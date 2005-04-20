@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/submitnews.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-03-07 11:40:17 $
-|     $Author: stevedunstan $
+|     $Revision: 1.10 $
+|     $Date: 2005-04-20 13:44:26 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -33,16 +33,7 @@ $author_email = check_email($_POST['author_email']);
 	
 if (isset($_POST['submit'])) {
 	 
-	if ($_POST['itemtitle'] == "") {
-		$message .= SUBNEWSLAN_1;
-		$error = TRUE;
-	}
-	 
-	if ($_POST['item'] == "") {
-		$message .= SUBNEWSLAN_2;
-		$error = TRUE;
-	}
-	 
+ 
 	$user = (USER ? USERNAME : $author_name);
 	$email = (USER ? USEREMAIL : $author_email);
 	 
@@ -118,7 +109,7 @@ if (isset($_POST['submit'])) {
 }
 
 $text = "<div style='text-align:center'>
-	<form id='dataform' method='post' action='".e_SELF."' enctype='multipart/form-data' >\n
+	<form id='dataform' method='post' action='".e_SELF."' enctype='multipart/form-data' onsubmit='return frmVerify()'>\n
 	<table style='width:95%' class='fborder'>";
 if (!USER) {
 	$text .= "<tr>\n<td style='width:20%' class='forumheader3'>".LAN_7."</td>\n<td style='width:80%' class='forumheader3'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>\n<tr>\n<td style='width:20%' class='forumheader3'>".LAN_112."</td>\n<td style='width:80%' class='forumheader3'>\n<input class='tbox' type='text' name='author_email' size='60' value='$author_email' maxlength='100' />\n</td>\n</tr>";
@@ -144,7 +135,7 @@ $text .= "</td>
 	</tr><tr>
 	<td style='width:20%' class='forumheader3'>".LAN_62."</td>
 	<td style='width:80%' class='forumheader3'>
-	<input class='tbox' type='text' name='itemtitle' size='60' value='$itemtitle' maxlength='200' style='width:90%' />
+	<input class='tbox' type='text' id='itemtitle' name='itemtitle' size='60' value='$itemtitle' maxlength='200' style='width:90%' />
 	</td>
 	</tr>";
 	
@@ -188,4 +179,25 @@ $text .= "
 $ns->tablerender(LAN_136, $text);
 	
 require_once(FOOTERF);
+
+function headerjs()
+{
+	$script = "<script type=\"text/javascript\">
+		function frmVerify()
+		{
+			if(document.getElementById('itemtitle').value == \"\")
+			{
+				alert('".SUBNEWSLAN_1."');
+				return false;
+			}
+			if(document.getElementById('item').value == \"\")
+			{
+				alert('".SUBNEWSLAN_2."');
+				return false;
+			}
+		}
+		</script>";
+	return $script;
+}
+	
 ?>
