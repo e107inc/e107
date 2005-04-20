@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-04-10 08:02:23 $
-|     $Author: stevedunstan $
+|     $Revision: 1.20 $
+|     $Date: 2005-04-20 13:18:02 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -1014,11 +1014,14 @@ class forum {
 				$forumList[] = $row;
 			}
 		}
-		if($sql->db_Select('user','user_name','user_admin != 0'))
+		if($sql->db_Select('user','user_name, user_perms','user_admin != 0'))
 		{
 			while($row = $sql->db_Fetch())
 			{
+				if(getperms("A", $row['user_perms']))
+				{
 				$adminList[] = $row;
+				}
 			}
 		}
 		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'><table class='fborder'><tr><td> &nbsp; </td>";
