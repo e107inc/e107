@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-04-19 07:13:36 $
+|     $Revision: 1.32 $
+|     $Date: 2005-04-20 06:07:17 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -47,7 +47,7 @@ function search_info($id, $type, $plug_require, $info='') {
 		$ret['results'] = $search_prefs[$type.'_handlers'][$id]['results'];
 		$ret['pre_title'] = $search_prefs[$type.'_handlers'][$id]['pre_title'];
 		$ret['pre_title_alt'] = $tp -> toHtml($search_prefs[$type.'_handlers'][$id]['pre_title_alt']);
-		$ret['order'] = $search_prefs[$type.'_handlers'][$id]['order'] ? $search_prefs[$type.'_handlers'][$id]['order'] : $auto_order;
+		$ret['order'] = (isset($search_prefs[$type.'_handlers'][$id]['order']) && $search_prefs[$type.'_handlers'][$id]['order']) ? $search_prefs[$type.'_handlers'][$id]['order'] : $auto_order;
 		$auto_order++;
 		return $ret;
 	} else {
@@ -126,7 +126,7 @@ if ($search_prefs['time_restrict']) {
 	}
 }
 
-if (is_numeric($_GET['r'])) {
+if (isset($_GET['r']) && is_numeric($_GET['r'])) {
 	$result_flag = $_GET['r'];
 } else {
 	$perform_search = 'not_numeric';
