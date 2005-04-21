@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-04-15 15:45:53 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.48 $
+|     $Date: 2005-04-21 18:55:55 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -67,11 +67,10 @@ if (isset($_POST['updateprefs']))
 	}
 	$pref['signup_options'] = $signup_options;
 	$e107cache->clear();
-//	exit;
 	save_prefs();
+	$sql -> db_Select_gen("TRUNCATE ".MPREFIX."online");
 	header("location:".e_ADMIN."prefs.php?u");
 	exit;
-
 }
 
 $sql->db_Select("plugin", "*", "plugin_installflag='1' ");
