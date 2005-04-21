@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_submenusgen.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-04-02 21:08:06 $
+|     $Revision: 1.3 $
+|     $Date: 2005-04-21 06:27:37 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -33,9 +33,9 @@ define("LAN_MENGEN_21","All links displayed in the");
 define("LAN_MENGEN_22","&nbsp;submenu will be deleted.");
 define("LAN_MENGEN_23","Main links are NOT deleted. If you need to delete them, please go to your");
 define("LAN_MENGEN_24","links section");
-// define("LAN_MENGEN_25","Main link created: ");
+define("LAN_MENGEN_25","Main link created: ");
 define("LAN_MENGEN_26","Link called: ");
-// define("LAN_MENGEN_27"," is the MAIN link.");
+define("LAN_MENGEN_27"," is the MAIN link.");
 // define("LAN_MENGEN_28"," is now displayed in the submenu of ");
 // define("LAN_MENGEN_29"," already exists. No modification done.");
 define("LAN_MENGEN_30"," was created in the submenu of ");
