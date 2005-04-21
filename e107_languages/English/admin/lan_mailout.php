@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_mailout.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-06 21:31:27 $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-21 18:52:31 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,7 @@ define("MAILAN_10","User Subscribed");
 define("MAILAN_11","Insert Variables");
 define("MAILAN_12","All Members");
 define("MAILAN_13","All Unverified Members ");
-define("MAILAN_14","It is recommended that you enable <a href='prefs.php'>SMTP</a> for sending large numbers of emails.");
+define("MAILAN_14","It is recommended that you enable SMTP for sending large numbers of emails - set in preferences below.");
 define("MAILAN_15","Mail-Out");
 
 
