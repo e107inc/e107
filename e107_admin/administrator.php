@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-04-02 18:29:13 $
+|     $Revision: 1.11 $
+|     $Date: 2005-04-21 11:10:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,10 @@ $e_sub_cat = 'admin';
 if (!is_object($tp)) $tp = new e_parse;
 
 require_once("auth.php");
+
+require_once(e_HANDLER."file_class.php");
+		$fl = new e_file;
+		$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
@@ -134,10 +138,32 @@ while ($row = $sql->db_Fetch()) {
 	$text .= "<tr>
 		<td style='width:5%' class='forumheader3'>$user_id</td>
 		<td style='width:30%' class='forumheader3'>$user_name</td>
-		<td style='width:30%; text-align:center' class='forumheader3'>". ($user_perms == "0" ? "&nbsp;" :
-	$rs->form_button("button", "", LAN_EDIT, "onclick=\"document.location='".e_SELF."?edit.$user_id'\""). $rs->form_button("button", "", ADMSLAN_59, "onclick=\"confirm_($user_id, '$user_name')\""))."</td>
-		<td style='width:35%' class='forumheader3'>".($user_perms == "0" ? ADMSLAN_58 : ($user_perms ? str_replace(".", "", $user_perms) : "&nbsp;"))."</td>
-		</tr>";
+		<td style='width:30%; text-align:center' class='forumheader3'>". ($user_perms == "0" ? "&nbsp;" : $rs->form_button("button", "", LAN_EDIT, "onclick=\"document.location='".e_SELF."?edit.$user_id'\""). $rs->form_button("button", "", ADMSLAN_59, "onclick=\"confirm_($user_id, '$user_name')\""))."</td>
+		<td style='width:35%' class='forumheader3'>";
+
+	if($user_perms == "0"){
+		$text .= ADMSLAN_58;
+	}else{
+		if($user_perms){
+			$tmp = explode(".",$user_perms);
+			foreach($tmp as $pms){
+				if(in_array($pms,$lanlist)){
+                	$langperm .= $pms."&nbsp;";
+				}else{
+					$permtxt .= $pms;
+				}
+			}
+
+	  	 	$text .= $permtxt;
+			if($pref['multilanguage']){
+				$text .= ",&nbsp;". $langperm;
+            }
+        }else{
+        	$text .= "&nbsp;";
+		}
+}
+
+$text .= "</td></tr>";
 }
 
 $text .= "</table></div>\n</form></div>\n</div>";
@@ -163,7 +189,7 @@ $text = "<div style='text-align:center'>
 	</tr>
 
 	<tr>
-	<td style='width:30%' class='forumheader3'>".ADMSLAN_18.": <br /></td>
+	<td style='width:30%;vertical-align:top' class='forumheader3'>".ADMSLAN_18.": <br /></td>
 	<td style='width:70%' class='forumheader3'>";
 
 function checkb($arg, $perms) {
@@ -211,7 +237,7 @@ $text .= checkb("U", $a_perms).ADMSLAN_45."<br />";
 $text .= checkb("M", $a_perms).ADMSLAN_46."<br />";
 $text .= checkb("N", $a_perms).ADMSLAN_47."<br /><br />";
 
-
+    $text .= "<br /><div class='fcaption'>".ADLAN_CL_7."</div><br />";
 $text .= checkb("Z", $a_perms).ADMSLAN_62."<br /><br />";
 
 $sql->db_Select("plugin", "*", "plugin_installflag='1'");
@@ -221,6 +247,19 @@ while ($row = $sql->db_Fetch()) {
 }
 
 
+// Language Rights.. --------------
+if($pref['multilanguage']){
+    $text .= "<br /><div class='fcaption'>".ADLAN_132."</div><br />\n";
+	$text .= checkb($pref['sitelanguage'], $a_perms).$pref['sitelanguage']."<br />\n";
+	foreach($lanlist as $langval){
+			$langname = $langval;
+			$langval = ($langval == $pref['sitelanguage']) ? "" : $langval;
+			if (table_exists("lan_".$langname)) {
+				$text .= checkb($langval, $a_perms).$langval."<br />\n";
+			}
+		}
+}
+// -------------------------
 
 
 $text .= "
