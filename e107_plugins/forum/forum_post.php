@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-04-20 13:56:38 $
+|     $Revision: 1.23 $
+|     $Date: 2005-04-21 02:12:40 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -231,6 +231,13 @@ if (isset($_POST['newthread']) || isset($_POST['reply'])) {
 			$forum_id = $id;
 		}
 		$iid = $forum->thread_insert($subject, $post, $forum_id, $parent, $user, $email_notify, $threadtype, $anon_info);
+		if($iid === -1)
+		{
+			require_once(HEADERF);
+			$ns->tablerender("", LAN_FORUM_2);
+			require_once(FOOTERF);
+			exit;
+		}
 		if (isset($_POST['reply'])) {
 			$iid = $parent;
 		}
@@ -275,8 +282,7 @@ if (isset($_POST['update_thread'])) {
 		$newvals['thread_edit_datestamp'] = time();
 		$newvals['thread_thread'] = $tp->toDB($_POST['post']);
 		$newvals['thread_name'] = $tp->toDB($_POST['subject']);
-		$newvals['thread_active'] = ($_POST['email_notify']) ? '99' :
-		 '1';
+		$newvals['thread_active'] = ($_POST['email_notify']) ? '99' : '1';
 		if (isset($_POST['threadtype'])) {
 			$newvals['thread_s'] = $_POST['threadtype'];
 		}
@@ -360,11 +366,8 @@ $POSTTYPE = ($action == "nt" ? LAN_63 : LAN_73);
 $POSTBOX = "<textarea class='tbox' name='post' cols='70' rows='10' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
 if(!$pref['wysiwyg'] || !check_class($pref['wysiwyg'])){
 	$POSTBOX .= ren_help(2);
-	$EMOTES = "";
-	if($pref['smiley_activate']) {
-		require_once(e_HANDLER."emote.php");
-		$EMOTES = r_emote();
-	}
+	require_once(e_HANDLER."emote.php");
+	$EMOTES = r_emote();
 }
 
 $emailnotify = "";
