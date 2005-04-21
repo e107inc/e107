@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-04-09 19:25:46 $
-|     $Author: stevedunstan $
+|     $Revision: 1.13 $
+|     $Date: 2005-04-21 02:20:04 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -22,6 +22,7 @@ $query = ($pref['nfp_posts'] ? "thread_lastpost" : "thread_datestamp");
 $lan_file = e_PLUGIN."newforumposts_main/languages/".e_LANGUAGE.".php";
 $path = e_PLUGIN."forum/";
 require_once((file_exists($lan_file) ? $lan_file : e_PLUGIN."newforumposts_main/languages/English.php"));
+global $sql, $ns;
 // get template ...
 	
 if (file_exists(THEME."newforumpost.php")) {
