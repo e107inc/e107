@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-04-15 09:22:55 $
-|     $Author: e107coders $
+|     $Revision: 1.35 $
+|     $Date: 2005-04-21 02:25:08 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -285,7 +285,7 @@ class links {
 			<tr>
 			<td style='width:30%' class='forumheader3'>".LCLAN_18.": </td>
 			<td style='width:70%' class='forumheader3'>
-			<input class='tbox' type='text' name='link_button' size='42' value='$link_button' maxlength='100' />
+			<input class='tbox' type='text' id='link_button' name='link_button' size='42' value='$link_button' maxlength='100' />
 
 					<input class='button' type ='button' style='cursor:hand' size='30' value='".LCLAN_39."' onclick='expandit(this)' />
 			<div id='linkicn' style='display:none;{head}'>";
