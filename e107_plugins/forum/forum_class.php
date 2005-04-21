@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-04-14 19:44:20 $
+|     $Revision: 1.21 $
+|     $Date: 2005-04-21 02:12:40 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -420,7 +420,7 @@ class e107forum {
 		global $sql;
 		$ret = array();
 		$qry = "
-			SELECT t.*, u.user_name, u.user_id from #forum_t AS t
+			SELECT t.*, u.user_name, u.user_id, u.user_email from #forum_t AS t
 			LEFT JOIN #user AS u
 			ON t.thread_user = u.user_id
 			WHERE t.thread_id = $thread_id
@@ -455,9 +455,10 @@ class e107forum {
 	 
 	function thread_insert($thread_name, $thread_thread, $thread_forum_id, $thread_parent, $thread_user, $thread_active, $thread_s, $thread_anon) {
 		$post_time = time();
-		global $sql;
+		global $sql, $tp, $pref;
 		//Check for duplicate post
-		if ($sql->db_Count('forum_t', '(*)', "WHERE thread_thread='$thread_thread'")) {
+		if ($sql->db_Count('forum_t', '(*)', "WHERE thread_thread='$thread_thread' and thread_datestamp > ".($post_time - 180)))
+		{
 			return -1;
 		}
 		if ($thread_anon) {
@@ -465,10 +466,12 @@ class e107forum {
 			$lastpost = $tmp[0].".".$post_time;
 			$lastuser = '0.'.$tmp[0];
 			$lp_lastuser = "0".chr(1).$tmp[0];
+			$lp_name = $tmp[0];
 		} else {
 			$lastpost = $thread_user.".".$post_time;
 			$lastuser = $thread_user.'.'.USERNAME;
 			$lp_lastuser = $thread_user.chr(1).USERNAME;
+			$lp_name = USERNAME;
 		}
 		//Add post to thread
 		if ($thread_parent) {
@@ -490,22 +493,26 @@ class e107forum {
 			$parent_thread = $this->thread_get_postinfo($thread_parent);
 			global $PLUGINS_DIRECTORY;
 			$datestamp = $gen->convert_date($post_time, "long");
-			$mail_post = stripslashes($_POST['post']);
-			$mail_link = SITEURL.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$thread_parent;
-			 
+			$email_post = $tp->toHTML($thread_thread, TRUE);
+			$mail_link = SITEURL.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$thread_parent.".last";
+			if(!isset($pref['forum_eprefix']))
+			{
+				$pref['forum_eprefix'] = "[forum]";
+			}
 			//   Send email to orinator of flagged
-			if ($thread_parent['active'] == 99) {
+			if ($parent_thread[0]['thread_active'] == 99) {
 				$gen = new convert;
-				$email_name = $parent_thread['user_name'];
-				$message = LAN_384.SITENAME.".\n\n". LAN_382.$datestamp."\n". LAN_94.": ".$lastuser."\n\n". LAN_385.$email_post."\n\n". LAN_383."\n\n".$mail_link;
-				sendemail($parent_thread['user_email'], $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message);
+				$email_name = $parent_thread[0]['user_name'];
+				$message = LAN_384.SITENAME.".\n\n". LAN_382.$datestamp."\n". LAN_94.": ".$lp_name."\n\n". LAN_385.$email_post."\n\n". LAN_383."\n\n".$mail_link;
+				include_once(e_HANDLER."mail.php");
+				sendemail($parent_thread[0]['user_email'], $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message);
 			}
 			 
 			//   Send email to all users tracking thread
 			if ($sql->db_Select("user", "*", "user_realm REGEXP('-".$thread_parent."-') ")) {
 				include_once(e_HANDLER.'mail.php');
 				while ($row = $sql->db_Fetch()) {
-					$message = LAN_385.SITENAME.".\n\n". LAN_382.$gen->convert_date(time(), "long")."\n". LAN_94.": ".$lastuser."\n\n". LAN_385.stripslashes($_POST['post'])."\n\n". LAN_383."\n\n".$mail_link;
+					$message = LAN_385.SITENAME.".\n\n". LAN_382.$gen->convert_date(time(), "long")."\n". LAN_94.": ".$lp_name."\n\n". LAN_385.$email_post."\n\n". LAN_383."\n\n".$mail_link;
 					if ($row['user_email']) {
 						sendemail($row['user_email'], $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message);
 					}
