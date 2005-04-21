@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-04-21 12:30:45 $
+|     $Revision: 1.44 $
+|     $Date: 2005-04-21 18:00:28 $
 |     $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
@@ -165,11 +165,12 @@ class sitelinks
 			$tmp = explode('.', $linkInfo['link_name'], 3);
 			$linkInfo['link_name'] = $tmp[2];
 			$indent = ($style['linkdisplay'] != 3) ? "&nbsp;&nbsp;" : "";
-
-			// By default links are not highlighted.
-			$linkstart = $style['linkstart'];
-			$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
 		}
+
+		// By default links are not highlighted.
+		$linkstart = $style['linkstart'];
+		$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
+
 		// Check for screentip regardless of URL.
 		if (isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description'])
 		{
