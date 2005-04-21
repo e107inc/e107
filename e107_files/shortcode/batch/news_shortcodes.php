@@ -6,16 +6,16 @@ SC_BEGIN NEWSTITLE
 global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-return $tp -> toHTML($news_item['news_title'], TRUE);
+return $tp -> toHTML($news_item['news_title'], TRUE, 'parse_sc');
 SC_END
 
 SC_BEGIN NEWSBODY
 global $tp;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-$news_body = $tp -> toHTML($news_item['news_body'], TRUE, '', $news_item['news_author']);
+$news_body = $tp -> toHTML($news_item['news_body'], TRUE, 'parse_sc', $news_item['news_author']);
 if($news_item['news_extended'] && (isset($_POST['preview']) || strpos(e_QUERY, 'extend') !== FALSE)) {
-    $news_extended = $tp -> toHTML($news_item['news_extended'], TRUE, '', $news_item['news_author']);
+    $news_extended = $tp -> toHTML($news_item['news_extended'], TRUE, 'parse_sc', $news_item['news_author']);
     $news_body .= "<br /><br />".$news_extended;
 }
 return $news_body;
