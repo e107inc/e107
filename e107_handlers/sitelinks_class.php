@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-04-12 23:13:01 $
-|     $Author: streaky $
+|     $Revision: 1.43 $
+|     $Date: 2005-04-21 12:30:45 $
+|     $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -26,7 +26,8 @@
 * @desc Outputs sitelinks
 */
 
-class sitelinks {
+class sitelinks
+{
 
 	var $eLinkList;
 
@@ -50,11 +51,12 @@ class sitelinks {
 
 	}
 
-	function get($cat=1,$style='') {
+	function get($cat=1,$style='')
+	{
 		global $pref, $ns, $tp, $e107cache;
 
-
-		if ($data = $e107cache->retrieve('sitelinks')) {
+		if ($data = $e107cache->retrieve('sitelinks'))
+		{
 			return $data;
 		}
 
@@ -67,10 +69,12 @@ class sitelinks {
 
 		// are these defines used at all ?
 
-		if(!defined('PRELINKTITLE')){
+		if(!defined('PRELINKTITLE'))
+		{
 			define('PRELINKTITLE', '');
 		}
-		if(!defined('PRELINKTITLE')){
+		if(!defined('PRELINKTITLE'))
+		{
 			define('POSTLINKTITLE', '');
 		}
 		// -----------------------------
@@ -90,41 +94,53 @@ class sitelinks {
 		$menu_count = 0;
 		$text = $style['prelink'];
 
-		if ($style['linkdisplay'] != 3) {
-			foreach ($this->eLinkList['head_menu'] as $link) {
+		if ($style['linkdisplay'] != 3)
+		{
+			foreach ($this->eLinkList['head_menu'] as $link)
+			{
 				$main_linkname = $link['link_name'];
 
 				$link['link_expand'] = (isset($pref['sitelinks_expandsub']) && is_array($this->eLinkList[$main_linkname])) ?  TRUE : FALSE;
 
 				$text .= $this->makeLink($link,'', $style);
 
-			// if there's a submenu. :
-				if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])) {
+				// if there's a submenu. :
+				if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname]))
+				{
 					$substyle = (eregi($main_linkname,e_SELF) || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
 					$text .= "\n\n<div id='sub_".$main_linkname."' style='display:$substyle'>\n";
-					foreach ($this->eLinkList[$main_linkname] as $sub) {
-					 	$text .= $this->makeLink($sub, TRUE, $style);
+					foreach ($this->eLinkList[$main_linkname] as $sub)
+					{
+						$text .= $this->makeLink($sub, TRUE, $style);
 					}
 					$text .= "\n</div>\n";
 
 				}
 			}
 			$text .= $style['postlink'];
-			if ($style['linkdisplay'] == 2) {
+			if ($style['linkdisplay'] == 2)
+			{
 				$text = $ns->tablerender(LAN_183, $text, 'sitelinks', TRUE);
 			}
-		} else {
-			foreach($this->eLinkList['head_menu'] as $link) {
-				if (!count($this->eLinkList[$link['link_name']])) {
+		}
+		else
+		{
+			foreach($this->eLinkList['head_menu'] as $link)
+			{
+				if (!count($this->eLinkList[$link['link_name']]))
+				{
 					$text .= $this->makeLink($link,'', $style);
 				}
 				$text .= $style['postlink'];
 			}
 			$text = $ns->tablerender(LAN_183, $text, 'sitelinks_main', TRUE);
-			foreach(array_keys($this->eLinkList) as $k) {
+			foreach(array_keys($this->eLinkList) as $k)
+			{
 				$mnu = $style['prelink'];
-				foreach($this->eLinkList[$k] as $link) {
-					if ($k != 'head_menu') {
+				foreach($this->eLinkList[$k] as $link)
+				{
+					if ($k != 'head_menu')
+					{
 						$mnu .= $this->makeLink($link, TRUE, $style);
 					}
 				}
@@ -136,107 +152,156 @@ class sitelinks {
 		return $text;
 	}
 
-	function makeLink($linkInfo, $submenu = FALSE, $style='') {
+	function makeLink($linkInfo, $submenu = FALSE, $style='')
+	{
 		global $pref;
 
-		if (!preg_match('#(http:|mailto:|ftp:)#', $linkInfo['link_url'])) {
-			$linkInfo['link_url'] = e_BASE.$linkInfo['link_url'];
-		}
-		if ($submenu == TRUE) {
+		// Start with an empty link
+		$linkstart = $indent = $linkadd = $screentip = $href = $link_append = '';
+
+		// If submenu: Fix Name, Add Indentation.
+		if ($submenu == TRUE)
+		{
 			$tmp = explode('.', $linkInfo['link_name'], 3);
 			$linkInfo['link_name'] = $tmp[2];
+			$indent = ($style['linkdisplay'] != 3) ? "&nbsp;&nbsp;" : "";
+
+			// By default links are not highlighted.
+			$linkstart = $style['linkstart'];
+			$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
+		}
+		// Check for screentip regardless of URL.
+		if (isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description'])
+		{
+			$screentip = " title = '".$linkInfo['link_description']."'";
 		}
 
-		if (hilite($linkInfo['link_url'],$style['linkstart_hilite'])== TRUE){
-			$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', $style['linkstart_hilite']) :  $style['linkstart_hilite'];
-		}else{
-			$_link = $linkInfo['link_button'] ? preg_replace('/\<img.*\>/si', '', $style['linkstart']) :  $style['linkstart'];
+
+		// Check if its expandable first. It should override its URL.
+		if ($linkInfo['link_expand'])
+		{
+			$href = " href=\"javascript: expandit('sub_".$linkInfo['link_name']."')\"";
+
+
 		}
+		elseif ($linkInfo['link_url'])
+		{
 
-
-
-		$_link .= $linkInfo['link_button'] ? "<img src='".e_IMAGE."icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />" : "";
-		$_link .= ($submenu == TRUE && $style['linkdisplay'] != 3) ? "&nbsp;&nbsp;" : "";
-
-		if ($linkInfo['link_url']) {
-			if (hilite($linkInfo['link_url'],$style['linkclass_hilite'])== TRUE){
-				$linkadd = ($style['linkclass_hilite']) ? " class='".$style['linkclass_hilite']."'" : "";
-			}else{
-				$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
-			}
-			$screentip = '';
-			if(isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description'])
+			// Only add the e_BASE if it actually has an URL.
+			if (!preg_match('#(http:|mailto:|ftp:)#', $linkInfo['link_url']))
 			{
-				$screentip = " title = '".$linkInfo['link_description']."'";
+				$linkInfo['link_url'] = e_BASE.$linkInfo['link_url'];
 			}
 
-//			$screentip = ($pref['linkpage_screentip'] && $linkInfo['link_description']) ? " title = '".$linkInfo['link_description']."'" : "";
+			// Only check if its highlighted if it has an URL
+			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE)
+			{
+				$linkstart = $style['linkstart_hilite'];
+			}
+			if ($this->hilite($linkInfo['link_url'], $style['linkclass_hilite'])== TRUE)
+			{
+				$linkadd = " class='".$style['linkclass_hilite']."'";
+			}
 
-			if($linkInfo['link_open'] == 4 || $linkInfo['link_open'] == 5){
+			if($linkInfo['link_open'] == 4 || $linkInfo['link_open'] == 5)
+			{
 				$dimen = ($linkInfo['link_open'] == 4) ? "600,400" : "800,600";
 				$href = " href=\"javascript:open_window('".$linkInfo['link_url']."', {$dimen})\"";
-			}else{
+			}
+			else
+			{
 				$href = " href='".$linkInfo['link_url']."'";
 			}
 
-	  //		$href = ($linkInfo['link_open'] == 4) ? " href=\"javascript:open_window('".$linkInfo['link_url']."')\"" : " href='".$linkInfo['link_url']."'";
-			$href = ($linkInfo['link_expand']) ? "href=\"javascript: expandit('sub_".$linkInfo['link_name']."')\"" : $href;  // expanding sub-menus.
+			// I have no idea what this does.
 			$link_append = ($linkInfo['link_open'] == 1) ? " rel='external'" : "";
+		}
 
-			$_link .= "<a".$linkadd.$screentip.$href.$link_append.">".$linkInfo['link_name']."</a>\n";
-		} else {
+		// Remove default images if its a button and add new image at the start.
+		if ($linkInfo['link_button'])
+		{
+			$linkstart = preg_replace('/\<img.*\>/si', '', $linkstart);
+			$linkstart .= "<img src='".e_IMAGE."icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />";
+		}
+
+		// If its a link.. make a link
+		if (!empty($href))
+		{
+			$_link .= "<a".$linkadd.$screentip.$href.$link_append.">".$linkInfo['link_name']."</a>";
+			// If its not a link, but has a class or screentip do span:
+		}
+		elseif (!empty($linkadd) || !empty($screentip))
+		{
+			$_link .= "<span".$linkadd.$screentip.">".$linkInfo['link_name']."</span>";
+			// Else just the name:
+		}
+		else
+		{
 			$_link .= $linkInfo['link_name'];
 		}
 
+		$_link = $linkstart.$indent.$_link."\n";
+
 		return $_link.$style['linkend'];
 	}
-}
 
-function hilite($link,$enabled=''){
+	function hilite($link,$enabled='')
+	{
 
-	global $PLUGINS_DIRECTORY;
+		global $PLUGINS_DIRECTORY;
 
-  	if(!$enabled){ return FALSE; }
+		if(!$enabled){ return FALSE; }
 
-// --------------- highlighting for plugins. ----------------
-	if(eregi($PLUGINS_DIRECTORY, $link) && !eregi("custompages", $link)){
-		$link = str_replace("../", "", $link);
-		if(eregi(dirname($link), dirname(e_SELF))){
-			return TRUE;
+		// --------------- highlighting for plugins. ----------------
+		if(eregi($PLUGINS_DIRECTORY, $link) && !eregi("custompages", $link))
+		{
+			$link = str_replace("../", "", $link);
+			if(eregi(dirname($link), dirname(e_SELF)))
+			{
+				return TRUE;
+			}
 		}
-	}
-// --------------- highlight for news items.----------------
-// eg. news.php?list.1 or news.php?cat.2 etc
+		// --------------- highlight for news items.----------------
+		// eg. news.php?list.1 or news.php?cat.2 etc
 
-	if(eregi("news.php",$link)){
-		if(eregi("list", $link) && eregi("list", e_QUERY)){
-			$tmp = str_replace("php?", "", explode(".",$link));
-			$tmp2 = explode(".", e_QUERY);
-			if($tmp[1] == $tmp2[1] && $tmp[2] == $tmp2[2]){
+		if(eregi("news.php",$link))
+		{
+			if(eregi("list", $link) && eregi("list", e_QUERY))
+			{
+				$tmp = str_replace("php?", "", explode(".",$link));
+				$tmp2 = explode(".", e_QUERY);
+				if($tmp[1] == $tmp2[1] && $tmp[2] == $tmp2[2])
+				{
+					return true;
+				}
+			}
+
+			if((eregi("cat", $link) || eregi("list", $link)) && eregi("item", e_QUERY))
+			{
+				$tmp = str_replace("php?", "", explode(".",$link));
+				$tmp2 = explode(".", e_QUERY);
+				if($tmp[2] == $tmp2[2])
+				{
+					return TRUE;
+				}
+			}
+		}
+
+		// --------------- highlight default ----------------
+		if(eregi("\?", $link))
+		{
+			if(($enabled) && (strpos(e_SELF."?".e_QUERY, str_replace("../", "", "/".$link)) !== false))
+			{
 				return true;
 			}
 		}
 
-		if((eregi("cat", $link) || eregi("list", $link)) && eregi("item", e_QUERY)){
-			$tmp = str_replace("php?", "", explode(".",$link));
-			$tmp2 = explode(".", e_QUERY);
-			if($tmp[2] == $tmp2[2]){
-				return TRUE;
-			}
-		}
-	}
-
-// --------------- highlight default ----------------
-	if(eregi("\?", $link)){
-		if(($enabled) && (strpos(e_SELF."?".e_QUERY, str_replace("../", "", "/".$link)) !== false)){
+		if(!eregi("all", e_QUERY) && !eregi("item", e_QUERY) && !eregi("cat",e_QUERY) && !eregi("list", e_QUERY) && $enabled && (strpos(e_SELF, str_replace("../", "", "/".$link)) !== false))
+		{
 			return true;
 		}
-	}
 
-	if(!eregi("all", e_QUERY) && !eregi("item", e_QUERY) && !eregi("cat",e_QUERY) && !eregi("list", e_QUERY) && $enabled && (strpos(e_SELF, str_replace("../", "", "/".$link)) !== false)){
-		return true;
+		return false;
 	}
-
-	return false;
 }
-?>
+	?>
