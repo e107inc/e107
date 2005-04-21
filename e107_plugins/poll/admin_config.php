@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-05 11:52:27 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-21 19:20:10 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -48,8 +48,8 @@ else
 	define("POLLID", FALSE);
 }
 
-if ($action == "delete" && $_POST['del_poll_confirm'] == 1) {
-	$message = $poll->delete_poll($sub_action);
+if ($action == "delete") {
+	$message = $poll->delete_poll($id);
 	unset($poll_id, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate']);
 }
 
@@ -157,7 +157,7 @@ function headerjs() {
 	global $tp;
 	$headerjs = "<script type=\"text/javascript\">
 		function confirm_(poll_id){
-		var x=confirm(\"".$tp->toJS(POLLAN_21)." [ID: \" + poll_id + \"]\");
+		var x=confirm(\"Delete this poll? [ID: \" + poll_id + \"]\");
 		if (x){
 		document.getElementById('del_poll').action='".e_SELF."?delete.' + poll_id;
 		document.getElementById('del_poll').submit();
