@@ -13,8 +13,6 @@ class e107{
 
 		if(defined("COMPRESS_OUTPUT") && COMPRESS_OUTPUT === true) {
 			ob_start ("ob_gzhandler");
-		} else {
-			ob_start();
 		}
 
 		$this->e107_dirs = $e107_paths;
