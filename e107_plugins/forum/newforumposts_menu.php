@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-20 19:47:52 $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-22 19:30:13 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -55,7 +55,7 @@ else
 			$poster_id = $thread_user;
 		}
 		$thread_thread = strip_tags(eregi_replace("\[.*\]", "", $thread_thread));
-		$thread_thread = $tp->toHTML($thread_thread, FALSE, "", "", $pref['menu_wordwrap']);
+		$thread_thread = $tp->toHTML($thread_thread, FALSE, "emotes_off", "", $pref['menu_wordwrap']);
 		if (strlen($thread_thread) > $menu_pref['newforumposts_characters'])
 		{
 			$thread_thread = substr($thread_thread, 0, $menu_pref['newforumposts_characters']).$menu_pref['newforumposts_postfix'];
