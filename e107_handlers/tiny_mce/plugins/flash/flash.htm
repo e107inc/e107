@@ -33,7 +33,7 @@ if (url != null)
             formObj.height.value  = swfheight;
         }
         formObj.file.value = swffile;
-        formObj.insert.value = tinyMCE.getLang('lang_' + tinyMCE.getWindowArg('action'));
+        formObj.insert.value = tinyMCE.getLang('lang_' + tinyMCE.getWindowArg('action'), 'Insert', true);
 
 		// Handle file browser
 		if (tinyMCE.getParam("file_browser_callback") != null) {
@@ -50,6 +50,14 @@ if (url != null)
 			html += ' class="mceButtonNormal" alt="' + tinyMCE.getLang('lang_browse') + '" />';
 
 			document.getElementById('browser').innerHTML = html;
+		}
+
+		// Auto select flash in list
+		if (typeof(tinyMCEFlashList) != "undefined" && tinyMCEFlashList.length > 0) {
+			for (var i=0; i<formObj.link_list.length; i++) {
+				if (formObj.link_list.options[i].value == tinyMCE.getWindowArg('swffile'))
+					formObj.link_list.options[i].selected = true;
+			}
 		}
 
         window.focus();

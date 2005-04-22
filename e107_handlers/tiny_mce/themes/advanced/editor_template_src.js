@@ -1,5 +1,5 @@
 /* Import theme specific language pack */
-tinyMCE.importThemeLanguagePack();
+tinyMCE.importThemeLanguagePack('advanced');
 
 // Variable declarations
 var TinyMCE_advanced_autoImportCSSClasses = true;

@@ -67,7 +67,7 @@ function init() {
 	formObj.cellspacing.value = tinyMCE.getWindowArg('cellspacing');
 	formObj.width.value = tinyMCE.getWindowArg('width');
 	formObj.height.value = tinyMCE.getWindowArg('height');
-	formObj.insert.value = tinyMCE.getLang('lang_' + tinyMCE.getWindowArg('action')); 
+	formObj.insert.value = tinyMCE.getLang('lang_' + tinyMCE.getWindowArg('action'), 'Insert', true); 
 
 	window.focus();
 }
