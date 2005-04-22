@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-04-02 19:13:38 $
+|     $Revision: 1.14 $
+|     $Date: 2005-04-22 23:53:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -24,11 +24,9 @@ if (!getperms("6")) {
 $e_sub_cat = 'filemanage';
 require_once("auth.php");
 
-if(str_replace("../","",e_QUERY) == str_replace("../","",e_FILE."public/")){
-	$pubfolder = TRUE;
-}else{
-	$pubfolder = FALSE;
-}
+
+$pubfolder = (str_replace("../","",e_QUERY) == str_replace("../","",e_FILE."public/")) ? TRUE : FALSE;
+
 
 $imagedir = e_IMAGE."filemanager/";
 
@@ -40,25 +38,20 @@ if (getperms("I")) {
 	$dir_options[4] = FMLAN_37;
 }
 
-$adchoice[0] = e_FILE."public/";
-$adchoice[1] = e_FILE;
-$adchoice[2] = e_IMAGE."newspost_images/";
-$adchoice[3] = e_PLUGIN."custom/";
-$adchoice[4] = e_PLUGIN."custompages/";
+	$adchoice[0] = e_FILE."public/";
+	$adchoice[1] = e_FILE;
+	$adchoice[2] = e_IMAGE."newspost_images/";
+	$adchoice[3] = e_PLUGIN."custom/";
+	$adchoice[4] = e_PLUGIN."custompages/";
 
 
-$choice = ($_POST['admin_choice']) ? $adchoice[$_POST['admin_choice']] : $adchoice[0];
-
-
-if (isset($_POST['admin_choice'])) {
-	header("location:".e_SELF."?".$choice);
-	 exit;
-}
-
-$path = str_replace("../", "", (e_QUERY ? e_QUERY : $choice));
+$path = str_replace("../", "", e_QUERY);
 if (!$path) {
-	$path = str_replace("../", "", $choice);
+	$path = str_replace("../", "", $adchoice[0]);
 }
+
+// ===============================================
+
 
 foreach($_POST['deleteconfirm'] as $key=>$delfile){
 	// check for delete.
@@ -190,12 +183,12 @@ $text = "<div style='text-align:center'>\n
 	".FMLAN_32."
 	</td>\n
 	<td class='forumheader3' style='text-align:center; width:30%'>\n
-	<select name='admin_choice' class='tbox'>\n";
+	<select name='admin_choice' class='tbox' onchange=\"location.href=this.options[selectedIndex].value\">\n";
 
 
 	foreach($dir_options as $key=>$opt){
-		$select = ($adchoice[$key] == e_QUERY) ? "selected='selected'" : "";
-		$text .= "<option value='$key' $select>".$opt."</option>\n";
+		$select = (str_replace("../","",$adchoice[$key]) == e_QUERY) ? "selected='selected'" : "";
+		$text .= "<option value='".e_SELF."?".str_replace("../","",$adchoice[$key])."' $select>".$opt."</option>\n";
 	}
 
 $text .= "</select>\n
@@ -253,7 +246,7 @@ while ($dirs[$c]) {
 		</td>
 		<td class=\"forumheader3\">&nbsp;</td>
 		<td class=\"forumheader3\">";
-	if (FILE_UPLOADS) {
+	if (FILE_UPLOADS && is_writable(e_BASE.$path.$dirs[$c])) {
 		$text .= "<input class=\"button\" type=\"button\" name=\"erquest\" value=\"".FMLAN_21."\" onclick=\"expandit(this)\" />
 			<div style=\"display:none;\">
 			<input class=\"tbox\" type=\"file\" name=\"file_userfile[]\" size=\"50\" />
