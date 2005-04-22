@@ -1,6 +1,11 @@
 /* Import plugin specific language pack */
 tinyMCE.importPluginLanguagePack('flash', 'en,de,sv,zh_cn,cs,fa,fr_ca,fr');
 
+function TinyMCE_flash_initInstance(inst) {
+	if (!tinyMCE.settings['flash_skip_plugin_css'])
+		tinyMCE.importCSS(inst.getDoc(), tinyMCE.baseURL + "/plugins/flash/flash.css");
+}
+
 function TinyMCE_flash_getControlHTML(control_name) {
     switch (control_name) {
         case "flash":
@@ -173,17 +178,17 @@ function TinyMCE_flash_cleanup(type, content) {
 <object
 classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"
 codebase="http://www.apple.com/qtactivex/qtplugin.cab" width="360" height="305" hspace="0" vspace="0">
-  <param name="src" value="<?=$_REQUEST['url']?>">
+  <param name="src" value="some source">
   <param name="autoplay" value="true">
   <param name="controller" value="true">
-  <embed src="<?=$_REQUEST['url']?>" width="360" height="305" hspace="0" vspace="0"
+  <embed src="some source" width="360" height="305" hspace="0" vspace="0"
 autoplay="true" controller="true"
 pluginspage="http://www.apple.com/quicktime/download/">
   </embed></object>
 
 */
 
-				content = content.substring(0, startPos) + embedHTML + content.substring(endPos+1);
+				content = content.substring(0, startPos) + embedHTML + content.substring(endPos);
 
 				startPos++;
 			}

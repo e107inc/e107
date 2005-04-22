@@ -5,7 +5,7 @@
 <script language="javascript">
 	function init() {
 		document.forms[0].anchorName.value = tinyMCE.getWindowArg('name');
-		document.forms[0].insert.value = tinyMCE.getLang('lang_' + tinyMCE.getWindowArg('action')); 
+		document.forms[0].insert.value = tinyMCE.getLang('lang_' + tinyMCE.getWindowArg('action'), 'Insert', true); 
 		window.focus();
 	}
 
