@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-11 08:32:21 $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-22 20:43:03 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -88,7 +88,21 @@ if($action == "show")
 			$FEEDIMAGE = "";
 		}
 		$FEEDLANGUAGE = $rss -> channel['language'];
-		$FEEDLASTBUILDDATE = NFLAN_33.($rss -> channel['lastbuilddate'] ? $rss -> channel['lastbuilddate'] : NFLAN_34);
+
+		if($rss -> channel['lastbuilddate'])
+		{
+			$pubbed = $rss -> channel['lastbuilddate'];
+		}
+		else if($rss -> channel['dc']['date'])
+		{
+			$pubbed = $rss -> channel['dc']['date'];
+		}
+		else
+		{
+			$pubbed = NFLAN_34;
+		}
+
+		$FEEDLASTBUILDDATE = NFLAN_33.$pubbed;
 		$FEEDCOPYRIGHT = $tp -> toHTML($rss -> channel['copyright'], TRUE);
 		$FEEDDOCS = $rss -> channel['docs'];
 		$FEEDTITLE = "<a href='".$rss -> channel['link']."' rel='external'>".$rss -> channel['title']."</a>";

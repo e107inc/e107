@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_functions.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-03 04:00:18 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-22 20:43:03 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -122,7 +122,21 @@ function newsfeed_info($which)
 				$FEEDIMAGE = "";
 			}
 			$FEEDLANGUAGE = $rss -> channel['language'];
-			$FEEDLASTBUILDDATE = NFLAN_33.($rss -> channel['lastbuilddate'] ? $rss -> channel['lastbuilddate'] : NFLAN_34);
+	
+			if($rss -> channel['lastbuilddate'])
+			{
+				$pubbed = $rss -> channel['lastbuilddate'];
+			}
+			else if($rss -> channel['dc']['date'])
+			{
+				$pubbed = $rss -> channel['dc']['date'];
+			}
+			else
+			{
+				$pubbed = NFLAN_34;
+			}
+
+			$FEEDLASTBUILDDATE = NFLAN_33.$pubbed;
 			$FEEDCOPYRIGHT = $tp -> toHTML($rss -> channel['copyright'], TRUE);
 			$FEEDTITLE = "<a href='".$rss -> channel['link']."' rel='external'>".$rss -> channel['title']."</a>";
 			$FEEDLINK = $rss -> channel['link'];
