@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-04-17 06:28:16 $
-|     $Author: sweetas $
+|     $Revision: 1.24 $
+|     $Date: 2005-04-22 20:22:54 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -134,17 +134,17 @@ if ($menu_act == "adv") {
 	$listtype = substr($menu_pages, 0, 1);
 	$menu_pages = substr($menu_pages, 2);
 	$menu_pages = preg_replace("#\|#", "\n", $menu_pages);
-	$text = "<div style='text-align:center'>
+	$text = "<div style='text-align:center;'>
 	<form  method='post' action='".e_SELF."?configure.".$menus_equery[1]."'>\n
-	<table style='width:100%'>
+	<table style='width:40%'>
 	<tr>
 	<td>
-	<input type='hidden' name='menuAct[$menu_id]' value='sv.$menu_id' />";
-	$text .= MENLAN_4." ";
-	$text .= r_userclass('menu_class', $menu_class, "off", "public,member,guest,admin,classes,nobody");
-	$text .= "</td>
-	</tr>";
-	$text .= "<tr><td><br />";
+	<input type='hidden' name='menuAct[$menu_id]' value='sv.$menu_id' />
+	".MENLAN_4." ".
+	r_userclass('menu_class', $menu_class, "off", "public,member,guest,admin,classes,nobody")."
+	</td>
+	</tr>
+	<tr><td><br />";
 	$checked = ($listtype == 1) ? " checked='checked' " :
 	"";
 	$text .= "<input type='radio' {$checked} name='listtype' value='1' /> ".MENLAN_26."<br />";
@@ -154,8 +154,8 @@ if ($menu_act == "adv") {
 	$text .= "<textarea name='pagelist' cols='60' rows='10' class='tbox'>$menu_pages</textarea>";
 	$text .= "
 	<tr>
-	<td style=\"text-align:center\"><br />
-	<input class=\"button\" type=\"submit\" name=\"class_submit\" value=\"".MENLAN_6."\" />
+	<td style='text-align:center'><br />
+	<input class='button' type='submit' name='class_submit' value='".MENLAN_6."' />
 	</td>
 	</tr>
 	</table>
@@ -433,14 +433,14 @@ function checklayout($str) {
 			$link = e_PLUGIN.$plug."/config.php";
 		}
 
-		$plugtext = ($link) ? "(".MENLAN_34.":<a href=\"$link\" title='".MENLAN_16."'>".MENLAN_16."</a>)" : "(".MENLAN_34.")" ;
+		$plugtext = ($link) ? "(".MENLAN_34.":<a href='$link' title='".MENLAN_16."'>".MENLAN_16."</a>)" : "(".MENLAN_34.")" ;
 		echo "<br />";
 		$ns -> tablerender($plug, $plugtext);
 	}
 	else if (strstr($str, "MENU")) {
 		$ns = new e107table;
 		$menu = preg_replace("/\{MENU=(.*?)\}/si", "\\1", $str);
-		echo "<div style=\"text-align:center; font-size:14px\" class=\"fborder\"><div class=\"forumheader\"><b>".MENLAN_14."  ".$menu."</b></div></div><br />";
+		echo "<div style='text-align:center; font-size:14px' class='fborder'><div class='forumheader'><b>".MENLAN_14."  ".$menu."</b></div></div><br />";
 		$text = "&nbsp;";
 		$sql9 = new db;
 		if ($sql9->db_Count("menus", "(*)", " WHERE menu_location='$menu' ")) {
@@ -453,7 +453,7 @@ function checklayout($str) {
 				$menu_name = eregi_replace("_menu", "", $menu_name);
 				$vis = ($menu_class || strlen($menu_pages) > 1) ? " <span style='color:red'>*</span> " :
 				"";
-				$caption = "<div style=\"text-align:center\">{$menu_name}{$vis}</div>";
+				$caption = "<div style='text-align:center'>{$menu_name}{$vis}</div>";
 				$menu_info = "{$menu_location}.{$menu_order}";
 
 				$text = "";
