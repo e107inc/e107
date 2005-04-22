@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-04-02 21:38:20 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2005-04-22 02:38:25 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -32,21 +32,31 @@ if (!$sql_data) {
 
 $tables["core"] = $sql_data;
 
-// require_once(HEADERF);
-
 if (!getperms("0")) {
 	header("location:".e_BASE."index.php");
 	exit;
+}
+
+//Get installed plugins
+if($sql->db_Select("plugin","plugin_path","plugin_installflag = '1'"))
+{
+	while($row = $sql->db_Fetch())
+	{
+		$pluginList[] = $row['plugin_path'];
+	}
 }
 
 //Get any plugin _sql.php files
 $handle = opendir(e_PLUGIN);
 $c = 1;
 while (false !== ($file = readdir($handle))) {
-	if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
+	if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file) && in_array($file, $pluginList))
+	{
 		$plugin_handle = opendir(e_PLUGIN.$file."/");
-		while (false !== ($file2 = readdir($plugin_handle))) {
-			if (preg_match("/(.*?)_sql.php/", $file2, $matches)) {
+		while (false !== ($file2 = readdir($plugin_handle)))
+		{
+			if (preg_match("/(.*?)_sql.php/", $file2, $matches))
+			{
 				$filename = e_PLUGIN.$file."/".$file2;
 				@$fd = fopen ($filename, "r");
 				$sql_data = @fread($fd, filesize($filename));
