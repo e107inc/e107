@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-04-21 18:55:55 $
-|     $Author: stevedunstan $
+|     $Revision: 1.49 $
+|     $Date: 2005-04-23 07:22:23 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -248,7 +248,7 @@ $text .= "<div id='admindisp' style='display:none; text-align:center'>
 
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_95."<br /><span class='smalltext'>".PRFLAN_96."</td>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_95."<br /><span class='smalltext'>".PRFLAN_96."</span></td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input type='radio' name='admin_alerts_ok' value='1'".($pref['admin_alerts_ok'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='admin_alerts_ok' value='0'".(!$pref['admin_alerts_ok'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
@@ -256,7 +256,7 @@ $text .= "<div id='admindisp' style='display:none; text-align:center'>
 	</tr>";
 
 $text .= "<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_97."<br /><span class='smalltext'>".PRFLAN_98."</td>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_97."<br /><span class='smalltext'>".PRFLAN_98."</span></td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input type='radio' name='admin_alerts_uniquemenu' value='1'".($pref['admin_alerts_uniquemenu'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='admin_alerts_uniquemenu' value='0'".(!$pref['admin_alerts_uniquemenu'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
@@ -298,7 +298,7 @@ $text .= "<td style='width:50%' class='forumheader3'>".PRFLAN_22.": </td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_24."<br /><span class='smalltext'>".PRFLAN_25." <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>".PRFLAN_93."</a></td>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_24."<br /><span class='smalltext'>".PRFLAN_25." <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>".PRFLAN_93."</a></span></td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input class='tbox' type='text' name='forumdate' size='40' value='".$pref['forumdate']."' maxlength='50' />
 	<br />".PRFLAN_83.": $date3
@@ -370,7 +370,7 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_45."<br /><span class='smalltext'>".PRFLAN_46." <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".PRFLAN_94."</span></td>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_45."<br /><span class='smalltext'>".PRFLAN_46." <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".PRFLAN_94."</a></span></td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input type='radio' name='use_coppa' value='1'".($pref['use_coppa'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='use_coppa' value='0'".(!$pref['use_coppa'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
@@ -414,6 +414,7 @@ $text .= "<div id='signup' style='display:none; text-align:center'>
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_126."</td>
 	<td style='width:50%' class='forumheader3'><textarea class='tbox' name='signup_text' cols='1' rows='5' style='width: 100%;'>".$pref['signup_text']."</textarea>
+	</td>
 	</tr>
 
 
@@ -653,7 +654,7 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_40."<br /><span class='smalltext'>".PRFLAN_41."</td>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_40."<br /><span class='smalltext'>".PRFLAN_41."</span></td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input type='radio' name='profanity_filter' value='1'".($pref['profanity_filter'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='profanity_filter' value='0'".(!$pref['profanity_filter'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
@@ -694,7 +695,7 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_37."<br /><span class='smalltext'>".PRFLAN_91."</td>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_37."<br /><span class='smalltext'>".PRFLAN_91."</span></td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input type='radio' name='autoban' value='1'".($pref['autoban'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='autoban' value='0'".(!$pref['autoban'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
@@ -717,6 +718,7 @@ $text .= "<div id='comments' style='display:none; text-align:center'>
 	<input type='radio' name='comments_icon' value='1'".($pref['comments_icon'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='comments_icon' value='0'".(!$pref['comments_icon'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
+	</tr>
 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_88.": </td>
