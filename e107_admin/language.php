@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-04-05 12:00:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.16 $
+|     $Date: 2005-04-23 07:33:08 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -217,7 +217,7 @@ function multilang_prefs() {
 
 
 	$text = "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."' name='linkform'>
+		<form method='post' action='".e_SELF."' id='linkform'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>";
 
 
@@ -255,7 +255,7 @@ function multilang_prefs() {
 		<td style='width:60%;text-align:center' class='forumheader3'>";
 	$checked = ($pref['multilanguage'] == 1) ? "checked='checked'" :
 	 "";
-	$text .= "<input type='checkbox' name='multilanguage'   value='1' $checked>
+	$text .= "<input type='checkbox' name='multilanguage'   value='1' $checked />
 		</td>
 		</tr>
 		";
