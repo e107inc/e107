@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.75 $
-|     $Date: 2005-04-11 08:31:14 $
-|     $Author: stevedunstan $
+|     $Revision: 1.76 $
+|     $Date: 2005-04-23 00:59:31 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -45,15 +45,16 @@ function update_check() {
 	if ($update_needed === TRUE) {
 		$txt = "<div style='text-align:center;'>".ADLAN_120;
 		$txt .= "<br /><form method='POST' action='".e_ADMIN."e107_update.php'>
-			<input class='button' type='submit' value='".LAN_UPDATE."' />
-			</form></div>";
+		<input class='button' type='submit' value='".LAN_UPDATE."' />
+		</form></div>";
 		$ns->tablerender(LAN_UPDATE, $txt);
 	}
 }
 
 function update_61x_to_700($type) {
 	global $sql, $ns, $mySQLdefaultdb, $pref, $tp;
-	if ($type == "do") {
+	if ($type == "do")
+	{
 		set_time_limit(180);
 		$s_prefs = FALSE;
 
@@ -77,22 +78,22 @@ function update_61x_to_700($type) {
 		/* start poll update */
 		$sql -> db_Update("menus", "menu_path='poll' WHERE menu_name='poll_menu' ");
 		$query = "CREATE TABLE ".MPREFIX."polls (
-		  poll_id int(10) unsigned NOT NULL auto_increment,
-		  poll_datestamp int(10) unsigned NOT NULL default '0',
-		  poll_start_datestamp int(10) unsigned NOT NULL default '0',
-		  poll_end_datestamp int(10) unsigned NOT NULL default '0',
-		  poll_admin_id int(10) unsigned NOT NULL default '0',
-		  poll_title varchar(250) NOT NULL default '',
-		  poll_options text NOT NULL,
-		  poll_votes text NOT NULL,
-		  poll_ip text NOT NULL,
-		  poll_type tinyint(1) unsigned NOT NULL default '0',
-		  poll_comment tinyint(1) unsigned NOT NULL default '1',
-		  poll_allow_multiple tinyint(1) unsigned NOT NULL default '0',
-		  poll_result_type tinyint(2) unsigned NOT NULL default '0',
-		  poll_vote_userclass tinyint(3) unsigned NOT NULL default '0',
-		  poll_storage_method tinyint(1) unsigned NOT NULL default '0',
-		  PRIMARY KEY  (poll_id)
+		poll_id int(10) unsigned NOT NULL auto_increment,
+		poll_datestamp int(10) unsigned NOT NULL default '0',
+		poll_start_datestamp int(10) unsigned NOT NULL default '0',
+		poll_end_datestamp int(10) unsigned NOT NULL default '0',
+		poll_admin_id int(10) unsigned NOT NULL default '0',
+		poll_title varchar(250) NOT NULL default '',
+		poll_options text NOT NULL,
+		poll_votes text NOT NULL,
+		poll_ip text NOT NULL,
+		poll_type tinyint(1) unsigned NOT NULL default '0',
+		poll_comment tinyint(1) unsigned NOT NULL default '1',
+		poll_allow_multiple tinyint(1) unsigned NOT NULL default '0',
+		poll_result_type tinyint(2) unsigned NOT NULL default '0',
+		poll_vote_userclass tinyint(3) unsigned NOT NULL default '0',
+		poll_storage_method tinyint(1) unsigned NOT NULL default '0',
+		PRIMARY KEY  (poll_id)
 		) TYPE=MyISAM;";
 		$sql->db_Select_gen($query);
 		if($sql -> db_Select("poll"))
@@ -135,14 +136,14 @@ function update_61x_to_700($type) {
 
 		/* start download updates */
 		$query = "CREATE TABLE ".MPREFIX."download_mirror (
-		  mirror_id int(10) unsigned NOT NULL auto_increment,
-		  mirror_name varchar(200) NOT NULL default '',
-		  mirror_url varchar(200) NOT NULL default '',
-		  mirror_image varchar(200) NOT NULL default '',
-		  mirror_location varchar(100) NOT NULL default '',
-		  mirror_description text NOT NULL,
-		  mirror_count int(10) unsigned NOT NULL default '0',
-		  PRIMARY KEY  (mirror_id)
+		mirror_id int(10) unsigned NOT NULL auto_increment,
+		mirror_name varchar(200) NOT NULL default '',
+		mirror_url varchar(200) NOT NULL default '',
+		mirror_image varchar(200) NOT NULL default '',
+		mirror_location varchar(100) NOT NULL default '',
+		mirror_description text NOT NULL,
+		mirror_count int(10) unsigned NOT NULL default '0',
+		PRIMARY KEY  (mirror_id)
 		) TYPE=MyISAM;";
 		$sql->db_Select_gen($query);
 		mysql_query("ALTER TABLE ".MPREFIX."download ADD download_class TINYINT ( 3 ) UNSIGNED NOT NULL");
@@ -154,25 +155,25 @@ function update_61x_to_700($type) {
 		if ($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."link_category")) {
 			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $pref;
 			$sql->db_Select_gen("CREATE TABLE ".MPREFIX."links_page_cat (
-				link_category_id int(10) unsigned NOT NULL auto_increment,
-				link_category_name varchar(100) NOT NULL default '',
-				link_category_description varchar(250) NOT NULL default '',
-				link_category_icon varchar(100) NOT NULL default '',
-				PRIMARY KEY  (link_category_id)
-				) TYPE=MyISAM;");
+			link_category_id int(10) unsigned NOT NULL auto_increment,
+			link_category_name varchar(100) NOT NULL default '',
+			link_category_description varchar(250) NOT NULL default '',
+			link_category_icon varchar(100) NOT NULL default '',
+			PRIMARY KEY  (link_category_id)
+			) TYPE=MyISAM;");
 			$sql->db_Select_gen("CREATE TABLE ".MPREFIX."links_page (
-				link_id int(10) unsigned NOT NULL auto_increment,
-				link_name varchar(100) NOT NULL default '',
-				link_url varchar(200) NOT NULL default '',
-				link_description text NOT NULL,
-				link_button varchar(100) NOT NULL default '',
-				link_category tinyint(3) unsigned NOT NULL default '0',
-				link_order int(10) unsigned NOT NULL default '0',
-				link_refer int(10) unsigned NOT NULL default '0',
-				link_open tinyint(1) unsigned NOT NULL default '0',
-				link_class tinyint(3) unsigned NOT NULL default '0',
-				PRIMARY KEY  (link_id)
-				) TYPE=MyISAM;");
+			link_id int(10) unsigned NOT NULL auto_increment,
+			link_name varchar(100) NOT NULL default '',
+			link_url varchar(200) NOT NULL default '',
+			link_description text NOT NULL,
+			link_button varchar(100) NOT NULL default '',
+			link_category tinyint(3) unsigned NOT NULL default '0',
+			link_order int(10) unsigned NOT NULL default '0',
+			link_refer int(10) unsigned NOT NULL default '0',
+			link_open tinyint(1) unsigned NOT NULL default '0',
+			link_class tinyint(3) unsigned NOT NULL default '0',
+			PRIMARY KEY  (link_id)
+			) TYPE=MyISAM;");
 
 			$new_cat_id = 1;
 			$sql->db_Select("link_category", "*", "link_category_id!=1 ORDER BY link_category_id");
@@ -180,7 +181,7 @@ function update_61x_to_700($type) {
 				$link_cat_id[$row['link_category_id']] = $new_cat_id;
 				if ($row['link_category_icon']) {
 					$link_category_icon = strstr($row['link_category_icon'], "/") ? $row['link_category_icon'] : $IMAGES_DIRECTORY."link_icons/".$row['link_category_icon'];
-				} else {
+					} else {
 					$link_category_icon = "";
 				}
 				$link_cat_export[] = "'0', '".$row['link_category_name']."', '".$row['link_category_description']."', '".$link_category_icon."'";
@@ -198,7 +199,7 @@ function update_61x_to_700($type) {
 			while ($row = $sql->db_Fetch()) {
 				if ($row['link_button']) {
 					$link_button = strstr($row['link_button'], "/") ? $row['link_button'] : $IMAGES_DIRECTORY."link_icons/".$row['link_button'];
-				} else {
+					} else {
 					$link_button = "";
 				}
 				$link_export[] = "'0', '".$row['link_name']."', '".$row['link_url']."', '".$row['link_description']."', '".$link_button."', '".$link_cat_id[$row['link_category']]."', '".$row['link_order']."', '".$row['link_refer']."', '".$row['link_open']."', '".$row['link_class']."'";
@@ -237,66 +238,66 @@ function update_61x_to_700($type) {
 		// New dblog table for logging db calls (admin log)
 		$sql->db_Select_gen(
 		"CREATE TABLE ".MPREFIX."dblog (
-			dblog_id int(10) unsigned NOT NULL auto_increment,
-			dblog_type varchar(60) NOT NULL default '',
-			dblog_datestamp int(10) unsigned NOT NULL default '0',
-			dblog_user_id int(10) unsigned NOT NULL default '0',
-			dblog_ip varchar(80) NOT NULL default '',
-			dblog_query text NOT NULL,
-			dblog_remarks varchar(255) NOT NULL default '',
-			PRIMARY KEY  (dblog_id)
-			) TYPE=MyISAM;
-			");
+		dblog_id int(10) unsigned NOT NULL auto_increment,
+		dblog_type varchar(60) NOT NULL default '',
+		dblog_datestamp int(10) unsigned NOT NULL default '0',
+		dblog_user_id int(10) unsigned NOT NULL default '0',
+		dblog_ip varchar(80) NOT NULL default '',
+		dblog_query text NOT NULL,
+		dblog_remarks varchar(255) NOT NULL default '',
+		PRIMARY KEY  (dblog_id)
+		) TYPE=MyISAM;
+		");
 
 		// New generic table for storing any miscellaneous data
 		$sql->db_Select_gen(
 		"CREATE TABLE ".MPREFIX."generic (
-			gen_id int(10) unsigned NOT NULL auto_increment,
-  			gen_type varchar(80) NOT NULL default '',
-  			gen_datestamp int(10) unsigned NOT NULL default '0',
-			gen_user_id int(10) unsigned NOT NULL default '0',
-			gen_ip varchar(80) NOT NULL default '',
-			gen_intdata int(10) unsigned NOT NULL default '0',
-			gen_chardata text NOT NULL,
-			PRIMARY KEY  (gen_id)
-			) TYPE=MyISAM;
+		gen_id int(10) unsigned NOT NULL auto_increment,
+		gen_type varchar(80) NOT NULL default '',
+		gen_datestamp int(10) unsigned NOT NULL default '0',
+		gen_user_id int(10) unsigned NOT NULL default '0',
+		gen_ip varchar(80) NOT NULL default '',
+		gen_intdata int(10) unsigned NOT NULL default '0',
+		gen_chardata text NOT NULL,
+		PRIMARY KEY  (gen_id)
+		) TYPE=MyISAM;
 		");
 
 		$sql->db_Select_gen(
 		"CREATE TABLE ".MPREFIX."generic (
-			gen_id int(10) unsigned NOT NULL auto_increment,
-				gen_type varchar(80) NOT NULL default '',
-				gen_datestamp int(10) unsigned NOT NULL default '0',
-			gen_user_id int(10) unsigned NOT NULL default '0',
-			gen_ip varchar(80) NOT NULL default '',
-			gen_intdata int(10) unsigned NOT NULL default '0',
-			gen_chardata text NOT NULL,
-			PRIMARY KEY  (gen_id)
-			) TYPE=MyISAM;
+		gen_id int(10) unsigned NOT NULL auto_increment,
+		gen_type varchar(80) NOT NULL default '',
+		gen_datestamp int(10) unsigned NOT NULL default '0',
+		gen_user_id int(10) unsigned NOT NULL default '0',
+		gen_ip varchar(80) NOT NULL default '',
+		gen_intdata int(10) unsigned NOT NULL default '0',
+		gen_chardata text NOT NULL,
+		PRIMARY KEY  (gen_id)
+		) TYPE=MyISAM;
 		");
 
 		$sql->db_Select_gen(
 		"CREATE TABLE ".MPREFIX."user_extended (
-				user_extended_id int(10) unsigned NOT NULL default '0',
-				PRIMARY KEY  (user_extended_id)
-			) TYPE=MyISAM;
+		user_extended_id int(10) unsigned NOT NULL default '0',
+		PRIMARY KEY  (user_extended_id)
+		) TYPE=MyISAM;
 		");
 
 		$sql->db_Select_gen(
 		"CREATE TABLE ".MPREFIX."user_extended_struct (
-  			user_extended_struct_id int(10) unsigned NOT NULL auto_increment,
-  			user_extended_struct_name varchar(255) NOT NULL default '',
-  			user_extended_struct_text varchar(255) NOT NULL default '',
-  			user_extended_struct_type tinyint(3) unsigned NOT NULL default '0',
-  			user_extended_struct_parms varchar(255) NOT NULL default '',
-  			user_extended_struct_values text NOT NULL,
-  			user_extended_struct_default varchar(255) NOT NULL default '',
-  			user_extended_struct_read tinyint(3) unsigned NOT NULL default '0',
-  			user_extended_struct_write tinyint(3) unsigned NOT NULL default '0',
-  			user_extended_struct_required tinyint(3) unsigned NOT NULL default '0',
-  			user_extended_struct_signup tinyint(3) unsigned NOT NULL default '0',
-  			PRIMARY KEY  (user_extended_struct_id)
-			) TYPE=MyISAM;
+		user_extended_struct_id int(10) unsigned NOT NULL auto_increment,
+		user_extended_struct_name varchar(255) NOT NULL default '',
+		user_extended_struct_text varchar(255) NOT NULL default '',
+		user_extended_struct_type tinyint(3) unsigned NOT NULL default '0',
+		user_extended_struct_parms varchar(255) NOT NULL default '',
+		user_extended_struct_values text NOT NULL,
+		user_extended_struct_default varchar(255) NOT NULL default '',
+		user_extended_struct_read tinyint(3) unsigned NOT NULL default '0',
+		user_extended_struct_write tinyint(3) unsigned NOT NULL default '0',
+		user_extended_struct_required tinyint(3) unsigned NOT NULL default '0',
+		user_extended_struct_signup tinyint(3) unsigned NOT NULL default '0',
+		PRIMARY KEY  (user_extended_struct_id)
+		) TYPE=MyISAM;
 		");
 
 		$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_applicable TINYINT( 3 ) UNSIGNED NOT NULL");
@@ -387,7 +388,7 @@ function update_61x_to_700($type) {
 				$carray = array_unique(array_diff($carray, array('')));
 				if (count($carray) > 1) {
 					$new_userclass = implode(',', $carray);
-				} else {
+					} else {
 					$new_userclass = $carray[0];
 				}
 				$sql2->db_Update('user', "user_class = '{$new_userclass}' WHERE user_id={$row['user_id']}");
@@ -480,13 +481,13 @@ function update_61x_to_700($type) {
 
 		$sql->db_Select_gen(
 		"CREATE TABLE ".MPREFIX."download_requests (
-				download_request_id int(10) unsigned NOT NULL auto_increment,
-				download_request_userid int(10) unsigned NOT NULL default '0',
-				download_request_ip varchar(30) NOT NULL default '',
-				download_request_download_id int(10) unsigned NOT NULL default '0',
-				download_request_datestamp int(10) unsigned NOT NULL default '0',
-				PRIMARY KEY  (download_request_id)
-			) TYPE=MyISAM;
+		download_request_id int(10) unsigned NOT NULL auto_increment,
+		download_request_userid int(10) unsigned NOT NULL default '0',
+		download_request_ip varchar(30) NOT NULL default '',
+		download_request_download_id int(10) unsigned NOT NULL default '0',
+		download_request_datestamp int(10) unsigned NOT NULL default '0',
+		PRIMARY KEY  (download_request_id)
+		) TYPE=MyISAM;
 		");
 
 		// Search Update
@@ -518,12 +519,12 @@ function update_61x_to_700($type) {
 			$serial_prefs = addslashes(serialize($search_prefs));
 			if (!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) {
 				$sql -> db_Insert("core", "'search_prefs', '".$serial_prefs."'");
-   			} else {
+				} else {
 				$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
-   			}
+			}
 			if ($pref['search_restrict']) {
 				$pref['search_restrict'] = 253;
-			} else {
+				} else {
 				$pref['search_restrict'] = 0;
 			}
 			$pref['search_highlight'] = TRUE;
@@ -541,11 +542,11 @@ function update_61x_to_700($type) {
 			$sql -> db_Update("menus", "menu_path='forum' WHERE menu_name = 'newforumposts_menu' ");
 		}
 
-        if($pref['cb_linkreplace'] && !$pref['link_replace']){
-        	$pref['link_text'] = "[link]";
+		if($pref['cb_linkreplace'] && !$pref['link_replace']){
+			$pref['link_text'] = "[link]";
 			$pref['link_replace'] = 1;
 			$pref['make_clickable'] = 1;
-            $pref['cb_linkreplace'] = "";
+			$pref['cb_linkreplace'] = "";
 			$s_prefs = TRUE;
 		}
 
@@ -558,7 +559,7 @@ function update_61x_to_700($type) {
 		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_icon` ;");
 		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_parent` INT( 10 ) UNSIGNED NOT NULL ;");
 		mysql_query("ALTER TABLE `".MPREFIX."user_extended` ADD `user_hidden_fields` TEXT NOT NULL AFTER `user_extended_id`");
-		
+
 		// news_attach removal / field structure changes / 'thumb:' prefix removal
 		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_attach` `news_thumbnail` TEXT NOT NULL;");
 		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_summary` `news_summary` TEXT NOT NULL;");
@@ -576,21 +577,21 @@ function update_61x_to_700($type) {
 			$s_prefs = TRUE;
 		}
 		// end poll update -------------------------------------------------------------------------------------------
-		
+
 		// start newsfeed update -------------------------------------------------------------------------------------------
 		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='newsfeed'")) {
 			$sql->db_Insert("plugin", "0, 'Newsfeeds', '2.0', 'newsfeed', 1");
 			$s_prefs = TRUE;
 		}
 		// end newsfeed update -------------------------------------------------------------------------------------------
-		
+
 		// start stats update -------------------------------------------------------------------------------------------
 		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='log'")) {
 			$sql->db_Insert("plugin", "0, 'Statistic Logging', '2.0', 'log', 1");
 			$s_prefs = TRUE;
 		}
 		// end stats update -------------------------------------------------------------------------------------------
-		
+
 		// start content update -------------------------------------------------------------------------------------------
 		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='content'")) {
 			$sql->db_Insert("plugin", "0, 'Content Management', '1.0', 'content', 1");
@@ -598,15 +599,15 @@ function update_61x_to_700($type) {
 		}
 		// end content update -------------------------------------------------------------------------------------------
 
-
-				
 		// Save all prefs that were set in above update routines
-			if ($s_prefs == TRUE) {
-				save_prefs();
-			}		
+		if ($s_prefs == TRUE) {
+			save_prefs();
+		}
 		// -----------------------------------------------------
 
-} else {
+	}
+	else
+	{
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
 
@@ -622,7 +623,7 @@ function update_61x_to_700($type) {
 		{
 			return FALSE;
 		}
-		
+
 		if ($sql -> db_Select("news", "news_id, news_thumbnail", "news_thumbnail LIKE '%thumb:%'")) {
 			return FALSE;
 		}
@@ -651,17 +652,19 @@ function update_61x_to_700($type) {
 
 		//return !$sql->db_Select("core","*","e107_name = 'user_entended'");
 
-//		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
+		//		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
 
 		/*
 		global $pref;
 		if (!isset($pref['search_highlight'])) {
-			return FALSE;
+		return FALSE;
 		} else {
-			return TRUE;
+		return TRUE;
 		}
 		*/
 
+		// No updates needed
+		return TRUE;
 	}
 }
 
@@ -673,7 +676,7 @@ function update_616_to_617($type) {
 		mysql_query("ALTER TABLE  ".MPREFIX."menus ADD menu_pages TEXT NOT NULL ");
 		$sql2 = new db;
 		$sql2->db_Update("poll", "poll_comment='1' WHERE poll_id!='0'");
-	} else {
+		} else {
 		global $mySQLdefaultdb;
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."menus");
 		$columns = mysql_num_fields($fields);
@@ -701,7 +704,7 @@ function update_615_to_616($type) {
 		mysql_query("ALTER TABLE ".MPREFIX."parser ADD UNIQUE (parser_regexp)");
 		mysql_query("ALTER TABLE ".MPREFIX."userclass_classes ADD userclass_editclass TINYINT( 3 ) UNSIGNED NOT NULL ");
 		update_extended_616();
-	} else {
+		} else {
 		global $mySQLdefaultdb;
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."userclass_classes");
 		$columns = mysql_num_fields($fields);
@@ -729,7 +732,7 @@ function update_614_to_615($type) {
 			extract($row);
 			$sql2->db_Update("download", "download_filesize='".filesize(e_BASE.$DOWNLOADS_DIRECTORY.$download_url)."' WHERE download_id='".$download_id."'");
 		}
-	} else {
+		} else {
 		global $mySQLdefaultdb;
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."submitnews");
 		$columns = mysql_num_fields($fields);
@@ -747,7 +750,7 @@ function update_611_to_612($type) {
 	if ($type == "do") {
 		mysql_query("ALTER TABLE ".MPREFIX."news ADD news_render_type TINYINT UNSIGNED NOT NULL ");
 		mysql_query("ALTER TABLE ".MPREFIX."content CHANGE content_parent content_parent INT UNSIGNED DEFAULT '0' NOT NULL ");
-	} else {
+		} else {
 		global $mySQLdefaultdb;
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."news");
 		$columns = mysql_num_fields($fields);
@@ -769,7 +772,7 @@ function update_603_to_604($type) {
 		mysql_query("ALTER TABLE ".MPREFIX."content ADD content_review_score TINYINT UNSIGNED NOT NULL AFTER content_type");
 		mysql_query("ALTER TABLE ".MPREFIX."content CHANGE content_author content_author VARCHAR( 200 ) NOT NULL");
 		mysql_query("ALTER TABLE ".MPREFIX."content ADD content_pe_icon TINYINT( 1 ) UNSIGNED NOT NULL AFTER content_review_score");
-	} else {
+		} else {
 		global $mySQLdefaultdb;
 		if ($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."link_category")) {
 			$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."link_category");
@@ -780,7 +783,7 @@ function update_603_to_604($type) {
 				}
 			}
 			return FALSE;
-		} else {
+			} else {
 			return TRUE;
 		}
 	}
