@@ -27,7 +27,7 @@ define("Integ_24", "Administrator Haupt-Seite");
 define("Integ_25", "Verlasse Admin-Breich");
 define("Integ_26", "Lade Seite mit normalem Kopf");
 	
-define("Integ_29", "<br /><br /><b>*<u>CRC-FEHLER:</u></b><br />Dies sind Pr&uuml;fsummen-Fehler. Es gibt folgende Erkl&auml;rungen:<br />-Du hast an einer Datei rumgebastelt, so dass sie nicht mehr in der Originalform ist.<br />-Die genannte Datei ist besch&auml;digt, du solltest sie neu hochladen!");
+//define("Integ_29", "<br /><br /><b>*<u>CRC-FEHLER:</u></b><br />Dies sind Pr&uuml;fsummen-Fehler. Es gibt folgende Erkl&auml;rungen:<br />-Du hast an einer Datei rumgebastelt, so dass sie nicht mehr in der Originalform ist.<br />-Die genannte Datei ist besch&auml;digt, du solltest sie neu hochladen!");
 define("Integ_30", "Du kannst, um die CPU-Intensit&auml;t zu verringern, das Checken des CRC-Files in bis zu 10 Schritten durchf&uuml;hren lassen.");
 define("Integ_31", "Schritte: ");
 define("Integ_32", "Du hast noch eine Datei namens <b>log_crc.txt</b> in deinem Crc-Ordner. Bitte l&ouml;schen! (Du kannst auch einen Refresh versuchen).");
