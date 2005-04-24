@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-04-23 07:22:23 $
-|     $Author: e107coders $
+|     $Revision: 1.50 $
+|     $Date: 2005-04-24 18:30:23 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -47,7 +47,6 @@ if (isset($_POST['updateprefs']))
 	unset($_POST['updateprefs']);
 	foreach($_POST as $key => $value)
 	{
-		echo "pref = $key - val = [$value] <br />";
 		if(substr($key, 0, 9) != "uesignup_")
 		{
 			$pref[$key] = $tp->toDB($value);
