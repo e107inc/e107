@@ -1,4 +1,14 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_user_extended.php,v $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-25 12:13:26 $
+|     $Author: mcfly_e107 $
++----------------------------------------------------------------------------+
+*/
 define("UE_LAN_1", "Text Box");
 define("UE_LAN_2", "Radio Buttons");
 define("UE_LAN_3", "Drop-Down Menu");
