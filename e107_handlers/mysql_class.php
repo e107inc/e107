@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-04-12 23:13:00 $
+|     $Revision: 1.40 $
+|     $Date: 2005-04-25 20:08:08 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.39 $
+* @version $Revision: 1.40 $
 * @author $Author: streaky $
 */
 class db {
@@ -137,10 +137,10 @@ class db {
 	* @access private
 	*/
 	function db_Write_log($log_type = '', $log_remark = '', $log_query = '') {
-		global $tp;
+		global $tp, $e107;
 		$d = time();
 		$uid = (USER === FALSE) ? USERID : '0';
-		$ip = getip();
+		$ip = $e107->getip();
 		$qry = $tp->toDB($log_query);
 		$this->db_Insert('dblog', "0, '{$log_type}', {$d}, {$uid}, '{$ip}', '{$qry}', '{$log_remark}'", 2);
 	}

@@ -11,11 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-09 19:47:32 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-25 20:08:10 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
+
+global $e107;
+
 if(!defined("e_HANDLER")){ exit; }
 
 if(defined("POLLRENDERED"))
@@ -71,7 +74,7 @@ if ($sql->db_Select_gen($query))
 			break;
 
 			case 1:
-				$userid = getip();
+				$userid = $e107->getip();
 				$voted_ids = explode("^", substr($pollArray['poll_ip'], 0, -1));
 				if (in_array($userid, $voted_ids))
 				{
