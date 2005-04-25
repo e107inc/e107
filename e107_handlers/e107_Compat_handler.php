@@ -46,6 +46,23 @@ function clear_cache($query) {
 	return $e107cache->clear($query);
 }
 
+function ban() {
+	if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+		global $db_debug;
+		$db_debug->aDeprecatiated();
+	}
+	global $e107;
+	$e107->ban();
+}
+
+function getip() {
+	if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
+		global $db_debug;
+		$db_debug->aDeprecatiated();
+	}
+	global $e107;
+	$e107->getip();
+}
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class textparse {

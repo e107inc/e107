@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-04-17 21:25:36 $
-|     $Author: e107coders $
+|     $Revision: 1.22 $
+|     $Date: 2005-04-25 19:53:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -207,7 +207,7 @@ if (isset($_POST['register'])) {
 
 		$username = strip_tags($_POST['name']);
 		$time = time();
-		$ip = getip();
+		$ip = $e107->getip();
 		$birthday = $_POST['birth_year']."/".$_POST['birth_month']."/".$_POST['birth_day'];
 
 		$ue_fields = "";
