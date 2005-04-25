@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.107 $
-|     $Date: 2005-04-12 23:11:55 $
+|     $Revision: 1.108 $
+|     $Date: 2005-04-25 19:49:21 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -265,7 +265,7 @@ $sql->db_Mark_Time('(Start: Pref/multilang done)');
 //
 
 if (isset($pref['frontpage']) && isset($pref['frontpage_type']) && $pref['frontpage_type'] == "splash") {
-	$ip=getip();
+	$ip = $e107->getip();
 	if (!$sql->db_Count("online", "(*)", "WHERE online_ip='{$ip}' ")) {
 		online();
 		if (is_numeric($pref['frontpage'])) {
@@ -464,7 +464,7 @@ if (isset($_POST['userlogin'])) {
 }
 
 if (e_QUERY == 'logout') {
-	$ip=getip();
+	$ip = $e107->getip();
 	$udata=(USER === TRUE) ? USERID.".".USERNAME : "0";
 	$sql->db_Update("online", "online_user_id = '0', online_pagecount=online_pagecount+1 WHERE online_user_id = '{$udata}' LIMIT 1");
 
@@ -479,7 +479,8 @@ if (e_QUERY == 'logout') {
 	exit;
 }
 
-ban();
+$e107->ban();
+
 /*
 * Calculate time zone offset, based on session cookie set in e107.js.
 * (Buyer beware: this may be wrong for the first pageview in a session,
@@ -857,41 +858,6 @@ function getcachedvars($id) {
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function getip() {
-	/*
-	# Get IP address
-	#
-	# - parameters                none
-	# - return                                valid IP address
-	# - scope                                        public
-	*/
-	if (getenv('HTTP_X_FORWARDED_FOR')) {
-		$ip=$_SERVER['REMOTE_ADDR'];
-		if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) {
-			$ip2 = array(
-				'/^0\./',
-				'/^127\.0\.0\.1/',
-				'/^192\.168\..*/',
-				'/^172\.16\..*/',
-				'/^10..*/',
-				'/^224..*/',
-				'/^240..*/'
-			);
-			$ip=preg_replace($ip2, $ip, $ip3[1]);
-		}
-	} else {
-		$ip = $_SERVER['REMOTE_ADDR'];
-	}
-
-	if ($ip == "") {
-		$ip = "x.x.x.x";
-	}
-
-	return $ip;
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 class floodprotect {
 	function flood($table, $orderfield) {
 		/*
@@ -1018,25 +984,6 @@ function init_session() {
 	define('USERCLASS_LIST', class_list());
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function ban() {
-	global $sql;
-	$ip=getip();
-	$wildcard=substr($ip, 0, strrpos($ip, ".")).".*";
-
-	$tmp = gethostbyaddr(getenv('REMOTE_ADDR'));
-	preg_match("/[\w]+\.[\w]+$/si", $tmp, $match);
-	$bhost = $match[0];
-
-	if ($ip != '127.0.0.1') {
-		if ($sql->db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='$ip' OR banlist_ip='$wildcard' OR banlist_ip='$bhost'")) {
-			// enter a message here if you want some text displayed to banned users ...
-			exit;
-		}
-	}
-}
-
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function cookie($name, $value, $expire, $path = "/", $domain = "", $secure = 0) {
 	setcookie($name, $value, $expire, $path, $domain, $secure);
 }

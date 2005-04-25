@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-04-20 06:07:17 $
-|     $Author: sweetas $
+|     $Revision: 1.33 $
+|     $Date: 2005-04-25 19:49:21 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once('class2.php');
@@ -112,7 +112,7 @@ if ($search_prefs['time_restrict']) {
 	if (isset($query)) {
 		$time = time() - $search_prefs['time_secs'];
 		$query_check = $tp -> toDB($query);
-		$ip = getip();
+		$ip = $e107->getip();
 		if ($sql -> db_Select("tmp", "tmp_ip, tmp_time, tmp_info", "tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'")) {
 			$row = $sql -> db_Fetch();
 			if (($row['tmp_time'] > $time) && ($row['tmp_info'] != 'type_search '.$query_check)) {

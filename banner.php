@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/banner.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-27 19:51:37 $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-25 19:49:21 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if (e_QUERY) {
 	$sql->db_Select("banner", "*", "banner_id='".e_QUERY."' ");
 	$row = $sql->db_Fetch();
 	 extract($row);
-	$ip = getip();
+	$ip = $e107->getip();
 	$newip = (preg_match("/".$ip."\^/", $banner_ip) ? $banner_ip : $banner_ip.$ip."^");
 	$sql->db_Update("banner", "banner_clicks=banner_clicks+1, banner_ip='$newip' WHERE banner_id='".e_QUERY."' ");
 	header("location: ".$banner_clickurl);

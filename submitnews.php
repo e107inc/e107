@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/submitnews.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-04-20 13:44:26 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.11 $
+|     $Date: 2005-04-25 19:53:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -39,7 +39,7 @@ if (isset($_POST['submit'])) {
 	 
 	if ($user && $email) {
 		 
-		$ip = getip();
+		$ip = $e107->getip();
 		$fp = new floodprotect;
 		if ($fp->flood("submitnews", "submitnews_datestamp") == FALSE) {
 			header("location:".e_BASE."index.php");

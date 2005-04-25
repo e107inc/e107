@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/fpw.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:51:38 $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-25 19:53:39 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -86,7 +86,7 @@ if (isset($_POST['pwsubmit'])) {
 		 extract($row);
 		 
 		if ($user_admin == 1 && $user_perms == "0") {
-			sendemail($pref['siteadminemail'], LAN_06, LAN_07."".getip()." ".LAN_08);
+			sendemail($pref['siteadminemail'], LAN_06, LAN_07."".$e107->getip()." ".LAN_08);
 			echo "<script type='text/javascript'>document.location.href='index.php'</script>\n";
 			die();
 		}
@@ -103,7 +103,7 @@ if (isset($_POST['pwsubmit'])) {
 		$rcode = md5($_SERVER[HTTP_USER_AGENT] . serialize($pref). $rand_num . $datekey);
 		 
 		$link = SITEURL."fpw.php?{$rcode}";
-		$message = LAN_FPW5." ".SITENAME." ".LAN_FPW14." : ".getip().".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
+		$message = LAN_FPW5." ".SITENAME." ".LAN_FPW14." : ".$e107->getip().".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
 		//  $message = LAN_FPW5."\n\n{$link}";
 		 
 		$deltime = time()+86400 * 2;

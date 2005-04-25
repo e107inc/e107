@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-04-17 22:12:10 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2005-04-25 19:53:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -189,7 +189,7 @@ if ($type == "file")
 			//increment download count
 			$sql->db_Update("download", "download_requested=download_requested+1 WHERE download_id='$id' ");
 			$user_id = USER ? USERID : 0;
-			$ip = getip();
+			$ip = $e107->getip();
 			$request_data = "'0', '{$user_id}', '{$ip}', '$id', '".time()."'";
 			//add request info to db
 			$sql->db_Insert("download_requests", $request_data, FALSE);
@@ -367,7 +367,7 @@ function check_download_limits()
 		}
 		else
 		{
-			$ip = getip();
+			$ip = $e107->getip();
 			$where = "dr.download_request_datestamp > $cutoff AND dr.download_request_ip = '$ip'";
 		}
 
@@ -411,7 +411,7 @@ function check_download_limits()
 		}
 		else
 		{
-			$ip = getip();
+			$ip = $e107->getip();
 			$where = "dr.download_request_datestamp > $cutoff AND dr.download_request_ip = '$ip'";
 		}
 		$qry = "

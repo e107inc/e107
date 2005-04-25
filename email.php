@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-17 02:01:34 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2005-04-25 19:53:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -49,7 +49,7 @@ if (isset($_POST['emailsubmit'])){
 	} else {
 		$message .= $comments;
 	}
-	$ip = getip();
+	$ip = $e107->getip();
 	$message .= "\n\n".LAN_email_2." ".$ip."\n\n";
 
 	if(strpos($source,'plugin:') !== FALSE) {
