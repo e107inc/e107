@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-11 23:40:45 $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-25 20:08:07 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ class userlogin {
 		# - return                                boolean
 		# - scope                                        public
 		*/
-		global $pref, $e_event, $sql;
+		global $pref, $e_event, $sql, $e107;
 		$sql = new db;
 		 
 		if ($pref['auth_method'] && $pref['auth_method'] != "e107") {
@@ -55,7 +55,7 @@ class userlogin {
 			$userpass = md5($userpass);
 			if (!$sql->db_Select("user", "*", "user_name = '{$username}'")) {
 				define("LOGINMESSAGE", LAN_300."<br /><br />");
-				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".getip()."', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_2.": $ouserpass' ");
+				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".$e107->getip()."', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_2.": $ouserpass' ");
 				return FALSE;
 			}
 			else if(!$sql->db_Select("user", "*", "user_name = '{$username}' AND user_password = '{$userpass}'")) {
@@ -64,7 +64,7 @@ class userlogin {
 			}
 			else if(!$sql->db_Select("user", "*", "user_name = '{$username}' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
 				define("LOGINMESSAGE", LAN_302."<br /><br />");
-				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".getip()."', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_2.": $ouserpass' ");
+				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".$e107->getip()."', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_2.": $ouserpass' ");
 				return FALSE;
 			} else {
 				list($user_id, $user_name) = $sql->db_Fetch();
@@ -75,7 +75,7 @@ class userlogin {
 					if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
 					{
 						define("LOGINMESSAGE", LAN_304."<br /><br />");
-						$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".getip()."', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_2.": $ouserpass' ");
+						$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".$e107->getip()."', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_2.": $ouserpass' ");
 						return FALSE;
 					}
 				}

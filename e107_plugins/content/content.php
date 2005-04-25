@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.20 $
-|		$Date: 2005-04-12 22:03:14 $
-|		$Author: lisa_ $
+|		$Revision: 1.21 $
+|		$Date: 2005-04-25 20:08:09 $
+|		$Author: streaky $
 +---------------------------------------------------------------+
 */
 
@@ -1463,7 +1463,7 @@ function parse_content_cat_list_table($row){
 function parse_content_content_table($row){
 				global $rater, $content_icon_path, $content_file_path, $content_image_path, $gen, $aa, $tp, $ep, $from, $number;
 				global $type, $type_id, $action, $sub_action, $id, $id2, $content_pref, $plugintable;
-				global $ns, $sql, $pref, $cobj, $datequery;
+				global $ns, $sql, $pref, $cobj, $datequery, $e107;
 
 				$CONTENT_CONTENT_TABLE_ICON = "";
 				$CONTENT_CONTENT_TABLE_IMAGES = "";
@@ -1479,7 +1479,7 @@ function parse_content_content_table($row){
 				if(!check_class($content_class)){ return FALSE; }
 
 				if($content_pref["content_log_{$type_id}"]){
-					$ip = getip();
+					$ip = $e107->getip();
 					$self = e_SELF;
 					$refertmp = explode("^", $content_refer);
 					if(!ereg($ip, $refertmp[1]) && (!eregi("admin", $self))){

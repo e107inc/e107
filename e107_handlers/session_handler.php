@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/session_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:52:29 $
+|     $Revision: 1.3 $
+|     $Date: 2005-04-25 20:08:08 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -84,7 +84,8 @@ function sess_gc($session_lifetime) {
 }
 	
 function get_full_ip() {
-	$ip_addr = getip();
+	global $e107;
+	$ip_addr = $e107->getip();
 	$tmp = $_SERVER['REMOTE_ADDR'];
 	$ip_resolved = gethostbyaddr($tmp);
 	$tmp2 = ($tmp != $ip_resolved && $ip_resolved ? $tmp." - ". $ip_resolved : $tmp2 = $tmp);

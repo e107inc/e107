@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-04-17 21:54:36 $
-|     $Author: e107coders $
+|     $Revision: 1.30 $
+|     $Date: 2005-04-25 20:07:07 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -135,7 +135,7 @@ if (isset($_POST['adduser'])) {
 		}
 
 		$username = strip_tags($_POST['name']);
-		$ip = getip();
+		$ip = $e107->getip();
 		extract($_POST);
 		for($a = 0; $a <= (count($_POST['userclass'])-1); $a++) {
 			$svar .= $userclass[$a].".";

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-04-21 02:12:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.24 $
+|     $Date: 2005-04-25 20:08:09 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -454,8 +454,7 @@ function isAuthor($thread) {
 }
 
 function getuser($name) {
-	global $tp;
-	global $sql;
+	global $tp, $sql, $e107;
 	$name = preg_replace("#\'#", "", $name);
 	if (!$name) {
 		// anonymous guest
@@ -469,7 +468,7 @@ function getuser($name) {
 				return FALSE;
 			}
 		} else {
-			$ip = getip();
+			$ip = $e107->getip();
 			$name = "0.".substr($tp->toDB($name), 0, 20).chr(1).$ip;
 		}
 	}

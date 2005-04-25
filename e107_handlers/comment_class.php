@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-04-13 12:55:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.21 $
+|     $Date: 2005-04-25 20:08:07 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -220,7 +220,7 @@ class comment {
 		return stripslashes($text);
 	}
 	function enter_comment($author_name, $comment, $table, $id, $pid, $subject) {
-		global $sql, $tp, $e107cache, $e_event;
+		global $sql, $tp, $e107cache, $e_event, $e107;
 		switch($table) {
 			case "news":
 			$type = 0;
@@ -276,7 +276,7 @@ class comment {
 				}
 				if (!defined("emessage"))
 				{
-					$ip = getip();
+					$ip = $e107->getip();
 					require_once(e_HANDLER."encrypt_handler.php");
 					$ip = encode_ip($ip);
 					$_t = time();

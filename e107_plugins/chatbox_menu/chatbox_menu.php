@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-03-31 07:45:44 $
-|     $Author: e107coders $
+|     $Revision: 1.37 $
+|     $Date: 2005-04-25 20:08:09 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
 require_once(e_HANDLER."emote.php");
-global $tp, $e107cache, $e_event;
+global $tp, $e107cache, $e_event, $e107;
 $emessage='';
 if(isset($_POST['chat_submit']))
 {
@@ -48,7 +48,7 @@ if(isset($_POST['chat_submit']))
 				else
 				{
 					$datestamp = time();
-					$ip = getip();
+					$ip = $e107->getip();
 					if(USER)
 					{
 						$nick = USERID.".".USERNAME;
