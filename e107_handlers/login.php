@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-04-25 20:08:07 $
-|     $Author: streaky $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-26 17:36:33 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -59,7 +59,7 @@ class userlogin {
 				return FALSE;
 			}
 			else if(!$sql->db_Select("user", "*", "user_name = '{$username}' AND user_password = '{$userpass}'")) {
-				define("LOGINMESSAGE", LAN_301."<br /><br />");
+				define("LOGINMESSAGE", LAN_300."<br /><br />");
 				return FALSE;
 			}
 			else if(!$sql->db_Select("user", "*", "user_name = '{$username}' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
