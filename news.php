@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2005-04-09 01:57:21 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.64 $
+|     $Date: 2005-04-26 17:50:04 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -406,6 +406,8 @@ if ($action != "item") {
 	echo ($nextprev ? "<div class='nextprev' style='text-align:center'>".$nextprev."</div>" : "");
 }
 
+setNewsCache($cacheString);
+
 if (isset($pref['nfp_display']) && $pref['nfp_display'] == 2) {
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
@@ -417,7 +419,7 @@ if (isset($pref['news_cats']) && $pref['news_cats'] == '1') {
 }
 
 // ---------------------------
-setNewsCache($cacheString);
+
 require_once(FOOTERF);
 // =========================================================================
 function setNewsCache($cacheString) {
