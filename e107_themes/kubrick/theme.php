@@ -36,7 +36,7 @@ $layout = "_default";
 $HEADER = "<div id='page'>
 <div id='header'>
 <div id='headerimg'>
-<h1><a href='{SITEURL}' title='{SITENAME}'>{SITENAME}</a></h1>
+<h1><a href='".SITEURL."' title='{SITENAME}'>{SITENAME}</a></h1>
 <br /><br /><br /><br /><br />
 <div class='sitetag'>{SITETAG}</div>
 </div>
@@ -63,7 +63,7 @@ $FOOTER = "
 $CUSTOMHEADER = "<div id='page2'>
 <div id='header'>
 <div id='headerimg'>
-<h1><a href='{SITEURL}' title='{SITENAME}'>{SITENAME}</a></h1>
+<h1><a href='".SITEURL."' title='{SITENAME}'>{SITENAME}</a></h1>
 <br /><br /><br /><br /><br />
 <div class='sitetag'>{SITETAG}</div>
 </div>
