@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-04-25 20:08:09 $
-|     $Author: streaky $
+|     $Revision: 1.25 $
+|     $Date: 2005-04-27 11:48:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -104,7 +104,6 @@ if ($action != "nt" && !$thread_info['head']['thread_active']) {
 $forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
 
 define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']." / ".($action == "rp" ? LAN_02.$forum_info['thread_name'] : LAN_03));
-require_once(HEADERF);
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -268,7 +267,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply'])) {
 		}
 	}
 }
-
+require_once(HEADERF);
 
 if (isset($_POST['update_thread'])) {
 	if (!$_POST['subject'] || !$_POST['post']) {
