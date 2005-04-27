@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-04-27 13:08:03 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.32 $
+|     $Date: 2005-04-27 18:08:28 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -151,12 +151,13 @@ if (isset($_POST['adduser'])) {
 		}
 
 		$username = strip_tags($_POST['name']);
+		$loginname = strip_tags($_POST['loginname']);
 		$ip = $e107->getip();
 		extract($_POST);
 		for($a = 0; $a <= (count($_POST['userclass'])-1); $a++) {
 			$svar .= $userclass[$a].".";
 		}
-		$sql->db_Insert("user", "0, '".$username."', '', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."',         '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '1', '".time()."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '".$svar."', '', '', '' ");
+		$sql->db_Insert("user", "0, '$username', '$loginname',  '', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."',         '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$_POST['birthday']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '1', '".time()."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '".$svar."', '', '', '' ");
 		$user->show_message(USRLAN_70);
 	}
 }
@@ -558,6 +559,14 @@ class users
 			".$rs->form_text("name", 40, "", 30)."
 			</td>
 			</tr>
+
+			<tr>
+			<td style='width:30%' class='forumheader3'>".USRLAN_128."</td>
+			<td style='width:70%' class='forumheader3'>
+			".$rs->form_text("loginname", 40, "", 30)."
+			</td>
+			</tr>
+
 			<tr>
 			<td style='width:30%' class='forumheader3'>".USRLAN_62."</td>
 			<td style='width:70%' class='forumheader3'>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-04-27 17:19:10 $
+|     $Revision: 1.25 $
+|     $Date: 2005-04-27 18:09:47 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -178,6 +178,7 @@ if (isset($_POST['updatesettings']))
 		$error = TRUE;
 	}
 
+	$username = strip_tags($_POST['username']);
 	$loginname = strip_tags($_POST['loginname']);
 	if(!$loginname)
 	{
@@ -237,7 +238,13 @@ if (isset($_POST['updatesettings']))
 		$ret = $e_event->trigger("preuserset", $_POST);
 
 		if ($ret=='') {
-			$sql->db_Update("user", "user_loginname='$loginname', user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."', user_customtitle='".$_POST['customtitle']."' WHERE user_id='".$inp."' ");
+			$sql->db_Update("user", "user_name='$username', user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."', user_customtitle='".$_POST['customtitle']."' WHERE user_id='".$inp."' ");
+
+			if(ADMIN && getperms("4"))
+			{
+				$sql -> db_Update("user", "user_loginname='$loginname' WHERE user_id='$inp' ");
+			}
+
 			if($ue_fields)
 			{
 				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$inp}')");
@@ -262,11 +269,6 @@ if (isset($_POST['updatesettings']))
 			$e_event->trigger("postuserset", $_POST);
 	
 			// =======================
-			 
-			if ($remflag) {
-				header("location:".e_ADMIN."users.php?main.$inp");
-				exit;
-			}
 		 
 			$text = "<div style='text-align:center'>".LAN_150."</div>";
 			$ns->tablerender(LAN_151, $text);
@@ -315,15 +317,28 @@ $text .= "<div style='text-align:center'>
 	 
 	<tr>
 	<td style='width:40%' class='forumheader3'>".LAN_7."<br /><span class='smalltext'>".LAN_8."</span></td>
-	<td style='width:60%' class='forumheader2'>". $rs->form_text("name", 20, $curVal['user_name'], 100, "tbox", TRUE)."</td>
+	<td style='width:60%' class='forumheader2'>". $rs->form_text("username", 20, $curVal['user_name'], 100, "tbox")."</td>
 	</tr>
+	";
 
-	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_9."<br /><span class='smalltext'>".LAN_10."</span></td>
-	<td style='width:60%' class='forumheader2'>". $rs->form_text("loginname", 20, $curVal['user_loginname'], 100, "tbox")."</td>
-	</tr>
+	if(ADMIN && getperms("4"))
+	{
+		$text .= "<tr>
+		<td style='width:40%' class='forumheader3'>".LAN_9."<br /><span class='smalltext'>".LAN_10."</span></td>
+		<td style='width:60%' class='forumheader2'>". $rs->form_text("loginname", 20, $curVal['user_loginname'], 100, "tbox")."</td>
+		</tr>
+		";
+	}
+	else
+	{
+		$text .= "<tr>
+		<td style='width:40%' class='forumheader3'>".LAN_9."<br /><span class='smalltext'>".LAN_11."</span></td>
+		<td style='width:60%' class='forumheader2'>". $curVal['user_loginname']."</td>
+		</tr>
+		";
+	}
 	 
-	<tr>
+	$text .= "<tr>
 	<td style='width:30%' class='forumheader3'>".LAN_308."</td>
 	<td style='width:70%' class='forumheader2'>
 	".$rs->form_text("realname", 40, $curVal['user_login'], 100)."

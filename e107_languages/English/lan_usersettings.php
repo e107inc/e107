@@ -4,17 +4,18 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-27 17:20:02 $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-27 18:09:47 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "User Settings");
 
 define("LAN_7", "Display Name: ");
-define("LAN_8", "the name displayed on site - this cannot be changed");
+define("LAN_8", "the name displayed on site");
 define("LAN_9", "Login Name: ");
 define("LAN_10", "the name you use to login to the site");
+define("LAN_11", "the name you use to login to the site - this cannot be changed, please contact an administrator if it needs to be changed for security purposes");
 
 define("LAN_20", "Error");
 define("LAN_105", "The two passwords do not match");
