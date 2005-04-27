@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-04-26 17:36:33 $
+|     $Revision: 1.9 $
+|     $Date: 2005-04-27 17:20:02 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -53,16 +53,16 @@ class userlogin {
 			$username = ereg_replace("\sOR\s|\=|\#", "", $username);
 			$ouserpass = $userpass;
 			$userpass = md5($userpass);
-			if (!$sql->db_Select("user", "*", "user_name = '{$username}'")) {
+			if (!$sql->db_Select("user", "*", "user_loginname = '{$username}'")) {
 				define("LOGINMESSAGE", LAN_300."<br /><br />");
 				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".$e107->getip()."', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_2.": $ouserpass' ");
 				return FALSE;
 			}
-			else if(!$sql->db_Select("user", "*", "user_name = '{$username}' AND user_password = '{$userpass}'")) {
+			else if(!$sql->db_Select("user", "*", "user_loginname = '{$username}' AND user_password = '{$userpass}'")) {
 				define("LOGINMESSAGE", LAN_300."<br /><br />");
 				return FALSE;
 			}
-			else if(!$sql->db_Select("user", "*", "user_name = '{$username}' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
+			else if(!$sql->db_Select("user", "*", "user_loginname = '{$username}' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
 				define("LOGINMESSAGE", LAN_302."<br /><br />");
 				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".$e107->getip()."', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_2.": $ouserpass' ");
 				return FALSE;

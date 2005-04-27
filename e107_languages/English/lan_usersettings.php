@@ -4,14 +4,18 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-04 16:24:36 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-27 17:20:02 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "User Settings");
 
-define("LAN_7", "Login Name: ");
+define("LAN_7", "Display Name: ");
+define("LAN_8", "the name displayed on site - this cannot be changed");
+define("LAN_9", "Login Name: ");
+define("LAN_10", "the name you use to login to the site");
+
 define("LAN_20", "Error");
 define("LAN_105", "The two passwords do not match");
 define("LAN_106", "That doesn't appear to be a valid email address");

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-04-25 19:53:39 $
-|     $Author: streaky $
+|     $Revision: 1.23 $
+|     $Date: 2005-04-27 17:19:09 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -206,6 +206,7 @@ if (isset($_POST['register'])) {
 		}
 
 		$username = strip_tags($_POST['name']);
+		$loginname = strip_tags($_POST['loginname']);
 		$time = time();
 		$ip = $e107->getip();
 		$birthday = $_POST['birth_year']."/".$_POST['birth_month']."/".$_POST['birth_day'];
@@ -220,7 +221,7 @@ if (isset($_POST['register'])) {
 
 		if ($pref['user_reg_veri']){
 			$u_key = md5(uniqid(rand(), 1));
-			$nid = $sql->db_Insert("user", "0, \"".$username."\", '', \"".md5($_POST['password1'])."\", '$u_key', \"".$_POST['email']."\", \"".$_POST['website']."\", \"".$_POST['icq']."\", \"".$_POST['aim']."\", \"".$_POST['msn']."\", \"".$_POST['location']."\", \"".$birthday."\", \"".$_POST['signature']."\", \"".$_POST['image']."\", \"".$_POST['timezone']."\", \"".$_POST['hideemail']."\", \"".$time."\", '0', \"".$time."\", '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', \"".$_POST['realname']."\", '', '', '', '' ");
+			$nid = $sql->db_Insert("user", "0, '".$username."', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."', '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
 
 			// ==== Update Userclass =======
 
@@ -268,7 +269,7 @@ if (isset($_POST['register'])) {
 		else
 		{
 			require_once(HEADERF);
-			$nid = $sql->db_Insert("user", "0, '".$username."', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."', '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
+			$nid = $sql->db_Insert("user", "0, '$username', '$loginname', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."', '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
 
 			// ==== Update Userclass =======
 			if ($_POST['usrclass']) {
@@ -302,7 +303,7 @@ require_once(HEADERF);
 $qs = ($error ? "stage" : e_QUERY);
 
 if ($pref['use_coppa'] == 1 && !ereg("stage", $qs)) {
-	$cert_text = LAN_109 . " <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".LAN_SIGNUP_14."</a>. ".LAN_SIGNUP_15." <a href=\"mailto:".SITEADMINEMAIL."\">".LAN_SIGNUP_14."</a> ".LAN_SIGNUP_16."<br /><br /><div style=\"text-align:center\"><b>".LAN_SIGNUP_17."\n";
+	$cert_text = LAN_109 . " <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".LAN_SIGNUP_14."</a>. ".LAN_SIGNUP_15." <a href='mailto:".SITEADMINEMAIL."'>".LAN_SIGNUP_14."</a> ".LAN_SIGNUP_16."<br /><br /><div style='text-align:center'><b>".LAN_SIGNUP_17."\n";
 	if (eregi("stage", LAN_109)) {
 		$text .= $cert_text."</b></div>\n";
 	} else {
@@ -348,13 +349,25 @@ $text .= LAN_400;
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 $text .= $rs->form_open("post", e_SELF, "signupform")."
-	<table class='fborder' style='width:90%'>
-	<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_7."<span style='font-size:15px; color:red'> *</span></td>
-	<td class='forumheader3' style='width:70%'>
-	".$rs->form_text("name", 40, $name, 30)."
-	</td>
-	</tr>";
+<table class='fborder' style='width:90%'>
+<tr>
+<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_7."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_8."</span></td>
+<td class='forumheader3' style='width:70%'>
+".$rs->form_text("name", 40, $name, 30)."
+</td>
+</tr>
+
+<tr>
+<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_9."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_10."</span></td>
+<td class='forumheader3' style='width:70%'>
+".$rs->form_text("loginname", 40, $loginname, 30)."
+</td>
+</tr>
+";
+
+
+
+
 
 if ($signupval[0]) {
 	$text .= "
