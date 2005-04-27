@@ -4,14 +4,19 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-17 21:24:56 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-27 17:20:02 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Register");
 
-define("LAN_7", "Login Name: ");
+define("LAN_7", "Display Name: ");
+define("LAN_8", "this is the name that will be displayed on site");
+
+define("LAN_9", "Login Name: ");
+define("LAN_10", "this is the name that you use to login");
+
 define("LAN_17", "Password: ");
 define("LAN_103", "That user name cannot be accepted as valid, please choose a different user name");
 define("LAN_104", "That user name already exists in the database, please choose a different user name");

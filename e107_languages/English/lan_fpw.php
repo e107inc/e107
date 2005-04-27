@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_fpw.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-04-27 17:20:02 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Password Reset");
@@ -44,7 +44,5 @@ define("LAN_FPW14", "has been submitted by someone with the IP of");
 define("LAN_FPW15", "This does not mean your password has yet been reset.  You must navigate to the link shown below to complete the reset process.");
 define("LAN_FPW16", "If it was not you the requested the password be reset and you do NOT want it reset, you can simply ignore this email");
 define("LAN_FPW17", "The link below will be valid for 48 hours.");
-
-
 
 ?>

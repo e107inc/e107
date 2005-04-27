@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.77 $
-|     $Date: 2005-04-27 10:40:19 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.78 $
+|     $Date: 2005-04-27 17:20:01 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -150,6 +150,19 @@ function update_61x_to_700($type) {
 		mysql_query("ALTER TABLE ".MPREFIX."download_category ADD download_category_order INT ( 10 ) UNSIGNED NOT NULL");
 		mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_mirror` TEXT NOT NULL , ADD `download_mirror_type` TINYINT( 1 ) UNSIGNED NOT NULL");
 		/*	end	*/
+
+
+		/* start user update */
+
+		mysql_query("ALTER TABLE ".MPREFIX."user ADD user_loginname VARCHAR( 100 ) NOT NULL AFTER user_name");
+		$sql -> db_Select("user", "user_id, user_name", "", "nowhere");
+		$sql2 = new db;
+		while($user = $sql -> db_Fetch())
+		{
+				$sql2 -> db_Update("user", "user_loginname='".$user['user_name']."' WHERE user_id='".$user['user_id']."' ");
+		}
+
+		/* end */
 
 		// start links update -------------------------------------------------------------------------------------------
 		if ($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."link_category")) {
@@ -607,6 +620,7 @@ function update_61x_to_700($type) {
 
 	
 		// Truncate logstats table if log_id = pageTotal not found
+		/* log update - previous log entries are not compatible with later versions, sorry but we have to clear the table :\ */
 		if(!$sql->db_Select("logstats","log_id","log_id = 'pageTotal'"))
 		{
 			mysql_query("TRUNCATE TABLE `".MPREFIX."logstats");
@@ -624,6 +638,14 @@ function update_61x_to_700($type) {
 		//if($sql -> db_Select("menus", "*", "menu_name = 'newforumposts_menu' and menu_path='newforumposts_menu' ")){
 		//	return FALSE;
 		//}
+
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");
+		$fieldname = mysql_field_name($fields, 2);
+		if($fieldname != "user_loginname")
+		{
+			return FALSE;
+		}
+
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."logstats");
 		if($fields)
 		{

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-04-20 14:14:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.24 $
+|     $Date: 2005-04-27 17:19:10 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -173,10 +173,16 @@ if (isset($_POST['updatesettings']))
 		$error .= LAN_106;
 	}
 	 
-	 
-	if ($sql->db_Select("user", "user_email", "user_email='".$_POST['email']." AND user_id!=".USERID."' ")) {
+	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$_POST['email']." AND user_id!=".USERID."' ")) {
 		message_handler("P_ALERT", LAN_408);
 		$error = TRUE;
+	}
+
+	$loginname = strip_tags($_POST['loginname']);
+	if(!$loginname)
+	{
+		$row = $sql -> db_Fetch();
+		$loginname = $row['user_name'];
 	}
 	 
 	if (preg_match('#^www\.#si', $_POST['website'])) {
@@ -231,7 +237,7 @@ if (isset($_POST['updatesettings']))
 		$ret = $e_event->trigger("preuserset", $_POST);
 
 		if ($ret=='') {
-			$sql->db_Update("user", "user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."', user_customtitle='".$_POST['customtitle']."' WHERE user_id='".$inp."' ");
+			$sql->db_Update("user", "user_loginname='$loginname', user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."', user_customtitle='".$_POST['customtitle']."' WHERE user_id='".$inp."' ");
 			if($ue_fields)
 			{
 				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$inp}')");
@@ -308,8 +314,13 @@ $text .= "<div style='text-align:center'>
 	</tr>
 	 
 	<tr>
-	<td style='width:40%' class='forumheader3'>".LAN_7."</td>
+	<td style='width:40%' class='forumheader3'>".LAN_7."<br /><span class='smalltext'>".LAN_8."</span></td>
 	<td style='width:60%' class='forumheader2'>". $rs->form_text("name", 20, $curVal['user_name'], 100, "tbox", TRUE)."</td>
+	</tr>
+
+	<tr>
+	<td style='width:40%' class='forumheader3'>".LAN_9."<br /><span class='smalltext'>".LAN_10."</span></td>
+	<td style='width:60%' class='forumheader2'>". $rs->form_text("loginname", 20, $curVal['user_loginname'], 100, "tbox")."</td>
 	</tr>
 	 
 	<tr>
