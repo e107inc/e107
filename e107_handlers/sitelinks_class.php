@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-04-21 18:00:28 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.45 $
+|     $Date: 2005-04-27 00:54:57 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -107,7 +107,9 @@ class sitelinks
 				// if there's a submenu. :
 				if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname]))
 				{
-					$substyle = (eregi($main_linkname,e_SELF) || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
+                    echo e_SELF."<br />";
+					echo $main_linkname;
+					$substyle = (eregi($link['link_url'],e_SELF) || eregi($main_linkname,e_SELF) || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
 					$text .= "\n\n<div id='sub_".$main_linkname."' style='display:$substyle'>\n";
 					foreach ($this->eLinkList[$main_linkname] as $sub)
 					{
@@ -246,39 +248,41 @@ class sitelinks
 		return $_link.$style['linkend'];
 	}
 
-	function hilite($link,$enabled='')
-	{
+	function hilite($link,$enabled=''){
 
-		global $PLUGINS_DIRECTORY;
+		global $PLUGINS_DIRECTORY,$tp;
 
 		if(!$enabled){ return FALSE; }
 
 		// --------------- highlighting for plugins. ----------------
-		if(eregi($PLUGINS_DIRECTORY, $link) && !eregi("custompages", $link))
-		{
+		if(eregi($PLUGINS_DIRECTORY, $link) && !eregi("custompages", $link)){
+
+        	if(str_replace("?","",$link)){
+
+				if(strpos(e_SELF."?".e_QUERY, str_replace("../", "", "/".$link))){
+               		return TRUE;
+				}else{
+					return FALSE;
+				}
+             }
 			$link = str_replace("../", "", $link);
-			if(eregi(dirname($link), dirname(e_SELF)))
-			{
+			if(eregi(dirname($link), dirname(e_SELF))){
 				return TRUE;
 			}
 		}
 		// --------------- highlight for news items.----------------
 		// eg. news.php?list.1 or news.php?cat.2 etc
 
-		if(eregi("news.php",$link))
-		{
-			if(eregi("list", $link) && eregi("list", e_QUERY))
-			{
+		if(eregi("news.php",$link)){
+			if(eregi("list", $link) && eregi("list", e_QUERY)){
 				$tmp = str_replace("php?", "", explode(".",$link));
 				$tmp2 = explode(".", e_QUERY);
-				if($tmp[1] == $tmp2[1] && $tmp[2] == $tmp2[2])
-				{
+				if($tmp[1] == $tmp2[1] && $tmp[2] == $tmp2[2]){
 					return true;
 				}
 			}
 
-			if((eregi("cat", $link) || eregi("list", $link)) && eregi("item", e_QUERY))
-			{
+			if((eregi("cat", $link) || eregi("list", $link)) && eregi("item", e_QUERY))	{
 				$tmp = str_replace("php?", "", explode(".",$link));
 				$tmp2 = explode(".", e_QUERY);
 				if($tmp[2] == $tmp2[2])
@@ -289,16 +293,13 @@ class sitelinks
 		}
 
 		// --------------- highlight default ----------------
-		if(eregi("\?", $link))
-		{
-			if(($enabled) && (strpos(e_SELF."?".e_QUERY, str_replace("../", "", "/".$link)) !== false))
-			{
+		if(eregi("\?", $link)){
+			if(($enabled) && (strpos(e_SELF."?".e_QUERY, str_replace("../", "", "/".$link)) !== false))	{
 				return true;
 			}
 		}
 
-		if(!eregi("all", e_QUERY) && !eregi("item", e_QUERY) && !eregi("cat",e_QUERY) && !eregi("list", e_QUERY) && $enabled && (strpos(e_SELF, str_replace("../", "", "/".$link)) !== false))
-		{
+		if(!eregi("all", e_QUERY) && !eregi("item", e_QUERY) && !eregi("cat",e_QUERY) && !eregi("list", e_QUERY) && $enabled && (strpos(e_SELF, str_replace("../", "", "/".$link)) !== false)){
 			return true;
 		}
 
