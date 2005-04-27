@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-04-25 20:07:07 $
-|     $Author: streaky $
+|     $Revision: 1.31 $
+|     $Date: 2005-04-27 13:08:03 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,6 +22,22 @@ if (!getperms("4")) {
 	header("location:".e_BASE."index.php");
 	 exit;
 }
+
+if ($_POST['useraction'] == 'userinfo') {
+	header('location:'.e_ADMIN."userinfo.php?{$_POST['userip']}");
+	exit;
+}
+
+if ($_POST['useraction'] == 'usersettings') {
+	header('location:'.e_BASE."usersettings.php?{$_POST['userid']}");
+	exit;
+}
+
+if ($_POST['useraction'] == 'userclass') {
+	header('location:'.e_ADMIN."userclass.php?{$_POST['userid']}");
+	exit;
+}
+
 $e_sub_cat = 'users';
 $user = new users;
 require_once("auth.php");
@@ -145,20 +161,6 @@ if (isset($_POST['adduser'])) {
 	}
 }
 
-if ($_POST['useraction'] == 'userinfo') {
-	header('location:'.e_ADMIN."userinfo.php?{$_POST['userip']}");
-	exit;
-}
-
-if ($_POST['useraction'] == 'usersettings') {
-	header('location:'.e_BASE."usersettings.php?{$_POST['userid']}");
-	exit;
-}
-
-if ($_POST['useraction'] == 'userclass') {
-	header('location:'.e_ADMIN."userclass.php?{$_POST['userid']}");
-	exit;
-}
 
 
 if ($_POST['useraction'] == "ban") {
