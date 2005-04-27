@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.76 $
-|     $Date: 2005-04-23 00:59:31 $
+|     $Revision: 1.77 $
+|     $Date: 2005-04-27 10:40:19 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -605,6 +605,14 @@ function update_61x_to_700($type) {
 		}
 		// -----------------------------------------------------
 
+	
+		// Truncate logstats table if log_id = pageTotal not found
+		if(!$sql->db_Select("logstats","log_id","log_id = 'pageTotal'"))
+		{
+			mysql_query("TRUNCATE TABLE `".MPREFIX."logstats");
+		}
+		// -----------------------------------------------------
+
 	}
 	else
 	{
@@ -616,6 +624,17 @@ function update_61x_to_700($type) {
 		//if($sql -> db_Select("menus", "*", "menu_name = 'newforumposts_menu' and menu_path='newforumposts_menu' ")){
 		//	return FALSE;
 		//}
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."logstats");
+		if($fields)
+		{
+			if(!$sql->db_Select("logstats", "log_id", "log_id = 'pageTotal'"))
+			{
+				if($sql->db_Select("logstats", "log_id"))
+				{
+					return FALSE;
+				}
+			}
+		}
 
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user_extended");
 		$fieldname = mysql_field_name($fields, 1);
@@ -631,8 +650,6 @@ function update_61x_to_700($type) {
 		if (!$sql -> db_Select('news', 'news_thumbnail')) {
 			return FALSE;
 		}
-
-
 
 		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = "SHOW CREATE TABLE `".MPREFIX."newsfeed`";
