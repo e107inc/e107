@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/admin_pm_conf.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:53:13 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-27 16:14:41 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 require_once("pm_inc.php");
+ob_start();
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
 	
@@ -68,7 +69,7 @@ if (isset($_POST['updatesettings'])) {
 	pm_UpdateParm("pm_userclass");
 	pm_UpdateParm("pm_sendemail");
 	save_prefs();
-	header("location:pm_conf.php?u");
+	header("location:admin_pm_conf.php?u");
 	exit;
 }
 	
@@ -174,6 +175,7 @@ if (e_QUERY == "u") {
 	$ns->tablerender("", "<div style='text-align:center'><b>".PM_ADLAN_20."</b></div>");
 }
 	
+
 $pm_title = $pref['pm_title'];
 $pm_show_animated = $pref['pm_show_animated'];
 $pm_user_dropdown = $pref['pm_user_dropdown'];
@@ -200,7 +202,7 @@ $text .= "<tr>
 	<td>".$dropdown."</td>
 	</tr>";
 	
-$dropdown = Create_yes_no_dropdown("pm_user_dropdown", $pm_user_dropdown);
+$dropdown = Create_yes_no_dropdown("pm_user_dropdown", $pref['pm_user_dropdown']);
 $text .= "
 	<tr>
 	<td>".PM_ADLAN_23."? </td>
@@ -237,7 +239,7 @@ $text .= "<tr>
 	
 $text .= "<tr>
 	<td>".PM_ADLAN_29.": </td>
-	<td>".r_userclass("pm_userclass", $pm_userclass)."</td>
+	<td>".r_userclass("pm_userclass", $pm_userclass, 'off', 'nobody, member, admin, classes')."</td>
 	</tr>";
 	
 $dropdown = Create_yes_no_dropdown("pm_sendemail", $pm_sendemail);
