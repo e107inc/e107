@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-04-02 22:09:56 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2005-04-27 18:09:44 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Options Saved.");
@@ -66,7 +66,7 @@ define("USRLAN_57", "Deleting un-activated members ...");
 define("USRLAN_58", "file uploads are disabled in php.ini");
 define("USRLAN_59", "Quick add user");
 define("USRLAN_60", "Add user");
-define("USRLAN_61", "Username");
+define("USRLAN_61", "Display name");
 define("USRLAN_62", "Password");
 define("USRLAN_63", "Re-type Password");
 define("USRLAN_64", "Email Address");
@@ -119,6 +119,8 @@ define("USRLAN_125", "From");
 
 define("USRLAN_126", "Allow users to rate users");
 define("USRLAN_127", "Allow comments in user profile");
+
+define("USRLAN_128", "Login name");
 
 define("LAN_MAINADMIN","Main Admin");
 define("LAN_ADMIN","Admin");
