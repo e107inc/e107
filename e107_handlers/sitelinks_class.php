@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-04-27 00:54:57 $
+|     $Revision: 1.46 $
+|     $Date: 2005-04-27 00:56:03 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -107,8 +107,7 @@ class sitelinks
 				// if there's a submenu. :
 				if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname]))
 				{
-                    echo e_SELF."<br />";
-					echo $main_linkname;
+                    
 					$substyle = (eregi($link['link_url'],e_SELF) || eregi($main_linkname,e_SELF) || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
 					$text .= "\n\n<div id='sub_".$main_linkname."' style='display:$substyle'>\n";
 					foreach ($this->eLinkList[$main_linkname] as $sub)
