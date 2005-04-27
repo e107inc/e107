@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-10 12:56:17 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-04-27 12:00:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -61,6 +61,7 @@ if (isset($_POST['updatesettings'])) {
 	$pref['cb_layer_height'] = ($_POST['cb_layer_height'] ? $_POST['cb_layer_height'] : 200);
 	$pref['cb_emote'] = $_POST['cb_emote'];
 	save_prefs();
+	$e107cache->clear("chatbox");
 	$message = CHBLAN_1;
 }
 	
@@ -69,10 +70,9 @@ if (isset($_POST['prune'])) {
 	$prunetime = time() - $chatbox_prune;
 	 
 	$sql->db_Delete("chatbox", "cb_datestamp < '$prunetime' ");
+	$e107cache->clear("chatbox");
 	$message = CHBLAN_28;
 }
-	
-	
 	
 if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
