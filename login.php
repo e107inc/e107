@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/login.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-02-07 10:28:48 $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-27 21:54:09 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -64,7 +64,7 @@ if (!USER) {
 	echo preg_replace("/\{(.*?)\}/e", '$\1', $LOGIN_TABLE_FOOTER);
 	 
 } else {
-	header("location:".e_BASE."index.php");
+	echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
 	exit;
 }
 
