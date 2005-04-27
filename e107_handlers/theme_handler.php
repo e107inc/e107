@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-03-31 08:54:06 $
+|     $Revision: 1.18 $
+|     $Date: 2005-04-27 21:47:16 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -279,7 +279,7 @@ class themeHandler{
 
 		global $ns, $pref;
 
-		$author = ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='$".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
+		$author = ($theme['email'] ? "<a href='mailto:".$theme['email']."' title='".$theme['email']."'>".$theme['author']."</a>" : $theme['author']);
 		$website = ($theme['website'] ? "<a href='".$theme['website']."' rel='external'>".$theme['website']."</a>" : "");
 		$preview = "<a href='".e_SELF."?preview.".$theme['id']."' title='".TPVLAN_9."' >".($theme['preview'] ? "<img src='".$theme['preview']."' style='border: 1px solid #000;width:200px' alt='' />" : "<img src='".e_IMAGE."admin_images/nopreview.png' style='border:0px' title='".TPVLAN_12."' alt='' />")."</a>";
 		$selectmainbutton = ($mode != 1 ? "<input class='button' type='submit' name='selectmain_".$theme['id']."' value='".TPVLAN_10."' />" : "");
