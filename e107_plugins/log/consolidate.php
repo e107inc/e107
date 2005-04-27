@@ -19,19 +19,20 @@
 
 $pathtologs = e_PLUGIN."log/logs/";
 $date = date("z.Y", time());
-$date2 = date("j.m.y", time());
-$date3 = date("m-y");
+$date2 = date("Y-m-j", (time() -86400));
+$date3 = date("Y-m");
 $day = date("z", time());
 $year = date("Y", time());
 
-$yfile = "log_".($day-1).".".$year.".php";
-$tfile = "log_".$date.".php";
+$pfileprev = "logp_".($day-1).".".$year.".php";
+$pfile = "logp_".$date.".php";
+$ifileprev = "logi_".($day-1).".".$year.".php";
+$ifile = "logi_".$date.".php";
 
-
-if(file_exists($pathtologs.$tfile)) {
+if(file_exists($pathtologs.$pfile)) {
 	/* log file is up to date, no consolidation required */
 	return;
-}else if(!file_exists($pathtologs.$yfile)) {
+}else if(!file_exists($pathtologs.$pfileprev)) {
 	/* no logfile found at all - create - this will only ever happen once ... */
 	createLog("blank");
 	return FALSE;
@@ -44,8 +45,10 @@ if(file_exists($pathtologs.$tfile)) {
 /* get existing stats ... */
 if($sql -> db_Select("logstats", "*", "log_id='statBrowser' OR log_id='statOs' OR log_id='statScreen' OR log_id='statDomain' OR log_id='statTotal' OR log_id='statUnique' OR log_id='statReferer' OR log_id='statQuery'")) {
 	$infoArray = array();
-	while($row = $sql -> db_Fetch()) {
+	while($row = $sql -> db_Fetch())
+	{
 		$$row[1] = unserialize($row[2]);
+		if($row[1] = "statUnique") $statUnique = $row[2];
 	}
 }else{
 	/* this must be the first time a consolidation has happened - this will only ever happen once ... */
@@ -64,11 +67,9 @@ if($sql -> db_Select("logstats", "*", "log_id='statBrowser' OR log_id='statOs' O
 	$statReferer =array();
 	$statQuery =array();
 }
-	
-require_once($pathtologs.$yfile);
 
-$ipArray = explode("\n", $ipAddresses);
-
+require_once($pathtologs.$pfileprev);
+require_once($pathtologs.$ifileprev);
 
 foreach($browserInfo as $name => $amount) {
 	$statBrowser[$name] += $amount;
@@ -103,8 +104,6 @@ $browser = serialize($statBrowser);
 $os = serialize($statOs);
 $screen = serialize($statScreen);
 $domain = serialize($statDomain);
-
-
 $refer = serialize($statReferer);
 $squery = serialize($statQuery);
 
@@ -122,22 +121,19 @@ $sql -> db_Update("logstats", "log_data='$statUnique' WHERE log_id='statUnique'"
 
 
 /* get monthly info from db */
-if($sql -> db_Select("logstats", "*", "log_id REGEXP('[[:digit:]]+-[[:digit:]]+')")) {
+if($sql -> db_Select("logstats", "*", "log_id='$date3' ")) {
 	$tmp = $sql -> db_Fetch();
 	$monthlyInfo = unserialize($tmp['log_data']);
 	unset($tmp);
 	$MonthlyExistsFlag = TRUE;
 }
 
-foreach($pageInfo as $key => $info) {
-	$key = preg_replace("/\?.*/", "", $key);
-	if(array_key_exists($key, $monthlyInfo)) {
-		$monthlyInfo[$key]['ttlv'] += $info['ttlv'];
-		$monthlyInfo[$key]['unqv'] += $info['unqv'];
-	} else {
-		$monthlyInfo[$key]['ttlv'] = $info['ttlv'];
-		$monthlyInfo[$key]['unqv'] = $info['unqv'];
-	}
+foreach($pageInfo as $key => $info)
+{
+	$monthlyInfo['TOTAL']['ttlv'] += $info['ttl'];
+	$monthlyInfo['TOTAL']['unqv'] += $info['unq'];
+	$monthlyInfo[$key]['ttlv'] += $info['ttl'];
+	$monthlyInfo[$key]['unqv'] += $info['unq'];
 }
 
 $monthlyinfo = serialize($monthlyInfo);
@@ -148,52 +144,80 @@ if($MonthlyExistsFlag) {
 	$sql->db_Insert("logstats", "0, '$date3', '$monthlyinfo'");
 }
 
-/* now we need to collate the individual page information into an array ... */
-if($sql -> db_Select("logstats", "*", "log_id REGEXP('[[:digit:]]+.')")) {
+
+/* collate page total information */
+if($sql -> db_Select("logstats", "*", "log_id='pageTotal' "))
+{
 	$tmp = $sql -> db_Fetch();
-	$pageArray = unserialize($tmp['log_data']);
+	$pageTotal = unserialize($tmp['log_data']);
 	unset($tmp);
 }
+else
+{
+	$pageTotal = array();
+}
 
-
-
-foreach($pageInfo as $key => $info) {
-	$key = preg_replace("/\?.*/", "", $key);
-	if(array_key_exists($key, $pageArray)) {
-		$pageArray[$key]['ttl'] += $info['ttl'];
-		$pageArray[$key]['unq'] += $info['unq'];
-		$pageArray[$key]['ttlv'] += $info['ttlv'];
-		$pageArray[$key]['unqv'] += $info['unqv'];
+foreach($pageInfo as $key => $info)
+{
+	if(array_key_exists($key, $pageTotal)) {
+		$pageTotal[$key]['ttlv'] += $info['ttl'];
+		$pageTotal[$key]['unqv'] += $info['unq'];
 	} else {
-		$pageArray[$key]['url'] = $info['url'];
-		$pageArray[$key]['ttl'] = $info['ttl'];
-		$pageArray[$key]['unq'] = $info['unq'];
-		$pageArray[$key]['ttlv'] = $info['ttlv'];
-		$pageArray[$key]['unqv'] = $info['unqv'];
+		$pageTotal[$key]['url'] = $info['url'];
+		$pageTotal[$key]['ttlv'] = $info['ttl'];
+		$pageTotal[$key]['unqv'] = $info['unq'];
 	}
 }
 
-$pagearray = serialize($pageArray);
+$pagetotal = serialize($pageTotal);
 
-$sql->db_Insert("logstats", "0, '$date2', '$pagearray'");
+if(!$sql -> db_Update("logstats", "log_data='$pagetotal' WHERE log_id='pageTotal' "))
+{
+	$sql -> db_Insert("logstats", "0, 'pageTotal', '$pagetotal' ");
+}
+
+
+/* now we need to collate the individual page information into an array ... */
+
+$data = "";
+$dailytotal = 0;
+$uniquetotal = 0;
+foreach($pageInfo as $key => $value)
+{
+	$data .= $value['url']."|".$value['ttl']."|".$value['unq'].chr(1);
+	$dailytotal += $value['ttl'];
+	$uniquetotal += $value['unq'];
+}
+
+$data = $dailytotal.chr(1).$uniquetotal.chr(1) . $data;
+$sql -> db_Insert("logstats", "0, '$date2', '$data'");
+
 	
 /* ok, we're finished with the log file now, we can empty it ... */
-if(!unlink($pathtologs.$yfile))
+if(!unlink($pathtologs.$pfileprev))
 {
-	$data = chr(60)."?php\n". chr(47)."* e107 website system: Log file: ".date("z:Y", time())." *". chr(47)."\n\n\n\n".chr(47)."* THE IMFORMATION IN THIS LOG FILE HAS BEEN CONSOLIDATED INTO THE DATABASE - YOU CAN SAFELY DELETE IT. *". chr(47)."\n\n\n?".  chr(62);
-	if ($handle = fopen($pathtologs.$yfile, 'w')) { 
+	$data = chr(60)."?php\n". chr(47)."* e107 website system: Log file: ".date("z:Y", time())." *". chr(47)."\n\n\n\n".chr(47)."* THE INFORMATION IN THIS LOG FILE HAS BEEN CONSOLIDATED INTO THE DATABASE - YOU CAN SAFELY DELETE IT. *". chr(47)."\n\n\n?".  chr(62);
+	if ($handle = fopen($pathtologs.$pfileprev, 'w')) { 
+		fwrite($handle, $data);
+	}
+	fclose($handle);
+}
+if(!unlink($pathtologs.$ifileprev))
+{
+	$data = chr(60)."?php\n". chr(47)."* e107 website system: Log file: ".date("z:Y", time())." *". chr(47)."\n\n\n\n".chr(47)."* THE INFORMATION IN THIS LOG INFO FILE HAS BEEN CONSOLIDATED INTO THE DATABASE - YOU CAN SAFELY DELETE IT. *". chr(47)."\n\n\n?".  chr(62);
+	if ($handle = fopen($pathtologs.$ifileprev, 'w')) { 
 		fwrite($handle, $data);
 	}
 	fclose($handle);
 }
 
-/* and finally, we need to create a new logfile for today ... */
+/* and finally, we need to create a new logfiles for today ... */
 createLog();
 /* done! */
 
 
 function createLog($mode="default") {
-	global $pathtologs, $statTotal, $statUnique, $pageArray, $tfile;
+	global $pathtologs, $statTotal, $statUnique, $pageArray, $pfile, $ifile;
 	if(!is_writable($pathtologs)) {
 		echo "Log directory is not writable - please CHMOD ".e_PLUGIN."log/logs to 777";
 		return FALSE;
@@ -207,7 +231,7 @@ function createLog($mode="default") {
 	$varStart."ipAddresses = ".$quote.$quote.";\n".
 	$varStart."hosts = ".$quote.$quote.";\n".
 	$varStart."siteTotal = ".$quote.$statTotal.$quote.";\n".
-	$varStart."siteUnique = ".$quote.$siteUnique.$quote.";\n".
+	$varStart."siteUnique = ".$quote.$statUnique.$quote.";\n".
 	$varStart."screenInfo = array();\n".
 	$varStart."browserInfo = array();\n".
 	$varStart."osInfo = array();\n".
@@ -227,19 +251,35 @@ function createLog($mode="default") {
 
 	$data .= "\n);\n\n?".  chr(62);
 
-	if(!touch($pathtologs.$tfile)) {
+	if(!touch($pathtologs.$pfile)) {
 		return FALSE;
 	}
 
-	if(!is_writable($pathtologs.$tfile)) {
+	if(!touch($pathtologs.$ifile)) {
+		return FALSE;
+	}
+
+	if(!is_writable($pathtologs.$pfile)) {
 		$old = umask(0);
-		chmod($pathtologs.$tfile, 0777);
+		chmod($pathtologs.$pfile, 0777);
 		umask($old);
-		return FALSE;
+	//	return FALSE;
 	}
 
-	if ($handle = fopen($pathtologs.$tfile, 'w')) { 
+	if(!is_writable($pathtologs.$ifile)) {
+		$old = umask(0);
+		chmod($pathtologs.$ifile, 0777);
+		umask($old);
+	//	return FALSE;
+	}
+
+	if ($handle = fopen($pathtologs.$pfile, 'w')) { 
 		fwrite($handle, $data);
+	}
+	fclose($handle);
+
+	if ($handle = fopen($pathtologs.$ifile, 'w')) { 
+		fwrite($handle, "");
 	}
 	fclose($handle);
 	return;

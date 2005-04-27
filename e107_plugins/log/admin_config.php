@@ -11,12 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-17 18:30:41 $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-27 16:06:34 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
+
+if (isset($_POST['updateStats']))
+{
+	header("location: ".e_PLUGIN."log/admin_updateroutine.php");
+	exit;
+}
+
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
 
@@ -57,7 +64,7 @@ if (isset($_POST['updatesettings'])) {
 if (e_QUERY == "u") {
 	$message = ADSTAT_L17;
 }
-	
+
 if (isset($_POST['wipe'])) {
 	if (isset($_POST['log_wipe_info'])) {
 		$sql->db_Delete("stat_info", "");
@@ -151,13 +158,25 @@ $text = "<div style='text-align:center'>
 	".ADSTAT_L9."<input type='checkbox' name='wipe[statWipeDomain]' value='1' /><br />
 	".ADSTAT_L10."<input type='checkbox' name='wipe[statWipeRefer]' value='1' /><br />
 	".ADSTAT_L11."<input type='checkbox' name='wipe[statWipeQuery]' value='1' /><br />
-
-
-
 	<br /><input class='button' type='submit' name='wipe' value='".ADSTAT_L12."' />
 	</td>
 	</tr>
+	
+	";
 
+	if($sql -> db_Select("stat_counter "))
+	{
+
+		$text .= "<tr>
+		<td style='width:50%' class='forumheader3'>".ADSTAT_L22."<br /><span class='smalltext'>".ADSTAT_L23."</td>
+		<td style='width:50%; text-align: right;' class='forumheader3'><input class='button' type='submit' name='updateStats' value='".ADSTAT_L24."' />
+		</td>
+		</tr>
+		";
+	}
+
+	$text .= "
+	
 
 	 
 	<tr>
