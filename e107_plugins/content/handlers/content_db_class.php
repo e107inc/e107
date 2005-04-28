@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.11 $
-|		$Date: 2005-04-28 13:36:01 $
+|		$Revision: 1.12 $
+|		$Date: 2005-04-28 20:45:06 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -60,13 +60,13 @@ class contentdb{
 								if($_POST['content_icon'] && !$uploadedicon){
 									$icon = $_POST['content_icon'];
 								} else {
-								//	require_once(e_HANDLER."resize_handler.php");
-								//	resize_image($pathicon.$uploadedicon[0]['name'], $pathicon.$uploadedicon[0]['name'], 250, "copy");
 									$fileorgicon = $uploadedicon[0]['name'];
 									$fileext2icon = substr(strrchr($fileorgicon, "."), 0);
 									if($fileorgicon){
 										$icon = $newpid."_contenticon".$fileext2icon;
 										rename($pathicon.$fileorgicon , $pathicon.$icon);
+										require_once(e_HANDLER."resize_handler.php");
+										resize_image($pathicon.$uploadedicon[0]['name'], $pathicon.$uploadedicon[0]['name'], '100', "nocopy");
 									} else {
 										$icon = "";
 									}
@@ -135,6 +135,10 @@ class contentdb{
 										if($fileorgimage[$i]){
 											$images{$i} = $newpid."_contentimage_".$n.$fileext2image[$i];
 											rename($pathimage.$fileorgimage[$i] , $pathimage.$images{$i});
+											require_once(e_HANDLER."resize_handler.php");
+											resize_image($pathimage.$image{$i}, $pathimage.$image{$i}, '500', "nocopy");
+											resize_image($pathimage.$image{$i}, $pathimage.$image{$i}, '100', "copy");
+
 											$totalimages .= "[img]".$images{$i};
 										} else {
 											$images{$i} = "";
@@ -239,13 +243,13 @@ class contentdb{
 								if($_POST['content_icon'] && !$uploadedicon){
 									$icon = $_POST['content_icon'];
 								} else {
-									//require_once(e_HANDLER."resize_handler.php");
-									//resize_image($pathicon.$uploadedicon[0]['name'], $pathicon.$uploadedicon[0]['name'], 250, "copy");
 									$fileorgicon = $uploadedicon[0]['name'];
 									$fileext2icon = substr(strrchr($fileorgicon, "."), 0);
 									if($fileorgicon){
 										$icon = $newpid."_contenticon".$fileext2icon;
 										rename($pathicon.$fileorgicon , $pathicon.$icon);
+										require_once(e_HANDLER."resize_handler.php");
+										resize_image($pathicon.$uploadedicon[0]['name'], $pathicon.$uploadedicon[0]['name'], '100', "nocopy");
 									} else {
 										$icon = "";
 									}
@@ -311,6 +315,10 @@ class contentdb{
 										if($fileorgimage[$i]){
 											$image{$i} = $newpid."_contentimage_".$n."".$fileext2image[$i]."";
 											rename($pathimage.$fileorgimage[$i] , $pathimage.$image{$i});
+											require_once(e_HANDLER."resize_handler.php");
+											resize_image($pathimage.$image{$i}, $pathimage.$image{$i}, '500', "nocopy");
+											resize_image($pathimage.$image{$i}, $pathimage.$image{$i}, '100', "copy");
+
 											$totalimages .= "[img]".$image{$i};
 										} else {
 											$image{$i} = "";
