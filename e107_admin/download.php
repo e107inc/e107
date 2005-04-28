@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-04-16 09:59:39 $
+|     $Revision: 1.46 $
+|     $Date: 2005-04-28 22:12:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,9 @@ $e_sub_cat = 'download';
 
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
+require_once(e_HANDLER."file_class.php");
+
+$fl = new e_file;
 
 // -------- Presets. ------------
 require_once(e_HANDLER."preset_class.php");
@@ -55,8 +58,7 @@ if (e_QUERY) {
 	unset($tmp);
 }
 
-if(isset($_POST['delete']))
-{
+if(isset($_POST['delete'])){
 	$tmp = array_pop(array_flip($_POST['delete']));
 	list($delete, $del_id) = explode("_", $tmp);
 	unset($_POST['searchquery']);
@@ -65,30 +67,28 @@ if(isset($_POST['delete']))
 $from = ($from ? $from : 0);
 $amount = 50;
 
-$e_file = str_replace("../", "", e_FILE);
 
-if ($file_array = getfiles($DOWNLOADS_DIRECTORY))
-{
-	sort($file_array);
+if($file_array = $fl->get_files(e_DOWNLOAD, "","standard",2)){
+		sort($file_array);
 }
-unset($t_array);
-if ($sql->db_Select("rbinary"))
-{
-	while ($row = $sql->db_Fetch())
-	{
+
+if ($sql->db_Select("rbinary")){
+	while ($row = $sql->db_Fetch())	{
 		extract($row);
 		$file_array[] = "Binary ".$binary_id."/".$binary_name;
 	}
 }
 
-if ($image_array = getfiles($e_file."downloadimages/", 1)) {
+$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
+
+if($image_array = $fl->get_files(e_FILE."downloadimages/", "",$reject,1)){
 	sort($image_array);
 }
-unset($t_array);
-if ($thumb_array = getfiles($e_file."downloadthumbs/", 1)) {
-	sort($thumb_array);
+
+if($thumb_array = $fl->get_files(e_FILE."downloadthumbs/", "",$reject,1)){
+	sort($image_array);
 }
- unset($t_array);
+
 
 if (isset($_POST['add_category'])) {
 	$download->create_category($sub_action, $id);
@@ -567,15 +567,16 @@ class download {
 
 		$counter = 0;
 		while (isset($file_array[$counter])) {
+			$fpath = str_replace(e_DOWNLOAD,"",$file_array[$counter]['path']).$file_array[$counter]['fname'];
 
-			if (eregi($download_url, $file_array[$counter])) {
+			if (eregi($download_url, $fpath)) {
 				$selected = " selected='selected'";
 				$found = 1;
 			} else {
 				$selected = "";
 			}
 
-			$text .= "<option value='".$file_array[$counter]."' $selected>".$file_array[$counter]."</option>\n";
+			$text .= "<option value='".$fpath."' $selected>".$fpath."</option>\n";
 			$counter++;
 		}
 
@@ -704,11 +705,9 @@ class download {
 			";
 		$counter = 0;
 		while (isset($image_array[$counter])) {
-			if ($image_array[$counter] == $download_image) {
-				$text .= "<option selected='selected'>".$image_array[$counter]."</option>\n";
-			} else {
-				$text .= "<option>".$image_array[$counter]."</option>\n";
-			}
+			$ipath = str_replace(e_FILE."downloadimages/","",$image_array[$counter]['path']).$image_array[$counter]['fname'];
+        	$seld = ($download_image == $ipath) ? "selected='selected'" : "";
+			$text .= "<option value='$ipath' $seld>".$ipath."</option>\n";
 			$counter++;
 		}
 		$text .= "</select>
@@ -721,13 +720,11 @@ class download {
 			<select name='download_thumb' class='tbox'>
 			<option></option>
 			";
-		$counter = 0;
+        $counter = 0;
 		while (isset($thumb_array[$counter])) {
-			if ($thumb_array[$counter] == $download_thumb) {
-				$text .= "<option selected='selected'>".$thumb_array[$counter]."</option>\n";
-			} else {
-				$text .= "<option>".$thumb_array[$counter]."</option>\n";
-			}
+			$tpath = str_replace(e_FILE."downloadthumbs/","",$thumb_array[$counter]['path']).$thumb_array[$counter]['fname'];
+        	$seld = ($download_thumb == $tpath) ? "selected='selected'" : "";
+			$text .= "<option value='$tpath' $seld>".$tpath."</option>\n";
 			$counter++;
 		}
 		$text .= "</select>
@@ -1254,31 +1251,6 @@ class download {
 
 }
 
-function getfiles($dir, $sub = 0) {
-	global $t_array, $DOWNLOADS_DIRECTORY, $FILES_DIRECTORY;
-	if ($DOWNLOADS_DIRECTORY{0} == "/" && $sub != 1 ) {
-		$pathdir = $dir;
-	} else {
-		$pathdir = e_BASE.$dir;
-	}
-	$dh = opendir($pathdir);
-	$size = 0;
-	$search = array("../", str_replace("../", "", $DOWNLOADS_DIRECTORY), $FILES_DIRECTORY, "downloads/", "downloadimages/", "downloadthumbs/");
-	$replace = array("", "", "", "", "", "");
-	while ($file = readdir($dh)) {
-		if ($file != "." and $file != ".." && $file != "index.html" && $file != "null.txt") {
-			if (is_file($pathdir.$file)) {
-				$t_array[] = str_replace($search, $replace, $pathdir.$file);
-			} else {
-				if (!preg_match("#^CVS#", $patchdir.$file)) {
-					getfiles(str_replace("../", "", $pathdir.$file)."/");
-				}
-			}
-		}
-	}
-	closedir($dh);
-	return $t_array;
-}
 
 function download_adminmenu($parms) {
 	global $download;

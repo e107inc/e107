@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.108 $
-|     $Date: 2005-04-25 19:49:21 $
-|     $Author: streaky $
+|     $Revision: 1.109 $
+|     $Date: 2005-04-28 22:10:53 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -84,6 +84,12 @@ define("e_PLUGIN", e_BASE.$PLUGINS_DIRECTORY);
 define("e_FILE", e_BASE.$FILES_DIRECTORY);
 define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
 define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
+
+if ($DOWNLOADS_DIRECTORY{0} == "/") {
+	define("e_DOWNLOAD", $DOWNLOADS_DIRECTORY);
+} else {
+	define("e_DOWNLOAD", e_BASE.$DOWNLOADS_DIRECTORY);
+}
 
 define("e_DOCS", e_BASE.$HELP_DIRECTORY);
 define("e_DOCROOT", $_SERVER['DOCUMENT_ROOT']."/");
