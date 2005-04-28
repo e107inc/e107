@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_cat_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-02-12 09:52:54 $
+|     $Revision: 1.4 $
+|     $Date: 2005-04-28 10:27:56 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -84,24 +84,22 @@ if(!$CONTENT_CAT_LIST_TABLE){
 							</td>
 						</tr>
 						<tr>
-							<td style='padding:2px; vertical-align:top; border:0;'>
-								<span class='smalltext'>
+							<td class='smalltext' style='padding:2px; vertical-align:top; border:0;'>
 								{CONTENT_CAT_LIST_TABLE_DATE} / {CONTENT_CAT_LIST_TABLE_AUTHORDETAILS}
 								{CONTENT_CAT_LIST_TABLE_EPICONS} {CONTENT_CAT_LIST_TABLE_COMMENT}
-								</span>
 							</td>
 						</tr>
 						<tr>
-							<td style='padding:2px; vertical-align:top; border:0;'>
-								<span class='smalltext'>{CONTENT_CAT_LIST_TABLE_RATING}</span>
+							<td class='smalltext' style='padding:2px; vertical-align:top; border:0;'>
+								{CONTENT_CAT_LIST_TABLE_RATING}
 							</td>
 						</tr>
 						</table>
 					</td>
 				</tr>
 				<tr>
-					<td colspan='2'>
-						<span class='smalltext'>{CONTENT_CAT_LIST_TABLE_TEXT}</span>&nbsp;
+					<td class='smalltext' colspan='2'>
+						{CONTENT_CAT_LIST_TABLE_TEXT}&nbsp;
 					</td>
 				</tr>
 				</table>

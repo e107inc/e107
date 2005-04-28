@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.16 $
-|		$Date: 2005-04-12 22:04:41 $
+|		$Revision: 1.17 $
+|		$Date: 2005-04-28 10:27:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -106,7 +106,7 @@ class contentform{
 							if(is_numeric($id)){
 								if($sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_id='$id' ")){
 									$row = $sql -> db_Fetch(); extract($row);
-									$content_text = str_replace("<br />", "", $tp -> post_toForm($content_text));
+									$content_text = str_replace("<br />", "", $tp -> toForm($content_text, TRUE));
 									$authordetails = $aa -> getAuthor($content_author);
 								}
 							}else{
@@ -118,7 +118,7 @@ class contentform{
 							if(is_numeric($id)){
 								if($sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_id=$id")){
 									$row = $sql -> db_Fetch(); extract($row);
-									$content_text = str_replace("<br />", "", $tp -> post_toForm($content_text));
+									$content_text = str_replace("<br />", "", $tp -> toForm($content_text, TRUE));
 									$authordetails = $aa -> getAuthor($content_author);
 								}
 							}else{

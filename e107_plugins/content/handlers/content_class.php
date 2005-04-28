@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.19 $
-|		$Date: 2005-04-11 14:56:31 $
+|		$Revision: 1.20 $
+|		$Date: 2005-04-28 10:27:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -819,27 +819,27 @@ class content{
 				$data .= chr(36)."content_icon_path = ".chr(36)."aa -> parseContentPathVars(".chr(36)."content_pref[\"content_icon_path_{$parentid}\"]);\n\n";
 
 				$data .= "if(".chr(36)."content_pref[\"content_menu_viewicon_{$parentid}\"] == \"0\"){ ".chr(36)."viewicon = \"\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_viewicon_{$parentid}\"] == \"1\"){ ".chr(36)."viewicon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."'>\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_viewicon_{$parentid}\"] == \"1\"){ ".chr(36)."viewicon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />\";\n";
 				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_viewicon_{$parentid}\"] == \"2\"){ ".chr(36)."viewicon = \"&middot\";\n";
 				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_viewicon_{$parentid}\"] == \"3\"){ ".chr(36)."viewicon = \"º\";\n";
 				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_viewicon_{$parentid}\"] == \"4\"){ ".chr(36)."viewicon = \"&raquo;\";\n";
-				$data .= "}else{ ".chr(36)."viewicon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."'>\"; }\n\n";
+				$data .= "}else{ ".chr(36)."viewicon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />\"; }\n\n";
 
 				$data .= "if(".chr(36)."content_pref[\"content_menu_cat_icon_{$parentid}\"] == \"0\"){ ".chr(36)."caticon = \"\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_{$parentid}\"] == \"1\"){ ".chr(36)."caticon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."'>\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_{$parentid}\"] == \"1\"){ ".chr(36)."caticon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />\";\n";
 				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_{$parentid}\"] == \"2\"){ ".chr(36)."caticon = \"&middot\";\n";
 				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_{$parentid}\"] == \"3\"){ ".chr(36)."caticon = \"º\";\n";
 				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_{$parentid}\"] == \"4\"){ ".chr(36)."caticon = \"&raquo;\";\n";
 				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_{$parentid}\"] == \"5\"){ ".chr(36)."caticon = \"\";\n";
-				$data .= "}else{ ".chr(36)."caticon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."'>\"; }\n\n";
+				$data .= "}else{ ".chr(36)."caticon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />\"; }\n\n";
 
 				$data .= "if(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"0\"){ ".chr(36)."recenticon = \"\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"1\"){ ".chr(36)."recenticon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."'>\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"1\"){ ".chr(36)."recenticon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />\";\n";
 				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"2\"){ ".chr(36)."recenticon = \"&middot\";\n";
 				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"3\"){ ".chr(36)."recenticon = \"º\";\n";
 				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"4\"){ ".chr(36)."recenticon = \"&raquo;\";\n";
 				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"5\"){ ".chr(36)."recenticon = \"\";\n";
-				$data .= "}else{ ".chr(36)."caticon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."'>\"; }\n\n";
+				$data .= "}else{ ".chr(36)."caticon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />\"; }\n\n";
 
 				$data .= "if(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"5\"){\n";
 				$data .= "   if(".chr(36)."content_pref[\"content_menu_recent_icon_width_{$parentid}\"]){\n";
@@ -974,7 +974,7 @@ class content{
 
 				$data .= "         if(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"5\"){\n";
 				$data .= "            if(".chr(36)."row['content_icon'] != \"\" && file_exists(".chr(36)."content_icon_path.".chr(36)."row['content_icon']) ){\n";
-				$data .= "               ".chr(36)."recenticon = \"<img src='\".".chr(36)."content_icon_path.".chr(36)."row['content_icon'].\"' alt='' style=' \".".chr(36)."recenticonwidth.\" border:0;'>\";\n";
+				$data .= "               ".chr(36)."recenticon = \"<img src='\".".chr(36)."content_icon_path.".chr(36)."row['content_icon'].\"' alt='' style=' \".".chr(36)."recenticonwidth.\" border:0;' />\";\n";
 				$data .= "            }else{\n";
 				$data .= "               ".chr(36)."recenticon = \"<img src='\".".chr(36)."content_icon_path.\"blank.gif' alt='' style='\".".chr(36)."recenticonwidth.\" border:0;'>\";\n";
 				$data .= "            }\n";

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_convert.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2005-04-14 07:50:54 $
+|		$Revision: 1.5 $
+|		$Date: 2005-04-28 10:26:59 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -58,6 +58,7 @@ if(isset($_POST['convert_table'])){
 
 	// ##### STAGE 1 : ANALYSE OLD CONTENT --------------------------------------------------------
 					//analyse old content table
+					if(!is_object($sql)){ $sql = new db; }
 					$totaloldcontentrows = $sql -> db_Count("content");
 					$totaloldrowscat_content = $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '1'");
 					$totaloldrowscat_article = $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '6'");
@@ -65,13 +66,13 @@ if(isset($_POST['convert_table'])){
 					$totaloldrowsitem_review = $sql -> db_Count("content", "(*)", "WHERE content_type = '3' || content_type = '16'");
 					$totaloldrowsitem_article = $sql -> db_Count("content", "(*)", "WHERE content_type = '0' || content_type = '15'");
 
-if(!is_object($sqlu)){ $sqlu = new db; }
-$totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_parent = '0' AND content_type = '1') || (content_parent = '0' AND content_type = '6') || (content_parent = '0' AND content_type = '10') || (content_type = '3' || content_type = '16') || (content_type = '0' || content_type = '15') ) ");
+					if(!is_object($sql)){ $sql = new db; }
+					$totaloldrowsunknown = $sql -> db_Select("content", "*", " NOT ( (content_parent = '0' AND content_type = '1') || (content_parent = '0' AND content_type = '6') || (content_parent = '0' AND content_type = '10') || (content_type = '3' || content_type = '16') || (content_type = '0' || content_type = '15') ) ");
 
-	while($rowu = $sqlu -> db_Fetch()){
-		extract($rowu);
-		$bug_unknownrows[] = $content_id." ".$content_heading." - parent=".$content_parent." - type=".$content_type;
-	}
+					while($row = $sql -> db_Fetch()){
+						extract($row);
+						$bug_unknownrows[] = $content_id." ".$content_heading." - parent=".$content_parent." - type=".$content_type;
+					}
 
 					//content page:		$content_parent == "0" && $content_type == "1"
 					//review category:	$content_parent == "0" && $content_type == "10"
@@ -84,17 +85,20 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 	$mainparentcontent = "0";
 	if($totaloldrowscat_content > "0"){
 					//insert a content main parent cat, then insert all content pages into this main parent
-					if(!$sql2 -> db_Select($plugintable, "content_heading", "content_heading = 'content' AND content_parent = '0' ")){
-						$sql2 -> db_Insert($plugintable, "'0', 'content', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '1' ");
+					if(!is_object($sql)){ $sql = new db; }
+					if(!$sql -> db_Select($plugintable, "content_heading", "content_heading = 'content' AND content_parent = '0' ")){
+						$sql -> db_Insert($plugintable, "'0', 'content', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '1' ");
 
 						//check if row is present in the db (is it a valid insert)
-						if(!$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'content' ")){
+						if(!is_object($sql2)){ $sql2 = new db; }
+						if(!$sql2 -> db_Select($plugintable, "content_id", "content_heading = 'content' ")){
 							$content_mainparent = CONTENT_ADMIN_CONVERSION_LAN_45;
 						}else{
 							$content_mainparent = CONTENT_ADMIN_CONVERSION_LAN_0." ".CONTENT_ADMIN_CONVERSION_LAN_7."<br />";
 							$mainparentcontent = "1";
 
 							//select main content parent id
+							if(!is_object($sql3)){ $sql3 = new db; }
 							$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'content' AND content_parent = '0' ");
 							list($content_main_id) = $sql3 -> db_Fetch();
 
@@ -102,6 +106,7 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 							unset($content_pref, $tmp);
 							$content_pref = $aa -> ContentDefaultPrefs($content_main_id);
 							$tmp = addslashes(serialize($content_pref));
+							if(!is_object($sql4)){ $sql4 = new db; }
 							$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$content_main_id' ");
 							$content_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_0." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
 						}
@@ -117,17 +122,20 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 	$mainparentreview = "0";
 	if($totaloldrowscat_review > "0"){
 					//insert a review main parent cat, then insert all review cats into this main parent
-					if(!$sql2 -> db_Select($plugintable, "content_heading", "content_heading = 'review' AND content_parent = '0' ")){
-						$sql2 -> db_Insert($plugintable, "'0', 'review', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '1' ");
+					if(!is_object($sql)){ $sql = new db; }
+					if(!$sql -> db_Select($plugintable, "content_heading", "content_heading = 'review' AND content_parent = '0' ")){
+						$sql -> db_Insert($plugintable, "'0', 'review', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '1' ");
 
 						//check if row is present in the db (is it a valid insert)
-						if(!$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'review' ")){
+						if(!is_object($sql2)){ $sql2 = new db; }
+						if(!$sql2 -> db_Select($plugintable, "content_id", "content_heading = 'review' ")){
 							$review_mainparent = CONTENT_ADMIN_CONVERSION_LAN_45;
 						}else{
 							$review_mainparent = CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_7."<br />";
 							$mainparentreview = "1";
 
 							//select main review parent id
+							if(!is_object($sql3)){ $sql3 = new db; }
 							$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'review' AND content_parent = '0' ");
 							list($review_main_id) = $sql3 -> db_Fetch();
 
@@ -135,6 +143,7 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 							unset($content_pref, $tmp);
 							$content_pref = $aa -> ContentDefaultPrefs($review_main_id);
 							$tmp = addslashes(serialize($content_pref));
+							if(!is_object($sql4)){ $sql4 = new db; }
 							$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$review_main_id' ");
 							$review_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
 							$aa -> CreateParentMenu($review_main_id);
@@ -151,17 +160,20 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 	$mainparentarticle = "0";
 	if($totaloldrowscat_article > "0"){
 					//insert a article main parent cat, then insert all article cats into this main parent
-					if(!$sql2 -> db_Select($plugintable, "content_heading", "content_heading = 'article' AND content_parent = '0' ")){
-						$sql2 -> db_Insert($plugintable, "'0', 'article', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '1' ");
+					if(!is_object($sql)){ $sql = new db; }
+					if(!$sql -> db_Select($plugintable, "content_heading", "content_heading = 'article' AND content_parent = '0' ")){
+						$sql -> db_Insert($plugintable, "'0', 'article', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '1' ");
 
 						//check if row is present in the db (is it a valid insert)
-						if(!$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'article' ")){
+						if(!is_object($sql2)){ $sql2 = new db; }
+						if(!$sql2 -> db_Select($plugintable, "content_id", "content_heading = 'article' ")){
 							$article_mainparent = CONTENT_ADMIN_CONVERSION_LAN_45;
 						}else{
 							$article_mainparent = CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_7."<br />";
 							$mainparentarticle = "1";
 
 							//select main article parent id
+							if(!is_object($sql3)){ $sql3 = new db; }
 							$sql3 -> db_Select($plugintable, "content_id", "content_heading = 'article' AND content_parent = '0' ");
 							list($article_main_id) = $sql3 -> db_Fetch();
 
@@ -169,6 +181,7 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 							unset($content_pref, $tmp);
 							$content_pref = $aa -> ContentDefaultPrefs($article_main_id);
 							$tmp = addslashes(serialize($content_pref));
+							if(!is_object($sql4)){ $sql4 = new db; }
 							$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$article_main_id' ");
 							$article_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
 							$aa -> CreateParentMenu($article_main_id);
@@ -181,6 +194,7 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 	}
 
 	// ##### STAGE 5 : INSERT CONTENT -------------------------------------------------------------
+	if(!is_object($sql)){ $sql = new db; }
 	if(!$sql -> db_Select("content", "*", "content_parent = '0' AND content_type = '1' ORDER BY content_id " )){
 		$content_present = "0";
 	}else{
@@ -191,8 +205,9 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 					$oldcontentid = $row['content_id'];
 
 					//select main content parent id
-					$sql5 -> db_Select($plugintable, "content_id", "content_heading = 'content' AND content_parent = '0' ");
-					list($content_main_id2) = $sql5 -> db_Fetch();
+					if(!is_object($sql2)){ $sql2 = new db; }
+					$sql2 -> db_Select($plugintable, "content_id", "content_heading = 'content' AND content_parent = '0' ");
+					list($content_main_id2) = $sql2 -> db_Fetch();
 
 					//summary can contain link to image in e107_images/link_icons/".$summary." THIS STILL NEEDS TO BE CHECKED
 					$newcontent_heading = $tp -> toDB($content_heading);
@@ -213,26 +228,29 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 					$newcontent_class = $content_class;
 					$newcontent_pref = "";
 
+					if(!is_object($sql3)){ $sql3 = new db; }
 					$sql6 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '1.".$count."' ");
 
-					if(!$sql6 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
+					if(!$sql3 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 						$bug_content_insert[] = $content_id." ".$content_heading;
 					}else{
 						$valid_content_insert[] = $content_id." ".$content_heading;
 						$countcontent = $countcontent + 1;
 
-						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
+						list($thenewcontent_id, $thenewcontent_heading) = $sql3 -> db_Fetch();
 						
 						//check if comments present, if so, convert those to new content item id's						
-						$numc = $sql7 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
+						if(!is_object($sql4)){ $sql4 = new db; }
+						$numc = $sql4 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
 						if($numc > 0){
-							$sql7 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
+							$sql4 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
 						}
 
 						//check if rating present, if so, convert those to new content item id's
-						$numr = $sql8 -> db_Count("rate", "(*)", "WHERE rate_table = 'content' AND rate_itemid = '".$content_id."' ");
+						if(!is_object($sql5)){ $sql5 = new db; }
+						$numr = $sql5 -> db_Count("rate", "(*)", "WHERE rate_table = 'content' AND rate_itemid = '".$content_id."' ");
 						if($numr > 0){
-							$sql8 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$content_id."' ");
+							$sql5 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$content_id."' ");
 						}
 					}
 					$count = $count + 1;
@@ -241,6 +259,7 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 
 
 	// ##### STAGE 6 : INSERT REVIEW CATEGORY -----------------------------------------------------
+	if(!is_object($sql)){ $sql = new db; }
 	if(!$sql -> db_Select("content", "*", "content_parent = '0' AND content_type = '10' ORDER BY content_id " )){
 		$review_cat_present = "0";
 	}else{
@@ -249,8 +268,9 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 		while($row = $sql -> db_Fetch()){
 		extract($row);
 					//select main review parent id
-					$sql5 -> db_Select($plugintable, "content_id", "content_heading = 'review' AND content_parent = '0' ");
-					list($review_main_id2) = $sql5 -> db_Fetch();
+					if(!is_object($sql2)){ $sql2 = new db; }
+					$sql2 -> db_Select($plugintable, "content_id", "content_heading = 'review' AND content_parent = '0' ");
+					list($review_main_id2) = $sql2 -> db_Fetch();
 
 					//summary can contain link to image in e107_images/link_icons/".$summary." THIS STILL NEEDS TO BE CHECKED
 					$newcontent_heading = $tp -> toDB($content_heading);
@@ -271,9 +291,10 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 					$newcontent_class = $content_class;
 					$newcontent_pref = "";
 
-					$sql6 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '".$count."' ");
+					if(!is_object($sql3)){ $sql3 = new db; }
+					$sql3 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '".$count."' ");
 
-					if(!$sql6 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
+					if(!$sql3 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 						$bug_review_cat_insert[] = $content_id." ".$content_heading;
 					}else{
 						$valid_review_cat_insert[] = $content_id." ".$content_heading;
@@ -285,6 +306,7 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 
 
 	// ##### STAGE 7 : INSERT ARTICLE CATEGORY ----------------------------------------------------
+	if(!is_object($sql)){ $sql = new db; }
 	if(!$sql -> db_Select("content", "*", "content_parent = '0' AND content_type = '6' ORDER BY content_id " )){
 		$article_cat_present = "0";
 	}else{
@@ -293,8 +315,9 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 		while($row = $sql -> db_Fetch()){
 		extract($row);
 					//select main article parent id
-					$sql5 -> db_Select($plugintable, "content_id", "content_heading = 'article' AND content_parent = '0' ");
-					list($article_main_id2) = $sql5 -> db_Fetch();
+					if(!is_object($sql2)){ $sql2 = new db; }
+					$sql2 -> db_Select($plugintable, "content_id", "content_heading = 'article' AND content_parent = '0' ");
+					list($article_main_id2) = $sql2 -> db_Fetch();
 
 					//summary can contain link to image in e107_images/link_icons/".$summary." THIS STILL NEEDS TO BE CHECKED
 					$newcontent_heading = $tp -> toDB($content_heading);
@@ -315,9 +338,10 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 					$newcontent_class = $content_class;
 					$newcontent_pref = "";
 
-					$sql6 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '".$count."' ");
+					if(!is_object($sql3)){ $sql3 = new db; }
+					$sql3 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '".$count."' ");
 
-					if(!$sql6 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
+					if(!$sql3 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 						$bug_article_cat_insert[] = $content_id." ".$content_heading;
 					}else{
 						$valid_article_cat_insert[] = $content_id." ".$content_heading;
@@ -329,16 +353,18 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 
 
 	// ##### STAGE 8 : INSERT REVIEWS -------------------------------------------------------------
-	if(!$sql7 -> db_Select("content", "*", "content_type = '3' || content_type = '16' ORDER BY content_id " )){
+	if(!is_object($sql)){ $sql = new db; }
+	if(!$thisreviewcount = $sql -> db_Select("content", "*", "content_type = '3' || content_type = '16' ORDER BY content_id " )){
 		$review_present = "0";
 	}else{
 		$count = 1;
 		$review_present = "1";
-		while($row = $sql7 -> db_Fetch()){
+		while($row = $sql -> db_Fetch()){
 		extract($row);
 					$oldcontentid = $row['content_id'];
 
 					//select main review parent id
+					if(!is_object($sql2)){ $sql2 = new db; }
 					$sql2 -> db_Select($plugintable, "content_id", "content_heading = 'review' AND content_parent = '0' ");
 					list($review_main_id) = $sql2 -> db_Fetch();
 
@@ -349,13 +375,16 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 					//review is in review subcat
 					}else{
 						//select old review cat heading
+						if(!is_object($sql3)){ $sql3 = new db; }
 						if(!$sql3 -> db_Select("content", "content_id, content_heading", "content_id = '".$content_parent."' ")){
 							$bug_article_oldcat[] = $content_id." ".$content_heading;
 							$newcontent_parent = $review_main_id.".".$review_main_id;
+							//echo $content_id." - ".$content_type." - ".$content_parent." - ".$content_heading."<br />";
 						}else{
 							list($old_review_cat_id, $old_review_cat_heading) = $sql3 -> db_Fetch();
 
 							//select new review cat id from the cat with the old_review_cat_heading
+							if(!is_object($sql4)){ $sql4 = new db; }
 							if(!$sql4 -> db_Select($plugintable, "content_id", "content_heading = '".$old_review_cat_heading."' AND content_parent = '0.".$review_main_id."' ")){
 								$bug_review_newcat[] = $content_id." ".$content_heading;
 								$newcontent_parent = $review_main_id.".".$review_main_id;
@@ -365,7 +394,7 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 							}
 						}
 					}
-
+					
 					if (strstr($content_content, "{EMAILPRINT}")) {
 						$content_content = str_replace("{EMAILPRINT}", "", $content_content);
 					}
@@ -391,10 +420,13 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 					$contentreviewprefvalue = addslashes(serialize($custom));
 					$newcontent_pref = $contentreviewprefvalue;
 
+					if(!is_object($sql5)){ $sql5 = new db; }
 					$sql5 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '1.".$count."' ");
 
+					if(!is_object($sql6)){ $sql6 = new db; }
 					if(!$sql6 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 						$bug_review_insert[] = $content_id." ".$content_heading;
+						//echo $content_id." - ".$content_type." - ".$content_parent." - ".$content_heading."<br />";
 					}else{
 						$valid_review_insert[] = $content_id." ".$content_heading;
 						$countreview = $countreview + 1;
@@ -402,23 +434,27 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
 						
 						//check if comments present, if so, convert those to new content item id's						
+						if(!is_object($sql7)){ $sql7 = new db; }
 						$numc = $sql7 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
 						if($numc > 0){
 							$sql7 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
 						}
 
 						//check if rating present, if so, convert those to new content item id's
+						if(!is_object($sql8)){ $sql8 = new db; }
 						$numr = $sql8 -> db_Count("rate", "(*)", "WHERE rate_table = 'review' AND rate_itemid = '".$content_id."' ");
 						if($numr > 0){
 							$sql8 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$content_id."' ");
 						}
 					}
 					$count = $count + 1;
+					
 		}
 	}
 
 
 	// ##### STAGE 9 : INSERT ARTICLES ------------------------------------------------------------
+	if(!is_object($sql)){ $sql = new db; }
 	if(!$sql -> db_Select("content", "*", "content_type = '0' || content_type = '15' ORDER BY content_id " )){
 		$article_present = "0";
 	}else{
@@ -429,6 +465,7 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 					$oldcontentid = $row['content_id'];
 
 					//select main article parent id
+					if(!is_object($sql2)){ $sql2 = new db; }
 					$sql2 -> db_Select($plugintable, "content_id", "content_heading = 'article' AND content_parent = '0' ");
 					list($article_main_id) = $sql2 -> db_Fetch();
 
@@ -439,6 +476,7 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 					//article is in article subcat
 					}else{
 						//select old article cat heading
+						if(!is_object($sql3)){ $sql3 = new db; }
 						if(!$sql3 -> db_Select("content", "content_id, content_heading", "content_id = '".$content_parent."' ")){
 							$bug_article_oldcat[] = $content_id." ".$content_heading;
 							$newcontent_parent = $article_main_id.".".$article_main_id;
@@ -446,6 +484,7 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 							list($old_article_cat_id, $old_article_cat_heading) = $sql3 -> db_Fetch();
 
 							//select new article cat id from the cat with the old_article_cat_heading
+							if(!is_object($sql4)){ $sql4 = new db; }
 							if(!$sql4 -> db_Select($plugintable, "content_id", "content_heading = '".$old_article_cat_heading."' AND content_parent = '0.".$article_main_id."' ")){
 								$bug_article_newcat[] = $content_id." ".$content_heading;
 								$newcontent_parent = $article_main_id.".".$article_main_id;
@@ -479,23 +518,26 @@ $totaloldrowsunknown = $sqlu -> db_Select("content", "*", " NOT ( (content_paren
 					$newcontent_pref = "";
 
 					if(!is_object($sql5)){ $sql5 = new db; }
-
 					$sql5 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '1.".$count."' ");
 
+					if(!is_object($sql6)){ $sql6 = new db; }
 					if(!$sql6 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 						$bug_article_insert[] = $content_id." ".$content_heading;
+						echo $content_id." - ".$content_type." - ".$content_parent." - ".$content_heading."<br />";
 					}else{
 						$valid_article_insert[] = $content_id." ".$content_heading;
 						$countarticle = $countarticle + 1;
 
 						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
 						//check if comments present, if so, convert those to new content item id's						
+						if(!is_object($sql7)){ $sql7 = new db; }
 						$numc = $sql7 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
 						if($numc > 0){
 							$sql7 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
 						}
 
 						//check if rating present, if so, convert those to new content item id's
+						if(!is_object($sql8)){ $sql8 = new db; }
 						$numr = $sql8 -> db_Count("rate", "(*)", "WHERE rate_table = 'article' AND rate_itemid = '".$content_id."' ");
 						if($numr > 0){
 							$sql8 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$content_id."' ");

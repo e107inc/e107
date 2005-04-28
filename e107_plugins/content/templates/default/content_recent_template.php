@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_recent_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-12 22:04:42 $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-28 10:27:56 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -26,6 +26,52 @@ if(!$CONTENT_RECENT_TABLE_START){
 				<table style='width:95%' border='0'>\n";
 }
 if(!$CONTENT_RECENT_TABLE){
+				$CONTENT_RECENT_TABLE = "
+				<tr>
+					<td style='width:1%; white-space:nowrap; vertical-align:top; padding:0; '>
+						{CONTENT_RECENT_TABLE_ICON}<br /><br />
+					</td>
+					<td style='width:99%; vertical-align:top; padding-top:2px; padding:0;'>
+						<table style='width:100%; vertical-align:top;' border='0'>
+						<tr>
+							<td colspan='2' style='text-align:left; padding:2px; vertical-align:top; border:0;'>
+								{CONTENT_RECENT_TABLE_HEADING}
+							</td>
+						</tr>
+						<tr>
+							<td colspan='2' style='text-align:left; padding:2px; vertical-align:top; border:0;'>
+								<i>{CONTENT_RECENT_TABLE_SUBHEADING}</i>
+							</td>
+						</tr>
+						<tr>
+							<td class='smalltext' colspan='2' style='padding:2px; vertical-align:top; border:0;'>
+								{CONTENT_RECENT_TABLE_DATE} {CONTENT_RECENT_TABLE_EPICONS} {CONTENT_RECENT_TABLE_AUTHORDETAILS} ".CONTENT_LAN_44." {CONTENT_RECENT_TABLE_REFER}
+							</td>
+						</tr>
+						<tr>
+							<td class='smalltext' colspan='2' style='padding:2px; vertical-align:top; border:0;'>
+								{CONTENT_RECENT_TABLE_RATING}
+							</td>
+						</tr>
+							<tr>
+							<td class='smalltext' colspan='2' style='padding:2px; vertical-align:middle; border:0;'>
+								{CONTENT_RECENT_TABLE_PARENT}
+							</td>
+						</tr>
+						<tr>
+							<td class='smalltext' colspan='2' style='padding:2px; vertical-align:middle; border:0;'>
+								{CONTENT_RECENT_TABLE_SUMMARY}
+							</td>
+						</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td colspan='2'>
+						<div class='spacer'><br /></div>
+					</td>
+				</tr>";
+/*
 				$CONTENT_RECENT_TABLE = "
 				<tr>
 					<td style='width:1%; white-space:nowrap; vertical-align:top; padding:0; '>
@@ -71,6 +117,7 @@ if(!$CONTENT_RECENT_TABLE){
 						<div class='spacer'><br /></div>
 					</td>
 				</tr>";
+*/
 }
 if(!$CONTENT_RECENT_TABLE_END){
 				$CONTENT_RECENT_TABLE_END = "
