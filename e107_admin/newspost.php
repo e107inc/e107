@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.74 $
-|   $Date: 2005-04-11 16:24:13 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.75 $
+|   $Date: 2005-04-28 22:33:55 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -543,7 +543,7 @@ class newspost {
 		<div id='newsicn' style='display:none;{head}'>";
 
 		foreach($thumblist as $icon){
-			$text .= "<a href=\"javascript:insertext('".$icon['fname']."','news_thumbnail','newsicn')\"><img src='".$icon['path']."/".$icon['fname']."' style='border:0' alt='' /></a> ";
+			$text .= "<a href=\"javascript:insertext('".$icon['fname']."','news_thumbnail','newsicn')\"><img src='".$icon['path'].$icon['fname']."' style='border:0' alt='' /></a> ";
 		}
 
 		$text .= "</div>

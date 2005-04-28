@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-04-06 21:29:36 $
-|     $Author: stevedunstan $
+|     $Revision: 1.17 $
+|     $Date: 2005-04-28 22:33:55 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -356,7 +356,7 @@ if ($action == "create") {
 	while ($images[$c])
 	{
 
-		$image = $images[$c]['path']."/".$images[$c]['fname'];
+		$image = $images[$c]['path'].$images[$c]['fname'];
 
 		$fileext1 = substr(strrchr($image, "."), 1);
 		$fileext2 = substr(strrchr($image, "."), 0);
