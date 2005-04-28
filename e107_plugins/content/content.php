@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.23 $
-|		$Date: 2005-04-28 13:35:17 $
+|		$Revision: 1.24 $
+|		$Date: 2005-04-28 20:44:00 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1542,14 +1542,16 @@ function parse_content_content_table($row){
 				$files = array_values($filestmp);
 				$content_files_popup_name = ereg_replace("'", "", $content_heading);
 				$file = "";
+				$filesexisting = "0";
 				for($i=0;$i<count($files);$i++){
 					if(file_exists($content_file_path.$files[$i])){
+						$filesexisting = $filesexisting+1;
 						$file .= "<a href='".$content_file_path.$files[$i]."' rel='external'>".CONTENT_ICON_FILE."</a> ";						
 					}else{
 						$file .= "&nbsp;";
 					}
 				}
-				$CONTENT_CONTENT_TABLE_FILE = (count($files) == "0" ? "" : CONTENT_LAN_41." ".(count($files) == 1 ? CONTENT_LAN_42 : CONTENT_LAN_43)." ".$file." ");
+				$CONTENT_CONTENT_TABLE_FILE = ($filesexisting == "0" ? "" : CONTENT_LAN_41." ".($filesexisting == 1 ? CONTENT_LAN_42 : CONTENT_LAN_43)." ".$file." ");
 
 				
 				if($content_pref["content_content_rating_{$type_id}"] || $content_pref["content_content_rating_all_{$type_id}"] || $content_rate){
@@ -1671,10 +1673,11 @@ function parse_content_content_table($row){
 
 						//openPerfectPopup(oSrc, oWidth, oTitle, oText)
 						$oSrc = $content_image_path.$images[$i];
+						$oSrcThumb = $content_image_path."thumb_".$images[$i];
 						$oWidth = $width;
 						$oTitle = $content_image_popup_name." ".($i+1);
 						$oText = $imagetext;
-						$CONTENT_CONTENT_TABLE_IMAGES .= "<a href=\"javascript:openPerfectPopup('".$oSrc."',".$oWidth.",'".$oTitle."','".$oText."')\" style='cursor:pointer;' onmouseover=\"window.status='click to enlarge image'; return true;\" onmouseout=\"window.status=''; return true;\" ><img src='".$oSrc."' style='border:1px solid #000; width:100px;' alt='' /></a><br /><br />";
+						$CONTENT_CONTENT_TABLE_IMAGES .= "<a href=\"javascript:openPerfectPopup('".$oSrc."',".$oWidth.",'".$oTitle."','".$oText."')\" style='cursor:pointer;' onmouseover=\"window.status='click to enlarge image'; return true;\" onmouseout=\"window.status=''; return true;\" ><img src='".$oSrcThumb."' style='border:1px solid #000; width:100px;' alt='' /></a><br /><br />";
 
 					}else{
 						$CONTENT_CONTENT_TABLE_IMAGES .= "";

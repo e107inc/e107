@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.17 $
-|		$Date: 2005-04-28 10:27:55 $
+|		$Revision: 1.18 $
+|		$Date: 2005-04-28 20:45:06 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -241,27 +241,27 @@ class contentform{
 						<tr>
 							<td class='forumheader3' style='width:30%; vertical-align:top'>".CONTENT_ADMIN_ITEM_LAN_51."</td>
 							<td class='forumheader3' style='width:70%; vertical-align:top'>
-								".$rs -> form_text("content_author_name", 90, ($authordetails[1] ? $authordetails[1] : CONTENT_ADMIN_ITEM_LAN_14), 100, "tbox", "", "", ($authordetails[1] ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_name.value=='".CONTENT_ADMIN_ITEM_LAN_14."'){document.getElementById('dataform').content_author_name.value='';}\"") )."<br />
-								".$rs -> form_text("content_author_email", 90, ($authordetails[2] ? $authordetails[2] : CONTENT_ADMIN_ITEM_LAN_15), 100, "tbox", "", "", ($authordetails[2] ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_email.value=='".CONTENT_ADMIN_ITEM_LAN_15."'){document.getElementById('dataform').content_author_email.value='';}\"") )."
+								".$rs -> form_text("content_author_name", 80, ($authordetails[1] ? $authordetails[1] : CONTENT_ADMIN_ITEM_LAN_14), 100, "tbox", "", "", ($authordetails[1] ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_name.value=='".CONTENT_ADMIN_ITEM_LAN_14."'){document.getElementById('dataform').content_author_name.value='';}\"") )."<br />
+								".$rs -> form_text("content_author_email", 80, ($authordetails[2] ? $authordetails[2] : CONTENT_ADMIN_ITEM_LAN_15), 100, "tbox", "", "", ($authordetails[2] ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_email.value=='".CONTENT_ADMIN_ITEM_LAN_15."'){document.getElementById('dataform').content_author_email.value='';}\"") )."
 								".$rs -> form_hidden("content_author_id", $authordetails[0])."
 							</td>
 						</tr>
 						<tr>
 							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_ITEM_LAN_11."</td>
-							<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_heading", 90, $content_heading, 250)."</td>
+							<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_heading", 80, $content_heading, 250)."</td>
 						</tr>
 						<tr>
 							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_ITEM_LAN_16."</td>
-							<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_subheading", 90, $content_subheading, 250)."</td>
+							<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_subheading", 80, $content_subheading, 250)."</td>
 						</tr>
 						<tr>
 							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_ITEM_LAN_17."</td>
-							<td class='forumheader3' style='width:70%'>".$rs -> form_textarea("content_summary", 88, 5, $content_summary)."</td>
+							<td class='forumheader3' style='width:70%'>".$rs -> form_textarea("content_summary", 66, 5, $content_summary)."</td>
 						</tr>
 						<tr>
 							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_ITEM_LAN_18."</td>
-							<td class='forumheader3' style='width:70%'>".$rs -> form_textarea("content_text", 88, 30, $content_text, "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'")."
-								<br />".$rs -> form_text("helpb", 90, '', '', "helpbox")."<br />";
+							<td class='forumheader3' style='width:70%'>".$rs -> form_textarea("content_text", 66, 30, $content_text, "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'")."
+								<br />".$rs -> form_text("helpb", 80, '', '', "helpbox")."<br />";
 								require_once(e_HANDLER."ren_help.php");
 								$text .= ren_help()."
 							</td>
@@ -371,8 +371,7 @@ class contentform{
 											".$rs -> form_text("content_images".$i."", 50, $imagesarray[$i], 100, "tbox", TRUE)."
 											".$rs -> form_button("button", "removeimage".$i."", CONTENT_ADMIN_ITEM_LAN_26, "onClick=\"confirm2_('image', '$i', '$imagesarray[$i]');\"").$rs -> form_button("button", "newimage".$i."", CONTENT_ADMIN_ITEM_LAN_33, "onClick='expandit(this)'")."
 											<div style='display:none; &{head};'>
-											<input class='tbox' type='file' name='file_userfile3[]' value='".$imagesarray[$i]."' size='50'>
-											</div>
+											<input class='tbox' type='file' name='file_userfile3[]' value='".$imagesarray[$i]."' size='50'>											</div>
 											";
 										} else {
 											$text .= "<i>no image yet</i><br /><input class='tbox' name='file_userfile3[]' type='file' size='50'>";
@@ -462,7 +461,7 @@ class contentform{
 							$text .= "
 							<tr>
 								<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_ITEM_LAN_53."</td>
-								<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_meta", 90, $custom['content_custom_meta'], 250)."</td>
+								<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_meta", 80, $custom['content_custom_meta'], 250)."</td>
 							</tr>";
 						}
 						
@@ -482,7 +481,7 @@ class contentform{
 										$text .= "
 										<tr>
 											<td class='forumheader3' style='width:30%'>".$rs -> form_text("content_custom_key_".$existing_custom."", 25, $key, 100)."</td>
-											<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_custom_value_".$existing_custom."", 90, $v, 250)."</td>
+											<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_custom_value_".$existing_custom."", 80, $v, 250)."</td>
 										</tr>";
 									}else{
 										$text .= $rs -> form_hidden("content_custom_key_".$existing_custom, $key);
@@ -496,7 +495,7 @@ class contentform{
 								$text .= "
 								<tr>
 									<td class='forumheader3' style='width:30%'>".$rs -> form_text("content_custom_key_".$i."", 25, "", 100)."</td>
-									<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_custom_value_".$i."", 90, "", 250)."</td>
+									<td class='forumheader3' style='width:70%'>".$rs -> form_text("content_custom_value_".$i."", 80, "", 250)."</td>
 								</tr>";
 						}
 
