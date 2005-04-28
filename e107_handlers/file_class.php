@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/file_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-04-28 22:12:54 $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-28 22:48:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -64,7 +64,7 @@ class e_file {
 				}
 				if($rejected == FALSE)
 				{
-					$finfo['path'] = $path."/";
+					$finfo['path'] = $path."/";  // important: leave this slash here and update other file instead. 
 					$finfo['fname'] = $file;
 					$ret[] = $finfo;
 				}

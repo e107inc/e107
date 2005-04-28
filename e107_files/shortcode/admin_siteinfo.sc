@@ -1,6 +1,6 @@
 if (ADMIN) {
-	global $ns, $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
-	$sql = new db;
+	global $sql,$ns, $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
+//	$sql = new db;
 	$sql -> db_Select("core", "*", "e107_name='e107' ");
 	$row = $sql -> db_Fetch();
 	$e107info = unserialize($row['e107_value']);

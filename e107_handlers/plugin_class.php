@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-04-12 22:21:43 $
-|     $Author: streaky $
+|     $Revision: 1.20 $
+|     $Date: 2005-04-28 22:48:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -56,7 +56,7 @@ class e107plugin {
 					unset($$varname);
 				}
 			}
-			include("{$p['path']}/{$p['fname']}");
+			include("{$p['path']}{$p['fname']}");
 			$plugin_path = substr($p['path'], strrpos($p['path'], "/") + 1);
 
 			if ((!$sql->db_Select("plugin", "plugin_id", "plugin_path = '{$plugin_path}'")) && $eplug_name)
