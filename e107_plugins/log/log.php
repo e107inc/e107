@@ -40,6 +40,7 @@ $infodata = time().chr(1).$ip.chr(1).$agent.chr(1).$colour.chr(1).$res.chr(1).$s
 
 
 $pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)|(\s)|(\')|(\")|(eself)|(&nbsp;)/", "", basename ($self));
+$pageName = str_replace("\\", "", $pageName);
 $pageName = trim(chop($pageName));
 if($pageName == "")
 {
@@ -87,6 +88,7 @@ $data .= $varStart."pageInfo = array(\n";
 foreach($pageInfo as $info)
 {
 	$page = preg_replace("/(\?.*)|(\_.*)|(\.php)|(\s)|(\')|(\")|(eself)|(&nbsp;)/", "", basename ($info['url']));
+	$page = str_replace("\\", "", $page);
 	$info['url'] = preg_replace("/(\s)|(\')|(\")|(eself)|(&nbsp;)/", "", $info['url']);
 	$page = trim(chop($page));
 	if($page)
