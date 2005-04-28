@@ -27,26 +27,26 @@ if (ADMIN) {
 
 			foreach($pluginList as $p)
 			{
-				$text .= include($p['path']."/".$p['fname']);
+				$text .= include($p['path'].$p['fname']);
 			}
 
 			if($flo = $sql -> db_Select("generic", "*", "gen_type='failed_login' "))
 			{
-				
+
 				$text .= "<img src='".e_IMAGE."admin_images/failedlogin_16.png' alt='' style='vertical-align: middle;' /> <a href='".e_ADMIN."fla.php'>".ADLAN_146.": $flo</a>";
 			}
 
 
-			return $ns -> tablerender(ADLAN_134, $text, '', TRUE);	
+			return $ns -> tablerender(ADLAN_134, $text, '', TRUE);
 		}
 	}
-	
+
 	if ($parm == 'request') {
 		if (function_exists('status_request')) {
 			if (status_request()) {
 				return admin_status();
 			}
-		}	
+		}
 	} else {
 		return admin_status();
 	}
