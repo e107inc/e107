@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.10 $
-|		$Date: 2005-04-11 16:11:05 $
+|		$Revision: 1.11 $
+|		$Date: 2005-04-28 13:36:01 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -148,8 +148,17 @@ class contentdb{
 						if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
 							$starttime = mktime( 0, 0, 0, $_POST['ne_month'], $_POST['ne_day'], $_POST['ne_year']);
 						}else{
-							$starttime = ($_POST['update_datestamp'] ? time() : $_POST['content_datestamp'] );
+							if($_POST['update_datestamp']){
+								$starttime = time();
+							}else{
+								if(isset($_POST['content_datestamp']) && $_POST['content_datestamp'] != "" && $_POST['content_datestamp'] != "0"){
+									$starttime = $_POST['content_datestamp'];
+								}else{
+									$starttime = time();
+								}
+							}
 						}
+
 						if($_POST['end_day'] != "none" && $_POST['end_month'] != "none" && $_POST['end_year'] != "none"){
 							$endtime = mktime( 0, 0, 0, $_POST['end_month'], $_POST['end_day'], $_POST['end_year']);
 						}else{

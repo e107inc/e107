@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.22 $
-|		$Date: 2005-04-28 10:26:59 $
+|		$Revision: 1.23 $
+|		$Date: 2005-04-28 13:35:17 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -132,7 +132,9 @@ function core_head(){
 			}
 	}
 }
-
+function headerjs(){
+	echo "<script type='text/javascript' src='".e_PLUGIN."content/content.js'></script>\n";
+}
 
 //retrieve and parse the preferences
 if(isset($type) && $type == "type" && is_numeric($type_id)){
@@ -1549,22 +1551,6 @@ function parse_content_content_table($row){
 				}
 				$CONTENT_CONTENT_TABLE_FILE = (count($files) == "0" ? "" : CONTENT_LAN_41." ".(count($files) == 1 ? CONTENT_LAN_42 : CONTENT_LAN_43)." ".$file." ");
 
-				$imagestmp = explode("[img]", $content_image);
-				foreach($imagestmp as $key => $value) { 
-					if($value == "") { 
-						unset($imagestmp[$key]); 
-					} 
-				} 
-				$images = array_values($imagestmp);
-				$content_image_popup_name = ereg_replace("'", "", $content_heading);
-				$CONTENT_CONTENT_TABLE_IMAGES = "";
-				for($i=0;$i<count($images);$i++){
-					if(file_exists($content_image_path.$images[$i])){
-						$CONTENT_CONTENT_TABLE_IMAGES .= "<a style='cursor:pointer' href=\"javascript:popImage('".$content_image_path.$images[$i]."','".$content_image_popup_name." ".($i+1)."')\"><img src='".$content_image_path.$images[$i]."' style='border:1px solid #000; width:100px' alt='' /></a><br /><br />";
-					}else{
-						$CONTENT_CONTENT_TABLE_IMAGES .= "";
-					}
-				}
 				
 				if($content_pref["content_content_rating_{$type_id}"] || $content_pref["content_content_rating_all_{$type_id}"] || $content_rate){
 					$CONTENT_CONTENT_TABLE_RATING = "";
@@ -1650,7 +1636,51 @@ function parse_content_content_table($row){
 					}
 				}
 
-				//print_r($custom);
+				$imagestmp = explode("[img]", $content_image);
+				foreach($imagestmp as $key => $value) { 
+					if($value == "") { 
+						unset($imagestmp[$key]); 
+					} 
+				} 
+				$images = array_values($imagestmp);
+				$content_image_popup_name = ereg_replace("'", "", $content_heading);
+				$CONTENT_CONTENT_TABLE_IMAGES = "";
+				for($i=0;$i<count($images);$i++){
+					if(file_exists($content_image_path.$images[$i])){
+						$imagearray = getimagesize(trim($content_image_path.$images[$i]));
+						//$imagearray[0] is width - $imagearray[1] is height
+						$maxsize = 500;		//maxsize holds limit value for either height or width depending on the image
+						if($imagearray[1] > $imagearray[0]){
+							if($imagearray[1] > $maxsize){
+								$width = round(($maxsize*$imagearray[0])/$imagearray[1],0);
+								$height = $maxsize;
+							}else{
+								$width = $imagearray[0];
+								$height = $imagearray[1];
+							}
+						}else{
+							if($imagearray[0] > $maxsize){
+								$width = $maxsize;
+								$height = round(($maxsize*$imagearray[1])/$imagearray[0],0);
+							}else{
+								$width = $imagearray[0];
+								$height = $imagearray[1];
+							}
+						}
+						$imagetext = $content_image_popup_name." ".($i+1)."<br />".$CONTENT_CONTENT_TABLE_SUBHEADING."<br />".$authordetails[1]." (".$CONTENT_CONTENT_TABLE_DATE.")";
+
+						//openPerfectPopup(oSrc, oWidth, oTitle, oText)
+						$oSrc = $content_image_path.$images[$i];
+						$oWidth = $width;
+						$oTitle = $content_image_popup_name." ".($i+1);
+						$oText = $imagetext;
+						$CONTENT_CONTENT_TABLE_IMAGES .= "<a href=\"javascript:openPerfectPopup('".$oSrc."',".$oWidth.",'".$oTitle."','".$oText."')\" style='cursor:pointer;' onmouseover=\"window.status='click to enlarge image'; return true;\" onmouseout=\"window.status=''; return true;\" ><img src='".$oSrc."' style='border:1px solid #000; width:100px;' alt='' /></a><br /><br />";
+
+					}else{
+						$CONTENT_CONTENT_TABLE_IMAGES .= "";
+					}
+				}
+
 				if(!empty($custom)){
 					foreach($custom as $k => $v){
 						if(!($k == "content_custom_score" || $k == "content_custom_meta")){
@@ -1661,8 +1691,6 @@ function parse_content_content_table($row){
 						}
 					}
 				}
-				//print_r($CONTENT_CONTENT_TABLE_CUSTOM_KEY);
-				//print_r($CONTENT_CONTENT_TABLE_CUSTOM_VALUE);
 				
 				$CONTENT_CONTENT_TABLE = "";
 				if(!$CONTENT_CONTENT_TABLE){
@@ -1679,76 +1707,6 @@ function parse_content_content_table($row){
 				return(preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE));
 }
 
-
-/*
-function headerjs(){
-	$script = "<script type='text/javascript'>
-	<!--
-	// Script Source: CodeLifter.com
-	// Copyright 2003
-	// Do not remove this notice.
-
-	// Set the horizontal and vertical position for the popup
-	PositionX = 10;
-	PositionY = 10;
-
-	// Set these value approximately 20 pixels greater than the
-	// size of the largest image to be used (needed for Netscape)
-	defaultWidth  = 600;
-	defaultHeight = 600;
-
-	// Set autoclose true to have the window close automatically
-	// Set autoclose false to allow multiple popup windows
-	var AutoClose = true;
-
-	if (parseInt(navigator.appVersion.charAt(0))>=4){
-		var isNN=(navigator.appName=='Netscape')?1:0;
-		var isIE=(navigator.appName.indexOf('Microsoft')!=-1)?1:0;
-	}
-	var optNN='scrollbars=no,width='+defaultWidth+',height='+defaultHeight+',left='+PositionX+',top='+PositionY;
-	var optIE='scrollbars=no,width=150,height=100,left='+PositionX+',top='+PositionY;
-
-	function popImage(imageURL,imageTitle, defaultWidth, defaultHeight){
-		if (isNN){imgWin=window.open('about:blank','',optNN);}
-		if (isIE){imgWin=window.open('about:blank','',optIE);}
-
-		with (imgWin.document){
-			writeln('<html><head><title>Loading...<\/title><style>body{margin:0px; text-align:center; background-color:#FFF;}<\/style>');
-			writeln('<sc'+'ript>');
-			writeln('var isNN,isIE;');
-			writeln('var imageWidth, imageHeight;');
-			writeln('if (parseInt(navigator.appVersion.charAt(0))>=4){');
-			writeln('isNN=(navigator.appName==\'Netscape\')?1:0;');
-			writeln('isIE=(navigator.appName.indexOf(\'Microsoft\')!=-1)?1:0;}');
-
-			writeln('function reSizeToImage(){');
-			writeln('if (isIE){');
-			writeln('window.resizeTo(100,100);');
-			writeln('width=100-(document.body.clientWidth-document.images[0].width);');
-			writeln('height=100-(document.body.clientHeight-document.images[0].height);');
-			writeln('window.resizeTo(width,height);}');
-
-			writeln('if (isNN || !isIE){');       
-			writeln('window.innerWidth=document.images[\'imagename\'].width;');
-			writeln('window.innerHeight=document.images[\'imagename\'].height;}}');
-
-			writeln('function doTitle(){document.title=\"'+imageTitle+'\";}');
-			writeln('<\/sc'+'ript>');
-
-			if (!AutoClose) 
-				writeln('<\/head><body scroll=\"no\" onload=\"reSizeToImage();doTitle();self.focus()\">')
-			else 
-				writeln('<\/head><body scroll=\"no\" onload=\"reSizeToImage();doTitle();self.focus()\" onblur=\"self.close()\">');
-				writeln('<img name=\"imagename\" src='+imageURL+' align=center valign=middle style=\"display:block; \"><\/body><\/html>');
-				close();		
-		}
-	}
-	$script .= "// -->
-	</script>\n";
-	return $script;
-
-}
-*/
 require_once(FOOTERF);
 
 ?>
