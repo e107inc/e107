@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-04-07 01:05:37 $
-|     $Author: sweetas $
+|     $Revision: 1.26 $
+|     $Date: 2005-04-28 17:40:43 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -432,6 +432,7 @@ CREATE TABLE upload (
 CREATE TABLE user (
   user_id int(10) unsigned NOT NULL auto_increment,
   user_name varchar(100) NOT NULL default '',
+  user_loginname varchar(100) NOT NULL default '',
   user_customtitle varchar(100) NOT NULL default '',
   user_password varchar(32) NOT NULL default '',
   user_sess varchar(100) NOT NULL default '',
