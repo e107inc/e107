@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-04-23 07:33:08 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2005-04-28 17:12:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -335,10 +335,15 @@ function table_list() {
 	//   print_r($search);
 
 	$tables = mysql_list_tables($mySQLdefaultdb);
-	while (list($temp) = mysql_fetch_array($tables)) {
-		$e107tab = str_replace(MPREFIX, "", $temp);
-		if (str_replace($exclude, "", $e107tab) && !eregi("lan_",$e107tab)) {
-			$tabs[] = $e107tab;
+	while (list($temp) = mysql_fetch_array($tables))
+	{
+		if(preg_match("#^".MPREFIX."#", $temp))
+		{
+			$e107tab = str_replace(MPREFIX, "", $temp);
+			if (str_replace($exclude, "", $e107tab) && !eregi("lan_",$e107tab))
+			{
+				$tabs[] = $e107tab;
+			}
 		}
 	}
 
