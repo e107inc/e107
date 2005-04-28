@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-03-22 18:21:45 $
-|     $Author: sweetas $
+|     $Revision: 1.20 $
+|     $Date: 2005-04-28 17:39:52 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 @include("e107_handlers/errorhandler_class.php");
@@ -532,7 +532,7 @@ function create_tables() {
 	mysql_query("INSERT INTO ".$mySQLprefix."plugin VALUES (0, 'Integrity Check', '0.03', 'integrity_check', 1) ");
 
 
-	$userp = "1, '".$_POST['admin_name']."', '', '".md5($_POST['admin_password1'])."', '', '".$_POST['admin_email']."', '', '', '', '', '', '', '', '', '', 0, ".time().", 0, 0, 0, 0, 0, 0, '$ip', 0, '', '', '', 0, 1, '', '', '0', '', ".time();
+	$userp = "1, '".$_POST['admin_name']."', '{$_POST['admin_name']}', '', '".md5($_POST['admin_password1'])."', '', '".$_POST['admin_email']."', '', '', '', '', '', '', '', '', '', 0, ".time().", 0, 0, 0, 0, 0, 0, '$ip', 0, '', '', '', 0, 1, '', '', '0', '', ".time();
 	mysql_query("INSERT INTO ".$mySQLprefix."user VALUES ($userp)" );
 	mysql_close();
 
