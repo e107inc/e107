@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-04-12 01:35:08 $
-|     $Author: e107coders $
+|     $Revision: 1.28 $
+|     $Date: 2005-04-29 18:28:23 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
-global $eMenuActive;
-$ip = getip();
+global $eMenuActive, $e107;
+$ip = $e107->getip();
 
 $bullet = (defined("BULLET") ? "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle;' />" : "<img src='".THEME."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />");
 
