@@ -1,4 +1,4 @@
-<?
+<?php
 require_once("../../class2.php");
 require_once(e_HANDLER."file_class.php");
 if(!ADMIN){
