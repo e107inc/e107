@@ -1,12 +1,12 @@
-<?
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-21 13:46:19 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-29 00:21:05 $
+|     $Author: qnome $
 +----------------------------------------------------------------------------+
 */
 
