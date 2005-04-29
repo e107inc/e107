@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-04-27 17:20:02 $
-|     $Author: stevedunstan $
+|     $Revision: 1.10 $
+|     $Date: 2005-04-29 09:51:58 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,7 +32,7 @@ class userlogin {
 		*/
 		global $pref, $e_event, $sql, $e107;
 		$sql = new db;
-		 
+
 		if ($pref['auth_method'] && $pref['auth_method'] != "e107") {
 			$auth_file = e_PLUGIN."alt_auth/".$pref['auth_method']."_auth.php";
 			if (file_exists($auth_file)) {
@@ -40,7 +40,7 @@ class userlogin {
 				$result = new alt_login($pref['auth_method'], $username, $userpass);
 			}
 		}
-		 
+
 		if ($pref['logcode'] && extension_loaded("gd")) {
 			require_once(e_HANDLER."secure_img_handler.php");
 			$sec_img = new secure_image;
@@ -52,7 +52,14 @@ class userlogin {
 		if ($username != "" && $userpass != "") {
 			$username = ereg_replace("\sOR\s|\=|\#", "", $username);
 			$ouserpass = $userpass;
-			$userpass = md5($userpass);
+			$userpass = md5($ouserpass);
+
+	// This is only required for upgrades and only for those not using utf-8 to begin with..
+		if(isset($pref['utf-compatmode']) && (CHARSET == "utf-8" || CHARSET == "UTF-8")){
+			$username = utf8_decode($username);
+			$userpass = md5(utf8_decode($ouserpass));
+		}
+
 			if (!$sql->db_Select("user", "*", "user_loginname = '{$username}'")) {
 				define("LOGINMESSAGE", LAN_300."<br /><br />");
 				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".$e107->getip()."', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_2.": $ouserpass' ");
@@ -79,9 +86,9 @@ class userlogin {
 						return FALSE;
 					}
 				}
-				
+
 				$cookieval = $user_id.".".md5($userpass);
-				 
+
 				if ($pref['user_tracking'] == "session") {
 					$_SESSION[$pref['cookie_name']] = $cookieval;
 				} else {
