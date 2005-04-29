@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-04-29 10:50:11 $
+|     $Revision: 1.36 $
+|     $Date: 2005-04-29 11:36:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -322,7 +322,7 @@ class users
 		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref;
 		// save the display choices.
 		if($_POST['searchdisp']){
-			$pref['usr_searchdisp'] = implode("|",$_POST['admin_user_disp']);
+			$pref['admin_user_disp'] = implode("|",$_POST['searchdisp']);
 			save_prefs();
 		}
 
