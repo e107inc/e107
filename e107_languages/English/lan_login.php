@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_login.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-04-27 17:20:02 $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-29 14:19:00 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -32,5 +32,6 @@ define("LAN_LOGIN_13", "Please enter text in image");
 define("LAN_LOGIN_14", "User attempted to login with unrecognised user name");
 define("LAN_LOGIN_15", "User attempted to login with incorrect password");
 define("LAN_LOGIN_16", "User attempted to login with username/password combination that was already in use");
+define("LAN_LOGIN_17", "User password (hashed)");
 
 ?>
