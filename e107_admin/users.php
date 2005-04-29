@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-04-29 02:00:36 $
+|     $Revision: 1.34 $
+|     $Date: 2005-04-29 09:59:49 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -320,7 +320,17 @@ class users
 		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 
 		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref;
-		$search_display = (!$_POST['searchdisp']) ? array("user_class") : $_POST['searchdisp'];
+		// save the display choices.
+		if($_POST['searchdisp']){
+			$pref['usr_searchdisp'] = implode("|",$_POST['searchdisp']);
+			save_prefs();
+		}
+
+		if(!$pref['usr_searchdisp']){
+			$search_display = array("user_class");
+		}else{
+			$search_display = explode("|",$pref['usr_searchdisp']);
+		}
 
 		if ($sql->db_Select("userclass_classes")) {
 			while ($row = $sql->db_Fetch()) {
@@ -469,7 +479,11 @@ class users
 
 // Search - display options etc. .
 
-		$text .= "<br /><form method='post' action='".e_SELF."'>\n";
+		$text .= "<br /><form method='post' action='".e_SELF."?".e_QUERY."'>\n";
+		$text .= "<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n
+		<input class='button' type='submit' name='searchsubmit' value='".USRLAN_90."' />\n
+		</p>\n";
+
 		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\"> Display Options </div>";
 		$text .= "<div id='sdisp' style='display:none;text-align:center;margin-left:auto;margin-right:auto'><table style='width:96%'><tr>";
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");
@@ -487,11 +501,7 @@ class users
 			 }
 		}
 
-		$text .= "</table></div>";
-
-		$text .= "<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n
-		<input class='button' type='submit' name='searchsubmit' value='".USRLAN_90."' />\n
-		</p>\n
+		$text .= "</table></div>
 		</form>\n
 		</div>";
 
