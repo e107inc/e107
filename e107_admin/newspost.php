@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.75 $
-|   $Date: 2005-04-28 22:33:55 $
-|   $Author: e107coders $
+|   $Revision: 1.76 $
+|   $Date: 2005-04-29 14:40:09 $
+|   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
 */
@@ -549,34 +549,35 @@ class newspost {
 		$text .= "</div>
 		</td>
 		</tr>
-
-		<tr>
-		<td class='forumheader3'>".LAN_NEWS_42."</td>
-		<td class='forumheader3'>
-		<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_40."</a>
-		<div style='display: none;'>
-		<br />
 		";
-		if(!count($filelist))
-		{
-			$text .= LAN_NEWS_43;
-		}
-		else
-		{
-			$text .= LAN_NEWS_39."<br /><br />";
-			foreach($filelist as $file)
-			{
-				$text .= "<a href='javascript:addtext(\"[file=request.php?".$file['url']."]".$file['name']."[/file]\");'><img src='".e_IMAGE."generic/".IMODE."/file.png' alt='' style='border:0px;vertical-align:middle;' /> ".$file['name']."</a><br />
-				";
-			}
-		}
-
-		$text .= "</div>
-		</td>
-		</tr>\n";
 
 		if (!$pref['wysiwyg'])
 		{
+
+			$text .= "<tr>
+			<td class='forumheader3'>".LAN_NEWS_42."</td>
+			<td class='forumheader3'>
+			<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_40."</a>
+			<div style='display: none;'>
+			<br />
+			";
+			if(!count($filelist))
+			{
+				$text .= LAN_NEWS_43;
+			}
+			else
+			{
+				$text .= LAN_NEWS_39."<br /><br />";
+				foreach($filelist as $file)
+				{
+					$text .= "<a href='javascript:addtext(\"[file=request.php?".$file['url']."]".$file['name']."[/file]\");'><img src='".e_IMAGE."generic/".IMODE."/file.png' alt='' style='border:0px;vertical-align:middle;' /> ".$file['name']."</a><br />
+					";
+				}
+			}
+
+			$text .= "</div>
+			</td>
+			</tr>\n";
 
 			$text .= "<tr>
 			<td class='forumheader3'>Images</td>
