@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-04-27 11:48:07 $
+|     $Revision: 1.26 $
+|     $Date: 2005-04-29 14:40:46 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -183,8 +183,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply'])) {
 		message_handler("ALERT", 5);
 	} else {
 		if ($fp->flood("forum_t", "thread_datestamp") == FALSE) {
-			header("location: ".e_BASE."index.php");
-			exit;
+			echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
 		}
 		if (USER) {
 			$user = USERID;
@@ -287,8 +286,8 @@ if (isset($_POST['update_thread'])) {
 		}
 		$forum->thread_update($id, $newvals);
 		$e107cache->clear("newforumposts");
-		header("location:".e_PLUGIN."forum/forum_viewtopic.php?{$thread_info['head']['thread_id']}.0");
-		exit;
+		$url = e_PLUGIN."forum/forum_viewtopic.php?{$thread_info['head']['thread_id']}.0";
+		echo "<script type='text/javascript'>document.location.href='".$url."'</script>\n";
 	}
 }
 
@@ -305,8 +304,8 @@ if (IsSet($_POST['update_reply'])) {
 		$newvals['thread_thread'] = $tp->toDB($_POST['post']);
 		$forum->thread_update($id, $newvals);
 		$e107cache->clear("newforumposts");
-		header("location:".e_PLUGIN."forum/forum_viewtopic.php?{$thread_info['head']['thread_id']}.{$from}");
-		exit;
+		$url = e_PLUGIN."forum/forum_viewtopic.php?{$thread_info['head']['thread_id']}.{$from}";
+		echo "<script type='text/javascript'>document.location.href='".$url."'</script>\n";
 	}
 }
 
@@ -510,17 +509,7 @@ function forumjump() {
 	return $text;
 }
 function redirect($url) {
-	global $ns;
-	if (@preg_match('/Microsoft|WebSTAR|Xitami/', getenv('SERVER_SOFTWARE'))) {
-		header('Refresh: 0; URL=' .$url);
-		$text = "<div style='text-align:center'>".LAN_408."<a href='".$url."'> ".LAN_409." </a>".LAN_410."</div>";
-		$ns->tablerender(LAN_407, $text);
-		require_once(FOOTERF);
-		exit;
-	}
-
-	header('Location: ' . $url);
-	exit;
+	echo "<script type='text/javascript'>document.location.href='".$url."'</script>\n";
 }
 
 function process_upload()
