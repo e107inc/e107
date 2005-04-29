@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-04-29 09:59:49 $
+|     $Revision: 1.35 $
+|     $Date: 2005-04-29 10:50:11 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -322,14 +322,14 @@ class users
 		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref;
 		// save the display choices.
 		if($_POST['searchdisp']){
-			$pref['usr_searchdisp'] = implode("|",$_POST['searchdisp']);
+			$pref['usr_searchdisp'] = implode("|",$_POST['admin_user_disp']);
 			save_prefs();
 		}
 
-		if(!$pref['usr_searchdisp']){
-			$search_display = array("user_class");
+		if(!$pref['admin_user_disp']){
+			$search_display = array("user_name","user_class");
 		}else{
-			$search_display = explode("|",$pref['usr_searchdisp']);
+			$search_display = explode("|",$pref['admin_user_disp']);
 		}
 
 		if ($sql->db_Select("userclass_classes")) {
@@ -356,15 +356,15 @@ class users
 			$text .= "<table class='fborder' style='width: 99%'>
 				<tr>
 				<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
-				<td style='width:10%' class='fcaption'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></td>
-				<td style='width:30%' class='fcaption'><a href='".e_SELF."?main.user_name.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_78."</a></td>";
+				<td style='width:10%' class='fcaption'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></td>";
+		   //		<td style='width:30%' class='fcaption'><a href='".e_SELF."?main.user_name.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_78."</a></td>";
 // Search Display Column header.
 
 			foreach($search_display as $disp){
 				if($disp == "user_class"){
 					$text .= "<td style='width:15%' class='fcaption'><a href='".e_SELF."?main.user_class.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_91."</a></td>";
 				}else{
-					$text .= "<td style='width:15%' class='fcaption'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".ucfirst(str_replace("_","-",$disp))."</a></td>";
+					$text .= "<td style='width:15%' class='fcaption'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".ucwords(str_replace("_"," ",$disp))."</a></td>";
 				}
 			}
 
@@ -394,8 +394,9 @@ class users
 					$text .= "&nbsp;";
 				}
 
-				$text .= "</td>
-					<td style='width:30%' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id' title='$user_email : $user_login'>$user_name</a></td>";
+				$text .= "</td>";
+
+		  //		$text .= "<td style='width:30%' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id' title='$user_email : $user_login'>$user_name</a></td>";
 
 
  // Display Chosen options -------------------------------------
@@ -403,7 +404,7 @@ class users
 	$datefields = array("user_lastpost","user_lastvisit","user_join","user_currentvisit");
 
 	foreach($search_display as $disp){
-				$text .= "<td style='width:15%' class='forumheader3'>";
+				$text .= "<td style='white-space:nowrap' class='forumheader3'>";
 				if($disp == "user_class"){
 					if ($user_class) {
 						$tmp = explode(",", $user_class);
@@ -482,24 +483,26 @@ class users
 		$text .= "<br /><form method='post' action='".e_SELF."?".e_QUERY."'>\n";
 		$text .= "<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n
 		<input class='button' type='submit' name='searchsubmit' value='".USRLAN_90."' />\n
-		</p>\n";
+		<br /><br /></p>\n";
 
-		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\"> Display Options </div>";
-		$text .= "<div id='sdisp' style='display:none;text-align:center;margin-left:auto;margin-right:auto'><table style='width:96%'><tr>";
+		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\">".USRLAN_129."</div>";
+		$text .= "<div  id='sdisp' style='padding-top:4px;display:none;text-align:center;margin-left:auto;margin-right:auto'>
+		<table class='forumheader3' style='width:95%'><tr>";
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");
 		$columns = mysql_num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
 			$fname = mysql_field_name($fields, $i);
 			$checked = (in_array($fname,$search_display)) ? "checked='checked'" : "";
-			$text .= "<td style='text-align:left'>";
-			$text .= "<input type='checkbox' name='searchdisp[]' value='".$fname."' $checked />
-			".str_replace("user_","",$fname) . "</td>\n";
+			$text .= "<td style='text-align:left; padding:0px'>";
+			$text .= "<input type='checkbox' name='searchdisp[]' value='".$fname."' $checked />".str_replace("user_","",$fname) . "</td>\n";
 			$m++;
 			if($m == 5){
 				$text .= "</tr><tr>";
 				$m = 0;
 			 }
 		}
+
+
 
 		$text .= "</table></div>
 		</form>\n
