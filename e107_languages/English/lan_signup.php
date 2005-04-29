@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-27 17:20:02 $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-29 14:06:31 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -62,7 +62,7 @@ define("LAN_409", "Invalid characters in username");
 define("LAN_410", "Enter code visible in the image");
 
 define("LAN_SIGNUP_12", "please keep your username and password written down in a safe place as if lost they cannot be retrieved.");
-define("LAN_SIGNUP_13", "You can now log in from the Login box. Please ");
+define("LAN_SIGNUP_13", "You can now log in from the Login box.");
 define("LAN_SIGNUP_14", "here");
 define("LAN_SIGNUP_15", "Please contact the main site admin");
 define("LAN_SIGNUP_16", "if you require assistance.");
