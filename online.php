@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/online.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-29 17:27:27 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -213,7 +213,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 			$sql->db_Select("forum", "forum_name", "forum_id='".$forum_t['thread_forum_id']."'");
 			list($forum['forum_name']) = $sql->db_Fetch();
 			$online_location_page = ONLINE_EL12.": ".ONLINE_EL13." .:. ".$forum['forum_name']."->".ONLINE_EL14." .:. ".$forum_t['thread_name'];
-			$online_location = "forum_viewtopic.php?$tmp[0].$tmp[1]";
+			$online_location = e_PLUGIN."forum/forum_viewtopic.php?$tmp[0].$tmp[1]";
 		}
 	}
 	if (strstr($online_location, "admin")) {
