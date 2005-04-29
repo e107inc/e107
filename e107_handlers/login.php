@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-04-29 09:51:58 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2005-04-29 14:18:06 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -62,7 +62,7 @@ class userlogin {
 
 			if (!$sql->db_Select("user", "*", "user_loginname = '{$username}'")) {
 				define("LOGINMESSAGE", LAN_300."<br /><br />");
-				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".$e107->getip()."', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_2.": $ouserpass' ");
+				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".$e107->getip()."', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
 				return FALSE;
 			}
 			else if(!$sql->db_Select("user", "*", "user_loginname = '{$username}' AND user_password = '{$userpass}'")) {
@@ -71,7 +71,7 @@ class userlogin {
 			}
 			else if(!$sql->db_Select("user", "*", "user_loginname = '{$username}' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
 				define("LOGINMESSAGE", LAN_302."<br /><br />");
-				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".$e107->getip()."', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_2.": $ouserpass' ");
+				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".$e107->getip()."', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
 				return FALSE;
 			} else {
 				list($user_id, $user_name) = $sql->db_Fetch();
@@ -82,7 +82,7 @@ class userlogin {
 					if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
 					{
 						define("LOGINMESSAGE", LAN_304."<br /><br />");
-						$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".$e107->getip()."', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_2.": $ouserpass' ");
+						$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '".$e107->getip()."', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
 						return FALSE;
 					}
 				}
