@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-03-25 03:32:11 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2005-04-29 21:28:14 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -170,5 +170,7 @@ define("FORLAN_141", "Post");
 
 define("FORLAN_142", "Post permission");
 define("FORLAN_143", "Indicates who can can post to the forum");
+
+define("FORLAN_144", "Moderators set");
 
 ?>
