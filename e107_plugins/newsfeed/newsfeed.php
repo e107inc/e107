@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-22 20:43:03 $
+|     $Revision: 1.7 $
+|     $Date: 2005-04-29 19:53:54 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -111,8 +111,19 @@ if($action == "show")
 		$data = "";
 		foreach ($rss -> items as $item)
 		{
-			$FEEDITEMLINK = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], TRUE)."</a>";
-			$FEEDITEMTEXT = ereg_replace("&#091;.*]", "", $tp -> toHTML($item['description'], TRUE));
+	
+			if($NEWSFEED_COLLAPSE)
+			{
+				$FEEDITEMLINK = "<a href='#' onclick='expandit(this)'>".$tp -> toHTML($item['title'], TRUE)."</a>
+				<div style='display:none' >
+				";
+				$FEEDITEMTEXT = ereg_replace("&#091;.*]", "", $tp -> toHTML($item['description'], TRUE))."</div>";
+			}
+			else
+			{
+				$FEEDITEMLINK = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], TRUE)."</a>";
+				$FEEDITEMTEXT = ereg_replace("&#091;.*]", "", $tp -> toHTML($item['description'], TRUE));
+			}
 			$FEEDITEMCREATOR = $tp -> toHTML($item['author'], TRUE);
 			$data .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MAIN);
 		}
