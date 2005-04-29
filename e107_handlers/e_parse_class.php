@@ -1,4 +1,4 @@
-n<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,8 +11,8 @@ n<?php
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2005-04-29 16:22:41 $
+|     $Revision: 1.68 $
+|     $Date: 2005-04-29 17:45:43 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
