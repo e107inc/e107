@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.109 $
-|     $Date: 2005-04-28 22:10:53 $
-|     $Author: e107coders $
+|     $Revision: 1.110 $
+|     $Date: 2005-04-29 15:01:30 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -213,8 +213,6 @@ if(!$PrefCache){
 	$pref = $eArrayStorage->ReadArray($PrefCache);
 }
 
-//print_r($sysprefs->prefVals);
-
 $menu_pref = unserialize(stripslashes($sysprefs->get('menu_pref')));
 
 $sql->db_Mark_Time('(Extracting Core Prefs Done)');
@@ -230,6 +228,20 @@ if ($pref['user_tracking'] == "session") {
 $pref['htmlarea']=false;
 
 define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
+
+if($pref['redirectsiteurl'])
+{
+	if($e107 -> http_path != $pref['siteurl'])
+	{
+		if($pref['siteurl'])
+		{
+			$location = str_replace($e107 -> http_path, $pref['siteurl'], e_SELF);
+			header("location: ".$location);
+			exit;
+		}
+	}
+}
+
 
 // Cameron's Mult-lang switch. ==================
 

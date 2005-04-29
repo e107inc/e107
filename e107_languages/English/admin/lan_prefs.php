@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-04-18 02:33:01 $
-|     $Author: sweetas $
+|     $Revision: 1.29 $
+|     $Date: 2005-04-29 15:03:36 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -181,6 +181,6 @@ define("PRFLAN_131", "Activate use of [php] bbcode");
 define("PRFLAN_132", "Activating this will allow authorized users to post [php] code in certain areas");
 define("PRFLAN_133", "GD extension required, not found");
 
-// define("PRFLAN_131", "Select stylesheet to use");
-
+define("PRFLAN_134", "Redirect all requests to site URL");
+define("PRFLAN_135", "for example, if your site URL above is set http://foo.com, anyone requesting http://www.foo.com will be redirected to http://foo.com");
 ?>
