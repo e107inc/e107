@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2005-04-29 15:03:34 $
+|     $Revision: 1.52 $
+|     $Date: 2005-04-29 15:05:51 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -126,7 +126,7 @@ $text = "<script type=\"text/javascript\">
 	hide=document.getElementById(hideid).style;
 	show.display=\"\";
 	hide.display=\"none\";
-	hideid = showid;
+	hideid = showid; 
 	}
 	}
 	//-->
@@ -137,7 +137,7 @@ $text = "<script type=\"text/javascript\">
 	<div id='main' style='text-align:center'>
 	<table style='width:100%' class='fborder'>
 	<tr>
-	<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_1."</td>
+	<td class='fcaption' title='".PRFLAN_80."' style='text-align:left;' colspan='2'>".PRFLAN_1."</td>
 	</tr>
 
 	<tr>
@@ -213,7 +213,7 @@ $text .= "</table>
 	<div id='display' style='display:none; text-align:center'>
 	<table style='width:100%' class='fborder'>
 	<tr>
-	<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_13."</td>
+	<td class='fcaption' title='".PRFLAN_80."' style='text-align:left;' colspan='2'>".PRFLAN_13."</td>
 	</tr>
 
 	<tr>
@@ -249,7 +249,7 @@ $text .= "</table></div>";
 $text .= "<div id='admindisp' style='display:none; text-align:center'>
 	<table style='width:100%' class='fborder'>
 	<tr>
-	<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_77."</td>
+	<td class='fcaption' title='".PRFLAN_80."' style='; text-align:left;' colspan='2'>".PRFLAN_77."</td>
 	</tr>
 
 
@@ -278,7 +278,7 @@ $text .= "</table></div>";
 $text .= "<div id='date' style='display:none; text-align:center'>
 	<table style='width:100%' class='fborder'>
 	<tr>
-	<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_21."</td>
+	<td class='fcaption' title='".PRFLAN_80."' style='text-align:left;' colspan='2'>".PRFLAN_21."</td>
 	</tr>
 
 	<tr>";
@@ -349,7 +349,7 @@ $text .= "</table></div>";
 
 $text .= "<div id='registration' style='display:none; text-align:center'><table style='width:100%' class='fborder'>
 	<tr>
-	<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_28."</td>
+	<td class='fcaption' title='".PRFLAN_80."' style='text-align:left;' colspan='2'>".PRFLAN_28."</td>
 	</tr>
 
 	<tr>
@@ -587,7 +587,7 @@ $hasGD = extension_loaded("gd");
 $text .= "<div id='security' style='display:none; text-align:center'>
 	<table style='width:100%' class='fborder'>
 	<tr>
-	<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_47."</td>
+	<td class='fcaption' title='".PRFLAN_80."' style='text-align:left;' colspan='2'>".PRFLAN_47."</td>
 	</tr>
 
 	<tr>
@@ -716,7 +716,7 @@ $text .= "</table></div>";
 $text .= "<div id='comments' style='display:none; text-align:center'>
 	<table style='width:100%' class='fborder'>
 	<tr>
-	<td class='fcaption' title='".PRFLAN_80."' style='cursor:pointer; cursor:hand; text-align:left;' colspan='2'>".PRFLAN_87."</td>
+	<td class='fcaption' title='".PRFLAN_80."' style='text-align:left;' colspan='2'>".PRFLAN_87."</td>
 	</tr>
 
 	<tr>
