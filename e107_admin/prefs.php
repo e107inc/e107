@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2005-04-24 18:30:23 $
+|     $Revision: 1.51 $
+|     $Date: 2005-04-29 15:03:34 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -151,6 +151,14 @@ $text = "<script type=\"text/javascript\">
 	<td style='width:50%' class='forumheader3'>".PRFLAN_3."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input class='tbox' type='text' name='siteurl' size='50' value='".SITEURL."' maxlength='150' />
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_134."<br /><span class='smalltext'>".PRFLAN_135."</span></td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	<input type='radio' name='redirectsiteurl' value='1'".($pref['redirectsiteurl'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='redirectsiteurl' value='0'".(!$pref['redirectsiteurl'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
 
