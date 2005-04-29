@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-04-27 18:08:28 $
-|     $Author: stevedunstan $
+|     $Revision: 1.33 $
+|     $Date: 2005-04-29 02:00:36 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -319,7 +319,8 @@ class users
 	function show_existing_users($action, $sub_action, $id, $from, $amount) {
 		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 
-		global $sql, $rs, $ns, $tp;
+		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref;
+		$search_display = (!$_POST['searchdisp']) ? array("user_class") : $_POST['searchdisp'];
 
 		if ($sql->db_Select("userclass_classes")) {
 			while ($row = $sql->db_Fetch()) {
@@ -330,7 +331,7 @@ class users
 
 		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>";
 
-		if (isset($_POST['searchquery'])) {
+		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "") {
 
 			$query = (eregi("@", $_POST['searchquery']))?"user_email REGEXP('".$_POST['searchquery']."') OR ": "";
 			$query .= (eregi(".", $_POST['searchquery']))?"user_ip REGEXP('".$_POST['searchquery']."') OR ": "";
@@ -346,9 +347,20 @@ class users
 				<tr>
 				<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
 				<td style='width:10%' class='fcaption'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></td>
-				<td style='width:30%' class='fcaption'><a href='".e_SELF."?main.user_name.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_78."</a></td>
-				<td style='width:15%' class='fcaption'><a href='".e_SELF."?main.user_class.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_91."</a></td>
-				<td style='width:30%' class='fcaption'>".LAN_OPTIONS."</td>
+				<td style='width:30%' class='fcaption'><a href='".e_SELF."?main.user_name.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_78."</a></td>";
+// Search Display Column header.
+
+			foreach($search_display as $disp){
+				if($disp == "user_class"){
+					$text .= "<td style='width:15%' class='fcaption'><a href='".e_SELF."?main.user_class.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_91."</a></td>";
+				}else{
+					$text .= "<td style='width:15%' class='fcaption'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".ucfirst(str_replace("_","-",$disp))."</a></td>";
+				}
+			}
+
+// ------------------------------
+
+			$text .= " 	<td style='width:30%' class='fcaption'>".LAN_OPTIONS."</td>
 				</tr>";
 
 			while ($row = $sql->db_Fetch()) {
@@ -373,20 +385,34 @@ class users
 				}
 
 				$text .= "</td>
-					<td style='width:30%' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id' title='$user_email : $user_login'>$user_name</a></td>
-					<td style='width:15%' class='forumheader3'>";
+					<td style='width:30%' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id' title='$user_email : $user_login'>$user_name</a></td>";
 
-				if ($user_class) {
-					$tmp = explode(",", $user_class);
-					while (list($key, $class_id) = each($tmp)) {
-						$text .= ($class[$class_id] ? $class[$class_id]."<br />\n" : "");
+
+ // Display Chosen options -------------------------------------
+
+	$datefields = array("user_lastpost","user_lastvisit","user_join","user_currentvisit");
+
+	foreach($search_display as $disp){
+				$text .= "<td style='width:15%' class='forumheader3'>";
+				if($disp == "user_class"){
+					if ($user_class) {
+						$tmp = explode(",", $user_class);
+						while (list($key, $class_id) = each($tmp)) {
+							$text .= ($class[$class_id] ? $class[$class_id]."<br />\n" : "");
+						}
+					} else {
+						$text .= "&nbsp;";
 					}
-				} else {
-					$text .= "&nbsp;";
+				}elseif(in_array($disp,$datefields)){
+					$text .= ($row[$disp]) ? strftime($pref['shortdate'],$row[$disp])."&nbsp;" : "&nbsp";
+				}else{
+					$text .= $row[$disp]."&nbsp;";
 				}
+				$text .= "</td>";
+	}
+// -------------------------------------------------------------
 
-
-				$text .= "</td>
+				$text .= "
 					<td style='width:30%; text-align:center' class='forumheader3'>
 					<form method='post' action='".e_SELF."'>
 					<div>
@@ -440,7 +466,38 @@ class users
 			$parms = "{$users},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.user_id.desc.")."[FROM]";
 			$text .= "<br />".USRLAN_89." ".$tp->parseTemplate("{NEXTPREV={$parms}}");
 		}
-		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".USRLAN_90."' />\n</p>\n</form>\n</div>";
+
+// Search - display options etc. .
+
+		$text .= "<br /><form method='post' action='".e_SELF."'>\n";
+		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\"> Display Options </div>";
+		$text .= "<div id='sdisp' style='display:none;text-align:center;margin-left:auto;margin-right:auto'><table style='width:96%'><tr>";
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");
+		$columns = mysql_num_fields($fields);
+		for ($i = 0; $i < $columns; $i++) {
+			$fname = mysql_field_name($fields, $i);
+			$checked = (in_array($fname,$search_display)) ? "checked='checked'" : "";
+			$text .= "<td style='text-align:left'>";
+			$text .= "<input type='checkbox' name='searchdisp[]' value='".$fname."' $checked />
+			".str_replace("user_","",$fname) . "</td>\n";
+			$m++;
+			if($m == 5){
+				$text .= "</tr><tr>";
+				$m = 0;
+			 }
+		}
+
+		$text .= "</table></div>";
+
+		$text .= "<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n
+		<input class='button' type='submit' name='searchsubmit' value='".USRLAN_90."' />\n
+		</p>\n
+		</form>\n
+		</div>";
+
+
+
+// ======================
 		$ns->tablerender(USRLAN_77, $text);
 
 	}
