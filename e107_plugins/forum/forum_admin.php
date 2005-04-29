@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-04-21 02:29:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.22 $
+|     $Date: 2005-04-29 21:27:41 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -64,7 +64,7 @@ if(isset($_POST['setMods']))
 		$modlist = implode(", ", array_keys($_POST['mod'][$fid]));
 		$sql->db_Update('forum',"forum_moderators = '{$modlist}' WHERE forum_id = {$fid}");
 	}
-	$forum->show_message(FORLAN_134);
+	$forum->show_message(FORLAN_144);
 }
 
 
