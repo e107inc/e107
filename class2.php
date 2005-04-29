@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.110 $
-|     $Date: 2005-04-29 15:01:30 $
-|     $Author: stevedunstan $
+|     $Revision: 1.111 $
+|     $Date: 2005-04-29 16:19:58 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -1077,6 +1077,15 @@ function e107_require($fname) {
 	global $e107_debug;
 	$ret = ($e107_debug ? require($fname) : @require($fname));
 	return $ret;
+}
+
+function utf8_html_entity_decode($string) {
+	$trans_tbl = get_html_translation_table(HTML_ENTITIES);
+	foreach($trans_tbl as $k => $v) {
+		$ttr[$v] = utf8_encode($k);
+	}
+	$string = strtr($string, $ttr);
+	return $string;
 }
 
 $sql->db_Mark_Time('(After class2)');
