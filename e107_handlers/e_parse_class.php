@@ -1,4 +1,4 @@
-<?php
+n<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,23 +11,23 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2005-04-27 16:14:36 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.67 $
+|     $Date: 2005-04-29 16:22:41 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-	
+
 class e_parse {
 	var $e_sc;
 	var $e_bb;
 	var $e_pf;
-//	var $e_lw;
+	//	var $e_lw;
 	var $e_emote;
 	var $e_hook;
 	var $search = array('&#39;', '&#039;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;');
 	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
 	var $e_query;
-	 
+
 	function toDB($text, $no_encode = FALSE) {
 		if (MAGIC_QUOTES_GPC == TRUE) {
 			$text = stripslashes($text);
@@ -49,7 +49,7 @@ class e_parse {
 		}
 		return $text;
 	}
-	 
+
 	function toForm($text, $single_quotes = FALSE) {
 		if($text == "") { return ""; }
 		$mode = ($single_quotes ? ENT_QUOTES :ENT_COMPAT);
@@ -59,9 +59,13 @@ class e_parse {
 		$search = array('&#036;', '&quot;');
 		$replace = array('$', '"');
 		$text = str_replace($search, $replace, $text);
-		return html_entity_decode($text, $mode, CHARSET);
+		if(CHARSET == 'utf-8'){
+			return utf8_html_entity_decode($text);
+		} else {
+			return html_entity_decode($text, $mode, CHARSET);
+		}
 	}
-	 
+
 	function post_toHTML($text, $modifier=TRUE, $extra='') {
 
 		/*
@@ -87,13 +91,13 @@ class e_parse {
 		}
 		return ($modifier ? $this->toHTML($text, TRUE, $extra) : $text);
 	}
-	 
+
 	function post_toForm($text) {
 		// ensure apostrophes are properly converted, or else the form item could break
 		return str_replace("'", "&#039;", $text);
 		return $text;
 	}
-	 
+
 	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "") {
 		// Start parse {XXX} codes
 		if (!is_object($this->e_sc)) {
@@ -106,37 +110,37 @@ class e_parse {
 
 
 
-function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $utf = false)
-{
-	/*
-	* htmlwrap() function - v1.1
-	* Copyright (c) 2004 Brian Huisman AKA GreyWyvern
-	* http://www.greywyvern.com/code/php/htmlwrap_1.1.php.txt
-	*
-	* This program may be distributed under the terms of the GPL
-	*   - http://www.gnu.org/licenses/gpl.txt
-	*/
+	function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $utf = false)
+	{
+		/*
+		* htmlwrap() function - v1.1
+		* Copyright (c) 2004 Brian Huisman AKA GreyWyvern
+		* http://www.greywyvern.com/code/php/htmlwrap_1.1.php.txt
+		*
+		* This program may be distributed under the terms of the GPL
+		*   - http://www.gnu.org/licenses/gpl.txt
+		*/
 
-	$content = preg_split("/([<>])/", $str, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
-	$nobreak = explode(" ", $nobreak);
-	$nobr = explode(" ", $nobr);
-	$intag = false;
-	$innbk = array();
-	$innbr = array();
-	$drain = "";
-	$utf = ($utf) ? "u" : "";
-	$lbrks = "/?!%)-}]\\\"':;";
-	if ($break == "\r")
-	{
-		$break = "\n";
-	}
-	while (list(, $value) = each($content))
-	{
-		switch ($value)
+		$content = preg_split("/([<>])/", $str, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+		$nobreak = explode(" ", $nobreak);
+		$nobr = explode(" ", $nobr);
+		$intag = false;
+		$innbk = array();
+		$innbr = array();
+		$drain = "";
+		$utf = ($utf) ? "u" : "";
+		$lbrks = "/?!%)-}]\\\"':;";
+		if ($break == "\r")
 		{
-			case "<": $intag = true; break;
-			case ">": $intag = false; break;
-			default:
+			$break = "\n";
+		}
+		while (list(, $value) = each($content))
+		{
+			switch ($value)
+			{
+				case "<": $intag = true; break;
+				case ">": $intag = false; break;
+				default:
 				if ($intag)
 				{
 					if ($value{0} != "/")
@@ -151,20 +155,20 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 				} else if ($value)
 				{
 					if (!count($innbr)) $value = str_replace("\n", "\r", str_replace("\r", "", $value));
-						if (!count($innbk))
+					if (!count($innbk))
+					{
+						do
 						{
-							do
+							$store = $value;
+							if (preg_match("/^(.*?\s|^)(([^\s&]|&(\w{2,5}|#\d{2,4});){".$width."})(?!(".preg_quote($break, "/").'|\s))(.*)$/s'.$utf, $value, $match))
 							{
-								$store = $value;
-								if (preg_match("/^(.*?\s|^)(([^\s&]|&(\w{2,5}|#\d{2,4});){".$width."})(?!(".preg_quote($break, "/").'|\s))(.*)$/s'.$utf, $value, $match)) 
-								{
-									for ($x = 0, $ledge = 0; $x < strlen($lbrks); $x++) $ledge = max($ledge, strrpos($match[2], $lbrks{$x}));
-									if (!$ledge) $ledge = strlen($match[2]) - 1;
-									$value = $match[1].substr($match[2], 0, $ledge + 1).$break.substr($match[2], $ledge + 1).$match[6];
-								}
+								for ($x = 0, $ledge = 0; $x < strlen($lbrks); $x++) $ledge = max($ledge, strrpos($match[2], $lbrks{$x}));
+								if (!$ledge) $ledge = strlen($match[2]) - 1;
+								$value = $match[1].substr($match[2], 0, $ledge + 1).$break.substr($match[2], $ledge + 1).$match[6];
 							}
-							while ($store != $value);
 						}
+						while ($store != $value);
+					}
 					if (!count($innbr)) $value = str_replace("\r", "[E_NL]", $value);
 				}
 			}
@@ -178,11 +182,11 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 	{
 		$text = str_replace ("\n\n\n", "\n\n", $text);
 		$text = $this -> htmlwrap($text, $wrap);
-		$text = str_replace (array ("<br /> ", " <br />", " <br /> "), "<br />", $text);	
+		$text = str_replace (array ("<br /> ", " <br />", " <br /> "), "<br />", $text);
 		/* we can remove any linebreaks added by htmlwrap function as any \n's will be converted later anyway */
-		return $text; 
+		return $text;
 	}
-	 
+
 	function toHTML($text, $parseBB = FALSE, $modifiers = "", $postID = "", $wrap=FALSE) {
 		if ($text == '')
 		{
@@ -194,7 +198,7 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 		if (strpos($modifiers, 'nobreak') === FALSE) {
 			$text = preg_replace("#>\W*[\r]*\n[\r]*#", ">", $text);
 		}
-		
+
 		if($pref['make_clickable'] && strpos($modifiers, 'no_make_clickable') === FALSE) {
 			if($pref['link_replace'] && strpos($modifiers, 'no_replace') === FALSE) {
 				$text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<]*)#is", "\\1<a href=\"\\2\" rel=\"external\">".$pref['link_text']."</a>", $text);
@@ -224,7 +228,7 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 		if (strpos($modifiers, 'nobreak') === FALSE) {
 			$text = preg_replace("#[\r]*\n[\r]*#", "[E_NL]", $text);
 		}
-		 
+
 		if (strpos($modifiers,'parse_sc') !== FALSE)
 		{
 			$text = $this->parseTemplate($text, TRUE);
@@ -239,7 +243,7 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 			$text = $this->e_bb->parseBBCodes($text, $postID);
 		}
 		// End parse [bb][/bb] codes
-		 
+
 		if ($pref['profanity_filter']) {
 			if (!is_object($this->e_pf)) {
 				require_once(e_HANDLER."profanity_filter.php");
@@ -265,19 +269,19 @@ function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $ut
 				}
 			}
 		}
-		
+
 		// Search Highlight
 		$shr = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "");
 		if ($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === FALSE) && ((strpos($shr, 'q=') !== FALSE) || (strpos($shr, 'p=') !== FALSE))) {
 			if (!isset($this -> e_query)) {
-				$query = preg_match('#(q|p)=(.*?)(&|$)#', $shr, $matches);		
+				$query = preg_match('#(q|p)=(.*?)(&|$)#', $shr, $matches);
 				$this -> e_query = str_replace(' ', '.*?\b|\b', trim(urldecode($matches[2])));
 			}
 			preg_match_all("#<[^>]+>#", $text, $tags);
 			$text = preg_replace("#<[^>]+>#", "<|>", $text);
 			$text = preg_replace("#(\b".$this -> e_query.".*?\b)#i", "<span class='searchhighlight'>\\1</span>", $text);
 			foreach ($tags[0] as $tag) {
-				$text = preg_replace("#<\|>#", $tag, $text, 1);	
+				$text = preg_replace("#<\|>#", $tag, $text, 1);
 			}
 		}
 
