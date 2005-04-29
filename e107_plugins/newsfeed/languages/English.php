@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/languages/English.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-14 15:40:03 $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-29 19:57:07 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -79,5 +79,6 @@ define("NFLAN_42", "<b>&raquo;</b> <u>Feed Name:</u>
 	where you want the feed results to be displayed, to see menu feeds you will need to activate the newsfeeds menu on the <a href='".e_ADMIN."menus.php'>menus page</a>.
 	<br /><br />For a good list of available feeds, see <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> or <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a>");
 define("NFLAN_43", "Newsfeed help");
+define("NFLAN_44", "click to view");
 
 ?>
