@@ -14,7 +14,7 @@ function retrieve_cache($query) {
 	}
 	$ret = $e107cache->retrieve($query);
 	if ($e107_debug && $ret) {
-		echo "cache used for: $query <br />";
+		echo "cache used for: {$query} <br />";
 	}
 	return $ret;
 }
@@ -29,7 +29,7 @@ function set_cache($query, $text) {
 		return FALSE;
 	}
 	if ($e107_debug) {
-		echo "cache set for: $query <br />";
+		echo "cache set for: {$query} <br />";
 	}
 	$e107cache->set($query, $text);
 }
