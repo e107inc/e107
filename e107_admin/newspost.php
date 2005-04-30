@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.77 $
-|   $Date: 2005-04-30 15:12:02 $
+|   $Revision: 1.78 $
+|   $Date: 2005-04-30 20:52:33 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
@@ -372,21 +372,26 @@ class newspost {
 
 		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
 		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
-		$tmp = $fl->get_files(e_FILE."downloads/","",$rejecthumb);
 
 		$filelist = array();
-		foreach($tmp as $value)
-		{
-			$filelist[] = array("id" => 0, "name" => $value['fname'], "url" => $value['fname']);
-		}
+		$downloadList = array();
 
-
-		$sql->db_Select("download");
+		$sql->db_Select("download", "*", "download_class != ".e_UC_NOBODY);
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
 			if($download_url)
 			{
-				$filelist[] = array("id" => $download_id, "name" => $download_name, "url" => $download_url);
+				$filelist[] = array("id" => $download_id, "name" => $download_name, "url" => $download_url, "class" => $download_class);
+				$downloadList[] = $download_url;
+			}
+		}
+
+		$tmp = $fl->get_files(e_FILE."downloads/","",$rejecthumb);
+		foreach($tmp as $value)
+		{
+			if(!in_array($value['fname'], $downloadList))
+			{
+				$filelist[] = array("id" => 0, "name" => $value['fname'], "url" => $value['fname']);
 			}
 		}
 
@@ -394,10 +399,13 @@ class newspost {
 			if ($sql->db_Select("submitnews", "*", "submitnews_id=$id", TRUE)) {
 				list($id, $submitnews_name, $submitnews_email, $_POST['news_title'], $submitnews_category, $_POST['data'], $submitnews_datestamp, $submitnews_ip, $submitnews_auth, $submitnews_file) = $sql->db_Fetch();
 
-				if ($pref['wysiwyg']) {
+				if ($pref['wysiwyg'])
+				{
 					$_POST['data'] .= "<br /><b>".NWSLAN_49." ".$submitnews_name."</b>";
 					$_POST['data'] .= ($submitnews_file)? "<br /><br /><img src='".e_IMAGE."newspost_images/$submitnews_file' style='float:right; margin-left:5px;margin-right:5px;margin-top:5px;margin-bottom:5px; border:1px solid' />":	"";
-					} else {
+				}
+				else
+				{
 					$_POST['data'] .= "\n[[b]".NWSLAN_49." ".$submitnews_name."[/b]]";
 					$_POST['data'] .= ($submitnews_file)?"\n\n[img]".e_IMAGE."newspost_images/".$submitnews_file." [/img]": 	"";
 				}
@@ -575,8 +583,26 @@ class newspost {
 				$text .= LAN_NEWS_39."<br /><br />";
 				foreach($filelist as $file)
 				{
-					$text .= "<a href='javascript:addtext(\"[file=request.php?".$file['url']."]".$file['name']."[/file]\");'><img src='".e_IMAGE."generic/".IMODE."/file.png' alt='' style='border:0px;vertical-align:middle;' /> ".$file['name']."</a><br />
-					";
+					
+					if(isset($file['class']))
+					{
+						$ucinfo = "^".$file['class'];
+						$ucname = r_userclass_name($file['class']);
+					}
+					else
+					{
+						$ucinfo = "";
+						$ucname = r_userclass_name(0);
+					}
+
+					if($file['id'])
+					{
+						$text .= "<a href='javascript:addtext(\"[file=request.php?".$file['id']."{$cinfo}]".$file['name']."[/file]\");'><img src='".e_IMAGE."generic/".IMODE."/file.png' alt='' style='border:0px;vertical-align:middle;' /> ".$file['name']."</a> - $ucname<br />";
+					}
+					else
+					{
+						$text .= "<a href='javascript:addtext(\"[file=request.php?".$file['url']."{$cinfo}]".$file['name']."[/file]\");'><img src='".e_IMAGE."generic/".IMODE."/file.png' alt='' style='border:0px;vertical-align:middle;' /> ".$file['name']."</a> - $ucname<br />";
+					}
 				}
 			}
 
