@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-04-29 15:05:51 $
-|     $Author: stevedunstan $
+|     $Revision: 1.53 $
+|     $Date: 2005-04-30 09:18:34 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -126,7 +126,7 @@ $text = "<script type=\"text/javascript\">
 	hide=document.getElementById(hideid).style;
 	show.display=\"\";
 	hide.display=\"none\";
-	hideid = showid; 
+	hideid = showid;
 	}
 	}
 	//-->
@@ -396,6 +396,13 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	<td style='width:50%' class='forumheader3'>".CUSTSIG_16."<br /><span class='smalltext'>".PRFLAN_78."</span></td>
 	<td class='forumheader3' style='width:50%;text-align:right' >
 	<input type='text' class='tbox' size='3' name='signup_pass_len' value='".$pref['signup_pass_len']."' />
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_136."</td>
+	<td class='forumheader3' style='width:50%;text-align:right' >
+	<input type='text' class='tbox' size='3' name='signup_maxip' value='".$pref['signup_maxip']."' />
 	</td>
 	</tr>
 
