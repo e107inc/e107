@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.111 $
-|     $Date: 2005-04-29 16:19:58 $
+|     $Revision: 1.112 $
+|     $Date: 2005-04-30 18:10:57 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -413,18 +413,17 @@ $sql->db_Mark_Time('Start: Init session');
 $ns=new e107table;
 init_session();
 
-//
-//
-$sql->db_Mark_Time('Start: Go online');
-//
-//
-online();
-//
-//
-$sql->db_Mark_Time('Start: Signup/splash/admin');
-//
-//
 
+$sql->db_Mark_Time('Start: Go online');
+$e_online = new e_online();
+echo $pref['flood_protect'];
+if($pref['flood_protect']){
+	$e_online->online(false, true);
+}
+
+
+
+$sql->db_Mark_Time('Start: Signup/splash/admin');
 $fp=($pref['frontpage'] ? $pref['frontpage'].".php" : "news.php index.php");
 define("e_SIGNUP", (file_exists(e_BASE."customsignup.php") ? e_BASE."customsignup.php" : e_BASE."signup.php"));
 define("e_LOGIN", (file_exists(e_BASE."customlogin.php") ? e_BASE."customlogin.php" : e_BASE."login.php"));
@@ -757,111 +756,135 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function online() {
-	$page=(strstr(e_SELF, "forum_")) ? e_SELF.".".e_QUERY : e_SELF;
-	$page=(strstr(e_SELF, "comment")) ? e_SELF.".".e_QUERY : $page;
-	$page=(strstr(e_SELF, "content")) ? e_SELF.".".e_QUERY : $page;
-	$online_timeout=300;
-	$online_warncount=90;
-	$online_bancount=100;
-	global $sql, $pref;
-	global $listuserson;
-	$ip=getip();
-	$udata=(USER === TRUE) ? USERID.".".USERNAME : "0";
 
-	if (USER) {
-		// Find record that matches IP or visitor, or matches user info
-		if ($sql->db_Select("online", "*", "(online_ip='{$ip}' AND online_user_id = '0') OR online_user_id = '{$udata}'")) {
-			$row=$sql->db_Fetch();
-			extract($row);
+class e_online {
+	var $_user_tracking_parsed;
+	var $_flood_control_parsed;
 
-			if ($online_user_id == $udata)                         //Matching user record
-			{
-				if ($online_timestamp < (time() - $online_timeout)) //It has been at least 'timeout' seconds since this user has connected
-				{
-					//Update user record with timestamp, current IP, current page and set pagecount to 1
-					$query = "online_timestamp='".time()."', online_ip='{$ip}', online_location='$page', online_pagecount=1 WHERE online_user_id='{$online_user_id}' LIMIT 1";
-				} else {
-					if (!ADMIN) {
-						$online_pagecount++;
+	function online($online_tracking = false, $flood_control = false) {
+		if($online_tracking == true || $flood_control == true) {
+			// If values not set (from e107_config.php, or elsewhere) set them
+			if(!isset($online_timeout)) {
+				$online_timeout = 300;
+			}
+			if(!isset($online_warncount)) {
+				$online_warncount = 90;
+			}
+			if(!isset($online_bancount)) {
+				$online_bancount = 100;
+			}
+
+			$page = (strstr(e_SELF, "forum_")) ? e_SELF.".".e_QUERY : e_SELF;
+			$page = (strstr(e_SELF, "comment")) ? e_SELF.".".e_QUERY : $page;
+			$page = (strstr(e_SELF, "content")) ? e_SELF.".".e_QUERY : $page;
+
+			global $sql, $pref, $e107, $listuserson;
+			$ip = $e107->getip();
+			$udata = (USER === true ? USERID.".".USERNAME : "0");
+
+			if($this->_user_tracking_parsed != true && $this->_flood_control_parsed != true) {
+				if (USER) {
+					// Find record that matches IP or visitor, or matches user info
+					if ($sql->db_Select("online", "*", "(`online_ip` = '{$ip}' AND `online_user_id` = '0') OR `online_user_id` = '{$udata}'")) {
+						$row = $sql->db_Fetch();
+
+						if ($row['online_user_id'] == $udata) {
+							//Matching user record
+							if ($row['online_timestamp'] < (time() - $online_timeout)) {
+								//It has been at least 'timeout' seconds since this user has connected
+								//Update user record with timestamp, current IP, current page and set pagecount to 1
+								$query = "online_timestamp='".time()."', online_ip='{$ip}', online_location='{$page}', online_pagecount=1 WHERE online_user_id='{$online_user_id}' LIMIT 1";
+							} else {
+								if (!ADMIN) {
+									$row['online_pagecount'] ++;
+								}
+								// Update user record with current IP, current page and increment pagecount
+								$query = "online_ip='{$ip}', `online_location` = '{$page}', `online_pagecount` = '{$row['online_pagecount']}' WHERE `online_user_id` = '{$row['online_user_id']}' LIMIT 1";
+							}
+						} else {
+							//Found matching visitor record (ip only) for this user
+							if ($row['online_timestamp'] < (time() - $online_timeout)) {
+								// It has been at least 'timeout' seconds since this user has connected
+								// Update record with timestamp, current IP, current page and set pagecount to 1
+								$query = "`online_timestamp` = '".time()."', `online_user_id` = '{$udata}', `online_location` = '{$page}', `online_pagecount` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
+							} else {
+								if (!ADMIN) {
+									$row['online_pagecount'] ++;
+								}
+								//Update record with current IP, current page and increment pagecount
+								$query = "`online_user_id` = '{$udata}', `online_location` = '{$page}', `online_pagecount` = {$row['online_pagecount']} WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
+							}
+						}
+						$sql->db_Update("online", $query);
+					} else {
+						$sql->db_Insert("online", " '".time()."', 'null', '{$udata}', '{$ip}', '{$page}', 1");
 					}
-					//Update user record with current IP, current page and increment pagecount
-					$query="online_ip='{$ip}', online_location='$page', online_pagecount={$online_pagecount} WHERE online_user_id='{$online_user_id}' LIMIT 1";
-				}
-			} else {
-				//Found matching visitor record (ip only) for this user
-				if ($online_timestamp < (time() - $online_timeout)) //It has been at least 'timeout' seconds since this user has connected
-				{
-					//Update record with timestamp, current IP, current page and set pagecount to 1
-					$query = "online_timestamp='".time()."', online_user_id='{$udata}', online_location='$page', online_pagecount=1 WHERE online_ip='{$ip}' AND online_user_id='0' LIMIT 1";
 				} else {
-					if (!ADMIN) {
-						$online_pagecount++;
+					//Current page request is from a visitor
+					if ($sql->db_Select("online", "*", "`online_ip` = '{$ip}' AND `online_user_id` = '0'")) {
+						$row = $sql->db_Fetch();
+
+						if ($row['online_timestamp'] < (time() - $online_timeout)) //It has been at least 'timeout' seconds since this ip has connected
+						{
+							//Update record with timestamp, current page, and set pagecount to 1
+							$query = "`online_timestamp` = '".time()."', `online_location` = '{$page}', `online_pagecount` = 1 WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
+						} else {
+							//Update record with current page and increment pagecount
+							$row['online_pagecount'] ++;
+							//   echo "here {$online_pagecount}";
+							$query="`online_location` = '{$page}', `online_pagecount` = {$row['online_pagecount']} WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
+						}
+						$sql->db_Update("online", $query);
+					} else {
+						$sql->db_Insert("online", " '".time()."', 'null', '0', '{$ip}', '{$page}', 1");
 					}
-					//Update record with current IP, current page and increment pagecount
-					$query="online_user_id='{$udata}', online_location='$page', online_pagecount={$online_pagecount} WHERE online_ip='{$ip}' AND online_user_id='0' LIMIT 1";
 				}
 			}
-			$sql->db_Update("online", $query);
-		} else {
-			$sql->db_Insert("online", " '".time()."', 'null', '".$udata."', '".$ip."', '".$page."', 1");
-		}
-	} else {
-		//Current page request is from a visitor
-		if ($sql->db_Select("online", "*", "online_ip='{$ip}' AND online_user_id = '0'")) {
-			$row=$sql->db_Fetch();
-			extract($row);
-
-			if ($online_timestamp < (time() - $online_timeout)) //It has been at least 'timeout' seconds since this ip has connected
-			{
-				//Update record with timestamp, current page, and set pagecount to 1
-				$query = "online_timestamp='".time()."', online_location='$page', online_pagecount=1 WHERE online_ip='{$ip}' AND online_user_id='0' LIMIT 1";
-			} else {
-				//Update record with current page and increment pagecount
-				$online_pagecount++;
-				//   echo "here {$online_pagecount}";
-				$query="online_location='$page', online_pagecount={$online_pagecount} WHERE online_ip='{$ip}' AND online_user_id='0' LIMIT 1";
+			if($flood_control == true && $this->_flood_control_parsed != true) {
+				if (ADMIN || $pref['autoban'] != 1) {
+					$row['online_pagecount'] = 1;
+				}
+				if ($row['online_pagecount'] > $online_bancount && $row['online_ip'] != "127.0.0.1") {
+					$sql->db_Insert("banlist", "'{$ip}', '0', 'Hit count exceeded ({$row['online_pagecount']} requests within allotted time)' ");
+					$e_event->trigger("flood", $ip);
+					exit;
+				}
+				if ($row['online_pagecount'] >= $online_warncount && $online_ip != "127.0.0.1") {
+					echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>Warning!</b><br /><br />The flood protection on this site has been activated and you are warned that if you carry on requesting pages you could be banned.<br /></div>";
+					exit;
+				}
 			}
-			$sql->db_Update("online", $query);
-		} else {
-			$sql->db_Insert("online", " '".time()."', 'null', '0', '{$ip}', '{$page}', 1");
+			if($online_tracking == true || $flood_control == true) {
+				if($this->_user_tracking_parsed != true && $this->_flood_control_parsed != true) {
+					$sql->db_Delete("online", "`online_timestamp` < ".(time() - $online_timeout));
+				}
+			}
+			if($online_tracking == true && $this->_user_tracking_parsed != true) {
+				global $members_online, $total_online, $member_list, $listuserson;
+				$total_online = $sql->db_Count("online");
+				if ($members_online = $sql->db_Select("online", "*", "online_user_id != '0' ")) {
+					$member_list = '';
+					$listuserson = array();
+					while ($row = $sql->db_Fetch()) {
+						$vals = explode(".", $row['online_user_id'], 2);
+						$member_list .= "<a href='".e_BASE."user.php?id.{$vals[0]}'>{$vals[1]}</a> ";
+						$listuserson[$row['online_user_id']] = $row['online_location'];
+					}
+				}
+				define("TOTAL_ONLINE", $total_online);
+				define("MEMBERS_ONLINE", $members_online);
+				define("GUESTS_ONLINE", $total_online - $members_online);
+				define("ON_PAGE", $sql->db_Count("online", "(*)", "WHERE `online_location` = '{$page}' "));
+				define("MEMBER_LIST", $member_list);
+			}
+			if($online_tracking == true) {
+				$this->_user_tracking_parsed = true;
+			}
+			if($flood_control == true) {
+				$this->_flood_control_parsed = true;
+			}
 		}
 	}
-
-	if (ADMIN || $pref['autoban'] != 1) {
-		$online_pagecount = 1;
-	}
-
-	if ($online_pagecount > $online_bancount && $online_ip != "127.0.0.1") {
-		$sql->db_Insert("banlist", "'$ip', '0', 'Hit count exceeded ($online_pagecount requests within allotted time)' ");
-		$e_event->trigger("flood", $ip);
-		exit;
-	}
-
-	if ($online_pagecount >= $online_warncount && $online_ip != "127.0.0.1") {
-		echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>Warning!</b><br /><br />The flood protection on this site has been activated and you are warned that if you carry on requesting pages you could be banned.<br /></div>";
-		exit;
-	}
-
-	$sql->db_Delete("online", "online_timestamp<".(time() - $online_timeout));
-	$total_online=$sql->db_Count("online");
-
-	if ($members_online = $sql->db_Select("online", "*", "online_user_id != '0' ")) {
-		$member_list= '';
-		$listuserson=array();
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
-			list($oid, $oname)=explode(".", $online_user_id, 2);
-			$member_list .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a> ";
-			$listuserson[$online_user_id]=$online_location;
-		}
-	}
-
-	define("TOTAL_ONLINE", $total_online);
-	define("MEMBERS_ONLINE", $members_online);
-	define("GUESTS_ONLINE", $total_online - $members_online);
-	define("ON_PAGE", $sql->db_Count("online", "(*)", "WHERE online_location='$page' "));
-	define("MEMBER_LIST", $member_list);
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
