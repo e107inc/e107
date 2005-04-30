@@ -58,7 +58,25 @@ SC_BEGIN NEWSDATE
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 $con = new convert;
-return  $con -> convert_date($news_item['news_datestamp'], 'long');
+if($parm == "")
+{
+	return  $con -> convert_date($news_item['news_datestamp'], 'long');
+}
+switch($parm)
+{
+	case 'long':
+		return  $con -> convert_date($news_item['news_datestamp'], 'long');
+		break;
+	case 'short':
+		return  $con -> convert_date($news_item['news_datestamp'], 'short');
+		break;
+	case 'forum':
+		return  $con -> convert_date($news_item['news_datestamp'], 'forum');
+		break;
+	default :
+		return date($parm, $news_item['news_datestamp']);
+		break;
+}	
 SC_END
 	
 SC_BEGIN NEWSCOMMENTS
