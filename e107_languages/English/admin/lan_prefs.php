@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-04-29 15:03:36 $
-|     $Author: stevedunstan $
+|     $Revision: 1.30 $
+|     $Date: 2005-04-30 09:18:36 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -183,4 +183,7 @@ define("PRFLAN_133", "GD extension required, not found");
 
 define("PRFLAN_134", "Redirect all requests to site URL");
 define("PRFLAN_135", "for example, if your site URL above is set http://foo.com, anyone requesting http://www.foo.com will be redirected to http://foo.com");
+
+define("PRFLAN_136", "Maximum Signups permitted from the same IP address.");
+
 ?>

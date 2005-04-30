@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.78 $
-|     $Date: 2005-04-27 17:20:01 $
-|     $Author: stevedunstan $
+|     $Revision: 1.79 $
+|     $Date: 2005-04-30 09:18:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -57,9 +57,9 @@ function update_61x_to_700($type) {
 	{
 		set_time_limit(180);
 		$s_prefs = FALSE;
-
-		$sql->db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
-
+		if(!$sql -> db_Select("userclass_classes", "*", "userclass_editclass='254' ")){
+			$sql->db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
+		}
 		/*
 		changes by jalist 19/01/05:
 		altered structure of news table
@@ -612,18 +612,27 @@ function update_61x_to_700($type) {
 		}
 		// end content update -------------------------------------------------------------------------------------------
 
-		// Save all prefs that were set in above update routines
-		if ($s_prefs == TRUE) {
-			save_prefs();
-		}
-		// -----------------------------------------------------
 
-	
+
 		// Truncate logstats table if log_id = pageTotal not found
 		/* log update - previous log entries are not compatible with later versions, sorry but we have to clear the table :\ */
 		if(!$sql->db_Select("logstats","log_id","log_id = 'pageTotal'"))
 		{
 			mysql_query("TRUNCATE TABLE `".MPREFIX."logstats");
+		}
+		// -----------------------------------------------------
+
+
+		// Add default pref for Max IP signups.
+		if(!isset($pref['signup_maxip'])){
+			$pref['signup_maxip'] = 3;
+			$s_prefs = TRUE;
+		}
+
+
+		// Save all prefs that were set in above update routines
+		if ($s_prefs == TRUE) {
+			save_prefs();
 		}
 		// -----------------------------------------------------
 
@@ -670,6 +679,10 @@ function update_61x_to_700($type) {
 		}
 
 		if (!$sql -> db_Select('news', 'news_thumbnail')) {
+			return FALSE;
+		}
+
+		if(!isset($pref['signup_maxip'])){
 			return FALSE;
 		}
 
