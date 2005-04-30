@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-04-29 14:01:34 $
-|     $Author: stevedunstan $
+|     $Revision: 1.25 $
+|     $Date: 2005-04-30 09:14:37 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -51,6 +51,9 @@ if (USER) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
+
+
 
 if (e_QUERY) {
 	$qs = explode(".", e_QUERY);
@@ -122,6 +125,14 @@ if (isset($_POST['register'])) {
 		message_handler("P_ALERT", LAN_104);
 		$error = TRUE;
 		$name = "";
+	}
+
+// check for multiple signups from the same IP address.
+	if($ipcount = $sql->db_Select("user", "*", "user_ip='".$e107->getip()."' ")){
+		if($ipcount >= $pref['signup_maxip']){
+		message_handler("P_ALERT",LAN_202);
+		$error = TRUE;
+		}
 	}
 
 
@@ -242,11 +253,11 @@ if (isset($_POST['register'])) {
 			// ========== Send Email =====.                                                       // ==========================================================
 			define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$nid.".".$u_key : SITEURL."/signup.php?activate.".$nid.".".$u_key));
 			$pass_show = ($pref['user_reg_secureveri'])? "*******" : $_POST['password1'];
-            $message = LAN_403." ".SITENAME."\n";
+			$message = LAN_403." ".SITENAME."\n";
 			$message .= LAN_SIGNUP_21."\n\n";
 			$message .= RETURNADDRESS."\n\n";
 			$message .= LAN_SIGNUP_18."\n\n";
-			$message .= LAN_SIGNUP_19." ".$_POST['name']."\n".LAN_SIGNUP_20." ".$pass_show."\n\n";
+			$message .= LAN_SIGNUP_19." ".$_POST['loginname']."\n".LAN_SIGNUP_20." ".$pass_show."\n\n";
 			$message .= LAN_407." ".SITENAME."\n".SITEURL;
 
 			require_once(e_HANDLER."mail.php");
@@ -335,7 +346,7 @@ if (!eregi("stage", LAN_109)) {
 		}
 	}
 }
-$text .= "<div style='text-align:center'>";
+$text .= "<div style='text-align:center;width:100%'>";
 
 if($pref['signup_text']) {
 	$text .= $tp->toHTML($pref['signup_text'], TRUE, 'parse_sc')."<br />";
@@ -348,19 +359,22 @@ if ($pref['user_reg_veri']) {
 $text .= LAN_400;
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
+
+
+
 $text .= $rs->form_open("post", e_SELF, "signupform")."
 <table class='fborder' style='width:90%'>
 <tr>
 <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_7."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_8."</span></td>
 <td class='forumheader3' style='width:70%'>
-".$rs->form_text("name", 40, $name, 30)."
+".$rs->form_text("name", 30, $name, 30)."
 </td>
 </tr>
 
 <tr>
 <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_9."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_10."</span></td>
 <td class='forumheader3' style='width:70%'>
-".$rs->form_text("loginname", 40, $loginname, 30)."
+".$rs->form_text("loginname", 30, $loginname, 30)."
 </td>
 </tr>
 ";
@@ -374,7 +388,7 @@ if ($signupval[0]) {
 		<tr>
 		<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_308."".req($signupval[0])."</td>
 		<td class='forumheader3' style='width:70%' >
-		".$rs->form_text("realname", 40, $realname, 100)."
+		".$rs->form_text("realname", 30, $realname, 100)."
 		</td>
 		</tr>";
 }
@@ -383,7 +397,7 @@ $text .= "
 	<tr>
 	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_17."<span style='font-size:15px; color:red'> *</span></td>
 	<td class='forumheader3' style='width:70%'>
-	".$rs->form_password("password1", 40, $password1, 20)."
+	".$rs->form_password("password1", 30, $password1, 20)."
 	";
 if ($pref['signup_pass_len']) {
 	$text .= "<span class='smalltext'> (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
@@ -394,13 +408,13 @@ $text .= "
 	<tr>
 	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_111."<span style='font-size:15px; color:red'> *</span></td>
 	<td class='forumheader3' style='width:70%'>
-	".$rs->form_password("password2", 40, $password2, 20)."
+	".$rs->form_password("password2", 30, $password2, 20)."
 	</td>
 	</tr>
 	<tr>
 	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_112."<span style='font-size:15px; color:red'> *</span></td>
 	<td class='forumheader3' style='width:70%'>
-	".$rs->form_text("email", 40, $email, 100)."
+	".$rs->form_text("email", 30, $email, 100)."
 	</td>
 	</tr>
 	<tr>
@@ -411,13 +425,12 @@ $text .= "
 
 
 // ----------  User subscription to userclasses.
-if ($signupval[10]) {
+if ($signupval[10] && ($sql->db_Select("userclass_classes", "*", "userclass_editclass =0 order by userclass_name"))) {
 	$text .= "<tr>
 		<td class='forumheader3' style='width:30%;vertical-align:top'>".LAN_USET_5." ".req($signupval[10])."
 		<br /><span class='smalltext'>".LAN_USET_6."</span></td>
 		<td class='forumheader3' style='width:70%'>";
 	$text .= "<table style='width:100%'>";
-	$sql->db_Select("userclass_classes", "*", "userclass_editclass =0 order by userclass_name");
 	while ($row3 = $sql->db_Fetch()) {
 		//  $frm_checked = check_class($userclass_id,$user_class) ? "checked='checked'" : "";
 		$text .= "<tr><td class='defaulttext' style='width:10%;vertical-align:top'>";
