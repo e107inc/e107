@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/import/phpbb2.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-14 15:32:04 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-04-30 18:45:59 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -86,7 +86,7 @@ extract($_POST);
 echo "<table style='width: 100%;' class='fborder'>
 <tr>
 <td class='forumheader3' style='text-align: center; margin-left: auto; margin-right: auto;'>
-Attempting to connect to phpBB database [ $phpbb2Database @ $phpbb2Host ] ...<br />\n";
+Attempting to connect to phpBB database [ {$phpbb2Database} @ {$phpbb2Host} ] ...<br />\n";
 flush();
 
 $phpbbConnection = mysql_connect($phpbb2Host, $phpbb2Username, $phpbb2Password, TRUE);
@@ -199,8 +199,8 @@ while($topic = mysql_fetch_array($phpbb_res))
 		}
 
 		extract($pollQ);
-		$query = "INSERT INTO ".$mySQLprefix."polls VALUES ('0', $vote_start, $vote_start, 0, 0, '$vote_text', '$options', '$votes', '', 2, 0, 0, 0, 255, 0)";
-		echo (mysql_query($query, $e107Connection) ? "Poll successfully inserted" : "Unable to insert poll ($query)")."<br />";
+		$query = "INSERT INTO ".$mySQLprefix."polls VALUES ('0', {$vote_start}, {$vote_start}, 0, 0, '{$vote_text}', '{$options}', '{$votes}', '', 2, 0, 0, 0, 255, 0)";
+		echo (mysql_query($query, $e107Connection) ? "Poll successfully inserted" : "Unable to insert poll ({$query})")."<br />";
 	}
 
 
@@ -232,7 +232,7 @@ while($topic = mysql_fetch_array($phpbb_res))
 
 		//echo "PARENT: $parent_id, TOPIC: $topic_id<br />"; 
 
-		$query = "SELECT * FROM {$phpbb2Prefix}posts LEFT JOIN {$phpbb2Prefix}posts_text ON ({$phpbb2Prefix}posts.post_id = {$phpbb2Prefix}posts_text.post_id) WHERE topic_id='$topic_id' AND post_subject = '' ORDER BY post_time DESC";
+		$query = "SELECT * FROM {$phpbb2Prefix}posts LEFT JOIN {$phpbb2Prefix}posts_text ON ({$phpbb2Prefix}posts.post_id = {$phpbb2Prefix}posts_text.post_id) WHERE topic_id='{$topic_id}' AND post_subject = '' ORDER BY post_time DESC";
 		$phpbb_res2 = mysql_query($query, $phpbbConnection);
 		if(!$phpbb_res2)
 		{
@@ -268,7 +268,7 @@ require_once(FOOTERF);
 
 function goError($error)
 {
-	echo "<b>$error</b></td></tr></table>";
+	echo "<b>{$error}</b></td></tr></table>";
 	require_once(FOOTERF);
 	exit;
 }
