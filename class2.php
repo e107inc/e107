@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.112 $
-|     $Date: 2005-04-30 18:10:57 $
+|     $Revision: 1.113 $
+|     $Date: 2005-04-30 18:22:37 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -416,7 +416,6 @@ init_session();
 
 $sql->db_Mark_Time('Start: Go online');
 $e_online = new e_online();
-echo $pref['flood_protect'];
 if($pref['flood_protect']){
 	$e_online->online(false, true);
 }
