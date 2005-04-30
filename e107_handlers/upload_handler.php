@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.6 $
-|   $Date: 2005-03-15 12:09:29 $
-|   $Author: stevedunstan $
+|   $Revision: 1.7 $
+|   $Date: 2005-04-30 13:53:11 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 	
@@ -133,7 +133,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 			} else {
 				switch ($files['error'][$key]) {
 					case 0:
-					$error = LANUPLOAD_4;
+					$error = LANUPLOAD_4." [".str_replace("../", "", $uploaddir)."]";
 					 break;
 					case 1:
 					$error = LANUPLOAD_5;
@@ -152,7 +152,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 					 break;
 				}
 				require_once(e_HANDLER."message_handler.php");
-				message_handler("MESSAGE", LANUPLOAD_11." '".$files['name'][$key]."' - ".LANUPLOAD_12.":".$error, __LINE__, __FILE__);
+				message_handler("MESSAGE", LANUPLOAD_11." '".$files['name'][$key]."' <br />".LANUPLOAD_12.": ".$error, __LINE__, __FILE__);
 				return FALSE;
 			}
 		}
