@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2005-04-30 09:18:34 $
-|     $Author: e107coders $
+|     $Revision: 1.54 $
+|     $Date: 2005-04-30 14:53:58 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -54,7 +54,7 @@ if (isset($_POST['updateprefs']))
 		else
 		{
 			$fid = intval(substr($key, 9));
-			$sql->db_Update("user_extended_struct", "user_extended_struct_signup = '{$value}' WHERE user_extended_struct_id = '{$fid}'", TRUE);
+			$sql->db_Update("user_extended_struct", "user_extended_struct_signup = '{$value}' WHERE user_extended_struct_id = '{$fid}'");
 		}
 	}
 	$signup_options = "";
