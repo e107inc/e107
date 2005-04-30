@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.79 $
-|     $Date: 2005-04-30 09:18:35 $
+|     $Revision: 1.80 $
+|     $Date: 2005-04-30 23:51:24 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -636,6 +636,10 @@ function update_61x_to_700($type) {
 		}
 		// -----------------------------------------------------
 
+		// Fix corrupted Plugin Table.
+		$sql -> db_Delete("plugin", " plugin_installflag='0' ");
+
+
 	}
 	else
 	{
@@ -702,6 +706,12 @@ function update_61x_to_700($type) {
 			}
 		}
 
+
+		if($pcount = $sql -> db_Select("plugin", "*", " plugin_installflag ='0' ")){
+			if($pcount >30){
+				return FALSE;
+			}
+		}
 		//return !$sql->db_Select("core","*","e107_name = 'user_entended'");
 
 		//		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
@@ -716,7 +726,7 @@ function update_61x_to_700($type) {
 		*/
 
 		// No updates needed
-		return TRUE;
+	 	return TRUE;
 	}
 }
 
