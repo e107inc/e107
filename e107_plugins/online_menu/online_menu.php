@@ -11,11 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_menu/online_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-28 20:03:52 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2005-04-30 18:11:49 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
+
+global $e_online;
+$e_online->online(true);
+
 if(!defined("e_PLUGIN")){ exit; }
 $text = ONLINE_L1.GUESTS_ONLINE."<br />";
 //if($pref['user_reg'] == 1){
@@ -34,4 +38,6 @@ if ($total_members > 1) {
 }
 	
 $ns->tablerender($caption, $text, 'online');
+
+
 ?>

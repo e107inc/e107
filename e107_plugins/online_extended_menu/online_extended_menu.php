@@ -11,16 +11,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_extended_menu/online_extended_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-04-14 17:07:56 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2005-04-30 18:11:49 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-if(!defined("e_PLUGIN")){ exit; }
+if(!defined("e_PLUGIN")){
+	exit;
+}
+
+global $e_online;
+$e_online->online(true);
+
 $text = ONLINE_EL1.GUESTS_ONLINE.", ";
-//        if($pref['user_reg'] == 1){
 $text .= ONLINE_EL2.MEMBERS_ONLINE." ...<br />";
-//        }
+
 if (MEMBERS_ONLINE) {
 	global $listuserson, $ADMIN_DIRECTORY;
 	foreach($listuserson as $uinfo => $pinfo) {
