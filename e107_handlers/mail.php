@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-04-15 19:02:00 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2005-04-30 22:28:16 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -66,14 +66,18 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 	$mail->AltBody = $text; //Include regular plaintext as well
 	$mail->AddAddress($send_to, $to_name);
 
-
-	if ($attachments) {
-		if (!is_array($attachments)) {
-			for ($i = 0; $i < count($attachments); $i++) {
-				$mail->AddStringAttachment($attachments[$i]);
-			};
-		} else {
-			$mail->AddStringAttachment($attachments);
+	if ($attachments)
+	{
+		if (is_array($attachments))
+		{
+			for ($i = 0; $i < count($attachments); $i++)
+			{
+				$mail->AddStringAttachment($attachments[$i], $attachments[$i]);
+			}
+		}
+		else
+		{
+			$mail->AddStringAttachment($attachments, $attachments);
 		}
 	}
 
