@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-04-28 22:12:54 $
+|     $Revision: 1.47 $
+|     $Date: 2005-04-30 22:06:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1047,7 +1047,7 @@ class download {
 
 			<tr>
 			<td style='width:30%' class='forumheader3'>".DOWLAN_43.":<br /><span class='smalltext'>(".DOWLAN_44.")</span></td>
-			<td style='width:70%' class='forumheader3'>".r_userclass("download_category_class", $download_category_class)."
+			<td style='width:70%' class='forumheader3'>".r_userclass("download_category_class", $download_category_class, 'off', 'public, nobody, member, admin, classes')."
 
 			</td></tr>";
 
