@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-04-11 16:25:16 $
+|     $Revision: 1.22 $
+|     $Date: 2005-04-30 15:12:12 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -76,8 +76,8 @@ define("NWSLAN_66", "Upload");
 define("NWSLAN_67", "Image");
 define("NWSLAN_68", "File");
 define("NWSLAN_69", "Upload an image or file for use in the news item");
-define("NWSLAN_70", "The e107_files/downloads folder is not writable, you need to CHMOD 777 the folder before uploading");
-define("NWSLAN_71", "The folder");
+define("NWSLAN_70", "The ".e_FILE."downloads folder is not writable, you need to CHMOD 777 the folder before uploading and files.");
+define("NWSLAN_71", "The ".e_IMAGE."newspost_images folder is not writable.  You need to CHMOD 777 the folder before uploading any images.");
 define("NWSLAN_72", "Only show news item between certain dates");
 define("NWSLAN_73", "Render type");
 define("NWSLAN_74", "Select how and where news item is posted");

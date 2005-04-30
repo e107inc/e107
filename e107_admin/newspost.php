@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.76 $
-|   $Date: 2005-04-29 14:40:09 $
-|   $Author: stevedunstan $
+|   $Revision: 1.77 $
+|   $Date: 2005-04-30 15:12:02 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
@@ -304,7 +304,7 @@ class newspost {
 				</td>
 				</tr>";
 			}
-		$text .= "</table></form>";
+			$text .= "</table></form>";
 			} else {
 			$text .= "<div style='text-align:center'>".NWSLAN_43."</div>";
 		}
@@ -494,15 +494,19 @@ class newspost {
 		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_69."</a>
 		<div style='display: none;'>";
 
-		if (!FILE_UPLOADS) {
+		if (!FILE_UPLOADS)
+		{
 			$text .= "<b>".NWSLAN_78."</b>";
-			} else {
-
-			if (!is_writable(e_FILE."downloads")) {
-				$text .= "<b>".NWSLAN_70."</b><br />";
+		}
+		else
+		{
+			if (!is_writable(e_FILE."downloads"))
+			{
+				$text .= "<b>".NWSLAN_70."</b><br /><br />";
 			}
-			if (!is_writable(e_IMAGE."newspost_images")) {
-				$text .= "<b>".NWSLAN_71."</b><br />";
+			if (!is_writable(e_IMAGE."newspost_images"))
+			{
+				$text .= "<b>".NWSLAN_71."</b><br /><br />";
 			}
 
 			$up_name = array(LAN_NEWS_24,NWSLAN_67,LAN_NEWS_22,NWSLAN_68);
@@ -512,7 +516,8 @@ class newspost {
 			<span id='upline' style='white-space:nowrap'>
 			<input class='tbox' type='file' name='file_userfile[]' size='40' />
 			<select class='tbox' name='uploadtype[]'>";
-			for ($i=0; $i<count($up_value); $i++) {
+			for ($i=0; $i<count($up_value); $i++)
+			{
 				$selected = ($_POST['uploadtype'] == $up_value[$i]) ? "selected='selected'" : "";
 				$text .= "<option value='".$up_value[$i]."' $selected>".$up_name[$i]."</option>\n";
 			};
@@ -538,7 +543,7 @@ class newspost {
 		<div style='display: none;'>
 
 		(".LAN_NEWS_38.")<br />
-		<input class='tbox' type='text' name='news_thumbnail' size='60' value='".$_POST['news_thumbnail']."' maxlength='100' />
+		<input class='tbox' type='text' id='news_thumbnail' name='news_thumbnail' size='60' value='".$_POST['news_thumbnail']."' maxlength='100' />
 		<input class='button' type ='button' style='cursor:hand' size='30' value='".NWSLAN_118."' onclick='expandit(this)' />
 		<div id='newsicn' style='display:none;{head}'>";
 
@@ -793,7 +798,7 @@ class newspost {
 		$text .= "<tr style='vertical-align: top;'>
 		<td colspan='2'  style='text-align:center' class='forumheader'>";
 
-		if (IsSet($_POST['preview'])) {
+		if (isset($_POST['preview'])) {
 			$text .= "<input class='button' type='submit' name='preview' value='".NWSLAN_24."' /> ";
 			if ($id && $sub_action != "sn" && $sub_action != "upload") {
 				$text .= "<input class='button' type='submit' name='submit' value='".NWSLAN_25."' /> ";
@@ -969,7 +974,7 @@ class newspost {
 				</td>
 				</tr>\n";
 			}
-		$text .= "</table></form>";
+			$text .= "</table></form>";
 			} else {
 			$text .= "<div style='text-align:center'><div style='vertical-align:center'>".NWSLAN_10."</div>";
 		}
