@@ -106,5 +106,6 @@ $pref['useGeshi'] = 0;
 $pref['wysiwyg'] = 0;
 $pref['old_np'] = 0;
 $pref['make_clickable'] = 0;
+$pref['signup_maxip'] = 3;
 
 ?>
