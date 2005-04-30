@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-04-13 09:43:42 $
-|     $Author: e107coders $
+|     $Revision: 1.24 $
+|     $Date: 2005-04-30 22:48:26 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -119,17 +119,13 @@ if (isset($_POST['submit'])) {
 	$mail->Subject = $_POST['email_subject'];
 	$mail->IsHTML(true);
 
-
 	$attach = chop($_POST['email_attachment']);
 
-	$root = (preg_match("#^/#", $DOWNLOADS_DIRECTORY) || preg_match("#.:#", $DOWNLOADS_DIRECTORY))? "" :
-	 e_BASE;
-	if (file_exists($root.$DOWNLOADS_DIRECTORY.$_POST['email_attachment'])) {
-		$attach_link = $root.$DOWNLOADS_DIRECTORY.$_POST['email_attachment'];
-	} else {
-		$attach_link = $root.$FILES_DIRECTORY."public/".$_POST['email_attachment'];
-	}
-	if (!$mail->AddAttachment($attach_link, $attach) && $attach != "") {
+	$attach_link = e_DOWNLOAD.$attach;
+	echo $attach_link;
+	
+	if ($attach != "" && !$mail->AddAttachment($attach_link, $attach))
+	{
 		$mss = "There is a problem with the attachment<br />$attach_link";
 		$ns->tablerender("Error", $mss);
 		require_once(e_ADMIN."footer.php");
