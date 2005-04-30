@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-04-28 22:48:13 $
+|     $Revision: 1.21 $
+|     $Date: 2005-04-30 23:51:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -27,9 +27,10 @@ class e107plugin {
 	 */
 	function getall() {
 		global $sql;
-		if ($sql->db_Select('plugin', '*', "plugin_id != '' ORDER BY `plugin_installflag` DESC, `plugin_name` ASC")) {
+		if ($sql->db_Select("plugin","*","plugin_id !='' ORDER BY plugin_installflag DESC,plugin_name ASC")) {
 			while ($row = $sql->db_Fetch()) {
-				$ret[ucfirst($row['plugin_name'])] = $row;
+				$name = ucfirst($row['plugin_name']);
+				$ret[$name] = $row;
 			}
 
 			return $ret;
@@ -56,11 +57,9 @@ class e107plugin {
 					unset($$varname);
 				}
 			}
-			include("{$p['path']}{$p['fname']}");
-			$plugin_path = substr($p['path'], strrpos($p['path'], "/") + 1);
-
-			if ((!$sql->db_Select("plugin", "plugin_id", "plugin_path = '{$plugin_path}'")) && $eplug_name)
-			{
+		 	include("{$p['path']}{$p['fname']}");
+			$plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
+			if ((!$sql->db_Select("plugin", "plugin_id", "plugin_path = '{$plugin_path}'")) && $eplug_name){
 				if (!$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_sc && !$eplug_userclass && !$eplug_module && !$eplug_bb && !$eplug_latest && !$eplug_status)
 				{
 					// new plugin, assign entry in plugin table, install is not necessary so mark it as intalled
