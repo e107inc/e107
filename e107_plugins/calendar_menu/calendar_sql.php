@@ -21,5 +21,21 @@ CREATE TABLE event (
 	event_cat_name varchar(100) NOT NULL default '',
 	event_cat_icon varchar(100) NOT NULL default '',
 	event_cat_class int(10) unsigned NOT NULL default '0',
+	event_cat_subs tinyint(3) unsigned NOT NULL default '0',
+	event_cat_force tinyint(3) unsigned NOT NULL default '0',
+	event_cat_ahead tinyint(3) unsigned NOT NULL default '0',
+	event_cat_msg1 text,
+	event_cat_msg2 text,
+	event_cat_notify  tinyint(3) unsigned NOT NULL default '0',
+	event_cat_last int(10) unsigned NOT NULL default '0',
+	event_cat_today int(10) unsigned NOT NULL default '0',
+	event_cat_lastupdate int(10) unsigned NOT NULL default '0',
+	event_cat_addclass int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_cat_id)
+	) TYPE=MyISAM;,
+	CREATE TABLE event_subs (
+	event_subid int(10) unsigned NOT NULL auto_increment,
+	event_userid  int(10) unsigned NOT NULL default '0',
+	event_cat  int(10) unsigned NOT NULL default '0',
+	PRIMARY KEY  (event_subid)
 	) TYPE=MyISAM;

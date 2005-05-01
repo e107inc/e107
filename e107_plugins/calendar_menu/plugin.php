@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-15 14:34:46 $
+|     $Revision: 1.6 $
+|     $Date: 2005-05-01 04:37:02 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@
 $lan_file = e_PLUGIN."calendar_menu/languages/".e_LANGUAGE.".php";
 @require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."calendar_menu/languages/English.php");
 $eplug_name = "Event Calendar";
-$eplug_version = "3.4";
+$eplug_version = "3.5";
 $eplug_author = "jalist / cameron / McFly / Barry";
 $eplug_url = "http://e107.org";
 $eplug_email = "jalist@e107.org";
@@ -52,14 +52,16 @@ $eplug_prefs = array(
 "eventpost_todaycss" => "indent",
 "eventpost_addcat" => 0,
 "eventpost_forum" => 1,
-"eventpost_evtoday" => "indent"
-
- );
+"eventpost_evtoday" => "indent",
+"eventpost_mailsubject" => "Calendar",
+"eventpost_mailfrom" => "e107 Web Site",
+"eventpost_mailaddress" => "calendar@yoursite.com",
+"eventpost_lenday" => 1,
+"eventpost_asubs" => 1,
+"eventpost_weekstart" => "sun" );
 	
 // List of table names -----------------------------------------------------------------------------------------------
-$eplug_table_names = array(
-"event",
-	"event_cat" );
+$eplug_table_names = array("event","event_cat","event_subs" );
 	
 // List of sql requests to create tables -----------------------------------------------------------------------------
 $eplug_tables = array(
@@ -85,8 +87,25 @@ $eplug_tables = array(
 	event_cat_id smallint(5) unsigned NOT NULL auto_increment,
 	event_cat_name varchar(100) NOT NULL default '',
 	event_cat_icon varchar(100) NOT NULL default '',
-	event_cat_class int(10) unsigned NOT NULL default 0,
+	event_cat_class int(10) unsigned NOT NULL default '0',
+	event_cat_subs tinyint(3) unsigned NOT NULL default '0',
+	event_cat_force tinyint(3) unsigned NOT NULL default '0',
+	event_cat_ahead tinyint(3) unsigned NOT NULL default '0',
+	event_cat_msg1 text,
+	event_cat_msg2 text,
+	event_cat_notify  tinyint(3) unsigned NOT NULL default '0',
+	event_cat_last int(10) unsigned NOT NULL default '0',
+	event_cat_today int(10) unsigned NOT NULL default '0',
+	event_cat_lastupdate int(10) unsigned NOT NULL default '0',
+	event_cat_addclass int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_cat_id)
+	) TYPE=MyISAM;"
+	,
+	"CREATE TABLE ".MPREFIX."event_subs (
+	event_subid int(10) unsigned NOT NULL auto_increment,
+	event_userid  int(10) unsigned NOT NULL default '0',
+	event_cat  int(10) unsigned NOT NULL default '0',
+	PRIMARY KEY  (event_subid)
 	) TYPE=MyISAM;");
 	
 	
@@ -107,7 +126,23 @@ $upgrade_add_prefs = "";
 	
 $upgrade_remove_prefs = "";
 	
-$upgrade_alter_tables = array("alter table ".MPREFIX."event_cat add event_cat_class int(10) unsigned NOT NULL default 0");
+$upgrade_alter_tables = array(
+"alter table ".MPREFIX."event_cat add event_cat_subs tinyint(3) unsigned NOT NULL default '0'",
+"alter table ".MPREFIX."event_cat add event_cat_force tinyint(3) unsigned NOT NULL default '0'",
+"alter table ".MPREFIX."event_cat add event_cat_ahead tinyint(3) unsigned NOT NULL default '0'",
+"alter table ".MPREFIX."event_cat add event_cat_msg1 text",
+"alter table ".MPREFIX."event_cat add event_cat_msg2 text",
+"alter table ".MPREFIX."event_cat add event_cat_notify  tinyint(3) unsigned NOT NULL default '0'",
+"alter table ".MPREFIX."event_cat add event_cat_last int(10) unsigned NOT NULL default '0'",
+"alter table ".MPREFIX."event_cat add event_cat_today int(10) unsigned NOT NULL default '0'",
+"alter table ".MPREFIX."event_cat add event_cat_lastupdate int(10) unsigned NOT NULL default '0'",
+"alter table ".MPREFIX."event_cat add event_cat_addclass int(10) unsigned NOT NULL default '0'",
+"CREATE TABLE ".MPREFIX."event_subs (
+	event_subid int(10) unsigned NOT NULL auto_increment,
+	event_userid  int(10) unsigned NOT NULL default '0',
+	event_cat  int(10) unsigned NOT NULL default '0',
+	PRIMARY KEY  (event_subid)
+	) TYPE=MyISAM;");
 	
 $eplug_upgrade_done = EC_LAN_108;
 	
