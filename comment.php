@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-04-11 11:55:00 $
+|     $Revision: 1.28 $
+|     $Date: 2005-05-01 17:51:44 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -120,7 +120,9 @@ if ($action == "reply") {
 	$query = "comment_id='$id' LIMIT 0,1";
 	if ($sql->db_Select("comments", "comment_subject", "comment_id='$id'")) {
 		list($comments['comment_subject']) = $sql->db_Fetch();
+		$not_parsed_subject = $comments['comment_subject'];
 		$subject = $tp->toHTML($comments['comment_subject']);
+		
 	}
 	if ($subject == "") {
 		if ($table == "news") {
@@ -204,6 +206,7 @@ if ($action == "reply") {
 				exit;
 			} else {
 				$news = $sql->db_Fetch();
+				$not_parsed_subject = $news['news_title'];
 				$subject = $tp->toHTML($news['news_title']);
 				define(e_PAGETITLE, LAN_100." / ".LAN_99." / ".$subject."");
 				require_once(HEADERF);
@@ -267,7 +270,7 @@ if (ADMIN && getperms("B")) {
 	echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?".$table.".".$id."'>".LAN_314."</a></div><br />";
 }
 	
-$cobj->form_comment($action, $table, $id, $subject, $content_type);
+$cobj->form_comment($action, $table, $id, $not_parsed_subject, $content_type);
 	
 if (!strstr(e_QUERY, "poll")) {
 	$cache = ob_get_contents();
