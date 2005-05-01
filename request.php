@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-04-25 19:53:39 $
-|     $Author: streaky $
+|     $Revision: 1.18 $
+|     $Date: 2005-05-01 16:45:55 $
+|     $Author: qnome $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -43,11 +43,7 @@ if (!is_numeric(e_QUERY)) {
 if(strstr(e_QUERY, "mirror"))
 {
 	list($action, $download_id, $mirror_id) = explode(".", e_QUERY);
-	$qry = "
-	SELECT d.*, dc.download_category_class FROM #download as d
-	LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_id
-	WHERE d.download_id = $download_id;
-	";
+	$qry = "SELECT d.*, dc.download_category_class FROM #download as d LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_id WHERE d.download_id = $download_id;";
 
 	if ($sql->db_Select_gen($qry))
 	{
@@ -119,11 +115,7 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) {
 if ($type == "file")
 {
 
-	$qry = "
-	SELECT d.*, dc.download_category_class FROM #download as d
-	LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_id
-	WHERE d.download_id = $id;
-	";
+	$qry = "SELECT d.*, dc.download_category_class FROM #download as d LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_id WHERE d.download_id = $id;";
 
 	if ($sql->db_Select_gen($qry))
 	{
@@ -180,11 +172,6 @@ if ($type == "file")
 				header("location: ".$gaddress);
 				exit;
 			}
-
-
-
-
-
 
 			//increment download count
 			$sql->db_Update("download", "download_requested=download_requested+1 WHERE download_id='$id' ");
@@ -351,12 +338,7 @@ function check_download_limits()
 	global $pref, $sql, $ns, $HEADER;
 
 	// Check download count limits
-	$qry = "
-	SELECT gen_intdata, gen_chardata, (gen_intdata/gen_chardata) as count_perday
-	FROM #generic
-	WHERE gen_type = 'download_limit' AND gen_datestamp IN (".USERCLASS_LIST.") AND (gen_chardata > 0 AND gen_intdata > 0)
-	ORDER BY count_perday DESC
-	";
+	$qry = "SELECT gen_intdata, gen_chardata, (gen_intdata/gen_chardata) as count_perday FROM #generic WHERE gen_type = 'download_limit' AND gen_datestamp IN (".USERCLASS_LIST.") AND (gen_chardata > 0 AND gen_intdata > 0) ORDER BY count_perday DESC";
 	if($sql->db_Select_gen($qry))
 	{
 		$limits = $sql->db_Fetch();
@@ -371,13 +353,7 @@ function check_download_limits()
 			$where = "dr.download_request_datestamp > $cutoff AND dr.download_request_ip = '$ip'";
 		}
 
-		$qry = "
-		SELECT COUNT(d.download_id) as count
-		FROM #download_requests as dr
-		LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1
-		WHERE {$where}
-		GROUP by dr.download_request_userid
-		";
+		$qry = "SELECT COUNT(d.download_id) as count FROM #download_requests as dr LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1 WHERE {$where} GROUP by dr.download_request_userid";
 		if($sql->db_Select_gen($qry))
 		{
 			$row=$sql->db_Fetch();
@@ -395,12 +371,7 @@ function check_download_limits()
 	}
 
 	// Check download bandwidth limits
-	$qry = "
-	SELECT gen_user_id, gen_ip, (gen_user_id/gen_ip) as bw_perday
-	FROM #generic
-	WHERE gen_type='download_limit' AND gen_datestamp IN (".USERCLASS_LIST.") AND (gen_user_id > 0 AND gen_ip > 0)
-	ORDER BY bw_perday DESC
-	";
+	$qry = "SELECT gen_user_id, gen_ip, (gen_user_id/gen_ip) as bw_perday FROM #generic WHERE gen_type='download_limit' AND gen_datestamp IN (".USERCLASS_LIST.") AND (gen_user_id > 0 AND gen_ip > 0) ORDER BY bw_perday DESC";
 	if($sql->db_Select_gen($qry))
 	{
 		$limit = $sql->db_Fetch();
@@ -414,13 +385,7 @@ function check_download_limits()
 			$ip = $e107->getip();
 			$where = "dr.download_request_datestamp > $cutoff AND dr.download_request_ip = '$ip'";
 		}
-		$qry = "
-		SELECT SUM(d.download_filesize) as total_bw
-		FROM #download_requests as dr
-		LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1
-		WHERE {$where}
-		GROUP by dr.download_request_userid
-		";
+		$qry = "SELECT SUM(d.download_filesize) as total_bw FROM #download_requests as dr LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1 WHERE {$where} GROUP by dr.download_request_userid";
 		if($sql->db_Select_gen($qry))
 		{
 			$row=$sql->db_Fetch();
