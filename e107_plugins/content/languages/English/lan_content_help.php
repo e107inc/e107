@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_help.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-12 11:23:23 $
+|     $Revision: 1.6 $
+|     $Date: 2005-05-01 23:14:26 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -75,8 +75,8 @@ define("CONTENT_ADMIN_HELP_LAN_18", "
 <b>explanation of icons</b><br />
 ".CONTENT_ICON_ORDERALL." manage the global order of content item regardless of category.<br />
 ".CONTENT_ICON_ORDERCAT." manage the order of content items in the specific category.<br />
-<img src='".e_IMAGE."admin_images/up.png' alt=''> the up button allow you to move a content item one up in order.<br />
-<img src='".e_IMAGE."admin_images/down.png' alt=''> the down button allow you to move a content item one down in order.<br />
+<img src='".e_IMAGE."admin_images/up.png' alt='' /> the up button allow you to move a content item one up in order.<br />
+<img src='".e_IMAGE."admin_images/down.png' alt='' /> the down button allow you to move a content item one down in order.<br />
 <br />
 <b>order</b><br />here you can manually set the order of all the categories in this main parent. You need to change the values in the select boxes to the order of your kind and then press the update button below to save the new order.<br />
 ");
@@ -86,8 +86,8 @@ define("CONTENT_ADMIN_HELP_LAN_19", "
 <b>detailed list</b><br />you see the content id, the content author and the content heading. also you see several options to manage the order of the content items.<br />
 <br />
 <b>explanation of icons</b><br />
-<img src='".e_IMAGE."admin_images/up.png' alt=''> the up button allow you to move a content item one up in order.<br />
-<img src='".e_IMAGE."admin_images/down.png' alt=''> the down button allow you to move a content item one down in order.<br />
+<img src='".e_IMAGE."admin_images/up.png' alt='' /> the up button allow you to move a content item one up in order.<br />
+<img src='".e_IMAGE."admin_images/down.png' alt='' /> the down button allow you to move a content item one down in order.<br />
 <br />
 <b>order</b><br />here you can manually set the order of all the categories in this main parent. You need to change the values in the select boxes to the order of your kind and then press the update button below to save the new order.<br />
 ");

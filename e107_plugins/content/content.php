@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.24 $
-|		$Date: 2005-04-28 20:44:00 $
+|		$Revision: 1.25 $
+|		$Date: 2005-05-01 23:14:26 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1592,11 +1592,11 @@ function parse_content_content_table($row){
 
 				if(preg_match_all("/\[newpage.*?]/si", $content_text, $matches)){
 					
-					$pages = preg_split("/\[newpage.*?]/si", $content_text);
+					$pages = preg_split("/\[newpage.*?]/si", $content_text, -1, PREG_SPLIT_NO_EMPTY);
 
-					for ($i=0; $i < count($pages); $i++) {				//remove empty values
-						if(empty($pages[$i])){ unset($pages[$i]); }
-					}
+					//for ($i=0; $i < count($pages); $i++) {				//remove empty values
+					//	if(empty($pages[$i])){ unset($pages[$i]); }
+					//}
 					$pages = array_values($pages);
 					
 					if(count($pages) == count($matches[0])){

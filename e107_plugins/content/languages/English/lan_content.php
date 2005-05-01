@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-04-28 20:45:07 $
+|     $Revision: 1.23 $
+|     $Date: 2005-05-01 23:14:26 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -308,7 +308,7 @@ define("CONTENT_ADMIN_ITEM_LAN_47", "preview again");
 define("CONTENT_ADMIN_ITEM_LAN_48", "main parent");
 define("CONTENT_ADMIN_ITEM_LAN_49", "submitted content items");
 define("CONTENT_ADMIN_ITEM_LAN_50", "no submitted content items");
-define("CONTENT_ADMIN_ITEM_LAN_51", "author details<br /> leave if article written by you");
+define("CONTENT_ADMIN_ITEM_LAN_51", "author details");
 define("CONTENT_ADMIN_ITEM_LAN_52", "submit content item");
 define("CONTENT_ADMIN_ITEM_LAN_53", "meta keywords");
 define("CONTENT_ADMIN_ITEM_LAN_54", "additional data");
@@ -328,23 +328,23 @@ define("CONTENT_ADMIN_ITEM_LAN_67", "Below you'll see the content items listed f
 define("CONTENT_ADMIN_ITEM_LAN_68", "Below you have the ability to add custom data for this content item. Each custom data needs to have both a key and a value data present. You can specify the key in the left field and the corresponding value in the right field.<br />(for instance, key='photography' and value='all photos are made by me'.");
 define("CONTENT_ADMIN_ITEM_LAN_69", "Here you can upload icons, attachments and/or images to go with the content item. The allowed filetypes are : ");
 define("CONTENT_ADMIN_ITEM_LAN_70", "In the next box you can specify specific meta keywords to go with this content item. These meta keywords are rendered in the header of the page. Seperate each word with commas, and no spaces are allowed !");
-define("CONTENT_ADMIN_ITEM_LAN_71", "");
-define("CONTENT_ADMIN_ITEM_LAN_72", "");
-define("CONTENT_ADMIN_ITEM_LAN_73", "");
-define("CONTENT_ADMIN_ITEM_LAN_74", "");
-define("CONTENT_ADMIN_ITEM_LAN_75", "");
-define("CONTENT_ADMIN_ITEM_LAN_76", "");
-define("CONTENT_ADMIN_ITEM_LAN_77", "");
-define("CONTENT_ADMIN_ITEM_LAN_78", "");
-define("CONTENT_ADMIN_ITEM_LAN_79", "");
-define("CONTENT_ADMIN_ITEM_LAN_80", "");
-define("CONTENT_ADMIN_ITEM_LAN_81", "");
-define("CONTENT_ADMIN_ITEM_LAN_82", "");
-define("CONTENT_ADMIN_ITEM_LAN_83", "");
-define("CONTENT_ADMIN_ITEM_LAN_84", "");
-define("CONTENT_ADMIN_ITEM_LAN_85", "");
-define("CONTENT_ADMIN_ITEM_LAN_86", "");
-define("CONTENT_ADMIN_ITEM_LAN_87", "");
+define("CONTENT_ADMIN_ITEM_LAN_71", "leave if item written by you");
+define("CONTENT_ADMIN_ITEM_LAN_72", "define author details");
+define("CONTENT_ADMIN_ITEM_LAN_73", "define a start date for this item (leave if none needed)");
+define("CONTENT_ADMIN_ITEM_LAN_74", "define an end date for this item (leave if none needed)");
+define("CONTENT_ADMIN_ITEM_LAN_75", "upload and assign an icon to go with this item");
+define("CONTENT_ADMIN_ITEM_LAN_76", "upload and assign attachments to go with this item");
+define("CONTENT_ADMIN_ITEM_LAN_77", "upload and assign images to go with this item");
+define("CONTENT_ADMIN_ITEM_LAN_78", "define if comments should be allowed");
+define("CONTENT_ADMIN_ITEM_LAN_79", "define if rating should be allowed");
+define("CONTENT_ADMIN_ITEM_LAN_80", "define if print email icons should be shown");
+define("CONTENT_ADMIN_ITEM_LAN_81", "choose which users see this item");
+define("CONTENT_ADMIN_ITEM_LAN_82", "define a score");
+define("CONTENT_ADMIN_ITEM_LAN_83", "define meta keywords");
+define("CONTENT_ADMIN_ITEM_LAN_84", "define custom data fields (key + value)");
+define("CONTENT_ADMIN_ITEM_LAN_85", "enabled");
+define("CONTENT_ADMIN_ITEM_LAN_86", "disabled");
+define("CONTENT_ADMIN_ITEM_LAN_87", "choose an icon for this category");
 define("CONTENT_ADMIN_ITEM_LAN_88", "");
 define("CONTENT_ADMIN_ITEM_LAN_89", "");
 

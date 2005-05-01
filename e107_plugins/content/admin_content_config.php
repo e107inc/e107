@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.19 $
-|		$Date: 2005-04-28 13:35:17 $
+|		$Revision: 1.20 $
+|		$Date: 2005-05-01 23:14:26 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -22,6 +22,7 @@ require_once("../../class2.php");
 
 if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
 $e_sub_cat = 'content';
+$e_wysiwyg = "content_text";
 
 $lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content.php');
