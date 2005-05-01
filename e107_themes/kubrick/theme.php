@@ -12,6 +12,8 @@
 +---------------------------------------------------------------+
 */
 // [multilanguage]
+
+
 @include_once(e_THEME."kubrick/languages/".e_LANGUAGE.".php");
 @include_once(e_THEME."kubrick/languages/English.php");
 
@@ -29,6 +31,39 @@ $csscompliant = TRUE;
 define("IMODE", "lite");
 define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
 
+if(!defined("e_THEME")){ exit; }
+$page=substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
+define("e_PAGE", $page);
+
+ 
+require_once(e_HANDLER."shortcode_handler.php");
+$tp -> e_sc = new e_shortcode;
+$ulinc = file_get_contents(THEME."ul.sc");
+$tp -> e_sc -> scList['ULINC'] = $ulinc;
+
+
+function theme_head() {
+	global $logo;
+	return "<link rel='stylesheet' type='text/css' href='".THEME."style.css' />
+	<link rel='stylesheet' type='text/css' href='".THEME."01_navigation.css' />
+	<link rel='stylesheet' type='text/css' href='".THEME."nicetitle.css' />
+	<script type='text/javascript' src='".THEME."nicetitle.js'></script>
+
+<style type='text/css'>
+
+#header{
+	position: relative;
+	/*  width: 700px;
+	height: 151px;
+	margin: auto;
+	background: url(".THEME."images/01_header0".$logo.".jpg) no-repeat; */
+}
+
+</style>
+";
+}
+
+
 // [layout]
 
 $layout = "_default";
@@ -40,11 +75,13 @@ $HEADER = "<div id='page'>
 <br /><br /><br /><br /><br />
 <div class='sitetag'>{SITETAG}</div>
 </div>
+<div id='navigation'>
+<h3 class='hidden'>Navigation</h3>
+{ULINC}
 </div>
-<div class='sitelinks'>{SITELINKS}</div>
-<hr />
-<div id='content' class='narrowcolumn'> 
-";
+</div>
+<div class='sitelinks' style='display:none;'>{SITELINKS}</div>
+<div id='content' class='narrowcolumn'>";
 
 $FOOTER = "
 </div> 
@@ -67,11 +104,15 @@ $CUSTOMHEADER = "<div id='page2'>
 <br /><br /><br /><br /><br />
 <div class='sitetag'>{SITETAG}</div>
 </div>
+<div id='navigation'>
+<h3 class='hidden'>Navigation</h3>
+{ULINC}
 </div>
-<div class='sitelinks'>{SITELINKS}</div>
+</div>
 <hr />
-<div id='content' class='widecolumn'> 
-";
+<div id='content' class='widecolumn'>";
+// <div class='sitelinks'>{SITELINKS}</div>
+
 
 $CUSTOMFOOTER = "
 </div> 
