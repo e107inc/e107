@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-04-29 11:36:55 $
+|     $Revision: 1.37 $
+|     $Date: 2005-05-01 20:02:35 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -163,7 +163,6 @@ if (isset($_POST['adduser'])) {
 }
 
 
-
 if ($_POST['useraction'] == "ban") {
 	$sub_action = $_POST['userid'];
 	$sql->db_Select("user", "*", "user_id='$sub_action'");
@@ -173,6 +172,7 @@ if ($_POST['useraction'] == "ban") {
 		$user->show_message(USRLAN_7);
 	} else {
 		$sql->db_Update("user", "user_ban='1' WHERE user_id=$sub_action");
+		$sql -> db_Insert("banlist", "'".$user_ip."', '".USERID."', '".$user_name."' ");
 		$user->show_message(USRLAN_8);
 	}
 	$action = "main";
@@ -181,7 +181,11 @@ if ($_POST['useraction'] == "ban") {
 
 if ($_POST['useraction'] == "unban") {
 	$sub_action = $_POST['userid'];
+	$sql->db_Select("user", "*", "user_id='$sub_action'");
+	$row = $sql->db_Fetch();
+	extract($row);
 	$sql->db_Update("user", "user_ban='0' WHERE user_id='$sub_action' ");
+	$sql -> db_Delete("banlist", " banlist_ip='$user_ip' ");
 	$user->show_message(USRLAN_9);
 	$action = "main";
 	$sub_action = "user_id";
@@ -419,7 +423,12 @@ class users
 				}else{
 					$text .= $row[$disp]."&nbsp;";
 				}
+				if($row[$disp] == $prev[$disp] && $prev[$disp] != ""){ // show matches
+					$text .= " <b>*</b>";
+				}
+
 				$text .= "</td>";
+			$prev[$disp] = $row[$disp];
 	}
 // -------------------------------------------------------------
 
