@@ -1,28 +1,16 @@
 /*   
 	Kubrick v1.2.5  for  e107
 	 http://binarybonsai.com/kubrick/
-
 	This theme was designed and built by Michael Heilemann,
 	whose blog you will find at http://binarybonsai.com/
-
 	The CSS, XHTML and design is released under GPL:
 	http://www.opensource.org/licenses/gpl-license.php
-	
-
 	*** REGARDING IMAGES ***
 	All CSS that involves the use of images, can be found in the 'index.php' file.
 	This is to ease installation inside subdirectories of a server.
-
 	Have fun, and don't be afraid to contact me if you have questions.
 */
 
-.sitelinks { text-align: center; font: 10px 'Lucida Grande', Verdana, Arial, Sans-Serif; padding: 2px 0 2px 20px; margin: 5px 0 0 5px; width: 700px; }
-.sitetag {
-	font-size: 1.2em;
-	text-align: center;
-	margin-top: -60px;
-	color: #ffffff;
-}
 
 /* Begin Typography & Colors */
 body {
@@ -33,10 +21,6 @@ body {
 	text-align: center;
 }
 
-.mediumtext {
-	
-	font: 12px 'Lucida Grande', Verdana, Arial, Sans-Serif;
-}
 
 #page {
 	background-color: white;
@@ -51,6 +35,29 @@ body {
 #content {
 	font-size: 1.2em
 	}
+
+/* ul navigation added by que~ */
+#navigation{
+	font-size: 11px;
+	width: 694px;
+	height: 22px;
+	position: absolute;
+	top: 178px;
+	left: 13px;
+
+}
+#navigation ul{
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+#navigation li{
+	text-align:center;
+	background: none;
+
+}
+/* end ul navigation */
+
 
 .widecolumn .entry p {
 	font-size: 1.05em;
@@ -298,7 +305,7 @@ body {
 h1 {
 	padding-top: 70px;
 	margin: 0;
-	}
+}
 
 .description {
 	text-align: center;
@@ -322,7 +329,10 @@ h3 {
 	padding: 0;
 	margin: 30px 0 0;
 	}
-
+/* move content h3 to the left */
+#content h3{
+	text-align:left;
+}
 h3.comments {
 	padding: 0;
 	margin: 40px auto 20px ;
@@ -535,11 +545,6 @@ select {
 	margin: 0;
 	}
 
-.smalltext {
-	font: 1em 'Lucida Grande', Verdana, Arial, Sans-Serif;
-}
-
-
 /* End Sidebar */
 
 
@@ -585,7 +590,13 @@ a img {
 	text-align: center;
 	margin-top: 10px;
 	margin-bottom: 60px;
-	}
+}
+
+
+.hidden{
+	display:none;
+}
+
 /* End Various Tags & Classes*/
 
 body	 	{ background: url("images/kubrickbgcolor.jpg"); }
@@ -593,6 +604,25 @@ body	 	{ background: url("images/kubrickbgcolor.jpg"); }
 #page2		{ background: url("images/kubrickbgwide.jpg") repeat-y top; border: none; }
 #header 	{ background: url("images/kubrickheader.jpg") no-repeat bottom center; }
 #footer 	{ background: url("images/kubrickfooter.jpg") no-repeat bottom; border: none;}
+
+
+/* e107 classes */
+
+.sitelinks { text-align: center; font: 10px 'Lucida Grande', Verdana, Arial, Sans-Serif; padding: 2px 0 2px 20px; margin: 5px 0 0 5px; width: 700px; }
+.sitetag {
+	font-size: 1.2em;
+	text-align: center;
+	margin-top: -60px;
+	color: #ffffff;
+}
+
+.smalltext {
+	font: 1em 'Lucida Grande', Verdana, Arial, Sans-Serif;
+}
+
+.mediumtext {
+	font: 12px 'Lucida Grande', Verdana, Arial, Sans-Serif;
+}
 
 .tbox{
 	background-color: #F4F7FA;
@@ -648,6 +678,7 @@ td {
 	color:#000;
 	padding: 4px;
 	border: #ededed 1px solid;
+
 }
 
 .forumborder{
@@ -656,13 +687,21 @@ td {
 }
 
 .fcaption {
+	height:35px;
 	border: #ededed 1px solid;
 	padding: 2px 0 2px 8px;
-	background-color: #e5f2ff;
+	background-color: #68ADE5;
 	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
-	color:#616060;
-}
+	color:#fff;
+	font-weight:bold;
+	background-image: url("images/tileage.jpg");
 
+}
+.fcaption a{
+	padding-right:4px;
+	color:#fff;
+
+}
 
 
 /* "Daisy, Daisy, give me your answer do. I'm half crazy all for the love of you.
