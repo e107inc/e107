@@ -1,0 +1,149 @@
+/*THIS PART IS FOR THE NAVIGATION LINKS*/
+.nav1 a:link, .nav1 a:visited, .nav2 a:link, .nav2 a:visited, .nav3 a:link, .nav3 a:visited, .nav4 a:link, .nav4 a:visited, .nav5 a:link, .nav5 a:visited, .nav6 a:link, .nav6 a:visited, .nav7 a:link, .nav7 a:visited, .nav8 a:link, .nav8 a:visited{
+	color: #4E4E4E;
+	width: 80px;
+	height: 20px;
+	line-height: 20px;
+	background: url(images/01_linkbg2.gif) top repeat-y;
+	padding: 0;
+}
+
+.nav1_onpage a:link, .nav1_onpage a:visited, .nav2_onpage a:link, .nav2_onpage a:visited, .nav3_onpage a:link, .nav3_onpage a:visited, .nav4_onpage a:link, .nav4_onpage a:visited, .nav5_onpage a:link, .nav5_onpage a:visited, .nav6_onpage a:link, .nav6_onpage a:visited, .nav7_onpage a:link, .nav7_onpage a:visited, .nav8_onpage a:link, .nav8_onpage a:visited{
+	color: #4E4E4E;
+	width: 80px;
+	height: 20px;
+	line-height: 20px;
+	background: url(images/01_linkbg2.gif) top repeat-y;
+	padding: 0;
+}
+
+.nav1 a:link, .nav1 a:visited, .nav1_onpage a:link, .nav1_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 14px;
+}
+
+.nav2 a:link, .nav2 a:visited, .nav2_onpage a:link, .nav2_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 96px;
+}
+.nav3 a:link, .nav3 a:visited, .nav3_onpage a:link, .nav3_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 178px;
+}
+
+.nav4 a:link, .nav4 a:visited, .nav4_onpage a:link, .nav4_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 260px;
+}
+
+.nav5 a:link, .nav5 a:visited, .nav5_onpage a:link, .nav5_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 342px;
+}
+
+.nav6 a:link, .nav6 a:visited, .nav6_onpage a:link, .nav6_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 424px;
+}
+
+.nav7 a:link, .nav7 a:visited, .nav7_onpage a:link, .nav7_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 506px;
+}
+
+.nav8 a:link, .nav8 a:visited, .nav8_onpage a:link, .nav8_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 588px;
+}
+
+
+
+/*HOVER EFFECTS*/
+.nav1 a:hover, .nav1 a:active,
+.nav2 a:hover, .nav2 a:active,
+.nav3 a:hover, .nav3 a:active,
+.nav4 a:hover, .nav4 a:active,
+.nav5 a:hover, .nav5 a:active,
+.nav6 a:hover, .nav6 a:active,
+.nav7 a:hover, .nav7 a:active,
+.nav8 a:hover, .nav8 a:active{
+	background: url(images/01_linkbg1.gif) top repeat-y;
+	margin: 1px 0 0 0;
+}
+
+/*USE A DIFFERENT COLOR WHEN USER IS ON THAT PAGE*/
+
+.nav1_onpage a:link, .nav1_onpage a:visited,
+.nav2_onpage a:link, .nav2_onpage a:visited,
+.nav3_onpage a:link, .nav3_onpage a:visited,
+.nav4_onpage a:link, .nav4_onpage a:visited,
+.nav5_onpage a:link, .nav5_onpage a:visited,
+.nav6_onpage a:link, .nav6_onpage a:visited,
+.nav7_onpage a:link, .nav7_onpage a:visited,
+.nav8_onpage a:link, .nav8_onpage a:visited{
+	background: url(images/01_linkbg1.gif) top repeat-y;
+}
+
+/*THE FOLLOWING PART IS FOR THE FONT CONTROL*/
+#fontcontrol{
+	background: none;
+	width: 66px;
+	height: 18px;
+	position: absolute;
+	top: 18px;
+	left: 615px;
+}
+#fontcontrol ul{
+	background: none;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+#fontcontrol li{
+	background: none;
+}
+#fontcontrol i{
+	display: block;
+	visibility: hidden;
+}
+.font1 a:link, .font1 a:visited{
+	width: 18px;
+	height: 18px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: url(images/01_font1.gif) no-repeat;
+}
+.font2 a:link, .font2 a:visited{
+	width: 18px;
+	height: 18px;
+	position: absolute;
+	top: 0;
+	left: 22px;
+	background: url(images/01_font2.gif) no-repeat;
+}
+.font3 a:link, .font3 a:visited{
+	width: 18px;
+	height: 18px;
+	position: absolute;
+	top: 0;
+	left: 44px;
+	background: url(images/01_font3.gif) no-repeat;
+}
+.font1 a:hover, .font1 a:active{
+	background-position: 0 -18px;
+}
+.font2 a:hover, .font2 a:active{
+	background-position: 0 -18px;
+}
+.font3 a:hover, .font3 a:active{
+	background-position: 0 -18px;
+}
