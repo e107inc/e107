@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-04-15 16:38:43 $
+|     $Revision: 1.10 $
+|     $Date: 2005-05-01 04:37:02 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -38,6 +38,10 @@ if (isset($_POST['updatesettings'])) {
 	$pref['eventpost_dateformat'] = $_POST['eventpost_dateformat'];	
 	$pref['eventpost_weekstart'] = $_POST['eventpost_weekstart'];
 	$pref['eventpost_lenday'] = $_POST['eventpost_lenday'];			
+	$pref['eventpost_mailsubject'] = $_POST['eventpost_mailsubject'];			
+	$pref['eventpost_mailfrom'] = $_POST['eventpost_mailfrom'];		
+	$pref['eventpost_mailaddress'] = $_POST['eventpost_mailaddress'];
+	$pref['eventpost_asubs'] = $_POST['eventpost_asubs'];
 	save_prefs();
 	$message = EC_LAN_75; // "Calendar settings updated.";
 }
@@ -135,7 +139,33 @@ $text = "<div style='text-align:center'>
 	($pref['eventpost_dateformat']=='ym'?" selected='selected' ":"")." />".EC_LAN_120."</option>
 	</select>
 	</td>
-	</tr>   
+	</tr>
+	
+		<tr>
+	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A95."</td>
+	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_asubs' value='1' ".
+	($pref['eventpost_asubs']==1?" checked='checked' ":"")." /><br /><span class='smalltext'><em>".EC_ADLAN_A96."</em></span>
+	</td>
+	</tr>
+	
+	<tr>
+	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A92."</td>
+	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_mailfrom' size='40' value='".$pref['eventpost_mailfrom']."' maxlength='100' />
+	</td>
+	</tr>  
+
+	<tr>
+	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A91."</td>
+	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_mailsubject' size='40' value='".$pref['eventpost_mailsubject']."' maxlength='100' />
+	</td>
+	</tr>  
+
+	<tr>
+	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A93."</td>
+	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_mailaddress' size='40' value='".$pref['eventpost_mailaddress']."' maxlength='100' />
+	</td>
+	</tr>  
+
 	<tr style='vertical-align:top'>
 	<td colspan='2'  style='text-align:left' class='fcaption'>
 	<input class='button' type='submit' name='updatesettings' value='".EC_LAN_77."' />

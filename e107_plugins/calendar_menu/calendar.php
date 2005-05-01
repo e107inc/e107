@@ -11,34 +11,31 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-04-15 15:22:52 $
+|     $Revision: 1.11 $
+|     $Date: 2005-05-01 04:37:02 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */ 
 // *BK* Comments or notes added by Barry are prefixed by  *BK*
 // get current date information ---------------------------------------------------------------------
 require_once("../../class2.php");
-require_once(HEADERF);
+if (isset($_POST['viewallevents']))
+{
+    Header("Location: " . e_PLUGIN . "calendar_menu/event.php?" . $_POST['enter_new_val']);
+} 
+if (isset($_POST['doit']))
+{
+    Header("Location: " . e_PLUGIN . "calendar_menu/event.php?ne." . $_POST['enter_new_val']);
+}
+if (isset($_POST['subs']))
+{
+    Header("Location: " . e_PLUGIN . "calendar_menu/subscribe.php");
+} 
 
 $ec_dir = e_PLUGIN . "calendar_menu/";
 $lan_file = $ec_dir . "languages/" . e_LANGUAGE . ".php";
 include(file_exists($lan_file) ? $lan_file : e_PLUGIN . "calendar_menu/languages/English.php");
 define("PAGE_NAME", EC_LAN_121);
-// *
-// *  *BK* Set up userclass list that the person belongs to. 0 for everyone, if logged in then also in 254
-// *  *BK* Members only 253
-// *  *BK* Guest only is 252
-// *  *BK* Inactive is 255
-if (USER)
-{
-    $cal_class .= "0,253," . USERCLASS;
-} 
-else
-{
-    $cal_class = "0,252";
-} 
-
 // *
 // *  *BK* See if they in are calendar supervisor class -they will have access to extra things like editing records see all categories etc
 // *  *BK* This means a specific userclass can be defined as an administrator of calendar rather than just any person with admin rights
@@ -46,15 +43,7 @@ $cal_super = check_class($pref['eventpost_super']);
 // *
 $num = $_POST['num'];
 
-if (isset($_POST['viewallevents']))
-{
-    Header("Location: " . e_PLUGIN . "calendar_menu/event.php?" . $_POST['enter_new_val']);
-} 
-
-if (isset($_POST['doit']))
-{
-    Header("Location: " . e_PLUGIN . "calendar_menu/event.php?ne." . $_POST['enter_new_val']);
-} 
+require_once(HEADERF);
 /* moved to top of file
 $ec_dir = e_PLUGIN . "calendar_menu/";
 $lan_file = $ec_dir . "languages/" . e_LANGUAGE . ".php";
@@ -159,7 +148,7 @@ $current = mktime(0, 0, 0, $nowmonth, 1, $nowyear);
 // #### Check for access.
 // ------------ Navigation Buttons. ------------------------------------------------------
 $nav_text = "<br />
-	<form method='post' action='" . e_SELF . "?" . e_QUERY . "'>
+	<form method='post' action='" . e_SELF . "?" . e_QUERY . "' id='calform'>
 	<table border='0' cellpadding='2' cellspacing='3' class='forumheader3'>
 	<tr>
 	<td align='right'>
@@ -167,7 +156,7 @@ $nav_text = "<br />
 	<option value='all'>" . EC_LAN_97 . "</option>";
 
 $event_cat_id = !isset($_POST['event_cat_ids'])? null : $_POST['event_cat_ids'];
-$sql->db_Select("event_cat", "*", " find_in_set(event_cat_class,'$cal_class') ");
+$sql->db_Select("event_cat", "*", " find_in_set(event_cat_class,'".USERCLASS_LIST."') ");
 
 while ($row = $sql->db_Fetch())
 {
@@ -203,6 +192,8 @@ if (check_class($pref['eventpost_admin']) || getperms('0'))
 // end admin preference activated.
 $nav_text .= "</td>
 	</tr>
+	<tr><td align='center' colspan='2'><input class='button' type='submit' style='width:140px;' name='subs' value='" . EC_LAN_123 . "' /></td>
+	</tr>
 	</table>
 	</form>
 	<br />"; 
@@ -231,7 +222,7 @@ else
 			FROM #event as e
 			LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
 			WHERE ((e.event_start >= {$monthstart} AND e.event_start <= {$monthend}) OR (e.event_end >= {$monthstart} AND e.event_end <= {$monthend}) OR e.event_rec_y = {$month})
-			AND find_in_set(event_cat_class,'$cal_class') 
+			AND find_in_set(event_cat_class,'".USERCLASS_LIST."') 
 			ORDER BY e.event_start";
 } 
 if ($sql->db_Select_gen($qry))

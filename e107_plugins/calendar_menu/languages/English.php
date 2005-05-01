@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: English.php,v 1.8 2005-04-15 15:23:42 mcfly_e107 Exp $
+// $Id: English.php,v 1.9 2005-05-01 04:37:13 mcfly_e107 Exp $
 	
 	
 define('EC_ADLAN_1', "Event Calendar");
@@ -161,6 +161,16 @@ define('EC_LAN_119', "month/year");
 define('EC_LAN_120', "year/month");
 define('EC_LAN_121', "Show Calendar");	
 define('EC_LAN_122', "Css element to show events on this day (menu)");	
+define('EC_LAN_123', "Subscriptions");
+define('EC_LAN_124', "Calendar Subscriptions");
+define('EC_LAN_125', "Categories available for subscription");
+define('EC_LAN_126', "Subscribed");
+define('EC_LAN_127', "Category");
+define('EC_LAN_128', "No categories available to subscribe to");
+define('EC_LAN_129', "Update");
+define('EC_LAN_130', "Subscriptions updated");
+define('EC_LAN_131', "Return");
+define('EC_LAN_132', "Expand details");
 
 define('EC_ADLAN_A10', "Configuration");
 define('EC_ADLAN_A11', "Categories");
@@ -192,4 +202,21 @@ define('EC_ADLAN_A35', "");
 define('EC_ADLAN_A59', "Category is in use. Can not delete.");
 
 define('EC_ADLAN_A80', "Visible to");
+define('EC_ADLAN_A81', "Allow subscription");
+define('EC_ADLAN_A82', "Force notification to this class");
+define('EC_ADLAN_A83', "Days ahead to notify of event");
+define('EC_ADLAN_A84', "Advanced message");
+define('EC_ADLAN_A85', "Message on the day");
+define('EC_ADLAN_A86', "Send email");
+define('EC_ADLAN_A87', "None");
+define('EC_ADLAN_A88', "Only advanced");
+define('EC_ADLAN_A89', "Only on the day");
+define('EC_ADLAN_A90', "Advanced and on the day");
+define('EC_ADLAN_A91', "Email Subject");
+define('EC_ADLAN_A92', "Email from (name)");
+define('EC_ADLAN_A93', "Email from email address");
+define('EC_ADLAN_A94', "Add new event class");
+define('EC_ADLAN_A95', "Enable subscriptions");
+define('EC_ADLAN_A96', "Disabling this removes the subscriptions button and overrides the category subscription setting.");
+define('EC_ADLAN_A97', "If set to force subscriptions this category will not be displayed in the available subscription list for the user.");
 ?>
