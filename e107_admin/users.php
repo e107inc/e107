@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-05-01 20:02:35 $
+|     $Revision: 1.38 $
+|     $Date: 2005-05-01 22:02:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -59,10 +59,10 @@ $from = ($from ? $from : 0);
 $amount = 30;
 
 if (isset($_POST['resend_mail'])) {
-	$id = $_POST['resend_id'];
+	$tid = $_POST['resend_id'];
 	$key = $_POST['resend_key'];
 	$name = $_POST['resend_name'];
-	define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$id.".".$key : SITEURL."/signup.php?activate.".$id.".".$key));
+	define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$tid.".".$key : SITEURL."/signup.php?activate.".$tid.".".$key));
 
 	$message = USRLAN_114." ".$_POST['resend_name']."\n\n".USRLAN_122." ".SITENAME."\n".USRLAN_123."\n\n".USRLAN_124."...\n\n";
 	$message .= RETURNADDRESS . "\n\n".USRLAN_115."\n\n ".USRLAN_125." ".SITENAME."\n".SITEURL;
@@ -71,7 +71,7 @@ if (isset($_POST['resend_mail'])) {
 	sendemail($_POST['resend_email'], USRLAN_113." ".SITENAME, $message);
 	//  echo str_replace("\n","<br>",$message);
 	$user->show_message("Email Re-sent to: ".$name);
-	unset($id, $action, $sub_cation);
+	unset($tid);
 }
 
 if (isset($_POST['test_mail'])) {
@@ -164,39 +164,38 @@ if (isset($_POST['adduser'])) {
 
 
 if ($_POST['useraction'] == "ban") {
-	$sub_action = $_POST['userid'];
-	$sql->db_Select("user", "*", "user_id='$sub_action'");
+  //	$sub_action = $_POST['userid'];
+	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	 extract($row);
 	if ($user_perms == "0") {
 		$user->show_message(USRLAN_7);
 	} else {
-		$sql->db_Update("user", "user_ban='1' WHERE user_id=$sub_action");
+		$sql->db_Update("user", "user_ban='1' WHERE user_id='".$_POST['userid']."' ");
 		$sql -> db_Insert("banlist", "'".$user_ip."', '".USERID."', '".$user_name."' ");
 		$user->show_message(USRLAN_8);
 	}
-	$action = "main";
-	$sub_action = "user_id";
+	if(!$action){ $action = "main"; }
+	if(!$sub_action){$sub_action = "user_id"; }
 }
 
 if ($_POST['useraction'] == "unban") {
-	$sub_action = $_POST['userid'];
-	$sql->db_Select("user", "*", "user_id='$sub_action'");
+	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	extract($row);
-	$sql->db_Update("user", "user_ban='0' WHERE user_id='$sub_action' ");
+	$sql->db_Update("user", "user_ban='0' WHERE user_id='".$_POST['userid']."' ");
 	$sql -> db_Delete("banlist", " banlist_ip='$user_ip' ");
 	$user->show_message(USRLAN_9);
-	$action = "main";
-	$sub_action = "user_id";
+	if(!$action){ $action = "main"; }
+	if(!$sub_action){$sub_action = "user_id"; }
 }
 
 
 if ($_POST['useraction'] == 'resend') {
-	$sub_action = $_POST['userid'];
-	if ($sql->db_Select("user", "*", "user_id='$sub_action' ")) {
+	$qry = (e_QUERY) ? "?".e_QUERY : "";
+	if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
 		$resend = $sql->db_Fetch();
-		$text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
+		$text .= "<form method='post' action='".e_SELF.$qry."'><div style='text-align:center'>\n";
 		$text .= USRLAN_116." <b>".$resend['user_name']."</b><br /><br />
 
 			<input type='hidden' name='resend_id' value='$sub_action' />\n
@@ -206,34 +205,39 @@ if ($_POST['useraction'] == 'resend') {
 			<input class='button' type='submit' name='resend_mail' value='".USRLAN_112."' />\n</div></form>\n";
 		$caption = USRLAN_112;
 		$ns->tablerender($caption, $text);
+		require_once("footer.php");
+		exit;
 	}
 }
 
 if ($_POST['useraction'] == 'test') {
-	$sub_action = $_POST['userid'];
-	if ($sql->db_Select("user", "*", "user_id='$sub_action' ")) {
+	$qry = (e_QUERY) ? "?".e_QUERY : "";
+	if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
 		$test = $sql->db_Fetch();
-		$text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
+		$text .= "<form method='post' action='".e_SELF.$qry."'><div style='text-align:center'>\n";
 		$text .= USRLAN_117." <br /><b>".$test['user_email']."</b><br /><br />
 			<input type='hidden' name='test_email' value='".$test['user_email']."' />\n
 			<input class='button' type='submit' name='test_mail' value='".USRLAN_118."' />\n</div></form>\n";
 		$caption = USRLAN_118;
 		$ns->tablerender($caption, $text);
+		require_once("footer.php");
+		exit;
 	}
 }
 
 if ($_POST['useraction'] == 'deluser') {
-	$sub_action = $_POST['userid'];
 	if ($_POST['confirm']) {
-		if ($sql->db_Delete("user", "user_id=$sub_action AND user_perms != '0'")) {
+		if ($sql->db_Delete("user", "user_id='".$_POST['userid']."' AND user_perms != '0'")) {
 			$user->show_message(USRLAN_10);
 		}
-		$sub_action = "user_id";
-		$id = "DESC";
+		if(!$sub_action){ $sub_action = "user_id"; }
+		if(!$id){ $id = "DESC"; }
+
 	} else {
-		if ($sql->db_Select("user", "*", "user_id='$sub_action' ")) {
+		if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
 			$row = $sql->db_Fetch();
-			$text .= "<form method='post' action='".e_SELF."'><div style='text-align:center'>\n";
+			$qry = (e_QUERY) ? "?".e_QUERY : "";
+			$text .= "<form method='post' action='".e_SELF.$qry."'><div style='text-align:center'>\n";
 			$text .= "<div>
 				<input type='hidden' name='useraction' value='deluser' />
 				<input type='hidden' name='userid' value='{$row['user_id']}' /></div>". USRLAN_13."
@@ -241,7 +245,7 @@ if ($_POST['useraction'] == 'deluser') {
 				<br /><br />
 				<input type='submit' class='button' name='confirm' value='".USRLAN_17."' />
 				&nbsp;&nbsp;
-				<input type='submit' class='button' name='cancel' value='".LAN_CANCEL."' />
+				<input type='button' class='button' name='cancel' value='".LAN_CANCEL."' onclick=\"location.href='".e_SELF.$qry."' \"/>
 				</div>
 				</form>
 				";
@@ -253,40 +257,37 @@ if ($_POST['useraction'] == 'deluser') {
 }
 
 if ($_POST['useraction'] == "admin") {
-	$sub_action = $_POST['userid'];
-	$sql->db_Select("user", "*", "user_id='$sub_action'");
+	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	 extract($row);
-	$sql->db_Update("user", "user_admin='1' WHERE user_id=$sub_action");
+	$sql->db_Update("user", "user_admin='1' WHERE user_id='".$_POST['userid']."' ");
 	$user->show_message($user_name." ".USRLAN_3." <a href='".e_ADMIN."administrator.php?edit.$sub_action'>".USRLAN_4."</a>");
-	$action = "main";
-	$sub_action = "user_id";
-	$id = "DESC";
+	if(!$action){ $action = "main"; }
+	if(!$sub_action){ $sub_action = "user_id"; }
+	if(!$id){ $id = "DESC"; }
 }
 
 if ($_POST['useraction'] == "unadmin") {
-	$sub_action = $_POST['userid'];
-	$sql->db_Select("user", "*", "user_id='$sub_action'");
+	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	 extract($row);
 	if ($user_perms == "0") {
 		$user->show_message(USRLAN_5);
 	} else {
-		$sql->db_Update("user", "user_admin='0' WHERE user_id=$sub_action");
+		$sql->db_Update("user", "user_admin='0' WHERE user_id='".$_POST['userid']."'");
 		$user->show_message($user_name." ".USRLAN_6);
-		$action = "main";
-		$sub_action = "user_id";
-		$id = "DESC";
+	if(!$action){ $action = "main"; }
+	if(!$sub_action){ $sub_action = "user_id"; }
+	if(!$id){ $id = "DESC"; }
 	}
 }
 
 if ($_POST['useraction'] == "verify") {
-	$sub_action = $_POST['userid'];
-	if ($sql->db_Update("user", "user_ban='0' WHERE user_id=$sub_action")) {
+	if ($sql->db_Update("user", "user_ban='0' WHERE user_id='".$_POST['userid']."' ")) {
 		$user->show_message(USRLAN_86);
-		$action = "main";
-		$sub_action = "user_id";
-		$id = "DESC";
+	if(!$action){ $action = "main"; }
+	if(!$sub_action){ $sub_action = "user_id"; }
+	if(!$id){ $id = "DESC"; }
 	}
 }
 
@@ -299,6 +300,14 @@ if ($action == "cu" && is_numeric($sub_action)) {
 	$action = "main";
 	$sub_action = "user_id";
 }
+
+/*
+echo "action= ".$action."<br />";
+echo "subaction= ".$sub_action."<br />";
+echo "id= ".$id."<br />";
+echo "from= ".$from."<br />";
+echo "amount= ".$amount."<br />";
+*/
 
 if (!e_QUERY || $action == "main") {
 	$user->show_existing_users($action, $sub_action, $id, $from, $amount);
@@ -431,14 +440,15 @@ class users
 			$prev[$disp] = $row[$disp];
 	}
 // -------------------------------------------------------------
-
+				if(e_QUERY){ $qry = "?".e_QUERY; }
 				$text .= "
-					<td style='width:30%; text-align:center' class='forumheader3'>
-					<form method='post' action='".e_SELF."'>
+					<td style='width:30%;text-align:center' class='forumheader3'>
+					<form method='post' action='".e_SELF.$qry."'>
 					<div>
+
 					<input type='hidden' name='userid' value='{$user_id}' />
 					<input type='hidden' name='userip' value='{$user_ip}' />
-					<select name='useraction' onchange='this.form.submit()' class='tbox'>
+					<select name='useraction' onchange='this.form.submit()' class='tbox' style='width:75%'>
 					<option selected='selected' value=''></option>";
 
 				if ($user_perms != "0") {
