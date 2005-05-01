@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-14 16:40:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-05-01 21:26:29 $
+|     $Author: qnome $
 +----------------------------------------------------------------------------+
 */
 
@@ -151,6 +151,6 @@ $USER_FULL_TEMPLATE = "
 	</td>
 </tr>
 
-</table>
+</table></div>
 ";
 ?>
