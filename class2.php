@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.113 $
-|     $Date: 2005-04-30 18:22:37 $
+|     $Revision: 1.114 $
+|     $Date: 2005-05-01 14:32:09 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -733,7 +733,6 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 
 			foreach ($pref as $key => $prefvalue) {
 				$pref[$key] = $tp->toDB($prefvalue, true);
-				$pref[$key] = str_replace('©', '&copy;', $pref[$key]);
 			}
 
 			// Create the data to be stored
