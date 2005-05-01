@@ -1,0 +1,31 @@
+/*Nice Titles*/
+.nicetitle {
+	font-weight: bold;
+	color: #3C3C3C;
+	text-align: left;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 25em;
+	z-index: 20;
+	max-width: 50%;
+}
+.nicetitle-content{
+	overflow: hidden;
+	background: white;
+	border: 1px solid #333;
+	padding: 5px;
+	opacity: 0.9;
+}
+.nicetitle p{
+	margin: 0;
+	line-height: 120%;
+}
+.nicetitle p.destination {
+	font-weight: normal;
+	font-size: 10px;
+	color: #5E7743;
+}
+div.nicetitle p span.accesskey {
+	color: #FF7200;
+}
