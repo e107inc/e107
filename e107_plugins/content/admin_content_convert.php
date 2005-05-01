@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_convert.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2005-04-28 10:26:59 $
+|		$Revision: 1.6 $
+|		$Date: 2005-05-01 20:31:15 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -32,8 +32,18 @@ require_once(e_PLUGIN."content/handlers/content_class.php");
 $aa = new content;
 global $tp;
 
+if (e_QUERY){
+	$tmp = explode(".", e_QUERY);
+	$action = $tmp[0];
+	$sub_action = $tmp[1];
+	$id = $tmp[2];
+	unset($tmp);
+}
+
+$plugintable = "pcontent";
+
 if(isset($_POST['convert_table'])){
-	$plugintable = "pcontent";
+	
 	$text = "";
 	$textcontent = "";
 	$textreview = "";
@@ -72,6 +82,7 @@ if(isset($_POST['convert_table'])){
 					while($row = $sql -> db_Fetch()){
 						extract($row);
 						$bug_unknownrows[] = $content_id." ".$content_heading." - parent=".$content_parent." - type=".$content_type;
+						$unknownrows[] = $content_id;
 					}
 
 					//content page:		$content_parent == "0" && $content_type == "1"
@@ -103,11 +114,15 @@ if(isset($_POST['convert_table'])){
 							list($content_main_id) = $sql3 -> db_Fetch();
 
 							//insert default prefs into the main content cat
-							unset($content_pref, $tmp);
-							$content_pref = $aa -> ContentDefaultPrefs($content_main_id);
-							$tmp = addslashes(serialize($content_pref));
-							if(!is_object($sql4)){ $sql4 = new db; }
-							$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$content_main_id' ");
+							//unset($content_pref, $tmp);
+							//$content_pref = $aa -> ContentDefaultPrefs($content_main_id);
+							//$tmp = addslashes(serialize($content_pref));
+							//if(!is_object($sql4)){ $sql4 = new db; }
+							//$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$content_main_id' ");
+							
+							insert_default_prefs($content_main_id);
+							$aa -> CreateParentMenu($content_main_id);
+
 							$content_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_0." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
 						}
 					}else{
@@ -117,6 +132,7 @@ if(isset($_POST['convert_table'])){
 		$content_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_9." ".CONTENT_ADMIN_CONVERSION_LAN_0." ".CONTENT_ADMIN_CONVERSION_LAN_10."<br />";
 	}
 	
+
 
 	// ##### STAGE 3 : INSERT MAIN PARENT FOR REVIEW ----------------------------------------------
 	$mainparentreview = "0";
@@ -140,13 +156,17 @@ if(isset($_POST['convert_table'])){
 							list($review_main_id) = $sql3 -> db_Fetch();
 
 							//insert default prefs into the main review cat
-							unset($content_pref, $tmp);
-							$content_pref = $aa -> ContentDefaultPrefs($review_main_id);
-							$tmp = addslashes(serialize($content_pref));
-							if(!is_object($sql4)){ $sql4 = new db; }
-							$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$review_main_id' ");
-							$review_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
+							//unset($content_pref, $tmp);
+							//$content_pref = $aa -> ContentDefaultPrefs($review_main_id);
+							//$tmp = addslashes(serialize($content_pref));
+							//if(!is_object($sql4)){ $sql4 = new db; }
+							//$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$review_main_id' ");
+							
+							insert_default_prefs($review_main_id);
 							$aa -> CreateParentMenu($review_main_id);
+							
+							$review_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
+							
 						}
 					}else{
 						$review_mainparent = CONTENT_ADMIN_CONVERSION_LAN_9." ".CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_10."<br />";
@@ -178,13 +198,16 @@ if(isset($_POST['convert_table'])){
 							list($article_main_id) = $sql3 -> db_Fetch();
 
 							//insert default prefs into the main article cat
-							unset($content_pref, $tmp);
-							$content_pref = $aa -> ContentDefaultPrefs($article_main_id);
-							$tmp = addslashes(serialize($content_pref));
-							if(!is_object($sql4)){ $sql4 = new db; }
-							$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$article_main_id' ");
-							$article_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
+							//unset($content_pref, $tmp);
+							//$content_pref = $aa -> ContentDefaultPrefs($article_main_id);
+							//$tmp = addslashes(serialize($content_pref));
+							//if(!is_object($sql4)){ $sql4 = new db; }
+							//$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$article_main_id' ");
+							
+							insert_default_prefs($article_main_id);
 							$aa -> CreateParentMenu($article_main_id);
+
+							$article_mainparent .= CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_8."<br />";
 						}
 					}else{
 						$article_mainparent = CONTENT_ADMIN_CONVERSION_LAN_9." ".CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_10."<br />";
@@ -238,20 +261,8 @@ if(isset($_POST['convert_table'])){
 						$countcontent = $countcontent + 1;
 
 						list($thenewcontent_id, $thenewcontent_heading) = $sql3 -> db_Fetch();
-						
-						//check if comments present, if so, convert those to new content item id's						
-						if(!is_object($sql4)){ $sql4 = new db; }
-						$numc = $sql4 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
-						if($numc > 0){
-							$sql4 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
-						}
-
-						//check if rating present, if so, convert those to new content item id's
-						if(!is_object($sql5)){ $sql5 = new db; }
-						$numr = $sql5 -> db_Count("rate", "(*)", "WHERE rate_table = 'content' AND rate_itemid = '".$content_id."' ");
-						if($numr > 0){
-							$sql5 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$content_id."' ");
-						}
+						convert_comments($content_id, $thenewcontent_id);
+						convert_rating($content_id, $thenewcontent_id);
 					}
 					$count = $count + 1;
 		}
@@ -370,7 +381,7 @@ if(isset($_POST['convert_table'])){
 
 					//review is in main review cat
 					if($content_parent == "0"){
-						$newcontent_parent = $review_main_id.".".$review_main_id;											//place each review in correct cat
+						$newcontent_parent = $review_main_id.".".$review_main_id;
 
 					//review is in review subcat
 					}else{
@@ -379,7 +390,6 @@ if(isset($_POST['convert_table'])){
 						if(!$sql3 -> db_Select("content", "content_id, content_heading", "content_id = '".$content_parent."' ")){
 							$bug_article_oldcat[] = $content_id." ".$content_heading;
 							$newcontent_parent = $review_main_id.".".$review_main_id;
-							//echo $content_id." - ".$content_type." - ".$content_parent." - ".$content_heading."<br />";
 						}else{
 							list($old_review_cat_id, $old_review_cat_heading) = $sql3 -> db_Fetch();
 
@@ -390,7 +400,7 @@ if(isset($_POST['convert_table'])){
 								$newcontent_parent = $review_main_id.".".$review_main_id;
 							}else{
 								list($new_review_cat_id) = $sql4 -> db_Fetch();
-								$newcontent_parent = $review_main_id.".".$review_main_id.".".$new_review_cat_id;					//place each review in correct cat
+								$newcontent_parent = $review_main_id.".".$review_main_id.".".$new_review_cat_id;
 							}
 						}
 					}
@@ -426,26 +436,13 @@ if(isset($_POST['convert_table'])){
 					if(!is_object($sql6)){ $sql6 = new db; }
 					if(!$sql6 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 						$bug_review_insert[] = $content_id." ".$content_heading;
-						//echo $content_id." - ".$content_type." - ".$content_parent." - ".$content_heading."<br />";
 					}else{
 						$valid_review_insert[] = $content_id." ".$content_heading;
 						$countreview = $countreview + 1;
 
 						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
-						
-						//check if comments present, if so, convert those to new content item id's						
-						if(!is_object($sql7)){ $sql7 = new db; }
-						$numc = $sql7 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
-						if($numc > 0){
-							$sql7 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
-						}
-
-						//check if rating present, if so, convert those to new content item id's
-						if(!is_object($sql8)){ $sql8 = new db; }
-						$numr = $sql8 -> db_Count("rate", "(*)", "WHERE rate_table = 'review' AND rate_itemid = '".$content_id."' ");
-						if($numr > 0){
-							$sql8 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$content_id."' ");
-						}
+						convert_comments($content_id, $thenewcontent_id);
+						convert_rating($content_id, $thenewcontent_id);
 					}
 					$count = $count + 1;
 					
@@ -523,25 +520,13 @@ if(isset($_POST['convert_table'])){
 					if(!is_object($sql6)){ $sql6 = new db; }
 					if(!$sql6 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 						$bug_article_insert[] = $content_id." ".$content_heading;
-						echo $content_id." - ".$content_type." - ".$content_parent." - ".$content_heading."<br />";
 					}else{
 						$valid_article_insert[] = $content_id." ".$content_heading;
 						$countarticle = $countarticle + 1;
 
 						list($thenewcontent_id, $thenewcontent_heading) = $sql6 -> db_Fetch();
-						//check if comments present, if so, convert those to new content item id's						
-						if(!is_object($sql7)){ $sql7 = new db; }
-						$numc = $sql7 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$content_id."' ");
-						if($numc > 0){
-							$sql7 -> db_Update("comments", "comment_item_id = '".$thenewcontent_id."', comment_type = 'pcontent' WHERE comment_item_id = '".$content_id."' ");
-						}
-
-						//check if rating present, if so, convert those to new content item id's
-						if(!is_object($sql8)){ $sql8 = new db; }
-						$numr = $sql8 -> db_Count("rate", "(*)", "WHERE rate_table = 'article' AND rate_itemid = '".$content_id."' ");
-						if($numr > 0){
-							$sql8 -> db_Update("rate", "rate_table = 'pcontent', rate_itemid = '".$thenewcontent_id."' WHERE rate_itemid = '".$content_id."' ");
-						}
+						convert_comments($content_id, $thenewcontent_id);
+						convert_rating($content_id, $thenewcontent_id);
 					}
 					$count = $count + 1;
 		}
@@ -587,10 +572,17 @@ if(isset($_POST['convert_table'])){
 	<tr><td class='forumheader3' colspan='2'><br /></td></tr>
 	<tr><td class='fcaption' colspan='2'>unknown rows</td></tr>";
 
+		$text .= $rs -> form_open("post", e_SELF."?unknown", "dataform", "", "enctype='multipart/form-data'");
+
 		if(count($bug_unknownrows) > 0 ){
 			for($i=0;$i<count($bug_unknownrows);$i++){
-				$text .= "<tr><td class='forumheader3' colspan='2'>".CONTENT_ICON_ERROR." ".$bug_unknownrows[$i]."</td></tr>";
+				$text .= "<tr><td class='forumheader3' colspan='2'>
+				".CONTENT_ICON_ERROR." ".$bug_unknownrows[$i]."
+				".$rs -> form_hidden("unknownrows[]", $unknownrows[$i])."
+				</td></tr>";
 			}
+			$text .= "<tr><td class='forumheader3' colspan='2'>".$rs -> form_button("submit", "convert_unknown", "manually convert unknown rows")."</td></tr>";
+			$text .= $rs -> form_close();
 		}
 
 
@@ -769,10 +761,8 @@ if(isset($_POST['convert_table'])){
 }
 
 
-
-
-
-if(!isset($_POST['convert_table'])){
+//show button to start conversion
+if(!isset($_POST['convert_table']) && !isset($action)){
 	$totalnewcontent = $sql -> db_Count($plugintable);
 
 	$text = "
@@ -793,12 +783,213 @@ if(!isset($_POST['convert_table'])){
 
 	$caption = CONTENT_ADMIN_CONVERSION_LAN_43;
 	$ns -> tablerender($caption, $text);
-}else{
+}
 
-	$text = "<div style='text-align:center'>".CONTENT_ADMIN_CONVERSION_LAN_46."</div>";
-	$caption = CONTENT_ADMIN_CONVERSION_LAN_47;
+//show start page for manual conversion of unknown rows
+if($action == "unknown" && !isset($sub_action)){
+	unset($text);
+
+	if(!is_object($sql)){ $sql = new db; }
+	if(!is_object($sql2)){ $sql2 = new db; }
+	
+	$text .= $rs -> form_open("post", e_SELF."?unknown.conversion", "dataform", "", "enctype='multipart/form-data'");
+	$text .= "<table class='fborder' style='width:95%;'>";
+
+	//get all parents into a form option array
+	$parentdetails = $aa -> getParent("", "", "");
+	for($a=0;$a<count($parentdetails);$a++){
+		$pre = "";
+		if(strpos($parentdetails[$a][9], ".")){
+			$id = substr($parentdetails[$a][9], 2).".".substr($parentdetails[$a][9], 2).".".$parentdetails[$a][0];
+		}else{
+			$id = $parentdetails[$a][0].".".$parentdetails[$a][0];
+		}
+		for($b=0;$b<$parentdetails[$a][17];$b++){
+			$pre .= "_";
+		}
+		$options .= $rs -> form_option($pre.$parentdetails[$a][1], "0", $id);
+	}
+
+	for($i=0;$i<count($_POST['unknownrows']);$i++){
+		$item = $sql -> db_Select("content", "*", " content_id = '".$_POST['unknownrows'][$i]."' ");
+		$row = $sql -> db_Fetch();
+		extract($row);
+
+		$text .= "
+		<tr>
+		<td class='forumheader3'>".CONTENT_ICON_ERROR." ".$content_id." ".$content_heading." (parent=".$content_parent." - type=".$content_type.")</td>
+		<td class='forumheader3'>";
+
+		if(!$sql2 -> db_Select($plugintable, "content_id as newcontentid, content_heading as newcontentheading", "content_parent = '0' ")){
+			//$text .= "no main parents present, manually conversion of old rows is not possible";
+		}else{
+			$text .= "
+			".$rs -> form_select_open("newcontent_parent[$content_id]")."
+			".$rs -> form_option("choose parent", "0", "")."
+			".$options."
+			";
+		}
+		$text .= $rs -> form_select_close()."
+		</td>
+		</tr>";
+	}
+	$text .= "<tr><td class='forumheader' colspan='2' style='text-align:center;'>".$rs -> form_button("submit", "convert_unknownrows", "convert unknown rows")."</td></tr>";
+	$text .= "</table>".$rs -> form_close();
+	$caption = "manually convert unknown rows";
 	$ns -> tablerender($caption, $text);
 }
+
+//convert unknown rows and show results
+if($action == "unknown" && $sub_action == "conversion"){
+		unset($text);
+		if(isset($_POST['convert_unknownrows'])){
+			foreach($_POST['newcontent_parent'] as $key => $value){
+
+					$oldrow = $sql -> db_Select("content", "*", "content_id = '".$key."' ");
+					if(!$oldrow){
+						return FALSE;
+					}
+					$row = $sql -> db_Fetch();
+					extract($row);
+
+					//summary can contain link to image in e107_images/link_icons/".$summary." THIS STILL NEEDS TO BE CHECKED
+					$newcontent_heading = $tp -> toDB($content_heading);
+					$newcontent_subheading = ($content_subheading ? $tp -> toDB($content_subheading) : "");
+					$newcontent_summary = ($content_summary ? $tp -> toDB($content_summary) : "");
+					$newcontent_text = $tp -> toDB($content_content);
+					$newcontent_author = (is_numeric($content_author) ? $content_author : "0^".$content_author);
+					$newcontent_icon = "";
+					$newcontent_attach = "";
+					$newcontent_images = "";
+					$newcontent_parent = $value;
+					$newcontent_comment = $content_comment;
+					$newcontent_rate = "0";
+					$newcontent_pe = $content_pe_icon;
+					$newcontent_refer = "0";
+					$newcontent_starttime = $content_datestamp;
+					$newcontent_endtime = "0";
+					$newcontent_class = $content_class;
+					$newcontent_pref = "";
+
+					if(!is_object($sql2)){ $sql2 = new db; }
+					$sql2 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '0.0' ");
+
+					if(!is_object($sql3)){ $sql3 = new db; }
+					if(!$sql3 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
+						$text .= CONTENT_ICON_ERROR." conversion not succesfull : ".$content_id." ".$content_heading."<br />";
+					}else{
+						list($thenewcontent_id, $thenewcontent_heading) = $sql3 -> db_Fetch();
+
+						convert_comments($content_id, $thenewcontent_id);
+						convert_rating($content_id, $thenewcontent_id);
+
+						$text .= CONTENT_ICON_OK." conversion succesfull : ".$content_id." ".$thenewcontent_heading."<br />";
+					}
+			}
+		}
+		$caption = "conversion results for unknown rows";
+		$ns -> tablerender($caption, $text);
+}
+
+
+//show link to start managing the content management plugin
+if(isset($_POST['convert_table']) || isset($action)){
+		$text = "<div style='text-align:center'>".CONTENT_ADMIN_CONVERSION_LAN_46."</div>";
+		$caption = CONTENT_ADMIN_CONVERSION_LAN_47;
+		$ns -> tablerender($caption, $text);
+}
+
+/*
+//function to convert unknown rows
+function convert_row($id, $parent){
+					global $sql, $tp, $plugintable;
+
+					$oldrow = $sql -> db_Select("content", "*", "content_id = '".$id."' ");
+					if(!$oldrow){
+						return FALSE;
+					}
+					$row = $sql -> db_Fetch();
+					extract($row);
+
+					//summary can contain link to image in e107_images/link_icons/".$summary." THIS STILL NEEDS TO BE CHECKED
+					$newcontent_heading = $tp -> toDB($content_heading);
+					$newcontent_subheading = ($content_subheading ? $tp -> toDB($content_subheading) : "");
+					$newcontent_summary = ($content_summary ? $tp -> toDB($content_summary) : "");
+					$newcontent_text = $tp -> toDB($content_content);
+					$newcontent_author = (is_numeric($content_author) ? $content_author : "0^".$content_author);
+					$newcontent_icon = "";
+					$newcontent_attach = "";
+					$newcontent_images = "";
+					$newcontent_parent = $parent;
+					$newcontent_comment = $content_comment;
+					$newcontent_rate = "0";
+					$newcontent_pe = $content_pe_icon;
+					$newcontent_refer = "0";
+					$newcontent_starttime = $content_datestamp;
+					$newcontent_endtime = "0";
+					$newcontent_class = $content_class;
+					$newcontent_pref = "";
+
+					
+					if(!is_object($sql2)){ $sql2 = new db; }
+					$sql2 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '0.0' ");
+
+					if(!is_object($sql3)){ $sql3 = new db; }
+					if(!$sql3 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
+						$bug_content_insert[] = $content_id." ".$content_heading;
+						return CONTENT_ICON_ERROR." conversion not succesfull : ".$content_id." ".$content_heading."<br />";
+					}else{
+						$valid_content_insert[] = $content_id." ".$content_heading;
+						$countcontent = $countcontent + 1;
+
+						list($thenewcontent_id, $thenewcontent_heading) = $sql3 -> db_Fetch();
+						
+						convert_comments($content_id, $thenewcontent_id);
+						convert_rating($content_id, $thenewcontent_id);
+
+						return CONTENT_ICON_OK." conversion succesfull : ".$content_id." ".$thenewcontent_heading."<br />";
+					}
+}
+*/
+
+
+
+//function to insert default preferences for a main parent
+function insert_default_prefs($id){
+		global $aa;
+		unset($content_pref, $tmp);
+
+		$content_pref = $aa -> ContentDefaultPrefs($content_main_id);
+		$tmp = addslashes(serialize($content_pref));
+		if(!is_object($sql4)){ $sql4 = new db; }
+		$sql4 -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$content_main_id' ");
+}
+
+//function to convert comments
+function convert_comments($oldid, $newid){
+		global $sql, $plugintable;
+
+		if(!is_object($sql7)){ $sql7 = new db; }
+		//check if comments present, if so, convert those to new content item id's								
+		$numc = $sql7 -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$oldid."' ");
+		if($numc > 0){
+			$sql7 -> db_Update("comments", "comment_item_id = '".$newid."', comment_type = '".$plugintable."' WHERE comment_item_id = '".$oldid."' ");
+		}
+}
+
+//function to convert rating
+function convert_rating($oldid, $newid){
+		global $sql, $plugintable;
+
+		if(!is_object($sql8)){ $sql8 = new db; }
+		//check if rating present, if so, convert those to new content item id's		
+		$numr = $sql8 -> db_Count("rate", "(*)", "WHERE rate_itemid = '".$oldid."' AND (rate_table = 'content' || rate_table = 'article' || rate_table = 'review') ");
+		if($numr > 0){
+			$sql8 -> db_Update("rate", "rate_table = '".$plugintable."', rate_itemid = '".$newid."' WHERE rate_itemid = '".$oldid."' ");
+		}
+}
+
+
 
 require_once(e_ADMIN."footer.php");
 
