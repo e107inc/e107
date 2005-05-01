@@ -50,17 +50,10 @@ function theme_head() {
 	<script type='text/javascript' src='".THEME."nicetitle.js'></script>
 
 <style type='text/css'>
-
 #header{
 	position: relative;
-	/*  width: 700px;
-	height: 151px;
-	margin: auto;
-	background: url(".THEME."images/01_header0".$logo.".jpg) no-repeat; */
 }
-
-</style>
-";
+</style>";
 }
 
 
