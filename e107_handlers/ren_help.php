@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-04-11 14:28:55 $
-|     $Author: stevedunstan $
+|     $Revision: 1.26 $
+|     $Date: 2005-05-01 23:13:14 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_ren_help.php");
@@ -158,12 +158,12 @@ function Color_Select() {
 	var rows1 = '';
 	var rows2 = '';
 	var notr = 0;
-	var tdblk = '<td style=\'background-color: #000000; cursor: default; height: 10px; width: 10px;\'></td>';
+	var tdblk = '<td style=\'background-color: #000000; cursor: default; height: 10px; width: 10px;\'><\/td>';
 	var g = 1;
 	var s = 0;
 	
 	function td_render(color) {
-		return '<td style=\'background-color: #' + color + '; height: 10px; width: 10px;\' onclick=\"addtext(\'[color=#' + color + '][/color]\')\"></td>';
+		return '<td style=\'background-color: #' + color + '; height: 10px; width: 10px;\' onclick=\"addtext(\'[color=#' + color + '][/color]\')\"><\/td>';
 	}
 
 	for (i=0; i < coloursrgb.length; i++) { 
@@ -173,13 +173,13 @@ function Color_Select() {
 				if (maxtddiv % maxtd == 0) { 
 					if (rowswitch) {
 						if (notr < 5){
-							rows1 += '</tr><tr>' + td_render(coloursgrey[g]) + tdblk;
+							rows1 += '<\/tr><tr>' + td_render(coloursgrey[g]) + tdblk;
 							g++;
 						}
 						rowswitch = 0;
 						notr++;
 					}else{
-						rows2 += '</tr><tr>' + td_render(colourssol[s]) + tdblk;
+						rows2 += '<\/tr><tr>' + td_render(colourssol[s]) + tdblk;
 						s++;
 						rowswitch = 1;
 					}
@@ -196,7 +196,7 @@ function Color_Select() {
 	}
 	document.write('<table cellspacing=\'1\' cellpadding=\'0\' style=\'cursor: hand; cursor: pointer; background-color: #000; width: 100%; border: 0px\'><tr>');
 	document.write(td_render(coloursgrey[0]) + tdblk + rows1 + rows2);
-	document.write('</tr></table>');
+	document.write('<\/tr><\/table>');
 	//]]>
 	</script>";
 
