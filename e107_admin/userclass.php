@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-13 02:57:35 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-02 09:59:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -21,25 +21,14 @@ if (!getperms("4")) {
 	header("location:".e_BASE."index.php");
 	 exit;
 }
+
 $e_sub_cat = 'userclass';
 require_once("auth.php");
 
-function check_allowed($class_id) {
-	global $sql;
-	if (!$sql->db_Select("userclass_classes", "*", "userclass_id = {$class_id}")) {
-		header("location:".SITEURL);
-		exit;
-	}
-	$row = $sql->db_Fetch();
-	extract($row);
-	if (!getperms("0") && !check_class($userclass_editclass)) {
-		header("location:".SITEURL);
-		exit;
-	}
-}
+
 
 if (!e_QUERY) {
-	header("location:".e_ADMIN."admin.php");
+  	header("location:".e_ADMIN."admin.php");
 	exit;
 } else {
 	$id = e_QUERY;
@@ -61,7 +50,31 @@ if (isset($_POST['updateclass'])) {
 	if ($_POST['notifyuser']) {
 		$message .= "<br />".UCSLAN_1.":</b> ".$row['user_name']."<br />";
 	}
+
+    if ($_POST['notifyuser']) {
+		require_once(e_HANDLER."mail.php");
+   		unset($messaccess);
+		for($a = 0; $a <= (count($class)-1); $a++) {
+			if (check_class($class[$a][0], $user_class)) {
+				$messaccess .= " - " . $class[$a][2]. "\n";
+			}
+		}
+		$send_to = $user_email;
+		$subject = UCSLAN_2;
+        	$message = UCSLAN_3." " . $user_name. ",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL . " )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN."\n( ".SITENAME." )";
+		sendemail($send_to, $subject, $message);
+	}
+
+
+	 header("location: ".$_POST['adminreturn']);
+	 echo "location redirect failed. (".$_POST['adminreturn'].")";
+     exit;
 }
+
+
+
+
+
 
 $sql->db_Select("user", "*", "user_id='$id' ");
 $row = $sql->db_Fetch();
@@ -78,24 +91,8 @@ while ($row = $sql->db_Fetch()) {
 	}
 }
 
-if ($_POST['notifyuser']) {
-	require_once(e_HANDLER."mail.php");
-	unset($messaccess);
-	for($a = 0; $a <= (count($class)-1); $a++) {
-		if (check_class($class[$a][0], $user_class)) {
-			$messaccess .= " - " . $class[$a][2]. "\n";
-		}
-	}
-	$send_to = $user_email;
-	$subject = UCSLAN_2;
-        $message = UCSLAN_3." " . $user_name. ",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL . " )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN."\n( ".SITENAME." )";
-	sendemail($send_to, $subject, $message);
-}
 
-if ($remuser) {
-	header("location:".e_ADMIN."users.php?cu.$id");
-	exit;
-}
+
 
 $caption = UCSLAN_6." <b>".$user_name."</b> (".$user_class.")";
 
@@ -112,8 +109,11 @@ for($a = 0; $a <= (count($class)-1); $a++) {
 	}
 	$text .= "</td><td style='width:70%' class='forumheader3'> ".$class[$a][2]."</td></tr>";
 }
-
-$text .= "<tr><td class='forumheader' colspan='2' style='text-align:center'><input type='checkbox' name='notifyuser' value='1' /> ".UCSLAN_8."&nbsp;&nbsp;<input class='button' type='submit' name='updateclass' value='".UCSLAN_7."' />
+ $ref = str_replace("main","cu",$_SERVER['HTTP_REFERER']);
+ $text .= "<tr><td class='forumheader' colspan='2' style='text-align:center'>
+		<input type='hidden' name='adminreturn' value='".$ref."' />
+		<input type='checkbox' name='notifyuser' value='1' /> ".UCSLAN_8."&nbsp;&nbsp;
+		<input class='button' type='submit' name='updateclass' value='".UCSLAN_7."' />
 	</td>
 	</tr>
 	</table>
@@ -124,4 +124,21 @@ $ns->tablerender($caption, $text);
 
 
 require_once("footer.php");
+
+
+// ----------------------------------------------------------
+
+function check_allowed($class_id) {
+	global $sql;
+	if (!$sql->db_Select("userclass_classes", "*", "userclass_id = {$class_id}")) {
+		header("location:".SITEURL);
+		exit;
+	}
+	$row = $sql->db_Fetch();
+	extract($row);
+	if (!getperms("0") && !check_class($userclass_editclass)) {
+		header("location:".SITEURL);
+		exit;
+	}
+}
 ?>
