@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.116 $
-|     $Date: 2005-05-02 14:39:14 $
-|     $Author: streaky $
+|     $Revision: 1.117 $
+|     $Date: 2005-05-02 17:37:03 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -62,8 +62,16 @@ for ($i = 1; $i <= $num_levels; $i++) {
 	$link_prefix .= "../";
 }
 
-if (!strstr($_SERVER['PHP_SELF'], "trackback") && (strstr($_SERVER['QUERY_STRING'], "'") || strstr($_SERVER['QUERY_STRING'], ";"))) {
-	die("Access denied.");
+$inArray = array("'", ";", "/**/", "/UNION/", "/SELECT/", "AS");
+if (!strstr($_SERVER['PHP_SELF'], "trackback"))
+{
+	foreach($inArray as $res)
+	{
+		if(strstr($_SERVER['QUERY_STRING'], $res))
+		{
+			die("Access denied.");
+		}
+	}
 }
 
 if (preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)) {
@@ -229,6 +237,7 @@ $pref['htmlarea']=false;
 
 define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
 
+/*
 if($pref['redirectsiteurl'])
 {
 	if($e107 -> http_path != $pref['siteurl'])
@@ -241,7 +250,7 @@ if($pref['redirectsiteurl'])
 		}
 	}
 }
-
+*/
 
 // Cameron's Mult-lang switch. ==================
 
