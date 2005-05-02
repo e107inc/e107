@@ -122,27 +122,21 @@ function TinyMCE_flash_cleanup(type, content) {
 			// Parse all object tags and replace them with images from the embed data
 			var index = 0;
 			while ((startPos = content.indexOf('<object', startPos)) != -1) {
-				var endPos = content.indexOf('>', startPos);
-
-				// Find end of embed
-				endPos = content.indexOf('/>', endPos);
-				if (endPos == -1) {
-					endPos = content.indexOf('</object>', endPos);
-					endPos += 8;
-				} else
-					endPos += 2;
-
 				if (index >= embedList.length)
 					break;
 
 				var attribs = embedList[index];
 
+				// Find end of object
+				endPos = content.indexOf('</object>', startPos);
+				endPos += 9;
+
 				// Insert image
-				var contentAfter = content.substring(endPos+1);
+				var contentAfter = content.substring(endPos);
 				content = content.substring(0, startPos);
 				content += '<img name="mce_plugin_flash" width="' + attribs["width"] + '" height="' + attribs["height"] + '"';
 				content += ' src="' + (tinyMCE.getParam("theme_href") + '/images/spacer.gif') + '" title="' + attribs["src"] + '"';
-				content += ' alt="' + attribs["src"] + '" class="mce_plugin_flash" />' + content.substring(endPos+1);
+				content += ' alt="' + attribs["src"] + '" class="mce_plugin_flash" />' + content.substring(endPos);
 				content += contentAfter;
 				index++;
 
@@ -185,7 +179,6 @@ codebase="http://www.apple.com/qtactivex/qtplugin.cab" width="360" height="305" 
 autoplay="true" controller="true"
 pluginspage="http://www.apple.com/quicktime/download/">
   </embed></object>
-
 */
 
 				content = content.substring(0, startPos) + embedHTML + content.substring(endPos);

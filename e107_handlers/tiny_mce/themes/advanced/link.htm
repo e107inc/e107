@@ -39,6 +39,8 @@ if (url != null)
 
 		// Auto select link in list
 		if (typeof(tinyMCELinkList) != "undefined" && tinyMCELinkList.length > 0) {
+			var formObj = document.forms[0];
+
 			for (var i=0; i<formObj.link_list.length; i++) {
 				if (formObj.link_list.options[i].value == tinyMCE.getWindowArg('href'))
 					formObj.link_list.options[i].selected = true;
