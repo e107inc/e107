@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-05-01 23:13:14 $
-|     $Author: lisa_ $
+|     $Revision: 1.27 $
+|     $Date: 2005-05-02 04:58:49 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_ren_help.php");
@@ -23,7 +23,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 	//        $mode == TRUE : fontsize and colour dialogs are rendered
 	//        $mode == 2 : no helpbox
 
-	if (strstr(e_SELF, "content")) {
+	if (strstr(e_SELF, "content") || strstr(e_SELF, "cpage")) {
 		$code[0] = array("newpage", "[newpage]", LANHELP_34);
 	}
 	$code[1] = array("link", "[link=".LANHELP_35."][/link]", LANHELP_23);
@@ -81,7 +81,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 	//        $mode == TRUE : fontsize and colour dialogs are rendered
 	//        $mode == 2 : no helpbox
 
-	if (strstr(e_SELF, "content")) {
+	if (strstr(e_SELF, "content") || strstr(e_SELF, "cpage")) {
 		$code[0] = array("newpage", "[newpage]", LANHELP_34);
 	}
 	$code[1] = array("link", "[link=".LANHELP_35."][/link]", LANHELP_23);
