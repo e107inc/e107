@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.21 $
-|		$Date: 2005-05-02 12:06:23 $
+|		$Revision: 1.22 $
+|		$Date: 2005-05-02 22:47:35 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -142,9 +142,9 @@ class content{
 				
 				if($id){	//if $id; use prefs from content table
 							$num_rows = $sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
-							$row = $sql -> db_Fetch(); extract($row);
+							$row = $sql -> db_Fetch();
 
-							if (empty($content_pref)) {
+							if (empty($row['content_pref'])) {
 								$content_pref = $this -> ContentDefaultPrefs($id);
 								$tmp = addslashes(serialize($content_pref));
 								$sql -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$id' ");
@@ -377,8 +377,7 @@ class content{
 					$n = "0";
 				}else{
 					while($row = $sqlcountitemsincat -> db_Fetch()){
-					extract($row);
-						if(!check_class($content_class)){
+						if(!check_class($row['content_class'])){
 							$n = $n - 1;
 						}
 					}
@@ -406,12 +405,13 @@ class content{
 					$parent = FALSE;
 				}else{
 					while($row = $sqlgetparent -> db_Fetch()){
-					extract($row);
 
-						$parent[] = array($content_id, $content_heading, $content_subheading, $content_summary, $content_text, $content_author, $content_icon, $content_file, $content_image, $content_parent, $content_comment, $content_rate, $content_pe, $content_refer, $content_datestamp, $content_class, $content_order, $level);
+						//$parent[] = array($content_id, $content_heading, $content_subheading, $content_summary, $content_text, $content_author, $content_icon, $content_file, $content_image, $content_parent, $content_comment, $content_rate, $content_pe, $content_refer, $content_datestamp, $content_class, $content_order, $level);
+
+						$parent[] = array($row['content_id'], $row['content_heading'], $row['content_subheading'], $row['content_summary'], $row['content_text'], $row['content_author'], $row['content_icon'], $row['content_file'], $row['content_image'], $row['content_parent'], $row['content_comment'], $row['content_rate'], $row['content_pe'], $row['content_refer'], $row['content_datestamp'], $row['content_class'], $row['content_order'], $level);
 
 						$level2 = $level+1;
-						$nid = ($content_parent == "0" ? $content_id : $content_parent.".".$content_id);
+						$nid = ($row['content_parent'] == "0" ? $row['content_id'] : $row['content_parent'].".".$row['content_id']);
 						$parentchild = $this -> getParent($nid, $level2, "", ($classcheck=="1" ? "1" : ""));
 						if($parentchild == TRUE){
 							if(is_array($parentchild[0])){
@@ -972,7 +972,6 @@ class content{
 		
 				$data .= "      ".chr(36)."text .= (".chr(36)."content_pref[\"content_menu_recent_caption_{$parentid}\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_recent_caption_{$parentid}\"] : \"recent items: ".$row['content_heading']."\").".chr(34)."<br />".chr(34).";\n";
 				$data .= "      while(".chr(36)."row = ".chr(36)."sql -> db_Fetch()){\n";
-				$data .= "      extract(".chr(36)."row);\n";
 
 				$data .= "         ".chr(36)."datestamp = ereg_replace(\" -.*\", \"\", ".chr(36)."gen -> convert_date(".chr(36)."row['content_datestamp'], \"short\"));\n";
 				$data .= "         ".chr(36)."authordetails = ".chr(36)."aa -> getAuthor(".chr(36)."row['content_author']);\n";
@@ -999,7 +998,7 @@ class content{
 				$data .= "         ".chr(36)."text .= \"<table style='border:0;'>\";\n";
 				$data .= "         ".chr(36)."text .= \"<tr>\";\n";
 				$data .= "         ".chr(36)."text .= \"<td style='width:1%; white-space:nowrap; vertical-align:top;'>\".".chr(36)."recenticon.\"</td>\";\n";
-				$data .= "         ".chr(36)."text .= \"<td style='width:99%; vertical-align:top;'><a href='\".e_PLUGIN.\"content/content.php?type.$parentid.content.\".".chr(36)."content_id.\"'>\".".chr(36)."content_heading.\"</a><br />\".(".chr(36)."datestamp ? ".chr(36)."datestamp.\"<br />\" : \"\" ).(".chr(36)."authordetails[1] ? ".chr(36)."authordetails[1].\"<br />\" : \"\" ).(".chr(36)."subheading ? ".chr(36)."subheading.\"<br />\" : \"\" ).\"</td>\";\n";
+				$data .= "         ".chr(36)."text .= \"<td style='width:99%; vertical-align:top;'><a href='\".e_PLUGIN.\"content/content.php?type.$parentid.content.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."row['content_heading'].\"</a><br />\".(".chr(36)."datestamp ? ".chr(36)."datestamp.\"<br />\" : \"\" ).(".chr(36)."authordetails[1] ? ".chr(36)."authordetails[1].\"<br />\" : \"\" ).(".chr(36)."subheading ? ".chr(36)."subheading.\"<br />\" : \"\" ).\"</td>\";\n";
 				$data .= "         ".chr(36)."text .= \"</tr>\";\n";
 				$data .= "         ".chr(36)."text .= \"</table><br />\";\n";
 
