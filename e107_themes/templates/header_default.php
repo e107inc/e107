@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-05-02 14:40:05 $
+|     $Revision: 1.46 $
+|     $Date: 2005-05-02 21:17:34 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -52,7 +52,7 @@ if(defined("PREVIEWTHEME")) {
 	echo "<link rel='stylesheet' href='".PREVIEWTHEME."style.css' type='text/css' />\n";
 } else {
 	if (isset($theme_css_php) && $theme_css_php) {
-		echo "<link rel='stylesheet' href='".e_THEME."/theme-css.php' type='text/css' />\n";
+		echo "<link rel='stylesheet' href='".THEME."/theme-css.php' type='text/css' />\n";
 	} else {
 		if(isset($pref['themecss']) && $pref['themecss'] && file_exists(THEME.$pref['themecss']))
 		{
