@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.79 $
-|   $Date: 2005-05-02 09:14:48 $
+|   $Revision: 1.80 $
+|   $Date: 2005-05-02 09:46:43 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -466,8 +466,7 @@ class newspost {
 		<td style='width:20%' class='forumheader3'>".NWSLAN_13.":<br /></td>
 		<td style='width:80%;margin-left:auto' class='forumheader3'>";
 
-		$insertjs = (!$pref['wysiwyg'])?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'":
-		"rows='25' style='width:100%' ";
+		$insertjs = (!$pref['wysiwyg'])?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'": "rows='25' style='width:100%'  ";
 		$_POST['data'] = $tp->toForm($_POST['data']);
 		$text .= "<textarea class='tbox' id='data' name='data'  cols='80'  style='width:95%' $insertjs>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
 		";
@@ -479,15 +478,16 @@ class newspost {
 		} // end of htmlarea check.
 
 		//Extended news form textarea
+		if($pref['wysiwyg']){ $ff_expand = "tinyMCE.execCommand('mceResetDesignMode')";  } // Fixes Firefox issue with hidden wysiwyg textarea.
 		$text .= "
 		</td>
 		</tr>
 		<tr>
 		<td style='width:20%' class='forumheader3'>".NWSLAN_14.":</td>
 		<td style='width:80%' class='forumheader3'>
-		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_83."</a>
-		<div style='display: none;'>
-		<textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' style='width:95%;height:100px' $insertjs>".(strstr($_POST['news_extended'], "[img]http") ? $_POST['news_extended'] : str_replace("[img]../", "[img]", $tp->toForm($_POST['news_extended'])))."</textarea>";
+		<a style='cursor: pointer; cursor: hand' onclick=\"expandit(this);$ff_expand\">".NWSLAN_83."</a>
+		<div style='display:none'>
+		<textarea class='tbox' id='news_extended' name='news_extended' cols='80' style='width:95%' $insertjs>".(strstr($_POST['news_extended'], "[img]http") ? $_POST['news_extended'] : str_replace("[img]../", "[img]", $tp->toForm($_POST['news_extended'])))."</textarea>";
 		if (!$pref['wysiwyg']) {
 			$text .="<br />". display_help("helpb");
 		}
