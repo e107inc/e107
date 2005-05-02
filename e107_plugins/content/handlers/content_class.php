@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.20 $
-|		$Date: 2005-04-28 10:27:55 $
+|		$Revision: 1.21 $
+|		$Date: 2005-05-02 12:06:23 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -182,6 +182,7 @@ class content{
 						$content_pref[$k] = $v;
 					}
 				}
+				/*
 				$content_pref["content_admin_icon_{$id}"] = $_POST["content_admin_icon_{$id}"];
 				$content_pref["content_admin_attach_{$id}"] = $_POST["content_admin_attach_{$id}"];
 				$content_pref["content_admin_images_{$id}"] = $_POST["content_admin_images_{$id}"];
@@ -286,7 +287,7 @@ class content{
 				$content_pref["content_menu_recent_subheading_post_{$id}"] = $_POST["content_menu_recent_subheading_post_{$id}"];
 				$content_pref["content_menu_recent_icon_{$id}"] = $_POST["content_menu_recent_icon_{$id}"];
 				$content_pref["content_menu_recent_icon_width_{$id}"] = $_POST["content_menu_recent_icon_width_{$id}"];
-
+*/
 				$tmp = addslashes(serialize($content_pref));
 				$sql -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$id' ");
 
@@ -530,14 +531,29 @@ class content{
 								<td class='".$class."' style='".$style." width:15%'>[".$authordetails[0]."] ".$authordetails[1]."</td>
 								<td class='".$class."' style='".$style." width:65%; white-space:nowrap;'>".$pre.$array[$a][1]." [".$array[$a][2]."]</td>
 								<td class='".$class."' style='".$style." width:10%; text-align:left; white-space:nowrap;'>
-									".$rs -> form_open("post", e_SELF."?".$type.".".$type_id.".cat.manage", "myform_{$array[$a][0]}","","", "")."
+
 									<a href='".e_SELF."?".$type.".".$type_id.".cat.edit.".$array[$a][0]."'>".CONTENT_ICON_EDIT."</a>
-									<a onclick=\"if(jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_9."\\n\\n".CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$array[$a][0]." : ".$delete_heading."]\\n\\n")."')){document.forms['myform_{$array[$a][0]}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
+									
+									<input type='image' value='{$array[$a][0]}' title='delete' name='delete_cat' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_9."\\n\\n".CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$array[$a][0]." : ".$delete_heading."]\\n\\n")."')\"/>
+
 									".($array[$a][9] == "0" ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.options.".$array[$a][0]."'>".CONTENT_ICON_OPTIONS."</a>" : "")."
 									".($array[$a][9] != "0" && getperms("0") ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.contentmanager.".$array[$a][0]."'>".CONTENT_ICON_CONTENTMANAGER_SMALL."</a>" : "")."
-									".$rs -> form_hidden("cat_delete_{$array[$a][0]}", "delete")."".$rs -> form_close()."
+
 								</td>
 							</tr>";
+									/*
+									".$rs -> form_open("post", e_SELF."?".$type.".".$type_id.".cat.manage", "deleteform_{$array[$a][0]}","","", "")."
+									
+									<a href='".e_SELF."?".$type.".".$type_id.".cat.edit.".$array[$a][0]."'>".CONTENT_ICON_EDIT."</a>
+									
+									<a onclick=\"if(jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_9."\\n\\n".CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$array[$a][0]." : ".$delete_heading."]\\n\\n")."')){document.forms['deleteform_{$array[$a][0]}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
+
+									".($array[$a][9] == "0" ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.options.".$array[$a][0]."'>".CONTENT_ICON_OPTIONS."</a>" : "")."
+									".($array[$a][9] != "0" && getperms("0") ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.contentmanager.".$array[$a][0]."'>".CONTENT_ICON_CONTENTMANAGER_SMALL."</a>" : "")."
+									
+									".$rs -> form_hidden("cat_delete_{$array[$a][0]}", "delete")."
+									".$rs -> form_close()."
+									*/
 						}
 				}
 				return $string;

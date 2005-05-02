@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.19 $
-|		$Date: 2005-05-01 23:14:26 $
+|		$Revision: 1.20 $
+|		$Date: 2005-05-02 12:06:24 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -21,19 +21,16 @@
 //$plugintable = "pcontent";		//name of the table used in this plugin
 
 if (!defined('ADMIN_WIDTH')) { define("ADMIN_WIDTH", "width:98%;"); }
-$classhelp = " class='forumheader3' style='color:#878787; padding-top:10px; border:0; font-style:italic;' ";
 
 $stylespacer = "style='border:0; height:20px;'";
 $stylehelp = "style='border:0; font-style:italic; color:#0087E5;'";
-$td1 = "style=' width:10%; vertical-align:top; text-align:left; white-space:nowrap;'";
-$td2 = "style=' width:90%; vertical-align:top; text-align:left; '";
 
 class contentform{
 
 		function show_content_create($mode, $userid="", $username=""){
 						global $sql, $ns, $rs, $aa, $tp, $plugintable, $pref;
 						global $type, $type_id, $action, $sub_action, $id;
-						global $message, $classhelp, $td1, $td2, $stylespacer, $stylehelp;
+						global $message, $stylehelp, $stylespacer;
 
 						$content_pref = $aa -> getContentPref($type_id);
 						$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$type_id}"]);
@@ -147,7 +144,7 @@ class contentform{
 						$authordetails[2] = ($content_author_email ? $content_author_email : $authordetails[2]);
 
 						$text = "
-						<div style='text-align:center'>
+						<div style='text-align:center;'>
 						".$rs -> form_open("post", e_SELF."?".e_QUERY."", "dataform", "", "enctype='multipart/form-data'")."
 						<table style='".ADMIN_WIDTH."' class='fborder'>";
 
@@ -183,15 +180,26 @@ class contentform{
 						<tr>
 							<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_17."</td>
 							<td class='forumheader3'>".$rs -> form_textarea("content_summary", 77, 5, $content_summary)."</td>
-						</tr>
+						</tr>";
 
+						if($mode == "submit"){
+							if($pref['wysiwyg'])
+							{
+								require_once(e_HANDLER."tiny_mce/wysiwyg.php");
+								echo wysiwyg("content_text");
+							}
+						}
+						$insertjs = " onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' ";
+						$thispref['html'] = true;
+
+						$text .= "
 						<tr>
 							<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_18."</td>
-							<td class='forumheader3'>
-								".$rs -> form_textarea("content_text", 77, 30, $content_text, "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'")."
+							<td class='forumheader3' style='text-align:left;'>
+								".$rs -> form_textarea("content_text", 77, 30, $content_text, ($thispref['html'] ? $insertjs : ""))."
 								<br />".$rs -> form_text("helpb", 80, '', '', "helpbox")."<br />";
 								require_once(e_HANDLER."ren_help.php");
-								$text .= ren_help()."
+								$text .= display_help()."
 							</td>
 						</tr>";
 			
@@ -280,14 +288,12 @@ class contentform{
 							</td>
 						</tr>";
 
-						$text .= "
-						<tr><td $stylespacer colspan='2'></td></tr>";
-						//<tr><td $stylehelp colspan='2'>".CONTENT_ADMIN_ITEM_LAN_69." ".$pref['upload_allowedfiletype']."</td></tr>";
+						$text .= "<tr><td $stylespacer colspan='2'></td></tr>";
 
 						if($checkicon){
 							$text .= "
 							<tr>
-								<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_20."</td>
+								<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_20."</td>
 								<td class='forumheader3'>
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_75."</a>
 									<div style='display:none;'>
@@ -318,139 +324,141 @@ class contentform{
 						if($checkattach){
 							$text .= "
 							<tr>
-								<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_24."</td>
+								<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_24."</td>
 								<td class='forumheader3'>
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_76."</a>
-									<div style='display:none;'><br />";
+									<div style='display:none;'><br />
+								
+									<table class='fborder' style='".ADMIN_WIDTH."; text-align:left;'>";
 
-							$text .= "<table class='fborder' style='".ADMIN_WIDTH."; text-align:left;'>";
-
-							$filetmp = explode("[file]", $content_file);
-							foreach($filetmp as $key => $value) { 
-								if($value == "") { 
-									unset($filetmp[$key]); 
-								} 
-							} 
-							$attachments = array_values($filetmp);
-							for($i=0;$i<count($attachments);$i++){
-								$k=$i+1;
-								$num = (strlen($k) == 1 ? "0".$k : $k);
-								$text .= "
-								<tr>
-									<td class='forumheader3' style='border:0;'>".$num." ".$rs -> form_hidden("uploadtype2", "file");
-										if ($attachments[$i]){
-											$text .= "
-											".$rs -> form_text("content_files".$i."", 50, $attachments[$i], 100, "tbox", TRUE)."
-											".$rs -> form_button("button", "removefile".$i."", CONTENT_ADMIN_ITEM_LAN_26, "onClick=\"confirm2_('file', '$i', '$attachments[$i]');\"").$rs -> form_button("button", "newfile".$i."", CONTENT_ADMIN_ITEM_LAN_28, "onClick='expandit(this)'")."
-											<div style='display:none; &{head};'>
-											<input class='tbox' type='file' name='file_userfile2[]' value='".$attachments[$i]."' size='50'>
-											</div>
-											";
-										} else {
-											$text .= "<i>".CONTENT_ADMIN_ITEM_LAN_29."</i><br /><input class='tbox' name='file_userfile2[]' type='file' size='50'>";
-										}
-									$text .= "
-									</td>
-								</tr>";
-							}
-
-							if(count($attachments) < $checkattachnumber){
-								for($i=0;$i<$checkattachnumber-count($attachments);$i++){
-									//<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_30." ".($i+1+count($attachments))."</td>
-									$num = (strlen($i+1+count($attachments)) == 1 ? "0".($i+1+count($attachments)) : ($i+1+count($attachments)));
-									$text .= "
-									<tr>
-										<td class='forumheader3' style='border:0;'>".$num." ".$rs -> form_hidden("uploadtype2", "file");
-										if(!FILE_UPLOADS){
-											$text .= "<b>".CONTENT_ADMIN_ITEM_LAN_21."</b>";
-										}else{
-											if(!is_writable($content_file_path)){
-												$text .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_file_path." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
-											}
-											$text .= "<input class='tbox' type='file' name='file_userfile2[]' size='50' />";
-										}
+									$filetmp = explode("[file]", $content_file);
+									foreach($filetmp as $key => $value) { 
+										if($value == "") { 
+											unset($filetmp[$key]); 
+										} 
+									} 
+									$attachments = array_values($filetmp);
+									for($i=0;$i<count($attachments);$i++){
+										$k=$i+1;
+										$num = (strlen($k) == 1 ? "0".$k : $k);
 										$text .= "
-										</td>
-									</tr>";
-								}
-							}
-							$text .= "</table></div></td></tr>";
+										<tr>
+											<td class='forumheader3' style='border:0;'>".$num." ".$rs -> form_hidden("uploadtype2", "file");
+												if ($attachments[$i]){
+													$text .= "
+													".$rs -> form_text("content_files".$i."", 50, $attachments[$i], 100, "tbox", TRUE)."
+													".$rs -> form_button("button", "removefile".$i."", CONTENT_ADMIN_ITEM_LAN_26, "onClick=\"confirm2_('file', '$i', '$attachments[$i]');\"").$rs -> form_button("button", "newfile".$i."", CONTENT_ADMIN_ITEM_LAN_28, "onClick='expandit(this)'")."
+													<div style='display:none; &{head};'>
+													<input class='tbox' type='file' name='file_userfile2[]' value='".$attachments[$i]."' size='50'>
+													</div>
+													";
+												} else {
+													$text .= "<i>".CONTENT_ADMIN_ITEM_LAN_29."</i><br /><input class='tbox' name='file_userfile2[]' type='file' size='50'>";
+												}
+											$text .= "
+											</td>
+										</tr>";
+									}
+
+									if(count($attachments) < $checkattachnumber){
+										for($i=0;$i<$checkattachnumber-count($attachments);$i++){
+											$num = (strlen($i+1+count($attachments)) == 1 ? "0".($i+1+count($attachments)) : ($i+1+count($attachments)));
+											$text .= "
+											<tr>
+												<td class='forumheader3' style='border:0;'>".$num." ".$rs -> form_hidden("uploadtype2", "file");
+												if(!FILE_UPLOADS){
+													$text .= "<b>".CONTENT_ADMIN_ITEM_LAN_21."</b>";
+												}else{
+													if(!is_writable($content_file_path)){
+														$text .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_file_path." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+													}
+													$text .= "<input class='tbox' type='file' name='file_userfile2[]' size='50' />";
+												}
+												$text .= "
+												</td>
+											</tr>";
+										}
+									}
+									$text .= "
+									</table>
+									</div>
+								</td>
+							</tr>";
 						}
 
 						if($checkimages){
 							$text .= "
 							<tr>
-								<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_31."</td>
+								<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_31."</td>
 								<td class='forumheader3'>
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_77."</a>
-									<div style='display: none;'><br />";
-
-							$text .= "<table class='fborder' style='".ADMIN_WIDTH."; text-align:left;'>";
-							$imagestmp = explode("[img]", $content_image);
-							foreach($imagestmp as $key => $value) { 
-								if($value == "") { 
-									unset($imagestmp[$key]); 
-								} 
-							} 
-							$imagesarray = array_values($imagestmp);
-							for($i=0;$i<count($imagesarray);$i++){
-								$k=$i+1;
-								//<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_32." ".$k."</td>
-								$num = (strlen($k) == 1 ? "0".$k : $k);
-								$text .= "
-								<tr>
-									<td class='forumheader3' style='border:0;'>".$k." ".$rs -> form_hidden("uploadtype3", "image");
-										if ($imagesarray[$i]){
-											$text .= "
-											".$rs -> form_text("content_images".$i."", 50, $imagesarray[$i], 100, "tbox", TRUE)."
-											".$rs -> form_button("button", "removeimage".$i."", CONTENT_ADMIN_ITEM_LAN_26, "onClick=\"confirm2_('image', '$i', '$imagesarray[$i]');\"").$rs -> form_button("button", "newimage".$i."", CONTENT_ADMIN_ITEM_LAN_33, "onClick='expandit(this)'")."
-											<div style='display:none; &{head};'>
-											<input class='tbox' type='file' name='file_userfile3[]' value='".$imagesarray[$i]."' size='50'>											</div>
-											";
-										} else {
-											$text .= "<input class='tbox' name='file_userfile3[]' type='file' size='50'>";
-										}
-									$text .= "
-									</td>
-								</tr>";
-							}
-							if(count($imagesarray) < $checkimagesnumber){
-								for($i=0;$i<$checkimagesnumber-count($imagesarray);$i++){
-									//<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_34." ".($i+1+count($imagesarray))."</td>
-									$num = (strlen($i+1+count($imagesarray)) == 1 ? "0".($i+1+count($imagesarray)) : ($i+1+count($imagesarray)));
-									$text .= "
-									<tr>
-										<td class='forumheader3' style='border:0;'>".$num." ".$rs -> form_hidden("uploadtype3", "image");
-										if(!FILE_UPLOADS){
-											$text .= "<b>".CONTENT_ADMIN_ITEM_LAN_21."</b>";
-										}else{
-											if(!is_writable($content_image_path)){
-												$text .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_image_path." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
-											}
-											$text .= "<input class='tbox' type='file' name='file_userfile3[]' size='50' />";
-										}
+									<div style='display: none;'><br />
+									<table class='fborder' style='".ADMIN_WIDTH."; text-align:left;'>";
+									$imagestmp = explode("[img]", $content_image);
+									foreach($imagestmp as $key => $value) { 
+										if($value == "") { 
+											unset($imagestmp[$key]); 
+										} 
+									} 
+									$imagesarray = array_values($imagestmp);
+									for($i=0;$i<count($imagesarray);$i++){
+										$k=$i+1;
+										$num = (strlen($k) == 1 ? "0".$k : $k);
 										$text .= "
-										</td>
-									</tr>";
-								}
-							}
-							$text .= "</table></div></td></tr>";
+										<tr>
+											<td class='forumheader3' style='border:0;'>".$k." ".$rs -> form_hidden("uploadtype3", "image");
+												if ($imagesarray[$i]){
+													$text .= "
+													".$rs -> form_text("content_images".$i."", 50, $imagesarray[$i], 100, "tbox", TRUE)."
+													".$rs -> form_button("button", "removeimage".$i."", CONTENT_ADMIN_ITEM_LAN_26, "onClick=\"confirm2_('image', '$i', '$imagesarray[$i]');\"").$rs -> form_button("button", "newimage".$i."", CONTENT_ADMIN_ITEM_LAN_33, "onClick='expandit(this)'")."
+													<div style='display:none; &{head};'>
+													<input class='tbox' type='file' name='file_userfile3[]' value='".$imagesarray[$i]."' size='50'>											</div>
+													";
+												} else {
+													$text .= "<input class='tbox' name='file_userfile3[]' type='file' size='50'>";
+												}
+											$text .= "
+											</td>
+										</tr>";
+									}
+									if(count($imagesarray) < $checkimagesnumber){
+										for($i=0;$i<$checkimagesnumber-count($imagesarray);$i++){
+											$num = (strlen($i+1+count($imagesarray)) == 1 ? "0".($i+1+count($imagesarray)) : ($i+1+count($imagesarray)));
+											$text .= "
+											<tr>
+												<td class='forumheader3' style='border:0;'>".$num." ".$rs -> form_hidden("uploadtype3", "image");
+												if(!FILE_UPLOADS){
+													$text .= "<b>".CONTENT_ADMIN_ITEM_LAN_21."</b>";
+												}else{
+													if(!is_writable($content_image_path)){
+														$text .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_image_path." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+													}
+													$text .= "<input class='tbox' type='file' name='file_userfile3[]' size='50' />";
+												}
+												$text .= "
+												</td>
+											</tr>";
+										}
+									}
+									$text .= "
+									</table>
+									</div>
+								</td>
+							</tr>";
 						}
 
 						if($checkcomment || $checkrating || $checkscore || $checkpe || $checkvisibility || $checkmeta ){
-							$text .= "
-							<tr><td $stylespacer colspan='2'></td></tr>";
-							//<tr><td $stylehelp colspan='2'>".CONTENT_ADMIN_ITEM_LAN_35."</td></tr>";
+							$text .= "<tr><td $stylespacer colspan='2'></td></tr>";
 						}
 						if($checkcomment){
 							$text .= "
 							<tr>
-								<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_36."</td>
-								<td class='forumheader3' $td2>
+								<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_36."</td>
+								<td class='forumheader3'>
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_78."</a>
 									<div style='display: none;'>
-										".$rs -> form_radio("content_comment", $content_comment, ($content_comment ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
-										".$rs -> form_radio("content_comment", $content_comment, ($content_comment ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+										".$rs -> form_radio("content_comment", "1", ($content_comment ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
+										".$rs -> form_radio("content_comment", "0", ($content_comment ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
 									</div>
 								</td>
 							</tr>";
@@ -459,12 +467,12 @@ class contentform{
 						if($checkrating){
 							$text .= "
 							<tr>
-								<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_37."</td>
-								<td class='forumheader3' $td2>
+								<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_37."</td>
+								<td class='forumheader3'>
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_79."</a>
 									<div style='display: none;'>
-										".$rs -> form_radio("content_rate", $content_rate, ($content_rate ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
-										".$rs -> form_radio("content_rate", $content_rate, ($content_rate ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+										".$rs -> form_radio("content_rate", "1", ($content_rate ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
+										".$rs -> form_radio("content_rate", "0", ($content_rate ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
 									</div>
 								</td>
 							</tr>";
@@ -473,12 +481,12 @@ class contentform{
 						if($checkpe){
 							$text .= "
 							<tr>
-								<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_38."</td>
-								<td class='forumheader3' $td2>
+								<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_38."</td>
+								<td class='forumheader3'>
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_80."</a>
 									<div style='display: none;'>
-										".$rs -> form_radio("content_pe", $content_pe, ($content_pe ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
-										".$rs -> form_radio("content_pe", $content_pe, ($content_pe ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+										".$rs -> form_radio("content_pe", "1", ($content_pe ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
+										".$rs -> form_radio("content_pe", "0", ($content_pe ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
 									</div>
 								</td>
 							</tr>";
@@ -487,8 +495,8 @@ class contentform{
 						if($checkvisibility){
 							$text .= "
 							<tr>
-								<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_39."</td>
-								<td class='forumheader3' $td2>
+								<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_39."</td>
+								<td class='forumheader3'>
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_81."</a>
 									<div style='display: none;'>
 										".r_userclass("content_class",$content_class, "CLASSES")."
@@ -504,8 +512,8 @@ class contentform{
 						if($checkscore){
 							$text .= "
 							<tr>
-								<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_40."</td>
-								<td class='forumheader3' $td2>
+								<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_40."</td>
+								<td class='forumheader3'>
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_82."</a>
 									<div style='display: none;'>
 										".$rs -> form_select_open("content_score")."
@@ -522,8 +530,8 @@ class contentform{
 						if($checkmeta){
 							$text .= "
 							<tr>
-								<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_53."</td>
-								<td class='forumheader3' $td2>
+								<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_53."</td>
+								<td class='forumheader3'>
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_83."</a>
 									<div style='display: none;'>
 										<div $stylehelp >".CONTENT_ADMIN_ITEM_LAN_70."</div>
@@ -538,8 +546,8 @@ class contentform{
 
 							$text .= "
 							<tr>
-								<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_54."</td>
-								<td class='forumheader3' $td2>
+								<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_54."</td>
+								<td class='forumheader3'>
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(\"customdata\");'>".CONTENT_ADMIN_ITEM_LAN_84."</a>
 									<div id='customdata' style='display:none;'>";
 
@@ -571,14 +579,15 @@ class contentform{
 										<td class='forumheader3' style='border:0;'>".$rs -> form_text("content_custom_value_".$i."", 80, "", 250)."</td>
 									</tr>";
 							}
-							$text .= "</table></div>
+							$text .= "</table>
+							</div>
 							</td>
 							</tr>";
 						}
 
 						$text .= "
 						<tr><td $stylespacer colspan='2'></td></tr>
-						<tr style='vertical-align:top'>
+						<tr>
 							<td colspan='2' style='text-align:center' class='forumheader'>";
 							if($sub_action == "edit" || $sub_action == "sa" || $_POST['editp']){
 								$text .= $rs -> form_hidden("content_refer", $content_refer);
@@ -605,7 +614,9 @@ class contentform{
 		function show_content_submitted($mode){
 						global $rs, $ns, $aa, $plugintable, $tp;
 						global $type, $type_id;
+
 						if(!is_object($sql)){ $sql = new db; }
+
 						$text = "<div style='text-align:center'>\n";
 						if($content_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_author, content_icon, content_parent", "content_refer = 'sa' ")){
 								$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -657,7 +668,7 @@ class contentform{
 
 		function show_content_manage($mode, $userid="", $username=""){
 						global $sql, $ns, $rs, $aa, $plugintable, $tp;
-						global $type, $type_id, $action, $sub_action, $id, $classhelp;
+						global $type, $type_id, $action, $sub_action, $id, $stylehelp;
 
 						$content_pref = $aa -> getContentPref($type_id);
 						$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$type_id}"]);
@@ -717,7 +728,7 @@ class contentform{
 								<div style='text-align:center'>
 								<form method='post' action='".$formtarget."'>
 								<table class='fborder' style='".ADMIN_WIDTH."'>
-								<tr><td colspan='2' $classhelp>".CONTENT_ADMIN_ITEM_LAN_66."</td></tr>
+								<tr><td colspan='2' $stylehelp>".CONTENT_ADMIN_ITEM_LAN_66."</td></tr>
 								<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_6."</td></tr>
 								<tr><td colspan='2' class='forumheader3'>";
 								while($row = $sql-> db_Fetch()){
@@ -760,8 +771,10 @@ class contentform{
 							$text .= "<div style='text-align:center'>".CONTENT_ADMIN_ITEM_LAN_4."</div>";
 						}else{
 							if($content_total < 50 || $letter || $cat){
-									$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>
-									<tr><td colspan='5' $classhelp>".CONTENT_ADMIN_ITEM_LAN_67."</td></tr>
+									$text .= "
+									".$rs -> form_open("post", e_SELF."?".$type.".".$type_id, "deletecontentform","","", "")."
+									<table style='".ADMIN_WIDTH."' class='fborder'>
+									<tr><td colspan='5' class='forumheader3' $stylehelp>".CONTENT_ADMIN_ITEM_LAN_67."</td></tr>
 									<tr>
 									<td class='fcaption' style='width:5%; text-align:center;'>".CONTENT_ADMIN_ITEM_LAN_8."</td>
 									<td class='fcaption' style='width:5%; text-align:center;'>".CONTENT_ADMIN_ITEM_LAN_9."</td>
@@ -782,15 +795,22 @@ class contentform{
 												<td class='forumheader3' style='width:10%; text-align:left'>[".$authordetails[0]."] ".$authordetails[1]."</td>
 												<td class='forumheader3' style='width:70%; text-align:left;'>".$content_heading." [".$content_subheading."]</td>
 												<td class='forumheader3' style='width:10%; text-align:center; white-space:nowrap;'>
+
+												<a href='".e_SELF."?".$type.".".$type_id.".create.edit.".$content_id."'>".CONTENT_ICON_EDIT."</a> 
+												<input type='image' value='{$content_id}' title='delete' name='delete_content' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_1."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$content_id." : ".$delete_heading."]")."')\"/>
+
+												</td>
+											</tr>";
+									}
+									$text .= "</table>
+									".$rs -> form_close();
+												/*
 												".$rs -> form_open("post", e_SELF."?".$type.".".$type_id, "myform_{$content_id}","","", "")."
 												<a href='".e_SELF."?".$type.".".$type_id.".create.edit.".$content_id."'>".CONTENT_ICON_EDIT."</a> 
 												<a onclick=\"if(jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_1."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$content_id." : ".$delete_heading."]")."')){document.forms['myform_{$content_id}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
 												".$rs -> form_hidden("content_delete_{$content_id}", "delete")."
 												".$rs -> form_close()."
-												</td>
-											</tr>";
-									}
-									$text .= "</table>";
+												*/
 							} else {
 									$text .= "<br /><div style='text-align:center'>".CONTENT_ADMIN_ITEM_LAN_7."</div>";
 							}
@@ -801,7 +821,7 @@ class contentform{
 
 
 		function show_cat_create(){
-						global $plugintable, $sql, $ns, $rs, $aa, $classhelp;
+						global $plugintable, $sql, $ns, $rs, $aa, $fl;
 						global $type, $type_id, $action, $sub_action, $id;
 						global $content_parent, $content_heading, $content_subheading, $content_text, $content_icon, $content_comment, $content_rate, $content_pe, $content_class;
 						global $stylespacer, $stylehelp;
@@ -827,14 +847,6 @@ class contentform{
 							}
 						}
 
-						$handle=opendir($content_cat_icon_path_small);
-						while ($file = readdir($handle)){
-							if($file != "." && $file != ".." && $file != "/" && strtolower($file) != "thumbs.db"){
-								$iconlist[] = $file;
-							}
-						}
-						closedir($handle);
-
 						$text = "
 						<div style='text-align:center'>
 						".$rs -> form_open("post", e_SELF."?".$type.".".$type_id.".cat.create", "dataform")."
@@ -842,7 +854,7 @@ class contentform{
 		
 						$text .= "
 						<tr>
-							<td class='forumheader3' style='width:30%; vertical-align:top'>".CONTENT_ADMIN_CAT_LAN_27.":</td>
+							<td class='forumheader3' style='width:30%;'>".CONTENT_ADMIN_CAT_LAN_27.":</td>
 							<td class='forumheader3' style='width:70%'>
 								".$rs -> form_select_open("parent")."
 								".$rs -> form_option("** ".CONTENT_ADMIN_CAT_LAN_26." **", "0", "none")."
@@ -851,19 +863,19 @@ class contentform{
 							</td>
 						</tr>
 						<tr>
-							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_CAT_LAN_2."</td>
-							<td class='forumheader3' style='width:70%'>".$rs -> form_text("cat_heading", 90, $content_heading, 250)."</td>
+							<td class='forumheader3'>".CONTENT_ADMIN_CAT_LAN_2."</td>
+							<td class='forumheader3'>".$rs -> form_text("cat_heading", 90, $content_heading, 250)."</td>
 						</tr>
 						<tr>
-							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_CAT_LAN_3."</td>
-							<td class='forumheader3' style='width:70%'>".$rs -> form_text("cat_subheading", 90, $content_subheading, 250)."</td>
+							<td class='forumheader3'>".CONTENT_ADMIN_CAT_LAN_3."</td>
+							<td class='forumheader3'>".$rs -> form_text("cat_subheading", 90, $content_subheading, 250)."</td>
 						</tr>
 						<tr>
-							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_CAT_LAN_4."</td>
-							<td class='forumheader3' style='width:70%'>".$rs -> form_textarea("cat_text", 88, 20, $content_text, "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'")."
+							<td class='forumheader3'>".CONTENT_ADMIN_CAT_LAN_4."</td>
+							<td class='forumheader3'>".$rs -> form_textarea("cat_text", 88, 20, $content_text, "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'")."
 								<br />".$rs -> form_text("helpb", 90, '', '', "helpbox")."<br />";
 								require_once(e_HANDLER."ren_help.php");
-								$text .= ren_help()."
+								$text .= display_help()."
 							</td>
 						</tr>";
 
@@ -877,8 +889,8 @@ class contentform{
 						$text .= "
 						<tr><td $stylespacer colspan='2'></td></tr>
 						<tr>
-							<td class='forumheader3' $td1>".CONTENT_ADMIN_DATE_LAN_15."</td>
-							<td class='forumheader3' $td2>
+							<td class='forumheader3'>".CONTENT_ADMIN_DATE_LAN_15."</td>
+							<td class='forumheader3'>
 								<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_73."</a>
 								<div style='display: none;'>
 								<div $stylehelp>".CONTENT_ADMIN_DATE_LAN_17."</div>
@@ -910,8 +922,8 @@ class contentform{
 
 						$text .= "
 						<tr>
-							<td class='forumheader3' $td1>".CONTENT_ADMIN_DATE_LAN_16."</td>
-							<td class='forumheader3' $td2>
+							<td class='forumheader3'>".CONTENT_ADMIN_DATE_LAN_16."</td>
+							<td class='forumheader3'>
 								<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_74."</a>
 								<div style='display: none;'>
 								<div $stylehelp>".CONTENT_ADMIN_DATE_LAN_18."</div>
@@ -940,17 +952,20 @@ class contentform{
 							</td>
 						</tr>";
 
+						$rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*');
+						$iconlist = $fl->get_files($content_cat_icon_path_large,"",$rejectlist);
+
 						$text .= "
 						<tr>
-							<td class='forumheader3' style='width:30%'>".CONTENT_ADMIN_CAT_LAN_5."</td>
-							<td class='forumheader3' style='width:70%'>
+							<td class='forumheader3'>".CONTENT_ADMIN_CAT_LAN_5."</td>
+							<td class='forumheader3'>
 								<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_87."</a>
 								<div style='display: none;'>
 								".$rs -> form_text("cat_icon", 60, $content_icon, 100)."
 								".$rs -> form_button("button", '', CONTENT_ADMIN_CAT_LAN_8, "onclick='expandit(this)'")."
 								<div id='divcaticon' style='{head}; display:none'>";
-								while(list($key, $icon) = each($iconlist)){
-									$text .= "<a href=\"javascript:insertext('".$icon."','cat_icon','divcaticon')\"><img src='".$content_cat_icon_path_large.$icon."' style='border:0' alt='' /></a> ";
+								foreach($iconlist as $icon){
+									$text .= "<a href=\"javascript:insertext('".$icon['fname']."','cat_icon','divcaticon')\"><img src='".$icon['path'].$icon['fname']."' style='border:0' alt='' /></a> ";
 								}
 								$text .= "</div>
 								</div>
@@ -959,41 +974,41 @@ class contentform{
 
 						$text .= "
 						<tr>
-							<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_36."</td>
-							<td class='forumheader3' $td2>
+							<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_36."</td>
+							<td class='forumheader3'>
 								<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_78."</a>
 								<div style='display: none;'>
-									".$rs -> form_radio("cat_comment", $content_comment, ($content_comment ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
-									".$rs -> form_radio("cat_comment", $content_comment, ($content_comment ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+									".$rs -> form_radio("cat_comment", $content_comment, "1", "", "").CONTENT_ADMIN_ITEM_LAN_85."
+									".$rs -> form_radio("cat_comment", $content_comment, "0", "", "").CONTENT_ADMIN_ITEM_LAN_86."
 								</div>
 							</td>
 						</tr>
 
 						<tr>
-							<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_37."</td>
-							<td class='forumheader3' $td2>
+							<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_37."</td>
+							<td class='forumheader3'>
 								<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_79."</a>
 								<div style='display: none;'>
-									".$rs -> form_radio("cat_rate", $content_rate, ($content_rate ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
-									".$rs -> form_radio("cat_rate", $content_rate, ($content_rate ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+									".$rs -> form_radio("cat_rate", $content_rate, "1", "", "").CONTENT_ADMIN_ITEM_LAN_85."
+									".$rs -> form_radio("cat_rate", $content_rate, "0", "", "").CONTENT_ADMIN_ITEM_LAN_86."
 								</div>
 							</td>
 						</tr>
 
 						<tr>
-							<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_38."</td>
-							<td class='forumheader3' $td2>
+							<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_38."</td>
+							<td class='forumheader3'>
 								<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_80."</a>
 								<div style='display: none;'>
-									".$rs -> form_radio("cat_pe", $content_pe, ($content_pe ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
-									".$rs -> form_radio("cat_pe", $content_pe, ($content_pe ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+									".$rs -> form_radio("cat_pe", $content_pe, "1", "", "").CONTENT_ADMIN_ITEM_LAN_85."
+									".$rs -> form_radio("cat_pe", $content_pe, "0", "", "").CONTENT_ADMIN_ITEM_LAN_86."
 								</div>
 							</td>
 						</tr>
 
 						<tr>
-							<td class='forumheader3' $td1>".CONTENT_ADMIN_ITEM_LAN_39."</td>
-							<td class='forumheader3' $td2>
+							<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_39."</td>
+							<td class='forumheader3'>
 								<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_81."</a>
 								<div style='display: none;'>
 									".r_userclass("cat_class",$content_class, "CLASSES")."
@@ -1262,7 +1277,7 @@ class contentform{
 
 
 		function show_main_parent($mode){
-						global $sql, $ns, $rs, $type, $type_id, $action, $sub_action, $id, $plugintable, $classhelp;
+						global $sql, $ns, $rs, $type, $type_id, $action, $sub_action, $id, $plugintable, $stylehelp;
 
 						if(!is_object($sql)){ $sql = new db; }
 						if(!$sql -> db_Select($plugintable, "content_id, content_heading", "content_parent='0' ")){
@@ -1283,10 +1298,11 @@ class contentform{
 								if($mode == "editcat"){ $help = CONTENT_ADMIN_MAIN_LAN_15; }
 								if($mode == "createcat"){ $help = CONTENT_ADMIN_MAIN_LAN_16; }
 
+								//".$rs -> form_open("post", "", "main_parent_form","","", "")."
 								$text = "
-								<div style='text-align:center'>
+								<div style='text-align:center'>								
 								<table style='".ADMIN_WIDTH."' class='fborder'>
-								<tr><td $classhelp>".$help."</td></tr>
+								<tr><td class='forumheader3' $stylehelp>".$help."</td></tr>
 								<tr><td class='fcaption'>".CONTENT_ADMIN_MAIN_LAN_2."</td></tr>								
 								<tr><td class='forumheader3'>";
 								while($row = $sql -> db_Fetch()){
@@ -1296,9 +1312,10 @@ class contentform{
 										if($mode == "order"){ $urllocation = e_SELF."?".$type.".".$content_id.".order.cat"; }
 										if($mode == "editcat"){ $urllocation = e_SELF."?".$type.".".$content_id.".cat.manage"; }
 										if($mode == "createcat"){ $urllocation = e_SELF."?".$type.".".$content_id.".cat.create"; }
-										$text .= $rs -> form_button("submit", "typeselect", $content_heading, "onclick=\"document.location='".$urllocation."'\"")." ";
+										$text .= $rs -> form_button("button", "typeselect_{$content_id}", $content_heading, "onclick=\"document.location='".$urllocation."'\"")." ";
 									}
 								$text .= "</table></div>";
+								//".$rs -> form_close()."
 						}
 						$ns -> tablerender(CONTENT_ADMIN_MAIN_LAN_0, $text);
 						return;
@@ -1307,7 +1324,7 @@ class contentform{
 
 		function show_cat_manage(){
 						global $sql, $ns, $rs, $aa, $plugintable;
-						global $type, $type_id, $action, $sub_action, $id, $classhelp;
+						global $type, $type_id, $action, $sub_action, $id, $stylehelp;
 
 						$parentdetails = $aa -> getParent("","",$type_id, "");
 						$content_pref = $aa -> getContentPref($type_id);
@@ -1322,9 +1339,12 @@ class contentform{
 								$text = "<div style='text-align:center'>\n";
 								if(!is_object($sql)){ $sql = new db; }
 								if($category_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_icon", "content_id='".$type_id."' ORDER BY content_parent")){
+									$row = $sql -> db_Fetch();
+									extract($row);
 										$text .= "
+										".$rs -> form_open("post", e_SELF."?".$type.".".$type_id.".cat.manage", "deletecatform","","", "")."
 										<table style='".ADMIN_WIDTH."' class='fborder'>
-										<tr><td $classhelp colspan='5'>".CONTENT_ADMIN_CAT_LAN_40."</td></tr>
+										<tr><td class='forumheader3' $stylehelp colspan='5'>".CONTENT_ADMIN_CAT_LAN_40."</td></tr>
 										<tr>
 										<td class='fcaption' style='width:5%'>".CONTENT_ADMIN_CAT_LAN_24."</td>
 										<td class='fcaption' style='width:5%'>".CONTENT_ADMIN_CAT_LAN_25."</td>
@@ -1333,7 +1353,8 @@ class contentform{
 										<td class='fcaption' style='width:10%; text-align:center'>".CONTENT_ADMIN_CAT_LAN_20."</td>
 										</tr>
 										".$aa -> printParent($parentdetails, "0", $content_id, "table")."
-										</table>";
+										</table>
+										".$rs -> form_close();
 								}else{
 									$text .= "<div style='text-align:center'>".CONTENT_ADMIN_CAT_LAN_9."</div>";
 								}
@@ -1346,7 +1367,7 @@ class contentform{
 
 		function show_admin_contentmanager(){
 						global $plugintable;
-						global $sql, $ns, $rs, $aa, $classhelp;
+						global $sql, $ns, $rs, $aa, $stylehelp;
 						global $type, $type_id, $action, $sub_action, $id;
 
 						if(!getperms("0")){ header("location:".e_SELF); exit; }
@@ -1388,7 +1409,7 @@ class contentform{
 						<div style='text-align:center'>
 						".$rs -> form_open("post", e_SELF."?".$type.".".$type_id.".cat.personalmanager.".$id, "dataform")."
 						<table class='fborder' style='".ADMIN_WIDTH."'>
-						<tr><td $classhelp>".CONTENT_ADMIN_CAT_LAN_41."</td></tr>
+						<tr><td class='forumheader3' $stylehelp>".CONTENT_ADMIN_CAT_LAN_41."</td></tr>
 						<tr><td class='forumheader' style='text-align:center;'>".CONTENT_ADMIN_CAT_LAN_28."</td></tr>
 						<tr><td class='forumheader3' style='text-align:center'>
 					 		<table style='width:98%;'>
@@ -1432,7 +1453,8 @@ class contentform{
 
 		function show_cat_options(){
 						global $sql, $ns, $rs, $aa, $content_pref, $content_cat_icon_path_large, $content_cat_icon_path_small, $plugintable;
-						global $type, $type_id, $action, $sub_action, $id;
+						global $type, $type_id, $action, $sub_action, $id, $fl, $stylehelp, $stylespacer;
+
 						if(!is_object($sql)){ $sql = new db; }
 						$parentdetails = $aa -> getParent();
 
@@ -1542,6 +1564,7 @@ class contentform{
 								$text .= $rs -> form_select_close()."
 							</td>
 						</tr>
+						".$this->pref_submit()."
 						</table>
 						</div>
 
@@ -1619,6 +1642,7 @@ class contentform{
 								$text .= $rs -> form_select_close()."
 							</td>
 						</tr>
+						".$this->pref_submit()."
 						</table>
 						</div>
 
@@ -1647,14 +1671,8 @@ class contentform{
 							<td colspan='2' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_14."</td>
 							<td colspan='4' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_text("content_file_path_{$id}", 60, $content_pref["content_file_path_{$id}"], 100)."</td>
 						</tr>";
-
-						$handle=opendir(e_PLUGIN."content/templates/");
-						while ($file = readdir($handle)){
-							if($file != "." && $file != ".." && $file != "templates" && $file != "/"){
-								$dirlist[] = $file;
-							}
-						}
-						closedir($handle);
+						
+						$dirlist = $fl->get_dirs(e_PLUGIN."content/templates/");
 
 						$text .= "
 						<tr><td colspan='6' class='fcaption'>".CONTENT_ADMIN_OPT_LAN_100."</td></tr>
@@ -1663,13 +1681,14 @@ class contentform{
 							<td colspan='4' class='forumheader3' style='width:30%; text-align:center'>
 								".$rs -> form_select_open("content_theme_{$id}");
 								$counter = 0;
-								while(isset($dirlist[$counter])){
-									$text .= $rs -> form_option($dirlist[$counter], ($dirlist[$counter] == $content_pref["content_theme_{$id}"] ? "1" : "0"), $dirlist[$counter]);
+								foreach($dirlist as $themedir){
+									$text .= $rs -> form_option($themedir, ($themedir == $content_pref["content_theme_{$id}"] ? "1" : "0"), $themedir);
 									$counter++;
 								}
 								$text .= $rs -> form_select_close()."
 							</td>
 						</tr>
+						".$this->pref_submit()."
 						</table>
 						</div>
 
@@ -1710,6 +1729,7 @@ class contentform{
 							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_23."<br />".CONTENT_ADMIN_OPT_LAN_109."</td>
 							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_searchmenu_{$id}", 1, ($content_pref["content_searchmenu_{$id}"] ? "1" : "0"))."</td>
 						</tr>
+						".$this->pref_submit()."
 						</table>
 						</div>
 
@@ -1800,7 +1820,7 @@ class contentform{
 								".$rs -> form_select_close()."
 							</td>
 						</tr>
-
+						".$this->pref_submit()."
 						</table>
 						</div>
 
@@ -1837,6 +1857,7 @@ class contentform{
 								".$rs -> form_select_close()."
 							</td>
 						</tr>
+						".$this->pref_submit()."
 						</table>
 						</div>
 
@@ -1880,6 +1901,7 @@ class contentform{
 							<td colspan='4' class='forumheader3' style='width:70%'>".CONTENT_ADMIN_OPT_LAN_42."</td>
 							<td colspan='2' class='forumheader3' style='width:30%; text-align:center'>".$rs -> form_checkbox("content_content_rating_all_{$id}", 1, ($content_pref["content_content_rating_all_{$id}"] ? "1" : "0"))."</td>
 						</tr>
+						".$this->pref_submit()."
 						</table>
 						</div>
 
@@ -2010,21 +2032,27 @@ class contentform{
 							<td colspan='4' class='forumheader3'>".CONTENT_ADMIN_OPT_LAN_92."<br />".CONTENT_ADMIN_OPT_LAN_93."</td>
 							<td colspan='2' class='forumheader3' style='text-align:center'>".$rs -> form_text("content_menu_recent_icon_width_{$id}", 1, $content_pref["content_menu_recent_icon_width_{$id}"], 3)."</td>
 						</tr>
+						".$this->pref_submit()."
 						</table>
 						</div>";
 
 						$text .= "
-						<br /><table style='".ADMIN_WIDTH."' class='fborder'>
-						<tr style='vertical-align:top'>
-							<td class='forumheader' colspan='6' style='text-align:center'>
-								<input class='button' type='submit' name='updateoptions' value='".CONTENT_ADMIN_OPT_LAN_51."' /> <input type='hidden' name='options_type' value='".$id."' />
-							</td>
-						</tr>
-						</table>
 						</form>
 						</div>";
 
 						$ns -> tablerender($caption, $text);
+		}
+
+		function pref_submit() {
+			global $id;
+			$text = "
+			<tr>
+			<td colspan='6' style='text-align:center' class='forumheader'>
+				<input class='button' type='submit' name='updateoptions' value='".CONTENT_ADMIN_OPT_LAN_51."' /> <input type='hidden' name='options_type' value='".$id."' />
+			</td>
+			</tr>";
+
+			return $text;
 		}
 
 }
