@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-05-02 12:06:24 $
+|     $Revision: 1.25 $
+|     $Date: 2005-05-02 16:40:32 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -346,8 +346,14 @@ define("CONTENT_ADMIN_ITEM_LAN_84", "define custom data fields (key + value)");
 define("CONTENT_ADMIN_ITEM_LAN_85", "enabled");
 define("CONTENT_ADMIN_ITEM_LAN_86", "disabled");
 define("CONTENT_ADMIN_ITEM_LAN_87", "choose an icon for this category");
-define("CONTENT_ADMIN_ITEM_LAN_88", "");
-define("CONTENT_ADMIN_ITEM_LAN_89", "");
+define("CONTENT_ADMIN_ITEM_LAN_88", "to create an item in the earlier selected main category");
+define("CONTENT_ADMIN_ITEM_LAN_89", "to edit an item in the earlier selected main category");
+define("CONTENT_ADMIN_ITEM_LAN_90", "click here");
+define("CONTENT_ADMIN_ITEM_LAN_91", "to re-edit the same item");
+define("CONTENT_ADMIN_ITEM_LAN_92", "");
+define("CONTENT_ADMIN_ITEM_LAN_93", "");
+define("CONTENT_ADMIN_ITEM_LAN_94", "");
+define("CONTENT_ADMIN_ITEM_LAN_95", "");
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "order is increased");
 define("CONTENT_ADMIN_ORDER_LAN_1", "order is decreased");
