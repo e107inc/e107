@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-04-14 16:40:27 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-02 03:29:49 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -33,10 +33,12 @@ $curtype = '1';
 require_once("auth.php");
 require_once(e_HANDLER."user_extended_class.php");
 require_once(e_HANDLER."userclass_class.php");
+require_once("users_extended_predefined.php");
 
 $ue = new e107_user_extended;
 
-if (e_QUERY) {
+if (e_QUERY)
+{
 	$tmp = explode(".", e_QUERY);
 	$action = $tmp[0];
 	$sub_action = $tmp[1];
@@ -167,6 +169,11 @@ if ($action == "editext")
 	{
 		$user->show_extended('new');
 	}
+}
+
+if($action == 'pre')
+{
+	show_predefined();
 }
 
 if($action == 'cat')
@@ -377,7 +384,7 @@ class users_ext
 				";
 			}
 			$text .= "
-			</div>			
+			</div>
 			<span class='smalltext'>".EXTLAN_17."</span><br />
 			<input type='button' class='button' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
 			</td>
@@ -464,7 +471,7 @@ class users_ext
 			".r_userclass("user_write", $current['user_extended_struct_write'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_21."</span>
 			</td>
 			</tr>
-			
+
 			<tr>
 			<td style='width:30%' class='forumheader3'>".EXTLAN_49."
 			</td>
@@ -514,7 +521,7 @@ class users_ext
 			</table></form>
 			";
 		}
-//		$text .= "</div>";
+		//		$text .= "</div>";
 		$ns->tablerender(EXTLAN_9, $text);
 	}
 
@@ -664,10 +671,13 @@ class users_ext
 		$var['cat']['text'] = EXTLAN_35;
 		$var['cat']['link'] = e_SELF."?cat";
 
+		$var['pre']['text'] = EXTLAN_56;
+		$var['pre']['link'] = e_SELF."?pre";
+
 		show_admin_menu(EXTLAN_9, $action, $var);
 	}
-
 }
+
 function users_extended_adminmenu() {
 	global $user, $action, $ns, $curtype, $action;
 	$user->show_options($action);
@@ -678,34 +688,6 @@ function users_extended_adminmenu() {
 	}
 }
 
-function headerjs()
-{
-	include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
-	$text = "
-<script type='text/javascript'>
-function changeHelp(type) {
-	var ftype;
-	var helptext;
-";
-for($i=0; $i<=7; $i++)
-{
-	$type_const = "UE_LAN_{$i}";
-	$help_const = "EXTLAN_HELP_{$i}";
-	$text .= "
-	if(type == \"{$i}\")
-	{
-		xtype=\"".constant($type_const)."\";
-		what=\"".constant($help_const)."\";
-	}";
-}
-$text .= "
-	document.getElementById('ue_type').innerHTML=''+xtype+'';
-	document.getElementById('ue_help').innerHTML=''+what+'';
-}
-</script>
-";
-	echo $text;
-}
 
 function make_delimited($var)
 {
@@ -723,4 +705,121 @@ function make_delimited($var)
 	return $ret;
 }
 
+function show_predefined()
+{
+	global $tp, $ns, $ue, $sql;
+
+	if($_POST)
+	{
+		echo "<pre>".print_r($_POST, true)."</pre>";
+	}
+	// Get list of current extended fields
+	$curList = $ue->user_extended_get_fieldlist();
+	foreach($curList as $c)
+	{
+		$curNames[] = $c['user_extended_struct_name'];
+	}
+
+	//Get list of predefined fields, determine which are already activated.
+	$preList = get_extended_predefined();
+	ksort($preList);
+	//	echo "<pre>".print_r($preList, true)."</pre>";
+	foreach($preList as $k => $v)
+	{
+		if(array_key_exists($k, $curNames))
+		{
+			$active[] = $k;
+		}
+		else
+		{
+			$inactive[] = $k;
+		}
+	}
+
+	$txt = "
+	This page is not yet working, it's a work on progress.  Please ignore for now :)
+	<br /><br /><br />
+	<form method='post'>
+	<table class='width:".ADMIN_WIDTH."'>
+	<tr>
+	<td class='fcaption' colspan='3'>".EXTLAN_57."</td>
+	</tr>
+	";
+	if(count($active))
+	{
+		foreach($active as $a)
+		{
+			$txt .= "
+			<tr>
+			<td class='forumheader2'>{$a}</td>
+			<td class='forumheader2'>";
+			foreach($preList[$a] as $k => $v)
+			{
+				$txt .= "<strong>{$k}:</strong>{$v}<br />";
+			}
+			$txt .= "
+			</td>
+			<td class='forumheader2'><input class='button' type='submit' name='deactivate[{$a}]' value='".EXTLAN_58."' /></td>
+			</tr>";
+		}
+	}
+	else
+	{
+		$txt .= "<tr><td colspan='3'>".EXTLAN_61."</td></tr>";
+	}
+
+	$txt .= "
+	<tr>
+	<td class='fcaption' colspan='3'>".EXTLAN_58."</td>
+	</tr>
+	";
+	foreach($inactive as $a)
+	{
+		$txt .= "
+		<tr>
+		<td class='forumheader2'>{$a}</td>
+		<td class='forumheader2'>";
+		foreach($preList[$a] as $k => $v)
+		{
+			$txt .= "<strong>{$k}: </strong>{$v}<br />";
+		}
+		$txt .= "
+		</td>
+		<td class='forumheader2'><input class='button' type='submit' name='activate[{$a}]' value='".EXTLAN_59."' /></td>
+		</tr>";
+	}
+	$txt .= "</table></form>";
+
+	$ns->tablerender(EXTLAN_56, $txt);
+	require_once('footer.php');
+	exit;
+}
+
+function headerjs()
+{
+	include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
+	$text = "
+	<script type='text/javascript'>
+	function changeHelp(type) {
+		var ftype;
+		var helptext;
+		";
+		for($i=0; $i<=7; $i++)
+		{
+			$type_const = "UE_LAN_{$i}";
+			$help_const = "EXTLAN_HELP_{$i}";
+			$text .= "
+			if(type == \"{$i}\")
+			{
+				xtype=\"".constant($type_const)."\";
+				what=\"".constant($help_const)."\";
+			}";
+		}
+		$text .= "
+		document.getElementById('ue_type').innerHTML=''+xtype+'';
+		document.getElementById('ue_help').innerHTML=''+what+'';
+	}
+	</script>";
+	echo $text;
+}
 ?>
