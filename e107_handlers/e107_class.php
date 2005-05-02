@@ -8,6 +8,8 @@ class e107{
 	var $e107_dirs = array();
 	var $e107_file_root;
 	var $_ip_cache;
+	var $site_theme;
+	var $http_theme_dir;
 
 	function e107($e107_paths, $class2_file){
 		error_reporting(E_ERROR | E_WARNING | E_PARSE);
@@ -48,6 +50,11 @@ class e107{
 			$_SERVER['PATH_TRANSLATED'] = $this->fix_windows_paths($_SERVER['PATH_TRANSLATED']);
 			$_SERVER['DOCUMENT_ROOT'] = str_replace($_SERVER['PATH_INFO'], '', $_SERVER['PATH_TRANSLATED']);
 		}
+	}
+	
+	function http_abs_location($dir_type = flase, $extended = false, $secure = false) {
+		$site_uri = ($secure ? $this->https_path : $this->http_path);
+		return "{$site_uri}{$this->e107_dirs[$dir_type]}{$extended}";
 	}
 
 	function ban() {
