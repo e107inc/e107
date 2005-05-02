@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2005-02-09 21:17:54 $
+|		$Revision: 1.5 $
+|		$Date: 2005-05-02 22:47:26 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -109,20 +109,19 @@ if(!isset($type)){
 			$content_submit_table_string = "";
 			$count = "0";
 			while($row = $sql -> db_Fetch()){
-			extract($row);
 				if(!is_object($sql2)){ $sql2 = new db; }
 
 				$content_pref = unserialize(stripslashes($row['prefvalue']));
-				$content_pref["content_cat_icon_path_large_{$content_id}"] = ($content_pref["content_cat_icon_path_large_{$content_id}"] ? $content_pref["content_cat_icon_path_large_{$content_id}"] : "{e_PLUGIN}content/images/cat/48/" );
-				$content_pref["content_cat_icon_path_small_{$content_id}"] = ($content_pref["content_cat_icon_path_small_{$content_id}"] ? $content_pref["content_cat_icon_path_small_{$content_id}"] : "{e_PLUGIN}content/images/cat/16/" );
-				$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$content_id}"]);
-				$content_cat_icon_path_small = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$content_id}"]);
-				$content_icon_path = $aa -> parseContentPathVars($content_pref["content_icon_path_{$content_id}"]);
+				$content_pref["content_cat_icon_path_large_{$content_id}"] = ($content_pref["content_cat_icon_path_large_{$row['content_id']}"] ? $content_pref["content_cat_icon_path_large_{$content_id}"] : "{e_PLUGIN}content/images/cat/48/" );
+				$content_pref["content_cat_icon_path_small_{$content_id}"] = ($content_pref["content_cat_icon_path_small_{$row['content_id']}"] ? $content_pref["content_cat_icon_path_small_{$content_id}"] : "{e_PLUGIN}content/images/cat/16/" );
+				$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$row['content_id']}"]);
+				$content_cat_icon_path_small = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$row['content_id']}"]);
+				$content_icon_path = $aa -> parseContentPathVars($content_pref["content_icon_path_{$row['content_id']}"]);
 
-				if($content_pref["content_submit_{$content_id}"] && check_class($content_pref["content_submit_class_{$content_id}"])){
-					$CONTENT_SUBMIT_TYPE_TABLE_HEADING = "<a href='".e_SELF."?type.".$content_id."'>".$content_heading."</a>";
-					$CONTENT_SUBMIT_TYPE_TABLE_SUBHEADING = ($content_subheading ? $content_subheading : "");
-					$CONTENT_SUBMIT_TYPE_TABLE_ICON = $aa -> getIcon("catlarge", $content_icon, $content_cat_icon_path_large, "type.".$content_id, "", $content_pref["content_blank_caticon_{$content_id}"]);
+				if($content_pref["content_submit_{$row['content_id']}"] && check_class($content_pref["content_submit_class_{$row['content_id']}"])){
+					$CONTENT_SUBMIT_TYPE_TABLE_HEADING = "<a href='".e_SELF."?type.".$row['content_id']."'>".$row['content_heading']."</a>";
+					$CONTENT_SUBMIT_TYPE_TABLE_SUBHEADING = ($row['content_subheading'] ? $row['content_subheading'] : "");
+					$CONTENT_SUBMIT_TYPE_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "type.".$row['content_id'], "", $content_pref["content_blank_caticon_{$row['content_id']}"]);
 					$content_submit_type_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_SUBMIT_TYPE_TABLE);
 					$count = $count + 1;
 				}
@@ -149,8 +148,6 @@ if($type=="type" && is_numeric($type_id) && !isset($action)){
 		}else{
 			$aform -> show_content_create("submit");
 		}
-
-
 }
 
 require_once(FOOTERF);

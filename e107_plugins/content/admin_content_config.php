@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.22 $
-|		$Date: 2005-05-02 16:39:37 $
+|		$Revision: 1.23 $
+|		$Date: 2005-05-02 22:47:26 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -556,11 +556,11 @@ function admin_content_config_adminmenu(){
 						$sql2 = new db;
 						if($category_total = $sql2 -> db_Select($plugintable, "content_id, content_heading", "content_parent='0' ")){
 							while($row = $sql2 -> db_Fetch()){
-								extract($row);
+
 								unset($var);
 								$var=array();
-								$parentdetails2 = $aa -> getParent("", "", $content_id);
-								$parentarray = $aa -> printParent($parentdetails2, "0", $content_id, "optionadminmenu");
+								$parentdetails2 = $aa -> getParent("", "", $row['content_id']);
+								$parentarray = $aa -> printParent($parentdetails2, "0", $row['content_id'], "optionadminmenu");
 								//$parentarray = $aa -> adminCatMenu($parentdetails2);
 
 								for($i=0;$i<count($parentarray);$i++){
@@ -577,7 +577,7 @@ function admin_content_config_adminmenu(){
 								//}
 
 
-								show_admin_menu(CONTENT_ADMIN_MENU_LAN_5." : ".$content_heading."", 'c'.$sub_action, $var);
+								show_admin_menu(CONTENT_ADMIN_MENU_LAN_5." : ".$row['content_heading']."", 'c'.$sub_action, $var);
 							}
 						}
 				}

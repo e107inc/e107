@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.21 $
-|		$Date: 2005-05-02 16:40:32 $
+|		$Revision: 1.22 $
+|		$Date: 2005-05-02 22:47:35 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -108,9 +108,9 @@ class contentform{
 						if($sub_action == "edit" && !$_POST['preview'] && !isset($message)){
 							if(is_numeric($id)){
 								if($sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_id='$id' ")){
-									$row = $sql -> db_Fetch(); extract($row);
-									$content_text = str_replace("<br />", "", $tp -> toForm($content_text, TRUE));
-									$authordetails = $aa -> getAuthor($content_author);
+									$row = $sql -> db_Fetch();
+									$row['content_text'] = str_replace("<br />", "", $tp -> toForm($row['content_text'], TRUE));
+									$authordetails = $aa -> getAuthor($row['content_author']);
 								}
 							}else{
 								header("location:".e_SELF."?create"); exit;
@@ -120,9 +120,9 @@ class contentform{
 						if($sub_action == "sa" && is_numeric($id) && !$_POST['preview'] && !isset($message)){
 							if(is_numeric($id)){
 								if($sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_id=$id")){
-									$row = $sql -> db_Fetch(); extract($row);
-									$content_text = str_replace("<br />", "", $tp -> toForm($content_text, TRUE));
-									$authordetails = $aa -> getAuthor($content_author);
+									$row = $sql -> db_Fetch();
+									$row['content_text'] = str_replace("<br />", "", $tp -> toForm($row['content_text'], TRUE));
+									$authordetails = $aa -> getAuthor($row['content_author']);
 								}
 							}else{
 								header("location:".e_SELF."?create"); exit;
@@ -150,7 +150,7 @@ class contentform{
 
 						if($mode == "contentmanager"){
 							if($sub_action == "edit"){
-								$text .= $rs -> form_hidden("parent", $content_parent);
+								$text .= $rs -> form_hidden("parent", $row['content_parent']);
 							}else{
 								$cat = str_replace("-", ".", $sub_action);
 								$text .= $rs -> form_hidden("parent", $cat);
@@ -162,7 +162,7 @@ class contentform{
 								<td class='forumheader3'>
 									".$rs -> form_select_open("parent")."
 									".$rs -> form_option("** ".CONTENT_ADMIN_ITEM_LAN_13." **", 0, "none")."
-									".$aa -> printParent($parentdetails, "0", $content_parent, "optioncontent")."
+									".$aa -> printParent($parentdetails, "0", $row['content_parent'], "optioncontent")."
 									".$rs -> form_select_close()."
 								</td>
 							</tr>";
@@ -171,15 +171,15 @@ class contentform{
 						$text .= "
 						<tr>
 							<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_11."</td>
-							<td class='forumheader3'>".$rs -> form_text("content_heading", 80, $content_heading, 250)."</td>
+							<td class='forumheader3'>".$rs -> form_text("content_heading", 80, $row['content_heading'], 250)."</td>
 						</tr>
 						<tr>
 							<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_16."</td>
-							<td class='forumheader3'>".$rs -> form_text("content_subheading", 80, $content_subheading, 250)."</td>
+							<td class='forumheader3'>".$rs -> form_text("content_subheading", 80, $row['content_subheading'], 250)."</td>
 						</tr>
 						<tr>
 							<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_17."</td>
-							<td class='forumheader3'>".$rs -> form_textarea("content_summary", 77, 5, $content_summary)."</td>
+							<td class='forumheader3'>".$rs -> form_textarea("content_summary", 77, 5, $row['content_summary'])."</td>
 						</tr>";
 
 						if($mode == "submit"){
@@ -196,7 +196,7 @@ class contentform{
 						<tr>
 							<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_18."</td>
 							<td class='forumheader3' style='text-align:left;'>
-								".$rs -> form_textarea("content_text", 77, 30, $content_text, ($thispref['html'] ? $insertjs : ""))."
+								".$rs -> form_textarea("content_text", 77, 30, $row['content_text'], ($thispref['html'] ? $insertjs : ""))."
 								<br />".$rs -> form_text("helpb", 80, '', '', "helpbox")."<br />";
 								require_once(e_HANDLER."ren_help.php");
 								$text .= display_help()."
@@ -298,10 +298,10 @@ class contentform{
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_75."</a>
 									<div style='display:none;'>
 									<br />01 ".$rs -> form_hidden("uploadtype1", "icon");
-									if ($content_icon){
+									if ($row['content_icon']){
 										$text .= "
-										".$rs -> form_text("content_icon", 50, $content_icon, 100, "tbox", TRUE)."
-										".$rs -> form_button("button", "removeicon", CONTENT_ADMIN_ITEM_LAN_26, "onClick=\"confirm2_('icon', '', '$content_icon');\"").$rs -> form_button("button", "newicon", CONTENT_ADMIN_ITEM_LAN_25, "onClick='expandit(this)'")."
+										".$rs -> form_text("content_icon", 50, $row['content_icon'], 100, "tbox", TRUE)."
+										".$rs -> form_button("button", "removeicon", CONTENT_ADMIN_ITEM_LAN_26, "onClick=\"confirm2_('icon', '', '".$row['content_icon']."');\"").$rs -> form_button("button", "newicon", CONTENT_ADMIN_ITEM_LAN_25, "onClick='expandit(this)'")."
 										<div style='display:none' style=&{head};>";
 									}
 									if(!FILE_UPLOADS){
@@ -331,7 +331,7 @@ class contentform{
 								
 									<table class='fborder' style='".ADMIN_WIDTH."; text-align:left;'>";
 
-									$filetmp = explode("[file]", $content_file);
+									$filetmp = explode("[file]", $row['content_file']);
 									foreach($filetmp as $key => $value) { 
 										if($value == "") { 
 											unset($filetmp[$key]); 
@@ -394,7 +394,7 @@ class contentform{
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_77."</a>
 									<div style='display: none;'><br />
 									<table class='fborder' style='".ADMIN_WIDTH."; text-align:left;'>";
-									$imagestmp = explode("[img]", $content_image);
+									$imagestmp = explode("[img]", $row['content_image']);
 									foreach($imagestmp as $key => $value) { 
 										if($value == "") { 
 											unset($imagestmp[$key]); 
@@ -457,8 +457,8 @@ class contentform{
 								<td class='forumheader3'>
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_78."</a>
 									<div style='display: none;'>
-										".$rs -> form_radio("content_comment", "1", ($content_comment ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
-										".$rs -> form_radio("content_comment", "0", ($content_comment ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+										".$rs -> form_radio("content_comment", "1", ($row['content_comment'] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
+										".$rs -> form_radio("content_comment", "0", ($row['content_comment'] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
 									</div>
 								</td>
 							</tr>";
@@ -471,8 +471,8 @@ class contentform{
 								<td class='forumheader3'>
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_79."</a>
 									<div style='display: none;'>
-										".$rs -> form_radio("content_rate", "1", ($content_rate ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
-										".$rs -> form_radio("content_rate", "0", ($content_rate ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+										".$rs -> form_radio("content_rate", "1", ($row['content_rate'] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
+										".$rs -> form_radio("content_rate", "0", ($row['content_rate'] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
 									</div>
 								</td>
 							</tr>";
@@ -485,8 +485,8 @@ class contentform{
 								<td class='forumheader3'>
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_80."</a>
 									<div style='display: none;'>
-										".$rs -> form_radio("content_pe", "1", ($content_pe ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
-										".$rs -> form_radio("content_pe", "0", ($content_pe ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+										".$rs -> form_radio("content_pe", "1", ($row['content_pe'] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
+										".$rs -> form_radio("content_pe", "0", ($row['content_pe'] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
 									</div>
 								</td>
 							</tr>";
@@ -499,14 +499,14 @@ class contentform{
 								<td class='forumheader3'>
 									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_81."</a>
 									<div style='display: none;'>
-										".r_userclass("content_class",$content_class, "CLASSES")."
+										".r_userclass("content_class",$row['content_class'], "CLASSES")."
 									</div>
 								</td>
 							</tr>";
 						}
 
 						if(!($_POST['preview'] || isset($message))){
-							$custom = unserialize(stripslashes($contentprefvalue));
+							$custom = unserialize(stripslashes($row['contentprefvalue']));
 						}
 
 						if($checkscore){
@@ -590,8 +590,8 @@ class contentform{
 						<tr>
 							<td colspan='2' style='text-align:center' class='forumheader'>";
 							if($sub_action == "edit" || $sub_action == "sa" || $_POST['editp']){
-								$text .= $rs -> form_hidden("content_refer", $content_refer);
-								$text .= $rs -> form_hidden("content_datestamp", $content_datestamp);
+								$text .= $rs -> form_hidden("content_refer", $row['content_refer']);
+								$text .= $rs -> form_hidden("content_datestamp", $row['content_datestamp']);
 								$text .= $rs -> form_button("submit", "update_content", ($sub_action == "sa" ? CONTENT_ADMIN_ITEM_LAN_43 : CONTENT_ADMIN_ITEM_LAN_45) );
 								$text .= $rs -> form_hidden("content_id", $id);
 								$text .= $rs -> form_checkbox("update_datestamp", 1, 0)." ".CONTENT_ADMIN_ITEM_LAN_42;
@@ -628,31 +628,32 @@ class contentform{
 								<td style='width:10%; text-align:center' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_12."</td>
 								</tr>";
 								while($row = $sql -> db_Fetch()){
-								extract($row);
-										unset($content_pref);
-										$type_id_parent = substr($content_parent,0,1);
+
+										unset($row['content_pref']);
+										$type_id_parent = substr($row['content_parent'],0,1);
 										if(!is_object($sql2)){ $sql2 = new db; }
 										$sql2 -> db_Select($plugintable, "content_id, content_heading", "content_id = '".$type_id_parent."' ");
 										list($parent_id, $parent_heading) = $sql2 -> db_Fetch();
-										$delete_heading = str_replace("&#39;", "\'", $content_heading);
-										$authordetails = $aa -> getAuthor($content_author);
-										$content_pref = $aa -> getContentPref($content_id);
+										$delete_heading = str_replace("&#39;", "\'", $row['content_heading']);
+										$authordetails = $aa -> getAuthor($row['content_author']);
+										$content_pref = $aa -> getContentPref($row['content_id']);
 										$content_pref["content_icon_path_{$type_id_parent}"] = ($content_pref["content_icon_path_{$type_id_parent}"] ? $content_pref["content_icon_path_{$type_id_parent}"] : "{e_PLUGIN}content/images/icon/" );
 										$content_icon_path = $aa -> parseContentPathVars($content_pref["content_icon_path_{$type_id_parent}"]);
-										$caticon = $content_icon_path.$content_icon;
+										$caticon = $content_icon_path.$row['content_icon'];
+										$cid = $row['content_id'];
 										$text .= "
 										<tr>
-											<td class='forumheader3' style='width:5%; text-align:center'>".$content_id."</td>
-											<td class='forumheader3' style='width:5%; text-align:center'>".($content_icon ? "<img src='".$caticon."' alt='' style='width:50px; vertical-align:middle' />" : "&nbsp;")."</td>
+											<td class='forumheader3' style='width:5%; text-align:center'>".$cid."</td>
+											<td class='forumheader3' style='width:5%; text-align:center'>".($row['content_icon'] ? "<img src='".$caticon."' alt='' style='width:50px; vertical-align:middle' />" : "&nbsp;")."</td>
 											<td class='forumheader3' style='width:15%; text-align:left'>".$parent_heading."</td>
-											<td class='forumheader3' style='width:75%; text-align:left; white-space:nowrap;'><b>".$content_heading."</b> [".$content_subheading."]<br />
+											<td class='forumheader3' style='width:75%; text-align:left; white-space:nowrap;'><b>".$row['content_heading']."</b> [".$row['content_subheading']."]<br />
 											".($authordetails[0] == "0" ? $authordetails[1] : "<a href='".e_BASE."user.php?id.".$authordetails[0]."'>".$authordetails[1]."</a>")."	
 											(".$authordetails[2].")</td>
 											<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
-											".$rs -> form_open("post", e_SELF."?".$type.".".$type_id_parent, "myform_{$content_id}","","", "")."
-											<a href='".e_SELF."?".$type.".".$type_id_parent.".create.sa.".$content_id."'>".CONTENT_ICON_EDIT."</a> 
-											<a onclick=\"if(jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_10."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$content_id." : ".$delete_heading."]")."')){document.forms['myform_{$content_id}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
-											".$rs -> form_hidden("content_delete_{$content_id}", "delete")."
+											".$rs -> form_open("post", e_SELF."?".$type.".".$type_id_parent, "myform_{$cid}","","", "")."
+											<a href='".e_SELF."?".$type.".".$type_id_parent.".create.sa.".$cid."'>".CONTENT_ICON_EDIT."</a> 
+											<a onclick=\"if(jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_10."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$cid." : ".$delete_heading."]")."')){document.forms['myform_{$cid}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
+											".$rs -> form_hidden("content_delete_{$row['content_id']}", "delete")."
 											".$rs -> form_close()."
 											</td>
 										</tr>";
@@ -731,10 +732,9 @@ class contentform{
 								<tr><td colspan='2' $stylehelp>".CONTENT_ADMIN_ITEM_LAN_66."</td></tr>
 								<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_6."</td></tr>
 								<tr><td colspan='2' class='forumheader3'>";
-								while($row = $sql-> db_Fetch()){
-								extract($row);
-									if($letter != ""){
-										$text .= "<input class='button' style='width:20' type='submit' name='letter' value='".strtoupper($letter)."' />";
+								while($row = $sql -> db_Fetch()){
+									if($row['letter'] != ""){
+										$text .= "<input class='button' style='width:20' type='submit' name='letter' value='".strtoupper($row['letter'])."' />";
 									}
 								}
 								$text .= "
@@ -783,21 +783,21 @@ class contentform{
 									<td class='fcaption' style='width:10%; text-align:center;'>".CONTENT_ADMIN_ITEM_LAN_12."</td>
 									</tr>";
 									while($row = $sql2 -> db_Fetch()){
-									extract($row);
-											$delete_heading = str_replace("&#39;", "\'", $content_heading);
-											$authordetails = $aa -> getAuthor($content_author);
-											$caticon = $content_icon_path.$content_icon;
+											$delete_heading = str_replace("&#39;", "\'", $row['content_heading']);
+											$authordetails = $aa -> getAuthor($row['content_author']);
+											$caticon = $content_icon_path.$row['content_icon'];
 											$deleteicon = CONTENT_ICON_DELETE;
+											$cid = $row['content_id'];
 											$text .= "
 											<tr>
-												<td class='forumheader3' style='width:5%; text-align:center'>".$content_id."</td>
-												<td class='forumheader3' style='width:5%; text-align:center'>".($content_icon ? "<img src='".$caticon."' alt='' style='width:50px; vertical-align:middle' />" : "&nbsp;")."</td>
+												<td class='forumheader3' style='width:5%; text-align:center'>".$cid."</td>
+												<td class='forumheader3' style='width:5%; text-align:center'>".($row['content_icon'] ? "<img src='".$caticon."' alt='' style='width:50px; vertical-align:middle' />" : "&nbsp;")."</td>
 												<td class='forumheader3' style='width:10%; text-align:left'>[".$authordetails[0]."] ".$authordetails[1]."</td>
-												<td class='forumheader3' style='width:70%; text-align:left;'>".$content_heading." [".$content_subheading."]</td>
+												<td class='forumheader3' style='width:70%; text-align:left;'>".$row['content_heading']." [".$row['content_subheading']."]</td>
 												<td class='forumheader3' style='width:10%; text-align:center; white-space:nowrap;'>
 
-												<a href='".e_SELF."?".$type.".".$type_id.".create.edit.".$content_id."'>".CONTENT_ICON_EDIT."</a> 
-												<input type='image' value='{$content_id}' title='delete' name='delete_content' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_1."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$content_id." : ".$delete_heading."]")."')\"/>
+												<a href='".e_SELF."?".$type.".".$type_id.".create.edit.".$cid."'>".CONTENT_ICON_EDIT."</a> 
+												<input type='image' value='{$cid}' title='delete' name='delete_content' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_1."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$cid." : ".$delete_heading."]")."')\"/>
 
 												</td>
 											</tr>";
@@ -838,8 +838,8 @@ class contentform{
 
 						if($sub_action == "edit" && is_numeric($id)){
 							if($sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_id='$id' ")){
-								$row = $sql -> db_Fetch(); extract($row);
-								if(substr($content_parent,0,1) != "0"){
+								$row = $sql -> db_Fetch();
+								if(substr($row['content_parent'],0,1) != "0"){
 									unset($id); header("location:".e_SELF."?".$type.".".$type_id.".cat"); exit;
 								}
 							}else{
@@ -858,21 +858,21 @@ class contentform{
 							<td class='forumheader3' style='width:70%'>
 								".$rs -> form_select_open("parent")."
 								".$rs -> form_option("** ".CONTENT_ADMIN_CAT_LAN_26." **", "0", "none")."
-								".$aa -> printParent($parentdetails, "0", $content_parent, "optioncat")."
+								".$aa -> printParent($parentdetails, "0", $row['content_parent'], "optioncat")."
 								".$rs -> form_select_close()."
 							</td>
 						</tr>
 						<tr>
 							<td class='forumheader3'>".CONTENT_ADMIN_CAT_LAN_2."</td>
-							<td class='forumheader3'>".$rs -> form_text("cat_heading", 90, $content_heading, 250)."</td>
+							<td class='forumheader3'>".$rs -> form_text("cat_heading", 90, $row['content_heading'], 250)."</td>
 						</tr>
 						<tr>
 							<td class='forumheader3'>".CONTENT_ADMIN_CAT_LAN_3."</td>
-							<td class='forumheader3'>".$rs -> form_text("cat_subheading", 90, $content_subheading, 250)."</td>
+							<td class='forumheader3'>".$rs -> form_text("cat_subheading", 90, $row['content_subheading'], 250)."</td>
 						</tr>
 						<tr>
 							<td class='forumheader3'>".CONTENT_ADMIN_CAT_LAN_4."</td>
-							<td class='forumheader3'>".$rs -> form_textarea("cat_text", 88, 20, $content_text, "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'")."
+							<td class='forumheader3'>".$rs -> form_textarea("cat_text", 88, 20, $row['content_text'], "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'")."
 								<br />".$rs -> form_text("helpb", 90, '', '', "helpbox")."<br />";
 								require_once(e_HANDLER."ren_help.php");
 								$text .= display_help()."
@@ -961,7 +961,7 @@ class contentform{
 							<td class='forumheader3'>
 								<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_87."</a>
 								<div style='display: none;'>
-								".$rs -> form_text("cat_icon", 60, $content_icon, 100)."
+								".$rs -> form_text("cat_icon", 60, $row['content_icon'], 100)."
 								".$rs -> form_button("button", '', CONTENT_ADMIN_CAT_LAN_8, "onclick='expandit(this)'")."
 								<div id='divcaticon' style='{head}; display:none'>";
 								foreach($iconlist as $icon){
@@ -978,8 +978,8 @@ class contentform{
 							<td class='forumheader3'>
 								<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_78."</a>
 								<div style='display: none;'>
-									".$rs -> form_radio("cat_comment", $content_comment, "1", "", "").CONTENT_ADMIN_ITEM_LAN_85."
-									".$rs -> form_radio("cat_comment", $content_comment, "0", "", "").CONTENT_ADMIN_ITEM_LAN_86."
+									".$rs -> form_radio("cat_comment", "1", ($row['content_comment'] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
+									".$rs -> form_radio("cat_comment", "0", ($row['content_comment'] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
 								</div>
 							</td>
 						</tr>
@@ -989,8 +989,8 @@ class contentform{
 							<td class='forumheader3'>
 								<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_79."</a>
 								<div style='display: none;'>
-									".$rs -> form_radio("cat_rate", $content_rate, "1", "", "").CONTENT_ADMIN_ITEM_LAN_85."
-									".$rs -> form_radio("cat_rate", $content_rate, "0", "", "").CONTENT_ADMIN_ITEM_LAN_86."
+									".$rs -> form_radio("cat_rate", "1", ($row['content_rate'] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
+									".$rs -> form_radio("cat_rate", "0", ($row['content_rate'] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
 								</div>
 							</td>
 						</tr>
@@ -1000,8 +1000,8 @@ class contentform{
 							<td class='forumheader3'>
 								<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_80."</a>
 								<div style='display: none;'>
-									".$rs -> form_radio("cat_pe", $content_pe, "1", "", "").CONTENT_ADMIN_ITEM_LAN_85."
-									".$rs -> form_radio("cat_pe", $content_pe, "0", "", "").CONTENT_ADMIN_ITEM_LAN_86."
+									".$rs -> form_radio("cat_pe", "1", ($row['content_pe'] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
+									".$rs -> form_radio("cat_pe", "0", ($row['content_pe'] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
 								</div>
 							</td>
 						</tr>
@@ -1011,7 +1011,7 @@ class contentform{
 							<td class='forumheader3'>
 								<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_ITEM_LAN_81."</a>
 								<div style='display: none;'>
-									".r_userclass("cat_class",$content_class, "CLASSES")."
+									".r_userclass("cat_class",$row['content_class'], "CLASSES")."
 								</div>
 							</td>
 						</tr>";
@@ -1065,12 +1065,11 @@ class contentform{
 									//	header("location:".e_PLUGIN."content/content.php"); exit;
 								}else{
 									while($row = $sql -> db_Fetch()){
-										extract($row);
 											$personalmanagercheck = TRUE;
 										
-											$parentheading = $aa -> drawBreadcrumb($prefetchbreadcrumb, $content_id, "nobase", "nolink");
+											$parentheading = $aa -> drawBreadcrumb($prefetchbreadcrumb, $row['content_id'], "nobase", "nolink");
 											for($i=0; $i<count($prefetchbreadcrumb); $i++){
-												if($content_id == $prefetchbreadcrumb[$i][0]){
+												if($row['content_id'] == $prefetchbreadcrumb[$i][0]){
 													$catidstring = $prefetchbreadcrumb[$i][3];
 												}
 											}
@@ -1188,15 +1187,14 @@ class contentform{
 							</tr>";
 
 							while($row = $sql -> db_Fetch()){
-							extract($row);
-									$delete_heading = str_replace("&#39;", "\'", $content_heading);
-									$authordetails = $aa -> getAuthor($content_author);
-									$caticon = $content_icon_path.$content_icon;
+									$delete_heading = str_replace("&#39;", "\'", $row['content_heading']);
+									$authordetails = $aa -> getAuthor($row['content_author']);
+									$caticon = $content_icon_path.$row['content_icon'];
 									$deleteicon = CONTENT_ICON_DELETE;
 
-									$tmp = explode(".", $content_order);
+									$tmp = explode(".", $row['content_order']);
 									if(!$tmp[1]){ $tmp[1] = "0"; }
-									$content_order = $tmp[0]."-".$tmp[1];
+									$row['content_order'] = $tmp[0]."-".$tmp[1];
 
 									if($style == "catitem"){
 										$ordercheck = $tmp[0];
@@ -1205,22 +1203,24 @@ class contentform{
 										$ordercheck = $tmp[1];
 										$ordercheck2 = $tmp[0];
 									}
+									$cid = $row['content_id'];
+									$corder = $row['content_order'];
 
 									$text .= "
 									<tr>
-										<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>".$content_id."</td>
+										<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>".$cid."</td>
 										<td class='forumheader3' style='width:15%; text-align:left; white-space:nowrap;'>
 											[".$authordetails[0]."] ".$authordetails[1]."
 										</td>
-										<td class='forumheader3' style='width:70%; text-align:left;'>".$content_heading."</td>
+										<td class='forumheader3' style='width:70%; text-align:left;'>".$row['content_heading']."</td>
 										<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
-											<a href='".e_SELF."?".$type.".".$type_id.".order.".$sub_action.".inc-".$content_id."-".$content_order."'><img src='".e_IMAGE."admin_images/up.png' alt='".CONTENT_ADMIN_ITEM_LAN_63."' style='border:0;' /></a>
-											<a href='".e_SELF."?".$type.".".$type_id.".order.".$sub_action.".dec-".$content_id."-".$content_order."'><img src='".e_IMAGE."admin_images/down.png' alt='".CONTENT_ADMIN_ITEM_LAN_64."' style='border:0;' /></a>
+											<a href='".e_SELF."?".$type.".".$type_id.".order.".$sub_action.".inc-".$cid."-".$corder."'><img src='".e_IMAGE."admin_images/up.png' alt='".CONTENT_ADMIN_ITEM_LAN_63."' style='border:0;' /></a>
+											<a href='".e_SELF."?".$type.".".$type_id.".order.".$sub_action.".dec-".$cid."-".$corder."'><img src='".e_IMAGE."admin_images/down.png' alt='".CONTENT_ADMIN_ITEM_LAN_64."' style='border:0;' /></a>
 										</td>
 										<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
 											<select name='order[]' class='tbox'>";
 											for($k=1;$k<=$content_total;$k++){
-												$text .= $rs -> form_option($k, ($ordercheck == $k ? "1" : "0"), $content_id.".".$k.".".$style.".".$content_order);
+												$text .= $rs -> form_option($k, ($ordercheck == $k ? "1" : "0"), $cid.".".$k.".".$style.".".$corder);
 											}
 											$text .= "</select>
 										</td>
@@ -1306,13 +1306,12 @@ class contentform{
 								<tr><td class='fcaption'>".CONTENT_ADMIN_MAIN_LAN_2."</td></tr>								
 								<tr><td class='forumheader3'>";
 								while($row = $sql -> db_Fetch()){
-									extract($row);
-										if($mode == "create"){ $urllocation = e_SELF."?".$type.".".$content_id.".create"; }
-										if($mode == "edit"){ $urllocation = e_SELF."?".$type.".".$content_id.""; }
-										if($mode == "order"){ $urllocation = e_SELF."?".$type.".".$content_id.".order.cat"; }
-										if($mode == "editcat"){ $urllocation = e_SELF."?".$type.".".$content_id.".cat.manage"; }
-										if($mode == "createcat"){ $urllocation = e_SELF."?".$type.".".$content_id.".cat.create"; }
-										$text .= $rs -> form_button("button", "typeselect_{$content_id}", $content_heading, "onclick=\"document.location='".$urllocation."'\"")." ";
+										if($mode == "create"){ $urllocation = e_SELF."?".$type.".".$row['content_id'].".create"; }
+										if($mode == "edit"){ $urllocation = e_SELF."?".$type.".".$row['content_id'].""; }
+										if($mode == "order"){ $urllocation = e_SELF."?".$type.".".$row['content_id'].".order.cat"; }
+										if($mode == "editcat"){ $urllocation = e_SELF."?".$type.".".$row['content_id'].".cat.manage"; }
+										if($mode == "createcat"){ $urllocation = e_SELF."?".$type.".".$row['content_id'].".cat.create"; }
+										$text .= $rs -> form_button("button", "typeselect_{$row['content_id']}", $row['content_heading'], "onclick=\"document.location='".$urllocation."'\"")." ";
 									}
 								$text .= "</table></div>";
 								//".$rs -> form_close()."
@@ -1340,7 +1339,6 @@ class contentform{
 								if(!is_object($sql)){ $sql = new db; }
 								if($category_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_icon", "content_id='".$type_id."' ORDER BY content_parent")){
 									$row = $sql -> db_Fetch();
-									extract($row);
 										$text .= "
 										".$rs -> form_open("post", e_SELF."?".$type.".".$type_id.".cat.manage", "deletecatform","","", "")."
 										<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -1352,7 +1350,7 @@ class contentform{
 										<td class='fcaption' style='width:65%'>".CONTENT_ADMIN_CAT_LAN_19."</td>
 										<td class='fcaption' style='width:10%; text-align:center'>".CONTENT_ADMIN_CAT_LAN_20."</td>
 										</tr>
-										".$aa -> printParent($parentdetails, "0", $content_id, "table")."
+										".$aa -> printParent($parentdetails, "0", $row['content_id'], "table")."
 										</table>
 										".$rs -> form_close();
 								}else{
@@ -1360,7 +1358,7 @@ class contentform{
 								}
 								$text .= "</div>";
 								$ns -> tablerender(CONTENT_ADMIN_CAT_LAN_10, $text);
-								unset($content_id, $content_heading, $content_subheading, $content_text, $content_icon);
+								unset($row['content_id'], $row['content_heading'], $row['content_subheading'], $row['content_text'], $row['content_icon']);
 						}
 		}
 
@@ -1374,12 +1372,12 @@ class contentform{
 
 						if(!is_object($sql)){ $sql = new db; }
 						if($sql -> db_Select($plugintable, "content_id, content_pref as contentprefvalue", "content_id='$id' ")){
-							$row = $sql -> db_Fetch(); extract($row);
+							$row = $sql -> db_Fetch();
 						}else{
 							header("location:".e_SELF."?".$type.".".$type_id.".cat.".$id); exit;
 						}
 
-						$personalcontentusers = explode(",", $contentprefvalue);
+						$personalcontentusers = explode(",", $row['contentprefvalue']);
 						for($i=0;$i<count($personalcontentusers);$i++){
 							if(empty($personalcontentusers[$i])){ unset($personalcontentusers[$i]); }
 						}
@@ -1389,17 +1387,16 @@ class contentform{
 						$c = 0;
 						$d = 0;
 						while ($row = $sql2->db_Fetch()) {
-							extract($row);
-								if(in_array($user_id, $personalcontentusers)){
-									$in_userid[$c] = $user_id;
-									$in_username[$c] = $user_name;
-									$in_userlogin[$c] = $user_login ? "(".$user_login.")" :
+								if(in_array($row['user_id'], $personalcontentusers)){
+									$in_userid[$c] = $row['user_id'];
+									$in_username[$c] = $row['user_name'];
+									$in_userlogin[$c] = $row['user_login'] ? "(".$row['user_login'].")" :
 									 "";
 									$c++;
 								}else{
-									$out_userid[$d] = $user_id;
-									$out_username[$d] = $user_name;
-									$out_userlogin[$d] = $user_login ? "(".$user_login.")" :
+									$out_userid[$d] = $row['user_id'];
+									$out_username[$d] = $row['user_name'];
+									$out_userlogin[$d] = $row['user_login'] ? "(".$row['user_login'].")" :
 									 "";
 									$d++;
 								}
@@ -1466,8 +1463,7 @@ class contentform{
 								header("location:".e_SELF."?".$type.".".$type_id.".cat"); exit;
 						}else{
 								while($row = $sql -> db_Fetch()){
-								extract($row);
-									$caption = CONTENT_ADMIN_OPT_LAN_0." : ".$content_heading;
+									$caption = CONTENT_ADMIN_OPT_LAN_0." : ".$row['content_heading'];
 								}
 						}
 
@@ -1805,8 +1801,7 @@ class contentform{
 								<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_OPT_LAN_83."</a>
 								<div style='display: none;'>
 									<div $stylehelp>".CONTENT_ADMIN_OPT_LAN_107."</div><br />
-									".$rs -> form_radio("content_breadcrumb_seperator{$id}", "1", ($content_pref["content_breadcrumb_seperator{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
-									".$rs -> form_radio("content_breadcrumb_seperator{$id}", "0", ($content_pref["content_breadcrumb_seperator{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+									".$rs -> form_text("content_breadcrumb_seperator{$id}", 10, $content_pref["content_breadcrumb_seperator{$id}"], 3)."
 								</div>
 							</td>
 						</tr>

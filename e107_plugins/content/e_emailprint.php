@@ -11,31 +11,30 @@ function print_item($id)
 		if(!is_object($sql)){ $sql = new db; }
 		$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_parent, content_datestamp, content_class", "content_id='$id' ");
 		$row = $sql -> db_Fetch();
-		extract($row);
 
-		if(!check_class($content_class)){
+		if(!check_class($row['content_class'])){
 			header("location:".e_PLUGIN."content/content.php"); exit;
 		}
-		$content_heading = $tp -> toHTML($content_heading);
-		$content_subheading = $tp -> toHTML($content_subheading);
-		$content_text = ereg_replace("\{EMAILPRINT\}|\[newpage\]", "", $tp -> toHTML($content_text, TRUE));
-		$authordetails = $aa -> getAuthor($content_author);
-		$content_datestamp = $con -> convert_date($content_datestamp, "long");
-		$tmp = explode(".",$content_parent);
+		$row['content_heading'] = $tp -> toHTML($row['content_heading']);
+		$row['content_subheading'] = $tp -> toHTML($row['content_subheading']);
+		$row['content_text'] = ereg_replace("\{EMAILPRINT\}|\[newpage\]", "", $tp -> toHTML($row['content_text'], TRUE));
+		$authordetails = $aa -> getAuthor($row['content_author']);
+		$row['content_datestamp'] = $con -> convert_date($row['content_datestamp'], "long");
+		$tmp = explode(".",$row['content_parent']);
 		$type_id = ($tmp[0] == "0" ? $tmp[1] : $tmp[0]);
 
 		$text = "
-		<b>".$content_heading."</b>
+		<b>".$row['content_heading']."</b>
 		<br />
-		".$content_subheading."
+		".$row['content_subheading']."
 		<br />
-		".$authordetails[1].", ".$content_datestamp."
+		".$authordetails[1].", ".$row['content_datestamp']."
 		<br /><br />
-		".$content_text."
+		".$row['content_text']."
 		<br /><br /><hr />
 		this content item is from ".SITENAME."
 		<br />
-		( http://".$_SERVER[HTTP_HOST].e_HTTP.e_PLUGIN."content/content.php?type.".$type_id.".content.".$content_id." )        
+		( http://".$_SERVER[HTTP_HOST].e_HTTP.e_PLUGIN."content/content.php?type.".$type_id.".content.".$row['content_id']." )        
 		";
 
 		require_once(e_HANDLER.'bbcode_handler.php');
@@ -51,13 +50,12 @@ function email_item($id)
 	if(!is_object($sql)){ $sql = new db; }
 	if($sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_parent, content_datestamp, content_class", "content_id='$id' ")){
 		while($row = $sql -> db_Fetch()){
-		extract($row);
-			$tmp = explode(".",$content_parent);
+			$tmp = explode(".",$row['content_parent']);
 			$type_id = ($tmp[0] == "0" ? $tmp[1] : $tmp[0]);
-			if(!check_class($content_class)){
+			if(!check_class($row['content_class'])){
 				header("location:".e_PLUGIN."content/content.php?type.".$type_id); exit;
 			}
-			$message = SITEURL.e_PLUGIN."content/content.php?type.".$type_id.".content.".$id."\n\n".$content_heading."\n".$content_subheading."\n";
+			$message = SITEURL.e_PLUGIN."content/content.php?type.".$type_id.".content.".$id."\n\n".$row['content_heading']."\n".$row['content_subheading']."\n";
 		}
 		return $message;
 	}
@@ -78,33 +76,32 @@ function print_item_pdf($id){
 			if(!is_object($sql)){ $sql = new db; }
 			$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_parent, content_datestamp, content_class", "content_id='$id' ");
 			$row = $sql -> db_Fetch();
-			extract($row);
 
-			if(!check_class($content_class)){
+			if(!check_class($row['content_class'])){
 				header("location:".e_PLUGIN."content/content.php"); exit;
 			}
-			$authordetails = $aa -> getAuthor($content_author);
-			$content_datestamp = $con -> convert_date($content_datestamp, "long");
-			$tmp = explode(".",$content_parent);
+			$authordetails = $aa -> getAuthor($row['content_author']);
+			$row['content_datestamp'] = $con -> convert_date($row['content_datestamp'], "long");
+			$tmp = explode(".",$row['content_parent']);
 			$type_id = ($tmp[0] == "0" ? $tmp[1] : $tmp[0]);
 
 			$text = "
-			<b>".$content_heading."</b><br />
-			".$content_subheading."<br />
-			".$authordetails[1].", ".$content_datestamp."<br />
+			<b>".$row['content_heading']."</b><br />
+			".$row['content_subheading']."<br />
+			".$authordetails[1].", ".$row['content_datestamp']."<br />
 			<br />
-			".$content_text."<br />
+			".$row['content_text']."<br />
 			";
 
 			//the following defines are processed in the document properties of the pdf file
 			$creator = SITENAME;								//define creator
 			$author	= $authordetails[1];						//define author
 			$keywords = "";										//define keywords
-			$subject = $content_subheading;						//define subject
-			$title = $content_heading;							//define title
+			$subject = $row['content_subheading'];						//define subject
+			$title = $row['content_heading'];							//define title
 
 			//define url and logo to use in the header of the pdf file
-			$url = SITEURL.$PLUGINS_DIRECTORY."content/content.php?type.".$type_id.".content.".$content_id;
+			$url = SITEURL.$PLUGINS_DIRECTORY."content/content.php?type.".$type_id.".content.".$row['content_id'];
 			define('CONTENTPDFPAGEURL', $url);					//define page url to add in header
 			define('CONTENTPDFLOGO', e_IMAGE."logo.png");		//define logo to add in header
 			//global $tp;
