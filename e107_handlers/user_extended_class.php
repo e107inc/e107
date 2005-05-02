@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-04-11 02:59:35 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.17 $
+|     $Date: 2005-05-02 23:12:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -60,7 +60,7 @@ class e107_user_extended
 		global $sql;
 		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type = 0 ORDER BY user_extended_struct_order ASC"))
 		{
-			
+
 			if($byID == TRUE)
 			{
 				while($row = $sql->db_Fetch())
@@ -215,7 +215,7 @@ class e107_user_extended
 		$name = "hide[user_".$struct['user_extended_struct_name']."]";
 		return "<input type='checkbox' {$chk} value='1' name='{$name}' />&nbsp;".UE_LAN_HIDE;
 	}
-		
+
 	function user_extended_edit($struct, $curval)
 	{
 		global $cal, $tp;
@@ -258,9 +258,10 @@ class e107_user_extended
 				}
 				return $ret;
 				break;
-				
+
 			case 3: //dropdown
-				$ret = "<select {$include} name='{$fname}'>\n";
+				$ret = "<select {$include} name='{$fname}'>\n"
+				$ret .= "<option value=''></option>\n";  // ensures that the user chose it.
 				foreach($choices as $choice)
 				{
 					$choice = trim($choice);
@@ -284,6 +285,7 @@ class e107_user_extended
 				{
 					$choiceList = $sql->db_getList();
 					$ret = "<select class='tbox' name='{$fname}'>\n";
+					$ret .= "<option value=''></option>\n";  // ensures that the user chose it.   
 					foreach($choiceList as $cArray)
 					{
 						$cID = $cArray[$choices[1]];
@@ -310,14 +312,14 @@ class e107_user_extended
 			case 5: //textarea
 				return "<textarea {$include} name='{$fname}' >{$curval}</textarea>";
 				break;
-				
+
 			case 7: //date
 				return $cal->make_input_field(array(), array('class' => 'tbox', 'name' => $fname, 'value' => $curval));
 				break;
 		}
 		return $ret;
 	}
-	
+
 	function user_extended_getStruct($orderby="user_extended_struct_order")
 	{
 		if($ueStruct = getcachedvars('ue_struct'))
