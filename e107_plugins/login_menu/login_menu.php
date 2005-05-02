@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-04-29 18:28:23 $
-|     $Author: streaky $
+|     $Revision: 1.29 $
+|     $Date: 2005-05-02 12:46:33 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -23,8 +23,8 @@ $ip = $e107->getip();
 $bullet = (defined("BULLET") ? "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle;' />" : "<img src='".THEME."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />");
 
 if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE) {
-	$text = '<div style="text-align:center">'.LOGIN_MENU_L7.'<br /><br />
-	$bullet <a href="'.e_BASE.'index.php?logout">'.LOGIN_MENU_L8.'</a></div>';
+	$text = "<div style='text-align:center'>".LOGIN_MENU_L7."<br /><br />
+	".$bullet." <a href='".e_BASE."index.php?logout'>".LOGIN_MENU_L8."</a></div>";
 	$ns->tablerender(LOGIN_MENU_L9, $text, 'login');
 }
 $use_imagecode = ($pref['logcode'] && extension_loaded('gd'));
