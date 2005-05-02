@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-05-01 22:02:40 $
+|     $Revision: 1.39 $
+|     $Date: 2005-05-02 08:01:07 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -291,8 +291,9 @@ if ($_POST['useraction'] == "verify") {
 	}
 }
 
-if ($action == "main" && is_numeric($sub_action)) {
+if ($action == "uset") {
 	$user->show_message(USRLAN_87);
+	$action = "main";
 }
 
 if ($action == "cu" && is_numeric($sub_action)) {
