@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-04-14 11:22:08 $
+|     $Revision: 1.25 $
+|     $Date: 2005-05-02 16:47:54 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -30,8 +30,8 @@ if (!e_QUERY) {
 	exit;
 } else {
 	$tmp = explode(".", e_QUERY);
-	$forum_id = $tmp[0];
-	$from = $tmp[1];
+	$forum_id = intval($tmp[0]);
+	$from = intval($tmp[1]);
 	if (!$from) {
 		$from = 0;
 	}
