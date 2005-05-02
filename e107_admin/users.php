@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-05-02 08:01:07 $
+|     $Revision: 1.40 $
+|     $Date: 2005-05-02 09:59:16 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -57,7 +57,7 @@ if (e_QUERY) {
 
 $from = ($from ? $from : 0);
 $amount = 30;
-
+// ------- Resend Email. --------------
 if (isset($_POST['resend_mail'])) {
 	$tid = $_POST['resend_id'];
 	$key = $_POST['resend_key'];
@@ -73,7 +73,7 @@ if (isset($_POST['resend_mail'])) {
 	$user->show_message("Email Re-sent to: ".$name);
 	unset($tid);
 }
-
+// ------- Test Email. --------------
 if (isset($_POST['test_mail'])) {
 	require_once(e_HANDLER."mail.php");
 	$text = validatemail($_POST['test_email']);
@@ -83,7 +83,7 @@ if (isset($_POST['test_mail'])) {
 	$ns->tablerender($caption, $text[1]);
 	unset($id, $action, $sub_cation);
 }
-
+// ------- Update Options. --------------
 if (isset($_POST['update_options'])) {
 	$pref['avatar_upload'] = (FILE_UPLOADS ? $_POST['avatar_upload'] : 0);
 	$pref['im_width'] = $_POST['im_width'];
@@ -95,7 +95,7 @@ if (isset($_POST['update_options'])) {
 	save_prefs();
 	$user->show_message(USRLAN_1);
 }
-
+// ------- Prune Users. --------------
 if (isset($_POST['prune'])) {
 	$sql2 = new db;
 	$text = USRLAN_56." ";
@@ -109,7 +109,7 @@ if (isset($_POST['prune'])) {
 	$ns->tablerender(USRLAN_57, "<div style='text-align:center'><b>".$text."</b></div>");
 	unset($text);
 }
-
+// ------- Quick Add User --------------
 if (isset($_POST['adduser'])) {
 	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
 		exit;
@@ -162,7 +162,7 @@ if (isset($_POST['adduser'])) {
 	}
 }
 
-
+// ------- Ban User. --------------
 if ($_POST['useraction'] == "ban") {
   //	$sub_action = $_POST['userid'];
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
@@ -175,10 +175,10 @@ if ($_POST['useraction'] == "ban") {
 		$sql -> db_Insert("banlist", "'".$user_ip."', '".USERID."', '".$user_name."' ");
 		$user->show_message(USRLAN_8);
 	}
-	if(!$action){ $action = "main"; }
+	$action = "main";
 	if(!$sub_action){$sub_action = "user_id"; }
 }
-
+// ------- Unban User --------------
 if ($_POST['useraction'] == "unban") {
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
@@ -186,11 +186,11 @@ if ($_POST['useraction'] == "unban") {
 	$sql->db_Update("user", "user_ban='0' WHERE user_id='".$_POST['userid']."' ");
 	$sql -> db_Delete("banlist", " banlist_ip='$user_ip' ");
 	$user->show_message(USRLAN_9);
-	if(!$action){ $action = "main"; }
+	$action = "main";
 	if(!$sub_action){$sub_action = "user_id"; }
 }
 
-
+// ------- Resend Email. --------------
 if ($_POST['useraction'] == 'resend') {
 	$qry = (e_QUERY) ? "?".e_QUERY : "";
 	if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
@@ -209,7 +209,7 @@ if ($_POST['useraction'] == 'resend') {
 		exit;
 	}
 }
-
+// ------- TEst Email. --------------
 if ($_POST['useraction'] == 'test') {
 	$qry = (e_QUERY) ? "?".e_QUERY : "";
 	if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
@@ -224,7 +224,7 @@ if ($_POST['useraction'] == 'test') {
 		exit;
 	}
 }
-
+// ------- Delete User --------------
 if ($_POST['useraction'] == 'deluser') {
 	if ($_POST['confirm']) {
 		if ($sql->db_Delete("user", "user_id='".$_POST['userid']."' AND user_perms != '0'")) {
@@ -255,18 +255,18 @@ if ($_POST['useraction'] == 'deluser') {
 		}
 	}
 }
-
+// ------- Make Admin.. --------------
 if ($_POST['useraction'] == "admin") {
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	 extract($row);
 	$sql->db_Update("user", "user_admin='1' WHERE user_id='".$_POST['userid']."' ");
 	$user->show_message($user_name." ".USRLAN_3." <a href='".e_ADMIN."administrator.php?edit.$sub_action'>".USRLAN_4."</a>");
-	if(!$action){ $action = "main"; }
+	$action = "main";
 	if(!$sub_action){ $sub_action = "user_id"; }
 	if(!$id){ $id = "DESC"; }
 }
-
+// ------- Remove Admin --------------
 if ($_POST['useraction'] == "unadmin") {
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
@@ -276,7 +276,7 @@ if ($_POST['useraction'] == "unadmin") {
 	} else {
 		$sql->db_Update("user", "user_admin='0' WHERE user_id='".$_POST['userid']."'");
 		$user->show_message($user_name." ".USRLAN_6);
-	if(!$action){ $action = "main"; }
+	$action = "main";
 	if(!$sub_action){ $sub_action = "user_id"; }
 	if(!$id){ $id = "DESC"; }
 	}
@@ -296,10 +296,10 @@ if ($action == "uset") {
 	$action = "main";
 }
 
-if ($action == "cu" && is_numeric($sub_action)) {
+if ($action == "cu") {
 	$user->show_message(USRLAN_88);
 	$action = "main";
-	$sub_action = "user_id";
+  //	$sub_action = "user_id";
 }
 
 /*
