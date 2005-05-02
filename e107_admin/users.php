@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-05-02 09:59:16 $
+|     $Revision: 1.41 $
+|     $Date: 2005-05-02 10:48:01 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -356,17 +356,24 @@ class users
 		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>";
 
 		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "") {
-
-			$query = (eregi("@", $_POST['searchquery']))?"user_email REGEXP('".$_POST['searchquery']."') OR ": "";
+            $query = "WHERE ".
+			$query .= (eregi("@", $_POST['searchquery']))?"user_email REGEXP('".$_POST['searchquery']."') OR ": "";
 			$query .= (eregi(".", $_POST['searchquery']))?"user_ip REGEXP('".$_POST['searchquery']."') OR ": "";
+            foreach($search_display as $disp){
+            	$query .= "$disp REGEXP('".$_POST['searchquery']."') OR "; 
+			}
+
 			$query .= "user_login REGEXP('".$_POST['searchquery']."') OR ";
 			$query .= "user_name REGEXP('".$_POST['searchquery']."') ORDER BY user_id";
-		} else {
+
+
+} else {
 			$query = "ORDER BY ".($sub_action ? $sub_action : "user_id")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
 		}
 
+        $qry_insert = "SELECT u.*, ue.* FROM #user AS u	LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id ";
 
-		if ($sql->db_Select("user", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))) {
+		if ($sql->db_Select_gen($qry_insert. $query)) {
 			$text .= "<table class='fborder' style='width: 99%'>
 				<tr>
 				<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
@@ -511,18 +518,25 @@ class users
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");
 		$columns = mysql_num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
-			$fname = mysql_field_name($fields, $i);
-			$checked = (in_array($fname,$search_display)) ? "checked='checked'" : "";
+			$fname[] = mysql_field_name($fields, $i);
+		}
+
+		// include extended fields in the list.
+        $sql -> db_Select("user_extended_struct");
+            while($row = $sql-> db_Fetch()){
+            $fname[] = "user_".$row['user_extended_struct_name'];
+		}
+
+		foreach($fname as $fcol){
+        $checked = (in_array($fcol,$search_display)) ? "checked='checked'" : "";
 			$text .= "<td style='text-align:left; padding:0px'>";
-			$text .= "<input type='checkbox' name='searchdisp[]' value='".$fname."' $checked />".str_replace("user_","",$fname) . "</td>\n";
+			$text .= "<input type='checkbox' name='searchdisp[]' value='".$fcol."' $checked />".str_replace("user_","",$fcol) . "</td>\n";
 			$m++;
 			if($m == 5){
 				$text .= "</tr><tr>";
 				$m = 0;
 			 }
-		}
-
-
+        }
 
 		$text .= "</table></div>
 		</form>\n
