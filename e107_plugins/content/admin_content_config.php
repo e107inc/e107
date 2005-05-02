@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.20 $
-|		$Date: 2005-05-01 23:14:26 $
+|		$Revision: 1.21 $
+|		$Date: 2005-05-02 12:05:44 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -37,6 +37,9 @@ require_once(e_PLUGIN."content/handlers/content_db_class.php");
 $adb = new contentdb;
 require_once(e_PLUGIN."content/handlers/content_form_class.php");
 $aform = new contentform;
+require_once(e_HANDLER."file_class.php");
+$fl = new e_file;
+
 global $tp;
 
 if(e_QUERY){
@@ -52,14 +55,69 @@ if(e_QUERY){
 if(!isset($type)){ $type = "type"; }
 if(!isset($type_id)){ $type_id = "0"; }
 
-$deltest = array_flip($_POST);
-if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$tp->toJS("delete")],$matches)){
-        $delete = $matches[1];
-        $del_id = $matches[2];
+
+if(isset($_POST['delete_cat'])){
+	$delete = "cat";
+	$del_id = $_POST['delete_cat'];
+}
+
+if(isset($_POST['delete_content'])){
+	$delete = "content";
+	$del_id = $_POST['delete_content'];
 }
 
 // ##### DB ---------------------------------------------------------------------------------------
 $content_pref = $aa -> getContentPref(($type_id != "0" ? $type_id : "0"));
+
+if($delete == 'cat'){
+
+		$sql -> db_Select($plugintable, "content_parent", "content_id = '$del_id' ");
+		list($content_parent) = $sql -> db_Fetch();
+
+		if($content_parent == "0"){
+			$check = $del_id.".".$del_id;
+		}else{
+			$tmp = explode(".", $content_parent);
+			$check = $tmp[1].".".substr($content_parent,strlen($tmp[1])+1).".".$del_id;
+		}
+
+		//check if subcats present
+		$query = "AND LEFT(content_parent,".(strlen($content_parent)+1+strlen($del_id)).") = '".$content_parent.".".$del_id."' ";
+		if($sql -> db_Select($plugintable, "content_parent", "content_id != '".$del_id."' ".$query." ")){
+			//subcategories found don't delete
+			$checkermsg .= CONTENT_ADMIN_CAT_LAN_36."<br />";
+			$checksubcat = TRUE;
+		}else{
+			$checkermsg .= CONTENT_ADMIN_CAT_LAN_39."<br />";
+			$checksubcat = FALSE;
+		}
+
+		//check if items present
+		if($sql -> db_Select($plugintable, "content_parent", "LEFT(content_parent,".(strlen($content_parent)).") = '".$check."' OR content_parent = '".$check."' ")){
+			//items found, don't delete
+			$checkermsg .= CONTENT_ADMIN_CAT_LAN_37."<br />";
+			$checkitems = TRUE;
+		}else{
+			$checkermsg .= CONTENT_ADMIN_CAT_LAN_38."<br />";
+			$checkitems = FALSE;
+		}
+	
+		if($checksubcat == FALSE && $checkitems == FALSE){
+			if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+				$message = CONTENT_ADMIN_CAT_LAN_23."<br />";
+			}
+		}else{
+			$message = $checkermsg;
+		}
+}
+
+if($delete == 'content'){
+		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+			$e107cache->clear("content");
+			$message = CONTENT_ADMIN_ITEM_LAN_3;
+		}
+}
+
 
 if(isset($_POST['updateoptions'])){
 		$content_pref = $aa -> UpdateContentPref($_POST, $_POST['options_type']);
@@ -185,54 +243,7 @@ If(isset($_POST['update_content'])){
 		}
 }
 
-if($delete == 'cat'){
 
-		$sql -> db_Select($plugintable, "content_parent", "content_id = '$del_id' ");
-		list($content_parent) = $sql -> db_Fetch();
-
-		if($content_parent == "0"){
-			$check = $del_id.".".$del_id;
-		}else{
-			$tmp = explode(".", $content_parent);
-			$check = $tmp[1].".".substr($content_parent,strlen($tmp[1])+1).".".$del_id;
-		}
-
-		//check if subcats present
-		$query = "AND LEFT(content_parent,".(strlen($content_parent)+1+strlen($del_id)).") = '".$content_parent.".".$del_id."' ";
-		if($sql -> db_Select($plugintable, "content_parent", "content_id != '".$del_id."' ".$query." ")){
-			//subcategories found don't delete
-			$checkermsg .= CONTENT_ADMIN_CAT_LAN_36."<br />";
-			$checksubcat = TRUE;
-		}else{
-			$checkermsg .= CONTENT_ADMIN_CAT_LAN_39."<br />";
-			$checksubcat = FALSE;
-		}
-
-		//check if items present
-		if($sql -> db_Select($plugintable, "content_parent", "LEFT(content_parent,".(strlen($content_parent)).") = '".$check."' OR content_parent = '".$check."' ")){
-			//items found, don't delete
-			$checkermsg .= CONTENT_ADMIN_CAT_LAN_37."<br />";
-			$checkitems = TRUE;
-		}else{
-			$checkermsg .= CONTENT_ADMIN_CAT_LAN_38."<br />";
-			$checkitems = FALSE;
-		}
-	
-		if($checksubcat == FALSE && $checkitems == FALSE){
-			if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-				$message = CONTENT_ADMIN_CAT_LAN_23."<br />";
-			}
-		}else{
-			$message = $checkermsg;
-		}
-}
-
-if($delete == 'content'){
-		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-			$e107cache->clear("content");
-			$message = CONTENT_ADMIN_ITEM_LAN_3;
-		}
-}
 
 if(isset($_POST['preview'])){
 		$content_heading = $tp -> post_toHTML($_POST['content_heading']);
@@ -416,8 +427,14 @@ if(!e_QUERY){																//show main categories
 						header("location:".e_SELF."?type.".$type_id.".cat.create"); exit;
 				}else{														//category; create form
 						if($id == "pc"){									//category; create redirect
-								$message = CONTENT_ADMIN_CAT_LAN_11;
-								if($type_id == "0"){ $message .= "<br /><br />".CONTENT_ADMIN_OPT_LAN_82; }
+								$message = CONTENT_ADMIN_CAT_LAN_11."<br /><br />";
+								if($type_id == "0"){ 
+									$message .= "<br /><br />".CONTENT_ADMIN_OPT_LAN_82."<br /><br />";
+								}
+								$message .= "
+								".CONTENT_ADMIN_CAT_LAN_44." <a href='".e_SELF."?type.".$type_id.".cat.create'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />
+								".CONTENT_ADMIN_CAT_LAN_42." <a href='".e_SELF."?type.".$type_id.".cat.edit'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />
+								";
 								$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 								require_once(e_ADMIN."footer.php");
 								exit;
@@ -443,6 +460,7 @@ if(!e_QUERY){																//show main categories
 	}
 }
 // ##### End --------------------------------------------------------------------------------------
+
 
 // ##### Display options --------------------------------------------------------------------------
 function admin_content_config_adminmenu(){

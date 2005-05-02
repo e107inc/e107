@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-05-01 23:14:26 $
+|     $Revision: 1.24 $
+|     $Date: 2005-05-02 12:06:24 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -28,6 +28,7 @@ define("CONTENT_ICON_LAN_14", "personal contentmanager");
 
 if (!defined('CONTENT_ICON_EDIT')) { define("CONTENT_ICON_EDIT", "<img src='".e_PLUGIN."content/images/maintain_16.png' alt='".CONTENT_ICON_LAN_0."' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_DELETE')) { define("CONTENT_ICON_DELETE", "<img src='".e_PLUGIN."content/images/banlist_16.png' alt='".CONTENT_ICON_LAN_1."' style='border:0; cursor:pointer;' />"); }
+if (!defined('CONTENT_ICON_DELETE_BASE')) { define("CONTENT_ICON_DELETE_BASE", e_PLUGIN."content/images/banlist_16.png"); }
 if (!defined('CONTENT_ICON_OPTIONS')) { define("CONTENT_ICON_OPTIONS", "<img src='".e_PLUGIN."content/images/cat_settings_16.png' alt='".CONTENT_ICON_LAN_2."' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_USER')) { define("CONTENT_ICON_USER", "<img src='".e_PLUGIN."content/images/users_16.png' alt='".CONTENT_ICON_LAN_3."' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_FILE')) { define("CONTENT_ICON_FILE", "<img src='".e_PLUGIN."content/images/file_16.png' alt='".CONTENT_ICON_LAN_4."' style='border:0; cursor:pointer;' />"); }
@@ -91,10 +92,10 @@ define("CONTENT_ADMIN_CAT_LAN_39", "category check: no subcategories found");
 define("CONTENT_ADMIN_CAT_LAN_40", "Below you see a list of the main category and all subcategories if present.<br />");
 
 define("CONTENT_ADMIN_CAT_LAN_41", "The personal manager of content categories allows you to assign certain other admins to a category. With this privilige these admins can manage their own and only their own personal content items in this specified category, without the need to have control over the full content manager plugin. From the normal content page outside of the admin area they will see a personalmanager icon which redirects them to the personal manager page.");
-define("CONTENT_ADMIN_CAT_LAN_42", "to edit more categories from the earlier selected main category");
+define("CONTENT_ADMIN_CAT_LAN_42", "to edit a category from the earlier selected main category");
 
 define("CONTENT_ADMIN_CAT_LAN_43", "click here");
-define("CONTENT_ADMIN_CAT_LAN_44", "");
+define("CONTENT_ADMIN_CAT_LAN_44", "to add another category in the earlier selected main category");
 define("CONTENT_ADMIN_CAT_LAN_45", "");
 define("CONTENT_ADMIN_CAT_LAN_46", "");
 define("CONTENT_ADMIN_CAT_LAN_47", "");
@@ -197,7 +198,7 @@ define("CONTENT_ADMIN_OPT_LAN_87", "does the date need to be shown?");
 define("CONTENT_ADMIN_OPT_LAN_88", "does the author need to be shown?");
 define("CONTENT_ADMIN_OPT_LAN_89", "does the subheading need to be shown?");
 define("CONTENT_ADMIN_OPT_LAN_90", "define the icon to display");
-define("CONTENT_ADMIN_OPT_LAN_91", "none (), bullet (<img src='".e_THEME.$pref['sitetheme']."/images/".(defined("BULLET") ? BULLET : "bullet2.gif")."'>), middot (&middot), white bullet (º), arrow (&raquo;)");
+define("CONTENT_ADMIN_OPT_LAN_91", "none (), bullet (<img src='".e_THEME.$pref['sitetheme']."/images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />), middot (&middot;), white bullet (º), arrow (&raquo;)");
 define("CONTENT_ADMIN_OPT_LAN_92", "define the width of the icon");
 define("CONTENT_ADMIN_OPT_LAN_93", "if you have chosen to display the 'content icon', specify the width of the content icon to show. enter only a numeric value of the amount of pixels you want. do not add the 'px' to the number.");
 define("CONTENT_ADMIN_OPT_LAN_94", ", category_icon()");

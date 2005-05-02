@@ -4,31 +4,64 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_help.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-01 23:14:26 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-02 12:06:24 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 //require_once(e_PLUGIN."content/handlers/content_class.php");
 
-define("CONTENT_ADMIN_HELP_LAN_0", "<i>if you have not yet added main parent categories, please do so at the Create New Category page.</i><br /><br /><b>main parent buttons</b><br />select a main parent category by clicking the button.");
+define("CONTENT_ADMIN_HELP_LAN_0", "
+<i>if you have not yet added main parent categories, please do so at the Create New Category page.</i><br /><br />
+<b>main parent buttons</b><br />select a main parent category by clicking the button.
+");
 
-define("CONTENT_ADMIN_HELP_LAN_1", "<i>this page shows all content items from the main parent category you have selected at the content main page.</i><br />");
+define("CONTENT_ADMIN_HELP_LAN_1", "
+<i>this page shows all content items from the main parent category you have selected at the content main page.</i><br />
+");
 
-define("CONTENT_ADMIN_HELP_LAN_2", "<br /><i>you have selected a specific category to show content items.<br />the list will now contain only those content items from the selected category.</i><br />");
+define("CONTENT_ADMIN_HELP_LAN_2", "
+<br />
+<i>you have selected a specific category to show content items.<br />the list will now contain only those content items from the selected category.</i><br />
+");
 
-define("CONTENT_ADMIN_HELP_LAN_3", "<br /><b>first letters</b><br />if multiple content item starting letters of the content_heading are present, you will see buttons to sleect only those content items starting with that letter.<br /><br /><b>detailed list</b><br />You see a list of all content items with their id, icon, author, heading [subheading] and options.<br /><br /><b>options</b><br />you can edit or delete a content item using the buttons shown.");
+define("CONTENT_ADMIN_HELP_LAN_3", "
+<br />
+<b>first letters</b><br />if multiple content item starting letters of the content_heading are present, you will see buttons to sleect only those content items starting with that letter.<br /><br />
+<b>detailed list</b><br />You see a list of all content items with their id, icon, author, heading [subheading] and options.<br /><br />
+<b>explanation of icons</b><br />
+".CONTENT_ICON_EDIT." : for all items you can click this button to edit the category.<br />
+".CONTENT_ICON_DELETE." : for all items you can click this button to delete the category.<br />
+");
 
-define("CONTENT_ADMIN_HELP_LAN_4", "<i>the main parent categories are shown as buttons.</i><br /><br /><b>main parent buttons</b><br />please select a main parent category to create your content item for.<br />");
+define("CONTENT_ADMIN_HELP_LAN_4", "
+<i>the main parent categories are shown as buttons.</i><br /><br />
+<b>main parent buttons</b><br />please select a main parent category to create your content item for.<br />");
 
-define("CONTENT_ADMIN_HELP_LAN_5", "<i>this page shows the content item creation form</i><br /><br /><b>create form</b><br />you can now supply all information for the new content item.<br /><br /><b>bbcode</b><br />with the bbcode tags you can specify certain style elements to parts of text, insert links and more.<br /><br /><b>[newpage=name]</b><br />with the [newpage] tag you can split your content item into multiple pages.<br />usage of the [newpage] tag: if you want to specify multiple pages, insert a [newpage] tag before each page (and don't forget to insert one at the very beginning of the content item !).<br />The new [newpage=name] method allows you to give a name to each page, which will be shown in the content item index when you view the content item.<br />");
+define("CONTENT_ADMIN_HELP_LAN_5", "
+<i>this page shows the content item creation form</i><br /><br />
+<b>create form</b><br />you can now supply all information for the new content item.<br /><br />
+<b>bbcode</b><br />with the bbcode tags you can specify certain style elements to parts of text, insert links and more.<br /><br />
+<b>[newpage=name]</b><br />with the [newpage] tag you can split your content item into multiple pages.<br />usage of the [newpage] tag: if you want to specify multiple pages, insert a [newpage] tag before each page (and don't forget to insert one at the very beginning of the content item !).<br />The new [newpage=name] method allows you to give a name to each page, which will be shown in the content item index when you view the content item.<br />
+");
 
-define("CONTENT_ADMIN_HELP_LAN_6", "<i>this page shows the content item edit form</i><br /><br /><b>edit form</b><br />you can now edit all information for this content item and submit your changes.");
+define("CONTENT_ADMIN_HELP_LAN_6", "
+<i>this page shows the content item edit form</i><br /><br />
+<b>edit form</b><br />you can now edit all information for this content item and submit your changes.
+");
 
-define("CONTENT_ADMIN_HELP_LAN_7", "<i>you see the main parent category buttons and the parent creation form</i><br /><br /><b>default main parent</b><br />by default this form allows you to create a new main parent. (the category pulldown is empty)<br /><br /><b>main parent buttons</b><br />if you want to create a subcategory within one of the present main parent categories, please select a main parent category by clicking the button.");
+define("CONTENT_ADMIN_HELP_LAN_7", "
+<i>you see the main parent category buttons and the parent creation form</i><br /><br />
+<b>default main parent</b><br />by default this form allows you to create a new main parent. (the category pulldown is empty)<br /><br />
+<b>main parent buttons</b><br />if you want to create a subcategory within one of the present main parent categories, please select a main parent category by clicking the button.
+");
 
-define("CONTENT_ADMIN_HELP_LAN_8", "<i>you have selected a main parent category to create a new subcategory in.</i><br /><br /><b>category pulldown</b><br />you see that the category pulldown now contains all present subcategories from the main parent category.<br /><br /><b>category creation form</b><br />you can now supply all information for the new subcategory.");
+define("CONTENT_ADMIN_HELP_LAN_8", "
+<i>you have selected a main parent category to create a new subcategory in.</i><br /><br />
+<b>category pulldown</b><br />you see that the category pulldown now contains all present subcategories from the main parent category.<br /><br />
+<b>category creation form</b><br />you can now supply all information for the new subcategory.
+");
 
 define("CONTENT_ADMIN_HELP_LAN_9", "<i>you see the main parent category buttons.</i><br /><br /><b>main parent buttons</b><br />first you have to select a main parent category by clicking the button.");
 
@@ -43,7 +76,10 @@ define("CONTENT_ADMIN_HELP_LAN_10", "
 ".CONTENT_ICON_CONTENTMANAGER_SMALL." : (site admin only) for each subcategory you can click this button to manage the personalmanager for other admins.<br />
 ");
 
-define("CONTENT_ADMIN_HELP_LAN_11", "<i>this page shows the category edit form.</i><br /><br /><b>category edit form</b><br />you can now edit all information for this (sub)category and submit your changes.");
+define("CONTENT_ADMIN_HELP_LAN_11", "
+<i>this page shows the category edit form.</i><br /><br />
+<b>category edit form</b><br />you can now edit all information for this (sub)category and submit your changes.
+");
 
 define("CONTENT_ADMIN_HELP_LAN_12", "
 <i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />
@@ -58,15 +94,28 @@ define("CONTENT_ADMIN_HELP_LAN_12", "
 <b>menu</b><br />in this section you can specify options for the menu of this main parent.<br /><br />
 ");
 
-define("CONTENT_ADMIN_HELP_LAN_13", "<i>On this page you see a list of all content items that were submitted by users.</i><br /><br /><b>detailed list</b><br />You see a list of these content items with their id, icon, main parent, heading [subheading], author and options.<br /><br /><b>options</b><br />you can post or delete a content item using the buttons shown.");
+define("CONTENT_ADMIN_HELP_LAN_13", "
+<i>On this page you see a list of all content items that were submitted by users.</i><br /><br />
+<b>detailed list</b><br />You see a list of these content items with their id, icon, main parent, heading [subheading], author and options.<br /><br />
+<b>options</b><br />you can post or delete a content item using the buttons shown.
+");
 
 define("CONTENT_ADMIN_HELP_LAN_14", "Content Management Help Area");
 
-define("CONTENT_ADMIN_HELP_LAN_15", "<br /><b>personal manager</b><br />you can assign admins to certain categories. In doing so, these admins can manage their personal content items within these categories from outside of the admin page (content_manager.php).");
+define("CONTENT_ADMIN_HELP_LAN_15", "
+<br />
+<b>personal manager</b><br />you can assign admins to certain categories. In doing so, these admins can manage their personal content items within these categories from outside of the admin page (content_manager.php).
+");
 
-define("CONTENT_ADMIN_HELP_LAN_16", "<i>on this page you can assign admins to the selected category you have clicked</i><br /><br />Assign admin from the left colomn by clicking their name. you will see these names move to the right colomn. After clicking the assign button the admins in the right colomn are assigned to this category.");
+define("CONTENT_ADMIN_HELP_LAN_16", "
+<i>on this page you can assign admins to the selected category you have clicked</i><br /><br />
+Assign admin from the left colomn by clicking their name. you will see these names move to the right colomn. After clicking the assign button the admins in the right colomn are assigned to this category.
+");
 
-define("CONTENT_ADMIN_HELP_LAN_17", "<i>if you have not yet added main parent categories, please do so at the Create New Category page.</i><br /><br /><b>main parent buttons</b><br />select a main parent category by clicking the button.");
+define("CONTENT_ADMIN_HELP_LAN_17", "
+<i>if you have not yet added main parent categories, please do so at the Create New Category page.</i><br /><br />
+<b>main parent buttons</b><br />select a main parent category by clicking the button.
+");
 
 define("CONTENT_ADMIN_HELP_LAN_18", "
 <i>this page shows all categories from the main parent category you have selected at the content order main page.</i><br /><br />
