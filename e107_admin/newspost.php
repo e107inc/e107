@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.78 $
-|   $Date: 2005-04-30 20:52:33 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.79 $
+|   $Date: 2005-05-02 09:14:48 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -487,7 +487,7 @@ class newspost {
 		<td style='width:80%' class='forumheader3'>
 		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_83."</a>
 		<div style='display: none;'>
-		<textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' style='width:95%;height:100px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".(strstr($_POST['news_extended'], "[img]http") ? $_POST['news_extended'] : str_replace("[img]../", "[img]", $tp->toForm($_POST['news_extended'])))."</textarea>";
+		<textarea class='tbox' id='news_extended' name='news_extended' cols='80' rows='15' style='width:95%;height:100px' $insertjs>".(strstr($_POST['news_extended'], "[img]http") ? $_POST['news_extended'] : str_replace("[img]../", "[img]", $tp->toForm($_POST['news_extended'])))."</textarea>";
 		if (!$pref['wysiwyg']) {
 			$text .="<br />". display_help("helpb");
 		}
@@ -583,7 +583,7 @@ class newspost {
 				$text .= LAN_NEWS_39."<br /><br />";
 				foreach($filelist as $file)
 				{
-					
+
 					if(isset($file['class']))
 					{
 						$ucinfo = "^".$file['class'];
