@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.115 $
-|     $Date: 2005-05-02 07:59:27 $
-|     $Author: e107coders $
+|     $Revision: 1.116 $
+|     $Date: 2005-05-02 14:39:14 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -99,7 +99,7 @@ define("e_UC_GUEST", 252);
 define("e_UC_MEMBER", 253);
 define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
-// define("ADMINDIR", $ADMIN_DIRECTORY); // deprecated
+define("ADMINDIR", $ADMIN_DIRECTORY);
 
 // All debug objects and constants are defined in the debug handler
 if (preg_match('/debug=(.*)/', e_MENU) || isset($_COOKIE['e107_debug_level'])) {
@@ -327,7 +327,7 @@ if (isset($pref['modules']) && $pref['modules']) {
 if (!function_exists('checkvalidtheme')) {
 	function checkvalidtheme($theme_check) {
 		// arg1 = theme to check
-		global $ADMIN_DIRECTORY, $tp;
+		global $ADMIN_DIRECTORY, $tp, $e107;
 
 
 		if(strstr(e_QUERY, "themepreview"))
@@ -343,6 +343,7 @@ if (!function_exists('checkvalidtheme')) {
 
 		if (@fopen(e_THEME.$theme_check."/theme.php", r)) {
 			define("THEME", e_THEME.$theme_check."/");
+			$e107->site_theme = $theme_check;
 		} else {
 			function search_validtheme() {
 				$theme_found=0;
@@ -352,20 +353,22 @@ if (!function_exists('checkvalidtheme')) {
 				while ($file = readdir($handle)) {
 					if (is_dir(e_THEME.$file) && is_readable(e_THEME.$file.'/theme.php')) {
 						closedir($handle);
+						$e107->site_theme = $file;
 						return $file;
 					}
 				}
 
 				closedir($handle);
 			}
-
-
-			$e107tmp_theme=search_validtheme();
+			
+			$e107tmp_theme = search_validtheme();
+			
 			define("THEME", e_THEME.$e107tmp_theme."/");
 			if (ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)) {
 				echo '<script>alert("'.$tp->toJS(CORE_LAN1).'")</script>';
 			}
 		}
+		$e107->http_theme_dir = $e107->http_abs_location("THEMES_DIRECTORY", "{$e107->site_theme}/");
 	}
 }
 
@@ -544,7 +547,7 @@ if ($sql->db_Select('menus', '*', "menu_location > 0 AND menu_class IN (".USERCL
 
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 
-if ((strstr(e_SELF, "usersettings.php") && e_QUERY && getperms("4") && ADMIN) || (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
+if ((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
 	if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') !== FALSE) {
 		checkvalidtheme($pref['sitetheme']);
 	} else if (strstr(e_SELF, "newspost.php")) {
@@ -1107,6 +1110,10 @@ function utf8_html_entity_decode($string) {
 	}
 	$string = strtr($string, $ttr);
 	return $string;
+}
+
+function print_a($var) {
+	echo '<pre>'.print_r($var, true).'</pre>';
 }
 
 $sql->db_Mark_Time('(After class2)');

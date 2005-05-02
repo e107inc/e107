@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-04-12 23:13:01 $
+|     $Revision: 1.45 $
+|     $Date: 2005-05-02 14:40:05 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
+
 if (!function_exists("parseheader")) {
 	function parseheader($LAYOUT){
 		global $tp;
@@ -37,11 +38,11 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 <title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 <meta http-equiv='content-style-type' content='text/css' />\n";
-echo "<link rel='alternate' type='application/rss+xml' title='".SITENAME." RSS' href='".e_PLUGIN."rss_menu/rss.php?1.2' />\n";
+echo "<link rel='alternate' type='application/rss+xml' title='".SITENAME." RSS' href='".$e107->http_abs_location("PLUGINS_DIRECTORY", "rss_menu/rss.php?1.2")."' />\n";
 if(isset($pref['trackbackEnabled']))
 {
-echo '<link rel="pingback" href="'.$e107->http_path.$PLUGINS_DIRECTORY.'trackback/xmlrpc.php" />
-';
+echo "<link rel='pingback' href='".$e107->http_abs_location("PLUGINS_DIRECTORY", "trackback/xmlrpc.php")."' />
+";
 }
 
 if (isset($eplug_css) && $eplug_css) { echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
@@ -51,7 +52,7 @@ if(defined("PREVIEWTHEME")) {
 	echo "<link rel='stylesheet' href='".PREVIEWTHEME."style.css' type='text/css' />\n";
 } else {
 	if (isset($theme_css_php) && $theme_css_php) {
-		echo "<link rel='stylesheet' href='".THEME."theme-css.php' type='text/css' />\n";
+		echo "<link rel='stylesheet' href='".e_THEME."/theme-css.php' type='text/css' />\n";
 	} else {
 		if(isset($pref['themecss']) && $pref['themecss'] && file_exists(THEME.$pref['themecss']))
 		{
@@ -59,7 +60,7 @@ if(defined("PREVIEWTHEME")) {
 		}
 		else
 		{
-			echo "<link rel='stylesheet' href='".THEME."style.css' type='text/css' />\n";
+			echo "<link rel='stylesheet' href='".$e107->http_theme_dir."style.css' type='text/css' />\n";
 		}
 		if (!isset($no_core_css) || !$no_core_css) {
 			echo "<link rel='stylesheet' href='".e_FILE."e107.css' type='text/css' />\n";
