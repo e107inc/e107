@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-02 09:59:15 $
+|     $Revision: 1.10 $
+|     $Date: 2005-05-02 10:08:57 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -22,8 +22,7 @@ if (!getperms("4")) {
 	 exit;
 }
 
-$e_sub_cat = 'userclass';
-require_once("auth.php");
+
 
 
 
@@ -72,7 +71,8 @@ if (isset($_POST['updateclass'])) {
 }
 
 
-
+$e_sub_cat = 'userclass';
+require_once("auth.php");
 
 
 
