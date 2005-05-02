@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.21 $
-|		$Date: 2005-05-02 12:05:44 $
+|		$Revision: 1.22 $
+|		$Date: 2005-05-02 16:39:37 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -326,7 +326,9 @@ if(!e_QUERY){																//show main categories
 
 		if($action == "create"){											//item
 			if($sub_action == "cc"){										//item; create redirect
-						$message = CONTENT_ADMIN_ITEM_LAN_1;
+						$message = CONTENT_ADMIN_ITEM_LAN_1."<br /><br />";
+						$message .= CONTENT_ADMIN_ITEM_LAN_88." <a href='".e_SELF."?type.".$type_id.".create'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+						$message .= CONTENT_ADMIN_ITEM_LAN_89." <a href='".e_SELF."?type.".$type_id."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
 						$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 						require_once(e_ADMIN."footer.php");
 						exit;
@@ -344,7 +346,10 @@ if(!e_QUERY){																//show main categories
 						header("location:".e_SELF."?type.".$type_id); exit;
 				}else{														//item; edit form
 					if($id2 == "cu"){										//item; update redirect
-						$message = CONTENT_ADMIN_ITEM_LAN_2;
+						$message = CONTENT_ADMIN_ITEM_LAN_2."<br /><br />";
+						$message .= CONTENT_ADMIN_ITEM_LAN_88." <a href='".e_SELF."?type.".$type_id.".create'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+						$message .= CONTENT_ADMIN_ITEM_LAN_89." <a href='".e_SELF."?type.".$type_id."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+						$message .= CONTENT_ADMIN_ITEM_LAN_91." <a href='".e_SELF."?type.".$type_id.".create.edit.".$id."'>".CONTENT_ADMIN_ITEM_LAN_90."</a>";
 						$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 						require_once(e_ADMIN."footer.php");
 						exit;
