@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
 <title>{$lang_insert_table_title}</title>
 <script language="javascript" type="text/javascript" src="../../tiny_mce_popup.js"></script>
@@ -8,6 +6,7 @@
 function insertTable() {
 	if (window.opener) {
 		var args = new Array();
+
 		args["cols"] = document.forms[0].cols.value;
 		args["rows"] = document.forms[0].rows.value;
 		args["border"] = document.forms[0].border.value;
@@ -15,6 +14,8 @@ function insertTable() {
 		args["cellspacing"] = document.forms[0].cellspacing.value;
 		args["width"] = document.forms[0].width.value;
 		args["height"] = document.forms[0].height.value;
+		args["bordercolor"] =	document.forms[0].bordercolor.value;
+		args["bgcolor"] =	document.forms[0].bgcolor.value;
 		args["align"] = document.forms[0].align.options[document.forms[0].align.selectedIndex].value;
 		args["className"] = document.forms[0].styleSelect.options[document.forms[0].styleSelect.selectedIndex].value;
 
@@ -24,6 +25,11 @@ function insertTable() {
 }
 
 function init() {
+	if (tinyMCE.settings['table_color_fields']) {
+		document.getElementById('colors').style.display = tinyMCE.isMSIE ? 'block' : 'table-row';
+		TinyMCEPlugin_onLoad(); // Resize again
+	}
+
 	for (var i=0; i<document.forms[0].align.options.length; i++) {
 		if (document.forms[0].align.options[i].value == tinyMCE.getWindowArg('align'))
 			document.forms[0].align.options.selectedIndex = i;
@@ -67,6 +73,8 @@ function init() {
 	formObj.cellspacing.value = tinyMCE.getWindowArg('cellspacing');
 	formObj.width.value = tinyMCE.getWindowArg('width');
 	formObj.height.value = tinyMCE.getWindowArg('height');
+	formObj.bordercolor.value = tinyMCE.getWindowArg('bordercolor');
+	formObj.bgcolor.value = tinyMCE.getWindowArg('bgcolor');
 	formObj.insert.value = tinyMCE.getLang('lang_' + tinyMCE.getWindowArg('action'), 'Insert', true); 
 
 	window.focus();
@@ -113,6 +121,12 @@ function cancelAction() {
             <td><input name="width" type="text" id="width" value="" size="4" maxlength="4"></td>
             <td>{$lang_insert_table_height}: </td>
             <td><input name="height" type="text" id="height" value="" size="4" maxlength="4"></td>
+          </tr>
+          <tr id="colors" style="display: none">
+            <td>{$lang_table_bordercolor}:</td>
+            <td><input name="bordercolor" type="text" id="bordercolor" value=""	size="9" maxlength="7"></td>
+            <td>{$lang_table_bgcolor}:</td>
+            <td><input name="bgcolor" type="text" id="bgcolor" value=""	size="9" maxlength="7"></td>
           </tr>
           <tr>
             <td>{$lang_insert_table_class}:</td>

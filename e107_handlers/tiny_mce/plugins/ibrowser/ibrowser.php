@@ -9,12 +9,12 @@
 // ------------------------------------------------
 //                                   www.j-cons.com
 // ================================================
-// $Revision: 1.1 $Date: 2004/10/04
+// $Revision: 1.2 $Date: 2004/10/04
 // ================================================
 //
 // $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/plugins/ibrowser/ibrowser.php,v $
-// $Revision: 1.1 $
-// $Date: 2005-02-19 12:12:47 $
+// $Revision: 1.2 $
+// $Date: 2005-05-02 05:27:57 $
 // $Author: e107coders $
 // +----------------------------------------------------------------------------+
 
@@ -80,7 +80,7 @@ if ($tinyMCE_img_delete_allowed && isset($HTTP_POST_VARS['lib_action'])
 <html>
 <head>
 <title>{$lang_ibrowser_title}</title>
-<script language="javascript" type="text/JavaScript" src="../../tiny_mce_popup.js"></script>
+<script type="text/javaScript" src="../../tiny_mce_popup.js"></script>
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <script type="text/javascript">
