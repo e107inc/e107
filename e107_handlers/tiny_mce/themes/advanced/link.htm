@@ -8,6 +8,9 @@ if (url != null)
 	document.write('<sc'+'ript language="javascript" type="text/javascript" src="' + tinyMCE.documentBasePath + "/" + url + '"></sc'+'ript>');
 </script>
 <script language="javascript">
+	// Disable auto resize
+	tinyMCE.getWindowArg('mce_windowresize', false);
+
 	function init() {
 		for (var i=0; i<document.forms[0].target.options.length; i++) {
 			var option = document.forms[0].target.options[i];
@@ -47,6 +50,8 @@ if (url != null)
 			}
 		}
 
+		// Autoresize and focus
+		TinyMCEPopup_autoResize();
 		window.focus();
 	}
 
@@ -68,14 +73,14 @@ if (url != null)
 </head>
 <body onload="init();">
 <form onsubmit="insertLink();return false;">
-  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <table border="0" cellpadding="0" cellspacing="0" width="100">
     <tr>
       <td align="center" valign="middle"><table border="0" cellpadding="4" cellspacing="0">
           <tr>
-            <td colspan="2" class="title">{$lang_insert_link_title}</td>
+            <td colspan="2" class="title" nowrap="nowrap">{$lang_insert_link_title}</td>
           </tr>
           <tr>
-            <td>{$lang_insert_link_url}:</td>
+            <td nowrap="nowrap">{$lang_insert_link_url}:</td>
             <td>              <table border="0" cellspacing="0" cellpadding="0">
                 <tr>
                   <td><input name="href" type="text" id="href" value="" style="width: 200px"></td>
@@ -102,14 +107,14 @@ if (url != null)
 		  </script>
 		  <!-- /Link list -->
           <tr>
-            <td>{$lang_insert_link_target}:</td>
+            <td nowrap="nowrap">{$lang_insert_link_target}:</td>
             <td><select name="target" style="width: 200px">
                 <option value="_self">{$lang_insert_link_target_same}</option>
                 <option value="_blank">{$lang_insert_link_target_blank}</option>
             </select></td>
           </tr>
           <tr>
-            <td>{$lang_theme_insert_link_titlefield}:</td>
+            <td nowrap="nowrap">{$lang_theme_insert_link_titlefield}:</td>
             <td><input name="linktitle" type="text" id="linktitle" value="" style="width: 200px"></td>
           </tr>
           <tr>

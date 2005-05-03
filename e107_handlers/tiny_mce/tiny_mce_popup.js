@@ -49,6 +49,36 @@ function TinyMCEPlugin_onLoad() {
 	}
 }
 
+function TinyMCEPopup_autoResize() {
+	var isMSIE = (navigator.appName == "Microsoft Internet Explorer");
+	var isOpera = (navigator.userAgent.indexOf("Opera") != -1);
+
+	if (isOpera)
+		return;
+
+	if (isMSIE) {
+		window.resizeTo(10, 10);
+
+		var elm = document.body;
+		var width = elm.offsetWidth;
+		var height = elm.offsetHeight;
+		var dx = (elm.scrollWidth - width) + 4;
+		var dy = elm.scrollHeight - height;
+
+		window.resizeBy(dx, dy);
+	} else {
+		window.scrollBy(1000, 1000);
+		if (window.scrollX > 0 || window.scrollY > 0) {
+			window.resizeBy(window.innerWidth * 2, window.innerHeight * 2);
+			window.sizeToContent();
+			window.scrollTo(0, 0);
+			var x = parseInt(screen.width / 2.0) - (window.outerWidth / 2.0);
+			var y = parseInt(screen.height / 2.0) - (window.outerHeight / 2.0);
+			window.moveTo(x, y);
+		}
+	}
+}
+
 // Add onload trigger
 tinyMCE.addEvent(window, "load", TinyMCEPlugin_onLoad);
 

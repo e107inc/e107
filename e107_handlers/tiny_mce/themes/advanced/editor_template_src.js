@@ -289,7 +289,7 @@ function TinyMCE_advanced_getEditorTemplate(settings) {
                 template['html'] = '<table class="mceEditor" border="0" cellpadding="0" cellspacing="0" width="{$width}" height="{$height}"><tbody>';
 
                 if (toolbarLocation == "top")
-                    template['html'] += '<tr><td class="mceToolbarTop" align="' + toolbarAlign + '" height="1">' + toolbarHTML + '</td></tr>';
+                    template['html'] += '<tr><td class="mceToolbarTop" align="' + toolbarAlign + '" height="1" nowrap="nowrap">' + toolbarHTML + '</td></tr>';
 
                 if (pathLocation == "top") {
                     template['html'] += '<tr><td class="mcePathTop" height="1">' + pathHTML + '</td></tr>';
@@ -412,8 +412,8 @@ function TinyMCE_advanced_getInsertLinkTemplate() {
 	var template = new Array();
 
 	template['file'] = 'link.htm';
-	template['width'] = 320;
-	template['height'] = 170;
+	template['width'] = 300;
+	template['height'] = 150;
 
 	// Language specific width and height addons
 	template['width'] += tinyMCE.getLang('lang_insert_link_delta_width', 0);
@@ -688,7 +688,7 @@ function TinyMCE_advanced_handleNodeChange(editor_id, node, undo_index, undo_lev
 		if (doc.queryCommandState("Italic"))
 			tinyMCE.switchClassSticky(editor_id + '_italic', 'mceButtonSelected');
 
-		if (doc.queryCommandState("Underline"))
+		if (doc.queryCommandState("Underline") && (node.parentNode == null || node.parentNode.nodeName != "A"))
 			tinyMCE.switchClassSticky(editor_id + '_underline', 'mceButtonSelected');
 
 		if (doc.queryCommandState("Strikethrough"))
