@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2005-05-03 15:02:37 $
+|		$Revision: 1.6 $
+|		$Date: 2005-05-03 21:43:23 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -157,6 +157,9 @@ if(isset($_POST['preview'])){
 if(IsSet($message)){
 			$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
+
+		$breadcrumb = $aa -> drawBreadcrumbFromUrl(e_PAGE, e_QUERY, $base=true, $nolink=false);
+		echo $breadcrumb."<br /><br />";
 
 if(!e_QUERY){
 			if(USERID){

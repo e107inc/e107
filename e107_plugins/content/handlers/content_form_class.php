@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.23 $
-|		$Date: 2005-05-03 15:04:17 $
+|		$Revision: 1.24 $
+|		$Date: 2005-05-03 21:43:23 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -778,7 +778,7 @@ class contentform{
 												<td class='forumheader3' style='width:5%; text-align:center'>".($row['content_icon'] ? "<img src='".$caticon."' alt='' style='width:50px; vertical-align:middle' />" : "&nbsp;")."</td>
 												<td class='forumheader3' style='width:10%; text-align:left'>[".$authordetails[0]."] ".$authordetails[1]."</td>
 												<td class='forumheader3' style='width:70%; text-align:left;'>".$row['content_heading']." [".$row['content_subheading']."]</td>
-												<td class='forumheader3' style='width:10%; text-align:center; white-space:nowrap;'>
+												<td class='forumheader3' style='width:10%; text-align:center; white-space:nowrap; vertical-align:top;'>
 
 												<a href='".e_SELF."?".$type.".".$type_id.".create.edit.".$cid."'>".CONTENT_ICON_EDIT."</a> 
 												<input type='image' value='{$cid}' title='delete' name='delete_content' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_1."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$cid." : ".$delete_heading."]")."')\"/>

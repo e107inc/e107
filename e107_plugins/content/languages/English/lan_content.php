@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-05-03 16:37:18 $
+|     $Revision: 1.28 $
+|     $Date: 2005-05-03 21:43:24 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -321,7 +321,6 @@ define("CONTENT_ADMIN_OPT_LAN_194", "content icon");
 define("CONTENT_ADMIN_OPT_LAN_195", "icon : width");
 define("CONTENT_ADMIN_OPT_LAN_196", "define the width of the icon");
 define("CONTENT_ADMIN_OPT_LAN_197", "if you have chosen to display the 'content icon', specify the width of the content icon to show. enter only a numeric value of the amount of pixels you want. do not add the 'px' to the number.");
-define("CONTENT_ADMIN_OPT_LAN_197", "");
 define("CONTENT_ADMIN_OPT_LAN_198", "");
 define("CONTENT_ADMIN_OPT_LAN_199", "");
 
@@ -639,7 +638,17 @@ define("CONTENT_LAN_76", "create pdf file of the");
 define("CONTENT_LAN_77", "content search");
 define("CONTENT_LAN_78", "untitled page");
 define("CONTENT_LAN_79", "page");
-define("CONTENT_LAN_80", "");
+define("CONTENT_LAN_80", "recent items : ");
+define("CONTENT_LAN_81", "categories");
+define("CONTENT_LAN_82", "no items yet in");
+define("CONTENT_LAN_83", "");
+define("CONTENT_LAN_84", "");
+define("CONTENT_LAN_85", "");
+define("CONTENT_LAN_86", "");
+define("CONTENT_LAN_87", "");
+define("CONTENT_LAN_88", "");
+define("CONTENT_LAN_89", "");
+
 
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "no content categories allow user submission at this point");
 define("CONTENT_ADMIN_SUBMIT_LAN_1", "content submit types");
