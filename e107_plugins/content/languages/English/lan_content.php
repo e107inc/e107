@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-05-03 15:04:18 $
+|     $Revision: 1.27 $
+|     $Date: 2005-05-03 16:37:18 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -101,7 +101,12 @@ define("CONTENT_ADMIN_CAT_LAN_46", "define if rating should be allowed");
 define("CONTENT_ADMIN_CAT_LAN_47", "define if print/email icons should be shown");
 define("CONTENT_ADMIN_CAT_LAN_48", "choose which users see this item");
 define("CONTENT_ADMIN_CAT_LAN_49", "choose an icon for this category");
-
+define("CONTENT_ADMIN_CAT_LAN_50", "content menu created<br /><br />
+Because you have created a Main Parent Category, a Menu has been generated.<br />
+The menu file has been created in your /menus folder.<br /><br />
+In order to see the menu in action, you still need to activate this menu in your <a href='".e_ADMIN."menus.php'>admin menus area</a>.
+");
+define("CONTENT_ADMIN_CAT_LAN_51", "error; menu file not created");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "options");
 

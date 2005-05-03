@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.23 $
-|		$Date: 2005-05-02 22:47:26 $
+|		$Revision: 1.24 $
+|		$Date: 2005-05-03 16:36:04 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -434,7 +434,7 @@ if(!e_QUERY){																//show main categories
 						if($id == "pc"){									//category; create redirect
 								$message = CONTENT_ADMIN_CAT_LAN_11."<br /><br />";
 								if($type_id == "0"){ 
-									$message .= "<br /><br />".CONTENT_ADMIN_OPT_LAN_82."<br /><br />";
+									$message .= "<br /><br />".CONTENT_ADMIN_CAT_LAN_50."<br /><br />";
 								}
 								$message .= "
 								".CONTENT_ADMIN_CAT_LAN_44." <a href='".e_SELF."?type.".$type_id.".cat.create'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />
