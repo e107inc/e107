@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-05-02 23:12:06 $
+|     $Revision: 1.18 $
+|     $Date: 2005-05-03 04:11:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -260,7 +260,7 @@ class e107_user_extended
 				break;
 
 			case 3: //dropdown
-				$ret = "<select {$include} name='{$fname}'>\n"
+				$ret = "<select {$include} name='{$fname}'>\n";
 				$ret .= "<option value=''></option>\n";  // ensures that the user chose it.
 				foreach($choices as $choice)
 				{
@@ -285,7 +285,7 @@ class e107_user_extended
 				{
 					$choiceList = $sql->db_getList();
 					$ret = "<select class='tbox' name='{$fname}'>\n";
-					$ret .= "<option value=''></option>\n";  // ensures that the user chose it.   
+					$ret .= "<option value=''></option>\n";  // ensures that the user chose it.
 					foreach($choiceList as $cArray)
 					{
 						$cID = $cArray[$choices[1]];
