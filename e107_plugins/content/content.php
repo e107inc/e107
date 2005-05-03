@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.28 $
-|		$Date: 2005-05-03 21:43:23 $
+|		$Revision: 1.29 $
+|		$Date: 2005-05-03 22:54:33 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1674,40 +1674,14 @@ function parse_content_content_table($row){
 				$content_image_popup_name = ereg_replace("'", "", $row['content_heading']);
 				$CONTENT_CONTENT_TABLE_IMAGES = "";
 				for($i=0;$i<count($images);$i++){
-					if(file_exists($content_image_path.$images[$i])){
-						$imagearray = getimagesize(trim($content_image_path.$images[$i]));
-						//$imagearray[0] is width - $imagearray[1] is height
-						$maxsize = 500;		//maxsize holds limit value for either height or width depending on the image
-						if($imagearray[1] > $imagearray[0]){
-							if($imagearray[1] > $maxsize){
-								$width = round(($maxsize*$imagearray[0])/$imagearray[1],0);
-								$height = $maxsize;
-							}else{
-								$width = $imagearray[0];
-								$height = $imagearray[1];
-							}
-						}else{
-							if($imagearray[0] > $maxsize){
-								$width = $maxsize;
-								$height = round(($maxsize*$imagearray[1])/$imagearray[0],0);
-							}else{
-								$width = $imagearray[0];
-								$height = $imagearray[1];
-							}
-						}
-						$imagetext = $content_image_popup_name." ".($i+1)."<br />".$CONTENT_CONTENT_TABLE_SUBHEADING."<br />".$authordetails[1]." (".$CONTENT_CONTENT_TABLE_DATE.")";
 
-						//openPerfectPopup(oSrc, oWidth, oTitle, oText)
-						$oSrc = $content_image_path.$images[$i];
-						$oSrcThumb = $content_image_path."thumb_".$images[$i];
-						$oWidth = $width;
-						$oTitle = $content_image_popup_name." ".($i+1);
-						$oText = $imagetext;
-						$CONTENT_CONTENT_TABLE_IMAGES .= "<a href=\"javascript:openPerfectPopup('".$oSrc."',".$oWidth.",'".$oTitle."','".$oText."')\" style='cursor:pointer;' onmouseover=\"window.status='click to enlarge image'; return true;\" onmouseout=\"window.status=''; return true;\" ><img src='".$oSrcThumb."' style='border:1px solid #000; width:100px;' alt='' /></a><br /><br />";
-
-					}else{
-						$CONTENT_CONTENT_TABLE_IMAGES .= "";
-					}
+					$oSrc = $content_image_path.$images[$i];
+					$oSrcThumb = $content_image_path."thumb_".$images[$i];
+					$oMaxWidth = 500;
+					$oTitle = $content_image_popup_name." ".($i+1);
+					$oText = $content_image_popup_name." ".($i+1)."<br />".$CONTENT_CONTENT_TABLE_SUBHEADING."<br />".$authordetails[1]." (".$CONTENT_CONTENT_TABLE_DATE.")";
+					$CONTENT_CONTENT_TABLE_IMAGES .= $aa -> popup($oSrc, $oSrcThumb, $oMaxWidth, $oTitle, $oText);
+					$myimagelink .= $aa -> popup($oSrc, $oSrcThumb, $oMaxWidth, $oTitle, $oText);
 				}
 
 				$CONTENT_CONTENT_TABLE = "";
