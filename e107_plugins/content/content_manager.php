@@ -12,13 +12,15 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2005-02-12 09:52:10 $
+|		$Revision: 1.5 $
+|		$Date: 2005-05-03 15:02:37 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
 require_once("../../class2.php");
+
+$eplug_css = "../../".$PLUGINS_DIRECTORY."content/content_css.css";
 
 $lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content.php');

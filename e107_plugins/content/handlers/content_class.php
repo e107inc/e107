@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.22 $
-|		$Date: 2005-05-02 22:47:35 $
+|		$Revision: 1.23 $
+|		$Date: 2005-05-03 15:04:16 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -387,7 +387,7 @@ class content{
 		}
 
 
-		function getParent($id, $level="", $mode="", $classcheck=""){
+		function getParent($id, $level="", $mode="", $classcheck="", $date=""){
 				global $plugintable, $datequery;
 				$sqlgetparent = "";
 
@@ -398,10 +398,11 @@ class content{
 				}
 				$query = ($mode != "" ? " AND content_id = '".$mode."' " : "");
 				$classquery = ($classcheck == "1" ? "AND content_class IN (".USERCLASS_LIST.")" : "");
+				$usedate = ($date ? $datequery : "");
 				if(!$level) { $level = "0"; }
 				if(!is_object($sqlgetparent)){ $sqlgetparent = new db; }
 				//content_id, content_heading, content_subheading, content_author, content_icon, content_parent, content_class
-				if(!$sqlgetparent -> db_Select($plugintable, "*", "content_parent='".$id."' ".$query." ".$datequery." ".$classquery." ORDER BY content_order")){
+				if(!$sqlgetparent -> db_Select($plugintable, "*", "content_parent='".$id."' ".$query." ".$usedate." ".$classquery." ORDER BY content_order")){
 					$parent = FALSE;
 				}else{
 					while($row = $sqlgetparent -> db_Fetch()){
@@ -467,7 +468,7 @@ class content{
 				$content_cat_icon_path_small = $this -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$type_id}"]);
 
 				if(empty($array)){ return FALSE; }
-				 
+
 				for($a=0;$a<count($array);$a++){
 						if(!$array[$a][17] || $array[$a][17] == "0"){
 							$pre = "";

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2005-05-02 22:47:26 $
+|		$Revision: 1.6 $
+|		$Date: 2005-05-03 15:02:39 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -29,6 +29,8 @@ $adb = new contentdb;
 require_once(e_PLUGIN."content/handlers/content_form_class.php");
 $aform = new contentform;
 global $tp;
+
+$eplug_css = "../../".$PLUGINS_DIRECTORY."content/content_css.css";
 
 $lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content.php');
@@ -103,7 +105,7 @@ if(!isset($type)){
 			$text .= "<div style='text-align:center;'>".CONTENT_ADMIN_SUBMIT_LAN_0."</div>";
 		}else{
 			if(!$CONTENT_SUBMIT_TYPE_TABLE){
-				require_once(e_PLUGIN."content/templates/default/content_submit_template.php");
+				require_once(e_PLUGIN."content/templates/content_submit_type_template.php");
 			}
 			$sql2 = "";
 			$content_submit_table_string = "";

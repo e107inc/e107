@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_search_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-03 23:31:40 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-03 15:04:21 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -21,21 +21,19 @@
 $CONTENT_SEARCH_TABLE = "";
 if(!$CONTENT_SEARCH_TABLE){
 				$CONTENT_SEARCH_TABLE .= "
-				<div style='text-align:center;'>
-				<table style='width:98%;'>
+				<table class='content_table'>
 					<tr>
-						<td style='width:30%; white-space:nowrap; vertical-align:middle;'>
+						<td class='content_info' style='width:30%; white-space:nowrap;'>
 							{CONTENT_SEARCH_TABLE_SELECT}
 						</td>
-						<td style='width:30%; white-space:nowrap; text-align:center; vertical-align:middle;'>
+						<td class='content_info' style='width:30%; white-space:nowrap;'>
 							{CONTENT_SEARCH_TABLE_ORDER}
 						</td>
-						<td style='width:30%; white-space:nowrap; text-align:right; vertical-align:middle;'>
+						<td class='content_info' style='width:30%; white-space:nowrap;'>
 							{CONTENT_SEARCH_TABLE_KEYWORD}
 						</td>
 					</tr>
-				</table>
-				</div>";
+				</table>";
 }
 // ##### ----------------------------------------------------------------------
 
