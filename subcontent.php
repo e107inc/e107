@@ -11,13 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/subcontent.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:51:38 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-05-03 18:34:37 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
-	
+
+//redirection to new content management plugin if it is installed
+if($content_install = $sql -> db_Select("plugin", "*", "plugin_path = 'content' AND plugin_installflag = '1' ")){ 
+	header("location:".e_PLUGIN."content/content_submit.php");
+}
+
 $aj = new textparse;
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
