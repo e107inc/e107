@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.117 $
-|     $Date: 2005-05-02 17:37:03 $
-|     $Author: stevedunstan $
+|     $Revision: 1.118 $
+|     $Date: 2005-05-03 10:48:00 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -369,9 +369,9 @@ if (!function_exists('checkvalidtheme')) {
 
 				closedir($handle);
 			}
-			
+
 			$e107tmp_theme = search_validtheme();
-			
+
 			define("THEME", e_THEME.$e107tmp_theme."/");
 			if (ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)) {
 				echo '<script>alert("'.$tp->toJS(CORE_LAN1).'")</script>';
@@ -449,8 +449,10 @@ $sql->db_Delete("tmp", "tmp_time < '".(time() - 300)."' AND tmp_ip!='data' AND t
 $language=($pref['sitelanguage'] ? $pref['sitelanguage'] : "English");
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 define("e_LAN", $language);
-define("USERLAN", ($user_language && (strpos(e_SELF, $PLUGINS_DIRECTORY) !== FALSE || (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE && file_exists(e_LANGUAGEDIR.$user_language."/lan_".e_PAGE)) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE && file_exists(e_LANGUAGEDIR.$user_language."/admin/lan_".e_PAGE))) ? $user_language : FALSE));
+
+define("USERLAN", ($user_language && (strpos(e_SELF, $PLUGINS_DIRECTORY) !== FALSE || (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE && file_exists(e_LANGUAGEDIR.$user_language."/lan_".e_PAGE)) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE && file_exists(e_LANGUAGEDIR.$user_language."/admin/lan_".e_PAGE)) || file_exists(dirname($_SERVER['SCRIPT_FILENAME'])."/languages/".$user_language."/lan_".e_PAGE)) ? $user_language : FALSE));
 define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
+
 e107_include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 
 foreach ($pref as $key => $prefvalue) {
