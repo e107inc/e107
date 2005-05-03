@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.12 $
-|		$Date: 2005-04-28 20:45:06 $
+|		$Revision: 1.13 $
+|		$Date: 2005-05-03 15:04:17 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -136,8 +136,8 @@ class contentdb{
 											$images{$i} = $newpid."_contentimage_".$n.$fileext2image[$i];
 											rename($pathimage.$fileorgimage[$i] , $pathimage.$images{$i});
 											require_once(e_HANDLER."resize_handler.php");
-											resize_image($pathimage.$image{$i}, $pathimage.$image{$i}, '500', "nocopy");
-											resize_image($pathimage.$image{$i}, $pathimage.$image{$i}, '100', "copy");
+											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, '500', "nocopy");
+											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, '100', "copy");
 
 											$totalimages .= "[img]".$images{$i};
 										} else {
@@ -307,21 +307,21 @@ class contentdb{
 								for($i=0;$i<$sumi;$i++){
 									$n = $i+1;
 									if($_POST["content_images{$i}"] && !$uploadedimage[$i]['name']){
-										$image{$i} = $_POST["content_images{$i}"];
-										$totalimages .= "[img]".$image{$i};
+										$images{$i} = $_POST["content_images{$i}"];
+										$totalimages .= "[img]".$images{$i};
 									} else {
 										$fileorgimage[$i] = $uploadedimage[$i]['name'];
 										$fileext2image[$i] = substr(strrchr($fileorgimage[$i], "."), 0);
 										if($fileorgimage[$i]){
-											$image{$i} = $newpid."_contentimage_".$n."".$fileext2image[$i]."";
-											rename($pathimage.$fileorgimage[$i] , $pathimage.$image{$i});
+											$images{$i} = $newpid."_contentimage_".$n."".$fileext2image[$i]."";
+											rename($pathimage.$fileorgimage[$i] , $pathimage.$images{$i});
 											require_once(e_HANDLER."resize_handler.php");
-											resize_image($pathimage.$image{$i}, $pathimage.$image{$i}, '500', "nocopy");
-											resize_image($pathimage.$image{$i}, $pathimage.$image{$i}, '100', "copy");
+											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, '500', "nocopy");
+											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, '100', "copy");
 
-											$totalimages .= "[img]".$image{$i};
+											$totalimages .= "[img]".$images{$i};
 										} else {
-											$image{$i} = "";
+											$images{$i} = "";
 											$totalimages .= "";
 										}
 									}

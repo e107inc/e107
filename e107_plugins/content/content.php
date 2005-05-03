@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.26 $
-|		$Date: 2005-05-02 22:47:26 $
+|		$Revision: 1.27 $
+|		$Date: 2005-05-03 15:02:35 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -341,7 +341,7 @@ function show_content_search_menu(){
 }
 
 function show_content_search_result($searchkeyword){
-				global $type, $type_id, $ns, $rs, $action, $sub_action, $id, $id2;
+				global $type, $type_id, $ns, $rs, $tp, $action, $sub_action, $id, $id2;
 				global $plugintable, $gen, $aa, $content_pref, $datequery;
 
 				$querysr = " (content_heading REGEXP '".$searchkeyword."' OR content_subheading REGEXP '".$searchkeyword."' OR content_summary REGEXP '".$searchkeyword."' OR content_text REGEXP '".$searchkeyword."' ) ";
@@ -365,6 +365,10 @@ function show_content_search_result($searchkeyword){
 					$content_searchresult_table_string = "";
 					$gen = new convert;
 					while($row = $sqlsr -> db_Fetch()){
+						$row['content_heading'] = $tp -> toHTML($row['content_heading'], TRUE, "");
+						$row['content_subheading'] = $tp -> toHTML($row['content_subheading'], TRUE, "");
+						$row['content_text'] = $tp -> toHTML($row['content_text'], TRUE, "");
+						
 						$datestamp = ereg_replace(" -.*", "", $gen -> convert_date($row['content_datestamp'], "short"));
 						$CONTENT_SEARCHRESULT_TABLE_DATE = ($datestamp != "" ? $datestamp : "");
 						$CONTENT_SEARCHRESULT_TABLE_HEADING = ($row['content_heading'] ? "<a href='".e_SELF."?".$type.".".$type_id.".content.".$row['content_id']."'>".$row['content_heading']."</a>" : "");
@@ -417,7 +421,7 @@ function show_content(){
 				$CONTENT_TYPE_TABLE = "";
 
 				if(!$CONTENT_TYPE_TABLE){
-					require_once(e_PLUGIN."content/templates/default/content_type_template.php");
+					require_once(e_PLUGIN."content/templates/content_type_template.php");
 				}
 
 				$cachestr = "$plugintable.typelist";
@@ -453,6 +457,8 @@ function show_content(){
 
 							$CONTENT_TYPE_TABLE_TOTAL = ($contenttotal ? $contenttotal : "");
 							$CONTENT_TYPE_TABLE_TOTAL_LAN = ($contenttotal ? ($contenttotal == 1 ? CONTENT_LAN_53 : CONTENT_LAN_54) : "");
+							$row['content_heading'] = $tp -> toHTML($row['content_heading'], TRUE, "");
+							$row['content_subheading'] = $tp -> toHTML($row['content_subheading'], TRUE, "");
 							$CONTENT_TYPE_TABLE_HEADING = ($contenttotal != "0" ? "<a href='".e_SELF."?type.".$row['content_id']."'>".$row['content_heading']."</a>" : $row['content_heading'] );
 							$CONTENT_TYPE_TABLE_SUBHEADING = ($row['content_subheading'] ? $row['content_subheading'] : "");
 							if($contenttotal != "0"){
@@ -708,10 +714,13 @@ function show_content_cat($mode=""){
 							if(substr($prefetchbreadcrumb[$i][3],0,strlen($checkparent)) == $checkparent && !strpos($unvalidcontent, "'".$prefetchbreadcrumb[$i][3]."'")){
 								if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_icon, content_parent", "content_refer !='sa' AND content_id = '".$prefetchbreadcrumb[$i][0]."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") " )){
 									while($row = $sql -> db_Fetch()){
+										$row['content_heading'] = $tp -> toHTML($row['content_heading'], TRUE, "");
+										$row['content_subheading'] = $tp -> toHTML($row['content_subheading'], TRUE, "");
+										
 										$CONTENT_CAT_LISTSUB_TABLE_AMOUNT = $aa -> countItemsInCat($row['content_id'], $row['content_parent']);
 										$CONTENT_CAT_LISTSUB_TABLE_ICON = $aa -> getIcon("catsmall", $row['content_icon'], "", "", "", $content_pref["content_blank_caticon_{$type_id}"]);
 										$CONTENT_CAT_LISTSUB_TABLE_HEADING = "<a href='".e_SELF."?".$type.".".$type_id.".cat.".$row['content_id']."'>".$row['content_heading']."</a>";
-										$CONTENT_CAT_LISTSUB_TABLE_SUBHEADING = ($row['content_subheading'] ? "[".$row['content_subheading']."]" : "");
+										$CONTENT_CAT_LISTSUB_TABLE_SUBHEADING = ($row['content_subheading'] ? $row['content_subheading'] : "");
 										$content_cat_listsub_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LISTSUB_TABLE);
 									}
 									$content_cat_listsub_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LISTSUB_TABLE_START);
@@ -1051,8 +1060,22 @@ function show_content_item(){
 					$caption = CONTENT_LAN_34;
 					$ns -> tablerender($caption, $text);
 
-					$totalpages = substr_count($row['content_text'], "[newpage");
-					$comflag = ($totalpages == $id ? TRUE : FALSE);
+					//$totalpages = substr_count($row['content_text'], "[newpage");
+					//$comflag = ($totalpages == $id ? TRUE : FALSE);
+
+					if(preg_match_all("/\[newpage.*?]/si", $row['content_text'], $matches)){
+						
+						$pages = preg_split("/\[newpage.*?]/si", $row['content_text'], -1, PREG_SPLIT_NO_EMPTY);
+						$pages = array_values($pages);
+						
+						if(count($pages) == count($matches[0])){
+						}elseif(count($pages) > count($matches[0])){
+							$matches[0] = array_pad($matches[0], -count($pages), "[newpage]");
+
+						}elseif(count($pages) < count($matches[0])){
+						}
+					}
+					$comflag = (count($pages) == $id ? TRUE : FALSE);
 
 					if($row['content_comment'] && $comflag){
 						if($cache = $e107cache->retrieve("comment.$plugintable.$sub_action")){
@@ -1319,8 +1342,16 @@ function parse_content_cat_table($row, $prefetchbreadcrumb){
 
 				$CONTENT_CAT_TABLE_AMOUNT = $aa -> countItemsInCat($row['content_id'], $row['content_parent']);
 				$CONTENT_CAT_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, $type.".".$type_id.".cat.".$row['content_id'], "", $content_pref["content_blank_caticon_{$type_id}"]);
-				$CONTENT_CAT_TABLE_SUBHEADING = ($row['content_subheading'] ? $row['content_subheading'] : "");
-				$CONTENT_CAT_TABLE_TEXT = ($row['content_text'] ? $tp -> toHTML($row['content_text'], TRUE, "") : "");
+				$CONTENT_CAT_TABLE_SUBHEADING = ($row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], TRUE, "") : "");
+				//$CONTENT_CAT_TABLE_TEXT = ($row['content_text'] ? $tp -> toHTML($row['content_text'], TRUE, "") : "");
+
+				// ----------- NUMBER OF SUMMARY CHARACTERS TO DISPLAY? ------------------------------
+				if(strlen($row['content_text']) > 500) {
+					$row['content_text'] = substr($row['content_text'], 0, 500)." [more...]";
+				}
+				$CONTENT_CAT_TABLE_TEXT = ($row['content_text'] != "" && $row['content_text'] != " " ? $tp -> toHTML($row['content_text'], TRUE, "") : "");
+				// -----------------------------------------------------------------------------------
+
 
 				$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumb, $row['content_id'], "nobase", "");
 				$CONTENT_CAT_TABLE_HEADING = $breadcrumbstring;
@@ -1345,13 +1376,13 @@ function parse_content_cat_table($row, $prefetchbreadcrumb){
 				$sqlc = "";
 				if(!is_object($sqlc)){ $sqlc = new db; }
 				$CONTENT_CAT_TABLE_COMMENT = "";
-				if($content_comment){
+				if($row['content_comment']){
 					$comment_total = $sqlc -> db_Select("comments", "*",  "comment_item_id='".$row['content_id']."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 					$CONTENT_CAT_TABLE_COMMENT = "<a style='text-decoration:none;' href='".e_SELF."?".$type.".".$type_id.".cat.".$row['content_id'].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
 				}
 
 				$CONTENT_CAT_TABLE_EPICONS = "";
-				if($content_pe){
+				if($row['content_pe']){
 					$CONTENT_CAT_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_72."^plugin:content.".$row['content_id']."}");
 					$CONTENT_CAT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.".$row['content_id']."}");
 					$CONTENT_CAT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
@@ -1411,7 +1442,7 @@ function parse_content_cat_list_table($row){
 
 				$CONTENT_CAT_LIST_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "", "", $content_pref["content_blank_caticon_{$type_id}"]);
 				$CONTENT_CAT_LIST_TABLE_HEADING = ($row['content_heading'] ? $row['content_heading'] : "");
-				$CONTENT_CAT_LIST_TABLE_SUBHEADING = ($row['content_subheading'] ? $row['content_subheading'] : "");
+				$CONTENT_CAT_LIST_TABLE_SUBHEADING = ($row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], TRUE, "") : "");
 				$CONTENT_CAT_LIST_TABLE_SUMMARY = ($row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "") : "");
 				$CONTENT_CAT_LIST_TABLE_TEXT = ($row['content_text'] ? $tp -> toHTML($row['content_text'], TRUE, "") : "");
 
@@ -1490,7 +1521,7 @@ function parse_content_content_table($row){
 					$CONTENT_CONTENT_TABLE_REFER = ($refercounttmp[0] ? $refercounttmp[0] : "");
 				}
 
-				if($content_comment){
+				if($row['content_comment']){
 					$comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='".$sub_action."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 					$CONTENT_CONTENT_TABLE_COMMENT = $comment_total;
 				}
@@ -1584,10 +1615,6 @@ function parse_content_content_table($row){
 				if(preg_match_all("/\[newpage.*?]/si", $row['content_text'], $matches)){
 					
 					$pages = preg_split("/\[newpage.*?]/si", $row['content_text'], -1, PREG_SPLIT_NO_EMPTY);
-
-					//for ($i=0; $i < count($pages); $i++) {				//remove empty values
-					//	if(empty($pages[$i])){ unset($pages[$i]); }
-					//}
 					$pages = array_values($pages);
 					
 					if(count($pages) == count($matches[0])){
@@ -1675,17 +1702,6 @@ function parse_content_content_table($row){
 					}
 				}
 
-				if(!empty($custom)){
-					foreach($custom as $k => $v){
-						if(!($k == "content_custom_score" || $k == "content_custom_meta")){
-							$CONTENT_CONTENT_TABLE_CUSTOM = true;
-							//echo $k."<br />";
-							$CONTENT_CONTENT_TABLE_CUSTOM_KEY[] = substr($k,15);
-							$CONTENT_CONTENT_TABLE_CUSTOM_VALUE[] = $v;
-						}
-					}
-				}
-				
 				$CONTENT_CONTENT_TABLE = "";
 				if(!$CONTENT_CONTENT_TABLE){
 					if(!$content_pref["content_theme_{$type_id}"]){
@@ -1698,6 +1714,19 @@ function parse_content_content_table($row){
 						}
 					}
 				}
+
+				if(!empty($custom)){
+					$CONTENT_CONTENT_TABLE_CUSTOM_TAGS = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE_CUSTOM_PRE);
+					foreach($custom as $k => $v){
+						if(!($k == "content_custom_score" || $k == "content_custom_meta")){
+							$CONTENT_CONTENT_TABLE_CUSTOM_KEY = substr($k,15);
+							$CONTENT_CONTENT_TABLE_CUSTOM_VALUE = $v;
+							$CONTENT_CONTENT_TABLE_CUSTOM_TAGS .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE_CUSTOM);
+						}
+					}
+					$CONTENT_CONTENT_TABLE_CUSTOM_TAGS .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE_CUSTOM_PRE2);
+				}
+
 				return(preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE));
 }
 

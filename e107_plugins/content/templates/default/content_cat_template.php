@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_cat_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-28 10:27:56 $
+|     $Revision: 1.5 $
+|     $Date: 2005-05-03 15:04:20 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -28,113 +28,94 @@ $CONTENT_CAT_LISTSUB_TABLE_END = "";
 // ##### CONTENT CAT ----------------------------------------------------------
 if(!$CONTENT_CAT_TABLE_START){
 				$CONTENT_CAT_TABLE_START = "
-				<div style='text-align:center'>
-				<table style='width:95%' border='0'>\n";
+				<table class='content_table'>\n";
 }
 if(!$CONTENT_CAT_TABLE){
 				$CONTENT_CAT_TABLE = "
 				<tr>
+					<td class='content_icon'>{CONTENT_CAT_TABLE_ICON}</td>
 					<td>
-						<table style='width:100%' border='0'>
-							<tr>								
-								<td style='vertical-align:top; white-space:nowrap; width:5%;'>{CONTENT_CAT_TABLE_ICON}</td>
-								<td style='width:90%; background-color:transparent; padding-left:10px;'>
-									{CONTENT_CAT_TABLE_HEADING}<br />
-									{CONTENT_CAT_TABLE_SUBHEADING}<br />
-									<span class='smalltext'>
-									{CONTENT_CAT_TABLE_DATE} / {CONTENT_CAT_TABLE_AUTHORDETAILS} {CONTENT_CAT_TABLE_EPICONS}<br />
-									</span>
-									<span class='smalltext'>{CONTENT_CAT_TABLE_TEXT}</span>
-								</td>
-								<td class='smalltext' style='vertical-align:top; text-align:right; padding-top:2px; white-space:nowrap; width:5%;'>
-									{CONTENT_CAT_TABLE_AMOUNT}<br />{CONTENT_CAT_TABLE_COMMENT}
-								</td>
+						<table style='width:100%;'>
+							<tr>
+								<td class='content_heading'>{CONTENT_CAT_TABLE_HEADING}</td>
+								<td class='content_info' style='text-align:right;'>{CONTENT_CAT_TABLE_AMOUNT}</td>
+							</tr>
+							<tr>
+								<td class='content_subheading' colspan='2'>{CONTENT_CAT_TABLE_SUBHEADING}</td>								
+							</tr>
+							<tr>
+								<td class='content_info'>{CONTENT_CAT_TABLE_DATE} / {CONTENT_CAT_TABLE_AUTHORDETAILS} {CONTENT_CAT_TABLE_EPICONS}</td>
+								<td class='content_info' style='text-align:right;'>{CONTENT_CAT_TABLE_COMMENT}</td>
+							</tr>
+							<tr>
+								<td class='content_text' colspan='2'>{CONTENT_CAT_TABLE_TEXT}</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
-				<tr><td><div class='spacer'><br /></div></td></tr>\n";
+				<tr><td class='content_spacer' colspan='2'></td></tr>\n";
 }
 if(!$CONTENT_CAT_TABLE_END){
 				$CONTENT_CAT_TABLE_END = "
-				</table>
-				</div>\n";
+				</table>\n";
 }
 // ##### ----------------------------------------------------------------------
 
 // ##### CONTENT CAT_LIST -----------------------------------------------------
 if(!$CONTENT_CAT_LIST_TABLE){
 				$CONTENT_CAT_LIST_TABLE = "
-				<div style='text-align:center'>
-				<table style='width:95%' border='0'>
+				<table class='content_table'>
 				<tr>
-					<td style='width:5%; padding-top:6px; white-space:nowrap; text-align:center; vertical-align:top; '>
-						{CONTENT_CAT_LIST_TABLE_ICON}
-					</td>
-					<td style='vertical-align:top; padding-top:2px;'>
-						<table style='width:100%; vertical-align:top;'>
-						<tr>
-							<td style='padding:2px; vertical-align:top; border:0;'>
-								{CONTENT_CAT_LIST_TABLE_HEADING} ({CONTENT_CAT_LIST_TABLE_AMOUNT})
-							</td>
-						</tr>
-						<tr>
-							<td style='padding:2px; vertical-align:top; border:0;'>
-								<i>{CONTENT_CAT_LIST_TABLE_SUBHEADING}</i>
-							</td>
-						</tr>
-						<tr>
-							<td class='smalltext' style='padding:2px; vertical-align:top; border:0;'>
-								{CONTENT_CAT_LIST_TABLE_DATE} / {CONTENT_CAT_LIST_TABLE_AUTHORDETAILS}
-								{CONTENT_CAT_LIST_TABLE_EPICONS} {CONTENT_CAT_LIST_TABLE_COMMENT}
-							</td>
-						</tr>
-						<tr>
-							<td class='smalltext' style='padding:2px; vertical-align:top; border:0;'>
-								{CONTENT_CAT_LIST_TABLE_RATING}
-							</td>
-						</tr>
+					<td class='content_icon'>{CONTENT_CAT_LIST_TABLE_ICON}</td>
+					<td>
+						<table style='width:100%;'>
+							<tr>
+								<td class='content_heading'>{CONTENT_CAT_LIST_TABLE_HEADING}</td>
+								<td class='content_info' style='text-align:right;'>{CONTENT_CAT_LIST_TABLE_AMOUNT}</td>
+							</tr>
+							<tr>
+								<td class='content_subheading' colspan='2'>{CONTENT_CAT_LIST_TABLE_SUBHEADING}</td>								
+							</tr>
+							<tr>
+								<td class='content_info'>{CONTENT_CAT_LIST_TABLE_DATE} / {CONTENT_CAT_LIST_TABLE_AUTHORDETAILS} {CONTENT_CAT_LIST_TABLE_EPICONS}</td>
+								<td class='content_info' style='text-align:right;'>{CONTENT_CAT_LIST_TABLE_COMMENT}</td>
+							</tr>
+							<tr>
+								<td class='content_rate' colspan='2'>{CONTENT_CAT_LIST_TABLE_RATING}</td>
+							</tr>
 						</table>
 					</td>
 				</tr>
-				<tr>
-					<td class='smalltext' colspan='2'>
-						{CONTENT_CAT_LIST_TABLE_TEXT}&nbsp;
-					</td>
-				</tr>
-				</table>
-				</div>";
+				<tr><td class='content_spacer' colspan='2'></td></tr>
+				<tr><td class='content_text' colspan='2'>{CONTENT_CAT_LIST_TABLE_TEXT}</td></tr>
+				<tr><td class='content_spacer' colspan='2'></td></tr>
+				</table>\n";
 }
 // ##### ----------------------------------------------------------------------
 
 // ##### CONTENT CAT_LIST SUB -------------------------------------------------
 if(!$CONTENT_CAT_LISTSUB_TABLE_START){
 				$CONTENT_CAT_LISTSUB_TABLE_START = "
-				<div style='text-align:center'>
-				<table style='width:95%' border='0'>";
+				<table class='content_table'>";
 }
 if(!$CONTENT_CAT_LISTSUB_TABLE){
 				$CONTENT_CAT_LISTSUB_TABLE = "
 				<tr>
+					<td class='content_icon'>{CONTENT_CAT_LISTSUB_TABLE_ICON}</td>
 					<td>
-						<table style='width:100%' border='0'>
+						<table style='width:100%;'>
 							<tr>
-								<td style='vertical-align:top; white-space:nowrap; width:20px; padding:0;'>{CONTENT_CAT_LISTSUB_TABLE_ICON}</td>
-								<td class='smalltext' style='padding-left:10px;'>
-									{CONTENT_CAT_LISTSUB_TABLE_HEADING} <i>{CONTENT_CAT_LISTSUB_TABLE_SUBHEADING}</i>
-								</td>
-								<td class='smalltext' style='width:5%; white-space:nowrap;'>
-									{CONTENT_CAT_LISTSUB_TABLE_AMOUNT}
-								</td>
+								<td class='content_heading'>{CONTENT_CAT_LISTSUB_TABLE_HEADING}</td>
+								<td class='content_info' style='text-align:right;'>{CONTENT_CAT_LISTSUB_TABLE_AMOUNT}</td>
 							</tr>
+							<tr><td class='content_subheading' colspan='2'>{CONTENT_CAT_LISTSUB_TABLE_SUBHEADING}</td></tr>
 						</table>
 					</td>
 				</tr>\n";
 }
 if(!$CONTENT_CAT_LISTSUB_TABLE_END){
 				$CONTENT_CAT_LISTSUB_TABLE_END = "
-				</table>
-				</div>";
+				</table>";
 }
 // ##### ----------------------------------------------------------------------
 
