@@ -1,7 +1,7 @@
 /**
  * $RCSfile: tiny_mce_src.js,v $
- * $Revision: 1.4 $
- * $Date: 2005-05-02 05:27:45 $
+ * $Revision: 1.5 $
+ * $Date: 2005-05-03 23:43:05 $
  *
  * @author Moxiecode
  * @copyright Copyright © 2004, Moxiecode Systems AB, All rights reserved.
@@ -77,7 +77,7 @@ TinyMCE.prototype.init = function(settings) {
 	defParam("docs_language", this.settings['language']);
 	defParam("elements", "");
 	defParam("textarea_trigger", "mce_editable");
-	defParam("valid_elements", "a[name|href|target|title],strong/b[class],em/i[class],strike[class],u[class],p[class|align],ol,ul,li,br,img[class|src|border=0|alt|title|hspace|vspace|width|height|align],sub,sup,blockquote[dir|style],table[border=0|cellspacing|cellpadding|width|height|class|align],tr[class|rowspan|width|height|align|valign],td[class|colspan|rowspan|width|height|align|valign],div[class|align],span[class|align],pre[class|align],address[class|align],h1[class|align],h2[class|align],h3[class|align],h4[class|align],h5[class|align],h6[class|align],hr");
+	defParam("valid_elements", "+a[name|href|target|title],strong/b[class],em/i[class],strike[class],u[class],p[class|align],ol,ul,li,br,img[class|src|border=0|alt|title|hspace|vspace|width|height|align],sub,sup,blockquote[dir|style],table[border=0|cellspacing|cellpadding|width|height|class|align],tr[class|rowspan|width|height|align|valign],td[class|colspan|rowspan|width|height|align|valign],div[class|align],span[class|align],pre[class|align],address[class|align],h1[class|align],h2[class|align],h3[class|align],h4[class|align],h5[class|align],h6[class|align],hr");
 	defParam("extended_valid_elements", "");
 	defParam("invalid_elements", "");
 	defParam("encoding", "");
@@ -108,7 +108,7 @@ TinyMCE.prototype.init = function(settings) {
 	defParam("inline_styles", false);
 	defParam("convert_newlines_to_brs", false);
 	defParam("auto_reset_designmode", false);
-	defParam("entities", "160,nbsp,38,amp,34,quot,162,cent,8364,euro,163,pound,165,yen,169,copy,174,reg,8482,trade,8240,permil,181,micro,183,middot,8226,bull,8230,hellip,8242,prime,8243,Prime,167,sect,182,para,223,szlig,8249,lsaquo,8250,rsaquo,171,laquo,187,raquo,8216,lsquo,8217,rsquo,8220,ldquo,8221,rdquo,8218,sbquo,8222,bdquo,60,lt,62,gt,8804,le,8805,ge,8211,ndash,8212,mdash,175,macr,8254,oline,164,curren,166,brvbar,168,uml,161,iexcl,191,iquest,710,circ,732,tilde,176,deg,8722,minus,177,plusmn,247,divide,8260,frasl,215,times,185,sup1,178,sup2,179,sup3,188,frac14,189,frac12,190,frac34,402,fnof,8747,int,8721,sum,8734,infin,8730,radic,8764,sim,8773,cong,8776,asymp,8800,ne,8801,equiv,8712,isin,8713,notin,8715,ni,8719,prod,8743,and,8744,or,172,not,8745,cap,8746,cup,8706,part,8704,forall,8707,exist,8709,empty,8711,nabla,8727,lowast,8733,prop,8736,ang,180,acute,184,cedil,170,ordf,186,ordm,8224,dagger,8225,Dagger,192,Agrave,194,Acirc,195,Atilde,196,Auml,197,Aring,198,AElig,199,Ccedil,200,Egrave,202,Ecirc,203,Euml,204,Igrave,206,Icirc,207,Iuml,208,ETH,209,Ntilde,210,Ograve,212,Ocirc,213,Otilde,214,Ouml,216,Oslash,338,OElig,217,Ugrave,219,Ucirc,220,Uuml,376,Yuml,222,THORN,224,agrave,226,acirc,227,atilde,228,auml,229,aring,230,aelig,231,ccedil,232,egrave,234,ecirc,235,euml,236,igrave,238,icirc,239,iuml,240,eth,241,ntilde,242,ograve,244,ocirc,245,otilde,246,ouml,248,oslash,339,oelig,249,ugrave,251,ucirc,252,uuml,254,thorn,255,yuml,914,Beta,915,Gamma,916,Delta,917,Epsilon,918,Zeta,919,Eta,920,Theta,921,Iota,922,Kappa,923,Lambda,924,Mu,925,Nu,926,Xi,927,Omicron,928,Pi,929,Rho,931,Sigma,932,Tau,933,Upsilon,934,Phi,935,Chi,936,Psi,937,Omega,945,alpha,946,beta,947,gamma,948,delta,949,epsilon,950,zeta,951,eta,952,theta,953,iota,954,kappa,955,lambda,956,mu,957,nu,958,xi,959,omicron,960,pi,961,rho,962,sigmaf,963,sigma,964,tau,965,upsilon,966,phi,967,chi,968,psi,969,omega,8501,alefsym,982,piv,8476,real,977,thetasym,978,upsih,8472,weierp,8465,image,8592,larr,8593,uarr,8594,rarr,8595,darr,8596,harr,8629,crarr,8656,lArr,8657,uArr,8658,rArr,8659,dArr,8660,hArr,8756,there4,8834,sub,8835,sup,8836,nsub,8838,sube,8839,supe,8853,oplus,8855,otimes,8869,perp,8901,sdot,8968,lceil,8969,rceil,8970,lfloor,8971,rfloor,9001,lang,9002,rang,9674,loz,9824,spades,9827,clubs,9829,hearts,9830,diams,8194,ensp,8195,emsp,8201,thinsp,8204,zwnj,8205,zwj,8206,lrm,8207,rlm,173,shy");
+	defParam("entities", "160,nbsp,38,amp,34,quot,162,cent,8364,euro,163,pound,165,yen,169,copy,174,reg,8482,trade,8240,permil,181,micro,183,middot,8226,bull,8230,hellip,8242,prime,8243,Prime,167,sect,182,para,223,szlig,8249,lsaquo,8250,rsaquo,171,laquo,187,raquo,8216,lsquo,8217,rsquo,8220,ldquo,8221,rdquo,8218,sbquo,8222,bdquo,60,lt,62,gt,8804,le,8805,ge,8211,ndash,8212,mdash,175,macr,8254,oline,164,curren,166,brvbar,168,uml,161,iexcl,191,iquest,710,circ,732,tilde,176,deg,8722,minus,177,plusmn,247,divide,8260,frasl,215,times,185,sup1,178,sup2,179,sup3,188,frac14,189,frac12,190,frac34,402,fnof,8747,int,8721,sum,8734,infin,8730,radic,8764,sim,8773,cong,8776,asymp,8800,ne,8801,equiv,8712,isin,8713,notin,8715,ni,8719,prod,8743,and,8744,or,172,not,8745,cap,8746,cup,8706,part,8704,forall,8707,exist,8709,empty,8711,nabla,8727,lowast,8733,prop,8736,ang,180,acute,184,cedil,170,ordf,186,ordm,8224,dagger,8225,Dagger,192,Agrave,194,Acirc,195,Atilde,196,Auml,197,Aring,198,AElig,199,Ccedil,200,Egrave,202,Ecirc,203,Euml,204,Igrave,206,Icirc,207,Iuml,208,ETH,209,Ntilde,210,Ograve,212,Ocirc,213,Otilde,214,Ouml,216,Oslash,338,OElig,217,Ugrave,219,Ucirc,220,Uuml,376,Yuml,222,THORN,224,agrave,226,acirc,227,atilde,228,auml,229,aring,230,aelig,231,ccedil,232,egrave,234,ecirc,235,euml,236,igrave,238,icirc,239,iuml,240,eth,241,ntilde,242,ograve,244,ocirc,245,otilde,246,ouml,248,oslash,339,oelig,249,ugrave,251,ucirc,252,uuml,254,thorn,255,yuml,914,Beta,915,Gamma,916,Delta,917,Epsilon,918,Zeta,919,Eta,920,Theta,921,Iota,922,Kappa,923,Lambda,924,Mu,925,Nu,926,Xi,927,Omicron,928,Pi,929,Rho,931,Sigma,932,Tau,933,Upsilon,934,Phi,935,Chi,936,Psi,937,Omega,945,alpha,946,beta,947,gamma,948,delta,949,epsilon,950,zeta,951,eta,952,theta,953,iota,954,kappa,955,lambda,956,mu,957,nu,958,xi,959,omicron,960,pi,961,rho,962,sigmaf,963,sigma,964,tau,965,upsilon,966,phi,967,chi,968,psi,969,omega,8501,alefsym,982,piv,8476,real,977,thetasym,978,upsih,8472,weierp,8465,image,8592,larr,8593,uarr,8594,rarr,8595,darr,8596,harr,8629,crarr,8656,lArr,8657,uArr,8658,rArr,8659,dArr,8660,hArr,8756,there4,8834,sub,8835,sup,8836,nsub,8838,sube,8839,supe,8853,oplus,8855,otimes,8869,perp,8901,sdot,8968,lceil,8969,rceil,8970,lfloor,8971,rfloor,9001,lang,9002,rang,9674,loz,9824,spades,9827,clubs,9829,hearts,9830,diams,8194,ensp,8195,emsp,8201,thinsp,8204,zwnj,8205,zwj,8206,lrm,8207,rlm,173,shy,233,eacute");
 	defParam("entity_encoding", "named");
 	defParam("cleanup_callback", "");
 	defParam("add_unload_trigger", true);
@@ -186,8 +186,20 @@ TinyMCE.prototype.init = function(settings) {
 	this._initCleanup();
 
 	// Only do this once
-	if (this.configs.length == 0)
+	if (this.configs.length == 0) {
 		tinyMCE.addEvent(window, "load", TinyMCE.prototype.onLoad);
+
+		if (tinyMCE.isMSIE) {
+			if (tinyMCE.settings['add_unload_trigger']) {
+				tinyMCE.addEvent(window, "unload", TinyMCE.prototype.unloadHandler);
+				tinyMCE.addEvent(window.document, "beforeunload", TinyMCE.prototype.unloadHandler);
+			} else
+				tinyMCE.addEvent(window, "unload", TinyMCE.prototype.cleanEvents);
+		} else {
+			if (tinyMCE.settings['add_unload_trigger'])
+				tinyMCE.addEvent(window, "unload", function () {tinyMCE.triggerSave(true, true);});
+		}
+	}
 
 	this.loadScript(tinyMCE.baseURL + '/themes/' + this.settings['theme'] + '/editor_template' + tinyMCE.srcMode + '.js');
 	this.loadScript(tinyMCE.baseURL + '/langs/' + this.settings['language'] +  '.js');
@@ -227,7 +239,7 @@ TinyMCE.prototype.loadCSS = function(url) {
 	this.loadedFiles[this.loadedFiles.length] = url;
 };
 
-TinyMCE.prototype.importCSS = function(doc, css_file, doc_write) {
+TinyMCE.prototype.importCSS = function(doc, css_file) {
 	if (tinyMCE.isMSIE)
 		var styleSheet = doc.createStyleSheet(css_file);
 	else {
@@ -296,9 +308,6 @@ TinyMCE.prototype.addMCEControl = function(replace_element, form_element_name, t
 	this.instances[id] = inst;
 
 	inst.onAdd(replace_element, form_element_name, target_document);
-
-	// For some odd MSIE reason this need some time inorder for init callbacks to load CSS files.
-	window.setTimeout(function () {inst.switchSettings(); tinyMCE.executeCallback('init_instance_callback', '_initInstance', 0, inst); }, 10);
 };
 
 TinyMCE.prototype.triggerSave = function(skip_cleanup, skip_callback) {
@@ -480,13 +489,6 @@ TinyMCE.prototype.addEventHandlers = function(editor_id) {
 		tinyMCE.addEvent(doc, "keydown", TinyMCE.prototype.eventPatch);
 		tinyMCE.addEvent(doc, "mouseup", TinyMCE.prototype.eventPatch);
 		tinyMCE.addEvent(doc, "click", TinyMCE.prototype.eventPatch);
-
-		if (tinyMCE.settings['add_unload_trigger'] && !tinyMCE.unloadTriggers) {
-			tinyMCE.addEvent(window, "unload", TinyMCE.prototype.unloadHandler);
-			tinyMCE.addEvent(window, "beforeunload", TinyMCE.prototype.unloadHandler);
-			tinyMCE.unloadTriggers = true; // Only once
-		} else
-			tinyMCE.addEvent(window, "unload", TinyMCE.prototype.cleanEvents);
 	} else {
 		var inst = tinyMCE.instances[editor_id];
 		var doc = inst.getDoc();
@@ -502,11 +504,6 @@ TinyMCE.prototype.addEventHandlers = function(editor_id) {
 		tinyMCE.addEvent(doc, "mouseup", tinyMCE.handleEvent);
 		tinyMCE.addEvent(doc, "mousedown", tinyMCE.handleEvent);
 		tinyMCE.addEvent(doc, "focus", tinyMCE.handleEvent);
-
-		if (tinyMCE.settings['add_unload_trigger'] && !tinyMCE.unloadTriggers) {
-			tinyMCE.addEvent(window, "unload", function () {tinyMCE.triggerSave(true, true);});
-			tinyMCE.unloadTriggers = true; // Only once
-		}
 
 		eval('try { doc.designMode = "On"; } catch(e) {}');
 	}
@@ -570,6 +567,9 @@ TinyMCE.prototype.setupContent = function(editor_id) {
 		return;
 	}
 
+	tinyMCE.importCSS(inst.getDoc(), inst.settings['content_css']);
+	tinyMCE.executeCallback('init_instance_callback', '_initInstance', 0, inst);
+
 	if (tinyMCE.settings['nowrap'])
 		doc.body.style.whiteSpace = "nowrap";
 
@@ -596,8 +596,6 @@ TinyMCE.prototype.setupContent = function(editor_id) {
 	content = tinyMCE._customCleanup("insert_to_editor", content);
 
 	if (tinyMCE.isMSIE) {
-		var styleSheet = document.frames[editor_id].document.createStyleSheet(inst.settings['content_css']);
-
 		// Ugly!!!
 		window.setInterval('try{tinyMCE.getCSSClasses(document.frames["' + editor_id + '"].document, "' + editor_id + '");}catch(e){}', 500);
 
@@ -611,13 +609,6 @@ TinyMCE.prototype.setupContent = function(editor_id) {
 		tinyMCE.addEvent(body, "paste", TinyMCE.prototype.eventPatch);
 
 		body.editorId = editor_id;
-	} else {
-		// Import editor css
-		var cssImporter = doc.createElement("link");
-		cssImporter.rel = "stylesheet";
-		cssImporter.href = inst.settings['content_css'];
-		if (headArr = doc.getElementsByTagName("head"));
-			headArr[0].appendChild(cssImporter);
 	}
 
 	// Fix for bug #958637
@@ -1315,6 +1306,9 @@ TinyMCE.prototype._cleanupElementName = function(element_name, element) {
 			for (var x=0, n=tinyMCE.cleanup_validElements[i][0].length; x<n; x++) {
 				var elmMatch = tinyMCE.cleanup_validElements[i][0][x];
 
+				if (elmMatch.charAt(0) == '+')
+					elmMatch = elmMatch.substring(1);
+
 				// Handle wildcard/regexp
 				if (elmMatch.match(new RegExp('\\*|\\?|\\+', 'g')) != null) {
 					elmMatch = elmMatch.replace(new RegExp('\\?', 'g'), '(\\S?)');
@@ -1415,14 +1409,14 @@ TinyMCE.prototype._fixInlineStyles = function(elm) {
 	}
 
 	// Setup vspace
-	value = elm.getAttributes("vspace");
+	value = elm.getAttribute("vspace");
 	if (value && value != "") {
 		elm.style.marginTop = value + "px";
 		elm.style.marginBottom = value + "px";
 	}
 
 	// Setup hspace
-	value = elm.getAttributes("hspace");
+	value = elm.getAttribute("hspace");
 	if (value && value != "") {
 		elm.style.marginLeft = value + "px";
 		elm.style.marginRight = value + "px";
@@ -1687,6 +1681,12 @@ TinyMCE.prototype.cleanupNode = function(node) {
 			var elementName = elementData ? elementData.element_name : null;
 			var elementValidAttribs = elementData ? elementData.valid_attribs : null;
 			var elementAttribs = "";
+			var openTag = false;
+
+			if (elementName != null && elementName.charAt(0) == '+') {
+				elementName = elementName.substring(1);
+				openTag = true;
+			}
 
 			// Checking DOM tree for MSIE weirdness!!
 			if (tinyMCE.isMSIE && tinyMCE.settings['fix_content_duplication']) {
@@ -1859,7 +1859,7 @@ TinyMCE.prototype.cleanupNode = function(node) {
 					output += "</" + elementName + ">";
 			} else {
 				// Allways leave anchor elements open
-				if (elementName == "a")
+				if (openTag)
 					output += "<" + elementName + elementAttribs + "></" + elementName + ">";
 				else {
 					// No children
@@ -1920,6 +1920,9 @@ TinyMCE.prototype._initCleanup = function() {
 	function getElementName(chunk) {
 		var pos;
 
+		if (chunk.charAt(0) == '+')
+			chunk = chunk.substring(1);
+
 		if ((pos = chunk.indexOf('/')) != -1)
 			chunk = chunk.substring(0, pos);
 
@@ -1955,6 +1958,7 @@ TinyMCE.prototype._initCleanup = function() {
 
 	for (var i=0; i<validElements.length; i++) {
 		var item = validElements[i];
+
 		item = item.replace('[','|');
 		item = item.replace(']','');
 
@@ -2540,6 +2544,10 @@ TinyMCE.prototype.convertRelativeToAbsoluteURL = function(base_url, relative_url
 	if (relURL['anchor'])
 		end += "#" + relURL['anchor'];
 
+	// Re-add trailing slash if it's removed
+	if (relative_url.charAt(relative_url.length-1) == "/")
+		end += "/";
+
 	return start + absPath + end;
 };
 
@@ -2747,7 +2755,9 @@ TinyMCE.prototype.openWindow = function(template, args) {
 
 			window.showModalDialog(url, window, features);
 		} else {
-			var win = window.open(url, "mcePopup", "top=" + y + ",left=" + x + ",scrollbars=" + scrollbars + ",dialog=yes,minimizable=" + resizable + ",modal=yes,width=" + width + ",height=" + height + ",resizable=" + resizable);
+			var modal = (resizable == "yes") ? "no" : "yes";
+
+			var win = window.open(url, "mcePopup", "top=" + y + ",left=" + x + ",scrollbars=" + scrollbars + ",dialog=" + modal + ",minimizable=" + resizable + ",modal=" + modal + ",width=" + width + ",height=" + height + ",resizable=" + resizable);
 			eval('try { win.resizeTo(width, height); } catch(e) { }');
 			win.focus();
 		}

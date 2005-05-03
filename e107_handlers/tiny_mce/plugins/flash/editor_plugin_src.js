@@ -1,5 +1,5 @@
 /* Import plugin specific language pack */
-tinyMCE.importPluginLanguagePack('flash', 'en,de,sv,zh_cn,cs,fa,fr_ca,fr');
+tinyMCE.importPluginLanguagePack('flash', 'en,de,sv,zh_cn,cs,fa,fr_ca,fr,pl');
 
 function TinyMCE_flash_initInstance(inst) {
 	if (!tinyMCE.settings['flash_skip_plugin_css'])
@@ -146,14 +146,14 @@ function TinyMCE_flash_cleanup(type, content) {
 
 		case "get_from_editor":
 			// Parse all img tags and replace them with object+embed
-			var startPos = 0;
-			while ((startPos = content.indexOf('<img', startPos)) != -1) {
+			var startPos = -1;
+			while ((startPos = content.indexOf('<img', startPos+1)) != -1) {
 				var endPos = content.indexOf('/>', startPos);
 				var attribs = TinyMCE_flash_parseAttributes(content.substring(startPos + 4, endPos));
 
-				// Is not flash
+				// Is not flash, skip it
 				if (attribs['name'] != "mce_plugin_flash")
-					break;
+					continue;
 
 				endPos += 2;
 
@@ -168,22 +168,10 @@ function TinyMCE_flash_cleanup(type, content) {
 				embedHTML += '<param name="menu" value="false" />';
 				embedHTML += '<embed src="' + attribs["title"] + '" quality="high" menu="false" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="' + attribs["width"] + '" height="' + attribs["height"] + '"></embed></object>';
 
-/*
-<object
-classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"
-codebase="http://www.apple.com/qtactivex/qtplugin.cab" width="360" height="305" hspace="0" vspace="0">
-  <param name="src" value="some source">
-  <param name="autoplay" value="true">
-  <param name="controller" value="true">
-  <embed src="some source" width="360" height="305" hspace="0" vspace="0"
-autoplay="true" controller="true"
-pluginspage="http://www.apple.com/quicktime/download/">
-  </embed></object>
-*/
-
-				content = content.substring(0, startPos) + embedHTML + content.substring(endPos);
-
-				startPos++;
+				// Insert embed/object chunk
+				chunkBefore = content.substring(0, startPos);
+				chunkAfter = content.substring(endPos);
+				content = chunkBefore + embedHTML + chunkAfter;
 			}
 			break;
 	}
