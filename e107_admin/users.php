@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-05-02 10:48:01 $
-|     $Author: e107coders $
+|     $Revision: 1.42 $
+|     $Date: 2005-05-03 17:38:36 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -274,7 +274,7 @@ if ($_POST['useraction'] == "unadmin") {
 	if ($user_perms == "0") {
 		$user->show_message(USRLAN_5);
 	} else {
-		$sql->db_Update("user", "user_admin='0' WHERE user_id='".$_POST['userid']."'");
+		$sql->db_Update("user", "user_admin='0', user_perms='' WHERE user_id='".$_POST['userid']."'");
 		$user->show_message($user_name." ".USRLAN_6);
 	$action = "main";
 	if(!$sub_action){ $sub_action = "user_id"; }
