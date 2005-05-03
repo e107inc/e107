@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.23 $
-|		$Date: 2005-05-03 15:04:16 $
+|		$Revision: 1.24 $
+|		$Date: 2005-05-03 16:37:18 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -941,6 +941,7 @@ class content{
 				$data .= "   ".chr(36)."text .= ".chr(34)."<br />".chr(34).";\n\n";
 				$data .= "   ".chr(36)."parentdetails = ".chr(36)."aa -> getParent(\"\", \"\", $parentid, \"1\");\n";
 				$data .= "   ".chr(36)."parentarray = ".chr(36)."aa -> printParent(".chr(36)."parentdetails, \"0\", $parentid, \"array\");\n";
+				$data .= "   ".chr(36)."text .= \"<table>\";\n";
 				$data .= "   for(".chr(36)."i=0;".chr(36)."i<count(".chr(36)."parentarray);".chr(36)."i++){\n\n";
 				$data .= "      ".chr(36)."n = ".chr(36)."aa -> countItemsInCat(".chr(36)."parentarray[".chr(36)."i][0], ".chr(36)."parentarray[".chr(36)."i][2], \"nolan\");\n";
 
@@ -952,12 +953,14 @@ class content{
 				$data .= "         }\n";
 				$data .= "      }\n";
 
-				$data .= "      ".chr(36)."text .= ".chr(36)."caticon.\" <a href='\".e_PLUGIN.\"content/content.php?type.$parentid.cat.\".".chr(36)."parentarray[".chr(36)."i][0].\"'>\".".chr(36)."parentarray[".chr(36)."i][1].\"</a>\";\n";
+				$data .= "      ".chr(36)."text .= \"<tr><td style='width:2%; white-space:nowrap;'>\".".chr(36)."caticon.\"</td><td><a href='\".e_PLUGIN.\"content/content.php?type.$parentid.cat.\".".chr(36)."parentarray[".chr(36)."i][0].\"'>\".".chr(36)."parentarray[".chr(36)."i][1].\"</a>\";\n";
 				$data .= "      if(".chr(36)."content_pref[\"content_menu_cat_number_{$parentid}\"]){\n";
 				$data .= "         ".chr(36)."text .= \" <span class='smalltext'>(\".".chr(36)."n.\")</span>\";\n";
 				$data .= "      }\n";
 				$data .= "      ".chr(36)."text .= ".chr(34)."<br />".chr(34).";\n";
+				$data .= "   ".chr(36)."text .= \"</td></tr>\";\n";
 				$data .= "   }\n";
+				$data .= "   ".chr(36)."text .= \"</table>\";\n";
 				$data .= "}\n\n";
 
 				$data .= "if(".chr(36)."content_pref[\"content_menu_recent_{$parentid}\"]){\n";
@@ -1021,10 +1024,10 @@ class content{
 				}else{
 					$fp = @fopen(e_PLUGIN."content/menus/".$menufile."_menu.php", "w");
 					if (!@fwrite($fp, $data)) {
-						$message = CONTENT_ADMIN_OPT_LAN_81;
+						$message = CONTENT_ADMIN_CAT_LAN_51;
 					} else {
 						fclose($fp);
-						$message = CONTENT_ADMIN_OPT_LAN_82;
+						$message = CONTENT_ADMIN_CAT_LAN_50;
 					}
 				}
 				return $message;
