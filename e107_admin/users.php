@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-05-03 17:38:36 $
-|     $Author: stevedunstan $
+|     $Revision: 1.43 $
+|     $Date: 2005-05-03 21:10:36 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -23,17 +23,17 @@ if (!getperms("4")) {
 	 exit;
 }
 
-if ($_POST['useraction'] == 'userinfo') {
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'userinfo') {
 	header('location:'.e_ADMIN."userinfo.php?{$_POST['userip']}");
 	exit;
 }
 
-if ($_POST['useraction'] == 'usersettings') {
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'usersettings') {
 	header('location:'.e_BASE."usersettings.php?{$_POST['userid']}");
 	exit;
 }
 
-if ($_POST['useraction'] == 'userclass') {
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'userclass') {
 	header('location:'.e_ADMIN."userclass.php?{$_POST['userid']}");
 	exit;
 }
@@ -55,7 +55,7 @@ if (e_QUERY) {
 	unset($tmp);
 }
 
-$from = ($from ? $from : 0);
+$from = (isset($from)) ? $from : 0;
 $amount = 30;
 // ------- Resend Email. --------------
 if (isset($_POST['resend_mail'])) {
@@ -163,7 +163,7 @@ if (isset($_POST['adduser'])) {
 }
 
 // ------- Ban User. --------------
-if ($_POST['useraction'] == "ban") {
+if (isset($_POST['useraction']) && $_POST['useraction'] == "ban") {
   //	$sub_action = $_POST['userid'];
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
@@ -179,7 +179,7 @@ if ($_POST['useraction'] == "ban") {
 	if(!$sub_action){$sub_action = "user_id"; }
 }
 // ------- Unban User --------------
-if ($_POST['useraction'] == "unban") {
+if (isset($_POST['useraction']) && $_POST['useraction'] == "unban") {
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	extract($row);
@@ -191,7 +191,7 @@ if ($_POST['useraction'] == "unban") {
 }
 
 // ------- Resend Email. --------------
-if ($_POST['useraction'] == 'resend') {
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'resend') {
 	$qry = (e_QUERY) ? "?".e_QUERY : "";
 	if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
 		$resend = $sql->db_Fetch();
@@ -210,7 +210,7 @@ if ($_POST['useraction'] == 'resend') {
 	}
 }
 // ------- TEst Email. --------------
-if ($_POST['useraction'] == 'test') {
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'test') {
 	$qry = (e_QUERY) ? "?".e_QUERY : "";
 	if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
 		$test = $sql->db_Fetch();
@@ -225,7 +225,7 @@ if ($_POST['useraction'] == 'test') {
 	}
 }
 // ------- Delete User --------------
-if ($_POST['useraction'] == 'deluser') {
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser') {
 	if ($_POST['confirm']) {
 		if ($sql->db_Delete("user", "user_id='".$_POST['userid']."' AND user_perms != '0'")) {
 			$user->show_message(USRLAN_10);
@@ -256,7 +256,7 @@ if ($_POST['useraction'] == 'deluser') {
 	}
 }
 // ------- Make Admin.. --------------
-if ($_POST['useraction'] == "admin") {
+if (isset($_POST['useraction']) && $_POST['useraction'] == "admin") {
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	 extract($row);
@@ -267,7 +267,7 @@ if ($_POST['useraction'] == "admin") {
 	if(!$id){ $id = "DESC"; }
 }
 // ------- Remove Admin --------------
-if ($_POST['useraction'] == "unadmin") {
+if (isset($_POST['useraction']) && $_POST['useraction'] == "unadmin") {
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	 extract($row);
@@ -282,7 +282,7 @@ if ($_POST['useraction'] == "unadmin") {
 	}
 }
 
-if ($_POST['useraction'] == "verify") {
+if (isset($_POST['useraction']) && $_POST['useraction'] == "verify") {
 	if ($sql->db_Update("user", "user_ban='0' WHERE user_id='".$_POST['userid']."' ")) {
 		$user->show_message(USRLAN_86);
 	if(!$action){ $action = "main"; }
@@ -291,12 +291,12 @@ if ($_POST['useraction'] == "verify") {
 	}
 }
 
-if ($action == "uset") {
+if (isset($action) && $action == "uset") {
 	$user->show_message(USRLAN_87);
 	$action = "main";
 }
 
-if ($action == "cu") {
+if (isset($action) && $action == "cu") {
 	$user->show_message(USRLAN_88);
 	$action = "main";
   //	$sub_action = "user_id";
@@ -310,32 +310,32 @@ echo "from= ".$from."<br />";
 echo "amount= ".$amount."<br />";
 */
 
-if (!e_QUERY || $action == "main") {
+if (!e_QUERY || ($action == "main")) {
 	$user->show_existing_users($action, $sub_action, $id, $from, $amount);
 }
 
-if ($action == "options") {
+if (isset($action) && $action == "options") {
 	$user->show_prefs();
 }
 
-if ($action == "prune") {
+if (isset($action) && $action == "prune") {
 	$user->show_prune();
 }
 
-if ($action == "create") {
+if (isset($action) && $action == "create") {
 	$user->add_user();
 }
 
 require_once("footer.php");
 
-class users
-{
+class users{
+
 	function show_existing_users($action, $sub_action, $id, $from, $amount) {
 		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 
 		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref;
 		// save the display choices.
-		if($_POST['searchdisp']){
+		if(isset($_POST['searchdisp'])){
 			$pref['admin_user_disp'] = implode("|",$_POST['searchdisp']);
 			save_prefs();
 		}
@@ -360,25 +360,24 @@ class users
 			$query .= (eregi("@", $_POST['searchquery']))?"user_email REGEXP('".$_POST['searchquery']."') OR ": "";
 			$query .= (eregi(".", $_POST['searchquery']))?"user_ip REGEXP('".$_POST['searchquery']."') OR ": "";
             foreach($search_display as $disp){
-            	$query .= "$disp REGEXP('".$_POST['searchquery']."') OR "; 
+            	$query .= "$disp REGEXP('".$_POST['searchquery']."') OR ";
 			}
-
 			$query .= "user_login REGEXP('".$_POST['searchquery']."') OR ";
 			$query .= "user_name REGEXP('".$_POST['searchquery']."') ORDER BY user_id";
-
-
-} else {
+		} else {
 			$query = "ORDER BY ".($sub_action ? $sub_action : "user_id")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
 		}
 
+        //  $user_total = db_Count($table, $fields = '(*)',
         $qry_insert = "SELECT u.*, ue.* FROM #user AS u	LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id ";
 
-		if ($sql->db_Select_gen($qry_insert. $query)) {
+		if ($user_total = $sql->db_Select_gen($qry_insert. $query)) {
 			$text .= "<table class='fborder' style='width: 99%'>
 				<tr>
 				<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
 				<td style='width:10%' class='fcaption'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></td>";
-		   //		<td style='width:30%' class='fcaption'><a href='".e_SELF."?main.user_name.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_78."</a></td>";
+
+
 // Search Display Column header.
 
 			foreach($search_display as $disp){
@@ -417,7 +416,6 @@ class users
 
 				$text .= "</td>";
 
-		  //		$text .= "<td style='width:30%' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id' title='$user_email : $user_login'>$user_name</a></td>";
 
 
  // Display Chosen options -------------------------------------
@@ -440,7 +438,7 @@ class users
 				}else{
 					$text .= $row[$disp]."&nbsp;";
 				}
-				if($row[$disp] == $prev[$disp] && $prev[$disp] != ""){ // show matches
+				if(isset($prev[$disp]) && $row[$disp] == $prev[$disp] && $prev[$disp] != ""){ // show matches
 					$text .= " <b>*</b>";
 				}
 
@@ -448,7 +446,7 @@ class users
 			$prev[$disp] = $row[$disp];
 	}
 // -------------------------------------------------------------
-				if(e_QUERY){ $qry = "?".e_QUERY; }
+				$qry = (e_QUERY) ?  "?".e_QUERY : "";
 				$text .= "
 					<td style='width:30%;text-align:center' class='forumheader3'>
 					<form method='post' action='".e_SELF.$qry."'>
@@ -526,7 +524,7 @@ class users
             while($row = $sql-> db_Fetch()){
             $fname[] = "user_".$row['user_extended_struct_name'];
 		}
-
+        $m = 0;
 		foreach($fname as $fcol){
         $checked = (in_array($fcol,$search_display)) ? "checked='checked'" : "";
 			$text .= "<td style='text-align:left; padding:0px'>";
@@ -545,7 +543,8 @@ class users
 
 
 // ======================
-		$ns->tablerender(USRLAN_77, $text);
+		$caption = USRLAN_77 ."&nbsp;&nbsp;   (total: $user_total)";
+		$ns->tablerender($caption, $text);
 
 	}
 
