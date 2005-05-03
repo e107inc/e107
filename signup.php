@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-05-01 16:34:07 $
-|     $Author: stevedunstan $
+|     $Revision: 1.27 $
+|     $Date: 2005-05-03 10:54:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -625,7 +625,7 @@ if ($use_imagecode) {
 $text .= "
 	<tr style='vertical-align:top'>
 	<td class='forumheader' colspan='2'  style='text-align:center'>
-	<input class='button' type='submit' name='register' value='".LAN_123."' />
+	<input class=\"button\" type=\"submit\" name=\"register\" value=\"".LAN_123."\" />
 	<br />
 	</td>
 	</tr>
