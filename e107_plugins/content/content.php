@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.27 $
-|		$Date: 2005-05-03 15:02:35 $
+|		$Revision: 1.28 $
+|		$Date: 2005-05-03 21:43:23 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -49,7 +49,7 @@ if(e_QUERY){
 }
 $query="";
 
-if($type == "0" || is_numeric($type)){ //is only when nextprev is active
+if(isset($type) && ($type == "0" || is_numeric($type))){ //is only when nextprev is active
 	$from = $type;
 	$type = $type_id;
 	$type_id = $action;
@@ -272,8 +272,11 @@ if(!isset($type)){
 
 // ##### CONTENT SEARCH MENU ----------------------------
 function show_content_search_menu(){
-				global $type, $type_id, $ns, $rs, $action, $sub_action, $id, $id2;
-				global $plugintable, $gen, $aa, $content_pref;
+				global $type, $type_id, $ns, $rs, $action, $sub_action, $id, $id2, $aa;
+				global $plugintable, $gen, $aa, $content_pref, $prefetchbreadcrumb;
+
+				$parentdetails = $aa -> getParent("", "", $type_id);
+				$parentarray = $aa -> printParent($parentdetails, "0", $type_id, "optionmenu");
 
 				$CONTENT_SEARCH_TABLE = "";
 				if(!$CONTENT_SEARCH_TABLE){
@@ -296,6 +299,7 @@ function show_content_search_menu(){
 				".$rs -> form_option(CONTENT_LAN_7, 0, "".e_SELF."?".$type.".".$type_id.".author")."
 				".$rs -> form_option(CONTENT_LAN_8, 0, "".e_SELF."?".$type.".".$type_id.".top")."
 				".$rs -> form_option(CONTENT_LAN_61, 0, "".e_SELF."?".$type.".".$type_id)."
+				".$parentarray."
 				".$rs -> form_select_close()."
 				".$rs -> form_close();
 
@@ -1029,7 +1033,7 @@ function show_content_author(){
 // ##### CONTENT ------------------------------------------
 function show_content_item(){
 				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
-				global $type, $type_id, $action, $sub_action, $id, $id2, $datequery, $prefetchbreadcrumbnosub, $unvalidcontent;
+				global $type, $type_id, $action, $sub_action, $id, $id2, $datequery, $prefetchbreadcrumb, $unvalidcontent, $order, $nextprevquery;
 
 				if(!is_numeric($sub_action)){ header("location:".e_SELF."?".$type.".".$type_id); exit; }
 
@@ -1047,7 +1051,7 @@ function show_content_item(){
 					}
 
 					if($content_pref["content_breadcrumb_{$type_id}"]){
-						$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumbnosub, $breadcrumb_parent, "base", "");
+						$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumb, $row['content_parent'], "base", "");
 						if($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "1"){
 								echo $breadcrumbstring;					
 						}elseif($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "2"){
@@ -1253,6 +1257,8 @@ function parse_content_recent_table($row, $prefetchbreadcrumb=""){
 						$row['content_subheading'] = substr($row['content_subheading'], 0, $content_pref["content_list_subheading_char_{$type_id}"]).$content_pref["content_list_subheading_post_{$type_id}"];
 					}
 					$CONTENT_RECENT_TABLE_SUBHEADING = ($row['content_subheading'] != "" && $row['content_subheading'] != " " ? $row['content_subheading'] : "");
+				}else{
+					$CONTENT_RECENT_TABLE_SUBHEADING = ($row['content_subheading'] ? $row['content_subheading'] : "");
 				}
 				// -----------------------------------------------------------------------------------
 
@@ -1263,6 +1269,8 @@ function parse_content_recent_table($row, $prefetchbreadcrumb=""){
 						$row['content_summary'] = substr($row['content_summary'], 0, $content_pref["content_list_summary_char_{$type_id}"]).$content_pref["content_list_summary_post_{$type_id}"];
 					}
 					$CONTENT_RECENT_TABLE_SUMMARY = ($row['content_summary'] != "" && $row['content_summary'] != " " ? $row['content_summary'] : "");
+				}else{
+					$CONTENT_RECENT_TABLE_SUMMARY = ($row['content_summary'] ? $row['content_summary'] : "");
 				}
 				// -----------------------------------------------------------------------------------
 
@@ -1270,7 +1278,7 @@ function parse_content_recent_table($row, $prefetchbreadcrumb=""){
 					$authordetails = $aa -> getAuthor($row['content_author']);
 					//$authordetails[1] = ($authordetails[1] ? $authordetails[1] : "unknown");
 					if($content_pref["content_list_authorname_{$type_id}"]){
-						if($content_pref["content_list_authoremail_{$type_id}"] && $authordetails[2]){
+						if(isset($content_pref["content_list_authoremail_{$type_id}"]) && $authordetails[2]){
 							if($authordetails[0] == "0"){								
 								if($content_pref["content_list_authoremail_nonmember_{$type_id}"]){
 									$CONTENT_RECENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
@@ -1447,7 +1455,7 @@ function parse_content_cat_list_table($row){
 				$CONTENT_CAT_LIST_TABLE_TEXT = ($row['content_text'] ? $tp -> toHTML($row['content_text'], TRUE, "") : "");
 
 				$CONTENT_CAT_LIST_TABLE_COMMENT = "";
-				if($content_comment){
+				if($row['content_comment']){
 					$comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='".$sub_action."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 					$CONTENT_CAT_LIST_TABLE_COMMENT = "<a style='text-decoration:none;' href='".e_SELF."?".$type.".".$type_id.".cat.".$sub_action.".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
 				}
@@ -1534,7 +1542,7 @@ function parse_content_content_table($row){
 
 				if($content_pref["content_content_authorname_{$type_id}"] || $content_pref["content_content_authoremail_{$type_id}"]){
 					$authordetails = $aa -> getAuthor($row['content_author']);
-					if($content_pref["content_content_authoremail_{$type_id}"] && $authordetails[2]){
+					if(isset($content_pref["content_content_authoremail_{$type_id}"]) && $authordetails[2]){
 						if($authordetails[0] == "0"){
 							if($content_pref["content_content_authoremail_nonmember_{$type_id}"]){
 								$CONTENT_CONTENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
@@ -1715,7 +1723,10 @@ function parse_content_content_table($row){
 					}
 				}
 
+				$CONTENT_CONTENT_TABLE_CUSTOM_TAGS = "";
 				if(!empty($custom)){
+					$CONTENT_CONTENT_TABLE_CUSTOM_PRE = "";
+					
 					$CONTENT_CONTENT_TABLE_CUSTOM_TAGS = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE_CUSTOM_PRE);
 					foreach($custom as $k => $v){
 						if(!($k == "content_custom_score" || $k == "content_custom_meta")){

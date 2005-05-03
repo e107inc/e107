@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-05-03 15:04:20 $
+|     $Revision: 1.5 $
+|     $Date: 2005-05-03 21:43:24 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,9 @@
 $CONTENT_CONTENT_TABLE_START = "";
 $CONTENT_CONTENT_TABLE = "";
 $CONTENT_CONTENT_TABLE_END = "";
-$CONTENT_CONTENT_TABLE_CUSTOM_KEY = "";
+$CONTENT_CONTENT_TABLE_CUSTOM = "";
+$CONTENT_CONTENT_TABLE_CUSTOM_PRE = "";
+$CONTENT_CONTENT_TABLE_CUSTOM_PRE2 = "";
 
 if(!$CONTENT_CONTENT_TABLE){
 				$CONTENT_CONTENT_TABLE .= "
@@ -127,13 +129,13 @@ if(!$CONTENT_CONTENT_TABLE){
 
 
 if(!$CONTENT_CONTENT_TABLE_CUSTOM_PRE){
-	$CONTENT_CONTENT_TABLE_CUSTOM_PRE .= "
+	$CONTENT_CONTENT_TABLE_CUSTOM_PRE = "
 	<tr>
 		<td colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? ($CONTENT_CONTENT_TABLE_ICON ? "4" : "3") : "3")."' style='border-bottom:1px solid #000;'><br /></td>
 	</tr>";
 }
 if(!$CONTENT_CONTENT_TABLE_CUSTOM_PRE2){
-	$CONTENT_CONTENT_TABLE_CUSTOM_PRE2 .= "
+	$CONTENT_CONTENT_TABLE_CUSTOM_PRE2 = "
 	<tr>
 		<td colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? ($CONTENT_CONTENT_TABLE_ICON ? "4" : "3") : "3")."'><br /></td>
 	</tr>";

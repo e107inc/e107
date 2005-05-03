@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2005-05-03 15:02:39 $
+|		$Revision: 1.7 $
+|		$Date: 2005-05-03 21:43:23 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -101,6 +101,10 @@ if(IsSet($message)){
 }
 
 if(!isset($type)){
+
+		$breadcrumb = $aa -> drawBreadcrumbFromUrl(e_PAGE, e_QUERY, $base=true, $nolink=false);
+		echo $breadcrumb."<br /><br />";
+
 		if(!$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_icon, content_pref as prefvalue", "content_parent = '0' AND content_class IN (".USERCLASS_LIST.") ORDER BY content_heading")){
 			$text .= "<div style='text-align:center;'>".CONTENT_ADMIN_SUBMIT_LAN_0."</div>";
 		}else{
