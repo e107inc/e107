@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.25 $
-|		$Date: 2005-05-03 21:43:23 $
+|		$Revision: 1.26 $
+|		$Date: 2005-05-03 22:54:51 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -987,9 +987,9 @@ class content{
 
 				$data .= "      if(".chr(36)."content_pref[\"content_menu_cat_icon_{$parentid}\"] == \"5\"){\n";
 				$data .= "         if(".chr(36)."parentarray[".chr(36)."i][3] != \"\" && file_exists(".chr(36)."content_cat_icon_path_small.".chr(36)."parentarray[".chr(36)."i][3]) ){\n";
-				$data .= "            ".chr(36)."caticon = \"<img src='\".".chr(36)."content_cat_icon_path_small.".chr(36)."parentarray[".chr(36)."i][3].\"' alt='' style='border:0;'>\";\n";
+				$data .= "            ".chr(36)."caticon = \"<img src='\".".chr(36)."content_cat_icon_path_small.".chr(36)."parentarray[".chr(36)."i][3].\"' alt='' style='border:0;' />\";\n";
 				$data .= "         }else{\n";
-				$data .= "            ".chr(36)."caticon = \"<img src='\".".chr(36)."content_icon_path.\"blank.gif' alt='' style='width:16px; border:0;'>\";\n";
+				$data .= "            ".chr(36)."caticon = \"<img src='\".".chr(36)."content_icon_path.\"blank.gif' alt='' style='width:16px; border:0;' />\";\n";
 				$data .= "         }\n";
 				$data .= "      }\n";
 
@@ -1035,7 +1035,7 @@ class content{
 				$data .= "            if(".chr(36)."row['content_icon'] != \"\" && file_exists(".chr(36)."content_icon_path.".chr(36)."row['content_icon']) ){\n";
 				$data .= "               ".chr(36)."recenticon = \"<img src='\".".chr(36)."content_icon_path.".chr(36)."row['content_icon'].\"' alt='' style=' \".".chr(36)."recenticonwidth.\" border:0;' />\";\n";
 				$data .= "            }else{\n";
-				$data .= "               ".chr(36)."recenticon = \"<img src='\".".chr(36)."content_icon_path.\"blank.gif' alt='' style='\".".chr(36)."recenticonwidth.\" border:0;'>\";\n";
+				$data .= "               ".chr(36)."recenticon = \"<img src='\".".chr(36)."content_icon_path.\"blank.gif' alt='' style='\".".chr(36)."recenticonwidth.\" border:0;' />\";\n";
 				$data .= "            }\n";
 				$data .= "         }\n\n";
 
@@ -1198,6 +1198,49 @@ class content{
 				}
 		}
 		*/
+
+		function popup($image, $thumb, $maxwidth, $title, $text){
+					//$image	:	full path to the large image you want to popup
+					//$thumb	:	full path to the small image to show on screen
+					//$maxwidth	:	the maximum size (width or height) an image may be popup'ed
+					//$title	:	the window title of the popup
+					//$text		:	the additional text to add into the popup
+
+					if(file_exists($image)){
+						
+						//use $image if $thumb doesn't exist
+						if(!file_exists($thumb)){
+							$thumb = $image;
+						}
+						$imagearray = getimagesize(trim($image));
+						//$imagearray holds width and height parameters of the image
+						//$imagearray[0] is width - $imagearray[1] is height
+
+						if($imagearray[1] > $imagearray[0]){
+							if($imagearray[1] > $maxwidth){
+								$width = round(($maxwidth*$imagearray[0])/$imagearray[1],0);
+								$height = $maxwidth;
+							}else{
+								$width = $imagearray[0];
+								$height = $imagearray[1];
+							}
+						}else{
+							if($imagearray[0] > $maxwidth){
+								$width = $maxwidth;
+								$height = round(($maxwidth*$imagearray[1])/$imagearray[0],0);
+							}else{
+								$width = $imagearray[0];
+								$height = $imagearray[1];
+							}
+						}
+
+						$popup = "<a href=\"javascript:openPerfectPopup('".$image."',".$width.",'".$title."','".$text."')\" style='cursor:pointer;' onmouseover=\"window.status='click to enlarge image'; return true;\" onmouseout=\"window.status=''; return true;\" ><img src='".$thumb."' style='border:1px solid #000; width:100px;' alt='' /></a><br /><br />";
+
+					}else{
+						$popup .= "";
+					}
+					return $popup;
+			}
 
 }
 
