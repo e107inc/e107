@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-05-04 15:57:01 $
+|     $Revision: 1.4 $
+|     $Date: 2005-05-04 16:03:01 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -159,7 +159,7 @@ class page
 			{
 				$row = $sql->db_Fetch();
 				extract($row);
-				$page_title = $tp -> toFORM($page_text);
+				$page_title = $tp -> toFORM($page_title);
 				$data = $tp -> toFORM($page_text);
 				$edit = TRUE;
 			}
@@ -390,7 +390,7 @@ class page
 			preg_match('#\$text = "(.*?)";#si', $contents, $match);
 			$page_text = $tp -> toDB(trim(chop($match[1])));
 			$filetime = filemtime($filename);
-			$sql -> db_Insert("page", "0, '$page_title', '$page_text', '".USERID."', '".$filetime."', '0', '0', '0', '0', '', '' ");
+			$sql -> db_Insert("page", "0, '$page_title', '$page_text', '".USERID."', '".$filetime."', '0', '0', '', '', '', '' ");
 			$text .= "<b>Inserting: </b> ".$page_title." <br />";
 			$count ++;
 		}
