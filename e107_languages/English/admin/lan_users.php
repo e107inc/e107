@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-05-01 22:03:17 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2005-05-04 18:56:08 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Options Saved.");
@@ -127,4 +127,10 @@ define("LAN_MAINADMIN","Main Admin");
 define("LAN_ADMIN","Admin");
 define("LAN_NOTVERIFIED","Not Verified");
 define("LAN_BANNED","Banned");
+
+
+define("USRLAN_130", "Enable online user tracking");
+define("USRLAN_131", "You must enable this option to use online user tracking options, like online.php, forum online info and online menus");
+define("USRLAN_132", "Enable");
+
 ?>

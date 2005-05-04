@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_extended_menu/online_extended_menu.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-04-30 18:11:49 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-04 18:56:08 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -20,8 +20,6 @@ if(!defined("e_PLUGIN")){
 	exit;
 }
 
-global $e_online;
-$e_online->online(true);
 
 $text = ONLINE_EL1.GUESTS_ONLINE.", ";
 $text .= ONLINE_EL2.MEMBERS_ONLINE." ...<br />";
