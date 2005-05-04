@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-05-04 01:26:57 $
+|     $Revision: 1.27 $
+|     $Date: 2005-05-04 02:05:16 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -122,7 +122,8 @@ if ($menu_act == 'config') {
 	{
 		$newloc = ".".$newloc;
 	}
-	$newurl = SITEURL.$PLUGINS_DIRECTORY.$location."/{$position}{$newloc}.php";
+	$newurl = $PLUGINS_DIRECTORY.$location."/{$position}{$newloc}.php";
+	$newurl = SITEURL.str_replace("//", "/", $newurl);
 	echo "<script>	top.location.href = '$newurl'; </script> ";
 	exit;
 }
