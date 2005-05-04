@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.24 $
-|		$Date: 2005-05-03 21:43:23 $
+|		$Revision: 1.25 $
+|		$Date: 2005-05-04 08:34:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -217,8 +217,9 @@ class contentform{
 						$insertjs = " onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' ";
 						require_once(e_HANDLER."ren_help.php");
 						$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_18;
+						//".$rs -> form_textarea("content_text", 77, 20, $row['content_text'], ($pref['wysiwyg'] ? $insertjs : ""))."<br />
 						$TOPIC_FIELD = "
-							".$rs -> form_textarea("content_text", 77, 20, $row['content_text'], ($pref['wysiwyg'] ? $insertjs : ""))."<br />
+							".$rs -> form_textarea("content_text", 80, 20, $row['content_text'], $insertjs)."<br />
 							".$rs -> form_text("helpb", 90, '', '', "helpbox")."<br />
 							".display_help()."
 						";
@@ -860,8 +861,9 @@ class contentform{
 						$insertjs = " onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' ";
 						require_once(e_HANDLER."ren_help.php");
 						$TOPIC_TOPIC = CONTENT_ADMIN_CAT_LAN_4;
+						//".$rs -> form_textarea("cat_text", 87, 20, $row['content_text'], ($pref['wysiwyg'] ? $insertjs : ""))."<br />
 						$TOPIC_FIELD = "
-							".$rs -> form_textarea("cat_text", 87, 20, $row['content_text'], ($pref['wysiwyg'] ? $insertjs : ""))."<br />
+							".$rs -> form_textarea("cat_text", 80, 20, $row['content_text'], $insertjs )."<br />
 							".$rs -> form_text("helpb", 90, '', '', "helpbox")."<br />
 							".display_help()."
 						";
