@@ -90,6 +90,7 @@ foreach($pageInfo as $info)
 	$page = preg_replace("/(\?.*)|(\_.*)|(\.php)|(\s)|(\')|(\")|(eself)|(&nbsp;)/", "", basename ($info['url']));
 	$page = str_replace("\\", "", $page);
 	$info['url'] = preg_replace("/(\s)|(\')|(\")|(eself)|(&nbsp;)/", "", $info['url']);
+	$info['url'] = str_replace("\\", "", $info['url']);
 	$page = trim(chop($page));
 	if($page)
 	{
