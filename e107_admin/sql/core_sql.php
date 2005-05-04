@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-04-28 17:40:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.27 $
+|     $Date: 2005-05-04 16:09:59 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -312,6 +312,26 @@ CREATE TABLE online (
   online_ip varchar(15) NOT NULL default '',
   online_location varchar(100) NOT NULL default '',
   online_pagecount tinyint(3) unsigned NOT NULL default '0'
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `page`
+# 
+
+CREATE TABLE page (
+  page_id int(10) unsigned NOT NULL auto_increment,
+  page_title varchar(250) NOT NULL,
+  page_text mediumtext NOT NULL,
+  page_author int(10) unsigned NOT NULL,
+  page_datestamp int(10) unsigned NOT NULL,
+  page_rating_flag tinyint(1) unsigned NOT NULL,
+  page_comment_flag tinyint(1) unsigned NOT NULL,
+  page_password varchar(50) NOT NULL,
+  page_class tinyint(3) default NULL,
+  page_ip_restrict text NOT NULL,
+  page_theme varchar(50) NOT NULL,
+  PRIMARY KEY  (page_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
