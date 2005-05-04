@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/clock_menu/config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:52:38 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-05-04 02:17:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
+$eplug_admin = TRUE;
 require_once("../../class2.php");
 if (!getperms("1")) {
 	header("location:".e_BASE."index.php");
