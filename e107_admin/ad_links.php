@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-04-03 08:26:47 $
-|     $Author: e107coders $
+|     $Revision: 1.30 $
+|     $Date: 2005-05-04 14:29:54 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -420,7 +420,7 @@ $array_functions = array(
 	2 => array(e_ADMIN."banlist.php", ADLAN_34, ADLAN_35, "4", 2, E_16_BANLIST, E_32_BANLIST),
 	3 => array(e_ADMIN."banner.php", ADLAN_54, ADLAN_55, "D", 3, E_16_BANNER, E_32_BANNER),
 	4 => array(e_ADMIN."cache.php", ADLAN_74, ADLAN_75, "0", 1, E_16_CACHE, E_32_CACHE),
-	5 => array(e_ADMIN."custommenu.php", ADLAN_42, ADLAN_43, "2", 3, E_16_CUST, E_32_CUST),
+	5 => array(e_ADMIN."cpage.php", ADLAN_42, ADLAN_43, "2", 3, E_16_CUST, E_32_CUST),
 	6 => array(e_ADMIN."db.php", ADLAN_44, ADLAN_45, "0", 4, E_16_DATAB, E_32_DATAB),
 	7 => array(e_ADMIN."download.php", ADLAN_24, ADLAN_25, "R", 3, E_16_DOWNL, E_32_DOWNL),
 	8 => array(e_ADMIN."emoticon.php", ADLAN_58, ADLAN_59, "F", 1, E_16_EMOTE, E_32_EMOTE),
