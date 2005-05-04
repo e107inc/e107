@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-05-04 16:11:34 $
+|     $Revision: 1.6 $
+|     $Date: 2005-05-04 16:12:53 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -359,8 +359,8 @@ class page
 
 		if(count($cpages))
 		{
-			$var['options']['text'] = "Convert old pages";
-			$var['options']['link'] = e_SELF."?convert";
+			$var['convert']['text'] = "Convert old pages";
+			$var['convert']['link'] = e_SELF."?convert";
 		}
 
 		show_admin_menu("Page Options", $action, $var);
