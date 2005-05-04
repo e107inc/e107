@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-04-27 16:06:34 $
-|     $Author: stevedunstan $
+|     $Revision: 1.19 $
+|     $Date: 2005-05-04 17:27:44 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -303,10 +303,11 @@ class siteStats {
 		$text .= "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;'>".ADSTAT_L23."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 		foreach($totalArray as $key => $info) {
 			if($info['ttlv']){
+				$bar_percentage = $this->bar($percentage);
 				$percentage = round(($info['ttlv']/$total) * 100, 2);
 				$text .= "<tr class='forumheader3'>
 				<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>
-				<td style='width: 70%;'>".$this -> bar($percentage)."&nbsp;".$info['ttlv']."</td>
+				<td style='width: 70%;'>{$bar_percentage}&nbsp;{$info['ttlv']}</td>
 				<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
 			}
