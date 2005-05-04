@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-04 14:04:50 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-04 14:29:55 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -218,24 +218,13 @@ class page
 		</tr>
 
 		<tr>
-		<td style='width:30%' class='forumheader3'>Page visible to</td>
-		<td style='width:70%' class='forumheader3'>".r_userclass("page_class", $page_class)."</td>
+		<td style='width:30%' class='forumheader3'>Create link in main menu<br /><span class='smalltext'>enter link name to create</span></td>
+		<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='page_link' size='60' value='' maxlength='50' /></td>
 		</tr>
 
 		<tr>
-		<td style='width:30%' class='forumheader3'>Page theme</td>
-		<td style='width:70%' class='forumheader3'>
-		<select name='page_theme' class='tbox'>
-		";
-
-		$tmatch = ($page_theme ? $page_theme : $pref['sitetheme']);
-		foreach($themelist as $key => $info)
-		{
-			$text .= "<option".($tmatch == $key ? " selected='selected'" : "").">".$key."</option>\n";
-		}
-
-		$text .= "</select>
-		</td>
+		<td style='width:30%' class='forumheader3'>Page / link visible to</td>
+		<td style='width:70%' class='forumheader3'>".r_userclass("page_class", $page_class)."</td>
 		</tr>
 
 
@@ -257,7 +246,7 @@ class page
 
 	function submitPage($mode = FALSE)
 	{
-		global $sql, $tp;
+		global $sql, $tp, $e107cache;
 
 		$page_title = $tp -> toDB($_POST['page_title']);
 		$page_text = $tp -> toDB($_POST['data']);
@@ -271,6 +260,17 @@ class page
 		{
 			$sql -> db_Insert("page", "0, '$page_title', '$page_text', '".USERID."', '".time()."', '".$_POST['page_rating_flag']."', '".$_POST['page_comment_flag']."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$_POST['page_theme']."' ");
 			$this -> message = "Page saved to database.";
+
+			if($_POST['page_link'])
+			{
+				$link = "page.php?".mysql_insert_id();
+				if (!$sql->db_Select("links", "link_id", "link_name='".$tp -> toDB($_POST['page_link'])."'"))
+				{
+					$linkname = $tp -> toDB($_POST['page_link']);
+					$sql->db_Insert("links", "0, '$linkname', '$link', '', '', 1, 0, 0, 0, ".$_POST['page_class']);
+					$e107cache->clear("sitelinks");
+				}
+			}
 		}
 	}
 
