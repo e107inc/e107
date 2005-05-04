@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-05-04 14:29:55 $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-04 15:57:01 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -59,6 +59,11 @@ if (preg_match("#delete_(.*?)_#", $delm, $match))
 {
 	$page -> delete_page($match[1]);
 }
+
+if (isset($_POST['saveOptions'])) {
+	$page -> saveSettings();
+}
+
 
 if($page -> $message)
 {
@@ -283,6 +288,55 @@ class page
 	}
 
 
+
+	function optionsPage()
+	{
+		global $ns, $pref;
+
+		if(!isset($pref['listPages'])) $pref['listPages'] = TRUE;
+		if(!isset($pref['pageCookieExpire'])) $pref['pageCookieExpire'] = 84600;
+	
+
+		$text = "<div style='text-align: center; margin-left:auto; margin-right: auto;'>
+		<form method='post' action='".e_SELF."'>
+		<table style='".ADMIN_WIDTH."' class='fborder'>
+
+		<tr>
+		<td style='width:50%' class='forumheader3'>List pages if no page selected</td>
+		<td style='width:50%; text-align: right;' class='forumheader3'>
+		<input type='radio' name='listPages' value='1'".($pref['listPages'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
+		<input type='radio' name='listPages' value='0'".(!$pref['listPages'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
+		</td>
+		</tr>
+
+		<tr>
+		<td style='width:50%' class='forumheader3'>Expiry time for cookie (in seconds)</td>
+		<td style='width:50%; text-align: right;' class='forumheader3'>
+		<input class='tbox' type='text' name='pageCookieExpire' size='15' value='".$pref['pageCookieExpire']."' maxlength='10' />
+		</td>
+		</tr>
+
+		<tr>
+		<td colspan='2'  style='text-align:center' class='forumheader'>
+		<input class='button' type='submit' name='saveOptions' value='".ADSTAT_L15."' />
+		</td>
+		</tr>
+		</table>
+		</form>
+		</div>";
+
+		$ns->tablerender("Options", $text);
+	}
+
+	function saveSettings()
+	{
+		global $pref;
+		$pref['listPages'] = $_POST['listPages'];
+		$pref['pageCookieExpire'] = $_POST['pageCookieExpire'];
+		save_prefs();
+		$this -> message = "Settings saved.";
+	}
+
 	function show_options($action)
 	{
 		if ($action == "")
@@ -298,8 +352,61 @@ class page
 		$var['options']['text'] = LAN_OPTIONS;
 		$var['options']['link'] = e_SELF."?options";
 
+		require_once(e_HANDLER."file_class.php");
+		$file = new e_file;
+		$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*', 'Readme.txt');
+		$cpages = $file -> get_files(e_PLUGIN."custompages", "", $reject);
+
+		if(count($cpages))
+		{
+			$var['options']['text'] = "Convert old pages";
+			$var['options']['link'] = e_SELF."?convert";
+		}
+
 		show_admin_menu("Page Options", $action, $var);
 	}
+
+
+	function convertPage()
+	{
+		global $tp, $ns, $sql;
+		require_once(e_HANDLER."file_class.php");
+		$file = new e_file;
+		$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*', 'Readme.txt');
+		$cpages = $file -> get_files(e_PLUGIN."custompages", "", $reject);
+
+		$text = "<b>Beginning conversion ...</b><br /><br />";
+
+		$count = 0;
+		foreach($cpages as $p)
+		{
+			$filename = $p['path'].$p['fname'];
+			$handle = fopen ($filename, "r");
+			$contents = fread ($handle, filesize ($filename));
+			fclose ($handle);
+			$contents = str_replace("'", "&#039;", $contents);
+			preg_match('#\$caption = "(.*?)";#si', $contents, $match);
+			$page_title = $tp -> toDB(trim(chop($match[1])));
+			preg_match('#\$text = "(.*?)";#si', $contents, $match);
+			$page_text = $tp -> toDB(trim(chop($match[1])));
+			$filetime = filemtime($filename);
+			$sql -> db_Insert("page", "0, '$page_title', '$page_text', '".USERID."', '".$filetime."', '0', '0', '0', '0', '', '' ");
+			$text .= "<b>Inserting: </b> ".$page_title." <br />";
+			$count ++;
+		}
+		$text .= "<br />Finished custom page update. To set your preferences for each page, please return to front page and edit the pages.";
+		$ns -> tablerender("Custom Page Update", $text);
+	}
+
+
+
+
+
+
+
+
+	
+
 
 }
 

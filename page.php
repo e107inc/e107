@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-04 14:04:52 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-04 15:57:59 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -70,9 +70,7 @@ class pageClass
 	{
 		global $pref, $sql, $ns;
 
-		$pref['listpages'] = TRUE;
-
-		if(!$pref['listpages'])
+		if(!$pref['listPages'])
 		{
 			$this -> pageError(1);
 		}
@@ -383,8 +381,9 @@ class pageClass
 
 	function setPageCookie()
 	{
+		global $pref;
 		$hash = md5($_POST['page_pw'].USERID);
-		cookie("e107page_".e_QUERY, $hash, time() + 84600);
+		cookie("e107page_".e_QUERY, $hash, (time() + $pref['pageCookieExpire']));
 		header("location:".e_SELF."?".e_QUERY);
 		exit;
 	}
