@@ -12,12 +12,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:53:08 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-04 02:17:58 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
+$eplug_admin = TRUE;
 require_once("../../class2.php");
 $lan_file = e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php";
 if (file_exists($lan_file)) {
