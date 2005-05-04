@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-05-04 16:03:01 $
+|     $Revision: 1.5 $
+|     $Date: 2005-05-04 16:11:34 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -390,11 +390,15 @@ class page
 			preg_match('#\$text = "(.*?)";#si', $contents, $match);
 			$page_text = $tp -> toDB(trim(chop($match[1])));
 			$filetime = filemtime($filename);
-			$sql -> db_Insert("page", "0, '$page_title', '$page_text', '".USERID."', '".$filetime."', '0', '0', '', '', '', '' ");
-			$text .= "<b>Inserting: </b> ".$page_title." <br />";
-			$count ++;
+
+			if(!$sql -> db_Select("page", "*", "page_title='$page_title' "))
+			{
+				$sql -> db_Insert("page", "0, '$page_title', '$page_text', '".USERID."', '".$filetime."', '0', '0', '', '', '', '' ");
+				$text .= "<b>Inserting: </b> '".$page_title."' <br />";
+				$count ++;
+			}
 		}
-		$text .= "<br />Finished custom page update. To set your preferences for each page, please return to front page and edit the pages.";
+		$text .= "<br />Finished custom page update - updated $count ".($count == 1 ? "file" : "files").".<br /> To set your preferences for each page, please return to front page and edit the pages.";
 		$ns -> tablerender("Custom Page Update", $text);
 	}
 
