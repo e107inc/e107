@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.80 $
-|     $Date: 2005-04-30 23:51:24 $
-|     $Author: e107coders $
+|     $Revision: 1.81 $
+|     $Date: 2005-05-04 15:15:40 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -163,6 +163,25 @@ function update_61x_to_700($type) {
 		}
 
 		/* end */
+
+		/* start page update */
+		$sql->db_Select_gen("
+		  CREATE TABLE ".MPREFIX."page (
+		  page_id int(10) unsigned NOT NULL auto_increment,
+		  page_title varchar(250) NOT NULL,
+		  page_text mediumtext NOT NULL,
+		  page_author int(10) unsigned NOT NULL,
+		  page_datestamp int(10) unsigned NOT NULL,
+		  page_rating_flag tinyint(1) unsigned NOT NULL,
+		  page_comment_flag tinyint(1) unsigned NOT NULL,
+		  page_password varchar(50) NOT NULL,
+		  page_class tinyint(3) default NULL,
+		  page_ip_restrict text NOT NULL,
+		  page_theme varchar(50) NOT NULL,
+		  PRIMARY KEY  (page_id)
+		) TYPE=MyISAM;");
+		/* end */
+
 
 		// start links update -------------------------------------------------------------------------------------------
 		if ($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."link_category")) {
@@ -651,6 +670,8 @@ function update_61x_to_700($type) {
 		//if($sql -> db_Select("menus", "*", "menu_name = 'newforumposts_menu' and menu_path='newforumposts_menu' ")){
 		//	return FALSE;
 		//}
+
+		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."page");
 
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");
 		$fieldname = mysql_field_name($fields, 2);
