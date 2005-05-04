@@ -11,15 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/online.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-04-29 17:27:27 $
+|     $Revision: 1.8 $
+|     $Date: 2005-05-04 18:28:13 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 require_once(HEADERF);
-	
+
+global $e_online;
+$e_online->online(true);
 global $listuserson;
+
 foreach($listuserson as $uinfo => $pinfo) {
 	$class_check = TRUE;
 	list($oid, $oname) = explode(".", $uinfo, 2);
