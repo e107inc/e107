@@ -92,7 +92,7 @@ foreach($pageInfo as $info)
 	$info['url'] = preg_replace("/(\s)|(\')|(\")|(eself)|(&nbsp;)/", "", $info['url']);
 	$info['url'] = str_replace("\\", "", $info['url']);
 	$page = trim(chop($page));
-	if($page)
+	if($page && !strstr($page, "cache"))
 	{
 		if($loop){ $data .= ",\n"; }
 		$data .= $quote.$page.$quote." => array('url' => '".$info['url']."', 'ttl' => ".$info['ttl'].", 'unq' => ".$info['unq'].")";
