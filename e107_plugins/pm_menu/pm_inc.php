@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm_inc.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-03-18 01:57:01 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-05 21:08:25 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("e_PM", e_PLUGIN."pm_menu/");
@@ -82,7 +82,7 @@ function pm_show_stats($no_show_br = 0) {
 				wint = (screen.height-100)/2;
 				winProp = 'width=200,height=100,left='+winl+',top='+wint+',scrollbars=no';
 				window.open('javascript:document.write(\"".$popuptext."\");', \"pm_popup\", winProp);
-				< /script > ";
+				</script > ";
 			}
 		}
 		if ($pmstats['new']){$text.=$pmstats['new']." ".PMLAN_0." <br /> \n";}
