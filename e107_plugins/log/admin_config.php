@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-04-27 16:06:34 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-05 20:21:02 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -36,6 +36,40 @@ if (!getperms("P")) {
 	header("location:../index.php");
 	 exit;
 }
+
+if(IsSet($_POST['wipeSubmit']))
+{
+	foreach($_POST['wipe'] as $key => $wipe)
+	{
+		switch($key)
+		{
+			case "statWipePage":
+				$sql -> db_Update("logstats", "log_data='' WHERE log_id='pageTotal' ");
+			break;
+			case "statWipeBrowser":
+				$sql -> db_Update("logstats", "log_data='' WHERE log_id='statBrowser' ");
+			break;
+			case "statWipeOs":
+				$sql -> db_Update("logstats", "log_data='' WHERE log_id='statOs' ");
+			break;
+			case "statWipeScreen":
+				$sql -> db_Update("logstats", "log_data='' WHERE log_id='statScreen' ");
+			break;
+			case "statWipeDomain":
+				$sql -> db_Update("logstats", "log_data='' WHERE log_id='statDomain' ");
+			break;
+			case "statWipeRefer":
+				$sql -> db_Update("logstats", "log_data='' WHERE log_id='statReferer' ");
+			break;
+			case "statWipeQuery":
+				$sql -> db_Update("logstats", "log_data='' WHERE log_id='statQuery' ");
+			break;
+		}
+	}
+	$message = ADSTAT_L25;
+}
+
+
 
 if(!is_writable(LOGPATH."logs")) {
 	$message = "<b>You must set the permissions of the e107_plugins/log/logs folder to 777 (chmod 777)</b>";
@@ -63,18 +97,6 @@ if (isset($_POST['updatesettings'])) {
 	
 if (e_QUERY == "u") {
 	$message = ADSTAT_L17;
-}
-
-if (isset($_POST['wipe'])) {
-	if (isset($_POST['log_wipe_info'])) {
-		$sql->db_Delete("stat_info", "");
-		$sql->db_Delete("stat_last", "");
-	}
-	if (isset($_POST['log_wipe_counter'])) {
-		$sql->db_Delete("stat_counter", "");
-	}
-	 
-	$message = LOGLAN_2;
 }
 	
 if (isset($message)) {
@@ -158,7 +180,7 @@ $text = "<div style='text-align:center'>
 	".ADSTAT_L9."<input type='checkbox' name='wipe[statWipeDomain]' value='1' /><br />
 	".ADSTAT_L10."<input type='checkbox' name='wipe[statWipeRefer]' value='1' /><br />
 	".ADSTAT_L11."<input type='checkbox' name='wipe[statWipeQuery]' value='1' /><br />
-	<br /><input class='button' type='submit' name='wipe' value='".ADSTAT_L12."' />
+	<br /><input class='button' type='submit' name='wipeSubmit' value='".ADSTAT_L12."' />
 	</td>
 	</tr>
 	
