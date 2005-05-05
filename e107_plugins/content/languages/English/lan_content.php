@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-05-03 21:43:24 $
+|     $Revision: 1.29 $
+|     $Date: 2005-05-05 23:20:23 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -459,45 +459,41 @@ define("CONTENT_ADMIN_MAIN_LAN_5", "parent icon");
 define("CONTENT_ADMIN_MAIN_LAN_6", "");
 
 define("CONTENT_ADMIN_MAIN_LAN_7", "Welcome to the Content Management System !");
-define("CONTENT_ADMIN_MAIN_LAN_8", "Please read the following information carefully and choose what you want to do");
-define("CONTENT_ADMIN_MAIN_LAN_9", "This information is shown because the table of the Content Management Plugin contains no records.");
+define("CONTENT_ADMIN_MAIN_LAN_8", "This information is shown because the table of the Content Management Plugin contains no records.");
+define("CONTENT_ADMIN_MAIN_LAN_9", "Please read the following information carefully and choose what you want to do.");
 define("CONTENT_ADMIN_MAIN_LAN_10", "You can manage content items on this page. First decide the category you would like to manage content for. Click on the button of the main parents listed below to start managing content for that category.");
-define("CONTENT_ADMIN_MAIN_LAN_11", "
-<b>The old content table contains records</b><br />
-Since the old content table contains records, you can choose one of the following two options:<br />
-<br />
-<b>a) convert records</b><br />
-The first thing you need to do is create a backup of your existing content table as well as your comments and rate table.<br />
-Use a program to backup your content table, like phpmyadmin.<br />
-After you have created a backup of your old content table, you can start converting the records to the new Content Management Plugin.<br />
-After you have converted your old content, you should no longer see this information, and be able to manage your existing content.<br />
-Please go to the <a href='".e_PLUGIN."content/admin_content_convert.php'>Content Conversion Script</a> page.<br />
-<br />
-<b>b) do not convert records and just start managing new content</b><br />
-If you no longer need the records from your old content table,<br />
-and just want to start with a fresh new Content Management Plugin table,<br />
-you can start by creating a new category.<br />
-Please go to the <a href='".e_SELF."?type.0.cat.create'>Create New Category</a> page.<br />
-");
-define("CONTENT_ADMIN_MAIN_LAN_12", "
-<b>This is a fresh install / The old content table does not contain records</b><br />
-Since the old existing content table does not contain any records, you can now start managing new content.<br />
-The first thing you need to do is create a new category.<br />
-Please go to the <a href='".e_SELF."?type.0.cat.create'>Create New Category</a> page.<br />
-");
+define("CONTENT_ADMIN_MAIN_LAN_11", "Since the old content table contains records, you can choose one of the following three options:");
+define("CONTENT_ADMIN_MAIN_LAN_12", "");
 define("CONTENT_ADMIN_MAIN_LAN_13", "You can create new content items on this page. First decide the category you would like to manage content for. Click on the button of the main parents listed below to create new content in that main category.");
 define("CONTENT_ADMIN_MAIN_LAN_14", "You can set the order for content items on this page. Click on the button of the main parents listed below to start ordering content items or categories for the selected main category.");
 define("CONTENT_ADMIN_MAIN_LAN_15", "You can manage categories on this page. Choose the main category from the buttons listed below to show an overview of alle categories and subcategories within that main category.");
 define("CONTENT_ADMIN_MAIN_LAN_16", "You can create new categories on this page. By default the creation form for a new main category is shown. If you would like to create a subcategory for an existing main category, please click on one of the buttons listed below to show the creation form for a subcategory within the selected main category.");
 define("CONTENT_ADMIN_MAIN_LAN_17", "please create a new category on the <a href='".e_SELF."?type.0.cat.create'>Create New Category</a> page");
-define("CONTENT_ADMIN_MAIN_LAN_18", "");
-define("CONTENT_ADMIN_MAIN_LAN_19", "");
-define("CONTENT_ADMIN_MAIN_LAN_20", "");
-define("CONTENT_ADMIN_MAIN_LAN_21", "");
-define("CONTENT_ADMIN_MAIN_LAN_22", "");
-define("CONTENT_ADMIN_MAIN_LAN_23", "");
-define("CONTENT_ADMIN_MAIN_LAN_24", "");
-define("CONTENT_ADMIN_MAIN_LAN_25", "");
+
+define("CONTENT_ADMIN_MAIN_LAN_18", "Convert records");
+define("CONTENT_ADMIN_MAIN_LAN_19", "
+The first thing you need to do is create a backup of your existing content table as well as your comments and rate table.<br />
+Use a program to backup your content table, like phpmyadmin.<br />
+After you have created a backup of your old content table, you can start converting the records to the new Content Management Plugin.<br />
+After you have converted your old content, you should no longer see this information, and be able to manage your existing content.<br />
+");
+define("CONTENT_ADMIN_MAIN_LAN_20", "Start with an empty content table");
+define("CONTENT_ADMIN_MAIN_LAN_21", "
+If you no longer need the records from your old content table,<br />
+and just want to start with a fresh new Content Management Plugin table,<br />
+and you do not want to create a default set of categories,<br />
+you can start by creating a new category.<br />
+");
+define("CONTENT_ADMIN_MAIN_LAN_22", "Create a default set of categories");
+define("CONTENT_ADMIN_MAIN_LAN_23", "
+If you want to start with a fresh install, you can first create a default set of content categories.<br />
+With this default set three main parent categories will be created, namely Content, Review and Article.<br />
+");
+define("CONTENT_ADMIN_MAIN_LAN_24", "This is a fresh install / The old content table does not contain records");
+define("CONTENT_ADMIN_MAIN_LAN_25", "
+Since the old existing content table does not contain any records, you can now start managing new content.<br />
+By clicking the next button, you will automatically create a default set of categories, namely Content, Review and Article.<br />
+");
 define("CONTENT_ADMIN_MAIN_LAN_26", "");
 define("CONTENT_ADMIN_MAIN_LAN_27", "");
 define("CONTENT_ADMIN_MAIN_LAN_28", "");
@@ -681,7 +677,7 @@ define("CONTENT_ADMIN_CONVERSION_LAN_4", "categories");
 define("CONTENT_ADMIN_CONVERSION_LAN_5", "page");
 define("CONTENT_ADMIN_CONVERSION_LAN_6", "pages");
 define("CONTENT_ADMIN_CONVERSION_LAN_7", "main parent inserted");
-define("CONTENT_ADMIN_CONVERSION_LAN_8", "main parent prefs inserted");
+define("CONTENT_ADMIN_CONVERSION_LAN_8", "main parent preferences inserted");
 define("CONTENT_ADMIN_CONVERSION_LAN_9", "no");
 define("CONTENT_ADMIN_CONVERSION_LAN_10", "main parent needed");
 define("CONTENT_ADMIN_CONVERSION_LAN_11", "CONVERSION ANALYSIS");
@@ -704,18 +700,17 @@ define("CONTENT_ADMIN_CONVERSION_LAN_27", "conversion analysis");
 define("CONTENT_ADMIN_CONVERSION_LAN_28", "total old rows");
 define("CONTENT_ADMIN_CONVERSION_LAN_29", "total new rows");
 define("CONTENT_ADMIN_CONVERSION_LAN_30", "failed");
-define("CONTENT_ADMIN_CONVERSION_LAN_31", "warning");
+define("CONTENT_ADMIN_CONVERSION_LAN_31", "warnings");
 define("CONTENT_ADMIN_CONVERSION_LAN_32", "old category does not exist: items added to higher category");
 define("CONTENT_ADMIN_CONVERSION_LAN_33", "new category does not exist: items added to higher category");
-define("CONTENT_ADMIN_CONVERSION_LAN_34", "NO REVIEW CATEGORY PAGES PRESENT");
-define("CONTENT_ADMIN_CONVERSION_LAN_35", "REVIEW CATEGORY PAGES PRESENT");
-define("CONTENT_ADMIN_CONVERSION_LAN_36", "NO REVIEW PAGES AND/OR SUBMITTED REVIEW PAGES PRESENT");
-define("CONTENT_ADMIN_CONVERSION_LAN_37", "REVIEW PAGES AND/OR SUBMITTED REVIEW PAGES PRESENT");
-define("CONTENT_ADMIN_CONVERSION_LAN_38", "NO ARTICLE CATEGORY PAGES PRESENT");
-define("CONTENT_ADMIN_CONVERSION_LAN_39", "ARTICLE CATEGORY PAGES PRESENT");
-
-define("CONTENT_ADMIN_CONVERSION_LAN_40", "NO ARTICLE PAGES AND/OR SUBMITTED ARTICLE PAGES PRESENT");
-define("CONTENT_ADMIN_CONVERSION_LAN_41", "ARTICLE PAGES AND/OR SUBMITTED ARTICLE PAGES PRESENT");
+define("CONTENT_ADMIN_CONVERSION_LAN_34", "no");
+define("CONTENT_ADMIN_CONVERSION_LAN_35", "category pages present");
+define("CONTENT_ADMIN_CONVERSION_LAN_36", "pages and/or submitted pages present");
+define("CONTENT_ADMIN_CONVERSION_LAN_37", "conversion of categories");
+define("CONTENT_ADMIN_CONVERSION_LAN_38", "valid inserts");
+define("CONTENT_ADMIN_CONVERSION_LAN_39", "failed inserts");
+define("CONTENT_ADMIN_CONVERSION_LAN_40", "warning");
+define("CONTENT_ADMIN_CONVERSION_LAN_41", "warning");
 define("CONTENT_ADMIN_CONVERSION_LAN_42", "conversion results of the old content table to the new content plugin table");
 define("CONTENT_ADMIN_CONVERSION_LAN_43", "press the button to convert the old content table");
 define("CONTENT_ADMIN_CONVERSION_LAN_44", "the new content table already contains data !<br />are you sure you want to convert the old content table to the new content table ?<br /><br />if you still would like to convert the table, the old content data will be added to the already existing new content table, but no garantee can be made to assure that all items will be added to already existing new categories in a correct manner !");
@@ -723,7 +718,16 @@ define("CONTENT_ADMIN_CONVERSION_LAN_44", "the new content table already contain
 define("CONTENT_ADMIN_CONVERSION_LAN_45", "insertion failed: main parent not inserted");
 define("CONTENT_ADMIN_CONVERSION_LAN_46", "Start managing your content by going to the <a href='".e_PLUGIN."content/admin_content_config.php'>Content Manager Plugin Frontpage</a> !");
 define("CONTENT_ADMIN_CONVERSION_LAN_47", "conversion completed");
-define("CONTENT_ADMIN_CONVERSION_LAN_48", "");
-define("CONTENT_ADMIN_CONVERSION_LAN_49", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_48", "click here for details");
+define("CONTENT_ADMIN_CONVERSION_LAN_49", "conversion of pages");
+define("CONTENT_ADMIN_CONVERSION_LAN_50", "conversion of main parents");
+define("CONTENT_ADMIN_CONVERSION_LAN_51", "unknown rows");
+define("CONTENT_ADMIN_CONVERSION_LAN_52", "default set of main parent categories created");
+define("CONTENT_ADMIN_CONVERSION_LAN_53", "a main parent by this name already exists");
+define("CONTENT_ADMIN_CONVERSION_LAN_54", "create a default set of parent categories (content, review and article)");
+define("CONTENT_ADMIN_CONVERSION_LAN_55", "content management plugin : conversion options");
+define("CONTENT_ADMIN_CONVERSION_LAN_56", "click the button to go to the Content Create New Category page.");
+define("CONTENT_ADMIN_CONVERSION_LAN_57", "choose parent");
+
 
 ?>

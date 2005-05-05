@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.26 $
-|		$Date: 2005-05-03 22:54:51 $
+|		$Revision: 1.27 $
+|		$Date: 2005-05-05 23:20:22 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -942,8 +942,8 @@ class content{
 				$data .= "         }\n\n";
 				
 				$data .= "         ".chr(36)."querystring = (".chr(36)."action && substr(".chr(36)."action,0,5) != \"order\" ? \".\".".chr(36)."action : \"\").(".chr(36)."sub_action && substr(".chr(36)."sub_action,0,5) != \"order\" ? \".\".".chr(36)."sub_action : \"\").(".chr(36)."id && substr(".chr(36)."id,0,5) != \"order\" ? \".\".".chr(36)."id : \"\").(".chr(36)."id2 && substr(".chr(36)."id2,0,5) != \"order\" ? \".\".".chr(36)."id2 : \"\");\n";
-				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_open(\"post\", e_PLUGIN.\"content/content.php?type.$parentid\", \"contentsearchorder\", \"\", \"enctype='multipart/form-data'\");\n";
-				$data .= "         ".chr(36)."text .= \"<select id='ordervalue' name='ordervalue' class='tbox' onchange=\\\"document.location=this.options[this.selectedIndex].value;\\\">".chr(34).";\n";
+				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_open(\"post\", e_PLUGIN.\"content/content.php?type.$parentid\", \"contentsearchordermenu\", \"\", \"enctype='multipart/form-data'\");\n";
+				$data .= "         ".chr(36)."text .= \"<select id='ordervaluemenu' name='ordervaluemenu' class='tbox' onchange=\\\"document.location=this.options[this.selectedIndex].value;\\\">".chr(34).";\n";
 				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_9, 0, \"none\");\n";
 				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_10, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderaheading\" );\n";
 				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_11, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderdheading\" );\n";
