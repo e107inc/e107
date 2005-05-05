@@ -1,98 +1,95 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        lan_install.php Spanish-utf language file 
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
 |
-|        �Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|        Translation Updated by: olisur on the 19th Sep 2004
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_0.7/e107_languages/Spanish/lan_install.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-05 08:59:10 $
+|     $Author: e107coders $
+|     Encoding: utf-8
++----------------------------------------------------------------------------+
 */
-
-define("INSLAN1", "Etapa de Instalaci&oacute;n");
-define("INSLAN2", "Chequeo de versi&oacute;n PHP / mySQL&lt;br&gt;Chequeo de sistema de archivos");
-define("INSLAN3", "Versi&oacute;n PHP");
+define("INSLAN1", "Etapa de Instalación");
+define("INSLAN2", "Chequeo de versión PHP / mySQL<br>Chequeo de sistema de archivos");
+define("INSLAN3", "Versión PHP");
 define("INSLAN4", "Fallo");
-define("INSLAN5", "&lt;b&gt;Est&aacute;s usando una versi&oacute;n de PHP que no es compatible con e107");
+define("INSLAN5", "<b>Estás usando una versión de PHP que no es compatible con e107");
 define("INSLAN6", "Script detenido.");
 define("INSLAN7", "Correcto");
-define("INSLAN8", "Versi&oacute;n MySQL");
-define("INSLAN9", "e107 no pudo determinar la versi&oacute;n de MySQL");
+define("INSLAN8", "Versión MySQL");
+define("INSLAN9", "e107 no pudo determinar la versión de MySQL");
 define("INSLAN10", "Permisos de Archivo");
 define("INSLAN11", "no tiene permisos de escritura");
 define("INSLAN12", "no se puede guardar en la carpeta");
-define("INSLAN13", "Por favor asegurese que los permisos de los ficheros mostrados&lt;br /&gt;son correctos en su servidor, los permisos deben ser 777. Para configurar los permisos,&lt;br /&gt; pulse sobre el archivo con el bot󮠤erecho del rat󮠥n su cliente FTP y seleccione Chmod o&lt;br /&gt;Propiedades, despues cambielos a 777, si aparece un diᬯgo con casillas&lt;br /&gt;entonces active todas las casillas.&lt;br /&gt;&lt;br /&gt;Por favor haga reset despu&eacute;s de cambiar los permisos de los archivos.");
-define("INSLAN14", "Instalaci&oacute;n de e107");
+define("INSLAN13", "Por favor asegurese que los permisos de los ficheros mostrados<br />son correctos en su servidor, los permisos deben ser 777. Para configurar los permisos,<br /> pulse sobre el archivo con el botón derecho del ratón en su cliente FTP y seleccione Chmod o<br />Propiedades, despues cambielos a 777, si aparece un diálogo con casillas<br />entonces active todas las casillas.<br /><br />Por favor haga reset después de cambiar los permisos de los archivos.");
+define("INSLAN14", "Instalación de e107");
 define("INSLAN15", "ERROR FATAL");
-define("INSLAN16", "Aunque no se ha podido determinar el estado del servidor MySQL, &lt;br /&gt; puede continuar con el siguiente paso.");
-define("INSLAN17", "Volver a testear los permisos de los ficheros");
-define("INSLAN18", "Todos los testeos de servidor fueron positivos. Clicke&aacute; el bot&oacute;n para continuar con el siguiente paso");
-define("INSLAN19", "Por favor escriba la configuraci󮠤e su MySQL.&lt;br /&gt;Si tiene permisos de root puede crear la base de datos automᴩcamente marcando la casilla, si no es as���ebe&lt;br /&gt;crear una base de datos o usar una ya existente. &lt;br /&gt;Si solo dispone de una base de datos utilice un prefijo para separar las tablas y permitir usar otros scripts en la base de datos.&lt;br /&gt;Si no conoce los detalles de su MySQL contacte con su proovedor de hosting.");
-define("INSLAN20", "Servidor MySQL");
-define("INSLAN21", "Usuario MySQL");
-define("INSLAN22", "Contrase&ntilde;a MySQL");
-define("INSLAN23", "Base de Datos MySQL");
-define("INSLAN24", "Prefijo de Tabla");
-define("INSLAN25", "Error");
-define("INSLAN26", "Encontrado Error");
-define("INSLAN27", "Ha olvidado rellenar campos, por favor reescriba la informaci󮠤e mySQL");
-define("INSLAN28", "e107 no pudo establecer una conexion con mySQL usando la informaci󮠱ue ha proporcionado.&lt;br /&gt;Por favor vuelva a la p᧩na anterior y asegurese de que la informaci󮠥s correcta.");
-define("INSLAN29", "Chequeo de mySQL");
-define("INSLAN30", "Conexi󮠥stablecida y verificada a mySQL.");
-define("INSLAN31", "Se cre󠬡 base de datos");
-define("INSLAN32", "No se pudo crear la base de datos, por favor asegurese de que tiene los permisos correctos para crear bases de datos en su servidor.");
-define("INSLAN33", "Creada Base de Datos.");
-define("INSLAN34", "Por favor pulse en el bot󮠰ara proceder con el siguiente paso de la instalaci󮮼/textarea&gt;&lt;input type=\'hidden\' name=\'newdef[]\' value=\'INSLAN36\' /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;            &lt;td class=\'forumheader3\' style=\'width:45%;vertical-align:top\'&gt;Back to last page&lt;/td&gt;&lt;td class=\'forumheader3\' style=\'width:55%;vertical-align:top\'&gt;&lt;textarea  class=\'tbox\' name=\'newlang[]\' rows=\'2\' cols=\'45\' style=\'height:100%\'&gt;Volver a la p᧩na anterior");
-define("INSLAN35", "Informaci󮠤el Administrador");
-define("INSLAN36", "Por favor escriba un nombre para su usuario administrador, contrase񡠹 direcci󮠥mail aqu���br /&gt;Estos detalles serᮠusados para garantizarle el acceso al area de administraci󮠤e su sitio.&lt;br /&gt;Por favor guarde una copia de su nombre de usuario y contrase񡠥n un lugar seguro porque si se pierde&lt;br /&gt;no se podrᠲecuperar.");
-define("INSLAN37", "Nombre del Administrador");
-define("INSLAN38", "Contrase񡠤el Administrador");
-define("INSLAN39", "Confirme Contrase񡼯textarea&gt;&lt;input type=\'hidden\' name=\'newdef[]\' value=\'INSLAN42\' /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;            &lt;td class=\'forumheader3\' style=\'width:45%;vertical-align:top\'&gt;Admin Email Address&lt;/td&gt;&lt;td class=\'forumheader3\' style=\'width:55%;vertical-align:top\'&gt;&lt;textarea  class=\'tbox\' name=\'newlang[]\' rows=\'2\' cols=\'45\' style=\'height:100%\'&gt;Direcci󮠅mail del administrador");
-define("INSLAN40", "Ha dejado campos en blanco, por favor reescriba la informaci󮠤el administrador.");
-define("INSLAN41", "Las dos contrase񡳠no coinciden, por favor reescribalas.");
-define("INSLAN42", "doesn\'t appear to be a valid email address, please re-enter.");
-define("INSLAN43", "Todo completado!");
-define("INSLAN44", "e107 ahora tiene toda la informaci󮠮ecesaria para completar la instalaci󮮼br /&gt;Por favor pulse el bot󮠰ara crear las tablas de la base de datos y guardar su configuraci󮮼/textarea&gt;&lt;input type=\'hidden\' name=\'newdef[]\' value=\'INSLAN48\' /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;            &lt;td class=\'forumheader3\' style=\'width:45%;vertical-align:top\'&gt;e107 was unable to save the main config file to your server&lt;br /&gt;Please ensure the &lt;b&gt;e107_config.php&lt;/b&gt; file has the correct permissions&lt;/td&gt;&lt;td class=\'forumheader3\' style=\'width:55%;vertical-align:top\'&gt;&lt;textarea  class=\'tbox\' name=\'newlang[]\' rows=\'5\' cols=\'45\' style=\'height:100%\'&gt;DoorSoft-e107 no pudo guardar el archivo de configuraci󮠥n su servidor&lt;br /&gt;Por favor asegurese de que el archivo &lt;b&gt;e107_config.php&lt;/b&gt; tiene los permisos correctos");
-define("INSLAN45", "Instalaci󮠃ompletada!");
-define("INSLAN46", "Todo Correcto");
-define("INSLAN47", "e107 ha sido instalado con 鸩to!&lt;br /&gt;Por razones de seguridad ahora deber���cambiar los permisos del fichero&lt;br /&gt;&lt;b&gt;e107_config.php&lt;/b&gt; a 644.&lt;br /&gt;Por favor tambien borre /install.php de su servidor despu鳠de pulsar sobre el bot󮼯textarea&gt;&lt;input type=\'hidden\' name=\'newdef[]\' value=\'INSLAN52\' /&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;            &lt;td class=\'forumheader3\' style=\'width:45%;vertical-align:top\'&gt;Click here to go to your new website!&lt;/td&gt;&lt;td class=\'forumheader3\' style=\'width:55%;vertical-align:top\'&gt;&lt;textarea  class=\'tbox\' name=\'newlang[]\' rows=\'2\' cols=\'45\' style=\'height:100%\'&gt;Pulse aqu���ara entrar en su nuevo Sitio!");
-define("INSLAN48", "No se pudo leer el fichero de datos sql&lt;br /&gt;&lt;br /&gt;Por favor aseg򲥳e de que el fichero &lt;b&gt;core_sql.php&lt;/b&gt; existe en el directorio &lt;b&gt;/admin/sql&lt;/b&gt;.");
-define("INSLAN49", "DoorSoft-e107 no pudo crear todas las tablas requeridas.&lt;br /&gt;Por favor limpie la base de datos y rectifique si hay alg򮠰roblema antes de continuar.");
-define("INSLAN50", "Bienvenid@ a tu nuevo Sitio!");
-define("INSLAN51", "e107 se instal&oacute; correctamente y est&aacute; listo para ser usado.");
-define("INSLAN52", "marca para crear");
-define("INSLAN53", "carpeta");
-define("INSLAN54", "o");
-define("INSLAN55", "Error en permisos de fichero");
-define("INSLAN56", "Este archivo fue generado por el programa de instalaci&oacute;n.");
-define("INSLAN57", "Si usas un servidor local tendr&aacute;s que actualizar tu");
-define("INSLAN58", "versi&oacute;n de PHP para poder continuar, puedes ver");
-define("INSLAN59", "para recibir instrucciones. Si est&aacute;s");
-define("INSLAN60", "tratando de instalar e107 en uns host remoto tendr&aacute;s que contactar al");
-define("INSLAN61", "administrador del sistema y pedirle que actualice PHP por ti.");
-define("INSLAN62", "Por favor, vuelve a ejecutar este script despu&eacute;s de actualizar PHP.");
-define("INSLAN63", "Esto puede significar que MySQL no est&aacute; instalado o que no est&aacute; corriendo actualmente, o");
-define("INSLAN64", "que la versi&oacute;n que est&aacute; funcionando no devuelve el n&uacute;mero de versi&oacute;n");
-define("INSLAN65", "(se sabe que la rama v5.x tiene este problema). Si el siguiente paso de la instalaci&oacute;n ");
-define("INSLAN66", "falla, tendr&aacute;s que revisar el estado de MySQL");
-define("INSLAN67", "Tu Administraci&oacute;n se");
-define("INSLAN68", "encuentra aqu&iacute;");
-define("INSLAN69", "clcike&aacute; para ir all&iacute; ahora. Tendr&aacute;s que loguearte usando el nombre de usuario y la contrase&ntilde;a ingresados durante la instalaci&oacute;n.");
-define("INSLAN70", "los adiminstradores del sistema y p&iacute;deles que actualicen la versi&oacute;n de PHP por ti.");
-define("INSLAN71", "Por favor ejecuta este script depu&eacute;s de actualizar tu versi&oacute;n de PHP.");
-define("INSLAN72", "Esto significa que mySQL no est&aacute; instalado o no est&aacute; funcionando, o");
-define("INSLAN73", "Podr&iacute;as estar utilizando una versi&oacute;n que no muestra bien la versi&oacute;n");
-define("INSLAN74", "n&uacute;mero (v5.x se sabe que posee este problema). Si el siguiente paso de la instalaci&oacute;n");
-define("INSLAN75", "falla necesitar&aacute;s comprobar el estado de tu mySQL");
-define("INSLAN76", "Tu &aacute;rea de administraci&oacute;n es");
-define("INSLAN77", "localizado aqu&iacute;");
-define("INSLAN78", "clic para ir ahora. Conectar&aacute;s utilizando el nombre y la contrase&ntilde;a que has introducido durante el proceso de instalaci&oacute;n.");
+define("INSLAN16", "Aunque no se ha podido determinar el estado del servidor MySQL, <br /> puede continuar con el siguiente paso.");
+define("INSLAN17", "Continuar");
+define("INSLAN18", "Volver a testear los archivos de instalación");
+define("INSLAN19", "Todas las comprobaciones al servidor son correctas. Click para el siguiente paso.");
+define("INSLAN20", "Información MySQL");
+define("INSLAN21", "Por favor escriba la configuración de su MySQL.<br>Si tiene permisos de root puede crear la base de datos automáticamente marcando la casilla, si no es así debe<br>crear una base de datos o usar una ya existente.<br>Si solo dispone de una base de datos utilice un prefijo para separar las tablas y permitir usar otros scripts en la base de datos.<br>Si no conoce los detalles de su MySQL contacte con su proovedor de hosting.");
+define("INSLAN22", "Servidor MySQL");
+define("INSLAN23", "Usuario MySQL");
+define("INSLAN24", "Contraseña MySQL");
+define("INSLAN25", "Base de Datos MySQL");
+define("INSLAN26", "Prefijo de Tabla");
+define("INSLAN27", "Error");
+define("INSLAN28", "Encontrado Error");
+define("INSLAN29", "Ha olvidado rellenar campos, por favor reescriba la información de mySQL");
+define("INSLAN30", "e107 no pudo establecer una conexion con mySQL usando la información fue ha proporcionado.<br />Por favor vuelva a la página anterior y asegurese de que la información es correcta.");
+define("INSLAN31", "Chequeo de mySQL");
+define("INSLAN32", "Conexión establecida y verificada a mySQL.");
+define("INSLAN33", "Se creó la base de datos");
+define("INSLAN34", "No se pudo crear la base de datos, por favor asegurese de que tiene los permisos correctos para crear bases de datos en su servidor.");
+define("INSLAN35", "Creada Base de Datos.");
+define("INSLAN36", "Por favor, pulse el botón para el próximo paso.");
+define("INSLAN37", "Volver a la última página");
+define("INSLAN38", "Información del administrador");
+define("INSLAN39", "Por favor, escriba el nombre del administrador principal, contraseña y dirección email aquí.<br />Estos detalles serán usados para acceder al área de admistración de su web.<br />Por favor, guarde los datos insertados aquí por si los olvidara.<br />No podrán ser restaurados.");
+define("INSLAN40", "Nombre Administrador");
+define("INSLAN41", "Contraseña Administrador");
+define("INSLAN42", "Confirmar contraseña");
+define("INSLAN43", "Dirección email Admin");
+define("INSLAN44", "Dejó en blanco datos obligatorios, entre los datos nuevamente.");
+define("INSLAN45", "Las dos contraseña no coinciden, vuelvalas a escribir.");
+define("INSLAN46", "no parece ser una dirección email válida, vuelva a escribirla.");
+define("INSLAN47", "¡Todo insertado!");
+define("INSLAN48", "e107 tiene la información necesaria para completar la instalación.<br />Por favor, pulse el botón para crear las tablas en la BD y guardar su configuración.");
+define("INSLAN49", "e107 no consiguió guardar el archivo de configuración en su servidor<br />Por favor, asegúrese que el archivo <b>e107_config.php</b> tiene los permisos correctos");
+define("INSLAN50", "¡Instalación finalizada!");
+define("INSLAN51", "¡Completado!");
+define("INSLAN52", "¡e107 ha sido instalado con éxito!<br />Por razones de seguridad ahora debería cambiar los permisos del archivo<br> <b>e107_config.php</b> a 644.<br />Por favor tambien borre /install.php de su servidor después de pulsar sobre el botón");
+define("INSLAN53", "¡Click aquí para ver su nuevo sitio!");
+define("INSLAN54", "No se pudo leer el fichero de datos sql<br /><br />Por favor asegúrese de que el fichero <b>core_sql.php</b> existe en el directorio <b>/admin/sql</b>.");
+define("INSLAN55", "e107 no pudo crear todas las tablas requeridas.<br />Por favor limpie la base de datos y rectifique si hay algún problema antes de continuar.");
+define("INSLAN56", "¡Bienvenido a su nuevo sitio!\n");
 
+define("INSLAN57", "e107 se instaló correctamente y está listo para ser usado.\n");
+define("INSLAN58", "encontrará la información y FAQ aquí.");
+define("INSLAN59", "Gracias por usar e107, espero que cumpla sus espectativas.\n(Puede borrar este mensaje desde el panel del Administrador, en la sección 'Noticias'.)\n\n");
+define("INSLAN60", "Crearla");
+define("INSLAN61", "carpeta");
+define("INSLAN62", "o");
+define("INSLAN63", "Error de permisos de archivo");
+define("INSLAN64", "Este archivo ha sido generado por el script de instalación.");
+
+define("INSLAN65", "e107 requiere como mínimo la versión 4.1.0");
+define("INSLAN66", "Si esta utilizando un servidor local en su PC necesitará actualizar su ");
+define("INSLAN67", "version de PHP para continuar, por favor, lea ");
+define("INSLAN68", "las instrucciones. Si está");
+define("INSLAN69", "intentando instalar e107 en un servidor ajeno necesitará contactar con ");
+define("INSLAN70", "los adminstradores del sistema y pídale que actualicen la versión de PHP por usted.");
+define("INSLAN71", "Por favor ejecute este script depués de actualizar su versión de PHP.");
+
+define("INSLAN72", "Esto significa que mySQL no está instalado o no está funcionando, o");
+define("INSLAN73", "Podrías estar utilizando una versión que no muestra bien la versión");
+define("INSLAN74", "número (v5.x se sabe que posee este problema). Si el siguiente paso de la instalación");
+define("INSLAN75", "falla necesitarás comprobar el estado de tu mySQL");
+define("INSLAN76", "Su área de administración se");
+define("INSLAN77", "encuentra aquí. ");
+define("INSLAN78", "Haga click para ir ahora. Se puede conectar al sistema utilizando el nombre y la contraseña que ha definido durante el proceso de instalación.");
 
 ?>
