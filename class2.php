@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.119 $
-|     $Date: 2005-05-04 18:55:49 $
-|     $Author: streaky $
+|     $Revision: 1.120 $
+|     $Date: 2005-05-05 06:26:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -62,8 +62,16 @@ for ($i = 1; $i <= $num_levels; $i++) {
 	$link_prefix .= "../";
 }
 
-if (!strstr($_SERVER['PHP_SELF'], "trackback") && (strstr($_SERVER['QUERY_STRING'], "'") || strstr($_SERVER['QUERY_STRING'], ";"))) {
-	die("Access denied.");
+$inArray = array("'", ";", "/**/", "/UNION/", "/SELECT/", "AS");
+if (!strstr($_SERVER['PHP_SELF'], "trackback"))
+{
+	foreach($inArray as $res)
+	{
+		if(strstr($_SERVER['QUERY_STRING'], $res))
+		{
+			die("Access denied.");
+		}
+	}
 }
 
 if (preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)) {
@@ -229,6 +237,7 @@ $pref['htmlarea']=false;
 
 define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
 
+/*
 if($pref['redirectsiteurl'])
 {
 	if($e107 -> http_path != $pref['siteurl'])
@@ -241,7 +250,7 @@ if($pref['redirectsiteurl'])
 		}
 	}
 }
-
+*/
 
 // Cameron's Mult-lang switch. ==================
 
@@ -360,9 +369,9 @@ if (!function_exists('checkvalidtheme')) {
 
 				closedir($handle);
 			}
-			
+
 			$e107tmp_theme = search_validtheme();
-			
+
 			define("THEME", e_THEME.$e107tmp_theme."/");
 			if (ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)) {
 				echo '<script>alert("'.$tp->toJS(CORE_LAN1).'")</script>';
@@ -419,7 +428,10 @@ init_session();
 
 $sql->db_Mark_Time('Start: Go online');
 $e_online = new e_online();
-$e_online->online($pref['track_online'], $pref['flood_protect']);
+if($pref['flood_protect']){
+	$e_online->online(false, true);
+}
+
 
 
 $sql->db_Mark_Time('Start: Signup/splash/admin');
@@ -437,8 +449,10 @@ $sql->db_Delete("tmp", "tmp_time < '".(time() - 300)."' AND tmp_ip!='data' AND t
 $language=($pref['sitelanguage'] ? $pref['sitelanguage'] : "English");
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 define("e_LAN", $language);
-define("USERLAN", ($user_language && (strpos(e_SELF, $PLUGINS_DIRECTORY) !== FALSE || (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE && file_exists(e_LANGUAGEDIR.$user_language."/lan_".e_PAGE)) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE && file_exists(e_LANGUAGEDIR.$user_language."/admin/lan_".e_PAGE))) ? $user_language : FALSE));
+
+define("USERLAN", ($user_language && (strpos(e_SELF, $PLUGINS_DIRECTORY) !== FALSE || (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE && file_exists(e_LANGUAGEDIR.$user_language."/lan_".e_PAGE)) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE && file_exists(e_LANGUAGEDIR.$user_language."/admin/lan_".e_PAGE)) || file_exists(dirname($_SERVER['SCRIPT_FILENAME'])."/languages/".$user_language."/lan_".e_PAGE)) ? $user_language : FALSE));
 define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
+
 e107_include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 
 foreach ($pref as $key => $prefvalue) {
