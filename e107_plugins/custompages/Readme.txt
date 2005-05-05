@@ -1,1 +1,0 @@
-This directory must be chmoded 777 to use custom pages.
