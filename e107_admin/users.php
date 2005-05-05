@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-05-04 18:56:08 $
-|     $Author: streaky $
+|     $Revision: 1.45 $
+|     $Date: 2005-05-05 03:45:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -23,17 +23,17 @@ if (!getperms("4")) {
 	 exit;
 }
 
-if ($_POST['useraction'] == 'userinfo') {
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'userinfo') {
 	header('location:'.e_ADMIN."userinfo.php?{$_POST['userip']}");
 	exit;
 }
 
-if ($_POST['useraction'] == 'usersettings') {
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'usersettings') {
 	header('location:'.e_BASE."usersettings.php?{$_POST['userid']}");
 	exit;
 }
 
-if ($_POST['useraction'] == 'userclass') {
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'userclass') {
 	header('location:'.e_ADMIN."userclass.php?{$_POST['userid']}");
 	exit;
 }
@@ -55,9 +55,9 @@ if (e_QUERY) {
 	unset($tmp);
 }
 
-$from = ($from ? $from : 0);
+$from = (isset($from)) ? $from : 0;
 $amount = 30;
-
+// ------- Resend Email. --------------
 if (isset($_POST['resend_mail'])) {
 	$tid = $_POST['resend_id'];
 	$key = $_POST['resend_key'];
@@ -68,12 +68,15 @@ if (isset($_POST['resend_mail'])) {
 	$message .= RETURNADDRESS . "\n\n".USRLAN_115."\n\n ".USRLAN_125." ".SITENAME."\n".SITEURL;
 
 	require_once(e_HANDLER."mail.php");
-	sendemail($_POST['resend_email'], USRLAN_113." ".SITENAME, $message);
+	if(sendemail($_POST['resend_email'], USRLAN_113." ".SITENAME, $message)){
 	//  echo str_replace("\n","<br>",$message);
-	$user->show_message("Email Re-sent to: ".$name);
+		$user->show_message("Email Re-sent to: ".$name);
+	}else{
+    	$user->show_message("Failed to Re-sent to: ".$name);
+	}
 	unset($tid);
 }
-
+// ------- Test Email. --------------
 if (isset($_POST['test_mail'])) {
 	require_once(e_HANDLER."mail.php");
 	$text = validatemail($_POST['test_email']);
@@ -83,7 +86,7 @@ if (isset($_POST['test_mail'])) {
 	$ns->tablerender($caption, $text[1]);
 	unset($id, $action, $sub_cation);
 }
-
+// ------- Update Options. --------------
 if (isset($_POST['update_options'])) {
 	$pref['avatar_upload'] = (FILE_UPLOADS ? $_POST['avatar_upload'] : 0);
 	$pref['im_width'] = $_POST['im_width'];
@@ -92,11 +95,10 @@ if (isset($_POST['update_options'])) {
 	$pref['del_unv'] = $_POST['del_unv'];
 	$pref['profile_rate'] = $_POST['profile_rate'];
 	$pref['profile_comments'] = $_POST['profile_comments'];
-	$pref['track_online'] = $_POST['track_online'];
 	save_prefs();
 	$user->show_message(USRLAN_1);
 }
-
+// ------- Prune Users. --------------
 if (isset($_POST['prune'])) {
 	$sql2 = new db;
 	$text = USRLAN_56." ";
@@ -110,7 +112,7 @@ if (isset($_POST['prune'])) {
 	$ns->tablerender(USRLAN_57, "<div style='text-align:center'><b>".$text."</b></div>");
 	unset($text);
 }
-
+// ------- Quick Add User --------------
 if (isset($_POST['adduser'])) {
 	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
 		exit;
@@ -163,8 +165,8 @@ if (isset($_POST['adduser'])) {
 	}
 }
 
-
-if ($_POST['useraction'] == "ban") {
+// ------- Ban User. --------------
+if (isset($_POST['useraction']) && $_POST['useraction'] == "ban") {
   //	$sub_action = $_POST['userid'];
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
@@ -176,30 +178,30 @@ if ($_POST['useraction'] == "ban") {
 		$sql -> db_Insert("banlist", "'".$user_ip."', '".USERID."', '".$user_name."' ");
 		$user->show_message(USRLAN_8);
 	}
-	if(!$action){ $action = "main"; }
+	$action = "main";
 	if(!$sub_action){$sub_action = "user_id"; }
 }
-
-if ($_POST['useraction'] == "unban") {
+// ------- Unban User --------------
+if (isset($_POST['useraction']) && $_POST['useraction'] == "unban") {
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	extract($row);
 	$sql->db_Update("user", "user_ban='0' WHERE user_id='".$_POST['userid']."' ");
 	$sql -> db_Delete("banlist", " banlist_ip='$user_ip' ");
 	$user->show_message(USRLAN_9);
-	if(!$action){ $action = "main"; }
+	$action = "main";
 	if(!$sub_action){$sub_action = "user_id"; }
 }
 
-
-if ($_POST['useraction'] == 'resend') {
+// ------- Resend Email. --------------
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'resend') {
 	$qry = (e_QUERY) ? "?".e_QUERY : "";
 	if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
 		$resend = $sql->db_Fetch();
 		$text .= "<form method='post' action='".e_SELF.$qry."'><div style='text-align:center'>\n";
 		$text .= USRLAN_116." <b>".$resend['user_name']."</b><br /><br />
 
-			<input type='hidden' name='resend_id' value='$sub_action' />\n
+			<input type='hidden' name='resend_id' value='".$_POST['userid']."' />\n
 			<input type='hidden' name='resend_name' value='".$resend['user_name']."' />\n
 			<input type='hidden' name='resend_key' value='".$resend['user_sess']."' />\n
 			<input type='hidden' name='resend_email' value='".$resend['user_email']."' />\n
@@ -210,8 +212,8 @@ if ($_POST['useraction'] == 'resend') {
 		exit;
 	}
 }
-
-if ($_POST['useraction'] == 'test') {
+// ------- TEst Email. --------------
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'test') {
 	$qry = (e_QUERY) ? "?".e_QUERY : "";
 	if ($sql->db_Select("user", "*", "user_id='".$_POST['userid']."' ")) {
 		$test = $sql->db_Fetch();
@@ -225,8 +227,8 @@ if ($_POST['useraction'] == 'test') {
 		exit;
 	}
 }
-
-if ($_POST['useraction'] == 'deluser') {
+// ------- Delete User --------------
+if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser') {
 	if ($_POST['confirm']) {
 		if ($sql->db_Delete("user", "user_id='".$_POST['userid']."' AND user_perms != '0'")) {
 			$user->show_message(USRLAN_10);
@@ -256,34 +258,34 @@ if ($_POST['useraction'] == 'deluser') {
 		}
 	}
 }
-
-if ($_POST['useraction'] == "admin") {
+// ------- Make Admin.. --------------
+if (isset($_POST['useraction']) && $_POST['useraction'] == "admin") {
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	 extract($row);
 	$sql->db_Update("user", "user_admin='1' WHERE user_id='".$_POST['userid']."' ");
 	$user->show_message($user_name." ".USRLAN_3." <a href='".e_ADMIN."administrator.php?edit.$sub_action'>".USRLAN_4."</a>");
-	if(!$action){ $action = "main"; }
+	$action = "main";
 	if(!$sub_action){ $sub_action = "user_id"; }
 	if(!$id){ $id = "DESC"; }
 }
-
-if ($_POST['useraction'] == "unadmin") {
+// ------- Remove Admin --------------
+if (isset($_POST['useraction']) && $_POST['useraction'] == "unadmin") {
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
 	 extract($row);
 	if ($user_perms == "0") {
 		$user->show_message(USRLAN_5);
 	} else {
-		$sql->db_Update("user", "user_admin='0' WHERE user_id='".$_POST['userid']."'");
+		$sql->db_Update("user", "user_admin='0', user_perms='' WHERE user_id='".$_POST['userid']."'");
 		$user->show_message($user_name." ".USRLAN_6);
-	if(!$action){ $action = "main"; }
+	$action = "main";
 	if(!$sub_action){ $sub_action = "user_id"; }
 	if(!$id){ $id = "DESC"; }
 	}
 }
 
-if ($_POST['useraction'] == "verify") {
+if (isset($_POST['useraction']) && $_POST['useraction'] == "verify") {
 	if ($sql->db_Update("user", "user_ban='0' WHERE user_id='".$_POST['userid']."' ")) {
 		$user->show_message(USRLAN_86);
 	if(!$action){ $action = "main"; }
@@ -292,14 +294,15 @@ if ($_POST['useraction'] == "verify") {
 	}
 }
 
-if ($action == "main" && is_numeric($sub_action)) {
+if (isset($action) && $action == "uset") {
 	$user->show_message(USRLAN_87);
+	$action = "main";
 }
 
-if ($action == "cu" && is_numeric($sub_action)) {
+if (isset($action) && $action == "cu") {
 	$user->show_message(USRLAN_88);
 	$action = "main";
-	$sub_action = "user_id";
+  //	$sub_action = "user_id";
 }
 
 /*
@@ -310,32 +313,32 @@ echo "from= ".$from."<br />";
 echo "amount= ".$amount."<br />";
 */
 
-if (!e_QUERY || $action == "main") {
+if (!e_QUERY || ($action == "main")) {
 	$user->show_existing_users($action, $sub_action, $id, $from, $amount);
 }
 
-if ($action == "options") {
+if (isset($action) && $action == "options") {
 	$user->show_prefs();
 }
 
-if ($action == "prune") {
+if (isset($action) && $action == "prune") {
 	$user->show_prune();
 }
 
-if ($action == "create") {
+if (isset($action) && $action == "create") {
 	$user->add_user();
 }
 
 require_once("footer.php");
 
-class users
-{
+class users{
+
 	function show_existing_users($action, $sub_action, $id, $from, $amount) {
 		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 
 		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref;
 		// save the display choices.
-		if($_POST['searchdisp']){
+		if(isset($_POST['searchdisp'])){
 			$pref['admin_user_disp'] = implode("|",$_POST['searchdisp']);
 			save_prefs();
 		}
@@ -356,22 +359,28 @@ class users
 		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>";
 
 		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "") {
-
-			$query = (eregi("@", $_POST['searchquery']))?"user_email REGEXP('".$_POST['searchquery']."') OR ": "";
+            $query = "WHERE ".
+			$query .= (eregi("@", $_POST['searchquery']))?"user_email REGEXP('".$_POST['searchquery']."') OR ": "";
 			$query .= (eregi(".", $_POST['searchquery']))?"user_ip REGEXP('".$_POST['searchquery']."') OR ": "";
+            foreach($search_display as $disp){
+            	$query .= "$disp REGEXP('".$_POST['searchquery']."') OR ";
+			}
 			$query .= "user_login REGEXP('".$_POST['searchquery']."') OR ";
 			$query .= "user_name REGEXP('".$_POST['searchquery']."') ORDER BY user_id";
 		} else {
 			$query = "ORDER BY ".($sub_action ? $sub_action : "user_id")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
 		}
 
+        //  $user_total = db_Count($table, $fields = '(*)',
+        $qry_insert = "SELECT u.*, ue.* FROM #user AS u	LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id ";
 
-		if ($sql->db_Select("user", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))) {
+		if ($user_total = $sql->db_Select_gen($qry_insert. $query)) {
 			$text .= "<table class='fborder' style='width: 99%'>
 				<tr>
 				<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
 				<td style='width:10%' class='fcaption'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></td>";
-		   //		<td style='width:30%' class='fcaption'><a href='".e_SELF."?main.user_name.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_78."</a></td>";
+
+
 // Search Display Column header.
 
 			foreach($search_display as $disp){
@@ -410,7 +419,6 @@ class users
 
 				$text .= "</td>";
 
-		  //		$text .= "<td style='width:30%' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id' title='$user_email : $user_login'>$user_name</a></td>";
 
 
  // Display Chosen options -------------------------------------
@@ -433,7 +441,7 @@ class users
 				}else{
 					$text .= $row[$disp]."&nbsp;";
 				}
-				if($row[$disp] == $prev[$disp] && $prev[$disp] != ""){ // show matches
+				if(isset($prev[$disp]) && $row[$disp] == $prev[$disp] && $prev[$disp] != ""){ // show matches
 					$text .= " <b>*</b>";
 				}
 
@@ -441,7 +449,7 @@ class users
 			$prev[$disp] = $row[$disp];
 	}
 // -------------------------------------------------------------
-				if(e_QUERY){ $qry = "?".e_QUERY; }
+				$qry = (e_QUERY) ?  "?".e_QUERY : "";
 				$text .= "
 					<td style='width:30%;text-align:center' class='forumheader3'>
 					<form method='post' action='".e_SELF.$qry."'>
@@ -511,18 +519,25 @@ class users
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");
 		$columns = mysql_num_fields($fields);
 		for ($i = 0; $i < $columns; $i++) {
-			$fname = mysql_field_name($fields, $i);
-			$checked = (in_array($fname,$search_display)) ? "checked='checked'" : "";
+			$fname[] = mysql_field_name($fields, $i);
+		}
+
+		// include extended fields in the list.
+        $sql -> db_Select("user_extended_struct");
+            while($row = $sql-> db_Fetch()){
+            $fname[] = "user_".$row['user_extended_struct_name'];
+		}
+        $m = 0;
+		foreach($fname as $fcol){
+        $checked = (in_array($fcol,$search_display)) ? "checked='checked'" : "";
 			$text .= "<td style='text-align:left; padding:0px'>";
-			$text .= "<input type='checkbox' name='searchdisp[]' value='".$fname."' $checked />".str_replace("user_","",$fname) . "</td>\n";
+			$text .= "<input type='checkbox' name='searchdisp[]' value='".$fcol."' $checked />".str_replace("user_","",$fcol) . "</td>\n";
 			$m++;
 			if($m == 5){
 				$text .= "</tr><tr>";
 				$m = 0;
 			 }
-		}
-
-
+        }
 
 		$text .= "</table></div>
 		</form>\n
@@ -531,7 +546,8 @@ class users
 
 
 // ======================
-		$ns->tablerender(USRLAN_77, $text);
+		$caption = USRLAN_77 ."&nbsp;&nbsp;   (total: $user_total)";
+		$ns->tablerender($caption, $text);
 
 	}
 
@@ -606,13 +622,6 @@ class users
 			<td style='width:50%' class='forumheader3'>
 			<input class='tbox' type='text' name='del_unv' size='10' value='".$pref['del_unv']."' maxlength='5' /> ".USRLAN_95."
 			</td></tr>
-
-			<tr>
-			<td style='width:50%' class='forumheader3'>".USRLAN_130."<br /><span class='smalltext'>".USRLAN_131."</span></td>
-			<td style='width:50%; class='forumheader3'>&nbsp;
-			<input type='checkbox' name='track_online' value='1'".($pref['track_online'] ? " checked='checked'" : "")." /> ".USRLAN_132."&nbsp;&nbsp;
-			</td>
-			</tr>
 
 			<tr>
 			<td colspan='2' style='text-align:center' class='forumheader'>
