@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.25 $
-|		$Date: 2005-05-04 08:34:02 $
+|		$Revision: 1.26 $
+|		$Date: 2005-05-05 23:20:22 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1235,19 +1235,52 @@ class contentform{
 
 							$text .= "
 							<div style='text-align:center'>
-							<div style='width:70%; text-align:left'>
-							".CONTENT_ADMIN_MAIN_LAN_9."<br /><br />
-							".CONTENT_ADMIN_MAIN_LAN_8."<br /><br />";
+							".$rs -> form_open("post", e_PLUGIN."content/admin_content_convert.php", "dataform")."
+							<table class='fborder' style='".ADMIN_WIDTH."'>";
 							
 							$oldcontent = $sql -> db_Count("content", "(*)", "");
 							if($oldcontent > 0){
-								$text .= CONTENT_ADMIN_MAIN_LAN_11;
+								$text .= "<tr><td class='forumheader3' colspan='2'>".CONTENT_ADMIN_MAIN_LAN_8." ".CONTENT_ADMIN_MAIN_LAN_9." ".CONTENT_ADMIN_MAIN_LAN_11."</td></tr>";
+
+								$text .= "<tr><td style='height:20px; border:0;' colspan='2'></td></tr>";
+								$text .= "<tr><td class='fcaption' colspan='2'>".CONTENT_ADMIN_MAIN_LAN_18."</td></tr>";
+								$text .= "<tr><td class='forumheader3' colspan='2'>".CONTENT_ADMIN_MAIN_LAN_19."</td></tr>";
+								$text .= "
+								<tr>
+									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_43."</td>
+									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".$rs -> form_button("submit", "convert_table", "convert table")."</td>
+								</tr>";
+
+								$text .= "<tr><td style='height:20px; border:0;' colspan='2'></td></tr>";
+								$text .= "<tr><td class='fcaption' colspan='2'>".CONTENT_ADMIN_MAIN_LAN_22."</td></tr>";
+								$text .= "<tr><td class='forumheader3' colspan='2'>".CONTENT_ADMIN_MAIN_LAN_23."</td></tr>";
+								$text .= "
+								<tr>
+									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_54."</td>
+									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".$rs -> form_button("submit", "create_default", "create defaults")."</td>
+								</tr>";
+
+								$text .= "<tr><td style='height:20px; border:0;' colspan='2'></td></tr>";
+								$text .= "<tr><td class='fcaption' colspan='2'>".CONTENT_ADMIN_MAIN_LAN_20."</td></tr>";
+								$text .= "<tr><td class='forumheader3' colspan='2'>".CONTENT_ADMIN_MAIN_LAN_21."</td></tr>";
+								$text .= "
+								<tr>
+									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_56."</td>
+									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".$rs -> form_button("button", "fresh", "create new category", "onclick=\"document.location='".e_PLUGIN."content/admin_content_config.php?type.0.cat.create'\"
+								")."</td>
+								</tr>";
+
 							}else{
-								$text .= CONTENT_ADMIN_MAIN_LAN_12;
+								$text .= "<tr><td class='fcaption' colspan='2'>".CONTENT_ADMIN_MAIN_LAN_8." ".CONTENT_ADMIN_MAIN_LAN_9." ".CONTENT_ADMIN_MAIN_LAN_24."</td></tr>";
+								$text .= "<tr><td class='forumheader3' colspan='2'>".CONTENT_ADMIN_MAIN_LAN_25."</td></tr>";
+								$text .= "
+								<tr>
+									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_54."</td>
+									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".$rs -> form_button("submit", "create_default", "create defaults")."</td>
+								</tr>";
 							}
 
-							$text .= "
-							</div>
+							$text .= "</table>".$rs -> form_close()."
 							</div>";
 
 							$ns -> tablerender(CONTENT_ADMIN_MAIN_LAN_7, $text);
