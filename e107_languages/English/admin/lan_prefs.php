@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-04-30 09:18:36 $
-|     $Author: e107coders $
+|     $Revision: 1.31 $
+|     $Date: 2005-05-05 12:53:58 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -132,8 +132,6 @@ define("CUSTSIG_16", "Minimum Length for Passwords");
 define("CUSTSIG_17", "Subscribe to content/mailouts");
 define("CUSTSIG_18", "Disallow usernames");
 define("CUSTSIG_19", "usernames containing the following text will be rejected, seperate entries by commas");
-
-define("PRFLAN_89", "Site Header:");
 
 // define("PRFLAN_90", "Click here to force Internet Explorer to use standards mode. Default is quirks mode.");
 
