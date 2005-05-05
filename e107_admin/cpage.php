@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-04 16:12:53 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-05 12:41:15 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -48,6 +48,17 @@ if(IsSet($_POST['submitPage']))
 {
 	$page -> submitPage();
 }
+
+if(IsSet($_POST['submitMenu']))
+{
+	$page -> submitPage("", TRUE);
+}
+
+if(IsSet($_POST['updateMenu']))
+{
+	$page -> submitPage($_POST['pe_id'], TRUE);
+}
+
 
 if(IsSet($_POST['updatePage']))
 {
@@ -115,8 +126,9 @@ class page
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td style='width:5%; text-align: center;' class='forumheader'>ID</td>
-			<td style='width:70%' class='forumheader3'>Title</td>
-			<td style='width:25%; text-align: center;' class='forumheader3'>Options</td>
+			<td style='width:60%' class='forumheader3'>Title</td>
+			<td style='width:15%; text-align: center;' class='forumheader3'>Type</td>
+			<td style='width:20%; text-align: center;' class='forumheader3'>Options</td>
 			</tr>
 			";
 
@@ -126,9 +138,10 @@ class page
 				$text .= "
 				<tr>
 				<td style='width:5%; text-align: center;' class='forumheader'>$page_id</td>
-				<td style='width:70%' class='forumheader3'><a href='".e_BASE."page.php?$page_id'>$page_title</a></td>
-				<td style='width:25%; text-align: center;' class='forumheader3'>
-				<a href='".e_SELF."?create.edit.{$page_id}'>".ADMIN_EDIT_ICON."</a>
+				<td style='width:60%' class='forumheader3'><a href='".e_BASE."page.php?$page_id'>$page_title</a></td>
+				<td style='width:15%; text-align: center;' class='forumheader3'>".($page_theme ? "menu" : "page")."</td>
+				<td style='width:20%; text-align: center;' class='forumheader3'>
+				<a href='".e_SELF."?".($page_theme ? "createm": "create").".edit.{$page_id}'>".ADMIN_EDIT_ICON."</a>
 				<input type='image' title='".LAN_DELETE."' name='delete_$page_id' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('Delete this page? [ ID: $page_id ]')\"/>
 				</td>
 				</tr>
@@ -148,9 +161,24 @@ class page
 	}
 
 
-	function createPage()
+
+	function createmPage()
 	{
-		
+		$this -> createPage(TRUE);
+	}
+
+
+
+
+
+
+
+
+
+	function createPage($mode=FALSE)
+	{
+		/* mode: FALSE == page, mode: TRUE == menu */
+
 		global $sql, $tp, $ns, $pref, $sub_action, $id;
 
 		if ($sub_action == "edit" && !$_POST['preview'] && !$_POST['submit'])
@@ -165,15 +193,23 @@ class page
 			}
 		}
 
-		require_once(e_HANDLER."theme_handler.php");
-		$theme = new themeHandler;
-		$themelist = $theme -> themeArray;
-
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."' id='dataform'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
+		";
 
-		<tr>
+		if($mode)
+		{
+			$text .= "<tr>
+			<td style='width:30%' class='forumheader3'>Menu Name</td>
+			<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='menu_name' size='30' value='".$menu_name."' maxlength='50' /></td>
+			</tr>
+			";
+		}
+
+			
+
+		$text .= "<tr>
 		<td style='width:30%' class='forumheader3'>Title / Caption</td>
 		<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='page_title' size='50' value='".$page_title."' maxlength='250' /></td>
 		</tr>
@@ -200,42 +236,53 @@ class page
 		$text .= "
 		</td>
 		</tr>
+		";
+	
+		if(!$mode)
+		{
+			$text .= "<tr>
+			<td style='width:30%' class='forumheader3'>Allow page to be rated</td>
+			<td style='width:70%;' class='forumheader3'>
+			<input type='radio' name='page_rating_flag' value='1'".($page_rating_flag ? " checked='checked'" : "")." /> yes&nbsp;&nbsp;
+			<input type='radio' name='page_rating_flag' value='0'".(!$page_rating_flag ? " checked='checked'" : "")." /> no
+			</td>
+			</tr>
 
-		<tr>
-		<td style='width:30%' class='forumheader3'>Allow page to be rated</td>
-		<td style='width:70%;' class='forumheader3'>
-		<input type='radio' name='page_rating_flag' value='1'".($page_rating_flag ? " checked='checked'" : "")." /> yes&nbsp;&nbsp;
-		<input type='radio' name='page_rating_flag' value='0'".(!$page_rating_flag ? " checked='checked'" : "")." /> no
-		</td>
-		</tr>
+			<tr>
+			<td style='width:30%' class='forumheader3'>Allow comments</td>
+			<td style='width:70%;' class='forumheader3'>
+			<input type='radio' name='page_comment_flag' value='1'".($page_comment_flag ? " checked='checked'" : "")." /> yes&nbsp;&nbsp;
+			<input type='radio' name='page_comment_flag' value='0'".(!$page_comment_flag ? " checked='checked'" : "")." /> no
+			</td>
+			</tr>
 
-		<tr>
-		<td style='width:30%' class='forumheader3'>Allow comments</td>
-		<td style='width:70%;' class='forumheader3'>
-		<input type='radio' name='page_comment_flag' value='1'".($page_comment_flag ? " checked='checked'" : "")." /> yes&nbsp;&nbsp;
-		<input type='radio' name='page_comment_flag' value='0'".(!$page_comment_flag ? " checked='checked'" : "")." /> no
-		</td>
-		</tr>
+			<tr>
+			<td style='width:30%' class='forumheader3'>Password protect page<br /><span class='smalltext'>enter password to protect page</span></td>
+			<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='page_password' size='20' value='".$page_password."' maxlength='50' /></td>
+			</tr>
 
-		<tr>
-		<td style='width:30%' class='forumheader3'>Password protect page<br /><span class='smalltext'>enter password to protect page</span></td>
-		<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='page_password' size='20' value='".$page_password."' maxlength='50' /></td>
-		</tr>
+			<tr>
+			<td style='width:30%' class='forumheader3'>Create link in main menu<br /><span class='smalltext'>enter link name to create</span></td>
+			<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='page_link' size='60' value='' maxlength='50' /></td>
+			</tr>
 
-		<tr>
-		<td style='width:30%' class='forumheader3'>Create link in main menu<br /><span class='smalltext'>enter link name to create</span></td>
-		<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='page_link' size='60' value='' maxlength='50' /></td>
-		</tr>
+			<tr>
+			<td style='width:30%' class='forumheader3'>Page / link visible to</td>
+			<td style='width:70%' class='forumheader3'>".r_userclass("page_class", $page_class)."</td>
+			</tr>
+			";
+		}
 
-		<tr>
-		<td style='width:30%' class='forumheader3'>Page / link visible to</td>
-		<td style='width:70%' class='forumheader3'>".r_userclass("page_class", $page_class)."</td>
-		</tr>
-
-
-		<tr>
+		$text .= "<tr>
 		<td colspan='2' style='text-align:center' class='forumheader'>". 
-		($edit ? "<input class='button' type='submit' name='updatePage' value='Update Page' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitPage' value='Create Page' />")."
+
+		(!$mode ? 
+
+		($edit ? "<input class='button' type='submit' name='updatePage' value='Update Page' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitPage' value='Create Page' />") : 
+		
+		($edit ? "<input class='button' type='submit' name='updateMenu' value='Update Menu' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitMenu' value='Create Menu' />"))
+		
+		."
 		</td>
 		</tr>
 
@@ -244,12 +291,12 @@ class page
 		</div>
 		";
 
-		$caption = ($edit ? "Edit page" : "Create new page");
+		$caption =(!$mode ? ($edit ? "Edit page" : "Create new page") : ($edit ? "Edit menu" : "Create new menu"));
 		$ns -> tablerender($caption, $text);
 	}
 
 
-	function submitPage($mode = FALSE)
+	function submitPage($mode = FALSE, $type=FALSE)
 	{
 		global $sql, $tp, $e107cache;
 
@@ -258,13 +305,24 @@ class page
 
 		if($mode)
 		{
-			$sql -> db_Update("page", "page_title='$page_title', page_text='$page_text', page_rating_flag='".$_POST['page_rating_flag']."', page_comment_flag='".$_POST['page_comment_flag']."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".$_POST['page_ip_restrict']."', page_theme='".$_POST['page_theme']."' WHERE page_id='$mode' ");
+			$sql -> db_Update("page", "page_title='$page_title', page_text='$page_text', page_rating_flag='".$_POST['page_rating_flag']."', page_comment_flag='".$_POST['page_comment_flag']."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".$_POST['page_ip_restrict']."' WHERE page_id='$mode' ");
 			$this -> message = "Page updated in database.";
 		}
 		else
 		{
-			$sql -> db_Insert("page", "0, '$page_title', '$page_text', '".USERID."', '".time()."', '".$_POST['page_rating_flag']."', '".$_POST['page_comment_flag']."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$_POST['page_theme']."' ");
+
+			$menuname = ($type ? $tp -> toDB($_POST['menu_name']) : "");
+
+			$sql -> db_Insert("page", "0, '$page_title', '$page_text', '".USERID."', '".time()."', '".$_POST['page_rating_flag']."', '".$_POST['page_comment_flag']."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."' ");
 			$this -> message = "Page saved to database.";
+
+			if($type)
+			{
+				$sql -> db_Insert("menus", "0, '$menuname', '0', '0', '0', 'dbcustom', '".mysql_insert_id()."' ");
+			}
+
+
+
 
 			if($_POST['page_link'])
 			{
@@ -348,6 +406,9 @@ class page
 
 		$var['create']['text'] = "Create page";
 		$var['create']['link'] = e_SELF."?create";
+
+		$var['createm']['text'] = "Create menu";
+		$var['createm']['link'] = e_SELF."?createm";
 
 		$var['options']['text'] = LAN_OPTIONS;
 		$var['options']['link'] = e_SELF."?options";

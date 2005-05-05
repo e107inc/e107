@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-05-04 02:05:16 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.28 $
+|     $Date: 2005-05-05 12:41:16 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -265,7 +265,7 @@ foreach ($menu_areas as $menu_act) {
 	}
 }
 
-$sql->db_Select("menus");
+$sql->db_Select("menus", "*", "menu_pages != 'dbcustom' ");
 while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch()) {
 	if (!eregi($menu_name, $menustr)) {
 		$sql2->db_Delete("menus", "menu_name='$menu_name'");
@@ -359,8 +359,17 @@ else
 	$text .= "<tr><td style='width:50%;vertical-align:top;text-align:center'>";
 
 	$text .= "<select name='menuselect[]' class='tbox' multiple='multiple' style='height:200px;width:95%'>";
-	while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch()) {
-		$menu_name = eregi_replace("_menu", "", $menu_name);
+	while ($row = $sql->db_Fetch())
+	{
+		extract($row);
+		if($menu_pages == "dbcustom")
+		{
+			$menu_name .= " [custom]";
+		}
+		else
+		{
+			$menu_name = eregi_replace("_menu", "", $menu_name);
+		}
 		$text .= "<option value='$menu_id'>$menu_name</option>\n";
 
 	}
