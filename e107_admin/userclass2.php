@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-04-02 21:06:52 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2005-05-05 21:14:05 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -106,23 +106,27 @@ if (isset($_POST['updateclass'])) {
 	$message = UCSLAN_5;
 }
 
-if (isset($_POST['createclass'])) {
-	$_POST['userclass_name'] = $tp->toDB($_POST['userclass_name'], "admin");
-	$_POST['userclass_description'] = $tp->toDB($_POST['userclass_description'], "admin");
+if (isset($_POST['createclass']))
+{
+	if($_POST['userclass_name'])
+	{
+		$_POST['userclass_name'] = $tp->toDB($_POST['userclass_name'], "admin");
+		$_POST['userclass_description'] = $tp->toDB($_POST['userclass_description'], "admin");
 
-	if (getperms("0") || check_class($_POST['userclass_editclass']) && $_POST['userclass_editclass']) {
-		$editclass = $_POST['userclass_editclass'];
-		$i = 1;
-		while ($sql->db_Select('userclass_classes', '*', "userclass_id='".$i."' ") && $i < 255) {
-			$i++;
+		if (getperms("0") || check_class($_POST['userclass_editclass']) && $_POST['userclass_editclass']) {
+			$editclass = $_POST['userclass_editclass'];
+			$i = 1;
+			while ($sql->db_Select('userclass_classes', '*', "userclass_id='".$i."' ") && $i < 255) {
+				$i++;
+			}
+			if ($i < 255) {
+				$sql->db_Insert("userclass_classes", $i.", '".strip_tags(strtoupper($_POST['userclass_name']))."', '".$_POST['userclass_description']."',{$editclass} ");
+			}
+			$message = UCSLAN_6;
+		} else {
+			header("location:".SITEURL);
+			exit;
 		}
-		if ($i < 255) {
-			$sql->db_Insert("userclass_classes", $i.", '".strip_tags(strtoupper($_POST['userclass_name']))."', '".$_POST['userclass_description']."',{$editclass} ");
-		}
-		$message = UCSLAN_6;
-	} else {
-		header("location:".SITEURL);
-		exit;
 	}
 }
 
