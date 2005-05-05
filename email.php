@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/email.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-04-25 19:53:39 $
-|     $Author: streaky $
+|     $Revision: 1.11 $
+|     $Date: 2005-05-05 21:03:19 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -68,6 +68,7 @@ if (isset($_POST['emailsubmit'])){
 		$sql->db_Select("news", "*", "news_id='$parms'");
 		list($news_id, $news_title, $news_body, $news_extended, $news_datestamp, $news_author, $news_source, $news_url, $news_category, $news_allow_comments) = $sql->db_Fetch();
 		$message .= $tp->toHTML($news_title, TRUE)."\n".$tp->toHTML($news_body, TRUE)."\n".$tp->toHTML($news_extended, TRUE)."\n\n".SITEURL.e_BASE."comment.php?comment.news.".$parms;
+		$message = strip_tags($message);
 	}
 	if ($error == "") {
 		require_once(e_HANDLER."mail.php");
