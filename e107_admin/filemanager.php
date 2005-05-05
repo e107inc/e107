@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-04-22 23:53:11 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2005-05-05 20:56:54 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -49,6 +49,13 @@ $path = str_replace("../", "", e_QUERY);
 if (!$path) {
 	$path = str_replace("../", "", $adchoice[0]);
 }
+
+if($path == "/")
+{
+	$path = $adchoice[0];
+	echo "<b>Debug</b> ".$path." <br />";
+}
+
 
 // ===============================================
 
