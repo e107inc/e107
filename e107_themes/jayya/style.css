@@ -23,12 +23,8 @@ body, td, .indent, .defaulttext, .caption, .bodytable, .infobar, .mediumtext,
 }
 
 body, td, .smalltext, .smallblacktext, .defaulttext, .mediumtext, .tbox, .button, .button:hover, .nextprev, .bodytable, .infobar, 
-.forumheader, .forumheader2, .f2default, .forumheader3, .f3default, .fcaption, .fcdefault, .fcaption2 {
+.forumheader, .forumheader2, .f2default, .forumheader3, .f3default, .fcaption, .fcdefault, .fcaption2, .captiontext {
 	color: #000;
-}
-
-.captiontext, .main_caption {
-	color: #fff;
 }
 
 img {	
