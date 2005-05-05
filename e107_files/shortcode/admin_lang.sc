@@ -1,7 +1,12 @@
 if (ADMIN) {
 	global $ns, $sql, $pref;
 	if ($pref['multilanguage']) {
-		require_once(e_PLUGIN."userlanguage_menu/languages/".e_LANGUAGE.".php");
+	  	$filepath = e_PLUGIN."userlanguage_menu/languages/".e_LANGUAGE.".php";
+	  	if(file_exists($filepath)){
+	 		require_once($filepath);
+	 	}else{
+	 		require_once(e_PLUGIN."userlanguage_menu/languages/English.php");
+		}
 		require_once(e_HANDLER."file_class.php");
 		$fl = new e_file;
 		$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
