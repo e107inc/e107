@@ -159,14 +159,9 @@ else
 
 foreach($pageInfo as $key => $info)
 {
-	if(array_key_exists($key, $pageTotal)) {
-		$pageTotal[$key]['ttlv'] += $info['ttl'];
-		$pageTotal[$key]['unqv'] += $info['unq'];
-	} else {
-		$pageTotal[$key]['url'] = $info['url'];
-		$pageTotal[$key]['ttlv'] = $info['ttl'];
-		$pageTotal[$key]['unqv'] = $info['unq'];
-	}
+	$pageTotal[$key]['url'] = $info['url'];
+	$pageTotal[$key]['ttlv'] += $info['ttl'];
+	$pageTotal[$key]['unqv'] += $info['unq'];
 }
 
 $pagetotal = serialize($pageTotal);

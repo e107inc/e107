@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-05-04 17:27:44 $
-|     $Author: streaky $
+|     $Revision: 1.20 $
+|     $Date: 2005-05-05 15:59:57 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -290,7 +290,7 @@ class siteStats {
 		$pageTotal = unserialize($row['log_data']);
 
 		foreach($this -> fileInfo as $url => $tmpcon) {
-			$pageTotal[$url]['url'] += $tmpcon['url'];
+			$pageTotal[$url]['url'] = $tmpcon['url'];
 			$pageTotal[$url]['ttlv'] += $tmpcon['ttl'];
 			$pageTotal[$url]['unqv'] += $tmpcon['unq'];
 		}
@@ -303,11 +303,10 @@ class siteStats {
 		$text .= "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'>".ADSTAT_L19."</td>\n<td class='fcaption' style='width: 70%;'>".ADSTAT_L23."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 		foreach($totalArray as $key => $info) {
 			if($info['ttlv']){
-				$bar_percentage = $this->bar($percentage);
 				$percentage = round(($info['ttlv']/$total) * 100, 2);
 				$text .= "<tr class='forumheader3'>
 				<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>
-				<td style='width: 70%;'>{$bar_percentage}&nbsp;{$info['ttlv']}</td>
+				<td style='width: 70%;'>".$this->bar($percentage)."&nbsp;{$info['ttlv']}</td>
 				<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";
 			}
