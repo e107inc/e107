@@ -6,19 +6,16 @@ body, td {
 }
 
 form {
-	margin: 2px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
 }
 
 body, .finfobar {
 	background-color: #fdfdfd;
 }
 
-body, td, .indent, .defaulttext, .caption, .bodytable, .infobar, .forumheader, .forumheader2, .f2default, .forumheader3, .f3default, .fcaption, .fcdefault, .fcaption2, .finfobar {
+body, td, .indent, .defaulttext, .caption, .bodytable, .infobar, .mediumtext, 
+.forumheader, .forumheader2, .f2default, .forumheader3, .f3default, .fcaption, .fcdefault, .fcaption2, .finfobar {
 	font: normal 11px arial, sans-serif;
-}
-
-.mediumtext {
-	font: normal 14px arial, sans-serif;
 }
 
 .smalltext, .smallblacktext, .tbox, .captiontext, .button, .button:hover, .nextprev, .helpbox {
@@ -26,12 +23,8 @@ body, td, .indent, .defaulttext, .caption, .bodytable, .infobar, .forumheader, .
 }
 
 body, td, .smalltext, .smallblacktext, .defaulttext, .mediumtext, .tbox, .button, .button:hover, .nextprev, .bodytable, .infobar, 
-.forumheader, .forumheader2, .f2default, .forumheader3, .f3default, .fcaption, .fcdefault, .fcaption2 {
+.forumheader, .forumheader2, .f2default, .forumheader3, .f3default, .fcaption, .fcdefault, .fcaption2, .captiontext {
 	color: #000;
-}
-
-.captiontext, .main_caption {
-	color: #fff;
 }
 
 img {	
