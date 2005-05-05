@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.120 $
-|     $Date: 2005-05-05 06:26:30 $
-|     $Author: e107coders $
+|     $Revision: 1.121 $
+|     $Date: 2005-05-05 06:35:57 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -428,11 +428,7 @@ init_session();
 
 $sql->db_Mark_Time('Start: Go online');
 $e_online = new e_online();
-if($pref['flood_protect']){
-	$e_online->online(false, true);
-}
-
-
+$e_online->online($pref['track_online'], $pref['flood_protect']);
 
 $sql->db_Mark_Time('Start: Signup/splash/admin');
 $fp=($pref['frontpage'] ? $pref['frontpage'].".php" : "news.php index.php");

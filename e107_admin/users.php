@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-05-05 03:45:20 $
-|     $Author: e107coders $
+|     $Revision: 1.46 $
+|     $Date: 2005-05-05 06:35:57 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -95,6 +95,7 @@ if (isset($_POST['update_options'])) {
 	$pref['del_unv'] = $_POST['del_unv'];
 	$pref['profile_rate'] = $_POST['profile_rate'];
 	$pref['profile_comments'] = $_POST['profile_comments'];
+	$pref['track_online'] = $_POST['track_online'];
 	save_prefs();
 	$user->show_message(USRLAN_1);
 }
@@ -622,6 +623,13 @@ class users{
 			<td style='width:50%' class='forumheader3'>
 			<input class='tbox' type='text' name='del_unv' size='10' value='".$pref['del_unv']."' maxlength='5' /> ".USRLAN_95."
 			</td></tr>
+
+			<tr>
+			<td style='width:50%' class='forumheader3'>".USRLAN_130."<br /><span class='smalltext'>".USRLAN_131."</span></td>
+			<td style='width:50%; class='forumheader3'>&nbsp;
+			<input type='checkbox' name='track_online' value='1'".($pref['track_online'] ? " checked='checked'" : "")." /> ".USRLAN_132."&nbsp;&nbsp;
+			</td>
+			</tr>
 
 			<tr>
 			<td colspan='2' style='text-align:center' class='forumheader'>
