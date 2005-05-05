@@ -33,10 +33,14 @@ foreach($eMenuList[$parm] as $row) {
 		$sql->db_Mark_Time($row['menu_name']);
 		if($row['menu_path'] != 'custom')
 		{
-			@include(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE.".php");
-			if(e_LANGUAGE != 'English')
-			{
-				@include(e_PLUGIN.$row['menu_path']."/languages/English.php");
+			if(is_readable(e_LANGUAGEDIR.e_LANGUAGE."/plugins/lan_{$row['menu_path']}.php")) {
+				include(e_LANGUAGEDIR.e_LANGUAGE."/plugins/lan_{$row['menu_path']}.php");
+			} elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE.".php")) {
+				include(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE.".php");	
+			} elseif (is_readable(e_LANGUAGEDIR."english/plugins/lan_{$row['menu_path']}.php")) {
+				include(e_LANGUAGEDIR."English/plugins/lan_{$row['menu_path']}.php");
+			} elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/English.php")) {
+				include(e_PLUGIN.$row['menu_path']."/languages/English.php");
 			}
 		}
 		$mname = $row['menu_name'];
