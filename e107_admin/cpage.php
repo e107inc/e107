@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-05 14:12:21 $
+|     $Revision: 1.10 $
+|     $Date: 2005-05-05 21:41:46 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -463,9 +463,17 @@ class page
 			$contents = fread ($handle, filesize ($filename));
 			fclose ($handle);
 			$contents = str_replace("'", "&#039;", $contents);
-			preg_match('#\$caption = "(.*?)";#si', $contents, $match);
+			if(!preg_match('#\$caption = "(.*?)";#si', $contents, $match))
+			{
+				preg_match('#<CAPTION(.*?)CAPTION#si', $contents, $match);
+			}
 			$page_title = $tp -> toDB(trim(chop($match[1])));
-			preg_match('#\$text = "(.*?)";#si', $contents, $match);
+			
+			if(!preg_match('#\$text = "(.*?)";#si', $contents, $match))
+			{
+				preg_match('#TEXT(.*?)TEXT#si', $contents, $match);
+			}
+
 			$page_text = $tp -> toDB(trim(chop($match[1])));
 			$filetime = filemtime($filename);
 
