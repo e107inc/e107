@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-05-05 20:56:54 $
+|     $Revision: 1.16 $
+|     $Date: 2005-05-05 20:59:42 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -33,16 +33,11 @@ $imagedir = e_IMAGE."filemanager/";
 	$dir_options[0] = FMLAN_47;
 	$dir_options[1] = FMLAN_35;
 	$dir_options[2] = FMLAN_40;
-if (getperms("I")) {
-	$dir_options[3] = FMLAN_36;
-	$dir_options[4] = FMLAN_37;
-}
+
 
 	$adchoice[0] = e_FILE."public/";
 	$adchoice[1] = e_FILE;
 	$adchoice[2] = e_IMAGE."newspost_images/";
-	$adchoice[3] = e_PLUGIN."custom/";
-	$adchoice[4] = e_PLUGIN."custompages/";
 
 
 $path = str_replace("../", "", e_QUERY);
