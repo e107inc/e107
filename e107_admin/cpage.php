@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-05 12:41:15 $
+|     $Revision: 1.8 $
+|     $Date: 2005-05-05 13:44:59 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -202,7 +202,18 @@ class page
 		{
 			$text .= "<tr>
 			<td style='width:30%' class='forumheader3'>Menu Name</td>
-			<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='menu_name' size='30' value='".$menu_name."' maxlength='50' /></td>
+			<td style='width:70%' class='forumheader3'>
+			";
+			if($edit)
+			{
+				$text .= $page_theme;
+			}
+			else
+			{
+				$text .= "<input class='tbox' type='text' name='menu_name' size='30' value='".$menu_name."' maxlength='50' />
+				";
+			}
+			$text .= "</td>
 			</tr>
 			";
 		}
@@ -417,10 +428,11 @@ class page
 		$file = new e_file;
 		$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*', 'Readme.txt');
 		$cpages = $file -> get_files(e_PLUGIN."custompages", "", $reject);
+		$cmenus = $file -> get_files(e_PLUGIN."custom", "", $reject);
 
-		if(count($cpages))
+		if(count($cpages) || count($cmenus))
 		{
-			$var['convert']['text'] = "Convert old pages";
+			$var['convert']['text'] = "Convert old pages/menus";
 			$var['convert']['link'] = e_SELF."?convert";
 		}
 
@@ -435,12 +447,16 @@ class page
 		$file = new e_file;
 		$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*', 'Readme.txt');
 		$cpages = $file -> get_files(e_PLUGIN."custompages", "", $reject);
+		$cmenus = $file -> get_files(e_PLUGIN."custom", "", $reject);
+
+		$customs = array_merge($cpages, $cmenus);
 
 		$text = "<b>Beginning conversion ...</b><br /><br />";
 
 		$count = 0;
-		foreach($cpages as $p)
+		foreach($customs as $p)
 		{
+			$type = (strstr($p['path'], "custompages") ? "" : str_replace(".php", "", $p['fname']));
 			$filename = $p['path'].$p['fname'];
 			$handle = fopen ($filename, "r");
 			$contents = fread ($handle, filesize ($filename));
@@ -454,10 +470,18 @@ class page
 
 			if(!$sql -> db_Select("page", "*", "page_title='$page_title' "))
 			{
-				$sql -> db_Insert("page", "0, '$page_title', '$page_text', '".USERID."', '".$filetime."', '0', '0', '', '', '', '' ");
+				$sql -> db_Insert("page", "0, '$page_title', '$page_text', '".USERID."', '".$filetime."', '0', '0', '', '', '', '$type' ");
 				$text .= "<b>Inserting: </b> '".$page_title."' <br />";
 				$count ++;
 			}
+
+			if($type)
+			{
+				$sql -> db_Insert("menus", "0, '$type', '0', '0', '0', 'dbcustom', '".mysql_insert_id()."' ");
+				$type2 = "custom_".$type;
+				$sql -> db_Delete("menus", "menu_name='$type2' ");
+			}
+
 		}
 		$text .= "<br />Finished custom page update - updated $count ".($count == 1 ? "file" : "files").".<br /> To set your preferences for each page, please return to front page and edit the pages.";
 		$ns -> tablerender("Custom Page Update", $text);
