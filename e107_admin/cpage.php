@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-05-05 13:44:59 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-05 14:12:21 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -33,6 +33,7 @@ require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."userclass_class.php");
 $custpage_lang = ($sql->mySQLlanguage) ? $sql->mySQLlanguage : $pref['sitelanguage'];
 unset($message);
+
 
 if (e_QUERY)
 {
@@ -351,8 +352,8 @@ class page
 	function delete_page($del_id)
 	{
 		global $sql;
-		$del_id = $matches[1];
 		$sql -> db_Delete("page", "page_id='$del_id' ");
+		$sql -> db_Delete("menus", "menu_path='$del_id' ");
 		$this -> message = "Page deleted";
 	}
 
@@ -477,9 +478,13 @@ class page
 
 			if($type)
 			{
-				$sql -> db_Insert("menus", "0, '$type', '0', '0', '0', 'dbcustom', '".mysql_insert_id()."' ");
-				$type2 = "custom_".$type;
-				$sql -> db_Delete("menus", "menu_name='$type2' ");
+				$iid = mysql_insert_id();
+				if(!$sql -> db_Select("menus", "*", "menu_path='$iid' "))
+				{
+					$sql -> db_Insert("menus", "0, '$type', '0', '0', '0', 'dbcustom', '$iid' ");
+					$type2 = "custom_".$type;
+					$sql -> db_Delete("menus", "menu_name='$type2' ");
+				}
 			}
 
 		}
