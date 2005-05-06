@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-05-06 11:00:23 $
+|     $Revision: 1.24 $
+|     $Date: 2005-05-06 15:15:33 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -48,7 +48,7 @@ class comment {
 				$ecom = $sql -> db_Fetch();
 				list($prid, $pname) = explode(".", $ecom['comment_author']);
 
-				if($prid != USERID)
+				if($prid != USERID || !USER)
 				{
 					echo "<div style='text-align: center;'>Unauthorized</div>";
 					require_once(FOOTERF);
@@ -187,7 +187,7 @@ class comment {
 
 		$search[4] = "/\{COMMENT\}(.*?)/si";
 		$replace[4] = ($comment_blocked ? LAN_0 : $tp->toHTML($comment_comment, TRUE, FALSE, $user_id)).
-			($pref['allowCommentEdit'] && $user_id == USERID ? "<br /><div style='text-align: right;'><a href='".e_SELF."?".e_QUERY.".edit.$comment_id'><img src='".e_IMAGE."generic/".IMODE."/edit.png' alt='".LAN_318."' title='".LAN_318."' style='border: 0;' /></a></div>" : "");
+			($pref['allowCommentEdit'] && USER && $user_id == USERID ? "<br /><div style='text-align: right;'><a href='".e_SELF."?".e_QUERY.".edit.$comment_id'><img src='".e_IMAGE."generic/".IMODE."/edit.png' alt='".LAN_318."' title='".LAN_318."' style='border: 0;' /></a></div>" : "");
 
 		$search[5] = "/\{SIGNATURE\}(.*?)/si";
 		if ($user_signature) {
