@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-04-30 22:48:26 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.25 $
+|     $Date: 2005-05-06 13:24:46 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -29,12 +29,6 @@ if (!getperms("W")) {
 }
 require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 require_once(e_HANDLER."userclass_class.php");
-
-if ($pref['htmlarea']) {
-	require_once(e_HANDLER."htmlarea/htmlarea.inc.php");
-	htmlarea('email_body');
-}
-
 
 if (isset($_POST['testemail'])) {
 	require_once(e_HANDLER."mail.php");
@@ -136,8 +130,9 @@ if (isset($_POST['submit'])) {
 	$text = "<div style='overflow:auto;height:300px; ".ADMIN_WIDTH."'>";
 	$text .= "<table class='fborder' style='width:100%'>";
 	$text .= "<tr><td class='fcaption'>Username</td><td class='fcaption'>Email</td><td class='fcaption'>Status</td></tr>";
-	$message_subject = stripslashes($_POST['email_subject']);
-	$message_body = stripslashes($_POST['email_body']);
+	$message_subject = stripslashes($tp -> toHTML($_POST['email_subject']));
+	$message_body = stripslashes($tp -> toHTML($_POST['email_body']));
+	$message_body = str_replace("&quot;", '"', $message_body);
 	$message_body = eregi_replace('src="', 'src="'.SITEURL, $message_body);
 
 	if (isset($_POST['use_theme'])) {
