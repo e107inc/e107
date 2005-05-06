@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-05-01 17:51:44 $
-|     $Author: streaky $
+|     $Revision: 1.29 $
+|     $Date: 2005-05-06 10:56:42 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -28,9 +28,8 @@ if (!e_QUERY) {
 list($action, $table, $id, $nid, $xid) = explode(".", e_QUERY);
 $cobj = new comment;
 	
-if (IsSet($_POST['commentsubmit']))
+if (IsSet($_POST['commentsubmit']) || IsSet($_POST['editsubmit']))
 {
-
 	if($table == "poll")
 	{
 		if (!$sql->db_Select("polls", "poll_title", "poll_id=$id AND poll_comment=1"))
@@ -46,23 +45,31 @@ if (IsSet($_POST['commentsubmit']))
 			exit;
 		}
 	}
-	
-
-//	echo "<pre>"; print_r($row); echo "</pre>"; exit;
-
 
 	if (ANON === TRUE || USER === TRUE) {
 		if (!$pid) {
 			$pid = 0;
 		}
-		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], $table, $id, $pid, $_POST['subject']);
+
+		$editpid = (isset($_POST['editpid']) ? $_POST['editpid'] : FALSE);
+
+		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], $table, $id, $pid, $_POST['subject'], $editpid);
 		if ($table == "news") {
 			$e107cache->clear("news");
 		} else {
 			$e107cache->clear("comment.php?$table.$id");
 		}
+
+		if($editpid)
+		{
+			$redir = preg_replace("#\.edit.*#si", "", e_QUERY);
+			header("location:".e_SELF."?".$redir);
+			exit;
+		}
+
 	}
 }
+
 
 if (IsSet($_POST['replysubmit'])) {
 	if ($table == "news" && !$sql->db_Select("news", "news_allow_comments", "news_id='$nid' ")) {
