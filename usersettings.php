@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-05-02 07:59:27 $
-|     $Author: e107coders $
+|     $Revision: 1.27 $
+|     $Date: 2005-05-06 11:03:41 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -464,7 +464,7 @@ $text .= "<tr>
 	<tr>
 	<td style='width:20%' class='forumheader3'>".LAN_144."</td>
 	<td style='width:80%' class='forumheader2'>
-	".$rs->form_text("website", 60, $curVal['user_website'], 150)."
+	".$rs->form_text("website", 60, $curVal['user_homepage'], 150)."
 	</td>
 	</tr>
 
