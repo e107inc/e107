@@ -9,6 +9,8 @@ if (!isset($SEARCH_TOP_TABLE)) {
 	<td class='forumheader3' style='width:30%'>".LAN_199."<br /><span class='smalltext'>".LAN_417."</span></td>
 	<td class='forumheader3' style='width:70%'>
 	{SEARCH_MAIN_SEARCHFIELD} {SEARCH_MAIN_SUBMIT}
+	<br />
+	{SEARCH_MESSAGE}
 	</td>
 	</tr>";
 }
