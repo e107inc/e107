@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-04-11 01:08:01 $
-|     $Author: sweetas $
+|     $Revision: 1.23 $
+|     $Date: 2005-05-06 02:29:05 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -81,7 +81,7 @@ if(!defined("ADLINK_COLS")){
 function render_links($link, $title, $description, $perms, $icon = FALSE, $mode = FALSE) {
 	global $td;
 	$text = '';
-	//if (getperms($perms)) {
+	if (getperms($perms)) {
 		if ($mode == 'adminb') {
 			$text = "<tr><td class='forumheader3'>
 				<div class='td' style='text-align:left; vertical-align:top; width:100%'
@@ -109,7 +109,7 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 			}
 			$td++;
 		}
-	//}
+	}
 	return $text;
 }
 
