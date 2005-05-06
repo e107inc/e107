@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_search.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-04-02 21:08:06 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2005-05-06 13:52:21 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("SEALAN_1", "Search Configuration");
@@ -33,11 +33,13 @@ define("SEALAN_21", "Searchable Areas");
 define("SEALAN_22", "Default");
 define("SEALAN_23", "Alternative:");
 define("SEALAN_24", "Type");
-define("SEALAN_25", "Class");
+define("SEALAN_25", "User Class");
 define("SEALAN_26", "Pre-Title Text");
 define("SEALAN_27", "Chars");
 define("SEALAN_28", "Results");
 // define("SEALAN_29", "Order");
 define("SEALAN_30", "Highlight keywords on referred too page:");
+define("SEALAN_31", "PHP limited to");
+define("SEALAN_32", "results (leave blank for no limit)");
 
 ?>

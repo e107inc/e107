@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-04-02 21:06:52 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2005-05-06 13:52:09 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -36,12 +36,13 @@ if (isset($_POST['updatesettings'])) {
 	$pref['search_restrict'] = $_POST['search_restrict'];
 	$pref['search_highlight'] = $_POST['search_highlight'];
 	save_prefs();
-	$search_prefs['search_sort'] = $_POST['search_sort'];
 	$search_prefs['relevance'] = $_POST['relevance'];
 	$search_prefs['user_select'] = $_POST['user_select'];
 	$search_prefs['multisearch'] = $_POST['multisearch'];
 	$search_prefs['time_restrict'] = $_POST['time_restrict'];
 	$search_prefs['time_secs'] = $_POST['time_secs'] > 300 ? 300 : $_POST['time_secs'];
+	$search_prefs['search_sort'] = $_POST['search_sort'];
+	$search_prefs['php_limit'] = $_POST['php_limit'];
 	$search_prefs['google'] = $_POST['google'];
 
 	foreach($search_handlers as $s_key => $s_value) {
@@ -95,11 +96,6 @@ $text .= "<tr>
 </tr>";
 
 $text .= "<tr>
-<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_3."</td>
-<td style='width:50%;' colspan='2' class='forumheader3'>".$rs -> form_radio('search_sort', 'php', ($search_prefs['search_sort'] == 'php' ? 1 : 0))."PHP".$rs -> form_radio('search_sort', 'mysql', ($search_prefs['search_sort'] == 'mysql' ? 1 : 0))."MySql</td>
-</tr>";
-
-$text .= "<tr>
 <td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_30."</td>
 <td style='width:50%;' colspan='2' class='forumheader3'>
 <input type='radio' name='search_highlight' value='1'".($pref['search_highlight'] ? " checked='checked'" : "")." /> ".SEALAN_16."&nbsp;&nbsp;
@@ -137,6 +133,15 @@ $text .= "<tr>
 <input type='radio' name='time_restrict' value='0'".(!$search_prefs['time_restrict'] ? " checked='checked'" : "")." /> ".SEALAN_17."&nbsp;&nbsp;
 <input type='radio' name='time_restrict' value='1'".($search_prefs['time_restrict'] ? " checked='checked'" : "")." />
 ".SEALAN_13." ".$rs -> form_text("time_secs", 3, $search_prefs['time_secs'], 3)." ".SEALAN_14."</td>
+</tr>";
+
+$text .= "<tr>
+<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_3."</td>
+<td style='width:50%;' colspan='2' class='forumheader3'>
+".$rs -> form_radio('search_sort', 'mysql', ($search_prefs['search_sort'] == 'mysql' ? 1 : 0))."MySql
+".$rs -> form_radio('search_sort', 'php', ($search_prefs['search_sort'] == 'php' ? 1 : 0)).SEALAN_31." 
+".$rs -> form_text("php_limit", 5, $search_prefs['php_limit'], 5)." ".SEALAN_32." 
+</td>
 </tr>";
 
 $text .= "<tr>

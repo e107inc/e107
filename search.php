@@ -11,26 +11,26 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-04-25 19:49:21 $
-|     $Author: streaky $
+|     $Revision: 1.34 $
+|     $Date: 2005-05-06 13:52:22 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once('class2.php');
-e107_require(e_HANDLER.'search_class.php');
-$sch = new e_search;
-$search_prefs = $sysprefs -> getArray('search_prefs');
-
 if (!check_class($pref['search_restrict'])) {
 	require_once(HEADERF);
 	$ns->tablerender(LAN_SEARCH_20, "<div style='text-align:center'>".LAN_SEARCH_21."</div>");
 	require_once(FOOTERF);
 	exit;
 }
+$search_prefs = $sysprefs -> getArray('search_prefs');
 
 if (isset($_GET['q']) && strlen($_GET['q']) > 2) {
 	$query = trim($_GET['q']);
 }
+
+e107_require(e_HANDLER.'search_class.php');
+$sch = new e_search;
 
 $search_info = array();
 $auto_order = 1000;
@@ -112,7 +112,7 @@ if ($search_prefs['time_restrict']) {
 	if (isset($query)) {
 		$time = time() - $search_prefs['time_secs'];
 		$query_check = $tp -> toDB($query);
-		$ip = $e107->getip();
+		$ip = getip();
 		if ($sql -> db_Select("tmp", "tmp_ip, tmp_time, tmp_info", "tmp_info LIKE 'type_search%' AND tmp_ip='".$ip."'")) {
 			$row = $sql -> db_Fetch();
 			if (($row['tmp_time'] > $time) && ($row['tmp_info'] != 'type_search '.$query_check)) {
@@ -212,13 +212,31 @@ if ($search_prefs['multisearch']) {
 	$SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 }
 $SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input class='button' type='submit' name='s' value='".LAN_180."' />";
-	
+
+$stop_count = count($sch -> stop_keys);
+if ($stop_count) {
+if ($stop_count > 1) {
+	$SEARCH_MESSAGE = "The following words were excluded from the search: ";
+} else {
+	$SEARCH_MESSAGE = "The following word was excluded from the search: ";
+}
+$i = 1;
+foreach ($sch -> stop_keys as $stop_key) {
+	$SEARCH_MESSAGE .= $stop_key;
+	if ($i != $stop_count) {
+		$SEARCH_MESSAGE .= ', ';
+	}
+	$i++;
+}
+} else {
+	$SEARCH_MESSAGE = "";
+}
+
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TOP_TABLE);
 
 if ($search_prefs['user_select']) {
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_CAT_TABLE);
 }
-
 
 $text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_BOT_TABLE);
 	
