@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-04-28 17:39:52 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.21 $
+|     $Date: 2005-05-06 16:40:28 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 @include("e107_handlers/errorhandler_class.php");
@@ -186,11 +186,6 @@ function stage2() {
 	if (!is_writable("e107_files/public/") || !is_writable("e107_files/public/avatars/")) {
 		$error[5] = TRUE;
 		$errorstr .= "<b>e107_files/public/</b> ".INSLAN61." ".INSLAN62." <b>e107_files/public/avatars/</b> ".INSLAN12.".</b> ";
-	}
-
-	if (!is_writable("e107_plugins/custom/") || !is_writable("e107_plugins/custompages/")) {
-		$error[6] = TRUE;
-		$errorstr .= "<br /><b>e107_plugins/custom/</b> ".INSLAN61." ".INSLAN62." <b>e107_plugins/custompages/</b> ".INSLAN61." ".INSLAN12.".</b> ";
 	}
 
 	if ($error[2] || $error[3] || $error[4] || $error[5] || $error[6]) {
