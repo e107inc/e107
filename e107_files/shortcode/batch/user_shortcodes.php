@@ -154,7 +154,7 @@ SC_END
 
 SC_BEGIN USER_EMAIL_LINK
 global $user, $tp;
-return $tp->parseTemplate("{email={$user['user_email']}-link}");
+return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_143."</i>" : $tp->parseTemplate("{email={$user['user_email']}-link}");
 SC_END
 
 SC_BEGIN USER_EMAIL
