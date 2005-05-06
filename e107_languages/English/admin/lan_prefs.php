@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-05-05 12:53:58 $
+|     $Revision: 1.32 $
+|     $Date: 2005-05-06 10:57:19 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -110,6 +110,7 @@ define("PRFLAN_83", "example");
 define("PRFLAN_87", "Comments");
 define("PRFLAN_88", "Turn on nested comments");
 define("PRFLAN_89", "Display new comment icon");
+define("PRFLAN_90", "Allow posters to edit their comments");
 
 define("CUSTSIG_1", "Settings Saved!");
 define("CUSTSIG_2", "Real Name:");

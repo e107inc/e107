@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-04-25 20:08:07 $
-|     $Author: streaky $
+|     $Revision: 1.22 $
+|     $Date: 2005-05-06 10:57:19 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,7 +22,7 @@
 @include(e_LANGUAGEDIR."English/lan_comment.php");
 class comment {
 	function form_comment($action, $table, $id, $subject, $content_type, $return=FALSE) {
-		global $pref;
+		global $pref, $sql, $tp;
 		require_once(e_HANDLER."ren_help.php");
 		if (ANON == TRUE || USER == TRUE) {
 			$ns = new e107table;
@@ -35,18 +35,46 @@ class comment {
 				} else {
 				$text2 = "<input  type='hidden' name='subject' value='$subject'  />\n";
 			}
+
+			if(strstr(e_QUERY, "edit"))
+			{
+				list($null, $null, $null, $eaction, $id) = explode(".", e_QUERY);
+			}
+
+			if($eaction == "edit")
+			{
+				$sql -> db_Select("comments", "*", "comment_id='$id' ");
+				$ecom = $sql -> db_Fetch();
+				list($prid, $pname) = explode(".", $ecom['comment_author']);
+
+				if($prid != USERID)
+				{
+					echo "<div style='text-align: center;'>Unauthorized</div>";
+					require_once(FOOTERF);
+					exit;
+				}
+				$caption = LAN_318;
+				$comval = $tp -> toFORM($ecom['comment_comment']);
+				$comval = preg_replace("#\[ ".LAN_319.".*\]#si", "", $comval);
+			}
+			else
+			{
+				$caption = LAN_9;
+				$comval = "";
+			}
+
 			if (ANON == TRUE && USER == FALSE) {
 				$text .= "<tr>\n<td style='width:20%'>".LAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>";
 			}
-			$text .= "<tr> \n<td style='width:20%'>".LAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea style='width:80%' class='tbox' name='comment' cols='1' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />
-			<input class='helpbox' type='text' name='helpb' style='width:80%' /><br />".ren_help(1, 'addtext', 'help')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td id='commentformbutton' style='width:80%;'>\n". ($action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').($content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".LAN_9."' />\n</td>\n</tr>\n</table>\n</form></div>";
+			$text .= "<tr> \n<td style='width:20%'>".LAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea style='width:80%' class='tbox' name='comment' cols='1' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
+			<input class='helpbox' type='text' name='helpb' style='width:80%' /><br />".ren_help(1, 'addtext', 'help')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td id='commentformbutton' style='width:80%;'>\n". ($action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').($eaction == "edit" ? "<input type='hidden' name='editpid' value='$id' />" : "").($content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".($eaction == "edit" ? LAN_320 : LAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
 			if($return)
 			{
 				return $text;
 			}
 			else
 			{
-				$ns->tablerender('', $text);
+				$ns->tablerender($caption, $text);
 			}
 			} else {
 			echo "<br /><div style='text-align:center'><b>".LAN_6." <a href='".e_SIGNUP."'>".COMLAN_1."</a> ".COMLAN_2."</b></div>";
@@ -157,7 +185,8 @@ class comment {
 		}
 
 		$search[4] = "/\{COMMENT\}(.*?)/si";
-		$replace[4] = ($comment_blocked ? LAN_0 : $tp->toHTML($comment_comment, TRUE, FALSE, $user_id));
+		$replace[4] = ($comment_blocked ? LAN_0 : $tp->toHTML($comment_comment, TRUE, FALSE, $user_id)).
+			($pref['allowCommentEdit'] && $user_id == USERID ? "<br /><div style='text-align: right;'><a href='".e_SELF."?".e_QUERY.".edit.$comment_id'><img src='".e_IMAGE."generic/".IMODE."/edit.png' alt='".LAN_318."' title='".LAN_318."' style='border: 0;' /></a></div>" : "");
 
 		$search[5] = "/\{SIGNATURE\}(.*?)/si";
 		if ($user_signature) {
@@ -219,8 +248,9 @@ class comment {
 		}
 		return stripslashes($text);
 	}
-	function enter_comment($author_name, $comment, $table, $id, $pid, $subject) {
-		global $sql, $tp, $e107cache, $e_event, $e107;
+	function enter_comment($author_name, $comment, $table, $id, $pid, $subject, $editpid=FALSE) {
+		global $sql, $tp, $e107cache, $e_event, $e107, $pref;
+
 		switch($table) {
 			case "news":
 			$type = 0;
@@ -280,9 +310,17 @@ class comment {
 					require_once(e_HANDLER."encrypt_handler.php");
 					$ip = encode_ip($ip);
 					$_t = time();
+
+					if($editpid)
+					{
+						$comment .= "\n[ ".LAN_319." ".strftime($pref['shortdate'], time())." ]";
+						$sql -> db_Update("comments", "comment_comment='$comment' WHERE comment_id='$editpid' ");
+						$e107cache->clear("comment");
+						return;
+					}
+
 					if (!$sql->db_Insert("comments", "0, '$pid', '$id', '$subject', '$nick', '', '".$_t."', '$comment', '0', '$ip', '$type' "))
 					{
-
 						echo "<b>".COMLAN_3."</b> ".LAN_11;
 					}
 					else
