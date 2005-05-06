@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-05-06 10:57:19 $
+|     $Revision: 1.23 $
+|     $Date: 2005-05-06 11:00:23 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -43,6 +43,7 @@ class comment {
 
 			if($eaction == "edit")
 			{
+				$id=intval($id);
 				$sql -> db_Select("comments", "*", "comment_id='$id' ");
 				$ecom = $sql -> db_Fetch();
 				list($prid, $pname) = explode(".", $ecom['comment_author']);
