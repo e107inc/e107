@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2005-05-06 12:38:05 $
+|     $Revision: 1.66 $
+|     $Date: 2005-05-06 15:14:04 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -408,6 +408,24 @@ if ($action != "item") {
 }
 
 setNewsCache($cacheString);
+
+if(is_dir("remotefile"))
+{
+	require_once(e_HANDLER."file_class.php");
+	$file = new e_file;
+	$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*', 'Readme.txt');
+	$crem = $file -> get_files(e_BASE."remotefile", "", $reject);
+	if(count($crem))
+	{
+		foreach($crem as $loadrem)
+		{
+			if(strstr($loadrem['fname'], "load_"))
+			{
+				require_once(e_BASE."remotefile/".$loadrem['fname']);
+			}
+		}
+	}
+}
 
 if (isset($pref['nfp_display']) && $pref['nfp_display'] == 2) {
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
