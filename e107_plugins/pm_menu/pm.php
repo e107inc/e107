@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:53:13 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-06 01:41:15 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -72,18 +72,18 @@ define("PM_QUERY", $qstr);
 	
 if ($_POST['delsel']) {
 	foreach(array_keys($_POST['delid']) as $i) {
-		$pm->delete_pm($i);
+		$pm->delete_pm(intval($i));
 	}
 }
 	
 if (preg_match("#read#", PM_QUERY) || PM_QUERY == "" && !$_POST['reply'] && !$_POST['postpm']) {
 	$parms = explode(".", PM_QUERY);
-	$readstart = (is_numeric($parms[0])) ? $parms[0] :
-	 0;
+	$readstart = (is_numeric($parms[0])) ? $parms[0] : 0;
 	$np_query = "read";
 	require_once(HEADERF);
 	if ($msg) {
 		pm_show_message($msg);
+		unset($msg);
 	}
 	pm_parseformat($PMREAD);
 }

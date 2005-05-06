@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm\cjdss.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-04-13 17:37:02 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-06 01:41:15 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,7 @@ class pm {
 		# Paremeter #2        - string $type, 'from', 'to', 'either'
 		# Return -        boolean, TRUE on success, FALSE on failure
 		*/
+		$pmid = intval($pmid);
 		global $sql;
 		if ($type != "") {
 			$from = "pm_from_user = '".USERNAME."' ";
@@ -36,8 +37,9 @@ class pm {
 				$qry = $to;
 			}
 			if ($type == "either") {
-				$qry = $from." OR ".$to;
+				$qry = "(".$from." OR ".$to.")";
 			}
+			$qry .= " AND pm_id = $pmid";
 			if ($sql->db_Select("pm_messages", "*", $qry)) {
 				return TRUE;
 			}
@@ -52,6 +54,7 @@ class pm {
 		# Return -        boolean, TRUE on success, FALSE on failure
 		*/
 		global $sql;
+		$pmid = intval($pmid);
 		if (!$this->pm_check($pmid, "to")) {
 			return FALSE;
 		}
@@ -172,7 +175,7 @@ class pm {
 		}
 		$count = $pm_sql->db_Select("pm_messages", "*", "pm_to_user = '".USERNAME."' ORDER BY pm_sent_datestamp DESC LIMIT {$start},{$max_per_page}");
 		//                echo $rcv_total;
-		$ret .= "<form name='delpm' method='post'>";
+		$ret .= "<form name='delpm' method='post' action='".e_SELF."'>";
 		$ret .= "<table style='width:97%; text-align:center' class='fborder'>";
 		$ret .= "<tr>";
 		$ret .= "<td style='width:1%; text-align:center' class='fcaption'>&nbsp;</td>";
@@ -205,7 +208,7 @@ class pm {
 			$ret .= "</tr>\n";
 		}
 		if ($count) {
-			$ret .= "<tr><td colspan='7' style='text-align:left;'><input class='tbox' type='submit' name='delsel' value='".PMLAN_58."'></td></tr>";
+			$ret .= "<tr><td colspan='7' class='forumheader2'><input class='tbox' type='submit' name='delsel' value='".PMLAN_58."'></td></tr>";
 		}
 		$ret .= "</table></form>\n";
 		if ($rcv_total > $max_per_page) {
@@ -664,7 +667,7 @@ class pm {
 		# Return -        1 on success, 0 on failure
 		*/
 		global $sql;
-		if ($bid= $this->is_blocked($from, $to)) {
+		if ($bid = $this->is_blocked($from, $to)) {
 			$sql->db_Delete("pm_blocks", "block_id='".$bid."' ");
 			return 1;
 		} else {
