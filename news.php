@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2005-04-26 17:50:04 $
+|     $Revision: 1.65 $
+|     $Date: 2005-05-06 12:38:05 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -292,7 +292,8 @@ if($pref['news_unstemplate'] && file_exists(THEME."news_template.php")) {
 		echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
 	} else {
 		$loop = 1;
-		while($news = $sql->db_Fetch()) {
+		$newsAr = $sql -> db_getList();
+		foreach($newsAr as $news){
 			$newsdata[$loop] .= $ix->render_newsitem($news, "return");
 			$loop ++;
 			if($loop > $newscolumns) {
