@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-04-24 15:13:38 $
+|     $Revision: 1.23 $
+|     $Date: 2005-05-07 02:28:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -57,31 +57,43 @@ class e107forum {
 			return $thread_info;
 		}
 		if ($type == 'forum') {
-			if ($id == 'all') {
-				if ($sql->db_Select('forum', 'forum_id', 'forum_parent != 0')) {
-					while ($row = $sql->db_Fetch()) {
+			if ($id == 'all')
+			{
+				if ($sql->db_Select('forum', 'forum_id', 'forum_parent != 0'))
+				{
+					while ($row = $sql->db_Fetch())
+					{
 						$parentList[] = $row['forum_id'];
 					}
-					foreach($parentList as $id) {
-						//						echo "Updating forum #{$id}<br />";
+					foreach($parentList as $id)
+					{
+						//	echo "Updating forum #{$id}<br />";
 						$this->update_lastpost('forum', $id);
 					}
 				}
-				} else {
+			}
+			else
+			{
 				$id = intval($id);
 				$sql2 = new db;
 				$current_lastpost = 0;
 				$forum_lpinfo = "";
-				if ($sql2->db_Select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0")) {
+				if ($sql2->db_Select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0"))
+				{
 					$cnt = 0;
-					while ($row = $sql2->db_Fetch()) {
+					while ($row = $sql2->db_Fetch())
+					{
 						$cnt++;
 						$lp_info = $this->update_lastpost('thread', $row['thread_id']);
-						if ($lp_info['thread_datestamp'] > $current_lastpost) {
-							if ($lp_info['thread_anon'] != '') {
+						if ($lp_info['thread_datestamp'] > $current_lastpost)
+						{
+							if ($lp_info['thread_anon'] != '')
+							{
 								$anon = explode(chr(1), $lp_info['thread_anon']);
 								$forum_lpinfo = "0".chr(1).".{$anon[0]}";
-								} else {
+								}
+								else
+								{
 								$forum_lpinfo = "{$lp_info['thread_user']}".chr(1)."{$lp_info['user_name']}";
 							}
 							$forum_lpinfo .= chr(1)."{$lp_info['thread_datestamp']}".chr(1)."{$row['thread_id']}";
@@ -89,8 +101,8 @@ class e107forum {
 						}
 					}
 					$sql2->db_Update('forum', "forum_lastpost = '{$forum_lpinfo}' WHERE forum_id={$id}");
-					//					echo "Forum $id lastpost info: $forum_lpinfo <br />";
-					//					echo "Updated $cnt threads <br />";
+					//	echo "Forum $id lastpost info: $forum_lpinfo <br />";
+					//	echo "Updated $cnt threads <br />";
 				}
 			}
 		}
@@ -545,6 +557,55 @@ class e107forum {
 			$ret = $sql->db_getList();
 		}
 		return $ret;
+	}
+	
+	function forum_prune($type, $days, $forumArray)
+	{
+		global $sql;
+		$prunedate = time() - ($days * 86400);
+		$forumList = implode(",", $forumArray);
+		
+		if($type == 'delete')
+		{
+			//Get list of threads to prune
+			if ($sql->db_Select("forum_t", "thread_id", "thread_lastpost < $prunedate AND thread_parent=0 AND thread_s != 1 AND thread_forum_id IN ({$forumList})"))
+			{
+				$threadList = $sql->db_getList();
+				foreach($threadList as $thread)
+				{
+					//Delete all replies
+					$reply_count += $sql->db_Delete("forum_t", "thread_parent='{$thread['thread_id']}'");
+					//Delete thread
+					$thread_count += $sql->db_Delete("forum_t", "thread_id = '{$thread['thread_id']}'");
+					//Delete poll if there is one
+					$sql->db_Delete("poll", "poll_datestamp='{$thread['thread_id']}");
+				}
+				foreach($forumArray as $fid)
+				{
+					$this->update_lastpost('forum', $fid);
+					$this->forum_update_counts($fid);
+				}
+				return FORLAN_8." ( ".$thread_count." ".FORLAN_92.", ".$reply_count." ".FORLAN_93." )";
+			}
+			else
+			{
+				return FORLAN_9;
+			}
+		}
+		else
+		{
+			$pruned = $sql->db_Update("forum_t", "thread_active=0 WHERE thread_lastpost < $prunedate AND thread_parent=0 AND thread_forum_id IN ({$forumList})");
+			return FORLAN_8." ".$pruned." ".FORLAN_91;
+		}
+	}
+	
+	function forum_update_counts($forumID)
+	{
+		global $sql;
+		$forumID = intval($forumID);
+		$threads = $sql->db_Count("forum_t", "(*)", "WHERE thread_forum_id=$forumID AND thread_parent = 0");
+		$replies = $sql->db_Count("forum_t", "(*)", "WHERE thread_forum_id=$forumID AND thread_parent != 0");
+		$sql->db_Update("forum", "forum_threads='$threads', forum_replies='$replies' WHERE forum_id='$forumID'");
 	}
 }
 
