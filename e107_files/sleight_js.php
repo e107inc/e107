@@ -12,16 +12,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/sleight_js.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-07 23:37:18 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-07 23:40:29 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
+
+// Credit to youngpup.net for sorting the annoyince that is ie for us =)
+// modified to ignore ie 7+ and figure out where it is on the server.
 
 // Slieght fix for sites that need it..
 
 $folder = dirname($_SERVER['PHP_SELF']).'/';
 $slashed_foler = str_replace(array("/", "."), array("\\/", "\\."), $folder);
+
+
 
 ?>
 if (navigator.platform == "Win32" && navigator.appName == "Microsoft Internet Explorer" && window.attachEvent) {
