@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/sleight_js.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-05-07 23:40:29 $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-07 23:55:03 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@
 $folder = dirname($_SERVER['PHP_SELF']).'/';
 $slashed_foler = str_replace(array("/", "."), array("\\/", "\\."), $folder);
 
-
+header("Content-type: application/x-javascript");
 
 ?>
 if (navigator.platform == "Win32" && navigator.appName == "Microsoft Internet Explorer" && window.attachEvent) {
