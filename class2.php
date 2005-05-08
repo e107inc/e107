@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.121 $
-|     $Date: 2005-05-05 06:35:57 $
+|     $Revision: 1.122 $
+|     $Date: 2005-05-08 00:51:25 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -294,7 +294,7 @@ $sql->db_Mark_Time('(Start: Pref/multilang done)');
 if (isset($pref['frontpage']) && isset($pref['frontpage_type']) && $pref['frontpage_type'] == "splash") {
 	$ip = $e107->getip();
 	if (!$sql->db_Count("online", "(*)", "WHERE online_ip='{$ip}' ")) {
-		online();
+		$e_online->online(true, true, true);
 		if (is_numeric($pref['frontpage'])) {
 			header("location:".e_BASE."article.php?".$pref['frontpage'].".255");
 			exit;
@@ -769,7 +769,13 @@ class e_online {
 	var $_user_tracking_parsed;
 	var $_flood_control_parsed;
 
-	function online($online_tracking = false, $flood_control = false) {
+	function online($online_tracking = false, $flood_control = false, $clear_cache = false) {
+		
+		if($clear_cache == true) {
+			$this->_user_tracking_parsed = false;
+			$this->_flood_control_parsed = false;
+		}
+		
 		if($online_tracking == true || $flood_control == true) {
 			// If values not set (from e107_config.php, or elsewhere) set them
 			if(!isset($online_timeout)) {
