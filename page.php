@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-05-04 15:57:59 $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-08 19:34:04 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -304,21 +304,27 @@ class pageClass
 				}
 			}
 
+			$query = ($pref['nested_comments'] ? 
+			"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
+			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$this -> pageID."' AND comment_type='page' AND comment_pid='0' ORDER BY comment_datestamp"
+			:
+			"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
+			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$this -> pageID."' AND comment_type='page'  ORDER BY comment_datestamp");
 
-			$query = ($pref['nested_comments'] ? "comment_item_id='".$this -> pageID."' AND comment_type='page' AND comment_pid='0' ORDER BY comment_datestamp" : "comment_item_id='".$this -> pageID."' AND comment_type='page' ORDER BY comment_datestamp");
-			$comment_total = $sql->db_Select("comments", "*", $query);
+			$comment_total = $sql->db_Select_gen($query);
+
 			if ($comment_total) {
 				$width = 0;
 				while ($row = $sql->db_Fetch())
 				{
 					if ($pref['nested_comments'])
 					{
-						$text = $cobj->render_comment($row, "page", "comment", $id, $width, $subject);
+						$text = $cobj->render_comment($row, "page", "comment", $this -> pageID, $width, $subject);
 						$ns->tablerender(LAN_5, $text);
 					}
 					else
 					{
-						$text .= $cobj->render_comment($row, "page", "comment", $id, $width, $subject);
+						$text .= $cobj->render_comment($row, "page", "comment", $this -> pageID, $width, $subject);
 					}
 				}
 				if (!$pref['nested_comments'])
