@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.122 $
-|     $Date: 2005-05-08 00:51:25 $
+|     $Revision: 1.123 $
+|     $Date: 2005-05-08 00:56:51 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -742,11 +742,11 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 			}
 
 			foreach ($pref as $key => $prefvalue) {
-				$pref[$key] = $tp->toDB($prefvalue, true);
+				$_pref[$key] = $tp->toDB($prefvalue, true);
 			}
 
 			// Create the data to be stored
-			$PrefCache1 = $eArrayStorage->WriteArray($pref);
+			$PrefCache1 = $eArrayStorage->WriteArray($_pref);
 			if(!$sql->db_Update('core', "e107_value='{$PrefCache1}' WHERE e107_name = 'SitePrefs'")){
 				$sql->db_Insert('core', "'SitePrefs', '{$PrefCache1}'");
 			}
@@ -754,10 +754,10 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 		}
 	} else {
 		foreach ($user_pref as $key => $prefvalue) {
-			$user_pref[$key] = $tp->toDB($prefvalue);
+			$_user_pref[$key] = $tp->toDB($prefvalue);
 		}
 
-		$tmp=addslashes(serialize($user_pref));
+		$tmp=addslashes(serialize($_user_pref));
 		$sql->db_Update("user", "user_prefs='$tmp' WHERE user_id=$uid");
 		return $tmp;
 	}
