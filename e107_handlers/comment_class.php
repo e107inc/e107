@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-05-06 15:15:33 $
+|     $Revision: 1.25 $
+|     $Date: 2005-05-08 19:54:03 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,18 @@ class comment {
 
 			if(strstr(e_QUERY, "edit"))
 			{
-				list($null, $null, $null, $eaction, $id) = explode(".", e_QUERY);
+				$eaction = "edit";
+				$tmp = explode(".", e_QUERY);
+				$count = 0;
+				foreach($tmp as $t)
+				{
+					if($t == "edit")
+					{
+						$id = $tmp[($count+1)];
+						break;
+					}
+					$count++;
+				}
 			}
 
 			if($eaction == "edit")
@@ -187,7 +198,7 @@ class comment {
 
 		$search[4] = "/\{COMMENT\}(.*?)/si";
 		$replace[4] = ($comment_blocked ? LAN_0 : $tp->toHTML($comment_comment, TRUE, FALSE, $user_id)).
-			($pref['allowCommentEdit'] && USER && $user_id == USERID ? "<br /><div style='text-align: right;'><a href='".e_SELF."?".e_QUERY.".edit.$comment_id'><img src='".e_IMAGE."generic/".IMODE."/edit.png' alt='".LAN_318."' title='".LAN_318."' style='border: 0;' /></a></div>" : "");
+			($pref['allowCommentEdit'] && USER && $user_id == USERID && !strstr(e_QUERY, "edit") ? "<br /><div style='text-align: right;'><a href='".e_SELF."?".e_QUERY.".edit.$comment_id'><img src='".e_IMAGE."generic/".IMODE."/edit.png' alt='".LAN_318."' title='".LAN_318."' style='border: 0;' /></a></div>" : "");
 
 		$search[5] = "/\{SIGNATURE\}(.*?)/si";
 		if ($user_signature) {
@@ -249,8 +260,25 @@ class comment {
 		}
 		return stripslashes($text);
 	}
-	function enter_comment($author_name, $comment, $table, $id, $pid, $subject, $editpid=FALSE) {
+	function enter_comment($author_name, $comment, $table, $id, $pid, $subject) {
 		global $sql, $tp, $e107cache, $e_event, $e107, $pref;
+
+
+		if(strstr(e_QUERY, "edit"))
+		{
+			$eaction = "edit";
+			$tmp = explode(".", e_QUERY);
+			$count = 0;
+			foreach($tmp as $t)
+			{
+				if($t == "edit")
+				{
+					$editpid = $tmp[($count+1)];
+					break;
+				}
+				$count++;
+			}
+		}
 
 		switch($table) {
 			case "news":

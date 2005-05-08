@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-05-06 10:56:42 $
+|     $Revision: 1.30 $
+|     $Date: 2005-05-08 19:53:26 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -53,7 +53,7 @@ if (IsSet($_POST['commentsubmit']) || IsSet($_POST['editsubmit']))
 
 		$editpid = (isset($_POST['editpid']) ? $_POST['editpid'] : FALSE);
 
-		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], $table, $id, $pid, $_POST['subject'], $editpid);
+		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], $table, $id, $pid, $_POST['subject']);
 		if ($table == "news") {
 			$e107cache->clear("news");
 		} else {
