@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_cat_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-05-03 15:04:20 $
+|     $Revision: 1.6 $
+|     $Date: 2005-05-08 20:01:20 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -64,11 +64,11 @@ if(!$CONTENT_CAT_TABLE_END){
 // ##### CONTENT CAT_LIST -----------------------------------------------------
 if(!$CONTENT_CAT_LIST_TABLE){
 				$CONTENT_CAT_LIST_TABLE = "
-				<table class='content_table'>
+				<table class='content_table' cellpadding='0' cellspacing='0'>
 				<tr>
-					<td class='content_icon'>{CONTENT_CAT_LIST_TABLE_ICON}</td>
+					".($CONTENT_CAT_LIST_TABLE_ICON ? "<td class='content_icon'>{CONTENT_CAT_LIST_TABLE_ICON}</td>" :"")."
 					<td>
-						<table style='width:100%;'>
+						<table style='width:100%;' cellpadding='0' cellspacing='0'>
 							<tr>
 								<td class='content_heading'>{CONTENT_CAT_LIST_TABLE_HEADING}</td>
 								<td class='content_info' style='text-align:right;'>{CONTENT_CAT_LIST_TABLE_AMOUNT}</td>

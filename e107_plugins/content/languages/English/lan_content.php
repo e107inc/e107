@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-05-05 23:20:23 $
+|     $Revision: 1.30 $
+|     $Date: 2005-05-08 20:01:19 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -109,7 +109,6 @@ In order to see the menu in action, you still need to activate this menu in your
 define("CONTENT_ADMIN_CAT_LAN_51", "error; menu file not created");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "options");
-
 define("CONTENT_ADMIN_OPT_LAN_1", "admin options : creation of content items");
 define("CONTENT_ADMIN_OPT_LAN_2", "sections");
 define("CONTENT_ADMIN_OPT_LAN_3", "choose which sections should be available when creating a content item in admin");
@@ -131,8 +130,6 @@ define("CONTENT_ADMIN_OPT_LAN_18", "this will be only be used if images are enab
 define("CONTENT_ADMIN_OPT_LAN_19", "attachments");
 define("CONTENT_ADMIN_OPT_LAN_20", "set the amount of attachments you can upload with an item");
 define("CONTENT_ADMIN_OPT_LAN_21", "this will be only be used if attachments are enabled in the above sections area");
-
-
 define("CONTENT_ADMIN_OPT_LAN_22", "submission : options for the content submit page and form");
 define("CONTENT_ADMIN_OPT_LAN_23", "submit items");
 define("CONTENT_ADMIN_OPT_LAN_24", "Allow if items can be submitted");
@@ -144,8 +141,6 @@ define("CONTENT_ADMIN_OPT_LAN_29", "allow direct posting of submitted content it
 define("CONTENT_ADMIN_OPT_LAN_30", "if direct posting is checked, a submitted item is directly added in the database and will be immediately visible. if not checked, the admin will see a submitted content item in the admin area to review.");
 define("CONTENT_ADMIN_OPT_LAN_31", "define which sections should be available for submission");
 define("CONTENT_ADMIN_OPT_LAN_32", "choose which areas you would like have allowed in user submission of items");
-
-
 define("CONTENT_ADMIN_OPT_LAN_33", "path locations");
 define("CONTENT_ADMIN_OPT_LAN_34", "here you can define where your images are or will be stored. use braces ( { } ) for the general e107 related path variables (like ( {e_PLUGIN} or {e_IMAGE} ). for the content category icons two versions are needed, one small and one large set of icons.");
 define("CONTENT_ADMIN_OPT_LAN_35", "path : cat icons large");
@@ -161,8 +156,6 @@ define("CONTENT_ADMIN_OPT_LAN_44", "define path to content item attachments");
 define("CONTENT_ADMIN_OPT_LAN_45", "theme");
 define("CONTENT_ADMIN_OPT_LAN_46", "define theme layout for this main category");
 define("CONTENT_ADMIN_OPT_LAN_47", "choose a layout theme for this content main category. you can create a new theme by adding a folder in the content plugin templates folder.");
-
-
 define("CONTENT_ADMIN_OPT_LAN_48", "general");
 define("CONTENT_ADMIN_OPT_LAN_49", "refer count");
 define("CONTENT_ADMIN_OPT_LAN_50", "activate logging of refer count");
@@ -180,13 +173,11 @@ define("CONTENT_ADMIN_OPT_LAN_61", "breadcrumb rendertype");
 define("CONTENT_ADMIN_OPT_LAN_62", "define how to show the breadcrumb menu");
 define("CONTENT_ADMIN_OPT_LAN_63", "define how to render the breadcrumb information. you have three options: one to just echo it out at the top of the page, one to render it in a seperate menu and one to incorporate it into the menus that will come below it.");
 define("CONTENT_ADMIN_OPT_LAN_64", "echo");
-define("CONTENT_ADMIN_OPT_LAN_65", "each in a seperate menu");
+define("CONTENT_ADMIN_OPT_LAN_65", "use a seperate menu");
 define("CONTENT_ADMIN_OPT_LAN_66", "combine into one menu");
 define("CONTENT_ADMIN_OPT_LAN_67", "search menu");
 define("CONTENT_ADMIN_OPT_LAN_68", "should the search menu be shown");
 define("CONTENT_ADMIN_OPT_LAN_69", "if checked a navigation and search menu will be shown to search in content or navigate to other overview pages in content as well as an option to order the content items in the list pages");
-
-
 define("CONTENT_ADMIN_OPT_LAN_70", "list pages (recent (content.php?type.X), contents by category (content.php?type.X.cat.Y), contents by author (content.php?type.X.author.Y))");
 define("CONTENT_ADMIN_OPT_LAN_71", "choose which sections should be shown when viewing a content item in the list pages");
 define("CONTENT_ADMIN_OPT_LAN_72", "subheading");
@@ -226,18 +217,16 @@ define("CONTENT_ADMIN_OPT_LAN_105", "if enabled it shows the rating system for a
 define("CONTENT_ADMIN_OPT_LAN_106", "page sort/order");
 define("CONTENT_ADMIN_OPT_LAN_107", "choose a default sort and order method");
 define("CONTENT_ADMIN_OPT_LAN_108", "order by 'order' will use the ordering number you have provided in the Manage Order area");
-define("CONTENT_ADMIN_OPT_LAN_109", "heading_ASC");
-define("CONTENT_ADMIN_OPT_LAN_110", "heading_DESC");
-define("CONTENT_ADMIN_OPT_LAN_111", "date_ASC");
-define("CONTENT_ADMIN_OPT_LAN_112", "date_DESC");
-define("CONTENT_ADMIN_OPT_LAN_113", "refer_ASC");
-define("CONTENT_ADMIN_OPT_LAN_114", "refer_DESC");
-define("CONTENT_ADMIN_OPT_LAN_115", "parent_ASC");
-define("CONTENT_ADMIN_OPT_LAN_116", "parent_DESC");
-define("CONTENT_ADMIN_OPT_LAN_117", "order_ASC");
-define("CONTENT_ADMIN_OPT_LAN_118", "order_DESC");
-
-
+define("CONTENT_ADMIN_OPT_LAN_109", "heading (ASC)");
+define("CONTENT_ADMIN_OPT_LAN_110", "heading (DESC)");
+define("CONTENT_ADMIN_OPT_LAN_111", "date (ASC)");
+define("CONTENT_ADMIN_OPT_LAN_112", "date (DESC)");
+define("CONTENT_ADMIN_OPT_LAN_113", "refer (ASC)");
+define("CONTENT_ADMIN_OPT_LAN_114", "refer (DESC)");
+define("CONTENT_ADMIN_OPT_LAN_115", "parent (ASC)");
+define("CONTENT_ADMIN_OPT_LAN_116", "parent (DESC)");
+define("CONTENT_ADMIN_OPT_LAN_117", "order (ASC)");
+define("CONTENT_ADMIN_OPT_LAN_118", "order (DESC)");
 define("CONTENT_ADMIN_OPT_LAN_119", "content category page (content.php?type.X.cat.Y)");
 define("CONTENT_ADMIN_OPT_LAN_120", "parent item");
 define("CONTENT_ADMIN_OPT_LAN_121", "should the parent item be shown");
@@ -257,12 +246,8 @@ define("CONTENT_ADMIN_OPT_LAN_134", "choose a render method of all the menus");
 define("CONTENT_ADMIN_OPT_LAN_135", "you can render the parent, sub and child items each in their own menu, or you can combine them together into one single menu");
 define("CONTENT_ADMIN_OPT_LAN_136", "each in seperate menus");
 define("CONTENT_ADMIN_OPT_LAN_137", "combine into one menu");
-
-
 define("CONTENT_ADMIN_OPT_LAN_138", "content page (content.php?type.X.content.Y)");
 define("CONTENT_ADMIN_OPT_LAN_139", "choose which sections should be shown when viewing a content item");
-
-
 define("CONTENT_ADMIN_OPT_LAN_140", "menu properties");
 define("CONTENT_ADMIN_OPT_LAN_141", "caption");
 define("CONTENT_ADMIN_OPT_LAN_142", "define the caption of the menu");
@@ -323,9 +308,7 @@ define("CONTENT_ADMIN_OPT_LAN_196", "define the width of the icon");
 define("CONTENT_ADMIN_OPT_LAN_197", "if you have chosen to display the 'content icon', specify the width of the content icon to show. enter only a numeric value of the amount of pixels you want. do not add the 'px' to the number.");
 define("CONTENT_ADMIN_OPT_LAN_198", "");
 define("CONTENT_ADMIN_OPT_LAN_199", "");
-
 define("CONTENT_ADMIN_OPT_LAN_200", "update options");
-
 define("CONTENT_ADMIN_OPT_LAN_201", "");
 define("CONTENT_ADMIN_OPT_LAN_202", "");
 define("CONTENT_ADMIN_OPT_LAN_203", "");
@@ -335,7 +318,6 @@ define("CONTENT_ADMIN_OPT_LAN_206", "");
 define("CONTENT_ADMIN_OPT_LAN_207", "");
 define("CONTENT_ADMIN_OPT_LAN_208", "");
 define("CONTENT_ADMIN_OPT_LAN_209", "");
-
 define("CONTENT_ADMIN_OPT_LAN_210", "");
 define("CONTENT_ADMIN_OPT_LAN_211", "");
 define("CONTENT_ADMIN_OPT_LAN_212", "");
@@ -457,7 +439,6 @@ define("CONTENT_ADMIN_MAIN_LAN_3", "content item deleted");
 define("CONTENT_ADMIN_MAIN_LAN_4", "parent text");
 define("CONTENT_ADMIN_MAIN_LAN_5", "parent icon");
 define("CONTENT_ADMIN_MAIN_LAN_6", "");
-
 define("CONTENT_ADMIN_MAIN_LAN_7", "Welcome to the Content Management System !");
 define("CONTENT_ADMIN_MAIN_LAN_8", "This information is shown because the table of the Content Management Plugin contains no records.");
 define("CONTENT_ADMIN_MAIN_LAN_9", "Please read the following information carefully and choose what you want to do.");
@@ -560,18 +541,16 @@ define("CONTENT_LAN_6", "all categories");
 define("CONTENT_LAN_7", "all authors");
 define("CONTENT_LAN_8", "top rated items");
 define("CONTENT_LAN_9", "sort by ...");
-
-define("CONTENT_LAN_10", "heading_asc");
-define("CONTENT_LAN_11", "heading_desc");
-define("CONTENT_LAN_12", "date_asc");
-define("CONTENT_LAN_13", "date_desc");
-define("CONTENT_LAN_14", "refer_asc");
-define("CONTENT_LAN_15", "refer_desc");
-define("CONTENT_LAN_16", "parent_asc");
-define("CONTENT_LAN_17", "parent_desc");
+define("CONTENT_LAN_10", "heading (ASC)");
+define("CONTENT_LAN_11", "heading (DESC)");
+define("CONTENT_LAN_12", "date (ASC)");
+define("CONTENT_LAN_13", "date (DESC)");
+define("CONTENT_LAN_14", "refer (ASC)");
+define("CONTENT_LAN_15", "refer (DESC)");
+define("CONTENT_LAN_16", "parent (ASC)");
+define("CONTENT_LAN_17", "parent (DESC)");
 define("CONTENT_LAN_18", "search by keyword");
 define("CONTENT_LAN_19", "search");
-
 define("CONTENT_LAN_20", "content search results");
 define("CONTENT_LAN_21", "no content types yet.");
 define("CONTENT_LAN_22", "content types");
@@ -592,7 +571,6 @@ define("CONTENT_LAN_36", "moderate comments");
 define("CONTENT_LAN_37", "no content items rated yet");
 define("CONTENT_LAN_38", "top rated content items");
 define("CONTENT_LAN_39", "author list");
-
 define("CONTENT_LAN_40", "author user details");
 define("CONTENT_LAN_41", "download attached");
 define("CONTENT_LAN_42", "file");
@@ -603,7 +581,6 @@ define("CONTENT_LAN_46", "article index");
 define("CONTENT_LAN_47", "author");
 define("CONTENT_LAN_48", "content items");
 define("CONTENT_LAN_49", "last content item");
-
 define("CONTENT_LAN_50", "date");
 define("CONTENT_LAN_51", "Type List");
 define("CONTENT_LAN_52", "no valid authors found");
@@ -627,8 +604,8 @@ define("CONTENT_LAN_69", "email the");
 define("CONTENT_LAN_70", "print the");
 define("CONTENT_LAN_71", "content item");
 define("CONTENT_LAN_72", "category item");
-define("CONTENT_LAN_73", "order_asc");
-define("CONTENT_LAN_74", "order_desc");
+define("CONTENT_LAN_73", "order (ASC)");
+define("CONTENT_LAN_74", "order (DESC)");
 define("CONTENT_LAN_75", "submit content item");
 define("CONTENT_LAN_76", "create pdf file of the");
 define("CONTENT_LAN_77", "content search");
@@ -656,7 +633,6 @@ define("CONTENT_ADMIN_SUBMIT_LAN_6", "Content Type List");
 define("CONTENT_ADMIN_SUBMIT_LAN_7", "Content Type Submission");
 define("CONTENT_ADMIN_SUBMIT_LAN_8", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_9", "");
-
 define("CONTENT_ADMIN_SUBMIT_LAN_10", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_11", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_12", "");
@@ -714,7 +690,6 @@ define("CONTENT_ADMIN_CONVERSION_LAN_41", "warning");
 define("CONTENT_ADMIN_CONVERSION_LAN_42", "conversion results of the old content table to the new content plugin table");
 define("CONTENT_ADMIN_CONVERSION_LAN_43", "press the button to convert the old content table");
 define("CONTENT_ADMIN_CONVERSION_LAN_44", "the new content table already contains data !<br />are you sure you want to convert the old content table to the new content table ?<br /><br />if you still would like to convert the table, the old content data will be added to the already existing new content table, but no garantee can be made to assure that all items will be added to already existing new categories in a correct manner !");
-
 define("CONTENT_ADMIN_CONVERSION_LAN_45", "insertion failed: main parent not inserted");
 define("CONTENT_ADMIN_CONVERSION_LAN_46", "Start managing your content by going to the <a href='".e_PLUGIN."content/admin_content_config.php'>Content Manager Plugin Frontpage</a> !");
 define("CONTENT_ADMIN_CONVERSION_LAN_47", "conversion completed");

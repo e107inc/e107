@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.27 $
-|		$Date: 2005-05-05 23:20:22 $
+|		$Revision: 1.28 $
+|		$Date: 2005-05-08 20:01:18 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -809,10 +809,12 @@ class content{
 							}
 							$iconstring = $hrefpre."<img src='".$content_icon_path."blank.gif' alt='' style='".$width." ".$border."' />".$hrefpost;
 						}else{
-							$iconstring = "&nbsp;";
+							//$iconstring = "&nbsp;";
+							$iconstring = "";
 						}
 					}else{
-						$iconstring = "&nbsp;";
+						//$iconstring = "&nbsp;";
+						$iconstring = "";
 					}
 				}
 				return $iconstring;
