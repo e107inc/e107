@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.29 $
-|		$Date: 2005-05-03 22:54:33 $
+|		$Revision: 1.30 $
+|		$Date: 2005-05-08 20:01:11 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -442,36 +442,36 @@ function show_content(){
 						while($row = $sql -> db_Fetch()){
 							if(!is_object($sql2)){ $sql2 = new db; }
 
-							$content_pref = unserialize(stripslashes($row['content_pref']));
-							$content_pref["content_cat_icon_path_large_{$row['content_id']}"] = ($content_pref["content_cat_icon_path_large_{$row['content_id']}"] ? $content_pref["content_cat_icon_path_large_{$row['content_id']}"] : "{e_PLUGIN}content/images/cat/48/" );
-							$content_pref["content_cat_icon_path_small_{$row['content_id']}"] = ($content_pref["content_cat_icon_path_small_{$row['content_id']}"] ? $content_pref["content_cat_icon_path_small_{$row['content_id']}"] : "{e_PLUGIN}content/images/cat/16/" );
-							$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$row['content_id']}"]);
-							$content_cat_icon_path_small = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$row['content_id']}"]);
-							$content_icon_path = $aa -> parseContentPathVars($content_pref["content_icon_path_{$row['content_id']}"]);
-
-							// check userclasses for contents, and do not use those content_ids in the query
-							// if no valid content is found within a main parent, then don't show a link, else show a link
-
-							$unvalidparent = $aa -> checkSubCat("0.".$row['content_id']);
-							//$unvalidparent = $aa -> checkMainCat($row['content_id']);
-							//echo $unvalidparent."<br />";
-							$unvalidparent = ($unvalidparent == "" ? "" : "AND ".substr($unvalidparent, 0, -3) );
-
-							$contenttotal = $sql2 -> db_Count($plugintable, "(*)", "WHERE LEFT(content_parent,".(strlen($row['content_id'])).") = '".$row['content_id']."' AND content_refer != 'sa' ".$unvalidparent." ".$datequery." AND content_class IN (".USERCLASS_LIST.")" );
-
-							$CONTENT_TYPE_TABLE_TOTAL = ($contenttotal ? $contenttotal : "");
-							$CONTENT_TYPE_TABLE_TOTAL_LAN = ($contenttotal ? ($contenttotal == 1 ? CONTENT_LAN_53 : CONTENT_LAN_54) : "");
-							$row['content_heading'] = $tp -> toHTML($row['content_heading'], TRUE, "");
-							$row['content_subheading'] = $tp -> toHTML($row['content_subheading'], TRUE, "");
-							$CONTENT_TYPE_TABLE_HEADING = ($contenttotal != "0" ? "<a href='".e_SELF."?type.".$row['content_id']."'>".$row['content_heading']."</a>" : $row['content_heading'] );
-							$CONTENT_TYPE_TABLE_SUBHEADING = ($row['content_subheading'] ? $row['content_subheading'] : "");
-							if($contenttotal != "0"){
-								$CONTENT_TYPE_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "type.".$row['content_id'], "", $content_pref["content_blank_caticon_{$row['content_id']}"]);
-							}else{
-								$CONTENT_TYPE_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "", "", $content_pref["content_blank_caticon_{$row['content_id']}"]);
-							}
-							
 							if(check_class($row['content_class'])){
+								$content_pref = unserialize(stripslashes($row['content_pref']));
+								$content_pref["content_cat_icon_path_large_{$row['content_id']}"] = ($content_pref["content_cat_icon_path_large_{$row['content_id']}"] ? $content_pref["content_cat_icon_path_large_{$row['content_id']}"] : "{e_PLUGIN}content/images/cat/48/" );
+								$content_pref["content_cat_icon_path_small_{$row['content_id']}"] = ($content_pref["content_cat_icon_path_small_{$row['content_id']}"] ? $content_pref["content_cat_icon_path_small_{$row['content_id']}"] : "{e_PLUGIN}content/images/cat/16/" );
+								$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$row['content_id']}"]);
+								$content_cat_icon_path_small = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$row['content_id']}"]);
+								$content_icon_path = $aa -> parseContentPathVars($content_pref["content_icon_path_{$row['content_id']}"]);
+
+								// check userclasses for contents, and do not use those content_ids in the query
+								// if no valid content is found within a main parent, then don't show a link, else show a link
+
+								$unvalidparent = $aa -> checkSubCat("0.".$row['content_id']);
+								//$unvalidparent = $aa -> checkMainCat($row['content_id']);
+								//echo $unvalidparent."<br />";
+								$unvalidparent = ($unvalidparent == "" ? "" : "AND ".substr($unvalidparent, 0, -3) );
+
+								$contenttotal = $sql2 -> db_Count($plugintable, "(*)", "WHERE LEFT(content_parent,".(strlen($row['content_id'])).") = '".$row['content_id']."' AND content_refer != 'sa' ".$unvalidparent." ".$datequery." AND content_class IN (".USERCLASS_LIST.")" );
+
+								$CONTENT_TYPE_TABLE_TOTAL = ($contenttotal ? $contenttotal : "");
+								$CONTENT_TYPE_TABLE_TOTAL_LAN = ($contenttotal ? ($contenttotal == 1 ? CONTENT_LAN_53 : CONTENT_LAN_54) : "");
+								$row['content_heading'] = $tp -> toHTML($row['content_heading'], TRUE, "");
+								$row['content_subheading'] = $tp -> toHTML($row['content_subheading'], TRUE, "");
+								$CONTENT_TYPE_TABLE_HEADING = ($contenttotal != "0" ? "<a href='".e_SELF."?type.".$row['content_id']."'>".$row['content_heading']."</a>" : $row['content_heading'] );
+								$CONTENT_TYPE_TABLE_SUBHEADING = ($row['content_subheading'] ? $row['content_subheading'] : "");
+								if($contenttotal != "0"){
+									$CONTENT_TYPE_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "type.".$row['content_id'], "", $content_pref["content_blank_caticon_{$row['content_id']}"]);
+								}else{
+									$CONTENT_TYPE_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "", "", $content_pref["content_blank_caticon_{$row['content_id']}"]);
+								}							
+							
 								$content_type_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TYPE_TABLE);
 							}									
 						}
@@ -659,7 +659,7 @@ function show_content_cat($mode=""){
 				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery;
 				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number, $prefetchbreadcrumb, $unvalidcontent;
 				global $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END;
-
+				
 				if(!$CONTENT_CAT_LIST_TABLE){
 					if(!$content_pref["content_theme_{$type_id}"]){
 						require_once(e_PLUGIN."content/templates/default/content_cat_template.php");
@@ -671,6 +671,7 @@ function show_content_cat($mode=""){
 						}
 					}
 				}
+				
 				if(!$CONTENT_RECENT_TABLE){
 					if(!$content_pref["content_theme_{$type_id}"]){
 						require_once(e_PLUGIN."content/templates/default/content_recent_template.php");
@@ -689,6 +690,17 @@ function show_content_cat($mode=""){
 					$cachestr = "$plugintable.cat.$sub_action";
 				}
 				if($cache = $e107cache->retrieve($cachestr)){
+					if(!$CONTENT_CAT_LIST_TABLE){
+						if(!$content_pref["content_theme_{$type_id}"]){
+							require_once(e_PLUGIN."content/templates/default/content_cat_template.php");
+						}else{
+							if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_cat_template.php")){
+								require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_cat_template.php");
+							}else{
+								require_once(e_PLUGIN."content/templates/default/content_cat_template.php");
+							}
+						}
+					}
 					echo $cache;
 				}else{
 					ob_start();
@@ -1490,7 +1502,19 @@ function parse_content_cat_list_table($row){
 					$CONTENT_CAT_LIST_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.$sub_action}");
 					$CONTENT_CAT_LIST_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.$sub_action}");
 				}
-				
+				/*
+				if(!$CONTENT_CAT_LIST_TABLE){
+					if(!$content_pref["content_theme_{$type_id}"]){
+						require_once(e_PLUGIN."content/templates/default/content_cat_template.php");
+					}else{
+						if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_cat_template.php")){
+							require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_cat_template.php");
+						}else{
+							require_once(e_PLUGIN."content/templates/default/content_cat_template.php");
+						}
+					}
+				}
+				*/
 				return(preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LIST_TABLE));
 }
 

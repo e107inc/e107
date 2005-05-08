@@ -97,8 +97,8 @@ function print_item_pdf($id){
 			$creator = SITENAME;								//define creator
 			$author	= $authordetails[1];						//define author
 			$keywords = "";										//define keywords
-			$subject = $row['content_subheading'];						//define subject
-			$title = $row['content_heading'];							//define title
+			$subject = $row['content_subheading'];				//define subject
+			$title = $row['content_heading'];					//define title
 
 			//define url and logo to use in the header of the pdf file
 			$url = SITEURL.$PLUGINS_DIRECTORY."content/content.php?type.".$type_id.".content.".$row['content_id'];
@@ -106,6 +106,8 @@ function print_item_pdf($id){
 			define('CONTENTPDFLOGO', e_IMAGE."logo.png");		//define logo to add in header
 			//global $tp;
 			//$text = $tp -> toHTML($text, TRUE);
+			//$image_wh = Getimagesize(CONTENTPDFLOGO);
+			//print_r($image_wh);
 	
 			//always return an array with the following data:
 			return array($text, $creator, $author, $title, $subject, $keywords, $url);
@@ -120,10 +122,10 @@ function print_item_pdf($id){
 		//create a header; this will be added on each page
 		function Header(){
 			$this->SetY(15);
-			$this->SetFont('Arial','I',8);
-			$this->Image(CONTENTPDFLOGO, 10, 15, '', 0, '', '');
+			$this->SetFont('Arial','I',8);			
+			$this->Image(CONTENTPDFLOGO, 10, 15, 0, 0, '', '');
 			$y = $this->GetY();
-			$x = $this->GetX();
+			$x = $this->GetX();			
 			$image_wh = Getimagesize(CONTENTPDFLOGO);
 			$newx = $x + (($image_wh[0]/$this->k));
 			$newy = (($image_wh[1]/$this->k));
@@ -135,7 +137,7 @@ function print_item_pdf($id){
 			$this->SetFont('Arial','I',8);
 			$this->Cell($cellwidth,8,CONTENTPDFPAGEURL,0,2,'R');
 			$this->Cell($cellwidth,10,'Page '.$this->PageNo().'/{nb}',0,2,'R');
-			$this->Line(10, $newy+15, 200, $newy+15);
+			$this->Line(10, $newy+20, 200, $newy+20);
 			$this->Ln(20);
 		}
 
