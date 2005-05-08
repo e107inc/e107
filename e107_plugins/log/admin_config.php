@@ -11,12 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-05 20:21:02 $
+|     $Revision: 1.10 $
+|     $Date: 2005-05-08 17:13:45 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
+if (!getperms("P")) {
+	header("location:../index.php");
+	 exit;
+}
 
 if (isset($_POST['updateStats']))
 {
@@ -32,10 +36,7 @@ define("LOGPATH", e_PLUGIN."log/");
 @include_once(LOGPATH."languages/admin/".e_LANGUAGE.".php");
 @include_once(LOGPATH."languages/admin/English.php");
 
-if (!getperms("P")) {
-	header("location:../index.php");
-	 exit;
-}
+
 
 if(IsSet($_POST['wipeSubmit']))
 {
