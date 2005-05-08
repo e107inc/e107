@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.123 $
-|     $Date: 2005-05-08 00:56:51 $
-|     $Author: streaky $
+|     $Revision: 1.124 $
+|     $Date: 2005-05-08 18:38:00 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -291,6 +291,8 @@ $sql->db_Mark_Time('(Start: Pref/multilang done)');
 //
 //
 
+$e_online = new e_online();
+
 if (isset($pref['frontpage']) && isset($pref['frontpage_type']) && $pref['frontpage_type'] == "splash") {
 	$ip = $e107->getip();
 	if (!$sql->db_Count("online", "(*)", "WHERE online_ip='{$ip}' ")) {
@@ -427,7 +429,6 @@ init_session();
 
 
 $sql->db_Mark_Time('Start: Go online');
-$e_online = new e_online();
 $e_online->online($pref['track_online'], $pref['flood_protect']);
 
 $sql->db_Mark_Time('Start: Signup/splash/admin');
