@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.25 $
-|		$Date: 2005-05-04 08:32:38 $
+|		$Revision: 1.26 $
+|		$Date: 2005-05-09 22:25:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -64,6 +64,11 @@ if(isset($_POST['delete_cat'])){
 if(isset($_POST['delete_content'])){
 	$delete = "content";
 	$del_id = $_POST['delete_content'];
+}
+
+if(isset($_POST['delete_submitted'])){
+	$delete = "submitted";
+	$del_id = $_POST['delete_submitted'];
 }
 
 // ##### DB ---------------------------------------------------------------------------------------
@@ -117,7 +122,13 @@ if($delete == 'content'){
 			$message = CONTENT_ADMIN_ITEM_LAN_3;
 		}
 }
-
+echo $delete." -- ".$del_id."<br />";
+if($delete == 'submitted'){
+		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+			$e107cache->clear("content");
+			$message = CONTENT_ADMIN_SUBMIT_LAN_8;
+		}
+}
 
 if(isset($_POST['updateoptions'])){
 		$content_pref = $aa -> UpdateContentPref($_POST, $_POST['options_type']);

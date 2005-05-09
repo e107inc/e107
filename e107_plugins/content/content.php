@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.30 $
-|		$Date: 2005-05-08 20:01:11 $
+|		$Revision: 1.31 $
+|		$Date: 2005-05-09 22:25:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -183,6 +183,7 @@ if(IsSet($_POST['commentsubmit'])){
 	}else{
 		$row = $sql -> db_Fetch();
 		if($row[0] && (ANON===TRUE || USER===TRUE)){
+			echo USERNAME." - ".$_POST['comment']." - ".$plugintable." - ".$sub_action." - ".$pid." - ".$_POST['subject'];
 			$cobj -> enter_comment(USERNAME, $_POST['comment'], $plugintable, $sub_action, $pid, $_POST['subject']);
 			$e107cache->clear("comment.{$plugintable}.{$sub_action}");
 		}
@@ -855,7 +856,6 @@ function show_content_cat($mode=""){
 									while($row2 = $sql -> db_Fetch()){
 										if($pref['nested_comments']){
 											$text .= $cobj -> render_comment($row2, $plugintable , "comment", $sub_action, $width, $row['content_heading']);
-											$ns -> tablerender(CONTENT_LAN_35, $text);
 										}else{
 											$text .= $cobj -> render_comment($row2, $plugintable , "comment", $sub_action, $width, $row['content_heading']);
 										}
@@ -1105,7 +1105,6 @@ function show_content_item(){
 
 									if($pref['nested_comments']){
 										$text .= $cobj -> render_comment($row2, $plugintable , "comment", $sub_action, $width, $row['content_heading']);
-										$ns -> tablerender(CONTENT_LAN_35, $text);
 									}else{
 										$text .= $cobj -> render_comment($row2, $plugintable , "comment", $sub_action, $width, $row['content_heading']);
 									}

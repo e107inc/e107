@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.27 $
-|		$Date: 2005-05-08 20:01:18 $
+|		$Revision: 1.28 $
+|		$Date: 2005-05-09 22:25:43 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -608,7 +608,10 @@ class contentform{
 
 						$text = "<div style='text-align:center'>\n";
 						if($content_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_author, content_icon, content_parent", "content_refer = 'sa' ")){
-								$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>
+								//."?".$type.".".$type_id
+								$text .= "
+								".$rs -> form_open("post", e_SELF, "deletesubmittedform","","", "")."
+								<table style='".ADMIN_WIDTH."' class='fborder'>
 								<tr>
 								<td style='width:5%; text-align:center' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_8."</td>
 								<td style='width:5%; text-align:center' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_9."</td>
@@ -639,15 +642,23 @@ class contentform{
 											".($authordetails[0] == "0" ? $authordetails[1] : "<a href='".e_BASE."user.php?id.".$authordetails[0]."'>".$authordetails[1]."</a>")."	
 											(".$authordetails[2].")</td>
 											<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
+
+											<a href='".e_SELF."?".$type.".".$type_id_parent.".create.sa.".$cid."'>".CONTENT_ICON_EDIT."</a>
+									
+											<input type='image' value='{$cid}' title='delete' name='delete_submitted' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_10."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$cid." : ".$delete_heading."]")."')\"/>
+
+											</td>
+										</tr>";
+											/*
 											".$rs -> form_open("post", e_SELF."?".$type.".".$type_id_parent, "myform_{$cid}","","", "")."
 											<a href='".e_SELF."?".$type.".".$type_id_parent.".create.sa.".$cid."'>".CONTENT_ICON_EDIT."</a> 
 											<a onclick=\"if(jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_10."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$cid." : ".$delete_heading."]")."')){document.forms['myform_{$cid}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
 											".$rs -> form_hidden("content_delete_{$row['content_id']}", "delete")."
 											".$rs -> form_close()."
-											</td>
-										</tr>";
+											*/
 								}
-								$text .= "</table>";
+								$text .= "</table>
+								".$rs -> form_close();
 						}else{
 							$text .= "<div style='text-align:center'>".CONTENT_ADMIN_ITEM_LAN_50."</div>";
 						}

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-05-08 20:01:19 $
+|     $Revision: 1.31 $
+|     $Date: 2005-05-09 22:25:44 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -631,7 +631,7 @@ define("CONTENT_ADMIN_SUBMIT_LAN_4", "required field(s) left blank");
 define("CONTENT_ADMIN_SUBMIT_LAN_5", "Go back to the <a href='".e_SELF."'>main submission page</a> to submit more content<br />or<br />Go to the <a href='".e_PLUGIN."content/content.php'>content main page</a> to view content items.");
 define("CONTENT_ADMIN_SUBMIT_LAN_6", "Content Type List");
 define("CONTENT_ADMIN_SUBMIT_LAN_7", "Content Type Submission");
-define("CONTENT_ADMIN_SUBMIT_LAN_8", "");
+define("CONTENT_ADMIN_SUBMIT_LAN_8", "submitted content item deleted");
 define("CONTENT_ADMIN_SUBMIT_LAN_9", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_10", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_11", "");
