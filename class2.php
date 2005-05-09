@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.124 $
-|     $Date: 2005-05-08 18:38:00 $
-|     $Author: stevedunstan $
+|     $Revision: 1.125 $
+|     $Date: 2005-05-09 10:10:38 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -555,7 +555,7 @@ if ($sql->db_Select('menus', '*', "menu_location > 0 AND menu_class IN (".USERCL
 
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 
-if ((strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
+if ((strstr(e_SELF, "usersettings.php") && e_QUERY && getperms("4") && ADMIN) || (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
 	if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') !== FALSE) {
 		checkvalidtheme($pref['sitetheme']);
 	} else if (strstr(e_SELF, "newspost.php")) {
@@ -771,12 +771,12 @@ class e_online {
 	var $_flood_control_parsed;
 
 	function online($online_tracking = false, $flood_control = false, $clear_cache = false) {
-		
+
 		if($clear_cache == true) {
 			$this->_user_tracking_parsed = false;
 			$this->_flood_control_parsed = false;
 		}
-		
+
 		if($online_tracking == true || $flood_control == true) {
 			// If values not set (from e107_config.php, or elsewhere) set them
 			if(!isset($online_timeout)) {
