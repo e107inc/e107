@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-05-05 21:41:46 $
+|     $Revision: 1.11 $
+|     $Date: 2005-05-09 10:16:46 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -127,9 +127,9 @@ class page
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td style='width:5%; text-align: center;' class='forumheader'>ID</td>
-			<td style='width:60%' class='forumheader3'>Title</td>
-			<td style='width:15%; text-align: center;' class='forumheader3'>Type</td>
-			<td style='width:20%; text-align: center;' class='forumheader3'>Options</td>
+			<td style='width:60%' class='forumheader3'>".CUSLAN_1."</td>
+			<td style='width:15%; text-align: center;' class='forumheader3'>".CUSLAN_2."</td>
+			<td style='width:20%; text-align: center;' class='forumheader3'>".CUSLAN_3."</td>
 			</tr>
 			";
 
@@ -143,7 +143,7 @@ class page
 				<td style='width:15%; text-align: center;' class='forumheader3'>".($page_theme ? "menu" : "page")."</td>
 				<td style='width:20%; text-align: center;' class='forumheader3'>
 				<a href='".e_SELF."?".($page_theme ? "createm": "create").".edit.{$page_id}'>".ADMIN_EDIT_ICON."</a>
-				<input type='image' title='".LAN_DELETE."' name='delete_$page_id' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('Delete this page? [ ID: $page_id ]')\"/>
+				<input type='image' title='".LAN_DELETE."' name='delete_$page_id' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".CUSLAN_4." [ ID: $page_id ]')\"/>
 				</td>
 				</tr>
 				";
@@ -157,7 +157,7 @@ class page
 		$text .= "</div>
 		";
 
-		$ns -> tablerender("Existing Pages", $text);
+		$ns -> tablerender(CUSLAN_5, $text);
 
 	}
 
@@ -202,7 +202,7 @@ class page
 		if($mode)
 		{
 			$text .= "<tr>
-			<td style='width:30%' class='forumheader3'>Menu Name</td>
+			<td style='width:30%' class='forumheader3'>".CUSLAN_7."</td>
 			<td style='width:70%' class='forumheader3'>
 			";
 			if($edit)
@@ -222,7 +222,7 @@ class page
 			
 
 		$text .= "<tr>
-		<td style='width:30%' class='forumheader3'>Title / Caption</td>
+		<td style='width:30%' class='forumheader3'>".CUSLAN_8."</td>
 		<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='page_title' size='50' value='".$page_title."' maxlength='250' /></td>
 		</tr>
 		
@@ -230,7 +230,7 @@ class page
 		</tr>
 		
 		<tr>
-		<td style='width:30%' class='forumheader3'>Text</td>
+		<td style='width:30%' class='forumheader3'>".CUSLAN_9."</td>
 		<td style='width:70%' class='forumheader3'>
 		";
 
@@ -253,33 +253,33 @@ class page
 		if(!$mode)
 		{
 			$text .= "<tr>
-			<td style='width:30%' class='forumheader3'>Allow page to be rated</td>
+			<td style='width:30%' class='forumheader3'>".CUSLAN_10."</td>
 			<td style='width:70%;' class='forumheader3'>
-			<input type='radio' name='page_rating_flag' value='1'".($page_rating_flag ? " checked='checked'" : "")." /> yes&nbsp;&nbsp;
-			<input type='radio' name='page_rating_flag' value='0'".(!$page_rating_flag ? " checked='checked'" : "")." /> no
+			<input type='radio' name='page_rating_flag' value='1'".($page_rating_flag ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
+			<input type='radio' name='page_rating_flag' value='0'".(!$page_rating_flag ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
 			</td>
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>Allow comments</td>
+			<td style='width:30%' class='forumheader3'>".CUSLAN_13."</td>
 			<td style='width:70%;' class='forumheader3'>
-			<input type='radio' name='page_comment_flag' value='1'".($page_comment_flag ? " checked='checked'" : "")." /> yes&nbsp;&nbsp;
-			<input type='radio' name='page_comment_flag' value='0'".(!$page_comment_flag ? " checked='checked'" : "")." /> no
+			<input type='radio' name='page_comment_flag' value='1'".($page_comment_flag ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
+			<input type='radio' name='page_comment_flag' value='0'".(!$page_comment_flag ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
 			</td>
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>Password protect page<br /><span class='smalltext'>enter password to protect page</span></td>
+			<td style='width:30%' class='forumheader3'>".CUSLAN_14."<br /><span class='smalltext'>".CUSLAN_15."</span></td>
 			<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='page_password' size='20' value='".$page_password."' maxlength='50' /></td>
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>Create link in main menu<br /><span class='smalltext'>enter link name to create</span></td>
+			<td style='width:30%' class='forumheader3'>".CUSLAN_16."<br /><span class='smalltext'>".CUSLAN_17."</span></td>
 			<td style='width:70%' class='forumheader3'><input class='tbox' type='text' name='page_link' size='60' value='' maxlength='50' /></td>
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>Page / link visible to</td>
+			<td style='width:30%' class='forumheader3'>".CUSLAN_18."</td>
 			<td style='width:70%' class='forumheader3'>".r_userclass("page_class", $page_class)."</td>
 			</tr>
 			";
@@ -290,9 +290,9 @@ class page
 
 		(!$mode ? 
 
-		($edit ? "<input class='button' type='submit' name='updatePage' value='Update Page' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitPage' value='Create Page' />") : 
+		($edit ? "<input class='button' type='submit' name='updatePage' value='".CUSLAN_19."' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitPage' value='".CUSLAN_20."' />") : 
 		
-		($edit ? "<input class='button' type='submit' name='updateMenu' value='Update Menu' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitMenu' value='Create Menu' />"))
+		($edit ? "<input class='button' type='submit' name='updateMenu' value='".CUSLAN_21."' /><input type='hidden' name='pe_id' value='$id' />" : "<input class='button' type='submit' name='submitMenu' value='".CUSLAN_22."' />"))
 		
 		."
 		</td>
@@ -303,7 +303,7 @@ class page
 		</div>
 		";
 
-		$caption =(!$mode ? ($edit ? "Edit page" : "Create new page") : ($edit ? "Edit menu" : "Create new menu"));
+		$caption =(!$mode ? ($edit ? CUSLAN_23 : CUSLAN_24) : ($edit ? CUSLAN_25 : CUSLAN_26));
 		$ns -> tablerender($caption, $text);
 	}
 
@@ -326,7 +326,7 @@ class page
 			$menuname = ($type ? $tp -> toDB($_POST['menu_name']) : "");
 
 			$sql -> db_Insert("page", "0, '$page_title', '$page_text', '".USERID."', '".time()."', '".$_POST['page_rating_flag']."', '".$_POST['page_comment_flag']."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."' ");
-			$this -> message = "Page saved to database.";
+			$this -> message = CUSLAN_27;
 
 			if($type)
 			{
@@ -354,7 +354,7 @@ class page
 		global $sql;
 		$sql -> db_Delete("page", "page_id='$del_id' ");
 		$sql -> db_Delete("menus", "menu_path='$del_id' ");
-		$this -> message = "Page deleted";
+		$this -> message = CUSLAN_28;
 	}
 
 
@@ -372,7 +372,7 @@ class page
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 
 		<tr>
-		<td style='width:50%' class='forumheader3'>List pages if no page selected</td>
+		<td style='width:50%' class='forumheader3'>".CUSLAN_29."</td>
 		<td style='width:50%; text-align: right;' class='forumheader3'>
 		<input type='radio' name='listPages' value='1'".($pref['listPages'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
 		<input type='radio' name='listPages' value='0'".(!$pref['listPages'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
@@ -380,7 +380,7 @@ class page
 		</tr>
 
 		<tr>
-		<td style='width:50%' class='forumheader3'>Expiry time for cookie (in seconds)</td>
+		<td style='width:50%' class='forumheader3'>".CUSLAN_30."</td>
 		<td style='width:50%; text-align: right;' class='forumheader3'>
 		<input class='tbox' type='text' name='pageCookieExpire' size='15' value='".$pref['pageCookieExpire']."' maxlength='10' />
 		</td>
@@ -413,13 +413,13 @@ class page
 		{
 			$action = "main";
 		}
-		$var['main']['text'] = "Front page";
+		$var['main']['text'] = CUSLAN_11;
 		$var['main']['link'] = e_SELF;
 
-		$var['create']['text'] = "Create page";
+		$var['create']['text'] = CUSLAN_12;
 		$var['create']['link'] = e_SELF."?create";
 
-		$var['createm']['text'] = "Create menu";
+		$var['createm']['text'] = CUSLAN_31;
 		$var['createm']['link'] = e_SELF."?createm";
 
 		$var['options']['text'] = LAN_OPTIONS;
@@ -433,11 +433,11 @@ class page
 
 		if(count($cpages) || count($cmenus))
 		{
-			$var['convert']['text'] = "Convert old pages/menus";
+			$var['convert']['text'] = CUSLAN_32;
 			$var['convert']['link'] = e_SELF."?convert";
 		}
 
-		show_admin_menu("Page Options", $action, $var);
+		show_admin_menu(CUSLAN_33, $action, $var);
 	}
 
 
@@ -452,7 +452,7 @@ class page
 
 		$customs = array_merge($cpages, $cmenus);
 
-		$text = "<b>Beginning conversion ...</b><br /><br />";
+		$text = "<b>".CUSLAN_34." ...</b><br /><br />";
 
 		$count = 0;
 		foreach($customs as $p)
@@ -496,8 +496,8 @@ class page
 			}
 
 		}
-		$text .= "<br />Finished custom page update - updated $count ".($count == 1 ? "file" : "files").".<br /> To set your preferences for each page, please return to front page and edit the pages.";
-		$ns -> tablerender("Custom Page Update", $text);
+		$text .= "<br />".CUSLAN_35." $count ".($count == 1 ? "file" : "files").".<br /> ".CUSLAN_36."";
+		$ns -> tablerender(CUSLAN_37, $text);
 	}
 
 
