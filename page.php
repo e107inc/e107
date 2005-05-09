@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-05-08 19:34:04 $
+|     $Revision: 1.4 $
+|     $Date: 2005-05-09 21:14:30 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -270,7 +270,7 @@ class pageClass
 			}
 			$rate_text .= "</td><td style='width:50%; text-align:right'>";
 
-			if (!$rater->checkrated("page", $page_id) && USER) {
+			if (!$rater->checkrated("page", $this -> pageID) && USER) {
 				$rate_text .= $rater->rateselect("&nbsp;&nbsp;&nbsp;&nbsp; <b>Rate this page</b>", "page", $this -> pageID)."</b>";
 			}
 			else if(!USER) {
