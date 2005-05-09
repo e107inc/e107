@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.28 $
-|		$Date: 2005-05-08 20:01:18 $
+|		$Revision: 1.29 $
+|		$Date: 2005-05-09 22:25:43 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -346,8 +346,13 @@ class content{
 				if(!is_object($sqlauthor)){ $sqlauthor = new db; }
 
 				if(is_numeric($content_author)){
-					$sqlauthor -> db_Select("user", "user_id, user_name, user_email", "user_id=$content_author");
-					list($author_id, $author_name, $author_email) = $sqlauthor -> db_Fetch();
+					if(!$sqlauthor -> db_Select("user", "user_id, user_name, user_email", "user_id=$content_author")){
+						$author_id = "0";
+						$author_name = "...";
+						$author_email = "";
+					}else{
+						list($author_id, $author_name, $author_email) = $sqlauthor -> db_Fetch();
+					}
 					$getauthor = array($author_id, $author_name, $author_email, $content_author);
 				}else{
 					$tmp = explode("^", $content_author);
@@ -590,6 +595,7 @@ class content{
 					}else{
 						$query = " content_parent='".$id."' ";
 					}
+
 					if(!is_object($sqlprefetchbreadcrumb)){ $sqlprefetchbreadcrumb = new db; }
 					if(!$sqlprefetchbreadcrumb -> db_Select($plugintable, "content_id, content_heading, content_parent, content_order", " ".$query."  ")){
 						$parent = FALSE;
@@ -621,7 +627,7 @@ class content{
 								}else{
 									$parentchild = $this -> prefetchBreadCrumb($parent_parent.".".$parent_id, "", $style);
 								}
-								if($parentchild == TRUE){
+								if($parentchild !== FALSE){
 									if(is_array($parentchild[0])){
 										for($a=0;$a<count($parentchild);$a++){
 											$parent[] = $parentchild[$a];
@@ -686,6 +692,34 @@ class content{
 				$drawbreadcrumb = substr($parentparentname,0,-strlen($sep)-2);
 				return $drawbreadcrumb;
 		}
+
+//get category name from parent id value of the item
+function getCat($catid){
+	global $plugintable, $type_id, $content_pref;
+	$plugintable = "pcontent";
+
+	if(strpos($catid, ".")){
+		$tmp = explode(".", $catid);
+		$type_id = $tmp[0];
+		$tmp2 = array_reverse($tmp);
+		$query = " content_id = '".$tmp2[0]."' ";
+	}else{
+		$type_id = $catid;
+		$query = " content_id = '".$catid."' ";
+	}
+
+	if(!is_object($sqlgetcat)){ $sqlgetcat = new db; }
+	if(!$sqlgetcat -> db_Select($plugintable, "content_id, content_heading", " ".$query."  ")){
+		$getcat = FALSE;
+	}else{
+		list($parent_id, $parent_heading) = $sqlgetcat -> db_Fetch();
+		$getcat = "<a href='".e_PLUGIN."content/content.php?type.".$type_id.".cat.".$parent_id."'>".$parent_heading."</a>";
+	}	
+
+	return $getcat;
+							
+}
+
 
 		//only base root is being output (only used in content_submit and content_manager)
 		function drawBreadcrumbFromUrl($page="", $query="", $base="", $nolink=""){
