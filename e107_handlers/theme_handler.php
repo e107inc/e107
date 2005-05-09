@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-04-27 21:47:16 $
-|     $Author: stevedunstan $
+|     $Revision: 1.19 $
+|     $Date: 2005-05-09 07:21:56 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -124,10 +124,12 @@ class themeHandler{
 						$themeArray[$file]['info'] = $match[2];
 
 						preg_match('/xhtmlcompliant(\s=\s|=|\s=|=\s)(.*?);/', $themeContents, $match);
-						$themeArray[$file]['xhtmlcompliant'] = $match[2];
+						$xhtml = strtolower($match[2]);
+						$themeArray[$file]['xhtmlcompliant'] = ($xhtml == "true" ? true : false);
 
 						preg_match('/csscompliant(\s=\s|=|\s=|=\s)(.*?);/', $themeContents, $match);
-						$themeArray[$file]['csscompliant'] = $match[2];
+						$css = strtolower($match[2]);
+						$themeArray[$file]['csscompliant'] = ($css == "true" ? true : false);
 
 					}
 					closedir($handle2);
