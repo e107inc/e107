@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_menu/online_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-04 18:56:08 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-09 17:18:39 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -29,7 +29,7 @@ $caption = (file_exists(THEME."images/online_menu.png") ? "<img src='".THEME."im
 $total_members = $sql->db_Count("user");
 	
 if ($total_members > 1) {
-	$newest_member = $sql->db_Select("user", "user_id, user_name", "ORDER BY user_join DESC LIMIT 0,1", "no_where");
+	$newest_member = $sql->db_Select("user", "user_id, user_name", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1");
 	$row = $sql->db_Fetch();
 	 extract($row);
 	$text .= "<br />".ONLINE_L5.": ".$total_members.", ".ONLINE_L6.": <a href='".e_BASE."user.php?id.$user_id'>$user_name</a>";
