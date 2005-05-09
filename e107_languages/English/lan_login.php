@@ -4,14 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_login.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-04-29 14:19:00 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-09 19:33:36 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("LAN_27", "You left required field(s) blank");
 define("LAN_300", "Incorrect login. The entered data doesn't match to a registered user. Check if you have the CAPS-LOCK key activated as logins on this site are case sensitive");
-
 define("LAN_302", "You have not activated your account. You should have received an email with instructions on how to confirm your account. If not, please contact a site administrator.");
 define("LAN_303", "Incorrect code entered.");
 define("LAN_304", "That username/password combination is already in use.");
