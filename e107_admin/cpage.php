@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-05-09 10:16:46 $
+|     $Revision: 1.12 $
+|     $Date: 2005-05-09 17:14:42 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -255,16 +255,16 @@ class page
 			$text .= "<tr>
 			<td style='width:30%' class='forumheader3'>".CUSLAN_10."</td>
 			<td style='width:70%;' class='forumheader3'>
-			<input type='radio' name='page_rating_flag' value='1'".($page_rating_flag ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
-			<input type='radio' name='page_rating_flag' value='0'".(!$page_rating_flag ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
+			<input type='radio' name='page_rating_flag' value='1'".($page_rating_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
+			<input type='radio' name='page_rating_flag' value='0'".(!$page_rating_flag ? " checked='checked'" : "")." /> ".CUSLAN_39."
 			</td>
 			</tr>
 
 			<tr>
 			<td style='width:30%' class='forumheader3'>".CUSLAN_13."</td>
 			<td style='width:70%;' class='forumheader3'>
-			<input type='radio' name='page_comment_flag' value='1'".($page_comment_flag ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
-			<input type='radio' name='page_comment_flag' value='0'".(!$page_comment_flag ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
+			<input type='radio' name='page_comment_flag' value='1'".($page_comment_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
+			<input type='radio' name='page_comment_flag' value='0'".(!$page_comment_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."
 			</td>
 			</tr>
 
@@ -374,8 +374,8 @@ class page
 		<tr>
 		<td style='width:50%' class='forumheader3'>".CUSLAN_29."</td>
 		<td style='width:50%; text-align: right;' class='forumheader3'>
-		<input type='radio' name='listPages' value='1'".($pref['listPages'] ? " checked='checked'" : "")." /> ".ADSTAT_ON."&nbsp;&nbsp;
-		<input type='radio' name='listPages' value='0'".(!$pref['listPages'] ? " checked='checked'" : "")." /> ".ADSTAT_OFF."
+		<input type='radio' name='listPages' value='1'".($pref['listPages'] ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
+		<input type='radio' name='listPages' value='0'".(!$pref['listPages'] ? " checked='checked'" : "")." /> ".CUSLAN_39."
 		</td>
 		</tr>
 
@@ -388,7 +388,7 @@ class page
 
 		<tr>
 		<td colspan='2'  style='text-align:center' class='forumheader'>
-		<input class='button' type='submit' name='saveOptions' value='".ADSTAT_L15."' />
+		<input class='button' type='submit' name='saveOptions' value='".CUSLAN_40."' />
 		</td>
 		</tr>
 		</table>
