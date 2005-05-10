@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.8 $
-|		$Date: 2005-05-10 08:58:36 $
+|		$Revision: 1.9 $
+|		$Date: 2005-05-10 09:09:05 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -28,6 +28,9 @@ require_once(e_PLUGIN."content/handlers/content_db_class.php");
 $adb = new contentdb;
 require_once(e_PLUGIN."content/handlers/content_form_class.php");
 $aform = new contentform;
+require_once(e_HANDLER."file_class.php");
+$fl = new e_file;
+
 global $tp;
 
 if (file_exists(THEME."content_css.css")) {
