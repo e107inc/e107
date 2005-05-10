@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fla.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-05-10 17:37:02 $
+|     $Revision: 1.4 $
+|     $Date: 2005-05-10 19:18:03 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -32,10 +32,6 @@ if(e_QUERY)
 
 if(IsSet($_POST['delbanSubmit']))
 {
-
-
-echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
-
 
 	$delcount = 0;
 	foreach($_POST['fladelete'] as $delete)
