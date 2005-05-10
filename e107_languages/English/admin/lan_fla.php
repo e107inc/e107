@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_fla.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-05-10 17:00:02 $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-10 17:38:56 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -20,6 +20,9 @@ define("FLALAN_7", "Data");
 define("FLALAN_8", "IP address/ Host");
 define("FLALAN_9", "Options");
 define("FLALAN_10", "Delete / Ban checked entries");
-
+define("FLALAN_11", "check all delete checkboxes");
+define("FLALAN_12", "uncheck all delete checkboxes");
+define("FLALAN_13", "check all ban checkboxes");
+define("FLALAN_14", "uncheck all ban checkboxes");
 
 ?>

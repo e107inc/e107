@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fla.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-05-10 16:58:13 $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-10 17:37:02 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -30,14 +30,13 @@ if(e_QUERY)
 	list($action, $id) = explode(".", e_QUERY);
 }
 
-if($action == "del")
-{
-	$sql -> db_Delete("generic", "gen_id='$id' ");
-	$message = FLALAN_3;
-}
-
 if(IsSet($_POST['delbanSubmit']))
 {
+
+
+echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
+
+
 	$delcount = 0;
 	foreach($_POST['fladelete'] as $delete)
 	{
@@ -77,7 +76,7 @@ else
 	$faArray = $sql -> db_getList();
 
 	$text = "
-	<form action='".e_SELF."' id='newsform' method='post'>
+	<form method='post' action='".e_SELF."' id='flaform' >
 	<table class='fborder' style='width:99%;'>
 	<tr>
 	<td style='width: 20%;' class='forumheader'>".FLALAN_6."</td>
@@ -104,15 +103,38 @@ else
 
 	$text .= "
 	<tr>
+	<td colspan='4' class='forumheader' style='text-align: right;'>
+
+	<a href='".e_SELF."?checkall=1' onclick=\"setCheckboxes('flaform', true, 'fladelete[]'); return false;\">".FLALAN_11."</a> -
+	<a href='".e_SELF."' onclick=\"setCheckboxes('flaform', false, 'fladelete[]'); return false;\">".FLALAN_12."</a>
+	<br />
+	<a href='".e_SELF."?checkall=1' onclick=\"setCheckboxes('flaform', true, 'flaban[]'); return false;\">".FLALAN_13."</a> -
+	<a href='".e_SELF."' onclick=\"setCheckboxes('flaform', false, 'flaban[]'); return false;\">".FLALAN_14."</a>
+	
+	</td>
+	</tr>
+
+	<tr>
 	<td colspan='4' class='forumheader' style='text-align: center;'><input class='button' type='submit' name='delbanSubmit' value='".FLALAN_10."' /></td>
 	</tr>
 	</table>
 	</form>
+
+	<script type=\"text/javascript\">
+	
+	</script>
+
+
 	";
 }
 
 $ns->tablerender(FLALAN_1, $text);
 
 require_once("footer.php");
+
+/*
+<a href='".e_SELF."?checkall=1' onclick=\"setCheckboxes('flaform', true); return false;\">".FLALAN_11."</a> -
+	<a href='".e_SELF."' onclick=\"setCheckboxes('flaform', false); return false;\">".FLALAN_12."</a>
+*/
 
 ?>
