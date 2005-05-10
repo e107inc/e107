@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-08 12:16:24 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-10 12:38:39 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_PLUGIN")){ exit; }
@@ -26,7 +26,7 @@ if(strstr(e_SELF, "comment.php")) {
 	$type = 5;
 	$des = BACKEND_MENU_L4;
 }
-if(strstr(e_SELF, "forum")) {
+if(strstr(e_SELF, "/forum")) {
 	$type = 6;
 	$des = BACKEND_MENU_L5;
 }
@@ -34,12 +34,12 @@ if(strstr(e_SELF, "forum_viewtopic")) {
 	$type = 7;
 	$des = BACKEND_MENU_L6;
 }
-if(strstr(e_SELF, "chat")) {
+if(strstr(e_SELF, "chat.php")) {
 	$type = 9;
 	$des = BACKEND_MENU_L7;
 }
 
-if(strstr(e_SELF, "bugtracker")) {
+if(strstr(e_SELF, "/bugtracker")) {
 	$type = 10;
 	$des = BACKEND_MENU_L8;
 }
