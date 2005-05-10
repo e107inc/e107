@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-05-09 22:25:44 $
+|     $Revision: 1.32 $
+|     $Date: 2005-05-10 08:59:48 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -308,10 +308,12 @@ define("CONTENT_ADMIN_OPT_LAN_196", "define the width of the icon");
 define("CONTENT_ADMIN_OPT_LAN_197", "if you have chosen to display the 'content icon', specify the width of the content icon to show. enter only a numeric value of the amount of pixels you want. do not add the 'px' to the number.");
 define("CONTENT_ADMIN_OPT_LAN_198", "");
 define("CONTENT_ADMIN_OPT_LAN_199", "");
+
 define("CONTENT_ADMIN_OPT_LAN_200", "update options");
-define("CONTENT_ADMIN_OPT_LAN_201", "");
-define("CONTENT_ADMIN_OPT_LAN_202", "");
-define("CONTENT_ADMIN_OPT_LAN_203", "");
+
+define("CONTENT_ADMIN_OPT_LAN_201", "override comment system");
+define("CONTENT_ADMIN_OPT_LAN_202", "allow comments on all items");
+define("CONTENT_ADMIN_OPT_LAN_203", "if enabled it allows the posting of comments on all content items, regardless of their individual setting");
 define("CONTENT_ADMIN_OPT_LAN_204", "");
 define("CONTENT_ADMIN_OPT_LAN_205", "");
 define("CONTENT_ADMIN_OPT_LAN_206", "");
@@ -423,9 +425,9 @@ define("CONTENT_ADMIN_ITEM_LAN_88", "to create an item in the earlier selected m
 define("CONTENT_ADMIN_ITEM_LAN_89", "to edit an item in the earlier selected main category");
 define("CONTENT_ADMIN_ITEM_LAN_90", "click here");
 define("CONTENT_ADMIN_ITEM_LAN_91", "to re-edit the same item");
-define("CONTENT_ADMIN_ITEM_LAN_92", "");
-define("CONTENT_ADMIN_ITEM_LAN_93", "");
-define("CONTENT_ADMIN_ITEM_LAN_94", "");
+define("CONTENT_ADMIN_ITEM_LAN_92", "template");
+define("CONTENT_ADMIN_ITEM_LAN_93", "choose a layout template");
+define("CONTENT_ADMIN_ITEM_LAN_94", "select a layout template");
 define("CONTENT_ADMIN_ITEM_LAN_95", "");
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "order is increased");

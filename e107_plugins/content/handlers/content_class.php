@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.29 $
-|		$Date: 2005-05-09 22:25:43 $
+|		$Revision: 1.30 $
+|		$Date: 2005-05-10 08:59:47 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -109,6 +109,7 @@ class content{
 				$content_pref["content_content_authoremail_nonmember_{$id}"] = "0";		//show email non member in content page
 				$content_pref["content_content_peicon_all_{$id}"] = "0";				//override printemail icons
 				$content_pref["content_content_rating_all_{$id}"] = "0";				//override rating system
+				$content_pref["content_content_comment_all_{$id}"] = "0";				//override comment system				
 
 				$content_pref["content_menu_caption_{$id}"] = "content menu";			//caption of menu
 				$content_pref["content_menu_search_{$id}"] = "1";						//show search keyword
@@ -264,6 +265,7 @@ class content{
 				$content_pref["content_content_authoremail_nonmember_{$id}"] = $_POST["content_content_authoremail_nonmember_{$id}"];
 				$content_pref["content_content_peicon_all_{$id}"] = $_POST["content_content_peicon_all_{$id}"];
 				$content_pref["content_content_rating_all_{$id}"] = $_POST["content_content_rating_all_{$id}"];
+				$content_pref["content_content_comment_all_{$id}"] = $_POST["content_content_comment_all_{$id}"];
 
 				$content_pref["content_menu_caption_{$id}"] = $_POST["content_menu_caption_{$id}"];
 				$content_pref["content_menu_search_{$id}"] = $_POST["content_menu_search_{$id}"];
