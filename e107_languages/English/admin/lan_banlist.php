@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_banlist.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-10 12:44:17 $
+|     $Revision: 1.5 $
+|     $Date: 2005-05-10 17:00:02 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -18,6 +18,5 @@ define("BANLAN_7", "Reason");
 define("BANLAN_8", "Ban User");
 define("BANLAN_9", "Ban users from site");
 define("BANLAN_10", "IP / Email / Reason");
-define("BANLAN_11", "User attempted to login using incorrect username/password");
 
 ?>
