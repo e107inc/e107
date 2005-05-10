@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_recent_template.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-05-03 15:04:20 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-10 09:51:22 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -32,7 +32,7 @@ if(!$CONTENT_RECENT_TABLE){
 							<tr><td class='content_heading'>{CONTENT_RECENT_TABLE_HEADING}</td></tr>
 							<tr><td class='content_subheading'>{CONTENT_RECENT_TABLE_SUBHEADING}</td></tr>
 							<tr><td class='content_summary'>{CONTENT_RECENT_TABLE_SUMMARY}</td></tr>
-							<tr><td class='content_info'>{CONTENT_RECENT_TABLE_DATE} {CONTENT_RECENT_TABLE_EPICONS} {CONTENT_RECENT_TABLE_AUTHORDETAILS} ".CONTENT_LAN_44." {CONTENT_RECENT_TABLE_REFER}</td></tr>
+							<tr><td class='content_info'>{CONTENT_RECENT_TABLE_DATE} {CONTENT_RECENT_TABLE_EPICONS} {CONTENT_RECENT_TABLE_AUTHORDETAILS} {CONTENT_RECENT_TABLE_EDITICON} ".CONTENT_LAN_44." {CONTENT_RECENT_TABLE_REFER}</td></tr>
 							<tr><td class='content_rating'>{CONTENT_RECENT_TABLE_RATING}</td></tr>
 							<tr><td class='content_parent'>{CONTENT_RECENT_TABLE_PARENT}</td></tr>
 						</table>

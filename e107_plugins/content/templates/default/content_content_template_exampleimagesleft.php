@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template_exampleimagesleft.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-10 08:59:48 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-10 09:51:22 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -70,7 +70,7 @@ if(!$CONTENT_CONTENT_TABLE){
 						</tr>
 						<tr>
 							<td class='content_info' colspan='2'>
-								{CONTENT_CONTENT_TABLE_DATE} / {CONTENT_CONTENT_TABLE_AUTHORDETAILS} {CONTENT_CONTENT_TABLE_EPICONS}
+								{CONTENT_CONTENT_TABLE_DATE} / {CONTENT_CONTENT_TABLE_AUTHORDETAILS} {CONTENT_CONTENT_TABLE_EPICONS} {CONTENT_CONTENT_TABLE_EDITICON}
 							</td>
 						</tr>";
 

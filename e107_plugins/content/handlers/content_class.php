@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.30 $
-|		$Date: 2005-05-10 08:59:47 $
+|		$Revision: 1.31 $
+|		$Date: 2005-05-10 09:51:21 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -91,6 +91,7 @@ class content{
 				$content_pref["content_list_peicon_all_{$id}"] = "0";					//override printemail icons
 				$content_pref["content_list_rating_all_{$id}"] = "0";					//override rating system
 				$content_pref["content_defaultorder_{$id}"] = "orderddate";				//default sort and order method
+				$content_pref["content_list_editicon_{$id}"] = "0";						//show link in list pages to admin edit item
 
 				$content_pref["content_cat_showparent_{$id}"] = "1";					//show parent item in category page
 				$content_pref["content_cat_showparentsub_{$id}"] = "1";					//show subcategories in category page
@@ -110,6 +111,7 @@ class content{
 				$content_pref["content_content_peicon_all_{$id}"] = "0";				//override printemail icons
 				$content_pref["content_content_rating_all_{$id}"] = "0";				//override rating system
 				$content_pref["content_content_comment_all_{$id}"] = "0";				//override comment system				
+				$content_pref["content_content_editicon_{$id}"] = "0";					//show link in content page to admin edit item
 
 				$content_pref["content_menu_caption_{$id}"] = "content menu";			//caption of menu
 				$content_pref["content_menu_search_{$id}"] = "1";						//show search keyword
@@ -247,6 +249,7 @@ class content{
 				$content_pref["content_list_peicon_all_{$id}"] = $_POST["content_list_peicon_all_{$id}"];
 				$content_pref["content_list_rating_all_{$id}"] = $_POST["content_list_rating_all_{$id}"];
 				$content_pref["content_defaultorder_{$id}"] = $_POST["content_defaultorder_{$id}"];
+				$content_pref["content_list_editicon_{$id}"] = $_POST["content_list_editicon_{$id}"];
 
 				$content_pref["content_cat_showparent_{$id}"] = $_POST["content_cat_showparent_{$id}"];
 				$content_pref["content_cat_showparentsub_{$id}"] = $_POST["content_cat_showparentsub_{$id}"];
@@ -266,6 +269,7 @@ class content{
 				$content_pref["content_content_peicon_all_{$id}"] = $_POST["content_content_peicon_all_{$id}"];
 				$content_pref["content_content_rating_all_{$id}"] = $_POST["content_content_rating_all_{$id}"];
 				$content_pref["content_content_comment_all_{$id}"] = $_POST["content_content_comment_all_{$id}"];
+				$content_pref["content_content_editicon_{$id}"] = $_POST["content_content_editicon_{$id}"];
 
 				$content_pref["content_menu_caption_{$id}"] = $_POST["content_menu_caption_{$id}"];
 				$content_pref["content_menu_search_{$id}"] = $_POST["content_menu_search_{$id}"];

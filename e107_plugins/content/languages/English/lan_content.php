@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-05-10 08:59:48 $
+|     $Revision: 1.33 $
+|     $Date: 2005-05-10 09:51:21 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -27,6 +27,9 @@ define("CONTENT_ICON_LAN_13", "personal admin");
 define("CONTENT_ICON_LAN_14", "personal contentmanager");
 
 if (!defined('CONTENT_ICON_EDIT')) { define("CONTENT_ICON_EDIT", "<img src='".e_PLUGIN."content/images/maintain_16.png' alt='".CONTENT_ICON_LAN_0."' style='border:0; cursor:pointer;' />"); }
+//maintain_16
+//edit_16
+
 if (!defined('CONTENT_ICON_DELETE')) { define("CONTENT_ICON_DELETE", "<img src='".e_PLUGIN."content/images/banlist_16.png' alt='".CONTENT_ICON_LAN_1."' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_DELETE_BASE')) { define("CONTENT_ICON_DELETE_BASE", e_PLUGIN."content/images/banlist_16.png"); }
 if (!defined('CONTENT_ICON_OPTIONS')) { define("CONTENT_ICON_OPTIONS", "<img src='".e_PLUGIN."content/images/cat_settings_16.png' alt='".CONTENT_ICON_LAN_2."' style='border:0; cursor:pointer;' />"); }
@@ -314,7 +317,7 @@ define("CONTENT_ADMIN_OPT_LAN_200", "update options");
 define("CONTENT_ADMIN_OPT_LAN_201", "override comment system");
 define("CONTENT_ADMIN_OPT_LAN_202", "allow comments on all items");
 define("CONTENT_ADMIN_OPT_LAN_203", "if enabled it allows the posting of comments on all content items, regardless of their individual setting");
-define("CONTENT_ADMIN_OPT_LAN_204", "");
+define("CONTENT_ADMIN_OPT_LAN_204", "edit icon : show icon with link to admin to edit content item");
 define("CONTENT_ADMIN_OPT_LAN_205", "");
 define("CONTENT_ADMIN_OPT_LAN_206", "");
 define("CONTENT_ADMIN_OPT_LAN_207", "");
