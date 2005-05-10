@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.32 $
-|		$Date: 2005-05-10 08:58:36 $
+|		$Revision: 1.33 $
+|		$Date: 2005-05-10 09:50:31 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1323,7 +1323,11 @@ function parse_content_recent_table($row, $prefetchbreadcrumb=""){
 					$CONTENT_RECENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
 					$CONTENT_RECENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
 				}
-				
+				if(getperms("P") && $content_pref["content_list_editicon_{$type_id}"]){
+					$CONTENT_RECENT_TABLE_EDITICON = "<a href='".e_PLUGIN."content/admin_content_config.php?type.".$type_id.".create.edit.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
+				}else{
+					$CONTENT_RECENT_TABLE_EDITICON = "";
+				}
 
 				if($content_pref["content_log_{$type_id}"] && $content_pref["content_list_refer_{$type_id}"]){
 					$refercounttmp = explode("^", $row['content_refer']);
@@ -1644,7 +1648,12 @@ function parse_content_content_table($row){
 					$CONTENT_CONTENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
 					$CONTENT_CONTENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
 				}
-				
+
+				if(getperms("P") && $content_pref["content_content_editicon_{$type_id}"]){
+					$CONTENT_CONTENT_TABLE_EDITICON = "<a href='".e_PLUGIN."content/admin_content_config.php?type.".$type_id.".create.edit.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
+				}else{
+					$CONTENT_CONTENT_TABLE_EDITICON = "";
+				}
 
 				$row['content_text'] = ($row['content_text'] ? $row['content_text'] : "");
 				$CONTENT_CONTENT_TABLE_TEXT = $row['content_text'];
