@@ -30,10 +30,14 @@ class e107{
 		$class2_file = $this->fix_windows_paths($class2_file);
 
 		$this->server_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $class2_file);
-		$this->http_path = 'http://'.$_SERVER['HTTP_HOST'].$this->server_path;
-		$this->https_path = 'https://'.$_SERVER['HTTP_HOST'].$this->server_path;
+		if ($_SERVER['SERVER_PORT'] != 80) {
+			$url_port = ":{$_SERVER['SERVER_PORT']}";
+		} else {
+			$url_port = "";
+		}
+		$this->http_path = 'http://'.$_SERVER['HTTP_HOST'].$url_port.$this->server_path;
+		$this->https_path = 'https://'.$_SERVER['HTTP_HOST'].$url_port.$this->server_path;
 		$this->class2_path = $class2_file;
-
 		$this->e107_file_root = $_SERVER['DOCUMENT_ROOT'].$this->server_path;
 
 		define("e_HTTP", $this->server_path);
@@ -52,7 +56,11 @@ class e107{
 		}
 	}
 	
-	function http_abs_location($dir_type = flase, $extended = false, $secure = false) {
+	function http_abs_location($dir_type = false, $extended = false, $secure = false) {
+		global $pref;
+		if ($pref['ssl_enabled']) {
+			$secure = true;
+		}
 		$site_uri = ($secure ? $this->https_path : $this->http_path);
 		return "{$site_uri}{$this->e107_dirs[$dir_type]}{$extended}";
 	}
