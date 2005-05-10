@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banlist.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-04-10 12:43:42 $
+|     $Revision: 1.11 $
+|     $Date: 2005-05-10 16:58:13 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -90,19 +90,6 @@ if ($action == "edit") {
 	unset($banlist_ip, $banlist_reason);
 	if (e_QUERY && strpos($_SERVER["HTTP_REFERER"], "userinfo")) {
 		$banlist_ip = $action;
-	}
-}
-
-
-
-if(strstr($action, "fla"))
-{
-	list($null, $id) = explode(".", $action);
-	if($sql -> db_Select("generic", "*", "gen_id=$id"))
-	{
-		$at = $sql -> db_Fetch();
-		$banlist_ip = $at['gen_ip'];
-		$banlist_reason = BANLAN_11;
 	}
 }
 

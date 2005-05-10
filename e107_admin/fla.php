@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fla.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-04-10 12:43:42 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-10 16:58:13 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -36,6 +36,32 @@ if($action == "del")
 	$message = FLALAN_3;
 }
 
+if(IsSet($_POST['delbanSubmit']))
+{
+	$delcount = 0;
+	foreach($_POST['fladelete'] as $delete)
+	{
+		$delcount ++;
+		$sql -> db_Delete("generic", "gen_id='$delete' ");
+	}
+	$message = FLALAN_3.": ".$delcount;
+
+	$bancount = 0;
+	foreach($_POST['flaban'] as $ban)
+	{
+		if($sql -> db_Select("generic", "*", "gen_id=$ban"))
+		{
+			$at = $sql -> db_Fetch();
+			$banlist_ip = $at['gen_ip'];
+			$sql->db_Insert("banlist", "'$banlist_ip', '".ADMINID."', '".FLALAN_4."' ");
+			$sql -> db_Delete("generic", "gen_id='$ban' ");
+			$bancount ++;
+		}
+	}
+	$message .= ", ".FLALAN_5.": ".$bancount;
+}
+
+
 if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
@@ -50,12 +76,14 @@ else
 
 	$faArray = $sql -> db_getList();
 
-	$text = "<table class='fborder' style='width:99%;'>
+	$text = "
+	<form action='".e_SELF."' id='newsform' method='post'>
+	<table class='fborder' style='width:99%;'>
 	<tr>
-	<td style='width: 20%;' class='forumheader'>Date</td>
-	<td style='width: 50%;' class='forumheader'>Data</td>
-	<td style='width: 20%;' class='forumheader'>IP / Host</td>
-	<td style='width: 10%; text-align: center;' class='forumheader'>Options</td>
+	<td style='width: 20%;' class='forumheader'>".FLALAN_6."</td>
+	<td style='width: 50%;' class='forumheader'>".FLALAN_7."</td>
+	<td style='width: 20%;' class='forumheader'>".FLALAN_8."</td>
+	<td style='width: 10%; text-align: center;' class='forumheader'>".FLALAN_9."</td>
 	</tr>
 	";
 
@@ -66,16 +94,25 @@ else
 		<td style='width: 20%;' class='forumheader3'>".$gen->convert_date($gen_datestamp, "forum")."</td>
 		<td style='width: 50%;' class='forumheader3'>".str_replace(":::", "<br />", $gen_chardata)."</td>
 		<td style='width: 20%;' class='forumheader'>".$fa['gen_ip']."<br />". gethostbyaddr(getenv($gen_ip))."</td>
-		<td style='width: 10%; text-align: center;' class='forumheader3'><a href='".e_SELF."?del.$gen_id'>Delete</a> - <a href='".e_ADMIN."banlist.php?fla.$gen_id'>Ban</a></td>
+		<td style='width: 10%; text-align: center;' class='forumheader3'>
+		<input type='checkbox' name='fladelete[]' value='$gen_id' /> delete<br />
+		<input type='checkbox' name='flaban[]' value='$gen_id' /> ban
+		</td>
 		</tr>
 		";
 	}
 
-	$text .= "</table>
+	$text .= "
+	<tr>
+	<td colspan='4' class='forumheader' style='text-align: center;'><input class='button' type='submit' name='delbanSubmit' value='".FLALAN_10."' /></td>
+	</tr>
+	</table>
+	</form>
 	";
 }
 
 $ns->tablerender(FLALAN_1, $text);
 
 require_once("footer.php");
+
 ?>
