@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.31 $
-|		$Date: 2005-05-09 22:25:02 $
+|		$Revision: 1.32 $
+|		$Date: 2005-05-10 08:58:36 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -30,7 +30,11 @@ $rs = new form;
 require_once(e_PLUGIN."content/handlers/content_class.php");
 $aa = new content;
 
-$eplug_css = "../../".$PLUGINS_DIRECTORY."content/content_css.css";
+if (file_exists(THEME."content_css.css")) {
+	$eplug_css = THEME."content_css.css";
+} else {
+	$eplug_css = e_BASE.$PLUGINS_DIRECTORY."content/content_css.css";
+}
 
 $lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content.php');
@@ -177,13 +181,15 @@ $unvalidcontent = ($unvalidcontent == "" ? "" : "AND ".substr($unvalidcontent, 0
 //post comment
 if(IsSet($_POST['commentsubmit'])){
 	$tmp = explode(".", e_QUERY);
-	if(!$sql -> db_Select($plugintable, "content_comment", "content_id='$sub_action' ")){
+	$sql = new db;
+	if(!$sql -> db_Select($plugintable, "content_comment", "content_id='".$sub_action."' ")){
 		header("location:".e_BASE."index.php");
 		exit;
 	}else{
 		$row = $sql -> db_Fetch();
-		if($row[0] && (ANON===TRUE || USER===TRUE)){
-			echo USERNAME." - ".$_POST['comment']." - ".$plugintable." - ".$sub_action." - ".$pid." - ".$_POST['subject'];
+		if(ANON === TRUE || USER === TRUE){
+			//enter_comment($author_name, $comment, $table, $id, $pid, $subject)
+			$pid = "0";
 			$cobj -> enter_comment(USERNAME, $_POST['comment'], $plugintable, $sub_action, $pid, $_POST['subject']);
 			$e107cache->clear("comment.{$plugintable}.{$sub_action}");
 		}
@@ -1093,7 +1099,7 @@ function show_content_item(){
 					}
 					$comflag = (count($pages) == $id ? TRUE : FALSE);
 
-					if($row['content_comment'] && $comflag){
+					if(($row['content_comment'] || $content_pref["content_content_comment_all_{$type_id}"]) && $comflag){
 						if($cache = $e107cache->retrieve("comment.$plugintable.$sub_action")){
 							echo $cache;
 						}else{
@@ -1552,7 +1558,7 @@ function parse_content_content_table($row){
 					$CONTENT_CONTENT_TABLE_REFER = ($refercounttmp[0] ? $refercounttmp[0] : "");
 				}
 
-				if($row['content_comment']){
+				if($row['content_comment'] || $content_pref["content_content_comment_all_{$type_id}"]){
 					$comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='".$sub_action."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 					$CONTENT_CONTENT_TABLE_COMMENT = $comment_total;
 				}
@@ -1666,7 +1672,17 @@ function parse_content_content_table($row){
 							$pagename[$i] = substr($arrpagename[1],0,-1);
 						}
 						$CONTENT_CONTENT_TABLE_PAGENAMES .= CONTENT_LAN_79." ".($i+1)." ".$pre." : <a href='".e_SELF."?".$type.".".$type_id.".content.".$sub_action.".".($i+1)."'>".$pagename[$i]."</a><br />";
+
+						if($idp==1){
+							$CONTENT_CONTENT_TABLE_SUMMARY = ($content_pref["content_content_summary_{$type_id}"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "") : "");
+							$CONTENT_CONTENT_TABLE_SUMMARY = $aa -> parseContentPathVars($CONTENT_CONTENT_TABLE_SUMMARY);
+						}else{
+							$CONTENT_CONTENT_TABLE_SUMMARY = "";
+						}
 					}
+				}else{
+					$CONTENT_CONTENT_TABLE_SUMMARY = ($content_pref["content_content_summary_{$type_id}"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "") : "");
+					$CONTENT_CONTENT_TABLE_SUMMARY = $aa -> parseContentPathVars($CONTENT_CONTENT_TABLE_SUMMARY);
 				}
 
 				$CONTENT_CONTENT_TABLE_TEXT = $aa -> parseContentPathVars($CONTENT_CONTENT_TABLE_TEXT);
@@ -1674,8 +1690,7 @@ function parse_content_content_table($row){
 				$CONTENT_CONTENT_TABLE_ICON = $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "", "100", $content_pref["content_blank_icon_{$type_id}"]);
 				$CONTENT_CONTENT_TABLE_HEADING = ($row['content_heading'] ? $row['content_heading'] : "");
 				$CONTENT_CONTENT_TABLE_SUBHEADING = ($content_pref["content_content_subheading_{$type_id}"] && $row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], TRUE, "") : "");
-				$CONTENT_CONTENT_TABLE_SUMMARY = ($content_pref["content_content_summary_{$type_id}"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "") : "");
-				$CONTENT_CONTENT_TABLE_SUMMARY = $aa -> parseContentPathVars($CONTENT_CONTENT_TABLE_SUMMARY);
+				
 
 				$custom = unserialize(stripslashes($row['contentprefvalue']));
 
@@ -1709,14 +1724,46 @@ function parse_content_content_table($row){
 
 				$CONTENT_CONTENT_TABLE = "";
 				if(!$CONTENT_CONTENT_TABLE){
+					//if no theme has been set, use default theme
 					if(!$content_pref["content_theme_{$type_id}"]){
-						require_once(e_PLUGIN."content/templates/default/content_content_template.php");
-					}else{
-						if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_content_template.php")){
-							require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_content_template.php");
+
+						//if custom layout is set
+						if($custom['content_custom_template']){
+							//if custom layout file exists
+							if(file_exists(e_PLUGIN."content/templates/default/".$custom['content_custom_template'])){
+								require_once(e_PLUGIN."content/templates/default/".$custom['content_custom_template']);
+							}else{
+								require_once(e_PLUGIN."content/templates/default/content_content_template.php");
+							}
 						}else{
 							require_once(e_PLUGIN."content/templates/default/content_content_template.php");
 						}
+					}else{
+						//if custom layout is set
+						if($custom['content_custom_template']){
+							//if custom layout file exists
+							if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/".$custom['content_custom_template'])){
+								require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/".$custom['content_custom_template']);
+							}else{
+								//if default layout from the set theme exists
+								if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_content_template.php")){
+									require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_content_template.php");
+								//else use default theme, default layout
+								}else{
+									require_once(e_PLUGIN."content/templates/default/content_content_template.php");
+								}
+							}
+						//if no custom layout is set
+						}else{
+							//if default layout from the set theme exists
+							if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_content_template.php")){
+								require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_content_template.php");
+							//else use default theme, default layout
+							}else{
+								require_once(e_PLUGIN."content/templates/default/content_content_template.php");
+							}
+						}
+						
 					}
 				}
 
@@ -1726,7 +1773,7 @@ function parse_content_content_table($row){
 					
 					$CONTENT_CONTENT_TABLE_CUSTOM_TAGS = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE_CUSTOM_PRE);
 					foreach($custom as $k => $v){
-						if(!($k == "content_custom_score" || $k == "content_custom_meta")){
+						if(!($k == "content_custom_score" || $k == "content_custom_meta" || $k = "content_custom_template")){
 							$CONTENT_CONTENT_TABLE_CUSTOM_KEY = substr($k,15);
 							$CONTENT_CONTENT_TABLE_CUSTOM_VALUE = $v;
 							$CONTENT_CONTENT_TABLE_CUSTOM_TAGS .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE_CUSTOM);

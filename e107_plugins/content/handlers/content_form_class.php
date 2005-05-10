@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.28 $
-|		$Date: 2005-05-09 22:25:43 $
+|		$Revision: 1.29 $
+|		$Date: 2005-05-10 08:59:48 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -574,6 +574,41 @@ class contentform{
 							";
 							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 						}
+
+						$checktemplate = TRUE;
+						if($checktemplate){
+							global $fl;
+
+							if(!$content_pref["content_theme_{$type_id}"]){
+								$dir = e_PLUGIN."content/templates/default";
+							}else{
+								if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_content_template.php")){
+									$dir = e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"];
+								}else{
+									$dir = e_PLUGIN."content/templates/default";
+								}
+							}
+							//get_files($path, $fmask = '', $omit='standard', $recurse_level = 0, $current_level = 0, $dirs_only = FALSE)
+							$rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*');
+							$templatelist = $fl->get_files($dir,"content_content",$rejectlist);
+
+							//template
+							$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_92;
+							$TOPIC_HEADING = CONTENT_ADMIN_ITEM_LAN_93;
+							$TOPIC_HELP = "";
+							$TOPIC_FIELD = "
+								".$rs -> form_select_open("content_template")."
+								".$rs -> form_option(CONTENT_ADMIN_ITEM_LAN_94, 0, "none");
+								foreach($templatelist as $template){
+									$templatename = substr($template['fname'], 25, -4);
+									$templatename = ($template['fname'] == "content_content_template.php" ? "default" : $templatename);
+									$TOPIC_FIELD .= $rs -> form_option($templatename, ($custom['content_custom_template'] == $template['fname'] ? "1" : "0"), $template['fname']);
+								}
+								$TOPIC_FIELD .= $rs -> form_select_close()."
+							";
+							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+						}
+						
 
 						$text .= $TOPIC_ROW_SPACER."
 						<tr>
@@ -2130,6 +2165,17 @@ class contentform{
 								<div $stylehelp>".CONTENT_ADMIN_OPT_LAN_105."</div><br />
 									".$rs -> form_radio("content_content_rating_all_{$id}", "1", ($content_pref["content_content_rating_all_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
 									".$rs -> form_radio("content_content_rating_all_{$id}", "0", ($content_pref["content_content_rating_all_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td class='forumheader3' $td1>".CONTENT_ADMIN_OPT_LAN_201."</td>
+							<td class='forumheader3'>								
+								<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".CONTENT_ADMIN_OPT_LAN_202."</a>
+								<div style='display: none;'>
+								<div $stylehelp>".CONTENT_ADMIN_OPT_LAN_203."</div><br />
+									".$rs -> form_radio("content_content_comment_all_{$id}", "1", ($content_pref["content_content_comment_all_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
+									".$rs -> form_radio("content_content_comment_all_{$id}", "0", ($content_pref["content_content_comment_all_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
 								</div>
 							</td>
 						</tr>
