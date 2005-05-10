@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-04-21 11:10:06 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2005-05-10 17:39:42 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -264,8 +264,8 @@ if($pref['multilanguage']){
 
 $text .= "
 	<br />
-	<a href='".e_SELF."?checkall=1' onclick=\"setCheckboxes('myform', true); return false;\">".ADMSLAN_49."</a> -
-	<a href='".e_SELF."' onclick=\"setCheckboxes('myform', false); return false;\">".ADMSLAN_51."</a>
+	<a href='".e_SELF."?checkall=1' onclick=\"setCheckboxes('myform', true, 'perms[]'); return false;\">".ADMSLAN_49."</a> -
+	<a href='".e_SELF."' onclick=\"setCheckboxes('myform', false, 'perms[]'); return false;\">".ADMSLAN_51."</a>
 
 	</td>
 	</tr>";

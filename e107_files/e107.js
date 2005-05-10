@@ -9,9 +9,9 @@ parent.location.href = self.location.href;
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.11 $
-|	$Date: 2005-04-12 02:23:50 $
-|	$Author: e107coders $
+|	$Revision: 1.12 $
+|	$Date: 2005-05-10 17:39:42 $
+|	$Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -137,8 +137,8 @@ function openwindow() {
 	opener.focus();
 }
 
-function setCheckboxes(the_form, do_check){
-	var elts = (typeof(document.forms[the_form].elements['perms[]']) != 'undefined') ? document.forms[the_form].elements['perms[]'] : document.forms[the_form].elements['perms[]'];
+function setCheckboxes(the_form, do_check, the_cb){
+	var elts = (typeof(document.forms[the_form].elements[the_cb]) != 'undefined') ? document.forms[the_form].elements[the_cb] : document.forms[the_form].elements[the_cb];
 	var elts_cnt  = (typeof(elts.length) != 'undefined') ? elts.length : 0;
 	if(elts_cnt){
 		for(var i = 0; i < elts_cnt; i++){
