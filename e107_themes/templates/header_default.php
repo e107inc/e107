@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-05-10 12:43:29 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.49 $
+|     $Date: 2005-05-11 19:01:28 $
+|     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
 
@@ -62,7 +62,7 @@ if(defined("PREVIEWTHEME")) {
 		}
 		else
 		{
-			echo "<link rel='stylesheet' href='".$e107->http_theme_dir."style.css' type='text/css' />\n";
+			echo "<link rel='stylesheet' href='".THEME."style.css' type='text/css' />\n";
 		}
 		if (!isset($no_core_css) || !$no_core_css) {
 			echo "<link rel='stylesheet' href='".e_FILE."e107.css' type='text/css' />\n";
