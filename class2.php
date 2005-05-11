@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.125 $
-|     $Date: 2005-05-09 10:10:38 $
-|     $Author: e107coders $
+|     $Revision: 1.126 $
+|     $Date: 2005-05-11 20:21:57 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -29,7 +29,7 @@ if(function_exists('ini_get')) {
 }
 if($register_globals == true){
 	while (list($global) = each($GLOBALS)) {
-		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart)$/', $global)) {
+		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart|start_ob_level)$/', $global)) {
 			unset($$global);
 		}
 	}
@@ -43,8 +43,7 @@ if(!isset($ADMIN_DIRECTORY)){
 	header("Location: install.php");
 }
 
-
-// clever stuff that figures out where the paths are on the fly.. no more need to hard-coded e_HTTP :)
+// clever stuff that figures out where the paths are on the fly.. no more need fo hard-coded e_HTTP :)
 include_once(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY.'e107_class.php');
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
 $e107 = new e107($e107_paths, __FILE__);
