@@ -1,0 +1,32 @@
+<?php
+
+	global $sql;
+	global $RECENT_MENU, $RECENT_MENU_START, $RECENT_MENU_END, $RECENT_PAGE_START, $RECENT_PAGE, $RECENT_PAGE_END;
+	global $RECENT_ICON, $RECENT_DATE, $RECENT_HEADING, $RECENT_AUTHOR, $RECENT_CATEGORY, $RECENT_INFO;
+	global $RECENT_DISPLAYSTYLE, $RECENT_CAPTION, $RECENT_STYLE_CAPTION, $RECENT_STYLE_BODY;
+
+	$RECENT_CAPTION = $arr[0];
+	$RECENT_DISPLAYSTYLE = ($arr[2] ? "" : "none");
+
+	$bullet = $this -> getBullet($arr[6], $mode);
+
+	$mp = MPREFIX;
+	$qry = "SELECT download_id, download_name, download_author, download_datestamp, {$mp}download_category.download_category_name, {$mp}download_category.download_category_class FROM {$mp}download LEFT JOIN {$mp}download_category ON {$mp}download.download_category={$mp}download_category.download_category_id WHERE {$mp}download.download_active = '1' ORDER BY download_datestamp DESC LIMIT 0,".$arr[7]." ";
+	$sql -> db_Select_gen($qry);
+	$row = $sql -> db_Fetch();
+	if (check_class($row['download_category_class'])) {
+
+		$rowheading = $this -> parse_heading($row['download_name'], $mode);
+
+		$ICON = $bullet;
+		$HEADING = "<a href='".e_BASE."download.php?view.".$row['download_id']."' title='".$row['download_name']."'>".$rowheading."</a>";
+		$AUTHOR = ($arr[3] ? $row['download_author'] : "");
+		$CATEGORY = ($arr[4] ? $row['download_category_name'] : "");
+		$DATE = ($arr[5] ? $this -> getRecentDate($row['download_datestamp'], $mode) : "");
+		$INFO = "";
+
+		$RECENT_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );
+
+	}
+
+?>
