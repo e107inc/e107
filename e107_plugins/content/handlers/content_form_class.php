@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.31 $
-|		$Date: 2005-05-12 20:49:55 $
+|		$Revision: 1.32 $
+|		$Date: 2005-05-12 21:11:06 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ if (!defined('ADMIN_WIDTH')) { define("ADMIN_WIDTH", "width:98%;"); }
 $stylespacer = "style='border:0; height:20px;'";
 //$stylehelp = "style='border:0; font-style:italic; color:#0087E5;'";
 $stylehelp = "class='smalltext'";
-$td1 = "style='width:20%; white-space:nowrap;'";
+$td1 = "style='width:20%; white-space:nowrap; vertical-align:top;'";
 
 //only used in admin pages, for normal rows (+ in content_submit.php creation form)
 $TOPIC_ROW_NOEXPAND = "
@@ -38,7 +38,7 @@ $TOPIC_ROW_NOEXPAND = "
 $TOPIC_ROW = "
 <tr>
 	<td class='forumheader3' $td1>{TOPIC_TOPIC}</td>
-	<td class='forumheader3'>
+	<td class='forumheader3' style='vertical-align:top;'>
 		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>{TOPIC_HEADING}</a>
 		<div style='display: none;'>
 			<div $stylehelp>{TOPIC_HELP}</div><br />
