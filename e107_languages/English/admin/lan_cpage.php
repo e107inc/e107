@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_cpage.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-05-09 17:17:12 $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-12 17:16:41 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -45,9 +45,10 @@ define("CUSLAN_34", "Beginning conversion");
 define("CUSLAN_35", "Finished custom page update - updated");
 define("CUSLAN_36", "To set your preferences for each page, please return to front page and edit the pages.");
 define("CUSLAN_37", "Custom Page Update");
-
 define("CUSLAN_38", "on");
 define("CUSLAN_39", "off");
 define("CUSLAN_40", "Save Options");
+
+define("CUSLAN_41", "Display author and date information");
 
 ?>

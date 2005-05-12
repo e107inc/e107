@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-05-12 12:35:48 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-05-12 17:16:41 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -150,8 +150,14 @@ class pageClass
 		$this -> parsePage();
 
 		$gen = new convert;
-		$text = "<span class='smalltext'>by ".$user_name.", ".$gen->convert_date($page_datestamp, "long")."</span><br /><br />";
-		$text .= "<b>".$this -> title."</b><br /><br />";
+		if($page_author)
+		{
+			$text = "<span class='smalltext'>by ".$user_name.", ".$gen->convert_date($page_datestamp, "long")."</span><br /><br />";
+		}
+		if($this -> title)
+		{
+			$text .= "<b>".$this -> title."</b><br /><br />";
+		}
 		$text .= $this -> pageToRender;
 		$text .= $this -> pageRating($page_rating_flag);
 		$text .= $this -> pageIndex();
