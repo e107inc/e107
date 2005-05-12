@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.31 $
-|		$Date: 2005-05-10 09:51:21 $
+|		$Revision: 1.32 $
+|		$Date: 2005-05-12 20:49:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -142,6 +142,7 @@ class content{
 		function getContentPref($id="") {
 				global $plugintable, $sql;
 				if(!is_object($sql)){ $sql = new db; }
+				$plugintable = "pcontent";
 				
 				if($id){	//if $id; use prefs from content table
 							$num_rows = $sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
@@ -152,11 +153,10 @@ class content{
 								$tmp = addslashes(serialize($content_pref));
 								$sql -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$id' ");
 								$sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
+								$row = $sql -> db_Fetch();
 							}
-
 							$content_pref = unserialize(stripslashes($row['content_pref']));
-							if(!is_array($content_pref)){ $content_pref = unserialize($row['content_pref']); }
-
+							if(!is_array($content_pref)){ echo $content_pref; $content_pref = unserialize($content_pref); }
 				
 				}else{		//if not $id; use prefs from default core table
 							$num_rows = $sql -> db_Select("core", "*", "e107_name='$plugintable' ");
@@ -169,7 +169,7 @@ class content{
 							}
 							$row = $sql -> db_Fetch();
 							$content_pref = unserialize(stripslashes($row['e107_value']));
-							if(!is_array($content_pref)){ $content_pref = unserialize($row['e107_value']); }
+							if(!is_array($content_pref)){ echo $content_pref; $content_pref = unserialize($content_pref); }
 				}
 
 				return $content_pref;
@@ -354,7 +354,7 @@ class content{
 				if(is_numeric($content_author)){
 					if(!$sqlauthor -> db_Select("user", "user_id, user_name, user_email", "user_id=$content_author")){
 						$author_id = "0";
-						$author_name = "...";
+						$author_name = "";
 						$author_email = "";
 					}else{
 						list($author_id, $author_name, $author_email) = $sqlauthor -> db_Fetch();
@@ -714,6 +714,7 @@ function getCat($catid){
 		$query = " content_id = '".$catid."' ";
 	}
 
+	$sqlgetcat = new db;
 	if(!is_object($sqlgetcat)){ $sqlgetcat = new db; }
 	if(!$sqlgetcat -> db_Select($plugintable, "content_id, content_heading", " ".$query."  ")){
 		$getcat = FALSE;
@@ -1275,15 +1276,32 @@ function getCat($catid){
 								$height = $imagearray[1];
 							}
 						}
+						$iconwidth = ($title == "help" ? "" : "width:100px;");
 
-						$popup = "<a href=\"javascript:openPerfectPopup('".$image."',".$width.",'".$title."','".$text."')\" style='cursor:pointer;' onmouseover=\"window.status='click to enlarge image'; return true;\" onmouseout=\"window.status=''; return true;\" ><img src='".$thumb."' style='border:1px solid #000; width:100px;' alt='' /></a><br /><br />";
+						$popup = "<a href=\"javascript:openPerfectPopup('".$image."',".$width.",'".$title."','".$text."')\" style='cursor:pointer;' onmouseover=\"window.status='click to enlarge image'; return true;\" onmouseout=\"window.status=''; return true;\" ><img src='".$thumb."' style='border:1px solid #000; ".$iconwidth."' alt='' /></a><br /><br />";
 
 					}else{
-						$popup .= "";
+						$popup = "";
 					}
 					return $popup;
-			}
+		}
 
+		function popupHelp($text, $image="", $width="500", $title=""){
+					//$image	:	full path to the image you want to show on screen
+					//$width	:	the width of the popup
+					//$title	:	the window title of the popup
+					//$text		:	the additional text to add into the popup
+
+					if(!$image || !file_exists($image)){
+						$image = e_IMAGE."admin_images/docs_16.png";
+					}
+					if(!$width){ $width = "500"; }
+					if(!$title){ $title = "content management help area"; }
+
+					$popup = "<a href=\"javascript:openHelpPopup(".$width.",'".$title."','".$text."')\" style='cursor:pointer;' onmouseover=\"window.status='click for help on this page'; return true;\" onmouseout=\"window.status=''; return true;\" ><img src='".$image."' style='border:0;' alt='' /></a>";
+
+					return $popup;
+		}
 }
 
 ?>
