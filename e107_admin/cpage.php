@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-05-09 17:14:42 $
+|     $Revision: 1.13 $
+|     $Date: 2005-05-12 17:15:24 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -190,6 +190,7 @@ class page
 				extract($row);
 				$page_title = $tp -> toFORM($page_title);
 				$data = $tp -> toFORM($page_text);
+				$page_display_authordate_flag = ($page_author );
 				$edit = TRUE;
 			}
 		}
@@ -264,7 +265,15 @@ class page
 			<td style='width:30%' class='forumheader3'>".CUSLAN_13."</td>
 			<td style='width:70%;' class='forumheader3'>
 			<input type='radio' name='page_comment_flag' value='1'".($page_comment_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
-			<input type='radio' name='page_comment_flag' value='0'".(!$page_comment_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."
+			<input type='radio' name='page_comment_flag' value='0'".(!$page_comment_flag ? " checked='checked'" : "")." /> ".CUSLAN_39."
+			</td>
+			</tr>
+
+			<tr>
+			<td style='width:30%' class='forumheader3'>".CUSLAN_41."</td>
+			<td style='width:70%;' class='forumheader3'>
+			<input type='radio' name='page_display_authordate_flag' value='1'".($page_display_authordate_flag ? " checked='checked'" : "")." /> ".CUSLAN_38."&nbsp;&nbsp;
+			<input type='radio' name='page_display_authordate_flag' value='0'".(!$page_display_authordate_flag ? " checked='checked'" : "")." /> ".CUSLAN_39."
 			</td>
 			</tr>
 
@@ -314,10 +323,11 @@ class page
 
 		$page_title = $tp -> toDB($_POST['page_title']);
 		$page_text = $tp -> toDB($_POST['data']);
+		$pauthor = ($_POST['page_display_authordate_flag'] ? USERID : 0);
 
 		if($mode)
 		{
-			$sql -> db_Update("page", "page_title='$page_title', page_text='$page_text', page_rating_flag='".$_POST['page_rating_flag']."', page_comment_flag='".$_POST['page_comment_flag']."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".$_POST['page_ip_restrict']."' WHERE page_id='$mode' ");
+			$sql -> db_Update("page", "page_title='$page_title', page_text='$page_text', page_author='$pauthor', page_rating_flag='".$_POST['page_rating_flag']."', page_comment_flag='".$_POST['page_comment_flag']."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".$_POST['page_ip_restrict']."' WHERE page_id='$mode' ");
 			$this -> message = "Page updated in database.";
 		}
 		else
@@ -325,7 +335,10 @@ class page
 
 			$menuname = ($type ? $tp -> toDB($_POST['menu_name']) : "");
 
-			$sql -> db_Insert("page", "0, '$page_title', '$page_text', '".USERID."', '".time()."', '".$_POST['page_rating_flag']."', '".$_POST['page_comment_flag']."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."' ");
+			
+			
+
+			$sql -> db_Insert("page", "0, '$page_title', '$page_text', '$pauthor', '".time()."', '".$_POST['page_rating_flag']."', '".$_POST['page_comment_flag']."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."' ");
 			$this -> message = CUSLAN_27;
 
 			if($type)
