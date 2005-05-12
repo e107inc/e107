@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/import/phpbb2.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-04-30 18:45:59 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-12 17:24:08 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -279,6 +279,7 @@ function convertUsers()
 	$usersArray = array(
 		array("phpbb" => "user_id", "e107" => "user_id", "type" => "INT"),
 		array("phpbb" => "username", "e107" => "user_name", "type" => "STRING"),
+		array("phpbb" => "username", "e107" => "user_loginname", "type" => "STRING"),
 		array("phpbb" => "user_password", "e107" => "user_password", "type" => "STRING"),
 		array("phpbb" => "user_email", "e107" => "user_email", "type" => "STRING"),
 		array("phpbb" => "user_website", "e107" => "user_homepage", "type" => "STRING"),
@@ -324,6 +325,7 @@ function convertTopics($poster)
 		array("phpbb" => "topic_title", "e107" => "thread_name", "type" => "STRING"),
 		array("phpbb" => "post_text", "e107" => "thread_thread", "type" => "STRING"),
 		array("phpbb" => "topic_poster", "e107" => "thread_user", "type" => "INT"), 
+		array("phpbb" => "null", "e107" => "thread_active", "type" => "INT", "value" => 1), 
 		array("phpbb" => "topic_time", "e107" => "thread_datestamp", "type" => "INT"),
 		array("phpbb" => "topic_views", "e107" => "thread_views", "type" => "INT"),
 		array("phpbb" => "topic_replies", "e107" => "thread_total_replies", "type" => "INT"), 
@@ -378,8 +380,6 @@ function createQuery($convertArray, $dataArray, $table)
 
 	$columns = substr($columns, 0, -1).")";
 	$values = substr($values, 0, -1).")";
-
-	//echo "INSERT INTO $table $columns VALUES $values<br />";
 
 	return "INSERT INTO $table $columns VALUES $values";
 	
