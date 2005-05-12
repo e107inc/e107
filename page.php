@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-05-09 21:14:30 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2005-05-12 12:35:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -172,7 +172,7 @@ class pageClass
 		}
 		else
 		{
-			$this -> pageToRender = $tp -> toHTML($this -> pageText, TRUE);
+			$this -> pageToRender = $tp -> toHTML($this -> pageText, TRUE, 'parse_sc');
 			return;
 		}
 
@@ -208,11 +208,11 @@ class pageClass
 		foreach($this -> pageTitles as $title)
 		{
 			$titlep = preg_replace("/\[newpage=(.*?)\]/", "\\1", $title);
-			$this -> pageTitles[$count] = ($titlep == "[newpage]" ? "Page ".($count+1)."&nbsp;" : $tp -> toHTML($titlep, TRUE));
+			$this -> pageTitles[$count] = ($titlep == "[newpage]" ? "Page ".($count+1)."&nbsp;" : $tp -> toHTML($titlep, TRUE, 'parse_sc'));
 			$count++;
 		}
 
-		$this -> pageToRender = $tp -> toHTML($pages[$this -> pageSelected], TRUE);
+		$this -> pageToRender = $tp -> toHTML($pages[$this -> pageSelected], TRUE, 'parse_sc');
 		$this -> title = (substr($this -> pageTitles[$this -> pageSelected], -1) == ";" ? "" : $this -> pageTitles[$this -> pageSelected]);
 
 
