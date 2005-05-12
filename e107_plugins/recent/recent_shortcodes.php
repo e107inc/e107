@@ -1,0 +1,35 @@
+<?php
+include_once(e_HANDLER.'shortcode_handler.php');
+$recent_shortcodes = e_shortcode::parse_scbatch(__FILE__);
+/*
+SC_BEGIN RECENT_DATE
+global $RECENT_DATE;
+return $RECENT_DATE;
+SC_END
+
+SC_BEGIN RECENT_ICON
+global $RECENT_ICON;
+return $RECENT_ICON;
+SC_END
+
+SC_BEGIN RECENT_HEADING
+global $RECENT_HEADING;
+return $RECENT_HEADING;
+SC_END
+
+SC_BEGIN RECENT_AUTHOR
+global $RECENT_AUTHOR;
+return $RECENT_AUTHOR;
+SC_END
+
+SC_BEGIN RECENT_CATEGORY
+global $RECENT_CATEGORY;
+return $RECENT_CATEGORY;
+SC_END
+
+SC_BEGIN RECENT_INFO
+global $RECENT_INFO;
+return $RECENT_INFO;
+SC_END
+*/
+?>
