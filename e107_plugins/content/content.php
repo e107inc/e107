@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.33 $
-|		$Date: 2005-05-10 09:50:31 $
+|		$Revision: 1.34 $
+|		$Date: 2005-05-12 20:49:41 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1728,7 +1728,7 @@ function parse_content_content_table($row){
 					$oTitle = $content_image_popup_name." ".($i+1);
 					$oText = $content_image_popup_name." ".($i+1)."<br />".$CONTENT_CONTENT_TABLE_SUBHEADING."<br />".$authordetails[1]." (".$CONTENT_CONTENT_TABLE_DATE.")";
 					$CONTENT_CONTENT_TABLE_IMAGES .= $aa -> popup($oSrc, $oSrcThumb, $oMaxWidth, $oTitle, $oText);
-					$myimagelink .= $aa -> popup($oSrc, $oSrcThumb, $oMaxWidth, $oTitle, $oText);
+					//$myimagelink .= $aa -> popup($oSrc, $oSrcThumb, $oMaxWidth, $oTitle, $oText);
 				}
 
 				$CONTENT_CONTENT_TABLE = "";

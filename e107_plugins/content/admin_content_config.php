@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.27 $
-|		$Date: 2005-05-10 08:58:36 $
+|		$Revision: 1.28 $
+|		$Date: 2005-05-12 20:49:41 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -39,6 +39,8 @@ require_once(e_PLUGIN."content/handlers/content_form_class.php");
 $aform = new contentform;
 require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
+
+
 
 global $tp;
 
@@ -601,7 +603,10 @@ require_once(e_ADMIN."footer.php");
 
 function headerjs(){
 	global $tp;
-	$script = "<script type=\"text/javascript\">
+
+	$script = "
+	<script type='text/javascript' src='".e_PLUGIN."content/content.js'></script>\n
+	<script type=\"text/javascript\">
 
 	function confirm2_(mode, number, name){
 		if(mode == 'image'){
