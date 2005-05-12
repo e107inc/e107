@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.126 $
-|     $Date: 2005-05-11 20:21:57 $
-|     $Author: streaky $
+|     $Revision: 1.127 $
+|     $Date: 2005-05-12 18:50:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -1037,6 +1037,7 @@ function init_session() {
 	}
 
 	define('USERCLASS_LIST', class_list());
+	define('e_CLASS_REGEXP', "(^|,)(".str_replace(",", "|", USERCLASS_LIST).")(,|$)");
 }
 
 function cookie($name, $value, $expire, $path = "/", $domain = "", $secure = 0) {
