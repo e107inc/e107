@@ -4,9 +4,12 @@ global $eMenuList;
 if (!array_key_exists($parm,$eMenuList)) {
 	return;
 }
+
+
+
 foreach($eMenuList[$parm] as $row) {
 	$show_menu = TRUE;
-	if($row['menu_pages'] && $row['menu_pages'] != "dbcustom") {
+	if($row['menu_pages'] && !is_numeric($row['menu_path'])) {
 		list($listtype,$listpages) = explode("-",$row['menu_pages']);
 		$pagelist = explode("|",$listpages);
 		$check_url = e_SELF."?".e_QUERY;
@@ -32,7 +35,7 @@ foreach($eMenuList[$parm] as $row) {
 	if($show_menu) {
 		$sql->db_Mark_Time($row['menu_name']);
 		$mname = $row['menu_name'];
-		if($row['menu_pages'] == 'dbcustom')
+		if(is_numeric($row['menu_path']))
 		{
 			global $tp;
 			$sql -> db_Select("page", "*", "page_id='".$row['menu_path']."' ");

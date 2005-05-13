@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-05-12 17:15:24 $
+|     $Revision: 1.14 $
+|     $Date: 2005-05-13 17:05:07 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -343,7 +343,7 @@ class page
 
 			if($type)
 			{
-				$sql -> db_Insert("menus", "0, '$menuname', '0', '0', '0', 'dbcustom', '".mysql_insert_id()."' ");
+				$sql -> db_Insert("menus", "0, '$menuname', '0', '0', '0', '', '".mysql_insert_id()."' ");
 			}
 
 
