@@ -302,6 +302,18 @@ $TOPIC_HELP = RECENT_ADMIN_MENU_19;
 $TOPIC_FIELD = $rs -> form_text("menu_datestyletoday", "30", $recent_pref['menu_datestyletoday'], "50", "tbox");
 $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
+//menu preference : show empty
+$TOPIC_TOPIC = RECENT_ADMIN_MENU_20;
+$TOPIC_HEADING = RECENT_ADMIN_MENU_21;
+$TOPIC_HELP = RECENT_ADMIN_MENU_22;
+$TOPIC_FIELD = "
+	".$rs -> form_radio("menu_showempty", "1", ($recent_pref['menu_showempty'] ? "1" : "0"), "", "").RECENT_ADMIN_7."
+	".$rs -> form_radio("menu_showempty", "0", ($recent_pref['menu_showempty'] ? "0" : "1"), "", "").RECENT_ADMIN_8."
+";
+$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+
+
 $text .= $TOPIC_ROW_SPACER;
 
 $text .= $rc -> parse_headerrow_title(RECENT_ADMIN_PAGE_1);
@@ -349,6 +361,16 @@ $TOPIC_TOPIC = RECENT_ADMIN_PAGE_17;
 $TOPIC_HEADING = RECENT_ADMIN_PAGE_18;
 $TOPIC_HELP = RECENT_ADMIN_PAGE_19;
 $TOPIC_FIELD = $rs -> form_text("page_datestyletoday", "30", $recent_pref['page_datestyletoday'], "50", "tbox");
+$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+//page preference : show empty
+$TOPIC_TOPIC = RECENT_ADMIN_PAGE_26;
+$TOPIC_HEADING = RECENT_ADMIN_PAGE_27;
+$TOPIC_HELP = RECENT_ADMIN_PAGE_28;
+$TOPIC_FIELD = "
+	".$rs -> form_radio("page_showempty", "1", ($recent_pref['page_showempty'] ? "1" : "0"), "", "").RECENT_ADMIN_7."
+	".$rs -> form_radio("page_showempty", "0", ($recent_pref['page_showempty'] ? "0" : "1"), "", "").RECENT_ADMIN_8."
+";
 $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 //page preference : colomn

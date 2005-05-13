@@ -11,22 +11,19 @@
 	$bullet = $this -> getBullet($arr[6], $mode);
 
 	$mp = MPREFIX;
-	$qry = "SELECT download_id, download_name, download_author, download_datestamp, {$mp}download_category.download_category_name, {$mp}download_category.download_category_class FROM {$mp}download LEFT JOIN {$mp}download_category ON {$mp}download.download_category={$mp}download_category.download_category_id WHERE {$mp}download.download_active = '1' ORDER BY download_datestamp DESC LIMIT 0,".$arr[7]." ";
+	$qry = "SELECT download_id, download_name, download_author, download_datestamp, {$mp}download_category.download_category_name, {$mp}download_category.download_category_class FROM {$mp}download LEFT JOIN {$mp}download_category ON {$mp}download.download_category={$mp}download_category.download_category_id WHERE download_category_class REGEXP '".e_CLASS_REGEXP."' AND download_class REGEXP '".e_CLASS_REGEXP."' AND {$mp}download.download_active = '1' ORDER BY download_datestamp DESC LIMIT 0,".$arr[7]." ";
 	$sql -> db_Select_gen($qry);
 	$row = $sql -> db_Fetch();
-	if (check_class($row['download_category_class'])) {
 
-		$rowheading = $this -> parse_heading($row['download_name'], $mode);
+	$rowheading = $this -> parse_heading($row['download_name'], $mode);
 
-		$ICON = $bullet;
-		$HEADING = "<a href='".e_BASE."download.php?view.".$row['download_id']."' title='".$row['download_name']."'>".$rowheading."</a>";
-		$AUTHOR = ($arr[3] ? $row['download_author'] : "");
-		$CATEGORY = ($arr[4] ? $row['download_category_name'] : "");
-		$DATE = ($arr[5] ? $this -> getRecentDate($row['download_datestamp'], $mode) : "");
-		$INFO = "";
+	$ICON = $bullet;
+	$HEADING = "<a href='".e_BASE."download.php?view.".$row['download_id']."' title='".$row['download_name']."'>".$rowheading."</a>";
+	$AUTHOR = ($arr[3] ? $row['download_author'] : "");
+	$CATEGORY = ($arr[4] ? $row['download_category_name'] : "");
+	$DATE = ($arr[5] ? $this -> getRecentDate($row['download_datestamp'], $mode) : "");
+	$INFO = "";
 
-		$RECENT_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );
-
-	}
+	$RECENT_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );
 
 ?>

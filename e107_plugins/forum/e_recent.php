@@ -18,7 +18,7 @@
 	SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name
 	FROM #forum_t AS t, #forum AS f
 	LEFT JOIN #user AS u ON t.thread_user = u.user_id
-	WHERE f.forum_id = t.thread_forum_id AND t.thread_parent =0 AND f.forum_class IN (".USERCLASS_LIST.") 
+	WHERE f.forum_id = t.thread_forum_id AND t.thread_parent =0 AND f.forum_class REGEXP '".e_CLASS_REGEXP."'	
 	ORDER BY t.thread_lastpost DESC LIMIT 0, ".$arr[7]." ");
 
 	$forumArray = $sql->db_getList();
@@ -52,7 +52,7 @@
 		$REPLIES = $thread_total_replies;
 		$LASTPOST = ($thread_total_replies ? ($r_id ? "<a href='".e_BASE."user.php?id.$r_id'>$r_name</a>" : $r_name) : " - ");
 
-		$INFO = "[ views: ".$VIEWS.", replies: ".$REPLIES.", lastpost: ".$LASTPOST." ]";
+		$INFO = "[ ".RECENT_FORUM_1." ".$VIEWS.", ".RECENT_FORUM_2." ".$REPLIES.", ".RECENT_FORUM_3." ".$LASTPOST." ]";
 
 		$RECENT_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );
 

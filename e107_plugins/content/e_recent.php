@@ -17,7 +17,7 @@
 
 	//get main parent types
 	$sqlm = new db;
-	if(!$mainparents = $sqlm -> db_Select($plugintable, "*", "content_parent = '0' ".$datequery." ORDER BY content_heading")){
+	if(!$mainparents = $sqlm -> db_Select($plugintable, "*", "content_class REGEXP '".e_CLASS_REGEXP."' AND content_parent = '0' ".$datequery." ORDER BY content_heading")){
 		$RECENT_CAPTION = "content";
 		$RECENT_DATA = "no content yet";
 	}else{
@@ -40,7 +40,7 @@
 			if($arr[9] == $rowm['content_heading']){
 				//get recent content for each main parent
 				$sqli = new db;
-				if($resultitem = $sqli -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id_recent)).") = '".$type_id_recent."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ORDER BY content_datestamp DESC LIMIT 0,".$arr[7]." ")){
+				if($resultitem = $sqli -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id_recent)).") = '".$type_id_recent."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ORDER BY content_datestamp DESC LIMIT 0,".$arr[7]." ")){
 					
 					$RECENT_CAPTION = $rowm['content_heading'];
 					$RECENT_DISPLAYSTYLE = ($arr[2] ? "" : "none");

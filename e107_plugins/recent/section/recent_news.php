@@ -11,11 +11,10 @@
 	$RECENT_DISPLAYSTYLE = ($arr[2] ? "" : "none");
 
 	$sql2 = new db; $sql3 = new db;
-	if(!$sql -> db_Select("news", "*", "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC LIMIT 0,".$arr[7]." ")){ 
+	if(!$sql -> db_Select("news", "*", "news_class REGEXP '".e_CLASS_REGEXP."' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC LIMIT 0,".$arr[7]." ")){ 
 		$RECENT_DATA = "no news items";
 	}else{
 		while($row = $sql -> db_Fetch()){
-			if(check_class($row['news_class'])){
 				// Code from Lisa
 				// copied from the rss creation, but added here to make sure the url for the newsitem is to the news.php?item.X
 				// instead of the actual hyperlink that may have been added to a newstitle on creation
@@ -52,7 +51,6 @@
 				$INFO = "";
 
 				$RECENT_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );
-			}
 		}
 	}
 

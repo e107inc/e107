@@ -90,8 +90,8 @@ define("RECENT_ADMIN_MENU_17", "today date");
 define("RECENT_ADMIN_MENU_18", "choose a date style if the date is today");
 define("RECENT_ADMIN_MENU_19", "For more information on date formats see the <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime function page at php.net</a>");
 
-define("RECENT_ADMIN_MENU_20", "");
-define("RECENT_ADMIN_MENU_21", "");
+define("RECENT_ADMIN_MENU_20", "show empty");
+define("RECENT_ADMIN_MENU_21", "define if for sections with no results a message needs to be shown");
 define("RECENT_ADMIN_MENU_22", "");
 
 define("RECENT_ADMIN_MENU_23", "");
@@ -134,8 +134,8 @@ define("RECENT_ADMIN_PAGE_23", "welcome text");
 define("RECENT_ADMIN_PAGE_24", "define a welcome text that will be rendered at the top of the page");
 define("RECENT_ADMIN_PAGE_25", "");
 
-define("RECENT_ADMIN_PAGE_26", "");
-define("RECENT_ADMIN_PAGE_27", "");
+define("RECENT_ADMIN_PAGE_26", "show empty");
+define("RECENT_ADMIN_PAGE_27", "define if for sections with no results a message needs to be shown");
 define("RECENT_ADMIN_PAGE_28", "");
 
 
@@ -160,6 +160,9 @@ define("RECENT_MENU_17", "");
 define("RECENT_MENU_18", "");
 define("RECENT_MENU_19", "");
 
+define("RECENT_FORUM_1", "views:");
+define("RECENT_FORUM_2", "replies:");
+define("RECENT_FORUM_3", "lastpost:");
 
 
 

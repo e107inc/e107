@@ -151,6 +151,7 @@ class recent {
 		$recent_pref['menu_char_postfix'] = "...";
 		$recent_pref['menu_datestyle'] = "%d %b";
 		$recent_pref['menu_datestyletoday'] = "%H:%M";
+		$recent_pref['menu_showempty'] = "";
 
 		//page preferences
 		$recent_pref['page_caption'] = RECENT_ADMIN_14;
@@ -159,6 +160,7 @@ class recent {
 		$recent_pref['page_char_postfix'] = "";
 		$recent_pref['page_datestyle'] = "%d %b";
 		$recent_pref['page_datestyletoday'] = "%H:%M";
+		$recent_pref['page_showempty'] = "";
 		$recent_pref['page_colomn'] = "1";
 		$recent_pref["page_welcometext"] = RECENT_ADMIN_13;
 
@@ -205,7 +207,7 @@ class recent {
 		}
 		$menutext = "";
 
-		if(is_array($RECENT_DATA[$mode])){
+		if(is_array($RECENT_DATA[$mode])){			//if it is an array, data exists and data is not empty
 			for($i=0;$i<count($RECENT_DATA[$mode]);$i++){				
 				$RECENT_ICON = $RECENT_DATA[$mode][$i][0];
 				$RECENT_HEADING = $RECENT_DATA[$mode][$i][1];
@@ -222,20 +224,28 @@ class recent {
 		}else{
 			$RECENT_HEADING = $RECENT_DATA;
 			if($mode == "page"){
-				$menutext .= $tp -> parseTemplate($RECENT_PAGE, FALSE, $recent_shortcodes);
+				if($recent_pref['page_showempty']){
+					$menutext .= $tp -> parseTemplate($RECENT_PAGE, FALSE, $recent_shortcodes);
+				}
 			}else{
-				$menutext .= preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_MENU);
+				if($recent_pref['menu_showempty']){
+					$menutext .= preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_MENU);
+				}
 			}
 		}
-
 		if($mode == "page"){
-			$start = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_PAGE_START);
-			$end = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_PAGE_END);
+			if($recent_pref['page_showempty'] || $menutext){
+				$start = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_PAGE_START);
+				$end = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_PAGE_END);
+			}
 		}else{
-			$start = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_MENU_START);
-			$end = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_MENU_END);
+			if($recent_pref['menu_showempty'] || $menutext){
+				$start = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_MENU_START);
+				$end = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_MENU_END);
+			}
 		}
 		$text = $start.$menutext.$end;
+
 		return $text;
 	}
 
