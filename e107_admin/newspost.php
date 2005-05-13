@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.81 $
-|   $Date: 2005-05-13 01:03:34 $
+|   $Revision: 1.82 $
+|   $Date: 2005-05-13 17:06:41 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
@@ -853,8 +853,6 @@ class newspost {
 		// ##### Display news preview ---------------------------------------------------------------------------------------------------------
 		global $tp, $sql, $ix, $IMAGES_DIRECTORY;
 		$_POST['news_id'] = $id;
-		print_a($_POST);
-//		print_a($_POST['news_userclass']);
 
 		if($_POST['news_start'])
 		{
