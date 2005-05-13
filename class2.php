@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.127 $
-|     $Date: 2005-05-12 18:50:00 $
+|     $Revision: 1.128 $
+|     $Date: 2005-05-13 15:45:30 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -630,13 +630,30 @@ function check_email($var) {
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function check_class($var, $userclass = USERCLASS, $debug = FALSE) {
-	if (!$var || $var == "") {
+function check_class($var, $userclass = USERCLASS, $debug = FALSE)
+{
+	if (!$var || $var == "")
+	{
 		return TRUE;
 	}
 
-	if (preg_match("/^([0-9]+)$/", $var)) {
-		if ($var == e_UC_MEMBER && USER == TRUE) {
+	if(strpos($var, ",") !== FALSE)
+	{
+		$varList = explode(",", $var);
+		foreach($varList as $v)
+		{
+			if(check_class($v, $userclass, $debug))
+			{
+				return TRUE;
+			}
+		}
+		return FALSE;
+	}
+
+	if (preg_match("/^([0-9]+)$/", $var))
+	{
+		if ($var == e_UC_MEMBER && USER == TRUE)
+		{
 			return TRUE;
 		}
 
