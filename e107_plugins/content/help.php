@@ -50,9 +50,9 @@ if($type == "type" && is_numeric($type_id)){
 			$text = CONTENT_ADMIN_HELP_LAN_8;
 
 		}elseif($type_id == "0" && ($sub_action == "manage" || !$sub_action)){
-			$text = CONTENT_ADMIN_HELP_LAN_9;
+			//$text = CONTENT_ADMIN_HELP_LAN_9;
 
-		}elseif($type_id != "0" && ($sub_action == "manage" || !$sub_action)){
+		//}elseif($type_id != "0" && ($sub_action == "manage" || !$sub_action)){
 			$text = CONTENT_ADMIN_HELP_LAN_10;
 
 			if(getperms("0")){
@@ -79,6 +79,7 @@ if($type == "type" && is_numeric($type_id)){
 	}
 
 	if($action == "order"){
+			/*
 			if($type_id == "0" || !$sub_action){
 				$text = CONTENT_ADMIN_HELP_LAN_20;
 			}elseif($type_id != "0" && $sub_action == "cat"){
@@ -86,6 +87,17 @@ if($type == "type" && is_numeric($type_id)){
 			}elseif($type_id != "0" && $sub_action && $sub_action != "cat"){
 				$text = CONTENT_ADMIN_HELP_LAN_19;
 			}
+			*/
+			if($sub_action == "cat"){
+				$text = CONTENT_ADMIN_HELP_LAN_18;
+			}
+			if($sub_action == "item" || $sub_action == "all"){
+				$text = CONTENT_ADMIN_HELP_LAN_19;
+			}
+			
+			//$text = CONTENT_ADMIN_HELP_LAN_20;
+			//$text .= CONTENT_ADMIN_HELP_LAN_18;
+			//$text .= CONTENT_ADMIN_HELP_LAN_19;
 	}
 
 }

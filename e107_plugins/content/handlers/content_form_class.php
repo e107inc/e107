@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.32 $
-|		$Date: 2005-05-12 21:11:06 $
+|		$Revision: 1.33 $
+|		$Date: 2005-05-13 11:16:40 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1128,10 +1128,9 @@ class contentform{
 
 
 		function show_cat_order($mode){
-						global $sql, $ns, $rs, $type, $type_id, $action, $sub_action, $id, $plugintable, $aa, $tp;
+						global $sql, $ns, $rs, $type, $type_id, $action, $sub_action, $id, $plugintable, $aa, $tp, $stylespacer;
 
-						$prefetchbreadcrumb = $aa -> prefetchBreadCrumb($type_id);
-						usort($prefetchbreadcrumb, create_function('$a,$b','return $a[4]==$b[4]?0:($a[4]<$b[4]?-1:1);')); 
+						$parentdetails = $aa -> getParent("","","", "", false);	//use all categories
 
 						$text = "
 						<div style='text-align:center'>
@@ -1139,31 +1138,62 @@ class contentform{
 						<table class='fborder' style='".ADMIN_WIDTH."'>
 						<tr><td class='fcaption' colspan='5'>".CONTENT_ADMIN_MAIN_LAN_2."</td></tr>
 						<tr>
-							<td class='forumheader' style='width:5%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_8."</td>
-							<td class='forumheader' style='width:80%; text-align:left;'>".CONTENT_ADMIN_ITEM_LAN_57."</td>
-							<td class='forumheader' style='width:5%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_58."</td>
-							<td class='forumheader' style='width:5%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_59."</td>
-							<td class='forumheader' style='width:5%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_60."</td>
+							<td class='fcaption' style='width:5%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_8."</td>
+							<td class='fcaption' style='width:80%; text-align:left;'>".CONTENT_ADMIN_ITEM_LAN_57."</td>
+							<td class='fcaption' style='width:5%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_58."</td>
+							<td class='fcaption' style='width:5%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_59."</td>
+							<td class='fcaption' style='width:5%; text-align:center; white-space:nowrap;'>".CONTENT_ADMIN_ITEM_LAN_60."</td>
 						</tr>";
+						
+						$subcatarray = $aa -> countSubCat();		//create array of amount of subcats for each main parent
 
-						for($i=0;$i<count($prefetchbreadcrumb);$i++){
-							$prefetchbreadcrumb[$i][3] = str_replace(".", "-", $prefetchbreadcrumb[$i][3]);
+						for($i=0;$i<count($parentdetails);$i++){
+
+							if($parentdetails[$i][9] == "0"){		//if main parent
+								foreach ($subcatarray as $key => $value){
+									if($parentdetails[$i][0] == $key){
+										$ordermax = $value+1;		//ordermax equals the amount of subcats + 1 (for the main parent)
+										break;
+									}
+								}
+							}							
+
+							if(strpos($parentdetails[$i][9], ".")){
+								$tmp1 = explode(".", $parentdetails[$i][9]);
+								$id = $tmp1[1].".".$parentdetails[$i][0];
+								$type_id = $tmp1[1];
+							}else{
+								$id = $parentdetails[$i][0].".".$parentdetails[$i][0];
+								$type_id = $parentdetails[$i][0];
+							}
+							$id = str_replace(".", "-", $id);
+
+							if($parentdetails[$i][9] == "0"){
+								$catitemid = $type_id.".".$type_id;
+							}else{
+								$catitemid = $type_id.".".substr($parentdetails[$i][9],2).".".$parentdetails[$i][0];
+							}
+							$catitemid = str_replace(".", "-", $catitemid);
+
+							$class = ($parentdetails[$i][9] == 0 ? "forumheader" : "forumheader3");
+							$fontweight = ($parentdetails[$i][9] == 0 ? "bold" : "normal");
+							$text .= ($parentdetails[$i][9] == 0 ? "<tr><td colspan='5' $stylespacer></td></tr>" : "");
 							$text .= "
 							<tr>
-								<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>".$prefetchbreadcrumb[$i][0]."</td>
-								<td class='forumheader3' style='width:80%; text-align:left;'>".$prefetchbreadcrumb[$i][1]."</td>
-								<td class='forumheader3' style='width:5%; text-align:left; white-space:nowrap;'>
-									<a href='".e_SELF."?".$type.".".$type_id.".order.".$prefetchbreadcrumb[$i][3]."'>".CONTENT_ICON_ORDERCAT."</a>
-									".($type_id == $prefetchbreadcrumb[$i][0] ? "<a href='".e_SELF."?".$type.".".$type_id.".order.all'>".CONTENT_ICON_ORDERALL."</a>" : "")."
+								<td class='".$class."' style='width:5%; font-weight:".$fontweight."; text-align:center; white-space:nowrap;'>".$parentdetails[$i][0]."</td>
+								<td class='".$class."' style='width:80%; font-weight:".$fontweight."; text-align:left;'>".$parentdetails[$i][1]."</td>
+								<td class='".$class."' style='width:5%; text-align:left; white-space:nowrap;'>
+									<a href='".e_SELF."?".$type.".".$type_id.".order.item.".$catitemid."'>".CONTENT_ICON_ORDERCAT."</a>
+									".($parentdetails[$i][9] == 0 ? "<a href='".e_SELF."?".$type.".".$type_id.".order.all'>".CONTENT_ICON_ORDERALL."</a>" : "")."
 								</td>
-								<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
-									<a href='".e_SELF."?".$type.".".$type_id.".order.cat.inc-".$prefetchbreadcrumb[$i][0]."-".$prefetchbreadcrumb[$i][4]."'><img src='".e_IMAGE."admin_images/up.png' alt='".CONTENT_ADMIN_ITEM_LAN_63."' style='border:0;' /></a>
-									<a href='".e_SELF."?".$type.".".$type_id.".order.cat.dec-".$prefetchbreadcrumb[$i][0]."-".$prefetchbreadcrumb[$i][4]."'><img src='".e_IMAGE."admin_images/down.png' alt='".CONTENT_ADMIN_ITEM_LAN_64."' style='border:0;' /></a>
+								<td class='".$class."' style='width:5%; text-align:center; white-space:nowrap;'>
+									<a href='".e_SELF."?".$type.".".$type_id.".order.cat.inc-".$parentdetails[$i][0]."-".$parentdetails[$i][16]."'><img src='".e_IMAGE."admin_images/up.png' alt='".CONTENT_ADMIN_ITEM_LAN_63."' style='border:0;' /></a>
+									<a href='".e_SELF."?".$type.".".$type_id.".order.cat.dec-".$parentdetails[$i][0]."-".$parentdetails[$i][16]."'><img src='".e_IMAGE."admin_images/down.png' alt='".CONTENT_ADMIN_ITEM_LAN_64."' style='border:0;' /></a>
 								</td>
-								<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
+								<td class='".$class."' style='width:5%; text-align:center; white-space:nowrap;'>
 									<select name='order[]' class='tbox'>";
-									for($k=1;$k<=count($prefetchbreadcrumb);$k++){
-										$text .= $rs -> form_option($k, ($prefetchbreadcrumb[$i][4] == $k ? "1" : "0"), $prefetchbreadcrumb[$i][0].".".$k.".cat");
+									for($k=1;$k<=$ordermax;$k++){
+										$text .= $rs -> form_option($k, ($parentdetails[$i][16] == $k ? "1" : "0"), $parentdetails[$i][0].".".$k.".cat");
 									}
 									$text .= "</select>
 								</td>
@@ -1171,6 +1201,7 @@ class contentform{
 						}
 
 						$text .= "
+						<tr><td colspan='5' $stylespacer></td></tr>
 						<tr>
 							<td class='fcaption' colspan='3'>&nbsp;</td>
 							<td class='fcaption' colspan='2' style='text-align:center'>
@@ -1181,7 +1212,10 @@ class contentform{
 						".$rs -> form_close()."
 						</div>";
 
-						$ns -> tablerender(CONTENT_ADMIN_ITEM_LAN_62, $text);
+						$oText = str_replace("'", "\'", CONTENT_ADMIN_HELP_LAN_18);
+						$popuphelp = $aa -> popupHelp($oText, "", "", "");
+
+						$ns -> tablerender(CONTENT_ADMIN_ITEM_LAN_62." ".$popuphelp, $text);
 
 						return;
 		}
@@ -1191,8 +1225,8 @@ class contentform{
 						global $sql, $ns, $rs, $type, $type_id, $action, $sub_action, $id, $plugintable, $aa, $tp;
 
 						if($style == "catitem"){
-							$cat = str_replace("-", ".", $sub_action);
-							$formtarget = e_SELF."?".$type.".".$type_id.".order.".$sub_action;
+							$cat = str_replace("-", ".", $id);
+							$formtarget = e_SELF."?".$type.".".$type_id.".order.item.".$id;
 							$query = "content_parent = '".$cat."' ";
 							$order = "SUBSTRING_INDEX(content_order, '.', 1)+0";
 
@@ -1233,9 +1267,11 @@ class contentform{
 									if($style == "catitem"){
 										$ordercheck = $tmp[0];
 										$ordercheck2 = $tmp[1];
+										$addid = ".".$id;
 									}elseif($style == "allitem"){
 										$ordercheck = $tmp[1];
 										$ordercheck2 = $tmp[0];
+										$addid = "";
 									}
 									$cid = $row['content_id'];
 									$corder = $row['content_order'];
@@ -1248,8 +1284,8 @@ class contentform{
 										</td>
 										<td class='forumheader3' style='width:70%; text-align:left;'>".$row['content_heading']."</td>
 										<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
-											<a href='".e_SELF."?".$type.".".$type_id.".order.".$sub_action.".inc-".$cid."-".$corder."'><img src='".e_IMAGE."admin_images/up.png' alt='".CONTENT_ADMIN_ITEM_LAN_63."' style='border:0;' /></a>
-											<a href='".e_SELF."?".$type.".".$type_id.".order.".$sub_action.".dec-".$cid."-".$corder."'><img src='".e_IMAGE."admin_images/down.png' alt='".CONTENT_ADMIN_ITEM_LAN_64."' style='border:0;' /></a>
+											<a href='".e_SELF."?".$type.".".$type_id.".order.".$sub_action."".$addid.".inc-".$cid."-".$corder."'><img src='".e_IMAGE."admin_images/up.png' alt='".CONTENT_ADMIN_ITEM_LAN_63."' style='border:0;' /></a>
+											<a href='".e_SELF."?".$type.".".$type_id.".order.".$sub_action."".$addid.".dec-".$cid."-".$corder."'><img src='".e_IMAGE."admin_images/down.png' alt='".CONTENT_ADMIN_ITEM_LAN_64."' style='border:0;' /></a>
 										</td>
 										<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
 											<select name='order[]' class='tbox'>";
@@ -1387,13 +1423,14 @@ class contentform{
 						return;
 		}
 
-
+		/*
 		function show_cat_manage(){
 						global $sql, $ns, $rs, $aa, $plugintable;
 						global $type, $type_id, $action, $sub_action, $id;
 
-						$parentdetails = $aa -> getParent("","",$type_id, "", false);
-						//getParent($id, $level="", $mode="", $classcheck="", $date="")
+						$parentdetails = $aa -> getParent("","",$type_id, "", false);	//use only categories from selected type_id
+						//$parentdetails = $aa -> getParent("","","", "", false);	//use all categories
+						//usage: getParent($id, $level="", $mode="", $classcheck="", $date="")
 						$content_pref = $aa -> getContentPref($type_id);
 						$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$type_id}"]);
 						$content_cat_icon_path_small = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$type_id}"]);
@@ -1429,6 +1466,54 @@ class contentform{
 								$ns -> tablerender(CONTENT_ADMIN_CAT_LAN_10." ".$popuphelp, $text);
 								unset($row['content_id'], $row['content_heading'], $row['content_subheading'], $row['content_text'], $row['content_icon']);
 						}
+		}
+		*/
+		function show_cat_manage(){
+						global $sql, $ns, $rs, $aa, $plugintable;
+						global $type, $type_id, $action, $sub_action, $id;
+
+						$parentdetails = $aa -> getParent("","","", "", false);	//use all categories
+
+						// ##### MANAGE CATEGORIES ------------------
+						//if(!$sub_action || $sub_action == "manage"){
+						//if(!$sub_action){
+								$text = "<div style='text-align:center'>\n";
+								if(!is_object($sql)){ $sql = new db; }
+								if($category_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_icon, content_parent", "ORDER BY content_parent", "mode=no_where")){
+									$row = $sql -> db_Fetch();
+
+										$content_pref = $aa -> getContentPref($type_id);
+										$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$type_id}"]);
+										$content_cat_icon_path_small = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$type_id}"]);
+										//$content_icon_path = $aa -> parseContentPathVars($content_pref["content_icon_path_{$type_id}"]);
+										//$content_image_path = $aa -> parseContentPathVars($content_pref["content_image_path_{$type_id}"]);
+										//$content_file_path = $aa -> parseContentPathVars($content_pref["content_file_path_{$type_id}"]);
+
+										$text .= "
+										".$rs -> form_open("post", e_SELF."?".$type.".".$type_id.".cat.manage", "deletecatform","","", "")."
+										<table style='".ADMIN_WIDTH."' class='fborder'>
+										<tr>
+										<td class='fcaption' style='width:5%'>".CONTENT_ADMIN_CAT_LAN_24."</td>
+										<td class='fcaption' style='width:5%'>".CONTENT_ADMIN_CAT_LAN_25."</td>
+										<td class='fcaption' style='width:15%'>".CONTENT_ADMIN_CAT_LAN_18."</td>
+										<td class='fcaption' style='width:65%'>".CONTENT_ADMIN_CAT_LAN_19."</td>
+										<td class='fcaption' style='width:10%; text-align:center'>".CONTENT_ADMIN_CAT_LAN_20."</td>
+										</tr>
+										".$aa -> printParent($parentdetails, "0", $row['content_id'], "table")."
+										</table>
+										".$rs -> form_close();
+								}else{
+									$text .= "<div style='text-align:center'>".CONTENT_ADMIN_CAT_LAN_9."</div>";
+								}
+								$text .= "</div>";
+
+								//$oText = str_replace("'", "\'", CONTENT_ADMIN_CAT_LAN_40);
+								$oText = CONTENT_ADMIN_HELP_LAN_10.(getperms("0") ? CONTENT_ADMIN_HELP_LAN_15 : "");
+								$oText = str_replace("'", "\'", $oText);
+								$popuphelp = $aa -> popupHelp($oText, "", "", "");
+								$ns -> tablerender(CONTENT_ADMIN_CAT_LAN_10." ".$popuphelp, $text);
+								unset($row['content_id'], $row['content_heading'], $row['content_subheading'], $row['content_text'], $row['content_icon']);
+						//}
 		}
 
 
@@ -1524,6 +1609,16 @@ class contentform{
 						global $type, $type_id, $action, $sub_action, $id, $fl, $stylespacer, $td1;
 						global $TOPIC_ROW;
 
+						$TOPIC_TABLE_END = "
+						".$this->pref_submit()."
+						</table>
+						</div>
+						";
+
+						$TOPIC_TITLE_ROW = "<tr><td colspan='2' class='fcaption'>{TOPIC_CAPTION}</td></tr>";
+						$TOPIC_HELP_ROW = "<tr><td colspan='2' class='forumheader'>{TOPIC_HELP}</td></tr>";
+						$TOPIC_TABLE_START = "";
+
 
 						if(!is_object($sql)){ $sql = new db; }
 						$parentdetails = $aa -> getParent();
@@ -1574,8 +1669,10 @@ class contentform{
 						<form method='post' action='".e_SELF."?".e_QUERY."'>\n
 
 						<div id='creation' style='text-align:center'>
-						<table style='".ADMIN_WIDTH."' class='fborder'>
-						<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_OPT_LAN_1."</td></tr>";
+						<table style='".ADMIN_WIDTH."' class='fborder'>";						
+						
+						$TOPIC_CAPTION = CONTENT_ADMIN_OPT_LAN_1;
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
 
 						//content_admin_sections
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_2;
@@ -1633,13 +1730,14 @@ class contentform{
 						$TOPIC_FIELD .= $rs -> form_select_close();
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-						$text .= $this->pref_submit()."
-						</table>
-						</div>
+						$text .= $TOPIC_TABLE_END;
 
+						$text .= "
 						<div id='submission' style='display:none; text-align:center'>
-						<table style='".ADMIN_WIDTH."' class='fborder'>
-						<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_OPT_LAN_22."</td></tr>";
+						<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+						$TOPIC_CAPTION = CONTENT_ADMIN_OPT_LAN_22;
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
 						
 						//content_submit_
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_23;
@@ -1724,14 +1822,17 @@ class contentform{
 						$TOPIC_FIELD .= $rs -> form_select_close();
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-						$text .= $this->pref_submit()."
-						</table>
-						</div>
+						$text .= $TOPIC_TABLE_END;
 
+						$text .= "
 						<div id='paththeme' style='display:none; text-align:center'>
-						<table style='".ADMIN_WIDTH."' class='fborder'>
-						<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_OPT_LAN_33."</td></tr>
-						<tr><td colspan='2' class='forumheader'>".CONTENT_ADMIN_OPT_LAN_34."</td></tr>";
+						<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+						$TOPIC_CAPTION = CONTENT_ADMIN_OPT_LAN_33;
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
+
+						$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_34;
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_HELP_ROW);
 
 						//content_cat_icon_path_large_
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_35;
@@ -1783,13 +1884,14 @@ class contentform{
 						$TOPIC_FIELD .= $rs -> form_select_close();
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-						$text .= $this->pref_submit()."
-						</table>
-						</div>
+						$text .= $TOPIC_TABLE_END;
 
+						$text .= "
 						<div id='general' style='display:none; text-align:center'>
-						<table style='".ADMIN_WIDTH."' class='fborder'>
-						<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_OPT_LAN_48."</td></tr>";
+						<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+						$TOPIC_CAPTION = CONTENT_ADMIN_OPT_LAN_48;
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
 
 						//content_log_
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_49;
@@ -1859,14 +1961,15 @@ class contentform{
 						".$rs -> form_radio("content_searchmenu_{$id}", "0", ($content_pref["content_searchmenu_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+						
+						$text .= $TOPIC_TABLE_END;
 
-						$text .= $this->pref_submit()."
-						</table>
-						</div>
-
+						$text .= "
 						<div id='listpages' style='display:none; text-align:center'>
-						<table style='".ADMIN_WIDTH."' class='fborder'>
-						<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_OPT_LAN_70."</td></tr>";
+						<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+						$TOPIC_CAPTION = CONTENT_ADMIN_OPT_LAN_70;
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
 
 						//content_list sections
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_2;
@@ -1885,21 +1988,6 @@ class contentform{
 						".$rs -> form_checkbox("content_list_editicon_{$id}", 1, ($content_pref["content_list_editicon_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_204."<br />
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
-
-						
-						/*
-						<tr>
-							<td class='forumheader3'>refer count</td>
-							<td class='forumheader3'>								
-								<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>activate logging of refer count</a>
-								<div style='display: none;'>
-								<div $stylehelp>".CONTENT_ADMIN_OPT_LAN_16."<br />".CONTENT_ADMIN_OPT_LAN_105."</div><br />
-									".$rs -> form_radio("content_list_log_{$id}", "1", ($content_pref["content_list_log_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
-									".$rs -> form_radio("content_list_log_{$id}", "0", ($content_pref["content_list_log_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
-								</div>
-							</td>
-						</tr>
-						*/
 
 						//content_list_subheading_char_
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_81;
@@ -2000,13 +2088,14 @@ class contentform{
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-						$text .= $this->pref_submit()."
-						</table>
-						</div>
+						$text .= $TOPIC_TABLE_END;
 
+						$text .= "
 						<div id='catpages' style='display:none; text-align:center'>
-						<table style='".ADMIN_WIDTH."' class='fborder'>
-						<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_OPT_LAN_119."</td></tr>";
+						<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+						$TOPIC_CAPTION = CONTENT_ADMIN_OPT_LAN_119;
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
 
 						//content_cat_showparent_
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_120;
@@ -2062,13 +2151,14 @@ class contentform{
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-						$text .= $this->pref_submit()."
-						</table>
-						</div>
+						$text .= $TOPIC_TABLE_END;
 
+						$text .= "
 						<div id='contentpages' style='display:none; text-align:center'>
-						<table style='".ADMIN_WIDTH."' class='fborder'>
-						<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_OPT_LAN_138."</td></tr>";
+						<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+						$TOPIC_CAPTION = CONTENT_ADMIN_OPT_LAN_138;
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
 
 						//content_content_sections
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_2;
@@ -2127,13 +2217,14 @@ class contentform{
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-						$text .= $this->pref_submit()."
-						</table>
-						</div>
+						$text .= $TOPIC_TABLE_END;
 
+						$text .= "
 						<div id='menu' style='display:none; text-align:center'>
-						<table style='".ADMIN_WIDTH."' class='fborder'>
-						<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_OPT_LAN_140."</td></tr>";
+						<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+						$TOPIC_CAPTION = CONTENT_ADMIN_OPT_LAN_140;
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
 
 						//content_menu_caption_
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_141;
@@ -2162,8 +2253,10 @@ class contentform{
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-						$text .= "<tr><td colspan='2' $stylespacer></td></tr>
-						<tr><td colspan='2' class='forumheader'>".CONTENT_ADMIN_OPT_LAN_147."</td></tr>";
+						$text .= $TOPIC_ROW_SPACER;
+
+						$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_147;
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_HELP_ROW);
 
 						//content_menu_viewallcat_
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_148;
@@ -2228,9 +2321,10 @@ class contentform{
 						".$rs -> form_select_close();
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
+						$text .= $TOPIC_ROW_SPACER;
 
-						$text .= "<tr><td colspan='2' $stylespacer></td></tr>
-						<tr><td colspan='2' class='forumheader'>".CONTENT_ADMIN_OPT_LAN_161."</td></tr>";
+						$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_161;
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_HELP_ROW);
 
 						//content_menu_cat_
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_162;
@@ -2268,9 +2362,10 @@ class contentform{
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);						
 					
-						
-						$text .= "<tr><td colspan='2' $stylespacer></td></tr>
-						<tr><td colspan='2' class='forumheader'>".CONTENT_ADMIN_OPT_LAN_174."</td></tr>";
+						$text .= $TOPIC_ROW_SPACER;
+
+						$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_174;
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_HELP_ROW);
 
 						//content_menu_recent_
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_175;
@@ -2367,15 +2462,14 @@ class contentform{
 						$TOPIC_FIELD = $rs -> form_text("content_menu_recent_icon_width_{$id}", 10, $content_pref["content_menu_recent_icon_width_{$id}"], 3);
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-						$text .= $this->pref_submit()."
-						</table>
-						</div>";
+						$text .= $TOPIC_TABLE_END;
 
 						$text .= "
 						</form>
 						</div>";
 
 						$oText = str_replace("'", "\'", CONTENT_ADMIN_HELP_LAN_12);
+						//popupHelp($text, $image="", $width="500", $title="")
 						$popuphelp = $aa -> popupHelp($oText, "", "", "");
 						$ns -> tablerender($caption." ".$popuphelp, $text);
 		}
@@ -2384,7 +2478,7 @@ class contentform{
 			global $id;
 			$text = "
 			<tr>
-			<td colspan='6' style='text-align:center' class='forumheader'>
+			<td colspan='2' style='text-align:center' class='forumheader'>
 				<input class='button' type='submit' name='updateoptions' value='".CONTENT_ADMIN_OPT_LAN_200."' /> <input type='hidden' name='options_type' value='".$id."' />
 			</td>
 			</tr>";

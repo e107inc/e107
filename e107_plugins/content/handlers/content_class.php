@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.32 $
-|		$Date: 2005-05-12 20:49:55 $
+|		$Revision: 1.33 $
+|		$Date: 2005-05-13 11:16:40 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -398,6 +398,19 @@ class content{
 		}
 
 
+		function countSubCat(){
+				global $plugintable, $sql;
+
+				if(!is_object($sql2)){ $sql2 = new db; }
+				if(!$sql -> db_Select($plugintable, "content_id", "content_parent='0' ORDER BY content_heading")){
+				}else{
+					while($row = $sql -> db_Fetch()){
+						$arr[$row['content_id']] = $sql2 -> db_Count($plugintable, "(*)", "WHERE LEFT(content_parent,".(strlen($row['content_id'])+2).") = '0.".$row['content_id']."' ");
+					}
+				}
+				return $arr;
+		}
+
 		function getParent($id, $level="", $mode="", $classcheck="", $date=""){
 				global $plugintable, $datequery;
 				$sqlgetparent = "";
@@ -471,7 +484,7 @@ class content{
 		*/
 
 		function printParent($array, $level, $currentparent, $mode="option"){
-				global $rs, $type, $type_id, $plugintable, $aa, $tp, $content_pref;
+				global $rs, $type, $type_id, $plugintable, $aa, $tp, $content_pref, $stylespacer;
 				$string = "";
 
 				$content_pref = $this -> getContentPref($type_id);
@@ -536,17 +549,22 @@ class content{
 								//$string .= "<a href='".e_PLUGIN."content/content.php?type.".$type_id.".cat.".$array[$a][0]."'>".$pre.$array[$a][1]."</a><br />";
 
 						}elseif($mode == "table"){
+							
 							if(strpos($array[$a][9], ".")){
 								$tmp1 = explode(".", $array[$a][9]);
 								$id = $tmp1[1].".".$array[$a][0];
+								$type_id = $tmp1[1];
 							}else{
 								$id = $array[$a][0].".".$array[$a][0];
+								$type_id = $array[$a][0];
 							}
+
 							$delete_heading = str_replace("&#39;", "\'", $array[$a][1]);
 							$authordetails = $this -> getAuthor($array[$a][5]);
 							$caticon = $content_cat_icon_path_large.$array[$a][6];
 
 							$string .= "
+							".($array[$a][9] == 0 ? "<tr><td colspan='5' $stylespacer></td></tr>" : "")."
 							<tr>
 								<td class='".$class."' style='".$style." width:5%; text-align:left'>".$array[$a][9].".".$array[$a][0]."</td>
 								<td class='".$class."' style='".$style." width:5%; text-align:center'>".($array[$a][6] ? "<img src='".$caticon."' alt='' style='vertical-align:middle' />" : "&nbsp;")."</td>
@@ -1286,16 +1304,16 @@ function getCat($catid){
 					return $popup;
 		}
 
-		function popupHelp($text, $image="", $width="500", $title=""){
-					//$image	:	full path to the image you want to show on screen
-					//$width	:	the width of the popup
-					//$title	:	the window title of the popup
-					//$text		:	the additional text to add into the popup
+		function popupHelp($text, $image="", $width="320", $title=""){
+					//$image	:	full path to the image you want to show on screen (uses a default doc image)
+					//$width	:	the width of the popup (uses a default width of 500)
+					//$title	:	the window title of the popup (uses a default title of ...)
+					//$text		:	the help text to show into the popup
 
 					if(!$image || !file_exists($image)){
 						$image = e_IMAGE."admin_images/docs_16.png";
 					}
-					if(!$width){ $width = "500"; }
+					if(!$width){ $width = "320"; }
 					if(!$title){ $title = "content management help area"; }
 
 					$popup = "<a href=\"javascript:openHelpPopup(".$width.",'".$title."','".$text."')\" style='cursor:pointer;' onmouseover=\"window.status='click for help on this page'; return true;\" onmouseout=\"window.status=''; return true;\" ><img src='".$image."' style='border:0;' alt='' /></a>";
