@@ -20,7 +20,7 @@
 // [theme]
 $themename = "kubrick";
 $themeversion = "1.0";
-$themeauthor = "Steve Dunstan [jalist]";
+$themeauthor = "Steve Dunstan [jalist] & William Moffett [Que]";
 $themeemail = "jalist@e107.org";
 $themewebsite = "http://e107.org";
 $themedate = "29/01/2005";
@@ -45,15 +45,12 @@ $tp -> e_sc -> scList['ULINC'] = $ulinc;
 function theme_head() {
 	global $logo;
 	return "<link rel='stylesheet' type='text/css' href='".THEME."style.css' />
-	<link rel='stylesheet' type='text/css' href='".THEME."01_navigation.css' />
-	<link rel='stylesheet' type='text/css' href='".THEME."nicetitle.css' />
 	<script type='text/javascript' src='".THEME."nicetitle.js'></script>
-
-<style type='text/css'>
-#header{
-	position: relative;
-}
-</style>";
+	<style type='text/css'>
+	#header{
+		position: relative;
+	}
+	</style>";
 }
 
 
@@ -65,7 +62,6 @@ $HEADER = "<div id='page'>
 <div id='header'>
 <div id='headerimg'>
 <h1><a href='".SITEURL."' title='{SITENAME}'>{SITENAME}</a></h1>
-<br /><br /><br /><br /><br />
 <div class='sitetag'>{SITETAG}</div>
 </div>
 <div id='navigation'>
@@ -94,7 +90,6 @@ $CUSTOMHEADER = "<div id='page2'>
 <div id='header'>
 <div id='headerimg'>
 <h1><a href='".SITEURL."' title='{SITENAME}'>{SITENAME}</a></h1>
-<br /><br /><br /><br /><br />
 <div class='sitetag'>{SITETAG}</div>
 </div>
 <div id='navigation'>
