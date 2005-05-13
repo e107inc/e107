@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-05-04 16:09:59 $
-|     $Author: stevedunstan $
+|     $Revision: 1.28 $
+|     $Date: 2005-05-13 02:21:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -274,7 +274,7 @@ CREATE TABLE news (
   news_allow_comments tinyint(3) unsigned NOT NULL default '0',
   news_start int(10) unsigned NOT NULL default '0',
   news_end int(10) unsigned NOT NULL default '0',
-  news_class tinyint(3) unsigned NOT NULL default '0',
+  news_class varchar(255) NOT NULL default '0',
   news_render_type tinyint(3) unsigned NOT NULL default '0',
   news_comment_total int(10) unsigned NOT NULL default '0',
   news_summary text NOT NULL,
@@ -321,16 +321,16 @@ CREATE TABLE online (
 
 CREATE TABLE page (
   page_id int(10) unsigned NOT NULL auto_increment,
-  page_title varchar(250) NOT NULL,
+  page_title varchar(250) NOT NULL default '',
   page_text mediumtext NOT NULL,
-  page_author int(10) unsigned NOT NULL,
-  page_datestamp int(10) unsigned NOT NULL,
-  page_rating_flag tinyint(1) unsigned NOT NULL,
-  page_comment_flag tinyint(1) unsigned NOT NULL,
-  page_password varchar(50) NOT NULL,
+  page_author int(10) unsigned NOT NULL default '0',
+  page_datestamp int(10) unsigned NOT NULL default '0',
+  page_rating_flag tinyint(1) unsigned NOT NULL default '0',
+  page_comment_flag tinyint(1) unsigned NOT NULL default '0',
+  page_password varchar(50) NOT NULL default '',
   page_class tinyint(3) default NULL,
   page_ip_restrict text NOT NULL,
-  page_theme varchar(50) NOT NULL,
+  page_theme varchar(50) NOT NULL default '',
   PRIMARY KEY  (page_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
