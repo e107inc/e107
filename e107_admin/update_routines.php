@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.81 $
-|     $Date: 2005-05-04 15:15:40 $
-|     $Author: stevedunstan $
+|     $Revision: 1.82 $
+|     $Date: 2005-05-13 01:03:34 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -592,6 +592,7 @@ function update_61x_to_700($type) {
 		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_parent` INT( 10 ) UNSIGNED NOT NULL ;");
 		mysql_query("ALTER TABLE `".MPREFIX."user_extended` ADD `user_hidden_fields` TEXT NOT NULL AFTER `user_extended_id`");
 
+		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_class` `news_class` VARCHAR( 255 ) DEFAULT '0' NOT NULL");
 		// news_attach removal / field structure changes / 'thumb:' prefix removal
 		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_attach` `news_thumbnail` TEXT NOT NULL;");
 		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_summary` `news_summary` TEXT NOT NULL;");
@@ -662,6 +663,24 @@ function update_61x_to_700($type) {
 	}
 	else
 	{
+
+		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
+		$qry = "SHOW CREATE TABLE `".MPREFIX."news`";
+		$res = mysql_query($qry);
+		if ($res)
+		{
+			$row = mysql_fetch_row($res);
+			$lines = explode("\n", $row[1]);
+			if(!strstr($lines[11], "varchar"))
+			{
+				return FALSE;
+			}
+			else
+			{
+				return TRUE;
+			}
+		}
+
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
 
@@ -671,6 +690,7 @@ function update_61x_to_700($type) {
 		//	return FALSE;
 		//}
 
+/*
 		return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."page");
 
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");
@@ -736,7 +756,7 @@ function update_61x_to_700($type) {
 		//return !$sql->db_Select("core","*","e107_name = 'user_entended'");
 
 		//		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
-
+*/
 		/*
 		global $pref;
 		if (!isset($pref['search_highlight'])) {
