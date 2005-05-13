@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-05-05 12:41:16 $
+|     $Revision: 1.29 $
+|     $Date: 2005-05-13 17:05:07 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -265,9 +265,11 @@ foreach ($menu_areas as $menu_act) {
 	}
 }
 
-$sql->db_Select("menus", "*", "menu_pages != 'dbcustom' ");
-while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch()) {
-	if (!eregi($menu_name, $menustr)) {
+$sql->db_Select("menus", "*", "menu_path NOT REGEXP('[0-9]+') ");
+while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch())
+{
+	if (!eregi($menu_name, $menustr))
+	{
 		$sql2->db_Delete("menus", "menu_name='$menu_name'");
 		$message .= "<b>".MENLAN_11." - ".$menu_name."</b><br />";
 	}
