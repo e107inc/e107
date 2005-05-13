@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm\cjdss.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-06 01:41:15 $
+|     $Revision: 1.10 $
+|     $Date: 2005-05-13 02:06:34 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -108,17 +108,17 @@ class pm {
 		}
 		if ($pref['pm_userclass'] == e_UC_MEMBER) {
 			$pm_sql = new db;
-			$pm_sql->db_Select("userclass_classes", "userclass_id,userclass_name", "ORDER BY userclass_name", "nowhere");
+			$pm_sql->db_Select("userclass_classes", "userclass_id, userclass_name", "ORDER BY userclass_name", "nowhere");
 			while (list($ucid, $ucname) = $pm_sql->db_Fetch()) {
-				if (check_class($ucname) || ADMINPERMS == "0") {
-					$ret .= "<option value='".$ucid.":".$ucname."'>".$ucname."\n";
+				if (check_class($ucid) || ADMINPERMS == "0") {
+					$ret .= "<option value='".$ucid.":".$ucname."'>".$ucname."</option>\n";
 				}
 			}
 		} else {
 			$pm_sql = new db;
 			$pm_sql->db_Select("userclass_classes", "userclass_id,userclass_name", "userclass_id='{$pref['pm_userclass']}' ORDER BY userclass_name");
 			while (list($ucid, $ucname) = $pm_sql->db_Fetch()) {
-				$ret .= "<option value='".$ucid.":".$ucname."'>".$ucname."\n";
+				$ret .= "<option value='".$ucid.":".$ucname."'>".$ucname."</option>\n";
 			}
 		}
 		return $ret;
@@ -131,14 +131,31 @@ class pm {
 		# Return -        string, drowdown list as form element 'option'
 		*/
 		global $pref;
+		switch ($pref['pm_userclass'])
+		{
+			case e_UC_ADMIN :
+				$qry = "user_admin = 1";
+				break;
+			
+			case e_UC_MEMBER :
+				$qry = "1";
+				break;
+			
+			case e_UC_NOBODY :
+				return "";
+				break;
+			
+			default :
+				$qry = "user_class REGEXP '(^|,)({$pref['pm_userclass']})(,|$)'";
+				break;
+		}
 		$qry .= " ORDER BY user_name";
 		$ret = "<option SELECTED value=''>".PMLAN_33."\n";
 		$pm_sql = new db;
-		$pm_sql->db_Select("user", "user_name,user_class", $qry, "nowhere");
-		while (list($uname, $uclass) = $pm_sql->db_Fetch()) {
-			if ($pref['pm_userclass'] == e_UC_MEMBER || check_class($pref['pm_userclass'], $uclass)) {
-				$ret .= "<option value='".$uname."'>".$uname."\n";
-			}
+		$pm_sql->db_Select("user", "user_name,user_class", $qry);
+		while (list($uname, $uclass) = $pm_sql->db_Fetch())
+		{
+			$ret .= "<option value='".$uname."'>".$uname."</option>\n";
 		}
 		return $ret;
 	}
