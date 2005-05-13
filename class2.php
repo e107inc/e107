@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.128 $
-|     $Date: 2005-05-13 15:45:30 $
+|     $Revision: 1.129 $
+|     $Date: 2005-05-13 22:10:22 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -61,12 +61,12 @@ for ($i = 1; $i <= $num_levels; $i++) {
 	$link_prefix .= "../";
 }
 
-$inArray = array("'", ";", "/**/", "/UNION/", "/SELECT/", "AS");
+$inArray = array("'", ";", "/**/", "/UNION/", "/SELECT/", "AS ");
 if (!strstr($_SERVER['PHP_SELF'], "trackback"))
 {
 	foreach($inArray as $res)
 	{
-		if(strstr($_SERVER['QUERY_STRING'], $res))
+		if(stristr($_SERVER['QUERY_STRING'], $res))
 		{
 			die("Access denied.");
 		}
