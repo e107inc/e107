@@ -1,3 +1,4 @@
+global $tp;
 $ret = "";
 $custom_query = explode('+', $parm);
 switch($custom_query[0])
@@ -36,14 +37,15 @@ switch($custom_query[0])
 				break;
 
 		case "quote":
-				if(!file_exists(e_BASE."quote.txt"))
+				$qotd_file = e_BASE."quote.txt";
+				if(!file_exists($qotd_file))
 				{
 						$quote = "Quote file not found ($qotd_file)";
 				}
 				else
 				{
 						$quotes = file(e_BASE."quote.txt");
-						$quote = stripslashes(htmlspecialchars($quotes[rand(0, count($quotes))]));
+						$quote = $tp->toHTML($quotes[rand(0, count($quotes))], TRUE);
 				}
 				return $quote;
 				break;
