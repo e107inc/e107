@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-05-13 11:16:40 $
+|     $Revision: 1.35 $
+|     $Date: 2005-05-13 22:20:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -318,8 +318,8 @@ define("CONTENT_ADMIN_OPT_LAN_201", "override comment system");
 define("CONTENT_ADMIN_OPT_LAN_202", "allow comments on all items");
 define("CONTENT_ADMIN_OPT_LAN_203", "if enabled it allows the posting of comments on all content items, regardless of their individual setting");
 define("CONTENT_ADMIN_OPT_LAN_204", "edit icon : show icon with link to admin to edit content item");
-define("CONTENT_ADMIN_OPT_LAN_205", "");
-define("CONTENT_ADMIN_OPT_LAN_206", "");
+define("CONTENT_ADMIN_OPT_LAN_205", "layout templates");
+define("CONTENT_ADMIN_OPT_LAN_206", "custom data");
 define("CONTENT_ADMIN_OPT_LAN_207", "");
 define("CONTENT_ADMIN_OPT_LAN_208", "");
 define("CONTENT_ADMIN_OPT_LAN_209", "");

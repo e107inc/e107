@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.33 $
-|		$Date: 2005-05-13 11:16:40 $
+|		$Revision: 1.34 $
+|		$Date: 2005-05-13 22:20:40 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -40,6 +40,8 @@ class content{
 				$content_pref["content_admin_custom_number_{$id}"] = "5";				//how many customtags should be available to add when creating an item
 				$content_pref["content_admin_images_number_{$id}"] = "10";				//how many images should be available to add when creating an item
 				$content_pref["content_admin_files_number_{$id}"] = "3";				//how many files should be available to add when creating an item
+				$content_pref["content_admin_layout_{$id}"] = "1";						//should the option for choosing a layout template be shown
+				$content_pref["content_admin_customtags_{$id}"] = "1";					//should options for adding additional data be shown
 
 				$content_pref["content_submit_{$id}"] = "0";							//should users be able to submit an item
 				$content_pref["content_submit_class_{$id}"] = "0";						//define which userclass is able to submit an item
@@ -56,6 +58,8 @@ class content{
 				$content_pref["content_submit_custom_number_{$id}"] = "0";				//how many customtags should be available to add when submitting an item
 				$content_pref["content_submit_images_number_{$id}"] = "0";				//how many images should be available to add when submitting an item
 				$content_pref["content_submit_files_number_{$id}"] = "0";				//how many files should be available to add when submitting an item
+				$content_pref["content_submit_layout_{$id}"] = "1";						//should the option for choosing a layout template be shown
+				$content_pref["content_submit_customtags_{$id}"] = "1";					//should options for adding additional data be shown
 
 				$content_pref["content_cat_icon_path_large_{$id}"] = "{e_PLUGIN}content/images/cat/48/";	//default path to large categry icons
 				$content_pref["content_cat_icon_path_small_{$id}"] = "{e_PLUGIN}content/images/cat/16/";	//default path to small category icons

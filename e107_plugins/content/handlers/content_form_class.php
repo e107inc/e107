@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.33 $
-|		$Date: 2005-05-13 11:16:40 $
+|		$Revision: 1.34 $
+|		$Date: 2005-05-13 22:20:40 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -99,7 +99,9 @@ class contentform{
 							$checkpe = $content_pref["content_submit_pe_{$type_id}"];
 							$checkvisibility = $content_pref["content_submit_visibility_{$type_id}"];
 							$checkmeta = $content_pref["content_submit_meta_{$type_id}"];
+							$checkcustom = $content_pref["content_submit_customtags_{$id}"];
 							$checkcustomnumber = $content_pref["content_submit_custom_number_{$type_id}"];
+							$checklayout = $content_pref["content_submit_layout_{$id}"];
 
 						}else{
 							$checkicon = $content_pref["content_admin_icon_{$type_id}"];
@@ -113,7 +115,9 @@ class contentform{
 							$checkpe = $content_pref["content_admin_pe_{$type_id}"];
 							$checkvisibility = $content_pref["content_admin_visibility_{$type_id}"];
 							$checkmeta = $content_pref["content_admin_meta_{$type_id}"];
+							$checkcustom = $content_pref["content_admin_customtags_{$id}"];
 							$checkcustomnumber = $content_pref["content_admin_custom_number_{$type_id}"];
+							$checklayout = $content_pref["content_admin_layout_{$id}"];
 						}
 
 						if($parentdetails == FALSE){
@@ -135,8 +139,8 @@ class contentform{
 							if(is_numeric($id)){
 								if($sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_enddate, content_class, content_pref as contentprefvalue", "content_id='$id' ")){
 									$row = $sql -> db_Fetch();
-									//$row['content_text'] = $tp -> toForm($row['content_text'], TRUE);
-									$row['content_text'] = $tp -> post_toHTML($row['content_text'], TRUE);
+									$row['content_text'] = $tp -> toForm($row['content_text'], TRUE);
+									//$row['content_text'] = $tp -> post_toHTML($row['content_text'], TRUE);
 									$authordetails = $aa -> getAuthor($row['content_author']);
 								}
 							}else{
@@ -462,7 +466,7 @@ class contentform{
 							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 						}
 
-						if($checkcomment || $checkrating || $checkscore || $checkpe || $checkvisibility || $checkmeta ){
+						if($checkcomment || $checkrating || $checkpe || $checkvisibility || $checkscore || $checkmeta || ($checkcustom && $checkcustomnumber) || $checklayout ){
 							$text .= $TOPIC_ROW_SPACER;
 						}
 						if($checkcomment){
@@ -539,48 +543,47 @@ class contentform{
 							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 						}
 						
-						if($checkcustomnumber){
-							$existing_custom = "0";
-
-							//custom data
-							$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_54;
-							$TOPIC_HEADING = CONTENT_ADMIN_ITEM_LAN_84;
-							$TOPIC_HELP = CONTENT_ADMIN_ITEM_LAN_68;
-							$TOPIC_FIELD = "
-								<table style='width:100%; border:0;'>";
-								if(!empty($custom)){						
-									foreach($custom as $k => $v){
-										if(!($k == "content_custom_score" || $k == "content_custom_meta")){
-											$key = substr($k,15);
-											if($checkcustomnumber){
-												$TOPIC_FIELD .= "
-												<tr>
-													<td class='forumheader3' style='border:0;'>".$rs -> form_text("content_custom_key_".$existing_custom."", 20, $key, 100)."</td>
-													<td class='forumheader3' style='border:0;'>".$rs -> form_text("content_custom_value_".$existing_custom."", 70, $v, 250)."</td>
-												</tr>";
-											}else{
-												$TOPIC_FIELD .= "
-												".$rs -> form_hidden("content_custom_key_".$existing_custom, $key)."
-												".$rs -> form_hidden("content_custom_value_".$existing_custom, $v);
-											}
-											$existing_custom = $existing_custom + 1;
-										}
-									}
-								}
-								for($i=$existing_custom;$i<$checkcustomnumber;$i++){
+						//custom data
+						$existing_custom = "0";
+						$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_54;
+						$TOPIC_HEADING = CONTENT_ADMIN_ITEM_LAN_84;
+						$TOPIC_HELP = CONTENT_ADMIN_ITEM_LAN_68;
+						$TOPIC_CHECK_VALID = FALSE;
+						$TOPIC_FIELD = "";
+						if($checkcustom && $checkcustomnumber){ $TOPIC_FIELD = "<table style='width:100%; border:0;'>"; }
+						if(!empty($custom)){						
+							foreach($custom as $k => $v){
+								if(!($k == "content_custom_score" || $k == "content_custom_meta")){
+									$key = substr($k,15);
+									if($checkcustom && $checkcustomnumber){
 										$TOPIC_FIELD .= "
 										<tr>
-											<td class='forumheader3' style='border:0;'>".$rs -> form_text("content_custom_key_".$i."", 20, "", 100)."</td>
-											<td class='forumheader3' style='border:0;'>".$rs -> form_text("content_custom_value_".$i."", 70, "", 250)."</td>
+											<td class='forumheader3' style='border:0;'>".$rs -> form_text("content_custom_key_".$existing_custom."", 20, $key, 100)."</td>
+											<td class='forumheader3' style='border:0;'>".$rs -> form_text("content_custom_value_".$existing_custom."", 70, $v, 250)."</td>
 										</tr>";
+									}else{
+										$TOPIC_FIELD .= "
+										".$rs -> form_hidden("content_custom_key_".$existing_custom, $key)."
+										".$rs -> form_hidden("content_custom_value_".$existing_custom, $v);
+										$TOPIC_CHECK_VALID = TRUE;
+									}
+									$existing_custom = $existing_custom + 1;
 								}
-								$TOPIC_FIELD .= "</table>
-							";
-							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+							}
 						}
+						if($checkcustom && $checkcustomnumber){
+							for($i=$existing_custom;$i<$checkcustomnumber;$i++){
+									$TOPIC_FIELD .= "
+									<tr>
+										<td class='forumheader3' style='border:0;'>".$rs -> form_text("content_custom_key_".$i."", 20, "", 100)."</td>
+										<td class='forumheader3' style='border:0;'>".$rs -> form_text("content_custom_value_".$i."", 70, "", 250)."</td>
+									</tr>";
+							}
+						}
+						if($checkcustom && $checkcustomnumber){ $TOPIC_FIELD .= "</table>"; }
+						if($TOPIC_CHECK_VALID){ $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW); }
 
-						$checktemplate = TRUE;
-						if($checktemplate){
+						if($checklayout){
 							global $fl;
 
 							if(!$content_pref["content_theme_{$type_id}"]){
@@ -611,8 +614,7 @@ class contentform{
 								$TOPIC_FIELD .= $rs -> form_select_close()."
 							";
 							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
-						}
-						
+						}						
 
 						$text .= $TOPIC_ROW_SPACER."
 						<tr>
@@ -1688,6 +1690,8 @@ class contentform{
 						".$rs -> form_checkbox("content_admin_pe_{$id}", 1, ($content_pref["content_admin_pe_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_10."<br />
 						".$rs -> form_checkbox("content_admin_visibility_{$id}", 1, ($content_pref["content_admin_visibility_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_11."<br />
 						".$rs -> form_checkbox("content_admin_meta_{$id}", 1, ($content_pref["content_admin_meta_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_12."<br />
+						".$rs -> form_checkbox("content_admin_layout_{$id}", 1, ($content_pref["content_admin_layout_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_205."<br />
+						".$rs -> form_checkbox("content_admin_customtags_{$id}", 1, ($content_pref["content_admin_customtags_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_206."<br />
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -1780,6 +1784,8 @@ class contentform{
 						".$rs -> form_checkbox("content_submit_pe_{$id}", 1, ($content_pref["content_submit_pe_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_10."<br />
 						".$rs -> form_checkbox("content_submit_visibility_{$id}", 1, ($content_pref["content_submit_visibility_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_11."<br />
 						".$rs -> form_checkbox("content_submit_meta_{$id}", 1, ($content_pref["content_submit_meta_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_12."<br />
+						".$rs -> form_checkbox("content_submit_layout_{$id}", 1, ($content_pref["content_submit_layout_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_205."<br />
+						".$rs -> form_checkbox("content_submit_customtags_{$id}", 1, ($content_pref["content_submit_customtags_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_206."<br />
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 

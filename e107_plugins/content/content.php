@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.34 $
-|		$Date: 2005-05-12 20:49:41 $
+|		$Revision: 1.35 $
+|		$Date: 2005-05-13 22:20:17 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -264,8 +264,12 @@ if(!isset($type)){
 	}elseif($action == "content"){										//show content item
 			if($content_pref["content_searchmenu_{$type_id}"]){ show_content_search_menu(); }
 			if($resultmenu == TRUE){ show_content_search_result($searchkeyword); }
-			show_content_item();
-
+			
+			if($id == "word"){
+				show_wordcount();
+			}else{
+				show_content_item();
+			}
 	}elseif($action == "top"){											//show content top rated items
 			if($content_pref["content_searchmenu_{$type_id}"]){ show_content_search_menu(); }
 			if($resultmenu == TRUE){ show_content_search_result($searchkeyword); }
@@ -861,7 +865,8 @@ function show_content_cat($mode=""){
 									$width = 0;
 									while($row2 = $sql -> db_Fetch()){
 										if($pref['nested_comments']){
-											$text .= $cobj -> render_comment($row2, $plugintable , "comment", $sub_action, $width, $row['content_heading']);
+											$text = $cobj -> render_comment($row2, $plugintable , "comment", $sub_action, $width, $row['content_heading']);
+											$ns -> tablerender(CONTENT_LAN_35, $text);
 										}else{
 											$text .= $cobj -> render_comment($row2, $plugintable , "comment", $sub_action, $width, $row['content_heading']);
 										}
@@ -1105,12 +1110,46 @@ function show_content_item(){
 						}else{
 							ob_start();
 							unset($text);
+							$query = ($pref['nested_comments'] ?
+							"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location FROM #comments
+							LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$sub_action."' AND comment_type='".$plugintable."' AND comment_pid='0' ORDER BY comment_datestamp"
+							:
+							"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location FROM #comments
+							LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$sub_action."' AND comment_type='".$plugintable."' ORDER BY comment_datestamp"
+							);
+
+							$comment_total = $sql->db_Select_gen($query); 
+							if ($comment_total) {
+								$width = 0;
+								while ($row2 = $sql->db_Fetch()) {
+									if ($pref['nested_comments']) {
+										$text .= $cobj->render_comment($row2, $plugintable , "comment", $sub_action, $width, $row['content_heading']);
+									} else {
+										$text = $cobj->render_comment($row2, $plugintable , "comment", $sub_action, $width, $row['content_heading']);
+									}
+								}
+								//if (!$pref['nested_comments']) {
+								//	$ns->tablerender(CONTENT_LAN_35, $text);
+								//}
+								$ns->tablerender(CONTENT_LAN_35, $text);
+
+								if(ADMIN && getperms("B")){
+									echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?$plugintable.$sub_action'>".CONTENT_LAN_36."</a></div><br />";
+								}
+							}
+							ob_end_flush(); // dump collected data							
+						}
+						$cobj->form_comment("comment", $plugintable, $sub_action, $row['content_heading']); 
+					}
+						
+							/*
 							if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='".$sub_action."' AND comment_type='".$plugintable."' AND comment_pid='0' ORDER BY comment_datestamp")){
 								$width = 0;
 								while($row2 = $sql -> db_Fetch()){
 
 									if($pref['nested_comments']){
-										$text .= $cobj -> render_comment($row2, $plugintable , "comment", $sub_action, $width, $row['content_heading']);
+										$text = $cobj -> render_comment($row2, $plugintable , "comment", $sub_action, $width, $row['content_heading']);
+										$ns -> tablerender(CONTENT_LAN_35, $text);
 									}else{
 										$text .= $cobj -> render_comment($row2, $plugintable , "comment", $sub_action, $width, $row['content_heading']);
 									}
@@ -1121,13 +1160,15 @@ function show_content_item(){
 									$e107cache->set("comment.$plugintable.$sub_action", $cache);
 								}
 							}
-							ob_end_flush(); /* dump collected data */		
-						}
-						if(ADMIN && getperms("B")){
-							echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?$plugintable.$sub_action'>".CONTENT_LAN_36."</a></div><br />";
-						}
-						$cobj -> form_comment("comment", $plugintable, $sub_action, $row['content_heading']);
-					}
+							ob_end_flush(); // dump collected data
+							*/
+
+						//}
+						//if(ADMIN && getperms("B")){
+						//	echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?$plugintable.$sub_action'>".CONTENT_LAN_36."</a></div><br />";
+						//}
+						//$cobj -> form_comment("comment", $plugintable, $sub_action, $row['content_heading']);
+					//}
 
 					if($pref['cachestatus']){
 						$cache = ob_get_contents();
@@ -1525,6 +1566,65 @@ function parse_content_cat_list_table($row){
 				}
 				*/
 				return(preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LIST_TABLE));
+}
+
+function show_wordcount(){
+				global $rater, $content_icon_path, $content_file_path, $content_image_path, $gen, $aa, $tp, $ep, $from, $number;
+				global $type, $type_id, $action, $sub_action, $id, $id2, $content_pref, $plugintable;
+				global $ns, $sql, $pref, $cobj, $datequery, $e107;
+
+				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
+				global $type, $type_id, $action, $sub_action, $id, $id2, $datequery, $prefetchbreadcrumb, $unvalidcontent, $order, $nextprevquery;
+
+				if(!is_numeric($sub_action)){ header("location:".e_SELF."?".$type.".".$type_id); exit; }
+
+				if(!$resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_refer !='sa' AND content_id='".$sub_action."' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery )){
+					header("location:".e_SELF."?".$type.".".$type_id); exit;
+				}else{
+					$row = $sql -> db_Fetch();
+
+$row['content_text'] = $tp -> toHTML($row['content_text']);
+
+$row['content_text'] = strip_tags($row['content_text']);
+
+//make all lowercase
+$row['content_text'] = strtolower($row['content_text']);
+
+
+//$row['content_text'] = ereg_replace( "[^A-Za-z0-9]", "", $row['content_text'] );
+$row['content_text'] = eregi_replace( " (.){1,3} ", "", $row['content_text'] );
+
+$search = array(",", "'", "!", "?", ".", ",", ";", ":", "%", "(", ")", '/', '\\', "-", "[", "]", "{", "}");
+$row['content_text'] = str_replace($search, "", $row['content_text']);
+
+//remove multiple white spaces
+//$row['content_text'] = preg_replace('/\s\s+/', ' ', $row['content_text']);
+$row['content_text'] = eregi_replace(" +", " ", $row['content_text']);
+
+$chars = preg_split('/ /', $row['content_text'], -1);
+
+$countvalues = array_count_values($chars);
+$unique = array_unique($chars);
+$countunique = count($unique);
+
+$text = "<table border='1' style='width:70%;'>";
+$text .= "<tr><td>unique words</td><td>".$countunique."</td></tr>";
+$text .= "</table><br />";
+
+arsort($countvalues);
+reset($countvalues);
+$text .= "<table border='1' style='width:70%;'><tr><td>word</td><td>amount</td></tr>";
+while (list($key, $val) = each($countvalues)) {
+	if($val > 1){
+		$text .= "<tr><td>".$key."</td><td>".$val."</td></tr>";
+	}
+}
+$text .= "</table>";
+echo $text;
+
+						
+
+				}
 }
 
 function parse_content_content_table($row){
