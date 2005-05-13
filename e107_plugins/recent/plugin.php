@@ -53,7 +53,7 @@ $eplug_tables = "";
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;
 $eplug_link_name = "recent";
-$eplug_link_url = e_PLUGIN."recent/recent.php";
+$eplug_link_url = e_PLUGIN."recent/recent_page.php";
 
 
 // Text to display after plugin successfully installed ------------------------------------------------------------------
