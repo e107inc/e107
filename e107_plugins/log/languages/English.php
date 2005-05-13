@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/languages/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-27 16:07:23 $
+|     $Revision: 1.4 $
+|     $Date: 2005-05-13 17:07:16 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -57,5 +57,6 @@ define("ADSTAT_L35", "Unique visits in last");
 define("ADSTAT_L36", "days by page");
 define("ADSTAT_L37", "Visits by month");
 define("ADSTAT_L38", "Unique visits by month");
+define("ADSTAT_L39", "remove this entry");
 
 ?>

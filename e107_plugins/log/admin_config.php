@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-05-08 17:13:45 $
+|     $Revision: 1.11 $
+|     $Date: 2005-05-13 17:07:04 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -36,7 +36,14 @@ define("LOGPATH", e_PLUGIN."log/");
 @include_once(LOGPATH."languages/admin/".e_LANGUAGE.".php");
 @include_once(LOGPATH."languages/admin/English.php");
 
-
+if(IsSet($_POST['openRemPageD']))
+{
+	rempage();
+}
+if(IsSet($_POST['remSelP']))
+{
+	rempagego();
+}
 
 if(IsSet($_POST['wipeSubmit']))
 {
@@ -75,8 +82,6 @@ if(IsSet($_POST['wipeSubmit']))
 if(!is_writable(LOGPATH."logs")) {
 	$message = "<b>You must set the permissions of the e107_plugins/log/logs folder to 777 (chmod 777)</b>";
 }
-
-
 	
 if (isset($_POST['updatesettings'])) {
 	$pref['statActivate'] = $_POST['statActivate'];
@@ -90,15 +95,10 @@ if (isset($_POST['updatesettings'])) {
 	$pref['statQuery'] = $_POST['statQuery'];
 	$pref['statRecent'] = $_POST['statRecent'];
 	$pref['statDisplayNumber'] = $_POST['statDisplayNumber'];
-	
 	save_prefs();
-	header("location:".e_SELF."?u");
-	exit;
-}
-	
-if (e_QUERY == "u") {
 	$message = ADSTAT_L17;
 }
+
 	
 if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
@@ -184,6 +184,12 @@ $text = "<div style='text-align:center'>
 	<br /><input class='button' type='submit' name='wipeSubmit' value='".ADSTAT_L12."' />
 	</td>
 	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".ADSTAT_L26."<br /><span class='smalltext'>".ADSTAT_L27."</td>
+	<td style='width:50%; text-align: right;' class='forumheader3'><input class='button' type='submit' name='openRemPageD' value='".ADSTAT_L28."' />
+	</td>
+	</tr>
 	
 	";
 
@@ -213,5 +219,126 @@ $text = "<div style='text-align:center'>
 	
 $ns->tablerender(ADSTAT_L16, $text);
 require_once("footer.php");
+
+
+
+
+function rempage()
+{
+	global $sql, $ns;
+
+	$logfile = e_PLUGIN."log/logs/logp_".date("z.Y", time()).".php";
+	if(is_readable($logfile))
+	{
+		require($logfile);
+	}
+
+	$sql -> db_Select("logstats", "*", "log_id='pageTotal' ");
+	$row = $sql -> db_Fetch();
+	$pageTotal = unserialize($row['log_data']);
+
+	foreach($pageInfo as $url => $tmpcon) {
+		$pageTotal[$url]['url'] = $tmpcon['url'];
+		$pageTotal[$url]['ttlv'] += $tmpcon['ttl'];
+		$pageTotal[$url]['unqv'] += $tmpcon['unq'];
+	}
+
+	$text = "<div style='text-align:center'>
+	<form method='post' action='".e_SELF."'>
+	<table style='".ADMIN_WIDTH."' class='fborder'>
+
+	<tr>
+	<td style='width:30%' class='forumheader'>Page Name</td>
+	<td style='width:50%' class='forumheader'>URL</td>
+	<td style='width:30%; text-align: center;' class='forumheader'>Check to remove ...</td>
+	</tr>
+	";
+
+	foreach($pageTotal as $key => $page)
+	{
+		$text .= "
+		<tr>
+		<td style='width:30%' class='forumheader3'>$key</td>
+		<td style='width:50%' class='forumheader3'>".$page['url']."</td>
+		<td style='width:30%; text-align: center;' class='forumheader3'><input type='checkbox' name='remcb[]' value='$key' /></td>
+		</tr>
+		";
+	}
+
+	$text .= "
+
+	<tr>
+	<td colspan='3' class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='remSelP' value='Remove selected pages' />
+	</td>
+	</tr>
+
+	</table>
+	</form>
+	</div>
+	";
+
+	$ns -> tablerender("Page Tidy", $text);
+}
+
+
+function rempagego()
+{
+	global $sql;
+
+	$sql -> db_Select("logstats", "*", "log_id='pageTotal' ");
+	$row = $sql -> db_Fetch();
+	$pageTotal = unserialize($row['log_data']);
+
+	$logfile = e_PLUGIN."log/logs/logp_".date("z.Y", time()).".php";
+	if(is_readable($logfile))
+	{
+		require($logfile);
+	}
+
+	foreach($_POST['remcb'] as $page)
+	{
+		unset($pageInfo[$page]);
+		unset($pageTotal[$page]);
+	}
+
+	$pagetotal = serialize($pageTotal);
+	if(!$sql -> db_Update("logstats", "log_data='$pagetotal' WHERE log_id='pageTotal' "))
+	{
+		$sql -> db_Insert("logstats", "0, 'pageTotal', '$pagetotal' ");
+	}
 	
+	$varStart = chr(36);
+	$quote = chr(34);
+
+	$data = chr(60)."?php\n". chr(47)."* e107 website system: Log file: ".date("z:Y", time())." *". chr(47)."\n\n".
+	$varStart."ipAddresses = ".$quote.$ipAddresses.$quote.";\n".
+	$varStart."siteTotal = ".$quote.$siteTotal.$quote.";\n".
+	$varStart."siteUnique = ".$quote.$siteUnique.$quote.";\n";
+
+	$loop = FALSE;
+	$data .= $varStart."pageInfo = array(\n";
+	foreach($pageInfo as $info)
+	{
+		$page = preg_replace("/(\?.*)|(\_.*)|(\.php)|(\s)|(\')|(\")|(eself)|(&nbsp;)/", "", basename ($info['url']));
+		$page = str_replace("\\", "", $page);
+		$info['url'] = preg_replace("/(\s)|(\')|(\")|(eself)|(&nbsp;)/", "", $info['url']);
+		$info['url'] = str_replace("\\", "", $info['url']);
+		$page = trim(chop($page));
+		if($page && !strstr($page, "cache") && !strstr($page, "file:"))
+		{
+			if($loop){ $data .= ",\n"; }
+			$data .= $quote.$page.$quote." => array('url' => '".$info['url']."', 'ttl' => ".$info['ttl'].", 'unq' => ".$info['unq'].")";
+			$loop = 1;
+		}
+	}
+
+	$data .= "\n);\n\n?".  chr(62);
+
+	if ($handle = fopen($logfile, 'w')) { 
+		fwrite($handle, $data);
+	}
+	fclose($handle);
+
+
+}
 ?>

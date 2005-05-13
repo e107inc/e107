@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-05-05 20:47:51 $
+|     $Revision: 1.22 $
+|     $Date: 2005-05-13 17:07:05 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -271,7 +271,8 @@ class siteStats {
 		foreach($totalArray as $key => $info) {
 			if($info['ttl']){
 				$percentage = round(($info['ttl']/$totalv) * 100, 2);
-				$text .= "<tr class='forumheader3'>\n<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>\n<td style='width: 70%;'>".$this -> bar($percentage, $info['ttl']." [".$info['unq']."]")."</td>\n<td style='width: 10%; text-align: center;'>".$percentage."%</td>\n</tr>\n";
+				$text .= "<tr class='forumheader3'>\n<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a>
+				</td>\n<td style='width: 70%;'>".$this -> bar($percentage, $info['ttl']." [".$info['unq']."]")."</td>\n<td style='width: 10%; text-align: center;'>".$percentage."%</td>\n</tr>\n";
 			}
 		}
 		$text .= "<tr class='forumheader2'><td colspan='2'>".ADSTAT_L21."</td><td style='text-align: center;'>$totalv</td></tr>\n<tr class='forumheader2'><td colspan='2'>".ADSTAT_L22."</td><td style='text-align: center;'>$totalu</td></tr>\n</table>";
@@ -305,7 +306,17 @@ class siteStats {
 			if($info['ttlv']){
 				$percentage = round(($info['ttlv']/$total) * 100, 2);
 				$text .= "<tr class='forumheader3'>
-				<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a></td>
+				<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a>
+				";
+				
+				if(ADMIN && getperms("P"))
+				{
+					$text .= "<a href='".e_SELF."?rem".$key."'><img src='".e_PLUGIN."log/images/remove.png' alt='".ADSTAT_L39."' title='".ADSTAT_L39."' style='vertical-align: middle; border: 0;' /></a>
+					";
+				}
+				
+				
+				$text .= "</td>
 				<td style='width: 70%;'>".$this->bar($percentage, $info['ttlv'])."</td>
 				<td style='width: 10%; text-align: center;'>".$percentage."%</td>
 				</tr>\n";

@@ -37,24 +37,31 @@ if($ref && !strstr($ref, $_SERVER['HTTP_HOST']))
 
 $infodata = time().chr(1).$ip.chr(1).$agent.chr(1).$colour.chr(1).$res.chr(1).$self.chr(1).$ref."\n";
 
+$pageDisallow = "cache|file|eself|admin";
+$tagRemove = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)|(\.php)|(\.html)";
+$tagRemove2 = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)";
 
+preg_match("#/(.*?)(\?|$)#si", $self, $match);
+$pageName = substr($match[1], (strrpos($match[1], "/")+1));
+$PN = $pageName;
+$pageName = preg_replace("/".$tagRemove."/si", "", $pageName);
+if($pageName == "") $pageName = "index";
+if(eregi($pageDisallow, $pageName)) return;
 
-$pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)|(\s)|(\')|(\")|(eself)|(&nbsp;)/", "", basename ($self));
-$pageName = str_replace("\\", "", $pageName);
-$pageName = trim(chop($pageName));
-if($pageName == "")
-{
-	$pageName = "index";
-}
 
 $logPfile = "logs/logp_".$date.".php";
 require_once($logPfile);
 
 $flag = FALSE;
-if(array_key_exists($pageName, $pageInfo)) {
+if(array_key_exists($pageName, $pageInfo))
+{
 	$pageInfo[$pageName]['ttl'] ++;
-} else {
-	$pageInfo[$pageName] = array('url' => $self, 'ttl' => 1, 'unq' => 1);
+}
+else
+{
+	$url = preg_replace("/".$tagRemove2."/si", "", $self);
+	if(eregi($pageDisallow, $url)) return;
+	$pageInfo[$pageName] = array('url' => $url, 'ttl' => 1, 'unq' => 1);
 	$flag = TRUE;
 }
 
@@ -62,7 +69,8 @@ if(!strstr($ipAddresses, $ip))
 {
 	/* unique visit */
 
-	if(!$flag) {
+	if(!$flag)
+	{
 		$pageInfo[$pageName]['unq'] ++;
 	}
 
@@ -85,19 +93,11 @@ $varStart."siteUnique = ".$quote.$siteUnique.$quote.";\n";
 
 $loop = FALSE;
 $data .= $varStart."pageInfo = array(\n";
-foreach($pageInfo as $info)
+foreach($pageInfo as $page => $info)
 {
-	$page = preg_replace("/(\?.*)|(\_.*)|(\.php)|(\s)|(\')|(\")|(eself)|(&nbsp;)/", "", basename ($info['url']));
-	$page = str_replace("\\", "", $page);
-	$info['url'] = preg_replace("/(\s)|(\')|(\")|(eself)|(&nbsp;)/", "", $info['url']);
-	$info['url'] = str_replace("\\", "", $info['url']);
-	$page = trim(chop($page));
-	if($page && !strstr($page, "cache") && !strstr($page, "file:"))
-	{
-		if($loop){ $data .= ",\n"; }
-		$data .= $quote.$page.$quote." => array('url' => '".$info['url']."', 'ttl' => ".$info['ttl'].", 'unq' => ".$info['unq'].")";
-		$loop = 1;
-	}
+	if($loop){ $data .= ",\n"; }
+	$data .= $quote.$page.$quote." => array('url' => '".$info['url']."', 'ttl' => ".$info['ttl'].", 'unq' => ".$info['unq'].")";
+	$loop = 1;
 }
 
 $data .= "\n);\n\n?".  chr(62);
