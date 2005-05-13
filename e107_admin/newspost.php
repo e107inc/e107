@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.80 $
-|   $Date: 2005-05-02 09:46:43 $
-|   $Author: e107coders $
+|   $Revision: 1.81 $
+|   $Date: 2005-05-13 01:03:34 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
@@ -58,6 +58,8 @@ $ix = new news;
 $deltest = array_flip($_POST);
 if (e_QUERY) {
 	list($action, $sub_action, $id, $from) = explode(".", e_QUERY);
+	$id = intval($id);
+	$from = intval($from);
 	unset($tmp);
 }
 
@@ -65,6 +67,8 @@ $from = ($from ? $from : 0);
 $amount = 50;
 
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
+
+$_POST['news_class'] = implode(",", array_keys($_POST['news_userclass']));
 
 if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LAN_DELETE)], $matches)) {
 	$delete = $matches[1];
@@ -129,7 +133,7 @@ if (IsSet($_POST['submitupload'])) {
 }
 
 // required.
-if (IsSet($_POST['preview'])) {
+if (isset($_POST['preview'])) {
 	$_POST['news_title'] = $tp->toDB($_POST['news_title']);
 	$_POST['news_summary'] = $tp->toDB($_POST['news_summary']);
 	$newspost->preview_item($id);
@@ -781,7 +785,7 @@ class newspost {
 
 		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_84."</a>
 		<div style='display: none;'>
-		".r_userclass("news_class", $_POST['news_class'])."
+		".r_userclass_check("news_userclass", $_POST['news_class'], "nobody,public,guest,member,admin,classes")."
 		</div>
 		</td></tr>
 
@@ -849,6 +853,8 @@ class newspost {
 		// ##### Display news preview ---------------------------------------------------------------------------------------------------------
 		global $tp, $sql, $ix, $IMAGES_DIRECTORY;
 		$_POST['news_id'] = $id;
+		print_a($_POST);
+//		print_a($_POST['news_userclass']);
 
 		if($_POST['news_start'])
 		{
