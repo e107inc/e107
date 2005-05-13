@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-05-10 09:51:21 $
+|     $Revision: 1.34 $
+|     $Date: 2005-05-13 11:16:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -402,8 +402,8 @@ define("CONTENT_ADMIN_ITEM_LAN_62", "order categories");
 define("CONTENT_ADMIN_ITEM_LAN_63", "inc");
 define("CONTENT_ADMIN_ITEM_LAN_64", "dec");
 define("CONTENT_ADMIN_ITEM_LAN_65", "order content items");
-define("CONTENT_ADMIN_ITEM_LAN_66", "Below you'll see the distinct letters of the content heading for all items in this category.<br />By clicking on one of the letters you will see a list of all items starting with the selected letter. You can also choose the ALL button to display all items in this category.");
-define("CONTENT_ADMIN_ITEM_LAN_67", "Below you'll see the content items listed for the selected category or narrowed down with a selected letter.<br />You can edit or delete an item by clicking the appropriate buttons on the right.");
+define("CONTENT_ADMIN_ITEM_LAN_66", "Below you see the distinct letters of the content heading for all items in this category.<br />By clicking on one of the letters you will see a list of all items starting with the selected letter. You can also choose the ALL button to display all items in this category.");
+define("CONTENT_ADMIN_ITEM_LAN_67", "Below you see the content items listed for the selected category or narrowed down with a selected letter.<br />You can edit or delete an item by clicking the appropriate buttons on the right.");
 define("CONTENT_ADMIN_ITEM_LAN_68", "Below you have the ability to add custom data for this content item. Each custom data needs to have both a key and a value data present. You can specify the key in the left field and the corresponding value in the right field.<br />(for instance, key='photography' and value='all photos are made by me'.");
 define("CONTENT_ADMIN_ITEM_LAN_69", "Here you can upload icons, attachments and/or images to go with the content item. The allowed filetypes are : ");
 define("CONTENT_ADMIN_ITEM_LAN_70", "In the next box you can specify specific meta keywords to go with this content item. These meta keywords are rendered in the header of the page. Seperate each word with commas, and no spaces are allowed !");

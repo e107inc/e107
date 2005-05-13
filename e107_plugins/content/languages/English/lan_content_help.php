@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_help.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-02 12:06:24 $
+|     $Revision: 1.8 $
+|     $Date: 2005-05-13 11:16:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -65,8 +65,9 @@ define("CONTENT_ADMIN_HELP_LAN_8", "
 
 define("CONTENT_ADMIN_HELP_LAN_9", "<i>you see the main parent category buttons.</i><br /><br /><b>main parent buttons</b><br />first you have to select a main parent category by clicking the button.");
 
+//<i>this page shows all categories from the main parent category you have selected at the previous page.</i><br /><br />
 define("CONTENT_ADMIN_HELP_LAN_10", "
-<i>this page shows all categories from the main parent category you have selected at the previous page.</i><br /><br />
+<i>this page shows all categories and subcategories present.</i><br /><br />
 <b>detailed list</b><br />You see a list of all subcategories with their id, icon, author, category [subheading] and options.<br />
 <br />
 <b>explanation of icons</b><br />
@@ -118,7 +119,7 @@ define("CONTENT_ADMIN_HELP_LAN_17", "
 ");
 
 define("CONTENT_ADMIN_HELP_LAN_18", "
-<i>this page shows all categories from the main parent category you have selected at the content order main page.</i><br /><br />
+<i>this page shows all categories and subcategories present.</i><br /><br />
 <b>detailed list</b><br />you see the category id and the category name. also you see several options to manage the order of the categories.<br />
 <br />
 <b>explanation of icons</b><br />
@@ -127,7 +128,7 @@ define("CONTENT_ADMIN_HELP_LAN_18", "
 <img src='".e_IMAGE."admin_images/up.png' alt='' /> the up button allow you to move a content item one up in order.<br />
 <img src='".e_IMAGE."admin_images/down.png' alt='' /> the down button allow you to move a content item one down in order.<br />
 <br />
-<b>order</b><br />here you can manually set the order of all the categories in this main parent. You need to change the values in the select boxes to the order of your kind and then press the update button below to save the new order.<br />
+<b>order</b><br />here you can manually set the order of all the categories in this each parent. You need to change the values in the select boxes to the order of your kind and then press the update button below to save the new order.<br />
 ");
 
 define("CONTENT_ADMIN_HELP_LAN_19", "

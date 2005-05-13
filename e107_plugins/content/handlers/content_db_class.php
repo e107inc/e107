@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.14 $
-|		$Date: 2005-05-10 08:59:47 $
+|		$Revision: 1.15 $
+|		$Date: 2005-05-13 11:16:40 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -472,11 +472,11 @@ class contentdb{
 		}
 
 		
-		function dbSetOrder($mode, $id){
-						global $plugintable, $sql, $_POST, $type_id, $sub_action;
+		function dbSetOrder($mode, $idorder){
+						global $plugintable, $sql, $_POST, $type_id, $sub_action, $id;
 
 						if($mode == "inc"){
-							$qs = explode("-", $id);
+							$qs = explode("-", $idorder);
 							$ctype = $qs[0];
 							$cid = $qs[1];
 							$corder = $qs[2];
@@ -488,20 +488,18 @@ class contentdb{
 								$sql->db_Update($plugintable, "content_order=content_order-1 WHERE content_id='".$cid."' " );
 							
 							}elseif($ctype == "ci"){		//order of items in category
-								$cat = str_replace("-", ".", $sub_action);
-								$sql->db_Update($plugintable, "content_order='".$corder.".".$corderitem."' WHERE content_parent = '".$cat."' AND content_order='".($corder-1).".".$corderitem."' " );
-								$sql->db_Update($plugintable, "content_order='".($corder-1).".".$corderitem."' WHERE content_parent = '".$cat."' AND content_id='".$cid."' " );
-
+								$cat = str_replace("-", ".", $id);
+								$sql->db_Update($plugintable, "content_order=content_order+1 WHERE content_parent = '".$cat."' AND SUBSTRING_INDEX(content_order, '.', 1) = '".($corder-1)."' " );
+								$sql->db_Update($plugintable, "content_order='".($corder-1).".".$corderitem."' WHERE content_id='".$cid."' " );
+								
 							}elseif($ctype == "ai"){		//global order of items
-								$cat = str_replace("-", ".", $sub_action);
-								$sql->db_Update($plugintable, "content_order=content_order+1 WHERE content_order='".($corder-1)."' " );
-								$sql->db_Update($plugintable, "content_order=content_order-1 WHERE content_id='".$cid."' " );
-							
+								$sql->db_Update($plugintable, "content_order='".$corder.".".$corderitem."' WHERE content_order='".$corder.".".($corderitem-1)."' " );
+								$sql->db_Update($plugintable, "content_order='".$corder.".".($corderitem-1)."' WHERE content_id='".$cid."' " );
 							}
 							$message = CONTENT_ADMIN_ORDER_LAN_0;
 							
 						}elseif($mode == "dec"){
-							$qs = explode("-", $id);
+							$qs = explode("-", $idorder);
 							$ctype = $qs[0];
 							$cid = $qs[1];
 							$corder = $qs[2];
@@ -513,14 +511,13 @@ class contentdb{
 								$sql->db_Update($plugintable, "content_order=content_order+1 WHERE content_id='".$cid."' " );
 							
 							}elseif($ctype == "ci"){		//order of items in category
-								$cat = str_replace("-", ".", $sub_action);
-								$sql->db_Update($plugintable, "content_order='".$corder.".".$corderitem."' WHERE content_parent = '".$cat."' AND content_order='".($corder+1).".".$corderitem."' " );
-								$sql->db_Update($plugintable, "content_order='".($corder+1).".".$corderitem."' WHERE content_parent = '".$cat."' AND content_id='".$cid."' " );
-
+								$cat = str_replace("-", ".", $id);
+								$sql->db_Update($plugintable, "content_order=content_order-1 WHERE content_parent = '".$cat."' AND SUBSTRING_INDEX(content_order, '.', 1) = '".($corder+1)."' " );
+								$sql->db_Update($plugintable, "content_order='".($corder+1).".".$corderitem."' WHERE content_id='".$cid."' " );
+								
 							}elseif($ctype == "ai"){		//global order of items
-								$cat = str_replace("-", ".", $sub_action);
-								$sql->db_Update($plugintable, "content_order=content_order+1 WHERE content_order='".($corder-1)."' " );
-								$sql->db_Update($plugintable, "content_order=content_order-1 WHERE content_id='".$cid."' " );
+								$sql->db_Update($plugintable, "content_order='".$corder.".".$corderitem."' WHERE content_order='".$corder.".".($corderitem+1)."' " );
+								$sql->db_Update($plugintable, "content_order='".$corder.".".($corderitem+1)."' WHERE content_id='".$cid."' " );
 							
 							}
 							$message = CONTENT_ADMIN_ORDER_LAN_1;

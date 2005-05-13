@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.28 $
-|		$Date: 2005-05-12 20:49:41 $
+|		$Revision: 1.29 $
+|		$Date: 2005-05-13 11:15:57 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -328,6 +328,7 @@ if(!e_QUERY){																//show main categories
 		exit;
 }else{
 	if($type=="type" && is_numeric($type_id)){
+		
 		if(!$action || ($action == "c" && $sub_action)){
 			if($type_id == "0"){
 					header("location:".e_SELF); exit;
@@ -380,11 +381,13 @@ if(!e_QUERY){																//show main categories
 		}
 
 		if($action == "order"){
-			if(!$sub_action || $type_id == "0"){
-						$aform -> show_main_parent("order");							//show main parents for order selection
-						require_once(e_ADMIN."footer.php");
-						exit;
 
+			//if(!$sub_action || (!$sub_action && $type_id == "0")){
+
+			//			$aform -> show_main_parent("order");							//show main parents for order selection
+			//			require_once(e_ADMIN."footer.php");
+			//			exit;
+/*
 			//category (category order)
 			}elseif($sub_action == "cat" && $type_id != "0" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
 						if($sub_action == "cat" && substr($id,0,3) == "inc"){			//increase order
@@ -394,6 +397,19 @@ if(!e_QUERY){																//show main categories
 						}
 						$aform -> show_main_parent("order");							//show main parents for order selection
 						$aform -> show_cat_order("admin");								//show categories from selected main parent
+*/
+			//category (category order)
+			//}else
+				if($sub_action == "cat" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
+
+						if($sub_action == "cat" && substr($id,0,3) == "inc"){			//increase order
+							$adb -> dbSetOrder("inc", "cc-".substr($id,4));
+						}elseif($sub_action == "cat" && substr($id,0,3) == "dec"){		//decrease order
+							$adb -> dbSetOrder("dec", "cc-".substr($id,4));
+						}
+						//$aform -> show_main_parent("order");							//show main parents for order selection
+						$aform -> show_cat_order("admin");								//show categories from selected main parent
+
 
 			//all items (global order)
 			}elseif($sub_action == "all" && $type_id != "0" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
@@ -402,17 +418,19 @@ if(!e_QUERY){																//show main categories
 						}elseif(substr($id,0,3) == "dec"){								//decrease order
 							$adb -> dbSetOrder("dec", "ai-".substr($id,4));
 						}
-						$aform -> show_main_parent("order");							//show main parents for order selection
+						//$aform -> show_main_parent("order");							//show main parents for order selection
 						$aform -> show_content_order("admin", "allitem");					//show global content items order
 
 			//items in category (category items order)
-			}elseif($sub_action && $sub_action != "cat" && $sub_action != "all" && $type_id != "0" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
-						if(substr($id,0,3) == "inc"){									//increase order
-							$adb -> dbSetOrder("inc", "ci-".substr($id,4));
-						}elseif(substr($id,0,3) == "dec"){								//decrease order
-							$adb -> dbSetOrder("dec", "ci-".substr($id,4));
+			//}elseif($sub_action && $sub_action != "cat" && $sub_action != "all" && $type_id != "0" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
+			}elseif($sub_action == "item" && ($id != "" || substr($id2,0,3) == "inc" || substr($id2,0,3) == "dec")  ){
+
+						if(substr($id2,0,3) == "inc"){									//increase order
+							$adb -> dbSetOrder("inc", "ci-".substr($id2,4));
+						}elseif(substr($id2,0,3) == "dec"){								//decrease order
+							$adb -> dbSetOrder("dec", "ci-".substr($id2,4));
 						}
-						$aform -> show_main_parent("order");							//show main parents for order selection
+					//	$aform -> show_main_parent("order");							//show main parents for order selection
 						$aform -> show_content_order("admin", "catitem");							//show order of content items from selected category
 
 			}else{
@@ -421,11 +439,13 @@ if(!e_QUERY){																//show main categories
 		}
 
 		if($action == "cat"){												//category
-			if(!$sub_action || $sub_action == "manage"){					//category; main parents
-					$aform -> show_main_parent("editcat");
-					if($type_id != "0"){
-							$aform -> show_cat_manage("editcat");			//category; overview subcategories
-					}
+			//if(!$sub_action || $sub_action == "manage"){					//category; main parents
+			//		$aform -> show_main_parent("editcat");
+			//		if($type_id != "0"){
+			//				$aform -> show_cat_manage("editcat");			//category; overview subcategories
+			//		}
+			if(!$sub_action){												//category; main parents
+					$aform -> show_cat_manage();							//category; overview subcategories
 			}elseif($sub_action == "edit"){									//category; edit
 				if(is_numeric($id)){										//category; edit form
 					if($id2 != "" && $id2 == "pu"){										//category; update redirect
@@ -503,8 +523,9 @@ function admin_content_config_adminmenu(){
 				if($action == "cat"){
 					if($sub_action == "create"){
 						$act = $action.".".$sub_action;
-					}elseif($sub_action == "edit" || $sub_action == "manage" || $sub_action == "options"){
-						$act = $action.".manage";
+					}else{
+						//if($sub_action == "edit" || $sub_action == "manage" || $sub_action == "options"){
+						$act = $action;
 					}
 				}elseif($action == "create"){
 					if(!$sub_action){
@@ -530,14 +551,14 @@ function admin_content_config_adminmenu(){
                 $var['create']['text']=CONTENT_ADMIN_MENU_LAN_1;
                 $var['create']['link']=e_SELF."?type.0.create";
 
-                $var['cat.manage']['text']=CONTENT_ADMIN_MENU_LAN_2;
-                $var['cat.manage']['link']=e_SELF."?type.0.cat.manage";
+                $var['cat']['text']=CONTENT_ADMIN_MENU_LAN_2;
+                $var['cat']['link']=e_SELF."?type.0.cat";
 
 				$var['cat.create']['text']=CONTENT_ADMIN_MENU_LAN_3;
                 $var['cat.create']['link']=e_SELF."?type.0.cat.create";
 
 				$var['order']['text']=CONTENT_ADMIN_MENU_LAN_15;
-                $var['order']['link']=e_SELF."?type.0.order";
+                $var['order']['link']=e_SELF."?type.0.order.cat";
 
                 if($submittedcontents = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer ='sa' ")){
                         $var['sa']['text']=CONTENT_ADMIN_MENU_LAN_4." (".$submittedcontents.")";
