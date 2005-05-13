@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/submenusgen.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-04-02 21:06:52 $
+|     $Revision: 1.10 $
+|     $Date: 2005-05-13 19:21:04 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -297,7 +297,7 @@ function submenusgen_adminmenu() {
 	$var['create']['text'] = LCLAN_63;
 	$var['create']['link'] = "links.php?create";
 
-	$var['opt']['text'] = LCLAN_67;
+	$var['opt']['text'] = LAN_OPTIONS;
 	$var['opt']['link'] = "links.php?opt";
 
 	$var['sub']['text'] = LCLAN_83;
