@@ -9,10 +9,13 @@
 	All CSS that involves the use of images, can be found in the 'index.php' file.
 	This is to ease installation inside subdirectories of a server.
 	Have fun, and don't be afraid to contact me if you have questions.
+
+	Maintainer: William Moffett [Que~]
+	Lastupdate 05-12-05
 */
 
 
-/* Begin Typography & Colors */
+/* BEGIN TYPOGRAPHY & COLORS */
 body {
 	font-size: 62.5%; /* Resets 1em to 10px */
 	font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif;
@@ -36,7 +39,9 @@ body {
 	font-size: 1.2em
 	}
 
-/* ul navigation added by que~ */
+
+/* UL NAVIGATION ADDED BY QUE~ */
+
 #navigation{
 	font-size: 11px;
 	width: 694px;
@@ -56,7 +61,11 @@ body {
 	background: none;
 
 }
-/* end ul navigation */
+#navigation a{
+	text-decoration:none;
+}
+
+/* END UL NAVIGATION */
 
 
 .widecolumn .entry p {
@@ -75,153 +84,96 @@ body {
 	text-align: center;
 	}
 
+/* NOT IN USE
 .graybox {
 	background-color: #f8f8f8;
 	border-top: 1px solid #ddd;
 	border-bottom: 1px solid #ddd;
 	}
+*/
+
 
 #footer {
 	background-color: #eee;
-	}
+}
 
 small {
 	font-family: Arial, Helvetica, Sans-Serif;
 	font-size: 0.9em;
 	line-height: 1.5em;
-	}
+}
 
 h1, h2, h3 {
 	font-family: 'Trebuchet MS', 'Lucida Grande', Verdana, Arial, Sans-Serif;
 	font-weight: bold;
-	}
+}
 
 h1 {
 	font-size: 4em;
 	text-align: center;
 	}
-
-.description {
-	font-size: 1.2em;
-	text-align: center;
-	}
-
 h2 {
 	font-size: 1.6em;
 	}
 
-h2.pagetitle {
-	font-size: 1.6em;
-	}
-
-#sidebar h2 {
-	font-family: 'Lucida Grande', Verdana, Sans-Serif;
-	font-size: 1.2em;
-	}
-
 h3 {
 	font-size: 1.3em;
-	}
+}
 
 h1, h1 a, h1 a:hover, h1 a:visited, .description {
 	text-decoration: none;
 	color: white;
-	}
+}
 
 h2, h2 a, h2 a:visited, h3, h3 a, h3 a:visited {
 	color: #333;
-	}
+}
 
 h2, h2 a, h2 a:hover, h2 a:visited, h3, h3 a, h3 a:hover, h3 a:visited, #sidebar h2, #wp-calendar caption, cite {
 	text-decoration: none;
-	}
+}
 
-.entry p a:visited {
+.entry p a:visited { /* used in NEWSSTYLE */
 	color: #b85b5a;
-	}
-
-.commentlist li, #commentform input, #commentform textarea {
-	font: 0.9em 'Lucida Grande', Verdana, Arial, Sans-Serif;
-	}
-	
-.commentlist li {
-	font-weight: bold;
-	}
-
-.commentlist cite, .commentlist cite a {
-	font-weight: bold;
-	font-style: normal;
-	font-size: 1.1em;
-	}
-
-.commentlist p {
-	font-weight: normal;
-	line-height: 1.5em;
-	text-transform: none;
-	}
-
-#commentform p {
-	font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif;
-	}
-
-.commentmetadata {
-	font-weight: normal;
-	}
+}
 
 #sidebar {
 	font: 1em 'Lucida Grande', Verdana, Arial, Sans-Serif;
 	}
 
-small, #sidebar ul ul li, #sidebar ul ol li, .nocomments, .postmetadata, blockquote, strike {
+small, #sidebar ul ul li, #sidebar ul ol li, blockquote, strike {
 	color: #777;
-	}
+}
 	
 code {
 	font: 1.1em 'Courier New', Courier, Fixed;
-	}
+}
 
-acronym, abbr, span.caps
-{
+acronym, abbr{
 	font-size: 0.9em;
 	letter-spacing: .07em;
-	}
+}
 
 a, h2 a:hover, h3 a:hover {
 	color: #06c;
 	text-decoration: none;
-	}
+}
 
 a:hover {
 	color: #147;
 	text-decoration: underline;
-	}
-	
-#wp-calendar #prev a {
-	font-size: 9pt;
-	}
+}
 
-#wp-calendar a {
-	text-decoration: none;
-	}
-
-#wp-calendar caption {
-	font: bold 1.3em 'Lucida Grande', Verdana, Arial, Sans-Serif;
-	text-align: center;
-	}
-
-#wp-calendar th {
-	font-style: normal;
-	text-transform: capitalize;
-	}
-/* End Typography & Colors */
+/* END TYPOGRAPHY & COLORS */
 
 
 
-/* Begin Structure */
+/* BEGIN STRUCTURE */
+
 body {
 	margin: 0;
 	padding: 0; 
-	}
+}
 
 #page {
 	background-color: white;
@@ -268,23 +220,6 @@ body {
 	margin-right: auto;
 }
 	
-.post {
-	margin: 0 0 40px;
-	text-align: justify;
-}
-
-.widecolumn .post {
-	margin: 0;
-}
-
-.narrowcolumn .postmetadata {
-	padding-top: 5px;
-}
-
-.widecolumn .postmetadata {
-	margin: 30px 0;
-}
-	
 #footer {
 	padding: 0;
 	margin: 0 auto;
@@ -297,33 +232,21 @@ body {
 	padding: 20px 0;
 	text-align: center;
 }
-/* End Structure */
+
+/* END STRUCTURE */
 
 
 
-/*	Begin Headers */
+/* BEGIN HEADERS */
+
 h1 {
 	padding-top: 70px;
 	margin: 0;
 }
 
-.description {
-	text-align: center;
-	}
-
 h2 {
 	margin: 30px 0 0;
-	}
-
-h2.pagetitle {
-	margin-top: 30px;
-	text-align: center;
 }
-
-#sidebar h2 {
-	margin: 5px 0 0;
-	padding: 0;
-	}
 
 h3 {
 	padding: 0;
@@ -333,227 +256,69 @@ h3 {
 #content h3{
 	text-align:left;
 }
-h3.comments {
-	padding: 0;
-	margin: 40px auto 20px ;
-	}
-/* End Headers */
+
+/* END HEADERS */
 
 
-
-/* Begin Images */
-p img {
-	padding: 0;
-	max-width: 100%;
-	}
-
-/*	Using 'class="alignright"' on an image will (who would've
-	thought?!) align the image to the right. And using 'class="centered',
-	will of course center the image. This is much better than using
-	align="center", being much more futureproof (and valid) */
-	
-img.centered {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-	}
-	
-img.alignright {
-	padding: 4px;
-	margin: 0 0 2px 7px;
-	display: inline;
-	}
-
-img.alignleft {
-	padding: 4px;
-	margin: 0 7px 2px 0;
-	display: inline;
-	}
-
-.alignright {
-	float: right;
-	}
-	
-.alignleft {
-	float: left
-	}
-/* End Images */
-
-
-
-/* Begin Lists
+/* BEGIN LISTS not in use
 
 	Special stylized non-IE bullets
 	Do not work in Internet Explorer, which merely default to normal bullets. */
-
-html>body .entry ul {
-	margin-left: 0px;
-	padding: 0 0 0 30px;
-	list-style: none;
-	padding-left: 10px;
-	text-indent: -10px;
-	} 
-
-html>body .entry li {
-	margin: 7px 0 8px 10px;
-	}
-
-.entry ul li:before, #sidebar ul ul li:before {
-	content: "\00BB \0020";
-	}
-
-.entry ol {
-	padding: 0 0 0 35px;
-	margin: 0;
-	}
-
-.entry ol li {
-	margin: 0;
-	padding: 0;
-	}
-
-.postmetadata ul, .postmetadata li {
-	display: inline;
-	list-style-type: none;
-	list-style-image: none;
-	}
 	
 #sidebar ul, #sidebar ul ol {
 	margin: 0;
 	padding: 0;
-	}
+}
 
 #sidebar ul li {
 	list-style-type: none;
 	list-style-image: none;
 	margin-bottom: 15px;
-	}
+}
 
 #sidebar ul p, #sidebar ul select {
 	margin: 5px 0 8px;
-	}
+}
 
 #sidebar ul ul, #sidebar ul ol {
 	margin: 5px 0 0 10px;
-	}
+}
 
 #sidebar ul ul ul, #sidebar ul ol {
 	margin: 0 0 0 10px;
-	}
+}
 
 ol li, #sidebar ul ol li {
 	list-style: decimal outside;
-	}
+}
 
 #sidebar ul ul li, #sidebar ul ol li {
 	margin: 3px 0 0;
 	padding: 0;
-	}
-/* End Entry Lists */
-
-
-
-/* Begin Form Elements */
-#searchform {
-	margin: 10px auto;
-	padding: 5px 3px; 
-	text-align: center;
-	}
-
-#sidebar #searchform #s {
-	width: 130px;
-	padding: 2px;
-	}
-
-#sidebar #searchsubmit {
-	padding: 1px;
-	}
-
-.entry form { /* This is mainly for password protected posts, makes them look better. */
-	text-align:center;
-	}
-
-select {
-	width: 130px;
-	}
-
-.button{
-	font-family: tahoma, verdana, arial, helvetica, sans-serif;
-	font-size: 10px;
-	text-align:center;
-}
-/* End Form Elements */
-
-.tbox.chatbox {
-	width: 80%;
-	margin-left: auto;
-	margin-right: auto;
 }
 
-.spacer {
-	padding: 2px 0 2px 0;
-}
-
-/* Begin Comments*/
-.graybox {
-	margin: 0;
-	padding: 10px;
-	}
-
-.commentlist {
-	padding: 0;
-	text-align: justify;
-	}
-
-.commentlist li {
-	margin: 15px 0 3px;
-	padding: 5px 10px 3px;
-	list-style: none;
-	}
-
-.commentlist p {
-	margin: 10px 5px 10px 0;
-	}
-
-#commentform p {
-	margin: 5px 0;
-	}
-
-.nocomments {
-	text-align: center;
-	margin: 0;
-	padding: 0;
-	}
-
-.commentmetadata {
-	margin: 0;
-	display: block;
-	}
-/* End Comments */
+/* END ENTRY LISTS */
 
 
 
-/* Begin Sidebar */
-#sidebar
-{
+/* BEGIN SIDEBAR */
+
+#sidebar{
 	padding: 20px 0 10px 0;
 	margin-left: 545px;
 	width: 190px;
-	}
+}
 
 #sidebar form {
 	margin: 0;
-	}
+}
 
-/* End Sidebar */
-
-
+/* END SIDEBAR */
 
 
+/* BEGIN VARIOUS TAGS & CLASSES */
 
 
-
-/* Begin Various Tags & Classes */
 acronym, abbr, span.caps {
 	cursor: help;
 	}
@@ -573,10 +338,6 @@ blockquote cite {
 	display: block;
 	}
 
-.center {
-	text-align: center;
-	}
-
 hr {
 	display: none;
 	}
@@ -585,19 +346,14 @@ a img {
 	border: none;
 	}
 
-.navigation {
-	display: block;
-	text-align: center;
-	margin-top: 10px;
-	margin-bottom: 60px;
-}
-
-
 .hidden{
 	display:none;
 }
 
-/* End Various Tags & Classes*/
+/* END VARIOUS TAGS & CLASSES */
+
+
+/* BEGIN PAGE IMAGES */
 
 body	 	{ background: url("images/kubrickbgcolor.jpg"); }
 #page		{ background: url("images/kubrickbg.jpg") repeat-y top; border: none; }
@@ -605,14 +361,38 @@ body	 	{ background: url("images/kubrickbgcolor.jpg"); }
 #header 	{ background: url("images/kubrickheader.jpg") no-repeat bottom center; }
 #footer 	{ background: url("images/kubrickfooter.jpg") no-repeat bottom; border: none;}
 
+/* END PAGE IMAGES */
 
-/* e107 classes */
+/* BEGIN E107 CORE CLASSES MAINTAINER QUE~ */
+
+.button{
+	font-family: tahoma, verdana, arial, helvetica, sans-serif;
+	font-size: 10px;
+	text-align:center;
+}
+
+.tbox.chatbox {
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.spacer {
+	padding: 2px 0 2px 0;
+}
+
+
+.indent{
+
+	border: 1px solid #06c;
+}
+
 
 .sitelinks { text-align: center; font: 10px 'Lucida Grande', Verdana, Arial, Sans-Serif; padding: 2px 0 2px 20px; margin: 5px 0 0 5px; width: 700px; }
 .sitetag {
 	font-size: 1.2em;
 	text-align: center;
-	margin-top: -60px;
+	/* margin-top: -60px; */
 	color: #ffffff;
 }
 
@@ -703,7 +483,222 @@ td {
 
 }
 
-
 /* "Daisy, Daisy, give me your answer do. I'm half crazy all for the love of you.
 	It won't be a stylish marriage, I can't afford a carriage.
 	But you'll look sweet upon the seat of a bicycle built for two." */
+
+
+/* START NAVIGATION */
+
+/* THIS PART IS FOR THE NAVIGATION LINKS ADDED BY QUE~ */
+.nav1 a:link, .nav1 a:visited, .nav2 a:link, .nav2 a:visited, .nav3 a:link, .nav3 a:visited, .nav4 a:link, .nav4 a:visited, .nav5 a:link, .nav5 a:visited, .nav6 a:link, .nav6 a:visited, .nav7 a:link, .nav7 a:visited, .nav8 a:link, .nav8 a:visited{
+	color: #4E4E4E;
+	width: 80px;
+	height: 20px;
+	line-height: 20px;
+	background: url(images/01_linkbg2.gif) top repeat-y;
+	padding: 0;
+}
+
+.nav1_onpage a:link, .nav1_onpage a:visited, .nav2_onpage a:link, .nav2_onpage a:visited, .nav3_onpage a:link, .nav3_onpage a:visited, .nav4_onpage a:link, .nav4_onpage a:visited, .nav5_onpage a:link, .nav5_onpage a:visited, .nav6_onpage a:link, .nav6_onpage a:visited, .nav7_onpage a:link, .nav7_onpage a:visited, .nav8_onpage a:link, .nav8_onpage a:visited{
+	color: #4E4E4E;
+	width: 80px;
+	height: 20px;
+	line-height: 20px;
+	background: url(images/01_linkbg2.gif) top repeat-y;
+	padding: 0;
+}
+
+.nav1 a:link, .nav1 a:visited, .nav1_onpage a:link, .nav1_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 14px;
+}
+
+.nav2 a:link, .nav2 a:visited, .nav2_onpage a:link, .nav2_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 96px;
+}
+.nav3 a:link, .nav3 a:visited, .nav3_onpage a:link, .nav3_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 178px;
+}
+
+.nav4 a:link, .nav4 a:visited, .nav4_onpage a:link, .nav4_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 260px;
+}
+
+.nav5 a:link, .nav5 a:visited, .nav5_onpage a:link, .nav5_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 342px;
+}
+
+.nav6 a:link, .nav6 a:visited, .nav6_onpage a:link, .nav6_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 424px;
+}
+
+.nav7 a:link, .nav7 a:visited, .nav7_onpage a:link, .nav7_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 506px;
+}
+
+.nav8 a:link, .nav8 a:visited, .nav8_onpage a:link, .nav8_onpage a:visited{
+	position: absolute;
+	top: 2px;
+	left: 588px;
+}
+
+
+
+/* HOVER EFFECTS MAINTAINER QUE~ */
+
+.nav1 a:hover, .nav1 a:active,
+.nav2 a:hover, .nav2 a:active,
+.nav3 a:hover, .nav3 a:active,
+.nav4 a:hover, .nav4 a:active,
+.nav5 a:hover, .nav5 a:active,
+.nav6 a:hover, .nav6 a:active,
+.nav7 a:hover, .nav7 a:active,
+.nav8 a:hover, .nav8 a:active{
+	background: url(images/01_linkbg1.gif) top repeat-y;
+	margin: 1px 0 0 0;
+}
+
+/* USE A DIFFERENT COLOR WHEN USER IS ON THAT PAGE */
+
+.nav1_onpage a:link, .nav1_onpage a:visited,
+.nav2_onpage a:link, .nav2_onpage a:visited,
+.nav3_onpage a:link, .nav3_onpage a:visited,
+.nav4_onpage a:link, .nav4_onpage a:visited,
+.nav5_onpage a:link, .nav5_onpage a:visited,
+.nav6_onpage a:link, .nav6_onpage a:visited,
+.nav7_onpage a:link, .nav7_onpage a:visited,
+.nav8_onpage a:link, .nav8_onpage a:visited{
+	background: url(images/01_linkbg1.gif) top repeat-y;
+}
+
+/* THE FOLLOWING PART IS FOR THE FONT CONTROL */
+
+#fontcontrol{
+	background: none;
+	width: 66px;
+	height: 18px;
+	position: absolute;
+	top: 18px;
+	left: 615px;
+}
+
+#fontcontrol ul{
+	background: none;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#fontcontrol li{
+	background: none;
+}
+
+#fontcontrol i{
+	display: block;
+	visibility: hidden;
+}
+
+.font1 a:link, .font1 a:visited{
+	width: 18px;
+	height: 18px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: url(images/01_font1.gif) no-repeat;
+}
+
+.font2 a:link, .font2 a:visited{
+	width: 18px;
+	height: 18px;
+	position: absolute;
+	top: 0;
+	left: 22px;
+	background: url(images/01_font2.gif) no-repeat;
+}
+
+.font3 a:link, .font3 a:visited{
+	width: 18px;
+	height: 18px;
+	position: absolute;
+	top: 0;
+	left: 44px;
+	background: url(images/01_font3.gif) no-repeat;
+}
+
+.font1 a:hover, .font1 a:active{
+	background-position: 0 -18px;
+}
+
+.font2 a:hover, .font2 a:active{
+	background-position: 0 -18px;
+}
+
+.font3 a:hover, .font3 a:active{
+	background-position: 0 -18px;
+}
+
+/* END NAVIGATION */
+
+/* NICETITLE ADDED BY QUE~*/
+
+.nicetitle {
+	font-weight: bold;
+	color: #3C3C3C;
+	text-align: left;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 35em;
+	z-index: 20;
+	max-width: 60%;
+}
+.nicetitle-content{
+	overflow: hidden;
+	background: white;
+	border: 1px solid #333;
+	padding: 7px;
+	opacity: 0.9;
+}
+.nicetitle p{
+	margin: 0;
+	line-height: 120%;
+}
+.nicetitle p.destination {
+	font-weight: normal;
+	font-size: 10px;
+	color: #5E7743;
+}
+div.nicetitle p span.accesskey {
+	color: #FF7200;
+}
+
+/* END NICETITLE */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
