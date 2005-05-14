@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-05-13 01:03:34 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-14 20:27:08 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -108,11 +108,9 @@ function r_userclass_check($fieldname, $curval = '', $optlist = "")
 {
 	$sql = new db;
 	$curArray = explode(",", $curval);
-	print_a($curArray);
 	$ret = "";
 	if (!$optlist || preg_match("#public#", $optlist))
 	{	
-		echo "public = ".e_UC_PUBLIC."<br />";
 		$c = (in_array(e_UC_PUBLIC, $curArray)) ? " checked='checked' " : "";
 		$ret .= "<input type='checkbox' name='{$fieldname}[".e_UC_PUBLIC."]' value='1' {$c} /> ".UC_LAN_0."<br />";
 	}
