@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-05-14 16:51:49 $
+|     $Revision: 1.17 $
+|     $Date: 2005-05-14 17:15:43 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -87,7 +87,7 @@ $total_replies = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
 $total_members = $sql->db_Count("user");
 $newest_member = $sql->db_Select("user", "*", "ORDER BY user_join DESC LIMIT 0,1", $mode = "no_where");
 list($nuser_id, $nuser_name) = $sql->db_Fetch();
-if(!e_TRACKING_DISABLED){
+if(!defined("e_TRACKING_DISABLED")){
 	$member_users = $sql->db_Select("online", "*", "online_location REGEXP('forum.php') AND online_user_id!='0' ");
 	$guest_users = $sql->db_Select("online", "*", "online_location REGEXP('forum.php') AND online_user_id='0' ");
 	$users = $member_users+$guest_users;
@@ -170,7 +170,7 @@ if (USERREALM && USER && e_QUERY != "track") {
 	$INFO .= "<br /><a href='".e_SELF."?track'>".LAN_393."</a>";
 }
 
-$FORUMINFO .= LAN_192.($total_topics+$total_replies)." ".LAN_404." ($total_topics ".($total_topics == 1 ? LAN_411 : LAN_413).", $total_replies ".($total_replies == 1 ? LAN_412 : LAN_414).").".(e_TRACKING_DISABLED ? "" : "<br />".$users." ".($users == 1 ? LAN_415 : LAN_416)." (".$member_users." ".($member_users == 1 ? LAN_417 : LAN_419).", ".$guest_users." ".($guest_users == 1 ? LAN_418 : LAN_420).")<br />".LAN_42.$total_members."<br />".LAN_41."<a href='".e_BASE."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n");
+$FORUMINFO .= LAN_192.($total_topics+$total_replies)." ".LAN_404." ($total_topics ".($total_topics == 1 ? LAN_411 : LAN_413).", $total_replies ".($total_replies == 1 ? LAN_412 : LAN_414).").".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_415 : LAN_416)." (".$member_users." ".($member_users == 1 ? LAN_417 : LAN_419).", ".$guest_users." ".($guest_users == 1 ? LAN_418 : LAN_420).")<br />".LAN_42.$total_members."<br />".LAN_41."<a href='".e_BASE."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n");
 
 if (!$FORUM_MAIN_START) {
 	if (file_exists(THEME."forum_template.php")) {
