@@ -11,9 +11,9 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-04-11 06:55:32 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2005-05-14 17:08:21 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -37,7 +37,7 @@ if (!$pref['frontpage']) {
 	}
 }
 
-$query = (e_QUERY) ? "?".e_QUERY : "";
+$query = (e_QUERY && e_QUERY != "" ? "?".e_QUERY : "");
 
 if ($pref['membersonly_enabled'] && !USER)
 {
