@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.133 $
-|     $Date: 2005-05-14 16:51:48 $
-|     $Author: streaky $
+|     $Revision: 1.134 $
+|     $Date: 2005-05-14 22:07:26 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -261,16 +261,18 @@ if (isset($_POST['setlanguage']) || $_GET['elan']) {
 	if ($pref['user_tracking'] == "session") {
 		$_SESSION['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
 	} else {
-		setcookie('e107language_'.$pref['cookie_name'], $_POST['sitelanguage'], time() + 86400);
+	 	setcookie('e107language_'.$pref['cookie_name'], $_POST['sitelanguage'], time() + 86400, "/");
 		$_COOKIE['e107language_'.$pref['cookie_name']]=$_POST['sitelanguage'];
 		if (!eregi(e_ADMIN, e_SELF)) {
-			Header("Location:".e_SELF);
+	   		Header("Location:".e_SELF);
 		}
 	}
 }
 
 $user_language='';
+// Multi-language options.
 if (isset($pref['multilanguage']) && $pref['multilanguage']) {
+
 	if ($pref['user_tracking'] == "session") {
 		$user_language=$_SESSION['e107language_'.$pref['cookie_name']];
 		$sql->mySQLlanguage=($user_language) ? $user_language : "";
@@ -278,6 +280,17 @@ if (isset($pref['multilanguage']) && $pref['multilanguage']) {
 		$user_language=$_COOKIE['e107language_'.$pref['cookie_name']];
 		$sql->mySQLlanguage=($user_language) ? $user_language : "";
 	}
+
+ // Get Language List for rights checking.
+	$handle=opendir(e_LANGUAGEDIR);
+		while ($file = readdir($handle)) {
+			if (is_dir(e_LANGUAGEDIR.$file) && $file !="." && $file !="..") {
+				$lanlist[] = $file;
+			}
+		}
+	closedir($handle);
+	$tmplan = implode(",",$lanlist);
+    define("e_LANLIST",$tmplan);
 }
 // =====================
 
@@ -633,6 +646,11 @@ function check_email($var) {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function check_class($var, $userclass = USERCLASS, $debug = FALSE)
 {
+	if($var == e_LANGUAGE){
+		return TRUE;
+	}
+
+
 	if (!$var || $var == "")
 	{
 		return TRUE;
@@ -640,13 +658,20 @@ function check_class($var, $userclass = USERCLASS, $debug = FALSE)
 
 	if(strpos($var, ",") !== FALSE)
 	{
+		$lans = explode(",",e_LANLIST);
 		$varList = explode(",", $var);
+        rsort($varList); // check the language first.(ie. numbers come last)
 		foreach($varList as $v)
 		{
-			if(check_class($v, $userclass, $debug))
-			{
+            if (in_array($v,$lans) && !preg_match("#".e_LANGUAGE."#", $v)){
+      		  	return FALSE;
+			}
+
+			if(check_class($v, $userclass, $debug))	{
 				return TRUE;
 			}
+
+
 		}
 		return FALSE;
 	}
@@ -700,10 +725,7 @@ function check_class($var, $userclass = USERCLASS, $debug = FALSE)
 		}
 	} else {
 
-		// Language Rights....
-		if($var == e_LANGUAGE){
-			return TRUE;
-		}
+
 
 		// var is name of class ...
 		$sql=new db;
