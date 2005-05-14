@@ -36,6 +36,7 @@ body {
 	}
 
 #content {
+	margin-top:22px;
 	font-size: 1.2em
 	}
 
@@ -45,13 +46,14 @@ body {
 #navigation{
 	font-size: 11px;
 	width: 694px;
-	height: 22px;
+	height: 22px; 
 	position: absolute;
 	top: 178px;
 	left: 13px;
-
+	list-style: none;
 }
 #navigation ul{
+	height: 22px; 
 	list-style: none;
 	padding: 0;
 	margin: 0;
@@ -59,7 +61,6 @@ body {
 #navigation li{
 	text-align:center;
 	background: none;
-
 }
 #navigation a{
 	text-decoration:none;
@@ -138,6 +139,7 @@ h2, h2 a, h2 a:hover, h2 a:visited, h3, h3 a, h3 a:hover, h3 a:visited, #sidebar
 }
 
 #sidebar {
+	margin-top:22px;
 	font: 1em 'Lucida Grande', Verdana, Arial, Sans-Serif;
 	}
 
@@ -388,7 +390,14 @@ body	 	{ background: url("images/kubrickbgcolor.jpg"); }
 }
 
 
-.sitelinks { text-align: center; font: 10px 'Lucida Grande', Verdana, Arial, Sans-Serif; padding: 2px 0 2px 20px; margin: 5px 0 0 5px; width: 700px; }
+.sitelinks { 
+	text-align: center; 
+	font: 10px 'Lucida Grande', Verdana, Arial, Sans-Serif;
+	padding: 2px 0 2px 20px;
+	margin: 5px 0 0 5px;
+	width: 700px; 
+}
+
 .sitetag {
 	font-size: 1.2em;
 	text-align: center;

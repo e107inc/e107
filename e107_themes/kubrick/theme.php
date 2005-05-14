@@ -64,14 +64,14 @@ $HEADER = "<div id='page'>
 <h1><a href='".SITEURL."' title='{SITENAME}'>{SITENAME}</a></h1>
 <div class='sitetag'>{SITETAG}</div>
 </div>
-<div id='navigation'>
-<h3 class='hidden'>Navigation</h3>
 {ULINC}
 </div>
-</div>
-<div class='sitelinks' style='display:none;'>{SITELINKS}</div>
 <div id='content' class='narrowcolumn'>";
+/*
 
+<div id='navigation'></div>
+<div class='sitelinks' style='display:none;'>{SITELINKS}</div>
+*/
 $FOOTER = "
 </div> 
 <div id='sidebar'> 
@@ -141,10 +141,10 @@ define("TRACKBACKBEFORESTRING", " | ");
 define('PRELINK', "");
 define('POSTLINK', "");
 define('LINKSTART', "");
-define('LINKEND', "&nbsp;&nbsp;&nbsp;");
+define('LINKEND', "");
 define('LINKDISPLAY', 1);
 define('LINKALIGN', "left");
-
+define('LINKCLASS', "");
 
 //	[tablestyle]
 

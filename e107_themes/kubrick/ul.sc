@@ -1,10 +1,6 @@
-
 global $sql, $page, $link_class;
 $sql -> db_Select('links', '*', "link_category = 1 and link_name NOT REGEXP('submenu') and link_name NOT REGEXP('child') and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC");
-
-$ulmenu = "<ul>";
-
-
+$ulmenu = "<ul id='navigation'>";
 $r="1";
 while($row = $sql -> db_Fetch()){
 	if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
@@ -26,11 +22,11 @@ while($row = $sql -> db_Fetch()){
 				default:
 				   unset($link_append);
 			}
-			$ulmenu .= "<li class='nav".$r."$ulclass'><a  ".($link_description ? " title = '$link_description' " : "")." href='".$link_url."'".$link_append.">".($r !="0" ? "".LINKSTART."" : "" )."$link_name</a></li>";
+			$ulmenu .= "<li class='nav".$r."$ulclass'><a".($link_description ? " title = '$link_description' " : "")." href='".$link_url."'".$link_append.">".($r !="0" ? "".LINKSTART."" : "" )."$link_name</a></li>";
 		}
 		$r++;
 	}
 }
-$ulmenu .= "</ul>\n";
+$ulmenu .= "</ul>";
 return $ulmenu;
 
