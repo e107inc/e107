@@ -55,15 +55,15 @@ foreach ($recent_pref as $key => $value) {
 
 //section reference
 for($i=0;$i<count($sections);$i++){
-	$arr[$sections[$i]][0] = $recent_pref[$sections[$i]."_caption"];
-	$arr[$sections[$i]][1] = $recent_pref[$sections[$i]."_pagedisplay"];
-	$arr[$sections[$i]][2] = $recent_pref[$sections[$i]."_pageopen"];
-	$arr[$sections[$i]][3] = $recent_pref[$sections[$i]."_pageauthor"];
-	$arr[$sections[$i]][4] = $recent_pref[$sections[$i]."_pagecategory"];
-	$arr[$sections[$i]][5] = $recent_pref[$sections[$i]."_pagedate"];
-	$arr[$sections[$i]][6] = $recent_pref[$sections[$i]."_icon"];
-	$arr[$sections[$i]][7] = $recent_pref[$sections[$i]."_pageamount"];
-	$arr[$sections[$i]][8] = $recent_pref[$sections[$i]."_order"];
+	$arr[$sections[$i]][0] = $recent_pref["$sections[$i]_caption"];
+	$arr[$sections[$i]][1] = $recent_pref["$sections[$i]_pagedisplay"];
+	$arr[$sections[$i]][2] = $recent_pref["$sections[$i]_pageopen"];
+	$arr[$sections[$i]][3] = $recent_pref["$sections[$i]_pageauthor"];
+	$arr[$sections[$i]][4] = $recent_pref["$sections[$i]_pagecategory"];
+	$arr[$sections[$i]][5] = $recent_pref["$sections[$i]_pagedate"];
+	$arr[$sections[$i]][6] = $recent_pref["$sections[$i]_icon"];
+	$arr[$sections[$i]][7] = $recent_pref["$sections[$i]_pageamount"];
+	$arr[$sections[$i]][8] = $recent_pref["$sections[$i]_order"];
 	$arr[$sections[$i]][9] = $sections[$i];
 }
 

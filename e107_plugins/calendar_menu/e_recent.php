@@ -21,7 +21,7 @@
 	$current = mktime(0,0,0,$current_month, $current_day, $current_year);
 
 	if(!$event_items = $sql -> db_select("event", "*", "event_start>='$current' ORDER BY event_start ASC LIMIT 0,".$arr[7]."")){
-		$RECENT_DATA = "no events yet";
+		$RECENT_DATA = RECENT_CALENDAR_2;
 	}else{
 		while($row = $sql -> db_Fetch()){
 
@@ -31,7 +31,7 @@
 			$HEADING = "<a href='".e_BASE."event.php?".$row['event_start']."' title='".$row['event_title']."'>".$rowheading."</a>";
 			$CATEGORY = "";
 			$AUTHOR = "";
-			$DATE = ($arr[5] ? $this -> getRecentDate($row['event_start'], $mode) : "");
+			$DATE = ($arr[5] ? ($row['event_start'] ? $this -> getRecentDate($row['event_start'], $mode) : "") : "");
 			$INFO = "";
 
 			$RECENT_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );

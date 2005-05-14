@@ -160,10 +160,45 @@ define("RECENT_MENU_17", "");
 define("RECENT_MENU_18", "");
 define("RECENT_MENU_19", "");
 
-define("RECENT_FORUM_1", "views:");
-define("RECENT_FORUM_2", "replies:");
-define("RECENT_FORUM_3", "lastpost:");
+define("RECENT_NEWS_1", "news");
+define("RECENT_NEWS_2", "no news items");
 
+define("RECENT_COMMENT_1", "comments");
+define("RECENT_COMMENT_2", "no comments");
+define("RECENT_COMMENT_3", "news");
+define("RECENT_COMMENT_4", "faq");
+define("RECENT_COMMENT_5", "poll");
+define("RECENT_COMMENT_6", "docs");
+define("RECENT_COMMENT_7", "bugtrack");
+define("RECENT_COMMENT_8", "content");
+define("RECENT_COMMENT_9", "download");
+define("RECENT_COMMENT_10", "");
+
+
+
+define("RECENT_DOWNLOAD_1", "downloads");
+define("RECENT_DOWNLOAD_2", "no downloads");
+
+define("RECENT_MEMBER_1", "members");
+define("RECENT_MEMBER_2", "no members");
+
+define("RECENT_CONTENT_1", "content");
+define("RECENT_CONTENT_2", "no content");
+
+define("RECENT_CHATBOX_1", "chatbox");
+define("RECENT_CHATBOX_2", "no chatbox posts");
+
+define("RECENT_CALENDAR_1", "calendar");
+define("RECENT_CALENDAR_2", "no calendar events");
+
+define("RECENT_LINKS_1", "links");
+define("RECENT_LINKS_2", "no links");
+
+define("RECENT_FORUM_1", "forum");
+define("RECENT_FORUM_2", "no forum posts");
+define("RECENT_FORUM_3", "views:");
+define("RECENT_FORUM_4", "replies:");
+define("RECENT_FORUM_5", "lastpost:");
 
 
 ?>
