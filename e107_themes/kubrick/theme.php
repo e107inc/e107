@@ -92,12 +92,8 @@ $CUSTOMHEADER = "<div id='page2'>
 <h1><a href='".SITEURL."' title='{SITENAME}'>{SITENAME}</a></h1>
 <div class='sitetag'>{SITETAG}</div>
 </div>
-<div id='navigation'>
-<h3 class='hidden'>Navigation</h3>
 {ULINC}
 </div>
-</div>
-<hr />
 <div id='content' class='widecolumn'>";
 // <div class='sitelinks'>{SITELINKS}</div>
 
