@@ -62,8 +62,9 @@ if (isset($_POST['delete'])) {
 	if (!e_REFERER_SELF) {
 		exit;
 	}
-	$delete = array_flip($_POST['delete']);
-	unset($emote[$delete['Delete']]);
+	foreach ($_POST['delete'] as $delete_id => $value) {
+		unset($emote[$delete_id]);
+	}
 	$newemote = array_values($emote);
 	$emote = $newemote;
 	$tmp = addslashes(serialize($emote));
@@ -154,27 +155,37 @@ $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH
 	<td class='forumheader'>".EMOLAN_13."</td>
 	</tr>
 	<tr>";
-//print_a($emote);
+
+	$update = "<tr>
+	<td colspan='5' style='text-align:center' class='forumheader'>
+	<input class='button' type='submit' name='updatesettings' value='".LAN_UPDATE."' />
+	</td>
+	</tr>";
+	
+	$i = 0;
 	foreach ($emote as $c => $value) {
 	while (list($short, $name) = @each($emote[$c])) {
 		$text .= "
 			<tr>
-			<td style='width:20%; text-align:center' class='forumheader3'><input class='tbox' type='text' name='emote_code[]' size='15' value='".$tp->toForm($short)."' maxlength='20' /></td>
-			<td style='width:20%; text-align:center' class='forumheader3'><input class='tbox' type='text' name='emote_text[]' size='15' value='".$tp->toForm($name)."' maxlength='20' /></td>
-			<td style='width:10%; text-align:center' class='forumheader3'><img src='".e_IMAGE."emoticons/$name' alt='' style='vertical-align:absmiddle' /></td>
-			<td class='forumheader3' style='width:30%; text-align: center'>
-			<input class='button' type='submit' name='delete[".$c."]' value='".LAN_DELETE."' />
-			<input class='button' type='submit' name='updatesettings' value='".LAN_UPDATE."' />
+			<td style='width:30%; text-align:center' class='forumheader3'><input class='tbox' type='text' name='emote_code[]' size='15' value='".$tp->toForm($short)."' maxlength='20' /></td>
+			<td style='width:30%; text-align:center' class='forumheader3'><input class='tbox' type='text' name='emote_text[]' size='15' value='".$tp->toForm($name)."' maxlength='20' /></td>
+			<td style='width:30%; text-align:center' class='forumheader3'><img src='".e_IMAGE."emoticons/$name' alt='' style='vertical-align:absmiddle' /></td>
+			<td class='forumheader3' style='width:10%; text-align: center'>
+			<input type='image' title='".LAN_DELETE."' name='delete[".$c."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LAN_DELETE." ".$tp->toForm($short))." ?') \" />
 			</td>
 			</tr>
 		";
 		$c++;
 		$names[] = $name;
+		$i++;
+		if ($i == 10) {
+			$text .= $update;
+			$i = 0;
+		}
 	}
 }
 
-$text .= "</tr>
-	<tr>
+$text .= "<tr>
 	<td colspan='5' style='text-align:center' class='forumheader'>
 	<input class='button' type='submit' name='updatesettings' value='".LAN_UPDATE."' />
 	</td>
