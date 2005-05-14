@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_menu/online_menu.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-05-14 16:51:49 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-14 17:15:44 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ if(!defined("e_PLUGIN")){ exit; }
 
 $caption = (file_exists(THEME."images/online_menu.png") ? "<img src='".THEME."images/online_menu.png' alt='' /> ".ONLINE_L4 : ONLINE_L4);
 
-if(!e_TRACKING_DISABLED) {
+if(!defined("e_TRACKING_DISABLED")) {
 	$text = ONLINE_L1.GUESTS_ONLINE."<br />";
 	//if($pref['user_reg'] == 1){
 	$text .= ONLINE_L2.MEMBERS_ONLINE.(MEMBERS_ONLINE ? ", ": "").MEMBER_LIST."<br />";
