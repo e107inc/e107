@@ -22,8 +22,12 @@ $e_sub_cat = 'emoticon';
 require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
 
-
-
+if (isset($_POST['active'])) {
+	$pref['smiley_activate'] = $_POST['smiley_activate'];
+	save_prefs();
+	header("location:".e_ADMIN."emoticon.php?u");
+	exit;
+}
 
 if (isset($_POST['updatesettings'])) {
 	while (list($id, $name) = each($_POST['emote_code'])) {
@@ -33,20 +37,16 @@ if (isset($_POST['updatesettings'])) {
 	if ($_POST['smiley_activate'] != $pref['smiley_activate']) {
 		$e107cache->clear();
 	}
-	$pref['smiley_activate'] = $_POST['smiley_activate'];
-	save_prefs();
 	header("location:".e_ADMIN."emoticon.php?u");
 	exit;
 }
 
-$emote = $sysprefs->getArray('emote');
-
-
+$emote = $sysprefs -> getArray('emote');
 
 if (!is_array($emote)) {
 	$tmp = setdefault();
-	$sysprefs->set($tmp, 'emote');
-	$emote = $sysprefs->getArray('emote');
+	$sysprefs -> set($tmp, 'emote');
+	$emote = $sysprefs -> getArray('emote');
 }
 
 if (isset($_POST['addemote'])) {
@@ -58,19 +58,20 @@ if (isset($_POST['addemote'])) {
 	}
 }
 
-$tmp = explode(".", e_QUERY);
-
-if ($tmp[0] == "del") {
+if (isset($_POST['delete'])) {
 	if (!e_REFERER_SELF) {
 		exit;
 	}
-	unset($emote[$tmp[1]]);
+	$delete = array_flip($_POST['delete']);
+	unset($emote[$delete['Delete']]);
 	$newemote = array_values($emote);
 	$emote = $newemote;
 	$tmp = addslashes(serialize($emote));
 	$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='emote' ");
+	$ns->tablerender("", "<div style='text-align:center'><b>".EMOLAN_3."</b></div>");
 	header("location:".e_ADMIN."emoticon.php?w");
 	exit;
+
 }
 
 require_once("auth.php");
@@ -87,55 +88,25 @@ if (e_QUERY == "w") {
 	$ns->tablerender("", "<div style='text-align:center'><b>".EMOLAN_3."</b></div>");
 }
 
-$smiley_activate = $pref['smiley_activate'];
-
 $text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>
 	<form method='post' action='".e_SELF."'>
 	<table class='fborder' style='width:99%'>
 	<tr>
 	<td style='width:30%' class='forumheader3'>".EMOLAN_4.": </td>
 	<td colspan='4' class='forumheader3'>";
-$text .= ($pref['smiley_activate'] ? "<input type='checkbox' name='smiley_activate' value='1'  checked='checked' />" : "<input type='checkbox' name='smiley_activate' value='1' />");
-$text .= "
-	</td>
+	$text .= ($pref['smiley_activate'] ? "<input type='checkbox' name='smiley_activate' value='1'  checked='checked' />" : "<input type='checkbox' name='smiley_activate' value='1' />");
+	$text .= "</td>
 	</tr>
+
 	<tr>
-	<td class='forumheader3' style='vertical-align:top'>".ADLAN_58."</td>
-	<td style='width:100%'>
-
-	<div style='padding:1px; width:100%; height:300px; overflow:auto; margin-left:auto; margin-right:auto'>
-	<table class='fborder' style='width:100%'>";
-
-	foreach ($emote as $c => $value) {
-	while (list($short, $name) = @each($emote[$c])) {
-		$text .= "
-			<tr>
-			<td style='width:20%; text-align:center' class='forumheader3'><input class='tbox' type='text' name='emote_code[]' size='15' value='".$tp->toForm($short)."' maxlength='20' /></td>
-			<td style='width:20%; text-align:center' class='forumheader3'><input class='tbox' type='text' name='emote_text[]' size='15' value='".$tp->toForm($name)."' maxlength='20' /></td>
-			<td style='width:10%; text-align:center' class='forumheader3'><img src='".e_IMAGE."emoticons/$name' alt='' style='vertical-align:absmiddle' /></td>
-			<td style='width:30%' class='forumheader3'>[ <a href='".e_SELF."?del.$c'>".LAN_DELETE."</a> ]</td>
-			</tr>
-		";
-		$c++;
-		$names[] = $name;
-	}
-}
-
-$emotelist = $fl->get_files(e_IMAGE."emoticons/","",$names);
-
-$text .= "
-
-</table>
-</div>
-</td></tr>
-<tr>
 	<td colspan='5' style='text-align:center' class='forumheader'>
-	<input class='button' type='submit' name='updatesettings' value='".LAN_UPDATE."' />
+	<input class='button' type='submit' name='active' value='".LAN_UPDATE."' />
 	</td>
 	</tr>
 	</table>
 	</form>
 	</div>
+	<br />
 
 	<div style='margin-left:auto;margin-right:auto;text-align:center; ".ADMIN_WIDTH."'>
 	<form method='post' action='".e_SELF."'>
@@ -150,6 +121,7 @@ $text .= "
 	<td class='forumheader3'><input class='tbox' type='text' id='emote_new_image' name='emote_new_image' size='30' value='$name' maxlength='100' />
 	<input class='button' type ='button' style='cursor:hand' size='30' value='".ADLAN_58."' onclick='expandit(this)' />
 	<div id='emoicn' style='padding:3px;display:none'>";
+	$emotelist = $fl -> get_files(e_IMAGE."emoticons/");
 	foreach ($emotelist as $key => $icon){
 		$text .= "<a href=\"javascript:insertext('".$icon['fname']."','emote_new_image','emoicn')\"><img src='".e_IMAGE."emoticons/".$icon['fname']."' style='border:0' alt='' /></a> ";
 	}
@@ -166,7 +138,51 @@ $text .= "
 	</tr>
 	</table>
 	</form>
-	</div></div>";
+	</div>
+	<br />
+
+	<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>
+	<form method='post' action='".e_SELF."'>
+	<table class='fborder' style='width:99%'>
+	<tr>
+	<td class='fcaption' colspan='4'>".ADLAN_58."</td>
+	</tr>
+	<tr>
+	<td class='forumheader'>".EMOLAN_8."</td>
+	<td class='forumheader'>".EMOLAN_9."</td>
+	<td class='forumheader'>".EMOLAN_12."</td>
+	<td class='forumheader'>".EMOLAN_13."</td>
+	</tr>
+	<tr>";
+//print_a($emote);
+	foreach ($emote as $c => $value) {
+	while (list($short, $name) = @each($emote[$c])) {
+		$text .= "
+			<tr>
+			<td style='width:20%; text-align:center' class='forumheader3'><input class='tbox' type='text' name='emote_code[]' size='15' value='".$tp->toForm($short)."' maxlength='20' /></td>
+			<td style='width:20%; text-align:center' class='forumheader3'><input class='tbox' type='text' name='emote_text[]' size='15' value='".$tp->toForm($name)."' maxlength='20' /></td>
+			<td style='width:10%; text-align:center' class='forumheader3'><img src='".e_IMAGE."emoticons/$name' alt='' style='vertical-align:absmiddle' /></td>
+			<td class='forumheader3' style='width:30%; text-align: center'>
+			<input class='button' type='submit' name='delete[".$c."]' value='".LAN_DELETE."' />
+			<input class='button' type='submit' name='updatesettings' value='".LAN_UPDATE."' />
+			</td>
+			</tr>
+		";
+		$c++;
+		$names[] = $name;
+	}
+}
+
+$text .= "</tr>
+	<tr>
+	<td colspan='5' style='text-align:center' class='forumheader'>
+	<input class='button' type='submit' name='updatesettings' value='".LAN_UPDATE."' />
+	</td>
+	</tr>
+	</table>
+	</form>
+	</div>
+	</div>";
 
 $ns->tablerender(EMOLAN_11, $text);
 require_once("footer.php");
