@@ -15,7 +15,7 @@
 	$bullet = $this -> getBullet($arr[6], $mode);
 
 	if(!$chatbox_posts = $sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0,".$arr[7]."", "mode=no_where")){ 
-		$RECENT_DATA = "no chatbox posts yet";
+		$RECENT_DATA = RECENT_CHATBOX_2;
 	}else{
 		while($row = $sql -> db_Fetch()) {
 
@@ -29,7 +29,7 @@
 			$HEADING = $rowheading;
 			$AUTHOR = ($arr[3] ? ($cb_id != 0 ? "<a href='".e_BASE."user.php?id.$cb_id'>".$cb_name."</a>" : $cb_name) : "");
 			$CATEGORY = "";
-			$DATE = ($arr[5] ? $this -> getRecentDate($row['cb_datestamp'], $mode) : "");
+			$DATE = ($arr[5] ? ($row['cb_datestamp'] ? $this -> getRecentDate($row['cb_datestamp'], $mode) : "") : "");
 			$INFO = "";
 
 			$RECENT_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );

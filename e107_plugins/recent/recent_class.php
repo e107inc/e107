@@ -41,6 +41,7 @@ class recent {
 				$content_name = 'content';
 			}
 		}
+		
 		$content_types = array_unique($content_types);
 
 		return;
@@ -82,61 +83,61 @@ class recent {
 			if(!in_array($sections[$i], $defaultarray)){
 				if(!in_array($sections[$i], $content_types)){
 					if($plugin_installed = $sql -> db_Select("plugin", "*", "plugin_path = '".$sections[$i]."' AND plugin_installflag = '1' ")){
-						$recent_pref[$sections[$i]."_menudisplay"] = "1";
-						$recent_pref[$sections[$i]."_menuopen"] = "0";
-						$recent_pref[$sections[$i]."_menuauthor"] = "0";
-						$recent_pref[$sections[$i]."_menucategory"] = "0";
-						$recent_pref[$sections[$i]."_menudate"] = "1";
-						$recent_pref[$sections[$i]."_menuamount"] = "5";
+						$recent_pref["$sections[$i]_menudisplay"] = "1";
+						$recent_pref["$sections[$i]_menuopen"] = "0";
+						$recent_pref["$sections[$i]_menuauthor"] = "0";
+						$recent_pref["$sections[$i]_menucategory"] = "0";
+						$recent_pref["$sections[$i]_menudate"] = "1";
+						$recent_pref["$sections[$i]_menuamount"] = "5";
 
-						$recent_pref[$sections[$i]."_pagedisplay"] = "1";
-						$recent_pref[$sections[$i]."_pageopen"] = "1";
-						$recent_pref[$sections[$i]."_pageauthor"] = "1";
-						$recent_pref[$sections[$i]."_pagecategory"] = "1";
-						$recent_pref[$sections[$i]."_pagedate"] = "1";
-						$recent_pref[$sections[$i]."_pageamount"] = "10";
+						$recent_pref["$sections[$i]_pagedisplay"] = "1";
+						$recent_pref["$sections[$i]_pageopen"] = "1";
+						$recent_pref["$sections[$i]_pageauthor"] = "1";
+						$recent_pref["$sections[$i]_pagecategory"] = "1";
+						$recent_pref["$sections[$i]_pagedate"] = "1";
+						$recent_pref["$sections[$i]_pageamount"] = "10";
 
-						$recent_pref[$sections[$i]."_icon"] = "";
-						$recent_pref[$sections[$i]."_order"] = ($i+1);
-						$recent_pref[$sections[$i]."_caption"] = $sections[$i];
+						$recent_pref["$sections[$i]_icon"] = "";
+						$recent_pref["$sections[$i]_order"] = ($i+1);
+						$recent_pref["$sections[$i]_caption"] = $sections[$i];
 					}
 				}else{
-					$recent_pref[$sections[$i]."_menudisplay"] = "1";
-					$recent_pref[$sections[$i]."_menuopen"] = "0";
-					$recent_pref[$sections[$i]."_menuauthor"] = "0";
-					$recent_pref[$sections[$i]."_menucategory"] = "0";
-					$recent_pref[$sections[$i]."_menudate"] = "1";
-					$recent_pref[$sections[$i]."_menuamount"] = "5";
+					$recent_pref["$sections[$i]_menudisplay"] = "1";
+					$recent_pref["$sections[$i]_menuopen"] = "0";
+					$recent_pref["$sections[$i]_menuauthor"] = "0";
+					$recent_pref["$sections[$i]_menucategory"] = "0";
+					$recent_pref["$sections[$i]_menudate"] = "1";
+					$recent_pref["$sections[$i]_menuamount"] = "5";
 
-					$recent_pref[$sections[$i]."_pagedisplay"] = "1";
-					$recent_pref[$sections[$i]."_pageopen"] = "1";
-					$recent_pref[$sections[$i]."_pageauthor"] = "1";
-					$recent_pref[$sections[$i]."_pagecategory"] = "1";
-					$recent_pref[$sections[$i]."_pagedate"] = "1";
-					$recent_pref[$sections[$i]."_pageamount"] = "10";
+					$recent_pref["$sections[$i]_pagedisplay"] = "1";
+					$recent_pref["$sections[$i]_pageopen"] = "1";
+					$recent_pref["$sections[$i]_pageauthor"] = "1";
+					$recent_pref["$sections[$i]_pagecategory"] = "1";
+					$recent_pref["$sections[$i]_pagedate"] = "1";
+					$recent_pref["$sections[$i]_pageamount"] = "10";
 
-					$recent_pref[$sections[$i]."_icon"] = "";
-					$recent_pref[$sections[$i]."_order"] = ($i+1);
-					$recent_pref[$sections[$i]."_caption"] = $sections[$i];
+					$recent_pref["$sections[$i]_icon"] = "";
+					$recent_pref["$sections[$i]_order"] = ($i+1);
+					$recent_pref["$sections[$i]_caption"] = $sections[$i];
 				}
 			}else{
-				$recent_pref[$sections[$i]."_menudisplay"] = "1";
-				$recent_pref[$sections[$i]."_menuopen"] = "0";
-				$recent_pref[$sections[$i]."_menuauthor"] = "0";
-				$recent_pref[$sections[$i]."_menucategory"] = "0";
-				$recent_pref[$sections[$i]."_menudate"] = "1";
-				$recent_pref[$sections[$i]."_menuamount"] = "5";
+				$recent_pref["$sections[$i]_menudisplay"] = "1";
+				$recent_pref["$sections[$i]_menuopen"] = "0";
+				$recent_pref["$sections[$i]_menuauthor"] = "0";
+				$recent_pref["$sections[$i]_menucategory"] = "0";
+				$recent_pref["$sections[$i]_menudate"] = "1";
+				$recent_pref["$sections[$i]_menuamount"] = "5";
 
-				$recent_pref[$sections[$i]."_pagedisplay"] = "1";
-				$recent_pref[$sections[$i]."_pageopen"] = "1";
-				$recent_pref[$sections[$i]."_pageauthor"] = "1";
-				$recent_pref[$sections[$i]."_pagecategory"] = "1";
-				$recent_pref[$sections[$i]."_pagedate"] = "1";
-				$recent_pref[$sections[$i]."_pageamount"] = "10";
+				$recent_pref["$sections[$i]_pagedisplay"] = "1";
+				$recent_pref["$sections[$i]_pageopen"] = "1";
+				$recent_pref["$sections[$i]_pageauthor"] = "1";
+				$recent_pref["$sections[$i]_pagecategory"] = "1";
+				$recent_pref["$sections[$i]_pagedate"] = "1";
+				$recent_pref["$sections[$i]_pageamount"] = "10";
 
-				$recent_pref[$sections[$i]."_icon"] = "";
-				$recent_pref[$sections[$i]."_order"] = ($i+1);
-				$recent_pref[$sections[$i]."_caption"] = $sections[$i];
+				$recent_pref["$sections[$i]_icon"] = "";
+				$recent_pref["$sections[$i]_order"] = ($i+1);
+				$recent_pref["$sections[$i]_caption"] = $sections[$i];
 			}
 		}
 		
@@ -178,10 +179,14 @@ class recent {
 		$this -> getContentSections("");
 
 		if(in_array($arr[9], $content_types)){
+			
 			$file = $content_name;
 			if(file_exists(e_PLUGIN.$file."/e_recent.php")){
 				//content should always be required cause of the multiple main parents in content.
 				//if(e_PAGE == "recent_page.php" && $menu_installed == 1 && $mode == "menu"){
+					//unset($RECENT_DATA, $RECENT_CAPTION);
+					global $contentmode;
+					$contentmode = $arr[9];
 					require(e_PLUGIN.$file."/e_recent.php");
 				//}else{
 				//	require_once(e_PLUGIN.$file."/e_recent.php");
@@ -206,6 +211,12 @@ class recent {
 			}
 		}
 		$menutext = "";
+		$RECENT_ICON = "";
+		$RECENT_DATE = "";
+		$RECENT_HEADING = "";
+		$RECENT_AUTHOR = "";
+		$RECENT_CATEGORY = "";
+		$RECENT_INFO = "";
 
 		if(is_array($RECENT_DATA[$mode])){			//if it is an array, data exists and data is not empty
 			for($i=0;$i<count($RECENT_DATA[$mode]);$i++){				
@@ -221,7 +232,7 @@ class recent {
 					$menutext .= preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_MENU);
 				}
 			}
-		}else{
+		}elseif(!is_array($RECENT_DATA) && $RECENT_DATA != ""){
 			$RECENT_HEADING = $RECENT_DATA;
 			if($mode == "page"){
 				if($recent_pref['page_showempty']){
@@ -233,18 +244,22 @@ class recent {
 				}
 			}
 		}
-		if($mode == "page"){
-			if($recent_pref['page_showempty'] || $menutext){
-				$start = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_PAGE_START);
-				$end = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_PAGE_END);
+		if($RECENT_DATA != ""){
+			if($mode == "page"){
+				if($recent_pref['page_showempty'] || $menutext){
+					$start = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_PAGE_START);
+					$end = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_PAGE_END);
+				}
+			}else{
+				if($recent_pref['menu_showempty'] || $menutext){
+					$start = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_MENU_START);
+					$end = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_MENU_END);
+				}
 			}
+			$text = $start.$menutext.$end;
 		}else{
-			if($recent_pref['menu_showempty'] || $menutext){
-				$start = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_MENU_START);
-				$end = preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_MENU_END);
-			}
+			$text = "";
 		}
-		$text = $start.$menutext.$end;
 
 		return $text;
 	}

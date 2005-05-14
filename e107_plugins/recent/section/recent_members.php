@@ -11,7 +11,7 @@
 	$bullet = $this -> getBullet($arr[6], $mode);
 
 	if(!$sql -> db_Select("user", "*", "user_class REGEXP '".e_CLASS_REGEXP."' ORDER BY user_id DESC LIMIT 0,".$arr[7]."")){ 
-		$RECENT_DATA = "no members yet";
+		$RECENT_DATA = RECENT_MEMBER_2;
 	}else{
 		while($row = $sql -> db_Fetch()){
 

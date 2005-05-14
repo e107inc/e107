@@ -12,7 +12,7 @@
 
 	$sql2 = new db;
 	if(!$sql -> db_Select("comments", "*", "ORDER BY comment_datestamp DESC LIMIT 0, ".$arr[7]."", "mode=no_where")){
-		$RECENT_DATA = "no comments yet";
+		$RECENT_DATA = RECENT_COMMENT_2;
 	}else{		
 		while($row = $sql -> db_Fetch()){
 
@@ -29,41 +29,37 @@
 			$INFO = "";
 
 			if($row['comment_type'] == "0"){	// news
-					$sql2 -> db_Select("news", "*", "news_id='".$row['comment_item_id']."' ");
+					$sql2 -> db_Select("news", "*", "news_id='".$row['comment_item_id']."' AND news_class REGEXP '".e_CLASS_REGEXP."' ");
 					$row2 = $sql2 -> db_Fetch();
-					if(check_class($row2['news_class'])){
-						$rowheading = $this -> parse_heading($row2['news_title'], $mode);
-						$HEADING = "<a href='".e_BASE."comment.php?".$row['comment_item_id']."' title='".$row2['news_title']."'>".$rowheading."</a>";
-						$CATEGORY = ($arr[4] ? "news" : "");
-					}
+					$rowheading = $this -> parse_heading($row2['news_title'], $mode);
+					$HEADING = "<a href='".e_BASE."comment.php?".$row['comment_item_id']."' title='".$row2['news_title']."'>".$rowheading."</a>";
+					$CATEGORY = ($arr[4] ? RECENT_COMMENT_3 : "");
 
 			}elseif($row['comment_type'] == "1"){	//	article, review or content page
 
 			}elseif($row['comment_type'] == "2"){	//	downloads
 					$mp = MPREFIX;
-					$qry = "SELECT download_name, {$mp}download_category.download_category_class, {$mp}download_category.download_category_id, {$mp}download_category.download_category_name FROM {$mp}download LEFT JOIN {$mp}download_category ON {$mp}download.download_category={$mp}download_category.download_category_id WHERE {$mp}download.download_id={$row['comment_item_id']}";
+					$qry = "SELECT download_name, {$mp}download_category.download_category_class, {$mp}download_category.download_category_id, {$mp}download_category.download_category_name FROM {$mp}download LEFT JOIN {$mp}download_category ON {$mp}download.download_category={$mp}download_category.download_category_id WHERE {$mp}download.download_id={$row['comment_item_id']} AND {$mp}download_category.download_category_class REGEXP '".e_CLASS_REGEXP."' ";
 					$sql2->db_Select_gen($qry);
 					$row2 = $sql2->db_Fetch();
-					if (check_class($row2['download_category_class'])) {
-						$rowheading = $this -> parse_heading($row2['download_name'], $mode);
-						$HEADING = "<a href='".e_BASE."download.php?view.".$row['comment_item_id']."' title='".$row2['download_name']."'>".$tp -> toHTML($rowheading, "admin")."</a>";
-						$CATEGORY = ($arr[4] ? $row2['download_category_name'] : "");
-						//$CATEGORY = ($recent_pref['comment_cat'] ? "download" : "");
-					}
+					$rowheading = $this -> parse_heading($row2['download_name'], $mode);
+					$HEADING = "<a href='".e_BASE."download.php?view.".$row['comment_item_id']."' title='".$row2['download_name']."'>".$tp -> toHTML($rowheading, "admin")."</a>";
+					$CATEGORY = ($arr[4] ? $row2['download_category_name'] : "");
+					//$CATEGORY = ($recent_pref['comment_cat'] ? RECENT_COMMENT_9 : "");
 
 			}elseif($row['comment_type'] == "3"){	//	faq
 					$sql2 -> db_Select("faq", "faq_question", "faq_id='".$row['comment_item_id']."' ");
 					$row2 = $sql2 -> db_Fetch();
 					$rowheading = $this -> parse_heading($row2['faq_question'], $mode);
 					$HEADING = "<a href='".e_BASE."faq.php?view.".$row2['comment_item_id']."' title='".$row2['faq_question']."'>".$tp -> toHTML($rowheading, "admin")."</a>";
-					$CATEGORY = ($arr[4] ? "faq" : "");
+					$CATEGORY = ($arr[4] ? RECENT_COMMENT_4 : "");
 
 			}elseif($row['comment_type'] == "4"){	//	poll comment
 					$sql2 -> db_Select("poll", "*", "poll_id='".$row['comment_item_id']."' ");
 					$row2 = $sql2 -> db_Fetch();
 					$rowheading = $this -> parse_heading($row2['poll_title'], $mode);
 					$HEADING = "<a href='".e_BASE."comment.php?comment.poll.".$row['comment_item_id']."' title='".$row2['poll_title']."'>".$tp -> toHTML($rowheading, "admin")."</a>";
-					$CATEGORY = ($arr[4] ? "poll" : "");
+					$CATEGORY = ($arr[4] ? RECENT_COMMENT_5 : "");
 
 			}elseif($row['comment_type'] == "5"){	//	docs
 					/*
@@ -76,22 +72,18 @@
 					$row2 = $sql2 -> db_Fetch();
 					$rowheading = $this -> parse_heading($row2['bugtrack_summary'], $mode);
 					$HEADING = "<a href='".e_PLUGIN."bugtracker/bugtracker.php?show.".$row['comment_item_id']."' title='".$row2['bugtrack_summary']."'>".$rowheading."</a>";
-					$CATEGORY = ($arr[4] ? "bugtrack" : "");
+					$CATEGORY = ($arr[4] ? RECENT_COMMENT_7 : "");
 
 			}elseif($row['comment_type'] == "pcontent"){	//	pcontent
-					$sql2 -> db_Select("pcontent", "content_heading, content_parent, content_class", "content_id='".$row['comment_item_id']."' ");
+					$sql2 -> db_Select("pcontent", "content_heading, content_parent, content_class", "content_id='".$row['comment_item_id']."' AND content_class REGEXP '".e_CLASS_REGEXP."' ");
 					$row2 = $sql2 -> db_Fetch();
-					if (check_class($row2['content_class'])) {
-						$tmp = explode(".", $row2['content_parent']);
-						$type_id = $tmp[0];
-						$rowheading = $this -> parse_heading($row2['content_heading'], $mode);
-						$HEADING = "<a href='".e_PLUGIN."content/content.php?type.".$type_id.".content.".$row['comment_item_id']."' title='".$row2['content_heading']."'>".$tp -> toHTML($rowheading)."</a>";
-						$CATEGORY = ($arr[4] ? "content" : "");
-					}
-			}else{
+					$tmp = explode(".", $row2['content_parent']);
+					$type_id = $tmp[0];
+					$rowheading = $this -> parse_heading($row2['content_heading'], $mode);
+					$HEADING = "<a href='".e_PLUGIN."content/content.php?type.".$type_id.".content.".$row['comment_item_id']."' title='".$row2['content_heading']."'>".$tp -> toHTML($rowheading)."</a>";
+					$CATEGORY = ($arr[4] ? RECENT_COMMENT_8 : "");
 
-			// added a check for not numeric comment_types (=custom comments for your own plugins)
-			//if(!is_numeric($row['comment_type'])){
+			}else{
 
 				$handle=opendir(e_PLUGIN);
 				while(false !== ($file = readdir($handle))){

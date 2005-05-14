@@ -54,7 +54,7 @@ if(!is_array($recent_pref)){ $recent_pref = unserialize($row['e107_value']); }
 //update preferences in database
 if(isset($_POST['update_menu'])){
 	while(list($key, $value) = each($_POST)){
-		if($value != RECENT_ADMIN_2){ $recent_pref[$key] = $value; }
+		if($value != RECENT_ADMIN_2){ $recent_pref[$tp->toDB($key)] = $tp->toDB($value); }
 	}
 
 	$tmp = addslashes(serialize($recent_pref));

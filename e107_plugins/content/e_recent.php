@@ -15,13 +15,27 @@
 	$plugintable = "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
 	$datequery = " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
 
+	global $contentmode;
+	if($contentmode){
+		$headingquery = " AND content_heading = '".$contentmode."' ";
+	}
+
 	//get main parent types
 	$sqlm = new db;
-	if(!$mainparents = $sqlm -> db_Select($plugintable, "*", "content_class REGEXP '".e_CLASS_REGEXP."' AND content_parent = '0' ".$datequery." ORDER BY content_heading")){
-		$RECENT_CAPTION = "content";
-		$RECENT_DATA = "no content yet";
-	}else{
+	if(!$mainparents = $sqlm -> db_Select($plugintable, "*", "content_class REGEXP '".e_CLASS_REGEXP."' AND content_parent = '0' ".$datequery." ".$headingquery." ORDER BY content_heading")){
+		//$RECENT_CAPTION = "content";
+		$RECENT_DATA = "no valid content category";
+		break;
+
+	}else{		
 		while($rowm = $sqlm -> db_Fetch()){
+			$ICON = "";
+			$HEADING = "";
+			$AUTHOR = "";
+			$CATEGORY = "";
+			$DATE = "";
+			$INFO = "";
+			$RECENT_CAPTION = $rowm['content_heading'];
 
 			//global var for this main parent
 			$type_id = $rowm['content_id'];
@@ -37,16 +51,19 @@
 			$unvalidcontent = ($unvalidcontent == "" ? "" : "AND ".substr($unvalidcontent, 0, -3) );
 
 			//check so only the preferences from the correct content_type (article, content, review etc) are used and rendered
-			if($arr[9] == $rowm['content_heading']){
+			if($contentmode == $rowm['content_heading']){
 				//get recent content for each main parent
 				$sqli = new db;
-				if($resultitem = $sqli -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id_recent)).") = '".$type_id_recent."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ORDER BY content_datestamp DESC LIMIT 0,".$arr[7]." ")){
+				if(!$resultitem = $sqli -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id_recent)).") = '".$type_id_recent."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ORDER BY content_datestamp DESC LIMIT 0,".$arr[7]." ")){
+
+					$RECENT_DATA = "no items in ".$rowm['content_heading'];
+					break;
+				}else{
 					
-					$RECENT_CAPTION = $rowm['content_heading'];
 					$RECENT_DISPLAYSTYLE = ($arr[2] ? "" : "none");
 
 					while($rowi = $sqli -> db_Fetch()){
-					
+
 						$rowheading = $this -> parse_heading($rowi['content_heading'], $mode);
 
 						$HEADING = "<a href='".e_PLUGIN."content/content.php?type.".$type_id_recent.".content.".$rowi['content_id']."' title='".$rowi['content_heading']."'>".$rowheading."</a>";
@@ -76,6 +93,7 @@
 					}
 				}
 			}
+			
 		}
 	}
 

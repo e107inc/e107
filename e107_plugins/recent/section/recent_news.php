@@ -12,7 +12,7 @@
 
 	$sql2 = new db; $sql3 = new db;
 	if(!$sql -> db_Select("news", "*", "news_class REGEXP '".e_CLASS_REGEXP."' AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") ORDER BY news_datestamp DESC LIMIT 0,".$arr[7]." ")){ 
-		$RECENT_DATA = "no news items";
+		$RECENT_DATA = RECENT_NEWS_2;
 	}else{
 		while($row = $sql -> db_Fetch()){
 				// Code from Lisa
