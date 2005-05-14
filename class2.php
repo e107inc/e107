@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.129 $
-|     $Date: 2005-05-13 22:10:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.130 $
+|     $Date: 2005-05-14 01:45:59 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -611,7 +611,8 @@ define("SAFE_MODE", (ini_get('safe_mode') ? TRUE : FALSE));
 define("FILE_UPLOADS", (ini_get('file_uploads') ? TRUE : FALSE));
 define("INIT", TRUE);
 if(isset($_SERVER['HTTP_REFERER'])) {
-	define("e_REFERER_SELF", ($_SERVER["HTTP_REFERER"] == e_SELF));
+	$tmp = explode("?", $_SERVER['HTTP_REFERER']);
+	define("e_REFERER_SELF",($tmp[0] == e_SELF));
 } else {
 	define('e_REFERER_SELF', FALSE);
 }
