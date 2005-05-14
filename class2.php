@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.132 $
-|     $Date: 2005-05-14 16:13:35 $
+|     $Revision: 1.133 $
+|     $Date: 2005-05-14 16:51:48 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -899,11 +899,13 @@ class e_online {
 			define("ON_PAGE", $sql->db_Count("online", "(*)", "WHERE `online_location` = '{$page}' "));
 			define("MEMBER_LIST", $member_list);
 		} else {
-			define("TOTAL_ONLINE", "Unknown");
-			define("MEMBERS_ONLINE", "Unknown");
-			define("GUESTS_ONLINE", "Unknown");
-			define("ON_PAGE", "Unknown");
-			define("MEMBER_LIST", "Online user tracking is currently disabled, please enable it HERE");
+			define("e_TRACKING_DISABLED", true);
+			define("TOTAL_ONLINE", "");
+			define("MEMBERS_ONLINE", "");
+			define("GUESTS_ONLINE", "");
+			define("ON_PAGE", "");
+			define("MEMBER_LIST", ""); //
+			define("TRACKING_MESSAGE", (ADMIN ? "<br /><br /><span style='font-weight: bold'>Online user tracking is currently disabled, please enable it <a href='".e_ADMIN."users.php?options'>here</a></span><br />" : ""));
 		}
 	}
 }

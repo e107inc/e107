@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-04-14 19:44:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.16 $
+|     $Date: 2005-05-14 16:51:49 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -87,18 +87,20 @@ $total_replies = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
 $total_members = $sql->db_Count("user");
 $newest_member = $sql->db_Select("user", "*", "ORDER BY user_join DESC LIMIT 0,1", $mode = "no_where");
 list($nuser_id, $nuser_name) = $sql->db_Fetch();
-$member_users = $sql->db_Select("online", "*", "online_location REGEXP('forum.php') AND online_user_id!='0' ");
-$guest_users = $sql->db_Select("online", "*", "online_location REGEXP('forum.php') AND online_user_id='0' ");
-$users = $member_users+$guest_users;
-$USERLIST = LAN_426;
-global $listuserson;
-$c = 0;
-foreach($listuserson as $uinfo => $pinfo) {
-	list($oid, $oname) = explode(".", $uinfo, 2);
-	$c ++;
-	$USERLIST .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
+if(!e_TRACKING_DISABLED){
+	$member_users = $sql->db_Select("online", "*", "online_location REGEXP('forum.php') AND online_user_id!='0' ");
+	$guest_users = $sql->db_Select("online", "*", "online_location REGEXP('forum.php') AND online_user_id='0' ");
+	$users = $member_users+$guest_users;
+	$USERLIST = LAN_426;
+	global $listuserson;
+	$c = 0;
+	foreach($listuserson as $uinfo => $pinfo) {
+		list($oid, $oname) = explode(".", $uinfo, 2);
+		$c ++;
+		$USERLIST .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
+	}
+	$USERLIST .= "<br /><a rel='external' href='".e_BASE."online.php'>".LAN_427."</a> ".LAN_436;
 }
-$USERLIST .= "<br /><a rel='external' href='".e_BASE."online.php'>".LAN_427."</a> ".LAN_436;
 $STATLINK = "<a href='".e_PLUGIN."forum/forum_stats.php'>".LAN_441."</a>\n";
 $ICONKEY = "
 	<table style='width:100%'>\n<tr>
@@ -168,7 +170,7 @@ if (USERREALM && USER && e_QUERY != "track") {
 	$INFO .= "<br /><a href='".e_SELF."?track'>".LAN_393."</a>";
 }
 
-$FORUMINFO .= LAN_192.($total_topics+$total_replies)." ".LAN_404." ($total_topics ".($total_topics == 1 ? LAN_411 : LAN_413).", $total_replies ".($total_replies == 1 ? LAN_412 : LAN_414).").<br />".$users." ".($users == 1 ? LAN_415 : LAN_416)." (".$member_users." ".($member_users == 1 ? LAN_417 : LAN_419).", ".$guest_users." ".($guest_users == 1 ? LAN_418 : LAN_420).")<br />".LAN_42.$total_members."<br />".LAN_41."<a href='".e_BASE."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n";
+$FORUMINFO .= LAN_192.($total_topics+$total_replies)." ".LAN_404." ($total_topics ".($total_topics == 1 ? LAN_411 : LAN_413).", $total_replies ".($total_replies == 1 ? LAN_412 : LAN_414).").".(e_TRACKING_DISABLED ? "" : "<br />".$users." ".($users == 1 ? LAN_415 : LAN_416)." (".$member_users." ".($member_users == 1 ? LAN_417 : LAN_419).", ".$guest_users." ".($guest_users == 1 ? LAN_418 : LAN_420).")<br />".LAN_42.$total_members."<br />".LAN_41."<a href='".e_BASE."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n");
 
 if (!$FORUM_MAIN_START) {
 	if (file_exists(THEME."forum_template.php")) {
@@ -219,31 +221,31 @@ foreach ($parent_list as $parent) {
 
 function parse_parent($parent) {
 
-/*
+	/*
 	if ($parent['forum_class'] == e_UC_NOBODY) {
-		$status[0] = "{ ".LAN_398." )";
-		$status[1] = FALSE;
+	$status[0] = "{ ".LAN_398." )";
+	$status[1] = FALSE;
 	} elseif($parent['forum_class'] == e_UC_MEMBER && !USER) {
-		$status[1] = FALSE;
+	$status[1] = FALSE;
 	} elseif($parent['forum_class'] == e_UC_MEMBER && USER) {
-		$status[0] = "( ".LAN_401." )";
-		$status[1] = TRUE;
+	$status[0] = "( ".LAN_401." )";
+	$status[1] = TRUE;
 	} elseif($parent['forum_class'] == e_UC_READONLY) {
-		$status[0] = "( ".LAN_405." )";
-		$status[1] = TRUE;
+	$status[0] = "( ".LAN_405." )";
+	$status[1] = TRUE;
 	} elseif($parent['forum_class']) {
-		if (check_class($parent['forum_class'])) {
-			$status[0] = "( ".LAN_399." )";
-			$status[1] = TRUE;
-		} else {
-			$status[1] = FALSE;
-		}
+	if (check_class($parent['forum_class'])) {
+	$status[0] = "( ".LAN_399." )";
+	$status[1] = TRUE;
 	} else {
-		$status[0] = "";
-		$status[1] = TRUE;
+	$status[1] = FALSE;
+	}
+	} else {
+	$status[0] = "";
+	$status[1] = TRUE;
 	}
 	return ($status);
-*/
+	*/
 	if(check_class($parent['forum_class']))
 	{
 		$status[0]="";
@@ -297,7 +299,7 @@ if (e_QUERY == "track") {
 		if ($value) {
 			$sql->db_Select("forum_t", "*", "thread_id='".$value."' ");
 			$row = $sql->db_Fetch();
-			 extract($row);
+			extract($row);
 			$NEWIMAGE = IMAGE_nonew_small;
 			if ($thread_datestamp > USERLV && (!ereg("\.".$thread_id."\.", USERVIEWED))) {
 				$NEWIMAGE = IMAGE_new_small;
@@ -310,7 +312,7 @@ if (e_QUERY == "track") {
 			}
 			$sql->db_Select("forum_t", "*", "thread_id='".$tmp[$key]."' ORDER BY thread_s DESC, thread_lastpost DESC, thread_datestamp DESC");
 			$row = $sql->db_Fetch();
-			 extract($row);
+			extract($row);
 			$result = preg_split("/\]/", $thread_name);
 			$TRACKPOSTNAME = ($result[1] ? $result[0]."] <a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_forum_id.".".$thread_id."'>".ereg_replace("\[.*\]", "", $thread_name)."</a>" : "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_forum_id.".".$thread_id."'>".$thread_name."</a>");
 			$UNTRACK = "<a href='".e_SELF."?untrack.".$thread_id."'>".LAN_392."</a>";
@@ -346,7 +348,7 @@ if (e_QUERY == "new")
 			{
 				$STARTERTITLE = "<a href='".e_BASE."user.php?id.$author_id'>$author_name</a><br />".$datestamp;
 			}
-				
+
 			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}.post'>".LAN_425.$post['post_subject']."</a>";
 			$forum_newstring .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_MAIN);
 		}
