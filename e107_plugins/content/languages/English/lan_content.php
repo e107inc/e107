@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-05-13 22:20:40 $
+|     $Revision: 1.36 $
+|     $Date: 2005-05-14 16:46:43 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -110,6 +110,7 @@ The menu file has been created in your /menus folder.<br /><br />
 In order to see the menu in action, you still need to activate this menu in your <a href='".e_ADMIN."menus.php'>admin menus area</a>.
 ");
 define("CONTENT_ADMIN_CAT_LAN_51", "error; menu file not created");
+define("CONTENT_ADMIN_CAT_LAN_52", "ALWAYS choose a category first before you fill in other fields!");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "options");
 define("CONTENT_ADMIN_OPT_LAN_1", "admin options : creation of content items");
@@ -149,7 +150,7 @@ define("CONTENT_ADMIN_OPT_LAN_34", "here you can define where your images are or
 define("CONTENT_ADMIN_OPT_LAN_35", "path : cat icons large");
 define("CONTENT_ADMIN_OPT_LAN_36", "define path to content cat icons (large)");
 define("CONTENT_ADMIN_OPT_LAN_37", "path : cat icons small");
-define("CONTENT_ADMIN_OPT_LAN_38", "define path to content cat icons (large)");
+define("CONTENT_ADMIN_OPT_LAN_38", "define path to content cat icons (small)");
 define("CONTENT_ADMIN_OPT_LAN_39", "path : item icons");
 define("CONTENT_ADMIN_OPT_LAN_40", "define path to content item icons");
 define("CONTENT_ADMIN_OPT_LAN_41", "path : item images");
@@ -447,7 +448,7 @@ define("CONTENT_ADMIN_MAIN_LAN_6", "");
 define("CONTENT_ADMIN_MAIN_LAN_7", "Welcome to the Content Management System !");
 define("CONTENT_ADMIN_MAIN_LAN_8", "This information is shown because the table of the Content Management Plugin contains no records.");
 define("CONTENT_ADMIN_MAIN_LAN_9", "Please read the following information carefully and choose what you want to do.");
-define("CONTENT_ADMIN_MAIN_LAN_10", "You can manage content items on this page. First decide the category you would like to manage content for. Click on the button of the main parents listed below to start managing content for that category.");
+define("CONTENT_ADMIN_MAIN_LAN_10", "You can manage content items on this page. First decide the category you would like to manage content for. Select a category in the select box to start managing content for that category.");
 define("CONTENT_ADMIN_MAIN_LAN_11", "Since the old content table contains records, you can choose one of the following three options:");
 define("CONTENT_ADMIN_MAIN_LAN_12", "");
 define("CONTENT_ADMIN_MAIN_LAN_13", "You can create new content items on this page. First decide the category you would like to manage content for. Click on the button of the main parents listed below to create new content in that main category.");

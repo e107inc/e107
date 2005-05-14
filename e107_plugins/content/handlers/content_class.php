@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.34 $
-|		$Date: 2005-05-13 22:20:40 $
+|		$Revision: 1.35 $
+|		$Date: 2005-05-14 16:46:43 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -486,6 +486,119 @@ class content{
 				return $string;
 		}
 		*/
+		function ShowCatOption($array, $currentparent, $mode=""){
+				global $rs, $type, $type_id, $sub_action, $id, $plugintable, $aa, $tp, $content_pref, $stylespacer;
+				$string = "";
+
+				if(empty($array)){ return FALSE; }
+
+				for($a=0;$a<count($array);$a++){
+					//check level of sub
+					$pre = "";
+					if(!$array[$a][17] || $array[$a][17] == "0"){							
+					}else{
+						for($b=0;$b<$array[$a][17];$b++){
+							$pre .= "_";
+						}
+					}					
+					$tmp = array_reverse( explode(".", $currentparent) );
+					$currentparent = $tmp[0];
+					
+					$array[$a][1] = (strlen($array[$a][1]) > 50 ? substr($array[$a][1],0,50)."..." : $array[$a][1]);
+					$emptystring = "-------------------------------";
+
+					if($mode == "createcat"){
+							$checkid = $id;
+							$value = $array[$a][9].".".$array[$a][0];
+							if($array[$a][9] == 0){
+									$name = strtoupper($pre.$array[$a][1]);
+									$url = e_SELF."?type.".$array[$a][0].".cat.create.".$array[$a][0];
+									$js = "style='font-weight:bold;' onclick=\"document.location='".$url."'\"";
+									$string .= $rs -> form_option($emptystring, "0", "----");
+							}else{
+									$tmp = explode(".", $array[$a][9]);
+									$name = $pre.$array[$a][1];
+									$url = e_SELF."?type.".$tmp[1].".cat.create.".$array[$a][0];
+									$js = "onclick=\"document.location='".$url."'\"";						
+							}
+					}elseif($mode == "create"){
+							$checkid = $sub_action;
+							
+							if($array[$a][9] == 0){
+									$value = $array[$a][0].".".$array[$a][0];
+									$name = strtoupper($pre.$array[$a][1]);								
+									$url = e_SELF."?type.".$array[$a][0].".create.".$array[$a][0];
+									$js = "style='font-weight:bold;' onclick=\"document.location='".$url."'\"";
+									$string .= $rs -> form_option($emptystring, "0", "----");
+							}else{
+									$tmp = explode(".", $array[$a][9]);
+									$value = $tmp[1].".".substr($array[$a][9],2).".".$array[$a][0];
+									//$value = $array[$a][9].".".$array[$a][0];
+									$tmp = explode(".", $array[$a][9]);
+									$name = $pre.$array[$a][1];
+									$url = e_SELF."?type.".$tmp[1].".create.".$array[$a][0];
+									$js = "onclick=\"document.location='".$url."'\"";
+							}
+					}elseif($mode == "edit"){
+						
+						if($sub_action == "edit"){
+							$checkid = $currentparent;
+							$catstring ="";
+							if($array[$a][9] == 0){								
+									$name = strtoupper($pre.$array[$a][1]);
+									$value = $array[$a][0].".".$array[$a][0];
+									$js = "style='font-weight:bold;'";
+									//$string .= $rs -> form_option($emptystring, "0", "----");
+							}else{								
+									$tmp = explode(".", $array[$a][9]);
+									$name = $pre.$array[$a][1];
+									$value = $tmp[1].".".substr($array[$a][9],2).".".$array[$a][0];
+									$js = "";
+							}
+						}else{
+							$checkid = $sub_action;
+							$value = $array[$a][9].".".$array[$a][0];
+							if($array[$a][9] == 0){
+									$name = strtoupper($pre.$array[$a][1])." (ALL)";
+									$url = e_SELF."?type.".$array[$a][0];
+									$js = "style='font-weight:bold;' onclick=\"document.location='".$url."'\"";
+									$string .= $rs -> form_option($emptystring, "0", "----");
+									
+									$catname = $pre.$array[$a][1];
+									$catvalue = $value;
+									$caturl = e_SELF."?type.".$array[$a][0].".c.".$array[$a][0]."-".$array[$a][0];
+									$catjs = " onclick=\"document.location='".$caturl."'\"";
+									$catstring = $rs -> form_option($catname, ($checkid == $array[$a][0] ? "1" : "0"), $catvalue, $catjs);
+							}else{
+									$catstring = "";
+									$tmp = explode(".", $array[$a][9]);
+									$name = $pre.$array[$a][1];								
+									$url = e_SELF."?type.".$tmp[1].".c.".$tmp[1]."-".str_replace(".", "-", substr($array[$a][9],2))."-".$array[$a][0];
+									$js = "onclick=\"document.location='".$url."'\"";
+							}
+						}
+					}else{
+						return;
+					}
+					$string .= $rs -> form_option($name, ($checkid == $array[$a][0] ? "1" : "0"), $value, $js).$catstring;
+
+				}
+				$text = $rs -> form_select_open("parent");
+				if($mode == "createcat"){
+						$url = e_SELF."?type.0.cat.create.0";
+						$js = "style='font-weight:bold;' onclick=\"document.location='".$url."'\" ";				
+						$text .= $rs -> form_option("NEW MAIN CATEGORY", ($id == 0 ? "1" : "0"), "none", $js);
+				}elseif($mode == "create"){
+						$text .= $rs -> form_option("choose category ...", "0", "");
+				}elseif($mode == "edit"){
+						$text .= $rs -> form_option("choose category ...", "0", "");
+				}
+				$text .= $string;
+				$text .= $rs -> form_select_close();
+
+				return $text;
+		}
+
 
 		function printParent($array, $level, $currentparent, $mode="option"){
 				global $rs, $type, $type_id, $plugintable, $aa, $tp, $content_pref, $stylespacer;
@@ -548,9 +661,9 @@ class content{
 								$currentparent = $tmp[0];
 								
 								$array[$a][1] = (strlen($array[$a][1]) > 25 ? substr($array[$a][1],0,25)."..." : $array[$a][1]);
+								$style = ($array[$a][9] == 0 ? "style='font-weight:bold;'" : "");
 								$pre = "category : ".$pre;
-								$string .= $rs -> form_option($pre.$array[$a][1], 0, e_SELF."?type.".$type_id.".cat.".$array[$a][0]);
-								//$string .= "<a href='".e_PLUGIN."content/content.php?type.".$type_id.".cat.".$array[$a][0]."'>".$pre.$array[$a][1]."</a><br />";
+								$string .= $rs -> form_option($pre.$array[$a][1], 0, e_SELF."?type.".$type_id.".cat.".$array[$a][0], $style);
 
 						}elseif($mode == "table"){
 							

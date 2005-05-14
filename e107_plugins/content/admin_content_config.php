@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.29 $
-|		$Date: 2005-05-13 11:15:57 $
+|		$Revision: 1.30 $
+|		$Date: 2005-05-14 16:46:25 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -346,13 +346,13 @@ if(!e_QUERY){																//show main categories
 						$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 						require_once(e_ADMIN."footer.php");
 						exit;
-			}elseif(!$sub_action){
+			}elseif(!$sub_action || is_numeric($sub_action)){
 				if($type_id == "0"){										//item; create; show main categories
 						$aform -> show_main_parent("create");
 						require_once(e_ADMIN."footer.php");
 						exit;
 				}else{														//item; create form; use selected main category
-						$aform -> show_main_parent("create");
+				//		$aform -> show_main_parent("create");
 						$aform -> show_content_create("admin");
 				}
 			}elseif(($sub_action == "edit" || $sub_action == "sa")){
@@ -368,7 +368,7 @@ if(!e_QUERY){																//show main categories
 						require_once(e_ADMIN."footer.php");
 						exit;
 					}
-					$aform -> show_main_parent("edit");
+					//$aform -> show_main_parent("edit");
 					$aform -> show_content_create("admin","","");
 				}
 			}else{
@@ -400,7 +400,7 @@ if(!e_QUERY){																//show main categories
 */
 			//category (category order)
 			//}else
-				if($sub_action == "cat" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
+			if($sub_action == "cat" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
 
 						if($sub_action == "cat" && substr($id,0,3) == "inc"){			//increase order
 							$adb -> dbSetOrder("inc", "cc-".substr($id,4));
@@ -461,7 +461,9 @@ if(!e_QUERY){																//show main categories
 					header("location:".e_SELF."?type.".$type_id.".cat"); exit;
 				}
 			}elseif($sub_action == "create"){
-				if($id && $id != "pc"){
+				//if(is_numeric($id)){
+				if($id && !is_numeric($id) && $id != "pc"){
+				//if($id && $id != "pc"){
 						header("location:".e_SELF."?type.".$type_id.".cat.create"); exit;
 				}else{														//category; create form
 						if($id == "pc"){									//category; create redirect
@@ -477,7 +479,7 @@ if(!e_QUERY){																//show main categories
 								require_once(e_ADMIN."footer.php");
 								exit;
 						}
-						$aform -> show_main_parent("createcat");
+						//$aform -> show_main_parent("createcat");
 						$aform -> show_cat_create("admin");
 				}
 			}elseif($sub_action == "options"){								//category; options
@@ -528,7 +530,7 @@ function admin_content_config_adminmenu(){
 						$act = $action;
 					}
 				}elseif($action == "create"){
-					if(!$sub_action){
+					if(!$sub_action || is_numeric($sub_action)){
 						$act = $action;
 					}elseif($sub_action == "edit"){
 						$act = "main";

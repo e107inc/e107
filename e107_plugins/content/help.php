@@ -13,95 +13,91 @@ if(e_QUERY){
         unset($tmp);
 }
 
-//main page
+//Manage Existing Content (no category selected)
 if(!$type){
-	$text = CONTENT_ADMIN_HELP_LAN_0;
+	$text = CONTENT_ADMIN_HELP_ITEM_1;
 }
 
-//create page
+//Manage Existing Content (category selected)
 if($type == "type" && is_numeric($type_id)){
-	if(!$action || ($action == "c" && $sub_action)){
-		$text = CONTENT_ADMIN_HELP_LAN_1;
-		if($action == "c" && $sub_action){
-			$text .= CONTENT_ADMIN_HELP_LAN_2;
-		}
-		$text .= CONTENT_ADMIN_HELP_LAN_3;
+	if(!$action || ($action == "c" && $sub_action) ){
+		$text = CONTENT_ADMIN_HELP_ITEM_2;
 	}
-
-	//create page
+	
 	if($action == "create"){
+		//Create New Content (no category selected)
 		if(!$sub_action){
-			if($type_id == "0"){
-				$text = CONTENT_ADMIN_HELP_LAN_4;
-			}else{
-				$text = CONTENT_ADMIN_HELP_LAN_5;
-			}
-		}else{
-			$text = CONTENT_ADMIN_HELP_LAN_6;
+			$text = CONTENT_ADMIN_HELP_ITEMCREATE_1;
+
+		//Create New Content (category selected)
+		}elseif(is_numeric($sub_action)){
+			$text = CONTENT_ADMIN_HELP_ITEMCREATE_2;
+
+		//Manage Existing Content (edit page)
+		}elseif($sub_action == "edit"){
+			$text = CONTENT_ADMIN_HELP_ITEMEDIT_1;
 		}
 	}
 
-	//category page
 	if($action == "cat"){
-		if($type_id == "0" && $sub_action == "create"){
-			$text = CONTENT_ADMIN_HELP_LAN_7;
-
-		}elseif($type_id != "0" && $sub_action == "create"){
-			$text = CONTENT_ADMIN_HELP_LAN_8;
-
-		}elseif($type_id == "0" && ($sub_action == "manage" || !$sub_action)){
-			//$text = CONTENT_ADMIN_HELP_LAN_9;
-
-		//}elseif($type_id != "0" && ($sub_action == "manage" || !$sub_action)){
-			$text = CONTENT_ADMIN_HELP_LAN_10;
-
+		//Manage Existing Categories
+		if(!$sub_action){
+			$text = CONTENT_ADMIN_HELP_CAT_1;
+			//Manage Existing Categories (show contentmanager link)
 			if(getperms("0")){
-				$text .= CONTENT_ADMIN_HELP_LAN_15;
+				$text .= CONTENT_ADMIN_HELP_CAT_2;
 			}
 
-		}elseif($type_id == "0" && $sub_action == "edit"){
+		//Create New Category
+		}elseif($sub_action == "create"){
+			//Create New Category (no category selected)
+			if(!$id){
+				$text = CONTENT_ADMIN_HELP_CAT_3;
 
-		}elseif($type_id != "0" && $sub_action == "edit"){
-			$text = CONTENT_ADMIN_HELP_LAN_11;
+			//Create New Category (category selected)
+			}elseif(is_numeric($id)){
+				$text = CONTENT_ADMIN_HELP_CAT_4;
+			}
 
-		}elseif($type_id != "0" && $sub_action == "options"){
-			$text = CONTENT_ADMIN_HELP_LAN_12;
+		//Manage Existing Categories (edit page)
+		}elseif($sub_action == "edit"){
+			$text = CONTENT_ADMIN_HELP_CAT_5;
 
-		}elseif($type_id != "0" && $sub_action == "contentmanager"){
-			$text = CONTENT_ADMIN_HELP_LAN_16;
+		//Manage Existing Categories (options page)
+		}elseif($sub_action == "options"){
+			$text = CONTENT_ADMIN_HELP_CAT_6;
 
-		}elseif(!$sub_action){
+		//Manage Existing Categories (contentmanager page)
+		}elseif($sub_action == "contentmanager"){
+			$text = CONTENT_ADMIN_HELP_CAT_7;
 		}
+
 	}
 
+	//Submitted Content Items
 	if($action == "sa"){
-			$text = CONTENT_ADMIN_HELP_LAN_13;
+		$text = CONTENT_ADMIN_HELP_SUBMIT_1;
 	}
 
+	//Manage Order
 	if($action == "order"){
-			/*
-			if($type_id == "0" || !$sub_action){
-				$text = CONTENT_ADMIN_HELP_LAN_20;
-			}elseif($type_id != "0" && $sub_action == "cat"){
-				$text = CONTENT_ADMIN_HELP_LAN_18;
-			}elseif($type_id != "0" && $sub_action && $sub_action != "cat"){
-				$text = CONTENT_ADMIN_HELP_LAN_19;
-			}
-			*/
-			if($sub_action == "cat"){
-				$text = CONTENT_ADMIN_HELP_LAN_18;
-			}
-			if($sub_action == "item" || $sub_action == "all"){
-				$text = CONTENT_ADMIN_HELP_LAN_19;
-			}
-			
-			//$text = CONTENT_ADMIN_HELP_LAN_20;
-			//$text .= CONTENT_ADMIN_HELP_LAN_18;
-			//$text .= CONTENT_ADMIN_HELP_LAN_19;
+
+		//Manage Order (category order)
+		if($sub_action == "cat"){
+			$text = CONTENT_ADMIN_HELP_ORDER_1;
+
+		//Manage Order (items order in category)
+		}elseif($sub_action == "item"){
+			$text = CONTENT_ADMIN_HELP_ORDER_2;
+
+		//Manage Order (global items order)
+		}elseif($sub_action == "all"){
+			$text = CONTENT_ADMIN_HELP_ORDER_3;
+		}
 	}
 
 }
 
-$ns -> tablerender(CONTENT_ADMIN_HELP_LAN_14, $text);
+$ns -> tablerender(CONTENT_ADMIN_HELP_1, $text);
 
 ?>
