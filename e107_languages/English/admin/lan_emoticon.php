@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_emoticon.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-05-14 01:46:09 $
+|     $Revision: 1.5 $
+|     $Date: 2005-05-14 02:39:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@ define("EMOLAN_10", "Add New Emote");
 define("EMOLAN_11", "Emoticon Settings");
 
 define("EMOLAN_12", "Preview");
-define("EMOLAN_13", "Options");
+define("EMOLAN_13", "Delete");
 
 
 ?>
