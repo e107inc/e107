@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.130 $
-|     $Date: 2005-05-14 01:45:59 $
-|     $Author: sweetas $
+|     $Revision: 1.131 $
+|     $Date: 2005-05-14 12:36:36 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -699,6 +699,12 @@ function check_class($var, $userclass = USERCLASS, $debug = FALSE)
 			return TRUE;
 		}
 	} else {
+
+		// Language Rights....
+		if($var == e_LANGUAGE){
+    		return TRUE;
+		}
+
 		// var is name of class ...
 		$sql=new db;
 		if ($sql->db_Select("userclass_classes", "*", "userclass_name='$var' ")) {
