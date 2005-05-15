@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-05-15 15:10:22 $
+|     $Revision: 1.19 $
+|     $Date: 2005-05-15 21:11:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -99,11 +99,14 @@ if(!defined("e_TRACKING_DISABLED"))
 	$USERLIST = LAN_426;
 	global $listuserson;
 	$c = 0;
+	if(is_array($listuserson))
+	{
 	foreach($listuserson as $uinfo => $pinfo)
 	{
 		list($oid, $oname) = explode(".", $uinfo, 2);
 		$c ++;
 		$USERLIST .= "<a href='".e_BASE."user.php?id.$oid'>$oname</a>".($c == MEMBERS_ONLINE ? "." :", ");
+	}
 	}
 	$USERLIST .= "<br /><a rel='external' href='".e_BASE."online.php'>".LAN_427."</a> ".LAN_436;
 }
@@ -129,6 +132,7 @@ $SEARCH = "
 
 $PERMS = (USER == TRUE || ANON == TRUE ? LAN_204." - ".LAN_206." - ".LAN_208 : LAN_205." - ".LAN_207." - ".LAN_209);
 
+$INFO = "";
 if (USER == TRUE)
 {
 	$total_new_threads = $sql->db_Count('forum_t', '(*)', "WHERE thread_datestamp>'".USERLV."' ");
@@ -190,14 +194,14 @@ if (USER && $allread != TRUE && $total_new_threads && $total_new_threads >= $tot
 	$INFO .= "<br /><a href='".e_SELF."?mark.all.as.read'>".LAN_199."</a>".(e_QUERY != "new" ? ", <a href='".e_SELF."?new'>".LAN_421."</a>" : "");
 }
 
-if (USERREALM && USER && e_QUERY != "track")
+if (USER && USERREALM && e_QUERY != "track")
 {
 	$INFO .= "<br /><a href='".e_SELF."?track'>".LAN_393."</a>";
 }
 
-$FORUMINFO .= LAN_192.($total_topics+$total_replies)." ".LAN_404." ($total_topics ".($total_topics == 1 ? LAN_411 : LAN_413).", $total_replies ".($total_replies == 1 ? LAN_412 : LAN_414).").".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_415 : LAN_416)." (".$member_users." ".($member_users == 1 ? LAN_417 : LAN_419).", ".$guest_users." ".($guest_users == 1 ? LAN_418 : LAN_420).")<br />".LAN_42.$total_members."<br />".LAN_41."<a href='".e_BASE."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n");
+$FORUMINFO = LAN_192.($total_topics+$total_replies)." ".LAN_404." ($total_topics ".($total_topics == 1 ? LAN_411 : LAN_413).", $total_replies ".($total_replies == 1 ? LAN_412 : LAN_414).").".(!defined("e_TRACKING_DISABLED") ? "" : "<br />".$users." ".($users == 1 ? LAN_415 : LAN_416)." (".$member_users." ".($member_users == 1 ? LAN_417 : LAN_419).", ".$guest_users." ".($guest_users == 1 ? LAN_418 : LAN_420).")<br />".LAN_42.$total_members."<br />".LAN_41."<a href='".e_BASE."user.php?id.".$nuser_id."'>".$nuser_name."</a>.\n");
 
-if (!$FORUM_MAIN_START)
+if (!isset($FORUM_MAIN_START))
 {
 	if (file_exists(THEME."forum_template.php"))
 	{
@@ -220,6 +224,7 @@ if (!$parent_list)
 foreach ($parent_list as $parent) {
 	$status = parse_parent($parent);
 	$PARENTSTATUS = $status[0];
+	$forum_string = "";
 	if ($status[1]) {
 		$PARENTNAME = $parent['forum_name'];
 		$forum_string .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_PARENT);
@@ -253,7 +258,7 @@ foreach ($parent_list as $parent) {
 					$forum_string .= parse_forum($f);
 				}
 			}
-			if ($FORUM_MAIN_PARENT_END)
+			if (isset($FORUM_MAIN_PARENT_END))
 			{
 				$forum_string .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_PARENT_END);
 			}
