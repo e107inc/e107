@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.134 $
-|     $Date: 2005-05-14 22:07:26 $
+|     $Revision: 1.135 $
+|     $Date: 2005-05-15 05:02:28 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -290,9 +290,9 @@ if (isset($pref['multilanguage']) && $pref['multilanguage']) {
 		}
 	closedir($handle);
 	$tmplan = implode(",",$lanlist);
-    define("e_LANLIST",$tmplan);
 }
 // =====================
+define("e_LANLIST",($tmplan ? $tmplan : ""));
 
 $page=substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
@@ -463,19 +463,21 @@ define("USERLAN", ($user_language && (strpos(e_SELF, $PLUGINS_DIRECTORY) !== FAL
 define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 
 e107_include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
+e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
+
 
 foreach ($pref as $key => $prefvalue) {
 	$pref[$key] = $tp->toFORM($prefvalue);
 }
 
-define("SITENAME", $pref['sitename']);
+define("SITENAME", $tp->toHTML($pref['sitename'],"","emotes_off defs"));
 define("SITEURL", (substr($pref['siteurl'], -1) == "/" ? $pref['siteurl'] : $pref['siteurl']."/"));
 define("SITEBUTTON", $pref['sitebutton']);
-define("SITETAG", $pref['sitetag']);
-define("SITEDESCRIPTION", $pref['sitedescription']);
+define("SITETAG", $tp->toHTML($pref['sitetag'],FALSE,"emotes_off defs"));
+define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'],"","emotes_off defs"));
 define("SITEADMIN", $pref['siteadmin']);
 define("SITEADMINEMAIL", $pref['siteadminemail']);
-define("SITEDISCLAIMER", $pref['sitedisclaimer']);
+define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'],"","emotes_off defs"));
 
 if ($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)) {
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
