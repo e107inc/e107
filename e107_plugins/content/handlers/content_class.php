@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.37 $
-|		$Date: 2005-05-15 14:45:14 $
+|		$Revision: 1.38 $
+|		$Date: 2005-05-15 20:28:11 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -338,36 +338,6 @@ class content{
 				return $parent;
 		}
 
-		/*
-		function adminCatMenu($array){
-				global $type_id;
-				$string = "";
-
-				if(empty($array)){ return FALSE; }
-
-				for($a=0;$a<count($array);$a++){
-					if(!$array[$a][17] || $array[$a][17] == "0"){
-						$pre = "";
-					}else{
-						$pre = "";
-						for($b=0;$b<$array[$a][17];$b++){
-							$pre .= "_";
-						}
-					}
-					if(strpos($array[$a][9], ".")){
-						$tmp = explode(".", $array[$a][9]);
-						$mainparent = $tmp[1];
-						$id = $tmp[1].".".substr($array[$a][9], 2).".".$array[$a][0];
-					}else{
-						$id = $array[$a][0].".".$array[$a][0];
-						$mainparent = $array[$a][0];
-					}
-					$id = str_replace(".", "-", $id);
-					$string[] = array($array[$a][0], $pre.$array[$a][1], $array[$a][9], $id, $mainparent);
-				}
-				return $string;
-		}
-		*/
 		function ShowCatOption($array, $currentparent, $mode=""){
 				global $rs, $type, $type_id, $sub_action, $id, $plugintable, $aa, $tp, $content_pref, $stylespacer;
 				$string = "";
@@ -431,7 +401,6 @@ class content{
 							}else{
 									$tmp = explode(".", $array[$a][9]);
 									$value = $tmp[1].".".substr($array[$a][9],2).".".$array[$a][0];
-									//$value = $array[$a][9].".".$array[$a][0];
 									$tmp = explode(".", $array[$a][9]);
 									$name = $pre.$array[$a][1];
 									$url = e_SELF."?type.".$tmp[1].".create.".$array[$a][0];
@@ -519,10 +488,10 @@ class content{
 							}
 						}
 						
-						if($mode == "array"){		//used only in the creation of the menu
+						if($mode == "array"){					//used only once in the creation of the menu
 								$string[] = array($array[$a][0], $array[$a][1], $array[$a][9], $array[$a][6]);
 
-						}elseif($mode == "optionadminmenu"){
+						}elseif($mode == "optionadminmenu"){	//used only once for the category admin menus in admin page
 								if(strpos($array[$a][9], ".")){
 									$tmp = explode(".", $array[$a][9]);
 									$mainparent = $tmp[1];
@@ -534,22 +503,7 @@ class content{
 								$id = str_replace(".", "-", $id);
 								$string[] = array($array[$a][0], $pre.$array[$a][1], $array[$a][9], $id, $mainparent);
 
-						}elseif($mode == "optioncat"){
-								$id = $array[$a][9].".".$array[$a][0];
-								$string .= $rs -> form_option($pre.$array[$a][1], ($id == $currentparent ? "1" : "0"), $id);
-
-						}elseif($mode == "optioncontent"){
-								$tmp = array_reverse( explode(".", $currentparent) );
-								$currentparent = $tmp[0];
-								
-								if(strpos($array[$a][9], ".")){
-									$id = $type_id.".".substr($array[$a][9], 2).".".$array[$a][0];
-								}else{
-									$id = $array[$a][0].".".$array[$a][0];
-								}
-								$string .= $rs -> form_option($pre.$array[$a][1], ($array[$a][0] == $currentparent ? "1" : "0"), $id);
-						
-						}elseif($mode == "optionmenu"){
+						}elseif($mode == "optionmenu"){			//used only once in search form in content.php
 								$tmp = array_reverse( explode(".", $currentparent) );
 								$currentparent = $tmp[0];
 								
@@ -558,7 +512,7 @@ class content{
 								$pre = "category : ".$pre;
 								$string .= $rs -> form_option($pre.$array[$a][1], 0, e_SELF."?type.".$type_id.".cat.".$array[$a][0], $style);
 
-						}elseif($mode == "table"){
+						}elseif($mode == "table"){				//used only once in form_class (show_cat_manage)
 							
 							if(strpos($array[$a][9], ".")){
 								$tmp1 = explode(".", $array[$a][9]);
@@ -595,19 +549,6 @@ class content{
 
 								</td>
 							</tr>";
-									/*
-									".$rs -> form_open("post", e_SELF."?".$type.".".$type_id.".cat.manage", "deleteform_{$array[$a][0]}","","", "")."
-									
-									<a href='".e_SELF."?".$type.".".$type_id.".cat.edit.".$array[$a][0]."'>".CONTENT_ICON_EDIT."</a>
-									
-									<a onclick=\"if(jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_9."\\n\\n".CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$array[$a][0]." : ".$delete_heading."]\\n\\n")."')){document.forms['deleteform_{$array[$a][0]}'].submit();}\" >".CONTENT_ICON_DELETE."</a>
-
-									".($array[$a][9] == "0" ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.options.".$array[$a][0]."'>".CONTENT_ICON_OPTIONS."</a>" : "")."
-									".($array[$a][9] != "0" && getperms("0") ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.contentmanager.".$array[$a][0]."'>".CONTENT_ICON_CONTENTMANAGER_SMALL."</a>" : "")."
-									
-									".$rs -> form_hidden("cat_delete_{$array[$a][0]}", "delete")."
-									".$rs -> form_close()."
-									*/
 						}
 				}
 				return $string;
@@ -642,21 +583,8 @@ class content{
 							
 							if($parent_parent == "0"){
 								$cat = $type_id.".".$type_id;
-								//$cat = ($style == "admin" ? $id.".".$id : $type_id.".".$type_id);
 							}else{
 								$cat = $type_id.".".substr($parent_parent,2).".".$parent_id;
-								/*
-								if($style == "admin"){
-									//&& substr($id,0,2) == "0."){ $id = substr($id,2).".".substr($id,2); }
-									$tmp = explode(".", $id);
-									$cat = $tmp[1].".".$tmp[1].".".$tmp[2];
-									echo $cat."<br />";
-									
-									echo $tmp[0]." - ".$tmp[1]." - ".$tmp[2]." - ".$tmp[3]."<br />";
-								}else{
-									$cat = $type_id.".".substr($parent_parent,2).".".$parent_id;
-								}
-								*/
 							}
 							$parent[] = array($parent_id, $parent_heading, $parent_parent, $cat, $parent_order);
 							if($mode == "" || $mode == "0"){
@@ -731,33 +659,32 @@ class content{
 				return $drawbreadcrumb;
 		}
 
-//get category name from parent id value of the item
-function getCat($catid){
-	global $plugintable, $type_id, $content_pref;
-	$plugintable = "pcontent";
+		//get category name from parent id value of the item
+		function getCat($catid){
+				global $plugintable, $type_id, $content_pref;
+				$plugintable = "pcontent";
 
-	if(strpos($catid, ".")){
-		$tmp = explode(".", $catid);
-		$type_id = $tmp[0];
-		$tmp2 = array_reverse($tmp);
-		$query = " content_id = '".$tmp2[0]."' ";
-	}else{
-		$type_id = $catid;
-		$query = " content_id = '".$catid."' ";
-	}
+				if(strpos($catid, ".")){
+					$tmp = explode(".", $catid);
+					$type_id = $tmp[0];
+					$tmp2 = array_reverse($tmp);
+					$query = " content_id = '".$tmp2[0]."' ";
+				}else{
+					$type_id = $catid;
+					$query = " content_id = '".$catid."' ";
+				}
 
-	$sqlgetcat = new db;
-	if(!is_object($sqlgetcat)){ $sqlgetcat = new db; }
-	if(!$sqlgetcat -> db_Select($plugintable, "content_id, content_heading", " ".$query."  ")){
-		$getcat = FALSE;
-	}else{
-		list($parent_id, $parent_heading) = $sqlgetcat -> db_Fetch();
-		$getcat = "<a href='".e_PLUGIN."content/content.php?type.".$type_id.".cat.".$parent_id."'>".$parent_heading."</a>";
-	}	
+				$sqlgetcat = new db;
+				if(!is_object($sqlgetcat)){ $sqlgetcat = new db; }
+				if(!$sqlgetcat -> db_Select($plugintable, "content_id, content_heading", " ".$query."  ")){
+					$getcat = FALSE;
+				}else{
+					list($parent_id, $parent_heading) = $sqlgetcat -> db_Fetch();
+					$getcat = "<a href='".e_PLUGIN."content/content.php?type.".$type_id.".cat.".$parent_id."'>".$parent_heading."</a>";
+				}	
 
-	return $getcat;
-							
-}
+				return $getcat;									
+		}
 
 
 		//only base root is being output (only used in content_submit and content_manager)
@@ -766,26 +693,16 @@ function getCat($catid){
 
 				$sep = ($content_pref["content_breadcrumb_seperator{$type_id}"] ? $content_pref["content_breadcrumb_seperator{$type_id}"] : ">");
 				
-				//if($base == "base"){
-					if($nolink){
-						$basecrumb = CONTENT_LAN_58." ".$sep." ".CONTENT_LAN_59." ".$sep;
-					}else{
-						$basecrumb = "<a href='".e_BASE."'>".CONTENT_LAN_58."</a> ".$sep." <a href='".e_PLUGIN."content/content.php'>".CONTENT_LAN_59."</a> ".$sep;
-					}
-				//}
+				if($nolink){
+					$basecrumb = CONTENT_LAN_58." ".$sep." ".CONTENT_LAN_59." ".$sep;
+				}else{
+					$basecrumb = "<a href='".e_BASE."'>".CONTENT_LAN_58."</a> ".$sep." <a href='".e_PLUGIN."content/content.php'>".CONTENT_LAN_59."</a> ".$sep;
+				}
 				if($page == "content_submit.php" || $page == "content_manager.php"){
 					$crumb = $basecrumb;
 				}else{
 					return FALSE;
 				}
-
-				/*
-				if($page == "content.php"){
-					$crumb = $basecrumb;
-					$crumb .= " ".$sep." ".($nolink ? CONTENT_LAN_60 : "<a href='".e_SELF."?type.".$type_id."'>".CONTENT_LAN_60."</a>");
-				}
-				*/
-
 				$crumb = substr($crumb,0,-strlen($sep)-1);
 				return $crumb;
 		}
@@ -837,37 +754,33 @@ function getCat($catid){
 		function getIcon($mode, $icon, $path="", $linkid="", $width="", $blank=""){
 				global $content_cat_icon_path_small, $content_cat_icon_path_large, $content_icon_path, $content_pref;
 
+				$blank = (!$blank ? "0" : $blank);
+				$border = "border:0;";
+				
 				if($mode == "item"){
 					$path = (!$path ? $content_icon_path : $path);
 					$hrefpre = ($linkid ? "<a href='".e_SELF."?".$linkid."'>" : "");
 					$hrefpost = ($linkid ? "</a>" : "");
 					$width = ($width ? "width:".$width."px;" : "");
 					$border = "border:1px solid #000;";
-					$blank = (!$blank ? "0" : $blank);
 					$icon = ($icon ? $path.$icon : ($blank ? $content_icon_path."blank.gif" : ""));
 
 				}elseif($mode == "catsmall"){
 					$path = (!$path ? $content_cat_icon_path_small : $path);
 					$hrefpre = ($linkid ? "<a href='".e_SELF."?".$linkid."'>" : "");
 					$hrefpost = ($linkid ? "</a>" : "");
-					$border = "border:0;";
-					$blank = (!$blank ? "0" : $blank);
 					$icon = ($icon ? $path.$icon : "");
 
 				}elseif($mode == "catlarge"){
 					$path = (!$path ? $content_cat_icon_path_large : $path);
 					$hrefpre = ($linkid ? "<a href='".e_SELF."?".$linkid."'>" : "");
 					$hrefpost = ($linkid ? "</a>" : "");
-					$border = "border:0;";
-					$blank = (!$blank ? "0" : $blank);
 					$icon = ($icon ? $path.$icon : "");
 				}else{
 					$path = (!$path ? $content_icon_path : $path);
 					$hrefpre = "";
 					$hrefpost = "";
 					$width = "";
-					$border = "border:0;";
-					$blank = (!$blank ? "0" : $blank);
 					$icon = ($icon ? $path.$icon : ($blank ? $content_icon_path."blank.gif" : ""));
 				}
 				if($icon && file_exists($icon)){
@@ -923,7 +836,6 @@ function getCat($catid){
 				}else{
 					$row = $sqlcreatemenu -> db_Fetch();
 				}
-
 				$menufile = "content_".$row['content_heading'];
 			
 				$data = chr(60)."?php\n". chr(47)."*\n+---------------------------------------------------------------+\n|        e107 website system\n|        ".e_PLUGIN."content/menus/content_".$row['content_heading']."_menu.php\n|\n|        ©Steve Dunstan 2001-2002\n|        http://e107.org\n|        jalist@e107.org\n|\n|        Released under the terms and conditions of the\n|        GNU General Public License (http://gnu.org).\n+---------------------------------------------------------------+\n\nThis file has been generated by ".e_PLUGIN."content/handlers/content_class.php.\n\n*". chr(47)."\n\n";
@@ -1067,7 +979,7 @@ function getCat($catid){
 				$data .= "      if(".chr(36)."content_pref[\"content_menu_cat_number_{$parentid}\"]){\n";
 				$data .= "         ".chr(36)."text .= \" <span class='smalltext'>(\".".chr(36)."n.\")</span>\";\n";
 				$data .= "      }\n";
-//$data .= "      ".chr(36)."text .= ".chr(34)."<br />".chr(34).";\n";
+
 				$data .= "   ".chr(36)."text .= \"</td></tr>\";\n";
 				$data .= "   }\n";
 				$data .= "   ".chr(36)."text .= \"</table>\";\n";
@@ -1115,20 +1027,16 @@ function getCat($catid){
 				$data .= "         ".chr(36)."text .= \"<td style='width:99%; vertical-align:top;'><a href='\".e_PLUGIN.\"content/content.php?type.$parentid.content.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."row['content_heading'].\"</a><br />\".(".chr(36)."datestamp ? ".chr(36)."datestamp.\"<br />\" : \"\" ).(".chr(36)."authordetails[1] ? ".chr(36)."authordetails[1].\"<br />\" : \"\" ).(".chr(36)."subheading ? ".chr(36)."subheading.\"<br />\" : \"\" ).\"</td>\";\n";
 				$data .= "         ".chr(36)."text .= \"</tr>\";\n";
 				$data .= "         ".chr(36)."text .= \"</table><br />\";\n";
-
 				$data .= "      }\n";
 				$data .= "   }\n";
 				$data .= "}\n\n";
 
-				//$data .= "if(".chr(36)."res){\n";
 				$data .= "if(!isset(".chr(36)."text)){ ".chr(36)."text = CONTENT_LAN_82.\" \".".chr(36)."row['content_heading']; }\n";
 				$data .= chr(36)."caption = (".chr(36)."content_pref[\"content_menu_caption_{$parentid}\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_caption_{$parentid}\"] : ".chr(36)."row['content_heading']);\n";
-				//$data .= chr(36)."caption = (".chr(36)."content_pref[\"content_menu_caption_{$parentid}\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_caption_{$parentid}\"] : ".chr(34)."".$row['content_heading']."".chr(34).");\n";
 
 				$data .= chr(36)."ns -> tablerender(".chr(36)."caption, ".chr(36)."text);\n";
 				//$data .= "}\n";
 				$data .= "?".chr(62);
-
 				 
 				if(file_exists(e_PLUGIN."content/menus/".$menufile."_menu.php")){
 					$message = "";
@@ -1144,130 +1052,6 @@ function getCat($catid){
 				return $message;
 		}
 
-
-		/*
-		function checkUnValidContent($query){
-				global $plugintable, $datequery;
-				$UnValidArticleIds = "";
-				$checkid2 = FALSE;
-				$sqlcheckunvalidcontent = "";
-
-				if(!is_object($sqlcheckunvalidcontent)){ $sqlcheckunvalidcontent = new db; }
-				if($sqlcheckunvalidcontent -> db_Select($plugintable, "content_id, content_parent, content_class", $query." ".$datequery." ")){
-					$count = 0;
-					while(list($content_id, $content_parent, $content_class) = $sqlcheckunvalidcontent -> db_Fetch()){
-						if(!check_class($content_class)){
-							$UnValidArticleIds .= " content_id != '".$content_id."' AND";
-						}else{
-							if($content_parent != "0"){
-								$parentidarray[$count] = $content_parent;
-							}
-						}
-						$count = $count + 1;
-					}
-					
-					$result = array_unique($parentidarray);
-					for($i=0;$i<count($result);$i++){
-						$checkparent = $this -> checkParentValidity2($result[$i]);
-						$UnValidArticleIds .= $checkparent;
-					}
-
-					$UnValidArticleIds = ($UnValidArticleIds == "" ? "" : " AND ".substr($UnValidArticleIds, 0, -3) );
-				}
-				return $UnValidArticleIds;
-		}
-		*/
-		/*
-		function checkParentValidity2($parent){
-				global $plugintable, $datequery, $type_id;
-				$UnValidArticleIds = "";
-				$sqlcheckparentvalidity = "";
-
-				if(strpos($parent, ".")){
-					$tmp = explode(".", $parent);
-					for($i=1;$i<count($tmp);$i++){
-					}
-				}
-				if(!is_object($sqlcheckparentvalidity)){ $sqlcheckparentvalidity = new db; }
-				if($sqlcheckparentvalidity -> db_Select($plugintable, "content_id, content_class", "content_id = '".$parent."' ".$datequery." " )){
-					while(list($content_id, $content_class) = $sqlcheckparentvalidity -> db_Fetch()){
-						if(!check_class($content_class)){
-							$UnValidArticleIds .= " content_id != '".$content_id."' AND";
-							$UnValidArticleIds .= " content_parent != '".$type_id.".".$type_id.".".$content_id."' AND";
-							
-						}
-					}
-				}
-				if($sqlcheckparentvalidity -> db_Select($plugintable, "content_id, content_class", "content_parent = '".$parent."' ".$datequery." " )){
-					while(list($content_id, $content_class) = $sqlcheckparentvalidity -> db_Fetch()){
-						if(!check_class($content_class)){
-							$UnValidArticleIds .= " content_id != '".$content_id."' AND";
-							$UnValidArticleIds .= " content_parent != '".$type_id.".".$type_id.".".$content_id."' AND";
-							
-						}
-					}
-				}
-				return $UnValidArticleIds;		
-		}
-		*/
-		/*
-		function checkItem($query){
-				global $plugintable, $datequery, $type_id;
-				//AND content_class IN (".USERCLASS_LIST.")
-				if(!is_object($sqlcheckparentvalidity)){ $sqlcheckparentvalidity = new db; }
-				if($sqlcheckparentvalidity -> db_Select($plugintable, "content_id, content_parent, content_class", " ".$query." ".$datequery." ORDER BY content_datestamp" )){
-					while(list($content_id, $content_parent, $content_class) = $sqlcheckparentvalidity -> db_Fetch()){
-						if(!check_class($content_class)){
-							$UnValidArticleIds .= " content_parent != '".$type_id.".".$type_id.".".$content_id."' AND";
-						}
-						$UnValidArticleIds .= $this -> checkSubCat($id.".".$content_id);
-					}
-				}
-				return $UnValidArticleIds;				
-		}
-		*/
-		/*
-		function checkParentValidity($parent){
-				global $plugintable, $datequery;
-
-				if(!is_object($sqlcheckparentvalidity)){ $sqlcheckparentvalidity = new db; }
-				if(strpos($parent, ".")){
-					$tmp = explode(".", $parent);
-					for($i=1;$i<count($tmp);$i++){
-						if($sqlcheckparentvalidity -> db_Select($plugintable, "content_class", "content_id = '".$tmp[$i]."' ".$datequery." " )){
-							while(list($content_class) = $sqlcheckparentvalidity -> db_Fetch()){
-								if(!check_class($content_class)){
-									return FALSE;
-								}
-							}
-						}
-					}
-				}else{
-					if($sqlcheckparentvalidity -> db_Select($plugintable, "content_class", "content_id = '".$parent."' ".$datequery." " )){
-						while(list($content_class) = $sqlcheckparentvalidity -> db_Fetch()){
-							if(!check_class($content_class)){
-								return FALSE;
-							}
-						}
-					}
-				}
-				return TRUE;
-		}
-		*/
-		/*
-		function getContent($id){
-				global $plugintable, $datequery;
-				$sqlgetcontent = "";
-
-				if(!is_object($sqlgetcontent)){ $sqlgetcontent = new db; }
-				if(!$sqlgetcontent -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_id='".$id."' ".$datequery." AND content_class IN (".USERCLASS_LIST.")")){
-					return FALSE;
-				}else{
-					$row = $sqlgetcontent -> db_Fetch();
-					return $row;
-				}
-		}
-		*/
 
 		function popup($image, $thumb, $maxwidth, $title, $text){
 					//$image	:	full path to the large image you want to popup

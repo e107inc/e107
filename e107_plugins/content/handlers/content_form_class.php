@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.36 $
-|		$Date: 2005-05-15 12:29:04 $
+|		$Revision: 1.37 $
+|		$Date: 2005-05-15 20:28:11 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -98,9 +98,9 @@ class contentform{
 							$checkpe = $content_pref["content_submit_pe_{$type_id}"];
 							$checkvisibility = $content_pref["content_submit_visibility_{$type_id}"];
 							$checkmeta = $content_pref["content_submit_meta_{$type_id}"];
-							$checkcustom = $content_pref["content_submit_customtags_{$id}"];
+							$checkcustom = $content_pref["content_submit_customtags_{$type_id}"];
 							$checkcustomnumber = $content_pref["content_submit_custom_number_{$type_id}"];
-							$checklayout = $content_pref["content_submit_layout_{$id}"];
+							$checklayout = $content_pref["content_submit_layout_{$type_id}"];
 
 						}else{
 							$checkicon = $content_pref["content_admin_icon_{$type_id}"];
@@ -114,9 +114,9 @@ class contentform{
 							$checkpe = $content_pref["content_admin_pe_{$type_id}"];
 							$checkvisibility = $content_pref["content_admin_visibility_{$type_id}"];
 							$checkmeta = $content_pref["content_admin_meta_{$type_id}"];
-							$checkcustom = $content_pref["content_admin_customtags_{$id}"];
+							$checkcustom = $content_pref["content_admin_customtags_{$type_id}"];
 							$checkcustomnumber = $content_pref["content_admin_custom_number_{$type_id}"];
-							$checklayout = $content_pref["content_admin_layout_{$id}"];
+							$checklayout = $content_pref["content_admin_layout_{$type_id}"];
 						}
 
 						/*
@@ -555,7 +555,7 @@ class contentform{
 						if($checkcustom && $checkcustomnumber){ $TOPIC_FIELD = "<table style='width:100%; border:0;'>"; }
 						if(!empty($custom)){						
 							foreach($custom as $k => $v){
-								if(!($k == "content_custom_score" || $k == "content_custom_meta")){
+								if(!($k == "content_custom_score" || $k == "content_custom_meta" || $k == "content_custom_template")){
 									$key = substr($k,15);
 									if($checkcustom && $checkcustomnumber){
 										$TOPIC_FIELD .= "
@@ -573,7 +573,9 @@ class contentform{
 								}
 							}
 						}
+
 						if($checkcustom && $checkcustomnumber){
+							$TOPIC_CHECK_VALID = TRUE;
 							for($i=$existing_custom;$i<$checkcustomnumber;$i++){
 									$TOPIC_FIELD .= "
 									<tr>
@@ -598,7 +600,7 @@ class contentform{
 								}
 							}
 							//get_files($path, $fmask = '', $omit='standard', $recurse_level = 0, $current_level = 0, $dirs_only = FALSE)
-							$rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*');
+							$rejectlist = array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', '*bak');
 							$templatelist = $fl->get_files($dir,"content_content",$rejectlist);
 
 							//template
