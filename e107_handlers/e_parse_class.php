@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.71 $
-|     $Date: 2005-05-15 03:32:56 $
+|     $Revision: 1.72 $
+|     $Date: 2005-05-15 05:03:24 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -195,8 +195,8 @@ class e_parse {
 		global $pref;
 
 		// support for converting defines(constants) within text. eg. Lan_XXXX
-		if(strpos($modifiers,"defs") !== FALSE && strlen($text) < 20 && defined($text)){
-        	return constant($text);
+		if(strpos($modifiers,"defs") !== FALSE && strlen($text) < 20 && defined(trim($text))){
+        	return constant(trim($text));
 		}
 
 

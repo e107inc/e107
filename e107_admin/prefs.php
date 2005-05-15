@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2005-05-06 10:57:18 $
-|     $Author: stevedunstan $
+|     $Revision: 1.56 $
+|     $Date: 2005-05-15 05:03:23 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -143,7 +143,7 @@ $text = "<script type=\"text/javascript\">
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_2."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input class='tbox' type='text' name='sitename' size='50' value='".SITENAME."' maxlength='100' />
+	<input class='tbox' type='text' name='sitename' size='50' value='".$pref['sitename']."' maxlength='100' />
 	</td>
 	</tr>
 
@@ -173,14 +173,14 @@ $text = "<script type=\"text/javascript\">
 
 	<td style='width:50%' class='forumheader3'>".PRFLAN_5."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-	<textarea class='tbox' name='sitetag' cols='59' rows='3'>".SITETAG."</textarea>
+	<textarea class='tbox' name='sitetag' cols='59' rows='3'>".$pref['sitetag']."</textarea>
 	</td>
 	</tr>
 	<tr>
 
 	<td style='width:50%' class='forumheader3'>".PRFLAN_6."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-	<textarea class='tbox' name='sitedescription' cols='59' rows='6'>".SITEDESCRIPTION."</textarea>
+	<textarea class='tbox' name='sitedescription' cols='59' rows='6'>".$pref['sitedescription']."</textarea>
 	</td>
 	</tr>
 	<tr>
@@ -201,7 +201,7 @@ $text = "<script type=\"text/javascript\">
 
 	<td style='width:50%' class='forumheader3'>".PRFLAN_9."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-	<textarea class='tbox' name='sitedisclaimer' cols='59' rows='6'>".SITEDISCLAIMER."</textarea>
+	<textarea class='tbox' name='sitedisclaimer' cols='59' rows='6'>".$pref['sitedisclaimer']."</textarea>
 	</td>
 	</tr>";
 
@@ -741,7 +741,7 @@ $text .= "<div id='comments' style='display:none; text-align:center'>
 	<input type='radio' name='nested_comments' value='0'".(!$pref['nested_comments'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
-	
+
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_90.": </td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
