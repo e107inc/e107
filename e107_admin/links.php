@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-04-21 02:25:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.36 $
+|     $Date: 2005-05-15 07:22:08 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -105,15 +105,15 @@ if ($delete == 'main') {
 }
 
 if (isset($_POST['add_link'])) {
-	$linkpost->submit_link($sub_action, $id);
+	$linkpost->submit_link($sub_action, $_POST['link_id']);
 	unset($id);
 }
 
-if ($action == 'create') {
+ if ($action == 'create' || isset($_POST['create'])) {
 	$linkpost->create_link($sub_action, $id);
 }
 
-if (!e_QUERY || $action == 'main') {
+if (!e_QUERY && !isset($_POST['create']) || $action == 'main') {
 	$linkpost->show_existing_items();
 }
 
@@ -245,7 +245,7 @@ class links {
 		closedir($handle);
 
 		$text = "<div style='text-align:center'>
-			<form method='post' action='".e_SELF."?".e_QUERY."' id='linkform'>
+			<form method='post' action='".e_SELF."' id='linkform'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>";
 
 		$text .= "<tr>
@@ -339,7 +339,7 @@ class links {
 		if ($id && $sub_action == "edit") {
 			$text .= "<input class='button' type='submit' name='add_link' value='".LCLAN_27."' />\n<input type='hidden' name='link_id' value='$link_id'>";
 		} else {
-			$text .= "<input class='button' type='submit' name='add_link' value='".LCLAN_28."' />";
+			$text .= "<input class='button' type='submit' name='add_link' value='".LCLAN_28."' />\n<input type='hidden' name='create' value='1'>";
 		}
 		$text .= "</td>
 			</tr>
