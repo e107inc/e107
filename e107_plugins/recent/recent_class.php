@@ -175,6 +175,7 @@ class recent {
 		global $RECENT_DISPLAYSTYLE, $RECENT_CAPTION, $RECENT_STYLE_CAPTION, $RECENT_STYLE_BODY;
 
 		$menu_installed = $sql -> db_Select("menus", "*", "menu_name = 'recent_menu' AND menu_location != '0' AND menu_class IN (".USERCLASS_LIST.") ");
+		$RECENT_DATA = "";
 
 		$this -> getContentSections("");
 
@@ -211,6 +212,9 @@ class recent {
 			}
 		}
 		$menutext = "";
+		$start = "";
+		$end = "";
+		
 		$RECENT_ICON = "";
 		$RECENT_DATE = "";
 		$RECENT_HEADING = "";
@@ -244,6 +248,7 @@ class recent {
 				}
 			}
 		}
+
 		if($RECENT_DATA != ""){
 			if($mode == "page"){
 				if($recent_pref['page_showempty'] || $menutext){
