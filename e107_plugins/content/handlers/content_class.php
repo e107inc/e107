@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.38 $
-|		$Date: 2005-05-15 20:28:11 $
+|		$Revision: 1.39 $
+|		$Date: 2005-05-15 22:18:01 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -380,31 +380,33 @@ class content{
 									if($array[$a][9] == 0){
 											$name = strtoupper($pre.$array[$a][1]);
 											$url = e_SELF."?type.".$array[$a][0].".cat.create.".$array[$a][0];
-											$js = "style='font-weight:bold;' onclick=\"document.location='".$url."'\"";
+											$js = "style='font-weight:bold;'";
 											$string .= $rs -> form_option($emptystring, "0", "----");
 									}else{
 											$tmp = explode(".", $array[$a][9]);
 											$name = $pre.$array[$a][1];
 											$url = e_SELF."?type.".$tmp[1].".cat.create.".$array[$a][0];
-											$js = "onclick=\"document.location='".$url."'\"";						
+											$js = "";
 									}
 							}
 					}elseif($mode == "create"){
 							$checkid = $sub_action;
 							
+							$selectjs = "onchange='document.location=this.options[this.selectedIndex].value;'";
 							if($array[$a][9] == 0){
-									$value = $array[$a][0].".".$array[$a][0];
 									$name = strtoupper($pre.$array[$a][1]);								
 									$url = e_SELF."?type.".$array[$a][0].".create.".$array[$a][0];
-									$js = "style='font-weight:bold;' onclick=\"document.location='".$url."'\"";
+									$js = "style='font-weight:bold;'";
+									$label = $array[$a][0].".".$array[$a][0];
+									$value = $url;
 									$string .= $rs -> form_option($emptystring, "0", "----");
 							}else{
 									$tmp = explode(".", $array[$a][9]);
-									$value = $tmp[1].".".substr($array[$a][9],2).".".$array[$a][0];
-									$tmp = explode(".", $array[$a][9]);
 									$name = $pre.$array[$a][1];
 									$url = e_SELF."?type.".$tmp[1].".create.".$array[$a][0];
-									$js = "onclick=\"document.location='".$url."'\"";
+									$js = "";
+									$value = $url;
+									$label = $tmp[1].".".substr($array[$a][9],2).".".$array[$a][0];
 							}
 					}elseif($mode == "edit"){
 						
@@ -415,7 +417,6 @@ class content{
 									$name = strtoupper($pre.$array[$a][1]);
 									$value = $array[$a][0].".".$array[$a][0];
 									$js = "style='font-weight:bold;'";
-									//$string .= $rs -> form_option($emptystring, "0", "----");
 							}else{								
 									$tmp = explode(".", $array[$a][9]);
 									$name = $pre.$array[$a][1];
@@ -424,36 +425,40 @@ class content{
 							}
 						}else{
 							$checkid = $sub_action;
-							$value = $array[$a][9].".".$array[$a][0];
+							$selectjs = "onchange='document.location=this.options[this.selectedIndex].value;'";
 							if($array[$a][9] == 0){
 									$name = strtoupper($pre.$array[$a][1])." (ALL)";
 									$url = e_SELF."?type.".$array[$a][0];
-									$js = "style='font-weight:bold;' onclick=\"document.location='".$url."'\"";
+									$js = "style='font-weight:bold;'";
+									$value = $url;
+									$label = $array[$a][9].".".$array[$a][0];
 									$string .= $rs -> form_option($emptystring, "0", "----");
 									
 									$catname = $pre.$array[$a][1];
 									$catvalue = $value;
 									$caturl = e_SELF."?type.".$array[$a][0].".c.".$array[$a][0]."-".$array[$a][0];
-									$catjs = " onclick=\"document.location='".$caturl."'\"";
+									$catjs = "";
 									$catstring = $rs -> form_option($catname, ($checkid == $array[$a][0] ? "1" : "0"), $catvalue, $catjs);
 							}else{
 									$catstring = "";
 									$tmp = explode(".", $array[$a][9]);
 									$name = $pre.$array[$a][1];								
 									$url = e_SELF."?type.".$tmp[1].".c.".$tmp[1]."-".str_replace(".", "-", substr($array[$a][9],2))."-".$array[$a][0];
-									$js = "onclick=\"document.location='".$url."'\"";
+									$js = "";
+									$value = $url;
+									$label = $array[$a][9].".".$array[$a][0];
 							}
 						}
 					}else{
 						return;
 					}
-					$string .= $rs -> form_option($name, ($checkid == $array[$a][0] ? "1" : "0"), $value, $js).$catstring;
+					$string .= $rs -> form_option($name, ($checkid == $array[$a][0] ? "1" : "0"), $value, ($label ? "label='".$label."' ".$js : $js) ).$catstring;
 
 				}
-				$text = $rs -> form_select_open("parent");
+				$text = $rs -> form_select_open("parent", $selectjs);
 				if($mode == "createcat"){
 						$url = e_SELF."?type.0.cat.create.0";
-						$js = "style='font-weight:bold;' onclick=\"document.location='".$url."'\" ";				
+						$js = "style='font-weight:bold;'";
 						$text .= $rs -> form_option("NEW MAIN CATEGORY", ($id == 0 ? "1" : "0"), "none", $js);
 				}elseif($mode == "create"){
 						$text .= $rs -> form_option("choose category ...", "0", "");
