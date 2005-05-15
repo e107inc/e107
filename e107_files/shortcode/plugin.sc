@@ -12,8 +12,7 @@ if($sql->db_Select('menus','menu_id, menu_pages',"menu_name = '$name' AND menu_p
 {
 	$row = $sql->db_Fetch();
 	$show_menu = TRUE;
-	if($menu_pages)
-	{
+	if($row['menu_pages']){
 		list($listtype,$listpages) = explode("-",$row['menu_pages']);
 		$pagelist = explode("|",$listpages);
 		$check_url = e_SELF."?".e_QUERY;
@@ -40,14 +39,15 @@ if($sql->db_Select('menus','menu_id, menu_pages',"menu_name = '$name' AND menu_p
 			}
 		}
 	}
-	
+
 	if($show_menu) {
 		$sql->db_Mark_Time($name);
 		if($path != 'custom')
 		{
-			include(e_PLUGIN.$path."/languages/".e_LANGUAGE.".php");
-			if(e_LANGUAGE != 'English')
-			{
+			if(is_readable(e_PLUGIN.$path."/languages/".e_LANGUAGE.".php")){
+				include(e_PLUGIN.$path."/languages/".e_LANGUAGE.".php");
+			}
+			if(e_LANGUAGE != 'English'){
 				include(e_PLUGIN.$path."/languages/English.php");
 			}
 		}
