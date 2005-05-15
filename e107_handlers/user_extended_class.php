@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-05-03 04:11:22 $
+|     $Revision: 1.19 $
+|     $Date: 2005-05-15 00:50:50 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -43,6 +43,7 @@ class e107_user_extended
 		//		5 = textarea
 		//		6 = integer
 		//		7 = date
+		//		8 = language
 
 		$this->user_extended_types = array(
 		1 => UE_LAN_1,
@@ -52,6 +53,7 @@ class e107_user_extended
 		5 => UE_LAN_5,
 		6 => UE_LAN_6,
 		7 => UE_LAN_7,
+		8 => UE_LAN_8
 		);
 	}
 
@@ -118,6 +120,7 @@ class e107_user_extended
 			case 2:
 			case 3:
 			case 7:
+			case 8:
 				//text, dropdown, radio, date
 				$db_type = 'VARCHAR(255)';
 				break;
@@ -246,14 +249,7 @@ class e107_user_extended
 				foreach($choices as $choice)
 				{
 					$choice = trim($choice);
-					if($curval == $choice)
-					{
-						$chk = " checked='checked' ";
-					}
-					else
-					{
-						$chk="";
-					}
+					$chk = ($curval == $choice)? " checked='checked' " : "";
 					$ret .= "<input {$include} type='radio' name='{$fname}' value='{$choice}' {$chk} /> {$choice}";
 				}
 				return $ret;
@@ -262,17 +258,9 @@ class e107_user_extended
 			case 3: //dropdown
 				$ret = "<select {$include} name='{$fname}'>\n";
 				$ret .= "<option value=''></option>\n";  // ensures that the user chose it.
-				foreach($choices as $choice)
-				{
+				foreach($choices as $choice){
 					$choice = trim($choice);
-					if($curval == $choice)
-					{
-						$sel = " selected='selected' ";
-					}
-					else
-					{
-						$sel="";
-					}
+					$sel = ($curval == $choice) ? " selected='selected' " : "";
 					$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
 				}
 				$ret .= "</select>\n";
@@ -286,18 +274,10 @@ class e107_user_extended
 					$choiceList = $sql->db_getList();
 					$ret = "<select class='tbox' name='{$fname}'>\n";
 					$ret .= "<option value=''></option>\n";  // ensures that the user chose it.
-					foreach($choiceList as $cArray)
-					{
+					foreach($choiceList as $cArray){
 						$cID = $cArray[$choices[1]];
 						$cText = trim($cArray[$choices[2]]);
-						if($curval == $cID)
-						{
-							$sel = " selected='selected' ";
-						}
-						else
-						{
-							$sel="";
-						}
+						$sel = ($curval == $cID) ? " selected='selected' " : "";
 						$ret .= "<option {$include} value='{$cID}' {$sel}>{$cText}</option>\n";
 					}
 					$ret .= "</select>\n";
@@ -316,7 +296,24 @@ class e107_user_extended
 			case 7: //date
 				return $cal->make_input_field(array(), array('class' => 'tbox', 'name' => $fname, 'value' => $curval));
 				break;
+
+            case 8: // language
+				require_once(e_HANDLER."file_class.php");
+				$fl = new e_file;
+				$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
+				sort($lanlist);
+            	$ret = "<select {$include} name='{$fname}'>\n";
+				$ret .= "<option value=''></option>\n";  // ensures that the user chose it.
+					foreach($lanlist as $choice){
+						$choice = trim($choice);
+						$sel = ($curval == $choice)? " selected='selected' " : "";
+						$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
+					}
+				$ret .= "</select>\n";
+           		break;
+
 		}
+
 		return $ret;
 	}
 
