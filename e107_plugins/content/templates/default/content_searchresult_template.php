@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_searchresult_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-05-03 15:04:22 $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-15 12:29:04 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -20,6 +20,7 @@
 $CONTENT_SEARCHRESULT_TABLE_START = "";
 $CONTENT_SEARCHRESULT_TABLE = "";
 $CONTENT_SEARCHRESULT_TABLE_END = "";
+global $sc_style, $content_shortcodes, $datestamp, $row, $type, $type_id, $aa, $content_icon_path, $content_pref, $contenttext;
 // ##### CONTENT SEARCHRESULT LIST --------------------------------------------------
 if(!$CONTENT_SEARCHRESULT_TABLE_START){
 				$CONTENT_SEARCHRESULT_TABLE_START = "";

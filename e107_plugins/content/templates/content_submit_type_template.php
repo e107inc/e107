@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/content_submit_type_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-03 15:04:23 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-15 12:29:04 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
+global $sc_style, $content_shortcodes;
 
 // ##### CONTENT SUBMIT TYPE LIST --------------------------------------------------
 if(!$CONTENT_SUBMIT_TYPE_TABLE_START){

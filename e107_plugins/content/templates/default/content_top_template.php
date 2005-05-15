@@ -11,14 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_top_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-05-03 15:04:22 $
+|     $Revision: 1.4 $
+|     $Date: 2005-05-15 12:29:04 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 $CONTENT_TOP_TABLE_START = "";
 $CONTENT_TOP_TABLE_END = "";
+global $sc_style, $content_shortcodes, $authordetails, $type, $type_id, $row, $thisratearray;
+
 // ##### CONTENT TOP --------------------------------------------------
 if(!$CONTENT_TOP_TABLE_START){
 				$CONTENT_TOP_TABLE_START = "

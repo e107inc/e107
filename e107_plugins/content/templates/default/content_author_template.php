@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_author_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-05-03 15:04:19 $
+|     $Revision: 1.4 $
+|     $Date: 2005-05-15 12:29:04 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
+global $sc_style, $content_shortcodes, $authordetails, $i, $type, $type_id, $row, $totalcontent, $CONTENT_AUTHOR_TABLE_DATE;
 
 $CONTENT_AUTHOR_TABLE_START = "";
 $CONTENT_AUTHOR_TABLE_END = "";
@@ -28,7 +29,7 @@ if(!$CONTENT_AUTHOR_TABLE){
 				$CONTENT_AUTHOR_TABLE = "
 				<tr>
 					<td class='content_heading'>{CONTENT_AUTHOR_TABLE_ICON} {CONTENT_AUTHOR_TABLE_NAME}</td>
-					<td class='content_info' style='white-space:nowrap;'>{CONTENT_AUTHOR_TABLE_TOTAL}</td>
+					<td class='content_info' style='text-align:right; white-space:nowrap;'>{CONTENT_AUTHOR_TABLE_TOTAL}</td>
 				</tr>
 				<tr>
 					<td class='content_info' colspan='2'>".CONTENT_LAN_55." {CONTENT_AUTHOR_TABLE_DATE} : {CONTENT_AUTHOR_TABLE_HEADING}</td>

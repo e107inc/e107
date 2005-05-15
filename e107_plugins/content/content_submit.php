@@ -12,13 +12,14 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.9 $
-|		$Date: 2005-05-10 09:09:05 $
+|		$Revision: 1.10 $
+|		$Date: 2005-05-15 12:28:47 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
 require_once("../../class2.php");
+require_once(e_PLUGIN."content/content_shortcodes.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
 $rs = new form;
@@ -132,19 +133,14 @@ if(!isset($type)){
 				$content_icon_path = $aa -> parseContentPathVars($content_pref["content_icon_path_{$row['content_id']}"]);
 
 				if($content_pref["content_submit_{$row['content_id']}"] && check_class($content_pref["content_submit_class_{$row['content_id']}"])){
-					$CONTENT_SUBMIT_TYPE_TABLE_HEADING = "<a href='".e_SELF."?type.".$row['content_id']."'>".$row['content_heading']."</a>";
-					$CONTENT_SUBMIT_TYPE_TABLE_SUBHEADING = ($row['content_subheading'] ? $row['content_subheading'] : "");
-					$CONTENT_SUBMIT_TYPE_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "type.".$row['content_id'], "", $content_pref["content_blank_caticon_{$row['content_id']}"]);
-					$content_submit_type_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_SUBMIT_TYPE_TABLE);
+					$content_submit_type_table_string .= $tp -> parseTemplate($CONTENT_SUBMIT_TYPE_TABLE, FALSE, $content_shortcodes);
 					$count = $count + 1;
 				}
 			}
 			if($count == "0"){
 				$text .= "<div style='text-align:center;'>".CONTENT_ADMIN_SUBMIT_LAN_0."</div>";
 			}else{
-				$content_submit_type_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_SUBMIT_TYPE_TABLE_START);
-				$content_submit_type_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_SUBMIT_TYPE_TABLE_END);
-				$text = $content_submit_type_table_start.$content_submit_type_table_string.$content_submit_type_table_end;
+				$text = $CONTENT_SUBMIT_TYPE_TABLE_START.$content_submit_type_table_string.$CONTENT_SUBMIT_TYPE_TABLE_END;
 			}
 		}
 		$caption = CONTENT_ADMIN_SUBMIT_LAN_1;
@@ -155,7 +151,7 @@ if($type=="type" && is_numeric($type_id) && !isset($action)){
 
 		//check if valid categories exist for this main parent
 		$sql2 = new db;
-		$contenttotal = $sql2 -> db_Count($plugintable, "(*)", "WHERE (content_parent = '0' AND content_id = '".$type_id."' || LEFT(content_parent,".(strlen($type_id)+2).") = '0.".$type_id."') AND content_refer != 'sa' ".$datequery." AND content_class IN (".USERCLASS_LIST.")" );
+		$contenttotal = $sql2 -> db_Count($plugintable, "(*)", "WHERE (content_parent = '0' AND content_id = '".$type_id."' || LEFT(content_parent,".(strlen($type_id)+2).") = '0.".$type_id."') AND content_refer != 'sa' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' " );
 		if($contenttotal == "0"){
 			header("location:".e_SELF); exit;
 		}else{

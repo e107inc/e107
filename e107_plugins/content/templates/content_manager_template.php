@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/content_manager_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-03 15:04:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-15 12:29:04 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
+global $sc_style, $content_shortcodes, $parentheading, $type_id, $catidstring;
 
 // ##### CONTENT CONTENTMANAGER LIST --------------------------------------------------
 if(!$CONTENT_CONTENTMANAGER_TABLE_START){

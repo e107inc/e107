@@ -12,13 +12,14 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.35 $
-|		$Date: 2005-05-13 22:20:17 $
+|		$Revision: 1.36 $
+|		$Date: 2005-05-15 12:28:46 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
 require_once("../../class2.php");
+require_once(e_PLUGIN."content/content_shortcodes.php");
 require_once(e_HANDLER."emailprint_class.php");
 $ep = new emailprint;
 require_once(e_HANDLER."comment_class.php");
@@ -240,7 +241,7 @@ if(!isset($type)){
 			}else{
 				header("location:".e_SELF."?".$type.".".$type_id.".cat.".$sub_action);
 				exit;
-			}				
+			}
 
 		}else{
 			header("location:".e_SELF."?".$type.".".$type_id.".cat");
@@ -264,12 +265,7 @@ if(!isset($type)){
 	}elseif($action == "content"){										//show content item
 			if($content_pref["content_searchmenu_{$type_id}"]){ show_content_search_menu(); }
 			if($resultmenu == TRUE){ show_content_search_result($searchkeyword); }
-			
-			if($id == "word"){
-				show_wordcount();
-			}else{
-				show_content_item();
-			}
+			show_content_item();
 	}elseif($action == "top"){											//show content top rated items
 			if($content_pref["content_searchmenu_{$type_id}"]){ show_content_search_menu(); }
 			if($resultmenu == TRUE){ show_content_search_result($searchkeyword); }
@@ -283,8 +279,9 @@ if(!isset($type)){
 
 // ##### CONTENT SEARCH MENU ----------------------------
 function show_content_search_menu(){
-				global $type, $type_id, $ns, $rs, $action, $sub_action, $id, $id2, $aa;
+				global $content_shortcodes, $tp, $type, $type_id, $ns, $rs, $action, $sub_action, $id, $id2, $aa;
 				global $plugintable, $gen, $aa, $content_pref, $prefetchbreadcrumb;
+				global $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD;
 
 				$parentdetails = $aa -> getParent("", "", $type_id);
 				$parentarray = $aa -> printParent($parentdetails, "0", $type_id, "optionmenu");
@@ -327,7 +324,7 @@ function show_content_search_menu(){
 					$querystring = ($action && substr($action,0,5) != "order" ? ".".$action : "").($sub_action && substr($sub_action,0,5) != "order" ? ".".$sub_action : "").($id && substr($id,0,5) != "order" ? ".".$id : "").($id2 && substr($id2,0,5) != "order" ? ".".$id2 : "");
 
 					$CONTENT_SEARCH_TABLE_ORDER = "
-					".$rs -> form_open("post", e_PLUGIN."content/content.php?type.1", "contentsearchorder", "", "enctype='multipart/form-data'")."
+					".$rs -> form_open("post", e_PLUGIN."content/content.php?type.".$type_id, "contentsearchorder", "", "enctype='multipart/form-data'")."
 					<select id='ordervalue' name='ordervalue' class='tbox' onchange=\"document.location=this.options[this.selectedIndex].value;\">
 					".$rs -> form_option(CONTENT_LAN_9, 0, "none")."
 					".$rs -> form_option(CONTENT_LAN_10, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderaheading" )."
@@ -349,14 +346,14 @@ function show_content_search_menu(){
 				<input class='button' type='submit' name='searchsubmit' value='".CONTENT_LAN_19."' />
 				".$rs -> form_close();
 
-				$text = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_SEARCH_TABLE);
+				$text = $tp -> parseTemplate($CONTENT_SEARCH_TABLE, FALSE, $content_shortcodes);
 				$caption = CONTENT_LAN_77;
 				$ns -> tablerender($caption, $text);
 				return TRUE;
 }
 
 function show_content_search_result($searchkeyword){
-				global $type, $type_id, $ns, $rs, $tp, $action, $sub_action, $id, $id2;
+				global $content_shortcodes, $type, $type_id, $ns, $rs, $tp, $action, $sub_action, $id, $id2;
 				global $plugintable, $gen, $aa, $content_pref, $datequery;
 
 				$querysr = " (content_heading REGEXP '".$searchkeyword."' OR content_subheading REGEXP '".$searchkeyword."' OR content_summary REGEXP '".$searchkeyword."' OR content_text REGEXP '".$searchkeyword."' ) ";
@@ -383,31 +380,14 @@ function show_content_search_result($searchkeyword){
 						$row['content_heading'] = $tp -> toHTML($row['content_heading'], TRUE, "");
 						$row['content_subheading'] = $tp -> toHTML($row['content_subheading'], TRUE, "");
 						$row['content_text'] = $tp -> toHTML($row['content_text'], TRUE, "");
-						
-						$datestamp = ereg_replace(" -.*", "", $gen -> convert_date($row['content_datestamp'], "short"));
-						$CONTENT_SEARCHRESULT_TABLE_DATE = ($datestamp != "" ? $datestamp : "");
-						$CONTENT_SEARCHRESULT_TABLE_HEADING = ($row['content_heading'] ? "<a href='".e_SELF."?".$type.".".$type_id.".content.".$row['content_id']."'>".$row['content_heading']."</a>" : "");
-						$CONTENT_SEARCHRESULT_TABLE_SUBHEADING = ($row['content_subheading'] ? $row['content_subheading'] : "");
-						$CONTENT_SEARCHRESULT_TABLE_TEXT = parsesearch($row['content_text'], $searchkeyword);
-						$CONTENT_SEARCHRESULT_TABLE_ICON = $aa -> getIcon("item", $row['content_icon'], $content_icon_path, $type.".".$type_id.".content.".$row['content_id'], "50", $content_pref["content_blank_icon_{$type_id}"]."<br />");
-						$authordetails = $aa -> getAuthor($row['content_author']);
-						$CONTENT_SEARCHRESULT_TABLE_AUTHORDETAILS = $authordetails[1];
-						if(USER){
-							if(is_numeric($authordetails[3])){
-								$CONTENT_SEARCHRESULT_TABLE_AUTHORDETAILS .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-							}else{
-								$CONTENT_SEARCHRESULT_TABLE_AUTHORDETAILS .= " ".CONTENT_ICON_USER;
-							}
-						}else{
-							$CONTENT_SEARCHRESULT_TABLE_AUTHORDETAILS .= " ".CONTENT_ICON_USER;
-						}
-						$CONTENT_SEARCHRESULT_TABLE_AUTHORDETAILS .= " <a href='".e_SELF."?".$type.".".$type_id.".author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
 
-						$content_searchresult_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_SEARCHRESULT_TABLE);
+						$datestamp = ereg_replace(" -.*", "", $gen -> convert_date($row['content_datestamp'], "short"));
+						$contenttext = parsesearch($row['content_text'], $searchkeyword);
+						$authordetails = $aa -> getAuthor($row['content_author']);
+
+						$content_searchresult_table_string .= $tp -> parseTemplate($CONTENT_SEARCHRESULT_TABLE, FALSE, $content_shortcodes);
 					}
-					$content_searchresult_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_SEARCHRESULT_TABLE_START);
-					$content_searchresult_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_SEARCHRESULT_TABLE_END);
-					$textsr = $content_searchresult_table_start.$content_searchresult_table_string.$content_searchresult_table_end;
+					$textsr = $CONTENT_SEARCHRESULT_TABLE_START.$content_searchresult_table_string.$CONTENT_SEARCHRESULT_TABLE_END;
 				}
 				$caption = CONTENT_LAN_20;
 				$ns -> tablerender($caption, $textsr);
@@ -430,7 +410,7 @@ function parsesearch($text, $match){
 
 // ##### CONTENT TYPE LIST ------------------------------
 function show_content(){
-				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $content_cat_icon_path_large, $content_cat_icon_path_small, $datequery;
+				global $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $content_cat_icon_path_large, $content_cat_icon_path_small, $datequery;
 
 				if(!is_object($sql)){ $sql = new db; }
 				$CONTENT_TYPE_TABLE = "";
@@ -444,7 +424,7 @@ function show_content(){
 					echo $cache;
 				}else{
 					ob_start();
-					if(!$sql -> db_Select($plugintable, "*", "content_parent = '0' ".$datequery." ORDER BY content_heading")){
+					if(!$sql -> db_Select($plugintable, "*", "content_class REGEXP '".e_CLASS_REGEXP."' AND content_parent = '0' ".$datequery." ORDER BY content_heading")){
 						$text .= "<div style='text-align:center;'>".CONTENT_LAN_21."</div>";
 					}else{
 
@@ -453,38 +433,22 @@ function show_content(){
 						while($row = $sql -> db_Fetch()){
 							if(!is_object($sql2)){ $sql2 = new db; }
 
-							if(check_class($row['content_class'])){
-								$content_pref = unserialize(stripslashes($row['content_pref']));
-								$content_pref["content_cat_icon_path_large_{$row['content_id']}"] = ($content_pref["content_cat_icon_path_large_{$row['content_id']}"] ? $content_pref["content_cat_icon_path_large_{$row['content_id']}"] : "{e_PLUGIN}content/images/cat/48/" );
-								$content_pref["content_cat_icon_path_small_{$row['content_id']}"] = ($content_pref["content_cat_icon_path_small_{$row['content_id']}"] ? $content_pref["content_cat_icon_path_small_{$row['content_id']}"] : "{e_PLUGIN}content/images/cat/16/" );
-								$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$row['content_id']}"]);
-								$content_cat_icon_path_small = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$row['content_id']}"]);
-								$content_icon_path = $aa -> parseContentPathVars($content_pref["content_icon_path_{$row['content_id']}"]);
+							$content_pref = unserialize(stripslashes($row['content_pref']));
+							$content_pref["content_cat_icon_path_large_{$row['content_id']}"] = ($content_pref["content_cat_icon_path_large_{$row['content_id']}"] ? $content_pref["content_cat_icon_path_large_{$row['content_id']}"] : "{e_PLUGIN}content/images/cat/48/" );
+							$content_pref["content_cat_icon_path_small_{$row['content_id']}"] = ($content_pref["content_cat_icon_path_small_{$row['content_id']}"] ? $content_pref["content_cat_icon_path_small_{$row['content_id']}"] : "{e_PLUGIN}content/images/cat/16/" );
+							$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$row['content_id']}"]);
+							$content_cat_icon_path_small = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$row['content_id']}"]);
+							$content_icon_path = $aa -> parseContentPathVars($content_pref["content_icon_path_{$row['content_id']}"]);
 
-								// check userclasses for contents, and do not use those content_ids in the query
-								// if no valid content is found within a main parent, then don't show a link, else show a link
+							// check userclasses for contents, and do not use those content_ids in the query
+							// if no valid content is found within a main parent, then don't show a link, else show a link
 
-								$unvalidparent = $aa -> checkSubCat("0.".$row['content_id']);
-								//$unvalidparent = $aa -> checkMainCat($row['content_id']);
-								//echo $unvalidparent."<br />";
-								$unvalidparent = ($unvalidparent == "" ? "" : "AND ".substr($unvalidparent, 0, -3) );
+							$unvalidparent = $aa -> checkSubCat("0.".$row['content_id']);
+							$unvalidparent = ($unvalidparent == "" ? "" : "AND ".substr($unvalidparent, 0, -3) );
 
-								$contenttotal = $sql2 -> db_Count($plugintable, "(*)", "WHERE LEFT(content_parent,".(strlen($row['content_id'])).") = '".$row['content_id']."' AND content_refer != 'sa' ".$unvalidparent." ".$datequery." AND content_class IN (".USERCLASS_LIST.")" );
+							$contenttotal = $sql2 -> db_Count($plugintable, "(*)", "WHERE LEFT(content_parent,".(strlen($row['content_id'])).") = '".$row['content_id']."' AND content_refer != 'sa' ".$unvalidparent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."'" );
 
-								$CONTENT_TYPE_TABLE_TOTAL = ($contenttotal ? $contenttotal : "");
-								$CONTENT_TYPE_TABLE_TOTAL_LAN = ($contenttotal ? ($contenttotal == 1 ? CONTENT_LAN_53 : CONTENT_LAN_54) : "");
-								$row['content_heading'] = $tp -> toHTML($row['content_heading'], TRUE, "");
-								$row['content_subheading'] = $tp -> toHTML($row['content_subheading'], TRUE, "");
-								$CONTENT_TYPE_TABLE_HEADING = ($contenttotal != "0" ? "<a href='".e_SELF."?type.".$row['content_id']."'>".$row['content_heading']."</a>" : $row['content_heading'] );
-								$CONTENT_TYPE_TABLE_SUBHEADING = ($row['content_subheading'] ? $row['content_subheading'] : "");
-								if($contenttotal != "0"){
-									$CONTENT_TYPE_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "type.".$row['content_id'], "", $content_pref["content_blank_caticon_{$row['content_id']}"]);
-								}else{
-									$CONTENT_TYPE_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "", "", $content_pref["content_blank_caticon_{$row['content_id']}"]);
-								}							
-							
-								$content_type_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TYPE_TABLE);
-							}									
+							$content_type_table_string .= $tp -> parseTemplate($CONTENT_TYPE_TABLE, FALSE, $content_shortcodes);
 						}
 
 						$SUBMIT_LINE = FALSE;
@@ -499,11 +463,8 @@ function show_content(){
 								}
 							}
 							if($count > "0"){
-								$content_type_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TYPE_TABLE_LINE);
-								$CONTENT_TYPE_TABLE_SUBMIT_ICON = "<a href='".e_PLUGIN."content/content_submit.php'>".CONTENT_ICON_SUBMIT."</a>";
-								$CONTENT_TYPE_TABLE_SUBMIT_HEADING = "<a href='".e_PLUGIN."content/content_submit.php'>".CONTENT_LAN_65."</a>";
-								$CONTENT_TYPE_TABLE_SUBMIT_SUBHEADING = CONTENT_LAN_66;
-								$content_type_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TYPE_TABLE_SUBMIT);
+								$content_type_table_string .= $CONTENT_TYPE_TABLE_LINE;
+								$content_type_table_string .= $tp -> parseTemplate($CONTENT_TYPE_TABLE_SUBMIT, FALSE, $content_shortcodes);
 								$SUBMIT_LINE = TRUE;
 							}
 						}
@@ -513,17 +474,14 @@ function show_content(){
 							if($sql3 -> db_Select($plugintable, "content_pref as managerclass", "LEFT(content_parent,2) = '0.' ".$checkquery." ORDER BY content_parent")){
 									$MANAGER_LINE = TRUE;
 									if($SUBMIT_LINE != TRUE && $MANAGER_LINE == TRUE){
-										$content_type_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TYPE_TABLE_LINE);
+										$content_type_table_string .= $CONTENT_TYPE_TABLE_LINE;
 									}
-									$CONTENT_TYPE_TABLE_MANAGER_ICON = "<a href='".e_PLUGIN."content/content_manager.php'>".CONTENT_ICON_CONTENTMANAGER."</a>";
-									$CONTENT_TYPE_TABLE_MANAGER_HEADING = "<a href='".e_PLUGIN."content/content_manager.php'>".CONTENT_LAN_67."</a>";
-									$CONTENT_TYPE_TABLE_MANAGER_SUBHEADING = CONTENT_LAN_68;
-									$content_type_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TYPE_TABLE_MANAGER);
+									$content_type_table_string .= $tp -> parseTemplate($CONTENT_TYPE_TABLE_MANAGER, FALSE, $content_shortcodes);
 							}
 						}
 						
-						$content_type_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TYPE_TABLE_START);
-						$content_type_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TYPE_TABLE_END);
+						$content_type_table_start = $CONTENT_TYPE_TABLE_START;
+						$content_type_table_end = $CONTENT_TYPE_TABLE_END;
 						$text = $content_type_table_start.$content_type_table_string.$content_type_table_end;
 					}
 					$caption = CONTENT_LAN_22;
@@ -565,20 +523,19 @@ function show_content_recent(){
 					$breadcrumb = $aa -> drawBreadcrumb($prefetchbreadcrumb, $type_id, "base", "");
 
 					if(!is_object($sql)){ $sql = new db; }
-					$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ");
+					$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ");
 
 					if($from > $contenttotal-1){ header("location:".e_SELF); exit; }
 
-					if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery )){
+					if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
 
 						$content_recent_table_string = "";
 						while($row = $sql -> db_Fetch()){
 							$content_recent_table_string .= parse_content_recent_table($row, $prefetchbreadcrumb);
 						}
 					}
-					$content_recent_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_RECENT_TABLE_START);
-					$content_recent_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_RECENT_TABLE_END);
-					$text = $content_recent_table_start.$content_recent_table_string.$content_recent_table_end;
+					
+					$text = $CONTENT_RECENT_TABLE_START.$content_recent_table_string.$CONTENT_RECENT_TABLE_END;
 
 					if($content_pref["content_breadcrumb_{$type_id}"]){
 						if($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "1"){
@@ -609,7 +566,7 @@ function show_content_recent(){
 
 // ##### CATEGORY LIST ------------------------------------
 function show_content_cat_all(){
-				global $ns, $plugintable, $aa, $e107cache, $tp, $pref, $content_pref, $CONTENT_CAT_TABLE;
+				global $content_shortcodes, $ns, $plugintable, $aa, $e107cache, $tp, $pref, $content_pref, $CONTENT_CAT_TABLE;
 				global $sql, $type, $type_id, $datequery, $prefetchbreadcrumb, $unvalidcontent;
 				unset($text);
 
@@ -632,7 +589,7 @@ function show_content_cat_all(){
 					ob_start();
 
 					if(!is_object($sql)){ $sql = new db; }
-					if(!$resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_enddate, content_class, content_pref as contentprefvalue, content_order", "content_refer !='sa' AND ((content_id = '".$type_id."' && content_parent ='0') || LEFT(content_parent,".(strlen($type_id)+2).") = '0.".$type_id."') ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ORDER BY content_order ASC " )){
+					if(!$resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_enddate, content_class, content_pref as contentprefvalue, content_order", "content_refer !='sa' AND ((content_id = '".$type_id."' && content_parent ='0') || LEFT(content_parent,".(strlen($type_id)+2).") = '0.".$type_id."') ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ORDER BY content_order ASC " )){
 						header("location:".e_SELF."?".$type.".".$type_id); exit;
 					}else{
 
@@ -640,15 +597,13 @@ function show_content_cat_all(){
 						while($row = $sql -> db_Fetch()){
 							$content_cat_table_string .= parse_content_cat_table($row, $prefetchbreadcrumb);
 						}
-						$content_cat_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_TABLE_START);
-						$content_cat_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_TABLE_END);
-						$text = $content_cat_table_start.$content_cat_table_string.$content_cat_table_end;
+						$text = $CONTENT_CAT_TABLE_START.$content_cat_table_string.$CONTENT_CAT_TABLE_END;
 
 						$breadcrumb = $aa -> drawBreadcrumb($prefetchbreadcrumb, $type_id, "base", "");
 
 						if($content_pref["content_breadcrumb_{$type_id}"]){
 							if($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "1"){
-									echo $breadcrumb;					
+									echo $breadcrumb;
 							}elseif($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "2"){
 									$ns -> tablerender(CONTENT_LAN_24, $breadcrumb);
 							}else{
@@ -667,7 +622,7 @@ function show_content_cat_all(){
 }
 
 function show_content_cat($mode=""){
-				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery;
+				global $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery;
 				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number, $prefetchbreadcrumb, $unvalidcontent;
 				global $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END;
 				
@@ -682,7 +637,7 @@ function show_content_cat($mode=""){
 						}
 					}
 				}
-				
+
 				if(!$CONTENT_RECENT_TABLE){
 					if(!$content_pref["content_theme_{$type_id}"]){
 						require_once(e_PLUGIN."content/templates/default/content_recent_template.php");
@@ -722,8 +677,8 @@ function show_content_cat($mode=""){
 
 					// parent article
 					if($content_pref["content_cat_showparent_{$type_id}"]){
-						
-						if(!$resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_parent, content_comment, content_rate, content_pe, content_datestamp", "content_refer !='sa' AND content_id = '".$sub_action."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") " )){
+
+						if(!$resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_parent, content_comment, content_rate, content_pe, content_datestamp", "content_refer !='sa' AND content_id = '".$sub_action."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' " )){
 							header("location:".e_SELF."?".$type.".".$type_id.".cat"); exit;
 						}else{
 							$row = $sql -> db_Fetch();
@@ -736,23 +691,15 @@ function show_content_cat($mode=""){
 
 						//list subcategories
 						$content_cat_listsub_table_string = "";
-						$checkparent = ($type_id == $sub_action ? $type_id.".".$type_id."." : $type_id.".".$type_id.".".$sub_action.".");
+						$checkparent = $type_id.".".$type_id.".".($type_id == $sub_action ? "" : $sub_action.".");
 						for($i=0;$i<count($prefetchbreadcrumb);$i++){
 							if(substr($prefetchbreadcrumb[$i][3],0,strlen($checkparent)) == $checkparent && !strpos($unvalidcontent, "'".$prefetchbreadcrumb[$i][3]."'")){
-								if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_icon, content_parent", "content_refer !='sa' AND content_id = '".$prefetchbreadcrumb[$i][0]."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") " )){
+								if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_icon, content_parent", "content_refer !='sa' AND content_id = '".$prefetchbreadcrumb[$i][0]."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' " )){
 									while($row = $sql -> db_Fetch()){
-										$row['content_heading'] = $tp -> toHTML($row['content_heading'], TRUE, "");
-										$row['content_subheading'] = $tp -> toHTML($row['content_subheading'], TRUE, "");
-										
-										$CONTENT_CAT_LISTSUB_TABLE_AMOUNT = $aa -> countItemsInCat($row['content_id'], $row['content_parent']);
-										$CONTENT_CAT_LISTSUB_TABLE_ICON = $aa -> getIcon("catsmall", $row['content_icon'], "", "", "", $content_pref["content_blank_caticon_{$type_id}"]);
-										$CONTENT_CAT_LISTSUB_TABLE_HEADING = "<a href='".e_SELF."?".$type.".".$type_id.".cat.".$row['content_id']."'>".$row['content_heading']."</a>";
-										$CONTENT_CAT_LISTSUB_TABLE_SUBHEADING = ($row['content_subheading'] ? $row['content_subheading'] : "");
-										$content_cat_listsub_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LISTSUB_TABLE);
+
+										$content_cat_listsub_table_string .= $tp -> parseTemplate($CONTENT_CAT_LISTSUB_TABLE, FALSE, $content_shortcodes);
 									}
-									$content_cat_listsub_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LISTSUB_TABLE_START);
-									$content_cat_listsub_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LISTSUB_TABLE_END);
-									$textsubparent = $content_cat_listsub_table_start.$content_cat_listsub_table_string.$content_cat_listsub_table_end;
+									$textsubparent = $CONTENT_CAT_LISTSUB_TABLE_START.$content_cat_listsub_table_string.$CONTENT_CAT_LISTSUB_TABLE_END;
 									$captionsubparent = CONTENT_LAN_28;
 								}
 							}
@@ -760,7 +707,7 @@ function show_content_cat($mode=""){
 
 						
 						//list all contents within this category
-						unset($text);				
+						unset($text);
 						/*
 						if(!$CONTENT_RECENT_TABLE){
 							if(!$content_pref["content_theme_{$type_id}"]){
@@ -778,18 +725,16 @@ function show_content_cat($mode=""){
 						$subquery = ($content_pref["content_cat_listtype_{$type_id}"] ? "" : "  AND content_parent NOT REGEXP '.".$sub_action.".'  ");
 						$order = $aa -> getOrder();
 
-						$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." AND content_parent REGEXP '.".$sub_action."' ".$subquery." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ");
+						$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." AND content_parent REGEXP '.".$sub_action."' ".$subquery." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ");
 
 						if(!is_object($sql)){ $sql = new db; }
-						if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND content_parent REGEXP '.".$sub_action."' ".$subquery." ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery )){
+						if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND content_parent REGEXP '.".$sub_action."' ".$subquery." ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
 
 							$content_recent_table_string = "";
 							while($row = $sql -> db_Fetch()){
 								$content_recent_table_string .= parse_content_recent_table($row, $prefetchbreadcrumb);
 							}
-							$content_recent_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_RECENT_TABLE_START);
-							$content_recent_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_RECENT_TABLE_END);
-							$textchild = $content_recent_table_start.$content_recent_table_string.$content_recent_table_end;
+							$textchild = $CONTENT_RECENT_TABLE_START.$content_recent_table_string.$CONTENT_RECENT_TABLE_END;
 							$captionchild = "contents";
 						}
 
@@ -845,7 +790,7 @@ function show_content_cat($mode=""){
 
 						if($content_pref["content_breadcrumb_{$type_id}"]){
 							if($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "1"){
-									echo $breadcrumb;					
+									echo $breadcrumb;
 							}elseif($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "2"){
 									$ns -> tablerender(CONTENT_LAN_24, $breadcrumb);
 							}else{
@@ -890,14 +835,14 @@ function show_content_cat($mode=""){
 						$cache = ob_get_contents();
 						$e107cache->set($cachestr, $cache);
 					}
-					ob_end_flush(); // dump collected data 			
+					ob_end_flush(); // dump collected data
 				}
 }
 // ##### --------------------------------------------------
 
 // ##### AUTHOR LIST --------------------------------------
 function show_content_author_all(){
-				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
+				global $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
 				global $type, $type_id, $action, $sub_action, $id, $id2, $datequery, $prefetchbreadcrumbnosub, $unvalidcontent;
 					
 				$CONTENT_AUTHOR_TABLE = "";
@@ -921,7 +866,7 @@ function show_content_author_all(){
 
 					$order = $aa -> getOrder();
 					if(!is_object($sql)){ $sql = new db; }
-					if(!$result = $sql -> db_Select($plugintable, "DISTINCT(content_author)", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ORDER BY content_author" )){
+					if(!$result = $sql -> db_Select($plugintable, "DISTINCT(content_author)", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ORDER BY content_author" )){
 						$text = "<div style='text-align:center;'>".CONTENT_LAN_52."</div>";
 					}else{
 						while($row = $sql -> db_Fetch()){
@@ -934,22 +879,13 @@ function show_content_author_all(){
 						for($i=0;$i<count($authordetails);$i++){
 							if(!is_object($sql2)){ $sql2 = new db; }
 							$gen = new convert;
-							$totalcontent = $sql2 -> db_Select($plugintable, "content_id, content_heading, content_datestamp", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") AND content_author = '".$authordetails[$i][3]."' ORDER BY content_datestamp DESC");
+							$totalcontent = $sql2 -> db_Select($plugintable, "content_id, content_heading, content_datestamp", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' AND content_author = '".$authordetails[$i][3]."' ORDER BY content_datestamp DESC");
 							list($row['content_id'], $row['content_heading'], $row['content_datestamp']) = $sql2 -> db_Fetch();
-
-							$name = ($authordetails[$i][1] == "" ? "... ".CONTENT_LAN_29." ..." : $authordetails[$i][1]);
-							$authorlink = "<a href='".e_SELF."?".$type.".".$type_id.".author.".$row['content_id']."'>".$name."</a>";
-
-							$CONTENT_AUTHOR_TABLE_NAME = $authorlink;
-							$CONTENT_AUTHOR_TABLE_ICON = "<a href='".e_SELF."?".$type.".".$type_id.".author.".$row['content_id']."'>".CONTENT_ICON_AUTHORLIST."</a>";
-							$CONTENT_AUTHOR_TABLE_TOTAL = $totalcontent." ".($totalcontent==1 ? CONTENT_LAN_53 : CONTENT_LAN_54);
-							$CONTENT_AUTHOR_TABLE_HEADING = "<a href='".e_SELF."?".$type.".".$type_id.".content.".$row['content_id']."'>".$row['content_heading']."</a>";
 							$CONTENT_AUTHOR_TABLE_DATE = ereg_replace(" -.*", "", $gen -> convert_date($row['content_datestamp'], "short"));
-							$content_author_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_AUTHOR_TABLE);
+
+							$content_author_table_string .= $tp -> parseTemplate($CONTENT_AUTHOR_TABLE, FALSE, $content_shortcodes);
 						}
-						$content_author_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_AUTHOR_TABLE_START);
-						$content_author_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_AUTHOR_TABLE_END);
-						$text = $content_author_table_start.$content_author_table_string.$content_author_table_end;
+						$text = $CONTENT_AUTHOR_TABLE_START.$content_author_table_string.$CONTENT_AUTHOR_TABLE_END;
 
 						if($content_pref["content_breadcrumb_{$type_id}"]){
 							$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumbnosub, $type_id, "base", "");
@@ -970,12 +906,12 @@ function show_content_author_all(){
 						$cache = ob_get_contents();
 						$e107cache->set($cachestr, $cache);
 					}
-					ob_end_flush(); // dump collected data 			
+					ob_end_flush(); // dump collected data
 				}
 }
 
 function show_content_author(){
-				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
+				global $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
 				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number;
 				global $CONTENT_RECENT_TABLE, $datequery, $prefetchbreadcrumb, $unvalidcontent;
 
@@ -999,7 +935,7 @@ function show_content_author(){
 
 					$sqla = "";
 					if(!is_object($sqla)){ $sqla = new db; }
-					if(!$author = $sqla -> db_Select($plugintable, "content_author", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_id = '".$sub_action."' AND content_class IN (".USERCLASS_LIST.") ")){
+					if(!$author = $sqla -> db_Select($plugintable, "content_author", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_id = '".$sub_action."' AND content_class REGEXP '".e_CLASS_REGEXP."' ")){
 						header("location:".e_SELF."?".$type.".".$type_id.".author");
 						exit;
 					}else{
@@ -1010,24 +946,22 @@ function show_content_author(){
 						if(!is_object($sql)){ $sql = new db; }
 						$query = " content_author = '".$authordetails[3]."' || content_author REGEXP '^".$authordetails[1]."^' ".(is_numeric($content_author) ? " || content_author = '".$authordetails[0]."' " : "")." ";
 
-						$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND (".$query.") ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ");
+						$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND (".$query.") ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ");
 
 						$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumb, $type_id, "base", "");
 
-						if($result = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_author, content_icon, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_pref as contentprefvalue", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND (".$query.") ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery )){
+						if($result = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_author, content_icon, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_pref as contentprefvalue", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' AND (".$query.") ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
 							
 							$content_recent_table_string = "";
 							while($row = $sql -> db_Fetch()){
 								$content_recent_table_string .= parse_content_recent_table($row, $prefetchbreadcrumb);
 							}
-							$content_recent_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_RECENT_TABLE_START);
-							$content_recent_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_RECENT_TABLE_END);
-							$text = $content_recent_table_start.$content_recent_table_string.$content_recent_table_end;
+							$text = $CONTENT_RECENT_TABLE_START.$content_recent_table_string.$CONTENT_RECENT_TABLE_END;
 						}
 
 						if($content_pref["content_breadcrumb_{$type_id}"]){
 							if($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "1"){
-									echo $breadcrumbstring;					
+									echo $breadcrumbstring;
 							}elseif($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "2"){
 									$ns -> tablerender(CONTENT_LAN_24, $breadcrumbstring);
 							}else{
@@ -1048,7 +982,7 @@ function show_content_author(){
 						$cache = ob_get_contents();
 						$e107cache->set($cachestr, $cache);
 					}
-					ob_end_flush(); // dump collected data 			
+					ob_end_flush(); // dump collected data
 				}
 }
 // ##### --------------------------------------------------
@@ -1066,7 +1000,7 @@ function show_content_item(){
 				}else{
 					ob_start();
 
-					if(!$resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_refer !='sa' AND content_id='".$sub_action."' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery )){
+					if(!$resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_refer !='sa' AND content_id='".$sub_action."' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
 						header("location:".e_SELF."?".$type.".".$type_id); exit;
 					}else{
 						$row = $sql -> db_Fetch();
@@ -1076,7 +1010,7 @@ function show_content_item(){
 					if($content_pref["content_breadcrumb_{$type_id}"]){
 						$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumb, $row['content_parent'], "base", "");
 						if($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "1"){
-								echo $breadcrumbstring;					
+								echo $breadcrumbstring;
 						}elseif($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "2"){
 								$ns -> tablerender(CONTENT_LAN_24, $breadcrumbstring);
 						}else{
@@ -1141,7 +1075,7 @@ function show_content_item(){
 						}
 						$cobj->form_comment("comment", $plugintable, $sub_action, $row['content_heading']); 
 					}
-						
+
 							/*
 							if($comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='".$sub_action."' AND comment_type='".$plugintable."' AND comment_pid='0' ORDER BY comment_datestamp")){
 								$width = 0;
@@ -1174,14 +1108,14 @@ function show_content_item(){
 						$cache = ob_get_contents();
 						$e107cache->set($cachestr, $cache);
 					}
-					ob_end_flush(); // dump collected data 			
+					ob_end_flush(); // dump collected data
 				}
 }
 // ##### --------------------------------------------------
 
 // ##### TOP RATED LIST -----------------------------------
 function show_content_top(){
-				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $unvalidcontent, $content_icon_path;
+				global $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $unvalidcontent, $content_icon_path;
 				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number, $datequery, $prefetchbreadcrumbnosub;
 
 				if(!is_object($sql)){ $sql = new db; }
@@ -1213,7 +1147,7 @@ function show_content_top(){
 						$rating[2] = (!empty($tmp[1]) ? substr($tmp[1],0,1) : "");	// $rating[2] = remainder
 						$rate_avg = $rating[1].".".($rating[2] ? $rating[2] : "0");	// rate average
 
-						if($sql2 -> db_Select($plugintable, "content_id, content_heading, content_author, content_icon", "content_id='".$row['rate_itemid']."' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$datequery." ".$unvalidcontent." AND content_class IN (".USERCLASS_LIST.")")){
+						if($sql2 -> db_Select($plugintable, "content_id, content_heading, content_author, content_icon", "content_id='".$row['rate_itemid']."' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$datequery." ".$unvalidcontent." AND content_class REGEXP '".e_CLASS_REGEXP."'")){
 							$rate_array[] = array($row['rate_itemid'], $row['rate_rating'], $row['rate_votes'], $rate_avg, $rating[1], $rating[2]);
 						}
 					}
@@ -1232,32 +1166,9 @@ function show_content_top(){
 						if($sql2 -> db_Select($plugintable, "content_id, content_heading, content_author, content_icon", "content_id='".$rate_array[$i][0]."' " )){
 
 							while($row = $sql2 -> db_Fetch()){
-
-								$CONTENT_TOP_TABLE_ICON = $aa -> getIcon("item", $row['content_icon'], $content_icon_path, $type.".".$type_id.".content.".$row['content_id'], "50", $content_pref["content_blank_icon_{$type_id}"]);
-								$CONTENT_TOP_TABLE_HEADING = "<a href='".e_PLUGIN."content/content.php?".$type.".".$type_id.".content.".$row['content_id']."'>".$row['content_heading']."</a>";
-
-								$CONTENT_TOP_TABLE_RATING = "";
-								for($c=1; $c<= $rate_array[$i][4]; $c++){
-									$CONTENT_TOP_TABLE_RATING .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
-								}
-								if($rate_array[$i][4] < 10){
-									for($c=9; $c>=$rate_array[$i][4]; $c--){
-										$CONTENT_TOP_TABLE_RATING .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
-									}
-								}
-								$CONTENT_TOP_TABLE_RATING .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
-								$CONTENT_TOP_TABLE_RATING .= " ".$rate_array[$i][3];
-
 								$authordetails = $aa -> getAuthor($row['content_author']);
-								$CONTENT_TOP_TABLE_AUTHOR = $authordetails[1]." ";								
-								if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0"){
-									$CONTENT_TOP_TABLE_AUTHOR .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-								}else{
-									//$CONTENT_TOP_TABLE_AUTHOR .= " ".CONTENT_ICON_USER;
-								}								
-								$CONTENT_TOP_TABLE_AUTHOR .= " <a href='".e_SELF."?".$type.".".$type_id.".author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
-
-								$content_top_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TOP_TABLE);
+								$thisratearray = $rate_array[$i];
+								$content_top_table_string .= $tp -> parseTemplate($CONTENT_TOP_TABLE, FALSE, $content_shortcodes);
 							}
 						}
 					}
@@ -1271,10 +1182,8 @@ function show_content_top(){
 						}else{
 								$text = $breadcrumbstring.$text;
 						}
-					}						
-					$content_top_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TOP_TABLE_START);
-					$content_top_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_TOP_TABLE_END);
-					$text = $content_top_table_start.$content_top_table_string.$content_top_table_end;
+					}
+					$text = $CONTENT_TOP_TABLE_START.$content_top_table_string.$CONTENT_TOP_TABLE_END;
 
 					$caption = CONTENT_LAN_38;
 					$ns -> tablerender($caption, $text);
@@ -1284,23 +1193,23 @@ function show_content_top(){
 						$np_querystring = ($type ? $type : "").($type_id ? ".".$type_id : "").($action ? ".".$action : "").($sub_action ? ".".$sub_action : "").($id ? ".".$id : "");
 						$ix = new nextprev("content.php", $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
 					}
-					
+
 				}
 }
 // ##### --------------------------------------------------
 
 
 function parse_content_recent_table($row, $prefetchbreadcrumb=""){
-				global $rater, $ep, $tp, $aa, $gen, $content_icon_path, $content_image_path;
+				global $content_shortcodes, $rater, $ep, $tp, $aa, $gen, $content_icon_path, $content_image_path;
 				global $type, $type_id, $action, $sub_action, $id, $content_pref, $plugintable, $datequery;
 				global $CONTENT_RECENT_TABLE;
 
 				if($content_pref["content_list_parent_{$type_id}"]){
 					$CONTENT_RECENT_TABLE_PARENT = $aa -> drawBreadcrumb($prefetchbreadcrumb, $row['content_parent'], "nobase", "");
 				}
-			
+
 				if($content_pref["content_list_date_{$type_id}"]){
-					$CCONTENT_RECENT_TABLE_DATE = "1";
+					$CONTENT_RECENT_TABLE_DATE = "1";
 						$gen = new convert;
 						$datestamp = ereg_replace(" -.*", "", $gen -> convert_date($row['content_datestamp'], "long"));
 						$CONTENT_RECENT_TABLE_DATE = ($datestamp != "" ? $datestamp : "");
@@ -1337,7 +1246,7 @@ function parse_content_recent_table($row, $prefetchbreadcrumb=""){
 					//$authordetails[1] = ($authordetails[1] ? $authordetails[1] : "unknown");
 					if($content_pref["content_list_authorname_{$type_id}"]){
 						if(isset($content_pref["content_list_authoremail_{$type_id}"]) && $authordetails[2]){
-							if($authordetails[0] == "0"){								
+							if($authordetails[0] == "0"){
 								if($content_pref["content_list_authoremail_nonmember_{$type_id}"]){
 									$CONTENT_RECENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
 								}else{
@@ -1374,7 +1283,7 @@ function parse_content_recent_table($row, $prefetchbreadcrumb=""){
 					$refercounttmp = explode("^", $row['content_refer']);
 					$CONTENT_RECENT_TABLE_REFER = ($refercounttmp[0] ? $refercounttmp[0] : "0");
 				}
-		
+
 				$CONTENT_RECENT_TABLE_RATING = "";
 				if($content_pref["content_list_rating_all_{$type_id}"] || ($content_pref["content_list_rating_{$type_id}"] && $row['content_rate'])){
 					
@@ -1401,12 +1310,14 @@ function parse_content_recent_table($row, $prefetchbreadcrumb=""){
 					}
 				}
 				return(preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_RECENT_TABLE));
+				//return ($tp -> parseTemplate($CONTENT_SEARCHRESULT_TABLE, FALSE, $content_shortcodes));
 }
 
 
 function parse_content_cat_table($row, $prefetchbreadcrumb){
-				global $CONTENT_CAT_TABLE, $content_cat_icon_path_large, $content_cat_icon_path_small, $gen, $aa, $tp, $rater, $ep, $plugintable;
+				global $content_shortcodes, $CONTENT_CAT_TABLE, $content_cat_icon_path_large, $content_cat_icon_path_small, $gen, $aa, $tp, $rater, $ep, $plugintable;
 				global $type, $type_id, $action, $sub_action, $id, $content_pref, $datequery;
+				global $CONTENT_CAT_TABLE_ICON, $CONTENT_CAT_TABLE_HEADING, $CONTENT_CAT_TABLE_AMOUNT, $CONTENT_CAT_TABLE_SUBHEADING, $CONTENT_CAT_TABLE_DATE, $CONTENT_CAT_TABLE_AUTHORDETAILS, $CONTENT_CAT_TABLE_EPICONS, $CONTENT_CAT_TABLE_COMMENT, $CONTENT_CAT_TABLE_TEXT;
 
 				//$parent[] = array($content_id, $content_heading, $content_subheading, $content_summary, $content_text, $content_author, $content_icon, $content_file, $content_image, $content_parent, $content_comment, $content_rate, $content_pe, $content_refer, $content_datestamp, $content_class, $level);
 
@@ -1457,7 +1368,6 @@ function parse_content_cat_table($row, $prefetchbreadcrumb){
 					$CONTENT_CAT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.".$row['content_id']."}");
 					$CONTENT_CAT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
 				}
-				
 
 				$CONTENT_CAT_TABLE_RATING = "";
 				if($row['content_rate']){
@@ -1483,7 +1393,8 @@ function parse_content_cat_table($row, $prefetchbreadcrumb){
 						$CONTENT_CAT_TABLE_RATING .= " - ".LAN_41;
 					}
 				}
-				return(preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_TABLE));
+
+				return ($tp -> parseTemplate($CONTENT_CAT_TABLE, FALSE, $content_shortcodes));
 }
 
 function parse_content_cat_list_table($row){
@@ -1568,64 +1479,6 @@ function parse_content_cat_list_table($row){
 				return(preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LIST_TABLE));
 }
 
-function show_wordcount(){
-				global $rater, $content_icon_path, $content_file_path, $content_image_path, $gen, $aa, $tp, $ep, $from, $number;
-				global $type, $type_id, $action, $sub_action, $id, $id2, $content_pref, $plugintable;
-				global $ns, $sql, $pref, $cobj, $datequery, $e107;
-
-				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
-				global $type, $type_id, $action, $sub_action, $id, $id2, $datequery, $prefetchbreadcrumb, $unvalidcontent, $order, $nextprevquery;
-
-				if(!is_numeric($sub_action)){ header("location:".e_SELF."?".$type.".".$type_id); exit; }
-
-				if(!$resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_refer !='sa' AND content_id='".$sub_action."' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class IN (".USERCLASS_LIST.") ".$order." ".$nextprevquery )){
-					header("location:".e_SELF."?".$type.".".$type_id); exit;
-				}else{
-					$row = $sql -> db_Fetch();
-
-$row['content_text'] = $tp -> toHTML($row['content_text']);
-
-$row['content_text'] = strip_tags($row['content_text']);
-
-//make all lowercase
-$row['content_text'] = strtolower($row['content_text']);
-
-
-//$row['content_text'] = ereg_replace( "[^A-Za-z0-9]", "", $row['content_text'] );
-$row['content_text'] = eregi_replace( " (.){1,3} ", "", $row['content_text'] );
-
-$search = array(",", "'", "!", "?", ".", ",", ";", ":", "%", "(", ")", '/', '\\', "-", "[", "]", "{", "}");
-$row['content_text'] = str_replace($search, "", $row['content_text']);
-
-//remove multiple white spaces
-//$row['content_text'] = preg_replace('/\s\s+/', ' ', $row['content_text']);
-$row['content_text'] = eregi_replace(" +", " ", $row['content_text']);
-
-$chars = preg_split('/ /', $row['content_text'], -1);
-
-$countvalues = array_count_values($chars);
-$unique = array_unique($chars);
-$countunique = count($unique);
-
-$text = "<table border='1' style='width:70%;'>";
-$text .= "<tr><td>unique words</td><td>".$countunique."</td></tr>";
-$text .= "</table><br />";
-
-arsort($countvalues);
-reset($countvalues);
-$text .= "<table border='1' style='width:70%;'><tr><td>word</td><td>amount</td></tr>";
-while (list($key, $val) = each($countvalues)) {
-	if($val > 1){
-		$text .= "<tr><td>".$key."</td><td>".$val."</td></tr>";
-	}
-}
-$text .= "</table>";
-echo $text;
-
-						
-
-				}
-}
 
 function parse_content_content_table($row){
 				global $rater, $content_icon_path, $content_file_path, $content_image_path, $gen, $aa, $tp, $ep, $from, $number;
@@ -1641,7 +1494,6 @@ function parse_content_content_table($row){
 				$CONTENT_CONTENT_TABLE_PAGENAMES = "";
 
 				if(substr($row['content_parent'],0,1) == "0"){ return FALSE; }
-				if(!check_class($row['content_class'])){ return FALSE; }
 
 				if($content_pref["content_log_{$type_id}"]){
 					$ip = $e107->getip();
