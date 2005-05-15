@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-10 09:51:22 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-15 20:28:11 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -24,122 +24,78 @@ $CONTENT_CONTENT_TABLE_END = "";
 $CONTENT_CONTENT_TABLE_CUSTOM = "";
 $CONTENT_CONTENT_TABLE_CUSTOM_PRE = "";
 $CONTENT_CONTENT_TABLE_CUSTOM_PRE2 = "";
+global $sc_style, $content_shortcodes, $type, $type_id, $action, $sub_action, $id, $row, $content_pref, $gen, $tp, $sql, $plugintable, $rater, $aa, $content_image_path, $content_icon_path, $content_file_path, $custom;
+
+$sc_style['CONTENT_CONTENT_TABLE_REFER']['pre'] = CONTENT_LAN_44." ";
+$sc_style['CONTENT_CONTENT_TABLE_REFER']['post'] = "";
+
+$sc_style['CONTENT_CONTENT_TABLE_COMMENT']['pre'] = CONTENT_LAN_57." ";
+$sc_style['CONTENT_CONTENT_TABLE_COMMENT']['post'] = "";
+
+$sc_style['CONTENT_CONTENT_TABLE_SCORE']['pre'] = CONTENT_LAN_45." ";
+$sc_style['CONTENT_CONTENT_TABLE_SCORE']['post'] = "";
+
+$sc_style['CONTENT_CONTENT_TABLE_RATING']['pre'] = "<tr><td class='content_rate' colspan='2'>";
+$sc_style['CONTENT_CONTENT_TABLE_RATING']['post'] = "</td></tr>";
+
+$sc_style['CONTENT_CONTENT_TABLE_AUTHORDETAILS']['pre'] = " / ";
+$sc_style['CONTENT_CONTENT_TABLE_AUTHORDETAILS']['post'] = "";
+
+$sc_style['CONTENT_CONTENT_TABLE_ICON']['pre'] = "<td class='content_icon'>";
+$sc_style['CONTENT_CONTENT_TABLE_ICON']['post'] = "</td>";
+
+$sc_style['CONTENT_CONTENT_TABLE_PAGENAMES']['pre'] = "<tr><td class='content_text' colspan='4' style='border-top:1px solid #000;'><br /><div class='content_bold'>".CONTENT_LAN_46."</div>";
+$sc_style['CONTENT_CONTENT_TABLE_PAGENAMES']['post'] = "</td></tr>";
+
+$sc_style['CONTENT_CONTENT_TABLE_CUSTOM_TAGS']['pre'] = "<tr><td colspan='4' style='border-top:1px solid #000;'><br /></td></tr>";
+$sc_style['CONTENT_CONTENT_TABLE_CUSTOM_TAGS']['post'] = "<tr><td colspan='4'><br /></td></tr>";
+
+$sc_style['CONTENT_CONTENT_TABLE_SUMMARY']['pre'] = "<i>";
+$sc_style['CONTENT_CONTENT_TABLE_SUMMARY']['post'] = "</i><br /><br />";
 
 if(!$CONTENT_CONTENT_TABLE){
 				$CONTENT_CONTENT_TABLE .= "
-				<table class='content_table'>
-				<tr>";
-
-					if($CONTENT_CONTENT_TABLE_ICON){
-						$CONTENT_CONTENT_TABLE .= "
-						<td class='content_icon'>
-							{CONTENT_CONTENT_TABLE_ICON}
-						</td>";
-					}
-
-					$CONTENT_CONTENT_TABLE .= "
-					<td colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? "3" : ($CONTENT_CONTENT_TABLE_ICON ? "2" : "3"))."' style='width:97%;'>
-						<table style='width:100%;'>
+				<table class='content_table' border='0'>
+				<tr>
+					{CONTENT_CONTENT_TABLE_ICON}
+					<td colspan='3' style='width:97%;'>
+						<table style='width:100%;' border='0'>
 						<tr>
-							<td class='content_heading' ".($CONTENT_CONTENT_TABLE_REFER ? "" : "colspan='2'").">
-								{CONTENT_CONTENT_TABLE_HEADING}
-							</td>";
-
-							if($CONTENT_CONTENT_TABLE_REFER){
-								$CONTENT_CONTENT_TABLE .= "
-								<td class='content_info' style='text-align:right;'>
-									".CONTENT_LAN_44." {CONTENT_CONTENT_TABLE_REFER}
-								</td>";
-							}
-
-						$CONTENT_CONTENT_TABLE .= "
+							<td class='content_heading'>{CONTENT_CONTENT_TABLE_HEADING}</td>
+							<td class='content_info' style='text-align:right;'>{CONTENT_CONTENT_TABLE_REFER}</td>
 						</tr>
 						<tr>
-							<td class='content_subheading' ".(isset($CONTENT_CONTENT_TABLE_COMMENT) ? "" : "colspan='2'")." >
-								{CONTENT_CONTENT_TABLE_SUBHEADING}
-							</td>";
-
-							if(isset($CONTENT_CONTENT_TABLE_COMMENT)){
-								$CONTENT_CONTENT_TABLE .= "
-								<td class='content_info' style='text-align:right;'>
-									".CONTENT_LAN_57." {CONTENT_CONTENT_TABLE_COMMENT}
-								</td>";
-							}
-						
-						$CONTENT_CONTENT_TABLE .= "
+							<td class='content_subheading'>{CONTENT_CONTENT_TABLE_SUBHEADING}</td>
+							<td class='content_info' style='text-align:right;'>{CONTENT_CONTENT_TABLE_COMMENT}</td>
 						</tr>
 						<tr>
 							<td class='content_info' colspan='2'>
-								{CONTENT_CONTENT_TABLE_DATE} / {CONTENT_CONTENT_TABLE_AUTHORDETAILS} {CONTENT_CONTENT_TABLE_EPICONS} {CONTENT_CONTENT_TABLE_EDITICON}
+								{CONTENT_CONTENT_TABLE_DATE} {CONTENT_CONTENT_TABLE_AUTHORDETAILS} {CONTENT_CONTENT_TABLE_EPICONS} {CONTENT_CONTENT_TABLE_EDITICON}
 							</td>
-						</tr>";
-
-						if($CONTENT_CONTENT_TABLE_RATING){
-							$CONTENT_CONTENT_TABLE .= "
-							<tr>							
-								<td class='content_rate' colspan='2'>
-									{CONTENT_CONTENT_TABLE_RATING}
-								</td>
-							</tr>";
-						}
-						if($CONTENT_CONTENT_TABLE_FILE || $CONTENT_CONTENT_TABLE_SCORE){
-							$CONTENT_CONTENT_TABLE .= "
-							<tr>
-								<td class='content_info'>".($CONTENT_CONTENT_TABLE_FILE ? "{CONTENT_CONTENT_TABLE_FILE}" : "")."</td>
-								<td class='content_info' style='text-align:right;'>".($CONTENT_CONTENT_TABLE_SCORE ? CONTENT_LAN_45." {CONTENT_CONTENT_TABLE_SCORE}" : "")."</td>
-							</tr>";
-						}
-						$CONTENT_CONTENT_TABLE .= "
+						</tr>
+						{CONTENT_CONTENT_TABLE_RATING}
+						<tr>
+							<td class='content_info'>{CONTENT_CONTENT_TABLE_FILE}</td>
+							<td class='content_info' style='text-align:right;'>{CONTENT_CONTENT_TABLE_SCORE}</td>
+						</tr>
 						</table>
 					</td>
 				</tr>
 				<tr>
-					<td colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? ($CONTENT_CONTENT_TABLE_ICON ? "4" : "3") : "3")."'><br /></td>
+					<td colspan='4'><br /></td>
 				</tr>
 				<tr>
-					<td colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? ($CONTENT_CONTENT_TABLE_ICON ? "4" : "3") : "3")."' style='border-top:1px solid #000;'><br /></td>
+					<td colspan='4' style='border-top:1px solid #000;'><br /></td>
 				</tr>
 				<tr>
-					<td class='content_text' colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? ($CONTENT_CONTENT_TABLE_ICON ? "3" : "2") : "3")."' style='width:97%;'>
-						".($CONTENT_CONTENT_TABLE_SUMMARY ? "<i>{CONTENT_CONTENT_TABLE_SUMMARY}</i><br /><br />" : "")."
-						".($CONTENT_CONTENT_TABLE_TEXT ? "{CONTENT_CONTENT_TABLE_TEXT}<br />" : "")."
-					</td>
-					".($CONTENT_CONTENT_TABLE_IMAGES ? "<td class='content_image'>{CONTENT_CONTENT_TABLE_IMAGES}</td>" : "")."
-				</tr>";
-
-				$CONTENT_CONTENT_TABLE .= "{CONTENT_CONTENT_TABLE_CUSTOM_TAGS}";
-
-				if($CONTENT_CONTENT_TABLE_PAGENAMES){
-					$CONTENT_CONTENT_TABLE .= "
-					<tr>
-						<td colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? ($CONTENT_CONTENT_TABLE_ICON ? "4" : "3") : "3")."' style='border-bottom:1px solid #000;'><br /></td>
-					</tr>
-					<tr>
-						<td class='content_text' colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? ($CONTENT_CONTENT_TABLE_ICON ? "4" : "3") : "3")."'>
-							<div class='content_bold'>".CONTENT_LAN_46."</div>
-							{CONTENT_CONTENT_TABLE_PAGENAMES}
-						</td>
-					</tr>";
-				}
-
-				$CONTENT_CONTENT_TABLE .= "
+					<td class='content_text' colspan='3' style='width:97%;'>{CONTENT_CONTENT_TABLE_SUMMARY}{CONTENT_CONTENT_TABLE_TEXT}<br /></td>
+					<td class='content_image'>{CONTENT_CONTENT_TABLE_IMAGES}</td>
+				</tr>
+				{CONTENT_CONTENT_TABLE_CUSTOM_TAGS}
+				{CONTENT_CONTENT_TABLE_PAGENAMES}
 				</table>\n";
 }
 // ##### ----------------------------------------------------------------------
-
-
-if(!$CONTENT_CONTENT_TABLE_CUSTOM_PRE){
-	$CONTENT_CONTENT_TABLE_CUSTOM_PRE = "
-	<tr>
-		<td colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? ($CONTENT_CONTENT_TABLE_ICON ? "4" : "3") : "3")."' style='border-bottom:1px solid #000;'><br /></td>
-	</tr>";
-}
-if(!$CONTENT_CONTENT_TABLE_CUSTOM_PRE2){
-	$CONTENT_CONTENT_TABLE_CUSTOM_PRE2 = "
-	<tr>
-		<td colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? ($CONTENT_CONTENT_TABLE_ICON ? "4" : "3") : "3")."'><br /></td>
-	</tr>";
-}
 
 if(!$CONTENT_CONTENT_TABLE_CUSTOM){
 	$CONTENT_CONTENT_TABLE_CUSTOM = "
@@ -147,7 +103,7 @@ if(!$CONTENT_CONTENT_TABLE_CUSTOM){
 		<td class='content_bold' style='width:5%;'>
 			{CONTENT_CONTENT_TABLE_CUSTOM_KEY}
 		</td>
-		<td class='content_text' colspan='".($CONTENT_CONTENT_TABLE_IMAGES ? ($CONTENT_CONTENT_TABLE_ICON ? "3" : "2") : "2")."' style='width:95%;'>
+		<td class='content_text' colspan='2' style='width:95%;'>
 			{CONTENT_CONTENT_TABLE_CUSTOM_VALUE}
 		</td>
 	</tr>";
