@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_recent_template.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-05-15 12:29:04 $
+|     $Revision: 1.11 $
+|     $Date: 2005-05-15 14:45:14 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,12 @@
 // ##### CONTENT RECENT LIST --------------------------------------------------
 $CONTENT_RECENT_TABLE_START = "";
 $CONTENT_RECENT_TABLE_END = "";
-global $sc_style, $content_shortcodes, $content_pref, $type_id, $aa, $prefetchbreadcrumb, $row;
+global $sc_style, $content_shortcodes, $content_pref, $type, $type_id, $aa, $prefetchbreadcrumb, $row, $gen, $rater, $plugintable;
+
+$sc_style['CONTENT_RECENT_TABLE_REFER']['pre'] = CONTENT_LAN_44." ";
+$sc_style['CONTENT_RECENT_TABLE_REFER']['post'] = " ";
+
+
 if(!$CONTENT_RECENT_TABLE_START){
 				$CONTENT_RECENT_TABLE_START = "<table class='content_table'>";
 }
@@ -33,7 +38,7 @@ if(!$CONTENT_RECENT_TABLE){
 							<tr><td class='content_heading'>{CONTENT_RECENT_TABLE_HEADING}</td></tr>
 							<tr><td class='content_subheading'>{CONTENT_RECENT_TABLE_SUBHEADING}</td></tr>
 							<tr><td class='content_summary'>{CONTENT_RECENT_TABLE_SUMMARY}</td></tr>
-							<tr><td class='content_info'>{CONTENT_RECENT_TABLE_DATE} {CONTENT_RECENT_TABLE_EPICONS} {CONTENT_RECENT_TABLE_AUTHORDETAILS} {CONTENT_RECENT_TABLE_EDITICON} ".CONTENT_LAN_44." {CONTENT_RECENT_TABLE_REFER}</td></tr>
+							<tr><td class='content_info'>{CONTENT_RECENT_TABLE_DATE} {CONTENT_RECENT_TABLE_EPICONS} {CONTENT_RECENT_TABLE_AUTHORDETAILS} {CONTENT_RECENT_TABLE_EDITICON} {CONTENT_RECENT_TABLE_REFER}</td></tr>
 							<tr><td class='content_rating'>{CONTENT_RECENT_TABLE_RATING}</td></tr>
 							<tr><td class='content_parent'>{CONTENT_RECENT_TABLE_PARENT}</td></tr>
 						</table>

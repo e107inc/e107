@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/content_type_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-05-15 12:29:04 $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-15 14:45:14 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -31,6 +31,9 @@ $sc_style['CONTENT_TYPE_TABLE_TOTAL']['post'] = " ";
 $sc_style['CONTENT_TYPE_TABLE_HEADING']['pre'] = "";
 $sc_style['CONTENT_TYPE_TABLE_HEADING']['post'] = "";
 
+$sc_style['CONTENT_TYPE_TABLE_SUBHEADING']['pre'] = "<tr><td class='content_subheading' colspan='2'>";
+$sc_style['CONTENT_TYPE_TABLE_SUBHEADING']['post'] = "</td></tr>";
+
 // ##### CONTENT TYPE LIST --------------------------------------------------
 if(!$CONTENT_TYPE_TABLE_START){
 				$CONTENT_TYPE_TABLE_START = "
@@ -46,7 +49,7 @@ if(!$CONTENT_TYPE_TABLE){
 								<td class='content_heading'>{CONTENT_TYPE_TABLE_HEADING}</td>
 								<td class='content_info' style='text-align:right;'>{CONTENT_TYPE_TABLE_TOTAL} {CONTENT_TYPE_TABLE_TOTAL_LAN}</td>
 							</tr>
-							<tr><td class='content_subheading' colspan='2'>{CONTENT_TYPE_TABLE_SUBHEADING}</td></tr>
+							{CONTENT_TYPE_TABLE_SUBHEADING}
 						</table>
 					</td>
 				</tr>

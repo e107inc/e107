@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.36 $
-|		$Date: 2005-05-15 12:29:04 $
+|		$Revision: 1.37 $
+|		$Date: 2005-05-15 14:45:14 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -146,7 +146,7 @@ class content{
 		function getContentPref($id="") {
 				global $plugintable, $sql;
 				if(!is_object($sql)){ $sql = new db; }
-				//$plugintable = "pcontent";
+				$plugintable = "pcontent";
 				
 				if($id){	//if $id; use prefs from content table
 							$num_rows = $sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
@@ -160,7 +160,8 @@ class content{
 								$row = $sql -> db_Fetch();
 							}
 							$content_pref = unserialize(stripslashes($row['content_pref']));
-							if(!is_array($content_pref)){ echo $content_pref; $content_pref = unserialize($content_pref); }
+							if(!is_array($content_pref)){ $content_pref = unserialize($content_pref); }
+							//echo $content_pref; 
 				
 				}else{		//if not $id; use prefs from default core table
 							$num_rows = $sql -> db_Select("core", "*", "e107_name='$plugintable' ");
@@ -173,7 +174,8 @@ class content{
 							}
 							$row = $sql -> db_Fetch();
 							$content_pref = unserialize(stripslashes($row['e107_value']));
-							if(!is_array($content_pref)){ echo $content_pref; $content_pref = unserialize($content_pref); }
+							if(!is_array($content_pref)){ $content_pref = unserialize($content_pref); }
+							//echo $content_pref;
 				}
 
 				return $content_pref;
