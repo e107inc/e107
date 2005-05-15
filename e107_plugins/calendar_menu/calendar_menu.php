@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-05-01 04:37:02 $
+|     $Revision: 1.15 $
+|     $Date: 2005-05-15 21:11:31 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -177,7 +177,7 @@ for($cal_c = 1; $cal_c <= 31; $cal_c++)
         } 
         else
         {
-            if (array_key_exists($cal_c, $cal_events))
+            if (isset($cal_events) && array_key_exists($cal_c, $cal_events))
             {
                 $cal_text .= "<td class='$cal_evtoday' style='text-align:center; width: 14.28%;'>";
             } 
@@ -187,7 +187,7 @@ for($cal_c = 1; $cal_c <= 31; $cal_c++)
             } 
         } 
 
-        if (array_key_exists($cal_c, $cal_events))
+        if (isset($cal_events) && array_key_exists($cal_c, $cal_events))
         {
             $cal_event_icon = e_PLUGIN . "calendar_menu/images/" . $cal_events[$cal_c][0]['event_cat_icon'];
             $cal_event_count = count($cal_events[$cal_c]); 
