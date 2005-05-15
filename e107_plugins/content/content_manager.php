@@ -12,14 +12,14 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.7 $
-|		$Date: 2005-05-10 08:58:36 $
+|		$Revision: 1.8 $
+|		$Date: 2005-05-15 12:28:47 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
 require_once("../../class2.php");
-
+require_once(e_PLUGIN."content/content_shortcodes.php");
 if (file_exists(THEME."content_css.css")) {
 	$eplug_css = THEME."content_css.css";
 } else {

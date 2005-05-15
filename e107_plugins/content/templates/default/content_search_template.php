@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_search_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-05-03 15:04:21 $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-15 12:29:04 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
-
+global $sc_style, $content_shortcodes;
+global $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD;
 // ##### CONTENT SEARCH LIST --------------------------------------------------
 $CONTENT_SEARCH_TABLE = "";
 if(!$CONTENT_SEARCH_TABLE){

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.35 $
-|		$Date: 2005-05-14 16:46:43 $
+|		$Revision: 1.36 $
+|		$Date: 2005-05-15 12:29:04 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -146,7 +146,7 @@ class content{
 		function getContentPref($id="") {
 				global $plugintable, $sql;
 				if(!is_object($sql)){ $sql = new db; }
-				$plugintable = "pcontent";
+				//$plugintable = "pcontent";
 				
 				if($id){	//if $id; use prefs from content table
 							$num_rows = $sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
@@ -189,115 +189,6 @@ class content{
 						$content_pref[$k] = $v;
 					}
 				}
-				/*
-				$content_pref["content_admin_icon_{$id}"] = $_POST["content_admin_icon_{$id}"];
-				$content_pref["content_admin_attach_{$id}"] = $_POST["content_admin_attach_{$id}"];
-				$content_pref["content_admin_images_{$id}"] = $_POST["content_admin_images_{$id}"];
-				$content_pref["content_admin_comment_{$id}"] = $_POST["content_admin_comment_{$id}"];
-				$content_pref["content_admin_rating_{$id}"] = $_POST["content_admin_rating_{$id}"];
-				$content_pref["content_admin_score_{$id}"] = $_POST["content_admin_score_{$id}"];
-				$content_pref["content_admin_pe_{$id}"] = $_POST["content_admin_pe_{$id}"];
-				$content_pref["content_admin_visibility_{$id}"] = $_POST["content_admin_visibility_{$id}"];
-				$content_pref["content_admin_meta_{$id}"] = $_POST["content_admin_meta_{$id}"];
-				$content_pref["content_admin_custom_number_{$id}"] = $_POST["content_admin_custom_number_{$id}"];
-				$content_pref["content_admin_images_number_{$id}"] = $_POST["content_admin_images_number_{$id}"];
-				$content_pref["content_admin_files_number_{$id}"] = $_POST["content_admin_files_number_{$id}"];
-
-				$content_pref["content_submit_{$id}"] = ($_POST["content_submit_{$id}"] ? $_POST["content_submit_{$id}"] : "0");
-				$content_pref["content_submit_class_{$id}"] = $_POST["content_submit_class_{$id}"];
-				$content_pref["content_submit_directpost_{$id}"] = $_POST["content_submit_directpost_{$id}"];
-				$content_pref["content_submit_icon_{$id}"] = $_POST["content_submit_icon_{$id}"];
-				$content_pref["content_submit_attach_{$id}"] = $_POST["content_submit_attach_{$id}"];
-				$content_pref["content_submit_images_{$id}"] = $_POST["content_submit_images_{$id}"];
-				$content_pref["content_submit_comment_{$id}"] = $_POST["content_submit_comment_{$id}"];
-				$content_pref["content_submit_rating_{$id}"] = $_POST["content_submit_rating_{$id}"];
-				$content_pref["content_submit_score_{$id}"] = $_POST["content_submit_score_{$id}"];
-				$content_pref["content_submit_pe_{$id}"] = $_POST["content_submit_pe_{$id}"];
-				$content_pref["content_submit_visibility_{$id}"] = $_POST["content_submit_visibility_{$id}"];
-				$content_pref["content_submit_meta_{$id}"] = $_POST["content_submit_meta_{$id}"];
-				$content_pref["content_submit_custom_number_{$id}"] = $_POST["content_submit_custom_number_{$id}"];
-				$content_pref["content_submit_images_number_{$id}"] = $_POST["content_submit_images_number_{$id}"];
-				$content_pref["content_submit_files_number_{$id}"] = $_POST["content_submit_files_number_{$id}"];
-
-				$content_pref["content_cat_icon_path_large_{$id}"] = $_POST["content_cat_icon_path_large_{$id}"];
-				$content_pref["content_cat_icon_path_small_{$id}"] = $_POST["content_cat_icon_path_small_{$id}"];
-				$content_pref["content_icon_path_{$id}"] = $_POST["content_icon_path_{$id}"];
-				$content_pref["content_image_path_{$id}"] = $_POST["content_image_path_{$id}"];
-				$content_pref["content_file_path_{$id}"] = $_POST["content_file_path_{$id}"];
-				$content_pref["content_theme_{$id}"] = $_POST["content_theme_{$id}"];
-
-				$content_pref["content_log_{$id}"] = $_POST["content_log_{$id}"];
-				$content_pref["content_blank_icon_{$id}"] = $_POST["content_blank_icon_{$id}"];
-				$content_pref["content_blank_caticon_{$id}"] = $_POST["content_blank_caticon_{$id}"];
-				$content_pref["content_breadcrumb_{$id}"] = $_POST["content_breadcrumb_{$id}"];
-				$content_pref["content_breadcrumb_seperator{$id}"] = $_POST["content_breadcrumb_seperator{$id}"];
-				$content_pref["content_breadcrumb_rendertype_{$id}"] = $_POST["content_breadcrumb_rendertype_{$id}"];
-				$content_pref["content_searchmenu_{$id}"] = $_POST["content_searchmenu_{$id}"];
-
-				$content_pref["content_list_subheading_{$id}"] = $_POST["content_list_subheading_{$id}"];
-				$content_pref["content_list_summary_{$id}"] = $_POST["content_list_summary_{$id}"];
-				$content_pref["content_list_date_{$id}"] = $_POST["content_list_date_{$id}"];
-				$content_pref["content_list_authorname_{$id}"] = $_POST["content_list_authorname_{$id}"];
-				$content_pref["content_list_authoremail_{$id}"] = $_POST["content_list_authoremail_{$id}"];
-				$content_pref["content_list_rating_{$id}"] = $_POST["content_list_rating_{$id}"];
-				$content_pref["content_list_peicon_{$id}"] = $_POST["content_list_peicon_{$id}"];
-				$content_pref["content_list_parent_{$id}"] = $_POST["content_list_parent_{$id}"];
-				$content_pref["content_list_refer_{$id}"] = $_POST["content_list_refer_{$id}"];
-				$content_pref["content_list_subheading_char_{$id}"] = $_POST["content_list_subheading_char_{$id}"];
-				$content_pref["content_list_subheading_post_{$id}"] = $_POST["content_list_subheading_post_{$id}"];
-				$content_pref["content_list_summary_char_{$id}"] = $_POST["content_list_summary_char_{$id}"];
-				$content_pref["content_list_summary_post_{$id}"] = $_POST["content_list_summary_post_{$id}"];
-				$content_pref["content_list_authoremail_nonmember_{$id}"] = $_POST["content_list_authoremail_nonmember_{$id}"];
-				$content_pref["content_nextprev_{$id}"] = $_POST["content_nextprev_{$id}"];
-				$content_pref["content_nextprev_number_{$id}"] = $_POST["content_nextprev_number_{$id}"];
-				$content_pref["content_list_peicon_all_{$id}"] = $_POST["content_list_peicon_all_{$id}"];
-				$content_pref["content_list_rating_all_{$id}"] = $_POST["content_list_rating_all_{$id}"];
-				$content_pref["content_defaultorder_{$id}"] = $_POST["content_defaultorder_{$id}"];
-				$content_pref["content_list_editicon_{$id}"] = $_POST["content_list_editicon_{$id}"];
-
-				$content_pref["content_cat_showparent_{$id}"] = $_POST["content_cat_showparent_{$id}"];
-				$content_pref["content_cat_showparentsub_{$id}"] = $_POST["content_cat_showparentsub_{$id}"];
-				$content_pref["content_cat_listtype_{$id}"] = ($_POST["content_cat_listtype_{$id}"] ? $_POST["content_cat_listtype_{$id}"] : "0");
-				$content_pref["content_cat_menuorder_{$id}"] = $_POST["content_cat_menuorder_{$id}"];
-				$content_pref["content_cat_rendertype_{$id}"] = $_POST["content_cat_rendertype_{$id}"];
-
-				$content_pref["content_content_subheading_{$id}"] = $_POST["content_content_subheading_{$id}"];
-				$content_pref["content_content_summary_{$id}"] = $_POST["content_content_summary_{$id}"];
-				$content_pref["content_content_date_{$id}"] = $_POST["content_content_date_{$id}"];
-				$content_pref["content_content_authorname_{$id}"] = $_POST["content_content_authorname_{$id}"];
-				$content_pref["content_content_authoremail_{$id}"] = $_POST["content_content_authoremail_{$id}"];
-				$content_pref["content_content_rating_{$id}"] = $_POST["content_content_rating_{$id}"];
-				$content_pref["content_content_peicon_{$id}"] = $_POST["content_content_peicon_{$id}"];
-				$content_pref["content_content_refer_{$id}"] = $_POST["content_content_refer_{$id}"];
-				$content_pref["content_content_authoremail_nonmember_{$id}"] = $_POST["content_content_authoremail_nonmember_{$id}"];
-				$content_pref["content_content_peicon_all_{$id}"] = $_POST["content_content_peicon_all_{$id}"];
-				$content_pref["content_content_rating_all_{$id}"] = $_POST["content_content_rating_all_{$id}"];
-				$content_pref["content_content_comment_all_{$id}"] = $_POST["content_content_comment_all_{$id}"];
-				$content_pref["content_content_editicon_{$id}"] = $_POST["content_content_editicon_{$id}"];
-
-				$content_pref["content_menu_caption_{$id}"] = $_POST["content_menu_caption_{$id}"];
-				$content_pref["content_menu_search_{$id}"] = $_POST["content_menu_search_{$id}"];
-				$content_pref["content_menu_sort_{$id}"] = $_POST["content_menu_sort_{$id}"];
-				$content_pref["content_menu_viewallcat_{$id}"] = $_POST["content_menu_viewallcat_{$id}"];
-				$content_pref["content_menu_viewallauthor_{$id}"] = $_POST["content_menu_viewallauthor_{$id}"];
-				$content_pref["content_menu_viewtoprated_{$id}"] = $_POST["content_menu_viewtoprated_{$id}"];
-				$content_pref["content_menu_viewrecent_{$id}"] = $_POST["content_menu_viewrecent_{$id}"];
-				$content_pref["content_menu_viewsubmit_{$id}"] = $_POST["content_menu_viewsubmit_{$id}"];
-				$content_pref["content_menu_viewicon_{$id}"] = $_POST["content_menu_viewicon_{$id}"];
-				$content_pref["content_menu_cat_{$id}"] = $_POST["content_menu_cat_{$id}"];
-				$content_pref["content_menu_cat_number_{$id}"] = $_POST["content_menu_cat_number_{$id}"];				
-				$content_pref["content_menu_cat_icon_{$id}"] = $_POST["content_menu_cat_icon_{$id}"];
-				$content_pref["content_menu_recent_{$id}"] = $_POST["content_menu_recent_{$id}"];
-				$content_pref["content_menu_recent_caption_{$id}"] = $_POST["content_menu_recent_caption_{$id}"];
-				$content_pref["content_menu_recent_number_{$id}"] = $_POST["content_menu_recent_number_{$id}"];
-				$content_pref["content_menu_recent_date_{$id}"] = $_POST["content_menu_recent_date_{$id}"];
-				$content_pref["content_menu_recent_author_{$id}"] = $_POST["content_menu_recent_author_{$id}"];
-				$content_pref["content_menu_recent_subheading_{$id}"] = $_POST["content_menu_recent_subheading_{$id}"];
-				$content_pref["content_menu_recent_subheading_char_{$id}"] = $_POST["content_menu_recent_subheading_char_{$id}"];
-				$content_pref["content_menu_recent_subheading_post_{$id}"] = $_POST["content_menu_recent_subheading_post_{$id}"];
-				$content_pref["content_menu_recent_icon_{$id}"] = $_POST["content_menu_recent_icon_{$id}"];
-				$content_pref["content_menu_recent_icon_width_{$id}"] = $_POST["content_menu_recent_icon_width_{$id}"];
-*/
 				$tmp = addslashes(serialize($content_pref));
 				$sql -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$id' ");
 
@@ -388,15 +279,7 @@ class content{
 				$sqlcountitemsincat = "";
 				if(!is_object($sqlcountitemsincat)){ $sqlcountitemsincat = new db; }
 
-				if(!$n = $sqlcountitemsincat -> db_Select($plugintable, "content_class", "content_parent='".$itemswithparent."' AND content_refer != 'sa' ".$datequery." ")){
-					$n = "0";
-				}else{
-					while($row = $sqlcountitemsincat -> db_Fetch()){
-						if(!check_class($row['content_class'])){
-							$n = $n - 1;
-						}
-					}
-				}
+				$n = $sqlcountitemsincat -> db_Select($plugintable, "content_class", "content_class REGEXP '".e_CLASS_REGEXP."' AND content_parent='".$itemswithparent."' AND content_refer != 'sa' ".$datequery." ");
 
 				return ($nolan ? $n : $n." ".($n == "1" ? CONTENT_LAN_53 : CONTENT_LAN_54) );
 		}
@@ -425,17 +308,14 @@ class content{
 					$id = "0.".$id;
 				}
 				$query = ($mode != "" ? " AND content_id = '".$mode."' " : "");
-				$classquery = ($classcheck == "1" ? "AND content_class IN (".USERCLASS_LIST.")" : "");
+				$classquery = ($classcheck == "1" ? "AND content_class REGEXP '".e_CLASS_REGEXP."'" : "");
 				$usedate = ($date ? $datequery : "");
 				if(!$level) { $level = "0"; }
 				if(!is_object($sqlgetparent)){ $sqlgetparent = new db; }
-				//content_id, content_heading, content_subheading, content_author, content_icon, content_parent, content_class
 				if(!$sqlgetparent -> db_Select($plugintable, "*", "content_parent='".$id."' ".$query." ".$usedate." ".$classquery." ORDER BY content_order")){
 					$parent = FALSE;
 				}else{
 					while($row = $sqlgetparent -> db_Fetch()){
-
-						//$parent[] = array($content_id, $content_heading, $content_subheading, $content_summary, $content_text, $content_author, $content_icon, $content_file, $content_image, $content_parent, $content_comment, $content_rate, $content_pe, $content_refer, $content_datestamp, $content_class, $content_order, $level);
 
 						$parent[] = array($row['content_id'], $row['content_heading'], $row['content_subheading'], $row['content_summary'], $row['content_text'], $row['content_author'], $row['content_icon'], $row['content_file'], $row['content_image'], $row['content_parent'], $row['content_comment'], $row['content_rate'], $row['content_pe'], $row['content_refer'], $row['content_datestamp'], $row['content_class'], $row['content_order'], $level);
 
@@ -508,18 +388,34 @@ class content{
 					$emptystring = "-------------------------------";
 
 					if($mode == "createcat"){
-							$checkid = $id;
-							$value = $array[$a][9].".".$array[$a][0];
-							if($array[$a][9] == 0){
-									$name = strtoupper($pre.$array[$a][1]);
-									$url = e_SELF."?type.".$array[$a][0].".cat.create.".$array[$a][0];
-									$js = "style='font-weight:bold;' onclick=\"document.location='".$url."'\"";
-									$string .= $rs -> form_option($emptystring, "0", "----");
+							if($sub_action == "edit" && is_numeric($id)){
+									$checkid = $id;
+									
+									if($array[$a][9] == 0){
+											$value = "none";
+											$name = strtoupper($pre.$array[$a][1]);
+											$js = "style='font-weight:bold;'";
+											$string .= $rs -> form_option($emptystring, "0", "----");
+									}else{
+											$value = $array[$a][9];
+											$tmp = explode(".", $array[$a][9]);
+											$name = $pre.$array[$a][1];
+											$js = "";						
+									}
 							}else{
-									$tmp = explode(".", $array[$a][9]);
-									$name = $pre.$array[$a][1];
-									$url = e_SELF."?type.".$tmp[1].".cat.create.".$array[$a][0];
-									$js = "onclick=\"document.location='".$url."'\"";						
+									$checkid = $id;
+									$value = $array[$a][9].".".$array[$a][0];
+									if($array[$a][9] == 0){
+											$name = strtoupper($pre.$array[$a][1]);
+											$url = e_SELF."?type.".$array[$a][0].".cat.create.".$array[$a][0];
+											$js = "style='font-weight:bold;' onclick=\"document.location='".$url."'\"";
+											$string .= $rs -> form_option($emptystring, "0", "----");
+									}else{
+											$tmp = explode(".", $array[$a][9]);
+											$name = $pre.$array[$a][1];
+											$url = e_SELF."?type.".$tmp[1].".cat.create.".$array[$a][0];
+											$js = "onclick=\"document.location='".$url."'\"";						
+									}
 							}
 					}elseif($mode == "create"){
 							$checkid = $sub_action;
@@ -604,11 +500,6 @@ class content{
 				global $rs, $type, $type_id, $plugintable, $aa, $tp, $content_pref, $stylespacer;
 				$string = "";
 
-				$content_pref = $this -> getContentPref($type_id);
-				$thisid = (isset($type_id) ? $type_id : "0");
-				$content_cat_icon_path_large = $this -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$thisid}"]);
-				$content_cat_icon_path_small = $this -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$thisid}"]);
-
 				if(empty($array)){ return FALSE; }
 
 				for($a=0;$a<count($array);$a++){
@@ -675,6 +566,10 @@ class content{
 								$id = $array[$a][0].".".$array[$a][0];
 								$type_id = $array[$a][0];
 							}
+
+							$content_pref = $this -> getContentPref($type_id);
+							$content_cat_icon_path_large = $this -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$type_id}"]);
+							$content_cat_icon_path_small = $this -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$type_id}"]);
 
 							$delete_heading = str_replace("&#39;", "\'", $array[$a][1]);
 							$authordetails = $this -> getAuthor($array[$a][5]);
@@ -985,11 +880,9 @@ function getCat($catid){
 							}
 							$iconstring = $hrefpre."<img src='".$content_icon_path."blank.gif' alt='' style='".$width." ".$border."' />".$hrefpost;
 						}else{
-							//$iconstring = "&nbsp;";
 							$iconstring = "";
 						}
 					}else{
-						//$iconstring = "&nbsp;";
 						$iconstring = "";
 					}
 				}
@@ -1024,11 +917,8 @@ function getCat($catid){
 
 				if(!is_object($sqlcreatemenu)){ $sqlcreatemenu = new db; }
 				if(!$sqlcreatemenu -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class, content_pref as contentprefvalue", "content_id='".$parentid."'  ")){
-					//".$datequery."
 					return FALSE;
-					//echo "error creating the menu";
 				}else{
-					//echo "creating menu is ok ! ";
 					$row = $sqlcreatemenu -> db_Fetch();
 				}
 

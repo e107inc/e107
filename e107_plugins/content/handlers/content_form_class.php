@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.35 $
-|		$Date: 2005-05-14 16:46:43 $
+|		$Revision: 1.36 $
+|		$Date: 2005-05-15 12:29:04 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -806,8 +806,10 @@ class contentform{
 							$text .= "<div style='text-align:center'>".CONTENT_ADMIN_ITEM_LAN_4."</div>";
 						}else{
 							if($content_total < 50 || $letter || $cat){
-									$oText = str_replace("'", "\'", CONTENT_ADMIN_ITEM_LAN_67);
-									$popuphelp = $aa -> popupHelp($oText, "", "", "");
+									if($mode != "contentmanager"){
+										$oText = str_replace("'", "\'", CONTENT_ADMIN_ITEM_LAN_67);
+										$popuphelp = $aa -> popupHelp($oText, "", "", "");
+									}
 									$text .= "
 									".$rs -> form_open("post", e_SELF."?".$type.".".$type_id, "deletecontentform","","", "")."
 									<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -1063,7 +1065,7 @@ class contentform{
 
 
 		function show_contentmanager($mode, $userid="", $username=""){
-						global $sql, $ns, $rs, $type, $type_id, $plugintable, $aa;
+						global $content_shortcodes, $tp, $sql, $ns, $rs, $type, $type_id, $plugintable, $aa;
 						$personalmanagercheck = FALSE;
 
 						if(!$CONTENT_CONTENTMANAGER_TABLE){
@@ -1082,26 +1084,21 @@ class contentform{
 									//	header("location:".e_PLUGIN."content/content.php"); exit;
 								}else{
 									while($row = $sql -> db_Fetch()){
-											$personalmanagercheck = TRUE;
-										
-											$parentheading = $aa -> drawBreadcrumb($prefetchbreadcrumb, $row['content_id'], "nobase", "nolink");
-											for($i=0; $i<count($prefetchbreadcrumb); $i++){
-												if($row['content_id'] == $prefetchbreadcrumb[$i][0]){
-													$catidstring = $prefetchbreadcrumb[$i][3];
-												}
+										$personalmanagercheck = TRUE;
+									
+										$parentheading = $aa -> drawBreadcrumb($prefetchbreadcrumb, $row['content_id'], "nobase", "nolink");
+										for($i=0; $i<count($prefetchbreadcrumb); $i++){
+											if($row['content_id'] == $prefetchbreadcrumb[$i][0]){
+												$catidstring = $prefetchbreadcrumb[$i][3];
 											}
-											$catidstring = str_replace(".","-",$catidstring);
-											$CONTENT_CONTENTMANAGER_ICONEDIT = "<a href='".e_SELF."?".$type.".".$type_id.".c.".$catidstring."'>".CONTENT_ICON_EDIT."</a>";
-											$CONTENT_CONTENTMANAGER_ICONNEW = "<a href='".e_SELF."?".$type.".".$type_id.".create.".$catidstring."'>".CONTENT_ICON_NEW."</a>";
-											$CONTENT_CONTENTMANAGER_CATEGORY = $parentheading;
-											$content_contentmanager_table_string .= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENTMANAGER_TABLE);
+										}
+										$catidstring = str_replace(".","-",$catidstring);
+										$content_contentmanager_table_string .= $tp -> parseTemplate($CONTENT_CONTENTMANAGER_TABLE, FALSE, $content_shortcodes);
 									}
 								}
 							}
 							if($personalmanagercheck == TRUE){
-								$content_contentmanager_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENTMANAGER_TABLE_START);
-								$content_contentmanager_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENTMANAGER_TABLE_END);
-								$text = $content_contentmanager_table_start.$content_contentmanager_table_string.$content_contentmanager_table_end;
+								$text = $CONTENT_CONTENTMANAGER_TABLE_START.$content_contentmanager_table_string.$CONTENT_CONTENTMANAGER_TABLE_END;
 								$ns -> tablerender(CONTENT_ADMIN_ITEM_LAN_56, $text);
 							}else{
 								header("location:".e_PLUGIN."content/content.php"); exit;
@@ -1426,9 +1423,12 @@ class contentform{
 						if($category_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_icon, content_parent", "ORDER BY content_parent", "mode=no_where")){
 							$row = $sql -> db_Fetch();
 
-							$content_pref = $aa -> getContentPref($type_id);
-							$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$type_id}"]);
-							$content_cat_icon_path_small = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$type_id}"]);
+							if($row['content_parent'] == 0){
+								$type_id = $row['content_id'];
+							}else{
+								$tmp = explode(".", $row['content_parent']);
+								$type_id = $tmp[1];
+							}
 
 							$text .= "
 							".$rs -> form_open("post", e_SELF."?".$type.".".$type_id.".cat.manage", "deletecatform","","", "")."

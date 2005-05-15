@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_recent_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-10 09:51:22 $
+|     $Revision: 1.10 $
+|     $Date: 2005-05-15 12:29:04 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -20,6 +20,7 @@
 // ##### CONTENT RECENT LIST --------------------------------------------------
 $CONTENT_RECENT_TABLE_START = "";
 $CONTENT_RECENT_TABLE_END = "";
+global $sc_style, $content_shortcodes, $content_pref, $type_id, $aa, $prefetchbreadcrumb, $row;
 if(!$CONTENT_RECENT_TABLE_START){
 				$CONTENT_RECENT_TABLE_START = "<table class='content_table'>";
 }

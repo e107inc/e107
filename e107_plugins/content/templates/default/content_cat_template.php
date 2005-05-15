@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_cat_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-08 20:01:20 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-15 12:29:04 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -24,6 +24,12 @@ $CONTENT_CAT_LIST_TABLE = "";
 $CONTENT_CAT_LISTSUB_TABLE_START = "";
 $CONTENT_CAT_LISTSUB_TABLE = "";
 $CONTENT_CAT_LISTSUB_TABLE_END = "";
+
+global $sc_style, $content_shortcodes;
+global $CONTENT_CAT_TABLE_ICON, $CONTENT_CAT_TABLE_HEADING, $CONTENT_CAT_TABLE_AMOUNT, $CONTENT_CAT_TABLE_SUBHEADING, $CONTENT_CAT_TABLE_DATE, $CONTENT_CAT_TABLE_AUTHORDETAILS, $CONTENT_CAT_TABLE_EPICONS, $CONTENT_CAT_TABLE_COMMENT, $CONTENT_CAT_TABLE_TEXT;
+$sc_style['CONTENT_CAT_TABLE_AUTHORDETAILS']['pre'] = " / ";
+$sc_style['CONTENT_CAT_TABLE_AUTHORDETAILS']['post'] = " ";
+
 
 // ##### CONTENT CAT ----------------------------------------------------------
 if(!$CONTENT_CAT_TABLE_START){
@@ -44,7 +50,7 @@ if(!$CONTENT_CAT_TABLE){
 								<td class='content_subheading' colspan='2'>{CONTENT_CAT_TABLE_SUBHEADING}</td>								
 							</tr>
 							<tr>
-								<td class='content_info'>{CONTENT_CAT_TABLE_DATE} / {CONTENT_CAT_TABLE_AUTHORDETAILS} {CONTENT_CAT_TABLE_EPICONS}</td>
+								<td class='content_info'>{CONTENT_CAT_TABLE_DATE} {CONTENT_CAT_TABLE_AUTHORDETAILS} {CONTENT_CAT_TABLE_EPICONS}</td>
 								<td class='content_info' style='text-align:right;'>{CONTENT_CAT_TABLE_COMMENT}</td>
 							</tr>
 							<tr>
@@ -93,6 +99,7 @@ if(!$CONTENT_CAT_LIST_TABLE){
 }
 // ##### ----------------------------------------------------------------------
 
+global $aa, $row, $content_pref, $type, $type_id, $tp;
 // ##### CONTENT CAT_LIST SUB -------------------------------------------------
 if(!$CONTENT_CAT_LISTSUB_TABLE_START){
 				$CONTENT_CAT_LISTSUB_TABLE_START = "
@@ -117,6 +124,7 @@ if(!$CONTENT_CAT_LISTSUB_TABLE_END){
 				$CONTENT_CAT_LISTSUB_TABLE_END = "
 				</table>";
 }
+
 // ##### ----------------------------------------------------------------------
 
 ?>

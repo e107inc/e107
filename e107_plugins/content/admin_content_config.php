@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.30 $
-|		$Date: 2005-05-14 16:46:25 $
+|		$Revision: 1.31 $
+|		$Date: 2005-05-15 12:28:46 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -454,7 +454,7 @@ if(!e_QUERY){																//show main categories
 							require_once(e_ADMIN."footer.php");
 							exit;
 					}
-					$aform -> show_main_parent("editcat");
+					//$aform -> show_main_parent("editcat");
 					$aform -> show_cat_create("admin");
 					//$aform -> show_cat_manage("editcat");
 				}else{

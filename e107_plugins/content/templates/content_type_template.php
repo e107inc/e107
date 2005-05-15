@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/content_type_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-03 15:04:23 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-15 12:29:04 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,14 @@ $CONTENT_TYPE_TABLE_SUBMIT = "";
 $CONTENT_TYPE_TABLE_MANAGER = "";
 $CONTENT_TYPE_TABLE_LINE = "";
 $CONTENT_TYPE_TABLE_END = "";
+
+global $sc_style, $content_shortcodes, $contenttotal, $row, $tp;
+
+$sc_style['CONTENT_TYPE_TABLE_TOTAL']['pre'] = "";
+$sc_style['CONTENT_TYPE_TABLE_TOTAL']['post'] = " ";
+
+$sc_style['CONTENT_TYPE_TABLE_HEADING']['pre'] = "";
+$sc_style['CONTENT_TYPE_TABLE_HEADING']['post'] = "";
 
 // ##### CONTENT TYPE LIST --------------------------------------------------
 if(!$CONTENT_TYPE_TABLE_START){
