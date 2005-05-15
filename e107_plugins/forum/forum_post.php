@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-05-01 03:26:56 $
+|     $Revision: 1.28 $
+|     $Date: 2005-05-15 15:10:22 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -177,58 +177,79 @@ if (IsSet($_POST['fpreview'])) {
 	}
 }
 
-
-if (isset($_POST['newthread']) || isset($_POST['reply'])) {
-	if ((isset($_POST['newthread']) && trim(chop($_POST['subject'])) == "") || trim(chop($_POST['post'])) == "") {
+if (isset($_POST['newthread']) || isset($_POST['reply']))
+{
+	$poster = array();
+	if ((isset($_POST['newthread']) && trim(chop($_POST['subject'])) == "") || trim(chop($_POST['post'])) == "")
+	{
 		message_handler("ALERT", 5);
-	} else {
-		if ($fp->flood("forum_t", "thread_datestamp") == FALSE) {
+	}
+	else
+	{
+		if ($fp->flood("forum_t", "thread_datestamp") == FALSE)
+		{
 			echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
 		}
-		if (USER) {
-			$user = USERID;
-		} else {
-			$user = getuser($_POST['anonname']);
-			if (intval($user)) {
+		if (USER)
+		{
+			$poster['post_userid'] = USERID;
+		}
+		else
+		{
+			$poster = getuser($_POST['anonname']);
+			if (intval($poster['post_userid']))
+			{
 				require_once(HEADERF);
 				$ns->tablerender(LAN_20, LAN_310);
-				if (isset($_POST['reply'])) {
+				if (isset($_POST['reply']))
+				{
 					$tmpdata = "reply.".$_POST['anonname'].".".$_POST['subject'].".".$_POST['post'];
-				} else {
+				}
+				else
+				{
 					$tmpdata = "newthread^".$_POST['anonname']."^".$_POST['subject']."^".$_POST['post'];
 				}
 				$sql->db_Insert("tmp", "'$ip', '".time()."', '$tmpdata' ");
 				loginf();
 				require_once(FOOTERF);
 				exit;
-			} else {
-				list($user, $anon_info) = explode('.', $user, 2);
 			}
+//			else
+//			{
+//				list($user, $anon_info) = explode('.', $user, 2);
+//			}
 		}
 		process_upload();
 
 		$post = $tp->toDB($_POST['post']);
 		$subject = $tp->toDB($_POST['subject']);
 		$email_notify = ($_POST['email_notify'] ? 99 : 1);
-		if ($_POST['poll_title'] != "" && $_POST['poll_option'][0] != "" && $_POST['poll_option'][1] != "") {
+		if ($_POST['poll_title'] != "" && $_POST['poll_option'][0] != "" && $_POST['poll_option'][1] != "")
+		{
 			$subject = "[".LAN_402."] ".$subject;
 		}
 
-		if ($_POST['threadtype'] == 2) {
+		if ($_POST['threadtype'] == 2)
+		{
 			$subject = "[".LAN_403."] ".$subject;
-		} elseif($_POST['threadtype'] == 1) {
+		}
+		elseif($_POST['threadtype'] == 1)
+		{
 			$subject = "[".LAN_404."] ".$subject;
 		}
 
 		$threadtype = intval($_POST['threadtype']);
-		if (isset($_POST['reply'])) {
+		if (isset($_POST['reply']))
+		{
 			$parent = $thread_info['head']['thread_id'];
 			$forum_id = $thread_info['head']['thread_forum_id'];
-		} else {
+		}
+		else
+		{
 			$parent = 0;
 			$forum_id = $id;
 		}
-		$iid = $forum->thread_insert($subject, $post, $forum_id, $parent, $user, $email_notify, $threadtype, $anon_info);
+		$iid = $forum->thread_insert($subject, $post, $forum_id, $parent, $poster, $email_notify, $threadtype);
 		if($iid === -1)
 		{
 			require_once(HEADERF);
@@ -459,26 +480,42 @@ function isAuthor($thread) {
 	return ($row['thread_user'] == USERID || ADMIN === TRUE);
 }
 
-function getuser($name) {
+function getuser($name)
+{
 	global $tp, $sql, $e107;
+	$ret = array();
+	$ip = $e107->getip();
 	$name = preg_replace("#\'#", "", $name);
-	if (!$name) {
+	if (!$name)
+	{
 		// anonymous guest
-		$name = "0.".LAN_311.chr(1).$ip;
-	} else {
-		if ($sql->db_Select("user", "user_id, user_ip", "user_name='$name' ")) {
+//		$name = "0.".LAN_311.chr(1).$ip;
+		$ret['post_userid'] = "0";
+		$ret['post_anon_name'] = LAN_311;
+		return $ret;
+	}
+	else
+	{
+		if ($sql->db_Select("user", "user_id, user_ip", "user_name='{$name}'"))
+		{
 			$row = $sql->db_Fetch();
-			if ($row['user_ip'] == $ip) {
-				$name = $row['user_id'];
-			} else {
+			if ($row['user_ip'] == $ip)
+			{
+				$ret['post_userid'] = $row['user_id'];
+			}
+			else
+			{
 				return FALSE;
 			}
-		} else {
-			$ip = $e107->getip();
-			$name = "0.".substr($tp->toDB($name), 0, 20).chr(1).$ip;
+		}
+		else
+		{
+//			$name = "0.".substr($tp->toDB($name), 0, 20).chr(1).$ip;
+			$ret['post_userid'] = "0";
+			$ret['post_anon_name'] = $tp->toDB($name);
 		}
 	}
-	return $name;
+	return $ret;
 }
 
 function loginf() {

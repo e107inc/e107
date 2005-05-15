@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-05-07 02:28:20 $
+|     $Revision: 1.24 $
+|     $Date: 2005-05-15 15:10:22 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -41,14 +41,15 @@ class e107forum {
 
 	function update_lastpost($type, $id) {
 		global $sql;
-		if ($type == 'thread') {
+		if ($type == 'thread')
+		{
 			$id = intval($id);
 			$thread_info = $this->thread_get_lastpost($id);
-			if ($thread_info) {
-				$thread_lastuser = $thread_info['thread_user'].'.';
-				if ($thread_info['thread_user']) {
-					$thread_lastuser .= $thread_info['user_name'];
-					} else {
+			if ($thread_info)
+			{
+				$thread_lastuser = $thread_info['thread_user'];
+				if (!$thread_info['thread_user'])
+				{
 					$tmp = explode(chr(1), $thread_info['thread_anon']);
 					$thread_lastuser .= $tmp[0];
 				}
@@ -90,17 +91,17 @@ class e107forum {
 							if ($lp_info['thread_anon'] != '')
 							{
 								$anon = explode(chr(1), $lp_info['thread_anon']);
-								$forum_lpinfo = "0".chr(1).".{$anon[0]}";
-								}
-								else
-								{
-								$forum_lpinfo = "{$lp_info['thread_user']}".chr(1)."{$lp_info['user_name']}";
+								$forum_lp_user = "0.{$anon[0]}";
 							}
-							$forum_lpinfo .= chr(1)."{$lp_info['thread_datestamp']}".chr(1)."{$row['thread_id']}";
+							else
+							{
+								$forum_lp_user = $lp_info['thread_user'];
+							}
+							$forum_lp_info = $lp_info['thread_datestamp'].chr(1).$row['thread_id'];
 							$current_lastpost = $lp_info['thread_datestamp'];
 						}
 					}
-					$sql2->db_Update('forum', "forum_lastpost = '{$forum_lpinfo}' WHERE forum_id={$id}");
+					$sql2->db_Update('forum', "forum_lastpost_user = '{$forum_lp_user}', forum_lastpost_info = '{$forum_lp_info}' WHERE forum_id={$id}");
 					//	echo "Forum $id lastpost info: $forum_lpinfo <br />";
 					//	echo "Updated $cnt threads <br />";
 				}
@@ -145,12 +146,21 @@ class e107forum {
 		return FALSE;
 	}
 
-	function forum_getforums($forum_id) {
+	function forum_getforums() {
 		global $sql;
-		$forum_id = intval($forum_id);
-		if ($sql->db_Select('forum', '*', "forum_parent='".$forum_id."' ORDER BY forum_order ASC ")) {
-			while ($row = $sql->db_Fetch()) {
-				$ret[] = $row;
+//		$forum_id = intval($forum_id);
+		$qry = "
+		SELECT f.*, u.user_name FROM #forum AS f
+		LEFT JOIN #user AS u ON f.forum_lastpost_user = u.user_id
+		WHERE forum_parent != 0
+		ORDER BY f.forum_order ASC
+		";
+//		if ($sql->db_Select('forum', '*', "forum_parent='".$forum_id."' ORDER BY forum_order ASC ")) {
+		if ($sql->db_Select_gen($qry))
+		{
+			while ($row = $sql->db_Fetch())
+			{
+				$ret[$row['forum_parent']][] = $row;
 			}
 			return $ret;
 		}
@@ -218,11 +228,10 @@ class e107forum {
 		$forum_id = intval($forum_id);
 		global $sql;
 		$qry = "
-		SELECT t.*, u.user_name from #forum_t as t
-		LEFT JOIN #user AS u
-		ON t.thread_user = u.user_id
-		WHERE t.thread_forum_id = $forum_id
-		AND t.thread_parent = 0
+		SELECT t.*, u.user_name, lpu.user_name AS lastpost_username from #forum_t as t
+		LEFT JOIN #user AS u ON t.thread_user = u.user_id
+		LEFT JOIN #user AS lpu ON t.thread_lastuser = lpu.user_id
+		WHERE t.thread_forum_id = $forum_id AND t.thread_parent = 0
 		ORDER BY
 		t.thread_s DESC,
 		t.thread_lastpost DESC,
@@ -238,43 +247,47 @@ class e107forum {
 		return $ret;
 	}
 
-	function thread_get_lastpost($forum_id) {
+	function thread_get_lastpost($forum_id)
+	{
 		$forum_id = intval($forum_id);
 		global $sql;
 		//		$ftab = MPREFIX.'forum_t';
 		//		$utab = MPREFIX.'user';
-		if ($sql->db_Count('forum_t', '(*)', "WHERE thread_parent = {$forum_id} ")) {
+		if ($sql->db_Count('forum_t', '(*)', "WHERE thread_parent = {$forum_id} "))
+		{
 			$where = "WHERE t.thread_parent = $forum_id ";
-			} else {
+		}
+		else
+		{
 			$where = "WHERE t.thread_id = $forum_id ";
 		}
 		$qry = "
-		SELECT t.thread_user,t.thread_anon,t.thread_datestamp, u.user_name
-		from #forum_t AS t
-		LEFT JOIN #user AS u
-		ON t.thread_user = u.user_id
+		SELECT t.thread_user, t.thread_anon, t.thread_datestamp, u.user_name FROM #forum_t AS t
+		LEFT JOIN #user AS u ON t.thread_user = u.user_id
 		{$where}
-		ORDER BY
-		t.thread_datestamp DESC
-		LIMIT 0,1
+		ORDER BY t.thread_datestamp DESC	LIMIT 0,1
 		";
-		if ($sql->db_Select_gen($qry)) {
+		if ($sql->db_Select_gen($qry))
+		{
 			return $sql->db_Fetch();
 		}
 		return FALSE;
 	}
 
-	function forum_get_topic_count($forum_id) {
+	function forum_get_topic_count($forum_id)
+	{
 		global $sql;
 		return $sql->db_Count("forum_t", "(*)", " WHERE thread_forum_id='".$forum_id."' AND thread_parent='0' ");
 	}
 
-	function thread_getnext($thread_id, $forum_id, $from = 0, $limit = 100) {
+	function thread_getnext($thread_id, $forum_id, $from = 0, $limit = 100)
+	{
 		global $sql;
 		$forum_id = intval($forum_id);
 		global $sql;
 		$ftab = MPREFIX.'forum_t';
-		while (!$found) {
+		while (!$found)
+		{
 			$qry = "
 			SELECT t.thread_id from #forum_t AS t
 			WHERE t.thread_forum_id = $forum_id
@@ -286,33 +299,43 @@ class e107forum {
 			LIMIT {$from}, {$limit}
 			";
 			//			echo $qry.'<br />';
-			if ($sql->db_Select_gen($qry)) {
+			if ($sql->db_Select_gen($qry))
+			{
 				$i = 0;
-				while ($row = $sql->db_Fetch()) {
+				while ($row = $sql->db_Fetch())
+				{
 					$threadList[$i++] = $row['thread_id'];
 				}
 				//$this->showvar($threadList);
 				$id = array_search($thread_id, $threadList);
-				if ($id) {
-					if ($id != 99) {
+				if ($id)
+				{
+					if ($id != 99)
+					{
 						return $threadList[$id+1];
-						} else {
+					}
+					else
+					{
 						return $this->thread_getnext($thread_id, $forum_id, $from+99, 2);
 					}
 				}
-				} else {
+			}
+			else
+			{
 				return FALSE;
 			}
 			$from += 100;
 		}
 	}
 
-	function thread_getprev($thread_id, $forum_id, $from = 0, $limit = 100) {
+	function thread_getprev($thread_id, $forum_id, $from = 0, $limit = 100)
+	{
 		global $sql;
 		$forum_id = intval($forum_id);
 		global $sql;
 		$ftab = MPREFIX.'forum_t';
-		while (!$found) {
+		while (!$found)
+		{
 			$qry = "
 			SELECT t.thread_id from #forum_t AS t
 			WHERE t.thread_forum_id = $forum_id
@@ -323,43 +346,57 @@ class e107forum {
 			t.thread_datestamp DESC
 			LIMIT {$from}, {$limit}
 			";
-			if ($sql->db_Select_gen($qry)) {
+			if ($sql->db_Select_gen($qry))
+			{
 				$i = 0;
-				while ($row = $sql->db_Fetch()) {
+				while ($row = $sql->db_Fetch())
+				{
 					$threadList[$i++] = $row['thread_id'];
 				}
 				$id = array_search($thread_id, $threadList);
-				if ($id !== FALSE) {
-					if ($id != 0) {
+				if ($id !== FALSE)
+				{
+					if ($id != 0)
+					{
 						return $threadList[$id-1];
-						} else {
-						if ($from == 0) {
+					}
+					else
+					{
+						if ($from == 0)
+						{
 							return FALSE;
 						}
 						return $this->thread_getprev($thread_id, $forum_id, $from-1, 2);
 					}
 				}
-				} else {
+			}
+			else
+			{
 				return FALSE;
 			}
 			$from += 100;
 		}
 	}
 
-	function thread_get($thread_id, $start = 0, $limit = 10) {
+	function thread_get($thread_id, $start = 0, $limit = 10)
+	{
 		$thread_id = intval($thread_id);
 		global $sql;
 		$ftab = MPREFIX.'forum_t';
 		$utab = MPREFIX.'user';
 
-		if ($start === "last") {
+		if ($start === "last")
+		{
 			$tcount = $this->thread_count($thread_id);
 			$start = max(0, $tcount-$limit);
 		}
 		$start = max(0, $start);
-		if ($start != 0) {
+		if ($start != 0)
+		{
 			$array_start = 0;
-			} else {
+		}
+		else
+		{
 			$limit--;
 			$array_start = 1;
 		}
@@ -373,9 +410,11 @@ class e107forum {
 		ORDER by t.thread_datestamp {$sortdir}
 		LIMIT {$start},".($limit);
 		$ret = array();
-		if ($sql->db_Select_gen($qry)) {
+		if ($sql->db_Select_gen($qry))
+		{
 			$i = $array_start;
-			while ($row = $sql->db_Fetch()) {
+			while ($row = $sql->db_Fetch())
+			{
 				$ret[$i] = $row;
 				$i++;
 			}
@@ -387,23 +426,27 @@ class e107forum {
 		WHERE t.thread_id = $thread_id
 		LIMIT 0,1
 		";
-		if ($sql->db_Select_gen($qry)) {
+		if ($sql->db_Select_gen($qry))
+		{
 			$row = $sql->db_Fetch();
 			$ret['head'] = $row;
-			if (!array_key_exists(0, $ret)) {
+			if (!array_key_exists(0, $ret))
+			{
 				$ret[0] = $row;
 			}
 		}
 		return $ret;
 	}
 
-	function thread_count($thread_id) {
+	function thread_count($thread_id)
+	{
 		$thread_id = intval($thread_id);
 		global $sql;
 		return $sql->db_Count('forum_t', '(*)', "WHERE thread_parent = $thread_id")+1;
 	}
 
-	function thread_count_list($thread_list) {
+	function thread_count_list($thread_list)
+	{
 		global $sql;
 		$qry = "
 		SELECT t.thread_parent, t.COUNT(*) as thread_replies
@@ -412,22 +455,26 @@ class e107forum {
 		IN {$thread_list}
 		GROUP BY t.thread_parent
 		";
-		if ($sql->db_Select_gen($qry)) {
-			while ($row = $sql->db_Fetch()) {
+		if ($sql->db_Select_gen($qry))
+		{
+			while ($row = $sql->db_Fetch())
+			{
 				$ret[$row['thread_parent']] = $row['thread_replies'];
 			}
 		}
 		return $ret;
 	}
 
-	function thread_incview($thread_id) {
+	function thread_incview($thread_id)
+	{
 		$thread_id = intval($thread_id);
 		global $sql;
 		return $sql->db_Update("forum_t", "thread_views=thread_views+1 WHERE thread_id='$thread_id' ");
 	}
 
 
-	function thread_get_postinfo($thread_id, $head = FALSE) {
+	function thread_get_postinfo($thread_id, $head = FALSE)
+	{
 		$thread_id = intval($thread_id);
 		global $sql;
 		$ret = array();
@@ -438,18 +485,25 @@ class e107forum {
 		WHERE t.thread_id = $thread_id
 		LIMIT 0,1
 		";
-		if ($sql->db_Select_gen($qry)) {
+		if ($sql->db_Select_gen($qry))
+		{
 			$ret[0] = $sql->db_Fetch();
-			} else {
+		}
+		else
+		{
 			return FALSE;
 		}
-		if ($head == FALSE) {
+		if ($head == FALSE)
+		{
 			return $ret;
 		}
 		$parent_id = $ret[0]['thread_parent'];
-		if ($parent_id == 0) {
+		if ($parent_id == 0)
+		{
 			$ret['head'] = $ret[0];
-			} else {
+		}
+		else
+		{
 			$qry = "
 			SELECT t.*, u.user_name, u.user_id from #forum_t AS t
 			LEFT JOIN #user AS u
@@ -457,7 +511,8 @@ class e107forum {
 			WHERE t.thread_id = {$parent_id}
 			LIMIT 0,1
 			";
-			if ($sql->db_Select_gen($qry)) {
+			if ($sql->db_Select_gen($qry))
+			{
 				$row = $sql->db_Fetch();
 				$ret['head'] = $row;
 			}
@@ -465,43 +520,77 @@ class e107forum {
 		return $ret;
 	}
 
-	function thread_insert($thread_name, $thread_thread, $thread_forum_id, $thread_parent, $thread_user, $thread_active, $thread_s, $thread_anon) {
+	//	function thread_insert($thread_name, $thread_thread, $thread_forum_id, $thread_parent, $thread_user, $thread_active, $thread_s, $thread_anon) {
+	function thread_insert($thread_name, $thread_thread, $thread_forum_id, $thread_parent, $thread_poster, $thread_active, $thread_s)
+	{
 		$post_time = time();
-		global $sql, $tp, $pref;
+		global $sql, $tp, $pref, $e107;
+		$ip = $e107->getip();
 		//Check for duplicate post
 		if ($sql->db_Count('forum_t', '(*)', "WHERE thread_thread='$thread_thread' and thread_datestamp > ".($post_time - 180)))
 		{
 			return -1;
 		}
-		if ($thread_anon) {
+
+/*
+		if ($thread_anon)
+		{
 			$tmp = explode(chr(1), $thread_anon);
 			$lastpost = $tmp[0].".".$post_time;
 			$lastuser = '0.'.$tmp[0];
 			$lp_lastuser = "0".chr(1).$tmp[0];
 			$lp_name = $tmp[0];
-			} else {
+		}
+		else
+		{
 			$lastpost = $thread_user.".".$post_time;
 			$lastuser = $thread_user.'.'.USERNAME;
 			$lp_lastuser = $thread_user.chr(1).USERNAME;
 			$lp_name = USERNAME;
 		}
-		//Add post to thread
-		if ($thread_parent) {
-			$lp_info = "";
-			} else {
-			$lp_info = $lastuser;
+*/
+		if($thread_poster['post_anon_name'])
+		{
+			$lp_user_info = "0.".$thread_poster['post_anon_name'];
 		}
-		$vals = "0,'$thread_name','$thread_thread','$thread_forum_id',$post_time,'$thread_parent','$thread_user',0,$thread_active,$post_time,$thread_s,'{$thread_anon}',0,'{$lp_info}', 0";
+		else
+		{
+			$lp_user_info = $thread_poster['post_userid'];
+		}
+
+		//Add post to thread
+		if ($thread_parent)
+		{
+			$thread_lp_info = "";
+		}
+		else
+		{
+//			$lp_info = $lastuser;
+			$thread_lp_info = $lp_user_info;
+		}
+		
+		$anon_info = ($thread_poster['post_anon_name'] ? $thread_poster['post_anon_name'].chr(1).$ip : "");
+		$vals = "0, '$thread_name', '$thread_thread', '$thread_forum_id', $post_time, '$thread_parent', '{$thread_poster['post_userid']}', 0, $thread_active, $post_time, $thread_s, '{$anon_info}', 0, '{$thread_lp_info}', 0";
 		$newthread_id = $sql->db_Insert('forum_t', $vals);
 
-		if (USER) {
+		// Increment user thread count and set user as viewed this thread
+		if (USER)
+		{
 			$sql->db_Update('user', "user_forums=user_forums+1, user_viewed='".USERVIEWED.".{$newthread_id}.' WHERE user_id='".USERID."' ");
 		}
+
 		//If post is a reply
-		if ($thread_parent) {
+		if ($thread_parent)
+		{
+			$forum_lp_info = $post_time.chr(1).$thread_parent;
 			$gen = new convert;
-			$sql->db_Update('forum', "forum_replies=forum_replies+1, forum_lastpost='{$lp_lastuser}".chr(1)."{$post_time}".chr(1)."{$thread_parent}' WHERE forum_id='$thread_forum_id' ");
-			$sql->db_Update('forum_t', "thread_lastpost={$post_time},thread_lastuser='{$lastuser}', thread_total_replies=thread_total_replies+1 WHERE thread_id = {$thread_parent}");
+			// Update main forum with last post info and increment reply count
+//			$sql->db_Update('forum', "forum_replies=forum_replies+1, forum_lastpost_user='{$thread_poster['post_userid'])', _time}".chr(1)."{$thread_parent}' WHERE forum_id='$thread_forum_id' ");
+			$sql->db_Update('forum', "forum_replies=forum_replies+1, forum_lastpost_user='{$lp_user_info}', forum_lastpost_info = '{$forum_lp_info}' WHERE forum_id='$thread_forum_id' ");
+
+			// Update head post with last post info and increment reply count
+			$sql->db_Update('forum_t', "thread_lastpost={$post_time},thread_lastuser='{$lp_user_info}', thread_total_replies=thread_total_replies+1 WHERE thread_id = {$thread_parent}");
+
 			$parent_thread = $this->thread_get_postinfo($thread_parent);
 			global $PLUGINS_DIRECTORY;
 			$datestamp = $gen->convert_date($post_time, "long");
@@ -512,7 +601,8 @@ class e107forum {
 				$pref['forum_eprefix'] = "[forum]";
 			}
 			//   Send email to orinator of flagged
-			if ($parent_thread[0]['thread_active'] == 99) {
+			if ($parent_thread[0]['thread_active'] == 99)
+			{
 				$gen = new convert;
 				$email_name = $parent_thread[0]['user_name'];
 				$message = LAN_384.SITENAME.".\n\n". LAN_382.$datestamp."\n". LAN_94.": ".$lp_name."\n\n". LAN_385.$email_post."\n\n". LAN_383."\n\n".$mail_link;
@@ -521,18 +611,24 @@ class e107forum {
 			}
 
 			//   Send email to all users tracking thread
-			if ($sql->db_Select("user", "*", "user_realm REGEXP('-".$thread_parent."-') ")) {
+			if ($sql->db_Select("user", "*", "user_realm REGEXP('-".$thread_parent."-') "))
+			{
 				include_once(e_HANDLER.'mail.php');
-				while ($row = $sql->db_Fetch()) {
+				while ($row = $sql->db_Fetch())
+				{
 					$message = LAN_385.SITENAME.".\n\n". LAN_382.$gen->convert_date(time(), "long")."\n". LAN_94.": ".$lp_name."\n\n". LAN_385.$email_post."\n\n". LAN_383."\n\n".$mail_link;
-					if ($row['user_email']) {
+					if ($row['user_email'])
+					{
 						sendemail($row['user_email'], $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message);
 					}
 				}
 			}
-			} else {
+		}
+		else
+		{
 			//post is a new thread
-			$sql->db_Update('forum', "forum_threads=forum_threads+1, forum_lastpost='{$lp_lastuser}".chr(1)."{$post_time}".chr(1)."{$newthread_id}' WHERE forum_id='$thread_forum_id' ");
+			$forum_lp_info = $post_time.chr(1).$newthread_id;
+			$sql->db_Update('forum', "forum_threads=forum_threads+1, forum_lastpost_user='{$lp_user_info}', forum_lastpost_info = '{$forum_lp_info}' WHERE forum_id='$thread_forum_id' ");
 		}
 
 		return $newthread_id;
@@ -558,13 +654,13 @@ class e107forum {
 		}
 		return $ret;
 	}
-	
+
 	function forum_prune($type, $days, $forumArray)
 	{
 		global $sql;
 		$prunedate = time() - ($days * 86400);
 		$forumList = implode(",", $forumArray);
-		
+
 		if($type == 'delete')
 		{
 			//Get list of threads to prune
@@ -598,7 +694,7 @@ class e107forum {
 			return FORLAN_8." ".$pruned." ".FORLAN_91;
 		}
 	}
-	
+
 	function forum_update_counts($forumID)
 	{
 		global $sql;
@@ -627,11 +723,15 @@ class e107forum {
 *
 * @access public
 */
-function img_path($filename, $eMLANG_folder = FALSE, $eMLANG_pref = FALSE) {
+function img_path($filename, $eMLANG_folder = FALSE, $eMLANG_pref = FALSE)
+{
 	global $pref;
-	if ($eMLANG_folder) {
+	if ($eMLANG_folder)
+	{
 		return eMLANG_path($filename, $eMLANG_folder);
-		} else {
+	}
+	else
+	{
 		if(file_exists(THEME.'forum/'.$filename))
 		{
 			$image = THEME.'forum/'.$filename;
@@ -651,22 +751,29 @@ function img_path($filename, $eMLANG_folder = FALSE, $eMLANG_pref = FALSE) {
 	return $image;
 }
 
-function eMLANG_path($file_name, $sub_folder) {
-	if (file_exists(THEME.$sub_folder."/".e_LANGUAGE."/".$file_name)) {
+function eMLANG_path($file_name, $sub_folder)
+{
+	if (file_exists(THEME.$sub_folder."/".e_LANGUAGE."/".$file_name))
+	{
 		return THEME.$sub_folder."/".e_LANGUAGE."/".$file_name;
 	}
-	if (file_exists(THEME.$sub_folder."/".$file_name)) {
+	if (file_exists(THEME.$sub_folder."/".$file_name))
+	{
 		return THEME.$sub_folder."/".$file_name;
 	}
-	if (file_exists(e_IMAGE.$sub_folder."/".e_LANGUAGE."/".$file_name)) {
+	if (file_exists(e_IMAGE.$sub_folder."/".e_LANGUAGE."/".$file_name))
+	{
 		return e_IMAGE.$sub_folder."/".e_LANGUAGE."/".$file_name;
 	}
 	return e_PLUGIN.$sub_folder."/images/".$file_name;
 }
 
-if (file_exists(THEME.'forum/forum_icons_template.php')) {
+if (file_exists(THEME.'forum/forum_icons_template.php'))
+{
 	require_once(THEME.'forum/forum_icons_template.php');
-	} else {
+}
+else
+{
 	require_once(e_PLUGIN.'forum/templates/forum_icons_template.php');
 }
 
