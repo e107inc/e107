@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-05-02 16:47:54 $
+|     $Revision: 1.26 $
+|     $Date: 2005-05-15 15:10:22 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -227,10 +227,10 @@ echo "<script type=\"text/javascript\">
 require_once(FOOTERF);
 	
 	
-function parse_thread($thread_info) {
-	global $forum, $tp, $FORUM_VIEW_FORUM, $gen, $aj, $pref, $forum_id, $menu_pref;
+function parse_thread($thread_info)
+{
+	global $forum, $tp, $FORUM_VIEW_FORUM, $gen, $pref, $forum_id, $menu_pref;
 	$text = "";
-	 
 	$VIEWS = $thread_info['thread_views'];
 	$REPLIES = $thread_info['thread_total_replies'];
 
@@ -238,26 +238,22 @@ function parse_thread($thread_info) {
 	 
 	if ($REPLIES) {
 		$lastpost_datestamp = $gen->convert_date($thread_info['thread_lastpost'], 'forum');
-		/*
-		changes by jalist 27/01/2005:
-		if lastpost name has period(s) in it list/explode would fail
-		*/
-		list($lastpost_id, $lastpost_name) = explode('.', $thread_info['thread_lastuser'],2);
-//		$count = count($lastpost);
-//		$lastpost_id = $lastpost[0];
-//		$lastpost_name = "";
-//		if (count($lastpost) > 2) {
-//			for($a = 1; $a <= ($count-1); $a++) {
-//				$lastpost_name .= $lastpost[$a];
-//			}
-//		} else {
-//			$lastpost_name = $lastpost[($count-1)];
-//		}
-		if (!$lastpost_id) {
-			$LASTPOST = $lastpost_name.'<br />'.$lastpost_datestamp;
-		} else {
-			$LASTPOST = "<a href='".e_BASE."user.php?id.".$lastpost_id."'>".$lastpost_name."</a><br />".$lastpost_datestamp;
+		
+		if($thread_info['lastpost_username'])
+		{
+			$LASTPOST = "<a href='".e_BASE."user.php?id.".$thread_info['thread_lastuser']."'>".$thread_info['lastpost_username']."</a><br />".$lastpost_datestamp;
 		}
+		else
+		{
+			$LASTPOST = $tp->toHTML(substr($thread_info['thread_lastuser'], 2)).'<br />'.$lastpost_datestamp;
+		}
+			
+			
+//		if (!$lastpost_id) {
+//			$LASTPOST = $lastpost_name.'<br />'.$lastpost_datestamp;
+//		} else {
+//			$LASTPOST = "<a href='".e_BASE."user.php?id.".$lastpost_id."'>".$lastpost_name."</a><br />".$lastpost_datestamp;
+//		}
 	} else {
 		$REPLIES = LAN_317;
 		$LASTPOST = " - ";
