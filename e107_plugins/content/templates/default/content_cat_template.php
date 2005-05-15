@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_cat_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-15 12:29:04 $
+|     $Revision: 1.8 $
+|     $Date: 2005-05-15 14:45:14 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -26,9 +26,19 @@ $CONTENT_CAT_LISTSUB_TABLE = "";
 $CONTENT_CAT_LISTSUB_TABLE_END = "";
 
 global $sc_style, $content_shortcodes;
-global $CONTENT_CAT_TABLE_ICON, $CONTENT_CAT_TABLE_HEADING, $CONTENT_CAT_TABLE_AMOUNT, $CONTENT_CAT_TABLE_SUBHEADING, $CONTENT_CAT_TABLE_DATE, $CONTENT_CAT_TABLE_AUTHORDETAILS, $CONTENT_CAT_TABLE_EPICONS, $CONTENT_CAT_TABLE_COMMENT, $CONTENT_CAT_TABLE_TEXT;
+global $aa, $row, $type, $type_id, $content_pref, $datestamp, $tp, $comment_total, $gen, $authordetails, $rater;
+
 $sc_style['CONTENT_CAT_TABLE_AUTHORDETAILS']['pre'] = " / ";
 $sc_style['CONTENT_CAT_TABLE_AUTHORDETAILS']['post'] = " ";
+
+$sc_style['CONTENT_CAT_TABLE_RATING']['pre'] = "<tr><td class='content_rate' colspan='2'>";
+$sc_style['CONTENT_CAT_TABLE_RATING']['post'] = "</td></tr>";
+
+$sc_style['CONTENT_CAT_TABLE_TEXT']['pre'] = "<tr><td class='content_text' colspan='2'>";
+$sc_style['CONTENT_CAT_TABLE_TEXT']['post'] = "</td></tr>";
+
+$sc_style['CONTENT_CAT_TABLE_SUBHEADING']['pre'] = "<tr><td class='content_subheading' colspan='2'>";
+$sc_style['CONTENT_CAT_TABLE_SUBHEADING']['post'] = "</td></tr>";
 
 
 // ##### CONTENT CAT ----------------------------------------------------------
@@ -46,16 +56,13 @@ if(!$CONTENT_CAT_TABLE){
 								<td class='content_heading'>{CONTENT_CAT_TABLE_HEADING}</td>
 								<td class='content_info' style='text-align:right;'>{CONTENT_CAT_TABLE_AMOUNT}</td>
 							</tr>
-							<tr>
-								<td class='content_subheading' colspan='2'>{CONTENT_CAT_TABLE_SUBHEADING}</td>								
-							</tr>
+							{CONTENT_CAT_TABLE_SUBHEADING}
 							<tr>
 								<td class='content_info'>{CONTENT_CAT_TABLE_DATE} {CONTENT_CAT_TABLE_AUTHORDETAILS} {CONTENT_CAT_TABLE_EPICONS}</td>
 								<td class='content_info' style='text-align:right;'>{CONTENT_CAT_TABLE_COMMENT}</td>
 							</tr>
-							<tr>
-								<td class='content_text' colspan='2'>{CONTENT_CAT_TABLE_TEXT}</td>
-							</tr>
+							{CONTENT_CAT_TABLE_TEXT}
+							{CONTENT_CAT_TABLE_RATING}
 						</table>
 					</td>
 				</tr>
@@ -67,39 +74,49 @@ if(!$CONTENT_CAT_TABLE_END){
 }
 // ##### ----------------------------------------------------------------------
 
+$sc_style['CONTENT_CAT_LIST_TABLE_ICON']['pre'] = "<td class='content_icon'>";
+$sc_style['CONTENT_CAT_LIST_TABLE_ICON']['post'] = "</td>";
+
+$sc_style['CONTENT_CAT_LIST_TABLE_RATING']['pre'] = "<tr><td class='content_rate' colspan='2'>";
+$sc_style['CONTENT_CAT_LIST_TABLE_RATING']['post'] = "</td></tr>";
+
+$sc_style['CONTENT_CAT_LIST_TABLE_SUBHEADING']['pre'] = "<tr><td class='content_subheading' colspan='2'>";
+$sc_style['CONTENT_CAT_LIST_TABLE_SUBHEADING']['post'] = "</td></tr>";
+
+$sc_style['CONTENT_CAT_LIST_TABLE_TEXT']['pre'] = "<tr><td class='content_spacer' colspan='2'></td></tr><tr><td class='content_text' colspan='2'>";
+$sc_style['CONTENT_CAT_LIST_TABLE_TEXT']['post'] = "</td></tr>";
+
 // ##### CONTENT CAT_LIST -----------------------------------------------------
 if(!$CONTENT_CAT_LIST_TABLE){
 				$CONTENT_CAT_LIST_TABLE = "
 				<table class='content_table' cellpadding='0' cellspacing='0'>
 				<tr>
-					".($CONTENT_CAT_LIST_TABLE_ICON ? "<td class='content_icon'>{CONTENT_CAT_LIST_TABLE_ICON}</td>" :"")."
+					{CONTENT_CAT_LIST_TABLE_ICON}
 					<td>
 						<table style='width:100%;' cellpadding='0' cellspacing='0'>
 							<tr>
 								<td class='content_heading'>{CONTENT_CAT_LIST_TABLE_HEADING}</td>
 								<td class='content_info' style='text-align:right;'>{CONTENT_CAT_LIST_TABLE_AMOUNT}</td>
 							</tr>
-							<tr>
-								<td class='content_subheading' colspan='2'>{CONTENT_CAT_LIST_TABLE_SUBHEADING}</td>								
-							</tr>
+							{CONTENT_CAT_LIST_TABLE_SUBHEADING}
 							<tr>
 								<td class='content_info'>{CONTENT_CAT_LIST_TABLE_DATE} / {CONTENT_CAT_LIST_TABLE_AUTHORDETAILS} {CONTENT_CAT_LIST_TABLE_EPICONS}</td>
 								<td class='content_info' style='text-align:right;'>{CONTENT_CAT_LIST_TABLE_COMMENT}</td>
 							</tr>
-							<tr>
-								<td class='content_rate' colspan='2'>{CONTENT_CAT_LIST_TABLE_RATING}</td>
-							</tr>
+							{CONTENT_CAT_LIST_TABLE_RATING}
 						</table>
 					</td>
 				</tr>
-				<tr><td class='content_spacer' colspan='2'></td></tr>
-				<tr><td class='content_text' colspan='2'>{CONTENT_CAT_LIST_TABLE_TEXT}</td></tr>
+				{CONTENT_CAT_LIST_TABLE_TEXT}
 				<tr><td class='content_spacer' colspan='2'></td></tr>
 				</table>\n";
 }
 // ##### ----------------------------------------------------------------------
 
-global $aa, $row, $content_pref, $type, $type_id, $tp;
+
+$sc_style['CONTENT_CAT_LISTSUB_TABLE_SUBHEADING']['pre'] = "<tr><td class='content_subheading' colspan='2'>";
+$sc_style['CONTENT_CAT_LISTSUB_TABLE_SUBHEADING']['post'] = "</td></tr>";
+
 // ##### CONTENT CAT_LIST SUB -------------------------------------------------
 if(!$CONTENT_CAT_LISTSUB_TABLE_START){
 				$CONTENT_CAT_LISTSUB_TABLE_START = "
@@ -115,7 +132,7 @@ if(!$CONTENT_CAT_LISTSUB_TABLE){
 								<td class='content_heading'>{CONTENT_CAT_LISTSUB_TABLE_HEADING}</td>
 								<td class='content_info' style='text-align:right;'>{CONTENT_CAT_LISTSUB_TABLE_AMOUNT}</td>
 							</tr>
-							<tr><td class='content_subheading' colspan='2'>{CONTENT_CAT_LISTSUB_TABLE_SUBHEADING}</td></tr>
+							{CONTENT_CAT_LISTSUB_TABLE_SUBHEADING}
 						</table>
 					</td>
 				</tr>\n";

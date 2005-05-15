@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.36 $
-|		$Date: 2005-05-15 12:28:46 $
+|		$Revision: 1.37 $
+|		$Date: 2005-05-15 14:44:41 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -354,7 +354,7 @@ function show_content_search_menu(){
 
 function show_content_search_result($searchkeyword){
 				global $content_shortcodes, $type, $type_id, $ns, $rs, $tp, $action, $sub_action, $id, $id2;
-				global $plugintable, $gen, $aa, $content_pref, $datequery;
+				global $plugintable, $gen, $aa, $content_pref, $datequery, $gen;
 
 				$querysr = " (content_heading REGEXP '".$searchkeyword."' OR content_subheading REGEXP '".$searchkeyword."' OR content_summary REGEXP '".$searchkeyword."' OR content_text REGEXP '".$searchkeyword."' ) ";
 
@@ -377,11 +377,8 @@ function show_content_search_result($searchkeyword){
 					$content_searchresult_table_string = "";
 					$gen = new convert;
 					while($row = $sqlsr -> db_Fetch()){
-						$row['content_heading'] = $tp -> toHTML($row['content_heading'], TRUE, "");
-						$row['content_subheading'] = $tp -> toHTML($row['content_subheading'], TRUE, "");
 						$row['content_text'] = $tp -> toHTML($row['content_text'], TRUE, "");
 
-						$datestamp = ereg_replace(" -.*", "", $gen -> convert_date($row['content_datestamp'], "short"));
 						$contenttext = parsesearch($row['content_text'], $searchkeyword);
 						$authordetails = $aa -> getAuthor($row['content_author']);
 
@@ -479,10 +476,7 @@ function show_content(){
 									$content_type_table_string .= $tp -> parseTemplate($CONTENT_TYPE_TABLE_MANAGER, FALSE, $content_shortcodes);
 							}
 						}
-						
-						$content_type_table_start = $CONTENT_TYPE_TABLE_START;
-						$content_type_table_end = $CONTENT_TYPE_TABLE_END;
-						$text = $content_type_table_start.$content_type_table_string.$content_type_table_end;
+						$text = $CONTENT_TYPE_TABLE_START.$content_type_table_string.$CONTENT_TYPE_TABLE_END;
 					}
 					$caption = CONTENT_LAN_22;
 					$ns -> tablerender($caption, $text);
@@ -531,10 +525,10 @@ function show_content_recent(){
 
 						$content_recent_table_string = "";
 						while($row = $sql -> db_Fetch()){
-							$content_recent_table_string .= parse_content_recent_table($row, $prefetchbreadcrumb);
+							$gen = new convert;
+							$content_recent_table_string .= $tp -> parseTemplate($CONTENT_RECENT_TABLE, FALSE, $content_shortcodes);
 						}
-					}
-					
+					}					
 					$text = $CONTENT_RECENT_TABLE_START.$content_recent_table_string.$CONTENT_RECENT_TABLE_END;
 
 					if($content_pref["content_breadcrumb_{$type_id}"]){
@@ -595,7 +589,13 @@ function show_content_cat_all(){
 
 						$content_cat_table_string = "";
 						while($row = $sql -> db_Fetch()){
-							$content_cat_table_string .= parse_content_cat_table($row, $prefetchbreadcrumb);
+
+							$gen = new convert;
+							$authordetails = $aa -> getAuthor($row['content_author']);
+							$sqlc = ""; if(!is_object($sqlc)){ $sqlc = new db; }
+							$comment_total = $sqlc -> db_Select("comments", "*",  "comment_item_id='".$row['content_id']."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
+
+							$content_cat_table_string .= $tp -> parseTemplate($CONTENT_CAT_TABLE, FALSE, $content_shortcodes);
 						}
 						$text = $CONTENT_CAT_TABLE_START.$content_cat_table_string.$CONTENT_CAT_TABLE_END;
 
@@ -682,7 +682,12 @@ function show_content_cat($mode=""){
 							header("location:".e_SELF."?".$type.".".$type_id.".cat"); exit;
 						}else{
 							$row = $sql -> db_Fetch();
-							$textparent = parse_content_cat_list_table($row);
+
+							$gen = new convert;
+							$authordetails = $aa -> getAuthor($row['content_author']);
+							$comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='".$sub_action."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
+
+							$textparent = $tp -> parseTemplate($CONTENT_CAT_LIST_TABLE, FALSE, $content_shortcodes);
 							$captionparent = CONTENT_LAN_26;
 						}
 					}
@@ -704,23 +709,9 @@ function show_content_cat($mode=""){
 								}
 							}
 						}
-
 						
 						//list all contents within this category
 						unset($text);
-						/*
-						if(!$CONTENT_RECENT_TABLE){
-							if(!$content_pref["content_theme_{$type_id}"]){
-								require_once(e_PLUGIN."content/templates/default/content_recent_template.php");
-							}else{
-								if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_recent_template.php")){
-									require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_recent_template.php");
-								}else{
-									require_once(e_PLUGIN."content/templates/default/content_recent_template.php");
-								}
-							}
-						}
-						*/
 
 						$subquery = ($content_pref["content_cat_listtype_{$type_id}"] ? "" : "  AND content_parent NOT REGEXP '.".$sub_action.".'  ");
 						$order = $aa -> getOrder();
@@ -732,7 +723,8 @@ function show_content_cat($mode=""){
 
 							$content_recent_table_string = "";
 							while($row = $sql -> db_Fetch()){
-								$content_recent_table_string .= parse_content_recent_table($row, $prefetchbreadcrumb);
+								$gen = new convert;
+								$content_recent_table_string .= $tp -> parseTemplate($CONTENT_RECENT_TABLE, FALSE, $content_shortcodes);
 							}
 							$textchild = $CONTENT_RECENT_TABLE_START.$content_recent_table_string.$CONTENT_RECENT_TABLE_END;
 							$captionchild = "contents";
@@ -784,7 +776,6 @@ function show_content_cat($mode=""){
 								$ns -> tablerender($captionparent, $textparent.(isset($textsubparent) ? "<br /><br />".$textsubparent : ""));
 							}
 						}
-
 
 					}elseif($mode == "comment"){
 
@@ -881,7 +872,6 @@ function show_content_author_all(){
 							$gen = new convert;
 							$totalcontent = $sql2 -> db_Select($plugintable, "content_id, content_heading, content_datestamp", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' AND content_author = '".$authordetails[$i][3]."' ORDER BY content_datestamp DESC");
 							list($row['content_id'], $row['content_heading'], $row['content_datestamp']) = $sql2 -> db_Fetch();
-							$CONTENT_AUTHOR_TABLE_DATE = ereg_replace(" -.*", "", $gen -> convert_date($row['content_datestamp'], "short"));
 
 							$content_author_table_string .= $tp -> parseTemplate($CONTENT_AUTHOR_TABLE, FALSE, $content_shortcodes);
 						}
@@ -954,7 +944,8 @@ function show_content_author(){
 							
 							$content_recent_table_string = "";
 							while($row = $sql -> db_Fetch()){
-								$content_recent_table_string .= parse_content_recent_table($row, $prefetchbreadcrumb);
+								$gen = new convert;
+								$content_recent_table_string .= $tp -> parseTemplate($CONTENT_RECENT_TABLE, FALSE, $content_shortcodes);
 							}
 							$text = $CONTENT_RECENT_TABLE_START.$content_recent_table_string.$CONTENT_RECENT_TABLE_END;
 						}
@@ -1021,9 +1012,6 @@ function show_content_item(){
 					$caption = CONTENT_LAN_34;
 					$ns -> tablerender($caption, $text);
 
-					//$totalpages = substr_count($row['content_text'], "[newpage");
-					//$comflag = ($totalpages == $id ? TRUE : FALSE);
-
 					if(preg_match_all("/\[newpage.*?]/si", $row['content_text'], $matches)){
 						
 						$pages = preg_split("/\[newpage.*?]/si", $row['content_text'], -1, PREG_SPLIT_NO_EMPTY);
@@ -1062,9 +1050,6 @@ function show_content_item(){
 										$text = $cobj->render_comment($row2, $plugintable , "comment", $sub_action, $width, $row['content_heading']);
 									}
 								}
-								//if (!$pref['nested_comments']) {
-								//	$ns->tablerender(CONTENT_LAN_35, $text);
-								//}
 								$ns->tablerender(CONTENT_LAN_35, $text);
 
 								if(ADMIN && getperms("B")){
@@ -1197,287 +1182,6 @@ function show_content_top(){
 				}
 }
 // ##### --------------------------------------------------
-
-
-function parse_content_recent_table($row, $prefetchbreadcrumb=""){
-				global $content_shortcodes, $rater, $ep, $tp, $aa, $gen, $content_icon_path, $content_image_path;
-				global $type, $type_id, $action, $sub_action, $id, $content_pref, $plugintable, $datequery;
-				global $CONTENT_RECENT_TABLE;
-
-				if($content_pref["content_list_parent_{$type_id}"]){
-					$CONTENT_RECENT_TABLE_PARENT = $aa -> drawBreadcrumb($prefetchbreadcrumb, $row['content_parent'], "nobase", "");
-				}
-
-				if($content_pref["content_list_date_{$type_id}"]){
-					$CONTENT_RECENT_TABLE_DATE = "1";
-						$gen = new convert;
-						$datestamp = ereg_replace(" -.*", "", $gen -> convert_date($row['content_datestamp'], "long"));
-						$CONTENT_RECENT_TABLE_DATE = ($datestamp != "" ? $datestamp : "");
-				}
-				$CONTENT_RECENT_TABLE_HEADING = ($row['content_heading'] ? "<a href='".e_SELF."?".$type.".".$type_id.".content.".$row['content_id']."'>".$row['content_heading']."</a>" : "");
-				$CONTENT_RECENT_TABLE_ICON = $aa -> getIcon("item", $row['content_icon'], $content_icon_path, $type.".".$type_id.".content.".$row['content_id'], "100", $content_pref["content_blank_icon_{$type_id}"]);
-
-				// ----------- NUMBER OF SUBHEADING CHARACTERS TO DISPLAY? ------------------------------
-				if ($content_pref["content_list_subheading_{$type_id}"] && $row['content_subheading'] && $content_pref["content_list_subheading_char_{$type_id}"] && $content_pref["content_list_subheading_char_{$type_id}"] != "" && $content_pref["content_list_subheading_char_{$type_id}"] != "0"){
-				
-					if(strlen($row['content_subheading']) > $content_pref["content_list_subheading_char_{$type_id}"]) {
-						$row['content_subheading'] = substr($row['content_subheading'], 0, $content_pref["content_list_subheading_char_{$type_id}"]).$content_pref["content_list_subheading_post_{$type_id}"];
-					}
-					$CONTENT_RECENT_TABLE_SUBHEADING = ($row['content_subheading'] != "" && $row['content_subheading'] != " " ? $row['content_subheading'] : "");
-				}else{
-					$CONTENT_RECENT_TABLE_SUBHEADING = ($row['content_subheading'] ? $row['content_subheading'] : "");
-				}
-				// -----------------------------------------------------------------------------------
-
-				// ----------- NUMBER OF SUMMARY CHARACTERS TO DISPLAY? ------------------------------
-				if ($content_pref["content_list_summary_{$type_id}"] && $row['content_summary'] && $content_pref["content_list_summary_char_{$type_id}"] && $content_pref["content_list_summary_char_{$type_id}"] != "" && $content_pref["content_list_summary_char_{$type_id}"] != "0"){
-
-					if(strlen($row['content_summary']) > $content_pref["content_list_summary_char_{$type_id}"]) {
-						$row['content_summary'] = substr($row['content_summary'], 0, $content_pref["content_list_summary_char_{$type_id}"]).$content_pref["content_list_summary_post_{$type_id}"];
-					}
-					$CONTENT_RECENT_TABLE_SUMMARY = ($row['content_summary'] != "" && $row['content_summary'] != " " ? $row['content_summary'] : "");
-				}else{
-					$CONTENT_RECENT_TABLE_SUMMARY = ($row['content_summary'] ? $row['content_summary'] : "");
-				}
-				// -----------------------------------------------------------------------------------
-
-				if($content_pref["content_list_authorname_{$type_id}"] || $content_pref["content_list_authoremail_{$type_id}"]){
-					$authordetails = $aa -> getAuthor($row['content_author']);
-					//$authordetails[1] = ($authordetails[1] ? $authordetails[1] : "unknown");
-					if($content_pref["content_list_authorname_{$type_id}"]){
-						if(isset($content_pref["content_list_authoremail_{$type_id}"]) && $authordetails[2]){
-							if($authordetails[0] == "0"){
-								if($content_pref["content_list_authoremail_nonmember_{$type_id}"]){
-									$CONTENT_RECENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-								}else{
-									$CONTENT_RECENT_TABLE_AUTHORDETAILS = $authordetails[1];
-								}
-							}else{
-								$CONTENT_RECENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-							}
-						}else{
-							$CONTENT_RECENT_TABLE_AUTHORDETAILS = $authordetails[1];
-						}
-						if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0"){
-							$CONTENT_RECENT_TABLE_AUTHORDETAILS .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-						}else{
-							//$CONTENT_RECENT_TABLE_AUTHORDETAILS .= " ".CONTENT_ICON_USER;
-						}
-					}
-					$CONTENT_RECENT_TABLE_AUTHORDETAILS .= " <a href='".e_SELF."?".$type.".".$type_id.".author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
-				}
-
-				$CONTENT_RECENT_TABLE_EPICONS  = "";
-				if(($content_pref["content_list_peicon_{$type_id}"] && $row['content_pe']) || $content_pref["content_list_peicon_all_{$type_id}"]){
-					$CONTENT_RECENT_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
-					$CONTENT_RECENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
-					$CONTENT_RECENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
-				}
-				if(getperms("P") && $content_pref["content_list_editicon_{$type_id}"]){
-					$CONTENT_RECENT_TABLE_EDITICON = "<a href='".e_PLUGIN."content/admin_content_config.php?type.".$type_id.".create.edit.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
-				}else{
-					$CONTENT_RECENT_TABLE_EDITICON = "";
-				}
-
-				if($content_pref["content_log_{$type_id}"] && $content_pref["content_list_refer_{$type_id}"]){
-					$refercounttmp = explode("^", $row['content_refer']);
-					$CONTENT_RECENT_TABLE_REFER = ($refercounttmp[0] ? $refercounttmp[0] : "0");
-				}
-
-				$CONTENT_RECENT_TABLE_RATING = "";
-				if($content_pref["content_list_rating_all_{$type_id}"] || ($content_pref["content_list_rating_{$type_id}"] && $row['content_rate'])){
-					
-					if($ratearray = $rater -> getrating($plugintable, $row['content_id'])){
-						for($c=1; $c<= $ratearray[1]; $c++){
-							$CONTENT_RECENT_TABLE_RATING .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
-						}
-						if($ratearray[1] < 10){
-							for($c=9; $c>=$ratearray[1]; $c--){
-								$CONTENT_RECENT_TABLE_RATING .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
-							}
-						}
-						$CONTENT_RECENT_TABLE_RATING .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
-						if($ratearray[2] == ""){ $ratearray[2] = 0; }
-						$CONTENT_RECENT_TABLE_RATING .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
-						$CONTENT_RECENT_TABLE_RATING .= ($ratearray[0] == 1 ? LAN_38 : LAN_39);
-					}else{
-						$CONTENT_RECENT_TABLE_RATING .= LAN_65;
-					}
-					if(!$rater -> checkrated($plugintable, $row['content_id']) && USER){
-						$CONTENT_RECENT_TABLE_RATING .= " - ".$rater -> rateselect(LAN_40, $plugintable, $row['content_id']);
-					}else if(USER){
-						$CONTENT_RECENT_TABLE_RATING .= " - ".LAN_41;
-					}
-				}
-				return(preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_RECENT_TABLE));
-				//return ($tp -> parseTemplate($CONTENT_SEARCHRESULT_TABLE, FALSE, $content_shortcodes));
-}
-
-
-function parse_content_cat_table($row, $prefetchbreadcrumb){
-				global $content_shortcodes, $CONTENT_CAT_TABLE, $content_cat_icon_path_large, $content_cat_icon_path_small, $gen, $aa, $tp, $rater, $ep, $plugintable;
-				global $type, $type_id, $action, $sub_action, $id, $content_pref, $datequery;
-				global $CONTENT_CAT_TABLE_ICON, $CONTENT_CAT_TABLE_HEADING, $CONTENT_CAT_TABLE_AMOUNT, $CONTENT_CAT_TABLE_SUBHEADING, $CONTENT_CAT_TABLE_DATE, $CONTENT_CAT_TABLE_AUTHORDETAILS, $CONTENT_CAT_TABLE_EPICONS, $CONTENT_CAT_TABLE_COMMENT, $CONTENT_CAT_TABLE_TEXT;
-
-				//$parent[] = array($content_id, $content_heading, $content_subheading, $content_summary, $content_text, $content_author, $content_icon, $content_file, $content_image, $content_parent, $content_comment, $content_rate, $content_pe, $content_refer, $content_datestamp, $content_class, $level);
-
-				$CONTENT_CAT_TABLE_AMOUNT = $aa -> countItemsInCat($row['content_id'], $row['content_parent']);
-				$CONTENT_CAT_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, $type.".".$type_id.".cat.".$row['content_id'], "", $content_pref["content_blank_caticon_{$type_id}"]);
-				$CONTENT_CAT_TABLE_SUBHEADING = ($row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], TRUE, "") : "");
-				//$CONTENT_CAT_TABLE_TEXT = ($row['content_text'] ? $tp -> toHTML($row['content_text'], TRUE, "") : "");
-
-				// ----------- NUMBER OF SUMMARY CHARACTERS TO DISPLAY? ------------------------------
-				if(strlen($row['content_text']) > 500) {
-					$row['content_text'] = substr($row['content_text'], 0, 500)." [more...]";
-				}
-				$CONTENT_CAT_TABLE_TEXT = ($row['content_text'] != "" && $row['content_text'] != " " ? $tp -> toHTML($row['content_text'], TRUE, "") : "");
-				// -----------------------------------------------------------------------------------
-
-
-				$breadcrumbstring = $aa -> drawBreadcrumb($prefetchbreadcrumb, $row['content_id'], "nobase", "");
-				$CONTENT_CAT_TABLE_HEADING = $breadcrumbstring;
-
-				$gen = new convert;
-				$datestamp = ereg_replace(" -.*", "", $gen -> convert_date($row['content_datestamp'], "long"));
-				$CONTENT_CAT_TABLE_DATE = ($datestamp != "" ? $datestamp : "");
-			
-				$authordetails = $aa -> getAuthor($row['content_author']);
-				if(USER){
-					$CONTENT_CAT_TABLE_AUTHORDETAILS = $authordetails[1]." ";
-					if(is_numeric($authordetails[3])){
-						$CONTENT_CAT_TABLE_AUTHORDETAILS .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-					}else{
-						$CONTENT_CAT_TABLE_AUTHORDETAILS .= " ".CONTENT_ICON_USER;
-					}
-					$CONTENT_CAT_TABLE_AUTHORDETAILS .= "<a href='".e_SELF."?".$type.".".$type_id.".author' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
-				}else{
-					$CONTENT_CAT_TABLE_AUTHORDETAILS = $authordetails[1]." ".CONTENT_ICON_USER." <a href='".e_SELF."?".$type.".".$type_id.".author' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
-				}
-
-				$sqlc = "";
-				if(!is_object($sqlc)){ $sqlc = new db; }
-				$CONTENT_CAT_TABLE_COMMENT = "";
-				if($row['content_comment']){
-					$comment_total = $sqlc -> db_Select("comments", "*",  "comment_item_id='".$row['content_id']."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
-					$CONTENT_CAT_TABLE_COMMENT = "<a style='text-decoration:none;' href='".e_SELF."?".$type.".".$type_id.".cat.".$row['content_id'].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
-				}
-
-				$CONTENT_CAT_TABLE_EPICONS = "";
-				if($row['content_pe']){
-					$CONTENT_CAT_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_72."^plugin:content.".$row['content_id']."}");
-					$CONTENT_CAT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.".$row['content_id']."}");
-					$CONTENT_CAT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
-				}
-
-				$CONTENT_CAT_TABLE_RATING = "";
-				if($row['content_rate']){
-					if($ratearray = $rater -> getrating("content_cat", $row['content_id'])){
-						for($c=1; $c<= $ratearray[1]; $c++){
-							$CONTENT_CAT_TABLE_RATING .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
-						}
-						if($ratearray[1] < 10){
-							for($c=9; $c>=$ratearray[1]; $c--){
-								$CONTENT_CAT_TABLE_RATING .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
-							}
-						}
-						$CONTENT_CAT_TABLE_RATING .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
-						if($ratearray[2] == ""){ $ratearray[2] = 0; }
-						$CONTENT_CAT_TABLE_RATING .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
-						$CONTENT_CAT_TABLE_RATING .= ($ratearray[0] == 1 ? LAN_38 : LAN_39);
-					}else{
-						$CONTENT_CAT_TABLE_RATING .= LAN_65;
-					}
-					if(!$rater -> checkrated("content_cat", $row['content_id']) && USER){
-						$CONTENT_CAT_TABLE_RATING .= " - ".$rater -> rateselect(LAN_40, "content_cat", $row['content_id']);
-					}else if(USER){
-						$CONTENT_CAT_TABLE_RATING .= " - ".LAN_41;
-					}
-				}
-
-				return ($tp -> parseTemplate($CONTENT_CAT_TABLE, FALSE, $content_shortcodes));
-}
-
-function parse_content_cat_list_table($row){
-				global $rater, $sql, $CONTENT_CAT_LIST_TABLE, $content_cat_icon_path_large, $content_cat_icon_path_small, $plugintable, $gen, $aa, $tp, $ep, $sub_action, $type, $type_id, $content_pref, $datequery;
-
-				$gen = new convert;
-				$datestamp = ereg_replace(" -.*", "", $gen -> convert_date($row['content_datestamp'], "long"));
-				$CONTENT_CAT_LIST_TABLE_DATE = ($datestamp != "" ? $datestamp : "");
-
-				$CONTENT_CAT_LIST_TABLE_AMOUNT = $aa -> countItemsInCat($row['content_id'], $row['content_parent']);
-
-				$authordetails = $aa -> getAuthor($row['content_author']);
-				$CONTENT_CAT_LIST_TABLE_AUTHORNAME = (USER ? "<a href='".e_BASE."user.php?id.".$authordetails[0]."'>".$authordetails[1]."</a>" : $authordetails[1]);
-				$CONTENT_CAT_LIST_TABLE_AUTHOREMAIL = ($authordetails[2] ? $authordetails[2] : "");
-				if(USER){
-					$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS = $authordetails[1]." ";
-					if(is_numeric($authordetails[3])){
-						$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-					}else{
-						$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS .= " ".CONTENT_ICON_USER;
-					}
-					$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS .= "<a href='".e_SELF."?".$type.".".$type_id.".author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
-				}else{
-					$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS = $authordetails[1]." ".CONTENT_ICON_USER." <a href='".e_SELF."?".$type.".".$type_id.".author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
-				}
-
-				$CONTENT_CAT_LIST_TABLE_ICON = $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "", "", $content_pref["content_blank_caticon_{$type_id}"]);
-				$CONTENT_CAT_LIST_TABLE_HEADING = ($row['content_heading'] ? $row['content_heading'] : "");
-				$CONTENT_CAT_LIST_TABLE_SUBHEADING = ($row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], TRUE, "") : "");
-				$CONTENT_CAT_LIST_TABLE_SUMMARY = ($row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "") : "");
-				$CONTENT_CAT_LIST_TABLE_TEXT = ($row['content_text'] ? $tp -> toHTML($row['content_text'], TRUE, "") : "");
-
-				$CONTENT_CAT_LIST_TABLE_COMMENT = "";
-				if($row['content_comment']){
-					$comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='".$sub_action."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
-					$CONTENT_CAT_LIST_TABLE_COMMENT = "<a style='text-decoration:none;' href='".e_SELF."?".$type.".".$type_id.".cat.".$sub_action.".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
-				}
-
-				$CONTENT_CAT_LIST_TABLE_RATING = "";
-				if($row['content_rate']){
-					if($ratearray = $rater -> getrating("content_cat", $row['content_id'])){
-						for($c=1; $c<= $ratearray[1]; $c++){
-							$CONTENT_CAT_LIST_TABLE_RATING .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
-						}
-						if($ratearray[1] < 10){
-							for($c=9; $c>=$ratearray[1]; $c--){
-								$CONTENT_CAT_LIST_TABLE_RATING .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
-							}
-						}
-						$CONTENT_CAT_LIST_TABLE_RATING .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
-						if($ratearray[2] == ""){ $ratearray[2] = 0; }
-						$CONTENT_CAT_LIST_TABLE_RATING .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
-						$CONTENT_CAT_LIST_TABLE_RATING .= ($ratearray[0] == 1 ? LAN_38 : LAN_39);
-					}else{
-						$CONTENT_CAT_LIST_TABLE_RATING .= LAN_65;
-					}
-					if(!$rater -> checkrated("content_cat", $row['content_id']) && USER){
-						$CONTENT_CAT_LIST_TABLE_RATING .= " - ".$rater -> rateselect(LAN_40, "content_cat", $row['content_id']);
-					}else if(USER){
-						$CONTENT_CAT_LIST_TABLE_RATING .= " - ".LAN_41;
-					}
-				}
-				$CONTENT_CAT_LIST_TABLE_EPICONS = "";
-				if($row['content_pe']){
-					$CONTENT_CAT_LIST_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_72."^plugin:content.$sub_action}");
-					$CONTENT_CAT_LIST_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_72."^plugin:content.$sub_action}");
-					$CONTENT_CAT_LIST_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.$sub_action}");
-				}
-				/*
-				if(!$CONTENT_CAT_LIST_TABLE){
-					if(!$content_pref["content_theme_{$type_id}"]){
-						require_once(e_PLUGIN."content/templates/default/content_cat_template.php");
-					}else{
-						if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_cat_template.php")){
-							require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_cat_template.php");
-						}else{
-							require_once(e_PLUGIN."content/templates/default/content_cat_template.php");
-						}
-					}
-				}
-				*/
-				return(preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CAT_LIST_TABLE));
-}
 
 
 function parse_content_content_table($row){
