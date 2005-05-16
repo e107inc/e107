@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-04-11 01:08:29 $
+|     $Revision: 1.29 $
+|     $Date: 2005-05-16 14:56:12 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -163,6 +163,8 @@ define("ADLAN_144", "You are in simple-view mode, to switch to advanced-view");
 define("ADLAN_145", "click here");
 
 define("ADLAN_146", "Failed login attempts");
+define("ADLAN_147", "File Inspector");
+define("ADLAN_148", "Scan site files");
 
 define('ADLAN_CL_1', 'Settings');
 define('ADLAN_CL_2', 'Users');

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-05-04 14:29:54 $
-|     $Author: stevedunstan $
+|     $Revision: 1.31 $
+|     $Date: 2005-05-16 14:56:09 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -144,6 +144,9 @@ if (!defined('E_16_FRONT')) {
 if (!defined('E_16_IMAGES')) {
 	define('E_16_IMAGES', "<img src='".e_IMAGE."admin_images/images_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
+if (!defined('E_16_INSPECT')) {
+	define('E_16_INSPECT', "<img src='".e_IMAGE."admin_images/fileinspector_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+}
 if (!defined('E_16_LINKS')) {
 	define('E_16_LINKS', "<img src='".e_IMAGE."admin_images/links_16.png' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
 }
@@ -261,6 +264,9 @@ if (!defined('E_32_FRONT')) {
 if (!defined('E_32_IMAGES')) {
 	define('E_32_IMAGES', "<img src='".e_IMAGE."admin_images/images_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
+if (!defined('E_32_INSPECT')) {
+	define('E_32_INSPECT', "<img src='".e_IMAGE."admin_images/fileinspector_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
+}
 if (!defined('E_32_LINKS')) {
 	define('E_32_LINKS', "<img src='".e_IMAGE."admin_images/links_32.png' alt='' style='border:0px; width: 32px; height: 32px' />");
 }
@@ -343,7 +349,7 @@ if (!defined('E_32_LOGOUT')) {
 }
 
 $e_icon_array = array(
-'main' => E_32_MAIN,
+	'main' => E_32_MAIN,
 	'admin' => E_32_ADMIN,
 	'admin_pass' => E_32_ADPASS,
 	'banlist' => E_32_BANLIST,
@@ -356,6 +362,7 @@ $e_icon_array = array(
 	'download' => E_32_DOWNL,
 	'emoticon' => E_32_EMOTE,
 	'filemanage' => E_32_FILE,
+	'fileinspector' => E_32_INSPECT,
 	'frontpage' => E_32_FRONT,
 	'image' => E_32_IMAGES,
 	'language' => E_32_LANGUAGE,
@@ -443,5 +450,6 @@ $array_functions = array(
 	25 => array(e_ADMIN."language.php", ADLAN_132, ADLAN_133, "0", 1, E_16_LANGUAGE, E_32_LANGUAGE),
 	26 => array(e_ADMIN."mailout.php", ADLAN_136, ADLAN_137, "W", 2, E_16_MAIL, E_32_MAIL),
 	27 => array(e_ADMIN."users_extended.php", ADLAN_78, ADLAN_79, "4", 2, E_16_USER_EXTENDED, E_32_USER_EXTENDED),
+	28 => array(e_ADMIN."fileinspector.php", ADLAN_147, ADLAN_148, "Y", 4, E_16_INSPECT, E_32_INSPECT)
 	);
 ?>
