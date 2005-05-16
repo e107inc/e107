@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/plugin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-25 03:32:11 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-16 15:00:37 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -68,7 +68,8 @@ $eplug_tables = array(
 	forum_moderators text NOT NULL,
 	forum_threads int(10) unsigned NOT NULL default '0',
 	forum_replies int(10) unsigned NOT NULL default '0',
-	forum_lastpost varchar(200) NOT NULL default '',
+	forum_lastpost_user varchar(200) NOT NULL default '',
+	forum_lastpost_info varchar(40) NOT NULL default '',
 	forum_class varchar(100) NOT NULL default '',
 	forum_order int(10) unsigned NOT NULL default '0',
 	forum_postclass tinyint(3) unsigned NOT NULL default '0',
