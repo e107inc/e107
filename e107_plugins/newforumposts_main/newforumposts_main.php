@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-04-21 02:20:04 $
+|     $Revision: 1.14 $
+|     $Date: 2005-05-16 12:46:14 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -58,10 +58,13 @@ else if(!$NEWFORUMPOSTSTYLE_HEADER) {
 }
 
 $results = $sql->db_Select_gen("
-SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name
-FROM #forum_t AS t, #forum AS f
+SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class
+FROM #forum_t AS t
 LEFT JOIN #user AS u ON t.thread_user = u.user_id
-WHERE f.forum_id = t.thread_forum_id AND t.thread_parent =0 AND f.forum_class IN (".USERCLASS_LIST.") 
+LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
+LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id 
+WHERE f.forum_id = t.thread_forum_id AND t.thread_parent=0 AND f.forum_class IN (".USERCLASS_LIST.") 
+AND fp.forum_class IN (".USERCLASS_LIST.")
 ORDER BY t.$query DESC LIMIT 0, ".$pref['nfp_amount']);
 
 $forumArray = $sql->db_getList();
