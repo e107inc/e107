@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.41 $
-|		$Date: 2005-05-16 09:29:26 $
+|		$Revision: 1.42 $
+|		$Date: 2005-05-16 13:08:40 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -129,6 +129,7 @@ class content{
 				$content_pref["content_menu_cat_{$id}"] = "1";							//view categories
 				$content_pref["content_menu_cat_number_{$id}"] = "1";					//show number of items in category				
 				$content_pref["content_menu_cat_icon_{$id}"] = "5";						//choose icon to display for categories
+				$content_pref["content_menu_cat_dropdown_{$id}"] = "1";					//rendertype of categories (in dropdown or as normal links)
 				$content_pref["content_menu_recent_{$id}"] = "1";						//view recent list
 				$content_pref["content_menu_recent_caption_{$id}"] = "recent items";	//caption of recent list
 				$content_pref["content_menu_recent_number_{$id}"] = "5";				//number of recent items to show
@@ -465,111 +466,11 @@ class content{
 				}
 				$text .= $string;
 				$text .= $rs -> form_select_close();
-				
 
 				return $text;
 		}
 
 
-		function printParent($array, $level, $currentparent, $mode="option"){
-				global $rs, $type, $type_id, $plugintable, $aa, $tp, $content_pref, $stylespacer;
-				$string = "";
-
-				if(empty($array)){ return FALSE; }
-
-				for($a=0;$a<count($array);$a++){
-						if(!$array[$a][17] || $array[$a][17] == "0"){
-							$pre = "";
-							$class = "forumheader";
-							$style = " font-weight:bold; ";
-						}else{
-							$pre = "";
-							$class = "forumheader3";
-							$style = " font-weight:normal; ";
-							for($b=0;$b<$array[$a][17];$b++){
-								$pre .= "_";
-								//$pre .= "&nbsp;";
-							}
-						}
-						
-						if($mode == "array"){					//used only once in the creation of the menu
-								$string[] = array($array[$a][0], $array[$a][1], $array[$a][9], $array[$a][6]);
-
-						}elseif($mode == "optionadminmenu"){	//used only once for the category admin menus in admin page
-								if(strpos($array[$a][9], ".")){
-									$tmp = explode(".", $array[$a][9]);
-									$mainparent = $tmp[1];
-									$id = $tmp[1].".".substr($array[$a][9], 2).".".$array[$a][0];
-								}else{
-									$id = $array[$a][0].".".$array[$a][0];
-									$mainparent = $array[$a][0];
-								}
-								$id = str_replace(".", "-", $id);
-								$string[] = array($array[$a][0], $pre.$array[$a][1], $array[$a][9], $id, $mainparent);
-
-						}elseif($mode == "optionmenu"){			//used only once in search form in content.php
-								$tmp = array_reverse( explode(".", $currentparent) );
-								$currentparent = $tmp[0];
-								
-								$array[$a][1] = (strlen($array[$a][1]) > 25 ? substr($array[$a][1],0,25)."..." : $array[$a][1]);
-								$style = ($array[$a][9] == 0 ? "style='font-weight:bold;'" : "");
-								$pre = "category : ".$pre;
-								$string .= $rs -> form_option($pre.$array[$a][1], 0, e_SELF."?type.".$type_id.".cat.".$array[$a][0], $style);
-
-						}elseif($mode == "table"){				//used only once in form_class (show_cat_manage)
-							
-							if(strpos($array[$a][9], ".")){
-								$tmp1 = explode(".", $array[$a][9]);
-								$id = $tmp1[1].".".$array[$a][0];
-								$type_id = $tmp1[1];
-							}else{
-								$id = $array[$a][0].".".$array[$a][0];
-								$type_id = $array[$a][0];
-							}
-
-							$content_pref = $this -> getContentPref($type_id);
-							$content_cat_icon_path_large = $this -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$type_id}"]);
-							$content_cat_icon_path_small = $this -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$type_id}"]);
-
-							$delete_heading = str_replace("&#39;", "\'", $array[$a][1]);
-							$authordetails = $this -> getAuthor($array[$a][5]);
-							$caticon = $content_cat_icon_path_large.$array[$a][6];
-
-							$string .= "
-							".($array[$a][9] == 0 ? "<tr><td colspan='5' $stylespacer></td></tr>" : "")."
-							<tr>
-								<td class='".$class."' style='".$style." width:5%; text-align:left'>".$array[$a][9].".".$array[$a][0]."</td>
-								<td class='".$class."' style='".$style." width:5%; text-align:center'>".($array[$a][6] ? "<img src='".$caticon."' alt='' style='vertical-align:middle' />" : "&nbsp;")."</td>
-								<td class='".$class."' style='".$style." width:15%'>[".$authordetails[0]."] ".$authordetails[1]."</td>
-								<td class='".$class."' style='".$style." width:65%; white-space:nowrap;'>".$pre.$array[$a][1]." [".$array[$a][2]."]</td>
-								<td class='".$class."' style='".$style." width:10%; text-align:left; white-space:nowrap;'>
-
-									<a href='".e_SELF."?".$type.".".$type_id.".cat.edit.".$array[$a][0]."'>".CONTENT_ICON_EDIT."</a>
-									
-									<input type='image' title='delete' name='delete[cat_{$array[$a][0]}]' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_9."\\n\\n".CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$array[$a][0]." : ".$delete_heading."]\\n\\n")."')\"/>
-
-									".($array[$a][9] == "0" ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.options.".$array[$a][0]."'>".CONTENT_ICON_OPTIONS."</a>" : "")."
-									".($array[$a][9] != "0" && getperms("0") ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.contentmanager.".$array[$a][0]."'>".CONTENT_ICON_CONTENTMANAGER_SMALL."</a>" : "")."
-
-								</td>
-							</tr>";
-
-							//<input type='image' value='{$array[$a][0]}' title='delete' name='delete_cat' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_9."\\n\\n".CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$array[$a][0]." : ".$delete_heading."]\\n\\n")."')\"/>
-						}
-				}
-				return $string;
-		}
-
-
-		/*
-		Array (
-			[0] => Array ( [0] => 2 [1] => article [2] => 0 [3] => 2.2 )
-			[1] => Array ( [0] => 24 [1] => recensies [2] => 0.2 [3] => 2.2.24 )
-			[2] => Array ( [0] => 25 [1] => interviews [2] => 0.2 [3] => 2.2.25 )
-			[3] => Array ( [0] => 95 [1] => interview sub 1 [2] => 0.2.25 [3] => 2.2.25.95 )
-			[4] => Array ( [0] => 26 [1] => essays [2] => 0.2 [3] => 2.2.26 )
-		)
-		*/		
 		function prefetchBreadCrumb($id, $mode="", $style=""){
 				global $plugintable, $datequery, $type_id;
 				$sqlprefetchbreadcrumb = "";
@@ -851,6 +752,7 @@ class content{
 				$data = chr(60)."?php\n". chr(47)."*\n+---------------------------------------------------------------+\n|        e107 website system\n|        ".e_PLUGIN."content/menus/content_".$row['content_heading']."_menu.php\n|\n|        ©Steve Dunstan 2001-2002\n|        http://e107.org\n|        jalist@e107.org\n|\n|        Released under the terms and conditions of the\n|        GNU General Public License (http://gnu.org).\n+---------------------------------------------------------------+\n\nThis file has been generated by ".e_PLUGIN."content/handlers/content_class.php.\n\n*". chr(47)."\n\n";
 
 				$data .= "unset(".chr(36)."text);\n";
+				$data .= chr(36)."menutypeid = \"$parentid\";\n";
 				$data .= chr(36)."text = \"\";\n";
 				$data .= "global ".chr(36)."plugintable, ".chr(36)."gen;\n";
 				$data .= "require_once(e_PLUGIN.\"content/handlers/content_class.php\");\n";
@@ -860,162 +762,95 @@ class content{
 				$data .= chr(36)."lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';\n";
 				$data .= "include_once(file_exists(".chr(36)."lan_file) ? ".chr(36)."lan_file : e_PLUGIN.'content/languages/English/lan_content.php');\n\n";
 
-				$data .= chr(36)."content_pref = ".chr(36)."aa -> getContentPref(\"$parentid\");\n";
-				$data .= chr(36)."content_pref[\"content_cat_icon_path_small_{$parentid}\"] = (".chr(36)."content_pref[\"content_cat_icon_path_small_{$parentid}\"] ? ".chr(36)."content_pref[\"content_cat_icon_path_small_{$parentid}\"] : \"{e_PLUGIN}content/images/cat/16/\" );\n";
-				$data .= chr(36)."content_cat_icon_path_small = ".chr(36)."aa -> parseContentPathVars(".chr(36)."content_pref[\"content_cat_icon_path_small_{$parentid}\"]);\n\n";
+				$data .= chr(36)."content_pref = ".chr(36)."aa -> getContentPref(".chr(36)."menutypeid);\n";
+				$data .= chr(36)."content_pref[\"content_cat_icon_path_small_".chr(36)."menutypeid\"] = (".chr(36)."content_pref[\"content_cat_icon_path_small_".chr(36)."menutypeid\"] ? ".chr(36)."content_pref[\"content_cat_icon_path_small_".chr(36)."menutypeid\"] : \"{e_PLUGIN}content/images/cat/16/\" );\n";
+				$data .= chr(36)."content_cat_icon_path_small = ".chr(36)."aa -> parseContentPathVars(".chr(36)."content_pref[\"content_cat_icon_path_small_".chr(36)."menutypeid\"]);\n\n";
 
-				$data .= chr(36)."content_pref[\"content_icon_path_{$parentid}\"] = (".chr(36)."content_pref[\"content_icon_path_{$parentid}\"] ? ".chr(36)."content_pref[\"content_icon_path_{$parentid}\"] : \"{e_PLUGIN}content/images/icon/\" );\n";
-				$data .= chr(36)."content_icon_path = ".chr(36)."aa -> parseContentPathVars(".chr(36)."content_pref[\"content_icon_path_{$parentid}\"]);\n\n";
+				$data .= chr(36)."content_pref[\"content_icon_path_".chr(36)."menutypeid\"] = (".chr(36)."content_pref[\"content_icon_path_".chr(36)."menutypeid\"] ? ".chr(36)."content_pref[\"content_icon_path_".chr(36)."menutypeid\"] : \"{e_PLUGIN}content/images/icon/\" );\n";
+				$data .= chr(36)."content_icon_path = ".chr(36)."aa -> parseContentPathVars(".chr(36)."content_pref[\"content_icon_path_".chr(36)."menutypeid\"]);\n\n";
 
-				$data .= "if(".chr(36)."content_pref[\"content_menu_viewicon_{$parentid}\"] == \"0\"){ ".chr(36)."viewicon = \"\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_viewicon_{$parentid}\"] == \"1\"){ ".chr(36)."viewicon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_viewicon_{$parentid}\"] == \"2\"){ ".chr(36)."viewicon = \"&middot\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_viewicon_{$parentid}\"] == \"3\"){ ".chr(36)."viewicon = \"º\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_viewicon_{$parentid}\"] == \"4\"){ ".chr(36)."viewicon = \"&raquo;\";\n";
+				$data .= "if(".chr(36)."content_pref[\"content_menu_viewicon_".chr(36)."menutypeid\"] == \"0\"){ ".chr(36)."viewicon = \"\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_viewicon_".chr(36)."menutypeid\"] == \"1\"){ ".chr(36)."viewicon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_viewicon_".chr(36)."menutypeid\"] == \"2\"){ ".chr(36)."viewicon = \"&middot\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_viewicon_".chr(36)."menutypeid\"] == \"3\"){ ".chr(36)."viewicon = \"º\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_viewicon_".chr(36)."menutypeid\"] == \"4\"){ ".chr(36)."viewicon = \"&raquo;\";\n";
 				$data .= "}else{ ".chr(36)."viewicon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />\"; }\n\n";
 
-				$data .= "if(".chr(36)."content_pref[\"content_menu_cat_icon_{$parentid}\"] == \"0\"){ ".chr(36)."caticon = \"\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_{$parentid}\"] == \"1\"){ ".chr(36)."caticon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_{$parentid}\"] == \"2\"){ ".chr(36)."caticon = \"&middot\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_{$parentid}\"] == \"3\"){ ".chr(36)."caticon = \"º\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_{$parentid}\"] == \"4\"){ ".chr(36)."caticon = \"&raquo;\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_{$parentid}\"] == \"5\"){ ".chr(36)."caticon = \"\";\n";
+				$data .= "if(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"0\"){ ".chr(36)."caticon = \"\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"1\"){ ".chr(36)."caticon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"2\"){ ".chr(36)."caticon = \"&middot\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"3\"){ ".chr(36)."caticon = \"º\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"4\"){ ".chr(36)."caticon = \"&raquo;\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"5\"){ ".chr(36)."caticon = \"\";\n";
 				$data .= "}else{ ".chr(36)."caticon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />\"; }\n\n";
 
-				$data .= "if(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"0\"){ ".chr(36)."recenticon = \"\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"1\"){ ".chr(36)."recenticon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"2\"){ ".chr(36)."recenticon = \"&middot\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"3\"){ ".chr(36)."recenticon = \"º\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"4\"){ ".chr(36)."recenticon = \"&raquo;\";\n";
-				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"5\"){ ".chr(36)."recenticon = \"\";\n";
+				$data .= "if(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"0\"){ ".chr(36)."recenticon = \"\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"1\"){ ".chr(36)."recenticon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"2\"){ ".chr(36)."recenticon = \"&middot\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"3\"){ ".chr(36)."recenticon = \"º\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"4\"){ ".chr(36)."recenticon = \"&raquo;\";\n";
+				$data .= "}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"5\"){ ".chr(36)."recenticon = \"\";\n";
 				$data .= "}else{ ".chr(36)."recenticon = \"<img src='\".THEME.\"images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' />\"; }\n\n";
 
-				$data .= "if(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"5\"){\n";
-				$data .= "   if(".chr(36)."content_pref[\"content_menu_recent_icon_width_{$parentid}\"]){\n";
-				$data .= "      ".chr(36)."recenticonwidth = \" width:\".".chr(36)."content_pref[\"content_menu_recent_icon_width_{$parentid}\"].\"px; \";\n";
+				$data .= "if(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"5\"){\n";
+				$data .= "   if(".chr(36)."content_pref[\"content_menu_recent_icon_width_".chr(36)."menutypeid\"]){\n";
+				$data .= "      ".chr(36)."recenticonwidth = \" width:\".".chr(36)."content_pref[\"content_menu_recent_icon_width_".chr(36)."menutypeid\"].\"px; \";\n";
 				$data .= "   }else{ ".chr(36)."recenticonwidth = \" width:50px; \"; }\n";
 				$data .= "}else{ ".chr(36)."recenticonwidth = \"\"; }\n\n";
 
-				$data .= "if(".chr(36)."content_pref[\"content_menu_search_{$parentid}\"]){\n";
-				$data .= "   ".chr(36)."text .= ".chr(36)."rs -> form_open(\"post\", e_PLUGIN.\"content/content.php?type.$parentid\", \"contentsearchmenu_{$parentid}\", \"\", \"enctype='multipart/form-data'\");\n";
-				$data .= "   ".chr(36)."text .= ".chr(34)."<input class='tbox' size='20' type='text' id='searchfieldmenu_{$parentid}' name='searchfieldmenu_{$parentid}' value='".chr(34).".(isset(".chr(36)."_POST['searchfieldmenu_{$parentid}']) ? ".chr(36)."_POST['searchfieldmenu_{$parentid}'] : CONTENT_LAN_18).".chr(34)."' maxlength='100' onfocus=\\\"document.forms['contentsearchmenu_{$parentid}'].searchfieldmenu_{$parentid}.value='';\\\" />".chr(34).";\n";
-				$data .= "   ".chr(36)."text .= ".chr(34)." <input class='button' type='submit' name='searchsubmit' value='\".CONTENT_LAN_19.\"' />".chr(34).";\n";
-				$data .= "   ".chr(36)."text .= ".chr(36)."rs -> form_close().".chr(34)."<br />".chr(34).";\n";
+				$data .= "if(".chr(36)."content_pref[\"content_menu_search_".chr(36)."menutypeid\"]){\n";
+				$data .= "   ".chr(36)."text .= ".chr(36)."aa -> showOptionsSearch(\"menu\", ".chr(36)."menutypeid);\n";
+				$data .= "}\n\n";
+				$data .= chr(36)."text .= ".chr(36)."aa -> showOptionsSelect(\"menu\", ".chr(36)."menutypeid);\n\n";
+				$data .= "if(".chr(36)."content_pref[\"content_menu_sort_".chr(36)."menutypeid\"]){\n";
+				$data .= "   ".chr(36)."text .= ".chr(36)."aa -> showOptionsOrder(\"menu\", ".chr(36)."menutypeid);\n";
 				$data .= "}\n\n";
 
-				$data .= "if(".chr(36)."content_pref[\"content_menu_sort_{$parentid}\"]){\n";
-				$data .= "   if(eregi('content.php', e_SELF) && eregi('type.$parentid', e_QUERY)){\n";
-				$data .= "      if(isset(".chr(36)."action) && ".chr(36)."action == \"content\"){\n";
-				$data .= "      }elseif(isset(".chr(36)."action) && ".chr(36)."action == \"author\" && !".chr(36)."sub_action){\n";
-				$data .= "      }elseif(isset(".chr(36)."action) && ".chr(36)."action == \"cat\" && !".chr(36)."sub_action){\n";
-				$data .= "      }elseif(isset(".chr(36)."action) && ".chr(36)."action == \"top\"){\n";
-				$data .= "      }else{\n";
-
-				$data .= "         if(e_QUERY){\n";
-				$data .= "            ".chr(36)."tmp = explode(\".\", e_QUERY);\n";
-				$data .= "            ".chr(36)."type = (isset(".chr(36)."tmp[0]) ? ".chr(36)."tmp[0] : \"\");\n";
-				$data .= "            ".chr(36)."type_id = (isset(".chr(36)."tmp[1]) ? ".chr(36)."tmp[1] : \"\");\n";
-				$data .= "            ".chr(36)."action = (isset(".chr(36)."tmp[2]) ? ".chr(36)."tmp[2] : \"\");\n";
-				$data .= "            ".chr(36)."sub_action = (isset(".chr(36)."tmp[3]) ? ".chr(36)."tmp[3] : \"\");\n";
-				$data .= "            ".chr(36)."id = (isset(".chr(36)."tmp[4]) ? ".chr(36)."tmp[4] : \"\");\n";
-				$data .= "            ".chr(36)."id2 = (isset(".chr(36)."tmp[5]) ? ".chr(36)."tmp[5] : \"\");\n";
-				
-				$data .= "            unset(".chr(36)."tmp);\n";
+				$data .= "if(!".chr(36)."content_pref[\"content_menu_cat_dropdown_".chr(36)."menutypeid\"]){\n";
+				$data .= "   if(".chr(36)."content_pref[\"content_menu_cat_".chr(36)."menutypeid\"]){\n";
+				$data .= "      ".chr(36)."text .= ".chr(34)."<br />".chr(34).";\n\n";
+				$data .= "      ".chr(36)."text .= CONTENT_LAN_81.\"<table>\";\n";
+				$data .= "      ".chr(36)."array = ".chr(36)."aa -> getParent(\"\", \"\", ".chr(36)."menutypeid, \"1\");\n";
+				$data .= "      for(".chr(36)."a=0;".chr(36)."a<count(".chr(36)."array);".chr(36)."a++){\n";
+				$data .= "         ".chr(36)."n = ".chr(36)."aa -> countItemsInCat(".chr(36)."array[".chr(36)."a][0], ".chr(36)."array[".chr(36)."a][9], \"nolan\");\n";
+				$data .= "         if(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"5\"){\n";
+				$data .= "            if(".chr(36)."array[".chr(36)."a][6] != \"\" && file_exists(".chr(36)."content_cat_icon_path_small.".chr(36)."array[".chr(36)."a][6]) ){\n";
+				$data .= "               ".chr(36)."caticon = \"<img src='\".".chr(36)."content_cat_icon_path_small.".chr(36)."array[".chr(36)."a][6].\"' alt='' style='border:0;' />\";\n";
+				$data .= "            }else{\n";
+				$data .= "               ".chr(36)."caticon = \"<img src='\".".chr(36)."content_icon_path.\"blank.gif' alt='' style='width:16px; border:0;' />\";\n";
+				$data .= "            }\n";
 				$data .= "         }\n";
-				$data .= "         if(".chr(36)."type == \"0\" || is_numeric(".chr(36)."type)){\n";
-				$data .= "            ".chr(36)."from = ".chr(36)."type;\n";
-				$data .= "            ".chr(36)."type = ".chr(36)."type_id;\n";
-				$data .= "            ".chr(36)."type_id = ".chr(36)."action;\n";
-				$data .= "            ".chr(36)."action = ".chr(36)."sub_action;\n";
-				$data .= "            ".chr(36)."sub_action = ".chr(36)."id;\n";
-				$data .= "            ".chr(36)."id = ".chr(36)."id2;\n";
-				$data .= "         }else{\n";
-				$data .= "            ".chr(36)."from = \"0\";\n";
-				$data .= "         }\n\n";
-				
-				$data .= "         ".chr(36)."querystring = (".chr(36)."action && substr(".chr(36)."action,0,5) != \"order\" ? \".\".".chr(36)."action : \"\").(".chr(36)."sub_action && substr(".chr(36)."sub_action,0,5) != \"order\" ? \".\".".chr(36)."sub_action : \"\").(".chr(36)."id && substr(".chr(36)."id,0,5) != \"order\" ? \".\".".chr(36)."id : \"\").(".chr(36)."id2 && substr(".chr(36)."id2,0,5) != \"order\" ? \".\".".chr(36)."id2 : \"\");\n";
-				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_open(\"post\", e_PLUGIN.\"content/content.php?type.$parentid\", \"contentsearchordermenu\", \"\", \"enctype='multipart/form-data'\");\n";
-				$data .= "         ".chr(36)."text .= \"<select id='ordervaluemenu' name='ordervaluemenu' class='tbox' onchange=\\\"document.location=this.options[this.selectedIndex].value;\\\">".chr(34).";\n";
-				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_9, 0, \"none\");\n";
-				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_10, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderaheading\" );\n";
-				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_11, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderdheading\" );\n";
-				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_12, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderadate\" );\n";
-				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_13, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderddate\" );\n";
-				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_14, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderarefer\" );\n";
-				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_15, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderdrefer\" );\n";
-				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_16, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderaparent\" );\n";
-				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_17, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderdparent\" );\n";
-				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_73, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderaorder\" );\n";
-				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_option(CONTENT_LAN_74, 0, e_PLUGIN.\"content/content.php?type.$parentid\".".chr(36)."querystring.\".orderdorder\" );\n";
-				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_select_close();\n";
-				$data .= "         ".chr(36)."text .= ".chr(36)."rs -> form_close().".chr(34)."<br />".chr(34).";\n";
-				$data .= "      }\n";
-				$data .= "   }\n";
-				$data .= "}\n\n";
-
-				$data .= "if(".chr(36)."content_pref[\"content_menu_viewallcat_{$parentid}\"]){\n";
-				$data .= "   ".chr(36)."text .= ".chr(36)."viewicon.\" <a href='\".e_PLUGIN.\"content/content.php?type.$parentid.cat'>\".CONTENT_LAN_62.\"</a><br />".chr(34).";\n\n";
-				$data .= "}\n";
-				$data .= "if(".chr(36)."content_pref[\"content_menu_viewallauthor_{$parentid}\"]){\n";
-				$data .= "   ".chr(36)."text .= ".chr(36)."viewicon.\" <a href='\".e_PLUGIN.\"content/content.php?type.$parentid.author'>\".CONTENT_LAN_63.\"</a><br />".chr(34).";\n\n";
-				$data .= "}\n";
-				$data .= "if(".chr(36)."content_pref[\"content_menu_viewtoprated_{$parentid}\"]){\n";
-				$data .= "   ".chr(36)."text .= ".chr(36)."viewicon.\" <a href='\".e_PLUGIN.\"content/content.php?type.$parentid.top'>\".CONTENT_LAN_64.\"</a><br />".chr(34).";\n\n";
-				$data .= "}\n";
-				$data .= "if(".chr(36)."content_pref[\"content_menu_viewrecent_{$parentid}\"]){\n";
-				$data .= "   ".chr(36)."text .= ".chr(36)."viewicon.\" <a href='\".e_PLUGIN.\"content/content.php?type.$parentid'>\".CONTENT_LAN_61.\"</a><br />".chr(34).";\n\n";
-				$data .= "}\n\n";
-				$data .= "if(".chr(36)."content_pref[\"content_menu_viewsubmit_{$parentid}\"] && ".chr(36)."content_pref[\"content_submit_{$parentid}\"] && check_class(".chr(36)."content_pref[\"content_submit_class_{$parentid}\"])){\n";
-				$data .= "   ".chr(36)."text .= ".chr(36)."viewicon.\" <a href='\".e_PLUGIN.\"content/content_submit.php?type.$parentid'>\".CONTENT_LAN_75.\"</a><br />".chr(34).";\n\n";
-				$data .= "}\n\n";
-
-				$data .= "if(".chr(36)."content_pref[\"content_menu_cat_{$parentid}\"]){\n";
-				$data .= "   ".chr(36)."text .= ".chr(34)."<br />".chr(34).";\n\n";
-				$data .= "   ".chr(36)."parentdetails = ".chr(36)."aa -> getParent(\"\", \"\", $parentid, \"1\");\n";
-				$data .= "   ".chr(36)."parentarray = ".chr(36)."aa -> printParent(".chr(36)."parentdetails, \"0\", $parentid, \"array\");\n";
-				$data .= "   ".chr(36)."text .= CONTENT_LAN_81.\"<table>\";\n";
-				$data .= "   for(".chr(36)."i=0;".chr(36)."i<count(".chr(36)."parentarray);".chr(36)."i++){\n\n";
-				$data .= "      ".chr(36)."n = ".chr(36)."aa -> countItemsInCat(".chr(36)."parentarray[".chr(36)."i][0], ".chr(36)."parentarray[".chr(36)."i][2], \"nolan\");\n";
-
-				$data .= "      if(".chr(36)."content_pref[\"content_menu_cat_icon_{$parentid}\"] == \"5\"){\n";
-				$data .= "         if(".chr(36)."parentarray[".chr(36)."i][3] != \"\" && file_exists(".chr(36)."content_cat_icon_path_small.".chr(36)."parentarray[".chr(36)."i][3]) ){\n";
-				$data .= "            ".chr(36)."caticon = \"<img src='\".".chr(36)."content_cat_icon_path_small.".chr(36)."parentarray[".chr(36)."i][3].\"' alt='' style='border:0;' />\";\n";
-				$data .= "         }else{\n";
-				$data .= "            ".chr(36)."caticon = \"<img src='\".".chr(36)."content_icon_path.\"blank.gif' alt='' style='width:16px; border:0;' />\";\n";
+				$data .= "         ".chr(36)."text .= \"<tr><td style='width:2%; white-space:nowrap;'>\".".chr(36)."caticon.\"</td><td><a href='\".e_PLUGIN.\"content/content.php?type.".chr(36)."menutypeid.cat.\".".chr(36)."array[".chr(36)."a][0].\"'>\".".chr(36)."array[".chr(36)."a][1].\"</a>\";\n";
+				$data .= "         if(".chr(36)."content_pref[\"content_menu_cat_number_".chr(36)."menutypeid\"]){\n";
+				$data .= "            ".chr(36)."text .= \" <span class='smalltext'>(\".".chr(36)."n.\")</span>\";\n";
 				$data .= "         }\n";
+				$data .= "         ".chr(36)."text .= \"</td></tr>\";\n";
 				$data .= "      }\n";
+				$data .= "      ".chr(36)."text .= \"</table>\";\n";
+				$data .= "   }\n\n";
+				$data .= "}\n";
 
-				$data .= "      ".chr(36)."text .= \"<tr><td style='width:2%; white-space:nowrap;'>\".".chr(36)."caticon.\"</td><td><a href='\".e_PLUGIN.\"content/content.php?type.$parentid.cat.\".".chr(36)."parentarray[".chr(36)."i][0].\"'>\".".chr(36)."parentarray[".chr(36)."i][1].\"</a>\";\n";
-				$data .= "      if(".chr(36)."content_pref[\"content_menu_cat_number_{$parentid}\"]){\n";
-				$data .= "         ".chr(36)."text .= \" <span class='smalltext'>(\".".chr(36)."n.\")</span>\";\n";
-				$data .= "      }\n";
-
-				$data .= "   ".chr(36)."text .= \"</td></tr>\";\n";
-				$data .= "   }\n";
-				$data .= "   ".chr(36)."text .= \"</table>\";\n";
-				$data .= "}\n\n";
-
-				$data .= "if(".chr(36)."content_pref[\"content_menu_recent_{$parentid}\"]){\n";
+				$data .= "if(".chr(36)."content_pref[\"content_menu_recent_".chr(36)."menutypeid\"]){\n";
 				$data .= "   ".chr(36)."text .= ".chr(34)."<br />".chr(34).";\n\n";
 				$data .= "   ".chr(36)."gen = new convert;\n";
 				$data .= "   if(!is_object(".chr(36)."sql)){ ".chr(36)."sql = new db; }\n";
 
-				$data .= "   ".chr(36)."UnValidArticleIds2 = ".chr(36)."aa -> checkMainCat($parentid);\n";
+				$data .= "   ".chr(36)."UnValidArticleIds2 = ".chr(36)."aa -> checkMainCat(".chr(36)."menutypeid);\n";
 				$data .= "   ".chr(36)."UnValidArticleIds2 = (".chr(36)."UnValidArticleIds2 == \"\" ? \"\" : \"AND \".substr(".chr(36)."UnValidArticleIds2, 0, -3) );\n";
 				$data .= "   ".chr(36)."order = ".chr(36)."aa -> getOrder();\n";
 
-				$data .= "   if(".chr(36)."res = ".chr(36)."sql -> db_Select(".chr(36)."plugintable, \"content_id, content_heading, content_subheading, content_author, content_icon, content_parent, content_datestamp, content_class\", \"content_refer !='sa' AND LEFT(content_parent,\".(strlen($parentid)).\") = '$parentid' \".".chr(36)."UnValidArticleIds2.\" AND (content_datestamp=0 || content_datestamp < \".time().\") AND (content_enddate=0 || content_enddate>\".time().\") AND content_class IN (\".USERCLASS_LIST.\") ORDER BY content_datestamp DESC LIMIT 0,\".".chr(36)."content_pref[\"content_menu_recent_number_{$parentid}\"].\" \")){\n\n";
+				$data .= "   if(".chr(36)."res = ".chr(36)."sql -> db_Select(".chr(36)."plugintable, \"content_id, content_heading, content_subheading, content_author, content_icon, content_parent, content_datestamp, content_class\", \"content_refer !='sa' AND LEFT(content_parent,\".(strlen(".chr(36)."menutypeid)).\") = '".chr(36)."menutypeid' \".".chr(36)."UnValidArticleIds2.\" AND (content_datestamp=0 || content_datestamp < \".time().\") AND (content_enddate=0 || content_enddate>\".time().\") AND content_class IN (\".USERCLASS_LIST.\") ORDER BY content_datestamp DESC LIMIT 0,\".".chr(36)."content_pref[\"content_menu_recent_number_".chr(36)."menutypeid\"].\" \")){\n\n";
 		
-				$data .= "      ".chr(36)."text .= (".chr(36)."content_pref[\"content_menu_recent_caption_{$parentid}\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_recent_caption_{$parentid}\"] : CONTENT_LAN_80.\" \".".chr(36)."row['content_heading']).".chr(34)."<br />".chr(34).";\n";
+				$data .= "      ".chr(36)."text .= (".chr(36)."content_pref[\"content_menu_recent_caption_".chr(36)."menutypeid\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_recent_caption_".chr(36)."menutypeid\"] : CONTENT_LAN_80.\" \".".chr(36)."row['content_heading']).".chr(34)."<br />".chr(34).";\n";
 				$data .= "      while(".chr(36)."row = ".chr(36)."sql -> db_Fetch()){\n";
 
 				$data .= "         ".chr(36)."datestamp = ereg_replace(\" -.*\", \"\", ".chr(36)."gen -> convert_date(".chr(36)."row['content_datestamp'], \"short\"));\n";
 				$data .= "         ".chr(36)."authordetails = ".chr(36)."aa -> getAuthor(".chr(36)."row['content_author']);\n";
 
-				$data .= "         if(".chr(36)."content_pref[\"content_menu_recent_subheading_{$parentid}\"] && ".chr(36)."row['content_subheading']){\n";
-				$data .= "            if(".chr(36)."content_pref[\"content_menu_recent_subheading_char_{$parentid}\"] && ".chr(36)."content_pref[\"content_menu_recent_subheading_char_{$parentid}\"] != \"\" && ".chr(36)."content_pref[\"content_menu_recent_subheading_char_{$parentid}\"] != \"0\"){\n";
-				$data .= "               if(strlen(".chr(36)."row['content_subheading']) > ".chr(36)."content_pref[\"content_menu_recent_subheading_char_{$parentid}\"]) {\n";
-				$data .= "                  ".chr(36)."row['content_subheading'] = substr(".chr(36)."row['content_subheading'], 0, ".chr(36)."content_pref[\"content_menu_recent_subheading_char_{$parentid}\"]).".chr(36)."content_pref[\"content_menu_recent_subheading_post_{$parentid}\"];\n";
+				$data .= "         if(".chr(36)."content_pref[\"content_menu_recent_subheading_".chr(36)."menutypeid\"] && ".chr(36)."row['content_subheading']){\n";
+				$data .= "            if(".chr(36)."content_pref[\"content_menu_recent_subheading_char_".chr(36)."menutypeid\"] && ".chr(36)."content_pref[\"content_menu_recent_subheading_char_".chr(36)."menutypeid\"] != \"\" && ".chr(36)."content_pref[\"content_menu_recent_subheading_char_".chr(36)."menutypeid\"] != \"0\"){\n";
+				$data .= "               if(strlen(".chr(36)."row['content_subheading']) > ".chr(36)."content_pref[\"content_menu_recent_subheading_char_".chr(36)."menutypeid\"]) {\n";
+				$data .= "                  ".chr(36)."row['content_subheading'] = substr(".chr(36)."row['content_subheading'], 0, ".chr(36)."content_pref[\"content_menu_recent_subheading_char_".chr(36)."menutypeid\"]).".chr(36)."content_pref[\"content_menu_recent_subheading_post_".chr(36)."menutypeid\"];\n";
 				$data .= "               }\n";
 				$data .= "            }\n";
 				$data .= "            ".chr(36)."subheading = (".chr(36)."row['content_subheading'] != \"\" && ".chr(36)."row['content_subheading'] != \" \" ? ".chr(36)."row['content_subheading'] : \"\");\n";
@@ -1023,7 +858,7 @@ class content{
 				$data .= "            ".chr(36)."subheading = (".chr(36)."row['content_subheading'] != \"\" && ".chr(36)."row['content_subheading'] != \" \" ? ".chr(36)."row['content_subheading'] : \"\");\n";
 				$data .= "         }\n\n";
 
-				$data .= "         if(".chr(36)."content_pref[\"content_menu_recent_icon_{$parentid}\"] == \"5\"){\n";
+				$data .= "         if(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"5\"){\n";
 				$data .= "            if(".chr(36)."row['content_icon'] != \"\" && file_exists(".chr(36)."content_icon_path.".chr(36)."row['content_icon']) ){\n";
 				$data .= "               ".chr(36)."recenticon = \"<img src='\".".chr(36)."content_icon_path.".chr(36)."row['content_icon'].\"' alt='' style=' \".".chr(36)."recenticonwidth.\" border:0;' />\";\n";
 				$data .= "            }else{\n";
@@ -1034,7 +869,7 @@ class content{
 				$data .= "         ".chr(36)."text .= \"<table style='border:0;'>\";\n";
 				$data .= "         ".chr(36)."text .= \"<tr>\";\n";
 				$data .= "         ".chr(36)."text .= \"<td style='width:1%; white-space:nowrap; vertical-align:top;'>\".".chr(36)."recenticon.\"</td>\";\n";
-				$data .= "         ".chr(36)."text .= \"<td style='width:99%; vertical-align:top;'><a href='\".e_PLUGIN.\"content/content.php?type.$parentid.content.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."row['content_heading'].\"</a><br />\".(".chr(36)."datestamp ? ".chr(36)."datestamp.\"<br />\" : \"\" ).(".chr(36)."authordetails[1] ? ".chr(36)."authordetails[1].\"<br />\" : \"\" ).(".chr(36)."subheading ? ".chr(36)."subheading.\"<br />\" : \"\" ).\"</td>\";\n";
+				$data .= "         ".chr(36)."text .= \"<td style='width:99%; vertical-align:top;'><a href='\".e_PLUGIN.\"content/content.php?type.".chr(36)."menutypeid.content.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."row['content_heading'].\"</a><br />\".(".chr(36)."datestamp ? ".chr(36)."datestamp.\"<br />\" : \"\" ).(".chr(36)."authordetails[1] ? ".chr(36)."authordetails[1].\"<br />\" : \"\" ).(".chr(36)."subheading ? ".chr(36)."subheading.\"<br />\" : \"\" ).\"</td>\";\n";
 				$data .= "         ".chr(36)."text .= \"</tr>\";\n";
 				$data .= "         ".chr(36)."text .= \"</table><br />\";\n";
 				$data .= "      }\n";
@@ -1042,7 +877,7 @@ class content{
 				$data .= "}\n\n";
 
 				$data .= "if(!isset(".chr(36)."text)){ ".chr(36)."text = CONTENT_LAN_82.\" \".".chr(36)."row['content_heading']; }\n";
-				$data .= chr(36)."caption = (".chr(36)."content_pref[\"content_menu_caption_{$parentid}\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_caption_{$parentid}\"] : ".chr(36)."row['content_heading']);\n";
+				$data .= chr(36)."caption = (".chr(36)."content_pref[\"content_menu_caption_".chr(36)."menutypeid\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_caption_".chr(36)."menutypeid\"] : ".chr(36)."row['content_heading']);\n";
 
 				$data .= chr(36)."ns -> tablerender(".chr(36)."caption, ".chr(36)."text);\n";
 				//$data .= "}\n";
@@ -1123,6 +958,165 @@ class content{
 
 					return $popup;
 		}
-}
+
+
+		//search by keyword
+		function showOptionsSearch($mode, $searchtypeid=""){
+						global $content_shortcodes, $tp, $type, $type_id, $ns, $rs, $action, $sub_action, $id, $id2, $aa;
+						global $plugintable, $gen, $aa, $content_pref, $prefetchbreadcrumb;
+						global $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD;
+
+						if(!is_object($rs)){
+							require_once(e_HANDLER."form_handler.php");
+							$rs = new form;
+						}
+						if(isset($searchtypeid)){$type_id = $searchtypeid;}
+
+						if($mode == "menu"){					
+							$CONTENT_SEARCH_TABLE_KEYWORD = $rs -> form_open("post", e_PLUGIN."content/content.php?type.$type_id", "contentsearchmenu_{$mode}", "", "enctype='multipart/form-data'")."<input class='tbox' size='20' type='text' id='searchfieldmenu_{$mode}' name='searchfieldmenu_{$mode}' value='".(isset($_POST['searchfieldmenu_{$mode}']) ? $_POST['searchfieldmenu_{$mode}'] : CONTENT_LAN_18)."' maxlength='100' onfocus=\"document.forms['contentsearchmenu_{$mode}'].searchfieldmenu_$mode.value='';\" /> <input class='button' type='submit' name='searchsubmit' value='".CONTENT_LAN_19."' />".$rs -> form_close();
+						}else{
+							$searchfieldname = "searchfield_{$mode}";
+							$CONTENT_SEARCH_TABLE_KEYWORD = $rs -> form_open("post", e_SELF.(e_QUERY ? "?".e_QUERY : ""), "contentsearch_{$mode}", "", "enctype='multipart/form-data'")."
+							<input class='tbox' size='27' type='text' id='$searchfieldname' name='$searchfieldname' value='".(isset($_POST[$searchfieldname]) ? $_POST[$searchfieldname] : CONTENT_LAN_18)."' maxlength='100' onfocus=\"document.forms['contentsearch_{$mode}'].$searchfieldname.value='';\" />
+							<input class='button' type='submit' name='searchsubmit' value='".CONTENT_LAN_19."' />
+							".$rs -> form_close();
+						}
+
+						return $CONTENT_SEARCH_TABLE_KEYWORD;
+		}
+
+		//redirection links in dropdown
+		function showOptionsSelect($mode, $searchtypeid=""){
+						global $content_shortcodes, $tp, $type, $type_id, $ns, $rs, $action, $sub_action, $id, $id2, $aa;
+						global $plugintable, $gen, $aa, $content_pref, $prefetchbreadcrumb;
+						global $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD;
+
+						if(!is_object($rs)){
+							require_once(e_HANDLER."form_handler.php");
+							$rs = new form;
+						}
+						if(isset($searchtypeid)){$type_id = $searchtypeid;}
+
+						$catarray = "";
+						$array = $this -> getParent("", "", $type_id);
+						if($array){
+							$emptystring = "---------- categories ----------";
+							$catarray = $rs -> form_option($emptystring, "0", "none");
+						}
+						for($a=0;$a<count($array);$a++){
+							$pre = "";
+							if(!$array[$a][17] || $array[$a][17] == "0"){						
+							}else{
+								for($b=0;$b<$array[$a][17];$b++){
+									$pre .= "_";
+								}
+							}
+							$tmp = array_reverse( explode(".", $type_id) );
+							$id = $tmp[0];
+							if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_cat_number_$type_id"])){
+								$n = " (".$aa -> countItemsInCat($array[$a][0], $array[$a][9], "nolan").")";
+							}
+							$array[$a][1] = (strlen($array[$a][1]) > 25 ? substr($array[$a][1],0,25)."..." : $array[$a][1]);
+							$catarray .= $rs -> form_option($pre.$array[$a][1].$n, 0, e_SELF."?type.".$id.".cat.".$array[$a][0]);
+						}
+
+						$CONTENT_SEARCH_TABLE_SELECT = "
+						".$rs -> form_open("post", e_PLUGIN."content/content.php".(e_QUERY ? "?".e_QUERY : ""), "contentredirect".$mode, "", "enctype='multipart/form-data'")."				
+						<select id='{$mode}value' name='{$mode}value' class='tbox' onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\">					
+						".$rs -> form_option(CONTENT_LAN_56, 1, "none").$rs -> form_option("&nbsp;", "0", "none");
+
+						if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_viewallcat_$type_id"])){
+						   $CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_6, 0, e_PLUGIN."content/content.php?".$type.".".$type_id.".cat");
+						}
+						if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_viewallauthor_$type_id"])){
+						   $CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_7, 0, e_PLUGIN."content/content.php?".$type.".".$type_id.".author");
+						}
+						if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_viewtoprated_$type_id"])){
+						   $CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_8, 0, e_PLUGIN."content/content.php?".$type.".".$type_id.".top");
+						}
+						if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_viewrecent_$type_id"])){
+						   $CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_61, 0, e_PLUGIN."content/content.php?".$type.".".$type_id);
+						}
+						if( ($mode == "page" || ($mode == "menu" && $content_pref["content_menu_viewsubmit_$type_id"]) && $content_pref["content_submit_$type_id"] && check_class($content_pref["content_submit_class_$type_id"]) ) ){
+							$CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_75, 0, e_PLUGIN."content/content_submit.php?".$type.".".$type_id);
+						}
+						if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_cat_$type_id"] && $content_pref["content_menu_cat_dropdown_$type_id"])){
+							$CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option("&nbsp;", "0", "none").$catarray;							
+						}
+
+						$CONTENT_SEARCH_TABLE_SELECT .= "
+						".$rs -> form_select_close()."
+						".$rs -> form_close();
+
+						return $CONTENT_SEARCH_TABLE_SELECT;
+		}
+
+
+		//ordering in dropdown
+		function showOptionsOrder($mode, $ordertypeid=""){
+					global $content_shortcodes, $tp, $type, $type_id, $ns, $rs, $action, $sub_action, $id, $id2, $aa;
+					global $plugintable, $gen, $aa, $content_pref, $prefetchbreadcrumb;
+					global $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD;
+
+					if(!is_object($rs)){
+						require_once(e_HANDLER."form_handler.php");
+						$rs = new form;
+					}
+					if(isset($ordertypeid)){$menutypeid = $ordertypeid;}
+
+					$text = "";
+					$str = "type.".$menutypeid;
+					if(eregi('content.php', e_SELF) && eregi($str, e_QUERY)){
+						if(isset($action) && $action == "content"){
+						}elseif(isset($action) && $action == "author" && !$sub_action){
+						}elseif(isset($action) && $action == "cat" && !$sub_action){
+						}elseif(isset($action) && $action == "top"){
+						}else{
+							if(e_QUERY){
+								$tmp = explode(".", e_QUERY);
+								$type = (isset($tmp[0]) ? $tmp[0] : "");
+								$type_id = (isset($tmp[1]) ? $tmp[1] : "");
+								$action = (isset($tmp[2]) ? $tmp[2] : "");
+								$sub_action = (isset($tmp[3]) ? $tmp[3] : "");
+								$id = (isset($tmp[4]) ? $tmp[4] : "");
+								$id2 = (isset($tmp[5]) ? $tmp[5] : "");
+								unset($tmp);
+							}
+							
+							if($type == "0" || is_numeric($type)){
+								$from = $type;
+								$type = $type_id;
+								$type_id = $action;
+								$action = $sub_action;
+								$sub_action = $id;
+								$id = $id2;
+							}else{
+								$from = "0";
+							}
+
+							$querystring = ($action && substr($action,0,5) != "order" ? ".".$action : "").($sub_action && substr($sub_action,0,5) != "order" ? ".".$sub_action : "").($id && substr($id,0,5) != "order" ? ".".$id : "").($id2 && substr($id2,0,5) != "order" ? ".".$id2 : "");
+							$text = $rs -> form_open("post", e_PLUGIN."content/content.php?type.$menutypeid", "contentsearchorder{$mode}", "", "enctype='multipart/form-data'");
+							$text .= "<select id='ordervalue{$mode}' name='ordervalue{$mode}' class='tbox' onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\">";
+
+							$text .= $rs -> form_option(CONTENT_LAN_9, 1, "none");
+							$text .= $rs -> form_option(CONTENT_LAN_10, ($action == "orderaheading" ? "1" : "0"), e_PLUGIN."content/content.php?type.$menutypeid".$querystring.".orderaheading" );
+							$text .= $rs -> form_option(CONTENT_LAN_11, ($action == "orderdheading" ? "1" : "0"), e_PLUGIN."content/content.php?type.$menutypeid".$querystring.".orderdheading" );
+							$text .= $rs -> form_option(CONTENT_LAN_12, ($action == "orderadate" ? "1" : "0"), e_PLUGIN."content/content.php?type.$menutypeid".$querystring.".orderadate" );
+							$text .= $rs -> form_option(CONTENT_LAN_13, ($action == "orderddate" ? "1" : "0"), e_PLUGIN."content/content.php?type.$menutypeid".$querystring.".orderddate" );
+							$text .= $rs -> form_option(CONTENT_LAN_14, ($action == "orderarefer" ? "1" : "0"), e_PLUGIN."content/content.php?type.$menutypeid".$querystring.".orderarefer" );
+							$text .= $rs -> form_option(CONTENT_LAN_15, ($action == "orderdrefer" ? "1" : "0"), e_PLUGIN."content/content.php?type.$menutypeid".$querystring.".orderdrefer" );
+							$text .= $rs -> form_option(CONTENT_LAN_16, ($action == "orderaparent" ? "1" : "0"), e_PLUGIN."content/content.php?type.$menutypeid".$querystring.".orderaparent" );
+							$text .= $rs -> form_option(CONTENT_LAN_17, ($action == "orderdparent" ? "1" : "0"), e_PLUGIN."content/content.php?type.$menutypeid".$querystring.".orderdparent" );
+							$text .= $rs -> form_option(CONTENT_LAN_73, ($action == "orderaorder" ? "1" : "0"), e_PLUGIN."content/content.php?type.$menutypeid".$querystring.".orderaorder" );
+							$text .= $rs -> form_option(CONTENT_LAN_74, ($action == "orderdorder" ? "1" : "0"), e_PLUGIN."content/content.php?type.$menutypeid".$querystring.".orderdorder" );
+							$text .= $rs -> form_select_close();
+							$text .= $rs -> form_close();
+						}
+					}
+					return $text;
+		}
+
+
+}	//close class
 
 ?>

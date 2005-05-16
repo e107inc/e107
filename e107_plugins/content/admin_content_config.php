@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.32 $
-|		$Date: 2005-05-16 09:29:07 $
+|		$Revision: 1.33 $
+|		$Date: 2005-05-16 13:08:29 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -585,23 +585,30 @@ function admin_content_config_adminmenu(){
 
 								unset($var);
 								$var=array();
-								$parentdetails2 = $aa -> getParent("", "", $row['content_id']);
-								$parentarray = $aa -> printParent($parentdetails2, "0", $row['content_id'], "optionadminmenu");
-								//$parentarray = $aa -> adminCatMenu($parentdetails2);
 
-								for($i=0;$i<count($parentarray);$i++){
-									$var['c'.$parentarray[$i][3]]['text']=$parentarray[$i][1];
-									$var['c'.$parentarray[$i][3]]['link']=e_SELF."?type.".$parentarray[$i][4].".c.{$parentarray[$i][3]}";
+								$array = $aa -> getParent("", "", $row['content_id']);		//get all categories from each main parent
+								for($a=0;$a<count($array);$a++){
+										$pre = "";
+										if(!$array[$a][17] || $array[$a][17] == "0"){
+										}else{
+											for($b=0;$b<$array[$a][17];$b++){
+												$pre .= "_";
+											}
+										}
+										if(strpos($array[$a][9], ".")){
+											$tmp = explode(".", $array[$a][9]);
+											$mainparent = $tmp[1];
+											$id = $tmp[1].".".substr($array[$a][9], 2).".".$array[$a][0];
+										}else{
+											$id = $array[$a][0].".".$array[$a][0];
+											$mainparent = $array[$a][0];
+										}
+										$id = str_replace(".", "-", $id);
+										$string[] = array($array[$a][0], $pre.$array[$a][1], $array[$a][9], $id, $mainparent);
+
+										$var['c'.$id]['text']=$pre.$array[$a][1];
+										$var['c'.$id]['link']=e_SELF."?type.".$mainparent.".c.{$id}";
 								}
-
-								//$parentarray = $aa -> prefetchBreadCrumb($content_id, "", "admin");
-								//print_r($parentarray);
-								//for($i=0;$i<count($parentarray);$i++){
-								//	//$parentarray[$i][3] = ($parentarray[$i][3] == "." ? $parentarray[$i][0].".".$parentarray[$i][0] : $parentarray[$i][0].".".$parentarray[$i][3]);
-								//	$var['c'.$parentarray[$i][3]]['text']=$parentarray[$i][1];
-								//	$var['c'.$parentarray[$i][3]]['link']=e_SELF."?type.".$parentarray[0][0].".c.{$parentarray[$i][3]}";
-								//}
-
 
 								show_admin_menu(CONTENT_ADMIN_MENU_LAN_5." : ".$row['content_heading']."", 'c'.$sub_action, $var);
 							}

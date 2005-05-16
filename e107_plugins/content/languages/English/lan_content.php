@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-05-16 00:04:02 $
+|     $Revision: 1.38 $
+|     $Date: 2005-05-16 13:08:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -322,11 +322,12 @@ define("CONTENT_ADMIN_OPT_LAN_203", "if enabled it allows the posting of comment
 define("CONTENT_ADMIN_OPT_LAN_204", "edit icon : show icon with link to admin to edit content item");
 define("CONTENT_ADMIN_OPT_LAN_205", "layout templates");
 define("CONTENT_ADMIN_OPT_LAN_206", "custom data");
-define("CONTENT_ADMIN_OPT_LAN_207", "");
-define("CONTENT_ADMIN_OPT_LAN_208", "");
-define("CONTENT_ADMIN_OPT_LAN_209", "");
-define("CONTENT_ADMIN_OPT_LAN_210", "");
-define("CONTENT_ADMIN_OPT_LAN_211", "");
+
+define("CONTENT_ADMIN_OPT_LAN_207", "rendertype categories");
+define("CONTENT_ADMIN_OPT_LAN_208", "define the way the categories need to be shown");
+define("CONTENT_ADMIN_OPT_LAN_209", "you can either place the categories in the select box together with the other links, or show them as normal links");
+define("CONTENT_ADMIN_OPT_LAN_210", "selectbox");
+define("CONTENT_ADMIN_OPT_LAN_211", "normallinks");
 define("CONTENT_ADMIN_OPT_LAN_212", "");
 define("CONTENT_ADMIN_OPT_LAN_213", "");
 define("CONTENT_ADMIN_OPT_LAN_214", "");
