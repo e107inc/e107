@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.17 $
-|		$Date: 2005-05-16 00:03:22 $
+|		$Revision: 1.18 $
+|		$Date: 2005-05-16 09:29:26 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -150,9 +150,9 @@ class contentdb{
 						}
 						$contentrefer = ($_POST['content_refer'] && $_POST['content_refer'] != "sa" ? $_POST['content_refer'] : "");
 
-						if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
-							$starttime = mktime( 0, 0, 0, $_POST['ne_month'], $_POST['ne_day'], $_POST['ne_year']);
-						}else{
+						//if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
+						//	$starttime = mktime( 0, 0, 0, $_POST['ne_month'], $_POST['ne_day'], $_POST['ne_year']);
+						//}else{
 							if($_POST['update_datestamp']){
 								$starttime = time();
 							}else{
@@ -162,7 +162,7 @@ class contentdb{
 									$starttime = time();
 								}
 							}
-						}
+						//}
 
 						if($_POST['end_day'] != "none" && $_POST['end_month'] != "none" && $_POST['end_year'] != "none"){
 							$endtime = mktime( 0, 0, 0, $_POST['end_month'], $_POST['end_day'], $_POST['end_year']);

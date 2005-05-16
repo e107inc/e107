@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.40 $
-|		$Date: 2005-05-16 00:03:21 $
+|		$Revision: 1.41 $
+|		$Date: 2005-05-16 09:29:26 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -546,13 +546,15 @@ class content{
 
 									<a href='".e_SELF."?".$type.".".$type_id.".cat.edit.".$array[$a][0]."'>".CONTENT_ICON_EDIT."</a>
 									
-									<input type='image' value='{$array[$a][0]}' title='delete' name='delete_cat' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_9."\\n\\n".CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$array[$a][0]." : ".$delete_heading."]\\n\\n")."')\"/>
+									<input type='image' title='delete' name='delete[cat_{$array[$a][0]}]' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_9."\\n\\n".CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$array[$a][0]." : ".$delete_heading."]\\n\\n")."')\"/>
 
 									".($array[$a][9] == "0" ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.options.".$array[$a][0]."'>".CONTENT_ICON_OPTIONS."</a>" : "")."
 									".($array[$a][9] != "0" && getperms("0") ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.contentmanager.".$array[$a][0]."'>".CONTENT_ICON_CONTENTMANAGER_SMALL."</a>" : "")."
 
 								</td>
 							</tr>";
+
+							//<input type='image' value='{$array[$a][0]}' title='delete' name='delete_cat' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_9."\\n\\n".CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$array[$a][0]." : ".$delete_heading."]\\n\\n")."')\"/>
 						}
 				}
 				return $string;

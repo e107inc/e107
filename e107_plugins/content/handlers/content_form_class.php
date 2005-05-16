@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.38 $
-|		$Date: 2005-05-16 00:03:22 $
+|		$Revision: 1.39 $
+|		$Date: 2005-05-16 09:29:26 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -692,11 +692,12 @@ class contentform{
 											<td class='forumheader3' style='width:5%; text-align:center; white-space:nowrap;'>
 
 											<a href='".e_SELF."?".$type.".".$type_id_parent.".create.sa.".$cid."'>".CONTENT_ICON_EDIT."</a>
-									
-											<input type='image' value='{$cid}' title='delete' name='delete_submitted' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_10."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$cid." : ".$delete_heading."]")."')\"/>
+
+											<input type='image' title='delete' name='delete[submitted_{$cid}]' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_10."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$cid." : ".$delete_heading."]")."')\"/>
 
 											</td>
 										</tr>";
+										//<input type='image' value='{$cid}' title='delete' name='delete_submitted' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_10."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$cid." : ".$delete_heading."]")."')\"/>
 								}
 								$text .= "</table>
 								".$rs -> form_close();
@@ -840,10 +841,12 @@ class contentform{
 												<td class='forumheader3' style='width:10%; text-align:center; white-space:nowrap; vertical-align:top;'>
 
 												<a href='".e_SELF."?".$type.".".$type_id.".create.edit.".$cid."'>".CONTENT_ICON_EDIT."</a> 
-												<input type='image' value='{$cid}' title='delete' name='delete_content' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_1."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$cid." : ".$delete_heading."]")."')\"/>
+												
+												<input type='image' title='delete' name='delete[content_{$cid}]' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_1."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$cid." : ".$delete_heading."]")."')\"/>
 
 												</td>
 											</tr>";
+											//<input type='image' value='{$cid}' title='delete' name='delete_content' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_1."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$cid." : ".$delete_heading."]")."')\"/>
 									}
 									$text .= "</table>
 									".$rs -> form_close();
