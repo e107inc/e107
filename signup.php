@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-05-15 05:02:29 $
+|     $Revision: 1.30 $
+|     $Date: 2005-05-16 08:32:56 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -435,8 +435,8 @@ if ($signupval[10] && ($sql->db_Select("userclass_classes", "*", "userclass_edit
 		//  $frm_checked = check_class($userclass_id,$user_class) ? "checked='checked'" : "";
 		$text .= "<tr><td class='defaulttext' style='width:10%;vertical-align:top'>";
 		$text .= "<input type='checkbox' name='usrclass[]' value='".$row3['userclass_id']."'  />\n";
-		$text .= "</td><td class='defaulttext' style='text-align:left;margin-left:0px;width:90%padding-top:3px;vertical-align:top'>".$row3['userclass_name']."<br />";
-		$text .= "<span class='smalltext'>".$row3['userclass_description']."</span></td>";
+		$text .= "</td><td class='defaulttext' style='text-align:left;margin-left:0px;width:90%padding-top:3px;vertical-align:top'>".$tp->toHTML($row3['userclass_name'],"","defs")."<br />";
+		$text .= "<span class='smalltext'>".$tp->toHTML($row3['userclass_description'],"","defs")."</span></td>";
 		$text .= "</tr>\n";
 	}
 	$text .= "</table>\n";

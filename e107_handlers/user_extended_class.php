@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-05-15 00:50:50 $
+|     $Revision: 1.20 $
+|     $Date: 2005-05-16 08:32:03 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -306,7 +306,7 @@ class e107_user_extended
 				$ret .= "<option value=''></option>\n";  // ensures that the user chose it.
 					foreach($lanlist as $choice){
 						$choice = trim($choice);
-						$sel = ($curval == $choice)? " selected='selected' " : "";
+						$sel = ($curval == $choice || (!USER && $choice == e_LANGUAGE))? " selected='selected' " : "";
 						$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
 					}
 				$ret .= "</select>\n";
