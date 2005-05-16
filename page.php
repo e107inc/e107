@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-12 17:16:41 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-16 17:28:35 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -76,7 +76,7 @@ class pageClass
 		}
 		else
 		{
-			if(!$sql -> db_Select("page", "*", "page_class IN (".USERCLASS_LIST.") "))
+			if(!$sql -> db_Select("page", "*", "page_theme='' AND page_class IN (".USERCLASS_LIST.") "))
 			{
 				$text = "No custom pages yet.";
 			}
