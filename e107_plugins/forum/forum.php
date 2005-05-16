@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-05-15 21:11:47 $
+|     $Revision: 1.20 $
+|     $Date: 2005-05-16 00:16:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -24,10 +24,8 @@ require_once("../../class2.php");
 require_once(e_PLUGIN.'forum/forum_class.php');
 $forum = new e107forum;
 
-//set_time_limit(300);
-//$forum->update_lastpost('forum', 'all');
-
-if (strstr(e_QUERY, "untrack")) {
+if (strstr(e_QUERY, "untrack"))
+{
 	$tmp1 = explode(".", e_QUERY);
 	$tmp = str_replace("-".$tmp1[1]."-", "", USERREALM);
 	$sql->db_Update("user", "user_realm='$tmp' WHERE user_id='".USERID."' ");
@@ -36,14 +34,16 @@ if (strstr(e_QUERY, "untrack")) {
 }
 
 //Mark all threads as read
-if (e_QUERY == "mark.all.as.read") {
+if (e_QUERY == "mark.all.as.read")
+{
 	$forum->forum_markasread('all');
 	header("location:".e_SELF);
 	exit;
 }
 
 //Mark all threads in specific forum as read
-if (strstr(e_QUERY, 'mfar')) {
+if (strstr(e_QUERY, 'mfar'))
+{
 	$tmp = explode(".", e_QUERY);
 	$forum_id = intval($tmp[1]);
 	$forum->forum_markasread($forum_id);
@@ -51,7 +51,8 @@ if (strstr(e_QUERY, 'mfar')) {
 	exit;
 }
 
-if (e_QUERY == 'rules') {
+if (e_QUERY == 'rules')
+{
 	include_once(HEADERF);
 	forum_rules('show');
 	include_once(FOOTERF);
@@ -70,7 +71,6 @@ $NEWTHREADTITLE = LAN_424;
 $POSTEDTITLE = LAN_423;
 $NEWIMAGE = IMAGE_new_small;
 $TRACKTITLE = LAN_397;
-
 
 $rules_text = forum_rules('check');
 $USERINFO = "<a href='".e_BASE."top.php?0.top.forum.10'>".LAN_429."</a> | <a href='".e_BASE."top.php?0.active'>".LAN_430."</a>";
@@ -213,6 +213,7 @@ require_once(HEADERF);
 
 $parent_list = $forum->forum_getparents();
 $forum_list = $forum->forum_getforums();
+$newflag_list = $forum->forum_newflag_list();
 
 if (!$parent_list)
 {
@@ -221,10 +222,10 @@ if (!$parent_list)
 	exit;
 }
 
+$forum_string = "";
 foreach ($parent_list as $parent) {
 	$status = parse_parent($parent);
 	$PARENTSTATUS = $status[0];
-	$forum_string = "";
 	if ($status[1]) {
 		$PARENTNAME = $parent['forum_name'];
 		$forum_string .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_PARENT);
@@ -287,8 +288,9 @@ function parse_parent($parent)
 
 function parse_forum($f, $restricted_string = "")
 {
-	global $FORUM_MAIN_FORUM, $gen, $forum, $tp;
-	if (USER && $forum->forum_newflag($f['forum_id']))
+	global $FORUM_MAIN_FORUM, $gen, $forum, $tp, $newflag_list;
+
+	if(USER && is_array($newflag_list) && in_array($f['forum_id'], $newflag_list))
 	{
 		$NEWFLAG = "<a href='".e_SELF."?mfar.{$f['forum_id']}'>".IMAGE_new."</a></td>";
 	}
