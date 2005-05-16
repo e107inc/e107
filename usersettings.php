@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-05-06 11:03:41 $
-|     $Author: stevedunstan $
+|     $Revision: 1.28 $
+|     $Date: 2005-05-16 08:32:57 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -441,8 +441,8 @@ if ($sql->db_Select("userclass_classes", "*", "userclass_editclass =0")) {
 			$text .= "<tr><td class='defaulttext'>";
 			$text .= "<input type='checkbox' name='usrclass[]' value='$userclass_id' $frm_checked />\n";
 			//   $text .= $rs->form_checkbox("usrclass[]", $userclass_id, $frm_checked);
-			$text .= $row3['userclass_name']."</td>";
-			$text .= "<td class='smalltext'>".$row3['userclass_description']."</td>";
+			$text .= $tp->toHTML($row3['userclass_name'],"","defs")."</td>";
+			$text .= "<td class='smalltext'>".$tp->toHTML($row3['userclass_description'],"","defs")."</td>";
 			$text .= "</tr>\n";
 		} else {
 			$hide .= check_class($userclass_id) ? "<input type='hidden' name='usrclass[]' value='$userclass_id' />\n" :
