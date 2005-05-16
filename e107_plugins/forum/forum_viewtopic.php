@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-04-09 19:13:46 $
-|     $Author: stevedunstan $
+|     $Revision: 1.24 $
+|     $Date: 2005-05-16 01:33:05 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -389,15 +389,18 @@ echo "<script type=\"text/javascript\">
 	</script>";
 require_once(FOOTERF);
 
-function showmodoptions() {
-	// return 'work in progress';
+function showmodoptions()
+{
 	global $thread_id;
 	global $thread_info;
 	global $forum_info;
 	global $post_info;
-	if ($post_info['thread_parent'] == FALSE) {
+	if ($post_info['thread_parent'] == FALSE)
+	{
 		$type = 'thread';
-	} else {
+	}
+	else
+	{
 		$type = 'reply';
 	}
 
@@ -408,7 +411,8 @@ function showmodoptions() {
 		<a href='".e_PLUGIN."forum/forum_post.php?edit.{$post_info['thread_id']}.{$from}'>".IMAGE_admin_edit."</a>
 		<input type='image' ".IMAGE_admin_delete." name='delete_{$post_info['thread_id']}' value='thread_action' onclick=\"return confirm_('$type', $forum_id, $thread_id, '{$post_info['user_name']}')\" />
 		";
-	if ($type == 'thread') {
+	if ($type == 'thread')
+	{
 		$ret .= "<a href='".e_PLUGIN."forum/forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move2."</a>";
 	}
 	$ret .= "
@@ -416,13 +420,17 @@ function showmodoptions() {
 		</form>";
 	return $ret;
 }
-function forumjump() {
+
+function forumjump()
+{
 	global $sql;
 	$sql->db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
 	$text .= "<form method='post' action='".e_SELF."'><p>".LAN_65.": <select name='forumjump' class='tbox'>";
-	while ($row = $sql->db_Fetch()) {
+	while ($row = $sql->db_Fetch())
+	{
 		extract($row);
-		if (check_class($forum_class)) {
+		if (check_class($forum_class))
+		{
 			$text .= "\n<option value='".$forum_id."'>".$forum_name."</option>";
 		}
 	}
@@ -430,9 +438,11 @@ function forumjump() {
 	return $text;
 }
 
-function rpg($user_join, $user_forums) {
+function rpg($user_join, $user_forums)
+{
 	global $FORUMTHREADSTYLE;
-	if (strpos($FORUMTHREADSTYLE, '{RPG}') == FALSE) {
+	if (strpos($FORUMTHREADSTYLE, '{RPG}') == FALSE)
+	{
 		return '';
 	}
 	// rpg mod by Ikari ( kilokan1@yahoo.it | http://artemanga.altervista.org )

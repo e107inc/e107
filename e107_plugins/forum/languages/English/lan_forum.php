@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-20 15:37:19 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-05-16 01:33:42 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("e_PAGETITLE", "Forum");
@@ -108,5 +108,6 @@ define("LAN_441", "View forum statistics");
 	
 define('FORLAN_441', 'No rules defined.');
 define('FORLAN_442', 'My Uploads');
+define('FORLAN_443', '[user deleted]');
 	
 ?>

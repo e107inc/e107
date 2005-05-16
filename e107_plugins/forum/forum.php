@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-05-16 00:16:47 $
+|     $Revision: 1.21 $
+|     $Date: 2005-05-16 01:33:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -319,7 +319,7 @@ function parse_forum($f, $restricted_string = "")
 		{
 			if(substr($f['forum_lastpost_user'], 0, 2) != "0.")
 			{
-				$lastpost_name = "";
+				$lastpost_name = FORLAN_443;
 			}
 			else
 			{
