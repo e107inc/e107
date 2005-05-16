@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-05-15 15:10:22 $
+|     $Revision: 1.27 $
+|     $Date: 2005-05-16 01:33:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -234,34 +234,39 @@ function parse_thread($thread_info)
 	$VIEWS = $thread_info['thread_views'];
 	$REPLIES = $thread_info['thread_total_replies'];
 
-//	$forum->showvar($thread_info);
+//	print_a($thread_info);
 	 
-	if ($REPLIES) {
+	if ($REPLIES)
+	{
 		$lastpost_datestamp = $gen->convert_date($thread_info['thread_lastpost'], 'forum');
-		
 		if($thread_info['lastpost_username'])
 		{
-			$LASTPOST = "<a href='".e_BASE."user.php?id.".$thread_info['thread_lastuser']."'>".$thread_info['lastpost_username']."</a><br />".$lastpost_datestamp;
+			$LASTPOST = "<a href='".e_BASE."user.php?id.".$thread_info['thread_lastuser']."'>".$thread_info['lastpost_username']."</a>";
 		}
 		else
 		{
-			$LASTPOST = $tp->toHTML(substr($thread_info['thread_lastuser'], 2)).'<br />'.$lastpost_datestamp;
+			if(intval($thread_info['thread_lastuser']) > 0)
+			{
+				$LASTPOST = FORLAN_19;
+			}
+			else
+			{
+				$LASTPOST = $tp->toHTML(substr($thread_info['thread_lastuser'], 2));
+			}
 		}
-			
-			
-//		if (!$lastpost_id) {
-//			$LASTPOST = $lastpost_name.'<br />'.$lastpost_datestamp;
-//		} else {
-//			$LASTPOST = "<a href='".e_BASE."user.php?id.".$lastpost_id."'>".$lastpost_name."</a><br />".$lastpost_datestamp;
-//		}
-	} else {
+		$LASTPOST .= "<br />".$lastpost_datestamp;
+	}
+	else
+	{
 		$REPLIES = LAN_317;
 		$LASTPOST = " - ";
 	}
 	 
 	$newflag = FALSE;
-	if (USER) {
-		if ($thread_info['thread_lastpost'] > USERLV && (!ereg("\.".$thread_info['thread_id']."\.", USERVIEWED))) {
+	if (USER)
+	{
+		if ($thread_info['thread_lastpost'] > USERLV && (!ereg("\.".$thread_info['thread_id']."\.", USERVIEWED)))
+		{
 			$newflag = TRUE;
 		}
 	}

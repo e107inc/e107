@@ -60,11 +60,22 @@ SC_END
 	
 SC_BEGIN POSTER
 global $post_info;
-if (!$post_info["thread_user"]) {
-$tmp = explode(chr(1), $post_info['thread_anon']);
-return "<b>".$tmp[0]."</b>";
-} else {
-return "<a href='".e_BASE."user.php?id.".$post_info['user_id']."'><b>".$post_info['user_name']."</b></a>";
+//print_a($post_info);
+if (!$post_info["thread_user"])
+{
+	$tmp = explode(chr(1), $post_info['thread_anon']);
+	return "<b>".$tmp[0]."</b>";
+}
+else
+{
+	if(!$post_info['user_name'])
+	{
+		return FORLAN_103;
+	}
+	else
+	{
+		return "<a href='".e_BASE."user.php?id.".$post_info['user_id']."'><b>".$post_info['user_name']."</b></a>";
+	}
 }
 SC_END
 	
