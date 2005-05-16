@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-05-10 17:39:42 $
-|     $Author: stevedunstan $
+|     $Revision: 1.13 $
+|     $Date: 2005-05-16 11:26:13 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -141,29 +141,41 @@ while ($row = $sql->db_Fetch()) {
 		<td style='width:30%; text-align:center' class='forumheader3'>". ($user_perms == "0" ? "&nbsp;" : $rs->form_button("button", "", LAN_EDIT, "onclick=\"document.location='".e_SELF."?edit.$user_id'\""). $rs->form_button("button", "", ADMSLAN_59, "onclick=\"confirm_($user_id, '$user_name')\""))."</td>
 		<td style='width:35%' class='forumheader3'>";
 
-	if($user_perms == "0"){
+	$permtxt = "";
+	if($user_perms == "0")
+	{
 		$text .= ADMSLAN_58;
-	}else{
-		if($user_perms){
-			$tmp = explode(".",$user_perms);
-			foreach($tmp as $pms){
-				if(in_array($pms,$lanlist)){
+	}
+	else
+	{
+		if($user_perms)
+		{
+			$tmp = explode(".", $user_perms);
+			$langperm = "";
+			foreach($tmp as $pms)
+			{
+				if(in_array($pms, $lanlist))
+				{
                 	$langperm .= $pms."&nbsp;";
-				}else{
+				}
+				else
+				{
 					$permtxt .= $pms;
 				}
 			}
 
 	  	 	$text .= $permtxt;
-			if($pref['multilanguage']){
+			if($pref['multilanguage'])
+			{
 				$text .= ",&nbsp;". $langperm;
-            }
-        }else{
+			}
+		}
+		else
+		{
         	$text .= "&nbsp;";
 		}
-}
-
-$text .= "</td></tr>";
+	}
+	$text .= "</td></tr>";
 }
 
 $text .= "</table></div>\n</form></div>\n</div>";
