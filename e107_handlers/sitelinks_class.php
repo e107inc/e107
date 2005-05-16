@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-04-27 00:56:03 $
-|     $Author: e107coders $
+|     $Revision: 1.47 $
+|     $Date: 2005-05-16 11:26:57 $
+|     $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -180,7 +180,7 @@ class sitelinks
 
 
 		// Check if its expandable first. It should override its URL.
-		if ($linkInfo['link_expand'])
+		if (isset($linkInfo['link_expand']))
 		{
 			$href = " href=\"javascript: expandit('sub_".$linkInfo['link_name']."')\"";
 
@@ -227,6 +227,7 @@ class sitelinks
 		}
 
 		// If its a link.. make a link
+		$_link = "";
 		if (!empty($href))
 		{
 			$_link .= "<a".$linkadd.$screentip.$href.$link_append.">".$linkInfo['link_name']."</a>";
