@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-05-14 16:46:43 $
+|     $Revision: 1.37 $
+|     $Date: 2005-05-16 00:04:02 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -104,10 +104,11 @@ define("CONTENT_ADMIN_CAT_LAN_46", "define if rating should be allowed");
 define("CONTENT_ADMIN_CAT_LAN_47", "define if print/email icons should be shown");
 define("CONTENT_ADMIN_CAT_LAN_48", "choose which users see this item");
 define("CONTENT_ADMIN_CAT_LAN_49", "choose an icon for this category");
-define("CONTENT_ADMIN_CAT_LAN_50", "content menu created<br /><br />
-Because you have created a Main Parent Category, a Menu has been generated.<br />
-The menu file has been created in your /menus folder.<br /><br />
-In order to see the menu in action, you still need to activate this menu in your <a href='".e_ADMIN."menus.php'>admin menus area</a>.
+//define("CONTENT_ADMIN_CAT_LAN_50", "content menu created<br /><br />Because you have created a Main Parent Category, a Menu has been generated.<br />The menu file has been created in your /menus folder.<br /><br />In order to see the menu in action, you still need to activate this menu in your <a href='".e_ADMIN."menus.php'>admin menus area</a>.");
+define("CONTENT_ADMIN_CAT_LAN_50", "
+Only if you have created a New Main Parent Category, a menu file has been created.<br />
+This menu file has been created in your /menus folder.<br />
+In order to see the menu in action, you still need to activate the menu in your <a href='".e_ADMIN."menus.php'>admin menus area</a>.<br /><br />
 ");
 define("CONTENT_ADMIN_CAT_LAN_51", "error; menu file not created");
 define("CONTENT_ADMIN_CAT_LAN_52", "ALWAYS choose a category first before you fill in other fields!");

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.37 $
-|		$Date: 2005-05-15 20:28:11 $
+|		$Revision: 1.38 $
+|		$Date: 2005-05-16 00:03:22 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -623,6 +623,7 @@ class contentform{
 						$text .= $TOPIC_ROW_SPACER."
 						<tr>
 							<td colspan='2' style='text-align:center' class='forumheader'>";
+							
 							if($sub_action == "edit" || $sub_action == "sa" || $_POST['editp']){
 								$text .= $rs -> form_hidden("content_refer", $row['content_refer']);
 								$text .= $rs -> form_hidden("content_datestamp", $row['content_datestamp']);
@@ -630,7 +631,9 @@ class contentform{
 								$text .= $rs -> form_hidden("content_id", $id);
 								$text .= $rs -> form_checkbox("update_datestamp", 1, 0)." ".CONTENT_ADMIN_ITEM_LAN_42;
 							}else{
-								$text .= $rs -> form_button("submit", "create_content", CONTENT_ADMIN_ITEM_LAN_44);
+								$text .= $rs -> form_hidden("parent", '');
+								$js = "onclick=\"document.getElementById('parent').value = document.getElementById('parent1').options[document.getElementById('parent1').selectedIndex].label;\" ";
+								$text .= $rs -> form_button("submit", "create_content", CONTENT_ADMIN_ITEM_LAN_44, $js);								
 							}
 							$text .= "
 							</td>
@@ -881,11 +884,20 @@ class contentform{
 						<table class='fborder' style='".ADMIN_WIDTH."'>";
 
 						//category parent
-						$parentdetails = $aa -> getParent("","","", "", false);	//use all categories						
-						$TOPIC_TOPIC = CONTENT_ADMIN_CAT_LAN_27;
-						$TOPIC_FIELD = CONTENT_ADMIN_CAT_LAN_52."<br /><br />".$aa -> ShowCatOption($parentdetails, $id, "createcat");
-						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-						$text .= $TOPIC_ROW_SPACER;
+						$parentdetails = $aa -> getParent($type_id,"","", "", false);	//use all categories
+						$theoptions = $aa -> ShowCatOption($parentdetails, $id, "createcat");
+						if($theoptions == ""){
+							$parent = $aa -> getCat($row['content_parent'], false);
+							$TOPIC_TOPIC = CONTENT_ADMIN_CAT_LAN_27;
+							$TOPIC_FIELD = $aa -> getCat($row['content_parent'], false).$rs->form_hidden("parent", $row['content_parent']);
+							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+							$text .= $TOPIC_ROW_SPACER;
+						}else{
+							$TOPIC_TOPIC = CONTENT_ADMIN_CAT_LAN_27;
+							$TOPIC_FIELD = CONTENT_ADMIN_CAT_LAN_52."<br /><br />".$theoptions;
+							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+							$text .= $TOPIC_ROW_SPACER;
+						}
 
 						//heading
 						$TOPIC_TOPIC = CONTENT_ADMIN_CAT_LAN_2;
