@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.31 $
-|		$Date: 2005-05-15 12:28:46 $
+|		$Revision: 1.32 $
+|		$Date: 2005-05-16 09:29:07 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -43,7 +43,7 @@ $fl = new e_file;
 
 
 global $tp;
-
+$deltest = array_flip($_POST);
 if(e_QUERY){
         $tmp		=	explode(".", e_QUERY);
 		$type		=	$tmp[0];
@@ -57,20 +57,10 @@ if(e_QUERY){
 if(!isset($type)){ $type = "type"; }
 if(!isset($type_id)){ $type_id = "0"; }
 
-
-if(isset($_POST['delete_cat'])){
-	$delete = "cat";
-	$del_id = $_POST['delete_cat'];
-}
-
-if(isset($_POST['delete_content'])){
-	$delete = "content";
-	$del_id = $_POST['delete_content'];
-}
-
-if(isset($_POST['delete_submitted'])){
-	$delete = "submitted";
-	$del_id = $_POST['delete_submitted'];
+if(isset($_POST['delete']))
+{
+	$tmp = array_pop(array_flip($_POST['delete']));
+	list($delete, $del_id) = explode("_", $tmp);
 }
 
 // ##### DB ---------------------------------------------------------------------------------------
