@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-05-06 13:24:46 $
-|     $Author: stevedunstan $
+|     $Revision: 1.26 $
+|     $Date: 2005-05-16 08:38:41 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,6 +30,12 @@ if (!getperms("W")) {
 require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 require_once(e_HANDLER."userclass_class.php");
 
+// Get name of extended language field.
+if($sql -> db_Select("user_extended_struct", "user_extended_struct_name", "user_extended_struct_type='8'")){
+$row = $sql -> db_Fetch();
+$language_field = $row['user_extended_struct_name'];
+}
+
 if (isset($_POST['testemail'])) {
 	require_once(e_HANDLER."mail.php");
 	if (!sendemail(SITEADMINEMAIL, PRFLAN_66." ".SITENAME, PRFLAN_67)) {
@@ -45,19 +51,23 @@ if (isset($_POST['submit'])) {
 
 		switch ($_POST['email_to']) {
 			case "admin":
-				$insert = "user_admin='1' ";
+				$insert = "u.user_admin='1' ";
 			break;
 			case "unverified":
-				$insert = "user_ban='2' ";
+				$insert = "u.user_ban='2' ";
 			break;
 			case "all":
-				$insert = "user_ban='0' ";
+				$insert = "u.user_ban='0' ";
 			break;
 		}
 
+	} else {
+        $insert = "u.user_class IN (".$_POST['email_to'].")";
+	}
 
-		// send to all.
-		$sql->db_Select("user", "user_id,user_name, user_email, user_class, user_sess", " $insert ORDER BY user_name");
+        $insert2 = ($_POST['language']) ? " AND ue.user_{$language_field} = '".$_POST['language']."' " : "";
+		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id WHERE $insert $insert2 ORDER BY u.user_name";
+        $sql->db_Select_gen($qry);
 		$c = 0;
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
@@ -67,25 +77,6 @@ if (isset($_POST['submit'])) {
 			$recipient_id[$c] = $user_id;
 			$c++;
 		}
-	} else {
-		// send to a user-class.
-
-		$sql->db_Select("user", "user_id,user_name, user_email, user_class", "ORDER BY user_name", "no-where");
-		$c = 0;
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
-			if (check_class($_POST['email_to'], $user_class)) {
-				$recipient_name[$c] = $user_name;
-				$recipient[$c] = $user_email;
-				$recipient_key[$c] = $user_sess;
-				$recipient_id[$c] = $user_id;
-				$c++;
-			}
-
-		}
-		// end while
-
-	}
 
 	// ===== phpmailer version.
 
@@ -116,8 +107,8 @@ if (isset($_POST['submit'])) {
 	$attach = chop($_POST['email_attachment']);
 
 	$attach_link = e_DOWNLOAD.$attach;
-	echo $attach_link;
-	
+//	echo $attach_link;
+
 	if ($attach != "" && !$mail->AddAttachment($attach_link, $attach))
 	{
 		$mss = "There is a problem with the attachment<br />$attach_link";
@@ -174,12 +165,13 @@ if (isset($_POST['submit'])) {
 
 
 
-		if ($mail->Send()) {
-			$stat = "<span style='color:green'>Sent</span>";
-			$sent_no ++;
-		} else {
-			$stat = "<span style='color:red'>Error</span>";
-		}
+        if ($mail->Send()) {
+            $stat = "<span style='color:green'>Sent</span>";
+            $sent_no ++;
+        } else {
+            $stat = "<span style='color:red'>Error</span>";
+        }
+
 		$text .= "<td class='forumheader3'>&nbsp;&nbsp; $stat </td></tr>";
 
 
@@ -256,6 +248,29 @@ $text .= "<div style='text-align:center'>
 	<td style='width:70%' class='forumheader3'>
 	".userclasses("email_to", $email_to)."</td>
 	</tr>";
+
+// Language Option for those using it in their extended user area.
+if(isset($language_field)){
+$text .= "<tr>
+	<td style='width:30%' class='forumheader3'>".ADLAN_132.": </td>
+	<td style='width:70%' class='forumheader3'>";
+
+    require_once(e_HANDLER."file_class.php");
+	$fl = new e_file;
+	$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
+	sort($lanlist);
+	$text .= "<select class='tbox' name='language'>\n";
+	$text .= "<option value=''></option>\n";  // ensures that the user chose it.
+		foreach($lanlist as $choice){
+			$choice = trim($choice);
+			$sel = (e_LANGUAGE == $choice)? " selected='selected' " : "";
+			$text .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
+		}
+	$text .= "</select>\n";
+	$text .= "</td>
+	</tr>";
+
+}
 
 $text .= "
 
