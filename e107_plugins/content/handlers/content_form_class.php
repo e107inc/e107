@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.39 $
-|		$Date: 2005-05-16 09:29:26 $
+|		$Revision: 1.40 $
+|		$Date: 2005-05-16 13:08:40 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1429,10 +1429,8 @@ class contentform{
 		}
 
 		function show_cat_manage(){
-						global $sql, $ns, $rs, $aa, $plugintable;
+						global $sql, $ns, $rs, $aa, $plugintable, $tp, $stylespacer;
 						global $type, $type_id, $action, $sub_action, $id;
-
-						$parentdetails = $aa -> getParent("","","", "", false);	//use all categories
 
 						// ##### MANAGE CATEGORIES ------------------
 						$text = "<div style='text-align:center'>\n";
@@ -1456,12 +1454,57 @@ class contentform{
 							<td class='fcaption' style='width:15%'>".CONTENT_ADMIN_CAT_LAN_18."</td>
 							<td class='fcaption' style='width:65%'>".CONTENT_ADMIN_CAT_LAN_19."</td>
 							<td class='fcaption' style='width:10%; text-align:center'>".CONTENT_ADMIN_CAT_LAN_20."</td>
-							</tr>
-							".$aa -> printParent($parentdetails, "0", $row['content_id'], "table")."
+							</tr>";
+
+							$array = $aa -> getParent("","","", "", false);	//use all categories
+							for($a=0;$a<count($array);$a++){
+								$pre = "";
+								if(!$array[$a][17] || $array[$a][17] == "0"){		//main parent level
+									$class = "forumheader";
+									$style = " font-weight:bold; ";
+								}else{												//sub level
+									$class = "forumheader3";
+									$style = " font-weight:normal; ";
+									for($b=0;$b<$array[$a][17];$b++){
+										$pre .= "_";
+									}
+								}
+								if(strpos($array[$a][9], ".")){
+									$tmp = explode(".", $array[$a][9]);
+									$type_id = $tmp[1];
+								}else{
+									$type_id = $array[$a][0];
+								}
+
+								$content_pref = $aa -> getContentPref($type_id);
+								$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$type_id}"]);
+								$content_cat_icon_path_small = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$type_id}"]);
+
+								$delete_heading = str_replace("&#39;", "\'", $array[$a][1]);
+								$authordetails = $aa -> getAuthor($array[$a][5]);
+								$caticon = $content_cat_icon_path_large.$array[$a][6];
+
+								$text .= "
+								".($array[$a][9] == 0 ? "<tr><td colspan='5' $stylespacer></td></tr>" : "")."
+								<tr>
+									<td class='".$class."' style='".$style." width:5%; text-align:left'>".$array[$a][9].".".$array[$a][0]."</td>
+									<td class='".$class."' style='".$style." width:5%; text-align:center'>".($array[$a][6] ? "<img src='".$caticon."' alt='' style='vertical-align:middle' />" : "&nbsp;")."</td>
+									<td class='".$class."' style='".$style." width:15%'>[".$authordetails[0]."] ".$authordetails[1]."</td>
+									<td class='".$class."' style='".$style." width:65%; white-space:nowrap;'>".$pre.$array[$a][1]." [".$array[$a][2]."]</td>
+									<td class='".$class."' style='".$style." width:10%; text-align:left; white-space:nowrap;'>
+										<a href='".e_SELF."?".$type.".".$type_id.".cat.edit.".$array[$a][0]."'>".CONTENT_ICON_EDIT."</a>
+										<input type='image' title='delete' name='delete[cat_{$array[$a][0]}]' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_9."\\n\\n".CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$array[$a][0]." : ".$delete_heading."]\\n\\n")."')\"/>
+										".($array[$a][9] == "0" ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.options.".$array[$a][0]."'>".CONTENT_ICON_OPTIONS."</a>" : "")."
+										".($array[$a][9] != "0" && getperms("0") ? "<a href='".e_SELF."?".$type.".".$type_id.".cat.contentmanager.".$array[$a][0]."'>".CONTENT_ICON_CONTENTMANAGER_SMALL."</a>" : "")."
+									</td>
+								</tr>";
+							}
+
+							$text .= "
 							</table>
 							".$rs -> form_close();
 						}else{
-							$text .= "<div style='text-align:center'>".CONTENT_ADMIN_CAT_LAN_9."</div>";
+							$text .= CONTENT_ADMIN_CAT_LAN_9;
 						}
 						$text .= "</div>";
 
@@ -1564,7 +1607,7 @@ class contentform{
 		function show_cat_options(){
 						global $sql, $ns, $rs, $aa, $content_pref, $content_cat_icon_path_large, $content_cat_icon_path_small, $plugintable;
 						global $type, $type_id, $action, $sub_action, $id, $fl, $stylespacer, $td1;
-						global $TOPIC_ROW;
+						global $TOPIC_ROW, $TOPIC_ROW_SPACER;
 
 						$TOPIC_TABLE_END = "
 						".$this->pref_submit()."
@@ -2269,6 +2312,7 @@ class contentform{
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
+						/*
 						//content_menu_viewicon_
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_158;
 						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_159;
@@ -2281,6 +2325,7 @@ class contentform{
 						".$rs -> form_option("arrow", ($content_pref["content_menu_viewicon_{$id}"] == "4" ? "1" : "0"), 4)."
 						".$rs -> form_select_close();
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+						*/
 
 						$text .= $TOPIC_ROW_SPACER;
 
@@ -2321,7 +2366,17 @@ class contentform{
 						".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_173, ($content_pref["content_menu_cat_icon_{$id}"] == "5" ? "1" : "0"), 5)."
 						".$rs -> form_select_close()."
 						";
-						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);						
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+						//content_menu_cat_dropdown_ (rendertype)
+						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_207;
+						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_208;
+						$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_209;
+						$TOPIC_FIELD = "
+						".$rs -> form_radio("content_menu_cat_dropdown_{$id}", "1", ($content_pref["content_menu_cat_dropdown_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_210."
+						".$rs -> form_radio("content_menu_cat_dropdown_{$id}", "0", ($content_pref["content_menu_cat_dropdown_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_211."
+						";
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 					
 						$text .= $TOPIC_ROW_SPACER;
 

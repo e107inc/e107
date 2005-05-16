@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.38 $
-|		$Date: 2005-05-15 20:28:02 $
+|		$Revision: 1.39 $
+|		$Date: 2005-05-16 13:08:29 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -199,8 +199,8 @@ if(IsSet($_POST['commentsubmit'])){
 
 // ##### REDIRECTION MANAGEMENT -------------------------------------------------------
 $resultmenu = FALSE;
-$searchfieldname = "searchfield_{$type_id}";
-$searchfieldmenuname = "searchfieldmenu_{$type_id}";
+$searchfieldname = "searchfield_page";
+$searchfieldmenuname = "searchfieldmenu_menu";
 if(isset($_POST['searchsubmit']) || isset($_POST[$searchfieldname]) || isset($_POST[$searchfieldmenuname])){		//if active keyword search
 	if($_POST[$searchfieldname] != "" && $_POST[$searchfieldname] != CONTENT_LAN_18){
 		$resultmenu = TRUE;
@@ -278,13 +278,10 @@ if(!isset($type)){
 // ##### ------------------------------------------------------------------------------
 
 // ##### CONTENT SEARCH MENU ----------------------------
-function show_content_search_menu(){
+function show_content_search_menu($mode="page"){
 				global $content_shortcodes, $tp, $type, $type_id, $ns, $rs, $action, $sub_action, $id, $id2, $aa;
 				global $plugintable, $gen, $aa, $content_pref, $prefetchbreadcrumb;
 				global $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD;
-
-				$parentdetails = $aa -> getParent("", "", $type_id);
-				$parentarray = $aa -> printParent($parentdetails, "0", $type_id, "optionmenu");
 
 				$CONTENT_SEARCH_TABLE = "";
 				if(!$CONTENT_SEARCH_TABLE){
@@ -299,54 +296,15 @@ function show_content_search_menu(){
 					}
 				}
 
-				$CONTENT_SEARCH_TABLE_SELECT = "
-				".$rs -> form_open("post", e_SELF.(e_QUERY ? "?".e_QUERY : ""), "contentdirect", "", "enctype='multipart/form-data'")."
-				<select id='pagevalue' name='pagevalue' class='tbox' onchange=\"document.location=this.options[this.selectedIndex].value;\">
-				".$rs -> form_option(CONTENT_LAN_56, 0, "none")."
-				".$rs -> form_option(CONTENT_LAN_6, 0, "".e_SELF."?".$type.".".$type_id.".cat")."
-				".$rs -> form_option(CONTENT_LAN_7, 0, "".e_SELF."?".$type.".".$type_id.".author")."
-				".$rs -> form_option(CONTENT_LAN_8, 0, "".e_SELF."?".$type.".".$type_id.".top")."
-				".$rs -> form_option(CONTENT_LAN_61, 0, "".e_SELF."?".$type.".".$type_id)."
-				".$parentarray."
-				".$rs -> form_select_close()."
-				".$rs -> form_close();
+				$CONTENT_SEARCH_TABLE_KEYWORD = $aa -> showOptionsSearch("page", $type_id);
+				$CONTENT_SEARCH_TABLE_SELECT = $aa -> showOptionsSelect("page", $type_id);
+				$CONTENT_SEARCH_TABLE_ORDER = $aa -> showOptionsOrder("page", $type_id);
 
-				if($action == "content"){
-					$CONTENT_SEARCH_TABLE_ORDER = "";
-				}elseif($action == "author" && !$sub_action){
-					$CONTENT_SEARCH_TABLE_ORDER = "";
-				}elseif($action == "cat" && !$sub_action){
-					$CONTENT_SEARCH_TABLE_ORDER = "";
-				}elseif($action == "top"){
-					$CONTENT_SEARCH_TABLE_ORDER = "";
+				if($mode == "page"){
+					$text = $tp -> parseTemplate($CONTENT_SEARCH_TABLE, FALSE, $content_shortcodes);
 				}else{
-
-					$querystring = ($action && substr($action,0,5) != "order" ? ".".$action : "").($sub_action && substr($sub_action,0,5) != "order" ? ".".$sub_action : "").($id && substr($id,0,5) != "order" ? ".".$id : "").($id2 && substr($id2,0,5) != "order" ? ".".$id2 : "");
-
-					$CONTENT_SEARCH_TABLE_ORDER = "
-					".$rs -> form_open("post", e_PLUGIN."content/content.php?type.".$type_id, "contentsearchorder", "", "enctype='multipart/form-data'")."
-					<select id='ordervalue' name='ordervalue' class='tbox' onchange=\"document.location=this.options[this.selectedIndex].value;\">
-					".$rs -> form_option(CONTENT_LAN_9, 0, "none")."
-					".$rs -> form_option(CONTENT_LAN_10, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderaheading" )."
-					".$rs -> form_option(CONTENT_LAN_11, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderdheading" )."
-					".$rs -> form_option(CONTENT_LAN_12, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderadate" )."
-					".$rs -> form_option(CONTENT_LAN_13, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderddate" )."
-					".$rs -> form_option(CONTENT_LAN_14, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderarefer" )."
-					".$rs -> form_option(CONTENT_LAN_15, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderdrefer" )."
-					".$rs -> form_option(CONTENT_LAN_16, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderaparent" )."
-					".$rs -> form_option(CONTENT_LAN_17, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderdparent" )."
-					".$rs -> form_option(CONTENT_LAN_73, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderaorder" )."
-					".$rs -> form_option(CONTENT_LAN_74, 0, e_PLUGIN."content/content.php?type.".$type_id.$querystring.".orderdorder" )."
-					".$rs -> form_select_close()."
-					".$rs -> form_close();
+					$text = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_SEARCH_TABLE);
 				}
-				$searchfieldname = "searchfield_{$type_id}";
-				$CONTENT_SEARCH_TABLE_KEYWORD = $rs -> form_open("post", e_SELF.(e_QUERY ? "?".e_QUERY : ""), "contentsearch_{$type_id}", "", "enctype='multipart/form-data'")."
-				<input class='tbox' size='27' type='text' id='$searchfieldname' name='$searchfieldname' value='".(isset($_POST[$searchfieldname]) ? $_POST[$searchfieldname] : CONTENT_LAN_18)."' maxlength='100' onfocus=\"document.forms['contentsearch_{$type_id}'].$searchfieldname.value='';\" />
-				<input class='button' type='submit' name='searchsubmit' value='".CONTENT_LAN_19."' />
-				".$rs -> form_close();
-
-				$text = $tp -> parseTemplate($CONTENT_SEARCH_TABLE, FALSE, $content_shortcodes);
 				$caption = CONTENT_LAN_77;
 				$ns -> tablerender($caption, $text);
 				return TRUE;
