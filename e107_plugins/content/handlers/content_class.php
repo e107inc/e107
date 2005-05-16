@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.39 $
-|		$Date: 2005-05-15 22:18:01 $
+|		$Revision: 1.40 $
+|		$Date: 2005-05-16 00:03:21 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -359,21 +359,9 @@ class content{
 					$array[$a][1] = (strlen($array[$a][1]) > 50 ? substr($array[$a][1],0,50)."..." : $array[$a][1]);
 					$emptystring = "-------------------------------";
 
-					if($mode == "createcat"){
+					if($mode == "createcat"){							
 							if($sub_action == "edit" && is_numeric($id)){
-									$checkid = $id;
-									
-									if($array[$a][9] == 0){
-											$value = "none";
-											$name = strtoupper($pre.$array[$a][1]);
-											$js = "style='font-weight:bold;'";
-											$string .= $rs -> form_option($emptystring, "0", "----");
-									}else{
-											$value = $array[$a][9];
-											$tmp = explode(".", $array[$a][9]);
-											$name = $pre.$array[$a][1];
-											$js = "";						
-									}
+									return false;
 							}else{
 									$checkid = $id;
 									$value = $array[$a][9].".".$array[$a][0];
@@ -452,14 +440,24 @@ class content{
 					}else{
 						return;
 					}
-					$string .= $rs -> form_option($name, ($checkid == $array[$a][0] ? "1" : "0"), $value, ($label ? "label='".$label."' ".$js : $js) ).$catstring;
+					if($checkid == $array[$a][0]){
+						$sel = "1";
+					}else{
+						$sel = "0";
+					}
+					$string .= $rs -> form_option($name, $sel, $value, ($label ? "label='".$label."' ".$js : $js) ).$catstring;
 
 				}
-				$text = $rs -> form_select_open("parent", $selectjs);
+				
+				$selectjs .= " onchange=\"document.getElementById('parent').value=this.options[this.selectedIndex].label;\"";
+				$text = $rs -> form_select_open("parent1", $selectjs);
 				if($mode == "createcat"){
 						$url = e_SELF."?type.0.cat.create.0";
-						$js = "style='font-weight:bold;'";
-						$text .= $rs -> form_option("NEW MAIN CATEGORY", ($id == 0 ? "1" : "0"), "none", $js);
+						if($sub_action == "edit" && is_numeric($id)){
+						}else{
+							$js = "style='font-weight:bold;'";
+							$text .= $rs -> form_option("NEW MAIN CATEGORY", ($id == 0 ? "1" : "0"), "none", $js);
+						}
 				}elseif($mode == "create"){
 						$text .= $rs -> form_option("choose category ...", "0", "");
 				}elseif($mode == "edit"){
@@ -467,6 +465,7 @@ class content{
 				}
 				$text .= $string;
 				$text .= $rs -> form_select_close();
+				
 
 				return $text;
 		}
@@ -665,13 +664,13 @@ class content{
 		}
 
 		//get category name from parent id value of the item
-		function getCat($catid){
+		function getCat($catid, $href=true){
 				global $plugintable, $type_id, $content_pref;
 				$plugintable = "pcontent";
 
 				if(strpos($catid, ".")){
 					$tmp = explode(".", $catid);
-					$type_id = $tmp[0];
+					$type_id = ($type_id ? $type_id : $tmp[0]);
 					$tmp2 = array_reverse($tmp);
 					$query = " content_id = '".$tmp2[0]."' ";
 				}else{
@@ -685,7 +684,11 @@ class content{
 					$getcat = FALSE;
 				}else{
 					list($parent_id, $parent_heading) = $sqlgetcat -> db_Fetch();
-					$getcat = "<a href='".e_PLUGIN."content/content.php?type.".$type_id.".cat.".$parent_id."'>".$parent_heading."</a>";
+					if($href){
+						$getcat = "<a href='".e_PLUGIN."content/content.php?type.".$type_id.".cat.".$parent_id."'>".$parent_heading."</a>";
+					}else{
+						$getcat = $parent_heading;
+					}
 				}	
 
 				return $getcat;									

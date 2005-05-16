@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.16 $
-|		$Date: 2005-05-15 12:29:04 $
+|		$Revision: 1.17 $
+|		$Date: 2005-05-16 00:03:22 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -31,7 +31,8 @@ class contentdb{
 						$_POST['content_heading'] = $tp -> toDB($_POST['content_heading']);
 						$_POST['content_subheading'] = $tp -> toDB($_POST['content_subheading']);
 						$_POST['content_text'] = $tp -> toDB($_POST['content_text']);
-						$_POST['parent'] = ($_POST['parent'] ? $_POST['parent'] : "0");
+						//$_POST['parent'] = ($_POST['parent'] ? $_POST['parent'] : "0");
+						$_POST['parent'] = ($_POST['parent1'] ? $_POST['parent1'] : "0");
 
 						if(USER){
 							if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) ){
@@ -406,7 +407,7 @@ class contentdb{
 						$_POST['cat_heading'] = $tp -> toDB($_POST['cat_heading']);
 						$_POST['cat_subheading'] = $tp -> toDB($_POST['cat_subheading']);
 						$_POST['cat_text'] = $tp -> toDB($_POST['cat_text']);
-						$_POST['parent'] = ($_POST['parent'] == "none" ? "0" : $_POST['parent']);
+						$_POST['parent'] = ($_POST['parent1'] == "none" ? "0" : $_POST['parent1']);
 
 						if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
 							$starttime = mktime( 0, 0, 0, $_POST['ne_month'], $_POST['ne_day'], $_POST['ne_year']);
