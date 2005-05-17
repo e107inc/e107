@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-21 19:20:10 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-17 14:24:49 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -135,7 +135,7 @@ if ($poll_total = $sql->db_Select("polls", "*", "poll_type=1")) {
 		extract($row);
 		$text .= "<tr>
 			<td style='width:5%' class='forumheader3'>$poll_id</td>
-			<td style='width:75%' class='forumheader3'>$poll_title</td>
+			<td style='width:75%' class='forumheader3'>".$tp -> toHTML($poll_title, TRUE)."</td>
 			<td style='width:20%; text-align:center' class='forumheader3'><div>". $rs->form_button("button", "main_edit_{$poll_id}", POLLAN_5, "onclick=\"document.location='".e_SELF."?edit.$poll_id'\""). $rs->form_button("submit", "main_delete_{$poll_id}", POLLAN_6, "onclick=\"confirm_($poll_id)\"")."
 			</div></td>
 			</tr>";
