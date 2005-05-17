@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-05-16 01:33:05 $
+|     $Revision: 1.22 $
+|     $Date: 2005-05-17 13:03:21 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -174,7 +174,7 @@ if (USER == TRUE)
 
 	$INFO .= "<br />
 	".LAN_36." ".$lastvisit_datestamp."<br />
-	".LAN_37." ".$datestamp.LAN_38.$pref['timezone'];
+	".LAN_37." ".$datestamp;
 }
 else
 {
