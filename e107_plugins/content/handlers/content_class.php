@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.42 $
-|		$Date: 2005-05-16 13:08:40 $
+|		$Revision: 1.43 $
+|		$Date: 2005-05-17 22:46:03 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -117,11 +117,16 @@ class content{
 				$content_pref["content_content_comment_all_{$id}"] = "0";				//override comment system				
 				$content_pref["content_content_editicon_{$id}"] = "0";					//show link in content page to admin edit item
 
+				$content_pref["content_archive_nextprev_{$id}"] = "1";					//archive : choose to show next/prev links
+				$content_pref["content_archive_nextprev_number_{$id}"] = "30";			//archive : choose amount to use in next/prev
+				$content_pref["content_archive_datestyle_{$id}"] = "%d %b %Y";			//archive : choose datestyle for given date
+
 				$content_pref["content_menu_caption_{$id}"] = "content menu";			//caption of menu
 				$content_pref["content_menu_search_{$id}"] = "1";						//show search keyword
 				$content_pref["content_menu_sort_{$id}"] = "1";							//show sorting methods
 				$content_pref["content_menu_viewallcat_{$id}"] = "1";					//menu: view link to all categories
 				$content_pref["content_menu_viewallauthor_{$id}"] = "1";				//menu: view link to all authors
+				$content_pref["content_menu_viewallitems_{$id}"] = "1";					//menu: view link to all items (archive)
 				$content_pref["content_menu_viewtoprated_{$id}"] = "1";					//menu: view link to top rated items
 				$content_pref["content_menu_viewrecent_{$id}"] = "1";					//menu: view link to recent items
 				$content_pref["content_menu_viewsubmit_{$id}"] = "1";					//view link to submit content item (only if it is allowed)
@@ -381,7 +386,8 @@ class content{
 					}elseif($mode == "create"){
 							$checkid = $sub_action;
 							
-							$selectjs = "onchange='document.location=this.options[this.selectedIndex].value;'";
+							//$selectjs = "onchange='document.location=this.options[this.selectedIndex].value;'";
+							$selectjs = "document.location=this.options[this.selectedIndex].value;";
 							if($array[$a][9] == 0){
 									$name = strtoupper($pre.$array[$a][1]);								
 									$url = e_SELF."?type.".$array[$a][0].".create.".$array[$a][0];
@@ -414,7 +420,8 @@ class content{
 							}
 						}else{
 							$checkid = $sub_action;
-							$selectjs = "onchange='document.location=this.options[this.selectedIndex].value;'";
+							//$selectjs = "onchange='document.location=this.options[this.selectedIndex].value;'";
+							$selectjs = "document.location=this.options[this.selectedIndex].value;";
 							if($array[$a][9] == 0){
 									$name = strtoupper($pre.$array[$a][1])." (ALL)";
 									$url = e_SELF."?type.".$array[$a][0];
@@ -450,7 +457,7 @@ class content{
 
 				}
 				
-				$selectjs .= " onchange=\"document.getElementById('parent').value=this.options[this.selectedIndex].label;\"";
+				$selectjs = " onchange=\"".$selectjs." document.getElementById('parent').value=this.options[this.selectedIndex].label;\"";
 				$text = $rs -> form_select_open("parent1", $selectjs);
 				if($mode == "createcat"){
 						$url = e_SELF."?type.0.cat.create.0";
@@ -1030,6 +1037,9 @@ class content{
 						}
 						if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_viewallauthor_$type_id"])){
 						   $CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_7, 0, e_PLUGIN."content/content.php?".$type.".".$type_id.".author");
+						}
+						if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_viewallitems_$type_id"])){
+						   $CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_83, 0, e_PLUGIN."content/content.php?".$type.".".$type_id.".list");
 						}
 						if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_viewtoprated_$type_id"])){
 						   $CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_8, 0, e_PLUGIN."content/content.php?".$type.".".$type_id.".top");

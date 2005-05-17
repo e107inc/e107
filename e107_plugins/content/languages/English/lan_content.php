@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-05-16 13:08:40 $
+|     $Revision: 1.39 $
+|     $Date: 2005-05-17 22:46:03 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -182,9 +182,9 @@ define("CONTENT_ADMIN_OPT_LAN_65", "use a seperate menu");
 define("CONTENT_ADMIN_OPT_LAN_66", "combine into one menu");
 define("CONTENT_ADMIN_OPT_LAN_67", "search menu");
 define("CONTENT_ADMIN_OPT_LAN_68", "should the search menu be shown");
-define("CONTENT_ADMIN_OPT_LAN_69", "if checked a navigation and search menu will be shown to search in content or navigate to other overview pages in content as well as an option to order the content items in the list pages");
-define("CONTENT_ADMIN_OPT_LAN_70", "list pages (recent (content.php?type.X), contents by category (content.php?type.X.cat.Y), contents by author (content.php?type.X.author.Y))");
-define("CONTENT_ADMIN_OPT_LAN_71", "choose which sections should be shown when viewing a content item in the list pages");
+define("CONTENT_ADMIN_OPT_LAN_69", "if checked a navigation and search menu will be shown to search in content or navigate to other overview pages in content as well as an option to order the content items in the recent pages");
+define("CONTENT_ADMIN_OPT_LAN_70", "recent pages (recent (content.php?type.X), contents by category (content.php?type.X.cat.Y), contents by author (content.php?type.X.author.Y))");
+define("CONTENT_ADMIN_OPT_LAN_71", "choose which sections should be shown when viewing a content item in the recent pages");
 define("CONTENT_ADMIN_OPT_LAN_72", "subheading");
 define("CONTENT_ADMIN_OPT_LAN_73", "summary");
 define("CONTENT_ADMIN_OPT_LAN_74", "date");
@@ -328,11 +328,11 @@ define("CONTENT_ADMIN_OPT_LAN_208", "define the way the categories need to be sh
 define("CONTENT_ADMIN_OPT_LAN_209", "you can either place the categories in the select box together with the other links, or show them as normal links");
 define("CONTENT_ADMIN_OPT_LAN_210", "selectbox");
 define("CONTENT_ADMIN_OPT_LAN_211", "normallinks");
-define("CONTENT_ADMIN_OPT_LAN_212", "");
-define("CONTENT_ADMIN_OPT_LAN_213", "");
-define("CONTENT_ADMIN_OPT_LAN_214", "");
-define("CONTENT_ADMIN_OPT_LAN_215", "");
-define("CONTENT_ADMIN_OPT_LAN_216", "");
+define("CONTENT_ADMIN_OPT_LAN_212", "link : all content items");
+define("CONTENT_ADMIN_OPT_LAN_213", "does a link to the 'all content items' page (the archive page) need to be shown?");
+define("CONTENT_ADMIN_OPT_LAN_214", "datestyle");
+define("CONTENT_ADMIN_OPT_LAN_215", "choose a datestyle to use for the displayed date");
+define("CONTENT_ADMIN_OPT_LAN_216", "For more information on date formats see the <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime function page at php.net</a>");
 define("CONTENT_ADMIN_OPT_LAN_217", "");
 define("CONTENT_ADMIN_OPT_LAN_218", "");
 define("CONTENT_ADMIN_OPT_LAN_219", "");
@@ -501,11 +501,12 @@ define("CONTENT_ADMIN_MENU_LAN_7", "Create");
 define("CONTENT_ADMIN_MENU_LAN_8", "Submit");
 define("CONTENT_ADMIN_MENU_LAN_9", "Path and Theme");
 define("CONTENT_ADMIN_MENU_LAN_10", "General");
-define("CONTENT_ADMIN_MENU_LAN_11", "List pages");
+define("CONTENT_ADMIN_MENU_LAN_11", "Recent pages");
 define("CONTENT_ADMIN_MENU_LAN_12", "Category pages");
 define("CONTENT_ADMIN_MENU_LAN_13", "Content pages");
 define("CONTENT_ADMIN_MENU_LAN_14", "Menu");
 define("CONTENT_ADMIN_MENU_LAN_15", "Manage Order");
+define("CONTENT_ADMIN_MENU_LAN_16", "Archive Page");
 
 define("CONTENT_ADMIN_JS_LAN_0", "Are you sure you want to delete this category?");
 define("CONTENT_ADMIN_JS_LAN_1", "Are you sure you want to delete this content?");
@@ -622,8 +623,8 @@ define("CONTENT_LAN_79", "page");
 define("CONTENT_LAN_80", "recent items : ");
 define("CONTENT_LAN_81", "categories");
 define("CONTENT_LAN_82", "no items yet in");
-define("CONTENT_LAN_83", "");
-define("CONTENT_LAN_84", "");
+define("CONTENT_LAN_83", "item archive");
+define("CONTENT_LAN_84", "content archive");
 define("CONTENT_LAN_85", "");
 define("CONTENT_LAN_86", "");
 define("CONTENT_LAN_87", "");

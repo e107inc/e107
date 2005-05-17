@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_recent_template.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-05-15 14:45:14 $
+|     $Revision: 1.12 $
+|     $Date: 2005-05-17 22:46:03 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@
 $CONTENT_RECENT_TABLE_START = "";
 $CONTENT_RECENT_TABLE_END = "";
 global $sc_style, $content_shortcodes, $content_pref, $type, $type_id, $aa, $prefetchbreadcrumb, $row, $gen, $rater, $plugintable;
-
+global $crumb;
 $sc_style['CONTENT_RECENT_TABLE_REFER']['pre'] = CONTENT_LAN_44." ";
 $sc_style['CONTENT_RECENT_TABLE_REFER']['post'] = " ";
 

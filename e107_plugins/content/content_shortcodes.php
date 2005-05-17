@@ -66,6 +66,32 @@ return CONTENT_LAN_68;
 SC_END
 
 
+
+// CONTENT_ARCHIVE_TABLE ------------------------------------------------
+SC_BEGIN CONTENT_ARCHIVE_TABLE_HEADING
+global $CONTENT_ARCHIVE_TABLE_HEADING, $row, $type_id;
+return "<a href='".e_SELF."?type.".$type_id.".content.".$row['content_id']."'>".$row['content_heading']."</a>";
+SC_END
+
+SC_BEGIN CONTENT_ARCHIVE_TABLE_DATE
+global $CONTENT_ARCHIVE_TABLE_DATE, $row, $content_pref, $type_id;
+$datestyle = ($content_pref["content_archive_datestyle_{$type_id}"] ? $content_pref["content_archive_datestyle_{$type_id}"] : "%d %b %Y");
+return strftime($datestyle, $row['content_datestamp']);
+SC_END
+
+SC_BEGIN CONTENT_ARCHIVE_TABLE_AUTHOR
+global $CONTENT_ARCHIVE_TABLE_AUTHOR, $row, $type, $type_id, $aa;
+$authordetails = $aa -> getAuthor($row['content_author']);
+$author = " <a href='".e_SELF."?type.".$type_id.".author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
+if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0"){
+	$author .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
+}
+$author .= ($authordetails[1] == "" ? "... ".CONTENT_LAN_29." ..." : $authordetails[1])." ";
+return $author;
+SC_END
+
+
+
 // CONTENT_TOP_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_TOP_TABLE_HEADING
 global $CONTENT_TOP_TABLE_HEADING, $row, $type, $type_id;
