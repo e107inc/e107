@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-05-17 19:32:33 $
+|     $Revision: 1.4 $
+|     $Date: 2005-05-17 19:35:59 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -88,7 +88,7 @@ class file_inspector {
 					}
 					// ?
 				} else {
-					if ($_POST['display'] == '0' || ($_POST['display'] == '3' && $readdir != 'core_image.php' && $this -> checksum($path) != $core_image[$path]) || ($_POST['display'] == '1' && isset($core_image[$path])) || ($_POST['display'] == '2' && !isset($core_image[$path]))) {
+					if ($_POST['display'] == '0' || ($_POST['display'] == '3' && isset($core_image[$path]) && $readdir != 'core_image.php' && $this -> checksum($path) != $core_image[$path]) || ($_POST['display'] == '1' && isset($core_image[$path])) || ($_POST['display'] == '2' && !isset($core_image[$path]))) {
 						 $size = $this -> parsesize(filesize($path));
 						 $this -> files_text[$dir_id] .= "<div style='margin: 2px 0px 1px 8px'>";
 						 if ($_POST['display'] != '3' && !isset($core_image[$path])) {
