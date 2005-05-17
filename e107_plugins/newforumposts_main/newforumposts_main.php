@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-05-16 12:46:14 $
+|     $Revision: 1.15 $
+|     $Date: 2005-05-17 12:48:54 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -58,9 +58,10 @@ else if(!$NEWFORUMPOSTSTYLE_HEADER) {
 }
 
 $results = $sql->db_Select_gen("
-SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class
+SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class, lp.user_name AS lp_name
 FROM #forum_t AS t
 LEFT JOIN #user AS u ON t.thread_user = u.user_id
+LEFT JOIN #user AS lp ON t.thread_lastuser = lp.user_id  
 LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id 
 WHERE f.forum_id = t.thread_forum_id AND t.thread_parent=0 AND f.forum_class IN (".USERCLASS_LIST.") 
@@ -79,42 +80,69 @@ $TOTAL_REPLIES = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
 $TOTAL_VIEWS = $sql->db_Count("SELECT sum(thread_views) FROM ".MPREFIX."forum_t", "generic");
 	
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWFORUMPOSTSTYLE_HEADER);
-foreach($forumArray as $forumInfo) {
-	 
-	 
-	//echo "<pre>"; print_r($forumInfo); echo "</pre>";
-	 
+
+foreach($forumArray as $forumInfo)
+{
 	extract($forumInfo);
-	 
-	$r_id = substr($thread_lastuser, 0, strpos($thread_lastuser, "."));
-	$r_name = substr($thread_lastuser, (strpos($thread_lastuser, ".")+1));
-	if (strstr($thread_lastuser, chr(1))) {
-		$tmp = explode(chr(1), $thread_lastuser);
-		$r_name = $tmp[0];
-	}
+
 	$r_datestamp = $gen->convert_date($thread_lastpost, "forum");
-	 
+	if($thread_total_replies)
+	{
+		if($lp_name)
+		{
+			$LASTPOST = "<a href='".e_BASE."user.php?id.{$thread_lastuser}'>$lp_name</a>";
+		}
+		else
+		{
+			if($thread_lastuser{0} == "0")
+			{
+				$LASTPOST = substr($thread_lastuser, 2);
+			}
+			else
+			{
+				$LASTPOST = NFPM_L16;
+			}
+		}
+		$LASTPOSTDATE = "<span class='smalltext'>$r_datestamp</span>";
+	}
+	else
+	{
+		$LASTPOST = " - ";
+		$LASTPOSTDATE = "";
+	}
+		
 	if ($thread_anon) {
 		$tmp = explode(chr(1), $thread_anon);
 		$thread_user = $tmp[0];
 		$thread_user_ip = $tmp[1];
+		$POSTER = $tmp[0];
+	}
+	else
+	{
+		if($user_name == "")
+		{
+			$POSTER = NFPM_L16;
+		}
+		else
+		{
+			$POSTER = "<a href='".e_BASE."user.php?id.$thread_user'>$user_name</a>";
+		}
 	}
 
 	$THREAD = "<a href='".$path."forum_viewtopic.php?$thread_id'>$thread_name</a>";
 	$FORUM = "<a href='".$path."forum_viewforum.php?$forum_id'>$forum_name</a>";
-	$POSTER = ($thread_anon ? $thread_user : "<a href='".e_BASE."user.php?id.$thread_user'>$user_name</a>");
 	 
 	$VIEWS = $thread_views;
 	$REPLIES = $thread_total_replies;
-	$LASTPOST = ($thread_total_replies ? ($r_id ? "<a href='".e_BASE."user.php?id.$r_id'>$r_name</a>" : $r_name) : " - ");
-	$LASTPOSTDATE = ($thread_total_replies ? "<span class='smalltext'>$r_datestamp</span>" : "");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWFORUMPOSTSTYLE_MAIN);
 	 
 }
 $text .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWFORUMPOSTSTYLE_FOOTER);
 	
 $text = ($pref['nfp_layer'] ? "<div style='border : 0; padding : 4px; width : auto; height : ".$pref['nfp_layer_height']."px; overflow : auto; '>".$text."</div>" : $text);
-if ($results) {
+
+if ($results)
+{
 	$ns->tablerender($pref['nfp_caption'], $text, "nfp");
 }
 
