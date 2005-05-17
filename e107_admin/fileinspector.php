@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-05-17 19:35:59 $
+|     $Revision: 1.5 $
+|     $Date: 2005-05-17 22:26:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -51,19 +51,23 @@ class file_inspector {
 		if (substr($this -> root_dir, -1) == '/') {
 			$this -> root_dir = substr($this -> root_dir, 0, -1);
 		}
+		
+		if ($_POST['display'] == '3') {
+			$_POST['integrity'] = TRUE;
+		}
 	}
 
 	function inspect($dir, $level, &$tree_end, &$tree_open) {
 		global $core_image;
 		unset ($text);
 		unset ($childOut);
-		$dir_id = crc32($dir);
+		$dir_id = md5($dir);
 
 		if ($level) {
 			$this -> files_text[$dir_id] .= "<div style='margin: 2px 0px 1px 8px'><span onclick=\"showhideit('f_".$this -> parent['id']."')\">
 			<img src='".e_IMAGE."fileinspector/folder_up.png' alt='' style='width: 16px; height: 16px' />&nbsp;..</span></div>";
 		} else {
-			$this -> files_text[$dir_id] .= "<span></span>";
+			$this -> files_text[$dir_id] .= "&nbsp;";
 		}
 		
 		$directory = $level ? basename($dir) : SITENAME;
@@ -168,7 +172,12 @@ class file_inspector {
 	}
 	
 	function checksum($filename) {
-		$checksum = dechex(crc32(file_get_contents($filename)));
+		//$checksum = dechex(crc32(str_replace(chr(13).chr(10), chr(10), file_get_contents($filename))));
+		//$checksum = dechex(md5(file_get_contents($filename)));
+		//$checksum = crc32(file_get_contents($filename));
+		$checksum = md5_file($filename);
+		//$checksum = md5_file(str_replace(chr(13).chr(10), chr(13), $filename));
+		//$checksum = sha1_file($filename);
 		return $checksum;
 	}
 	
@@ -176,7 +185,7 @@ class file_inspector {
 		global $ns, $rs;
 		$text = "<script type=\"text/javascript\">
 		<!--
-		var hideid=\"f_".crc32($this -> root_dir)."\";
+		var hideid=\"f_".md5($this -> root_dir)."\";
 		function showhideit(showid){
 			if (hideid!=showid){
 				show=document.getElementById(showid).style;
