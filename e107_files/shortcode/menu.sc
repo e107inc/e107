@@ -7,9 +7,11 @@ if (!array_key_exists($parm,$eMenuList)) {
 
 
 
-foreach($eMenuList[$parm] as $row) {
+foreach($eMenuList[$parm] as $row)
+{
+
 	$show_menu = TRUE;
-	if($row['menu_pages'] && !is_numeric($row['menu_path'])) {
+	if($row['menu_pages']) {
 		list($listtype,$listpages) = explode("-",$row['menu_pages']);
 		$pagelist = explode("|",$listpages);
 		$check_url = e_SELF."?".e_QUERY;
