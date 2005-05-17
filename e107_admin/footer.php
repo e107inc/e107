@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-04-04 09:17:02 $
+|     $Revision: 1.11 $
+|     $Date: 2005-05-17 21:26:19 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -41,7 +41,16 @@ if (ADMIN == TRUE) {
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
 	parse_admin($ADMIN_FOOTER);
 }
-echo "<div style='text-align: center; margin-left: auto; margin-right: auto;'><a href='".e_ADMIN."credits.php'>Credits</a></div>";
+	$eTimingStop = microtime();
+	global $eTimingStart;
+	$rendertime = number_format($eTraffic->TimeDelta( $eTimingStart, $eTimingStop ), 4);
+	$db_time    = number_format($db_time,4);
+	$rinfo = '';
+
+	if($pref['displayrendertime']){ $rinfo .= "Render time: {$rendertime} second(s); {$db_time} of that for queries. "; }
+	if($pref['displaysql']){ $rinfo .= "DB queries: ".$sql -> db_QueryCount().". "; }
+	if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
+	echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");echo "<div style='text-align: center; margin-left: auto; margin-right: auto;'><a href='".e_ADMIN."credits.php'>Credits</a></div>";
 ?>
 
 </body>
