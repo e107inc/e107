@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-16 14:56:10 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-17 18:40:10 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -57,23 +57,28 @@ class file_inspector {
 		global $core_image;
 		unset ($text);
 		unset ($childOut);
-		if ($level > 0) {
-			$this -> files_text['f'][$dir] .= "<div style='margin-left: 8px; margin-bottom: 1px; margin-top: 2px; vertical-align: top'>
-			<span onclick=\"showhideit('expand_files_".$this -> parent."')\">
-			<img src='".e_IMAGE."fileinspector/folder_up.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;..</div></span>";
+		$dir_id = crc32($dir);
+
+		if ($level) {
+			$this -> files_text[$dir_id] .= "<div style='margin: 2px 0px 1px 8px'><span onclick=\"showhideit('f_".$this -> parent['id']."')\">
+			<img src='".e_IMAGE."fileinspector/folder_up.png' alt='' style='width: 16px; height: 16px' />&nbsp;..</span></div>";
+		} else {
+			$this -> files_text[$dir_id] .= "<span></span>";
 		}
+		
 		$directory = $level ? basename($dir) : SITENAME;
 		$level++;
 		$handle = opendir($dir);
 		while (false !== ($readdir = readdir($handle))) {
 			if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
-				$this -> parent = $dir;
+				$this -> parent = array('id' => $dir_id, 'name' => $directory);
 				$path = $dir.'/'.$readdir;
 				if (is_dir($path)) {
 					$child_open = false;
 					$child_end = true;
 					$childOut .= $this -> inspect($path, $level, $child_end, $child_open);
 					$tree_end = false;
+					// ?
 					if ($child_open == 'warning') {
 						$tree_open = 'warning';
 					} else if ($child_open == 'core') {
@@ -81,45 +86,46 @@ class file_inspector {
 					} else if ($child_open == 'unknown') {
 						$tree_open = ($tree_open == 'warning') ? 'warning' : 'unknown';
 					}
+					// ?
 				} else {
 					if (($_POST['display'] == '1' && isset($core_image[$path])) || ($_POST['display'] == '2' && !isset($core_image[$path])) || $_POST['display'] == '0' || !isset($_POST['display'])) {
+						 $size = $this -> parsesize(filesize($path));
+						 $this -> files_text[$dir_id] .= "<div style='margin: 2px 0px 1px 8px'>";
 						 if (!isset($core_image[$path])) {
-							$this -> files_text['f'][$dir] .= "<div style='margin-left: 8px; margin-bottom: 1px; margin-top: 2px; vertical-align: top'>
-							<img src='".e_IMAGE."fileinspector/file_unknown.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;".$readdir."</div>";
+							$file_icon = 'file_unknown.png';
 							$tree_open = ($tree_open == 'warning') ? 'warning' : 'unknown';
 						} else if (!$_POST['integrity']) {
-							$this -> files_text['f'][$dir] .= "<div style='margin-left: 8px; margin-bottom: 1px; margin-top: 2px; vertical-align: top'>
-							<img src='".e_IMAGE."fileinspector/file.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;".$readdir."</div>";
+							$file_icon = 'file.png';
 							$tree_open = ($tree_open == 'unknown') ? 'unknown' : 'core';
 						} else if ($readdir != 'core_image.php' && $this -> checksum($path) != $core_image[$path]) {
-							$this -> files_text['f'][$dir] .= "<div style='margin-left: 8px; margin-bottom: 1px; margin-top: 2px; vertical-align: top'>
-							<img src='".e_IMAGE."fileinspector/file_warning.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;".$readdir."</div>";
+							$file_icon = 'file_warning.png';
 							$tree_open = 'warning';
 						} else {
-							$this -> files_text['f'][$dir] .= "\n<div style='margin-left: 8px; margin-bottom: 1px; margin-top: 2px; vertical-align: top'>
-							<img src='".e_IMAGE."fileinspector/file_check.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;".$readdir."</div>";
+							$file_icon = 'file_check.png';
 						}
+						$this -> files_text[$dir_id] .= "<img src='".e_IMAGE."fileinspector/".$file_icon."' alt='' style='width: 16px; height: 16px' />&nbsp;".$readdir."&nbsp;".$size."</div>";
 					}
 				}
 			}
 		}
-		// echo $tree_open;
+
 		if ($tree_open == 'warning') {
-			$icon = "<img src='".e_IMAGE."fileinspector/folder_warning.png' alt='".$dir."' style='width: 16px; height: 16px' />";
+			$dir_icon = 'folder_warning.png';
 		} else if ($tree_open == 'unknown') {
-			$icon = "<img src='".e_IMAGE."fileinspector/folder_unknown.png' alt='".$dir."' style='width: 16px; height: 16px' />";
+			$dir_icon = 'folder_unknown.png';
 		} else if ($tree_open == 'core' || $_POST['display'] == '2') {
-			$icon = "<img src='".e_IMAGE."fileinspector/folder.png' alt='".$dir."' style='width: 16px; height: 16px' />";
+			$dir_icon = 'folder.png';
 		} else {
-			$icon = "<img src='".e_IMAGE."fileinspector/folder_check.png' alt='".$dir."' style='width: 16px; height: 16px' />";
+			$dir_icon = 'folder_check.png';
 		}
+		$icon = "<img src='".e_IMAGE."fileinspector/".$dir_icon."' alt='' style='width: 16px; height: 16px' />";
 		$hide = ($tree_open && $tree_open != 'core') ? "" : "style='display: none'";
-		$text .= "<div style='margin-left: ".($level * 8)."px; margin-bottom: 1px; margin-top: 2px; vertical-align: top; cursor: default'>";
-		$text .= $tree_end ? "<img src='".e_IMAGE."fileinspector/blank.png' alt='' style='margin-left: 3px; width: 9px; height: 9px' />" : "<span onclick=\"expandit('expand_dirs_".$dir."')\"><img src='".e_IMAGE."fileinspector/expand.png' alt='' style='margin-left: 3px; width: 9px; height: 9px' /></span>";
-		$text .= $tree_end ? "&nbsp;<span onclick=\"showhideit('expand_files_".$dir."')\">".$icon."&nbsp;".$directory."</span>" : "&nbsp;<span onclick=\"showhideit('expand_files_".$dir."')\">".$icon."&nbsp;".$directory."</span>";
-		$text .= $tree_end ? "" : "<div ".$hide." id='expand_dirs_".$dir."'>".$childOut."</div>";
+		$text .= "<div style='margin: 2px 0px 1px ".($level * 8)."px; cursor: default'>";
+		$text .= $tree_end ? "<img src='".e_IMAGE."fileinspector/blank.png' alt='' style='width: 9px; height: 9px' />" : "<span onclick=\"expandit('d_".$dir_id."')\"><img src='".e_IMAGE."fileinspector/expand.png' alt='' style='width: 9px; height: 9px' /></span>";
+		$text .= $tree_end ? "&nbsp;<span onclick=\"showhideit('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>" : "&nbsp;<span onclick=\"showhideit('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>";
+		$text .= $tree_end ? "" : "<div ".$hide." id='d_".$dir_id."'>".$childOut."</div>";
 		$text .= "</div>";
-		
+
 		return $text;
 		closedir($handle);
 	}
@@ -170,7 +176,7 @@ class file_inspector {
 		global $ns, $rs;
 		$text = "<script type=\"text/javascript\">
 		<!--
-		var hideid=\"expand_files_".$this -> root_dir."\";
+		var hideid=\"f_".crc32($this -> root_dir)."\";
 		function showhideit(showid){
 			if (hideid!=showid){
 				show=document.getElementById(showid).style;
@@ -199,16 +205,17 @@ class file_inspector {
 		<td class='forumheader3' style='width:50%; vertical-align: top'><div style='height: 300px; overflow: auto'>";
 
 		$initial = FALSE;
-		foreach ($this -> files_text['f'] as $dir => $stext) {
-			$hide = $initial ? "style='display: none;'" : "";
-			$text .= "<div ".$hide." id='expand_files_".$dir."'>\n";
+		foreach ($this -> files_text as $dir_id => $stext) {
+			$hide = $initial ? "style='display: none'" : "";
+			$text .= "<div ".$hide." id='f_".$dir_id."'>\n";
 			$text .= $stext;
 			$text .= "\n</div>\n";
 			$initial = TRUE;
 		}
+
+		$text .= "</div></td></tr>";
 /*
-		$text .= "</div></td></tr>
-		<tr>
+		$text .= "<tr>
 		<td colspan='2' style='text-align:center' class='forumheader'>".$rs -> form_button('submit', 'updatesettings', 'Delete Selected')."</td>
 		</tr>";
 */
@@ -254,11 +261,11 @@ class file_inspector {
 		<td class='forumheader3' style='width:50%'>
 		Absolute path of root directory to create image from:
 		</td>
-		<td class='forumheader3' style='width:50%; vertical-align: top'>
+		<td class='forumheader3' style='width:50%'>
 		<input class='tbox' type='text' name='snapshot_path' size='60' value='".$this -> root_dir."' />
 		</td></tr>
 		<tr>
-		<td colspan='2' style='text-align:center' class='forumheader'>".$rs -> form_button('submit', 'create_snapshot', 'Create Snapshot')."</td>
+		<td class='forumheader' style='text-align:center' colspan='2'>".$rs -> form_button('submit', 'create_snapshot', 'Create Snapshot')."</td>
 		</tr>
 		</table>
 		</form>
@@ -271,8 +278,8 @@ class file_inspector {
 	function scan_config() {
 		global $ns, $rs;
 
-		$text = "<div style='text-align:center'>
-		<form action='".e_SELF."?results' method='post' id='scan'>
+		$text = "<div style='text-align: center'>
+		<form action='".e_SELF."?results' method='post' id='scanform'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 		<tr>
 		<td class='fcaption' colspan='2'>Scan Options</td>
@@ -282,7 +289,7 @@ class file_inspector {
 		<td class='forumheader3' style='width: 35%'>
 		Scan:
 		</td>
-		<td style='width: 65%;' colspan='2' class='forumheader3' style='text-align: center'>
+		<td colspan='2' class='forumheader3' style='width: 65%'>
 		<input type='radio' name='display' value='0'".(($_POST['display'] == '0' || !isset($_POST['display'])) ? " checked='checked'" : "")." /> All Files&nbsp;&nbsp;
 		<input type='radio' name='display' value='1'".($_POST['display'] == '1' ? " checked='checked'" : "")." /> Core Files Only&nbsp;&nbsp;
 		<input type='radio' name='display' value='2'".($_POST['display'] == '2' ? " checked='checked'" : "")." /> Non Core Files Only&nbsp;&nbsp;
@@ -306,6 +313,27 @@ class file_inspector {
 
 		$ns -> tablerender('File Inspector', $text);
 		
+	}
+	
+	function parsesize($size) {
+		$kb = 1024;
+		$mb = 1024 * $kb;
+		$gb = 1024 * $mb;
+		$tb = 1024 * $gb;
+		if ($size < $kb) {
+			return $size." b";
+		}
+		else if($size < $mb) {
+			return round($size/$kb)." kb";
+		}
+		else if($size < $gb) {
+			return round($size/$mb)." mb";
+		}
+		else if($size < $tb) {
+			return round($size/$gb)." gb";
+		} else {
+			return round($size/$tb)." tb";
+		}
 	}
 }
 
