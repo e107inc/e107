@@ -22,6 +22,7 @@ define("NFPM_L12", "New Forum Posts Configuration");
 define("NFPM_L13", "Update New Forum Posts Settings");
 define("NFPM_L14", "New Forum Posts settings updated.");
 define("NFPM_L15", "Check to display latest forum posts.<br />Default is latest topics.");
+define('NFPM_L16', '[user deleted]');
 	
 	
 ?>
