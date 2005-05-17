@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.40 $
-|		$Date: 2005-05-17 22:45:07 $
+|		$Revision: 1.41 $
+|		$Date: 2005-05-17 22:57:33 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -453,7 +453,7 @@ function show_content(){
 }
 
 
-
+//show archive list of all content items in a main parent
 function show_content_list(){
 				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
 				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number;
