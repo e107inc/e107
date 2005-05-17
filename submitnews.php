@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/submitnews.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-04-25 19:53:39 $
-|     $Author: streaky $
+|     $Revision: 1.12 $
+|     $Date: 2005-05-17 11:52:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -51,7 +51,8 @@ if (isset($_POST['submit'])) {
 		 
 		 
 		// Process File Upload    =================================================
-		if ($_FILES['file_userfile']) {
+		if ($_FILES['file_userfile'] && $pref['subnews_attach'] && $pref['upload_enabled'] && check_class($pref['upload_class']) && FILE_UPLOADS ) 
+		{
 			require_once(e_HANDLER."upload_handler.php");
 			$uploaded = file_upload(e_IMAGE."newspost_images/");
 			$file = $uploaded[0]['name'];
@@ -156,7 +157,8 @@ $text .= "</td>
 	</td>
 	</tr>\n";
 	
-if ($pref['subnews_attach']) {
+if ($pref['subnews_attach'] && $pref['upload_enabled'] && check_class($pref['upload_class']) && FILE_UPLOADS) 
+{
 	$text .= "
 		<tr>
 		<td style='width:20%' class='forumheader3'>".SUBNEWSLAN_5."<br /><span class='smalltext'>".SUBNEWSLAN_6."</span></td>

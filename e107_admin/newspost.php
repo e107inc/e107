@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.82 $
-|   $Date: 2005-05-13 17:06:41 $
+|   $Revision: 1.83 $
+|   $Date: 2005-05-17 11:52:30 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
@@ -411,7 +411,7 @@ class newspost {
 				else
 				{
 					$_POST['data'] .= "\n[[b]".NWSLAN_49." ".$submitnews_name."[/b]]";
-					$_POST['data'] .= ($submitnews_file)?"\n\n[img]".e_IMAGE."newspost_images/".$submitnews_file." [/img]": 	"";
+					$_POST['data'] .= ($submitnews_file)?"\n\n[img]{E_IMAGE}newspost_images/".$submitnews_file."[/img]": "";
 				}
 				$_POST['cat_id'] = $submitnews_category;
 			}
