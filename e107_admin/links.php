@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-05-15 07:22:08 $
-|     $Author: sweetas $
+|     $Revision: 1.37 $
+|     $Date: 2005-05-17 14:26:14 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,10 +33,8 @@ require_once('auth.php');
 // --------------------
 $pst->save_preset();
 
-
 require_once(e_HANDLER.'userclass_class.php');
 require_once(e_HANDLER.'form_handler.php');
-
 
 $rs = new form;
 $linkpost = new links;
@@ -90,17 +88,26 @@ if (isset($_POST['updateoptions'])) {
 	$linkpost->show_message(LCLAN_1);
 }
 
-if ($delete == 'main') {
-	$sql->db_Select("links", "link_order", "link_id='".$del_id."'");
-	$row = $sql->db_Fetch();
-	$sql2 = new db;
-	$sql->db_Select("links", "link_id", "link_order>'".$row['link_order']."'");
-	while ($row = $sql->db_Fetch()) {
-		$sql2->db_Update("links", "link_order=link_order-1 WHERE link_id='".$row['link_id']."'");
-	}
-	if ($sql->db_Delete("links", "link_id='".$del_id."'")) {
-		$e107cache->clear("sitelinks");
-		$linkpost->show_message(LCLAN_53." #".$del_id." ".LCLAN_54);
+if ($delete == 'main')
+{
+	if($sql->db_Select("links", "link_id, link_name, link_order", "link_id='".$del_id."'"))
+	{
+		$row = $sql->db_Fetch();
+		if($sql->db_Select("links", "link_id, link_order","link_name LIKE 'submenu.{$row['link_name']}.%'"))
+		{
+			$subList = $sql->db_getList();
+		}
+		
+		$msg = $linkpost->delete_link($row);
+		foreach($subList as $row)
+		{
+			$msg .= $linkpost->delete_link($row);
+		}
+		if($msg)
+		{
+			$e107cache->clear("sitelinks");
+			$linkpost->show_message($msg);
+		}
 	}
 }
 
@@ -209,8 +216,6 @@ class links {
 	return $text;
 
 	}
-
-
 
 	function show_message($message) {
 		global $ns;
@@ -412,6 +417,24 @@ class links {
 			</form>
 			</div>";
 		$ns->tablerender(LCLAN_88, $text);
+	}
+	
+	function delete_link($linkInfo)
+	{
+		global $sql;
+		
+		if ($sql->db_Select("links", "link_id", "link_order > '{$linkInfo['link_order']}'"))
+		{
+			$linkList = $sql->db_getList();
+			foreach($linkList as $l)
+			{
+				$sql->db_Update("links", "link_order = link_order -1 WHERE link_id = '{$l['link_id']}'");
+			}
+		}
+		if ($sql->db_Delete("links", "link_id='".$linkInfo['link_id']."'"))
+		{
+			return LCLAN_53." #".$linkInfo['link_id']." ".LCLAN_54."<br />";
+		}
 	}
 }
 
