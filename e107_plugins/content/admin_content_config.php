@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.33 $
-|		$Date: 2005-05-16 13:08:29 $
+|		$Revision: 1.34 $
+|		$Date: 2005-05-17 22:45:07 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -40,19 +40,17 @@ $aform = new contentform;
 require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
 
-
-
 global $tp;
 $deltest = array_flip($_POST);
 if(e_QUERY){
-        $tmp		=	explode(".", e_QUERY);
-		$type		=	$tmp[0];
-		$type_id	=	$tmp[1];
-        $action		=	$tmp[2];
-        $sub_action	=	$tmp[3];
-        $id			=	$tmp[4];
-		$id2		=	$tmp[5];
-        unset($tmp);
+	$tmp		=	explode(".", e_QUERY);
+	$type		=	$tmp[0];
+	$type_id	=	$tmp[1];
+	$action		=	$tmp[2];
+	$sub_action	=	$tmp[3];
+	$id			=	$tmp[4];
+	$id2		=	$tmp[5];
+	unset($tmp);
 }
 if(!isset($type)){ $type = "type"; }
 if(!isset($type_id)){ $type_id = "0"; }
@@ -68,64 +66,64 @@ $content_pref = $aa -> getContentPref(($type_id != "0" ? $type_id : "0"));
 
 if($delete == 'cat'){
 
-		$sql -> db_Select($plugintable, "content_parent", "content_id = '$del_id' ");
-		list($content_parent) = $sql -> db_Fetch();
+	$sql -> db_Select($plugintable, "content_parent", "content_id = '$del_id' ");
+	list($content_parent) = $sql -> db_Fetch();
 
-		if($content_parent == "0"){
-			$check = $del_id.".".$del_id;
-		}else{
-			$tmp = explode(".", $content_parent);
-			$check = $tmp[1].".".substr($content_parent,strlen($tmp[1])+1).".".$del_id;
-		}
+	if($content_parent == "0"){
+		$check = $del_id.".".$del_id;
+	}else{
+		$tmp = explode(".", $content_parent);
+		$check = $tmp[1].".".substr($content_parent,strlen($tmp[1])+1).".".$del_id;
+	}
 
-		//check if subcats present
-		$query = "AND LEFT(content_parent,".(strlen($content_parent)+1+strlen($del_id)).") = '".$content_parent.".".$del_id."' ";
-		if($sql -> db_Select($plugintable, "content_parent", "content_id != '".$del_id."' ".$query." ")){
-			//subcategories found don't delete
-			$checkermsg .= CONTENT_ADMIN_CAT_LAN_36."<br />";
-			$checksubcat = TRUE;
-		}else{
-			$checkermsg .= CONTENT_ADMIN_CAT_LAN_39."<br />";
-			$checksubcat = FALSE;
-		}
+	//check if subcats present
+	$query = "AND LEFT(content_parent,".(strlen($content_parent)+1+strlen($del_id)).") = '".$content_parent.".".$del_id."' ";
+	if($sql -> db_Select($plugintable, "content_parent", "content_id != '".$del_id."' ".$query." ")){
+		//subcategories found don't delete
+		$checkermsg .= CONTENT_ADMIN_CAT_LAN_36."<br />";
+		$checksubcat = TRUE;
+	}else{
+		$checkermsg .= CONTENT_ADMIN_CAT_LAN_39."<br />";
+		$checksubcat = FALSE;
+	}
 
-		//check if items present
-		if($sql -> db_Select($plugintable, "content_parent", "LEFT(content_parent,".(strlen($content_parent)).") = '".$check."' OR content_parent = '".$check."' ")){
-			//items found, don't delete
-			$checkermsg .= CONTENT_ADMIN_CAT_LAN_37."<br />";
-			$checkitems = TRUE;
-		}else{
-			$checkermsg .= CONTENT_ADMIN_CAT_LAN_38."<br />";
-			$checkitems = FALSE;
+	//check if items present
+	if($sql -> db_Select($plugintable, "content_parent", "LEFT(content_parent,".(strlen($content_parent)).") = '".$check."' OR content_parent = '".$check."' ")){
+		//items found, don't delete
+		$checkermsg .= CONTENT_ADMIN_CAT_LAN_37."<br />";
+		$checkitems = TRUE;
+	}else{
+		$checkermsg .= CONTENT_ADMIN_CAT_LAN_38."<br />";
+		$checkitems = FALSE;
+	}
+
+	if($checksubcat == FALSE && $checkitems == FALSE){
+		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+			$message = CONTENT_ADMIN_CAT_LAN_23."<br />";
 		}
-	
-		if($checksubcat == FALSE && $checkitems == FALSE){
-			if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-				$message = CONTENT_ADMIN_CAT_LAN_23."<br />";
-			}
-		}else{
-			$message = $checkermsg;
-		}
+	}else{
+		$message = $checkermsg;
+	}
 }
 
 if($delete == 'content'){
-		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-			$e107cache->clear("content");
-			$message = CONTENT_ADMIN_ITEM_LAN_3;
-		}
+	if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+		$e107cache->clear("content");
+		$message = CONTENT_ADMIN_ITEM_LAN_3;
+	}
 }
 
 if($delete == 'submitted'){
-		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-			$e107cache->clear("content");
-			$message = CONTENT_ADMIN_SUBMIT_LAN_8;
-		}
+	if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+		$e107cache->clear("content");
+		$message = CONTENT_ADMIN_SUBMIT_LAN_8;
+	}
 }
 
 if(isset($_POST['updateoptions'])){
-		$content_pref = $aa -> UpdateContentPref($_POST, $_POST['options_type']);
-		$message = CONTENT_ADMIN_CAT_LAN_22."<br /><br />";
-		$message .= $aa -> CreateParentMenu($_POST['options_type']);
+	$content_pref = $aa -> UpdateContentPref($_POST, $_POST['options_type']);
+	$message = CONTENT_ADMIN_CAT_LAN_22."<br /><br />";
+	$message .= $aa -> CreateParentMenu($_POST['options_type']);
 }
 
 $content_cat_icon_path_large	=	$aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$type_id}"]);
@@ -135,148 +133,72 @@ $content_image_path				=	$aa -> parseContentPathVars($content_pref["content_imag
 $content_file_path				=	$aa -> parseContentPathVars($content_pref["content_file_path_{$type_id}"]);
 
 if(isset($_POST['create_category'])){
-		 if($_POST['cat_heading']){
-				$adb -> dbCategoryCreate("admin");
-		}else{
-				$message = CONTENT_ADMIN_ITEM_LAN_0;
-				$content_parent = $_POST['parent'];
-				$content_heading = $_POST['cat_heading'];
-				$content_subheading = $_POST['cat_subheading'];				
-				$content_text = $_POST['cat_text'];
-				$content_icon = $_POST['cat_icon'];
-				$content_comment = $_POST['cat_comment'];
-				$content_rate = $_POST['cat_rate'];
-				$content_pe = $_POST['cat_pe'];
-				$content_class = $_POST['cat_class'];
-				$content_datestamp = $_POST['content_datestamp'];
-				$ne_day = $_POST['ne_day'];
-				$ne_month = $_POST['ne_month'];
-				$ne_year = $_POST['ne_year'];
-				$end_day = $_POST['end_day'];
-				$end_month = $_POST['end_month'];
-				$end_year = $_POST['end_year'];
-		}
+	 if($_POST['cat_heading']){
+		$adb -> dbCategoryCreate("admin");
+	}else{
+		$message = CONTENT_ADMIN_ITEM_LAN_0;
+		$content_parent = $_POST['parent'];
+		$content_heading = $_POST['cat_heading'];
+		$content_subheading = $_POST['cat_subheading'];
+		$content_text = $_POST['cat_text'];
+		$content_icon = $_POST['cat_icon'];
+		$content_comment = $_POST['cat_comment'];
+		$content_rate = $_POST['cat_rate'];
+		$content_pe = $_POST['cat_pe'];
+		$content_class = $_POST['cat_class'];
+		$content_datestamp = $_POST['content_datestamp'];
+		$ne_day = $_POST['ne_day'];
+		$ne_month = $_POST['ne_month'];
+		$ne_year = $_POST['ne_year'];
+		$end_day = $_POST['end_day'];
+		$end_month = $_POST['end_month'];
+		$end_year = $_POST['end_year'];
+	}
 }
 
 if(isset($_POST['update_category'])){
-		if($_POST['cat_heading']){
-				$adb -> dbCategoryUpdate("admin");
-		}else{
-				$message = CONTENT_ADMIN_ITEM_LAN_0;
-				$content_parent = $_POST['parent'];
-				$content_heading = $_POST['cat_heading'];
-				$content_subheading = $_POST['cat_subheading'];				
-				$content_text = $_POST['cat_text'];
-				$content_icon = $_POST['cat_icon'];
-				$content_comment = $_POST['cat_comment'];
-				$content_rate = $_POST['cat_rate'];
-				$content_pe = $_POST['cat_pe'];
-				$content_class = $_POST['cat_class'];
-				$content_datestamp = $_POST['content_datestamp'];
-				$ne_day = $_POST['ne_day'];
-				$ne_month = $_POST['ne_month'];
-				$ne_year = $_POST['ne_year'];
-				$end_day = $_POST['end_day'];
-				$end_month = $_POST['end_month'];
-				$end_year = $_POST['end_year'];
-		}
+	if($_POST['cat_heading']){
+		$adb -> dbCategoryUpdate("admin");
+	}else{
+		$message = CONTENT_ADMIN_ITEM_LAN_0;
+		$content_parent = $_POST['parent'];
+		$content_heading = $_POST['cat_heading'];
+		$content_subheading = $_POST['cat_subheading'];
+		$content_text = $_POST['cat_text'];
+		$content_icon = $_POST['cat_icon'];
+		$content_comment = $_POST['cat_comment'];
+		$content_rate = $_POST['cat_rate'];
+		$content_pe = $_POST['cat_pe'];
+		$content_class = $_POST['cat_class'];
+		$content_datestamp = $_POST['content_datestamp'];
+		$ne_day = $_POST['ne_day'];
+		$ne_month = $_POST['ne_month'];
+		$ne_year = $_POST['ne_year'];
+		$end_day = $_POST['end_day'];
+		$end_month = $_POST['end_month'];
+		$end_year = $_POST['end_year'];
+	}
 }
 if(isset($_POST['assign_admins'])){
-		$message = $adb -> dbAssignAdmins("admin");
+	$message = $adb -> dbAssignAdmins("admin");
 }
 
 if(isset($_POST['create_content'])){
-        if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
-				$adb -> dbContentCreate("admin");
-        }else{
-                $message = CONTENT_ADMIN_ITEM_LAN_0;
-				$content_heading = $_POST['content_heading'];
-				$content_subheading = $_POST['content_subheading'];
-				$content_summary = $_POST['content_summary'];
-				$content_text = $_POST['content_text'];
-				$content_icon = $_POST['content_icon'];
-				$content_file = $_POST['content_file'];
-				$content_comment = $_POST['content_comment'];
-				$content_rate = $_POST['content_rate'];
-				$content_pe = $_POST['content_pe'];
-				$content_class = $_POST['content_class'];
-				$content_datestamp = $_POST['content_datestamp'];
-				$ne_day = $_POST['ne_day'];
-				$ne_month = $_POST['ne_month'];
-				$ne_year = $_POST['ne_year'];
-				$end_day = $_POST['end_day'];
-				$end_month = $_POST['end_month'];
-				$end_year = $_POST['end_year'];
-				$custom["content_custom_score"] = $_POST['content_score'];
-				$custom["content_custom_meta"] = $_POST['content_meta'];
-				for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
-					$keystring = $_POST["content_custom_key_{$i}"];
-					$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
-				}
-		}
-}
-
-If(isset($_POST['update_content'])){
-        if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
-				$adb -> dbContentUpdate("admin");
-		}else{
-				$message = CONTENT_ADMIN_ITEM_LAN_0;
-				$content_heading = $_POST['content_heading'];
-				$content_subheading = $_POST['content_subheading'];
-				$content_summary = $_POST['content_summary'];
-				$content_text = $_POST['content_text'];
-				$content_icon = $_POST['content_icon'];
-				$content_comment = $_POST['content_comment'];
-				$content_rate = $_POST['content_rate'];
-				$content_pe = $_POST['content_pe'];
-				$content_class = $_POST['content_class'];
-				$content_datestamp = $_POST['content_datestamp'];
-				$ne_day = $_POST['ne_day'];
-				$ne_month = $_POST['ne_month'];
-				$ne_year = $_POST['ne_year'];				
-				$end_day = $_POST['end_day'];
-				$end_month = $_POST['end_month'];
-				$end_year = $_POST['end_year'];
-				$custom["content_custom_score"] = $_POST['content_score'];
-				$custom["content_custom_meta"] = $_POST['content_meta'];
-				for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
-					$keystring = $_POST["content_custom_key_{$i}"];
-					$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
-				}
-		}
-}
-
-
-
-if(isset($_POST['preview'])){
-		$content_heading = $tp -> post_toHTML($_POST['content_heading']);
-		$content_subheading = $tp -> post_toHTML($_POST['content_subheading']);
-		$content_summary = $tp -> post_toHTML($_POST['content_summary']);
-		$content_text = $tp -> post_toHTML($_POST['content_text']);
-
-		$text = "
-		<div style='text-align:center'>
-		<table class='fborder' style='".ADMIN_WIDTH."' border='0'>
-		<tr><td>".$content_heading."</td></tr>
-		<tr><td>".$content_subheading."</td></tr>
-		<tr><td>".$content_summary."</td></tr>
-		<tr><td>".$content_text."</td></tr>
-		</table>
-		</div>";
-			  
-		$ns -> tablerender($content_heading, $text);
-
-		$content_authorname = $_POST['content_authorname'];
-		$content_authoremail = $_POST['content_authoremail'];
-		$content_parent = $_POST['parent'];
-		$content_heading = $tp -> post_toForm($_POST['content_heading']);
-		$content_subheading = $tp -> post_toForm($_POST['content_subheading']);
-		$content_summary = $tp -> post_toForm($_POST['content_summary']);
-		$content_text = $tp -> post_toForm($_POST['content_text']);
+	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
+		$adb -> dbContentCreate("admin");
+	}else{
+		$message = CONTENT_ADMIN_ITEM_LAN_0;
+		$content_heading = $_POST['content_heading'];
+		$content_subheading = $_POST['content_subheading'];
+		$content_summary = $_POST['content_summary'];
+		$content_text = $_POST['content_text'];
+		$content_icon = $_POST['content_icon'];
+		$content_file = $_POST['content_file'];
 		$content_comment = $_POST['content_comment'];
 		$content_rate = $_POST['content_rate'];
 		$content_pe = $_POST['content_pe'];
 		$content_class = $_POST['content_class'];
+		$content_datestamp = $_POST['content_datestamp'];
 		$ne_day = $_POST['ne_day'];
 		$ne_month = $_POST['ne_month'];
 		$ne_year = $_POST['ne_year'];
@@ -289,65 +211,138 @@ if(isset($_POST['preview'])){
 			$keystring = $_POST["content_custom_key_{$i}"];
 			$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
 		}
+	}
+}
 
-		$content_icon = $_FILES['file_userfile1']['name'][0];							//won't work, cause file isn't upoaded
-		for($i=0;$i<$content_pref["content_admin_files_number_{$type_id}"];$i++){
-			$content_files{$i} = $_POST['content_files{$i}'];							//won't work, cause file isn't upoaded
+if(isset($_POST['update_content'])){
+	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
+		$adb -> dbContentUpdate("admin");
+	}else{
+		$message = CONTENT_ADMIN_ITEM_LAN_0;
+		$content_heading = $_POST['content_heading'];
+		$content_subheading = $_POST['content_subheading'];
+		$content_summary = $_POST['content_summary'];
+		$content_text = $_POST['content_text'];
+		$content_icon = $_POST['content_icon'];
+		$content_comment = $_POST['content_comment'];
+		$content_rate = $_POST['content_rate'];
+		$content_pe = $_POST['content_pe'];
+		$content_class = $_POST['content_class'];
+		$content_datestamp = $_POST['content_datestamp'];
+		$ne_day = $_POST['ne_day'];
+		$ne_month = $_POST['ne_month'];
+		$ne_year = $_POST['ne_year'];
+		$end_day = $_POST['end_day'];
+		$end_month = $_POST['end_month'];
+		$end_year = $_POST['end_year'];
+		$custom["content_custom_score"] = $_POST['content_score'];
+		$custom["content_custom_meta"] = $_POST['content_meta'];
+		for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
+			$keystring = $_POST["content_custom_key_{$i}"];
+			$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
 		}
-		for($i=0;$i<$content_pref["content_admin_images_number_{$type_id}"];$i++){
-			$content_images{$i} = $_POST['content_images{$i}'];							//won't work, cause file isn't upoaded
-		}
+	}
+}
+
+if(isset($_POST['preview'])){
+	$content_heading = $tp -> post_toHTML($_POST['content_heading']);
+	$content_subheading = $tp -> post_toHTML($_POST['content_subheading']);
+	$content_summary = $tp -> post_toHTML($_POST['content_summary']);
+	$content_text = $tp -> post_toHTML($_POST['content_text']);
+
+	$text = "
+	<div style='text-align:center'>
+	<table class='fborder' style='".ADMIN_WIDTH."' border='0'>
+	<tr><td>".$content_heading."</td></tr>
+	<tr><td>".$content_subheading."</td></tr>
+	<tr><td>".$content_summary."</td></tr>
+	<tr><td>".$content_text."</td></tr>
+	</table>
+	</div>";
+
+	$ns -> tablerender($content_heading, $text);
+
+	$content_authorname = $_POST['content_authorname'];
+	$content_authoremail = $_POST['content_authoremail'];
+	$content_parent = $_POST['parent'];
+	$content_heading = $tp -> post_toForm($_POST['content_heading']);
+	$content_subheading = $tp -> post_toForm($_POST['content_subheading']);
+	$content_summary = $tp -> post_toForm($_POST['content_summary']);
+	$content_text = $tp -> post_toForm($_POST['content_text']);
+	$content_comment = $_POST['content_comment'];
+	$content_rate = $_POST['content_rate'];
+	$content_pe = $_POST['content_pe'];
+	$content_class = $_POST['content_class'];
+	$ne_day = $_POST['ne_day'];
+	$ne_month = $_POST['ne_month'];
+	$ne_year = $_POST['ne_year'];
+	$end_day = $_POST['end_day'];
+	$end_month = $_POST['end_month'];
+	$end_year = $_POST['end_year'];
+	$custom["content_custom_score"] = $_POST['content_score'];
+	$custom["content_custom_meta"] = $_POST['content_meta'];
+	for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
+		$keystring = $_POST["content_custom_key_{$i}"];
+		$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
+	}
+
+	$content_icon = $_FILES['file_userfile1']['name'][0];							//won't work, cause file isn't upoaded
+	for($i=0;$i<$content_pref["content_admin_files_number_{$type_id}"];$i++){
+		$content_files{$i} = $_POST['content_files{$i}'];							//won't work, cause file isn't upoaded
+	}
+	for($i=0;$i<$content_pref["content_admin_images_number_{$type_id}"];$i++){
+		$content_images{$i} = $_POST['content_images{$i}'];							//won't work, cause file isn't upoaded
+	}
 }
 
 if(isset($_POST['update_order'])){
-		$message = $adb -> dbSetOrder("all", $_POST['order']);
+	$message = $adb -> dbSetOrder("all", $_POST['order']);
 }
 
 if(IsSet($message)){
-        $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 // ##### End --------------------------------------------------------------------------------------
 
 if(!e_QUERY){																//show main categories
+	$intro = $aform -> show_main_intro();
+	if($intro == false){
+		$aform -> show_main_parent("edit");
+	}
+	require_once(e_ADMIN."footer.php");
+	exit;
 
-		$intro = $aform -> show_main_intro();
-		if($intro == false){
-			$aform -> show_main_parent("edit");
-		}
-		require_once(e_ADMIN."footer.php");
-		exit;
 }else{
 	if($type=="type" && is_numeric($type_id)){
 		
 		if(!$action || ($action == "c" && $sub_action)){
 			if($type_id == "0"){
-					header("location:".e_SELF); exit;
+				header("location:".e_SELF); exit;
 			}else{															//item; overview by category
-					$aform -> show_main_parent("edit");
-					$aform -> show_content_manage("admin");
+				$aform -> show_main_parent("edit");
+				$aform -> show_content_manage("admin");
 			}
 		}
 
 		if($action == "create"){											//item
 			if($sub_action == "cc"){										//item; create redirect
-						$message = CONTENT_ADMIN_ITEM_LAN_1."<br /><br />";
-						$message .= CONTENT_ADMIN_ITEM_LAN_88." <a href='".e_SELF."?type.".$type_id.".create'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
-						$message .= CONTENT_ADMIN_ITEM_LAN_89." <a href='".e_SELF."?type.".$type_id."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
-						$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-						require_once(e_ADMIN."footer.php");
-						exit;
+					$message = CONTENT_ADMIN_ITEM_LAN_1."<br /><br />";
+					$message .= CONTENT_ADMIN_ITEM_LAN_88." <a href='".e_SELF."?type.".$type_id.".create'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+					$message .= CONTENT_ADMIN_ITEM_LAN_89." <a href='".e_SELF."?type.".$type_id."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+					$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+					require_once(e_ADMIN."footer.php");
+					exit;
 			}elseif(!$sub_action || is_numeric($sub_action)){
 				if($type_id == "0"){										//item; create; show main categories
-						$aform -> show_main_parent("create");
-						require_once(e_ADMIN."footer.php");
-						exit;
+					$aform -> show_main_parent("create");
+					require_once(e_ADMIN."footer.php");
+					exit;
 				}else{														//item; create form; use selected main category
-				//		$aform -> show_main_parent("create");
-						$aform -> show_content_create("admin");
+					$aform -> show_content_create("admin");
 				}
 			}elseif(($sub_action == "edit" || $sub_action == "sa")){
 				if(!is_numeric($id)){
-						header("location:".e_SELF."?type.".$type_id); exit;
+					header("location:".e_SELF."?type.".$type_id); exit;
 				}else{														//item; edit form
 					if($id2 == "cu"){										//item; update redirect
 						$message = CONTENT_ADMIN_ITEM_LAN_2."<br /><br />";
@@ -358,11 +353,10 @@ if(!e_QUERY){																//show main categories
 						require_once(e_ADMIN."footer.php");
 						exit;
 					}
-					//$aform -> show_main_parent("edit");
 					$aform -> show_content_create("admin","","");
 				}
 			}else{
-					header("location:".e_SELF."?type.".$type_id); exit;
+				header("location:".e_SELF."?type.".$type_id); exit;
 			}
 		}
 
@@ -372,120 +366,86 @@ if(!e_QUERY){																//show main categories
 
 		if($action == "order"){
 
-			//if(!$sub_action || (!$sub_action && $type_id == "0")){
-
-			//			$aform -> show_main_parent("order");							//show main parents for order selection
-			//			require_once(e_ADMIN."footer.php");
-			//			exit;
-/*
-			//category (category order)
-			}elseif($sub_action == "cat" && $type_id != "0" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
-						if($sub_action == "cat" && substr($id,0,3) == "inc"){			//increase order
-							$adb -> dbSetOrder("inc", "cc-".substr($id,4));
-						}elseif($sub_action == "cat" && substr($id,0,3) == "dec"){		//decrease order
-							$adb -> dbSetOrder("dec", "cc-".substr($id,4));
-						}
-						$aform -> show_main_parent("order");							//show main parents for order selection
-						$aform -> show_cat_order("admin");								//show categories from selected main parent
-*/
-			//category (category order)
-			//}else
 			if($sub_action == "cat" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
-
-						if($sub_action == "cat" && substr($id,0,3) == "inc"){			//increase order
-							$adb -> dbSetOrder("inc", "cc-".substr($id,4));
-						}elseif($sub_action == "cat" && substr($id,0,3) == "dec"){		//decrease order
-							$adb -> dbSetOrder("dec", "cc-".substr($id,4));
-						}
-						//$aform -> show_main_parent("order");							//show main parents for order selection
-						$aform -> show_cat_order("admin");								//show categories from selected main parent
-
+				if($sub_action == "cat" && substr($id,0,3) == "inc"){			//increase order
+					$adb -> dbSetOrder("inc", "cc-".substr($id,4));
+				}elseif($sub_action == "cat" && substr($id,0,3) == "dec"){		//decrease order
+					$adb -> dbSetOrder("dec", "cc-".substr($id,4));
+				}
+				$aform -> show_cat_order("admin");								//show categories from selected main parent
 
 			//all items (global order)
 			}elseif($sub_action == "all" && $type_id != "0" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
-						if(substr($id,0,3) == "inc"){									//increase order
-							$adb -> dbSetOrder("inc", "ai-".substr($id,4));
-						}elseif(substr($id,0,3) == "dec"){								//decrease order
-							$adb -> dbSetOrder("dec", "ai-".substr($id,4));
-						}
-						//$aform -> show_main_parent("order");							//show main parents for order selection
-						$aform -> show_content_order("admin", "allitem");					//show global content items order
+				if(substr($id,0,3) == "inc"){									//increase order
+					$adb -> dbSetOrder("inc", "ai-".substr($id,4));
+				}elseif(substr($id,0,3) == "dec"){								//decrease order
+					$adb -> dbSetOrder("dec", "ai-".substr($id,4));
+				}
+				$aform -> show_content_order("admin", "allitem");				//show global content items order
 
 			//items in category (category items order)
-			//}elseif($sub_action && $sub_action != "cat" && $sub_action != "all" && $type_id != "0" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
 			}elseif($sub_action == "item" && ($id != "" || substr($id2,0,3) == "inc" || substr($id2,0,3) == "dec")  ){
 
-						if(substr($id2,0,3) == "inc"){									//increase order
-							$adb -> dbSetOrder("inc", "ci-".substr($id2,4));
-						}elseif(substr($id2,0,3) == "dec"){								//decrease order
-							$adb -> dbSetOrder("dec", "ci-".substr($id2,4));
-						}
-					//	$aform -> show_main_parent("order");							//show main parents for order selection
-						$aform -> show_content_order("admin", "catitem");							//show order of content items from selected category
+				if(substr($id2,0,3) == "inc"){									//increase order
+					$adb -> dbSetOrder("inc", "ci-".substr($id2,4));
+				}elseif(substr($id2,0,3) == "dec"){								//decrease order
+					$adb -> dbSetOrder("dec", "ci-".substr($id2,4));
+				}
+				$aform -> show_content_order("admin", "catitem");				//show order of content items from selected category
 
 			}else{
-						header("location:".e_SELF."?type.".$type_id.".order"); exit;
+				header("location:".e_SELF."?type.".$type_id.".order"); exit;
 			}
 		}
 
 		if($action == "cat"){												//category
-			//if(!$sub_action || $sub_action == "manage"){					//category; main parents
-			//		$aform -> show_main_parent("editcat");
-			//		if($type_id != "0"){
-			//				$aform -> show_cat_manage("editcat");			//category; overview subcategories
-			//		}
+
 			if(!$sub_action){												//category; main parents
 					$aform -> show_cat_manage();							//category; overview subcategories
 			}elseif($sub_action == "edit"){									//category; edit
 				if(is_numeric($id)){										//category; edit form
-					if($id2 != "" && $id2 == "pu"){										//category; update redirect
-							$message = CONTENT_ADMIN_CAT_LAN_12."<br />".CONTENT_ADMIN_CAT_LAN_42." <a href='".e_SELF."?type.".$type_id.".cat.edit'>".CONTENT_ADMIN_CAT_LAN_43."</a>";
-							$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-							require_once(e_ADMIN."footer.php");
-							exit;
+					if($id2 != "" && $id2 == "pu"){							//category; update redirect
+						$message = CONTENT_ADMIN_CAT_LAN_12."<br />".CONTENT_ADMIN_CAT_LAN_42." <a href='".e_SELF."?type.".$type_id.".cat.edit'>".CONTENT_ADMIN_CAT_LAN_43."</a>";
+						$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+						require_once(e_ADMIN."footer.php");
+						exit;
 					}
-					//$aform -> show_main_parent("editcat");
 					$aform -> show_cat_create("admin");
-					//$aform -> show_cat_manage("editcat");
 				}else{
 					header("location:".e_SELF."?type.".$type_id.".cat"); exit;
 				}
 			}elseif($sub_action == "create"){
-				//if(is_numeric($id)){
 				if($id && !is_numeric($id) && $id != "pc"){
-				//if($id && $id != "pc"){
-						header("location:".e_SELF."?type.".$type_id.".cat.create"); exit;
-				}else{														//category; create form
-						if($id == "pc"){									//category; create redirect
-								$message = CONTENT_ADMIN_CAT_LAN_11."<br /><br />";
-								if($type_id == "0"){ 
-									$message .= "<br /><br />".CONTENT_ADMIN_CAT_LAN_50."<br /><br />";
-								}
-								$message .= "
-								".CONTENT_ADMIN_CAT_LAN_44." <a href='".e_SELF."?type.".$type_id.".cat.create'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />
-								".CONTENT_ADMIN_CAT_LAN_42." <a href='".e_SELF."?type.".$type_id.".cat.edit'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />
-								";
-								$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-								require_once(e_ADMIN."footer.php");
-								exit;
+					header("location:".e_SELF."?type.".$type_id.".cat.create"); exit;
+				}else{													//category; create form
+					if($id == "pc"){									//category; create redirect
+						$message = CONTENT_ADMIN_CAT_LAN_11."<br /><br />";
+						if($type_id == "0"){ 
+							$message .= "<br /><br />".CONTENT_ADMIN_CAT_LAN_50."<br /><br />";
 						}
-						//$aform -> show_main_parent("createcat");
-						$aform -> show_cat_create("admin");
+						$message .= "
+						".CONTENT_ADMIN_CAT_LAN_44." <a href='".e_SELF."?type.".$type_id.".cat.create'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />
+						".CONTENT_ADMIN_CAT_LAN_42." <a href='".e_SELF."?type.".$type_id.".cat.edit'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />
+						";
+						$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+						require_once(e_ADMIN."footer.php");
+						exit;
+					}
+					$aform -> show_cat_create("admin");
 				}
-			}elseif($sub_action == "options"){								//category; options
+			}elseif($sub_action == "options"){							//category; options
 					$aform -> show_cat_options();
 
-			}elseif($sub_action == "contentmanager"){						//category; contentmanager users for category
-					if(!getperms("0")){
-							header("location:".e_SELF."?".$type.".".$type_id.".cat"); exit;
-					}
-					if(is_numeric($id)){
-							$aform -> show_admin_contentmanager();
-					}
+			}elseif($sub_action == "contentmanager"){					//category; contentmanager users for category
+				if(!getperms("0")){
+					header("location:".e_SELF."?".$type.".".$type_id.".cat"); exit;
+				}
+				if(is_numeric($id)){
+					$aform -> show_admin_contentmanager();
+				}
 			}else{
-					header("location:".e_SELF."?type.0.cat"); exit;
+				header("location:".e_SELF."?type.0.cat"); exit;
 			}
-
 		}
 	}
 }
@@ -502,21 +462,20 @@ function admin_content_config_adminmenu(){
 				$aa = new content;
 
 				if(e_QUERY){
-						$tmp		=	explode(".", e_QUERY);
-						$type		=	$tmp[0];
-						$type_id	=	$tmp[1];
-						$action		=	$tmp[2];
-						$sub_action	=	$tmp[3];
-						$id			=	$tmp[4];
-						$id2		=	$tmp[5];
-						unset($tmp);
+					$tmp		=	explode(".", e_QUERY);
+					$type		=	$tmp[0];
+					$type_id	=	$tmp[1];
+					$action		=	$tmp[2];
+					$sub_action	=	$tmp[3];
+					$id			=	$tmp[4];
+					$id2		=	$tmp[5];
+					unset($tmp);
 				}
 
 				if($action == "cat"){
 					if($sub_action == "create"){
 						$act = $action.".".$sub_action;
 					}else{
-						//if($sub_action == "edit" || $sub_action == "manage" || $sub_action == "options"){
 						$act = $action;
 					}
 				}elseif($action == "create"){
@@ -553,8 +512,8 @@ function admin_content_config_adminmenu(){
                 $var['order']['link']=e_SELF."?type.0.order.cat";
 
                 if($submittedcontents = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer ='sa' ")){
-                        $var['sa']['text']=CONTENT_ADMIN_MENU_LAN_4." (".$submittedcontents.")";
-                        $var['sa']['link']=e_SELF."?type.0.sa";
+					$var['sa']['text']=CONTENT_ADMIN_MENU_LAN_4." (".$submittedcontents.")";
+					$var['sa']['link']=e_SELF."?type.0.sa";
                 }
 
 				show_admin_menu(CONTENT_ADMIN_MENU_LAN_6, $act,$var);
@@ -577,42 +536,42 @@ function admin_content_config_adminmenu(){
 					list($content_heading) = $sql -> db_Fetch();
 
 					show_admin_menu(CONTENT_ADMIN_MENU_LAN_6.": ".$content_heading."", $act, $var, TRUE);
-				
+
 				}else{
-						$sql2 = new db;
-						if($category_total = $sql2 -> db_Select($plugintable, "content_id, content_heading", "content_parent='0' ")){
-							while($row = $sql2 -> db_Fetch()){
+					$sql2 = new db;
+					if($category_total = $sql2 -> db_Select($plugintable, "content_id, content_heading", "content_parent='0' ")){
+						while($row = $sql2 -> db_Fetch()){
 
-								unset($var);
-								$var=array();
+							unset($var);
+							$var=array();
 
-								$array = $aa -> getParent("", "", $row['content_id']);		//get all categories from each main parent
-								for($a=0;$a<count($array);$a++){
-										$pre = "";
-										if(!$array[$a][17] || $array[$a][17] == "0"){
-										}else{
-											for($b=0;$b<$array[$a][17];$b++){
-												$pre .= "_";
-											}
-										}
-										if(strpos($array[$a][9], ".")){
-											$tmp = explode(".", $array[$a][9]);
-											$mainparent = $tmp[1];
-											$id = $tmp[1].".".substr($array[$a][9], 2).".".$array[$a][0];
-										}else{
-											$id = $array[$a][0].".".$array[$a][0];
-											$mainparent = $array[$a][0];
-										}
-										$id = str_replace(".", "-", $id);
-										$string[] = array($array[$a][0], $pre.$array[$a][1], $array[$a][9], $id, $mainparent);
-
-										$var['c'.$id]['text']=$pre.$array[$a][1];
-										$var['c'.$id]['link']=e_SELF."?type.".$mainparent.".c.{$id}";
+							$array = $aa -> getParent("", "", $row['content_id']);		//get all categories from each main parent
+							for($a=0;$a<count($array);$a++){
+								$pre = "";
+								if(!$array[$a][17] || $array[$a][17] == "0"){
+								}else{
+									for($b=0;$b<$array[$a][17];$b++){
+										$pre .= "_";
+									}
 								}
+								if(strpos($array[$a][9], ".")){
+									$tmp = explode(".", $array[$a][9]);
+									$mainparent = $tmp[1];
+									$id = $tmp[1].".".substr($array[$a][9], 2).".".$array[$a][0];
+								}else{
+									$id = $array[$a][0].".".$array[$a][0];
+									$mainparent = $array[$a][0];
+								}
+								$id = str_replace(".", "-", $id);
+								$string[] = array($array[$a][0], $pre.$array[$a][1], $array[$a][9], $id, $mainparent);
 
-								show_admin_menu(CONTENT_ADMIN_MENU_LAN_5." : ".$row['content_heading']."", 'c'.$sub_action, $var);
+								$var['c'.$id]['text']=$pre.$array[$a][1];
+								$var['c'.$id]['link']=e_SELF."?type.".$mainparent.".c.{$id}";
 							}
+
+							show_admin_menu(CONTENT_ADMIN_MENU_LAN_5." : ".$row['content_heading']."", 'c'.$sub_action, $var);
 						}
+					}
 				}
 
 }
@@ -689,8 +648,7 @@ function headerjs(){
 		document.getElementById('assignclass1').selectedIndex=-1;
 		document.getElementById('class_id').value = document.getElementById('class_id').value + newvalues
 	}
-		 
-		 
+
 	function removeMe() {
 		var boxLength = document.getElementById('assignclass2').length;
 		var boxLength2 = document.getElementById('assignclass1').length;
@@ -705,7 +663,6 @@ function headerjs(){
 						document.getElementById('assignclass1').options[j].text = valname;
 					}
 				}
-				// document.getElementById('assignclass1').options[i].text = valname;
 			}
 			count++;
 		}

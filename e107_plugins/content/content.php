@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.39 $
-|		$Date: 2005-05-16 13:08:29 $
+|		$Revision: 1.40 $
+|		$Date: 2005-05-17 22:45:07 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -266,10 +266,15 @@ if(!isset($type)){
 			if($content_pref["content_searchmenu_{$type_id}"]){ show_content_search_menu(); }
 			if($resultmenu == TRUE){ show_content_search_result($searchkeyword); }
 			show_content_item();
+
 	}elseif($action == "top"){											//show content top rated items
 			if($content_pref["content_searchmenu_{$type_id}"]){ show_content_search_menu(); }
 			if($resultmenu == TRUE){ show_content_search_result($searchkeyword); }
 			show_content_top();
+	}elseif($action == "list"){
+			if($content_pref["content_searchmenu_{$type_id}"]){ show_content_search_menu(); }
+			if($resultmenu == TRUE){ show_content_search_result($searchkeyword); }
+			show_content_list();
 	}else{
 		header("location:".e_SELF."?".$type.".".$type_id);
 		exit;
@@ -447,6 +452,77 @@ function show_content(){
 				}
 }
 
+
+
+function show_content_list(){
+				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
+				global $type, $type_id, $action, $sub_action, $id, $id2, $nextprevquery, $from, $number;
+				global $CONTENT_LIST_TABLE, $datequery, $prefetchbreadcrumb, $unvalidcontent;
+
+				if(!$CONTENT_LIST_TABLE){
+					if(!$content_pref["content_theme_{$type_id}"]){
+						require_once(e_PLUGIN."content/templates/default/content_archive_template.php");
+					}else{
+						if(file_exists(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_archive_template.php")){
+							require_once(e_PLUGIN."content/templates/".$content_pref["content_theme_{$type_id}"]."/content_archive_template.php");
+						}else{
+							require_once(e_PLUGIN."content/templates/default/content_archive_template.php");
+						}
+					}
+				}
+
+				$cachestr = "$plugintable.archive";
+				if($cache = $e107cache->retrieve($cachestr)){
+					echo $cache;
+				}else{
+					ob_start();
+
+					$number = ($content_pref["content_archive_nextprev_number_{$type_id}"] ? $content_pref["content_archive_nextprev_number_{$type_id}"] : "30");
+					$order = $aa -> getOrder();
+					$nextprevquery = "LIMIT ".$from.",".$number;
+
+					$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ");
+
+					if($from > $contenttotal-1){ header("location:".e_SELF); exit; }
+
+					if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
+
+						$content_archive_table_string = "";
+						while($row = $sql -> db_Fetch()){
+							$content_archive_table_string .= $tp -> parseTemplate($CONTENT_ARCHIVE_TABLE, FALSE, $content_shortcodes);
+						}
+						$text = $CONTENT_ARCHIVE_TABLE_START.$content_archive_table_string.$CONTENT_ARCHIVE_TABLE_END;
+					}
+
+					if($content_pref["content_breadcrumb_{$type_id}"]){
+						$breadcrumb = $aa -> drawBreadcrumb($prefetchbreadcrumb, $type_id, "base", "");
+						if($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "1"){
+								echo $breadcrumb;					
+						}elseif($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "2"){
+								$ns -> tablerender(CONTENT_LAN_24, $breadcrumb);
+						}else{
+								$text = $breadcrumb.$text;
+						}
+					}
+
+					$caption = CONTENT_LAN_84;
+					$ns->tablerender($caption, $text);
+
+					$content_pref["content_archive_nextprev_{$type_id}"] = ($content_pref["content_archive_nextprev_{$type_id}"] ? $content_pref["content_archive_nextprev_{$type_id}"] : "1");
+					if($content_pref["content_archive_nextprev_{$type_id}"]){
+						require_once(e_HANDLER."np_class.php");
+						$np_querystring = ($type ? $type : "").($type_id ? ".".$type_id : "").($action ? ".".$action : "").($sub_action ? ".".$sub_action : "").($id ? ".".$id : "");
+						$ix = new nextprev("content.php", $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
+					}
+					
+					if($pref['cachestatus']){
+						$cache = ob_get_contents();
+						$e107cache->set($cachestr, $cache);
+					}
+					ob_end_flush(); // dump collected data 			
+				}
+}
+
 // ##### RECENT LIST ------------------------------------
 function show_content_recent(){
 				global $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
@@ -472,7 +548,6 @@ function show_content_recent(){
 					ob_start();
 
 					$order = $aa -> getOrder();
-					$breadcrumb = $aa -> drawBreadcrumb($prefetchbreadcrumb, $type_id, "base", "");
 
 					if(!is_object($sql)){ $sql = new db; }
 					$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id)).") = '".$type_id."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ");
@@ -490,6 +565,7 @@ function show_content_recent(){
 					$text = $CONTENT_RECENT_TABLE_START.$content_recent_table_string.$CONTENT_RECENT_TABLE_END;
 
 					if($content_pref["content_breadcrumb_{$type_id}"]){
+						$breadcrumb = $aa -> drawBreadcrumb($prefetchbreadcrumb, $type_id, "base", "");
 						if($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "1"){
 								echo $breadcrumb;					
 						}elseif($content_pref["content_breadcrumb_rendertype_{$type_id}"] == "2"){
