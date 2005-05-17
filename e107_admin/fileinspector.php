@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-05-17 18:40:10 $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-17 19:32:33 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -88,13 +88,13 @@ class file_inspector {
 					}
 					// ?
 				} else {
-					if (($_POST['display'] == '1' && isset($core_image[$path])) || ($_POST['display'] == '2' && !isset($core_image[$path])) || $_POST['display'] == '0' || !isset($_POST['display'])) {
+					if ($_POST['display'] == '0' || ($_POST['display'] == '3' && $readdir != 'core_image.php' && $this -> checksum($path) != $core_image[$path]) || ($_POST['display'] == '1' && isset($core_image[$path])) || ($_POST['display'] == '2' && !isset($core_image[$path]))) {
 						 $size = $this -> parsesize(filesize($path));
 						 $this -> files_text[$dir_id] .= "<div style='margin: 2px 0px 1px 8px'>";
-						 if (!isset($core_image[$path])) {
+						 if ($_POST['display'] != '3' && !isset($core_image[$path])) {
 							$file_icon = 'file_unknown.png';
 							$tree_open = ($tree_open == 'warning') ? 'warning' : 'unknown';
-						} else if (!$_POST['integrity']) {
+						} else if ($_POST['display'] != '3' && !$_POST['integrity']) {
 							$file_icon = 'file.png';
 							$tree_open = ($tree_open == 'unknown') ? 'unknown' : 'core';
 						} else if ($readdir != 'core_image.php' && $this -> checksum($path) != $core_image[$path]) {
@@ -291,8 +291,9 @@ class file_inspector {
 		</td>
 		<td colspan='2' class='forumheader3' style='width: 65%'>
 		<input type='radio' name='display' value='0'".(($_POST['display'] == '0' || !isset($_POST['display'])) ? " checked='checked'" : "")." /> All Files&nbsp;&nbsp;
-		<input type='radio' name='display' value='1'".($_POST['display'] == '1' ? " checked='checked'" : "")." /> Core Files Only&nbsp;&nbsp;
-		<input type='radio' name='display' value='2'".($_POST['display'] == '2' ? " checked='checked'" : "")." /> Non Core Files Only&nbsp;&nbsp;
+		<input type='radio' name='display' value='1'".($_POST['display'] == '1' ? " checked='checked'" : "")." /> Core Files&nbsp;&nbsp;
+		<input type='radio' name='display' value='3'".($_POST['display'] == '3' ? " checked='checked'" : "")." /> Core Files (Integrity Fail)&nbsp;&nbsp;
+		<input type='radio' name='display' value='2'".($_POST['display'] == '2' ? " checked='checked'" : "")." /> Non Core Files&nbsp;&nbsp;
 		</td>
 		</tr>";
 		
