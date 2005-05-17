@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-05-08 19:54:03 $
+|     $Revision: 1.26 $
+|     $Date: 2005-05-17 14:46:00 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -357,7 +357,10 @@ class comment {
 						$edata_li = array("comment_type" => $type, "comment_subject" => $subject, "comment_item_id" => $id, "comment_nick" => $nick, "comment_time" => $_t, "comment_comment" => $comment);
 						$e_event->trigger("postcomment", $edata_li);
 						$e107cache->clear("comment");
-						$sql->db_Update("news", "news_comment_total=news_comment_total+1 WHERE news_id=$id");
+						if(!$type || $type == "news")
+						{
+							$sql->db_Update("news", "news_comment_total=news_comment_total+1 WHERE news_id=$id");
+						}
 					}
 				}
 			}
