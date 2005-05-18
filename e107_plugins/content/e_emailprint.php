@@ -67,8 +67,8 @@ function print_item_pdf($id){
 	function print_content_pdf($id)
 	{
 			//in this section you decide what to needs to be output to the pdf file
-			//unfortunately using $tp causes problems, so don't use it (yet)
 			$con = new convert;
+			global $tp;
 
 			require_once(e_PLUGIN."content/handlers/content_class.php");
 			$aa = new content;
@@ -82,6 +82,13 @@ function print_item_pdf($id){
 			}
 			$authordetails = $aa -> getAuthor($row['content_author']);
 			$row['content_datestamp'] = $con -> convert_date($row['content_datestamp'], "long");
+
+			$row['content_heading'] = $tp -> toHTML($row['content_heading'], TRUE);
+			$row['content_subheading'] = $tp -> toHTML($row['content_subheading'], TRUE);
+			$row['content_text'] = ereg_replace("\{EMAILPRINT\}|\[newpage\]", "", $row['content_text']);
+			//$row['content_text'] = $tp -> toHTML($row['content_text'], TRUE);
+			$row['content_text'] = $tp -> toForm($row['content_text']);
+
 			$tmp = explode(".",$row['content_parent']);
 			$type_id = ($tmp[0] == "0" ? $tmp[1] : $tmp[0]);
 
@@ -90,8 +97,7 @@ function print_item_pdf($id){
 			".$row['content_subheading']."<br />
 			".$authordetails[1].", ".$row['content_datestamp']."<br />
 			<br />
-			".$row['content_text']."<br />
-			";
+			".$row['content_text']."<br />";
 
 			//the following defines are processed in the document properties of the pdf file
 			$creator = SITENAME;								//define creator

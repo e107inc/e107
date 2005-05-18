@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.41 $
-|		$Date: 2005-05-17 22:46:03 $
+|		$Revision: 1.42 $
+|		$Date: 2005-05-18 19:49:21 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -868,7 +868,7 @@ class contentform{
 						if($theoptions == ""){
 							$parent = $aa -> getCat($row['content_parent'], false);
 							$TOPIC_TOPIC = CONTENT_ADMIN_CAT_LAN_27;
-							$TOPIC_FIELD = $aa -> getCat($row['content_parent'], false).$rs->form_hidden("parent", $row['content_parent']);
+							$TOPIC_FIELD = ($parent ? $parent : CONTENT_ADMIN_CAT_LAN_53).$rs->form_hidden("parent", $row['content_parent']);
 							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 							$text .= $TOPIC_ROW_SPACER;
 						}else{

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.43 $
-|		$Date: 2005-05-17 22:46:03 $
+|		$Revision: 1.44 $
+|		$Date: 2005-05-18 19:49:21 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -249,9 +249,9 @@ class content{
 
 		
 		function getAuthor($content_author) {
-				global $plugintable, $datequery;
+				global $plugintable, $sqlauthor, $datequery;
 				
-				$sqlauthor = "";
+				//$sqlauthor = "";
 				if(!is_object($sqlauthor)){ $sqlauthor = new db; }
 
 				if(is_numeric($content_author)){
@@ -575,12 +575,13 @@ class content{
 
 		//get category name from parent id value of the item
 		function getCat($catid, $href=true){
-				global $plugintable, $type_id, $content_pref;
+				global $plugintable, $sqlgetcat, $type_id, $content_pref;
 				$plugintable = "pcontent";
 
 				if(strpos($catid, ".")){
 					$tmp = explode(".", $catid);
-					$type_id = ($type_id ? $type_id : $tmp[0]);
+					//$type_id = ($type_id ? $type_id : $tmp[0]);
+					$type_id = $tmp[0];
 					$tmp2 = array_reverse($tmp);
 					$query = " content_id = '".$tmp2[0]."' ";
 				}else{
@@ -588,7 +589,7 @@ class content{
 					$query = " content_id = '".$catid."' ";
 				}
 
-				$sqlgetcat = new db;
+				//$sqlgetcat = new db;
 				if(!is_object($sqlgetcat)){ $sqlgetcat = new db; }
 				if(!$sqlgetcat -> db_Select($plugintable, "content_id, content_heading", " ".$query."  ")){
 					$getcat = FALSE;
