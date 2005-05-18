@@ -621,7 +621,6 @@ SC_BEGIN CONTENT_RECENT_TABLE_RATING
 global $CONTENT_RECENT_TABLE_RATING, $rater, $row, $type, $type_id, $content_pref, $plugintable;
 $RATING = "";
 if($content_pref["content_list_rating_all_{$type_id}"] || ($content_pref["content_list_rating_{$type_id}"] && $row['content_rate'])){
-	
 	if($ratearray = $rater -> getrating($plugintable, $row['content_id'])){
 		for($c=1; $c<= $ratearray[1]; $c++){
 			$RATING .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
@@ -662,7 +661,7 @@ SC_END
 // CONTENT_CONTENT_TABLE ------------------------------------------------
 
 SC_BEGIN CONTENT_CONTENT_TABLE_ICON
-global $CONTENT_CONTENT_TABLE_ICON, $aa, $row, $content_pref, $content_icon_path;
+global $CONTENT_CONTENT_TABLE_ICON, $aa, $row, $content_pref, $content_icon_path, $type_id;
 return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "", "100", $content_pref["content_blank_icon_{$type_id}"]);
 SC_END
 
@@ -754,8 +753,8 @@ SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_RATING
 global $CONTENT_CONTENT_TABLE_RATING, $content_pref, $type_id, $row, $rater, $plugintable;
-if($content_pref["content_content_rating_{$type_id}"] || $content_pref["content_content_rating_all_{$type_id}"] || $row['content_rate']){
-	$RATING = "";
+$RATING = "";
+if(($content_pref["content_content_rating_{$type_id}"] && $row['content_rate']) || $content_pref["content_content_rating_all_{$type_id}"]){	
 	if($ratearray = $rater -> getrating($plugintable, $row['content_id'])){
 		for($c=1; $c<= $ratearray[1]; $c++){
 			$RATING .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
@@ -779,6 +778,7 @@ if($content_pref["content_content_rating_{$type_id}"] || $content_pref["content_
 	}
 }
 return $RATING;
+
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_FILE
