@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm_inc.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-05-18 07:34:21 $
+|     $Revision: 1.11 $
+|     $Date: 2005-05-18 15:30:33 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -92,7 +92,7 @@ function pm_show_stats($no_show_br = 0) {
 		$text .= ($pmstats['blocks'] == 1) ? $pmstats['blocks']." ".PMLAN_3 : $pmstats['blocks']." ".PMLAN_4;
 		if ($pmstats['blocks']>0){$text.=" - <a class = 'smalltext' href = '".e_PM."pm.php?vb' > ".PMLAN_6." </a> ";}
 		$text.=" <br /> \n";
-		$text.="[ <a href = '".e_PM."pm.php?send'> ".PMLAN_5." </a> ]";
+		$text.="[ <a href='".e_PM."pm.php?send'>".PMLAN_5."</a> ]";
 		$text.=" <br /> \n";
 		return " <span class = 'smalltext' > ".$text." </span> ";
 	}
