@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-05-17 22:26:36 $
+|     $Revision: 1.6 $
+|     $Date: 2005-05-18 01:41:21 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,7 @@ if (!getperms('Y')) {
 $e_sub_cat = 'fileinspector';
 
 require_once('auth.php');
+$DOCS_DIRECTORY = str_replace('help/', '', $HELP_DIRECTORY);
 require_once('core_image.php');
 $fi = new file_inspector;
 require_once(e_HANDLER.'form_handler.php');
@@ -47,6 +48,7 @@ class file_inspector {
 	var $parent;
 	
 	function file_inspector() {
+		global $HELP_DIRECTORY;
 		$this -> root_dir = $_SERVER['DOCUMENT_ROOT'].e_HTTP;
 		if (substr($this -> root_dir, -1) == '/') {
 			$this -> root_dir = substr($this -> root_dir, 0, -1);
@@ -61,13 +63,12 @@ class file_inspector {
 		global $core_image;
 		unset ($text);
 		unset ($childOut);
-		$dir_id = md5($dir);
+		$dir_id = dechex(crc32($dir));
 
 		if ($level) {
-			$this -> files_text[$dir_id] .= "<div style='margin: 2px 0px 1px 8px'><span onclick=\"showhideit('f_".$this -> parent['id']."')\">
-			<img src='".e_IMAGE."fileinspector/folder_up.png' alt='' style='width: 16px; height: 16px' />&nbsp;..</span></div>";
+			$this -> files_text[$dir_id] .= "<tr><td class='f' onclick=\"sh('f_".$this -> parent['id']."')\" colspan='2'><img src='".e_IMAGE."fileinspector/folder_up.png' class='i' alt='' />&nbsp;..</td></tr>";
 		} else {
-			$this -> files_text[$dir_id] .= "&nbsp;";
+			$this -> files_text[$dir_id] .= "<tr><td style='display: none' colspan='2'>&nbsp;</td></tr>";
 		}
 		
 		$directory = $level ? basename($dir) : SITENAME;
@@ -77,6 +78,7 @@ class file_inspector {
 			if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
 				$this -> parent = array('id' => $dir_id, 'name' => $directory);
 				$path = $dir.'/'.$readdir;
+				$i_path = str_replace($this -> root_dir.'/', '', $path);
 				if (is_dir($path)) {
 					$child_open = false;
 					$child_end = true;
@@ -92,22 +94,22 @@ class file_inspector {
 					}
 					// ?
 				} else {
-					if ($_POST['display'] == '0' || ($_POST['display'] == '3' && isset($core_image[$path]) && $readdir != 'core_image.php' && $this -> checksum($path) != $core_image[$path]) || ($_POST['display'] == '1' && isset($core_image[$path])) || ($_POST['display'] == '2' && !isset($core_image[$path]))) {
+					if ($_POST['display'] == '0' || ($_POST['display'] == '3' && isset($core_image[$i_path]) && $readdir != 'core_image.php' && $this -> checksum($path) != $core_image[$i_path]) || ($_POST['display'] == '1' && isset($core_image[$i_path])) || ($_POST['display'] == '2' && !isset($core_image[$i_path]))) {
 						 $size = $this -> parsesize(filesize($path));
-						 $this -> files_text[$dir_id] .= "<div style='margin: 2px 0px 1px 8px'>";
-						 if ($_POST['display'] != '3' && !isset($core_image[$path])) {
+						 $this -> files_text[$dir_id] .= "<tr><td class='f'>";
+						 if ($_POST['display'] != '3' && !isset($core_image[$i_path])) {
 							$file_icon = 'file_unknown.png';
 							$tree_open = ($tree_open == 'warning') ? 'warning' : 'unknown';
 						} else if ($_POST['display'] != '3' && !$_POST['integrity']) {
 							$file_icon = 'file.png';
 							$tree_open = ($tree_open == 'unknown') ? 'unknown' : 'core';
-						} else if ($readdir != 'core_image.php' && $this -> checksum($path) != $core_image[$path]) {
+						} else if ($readdir != 'core_image.php' && $this -> checksum($path) != $core_image[$i_path]) {
 							$file_icon = 'file_warning.png';
 							$tree_open = 'warning';
 						} else {
 							$file_icon = 'file_check.png';
 						}
-						$this -> files_text[$dir_id] .= "<img src='".e_IMAGE."fileinspector/".$file_icon."' alt='' style='width: 16px; height: 16px' />&nbsp;".$readdir."&nbsp;".$size."</div>";
+						$this -> files_text[$dir_id] .= "<img src='".e_IMAGE."fileinspector/".$file_icon."' class='i' alt='' />&nbsp;".$readdir."&nbsp;</td><td class='s'>".$size."</td></tr>";
 					}
 				}
 			}
@@ -122,11 +124,11 @@ class file_inspector {
 		} else {
 			$dir_icon = 'folder_check.png';
 		}
-		$icon = "<img src='".e_IMAGE."fileinspector/".$dir_icon."' alt='' style='width: 16px; height: 16px' />";
+		$icon = "<img src='".e_IMAGE."fileinspector/".$dir_icon."' class='i' alt='' />";
 		$hide = ($tree_open && $tree_open != 'core') ? "" : "style='display: none'";
-		$text .= "<div style='margin: 2px 0px 1px ".($level * 8)."px; cursor: default'>";
-		$text .= $tree_end ? "<img src='".e_IMAGE."fileinspector/blank.png' alt='' style='width: 9px; height: 9px' />" : "<span onclick=\"expandit('d_".$dir_id."')\"><img src='".e_IMAGE."fileinspector/expand.png' alt='' style='width: 9px; height: 9px' /></span>";
-		$text .= $tree_end ? "&nbsp;<span onclick=\"showhideit('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>" : "&nbsp;<span onclick=\"showhideit('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>";
+		$text .= "<div class='d' style='margin-left: ".($level * 8)."px'>";
+		$text .= $tree_end ? "<img src='".e_IMAGE."fileinspector/blank.png' class='e' alt='' />" : "<span onclick=\"expandit('d_".$dir_id."')\"><img src='".e_IMAGE."fileinspector/expand.png' class='e' alt='' /></span>";
+		$text .= $tree_end ? "&nbsp;<span onclick=\"sh('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>" : "&nbsp;<span onclick=\"sh('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>";
 		$text .= $tree_end ? "" : "<div ".$hide." id='d_".$dir_id."'>".$childOut."</div>";
 		$text .= "</div>";
 
@@ -134,59 +136,12 @@ class file_inspector {
 		closedir($handle);
 	}
 	
-	function image_scan($dir) {
-		$handle = opendir($dir);
-		while (false !== ($readdir = readdir($handle))) {
-			if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
-				$path = $dir.'/'.$readdir;
-				if (is_dir($path)) {
-					$this -> image_scan($path);
-				} else {
-					$this -> image[$path] = $this -> checksum($path);
-				}
-			}
-		}
-		return FALSE;
-		closedir($handle);
-	}
-	
-	function create_image($dir) {
-		global $ADMIN_DIRECTORY, $FILES_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $DOWNLOADS_DIRECTORY;
-		$this -> image_scan($dir);
-		$data = "<?php\n";
-		$data .= "\$core_image = array(
-		";
-		foreach($this -> image as $path_key => $path_value) {
-			$root = str_replace($dir."/", "\$_SERVER['DOCUMENT_ROOT'].e_HTTP.'", $path_key);
-			$search = array("'".$ADMIN_DIRECTORY, "'".$FILES_DIRECTORY, "'".$IMAGES_DIRECTORY, "'".$THEMES_DIRECTORY, "'".$PLUGINS_DIRECTORY, "'".$HANDLERS_DIRECTORY, "'".$LANGUAGES_DIRECTORY, "'".$HELP_DIRECTORY, "'".$DOWNLOADS_DIRECTORY);
-			$replace = array("\$ADMIN_DIRECTORY.'", "\$FILES_DIRECTORY.'", "\$IMAGES_DIRECTORY.'", "\$THEMES_DIRECTORY.'", "\$PLUGINS_DIRECTORY.'", "\$HANDLERS_DIRECTORY.'", "\$LANGUAGES_DIRECTORY.'", "\$HELP_DIRECTORY.'", "\$DOWNLOADS_DIRECTORY.'");
-			$root = str_replace($search, $replace, $root);
-			$core_array[] = $root."' => '".$path_value."'";
-		}
-		$data .= implode($core_array, ', 
-		');
-		$data .= "\n);\n";
-		$data .= "?>";
-		$fp = fopen(e_ADMIN.'core_image.php', 'w');
-		fwrite($fp, $data);
-	}
-	
-	function checksum($filename) {
-		//$checksum = dechex(crc32(str_replace(chr(13).chr(10), chr(10), file_get_contents($filename))));
-		//$checksum = dechex(md5(file_get_contents($filename)));
-		//$checksum = crc32(file_get_contents($filename));
-		$checksum = md5_file($filename);
-		//$checksum = md5_file(str_replace(chr(13).chr(10), chr(13), $filename));
-		//$checksum = sha1_file($filename);
-		return $checksum;
-	}
-	
 	function scan_results() {
 		global $ns, $rs;
 		$text = "<script type=\"text/javascript\">
 		<!--
-		var hideid=\"f_".md5($this -> root_dir)."\";
-		function showhideit(showid){
+		var hideid=\"f_".dechex(crc32($this -> root_dir))."\";
+		function sh(showid){
 			if (hideid!=showid){
 				show=document.getElementById(showid).style;
 				hide=document.getElementById(hideid).style;
@@ -197,6 +152,14 @@ class file_inspector {
 		}
 		//-->
 		</script>
+		<style>
+		.f { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90%; white-space: nowrap }
+		.d { margin: 2px 0px 1px 8px; cursor: default; white-space: nowrap }
+		.s { padding: 1px 8px 1px 0px; vertical-align: bottom; width: 10%; white-space: nowrap }
+		.t { margin-top: 1px; width: 100%; border-collapse: collapse; border-spacing: 0px }
+		.i { width: 16px; height: 16px }
+		.e { width: 9px; height: 9px }
+		</style>
 		<div style='text-align:center'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 		<tr>
@@ -216,9 +179,9 @@ class file_inspector {
 		$initial = FALSE;
 		foreach ($this -> files_text as $dir_id => $stext) {
 			$hide = $initial ? "style='display: none'" : "";
-			$text .= "<div ".$hide." id='f_".$dir_id."'>\n";
+			$text .= "<table class='t' ".$hide." id='f_".$dir_id."'>\n";
 			$text .= $stext;
-			$text .= "\n</div>\n";
+			$text .= "\n</table>\n";
 			$initial = TRUE;
 		}
 
@@ -232,6 +195,53 @@ class file_inspector {
 		</div><br />";
 
 		$ns -> tablerender('Scanning...', $text);
+	}
+	
+		function image_scan($dir) {
+		$handle = opendir($dir);
+		while (false !== ($readdir = readdir($handle))) {
+			if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
+				$path = $dir.'/'.$readdir;
+				if (is_dir($path)) {
+					$this -> image_scan($path);
+				} else {
+					$this -> image[$path] = $this -> checksum($path);
+				}
+			}
+		}
+		return FALSE;
+		closedir($handle);
+	}
+	
+	function create_image($dir) {
+		global $ADMIN_DIRECTORY, $FILES_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $DOWNLOADS_DIRECTORY, $DOCS_DIRECTORY;
+		$this -> image_scan($dir);
+		$data = "<?php\n";
+		$data .= "\$core_image = array(
+		";
+		foreach($this -> image as $path_key => $path_value) {
+			$root = str_replace($dir."/", "'", $path_key);
+			$search = array("'".$ADMIN_DIRECTORY, "'".$FILES_DIRECTORY, "'".$IMAGES_DIRECTORY, "'".$THEMES_DIRECTORY, "'".$PLUGINS_DIRECTORY, "'".$HANDLERS_DIRECTORY, "'".$LANGUAGES_DIRECTORY, "'".$HELP_DIRECTORY, "'".$DOWNLOADS_DIRECTORY, "'".$DOCS_DIRECTORY);
+			$replace = array("\$ADMIN_DIRECTORY.'", "\$FILES_DIRECTORY.'", "\$IMAGES_DIRECTORY.'", "\$THEMES_DIRECTORY.'", "\$PLUGINS_DIRECTORY.'", "\$HANDLERS_DIRECTORY.'", "\$LANGUAGES_DIRECTORY.'", "\$HELP_DIRECTORY.'", "\$DOWNLOADS_DIRECTORY.'", "\$DOCS_DIRECTORY.'");
+			$root = str_replace($search, $replace, $root);
+			$core_array[] = $root."' => '".$path_value."'";
+		}
+		$data .= implode($core_array, ', 
+		');
+		$data .= "\n);\n";
+		$data .= "?>";
+		$fp = fopen(e_ADMIN.'core_image.php', 'w');
+		fwrite($fp, $data);
+	}
+	
+	function checksum($filename) {
+		//$checksum = dechex(crc32(str_replace(chr(13).chr(10), chr(10), file_get_contents($filename))));
+		//$checksum = dechex(md5(file_get_contents($filename)));
+		//$checksum = crc32(file_get_contents($filename));
+		$checksum = md5_file($filename);
+		//$checksum = md5_file(str_replace(chr(13).chr(10), chr(13), $filename));
+		//$checksum = sha1_file($filename);
+		return $checksum;
 	}
 	
 	function snapshot_interface() {
