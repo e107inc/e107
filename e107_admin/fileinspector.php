@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-05-18 11:29:13 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-18 23:21:27 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -145,14 +145,7 @@ class file_inspector {
 		}
 		//-->
 		</script>
-		<style>
-		.f { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90%; white-space: nowrap }
-		.d { margin: 2px 0px 1px 8px; cursor: default; white-space: nowrap }
-		.s { padding: 1px 8px 1px 0px; vertical-align: bottom; width: 10%; white-space: nowrap }
-		.t { margin-top: 1px; width: 100%; border-collapse: collapse; border-spacing: 0px }
-		.i { width: 16px; height: 16px }
-		.e { width: 9px; height: 9px }
-		</style>
+
 		<div style='text-align:center'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 		<tr>
@@ -351,5 +344,20 @@ class file_inspector {
 }
 
 require_once('footer.php');
+
+function headerjs() {
+	$text = "<style type='text/css'>
+	<!--
+	.f { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90%; white-space: nowrap }
+	.d { margin: 2px 0px 1px 8px; cursor: default; white-space: nowrap }
+	.s { padding: 1px 8px 1px 0px; vertical-align: bottom; width: 10%; white-space: nowrap }
+	.t { margin-top: 1px; width: 100%; border-collapse: collapse; border-spacing: 0px }
+	.i { width: 16px; height: 16px }
+	.e { width: 9px; height: 9px }
+	-->
+	</style>";
+		
+	return $text;
+}
 
 ?>
