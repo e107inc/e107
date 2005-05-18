@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-05-17 12:48:54 $
+|     $Revision: 1.16 $
+|     $Date: 2005-05-18 18:16:48 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ else if(!$NEWFORUMPOSTSTYLE_HEADER) {
 }
 
 $results = $sql->db_Select_gen("
-SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class, lp.user_name AS lp_name
+SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class, lp.user_name AS lp_name
 FROM #forum_t AS t
 LEFT JOIN #user AS u ON t.thread_user = u.user_id
 LEFT JOIN #user AS lp ON t.thread_lastuser = lp.user_id  
@@ -88,15 +88,16 @@ foreach($forumArray as $forumInfo)
 	$r_datestamp = $gen->convert_date($thread_lastpost, "forum");
 	if($thread_total_replies)
 	{
+		$tmp = explode(".", $thread_lastuser, 2);
 		if($lp_name)
 		{
-			$LASTPOST = "<a href='".e_BASE."user.php?id.{$thread_lastuser}'>$lp_name</a>";
+			$LASTPOST = "<a href='".e_BASE."user.php?id.{$tmp[0]}'>$lp_name</a>";
 		}
 		else
 		{
-			if($thread_lastuser{0} == "0")
+			if($tmp[1])
 			{
-				$LASTPOST = substr($thread_lastuser, 2);
+				$LASTPOST = $tmp[1];
 			}
 			else
 			{
@@ -111,21 +112,21 @@ foreach($forumArray as $forumInfo)
 		$LASTPOSTDATE = "";
 	}
 		
-	if ($thread_anon) {
-		$tmp = explode(chr(1), $thread_anon);
-		$thread_user = $tmp[0];
-		$thread_user_ip = $tmp[1];
-		$POSTER = $tmp[0];
+	$x = explode(chr(1), $thread_user);
+	$tmp = explode(".", $x[0], 2);
+	if($user_name)
+	{
+		$POSTER = "<a href='".e_BASE."user.php?id.{$tmp[1]}'>$user_name</a>";
 	}
 	else
 	{
-		if($user_name == "")
+		if($tmp[1])
 		{
-			$POSTER = NFPM_L16;
+			$POSTER = $tmp[1];
 		}
 		else
 		{
-			$POSTER = "<a href='".e_BASE."user.php?id.$thread_user'>$user_name</a>";
+			$POSTER = NFPM_L16;
 		}
 	}
 
