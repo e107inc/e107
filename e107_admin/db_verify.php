@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-04-22 02:38:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2005-05-18 03:04:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -38,10 +38,8 @@ if (!getperms("0")) {
 }
 
 //Get installed plugins
-if($sql->db_Select("plugin","plugin_path","plugin_installflag = '1'"))
-{
-	while($row = $sql->db_Fetch())
-	{
+if($sql->db_Select("plugin","plugin_path","plugin_installflag = '1'")){
+	while($row = $sql->db_Fetch()){
 		$pluginList[] = $row['plugin_path'];
 	}
 }
@@ -73,17 +71,19 @@ closedir($handle);
 function read_tables($tab) {
 	global $tablines;
 	global $table_list;
-	global $tables;
+	global $tables,$sql,$pref;
+
 	$file = split("\n", $tables[$tab]);
 	foreach($file as $line) {
 		$line = ltrim(stripslashes($line));
 		if (preg_match("/CREATE TABLE (.*) /", $line, $match)) {
 			$table_list[$match[1]] = 1;
 			$current_table = $match[1];
-
+          //  $table_list[$match[1]] = 1;
 			$x = 0;
 			$cnt = 0;
 		}
+
 		if (preg_match("/TYPE=/", $line, $match)) {
 			$current_table = "";
 		}
@@ -92,8 +92,22 @@ function read_tables($tab) {
 			$tablines[$current_table][$cnt++] = $line;
 
 		}
+
 		$x = 1;
 	}
+
+// Get multi-language tables as well
+    if($pref['multilanguage']){
+        $langs = table_list();
+       foreach($table_list as $name=>$stuff){
+            if($langs[$name]){
+                $ltab = $langs[$name];
+                $table_list[$ltab] = 1;
+                $tablines[$ltab] = $tablines[$name];
+            }
+        }
+    }
+
 }
 
 function get_current($tab, $prefix = "") {
@@ -120,6 +134,8 @@ function check_tables($what) {
 	$table_list = "";
 	read_tables($what);
 
+//   print_r(table_list());
+//   print_r($table_list);
 	$text = "<form method='POST' action='".e_SELF."' id='checktab'>
 		<div style='text-align:center'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -150,6 +166,14 @@ function check_tables($what) {
 				$fields[$fname] = 1;
 				$fparams = ltrim(rtrim($fparams));
 				$fparams = preg_replace("/\r?\n$|\r[^\n]$|,$/", "", $fparams);
+
+			if(eregi("lan_",$k) && $cur != 1){
+            $text .= "<tr><td colspan='6' class='fcaption'>".ADLAN_132."</td></tr>";
+			$cur = 1;
+			};
+
+
+
 				$text .= "<tr><td class='forumheader3'>$k</td><td class='forumheader3'>$fname";
 				if (preg_match("#KEY#", $fparams)) {
 					$text .= " $fparams";
@@ -214,41 +238,22 @@ function check_tables($what) {
 
 	if($fix_active){
 		$text .= "<div style='".ADMIN_WIDTH.";text-align:right'>
-		<input class='button' type='submit' name='do_fix' value='".DBLAN_21."' /></div>";
+		<input class='button' type='submit' name='do_fix' value='".DBLAN_21."' /></div>\n";
 	}
 
+	foreach(array_keys($_POST) as $j) {
+
+		if (preg_match("/table_(.*)/", $j, $mitch)) {
+	   		$lx = $mitch[1];
+			$text .= "<input type='hidden' name='table_{$lx}' value='1' />\n";
+    	}
+    }
 	$text .= "</form>";
 
 	return $text;
 }
 
 global $table_list;
-if (!$_POST && !$_POST['do_fix']) {
-	$text = "
-		<form method='POST' action='".e_SELF."'>
-		<table border=0 align='center'>
-		<tr><td>".DBLAN_14."<br /><br />";
-	foreach(array_keys($tables) as $x) {
-		$text .= "<input type='checkbox' name='table_".$x."'>".$x."<br />";
-	}
-	$text .= "
-		<br /><input class='button' type='submit' value='".DBLAN_15."'>
-		</td></tr></table></form>";
-	$ns->tablerender(DBLAN_16, $text);
-} else {
-	foreach(array_keys($_POST) as $k) {
-		if (preg_match("/table_(.*)/", $k, $match)) {
-			$xx = $match[1];
-			$str = "<br />
-				<div style='text-align:center'>
-				<form method='POST' action='db.php'>
-				<input class='button' type='submit' name='back' value='".DBLAN_17."' />
-				</form>
-				</div>";
-			$ns->tablerender(DBLAN_16." - $xx ".DBLAN_18, check_tables($xx).$str);
-		}
-	}
-}
 
 // --------------------------------------------------------------
 
@@ -298,6 +303,43 @@ if(isset($_POST['do_fix'])){
 	$ns -> tablerender(DBLAN_20, $text);
 }
 
+
+
+
+
+
+
+
+// ----------------------------------------------------------
+if (!$_POST) {
+	$text = "
+		<form method='POST' action='".e_SELF."'>
+		<table border=0 align='center'>
+		<tr><td>".DBLAN_14."<br /><br />";
+	foreach(array_keys($tables) as $x) {
+		$text .= "<input type='checkbox' name='table_".$x."'>".$x."<br />";
+	}
+	$text .= "
+		<br /><input class='button' type='submit' value='".DBLAN_15."'>
+		</td></tr></table></form>";
+	$ns->tablerender(DBLAN_16, $text);
+} else {
+	foreach(array_keys($_POST) as $k) {
+		if (preg_match("/table_(.*)/", $k, $match)) {
+			$xx = $match[1];
+			$str = "<br />
+				<div style='text-align:center'>
+				<form method='POST' action='db.php'>
+				<input class='button' type='submit' name='back' value='".DBLAN_17."' />
+				</form>
+				</div>";
+			$ns->tablerender(DBLAN_16." - $xx ".DBLAN_18, check_tables($xx).$str);
+		}
+	}
+}
+
+
+
 // --------------------------------------------------------------
 function fix_form($table,$field, $newvalue,$mode,$after =''){
 
@@ -320,6 +362,46 @@ function fix_form($table,$field, $newvalue,$mode,$after =''){
 
 	return $text;
 }
+
+function table_list() {
+	// grab default language lists.
+	global $mySQLdefaultdb;
+
+	$exclude[] = "banlist";		$exclude[] = "banner";
+	$exclude[] = "cache";		$exclude[] = "core";
+	$exclude[] = "online";		$exclude[] = "parser";
+	$exclude[] = "plugin";		$exclude[] = "user";
+	$exclude[] = "upload";		$exclude[] = "userclass_classes";
+	$exclude[] = "rbinary";		$exclude[] = "session";
+	$exclude[] = "tmp";	 		$exclude[] = "flood";
+	$exclude[] = "stat_info";	$exclude[] = "stat_last";
+	$exclude[] = "submit_news";	$exclude[] = "rate";
+	$exclude[] = "stat_counter";$exclude[] = "user_extended";
+	$exclude[] = "user_extended_struc";
+	$exclude[] = "pm_messages";
+	$exclude[] = "pm_blocks";
+
+	//   print_r($search);
+
+	$tables = mysql_list_tables($mySQLdefaultdb);
+	while (list($temp) = mysql_fetch_array($tables)){
+		$prefix = MPREFIX."lan_";
+
+		if(preg_match("/^".$prefix."(.*)/", $temp, $match)){
+			$e107tab = str_replace(MPREFIX, "", $temp);
+			$pos = strrpos($match[1],"_")+1;
+			$core = substr(str_replace("lan_","",$e107tab),$pos);
+			if (str_replace($exclude, "", $e107tab)){
+				$tabs[$core] = $e107tab;
+			}
+		}
+	}
+
+	return $tabs;
+}
+
+
+
 
 require_once(e_ADMIN."footer.php");
 ?>
