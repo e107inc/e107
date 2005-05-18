@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-05-13 17:05:07 $
+|     $Revision: 1.15 $
+|     $Date: 2005-05-18 10:01:29 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -438,11 +438,18 @@ class page
 		$var['options']['text'] = LAN_OPTIONS;
 		$var['options']['link'] = e_SELF."?options";
 
+		
 		require_once(e_HANDLER."file_class.php");
 		$file = new e_file;
 		$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*', 'Readme.txt');
-		$cpages = $file -> get_files(e_PLUGIN."custompages", "", $reject);
-		$cmenus = $file -> get_files(e_PLUGIN."custom", "", $reject);
+		if(is_dir(e_PLUGIN."custompages"))
+		{
+			$cpages = $file -> get_files(e_PLUGIN."custompages", "", $reject);
+		}
+		if(is_dir(e_PLUGIN."custom"))
+		{
+			$cmenus = $file -> get_files(e_PLUGIN."custom", "", $reject);
+		}
 
 		if(count($cpages) || count($cmenus))
 		{
