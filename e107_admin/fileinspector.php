@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-18 03:56:22 $
+|     $Revision: 1.8 $
+|     $Date: 2005-05-18 11:29:13 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -62,11 +62,11 @@ class file_inspector {
 		unset ($text);
 		unset ($childOut);
 		$dir_id = dechex(crc32($dir));
-
+		$fid = '.';
 		if ($level) {
-			$this -> files_text[$dir_id] .= "<tr><td class='f' onclick=\"sh('f_".$this -> parent['id']."')\" colspan='2'><img src='".e_IMAGE."fileinspector/folder_up.png' class='i' alt='' />&nbsp;..</td></tr>";
+			$this -> files_text[$dir_id][$fid] = "<tr><td class='f' onclick=\"sh('f_".$this -> parent['id']."')\" colspan='2'><img src='".e_IMAGE."fileinspector/folder_up.png' class='i' alt='' />&nbsp;..</td></tr>";
 		} else {
-			$this -> files_text[$dir_id] .= "<tr><td style='display: none' colspan='2'>&nbsp;</td></tr>";
+			$this -> files_text[$dir_id][$fid] = "<tr><td style='display: none' colspan='2'>&nbsp;</td></tr>";
 		}
 		
 		$directory = $level ? basename($dir) : SITENAME;
@@ -82,18 +82,15 @@ class file_inspector {
 					$child_end = true;
 					$childOut .= $this -> inspect($path, $level, $child_end, $child_open);
 					$tree_end = false;
-					if ($child_open == 'warning') {
-						$tree_open = 'warning';
-					} else if ($child_open == 'core') {
-						$tree_open = ($tree_open == 'unknown') ? 'unknown' : 'core';
-					} else if ($child_open == 'unknown') {
-						$tree_open = ($tree_open == 'warning') ? 'warning' : 'unknown';
+					if ($child_open) {
+						$parent_open = 'default';
 					}
 				} else {
 					if ($_POST['display'] == '0' || ($_POST['display'] == '3' && isset($core_image[$i_path]) && $readdir != 'core_image.php' && $this -> checksum($path) != $core_image[$i_path]) || ($_POST['display'] == '1' && isset($core_image[$i_path])) || ($_POST['display'] == '2' && !isset($core_image[$i_path]))) {
-						 $size = $this -> parsesize(filesize($path));
-						 $this -> files_text[$dir_id] .= "<tr><td class='f'>";
-						 if ($_POST['display'] != '3' && !isset($core_image[$i_path])) {
+						$fid = strtolower($readdir);
+						$size = $this -> parsesize(filesize($path));
+						$this -> files_text[$dir_id][$fid] .= "<tr><td class='f'>";
+						if ($_POST['display'] != '3' && !isset($core_image[$i_path])) {
 							$file_icon = 'file_unknown.png';
 							$tree_open = ($tree_open == 'warning') ? 'warning' : 'unknown';
 						} else if ($_POST['display'] != '3' && !$_POST['integrity']) {
@@ -105,7 +102,7 @@ class file_inspector {
 						} else {
 							$file_icon = 'file_check.png';
 						}
-						$this -> files_text[$dir_id] .= "<img src='".e_IMAGE."fileinspector/".$file_icon."' class='i' alt='' />&nbsp;".$readdir."&nbsp;</td><td class='s'>".$size."</td></tr>";
+						$this -> files_text[$dir_id][$fid] .= "<img src='".e_IMAGE."fileinspector/".$file_icon."' class='i' alt='' />&nbsp;".$readdir."&nbsp;</td><td class='s'>".$size."</td></tr>";
 					}
 				}
 			}
@@ -121,7 +118,7 @@ class file_inspector {
 			$dir_icon = 'folder_check.png';
 		}
 		$icon = "<img src='".e_IMAGE."fileinspector/".$dir_icon."' class='i' alt='' />";
-		$hide = ($tree_open && $tree_open != 'core') ? "" : "style='display: none'";
+		$hide = ($parent_open && $tree_open != 'core') ? "" : "style='display: none'";
 		$text .= "<div class='d' style='margin-left: ".($level * 8)."px'>";
 		$text .= $tree_end ? "<img src='".e_IMAGE."fileinspector/blank.png' class='e' alt='' />" : "<span onclick=\"expandit('d_".$dir_id."')\"><img src='".e_IMAGE."fileinspector/expand.png' class='e' alt='' /></span>";
 		$text .= $tree_end ? "&nbsp;<span onclick=\"sh('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>" : "&nbsp;<span onclick=\"sh('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>";
@@ -173,12 +170,15 @@ class file_inspector {
 		</div>
 		</td>
 		<td class='forumheader3' style='width:50%; vertical-align: top'><div style='height: 300px; overflow: auto'>";
-
+//print_a($this -> files_text);
 		$initial = FALSE;
 		foreach ($this -> files_text as $dir_id => $stext) {
+			ksort($stext);
 			$hide = $initial ? "style='display: none'" : "";
 			$text .= "<table class='t' ".$hide." id='f_".$dir_id."'>\n";
-			$text .= $stext;
+			foreach ($stext as $key => $stext2) {
+				$text .= $stext2;
+			}
 			$text .= "\n</table>\n";
 			$initial = TRUE;
 		}
