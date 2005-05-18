@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.42 $
-|		$Date: 2005-05-18 19:49:21 $
+|		$Revision: 1.43 $
+|		$Date: 2005-05-18 20:27:31 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -2178,6 +2178,9 @@ class contentform{
 						$text .= "
 						<div id='archivepage' style='display:none; text-align:center'>
 						<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+						$TOPIC_CAPTION = CONTENT_ADMIN_OPT_LAN_217;
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
 
 						//content_archive_nextprev_
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_94;
