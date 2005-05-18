@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_download.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-23 12:54:37 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-18 08:00:20 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -93,4 +93,6 @@ define("LAN_dl_71", "About");
 define("LAN_dl_72", "Requesting file: ");
 define("LAN_dl_73", "Downloads from this mirror: ");
 define("LAN_dl_74", "Total downloads from this mirror: ");
+
+define("LAN_dl_75", "no image available ");
 ?>

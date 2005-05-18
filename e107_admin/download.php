@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-04-30 22:06:22 $
-|     $Author: e107coders $
+|     $Revision: 1.48 $
+|     $Date: 2005-05-18 08:00:19 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -405,7 +405,7 @@ class download {
 				extract($row);
 				$text .= "<tr>
 					<td style='width:5%' class='forumheader3'>$download_id</td>
-					<td style='width:75%' class='forumheader3'>$download_name</td>
+					<td style='width:75%' class='forumheader3'><a href='".e_BASE."download.php?view.$download_id'>$download_name</a></td>
 					<td style='width:20%; text-align:center' class='forumheader3'>
 					<a href='".e_SELF."?create.edit.{$download_id}'>".ADMIN_EDIT_ICON."</a>
 					<input type='image' title='".LAN_DELETE."' name='delete[main_{$download_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_33." [ID: $download_id ]")."') \" />
