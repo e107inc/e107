@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2005-05-15 05:03:24 $
-|     $Author: e107coders $
+|     $Revision: 1.73 $
+|     $Date: 2005-05-18 15:07:10 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -302,6 +302,7 @@ class e_parse {
 			$nl_replace = "\n";
 		}
 		$text = str_replace('[E_NL]', $nl_replace, $text);
+		$text = str_replace("&", "&amp;", $text);
 		return $text;
 	}
 
