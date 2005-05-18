@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-05-18 19:49:21 $
+|     $Revision: 1.41 $
+|     $Date: 2005-05-18 20:27:32 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -334,7 +334,7 @@ define("CONTENT_ADMIN_OPT_LAN_213", "does a link to the 'all content items' page
 define("CONTENT_ADMIN_OPT_LAN_214", "datestyle");
 define("CONTENT_ADMIN_OPT_LAN_215", "choose a datestyle to use for the displayed date");
 define("CONTENT_ADMIN_OPT_LAN_216", "For more information on date formats see the <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime function page at php.net</a>");
-define("CONTENT_ADMIN_OPT_LAN_217", "");
+define("CONTENT_ADMIN_OPT_LAN_217", "archive page");
 define("CONTENT_ADMIN_OPT_LAN_218", "");
 define("CONTENT_ADMIN_OPT_LAN_219", "");
 
