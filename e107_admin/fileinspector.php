@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-18 01:41:21 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-18 03:56:22 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -48,12 +48,10 @@ class file_inspector {
 	var $parent;
 	
 	function file_inspector() {
-		global $HELP_DIRECTORY;
 		$this -> root_dir = $_SERVER['DOCUMENT_ROOT'].e_HTTP;
 		if (substr($this -> root_dir, -1) == '/') {
 			$this -> root_dir = substr($this -> root_dir, 0, -1);
 		}
-		
 		if ($_POST['display'] == '3') {
 			$_POST['integrity'] = TRUE;
 		}
@@ -84,7 +82,6 @@ class file_inspector {
 					$child_end = true;
 					$childOut .= $this -> inspect($path, $level, $child_end, $child_open);
 					$tree_end = false;
-					// ?
 					if ($child_open == 'warning') {
 						$tree_open = 'warning';
 					} else if ($child_open == 'core') {
@@ -92,7 +89,6 @@ class file_inspector {
 					} else if ($child_open == 'unknown') {
 						$tree_open = ($tree_open == 'warning') ? 'warning' : 'unknown';
 					}
-					// ?
 				} else {
 					if ($_POST['display'] == '0' || ($_POST['display'] == '3' && isset($core_image[$i_path]) && $readdir != 'core_image.php' && $this -> checksum($path) != $core_image[$i_path]) || ($_POST['display'] == '1' && isset($core_image[$i_path])) || ($_POST['display'] == '2' && !isset($core_image[$i_path]))) {
 						 $size = $this -> parsesize(filesize($path));
@@ -168,6 +164,8 @@ class file_inspector {
 
 		$scan_text = $this -> inspect($this -> root_dir, 0);
 
+		$text .= "<tr style='display: none'><td style='width:50%'></td><td style='width:50%'></td></tr>";
+		
 		$text .= "<tr>
 		<td class='forumheader3' style='width:50%'>
 		<div style='height: 300px; overflow: auto'>
@@ -197,7 +195,7 @@ class file_inspector {
 		$ns -> tablerender('Scanning...', $text);
 	}
 	
-		function image_scan($dir) {
+	function image_scan($dir) {
 		$handle = opendir($dir);
 		while (false !== ($readdir = readdir($handle))) {
 			if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
@@ -205,7 +203,7 @@ class file_inspector {
 				if (is_dir($path)) {
 					$this -> image_scan($path);
 				} else {
-					$this -> image[$path] = $this -> checksum($path);
+					$this -> image[$path] = $this -> checksum($path, TRUE);
 				}
 			}
 		}
@@ -226,21 +224,16 @@ class file_inspector {
 			$root = str_replace($search, $replace, $root);
 			$core_array[] = $root."' => '".$path_value."'";
 		}
-		$data .= implode($core_array, ', 
-		');
+		$data .= implode(', 
+		', $core_array);
 		$data .= "\n);\n";
 		$data .= "?>";
 		$fp = fopen(e_ADMIN.'core_image.php', 'w');
 		fwrite($fp, $data);
 	}
 	
-	function checksum($filename) {
-		//$checksum = dechex(crc32(str_replace(chr(13).chr(10), chr(10), file_get_contents($filename))));
-		//$checksum = dechex(md5(file_get_contents($filename)));
-		//$checksum = crc32(file_get_contents($filename));
-		$checksum = md5_file($filename);
-		//$checksum = md5_file(str_replace(chr(13).chr(10), chr(13), $filename));
-		//$checksum = sha1_file($filename);
+	function checksum($filename, $create = FALSE) {
+		$checksum = md5(str_replace(chr(13).chr(10), chr(10), file_get_contents($filename)));
 		return $checksum;
 	}
 	
@@ -291,7 +284,7 @@ class file_inspector {
 		</div>";
 
 		$ns -> tablerender('Snapshot', $text);
-		
+
 	}
 	
 	function scan_config() {
