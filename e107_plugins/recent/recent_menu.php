@@ -12,6 +12,10 @@
 +---------------------------------------------------------------+
 */
 
+if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
+if(!$sql -> db_Select("plugin", "*", "plugin_path = 'recent' AND plugin_installflag = '1' ")){
+	return;
+}
 unset($text);
 
 require_once(e_PLUGIN."recent/recent_shortcodes.php");

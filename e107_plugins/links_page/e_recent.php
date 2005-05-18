@@ -29,7 +29,7 @@
 			$ICON = $bullet;
 			$HEADING = "<a href='".$row['link_url']."' target='_blank' title='".$row['link_name']."'>".$rowheading."</a>";
 			$AUTHOR = "";
-			$CATEGORY = ($arr[4] ? $catname : "");
+			$CATEGORY = ($arr[4] ? "<a href='".e_PLUGIN."links_page/links.php?cat.".$catid."'>".$catname."</a>" : "");
 			$DATE = "";
 			$INFO = "";
 

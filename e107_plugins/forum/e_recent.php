@@ -15,9 +15,10 @@
 	$bullet = $this -> getBullet($arr[6], $mode);
 
 	$results = $sql->db_Select_gen("
-	SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name
+	SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name
 	FROM #forum_t AS t, #forum AS f
 	LEFT JOIN #user AS u ON t.thread_user = u.user_id
+	LEFT JOIN #user AS lp ON t.thread_lastuser = lp.user_id 
 	WHERE f.forum_id = t.thread_forum_id AND t.thread_parent =0 AND f.forum_class REGEXP '".e_CLASS_REGEXP."'	
 	ORDER BY t.thread_lastpost DESC LIMIT 0, ".$arr[7]." ");
 
@@ -31,6 +32,7 @@
 		foreach($forumArray as $forumInfo) {
 			extract($forumInfo);
 
+			/*
 			$r_id = substr($thread_lastuser, 0, strpos($thread_lastuser, "."));
 			$r_name = substr($thread_lastuser, (strpos($thread_lastuser, ".")+1));
 			if (strstr($thread_lastuser, chr(1))) {
@@ -43,6 +45,33 @@
 				$thread_user = $tmp[0];
 				$thread_user_ip = $tmp[1];
 			}
+			*/
+			$gen = new convert;
+			$r_datestamp = $gen->convert_date($thread_lastpost, "forum");
+			if($thread_total_replies)
+			{
+				if($lp_name)
+				{
+					$LASTPOST = "<a href='".e_BASE."user.php?id.{$thread_lastuser}'>$lp_name</a>";
+				}
+				else
+				{
+					if($thread_lastuser{0} == "0")
+					{
+						$LASTPOST = substr($thread_lastuser, 2);
+					}
+					else
+					{
+						//$LASTPOST = NFPM_L16;
+					}
+				}
+				$LASTPOST .= " ".RECENT_FORUM_6." <span class='smalltext'>$r_datestamp</span>";
+			}
+			else
+			{
+				$LASTPOST = " - ";
+				$LASTPOSTDATE = "";
+			}
 
 			$rowheading = $this -> parse_heading($thread_name, $mode);
 			$HEADING = "<a href='".$path."forum_viewtopic.php?$thread_id' title='".$thread_name."'>".$rowheading."</a>";
@@ -53,7 +82,6 @@
 
 			$VIEWS = $thread_views;
 			$REPLIES = $thread_total_replies;
-			$LASTPOST = ($thread_total_replies ? ($r_id ? "<a href='".e_BASE."user.php?id.$r_id'>$r_name</a>" : $r_name) : " - ");
 
 			$INFO = "[ ".RECENT_FORUM_3." ".$VIEWS.", ".RECENT_FORUM_4." ".$REPLIES.", ".RECENT_FORUM_5." ".$LASTPOST." ]";
 

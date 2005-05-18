@@ -70,8 +70,8 @@ define("RECENT_ADMIN_MENU_2", "caption");
 define("RECENT_ADMIN_MENU_3", "define a caption");
 define("RECENT_ADMIN_MENU_4", "");
 
-define("RECENT_ADMIN_MENU_5", "style icon");
-define("RECENT_ADMIN_MENU_6", "use icon in menu");
+define("RECENT_ADMIN_MENU_5", "icon : use");
+define("RECENT_ADMIN_MENU_6", "use icon from each section in menu");
 define("RECENT_ADMIN_MENU_7", "");
 
 define("RECENT_ADMIN_MENU_8", "characters");
@@ -94,8 +94,8 @@ define("RECENT_ADMIN_MENU_20", "show empty");
 define("RECENT_ADMIN_MENU_21", "define if for sections with no results a message needs to be shown");
 define("RECENT_ADMIN_MENU_22", "");
 
-define("RECENT_ADMIN_MENU_23", "");
-define("RECENT_ADMIN_MENU_24", "");
+define("RECENT_ADMIN_MENU_23", "icon : default");
+define("RECENT_ADMIN_MENU_24", "use default theme bullet if no icon is present or if icon:use is disabled");
 define("RECENT_ADMIN_MENU_25", "");
 
 
@@ -106,8 +106,8 @@ define("RECENT_ADMIN_PAGE_2", "caption");
 define("RECENT_ADMIN_PAGE_3", "define a caption");
 define("RECENT_ADMIN_PAGE_4", "");
 
-define("RECENT_ADMIN_PAGE_5", "style icon");
-define("RECENT_ADMIN_PAGE_6", "use icon in page");
+define("RECENT_ADMIN_PAGE_5", "icon : use");
+define("RECENT_ADMIN_PAGE_6", "use icon from each section in page");
 define("RECENT_ADMIN_PAGE_7", "");
 
 define("RECENT_ADMIN_PAGE_8", "characters");
@@ -137,6 +137,11 @@ define("RECENT_ADMIN_PAGE_25", "");
 define("RECENT_ADMIN_PAGE_26", "show empty");
 define("RECENT_ADMIN_PAGE_27", "define if for sections with no results a message needs to be shown");
 define("RECENT_ADMIN_PAGE_28", "");
+
+define("RECENT_ADMIN_PAGE_29", "icon : default");
+define("RECENT_ADMIN_PAGE_30", "use default theme bullet if no icon is present or if icon:use is disabled");
+define("RECENT_ADMIN_PAGE_31", "");
+
 
 
 
@@ -199,6 +204,7 @@ define("RECENT_FORUM_2", "no forum posts");
 define("RECENT_FORUM_3", "views:");
 define("RECENT_FORUM_4", "replies:");
 define("RECENT_FORUM_5", "lastpost:");
+define("RECENT_FORUM_6", "on:");
 
 
 ?>

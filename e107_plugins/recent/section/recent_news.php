@@ -38,15 +38,15 @@
 				list($news_author_name) = $sql2 -> db_Fetch();
 
 				//get category
-				$sql3 -> db_Select("news_category", "category_name", "category_id = '".$row['news_category']."' ");
-				list($news_category_name) = $sql3 -> db_Fetch();
+				$sql3 -> db_Select("news_category", "category_id, category_name", "category_id = '".$row['news_category']."' ");
+				list($news_category_id, $news_category_name) = $sql3 -> db_Fetch();
 
 				$rowheading = $this -> parse_heading($news_title, $mode);
 
 				$ICON = $bullet;
 				$HEADING = "<a href='".e_BASE."comment.php?comment.news.".$row['news_id']."' title='".$news_title."'>".$rowheading."</a>";
 				$AUTHOR = ($arr[3] ? ($row['news_author'] == 0 ? $row['news_author'] : ($news_author_name ? "<a href='".e_BASE."user.php?id.".$row['news_author']."'>".$news_author_name."</a>" : "") ) : "");
-				$CATEGORY = ($arr[4] ? $news_category_name : "");
+				$CATEGORY = ($arr[4] ? "<a href='".e_BASE."news.php?cat.".$news_category_id."'>".$news_category_name."</a>" : "");
 				$DATE = ($arr[5] ? $this -> getRecentDate($row['news_datestamp'], $mode) : "");
 				$INFO = "";
 
