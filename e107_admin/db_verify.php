@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-05-18 03:04:39 $
+|     $Revision: 1.14 $
+|     $Date: 2005-05-18 03:08:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -79,7 +79,6 @@ function read_tables($tab) {
 		if (preg_match("/CREATE TABLE (.*) /", $line, $match)) {
 			$table_list[$match[1]] = 1;
 			$current_table = $match[1];
-          //  $table_list[$match[1]] = 1;
 			$x = 0;
 			$cnt = 0;
 		}
@@ -97,16 +96,16 @@ function read_tables($tab) {
 	}
 
 // Get multi-language tables as well
-    if($pref['multilanguage']){
-        $langs = table_list();
-       foreach($table_list as $name=>$stuff){
-            if($langs[$name]){
-                $ltab = $langs[$name];
-                $table_list[$ltab] = 1;
-                $tablines[$ltab] = $tablines[$name];
-            }
-        }
-    }
+	if($pref['multilanguage']){
+		$langs = table_list();
+		foreach($table_list as $name=>$stuff){
+			if($langs[$name]){
+				$ltab = $langs[$name];
+				$table_list[$ltab] = 1;
+				$tablines[$ltab] = $tablines[$name];
+			}
+		}
+	}
 
 }
 
@@ -130,12 +129,10 @@ function check_tables($what) {
 	global $tablines;
 	global $table_list;
 	global $ns;
-
+	$cur=0;
 	$table_list = "";
 	read_tables($what);
 
-//   print_r(table_list());
-//   print_r($table_list);
 	$text = "<form method='POST' action='".e_SELF."' id='checktab'>
 		<div style='text-align:center'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -168,8 +165,8 @@ function check_tables($what) {
 				$fparams = preg_replace("/\r?\n$|\r[^\n]$|,$/", "", $fparams);
 
 			if(eregi("lan_",$k) && $cur != 1){
-            $text .= "<tr><td colspan='6' class='fcaption'>".ADLAN_132."</td></tr>";
-			$cur = 1;
+				$text .= "<tr><td colspan='6' class='fcaption'>".ADLAN_132."</td></tr>";
+				$cur = 1;
 			};
 
 
@@ -229,9 +226,9 @@ function check_tables($what) {
 					$text .= "<tr><td class='forumheader3' style='text-align:center'>$k</td><td class='forumheader3' style='text-align:center'>$tf</td><td class='forumheader3' style='text-align:center'><strong><em>".DBLAN_12."</em></strong></td><td class='forumheader3' style='text-align:center'>&nbsp;".fix_form($k,$tf,$fparams,"drop")."</td></tr>";
 				}
 			}
-		} else {    // Table Missing.
+		} else {	// Table Missing.
 			$text .= "<tr><td class='forumheader3' style='text-align:center'>$k</td><td class='forumheader3' style='text-align:center'>&nbsp;</td><td class='forumheader' style='text-align:center'>".DBLAN_13."<br /><td class='forumheader3' style='text-align:center'>&nbsp;".fix_form($k,$tf,$tablines[$k],"create")."</td></tr>";
-            $fix_active = TRUE;
+			$fix_active = TRUE;
 		}
 	}
 	$text .= "</table></div>";
@@ -242,12 +239,11 @@ function check_tables($what) {
 	}
 
 	foreach(array_keys($_POST) as $j) {
-
 		if (preg_match("/table_(.*)/", $j, $mitch)) {
-	   		$lx = $mitch[1];
+			$lx = $mitch[1];
 			$text .= "<input type='hidden' name='table_{$lx}' value='1' />\n";
-    	}
-    }
+		}
+	}
 	$text .= "</form>";
 
 	return $text;
@@ -255,10 +251,10 @@ function check_tables($what) {
 
 global $table_list;
 
-// --------------------------------------------------------------
+// -------------------- Table Fixing ------------------------------
 
 if(isset($_POST['do_fix'])){
-        $text = "<div><table class='fborder' style='width:100%'>";
+	$text = "<div><table class='fborder' style='width:100%'>";
 	foreach( $_POST['fix_active'] as $key=>$val){
 		$table= $_POST['fix_table'][$key][0];
 		$field= $key;
@@ -305,12 +301,7 @@ if(isset($_POST['do_fix'])){
 
 
 
-
-
-
-
-
-// ----------------------------------------------------------
+// ---------------------- Main Form and Submit. ------------------------
 if (!$_POST) {
 	$text = "
 		<form method='POST' action='".e_SELF."'>
