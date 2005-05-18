@@ -259,7 +259,8 @@ function print_item_pdf($id){
 	$pdf->SetKeywords($text[5]);				//space seperated
 
 	$file = $text[3].".pdf";					//name of the file
-	$pdf->Output($file, 'D');					//Save PDF to file (D = output to download window)
+	//(I = send to standard browser)(D = download file window)(F = save to local file)(S = return as string)
+	$pdf->Output($file, 'D');					//Save PDF to file	
 
 	//##### ---------------------------------------------------------------------------------------
 
