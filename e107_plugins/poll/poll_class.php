@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-04-11 10:06:09 $
+|     $Revision: 1.19 $
+|     $Date: 2005-05-18 15:36:03 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -147,7 +147,7 @@ class poll
 
 		$comment_total = $sql->db_Select("comments", "*", "comment_item_id='".$pollArray['poll_id']."' AND comment_type=4");
 
-		$QUESTION = $tp -> toHTML($pollArray['poll_title']);
+		$QUESTION = $tp -> toHTML($pollArray['poll_title'], TRUE);
 		$VOTE_TOTAL = POLLAN_26.": ".$voteTotal;
 		$COMMENTS = ($pollArray['poll_comment'] ? " <a href='".e_BASE."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_27.": ".$comment_total."</a>" : "");
 		$OLDPOLLS = ($type == "menu" ? "<a href='".e_PLUGIN."poll/oldpolls.php'>".POLLAN_28."</a>" : "");
