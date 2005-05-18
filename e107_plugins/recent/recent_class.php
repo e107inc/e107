@@ -33,12 +33,12 @@ class recent {
 		//get main parent types
 		if($mainparents = $sql -> db_Select($plugintable, "*", "content_parent = '0' ".$datequery." ORDER BY content_heading")){
 			while($row = $sql -> db_Fetch()){
-				if($mode == "add"){
-					$sections[] = $row['content_heading'];
-					$titles[] = $row['content_heading'];
-				}
 				$content_types[] = $row['content_heading'];
 				$content_name = 'content';
+				if($mode == "add"){
+					$sections[] = $row['content_heading'];
+					$titles[] = $content_name." : ".$row['content_heading'];
+				}
 			}
 		}
 		
@@ -147,7 +147,8 @@ class recent {
 
 		//menu preferences
 		$recent_pref['menu_caption'] = RECENT_ADMIN_14;
-		$recent_pref['menu_style_icon'] = "1";
+		$recent_pref['menu_icon_use'] = "1";
+		$recent_pref['menu_icon_default'] = "1";
 		$recent_pref['menu_char_heading'] = "20";
 		$recent_pref['menu_char_postfix'] = "...";
 		$recent_pref['menu_datestyle'] = "%d %b";
@@ -156,7 +157,8 @@ class recent {
 
 		//page preferences
 		$recent_pref['page_caption'] = RECENT_ADMIN_14;
-		$recent_pref['page_style_icon'] = "1";
+		$recent_pref['page_icon_use'] = "1";
+		$recent_pref['page_icon_default'] = "1";
 		$recent_pref['page_char_heading'] = "";
 		$recent_pref['page_char_postfix'] = "";
 		$recent_pref['page_datestyle'] = "%d %b";
@@ -168,13 +170,13 @@ class recent {
 		return $recent_pref;
 	}
 
-	function show_section_recent($arr, $mode){
+	function show_section_recent($arr, $mode, $max=""){
 		global $tp, $recent_shortcodes, $sql, $recent_pref, $defaultarray, $content_types, $content_name;
 		global $RECENT_MENU, $RECENT_MENU_START, $RECENT_MENU_END, $RECENT_PAGE_START, $RECENT_PAGE, $RECENT_PAGE_END;
 		global $RECENT_ICON, $RECENT_DATE, $RECENT_HEADING, $RECENT_AUTHOR, $RECENT_CATEGORY, $RECENT_INFO;
 		global $RECENT_DISPLAYSTYLE, $RECENT_CAPTION, $RECENT_STYLE_CAPTION, $RECENT_STYLE_BODY;
 
-		$menu_installed = $sql -> db_Select("menus", "*", "menu_name = 'recent_menu' AND menu_location != '0' AND menu_class IN (".USERCLASS_LIST.") ");
+		$menu_installed = $sql -> db_Select("menus", "*", "menu_name = 'recent_menu' AND menu_location != '0' AND menu_class REGEXP '".e_CLASS_REGEXP."' ");
 		$RECENT_DATA = "";
 
 		$this -> getContentSections("");
@@ -199,14 +201,16 @@ class recent {
 				if(e_PAGE == "recent_page.php" && $menu_installed == 1 && $mode == "menu"){
 					require(e_PLUGIN."recent/section/recent_".$file.".php");
 				}else{
-					require_once(e_PLUGIN."recent/section/recent_".$file.".php");
+					//require_once(e_PLUGIN."recent/section/recent_".$file.".php");
+					require(e_PLUGIN."recent/section/recent_".$file.".php");
 				}
 			}else{
 				if(file_exists(e_PLUGIN.$file."/e_recent.php")){
 					if(e_PAGE == "recent_page.php" && $menu_installed == 1 && $mode == "menu"){
 						require(e_PLUGIN.$file."/e_recent.php");
 					}else{
-						require_once(e_PLUGIN.$file."/e_recent.php");
+						//require_once(e_PLUGIN.$file."/e_recent.php");
+						require(e_PLUGIN.$file."/e_recent.php");
 					}
 				}
 			}
@@ -222,7 +226,7 @@ class recent {
 		$RECENT_CATEGORY = "";
 		$RECENT_INFO = "";
 
-		if(is_array($RECENT_DATA[$mode])){			//if it is an array, data exists and data is not empty
+		if(is_array($RECENT_DATA)){			//if it is an array, data exists and data is not empty
 			for($i=0;$i<count($RECENT_DATA[$mode]);$i++){				
 				$RECENT_ICON = $RECENT_DATA[$mode][$i][0];
 				$RECENT_HEADING = $RECENT_DATA[$mode][$i][1];
@@ -233,6 +237,9 @@ class recent {
 				if($mode == "page"){
 					$menutext .= $tp -> parseTemplate($RECENT_PAGE, FALSE, $recent_shortcodes);
 				}else{
+					global $sc_style;
+					$RECENT_AUTHOR = ($RECENT_AUTHOR ? $sc_style['RECENT_AUTHOR']['pre'].$RECENT_AUTHOR.$sc_style['RECENT_AUTHOR']['post'] : "");					
+					$RECENT_CATEGORY = ($RECENT_CATEGORY ? $sc_style['RECENT_CATEGORY']['pre'].$RECENT_CATEGORY.$sc_style['RECENT_CATEGORY']['post'] : "");					
 					$menutext .= preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_MENU);
 				}
 			}
@@ -265,20 +272,25 @@ class recent {
 		}else{
 			$text = "";
 		}
-
-		return $text;
+		return $text;		
 	}
 
 
 	function getBullet($sectionicon, $mode){
 		global $recent_pref;
 
-		$default_bullet = "<img src='".THEME."images/bullet2.gif' alt='' />";
+		$default_bullet = "";
+		if($recent_pref[$mode."_icon_default"]){
+			if(file_exists(THEME."images/bullet2.gif")){
+				$default_bullet = "<img src='".THEME."images/bullet2.gif' alt='' />";
+			}
+		}
+
 		$icon_width = "8";
 		$icon_height = "8";
 		$style_pre = "";
 
-		if($recent_pref[$mode."_style_icon"]){
+		if($recent_pref[$mode."_icon_use"]){
 			if($sectionicon){
 				if(file_exists(e_PLUGIN."recent/images/".$sectionicon)){
 					$bullet = "<img src='".e_PLUGIN."recent/images/".$sectionicon."' style='width:".$icon_width."px; height:".$icon_height."px; border:0; vertical-align:middle;' alt='' />";

@@ -19,7 +19,7 @@
 			if($arr[3]){
 				$comment_author_id = substr($row['comment_author'] , 0, strpos($row['comment_author'] , "."));
 				$comment_author_name = substr($row['comment_author'] , (strpos($row['comment_author'] , ".")+1));
-				$AUTHOR = (USERID ? $comment_author_name : "<a href='".e_BASE."user.php?id.".$comment_author_id."'>".$comment_author_name."</a>");
+				$AUTHOR = (USERID ? "<a href='".e_BASE."user.php?id.".$comment_author_id."'>".$comment_author_name."</a>" : $comment_author_name);
 			}else{
 				$AUTHOR = "";
 			}
@@ -32,8 +32,8 @@
 					$sql2 -> db_Select("news", "*", "news_id='".$row['comment_item_id']."' AND news_class REGEXP '".e_CLASS_REGEXP."' ");
 					$row2 = $sql2 -> db_Fetch();
 					$rowheading = $this -> parse_heading($row2['news_title'], $mode);
-					$HEADING = "<a href='".e_BASE."comment.php?".$row['comment_item_id']."' title='".$row2['news_title']."'>".$rowheading."</a>";
-					$CATEGORY = ($arr[4] ? RECENT_COMMENT_3 : "");
+					$HEADING = "<a href='".e_BASE."comment.php?comment.news.".$row['comment_item_id']."' title='".$row2['news_title']."'>".$rowheading."</a>";
+					$CATEGORY = ($arr[4] ? "<a href='".e_BASE."news.php'>".RECENT_COMMENT_3."</a>" : "");
 
 			}elseif($row['comment_type'] == "1"){	//	article, review or content page
 
@@ -44,15 +44,14 @@
 					$row2 = $sql2->db_Fetch();
 					$rowheading = $this -> parse_heading($row2['download_name'], $mode);
 					$HEADING = "<a href='".e_BASE."download.php?view.".$row['comment_item_id']."' title='".$row2['download_name']."'>".$tp -> toHTML($rowheading, "admin")."</a>";
-					$CATEGORY = ($arr[4] ? $row2['download_category_name'] : "");
-					//$CATEGORY = ($recent_pref['comment_cat'] ? RECENT_COMMENT_9 : "");
+					$CATEGORY = ($arr[4] ? "<a href='".e_BASE."download.php?list.".$row2['download_category_id']."'>".$row2['download_category_name']."</a>" : "");
 
 			}elseif($row['comment_type'] == "3"){	//	faq
 					$sql2 -> db_Select("faq", "faq_question", "faq_id='".$row['comment_item_id']."' ");
 					$row2 = $sql2 -> db_Fetch();
 					$rowheading = $this -> parse_heading($row2['faq_question'], $mode);
-					$HEADING = "<a href='".e_BASE."faq.php?view.".$row2['comment_item_id']."' title='".$row2['faq_question']."'>".$tp -> toHTML($rowheading, "admin")."</a>";
-					$CATEGORY = ($arr[4] ? RECENT_COMMENT_4 : "");
+					$HEADING = "<a href='".e_PLUGIN."faq/faq.php?view.".$row2['comment_item_id']."' title='".$row2['faq_question']."'>".$tp -> toHTML($rowheading, "admin")."</a>";
+					$CATEGORY = ($arr[4] ? "<a href='".e_PLUGIN."faq/faq.php'>".RECENT_COMMENT_4."</a>" : "");
 
 			}elseif($row['comment_type'] == "4"){	//	poll comment
 					$sql2 -> db_Select("poll", "*", "poll_id='".$row['comment_item_id']."' ");
@@ -81,7 +80,7 @@
 					$type_id = $tmp[0];
 					$rowheading = $this -> parse_heading($row2['content_heading'], $mode);
 					$HEADING = "<a href='".e_PLUGIN."content/content.php?type.".$type_id.".content.".$row['comment_item_id']."' title='".$row2['content_heading']."'>".$tp -> toHTML($rowheading)."</a>";
-					$CATEGORY = ($arr[4] ? RECENT_COMMENT_8 : "");
+					$CATEGORY = ($arr[4] ? "<a href='".e_PLUGIN."content/content.php?type.".$type_id."'>".RECENT_COMMENT_8."</a>" : "");
 
 			}else{
 

@@ -13,6 +13,11 @@
 */
 
 require_once("../../class2.php");
+
+if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
+if(!$sql -> db_Select("plugin", "*", "plugin_path = 'recent' AND plugin_installflag = '1' ")){
+	header("location:".e_BASE."index.php"); exit;
+}
 require_once(e_PLUGIN."recent/recent_shortcodes.php");
 require_once(HEADERF);
 
@@ -55,16 +60,18 @@ foreach ($recent_pref as $key => $value) {
 
 //section reference
 for($i=0;$i<count($sections);$i++){
-	$arr[$sections[$i]][0] = $recent_pref["$sections[$i]_caption"];
-	$arr[$sections[$i]][1] = $recent_pref["$sections[$i]_pagedisplay"];
-	$arr[$sections[$i]][2] = $recent_pref["$sections[$i]_pageopen"];
-	$arr[$sections[$i]][3] = $recent_pref["$sections[$i]_pageauthor"];
-	$arr[$sections[$i]][4] = $recent_pref["$sections[$i]_pagecategory"];
-	$arr[$sections[$i]][5] = $recent_pref["$sections[$i]_pagedate"];
-	$arr[$sections[$i]][6] = $recent_pref["$sections[$i]_icon"];
-	$arr[$sections[$i]][7] = $recent_pref["$sections[$i]_pageamount"];
-	$arr[$sections[$i]][8] = $recent_pref["$sections[$i]_order"];
-	$arr[$sections[$i]][9] = $sections[$i];
+	if($recent_pref["$sections[$i]_pagedisplay"] == "1"){
+		$arr[$sections[$i]][0] = $recent_pref["$sections[$i]_caption"];
+		$arr[$sections[$i]][1] = $recent_pref["$sections[$i]_pagedisplay"];
+		$arr[$sections[$i]][2] = $recent_pref["$sections[$i]_pageopen"];
+		$arr[$sections[$i]][3] = $recent_pref["$sections[$i]_pageauthor"];
+		$arr[$sections[$i]][4] = $recent_pref["$sections[$i]_pagecategory"];
+		$arr[$sections[$i]][5] = $recent_pref["$sections[$i]_pagedate"];
+		$arr[$sections[$i]][6] = $recent_pref["$sections[$i]_icon"];
+		$arr[$sections[$i]][7] = $recent_pref["$sections[$i]_pageamount"];
+		$arr[$sections[$i]][8] = $recent_pref["$sections[$i]_order"];
+		$arr[$sections[$i]][9] = $sections[$i];
+	}
 }
 
 //sort array on order values set in preferences

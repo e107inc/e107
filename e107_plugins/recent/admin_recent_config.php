@@ -71,13 +71,12 @@ if(isset($message)){
 
 //define some variables
 $stylespacer = "style='border:0; height:20px;'";
-$stylehelp = "style='border:0; font-style:italic; color:#0087E5;'";
-$td1 = "style='width:20%; white-space:nowrap;'";
+$styletable = "style='width:90%; border:1px solid #444; border-collapse:collapse;' cellpadding='0' cellspacing='0' ";
 
 //template for non expanding row
 $TOPIC_ROW_NOEXPAND = "
 <tr>
-	<td class='forumheader3' $td1>{TOPIC_TOPIC}</td>
+	<td class='forumheader3' style='width:20%; white-space:nowrap;'>{TOPIC_TOPIC}</td>
 	<td class='forumheader3'>{TOPIC_FIELD}</td>
 </tr>
 ";
@@ -85,11 +84,11 @@ $TOPIC_ROW_NOEXPAND = "
 //template for expanding row
 $TOPIC_ROW = "
 <tr>
-	<td class='forumheader3' $td1>{TOPIC_TOPIC}</td>
+	<td class='forumheader3' style='width:20%; white-space:nowrap;'>{TOPIC_TOPIC}</td>
 	<td class='forumheader3'>
 		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>{TOPIC_HEADING}</a>
 		<div style='display: none;'>
-			<div $stylehelp>{TOPIC_HELP}</div><br />
+			<div class='smalltext'>{TOPIC_HELP}</div><br />
 			{TOPIC_FIELD}
 		</div>
 	</td>
@@ -119,11 +118,11 @@ $TOPIC_TOPIC = RECENT_ADMIN_SECT_1;
 $TOPIC_HEADING = RECENT_ADMIN_SECT_2;
 $TOPIC_HELP = RECENT_ADMIN_SECT_3;
 $TOPIC_FIELD = "
-<table style='width:90%; border:1px solid #444; border-collapse:collapse;' cellpadding='0' cellspacing='0'>";
+<table $styletable>";
 $TOPIC_FIELD .= $rc -> parse_headerrow();
 for($i=0;$i<count($sections);$i++){
 	$TOPIC_FIELD .= $rc -> parse_display($sections[$i], $titles[$i]);
-}						
+}
 $TOPIC_FIELD .= "
 </table>
 ";
@@ -134,11 +133,11 @@ $TOPIC_TOPIC = RECENT_ADMIN_SECT_4;
 $TOPIC_HEADING = RECENT_ADMIN_SECT_5;
 $TOPIC_HELP = RECENT_ADMIN_SECT_6;
 $TOPIC_FIELD = "
-<table style='width:90%; border:1px solid #444; border-collapse:collapse;' cellpadding='0' cellspacing='0'>";
+<table $styletable>";
 $TOPIC_FIELD .= $rc -> parse_headerrow();
 for($i=0;$i<count($sections);$i++){
 	$TOPIC_FIELD .= $rc -> parse_openclose($sections[$i], $titles[$i]);
-}						
+}
 $TOPIC_FIELD .= "
 </table>
 ";
@@ -149,11 +148,11 @@ $TOPIC_TOPIC = RECENT_ADMIN_SECT_7;
 $TOPIC_HEADING = RECENT_ADMIN_SECT_8;
 $TOPIC_HELP = RECENT_ADMIN_SECT_9;
 $TOPIC_FIELD = "
-<table style='width:90%; border:1px solid #444; border-collapse:collapse;' cellpadding='0' cellspacing='0'>";
+<table $styletable>";
 $TOPIC_FIELD .= $rc -> parse_headerrow();
 for($i=0;$i<count($sections);$i++){
 	$TOPIC_FIELD .= $rc -> parse_author($sections[$i], $titles[$i]);
-}						
+}
 $TOPIC_FIELD .= "
 </table>
 ";
@@ -164,11 +163,11 @@ $TOPIC_TOPIC = RECENT_ADMIN_SECT_10;
 $TOPIC_HEADING = RECENT_ADMIN_SECT_11;
 $TOPIC_HELP = RECENT_ADMIN_SECT_12;
 $TOPIC_FIELD = "
-<table style='width:90%; border:1px solid #444; border-collapse:collapse;' cellpadding='0' cellspacing='0'>";
+<table $styletable>";
 $TOPIC_FIELD .= $rc -> parse_headerrow();
 for($i=0;$i<count($sections);$i++){
 	$TOPIC_FIELD .= $rc -> parse_category($sections[$i], $titles[$i]);
-}						
+}
 $TOPIC_FIELD .= "
 </table>
 ";
@@ -179,11 +178,11 @@ $TOPIC_TOPIC = RECENT_ADMIN_SECT_13;
 $TOPIC_HEADING = RECENT_ADMIN_SECT_14;
 $TOPIC_HELP = RECENT_ADMIN_SECT_15;
 $TOPIC_FIELD = "
-<table style='width:90%; border:1px solid #444; border-collapse:collapse;' cellpadding='0' cellspacing='0'>";
+<table $styletable>";
 $TOPIC_FIELD .= $rc -> parse_headerrow();
 for($i=0;$i<count($sections);$i++){
 	$TOPIC_FIELD .= $rc -> parse_date($sections[$i], $titles[$i]);
-}						
+}
 $TOPIC_FIELD .= "
 </table>
 ";
@@ -195,11 +194,11 @@ $TOPIC_TOPIC = RECENT_ADMIN_SECT_16;
 $TOPIC_HEADING = RECENT_ADMIN_SECT_17;
 $TOPIC_HELP = RECENT_ADMIN_SECT_18;
 $TOPIC_FIELD = "
-<table style='width:90%; border:1px solid #444; border-collapse:collapse;' cellpadding='0' cellspacing='0'>";
+<table $styletable>";
 $TOPIC_FIELD .= $rc -> parse_headerrow();
 for($i=0;$i<count($sections);$i++){
 	$TOPIC_FIELD .= $rc -> parse_amount($sections[$i], $titles[$i]);
-}						
+}
 $TOPIC_FIELD .= "
 </table>
 ";
@@ -211,10 +210,10 @@ $TOPIC_TOPIC = RECENT_ADMIN_SECT_19;
 $TOPIC_HEADING = RECENT_ADMIN_SECT_20;
 $TOPIC_HELP = RECENT_ADMIN_SECT_21;
 $TOPIC_FIELD = "
-<table style='width:90%; border:1px solid #444; border-collapse:collapse;' cellpadding='0' cellspacing='0'>";
+<table $styletable>";
 for($i=0;$i<count($sections);$i++){
 	$TOPIC_FIELD .= $rc -> parse_order($sections[$i], $titles[$i], $max);
-}						
+}
 $TOPIC_FIELD .= "
 </table>
 ";
@@ -227,10 +226,10 @@ $TOPIC_TOPIC = RECENT_ADMIN_SECT_22;
 $TOPIC_HEADING = RECENT_ADMIN_SECT_23;
 $TOPIC_HELP = RECENT_ADMIN_SECT_24;
 $TOPIC_FIELD = "
-<table style='width:90%; border:1px solid #444; border-collapse:collapse;' cellpadding='0' cellspacing='0'>";
+<table $styletable>";
 for($i=0;$i<count($sections);$i++){
 	$TOPIC_FIELD .= $rc -> parse_icon($sections[$i], $titles[$i]);
-}						
+}
 $TOPIC_FIELD .= "
 </table>
 ";
@@ -241,10 +240,10 @@ $TOPIC_TOPIC = RECENT_ADMIN_SECT_25;
 $TOPIC_HEADING = RECENT_ADMIN_SECT_26;
 $TOPIC_HELP = RECENT_ADMIN_SECT_27;
 $TOPIC_FIELD = "
-<table style='width:90%; border:1px solid #444; border-collapse:collapse;' cellpadding='0' cellspacing='0'>";
+<table $styletable>";
 for($i=0;$i<count($sections);$i++){
 	$TOPIC_FIELD .= $rc -> parse_caption($sections[$i], $titles[$i]);
-}						
+}
 $TOPIC_FIELD .= "
 </table>
 ";
@@ -263,14 +262,23 @@ $TOPIC_HELP = RECENT_ADMIN_MENU_4;
 $TOPIC_FIELD = $rs -> form_text("menu_caption", "30", $recent_pref['menu_caption'], "50", "tbox");
 $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-//menu preference : style icon
+//menu preference : icon : use
 $TOPIC_TOPIC = RECENT_ADMIN_MENU_5;
 $TOPIC_HEADING = RECENT_ADMIN_MENU_6;
 $TOPIC_HELP = RECENT_ADMIN_MENU_7;
-//$TOPIC_FIELD = $rs -> form_checkbox("style_icon", 1, $recent_pref['style_icon']);
 $TOPIC_FIELD = "
-	".$rs -> form_radio("menu_style_icon", "1", ($recent_pref['menu_style_icon'] ? "1" : "0"), "", "").RECENT_ADMIN_7."
-	".$rs -> form_radio("menu_style_icon", "0", ($recent_pref['menu_style_icon'] ? "0" : "1"), "", "").RECENT_ADMIN_8."
+	".$rs -> form_radio("menu_icon_use", "1", ($recent_pref['menu_icon_use'] ? "1" : "0"), "", "").RECENT_ADMIN_7."
+	".$rs -> form_radio("menu_icon_use", "0", ($recent_pref['menu_icon_use'] ? "0" : "1"), "", "").RECENT_ADMIN_8."
+";
+$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+//menu preference : icon : show default theme bullet
+$TOPIC_TOPIC = RECENT_ADMIN_MENU_23;
+$TOPIC_HEADING = RECENT_ADMIN_MENU_24;
+$TOPIC_HELP = RECENT_ADMIN_MENU_25;
+$TOPIC_FIELD = "
+	".$rs -> form_radio("menu_icon_default", "1", ($recent_pref['menu_icon_default'] ? "1" : "0"), "", "").RECENT_ADMIN_7."
+	".$rs -> form_radio("menu_icon_default", "0", ($recent_pref['menu_icon_default'] ? "0" : "1"), "", "").RECENT_ADMIN_8."
 ";
 $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -325,13 +333,23 @@ $TOPIC_HELP = RECENT_ADMIN_PAGE_4;
 $TOPIC_FIELD = $rs -> form_text("page_caption", "30", $recent_pref['page_caption'], "50", "tbox");
 $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-//page preference : style icon
+//page preference : icon : use
 $TOPIC_TOPIC = RECENT_ADMIN_PAGE_5;
 $TOPIC_HEADING = RECENT_ADMIN_PAGE_6;
 $TOPIC_HELP = RECENT_ADMIN_PAGE_7;
 $TOPIC_FIELD = "
-	".$rs -> form_radio("page_style_icon", "1", ($recent_pref['page_style_icon'] ? "1" : "0"), "", "").RECENT_ADMIN_7."
-	".$rs -> form_radio("page_style_icon", "0", ($recent_pref['page_style_icon'] ? "0" : "1"), "", "").RECENT_ADMIN_8."
+	".$rs -> form_radio("page_icon_use", "1", ($recent_pref['page_icon_use'] ? "1" : "0"), "", "").RECENT_ADMIN_7."
+	".$rs -> form_radio("page_icon_use", "0", ($recent_pref['page_icon_use'] ? "0" : "1"), "", "").RECENT_ADMIN_8."
+";
+$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+//page preference : icon : show default theme bullet
+$TOPIC_TOPIC = RECENT_ADMIN_PAGE_29;
+$TOPIC_HEADING = RECENT_ADMIN_PAGE_30;
+$TOPIC_HELP = RECENT_ADMIN_PAGE_31;
+$TOPIC_FIELD = "
+	".$rs -> form_radio("page_icon_default", "1", ($recent_pref['page_icon_default'] ? "1" : "0"), "", "").RECENT_ADMIN_7."
+	".$rs -> form_radio("page_icon_default", "0", ($recent_pref['page_icon_default'] ? "0" : "1"), "", "").RECENT_ADMIN_8."
 ";
 $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -377,13 +395,11 @@ $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 $TOPIC_TOPIC = RECENT_ADMIN_PAGE_20;
 $TOPIC_HEADING = RECENT_ADMIN_PAGE_21;
 $TOPIC_HELP = RECENT_ADMIN_PAGE_22;
-$TOPIC_FIELD = "
-	".$rs -> form_select_open("page_colomn");
+$TOPIC_FIELD = $rs -> form_select_open("page_colomn");
 	for($a=1; $a<=count($sections); $a++){
 		$TOPIC_FIELD .= ($recent_pref['page_colomn'] == $a ? $rs -> form_option($a, 1) : $rs -> form_option($a, 0));
 	}
-	$TOPIC_FIELD .= $rs -> form_select_close()."					
-";
+	$TOPIC_FIELD .= $rs -> form_select_close();
 $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 //page preference : welcome text
