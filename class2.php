@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.135 $
-|     $Date: 2005-05-15 05:02:28 $
-|     $Author: e107coders $
+|     $Revision: 1.136 $
+|     $Date: 2005-05-18 01:37:01 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -470,7 +470,7 @@ foreach ($pref as $key => $prefvalue) {
 	$pref[$key] = $tp->toFORM($prefvalue);
 }
 
-define("SITENAME", $tp->toHTML($pref['sitename'],"","emotes_off defs"));
+define("SITENAME", trim($tp->toHTML($pref['sitename'],"","emotes_off defs")));
 define("SITEURL", (substr($pref['siteurl'], -1) == "/" ? $pref['siteurl'] : $pref['siteurl']."/"));
 define("SITEBUTTON", $pref['sitebutton']);
 define("SITETAG", $tp->toHTML($pref['sitetag'],FALSE,"emotes_off defs"));
