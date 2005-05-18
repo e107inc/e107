@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.41 $
-|		$Date: 2005-05-17 22:57:33 $
+|		$Revision: 1.42 $
+|		$Date: 2005-05-18 09:48:25 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -216,6 +216,7 @@ if(!isset($type)){
 			show_content();												//show content type list
 
 }elseif($type == "type" && is_numeric($type_id)){
+
 	if(!isset($action) || substr($action,0,5) == "order"){
 			if($content_pref["content_searchmenu_{$type_id}"]){ show_content_search_menu(); }
 			if($resultmenu == TRUE){ show_content_search_result($searchkeyword); }
@@ -265,12 +266,13 @@ if(!isset($type)){
 	}elseif($action == "content"){										//show content item
 			if($content_pref["content_searchmenu_{$type_id}"]){ show_content_search_menu(); }
 			if($resultmenu == TRUE){ show_content_search_result($searchkeyword); }
-			show_content_item();
+				show_content_item();
 
 	}elseif($action == "top"){											//show content top rated items
 			if($content_pref["content_searchmenu_{$type_id}"]){ show_content_search_menu(); }
 			if($resultmenu == TRUE){ show_content_search_result($searchkeyword); }
 			show_content_top();
+
 	}elseif($action == "list"){
 			if($content_pref["content_searchmenu_{$type_id}"]){ show_content_search_menu(); }
 			if($resultmenu == TRUE){ show_content_search_result($searchkeyword); }
@@ -1014,12 +1016,13 @@ function show_content_author(){
 
 // ##### CONTENT ------------------------------------------
 function show_content_item(){
+	
 				global $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
 				global $type, $type_id, $action, $sub_action, $id, $id2, $datequery, $prefetchbreadcrumb, $unvalidcontent, $order, $nextprevquery;
 				global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS;
 				global $gen, $rater, $content_icon_path, $content_image_path, $content_file_path, $custom;
-				global $row, $ep, $from, $number, $authordetails;
-				
+				global $row, $ep, $from, $number;
+
 				if(!is_numeric($sub_action)){ header("location:".e_SELF."?".$type.".".$type_id); exit; }
 
 				$cachestr = "$plugintable.content.$sub_action";
@@ -1195,8 +1198,11 @@ function show_content_top(){
 function parse_content_content_table($row){
 				global $content_shortcodes, $rater, $content_icon_path, $content_file_path, $content_image_path, $gen, $aa, $tp, $ep, $from, $number;
 				global $type, $type_id, $action, $sub_action, $id, $id2, $content_pref, $plugintable;
-				global $ns, $sql, $pref, $cobj, $datequery, $e107, $authordetails, $custom;
+				global $ns, $sql, $pref, $cobj, $datequery, $e107, $custom;
 				global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS;
+
+				$tmp = explode(".", e_QUERY);
+				$id = ($tmp[4] ? $tmp[4] : "0");
 
 				if(substr($row['content_parent'],0,1) == "0"){ return FALSE; }
 
@@ -1212,8 +1218,6 @@ function parse_content_content_table($row){
 					}
 				}
 
-				$authordetails = $aa -> getAuthor($row['content_author']);
-
 				$row['content_text'] = ($row['content_text'] ? $row['content_text'] : "");
 				$CONTENT_CONTENT_TABLE_TEXT = $row['content_text'];
 
@@ -1228,7 +1232,7 @@ function parse_content_content_table($row){
 
 					}elseif(count($pages) < count($matches[0])){
 					}
-					
+
 					$CONTENT_CONTENT_TABLE_TEXT = $pages[(!$id ? 0 : $id-1)];
 					for ($i=0; $i < count($pages); $i++) {
 						if(!isset($id)){ $idp = 1; }else{ $idp = $id; }
