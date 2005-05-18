@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-05-17 22:46:03 $
+|     $Revision: 1.40 $
+|     $Date: 2005-05-18 19:49:21 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -112,6 +112,7 @@ In order to see the menu in action, you still need to activate the menu in your 
 ");
 define("CONTENT_ADMIN_CAT_LAN_51", "error; menu file not created");
 define("CONTENT_ADMIN_CAT_LAN_52", "ALWAYS choose a category first before you fill in other fields!");
+define("CONTENT_ADMIN_CAT_LAN_53", "main parent category");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "options");
 define("CONTENT_ADMIN_OPT_LAN_1", "admin options : creation of content items");
