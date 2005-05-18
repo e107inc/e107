@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/new.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-05-18 12:18:55 $
+|     $Revision: 1.13 $
+|     $Date: 2005-05-18 13:34:20 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -252,7 +252,8 @@ if($ITEMS = $sql->db_Select("bugtrack2_bugs", "*", "bugtrack2_bugs_datestamp>$lv
 	foreach($newArray as $item)
 	{
 		extract($item);
-		$MEMBER = "<a href='".e_PLUGIN."bugtracker2/bugtracker2.php?0.bug.$bugtrack2_bugs_id'>".$tp -> toHTML($bugtrack2_bugs_summary)."</a>";
+		$TYPE = $bugtrack2_bugs_category;
+		$TITLE = "<a href='".e_PLUGIN."bugtracker2/bugtracker2.php?0.bug.$bugtrack2_bugs_id'>".$tp -> toHTML($bugtrack2_bugs_summary)."</a>";
 		$mainStr .= preg_replace("/\{(.*?)\}/e", '$\1', $LISTNEW_MAIN_BUG);
 	}
 	$mainStr .= preg_replace("/\{(.*?)\}/e", '$\1', $LISTNEW_END_BUG);
