@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-15 20:28:11 $
+|     $Revision: 1.8 $
+|     $Date: 2005-05-18 09:48:53 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ $CONTENT_CONTENT_TABLE_END = "";
 $CONTENT_CONTENT_TABLE_CUSTOM = "";
 $CONTENT_CONTENT_TABLE_CUSTOM_PRE = "";
 $CONTENT_CONTENT_TABLE_CUSTOM_PRE2 = "";
-global $sc_style, $content_shortcodes, $type, $type_id, $action, $sub_action, $id, $row, $content_pref, $gen, $tp, $sql, $plugintable, $rater, $aa, $content_image_path, $content_icon_path, $content_file_path, $custom;
+global $sc_style, $content_shortcodes, $type, $type_id, $action, $sub_action, $id, $row, $content_pref, $gen, $tp, $sql, $plugintable, $rater, $aa, $content_image_path, $content_icon_path, $content_file_path, $custom, $CONTENT_CONTENT_TABLE_TEXT;
 
 $sc_style['CONTENT_CONTENT_TABLE_REFER']['pre'] = CONTENT_LAN_44." ";
 $sc_style['CONTENT_CONTENT_TABLE_REFER']['post'] = "";

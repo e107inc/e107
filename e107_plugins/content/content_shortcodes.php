@@ -688,9 +688,10 @@ return ($content_pref["content_content_subheading_{$type_id}"] && $row['content_
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_COMMENT
-global $CONTENT_CONTENT_TABLE_COMMENT, $row, $plugintable, $content_pref, $sub_action, $sql;
+global $CONTENT_CONTENT_TABLE_COMMENT, $row, $type_id, $plugintable, $content_pref, $sub_action, $sql;
 if($row['content_comment'] || $content_pref["content_content_comment_all_{$type_id}"]){
 	$COMMENT = $sql -> db_Select("comments", "*",  "comment_item_id='".$sub_action."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
+	if(!$COMMENT){ $COMMENT = "0"; }
 }
 return $COMMENT;
 SC_END
@@ -706,7 +707,8 @@ return $DATE;
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_AUTHORDETAILS
-global $CONTENT_CONTENT_TABLE_AUTHORDETAILS, $content_pref, $type, $type_id, $row, $aa, $authordetails;
+global $CONTENT_CONTENT_TABLE_AUTHORDETAILS, $content_pref, $type, $type_id, $row, $aa;
+$authordetails = $aa -> getAuthor($row['content_author']);
 if($content_pref["content_content_authorname_{$type_id}"] || $content_pref["content_content_authoremail_{$type_id}"]){
 	if(isset($content_pref["content_content_authoremail_{$type_id}"]) && $authordetails[2]){
 		if($authordetails[0] == "0"){
