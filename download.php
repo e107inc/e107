@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-04-15 22:25:30 $
-|     $Author: e107coders $
+|     $Revision: 1.25 $
+|     $Date: 2005-05-18 07:59:20 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -302,13 +302,16 @@ if ($action == "view") {
 	$DOWNLOAD_VIEW_DESCRIPTION_LAN = LAN_dl_7;
 	$DOWNLOAD_VIEW_DESCRIPTION = $tp->toHTML(($download_description ? $download_description : "&nbsp;"), TRUE);
 
+	$DOWNLOAD_VIEW_IMAGE_LAN = LAN_dl_11;
 	if ($download_thumb) {
-		$DOWNLOAD_VIEW_IMAGE_LAN = LAN_dl_11;
 		$DOWNLOAD_VIEW_IMAGE = ($download_image ? "<a href='".e_FILE."downloadimages/{$download_image}'><img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' style='".DL_IMAGESTYLE."' /></a>" : "<img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' style='".DL_IMAGESTYLE."' />");
 	}
 	else if($download_image) {
-		$DOWNLOAD_VIEW_IMAGE_LAN = LAN_dl_11;
 		$DOWNLOAD_VIEW_IMAGE = "<a href='".e_BASE."request.php?download.".$download_id."'>".LAN_dl_40."</a>";
+	}
+	else
+	{
+		$DOWNLOAD_VIEW_IMAGE = LAN_dl_75;
 	}
 
 	$DOWNLOAD_VIEW_IMAGEFULL = ($download_image) ? "<img src='".e_FILE."downloadimages/{$download_image}' alt='' style='".DL_IMAGESTYLE."' />" : "";

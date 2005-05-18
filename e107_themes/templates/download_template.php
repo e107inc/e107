@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-15 22:26:30 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-05-18 08:00:21 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 /* set style of download image and thumbnail */
@@ -237,18 +237,14 @@ if(!$DOWNLOAD_VIEW_TABLE){
         <tr>
         <td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_DESCRIPTION_LAN}</td>
         <td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_DESCRIPTION}</td>
-        </tr>";
+        </tr>
 
-                if($DOWNLOAD_VIEW_IMAGE){
-                $DOWNLOAD_VIEW_TABLE .= "
         <tr>
         <td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_IMAGE_LAN}</td>
         <td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_IMAGE}</td>
-        </tr>";
-                }
+        </tr>
 
-        $DOWNLOAD_VIEW_TABLE .= "
-                <tr>
+        <tr>
         <td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_FILESIZE_LAN}</td>
         <td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_FILESIZE}</td>
         </tr>
