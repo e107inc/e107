@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-05-07 02:28:19 $
+|     $Revision: 1.24 $
+|     $Date: 2005-05-18 18:14:15 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -64,7 +64,7 @@ if(isset($_POST['setMods']))
 
 if(isset($_POST['submit_parent'])) {
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
-	$sql->db_Insert("forum", "0, '".$_POST['forum_name']."', '', '', '".time()."', '0', '0', '0', '', '".$_POST['forum_class']."', 0, '{$_POST['forum_postclass']}'");
+	$sql->db_Insert("forum", "0, '".$_POST['forum_name']."', '', '', '".time()."', '', '0', '0', '', '', '".$_POST['forum_class']."', 0, '{$_POST['forum_postclass']}'");
 	$forum->show_message(FORLAN_13);
 }
 
@@ -79,7 +79,7 @@ if(isset($_POST['submit_forum'])) {
 	$mods = implode(", ", $_POST['mod']);
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
 	$_POST['forum_description'] = $tp->toDB($_POST['forum_description'], "admin");
-	$sql->db_Insert("forum", "0, '".$_POST['forum_name']."', '".$_POST['forum_description']."', '".$_POST['forum_parent']."', '".time()."', '".$mods."', 0, 0, 0, '".$_POST['forum_class']."', 0, '{$_POST['forum_postclass']}'");
+	$sql->db_Insert("forum", "0, '".$_POST['forum_name']."', '".$_POST['forum_description']."', '".$_POST['forum_parent']."', '".time()."', '".$mods."', 0, 0, '', '', '".$_POST['forum_class']."', 0, '{$_POST['forum_postclass']}'");
 	$forum->show_message(FORLAN_11);
 }
 

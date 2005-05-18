@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-05-16 01:33:05 $
+|     $Revision: 1.28 $
+|     $Date: 2005-05-18 18:14:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -239,19 +239,20 @@ function parse_thread($thread_info)
 	if ($REPLIES)
 	{
 		$lastpost_datestamp = $gen->convert_date($thread_info['thread_lastpost'], 'forum');
+		$tmp = explode(".", $thread_info['thread_lastuser'], 2);
 		if($thread_info['lastpost_username'])
 		{
-			$LASTPOST = "<a href='".e_BASE."user.php?id.".$thread_info['thread_lastuser']."'>".$thread_info['lastpost_username']."</a>";
+			$LASTPOST = "<a href='".e_BASE."user.php?id.".$tmp[0]."'>".$thread_info['lastpost_username']."</a>";
 		}
 		else
 		{
-			if(intval($thread_info['thread_lastuser']) > 0)
+			if($tmp[1])
 			{
-				$LASTPOST = FORLAN_19;
+				$LASTPOST = $tp->toHTML($tmp[1]);
 			}
 			else
 			{
-				$LASTPOST = $tp->toHTML(substr($thread_info['thread_lastuser'], 2));
+				$LASTPOST = FORLAN_19;
 			}
 		}
 		$LASTPOST .= "<br />".$lastpost_datestamp;
@@ -345,13 +346,24 @@ function parse_thread($thread_info)
 		";
 //	$POSTER = (!isset($post_author_id) ? $post_author_name : "<a href='".e_BASE."user.php?id.".$post_author_id."'>".$post_author_name."</a>");
 	 
-	if (!$thread_info['thread_user']) {
-		$tmp = explode(chr(1), $thread_info['thread_anon']);
-		$POSTER = $tmp[0];
-	} else {
-		$POSTER = "<a href='".e_BASE."user.php?id.".$thread_info['thread_user']."'>".$thread_info['user_name']."</a>";
+//	print_a($thread_info);
+	$tmp = explode(".", $thread_info['thread_user'], 2);
+	if($thread_info['user_name'])
+	{
+		$POSTER = "<a href='".e_BASE."user.php?id.".$tmp[0]."'>".$thread_info['user_name']."</a>";
 	}
-	 
+	else
+	{
+		if($tmp[1])
+		{
+			$POSTER = $tp->toHTML($tmp[1]);
+		}
+		else
+		{
+			$POSTER = FORLAN_19;
+		}
+	}
+	
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM));
 }
 	

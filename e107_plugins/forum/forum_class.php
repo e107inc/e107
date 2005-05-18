@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-05-16 00:16:47 $
+|     $Revision: 1.26 $
+|     $Date: 2005-05-18 18:14:15 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -45,13 +45,17 @@ class e107forum {
 		{
 			$id = intval($id);
 			$thread_info = $this->thread_get_lastpost($id);
+			list($uid, $uname) = explode(".", $thread_info['thread_user'], 2);
 			if ($thread_info)
 			{
-				$thread_lastuser = $thread_info['thread_user'];
-				if (!$thread_info['thread_user'])
+				if($thread_user['user_name'] != "")
 				{
-					$tmp = explode(chr(1), $thread_info['thread_anon']);
-					$thread_lastuser .= $tmp[0];
+					$thread_lastuser = $uid.".".$thread_info['user_name'];
+				}
+				else
+				{
+					$tmp = explode(chr(1), $thread_info['thread_user']);
+					$thread_lastuser = $tmp[0];
 				}
 				$sql->db_Update('forum_t', "thread_lastpost = {$thread_info['thread_datestamp']}, thread_lastuser = '{$thread_lastuser}' WHERE thread_id = {$id}");
 			}
@@ -88,16 +92,18 @@ class e107forum {
 						$lp_info = $this->update_lastpost('thread', $row['thread_id']);
 						if ($lp_info['thread_datestamp'] > $current_lastpost)
 						{
-							if ($lp_info['thread_anon'] != '')
+
+							if($lp_info['user_name'] != "")
 							{
-								$anon = explode(chr(1), $lp_info['thread_anon']);
-								$forum_lp_user = "0.{$anon[0]}";
+								$forum_lp_user = $uid.".".$thread_info['user_name'];
 							}
 							else
 							{
-								$forum_lp_user = $lp_info['thread_user'];
+								$tmp = explode(chr(1), $lp_info['thread_user']);
+								$forum_lp_user = $tmp[0];
 							}
-							$forum_lp_info = $lp_info['thread_datestamp'].chr(1).$row['thread_id'];
+
+							$forum_lp_info = $lp_info['thread_datestamp'].".".$row['thread_id'];
 							$current_lastpost = $lp_info['thread_datestamp'];
 						}
 					}
@@ -108,7 +114,6 @@ class e107forum {
 			}
 		}
 	}
-
 
 	function forum_markasread($forum_id) {
 		global $sql;
@@ -290,7 +295,7 @@ class e107forum {
 			$where = "WHERE t.thread_id = $forum_id ";
 		}
 		$qry = "
-		SELECT t.thread_user, t.thread_anon, t.thread_datestamp, u.user_name FROM #forum_t AS t
+		SELECT t.thread_user, t.thread_datestamp, u.user_name FROM #forum_t AS t
 		LEFT JOIN #user AS u ON t.thread_user = u.user_id
 		{$where}
 		ORDER BY t.thread_datestamp DESC	LIMIT 0,1
@@ -556,28 +561,16 @@ class e107forum {
 		{
 			return -1;
 		}
-
-		if($thread_poster['post_anon_name'])
-		{
-			$lp_user_info = "0.".$thread_poster['post_anon_name'];
-		}
-		else
-		{
-			$lp_user_info = $thread_poster['post_userid'];
-		}
-
-		//Add post to thread
-		if ($thread_parent)
-		{
-			$thread_lp_info = "";
-		}
-		else
-		{
-			$thread_lp_info = $lp_user_info;
-		}
 		
-		$anon_info = ($thread_poster['post_anon_name'] ? $thread_poster['post_anon_name'].chr(1).$ip : "");
-		$vals = "0, '$thread_name', '$thread_thread', '$thread_forum_id', $post_time, '$thread_parent', '{$thread_poster['post_userid']}', 0, $thread_active, $post_time, $thread_s, '{$anon_info}', 0, '{$thread_lp_info}', 0";
+		$post_user = $thread_poster['post_userid'].".".$thread_poster['post_user_name'];
+		$thread_post_user = $post_user;
+		if($thread_poster['post_userid'] == 0)
+		{
+			$thread_post_user = $post_user.chr(1).$ip;
+		}
+
+		$post_last_user = ($thread_parent ? "" : $post_user);
+		$vals = "0, '$thread_name', '$thread_thread', '$thread_forum_id', $post_time, '$thread_parent', '{$thread_post_user}', 0, $thread_active, $post_time, $thread_s, 0, '{$post_last_user}', 0";
 		$newthread_id = $sql->db_Insert('forum_t', $vals);
 
 		// Increment user thread count and set user as viewed this thread
@@ -589,13 +582,13 @@ class e107forum {
 		//If post is a reply
 		if ($thread_parent)
 		{
-			$forum_lp_info = $post_time.chr(1).$thread_parent;
+			$forum_lp_info = $post_time.".".$thread_parent;
 			$gen = new convert;
 			// Update main forum with last post info and increment reply count
-			$sql->db_Update('forum', "forum_replies=forum_replies+1, forum_lastpost_user='{$lp_user_info}', forum_lastpost_info = '{$forum_lp_info}' WHERE forum_id='$thread_forum_id' ");
+			$sql->db_Update('forum', "forum_replies=forum_replies+1, forum_lastpost_user='{$post_user}', forum_lastpost_info = '{$forum_lp_info}' WHERE forum_id='$thread_forum_id' ");
 
 			// Update head post with last post info and increment reply count
-			$sql->db_Update('forum_t', "thread_lastpost={$post_time},thread_lastuser='{$lp_user_info}', thread_total_replies=thread_total_replies+1 WHERE thread_id = {$thread_parent}");
+			$sql->db_Update('forum_t', "thread_lastpost={$post_time}, thread_lastuser='{$post_user}', thread_total_replies=thread_total_replies+1 WHERE thread_id = {$thread_parent}");
 
 			$parent_thread = $this->thread_get_postinfo($thread_parent);
 			global $PLUGINS_DIRECTORY;
@@ -633,10 +626,9 @@ class e107forum {
 		else
 		{
 			//post is a new thread
-			$forum_lp_info = $post_time.chr(1).$newthread_id;
-			$sql->db_Update('forum', "forum_threads=forum_threads+1, forum_lastpost_user='{$lp_user_info}', forum_lastpost_info = '{$forum_lp_info}' WHERE forum_id='$thread_forum_id' ");
+			$forum_lp_info = $post_time.".".$newthread_id;
+			$sql->db_Update('forum', "forum_threads=forum_threads+1, forum_lastpost_user='{$post_user}', forum_lastpost_info = '{$forum_lp_info}' WHERE forum_id='$thread_forum_id' ");
 		}
-
 		return $newthread_id;
 	}
 
@@ -704,6 +696,16 @@ class e107forum {
 	function forum_update_counts($forumID)
 	{
 		global $sql;
+		if($forumID == 'all')
+		{
+			$sql->db_Select('forum', 'forum_id', 'forum_parent != 0');
+			$flist = $sql->db_getList();
+			foreach($flist as $f)
+			{
+				$this->forum_update_counts($f['forum_id']);
+			}
+			return;
+		}
 		$forumID = intval($forumID);
 		$threads = $sql->db_Count("forum_t", "(*)", "WHERE thread_forum_id=$forumID AND thread_parent = 0");
 		$replies = $sql->db_Count("forum_t", "(*)", "WHERE thread_forum_id=$forumID AND thread_parent != 0");

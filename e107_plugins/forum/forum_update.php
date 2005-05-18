@@ -5,6 +5,8 @@ if(!defined('e_HTTP'))
 }
 require_once(e_PLUGIN.'forum/forum_class.php');
 global $ns;
+$forum = new e107forum;
+
 $timestart = microtime();
 $ttab = MPREFIX.'forum_t';
 	
@@ -26,9 +28,7 @@ function forum_stage1()
 {
 	global $sql;
 	$ttab = MPREFIX.'forum_t';
-	$sql->db_Select_gen("ALTER TABLE #forum_t ADD thread_anon VARCHAR( 250 ) NOT NULL");
 	$sql->db_Select_gen("ALTER TABLE #forum_t ADD thread_edit_datestamp INT( 10 ) UNSIGNED NOT NULL");
-	$sql->db_Select_gen("ALTER TABLE #forum_t ADD thread_lastuser VARCHAR( 30 ) NOT NULL");
 	$sql->db_Select_gen("ALTER TABLE #forum_t ADD thread_lastuser VARCHAR( 30 ) NOT NULL");
 	$sql->db_Select_gen("ALTER TABLE #forum_t ADD thread_total_replies INT UNSIGNED NOT NULL");
 	$sql->db_Select_gen("ALTER TABLE #forum ADD forum_postclass TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL ;");
@@ -40,34 +40,39 @@ function forum_stage2()
 {
 	global $sql;
 	$ttab = MPREFIX.'forum_t';
-	$numrows = $sql->db_Update('forum_t', "thread_anon = SUBSTRING(thread_user,3) WHERE thread_user LIKE '0.%' AND thread_anon = ''");
-	return "Updated anonymous post info ... $numrows rows updated<br />";
+//	$numrows = $sql->db_Update('forum_t', "thread_anon = SUBSTRING(thread_user,3) WHERE thread_user LIKE '0.%'");
+	$numrows = $sql->db_Update('forum_t', "thread_user = CAT('0.', thread_anon) WHERE thread_user = '0'");
+	return $ret."Updated anonymous post info ... $numrows rows updated<br />";
 }
 	
 function forum_stage3()
 {
 	global $sql;
-	$sql->db_Select_gen("ALTER TABLE #forum_t CHANGE thread_user thread_user INT( 10 ) UNSIGNED NOT NULL");
-	return "Updated thread_user field<br />";
+	$sql->db_Select_gen("ALTER TABLE #forum_t CHANGE thread_user thread_user varchar( 250 ) NOT NULL");
+	$sql->db_Select_gen("ALTER TABLE #forum_t DROP thread_anon"); 
+	return "Updated thread_user & forum_anon field<br />";
 }
 	
 function forum_stage4()
 {	
-	global $sql;
-	$sql->db_Select_gen("SELECT thread_parent AS id, COUNT(*) AS amount FROM #forum_t WHERE thread_parent!=0 GROUP BY thread_parent");
-	$threadArray = $sql->db_getList('ALL',FALSE,0);
+	global $sql, $forum;
+	$sql->db_Select_gen("SELECT thread_parent AS id, COUNT(*) AS amount FROM #forum_t WHERE thread_parent !=0 GROUP BY thread_parent");
+	$threadArray = $sql->db_getList('ALL', FALSE, 0);
 	foreach($threadArray as $threads)
 	{
 		extract($threads);
 		$sql->db_Update("forum_t", "thread_total_replies=$amount WHERE thread_id=$id");
 	}
-	return "Updated thread reply info...".count($threadArray). " threads updated.<br />";
+
+	$ret = "Updated thread reply info...".count($threadArray). " threads updated.<br />";
+	$forum = new e107forum;
+	$forum->forum_update_counts('all');
+	return $ret."Updated forum thread count info. <br />";
 }
 
 function forum_stage5()
 {
-	global $sql;
-	$forum = new e107forum;
+	global $sql, $forum;
 	$sql->db_Select_gen("ALTER TABLE #forum CHANGE forum_lastpost forum_lastpost_user VARCHAR( 200 ) NOT NULL"); 
 	$sql->db_Select_gen("ALTER TABLE #forum ADD forum_lastpost_info VARCHAR( 40 ) NOT NULL AFTER forum_lastpost_user");
 	set_time_limit(180);

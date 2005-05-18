@@ -59,22 +59,23 @@ return "<span class='smallblacktext'>".LAN_194."</span>";
 SC_END
 	
 SC_BEGIN POSTER
-global $post_info;
+global $post_info, $tp;
 //print_a($post_info);
-if (!$post_info["thread_user"])
+if($post_info['user_name'])
 {
-	$tmp = explode(chr(1), $post_info['thread_anon']);
-	return "<b>".$tmp[0]."</b>";
+	return "<a href='".e_BASE."user.php?id.".$post_info['user_id']."'><b>".$post_info['user_name']."</b></a>";
 }
 else
 {
-	if(!$post_info['user_name'])
+	$x = explode(chr(1), $post_info['thread_user']);
+	$tmp = explode(".", $x[0], 2);
+	if(!$tmp[1])
 	{
 		return FORLAN_103;
 	}
 	else
 	{
-		return "<a href='".e_BASE."user.php?id.".$post_info['user_id']."'><b>".$post_info['user_name']."</b></a>";
+		return "<b>".$tp->toHTML($tmp[1])."</b>";
 	}
 }
 SC_END
