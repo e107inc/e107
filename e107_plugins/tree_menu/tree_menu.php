@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-02-28 20:04:10 $
+|     $Revision: 1.15 $
+|     $Date: 2005-05-18 15:08:36 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -79,7 +79,7 @@ foreach($mainLinkArray as $links) {
 	extract ($links);
 	if (array_key_exists("sublink", $links)) {
 		// sublinks found ...
-		$url = "javascript: void(0);";
+		$url = "javascript:void(0);";
 		$spanName = str_replace(" ", "_", $name);
 		$image = ($image ? "<img src='".e_IMAGE."icons/".$image."' alt='' style='vertical-align:middle;' />" : "&raquo;");
 		$plink = "<div class='".$menu_pref['tm_class2']."' style='width:100%; cursor: pointer;' onclick='expandit(\"span_".$spanName."\");updatecook(\"".$name."\");'>".$image.setLink($name, $url, $openMethod, $description)."</div>\n";
