@@ -293,4 +293,3 @@ CREATE TABLE rate (
   rate_voters text NOT NULL,
   CONSTRAINT rate_pkey PRIMARY KEY (rate_id)
 );
-
