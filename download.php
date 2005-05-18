@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-05-18 07:59:20 $
+|     $Revision: 1.26 $
+|     $Date: 2005-05-18 09:08:08 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -291,12 +291,12 @@ if ($action == "view") {
 
 	if ($download_author_email) {
 		$DOWNLOAD_VIEW_AUTHOREMAIL_LAN = LAN_dl_30;
-		$DOWNLOAD_VIEW_AUTHOREMAIL = $download_author_email;
+		$DOWNLOAD_VIEW_AUTHOREMAIL = $tp -> toHTML($download_author_email, TRUE);
 	}
 
 	if ($download_author_website) {
 		$DOWNLOAD_VIEW_AUTHORWEBSITE_LAN = LAN_dl_31;
-		$DOWNLOAD_VIEW_AUTHORWEBSITE = $download_author_website;
+		$DOWNLOAD_VIEW_AUTHORWEBSITE = $tp -> toHTML($download_author_website, TRUE);
 	}
 
 	$DOWNLOAD_VIEW_DESCRIPTION_LAN = LAN_dl_7;
