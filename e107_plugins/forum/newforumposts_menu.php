@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-16 12:46:31 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-18 18:14:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@ global $tp;
 $gen = new convert;
 
 $query2 = "
-SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class FROM #forum_t AS t 
+SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class FROM #forum_t AS t 
 LEFT JOIN #user AS u ON t.thread_user = u.user_id 
 LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id 
 LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id 
@@ -47,16 +47,24 @@ else
 		$topic = ($parent_name ? "[re: <i>$parent_name</i>]" : "[thread: <i>$thread_name</i>]");
 		$id = $thread_id;
 
-		if(!$thread_user)
+		if($user_name)
 		{
-			// anonymous post ...
-			list($poster, $ip) = explode(chr(1), $thread_anon);				
+			$poster = $user_name;
 		}
 		else
 		{
-			$poster = $user_name;
-			$poster_id = $thread_user;
+			$x = explode(chr(1), $thread_user);
+			$tmp = explode(".", $x[0], 2);
+			if($tmp[1])
+			{
+				$poster = $tmp[1];
+			}
+			else
+			{
+				$poster = "[deleted]";
+			}
 		}
+
 		$thread_thread = strip_tags(eregi_replace("\[.*\]", "", $thread_thread));
 		$thread_thread = $tp->toHTML($thread_thread, FALSE, "emotes_off", "", $pref['menu_wordwrap']);
 		if (strlen($thread_thread) > $menu_pref['newforumposts_characters'])

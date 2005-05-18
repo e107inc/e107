@@ -12,6 +12,7 @@ function update_forum_07($type)
 	}
 	else
 	{
+		// FALSE = needed, TRUE = not needed.
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."forum");
 		if(!$fields)
 		{
@@ -22,10 +23,19 @@ function update_forum_07($type)
 		{
 			if ("forum_lastpost_info" == mysql_field_name($fields, $i))
 			{
-				return TRUE;
+				$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."forum_t");
+				$columns = mysql_num_fields($fields);
+				for ($i = 0; $i < $columns; $i++)
+				{
+					if("thread_anon" == mysql_field_name($fields, $i))
+					{
+						return FALSE; //needed
+					}
+				}
+				return TRUE; // not needed
 			}
 		}
-		return FALSE;
+		return FALSE; //needed
 	}
 }
 

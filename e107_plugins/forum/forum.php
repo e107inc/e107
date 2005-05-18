@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-05-17 13:03:21 $
+|     $Revision: 1.23 $
+|     $Date: 2005-05-18 18:14:15 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -292,7 +292,7 @@ function parse_forum($f, $restricted_string = "")
 
 	if(USER && is_array($newflag_list) && in_array($f['forum_id'], $newflag_list))
 	{
-		$NEWFLAG = "<a href='".e_SELF."?mfar.{$f['forum_id']}'>".IMAGE_new."</a></td>";
+		$NEWFLAG = "<a href='".e_SELF."?mfar.{$f['forum_id']}'>".IMAGE_new."</a>";
 	}
 	else
 	{
@@ -310,20 +310,21 @@ function parse_forum($f, $restricted_string = "")
 
 	if ($f['forum_lastpost_user'])
 	{
-		list($lastpost_datestamp, $lastpost_thread) = explode(chr(1), $f['forum_lastpost_info']);
+		list($lastpost_datestamp, $lastpost_thread) = explode(".", $f['forum_lastpost_info']);
+		$tmp = explode(".", $f['forum_lastpost_user'], 2);
 		if ($f['user_name'])
 		{
-			$lastpost_name = "<a href='".e_BASE."user.php?id.{$f['forum_lastpost_user']}'>{$f['user_name']}</a>";
+			$lastpost_name = "<a href='".e_BASE."user.php?id.{$tmp[0]}'>{$f['user_name']}</a>";
 		}
 		else
 		{
-			if(substr($f['forum_lastpost_user'], 0, 2) != "0.")
+			if(!$tmp[1])
 			{
 				$lastpost_name = FORLAN_443;
 			}
 			else
 			{
-				$lastpost_name = $tp->toHTML(substr($f['forum_lastpost_user'], 2));
+				$lastpost_name = $tp->toHTML($tmp[1]);
 			}
 		}
 		$lastpost_datestamp = $gen->convert_date($lastpost_datestamp, 'forum');
@@ -391,8 +392,8 @@ if (e_QUERY == "new")
 	{
 		if (!ereg("\.".$thread_id."\.", USERVIEWED))
 		{
-			$author_name = $forum->thread_user($post);
-			$author_id = $post['thread_user'];
+//			$author_name = $forum->thread_user($post);
+			list($author_id, $author_name) = explode(".". $post['thread_user'], 2);
 			$datestamp = $gen->convert_date($post['thread_datestamp'], "forum");
 			if($author_id == 0)
 			{
