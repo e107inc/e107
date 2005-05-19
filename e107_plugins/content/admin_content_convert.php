@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_convert.php,v $
-|		$Revision: 1.8 $
-|		$Date: 2005-05-05 23:15:09 $
+|		$Revision: 1.9 $
+|		$Date: 2005-05-19 08:58:01 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -57,6 +57,9 @@ if(!isset($_POST['convert_table']) && !isset($_POST['create_default'])&& !isset(
 
 //create default mainparent category for content, review and article
 if(isset($_POST['create_default'])){
+
+		$maxcid = "";	//no checked id value of amount of old content rows needed
+
 		$content_mainarray = $ac -> create_mainparent("content", "1", "1");
 		$content_main_checkpresent = $content_mainarray[0];
 		$content_main_msg = $content_mainarray[1];
@@ -85,6 +88,11 @@ if(isset($_POST['convert_table'])){
 		// ##### STAGE 1 : ANALYSE OLD CONTENT --------------------------------------------------------
 		//analyse old content table
 		if(!is_object($sql)){ $sql = new db; }
+
+		//get max id value, new parent rows need id with added value
+		$sql -> db_select("content", "MAX(content_id) as maxcid", "content_id!='0' ");
+		list($maxcid) = $sql -> db_Fetch();
+
 		$totaloldcontentrows = $sql -> db_Count("content");
 		$totaloldrowscat_article = $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '6'");
 		$totaloldrowscat_review = $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '10'");
@@ -329,9 +337,10 @@ if($action == "unknown" && $sub_action == "conversion"){
 				$newcontent_endtime = "0";
 				$newcontent_class = $row['content_class'];
 				$newcontent_pref = "";
+				$newcontent_id = $key;
 
 				if(!is_object($sql2)){ $sql2 = new db; }
-				$sql2 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '0.0' ");
+				$sql2 -> db_Insert($plugintable, "'".$newcontent_id."', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '0.0' ");
 
 				if(!is_object($sql3)){ $sql3 = new db; }
 				if(!$sql3 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){

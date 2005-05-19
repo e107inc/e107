@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-05-18 09:48:53 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-19 08:58:02 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -53,6 +53,9 @@ $sc_style['CONTENT_CONTENT_TABLE_CUSTOM_TAGS']['post'] = "<tr><td colspan='4'><b
 $sc_style['CONTENT_CONTENT_TABLE_SUMMARY']['pre'] = "<i>";
 $sc_style['CONTENT_CONTENT_TABLE_SUMMARY']['post'] = "</i><br /><br />";
 
+$sc_style['CONTENT_CONTENT_TABLE_IMAGES']['pre'] = "<td class='content_image'>";
+$sc_style['CONTENT_CONTENT_TABLE_IMAGES']['post'] = "</td>";
+
 if(!$CONTENT_CONTENT_TABLE){
 				$CONTENT_CONTENT_TABLE .= "
 				<table class='content_table' border='0'>
@@ -89,7 +92,7 @@ if(!$CONTENT_CONTENT_TABLE){
 				</tr>
 				<tr>
 					<td class='content_text' colspan='3' style='width:97%;'>{CONTENT_CONTENT_TABLE_SUMMARY}{CONTENT_CONTENT_TABLE_TEXT}<br /></td>
-					<td class='content_image'>{CONTENT_CONTENT_TABLE_IMAGES}</td>
+					{CONTENT_CONTENT_TABLE_IMAGES}
 				</tr>
 				{CONTENT_CONTENT_TABLE_CUSTOM_TAGS}
 				{CONTENT_CONTENT_TABLE_PAGENAMES}

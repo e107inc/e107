@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.44 $
-|		$Date: 2005-05-18 19:49:21 $
+|		$Revision: 1.45 $
+|		$Date: 2005-05-19 08:58:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -273,15 +273,13 @@ class content{
 				return $getauthor;
 		}
 
-
 		function countItemsInCat($id, $parent, $nolan=""){
 				global $plugintable, $datequery, $type_id;
-				
 				if($parent == "0"){
 					$itemswithparent = $id.".".$id;
 				}else{
 					$tmp = explode(".", $parent);
-					$itemswithparent = $tmp[1].".".substr($parent,strlen($tmp[1])+1).".".$id;
+					$itemswithparent = $tmp[1].".".substr($parent,2).".".$id;
 				}
 
 				$sqlcountitemsincat = "";
@@ -431,10 +429,11 @@ class content{
 									$string .= $rs -> form_option($emptystring, "0", "----");
 									
 									$catname = $pre.$array[$a][1];
-									$catvalue = $value;
 									$caturl = e_SELF."?type.".$array[$a][0].".c.".$array[$a][0]."-".$array[$a][0];
+									$catvalue = $caturl;
+									$catlabel = "label = '".$array[$a][9].".".$array[$a][0]."' ";
 									$catjs = "";
-									$catstring = $rs -> form_option($catname, ($checkid == $array[$a][0] ? "1" : "0"), $catvalue, $catjs);
+									$catstring = $rs -> form_option($catname, ($checkid == $array[$a][0] ? "1" : "0"), $catvalue, $catlabel);
 							}else{
 									$catstring = "";
 									$tmp = explode(".", $array[$a][9]);
@@ -1022,7 +1021,7 @@ class content{
 							$tmp = array_reverse( explode(".", $type_id) );
 							$id = $tmp[0];
 							if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_cat_number_$type_id"])){
-								$n = " (".$aa -> countItemsInCat($array[$a][0], $array[$a][9], "nolan").")";
+								$n = " (".$this -> countItemsInCat($array[$a][0], $array[$a][9], "nolan").")";
 							}
 							$array[$a][1] = (strlen($array[$a][1]) > 25 ? substr($array[$a][1],0,25)."..." : $array[$a][1]);
 							$catarray .= $rs -> form_option($pre.$array[$a][1].$n, 0, e_SELF."?type.".$id.".cat.".$array[$a][0]);

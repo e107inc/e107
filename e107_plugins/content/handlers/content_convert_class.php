@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.1 $
-|		$Date: 2005-05-05 23:20:23 $
+|		$Revision: 1.2 $
+|		$Date: 2005-05-19 08:58:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -96,7 +96,6 @@ class content_convert{
 
 				$content_pref = $aa -> ContentDefaultPrefs($id);
 				$tmp = addslashes(serialize($content_pref));
-				//if(!is_object($sql)){ $sql = new db; }
 				$sql -> db_Update($plugintable, "content_pref='$tmp' WHERE content_id='$id' ");
 		}
 
@@ -106,7 +105,7 @@ class content_convert{
 				global $plugintable;
 
 				if(!is_object($sqlcc)){ $sqlcc = new db; }
-				//check if comments present, if so, convert those to new content item id's								
+				//check if comments present, if so, convert those to new content item id's
 				$numc = $sqlcc -> db_Count("comments", "(*)", "WHERE comment_type = '1' AND comment_item_id = '".$oldid."' ");
 				if($numc > 0){
 					$sqlcc -> db_Update("comments", "comment_item_id = '".$newid."', comment_type = '".$plugintable."' WHERE comment_item_id = '".$oldid."' ");
@@ -119,7 +118,7 @@ class content_convert{
 				global $plugintable;
 
 				if(!is_object($sqlcr)){ $sqlcr = new db; }
-				//check if rating present, if so, convert those to new content item id's		
+				//check if rating present, if so, convert those to new content item id's
 				$numr = $sqlcr -> db_Count("rate", "(*)", "WHERE rate_itemid = '".$oldid."' AND (rate_table = 'content' || rate_table = 'article' || rate_table = 'review') ");
 				if($numr > 0){
 					$sqlcr -> db_Update("rate", "rate_table = '".$plugintable."', rate_itemid = '".$newid."' WHERE rate_itemid = '".$oldid."' ");
@@ -129,14 +128,19 @@ class content_convert{
 
 		//create main parent
 		function create_mainparent($name, $tot, $order){
-				global $sql, $aa, $plugintable;
+				global $sql, $aa, $plugintable, $maxcid;
 
 				// ##### STAGE 4 : INSERT MAIN PARENT FOR ARTICLE ---------------------------------------------
 				$checkinsert = FALSE;
 				if($tot > "0"){
-					if(!is_object($sql)){ $sql = new db; }
+					//check if row with this name does not already exists
+					if(!is_object($sql)){ $sql = new db; }					
 					if(!$sql -> db_Select($plugintable, "content_heading", "content_heading = '".$name."' AND content_parent = '0' ")){
-						$sql -> db_Insert($plugintable, "'0', '".$name."', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '".$order."' ");
+						
+						//use global value for last row id, and add the $order number to it, else use order number as id
+						$maxcid = ($maxcid ? $maxcid+$order : $order);
+
+						$sql -> db_Insert($plugintable, "'".$maxcid."', '".$name."', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '".$order."' ");
 
 						//check if row is present in the db (is it a valid insert)
 						if(!is_object($sql2)){ $sql2 = new db; }
@@ -199,6 +203,10 @@ class content_convert{
 					$cat_present = true;
 					while($row = $sql -> db_Fetch()){
 
+						//get max id value, new parent rows need id with added value
+						//$sql -> db_select("content", "MAX(content_id) as maxcid", "content_id!='0' ");
+						//list($maxcid) = $sql -> db_Fetch();
+
 						//select main parent id
 						if(!is_object($sql2)){ $sql2 = new db; }
 						$sql2 -> db_Select($plugintable, "content_id", "content_heading = '".$name."' AND content_parent = '0' ");
@@ -222,9 +230,10 @@ class content_convert{
 						$newcontent_endtime = "0";
 						$newcontent_class = $row['content_class'];
 						$newcontent_pref = "";
+						$newcontent_id = $row['content_id'];
 
 						if(!is_object($sql3)){ $sql3 = new db; }
-						$sql3 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '".$count."' ");
+						$sql3 -> db_Insert($plugintable, "'".$newcontent_id."', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '".$count."' ");
 
 						if(!$sql3 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 							$bug_cat_insert[] = $row['content_id']." ".$row['content_heading'];
@@ -251,8 +260,6 @@ class content_convert{
 					$count = $startorder;
 					$check_present = true;
 					while($row = $sql -> db_Fetch()){
-
-						$oldcontentid = $row['content_id'];
 
 						//select main parent id
 						if(!is_object($sql2)){ $sql2 = new db; }
@@ -305,13 +312,14 @@ class content_convert{
 						$newcontent_starttime = $row['content_datestamp'];
 						$newcontent_endtime = "0";
 						$newcontent_class = $row['content_class'];
+						$newcontent_id = $row['content_id'];
 								
 						$custom["content_custom_score"] = ($content_review_score != "none" && $content_review_score ? $content_review_score : "");
 						$contentprefvalue = addslashes(serialize($custom));
 						$newcontent_pref = $contentprefvalue;
 
 						if(!is_object($sql5)){ $sql5 = new db; }
-						$sql5 -> db_Insert($plugintable, "'0', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '1.".$count."' ");
+						$sql5 -> db_Insert($plugintable, "'".$newcontent_id."', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '1.".$count."' ");
 
 						if(!is_object($sql6)){ $sql6 = new db; }
 						if(!$sql6 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
