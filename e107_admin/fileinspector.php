@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-18 23:21:27 $
+|     $Revision: 1.10 $
+|     $Date: 2005-05-19 09:50:05 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -46,6 +46,7 @@ class file_inspector {
 	var $files_text = array();
 	var $image = array();
 	var $parent;
+	var $count = array();
 	
 	function file_inspector() {
 		$this -> root_dir = $_SERVER['DOCUMENT_ROOT'].e_HTTP;
@@ -63,11 +64,10 @@ class file_inspector {
 		unset ($childOut);
 		$dir_id = dechex(crc32($dir));
 		$fid = '.';
-		if ($level) {
-			$this -> files_text[$dir_id][$fid] = "<tr><td class='f' onclick=\"sh('f_".$this -> parent['id']."')\" colspan='2'><img src='".e_IMAGE."fileinspector/folder_up.png' class='i' alt='' />&nbsp;..</td></tr>";
-		} else {
-			$this -> files_text[$dir_id][$fid] = "<tr><td style='display: none' colspan='2'>&nbsp;</td></tr>";
-		}
+		$this -> files_text[$dir_id][$fid] = "<tr><td class='f' style='padding-left: 4px' ".($level ? "onclick=\"sh('f_".$this -> parent['id']."')\"" : "").">
+		<img src='".e_IMAGE."fileinspector/".($level ? "folder_up.png" : "folder_root.png")."' class='i' alt='' />".($level ? "&nbsp;.." : "")."</td>
+		<td class='s' style='text-align: right; padding-right: 4px' onclick=\"sh('initial')\">
+		<img src='".e_IMAGE."fileinspector/close.png' class='i' alt='' /></td></tr>";
 		
 		$directory = $level ? basename($dir) : SITENAME;
 		$level++;
@@ -82,25 +82,39 @@ class file_inspector {
 					$child_end = true;
 					$childOut .= $this -> inspect($path, $level, $child_end, $child_open);
 					$tree_end = false;
-					if ($child_open) {
-						$parent_open = 'default';
+					if ($child_open == 'warning' || $child_open == 'unknown') {
+						$parent_open = TRUE;
 					}
 				} else {
 					if ($_POST['display'] == '0' || ($_POST['display'] == '3' && isset($core_image[$i_path]) && $readdir != 'core_image.php' && $this -> checksum($path) != $core_image[$i_path]) || ($_POST['display'] == '1' && isset($core_image[$i_path])) || ($_POST['display'] == '2' && !isset($core_image[$i_path]))) {
 						$fid = strtolower($readdir);
-						$size = $this -> parsesize(filesize($path));
+						$filesize = filesize($path);
+						$size = $this -> parsesize($filesize);
+						if (isset($core_image[$i_path])) {
+							$this -> count['core']['num']++;
+							$this -> count['core']['size'] += $filesize;
+						}
 						$this -> files_text[$dir_id][$fid] .= "<tr><td class='f'>";
 						if ($_POST['display'] != '3' && !isset($core_image[$i_path])) {
+							$this -> count['unknown']['num']++;
+							$this -> count['unknown']['size'] += $filesize;
 							$file_icon = 'file_unknown.png';
 							$tree_open = ($tree_open == 'warning') ? 'warning' : 'unknown';
 						} else if ($_POST['display'] != '3' && !$_POST['integrity']) {
-							$file_icon = 'file.png';
+							$file_icon = 'file_core.png';
 							$tree_open = ($tree_open == 'unknown') ? 'unknown' : 'core';
-						} else if ($readdir != 'core_image.php' && $this -> checksum($path) != $core_image[$i_path]) {
-							$file_icon = 'file_warning.png';
-							$tree_open = 'warning';
-						} else {
-							$file_icon = 'file_check.png';
+						} else if ($readdir != 'core_image.php') {
+							if ($_POST['display'] == '3' || $this -> checksum($path) != $core_image[$i_path]) {
+								$this -> count['fail']['num']++;
+								$this -> count['fail']['size'] += $filesize;
+								$file_icon = 'file_warning.png';
+								$tree_open = 'warning';
+							} else {
+								$this -> count['pass']['num']++;
+								$this -> count['pass']['size'] += $filesize;
+								$file_icon = 'file_check.png';
+								$tree_open = ($tree_open == 'warning' || $tree_open == 'unknown') ? $tree_open : 'check';
+							}
 						}
 						$this -> files_text[$dir_id][$fid] .= "<img src='".e_IMAGE."fileinspector/".$file_icon."' class='i' alt='' />&nbsp;".$readdir."&nbsp;</td><td class='s'>".$size."</td></tr>";
 					}
@@ -112,10 +126,14 @@ class file_inspector {
 			$dir_icon = 'folder_warning.png';
 		} else if ($tree_open == 'unknown') {
 			$dir_icon = 'folder_unknown.png';
-		} else if ($tree_open == 'core' || $_POST['display'] == '2') {
-			$dir_icon = 'folder.png';
-		} else {
+		} else if ($tree_open == 'core') {
+			$dir_icon = 'folder_core.png';
+		} else if ($tree_open == 'check') {
 			$dir_icon = 'folder_check.png';
+		} else if ($tree_open == 'core') {
+			$dir_icon = 'folder_core.png';
+		} else {
+			$dir_icon = 'folder.png';
 		}
 		$icon = "<img src='".e_IMAGE."fileinspector/".$dir_icon."' class='i' alt='' />";
 		$hide = ($parent_open && $tree_open != 'core') ? "" : "style='display: none'";
@@ -133,7 +151,7 @@ class file_inspector {
 		global $ns, $rs;
 		$text = "<script type=\"text/javascript\">
 		<!--
-		var hideid=\"f_".dechex(crc32($this -> root_dir))."\";
+		var hideid=\"initial\";
 		function sh(showid){
 			if (hideid!=showid){
 				show=document.getElementById(showid).style;
@@ -163,25 +181,74 @@ class file_inspector {
 		</div>
 		</td>
 		<td class='forumheader3' style='width:50%; vertical-align: top'><div style='height: 300px; overflow: auto'>";
-//print_a($this -> files_text);
-		$initial = FALSE;
+
+		$text .= "<table class='t' id='initial'>
+		<tr><td class='f' style='padding-left: 4px'>
+		<img src='".e_IMAGE."fileinspector/fileinspector.png' class='i' alt='' />&nbsp;<b>Overview</b></td>
+		<td class='s' style='text-align: right; padding-right: 4px' onclick=\"sh('f_".dechex(crc32($this -> root_dir))."')\">
+		<img src='".e_IMAGE."fileinspector/forward.png' class='i' alt='' /></td></tr>";
+		if ($_POST['display'] != '3' && $_POST['display'] != '2') {
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_core.png' class='i' alt='' />&nbsp;Core files scanned:&nbsp;".($this -> count['core']['num'] ? $this -> count['core']['num'] : 'none')."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['core']['size'], 2)."</td></tr>";
+		}
+		if ($_POST['display'] != '3' && $_POST['display'] != '1') {
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_unknown.png' class='i' alt='' />&nbsp;Non core files scanned:&nbsp;".($this -> count['unknown']['num'] ? $this -> count['unknown']['num'] : 'none')."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['unknown']['size'], 2)."</td></tr>";
+		}
+		if ($_POST['display'] == '0') {
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file.png' class='i' alt='' />&nbsp;Total files scanned:&nbsp;".($this -> count['core']['num'] + $this -> count['unknown']['num'])."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['core']['size'] + $this -> count['unknown']['size'], 2)."</td></tr>";
+		}
+		if ($_POST['integrity']) {
+			$integrity_icon = $this -> count['fail']['num'] ? 'integrity_fail.png' : 'integrity_pass.png';
+			$integrity_text = $this -> count['fail']['num'] ? '( '.$this -> count['fail']['num'].' files failed )' : '( All files passed )';
+			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
+			$text .= "<tr><td class='f' style='padding-left: 4px' colspan='2'>
+			<img src='".e_IMAGE."fileinspector/".$integrity_icon."' class='i' alt='' />&nbsp;<b>Integrity Check</b> ".$integrity_text."</td></tr>";
+		
+			if ($_POST['display'] != '3' && $_POST['display'] != '2' && $_POST['integrity']) {
+				$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_check.png' class='i' alt='' />&nbsp;Core files passed:&nbsp;".($this -> count['pass']['num'] ? $this -> count['pass']['num'] : 'none')."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['pass']['size'], 2)."</td></tr>";
+			}
+			if ($_POST['display'] != '2' && $_POST['integrity']) {
+				$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_warning.png' class='i' alt='' />&nbsp;Core files failed:&nbsp;".($this -> count['fail']['num'] ? $this -> count['fail']['num'] : 'none')."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['fail']['size'], 2)."</td></tr>";
+			}
+		
+			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
+
+			$text .= "<tr><td class='f' colspan='2'><img src='".e_IMAGE."fileinspector/info.png' class='i' alt='' />&nbsp;Possible reasons for files to fail:&nbsp;</td></tr>";
+
+			$text .= "<tr><td style='padding-right: 4px' colspan='2'>
+			<ul><li>
+			<a href=\"javascript: expandit('i_corrupt')\">The file is corrupted...</a><div style='display: none' id='i_corrupt'>
+			This could be for a number of reasons such as the file being corrupted in the zip, got corrupted during 
+			extraction or got corrupted during file upload via FTP. You should try reuploading the file to your server 
+			and re-run the scan to see if this resolves the error.<br /><br /></div>
+			</li><li>
+			<a href=\"javascript: expandit('i_date')\">The file is out of date...</a><div style='display: none' id='i_date'>If the file is from an older release of e107 to the version you are 
+			running then it will fail the integrity check. Make sure you have uploaded the newest version of this file.<br /><br /></div>
+			</li><li>
+			<a href=\"javascript: expandit('i_edit')\">The file has been edited...</a><div style='display: none' id='i_edit'>If you have edited this file in anyway it will not pass the integrity check. If you 
+			intentionally edited this file then you need not worry and can ignore this integrity check fail. If however 
+			the file was edited by someone else without authorisation you may want to re-upload the proper version of 
+			this file from the e107 zip.<br /><br /></div>
+			</li><li>
+			<a href=\"javascript: expandit('i_cvs')\">If you are a CVS user...</a><div style='display: none' id='i_cvs'>If you run checkouts of the e107 CVS on your site instead of the official e107 stable 
+			releases, then you will discover files have failed integrity check because they have been edited by a dev 
+			after the latest core image snapshot was created.<br /><br /></div>
+			</li></ul>
+			</td></tr>";
+		}
+
+		$text .= "</table>";
+		
 		foreach ($this -> files_text as $dir_id => $stext) {
 			ksort($stext);
-			$hide = $initial ? "style='display: none'" : "";
-			$text .= "<table class='t' ".$hide." id='f_".$dir_id."'>\n";
+			$text .= "<table class='t' style='display: none' id='f_".$dir_id."'>";
 			foreach ($stext as $key => $stext2) {
 				$text .= $stext2;
 			}
-			$text .= "\n</table>\n";
-			$initial = TRUE;
+			$text .= "</table>";
 		}
 
 		$text .= "</div></td></tr>";
-/*
-		$text .= "<tr>
-		<td colspan='2' style='text-align:center' class='forumheader'>".$rs -> form_button('submit', 'updatesettings', 'Delete Selected')."</td>
-		</tr>";
-*/
+		
 		$text .= "</table>
 		</div><br />";
 
@@ -292,7 +359,7 @@ class file_inspector {
 		
 		$text .= "<tr>
 		<td class='forumheader3' style='width: 35%'>
-		Scan:
+		Show:
 		</td>
 		<td colspan='2' class='forumheader3' style='width: 65%'>
 		<input type='radio' name='display' value='0'".(($_POST['display'] == '0' || !isset($_POST['display'])) ? " checked='checked'" : "")." /> All Files&nbsp;&nbsp;
@@ -321,7 +388,8 @@ class file_inspector {
 		
 	}
 	
-	function parsesize($size) {
+	function parsesize($size = 0, $dec = 0) {
+		if (!$size) { return FALSE; }
 		$kb = 1024;
 		$mb = 1024 * $kb;
 		$gb = 1024 * $mb;
@@ -333,12 +401,12 @@ class file_inspector {
 			return round($size/$kb)." kb";
 		}
 		else if($size < $gb) {
-			return round($size/$mb)." mb";
+			return round($size/$mb, $dec)." mb";
 		}
 		else if($size < $tb) {
-			return round($size/$gb)." gb";
+			return round($size/$gb, $dec)." gb";
 		} else {
-			return round($size/$tb)." tb";
+			return round($size/$tb, $dec)." tb";
 		}
 	}
 }
