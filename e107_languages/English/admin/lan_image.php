@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_image.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-04-02 19:14:19 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-19 20:41:08 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 define("IMALAN_1", "Enable image posting");
@@ -41,6 +41,7 @@ define("IMALAN_30", "Everyone (public)");
 define("IMALAN_31", "Guests only");
 define("IMALAN_32", "Members only");
 define("IMALAN_33", "Admin only");
-
+define("IMALAN_34", "Enable Sleight");
+define("IMALAN_35", "Fixes transparent PNG-24's with alpha transparency in IE 5 / 6 (Applies Sitewide)");
 
 ?>

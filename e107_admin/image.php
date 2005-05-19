@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/image.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-04-02 19:13:38 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-19 20:39:16 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -67,6 +67,8 @@ if (isset($_POST['update_options'])) {
 	$pref['im_path'] = $_POST['im_path'];
 	$pref['image_post_class'] = $_POST['image_post_class'];
 	$pref['image_post_disabled_method'] = $_POST['image_post_disabled_method'];
+	$pref['enable_png_image_fix'] = $_POST['enable_png_image_fix'];
+	
 	save_prefs();
 	$message = IMALAN_9;
 }
@@ -201,6 +203,14 @@ $text .= "</select>
 	</td></tr>
 
 	<tr>
+	<td style='width:75%' class='forumheader3'>".IMALAN_34."<br />
+	<span class='smalltext'>".IMALAN_35."</span>
+	</td>
+	<td style='width:25%;text-align:center' class='forumheader3' >".($pref['enable_png_image_fix'] ? "<input type='checkbox' name='enable_png_image_fix' value='1' checked='checked' />" : "<input type='checkbox' name='enable_png_image_fix' value='1' />")."
+	</td>
+	</tr>
+	
+	<tr>
 	<td style='width:75%' class='forumheader3'>".IMALAN_16."</td>
 	<td style='width:25%;text-align:center' class='forumheader3'  >
 	<input class='button' type='submit' name='show_avatars' value='".IMALAN_17."' />
@@ -211,6 +221,9 @@ $text .= "</select>
 	<input class='button' type='submit' name='update_options' value='".IMALAN_8."' />
 	</td>
 	</tr>
+	
+	
+
 
 	</table></form></div>";
 $ns->tablerender(IMALAN_7, $text);
