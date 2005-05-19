@@ -12,14 +12,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-05-19 08:31:04 $
+|     $Revision: 1.14 $
+|     $Date: 2005-05-19 08:44:01 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 class e107{
-	
+
 	var $e107_dirs;
 	var $http_path;
 	var $file_path;
@@ -39,7 +39,7 @@ class e107{
 
 		$e107_root_folder = dirname($class2_file);
 		$e107_root_folder = $this->fix_windows_paths($e107_root_folder);
-		
+
 		// the code chunk below fixes what appears to be either a php bug, or a too common server mis-config, where __FILE__ and DOCUMENT_ROOT
 		// dont tally - don't ask me to explain it, figure it out for yourself :)
 		if(!strstr($e107_root_folder, $_SERVER['DOCUMENT_ROOT'])) {
@@ -52,12 +52,21 @@ class e107{
 			}
 			$e107_root_folder = implode("/", $e107_root_foler_array);
 		}
-		
+
 		// replace the document root with "" (nothing) in the e107 root path, gives us out e_HTTP path :)
 		$server_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $e107_root_folder)."/";
-		$this->http_path = $server_path;
+
+		if ($_SERVER['SERVER_PORT'] != 80) {
+			$url_port = ":{$_SERVER['SERVER_PORT']}";
+		} else {
+			$url_port = "";
+		}
+
+		$this->http_path = 'http://'.$_SERVER['HTTP_HOST'].$url_port.$server_path;
+		$this->https_path = 'http://'.$_SERVER['HTTP_HOST'].$url_port.$server_path;
+
 		$this->file_path = $_SERVER['DOCUMENT_ROOT'].$server_path;
-		
+
 		// For compatability
 		define("e_HTTP", $server_path);
 	}
@@ -77,7 +86,12 @@ class e107{
 	}
 
 	function http_abs_location($dir_type = false, $extended = false, $secure = false) {
-		return "{$this->http_path}{$this->e107_dirs[$dir_type]}{$extended}";
+		global $pref;
+		if ($pref['ssl_enabled']) {
+			$secure = true;
+		}
+		$site_uri = ($secure ? $this->https_path : $this->http_path);
+		return "{$site_uri}{$this->e107_dirs[$dir_type]}{$extended}";
 	}
 
 	function ban() {
