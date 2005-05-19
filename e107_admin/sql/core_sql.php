@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-05-13 02:21:00 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.29 $
+|     $Date: 2005-05-19 20:42:51 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -328,7 +328,7 @@ CREATE TABLE page (
   page_rating_flag tinyint(1) unsigned NOT NULL default '0',
   page_comment_flag tinyint(1) unsigned NOT NULL default '0',
   page_password varchar(50) NOT NULL default '',
-  page_class tinyint(3) default NULL,
+  page_class varchar(250) default NULL,
   page_ip_restrict text NOT NULL,
   page_theme varchar(50) NOT NULL default '',
   PRIMARY KEY  (page_id)

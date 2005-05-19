@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.82 $
-|     $Date: 2005-05-13 01:03:34 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.83 $
+|     $Date: 2005-05-19 20:42:52 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -175,12 +175,14 @@ function update_61x_to_700($type) {
 		  page_rating_flag tinyint(1) unsigned NOT NULL,
 		  page_comment_flag tinyint(1) unsigned NOT NULL,
 		  page_password varchar(50) NOT NULL,
-		  page_class tinyint(3) default NULL,
+		  page_class varchar(250) NOT NULL,
 		  page_ip_restrict text NOT NULL,
 		  page_theme varchar(50) NOT NULL,
 		  PRIMARY KEY  (page_id)
 		) TYPE=MyISAM;");
 		/* end */
+		
+		mysql_query("ALTER TABLE ".MPREFIX."page CHANGE page_class page_class VARCHAR( 250 ) NOT NULL");
 
 
 		// start links update -------------------------------------------------------------------------------------------
@@ -664,6 +666,7 @@ function update_61x_to_700($type) {
 	else
 	{
 
+
 		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = "SHOW CREATE TABLE `".MPREFIX."news`";
 		$res = mysql_query($qry);
@@ -672,6 +675,19 @@ function update_61x_to_700($type) {
 			$row = mysql_fetch_row($res);
 			$lines = explode("\n", $row[1]);
 			if(!strstr($lines[11], "varchar"))
+			{
+				return FALSE;
+			}
+		}
+		
+		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
+		$qry = "SHOW CREATE TABLE `".MPREFIX."page`";
+		$res = mysql_query($qry);
+		if ($res)
+		{
+			$row = mysql_fetch_row($res);
+			$lines = explode("\n", $row[1]);
+			if(!strstr($lines[9], "varchar"))
 			{
 				return FALSE;
 			}
