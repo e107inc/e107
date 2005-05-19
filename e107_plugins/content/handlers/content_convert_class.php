@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2005-05-19 08:58:02 $
+|		$Revision: 1.3 $
+|		$Date: 2005-05-19 11:05:05 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -314,9 +314,12 @@ class content_convert{
 						$newcontent_class = $row['content_class'];
 						$newcontent_id = $row['content_id'];
 								
-						$custom["content_custom_score"] = ($content_review_score != "none" && $content_review_score ? $content_review_score : "");
-						$contentprefvalue = addslashes(serialize($custom));
-						$newcontent_pref = $contentprefvalue;
+						if($content_review_score != "none" && $content_review_score){
+							$custom["content_custom_score"] = $content_review_score;
+							$newcontent_pref = addslashes(serialize($custom));
+						}else{
+							$newcontent_pref = "";
+						}
 
 						if(!is_object($sql5)){ $sql5 = new db; }
 						$sql5 -> db_Insert($plugintable, "'".$newcontent_id."', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '1.".$count."' ");
