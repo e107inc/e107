@@ -12,14 +12,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-05-19 08:44:01 $
+|     $Revision: 1.15 $
+|     $Date: 2005-05-19 13:11:58 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 class e107{
 
+	var $server_path;
 	var $e107_dirs;
 	var $http_path;
 	var $file_path;
@@ -66,6 +67,8 @@ class e107{
 		$this->https_path = 'http://'.$_SERVER['HTTP_HOST'].$url_port.$server_path;
 
 		$this->file_path = $_SERVER['DOCUMENT_ROOT'].$server_path;
+		
+		$this->server_path = $server_path;
 
 		// For compatability
 		define("e_HTTP", $server_path);
