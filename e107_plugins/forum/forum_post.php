@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-05-18 18:14:16 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.30 $
+|     $Date: 2005-05-19 20:48:31 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -127,6 +127,7 @@ if (IsSet($_POST['submitpoll'])) {
 }
 
 if (isset($_POST['fpreview'])) {
+	require_once(HEADERF);
 	process_upload();	
 	if (USER) {
 		$poster = USERNAME;
