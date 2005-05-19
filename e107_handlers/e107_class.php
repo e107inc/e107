@@ -12,75 +12,72 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-05-10 17:10:50 $
+|     $Revision: 1.12 $
+|     $Date: 2005-05-19 08:28:48 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 class e107{
-	var $server_path;
+	
+	var $e107_dirs;
 	var $http_path;
-	var $https_path;
-	var $class2_path;
-	var $e107_dirs = array();
-	var $e107_file_root;
-	var $_ip_cache;
-	var $site_theme;
-	var $http_theme_dir;
+	var $file_path;
 
 	function e107($e107_paths, $class2_file){
 		error_reporting(E_ERROR | E_WARNING | E_PARSE);
-
 		if(defined("COMPRESS_OUTPUT") && COMPRESS_OUTPUT === true) {
 			ob_start ("ob_gzhandler");
 		}
-
 		$this->e107_dirs = $e107_paths;
 		$this->set_e107_dirs($class2_file);
 	}
 
 	function set_e107_dirs($class2_file){
-		$this->fix_missing_doc_root();
-		$_SERVER['DOCUMENT_ROOT'] = $this->fix_windows_paths($_SERVER['DOCUMENT_ROOT']);
+		// go off and fix missing doc root paths. also fix windows paths.
+		$this->fix_doc_root();
 
-		$class2_file = dirname($class2_file).'/';
-		$class2_file = $this->fix_windows_paths($class2_file);
-
-		$this->server_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $class2_file);
-		if ($_SERVER['SERVER_PORT'] != 80) {
-			$url_port = ":{$_SERVER['SERVER_PORT']}";
-		} else {
-			$url_port = "";
+		$e107_root_folder = dirname($class2_file);
+		$e107_root_folder = $this->fix_windows_paths($e107_root_folder);
+		$e107_root_foler_array = explode("/", $e107_root_folder);
+		
+		// the code chunk below fixes what appears to be either a php bug, or a too common server mis-config, where __FILE__ and DOCUMENT_ROOT
+		// dont tally - don't ask me to explain it, figure it out for yourself :)
+		if(!strstr($e107_root_folder, $_SERVER['DOCUMENT_ROOT'])) {
+			$temp_path = $_SERVER['DOCUMENT_ROOT'].$_SERVER['PATH_INFO'];
+			foreach ($e107_root_foler_array as $key => $val) {
+				if(!strstr($temp_path, $val) && $val != "") {
+					unset($e107_root_foler_array[$key]);
+				}
+			}
+			$e107_root_folder = implode("/", $e107_root_foler_array);
 		}
-		$this->http_path = 'http://'.$_SERVER['HTTP_HOST'].$url_port.$this->server_path;
-		$this->https_path = 'https://'.$_SERVER['HTTP_HOST'].$url_port.$this->server_path;
-		$this->class2_path = $class2_file;
-		$this->e107_file_root = $_SERVER['DOCUMENT_ROOT'].$this->server_path;
-
-		define("e_HTTP", $this->server_path);
+		
+		// replace the document root with "" (nothing) in the e107 root path, gives us out e_HTTP path :)
+		$server_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $e107_root_folder)."/";
+		$this->http_path = $server_path;
+		$this->file_path = $_SERVER['DOCUMENT_ROOT'].$server_path;
+		
+		// For compatability
+		define("e_HTTP", $server_path);
 	}
 
 	function fix_windows_paths($path) {
-		$fixed_path = str_replace(array('\\\\', '\\'), array('/', '/'), $path);
-		return $fixed_path;
+		return str_replace(array('\\\\', '\\'), array('/', '/'), $path);
 	}
 
-	function fix_missing_doc_root() {
-		if($_SERVER['DOCUMENT_ROOT'] == '') {
+	function fix_doc_root() {
+		if (!$_SERVER['DOCUMENT_ROOT']) {
 			$_SERVER['PATH_INFO'] = $this->fix_windows_paths($_SERVER['PATH_INFO']);
 			$_SERVER['PATH_TRANSLATED'] = $this->fix_windows_paths($_SERVER['PATH_TRANSLATED']);
 			$_SERVER['DOCUMENT_ROOT'] = str_replace($_SERVER['PATH_INFO'], '', $_SERVER['PATH_TRANSLATED']);
+		} else {
+			$_SERVER['DOCUMENT_ROOT'] = $this->fix_windows_paths($_SERVER['DOCUMENT_ROOT']);
 		}
 	}
-	
+
 	function http_abs_location($dir_type = false, $extended = false, $secure = false) {
-		global $pref;
-		if ($pref['ssl_enabled']) {
-			$secure = true;
-		}
-		$site_uri = ($secure ? $this->https_path : $this->http_path);
-		return "{$site_uri}{$this->e107_dirs[$dir_type]}{$extended}";
+		return "{$this->http_path}{$this->e107_dirs[$dir_type]}{$extended}";
 	}
 
 	function ban() {
@@ -93,7 +90,7 @@ class e107{
 		$bhost = $match[0];
 
 		if ($ip != '127.0.0.1') {
-			if ($sql->db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='$ip' OR banlist_ip='$wildcard' OR banlist_ip='$bhost'")) {
+			if ($sql->db_Select("banlist", "*", "banlist_ip='{$_SERVER['REMOTE_ADDR']}' OR banlist_ip='".USEREMAIL."' OR banlist_ip='{$ip}' OR banlist_ip='{$wildcard}' OR banlist_ip='{$bhost}'")) {
 				// enter a message here if you want some text displayed to banned users ...
 				exit;
 			}
@@ -114,7 +111,7 @@ class e107{
 					'/^224..*/',
 					'/^240..*/'
 					);
-					$ip=preg_replace($ip2, $ip, $ip3[1]);
+					$ip = preg_replace($ip2, $ip, $ip3[1]);
 				}
 			} else {
 				$ip = $_SERVER['REMOTE_ADDR'];
