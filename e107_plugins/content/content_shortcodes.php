@@ -754,7 +754,7 @@ SC_END
 SC_BEGIN CONTENT_CONTENT_TABLE_RATING
 global $CONTENT_CONTENT_TABLE_RATING, $content_pref, $type_id, $row, $rater, $plugintable;
 $RATING = "";
-if(($content_pref["content_content_rating_{$type_id}"] && $row['content_rate']) || $content_pref["content_content_rating_all_{$type_id}"]){	
+if( ($content_pref["content_content_rating_{$type_id}"] && $row['content_rate']) || $content_pref["content_content_rating_all_{$type_id}"] ){	
 	if($ratearray = $rater -> getrating($plugintable, $row['content_id'])){
 		for($c=1; $c<= $ratearray[1]; $c++){
 			$RATING .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
