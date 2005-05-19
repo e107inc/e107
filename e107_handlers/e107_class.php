@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-05-19 16:30:41 $
+|     $Revision: 1.17 $
+|     $Date: 2005-05-19 20:17:38 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -44,14 +44,14 @@ class e107{
 		// the code chunk below fixes what appears to be either a php bug, or a too common server mis-config, where __FILE__ and DOCUMENT_ROOT
 		// dont tally - don't ask me to explain it, figure it out for yourself :)
 		if(!strstr($e107_root_folder, $_SERVER['DOCUMENT_ROOT'])) {
-			$e107_root_foler_array = explode("/", $e107_root_folder);
+			$e107_root_folder_array = explode("/", $e107_root_folder);
 			$temp_path = $_SERVER['DOCUMENT_ROOT'].$_SERVER['PATH_INFO'];
-			foreach ($e107_root_foler_array as $key => $val) {
+			foreach ($e107_root_folder_array as $key => $val) {
 				if($val != "" && !strstr($temp_path, $val)) {
-					unset($e107_root_foler_array[$key]);
+					unset($e107_root_folder_array[$key]);
 				}
 			}
-			$e107_root_folder = implode("/", $e107_root_foler_array);
+			$e107_root_folder = implode("/", $e107_root_folder_array);
 		}
 
 		// replace the document root with "" (nothing) in the e107 root path, gives us out e_HTTP path :)
