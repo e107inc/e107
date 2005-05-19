@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-05-19 08:28:48 $
+|     $Revision: 1.13 $
+|     $Date: 2005-05-19 08:31:04 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -39,11 +39,11 @@ class e107{
 
 		$e107_root_folder = dirname($class2_file);
 		$e107_root_folder = $this->fix_windows_paths($e107_root_folder);
-		$e107_root_foler_array = explode("/", $e107_root_folder);
 		
 		// the code chunk below fixes what appears to be either a php bug, or a too common server mis-config, where __FILE__ and DOCUMENT_ROOT
 		// dont tally - don't ask me to explain it, figure it out for yourself :)
 		if(!strstr($e107_root_folder, $_SERVER['DOCUMENT_ROOT'])) {
+			$e107_root_foler_array = explode("/", $e107_root_folder);
 			$temp_path = $_SERVER['DOCUMENT_ROOT'].$_SERVER['PATH_INFO'];
 			foreach ($e107_root_foler_array as $key => $val) {
 				if(!strstr($temp_path, $val) && $val != "") {
