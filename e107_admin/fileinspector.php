@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-05-19 09:50:05 $
+|     $Revision: 1.11 $
+|     $Date: 2005-05-19 10:43:54 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -49,7 +49,8 @@ class file_inspector {
 	var $count = array();
 	
 	function file_inspector() {
-		$this -> root_dir = $_SERVER['DOCUMENT_ROOT'].e_HTTP;
+		global $e107;
+		$this -> root_dir = $e107 -> file_path;
 		if (substr($this -> root_dir, -1) == '/') {
 			$this -> root_dir = substr($this -> root_dir, 0, -1);
 		}
