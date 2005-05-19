@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-05-19 13:11:58 $
+|     $Revision: 1.16 $
+|     $Date: 2005-05-19 16:30:41 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -47,7 +47,7 @@ class e107{
 			$e107_root_foler_array = explode("/", $e107_root_folder);
 			$temp_path = $_SERVER['DOCUMENT_ROOT'].$_SERVER['PATH_INFO'];
 			foreach ($e107_root_foler_array as $key => $val) {
-				if(!strstr($temp_path, $val) && $val != "") {
+				if($val != "" && !strstr($temp_path, $val)) {
 					unset($e107_root_foler_array[$key]);
 				}
 			}
