@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-05-19 10:43:54 $
+|     $Revision: 1.12 $
+|     $Date: 2005-05-19 15:11:21 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -139,7 +139,7 @@ class file_inspector {
 		$icon = "<img src='".e_IMAGE."fileinspector/".$dir_icon."' class='i' alt='' />";
 		$hide = ($parent_open && $tree_open != 'core') ? "" : "style='display: none'";
 		$text .= "<div class='d' style='margin-left: ".($level * 8)."px'>";
-		$text .= $tree_end ? "<img src='".e_IMAGE."fileinspector/blank.png' class='e' alt='' />" : "<span onclick=\"expandit('d_".$dir_id."')\"><img src='".e_IMAGE."fileinspector/expand.png' class='e' alt='' /></span>";
+		$text .= $tree_end ? "<img src='".e_IMAGE."fileinspector/blank.png' class='e' alt='' />" : "<span onclick=\"ec('".$dir_id."')\"><img src='".e_IMAGE."fileinspector/".($hide ? 'expand.png' : 'contract.png')."' class='e' alt='' id='e_".$dir_id."' /></span>";
 		$text .= $tree_end ? "&nbsp;<span onclick=\"sh('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>" : "&nbsp;<span onclick=\"sh('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>";
 		$text .= $tree_end ? "" : "<div ".$hide." id='d_".$dir_id."'>".$childOut."</div>";
 		$text .= "</div>";
@@ -150,22 +150,7 @@ class file_inspector {
 	
 	function scan_results() {
 		global $ns, $rs;
-		$text = "<script type=\"text/javascript\">
-		<!--
-		var hideid=\"initial\";
-		function sh(showid){
-			if (hideid!=showid){
-				show=document.getElementById(showid).style;
-				hide=document.getElementById(hideid).style;
-				show.display=\"\";
-				hide.display=\"none\";
-				hideid = showid;
-			}
-		}
-		//-->
-		</script>
-
-		<div style='text-align:center'>
+		$text = "<div style='text-align:center'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 		<tr>
 		<td class='fcaption' colspan='2'>Scan Results</td>
@@ -415,18 +400,51 @@ class file_inspector {
 require_once('footer.php');
 
 function headerjs() {
-	$text = "<style type='text/css'>
-	<!--
-	.f { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90%; white-space: nowrap }
-	.d { margin: 2px 0px 1px 8px; cursor: default; white-space: nowrap }
-	.s { padding: 1px 8px 1px 0px; vertical-align: bottom; width: 10%; white-space: nowrap }
-	.t { margin-top: 1px; width: 100%; border-collapse: collapse; border-spacing: 0px }
-	.i { width: 16px; height: 16px }
-	.e { width: 9px; height: 9px }
-	-->
-	</style>";
+global $e107;
+$text = "<script type=\"text/javascript\">
+<!--
+c = new Image(); c = '".$e107 -> http_abs_location("IMAGES_DIRECTORY", "fileinspector/contract.png")."';
+e = '".$e107 -> http_abs_location("IMAGES_DIRECTORY", "fileinspector/expand.png")."';
+function ec(ecid) {
+	icon = document.getElementById('e_' + ecid).src;
+	if (icon == e) {
+		document.getElementById('e_' + ecid).src = c;
+	} else {
+		document.getElementById('e_' + ecid).src = e;
+	}
+
+	div = document.getElementById('d_' + ecid).style;
+	if (div.display == 'none') {
+		div.display = '';
+	} else {
+		div.display = 'none';
+	}
+}
+
+var hideid = 'initial';
+function sh(showid) {
+	if (hideid != showid) {
+		show = document.getElementById(showid).style;
+		hide = document.getElementById(hideid).style;
+		show.display = '';
+		hide.display = 'none';
+		hideid = showid;
+	}
+}
+//-->
+</script>
+<style type='text/css'>
+<!--
+.f { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90%; white-space: nowrap }
+.d { margin: 2px 0px 1px 8px; cursor: default; white-space: nowrap }
+.s { padding: 1px 8px 1px 0px; vertical-align: bottom; width: 10%; white-space: nowrap }
+.t { margin-top: 1px; width: 100%; border-collapse: collapse; border-spacing: 0px }
+.i { width: 16px; height: 16px }
+.e { width: 9px; height: 9px }
+-->
+</style>";
 		
-	return $text;
+return $text;
 }
 
 ?>
