@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_fileinspector.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-20 10:52:34 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-20 11:14:39 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -50,6 +50,7 @@ releases, then you will discover files have failed integrity check because they 
 after the latest core image snapshot was created.");
 define("FR_LAN_19", "files failed");
 define("FR_LAN_20", "All files passed");
+define("FR_LAN_21", "none");
 
 
 ?>
