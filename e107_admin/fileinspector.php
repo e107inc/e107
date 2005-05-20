@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-05-20 11:14:13 $
+|     $Revision: 1.15 $
+|     $Date: 2005-05-20 11:30:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ $fi = new file_inspector;
 require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
 
-if (e_QUERY == 'snapshot') {
+if (e_QUERY == 'snapshot' || e_QUERY == 's' || (strpos(e_QUERY, '.s') !== false)) {
 	$fi -> snapshot_interface();
 } else if (e_QUERY == 'results') {
 	$fi -> scan_results();
@@ -357,7 +357,7 @@ class file_inspector {
 		Absolute path of root directory to create image from:
 		</td>
 		<td class='forumheader3' style='width:50%'>
-		<input class='tbox' type='text' name='snapshot_path' size='60' value='".$this -> root_dir."' />
+		<input class='tbox' type='text' name='snapshot_path' size='60' value='".(isset($_POST['snapshot_path']) ? $_POST['snapshot_path'] : $this -> root_dir)."' />
 		</td></tr>
 		<tr>
 		<td class='forumheader' style='text-align:center' colspan='2'>".$rs -> form_button('submit', 'create_snapshot', 'Create Snapshot')."</td>
@@ -370,22 +370,19 @@ class file_inspector {
 
 	}
 	
-	function parsesize($size = 0, $dec = 0) {
-		if (!$size) { return FALSE; }
+	function parsesize($size, $dec = 0) {
+		$size = $size ? $size : 0;
 		$kb = 1024;
 		$mb = 1024 * $kb;
 		$gb = 1024 * $mb;
 		$tb = 1024 * $gb;
 		if ($size < $kb) {
 			return $size." b";
-		}
-		else if($size < $mb) {
+		} else if($size < $mb) {
 			return round($size/$kb)." kb";
-		}
-		else if($size < $gb) {
+		} else if($size < $gb) {
 			return round($size/$mb, $dec)." mb";
-		}
-		else if($size < $tb) {
+		} else if($size < $tb) {
 			return round($size/$gb, $dec)." gb";
 		} else {
 			return round($size/$tb, $dec)." tb";
