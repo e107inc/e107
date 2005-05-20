@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-05-19 20:17:38 $
+|     $Revision: 1.18 $
+|     $Date: 2005-05-20 20:49:02 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -67,7 +67,7 @@ class e107{
 		$this->https_path = 'http://'.$_SERVER['HTTP_HOST'].$url_port.$server_path;
 
 		$this->file_path = $_SERVER['DOCUMENT_ROOT'].$server_path;
-		
+
 		$this->server_path = $server_path;
 
 		// For compatability
@@ -139,6 +139,29 @@ class e107{
 			$this->_ip_cache = $ip;
 		}
 		return $this->_ip_cache;
+	}
+	
+	function get_memory_usage(){
+		global $dbg;
+		if(function_exists("memory_get_usage")){
+			$memusage = memory_get_usage();
+			$memunit = 'b';
+			if ($memusage > 1024){
+				$memusage = $memusage / 1024;
+				$memunit = 'kb';
+			}
+			if ($memusage > 1024){
+				$memusage = $memusage / 1024;
+				$memunit = 'mb';
+			}
+			if ($memusage > 1024){
+				$memusage = $memusage / 1024;
+				$memunit = 'gb';
+			}
+			return (number_format($memusage, 2).$memunit);
+		} else {
+			return ('Unknown');
+		}
 	}
 }
 
