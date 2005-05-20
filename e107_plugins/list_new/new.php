@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/new.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-05-18 13:34:20 $
+|     $Revision: 1.14 $
+|     $Date: 2005-05-20 21:56:38 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -208,7 +208,7 @@ if($ITEMS = $sql->db_Select("comments", "*", "comment_datestamp>$lvisit  ORDER B
 		
 		
 		
-		$handle = opendir(e_PLUGIN);
+		/* --- $handle = opendir(e_PLUGIN);
 		while (false !== ($file = readdir($handle))) {
 			if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
 				$plugin_handle = opendir(e_PLUGIN.$file."/");
@@ -228,7 +228,7 @@ if($ITEMS = $sql->db_Select("comments", "*", "comment_datestamp>$lvisit  ORDER B
 					}
 				}
 			}
-		}
+		} --- */
 
 		$mainStr .= preg_replace("/\{(.*?)\}/e", '$\1', $LISTNEW_MAIN_COMMENT);
 	}
