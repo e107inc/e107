@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2005-05-15 05:03:23 $
-|     $Author: e107coders $
+|     $Revision: 1.57 $
+|     $Date: 2005-05-20 21:24:36 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -238,8 +238,19 @@ $text .= "</table>
 	<input type='radio' name='displaysql' value='1'".($pref['displaysql'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='displaysql' value='0'".(!$pref['displaysql'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
-	</tr>";
-
+	</tr>
+	";
+if(function_exists("memory_get_usage")){
+	$text .= "
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_137." </td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	<input type='radio' name='display_memory_usage' value='1'".($pref['display_memory_usage'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='display_memory_usage' value='0'".(!$pref['display_memory_usage'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
+	</tr>
+	";
+}
 $text .= pref_submit();
 
 $text .= "</table></div>";

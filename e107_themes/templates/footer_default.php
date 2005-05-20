@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-05-11 20:13:23 $
+|     $Revision: 1.24 $
+|     $Date: 2005-05-20 21:24:53 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -39,6 +39,7 @@ if($e107_popup!=1){
 
 	if($pref['displayrendertime']){ $rinfo .= "Render time: {$rendertime} second(s); {$db_time} of that for queries. "; }
 	if($pref['displaysql']){ $rinfo .= "DB queries: ".$sql -> db_QueryCount().". "; }
+	if(isset($pref['display_memory_usage']) && $pref['display_memory_usage']){ $rinfo .= "Memory Usage: ".$e107->get_memory_usage(); }
 	if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
 	echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");
 	if (ADMIN && E107_DEBUG_LEVEL) {

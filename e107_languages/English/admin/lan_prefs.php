@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-05-06 10:57:19 $
-|     $Author: stevedunstan $
+|     $Revision: 1.33 $
+|     $Date: 2005-05-20 21:24:53 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -184,5 +184,8 @@ define("PRFLAN_134", "Redirect all requests to site URL");
 define("PRFLAN_135", "for example, if your site URL above is set http://foo.com, anyone requesting http://www.foo.com will be redirected to http://foo.com");
 
 define("PRFLAN_136", "Maximum Signups permitted from the same IP address.");
+
+
+define("PRFLAN_137", "Display Memory Usage");
 
 ?>
