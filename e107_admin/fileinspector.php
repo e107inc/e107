@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-05-20 11:30:38 $
+|     $Revision: 1.16 $
+|     $Date: 2005-05-20 12:29:33 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -121,14 +121,13 @@ class file_inspector {
 					$childOut .= $this -> inspect($path, $level, $child_end, $child_expand);
 					$tree_end = false;
 					if ($child_expand) {
-						$parent_expand = TRUE;
+						$parent_expand = true;
 						$last_expand = true;
 					}
 				} else {
 					 if ($_POST['display'] == 'all' || ($_POST['display'] == 'fail' && isset($core_image[$i_path]) && $readdir != 'core_image.php' && $this -> checksum($path) != $core_image[$i_path]) || ($_POST['display'] == 'core' && isset($core_image[$i_path])) || ($_POST['display'] == 'non' && !isset($core_image[$i_path]))) {
 						$fid = strtolower($readdir);
 						$filesize = filesize($path);
-						$size = $this -> parsesize($filesize);
 						if (isset($core_image[$i_path])) {
 							$this -> count['core']['num']++;
 							$this -> count['core']['size'] += $filesize;
@@ -158,7 +157,7 @@ class file_inspector {
 						}
 						$this -> files[$dir_id][$fid]['file'] = $readdir;
 						$this -> files[$dir_id][$fid]['icon'] = $file_icon;
-						$this -> files[$dir_id][$fid]['size'] = $size;
+						$this -> files[$dir_id][$fid]['size'] = $filesize;
 					}
 				}
 			}
@@ -168,10 +167,10 @@ class file_inspector {
 			$dir_icon = 'folder.png';
 		}
 		$icon = "<img src='".e_IMAGE."fileinspector/".$dir_icon."' class='i' alt='' />";
-		$hide = ($parent_expand && $last_expand && $dir_icon != 'folder_core.png') ? "" : "style='display: none'";
+		$hide = ($last_expand && $dir_icon != 'folder_core.png') ? "" : "style='display: none'";
 		$text = "<div class='d' style='margin-left: ".($level * 8)."px'>";
 		$text .= $tree_end ? "<img src='".e_IMAGE."fileinspector/blank.png' class='e' alt='' />" : "<span onclick=\"ec('".$dir_id."')\"><img src='".e_IMAGE."fileinspector/".($hide ? 'expand.png' : 'contract.png')."' class='e' alt='' id='e_".$dir_id."' /></span>";
-		$text .= $tree_end ? "&nbsp;<span onclick=\"sh('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>" : "&nbsp;<span onclick=\"sh('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>";
+		$text .= "&nbsp;<span onclick=\"sh('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>";
 		$text .= $tree_end ? "" : "<div ".$hide." id='d_".$dir_id."'>".$childOut."</div>";
 		$text .= "</div>";
 
@@ -262,7 +261,7 @@ class file_inspector {
 				} else {
 					$text .= "<tr>
 					<td class='f'><img src='".e_IMAGE."fileinspector/".$stext['icon']."' class='i' alt='' />&nbsp;".$stext['file']."&nbsp;</td>
-					<td class='s'>".$stext['size']."</td>
+					<td class='s'>".$this -> parsesize($stext['size'])."</td>
 					</tr>";
 				}
 				$initial = TRUE;
