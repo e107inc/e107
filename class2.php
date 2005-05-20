@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.136 $
-|     $Date: 2005-05-18 01:37:01 $
-|     $Author: sweetas $
+|     $Revision: 1.137 $
+|     $Date: 2005-05-20 22:08:24 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -236,20 +236,17 @@ $pref['htmlarea']=false;
 
 define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
 
-/*
+
+
 if($pref['redirectsiteurl'])
 {
-if($e107 -> http_path != $pref['siteurl'])
-{
-if($pref['siteurl'])
-{
-$location = str_replace($e107 -> http_path, $pref['siteurl'], e_SELF);
-header("location: ".$location);
-exit;
+	if($e107 -> http_abs_location() != $pref['siteurl'] && $pref['siteurl'])
+	{
+		$location = str_replace($e107 -> http_abs_location(), $pref['siteurl'], e_SELF);
+		header("location: ".$location);
+		exit;
+	}
 }
-}
-}
-*/
 
 // Cameron's Mult-lang switch. ==================
 
