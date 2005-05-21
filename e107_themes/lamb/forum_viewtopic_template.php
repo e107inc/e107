@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_viewtopic_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-04-11 08:45:19 $
+|     $Revision: 1.10 $
+|     $Date: 2005-05-21 05:01:01 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -39,8 +39,8 @@ $FORUMSTART = "
 
 <table style='width:100%'>
 <tr>
-<td style='width:80%'><div class='mediumtext'><img src='".$icon."' style='vertical-align:middle' alt=''/> <b>{THREADNAME}</b></div><br />{GOTOPAGES}</td>
-<td style='width:20%; vertical-align:bottom;'>{BUTTONS}</td>
+<td style='width:70%'><div class='mediumtext'><img src='".$icon."' style='vertical-align:middle' alt=''/> <b>{THREADNAME}</b></div><br />{GOTOPAGES}</td>
+<td style='width:30%; vertical-align:bottom; text-align:right;'>{BUTTONS}</td>
 </tr>
 </table>
 
@@ -121,7 +121,7 @@ $FORUMSTART = "
 </tr>	
 <tr>
 <td class='nforumreply' style='vertical-align:top'>\n{AVATAR}\n<span class='smalltext'>\n{LEVEL}\n{MEMBERID}\n{JOINED}\n{POSTS}\n</span>\n</td>
-<td class='nforumreply' style='vertical-align:top'>\n<div class='intwrapper'>{POST}\n{SIGNATURE}\n</div></td>
+<td class='nforumreply' style='vertical-align:top'>{POST}\n{SIGNATURE}</td>
 </tr>		
 <tr>
 <td class='nforumreply2'>\n<span class='smallblacktext'>\n{TOP}\n</span>\n</td>
