@@ -11,25 +11,50 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_conf.php,v $
-| $Revision: 1.2 $
-| $Date: 2005-01-27 19:52:48 $
-| $Author: streaky $
+| $Revision: 1.3 $
+| $Date: 2005-05-21 02:03:54 $
+| $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 require_once("../../class2.php");
-if (!getperms("A")) {
-	header("location:".e_BASE."index.php");
-	exit;
-}
+@include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_conf.php';
+@include_once e_PLUGIN.'forum/languages/English/lan_forum_conf.php';
+
 $e_sub_cat = 'forum';
-require_once(e_ADMIN.'auth.php');
 	
 $qs = explode(".", e_QUERY);
 $action = $qs[0];
-$forum_id = $qs[1];
-$thread_id = $qs[2];
-$thread_parent = $qs[3];
-	
+$thread_id = intval($qs[1]);
+
+$qry = "
+SELECT t.*, f.*, fp.forum_id AS forum_parent_id FROM #forum_t as t
+LEFT JOIN #forum AS f ON t.thread_forum_id = f.forum_id
+LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent
+WHERE t.thread_id = {$thread_id}
+";
+
+require_once(HEADERF);
+
+if($sql->db_Select_gen($qry))
+{
+	$info = $sql->db_Fetch();
+	$modlist = explode(", ", $info['forum_moderators']);
+	foreach($modlist as $k => $v)
+	{
+		$modlist[$k] = trim($v);
+	}
+	if(!in_array(USERNAME, $modlist))
+	{
+		header("location:".e_BASE."index.php");
+		exit;
+	}
+}
+else
+{
+	header("location:".e_BASE."index.php");
+	exit;
+}
+
 if (isset($_POST['deletepollconfirm'])) {
 	$sql->db_Delete("poll", "poll_id='$thread_parent' ");
 	$sql->db_Select("forum_t", "*", "thread_id='".$thread_id."' ");
@@ -41,57 +66,59 @@ if (isset($_POST['deletepollconfirm'])) {
 	$url = e_PLUGIN."forum/forum_viewtopic.php?".$forum_id.".".$thread_id;
 }
 	
-if (isset($_POST['move'])) {
-	$new_forum = $_POST['forum_move'];
+if (isset($_POST['move']))
+{
+	require_once(e_PLUGIN."forum/forum_class.php");
+	$forum = new e107forum;
+	$new_forum = intval($_POST['forum_move']);
 	$replies = $sql->db_Select("forum_t", "*", "thread_parent='$thread_id' ");
-	$sql->db_Select("forum_t", "thread_name", "thread_id ='".$thread_id."' ");
+	$sql->db_Select("forum_t", "thread_name, thread_forum_id", "thread_id ='".$thread_id."' ");
 	$row = $sql->db_Fetch();
-	 extract($row);
-	$sql->db_Update("forum_t", "thread_forum_id='$new_forum', thread_name='[".FORLAN_27."] ".$thread_name."' WHERE thread_id='$thread_id' ");
+	$old_forum = $row['thread_forum_id'];
+	$new_thread_name = $row['thread_name'];
+
+	if($_POST['rename_thread'] == 'add')
+	{
+		$new_thread_name = "[".FORLAN_27."] ".$new_thread_name;
+	}
+	elseif($_POST['rename_thread'] == 'rename' && trim($_POST['newtitle']) != "")
+	{
+		$new_thread_name = $tp->toDB($_POST['newtitle']);
+	}
+
+	$sql->db_Update("forum_t", "thread_forum_id='$new_forum', thread_name='{$new_thread_name}' WHERE thread_id='$thread_id' ");
 	$sql->db_Update("forum_t", "thread_forum_id='$new_forum' WHERE thread_parent='$thread_id' ");
-	$sql->db_Update("forum", "forum_threads=forum_threads-1, forum_replies=forum_replies-$replies WHERE forum_id='$forum_id' ");
+	$sql->db_Update("forum", "forum_threads=forum_threads-1, forum_replies=forum_replies-$replies WHERE forum_id='$old_forum' ");
 	$sql->db_Update("forum", "forum_threads=forum_threads+1, forum_replies=forum_replies+$replies WHERE forum_id='$new_forum' ");
 	 
 	// update lastposts
-	 
-	if ($sql->db_Select("forum_t", "*", "thread_forum_id='$new_forum' ORDER BY thread_datestamp DESC LIMIT 0,1")) {
-		$row = $sql->db_Fetch();
-		 extract($row);
-		$new_forum_lastpost = $thread_user.".".$thread_datestamp;
-	} else {
-		$new_forum_lastpost = "";
-	}
-	$sql->db_Update("forum", "forum_lastpost='{$new_forum_lastpost}' WHERE forum_id='$new_forum' ");
-	 
-	if ($sql->db_Select("forum_t", "*", "thread_forum_id='$forum_id' ORDER BY thread_datestamp DESC LIMIT 0,1")) {
-		$row = $sql->db_Fetch();
-		extract($row);
-		$new_forum_lastpost = $thread_user.".".$thread_datestamp;
-	} else {
-		$new_forum_lastpost = "";
-	}
-	$sql->db_Update("forum", "forum_lastpost='{$new_forum_lastpost}' WHERE forum_id='$forum_id' ");
+
+	$forum->update_lastpost('forum', $old_forum, FALSE);
+	$forum->update_lastpost('forum', $new_forum, FALSE);
 	 
 	$message = FORLAN_9;
 	$url = e_PLUGIN."forum/forum_viewforum.php?".$new_forum;
 }
 	
-if (IsSet($_POST['movecancel'])) {
+if (isset($_POST['movecancel']))
+{
 	$message = FORLAN_10;
-	$url = e_PLUGIN."forum/forum_viewforum.php?".$thread_id;
+	$url = e_PLUGIN."forum/forum_viewforum.php?".$info['forum_id'];
 }
 	
-if ($message) {
+if ($message)
+{
 	$text = "<div style='text-align:center'>".$message."
 		<br />
 		<a href='$url'>".FORLAN_11."</a>
 		</div>";
 	$ns->tablerender(FORLAN_12, $text);
-	require_once("footer.php");
+	require_once(FOOTERF);
 	exit;
 }
 	
-if ($action == "delete_poll") {
+if ($action == "delete_poll")
+{
 	$text = "<div style='text-align:center'>
 		".FORLAN_13."
 		<br /><br />
@@ -105,22 +132,35 @@ if ($action == "delete_poll") {
 	exit;
 }
 	
-if ($action == "move") {
-	$forum_total = $sql->db_Select("forum", "forum_id,forum_name", "forum_parent!='0' ");
+if ($action == "move")
+{
 	$text = "
-		<form method='post' action='".e_SELF."?".e_QUERY.".".$thread_parent."'>
+		<form method='post' action='".e_SELF."?".e_QUERY."'>
 		<div style='text-align:center'>
 		<table style='".ADMIN_WIDTH."'>
 		<tr>
 		<td style='text-align:right'>".FORLAN_24.": </td>
 		<td style='text-align:left'>
 		<select name='forum_move' class='tbox'>";
-	while (list($forum_id_, $forum_name_) = $sql->db_Fetch()) {
-		if ($forum_id_ != $forum_id) {
-			$text .= "<option value='$forum_id_'>".$forum_name_."</option>";
+	$sql->db_Select("forum", "forum_id, forum_name, forum_sub", "forum_parent != '0' AND forum_id != {$info['forum_id']} ORDER BY forum_order");
+	$fList = $sql->db_getList();
+	foreach($fList as $f)
+	{
+		if($f['forum_sub'] > 0)
+		{
+			$f['forum_name'] = "subforum -> ".$f['forum_name'];
 		}
+		$text .= "<option value='{$f['forum_id']}'>".$f['forum_name']."</option>";
 	}
 	$text .= "</select>
+		</td>
+		</tr>
+		<tr>
+		<td colspan='2'><br />
+		<b>Rename thread Options:</b><br />
+		<input type='radio' name='rename_thread' checked='checked' value='none' /> Do not rename thread title<br />
+		<input type='radio' name='rename_thread' value='add' /> Add [".FORLAN_27."] to title<br />
+		<input type='radio' name='rename_thread' value='rename' /> Rename to: <input type='text' class='tbox' name='newtitle' size='60' maxlength='250' value='".$tp->toForm($info['thread_name'])."'/>
 		</td>
 		</tr>
 		<tr style='vertical-align: top;'>
@@ -131,8 +171,10 @@ if ($action == "move") {
 		</tr>
 		</table>
 		</div>
-		</form>";
+		</form><br />";
+	$text = $ns->tablerender($tp->toHTML($info['thread_name']), $tp->toHTML($info['thread_thread']), '', TRUE).$ns->tablerender("", $text, '', true);
 	$ns->tablerender(FORLAN_25, $text);
+	
 }
-require_once(e_ADMIN.'footer.php');
+require_once(FOOTERF);
 ?>

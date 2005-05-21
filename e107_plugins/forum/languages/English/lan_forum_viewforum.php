@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_viewforum.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-16 01:33:42 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-21 02:04:35 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -86,6 +86,8 @@ define("FORLAN_16", "Closed Sticky Thread");
 define("FORLAN_17", "Announcement Thread");
 define("FORLAN_18", "Closed Thread");
 define('FORLAN_19', '[user deleted]');
-
+define('FORLAN_20', 'Sub-forum');
+define('FORLAN_21', 'Threads');
+define('FORLAN_22', 'Last Post');
 	
 ?>

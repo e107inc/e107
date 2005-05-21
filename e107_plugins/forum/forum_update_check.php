@@ -23,16 +23,19 @@ function update_forum_07($type)
 		{
 			if ("forum_lastpost_info" == mysql_field_name($fields, $i))
 			{
-				$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."forum_t");
-				$columns = mysql_num_fields($fields);
-				for ($i = 0; $i < $columns; $i++)
+				$flist = mysql_list_fields($mySQLdefaultdb, MPREFIX."forum_t");
+				$cols = mysql_num_fields($flist);
+				for ($x = 0; $x < $cols; $x++)
 				{
-					if("thread_anon" == mysql_field_name($fields, $i))
+					if("thread_anon" == mysql_field_name($flist, $x))
 					{
 						return FALSE; //needed
 					}
 				}
-				return TRUE; // not needed
+			}
+			if("forum_sub" == mysql_field_name($fields, $i))
+			{
+				return TRUE; //not needed
 			}
 		}
 		return FALSE; //needed

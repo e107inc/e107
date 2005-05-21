@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-05-19 20:48:31 $
-|     $Author: stevedunstan $
+|     $Revision: 1.31 $
+|     $Date: 2005-05-21 02:03:54 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -127,28 +127,35 @@ if (IsSet($_POST['submitpoll'])) {
 }
 
 if (isset($_POST['fpreview'])) {
+	process_upload();
 	require_once(HEADERF);
-	process_upload();	
-	if (USER) {
+	if (USER)
+	{
 		$poster = USERNAME;
-	} else {
+	}
+	else
+	{
 		$poster = ($_POST['anonname']) ? $_POST['anonname'] : LAN_311;
 	}
 	$postdate = $gen->convert_date(time(), "forum");
 	$tsubject = $tp->post_toHTML($_POST['subject'], FALSE);
 	$tpost = $tp->post_toHTML($_POST['post']);
 
-	if ($_POST['poll_title'] != "" && $pref['forum_poll']) {
+	if ($_POST['poll_title'] != "" && $pref['forum_poll'])
+	{
 		require_once(e_PLUGIN."poll/poll_class.php");
 		$poll = new poll;
 		$poll->render_poll($_POST, "forum", "notvoted");
 	}
 
-
-	if (!$FORUM_PREVIEW) {
-		if (file_exists(THEME."forum_preview_template.php")) {
+	if (!$FORUM_PREVIEW)
+	{
+		if (file_exists(THEME."forum_preview_template.php"))
+		{
 			require_once(THEME."forum_preview_template.php");
-		} else {
+		}
+		else
+		{
 			require_once(e_PLUGIN."forum/templates/forum_preview_template.php");
 		}
 	}
@@ -186,10 +193,10 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 	}
 	else
 	{
-//		if ($fp->flood("forum_t", "thread_datestamp") == FALSE && !ADMIN)
-//		{
-//			echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
-//		}
+		if ($fp->flood("forum_t", "thread_datestamp") == FALSE && !ADMIN)
+		{
+			echo "<script type='text/javascript'>document.location.href='".e_BASE."index.php'</script>\n";
+		}
 		if (USER)
 		{
 			$poster['post_userid'] = USERID;
@@ -226,14 +233,14 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			$subject = "[".LAN_402."] ".$subject;
 		}
 
-		if ($_POST['threadtype'] == 2)
-		{
-			$subject = "[".LAN_403."] ".$subject;
-		}
-		elseif($_POST['threadtype'] == 1)
-		{
-			$subject = "[".LAN_404."] ".$subject;
-		}
+//		if ($_POST['threadtype'] == 2)
+//		{
+//			$subject = "[".LAN_403."] ".$subject;
+//		}
+//		elseif($_POST['threadtype'] == 1)
+//		{
+//			$subject = "[".LAN_404."] ".$subject;
+//		}
 
 		$threadtype = intval($_POST['threadtype']);
 		if (isset($_POST['reply']))

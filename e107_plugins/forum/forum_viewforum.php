@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-05-18 18:14:27 $
+|     $Revision: 1.29 $
+|     $Date: 2005-05-21 02:03:54 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -68,6 +68,8 @@ if (!$FORUM_VIEW_START) {
 	
 $forum_info = $forum->forum_get($forum_id);
 
+//print_a($forum_info);
+
 if (!check_class($forum_info['forum_class']) || !check_class($forum_info['parent_class']) || !$forum_info['forum_parent'])
 {
 	header("Location:".e_PLUGIN."forum/forum.php");
@@ -120,7 +122,13 @@ if (check_class($forum_info['forum_postclass']) && check_class($forum_info['pare
 	$NEWTHREADBUTTON = "<a href='".e_PLUGIN."forum/forum_post.php?nt.".$forum_id."'>".IMAGE_newthread."</a>";
 }
 	
-$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a> -> <b>".$forum_info['forum_name']."</b>";
+$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a> -> ";
+if($forum_info['sub_parent'])
+{
+	$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'>{$forum_info['sub_parent']}</a> -> ";
+}
+$BREADCRUMB .= $forum_info['forum_name']."</b>";
+
 $FORUMTITLE = $forum_info['forum_name'];
 $MODERATORS = LAN_404.": ".$forum_info['forum_moderators'];
 $BROWSERS = $users." ".($users == 1 ? LAN_405 : LAN_406)." (".$member_users." ".($member_users == 1 ? LAN_407 : LAN_409).", ".$guest_users." ".($guest_users == 1 ? LAN_408 : LAN_410).")";
@@ -170,8 +178,21 @@ $reg_threads = 0;
 $unstuck = FALSE;
 	
 $thread_list = $forum->forum_get_topics($forum_id, $from, $view);
+$sub_list = $forum->forum_getsubs($forum_id);
+//print_a($sub_list);
 $gen = new convert;
 	
+$SUBFORUMS = "";
+if(is_array($sub_list))
+{
+	$sub_info = "";
+	foreach($sub_list as $sub)
+	{
+		$sub_info .= parse_sub($sub);
+	}
+	$SUBFORUMS = $FORUM_VIEW_SUB_START.$sub_info.$FORUM_VIEW_SUB_END;
+}
+
 if ($thread_list) {
 	foreach($thread_list as $thread_info) {
 		$idArray[] = $thread_info['thread_id'];
@@ -212,7 +233,7 @@ $TOPLINK = "<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>".LAN_02."</a>
 $forum_view_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_START);
 $forum_view_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_END);
 if ($pref['forum_enclose']) {
-	$ns->tablerender($pref['forum_title'], $forum_view_start.$forum_view_forum.$forum_view_end);
+	$ns->tablerender($pref['forum_title'], $forum_view_start.$forum_view_subs.$forum_view_forum.$forum_view_end);
 } else {
 	echo $forum_view_start.$forum_view_forum.$forum_view_end;
 }
@@ -335,7 +356,7 @@ function parse_thread($thread_info)
 		 "<input type='image' ".IMAGE_admin_stick." name='stick_{$thread_id}' value='thread_action' /> ";
 		$ADMIN_ICONS .= ($thread_info['thread_active']) ? "<input type='image' ".IMAGE_admin_lock." name='lock_{$thread_id}' value='thread_action' /> " :
 		 "<input type='image' ".IMAGE_admin_unlock." name='unlock_{$thread_id}' value='thread_action' /> ";
-		$ADMIN_ICONS .= "<a href='".e_PLUGIN."forum/forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move."</a>";
+		$ADMIN_ICONS .= "<a href='".e_PLUGIN."forum/forum_conf.php?move.".$thread_id."'>".IMAGE_admin_move."</a>";
 		$ADMIN_ICONS .= "
 			</div></form>
 			";
@@ -366,7 +387,38 @@ function parse_thread($thread_info)
 	
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM));
 }
-	
+
+function parse_sub($subInfo)
+{
+	global $FORUM_VIEW_SUB, $gen, $tp;
+//	print_a($subInfo);
+	$SUB_FORUMTITLE = "<a href='".e_PLUGIN."forum/forum_viewforum.php?{$subInfo['forum_id']}'>{$subInfo['forum_name']}</a>";
+	$SUB_DESCRIPTION = $tp->toHTML($subInfo['forum_description']);
+	$SUB_THREADS = $subInfo['forum_threads'];
+	$SUB_REPLIES = $subInfo['forum_replies'];
+//	$SUB_LASTPOST = $subInfo['forum_lastpost_info'];
+	if($subInfo['forum_lastpost_info'])
+	{
+		$tmp = explode(".", $subInfo['forum_lastpost_info']);
+		$lp_thread = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$tmp[1]}.last'>".IMAGE_post2."</a>";
+		$lp_date = $gen->convert_date($tmp[0], 'forum');
+		$tmp = explode(".", $subInfo['forum_lastpost_user']);
+		if($subInfo['user_name'])
+		{
+			$lp_name = "<a href='".e_BASE."user.php?{$tmp[0]}'>{$subInfo['user_name']}</a>";
+		}
+		else
+		{
+			$lp_name = $tmp[1];
+		}
+		$SUB_LASTPOST = $lp_date."<br />".$lp_name." ".$lp_thread;
+	}
+	else
+	{
+		$SUB_LASTPOST = "-";
+	}
+	return  (preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_SUB));
+}			
 	
 function forumjump() {
 	global $sql;
