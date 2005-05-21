@@ -32,10 +32,10 @@ class ArrayData {
 	*/
 	function ReadArray(&$ArrayData) {
 		$ArrayData = '$data = '.trim($ArrayData).';';
-		@eval('$data = '.$ArrayData.';');
-		if (!is_array($data)) {
+		@eval($ArrayData);
+/*		if (!is_array($data)) {
 			return false;
-		}
+		}*/
 		return $data;
 	}
 }

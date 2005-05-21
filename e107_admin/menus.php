@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-05-13 17:05:07 $
-|     $Author: stevedunstan $
+|     $Revision: 1.30 $
+|     $Date: 2005-05-21 17:13:29 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -26,6 +26,10 @@ require_once("auth.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."file_class.php");
 $frm = new form;
+
+if($_POST) {
+	$e107cache->clear("menus_");
+}
 
 $menus_equery = explode('.', e_QUERY);
 
