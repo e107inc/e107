@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/plugin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-16 15:00:37 $
+|     $Revision: 1.8 $
+|     $Date: 2005-05-21 02:03:54 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -64,6 +64,7 @@ $eplug_tables = array(
 	forum_name varchar(250) NOT NULL default '',
 	forum_description text NOT NULL,
 	forum_parent int(10) unsigned NOT NULL default '0',
+	forum_sub int(10) unsigned NOT NULL default '0',
 	forum_datestamp int(10) unsigned NOT NULL default '0',
 	forum_moderators text NOT NULL,
 	forum_threads int(10) unsigned NOT NULL default '0',
@@ -82,12 +83,11 @@ $eplug_tables = array(
 	thread_forum_id int(10) unsigned NOT NULL default '0',
 	thread_datestamp int(10) unsigned NOT NULL default '0',
 	thread_parent int(10) unsigned NOT NULL default '0',
-	thread_user int(10) unsigned NOT NULL default '0',
+	thread_user varchar(250) unsigned NOT NULL default '0',
 	thread_views int(10) unsigned NOT NULL default '0',
 	thread_active tinyint(3) unsigned NOT NULL default '0',
 	thread_lastpost int(10) unsigned NOT NULL default '0',
 	thread_s tinyint(1) unsigned NOT NULL default '0',
-	thread_anon varchar(250) NOT NULL default '',
 	thread_edit_datestamp int(10) unsigned NOT NULL default '0',
 	thread_lastuser varchar(30) NOT NULL default '',
 	thread_total_replies int(10) unsigned NOT NULL default '0',

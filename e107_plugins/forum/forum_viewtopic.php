@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-05-16 01:33:05 $
+|     $Revision: 1.25 $
+|     $Date: 2005-05-21 02:03:54 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -413,7 +413,7 @@ function showmodoptions()
 		";
 	if ($type == 'thread')
 	{
-		$ret .= "<a href='".e_PLUGIN."forum/forum_conf.php?move.".$forum_id.".".$thread_id."'>".IMAGE_admin_move2."</a>";
+		$ret .= "<a href='".e_PLUGIN."forum/forum_conf.php?move.".$thread_id."'>".IMAGE_admin_move2."</a>";
 	}
 	$ret .= "
 		</div>

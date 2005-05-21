@@ -32,8 +32,8 @@ function forum_stage1()
 	$sql->db_Select_gen("ALTER TABLE #forum_t ADD thread_lastuser VARCHAR( 30 ) NOT NULL");
 	$sql->db_Select_gen("ALTER TABLE #forum_t ADD thread_total_replies INT UNSIGNED NOT NULL");
 	$sql->db_Select_gen("ALTER TABLE #forum ADD forum_postclass TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL ;");
-
-	return "Updating table structure <br />";
+	$sql->db_Select_gen("ALTER TABLE #forum ADD `forum_sub` INT( 10 ) UNSIGNED DEFAULT '0' NOT NULL AFTER `forum_parent` ;");
+	return "Updated table structure <br />";
 }
 	
 function forum_stage2()
@@ -76,7 +76,7 @@ function forum_stage5()
 	$sql->db_Select_gen("ALTER TABLE #forum CHANGE forum_lastpost forum_lastpost_user VARCHAR( 200 ) NOT NULL"); 
 	$sql->db_Select_gen("ALTER TABLE #forum ADD forum_lastpost_info VARCHAR( 40 ) NOT NULL AFTER forum_lastpost_user");
 	set_time_limit(180);
-	$forum->update_lastpost('forum', 'all');
+	$forum->update_lastpost('forum', 'all', TRUE);
 	return "Updated lastpost info <br />";
 }
 

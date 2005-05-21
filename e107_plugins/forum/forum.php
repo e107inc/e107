@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-05-18 18:14:15 $
+|     $Revision: 1.24 $
+|     $Date: 2005-05-21 02:03:54 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -213,6 +213,7 @@ require_once(HEADERF);
 
 $parent_list = $forum->forum_getparents();
 $forum_list = $forum->forum_getforums();
+$sub_list = $forum->forum_getsubs();
 $newflag_list = $forum->forum_newflag_list();
 
 if (!$parent_list)
@@ -269,7 +270,6 @@ foreach ($parent_list as $parent) {
 
 function parse_parent($parent)
 {
-
 	if(check_class($parent['forum_class']))
 	{
 		$status[0]="";
@@ -288,7 +288,7 @@ function parse_parent($parent)
 
 function parse_forum($f, $restricted_string = "")
 {
-	global $FORUM_MAIN_FORUM, $gen, $forum, $tp, $newflag_list;
+	global $FORUM_MAIN_FORUM, $gen, $forum, $tp, $newflag_list, $sub_list;
 
 	if(USER && is_array($newflag_list) && in_array($f['forum_id'], $newflag_list))
 	{
@@ -306,7 +306,21 @@ function parse_forum($f, $restricted_string = "")
 	$FORUMDESCRIPTION = $f['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
 	$THREADS = $f['forum_threads'];
 	$REPLIES = $f['forum_replies'];
+	$FORUMSUBFORUMS = "";
 
+	if(is_array($sub_list[$f['forum_parent']][$f['forum_id']]))
+	{
+		list($lastpost_datestamp, $lastpost_thread) = explode(".", $f['forum_lastpost_info']);
+		$ret = parse_subs($sub_list[$f['forum_parent']][$f['forum_id']], $lastpost_datestamp);
+		$FORUMSUBFORUMS = "<br /><div class='indent'>{$ret['text']}</div>";
+		$THREADS += $ret['threads'];
+		$REPLIES += $ret['replies'];
+		if(isset($ret['lastpost_info']))
+		{
+			$f['forum_lastpost_info'] = $ret['lastpost_info'];
+			$f['user_name'] = $ret['user_name'];
+		}
+	}
 
 	if ($f['forum_lastpost_user'])
 	{
@@ -335,6 +349,27 @@ function parse_forum($f, $restricted_string = "")
 		$LASTPOST = "-";
 	}
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_FORUM));
+}
+
+function parse_subs($subList, $lastpost_datestamp)
+{
+	$ret = array();
+	$ret['text'] = "";
+	foreach($subList as $sub)
+	{
+		$ret['text'] .= 	($ret['text'] ? ", " : "");
+		$ret['text'] .= "<a href='".e_PLUGIN."forum/forum_viewforum.php?{$sub['forum_id']}'>{$sub['forum_name']}</a>";
+		$ret['threads'] += $sub['forum_threads'];
+		$ret['replies'] += $sub['forum_replies'];
+		$tmp = explode(".", $sub['forum_lastpost_info']);
+		if($tmp[0] > $lastpost_datestamp)
+		{
+			$ret['lastpost_info'] = $sub['forum_lastpost_info'];
+			$ret['user_name'] = $sub['user_name'];
+			$lastpost_datestamp = $tmp[0];
+		}
+	}
+	return $ret;
 }
 
 if (e_QUERY == "track")

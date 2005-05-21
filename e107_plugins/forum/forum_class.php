@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-05-18 18:14:15 $
+|     $Revision: 1.27 $
+|     $Date: 2005-05-21 02:03:54 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -39,8 +39,10 @@ class e107forum {
 		return $ret;
 	}
 
-	function update_lastpost($type, $id) {
+	function update_lastpost($type, $id, $update_threads = FALSE)
+	{
 		global $sql;
+		$sql2 = new db;
 		if ($type == 'thread')
 		{
 			$id = intval($id);
@@ -73,43 +75,32 @@ class e107forum {
 					foreach($parentList as $id)
 					{
 						//	echo "Updating forum #{$id}<br />";
-						$this->update_lastpost('forum', $id);
+						$this->update_lastpost('forum', $id, $update_threads);
 					}
 				}
 			}
 			else
 			{
 				$id = intval($id);
-				$sql2 = new db;
-				$current_lastpost = 0;
 				$forum_lpinfo = "";
-				if ($sql2->db_Select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0"))
+				if($update_threads == TRUE)
 				{
-					$cnt = 0;
-					while ($row = $sql2->db_Fetch())
+					if ($sql2->db_Select('forum_t', 'thread_id', "thread_forum_id = $id AND thread_parent = 0"))
 					{
-						$cnt++;
-						$lp_info = $this->update_lastpost('thread', $row['thread_id']);
-						if ($lp_info['thread_datestamp'] > $current_lastpost)
+						while ($row = $sql2->db_Fetch())
 						{
-
-							if($lp_info['user_name'] != "")
-							{
-								$forum_lp_user = $uid.".".$thread_info['user_name'];
-							}
-							else
-							{
-								$tmp = explode(chr(1), $lp_info['thread_user']);
-								$forum_lp_user = $tmp[0];
-							}
-
-							$forum_lp_info = $lp_info['thread_datestamp'].".".$row['thread_id'];
-							$current_lastpost = $lp_info['thread_datestamp'];
+							$this->update_lastpost('thread', $row['thread_id']);
 						}
 					}
-					$sql2->db_Update('forum', "forum_lastpost_user = '{$forum_lp_user}', forum_lastpost_info = '{$forum_lp_info}' WHERE forum_id={$id}");
-					//	echo "Forum $id lastpost info: $forum_lpinfo <br />";
-					//	echo "Updated $cnt threads <br />";
+				}
+				if ($sql->db_Select("forum_t", "*", "thread_forum_id='$id' ORDER BY thread_datestamp DESC LIMIT 0,1"))
+				{
+					$row = $sql->db_Fetch();
+					$tmp = explode(chr(1), $row['thread_user']);
+					$forum_lp_user = $tmp[0];
+					$last_id = $row['thread_parent'] ? $row['thread_parent'] : $row['thread_id'];
+					$forum_lp_info = $row['thread_datestamp'].".".$last_id;
+					$sql->db_Update('forum', "forum_lastpost_user = '{$forum_lp_user}', forum_lastpost_info = '{$forum_lp_info}' WHERE forum_id={$id}");
 				}
 			}
 		}
@@ -160,7 +151,7 @@ class e107forum {
 		$qry = "
 		SELECT f.*, u.user_name FROM #forum AS f
 		LEFT JOIN #user AS u ON f.forum_lastpost_user = u.user_id
-		WHERE forum_parent != 0
+		WHERE forum_parent != 0 AND forum_sub = 0
 		ORDER BY f.forum_order ASC
 		";
 		if ($sql->db_Select_gen($qry))
@@ -173,6 +164,35 @@ class e107forum {
 		}
 		return FALSE;
 	}
+
+	function forum_getsubs($forum_id = "")
+	{
+		global $sql;
+		$where = ($forum_id != "" ? "AND forum_sub = {$forum_id}" : "");
+		$qry = "
+		SELECT f.*, u.user_name FROM #forum AS f
+		LEFT JOIN #user AS u ON f.forum_lastpost_user = u.user_id
+		WHERE forum_sub != 0 {$where}
+		ORDER BY f.forum_order ASC
+		";
+		if ($sql->db_Select_gen($qry))
+		{
+			while ($row = $sql->db_Fetch())
+			{
+				if($forum_id == "")
+				{
+					$ret[$row['forum_parent']][$row['forum_sub']][] = $row;
+				}
+				else
+				{
+					$ret[] = $row;
+				}
+			}
+			return $ret;
+		}
+		return FALSE;
+	}
+
 
 	function forum_newflag_list()
 	{
@@ -233,8 +253,9 @@ class e107forum {
 	{
 		$forum_id = intval($forum_id);
 		$qry = "
-		SELECT f.*, fp.forum_class as parent_class, fp.forum_postclass as parent_postclass FROM #forum AS f
+		SELECT f.*, fp.forum_class as parent_class, fp.forum_postclass as parent_postclass, sp.forum_name AS sub_parent FROM #forum AS f
 		LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent
+		LEFT JOIN #forum AS sp ON f.forum_sub = sp.forum_id AND f.forum_sub > 0
 		WHERE f.forum_id = {$forum_id}
 		";
 		global $sql;
@@ -570,8 +591,14 @@ class e107forum {
 		}
 
 		$post_last_user = ($thread_parent ? "" : $post_user);
-		$vals = "0, '$thread_name', '$thread_thread', '$thread_forum_id', $post_time, '$thread_parent', '{$thread_post_user}', 0, $thread_active, $post_time, $thread_s, 0, '{$post_last_user}', 0";
+		$vals = "'0', '{$thread_name}', '{$thread_thread}', '{$thread_forum_id}', '{$post_time}', '{$thread_parent}', '{$thread_post_user}', '0', '$thread_active', '$post_time', '$thread_s', '0', '{$post_last_user}', '0'";
 		$newthread_id = $sql->db_Insert('forum_t', $vals);
+		if(!$newthread_id)
+		{
+			echo "thread creation failed! <br />
+			Values sent were: ".htmlentities($vals)."<br /><br />Please save these values for dev team for troubleshooting.";
+			exit;
+		}
 
 		// Increment user thread count and set user as viewed this thread
 		if (USER)
