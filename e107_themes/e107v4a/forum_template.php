@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/forum_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-04-11 16:42:38 $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-21 02:06:57 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -145,7 +145,7 @@ $FORUM_MAIN_PARENT = "<div class='spacer'>\n<table style='width:100%' class='nfo
 
 $FORUM_MAIN_PARENT_END = "</table></div>";
 
-$FORUM_MAIN_FORUM = "<tr>\n<td style='width:5%; text-align:center' class='nforumcaption3'>{NEWFLAG}</td>\n<td style='width:55%' class='nforumcaption3'>{FORUMNAME}<br /><span class='smallblacktext'>{FORUMDESCRIPTION}</span></td>\n<td style='width:10%; text-align:center' class='nforumthread'>{THREADS}</td>\n<td style='width:10%; text-align:center' class='nforumthread'>{REPLIES}</td>\n<td style='width:20%; text-align:center' class='nforumthread'><span class='smallblacktext'>{LASTPOST}</span></td>\n</tr>";
+$FORUM_MAIN_FORUM = "<tr>\n<td style='width:5%; text-align:center' class='nforumcaption3'>{NEWFLAG}</td>\n<td style='width:55%' class='nforumcaption3'>{FORUMNAME}<br /><span class='smallblacktext'>{FORUMDESCRIPTION}</span>{FORUMSUBFORUMS}</td>\n<td style='width:10%; text-align:center' class='nforumthread'>{THREADS}</td>\n<td style='width:10%; text-align:center' class='nforumthread'>{REPLIES}</td>\n<td style='width:20%; text-align:center' class='nforumthread'><span class='smallblacktext'>{LASTPOST}</span></td>\n</tr>";
 
 $FORUM_MAIN_END = "<div class='spacer'>\n<table style='width:100%' class='fborder'>\n<tr>\n<td colspan='2' style='width:60%' class='nforumcaption2'>{INFOTITLE}</td>\n</tr>\n<tr>\n<td rowspan='4' style='width:5%; text-align:center' class='forumheader3'>{LOGO}</td>\n<td style='width:100%' class='forumheader3'>{USERINFO}</td>\n</tr>\n<tr>\n<td style='width:auto' class='forumheader3'>{INFO}</td>\n</tr>\n<tr>\n<td style='width:100%' class='forumheader3'>{FORUMINFO}</td>\n</tr>\n<tr>\n<td style='width:100%' class='forumheader3'>{USERLIST}</td>\n</tr>\n</table>\n</div>\n<div class='spacer'>\n<table class='fborder' style='width:100%'>\n<tr>\n<td class='forumheader3' style='text-align:center; width:33%'>{ICONKEY}</td>\n<td style='text-align:center; width:33%' class='forumheader3'>{SEARCH}</td>\n<td style='width:33%; text-align:center; vertical-align:middle' class='forumheader3'><span class='smallblacktext'>{PERMS}</span>\n</td>\n</tr>\n</table>\n</div>\n<div class='nforumdisclaimer' style='text-align:center'>Forum theme loosely based on <a href='http://www.invisionpower.com/'>Invision Power Board</a></div></div>";
 
@@ -156,6 +156,7 @@ $FORUM_VIEW_START = "
 <tr>
 <td  colspan='2' class='nforumcaption'>{BREADCRUMB}</td>
 </tr>
+{SUBFORUMS}
 </table>
 
 <table style='width:100%'><tr>
@@ -229,6 +230,42 @@ $FORUM_VIEW_END = "
 
 <div class='nforumdisclaimer' style='text-align:center'>Forum theme loosely based on <a href='http://www.invisionpower.com/'>Invision Power Board</a></div>";
 
+if (!$FORUM_VIEW_SUB_START)
+ {
+	$FORUM_VIEW_SUB_START = "
+	<tr>
+	<td colspan='2'>
+		<br />
+		<div>
+		<table style='width:100%'>
+		<tr>
+			<td class='fcaption' style='width: 50%'>".FORLAN_20."</td>
+			<td class='fcaption' style='width: 10%'>".FORLAN_21."</td>
+			<td class='fcaption' style='width: 10%'>".LAN_55."</td>
+			<td class='fcaption' style='width: 30%'>".FORLAN_22."</td>
+		</tr>
+	";
+}
+
+if (!$FORUM_VIEW_SUB) {
+	$FORUM_VIEW_SUB = "
+	<tr>
+		<td class='forumheader3' style='text-align:left'><b>{SUB_FORUMTITLE}</b><br />{SUB_DESCRIPTION}</td>
+		<td class='forumheader3' style='text-align:center'>{SUB_THREADS}</td>
+		<td class='forumheader3' style='text-align:center'>{SUB_REPLIES}</td>
+		<td class='forumheader3' style='text-align:center'>{SUB_LASTPOST}</td>
+	</tr>
+	";
+}
+
+if (!$FORUM_VIEW_SUB_END) {
+	$FORUM_VIEW_SUB_END = "
+	</table><br /><br />
+	</div>
+	</td>
+	</tr>
+	";
+}
 
 
 ?>

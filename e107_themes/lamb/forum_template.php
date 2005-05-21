@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-25 11:38:50 $
-|     $Author: stevedunstan $
+|     $Revision: 1.4 $
+|     $Date: 2005-05-21 02:06:57 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 $FORUM_MAIN_START = "<div style='text-align:center'>";
@@ -23,7 +23,7 @@ $FORUM_MAIN_PARENT = "<div class='spacer'>\n<table style='width:100%' class='nfo
 
 //$FORUM_MAIN_PARENT_END = "</table></div>";
 
-$FORUM_MAIN_FORUM = "<tr>\n<td style='width:5%; text-align:center' class='nforumcaption3'>{NEWFLAG}</td>\n<td style='width:55%' class='nforumcaption3'>{FORUMNAME}<br /><span class='smallblacktext'>{FORUMDESCRIPTION}</span></td>\n<td style='width:10%; text-align:center' class='nforumthread'>{THREADS}</td>\n<td style='width:10%; text-align:center' class='nforumthread'>{REPLIES}</td>\n<td style='width:20%; text-align:center' class='nforumthread'><span class='smallblacktext'>{LASTPOST}</span></td>\n</tr>";
+$FORUM_MAIN_FORUM = "<tr>\n<td style='width:5%; text-align:center' class='nforumcaption3'>{NEWFLAG}</td>\n<td style='width:55%' class='nforumcaption3'>{FORUMNAME}<br /><span class='smallblacktext'>{FORUMDESCRIPTION}</span>{FORUMSUBFORUMS}</td>\n<td style='width:10%; text-align:center' class='nforumthread'>{THREADS}</td>\n<td style='width:10%; text-align:center' class='nforumthread'>{REPLIES}</td>\n<td style='width:20%; text-align:center' class='nforumthread'><span class='smallblacktext'>{LASTPOST}</span></td>\n</tr>";
 
 $FORUM_MAIN_END = "</table></div>\n<div class='spacer'>\n<table style='width:100%' class='nforumholder' cellspacing='1'>\n<tr>\n<td colspan='2' style='width:60%' class='nforumcaption2'>{INFOTITLE}</td>\n</tr>\n<tr>\n<td rowspan='4' style='width:5%; text-align:center' class='nforumthread'>{LOGO}</td>\n<td style='width:auto' class='nforumthread'>{USERINFO}</td>\n</tr>\n<tr>\n<td style='width:95%' class='nforumthread'>{INFO}</td>\n</tr><tr>\n<td style='width:95%' class='nforumthread'>{FORUMINFO}</td>\n</tr>\n<tr>\n<td style='width:95%' class='nforumthread'>{USERLIST}<br />{STATLINK}</td>\n</tr>\n</table>\n</div>\n<div class='spacer'>\n<table class='fborder' style='width:100%'>\n<tr>\n<td class='nforumthread' style='text-align:center; width:33%'>{ICONKEY}</td>\n<td style='text-align:center; width:33%' class='nforumthread'>{SEARCH}</td>\n<td style='width:33%; text-align:center; vertical-align:middle' class='nforumthread'><span class='smallblacktext'>{PERMS}</span>\n</td>\n</tr>\n</table>\n</div>\n</div>";
 
