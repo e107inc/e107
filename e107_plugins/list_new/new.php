@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/new.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-05-20 21:56:38 $
-|     $Author: stevedunstan $
+|     $Revision: 1.15 $
+|     $Date: 2005-05-21 03:47:55 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -30,6 +30,7 @@ require_once(HEADERF);
 $BULLET = (defined("BULLET") ? "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle;' />" : "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='bullet' style='vertical-align: middle;' />");
 
 $lvisit = (e_QUERY ? intval(e_QUERY) : USERLV);
+$lvisit = ($lvisit <= 14 ? time()-$lvisit*86400 : $lvisit);
 
 /* --- get template --- */
 if (file_exists(THEME."list_new_template.php"))
