@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-05-21 12:21:06 $
+|     $Revision: 1.20 $
+|     $Date: 2005-05-21 13:05:17 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -65,7 +65,7 @@ class e107{
 		}
 
 		$this->http_path = 'http://'.$_SERVER['HTTP_HOST'].$url_port.$server_path;
-		$this->https_path = 'http://'.$_SERVER['HTTP_HOST'].$url_port.$server_path;
+		$this->https_path = 'https://'.$_SERVER['HTTP_HOST'].$url_port.$server_path;
 
 		$this->file_path = $_SERVER['DOCUMENT_ROOT'].$server_path;
 
