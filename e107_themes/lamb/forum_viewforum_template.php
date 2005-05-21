@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_viewforum_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-21 02:06:57 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-21 10:18:41 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -35,7 +35,7 @@ $icon = (file_exists(THEME."forum/e.png") ? THEME."forum/e.png" : e_PLUGIN."foru
 </tr>
 </table>
 
-<table style='width:100%' class='nforumholder' cellpadding=0 cellspacing=0>
+<table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
 <tr>
 <td style='width:3%' class='nforumcaption2'>&nbsp;</td>
 <td style='width:47%' class='nforumcaption2'>{THREADTITLE}</td>
@@ -101,41 +101,32 @@ $FORUM_VIEW_FORUM = "
 </div>
 <div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>";
 
-if (!$FORUM_VIEW_SUB_START)
- {
-	$FORUM_VIEW_SUB_START = "
-	<tr>
-	<td colspan='2'>
-		<br />
-		<div>
-		<table style='width:100%'>
-		<tr>
-			<td class='fcaption' style='width: 50%'>".FORLAN_20."</td>
-			<td class='fcaption' style='width: 10%'>".FORLAN_21."</td>
-			<td class='fcaption' style='width: 10%'>".LAN_55."</td>
-			<td class='fcaption' style='width: 30%'>".FORLAN_22."</td>
-		</tr>
-	";
-}
 
-if (!$FORUM_VIEW_SUB) {
-	$FORUM_VIEW_SUB = "
-	<tr>
-		<td class='forumheader3' style='text-align:left'><b>{SUB_FORUMTITLE}</b><br />{SUB_DESCRIPTION}</td>
-		<td class='forumheader3' style='text-align:center'>{SUB_THREADS}</td>
-		<td class='forumheader3' style='text-align:center'>{SUB_REPLIES}</td>
-		<td class='forumheader3' style='text-align:center'>{SUB_LASTPOST}</td>
-	</tr>
-	";
-}
+$FORUM_VIEW_SUB_START = "
+<tr>
+<td colspan='2'>
+<table style='width:100%'  cellpadding='0' cellspacing='0'>
+<tr>
+<td class='nforumcaption2' style='width: 50%'>".FORLAN_20."</td>
+<td class='nforumcaption2' style='width: 10%; text-align: center;'>".FORLAN_21."</td>
+<td class='nforumcaption2' style='width: 10%; text-align: center;'>".LAN_55."</td>
+<td class='nforumcaption2' style='width: 30%; text-align: center;'>".FORLAN_22."</td>
+</tr>
+";
 
-if (!$FORUM_VIEW_SUB_END) {
-	$FORUM_VIEW_SUB_END = "
-	</table><br /><br />
-	</div>
-	</td>
-	</tr>
-	";
-}
+$FORUM_VIEW_SUB = "
+<tr>
+<td class='nforumview2' style='text-align:left'><b>{SUB_FORUMTITLE}</b><br />{SUB_DESCRIPTION}</td>
+<td class='nforumview2' style='text-align:center'>{SUB_THREADS}</td>
+<td class='nforumview2' style='text-align:center'>{SUB_REPLIES}</td>
+<td class='nforumview2' style='text-align:center'>{SUB_LASTPOST}</td>
+</tr>
+";
+
+$FORUM_VIEW_SUB_END = "
+</table>
+</td>
+</tr>
+";
 
  ?>
