@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-05-20 20:49:02 $
+|     $Revision: 1.19 $
+|     $Date: 2005-05-21 12:21:06 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -24,6 +24,7 @@ class e107{
 	var $e107_dirs;
 	var $http_path;
 	var $file_path;
+	var $relative_base_path;
 
 	function e107($e107_paths, $class2_file){
 		error_reporting(E_ERROR | E_WARNING | E_PARSE);
@@ -72,6 +73,17 @@ class e107{
 
 		// For compatability
 		define("e_HTTP", $server_path);
+
+		$page_path = dirname($_SERVER['PHP_SELF']).'/';
+		$relative_path = str_replace($this->server_path, '', $page_path);
+		$link_prefix = '';
+		$url_prefix = substr($_SERVER['PHP_SELF'], strlen($this->server_path), strrpos($_SERVER['PHP_SELF'], "/") + 1 - strlen($this->server_path));
+		$tmp = explode("?", $url_prefix);
+		$num_levels = substr_count($tmp[0], "/");
+		for ($i = 1; $i <= $num_levels; $i++) {
+			$link_prefix .= "../";
+		}
+		$this->relative_base_path = $link_prefix;
 	}
 
 	function fix_windows_paths($path) {
@@ -94,7 +106,7 @@ class e107{
 			$secure = true;
 		}
 		$site_uri = ($secure ? $this->https_path : $this->http_path);
-		return "{$site_uri}{$this->e107_dirs[$dir_type]}{$extended}";
+		return "{$site_uri}".($dir_type ? $this->e107_dirs[$dir_type] : "").($extended ? $extended : "");
 	}
 
 	function ban() {
@@ -140,7 +152,7 @@ class e107{
 		}
 		return $this->_ip_cache;
 	}
-	
+
 	function get_memory_usage(){
 		global $dbg;
 		if(function_exists("memory_get_usage")){
