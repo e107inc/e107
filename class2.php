@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.138 $
-|     $Date: 2005-05-21 17:13:11 $
+|     $Revision: 1.139 $
+|     $Date: 2005-05-21 23:05:49 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -547,7 +547,6 @@ if(!is_array($menu_data)) {
 	$e107cache->set("menus_".USERCLASS_LIST, $menu_data);
 	unset($menu_data);
 } else {
-	print_a($menu_data);
 	$eMenuList = $menu_data['menu_list'];
 	$eMenuActive = $menu_data['menu_active'];
 	unset($menu_data);
