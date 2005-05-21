@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_viewforum_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-11 08:45:19 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-05-21 02:06:57 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,6 +24,7 @@ $icon = (file_exists(THEME."forum/e.png") ? THEME."forum/e.png" : e_PLUGIN."foru
 <tr>
 <td  colspan='2' class='nforumcaption'>{BREADCRUMB}</td>
 </tr>
+{SUBFORUMS}
 <tr>
 </table>
 <table style='width:100%'>
@@ -99,5 +100,42 @@ $FORUM_VIEW_FORUM = "
 <a href='".e_PLUGIN."rss_menu/rss.php?11.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;' /></a>
 </div>
 <div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>";
+
+if (!$FORUM_VIEW_SUB_START)
+ {
+	$FORUM_VIEW_SUB_START = "
+	<tr>
+	<td colspan='2'>
+		<br />
+		<div>
+		<table style='width:100%'>
+		<tr>
+			<td class='fcaption' style='width: 50%'>".FORLAN_20."</td>
+			<td class='fcaption' style='width: 10%'>".FORLAN_21."</td>
+			<td class='fcaption' style='width: 10%'>".LAN_55."</td>
+			<td class='fcaption' style='width: 30%'>".FORLAN_22."</td>
+		</tr>
+	";
+}
+
+if (!$FORUM_VIEW_SUB) {
+	$FORUM_VIEW_SUB = "
+	<tr>
+		<td class='forumheader3' style='text-align:left'><b>{SUB_FORUMTITLE}</b><br />{SUB_DESCRIPTION}</td>
+		<td class='forumheader3' style='text-align:center'>{SUB_THREADS}</td>
+		<td class='forumheader3' style='text-align:center'>{SUB_REPLIES}</td>
+		<td class='forumheader3' style='text-align:center'>{SUB_LASTPOST}</td>
+	</tr>
+	";
+}
+
+if (!$FORUM_VIEW_SUB_END) {
+	$FORUM_VIEW_SUB_END = "
+	</table><br /><br />
+	</div>
+	</td>
+	</tr>
+	";
+}
 
  ?>
