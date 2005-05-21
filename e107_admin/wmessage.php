@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/wmessage.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-04-09 15:40:37 $
+|     $Revision: 1.22 $
+|     $Date: 2005-05-21 03:10:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -112,14 +112,17 @@ if ($action == "main" || $action == "") {
 }
 
 // Create and Edit
-if ($action == "create" || $action == "edit") {
+if ($action == "create" || $action == "edit")
+{
 
-	if ($sub_action == "edit"){
+	if ($sub_action == "edit")
+	{
 		$sql->db_Select("generic", "gen_intdata, gen_chardata", "gen_id = $id");
 		$row = $sql->db_Fetch();
 	}
 
-	if ($sub_action != 'edit'){
+	if ($sub_action != 'edit')
+	{
 		$preset = $pst->read_preset("admin_wmessage");
 		extract($preset);
 	}
@@ -131,28 +134,26 @@ if ($action == "create" || $action == "edit") {
 		<tr>";
 
 	$text .= "
-
 		<td style='width:20%' class='forumheader3'>".WMLAN_04."</td>
 		<td style='width:60%' class='forumheader3'>
 		<textarea class='tbox' id='wm_text' name='wm_text' cols='70' rows='18' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this)'>".$row['gen_chardata']."</textarea>
 		<br />";
 
-	if(!$pref['wysiwyg']){
-		$text .="<input id='helpguest' class='helpbox' type='text' name='helpguest' size='100' />
+	if(!$pref['wysiwyg'])
+	{
+		$text .= "
 		<br />
-		".display_help("helpguest",FALSE);
+		".display_help("helpb", 2);
 	}
 
 	$text .= "
 		</td>
 		</tr>
-
 		<tr><td class='forumheader3'>".WMLAN_03."</td>
 		<td class='forumheader3'>".r_userclass("wm_active", $row['gen_intdata'], "off", "public,guest,nobody,member,admin,classes")."</td></tr>";
 
 	$text .= "
 		<tr style='vertical-align:top'>
-
 		<td colspan='2' class='forumheader' style='text-align:center'>";
 
 	$text .= ($sub_action == "edit") ? "<input class='button' type='submit' name='wm_update' value='".LAN_UPDATE."' />" :
