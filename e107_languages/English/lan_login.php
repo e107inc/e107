@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_login.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-09 19:33:36 $
+|     $Revision: 1.10 $
+|     $Date: 2005-05-22 17:52:33 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -32,5 +32,8 @@ define("LAN_LOGIN_14", "User attempted to login with unrecognised user name");
 define("LAN_LOGIN_15", "User attempted to login with incorrect password");
 define("LAN_LOGIN_16", "User attempted to login with username/password combination that was already in use");
 define("LAN_LOGIN_17", "User password (hashed)");
+define("LAN_LOGIN_18", "Auto-ban: More than 10 failed login attempts")
+
+define("LAN_LOGIN_19", "> 10 failed login attempts");;
 
 ?>

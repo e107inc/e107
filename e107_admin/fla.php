@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fla.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-05-22 17:07:07 $
+|     $Revision: 1.6 $
+|     $Date: 2005-05-22 17:52:21 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -29,6 +29,7 @@ if(e_QUERY)
 {
 	list($action, $id) = explode(".", e_QUERY);
 }
+
 
 if(IsSet($_POST['delbanSubmit']))
 {
@@ -56,12 +57,26 @@ if(IsSet($_POST['delbanSubmit']))
 	$message .= ", ".FLALAN_5.": ".$bancount;
 }
 
+if($sql -> db_Select("generic", "*", "gen_type='auto_banned' ORDER BY gen_datestamp DESC"))
+{
+	$abArray = $sql -> db_getList();
+	$message = FLALAN_15;
+	foreach($abArray as $ab)
+	{
+		$message .= " - ".$ab['gen_ip'];
+	}
+}
 
 if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 $gen = new convert;
+
+
+
+
+
 if(!$sql -> db_Select("generic", "*", "gen_type='failed_login' ORDER BY gen_datestamp DESC"))
 {
 	$text = "<div style='text-align: center;'>".FLALAN_2."</div>";
@@ -69,7 +84,7 @@ if(!$sql -> db_Select("generic", "*", "gen_type='failed_login' ORDER BY gen_date
 else
 {
 
-	$faArray = $sql -> db_getList();
+	$faArray = $sql -> db_getList('ALL', FALSE, FALSE);
 
 	$text = "
 	<form method='post' action='".e_SELF."' id='flaform' >
@@ -127,10 +142,5 @@ else
 $ns->tablerender(FLALAN_1, $text);
 
 require_once("footer.php");
-
-/*
-<a href='".e_SELF."?checkall=1' onclick=\"setCheckboxes('flaform', true); return false;\">".FLALAN_11."</a> -
-	<a href='".e_SELF."' onclick=\"setCheckboxes('flaform', false); return false;\">".FLALAN_12."</a>
-*/
 
 ?>
