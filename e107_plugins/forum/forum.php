@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-05-22 14:29:40 $
+|     $Revision: 1.26 $
+|     $Date: 2005-05-22 14:34:00 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -342,7 +342,7 @@ function parse_forum($f, $restricted_string = "")
 			}
 		}
 		$lastpost_datestamp = $gen->convert_date($lastpost_datestamp, 'forum');
-		$LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name."<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$lastpost_thread}.last'>".IMAGE_post2.'</a>';
+		$LASTPOST = $lastpost_datestamp.'<br />'.$lastpost_name." <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$lastpost_thread}.last'>".IMAGE_post2.'</a>';
 	}
 	else
 	{
