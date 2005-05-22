@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.7 $
-|   $Date: 2005-04-30 13:53:11 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.8 $
+|   $Date: 2005-05-22 16:04:14 $
+|   $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
 	
@@ -71,6 +71,9 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 	*/
 
 
+//	echo "<pre>"; print_r($_FILES); echo "</pre>"; exit;
+
+
 	$files = $_FILES['file_userfile'];
 	if (!is_array($files)) {
 		return FALSE;
@@ -86,12 +89,11 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 				$name = time()."_".USERID."_".$fileinfo.$name;
 			}
 			$destination_file = getcwd()."/".$uploaddir."/".$name;
-			if (file_exists($destination_file)) {
+			if (file_exists($destination_file))
+			{
 				require_once(e_HANDLER."message_handler.php");
-				message_handler("MESSAGE", "".LANUPLOAD_10, __LINE__, __FILE__);
-				return FALSE;
-				require_once(FOOTERF);
-				exit;
+				message_handler("MESSAGE", LANUPLOAD_10, __LINE__, __FILE__);
+				$f_message .= LANUPLOAD_10 . __LINE__ .  __FILE__;
 			}
 			$uploadfile = $files['tmp_name'][$key];
 			$fileext1 = substr(strrchr($files['name'][$key], "."), 1);
@@ -99,10 +101,8 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 			if (!in_array($fileext1, $allowed_filetypes) && !in_array(strtolower($fileext1), $allowed_filetypes) && !in_array(strtolower($files['type'][$c]), $allowed_filetypes)) {
 				if (!in_array($fileext2, $allowed_filetypes) && !in_array(strtolower($fileext2), $allowed_filetypes) && !in_array(strtolower($files['type'][$c]), $allowed_filetypes)) {
 					require_once(e_HANDLER."message_handler.php");
-					message_handler("MESSAGE", "".LANUPLOAD_1." ".$files['type'][$key]." ".LANUPLOAD_2.".", __LINE__, __FILE__);
-					return FALSE;
-					require_once(FOOTERF);
-					exit;
+					message_handler("MESSAGE", LANUPLOAD_1." ".$files['type'][$key]." ".LANUPLOAD_2.".", __LINE__, __FILE__);
+					$f_message .= LANUPLOAD_1." ".$files['type'][$key]." ".LANUPLOAD_2."." . __LINE__ .  __FILE__;
 				}
 			}
 
@@ -128,7 +128,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 				 
 				require_once(e_HANDLER."message_handler.php");
 				message_handler("MESSAGE", "".LANUPLOAD_3." '".$files['name'][$key]."'", __LINE__, __FILE__);
-				$message .= "".LANUPLOAD_3." '".$files['name'][$key]."'.<br />";
+				$f_message .= "".LANUPLOAD_3." '".$files['name'][$key]."'.<br />";
 				$uploaded[$c]['size'] = $files['size'][$key];
 			} else {
 				switch ($files['error'][$key]) {
@@ -153,11 +153,13 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 				}
 				require_once(e_HANDLER."message_handler.php");
 				message_handler("MESSAGE", LANUPLOAD_11." '".$files['name'][$key]."' <br />".LANUPLOAD_12.": ".$error, __LINE__, __FILE__);
-				return FALSE;
+				$f_message .= LANUPLOAD_11." '".$files['name'][$key]."' <br />".LANUPLOAD_12.": ".$error . __LINE__ . __FILE__;
+
 			}
 		}
 		$c++;
 	}
+	define("F_MESSAGE", "<br />".$f_message);
 	return $uploaded;
 }
 ?>
