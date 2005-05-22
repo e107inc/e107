@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_config.php,v $
-|    $Revision: 1.5 $
-|    $Date: 2005-03-31 09:20:29 $
+|    $Revision: 1.6 $
+|    $Date: 2005-05-22 14:10:11 $
 |    $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -138,12 +138,14 @@ if ($delete == 'sn') {
 if ($action == 'cat') {
 	$sql->db_Select("links_page_cat", "link_category_id");
 	while ($row = $sql->db_Fetch()) {
-		if (isset($_POST['view_cat_links_'.$row['link_category_id']])) {
-			header("location:".e_SELF."?main.view.".$row['link_category_id']);
+		if (isset($_POST['view_cat_links_'.$row['link_category_id']]))
+		{
+			echo "<script type='text/javascript'>document.location.href='".e_SELF."?main.view.".$row['link_category_id']."'</script>n";
 			exit;
 		}
-		if (isset($_POST['category_edit_'.$row['link_category_id']])) {
-			header("location:".e_SELF."?cat.edit.".$row['link_category_id']);
+		if (isset($_POST['category_edit_'.$row['link_category_id']]))
+		{
+			echo "<script type='text/javascript'>document.location.href='".e_SELF."?cat.edit.".$row['link_category_id']."'</script>n";
 			exit;
 		}
 	}
