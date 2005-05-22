@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-05-21 02:03:54 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.25 $
+|     $Date: 2005-05-22 14:29:40 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -312,7 +312,7 @@ function parse_forum($f, $restricted_string = "")
 	{
 		list($lastpost_datestamp, $lastpost_thread) = explode(".", $f['forum_lastpost_info']);
 		$ret = parse_subs($sub_list[$f['forum_parent']][$f['forum_id']], $lastpost_datestamp);
-		$FORUMSUBFORUMS = "<br /><div class='indent'>{$ret['text']}</div>";
+		$FORUMSUBFORUMS = "<br /><div class='smalltext'>".FORLAN_444.": {$ret['text']}</div>";
 		$THREADS += $ret['threads'];
 		$REPLIES += $ret['replies'];
 		if(isset($ret['lastpost_info']))
