@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_submenusgen.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-21 06:27:37 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2005-05-22 14:12:34 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("LAN_MENGEN_1","Manage links for your main menu");
@@ -36,12 +36,12 @@ define("LAN_MENGEN_24","links section");
 define("LAN_MENGEN_25","Main link created: ");
 define("LAN_MENGEN_26","Link called: ");
 define("LAN_MENGEN_27"," is the MAIN link.");
-// define("LAN_MENGEN_28"," is now displayed in the submenu of ");
-// define("LAN_MENGEN_29"," already exists. No modification done.");
+define("LAN_MENGEN_28"," is now displayed in the submenu of ");
+define("LAN_MENGEN_29"," already exists. No modification done.");
 define("LAN_MENGEN_30"," was created in the submenu of ");
-// define("LAN_MENGEN_31"," To configure in your links section.");
-// define("LAN_MENGEN_32"," was deleted ! ");
-// define("LAN_MENGEN_33","No link to delete...");
+define("LAN_MENGEN_31"," To configure in your links section.");
+define("LAN_MENGEN_32"," was deleted ! ");
+define("LAN_MENGEN_33","No link to delete...");
 define("LAN_MENGEN_34","Other main links:");
 define("LAN_MENGEN_35","Submenu links names and URLs");
 define("LAN_MENGEN_36","Add links in submenus for:");
