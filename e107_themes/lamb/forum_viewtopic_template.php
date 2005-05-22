@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_viewtopic_template.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-05-21 05:01:01 $
+|     $Revision: 1.11 $
+|     $Date: 2005-05-22 14:48:55 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -83,6 +83,8 @@ $FORUMSTART = "
 </div>";
         $FORUMEND = "
 <div class='spacer'>
+{GOTOPAGES}
+</div>
 <table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
 <tr>
 <td style='width:50%; text-align:left; vertical-align:top' class='nforumthread'><b>{MODERATORS}</b><br />{FORUMJUMP}</td>

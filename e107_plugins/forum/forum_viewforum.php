@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-05-21 02:03:54 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.30 $
+|     $Date: 2005-05-22 14:48:55 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 	
@@ -337,7 +337,7 @@ function parse_thread($thread_info)
 			$PAGES .= $PAGES ? "-" : "";
 			$PAGES .= "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_info['thread_id'].".".($a * $pref['forum_postspage'])."'>".($a+1)."</a>";
 		}
-		$PAGES = LAN_316." [&nbsp;".$PAGES."&nbsp;]";
+		$PAGES = "<br />".LAN_316." [&nbsp;".$PAGES."&nbsp;]";
 	}
 	else
 	{
