@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_viewtopic_template.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-05-22 14:48:55 $
+|     $Revision: 1.12 $
+|     $Date: 2005-05-22 16:41:46 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -39,8 +39,8 @@ $FORUMSTART = "
 
 <table style='width:100%'>
 <tr>
-<td style='width:70%'><div class='mediumtext'><img src='".$icon."' style='vertical-align:middle' alt=''/> <b>{THREADNAME}</b></div><br />{GOTOPAGES}</td>
-<td style='width:30%; vertical-align:bottom; text-align:right;'>{BUTTONS}</td>
+<td style='width:60%'><div class='mediumtext'><img src='".$icon."' style='vertical-align:middle' alt=''/> <b>{THREADNAME}</b></div><br />{GOTOPAGES}</td>
+<td style='width:40%; vertical-align:bottom; text-align:right;'>{BUTTONS}</td>
 </tr>
 </table>
 
