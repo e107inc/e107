@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fla.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-05-10 19:18:03 $
+|     $Revision: 1.5 $
+|     $Date: 2005-05-22 17:07:07 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -87,7 +87,7 @@ else
 		extract($fa);
 		$text .= "<tr>
 		<td style='width: 20%;' class='forumheader3'>".$gen->convert_date($gen_datestamp, "forum")."</td>
-		<td style='width: 50%;' class='forumheader3'>".str_replace(":::", "<br />", $gen_chardata)."</td>
+		<td style='width: 50%;' class='forumheader3'>".str_replace(":::", "<br />", htmlentities($gen_chardata))."</td>
 		<td style='width: 20%;' class='forumheader'>".$fa['gen_ip']."<br />". gethostbyaddr(getenv($gen_ip))."</td>
 		<td style='width: 10%; text-align: center;' class='forumheader3'>
 		<input type='checkbox' name='fladelete[]' value='$gen_id' /> delete<br />
