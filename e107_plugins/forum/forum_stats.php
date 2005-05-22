@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_stats.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-15 15:10:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-22 14:39:46 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -58,7 +58,7 @@ foreach($array as $table)
 
 
 $query = "
-SELECT ft.thread_id, ft.thread_user, ft.thread_name, ft.thread_anon, ft.thread_total_replies, ft.thread_datestamp, f.forum_class, u.user_name FROM #forum_t as ft 
+SELECT ft.thread_id, ft.thread_user, ft.thread_name, ft.thread_total_replies, ft.thread_datestamp, f.forum_class, u.user_name FROM #forum_t as ft 
 LEFT JOIN #user AS u ON ft.thread_user = u.user_id 
 LEFT JOIN #forum AS f ON f.forum_id = ft.thread_forum_id 
 WHERE ft.thread_parent = 0 
@@ -67,6 +67,7 @@ AND f.forum_class IN (".USERCLASS_LIST.")
 ORDER BY thread_total_replies DESC LIMIT 0,10";
 $sql -> db_Select_gen($query);
 $most_activeArray = $sql -> db_getList();
+
 
 $query = "
 SELECT ft.*, user_name FROM #forum_t as ft 
