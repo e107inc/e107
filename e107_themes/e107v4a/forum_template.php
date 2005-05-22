@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/forum_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-05-21 02:06:57 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2005-05-22 16:41:45 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -37,8 +37,8 @@ $FORUMSTART = "
 
 <table style='width:100%'>
 <tr>
-<td style='width:80%'><div class='mediumtext'><img src='".e_PLUGIN."forum/images/e.png' alt='' style='vertical-align:middle' /> <b>{THREADNAME}</b></div><br />{GOTOPAGES}</td>
-<td style='width:20%; vertical-align:bottom;'>{BUTTONS}</td>
+<td style='width:60%'><div class='mediumtext'><img src='".e_PLUGIN."forum/images/e.png' alt='' style='vertical-align:middle' /> <b>{THREADNAME}</b></div><br />{GOTOPAGES}</td>
+<td style='width:40%; text-align: right; vertical-align:bottom;'>{BUTTONS}</td>
 </tr>
 </table>
 
