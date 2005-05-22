@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_posted_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-03 14:34:33 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-22 13:47:27 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -50,6 +50,7 @@ $FORUMREPLYPOSTED = "
 <td style='text-align:right; vertical-align:center; width:20%' class='forumheader2'>".IMAGE_e."&nbsp;</td>
 <td style='vertical-align:center; width:80%' class='forumheader2'>
 <br />".LAN_415."<br />
+".(defined("FORUM_MESSAGE") ? FORUM_MESSAGE."<br />" : "")."
 <span class='defaulttext'><a href='".e_PLUGIN."forum/forum_viewtopic.php?{$iid}.last'>".LAN_325."</a><br />
 <a href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_id."'>".LAN_326."</a></span><br /><br />
 </td></tr></table>";

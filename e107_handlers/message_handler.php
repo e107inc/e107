@@ -11,9 +11,9 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/message_handler.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-11 23:57:25 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2005-05-22 13:47:13 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -50,6 +50,11 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		break;
 
 		case "MESSAGE":
+		if(strstr(e_SELF, "forum_post.php"))
+		{
+			define("FORUM_MESSAGE", $message);
+			return;
+		}
 		$ns->tablerender("", "<div style='text-align:center'><b>{$message}</b></div>");
 		break;
 
@@ -64,6 +69,21 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		case "P_ALERT":
 		echo "<script type='text/javascript'>alert(\"".$tp->toJS($message)."\"); </script>\n";
 		break;
+
+		case "POPUP":
+
+		$mtext = "<html><head><title>Message</title><link rel=stylesheet href=" . THEME . "style.css></head><body style=padding-left:2px;padding-right:2px;padding:2px;padding-bottom:2px;margin:0px;align;center marginheight=0 marginleft=0 topmargin=0 leftmargin=0><table width=100% align=center style=width:100%;height:99%padding-bottom:2px class=bodytable height=99% ><tr><td width=100% ><center><b>--- Message ---</b><br /><br />".$message."<br /><br /><form><input class=button type=submit onclick=self.close() value = ok /></form></center></td></tr></table></body></html> ";
+
+		echo "
+		<script type='text/javascript'>
+		winl=(screen.width-200)/2;
+		wint = (screen.height-100)/2;
+		winProp = 'width=200,height=100,left='+winl+',top='+wint+',scrollbars=no';
+		window.open('javascript:document.write(\"".$mtext."\");', \"message\", winProp);
+		</script >";
+
+		break;
+
 	}
 }
 
