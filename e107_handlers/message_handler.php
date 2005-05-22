@@ -11,8 +11,8 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/message_handler.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-22 13:47:13 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-22 16:04:14 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -52,7 +52,6 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		case "MESSAGE":
 		if(strstr(e_SELF, "forum_post.php"))
 		{
-			define("FORUM_MESSAGE", $message);
 			return;
 		}
 		$ns->tablerender("", "<div style='text-align:center'><b>{$message}</b></div>");
