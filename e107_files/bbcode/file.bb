@@ -10,5 +10,5 @@ if (array_key_exists('forum_attach',$pref) && $pref['forum_attach'] && FILE_UPLO
 			return;
 		}
 	}
-	return "<br /><a href='".$fname."'><img src='".$image."' alt='' style='border:0; vertical-align:middle' /> ".$code_text."</a>";
+	return "<br /><a href='".$fname."'><img src='".$image."' alt='' style='border:0; vertical-align:middle' /></a> <a href='".$fname."'>".$code_text."</a>";
 }
