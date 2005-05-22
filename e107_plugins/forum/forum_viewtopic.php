@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-05-21 02:03:54 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.26 $
+|     $Date: 2005-05-22 23:12:31 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -409,11 +409,11 @@ function showmodoptions()
 		<form method='post' action='".e_PLUGIN."forum/forum_viewforum.php?{$forum_id}' id='frmMod_{$forum_id}_{$post_info['thread_id']}'>
 		<div>
 		<a href='".e_PLUGIN."forum/forum_post.php?edit.{$post_info['thread_id']}.{$from}'>".IMAGE_admin_edit."</a>
-		<input type='image' ".IMAGE_admin_delete." name='delete_{$post_info['thread_id']}' value='thread_action' onclick=\"return confirm_('$type', $forum_id, $thread_id, '{$post_info['user_name']}')\" />
+		<input type='image' ".IMAGE_admin_delete." name='delete_{$post_info['thread_id']}' value='thread_action' onclick=\"return confirm_('{$type}', {$forum_id}, {$thread_id}, '{$post_info['user_name']}')\" />
 		";
 	if ($type == 'thread')
 	{
-		$ret .= "<a href='".e_PLUGIN."forum/forum_conf.php?move.".$thread_id."'>".IMAGE_admin_move2."</a>";
+		$ret .= "<a href='".e_PLUGIN."forum/forum_conf.php?move.{$thread_id}'>".IMAGE_admin_move2."</a>";
 	}
 	$ret .= "
 		</div>
