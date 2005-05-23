@@ -17,9 +17,9 @@ if (ADMIN) {
 		}
 	}
 	closedir($handle);
-
-	$plugpath = e_PLUGIN.substr(strrchr(substr(e_SELF, 0, strrpos(e_SELF, "/")), "/"), 1)."/help.php";
-	if(file_exists($plugpath)){
+	$plugpath = e_BASE.substr(substr(e_SELF, 0, strrpos(e_SELF, "/")), strpos(e_SELF, e_HTTP)+strlen(e_HTTP))."/help.php";
+	if(file_exists($plugpath))
+	{
 		@require_once($plugpath);
 	}
 	$help_text = ob_get_contents();
