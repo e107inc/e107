@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-05-20 12:29:33 $
+|     $Revision: 1.17 $
+|     $Date: 2005-05-23 11:09:26 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -43,7 +43,7 @@ if (e_QUERY == 'snapshot' || e_QUERY == 's' || (strpos(e_QUERY, '.s') !== false)
 class file_inspector {
 	
 	var $root_dir;
-	var $files_text = array();
+	var $files = array();
 	var $image = array();
 	var $parent;
 	var $count = array();
@@ -99,8 +99,34 @@ class file_inspector {
 		$ns -> tablerender(FC_LAN_1, $text);
 		
 	}
-
-	function inspect($dir, $level, &$tree_end, &$parent_expand) {
+	
+	function scan($dir) {
+		$handle = opendir($dir);
+		while (false !== ($readdir = readdir($handle))) {
+			if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
+				$path = $dir.'/'.$readdir;
+				if (is_dir($path)) {
+					$dirs[$path] = $readdir;
+				} else {
+					$files[] = $readdir;
+				}
+			}
+		}
+		closedir($handle);
+		
+		asort ($dirs);
+		sort ($files);
+		
+		foreach ($dirs as $dir_path => $dir_list) {
+			$list[$dir_list] = $this -> scan($dir_path);
+		}
+		foreach ($files as $file_list) {
+			$list[] = $file_list;
+		}
+		return $list;
+	}
+	
+	function inspect($list, $level, $dir, &$tree_end, &$parent_expand) {
 		global $core_image;
 		unset ($childOut);
 		$parent_expand = false;
@@ -109,24 +135,23 @@ class file_inspector {
 		$this -> files[$dir_id]['.']['parent'] = $this -> parent;
 		$directory = $level ? basename($dir) : SITENAME;
 		$level++;
-		$handle = opendir($dir);
-		while (false !== ($readdir = readdir($handle))) {
-			if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
-				$this -> parent = $dir_id;
-				$path = $dir.'/'.$readdir;
+		foreach ($list as $key => $value) {
+			$this -> parent = $dir_id;
+			if (is_array($value)) {
+				$path = $dir.'/'.$key;
+				$child_open = false;
+				$child_end = true;
+				$sub_text .= $this -> inspect($value, $level, $path, $child_end, $child_expand);
+				$tree_end = false;
+				if ($child_expand) {
+					$parent_expand = true;
+					$last_expand = true;
+				}
+			} else {
+				$path = $dir.'/'.$value;
 				$i_path = str_replace($this -> root_dir.'/', '', $path);
-				if (is_dir($path)) {
-					$child_open = false;
-					$child_end = true;
-					$childOut .= $this -> inspect($path, $level, $child_end, $child_expand);
-					$tree_end = false;
-					if ($child_expand) {
-						$parent_expand = true;
-						$last_expand = true;
-					}
-				} else {
-					 if ($_POST['display'] == 'all' || ($_POST['display'] == 'fail' && isset($core_image[$i_path]) && $readdir != 'core_image.php' && $this -> checksum($path) != $core_image[$i_path]) || ($_POST['display'] == 'core' && isset($core_image[$i_path])) || ($_POST['display'] == 'non' && !isset($core_image[$i_path]))) {
-						$fid = strtolower($readdir);
+					if ($_POST['display'] == 'all' || ($_POST['display'] == 'fail' && isset($core_image[$i_path]) && $value != 'core_image.php' && $this -> checksum($path) != $core_image[$i_path]) || ($_POST['display'] == 'core' && isset($core_image[$i_path])) || ($_POST['display'] == 'non' && !isset($core_image[$i_path]))) {
+						$fid = strtolower($value);
 						$filesize = filesize($path);
 						if (isset($core_image[$i_path])) {
 							$this -> count['core']['num']++;
@@ -141,7 +166,7 @@ class file_inspector {
 						} else if ($_POST['display'] != 'fail' && !$_POST['integrity']) {
 							$file_icon = 'file_core.png';
 							$dir_icon = ($dir_icon == 'folder_unknown.png') ? 'folder_unknown.png' : 'folder_core.png';
-						} else if ($readdir != 'core_image.php') {
+						} else if ($value != 'core_image.php') {
 							if ($_POST['display'] == 'fail' || $this -> checksum($path) != $core_image[$i_path]) {
 								$this -> count['fail']['num']++;
 								$this -> count['fail']['size'] += $filesize;
@@ -155,14 +180,13 @@ class file_inspector {
 								$dir_icon = ($dir_icon == 'folder_warning.png' || $dir_icon == 'folder_unknown.png') ? $dir_icon : 'folder_check.png';
 							}
 						}
-						$this -> files[$dir_id][$fid]['file'] = $readdir;
+						$this -> files[$dir_id][$fid]['file'] = $value;
 						$this -> files[$dir_id][$fid]['icon'] = $file_icon;
 						$this -> files[$dir_id][$fid]['size'] = $filesize;
 					}
-				}
 			}
 		}
-
+		
 		if (!$dir_icon) {
 			$dir_icon = 'folder.png';
 		}
@@ -171,16 +195,16 @@ class file_inspector {
 		$text = "<div class='d' style='margin-left: ".($level * 8)."px'>";
 		$text .= $tree_end ? "<img src='".e_IMAGE."fileinspector/blank.png' class='e' alt='' />" : "<span onclick=\"ec('".$dir_id."')\"><img src='".e_IMAGE."fileinspector/".($hide ? 'expand.png' : 'contract.png')."' class='e' alt='' id='e_".$dir_id."' /></span>";
 		$text .= "&nbsp;<span onclick=\"sh('f_".$dir_id."')\">".$icon."&nbsp;".$directory."</span>";
-		$text .= $tree_end ? "" : "<div ".$hide." id='d_".$dir_id."'>".$childOut."</div>";
+		$text .= $tree_end ? "" : "<div ".$hide." id='d_".$dir_id."'>".$sub_text."</div>";
 		$text .= "</div>";
 
 		return $text;
-		closedir($handle);
 	}
-	
+
 	function scan_results() {
 		global $ns, $rs;
-		$scan_text = $this -> inspect($this -> root_dir, 0);
+		$list = $this -> scan($this -> root_dir);
+		$scan_text = $this -> inspect($list, 0, $this -> root_dir);
 		
 		$text = "<div style='text-align:center'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
