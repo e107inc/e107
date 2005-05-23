@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-05-21 02:03:54 $
+|     $Revision: 1.28 $
+|     $Date: 2005-05-23 00:26:37 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -226,12 +226,15 @@ class e107forum {
 
 	function thread_user($post_info)
 	{
-		if (!$post_info['user_id'])
+		if($post_info['user_name'])
 		{
-			$tmp = explode(chr(1), $post_info['thread_anon']);
-			$post_info['user_name'] = $tmp[0];
+			return $post_info['user_name'];
 		}
-		return $post_info['user_name'];
+		else
+		{
+			$tmp = explode(".", $post_info['thread_user'], 2);
+			return $tmp[1];
+		}
 	}
 
 	function untrack($thread_id, $from)
