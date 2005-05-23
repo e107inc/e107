@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-05-23 01:45:54 $
-|     $Author: e107coders $
+|     $Revision: 1.22 $
+|     $Date: 2005-05-23 22:57:48 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -56,8 +56,12 @@ class e107{
 		}
 
 		// replace the document root with "" (nothing) in the e107 root path, gives us out e_HTTP path :)
-		$server_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $e107_root_folder)."/";
-
+		if(defined("FORCE_SERVER_PATH")){
+			$server_path = FORCE_SERVER_PATH;
+		} else {
+			$server_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $e107_root_folder)."/";
+		}
+		
 		if ($_SERVER['SERVER_PORT'] != 80) {
 			$url_port = ":{$_SERVER['SERVER_PORT']}";
 		} else {
