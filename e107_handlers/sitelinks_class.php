@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-05-16 17:21:26 $
-|     $Author: stevedunstan $
+|     $Revision: 1.49 $
+|     $Date: 2005-05-23 01:34:40 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -100,14 +100,13 @@ class sitelinks
 			{
 				$main_linkname = $link['link_name'];
 
-				$link['link_expand'] = (isset($pref['sitelinks_expandsub']) && is_array($this->eLinkList[$main_linkname])) ?  TRUE : FALSE;
+				$link['link_expand'] = (isset($pref['sitelinks_expandsub']) && isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])) ?  TRUE : FALSE;
 
 				$text .= $this->makeLink($link,'', $style);
 
 				// if there's a submenu. :
-				if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname]))
-				{
-                    
+				if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])){
+
 					$substyle = (eregi($link['link_url'],e_SELF) || eregi($main_linkname,e_SELF) || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
 					$text .= "\n\n<div id='sub_".$main_linkname."' style='display:$substyle'>\n";
 					foreach ($this->eLinkList[$main_linkname] as $sub)
@@ -173,18 +172,15 @@ class sitelinks
 		$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
 
 		// Check for screentip regardless of URL.
-		if (isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description'])
-		{
+		if (isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description']){
 			$screentip = " title = '".$linkInfo['link_description']."'";
 		}
 
 		// Check if its expandable first. It should override its URL.
-		if ($linkInfo['link_expand'])
-		{
+		if (isset($linkInfo['link_expand']) && $linkInfo['link_expand']){
 			$href = " href=\"javascript: expandit('sub_".$linkInfo['link_name']."')\"";
 		}
-		elseif ($linkInfo['link_url'])
-		{
+		elseif ($linkInfo['link_url']){
 
 			// Only add the e_BASE if it actually has an URL.
 			if (!preg_match('#(http:|mailto:|ftp:)#', $linkInfo['link_url']))
