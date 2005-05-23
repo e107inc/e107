@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.139 $
-|     $Date: 2005-05-21 23:05:49 $
-|     $Author: streaky $
+|     $Revision: 1.140 $
+|     $Date: 2005-05-23 01:28:19 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -1119,7 +1119,9 @@ function e107_include($fname) {
 
 function e107_include_once($fname) {
 	global $e107_debug;
-	$ret = ($e107_debug ? include_once($fname) : @include_once($fname));
+	if(is_readable($fname)){
+	$ret = (!$e107_debug)? @include_once($fname) : include_once($fname);
+	}
 	return $ret;
 }
 
