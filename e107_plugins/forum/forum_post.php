@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-05-23 00:26:37 $
+|     $Revision: 1.34 $
+|     $Date: 2005-05-23 13:57:52 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -461,13 +461,10 @@ $FORUMJUMP = forumjump();
 
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMPOST);
 
-
-
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-
-if ($action == 'rp') {
+if ($action == 'rp')
+{
 	$tmp_template = "
 		<div style='text-align:center'>
 		{THREADTOPIC}
@@ -477,17 +474,22 @@ if ($action == 'rp') {
 	$text .= $tp->parseTemplate($tmp_template, FALSE, $forum_post_shortcodes);
 }
 
-if ($pref['forum_enclose']) {
+if ($pref['forum_enclose'])
+{
 	$ns->tablerender($pref['forum_title'], $text);
-} else {
+}
+else
+{
 	echo $text;
 }
 
-function isAuthor($thread) {
+function isAuthor($thread)
+{
 	global $sql;
 	$sql->db_Select("forum_t", "thread_user", "thread_id='".$thread."' ");
 	$row = $sql->db_Fetch();
-	return ($row['thread_user'] == USERID || ADMIN === TRUE);
+	$tmp = explode(".", $row['thread_user'], 2);
+	return ($tmp[0] == USERID || ADMIN === TRUE);
 }
 
 function getuser($name)
