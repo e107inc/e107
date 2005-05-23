@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-05-21 02:04:35 $
+|     $Revision: 1.11 $
+|     $Date: 2005-05-23 15:46:51 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -182,5 +182,6 @@ define("FORLAN_150", "sub-forum");
 define("FORLAN_151", "ID");
 define("FORLAN_152", "posts");
 define("FORLAN_153", "Tools");
+define("FORLAN_154", "Reply Deleted");
 
 ?>
