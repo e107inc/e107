@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-05-21 13:05:17 $
-|     $Author: streaky $
+|     $Revision: 1.21 $
+|     $Date: 2005-05-23 01:45:54 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -116,7 +116,7 @@ class e107{
 
 		$tmp = gethostbyaddr(getenv('REMOTE_ADDR'));
 		preg_match("/[\w]+\.[\w]+$/si", $tmp, $match);
-		$bhost = $match[0];
+		$bhost = (isset($match[0])) ? $match[0] : "" ;
 
 		if ($ip != '127.0.0.1') {
 			if ($sql->db_Select("banlist", "*", "banlist_ip='{$_SERVER['REMOTE_ADDR']}' OR banlist_ip='".USEREMAIL."' OR banlist_ip='{$ip}' OR banlist_ip='{$wildcard}' OR banlist_ip='{$bhost}'")) {
@@ -127,7 +127,7 @@ class e107{
 	}
 
 	function getip() {
-		if(!$this->_ip_cache){
+		if(!isset($this->_ip_cache)){
 			if (getenv('HTTP_X_FORWARDED_FOR')) {
 				$ip=$_SERVER['REMOTE_ADDR'];
 				if (preg_match("/^([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)/", getenv('HTTP_X_FORWARDED_FOR'), $ip3)) {
