@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-05-16 08:32:57 $
-|     $Author: e107coders $
+|     $Revision: 1.29 $
+|     $Date: 2005-05-23 14:16:20 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -258,15 +258,19 @@ if (isset($_POST['updatesettings']))
 		$_POST['msn'] = $tp->toDB($_POST['msn']);
 		$_POST['aim'] = $tp->toDB($_POST['aim']);
 		$_POST['realname'] = $tp->toDB($_POST['realname']);
-		$_POST['customtitle'] = $tp->toDB($_POST['customtitle']);
-
+	$new_customtitle = "";
+		if(isset($_POST['customtitle']))
+		{
+//			$_POST['customtitle'] = $tp->toDB($_POST['customtitle']);
+			$new_customtitle = ", user_customtitle = '".$tp->toDB($_POST['customtitle'])."' ";
+		}
 		unset($_POST['password1']);
 		unset($_POST['password2']);
 
 		$ret = $e_event->trigger("preuserset", $_POST);
 
 		if ($ret=='') {
-			$sql->db_Update("user", "user_name='$username', user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."', user_customtitle='".$_POST['customtitle']."' WHERE user_id='".$inp."' ");
+			$sql->db_Update("user", "user_name='$username', user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."' {$new_customtitle} WHERE user_id='".$inp."' ");
 
 			if(ADMIN && getperms("4"))
 			{
@@ -376,7 +380,8 @@ $text .= "<div style='text-align:center'>
 	".$rs->form_text("realname", 40, $curVal['user_login'], 100)."
 	</td>
 	</tr>";
-if ($pref['forum_user_customtitle'] || ADMIN) {
+if ($pref['forum_user_customtitle'] || ADMIN)
+{
 	$text .= "
 		<tr>
 		<td style='width:30%' class='forumheader3'>".LAN_CUSTOMTITLE."</td>
