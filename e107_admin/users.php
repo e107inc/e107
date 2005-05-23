@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-05-05 06:35:57 $
-|     $Author: streaky $
+|     $Revision: 1.47 $
+|     $Date: 2005-05-23 14:58:08 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -426,28 +426,43 @@ class users{
 
 	$datefields = array("user_lastpost","user_lastvisit","user_join","user_currentvisit");
 
-	foreach($search_display as $disp){
-				$text .= "<td style='white-space:nowrap' class='forumheader3'>";
-				if($disp == "user_class"){
-					if ($user_class) {
-						$tmp = explode(",", $user_class);
-						while (list($key, $class_id) = each($tmp)) {
-							$text .= ($class[$class_id] ? $class[$class_id]."<br />\n" : "");
-						}
-					} else {
-						$text .= "&nbsp;";
-					}
-				}elseif(in_array($disp,$datefields)){
-					$text .= ($row[$disp]) ? strftime($pref['shortdate'],$row[$disp])."&nbsp;" : "&nbsp";
-				}else{
-					$text .= $row[$disp]."&nbsp;";
+	foreach($search_display as $disp)
+	{
+		$text .= "<td style='white-space:nowrap' class='forumheader3'>";
+		if($disp == "user_class")
+		{
+			if ($user_class)
+			{
+				$tmp = explode(",", $user_class);
+				while (list($key, $class_id) = each($tmp))
+				{
+					$text .= ($class[$class_id] ? $class[$class_id]."<br />\n" : "");
 				}
-				if(isset($prev[$disp]) && $row[$disp] == $prev[$disp] && $prev[$disp] != ""){ // show matches
-					$text .= " <b>*</b>";
-				}
+			}
+			else
+			{
+				$text .= "&nbsp;";
+			}
+		}
+		elseif(in_array($disp,$datefields))
+		{
+			$text .= ($row[$disp]) ? strftime($pref['shortdate'],$row[$disp])."&nbsp;" : "&nbsp";
+		}
+		elseif($disp == "user_name")
+		{
+			$text .= "<a href='".e_BASE."user.php?id.{$row['user_id']}'>{$row['user_name']}</a>";
+		}
+		else
+		{
+			$text .= $row[$disp]."&nbsp;";
+		}
+		if(isset($prev[$disp]) && $row[$disp] == $prev[$disp] && $prev[$disp] != "")
+		{ // show matches
+			$text .= " <b>*</b>";
+		}
 
-				$text .= "</td>";
-			$prev[$disp] = $row[$disp];
+		$text .= "</td>";
+		$prev[$disp] = $row[$disp];
 	}
 // -------------------------------------------------------------
 				$qry = (e_QUERY) ?  "?".e_QUERY : "";
