@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-04-01 07:21:16 $
-|     $Author: stevedunstan $
+|     $Revision: 1.13 $
+|     $Date: 2005-05-23 02:44:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -25,16 +25,23 @@ if (!USER) {
 }
 	
 $_POST['f_query'] = trim(chop($_POST['f_query']));
+
 if (e_QUERY)
 {
 	list($from, $action, $id) = explode(".", e_QUERY);
-} else {
+	$id = intval($id);
+	$from = intval($from);
+}
+else
+{
 	header("location:".e_BASE."index.php");
 	exit;
 }
 
-if(!defined("BULLET"))	 define("BULLET", "bullet2.gif");
-
+if(!defined("BULLET"))
+{
+	 define("BULLET", "bullet2.gif");
+}
 
 if ($action == "comments") {
 	if(is_numeric($id))
@@ -101,7 +108,10 @@ if ($action == "forums" || isset($_POST['fsearch'])) {
 	 
 	if(is_numeric($id))
 	{
-		$user_id = $id;
+		$user_id = intval($id);
+		$sql->db_Select("user", "user_name", "user_id=".$id."");
+		$row = $sql->db_Fetch();
+		$fcaption = UP_LAN_0." ".$row['user_name'];
 	}
 	else
 	{
@@ -115,51 +125,59 @@ if ($action == "forums" || isset($_POST['fsearch'])) {
 			require_once(e_BASE.$THEMES_DIRECTORY."templates/userposts_template.php");
 		}
 	}
-	 
-	if (isset($_POST['f_query']) && $_POST['f_query'] != "") {
-		extract($_POST);
-		$fcaption = UP_LAN_12.' '.$user_name;
-		$f_query = $_POST['f_query'];
-		$db_query = "SELECT * FROM #forum_t, #forum WHERE #forum.forum_id=#forum_t.thread_forum_id AND #forum_t.thread_user='".$user_id."' AND (#forum_t.thread_name REGEXP('".$f_query."') OR #forum_t.thread_thread REGEXP('".$f_query."')) ORDER BY #forum_t.thread_datestamp DESC ";
-	} else {
-		if (!is_object($sql2)) {
-			$sql2 = new db;
-		}
-		$ftotal = 0;
 
-		$sql2->db_Select_gen("SELECT * FROM #forum_t, #forum WHERE #forum.forum_id=#forum_t.thread_forum_id AND #forum_t.thread_user=$user_id" );
-		while ($row = $sql2->db_Fetch()) {
-			extract($row);
-			if (check_class($forum_class)) {
-				$ftotal ++;
-				$limit_ids[] = $thread_id;
-			}
-		}
-		$limit_ids = implode(",", $limit_ids);
-		$fcaption = UP_LAN_0.$user_name;
-		$db_query = "SELECT * FROM #forum_t, #forum WHERE #forum.forum_id=#forum_t.thread_forum_id AND #forum_t.thread_user='".$user_id."' AND #forum_t.thread_id IN ($limit_ids) ORDER BY #forum_t.thread_datestamp DESC LIMIT ".$from.", 10";
+	$s_info = "";
+	if (isset($_POST['f_query']) && $_POST['f_query'] != "")
+	{
+		$f_query = $_POST['f_query'];
+		$s_info = "AND (ft.thread_name REGEXP('".$f_query."') OR ft.thread_thread REGEXP('".$f_query."'))";
+		$fcaption = UP_LAN_12." ".$row['user_name'];
 	}
-	 
-	$sql = new db;
-	if (!$sql->db_Select_gen($db_query)) {
+	$qry = "
+	SELECT f.*, ft.* FROM #forum_t AS ft
+	LEFT JOIN #forum AS f ON ft.thread_forum_id = f.forum_id
+	LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
+	WHERE ft.thread_user LIKE '{$user_id}.%'
+	AND f.forum_class IN (".USERCLASS_LIST.")
+	AND fp.forum_class IN (".USERCLASS_LIST.") 
+	{$s_info}
+	ORDER BY ft.thread_datestamp DESC LIMIT {$from}, 10
+	";	
+
+	$total_qry = "
+	SELECT COUNT(*) AS count FROM #forum_t AS ft
+	LEFT JOIN #forum AS f ON ft.thread_forum_id = f.forum_id
+	LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
+	WHERE ft.thread_user LIKE '{$user_id}.%'
+	AND f.forum_class IN (".USERCLASS_LIST.")
+	AND fp.forum_class IN (".USERCLASS_LIST.") 
+	{$s_info}
+	";	
+
+	$ftotal = 0;
+	if($sql->db_Select_gen($total_qry))
+	{
+		$row = $sql->db_Fetch();
+		$ftotal = $row['count'];
+	}
+
+	if (!$sql->db_Select_gen($qry))
+	{
 		$ftext .= "<span class='mediumtext'>".UP_LAN_8."</span>";
-	} else {
-		 
-		if (!is_object($gen)) {
+	}
+	else
+	{
+		if (!is_object($gen))
+		{
 			$gen = new convert;
 		}
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
-			if (check_class($forum_class)) {
-				$userposts_forum_table_string .= parse_userposts_forum_table($row);
-			}
+		while ($row = $sql->db_Fetch())
+		{
+			$userposts_forum_table_string .= parse_userposts_forum_table($row);
 		}
 		$userposts_forum_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_FORUM_TABLE_START);
-		 
 		$USERPOSTS_FORUM_SEARCH = "<input class='tbox' type='text' name='f_query' size='20' value='' maxlength='50' /> <input class='button' type='submit' name='fsearch' value='".UP_LAN_12."' />";
-		 
 		$userposts_forum_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_FORUM_TABLE_END);
-		 
 		$ftext .= $userposts_forum_table_start."".$userposts_forum_table_string."".$userposts_forum_table_end;
 	}
 	$ns->tablerender($fcaption, $ftext);
