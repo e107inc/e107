@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_mod.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-05-07 02:28:20 $
+|     $Revision: 1.5 $
+|     $Date: 2005-05-23 15:46:17 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -75,19 +75,7 @@ function forum_delete_thread($thread_id)
 		// dec reply count by 1
 		$sql->db_Update("forum_t", "thread_total_replies=thread_total_replies-1 WHERE thread_id='$thread_parent' ");
 		// dec reply count by 1
-		$sql->db_Select("forum_t", "*", "thread_id=$thread_id");
-		$row = $sql->db_Fetch();
-		extract($row);
-		$replies = $sql->db_Count("forum_t", "(*)", "WHERE thread_parent='".$thread_parent."'");
-		$pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
-		$pages = 0;
-		if ($replies)
-		{
-			$pages = ((ceil($replies/$pref['forum_postspage']) -1) * $pref['forum_postspage']);
-		}
-		// set return url
-		$url = e_PLUGIN."forum/forum_viewtopic.php?".$thread_parent;
-		return FORLAN_26;
+		return FORLAN_154;
 	}
 	else
 	{
