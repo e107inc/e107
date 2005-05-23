@@ -1,11 +1,11 @@
 <?php
-	
+
 /**
 * Allows Storage of arrays without use of serialize functions
 *
 */
 class ArrayData {
-	 
+
 	/**
 	* Return a string containg exported array data.
 	*
@@ -23,7 +23,7 @@ class ArrayData {
 		}
 		return $Array;
 	}
-	 
+
 	/**
 	* Returns an array from stored array data.
 	*
@@ -36,8 +36,8 @@ class ArrayData {
 /*		if (!is_array($data)) {
 			return false;
 		}*/
-		return $data;
+		return (isset($data)) ? $data : "";
 	}
 }
-	
+
 ?>

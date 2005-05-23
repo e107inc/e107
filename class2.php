@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.140 $
-|     $Date: 2005-05-23 01:28:19 $
+|     $Revision: 1.141 $
+|     $Date: 2005-05-23 01:42:53 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -249,7 +249,7 @@ if($pref['redirectsiteurl'])
 }
 
 // sort out the users language selection
-if (isset($_POST['setlanguage']) || $_GET['elan']) {
+if (isset($_POST['setlanguage']) || isset($_GET['elan'])) {
 	if($_GET['elan']){  // query support, for language selection splash pages. etc
 	$_POST['sitelanguage'] = $_GET['elan'];
 	}
@@ -424,8 +424,9 @@ init_session();
 
 
 $sql->db_Mark_Time('Start: Go online');
-$e_online->online($pref['track_online'], $pref['flood_protect']);
-
+if(isset($pref['track_online'])){
+	$e_online->online($pref['track_online'], $pref['flood_protect']);
+}
 $sql->db_Mark_Time('Start: Signup/splash/admin');
 $fp=($pref['frontpage'] ? $pref['frontpage'].".php" : "news.php index.php");
 define("e_SIGNUP", (file_exists($e107->relative_base_path."customsignup.php") ? $e107->http_abs_location(false, "customsignup.php") : $e107->http_abs_location(false, "signup.php")));
@@ -965,7 +966,7 @@ function init_session() {
 	*/
 	global $sql, $pref, $user_pref, $tp, $currentUser;
 
-	if (!$_COOKIE[$pref['cookie_name']] && !$_SESSION[$pref['cookie_name']]) {
+	if (!isset($_COOKIE[$pref['cookie_name']]) && !isset($_SESSION[$pref['cookie_name']])) {
 		define("USER", FALSE);
 		define("USERTHEME", FALSE);
 		define("ADMIN", FALSE);
@@ -1120,9 +1121,9 @@ function e107_include($fname) {
 function e107_include_once($fname) {
 	global $e107_debug;
 	if(is_readable($fname)){
-	$ret = (!$e107_debug)? @include_once($fname) : include_once($fname);
+		$ret = (!$e107_debug)? @include_once($fname) : include_once($fname);
 	}
-	return $ret;
+	return (isset($ret)) ? $ret : "";
 }
 
 function e107_require_once($fname) {

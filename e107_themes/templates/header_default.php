@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2005-05-19 20:41:09 $
-|     $Author: streaky $
+|     $Revision: 1.51 $
+|     $Date: 2005-05-23 01:47:41 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -44,7 +44,7 @@ if(isset($pref['trackbackEnabled']))
 echo "<link rel='pingback' href='".$e107->http_abs_location("PLUGINS_DIRECTORY", "trackback/xmlrpc.php")."' />
 ";
 }
-if($pref['enable_png_image_fix'] == true) {
+if(isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) {
 	echo "<script type='text/javascript' src='".$e107->http_abs_location("FILES_DIRECTORY", "sleight_js.php")."'></script>\n";
 }
 
