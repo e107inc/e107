@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_post_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-22 16:04:45 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-24 13:48:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -35,7 +35,7 @@ $subjectbox = "<tr>
 
 // the poll is optional, be careful when changing the values here, only change if you know what you're doing ...
 
-require(e_PLUGIN."poll/poll_class.php");
+require_once(e_PLUGIN."poll/poll_class.php");
 $pollo = new poll;
 $poll = $pollo -> renderPollForm("forum");
 
