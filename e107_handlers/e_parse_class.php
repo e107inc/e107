@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.76 $
-|     $Date: 2005-05-22 12:40:10 $
-|     $Author: stevedunstan $
+|     $Revision: 1.77 $
+|     $Date: 2005-05-24 13:59:24 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
-class e_parse {
+class e_parse
+{
 	var $e_sc;
 	var $e_bb;
 	var $e_pf;
@@ -28,13 +29,16 @@ class e_parse {
 	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
 	var $e_query;
 
-	function toDB($text, $no_encode = FALSE) {
-		if (MAGIC_QUOTES_GPC == TRUE) {
+	function toDB($text, $no_encode = FALSE)
+	{
+		global $pref;
+		if (MAGIC_QUOTES_GPC == TRUE)
+		{
 			$text = stripslashes($text);
 		}
 		if(isset($pref['post_html']) && check_class($pref['post_html']))
 		{
-			$no_encode == TRUE;
+			$no_encode = TRUE;
 		}
 		if (getperms("0") || $no_encode)
 		{
@@ -50,30 +54,42 @@ class e_parse {
 		return $text;
 	}
 
-	function toForm($text, $single_quotes = FALSE) {
+	function toForm($text, $single_quotes = FALSE)
+	{
 		if($text == "") { return ""; }
 		$mode = ($single_quotes ? ENT_QUOTES :ENT_COMPAT);
-		if (MAGIC_QUOTES_GPC == TRUE) {
+		if (MAGIC_QUOTES_GPC == TRUE)
+		{
 			$text = stripslashes($text);
 		}
 		$search = array('&#036;', '&quot;');
 		$replace = array('$', '"');
 		$text = str_replace($search, $replace, $text);
-		if(CHARSET == 'utf-8' && function_exists("utf8_encode")){
+		if(CHARSET == 'utf-8' && function_exists("utf8_encode"))
+		{
 			return utf8_html_entity_decode($text);
-		} else {
+		}
+		else
+		{
 			return html_entity_decode($text, $mode, CHARSET);
 		}
 	}
 
-	function post_toHTML($text, $modifier=TRUE, $extra='') {
-
+	function post_toHTML($text, $modifier=TRUE, $extra='')
+	{
 		/*
 		changes by jalist 30/01/2005:
 		description had to add modifier to /not/ send formatted text on to this->toHTML at end of method, this was causing problems when MAGIC_QUOTES_GPC == TRUE.
 		*/
+		global $pref;
 
-		if (ADMIN === TRUE || $no_encode === TRUE) {
+		if(isset($pref['post_html']) && check_class($pref['post_html']))
+		{
+			$no_encode = TRUE;
+		}
+
+		if (ADMIN === TRUE || $no_encode === TRUE)
+		{
 			$search = array('$', '"', "'", '\\', "'&#092;'");
 			$replace = array('&#036;','&quot;','&#039;','&#092;','&#039;');
 			$text = str_replace($search, $replace, $text);
@@ -81,34 +97,38 @@ class e_parse {
 			changes by jalist 30/01/2005:
 			description dirty fix for servers with magic_quotes_gpc == true
 			*/
-			if (MAGIC_QUOTES_GPC) {
+			if (MAGIC_QUOTES_GPC)
+			{
 				$search = array('&#092;&#092;&#092;&#092;', '&#092;&#039;', '&#092;&quot;');
 				$replace = array('&#092;&#092;','&#039;', '&quot;');
 				$text = str_replace($search, $replace, $text);
 			}
-		} else {
+		}
+		else
+		{
 			$text = htmlentities($text, ENT_QUOTES, CHARSET);
 		}
 		return ($modifier ? $this->toHTML($text, TRUE, $extra) : $text);
 	}
 
-	function post_toForm($text) {
+	function post_toForm($text)
+	{
 		// ensure apostrophes are properly converted, or else the form item could break
 		return str_replace("'", "&#039;", $text);
 		return $text;
 	}
 
-	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "") {
+	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "")
+	{
 		// Start parse {XXX} codes
-		if (!is_object($this->e_sc)) {
+		if (!is_object($this->e_sc))
+		{
 			require_once(e_HANDLER."shortcode_handler.php");
 			$this->e_sc = new e_shortcode;
 		}
 		return $this->e_sc->parseCodes($text, $parseSCFiles, $extraCodes);
 		// End parse {XXX} codes
 	}
-
-
 
 	function htmlwrap($str, $width, $break = "\n", $nobreak = "", $nobr = "pre", $utf = false)
 	{
@@ -176,7 +196,6 @@ class e_parse {
 		}
 		return $drain;
 	}
-
 
 	function textclean ($text, $wrap=100)
 	{
