@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm\cjdss.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-05-13 02:06:34 $
+|     $Revision: 1.11 $
+|     $Date: 2005-05-24 14:40:37 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -446,17 +446,18 @@ class pm {
 		# Return -        NONE
 		*/
 		$read_link = SITEURL;
-		if (substr(SITEURL, -1, 1) != "/") {
+		if (substr(SITEURL, -1, 1) != "/")
+		{
 			$read_link .= "/";
 		}
 		$read_link .= $PLUGINS_DIRECTORY."pm_menu/pm.php?read\n\n";
 
-		if ($to_email) {
+		if ($to_email)
+		{
 			require_once(e_HANDLER."mail.php");
 			$msg = $user_to.",\n\n".PMLAN_50." ".PMLAN_35.": ".$user_from."\n\n";
 			$msg .= PMLAN_29." ".$subject."\n\n";
 			$msg .= PMLAN_51.": ".SITENAME."\n\n";
-			//                        $msg.=SITEURL.$PLUGINS_DIRECTORY."pm_menu/pm.php?read\n\n";
 			$msg .= $read_link;
 			return sendemail($to_email, PMLAN_50, $msg);
 		}
@@ -473,10 +474,12 @@ class pm {
 		# Return -        int, 0 if success, 1 if PM blocked, 2 if user not found.
 		*/
 		global $ns, $pref, $tp, $sql;
-		if($sql->db_Select("user", "user_name", "user_name LIKE '".$pm_touser."' "))
+		if($sql->db_Select("user", "user_name, user_email", "user_name LIKE '".$pm_touser."' "))
 		{
 			$userdata = $sql->db_Fetch();
 			$real_userid = $userdata['user_name'];
+			$user_email = $userdata['user_email'];
+			
 			if($bid = $this->is_blocked($pm_fromuser, $real_userid))
 			{
 				$block_count++;
@@ -484,7 +487,8 @@ class pm {
 				return 1;
 			}
 			ini_set("max_execution_time", 30);
-			if ($pm_subject == "") {
+			if ($pm_subject == "")
+			{
 				$pm_subject = PMLAN_57;
 			}
 			$pm_text = $tp->toDB($pm_text);
@@ -492,11 +496,14 @@ class pm {
 
 			$vars = "0,'{$pm_fromuser}','{$real_userid}','".time()."',0,'{$pm_subject}','{$pm_text}'";
 			$sql->db_Insert("pm_messages", $vars);
-			if ($pref['pm_sendemail']) {
+			if ($pref['pm_sendemail'])
+			{
 				$this->pm_send_email($pm_fromuser, $real_userid, $user_email, $pm_subject);
 			}
 			return 0;
-		} else {
+		}
+		else
+		{
 			return 2;
 		}
 	}
