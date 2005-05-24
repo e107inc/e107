@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/upload.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-04-02 21:06:52 $
+|     $Revision: 1.12 $
+|     $Date: 2005-05-24 01:19:25 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("6")) {
+if (!getperms("V")) {  
 	header("location:".e_BASE."index.php");
 	exit;
 }

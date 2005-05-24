@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-05-16 14:56:10 $
-|     $Author: sweetas $
+|     $Revision: 1.15 $
+|     $Date: 2005-05-24 01:19:25 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -142,24 +142,17 @@ while ($row = $sql->db_Fetch()) {
 		<td style='width:35%' class='forumheader3'>";
 
 	$permtxt = "";
-	if($user_perms == "0")
-	{
+	if($user_perms == "0"){
 		$text .= ADMSLAN_58;
 	}
-	else
-	{
-		if($user_perms)
-		{
+	else{
+		if($user_perms){
 			$tmp = explode(".", $user_perms);
 			$langperm = "";
-			foreach($tmp as $pms)
-			{
-				if(in_array($pms, $lanlist))
-				{
-                	$langperm .= $pms."&nbsp;";
-				}
-				else
-				{
+			foreach($tmp as $pms){
+				if(in_array($pms, $lanlist)){
+					$langperm .= $pms."&nbsp;";
+				}else{
 					$permtxt .= $pms;
 				}
 			}
@@ -170,9 +163,8 @@ while ($row = $sql->db_Fetch()) {
 				$text .= ",&nbsp;". $langperm;
 			}
 		}
-		else
-		{
-        	$text .= "&nbsp;";
+		else{
+			$text .= "&nbsp;";
 		}
 	}
 	$text .= "</td></tr>";
@@ -216,10 +208,10 @@ function checkb($arg, $perms) {
 $text .= checkb("1", $a_perms).ADMSLAN_19."<br />";
 $text .= checkb("2", $a_perms).ADMSLAN_20."<br />";
 $text .= checkb("3", $a_perms).ADMSLAN_21."<br />";
-$text .= checkb("4", $a_perms).ADMSLAN_22."<br />";
+$text .= checkb("4", $a_perms).ADMSLAN_22."<br />"; // Moderate users/bans etc
 $text .= checkb("5", $a_perms).ADMSLAN_23."<br />";
 $text .= checkb("Q", $a_perms).ADMSLAN_24."<br />";
-$text .= checkb("6", $a_perms).ADMSLAN_25."<br />";
+$text .= checkb("6", $a_perms).ADMSLAN_25."<br />";  //Upload /manage files
 $text .= checkb("Y", $a_perms).ADMSLAN_67."<br />";
 $text .= checkb("7", $a_perms).ADMSLAN_26."<br />";
 $text .= checkb("8", $a_perms).ADMSLAN_27."<br />";
@@ -233,24 +225,24 @@ $text .= checkb("F", $a_perms).ADMSLAN_31."<br />";
 $text .= checkb("G", $a_perms).ADMSLAN_32."<br />";
 $text .= checkb("S", $a_perms).ADMSLAN_33."<br />";
 $text .= checkb("T", $a_perms).ADMSLAN_34."<br />";
-$text .= checkb("V", $a_perms).ADMSLAN_35."<br />";
+$text .= checkb("V", $a_perms).ADMSLAN_35."<br />"; // Configure public file uploads
 $text .= checkb("X", $a_perms).ADMSLAN_66."<br />";
 
-$text .= checkb("A", $a_perms).ADMSLAN_36."<br />";
+// $text .= checkb("A", $a_perms).ADMSLAN_36."<br />"; // Moderate forums   - PLUGIN.
 $text .= checkb("B", $a_perms).ADMSLAN_37."<br />";
-$text .= checkb("C", $a_perms).ADMSLAN_38."<br /><br />";
+$text .= checkb("C", $a_perms).ADMSLAN_38."<br /><br />"; // Moderate/configure chatbox
 
 $text .= checkb("H", $a_perms).ADMSLAN_39."<br />";
 $text .= checkb("I", $a_perms).ADMSLAN_40."<br />";
-$text .= checkb("J", $a_perms).ADMSLAN_41."<br />";
-$text .= checkb("K", $a_perms).ADMSLAN_42."<br />";
+// $text .= checkb("J", $a_perms).ADMSLAN_41."<br />";  // Post articles   - PLUGIN
+// $text .= checkb("K", $a_perms).ADMSLAN_42."<br />";  // Post reviews   - PLUGIN
 $text .= checkb("L", $a_perms).ADMSLAN_43."<br />";
 $text .= checkb("R", $a_perms).ADMSLAN_44."<br />";
 $text .= checkb("U", $a_perms).ADMSLAN_45."<br />";
 $text .= checkb("M", $a_perms).ADMSLAN_46."<br />";
 $text .= checkb("N", $a_perms).ADMSLAN_47."<br /><br />";
 
-    $text .= "<br /><div class='fcaption'>".ADLAN_CL_7."</div><br />";
+	$text .= "<br /><div class='fcaption'>".ADLAN_CL_7."</div><br />";
 $text .= checkb("Z", $a_perms).ADMSLAN_62."<br /><br />";
 
 $sql->db_Select("plugin", "*", "plugin_installflag='1'");
@@ -262,7 +254,7 @@ while ($row = $sql->db_Fetch()) {
 
 // Language Rights.. --------------
 if($pref['multilanguage']){
-    $text .= "<br /><div class='fcaption'>".ADLAN_132."</div><br />\n";
+	$text .= "<br /><div class='fcaption'>".ADLAN_132."</div><br />\n";
 	$text .= checkb($pref['sitelanguage'], $a_perms).$pref['sitelanguage']."<br />\n";
 	foreach($lanlist as $langval){
 			$langname = $langval;
@@ -270,7 +262,7 @@ if($pref['multilanguage']){
 			if (table_exists("lan_".$langname)) {
 				$text .= checkb($langval, $a_perms).$langval."<br />\n";
 			}
-		}
+	}
 }
 // -------------------------
 
