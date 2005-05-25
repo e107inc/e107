@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-02 03:29:49 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2005-05-25 11:44:21 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -202,16 +202,15 @@ class users_ext
 		$catNums = array_keys($catList);
 		$extendedList = $ue->user_extended_get_fields();
 
-		if(!$current)
-		{
+		if(!$current){
 			$text = "<div style='text-align:center'>";
 			$text .= "
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td class='fcaption'>".EXTLAN_1."</td>
-			<td class='fcaption'>".EXTLAN_2."</td>
-			<td class='fcaption'>".EXTLAN_3."</td>
-			<td class='fcaption'>".EXTLAN_4."</td>
+			<td class='fcaption'>".EXTLAN_2."</td>";
+		//	$text .="<td class='fcaption'>".EXTLAN_3."</td>";
+			$text .="<td class='fcaption'>".EXTLAN_4."</td>
 			<td class='fcaption'>".EXTLAN_5."</td>
 			<td class='fcaption'>".EXTLAN_6."</td>
 			<td class='fcaption'>".EXTLAN_7."</td>
@@ -232,13 +231,14 @@ class users_ext
 				if(count($extendedList))
 				{
 					//	Show current extended fields
-					foreach($extendedList[$cn] as $ext)
-					{
+					foreach($extendedList[$cn] as $ext)	{
+					$fname = "user_".$ext['user_extended_struct_name'];
+					$uVal = str_replace(chr(1), "", $curVal[$fname]);
 						$text .= "
 						<tr>
 						<td class='forumheader3'>{$ext['user_extended_struct_name']}<br />[{$ext['user_extended_struct_text']}]</td>
-						<td class='forumheader3'>".$ue->user_extended_types[$ext['user_extended_struct_type']]."</td>
-						<td class='forumheader3'>{$ext['user_extended_struct_values']}";
+						<td class='forumheader3'>".$ue->user_extended_edit($ext,$uVal)."</td>";
+					 //	$text .= "<td class='forumheader3'>{$ext['user_extended_struct_values']}";
 						if($ext['user_extended_struct_values'])
 						{
 							$text .= "<br />[{$ext['user_extended_struct_default']}]";
@@ -249,12 +249,11 @@ class users_ext
 						<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
 						<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_read'])."</td>
 						<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_write'])."</td>
-						<td class='forumheader3'>
+						<td class='forumheader3' style='width:5px'>
 						<form method='post' action='".e_SELF."'>
 						<input type='hidden' name='id' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
 						";
-						if($i > 0)
-						{
+						if($i > 0){
 							$text .= "
 							<input type='image' alt='' title='".EXTLAN_26."' src='".e_IMAGE."/admin_images/up.png' name='up' value='{$ext['user_extended_struct_id']}.{$ext['user_extended_struct_order']}.{$ext['user_extended_struct_parent']}' />
 							";
@@ -266,7 +265,7 @@ class users_ext
 						$text .= "
 						</form>
 						</td>
-						<td class='forumheader3' style='text-align:center;'>
+						<td class='forumheader3' style='width:50px;text-align:center;'>
 						<a style='text-decoration:none' href='".e_SELF."?editext.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
 						&nbsp;
 						<form method='post' action='".e_SELF."?extended' onsubmit='return confirm(\"".EXTLAN_27."\")'>
