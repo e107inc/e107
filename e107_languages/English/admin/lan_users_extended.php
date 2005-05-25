@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-02 03:30:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2005-05-25 11:45:50 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("EXTLAN_1", "Name");
-define("EXTLAN_2", "Type");
+define("EXTLAN_2", "Preview");
 define("EXTLAN_3", "Values");
 define("EXTLAN_4", "Req'd");
 define("EXTLAN_5", "Applicable");
