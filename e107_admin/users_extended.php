@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-05-25 12:04:22 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2005-05-25 12:13:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -240,14 +240,7 @@ class users_ext
 						$text .= "
 						<tr>
 						<td class='forumheader3'>{$ext['user_extended_struct_name']}<br />[{$ext['user_extended_struct_text']}]</td>
-						<td class='forumheader3'>".$ue->user_extended_edit($ext,$uVal)."</td>";
-					 //	$text .= "<td class='forumheader3'>{$ext['user_extended_struct_values']}";
-						if($ext['user_extended_struct_values'])
-						{
-							$text .= "<br />[{$ext['user_extended_struct_default']}]";
-						}
-						$text .= "
-						</td>
+						<td class='forumheader3'>".$ue->user_extended_edit($ext,$uVal)."</td>
 						<td class='forumheader3'>".($ext['user_extended_struct_required'] ? LAN_YES : LAN_NO)."</td>
 						<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
 						<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_read'])."</td>
