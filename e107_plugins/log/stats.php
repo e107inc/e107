@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-05-13 17:07:05 $
-|     $Author: stevedunstan $
+|     $Revision: 1.23 $
+|     $Date: 2005-05-25 18:26:58 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -671,7 +671,14 @@ class siteStats {
 		$dayarray[$td] = array();
 		$pagearray = array();
 
-		if($amount = $sql -> db_Select("logstats", "*", "log_id REGEXP('[[:digit:]]+\-[[:digit:]]+\-[[:digit:]]+') ORDER BY log_id DESC LIMIT 0,14", TRUE)) {
+		$qry = "
+		SELECT * from #logstats WHERE log_id REGEXP('[[:digit:]]+\-[[:digit:]]+\-[[:digit:]]+') 
+		ORDER BY CONCAT(LEFT(log_id,4), SUBSTRING(log_id, 6, 2), LPAD(SUBSTRING(log_id, 9), 2, '0')) 
+		DESC LIMIT 0,14
+		";
+
+		if($amount = $sql -> db_Select_gen($qry))
+		{
 			$array = $sql -> db_getList();
 
 			$ttotal = 0;
@@ -718,7 +725,7 @@ class siteStats {
 			$utotal += $fvalue['unq'];
 		}
 
-		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L33." ".($amount+1)." ".ADSTAT_L34."</td>\n<td class='fcaption' style='width: 70%;'>".ADSTAT_L34."</td>\n</tr>\n";
+		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L33." ".($amount+1)." ".ADSTAT_L40."</td>\n<td class='fcaption' style='width: 70%;'>".ADSTAT_L34."</td>\n</tr>\n";
 
 		foreach($dayarray as $date => $total) {
 
@@ -734,7 +741,7 @@ class siteStats {
 		$text .= "</table>";
 
 		
-		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L35." ".($amount+1)." ".ADSTAT_L34."</td>\n<td class='fcaption' style='width: 70%;'>".ADSTAT_L34."</td>\n</tr>\n";
+		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L35." ".($amount+1)." ".ADSTAT_L40."</td>\n<td class='fcaption' style='width: 70%;'>".ADSTAT_L34."</td>\n</tr>\n";
 
 
 		foreach($dayarray as $date => $total) {
@@ -781,7 +788,7 @@ class siteStats {
 	function renderMonthly() {
 		global $sql;
 		
-		if(!$entries = $sql -> db_Select("logstats", "*", "log_id REGEXP('^[[:digit:]]+\-[[:digit:]]+$') ORDER BY log_id DESC")) {
+		if(!$entries = $sql -> db_Select("logstats", "*", "log_id REGEXP('^[[:digit:]]+\-[[:digit:]]+$') ORDER BY CONCAT(LEFT(log_id,4), RIGHT(log_id,2)) DESC")) {
 			return "No monthly stats yet.";
 		}
 
