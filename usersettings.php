@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-05-23 14:16:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.30 $
+|     $Date: 2005-05-25 07:24:00 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -133,17 +133,14 @@ if (isset($_POST['updatesettings']))
 	};
 
 
-	if($sql->db_Select('user_extended_struct'))
-	{
-		while($row = $sql->db_Fetch())
-		{
+	if($sql->db_Select('user_extended_struct'))	{
+		while($row = $sql->db_Fetch()){
 			$extList["user_".$row['user_extended_struct_name']] = $row;
 		}
 	}
 
 	$ue_fields = "";
-	foreach($_POST['ue'] as $key => $val)
-	{
+	foreach($_POST['ue'] as $key => $val){
 		$err = false;
 		$parms = explode("^,^", $extList[$key]['user_extended_struct_parms']);
 		$regex = $tp->toText($parms[1]);
@@ -277,8 +274,7 @@ if (isset($_POST['updatesettings']))
 				$sql -> db_Update("user", "user_loginname='$loginname' WHERE user_id='$inp' ");
 			}
 
-			if($ue_fields)
-			{
+			if($ue_fields){
 				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$inp}')");
 				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$inp}'");
 			}
@@ -549,7 +545,7 @@ $text .= "
 			$uVal = str_replace(chr(1), "", $curVal[$fname]);
 			$text .= "
 				<tr>
-					<td style='width:40%' class='forumheader3'>".$f['user_extended_struct_text']."</td>
+					<td style='width:40%' class='forumheader3'>".$tp->toHTML($f['user_extended_struct_text'],"","emotes_off defs")."</td>
 					<td style='width:60%' class='forumheader3'>".$ue->user_extended_edit($f, $uVal);
 					$parms = explode("^,^",$f['user_extended_struct_parms']);
 					if($parms[3])
