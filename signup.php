@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-05-16 08:32:56 $
+|     $Revision: 1.31 $
+|     $Date: 2005-05-25 07:24:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -529,13 +529,11 @@ if ($signupval[6]) {
 
 $extList = $usere->user_extended_get_fieldList();
 
-foreach($extList as $ext)
-{
-	if($ext['user_extended_struct_signup'] > 0)
-	{
+foreach($extList as $ext) {
+	if($ext['user_extended_struct_signup'] > 0) {
 		$text .= "
 		<tr>
-			<td style='width:40%' class='forumheader3'>".$ext['user_extended_struct_text']." ".req($ext['user_extended_struct_signup'])."</td>
+			<td style='width:40%' class='forumheader3'>".$tp->toHTML($ext['user_extended_struct_text'],"","emotes_off defs")." ".req($ext['user_extended_struct_signup'])."</td>
 			<td style='width:60%' class='forumheader3'>".$usere->user_extended_edit($ext, $_POST['ue']['user_'.$ext['user_extended_struct_name']])."
 		</tr>
 		";
