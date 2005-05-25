@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:39 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-05-25 09:43:25 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-	
+$eplug_admin = TRUE;
 require_once("../../class2.php");
 require_once(e_HANDLER."userclass_class.php");
 	
