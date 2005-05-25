@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-05-23 00:26:37 $
+|     $Revision: 1.29 $
+|     $Date: 2005-05-25 14:25:42 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -622,6 +622,7 @@ class e107forum {
 
 			$parent_thread = $this->thread_get_postinfo($thread_parent);
 			global $PLUGINS_DIRECTORY;
+			$thread_name = $tp->toText($parent_thread[0]['thread_name']);
 			$datestamp = $gen->convert_date($post_time, "long");
 			$email_post = $tp->toHTML($thread_thread, TRUE);
 			$mail_link = SITEURL.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$thread_parent.".last";
@@ -634,7 +635,7 @@ class e107forum {
 			{
 				$gen = new convert;
 				$email_name = $parent_thread[0]['user_name'];
-				$message = LAN_384.SITENAME.".\n\n". LAN_382.$datestamp."\n". LAN_94.": ".$lp_name."\n\n". LAN_385.$email_post."\n\n". LAN_383."\n\n".$mail_link;
+				$message = LAN_384.SITENAME.".\n\n". LAN_382.$datestamp."\n". LAN_94.": ".$thread_poster['post_user_name']."\n\n". LAN_385.$email_post."\n\n". LAN_383."\n\n".$mail_link;
 				include_once(e_HANDLER."mail.php");
 				sendemail($parent_thread[0]['user_email'], $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message);
 			}
@@ -643,9 +644,9 @@ class e107forum {
 			if ($sql->db_Select("user", "*", "user_realm REGEXP('-".$thread_parent."-') "))
 			{
 				include_once(e_HANDLER.'mail.php');
+				$message = LAN_385.SITENAME.".\n\n". LAN_382.$datestamp."\n". LAN_94.": ".$thread_poster['post_user_name']."\n\n". LAN_385.$email_post."\n\n". LAN_383."\n\n".$mail_link;
 				while ($row = $sql->db_Fetch())
 				{
-					$message = LAN_385.SITENAME.".\n\n". LAN_382.$gen->convert_date(time(), "long")."\n". LAN_94.": ".$lp_name."\n\n". LAN_385.$email_post."\n\n". LAN_383."\n\n".$mail_link;
 					if ($row['user_email'])
 					{
 						sendemail($row['user_email'], $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message);
