@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-05-25 11:44:21 $
+|     $Revision: 1.11 $
+|     $Date: 2005-05-25 12:04:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -30,10 +30,13 @@ if (isset($_POST['cancel']))
 $e_sub_cat = 'user_extended';
 $user = new users_ext;
 $curtype = '1';
+require_once(e_HANDLER."calendar/calendar_class.php");
+$cal = new DHTML_Calendar(true);
 require_once("auth.php");
 require_once(e_HANDLER."user_extended_class.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once("users_extended_predefined.php");
+
 
 $ue = new e107_user_extended;
 
@@ -819,6 +822,11 @@ function headerjs()
 		document.getElementById('ue_help').innerHTML=''+what+'';
 	}
 	</script>";
+
+
+	global $cal;
+	$text .= $cal->load_files();
+
 	echo $text;
 }
 ?>
