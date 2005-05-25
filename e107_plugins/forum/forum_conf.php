@@ -11,8 +11,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_conf.php,v $
-| $Revision: 1.3 $
-| $Date: 2005-05-21 02:03:54 $
+| $Revision: 1.4 $
+| $Date: 2005-05-25 11:13:31 $
 | $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
@@ -142,7 +142,16 @@ if ($action == "move")
 		<td style='text-align:right'>".FORLAN_24.": </td>
 		<td style='text-align:left'>
 		<select name='forum_move' class='tbox'>";
-	$sql->db_Select("forum", "forum_id, forum_name, forum_sub", "forum_parent != '0' AND forum_id != {$info['forum_id']} ORDER BY forum_order");
+	$qry = "
+	SELECT f.forum_id, f.forum_name FROM #forum AS f
+	LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
+	WHERE f.forum_parent != 0
+	AND f.forum_id != {$info['forum_id']}	
+	AND f.forum_class IN (".USERCLASS_LIST.")
+	AND fp.forum_class IN (".USERCLASS_LIST.")
+	ORDER BY f.forum_order
+	";
+	$sql->db_Select_gen($qry);
 	$fList = $sql->db_getList();
 	foreach($fList as $f)
 	{
