@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-05-18 15:36:03 $
-|     $Author: stevedunstan $
+|     $Revision: 1.20 $
+|     $Date: 2005-05-25 08:13:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 @include(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
@@ -147,7 +147,7 @@ class poll
 
 		$comment_total = $sql->db_Select("comments", "*", "comment_item_id='".$pollArray['poll_id']."' AND comment_type=4");
 
-		$QUESTION = $tp -> toHTML($pollArray['poll_title'], TRUE);
+		$QUESTION = $tp -> toHTML($pollArray['poll_title'], TRUE,"emotes_off defs");
 		$VOTE_TOTAL = POLLAN_26.": ".$voteTotal;
 		$COMMENTS = ($pollArray['poll_comment'] ? " <a href='".e_BASE."comment.php?comment.poll.".$pollArray['poll_id']."'>".POLLAN_27.": ".$comment_total."</a>" : "");
 		$OLDPOLLS = ($type == "menu" ? "<a href='".e_PLUGIN."poll/oldpolls.php'>".POLLAN_28."</a>" : "");
@@ -159,13 +159,12 @@ class poll
 				$text = "<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_START : $POLL_NOTVOTED_START));
 				$count = 1;
 				$alt == 0; // alternate style.
-				foreach($optionArray as $option)
-				{
+				foreach($optionArray as $option) {
 					$MODE = $mode;		/* debug */
 					$OPTIONBUTTON = ($pollArray['poll_allow_multiple'] ? "<input type='checkbox' name='votea[]' value='$count' />" : "<input type='radio' name='votea' value='$count' />");
-					$OPTION = $option;
+					$OPTION = $tp->toHTML($option,"","emotes_off defs");
 					if($POLL_NOTVOTED_LOOP_ALT && $type != "forum"){ // alternating style
-                        $text .= preg_replace("/\{(.*?)\}/e", '$\1', ($alt == 0 ? $POLL_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP_ALT));
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($alt == 0 ? $POLL_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP_ALT));
 						$alt = ($alt ==0) ? 1 : 0;
 					}else{
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP));
