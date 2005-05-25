@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-05-22 23:12:31 $
-|     $Author: streaky $
+|     $Revision: 1.27 $
+|     $Date: 2005-05-25 13:31:56 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -78,24 +78,30 @@ if($from === 'post')
 require_once(e_PLUGIN.'forum/forum_shortcodes.php');
 
 
-if ($action == "track" && USER) {
+if ($action == "track" && USER)
+{
 	$forum->track($thread_id);
 	header("location:".e_SELF."?{$thread_id}.{$from}");
 	exit;
 }
 
-if ($action == "untrack" && USER) {
+if ($action == "untrack" && USER)
+{
 	$forum->untrack($thread_id);
 	header("location:".e_SELF."?{$thread_id}.{$from}");
 	exit;
 }
 
-if ($action == "next") {
+if ($action == "next")
+{
 	$next = $forum->thread_getnext($thread_id, $from);
-	if ($next) {
+	if ($next)
+	{
 		header("location:".e_SELF."?{$next}");
 		exit;
-	} else {
+	}
+	else
+	{
 		require_once(HEADERF);
 		$ns->tablerender('', 'No next thread');
 		require_once(FOOTERF);
@@ -292,8 +298,9 @@ $NEXTPREV = "&lt;&lt; <a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}
 $NEXTPREV .= " | ";
 $NEXTPREV .= "<a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}.next'>".LAN_390."</a> &gt;&gt;";
 
-if ($pref['forum_track'] && USER) {
-	$TRACK = (preg_match("/-".$thread_id."-/", USERREALM) ? "<span class='smalltext'><a href='".e_SELF."?".$forum_id.".".$thread_id.".0."."untrack'>".LAN_392."</a></span>" : "<span class='smalltext'><a href='".e_SELF."?".$thread_id.".0."."track'>".LAN_391."</a></span>");
+if ($pref['forum_track'] && USER)
+{
+	$TRACK = (preg_match("/-".$thread_id."-/", USERREALM) ? "<span class='smalltext'><a href='".e_SELF."?".$thread_id.".0."."untrack'>".LAN_392."</a></span>" : "<span class='smalltext'><a href='".e_SELF."?".$thread_id.".0."."track'>".LAN_391."</a></span>");
 }
 
 $MODERATORS = LAN_321.$forum_info['forum_moderators'];
