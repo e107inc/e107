@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-02-13 13:13:15 $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-25 09:43:26 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+$eplug_admin = TRUE;
 require_once("../../class2.php");
 @include_once(e_PLUGIN."tree_menu/languages/".e_LANGUAGE.".php");
 @include_once(e_PLUGIN."tree_menu/languages/English.php");
