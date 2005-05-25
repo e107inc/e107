@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-05-23 01:34:40 $
+|     $Revision: 1.50 $
+|     $Date: 2005-05-25 03:55:50 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -154,14 +154,13 @@ class sitelinks
 
 	function makeLink($linkInfo, $submenu = FALSE, $style='')
 	{
-		global $pref;
+		global $pref,$tp;
 
 		// Start with an empty link
 		$linkstart = $indent = $linkadd = $screentip = $href = $link_append = '';
 
 		// If submenu: Fix Name, Add Indentation.
-		if ($submenu == TRUE)
-		{
+		if ($submenu == TRUE) {
 			$tmp = explode('.', $linkInfo['link_name'], 3);
 			$linkInfo['link_name'] = $tmp[2];
 			$indent = ($style['linkdisplay'] != 3) ? "&nbsp;&nbsp;" : "";
@@ -179,32 +178,25 @@ class sitelinks
 		// Check if its expandable first. It should override its URL.
 		if (isset($linkInfo['link_expand']) && $linkInfo['link_expand']){
 			$href = " href=\"javascript: expandit('sub_".$linkInfo['link_name']."')\"";
-		}
-		elseif ($linkInfo['link_url']){
+		} elseif ($linkInfo['link_url']){
 
 			// Only add the e_BASE if it actually has an URL.
-			if (!preg_match('#(http:|mailto:|ftp:)#', $linkInfo['link_url']))
-			{
+			if (!preg_match('#(http:|mailto:|ftp:)#', $linkInfo['link_url'])) {
 				$linkInfo['link_url'] = e_BASE.$linkInfo['link_url'];
 			}
 
 			// Only check if its highlighted if it has an URL
-			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE)
-			{
+			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE) {
 				$linkstart = $style['linkstart_hilite'];
 			}
-			if ($this->hilite($linkInfo['link_url'], $style['linkclass_hilite'])== TRUE)
-			{
+			if ($this->hilite($linkInfo['link_url'], $style['linkclass_hilite'])== TRUE) {
 				$linkadd = " class='".$style['linkclass_hilite']."'";
 			}
 
-			if($linkInfo['link_open'] == 4 || $linkInfo['link_open'] == 5)
-			{
+			if ($linkInfo['link_open'] == 4 || $linkInfo['link_open'] == 5){
 				$dimen = ($linkInfo['link_open'] == 4) ? "600,400" : "800,600";
 				$href = " href=\"javascript:open_window('".$linkInfo['link_url']."', {$dimen})\"";
-			}
-			else
-			{
+			} else {
 				$href = " href='".$linkInfo['link_url']."'";
 			}
 
@@ -213,27 +205,21 @@ class sitelinks
 		}
 
 		// Remove default images if its a button and add new image at the start.
-		if ($linkInfo['link_button'])
-		{
+		if ($linkInfo['link_button']){
 			$linkstart = preg_replace('/\<img.*\>/si', '', $linkstart);
 			$linkstart .= "<img src='".e_IMAGE."icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />";
 		}
 
 		// If its a link.. make a link
 		$_link = "";
-		if (!empty($href))
-		{
-			$_link .= "<a".$linkadd.$screentip.$href.$link_append.">".$linkInfo['link_name']."</a>";
-			// If its not a link, but has a class or screentip do span:
-		}
-		elseif (!empty($linkadd) || !empty($screentip))
-		{
-			$_link .= "<span".$linkadd.$screentip.">".$linkInfo['link_name']."</span>";
+		if (!empty($href)){
+			$_link .= "<a".$linkadd.$screentip.$href.$link_append.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off defs")."</a>";
+		// If its not a link, but has a class or screentip do span:
+		}elseif (!empty($linkadd) || !empty($screentip)){
+			$_link .= "<span".$linkadd.$screentip.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off defs")."</span>";
 			// Else just the name:
-		}
-		else
-		{
-			$_link .= $linkInfo['link_name'];
+		}else {
+			$_link .= $tp->toHTML($linkInfo['link_name'],"","emotes_off defs");
 		}
 
 		$_link = $linkstart.$indent.$_link."\n";
@@ -250,14 +236,14 @@ class sitelinks
 		// --------------- highlighting for plugins. ----------------
 		if(eregi($PLUGINS_DIRECTORY, $link) && !eregi("custompages", $link)){
 
-        	if(str_replace("?","",$link)){
+			if(str_replace("?","",$link)){
 
 				if(strpos(e_SELF."?".e_QUERY, str_replace("../", "", "/".$link))){
-               		return TRUE;
+					return TRUE;
 				}else{
 					return FALSE;
 				}
-             }
+			}
 			$link = str_replace("../", "", $link);
 			if(eregi(dirname($link), dirname(e_SELF))){
 				return TRUE;
@@ -299,4 +285,4 @@ class sitelinks
 		return false;
 	}
 }
-	?>
+?>
