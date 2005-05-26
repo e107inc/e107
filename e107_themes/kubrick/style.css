@@ -52,12 +52,12 @@ body {
 	left: 13px;
 	list-style: none;
 }
-
+/* firfox position fix
 body>#page>#header>#navigation{
 	position: absolute;
 	top: 167px;
 }
-
+*/
 #navigation ul{
 	height: 22px; 
 	list-style: none;
