@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-04-11 11:55:49 $
-|     $Author: streaky $
+|     $Revision: 1.12 $
+|     $Date: 2005-05-26 00:24:04 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,6 +30,7 @@ Query string: content_type.rss_type.[topic id]
 9: chatbox
 10: bugtracker
 11: forum
+12: downloads (option: specify category)
 */
 
 require_once("../../class2.php");
@@ -280,7 +281,7 @@ class rssCreate {
 				LEFT JOIN e107_forum_t AS tp ON t.thread_parent = tp.thread_id
 				LEFT JOIN e107_forum AS f ON f.forum_id = t.thread_forum_id
 				WHERE f.forum_class  IN (0, 255)
-				AND t.thread_forum_id = ".$this -> topicid." 
+				AND t.thread_forum_id = ".$this -> topicid."
 				ORDER BY t.thread_datestamp DESC LIMIT 0, 9";
 				$sql->db_Select_gen($this -> rssQuery);
 				$tmp = $sql->db_getList();
@@ -305,12 +306,37 @@ class rssCreate {
 					$loop++;
 				}
 			break;
+
+			case 12:
+				$topic = ($topic_id) ? "download_category='$topic_id' AND " : "";
+				$this -> contentType = "downloads";
+				$class_list = "0,251,252,253";
+				$sql->db_Select("download", "*", "{$topic} download_active > 0 AND download_class IN (".$class_list.") ORDER BY download_datestamp DESC LIMIT 0,29");
+				$tmp = $sql->db_getList();
+				$this -> rssItems = array();
+				$loop=0;
+				foreach($tmp as $value) {
+					$nick = eregi_replace("[0-9]+\.", "", $value['download_author']);
+					$this -> rssItems[$loop]['author'] = $nick;
+					$this -> rssItems[$loop]['title'] = $value['download_name'];
+					$this -> rssItems[$loop]['link'] = $e107->http_path."download.php?view.".$value['download_id'];
+					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['download_description']) : $tp -> toRss(substr($value['download_description'], 0, 100)));
+					$this -> rssItems[$loop]['enc_url'] = $e107->http_path."request.php?".$value['download_id'];
+					$this -> rssItems[$loop]['enc_leng'] = $value['download_filesize'];
+					$this -> rssItems[$loop]['enc_type'] = $this->getmime($value['download_url']);
+				$loop++;
+				}
+			break;
+
+
+
+
 		}
 	}
 
 	function striptags($text)
 	{
-		
+
 		return $text;
 	}
 
@@ -318,7 +344,7 @@ class rssCreate {
 		global $sql, $pref;
 		header('Content-type: text/xml', TRUE);
 		switch ($this -> rssType) {
-			case 1:
+			case 1:		// Rss 1.0
 				echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>
 						<!-- generator=\"e107\" -->
 						<!-- content type=\"".$this -> contentType."\" -->
@@ -384,8 +410,14 @@ class rssCreate {
 					<description>".$value['description']."</description>
 					".$value['category']."
 					<comments>".$value['comment']."</comments>
-					<author>".$value['author']."</author>
-					<pubDate>".$value['pubdate']."</pubDate>
+					<author>".$value['author']."</author>\n";
+
+			// enclosure support for podcasting etc.
+			if($value['enc_url'] && $value['enc_leng'] && $value['enc_type']){
+				echo "<enclosure url=\"".$value['enc_url']."\" length=\"".$value['enc_leng']."\" type=\"".$value['enc_type']."\"   />\n";
+			}
+
+			echo "<pubDate>".$value['pubdate']."</pubDate>
 					<guid isPermaLink=\"true\">".$value['link']."</guid>
 					</item>";
 			}
@@ -441,6 +473,17 @@ class rssCreate {
 			break;
 		}
 	}
+
+
+	function getmime($file){
+		$ext = strtolower(str_replace(".","",strrchr(basename($file), ".")));
+		$mime["mp3"] = "audio/mpeg";
+		return $mime[$ext];
+
+
+	}
+
+
 }
 
 ?>
