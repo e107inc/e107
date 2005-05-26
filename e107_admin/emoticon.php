@@ -126,6 +126,50 @@ class emotec
 					$tmp = addslashes(serialize($confArray));
 					$sql->db_Insert("core", "'emote_".$value."', '$tmp' ");
 				}
+
+				else if(file_exists(e_IMAGE."emotes/".$value."/emoticons.xml"))
+				{
+					$filename = e_IMAGE."emotes/".$value."/emoticons.xml"; 
+					$handle = fopen ($filename, "r"); 
+					$contents = fread ($handle, filesize ($filename)); 
+					fclose ($handle); 
+
+
+					preg_match_all("#\<emoticon file=\"(.*?)\"\>(.*?)\<\/emoticon\>#si", $contents, $match);
+					//echo "<pre>"; print_r($match); echo "</pre>";
+
+					$confArray = array();
+
+					$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', '.cvsignore', 'emoticons.xml');
+					$emoteArray = $fl -> get_files(e_IMAGE."emotes/".$value, "", $reject);
+
+					
+
+					for($a=0; $a<=(count($match[0])); $a++)
+					{
+						preg_match_all("#\<string\>(.*?)\<\/string\>#si", $match[0][$a], $match2);
+						$codet = "";
+						foreach($match2[1] as $code)
+						{
+							$codet .= $code." ";
+						}
+
+						foreach($emoteArray as $emote)
+						{
+							if(strstr($emote['fname'], $match[1][$a]))
+							{
+								$file = str_replace(".", "!", $emote['fname']);
+								break;
+							}
+						}
+
+						$confArray[$file] = $codet;
+					}
+
+					$tmp = addslashes(serialize($confArray));
+					$sql->db_Insert("core", "'emote_".$value."', '$tmp' ");
+
+				}
 				else
 				{
 					echo "<b>No config found - manually configuration required</b> ".$variable." <br />";
