@@ -251,7 +251,7 @@ class emotec
 
 		$emotecode = $sysprefs -> getArray($corea);
 
-		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*', 'phpBB-design.com_banner*', 'readme.txt', 'phpBB-design.com.pak', '_phpBB-design.com.pak');
+		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*', 'phpBB-design.com_banner*', 'readme.txt', 'phpBB-design.com.pak', '_phpBB-design.com.pak', '.cvsignore');
 		$emoteArray = $fl -> get_files(e_IMAGE."emotes/".$packID, "", $reject);
 
 		$text = "
