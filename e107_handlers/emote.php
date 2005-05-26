@@ -11,26 +11,24 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emote.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-18 15:29:34 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-26 16:48:16 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
-function r_emote() {
-	global $sysprefs;
-	$emote = $sysprefs -> getArray('emote');
-	$str = "<div class='spacer'>";
-	$c = 0;
-	$orig = array();
-	while(list($code, $name) = @each($emote[$c])){
-		if(!array_key_exists($name, $orig) && (strpos($code, '&') === false)){
-			$str .= "\n<a href=\"javascript:addtext('$code',true)\"><img src=\"".e_IMAGE."emoticons/{$name}\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
-			$orig[$name] = true;
-		}
-		$c++;
+function r_emote()
+{
+	global $sysprefs, $pref;
+	$emotes = $sysprefs->getArray("emote_".$pref['emotepack']);
+
+	foreach($emotes as $key => $value)
+	{
+		$key = e_IMAGE."emotes/" . $pref['emotepack'] . "/" .str_replace("_", ".", $key);
+		$value2 = substr($value, 0, strpos($value, " "));
+		$value = ($value2 ? $value2 : $value);
+		$str .= "\n<a href=\"javascript:addtext('$value',true)\"><img src='$key' style='border:0; padding-top:2px;' alt='' /></a> ";
 	}
-	 
-	$str .= "</div>";
-	return $str;
+
+	return "<div class='spacer'>".$str."</div>";
 }
 ?>

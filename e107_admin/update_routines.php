@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.83 $
-|     $Date: 2005-05-19 20:42:52 $
+|     $Revision: 1.84 $
+|     $Date: 2005-05-26 16:48:16 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -132,6 +132,13 @@ function update_61x_to_700($type) {
 		/* start newsfeed update */
 		mysql_query("ALTER TABLE `".MPREFIX."newsfeed` CHANGE `newsfeed_data` `newsfeed_data` LONGTEXT NOT NULL");
 		$sql -> db_Update("newsfeed", "newsfeed_timestamp='0' ");
+
+		/* start emote update */
+		$tmp = 
+		'a:28:{s:9:"alien_png";s:6:"!alien";s:10:"amazed_png";s:7:"!amazed";s:9:"angry_png";s:11:"!grr !angry";s:12:"biglaugh_png";s:4:"!lol";s:11:"cheesey_png";s:10:":D :oD :-D";s:12:"confused_png";s:10:":? :o? :-?";s:7:"cry_png";s:19:"&| &-| &o| :(( !cry";s:8:"dead_png";s:21:"x) xo) x-) x( xo( x-(";s:9:"dodge_png";s:6:"!dodge";s:9:"frown_png";s:10:":( :o( :-(";s:7:"gah_png";s:10:":@ :o@ :o@";s:8:"grin_png";s:10:":D :oD :-D";s:9:"heart_png";s:6:"!heart";s:8:"idea_png";s:10:":! :o! :-!";s:7:"ill_png";s:4:"!ill";s:7:"mad_png";s:13:"~:( ~:o( ~:-(";s:12:"mistrust_png";s:9:"!mistrust";s:11:"neutral_png";s:10:":| :o| :-|";s:12:"question_png";s:2:"?!";s:12:"rolleyes_png";s:10:"B) Bo) B-)";s:7:"sad_png";s:4:"!sad";s:10:"shades_png";s:10:"8) 8o) 8-)";s:7:"shy_png";s:4:"!shy";s:9:"smile_png";s:10:":) :o) :-)";s:11:"special_png";s:3:"%-6";s:12:"suprised_png";s:10:":O :oO :-O";s:10:"tongue_png";s:21:":p :op :-p :P :oP :-P";s:8:"wink_png";s:10:";) ;o) ;-)";}';
+		$sql->db_Insert("core", "'emote_default', '$tmp' ");
+		$pref['emotepack'] = "default";
+
 
 
 		/* start download updates */
@@ -665,6 +672,12 @@ function update_61x_to_700($type) {
 	}
 	else
 	{
+
+
+		if(!$sql -> db_Select("core", "*", "e107_name='emote_default' "))
+		{
+			return FALSE;
+		}
 
 
 		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
