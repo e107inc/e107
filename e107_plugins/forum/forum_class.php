@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-05-25 14:25:42 $
+|     $Revision: 1.30 $
+|     $Date: 2005-05-26 01:38:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -150,7 +150,7 @@ class e107forum {
 		global $sql;
 		$qry = "
 		SELECT f.*, u.user_name FROM #forum AS f
-		LEFT JOIN #user AS u ON f.forum_lastpost_user = u.user_id
+		LEFT JOIN #user AS u ON CAST(f.forum_lastpost_user AS UNSIGNED) = u.user_id
 		WHERE forum_parent != 0 AND forum_sub = 0
 		ORDER BY f.forum_order ASC
 		";
@@ -171,7 +171,7 @@ class e107forum {
 		$where = ($forum_id != "" ? "AND forum_sub = {$forum_id}" : "");
 		$qry = "
 		SELECT f.*, u.user_name FROM #forum AS f
-		LEFT JOIN #user AS u ON f.forum_lastpost_user = u.user_id
+		LEFT JOIN #user AS u ON CAST(f.forum_lastpost_user AS UNSIGNED) = u.user_id
 		WHERE forum_sub != 0 {$where}
 		ORDER BY f.forum_order ASC
 		";
@@ -286,8 +286,8 @@ class e107forum {
 		global $sql;
 		$qry = "
 		SELECT t.*, u.user_name, lpu.user_name AS lastpost_username from #forum_t as t
-		LEFT JOIN #user AS u ON t.thread_user = u.user_id
-		LEFT JOIN #user AS lpu ON t.thread_lastuser = lpu.user_id
+		LEFT JOIN #user AS u ON CAST(t.thread_user AS UNSIGNED) = u.user_id
+		LEFT JOIN #user AS lpu ON CAST(t.thread_lastuser AS UNSIGNED) = lpu.user_id
 		WHERE t.thread_forum_id = $forum_id AND t.thread_parent = 0
 		ORDER BY
 		t.thread_s DESC,
@@ -320,7 +320,7 @@ class e107forum {
 		}
 		$qry = "
 		SELECT t.thread_user, t.thread_datestamp, u.user_name FROM #forum_t AS t
-		LEFT JOIN #user AS u ON t.thread_user = u.user_id
+		LEFT JOIN #user AS u ON CAST(t.thread_user AS UNSIGNED) = u.user_id
 		{$where}
 		ORDER BY t.thread_datestamp DESC	LIMIT 0,1
 		";
@@ -460,7 +460,7 @@ class e107forum {
 		$qry = "
 		SELECT t.*, u.* FROM #forum_t as t
 		LEFT JOIN #user AS u
-		ON t.thread_user = u.user_id
+		ON CAST(t.thread_user AS UNSIGNED) = u.user_id
 		WHERE t.thread_parent = $thread_id
 		ORDER by t.thread_datestamp {$sortdir}
 		LIMIT {$start},".($limit);
@@ -477,7 +477,7 @@ class e107forum {
 		$qry = "
 		SELECT t.*,u.* from #forum_t AS t
 		LEFT JOIN #user AS u
-		ON t.thread_user = u.user_id
+		ON CAST(t.thread_user AS UNSIGNED) = u.user_id
 		WHERE t.thread_id = $thread_id
 		LIMIT 0,1
 		";
@@ -536,7 +536,7 @@ class e107forum {
 		$qry = "
 		SELECT t.*, u.user_name, u.user_id, u.user_email from #forum_t AS t
 		LEFT JOIN #user AS u
-		ON t.thread_user = u.user_id
+		ON CAST(t.thread_user AS UNSIGNED) = u.user_id
 		WHERE t.thread_id = $thread_id
 		LIMIT 0,1
 		";
@@ -562,7 +562,7 @@ class e107forum {
 			$qry = "
 			SELECT t.*, u.user_name, u.user_id from #forum_t AS t
 			LEFT JOIN #user AS u
-			ON t.thread_user = u.user_id
+			ON CAST(t.thread_user AS UNSIGNED) = u.user_id
 			WHERE t.thread_id = {$parent_id}
 			LIMIT 0,1
 			";
@@ -670,7 +670,7 @@ class e107forum {
 		SELECT ft.*, fp.thread_name as post_subject, fp.thread_total_replies as replies, u.user_id, u.user_name, f.forum_class
 		FROM #forum_t AS ft
 		LEFT JOIN #forum_t as fp ON fp.thread_id = ft.thread_parent
-		LEFT JOIN #user as u ON u.user_id = ft.thread_user
+		LEFT JOIN #user as u ON u.user_id = CAST(ft.thread_user AS UNSIGNED) 
 		LEFT JOIN #forum as f ON f.forum_id = ft.thread_forum_id
 		WHERE ft.thread_datestamp > ".USERLV. "
 		AND
