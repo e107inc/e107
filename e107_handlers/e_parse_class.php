@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.77 $
-|     $Date: 2005-05-24 13:59:24 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.78 $
+|     $Date: 2005-05-26 08:44:19 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -114,8 +114,7 @@ class e_parse
 	function post_toForm($text)
 	{
 		// ensure apostrophes are properly converted, or else the form item could break
-		return str_replace("'", "&#039;", $text);
-		return $text;
+		return str_replace(array('"', "'"), array("&#039;", "&quot;"), $text);
 	}
 
 	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "")
