@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-04-25 20:08:08 $
-|     $Author: streaky $
+|     $Revision: 1.41 $
+|     $Date: 2005-05-26 07:33:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,8 +25,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.40 $
-* @author $Author: streaky $
+* @version $Revision: 1.41 $
+* @author $Author: e107coders $
 */
 class db {
 
@@ -531,10 +531,10 @@ class db {
 	* @desc Enter description here...
 	* @access private
 	*/
-	function db_IsLang($table) {
+	function db_IsLang($table,$multiple=FALSE) {
 		global $pref, $mySQLtablelist;
-		if (!$this->mySQLlanguage || !$pref['multilanguage']) {
-			return $table;
+		if ((!$this->mySQLlanguage || !$pref['multilanguage']) && $multiple==FALSE) {
+		  	return $table;
 		}
 		if (!$mySQLtablelist) {
 			$tablist = mysql_list_tables($this->mySQLdefaultdb);
@@ -542,11 +542,22 @@ class db {
 				$mySQLtablelist[] = $temp;
 			}
 		}
+
 		$mltable = "lan_".strtolower($this->mySQLlanguage.'_'.$table);
+
+		if($multiple == TRUE){ // return an array of all matching language tables.
+			foreach($mySQLtablelist as $tab){
+              	if(eregi(MPREFIX."lan_",$tab) && substr($tab,-strlen($table)) == $table){
+                	$lanlist[] = $tab;
+			  	}
+			}
+			return ($lanlist) ? $lanlist : FALSE;
+		}
+
 		if (in_array(MPREFIX.$mltable, $mySQLtablelist)) {
 			return $mltable;
 		}
-		return $table;
+	 	return $table;
 	}
 
 	/**
@@ -591,6 +602,30 @@ class db {
 		global $db_mySQLQueryCount;
 		return $db_mySQLQueryCount;
 	}
+
+
+    /*
+    	Multi-language Query Function.
+	*/
+
+	function db_Query_all($query){
+
+       if(strpos($query,'#') !== FALSE) {
+			$table = explode(" ",str_replace("#","",strrchr($query, "#"))); // get the name of the table.
+			$query = preg_replace_callback("/#([\w]*?)\W/", array($this, 'ml_check'), $query);
+		}
+        $this->db_Query($query);
+        if($tablist = $this->db_IsLang($table[0],TRUE)){
+			foreach($tablist as $tab){
+            	$qrylan = str_replace(MPREFIX.$table[0],$tab,$query);
+				$this->db_Query($qrylan);
+			}
+		}
+	}
+
+
+
+
 }
 
 ?>
