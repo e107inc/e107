@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-05-18 09:08:08 $
-|     $Author: stevedunstan $
+|     $Revision: 1.27 $
+|     $Date: 2005-05-26 01:26:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -634,8 +634,11 @@ function parsesize($size) {
 }
 
 function parse_download_cat_parent_table($row) {
-	global $DOWNLOAD_CAT_PARENT_TABLE;
+	global $current_row,$DOWNLOAD_CAT_PARENT_TABLE;
 	extract($row);
+
+	$current_row = ($current_row) ? 0 : 1;  // Alternating CSS for each row.(backwards compatible)
+	$template = ($current_row == 1) ? $DOWNLOAD_CAT_PARENT_TABLE : str_replace("forumheader3","forumheader3 forumheader3_alt",$DOWNLOAD_CAT_PARENT_TABLE);
 
 	if (check_class($download_category_class)) {
 		$parent_status == "open";
@@ -644,20 +647,21 @@ function parse_download_cat_parent_table($row) {
 	} else {
 		$parent_status == "closed";
 	}
-	return(preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_PARENT_TABLE));
+	return(preg_replace("/\{(.*?)\}/e", '$\1', $template));
 }
 
-function parse_download_cat_child_table($row, $subList)
-{
+function parse_download_cat_child_table($row, $subList){
 
-	global $DOWNLOAD_CAT_CHILD_TABLE, $DOWNLOAD_CAT_SUBSUB_TABLE;
+	global $current_row,$DOWNLOAD_CAT_CHILD_TABLE, $DOWNLOAD_CAT_SUBSUB_TABLE;
 
-	if(USER && $row['d_last'] > USERLV)
-	{
+	$current_row = ($current_row) ? 0 : 1;  // Alternating CSS for each row.(backwards compatible)
+	$template = ($current_row == 1) ? $DOWNLOAD_CAT_CHILD_TABLE : str_replace("forumheader3","forumheader3 forumheader3_alt",$DOWNLOAD_CAT_CHILD_TABLE);
+
+
+
+	if(USER && $row['d_last'] > USERLV){
 		$new = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' />";
-	}
-	else
-	{
+	}else{
 		$new = "";
 	}
 	$DOWNLOAD_CAT_SUB_ICON = ($row['download_category_icon'] ? "<img src='".e_IMAGE."icons/{$row['download_category_icon']}' alt='' style='float-left' />" : "&nbsp;");
@@ -669,32 +673,31 @@ function parse_download_cat_child_table($row, $subList)
 	$DOWNLOAD_CAT_SUB_DOWNLOADED = intval($row['d_requests']);
 	$DOWNLOAD_CAT_SUBSUB = "";
 	// check for subsub cats ...
-	foreach($subList as $subrow)
-	{
+	foreach($subList as $subrow){
 		$DOWNLOAD_CAT_SUBSUB_ICON = ($subrow['download_category_icon'] ? "<img src='".e_IMAGE."icons/".$subrow['download_category_icon']."' alt='' style='float-left' />" : "&nbsp;");
 		$DOWNLOAD_CAT_SUBSUB_DESCRIPTION = $subrow['download_category_description'];
 		$DOWNLOAD_CAT_SUBSUB_COUNT = intval($subrow['d_count']);
 		$DOWNLOAD_CAT_SUBSUB_SIZE = parsesize($subrow['d_size']);
 		$DOWNLOAD_CAT_SUBSUB_DOWNLOADED = intval($subrow['d_requests']);
 
-		if(USER && $subrow['d_last'] > USERLV)
-		{
+		if(USER && $subrow['d_last'] > USERLV)	{
 			$new = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' />";
-		}
-		else
-		{
+		}else {
 			$new = "";
 		}
 		$DOWNLOAD_CAT_SUBSUB_NEW_ICON = $new;
 		$DOWNLOAD_CAT_SUBSUB_NAME = $new.($subrow['d_count'] ? "<a href='".e_SELF."?list.".$subrow['download_category_id']."'>".$subrow['download_category_name']."</a>" : $subrow['download_category_name']);
 		$DOWNLOAD_CAT_SUBSUB .= preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_SUBSUB_TABLE);
 	}
-	return(preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_CHILD_TABLE));
+	return(preg_replace("/\{(.*?)\}/e", '$\1', $template));
 }
 
 function parse_download_list_table($row) {
-	global $DOWNLOAD_LIST_TABLE, $rater, $pref, $gen, $agreetext;
+	global $current_row,$DOWNLOAD_LIST_TABLE, $rater, $pref, $gen, $agreetext;
 	extract($row);
+
+	$current_row = ($current_row) ? 0 : 1;  // Alternating CSS for each row.(backwards compatible)
+	$template = ($current_row == 1) ? $DOWNLOAD_LIST_TABLE : str_replace("forumheader3","forumheader3 forumheader3_alt",$DOWNLOAD_LIST_TABLE);
 
 	$gen = new convert;
 	$rater = new rater;
@@ -724,8 +727,8 @@ function parse_download_list_table($row) {
 	$DOWNLOAD_LIST_AUTHOR = $download_author;
 	$DOWNLOAD_LIST_REQUESTED = $download_requested;
 	$DOWNLOAD_LIST_ICON = "<img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
-    $DOWNLOAD_LIST_THUMB = "<img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' style='".DL_IMAGESTYLE."' />";
-	return(preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_LIST_TABLE));
+	$DOWNLOAD_LIST_THUMB = "<img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' style='".DL_IMAGESTYLE."' />";
+	return(preg_replace("/\{(.*?)\}/e", '$\1', $template));
 }
 
 ?>
