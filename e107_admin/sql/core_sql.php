@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-05-19 20:42:51 $
+|     $Revision: 1.30 $
+|     $Date: 2005-05-26 19:42:48 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -116,7 +116,7 @@ CREATE TABLE content (
 #
 
 CREATE TABLE core (
-  e107_name varchar(20) NOT NULL default '',
+  e107_name varchar(100) NOT NULL default '',
   e107_value text NOT NULL,
   PRIMARY KEY  (e107_name)
 ) TYPE=MyISAM;

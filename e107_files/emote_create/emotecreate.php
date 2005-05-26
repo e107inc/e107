@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/emote_create/emotecreate.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-26 16:47:25 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-26 19:42:48 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -168,7 +168,7 @@ class emotec
 		foreach($imageArray as $image)
 		{
 
-			$ca = str_replace(".", "_", $image);
+			$ca = str_replace(".", "!", $image);
 
 			$text .= "
 			<tr>
