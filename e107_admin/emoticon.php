@@ -82,7 +82,61 @@ class emotec
 	function listPacks()
 	{
 
-		global $ns, $fl, $pref;
+		global $ns, $fl, $pref, $sql;
+
+
+		foreach($this -> packArray as $key => $value)
+		{
+			if(!$sql -> db_Select("core", "*", "e107_name='emote_".$value."' "))
+			{
+				/* pack not installed ... */
+				if(file_exists(e_IMAGE."emotes/".$value."/emoteconf.php"))
+				{
+					echo "<b>.conf file found</b>: installing '".$value."'<br />";
+					include(e_IMAGE."emotes/".$value."/emoteconf.php");
+					$sql->db_Insert("core", "'emote_".$value."', '$_emoteconf' ");
+				}
+				else if(file_exists(e_IMAGE."emotes/".$value."/_phpBB-design.com.pak"))
+				{
+					echo "<b>.pak file found</b>: installing '".$value."'<br />";
+					$filename = e_IMAGE."emotes/".$value."/_phpBB-design.com.pak";
+					$pakconf = file ($filename);
+					$confArray = array();
+					foreach($pakconf as $pakline)
+					{
+						$tmp = explode("=+:", $pakline);
+						$confIC = str_replace(".", "!", $tmp[0]);
+						$confArray[$confIC] = trim(chop($tmp[2]));
+					}
+					$tmp = addslashes(serialize($confArray));
+					$sql->db_Insert("core", "'emote_".$value."', '$tmp' ");
+				}
+				else if(file_exists(e_IMAGE."emotes/".$value."/phpBB-design.com.pak"))
+				{
+					echo "<b>.pak file found</b>: installing '".$value."'<br />";
+					$filename = e_IMAGE."emotes/".$value."/phpBB-design.com.pak";
+					$pakconf = file ($filename);
+					$confArray = array();
+					foreach($pakconf as $pakline)
+					{
+						$tmp = explode("=+:", $pakline);
+						$confIC = str_replace(".", "!", $tmp[0]);
+						$confArray[$confIC] = trim(chop($tmp[2]));
+					}
+					$tmp = addslashes(serialize($confArray));
+					$sql->db_Insert("core", "'emote_".$value."', '$tmp' ");
+				}
+				else
+				{
+					echo "<b>No config found - manually configuration required</b> ".$variable." <br />";
+				}
+			}
+		}
+
+
+
+
+
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'>
@@ -153,17 +207,7 @@ class emotec
 
 		$emotecode = $sysprefs -> getArray($corea);
 
-		if(!is_array($emotecode))
-		{
-			if(file_exists(e_IMAGE."emotes/".$packID."/emoteconf.php"))
-			{
-				@include_once(e_IMAGE."emotes/".$packID."/emoteconf.php");
-				$sql->db_Insert("core", "'emote_".$packID."', '$_emoteconf' ");
-				$emotecode = unserialize($_emoteconf);
-			}
-		}
-
-		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*');
+		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*', 'phpBB-design.com_banner*', 'readme.txt', 'phpBB-design.com.pak', '_phpBB-design.com.pak');
 		$emoteArray = $fl -> get_files(e_IMAGE."emotes/".$packID, "", $reject);
 
 		$text = "
@@ -176,10 +220,12 @@ class emotec
 		</tr>
 		";
 
+
 		foreach($emoteArray as $emote)
 		{
 			$ename = $emote['fname'];
-			$evalue = str_replace(".", "_", $ename);
+			$evalue = str_replace(".", "!", $ename);
+
 			$text .= "
 			<tr>
 			<td class='forumheader3' style='width: 20%;'>".$ename."</td>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.84 $
-|     $Date: 2005-05-26 16:48:16 $
+|     $Revision: 1.85 $
+|     $Date: 2005-05-26 19:41:55 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -135,10 +135,11 @@ function update_61x_to_700($type) {
 
 		/* start emote update */
 		$tmp = 
-		'a:28:{s:9:"alien_png";s:6:"!alien";s:10:"amazed_png";s:7:"!amazed";s:9:"angry_png";s:11:"!grr !angry";s:12:"biglaugh_png";s:4:"!lol";s:11:"cheesey_png";s:10:":D :oD :-D";s:12:"confused_png";s:10:":? :o? :-?";s:7:"cry_png";s:19:"&| &-| &o| :(( !cry";s:8:"dead_png";s:21:"x) xo) x-) x( xo( x-(";s:9:"dodge_png";s:6:"!dodge";s:9:"frown_png";s:10:":( :o( :-(";s:7:"gah_png";s:10:":@ :o@ :o@";s:8:"grin_png";s:10:":D :oD :-D";s:9:"heart_png";s:6:"!heart";s:8:"idea_png";s:10:":! :o! :-!";s:7:"ill_png";s:4:"!ill";s:7:"mad_png";s:13:"~:( ~:o( ~:-(";s:12:"mistrust_png";s:9:"!mistrust";s:11:"neutral_png";s:10:":| :o| :-|";s:12:"question_png";s:2:"?!";s:12:"rolleyes_png";s:10:"B) Bo) B-)";s:7:"sad_png";s:4:"!sad";s:10:"shades_png";s:10:"8) 8o) 8-)";s:7:"shy_png";s:4:"!shy";s:9:"smile_png";s:10:":) :o) :-)";s:11:"special_png";s:3:"%-6";s:12:"suprised_png";s:10:":O :oO :-O";s:10:"tongue_png";s:21:":p :op :-p :P :oP :-P";s:8:"wink_png";s:10:";) ;o) ;-)";}';
+		'a:28:{s:9:"alien!png";s:6:"!alien";s:10:"amazed!png";s:7:"!amazed";s:9:"angry!png";s:11:"!grr !angry";s:12:"biglaugh!png";s:4:"!lol";s:11:"cheesey!png";s:10:":D :oD :-D";s:12:"confused!png";s:10:":? :o? :-?";s:7:"cry!png";s:19:"&| &-| &o| :(( !cry";s:8:"dead!png";s:21:"x) xo) x-) x( xo( x-(";s:9:"dodge!png";s:6:"!dodge";s:9:"frown!png";s:10:":( :o( :-(";s:7:"gah!png";s:10:":@ :o@ :o@";s:8:"grin!png";s:10:":D :oD :-D";s:9:"heart!png";s:6:"!heart";s:8:"idea!png";s:10:":! :o! :-!";s:7:"ill!png";s:4:"!ill";s:7:"mad!png";s:13:"~:( ~:o( ~:-(";s:12:"mistrust!png";s:9:"!mistrust";s:11:"neutral!png";s:10:":| :o| :-|";s:12:"question!png";s:2:"?!";s:12:"rolleyes!png";s:10:"B) Bo) B-)";s:7:"sad!png";s:4:"!sad";s:10:"shades!png";s:10:"8) 8o) 8-)";s:7:"shy!png";s:4:"!shy";s:9:"smile!png";s:10:":) :o) :-)";s:11:"special!png";s:3:"%-6";s:12:"suprised!png";s:10:":O :oO :-O";s:10:"tongue!png";s:21:":p :op :-p :P :oP :-P";s:8:"wink!png";s:10:";) ;o) ;-)";}';
 		$sql->db_Insert("core", "'emote_default', '$tmp' ");
 		$pref['emotepack'] = "default";
 
+		mysql_query("ALTER TABLE".MPREFIX."core CHANGE e107_name e107_name VARCHAR( 100 ) NOT NULL");
 
 
 		/* start download updates */
