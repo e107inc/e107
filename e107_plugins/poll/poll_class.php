@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-05-25 08:13:06 $
-|     $Author: e107coders $
+|     $Revision: 1.21 $
+|     $Date: 2005-05-26 08:45:08 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 @include(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
@@ -261,10 +261,9 @@ class poll
 		$mode = "admin" :: called from admin_config.php
 		$mode = "forum" :: called from forum_post.php
 		*/
-
+		global $tp;
 		if($mode == "forum")
 		{
-			global $tp;
 			$text = "<tr>
 			<td colspan='2' class='nforumcaption2'>".LAN_4."</td>
 			</tr>
@@ -314,7 +313,7 @@ class poll
 		<tr>
 		<td style='width:30%' class='forumheader3'><div class='normaltext'>".POLLAN_3.":</div></td>
 		<td style='width:70%'class='forumheader3'>
-		<input class='tbox' type='text' name='poll_title' size='70' value='".$_POST['poll_title']."' maxlength='200' />";
+		<input class='tbox' type='text' name='poll_title' size='70' value='".$tp -> post_toForm($_POST['poll_title'])."' maxlength='200' />";
 
 		$option_count = (count($_POST['poll_option']) ? count($_POST['poll_option']) : 1);
 
@@ -328,7 +327,7 @@ class poll
 				break;
 			}
 			$opt = ($count==1) ? "id='pollopt'" : "";
-			$text .="<span $opt><input  class='tbox' type='text' name='poll_option[]' size='40' value=\"".$_POST['poll_option'][($count-1)]."\" maxlength='200' />";
+			$text .="<span $opt><input  class='tbox' type='text' name='poll_option[]' size='40' value=\"".$tp -> post_toForm($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
 			$text .= "</span><br />";
 		}
 
