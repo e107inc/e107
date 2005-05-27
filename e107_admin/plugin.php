@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-04-02 21:53:22 $
+|     $Revision: 1.43 $
+|     $Date: 2005-05-27 09:52:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -124,6 +124,10 @@ if ($action == 'uninstall') {
 		$func = $eplug_folder.'_uninstall';
 		if (function_exists($func)) {
 			$text .= call_user_func($func);
+		}
+
+        if(is_array($eplug_rss) && $eplug_rss['title']){
+			$sql -> db_Delete("generic", "gen_type='rss' AND gen_ip='$eplug_folder'");
 		}
 
 		if (is_array($eplug_table_names)) {

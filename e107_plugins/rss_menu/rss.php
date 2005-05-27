@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-05-26 00:24:04 $
+|     $Revision: 1.13 $
+|     $Date: 2005-05-27 09:53:03 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -36,7 +36,7 @@ Query string: content_type.rss_type.[topic id]
 require_once("../../class2.php");
 
 list($content_type, $rss_type, $topic_id) = explode(".", e_QUERY);
-if (intval($content_type) == false || intval($rss_type) == false) {
+if (intval($rss_type) == false) {
 	echo "No type specified";
 	exit;
 }
@@ -57,6 +57,7 @@ class rssCreate {
 
 	function rssCreate($content_type, $rss_type, $topic_id) {
 		// constructor
+		$sql_rs = new db;
 		global $tp, $sql, $e107, $PLUGINS_DIRECTORY;
 		$this -> path = e_PLUGIN."rss_menu/";
 		$this -> rssType = $rss_type;
@@ -327,12 +328,36 @@ class rssCreate {
 				$loop++;
 				}
 			break;
-
-
-
-
 		}
-	}
+
+        // Get Plugin RSS feeds.
+   	   if($sql_rs->db_Select("generic","*","gen_type = 'rss' and gen_ip = '$content_type' ")){
+			while($row2 = $sql_rs -> db_Fetch()){
+					$rs = unserialize($row2['gen_chardata']);
+       				extract($rs);
+					$sql -> db_Select_gen($query);
+   					$this -> contentType = $content_type;
+                    $this -> rssItems = array();
+					$tmp = $sql->db_getList();
+					$loop=0;
+					foreach($tmp as $row) {
+						$this -> rssItems[$loop]['author'] = $tp -> toRss($row[$author]);
+						$this -> rssItems[$loop]['title'] = $tp -> toRss($row[$title]);
+						if($item_id){ $link = $link.$row[$itemid]; }
+						$this -> rssItems[$loop]['link'] = $e107->http_path.$link;
+						$this -> rssItems[$loop]['description'] = $tp -> toRss($row[$description]);
+                       	if(enc_url){ $this -> rssItems[$loop]['enc_url'] = $e107->http_path.$enc_url.$row[$item_id]; }
+						if($enc_leng){ $this -> rssItems[$loop]['enc_leng'] = $row[$enc_leng]; }
+						if($enc_type){ $this -> rssItems[$loop]['enc_type'] = $this->getmime($row[$enc_type]); }
+						$catlink = ($categorylink) ? $categorylink : "";
+						$catlink .= ($categoryid) ? $row[$categoryid] : "";
+						if($categoryname){ $this -> rssItems[$loop]['category'] = "<category domain='".SITEURL.$catlink."'>".$tp -> toRss($row[$categoryname])."</category>"; }
+						if($datestamp){	$this -> rssItems[$loop]['pubdate'] = strftime("%a, %d %b %Y %I:%M:00 GMT", $row[$datestamp]);  }
+                        $loop++;
+					}
+          	}
+      }
+}
 
 	function striptags($text)
 	{
