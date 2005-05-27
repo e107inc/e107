@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-05-27 01:05:20 $
+|     $Revision: 1.28 $
+|     $Date: 2005-05-27 10:44:04 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -98,6 +98,7 @@ if (isset($_POST['submit'])) {
 			$mail->SMTPAuth = TRUE;
 			$mail->Username = $pref['smtp_username'];
 			$mail->Password = $pref['smtp_password'];
+			$mail->$PluginDir = e_HANDLER."phpmailer/";     
         }
 	} else {
 		$mail->Mailer = "mail";
