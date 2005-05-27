@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-04-30 22:28:16 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2005-05-27 00:09:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -26,24 +26,29 @@ php 4.3.6 does NOT have this problem.
 
 function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_name, $attachments, $Cc, $Bcc, $returnpath, $returnreceipt) {
 	global $pref;
-	require_once("phpmailer/class.phpmailer.php");
+	require_once(e_HANDLER."phpmailer/class.phpmailer.php");
 
 	$mail = new PHPMailer();
-	if ($pref['smtp_enable']) {
-		require_once("phpmailer/class.smtp.php");
-		$mail->IsSMTP(); // telling the class to use SMTP
+
+    if ($pref['smtp_enable']) {
+		$mail->Mailer = "smtp";
+	 	$mail->SMTPKeepAlive = FALSE;
+		$mail->SMTPAuth = TRUE;
+		$mail->Username = $pref['smtp_username'];
+		$mail->Password = $pref['smtp_password'];
+		$mail->Host = $pref['smtp_server'];
+	} else {
+		$mail->Mailer = "mail";
 	}
-	($to_name)?$to_name:
-	$send_to;
+
+
+	($to_name)? $to_name: $send_to;
 	$mail->CharSet = CHARSET;
-	$mail->From = ($send_from)?$send_from:
-	$pref['siteadminemail'];
-	$mail->FromName = ($from_name)?$from_name:
-	$pref['siteadmin'];
+	$mail->From = ($send_from)? $send_from: $pref['siteadminemail'];
+	$mail->FromName = ($from_name)? $from_name:	$pref['siteadmin'];
 	$mail->Host = $pref['smtp_server'];
-	$mail->Mailer = ($pref['smtp_enable'])? "smtp":
-	"mail";
 	$mail->Subject = $subject;
+	$mail->SetLanguage("en",e_HANDLER."phpmailer/language/");
 
 	$lb = "\n";
 	// Clean up the HTML. ==
@@ -66,17 +71,12 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 	$mail->AltBody = $text; //Include regular plaintext as well
 	$mail->AddAddress($send_to, $to_name);
 
-	if ($attachments)
-	{
-		if (is_array($attachments))
-		{
-			for ($i = 0; $i < count($attachments); $i++)
-			{
+	if ($attachments){
+		if (is_array($attachments))	{
+			for ($i = 0; $i < count($attachments); $i++){
 				$mail->AddStringAttachment($attachments[$i], $attachments[$i]);
 			}
-		}
-		else
-		{
+		}else{
 			$mail->AddStringAttachment($attachments, $attachments);
 		}
 	}
