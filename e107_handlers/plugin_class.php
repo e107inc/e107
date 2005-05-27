@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-05-27 09:52:54 $
+|     $Revision: 1.23 $
+|     $Date: 2005-05-27 10:31:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -25,17 +25,17 @@ class e107plugin {
 	 *
 	 * @return array plugin details
 	 */
-	function getall() {
+	function getall($flag) {
 		global $sql;
-		if ($sql->db_Select("plugin","*","plugin_id !='' ORDER BY plugin_installflag DESC,plugin_name ASC")) {
+		if ($sql->db_Select("plugin","*","plugin_installflag = '$flag' ORDER BY plugin_name ASC")) {
 			while ($row = $sql->db_Fetch()) {
 				$name = ucfirst($row['plugin_name']);
 				$ret[$name] = $row;
 			}
+ 		}
 
-			return $ret;
-		}
-		return FALSE;
+		return ($ret) ? $ret : FALSE;
+
 	}
 
 	/**
@@ -372,6 +372,7 @@ class e107plugin {
 		} else {
 			$text = EPL_ADLAN_21;
 		}
+		if($eplug_conffile){ $text .= "&nbsp;<a href='".e_PLUGIN."$eplug_folder/$eplug_conffile'>[".EPL_CONFIGURE."]</a>"; }
 		$ns->tablerender(EPL_ADLAN_33, $text);
 	}
 }

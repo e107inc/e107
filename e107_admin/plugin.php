@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-05-27 09:52:34 $
+|     $Revision: 1.44 $
+|     $Date: 2005-05-27 10:31:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -336,47 +336,47 @@ if(!is_writable(e_PLUGIN)) {
 	</form>
 	<br />\n";
 }
+// Uninstall and Install sorting should be fixed once and for all now !
+$installed = $plugin->getall(1);
+$uninstalled = $plugin->getall(0);
 
 $text .= "<table style='".ADMIN_WIDTH."' class='fborder'>";
+$text .= "<tr><td class='fcaption' colspan='3'>".EPL_ADLAN_22."</td></tr>";
+$text .= render_plugs($installed);
+$text .= "<tr><td class='fcaption' colspan='3'>".EPL_ADLAN_23."</td></tr>";
+$text .= render_plugs($uninstalled);
 
 
-$pluginList = $plugin->getall();
+function render_plugs($pluginList){
+	global $tp;
 
-foreach($pluginList as $plug) {
+	foreach($pluginList as $plug) {
 	//Unset any possible eplug_ variables set by last plugin.php
-	$defined_vars = array_keys(get_defined_vars());
-	foreach($defined_vars as $varname) {
-		if (substr($varname, 0, 6) == 'eplug_' || substr($varname, 0, 8) == 'upgrade_') {
-			unset($$varname);
+		$defined_vars = array_keys(get_defined_vars());
+		foreach($defined_vars as $varname) {
+			if (substr($varname, 0, 6) == 'eplug_' || substr($varname, 0, 8) == 'upgrade_') {
+				unset($$varname);
+			}
 		}
-	}
-	include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
+		include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 
-	if ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest) {
-		$img = (!$plug['plugin_installflag'] ? "<img src='".e_IMAGE."admin_images/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."admin_images/installed.png' alt='' />");
-	} else {
-		$img = "<img src='".e_IMAGE."admin_images/noinstall.png' alt='' />";
-	}
+   		if ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest) {
+			$img = (!$plug['plugin_installflag'] ? "<img src='".e_IMAGE."admin_images/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."admin_images/installed.png' alt='' />");
+		} else {
+			$img = "<img src='".e_IMAGE."admin_images/noinstall.png' alt='' />";
+		}
 
-	if ($plug['plugin_version'] != $eplug_version && $plug['plugin_installflag']) {
-		$img = "<img src='".e_IMAGE."admin_images/upgrade.png' alt='' />";
-	}
+		if ($plug['plugin_version'] != $eplug_version && $plug['plugin_installflag']) {
+			$img = "<img src='".e_IMAGE."admin_images/upgrade.png' alt='' />";
+		}
 
-	$plugin_icon = $eplug_icon ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' style='border:0px;vertical-align: bottom; width: 32px; height: 32px' />" :
-	 E_32_CAT_PLUG;
-	if ($eplug_conffile && $plug['plugin_installflag'] == TRUE) {
-		$conf_title = EPL_CONFIGURE.' '.$eplug_name;
-		$plugin_icon = "<a title='{$conf_title}' href='".e_PLUGIN.$eplug_folder.'/'.$eplug_conffile."' >".$plugin_icon.'</a>';
-	}
+		$plugin_icon = $eplug_icon ? "<img src='".e_PLUGIN.$eplug_icon."' alt='' style='border:0px;vertical-align: bottom; width: 32px; height: 32px' />" : E_32_CAT_PLUG;
+		if ($eplug_conffile && $plug['plugin_installflag'] == TRUE) {
+			$conf_title = EPL_CONFIGURE.' '.$eplug_name;
+			$plugin_icon = "<a title='{$conf_title}' href='".e_PLUGIN.$eplug_folder.'/'.$eplug_conffile."' >".$plugin_icon.'</a>';
+		}
 
-    if($plug['plugin_installflag'] != $installed_stat_cur){
-		$installed_status = ($plug['plugin_installflag']==1)? EPL_ADLAN_22 : EPL_ADLAN_23;
-		$text .= ($plug['plugin_installflag'] == 0) ? "</table><br /><br /><table style='".ADMIN_WIDTH."' class='fborder'>" : "";
-		$text .= "<tr><td class='fcaption' colspan='3'>".$installed_status."</td></tr>";
-	}
-    $installed_stat_cur = $plug['plugin_installflag'];
-
-	$text .= "
+		$text .= "
 		<tr>
 		<td class='forumheader3' style='width:160px; text-align:center; vertical-align:top'>
 		<table style='width:100%'><tr><td style='text-align:left;width:40px;vertical-align:top'>
@@ -386,14 +386,14 @@ foreach($pluginList as $plug) {
 		<br />";
 
 
-	$text .="</td>
+		$text .="</td>
 		</tr></table>
 		</td>
 		<td class='forumheader3' style='vertical-align:top'>
 		<table cellspacing='3' style='width:98%'>
 		<tr><td style='vertical-align:top;width:15%'><b>".EPL_ADLAN_12."</b>:</td><td style='vertical-align:top'><a href='mailto:$eplug_email' title='$eplug_email'>$eplug_author</a>&nbsp;";
         if($eplug_url){
-        $text .= "&nbsp;&nbsp;[ <a href='$eplug_url' title='$eplug_url' >".EPL_WEBSITE."</a> ] ";
+        	$text .= "&nbsp;&nbsp;[ <a href='$eplug_url' title='$eplug_url' >".EPL_WEBSITE."</a> ] ";
 		}
 		$text .="</td></tr>
 		<tr><td style='vertical-align:top'><b>".EPL_ADLAN_14."</b>:</td><td style='vertical-align:top'> $eplug_description&nbsp;";
@@ -409,28 +409,32 @@ foreach($pluginList as $plug) {
 		$text .="</td></tr>\n";
 
 
-	$text .= "</table></td>";
-	$text .= "<td class='forumheader3' style='width:70px;text-align:center'>";
-    if ($eplug_conffile || $eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_status || $eplug_latest) {
-		$text .= ($plug['plugin_installflag'] ? "<input type='button' class='button' onclick=\"uninstall_confirm('".$tp->toJS(EPL_ADLAN_2." [ {$plug['plugin_name']} ]")."','".e_SELF."?uninstall.{$plug['plugin_id']}')\" title='".EPL_ADLAN_1."' value='".EPL_ADLAN_1."' />" : "<input type='button' class='button' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />");
-	} else {
-		if ($eplug_menu_name) {
-			$text .= EPL_NOINSTALL.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
+		$text .= "</table></td>";
+		$text .= "<td class='forumheader3' style='width:70px;text-align:center'>";
+    	if ($eplug_conffile || $eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_status || $eplug_latest) {
+			$text .= ($plug['plugin_installflag'] ? "<input type='button' class='button' onclick=\"uninstall_confirm('".$tp->toJS(EPL_ADLAN_2." [ {$plug['plugin_name']} ]")."','".e_SELF."?uninstall.{$plug['plugin_id']}')\" title='".EPL_ADLAN_1."' value='".EPL_ADLAN_1."' />" : "<input type='button' class='button' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />");
 		} else {
-			$text .= EPL_NOINSTALL_1.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
+	   		if ($eplug_menu_name) {
+				$text .= EPL_NOINSTALL.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
+			} else {
+				$text .= EPL_NOINSTALL_1.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
+			}
 		}
+
+		if ($plug['plugin_version'] != $eplug_version && $plug['plugin_installflag']) {
+			$text .= "<br /><input type='button' class='button' onclick=\"location.href='".e_SELF."?upgrade.{$plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$eplug_version."' value='".EPL_UPGRADE."' />";
+		}
+
+		$text .="</td>";
+		$text .= "</tr>";
 	}
 
-	if ($plug['plugin_version'] != $eplug_version && $plug['plugin_installflag']) {
-		$text .= "<br /><input type='button' class='button' onclick=\"location.href='".e_SELF."?upgrade.{$plug['plugin_id']}'\" title='".EPL_UPGRADE." to v".$eplug_version."' value='".EPL_UPGRADE."' />";
-	}
 
-	$text .="</td>";
-	$text .= "</tr>";
+return $text;
 }
 
 $text .= "</table>
-	<div><br />
+	<div style='text-align:center'><br />
 	<img src='".e_IMAGE."admin_images/uninstalled.png' alt='' /> ".EPL_ADLAN_23."&nbsp;&nbsp;
 	<img src='".e_IMAGE."admin_images/installed.png' alt='' /> ".EPL_ADLAN_22."&nbsp;&nbsp;
 	<img src='".e_IMAGE."admin_images/upgrade.png' alt='' /> ".EPL_ADLAN_24."&nbsp;&nbsp;
