@@ -51,7 +51,7 @@ foreach($_POST as $key => $value)
 	}
 }
 
-
+$emote -> installCheck();
 $emote -> listPacks();
 
 
@@ -85,97 +85,7 @@ class emotec
 		global $ns, $fl, $pref, $sql;
 
 
-		foreach($this -> packArray as $key => $value)
-		{
-			if(!$sql -> db_Select("core", "*", "e107_name='emote_".$value."' "))
-			{
-				/* pack not installed ... */
-				if(file_exists(e_IMAGE."emotes/".$value."/emoteconf.php"))
-				{
-					echo "<b>.conf file found</b>: installing '".$value."'<br />";
-					include(e_IMAGE."emotes/".$value."/emoteconf.php");
-					$sql->db_Insert("core", "'emote_".$value."', '$_emoteconf' ");
-				}
-				else if(file_exists(e_IMAGE."emotes/".$value."/_phpBB-design.com.pak"))
-				{
-					echo "<b>.pak file found</b>: installing '".$value."'<br />";
-					$filename = e_IMAGE."emotes/".$value."/_phpBB-design.com.pak";
-					$pakconf = file ($filename);
-					$confArray = array();
-					foreach($pakconf as $pakline)
-					{
-						$tmp = explode("=+:", $pakline);
-						$confIC = str_replace(".", "!", $tmp[0]);
-						$confArray[$confIC] = trim(chop($tmp[2]));
-					}
-					$tmp = addslashes(serialize($confArray));
-					$sql->db_Insert("core", "'emote_".$value."', '$tmp' ");
-				}
-				else if(file_exists(e_IMAGE."emotes/".$value."/phpBB-design.com.pak"))
-				{
-					echo "<b>.pak file found</b>: installing '".$value."'<br />";
-					$filename = e_IMAGE."emotes/".$value."/phpBB-design.com.pak";
-					$pakconf = file ($filename);
-					$confArray = array();
-					foreach($pakconf as $pakline)
-					{
-						$tmp = explode("=+:", $pakline);
-						$confIC = str_replace(".", "!", $tmp[0]);
-						$confArray[$confIC] = trim(chop($tmp[2]));
-					}
-					$tmp = addslashes(serialize($confArray));
-					$sql->db_Insert("core", "'emote_".$value."', '$tmp' ");
-				}
-
-				else if(file_exists(e_IMAGE."emotes/".$value."/emoticons.xml"))
-				{
-					$filename = e_IMAGE."emotes/".$value."/emoticons.xml"; 
-					$handle = fopen ($filename, "r"); 
-					$contents = fread ($handle, filesize ($filename)); 
-					fclose ($handle); 
-
-
-					preg_match_all("#\<emoticon file=\"(.*?)\"\>(.*?)\<\/emoticon\>#si", $contents, $match);
-					//echo "<pre>"; print_r($match); echo "</pre>";
-
-					$confArray = array();
-
-					$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', '.cvsignore', 'emoticons.xml');
-					$emoteArray = $fl -> get_files(e_IMAGE."emotes/".$value, "", $reject);
-
-					
-
-					for($a=0; $a<=(count($match[0])); $a++)
-					{
-						preg_match_all("#\<string\>(.*?)\<\/string\>#si", $match[0][$a], $match2);
-						$codet = "";
-						foreach($match2[1] as $code)
-						{
-							$codet .= $code." ";
-						}
-
-						foreach($emoteArray as $emote)
-						{
-							if(strstr($emote['fname'], $match[1][$a]))
-							{
-								$file = str_replace(".", "!", $emote['fname']);
-								break;
-							}
-						}
-
-						$confArray[$file] = $codet;
-					}
-
-					$tmp = addslashes(serialize($confArray));
-					$sql->db_Insert("core", "'emote_".$value."', '$tmp' ");
-
-				}
-				else
-				{
-					echo "<b>No config found - manually configuration required</b> ".$variable." <br />";
-				}
-			}
-		}
+		
 
 
 
@@ -251,8 +161,17 @@ class emotec
 
 		$emotecode = $sysprefs -> getArray($corea);
 
-		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*', 'phpBB-design.com_banner*', 'readme.txt', 'phpBB-design.com.pak', '_phpBB-design.com.pak', '.cvsignore');
+		$reject = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$', 'emoteconf*', '*\.txt', '*\.html', '*\.pak', '*php*', '.cvsignore');
 		$emoteArray = $fl -> get_files(e_IMAGE."emotes/".$packID, "", $reject);
+
+		$eArray = array();
+		foreach($emoteArray as $key => $value)
+		{
+			if(!strstr($value['fname'], ".php") && !strstr($value['fname'], ".txt") && !strstr($value['fname'], ".pak") && !strstr($value['fname'], ".xml") && !strstr($value['fname'], "phpBB") && !strstr($value['fname'], ".html"))
+			{
+				$eArray[] = array('path' => $value['path'], 'fname' => $value['fname']);
+			}
+		}
 
 		$text = "
 		<form method='post' action='".e_SELF."'>
@@ -265,7 +184,7 @@ class emotec
 		";
 
 
-		foreach($emoteArray as $emote)
+		foreach($eArray as $emote)
 		{
 			$ename = $emote['fname'];
 			$evalue = str_replace(".", "!", $ename);
@@ -307,13 +226,104 @@ class emotec
 
 	}
 
+	function installCheck()
+	{
+		global $sql, $fl;
+		foreach($this -> packArray as $key => $value)
+		{
+			if(!$sql -> db_Select("core", "*", "e107_name='emote_".$value."' "))
+			{
+				$fileArray = $fl -> get_files(e_IMAGE."emotes/".$value);
+				foreach($fileArray as $file)
+				{
+					if(strstr($file['fname'], ".xml"))
+					{
+						$confFile = array('file' => $file['fname'], 'type' => "xml");
+					}
+					else if(strstr($file['fname'], ".pak"))
+					{
+						$confFile = array('file' => $file['fname'], 'type' => "pak");
+					}
+					else if(strstr($file['fname'], ".php"))
+					{
+						$confFile = array('file' => $file['fname'], 'type' => "php");
+					}
+				}
+
+				/* .pak file ------------------------------------------------------------------------------------------------------------------------------------ */
+				if($confFile['type'] == "pak")
+				{
+					$filename = e_IMAGE."emotes/".$value."/".$confFile['file'];
+					$pakconf = file ($filename);
+					$contentArray = array();
+					foreach($pakconf as $line)
+					{
+						if(trim(chop($line)) && strstr($line, "=+") && !strstr($line, ".txt") && !strstr($line, ".html") && !strstr($line, "cvs")) $contentArray[] = $line;
+					}
+					$emotecount = count($contentArray);
+					$confArray = array();
+					foreach($contentArray as $pakline)
+					{
+						$tmp = explode("=+:", $pakline);
+						$confIC = str_replace(".", "!", $tmp[0]);
+						$confArray[$confIC] = trim(chop($tmp[2]));
+					}
+					$tmp = addslashes(serialize($confArray));
+					$sql->db_Insert("core", "'emote_".$value."', '$tmp' ");
+					echo "<div style='text-align: center;'><b>New emote pak found: '</b> ".$value."'</div>";
+				}
+				/* end ----------------------------------------------------------------------------------------------------------------------------------------- */
+
+				/* .xml file ------------------------------------------------------------------------------------------------------------------------------------ */
+				if($confFile['type'] == "xml")
+				{
+					$filename = e_IMAGE."emotes/".$value."/".$confFile['file'];
+
+					$handle = fopen ($filename, "r"); 
+					$contents = fread ($handle, filesize ($filename)); 
+					fclose ($handle);
+
+					preg_match_all("#\<emoticon file=\"(.*?)\"\>(.*?)\<\/emoticon\>#si", $contents, $match);
+					$confArray = array();
+
+					for($a=0; $a<=(count($match[0])); $a++)
+					{
+						preg_match_all("#\<string\>(.*?)\<\/string\>#si", $match[0][$a], $match2);
+
+						$codet = "";
+						foreach($match2[1] as $code)
+						{
+							$codet .= $code." ";
+						}
+
+						foreach($fileArray as $emote)
+						{
+							if(strstr($emote['fname'], $match[1][$a]))
+							{
+								$file = str_replace(".", "!", $emote['fname']);
+							}
+						}
+						$confArray[$file] = $codet;
+					}
+
+					$tmp = addslashes(serialize($confArray));
+					$sql->db_Insert("core", "'emote_".$value."', '$tmp' ");
+					echo "<div style='text-align: center;'><b>New emote xml pak found: '</b> ".$value."'</div>";
+				}
+
+				if($confFile['type'] == "php")
+				{
+					echo "<b>.conf file found</b>: installing '".$value."'<br />";
+					include(e_IMAGE."emotes/".$value."/".$confFile['file']);
+					$sql->db_Insert("core", "'emote_".$value."', '$_emoteconf' ");
+					echo "<div style='text-align: center;'><b>New emote php found: '</b> ".$value."'</div>";
+				}
+				/* end ----------------------------------------------------------------------------------------------------------------------------------------- */
+				
+			}
+		}
+	}
 }
-
-
-
-
-
-
 
 require_once("footer.php");
 ?>
