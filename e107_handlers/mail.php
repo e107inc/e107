@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-05-27 01:04:54 $
+|     $Revision: 1.12 $
+|     $Date: 2005-05-27 10:44:17 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -38,6 +38,7 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 			$mail->SMTPAuth = TRUE;
 			$mail->Username = $pref['smtp_username'];
 			$mail->Password = $pref['smtp_password'];
+			$mail->$PluginDir = e_HANDLER."phpmailer/";
 		}
 
 	} else {
