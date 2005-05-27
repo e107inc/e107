@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-05-25 12:24:36 $
+|     $Revision: 1.14 $
+|     $Date: 2005-05-27 04:55:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -48,6 +48,8 @@ if (e_QUERY)
 	$id = $tmp[2];
 	unset($tmp);
 }
+
+
 
 if (isset($_POST['up_x']))
 {
@@ -90,6 +92,9 @@ if (isset($_POST['catdown_x']))
 
 if (isset($_POST['add_field']))
 {
+	if($_POST['user_type']==4){
+    	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value']);
+	}
 	$new_values = make_delimited($_POST['user_values']);
 	$new_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
 	if($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $new_parms, $new_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], 0, $_POST['user_parent']))
@@ -99,6 +104,9 @@ if (isset($_POST['add_field']))
 }
 
 if (isset($_POST['update_field'])) {
+	if($_POST['user_type']==4){
+    	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value']);
+	}
 	$upd_values = make_delimited($_POST['user_values']);
 	$upd_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
 	if($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $upd_parms, $upd_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], $_POST['user_parent']))
@@ -156,6 +164,15 @@ if($message)
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
+if(isset($_POST['table_db']) && !$_POST['add_field'] && !$_POST['update_field']){
+	$action = "continue";
+	$current['user_extended_struct_name'] = $_POST['user_field'];
+    $current['user_extended_struct_parms'] = $_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide'];
+    $current['user_extended_struct_text'] = $_POST['user_text'];
+	$current['user_extended_struct_type'] = $_POST['user_type'];
+	$user->show_extended($current);
+}
+
 if (!e_QUERY || $action == 'main')
 {
 	$user->show_extended();
@@ -198,7 +215,7 @@ class users_ext
 
 	function show_extended($current)
 	{
-		global $sql, $ns, $ue, $curtype, $tp;
+		global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action;
 
 		$catList = $ue->user_extended_get_categories();
 		$catList[0][0] = array('user_extended_struct_name' => EXTLAN_36);
@@ -303,7 +320,7 @@ class users_ext
 			<tr>
 			<td style='width:30%' class='forumheader3'>".EXTLAN_10.":</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>user_";
-			if(is_array($current))
+			if(is_array($current) && $current['user_extended_struct_name'])
 			{
 				$text .= $current['user_extended_struct_name']."
 				<input type='hidden' name='user_field' value='".$current['user_extended_struct_name']."' />
@@ -357,30 +374,73 @@ class users_ext
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".EXTLAN_3."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
-			<div id='value_container'>
-			";
+			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_3."</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>";
+  // Start of Values ---------------------------------
+
+      		$val_hide = ($current['user_extended_struct_type'] != 4) ? "visible" : "none";
+
+			$text .= "<div id='values' style='display:$val_hide'>\n";
+			$text .= "<div id='value_container' >\n";
 			$curVals = explode(",",$current['user_extended_struct_values']);
-			if(count($curVals) == 0)
-			{
+			if(count($curVals) == 0){
 				$curVals[]='';
 			}
 			$i=0;
-			foreach($curVals as $v)
-			{
+			foreach($curVals as $v){
 				$id = $i ? "" : " id='value_line'";
 				$i++;
 				$text .= "
 				<span {$id}>
-				<input class='tbox' type='text' name='user_values[]' size='40' value='{$v}' /><br />
-				</span>
-				";
+				<input class='tbox' type='text' name='user_values[]' size='40' value='{$v}' /></span><br />";
 			}
 			$text .= "
 			</div>
-			<span class='smalltext'>".EXTLAN_17."</span><br />
 			<input type='button' class='button' value='".EXTLAN_48."' onclick=\"duplicateHTML('value_line','value_container');\"  />
+			<br /><span class='smalltext'>".EXTLAN_17."</span></div>";
+// End of Values. --------------------------------------
+       		$db_hide = ($current['user_extended_struct_type'] == 4) ? "visible" : "none";
+
+			$text .= "<div id='db_mode' style='display:$db_hide'>\n";
+            $text .= "<select style='width:32%' class='tbox' name='table_db' onchange=\"this.form.submit()\" >
+            <option value='' class='caption'>".EXTLAN_62."</option>\n";
+			$result = mysql_list_tables($mySQLdefaultdb);
+			while ($row2 = mysql_fetch_row($result)){
+				$fld = str_replace(MPREFIX,"",$row2[0]);
+				$selected =  ($_POST['table_db'] == $fld || $curVals[0] == $fld) ? " selected='selected'" : "";
+         		$text .= (eregi(MPREFIX,$row2[0])) ? "<option value=\"".$fld."\" $selected>".$fld."</option>\n" : "";
+			}
+			$text .= " </select>";
+     	if($_POST['table_db'] || $curVals[0]){
+			// Field ID
+			$text .= "&nbsp;<select style='width:32%' class='tbox' name='field_id' >\n
+			<option value='' class='caption'>".EXTLAN_63."</option>\n";
+			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
+			if($sql -> db_Select_gen("DESCRIBE ".MPREFIX."{$table_list}")){
+		   		while($row3 = $sql -> db_Fetch()){
+    				$field_name=$row3[0];
+					$selected =  ($curVals[1] == $field_name) ? " selected='selected' " : "";
+					$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
+				}
+			}
+    		$text .= " </select>";
+             // Field Value
+			$text .= "&nbsp;<select style='width:32%' class='tbox' name='field_value' >
+			<option value='' class='caption'>".EXTLAN_64."</option>\n";
+			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
+			if($sql -> db_Select_gen("DESCRIBE ".MPREFIX."{$table_list}")){
+		   		while($row3 = $sql -> db_Fetch()){
+    				$field_name=$row3[0];
+					$selected =  ($curVals[2] == $field_name) ? " selected='selected' " : "";
+					$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
+				}
+			}
+    		$text .= " </select></div>";
+
+     	}
+
+// ---------------------------------------------------------
+			$text .= "
 			</td>
 			</tr>
 
@@ -495,7 +555,7 @@ class users_ext
 			$text .= "<tr>
 			<td colspan='4' style='text-align:center' class='forumheader'>";
 
-			if (!is_array($current))
+			if (!is_array($current) || $action == "continue")
 			{
 				$text .= "
 				<input class='button' type='submit' name='add_field' value='".EXTLAN_23."' />
@@ -675,7 +735,7 @@ class users_ext
 function users_extended_adminmenu() {
 	global $user, $action, $ns, $curtype, $action;
 	$user->show_options($action);
-	if($action == 'editext')
+	if($action == 'editext' || $action == 'continue')
 	{
 		$ns->tablerender(EXTLAN_46." - <span id='ue_type'>&nbsp;</span>", "<div id='ue_help'>&nbsp;</div>");
 		echo "<script type='text/javascript'>changeHelp('{$curtype}');</script>";
@@ -812,7 +872,17 @@ function headerjs()
 		$text .= "
 		document.getElementById('ue_type').innerHTML=''+xtype+'';
 		document.getElementById('ue_help').innerHTML=''+what+'';
+
+		if(type == 4){
+			document.getElementById('db_mode').style.display = '';
+			document.getElementById('values').style.display = 'none';
+		}else{
+            document.getElementById('values').style.display = '';
+			document.getElementById('db_mode').style.display = 'none';
+		}
 	}
+
+
 	</script>";
 
 
