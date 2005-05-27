@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-05-16 08:38:41 $
+|     $Revision: 1.27 $
+|     $Date: 2005-05-27 01:05:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,8 @@ $language_field = $row['user_extended_struct_name'];
 
 if (isset($_POST['testemail'])) {
 	require_once(e_HANDLER."mail.php");
-	if (!sendemail(SITEADMINEMAIL, PRFLAN_66." ".SITENAME, PRFLAN_67)) {
+	$add = ($pref['smtp_enable']) ? " (SMTP)" : " (PHP)";
+	if (!sendemail(SITEADMINEMAIL, PRFLAN_66." ".SITENAME.$add, PRFLAN_67)) {
 		$message = ($pref['smtp_enable'] ? PRFLAN_75 : PRFLAN_68);
 	} else {
 		$message = PRFLAN_69;
@@ -47,27 +48,29 @@ if (isset($_POST['testemail'])) {
 
 if (isset($_POST['submit'])) {
 
-	if ($_POST['email_to'] == "all" || $_POST['email_to'] == "unverified" || $_POST['email_to'] == "admin") {
+	if ($_POST['email_to'] == "all" || $_POST['email_to'] == "admin") {
 
 		switch ($_POST['email_to']) {
 			case "admin":
 				$insert = "u.user_admin='1' ";
 			break;
-			case "unverified":
-				$insert = "u.user_ban='2' ";
-			break;
+
 			case "all":
 				$insert = "u.user_ban='0' ";
 			break;
 		}
+		$insert2 = ($_POST['language']) ? " AND ue.user_{$language_field} = '".$_POST['language']."' " : "";
+		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id WHERE $insert $insert2 ORDER BY u.user_name";
 
+} elseif($_POST['email_to'] == "unverified"){
+        $qry = "SELECT u.* FROM #user AS u WHERE u.user_ban='2'";
 	} else {
         $insert = "u.user_class IN (".$_POST['email_to'].")";
+		$insert2 = ($_POST['language']) ? " AND ue.user_{$language_field} = '".$_POST['language']."' " : "";
+		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id WHERE $insert $insert2 ORDER BY u.user_name";
 	}
 
-        $insert2 = ($_POST['language']) ? " AND ue.user_{$language_field} = '".$_POST['language']."' " : "";
-		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id WHERE $insert $insert2 ORDER BY u.user_name";
-        $sql->db_Select_gen($qry);
+		$sql->db_Select_gen($qry);
 		$c = 0;
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
@@ -90,10 +93,12 @@ if (isset($_POST['submit'])) {
 	if ($pref['smtp_enable']) {
 		$mail->Mailer = "smtp";
 		$mail->SMTPKeepAlive = TRUE;
-		$mail->SMTPAuth = TRUE;
-		$mail->Username = $pref['smtp_username'];
-		$mail->Password = $pref['smtp_password'];
 		$mail->Host = $pref['smtp_server'];
+		if($pref['smtp_username'] && $pref['smtp_password']){
+			$mail->SMTPAuth = TRUE;
+			$mail->Username = $pref['smtp_username'];
+			$mail->Password = $pref['smtp_password'];
+        }
 	} else {
 		$mail->Mailer = "mail";
 	}
@@ -109,8 +114,7 @@ if (isset($_POST['submit'])) {
 	$attach_link = e_DOWNLOAD.$attach;
 //	echo $attach_link;
 
-	if ($attach != "" && !$mail->AddAttachment($attach_link, $attach))
-	{
+	if ($attach != "" && !$mail->AddAttachment($attach_link, $attach)){
 		$mss = "There is a problem with the attachment<br />$attach_link";
 		$ns->tablerender("Error", $mss);
 		require_once(e_ADMIN."footer.php");
