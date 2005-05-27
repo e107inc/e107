@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-05-27 00:09:35 $
+|     $Revision: 1.11 $
+|     $Date: 2005-05-27 01:04:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -33,10 +33,13 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
     if ($pref['smtp_enable']) {
 		$mail->Mailer = "smtp";
 	 	$mail->SMTPKeepAlive = FALSE;
-		$mail->SMTPAuth = TRUE;
-		$mail->Username = $pref['smtp_username'];
-		$mail->Password = $pref['smtp_password'];
 		$mail->Host = $pref['smtp_server'];
+		if($pref['smtp_username'] && $pref['smtp_password']){
+			$mail->SMTPAuth = TRUE;
+			$mail->Username = $pref['smtp_username'];
+			$mail->Password = $pref['smtp_password'];
+		}
+
 	} else {
 		$mail->Mailer = "mail";
 	}
