@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-04-30 23:51:35 $
+|     $Revision: 1.22 $
+|     $Date: 2005-05-27 09:52:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -303,6 +303,11 @@ class e107plugin {
 				}
 			}
 
+			if(is_array($eplug_rss) && $eplug_rss['title']){
+                $tmp = serialize($eplug_rss);
+				$sql -> db_Insert("generic", "0, 'rss', '', '', '$eplug_folder', '', '$tmp' ");
+			}
+
 			if (is_array($eplug_prefs)) {
 				$this->manage_prefs('add', $eplug_prefs);
 				$text .= EPL_ADLAN_20.'<br />';
@@ -320,10 +325,8 @@ class e107plugin {
 				$this->manage_plugin_prefs('add', 'plug_latest', $eplug_folder);
 			}
 
-			if (is_array($eplug_array_pref))
-			{
-				foreach($eplug_array_pref as $key => $val)
-				{
+			if (is_array($eplug_array_pref)){
+				foreach($eplug_array_pref as $key => $val){
 					$this->manage_plugin_prefs('add', $key, $val);
 				}
 			}
