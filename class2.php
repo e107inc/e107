@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.142 $
-|     $Date: 2005-05-23 13:50:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.143 $
+|     $Date: 2005-05-27 19:53:57 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -71,8 +71,9 @@ if (preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)) {
 define("e_TBQS", $_SERVER['QUERY_STRING']);
 $_SERVER['QUERY_STRING'] = e_QUERY;
 
+$link_prefix = $e107->relative_base_path;
 // define e_BASE for backwards compatability
-define('e_BASE', $e107->relative_base_path);
+define("e_BASE", $e107->relative_base_path);
 
 define("e_ADMIN", $e107->relative_base_path.$ADMIN_DIRECTORY);
 define("e_IMAGE", $e107->relative_base_path.$IMAGES_DIRECTORY);
@@ -240,7 +241,7 @@ define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SER
 // if the option to force users to use a particular url for the site is enabled, redirect users there
 if($pref['redirectsiteurl'])
 {
-	if($e107 -> http_abs_location() != $pref['siteurl'] && $pref['siteurl'])
+	if($e107->http_abs_location() != $pref['siteurl'] && $pref['siteurl'])
 	{
 		$location = str_replace($e107 -> http_abs_location(), $pref['siteurl'], e_SELF);
 		header("location: ".$location);
@@ -498,7 +499,7 @@ if (e_QUERY == 'logout') {
 
 	cookie($pref['cookie_name'], "", (time() - 2592000));
 	$e_event->trigger("logout");
-	echo "<script type='text/javascript'>document.location.href = '".$e107->http_abs_location()."index.php'</script>\n";
+	echo "<script type='text/javascript'>document.location.href = '".$e107->http_abs_location()."'</script>\n";
 	exit;
 }
 
