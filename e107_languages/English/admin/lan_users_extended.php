@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-05-25 11:45:50 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-27 04:56:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -71,6 +71,12 @@ define("EXTLAN_58", "Not Activated");
 define("EXTLAN_59", "Activate");
 define("EXTLAN_60", "Deactivate");
 define("EXTLAN_61", "None");
+
+define("EXTLAN_62", "Choose Table");
+define("EXTLAN_63", "Choose Field Id");
+define("EXTLAN_64", "Choose Display Value");
+
+
 
 //textbox
 define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - size of field<br />maxlength - max length of field<br /><br />class - css class of field<br />style - css style string<br /><br />regex - regex valiation code<br />regexfail - validateion fail text");
