@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-05-25 07:24:00 $
+|     $Revision: 1.32 $
+|     $Date: 2005-05-28 01:49:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,23 @@ require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 
 $use_imagecode = ($pref['signcode'] && extension_loaded("gd"));
+
+if(!$_POST){   // Notice Removal.
+	$error = ""; 		$msn = "";
+	$website = ""; 		$text = " ";
+	$password1 = "";	$password2 = "";
+	$email = "";		$name = "";
+	$loginname = "";	$realname = "";
+	$icq = "";			$aim = "";
+	$birth_day = "";	$birth_month = "";
+	$birth_year = "";	$user_timezone = "";
+	$location = "";		$image = "";
+	$avatar_upload = ""; $photo_upload = "";
+	$_POST['ue'] = "";  $signature = "";
+}
+
+
+
 
 if ($pref['membersonly_enabled']) {
 	$HEADER = "<div style='text-align:center; width:100%;margin-left:auto;margin-right:auto;text-align:center'><div style='width:70%;text-align:center;margin-left:auto;margin-right:auto'><br />";
@@ -51,6 +68,7 @@ if (USER) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
 
 
 
@@ -350,10 +368,8 @@ $text .= "<div style='text-align:center;width:100%'>";
 
 if($pref['signup_text']) {
 	$text .= $tp->toHTML($pref['signup_text'], TRUE, 'parse_sc,defs')."<br />";
-}
-
-if ($pref['user_reg_veri']) {
-	$text .= LAN_309."<br /><br />";
+}elseif($pref['user_reg_veri']) {
+	$text .= LAN_309."<b>".LAN_SIGNUP_29."</b><br />".LAN_SIGNUP_30."<br /><br />";
 }
 
 $text .= LAN_400;
@@ -453,7 +469,7 @@ if ($signupval[1]) {
 		<tr>
 		<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_144.req($signupval[1])."</td>
 		<td class='forumheader3' style='width:70%' >
-		".$rs->form_text("website", 60, $website, 150)."
+		<input class='tbox' style='width:99%' type='text' name='website' size='60' value='$website' maxlength='60' />
 		</td>
 		</tr>";
 }
@@ -464,7 +480,7 @@ if ($signupval[2]) {
 		<tr>
 		<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_115.req($signupval[2])."</td>
 		<td class='forumheader3' style='width:70%' >
-		".$rs->form_text("icq", 20, $icq, 10)."
+		<input class='tbox' type='text' name='icq' size='30' value='$icq' maxlength='100' />
 		</td>
 		</tr>";
 }
@@ -521,7 +537,7 @@ if ($signupval[6]) {
 		<tr>
 		<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_119." ".req($signupval[6])."</td>
 		<td class='forumheader3' style='width:70%' >
-		<input class='tbox' type='text' name='location' size='60' value='$location' maxlength='200' />
+		<input class='tbox' style='width:99%' type='text' name='location' size='60' value='$location' maxlength='200' />
 		</td>
 		</tr>";
 }
@@ -545,8 +561,8 @@ if ($signupval[7]) {
 	$text .= "<tr>
 		<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_120." ".req($signupval[7])."</td>
 		<td class='forumheader3' style='width:70%' >
-		<textarea class='tbox' name='signature' cols='10' rows='4' style='width: 80%;' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$signature</textarea><br />
-		".ren_help(2);
+		<textarea class='tbox' style='width:99%' name='signature' cols='10' rows='4' style='width: 80%;' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$signature</textarea><br />
+		<div style='width:99%'>".ren_help(2)."</div>";
 }
 
 if ($signupval[8]) {
@@ -554,7 +570,7 @@ if ($signupval[8]) {
 		<tr>
 		<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_121.req($signupval[8])."<br /><span class='smalltext'>(".LAN_402.")</span></td>
 		<td class='forumheader3' style='width:70%' >
-		<input class='tbox' id='avatar' type='text' name='image' size='40' value='$image' maxlength='100' />
+		<input class='tbox' style='width:80%' id='avatar' type='text' name='image' size='40' value='$image' maxlength='100' />
 
 		<input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".LAN_SIGNUP_27."' onClick='expandit(this)'>
 		<div style='display:none' style=&{head};>";
@@ -594,7 +610,7 @@ if ($signupval[9]) {
 		<tr>
 		<td class='forumheader3' style='width:30%' >".LAN_122.req($signupval[9])."</td>
 		<td class='forumheader3' style='width:70%;white-space:nowrap'>
-		<select name='timezone' class='tbox'>\n";
+		<select style='width:99%' name='timezone' class='tbox'>\n";
 
 	timezone();
 	$count = 0;
@@ -678,8 +694,8 @@ function headerjs() {
 	</script>\n";
 
 	global $cal;
-	$script_text .= $cal->load_files();
-	return $script_text;
+	$script_txt .= $cal->load_files();
+	return $script_txt;
 }
 
 ?>
