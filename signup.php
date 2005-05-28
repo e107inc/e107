@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-05-28 02:01:28 $
+|     $Revision: 1.34 $
+|     $Date: 2005-05-28 02:47:53 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -147,7 +147,7 @@ if (isset($_POST['register'])) {
 
 // check for multiple signups from the same IP address.
 	if($ipcount = $sql->db_Select("user", "*", "user_ip='".$e107->getip()."' and user_ban !='2' ")){
-		if($ipcount >= $pref['signup_maxip']){
+		if($ipcount >= $pref['signup_maxip'] && trim($pref['signup_maxip']) != ""){
 		message_handler("P_ALERT",LAN_202);
 		$error = TRUE;
 		}
