@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-05-23 14:58:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.48 $
+|     $Date: 2005-05-28 03:32:37 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -265,7 +265,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "admin") {
 	$row = $sql->db_Fetch();
 	 extract($row);
 	$sql->db_Update("user", "user_admin='1' WHERE user_id='".$_POST['userid']."' ");
-	$user->show_message($user_name." ".USRLAN_3." <a href='".e_ADMIN."administrator.php?edit.$sub_action'>".USRLAN_4."</a>");
+	$user->show_message($user_name." ".USRLAN_3." <a href='".e_ADMIN."administrator.php?edit.$user_id'>".USRLAN_4."</a>");
 	$action = "main";
 	if(!$sub_action){ $sub_action = "user_id"; }
 	if(!$id){ $id = "DESC"; }
