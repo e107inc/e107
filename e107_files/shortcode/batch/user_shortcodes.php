@@ -376,7 +376,7 @@ foreach($ueCatList as $catnum => $cat)
 			if($ue_name = $tp->parseTemplate("{EXTENDED={$key}.text.{$user['user_id']}}", TRUE))
 			{
 				$extended_record = str_replace("EXTENDED_ICON","EXTENDED={$key}.icon", $EXTENDED_CATEGORY_TABLE);
-				$extended_record = str_replace("{EXTENDED_NAME}", $ue_name, $extended_record);
+			 	$extended_record = str_replace("{EXTENDED_NAME}", $tp->toHTML($ue_name,"","defs"), $extended_record);
 				$extended_record = str_replace("EXTENDED_VALUE","EXTENDED={$key}.value.{$user['user_id']}", $extended_record);
 				$ret .= $tp->parseTemplate($extended_record, TRUE);
 			}
