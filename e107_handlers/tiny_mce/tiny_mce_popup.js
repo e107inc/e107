@@ -57,7 +57,7 @@ function TinyMCEPopup_autoResize() {
 		return;
 
 	if (isMSIE) {
-		window.resizeTo(10, 10);
+		try { window.resizeTo(10, 10); } catch (e) {}
 
 		var elm = document.body;
 		var width = elm.offsetWidth;
@@ -65,7 +65,7 @@ function TinyMCEPopup_autoResize() {
 		var dx = (elm.scrollWidth - width) + 4;
 		var dy = elm.scrollHeight - height;
 
-		window.resizeBy(dx, dy);
+		try { window.resizeBy(dx, dy); } catch (e) {}
 	} else {
 		window.scrollBy(1000, 1000);
 		if (window.scrollX > 0 || window.scrollY > 0) {
