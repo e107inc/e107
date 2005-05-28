@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/secure_img_render.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-28 13:07:56 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-28 13:09:31 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -62,15 +62,15 @@ switch($type) {
 	$image = ImageCreateFromJPEG("../".$url."generic/code_bg.jpg");
 	break;
 	case "png":
-	$image = ImageCreateFromPNG("../"."generic/code_bg.png");
+	$image = ImageCreateFromPNG("../".$url."generic/code_bg.png");
 	break;
 	case "gif":
-	$image = ImageCreateFromGIF("../"."generic/code_bg.gif");
+	$image = ImageCreateFromGIF("../".$url."generic/code_bg.gif");
 	break;
 }
 $text_color = ImageColorAllocate($image, 80, 80, 80);
 //ob_clean();
-Header("Content-type: image/".$type);
+// Header("Content-type: image/".$type);
 ImageString ($image, 5, 12, 2, $code, $text_color);
 switch($type) {
 	case "jpeg":
