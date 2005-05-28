@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-25 07:27:23 $
+|     $Revision: 1.10 $
+|     $Date: 2005-05-28 01:49:49 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -32,7 +32,7 @@ define("LAN_185", "You left required field(s) blank");
 define("LAN_201", "Yes");
 define("LAN_200", "No");
 define("LAN_202", "Registration failed");
-define("LAN_309", "Please enter your details below. <b>A verification email will be sent to the email address you enter here so it must be valid.</b><br/>If you do not wish to display your email address on this site, please tick the 'hide email address' box.");
+define("LAN_309", "Please enter your details below.");
 define("LAN_399", "Continue");
 define("LAN_400", "Usernames and passwords are <b>case-sensitive</b>");
 define("LAN_401", "Your account has now been activated, please");
@@ -77,4 +77,6 @@ define("LAN_SIGNUP_27", "Show");
 
 define("LAN_SIGNUP_28", "choice of Content/Mail-lists");
 
+define("LAN_SIGNUP_29", "A verification email will be sent to the email address you enter here so it must be valid.");
+define("LAN_SIGNUP_30", "If you do not wish to display your email address on this site, please tick the 'hide email address' box.");
 ?>
