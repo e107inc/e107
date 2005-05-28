@@ -9,7 +9,7 @@ function TinyMCE_flash_initInstance(inst) {
 function TinyMCE_flash_getControlHTML(control_name) {
     switch (control_name) {
         case "flash":
-            return '<img id="{$editor_id}_flash" src="{$pluginurl}/images/flash.gif" title="{$lang_insert_flash}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');" onclick="tinyMCE.execInstanceCommand(\'{$editor_id}\',\'mceFlash\');" />';
+            return '<img id="{$editor_id}_flash" src="{$pluginurl}/images/flash.gif" title="{$lang_insert_flash}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');tinyMCE.execInstanceCommand(\'{$editor_id}\',\'mceFlash\');" />';
     }
 
     return "";
@@ -85,8 +85,8 @@ function TinyMCE_flash_execCommand(editor_id, element, command, user_interface, 
 					return true;
 
 				// Get rest of Flash items
-				swffile = getAttrib(focusElm, 'title');
-				//swffile = eval(tinyMCE.settings['urlconvertor_callback'] + "(swffile, null, true);");
+				swffile = getAttrib(focusElm, 'alt');
+				swffile = eval(tinyMCE.settings['urlconverter_callback'] + "(swffile, null, true);");
 				swfwidth = getAttrib(focusElm, 'width');
 				swfheight = getAttrib(focusElm, 'height');
 				action = "update";
@@ -102,6 +102,32 @@ function TinyMCE_flash_execCommand(editor_id, element, command, user_interface, 
 
 function TinyMCE_flash_cleanup(type, content) {
 	switch (type) {
+		case "insert_to_editor_dom":
+			var imgs = content.getElementsByTagName("img");
+			for (var i=0; i<imgs.length; i++) {
+				if (tinyMCE.getAttrib(imgs[i], "name") == "mce_plugin_flash") {
+					var src = tinyMCE.getAttrib(imgs[i], "alt");
+
+					src = tinyMCE.convertRelativeToAbsoluteURL(tinyMCE.settings['base_href'], src);
+
+					imgs[i].setAttribute('alt', src);
+				}
+			}
+			break;
+
+		case "get_from_editor_dom":
+			var imgs = content.getElementsByTagName("img");
+			for (var i=0; i<imgs.length; i++) {
+				if (tinyMCE.getAttrib(imgs[i], "name") == "mce_plugin_flash") {
+					var src = tinyMCE.getAttrib(imgs[i], "alt");
+
+					src = eval(tinyMCE.settings['urlconverter_callback'] + "(src, null, true);");
+
+					imgs[i].setAttribute('alt', src);
+				}
+			}
+			break;
+
 		case "insert_to_editor":
 			var startPos = 0;
 			var embedList = new Array();

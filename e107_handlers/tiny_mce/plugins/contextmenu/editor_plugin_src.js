@@ -28,13 +28,36 @@ function TinyMCE_contextmenu_initInstance(inst) {
 	TinyMCE_contextmenu_contextMenu = contextMenu;
 
 	// Attach contextmenu event
-	tinyMCE.addEvent(inst.getDoc(), "contextmenu", function (e) {
-		contextMenu.inst = inst;
-		return TinyMCE_contextmenu_showContextMenu(tinyMCE.isMSIE ? inst.contentWindow.event : e, inst);
-	});
+	if (tinyMCE.isGecko) {
+		tinyMCE.addEvent(inst.getDoc(), "contextmenu", function(e) {TinyMCE_contextmenu_showContextMenu(tinyMCE.isMSIE ? inst.contentWindow.event : e, inst);});
+	} else
+		tinyMCE.addEvent(inst.getDoc(), "contextmenu", TinyMCE_contextmenu_onContextMenu);
+}
+
+function TinyMCE_contextmenu_onContextMenu(e) {
+	var elm = tinyMCE.isMSIE ? e.srcElement : e.target;
+	var targetInst, body;
+
+	// Find instance
+	if ((body = tinyMCE.getParentElement(elm, "body")) != null) {
+		for (var n in tinyMCE.instances) {
+			var inst = tinyMCE.instances[n];
+
+			if (body == inst.getBody()) {
+				targetInst = inst;
+				break;
+			}
+		}
+
+		return TinyMCE_contextmenu_showContextMenu(tinyMCE.isMSIE ? targetInst.contentWindow.event : e, targetInst);
+	}
 }
 
 function TinyMCE_contextmenu_showContextMenu(e, inst) {
+	function getAttrib(elm, name) {
+		return elm.getAttribute(name) ? elm.getAttribute(name) : "";
+	}
+
 	var x, y, elm, contextMenu;
 	var pos = tinyMCE.getAbsPosition(inst.iframeElement);
 
@@ -42,19 +65,22 @@ function TinyMCE_contextmenu_showContextMenu(e, inst) {
 	y = tinyMCE.isMSIE ? e.screenY : pos.absTop + (e.pageY - inst.getBody().scrollTop);
 	elm = tinyMCE.isMSIE ? e.srcElement : e.target;
 	contextMenu = TinyMCE_contextmenu_contextMenu;
+	contextMenu.inst = inst;
 
 	// Mozilla needs some time
 	window.setTimeout(function () {
+		var theme = tinyMCE.getParam("theme");
+
 		contextMenu.clearAll();
 		var sel = inst.getSelectedText().length != 0 || elm.nodeName == "IMG";
 
 		// Default items
-		contextMenu.addItem(tinyMCE.baseURL + "/themes/advanced/images/cut.gif", "$lang_cut_desc", "Cut", "", !sel);
-		contextMenu.addItem(tinyMCE.baseURL + "/themes/advanced/images/copy.gif", "$lang_copy_desc", "Copy", "", !sel);
-		contextMenu.addItem(tinyMCE.baseURL + "/themes/advanced/images/paste.gif", "$lang_paste_desc", "Paste", "", false);
+		contextMenu.addItem(tinyMCE.baseURL + "/themes/" + theme + "/images/cut.gif", "$lang_cut_desc", "Cut", "", !sel);
+		contextMenu.addItem(tinyMCE.baseURL + "/themes/" + theme + "/images/copy.gif", "$lang_copy_desc", "Copy", "", !sel);
+		contextMenu.addItem(tinyMCE.baseURL + "/themes/" + theme + "/images/paste.gif", "$lang_paste_desc", "Paste", "", false);
 
 		// Get element
-		elm = tinyMCE.getParentElement(elm, "img,td");
+		elm = tinyMCE.getParentElement(elm, "img,table,td");
 		if (elm) {
 			switch (elm.nodeName) {
 				case "IMG":
@@ -64,17 +90,29 @@ function TinyMCE_contextmenu_showContextMenu(e, inst) {
 					if (tinyMCE.getAttrib(elm, 'name', '').indexOf('mce_plugin_flash') == 0)
 						contextMenu.addItem(tinyMCE.baseURL + "/plugins/flash/images/flash.gif", "$lang_flash_props", "mceFlash");
 					else
-						contextMenu.addItem(tinyMCE.baseURL + "/themes/advanced/images/image.gif", "$lang_image_props_desc", "mceImage");
+						contextMenu.addItem(tinyMCE.baseURL + "/themes/" + theme + "/images/image.gif", "$lang_image_props_desc", "mceImage");
 					break;
 
+				case "TABLE":
 				case "TD":
 					// Is table plugin loaded
 					if (typeof(TinyMCE_table_getControlHTML) != "undefined") {
+						var colspan = (elm.nodeName == "TABLE") ? "" : getAttrib(elm, "colspan");
+						var rowspan = (elm.nodeName == "TABLE") ? "" : getAttrib(elm, "rowspan");
+
+						colspan = colspan == "" ? "1" : colspan;
+						rowspan = rowspan == "" ? "1" : rowspan;
+
 						contextMenu.addSeparator();
-						contextMenu.addItem(tinyMCE.baseURL + "/themes/advanced/images/left.gif", "$lang_justifyleft_desc", "JustifyLeft", "", false);
-						contextMenu.addItem(tinyMCE.baseURL + "/themes/advanced/images/center.gif", "$lang_justifycenter_desc", "JustifyCenter", "", false);
-						contextMenu.addItem(tinyMCE.baseURL + "/themes/advanced/images/right.gif", "$lang_justifyright_desc", "JustifyRight", "", false);
-						contextMenu.addItem(tinyMCE.baseURL + "/themes/advanced/images/full.gif", "$lang_justifyfull_desc", "JustifyFull", "", false);
+						contextMenu.addItem(tinyMCE.baseURL + "/themes/" + theme + "/images/cut.gif", "$lang_table_cut_row_desc", "mceTableCutRow");
+						contextMenu.addItem(tinyMCE.baseURL + "/themes/" + theme + "/images/copy.gif", "$lang_table_copy_row_desc", "mceTableCopyRow");
+						contextMenu.addItem(tinyMCE.baseURL + "/themes/" + theme + "/images/paste.gif", "$lang_table_paste_row_before_desc", "mceTablePasteRowBefore", "", inst.tableRowClipboard == null);
+						contextMenu.addItem(tinyMCE.baseURL + "/themes/" + theme + "/images/paste.gif", "$lang_table_paste_row_after_desc", "mceTablePasteRowAfter", "", inst.tableRowClipboard == null);
+
+/*						contextMenu.addItem(tinyMCE.baseURL + "/themes/" + theme + "/images/left.gif", "$lang_justifyleft_desc", "JustifyLeft", "", false);
+						contextMenu.addItem(tinyMCE.baseURL + "/themes/" + theme + "/images/center.gif", "$lang_justifycenter_desc", "JustifyCenter", "", false);
+						contextMenu.addItem(tinyMCE.baseURL + "/themes/" + theme + "/images/right.gif", "$lang_justifyright_desc", "JustifyRight", "", false);
+						contextMenu.addItem(tinyMCE.baseURL + "/themes/" + theme + "/images/full.gif", "$lang_justifyfull_desc", "JustifyFull", "", false);*/
 						contextMenu.addSeparator();
 						contextMenu.addItem(tinyMCE.baseURL + "/plugins/table/images/table.gif", "$lang_table_props_desc", "mceInsertTable");
 						contextMenu.addItem(tinyMCE.baseURL + "/plugins/table/images/table_cell_props.gif", "$lang_table_cell_desc", "mceTableCellProps");
@@ -87,6 +125,9 @@ function TinyMCE_contextmenu_showContextMenu(e, inst) {
 						contextMenu.addItem(tinyMCE.baseURL + "/plugins/table/images/table_insert_col_before.gif", "$lang_table_insert_col_before_desc", "mceTableInsertColBefore");
 						contextMenu.addItem(tinyMCE.baseURL + "/plugins/table/images/table_insert_col_after.gif", "$lang_table_insert_col_after_desc", "mceTableInsertColAfter");
 						contextMenu.addItem(tinyMCE.baseURL + "/plugins/table/images/table_delete_col.gif", "$lang_table_delete_col_desc", "mceTableDeleteCol");
+						contextMenu.addSeparator();
+						contextMenu.addItem(tinyMCE.baseURL + "/plugins/table/images/table_split_cells.gif", "$lang_table_split_cells_desc", "mceTableSplitCells", "", (colspan == "1" && rowspan == "1"));
+						contextMenu.addItem(tinyMCE.baseURL + "/plugins/table/images/table_merge_cells.gif", "$lang_table_merge_cells_desc", "mceTableMergeCells", "", false);
 					}
 					break;
 			}
@@ -111,7 +152,7 @@ function TinyMCE_contextmenu_commandHandler(command, value) {
 
 	// UI must be true on these
 	var ui = false;
-	if (command == "mceInsertTable" || command == "mceTableCellProps" || command == "mceTableRowProps")
+	if (command == "mceInsertTable" || command == "mceTableCellProps" || command == "mceTableRowProps" || command == "mceTableMergeCells")
 		ui = true;
 
 	TinyMCE_contextmenu_contextMenu.inst.execCommand(command, ui);
