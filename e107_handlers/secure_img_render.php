@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/secure_img_render.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-11 13:28:00 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-05-28 13:07:56 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 while (list($global) = each($GLOBALS)) {
@@ -23,7 +23,7 @@ while (list($global) = each($GLOBALS)) {
 }
 unset($global);
 $imgtypes = array("jpeg", "png", "gif");
-	
+
 define("e_QUERY", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']));
 $recnum = preg_replace("#\D#", "", e_QUERY);
 if (!$recnum) {
@@ -32,10 +32,10 @@ if (!$recnum) {
 
 $mySQLserver = "";
 
-@include("e107_config.php");
+@include(dirname(__FILE__)."e107_config.php");
 $a = 0;
 $p = "";
-	
+
 while (!$mySQLserver && $a < 5) {
 	$a++;
 	$p .= "../";
@@ -59,18 +59,18 @@ foreach($imgtypes as $t) {
 
 switch($type) {
 	case "jpeg":
-	$image = ImageCreateFromJPEG($url."generic/code_bg.jpg");
+	$image = ImageCreateFromJPEG("../".$url."generic/code_bg.jpg");
 	break;
 	case "png":
-	$image = ImageCreateFromPNG($url."generic/code_bg.png");
+	$image = ImageCreateFromPNG("../"."generic/code_bg.png");
 	break;
 	case "gif":
-	$image = ImageCreateFromGIF($url."generic/code_bg.gif");
+	$image = ImageCreateFromGIF("../"."generic/code_bg.gif");
 	break;
 }
 $text_color = ImageColorAllocate($image, 80, 80, 80);
 //ob_clean();
-//Header("Content-type: image/".$type);
+Header("Content-type: image/".$type);
 ImageString ($image, 5, 12, 2, $code, $text_color);
 switch($type) {
 	case "jpeg":
