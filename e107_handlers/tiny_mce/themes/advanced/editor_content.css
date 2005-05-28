@@ -21,3 +21,7 @@ pre {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 }
+
+.mceVisualAid {
+	border: 1px dashed #BBBBBB;
+}
