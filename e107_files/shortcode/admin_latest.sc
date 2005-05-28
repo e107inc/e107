@@ -12,8 +12,8 @@ if (ADMIN) {
 			if ($pref['plug_latest']) {
 				$lats = explode(",", $pref['plug_latest']);
 				foreach($lats as $lat) {
-					if (file_exists(e_PLUGIN.$lat."/latest.php")) {
-						include(e_PLUGIN.$lat."/latest.php");
+					if (file_exists(e_PLUGIN.$lat."/e_latest.php")) {
+						include(e_PLUGIN.$lat."/e_latest.php");
 					}
 				}
 			}
@@ -29,16 +29,16 @@ if (ADMIN) {
 				$text .= "<br /><b><a href='".e_ADMIN."message.php'>".ADLAN_LAT_8." [".$amount."]</a></b>";
 			}
 
-			return $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE);	
+			return $ns -> tablerender(ADLAN_LAT_1, $text, '', TRUE);
 		}
 	}
-	
+
 	if ($parm == 'request') {
 		if (function_exists('latest_request')) {
 			if (latest_request()) {
 				return admin_latest();
 			}
-		}	
+		}
 	} else {
 		return admin_latest();
 	}

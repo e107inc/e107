@@ -15,8 +15,8 @@ if (ADMIN) {
 			if ($pref['plug_status']) {
 				$stas = explode(",", $pref['plug_status']);
 				foreach($stas as $sta) {
-					if (file_exists(e_PLUGIN.$sta."/status.php")) {
-						include(e_PLUGIN.$sta."/status.php");
+					if (file_exists(e_PLUGIN.$sta."/e_status.php")) {
+						include(e_PLUGIN.$sta."/e_status.php");
 					}
 				}
 			}
