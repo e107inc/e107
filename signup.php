@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-05-28 01:49:58 $
+|     $Revision: 1.33 $
+|     $Date: 2005-05-28 02:01:28 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -526,7 +526,7 @@ if ($signupval[5]) {
 	for($a = 1900; $a <= $year; $a++) {
 		$text .= ($birth_year == $a ? $rs->form_option($a, 1) : $rs->form_option($a, 0));
 	}
-
+	$text .= $rs->form_select_close();
 	$text .= "</td></tr>";
 }
 
@@ -551,6 +551,7 @@ foreach($extList as $ext) {
 		<tr>
 			<td style='width:40%' class='forumheader3'>".$tp->toHTML($ext['user_extended_struct_text'],"","emotes_off defs")." ".req($ext['user_extended_struct_signup'])."</td>
 			<td style='width:60%' class='forumheader3'>".$usere->user_extended_edit($ext, $_POST['ue']['user_'.$ext['user_extended_struct_name']])."
+		</td>
 		</tr>
 		";
 	}
@@ -561,19 +562,20 @@ if ($signupval[7]) {
 	$text .= "<tr>
 		<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_120." ".req($signupval[7])."</td>
 		<td class='forumheader3' style='width:70%' >
-		<textarea class='tbox' style='width:99%' name='signature' cols='10' rows='4' style='width: 80%;' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$signature</textarea><br />
-		<div style='width:99%'>".ren_help(2)."</div>";
+		<textarea class='tbox' style='width:99%' name='signature' cols='10' rows='4' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$signature</textarea><br />
+		<div style='width:99%'>".ren_help(2)."</div>
+		</td></tr>";
 }
 
 if ($signupval[8]) {
 	$text .= "
 		<tr>
 		<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_121.req($signupval[8])."<br /><span class='smalltext'>(".LAN_402.")</span></td>
-		<td class='forumheader3' style='width:70%' >
+		<td class='forumheader3' style='width:70%;vertical-align:top' >
 		<input class='tbox' style='width:80%' id='avatar' type='text' name='image' size='40' value='$image' maxlength='100' />
 
-		<input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".LAN_SIGNUP_27."' onClick='expandit(this)'>
-		<div style='display:none' style=&{head};>";
+		<input class='button' type ='button' style='cursor:hand' size='30' value='".LAN_SIGNUP_27."' onclick='expandit(this)' />
+		<div style='display:none' >";
 	$avatarlist[0] = "";
 	$handle = opendir(e_IMAGE."avatars/");
 	while ($file = readdir($handle)) {
