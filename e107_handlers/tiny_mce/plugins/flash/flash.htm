@@ -4,8 +4,13 @@
 <script language="javascript" type="text/javascript" src="../../tiny_mce_popup.js"></script>
 <script language="javascript">
 var url = tinyMCE.getParam("flash_external_list_url");
-if (url != null)
-	document.write('<sc'+'ript language="javascript" type="text/javascript" src="' + tinyMCE.documentBasePath + "/" + url + '"></sc'+'ript>');
+if (url != null) {
+	// Fix relative
+	if (url.charAt(0) != '/')
+		url = tinyMCE.documentBasePath + "/" + url;
+
+	document.write('<sc'+'ript language="javascript" type="text/javascript" src="' + url + '?rnd=' + new Date().getTime() + '"></sc'+'ript>');
+}
 </script>
 <script language="javascript" type="text/javascript">
 <!--
@@ -86,6 +91,7 @@ if (url != null)
                 + 'width="' + width + '" height="' + height + '" '
                 + 'border="0" alt="' + file + '" title="' + file + '" class="mce_plugin_flash" name="mce_plugin_flash" />';
             tinyMCE.execCommand("mceInsertContent",true,html);
+			tinyMCE.selectedInstance.repaint();
             top.close();
         }
     }
