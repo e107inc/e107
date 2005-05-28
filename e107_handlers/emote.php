@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emote.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-05-26 19:42:48 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-28 05:05:32 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -36,4 +36,5 @@ function r_emote()
 
 	return "<div class='spacer'>".$str."</div>";
 }
+
 ?>

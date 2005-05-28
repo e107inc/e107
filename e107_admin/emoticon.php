@@ -72,25 +72,12 @@ class emotec
 		{
 			$this -> saveConf();
 		}
-
-		
-
-
-
 	}
 
 	function listPacks()
 	{
 
 		global $ns, $fl, $pref, $sql;
-
-
-		
-
-
-
-
-
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'>
