@@ -115,3 +115,7 @@ input.checkbox {
 	border: 1px solid #0A246A;
 	background-color: #8592B5;
 }
+
+legend {
+	font-weight: bold;
+}
