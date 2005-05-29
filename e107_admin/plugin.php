@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-05-27 10:31:20 $
-|     $Author: e107coders $
+|     $Revision: 1.45 $
+|     $Date: 2005-05-29 18:19:24 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -206,6 +206,8 @@ if ($action == 'uninstall') {
 		}
 
 		$plugin -> manage_search('remove', $eplug_folder);
+		
+		$plugin -> manage_notify('remove', $eplug_folder);
 
 		$sql->db_Update('plugin', "plugin_installflag=0, plugin_version='{$eplug_version}' WHERE plugin_id='{$id}' ");
 		$text .= '<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32;
@@ -297,6 +299,8 @@ if ($action == 'upgrade') {
 	}
 
 	$plugin -> manage_search('upgrade', $eplug_folder);
+	
+	$plugin -> manage_notify('upgrade', $eplug_folder);
 
 	$text .= '<br />'.$eplug_upgrade_done;
 	$sql->db_Update('plugin', "plugin_version ='{$eplug_version}' WHERE plugin_id='$id' ");
