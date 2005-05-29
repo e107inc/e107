@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-05-16 14:56:12 $
+|     $Revision: 1.30 $
+|     $Date: 2005-05-29 18:19:25 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -165,6 +165,9 @@ define("ADLAN_145", "click here");
 define("ADLAN_146", "Failed login attempts");
 define("ADLAN_147", "File Inspector");
 define("ADLAN_148", "Scan site files");
+
+define("ADLAN_149", "Notify");
+define("ADLAN_150", "Admin Email Notifications");
 
 define('ADLAN_CL_1', 'Settings');
 define('ADLAN_CL_2', 'Users');

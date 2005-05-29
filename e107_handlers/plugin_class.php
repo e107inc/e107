@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-05-27 10:31:55 $
-|     $Author: e107coders $
+|     $Revision: 1.24 $
+|     $Date: 2005-05-29 18:19:24 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -272,6 +272,38 @@ class e107plugin {
 		$tmp = addslashes(serialize($search_prefs));
 		$sql->db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = 'search_prefs' ");
 	}
+	
+	function manage_notify($action, $eplug_folder) {
+		global $sql, $sysprefs;
+		$notify_prefs = $sysprefs -> getArray('notify_prefs');
+		$e_notify = file_exists(e_PLUGIN.$eplug_folder.'/e_notify.php') ? TRUE : FALSE;
+		if ($action == 'add'){
+			$install_notify = $e_notify ? TRUE : FALSE;
+		} else if ($action == 'remove'){
+			$uninstall_notify = isset($notify_prefs['plugins'][$eplug_folder]) ? TRUE : FALSE;
+		} else if ($action == 'upgrade'){
+			if (isset($notify_prefs['plugins'][$eplug_folder])) {
+				$uninstall_notify = $e_notify ? FALSE : TRUE;
+			} else {
+				$install_notify = $e_notify ? TRUE : FALSE;
+			}
+		}
+		if ($install_notify) {
+			$notify_prefs['plugins'][$eplug_folder] = TRUE;
+			require_once(e_PLUGIN.$eplug_folder.'/e_notify.php');
+			foreach ($config_events as $event_id => $event_text) {
+				$notify_prefs['event'][$event_id] = array('type' => 'off', 'class' => '254', 'email' => '');
+			}
+		} else if ($uninstall_notify) {
+			unset($notify_prefs['plugins'][$eplug_folder]);
+			require_once(e_PLUGIN.$eplug_folder.'/e_notify.php');
+			foreach ($config_events as $event_id => $event_text) {
+				unset($notify_prefs['event'][$event_id]);
+			}
+		}
+		$tmp = addslashes(serialize($notify_prefs));
+		$sql->db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = 'notify_prefs' ");
+	}
 
 	/**
 	 * Installs a plugin by ID
@@ -366,6 +398,8 @@ class e107plugin {
 			}
 
 			$this -> manage_search('add', $eplug_folder);
+			
+			$this -> manage_notify('add', $eplug_folder);
 
 			$sql->db_Update('plugin', "plugin_installflag = 1 WHERE plugin_id = '{$id}'");
 			$text .= ($eplug_done ? "<br />{$eplug_done}" : "");

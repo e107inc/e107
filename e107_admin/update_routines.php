@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.85 $
-|     $Date: 2005-05-26 19:41:55 $
-|     $Author: stevedunstan $
+|     $Revision: 1.86 $
+|     $Date: 2005-05-29 18:19:24 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -658,23 +658,55 @@ function update_61x_to_700($type) {
 			$pref['signup_maxip'] = 3;
 			$s_prefs = TRUE;
 		}
+		
+		// Fix corrupted Plugin Table.
+		$sql -> db_Delete("plugin", " plugin_installflag='0' ");
 
-
+		// Notify
+		if (!isset($pref['notify'])) {
+			global $pref, $sysprefs;
+			$serial_prefs = "a:1:{s:5:\"event\";a:9:{s:7:\"usersup\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:8:\"userveri\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:5:\"flood\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:7:\"subnews\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:5:\"login\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:6:\"logout\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:8:\"newspost\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:7:\"newsupd\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:7:\"newsdel\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}}}";
+			$notify_prefs = unserialize(stripslashes($serial_prefs));
+			$handle = opendir(e_PLUGIN);
+			while (false !== ($file = readdir($handle))) {
+				if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
+					$plugin_handle = opendir(e_PLUGIN.$file."/");
+					while (false !== ($file2 = readdir($plugin_handle))) {
+						if ($file2 == "e_notify.php") {
+							if ($sql -> db_Select("plugin", "plugin_path", "plugin_path='".$file."' AND plugin_installflag='1'")) {
+								$notify_prefs['plugins'][$file] = TRUE;
+								require_once(e_PLUGIN.$file.'/e_notify.php');
+								foreach ($config_events as $event_id => $event_text) {
+									$notify_prefs['event'][$event_id] = array('type' => 'off', 'class' => '254', 'email' => '');
+								}
+							}
+						}
+					}
+				}
+			}
+			$serialised_prefs = addslashes(serialize($notify_prefs));
+			$sql -> db_Insert("core", "'notify_prefs', '".$serialised_prefs."'");
+			$pref['notify'] = FALSE;
+			$s_prefs = TRUE;
+		}
+		
 		// Save all prefs that were set in above update routines
 		if ($s_prefs == TRUE) {
 			save_prefs();
 		}
-		// -----------------------------------------------------
-
-		// Fix corrupted Plugin Table.
-		$sql -> db_Delete("plugin", " plugin_installflag='0' ");
-
+		// -----------------------------------------------------	
 
 	}
 	else
 	{
+		// check if update is needed.
+		// FALSE = needed, TRUE = not needed.
+		global $pref;
+		if (!isset($pref['notify'])) {
+			return FALSE;
+		}
 
-
+/*
 		if(!$sql -> db_Select("core", "*", "e107_name='emote_default' "))
 		{
 			return FALSE;
@@ -711,9 +743,7 @@ function update_61x_to_700($type) {
 			}
 		}
 
-		// check if update is needed.
-		// FALSE = needed, TRUE = not needed.
-
+*/
 		//return $sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended_struct");
 
 		//if($sql -> db_Select("menus", "*", "menu_name = 'newforumposts_menu' and menu_path='newforumposts_menu' ")){

@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.143 $
-|     $Date: 2005-05-27 19:53:57 $
-|     $Author: streaky $
+|     $Revision: 1.144 $
+|     $Date: 2005-05-29 18:19:00 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -328,6 +328,12 @@ $override=new override;
 
 e107_require_once(e_HANDLER."event_class.php");
 $e_event=new e107_event;
+
+if ($pref['notify']) {
+	e107_require_once(e_HANDLER.'notify_class.php');
+}
+
+$e_event -> trigger("testing");
 
 if (isset($pref['modules']) && $pref['modules']) {
 	$mods=explode(",", $pref['modules']);
