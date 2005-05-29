@@ -1,0 +1,51 @@
+<?php
+
+define(PMLAN_PM,"Private Nachrichten");
+define(PM_ADLAN_PM,"Private Benachrichtigung");
+define(PM_ADLAN_1,"PM Konfigurations Optionen");
+define(PM_ADLAN_2,"PM Admin Funktionen");
+define(PM_ADLAN_3,"Aktualisiere PM Einstellungen");
+define(PM_ADLAN_4,"Benutzer wählen");
+define(PM_ADLAN_5,"ALle Nachrichten wurden gelöscht");
+define(PM_ADLAN_6,"Nachrichten zu/von");
+define(PM_ADLAN_7,"gelöscht");
+define(PM_ADLAN_8,"Nachrichten älter als ");
+define(PM_ADLAN_9,"Tage alt");
+define(PM_ADLAN_10,"Alle Nachrichten werden gelöscht, die älter sind als ");
+define(PM_ADLAN_11,"Löschung bestätigen");
+define(PM_ADLAN_12,"Aufheben");
+define(PM_ADLAN_13,"Sie müssen etwas eingeben.");
+define(PM_ADLAN_14,"Nachrichten löschen");
+define(PM_ADLAN_15,"Alle Nachrichten, sowohl zum, als auch vom Benutzer werden gelöscht: ");
+define(PM_ADLAN_16,"Sie müssen zuerst einen Benutzer auswählen.");
+define(PM_ADLAN_17,"Nachrichten löschen vom / zum Benutzer");
+define(PM_ADLAN_18,"Alle nachrichten des PM Systems werden gelöscht, egal ob sie gelesen wurden oder nicht.");
+define(PM_ADLAN_19,"Alle Nachrichten löschenschen");
+define(PM_ADLAN_20,"PM Einstellungen aktualisiert");
+define(PM_ADLAN_21,"Plugin Titel");
+define(PM_ADLAN_22,"Zeige neue PM Animation");
+define(PM_ADLAN_23,"Zeige Benutzer Dropdown Liste");
+define(PM_ADLAN_24,"Automatisches Löschen gelesener Nachrichten");
+define(PM_ADLAN_25,"Gelesene Nachrichten Timeout");
+define(PM_ADLAN_26,"Ungelesene Nachrichten Timeout");
+define(PM_ADLAN_27,"Popupbenachrichtigung bei neuer PM");
+define(PM_ADLAN_28,"Popup Anzeigezeit");
+define(PM_ADLAN_29,"Beschränke PM zu");
+define(PM_ADLAN_30,"Alle registrierten Benutzer");
+define(PM_ADLAN_31,"Benutzerklassen");
+define(PM_ADLAN_32,"Lösche Nachrichten mehr als");
+define(PM_ADLAN_33,"Ja");
+define(PM_ADLAN_34,"Nein");
+define(PM_ADLAN_35,"E-mailbenachrichtigung senden");
+define(PM_ADLAN_36,"Bitte markieren Sie hier um die Operation zu bestätigen");
+define(PM_ADLAN_37,"Nachrichten im System");
+define(PM_ADLAN_38,"Benutzername finden");
+define(PM_ADLAN_39,"Tage");
+define(PM_ADLAN_40,"nicht erlauben");
+define(PM_ADLAN_41,"Sekunden");
+define(PM_ADLAN_42, "Dieses Plugin ist ein ausgereiftes 'Privates Nachrichten System'.");
+define(PM_ADLAN_43, "Privates Nachrichten System konfigurieren");
+define(PM_ADLAN_44, "Um das Menü zu aktivieren gehen Sie in den Adminbereich - Menüs und aktivieren es an gewünschtem Platz.");
+define(PM_ADLAN_45, "PM wurde erfolgreich aktualisiert zur Version");
+
+?>
