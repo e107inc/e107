@@ -170,7 +170,6 @@ class emotec
 		</tr>
 		";
 
-
 		foreach($eArray as $emote)
 		{
 			$ename = $emote['fname'];
@@ -179,8 +178,8 @@ class emotec
 			$text .= "
 			<tr>
 			<td class='forumheader3' style='width: 20%;'>".$ename."</td>
-			<td class='forumheader3' style='width: 20%; text-align: center;'><img src='".$emote['path']."/".$ename."' alt='' /></td>
-			<td class='forumheader3' style='width: 60%;'><input style='width: 80%' class='tbox' type='text' name='$ename' value='".$emotecode[$evalue]."' maxlength='200' /></td>
+			<td class='forumheader3' style='width: 20%; text-align: center;'><img src='".$emote['path'].$ename."' alt='' /></td>
+			<td class='forumheader3' style='width: 60%;'><input style='width: 80%' class='tbox' type='text' name='$evalue' value='".$emotecode[$evalue]."' maxlength='200' /></td>
 			</tr>
 			";	
 		}
