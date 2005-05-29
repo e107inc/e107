@@ -1,0 +1,11 @@
+<?php
+
+define("TPVLAN_1", "This is a Theme Test Page");
+define("TPVLAN_2", "This theme is active for this page only. To set it as your site theme go to");
+define("TPVLAN_3", "Preferences");
+define("TPVLAN_4", "Preview More Themes");
+define("TPVLAN_5", "Preview Site Themes");
+define("TPVLAN_6", "Preview");
+define("TPVLAN_7", "Preview Theme");
+
+?>

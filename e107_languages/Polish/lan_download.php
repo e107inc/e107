@@ -1,0 +1,50 @@
+<?php
+
+define("PAGE_NAME", "Pliki do pobrania"); 
+
+define("LAN_dl_1", "(Dostęp ograniczony)");
+define("LAN_dl_2", "W tej chwili nie ma żadnych plików do pobrania, zapraszamy wkrótce");
+define("LAN_dl_3", "Nie ma jeszcze plików do pobrania w tej kategorii");
+define("LAN_dl_4", "Dostępne pliki: ");
+define("LAN_dl_5", "Łączny rozmiar wszystkich plików: ");
+define("LAN_dl_6", "Pobrano plików: ");
+define("LAN_dl_7", "Opis");
+define("LAN_dl_8", "Pobierz");
+define("LAN_dl_9", "Powrót do listy kategorii");
+define("LAN_dl_10", "Rozmiar pliku");
+define("LAN_dl_11", "Obraz");
+define("LAN_dl_12", "Ocena");
+define("LAN_dl_13", "Nie oceniany");
+define("LAN_dl_14", "Oceń ten plik");
+define("LAN_dl_15", "Dziękujemy za ocenę");
+define("LAN_dl_16", "pobrań z");
+define("LAN_dl_17", "plików");
+define("LAN_17", "Tytuł");
+define("LAN_dl_18", "Pobrań");
+define("LAN_dl_19", "Kategoria");
+define("LAN_dl_20", "Plików");
+define("LAN_dl_21", "Rozmiar");
+define("LAN_dl_22", "Data");
+define("LAN_dl_23", "Nazwa");
+define("LAN_dl_24", "Autor");
+define("LAN_dl_25", "Rosnąco");
+define("LAN_dl_26", "Malejąco");
+define("LAN_dl_27", "Dalej");
+define("LAN_dl_28", "Nazwa");
+define("LAN_dl_29", "pobrań");
+define("LAN_dl_30", "Email autora");
+define("LAN_dl_31", "Strona autora");
+define("LAN_dl_32", "Pobierz");
+define("LAN_dl_33", "Poprzedni");
+define("LAN_dl_34", "Następny");
+define("LAN_dl_35", "Powrót do listy");
+define("LAN_dl_36", "Nowe pliki");
+define("LAN_dl_37", "Podgląd");
+define("LAN_dl_38", "Kolejność wg");
+define("LAN_dl_39", "Sortuj");
+define("LAN_dl_40", "Kliknij tutaj aby zobaczyć zrzut ekranu");
+define("LAN_dl_41", "Szukaj w plikach do pobrania");
+define("LAN_dl_42", "Podkategoria");
+define("LAN_dl_43", "głos");
+define("LAN_dl_44", "głosów");
+?>
