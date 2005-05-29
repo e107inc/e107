@@ -4,12 +4,13 @@
 |     e107 website system - French Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/French.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:23 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-29 02:07:46 $
 |     $Author: e107coders $
 |     Encoding: UTF-8
 +----------------------------------------------------------------------------+
 */
+
 
 define("LOGIN_MENU_L1", "Nom d'utilisateur: ");
 define("LOGIN_MENU_L2", "Mot de passe: ");
