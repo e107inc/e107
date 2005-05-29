@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/fpw.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-28 02:41:58 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-29 23:48:22 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -23,7 +23,7 @@ if(USER){
 	exit;
 }
 
-$use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
+$use_imagecode = ($pref['fpwcode'] && extension_loaded("gd"));
 if ($use_imagecode) {
 	require_once(e_HANDLER."secure_img_handler.php");
 	$sec_img = new secure_image;
