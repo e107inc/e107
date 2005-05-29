@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_administrator.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-16 14:56:12 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-29 18:34:37 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -73,4 +73,5 @@ define("ADMSLAN_64", "Clear the system cache");
 define("ADMSLAN_65", "Configure mail settings and mailout");
 define("ADMSLAN_66", "Configure Search");
 define("ADMSLAN_67", "Scan with file inspector");
+define("ADMSLAN_68", "Configure email notification");
 ?>
