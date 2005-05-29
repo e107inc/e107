@@ -202,6 +202,14 @@ class emotec
 
 		$packID = $_POST['packID'];
 		unset($_POST['sub_conf'], $_POST['packID']);
+
+		foreach($_POST as $key => $value)
+		{
+			$key = str_replace("_", "!", $key);
+			$_POST[$key] = $value;
+		}
+
+
 		$tmp = addslashes(serialize($_POST));
 
 		if(!$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='emote_".$packID."' "))

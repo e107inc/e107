@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emote_filter.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-29 13:48:19 $
+|     $Revision: 1.8 $
+|     $Date: 2005-05-29 15:25:45 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -27,12 +27,13 @@ class e_emotefilter {
 
 		foreach($emotes as $key => $value)
 		{
-
-			$key =  str_replace("!", ".", $key);
+			$key = preg_replace("#!(\w{3,}?)$#si", ".\\1", $key);
+			$key =  str_replace("!", "_", $key);
+			
+			$value = trim(chop($value));
 
 			$filename = e_IMAGE."emotes/" . $pref['emotepack'] . "/" . $key;
 
-			
 			if(file_exists($filename))
 			{
 				if(strstr($value, " "))
@@ -40,25 +41,26 @@ class e_emotefilter {
 					$tmp = explode(" ", $value);
 					foreach($tmp as $code)
 					{
-						if(trim(chop($code)))
-						{
-							$this->searcha[] = " ".$code;
-							$this->searchb[] = "\n".$code;
-							$this->replace[] = " <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
-						}
+						$this->searcha[] = " ".$code;
+						$this->searchb[] = "\n".$code;
+						$this->replace[] = " <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
 					}
+					unset($tmp);
 				}
 				else
 				{
-					if(trim(chop($code)))
+					if($value)
 					{
-						$this->searcha[] = " ".$code;
-						$this->searchb[] = "\n".$code;
+						$this->searcha[] = " ".$value;
+						$this->searchb[] = "\n".$value;
 						$this->replace[] = " <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
 					}
 				}
 			}
 		}
+
+	
+
 	}
 	 
 	function filterEmotes($text)
