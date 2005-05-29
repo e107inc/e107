@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-05-13 04:03:49 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2005-05-29 15:52:14 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -64,7 +64,7 @@ if (isset($_POST['usubmit'])) {
 	$a_name = preg_replace("/\\W/i", '',  $_POST['a_name']);
 	$a_password = md5($_POST['a_password']);
 
-	if ($result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name = '{$a_name}' AND user_password = '{$a_password}' AND user_perms = 0")) {
+	if ($result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name = '{$a_name}' AND user_password = '{$a_password}' AND user_perms = '0'")) {
 		if ($row = mysql_fetch_array($result)) {
 			extract($row);
 
