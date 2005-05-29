@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2005-05-20 21:24:36 $
-|     $Author: streaky $
+|     $Revision: 1.58 $
+|     $Date: 2005-05-29 23:47:56 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -644,6 +644,25 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	$text .= "
 	<input type='radio' name='logcode' value='1'".($pref['logcode'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='logcode' value='0'".(!$pref['logcode'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	";
+	}
+	else
+	{
+		$text .= PRFLAN_133;
+	}
+	$text .= "
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_138.": </td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	";
+	if($hasGD)
+	{
+	$text .= "
+	<input type='radio' name='fpwcode' value='1'".($pref['fpwcode'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='fpwcode' value='0'".(!$pref['fpwcode'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	";
 	}
 	else
