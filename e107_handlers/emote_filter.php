@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emote_filter.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-28 05:05:32 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-29 13:48:19 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -40,16 +40,22 @@ class e_emotefilter {
 					$tmp = explode(" ", $value);
 					foreach($tmp as $code)
 					{
-						$this->searcha[] = $key;
-						$this->searchb[] = $code;
-						$this->replace[] = " <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
+						if(trim(chop($code)))
+						{
+							$this->searcha[] = " ".$code;
+							$this->searchb[] = "\n".$code;
+							$this->replace[] = " <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
+						}
 					}
 				}
 				else
 				{
-					$this->searcha[] = $key;
-					$this->searchb[] = $value;
-					$this->replace[] = " <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
+					if(trim(chop($code)))
+					{
+						$this->searcha[] = " ".$code;
+						$this->searchb[] = "\n".$code;
+						$this->replace[] = " <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
+					}
 				}
 			}
 		}
