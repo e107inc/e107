@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-05-24 01:19:25 $
-|     $Author: e107coders $
+|     $Revision: 1.16 $
+|     $Date: 2005-05-29 18:34:31 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -212,7 +212,8 @@ $text .= checkb("4", $a_perms).ADMSLAN_22."<br />"; // Moderate users/bans etc
 $text .= checkb("5", $a_perms).ADMSLAN_23."<br />";
 $text .= checkb("Q", $a_perms).ADMSLAN_24."<br />";
 $text .= checkb("6", $a_perms).ADMSLAN_25."<br />";  //Upload /manage files
-$text .= checkb("Y", $a_perms).ADMSLAN_67."<br />";
+$text .= checkb("Y", $a_perms).ADMSLAN_67."<br />"; // file inspector
+$text .= checkb("O", $a_perms).ADMSLAN_68."<br />"; // notify
 $text .= checkb("7", $a_perms).ADMSLAN_26."<br />";
 $text .= checkb("8", $a_perms).ADMSLAN_27."<br />";
 $text .= checkb("0", $a_perms).ADMSLAN_64."<br />";
