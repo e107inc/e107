@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-05-30 19:02:14 $
+|     $Revision: 1.19 $
+|     $Date: 2005-05-30 19:14:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -302,7 +302,7 @@ class file_inspector {
 		$ns -> tablerender(FR_LAN_1.'...', $text);
 	}
 	
-	function image_scan_orig($dir) {
+	function image_scan($dir) {
 		$handle = opendir($dir);
 		while (false !== ($readdir = readdir($handle))) {
 			if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
@@ -318,32 +318,22 @@ class file_inspector {
 		closedir($handle);
 	}
 	
-	function image_scan($list, $dir) {
+	function create_image($dir) {
 		global $ADMIN_DIRECTORY, $FILES_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $DOWNLOADS_DIRECTORY, $DOCS_DIRECTORY;
-		foreach($list as $path_key => $path_value) {
-			if (is_array($path_value)) {
-				$data .= $this -> image_scan($path_value, $dir);
-			} else {
-				$root = str_replace($dir."/", "'", $path_key);
-				$search = array("'".$ADMIN_DIRECTORY, "'".$FILES_DIRECTORY, "'".$IMAGES_DIRECTORY, "'".$THEMES_DIRECTORY, "'".$PLUGINS_DIRECTORY, "'".$HANDLERS_DIRECTORY, "'".$LANGUAGES_DIRECTORY, "'".$HELP_DIRECTORY, "'".$DOWNLOADS_DIRECTORY, "'".$DOCS_DIRECTORY);
-				$replace = array("\$ADMIN_DIRECTORY.'", "\$FILES_DIRECTORY.'", "\$IMAGES_DIRECTORY.'", "\$THEMES_DIRECTORY.'", "\$PLUGINS_DIRECTORY.'", "\$HANDLERS_DIRECTORY.'", "\$LANGUAGES_DIRECTORY.'", "\$HELP_DIRECTORY.'", "\$DOWNLOADS_DIRECTORY.'", "\$DOCS_DIRECTORY.'");
-				$root = str_replace($search, $replace, $root);
-				$core_array[] = $root."' => '".$path_value."'";
-			}
+		$this -> image_scan($dir);
+		$data = "<?php\n";
+		$data .= "\$core_image = array(
+		";
+		foreach($this -> image as $path_key => $path_value) {
+			$root = str_replace($dir."/", "'", $path_key);
+			$search = array("'".$ADMIN_DIRECTORY, "'".$FILES_DIRECTORY, "'".$IMAGES_DIRECTORY, "'".$THEMES_DIRECTORY, "'".$PLUGINS_DIRECTORY, "'".$HANDLERS_DIRECTORY, "'".$LANGUAGES_DIRECTORY, "'".$HELP_DIRECTORY, "'".$DOWNLOADS_DIRECTORY, "'".$DOCS_DIRECTORY);
+			$replace = array("\$ADMIN_DIRECTORY.'", "\$FILES_DIRECTORY.'", "\$IMAGES_DIRECTORY.'", "\$THEMES_DIRECTORY.'", "\$PLUGINS_DIRECTORY.'", "\$HANDLERS_DIRECTORY.'", "\$LANGUAGES_DIRECTORY.'", "\$HELP_DIRECTORY.'", "\$DOWNLOADS_DIRECTORY.'", "\$DOCS_DIRECTORY.'");
+			$root = str_replace($search, $replace, $root);
+			$core_array[] = $root."' => '".$path_value."'";
 		}
-		$data .= "\n array();\n";
 		$data .= implode(', 
 		', $core_array);
 		$data .= "\n);\n";
-		return $data;
-	}
-	
-	function create_image($dir) {
-		$list = $this -> scan($dir);
-		print_a($list);
-		$data = "<?php\n";
-		$data .= "\$core_image = ";
-		$data .= $this -> image_scan($list, $dir);
 		$data .= "?>";
 		$fp = fopen(e_ADMIN.'core_image.php', 'w');
 		fwrite($fp, $data);
