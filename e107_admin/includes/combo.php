@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/combo.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-12 10:43:46 $
+|     $Revision: 1.7 $
+|     $Date: 2005-05-30 18:30:15 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -60,7 +60,7 @@ $text .= render_clean();
 	
 $text .= "</table></div>";
 	
-$ns->tablerender('Plugins', $text);
+$ns->tablerender(ADLAN_CL_7, $text);
 	
 echo admin_info();
 	

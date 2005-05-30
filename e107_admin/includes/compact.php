@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/compact.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-12 10:43:46 $
+|     $Revision: 1.8 $
+|     $Date: 2005-05-30 18:30:16 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -31,10 +31,13 @@ while ($td <= 5) {
 }
 $td = 1;
 	
-$text .= "</tr><tr>
-	<td colspan='5'><br />
-	</td>
-	</tr>";
+$text .= "</tr></table></div>";
+	
+$ns->tablerender(ADLAN_47." ".ADMINNAME, $text);
+
+
+$text = "<div style='text-align:center'>
+	<table style='".ADMIN_WIDTH."'>";
 	
 $text .= render_links(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", E_16_PLUGMANAGER, 'default');
 	
@@ -58,7 +61,7 @@ foreach ($plugin_array as $plug_key => $plug_value) {
 $text .= "</tr>
 	</table></div>";
 	
-$ns->tablerender(ADLAN_47." ".ADMINNAME, $text);
+$ns->tablerender(ADLAN_CL_7, $text);
 	
 echo admin_info();
 	
