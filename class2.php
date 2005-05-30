@@ -12,12 +12,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.144 $
-|     $Date: 2005-05-29 18:19:00 $
+|     $Revision: 1.145 $
+|     $Date: 2005-05-30 19:02:11 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-
+header("Content-type: text/html; charset=utf-8");
 // Honest global beginning point for processing time
 $eTimingStart = microtime();
 $start_ob_level = ob_get_level();

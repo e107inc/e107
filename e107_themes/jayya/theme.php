@@ -24,7 +24,7 @@ if(!defined("e_THEME")){ exit; }
 $themename = "Jayya";
 $themeversion = "1.0";
 $themeauthor = "e107";
-$themedate = "22/12/04";
+$themedate = "";
 $themeinfo = "";
 $xhtmlcompliant = TRUE;
 $csscompliant = TRUE;
