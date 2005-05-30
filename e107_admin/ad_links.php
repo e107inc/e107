@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-05-29 18:19:24 $
+|     $Revision: 1.33 $
+|     $Date: 2005-05-30 13:53:07 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -458,6 +458,6 @@ $array_functions = array(
 	26 => array(e_ADMIN."mailout.php", ADLAN_136, ADLAN_137, "W", 2, E_16_MAIL, E_32_MAIL),
 	27 => array(e_ADMIN."users_extended.php", ADLAN_78, ADLAN_79, "4", 2, E_16_USER_EXTENDED, E_32_USER_EXTENDED),
 	28 => array(e_ADMIN."fileinspector.php", ADLAN_147, ADLAN_148, "Y", 4, E_16_INSPECT, E_32_INSPECT),
-	29 => array(e_ADMIN."notify.php", ADLAN_149, ADLAN_150, "Y", 4, E_16_NOTIFY, E_32_NOTIFY)
+	29 => array(e_ADMIN."notify.php", ADLAN_149, ADLAN_150, "O", 4, E_16_NOTIFY, E_32_NOTIFY)
 	);
 ?>
