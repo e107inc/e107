@@ -1,0 +1,28 @@
+
+README for the Swedish language pack for e107.
+README för det svenska språkpaketet till e107.
+
+With respect for the non-Swedish users who wish to use this
+language package, all documentation files will be written in Egnlish.
+
+Med respekt för icke-Svenska användare kommer alla dokumentationsfiler
+att vara skrivna på Engelska.
+
+-------------
+
+This language pack is under development at the moment, and by that
+in no way complete as of now.
+
+Files will be added to the CVS as they become ready for beta use.
+Keep your eyes on the CHANGELOG for information on language files
+and the status of them.
+
+In the CHANGELOG, files will be listed when they have been tested
+as functional and proof-read for grammar and correctness.
+
+If you want to contribute, feel free to send me any pointers, any
+completely translated files or anything else you feel like should
+be included/changed.
+
+Regards,
+mrpiercer at users.sourceforge.net
