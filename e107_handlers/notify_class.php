@@ -11,13 +11,11 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/notify_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 18:19:24 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-31 21:05:03 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-
-$nt = new notify;
 
 class notify {
 	
@@ -56,9 +54,11 @@ class notify {
 	}
 }
 
+global $nt;
+$nt = new notify;
+
 function notify_usersup($data) {
-	global $sql;
-	$nt = new notify;
+	global $nt;
 	foreach ($data as $key => $value) {
 		$message .= $key.': '.$value.'<br />';
 	}
@@ -66,14 +66,12 @@ function notify_usersup($data) {
 }
 
 function notify_userveri($data) {
-	global $sql;
-	$nt = new notify;
+	global $nt;
 	$nt -> send('userveri', 'User Signup Verified', 'Users session string: '.$data);
 }
 
 function notify_login($data) {
-	global $sql;
-	$nt = new notify;
+	global $nt;
 	foreach ($data as $key => $value) {
 		$message .= $key.': '.$value.'<br />';
 	}
@@ -81,20 +79,17 @@ function notify_login($data) {
 }
 
 function notify_logout() {
-	global $sql;
-	$nt = new notify;
+	global $nt;
 	$nt -> send('logout', 'User Logged Out');
 }
 
 function notify_flood($data) {
-	global $sql;
-	$nt = new notify;
+	global $nt;
 	$nt -> send('flood', 'Flood Ban', 'IP address banned for flooding: '.$data);
 }
 
 function notify_subnews($data) {
-	global $sql;
-	$nt = new notify;
+	global $nt;
 	foreach ($data as $key => $value) {
 		$message .= $key.': '.$value.'<br />';
 	}
@@ -102,22 +97,19 @@ function notify_subnews($data) {
 }
 
 function notify_newspost($data) {
-	global $sql;
-	$nt = new notify;
+	global $nt;
 	$message = '<b>'.$data['news_title'].'</b><br /><br />'.$data['news_summary'].'<br /><br />'.$data['data'].'<br /><br />'.$data['news_extended'];
 	$nt -> send('newspost', $data['news_title'], $message);
 }
 
 function notify_newsupd($data) {
-	global $sql;
-	$nt = new notify;
+	global $nt;
 	$message = '<b>'.$data['news_title'].'</b><br /><br />'.$data['news_summary'].'<br /><br />'.$data['data'].'<br /><br />'.$data['news_extended'];
 	$nt -> send('newsupd', 'Updated: '.$data['news_title'], $message);
 }
 
 function notify_newsdel($data) {
-	global $sql;
-	$nt = new notify;
+	global $nt;
 	$nt -> send('newsdel', 'News Item Deleted', 'Deleted news item id: '.$data);
 }
 

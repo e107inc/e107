@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/e_notify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 18:19:26 $
+|     $Revision: 1.2 $
+|     $Date: 2005-05-31 21:05:06 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -22,8 +22,7 @@ $config_events = array('linksub' => 'Link submitted by user');
 
 if (!function_exists('notify_linksub')) {
 	function notify_linksub($data) {
-		global $sql;
-		$nt = new notify;
+		global $nt;
 		foreach ($data as $key => $value) {
 			$message .= $key.': '.$value.'<br />';
 		}
