@@ -1,15 +1,10 @@
 /* Import plugin specific language pack */
-tinyMCE.importPluginLanguagePack('flash', 'en,de,sv,zh_cn,cs,fa,fr_ca,fr,pl');
-
-function TinyMCE_flash_initInstance(inst) {
-	if (!tinyMCE.settings['flash_skip_plugin_css'])
-		tinyMCE.importCSS(inst.getDoc(), tinyMCE.baseURL + "/plugins/flash/flash.css");
-}
+tinyMCE.importPluginLanguagePack('flash', 'en,de,sv,zh_cn,cs,fa,fr_ca,fr');
 
 function TinyMCE_flash_getControlHTML(control_name) {
     switch (control_name) {
         case "flash":
-            return '<img id="{$editor_id}_flash" src="{$pluginurl}/images/flash.gif" title="{$lang_insert_flash}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');tinyMCE.execInstanceCommand(\'{$editor_id}\',\'mceFlash\');" />';
+            return '<img id="{$editor_id}_flash" src="{$pluginurl}/images/flash.gif" title="{$lang_insert_flash}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');" onclick="tinyMCE.execInstanceCommand(\'{$editor_id}\',\'mceFlash\');" />';
     }
 
     return "";
@@ -85,8 +80,8 @@ function TinyMCE_flash_execCommand(editor_id, element, command, user_interface, 
 					return true;
 
 				// Get rest of Flash items
-				swffile = getAttrib(focusElm, 'alt');
-				swffile = eval(tinyMCE.settings['urlconverter_callback'] + "(swffile, null, true);");
+				swffile = getAttrib(focusElm, 'title');
+				//swffile = eval(tinyMCE.settings['urlconvertor_callback'] + "(swffile, null, true);");
 				swfwidth = getAttrib(focusElm, 'width');
 				swfheight = getAttrib(focusElm, 'height');
 				action = "update";
@@ -102,32 +97,6 @@ function TinyMCE_flash_execCommand(editor_id, element, command, user_interface, 
 
 function TinyMCE_flash_cleanup(type, content) {
 	switch (type) {
-		case "insert_to_editor_dom":
-			var imgs = content.getElementsByTagName("img");
-			for (var i=0; i<imgs.length; i++) {
-				if (tinyMCE.getAttrib(imgs[i], "name") == "mce_plugin_flash") {
-					var src = tinyMCE.getAttrib(imgs[i], "alt");
-
-					src = tinyMCE.convertRelativeToAbsoluteURL(tinyMCE.settings['base_href'], src);
-
-					imgs[i].setAttribute('alt', src);
-				}
-			}
-			break;
-
-		case "get_from_editor_dom":
-			var imgs = content.getElementsByTagName("img");
-			for (var i=0; i<imgs.length; i++) {
-				if (tinyMCE.getAttrib(imgs[i], "name") == "mce_plugin_flash") {
-					var src = tinyMCE.getAttrib(imgs[i], "alt");
-
-					src = eval(tinyMCE.settings['urlconverter_callback'] + "(src, null, true);");
-
-					imgs[i].setAttribute('alt', src);
-				}
-			}
-			break;
-
 		case "insert_to_editor":
 			var startPos = 0;
 			var embedList = new Array();
@@ -148,21 +117,27 @@ function TinyMCE_flash_cleanup(type, content) {
 			// Parse all object tags and replace them with images from the embed data
 			var index = 0;
 			while ((startPos = content.indexOf('<object', startPos)) != -1) {
+				var endPos = content.indexOf('>', startPos);
+
+				// Find end of embed
+				endPos = content.indexOf('/>', endPos);
+				if (endPos == -1) {
+					endPos = content.indexOf('</object>', endPos);
+					endPos += 8;
+				} else
+					endPos += 2;
+
 				if (index >= embedList.length)
 					break;
 
 				var attribs = embedList[index];
 
-				// Find end of object
-				endPos = content.indexOf('</object>', startPos);
-				endPos += 9;
-
 				// Insert image
-				var contentAfter = content.substring(endPos);
+				var contentAfter = content.substring(endPos+1);
 				content = content.substring(0, startPos);
 				content += '<img name="mce_plugin_flash" width="' + attribs["width"] + '" height="' + attribs["height"] + '"';
 				content += ' src="' + (tinyMCE.getParam("theme_href") + '/images/spacer.gif') + '" title="' + attribs["src"] + '"';
-				content += ' alt="' + attribs["src"] + '" class="mce_plugin_flash" />' + content.substring(endPos);
+				content += ' alt="' + attribs["src"] + '" class="mce_plugin_flash" />' + content.substring(endPos+1);
 				content += contentAfter;
 				index++;
 
@@ -172,14 +147,14 @@ function TinyMCE_flash_cleanup(type, content) {
 
 		case "get_from_editor":
 			// Parse all img tags and replace them with object+embed
-			var startPos = -1;
-			while ((startPos = content.indexOf('<img', startPos+1)) != -1) {
+			var startPos = 0;
+			while ((startPos = content.indexOf('<img', startPos)) != -1) {
 				var endPos = content.indexOf('/>', startPos);
 				var attribs = TinyMCE_flash_parseAttributes(content.substring(startPos + 4, endPos));
 
-				// Is not flash, skip it
+				// Is not flash
 				if (attribs['name'] != "mce_plugin_flash")
-					continue;
+					break;
 
 				endPos += 2;
 
@@ -194,10 +169,23 @@ function TinyMCE_flash_cleanup(type, content) {
 				embedHTML += '<param name="menu" value="false" />';
 				embedHTML += '<embed src="' + attribs["title"] + '" quality="high" menu="false" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="' + attribs["width"] + '" height="' + attribs["height"] + '"></embed></object>';
 
-				// Insert embed/object chunk
-				chunkBefore = content.substring(0, startPos);
-				chunkAfter = content.substring(endPos);
-				content = chunkBefore + embedHTML + chunkAfter;
+/*
+<object
+classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"
+codebase="http://www.apple.com/qtactivex/qtplugin.cab" width="360" height="305" hspace="0" vspace="0">
+  <param name="src" value="<?=$_REQUEST['url']?>">
+  <param name="autoplay" value="true">
+  <param name="controller" value="true">
+  <embed src="<?=$_REQUEST['url']?>" width="360" height="305" hspace="0" vspace="0"
+autoplay="true" controller="true"
+pluginspage="http://www.apple.com/quicktime/download/">
+  </embed></object>
+
+*/
+
+				content = content.substring(0, startPos) + embedHTML + content.substring(endPos+1);
+
+				startPos++;
 			}
 			break;
 	}
