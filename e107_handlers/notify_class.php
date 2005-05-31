@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/notify_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-05-31 21:05:03 $
+|     $Revision: 1.3 $
+|     $Date: 2005-05-31 21:38:40 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -29,6 +29,8 @@ class notify {
 				$e_event -> register($id, 'notify_'.$id);
 			}
 		}
+		@include_once(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
+		@include_once(e_LANGUAGEDIR.'English/lan_notify.php');
 	}
 	
 	function send($id, $subject, $message) {
@@ -62,12 +64,12 @@ function notify_usersup($data) {
 	foreach ($data as $key => $value) {
 		$message .= $key.': '.$value.'<br />';
 	}
-	$nt -> send('usersup', 'User Signup', $message);
+	$nt -> send('usersup', NT_LAN_US_1, $message);
 }
 
 function notify_userveri($data) {
 	global $nt;
-	$nt -> send('userveri', 'User Signup Verified', 'Users session string: '.$data);
+	$nt -> send('userveri', NT_LAN_UV_1, NT_LAN_UV_2.': '.$data);
 }
 
 function notify_login($data) {
@@ -75,17 +77,17 @@ function notify_login($data) {
 	foreach ($data as $key => $value) {
 		$message .= $key.': '.$value.'<br />';
 	}
-	$nt -> send('login', 'User Logged In', $message);
+	$nt -> send('login', NT_LAN_LI_1, $message);
 }
 
 function notify_logout() {
 	global $nt;
-	$nt -> send('logout', 'User Logged Out');
+	$nt -> send('logout', NT_LAN_LO_1);
 }
 
 function notify_flood($data) {
 	global $nt;
-	$nt -> send('flood', 'Flood Ban', 'IP address banned for flooding: '.$data);
+	$nt -> send('flood', NT_LAN_FL_1, NT_LAN_FL_2.': '.$data);
 }
 
 function notify_subnews($data) {
@@ -93,7 +95,7 @@ function notify_subnews($data) {
 	foreach ($data as $key => $value) {
 		$message .= $key.': '.$value.'<br />';
 	}
-	$nt -> send('subnews', 'News Item Submitted', $message);
+	$nt -> send('subnews', NT_LAN_SN_1, $message);
 }
 
 function notify_newspost($data) {
@@ -105,12 +107,12 @@ function notify_newspost($data) {
 function notify_newsupd($data) {
 	global $nt;
 	$message = '<b>'.$data['news_title'].'</b><br /><br />'.$data['news_summary'].'<br /><br />'.$data['data'].'<br /><br />'.$data['news_extended'];
-	$nt -> send('newsupd', 'Updated: '.$data['news_title'], $message);
+	$nt -> send('newsupd', NT_LAN_NU_1.': '.$data['news_title'], $message);
 }
 
 function notify_newsdel($data) {
 	global $nt;
-	$nt -> send('newsdel', 'News Item Deleted', 'Deleted news item id: '.$data);
+	$nt -> send('newsdel', NT_LAN_ND_1, NT_LAN_ND_2.': '.$data);
 }
 
 foreach ($nt -> notify_prefs['plugins'] as $plugin_id => $plugin_settings) {
