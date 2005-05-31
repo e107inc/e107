@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-05-27 19:54:34 $
+|     $Revision: 1.24 $
+|     $Date: 2005-05-31 16:31:48 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -37,30 +37,30 @@ class e107{
 
 	function set_e107_dirs($class2_file){
 		$this->fix_missing_doc_root();
-		
+
 		$_SERVER['DOCUMENT_ROOT'] = $this->fix_windows_paths(realpath($_SERVER['DOCUMENT_ROOT']));
 
 		$e107_root_folder = realpath(dirname($class2_file));
-		$e107_root_folder = $this->fix_windows_paths($e107_root_folder);		
-		
+		$e107_root_folder = $this->fix_windows_paths($e107_root_folder);
+
 		// define server path in e107_config.php if you have problems, just leave it if everything works.
 		if(defined("SERVER_PATH")){
 			$server_path = SERVER_PATH;
 		} else {
 			$server_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $e107_root_folder)."/";
 		}
-		
+
 		$relative_path = substr_replace(dirname($_SERVER['PHP_SELF']), "", 0, strlen($server_path));
-		
+
 		$link_prefix = '';
 		$prefix_array = explode("/", $relative_path."/");
-		
+
 		foreach ($prefix_array as $val) {
 			if(trim($val) != ""){
 				$link_prefix .= "../";
 			}
 		}
-		
+
 		$this->relative_base_path = $link_prefix;
 
 		if ($_SERVER['SERVER_PORT'] != 80) {
@@ -68,13 +68,13 @@ class e107{
 		} else {
 			$url_port = "";
 		}
-		
+
 		$this->server_path = $server_path;
-		
+
 		$this->http_path = "http://{$_SERVER['HTTP_HOST']}{$url_port}{$this->server_path}";
 		$this->https_path = "https://{$_SERVER['HTTP_HOST']}{$url_port}{$this->server_path}";
 		$this->file_path = $e107_root_folder;
-		
+
 		define("e_HTTP", $this->server_path);
 	}
 
@@ -142,6 +142,29 @@ class e107{
 			$this->_ip_cache = $ip;
 		}
 		return $this->_ip_cache;
+	}
+
+	function get_memory_usage(){
+		global $dbg;
+		if(function_exists("memory_get_usage")){
+			$memusage = memory_get_usage();
+			$memunit = 'b';
+			if ($memusage > 1024){
+				$memusage = $memusage / 1024;
+				$memunit = 'kb';
+			}
+			if ($memusage > 1024){
+				$memusage = $memusage / 1024;
+				$memunit = 'mb';
+			}
+			if ($memusage > 1024){
+				$memusage = $memusage / 1024;
+				$memunit = 'gb';
+			}
+			return (number_format($memusage, 0).$memunit);
+		} else {
+			return ('Unknown');
+		}
 	}
 }
 
