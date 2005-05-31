@@ -4,7 +4,7 @@
 |        e107 website system
 |        lan_install.php Dutch-utf language file 
 |
-|        �Steve Dunstan 2001-2002
+|        ©Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -27,15 +27,15 @@ define("INSLAN9", "e107 was niet in staat het mySQL versie nummer te achterhalen
 define("INSLAN10", "Bestandsrechten");
 define("INSLAN11", "is niet beschrijfbaar");
 define("INSLAN12", "mappen zijn niet beschrijfbaar");
-define("INSLAN13", "Controleer of de rechten voor de bestanden zoals hierboven getoond correct op de server&lt;br /&gt;zijn ingesteld, de rechten dienen als 777 ingesteld te worden. Om de rechten&lt;br /&gt; in te stellen, kun je rechtsklikken op het bestand in uw FTP programma en kiezen voor Chmod of&lt;br /&gt;Zet bestandsrechten, typ dan 777 in, indien het dialoog dat verschijnt vinkhokjes heeft,&lt;br /&gt;vink alle hokjes aan.&lt;br /&gt;&lt;br /&gt;Probeer het nogmaals na het correct instellen van de bestandsrechten.");
+define("INSLAN13", "Controleer of de rechten voor de bestanden zoals hierboven getoond correct op de server<br />zijn ingesteld, de rechten dienen als 777 ingesteld te worden. Om de rechten<br /> in te stellen, kun je rechtsklikken op het bestand in uw FTP programma en kiezen voor Chmod of<br />Zet bestandsrechten, typ dan 777 in, indien het dialoog dat verschijnt vinkhokjes heeft,<br />vink alle hokjes aan.<br /><br />Probeer het nogmaals na het correct instellen van de bestandsrechten.");
 define("INSLAN14", "e107 installeren");
 define("INSLAN15", "FATAAL PROBLEEM");
-define("INSLAN16", "Ondanks dat het niet mogelijk was de status van uw mySQL installatie te achterhalen,&lt;br /&gt;kun je door naar de volgende stap.");
+define("INSLAN16", "Ondanks dat het niet mogelijk was de status van uw mySQL installatie te achterhalen,<br />kun je door naar de volgende stap.");
 define("INSLAN17", "Ga door");
 define("INSLAN18", "Herhaal controle bestandsrechten");
 define("INSLAN19", "Alle server testen zijn geslaagd, klik op de knop om verder te gaan naar het volgende stadium");
 define("INSLAN20", "mySQL informatie");
-define("INSLAN21", "Vul je mySQL instellingen hier in.&lt;br /&gt;Indien je root rechten hebt, kunt je een nieuwe database aanmaken door het hokje aan te vinken, anders moet je een database maken of een reeds bestaande database gebruiken. &lt;br /&gt;Als je slechts &eacute;&eacute;n database hebt, kun je een voorvoegsel gebruiken zodat andere scripts dezelfde database kunnen delen.&lt;br /&gt;Als je je mySQL instellingen niet weet, kun je je webbeheerder benaderen.");
+define("INSLAN21", "Vul je mySQL instellingen hier in.<br />Indien je root rechten hebt, kunt je een nieuwe database aanmaken door het hokje aan te vinken, anders moet je een database maken of een reeds bestaande database gebruiken. <br />Als je slechts één database hebt, kun je een voorvoegsel gebruiken zodat andere scripts dezelfde database kunnen delen.<br />Als je je mySQL instellingen niet weet, kun je je webbeheerder benaderen.");
 define("INSLAN22", "mySQL Server");
 define("INSLAN23", "mySQL Gebruikersnaam");
 define("INSLAN24", "mySQL wachtwoord");
@@ -44,7 +44,7 @@ define("INSLAN26", "Tabel voorvoegsel");
 define("INSLAN27", "Probleem");
 define("INSLAN28", "Probleem ontdekt");
 define("INSLAN29", "Je hebt vereiste velden niet ingevuld, vul opnieuw alle mySQL gegevens in");
-define("INSLAN30", "e107 was niet in staat een connectie te maken met mySQL volgens de ingestelde gegevens.&lt;br /&gt;Keer terug naar de vorige pagina and controleer of de gegevens correct zijn");
+define("INSLAN30", "e107 was niet in staat een connectie te maken met mySQL volgens de ingestelde gegevens.<br />Keer terug naar de vorige pagina and controleer of de gegevens correct zijn");
 define("INSLAN31", "mySQL controle");
 define("INSLAN32", "Connectie met mySQL gemaakt en gecontroleerd.");
 define("INSLAN33", "Poging de database aan te maken");
@@ -53,7 +53,7 @@ define("INSLAN35", "Database succesvol aangemaakt.");
 define("INSLAN36", "Klik op de knop om verder te gaan naar het volgende stadium.");
 define("INSLAN37", "Terug naar laatste pagina");
 define("INSLAN38", "Beheerdersinformatie");
-define("INSLAN39", "Vul de gebruikersnaam, het wachtwoord en het e-mailadres van je hoofdbeheerder in.&lt;br /&gt;Deze gegevens zullen gebruikt worden om toegang te krijgen tot het beheerdersgedeelte van uw website.&lt;br /&gt;Let op dat je je gebruikersnaam en wachtwoord opschrijft en op een veilige plaats bewaart, &lt;br /&gt;aangezien ze niet meer zijn te achterhalen wanneer je deze kwijtraakt.");
+define("INSLAN39", "Vul de gebruikersnaam, het wachtwoord en het e-mailadres van je hoofdbeheerder in.<br />Deze gegevens zullen gebruikt worden om toegang te krijgen tot het beheerdersgedeelte van uw website.<br />Let op dat je je gebruikersnaam en wachtwoord opschrijft en op een veilige plaats bewaart, <br />aangezien ze niet meer zijn te achterhalen wanneer je deze kwijtraakt.");
 define("INSLAN40", "Naam Beheerder");
 define("INSLAN41", "Wachtwoord Beheerder");
 define("INSLAN42", "Bevestig wachtwoord");
@@ -62,18 +62,18 @@ define("INSLAN44", "Je hebt vereiste velden niet ingevuld, vul de gegevens opnie
 define("INSLAN45", "De twee wachtwoorden zijn niet gelijk, vul deze opnieuw in.");
 define("INSLAN46", "is geen geldig e-mailadres, vul deze opnieuw in.");
 define("INSLAN47", "Alles ingesteld!");
-define("INSLAN48", "e107 heeft nu alle informatie om de installatie af te maken.&lt;br /&gt;klik op de knop om de tabellen van de database te maken en alle instellingen op te slaan.");
-define("INSLAN49", "e107 was niet in staat het hoofd configuratiebestand op je server te bewaren&lt;br /&gt;Controleer of het &lt;b&gt;e107_config.php&lt;/b&gt; bestand de juiste bestandsrechten heeft");
+define("INSLAN48", "e107 heeft nu alle informatie om de installatie af te maken.<br />klik op de knop om de tabellen van de database te maken en alle instellingen op te slaan.");
+define("INSLAN49", "e107 was niet in staat het hoofd configuratiebestand op je server te bewaren<br />Controleer of het <b>e107_config.php</b> bestand de juiste bestandsrechten heeft");
 define("INSLAN50", "Installatie Voltooid!");
 define("INSLAN51", "Alles voltooid");
-define("INSLAN52", "e107 is succesvol ge&iuml;nstalleerd!&lt;br /&gt;Voor veiligheidsredenen moet je de bestandsrechten van het&lt;br /&gt;&lt;b&gt;e107_config.php&lt;/b&gt; bestand terug te zetten naar 644.&lt;br /&gt;Ook moet je het /install.php bestand van ja server te verwijderen nadat je op de onderstaande knop hebt geklikt");
+define("INSLAN52", "e107 is succesvol geïnstalleerd!<br />Voor veiligheidsredenen moet je de bestandsrechten van het<br /><b>e107_config.php</b> bestand terug te zetten naar 644.<br />Ook moet je het /install.php bestand van ja server te verwijderen nadat je op de onderstaande knop hebt geklikt");
 define("INSLAN53", "Klik hier om je nieuwe website te bekijken!");
-define("INSLAN54", "Niet in staat het sql databestand te lezen&lt;br /&gt;&lt;br /&gt;Controleer of het bestand &lt;b&gt;core_sql.php&lt;/b&gt; bestaat in de &lt;b&gt;/e107_admin/sql&lt;/b&gt; map.");
-define("INSLAN55", "e107 was niet in staat alle vereiste tabellen te cre&euml;ren.&lt;br /&gt;Maak de database leeg en herstel de problemen voordat je het opnieuw probeert.");
+define("INSLAN54", "Niet in staat het sql databestand te lezen<br /><br />Controleer of het bestand <b>core_sql.php</b> bestaat in de <b>/e107_admin/sql</b> map.");
+define("INSLAN55", "e107 was niet in staat alle vereiste tabellen te creëren.<br />Maak de database leeg en herstel de problemen voordat je het opnieuw probeert.");
 define("INSLAN56", "Welkom op je nieuwe website!");
-define("INSLAN57", "e107 is succesvol ge&iuml;nstalleerd en is nu klaar om gebruikt te worden.");
+define("INSLAN57", "e107 is succesvol geïnstalleerd en is nu klaar om gebruikt te worden.");
 define("INSLAN58", "Je kunt de FAQ en documentatie hier vinden.");
-define("INSLAN59", "Bedankt dat je e107 wilt gebruiken, wij hopen dat het de behoefte voor je website vervultn(je kunt dit bericht verwijderen in het beheerdersgedeelte.)");
+define("INSLAN59", "Bedankt dat je e107 wilt gebruiken, wij hopen dat het de behoefte voor je website vervult<br />(je kunt dit bericht verwijderen in het beheerdersgedeelte.)");
 define("INSLAN60", "aanvinken om te maken");
 define("INSLAN61", "map");
 define("INSLAN62", "of");
