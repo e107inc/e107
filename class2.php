@@ -4,7 +4,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Â©Steve Dunstan 2001-2002
+|     ©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.148 $
-|     $Date: 2005-05-31 19:34:32 $
+|     $Revision: 1.149 $
+|     $Date: 2005-05-31 19:58:05 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
