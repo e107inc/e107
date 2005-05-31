@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.146 $
-|     $Date: 2005-05-31 18:13:50 $
-|     $Author: sweetas $
+|     $Revision: 1.147 $
+|     $Date: 2005-05-31 19:10:02 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -455,6 +455,9 @@ define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 
 e107_include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
+
+// send the charset to the browser - overides spurious server settings with the lan pack settings.
+header("Content-type: text/html; charset=".CHARSET);
 
 // following lines commented - because they bog down the core and don't *actually* [seem] to do much...
 // it might be the case that these are needed for admin, but they certainly aren't needed for anywhere else.
