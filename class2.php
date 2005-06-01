@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.149 $
-|     $Date: 2005-05-31 19:58:05 $
+|     $Revision: 1.150 $
+|     $Date: 2005-06-01 19:17:27 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -38,14 +38,14 @@ if($register_globals == true){
 }
 
 // Grab e107_config, get directory paths, and create the $e107 object
-@include_once(dirname(__FILE__).'/e107_config.php');
+@include_once(realpath(dirname(__FILE__).'/').'/e107_config.php');
 if(!isset($ADMIN_DIRECTORY)){
 	// e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
 	header("Location: install.php");
 }
 
 // clever stuff that figures out where the paths are on the fly.. no more need fo hard-coded e_HTTP :)
-include_once(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY.'e107_class.php');
+e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'/e107_class.php');
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
 $e107 = new e107($e107_paths, __FILE__);
 
