@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-14 20:27:08 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-01 12:11:02 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -233,6 +233,52 @@ class e_userclass {
 			}
 			$sql2->db_Update('user', "user_class='{$new_userclass}' WHERE user_id={$uid}");
 		}
+	}
+	
+	function class_create($ulist, $class_prefix = "NEW_CLASS_", $num = 0)
+	{
+		global $sql;
+		$varname = "uc_".$ulist;
+		if($ret = getcachedvars($varname))
+		{
+			return $ret;
+		}
+		$ul = explode(",", $ulist);
+		array_walk($ul, array($this, 'munge'));
+		$qry = "
+		SELECT user_id, user_class from #user AS u
+		WHERE user_name = ".implode(" OR user_name = ", $ul);
+		if($sql->db_Select_gen($qry))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$idList[$row['user_id']] = $row['user_class'];
+				
+			}
+			while($sql->db_Count("userclass_classes","(*)","WHERE userclass_name = '".strtoupper($class_prefix.$num)."'"))
+			{
+				$num++;
+			}
+			$newname = strtoupper($class_prefix.$num);
+			$i = 1;
+			while ($sql->db_Select('userclass_classes', '*', "userclass_id='".$i."' ") && $i < 255)
+			{
+				$i++;
+			}
+			if ($i < 255)
+			{
+				$sql->db_Insert("userclass_classes", "{$i}, '{$newname}', 'Auto_created_class', 254");
+				$this->class_add($i, $idList);
+				cachevars($varname, $i);
+				return $i;
+			}
+		}
+		
+	}
+	
+	function munge(&$value, &$key)
+	{
+		$value = "'".trim($value)."'";
 	}
 }
 	
