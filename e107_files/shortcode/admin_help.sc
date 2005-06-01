@@ -17,7 +17,7 @@ if (ADMIN) {
 		}
 	}
 	closedir($handle);
-	$plugpath = e_BASE.substr(substr(e_SELF, 0, strrpos(e_SELF, "/")), strpos(e_SELF, e_HTTP)+strlen(e_HTTP))."/help.php";
+   $plugpath = getcwd()."/help.php";
 	if(file_exists($plugpath))
 	{
 		@require_once($plugpath);
