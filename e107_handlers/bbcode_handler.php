@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-04-12 23:13:00 $
-|     $Author: streaky $
+|     $Revision: 1.28 $
+|     $Date: 2005-06-01 19:49:24 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -31,7 +31,7 @@ class e_bbcode {
 		'html', 'flash', 'link', 'email',
 		'url', 'quote', 'left', 'right',
 		'blockquote', 'justify', 'file', 'stream',
-		'textarea', 'list', 'php'
+		'textarea', 'list', 'php', 'time'
 		);
 		foreach($core_bb as $c) {
 			$this->bbLocation[$c] = 'core';
