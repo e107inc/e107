@@ -11,17 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-04-28 17:12:45 $
+|     $Revision: 1.18 $
+|     $Date: 2005-06-01 14:14:07 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 $e_sub_cat = 'language';
 require_once("auth.php");
-if (!getperms("ML")) {
+if (!getperms("ML"))
+{
 	header("location:".e_BASE."index.php");
-	 exit;
+	exit;
 }
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -31,7 +32,6 @@ $tabs = table_list(); // array("news","content","links");
 require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
 $lanlist = $fl->get_dirs(e_LANGUAGEDIR);
-
 
 if (isset($_POST['submit_prefs']) ) {
 
@@ -52,11 +52,8 @@ if (isset($_POST['del_existing']) && $_POST['lang_choices']) {
 			 $_POST['lang_choices']." $del_table couldn't be deleted<br />";
 		}
 	}
-
-
 	$ns->tablerender("Result", $message);
 }
-
 
 // ----------create tables -----------------------------------------------------
 
@@ -115,7 +112,6 @@ for($i = 0; $i < count($lanlist); $i++) {
 			$text .= $tab_name.", ";
 			$installed++;
 		}
-
 	}
 
 	$text .= (!$installed)? "<div style='text-align:center'><i>".LANG_LAN_05."</i></div>" :
@@ -145,10 +141,6 @@ if (!$_POST['language'] && !$_POST['edit_existing']) {
 	multilang_prefs();
 }
 unset($text);
-
-
-
-
 
 // Grab Language configuration. ---
 if ($_POST['edit_existing']) {
@@ -199,8 +191,6 @@ if ($_POST['edit_existing']) {
 	$ns->tablerender($_POST['lang_choices'], $text);
 }
 
-
-
 require_once(e_ADMIN."footer.php");
 
 // ---------------------------------------------------------------------------
@@ -244,11 +234,6 @@ function multilang_prefs() {
 		</td>
 		</tr>";
 
-
-
-
-
-
 	$text .= "
 		<tr>
 		<td style='width:40%' class='forumheader3'>".LANG_LAN_12.": </td>
@@ -275,41 +260,40 @@ function multilang_prefs() {
 
 }
 
-
-
-
-
 // ----------------------------------------------------------------------------
 
-function db_Table_exists($table) {
+function db_Table_exists($table)
+{
 	global $mySQLdefaultdb;
 	$tables = mysql_list_tables($mySQLdefaultdb);
-	while (list($temp) = mysql_fetch_array($tables)) {
-		if ($temp == strtolower(MPREFIX."lan_".$table)) {
+	while (list($temp) = mysql_fetch_array($tables))
+	{
+		if ($temp == strtolower(MPREFIX."lan_".$table))
+		{
 			return TRUE;
 		}
 	}
 	return FALSE;
 }
 // ----------------------------------------------------------------------------
-// Cam's Alternative - requires MySQL 4.1+
-// eg. copy_table("news","lan_french_news",1,0);
 
-function copy_table($oldtable, $newtable, $drop, $data=0) {
-
-	$request = ($drop)? "DROP TABLE IF EXISTS $newtable": "";
-	if ($data){ // structure and data
-    	$request .= "CREATE TABLE ".MPREFIX.strtolower($newtable)." SELECT * FROM ".MPREFIX.$oldtable." order by 1";
-	} else{  // structure only.
-		$request .= "CREATE TABLE ".MPREFIX.strtolower($newtable)." LIKE ".MPREFIX.$oldtable;
+function copy_table($oldtable, $newtable, $drop = FALSE, $data = FALSE)
+{
+	$old = MPREFIX.strtolower($oldtable);
+	$new = MPREFIX.strtolower($newtable);
+	if($drop)
+	{
+		mysql_query("DROP TABLE IF EXISTS {$new}");
 	}
-
-	if (mysql_query($request)) {
-		return TRUE;
-	} else {
+	if(!mysql_query("CREATE TABLE {$new} SELECT * FROM {$old} order by 1"))
+	{
 		return FALSE;
 	}
-
+	if (!$data)  //We don't want the data
+	{
+    	mysql_query("TRUNCATE TABLE {$new}");
+	}
+	return TRUE;
 }
 
 // ----------------------------------------------------------------------------
