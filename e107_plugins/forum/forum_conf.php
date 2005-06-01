@@ -11,8 +11,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_conf.php,v $
-| $Revision: 1.4 $
-| $Date: 2005-05-25 11:13:31 $
+| $Revision: 1.5 $
+| $Date: 2005-06-01 03:16:32 $
 | $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
@@ -33,17 +33,10 @@ LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent
 WHERE t.thread_id = {$thread_id}
 ";
 
-require_once(HEADERF);
-
 if($sql->db_Select_gen($qry))
 {
-	$info = $sql->db_Fetch();
-	$modlist = explode(", ", $info['forum_moderators']);
-	foreach($modlist as $k => $v)
-	{
-		$modlist[$k] = trim($v);
-	}
-	if(!in_array(USERNAME, $modlist))
+	$info=$sql->db_Fetch();
+	if(!check_class($info['forum_moderators']))
 	{
 		header("location:".e_BASE."index.php");
 		exit;
@@ -54,6 +47,8 @@ else
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
+require_once(HEADERF);
 
 if (isset($_POST['deletepollconfirm'])) {
 	$sql->db_Delete("poll", "poll_id='$thread_parent' ");

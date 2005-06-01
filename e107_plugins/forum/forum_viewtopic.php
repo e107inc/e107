@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-05-25 13:31:56 $
+|     $Revision: 1.28 $
+|     $Date: 2005-06-01 03:16:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -22,34 +22,42 @@ require_once('../../class2.php');
 @include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewtopic.php';
 @include_once e_PLUGIN.'forum/languages/English/lan_forum_viewtopic.php';
 @require_once(e_PLUGIN.'forum/forum_class.php');
-if (file_exists(THEME.'forum_design.php')) {
+if (file_exists(THEME.'forum_design.php'))
+{
 	@include_once(THEME.'forum_design.php');
 }
 
 $forum = new e107forum;
 
-if (IsSet($_POST['fjsubmit'])) {
+if (IsSet($_POST['fjsubmit']))
+{
 	header("location:".e_PLUGIN."forum/forum_viewforum.php?".$_POST['forumjump']);
 	exit;
 }
 $highlight_search = FALSE;
-if (IsSet($_POST['highlight_search'])) {
+if (isset($_POST['highlight_search']))
+{
 	$highlight_search = TRUE;
 }
 
-if (!e_QUERY) {
+if (!e_QUERY)
+{
 	//No paramters given, redirect to forum home
 	header("Location:".e_PLUGIN."/forum/forum.php");
 	exit;
-} else {
+}
+else
+{
 	$tmp = explode(".", e_QUERY);
 	$thread_id = $tmp[0];
 	$from = $tmp[1];
 	$action = $tmp[2];
-	if (!$from) {
+	if (!$from)
+	{
 		$from = 0;
 	}
-	if (!$thread_id || !is_numeric($thread_id)) {
+	if (!$thread_id || !is_numeric($thread_id))
+	{
 		header("Location:".e_PLUGIN."forum/forum.php");
 		exit;
 	}
@@ -199,11 +207,15 @@ if (!check_class($forum_info['forum_class']) || !check_class($forum_info['parent
 $forum->thread_incview($thread_id);
 
 define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']." / ".$thread_info['head']['thread_name']);
-define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_info['forum_moderators']) && getperms('A') ? TRUE : FALSE));
+//define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_info['forum_moderators']) && getperms('A') ? TRUE : FALSE));
+define("MODERATOR", check_class($forum_info['forum_moderators']));
+$modArray = $forum->forum_getmods($forum_info['forum_moderators']);
 
 $message = '';
-if (MODERATOR) {
-	if ($_POST) {
+if (MODERATOR)
+{
+	if ($_POST)
+	{
 		require_once(e_PLUGIN.'forum/forum_mod.php');
 		$message = forum_thread_moderate($_POST);
 	}
@@ -211,11 +223,12 @@ if (MODERATOR) {
 
 require_once(HEADERF);
 require_once(e_HANDLER."level_handler.php");
-if ($message) {
+if ($message)
+{
 	$ns->tablerender("", $message);
 }
 
-If (IsSet($_POST['pollvote']))
+if (isset($_POST['pollvote']))
 {
 	if ($_POST['votea'])
 	{
@@ -303,14 +316,16 @@ if ($pref['forum_track'] && USER)
 	$TRACK = (preg_match("/-".$thread_id."-/", USERREALM) ? "<span class='smalltext'><a href='".e_SELF."?".$thread_id.".0."."untrack'>".LAN_392."</a></span>" : "<span class='smalltext'><a href='".e_SELF."?".$thread_id.".0."."track'>".LAN_391."</a></span>");
 }
 
-$MODERATORS = LAN_321.$forum_info['forum_moderators'];
+$MODERATORS = LAN_321.implode(", ", $modArray);
+
 $THREADSTATUS = (!$thread_info['head']['thread_active'] ? LAN_66 : "");
 
 $pref['forum_postspage'] = ($pref['forum_postspage'] ? $pref['forum_postspage'] : 10);
 $pages = ceil(($replies+1)/$pref['forum_postspage']);
-if ($pages > 1) {
-		$parms = ($replies+1).",{$pref['forum_postspage']},{$from},".e_SELF.'?'.$thread_id.'.[FROM]';
-		$GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
+if ($pages > 1)
+{
+	$parms = ($replies+1).",{$pref['forum_postspage']},{$from},".e_SELF.'?'.$thread_id.'.[FROM]';
+	$GOTOPAGES = $tp->parseTemplate("{NEXTPREV={$parms}}");
 }
 
 if ((check_class($forum_info['forum_postclass']) && check_class($forum_info['parent_postclass'])) || MODERATOR)

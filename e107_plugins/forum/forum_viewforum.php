@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-05-22 14:48:55 $
-|     $Author: stevedunstan $
+|     $Revision: 1.31 $
+|     $Date: 2005-06-01 03:16:32 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -68,43 +68,48 @@ if (!$FORUM_VIEW_START) {
 	
 $forum_info = $forum->forum_get($forum_id);
 
-//print_a($forum_info);
-
 if (!check_class($forum_info['forum_class']) || !check_class($forum_info['parent_class']) || !$forum_info['forum_parent'])
 {
 	header("Location:".e_PLUGIN."forum/forum.php");
 	exit;
 }
 
-$forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
-$forum_info['forum_description'] = $tp -> toHTML($forum_info['forum_description'], TRUE);
+$forum_info['forum_name'] = $tp->toHTML($forum_info['forum_name'], TRUE);
+$forum_info['forum_description'] = $tp->toHTML($forum_info['forum_description'], TRUE);
 
 define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']);
-define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_info['forum_moderators']) && getperms("A") ? TRUE : FALSE));
-	
+define("MODERATOR", check_class($forum_info['forum_moderators']));
+$modArray = $forum->forum_getmods($forum_info['forum_moderators']);
+//print_a($modArray);
 $message = "";
-if (MODERATOR) {
-	if ($_POST) {
+if (MODERATOR)
+{
+	if ($_POST)
+	{
 		require_once(e_PLUGIN."forum/forum_mod.php");
 		$message = forum_thread_moderate($_POST);
 	}
 }
-	
+
 $member_users = $sql->db_Select("online", "*", "online_location REGEXP('forum_viewforum.php.$forum_id') AND online_user_id!='0' ");
 $guest_users = $sql->db_Select("online", "*", "online_location REGEXP('forum_viewforum.php.$forum_id') AND online_user_id='0' ");
 $users = $member_users+$guest_users;
 	
 require_once(HEADERF);
 $text='';
-if ($message) {
+if ($message)
+{
 	$ns->tablerender("", $message);
 }
 	
 $topics = $forum->forum_get_topic_count($forum_id);
 	
-if ($topics > $view) {
+if ($topics > $view)
+{
 	$pages = ceil($topics/$view);
-} else {
+}
+else
+{
 	$pages = FALSE;
 }
 	
@@ -130,7 +135,8 @@ if($forum_info['sub_parent'])
 $BREADCRUMB .= $forum_info['forum_name']."</b>";
 
 $FORUMTITLE = $forum_info['forum_name'];
-$MODERATORS = LAN_404.": ".$forum_info['forum_moderators'];
+//$MODERATORS = LAN_404.": ".$forum_info['forum_moderators'];
+$MODERATORS = LAN_404.": ".implode(", ", $modArray);
 $BROWSERS = $users." ".($users == 1 ? LAN_405 : LAN_406)." (".$member_users." ".($member_users == 1 ? LAN_407 : LAN_409).", ".$guest_users." ".($guest_users == 1 ? LAN_408 : LAN_410).")";
 	
 $ICONKEY = "
@@ -344,7 +350,8 @@ function parse_thread($thread_info)
 		$PAGES = "";
 	}
 	 
-	if (MODERATOR) {
+	if (MODERATOR)
+	{
 		$thread_id = $thread_info['thread_id'];
 		$ADMIN_ICONS = "
 			<form method='post' action='".e_SELF."?{$forum_id}' id='frmMod_{$forum_id}_{$thread_id}' style='margin:0;'><div>
@@ -365,9 +372,6 @@ function parse_thread($thread_info)
 	$text .= "</td>
 		<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>".$THREADDATE."<br />
 		";
-//	$POSTER = (!isset($post_author_id) ? $post_author_name : "<a href='".e_BASE."user.php?id.".$post_author_id."'>".$post_author_name."</a>");
-	 
-//	print_a($thread_info);
 	$tmp = explode(".", $thread_info['thread_user'], 2);
 	if($thread_info['user_name'])
 	{
@@ -391,12 +395,10 @@ function parse_thread($thread_info)
 function parse_sub($subInfo)
 {
 	global $FORUM_VIEW_SUB, $gen, $tp;
-//	print_a($subInfo);
 	$SUB_FORUMTITLE = "<a href='".e_PLUGIN."forum/forum_viewforum.php?{$subInfo['forum_id']}'>{$subInfo['forum_name']}</a>";
 	$SUB_DESCRIPTION = $tp->toHTML($subInfo['forum_description']);
 	$SUB_THREADS = $subInfo['forum_threads'];
 	$SUB_REPLIES = $subInfo['forum_replies'];
-//	$SUB_LASTPOST = $subInfo['forum_lastpost_info'];
 	if($subInfo['forum_lastpost_info'])
 	{
 		$tmp = explode(".", $subInfo['forum_lastpost_info']);
@@ -420,18 +422,21 @@ function parse_sub($subInfo)
 	return  (preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_SUB));
 }			
 	
-function forumjump() {
+function forumjump()
+{
 	global $sql;
 	$sql->db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
 	$FORUMJUMP = "<form method='post' action='".e_SELF."'><p>".LAN_403.": <select name='forumjump' class='tbox'>";
-	while ($row = $sql->db_Fetch()) {
+	while ($row = $sql->db_Fetch())
+	{
 		extract($row);
-		if (check_class($forum_class)) {
+		if (check_class($forum_class))
+		{
 			$FORUMJUMP .= "\n<option value='".$forum_id."'>".$forum_name."</option>";
 		}
 	}
 	$FORUMJUMP .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_03."' />&nbsp;&nbsp;&nbsp;&nbsp;<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>".LAN_02."</a></p></form>";
 	return ($FORUMJUMP);
 }
-	
+
 ?>

@@ -1,4 +1,21 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_update.php,v $
+|     $Revision: 1.12 $
+|     $Date: 2005-06-01 03:16:32 $
+|     $Author: mcfly_e107 $
++----------------------------------------------------------------------------+
+*/
 if(!defined('e_HTTP'))
 {
 	exit;
@@ -10,13 +27,41 @@ $forum = new e107forum;
 $timestart = microtime();
 $ttab = MPREFIX.'forum_t';
 	
+
+if($sql->db_Select("plugin", "plugin_version", "plugin_name = 'Forum'"))
+{
+	$row = $sql->db_Fetch();
+	$forum_version = $row['plugin_version'];
+}
+
+
+$forum_subs = FALSE;
+$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."forum");
+$columns = mysql_num_fields($fields);
+for ($i = 0; $i < $columns; $i++)
+{
+	if("forum_sub" == mysql_field_name($fields, $i))
+	{
+		$forum_subs = TRUE;
+	}
+}
+
 $text = "";
-$text .= forum_stage1();
-$text .= forum_stage2();
-$text .= forum_stage3();
-$text .= forum_stage4();
-$text .= forum_stage5();
-$text .= forum_stage6();
+if(!$forum_subs)
+{
+	$text .= forum_stage1();
+	$text .= forum_stage2();
+	$text .= forum_stage3();
+	$text .= forum_stage4();
+	$text .= forum_stage5();
+	$text .= forum_stage6();
+}
+
+if($forum_version < 1.2)
+{
+	$text .= mods_to_userclass();
+}
+$text .= set_forum_version();
 
 $timeend = microtime();
 $diff = number_format(((substr($timeend, 0, 9)) + (substr($timeend, -10)) - (substr($timestart, 0, 9)) - (substr($timestart, -10))), 4);
@@ -92,27 +137,37 @@ function forum_stage6()
 	else
 	{
 		$sql->db_Update('plugin',"plugin_installflag = 1 WHERE plugin_name='Forum'");
-		$sql->db_Update('plugin',"plugin_version = '1.1' WHERE plugin_name='Forum'");
 	}
 	$sql->db_Update('links',"link_url='{$PLUGINS_DIRECTORY}forum/forum.php' WHERE link_name='Forum'");
 
 }
 	
-	
-/*
-1) Add new fields
-forum_t = thread_anon, thread_edit_datestamp, thread_lastuser
-	
-2) move anonymous post info into thread_anon
-	
-3) change thread_user to int(10) UNSIGNED
-	
-4) Update ALL lastpost info (forum_t and forum)
-	
-5) Remove all 'edited' info from posts (possible regex to move it)
+function mods_to_userclass()
+{
+	global $sql;
+	require_once(e_HANDLER."userclass_class.php");
+	$_uc = new e_userclass;
+	if($sql->db_Select("forum", "forum_id, forum_moderators","forum_parent != 0"))
+	{
+		$fList = $sql->db_getList();
+		foreach($fList as $row)
+		{
+			if(!is_numeric($row['forum_moderators']))
+			{
+				$newclass = $_uc->class_create($row['forum_moderators'], "FORUM_MODS_");
+				$sql->db_Update("forum", "forum_moderators = '{$newclass}' WHERE forum_id = '{$row['forum_id']}'");
+			}
+		}
+	}
+	return "Forum moderators converted to userclasses <br />";
+}
 
-**** NEED TO ADD FORUM PLUGIN INSTALLATION INFO IN PLUGIN TABLE ****
+function set_forum_version()
+{
+	global $sql;
+	$new_version = "1.2";
+	$sql->db_Update('plugin',"plugin_version = '{$new_version}' WHERE plugin_name='Forum'");
+	return "Forum Version updated to version: $new_version <br />";
+}	
 
-*/
-	
 ?>

@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-05-26 01:38:05 $
+|     $Revision: 1.31 $
+|     $Date: 2005-06-01 03:16:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-class e107forum {
+class e107forum
+{
 
 	function thread_postnum($thread_id)
 	{
@@ -145,7 +146,26 @@ class e107forum {
 		return FALSE;
 	}
 
-	function forum_getforums()
+	function forum_getmods($uclass)
+	{
+		global $sql;
+		if($uclass == e_UC_ADMIN)
+		{
+			$sql->db_Select('user', 'user_name',"user_admin = 1");
+		}
+		else
+		{
+			$regex = "(^|,)(".str_replace(",", "|", $uclass).")(,|$)";
+			$sql->db_Select("user", "user_name", "user_class REGEXP '{$regex}'");
+		}
+		while($row = $sql->db_Fetch())
+		{
+			$ret[] = $row['user_name'];
+		}
+		return $ret;
+	}
+
+	function forum_getforums($type = 'all')
 	{
 		global $sql;
 		$qry = "
@@ -158,7 +178,14 @@ class e107forum {
 		{
 			while ($row = $sql->db_Fetch())
 			{
-				$ret[$row['forum_parent']][] = $row;
+				if($type == 'all')
+				{
+					$ret[$row['forum_parent']][] = $row;
+				}
+				else
+				{
+					$ret[] = $row;
+				}
 			}
 			return $ret;
 		}
@@ -168,7 +195,7 @@ class e107forum {
 	function forum_getsubs($forum_id = "")
 	{
 		global $sql;
-		$where = ($forum_id != "" ? "AND forum_sub = {$forum_id}" : "");
+		$where = ($forum_id != "" && $forum_id != 'bysub' ? "AND forum_sub = {$forum_id}" : "");
 		$qry = "
 		SELECT f.*, u.user_name FROM #forum AS f
 		LEFT JOIN #user AS u ON CAST(f.forum_lastpost_user AS UNSIGNED) = u.user_id
@@ -182,6 +209,10 @@ class e107forum {
 				if($forum_id == "")
 				{
 					$ret[$row['forum_parent']][$row['forum_sub']][] = $row;
+				}
+				elseif($forum_id == 'bysub')
+				{
+					$ret[$row['forum_sub']][] = $row;
 				}
 				else
 				{

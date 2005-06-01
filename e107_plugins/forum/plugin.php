@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/plugin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-22 23:07:42 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-01 03:16:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@
 	
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = 'Forum';
-$eplug_version = '1.1';
+$eplug_version = '1.2';
 $eplug_author = 'e107dev';
 $eplug_url = 'http://e107.org';
 $eplug_email = '';
