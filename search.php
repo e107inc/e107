@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-05-06 13:52:22 $
-|     $Author: sweetas $
+|     $Revision: 1.35 $
+|     $Date: 2005-06-01 15:35:29 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once('class2.php');
@@ -71,9 +71,14 @@ if ($search_info[$search_id] = search_info('downloads', 'core', FALSE, array('sf
 }
 
 //load plugin search routines
-foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
-	if ($search_info[$search_id] = search_info($plug_dir, 'plug', e_PLUGIN.$plug_dir."/e_search.php")) {
-		$search_id++;
+foreach ($search_prefs['plug_handlers'] as $plug_dir => $active)
+{
+	if(is_readable(e_PLUGIN.$plug_dir."/e_search.php"))
+	{
+		if ($search_info[$search_id] = search_info($plug_dir, 'plug', e_PLUGIN.$plug_dir."/e_search.php"))
+		{
+			$search_id++;
+		}
 	}
 }
 
