@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-06-01 14:14:07 $
+|     $Revision: 1.19 $
+|     $Date: 2005-06-01 15:00:22 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -279,19 +279,32 @@ function db_Table_exists($table)
 
 function copy_table($oldtable, $newtable, $drop = FALSE, $data = FALSE)
 {
+	global $sql;
 	$old = MPREFIX.strtolower($oldtable);
 	$new = MPREFIX.strtolower($newtable);
 	if($drop)
 	{
-		mysql_query("DROP TABLE IF EXISTS {$new}");
+		$sql->db_Select_gen("DROP TABLE IF EXISTS {$new}");
 	}
-	if(!mysql_query("CREATE TABLE {$new} SELECT * FROM {$old} order by 1"))
+
+	//Get $old table structure
+	$sql->db_Select_gen('SET SQL_QUOTE_SHOW_CREATE = 1');
+	$qry = "SHOW CREATE TABLE {$old}";
+	if($sql->db_Select_gen($qry))
+	{
+		$row = $sql->db_Fetch();
+		$qry = $row[1];
+		$qry = str_replace($old, $new, $qry);
+	}
+	$result = mysql_query($qry);
+	if(!$result)
 	{
 		return FALSE;
 	}
-	if (!$data)  //We don't want the data
+	if ($data)  //We need to copy the data too
 	{
-    	mysql_query("TRUNCATE TABLE {$new}");
+		$qry = "INSERT INTO {$new} SELECT * FROM {$old}";
+		$sql->db_Select_gen($qry);
 	}
 	return TRUE;
 }
