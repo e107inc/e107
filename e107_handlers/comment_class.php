@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-05-17 14:46:00 $
-|     $Author: stevedunstan $
+|     $Revision: 1.27 $
+|     $Date: 2005-06-01 19:49:24 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -342,7 +342,7 @@ class comment {
 
 					if($editpid)
 					{
-						$comment .= "\n[ ".LAN_319." ".strftime($pref['shortdate'], time())." ]";
+						$comment .= "\n[ ".LAN_319." [time=short]".time()."[/time] ]";
 						$sql -> db_Update("comments", "comment_comment='$comment' WHERE comment_id='$editpid' ");
 						$e107cache->clear("comment");
 						return;
