@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-06-01 03:16:32 $
+|     $Revision: 1.29 $
+|     $Date: 2005-06-01 17:03:58 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -445,16 +445,13 @@ function showmodoptions()
 
 function forumjump()
 {
-	global $sql;
-	$sql->db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
-	$text .= "<form method='post' action='".e_SELF."'><p>".LAN_65.": <select name='forumjump' class='tbox'>";
-	while ($row = $sql->db_Fetch())
+
+	global $forum;
+	$jumpList = $forum->forum_get_allowed();
+	$text = "<form method='post' action='".e_SELF."'><p>".LAN_65.": <select name='forumjump' class='tbox'>";
+	foreach($jumpList as $key => $val)
 	{
-		extract($row);
-		if (check_class($forum_class))
-		{
-			$text .= "\n<option value='".$forum_id."'>".$forum_name."</option>";
-		}
+		$text .= "\n<option value='".$key."'>".$val."</option>";
 	}
 	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_03."' />&nbsp;&nbsp;&nbsp;&nbsp;<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>".LAN_10."</a></p></form>";
 	return $text;

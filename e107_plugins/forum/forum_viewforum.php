@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-06-01 03:16:32 $
+|     $Revision: 1.32 $
+|     $Date: 2005-06-01 17:03:58 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -21,18 +21,23 @@ require_once("../../class2.php");
 $lan_file = e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php';
 include(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_viewforum.php');
 	
-if (IsSet($_POST['fjsubmit'])) {
+if (isset($_POST['fjsubmit'])) {
 	header("location:".e_PLUGIN."forum/forum_viewforum.php?".$_POST['forumjump']);
 	exit;
 }
-if (!e_QUERY) {
+
+if (!e_QUERY)
+{
 	header("Location:".e_PLUGIN."/forum/forum.php");
 	exit;
-} else {
+}
+else
+{
 	$tmp = explode(".", e_QUERY);
 	$forum_id = intval($tmp[0]);
 	$from = intval($tmp[1]);
-	if (!$from) {
+	if (!$from)
+	{
 		$from = 0;
 	}
 }
@@ -80,7 +85,6 @@ $forum_info['forum_description'] = $tp->toHTML($forum_info['forum_description'],
 define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']);
 define("MODERATOR", check_class($forum_info['forum_moderators']));
 $modArray = $forum->forum_getmods($forum_info['forum_moderators']);
-//print_a($modArray);
 $message = "";
 if (MODERATOR)
 {
@@ -172,9 +176,12 @@ $SEARCH = "
 	</p>
 	</form>";
 	
-if (USER == TRUE || ANON == TRUE) {
+if (USER == TRUE || ANON == TRUE)
+{
 	$PERMS = LAN_204." - ".LAN_206." - ".LAN_208;
-} else {
+}
+else
+{
 	$PERMS = LAN_205." - ".LAN_207." - ".LAN_209;
 }
 	
@@ -226,21 +233,17 @@ if ($thread_list) {
 }
 	
 $sql->db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
-$FORUMJUMP = "<form method='post' action='".e_SELF."'><p>".LAN_403.": <select name='forumjump' class='tbox'>";
-while ($row = $sql->db_Fetch()) {
-	extract($row);
-	if (check_class($forum_class)) {
-		$FORUMJUMP .= "\n<option value='".$forum_id."'>".$forum_name."</option>";
-	}
-}
-$FORUMJUMP .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_03."' /></p></form>";
+$FORUMJUMP = forumjump();
 $TOPLINK = "<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>".LAN_02."</a>";
 	
 $forum_view_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_START);
 $forum_view_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_END);
-if ($pref['forum_enclose']) {
+if ($pref['forum_enclose'])
+{
 	$ns->tablerender($pref['forum_title'], $forum_view_start.$forum_view_subs.$forum_view_forum.$forum_view_end);
-} else {
+}
+else
+{
 	echo $forum_view_start.$forum_view_forum.$forum_view_end;
 }
 
@@ -424,19 +427,15 @@ function parse_sub($subInfo)
 	
 function forumjump()
 {
-	global $sql;
-	$sql->db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
-	$FORUMJUMP = "<form method='post' action='".e_SELF."'><p>".LAN_403.": <select name='forumjump' class='tbox'>";
-	while ($row = $sql->db_Fetch())
+	global $forum;
+	$jumpList = $forum->forum_get_allowed();
+	$text = "<form method='post' action='".e_SELF."'><p>".LAN_403.": <select name='forumjump' class='tbox'>";
+	foreach($jumpList as $key => $val)
 	{
-		extract($row);
-		if (check_class($forum_class))
-		{
-			$FORUMJUMP .= "\n<option value='".$forum_id."'>".$forum_name."</option>";
-		}
+		$text .= "\n<option value='".$key."'>".$val."</option>";
 	}
-	$FORUMJUMP .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_03."' />&nbsp;&nbsp;&nbsp;&nbsp;<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>".LAN_02."</a></p></form>";
-	return ($FORUMJUMP);
+	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_03."' />&nbsp;&nbsp;&nbsp;&nbsp;<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>".LAN_02."</a></p></form>";
+	return $text;
 }
 
 ?>
