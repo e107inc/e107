@@ -83,13 +83,13 @@ if (ADMIN) {
 	}
 	
 	if ($render_plugins) {
-		$text .= adnav_cat('Plugins', '', E_16_CAT_PLUG, 'plugMenu');
+		$text .= adnav_cat(ADLAN_CL_7, '', E_16_CAT_PLUG, 'plugMenu');
 		$text .= "<div id='plugMenu' class='menu' onmouseover=\"menuMouseover(event)\">";
 		$text .= $plugin_text.$plugs_text;
 		$text .= "</div>";
 	}
 	
-	$text .= adnav_cat('Docs', '', E_16_NAV_DOCS, 'docsMenu');
+	$text .= adnav_cat(ADLAN_CL_8, '', E_16_NAV_DOCS, 'docsMenu');
 	$text .= "<div id='docsMenu' class='menu' onmouseover=\"menuMouseover(event)\">";
 	if (!$handle=opendir(e_DOCS.e_LANGUAGE."/")) {
 		$handle=opendir(e_DOCS."English/");
