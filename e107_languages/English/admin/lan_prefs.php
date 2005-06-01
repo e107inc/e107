@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-05-29 23:48:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.35 $
+|     $Date: 2005-06-01 16:02:17 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -186,4 +186,5 @@ define("PRFLAN_136", "Maximum Signups permitted from the same IP address.");
 define("PRFLAN_137", "Display Memory Usage");
 
 define("PRFLAN_138", "Enable Image-code verification during forgotten password.");
+define("PRFLAN_139", "Display warning when main administrator password hasnt changed for at least 30 days");
 ?>
