@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-05-23 15:46:51 $
+|     $Revision: 1.12 $
+|     $Date: 2005-06-01 03:16:50 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ define("FORLAN_30", "Existing Forums");
 define("FORLAN_31", "Name");
 define("FORLAN_32", "Description");
 define("FORLAN_33", "Moderators");
-define("FORLAN_34", "tick to make active on this forum");
+define("FORLAN_34", "Choose userclass for moderators of this forum");
 define("FORLAN_35", "Update Forum");
 define("FORLAN_36", "Create Forum");
 define("FORLAN_37", "Order");

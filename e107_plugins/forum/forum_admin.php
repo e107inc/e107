@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-05-21 02:03:54 $
+|     $Revision: 1.26 $
+|     $Date: 2005-06-01 03:16:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@ require_once("../../class2.php");
 @include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_admin.php';
 @include_once e_PLUGIN.'forum/languages/English/lan_forum_admin.php';
 
-if (!getperms("5"))
+if (!getperms("P"))
 {
 	header("location:".e_BASE."index.php");
 	exit;
@@ -57,14 +57,12 @@ if(isset($_POST['delete']))
 
 if(isset($_POST['setMods']))
 {
-	foreach(array_keys($_POST['mod']) as $fid)
+	foreach($_POST['mods'] as $fid => $modid)
 	{
-		$modlist = implode(", ", array_keys($_POST['mod'][$fid]));
-		$sql->db_Update('forum',"forum_moderators = '{$modlist}' WHERE forum_id = {$fid} OR forum_sub = {$fid}");
+		$sql->db_Update('forum',"forum_moderators = '{$modid}' WHERE forum_id = {$fid}");
 	}
 	$forum->show_message(FORLAN_144);
 }
-
 
 if(isset($_POST['tools']))
 {
@@ -165,7 +163,7 @@ if(isset($_POST['update_parent']))
 
 if(isset($_POST['submit_forum']))
 {
-	$mods = implode(", ", $_POST['mod']);
+	$mods = $_POST['forum_moderators'];
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
 	$_POST['forum_description'] = $tp->toDB($_POST['forum_description'], "admin");
 	$sql->db_Insert("forum", "0, '".$_POST['forum_name']."', '".$_POST['forum_description']."', '".$_POST['forum_parent']."', '0', '".time()."', '".$mods."', 0, 0, '', '', '".$_POST['forum_class']."', 0, '{$_POST['forum_postclass']}'");
@@ -174,7 +172,7 @@ if(isset($_POST['submit_forum']))
 
 if(isset($_POST['update_forum']))
 {
-	$mods = implode(", ", $_POST['mod']);
+	$mods = $_POST['forum_moderators'];
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
 	$_POST['forum_description'] = $tp->toDB($_POST['forum_description']);
 	$forum_parent = $row['forum_id'];
@@ -867,17 +865,19 @@ class forum
 			<tr>
 			<td style='width:40%' class='forumheader3'>".FORLAN_33.":<br /><span class='smalltext'>(".FORLAN_34.")</span></td>
 			<td style='width:60%' class='forumheader3'>";
-		$admin_no = $sql->db_Select("user", "*", "user_admin='1' AND user_perms REGEXP('A.') OR user_perms='0' ");
-		while ($row = $sql->db_Fetch())
-		{
-			extract($row);
-			$text .= "<input type='checkbox' name='mod[]' value='".$user_name ."'";
-			if (preg_match('/'.preg_quote($user_name).'/', $forum_moderators))
-			{
-				$text .= " checked";
-			}
-			$text .= "/> ".$user_name ."<br />";
-		}
+			$text .= r_userclass("forum_moderators", $forum_moderators, 'off', 'admin,classes');
+
+//		$admin_no = $sql->db_Select("user", "*", "user_admin='1' AND user_perms REGEXP('A.') OR user_perms='0' ");
+//		while ($row = $sql->db_Fetch())
+//		{
+//			extract($row);
+//			$text .= "<input type='checkbox' name='mod[]' value='".$user_name ."'";
+//			if (preg_match('/'.preg_quote($user_name).'/', $forum_moderators))
+//			{
+//				$text .= " checked";
+//			}
+//			$text .= "/> ".$user_name ."<br />";
+//		}
 
 		$text .= "</td>
 			</tr>
@@ -1226,6 +1226,41 @@ class forum
 		$ns->tablerender("Ranks", $text);
 	}
 
+	function show_mods()
+	{
+		global $sql, $ns, $for;
+		$forumList = $for->forum_getforums('list');
+		$subList   = $for->forum_getsubs('bysub');
+		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'><table class='fborder'><tr><td> &nbsp; </td>";
+		foreach($forumList as $f)
+		{
+			$txt .= "
+			<tr>
+				<td class='forumheader'>{$f['forum_name']}</td>
+				<td class='forumheader'>".r_userclass("mods[{$f['forum_id']}]", $f['forum_moderators'], 'off', 'admin,classes')."</td>
+			</tr>
+			";
+			foreach($subList[$f['forum_id']] as $s)
+			{
+				$txt .= "
+				<tr>
+					<td class='forumheader3'>&nbsp;&nbsp;&nbsp;&nbsp;{$s['forum_name']}</td>
+					<td class='forumheader3'>".r_userclass("mods[{$s['forum_id']}]", $s['forum_moderators'], 'off', 'admin,classes')."</td>
+				</tr>
+				";
+			}
+		}
+		$txt .= "
+		<tr>
+		<td colspan='2' class='fcaption' style='text-align:center'>
+			<input class='button' type='submit' name='setMods' value='".WMGLAN_4." ".FORLAN_33."' />
+		</td>
+		</tr>
+		
+		</table>";		
+		$ns->tablerender(FORLAN_33, $txt);
+	}
+
 	function show_rules()
 	{
 		global $sql, $pref, $ns, $tp;
@@ -1338,6 +1373,7 @@ class forum
 			</div>";
 
 		$ns->tablerender(WMGLAN_5, $text);
+
 		echo "
 			<script type=\"text/javascript\">
 			function addtext1(sc){
@@ -1358,78 +1394,11 @@ class forum
 			function help3(help){
 			document.getElementById('wmform').helpadmin.value = help;
 			}
-			</script>";
-	}
-	
-	
-	function show_mods()
-	{
-		global $sql, $ns;
-		if($sql->db_Select('forum','forum_id, forum_name, forum_moderators','forum_parent != 0 AND forum_sub = 0'))
-		{
-			while($row = $sql->db_Fetch())
-			{
-				$forumList[] = $row;
-			}
-		}
-		if($sql->db_Select('user','user_name, user_perms','user_admin != 0'))
-		{
-			while($row = $sql->db_Fetch())
-			{
-				if(getperms("A", $row['user_perms']))
-				{
-				$adminList[] = $row;
-				}
-			}
-		}
-		$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'><table class='fborder'><tr><td> &nbsp; </td>";
-		foreach($adminList as $name)
-		{
-			$txt .= "<td class='forumheader' style='font-weight:bold; text-align:center; vertical-align:bottom'>";
-			for($i=0; $i<strlen($name['user_name']); $i++)
-			{
-				$txt .= $name['user_name']{$i}."<br />";
-			}
-			$txt .= "</td>";
-		}
-		$txt .= "</tr>";
-		foreach($forumList as $f)
-		{
-			$mods = explode(",",$f['forum_moderators']);
-			foreach($mods as $k => $v)
-			{
-				$mods[$k] = trim($v);
-			}
-			$txt .= "<tr><td class='forumheader'>{$f['forum_name']}</td>";
-			foreach($adminList as $name)
-			{
+			</script>
+			";
 
-				if(in_array($name['user_name'],$mods))
-				{
-					$chk = " checked = 'checked' ";
-				}
-				else
-				{
-					$chk = "";
-				}
-				$txt .= "
-					<td class='forumheader3'>
-					<input name='mod[{$f['forum_id']}][{$name['user_name']}]' class='tbox' type='checkbox' {$chk} />
-					</td>";
-			}
-			$txt .= "</tr>";
-		}
-		$txt .= "
-		<tr>
-		<td colspan='".(count($adminList)+1)."' class='fcaption' style='text-align:center'>
-			<input class='button' type='submit' name='setMods' value='".WMGLAN_4." ".FORLAN_33."' />
-		</td>
-		</tr>
-		
-		</table>";		
-		$ns->tablerender(FORLAN_33, $txt);
 	}
-}
+}	
 
 function forum_admin_adminmenu()
 {
