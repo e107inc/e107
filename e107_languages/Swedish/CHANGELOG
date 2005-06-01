@@ -2,4 +2,8 @@ Changelog for the Swedish Language pack:
 
 
 Mon May 30 2005 - mrpiercer at users.sourceforge.net
+- Added a file SVENSKA.INFO in Swedish language. This file
+  is used for findings and questions about Swedish grammar
+  and language correctness
+Mon May 30 2005 - mrpiercer at users.sourceforge.net
 - Initial CVS commit of partial package.

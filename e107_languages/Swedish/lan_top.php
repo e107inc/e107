@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_top.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-30 16:42:48 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-01 13:40:03 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -15,7 +15,7 @@ define("TOP_LAN_1", "Användarnamn");
 define("TOP_LAN_2", "Inlägg");
 define("TOP_LAN_3", "Toppostare, kommentarer");
 define("TOP_LAN_4", "Kommentarer");
-define("TOP_LAN_5", "Toppostare, chatbox");
+define("TOP_LAN_5", "Toppostare, chattruta");
 define("TOP_LAN_6", "Sajtbetyg");
 
 //v.616
