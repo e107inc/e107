@@ -2,6 +2,10 @@ Changelog for the Swedish Language pack:
 
 
 Wed Jun 1 2005 - mrpiercer (at) users.sourceforge.net
+- Commited language files for the themes currently in the
+  CVS; crahan, e107v4, human_condition, interfectus, jayya,
+  kubrick, lamb, sebes and vekna_blue.
+Wed Jun 1 2005 - mrpiercer (at) users.sourceforge.net
 - All files in the e107_languages/Swedish directory and
   its subdirectories are now rougly translated and commited.
   Please do comment on them! Nothing is read for correctness
