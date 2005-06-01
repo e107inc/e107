@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-05-23 13:57:52 $
+|     $Revision: 1.35 $
+|     $Date: 2005-06-01 17:03:58 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -40,14 +40,19 @@ if (!e_QUERY) {
 }
 
 // check if user can post to this forum ...
-if ($action == 'rp') {
+if ($action == 'rp')
+{
 	// reply to thread
 	$thread_info = $forum->thread_get($id, 'last', 11);
 	$forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
-} elseif ($action == 'nt') {
+}
+elseif ($action == 'nt')
+{
 	// New post
 	$forum_info = $forum->forum_get($id);
-} elseif ($action == 'quote' || $action == 'edit') {
+}
+elseif ($action == 'quote' || $action == 'edit')
+{
 	$thread_info = $forum->thread_get_postinfo($id, TRUE);
 	$forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
 }
@@ -58,7 +63,7 @@ if (!check_class($forum_info['forum_postclass']) || !check_class($forum_info['pa
 	require_once(FOOTERF);
 	exit;
 }
-
+define("MODERATOR", check_class($forum_info['forum_moderators']));
 //require_once(e_HANDLER.'forum_include.php');
 require_once(e_PLUGIN."forum/forum_post_shortcodes.php");
 require_once(e_HANDLER."ren_help.php");
@@ -94,7 +99,8 @@ if ($forum_info['forum_class'] == e_UC_READONLY && !ADMIN) {
 }
 
 //if thread is not active and not new thread, show warning
-if ($action != "nt" && !$thread_info['head']['thread_active']) {
+if ($action != "nt" && !$thread_info['head']['thread_active'] && !MODERATOR)
+{
 	require_once(HEADERF);
 	$ns->tablerender(LAN_20, "<div style='text-align:center'>".LAN_397."</div>");
 	require_once(FOOTERF);
@@ -107,26 +113,31 @@ define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']." / ".($action == "
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if (IsSet($_POST['submitpoll'])) {
+if (IsSet($_POST['submitpoll']))
+{
 	require(e_PLUGIN."poll/poll_class.php");
 	$poll = new poll;
 	//$poll->submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], 0, $forum_id, "forum");
 
 	require_once(HEADERF);
-	if (!$FORUMPOST) {
-		if (file_exists(THEME."forum_posted_template.php")) {
+	if (!$FORUMPOST)
+	{
+		if (file_exists(THEME."forum_posted_template.php"))
+		{
 			require_once(THEME."forum_posted_template.php");
-		} else {
+		}
+		else
+		{
 			require_once(e_PLUGIN."forum/templates/forum_posted_template.php");
 		}
 	}
-
 	echo $FORUMPOLLPOSTED;
 	require_once(FOOTERF);
 	exit;
 }
 
-if (isset($_POST['fpreview'])) {
+if (isset($_POST['fpreview']))
+{
 	process_upload();
 	require_once(HEADERF);
 	if (USER)
@@ -162,7 +173,8 @@ if (isset($_POST['fpreview'])) {
 
 	$text = $FORUM_PREVIEW;
 
-	if ($poll_text) {
+	if ($poll_text)
+	{
 		$ns->tablerender($_POST['poll_title'], $poll_text);
 	}
 	$ns->tablerender(LAN_323, $text);
@@ -170,15 +182,20 @@ if (isset($_POST['fpreview'])) {
 	$post = $tp->post_toHTML($_POST['post'], FALSE);
 	$subject = $tp->post_toHTML($_POST['subject'], FALSE);
 
-	if ($action == "edit") {
-		if ($_POST['subject']) {
+	if ($action == "edit")
+	{
+		if ($_POST['subject'])
+		{
 			$action = "nt";
-		} else {
+		}
+		else
+		{
 			$action = "reply";
 		}
 		$eaction = TRUE;
 	}
-	else if($action == "quote") {
+	else if($action == "quote")
+	{
 		$action = "reply";
 		$eaction = FALSE;
 	}
@@ -233,15 +250,6 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			$subject = "[".LAN_402."] ".$subject;
 		}
 
-//		if ($_POST['threadtype'] == 2)
-//		{
-//			$subject = "[".LAN_403."] ".$subject;
-//		}
-//		elseif($_POST['threadtype'] == 1)
-//		{
-//			$subject = "[".LAN_404."] ".$subject;
-//		}
-
 		$threadtype = intval($_POST['threadtype']);
 		if (isset($_POST['reply']))
 		{
@@ -273,14 +281,21 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			$poll -> submit_poll(2);
 		}
 
-		if ($pref['forum_redirect']) {
+		if ($pref['forum_redirect'])
+		{
 			redirect(e_PLUGIN."forum/forum_viewtopic.php?{$iid}.last");
-		} else {
+		}
+		else
+		{
 			require_once(HEADERF);
-			if (!$FORUMPOST) {
-				if (file_exists(THEME."forum_posted_template.php")) {
+			if (!$FORUMPOST)
+			{
+				if (file_exists(THEME."forum_posted_template.php"))
+				{
 					require_once(THEME."forum_posted_template.php");
-				} else {
+				}
+				else
+				{
 					require_once(e_PLUGIN."forum/templates/forum_posted_template.php");
 				}
 			}
@@ -294,11 +309,16 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 }
 require_once(HEADERF);
 
-if (isset($_POST['update_thread'])) {
-	if (!$_POST['subject'] || !$_POST['post']) {
+if (isset($_POST['update_thread']))
+{
+	if (!$_POST['subject'] || !$_POST['post'])
+	{
 		$error = "<div style='text-align:center'>".LAN_27."</div>";
-	} else {
-		if (!isAuthor($id)) {
+	}
+	else
+	{
+		if (!isAuthor())
+		{
 			$ns->tablerender(LAN_95, "<div style='text-align:center'>".LAN_96."</div>");
 			require_once(FOOTERF);
 			exit;
@@ -307,7 +327,8 @@ if (isset($_POST['update_thread'])) {
 		$newvals['thread_thread'] = $tp->toDB($_POST['post']);
 		$newvals['thread_name'] = $tp->toDB($_POST['subject']);
 		$newvals['thread_active'] = ($_POST['email_notify']) ? '99' : '1';
-		if (isset($_POST['threadtype'])) {
+		if (isset($_POST['threadtype']))
+		{
 			$newvals['thread_s'] = $_POST['threadtype'];
 		}
 		$forum->thread_update($id, $newvals);
@@ -317,11 +338,16 @@ if (isset($_POST['update_thread'])) {
 	}
 }
 
-if (IsSet($_POST['update_reply'])) {
-	if (!$_POST['post']) {
+if (isset($_POST['update_reply']))
+{
+	if (!$_POST['post'])
+	{
 		$error = "<div style='text-align:center'>".LAN_27."</div>";
-	} else {
-		if (!isAuthor($id)) {
+	}
+	else
+	{
+		if (!isAuthor())
+		{
 			$ns->tablerender(LAN_95, "<div style='text-align:center'>".LAN_96."</div>");
 			require_once(FOOTERF);
 			exit;
@@ -335,17 +361,17 @@ if (IsSet($_POST['update_reply'])) {
 	}
 }
 
-if ($error) {
+if ($error)
+{
 	$ns->tablerender(LAN_20, $error);
 }
 
 
 if ($action == 'edit' || $action == 'quote')
 {
-	$tmp = explode('.', $thread_info[0]['thread_user']);
  	if ($action == "edit")
 	{
-		if ((!$tmp[0] || $tmp[0] != USERID) && !ADMIN)
+		if (!isAuthor())
 		{
 			$ns->tablerender(LAN_95, "<div style='text-align:center'>".LAN_96."</div>");
 			require_once(FOOTERF);
@@ -483,13 +509,14 @@ else
 	echo $text;
 }
 
-function isAuthor($thread)
+function isAuthor()
 {
-	global $sql;
-	$sql->db_Select("forum_t", "thread_user", "thread_id='".$thread."' ");
-	$row = $sql->db_Fetch();
-	$tmp = explode(".", $row['thread_user'], 2);
-	return ($tmp[0] == USERID || ADMIN === TRUE);
+	global $thread_info;
+//	global $sql;
+//	$sql->db_Select("forum_t", "thread_user", "thread_id='".$thread."' ");
+//	$row = $sql->db_Fetch();
+	$tmp = explode(".", $thread_info['thread_user'], 2);
+	return ($tmp[0] == USERID || MODERATOR);
 }
 
 function getuser($name)
@@ -552,21 +579,22 @@ function loginf() {
 	$ns = new e107table;
 	$ns->tablerender(LAN_175, $text);
 }
-function forumjump() {
-	global $sql;
-	$sql->db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
-	$text .= "<form method='post' action='".e_SELF."'><p>".LAN_401.": <select name='forumjump' class='tbox'>";
-	while ($row = $sql->db_Fetch()) {
-		extract($row);
-		// if(($forum_class && check_class($forum_class)) || ($forum_class == 254 && USER) || !$forum_class){
-		if (check_class($forum_class)) {
-			$text .= "\n<option value='".$forum_id."'>".$forum_name."</option>";
-		}
+
+function forumjump()
+{
+	global $forum;
+	$jumpList = $forum->forum_get_allowed();
+	$text = "<form method='post' action='".e_SELF."'><p>".LAN_401.": <select name='forumjump' class='tbox'>";
+	foreach($jumpList as $key => $val)
+	{
+		$text .= "\n<option value='".$key."'>".$val."</option>";
 	}
 	$text .= "</select> <input class='button' type='submit' name='fjsubmit' value='".LAN_387."' /></p></form>";
 	return $text;
 }
-function redirect($url) {
+
+function redirect($url)
+{
 	echo "<script type='text/javascript'>document.location.href='".$url."'</script>\n";
 }
 

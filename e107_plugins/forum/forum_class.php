@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-06-01 03:16:32 $
+|     $Revision: 1.32 $
+|     $Date: 2005-06-01 17:03:57 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -300,6 +300,27 @@ class e107forum
 		return FALSE;
 	}
 
+	function forum_get_allowed()
+	{
+		global $sql;
+		$qry = "
+		SELECT f.forum_id, f.forum_name FROM #forum AS f
+		LEFT JOIN #forum AS fp ON fp.forum_id = f.forum_parent
+		WHERE f.forum_parent != 0
+		AND fp.forum_class IN (".USERCLASS_LIST.")
+		AND f.forum_class IN (".USERCLASS_LIST.")
+		";
+		if ($sql->db_Select_gen($qry))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$ret[$row['forum_id']] = $row['forum_name'];
+			}
+		
+		}
+		return $ret;
+	}
+	
 	function thread_update($thread_id, $newvals)
 	{
 		global $sql;
