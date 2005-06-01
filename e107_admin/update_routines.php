@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.86 $
-|     $Date: 2005-05-29 18:19:24 $
+|     $Revision: 1.87 $
+|     $Date: 2005-06-01 16:02:16 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -690,6 +690,14 @@ function update_61x_to_700($type) {
 			$s_prefs = TRUE;
 		}
 		
+		// Admin Password Change Menu Display
+		
+		global $pref;
+		if (!isset($pref['adminpwordchange'])) {
+			$pref['adminpwordchange'] = TRUE;
+			$s_prefs = TRUE;
+		}
+		
 		// Save all prefs that were set in above update routines
 		if ($s_prefs == TRUE) {
 			save_prefs();
@@ -702,7 +710,7 @@ function update_61x_to_700($type) {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
 		global $pref;
-		if (!isset($pref['notify'])) {
+		if (!isset($pref['adminpwordchange'])) {
 			return FALSE;
 		}
 
