@@ -12,4 +12,12 @@ define("FRTLAN_18", "fout: geen content onderwerp item geselecteerd");
 define("FRTLAN_19", "content hoofdpagina");
 define("FRTLAN_20", "content categorie");
 define("FRTLAN_21", "content onderwerp");
+define("FRTLAN_26", "alle gebruikers");
+define("FRTLAN_27", "Gasten");
+define("FRTLAN_28", "Leden");
+define("FRTLAN_29", "Beheerders");
+define("FRTLAN_31", "Alle gebruikers");
+define("FRTLAN_32", "Ledenklasse");
+define("FRTLAN_33", "Huidige instellingen");
+define("FRTLAN_34", "Pagina");
 ?>
