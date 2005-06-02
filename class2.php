@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.152 $
-|     $Date: 2005-06-02 14:54:52 $
-|     $Author: sweetas $
+|     $Revision: 1.153 $
+|     $Date: 2005-06-02 15:04:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -768,7 +768,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 			}
 
 			foreach ($pref as $key => $prefvalue) {
-				$_pref[$key] = $tp->toDB($prefvalue, true);
+				$_pref[$key] = $tp->toDB($prefvalue, true, true);
 			}
 
 			// Create the data to be stored

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.80 $
-|     $Date: 2005-06-02 12:09:36 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.81 $
+|     $Date: 2005-06-02 15:04:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -29,10 +29,10 @@ class e_parse
 	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
 	var $e_query;
 
-	function toDB($text, $no_encode = FALSE)
+	function toDB($text, $no_encode = FALSE, $nostrip = false)
 	{
 		global $pref;
-		if (MAGIC_QUOTES_GPC == TRUE)
+		if (MAGIC_QUOTES_GPC == TRUE && $nostrip == false)
 		{
 			$text = stripslashes($text);
 		}
