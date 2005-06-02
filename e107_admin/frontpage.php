@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-06-02 04:30:04 $
+|     $Revision: 1.19 $
+|     $Date: 2005-06-02 06:11:01 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -114,10 +114,10 @@ class frontpage {
 		<table style='".ADMIN_WIDTH."' class='fborder'>";
 
 		$text .= "<tr>
-		<td style='width: 50%' class='forumheader3'>Set frontpage for:</td>
+		<td style='width: 50%' class='forumheader3'>".FRTLAN_2.":</td>
 		<td style='width: 50%' class='forumheader3'>
-		".$rs -> form_radio('type', 'all_users', ($pref['frontpage']['all'] ? TRUE : FALSE))." All Users&nbsp;
-		".$rs -> form_radio('type', 'user_class', ($pref['frontpage']['all'] ? FALSE : TRUE))." User Class: 
+		".$rs -> form_radio('type', 'all_users', ($pref['frontpage']['all'] ? TRUE : FALSE))." ".FRTLAN_31."&nbsp;
+		".$rs -> form_radio('type', 'user_class', ($pref['frontpage']['all'] ? FALSE : TRUE))." ".FRTLAN_32.": 
 		".r_userclass('class', '', 'off', 'guest,member,admin,classes')."</td>
 		</tr>";
 
@@ -135,9 +135,9 @@ class frontpage {
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'>
 		<table style='".ADMIN_WIDTH."' class='fborder'><tr>
-		<td style='width: 25%' class='fcaption'>User Class</td>
-		<td style='width: 65%' class='fcaption'>Page</td>
-		<td style='width: 10%' class='fcaption'>Edit</td>
+		<td style='width: 25%' class='fcaption'>".FRTLAN_32."</td>
+		<td style='width: 65%' class='fcaption'>".FRTLAN_34."</td>
+		<td style='width: 10%' class='fcaption'>".LAN_EDIT."</td>
 		</tr>";
 		
 		foreach ($pref['frontpage'] as $current_key => $current_value) {
@@ -170,7 +170,7 @@ class frontpage {
 		</form>
 		</div>";
 
-		$ns -> tablerender('Current Settings', $text);
+		$ns -> tablerender(FRTLAN_33, $text);
 		
 	}
 	
