@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.87 $
-|     $Date: 2005-06-01 16:02:16 $
+|     $Revision: 1.88 $
+|     $Date: 2005-06-02 04:30:04 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -698,6 +698,38 @@ function update_61x_to_700($type) {
 			$s_prefs = TRUE;
 		}
 		
+		// Front Page Upgrade
+		
+		if (!is_array($pref['frontpage'])) {
+			if (!$pref['frontpage']) {
+				$up_pref = 'news.php';
+			} else if ($pref['frontpage'] == 'links') {
+				$up_pref = $PLUGINS_DIRECTORY.'links_page/links.php';
+			} else if ($pref['frontpage'] == 'forum') {
+				$up_pref = $PLUGINS_DIRECTORY.'forum/forum.php';
+			} else if (is_numeric($pref['frontpage'])) {
+				$up_pref = $PLUGINS_DIRECTORY.'content/content.php?type.'.$pref['frontpage'];
+			} else if (strpos($pref['frontpage'], '.')===FALSE) {
+				if (!preg_match("#/$#",$pref['frontpage'])) {
+					$up_pref = $pref['frontpage'].'.php';
+				}
+			} else {
+				$up_pref = $pref['frontpage'];
+			}
+			unset($pref['frontpage']);
+			require_once(e_HANDLER.'userclass_class.php');
+			$pref['frontpage']['all'] = $up_pref;
+			$pref['frontpage']['252'] = $up_pref;
+			$pref['frontpage']['253'] = $up_pref;
+			$pref['frontpage']['254'] = $up_pref;
+			$class_list = get_userclass_list();
+			foreach ($class_list as $fp_class) {
+				$pref['frontpage'][$fp_class['userclass_id']] = $up_pref;
+			}
+			$s_prefs = TRUE;
+		}
+
+		
 		// Save all prefs that were set in above update routines
 		if ($s_prefs == TRUE) {
 			save_prefs();
@@ -710,9 +742,16 @@ function update_61x_to_700($type) {
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
 		global $pref;
-		if (!isset($pref['adminpwordchange'])) {
+		if (!is_array($pref['frontpage'])) {
 			return FALSE;
 		}
+
+		
+		
+		//global $pref;
+		//if (!isset($pref['adminpwordchange'])) {
+		//	return FALSE;
+		//}
 
 /*
 		if(!$sql -> db_Select("core", "*", "e107_name='emote_default' "))
