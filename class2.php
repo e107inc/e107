@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.151 $
-|     $Date: 2005-06-02 14:50:10 $
+|     $Revision: 1.152 $
+|     $Date: 2005-06-02 14:54:52 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -417,7 +417,7 @@ if(isset($pref['track_online'])){
 	$e_online->online($pref['track_online'], $pref['flood_protect']);
 }
 $sql->db_Mark_Time('Start: Signup/splash/admin');
-$fp=($pref['frontpage'] ? $pref['frontpage'].".php" : "news.php index.php");
+
 define("e_SIGNUP", (file_exists($e107->relative_base_path."customsignup.php") ? $e107->http_abs_location(false, "customsignup.php") : $e107->http_abs_location(false, "signup.php")));
 define("e_LOGIN", (file_exists($e107->relative_base_path."customlogin.php") ? $e107->http_abs_location(false, "customlogin.php") : $e107->http_abs_location(false, "login.php")));
 
