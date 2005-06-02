@@ -31,7 +31,6 @@ class ArrayData {
 	* @return array stored data
 	*/
 	function ReadArray(&$ArrayData) {
-		echo htmlentities($ArrayData);
 		if ($ArrayData == ""){
 			return false;
 		}
