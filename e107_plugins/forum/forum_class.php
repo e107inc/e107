@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-06-01 20:43:59 $
+|     $Revision: 1.34 $
+|     $Date: 2005-06-02 18:42:46 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -658,7 +658,8 @@ class e107forum
 		// Increment user thread count and set user as viewed this thread
 		if (USER)
 		{
-			$sql->db_Update('user', "user_forums=user_forums+1, user_viewed='".USERVIEWED.".{$newthread_id}.' WHERE user_id='".USERID."' ");
+			$new_userviewed = USERVIEWED.".".($thread_parent ? $thread_parent : $newthread_id);
+			$sql->db_Update('user', "user_forums=user_forums+1, user_viewed='{$new_userviewed}' WHERE user_id='".USERID."' ");
 		}
 
 		//If post is a reply
