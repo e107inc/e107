@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.154 $
-|     $Date: 2005-06-02 18:57:26 $
+|     $Revision: 1.155 $
+|     $Date: 2005-06-02 19:07:40 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -415,10 +415,11 @@ if(isset($pref['track_online'])){
 }
 $sql->db_Mark_Time('Start: Signup/splash/admin');
 
-define("e_SIGNUP", (file_exists($e107->relative_base_path."customsignup.php") ? $e107->http_abs_location(false, "customsignup.php") : $e107->http_abs_location(false, "signup.php")));
-define("e_LOGIN", (file_exists($e107->relative_base_path."customlogin.php") ? $e107->http_abs_location(false, "customlogin.php") : $e107->http_abs_location(false, "login.php")));
+define("e_SIGNUP", (file_exists($e107->relative_base_path."customsignup.php") ? $e107->relative_base_path."customsignup.php" : $e107->relative_base_path."signup.php"));
+define("e_LOGIN", (file_exists($e107->relative_base_path."customlogin.php") ? $e107->relative_base_path."customlogin.php" : $e107->relative_base_path."login.php"));
 
 if ($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php') {
+	
 	header("Location: ".$e107->http_abs_location(false, "membersonly.php"));
 	exit;
 }
