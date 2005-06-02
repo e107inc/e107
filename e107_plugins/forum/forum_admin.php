@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-06-01 03:16:32 $
+|     $Revision: 1.27 $
+|     $Date: 2005-06-02 20:57:40 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -92,6 +92,16 @@ if(isset($_POST['tools']))
 			$msg .= "Lastpost info updated for forum: $fid <br />";
 		}
 	}
+	if(isset($_POST['userpostcounts']))
+	{
+		$list = $for->get_user_counts();
+		foreach($list as $uid => $cnt)
+		{
+			$sql->db_Update("user","user_forums = '{$cnt}' WHERE user_id = '{$uid}'");
+		}
+		$msg .= "User forum counts updated <br />";
+	}
+
 	$forum->show_message($msg);
 }
 
@@ -944,7 +954,7 @@ class forum
 		</tr>
 		<tr>
 		<td class='forumheader3'>
-			<input type='checkbox' name='lastpost' value='1' /> Select to recalculate lastpost info <br />
+			<input type='checkbox' name='lastpost' value='1' /> Select to recalculate lastpost info <br />&nbsp;&nbsp;&nbsp;&nbsp;
 			<input type='checkbox' name='lastpost_nothread' value='1' checked='checked' /> Select to perform this on forums only, not threads
 		</td>
 		</tr>
@@ -954,6 +964,14 @@ class forum
 		<tr>
 		<td class='forumheader3'>
 			<input type='checkbox' name='counts' value='1' /> Select to recalculate forum thread/reply counts<br />
+		</td>
+		</tr>
+		<tr>
+		<td class='fcaption'>Recalculate user forum posts counts</td>
+		</tr>
+		<tr>
+		<td class='forumheader3'>
+			<input type='checkbox' name='userpostcounts' value='1' /> Select to recalculate user forum counts<br />
 		</td>
 		</tr>
 		<tr>

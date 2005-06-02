@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-06-02 18:42:46 $
+|     $Revision: 1.35 $
+|     $Date: 2005-06-02 20:57:39 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -794,6 +794,25 @@ class e107forum
 		$threads = $sql->db_Count("forum_t", "(*)", "WHERE thread_forum_id=$forumID AND thread_parent = 0");
 		$replies = $sql->db_Count("forum_t", "(*)", "WHERE thread_forum_id=$forumID AND thread_parent != 0");
 		$sql->db_Update("forum", "forum_threads='$threads', forum_replies='$replies' WHERE forum_id='$forumID'");
+	}
+	
+	function get_user_counts()
+	{
+		global $sql;
+		$qry = "
+		SELECT FLOOR(thread_user) as uid , count(thread_user) AS cnt FROM e107_forum_t 
+		GROUP BY thread_user
+		";
+		if($sql->db_Select_gen($qry))
+		{
+			$ret = array();
+			while($row = $sql->db_Fetch())
+			{
+				$ret[$row['uid']] = $row['cnt'];	
+			}
+			return $ret;
+		}
+		return FALSE;
 	}
 }
 
