@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_frontpage.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-02 21:08:06 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-02 04:30:04 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("FRTLAN_1", "Front Page settings updated.");
-define("FRTLAN_2", "Display");
+define("FRTLAN_2", "Set front page for ");
 
 
 define("FRTLAN_6", "Links");
@@ -28,6 +28,11 @@ define("FRTLAN_21", "content item");
 // define("FRTLAN_23", "");
 // define("FRTLAN_24", "");
 // define("FRTLAN_25", "");
+
+define("FRTLAN_26", "all users");
+define("FRTLAN_27", "Guests");
+define("FRTLAN_28", "Members");
+define("FRTLAN_29", "Administrators");
 
 
 ?>
