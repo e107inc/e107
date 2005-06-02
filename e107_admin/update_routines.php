@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.88 $
-|     $Date: 2005-06-02 04:30:04 $
-|     $Author: sweetas $
+|     $Revision: 1.89 $
+|     $Date: 2005-06-02 12:26:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -163,12 +163,7 @@ function update_61x_to_700($type) {
 		/* start user update */
 
 		mysql_query("ALTER TABLE ".MPREFIX."user ADD user_loginname VARCHAR( 100 ) NOT NULL AFTER user_name");
-		$sql -> db_Select("user", "user_id, user_name", "", "nowhere");
-		$sql2 = new db;
-		while($user = $sql -> db_Fetch())
-		{
-				$sql2 -> db_Update("user", "user_loginname='".$user['user_name']."' WHERE user_id='".$user['user_id']."' ");
-		}
+		$sql->db_Update("user", "user_loginname=user_name WHERE user_loginname=''");
 
 		/* end */
 
