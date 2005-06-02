@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.89 $
-|     $Date: 2005-06-02 12:26:00 $
+|     $Revision: 1.90 $
+|     $Date: 2005-06-02 12:47:13 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -178,7 +178,7 @@ function update_61x_to_700($type) {
 		  page_rating_flag tinyint(1) unsigned NOT NULL,
 		  page_comment_flag tinyint(1) unsigned NOT NULL,
 		  page_password varchar(50) NOT NULL,
-		  page_class varchar(250) NOT NULL,
+		  page_class varchar(250) default NULL,
 		  page_ip_restrict text NOT NULL,
 		  page_theme varchar(50) NOT NULL,
 		  PRIMARY KEY  (page_id)
