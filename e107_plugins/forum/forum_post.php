@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-06-01 17:03:58 $
+|     $Revision: 1.36 $
+|     $Date: 2005-06-02 15:33:17 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -512,10 +512,7 @@ else
 function isAuthor()
 {
 	global $thread_info;
-//	global $sql;
-//	$sql->db_Select("forum_t", "thread_user", "thread_id='".$thread."' ");
-//	$row = $sql->db_Fetch();
-	$tmp = explode(".", $thread_info['thread_user'], 2);
+	$tmp = explode(".", $thread_info[0]['thread_user'], 2);
 	return ($tmp[0] == USERID || MODERATOR);
 }
 
