@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.150 $
-|     $Date: 2005-06-01 19:17:27 $
-|     $Author: streaky $
+|     $Revision: 1.151 $
+|     $Date: 2005-06-02 14:50:10 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -296,24 +296,6 @@ $sql->db_Mark_Time('(Start: Pref/multilang done)');
 
 // online user tracking class
 $e_online = new e_online();
-
-if (isset($pref['frontpage']) && isset($pref['frontpage_type']) && $pref['frontpage_type'] == "splash") {
-	$ip = $e107->getip();
-	if (!$sql->db_Count("online", "(*)", "WHERE online_ip='{$ip}' ")) {
-		$e_online->online(true, true, true);
-		if (is_numeric($pref['frontpage'])) {
-			header("location: ".$e107->http_abs_location(false, "article.php?{$pref['frontpage']}.255"));
-			exit;
-		} else if (eregi("http", $pref['frontpage'])) {
-			header("location: ".$e107->http_abs_location(false, $pref['frontpage']));
-			exit;
-		}
-		else {
-			header("location: ".$e107->http_abs_location(false, $pref['frontpage'].".php"));
-			exit;
-		}
-	}
-}
 
 // cache class
 $e107cache = new ecache;
