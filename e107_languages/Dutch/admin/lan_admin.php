@@ -204,6 +204,7 @@ define('ADLAN_CL_4', "Coms");
 define('ADLAN_CL_5', "Bestanden");
 define('ADLAN_CL_6', "Hulpmiddelen");
 define('ADLAN_CL_7', "Plugins");
+define('ADLAN_CL_8', "Docs");
 define("ADLAN_LAT_1", "Laatste");
 define("ADLAN_LAT_2", "Aangemelde nieuwsberichten");
 define("ADLAN_LAT_3", "Aangemelde artikelen");
