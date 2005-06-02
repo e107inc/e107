@@ -31,11 +31,15 @@ class ArrayData {
 	* @return array stored data
 	*/
 	function ReadArray(&$ArrayData) {
+		echo htmlentities($ArrayData);
+		if ($ArrayData == ""){
+			return false;
+		}
 		$ArrayData = '$data = '.trim($ArrayData).';';
 		@eval($ArrayData);
-/*		if (!is_array($data)) {
+		if (!is_array($data)) {
 			return false;
-		}*/
+		}
 		return (isset($data)) ? $data : "";
 	}
 }
