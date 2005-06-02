@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.153 $
-|     $Date: 2005-06-02 15:04:39 $
+|     $Revision: 1.154 $
+|     $Date: 2005-06-02 18:57:26 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -235,17 +235,14 @@ if ($pref['user_tracking'] == "session") {
 	session_start();
 }
 
-
 define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
 
 // if the option to force users to use a particular url for the site is enabled, redirect users there
-if($pref['redirectsiteurl'])
-{
-	if($e107->http_abs_location() != $pref['siteurl'] && $pref['siteurl'])
-	{
-		$location = str_replace($e107 -> http_abs_location(), $pref['siteurl'], e_SELF);
-		header("location: ".$location);
-		exit;
+if($pref['redirectsiteurl'] && $pref['siteurl']) {
+	if(!strstr($pref['siteurl'], substr($e107->http_abs_location(), 0, -1))) {
+		$location = str_replace($e107->http_abs_location(), $pref['siteurl'], e_SELF).(e_QUERY ? "?".e_QUERY : "");
+		header("Location: {$location}");
+		exit();
 	}
 }
 
