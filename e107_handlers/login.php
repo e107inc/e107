@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-05-22 17:52:33 $
-|     $Author: stevedunstan $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-02 17:59:44 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -101,7 +101,7 @@ class userlogin {
 					if ($autologin == 1) {
 						cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 24 * 30));
 					} else {
-						cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 3));
+						cookie($pref['cookie_name'], $cookieval);
 					}
 				}
 				$edata_li = array("user_id" => $user_id, "user_name" => $username);
