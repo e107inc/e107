@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.79 $
-|     $Date: 2005-05-29 14:13:36 $
-|     $Author: stevedunstan $
+|     $Revision: 1.80 $
+|     $Date: 2005-06-02 12:09:36 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -236,9 +236,6 @@ class e_parse
 			}
 		}
 
-		if (strpos($modifiers, 'nobreak') === FALSE) {
-			$text = $this -> textclean($text, $wrap);
-		}
 
 		if (strpos($modifiers, 'emotes_off') === FALSE) {
 			if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
@@ -293,6 +290,10 @@ class e_parse
 					$text = $this->e_hook[$hook]->$hook($text);
 				}
 			}
+		}
+
+		if (strpos($modifiers, 'nobreak') === FALSE) {
+			$text = $this -> textclean($text, $wrap);
 		}
 
 		// Search Highlight
