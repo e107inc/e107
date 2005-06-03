@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_article.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 20:04:39 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-03 22:17:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -15,7 +15,7 @@ define("ARLAN_2", "Artículo actualizado en la base de datos.");
 define("ARLAN_3", "Padre añadido a la base de datos.");
 define("ARLAN_4", "Artículo padre actualizado en la base de datos.");
 define("ARLAN_5", "Artículo padre borrado.");
-define("ARLAN_6", "Por favor marque la casilla confirmar para borrar el artículo"); 
+define("ARLAN_6", "Por favor marque la casilla confirmar para borrar el artículo");
 define("ARLAN_7", "Artículos");
 define("ARLAN_8", "No hay padres");
 define("ARLAN_9", "Padres existentes");

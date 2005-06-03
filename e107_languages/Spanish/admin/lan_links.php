@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_links.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 20:04:40 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-03 22:17:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -54,7 +54,7 @@ define("LCLAN_78", "Mostrar Descripción como Screen-Tip");
 define("LCLAN_79", "Se mostrará la descripción cuando el cursor del ratón pase por encima del enlace");
 define("LCLAN_80", "Activar submenús expandidos");
 define("LCLAN_81", "Los submenús se mostrarán después de hacer click en su padre. (Desactivado enlace Padre)");
-define("LCLAN_82", "Abrir en ventana 800x600"); 
+define("LCLAN_82", "Abrir en ventana 800x600");
 define("LCLAN_83", "Generador de Submenus");
 
 define("LCLAN_88", "Opciones de los enlaces");

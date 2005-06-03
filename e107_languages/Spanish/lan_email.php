@@ -1,15 +1,15 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_email.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 20:01:13 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-03 22:17:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Email"); 
+define("PAGE_NAME", "Email");
 
 define("LAN_5", "Enviar artículo a un amigo");
 define("LAN_6", "Enviar noticia a un amigo");

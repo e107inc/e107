@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 20:04:39 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-03 22:17:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -15,7 +15,7 @@ define("ADLAN_2", "Cat. Noticias");
 define("ADLAN_3", "Gestionar categorías de noticias");
 define("ADLAN_4", "Preferencias");
 define("ADLAN_5", "Editar Preferencias");
-define("ADLAN_6", "Menús"); 
+define("ADLAN_6", "Menús");
 define("ADLAN_7", "Gestionar menús");
 define("ADLAN_8", "Administradores");
 define("ADLAN_9", "Gestionar administradores");
@@ -28,7 +28,7 @@ define("ADLAN_15", "Gestionar artículos");
 define("ADLAN_16", "Contenido");
 define("ADLAN_17", "Gestionar contenidos");
 define("ADLAN_18", "Revisiones");
-define("ADLAN_19", "Gestionar revisiones"); 
+define("ADLAN_19", "Gestionar revisiones");
 define("ADLAN_20", "Enlaces");
 define("ADLAN_21", "Gestionar enlaces");
 define("ADLAN_22", "Cat. enlaces");

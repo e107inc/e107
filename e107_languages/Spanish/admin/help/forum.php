@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/forum.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 20:07:26 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-03 22:17:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -14,20 +14,20 @@ $text = "<b>General</b><br />
 Use este área para crear o editar tus foros<br />
 <br />
 <b>Foros/Padres</b><br />
-Un Padre es un encabezado desde el que se despliegan otros foros, 
-esto hará las exposiciones más simples y hará que la navegación en sus foros sea más simple 
+Un Padre es un encabezado desde el que se despliegan otros foros,
+esto hará las exposiciones más simples y hará que la navegación en sus foros sea más simple
 para sus usuarios.
 <br /><br />
 <b>Accesibilidad</b>
 <br />
-Puede configurar sus foros para hacerlos accesibles solo para ciertos visitantes. 
-Una vez que haya configurado la 'clase' de los usuarios puede marcar la 
-clase para permitir solo los accesos de esos visitantes a los foros. 
+Puede configurar sus foros para hacerlos accesibles solo para ciertos visitantes.
+Una vez que haya configurado la 'clase' de los usuarios puede marcar la
+clase para permitir solo los accesos de esos visitantes a los foros.
 Puede configurar foros padres o individuales de esta misma manera.
 <br /><br />
 <b>Moderadores</b>
 <br />
-Marque los nombres de los administradores listados para darles estado de moderador en el foro. 
+Marque los nombres de los administradores listados para darles estado de moderador en el foro.
 El administrador debe tener permisos de moderación de foro para estar listado aquí.
 <br /><br />
 <b>Rangos</b>

@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_administrator.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 20:04:39 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-03 22:17:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -15,7 +15,7 @@ define("ADMSLAN_2", "actualizado en la base de datos.");
 define("ADMSLAN_3", "es el administrador del sitio y no puede ser editado.");
 define("ADMSLAN_4", "Continuar");
 define("ADMSLAN_5", "Error!");
-define("ADMSLAN_6", "es el administrador del sitio y no puede ser borrado."); 
+define("ADMSLAN_6", "es el administrador del sitio y no puede ser borrado.");
 define("ADMSLAN_7", "por favor confirma que deseas borrarlo");
 define("ADMSLAN_8", "de la base de datos");
 define("ADMSLAN_9", "Cancelar");
@@ -28,7 +28,7 @@ define("ADMSLAN_15", "Editar");
 define("ADMSLAN_16", "Nombre");
 define("ADMSLAN_17", "Contraseña");
 define("ADMSLAN_18", "Permisos");
-define("ADMSLAN_19", "Cambiar preferencias del sitio"); 
+define("ADMSLAN_19", "Cambiar preferencias del sitio");
 define("ADMSLAN_20", "Cambiar menús y páginas personales");
 define("ADMSLAN_21", "Añadir administradores");
 define("ADMSLAN_22", "Moderar usuarios/expulsiones etc");

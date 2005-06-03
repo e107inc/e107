@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 20:04:40 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-03 22:17:41 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -109,7 +109,7 @@ define("USRLAN_114", "Estimado");
 define("USRLAN_115", "Gracias por su registro.");
 define("USRLAN_116", "Confirme que desea re-enviar un email de confirmación a:");
 define("USRLAN_117", "Pulse el botón para probar el siguiente email:");
-define("USRLAN_118", "Probar Email"); 
+define("USRLAN_118", "Probar Email");
 
 define("USRLAN_120", "Elegir Clases");
 define("USRLAN_121", "Mailing");
@@ -128,7 +128,7 @@ define("USRLAN_132", "Activar");
 define("LAN_MAINADMIN","Admin Jefe");
 define("LAN_ADMIN","Admin");
 define("LAN_NOTVERIFIED","No comprobado");
-define("LAN_BANNED","Expulsado"); 
+define("LAN_BANNED","Expulsado");
 
 
 

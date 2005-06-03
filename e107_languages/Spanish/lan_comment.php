@@ -1,15 +1,15 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_comment.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 20:01:12 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-03 22:17:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Comentarios"); 
+define("PAGE_NAME", "Comentarios");
 define("LAN_0", "[bloqueado por el administrador]");
 define("LAN_1", "Desbloquear");
 define("LAN_2", "Bloquear");

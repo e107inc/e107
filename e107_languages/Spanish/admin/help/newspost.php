@@ -1,23 +1,23 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/newspost.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 20:07:26 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-03 22:17:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 $caption = "Ayuda de mensaje Noticias";
 $text = "<b>General</b><br />
-El cuerpo será desplegado en la página principal, 
-el texto completo será leído pulsando en 'Leer más'. 
+El cuerpo será desplegado en la página principal,
+el texto completo será leído pulsando en 'Leer más'.
 Recurso y URL es donde está publicada la noticia.
 <br />
 <br />
 <b>Atajos</b><br />
-Puede usar estos atajos en vez de escribir toda la etiqueta , 
+Puede usar estos atajos en vez de escribir toda la etiqueta ,
 al enviar la noticia el atajo será convertido en código xhtml.
 <br /><br />
 <b>Enlaces</b>

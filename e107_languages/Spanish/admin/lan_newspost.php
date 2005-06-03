@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_newspost.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 20:04:40 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-03 22:17:41 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -99,8 +99,8 @@ define("NWSLAN_100", "Activar la transferencia de imágenes en el envio de notic
 define("NWSLAN_101", "Autoajustar el tamaño de las imágenes transferidas");
 define("NWSLAN_102", "ancho en pixels<br> o dejar en blanco para desactivar.");
 define("NWSLAN_103", "re-enviar");
-define("NWSLAN_104", "por"); 
-define("NWSLAN_105", "Marque para cambiar la fecha de las noticias a la actual"); 
+define("NWSLAN_104", "por");
+define("NWSLAN_105", "Marque para cambiar la fecha de las noticias a la actual");
 define("NWSLAN_106", "Enviar-Noticias puede aceder por:");
 define("NWSLAN_107", "Activar HtmlArea en Enviar-Noticia.");
 

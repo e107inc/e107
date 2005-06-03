@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/menus.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 20:07:26 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-03 22:17:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@ if(IsSet($_POST['reset'])){
 
 
 
-$text .= "Puede organizar el lugar y el orden en que los menús se mostrarán desde aquí. 
+$text .= "Puede organizar el lugar y el orden en que los menús se mostrarán desde aquí.
 Use las flechas para mover los menús arriba y abajo hasta que esté conforme con la organización.<br />
 Si encuentra que los menús no se están actualizando apropiadamente pulse en el botón refrescar.
 
