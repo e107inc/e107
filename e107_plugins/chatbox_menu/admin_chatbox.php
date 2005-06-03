@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-27 12:00:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-03 17:02:28 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -21,17 +21,17 @@ if (!getperms("C")) {
 	header("location:".e_BASE."index.php");
 	 exit ;
 }
-if (file_exists(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."_config.php")) {
-	include_once(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."_config.php");
+if (file_exists(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE."_config.php")) {
+	include_once(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE."_config.php");
 } else {
-	include_once(e_PLUGIN."chatbox_menu/languages/English_config.php");
+	include_once(e_PLUGIN."chatbox_menu/languages/English/English_config.php");
 }
-	
+
 require_once(e_ADMIN."auth.php");
-	
+
 
 if (isset($_POST['moderate'])) {
-	 
+
 	extract($_POST);
 	if (is_array($cb_blocked)) {
 		while (list ($key, $id) = each ($cb_blocked)) {
@@ -51,9 +51,9 @@ if (isset($_POST['moderate'])) {
 	$e107cache->clear("chatbox");
 	$message = CHBLAN_2;
 }
-	
+
 if (isset($_POST['updatesettings'])) {
-	 
+
 	$pref['chatbox_posts'] = $_POST['chatbox_posts'];
 	$pref['cb_linkc'] = $tp->toDB($_POST['cb_linkc'], "admin");
 	$pref['cb_linkreplace'] = $_POST['cb_linkreplace'];
@@ -64,27 +64,27 @@ if (isset($_POST['updatesettings'])) {
 	$e107cache->clear("chatbox");
 	$message = CHBLAN_1;
 }
-	
+
 if (isset($_POST['prune'])) {
 	$chatbox_prune = $_POST['chatbox_prune'];
 	$prunetime = time() - $chatbox_prune;
-	 
+
 	$sql->db_Delete("chatbox", "cb_datestamp < '$prunetime' ");
 	$e107cache->clear("chatbox");
 	$message = CHBLAN_28;
 }
-	
+
 if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
-	
-	
+
+
 if (!$sql->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", $mode = "no_where")) {
 	$text = "<div style='text-align:center'>".CHBLAN_3."</div>";
 } else {
 	$con = new convert;
 	$aj = new textparse();
-	 
+
 	$text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>
 		<form method='post' action='".e_SELF."'>
 		<table style='width:99%' class='fborder'>";
@@ -95,11 +95,11 @@ if (!$sql->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", $
 	foreach($cbArray as $row)
 	{
 		extract($row);
-		 
+
 		$datestamp = $con->convert_date($cb_datestamp, "short");
-		 
+
 		$cb_ida = substr($cb_nick, 0, strpos($cb_nick, "."));
-		 
+
 		if ($cb_ida) {
 			$sql->db_Select("user", "*", "user_id='$cb_ida' ");
 			$row = $sql->db_Fetch();
@@ -110,40 +110,40 @@ if (!$sql->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", $
 			$cb_str = CHBLAN_5;
 			$cb_nick = eregi_replace("[0-9]+\.", "", $cb_nick);
 		}
-		 
+
 		$cb_message = str_replace('&amp;#', '&#', $cb_message);
 		$cb_message = $aj->tpa($cb_message, "on");
-		 
+
 		$text .= "<tr>
 			<td class='forumheader3' style='width:5%; text-align: center'>".($cb_blocked ? "<img src='".e_IMAGE."generic/blocked.png' />" : "&nbsp;")."</td>
 			<td class='forumheader3' style='width:15%'>".$datestamp."</td>
 			<td class='forumheader3' style='width:20%'><b>".$cb_nick."</b><br />".$cb_str."<br />IP: ".$cb_ip."</td>
 			<td class='forumheader3' style='width:40%'>".$cb_message."</td>
-			<td class='forumheader3' style='width:20%;text-align:center' >".  
-		 
+			<td class='forumheader3' style='width:20%;text-align:center' >".
+
 		($cb_blocked ? "<input type='checkbox' name='cb_unblocked[]' value='$cb_id' /> ".CHBLAN_6 : "<input type='checkbox' name='cb_blocked[]' value='$cb_id' />".CHBLAN_7)."
 			&nbsp;<input type='checkbox' name='cb_delete[]' value='$cb_id' />".CHBLAN_8."
 			</td>
 			</tr>";
-		 
+
 	}
-	 
+
 	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='button' type='submit' name='moderate' value='".CHBLAN_9."' />
 		</td>
 		</tr>
 		</table></form></div>";
-	 
+
 	$ns->tablerender(CHBLAN_10, $text);
-	 
+
 	echo "<br />";
-	 
+
 }
-	
-	
+
+
 $chatbox_posts = $pref['chatbox_posts'];
 $cb_linkreplace = $pref['cb_linkreplace'];
 $cb_linkc = $pref['cb_linkc'];
-	
+
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."' id='cbform'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -176,23 +176,23 @@ if ($chatbox_posts == 25) {
 } else {
 	$text .= "<option>25</option>\n";
 }
-	
+
 $text .= "</select>
 	</td>
 	</tr>
-	 
+
 	<tr><td class='forumheader3' style='width:40%'>".CHBLAN_29."?: </td>
 	<td class='forumheader3' style='width:60%'>". ($pref['cb_layer'] ? "<input type='checkbox' name='cb_layer' value='1' checked='checked' />" : "<input type='checkbox' name='cb_layer' value='1' />")."&nbsp;&nbsp;". CHBLAN_30.": <input class='tbox' type='text' name='cb_layer_height' size='8' value='".$pref['cb_layer_height']."' maxlength='3' />
 	</td>
 	</tr>
-	 
-	
-	 
+
+
+
 	<tr><td class='forumheader3' style='width:40%'>".CHBLAN_31."?: </td>
 	<td class='forumheader3' style='width:60%'>". ($pref['cb_emote'] ? "<input type='checkbox' name='cb_emote' value='1' checked='checked' />" : "<input type='checkbox' name='cb_emote' value='1' />")."
 	</td>
 	</tr>
-	 
+
 	<tr>
 	<td class='forumheader3' style='width:40%'>".CHBLAN_21.": <div class='smalltext'>".CHBLAN_22."</div></td>
 	<td class='forumheader3' style='width:60%'>
@@ -206,7 +206,7 @@ $text .= "</select>
 	<input class='button' type='submit' name='prune' value='".CHBLAN_21."' />
 	</td>
 	</tr>
-	 
+
 	<tr>
 	<td  class='forumheader' colspan='3' style='text-align:center'>
 	<input class='button' type='submit' name='updatesettings' value='".CHBLAN_19."' />
@@ -215,8 +215,8 @@ $text .= "</select>
 	</table>
 	</form>
 	</div>";
-	
+
 $ns->tablerender(CHBLAN_20, $text);
-	
+
 require_once(e_ADMIN."footer.php");
 ?>

@@ -3,10 +3,11 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/languages/English_config.php,v $
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/languages/English/English_config.php,v $
 |     $Revision: 1.1 $
-|     $Date: 2005-02-01 05:15:01 $
-|     $Author: sweetas $
+|     $Date: 2005-06-03 17:02:29 $
+|     $Author: e107coders $
+|     Encoding:
 +----------------------------------------------------------------------------+
 */
 define("CHBLAN_1", "Chatbox settings updated.");
