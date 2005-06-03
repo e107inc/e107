@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emote_filter.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-05-29 15:25:45 $
-|     $Author: stevedunstan $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-03 13:24:02 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 class e_emotefilter {
@@ -28,8 +28,9 @@ class e_emotefilter {
 		foreach($emotes as $key => $value)
 		{
 			$key = preg_replace("#!(\w{3,}?)$#si", ".\\1", $key);
+			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
 			$key =  str_replace("!", "_", $key);
-			
+
 			$value = trim(chop($value));
 
 			$filename = e_IMAGE."emotes/" . $pref['emotepack'] . "/" . $key;
