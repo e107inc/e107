@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewforum_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-21 02:04:35 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-03 18:24:47 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -48,6 +48,8 @@ $FORUM_VIEW_START = "
 }
 
 if (!$FORUM_VIEW_FORUM) {
+	global $sc_style;
+	$sc_style['THREADTYLE']['post'] = "<br />";
 	$FORUM_VIEW_FORUM = "
 		<tr>
 		<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>{ICON}</td>
@@ -55,17 +57,17 @@ if (!$FORUM_VIEW_FORUM) {
 
 		<table style='width:100%'>
 		<tr>
-		<td style='width:90%'><span class='mediumtext'><b>{THREADTYPE}<br />{THREADNAME}</b></span> <span class='smalltext'>{PAGES}</span></td>
+		<td style='width:90%'><span class='mediumtext'><b>{THREADTYPE}{THREADNAME}</b></span> <span class='smalltext'>{PAGES}</span></td>
 		<td style='width:10%; white-space:nowrap;'>{ADMIN_ICONS}</td>
 		</tr>
 		</table>
 
 		</td>
 
-		<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>{POSTER}<br />{THREADDATE}</td>
+		<td style='vertical-align:center; text-align:center; width:20%' class='forumheader3'>{POSTER}<br />{THREADDATE}</td>
 		<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{REPLIES}</td>
 		<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{VIEWS}</td>
-		<td style='vertical-align:top; text-align:center; width:20%' class='forumheader3'>{LASTPOST}</td>
+		<td style='vertical-align:center; text-align:center; width:20%' class='forumheader3'>{LASTPOST}</td>
 		</tr>";
 }
 
