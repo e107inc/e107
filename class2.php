@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.156 $
-|     $Date: 2005-06-03 12:14:57 $
+|     $Revision: 1.157 $
+|     $Date: 2005-06-03 15:08:34 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -489,7 +489,7 @@ if (e_QUERY == 'logout') {
 
 	cookie($pref['cookie_name'], "", (time() - 2592000));
 	$e_event->trigger("logout");
-	echo "<script type='text/javascript'>document.location.href = '".$e107->http_abs_location()."'</script>\n";
+	echo "<script type='text/javascript'>document.location.href = '".$e107->http_abs_location()."index.php'</script>\n";
 	exit;
 }
 
