@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-05-28 03:32:37 $
+|     $Revision: 1.49 $
+|     $Date: 2005-06-03 07:27:57 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -285,7 +285,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "unadmin") {
 	if(!$id){ $id = "DESC"; }
 	}
 }
-
+// ------- Approve User. --------------
 if (isset($_POST['useraction']) && $_POST['useraction'] == "verify") {
 	if ($sql->db_Update("user", "user_ban='0' WHERE user_id='".$_POST['userid']."' ")) {
 		$user->show_message(USRLAN_86);
@@ -360,6 +360,7 @@ class users{
 		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>";
 
 		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "") {
+			$_POST['searchquery'] = trim($_POST['searchquery']);
             $query = "WHERE ".
 			$query .= (eregi("@", $_POST['searchquery']))?"user_email REGEXP('".$_POST['searchquery']."') OR ": "";
 			$query .= (eregi(".", $_POST['searchquery']))?"user_ip REGEXP('".$_POST['searchquery']."') OR ": "";
