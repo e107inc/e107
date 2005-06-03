@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $text = "If your MySql server version supports it you can switch to the MySql sort method which is faster than the PHP sort method and 
 includes boolean search functionality.<br /><br />
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 if(!defined('e_HTTP')){ die("Unauthorised Access");}
 if (!getperms("2")) {
 	header("location:".e_BASE."index.php");

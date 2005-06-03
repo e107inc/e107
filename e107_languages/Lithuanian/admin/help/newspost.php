@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $caption = "Newspost Help";
 $text = "<b>General</b><br />
 Body will be displayed on the main page, extended will be readable by clicking a 'Read More' link.

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $text = "From this page you can add single or multi-page articles.<br />
  For a multi-page article seperate each page with the text [newpage], ie <br /><code>Test1 [newpage] Test2</code><br /> would create a two page article with 'Test1' on page 1 and 'Test2' on page 2.
 <br /><br />

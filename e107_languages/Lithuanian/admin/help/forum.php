@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $caption = "Forum Help";
 $text = "<b>General</b><br />
 Use this screen to create or edit your forums<br />
