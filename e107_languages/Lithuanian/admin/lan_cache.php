@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_cache.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 14:53:40 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 15:15:31 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
@@ -20,4 +20,5 @@ define("CACLAN_7", "Podėlis atjungtas");
 // define("CACLAN_8", "Podėlio duomenys įrašyti į MySQL");
 define("CACLAN_9", "Podėlio duomenys įrašyti į diską");
 define("CACLAN_10", "Neįmanoma įrašyti į podėlio aplankalą. Prašome įsitikinti, jog aplankalo atributai yra 0777 (CHMOD 777)");
+
 ?>
