@@ -1,13 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-     e107 website system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-25 01:17:11 $
-|     $Author: e107coders $
-|     Encoding: utf-8
+|     $Revision: 1.2 $
+|     $Date: 2005-06-03 22:34:18 $
+|     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "Debe introducir el número de días que desea limpiar.");
@@ -43,7 +42,7 @@ define("FORLAN_30", "Foros existentes");
 define("FORLAN_31", "Nombre");
 define("FORLAN_32", "Descripción");
 define("FORLAN_33", "Moderadores");
-define("FORLAN_34", "Activar moderación");
+define("FORLAN_34", "Escoja clase de usuario para moderadores de este foro");
 define("FORLAN_35", "Actualizar foro");
 define("FORLAN_36", "Crear foro");
 define("FORLAN_37", "Ordenar");
@@ -159,5 +158,17 @@ define("FORLAN_140", "Ver");
 define("FORLAN_141", "Envío");
 define("FORLAN_142", "Permisos de envíos");
 define("FORLAN_143", "Indica quien puede hacer envíos al foro");
+define("FORLAN_144", "Fijar moderadores");
+define("FORLAN_145", "Configurar sub-foros");
+
+define("FORLAN_146", "No hay sub-foros todavía");
+define("FORLAN_147", "Actualizar sub-foros");
+define("FORLAN_148", "Crear sub-foros");
+define("FORLAN_149", "Sub-foros");
+define("FORLAN_150", "Sub-foro");
+define("FORLAN_151", "ID");
+define("FORLAN_152", "Envíos");
+define("FORLAN_153", "Herramientas");
+define("FORLAN_154", "Respuesta eliminada");
 
 ?>

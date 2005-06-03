@@ -1,13 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-     e107 website system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_viewforum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-25 01:17:11 $
-|     $Author: e107coders $
-|     Encoding: utf-8
+|     $Revision: 1.2 $
+|     $Date: 2005-06-03 22:34:18 $
+|     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Foro");
@@ -85,4 +84,8 @@ define("FORLAN_15","Pegar hilo");
 define("FORLAN_16","Cerrar hilo pegado");
 define("FORLAN_17","Hilo publicitario");
 define("FORLAN_18","Hilo cerrado");
+define('FORLAN_19', '[Usuario eliminado]');
+define('FORLAN_20', 'Sub-foro');
+define('FORLAN_21', 'Temas');
+define('FORLAN_22', 'Último envío');
 ?>

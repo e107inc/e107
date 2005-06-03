@@ -1,33 +1,37 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-     e107 website system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Spanish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-25 01:17:12 $
-|     $Author: e107coders $
-|     Encoding: utf-8
+|     $Revision: 1.2 $
+|     $Date: 2005-06-03 22:34:18 $
+|     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Listar nuevos datos");
 define("LIST_1", "Noticias");
-define("LIST_2", "Comentarios");
+define("LIST_2", "Sin título");
 define("LIST_3", "Novedades desde su última visita ...");
-define("LIST_4", "nada");
+define("LIST_4", "No se encontraron nuevos elementos");
 define("LIST_5", "Mensajes en Chatbox");
-define("LIST_6", "Mensajes en Foros");
-define("LIST_7", "Nuevos miembros");
-define("LIST_8", "encontrado");
-define("LIST_9", "Noticias");
-define("LIST_10", "devuelto");
-define("LIST_11", "Admin");
-define("LIST_12", "Configuración");
-define("LIST_13", "Perfil");
-define("LIST_14", "Artículo");
-define("LIST_15", "Contenido");
-define("LIST_16", "Revisión");
-define("LIST_17", "Descarga");
+define("LIST_6", "Bloqueado por Admin");
+define("LIST_7", "Envíos de foros");
+define("LIST_8", "Nuevos miembros");
+define("LIST_9", "Comentarios");
+define("LIST_10", "Ideas");
+define("LIST_11", "Descarga");
+define("LIST_12", "Noticias");
+define("LIST_13", "Control de errores");
+define("LIST_14", "Escuesta");
+define("LIST_15", "FAQ");
+define("LIST_16", "Errores");
+define("LIST_17", "Ideas");
+
+define("LIST_13", "Profile");
+define("LIST_14", "Article");
+define("LIST_15", "Content");
+
 define("LIST_18", "FAQ");
 define("LIST_18", "Encuesta");
 define("LIST_19", "Documentos");

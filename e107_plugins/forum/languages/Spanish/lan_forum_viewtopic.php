@@ -1,13 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-     e107 website system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_viewtopic.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-25 01:17:11 $
-|     $Author: e107coders $
-|     Encoding: utf-8
+|     $Revision: 1.2 $
+|     $Date: 2005-06-03 22:34:18 $
+|     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Foro");
@@ -79,5 +78,7 @@ define("FORLAN_26", "Respuesta borrada");
 define("FORLAN_10", "Comenzar nuevo hilo");
 define("FORLAN_101", "Enviar por correo el hilo");
 define("FORLAN_102", "Imprimir vista");
+define('FORLAN_103', '[usuario eliminado]');
+
 define("LAN_29", "Editado");
 ?>

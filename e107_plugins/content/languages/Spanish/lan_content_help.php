@@ -1,68 +1,133 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content_help.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-03 22:34:18 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
+define("CONTENT_ADMIN_HELP_ORDER_1", "
+<i>Esta p√°gina muestra todas las categor√≠as y subcategor√≠as existentes.</i><br /><br />
+<b>Lista detallada</b><br />Ver√° el Id de la categor√≠a y su nombre. Tambi√©n ver√° algunas opciones para gestionar el orden de las categor√≠as.<br />
+<br />
+<b>Explicaci√≥n de iconos</b><br />
+".CONTENT_ICON_ORDERALL." Gestiona el orden global de contenidos sin contar con la categor√≠a.<br />
+".CONTENT_ICON_ORDERCAT." Gestiona el orden de los contenidos de una categor√≠a espec√≠fica.<br />
+<img src='".e_IMAGE."admin_images/up.png' alt='' /> El bot√≥n arriba le permite subir un escalon el orden de contenido.<br />
+<img src='".e_IMAGE."admin_images/down.png' alt='' /> El bot√≥n abajo le permite bajar un escal√≥n el orden del contenido.<br />
+<br />
+<b>Orden</b><br />Aqu√≠ puede fijar el orden de todas las categor√≠as de cada padre manualmente. Necesita cambiar los valores de las cajas al orden que desea y pulsar en actualizar para guardar en nuevo orden.<br />
+");
+define("CONTENT_ADMIN_HELP_ORDER_2", "
+<i>Esta p√°gina muestra todos los contenidos de la categor√≠a seleccionada.</i><br /><br />
+<b>detailed list</b><br />Ver√° el ID de contenido, el autor y su cabecera. Tambi√©n ver√° algunas opciones para gestionar el orden de los contenidos.<br />
+<br />
+<b>Explicaci√≥n de iconos</b><br />
+<img src='".e_IMAGE."admin_images/up.png' alt='' /> El bot√≥n arriba le permite subir un escalon el orden de contenido.<br />
+<img src='".e_IMAGE."admin_images/down.png' alt='' /> El bot√≥n abajo le permite bajar un escal√≥n el orden del contenido.<br />
+<br />
+<b>Orden</b><br />Aqu√≠ puede fijar el orden de todas las categor√≠as de cada padre manualmente. Necesita cambiar los valores de las cajas al orden que desea y pulsar en actualizar para guardar en nuevo orden.<br />
+");
+define("CONTENT_ADMIN_HELP_ORDER_3", "
+<i>Esta p√°gina muestra todos los contenidos de la categor√≠a seleccionada.</i><br /><br />
+<b>Lista detallada</b><br />Ver√° el ID de contenido, el autor y su cabecera. Tambi√©n ver√° algunas opciones para gestionar el orden de los contenidos.<br />
+<br />
+<b>Explicaci√≥n de iconos</b><br />
+<img src='".e_IMAGE."admin_images/up.png' alt='' /> El bot√≥n arriba le permite subir un escalon el orden de contenido.<br />
+<img src='".e_IMAGE."admin_images/down.png' alt='' /> El bot√≥n abajo le permite bajar un escal√≥n el orden del contenido.<br />
+<br />
+<b>Orden</b><br />Aqu√≠ puede fijar el orden de todas las categor√≠as de cada padre manualmente. Necesita cambiar los valores de las cajas al orden que desea y pulsar en actualizar para guardar en nuevo orden.<br />
+");
 
 
-//require_once(e_PLUGIN."content/handlers/content_class.php");
 
-define("CONTENT_ADMIN_HELP_LAN_0", "<i>Si no ha creado ninguna categorÌa principal todavÌa, hagalo en la p·gina de crear categorÌas.</i><br /><br /><b>botones principales</b><br />seleccione la categorÌa principal pulsando el botÛn.");
-define("CONTENT_ADMIN_HELP_LAN_1", "<i>Esta p·gina muestra todos los contenidos de la principal categorÌa padre que ha seleccionado en la p·gina de contenidos.</i><br />");
-define("CONTENT_ADMIN_HELP_LAN_2", "<br /><i>Ha seleccionado una categorÌa especÌfica para mostrar contenidos.<br />la lista contendr· solo los contenidos de la categorÌa seleccionada.</i><br />");
-define("CONTENT_ADMIN_HELP_LAN_3", "<br /><b>Primeras letras</b><br />Si las letras iniciales de los multiples contenidos de la cabecera de contenido est· rpesente, ver· los botones solo para aquellos contenidos comenzando con esa letra.<br /><br /><b>lista detallada</b><br />Ver· una lista con todos los contenidos y su id, icono, autor, cabecera [subcabecera] y opciones.<br /><br /><b>opciones</b><br />puede editar o eliminar un contenido con los botones mostrados.");
-define("CONTENT_ADMIN_HELP_LAN_4", "<i>Las principales categorÌas padre se mostrar·n como botones.</i><br /><br /><b>botones padre principales</b><br /> por favor seleccione una categorÌa del padre principal para crear su contenido.<br />");
-define("CONTENT_ADMIN_HELP_LAN_5", "<i>Esta p·gina muestra el formulario de creaciÛn de contenidos</i><br /><br /><b>Crear formulario</b><br />usted puede proporcionar toda la informaciÛn para el nuevo contenido.<br /><br /><b>bbcode</b><br />con los tags bbcode puede especificar ciertos estilos para partes del texto, insertar enlaces y dem·s.<br /><br /><b>[newpage=name]</b><br />Con el tag [newpage] puede cortar la informaciÛn en varias p·ginas.<br />Uso del tag [newpage]: Si quiere crear m˙ltiples p·ginas, inserte un tag  [newpage] antes de cada p·gina (°y no olvide de insertar uno al principio de cada contenido!).<br />El nuevo mÈtodo [newpage=name] le permite dar un nombre a cada p·gina, que se mostrar· en el Ìndice del contenido<br />");
-define("CONTENT_ADMIN_HELP_LAN_6", "<i>Esta p·gina muestra el formulario de ediciÛn del contenido</i><br /><br /><b>Formulario de ediciÛn</b><br />Puede editar toda la informaciÛn del formulario y enviar los cambios");
-define("CONTENT_ADMIN_HELP_LAN_7", "<i>Ver· los botones de la principal categorÌa padre y del formulario de creaciÛn </i><br /><br /><b>Padre principal predeterminado</b><br />por defecto, este formulario le permite crear un nuevo padre. (la tira de categorÌas est· vacÌa)<br /><br /><b>Botones padre principal</b><br />Si quiere crear una subcategorÌa dentro de una existente en las categorÌas principales padre, pulse el botÛn para seleccionar la categorÌa principal padre.");
-define("CONTENT_ADMIN_HELP_LAN_8", "<i>Ha seleccionado la categorÌa principal padre para crear una subcategorÌa en</i><br /><br /><b>Tira de categorÌas</b><br />Ver· que la tira de categorÌa contiene todas la subcategorÌas existentes de su categorÌa principal padre</b><br /> Ahora puede aÒadir toda la informaciÛn de la nueva categorÌa.");
-define("CONTENT_ADMIN_HELP_LAN_9", "<i>Ver· los botones de la categorÌa principal padre.</i><br /><br /><b>Botones padre principal</b><br />Primero debe pulsar el botÛn para selecciona la categorÌa padre principal.");
-define("CONTENT_ADMIN_HELP_LAN_10", "
-  	 <i>Esta p·gina mostrar· todas las categorÌas de la categorÌa padre principal que seleccionÛ en la p·gina anterior.</i><br /><br />
-  	 <b>lista detallada</b><br />Ver· una lista de todas las subcategorÌas con su id, icono, autor, categorÌa [subcabecera] y opciones.<br />
-  	 <br />
-  	 <b>explicaciÛn de los iconos</b><br />
-  	 ".CONTENT_ICON_EDIT." : Para todas las categorÌas haga click en este botÛn para editarlas.<br />
-  	 ".CONTENT_ICON_DELETE." : Para todas las categorÌas haga click en este botÛn pata eliminarlas.<br />
-  	 ".CONTENT_ICON_OPTIONS." : Solo para la categorÌa principal (al tope de la lista) haga click en este botÛn para fijar y controlar las opciones.<br />
-  	 ".CONTENT_ICON_CONTENTMANAGER_SMALL." : (Solo Admin del sitio) para cada subcategorÌa haga click en este botÛn para manejar el configurador personal de otros administradores.<br />
-  	 ");
-define("CONTENT_ADMIN_HELP_LAN_11", "<i>Esta p·gina muestra el formulario de ediciÛn de la categorÌa. </i><br /><br /><b>Formulario de ediciÛn de categorÌa</b><br /> Ahora puede aÒadir toda la informaciÛn para esta (sub)categorÌa y enviar los cambios.");
-define("CONTENT_ADMIN_HELP_LAN_12", "
-  	 <i>Esta p·gina muestra las opciones que puede fijar para este padre principal. Cada padre principal tiene su propio juego de opciones, asi que estÈ seguro de fijarlas correctamente.</i><br /><br />
-  	 <b>Valores por defecto</b><br />Por defecto, todos los valroes est·n presentes y actualizados en las preferencias cuando Usted mira esta p·gina, pero cambie lo que quiera de sus propios estandares.<br /><br />
-  	 <b>DivisiÛn en 8 secciones</b><br />Las opciones est·n divididas en 8 secciones principales. Ver· cada secciÛn en el men˙ de la derecha. Puede hacer click en ellas e ir al juego especÌfico de opciones para esa secciÛn.<br /><br />
-  	 <b>Crear</b><br />En esta secciÛn puede especificar las opciones para la creaciÛn de contenidos en las p·ginas de los Admins.<br /><br />
-  	 <b>submit</b><br />En esta secciÛn puede especificar las opciones para el formulario de envÌos de contenidos.<br /><br />
-  	 <b>ruta y tema</b><br />En esta secciÛn puede fijar un tema para este padre principal, y proveer las direcciones donde tiene almacenadas las im·genes para este padre principal.<br /><br /><b>General</b><br />En esta secciÛn puede especificar las opciones generales para usar a travÈs de todas las p·ginas de contenidos.<br /><br />
-  	 <b>Lista de p·ginas</b><br />En esta secciÛn puede especificar las opciones de las p·ginas, donde se listan los contenidos.<br /><br />
-  	 <b>P·gina de categorÌas</b><br />En esta secciÛn puede especificar las opciones de como mostrar las p·ginas de categorÌas.<br /><br />
-  	 <b>P·gina de contenidos</b><br />En esta secciÛn puede especificar las opciones de como mostrar las p·ginas de contenidos.<br /><br />
-  	 <b>Men˙</b><br />En esta secciÛn puede especificar las opciones para el men˙ en el padre principal.<br /><br />
-  	 ");
-define("CONTENT_ADMIN_HELP_LAN_13", "<i>En esta p·gina puede listar todos los contenidos que se han enviado por los usuarios .</i><br /><br /><b>lista de detalles</b><br />Ver· una lista de los contenidos con su id, icono, padre principal, cabecera [subcabecera], autor y opciones.<br /><br /><b>opciones</b><br />Puede enviar o eliminar contenidos usando los botones mostrados.");
-define("CONTENT_ADMIN_HELP_LAN_14", "¡rea de ayuda de configuraciÛn de contenidos");
-define("CONTENT_ADMIN_HELP_LAN_15", "<br /><br /><b>configuraciÛn personal</b><br />Puede asignar administradores a ciertas categorÌas.Haciendo esto, esos administradores pueden configurar sus contenidos personales fuera del control de la p·gina del administrador de categorÌas (content_manager.php).");
-define("CONTENT_ADMIN_HELP_LAN_16", "<i>en esta p·gina puede asignar administradores a las categorÌas que ha seleccionado </i><br /><br />Asigne un administrador en la columna de la izquierda pulsando su nombre. DespuÈs de pulse el botÛn de asignaciÛn  en la columna derecha para asignarle a esta categorÌa.");
-define("CONTENT_ADMIN_HELP_LAN_17", "<i>Si no ha aÒadido a˙n categorÌas padres principales, por favor cree una nueva p·gina de categorÌas.</i><br /><br /><b>Botones padre principales</b><br /> Seleccione una categorÌa padre principal pulsando el botÛn .");
-define("CONTENT_ADMIN_HELP_LAN_18", "
-  	 <i>Esta p·gina muestra todas las categorÌas de la categorÌa principal padre que seleccionÛ en la p·gina de ordenaciÛn de contenidos.</i><br /><br />
-  	 <b>Lista detallada</b><br />Ver· la categorÌa id y su nombre. TambiÈn ver· varias opciones para manejar el orden de las categorÌas.<br />
-  	 <br />
-  	 <b>ExplicaciÛn de los iconos</b><br />
-  	 ".CONTENT_ICON_ORDERALL." Manejar el orden global de los contenidos sin contar con la categorÌa.<br />
-  	 ".CONTENT_ICON_ORDERCAT." Manejar el orden de los contenidos de la categorÌa especÌficada.<br />
-  	 <img src='".e_IMAGE."admin_images/up.png' alt=''> El botÛn arriba le permite mover el orden del contenido un valor arriba.<br />
-  	 <img src='".e_IMAGE."admin_images/down.png' alt=''> El botÛn abajo le permite mover el orden del contenido un valor abajo.<br />
-  	 <br />
-  	 <b>order</b><br />AquÌ puede manualmente fijar el orden de todas las categorÌas en el padre principal. Necesita cambiar los valores en las cajas seleccionadas en el orden que desee y pulsar el botÛn de abajo para guardar el orden.<br />
-  	 ");
-define("CONTENT_ADMIN_HELP_LAN_19", "
-  	 <i>Esta p·gina muestra todos los contenidos de la categorÌa que ha seleccionado.</i><br /><br />
-  	 <b>Lista detallada</b><br />Puede ver el contenido id, autor, y cabecera TambiÈn puede ver varias opciones para manejar el orden de los contenidos.<br />
-  	 <br />
-  	 <b>ExplicaciÛn de los iconos</b><br />
-  	 <img src='".e_IMAGE."admin_images/up.png' alt=''> El botÛn arriba le permite mover el orden del contenido un valor arriba.<br />
-  	 <img src='".e_IMAGE."admin_images/down.png' alt=''> El botÛn abajo le permite mover el orden del contenido un valor abajo.<br />
-  	 <br />
-  	 <b>Orden</b><br />AquÌ puede manualmente fijar el orden de todas las categorÌas de este padre principal. Necesita cambiar los valores de las cajas de selecciÛn para ordenarlos como desee y pulsar el botÛn de abajo  para guardar el nuevo orden.<br />
-  	 ");
-define("CONTENT_ADMIN_HELP_LAN_20", "<i>Si no ha aÒadido una categorÌa padre principal, por favor, cree una nueva p·gina de categorÌas.</i><br /><br /><b>Botones padre principal</b><br />seleccione una categorÌa padre principal usando el botÛn.<br /><br /><b>3 tipos de ordenaciÛn</b><br />hay 3 tipos de ordenaciÛn diferentes disponibles, que no interfieren con cada uno.<br /><b>ordenar categorÌa</b><br />primero debe ordenar las subcategorÌas del padre principal. (esto se usar· al ojear las categorÌas)<br /><b>ordenarlas en cada categorÌa </b><br />segundo puede ordenar los contenidos en subcategorÌas separadas (esto se usar· al ojear los contenidos de las categorÌas)<br /><b>ordenarlos todos en una lista</b><br />tercero puede ordenar todos los contenidos del padre principal(esto se usar· en la lista reciente de los contenidos).");
+define("CONTENT_ADMIN_HELP_SUBMIT_1", "
+<i>En esta p√°gina ver√° una lista de contenidos enviados por los ususarios.</i><br /><br />
+<b>Lista detallada</b><br />Ver√° una lista de estos contenidos con su ID, icono, padre principal, cabecera [subcabecera], autor y opciones.<br /><br />
+<b>Opciones</b><br />Puede enviar o eliminar contenido usando los botones mostrados.
+");
+
+
+
+define("CONTENT_ADMIN_HELP_CAT_1", "
+<i>Esta p√°gina muestra todas las categor√≠as y subcategor√≠as existentes.</i><br /><br />
+<b>Lista detallada</b><br />Ver√° una lista de subcategor√≠as con su ID, autor, icono, categor√≠a [subcabecera] y opciones.<br />
+<br />
+<b>Explicaci√≥n de los iconos</b><br />
+".CONTENT_ICON_EDIT." : para todas las categor√≠as puede pulsar el bot√≥n para editar la categor√≠a.<br />
+".CONTENT_ICON_DELETE." : para todas las categor√≠as puede pulsar el bot√≥n para eliminar la categor√≠a.<br />
+".CONTENT_ICON_OPTIONS." : solo para la categor√≠a principal (arriba en la lista) puede pulsar este bot√≥n para fijar y controlar todas las opciones.<br />
+");
+define("CONTENT_ADMIN_HELP_CAT_2", "
+".CONTENT_ICON_CONTENTMANAGER_SMALL." : (solo sitio admin) para cada subcategor√≠a puede pulsar este bot√≥n para gestionar el perfil de otros administradores.<br />
+<br />
+<b>Gestiones personales</b><br />Puede asiganr administradores a ciertas categor√≠as. Haciendo √©sto, esos administradores pueden gestionar sus propios contenidos fueras de la p√°gina del administrador (content_manager.php).
+");
+define("CONTENT_ADMIN_HELP_CAT_3", "
+<i>Esta p√°gina le permite crear una nueva categor√≠a</i><br /><br />
+¬°ESCOJA SIEMPRE UN PADRE ANTES DE RELLENAR OTROS CAMPOS!<br /><br />
+Esto debe hacerse, porque debe cargarse en el sistema una categor√≠a √∫nica de preferencias.
+");
+define("CONTENT_ADMIN_HELP_CAT_4", "
+<i>Esta p√°gina muestra el formulario de edici¬¥n de la categor√≠a.</i><br /><br />
+<b>Formulario de edici√≥n de categor√≠a</b><br /> Usted puede editar toda la informaci√≥n de esta (sub)categor√≠a y enviar sus cambios.
+");
+define("CONTENT_ADMIN_HELP_CAT_5", "
+");
+define("CONTENT_ADMIN_HELP_CAT_6", "
+<i>Esta p√°gina muestra las opciones que puede fijar en el padre principal. Cada padre principal tiene su juego de opciones, asegurese de fijarlas correctamente.</i><br /><br />
+<b>Valores por defecto</b><br />Por defecto todos los valores est√°n presentes y actualizados en las preferencias que se muestran en la p√°gina, pero cambie alg√∫n par√°metro a sus estandares.<br /><br />
+<b>Divisi√≥n en 8 secciones</b><br />Las opciones est√°n divididas en 8 secciones principales. Ver√° las diferencias entre las secciones en el men√∫de la derecha. Haga click en ellas para ir al juego de cada secci√≥n.<br /><br />
+<b>Crear</b><br />iEn esta secci√≥n puede especificar las opciones para la creaci√≥n de contenidos en las p√°ginas del administrador.<br /><br />
+<b>Ruta y tema</b><br />En esta secci√≥n puede fijar un tema para este padre principal, y proveer rotas donde almacenar√° sus im√°genes para este padre principal.<br /><br /><b>General</b><br />En esta secci√≥n puede especificar opciones generales para usar a trav√©s de las p√°ginas de contenidos.<br /><br />
+<b>Lista de p√°ginas</b><br />En esta secci√≥n puede especificar opciones en las p√°ginas, donde se listar√°n los contenidos.<br /><br />
+<b>P√°ginas de categor√≠as</b><br />En esta secci√≥n puede especificar opciones sobre como mostrar las p√°ginas de categor√≠as.<br /><br />
+<b>P√°ginas de contenidos</b><br />En esta secci√≥n puede especificar opciones sobre como mostrar los contenidos en la p√°gina.<br /><br />
+<b>Men√∫</b><br />En esta secci√≥n puede especificar opciones para el men√∫ de sete padre principal.<br /><br />
+");
+define("CONTENT_ADMIN_HELP_CAT_7", "
+<i>En esta p√°gina puede asignar administradores a las categor√≠as seleccionadas</i><br /><br />
+Asigne administradores desde la columna izquierda pulsando sobre su nombre. Ver√° que los nombres se mueven a la columna derecha. Despues de pulsar sobre los administradores de la derecha se asignar√°n a esta categor√≠a.
+");
+
+define("CONTENT_ADMIN_HELP_ITEMCREATE_1", "
+<b>Categor√≠a</b><br />Seleccione una categor√≠a desde la caja de selecci√≥n para crear contenidos en ella.<br />
+");
+define("CONTENT_ADMIN_HELP_ITEMCREATE_2", "
+¬°Siempre seleccione una categor√≠a antes de compretar otros campos!<br />
+Es necesarioa hacer esto, porque cada padre principal de la categor√≠a (y subcategor√≠as en ella) pueden tener diferentes ajustes.<br /><br />
+<b>Formulario de creaci√≥n</b><br />Usted puede proveer toda la informaci√≥n para este contenido y enviarla.<br /><br />
+Tenga en cuenta que diferentes categor√≠as padres principales pueden tener diferente juego de ajustes, y pueden haber m√°s campos disponibles para rellenar.
+");
+
+
+define("CONTENT_ADMIN_HELP_ITEM_1", "
+<i>Si no ha a√±adido categor√≠as padres principales, h√°galo en la p√°gina <a href='".e_SELF."?type.0.cat.create'>Crear nueva categor√≠a</a>.</i><br /><br />
+<b>Categor√≠a</b><br />Seleccione una categor√≠a desde el men√∫ desplegable para gestionar el contenido de esa categor√≠a.<br /><br />
+Los padres principales se mostrar√°n en negrita y tendr√°n (TODAS) las extensiones detr√°s de ellas. Seleccionando una de√©stas se mostrar√°n todos los elementos de este padre principal.<br /><br />
+Para cada padre principal todas las subcategor√≠as se mostrar√°n incluyendo la propia categor√≠a padre principal(estas mostraras en texto plano). Seleccionando solo en estas categor√≠as se mostrar√°n los elementos, solo se mostrar√°n los elementos de esa categor√≠a.
+");
+define("CONTENT_ADMIN_HELP_ITEM_2", "
+<b>Primeras letras</b><br />Si m√∫ltiples primeras letras de contenidos existen(cabeceras de contenidos), ver√° los botones para seleccionar solo los contenidos con esa letra. Seleccionando el bot√≥n 'todo' se mostrar√° una lista conteniendo todos los contenidos en esa categor√≠a.<br /><br />
+<b>Lista detallada</b><br />Ver√° una lista de todos los caontenidos con su id, icono, autor, cabecera [subcabecera] y opciones.<br /><br />
+<b>Explicaci√≥n de iconos</b><br />
+".CONTENT_ICON_EDIT." : Editar el contenido.<br />
+".CONTENT_ICON_DELETE." : Eliminar el contenido.<br />
+");
+
+
+define("CONTENT_ADMIN_HELP_ITEMEDIT_1", "
+<b>Editar formulario</b><br />Puede editar toda la informaci√≥n de este contenido y enviar los cambios.<br /><br />
+Si cambia la categor√≠a de este contenido a otro padre principal, probeblemente quiera re-editar este elemento despu√©s de cambiar la categor√≠a.<br />Because you change the main parent category other preferences may be available to fill in.
+");
+
+define("CONTENT_ADMIN_HELP_1", "Area de ayuda de la gesti√≥n de contenidos");
+
+
+define("CONTENT_ADMIN_HELP_ITEM_LETTERS", "Abajo ver√° letras distintivas de cabeceras de contenidos de esta categor√≠a.<br />Pulsando en una de las letras, ver√° una lista de elementos comenzando poe la misma. Tambi√©n puede escoger el bot√≥n TODO para mostrar todos los elementos de esta categor√≠a.");
+
 
 ?>

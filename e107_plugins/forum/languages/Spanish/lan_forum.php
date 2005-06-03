@@ -1,13 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-     e107 website system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-25 01:17:11 $
-|     $Author: e107coders $
-|     Encoding: utf-8
+|     $Revision: 1.2 $
+|     $Date: 2005-06-03 22:34:18 $
+|     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("e_PAGETITLE", "Foros");
@@ -98,4 +97,6 @@ define("LAN_439", "aquí");
 define("LAN_440", "para ir a la página de registro.");
 define('FORLAN_441', 'No hay reglas definidas.');
 define('FORLAN_442', 'Mis subidas');
+define('FORLAN_443', '[Usuario eliminado]');
+define('FORLAN_444', 'sub-foros');
 ?>

@@ -1,13 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-     e107 website system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Spanish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-25 01:17:13 $
-|     $Author: e107coders $
-|     Encoding: utf-8
+|     $Revision: 1.2 $
+|     $Date: 2005-06-03 22:34:18 $
+|     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("NFLAN_01", "NewsFeeds");
@@ -70,4 +69,5 @@ define("NFLAN_42", "<b>&raquo;</b> <u>Feed Nombre:</u>
 	donde quiere que se muestren los resultados del feed, para ver el menú feeds necesitarás activar el newsfeed en su menú correspondiente, en <a href='".e_ADMIN."menus.php'>Página de menús</a>.
 	<br /><br />Para una buena lista de feeds disponibles, vea <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> o <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a>");
 define("NFLAN_43", "Newsfeed ayuda");
+define("NFLAN_44", "click para ver");
 ?>

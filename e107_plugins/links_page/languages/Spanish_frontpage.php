@@ -3,12 +3,13 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/usertheme_menu/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 22:34:19 $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish_frontpage.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2005-06-03 22:34:18 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("LAN_350", "Elegir Tema");
-define("LAN_351", "Seleccionar Tema");
+
+define("LP_FP_1", "Página de enlaces");
+
 ?>

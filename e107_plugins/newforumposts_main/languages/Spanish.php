@@ -1,13 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-     e107 website system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newforumposts_main/languages/Spanish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-25 01:17:12 $
-|     $Author: e107coders $
-|     Encoding: utf-8
+|     $Revision: 1.2 $
+|     $Date: 2005-06-03 22:34:18 $
+|     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("LAN_1", "Hilo");
@@ -32,5 +31,5 @@ define("NFPM_L12", "Configuración");
 define("NFPM_L13", "Actualizar configuración");
 define("NFPM_L14", "Configuración actualizada.");
 define("NFPM_L15", "Marque para ver los últimos mensajes en los foros.<br />Por defecto son los últimos temas.");
-
+define('NFPM_L16', '[Usuario eliminado]');
 ?>

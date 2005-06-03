@@ -1,13 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-     e107 website system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/calendar_menu/languages/Spanish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-25 01:17:10 $
-|     $Author: e107coders $
-|     Encoding: utf-8
+|     $Revision: 1.2 $
+|     $Date: 2005-06-03 22:34:18 $
+|     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define('EC_ADLAN_1', "Calendario de eventos");
@@ -168,6 +167,16 @@ define('EC_LAN_119', "mes/año");
 define('EC_LAN_120', "año/mes");
 define('EC_LAN_121', "Mostrar calendario");
 define('EC_LAN_122', "Elemento Css para mostrar eventos este día (menú)");
+define('EC_LAN_123', "Suscripciones");
+define('EC_LAN_124', "Suscripciones de calendario");
+define('EC_LAN_125', "Categorías disponibles para suscribirse");
+define('EC_LAN_126', "Suscrito");
+define('EC_LAN_127', "Categoría");
+define('EC_LAN_128', "No hay categorías para suscribirse");
+define('EC_LAN_129', "Actualizar");
+define('EC_LAN_130', "Suscripciones actualizadas");
+define('EC_LAN_131', "Volver");
+define('EC_LAN_132', "Detalles expandidos");
 
 define('EC_ADLAN_A10', "Configuración");
 define('EC_ADLAN_A11', "Categorias");
@@ -198,4 +207,21 @@ define('EC_ADLAN_A35', "");
 define('EC_ADLAN_A59', "Categoría en uso. No puede eliminarse.");
 
 define('EC_ADLAN_A80', "Visible para");
+define('EC_ADLAN_A81', "Permitir suscribir");
+define('EC_ADLAN_A82', "Forzar notificación a esta clase");
+define('EC_ADLAN_A83', "Días para notificar el evento");
+define('EC_ADLAN_A84', "Mensaje avanzado");
+define('EC_ADLAN_A85', "Mensaje del día");
+define('EC_ADLAN_A86', "Enviar email");
+define('EC_ADLAN_A87', "Nada");
+define('EC_ADLAN_A88', "Solo avanzado");
+define('EC_ADLAN_A89', "Solo en el día");
+define('EC_ADLAN_A90', "Avanzado y en el día");
+define('EC_ADLAN_A91', "Asunto email");
+define('EC_ADLAN_A92', "De email (nombre)");
+define('EC_ADLAN_A93', "De email (dirección email");
+define('EC_ADLAN_A94', "Añadir nueva clase de enevto");
+define('EC_ADLAN_A95', "Activar suscripciones");
+define('EC_ADLAN_A96', "Desactivandolo elimina el botón de las suscripciones y sobreescribe la configuración de la suscripción de la categoría");
+define('EC_ADLAN_A97', " Si fija forzar suscripciones esta categoría no se mostrará en la lista de suscripciones disponibles para el usuario.");
 ?>

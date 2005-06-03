@@ -1,13 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-     e107 website system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/Spanish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-25 01:17:12 $
-|     $Author: e107coders $
-|     Encoding: utf-8
+|     $Revision: 1.2 $
+|     $Date: 2005-06-03 22:34:18 $
+|     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("ADSTAT_ON", "On");
@@ -31,6 +30,13 @@ define("ADSTAT_L16", "Ajustes de estadísticas del sitio");
 define("ADSTAT_L17", "Ajustes de estadísticas actualizado");
 define("ADSTAT_L18", "Permitir acceder a la página de estadísticas principales ...");
 define("ADSTAT_L19", "Visitantes recientes");
-define("ADSTAT_L20", "Cantidad de nisitas del Admin");
+define("ADSTAT_L20", "Cantidad de visitas del Admin");
 define("ADSTAT_L21", "Máx registros a mostrar en la página de estadísticas");
+define("ADSTAT_L22", "Ejecutar rutina de actualización");
+define("ADSTAT_L23", "Se han detectado registros de versiones previas a e107, actualicelas aquí");
+define("ADSTAT_L24", "Ir al script de actualización");
+define("ADSTAT_L25", "Estadísticas seleccionadas Reseteadas");
+define("ADSTAT_L26", "Eliminar entradas de páginas");
+define("ADSTAT_L27", "Si sus estadísticas tiene páginas incorrectas, puede eliminarlas desde aquí");
+define("ADSTAT_L28", "Abrir página");
 ?>

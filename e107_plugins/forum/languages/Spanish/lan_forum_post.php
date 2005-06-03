@@ -1,13 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-     e107 website system - Language File.
+|     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_post.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-25 01:17:11 $
-|     $Author: e107coders $
-|     Encoding: utf-8
+|     $Revision: 1.2 $
+|     $Date: 2005-06-03 22:34:18 $
+|     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Foros");
@@ -109,6 +108,7 @@ define("LAN_414", "Click aquí para ver su encuesta");
 define("LAN_415", "Su respuesta ha sido enviada correctamente.");
 
 define("LAN_416", "Adjuntar archivo");
+define("LAN_417", "Añadir otro adjunto");
 
 define("POLL_506", "¿Permitir varias opciones?");
 define("POLL_507", "Si");
