@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 if(IsSet($_POST['reset'])){
 	for($mc=1;$mc<=5;$mc++){
 		$sql -> db_Select("menus","*", "menu_location='$mc' ORDER BY menu_order");
@@ -8,7 +8,7 @@ if(IsSet($_POST['reset'])){
 			$sql2 -> db_Update("menus", "menu_order='$count' WHERE menu_id='$menu_id' ");
 			$count++;
 		}
-		$text = "<b>Reiniciar menús en base de datos</b><br /><br />";
+		$text = "<b>Reiniciar menÃºs en base de datos</b><br /><br />";
 	}
 }else{
 	unset($text);
@@ -16,14 +16,14 @@ if(IsSet($_POST['reset'])){
 
 
 
-$text .= "Puede organizar el lugar y el orden en que los menús se mostrarán desde aquí. 
-Use las flechas para mover los menús arriba y abajo hasta que esté conforme con la organización.<br />
-Si encuentra que los menús no se están actualizando apropiadamente pulse en el botón refrescar.
+$text .= "Puede organizar el lugar y el orden en que los menÃºs se mostrarÃ¡n desde aquÃ­. 
+Use las flechas para mover los menÃºs arriba y abajo hasta que estÃ© conforme con la organizaciÃ³n.<br />
+Si encuentra que los menÃºs no se estÃ¡n actualizando apropiadamente pulse en el botÃ³n refrescar.
 
 <br />
 <form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">
 <input class=\"button\" type=\"submit\" name=\"reset\" value=\"Refrescar\" />
 </form>";
 
-$ns -> tablerender("Ayuda Menús", $text);
+$ns -> tablerender("Ayuda MenÃºs", $text);
 ?>

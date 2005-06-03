@@ -1,20 +1,11 @@
+﻿
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_banner.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+
 define("BNRLAN_1", "Anuncio borrado.");
 define("BNRLAN_2", "Por favor confirme que desea borrar este anuncio - una vez borrado no se podrá recuperar");
 
 define("BNRLAN_5", "Confirmar Borrar anuncio");
-define("BNRLAN_6", "Borrado cancelado.");
+define("BNRLAN_6", "Borrado cancelado."); 
 define("BNRLAN_7", "Anuncios Existentes");
 define("BNRLAN_8", "ID anuncio");
 define("BNRLAN_9", "Cliente");

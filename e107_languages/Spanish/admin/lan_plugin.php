@@ -1,22 +1,13 @@
+﻿
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+
 define("EPL_ADLAN_0", "Instalar");
 define("EPL_ADLAN_1", "Desinstalar");
 define("EPL_ADLAN_2", "¿Está seguro que quiere desinstalar esta aplicación?");
 define("EPL_ADLAN_3", "Confirmar desinstalación");
 define("EPL_ADLAN_4", "Desinstalación cancelada.");
 define("EPL_ADLAN_5", "El procedimiento de instalación creará nuevas entradas de preferencias.");
-define("EPL_ADLAN_6", "... pulsar aquí para comenzar procedimiento de instalación");
+define("EPL_ADLAN_6", "... pulsar aquí para comenzar procedimiento de instalación"); 
 define("EPL_ADLAN_7", "Tablas de base de datos ascendidas con éxito.");
 define("EPL_ADLAN_8", "Configuraciones de preferencias creadas con éxito.");
 define("EPL_ADLAN_9", "No se puede crear tabla(s) para esta aplicación.");
@@ -36,7 +27,7 @@ define("EPL_ADLAN_22", "Instalado");
 define("EPL_ADLAN_23", "No instalado");
 define("EPL_ADLAN_24", "Actualización disponible");
 define("EPL_ADLAN_25", "No se requiere instalación");
-define("EPL_ADLAN_26", "... pulsar aquí para comenzar procedimiento de desintalación");
+define("EPL_ADLAN_26", "... pulsar aquí para comenzar procedimiento de desintalación"); 
 define("EPL_ADLAN_27", "No se puede borrar con éxito ");
 define("EPL_ADLAN_28", "Tablas de base de datos borradas con éxito.");
 define("EPL_ADLAN_29", "Configuraciones de preferencias borradas con éxito.");
@@ -54,8 +45,8 @@ define("EPL_ADLAN_40", "Mensaje Admin");
 define("EPL_ADLAN_41", "Este no parece ser un archivo .zip o .tar válido.");
 define("EPL_ADLAN_42", "Ocurrió un error, no se pudo descomprimir el archivo");
 define("EPL_ADLAN_43", "Su plugin ha sido subido y descomprimido, compruebe su plugin en la lista.");
-define("EPL_ADLAN_44", "Subida y extracción automática ha sido desactivada por falta de permisos en la carpeta - CHMOD la carpeta e107_plugins a 777.");
-define("EPL_ADLAN_45", "Su menú ha sido subido y descomprimido, para activar ir a <a href='".e_ADMIN."menu.php'>en su página de menús</a>.");
+define("EPL_ADLAN_44", "Subida y extracción automática ha sido desactivada por falta de permisos en la carpeta - CHMOD la carpeta e107_plugins a 777."); 
+define("EPL_ADLAN_45", "Su menú ha sido subido y descomprimido, para activar ir a <a href='".e_ADMIN."menus.php'>en su página de menús</a>.");
 
 //define("EPL_CANCEL", "Cancelar");
 //define("EPL_EMAIL", "email");

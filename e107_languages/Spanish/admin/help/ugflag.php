@@ -1,8 +1,8 @@
-<?php
-$text = "Si estás actualizando e107 o necesitas tu sitio 
-fuera de línea por un momento solo marca la casilla mantenimiento 
-y tus visitantes serán redirigidos a una página explicandoles que 
-el sitio está en reparación. 
+ï»¿<?php
+$text = "Si estÃ¡s actualizando e107 o necesitas tu sitio 
+fuera de lÃ­nea por un momento solo marca la casilla mantenimiento 
+y tus visitantes serÃ¡n redirigidos a una pÃ¡gina explicandoles que 
+el sitio estÃ¡ en reparaciÃ³n. 
 Cuando hayas finalizado desmarca la casilla para retornar al estado normal.";
 
 $ns -> tablerender("Mantenimiento", $text);

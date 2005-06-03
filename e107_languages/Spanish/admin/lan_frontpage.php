@@ -1,15 +1,5 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_frontpage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("FRTLAN_1", "Actualizados los ajustes de la página.");
 define("FRTLAN_2", "Mostrar");
 
@@ -30,4 +20,12 @@ define("FRTLAN_21", "Contenido");
 //define("FRTLAN_23", "");
 //define("FRTLAN_24", "");
 //define("FRTLAN_25", "");
+define("FRTLAN_26", "Todos los usuarios");
+define("FRTLAN_27", "Invitados");
+define("FRTLAN_28", "Miembros");
+define("FRTLAN_29", "Administradores");
+define("FRTLAN_31", "Todos los usuarios");
+define("FRTLAN_32", "Clase de usuario");
+define("FRTLAN_33", "Parámetros actuales");
+define("FRTLAN_34", "Página");
 ?>

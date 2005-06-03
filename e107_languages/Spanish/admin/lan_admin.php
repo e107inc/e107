@@ -1,22 +1,12 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("ADLAN_0", "Noticias");
 define("ADLAN_1", "Gestionar Noticias");
 define("ADLAN_2", "Cat. Noticias");
 define("ADLAN_3", "Gestionar categorías de noticias");
 define("ADLAN_4", "Preferencias");
 define("ADLAN_5", "Editar Preferencias");
-define("ADLAN_6", "Menús");
+define("ADLAN_6", "Menús"); 
 define("ADLAN_7", "Gestionar menús");
 define("ADLAN_8", "Administradores");
 define("ADLAN_9", "Gestionar administradores");
@@ -29,7 +19,7 @@ define("ADLAN_15", "Gestionar artículos");
 define("ADLAN_16", "Contenido");
 define("ADLAN_17", "Gestionar contenidos");
 define("ADLAN_18", "Revisiones");
-define("ADLAN_19", "Gestionar revisiones");
+define("ADLAN_19", "Gestionar revisiones"); 
 define("ADLAN_20", "Enlaces");
 define("ADLAN_21", "Gestionar enlaces");
 define("ADLAN_22", "Cat. enlaces");
@@ -150,6 +140,11 @@ define("ADLAN_142", "Buscar");
 define("ADLAN_143", "Configuración de búsquedas");
 define("ADLAN_144", "Está en modo vista-simple, para cambiar a vista-avanzada");
 define("ADLAN_145", "pulse aquí");
+define("ADLAN_146", "Fallos de intentos de conexión");
+define("ADLAN_147", "Inpector de archivos");
+define("ADLAN_148", "Escanear archivos del sitio");
+define("ADLAN_149", "Notificación");
+define("ADLAN_150", "Notificaciones de email a Admin");
 
 define('ADLAN_CL_1', 'Parámetros');
 define('ADLAN_CL_2', 'Usuarios');
@@ -158,6 +153,7 @@ define('ADLAN_CL_4', 'Coms');
 define('ADLAN_CL_5', 'Archivos');
 define('ADLAN_CL_6', 'Herramientas');
 define('ADLAN_CL_7', 'Plugins');
+define('ADLAN_CL_8', 'Documentos');
 
 define("ADLAN_LAT_1", "Último");
 define("ADLAN_LAT_2", "Noticias enviadas");

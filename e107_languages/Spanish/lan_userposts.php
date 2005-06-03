@@ -1,17 +1,6 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_userposts.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
 
-define("PAGE_NAME", "Envios de usuario");
+define("PAGE_NAME", "Envios de usuario"); 
 
 define("UP_LAN_0", "Todos los mensaes en foros para ");
 define("UP_LAN_1", "Todos los comentarios para ");

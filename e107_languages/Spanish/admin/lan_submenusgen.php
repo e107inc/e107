@@ -1,15 +1,5 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_submenusgen.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("LAN_MENGEN_1","Gestionar enlaces para su menú");
 define("LAN_MENGEN_2","Generador Automático de Menú");
 define("LAN_MENGEN_3","Añadir enlaces en un submenú para :");
@@ -37,12 +27,12 @@ define("LAN_MENGEN_24","Todos los enlaces mostrados en el submenú ".LAN_MENGEN_
 define("LAN_MENGEN_25","Creado enlace principal: ");
 define("LAN_MENGEN_26","Enlace llamado: ");
 define("LAN_MENGEN_27"," es el enlace principal.");
-//define("LAN_MENGEN_28"," ahora se muestra en el submenú de ");
-//define("LAN_MENGEN_29"," existe. No se pudo modificar.");
+define("LAN_MENGEN_28"," ahora se muestra en el submenú de ");
+define("LAN_MENGEN_29"," existe. No se pudo modificar.");
 define("LAN_MENGEN_30"," fué creado en el submenú de ");
-//define("LAN_MENGEN_31"," para configurar en su área de enlaces.");
-//define("LAN_MENGEN_32"," fué borrado ! ");
-//define("LAN_MENGEN_33","No hay enlace para borrar...");
+define("LAN_MENGEN_31"," para configurar en su área de enlaces.");
+define("LAN_MENGEN_32"," fué borrado ! ");
+define("LAN_MENGEN_33","No hay enlace para borrar...");
 define("LAN_MENGEN_34","Otros enlaces principales:");
 define("LAN_MENGEN_35","Nombres de enlaces y direcciones en Submenú");
 define("LAN_MENGEN_36","Añadir enlaces en submenú para:");

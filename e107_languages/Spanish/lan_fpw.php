@@ -1,15 +1,5 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_fpw.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("PAGE_NAME", "Cambiar Contraseña");
 define("LAN_01", "La nueva contraseña ha sido enviada a ".$_POST['email'].", por favor siga las instrucciones en el email para validar su contraseña.");
 define("LAN_02", "Lo sentimos, no se puede enviar el email - por favor póngase en contacto con el administrador del sitio.");

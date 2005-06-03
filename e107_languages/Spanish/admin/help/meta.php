@@ -1,5 +1,5 @@
-<?php
-$text = "Cualquier meta tag que introduzcas aquí será enviado a la pantalla en el lugar correcto.";
+ï»¿<?php
+$text = "Cualquier meta tag que introduzcas aquÃ­ serÃ¡ enviado a la pantalla en el lugar correcto.";
 
 $ns -> tablerender("Meta Tags", $text);
 ?>

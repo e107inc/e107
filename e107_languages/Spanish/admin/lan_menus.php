@@ -1,15 +1,5 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_menus.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("MENLAN_1", "Visible para todos");
 define("MENLAN_2", "Visible solo para miembros");
 define("MENLAN_3", "Visible solo para administradores");

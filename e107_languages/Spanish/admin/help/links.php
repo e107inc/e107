@@ -1,7 +1,7 @@
-<?php
-$text = "Introduzca todos los enlaces de su sitio aquí.
-Los enlaces se mostrarán en el menú principal de navegación.
-Para los demás enlaces utilice la página de enlaces del plugin
+ï»¿<?php
+$text = "Introduzca todos los enlaces de su sitio aquÃ­.
+Los enlaces se mostrarÃ¡n en el menÃº principal de navegaciÃ³n.
+Para los demÃ¡s enlaces utilice la pÃ¡gina de enlaces del plugin
 <br />
 ";
 $ns -> tablerender("Ayuda Enlaces", $text);

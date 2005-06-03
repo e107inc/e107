@@ -1,11 +1,11 @@
-<?php
+ï»¿<?php
 $caption = "Foro de Ayuda";
 $text = "<b>General</b><br />
-Use este área para crear o editar tus foros<br />
+Use este Ã¡rea para crear o editar tus foros<br />
 <br />
 <b>Foros/Padres</b><br />
 Un Padre es un encabezado desde el que se despliegan otros foros, 
-esto hará las exposiciones más simples y hará que la navegación en sus foros sea más simple 
+esto harÃ¡ las exposiciones mÃ¡s simples y harÃ¡ que la navegaciÃ³n en sus foros sea mÃ¡s simple 
 para sus usuarios.
 <br /><br />
 <b>Accesibilidad</b>
@@ -18,12 +18,12 @@ Puede configurar foros padres o individuales de esta misma manera.
 <b>Moderadores</b>
 <br />
 Marque los nombres de los administradores listados para darles estado de moderador en el foro. 
-El administrador debe tener permisos de moderación de foro para estar listado aquí.
+El administrador debe tener permisos de moderaciÃ³n de foro para estar listado aquÃ­.
 <br /><br />
 <b>Rangos</b>
 <br />
-Configure sus rangos de usuario desde aquí. Si el campo de imágenes esta relleno se usarán imágenes, para usar nombres de rango escriba los nombres y asegurese de que la imagen en el campo del rango correspondiente esté en blanco.
-<br />el umbral es el número de puntos que el usuario necesita aumentar antes de que su nivel cambie.";
+Configure sus rangos de usuario desde aquÃ­. Si el campo de imÃ¡genes esta relleno se usarÃ¡n imÃ¡genes, para usar nombres de rango escriba los nombres y asegurese de que la imagen en el campo del rango correspondiente estÃ© en blanco.
+<br />el umbral es el nÃºmero de puntos que el usuario necesita aumentar antes de que su nivel cambie.";
 
 $ns -> tablerender($caption, $text);
 unset($text);

@@ -1,6 +1,6 @@
-<?php
-$text = "Puede separar sus ítems nuevos en diferentes categorías, 
-y permitir a los visitantes desplegar los nuevos ítems en esas categorías. <br /><br />
-Suba los íconos de sus noticias a ".e_THEME."-tutema-/images/ o images/newsicons/.";
-$ns -> tablerender("Ayuda Categoría de noticias", $text);
+ï»¿<?php
+$text = "Puede separar sus Ã­tems nuevos en diferentes categorÃ­as, 
+y permitir a los visitantes desplegar los nuevos Ã­tems en esas categorÃ­as. <br /><br />
+Suba los Ã­conos de sus noticias a ".e_THEME."-tutema-/images/ o images/newsicons/.";
+$ns -> tablerender("Ayuda CategorÃ­a de noticias", $text);
 ?>

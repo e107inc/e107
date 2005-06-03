@@ -1,18 +1,11 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_signup.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("PAGE_NAME", "Registro");
 
-define("LAN_7", "Usuario: ");
+define("LAN_7", "Nombre a mostrar: ");
+define("LAN_8", "Este es el nombre que se mostrará en el sitio");
+define("LAN_9", "Nombre usuario: ");
+define("LAN_10", "Este es el nombre que se usará para conectarse al sitio");
 
 define("LAN_17", "Contraseña: ");
 
@@ -63,7 +56,7 @@ define("LAN_SIGNUP_9", "No se pudo realizar el proceso.");
 define("LAN_SIGNUP_10", "Si");
 define("LAN_SIGNUP_11", ".");
 define("LAN_SIGNUP_12", "Guarde su nombre de usuario en un lugar seguro, si lo pierde no se podrá volver a recuperar.");
-define("LAN_SIGNUP_13", "Ahora puede iniciar sesión.");
+define("LAN_SIGNUP_13", "Ahora puede conectarse desde la caja de conexión, o desde <a href='".e_BASE."login.php'>aquí</a>.");
 define("LAN_SIGNUP_14", "aquí");
 define("LAN_SIGNUP_15", "Por favor contacte con el administrador del sitio");
 define("LAN_SIGNUP_16", "si necesita asistencia.");
@@ -78,6 +71,7 @@ define("LAN_SIGNUP_24", "Gracias por registrarse en");
 define("LAN_SIGNUP_25", "Envíe su avatar");
 define("LAN_SIGNUP_26", "Envíe su fotografía");
 define("LAN_SIGNUP_27", "Mostrar");
-
 define("LAN_SIGNUP_28", "opción de contenidos y listas de correo");
+define("LAN_SIGNUP_29", "Un correo de verificación le será enviado a la dirección de correo facilitada, por lo que debe ser una dirección válida.");
+define("LAN_SIGNUP_30", "Si no desea mostrar su dirección email en este sitio, seleccione 'ocultar dirección email'.");
 ?>

@@ -1,15 +1,4 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_upload_handler.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
 
 define("LANUPLOAD_1", "El tipo de archivo");
 define("LANUPLOAD_2", "no está permitido y ha sido borrado.");

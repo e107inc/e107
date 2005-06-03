@@ -1,15 +1,6 @@
+﻿
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+
 define("DOWLAN_1", "Descarga añadida a la base de datos.");
 define("DOWLAN_2", "Descarga actualizada en la base de datos.");
 define("DOWLAN_3", "Descarga borrada.");
@@ -46,7 +37,7 @@ define("DOWLAN_36", "borrada");
 define("DOWLAN_37", "Padre");
 define("DOWLAN_38", "No existen categorias");
 define("DOWLAN_39", "Categorías de descargas");
-define("DOWLAN_40", "Nada - padre principal");
+define("DOWLAN_40", "Nada - Padre principal");
 define("DOWLAN_41", "Icono");
 define("DOWLAN_42", "Ver imágenes");
 define("DOWLAN_43", "Visible para");

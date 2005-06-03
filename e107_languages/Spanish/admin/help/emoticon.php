@@ -1,8 +1,6 @@
-<?php
+ï»¿<?php
 
-$text = "Marca la casilla para que los emóticonos de texto sean reemplazados por imágenes de emoticons.<br /><br />
-Escribe cualquier actualización que necesites en las cajas de texto, y luego pulsa en actualizar para salvar las actualizaciones. 
-Usa el formulario al pie de la página para añadir emoticonos nuevos.";
+$text = "Puedes crear packs de emoticonops que se instalarÃ¡n en el sistema. Vaya a <a href='".e_FILE."emote_create/emotecreate.php'>crear emoticono</a> y siga las instrucciones.";
 
 $ns -> tablerender("Ayuda Emoticon", $text);
 ?>

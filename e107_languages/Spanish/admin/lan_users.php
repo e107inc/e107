@@ -1,15 +1,5 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("USRLAN_1", "Opciones Guardadas.");
 define("USRLAN_2", "Campos extendidos del usuario guardados.");
 define("USRLAN_3", "Administrador listado - para configurar permisos por favor ir a");
@@ -97,7 +87,7 @@ define("USRLAN_86", "Usuario verificado");
 define("USRLAN_87", "Configuración de usuario actualizada");
 define("USRLAN_88", "Clases de usuario actualizadas");
 define("USRLAN_89", "Ir a página:");
-define("USRLAN_90", "Buscar usuarios");
+define("USRLAN_90", "Buscar/refrescar");
 define("USRLAN_91", "Clase");
 define("USRLAN_92", "Caracteres no válidos en el nombre de usuario");
 define("USRLAN_93", "Borrar usuarios sin verificar");
@@ -110,7 +100,7 @@ define("USRLAN_114", "Estimado");
 define("USRLAN_115", "Gracias por su registro.");
 define("USRLAN_116", "Confirme que desea re-enviar un email de confirmación a:");
 define("USRLAN_117", "Pulse el botón para probar el siguiente email:");
-define("USRLAN_118", "Probar Email");
+define("USRLAN_118", "Probar Email"); 
 
 define("USRLAN_120", "Elegir Clases");
 define("USRLAN_121", "Mailing");
@@ -120,10 +110,17 @@ define("USRLAN_124", "Su cuenta está actualmente marcada como inactiva, para ac
 define("USRLAN_125", "Desde");
 define("USRLAN_126", "Permitir a ususarios valorar ususarios");
 define("USRLAN_127", "Permitir comentarios en perfil de usuario");
+define("USRLAN_128", "Nombre de conexión");
+define("USRLAN_129", "Opciones de edición (mostrar)");
+define("USRLAN_130", "Activar tracking de usuario online");
+define("USRLAN_131", "Debe activar esta opción para usar las opciones de tracking de usuario online, como online.php, foro online info y menús online");
+define("USRLAN_132", "Activar");
 
 define("LAN_MAINADMIN","Admin Jefe");
 define("LAN_ADMIN","Admin");
 define("LAN_NOTVERIFIED","No comprobado");
-define("LAN_BANNED","Expulsado");
+define("LAN_BANNED","Expulsado"); 
+
+
 
 ?>

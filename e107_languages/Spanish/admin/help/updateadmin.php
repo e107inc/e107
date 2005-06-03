@@ -1,4 +1,4 @@
-<?php
-$text = "Actualice su contraseña aquí.";
-$ns -> tablerender("Ayuda Configuración", $text);
+ï»¿<?php
+$text = "Actualice su contraseÃ±a aquÃ­.";
+$ns -> tablerender("Ayuda ConfiguraciÃ³n", $text);
 ?>

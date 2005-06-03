@@ -1,15 +1,5 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_db_verify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("DBLAN_1", "Imposible leer fichero de datos sql<br /><br />Por favor asegúrese de que el fichero <b>core_sql.php</b> existe en el directorio<b>/admin/sql</b>.");
 define("DBLAN_2", "Verificando todo");
 define("DBLAN_3", "para versión");

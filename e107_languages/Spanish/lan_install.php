@@ -1,15 +1,5 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_install.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("INSLAN1", "Etapa de Instalación");
 define("INSLAN2", "Chequeo de versión PHP / mySQL<br>Chequeo de sistema de archivos");
 define("INSLAN3", "Versión PHP");
@@ -54,7 +44,7 @@ define("INSLAN41", "Contraseña Administrador");
 define("INSLAN42", "Confirmar contraseña");
 define("INSLAN43", "Dirección email Admin");
 define("INSLAN44", "Dejó en blanco datos obligatorios, entre los datos nuevamente.");
-define("INSLAN45", "Las dos contraseña no coinciden, vuelvalas a escribir.");
+define("INSLAN45", "Las dos contraseñas no coinciden, vuelvalas a escribir.");
 define("INSLAN46", "no parece ser una dirección email válida, vuelva a escribirla.");
 define("INSLAN47", "¡Todo insertado!");
 define("INSLAN48", "e107 tiene la información necesaria para completar la instalación.<br />Por favor, pulse el botón para crear las tablas en la BD y guardar su configuración.");

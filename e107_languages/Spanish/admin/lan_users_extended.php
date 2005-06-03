@@ -1,17 +1,7 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_users_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("EXTLAN_1", "Nombre");
-define("EXTLAN_2", "Tipo");
+define("EXTLAN_2", "Previsualizar");
 define("EXTLAN_3", "Valores");
 define("EXTLAN_4", "Req'd");
 define("EXTLAN_5", "Aplicable");
@@ -61,6 +51,17 @@ define("EXTLAN_48", "Añadir nuevo valor");
 define("EXTLAN_49", "Permitir ocultar al usuario");
 define("EXTLAN_50", "Fijando a 'Si' permitirá al usuario ocultar el valor excepto a los Admins");
 define("EXTLAN_51", "<i>parm_name=parm_value</i><br />Consulta la ayuda para parámetros válidos.");
+
+define("EXTLAN_56", "Campos predefinidos");
+define("EXTLAN_57", "Activado");
+define("EXTLAN_58", "No Activado");
+define("EXTLAN_59", "Activar");
+define("EXTLAN_60", "Desactivar");
+define("EXTLAN_61", "Nada");
+define("EXTLAN_62", "Escoja tabla");
+define("EXTLAN_63", "Escoja campo ID");
+define("EXTLAN_64", "Escoja valor a mostrar");
+
 //textbox
 define("EXTLAN_HELP_1", "<b><i>Parámetros:</i></b><br />size - tamaño del campo<br />maxlength - longitud máx del campo<br />class - css clase del campo<br />");
 //radio buttons
@@ -75,4 +76,10 @@ define("EXTLAN_HELP_5", "Ésta será la ayuda del área de texto");
 define("EXTLAN_HELP_6", "Ésta será la ayuda de los Enteros");
 //date
 define("EXTLAN_HELP_7", "Ésta será la ayuda de la fecha");
+
+define("EXTLAN_PRE1", "Zona");
+define("EXTLAN_PRE2", "AIM");
+define("EXTLAN_PRE3", "ICQ");
+define("EXTLAN_PRE4", "Yahoo!");
+define("EXTLAN_PRE5", "Página Web");
 ?>

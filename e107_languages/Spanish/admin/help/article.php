@@ -1,12 +1,12 @@
-<?php
-$text = "Desde esta página puede añadir artículos simples o multi-página.<br />
- Para artículo multi-página separar cada página con el texto [newpage], ej <br /><code>Test1 [newpage] Test2</code><br /> 
- creará un artíclo de dos páginas con 'Test1' en página 1 y 'Test2' en página 2.
+ï»¿<?php
+$text = "Desde esta pÃ¡gina puede aÃ±adir artÃ­culos simples o multi-pÃ¡gina.<br />
+ Para artÃ­culo multi-pÃ¡gina separar cada pÃ¡gina con el texto [newpage], ej <br /><code>Test1 [newpage] Test2</code><br /> 
+ crearÃ¡ un artÃ­clo de dos pÃ¡ginas con 'Test1' en pÃ¡gina 1 y 'Test2' en pÃ¡gina 2.
 <br /><br />
-Si su artículo contiene etiquetas HTML que desea preservar, encierre el código con [preserve] [/preserve]. 
+Si su artÃ­culo contiene etiquetas HTML que desea preservar, encierre el cÃ³digo con [preserve] [/preserve]. 
 Por ejemplo, si ha introducido el texto '&lt;table>&lt;tr>&lt;td>Hola &lt;/td>&lt;/tr>&lt;/table>' 
-en su artículo, debe aparecer una tabla conteniendo la palabra Hola. 
+en su artÃ­culo, debe aparecer una tabla conteniendo la palabra Hola. 
 Si ha introducido '[preserve]&lt;table>&lt;tr>&lt;td>Hola &lt;/td>&lt;/tr>&lt;/table>[/preserve]' 
-el debe aparecer el código tal como lo introdujo y no la tabla que genera el código.";
-$ns -> tablerender("Ayuda Artículo", $text);
+el debe aparecer el cÃ³digo tal como lo introdujo y no la tabla que genera el cÃ³digo.";
+$ns -> tablerender("Ayuda ArtÃ­culo", $text);
 ?>

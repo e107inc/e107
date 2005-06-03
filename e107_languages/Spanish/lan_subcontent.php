@@ -1,15 +1,5 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_subcontent.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("ARLAN_0", "Gracias, su artículo ha sido guardado y será revisado por un administrador.");
 define("ARLAN_1", "Ha dejado campos en blanco.");
 define("ARLAN_2", "Gracias, su revisión ha sido guardado y será revisado por un administrador.");

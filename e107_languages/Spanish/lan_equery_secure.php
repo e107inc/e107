@@ -1,15 +1,5 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_equery_secure.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("EQSEC_LAN1", "Esta siendo redirigido a una función de Administración, posiblemente hay modificaciones de la base de datos");
 define("EQSEC_LAN2", "Por favor, confirme esta acción:");
 define("EQSEC_LAN3", "Sin referir");

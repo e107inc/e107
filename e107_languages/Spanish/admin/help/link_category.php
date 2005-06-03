@@ -1,6 +1,6 @@
-<?php
-$text = "Puede separar sus enlaces en diferentes categorías, 
-esto hace la navegación por la página de enlaces mucho más fácil y mejora la exposición.<br /><br />
-Cualquier enlace introducido bajo la categoría Principal será mostrado en su menú de navegación.";
-$ns -> tablerender("Ayuda Categoría enlace", $text);
+ï»¿<?php
+$text = "Puede separar sus enlaces en diferentes categorÃ­as, 
+esto hace la navegaciÃ³n por la pÃ¡gina de enlaces mucho mÃ¡s fÃ¡cil y mejora la exposiciÃ³n.<br /><br />
+Cualquier enlace introducido bajo la categorÃ­a Principal serÃ¡ mostrado en su menÃº de navegaciÃ³n.";
+$ns -> tablerender("Ayuda CategorÃ­a enlace", $text);
 ?>

@@ -1,17 +1,17 @@
-<?php
-$text = "En esta sección puede configurar 3 menús<br>
-<b> Menú de Nuevos Artículos</b> <br>
-Introduzca un número, por ejemplo '5' en el primer campo para mostrar los 5 primeros artículos o 
+ï»¿<?php
+$text = "En esta secciÃ³n puede configurar 3 menÃºs<br>
+<b> MenÃº de Nuevos ArtÃ­culos</b> <br>
+Introduzca un nÃºmero, por ejemplo '5' en el primer campo para mostrar los 5 primeros artÃ­culos o 
 deje en blanco para ver todos. 
-Puede configurar el título del enlace para el resto de los artículos en el segundo campo, 
-cuando deje esta opción en blanco no creará un enlace, por ejemplo: 'Todos los artículos'<br>
-<b> Menú Comentarios/Foro</b> <br>
-El número de comentarios predeterminado es 5, 
-el número predeterminado de caracteres es 10000. 
-El mensaje fijo es para cortar lineas muy largas, pondrá un mensaje fijo en el final, 
-una buena elección para esto es 
-'...', revise los temas originales si quiere verlos en toda la visión de conjunto.<br>
+Puede configurar el tÃ­tulo del enlace para el resto de los artÃ­culos en el segundo campo, 
+cuando deje esta opciÃ³n en blanco no crearÃ¡ un enlace, por ejemplo: 'Todos los artÃ­culos'<br>
+<b> MenÃº Comentarios/Foro</b> <br>
+El nÃºmero de comentarios predeterminado es 5, 
+el nÃºmero predeterminado de caracteres es 10000. 
+El mensaje fijo es para cortar lineas muy largas, pondrÃ¡ un mensaje fijo en el final, 
+una buena elecciÃ³n para esto es 
+'...', revise los temas originales si quiere verlos en toda la visiÃ³n de conjunto.<br>
 
 ";
-$ns -> tablerender("Ayuda Configuración de menú", $text);
+$ns -> tablerender("Ayuda ConfiguraciÃ³n de menÃº", $text);
 ?>

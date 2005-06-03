@@ -1,16 +1,4 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_image.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
-
+﻿<?php
 define("IMALAN_1", "Permitir enviar imágenes");
 define("IMALAN_2", "Ver imágenes, esto se aplicará a (comentarios, chatbox etc)");
 define("IMALAN_3", "Metodo de cambio de tamaño");
@@ -43,4 +31,6 @@ define("IMALAN_30", "Todos (público)");
 define("IMALAN_31", "Solo Visitas");
 define("IMALAN_32", "Solo Miembros");
 define("IMALAN_33", "Solo Administradores");
+define("IMALAN_34", "Activar Sleight");
+define("IMALAN_35", "Repara la transparencia PNG-24's con transparencia alfa en IE 5 / 6 (Aplicado Sitewide)");
 ?>

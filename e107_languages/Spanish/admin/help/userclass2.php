@@ -1,9 +1,9 @@
-<?php
+ï»¿<?php
 $caption = "Ayuda Uso de Clase";
-$text = "Puede crear o editar/borrar clases existentes desde esta página.<br />
-Esto es útil para restringir usuarios a ciertos sectores de su sitio. 
+$text = "Puede crear o editar/borrar clases existentes desde esta pÃ¡gina.<br />
+Esto es Ãºtil para restringir usuarios a ciertos sectores de su sitio. 
 Por ejemplo, Puede crear una clase llamada PRUEBA, luego crear un foro en donde solo los usuarios 
 de clase PRUEBA puedan acceder.
-<br /> usando clases puede fácilmente construir un área solo para miembros en su web.";
+<br /> usando clases puede fÃ¡cilmente construir un Ã¡rea solo para miembros en su web.";
 $ns -> tablerender($caption, $text);
 ?>

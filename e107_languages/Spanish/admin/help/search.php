@@ -1,8 +1,8 @@
-<?php
-$text = "Si su versión de servidor MySQL lo soporta usted puede cambiar método corto de MySql  que es más rápido que el método corto de PHP y   
+ï»¿<?php
+$text = "Si su versiÃ³n de servidor MySQL lo soporta usted puede cambiar mÃ©todo corto de MySql  que es mÃ¡s rÃ¡pido que el mÃ©todo corto de PHP y   
 incluye la funcionalidad de buscar booleans.<br /><br />
 
-<b>Caracteres </ b> Éste es el número de carácteres del texto que se desplegarán en el resumen de resultado de búsqueda. <br /> <br />  
-<b>Resultados </ b> Éste es el número de resultados que mostrarán por la página.";
-$ns -> tablerender("Ayuda búsquedas", $text);
+<b>Caracteres </ b> Ã‰ste es el nÃºmero de carÃ¡cteres del texto que se desplegarÃ¡n en el resumen de resultado de bÃºsqueda. <br /> <br />  
+<b>Resultados </ b> Ã‰ste es el nÃºmero de resultados que mostrarÃ¡n por la pÃ¡gina.";
+$ns -> tablerender("Ayuda bÃºsquedas", $text);
 ?>

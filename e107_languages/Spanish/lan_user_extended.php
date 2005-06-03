@@ -1,15 +1,4 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_user_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
 define("UE_LAN_1", "Caja de texto");
 define("UE_LAN_2", "Botones seleccionables");
 define("UE_LAN_3", "Lista desplegable");
@@ -17,6 +6,7 @@ define("UE_LAN_4", "Campo de tabla de BD");
 define("UE_LAN_5", "Área de texto");
 define("UE_LAN_6", "Entero");
 define("UE_LAN_7", "Fecha");
+define("UE_LAN_8", "Idioma");
 
 define("UE_LAN_HIDE", "Ocultar a los usuarios");
 ?>

@@ -1,22 +1,12 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_article.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("ARLAN_0", "Artículo añadido a la base de datos.");
 define("ARLAN_1", "Campos dejados en blanco.");
 define("ARLAN_2", "Artículo actualizado en la base de datos.");
 define("ARLAN_3", "Padre añadido a la base de datos.");
 define("ARLAN_4", "Artículo padre actualizado en la base de datos.");
 define("ARLAN_5", "Artículo padre borrado.");
-define("ARLAN_6", "Por favor marque la casilla confirmar para borrar el artículo");
+define("ARLAN_6", "Por favor marque la casilla confirmar para borrar el artículo"); 
 define("ARLAN_7", "Artículos");
 define("ARLAN_8", "No hay padres");
 define("ARLAN_9", "Padres existentes");

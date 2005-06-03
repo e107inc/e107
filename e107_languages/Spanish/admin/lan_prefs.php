@@ -1,15 +1,5 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("PRFLAN_1", "Información del sitio");
 define("PRFLAN_2", "Nombre del sitio");
 define("PRFLAN_3", "URL del sitio");
@@ -98,9 +88,9 @@ define("PRFLAN_83", "ejemplo");
 //define("PRFLAN_86", "Verificar archivos de Idioma");
 define("PRFLAN_87", "Comentarios");
 define("PRFLAN_88", "Ver comentarios anindados (jerarquía)");
-//define("PRFLAN_89", "Mostrar icono nuevo comentario");
+define("PRFLAN_89", "Mostrar icono nuevo comentario");
 define("PRFLAN_89", "Sitio:");
-//define("PRFLAN_90", "Pulse aquí para forzar a Internet Explorer a usar modo estandar. El modo por defecto es quirks.");
+define("PRFLAN_90", "Permitir editar sus propios comentarios");
 define("PRFLAN_91", "Si alguien ataca su sitio mediante multiples comandos a su servidor, su IP será automáticamente baneada!");
 define("PRFLAN_92", "¿Ocultar contraseña en el email de confirmación?");
 define("PRFLAN_93", "página de la función strftime en php.net");
@@ -142,8 +132,14 @@ define("PRFLAN_129", "No permitir conexiones múltiples");
 define("PRFLAN_130", "On: evitará que se hagan más de una conexión con el mismo usuario y contraseña (compartir detalle de conexión)");
 define("PRFLAN_131", "Activar el uso de bbcode [php]");
 define("PRFLAN_132", "Activandolo permitiré a los ususarios autorizados a enviar código [php] en ciertas áreas");
-//define("PRFLAN_131", "Seleccionar hoja de estilo a usar");
+define("PRFLAN_131", "Activar uso de bbcode [php]");
 define("PRFLAN_133", "Requerida extension GD, no encontrada");
+define("PRFLAN_134", "Redirigir todas las peticiones a una URL");
+define("PRFLAN_135", "por ejemplo, si su sitio de arriba es http://foo.com, cualquiera que consulte http://www.foo.com será redirigido a http://foo.com");
+define("PRFLAN_136", "Máximas conexiones permitidas para la misma dirección IP.");
+define("PRFLAN_137", "Mostrar el uso de memoria");
+define("PRFLAN_138", "Activar codigo-Imagen de verificación durante el proceso de password olvidado.");
+define("PRFLAN_139", "Mostrar una alerta cuando la contraseña del admin principal no ha cambiado en los últimos 30 días");
 
 define("CUSTSIG_1", "¡Configuración Guardada!");
 define("CUSTSIG_2", "Nombre Real:");

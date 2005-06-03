@@ -1,15 +1,5 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_filemanager.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("FMLAN_1", "Actualizado");
 define("FMLAN_2", "A");
 define("FMLAN_3", "directorio");
@@ -54,5 +44,5 @@ define("FMLAN_43", "Eliminar archivos seleccionados");
 define("FMLAN_44", "Confirme que desea MOVER los archivos seleccionados al directorio DOWNLOADS.");
 define("FMLAN_45", "Confirme que desea MOVER los archivos seleccionados al directorio DOWNLOADIMAGES.");
 define("FMLAN_46", "Confirme que desea ELIMINAR los archivos seleccionados.");
-define("FMLAN_47", "Transferencias de usuario");
+define("FMLAN_47", "Transferencias de usuario"); 
 ?>

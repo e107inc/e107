@@ -1,6 +1,6 @@
-<?php
-$text = "Por favor, copie sus archivos en la carpeta ".e_FILE."downloads, sus imágenes en la carpeta ".e_FILE."downloadimages y la imágenes de muestra en la carpeta ".e_FILE."downloadthumbs.
+ï»¿<?php
+$text = "Por favor, copie sus archivos en la carpeta ".e_FILE."downloads, sus imÃ¡genes en la carpeta ".e_FILE."downloadimages y la imÃ¡genes de muestra en la carpeta ".e_FILE."downloadthumbs.
 <br /><br />
-Para enviar una descarga, primero cree un padre, después las categorías dentro del padre, podrá activar las descargas dentro de cada categoría.";
+Para enviar una descarga, primero cree un padre, despuÃ©s las categorÃ­as dentro del padre, podrÃ¡ activar las descargas dentro de cada categorÃ­a.";
 $ns -> tablerender("Ayuda Descargas", $text);
 ?>

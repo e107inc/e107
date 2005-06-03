@@ -1,15 +1,5 @@
-<?php
-/*
-+ ----------------------------------------------------------------------------+
-     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_newspost.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-24 11:44:22 $
-|     $Author: e107coders $
-|     Encoding: utf-8
-+----------------------------------------------------------------------------+
-*/
+﻿<?php
+
 define("NWSLAN_1", "Noticia borrada.");
 define("NWSLAN_2", "Por favor marca la casilla para borrar esta noticia.");
 define("NWSLAN_3", "No hay noticias aún.");
@@ -77,8 +67,8 @@ define("NWSLAN_66", "Transferir");
 define("NWSLAN_67", "Imagen");
 define("NWSLAN_68", "Archivo");
 define("NWSLAN_69", "Transferir una imagen o archivo para usar en la noticia");
-define("NWSLAN_70", "La carpeta files/downloads no tiene permisos de escritura, necesita cambiar los permisos a CHMOD 777 antes de realizar la transferencia");
-define("NWSLAN_71", "La carpeta images/newspost_images no tiene permisos de escritura, necesita cambiar los permisos a CHMOD 777 antes de realizar la transferencia");
+define("NWSLAN_70", "La carpeta de descargas ".e_FILE." no tiene permisos de escritura, Necesita habilitar con CHMOD 777 la carpeta antes de transferir archivos.");
+define("NWSLAN_71", "La carpeta de imagenes de noticias ".e_IMAGE." no tiene permisos de escritura.  Necesita habilitar con CHMOD 777 la carpeta antes de transferir imágenes.");
 define("NWSLAN_72", "Solo muestra la noticia entre ciertas fechas");
 define("NWSLAN_73", "Tipo de muestreo");
 define("NWSLAN_74", "Seleccione como y donde se mostrará la noticia");
@@ -100,8 +90,8 @@ define("NWSLAN_100", "Activar la transferencia de imágenes en el envio de notic
 define("NWSLAN_101", "Autoajustar el tamaño de las imágenes transferidas");
 define("NWSLAN_102", "ancho en pixels<br> o dejar en blanco para desactivar.");
 define("NWSLAN_103", "re-enviar");
-define("NWSLAN_104", "por");
-define("NWSLAN_105", "Marque para cambiar la fecha de las noticias a la actual");
+define("NWSLAN_104", "por"); 
+define("NWSLAN_105", "Marque para cambiar la fecha de las noticias a la actual"); 
 define("NWSLAN_106", "Enviar-Noticias puede aceder por:");
 define("NWSLAN_107", "Activar HtmlArea en Enviar-Noticia.");
 
