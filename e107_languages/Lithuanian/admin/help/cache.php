@@ -1,5 +1,5 @@
-<?php
-$caption = "Caching";
-$text = "If you have caching turned on it will vastly improve speed on your site and minimize the amount of calls to the sql database.<br /><br /><b>IMPORTANT! If you are making your own theme turn caching off as any changes you make will not be reflected.</b>";
+﻿<?php
+$caption = "Podėlis";
+$text = "Įjungus podėlį, labai pagreitinsite svetainės įkrovimą ir sumažinsite užklausų į sql duomenų bazę skaičių.<br /><br /><b><font style='color: red;'>Dėmesio!</font> Jei jūs kuriate naują temą, išjunkite podėlį, kitaip nematysite temos pasikeitimų.</b>";
 $ns -> tablerender($caption, $text);
 ?>
