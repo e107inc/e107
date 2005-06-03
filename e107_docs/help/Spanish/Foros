@@ -1,0 +1,17 @@
+﻿
+P>	¿Que son los padres de los foros?
+R>	El padre es la cabecera del foro por el cual se ordenaran sus temas. Esto hace más fácil la navegación del foro.
+
+P>	Quiero que un cierto administrador modere un foro pero su nombre no aparece en la lista ¿Por qué?
+I want to make a certain administator a forum moderator but his name isn't in the list - why?
+R> Los administradores solo estarán en la lista si tienen los permisos para ser moderadores de foro. Vaya al área de administración y edite al administrador. Asegúrese que tiene activada la opción 'Moderar foros'.
+
+P>	¿Que es la notificación?
+R>	Si lo tiene activo, le permitirá que los usuarios puedan recibir una notificación sobre un tema cuando alguien lo responda, recibiendo un email.
+
+P>	¿Que es la purga?
+R>	Esta opción le permite eliminar viejos temas o mensajes que no hayan recibido respuestas durante un tiempo. Cuidado con esta función, ya que los temas eliminados ya no podrán ser restaurados.
+
+P>	¿que son los informes de mensajes?
+R>	Los usuarios pueden informar cuando encuentren problemas de moderación, o mensajes inquietantes (insultos, no cumplir las normas...) para denunciar estos casos. Puede abrir un informe y moderar a su antojo.
+

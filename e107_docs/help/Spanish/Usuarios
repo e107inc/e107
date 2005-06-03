@@ -1,0 +1,3 @@
+﻿
+P> ¿Qué es el campo extra?
+R> Esta utilidad le servirá para añadir más campos a los ya existentes de los usuarios. Por ejemplo, podría añadir campos en que os usuarios deban registrar dirección, teléfono, etc... y hacer éstos obligatorios u opcionales. El nuevo campo aparecerá en la página de Ajustes de Usuario, y también la lista de Miembros.

@@ -1,0 +1,15 @@
+﻿
+P> ¿Cómo cambio temas?
+R> Hay una sección en su página de Preferencias que le permite para cambiar el tema de su sitio. Por favor vea el tema con anticipación primero ya que algunos más viejos temas no son  compatibles y podrían dejar su sitio inutilizable de ser aplicado.
+
+P> ¿Qué es COPPA?
+R> Protección contra el acto de Intimidad En línea De niños de 1998. Esto es una regla universal usada que protege a menores de 13 y más pequeños. Esto asegura que ninguna información sobre menores será usada por 'el Operador' (es decir, usted) para otros objetivos que no sean el mantenimiento del sitio web. Para más información, por favor, mirar en http://www.cdt.org/legislation/105th/privacy/coppa.html
+
+P>¿Que es la protección flood?
+R> Esto previene su sitio de ser inundado por llamadas HTTP, que pueden dar a su sitio el mensaje de ser inaccesible.
+
+P> ¿Debería usar cookies o Sesiones para controlar a mis usuarios?
+R> Es su opción, si su sitio trabaja bien con cookies entonces lo dejelo así. Si usted prefiere usar sesiones PHP, usela (un objeto de sesión personalizado es usado por e107 para almacenar y manejar sesiones).
+
+P> ¿Por qué debería llevar mi sitio en el modo standard?
+R> Si está  desarrollando un tema y está teniendo problemas para mostrarlo en Firefox/Mozilla y IE, trate de activarlo. IE entonces será controlado en el modo standard y el empleará el modelo de cajas correcto.

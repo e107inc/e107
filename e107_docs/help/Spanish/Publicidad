@@ -1,0 +1,19 @@
+﻿
+
+P>	I definido un nuevo anuncio (banner) desde el área de administración pero no se muestra ¿Porque?
+R>	El tema que estes utilizando debe estar preparado para mostrar anuncios. Asegúrese de que tiene la etiqueta {BANNER] o {BANNER=su_nombre_de_campaña} en la sección $HEADER del aricho theme.php
+
+P>	Quisiera definir dos áreas diferentes de anuncios ¿Cómo?
+R>	Puede agrupar sus anuncios en campañas. Luego debe editar su tema para mostrar anuncios de ciertas campañas. POr ejemplo, si tiene dos campañas llamadas cam_1 y cam_2, escribiendo {BANNER=cam1] en una área de su sección $HEADER del archivo theme.php mostrará solo los anuncions de cam_1, y escribiendo {BANNER=cam2} en otro área solo loas anuncions de la campaña 2. Escribiendo {BANNER} (sin nombre de campaña) mostrará aleatoriamente loas anuncios de todas las campañas.
+
+P>	¿Para que sirve el nombre de cliente y su contraseña?
+R>	Si su cliente quiere acceder a ver que tal están funcionando sus anuncios en su sitio, accediendo desde http://nombre_de_su_sitio/banner.php y entrando con su nombre y contraseña podrán realizar un seguimiento.
+
+P>	¿Como puedo tener un anuncio tipo torre dentro de un menú?
+R>	Primero es necesario definir una campaña para los anuncios tipo torre (manteniendolo separado de los banner de tipo de barra)
+	1. Vaya al área del admin y haga click en Publicidad
+	2. Entre los anuncios tipo torre. Asegurese de haber creado una nueva campaña, por ejemplo 'torres'.
+	3. Vaya al área de 'Menus'. Active 'Banner_menu' en una de sus áreas.
+	4. Haga click en el enlace Configurar del menú.
+	5. Escriba un título (por defecto 'Anuncio'), y escriba un nombre de campaña que definió anteriormente.
+	6. Abandone el área del admin y verá su anuncio tipo torre en el área que asignó.

@@ -1,0 +1,10 @@
+﻿
+P>	¿Qué es la caché?
+R>	Activandola acelerará la navegación en su sitio y disminuirá la llamada de sentencias sql.
+
+P>	He cambiado algunas cosas en el tema que estoy utilizando pero no veo los cambios. ¿Puede ser debido a la caché?
+R>	Lo más probable. Cuando cambia de temas la caché se limpia, pero si cambia código dentro de un tema no. Mantenga el estado de la caché en Off hasta finalizar sus cambios.
+
+P>	¿Puedo guardar los archivos de caché en el disco?
+R>	Si. De hecho es así como se almacenan los datos. Pero para eso es muy importante que la carpeta e107_files/cache tenga permisos de escritura.
+
