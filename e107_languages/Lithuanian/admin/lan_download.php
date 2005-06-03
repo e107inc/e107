@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:32:34 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 15:36:34 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
@@ -19,7 +19,7 @@ define("DOWLAN_7", "Existing Downloads");
 
 define("DOWLAN_11", "Category");
 define("DOWLAN_12", "Name");
-define("DOWLAN_13", "File");
+define("DOWLAN_13", "Byla");
 define("DOWLAN_14", "Enter address if download is an external file");
 define("DOWLAN_15", "Author");
 define("DOWLAN_16", "Author Email");
