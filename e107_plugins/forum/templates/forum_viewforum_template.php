@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewforum_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-03 18:24:47 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-03 18:43:21 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -48,8 +48,6 @@ $FORUM_VIEW_START = "
 }
 
 if (!$FORUM_VIEW_FORUM) {
-	global $sc_style;
-	$sc_style['THREADTYLE']['post'] = "<br />";
 	$FORUM_VIEW_FORUM = "
 		<tr>
 		<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>{ICON}</td>

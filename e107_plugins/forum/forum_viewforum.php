@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-06-01 17:03:58 $
+|     $Revision: 1.33 $
+|     $Date: 2005-06-03 18:43:22 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -309,17 +309,20 @@ function parse_thread($thread_info)
 	}
 	 
 	$THREADTYPE = '';
-	if ($thread_info['thread_s'] == 1) {
+	if ($thread_info['thread_s'] == 1)
+	{
 		$ICON = ($thread_info['thread_active'] ? IMAGE_sticky : IMAGE_stickyclosed);
-		$THREADTYPE = '['.LAN_202.']';
-	} elseif($thread_info['thread_s'] == 2) {
+		$THREADTYPE = '['.LAN_202.']<br />';
+	}
+	elseif($thread_info['thread_s'] == 2)
+	{
 		$ICON = IMAGE_announce;
-		$THREADTYPE = '['.LAN_396.']';
-	} elseif(!$thread_info['thread_active']) {
+		$THREADTYPE = '['.LAN_396.']<br />';
+	}
+	elseif(!$thread_info['thread_active'])
+	{
 		$ICON = IMAGE_closed;
 	}
-
-//	echo $thread_info['thread_id'].' = ['.$thread_info['thread_active'].']';
 	 
 	$thread_name = strip_tags($tp->toHTML($thread_info['thread_name']));
 	if (strtoupper($THREADTYPE) == strtoupper(substr($thread_name, 0, strlen($THREADTYPE)))) {
