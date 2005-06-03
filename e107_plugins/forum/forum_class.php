@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-06-02 20:57:39 $
+|     $Revision: 1.36 $
+|     $Date: 2005-06-03 11:18:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -800,9 +800,12 @@ class e107forum
 	{
 		global $sql;
 		$qry = "
-		SELECT FLOOR(thread_user) as uid , count(thread_user) AS cnt FROM e107_forum_t 
-		GROUP BY thread_user
+		SELECT u.user_id AS uid, count(t.thread_user) AS cnt FROM #forum_t AS t
+		LEFT JOIN #user AS u on FLOOR(t.thread_user) = u.user_id
+		WHERE u.user_id > 0
+		GROUP BY uid
 		";
+
 		if($sql->db_Select_gen($qry))
 		{
 			$ret = array();
