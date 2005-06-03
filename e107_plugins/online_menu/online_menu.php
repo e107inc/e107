@@ -11,18 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_menu/online_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-14 17:15:44 $
-|     $Author: streaky $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-03 12:14:58 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-
 
 if(!defined("e_PLUGIN")){ exit; }
 
 $caption = (file_exists(THEME."images/online_menu.png") ? "<img src='".THEME."images/online_menu.png' alt='' /> ".ONLINE_L4 : ONLINE_L4);
 
-if(!defined("e_TRACKING_DISABLED")) {
+if(!defined("e_TRACKING_DISABLED") && (isset($pref['track_online']) && $pref['track_online']))
+{
 	$text = ONLINE_L1.GUESTS_ONLINE."<br />";
 	//if($pref['user_reg'] == 1){
 	$text .= ONLINE_L2.MEMBERS_ONLINE.(MEMBERS_ONLINE ? ", ": "").MEMBER_LIST."<br />";
@@ -37,11 +37,19 @@ if(!defined("e_TRACKING_DISABLED")) {
 		extract($row);
 		$text .= "<br />".ONLINE_L5.": ".$total_members.", ".ONLINE_L6.": <a href='".e_BASE."user.php?id.$user_id'>$user_name</a>";
 	}
-} else {
-	$text = TRACKING_MESSAGE;
+}
+else
+{
+	if(ADMIN)
+	{
+		$text = TRACKING_MESSAGE;
+	}
+	else
+	{
+		return;
+	}
 }
 
 $ns->tablerender($caption, $text, 'online');
-
 
 ?>

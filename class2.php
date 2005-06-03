@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.155 $
-|     $Date: 2005-06-02 19:07:40 $
-|     $Author: streaky $
+|     $Revision: 1.156 $
+|     $Date: 2005-06-03 12:14:57 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -410,7 +410,8 @@ init_session();
 
 
 $sql->db_Mark_Time('Start: Go online');
-if(isset($pref['track_online'])){
+if(isset($pref['track_online']) && $pref['track_online'])
+{
 	$e_online->online($pref['track_online'], $pref['flood_protect']);
 }
 $sql->db_Mark_Time('Start: Signup/splash/admin');
@@ -905,7 +906,6 @@ class e_online {
 			define("GUESTS_ONLINE", "");
 			define("ON_PAGE", "");
 			define("MEMBER_LIST", ""); //
-			define("TRACKING_MESSAGE", (ADMIN ? "<br /><br /><span style='font-weight: bold'>Online user tracking is currently disabled, please enable it <a href='".e_ADMIN."users.php?options'>here</a></span><br />" : ""));
 		}
 	}
 }
