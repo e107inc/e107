@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_cache.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 15:15:31 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-03 15:32:34 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
