@@ -11,14 +11,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-04-25 20:08:09 $
-|     $Author: streaky $
+|     $Revision: 1.38 $
+|     $Date: 2005-06-03 17:02:29 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
 require_once(e_HANDLER."emote.php");
 global $tp, $e107cache, $e_event, $e107;
+
+if (file_exists(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php")) {
+	include_once(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
+} else {
+	include_once(e_PLUGIN."chatbox_menu/languages/English/English.php");
+}
+
 $emessage='';
 if(isset($_POST['chat_submit']))
 {

@@ -11,15 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/e_notify.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-05-31 21:38:58 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-03 17:02:29 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
-@include_once(e_PLUGIN.'chatbox_menu/languages/'.e_LANGUAGE.'_notify.php');
-@include_once(e_PLUGIN.'chatbox_menu/languages/English_notify.php');
-
+if (file_exists(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php")) {
+	include_once(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
+} else {
+	include_once(e_PLUGIN."chatbox_menu/languages/English/English.php");
+}
 $config_category = NT_LAN_CB_1;
 $config_events = array('cboxpost' => NT_LAN_CB_2);
 
