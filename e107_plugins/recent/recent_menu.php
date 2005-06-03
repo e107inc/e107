@@ -12,12 +12,8 @@
 +---------------------------------------------------------------+
 */
 
-if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
-if(!$sql -> db_Select("plugin", "*", "plugin_path = 'recent' AND plugin_installflag = '1' ")){
-	return;
-}
+global $sysprefs, $tp;
 unset($text);
-
 require_once(e_PLUGIN."recent/recent_shortcodes.php");
 
 //get language file
@@ -27,26 +23,18 @@ include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."recent/languages/Eng
 require_once(e_PLUGIN."recent/recent_class.php");
 $rc = new recent;
 
-global $tp;
-
 //check preferences from database
-$sql = new db;
-$num_rows = $sql -> db_Select("core", "*", "e107_name='recent' ");
-$row = $sql -> db_Fetch();
+$recent_pref = $sysprefs->getArray('recent');
 
 //insert default preferences
-if (empty($row['e107_value'])) {
-
+if (!isset($recent_pref['news_menudisplay']))
+{
 	$rc -> getSections();
 	$recent_pref = $rc -> getDefaultPrefs();
 
 	$tmp = addslashes(serialize($recent_pref));
 	$sql -> db_Insert("core", "'recent', '$tmp' ");
-	$sql -> db_Select("core", "*", "e107_name='recent' ");
 }
-
-$recent_pref = unserialize(stripslashes($row['e107_value']));
-if(!is_array($recent_pref)){ $recent_pref = unserialize($row['e107_value']); }
 
 //get all sections to use
 foreach ($recent_pref as $key => $value) {
@@ -75,8 +63,8 @@ global $rc;
 if(!is_object($rc)){ $rc = new recent; }
 //display the sections
 $text = "";
-for($i=0;$i<count($arr);$i++){
-	if($arr[$i][1] == "1"){
+for($i=0;$i<count($arr);$i++) {
+	if($arr[$i][1] == "1") {
 		$text .= $rc -> show_section_recent($arr[$i], "menu");
 	}
 }
