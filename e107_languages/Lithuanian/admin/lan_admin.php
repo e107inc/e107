@@ -4,228 +4,228 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:32:34 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 19:29:10 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "Naujienos");
 define("ADLAN_1", "Paskelbti/redaguoti/trinti naujienas");
-define("ADLAN_2", "Naujienø rubrikos");
-define("ADLAN_3", "Pridëti/redaguoti/trinti naujienø rubrikas");
+define("ADLAN_2", "NaujienÅ³ rubrikos");
+define("ADLAN_3", "PridÄ—ti/redaguoti/trinti naujienÅ³ rubrikas");
 define("ADLAN_4", "Nuostatos");
-define("ADLAN_5", "Redaguoti svetainës nuostatas");
+define("ADLAN_5", "Redaguoti svetainÄ—s nuostatas");
 define("ADLAN_6", "Meniu");
-define("ADLAN_7", "Keisti meniu iğsidëstymo tvarkà");
+define("ADLAN_7", "Keisti meniu iÅ¡sidÄ—stymo tvarkÄ…");
 define("ADLAN_8", "Administratoriai");
-define("ADLAN_9", "Pridëti/paalinti svetainës administratorius");
-define("ADLAN_10", "Administratoriaus slaptaşodis");
-define("ADLAN_11", "Keisti savo slaptaşodá");
+define("ADLAN_9", "PridÄ—ti/paÅ¡alinti svetainÄ—s administratorius");
+define("ADLAN_10", "Administratoriaus slaptaÅ¾odis");
+define("ADLAN_11", "Keisti savo slaptaÅ¾odÄ¯");
 define("ADLAN_12", "Diskusijos");
-define("ADLAN_13", "Pridëti/redaguoti diskusijas");
+define("ADLAN_13", "PridÄ—ti/redaguoti diskusijas");
 define("ADLAN_14", "Straipsniai");
 define("ADLAN_15", "Paskelbti naujus/redaguoti/trinti straipsnius");
 define("ADLAN_16", "Turinys");
-define("ADLAN_17", "Pridëti naujà/redaguoti/trinti turiná");
-define("ADLAN_18", "Apşvalgos");
-define("ADLAN_19", "Pridëti naujas/redaguoti/trinti apşvalgas");
-define("ADLAN_22", "Nuorodø grupës");
-define("ADLAN_23", "Pridëti naujas/redaguoti/trinti nuorodø  grupes");
-define("ADLAN_24", "Bylø parsisiuntimas");
-define("ADLAN_25", "Tvarkyti bylø parsisiuntimo nuostatas");
-define("ADLAN_26", "Bylø grupës");
-define("ADLAN_27", "Pridëti naujas/redaguoti/trinti bylø grupes");
+define("ADLAN_17", "PridÄ—ti naujÄ…/redaguoti/trinti turinÄ¯");
+define("ADLAN_18", "ApÅ¾valgos");
+define("ADLAN_19", "PridÄ—ti naujas/redaguoti/trinti apÅ¾valgas");
+define("ADLAN_22", "NuorodÅ³ grupÄ—s");
+define("ADLAN_23", "PridÄ—ti naujas/redaguoti/trinti nuorodÅ³ grupes");
+define("ADLAN_24", "BylÅ³ parsisiuntimas");
+define("ADLAN_25", "Tvarkyti bylÅ³ parsisiuntimo nuostatas");
+define("ADLAN_26", "BylÅ³ grupÄ—s");
+define("ADLAN_27", "PridÄ—ti naujas/redaguoti/trinti bylÅ³ grupes");
 define("ADLAN_28", "Pasisveikinimas");
-define("ADLAN_29", "Rağyti nekintantá pasisveikinimo tekstà");
-define("ADLAN_30", "Bylø tvarkyklë");
-define("ADLAN_31", "Tvarkyti/atsiøsti bylas");
+define("ADLAN_29", "Ä®raÅ¡yti nekintantÄ¯ pasisveikinimo tekstÄ…");
+define("ADLAN_30", "BylÅ³ tvarkyklÄ—");
+define("ADLAN_31", "Tvarkyti/atsiÅ³sti bylas");
 define("ADLAN_32", "Pateiktos naujienos");
-define("ADLAN_33", "Apşvelgti vartotojø pateiktas naujienas");
-define("ADLAN_34", "Draudimø  sàrağas");
+define("ADLAN_33", "ApÅ¾velgti vartotojÅ³ pateiktas naujienas");
+define("ADLAN_34", "DraudimÅ³ sÄ…raÅ¡as");
 define("ADLAN_35", "Apriboti lankytojus");
 define("ADLAN_36", "Nariai");
-define("ADLAN_37", "Svetainës nariø sàrağas");
-define("ADLAN_38", "Nariø grupës");
-define("ADLAN_39", "Sukurti/redaguoti nariø grupes");
-define("ADLAN_40", "Svetainës prieşiûra");
-define("ADLAN_41", "Laikinai uşdaryti svetainæ");
-define("ADLAN_42", "Individualûs meniu/puslapiai");
-define("ADLAN_43", "Sukurti individualø meniu");
-define("ADLAN_44", "Duomenø bazë");
-define("ADLAN_45", "Duomenø bazës tvarkymo priemonës");
+define("ADLAN_37", "SvetainÄ—s nariÅ³ sÄ…raÅ¡as");
+define("ADLAN_38", "NariÅ³ grupÄ—s");
+define("ADLAN_39", "Sukurti/redaguoti nariÅ³ grupes");
+define("ADLAN_40", "SvetainÄ—s prieÅ¾iÅ«ra");
+define("ADLAN_41", "Laikinai uÅ¾daryti svetainÄ™");
+define("ADLAN_42", "IndividualÅ«s meniu/puslapiai");
+define("ADLAN_43", "Sukurti individualÅ³ meniu");
+define("ADLAN_44", "DuomenÅ³ bazÄ—");
+define("ADLAN_45", "DuomenÅ³ bazÄ—s tvarkymo priemonÄ—s");
 define("ADLAN_46", "Atsijungti");
 define("ADLAN_47", "Sveiki,");
-define("ADLAN_48", "Seansà pradëjo");
-define("ADLAN_49", "svetainës administratorius");
-define("ADLAN_50", "valdymo teisës");
-define("ADLAN_51", "Prağome pradëti naujà seansà, jei norite patekti á svetainës administravimo sritá.");
+define("ADLAN_48", "SeansÄ… pradÄ—jo");
+define("ADLAN_49", "svetainÄ—s administratorius");
+define("ADLAN_50", "valdymo teisÄ—s");
+define("ADLAN_51", "PraÅ¡ome pradÄ—ti naujÄ… seansÄ…, jei norite patekti Ä¯ svetainÄ—s administravimo sritÄ¯");
 define("ADLAN_52", "Admin Front Page");
-define("ADLAN_53", "Svetainë");
+define("ADLAN_53", "SvetainÄ—");
 define("ADLAN_54", "Reklaminiai skydeliai");
 define("ADLAN_55", "Tvarkyti reklaminius skydelius");
-define("ADLAN_56", "Pokalbiø kanalas");
-define("ADLAN_57", "Tvarkyti pokalbiø kanalà");
-define("ADLAN_58", "Jausmukø piktogramos");
-define("ADLAN_59", "Tvarkyti jausmukø piktogramas");
+define("ADLAN_56", "PokalbiÅ³ kanalas");
+define("ADLAN_57", "Tvarkyti pokalbiÅ³ kanalÄ…");
+define("ADLAN_58", "Jausmukai");
+define("ADLAN_59", "Tvarkyti jausmukÅ³ piktogramas");
 define("ADLAN_60", "Pirmasis puslapis");
-define("ADLAN_61", "Tvarkyti pirmojo puslapio turiná");
-define("ADLAN_62", "Naujienø ğaltiniai");
-define("ADLAN_63", "Tvarkyti naujienø ğaltinius");
-define("ADLAN_64", "Seansø şurnalas");
+define("ADLAN_61", "Tvarkyti pirmojo puslapio turinÄ¯");
+define("ADLAN_62", "NaujienÅ³ Å¡altiniai");
+define("ADLAN_63", "Tvarkyti naujienÅ³ Å¡altinius");
+define("ADLAN_64", "SeansÅ³ Å¾urnalas");
 define("ADLAN_65", "Log stats/counter etc");
 define("ADLAN_66", "Meta Tags");
 define("ADLAN_67", "Add/Edit site meta tags");
 define("ADLAN_68", "PHP informacija");
 define("ADLAN_69", "PHP informacijos puslapis");
 define("ADLAN_70", "Apklausos");
-define("ADLAN_71", "Pridëti/redaguoti apklausas");
-define("ADLAN_72", "Vieğai atsiunèiamos bylos");
-define("ADLAN_73", "Tvarkyti vieğøjø bylø atsiuntimà");
-define("ADLAN_74", "Podëlis");
-define("ADLAN_75", "Nustatyti podëlio bûsenà");
-define("ADLAN_77", "Yra pateiktø naujienø - prağome jas perşiûrëti.");
+define("ADLAN_71", "PridÄ—ti/redaguoti apklausas");
+define("ADLAN_72", "VieÅ¡ai atsiunÄiamos bylos");
+define("ADLAN_73", "Tvarkyti vieÅ¡Ä…jÄ¯ bylÅ³ atsiuntimÄ…");
+define("ADLAN_74", "PodÄ—lis");
+define("ADLAN_75", "Nustatyti podÄ—lio bÅ«senÄ…");
+define("ADLAN_77", "Yra pateiktÅ³ naujienÅ³ â€“ praÅ¡ome perÅ¾iÅ«rÄ—ti jas.");
 define("ADLAN_78", "Papildomi informacijos laukai");
-define("ADLAN_79", "Redaguoti papildomus informacijos apie nará laukus");
+define("ADLAN_79", "Redaguoti papildomus informacijos apie narÄ¯ laukus");
 
 
-define("ADLAN_86", "Neteisingas slaptaşodis ");
-define("ADLAN_87", "Administratoriaus vardas nerastas duomenø bazëje ");
-define("ADLAN_88", "Negalima pradëti seanso ");
+define("ADLAN_86", "Neteisingas slaptaÅ¾odis ");
+define("ADLAN_87", "Administratoriaus vardas nerastas duomenÅ³ bezÄ—je ");
+define("ADLAN_88", "Negalima pradÄ—ti seanso ");
 define("ADLAN_89", "Administratoriaus vardas ");
-define("ADLAN_90", "Administratoriaus slaptaşodis ");
-define("ADLAN_91", "Pradëti seansà");
-define("ADLAN_92", "Prağome pradëti naujà seansà, jei norite patekti á svetainës administravimo sritá ...");
+define("ADLAN_90", "Administratoriaus slaptaÅ¾odis ");
+define("ADLAN_91", "PradÄ—ti seansÄ…");
+define("ADLAN_92", "PraÅ¡ome pradÄ—ti naujÄ… seansÄ…, jei norite patekti Ä¯ svetainÄ—s administravimo sritÄ¯ ...");
 define("ADLAN_93", "Administravimo funkcijos");
-define("ADLAN_94", "Rodyti ádiegtus áskiepius");
-define("ADLAN_95", "Áskiepiø valdymas");
-define("ADLAN_96", "Nëra");
-define("ADLAN_97", "Spauskite èia, jei norite perşiûrëti DUK");
-define("ADLAN_98", "Áskiepiø tvarkyklë");
-define("ADLAN_99", "Ádiegti/atnaujinti áskiepius");
+define("ADLAN_94", "Rodyti Ä¯diegtus Ä¯skiepius");
+define("ADLAN_95", "Ä®skiepiÅ³ valdymas");
+define("ADLAN_96", "NÄ—ra");
+define("ADLAN_97", "Spauskite Äia, jei norite perÅ¾iÅ«rÄ—ti DUK");
+define("ADLAN_98", "Ä®skiepiÅ³ tvarkyklÄ—");
+define("ADLAN_99", "Ä®diegti/atnaujinti Ä¯skiepius");
 define("ADLAN_100", "Temos maketas");
-define("ADLAN_101", "Ğablono autorius");
-define("ADLAN_102", "Nuo administratoriaus slaptaşodşio pakeitimo praëjo daugiau kaip 30 dienø - ");
-define("ADLAN_103", "Pakeiskite já dabar");
+define("ADLAN_101", "Å ablono autorius");
+define("ADLAN_102", "Nuo administratoriaus slaptaÅ¾odÅ¾io pakeitimo praÄ—jo daugiau kaip 30 dienÅ³ - ");
+define("ADLAN_103", "Pakeiskite jÄ¯ dabar");
 define("ADLAN_104", "Saugumas");
 
 define("ADLAN_105", "Iliustracijos");
-define("ADLAN_106", "Iliustracijø nuostatos");
+define("ADLAN_106", "IliustracijÅ³ nuostatos");
 
 define("ADLAN_107", "Nepatikrintos pateiktos naujienos");
-define("ADLAN_108", "Nepatikrintos atsiøstos bylos");
+define("ADLAN_108", "Nepatikrintos atsiÅ³stos bylos");
 define("ADLAN_109", "Informacija");
 define("ADLAN_110", "Registruoti nariai");
 define("ADLAN_111", "Nepatvirtinti nariai");
 define("ADLAN_112", "Apriboti nariai");
-define("ADLAN_113", "Diskusijø şinutës");
+define("ADLAN_113", "DiskusijÅ³ Å¾inutÄ—s");
 define("ADLAN_114", "Komentarai");
-define("ADLAN_115", "Pokalbiø pasisakymai");
-define("ADLAN_116", "Administratoriaus  şurnalas ...");
+define("ADLAN_115", "PokalbiÅ³ pasisakymai");
+define("ADLAN_116", "Administratoriaus Å¾urnalas ...");
 define("ADLAN_117", "Parodyti visus elementus");
-define("ADLAN_118", "Iğvalyti şurnalà");
+define("ADLAN_118", "IÅ¡valyti Å¾urnalÄ…");
 
 define("ADLAN_119", "Nepatikrintos pateiktos nuorodos");
 
-define("ADLAN_120", "Galimas duomenø bazës atnaujinimas ...");
-define("ADLAN_121", "Ádiegti");
+define("ADLAN_120", "Galimas duomenÅ³ bazÄ—s atnaujinimas ...");
+define("ADLAN_121", "Ä®diegti");
 
 
 define("ADLAN_123", "Nepatikrinti pateikti straipsniai");
-define("ADLAN_124", "nepatikrintos pateiktos apşvalgos");
+define("ADLAN_124", "nepatikrintos pateiktos apÅ¾valgos");
 
-define("ADLAN_125", "Nepatikrintos pateiktos diskusijø şinutës");
+define("ADLAN_125", "Nepatikrintos pateiktos diskusijÅ³ Å¾inutÄ—s");
 
-define("ADLAN_126", "Pagrindinës parinktys");
+define("ADLAN_126", "PagrindinÄ—s parinktys");
 define("ADLAN_127", "Nariai");
 define("ADLAN_128", "Turinys");
 define("ADLAN_129", "Bendravimas");
-define("ADLAN_130", "Byløtvarkymas");
-define("ADLAN_131", "Kiti árankiai");
+define("ADLAN_130", "BylÅ³ tvarkymas");
+define("ADLAN_131", "Kiti Ä¯rankiai");
 
 define("ADLAN_132", "Kalba");
 define("ADLAN_133", "numatyta");
 
-define("ADLAN_134", "Bûsena");
-define("ADLAN_135", "Administratoriaus şurnalas");
+define("ADLAN_134", "BÅ«sena");
+define("ADLAN_135", "Administratoriaus Å¾urnalas");
 
-define("ADLAN_136", "Pağtas");
-define("ADLAN_137", "Pağto nuostatos ir iğsiuntimas");
+define("ADLAN_136", "PaÅ¡tas");
+define("ADLAN_137", "PaÅ¡to nuostatos ir iÅ¡siuntimas");
 
-define("ADLAN_138", "Svetainës nuorodos");
-define("ADLAN_139", "Árağyti/redaguoti/iğtrinti nuorodas");
+define("ADLAN_138", "SvetainÄ—s nuorodos");
+define("ADLAN_139", "Ä®raÅ¡yti/redaguoti/iÅ¡trinti nuorodas");
 
-define("ADLAN_140", "Temø tvarkyklë");
-define("ADLAN_141", "Ádiegti/pasirinkti temas ir t.t.");
+define("ADLAN_140", "TemÅ³ tvarkyklÄ—");
+define("ADLAN_141", "Ä®diegti/pasirinkti temas ir t.t.");
 
-define("ADLAN_142", "Paieğka");
-define("ADLAN_143", "Paieğkos svetainëje sàranka");
-define("ADLAN_144", "Jûs matote supaprastintà  vaizdà, taèiau galite já");
-define("ADLAN_145", "iğplësti");
+define("ADLAN_142", "PaieÅ¡ka");
+define("ADLAN_143", "PaieÅ¡kos svetainÄ—je sÄ…ranka");
+define("ADLAN_144", "JÅ«s matote supaprastintÄ… vaizdÄ…, taÄiau galite jÄ¯");
+define("ADLAN_145", "iÅ¡plÄ—sti");
 
-define("ADLAN_146", "Nepavykæ prisijungimo bandymai");
-define("ADLAN_147", "Bylø inspektorius");
+define("ADLAN_146", "NepavykÄ™ prisijungimo bandymai");
+define("ADLAN_147", "BylÅ³ inspektorius");
 define("ADLAN_148", "Scan site files");
 
-define("ADLAN_149", "Praneğti");
+define("ADLAN_149", "PraneÅ¡ti");
 define("ADLAN_150", "Admin Email Notifications");
 
-define("ADLAN_CL_1", "Nuostatos");
-define("ADLAN_CL_2", "Nariai");
-define("ADLAN_CL_3", "Turinys");
-define("ADLAN_CL_4", "Bendravimas");
-define("ADLAN_CL_5", "Bylos");
-define("ADLAN_CL_6", "Árankiai");
-define("ADLAN_CL_7", "Áskiepiai");
+define('ADLAN_CL_1', 'Nuostatos');
+define('ADLAN_CL_2', 'Nariai');
+define('ADLAN_CL_3', 'Turinys');
+define('ADLAN_CL_4', 'Bendravimas');
+define('ADLAN_CL_5', 'Bylos');
+define('ADLAN_CL_6', 'Ä®rankiai');
+define('ADLAN_CL_7', 'Ä®skiepiai');
 
-define("ADLAN_LAT_1", "Vliausi");
+define("ADLAN_LAT_1", "VÄ—liausi");
 
 define("ADLAN_LAT_2", "Pateiktos naujienos");
 define("ADLAN_LAT_3", "Pateikti straipsniai");
-define("ADLAN_LAT_4", "Pateiktos apşvalgos");
+define("ADLAN_LAT_4", "Pateiktos apÅ¾valgos");
 define("ADLAN_LAT_5", "Pateiktos nuorodos");
-define("ADLAN_LAT_6", "Pateiktos diskusijø şinutës");
-define("ADLAN_LAT_7", "Atsiøstos bylos");
+define("ADLAN_LAT_6", "Pateiktos diskusijÅ³ Å¾inutÄ—s");
+define("ADLAN_LAT_7", "AtsiÅ³stos bylos");
 define("ADLAN_LAT_8", "There are unmoderated administrator messages");
 
 // Common Terms
 define("LAN_EDIT","Taisyti");
-define("LAN_DELETE","Iğtrinti");
+define("LAN_DELETE","IÅ¡trinti");
 define("LAN_CREATE","Sukurti");
 define("LAN_UPDATE","Atnaujinti");
-define("LAN_SAVE","Iğsaugoti");
-define("LAN_SAVED","Iğsaugotas");
-define("LAN_SETSAVED","Jûsø nuostatos iğsaugotos");
+define("LAN_SAVE","IÅ¡saugoti");
+define("LAN_SAVED","IÅ¡saugotas");
+define("LAN_SETSAVED","JÅ«sÅ³ nuostatos iÅ¡saugotos");
 define("LAN_ERROR","Klaida");
-define("LAN_CONFIRMDEL","Prağome patvirtinti iğtrynimà");
+define("LAN_CONFIRMDEL","PraÅ¡ome patvirtinti iÅ¡trynimÄ…");
 define("LAN_OPTIONS","Parinktys");
 define("LAN_PREFS","Nuostatos");
-define("LAN_DELETED","Sëkmingai iğtrinta");
-define("LAN_UPDATED","Sëkmingai atnaujinta");
-define("LAN_CREATED","Sëkmingai sukurta");
+define("LAN_DELETED","SÄ—kmingai iÅ¡trinta");
+define("LAN_UPDATED","SÄ—kmingai atnaujinta");
+define("LAN_CREATED","SÄ—kmingai sukurta");
 define("LAN_CREATED_FAILED","Nepavyko sukurti");
-define("LAN_DELETED_FAILED","Nepavyko iğtrinti");
+define("LAN_DELETED_FAILED","Nepavyko iÅ¡trinti");
 define("LAN_UPDATED_FAILED","Nepavyko atnaujinti");
 
-define("LAN_RESET","Atstatyti bûsenà");
-define("LAN_CLEAR","Iğvalyti");
+define("LAN_RESET","Atstatyti bÅ«senÄ…");
+define("LAN_CLEAR","IÅ¡valyti");
 define("LAN_OK","Gerai");
 
-define("LAN_PRESET","Iğankstinë pasirinktis");
-define("LAN_PRESET_SAVED","Iğankstinë pasirinktis sëkmingai iğsaugota");
-define("LAN_PRESET_DELETED","Iğankstinë pasirinktis sëkmingai iğtrinta");
-define("LAN_PRESET_CONFIRMDEL","Ar tikrai norite iğtrinti iğankstinæ pasirinktá?");
+define("LAN_PRESET","IÅ¡ankstinÄ— pasirinktis");
+define("LAN_PRESET_SAVED","IÅ¡ankstinÄ— pasirinktis sÄ—kmingai iÅ¡saugota");
+define("LAN_PRESET_DELETED","IÅ¡ankstinÄ— pasirinktis sÄ—kmingai iÅ¡trinta");
+define("LAN_PRESET_CONFIRMDEL","Ar tikrai norite iÅ¡trinti iÅ¡ankstinÄ™ pasirinktÄ¯?");
 define("LAN_NOTWRITABLE"," is not writable, you need to CHMOD 777 the folder first.");
 define("LAN_DATE","Data");
 define("LAN_TIME","Laikas");
 define("LAN_YES","Taip");
 define("LAN_NO","Ne");
-define("LAN_EMPTY","Duomenø bazëje árağø dar nëra");
-define("LAN_EXISTING","Esantys árağai");
+define("LAN_EMPTY","DuomenÅ³ bazÄ—je Ä¯raÅ¡Å³ dar nÄ—ra");
+define("LAN_EXISTING","Esantys Ä¯raÅ¡ai");
 
-define("LAN_CANCEL","Atğaukti");
-define("LAN_CONFDELETE","Patvirtinti iğtrynimà");
-define("LAN_PLUGIN","Áskiepis");
-define("LAN_ORDER","Eilë");
+define("LAN_CANCEL","AtÅ¡aukti");
+define("LAN_CONFDELETE","Patvirtinti iÅ¡trynimÄ…");
+define("LAN_PLUGIN","Ä®skiepis");
+define("LAN_ORDER","EilÄ—");
 
 define("LAN_SELECT","Pasirinkti ...");
 define("LAN_ADMIN","Admin");
