@@ -1,4 +1,14 @@
 ﻿<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/article.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:07:25 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 $text = "Desde esta página puede añadir artículos simples o multi-página.<br />
  Para artículo multi-página separar cada página con el texto [newpage], ej <br /><code>Test1 [newpage] Test2</code><br /> 
  creará un artíclo de dos páginas con 'Test1' en página 1 y 'Test2' en página 2.

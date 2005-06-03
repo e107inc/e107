@@ -1,4 +1,14 @@
 ﻿<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/banlist.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:07:25 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 $caption = "Expulsando usuarios de su sitio";
 $text = "Usted puede expulsar usuarios de su sitio desde este área.<br />
 Escriba una dirección IP completa o use comodines para expulsar un rango completo de direcciones IP. 

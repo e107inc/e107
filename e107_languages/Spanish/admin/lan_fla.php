@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_fla.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:40 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("FLALAN_1", "Fallo en los intentos de conexión");
 define("FLALAN_2", "No se han registrado fallos de conexión");
 define("FLALAN_3", "Intento(s) eliminado(s)");

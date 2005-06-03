@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_review.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:40 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("REVLAN_1", "Revisión añadida a base de datos.");
 define("REVLAN_2", "Campos en blanco.");
 define("REVLAN_3", "Revisión actualizada en base de datos.");

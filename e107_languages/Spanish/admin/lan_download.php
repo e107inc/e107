@@ -1,6 +1,14 @@
-﻿
-<?php
-
+﻿<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_download.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:39 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("DOWLAN_1", "Descarga añadida a la base de datos.");
 define("DOWLAN_2", "Descarga actualizada en la base de datos.");
 define("DOWLAN_3", "Descarga borrada.");

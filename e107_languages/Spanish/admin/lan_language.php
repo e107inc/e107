@@ -1,4 +1,14 @@
 ﻿<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_language.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:40 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("LANG_LAN_00","No se puede crear(Ya existe)");
 define("LANG_LAN_01","fué borrado(si existía) y creado.");
 define("LANG_LAN_02","no puede eliminarse");

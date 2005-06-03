@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_search.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:40 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("SEALAN_1", "Configuración de búsquedas");
 define("SEALAN_2", "Número de carácteres a mostrar en el resumen de búsquedas:");
 define("SEALAN_3", "Método corto de búsqueda:");

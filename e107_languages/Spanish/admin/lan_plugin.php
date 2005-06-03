@@ -1,6 +1,15 @@
 ﻿
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_plugin.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:40 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("EPL_ADLAN_0", "Instalar");
 define("EPL_ADLAN_1", "Desinstalar");
 define("EPL_ADLAN_2", "¿Está seguro que quiere desinstalar esta aplicación?");

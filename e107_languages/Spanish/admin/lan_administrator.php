@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_administrator.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:39 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("ADMSLAN_0", "nuevo usuario/administrador creado para");
 define("ADMSLAN_1", "ahora como administrador.");
 define("ADMSLAN_2", "actualizado en la base de datos.");

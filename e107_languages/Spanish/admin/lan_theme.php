@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_theme.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:40 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("TPVLAN_1", "Viendo previsualización del tema <b>'".PREVIEWTHEMENAME."'</b>. No se ha fijado como tema principal de su página, solo ha sido activado para ver su apariencia.<br />Para ajustar como tema principal de su sitio, <a href='".e_ADMIN."theme.php'>vuelva al configurador de themes</a> y seleccione 'Fijar tema del sitio'.<br />Para ver más themes <a href='".e_ADMIN."theme.php'<pulse aquí</a>");
 define("TPVLAN_2", "Previsualizar tema");
 define("TPVLAN_3", "tema principal fijado");

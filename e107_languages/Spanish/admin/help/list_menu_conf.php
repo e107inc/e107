@@ -1,4 +1,14 @@
 ﻿<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/list_menu_conf.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:07:26 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 $text = "En esta sección puede configurar 3 menús<br>
 <b> Menú de Nuevos Artículos</b> <br>
 Introduzca un número, por ejemplo '5' en el primer campo para mostrar los 5 primeros artículos o 

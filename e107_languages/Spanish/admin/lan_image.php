@@ -1,4 +1,14 @@
 ﻿<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_image.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:40 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("IMALAN_1", "Permitir enviar imágenes");
 define("IMALAN_2", "Ver imágenes, esto se aplicará a (comentarios, chatbox etc)");
 define("IMALAN_3", "Metodo de cambio de tamaño");

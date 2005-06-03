@@ -1,6 +1,14 @@
-﻿
-<?php
-
+﻿<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_wmessage.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:40 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 //define("WMGLAN_1", "Mensaje para visitantes");
 //define("WMGLAN_2", "Mensaje para miembros");
 //define("WMGLAN_3", "Mensaje para Administradores");

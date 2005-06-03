@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_header.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:40 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("LAN_head_1", "Menú Admin.");
 define("LAN_head_2", "Su servidor no admite la transferencia de archivos via HTTP, los usuarios no podrán transferir sus avatars/archivos etc. para corregir esto cambie file_uploads a On en su php.ini y reinicie el servidor. Si usted no tiene acceso al servidor póngase en contacto con su proovedor de hosting.");
 define("LAN_head_3", "Su servidor está corriendo con una restricción en el directorio principal. Esto no permitirá el uso de algunos archivos fuera de su carpeta principal y afectará a determinados Scripts como el gestor de ficheros.");

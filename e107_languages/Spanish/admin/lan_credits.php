@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_credits.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:39 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("CRELAN_1", "Créditos");
 define("CRELAN_2", "Debajo está una lista de recursos y software de terceras personas para e107. agradecemos su colaboración así como permitir usar su software bajo licencia GPL");
 //define("CRELAN_3", "Orígen");

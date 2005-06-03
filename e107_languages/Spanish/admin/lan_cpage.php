@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_cpage.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-03 20:04:39 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("CUSLAN_1", "Título");
 define("CUSLAN_2", "Tipo");
 define("CUSLAN_3", "Opciones");

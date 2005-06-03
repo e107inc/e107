@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_log.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:40 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("LOGLAN_1", "Configuración de inicio de sesión actualizada.");
 define("LOGLAN_2", "Tabla(s) de estadísticas vaciada.");
 define("LOGLAN_3", "¿Activar estadísticas?");

@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_news.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:01:13 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("PAGE_NAME", "Noticias");
 define("LAN_00", "Por favor, borre install.php de su servidor ***</b><br />si no lo hace puede provocar un grave problema de seguridad en su sitio");
 

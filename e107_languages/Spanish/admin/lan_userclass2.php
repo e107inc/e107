@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_userclass2.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:40 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("UCSLAN_1", "Borrados todos los usuarios de esta clase.");
 define("UCSLAN_2", "Usuarios de esta clase actualizados.");
 define("UCSLAN_3", "Clase borrada.");

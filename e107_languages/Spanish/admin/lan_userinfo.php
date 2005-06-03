@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_userinfo.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:40 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("USFLAN_1", "No se puede encontrar dirección IP de usuario - no hay información disponible.");
 //define("USFLAN_2", "Error");
 define("USFLAN_3", "Mensajes enviados desde direción IP");

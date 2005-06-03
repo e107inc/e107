@@ -1,4 +1,14 @@
 ﻿<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/notify.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-03 20:07:26 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 $text = "Notificaciones envía notificaciones de correo cuando ocurren eventos en el sitio.<br /><br />
 Por ejemplo, fijar 'IP expulsada por flooding' a la clase 'Admin' y a todos los Admins se les enviará una notificación 
 cuando el lugar esté siendo floodeado.<br /><br />

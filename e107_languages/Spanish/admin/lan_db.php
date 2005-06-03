@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_db.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:39 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("DBLAN_1", "Configuración del nucleo guardada con copia de seguridad en la base de datos.");
 define("DBLAN_2", "Backup BD");
 define("DBLAN_3", "Hacer Backup de base de datos SQL");

@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_download.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:01:12 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("PAGE_NAME", "Descargas"); 
 define("LAN_dl_1", "(Limitado)");
 define("LAN_dl_2", "No hay descargas en este momento, por favor visite esta sección más tarde");

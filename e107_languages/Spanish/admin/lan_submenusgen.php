@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_submenusgen.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:04:40 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("LAN_MENGEN_1","Gestionar enlaces para su menú");
 define("LAN_MENGEN_2","Generador Automático de Menú");
 define("LAN_MENGEN_3","Añadir enlaces en un submenú para :");

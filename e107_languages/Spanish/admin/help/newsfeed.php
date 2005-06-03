@@ -1,4 +1,14 @@
 ﻿<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/newsfeed.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:07:26 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 $text = "Puede recuperar y cortar los contenidos de noticias de otros sitios y 
 pegarlos en su sitio desde aquí.<br />
 Introduzca la dirección URL entera hacia el backend (ej http://e107.org/portal). 

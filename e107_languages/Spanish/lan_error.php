@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_error.php,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-03 20:01:13 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("PAGE_NAME", "Error");
 define("LAN_1", "Error 401 - Permiso denegado");
 define("LAN_2", "No tiene permisos para entrar en esta dirección.");

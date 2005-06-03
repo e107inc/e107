@@ -1,5 +1,14 @@
 ﻿<?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_notify.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-03 20:04:40 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 define("NT_LAN_1", "Notificaciones");
 define("NT_LAN_2", "Recibir notificación email ON");
 define("NT_LAN_3", "OFF");
