@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-05-21 17:13:29 $
-|     $Author: streaky $
+|     $Revision: 1.31 $
+|     $Date: 2005-06-04 21:14:10 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -224,19 +224,6 @@ if ($menu_act == "inc") {
 
 $efile = new e_file;
 $fileList = $efile->get_files(e_PLUGIN,"_menu\.php$",'standard',2);
-$customList = $efile->get_files(e_PLUGIN.'custom',"\.php$",'standard',1);
-
-foreach($customList as $custom)
-{
-	$custom['path'] = str_replace(e_PLUGIN,"",$custom['path']);
-	$custom['fname'] = str_replace(".php","",$custom['fname']);
-
-	if (!$sql->db_Count("menus", "(*)", "WHERE menu_name='{$custom['fname']}'")) {
-		$sql->db_Insert("menus", " 0, '{$custom['fname']}', 0, 0, 0, '', 'custom'");
-		$message .= "<b>".MENLAN_9." - ".$custom['fname']."</b><br />";
-	}
-	$menustr .= "&".$custom['fname'];
-}
 
 foreach($fileList as $file) {
 	list($parent_dir) = explode('/',str_replace(e_PLUGIN,"",$file['path']));
