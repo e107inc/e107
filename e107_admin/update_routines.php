@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.90 $
-|     $Date: 2005-06-02 12:47:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.91 $
+|     $Date: 2005-06-04 20:16:39 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -712,15 +712,7 @@ function update_61x_to_700($type) {
 				$up_pref = $pref['frontpage'];
 			}
 			unset($pref['frontpage']);
-			require_once(e_HANDLER.'userclass_class.php');
 			$pref['frontpage']['all'] = $up_pref;
-			$pref['frontpage']['252'] = $up_pref;
-			$pref['frontpage']['253'] = $up_pref;
-			$pref['frontpage']['254'] = $up_pref;
-			$class_list = get_userclass_list();
-			foreach ($class_list as $fp_class) {
-				$pref['frontpage'][$fp_class['userclass_id']] = $up_pref;
-			}
 			$s_prefs = TRUE;
 		}
 

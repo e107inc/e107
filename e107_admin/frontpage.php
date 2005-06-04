@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-06-02 06:11:01 $
+|     $Revision: 1.20 $
+|     $Date: 2005-06-04 20:16:39 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -51,7 +51,7 @@ foreach ($frontpage_plugs as $plugin_id) {
 }
 
 if (isset($_POST['edit'])) {
-	$_POST['type'] = 'user_class';
+	$_POST['type'] = (isset($_POST['edit']['all'])) ? 'all_users' : 'user_class';
 	$_POST['class'] = key($_POST['edit']);
 }
 
@@ -66,32 +66,22 @@ if (isset($_POST['updatesettings'])) {
 			$frontpage_value = $front_page[$_POST['frontpage']]['page'];
 		}
 	}
-		
-	if ($_POST['type'] == 'all_users') {
-		$pref['frontpage']['all'] = $frontpage_value;
-		$pref['frontpage']['252'] = $frontpage_value;
-		$pref['frontpage']['253'] = $frontpage_value;
-		$pref['frontpage']['254'] = $frontpage_value;
-		$class_list = get_userclass_list();
-		foreach ($class_list as $fp_class) {
-			$pref['frontpage'][$fp_class['userclass_id']] = $frontpage_value;
-		}
-	} else {
-		$pref['frontpage']['all'] = '';
-		$pref['frontpage'][$_POST['class']] = $frontpage_value;
-	}
 
-	$match = $pref['frontpage']['252'];
-	foreach ($pref['frontpage'] as $check_key => $check_value) {
-		if ($check_key != 'all') {
-			if ($check_value != $match) {
-				$diff = TRUE;
+	if ($_POST['type'] == 'all_users') {
+		unset($pref['frontpage']);
+		$pref['frontpage']['all'] = $frontpage_value;
+	} else {
+		if (isset($pref['frontpage']['all'])) {
+			$pref['frontpage']['252'] = ($_POST['class'] == '252') ? $frontpage_value : $pref['frontpage']['all'];
+			$pref['frontpage']['253'] = ($_POST['class'] == '253') ? $frontpage_value : $pref['frontpage']['all'];
+			$pref['frontpage']['254'] = ($_POST['class'] == '254') ? $frontpage_value : $pref['frontpage']['all'];
+			$class_list = get_userclass_list();
+			foreach ($class_list as $fp_class) {
+				$pref['frontpage'][$fp_class['userclass_id']] = ($_POST['class'] == $fp_class['userclass_id']) ? $frontpage_value : $pref['frontpage']['all'];
 			}
+			unset($pref['frontpage']['all']);
 		}
-	}
-	
-	if (!$diff) {
-		$pref['frontpage']['all'] = $match;
+		$pref['frontpage'][$_POST['class']] = $frontpage_value;
 	}
 
 	save_prefs();
@@ -116,8 +106,8 @@ class frontpage {
 		$text .= "<tr>
 		<td style='width: 50%' class='forumheader3'>".FRTLAN_2.":</td>
 		<td style='width: 50%' class='forumheader3'>
-		".$rs -> form_radio('type', 'all_users', ($pref['frontpage']['all'] ? TRUE : FALSE))." ".FRTLAN_31."&nbsp;
-		".$rs -> form_radio('type', 'user_class', ($pref['frontpage']['all'] ? FALSE : TRUE))." ".FRTLAN_32.": 
+		".$rs -> form_radio('type', 'all_users', (isset($pref['frontpage']['all']) ? TRUE : FALSE))." ".FRTLAN_31."&nbsp;
+		".$rs -> form_radio('type', 'user_class', (isset($pref['frontpage']['all']) ? FALSE : TRUE))." ".FRTLAN_32.": 
 		".r_userclass('class', '', 'off', 'guest,member,admin,classes')."</td>
 		</tr>";
 
@@ -140,8 +130,16 @@ class frontpage {
 		<td style='width: 10%' class='fcaption'>".LAN_EDIT."</td>
 		</tr>";
 		
-		foreach ($pref['frontpage'] as $current_key => $current_value) {
-			if ($current_key != 'all') {
+		if (isset($pref['frontpage']['all'])) {
+			$text .= "<tr>
+			<td class='forumheader3'>All Users</td>
+			<td class='forumheader3'>".$pref['frontpage']['all']."</td>
+			<td class='forumheader3' style='text-align:center'>
+			<input type='image' title='".LAN_EDIT."' name='edit[all]' src='".ADMIN_EDIT_ICON_PATH."' />
+			</td>
+			</tr>";
+		} else {
+			foreach ($pref['frontpage'] as $current_key => $current_value) {
 				if ($current_key == 252) {
 					$title = FRTLAN_27;
 				} else if ($current_key == 253) {
@@ -165,7 +163,6 @@ class frontpage {
 				</tr>";
 			}
 		}
-
 		$text .= "</table>
 		</form>
 		</div>";
@@ -205,15 +202,16 @@ class frontpage {
 		
 		foreach ($front_page as $front_key => $front_value) {
 			$type_selected = FALSE;
+			$current_setting = (isset($pref['frontpage']['all'])) ? $pref['frontpage']['all'] : $pref['frontpage'][$_POST['class']];
 			if (is_array($front_value['page'])) {
 				foreach ($front_value['page'] as $multipage) {
-					if ($pref['frontpage'][$_POST['class']] == $multipage['page']) {
+					if ($current_setting == $multipage['page']) {
 						$type_selected = TRUE;
 						$not_other = TRUE;
 					}
 				}
 			} else {
-				if ($pref['frontpage'][$_POST['class']] == $front_value['page']) {
+				if ($current_setting == $front_value['page']) {
 					$type_selected = TRUE;
 					$not_other = TRUE;
 				}
@@ -243,7 +241,7 @@ class frontpage {
 		<td class='forumheader3'>".$rs -> form_radio('frontpage', 'other', (!$not_other ? TRUE : FALSE))."</td>
 		<td style='width: 50%' class='forumheader3'>".FRTLAN_15."</td>
 		<td style='width: 50%' class='forumheader3'>
-		".$rs -> form_text('other_page', 50, (!$not_other ? $pref['frontpage'][$_POST['class']] : ''))."
+		".$rs -> form_text('other_page', 50, (!$not_other ? $current_setting : ''))."
 		</td>
 		</tr>";
 		

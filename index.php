@@ -11,8 +11,8 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-02 04:30:04 $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-04 20:16:39 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ if (!is_array($pref['frontpage'])) {
 		$up_pref = $PLUGINS_DIRECTORY.'forum/forum.php';
 	} else if (is_numeric($pref['frontpage'])) {
 		$up_pref = $PLUGINS_DIRECTORY.'content/content.php?type.'.$pref['frontpage'];
-	} else if (strpos($pref['frontpage'], '.')===FALSE) {
+	} else if (strpos($pref['frontpage'], '.') === FALSE) {
 		if (!preg_match("#/$#",$pref['frontpage'])) {
 			$up_pref = $pref['frontpage'].'.php';
 		}
@@ -45,7 +45,7 @@ $query = (e_QUERY && e_QUERY != '' ? '?'.e_QUERY : '');
 if ($pref['membersonly_enabled'] && !USER) {
 	header('location: '.e_LOGIN);
 	exit;
-} else if ($pref['frontpage']['all']) {
+} else if (isset($pref['frontpage']['all']) && $pref['frontpage']['all']) {
 	header('location: '.((strpos($pref['frontpage']['all'], 'http') === FALSE) ? e_BASE : '').$pref['frontpage']['all'].$query);
 	exit;
 } else if (ADMIN) {
