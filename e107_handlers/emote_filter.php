@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emote_filter.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-03 13:24:02 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-04 20:54:41 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 class e_emotefilter {
@@ -42,9 +42,10 @@ class e_emotefilter {
 					$tmp = explode(" ", $value);
 					foreach($tmp as $code)
 					{
-						$this->searcha[] = " ".$code;
-						$this->searchb[] = "\n".$code;
+						$this->search[] = " ".$code;
+						$this->search[] = "\n".$code;
 						$this->replace[] = " <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
+						$this->replace[] = "\n <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
 					}
 					unset($tmp);
 				}
@@ -52,9 +53,10 @@ class e_emotefilter {
 				{
 					if($value)
 					{
-						$this->searcha[] = " ".$value;
-						$this->searchb[] = "\n".$value;
+						$this->search[] = " ".$value;
+						$this->search[] = "\n".$value;
 						$this->replace[] = " <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
+						$this->replace[] = "\n <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
 					}
 				}
 			}
@@ -66,14 +68,13 @@ class e_emotefilter {
 	 
 	function filterEmotes($text)
 	{	 
-		$text = str_replace($this->searcha, $this->replace, $text);
-		$text = str_replace($this->searchb, $this->replace, $text);
+		$text = str_replace($this->search, $this->replace, $text);
 		return $text;
 	}
 	 
 	function filterEmotesRev($text)
 	{
-		$text = str_replace($this->replace, $this->searcha, $text);
+		$text = str_replace($this->replace, $this->search, $text);
 		return $text;
 	}
 }
