@@ -1,0 +1,12 @@
+
+Q>	Wat is BBCode?
+A>	Een BBCode is een versnelde invoer voor een HTML tag. Door bijvoorbeeld &#91;b] Ik ben vett tekst! &#91;/b] te typen in een beheertekstveld, wordt de tekst tussen de &#91;b] en &#91;/b] vet weergegeven, dus dan wordt [b]Ik ben vette tekst![/b] op het scherm getoond.
+
+Q>	Waar dient het voor?
+A>	Het scheelt tijd bij het invoeren van HTML tags. Je kunt ook gewoon HTML tags in je tekst invoeren, maar door BBCode te gebruiken kun je sneller teksten invoeren.
+
+Q>	Als ik op een BBCode knop druk om de code in te voeren, verschijnen die afkortingen achter de tekst, niet op de plek van de cursos. - waarom?
+A>	Er zit een bug in bug in Internet Explorer die dat programma laat crashen als e107 op de juiste plek zou invoeren, om die reden worden de codes dus maar achteraan geplaats
+
+Q>	Welke BBCodes kan ik gebruiken?
+A>	Verplaats de muis boven een knop en er verschijnt een korte uitleg. Er zijn ook codes voor links &#91;url] &#91;/url] en e-mail &#91;email] &#91;/email], maar ook normal HTML tags kunnen worden gebruikt. Alle web adressen en e-mailadressen worden automatisch omgezet in hyperlinks.

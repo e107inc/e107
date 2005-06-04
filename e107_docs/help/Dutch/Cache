@@ -1,0 +1,6 @@
+
+Q>	Waar dient dit voor?
+A>	Het instellen van de Cache Status op 'aan' slaat enkele delen van je website in je database. Dit vermindert queries naar de mySQL database en versnelt dus je site.
+
+Q>	Ik heb wat aanpassingen aan het theme dat ik gebruik gedaan, maar de wijzigingen worden niet getoond - komt dat door de cache?
+A>	Waarschijnlijk. Als je van theme wijzigt, wordt de cache geleegd maar het wijzigen van alleen enige code in je theme.php schoont de cache niet. Stel de Cache Status op 'uit'tot de je klaar bent met het aanpassen van je theme.

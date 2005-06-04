@@ -1,0 +1,18 @@
+
+Q>	Ik heb een nieuwe banner gedefinieerd, maar die zie ik niet. Waarom?
+A>	In het theme dat je gebruikt moet wel een plekje aanwezig zijn voor de banner. Open theme.php van het theme en let erop dat er {BANNER} of {BANNER=jecampagnenaam} in de $HEADER sectie staat.
+
+Q>	Ik wil de ene set banners in het ene gebied en een andere set in een ander gebeid zetten. Hoe moet dat?
+A>	Je kunt je banners in 'campagnes' opdelen en vervolgens je theme zo instellen dat de banners uit de verschillende campagnes worden getoond. Als je bijvoorbeeld twee campagnes hebt, cam_1 en cam_2, kun je {BANNER=cam1} in het ene gebied van je $HEADER sectie in theme.php plaatsen en {BANNER=cam_2} in een ander segment. Door alleen {BANNER} (zonder campagnenaam) in theme.php te zetten, worden de banners uit alle campagnes op willekeurige volgorde getoond.
+
+Q>	Waarvoor dienen de klantenlogin en het klantenwachtwoord?
+A>	Je kunt loginaccounts en wachtwoorden voor je bannerklanten opstellen, zodat ze zelf kunnen zien wat de resulaten van hun banners zijn. Ze kunnen met hun accountnaam en wachtwoord inloggen op http://jouwsite.com/banner.php.
+
+Q>	Hoe kan ik een 'staande' banner in een menu plaatsen?
+A>	Eerst moet je de campagne forvoor het staande type banners definiëren (hierdoor kun je ze onderscheiden van de horizontale banners) ...
+	1. Ga naar je beheerscherm en klik op banners.
+	2. Voer je staande banner in en let erop dat je een nieuwe campagnenaam opgeeft, bijvoorbeeld 'vertikaal'.
+	3. Ga nu naar je menubeheer scherm en activeer het Banner_menu in een menuzone.
+	4. Klik op configureren in het menu onderdeel.
+	5. Geef de titelbalk op (standaard is dat 'Advertentie') en geef de eerder ingevoerde campagnenaam op.
+	6. Verlaat je beheerscherm en je ziet de staande banner in de menuzone die je hebt gekozen.

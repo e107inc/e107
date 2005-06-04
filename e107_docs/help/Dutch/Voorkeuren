@@ -1,0 +1,12 @@
+
+Q>	Hoe wijzig ik van thema?
+A>	Er is een sectie in de Voorkeuren pagina waarni je het site thema kunt instellen. Bekijk eerst of het theme wel werkt, er zjin nog oude, niet meer goed werkende, themes.
+
+Q>	Wat is COPPA?
+A>	The Children's Online Privacy Protection Act uit 1998. Het is een regel ter bescherming van minderjarigen. Het verzekert dat er geen informatie over minderjarigen wordt bijgehouden, behalve voor het beheer van de site. Voor meer info, zie http://www.cdt.org/legislation/105th/privacy/coppa.html.
+
+Q>	Wat is flood protection?
+A>	Het voorkomt dat he site wordt overstroomd door extremen aantallen HTTP aanroepen waardoor je site geblokkeerd wordt.
+
+Q>	Moet ik Cookies of Sessies gebruiken om mijn leden te volgen?
+A>	Het is je eigen keuze. Als je site goed werkt met cookies (standaardwaarde), laat dat maar zo. Als je de voorkeur geeft aan PHP Sessies, probeer dat dan (er wordt een eigen e107 sessie manager gebruikt).

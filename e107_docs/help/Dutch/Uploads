@@ -1,0 +1,6 @@
+
+Q>	Ik wil gebruikers gaarg bestanden laten uploaden naar mijn site. Maar is dat wel veilig...
+A>	Je kint verschillende dingen doen om de beveiliging te verhogen. Eerst, gebruik Binary opslag, het geuploade bestand wordt dan in de mySQL database opgeslagen en is niet toegankelijk voor wie dan ook, behalve voor download. Ten tweede, beperk het aantal toegestane bestandsformaten. Als iemand probeert een niet toegestaan bestandstype te uploaden, dan wordt dat onmiddellijk verwijderd van je server.
+
+Q>	Er zjin bestanden ge-upload, wat nu?
+A>	Je kunt de bestanden kopiëren naar je downloadmanger, zodat anderen het kunnen downloaden. Ook kun je de upload info kopiëren naar je nieuwsberichtensectie om een aankondiging te plaatsen.
