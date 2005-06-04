@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-05-31 16:31:48 $
+|     $Revision: 1.25 $
+|     $Date: 2005-06-04 21:28:14 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -80,6 +80,7 @@ class e107{
 
 	function fix_windows_paths($path) {
 		$fixed_path = str_replace(array('\\\\', '\\'), array('/', '/'), $path);
+		$fixed_path = (substr($fixed_path, 1, 2) == ":/" ? substr($fixed_path, 2) : $fixed_path);
 		return $fixed_path;
 	}
 
