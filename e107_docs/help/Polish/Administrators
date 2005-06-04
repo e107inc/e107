@@ -1,0 +1,6 @@
+
+Q>	Co to są uprawnienia?
+A>	Pozwalają one nadawać administratorom możliwości dostępu na różnych poziomach do panelu administracyjnego. Na przykład możesz pozwolić określonemu administratorowi tylko na wysyłanie wiadomości, nadając mu odpowiednie uprawnienia. Ze względów bezpieczeństwa pewne funkcje administarcyjne są zastrzeżone wyłącznie dla głównego administratora serwisu.
+
+Q>	Chciałbym istniejącemu i zarejestrowanemu użytkownikowi nadać status administratora. Jak to zrobić?
+A>	W panelu administracyjnym kliknji na dział Użytkownicy i poszukaj tego użytkownika. Nastepnie kliknij na link: Nadaj prawa administratora przy tym uzytkowniku. Natychmiast potem przejdź do działu Administratorzy i nadaj mu uprawnienia. W podobny sposób możesz użytkownika pozbawić praw administratora.

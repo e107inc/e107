@@ -1,0 +1,18 @@
+
+Q>	Zdefiniowałem nowy banner dla obszaru administratora, lecz on nie pokazuje się. Dlaczego?
+A>	Skórka, której używasz musi wiedzieć, że ma wyświetlić banner. Otwórz plik theme.php używanej skórki i upewnij się, że w sekcji $HEADER występuje {BANNER} lub {BANNER=yourcampaignname}.
+
+Q>	Jak mogę zaprogramować jeden zestaw bannerów w pewnym obszarze, a inny zestaw w innym obszarze?
+A>	Możesz pogrupować bannery w 'kampanie', a następnie tak zaprogramować skórkę, aby pokazywała bannery z określonych kampanii. Na przykład jeśli masz dwie kampanie, o nazwach cam_1 i cam_2, umieszczenie {BANNER=cam1} w jednym obszarze sekcji $HEADER w pliku theme.php pokaże bannery tylko z kampanii cam_1, a umieszczenie {BANNER=cam_2} w innym obszarze te z kampanii cam_2. Umieszczenie samego {BANNER} (bez nazwy kampanii) w pliku theme.php pokaże losowe bannery z wszystkich kampanii.
+
+Q>	Do czego służy hasło i login klienta?
+A>	Możesz zdefiniować login i hasło dla swoich klientów, aby mogli uzyskać dostęp do informacji na temat przebiegu ich kampanii klikając na http://yoursite.com/banner.php i wprowadzając login oraz hasło.
+
+Q>	Jak mogę wyświetlać banner pionowy ('tower') w jednym z menu?
+A>	Najpierw zdefiniuj kampanie dla bannerów pionowych (żeby nie mieszały sie z poziomymi) ...
+	1. Przejdź do panelu administratora i kliknij na Bannery.
+	2. Wprowadź pionowe bannery, upewnij się, że używasz nazwy nowej kampanii, na przykład 'towers'.
+	3. Przejdź teraz do sekcji Menu, i aktywuj Banner_menu w jednym z obszarów.
+	4. Kliknij na link 'Konfiguruj' w tym menu.
+	5. Wpisz tytuł (nagłówek) - standardowo jest to 'Advertisment' i wprowadź nazwę kampanii zdefiniowanej w poprzednich krokach.
+	6. Wyjdź z panelu administratora. Powinieneś zobaczyć pionowy banner w obszarze, do którego go przypisałeś.

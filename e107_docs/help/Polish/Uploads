@@ -1,0 +1,6 @@
+
+Q>	Chciałbym pozwolić ludziom nadsyłac pliki do serwisu, ale niepokoję sie o bezpieczeństwo ...
+A>	Możesz zwiekszyć bezpieczeństwo pamietając o kilku rzeczach. Po pierwsze używaj zapamietywania plików w postaci binarnej. Nadesłane pliki będą umieszczone w bazie mySQL i nie będą dla nikogo dostępne, chyba że do ściągnięcia. Poza tym ustal listę dozwolonych typów plików, jeśli ktoś spróbuje nadesłać plik innego typu, zostanie on natychmiast skasowany z serwera.
+
+Q>	Mam już kilka nadesłanych plików, co mam teraz zrobić?
+A>	Masz możliwość skopiowania tych plików do Managera Pobrania, aby udostępnic je innym do pobrania, oraz skopiowania informacji o nadesłanych plikach do banku wiadomości, aby sporządzić zawiadomienia o tych plikach.

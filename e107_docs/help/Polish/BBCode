@@ -1,0 +1,12 @@
+
+Q>	Co to jest BBCode?
+A>	BBCode jest skrótową formą znacznika HTML, na przykład wpisując [b] Jestem pogrubiony! [/b] w okienkach tekstowych administratora spowodujesz, że tekst pomiędzy [b] oraz [/b] ukaże sie jako pogrubiony, a więc na ekranie będzie to [b]Jestem pogrubiony![/b].
+
+Q>	Do czego służy?
+A>	Pozwala oszczędzać czas przy wprowadzaniu znaczników HTML. Możesz uzywać normalnych znaczników HTML w okienkach tekstowych, lecz używanie BBCode znacznie przyspiesza wpisywanie tekstu.
+
+Q>	Kiedy kliknę na jeden z guzików, aby wprowadzić BBCode, kod pojawia się na końcu tekstu, a nie w pozycji kursora. Dlaczego?
+A>	W programie Internet Explorer jest błąd, który może zdestabilizowac tę aplikację, jeśli e107 spróbuje wstawić kod w pozycji kursora, dlatego dla zachowania kompatybilności kod jest umieszczany na końcu tekstu.
+
+Q>	Jakie kody BBCodes mogę używać?
+A>	Przejedź kursorem myszy nad dowolnym z guzików BBcode. Zobaczysz krótkie objaśmnienie tuż nad obszarem guzików. Istnieją także kody dla linków [url] [/url] i adresów email [email] [/email], choć oczywiście możesz również używać zwykłych znaczników HTML. Wszystkie wpisane adresy stron i adresy email są automatycznie zamieniane na linki, które mozna kliknąć.

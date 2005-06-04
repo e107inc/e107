@@ -1,0 +1,9 @@
+
+Q>	Do czego służy ta sekcja?
+A>	Ta strona umożliwia kontrolowanie zawartości strony głównej serwisu. Standardowo na stronie głównej znajdują sie wiadomości.
+
+Q>	Jakie inne strony mogę tam zamieścić?
+A>	Każdą. Możesz zaznaczyć którąś ze stron predefiniowanych (forum, pliki itd.) albo wpisać adres strony, której chcesz użyć.
+
+Q>	Jak mogę utworzyć stronę startową (splashscreen)?
+A>	Wpisz adres strony startowej i zaznacz opcję: Tylko pierwsze załadowanie. Strona ta pokaże się na 10 sekund, po czym zostanie przekierowana do głównej strony.

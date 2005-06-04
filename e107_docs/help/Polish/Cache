@@ -1,0 +1,6 @@
+
+Q>	Do czego służy ta sekcja?
+A>	Włączenie Cache spowoduje zapisanie pewnych obszarów serwisu w bazie danych. Zmniejsza to liczbę odwołań do mySQL i znacznie przyspiesza działanie serwisu.
+
+Q>	Wprowadziłem pewne modyfikacje do skórki, której używam, lecz nie widzę zmian. Czy przyczyną może byc włączony cache?
+A>	Jest to wysoce prawdopodobne. Kiedy zmieniasz skórkę na inną cache jest czyszczony, lecz jeśli zmieniasz kod w pliku theme.php - nie jest. Wyłącz Cache dopóki nie ukończysz zmian.

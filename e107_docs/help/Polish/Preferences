@@ -1,0 +1,12 @@
+
+Q>	Jak mogę zmieniać skórki?
+A>	Na stronie Preferencji znajduje się sekcja, która umożliwia zmiane skórki serwisu. Przed zastosowanie najpierw obejrzyj Podgląd skórki, ponieważ niektóre z nich (starsze) mogą nie być już zgodne z oprogramowaniem i po ich zastosowaniu serwis może nie być w pełni użyteczny.
+
+Q>	Co to jest COPPA?
+A>	To skrót od Children's Online Privacy Protection Act z roku 1998. Jest to powszechnie stosowana zasada, która chroni osoby niepełnoletnie w wieku 13 lat i poniżej. Zapewnia ona, że żadne informacje o takich niepełnoletnich nie będą wykorzystywane przez 'Operatora' (w tym wypadku Ciebie) do innych celów niz normalne funkcjonowanie serwisu. Więcej informacji możesz uzyskać pod adresem http://www.cdt.org/legislation/105th/privacy/coppa.html.
+
+Q>	Co to jest zabezpieczenie przed zatkaniem?
+A>	Zapobiega ono zablokowaniu serwisu na skutek nadmiernej liczby wywołań HTTP, które mogą spowodować, że serwis będzie niedostępny.
+
+Q>	Czy do śledzenia użytkowników mam używać sesji, czy ciasteczek?
+A>	Możesz sam wybrać. Jeśli serwis pracuje dobrze przy użyciu ciasteczek (ustawienie standardowe), pozostań w tym trybie. Jeśli wolisz używać sesji PHP, możesz tak zadecydować (e107 używa własnej obsługi sesji, która zapamietuje i zarządza sesjami).

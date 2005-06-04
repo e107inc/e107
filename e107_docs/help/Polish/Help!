@@ -1,0 +1,9 @@
+
+Q>	Wprowadziłem pewne zmiany w serwisie i teraz występują błędy mySQL, a strony się nie pojawiają.
+A>	Mogło sie tak zdarzyć, że uszkodzeniu uległo jądro systemu (core). Jądro zawiera podstawowe ustawienia i zmienne systemu e107. Aby wyzerowac jądro wywołaj plik http://yoursite.com/e107_files/resetcore.php. Zawsze rób kopię zapasową jądra (w dziale Baza danych) zanim zaczniesz wprowadzać zmiany. Wówczas będziesz mógł odzyskać jądro z tej kopii (przy użyciu resetcore.php), jeśli coś pójdzie źle.
+
+Q>	Zapomniałem hasła głównego administratora i nie mogę sie dostać do panelu administracyjnego.
+A>	Z bardzo ważnych powodów związanych z bezpieczeństwem nie jest możliwa zmiana hasła jeśli nie jesteś zalogowany. Jeśli nie zapisałeś hasła w bezpiecznym miejscu zrób to teraz, aby ustrzec się od takiej sytuacji w przyszłości. Jeśli się tak zdarzy będziesz musiał zmienić hasło ręcznie przy pomocy PHPMyAdmin lub podobnego programu do zarządzania mySQL. Przejdź do tablicy users, główny administrator powinien mieć nazwę numver 1. Kliknij na guzik edycji i zmień hasło na 4cb9c8a8048fd02294477fcb1a41191a, co oznacza zmianę Twojego hasła w systemie na changeme. Teraz zaloguj sie i [b]zmień natychmiast hasło[/b].
+
+Q>	Zainstalowałem nową skórkę lub plugin i teraz mój serwis jest niedostępny, co robić?
+A>	Użyj resetcore.php (jak powyżej).

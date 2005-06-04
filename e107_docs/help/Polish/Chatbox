@@ -1,0 +1,9 @@
+
+Q>	Do czego służy sekcja Zamień Linki?
+A>	Możesz zamienić wszystkie linki wpisywane na czacie na wybrany tekst, lub obraz. Dzieki temu okienko czatu nie jest rozpychane przez długie adresy stron. Aby użyc obrazu zaznacz Zamień Linki i w okienku poniżej wpisz &lt;img src='path_to_your_image' alt='' />, odtąd każdy wprowadzony link będzie zamieniony na wskazany obraz.
+
+Q>	Do czego służy Zawijanie słów?
+A>	Jeśli ktoś na czacie wpisze bardzo długie słowo może to zaburzyć układ strony. Jeżeli wpiszesz 40 w okienko Zawijania, wszystkie słowa dłuższe niż 40 znaków zostaną zawinięte, a więc szerokość kolumny się nie zwiększy. Możesz dostosować tę wartość do używanej skórki oraz szerokości kolumny, w której mieści się okienko czatu.
+
+Q>	Mój serwis jest przeznaczony dla użytkowników w każdym wieku, jednak ktoś stale przeklina na czacie. Jak temu zapobiec?
+A>	Przejdź do sekcji Preferencje panelu administratora i znajdź opcję Ochrona niepełnoletnich. Możesz tutaj dodac listę słów, które będą zastąpionne wyznaczonym przez Ciebie sformułowaniem, na przykład OCENZUROWANO! Odtąd każde napotkane słówo z listy będzie zamienione na wyznaczone sformułowanie.

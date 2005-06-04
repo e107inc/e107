@@ -1,0 +1,6 @@
+
+Q>	Do czego służy ten dział?
+A>	Pozwala uczynić cały serwis niedostępnym dla odwiedzających. Możesz użyć tej funkcji kiedy instalujesz nową wersję programu albo z innego powodu musisz wyłączyc serwis na jakiś czas. Kiedy serwis jest w trybie konserwacji, tylko główny administrator może uzyskać do niego dostęp. Taki komunikat pojawi się na każdej stronie.
+
+Q>	Pomocy! Włączyłem znacznik Konserwacji i omyłkowo wylogowałem się. Jak mogę wrócić do panelu administratora, aby przywrócić działanie serwisu?
+A>	Uruchom http://yoursite.com/e107_admin.php/admin.php i zaloguj sie na tym ekranie.

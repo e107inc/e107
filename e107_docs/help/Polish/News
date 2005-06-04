@@ -1,0 +1,12 @@
+
+Q>	Do czego służą kategorie wiadomości?
+A>	Możesz grupować wiadomości w różne kategorie, będą wówczas miały różne ikony itd. (jeśli je zdefiniujesz). Dzięki temu odwiedzający mogą łatwiej poruszac się w serwisie i czytać tylko te wiadomości, które ich interesują.
+
+Q>	Do czego służy pole Rozwinięcie?
+A>	Zauważyłeś pewnie w jaki sposób wiadomości są prezentowane w niektórych serwisach. Składają się one z krótkiego wprowadzenia wraz z linkiem docałego artykułu. Możesz osiągnąć taki efekt wpisując wprowadzenie do okienka Treść, a resztę artykułu do okienka Rozwinięcie.
+
+Q>	Do czego służą pola automatycznej aktywacji?
+A>	Możesz zaprogramowac wiadomość tak, że ukazywać sie będzie tylko w określonych dniach, pomiędzy datami określonymi w polach automatycznej aktywacji. Jeśli pozostawisz te pola puste, wiadomość ukaże się natychmiast.
+
+Q>	Wprowadziłem nową wiadomość i otrzymałem komunikat 'Wiadomość zapisana w bazie danych'. Czy to oznacza, że ukaże się ona na stronie Wiadomości?
+A>	Komunikat oznacza, że wprowadzony tekst został zapamiętany. Jeżeli wprowadzona wiadomość została zaznaczona jako aktywna, wówczas pojawi sie na stronie Wiadomości.

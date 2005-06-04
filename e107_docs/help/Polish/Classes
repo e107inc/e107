@@ -1,0 +1,5 @@
+
+Q>	Co to s± klasy użytkowników i do czego służ±?
+A>	Klasy użytkowników ograniczaj± dostep do pewnych obszarów lub funkcji serwisu. Kiedy zdefiniujesz klase i dodasz do niej wyznaczonych uzytkowników możesz okre¶lić pewne elementy jako widoczne tylko dla uzytkowników z tej klasy.
+Na przykład przy instalacji e107 standardowo jest tworzona klasa PRIVATEFORUM. Dodaj±c uzytkowników do tej klasy, a następnie tworz±c forum w tej klasie spowoduje, że tylko użytkownicy z tej klasy będ± mogli korzystać z tego forum. Przy użyciu klas możesz ograniczać dostęp do innych obszarów, np. wiadomo¶ci, linków, plików itd.
+

@@ -1,0 +1,12 @@
+
+Q>	Co to są Menu?
+A>	Są to elementy, które pojawiają sie w różnych obszarach (kolumnach) serwisu. Mogą one zawierać teksty, linki itd.
+
+Q>	Jak mogę aktywować jakieś menu?
+A>	Przejdź do panelu administratora i kliknij na Menu. Zobaczysz podstawowy rozkład strony serwisu wraz z listą Menu w odpowiednich obszarach. Menu znajdujące się pośrodku strony są nieaktywne, możesz umieścić je w aktywnym obszarze klikając na Aktywuj menu. Możesz także zmienić obszar, w którym znajduje się menu, albo przesunąc je w górę, lub w dół w kolumnie, w której zostało ono aktywowane.
+
+Q>	Potrzebuję umieścić jakiś tekst wewnątrz menu. Jak to zrobić?
+A>	Przejdź do panelu administracyjnego i kliknij na Własne Menu. Tutaj możesz wprowadzić dowolny tekst do menu, zostanie on zapamiętany i będzie dostępny tak jak każde inne menu.
+
+Q>	Jak mogę zmieniać opcje jakiegoś menu?
+A>	Jeżeli menu posiada panel konfiguracyjny, powinieneś zobaczyć link (nazwany 'Konfiguruj') jeśli menu zostało aktywowane.

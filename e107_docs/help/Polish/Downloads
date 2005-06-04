@@ -1,0 +1,6 @@
+
+Q>	Co to jest Dział plików do pobrania?
+A>	Pozwala on grupować pliki do pobrania w różnych kategoriach.
+
+Q>	Chciałbym dodac plik do pobrania, ale nie pojawia sie on na liście. Dlaczego?
+A>	Tylko pliki z katalogu e107_files/downloads pojawiają sie na rozwijaniej liście. Skopiuj plik do tego katalogu i wówczas się pojawi. To samo dotyczy obrazów, muszą znajdowac się w katalogu e107_files/downloadimages.
