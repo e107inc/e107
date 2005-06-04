@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 // default preferences for e107
 $pref['sitename'] = "e107 powered website";
@@ -70,7 +70,7 @@ $pref['linkpage_screentip'] = "0";
 $pref['plug_status'] = "";
 $pref['plug_latest'] = "";
 $pref['wmessage_sc'] = "0";
-$pref['frontpage'] = "news.php";
+$pref['frontpage']['all'] = "news.php";
 
 // Added
 $pref['signup_text'] = "";
