@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-05-27 04:55:29 $
+|     $Revision: 1.15 $
+|     $Date: 2005-06-04 22:51:21 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -93,7 +93,7 @@ if (isset($_POST['catdown_x']))
 if (isset($_POST['add_field']))
 {
 	if($_POST['user_type']==4){
-    	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value']);
+    	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
 	}
 	$new_values = make_delimited($_POST['user_values']);
 	$new_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
@@ -105,7 +105,7 @@ if (isset($_POST['add_field']))
 
 if (isset($_POST['update_field'])) {
 	if($_POST['user_type']==4){
-    	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value']);
+    	$_POST['user_values'] = array($_POST['table_db'],$_POST['field_id'],$_POST['field_value'],$_POST['field_order']);
 	}
 	$upd_values = make_delimited($_POST['user_values']);
 	$upd_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
@@ -215,7 +215,7 @@ class users_ext
 
 	function show_extended($current)
 	{
-		global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action;
+		global $sql, $ns, $ue, $curtype, $tp, $mySQLdefaultdb, $action, $sub_action;
 
 		$catList = $ue->user_extended_get_categories();
 		$catList[0][0] = array('user_extended_struct_name' => EXTLAN_36);
@@ -402,19 +402,20 @@ class users_ext
        		$db_hide = ($current['user_extended_struct_type'] == 4) ? "visible" : "none";
 
 			$text .= "<div id='db_mode' style='display:$db_hide'>\n";
-            $text .= "<select style='width:32%' class='tbox' name='table_db' onchange=\"this.form.submit()\" >
-            <option value='' class='caption'>".EXTLAN_62."</option>\n";
+			$text .= "<table style='width:70%;margin-left:0px'><tr><td>";
+            $text .= EXTLAN_62."</td><td style='70%'><select style='width:99%' class='tbox' name='table_db' onchange=\"this.form.submit()\" >
+            <option value='' class='caption'>".EXTLAN_61."</option>\n";
 			$result = mysql_list_tables($mySQLdefaultdb);
 			while ($row2 = mysql_fetch_row($result)){
 				$fld = str_replace(MPREFIX,"",$row2[0]);
 				$selected =  ($_POST['table_db'] == $fld || $curVals[0] == $fld) ? " selected='selected'" : "";
          		$text .= (eregi(MPREFIX,$row2[0])) ? "<option value=\"".$fld."\" $selected>".$fld."</option>\n" : "";
 			}
-			$text .= " </select>";
+			$text .= " </select></td></tr>";
      	if($_POST['table_db'] || $curVals[0]){
 			// Field ID
-			$text .= "&nbsp;<select style='width:32%' class='tbox' name='field_id' >\n
-			<option value='' class='caption'>".EXTLAN_63."</option>\n";
+			$text .= "<tr><td>".EXTLAN_63."</td><td><select style='width:99%' class='tbox' name='field_id' >\n
+			<option value='' class='caption'>".EXTLAN_61."</option>\n";
 			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 			if($sql -> db_Select_gen("DESCRIBE ".MPREFIX."{$table_list}")){
 		   		while($row3 = $sql -> db_Fetch()){
@@ -423,10 +424,10 @@ class users_ext
 					$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
 				}
 			}
-    		$text .= " </select>";
+    		$text .= " </select></td></tr><tr><td>";
              // Field Value
-			$text .= "&nbsp;<select style='width:32%' class='tbox' name='field_value' >
-			<option value='' class='caption'>".EXTLAN_64."</option>\n";
+			$text .= EXTLAN_64."</td><td><select style='width:99%' class='tbox' name='field_value' >
+			<option value='' class='caption'>".EXTLAN_61."</option>\n";
 			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
 			if($sql -> db_Select_gen("DESCRIBE ".MPREFIX."{$table_list}")){
 		   		while($row3 = $sql -> db_Fetch()){
@@ -435,10 +436,22 @@ class users_ext
 					$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
 				}
 			}
-    		$text .= " </select></div>";
+    		$text .= " </select></td></tr><tr><td>";
+
+			$text .= LAN_ORDER."</td><td><select style='width:99%' class='tbox' name='field_order' >
+			<option value='' class='caption'>".EXTLAN_61."</option>\n";
+			$table_list = ($_POST['table_db']) ? $_POST['table_db'] : $curVals[0] ;
+			if($sql -> db_Select_gen("DESCRIBE ".MPREFIX."{$table_list}")){
+		   		while($row3 = $sql -> db_Fetch()){
+    				$field_name=$row3[0];
+					$selected =  ($curVals[3] == $field_name) ? " selected='selected' " : "";
+					$text .="<option value=\"$field_name\" $selected>".$field_name."</option>\n";
+				}
+			}
+    		$text .= " </select></td></tr>";
 
      	}
-
+        $text .= "</table></div>";
 // ---------------------------------------------------------
 			$text .= "
 			</td>
@@ -551,11 +564,10 @@ class users_ext
 			</tr>
 			";
 
-
 			$text .= "<tr>
 			<td colspan='4' style='text-align:center' class='forumheader'>";
 
-			if (!is_array($current) || $action == "continue")
+			if ((!is_array($current) || $action == "continue") && $sub_action == "")
 			{
 				$text .= "
 				<input class='button' type='submit' name='add_field' value='".EXTLAN_23."' />
