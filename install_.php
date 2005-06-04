@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-05-06 16:40:28 $
-|     $Author: streaky $
+|     $Revision: 1.22 $
+|     $Date: 2005-06-04 13:53:42 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 @include("e107_handlers/errorhandler_class.php");
@@ -44,14 +44,14 @@ if (!$_POST['installlanguage']) {
 @include("e107_languages/".$_POST['installlanguage']."/lan_install.php");
 
 
-echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
+echo "<?xml version='1.0' encoding='utf-8' ?>\n";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>[ e107 installing ]</title>
 <link rel="stylesheet" href="e107_install/style.css" />
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="content-style-type" content="text/css" />
 <?php
 echo "\n
@@ -475,14 +475,14 @@ function create_tables() {
 	$welcome_message = str_replace($search, $replace, $welcome_message);
 	$datestamp = time();
 
-	
+
 	mysql_query("INSERT INTO ".$mySQLprefix."news VALUES (0, 'Welcome to e107', '$welcome_message', '', '$datestamp', '0', '1', 1, 0, 0, 0, 0, '0', '', '', 0) ");
 
 
 
 
 	mysql_query("INSERT INTO ".$mySQLprefix."news_category VALUES (0, 'Misc', 'icon5.png') ");
-	
+
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Home', 'index.php', '', '', 1, 1, 0, 0, 0) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Downloads', 'download.php', '', '', 1, 3, 0, 0, 0) ");
 	mysql_query("INSERT INTO ".$mySQLprefix."links VALUES (0, 'Members', 'user.php', '', '', 1, 4, 0, 0, 0) ");
