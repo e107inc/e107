@@ -45,10 +45,10 @@ if($sql->db_Select('menus','menu_id, menu_pages',"menu_name = '$name' AND menu_p
 		if($path != 'custom')
 		{
 			if(is_readable(e_PLUGIN.$path."/languages/".e_LANGUAGE.".php")){
-				include(e_PLUGIN.$path."/languages/".e_LANGUAGE.".php");
+				require_once(e_PLUGIN.$path."/languages/".e_LANGUAGE.".php");
 			}
 			if(e_LANGUAGE != 'English'){
-				include(e_PLUGIN.$path."/languages/English.php");
+				require_once(e_PLUGIN.$path."/languages/English.php");
 			}
 		}
 		include(e_PLUGIN.$path."/".$name.".php");
