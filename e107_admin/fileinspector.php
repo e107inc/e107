@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-05-30 19:14:36 $
+|     $Revision: 1.20 $
+|     $Date: 2005-06-05 04:11:25 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -102,7 +102,7 @@ class file_inspector {
 	}
 	
 	function scan($dir) {
-		$handle = opendir($dir);
+		$handle = opendir($dir.'/');
 		while (false !== ($readdir = readdir($handle))) {
 			if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
 				$path = $dir.'/'.$readdir;
@@ -303,7 +303,7 @@ class file_inspector {
 	}
 	
 	function image_scan($dir) {
-		$handle = opendir($dir);
+		$handle = opendir($dir.'/');
 		while (false !== ($readdir = readdir($handle))) {
 			if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
 				$path = $dir.'/'.$readdir;
