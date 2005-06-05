@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-06-04 22:51:21 $
+|     $Revision: 1.16 $
+|     $Date: 2005-06-05 00:51:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -318,7 +318,7 @@ class users_ext
 			$text .= "
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".EXTLAN_10.":</td>
+			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_10.":</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>user_";
 			if(is_array($current) && $current['user_extended_struct_name'])
 			{
@@ -338,7 +338,7 @@ class users_ext
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".EXTLAN_12.":</td>
+			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_12.":</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
 			<input class='tbox' type='text' name='user_text' size='40' value='".$current['user_extended_struct_text']."' maxlength='50' /><br />
 			<span class='smalltext'>".EXTLAN_13."</span>
@@ -347,7 +347,7 @@ class users_ext
 			";
 
 			$text .= "<tr>
-			<td style='width:30%' class='forumheader3'>".EXTLAN_14."</td>
+			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_14."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
 			<select onchange='changeHelp(this.value)' class='tbox' name='user_type' id='user_type'>";
 			foreach($ue->user_extended_types as $key => $val)
@@ -364,15 +364,9 @@ class users_ext
 			</select>
 			</td></tr>";
 
-			$text .= "
-			<tr>
-			<td style='width:30%' class='forumheader3'>".EXTLAN_15."</td>
-			<td style='width:70%' class='forumheader3' colspan='3'>
-			<textarea class='tbox' name='user_include' cols='60' rows='3'>{$current_include}</textarea><br />
-			<span class='smalltext'>".EXTLAN_51."</span><br />
-			</td>
-			</tr>
 
+
+			$text .= "
 			<tr>
 			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_3."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>";
@@ -458,14 +452,23 @@ class users_ext
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".EXTLAN_16."</td>
+			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_16."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
 			<input class='tbox' type='text' name='user_default' size='40' value='{$current['user_extended_struct_default']}' />
 			</td>
 			</tr>
 
+
 			<tr>
-			<td style='width:30%' class='forumheader3'>".EXTLAN_52."</td>
+			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_15."</td>
+			<td style='width:70%' class='forumheader3' colspan='3'>
+			<textarea class='tbox' name='user_include' cols='60' rows='2'>{$current_include}</textarea><br />
+			<span class='smalltext'>".EXTLAN_51."</span><br />
+			</td>
+			</tr>
+
+			<tr>
+			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_52."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
 			<input class='tbox' type='text' name='user_regex' size='30' value='{$current_regex}' /><br />
 			<span class='smalltext'>".EXTLAN_53."</span><br />
@@ -473,7 +476,7 @@ class users_ext
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".EXTLAN_54."</td>
+			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_54."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
 			<input class='tbox' type='text' name='user_regexfail' size='40' value='{$current_regexfail}' /><br />
 			<span class='smalltext'>".EXTLAN_55."</span><br />
@@ -481,7 +484,7 @@ class users_ext
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".EXTLAN_44."</td>
+			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_44."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
 			<select class='tbox' name='user_parent'>";
 			foreach($catNums as $k)
@@ -495,7 +498,7 @@ class users_ext
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".EXTLAN_18."</td>
+			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_18."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
 			<select class='tbox' name='user_required'>
 			";
@@ -519,28 +522,28 @@ class users_ext
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".EXTLAN_5."</td>
+			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_5."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
 			".r_userclass("user_applicable", $current['user_extended_struct_applicable'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_20."</span>
 			</td>
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".EXTLAN_6."</td>
+			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_6."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
 			".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'public, member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_22."</span>
 			</td>
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".EXTLAN_7."</td>
+			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_7."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
 			".r_userclass("user_write", $current['user_extended_struct_write'], 'off', 'member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_21."</span>
 			</td>
 			</tr>
 
 			<tr>
-			<td style='width:30%' class='forumheader3'>".EXTLAN_49."
+			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_49."
 			</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
 			<select class='tbox' name='user_hide'>
