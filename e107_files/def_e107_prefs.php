@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 // default preferences for e107
 $pref['sitename'] = "e107 powered website";
