@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/languages/English/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-03 17:02:29 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-05 15:26:51 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Chatbox");
+
 define("CHATBOX_L1", "Unable to accept post as that username is registered - if it is your username please login to post.");
 define("CHATBOX_L2", "Chatbox");
 define("CHATBOX_L3", "You must be logged in to post comments on this site - please either log in or if you are not registered click <a href='".e_BASE."signup.php'>here</a> to signup");
