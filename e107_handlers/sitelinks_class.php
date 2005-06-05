@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2005-05-25 03:55:50 $
-|     $Author: e107coders $
+|     $Revision: 1.51 $
+|     $Date: 2005-06-05 16:12:44 $
+|     $Author: streaky $
 +---------------------------------------------------------------+
 */
 
@@ -102,7 +102,7 @@ class sitelinks
 
 				$link['link_expand'] = (isset($pref['sitelinks_expandsub']) && isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])) ?  TRUE : FALSE;
 
-				$text .= $this->makeLink($link,'', $style);
+				$text .= $this->makeLink($link, '', $style);
 
 				// if there's a submenu. :
 				if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])){
@@ -154,7 +154,7 @@ class sitelinks
 
 	function makeLink($linkInfo, $submenu = FALSE, $style='')
 	{
-		global $pref,$tp;
+		global $pref,$tp, $e107;
 
 		// Start with an empty link
 		$linkstart = $indent = $linkadd = $screentip = $href = $link_append = '';
@@ -180,9 +180,9 @@ class sitelinks
 			$href = " href=\"javascript: expandit('sub_".$linkInfo['link_name']."')\"";
 		} elseif ($linkInfo['link_url']){
 
-			// Only add the e_BASE if it actually has an URL.
+			// Only add the $e107->server_path if it's an in-site relative path - fixes varuos issues (streaky).
 			if (!preg_match('#(http:|mailto:|ftp:)#', $linkInfo['link_url'])) {
-				$linkInfo['link_url'] = e_BASE.$linkInfo['link_url'];
+				$linkInfo['link_url'] = $e107->server_path.$linkInfo['link_url'];
 			}
 
 			// Only check if its highlighted if it has an URL
@@ -222,7 +222,7 @@ class sitelinks
 			$_link .= $tp->toHTML($linkInfo['link_name'],"","emotes_off defs");
 		}
 
-		$_link = $linkstart.$indent.$_link."\n";
+		$_link = $linkstart.$indent.$_link;
 
 		return $_link.$style['linkend'];
 	}
