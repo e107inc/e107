@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-06-05 02:09:38 $
+|     $Revision: 1.40 $
+|     $Date: 2005-06-05 02:28:48 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -185,7 +185,7 @@ if(!$text = $e107cache->retrieve("chatbox"))
 	$e107cache->set("chatbox", $text);
 }
 
-if(ADMIN && getperms("C")){$text .= "<br />[ <a href='".e_PLUGIN."chatbox_menu/admin_chatbox.php'>".CHATBOX_L13."</a> ]";}
+if(ADMIN && getperms("C")){$text .= "<br /><div style='text-align: center'>[ <a href='".e_PLUGIN."chatbox_menu/admin_chatbox.php'>".CHATBOX_L13."</a> ]</div>";}
 $caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME."images/chatbox_menu.png' alt='' /> ".CHATBOX_L2 : CHATBOX_L2);
 
 
