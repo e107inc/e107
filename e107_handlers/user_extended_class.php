@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-05-27 04:56:05 $
+|     $Revision: 1.22 $
+|     $Date: 2005-06-05 00:51:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -110,15 +110,20 @@ class e107_user_extended
 	{
 		switch ($type)
 		{
-			case 4:
+
+			case 4:   // db table - supporting numeric and non-numeric ids.(eg country codes)
+				$db_type = 'VARCHAR(11)';
+				break;
+
 			case 6:
-				// integer, db_field
+				// integer,
 				$db_type = 'INT(11)';
 				break;
 
 			case 1:
 			case 2:
 			case 3:
+			case 4:
 			case 7:
 			case 8:
 				//text, dropdown, radio, date
@@ -223,8 +228,7 @@ class e107_user_extended
 	{
 		global $cal, $tp;
 		$choices = explode(",",$struct['user_extended_struct_values']);
-		foreach($choices as $k => $v)
-		{
+		foreach($choices as $k => $v){
 			$choices[$k] = str_replace("[E_COMMA]", ",", $choices[$k]);
 		}
 		$parms = explode("^,^",$struct['user_extended_struct_parms']);
@@ -232,13 +236,13 @@ class e107_user_extended
 		$regex = $tp->toText($parms[1]);
 		$regexfail = $tp->toText($parms[2]);
 		$fname = "ue[user_".$struct['user_extended_struct_name']."]";
-		if(strpos($include, 'class') === FALSE)
-		{
+		if(strpos($include, 'class') === FALSE)	{
 			$include .= " class='tbox' ";
 		}
 
-		switch($struct['user_extended_struct_type'])
-		{
+
+
+		switch($struct['user_extended_struct_type']){
 			case 1:  //textbox
 			case 6:  //integer
 				$ret = "<input name='{$fname}' value='{$curval}' {$include} />";
@@ -269,22 +273,21 @@ class e107_user_extended
 
 			case 4: //db_field
 				global $sql;
-				if($sql->db_Select($choices[0],"{$choices[1]},{$choices[2]}","1 ORDER BY {$choices[2]}"))
-				{
+				$order = ($choices[3]) ? "ORDER BY {$choices[3]}" : "";
+
+				if($sql->db_Select($choices[0],"{$choices[1]},{$choices[2]}","1 $order")){
 					$choiceList = $sql->db_getList();
-					$ret = "<select {$include} class='tbox' name='{$fname}'>\n";
+					$ret = "<select {$include} class='tbox' name='{$fname}'  >\n";
 					$ret .= "<option value=''></option>\n";  // ensures that the user chose it.
 					foreach($choiceList as $cArray){
-						$cID = $cArray[$choices[1]];
+						$cID = trim($cArray[$choices[1]]);
 						$cText = trim($cArray[$choices[2]]);
 						$sel = ($curval == $cID) ? " selected='selected' " : "";
 						$ret .= "<option value='{$cID}' {$sel}>{$cText}</option>\n";
 					}
 					$ret .= "</select>\n";
 					return $ret;
-				}
-				else
-				{
+				} else {
 					return "";
 				}
 				break;
