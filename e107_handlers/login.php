@@ -12,14 +12,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-06-02 17:59:44 $
-|     $Author: streaky $
+|     $Revision: 1.14 $
+|     $Date: 2005-06-05 20:42:10 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
-@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php");
-@include(e_LANGUAGEDIR."English/lan_login.php");
+if(is_readable(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php")){
+ @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php");
+}else{
+ @include_once(e_LANGUAGEDIR."English/lan_login.php");
+}
 
 class userlogin {
 	function userlogin($username, $userpass, $autologin) {
