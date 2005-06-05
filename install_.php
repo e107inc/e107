@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-06-05 02:21:07 $
-|     $Author: sweetas $
+|     $Revision: 1.24 $
+|     $Date: 2005-06-05 17:33:14 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 @include("e107_handlers/errorhandler_class.php");
@@ -515,7 +515,7 @@ function create_tables() {
 	$search_prefs = 'a:10:{s:11:"search_sort";s:3:"php";s:11:"multisearch";s:1:"1";s:9:"relevance";s:1:"1";s:11:"user_select";s:1:"1";s:13:"time_restrict";s:1:"0";s:9:"time_secs";s:2:"60";s:6:"google";s:1:"0";s:13:"core_handlers";a:4:{s:4:"news";a:5:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"0";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";}s:8:"comments";a:5:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";}s:5:"users";a:5:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";}s:9:"downloads";a:5:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";}}s:17:"comments_handlers";a:2:{s:4:"news";a:3:{s:2:"id";i:0;s:3:"dir";s:4:"core";s:5:"class";s:1:"0";}s:8:"download";a:3:{s:2:"id";i:2;s:3:"dir";s:4:"core";s:5:"class";s:1:"0";}}s:13:"plug_handlers";N;}';
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('search_prefs', '$search_prefs') ");
 
-	$notify_prefs = 'a:1:{s:5:'event';a:9:{s:7:'usersup';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:8:'userveri';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:5:'flood';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:7:'subnews';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:5:'login';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:6:'logout';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:8:'newspost';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:7:'newsupd';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:7:'newsdel';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}}}';
+	$notify_prefs = "a:1:{s:5:'event';a:9:{s:7:'usersup';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:8:'userveri';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:5:'flood';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:7:'subnews';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:5:'login';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:6:'logout';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:8:'newspost';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:7:'newsupd';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:7:'newsdel';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}}}";
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('notify_prefs', '$notify_prefs') ");
 
 	mysql_query("INSERT INTO ".$mySQLprefix."banner VALUES (0, 'e107', 'e107login', 'e107password', 'e107.jpg', 'http://e107.org', 0, 0, 0, 0, 0, 0, '', 'campaign_one') ");
