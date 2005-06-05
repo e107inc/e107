@@ -18,5 +18,5 @@ define("ONLINE_L3", "Op deze pagina: ");
 define("ONLINE_L4", "Online");
 define("ONLINE_L5", "Leden");
 define("ONLINE_L6", "nieuwste");
-
+define("TRACKING_MESSAGE", "Het volgen van de gebruikers Online is nu gedeactiveerd, activeer de functie <a href='".e_ADMIN."users.php?options'>hier</a></span><br />");
 ?>
