@@ -11,8 +11,7 @@ $query = " (banner_startdate=0 OR banner_startdate<=".time().") AND (banner_endd
 AND banner_active IN (".USERCLASS_LIST.")
 ORDER BY RAND($seed)";
 
-if($sql -> db_Select("banner", "*", $query))
-{
+if($sql -> db_Select("banner", "*", $query)){
 	$row = $sql->db_Fetch();
 
 	if(!$row['banner_image'])
@@ -36,10 +35,12 @@ if($sql -> db_Select("banner", "*", $query))
 	elseif($fileext1 == 'php' || $fileext1 == 'html' || $fileext1 == 'js')
 	{
 		include(e_IMAGE."banners/".$row['banner_image']);
-		return "";
+		return;
 	}
 	else
 	{
 		return "<a href='".e_BASE."banner.php?".$row['banner_id']."' rel='external'><img src='".e_IMAGE."banners/".$row['banner_image']."' alt='".$row['banner_clickurl']."' style='border:0' /></a>";
 	}
+} else {
+	return "&nbsp;";
 }
