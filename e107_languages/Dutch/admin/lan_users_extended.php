@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_users_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 04:44:52 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-05 06:09:12 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -70,9 +70,9 @@ define("EXTLAN_58", "Niet geactiveerd");
 define("EXTLAN_59", "Activeren");
 define("EXTLAN_60", "Deactiveren");
 define("EXTLAN_61", "Geen");
-define("EXTLAN_62", "Kies tabel");
-define("EXTLAN_63", "Kies veld id");
-define("EXTLAN_64", "Kies weergave waarde");
+define("EXTLAN_62", "Tabel");
+define("EXTLAN_63", "Veld id");
+define("EXTLAN_64", "Toon waarde");
 
 define("EXTLAN_PRE1", "Plaats");
 define("EXTLAN_PRE2", "AIM");
