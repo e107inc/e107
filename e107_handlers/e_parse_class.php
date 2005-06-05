@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.82 $
-|     $Date: 2005-06-05 12:35:32 $
-|     $Author: sweetas $
+|     $Revision: 1.83 $
+|     $Date: 2005-06-05 17:01:15 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -324,7 +324,7 @@ class e_parse
 		$text = str_replace('[E_NL]', $nl_replace, $text);
 //		$text = str_replace("&amp;", "&", $text);
 //		$text = str_replace(array("&", "&pound;"), array("&amp;", "£"), $text);
-		return $text;
+		return trim($text);
 	}
 
 	function toJS($stringarray) {
