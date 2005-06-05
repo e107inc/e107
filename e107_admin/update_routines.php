@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.91 $
-|     $Date: 2005-06-04 20:16:39 $
-|     $Author: sweetas $
+|     $Revision: 1.92 $
+|     $Date: 2005-06-05 19:51:28 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -53,10 +53,13 @@ function update_check() {
 
 function update_61x_to_700($type) {
 	global $sql, $ns, $mySQLdefaultdb, $pref, $tp;
-	if ($type == "do")
-	{
+	if ($type == "do") {
 		set_time_limit(180);
 		$s_prefs = FALSE;
+		
+		// add an index on user_ban - speeds up page render time massively on large user tables.
+		mysql_query("ALTER TABLE `".MPREFIX."user` ADD INDEX `user_ban_index`(`user_ban`);");
+		
 		if(!$sql -> db_Select("userclass_classes", "*", "userclass_editclass='254' ")){
 			$sql->db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
 		}
@@ -723,9 +726,22 @@ function update_61x_to_700($type) {
 		}
 		// -----------------------------------------------------	
 
-	}
-	else
-	{
+	} else {
+		
+		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
+		$qry = "SHOW CREATE TABLE `".MPREFIX."user`";
+		$res = mysql_query($qry);
+		if ($res) {
+			$row = mysql_fetch_row($res);
+			$lines = explode("\n", $row[1]);
+			if(!strstr($lines[39], "KEY `user_ban_index` (`user_ban`)")) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+		
+		
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
 		global $pref;
