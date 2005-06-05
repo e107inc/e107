@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_usersettings.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-27 18:09:47 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-05 20:24:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "User Settings");
@@ -99,4 +99,6 @@ define("LAN_USET_5", "Subscribed to");
 define("LAN_USET_6", "Subscribe to our mailing-list(s) and/or sections of this site.");
 define("LAN_USET_7", "Miscellaneous");
 define("LAN_USET_8", "Signature / Timezone");
+define("LAN_USET_9", "Some of the required fields (marked with a *) are missing from your settings.");
+define("LAN_USET_10","Please update your settings now, in order to proceed.");
 ?>

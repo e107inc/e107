@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.157 $
-|     $Date: 2005-06-03 15:08:34 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.158 $
+|     $Date: 2005-06-05 20:24:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -302,6 +302,9 @@ if (isset($pref['del_unv']) && $pref['del_unv']) {
 	$sql->db_Delete("user", "user_ban = 2 AND user_join<'$threshold' ");
 }
 
+
+
+
 e107_require_once(e_HANDLER."override_class.php");
 $override=new override;
 
@@ -408,6 +411,12 @@ $sql->db_Mark_Time('Start: Init session');
 $ns=new e107table;
 init_session();
 
+if(USER && $pref['forceuser_update'] && e_PAGE != "usersettings.php"){
+	if(force_userupdate()){
+    	header("Location: ".e_BASE."usersettings.php?update");
+	};
+}
+
 
 $sql->db_Mark_Time('Start: Go online');
 if(isset($pref['track_online']) && $pref['track_online'])
@@ -420,7 +429,7 @@ define("e_SIGNUP", (file_exists($e107->relative_base_path."customsignup.php") ? 
 define("e_LOGIN", (file_exists($e107->relative_base_path."customlogin.php") ? $e107->relative_base_path."customlogin.php" : $e107->relative_base_path."login.php"));
 
 if ($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php') {
-	
+
 	header("Location: ".$e107->http_abs_location(false, "membersonly.php"));
 	exit;
 }
@@ -546,7 +555,7 @@ if(!is_array($menu_data)) {
 
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 
-if ((strstr(e_SELF, "usersettings.php") && e_QUERY && getperms("4") && ADMIN) || (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
+if ((strstr(e_SELF, "usersettings.php") && is_numeric(e_QUERY) && getperms("4") && ADMIN) || (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
 	if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') !== FALSE) {
 		checkvalidtheme($pref['sitetheme']);
 	} else if (strstr(e_SELF, "newspost.php")) {
@@ -992,8 +1001,9 @@ function init_session() {
 		if ($sql->db_Select_gen($qry))
 		{
 			$result=$sql->db_Fetch();
-			extract($result);
 			$currentUser = $result;
+			extract($result);
+
 			define("USERID", $user_id);
 			define("USERNAME", $user_name);
 			define("USERURL", $user_homepage);
@@ -1139,6 +1149,34 @@ function utf8_html_entity_decode($string) {
 
 function print_a($var) {
 	echo '<pre>'.print_r($var, true).'</pre>';
+}
+
+function force_userupdate(){
+	// returns TRUE if required fields are empty in the user's profile.
+	global $sql,$pref,$currentUser;
+	$signupval = explode(".", $pref['signup_options']);
+	if(in_array("2",$signupval)){
+		$signup_name = array("realname", "website", "icq", "aim", "msn", "birthday", "location", "signature", "image", "timezone", "usrclass");
+        foreach($signupval as $key=>$sign){
+			$field = "user_".$signup_name[$key];
+			$req = $signupval[$key];
+			if($req ==2 && $currentUser[$field] == ""){
+	   		  	return TRUE;
+			}
+		}
+	}
+
+	// extended user.
+    if($sql -> db_Select("user_extended_struct", "user_extended_struct_name", " user_extended_struct_required = '1' ")){
+    	while($row = $sql -> db_Fetch()){
+         	extract($row);
+			if(!$currentUser["user_".$user_extended_struct_name]){
+				return TRUE;
+			}
+		}
+	}
+
+	return FALSE;
 }
 
 $sql->db_Mark_Time('(After class2)');
