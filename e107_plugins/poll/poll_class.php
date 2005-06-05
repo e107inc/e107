@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-05-26 08:45:08 $
-|     $Author: stevedunstan $
+|     $Revision: 1.22 $
+|     $Date: 2005-06-05 02:40:19 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 @include(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
@@ -193,7 +193,7 @@ class poll
 					{
 						$OPTION = $option;
 
-						$BAR = ($percentage[$count] ? "<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".(floor($percentage[$count]) != 100 ? floor($percentage[$count]) : 90)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>" : "");
+						$BAR = ($percentage[$count] ? "<div style='width: 100%'><div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".(floor($percentage[$count]) != 100 ? floor($percentage[$count]) : 90)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div></div>" : "");
 
 						$PERCENTAGE = $percentage[$count]."%";
 						$VOTES = POLLAN_31.": ".$voteArray[$count];
