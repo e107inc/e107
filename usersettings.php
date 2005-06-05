@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-06-05 17:34:32 $
+|     $Revision: 1.32 $
+|     $Date: 2005-06-05 20:24:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -59,7 +59,9 @@ if (e_QUERY && !ADMIN) {
 
 require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
-$_uid = e_QUERY;
+$_uid = is_numeric(e_QUERY) ? e_QUERY : "";
+
+
 
 
 if(getperms("4") && eregi(str_replace("../","",e_ADMIN),$_SERVER['HTTP_REFERER']) || $_POST['adminmode'] == 1){
@@ -82,25 +84,33 @@ require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 
 	  	show_admin_menu(USRLAN_76, $action, $var);
 	}
-     require_once(e_ADMIN."auth.php");
+
 	$ADMINAREA = TRUE;
-}else{
-  	require_once(HEADERF);
 }
 
 
-if (isset($_POST['updatesettings']))
-{
+
+
+
+	$signupval = explode(".", $pref['signup_options']);
+
+// Save Form Data  --------------------------------------->
+
+
+if (isset($_POST['updatesettings'])){
 
 	if ($_uid && ADMIN) {
 		$inp = $_uid;
 		$remflag = TRUE;
+
 	} else {
 		$inp = USERID;
 	}
+
+
 	$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']); // these are invalid anyways, so why allow them? (XSS Fix)
 	// check prefs for required fields =================================.
-	$signupval = explode(".", $pref['signup_options']);
+
 	$signup_title = array(LAN_308, LAN_144, LAN_115, LAN_116, LAN_117, LAN_118, LAN_119, LAN_120, LAN_121, LAN_122);
 	$signup_name = array("realname", "website", "icq", "aim", "msn", "birthday", "location", "signature", "image", "user_timezone");
 
@@ -119,13 +129,14 @@ if (isset($_POST['updatesettings']))
 		}
 		if ($avmsg) {
 			$_POST['image'] = "";
-			$ns->tablerender(" ", $avmsg);
+		  //	$ns->tablerender(" ", $avmsg);
+				$messsage = $avmsg;
 		}
 	}
 
 	for ($i = 0; $i < count($signup_title); $i++){
 		$postvalue = $signup_name[$i];
-		if ($signupval[$i] == 2 && $_POST[$postvalue] == ""){
+		if ($signupval[$i] == 2 && $_POST[$postvalue] == "" && !$_uid){
 			$error .= LAN_SIGNUP_6.$signup_title[$i].LAN_SIGNUP_7."\\n";
 		}
 	};
@@ -143,7 +154,7 @@ if (isset($_POST['updatesettings']))
 		$parms = explode("^,^", $extList[$key]['user_extended_struct_parms']);
 		$regex = $tp->toText($parms[1]);
 		$regexfail = $tp->toText($parms[2]);
-		if($val == '' && $extList[$key]['user_extended_struct_required'] == TRUE)
+		if($val == '' && $extList[$key]['user_extended_struct_required'] == TRUE && !$_uid)
 		{
 			$error .= LAN_SIGNUP_6.substr($key,5)." ".LAN_SIGNUP_7."\\n";
 			$err = TRUE;
@@ -152,7 +163,7 @@ if (isset($_POST['updatesettings']))
 		{
 			if(!preg_match($regex, $val))
 			{
-				$error .= "<b>".substr($key,5)."</b> ".$regexfail;
+				$error .= substr($key,5)." ".$regexfail."\\n";
 				$err = TRUE;
 			}
 		}
@@ -176,12 +187,12 @@ if (isset($_POST['updatesettings']))
 	// ====================================================================
 
 	if ($_POST['password1'] != $_POST['password2']) {
-		$error .= LAN_105."<br />";
+		$error .= LAN_105."\\n";
 	}
 
 	if (strlen($_POST['password1']) < $pref['signup_pass_len'] && $_POST['password1'] != "") {
 
-		$error .= LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5;
+		$error .= LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5."\\n";
 		$password1 = "";
 		$password2 = "";
 	}
@@ -193,31 +204,28 @@ if (isset($_POST['updatesettings']))
 	}
 
 	if (!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $_POST['email'])) {
-		$error .= LAN_106;
+	  	$error .= LAN_106."\\n";
 	}
 
-	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$_POST['email']." AND user_id!=".USERID."' ")) {
-		message_handler("P_ALERT", LAN_408);
-		$error = TRUE;
+	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$_POST['email']."' AND user_id !=".USERID."' ")) {
+	  	$error .= LAN_408."\\n";
 	}
 
 	$username = strip_tags($_POST['username']);
 	$loginname = strip_tags($_POST['loginname']);
-	if(!$loginname)
-	{
+	if (!$loginname) {
 		$row = $sql -> db_Fetch();
 		$loginname = $row['user_name'];
 	}
 
 	if (preg_match('#^www\.#si', $_POST['website'])) {
 		$_POST['website'] = "http://$homepage";
-	}
-	else if (!preg_match('#^[a-z0-9]+://#si', $_POST['website'])) {
+	} else if (!preg_match('#^[a-z0-9]+://#si', $_POST['website'])) {
 		$_POST['website'] = "";
 	}
 
 	if ($_POST['icq'] && !is_numeric($_POST['icq'])) {
-		$error = LAN_ICQNUMBER;
+		$error = LAN_ICQNUMBER."\\n";
 		$_POST['icq'] = "";
 	}
 
@@ -232,7 +240,7 @@ if (isset($_POST['updatesettings']))
 				$_POST['image'] = "-upload-".$uploaded[0]['name'];
 				if (!resize_image(e_FILE."public/avatars/".$uploaded[0]['name'], e_FILE."public/avatars/".$uploaded[0]['name'], "avatar")) {
 					unset($message);
-					$error = RESIZE_NOT_SUPPORTED;
+					$error .= RESIZE_NOT_SUPPORTED."\\n";
 					@unlink(e_FILE."public/avatars/".$uploaded[0]['name']);
 				}
 			}
@@ -243,17 +251,23 @@ if (isset($_POST['updatesettings']))
 			}
 		}
 	}
+
 	if (!$user_sess) {
 		$user_sess = $_POST['_user_sess'];
 	}
+
+
 	if (!$error) {
+
 		$_POST['signature'] = $tp->toDB($_POST['signature']);
 		$_POST['location'] = $tp->toDB($_POST['location']);
 		$_POST['website'] = $tp->toDB($_POST['website']);
 		$_POST['msn'] = $tp->toDB($_POST['msn']);
 		$_POST['aim'] = $tp->toDB($_POST['aim']);
 		$_POST['realname'] = $tp->toDB($_POST['realname']);
-	$new_customtitle = "";
+
+		$new_customtitle = "";
+
 		if(isset($_POST['customtitle'])){
 //			$_POST['customtitle'] = $tp->toDB($_POST['customtitle']);
 			$new_customtitle = ", user_customtitle = '".$tp->toDB($_POST['customtitle'])."' ";
@@ -292,20 +306,43 @@ if (isset($_POST['updatesettings']))
 
 			$e_event->trigger("postuserset", $_POST);
 
+
 			// =======================
 
-			$text = "<div style='text-align:center'>".LAN_150."</div>";
-			$ns->tablerender(LAN_151, $text);
-			if($ADMINAREA){
+
+            if(e_QUERY == "update"){
+            	Header("Location: index.php");
+			}
+			if($ADMINAREA && !$error){
             	Header("Location: ".$_POST['adminreturn']);
 			}
+			$message = "<div style='text-align:center'>".LAN_150."</div>";
+			$caption = LAN_151;
+
 		} else {
-			$text = "<div style='text-align:center'>".$ret."</div>";
-			$ns->tablerender(LAN_151, $text);
+
+			$message = "<div style='text-align:center'>".$ret."</div>";
+			$caption = LAN_151;
 		}
 	}
+
+}
+// -------------------
+
+if($ADMINAREA){
+  	require_once(e_ADMIN."auth.php");
+}else{
+	require_once(HEADERF);
 }
 
+
+
+if(isset($message)){
+	$ns->tablerender($caption, $message);
+}
+
+
+// ---------------------
 if ($error) {
 	require_once(e_HANDLER."message_handler.php");
 	message_handler("P_ALERT", $error);
@@ -338,7 +375,12 @@ if($_POST){     // Fix for all the values being lost when an error occurred.
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
-$text = (e_QUERY ? $rs->form_open("post", e_SELF."?".$user_id, "dataform", "", " enctype='multipart/form-data'") : $rs->form_open("post", e_SELF, "dataform", "", " enctype='multipart/form-data'"));
+$text = (e_QUERY ? $rs->form_open("post", e_SELF."?".e_QUERY, "dataform", "", " enctype='multipart/form-data'") : $rs->form_open("post", e_SELF, "dataform", "", " enctype='multipart/form-data'"));
+
+if(e_QUERY == "update"){
+	$text .= "<div class='fborder' style='text-align:center'><br />".str_replace("*","<span style='color:red'>*</span>",LAN_USET_9)."<br />".LAN_USET_10."<br /><br /></div>";
+}
+
 
 $text .= "<div style='text-align:center'>
 	<table style='width:auto' class='fborder'>
@@ -459,35 +501,35 @@ $text .= "<tr>
 	</tr>
 
 	<tr>
-	<td style='width:20%' class='forumheader3'>".LAN_144."</td>
+	<td style='width:20%' class='forumheader3'>".LAN_144.req($signupval[1])."</td>
 	<td style='width:80%' class='forumheader2'>
 	".$rs->form_text("website", 60, $curVal['user_homepage'], 150)."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:20%' class='forumheader3'>".LAN_115."</td>
+	<td style='width:20%' class='forumheader3'>".LAN_115.req($signupval[2])."</td>
 	<td style='width:80%' class='forumheader2'>
 	".$rs->form_text("icq", 20, $curVal['user_icq'], 10)."
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:20%' class='forumheader3'>".LAN_116."</td>
+	<td style='width:20%' class='forumheader3'>".LAN_116.req($signupval[3])."</td>
 	<td style='width:80%' class='forumheader2'>
 	<input class='tbox' type='text' name='aim' size='30' value='{$curVal['user_aim']}' maxlength='100' />
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:20%' class='forumheader3'>".LAN_117."</td>
+	<td style='width:20%' class='forumheader3'>".LAN_117.req($signupval[4])."</td>
 	<td style='width:80%' class='forumheader2'>
 	<input class='tbox' type='text' name='msn' size='30' value='{$curVal['user_msn']}' maxlength='100' />
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:20%' class='forumheader3'>".LAN_118."</td>
+	<td style='width:20%' class='forumheader3'>".LAN_118.req($signupval[5])."</td>
 	<td style='width:80%' class='forumheader2'>";
 
 unset($cal_options);
@@ -506,7 +548,7 @@ $text .= "
 	</tr>
 
 	<tr>
-	<td style='width:20%' class='forumheader3'>".LAN_119."</td>
+	<td style='width:20%' class='forumheader3'>".LAN_119.req($signupval[6])."</td>
 	<td style='width:80%' class='forumheader2'>
 	<input class='tbox' type='text' name='location' size='60' value='{$curVal['user_location']}' maxlength='200' />
 	</td>
@@ -541,7 +583,11 @@ $text .= "
 			$uVal = str_replace(chr(1), "", $curVal[$fname]);
 			$text .= "
 				<tr>
-					<td style='width:40%' class='forumheader3'>".$tp->toHTML($f['user_extended_struct_text'],"","emotes_off defs")."</td>
+					<td style='width:40%' class='forumheader3'>".$tp->toHTML($f['user_extended_struct_text'],"","emotes_off defs");
+                if($f['user_extended_struct_required']){
+                  $text .= req(2);
+				}
+				$text .="</td>
 					<td style='width:60%' class='forumheader3'>".$ue->user_extended_edit($f, $uVal);
 					$parms = explode("^,^",$f['user_extended_struct_parms']);
 					if($parms[3])
@@ -560,7 +606,7 @@ $signature = $tp->toForm($curVal['user_signature']);
 $text .= "
 	<tr><td colspan='2' class='forumheader'>".LAN_USET_8."</td></tr>
 	<tr>
-	<td style='width:20%;vertical-align:top' class='forumheader3'>".LAN_120."</td>
+	<td style='width:20%;vertical-align:top' class='forumheader3'>".LAN_120.req($signupval[7])."</td>
 	<td style='width:80%' class='forumheader2'>
 	<textarea class='tbox' name='signature' cols='58' rows='4' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$signature</textarea>
 	<br />
@@ -571,7 +617,7 @@ $text .= "
 	</tr>
 
 	<tr>
-	<td style='width:20%' class='forumheader3'>".LAN_122."</td>
+	<td style='width:20%' class='forumheader3'>".LAN_122.req($signupval[9])."</td>
 	<td style='width:80%' class='forumheader2'>
 	<select name='user_timezone' class='tbox'>\n";
 timezone();
@@ -599,7 +645,7 @@ $text .= "</select>
 
 
 	<tr>
-	<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_422."<br /><span class='smalltext'>".LAN_423."</span></td>
+	<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_422.req($signupval[8])."<br /><span class='smalltext'>".LAN_423."</span></td>
 	<td style='width:80%' class='forumheader2'>
 	<input class='tbox' type='text' name='image' size='60' value='".$curVal['user_image']."' maxlength='100' />
 	</td>
