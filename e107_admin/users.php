@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-06-03 07:27:57 $
+|     $Revision: 1.50 $
+|     $Date: 2005-06-05 20:41:56 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -96,6 +96,7 @@ if (isset($_POST['update_options'])) {
 	$pref['profile_rate'] = $_POST['profile_rate'];
 	$pref['profile_comments'] = $_POST['profile_comments'];
 	$pref['track_online'] = $_POST['track_online'];
+	$pref['force_userupdate'] = $_POST['force_userupdate'];
 	save_prefs();
 	$user->show_message(USRLAN_1);
 }
@@ -623,19 +624,25 @@ class users{
 
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_126.":</td>
-			<td style='width:50%' class='forumheader3'>". ($pref['profile_rate'] ? "<input name='profile_rate' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' />".LAN_NO : "<input name='profile_rate' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' checked='checked' />".LAN_NO)."
+			<td style='width:50%;vertical-align:top' class='forumheader3'>". ($pref['profile_rate'] ? "<input name='profile_rate' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' />".LAN_NO : "<input name='profile_rate' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='profile_rate' type='radio' value='0' checked='checked' />".LAN_NO)."
 			</td>
 			</tr>
 
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_127.":</td>
-			<td style='width:50%' class='forumheader3'>". ($pref['profile_comments'] ? "<input name='profile_comments' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' />".LAN_NO : "<input name='profile_comments' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' checked='checked' />".LAN_NO)."
+			<td style='width:50%;vertical-align:top' class='forumheader3'>". ($pref['profile_comments'] ? "<input name='profile_comments' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' />".LAN_NO : "<input name='profile_comments' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='profile_comments' type='radio' value='0' checked='checked' />".LAN_NO)."
+			</td>
+			</tr>
+
+			<tr>
+			<td style='width:50%;vertical-align:top' class='forumheader3'>".USRLAN_133.":<br /><span class='smalltext'>".USRLAN_134."</span></td>
+			<td style='width:50%;vertical-align:top' class='forumheader3'>". ($pref['force_userupdate'] ? "<input name='force_userupdate' type='radio' value='1' checked='checked' />".LAN_YES."&nbsp;&nbsp;<input name='force_userupdate' type='radio' value='0' />".LAN_NO : "<input name='force_userupdate' type='radio' value='1' />".LAN_YES."&nbsp;&nbsp;<input name='force_userupdate' type='radio' value='0' checked='checked' />".LAN_NO)."
 			</td>
 			</tr>
 
 
 			<tr>
-			<td style='width:50%' class='forumheader3'>".USRLAN_93."<br /><span class='smalltext'>".USRLAN_94."</span></td>
+			<td style='width:50%;vertical-align:top' class='forumheader3'>".USRLAN_93."<br /><span class='smalltext'>".USRLAN_94."</span></td>
 			<td style='width:50%' class='forumheader3'>
 			<input class='tbox' type='text' name='del_unv' size='10' value='".$pref['del_unv']."' maxlength='5' /> ".USRLAN_95."
 			</td></tr>

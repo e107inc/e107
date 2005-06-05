@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-05-04 18:56:08 $
-|     $Author: streaky $
+|     $Revision: 1.14 $
+|     $Date: 2005-06-05 20:41:56 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Options Saved.");
@@ -132,5 +132,8 @@ define("LAN_BANNED","Banned");
 define("USRLAN_130", "Enable online user tracking");
 define("USRLAN_131", "You must enable this option to use online user tracking options, like online.php, forum online info and online menus");
 define("USRLAN_132", "Enable");
+
+define("USRLAN_133", "Force user to update settings");
+define("USRLAN_134", "Enabling this option will automatically send the user to their user-settings if a required user field is not filled.");
 
 ?>
