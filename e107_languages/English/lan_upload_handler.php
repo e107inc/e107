@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_upload_handler.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:11:56 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-05 06:58:21 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("LANUPLOAD_1", "The filetype");
 define("LANUPLOAD_2", "is not allowed and has been deleted.");
 define("LANUPLOAD_3", "Successfully uploaded");
-define("LANUPLOAD_4", "Either destination folder does not exist or is not writable.");
+define("LANUPLOAD_4", "Either destination folder does not exist or is not writable. (chmod 777)");
 define("LANUPLOAD_5", "The uploaded file exceeds the upload_max_filesize directive in php.ini.");
 define("LANUPLOAD_6", "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the html form.");
 define("LANUPLOAD_7", "The uploaded file was only partially uploaded.");
