@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.81 $
-|     $Date: 2005-06-02 15:04:39 $
-|     $Author: streaky $
+|     $Revision: 1.82 $
+|     $Date: 2005-06-05 12:35:32 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -220,8 +220,9 @@ class e_parse
 
 		if(!$wrap) $wrap = $pref['main_wordwrap'];
 		$text = " ".$text;
+		
 		if (strpos($modifiers, 'nobreak') === FALSE) {
-			$text = preg_replace("#>\W*[\r]*\n[\r]*#", ">", $text);
+			$text = preg_replace("#>\s*[\r]*\n[\r]*#", ">", $text);
 		}
 
 		if($pref['make_clickable'] && strpos($modifiers, 'no_make_clickable') === FALSE) {
