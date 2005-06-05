@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.83 $
-|   $Date: 2005-05-17 11:52:30 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.84 $
+|   $Date: 2005-06-05 07:45:52 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 
 */
@@ -125,7 +125,7 @@ if (IsSet($_POST['submitupload'])) {
 			rename(e_IMAGE."newspost_images/".$uploaded[$key]['name'],e_FILE."downloads/".$uploaded[$key]['name']);
 		}
 
-		if ($uploadtype == "resize" && $_POST['resize_value'][$key]) {
+		if ($uploadtype == "resize" && $_POST['resize_value']) {
 			require_once(e_HANDLER."resize_handler.php");
 			resize_image(e_IMAGE."newspost_images/".$uploaded[$key]['name'], e_IMAGE."newspost_images/".$uploaded[$key]['name'], $_POST['resize_value'], "copy");
 		}
