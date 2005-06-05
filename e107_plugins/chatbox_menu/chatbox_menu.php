@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-06-03 17:02:29 $
-|     $Author: e107coders $
+|     $Revision: 1.39 $
+|     $Date: 2005-06-05 02:09:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -101,14 +101,14 @@ if(!USER && !$pref['anon_post']){
 }
 else
 {
-	$texta =  "<div style='text-align:center'>".(e_QUERY ? "\n<form id='chatbox' method='post' action='".e_SELF."?".e_QUERY."'>" : "\n<form id='chatbox' method='post' action='".e_SELF."'>")."<p>";
+	$cb_width = (defined("CBWIDTH") ? CBWIDTH : "100%");
+	
+	$texta =  "<div style='text-align:center; width: 100%'>".(e_QUERY ? "\n<form id='chatbox' method='post' action='".e_SELF."?".e_QUERY."'>" : "\n<form id='chatbox' method='post' action='".e_SELF."'>")."<p>";
 	if(($pref['anon_post'] == "1" && USER == FALSE)){
 		$texta .= "\n<input class='tbox' type='text' name='nick' value='' maxlength='50' style='width: 100%;' /><br />";
 	}
 
-	$cb_width = (defined("CBWIDTH") ? CBWIDTH : "97%");
-
-	$texta .= "\n<textarea class='tbox chatbox' name='cmessage' cols='20' rows='5' style='width:".$cb_width.";overflow:hidden' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
+	$texta .= "\n<textarea class='tbox chatbox' name='cmessage' cols='20' rows='5' style='width:".$cb_width."; overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
 
 	if($pref['cb_emote']){
 		$texta .= " \n<input class='button' type ='button' style='cursor:hand; cursor:pointer' size='30' value='".CHATBOX_L14."' onclick=\"expandit('emote')\" />\n<div style='display:none' id='emote'>".r_emote()."\n</div>\n";
