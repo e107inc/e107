@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_upload_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-05 13:59:45 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("LANUPLOAD_1", "El tipo de archivo");
 define("LANUPLOAD_2", "no está permitido y ha sido borrado.");
 define("LANUPLOAD_3", "Transferencia completada");
-define("LANUPLOAD_4", "La carpeta de destino no existe o no tiene permisos de escritura.");
+define("LANUPLOAD_4", "La carpeta de destino no existe o no tiene permisos de escritura.(chmod 777)");
 define("LANUPLOAD_5", "La transferencia excede el tamaño máximo permitido definido en php.ini.");
 define("LANUPLOAD_6", "La transferencia excede el tamaño máximo permitido definido por el administrador.");
 define("LANUPLOAD_7", "La transferencia se ha completado parcialmente.");

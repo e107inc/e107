@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_users_extended.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:41 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-05 13:59:45 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -33,8 +33,8 @@ define("EXTLAN_21", "Determina quien verá este campo en su configuración de us
 define("EXTLAN_22", "Determina quien verá el campo en su página de usuarios.");
 define("EXTLAN_23", "Añadir campo extra");
 define("EXTLAN_24", "Actualizar campo extra");
-define("EXTLAN_25", "mover arriba");
-define("EXTLAN_26", "mover abajo");
+define("EXTLAN_25", "Mover arriba");
+define("EXTLAN_26", "Mover abajo");
 define("EXTLAN_27", "Confirmar eliminación");
 define("EXTLAN_28", "Nada definido");
 define("EXTLAN_29", "Campos extras de usuario guardados.");
@@ -45,7 +45,7 @@ define("EXTLAN_33", "Cancelar Editar");
 define("EXTLAN_34", "Campos extras");
 define("EXTLAN_35", "Categorías");
 define("EXTLAN_36", "Sin asignar categoría");
-define("EXTLAN_37", "sin definir categoría");
+define("EXTLAN_37", "Sin definir categoría");
 define("EXTLAN_38", "Nombre Categoría");
 define("EXTLAN_39", "Añadir categoría ");
 define("EXTLAN_40", "Categoría creada");
@@ -59,32 +59,35 @@ define("EXTLAN_47", "Añadir nuevo parámetro");
 define("EXTLAN_48", "Añadir nuevo valor");
 define("EXTLAN_49", "Permitir ocultar al usuario");
 define("EXTLAN_50", "Fijando a 'Si' permitirá al usuario ocultar el valor excepto a los Admins");
-define("EXTLAN_51", "<i>parm_name=parm_value</i><br />Consulta la ayuda para parámetros válidos.");
-
+define("EXTLAN_51", "Aquí puede entrar cualquier parámetro válido w3c<br />ie <i><b>class='tbox' size='40' maxlength='80'</i></b>.");
+define("EXTLAN_52", "Validación de código regex");
+define("EXTLAN_53", "Escriba el código regex que necesitará para compararlo con una entrada válida <br />**Los delimitadores regex son obligatorios**");
+define("EXTLAN_54", "Fallo del texto regex");
+define("EXTLAN_55", "Escriba el mensaje de error que se mostrará si la validación regex falla.");
 define("EXTLAN_56", "Campos predefinidos");
 define("EXTLAN_57", "Activado");
 define("EXTLAN_58", "No Activado");
 define("EXTLAN_59", "Activar");
 define("EXTLAN_60", "Desactivar");
 define("EXTLAN_61", "Nada");
-define("EXTLAN_62", "Escoja tabla");
-define("EXTLAN_63", "Escoja campo ID");
-define("EXTLAN_64", "Escoja valor a mostrar");
+define("EXTLAN_62", "Tabla");
+define("EXTLAN_63", "Campo ID");
+define("EXTLAN_64", "Mostrar valor");
 
 //textbox
 define("EXTLAN_HELP_1", "<b><i>Parámetros:</i></b><br />size - tamaño del campo<br />maxlength - longitud máx del campo<br />class - css clase del campo<br />");
 //radio buttons
-define("EXTLAN_HELP_2", "Ésta será la ayuda de los botones radio");
+define("EXTLAN_HELP_2", "Éste será el texto de ayuda de los botones radio");
 //dropdown
-define("EXTLAN_HELP_3", "Ésta será la ayuda de la lista desplegable");
+define("EXTLAN_HELP_3", "Éste será el texto de ayuda de la lista desplegable");
 //db field
-define("EXTLAN_HELP_4", "<b><i>Valores:</i></b><br />SIEMPRE DEBEN HABER tres valores dados:<br /><ol><li>dbtable</li><li>campo conteniendo el id</li><li>campo conteniendo el valor</li></ol><br />");
+define("EXTLAN_HELP_4", "<b><i>Valores:</i></b><br />SIEMPRE DEBEN HABER tres valores dados:<br /><ol><li>dbtable</li><li>Campo conteniendo el id</li><li>Campo conteniendo el valor</li></ol><br />");
 //textarea
-define("EXTLAN_HELP_5", "Ésta será la ayuda del área de texto");
+define("EXTLAN_HELP_5", "Éste será el texto de ayuda del área de texto");
 //integer
-define("EXTLAN_HELP_6", "Ésta será la ayuda de los Enteros");
+define("EXTLAN_HELP_6", "Éste será el texto de ayuda de los Enteros");
 //date
-define("EXTLAN_HELP_7", "Ésta será la ayuda de la fecha");
+define("EXTLAN_HELP_7", "Éste será el texto ayuda de la fecha");
 
 define("EXTLAN_PRE1", "Zona");
 define("EXTLAN_PRE2", "AIM");
