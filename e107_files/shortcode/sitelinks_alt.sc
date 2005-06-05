@@ -5,6 +5,7 @@
 		$icon = e_IMAGE."generic/".IMODE."/arrow.png";
 	}
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
+		$cat_id = 'l_'.crc32($cat_id);
 		$text = "<a class='menuButton' href='".e_BASE.$cat_link."' ";
 		if ($cat_img != 'no_icons') {
 			$text .= "style='background-image: url(".$cat_img."); background-repeat: no-repeat;  background-position: 3px 1px; white-space: nowrap' ";
@@ -73,7 +74,7 @@
 		if (check_class($links_exp['link_class'])) {
 			if (isset($sub_comp[$links_exp['link_name']]) && $sub_comp[$links_exp['link_name']]) {
 				$text .= adnav_cat($links_exp['link_name'], '', $link_icon, $links_exp['link_name']);
-				$text .= "<div id='".$links_exp['link_name']."' class='menu' onmouseover=\"menuMouseover(event)\">";
+				$text .= "<div id='l_".crc32($links_exp['link_name'])."' class='menu' onmouseover=\"menuMouseover(event)\">";
 				foreach ($sub_comp[$links_exp['link_name']]['link_name'] as $sub_comp_key => $sub_comp_value) {
 					if (!$sub_comp[$links_exp['link_name']]['link_button'][$sub_comp_key] && $parm == 'no_icons') {
 						$sub_link_icon = 'no_icons';
