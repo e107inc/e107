@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-06-05 02:40:19 $
-|     $Author: sweetas $
+|     $Revision: 1.23 $
+|     $Date: 2005-06-05 15:37:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 @include(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
@@ -122,11 +122,11 @@ class poll
 		$voteTotal = array_sum($voteArray);
 
 		$percentage = array();
-		foreach($voteArray as $votes)
-		{
-			$percentage[] = round(($votes/$voteTotal) * 100, 2);
+		if(isset($votes)){
+			foreach($voteArray as $votes){
+				$percentage[] = round(($votes/$voteTotal) * 100, 2);
+			}
 		}
-
 		/* get template */
 		if (file_exists(THEME."poll_template.php"))
 		{
@@ -158,9 +158,9 @@ class poll
 			case "notvoted":
 				$text = "<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_START : $POLL_NOTVOTED_START));
 				$count = 1;
-				$alt == 0; // alternate style.
+				$alt = 0; // alternate style.
 				foreach($optionArray as $option) {
-					$MODE = $mode;		/* debug */
+				//	$MODE = ($mode) ? $mode : "";		/* debug */
 					$OPTIONBUTTON = ($pollArray['poll_allow_multiple'] ? "<input type='checkbox' name='votea[]' value='$count' />" : "<input type='radio' name='votea' value='$count' />");
 					$OPTION = $tp->toHTML($option,"","emotes_off defs");
 					if($POLL_NOTVOTED_LOOP_ALT && $type != "forum"){ // alternating style
