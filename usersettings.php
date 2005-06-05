@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-05-25 07:24:00 $
+|     $Revision: 1.31 $
+|     $Date: 2005-06-05 17:34:32 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -123,12 +123,10 @@ if (isset($_POST['updatesettings']))
 		}
 	}
 
-	for ($i = 0; $i < count($signup_title); $i++)
-	{
+	for ($i = 0; $i < count($signup_title); $i++){
 		$postvalue = $signup_name[$i];
-		if ($signupval[$i] == 2 && $_POST[$postvalue] == "")
-		{
-			$error .= LAN_SIGNUP_6."<b>".$signup_title[$i]."</b>".LAN_SIGNUP_7."<br />";
+		if ($signupval[$i] == 2 && $_POST[$postvalue] == ""){
+			$error .= LAN_SIGNUP_6.$signup_title[$i].LAN_SIGNUP_7."\\n";
 		}
 	};
 
@@ -147,7 +145,7 @@ if (isset($_POST['updatesettings']))
 		$regexfail = $tp->toText($parms[2]);
 		if($val == '' && $extList[$key]['user_extended_struct_required'] == TRUE)
 		{
-			$error .= "<b>".substr($key,5)."</b> ".LAN_SIGNUP_7."<br />";
+			$error .= LAN_SIGNUP_6.substr($key,5)." ".LAN_SIGNUP_7."\\n";
 			$err = TRUE;
 		}
 		if($regex != "")
@@ -256,8 +254,7 @@ if (isset($_POST['updatesettings']))
 		$_POST['aim'] = $tp->toDB($_POST['aim']);
 		$_POST['realname'] = $tp->toDB($_POST['realname']);
 	$new_customtitle = "";
-		if(isset($_POST['customtitle']))
-		{
+		if(isset($_POST['customtitle'])){
 //			$_POST['customtitle'] = $tp->toDB($_POST['customtitle']);
 			$new_customtitle = ", user_customtitle = '".$tp->toDB($_POST['customtitle'])."' ";
 		}
@@ -269,8 +266,7 @@ if (isset($_POST['updatesettings']))
 		if ($ret=='') {
 			$sql->db_Update("user", "user_name='$username', user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."' {$new_customtitle} WHERE user_id='".$inp."' ");
 
-			if(ADMIN && getperms("4"))
-			{
+			if(ADMIN && getperms("4")){
 				$sql -> db_Update("user", "user_loginname='$loginname' WHERE user_id='$inp' ");
 			}
 
@@ -311,17 +307,15 @@ if (isset($_POST['updatesettings']))
 }
 
 if ($error) {
-	$ns->tablerender("<div style='text-align:center'>".LAN_20."</div>", $error);
+	require_once(e_HANDLER."message_handler.php");
+	message_handler("P_ALERT", $error);
 	$adref = $_POST['adminreturn'];
 }
 
 
-if ($_uid)
-{
+if ($_uid){
 	$uuid = $_uid;
-}
-else
-{
+}else{
 	$uuid = USERID;
 }
 
@@ -333,7 +327,13 @@ WHERE u.user_id='{$uuid}'
 
 $sql->db_Select_gen($qry);
 $curVal=$sql->db_Fetch();
-extract($curVal);
+
+if($_POST){     // Fix for all the values being lost when an error occurred.
+	foreach($_POST as $key=>$val){
+			$curVal["user_".$key] = $val;
+	}
+}
+
 
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -353,16 +353,13 @@ $text .= "<div style='text-align:center'>
 	</tr>
 	";
 
-	if(ADMIN && getperms("4"))
-	{
+	if (ADMIN && getperms("4")){
 		$text .= "<tr>
 		<td style='width:40%' class='forumheader3'>".LAN_9."<br /><span class='smalltext'>".LAN_10."</span></td>
 		<td style='width:60%' class='forumheader2'>". $rs->form_text("loginname", 20, $curVal['user_loginname'], 100, "tbox")."</td>
 		</tr>
 		";
-	}
-	else
-	{
+	} else {
 		$text .= "<tr>
 		<td style='width:40%' class='forumheader3'>".LAN_9."<br /><span class='smalltext'>".LAN_11."</span></td>
 		<td style='width:60%' class='forumheader2'>". $curVal['user_loginname']."</td>
@@ -376,8 +373,7 @@ $text .= "<div style='text-align:center'>
 	".$rs->form_text("realname", 40, $curVal['user_login'], 100)."
 	</td>
 	</tr>";
-if ($pref['forum_user_customtitle'] || ADMIN)
-{
+if ($pref['forum_user_customtitle'] || ADMIN){
 	$text .= "
 		<tr>
 		<td style='width:30%' class='forumheader3'>".LAN_CUSTOMTITLE."</td>
@@ -560,7 +556,7 @@ $text .= "
 		}
 	}
 
-$signature = $tp->toForm($user_signature);
+$signature = $tp->toForm($curVal['user_signature']);
 $text .= "
 	<tr><td colspan='2' class='forumheader'>".LAN_USET_8."</td></tr>
 	<tr>
@@ -581,7 +577,7 @@ $text .= "
 timezone();
 $count = 0;
 while ($timezone[$count]) {
-	if ($timezone[$count] == $user_timezone) {
+	if ($timezone[$count] == $curVal['user_timezone']) {
 		$text .= "<option value='".$timezone[$count]."' selected='selected'>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
 	} else {
 		$text .= "<option value='".$timezone[$count]."'>(GMT".$timezone[$count].") ".$timearea[$count]."</option>\n";
@@ -605,7 +601,7 @@ $text .= "</select>
 	<tr>
 	<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_422."<br /><span class='smalltext'>".LAN_423."</span></td>
 	<td style='width:80%' class='forumheader2'>
-	<input class='tbox' type='text' name='image' size='60' value='$user_image' maxlength='100' />
+	<input class='tbox' type='text' name='image' size='60' value='".$curVal['user_image']."' maxlength='100' />
 	</td>
 	</tr>
 
@@ -702,8 +698,8 @@ if($ADMINAREA){
 }
 $text .= "
 	<input type='hidden' name='_uid' value='$_uid' />
-	<input type='hidden' name='_pw' value='$user_password' />
-	<input type='hidden' name='_user_sess' value='$user_sess' /></div>
+	<input type='hidden' name='_pw' value='".$curVal['user_password']."' />
+	<input type='hidden' name='_user_sess' value='".$curVal['user_sess']."' /></div>
 	</form>
 	";
 
