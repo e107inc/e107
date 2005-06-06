@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.20 $
-|		$Date: 2005-06-06 21:29:04 $
+|		$Revision: 1.21 $
+|		$Date: 2005-06-06 21:37:01 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -180,7 +180,6 @@ class contentdb{
 
 						//custom additional data tags
 						for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){
-							echo $i." - ".$_POST["content_custom_key_{$i}"]." - ".$_POST["content_custom_value_{$i}"]."<br />";
 							if(isset($_POST["content_custom_key_{$i}"]) && isset($_POST["content_custom_value_{$i}"]) && $_POST["content_custom_value_{$i}"] != ""){
 								$keystring = $_POST["content_custom_key_{$i}"];
 								$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
