@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.46 $
-|		$Date: 2005-06-06 13:28:13 $
+|		$Revision: 1.47 $
+|		$Date: 2005-06-06 16:40:21 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -327,7 +327,6 @@ class content{
 		}
 
 		function getCrumbItem($id, $arr){
-			global $qs;
 			//$id	:	content_parent of item
 			//$arr	:	array of all categories
 			$crumb = "";
