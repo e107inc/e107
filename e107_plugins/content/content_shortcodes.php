@@ -538,7 +538,7 @@ if ($content_pref["content_list_summary_{$mainparent}"]){
 		}
 		$CONTENT_RECENT_TABLE_SUMMARY = ($row['content_summary'] != "" && $row['content_summary'] != " " ? $row['content_summary'] : "");
 	}else{
-		$CONTENT_RECENT_TABLE_SUMMARY = "";
+		$CONTENT_RECENT_TABLE_SUMMARY = ($row['content_summary'] ? $row['content_summary'] : "");
 	}
 }else{
 	$CONTENT_RECENT_TABLE_SUMMARY = "";
