@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.44 $
-|		$Date: 2005-06-06 13:28:13 $
+|		$Revision: 1.45 $
+|		$Date: 2005-06-06 16:40:21 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -248,9 +248,9 @@ class contentform{
 
 						if($mode == "contentmanager"){
 							if($qs[1] == "edit"){
-								$text .= $rs -> form_hidden("parent", $row['content_parent']);
+								$hidden = $rs -> form_hidden("parent", $row['content_parent']);
 							}else{
-								$text .= $rs -> form_hidden("parent", $qs[2]);
+								$hidden = $rs -> form_hidden("parent", $qs[2]);
 							}
 						}else{
 							if($mode == "submit"){
@@ -268,7 +268,7 @@ class contentform{
 						//heading
 						$row['content_heading'] = (isset($row['content_heading']) ? $row['content_heading'] : "");
 						$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_11;
-						$TOPIC_FIELD = $rs -> form_text("content_heading", 74, $row['content_heading'], 250);
+						$TOPIC_FIELD = $rs -> form_text("content_heading", 74, $row['content_heading'], 250).$hidden;
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 						//subheading
@@ -441,11 +441,11 @@ class contentform{
 													".$rs -> form_text("content_files".$i."", 50, $attachments[$i], 100, "tbox", TRUE)."
 													".$rs -> form_button("button", "removefile".$i."", CONTENT_ADMIN_ITEM_LAN_26, "onClick=\"confirm2_('file', '$i', '$attachments[$i]');\"").$rs -> form_button("button", "newfile".$i."", CONTENT_ADMIN_ITEM_LAN_28, "onClick='expandit(this)'")."
 													<div style='display:none; &{head};'>
-													<input class='tbox' type='file' name='file_userfile2[]' value='".$attachments[$i]."' size='50'>
+													<input class='tbox' type='file' name='file_userfile2[]' value='".$attachments[$i]."' size='50' />
 													</div>
 													";
 												} else {
-													$TOPIC_FIELD .= "<i>".CONTENT_ADMIN_ITEM_LAN_29."</i><br /><input class='tbox' name='file_userfile2[]' type='file' size='50'>";
+													$TOPIC_FIELD .= "<i>".CONTENT_ADMIN_ITEM_LAN_29."</i><br /><input class='tbox' name='file_userfile2[]' type='file' size='50' />";
 												}
 											$TOPIC_FIELD .= "
 											</td>
@@ -502,10 +502,11 @@ class contentform{
 													".$rs -> form_text("content_images".$i."", 50, $imagesarray[$i], 100, "tbox", TRUE)."
 													".$rs -> form_button("button", "removeimage".$i."", CONTENT_ADMIN_ITEM_LAN_26, "onClick=\"confirm2_('image', '$i', '$imagesarray[$i]');\"").$rs -> form_button("button", "newimage".$i."", CONTENT_ADMIN_ITEM_LAN_33, "onClick='expandit(this)'")."
 													<div style='display:none; &{head};'>
-													<input class='tbox' type='file' name='file_userfile3[]' value='".$imagesarray[$i]."' size='50'>									</div>
+													<input class='tbox' type='file' name='file_userfile3[]' value='".$imagesarray[$i]."' size='50' />
+													</div>
 													";
 												} else {
-													$TOPIC_FIELD .= "<input class='tbox' name='file_userfile3[]' type='file' size='50'>";
+													$TOPIC_FIELD .= "<input class='tbox' name='file_userfile3[]' type='file' size='50' />";
 												}
 											$TOPIC_FIELD .= "
 											</td>
