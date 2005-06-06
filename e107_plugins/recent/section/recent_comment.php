@@ -76,11 +76,16 @@
 			}elseif($row['comment_type'] == "pcontent"){	//	pcontent
 					$sql2 -> db_Select("pcontent", "content_heading, content_parent, content_class", "content_id='".$row['comment_item_id']."' AND content_class REGEXP '".e_CLASS_REGEXP."' ");
 					$row2 = $sql2 -> db_Fetch();
-					$tmp = explode(".", $row2['content_parent']);
-					$type_id = $tmp[0];
 					$rowheading = $this -> parse_heading($row2['content_heading'], $mode);
-					$HEADING = "<a href='".e_PLUGIN."content/content.php?type.".$type_id.".content.".$row['comment_item_id']."' title='".$row2['content_heading']."'>".$tp -> toHTML($rowheading)."</a>";
-					$CATEGORY = ($arr[4] ? "<a href='".e_PLUGIN."content/content.php?type.".$type_id."'>".RECENT_COMMENT_8."</a>" : "");
+					$HEADING = "<a href='".e_PLUGIN."content/content.php?content.".$row['comment_item_id']."' title='".$row2['content_heading']."'>".$tp -> toHTML($rowheading)."</a>";
+					if($row2['content_parent'] == "0"){
+						$catid = $row['comment_item_id'];
+					}elseif(strpos($row2['content_parent'], ".")){
+						$catid = substr($row2['content_parent'], 2);
+					}else{
+						$catid = $row2['content_parent'];
+					}
+					$CATEGORY = ($arr[4] ? "<a href='".e_PLUGIN."content/content.php?cat.".$catid."'>".RECENT_COMMENT_8."</a>" : "");
 
 			}else{
 

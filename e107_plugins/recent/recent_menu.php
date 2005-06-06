@@ -12,6 +12,13 @@
 +---------------------------------------------------------------+
 */
 
+if(!getperms("P")){
+	return;
+}
+if(!$sql -> db_Select("plugin", "*", "plugin_path = 'recent' AND plugin_installflag = '1' ")){
+	return;
+}
+
 global $sysprefs, $tp;
 unset($text);
 require_once(e_PLUGIN."recent/recent_shortcodes.php");
@@ -24,17 +31,23 @@ require_once(e_PLUGIN."recent/recent_class.php");
 $rc = new recent;
 
 //check preferences from database
-$recent_pref = $sysprefs->getArray('recent');
+$sql = new db;
+$num_rows = $sql -> db_Select("core", "*", "e107_name='recent' ");
+$row = $sql -> db_Fetch();
 
 //insert default preferences
-if (!isset($recent_pref['news_menudisplay']))
-{
+if (empty($row['e107_value'])) {
+
 	$rc -> getSections();
 	$recent_pref = $rc -> getDefaultPrefs();
 
 	$tmp = addslashes(serialize($recent_pref));
 	$sql -> db_Insert("core", "'recent', '$tmp' ");
+	$sql -> db_Select("core", "*", "e107_name='recent' ");
 }
+
+$recent_pref = unserialize(stripslashes($row['e107_value']));
+if(!is_array($recent_pref)){ $recent_pref = unserialize($row['e107_value']); }
 
 //get all sections to use
 foreach ($recent_pref as $key => $value) {
