@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.83 $
-|     $Date: 2005-06-05 17:01:15 $
+|     $Revision: 1.84 $
+|     $Date: 2005-06-06 22:40:49 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -52,6 +52,18 @@ class e_parse
 			$text = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $text);
 		}
 		return $text;
+	}
+
+	// recursively run toDB (for arrays)
+	function recurse_toDB($data, $no_encode = false, $nostrip = false){
+		foreach ($data as $key => $var) {
+			if(!is_array($var)){
+				$ret[$key] = $this->toDB($var, $no_encode, $nostrip);
+			} else {
+				$ret[$key] = $this->recurse_toDB($var, $no_encode, $nostrip);
+			}
+		}
+		return $ret;
 	}
 
 	function toForm($text, $single_quotes = FALSE)
@@ -214,13 +226,13 @@ class e_parse
 
 		// support for converting defines(constants) within text. eg. Lan_XXXX
 		if(strpos($modifiers,"defs") !== FALSE && strlen($text) < 20 && defined(trim($text))){
-        	return constant(trim($text));
+			return constant(trim($text));
 		}
 
 
 		if(!$wrap) $wrap = $pref['main_wordwrap'];
 		$text = " ".$text;
-		
+
 		if (strpos($modifiers, 'nobreak') === FALSE) {
 			$text = preg_replace("#>\s*[\r]*\n[\r]*#", ">", $text);
 		}
@@ -322,8 +334,8 @@ class e_parse
 			$nl_replace = "\n";
 		}
 		$text = str_replace('[E_NL]', $nl_replace, $text);
-//		$text = str_replace("&amp;", "&", $text);
-//		$text = str_replace(array("&", "&pound;"), array("&amp;", "£"), $text);
+		//		$text = str_replace("&amp;", "&", $text);
+		//		$text = str_replace(array("&", "&pound;"), array("&amp;", "£"), $text);
 		return trim($text);
 	}
 
