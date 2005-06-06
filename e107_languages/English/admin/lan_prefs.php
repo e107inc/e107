@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-06-01 16:02:17 $
-|     $Author: sweetas $
+|     $Revision: 1.36 $
+|     $Date: 2005-06-06 17:38:46 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -187,4 +187,6 @@ define("PRFLAN_137", "Display Memory Usage");
 
 define("PRFLAN_138", "Enable Image-code verification during forgotten password.");
 define("PRFLAN_139", "Display warning when main administrator password hasnt changed for at least 30 days");
+
+define("PRFLAN_140", "Text to display after signup form has been submitted.");  
 ?>

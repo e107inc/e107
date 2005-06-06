@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-06-06 03:54:33 $
+|     $Revision: 1.37 $
+|     $Date: 2005-06-06 17:38:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -303,7 +303,13 @@ if (isset($_POST['register'])) {
 			$e_event->trigger("usersup", $edata_su);
 
 			require_once(HEADERF);
-			$text = LAN_405;
+
+            if($pref['signup_text_after']) {
+				$text = $tp->toHTML($pref['signup_text_after'], TRUE, 'parse_sc,defs')."<br />";
+			}else {
+				$text = LAN_405;
+			}
+
 			$ns->tablerender(LAN_406, $text);
 			require_once(FOOTERF);
 			exit;
@@ -322,8 +328,7 @@ if (isset($_POST['register'])) {
 			}
 			// ======== save extended fields as serialized data.
 
-			if($ue_fields)
-			{
+			if($ue_fields){
 				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$nid}')");
 				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$nid}'");
 			}
@@ -333,7 +338,13 @@ if (isset($_POST['register'])) {
 			$edata_su = array("username" => $username, "email" => $_POST['email'], "website" => $_POST['website'], "icq" => $_POST['icq'], "aim" => $_POST['aim'], "msn" => $_POST['msn'], "location" => $_POST['location'], "birthday" => $birthday, "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname']);
 			$e_event->trigger("usersup", $edata_su);
 
-			$ns->tablerender(LAN_SIGNUP_8, LAN_107."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />".LAN_SIGNUP_13);
+			if($pref['signup_text_after']) {
+				$text = $tp->toHTML($pref['signup_text_after'], TRUE, 'parse_sc,defs')."<br />";
+			}else {
+				$text = LAN_107."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />".LAN_SIGNUP_13;
+			}
+
+			$ns->tablerender(LAN_SIGNUP_8,$text);
 			require_once(FOOTERF);
 			exit;
 		}

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2005-06-01 16:02:16 $
-|     $Author: sweetas $
+|     $Revision: 1.60 $
+|     $Date: 2005-06-06 17:38:46 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -438,7 +438,13 @@ $text .= "<div id='signup' style='display:none; text-align:center'>
 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_126."</td>
-	<td style='width:50%' class='forumheader3'><textarea class='tbox' name='signup_text' cols='1' rows='5' style='width: 100%;'>".$pref['signup_text']."</textarea>
+	<td style='width:50%' class='forumheader3'><textarea class='tbox' name='signup_text' cols='1' rows='3' style='width: 100%;'>".$pref['signup_text']."</textarea>
+	</td>
+	</tr>
+
+    <tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_140."</td>
+	<td style='width:50%' class='forumheader3'><textarea class='tbox' name='signup_text_after' cols='1' rows='3' style='width: 100%;'>".$pref['signup_text_after']."</textarea>
 	</td>
 	</tr>
 
@@ -745,8 +751,8 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	<input type='radio' name='autoban' value='0'".(!$pref['autoban'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
-	
-	
+
+
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_139.":</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
