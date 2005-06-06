@@ -1,77 +1,77 @@
-ï»¿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_administrator.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 15:32:34 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-06 16:18:15 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("ADMSLAN_0", "Naujai áraðytas narys/administratorius");
-define("ADMSLAN_1", "dabar turi administratoriaus statusà.");
-define("ADMSLAN_2", "atnaujintas duomenø  bazëje.");
-define("ADMSLAN_3", "yra pagrindinis svetainës administratorius ir negali bûti redaguojamas.");
-define("ADMSLAN_4", "Tæsti");
-define("ADMSLAN_6", "yra pagrindinis svetainës administratorius ir negali bûti paðalintas.");
+define("ADMSLAN_0", "Naujai Ä®raÅ¡ytas narys/administratorius");
+define("ADMSLAN_1", "dabar turi administratoriaus statusÄ….");
+define("ADMSLAN_2", "atnaujintas duomenÅ³  bazÄ—je.");
+define("ADMSLAN_3", "yra pagrindinis svetainÄ—s administratorius ir negali bÅ«ti redaguojamas.");
+define("ADMSLAN_4", "TÄ™sti");
+define("ADMSLAN_6", "yra pagrindinis svetainÄ—s administratorius ir negali bÅ«ti paÅ¡alintas.");
 
-define("ADMSLAN_13", "Svetainës administratoriai");
+define("ADMSLAN_13", "SvetainÄ—s administratoriai");
 
 
 define("ADMSLAN_16", "Administratoriaus vardas");
-define("ADMSLAN_17", "Administratoriaus slaptaþodis");
-define("ADMSLAN_18", "Teisës");
-define("ADMSLAN_19", "Keisti svetainës parinktis");
+define("ADMSLAN_17", "Administratoriaus slaptaÅ¾odis");
+define("ADMSLAN_18", "TeisÄ—s");
+define("ADMSLAN_19", "Keisti svetainÄ—s parinktis");
 define("ADMSLAN_20", "Keisti meniu");
-define("ADMSLAN_21", "Áraðyti administratorius");
-define("ADMSLAN_22", "Tvarkyti nariø sàraðà. Tvarkyti draudimus");
+define("ADMSLAN_21", "Ä®raÅ¡yti administratorius");
+define("ADMSLAN_22", "Tvarkyti nariÅ³ sÄ…raÅ¡Ä…. Tvarkyti draudimus");
 define("ADMSLAN_23", "Sukurti/redaguoti diskusijas");
-define("ADMSLAN_24", "Tvarkyti bylø grupes");
-define("ADMSLAN_25", "Atsiøsti/tvarkyti bylas");
-define("ADMSLAN_26", "Priþiûrëti naujienø rubrikas");
-define("ADMSLAN_27", "Priþiûrëti nuorodø grupes");
-define("ADMSLAN_28", "Laikinai uþdaryti svetainæ tvarkymui");
+define("ADMSLAN_24", "Tvarkyti bylÅ³ grupes");
+define("ADMSLAN_25", "AtsiÅ³sti/tvarkyti bylas");
+define("ADMSLAN_26", "PriÅ¾iÅ«rÄ—ti naujienÅ³ rubrikas");
+define("ADMSLAN_27", "PriÅ¾iÅ«rÄ—ti nuorodÅ³ grupes");
+define("ADMSLAN_28", "Laikinai uÅ¾daryti svetainÄ™ tvarkymui");
 define("ADMSLAN_29", "Tvarkyti reklaminius skydelius");
-define("ADMSLAN_30", "Tvarkyti naujienø ðaltinius");
-define("ADMSLAN_31", "Tvarkyti jausmukø piktogramas");
-define("ADMSLAN_32", "Tvarkyti pirmojo puslapio turiná");
-define("ADMSLAN_33", "Tvarkyti seansø þurnalà");
+define("ADMSLAN_30", "Tvarkyti naujienÅ³ Å¡altinius");
+define("ADMSLAN_31", "Tvarkyti jausmukÅ³ piktogramas");
+define("ADMSLAN_32", "Tvarkyti pirmojo puslapio turinÄ¯");
+define("ADMSLAN_33", "Tvarkyti seansÅ³ Å¾urnalÄ…");
 define("ADMSLAN_34", "Tvarkyti metagaires");
-define("ADMSLAN_35", "Tvarkyti vieðai atsiunèiamas bylas");
+define("ADMSLAN_35", "Tvarkyti vieÅ¡ai atsiunÄiamas bylas");
 define("ADMSLAN_36", "Vadovauti diskusijoms");
 define("ADMSLAN_37", "Vadovauti komentarams");
 define("ADMSLAN_38", "Vadovauti pokalbiams");
 define("ADMSLAN_39", "Skelbti naujienas");
 define("ADMSLAN_40", "Skelbti nuorodas");
 define("ADMSLAN_41", "Skelbti straipsnius");
-define("ADMSLAN_42", "Skelbti apþvalgas");
+define("ADMSLAN_42", "Skelbti apÅ¾valgas");
 define("ADMSLAN_43", "Post content pages");
-define("ADMSLAN_44", "Atsiøsti bylas");
+define("ADMSLAN_44", "AtsiÅ³sti bylas");
 define("ADMSLAN_45", "Skelbti apklausas");
-define("ADMSLAN_46", "Áraðyti pasisveikinimo þinutæ");
+define("ADMSLAN_46", "Ä®raÅ¡yti pasisveikinimo Å¾inutÄ™");
 define("ADMSLAN_47", "Tvarkyti pateiktas naujienas");
 
-define("ADMSLAN_49", "Paþymëti viskà");
-define("ADMSLAN_51", "Panaikinti þymëjimà");
+define("ADMSLAN_49", "PaÅ¾ymÄ—ti viskÄ…");
+define("ADMSLAN_51", "Panaikinti Å¾ymÄ—jimÄ…");
 define("ADMSLAN_52", "Update administrator");
-define("ADMSLAN_53", "Áraðyti administratoriø");
-define("ADMSLAN_54", "Svetainës administratoriai");
+define("ADMSLAN_53", "Ä®raÅ¡yti administratoriÅ³");
+define("ADMSLAN_54", "SvetainÄ—s administratoriai");
 
-define("ADMSLAN_55", "Palikta tuðèiø laukeliø");
+define("ADMSLAN_55", "Palikta tuÅ¡ÄiÅ³ laukeliÅ³");
 
-define("ADMSLAN_56", "Svetainës administratorius");
+define("ADMSLAN_56", "SvetainÄ—s administratorius");
 
 define("ADMSLAN_58", "Main Site Administrator");
-define("ADMSLAN_59", "Paðalinti administratoriaus statusà");
-define("ADMSLAN_60", "Ar jûs tikrai norite paðalinti administratoriaus statusà nariui");
-define("ADMSLAN_61", "Administratorius paðalintas");
+define("ADMSLAN_59", "PaÅ¡alinti administratoriaus statusÄ…");
+define("ADMSLAN_60", "Ar jÅ«s tikrai norite paÅ¡alinti administratoriaus statusÄ… nariui");
+define("ADMSLAN_61", "Administratorius paÅ¡alintas");
 
-define("ADMSLAN_62", "Áskiepiø tvarkyklë");
+define("ADMSLAN_62", "Ä®skiepiÅ³ tvarkyklÄ—");
 
-define("ADMSLAN_64", "Iðvalyti svetainës podëlá");
-define("ADMSLAN_65", "Tvarkyti paðto parinktis");
-define("ADMSLAN_66", "Tvarkyti svetainës paieðkos sistemà");
-define("ADMSLAN_67", "Ieðkoti bylø su bylø inspektoriumi");
-define("ADMSLAN_68", "Tvarkyti praneðimus paðtu");
+define("ADMSLAN_64", "IÅ¡valyti svetainÄ—s podÄ—lÄ¯");
+define("ADMSLAN_65", "Tvarkyti paÅ¡to parinktis");
+define("ADMSLAN_66", "Tvarkyti svetainÄ—s paieÅ¡kos sistemÄ…");
+define("ADMSLAN_67", "IeÅ¡koti bylÅ³ su bylÅ³ inspektoriumi");
+define("ADMSLAN_68", "Tvarkyti praneÅ¡imus paÅ¡tu");
 ?>
