@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-06-01 17:03:58 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.30 $
+|     $Date: 2005-06-06 20:08:43 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -362,11 +362,11 @@ for($i = 0; $i < count($thread_info)-1; $i++) {
 
 	if($post_info['thread_parent'])
 	{
-		$forrep .= $tp->parseTemplate($FORUMREPLYSTYLE, FALSE, $forum_shortcodes)."\n";
+		$forrep .= $tp->parseTemplate($FORUMREPLYSTYLE, TRUE, $forum_shortcodes)."\n";
 	}
 	else
 	{
-		$forthr = $tp->parseTemplate($FORUMTHREADSTYLE, FALSE, $forum_shortcodes)."\n";
+		$forthr = $tp->parseTemplate($FORUMTHREADSTYLE, TRUE, $forum_shortcodes)."\n";
 	}
 }
 
