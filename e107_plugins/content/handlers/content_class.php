@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.48 $
-|		$Date: 2005-06-06 21:29:04 $
+|		$Revision: 1.49 $
+|		$Date: 2005-06-06 22:51:33 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -33,7 +33,8 @@ class content{
 				global $tp;
 
 				if(!$id){ $id="0"; }
-				//default values
+
+				//admin create form
 				$content_pref["content_admin_icon_{$id}"] = "1";						//should icon be available to add when creating an item
 				$content_pref["content_admin_attach_{$id}"] = "1";						//should file be available to add when creating an item
 				$content_pref["content_admin_images_{$id}"] = "1";						//should image be available to add when creating an item
@@ -50,6 +51,7 @@ class content{
 				$content_pref["content_admin_customtags_{$id}"] = "1";					//should options for adding additional data be shown
 				$content_pref["content_admin_presettags_{$id}"] = "1";					//should preset data tags be shown
 
+				//submit form
 				$content_pref["content_submit_{$id}"] = "0";							//should users be able to submit an item
 				$content_pref["content_submit_class_{$id}"] = "0";						//define which userclass is able to submit an item
 				$content_pref["content_submit_directpost_{$id}"] ="0";					//should submission be direclty posted as an item, or have them validated by admins
@@ -69,6 +71,7 @@ class content{
 				$content_pref["content_submit_customtags_{$id}"] = "1";					//should options for adding additional data be shown
 				$content_pref["content_submit_presettags_{$id}"] = "1";					//should preset data tags be shown
 
+				//path theme css
 				$content_pref["content_cat_icon_path_large_{$id}"] = "{e_PLUGIN}content/images/cat/48/";	//default path to large categry icons
 				$content_pref["content_cat_icon_path_small_{$id}"] = "{e_PLUGIN}content/images/cat/16/";	//default path to small category icons
 				$content_pref["content_icon_path_{$id}"] = "{e_PLUGIN}content/images/icon/";				//default path to item icons
@@ -78,6 +81,7 @@ class content{
 				$content_pref["content_layout_{$id}"] = "content_content_template.php";						//choose default layout scheme
 				$content_pref["content_css_{$id}"] = "ctemp";												//choose css stylesheet to use (theme, ctemp, ctempdef)
 
+				//general
 				$content_pref["content_log_{$id}"] = "1";								//activate log
 				$content_pref["content_blank_icon_{$id}"] = "0";						//use blank icon if no icon present
 				$content_pref["content_blank_caticon_{$id}"] = "0";						//use blank caticon if no caticon present
@@ -89,6 +93,7 @@ class content{
 				$content_pref["content_nextprev_number_{$id}"] = "10";					//how many items on a page
 				$content_pref["content_defaultorder_{$id}"] = "orderddate";				//default sort and order method
 
+				//content item preview
 				$content_pref["content_list_subheading_{$id}"] = "1";					//show subheading in listpages
 				$content_pref["content_list_summary_{$id}"] = "1";						//show summary in listpages
 				$content_pref["content_list_text_{$id}"] = "0";							//show (part of) text in listpages
@@ -111,12 +116,50 @@ class content{
 				$content_pref["content_list_rating_all_{$id}"] = "0";					//override rating system
 				$content_pref["content_list_editicon_{$id}"] = "0";						//show link in list pages to admin edit item
 
+				//category
 				$content_pref["content_cat_showparent_{$id}"] = "1";					//show parent item in category page
 				$content_pref["content_cat_showparentsub_{$id}"] = "1";					//show subcategories in category page
 				$content_pref["content_cat_listtype_{$id}"] = "0";						//also show items from subategories
 				$content_pref["content_cat_menuorder_{$id}"] = "1";						//order of parent and child items
 				$content_pref["content_cat_rendertype_{$id}"] = "1";					//render method of the menus
 
+				//sections of content category in 'view all categories page'
+				$content_pref["content_catall_icon_{$id}"] = "1";						//show icon
+				$content_pref["content_catall_subheading_{$id}"] = "1";					//show subheading
+				$content_pref["content_catall_text_{$id}"] = "1";						//show text
+				$content_pref["content_catall_date_{$id}"] = "1";						//show date
+				$content_pref["content_catall_authordetails_{$id}"] = "1";				//show authordetails
+				$content_pref["content_catall_rating_{$id}"] = "1";						//show rating
+				$content_pref["content_catall_peicon_{$id}"] = "1";						//show pe icons
+				$content_pref["content_catall_comment_{$id}"] = "1";					//show amount of comments
+				$content_pref["content_catall_amount_{$id}"] = "1";						//show amount of items
+
+				$content_pref["content_catall_text_char_{$id}"] = "65";					//define amount of words of text to display
+				$content_pref["content_catall_text_post_{$id}"] = "[read more]";		//define postfix is text is too long
+				$content_pref["content_catall_text_link_{$id}"] = "1";					//define if link to category should be added on postfix
+
+				//sections of content category in 'view category' page
+				$content_pref["content_cat_icon_{$id}"] = "1";							//show icon
+				$content_pref["content_cat_subheading_{$id}"] = "1";					//show subheading
+				$content_pref["content_cat_text_{$id}"] = "1";							//show text
+				$content_pref["content_cat_date_{$id}"] = "1";							//show date
+				$content_pref["content_cat_authorname_{$id}"] = "1";					//show authorname
+				$content_pref["content_cat_authoremail_{$id}"] = "1";					//show authoremail
+				$content_pref["content_cat_rating_{$id}"] = "1";						//show rating
+				$content_pref["content_cat_peicon_{$id}"] = "1";						//show pe icons
+				$content_pref["content_cat_comment_{$id}"] = "1";						//show amount of comments
+				$content_pref["content_cat_amount_{$id}"] = "1";						//show amount of items
+
+				//sections of subcategories in 'view category page'
+				$content_pref["content_catsub_icon_{$id}"] = "1";						//show icon
+				$content_pref["content_catsub_subheading_{$id}"] = "1";					//show subheading
+				$content_pref["content_catsub_amount_{$id}"] = "1";						//show amount of items
+
+				$content_pref["content_cat_text_char_{$id}"] = "65";					//define amount of words of text to display
+				$content_pref["content_cat_text_post_{$id}"] = "[read more]";			//define postfix is text is too long
+				$content_pref["content_cat_text_link_{$id}"] = "1";						//define if link to category should be added on postfix
+
+				//content page
 				$content_pref["content_content_subheading_{$id}"] = "1";				//show subheading in content page
 				$content_pref["content_content_summary_{$id}"] = "1";					//show summary in content page
 				$content_pref["content_content_date_{$id}"] = "1";						//show date in content page
@@ -132,18 +175,21 @@ class content{
 				$content_pref["content_content_editicon_{$id}"] = "0";					//show link in content page to admin edit item
 				$content_pref["content_content_customtags_{$id}"] = "1";				//should additional data be shown
 				$content_pref["content_content_presettags_{$id}"] = "1";				//should preset data tags be shown
-				
+
+				//author page
 				$content_pref["content_author_lastitem_{$id}"] = "1";					//show last item reference
 				$content_pref["content_author_amount_{$id}"] = "1";						//show amount of items from this author
 				$content_pref["content_author_nextprev_{$id}"] = "1";					//use next prev buttons
 				$content_pref["content_author_nextprev_number_{$id}"] = "20";			//amount of items per page
 
+				//archive page
 				$content_pref["content_archive_nextprev_{$id}"] = "1";					//archive : choose to show next/prev links
 				$content_pref["content_archive_nextprev_number_{$id}"] = "30";			//archive : choose amount to use in next/prev
 				$content_pref["content_archive_datestyle_{$id}"] = "%d %b %Y";			//archive : choose datestyle for given date
 				$content_pref["content_archive_date_{$id}"] = "1";						//archive : section: show date
 				$content_pref["content_archive_authorname_{$id}"] = "1";				//archive : section: show authordetails
 
+				//content manager
 				$content_pref["content_manager_class_{$id}"] = "0";						//contentmanager: class to narrow down the userlist
 
 				//menu options
