@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.47 $
-|		$Date: 2005-06-06 16:40:21 $
+|		$Revision: 1.48 $
+|		$Date: 2005-06-06 21:29:04 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -917,7 +917,7 @@ class content{
 							$CONTENT_SEARCH_TABLE_KEYWORD = $rs -> form_open("post", $plugindir."content.php?content.$searchtypeid", "contentsearchmenu_{$mode}", "", "enctype='multipart/form-data'")."<input class='tbox' size='20' type='text' id='searchfieldmenu_{$mode}' name='searchfieldmenu_{$mode}' value='".(isset($_POST['searchfieldmenu_{$mode}']) ? $_POST['searchfieldmenu_{$mode}'] : CONTENT_LAN_18)."' maxlength='100' onfocus=\"document.forms['contentsearchmenu_{$mode}'].searchfieldmenu_$mode.value='';\" /> <input class='button' type='submit' name='searchsubmit' value='".CONTENT_LAN_19."' />".$rs -> form_close();
 						}else{
 							$searchfieldname = "searchfield_{$mode}";
-							$CONTENT_SEARCH_TABLE_KEYWORD = $rs -> form_open("post", e_SELF.(e_QUERY ? "?".e_QUERY : ""), "contentsearch_{$mode}", "", "enctype='multipart/form-data'")."
+							$CONTENT_SEARCH_TABLE_KEYWORD = $rs -> form_open("post", $plugindir."content.php?content.$searchtypeid", "contentsearch_{$mode}", "", "enctype='multipart/form-data'")."
 							<input class='tbox' size='27' type='text' id='$searchfieldname' name='$searchfieldname' value='".(isset($_POST[$searchfieldname]) ? $_POST[$searchfieldname] : CONTENT_LAN_18)."' maxlength='100' onfocus=\"document.forms['contentsearch_{$mode}'].$searchfieldname.value='';\" />
 							<input class='button' type='submit' name='searchsubmit' value='".CONTENT_LAN_19."' />
 							".$rs -> form_close();

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.43 $
-|		$Date: 2005-06-06 13:28:13 $
+|		$Revision: 1.44 $
+|		$Date: 2005-06-06 21:29:04 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -248,9 +248,11 @@ function show_content_search_result($searchkeyword){
 					$content_searchresult_table_string = "";
 					if(!is_object($gen)){ $gen = new convert; }
 					while($row = $sqlsr -> db_Fetch()){
-						$row['content_text'] = $tp -> toHTML($row['content_text'], TRUE, "");
+						
+						$row['content_heading']		= parsesearch($row['content_heading'], $searchkeyword, "full");
+						$row['content_subheading']	= parsesearch($row['content_subheading'], $searchkeyword, "full");
+						$row['content_text']		= parsesearch($row['content_text'], $searchkeyword, "");
 
-						$CONTENT_SEARCHRESULT_TABLE_TEXT = parsesearch($row['content_text'], $searchkeyword);
 						$content_searchresult_table_string .= $tp -> parseTemplate($CONTENT_SEARCHRESULT_TABLE, FALSE, $content_shortcodes);
 					}
 					$textsr = $CONTENT_SEARCHRESULT_TABLE_START.$content_searchresult_table_string.$CONTENT_SEARCHRESULT_TABLE_END;
@@ -261,14 +263,18 @@ function show_content_search_result($searchkeyword){
 				exit;
 }
 
-function parsesearch($text, $match){
+function parsesearch($text, $match, $amount){
 				$text = strip_tags($text);
 				$temp = stristr($text,$match);
 				$pos = strlen($text)-strlen($temp);
-				if($pos < 140){
-						$text = "...".substr($text, 0, 140)."...";
+				
+				if($amount == "full"){
 				}else{
-						$text = "...".substr($text, ($pos-140), 280)."...";
+					if($pos < 140){
+							$text = "...".substr($text, 0, 140)."...";
+					}else{
+							$text = "...".substr($text, ($pos-140), 280)."...";
+					}
 				}
 				$text = eregi_replace($match, "<span class='searchhighlight' style='color:red;'>$match</span>", $text);
 				return($text);
