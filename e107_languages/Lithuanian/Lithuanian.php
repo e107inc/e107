@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/Lithuanian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-02 22:18:36 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-06 16:17:47 $
 |     $Author: alkas $
 |     $translated by: alkas $
 |     $ UTF-8 encoded $
