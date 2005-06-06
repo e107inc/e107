@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-06-05 16:19:46 $
+|     $Revision: 1.53 $
+|     $Date: 2005-06-06 22:48:39 $
 |     $Author: streaky $
 +---------------------------------------------------------------+
 */
@@ -26,39 +26,58 @@
 * @desc Outputs sitelinks
 */
 
-class sitelinks {
+class sitelinks
+{
+
 	var $eLinkList;
-	function getlinks($cat=1) {
+
+	function getlinks($cat=1)
+	{
 		global $sql;
 		if ($sql->db_Select('links', '*', "link_category = $cat and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC")){
-			while ($row = $sql->db_Fetch()) {
-				if (substr($row['link_name'], 0, 8) == 'submenu.') {
+			while ($row = $sql->db_Fetch())
+			{
+				if (substr($row['link_name'], 0, 8) == 'submenu.')
+				{
 					$tmp=explode('.', $row['link_name'], 3);
 					$this->eLinkList[$tmp[1]][]=$row;
-				} else {
+				}
+				else
+				{
 					$this->eLinkList['head_menu'][] = $row;
 				}
 			}
 		}
+
 	}
 
-	function get($cat=1,$style='') {
+	function get($cat=1,$style='')
+	{
 		global $pref, $ns, $tp, $e107cache;
-		if ($data = $e107cache->retrieve('sitelinks')) {
+
+		if ($data = $e107cache->retrieve('sitelinks'))
+		{
 			return $data;
 		}
+
 		if (LINKDISPLAY == 4) {
 			require_once(e_PLUGIN.'ypslide_menu/ypslide_menu.php');
 			return;
 		}
+
 		$this->getlinks($cat);
+
 		// are these defines used at all ?
-		if(!defined('PRELINKTITLE')) {
+
+		if(!defined('PRELINKTITLE'))
+		{
 			define('PRELINKTITLE', '');
 		}
-		if(!defined('PRELINKTITLE')) {
+		if(!defined('PRELINKTITLE'))
+		{
 			define('POSTLINKTITLE', '');
 		}
+		// -----------------------------
 
 		if(!$style){
 			$style['prelink'] = PRELINK;
@@ -74,37 +93,54 @@ class sitelinks {
 
 		$menu_count = 0;
 		$text = $style['prelink'];
-		if ($style['linkdisplay'] != 3) {
-			foreach ($this->eLinkList['head_menu'] as $link) {
+
+		if ($style['linkdisplay'] != 3)
+		{
+			foreach ($this->eLinkList['head_menu'] as $link)
+			{
 				$main_linkname = $link['link_name'];
+
 				$link['link_expand'] = (isset($pref['sitelinks_expandsub']) && isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])) ?  TRUE : FALSE;
+
 				$text .= $this->makeLink($link, '', $style);
+
 				// if there's a submenu. :
-				if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])) {
+				if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])){
+
 					$substyle = (eregi($link['link_url'],e_SELF) || eregi($main_linkname,e_SELF) || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
 					$text .= "\n\n<div id='sub_".$main_linkname."' style='display:$substyle'>\n";
-					foreach ($this->eLinkList[$main_linkname] as $sub) {
+					foreach ($this->eLinkList[$main_linkname] as $sub)
+					{
 						$text .= $this->makeLink($sub, TRUE, $style);
 					}
 					$text .= "\n</div>\n";
+
 				}
 			}
 			$text .= $style['postlink'];
-			if ($style['linkdisplay'] == 2) {
+			if ($style['linkdisplay'] == 2)
+			{
 				$text = $ns->tablerender(LAN_183, $text, 'sitelinks', TRUE);
 			}
-		} else {
-			foreach($this->eLinkList['head_menu'] as $link) {
-				if (!count($this->eLinkList[$link['link_name']])) {
+		}
+		else
+		{
+			foreach($this->eLinkList['head_menu'] as $link)
+			{
+				if (!count($this->eLinkList[$link['link_name']]))
+				{
 					$text .= $this->makeLink($link,'', $style);
 				}
 				$text .= $style['postlink'];
 			}
 			$text = $ns->tablerender(LAN_183, $text, 'sitelinks_main', TRUE);
-			foreach(array_keys($this->eLinkList) as $k) {
+			foreach(array_keys($this->eLinkList) as $k)
+			{
 				$mnu = $style['prelink'];
-				foreach($this->eLinkList[$k] as $link) {
-					if ($k != 'head_menu') {
+				foreach($this->eLinkList[$k] as $link)
+				{
+					if ($k != 'head_menu')
+					{
 						$mnu .= $this->makeLink($link, TRUE, $style);
 					}
 				}
@@ -116,7 +152,8 @@ class sitelinks {
 		return $text;
 	}
 
-	function makeLink($linkInfo, $submenu = FALSE, $style='') {
+	function makeLink($linkInfo, $submenu = FALSE, $style='')
+	{
 		global $pref,$tp, $e107;
 
 		// Start with an empty link
@@ -134,7 +171,7 @@ class sitelinks {
 		$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
 
 		// Check for screentip regardless of URL.
-		if (isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description']) {
+		if (isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description']){
 			$screentip = " title = '".$linkInfo['link_description']."'";
 		}
 
@@ -156,14 +193,14 @@ class sitelinks {
 				$linkadd = " class='".$style['linkclass_hilite']."'";
 			}
 
-			if ($linkInfo['link_open'] == 4 || $linkInfo['link_open'] == 5) {
+			if ($linkInfo['link_open'] == 4 || $linkInfo['link_open'] == 5){
 				$dimen = ($linkInfo['link_open'] == 4) ? "600,400" : "800,600";
 				$href = " href=\"javascript:open_window('".$linkInfo['link_url']."', {$dimen})\"";
 			} else {
 				$href = " href='".$linkInfo['link_url']."'";
 			}
 
-			// open the link in a new window
+			// I have no idea what this does.
 			$link_append = ($linkInfo['link_open'] == 1) ? " rel='external'" : "";
 		}
 
@@ -178,10 +215,10 @@ class sitelinks {
 		if (!empty($href)){
 			$_link .= "<a".$linkadd.$screentip.$href.$link_append.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off defs")."</a>";
 		// If its not a link, but has a class or screentip do span:
-		} elseif (!empty($linkadd) || !empty($screentip)){
+		}elseif (!empty($linkadd) || !empty($screentip)){
 			$_link .= "<span".$linkadd.$screentip.">".$tp->toHTML($linkInfo['link_name'],"","emotes_off defs")."</span>";
 			// Else just the name:
-		} else {
+		}else {
 			$_link .= $tp->toHTML($linkInfo['link_name'],"","emotes_off defs");
 		}
 
@@ -190,26 +227,26 @@ class sitelinks {
 		return $_link.$style['linkend'];
 	}
 
-	function hilite($link,$enabled='') {
+	function hilite($link,$enabled=''){
 
 		global $PLUGINS_DIRECTORY,$tp;
 
-		if(!$enabled){
-			return true;
-		}
+		if(!$enabled){ return FALSE; }
 
 		// --------------- highlighting for plugins. ----------------
-		if(eregi($PLUGINS_DIRECTORY, $link) && !eregi("custompages", $link)) {
+		if(eregi($PLUGINS_DIRECTORY, $link) && !eregi("custompages", $link)){
+
 			if(str_replace("?","",$link)){
-				if(strpos(e_SELF."?".e_QUERY, str_replace("../", "", "/".$link))) {
-					return true;
+
+				if(strpos(e_SELF."?".e_QUERY, str_replace("../", "", "/".$link))){
+					return TRUE;
 				}else{
-					return false;
+					return FALSE;
 				}
 			}
 			$link = str_replace("../", "", $link);
 			if(eregi(dirname($link), dirname(e_SELF))){
-				return true;
+				return TRUE;
 			}
 		}
 		// --------------- highlight for news items.----------------
@@ -227,21 +264,24 @@ class sitelinks {
 			if((eregi("cat", $link) || eregi("list", $link)) && eregi("item", e_QUERY))	{
 				$tmp = str_replace("php?", "", explode(".",$link));
 				$tmp2 = explode(".", e_QUERY);
-				if($tmp[2] == $tmp2[2]) {
-					return true;
+				if($tmp[2] == $tmp2[2])
+				{
+					return TRUE;
 				}
 			}
 		}
 
 		// --------------- highlight default ----------------
-		if(eregi("\?", $link)) {
+		if(eregi("\?", $link)){
 			if(($enabled) && (strpos(e_SELF."?".e_QUERY, str_replace("../", "", "/".$link)) !== false))	{
 				return true;
 			}
 		}
+
 		if(!eregi("all", e_QUERY) && !eregi("item", e_QUERY) && !eregi("cat",e_QUERY) && !eregi("list", e_QUERY) && $enabled && (strpos(e_SELF, str_replace("../", "", "/".$link)) !== false)){
 			return true;
 		}
+
 		return false;
 	}
 }
