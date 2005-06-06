@@ -11,15 +11,27 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_top_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-05-15 12:29:04 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-06 13:28:15 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 $CONTENT_TOP_TABLE_START = "";
 $CONTENT_TOP_TABLE_END = "";
-global $sc_style, $content_shortcodes, $authordetails, $type, $type_id, $row, $thisratearray;
+global $sc_style, $content_shortcodes, $qs, $authordetails, $row, $thisratearray;
+
+$sc_style['CONTENT_TOP_TABLE_ICON']['pre'] = "<td class='content_icon'>";
+$sc_style['CONTENT_TOP_TABLE_ICON']['post'] = "</td>";
+
+$sc_style['CONTENT_TOP_TABLE_HEADING']['pre'] = "<tr><td class='content_heading'>";
+$sc_style['CONTENT_TOP_TABLE_HEADING']['post'] = "</td></tr>";
+
+$sc_style['CONTENT_TOP_TABLE_AUTHOR']['pre'] = "<tr><td class='content_info'>";
+$sc_style['CONTENT_TOP_TABLE_AUTHOR']['post'] = "</td></tr>";
+
+$sc_style['CONTENT_TOP_TABLE_RATING']['pre'] = "<tr><td class='content_rating' style='width:100%; text-align:right;'>";
+$sc_style['CONTENT_TOP_TABLE_RATING']['post'] = "</td></tr>";
 
 // ##### CONTENT TOP --------------------------------------------------
 if(!$CONTENT_TOP_TABLE_START){
@@ -29,12 +41,12 @@ if(!$CONTENT_TOP_TABLE_START){
 if(!$CONTENT_TOP_TABLE){
 				$CONTENT_TOP_TABLE = "
 					<tr>
-						<td class='content_icon'>{CONTENT_TOP_TABLE_ICON}</td>
+						{CONTENT_TOP_TABLE_ICON}
 						<td>
-							<table style='width:100%;'>
-								<tr><td class='content_heading'>{CONTENT_TOP_TABLE_HEADING}</td></tr>
-								<tr><td class='content_info'>{CONTENT_TOP_TABLE_AUTHOR}</td></tr>
-								<tr><td class='content_rating' style='width:100%; text-align:right;'>{CONTENT_TOP_TABLE_RATING}</td></tr>
+							<table style='width:100%;' cellpadding='0' cellspacing='0'>
+								{CONTENT_TOP_TABLE_HEADING}
+								{CONTENT_TOP_TABLE_AUTHOR}
+								{CONTENT_TOP_TABLE_RATING}
 							</table>
 						</td>
 					</tr>

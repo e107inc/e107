@@ -6,7 +6,7 @@ $text .= "
 <img src='".e_PLUGIN."content/images/articles_16.png' style='width: 16px; height: 16px; vertical-align: bottom' alt='' />
 ";
 if($reported_content) {
-	$text .= " <a href='".e_PLUGIN."content/admin_content_config.php?type.0.sa'>Submitted Content Items: $reported_content</a>";
+	$text .= " <a href='".e_PLUGIN."content/admin_content_config.php?submitted'>Submitted Content Items: $reported_content</a>";
 } else {
 	$text .= "Submitted Content Items: ".$reported_content;
 }

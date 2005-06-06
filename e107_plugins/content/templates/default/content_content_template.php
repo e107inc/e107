@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-19 08:58:02 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-06 13:28:15 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ $CONTENT_CONTENT_TABLE_END = "";
 $CONTENT_CONTENT_TABLE_CUSTOM = "";
 $CONTENT_CONTENT_TABLE_CUSTOM_PRE = "";
 $CONTENT_CONTENT_TABLE_CUSTOM_PRE2 = "";
-global $sc_style, $content_shortcodes, $type, $type_id, $action, $sub_action, $id, $row, $content_pref, $gen, $tp, $sql, $plugintable, $rater, $aa, $content_image_path, $content_icon_path, $content_file_path, $custom, $CONTENT_CONTENT_TABLE_TEXT;
+global $sc_style, $content_shortcodes, $qs, $row, $content_pref, $gen, $tp, $sql, $plugintable, $rater, $aa, $content_image_path, $content_icon_path, $content_file_path, $custom;
 
 $sc_style['CONTENT_CONTENT_TABLE_REFER']['pre'] = CONTENT_LAN_44." ";
 $sc_style['CONTENT_CONTENT_TABLE_REFER']['post'] = "";
@@ -62,7 +62,7 @@ if(!$CONTENT_CONTENT_TABLE){
 				<tr>
 					{CONTENT_CONTENT_TABLE_ICON}
 					<td colspan='3' style='width:97%;'>
-						<table style='width:100%;' border='0'>
+						<table style='width:100%;' border='0' cellpadding='0' cellspacing='0'>
 						<tr>
 							<td class='content_heading'>{CONTENT_CONTENT_TABLE_HEADING}</td>
 							<td class='content_info' style='text-align:right;'>{CONTENT_CONTENT_TABLE_REFER}</td>

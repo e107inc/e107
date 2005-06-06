@@ -8,8 +8,7 @@ function com_search_1($row) {
 	global $con;
 	$nick = eregi_replace("[0-9]+\.", "", $row['comment_author']);
 	$datestamp = $con -> convert_date($row['comment_datestamp'], "long");
-	$type = explode('.', $row['content_parent']);
-	$res['link'] = e_PLUGIN."content/content.php?type.".$type[0].".content.".$row['content_id'];
+	$res['link'] = e_PLUGIN."content/content.php?content.".$row['content_id'];
 	$res['pre_title'] = 'Posted in reply to item: ';
 	$res['title'] = $row['content_heading'];
 	$res['summary'] = $row['comment_comment'];

@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_archive_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-17 22:46:03 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-06 13:28:15 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 $CONTENT_ARCHIVE_TABLE_START = "";
+$CONTENT_ARCHIVE_TABLE = "";
 $CONTENT_ARCHIVE_TABLE_END = "";
-global $sc_style, $content_shortcodes, $content_pref, $aa, $type_id, $row;
+global $sc_style, $content_shortcodes, $content_pref, $aa, $qs, $row;
 
 // ##### CONTENT ARCHIVE --------------------------------------------------
 if(!$CONTENT_ARCHIVE_TABLE_START){

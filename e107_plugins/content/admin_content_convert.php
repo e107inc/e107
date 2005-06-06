@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_convert.php,v $
-|		$Revision: 1.9 $
-|		$Date: 2005-05-19 08:58:01 $
+|		$Revision: 1.10 $
+|		$Date: 2005-06-06 13:28:13 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -22,55 +22,40 @@ require_once("../../class2.php");
 
 if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
 $e_sub_cat = 'content';
+$plugindir = e_PLUGIN."content/";
 
-$lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content.php');
+$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
+include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
-require_once(e_PLUGIN."content/handlers/content_class.php");
+require_once($plugindir."handlers/content_class.php");
 $aa = new content;
-require_once(e_PLUGIN."content/handlers/content_convert_class.php");
+require_once($plugindir."handlers/content_convert_class.php");
 $ac = new content_convert;
+e107_require_once(e_HANDLER.'arraystorage_class.php');
+$eArrayStorage = new ArrayData();
 global $tp;
 
 if (e_QUERY){
-	$tmp = explode(".", e_QUERY);
-	$action = $tmp[0];
-	$sub_action = $tmp[1];
-	$id = $tmp[2];
-	unset($tmp);
+	$qs = explode(".", e_QUERY);
 }
 
-$plugintable = "pcontent";
 $stylespacer = "style='height:20px; border:0;'";
-
-/*
-//show buttons to start conversion
-if(!isset($_POST['convert_table']) && !isset($_POST['create_default'])&& !isset($action)){
-	$totalnewcontent = $sql -> db_Count($plugintable);
-	require_once(e_PLUGIN."content/handlers/content_form_class.php");
-	$af = new content_form;
-	$text = $af -> show_main_intro();
-}
-*/
 
 //create default mainparent category for content, review and article
 if(isset($_POST['create_default'])){
+		$content_mainarray			= $ac -> create_mainparent("content", "1", "1");
+		$content_main_checkpresent	= $content_mainarray[0];
+		$content_main_msg			= $content_mainarray[1];
 
-		$maxcid = "";	//no checked id value of amount of old content rows needed
+		$article_mainarray			= $ac -> create_mainparent("article", "1", "2");
+		$article_main_checkpresent	= $article_mainarray[0];
+		$article_main_msg			= $article_mainarray[1];
 
-		$content_mainarray = $ac -> create_mainparent("content", "1", "1");
-		$content_main_checkpresent = $content_mainarray[0];
-		$content_main_msg = $content_mainarray[1];
-
-		$article_mainarray = $ac -> create_mainparent("article", "1", "2");
-		$article_main_checkpresent = $article_mainarray[0];
-		$article_main_msg = $article_mainarray[1];
-
-		$review_mainarray = $ac -> create_mainparent("review", "1", "3");
-		$review_main_checkpresent = $review_mainarray[0];
-		$review_main_msg = $review_mainarray[1];
+		$review_mainarray			= $ac -> create_mainparent("review", "1", "3");
+		$review_main_checkpresent	= $review_mainarray[0];
+		$review_main_msg			= $review_mainarray[1];
 
 		$text = "<table class='fborder' style='width:95%; padding:0px;'>";
 		$text .= $ac -> results_conversion_mainparent($content_mainarray, $review_mainarray, $article_mainarray);
@@ -88,17 +73,12 @@ if(isset($_POST['convert_table'])){
 		// ##### STAGE 1 : ANALYSE OLD CONTENT --------------------------------------------------------
 		//analyse old content table
 		if(!is_object($sql)){ $sql = new db; }
-
-		//get max id value, new parent rows need id with added value
-		$sql -> db_select("content", "MAX(content_id) as maxcid", "content_id!='0' ");
-		list($maxcid) = $sql -> db_Fetch();
-
-		$totaloldcontentrows = $sql -> db_Count("content");
-		$totaloldrowscat_article = $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '6'");
-		$totaloldrowscat_review = $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '10'");
-		$totaloldrowsitem_content = $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '1'");
-		$totaloldrowsitem_review = $sql -> db_Count("content", "(*)", "WHERE content_type = '3' || content_type = '16'");
-		$totaloldrowsitem_article = $sql -> db_Count("content", "(*)", "WHERE content_type = '0' || content_type = '15'");
+		$totaloldcontentrows		= $sql -> db_Count("content");
+		$totaloldrowscat_article	= $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '6'");
+		$totaloldrowscat_review		= $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '10'");
+		$totaloldrowsitem_content	= $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '1'");
+		$totaloldrowsitem_review	= $sql -> db_Count("content", "(*)", "WHERE content_type = '3' || content_type = '16'");
+		$totaloldrowsitem_article	= $sql -> db_Count("content", "(*)", "WHERE content_type = '0' || content_type = '15'");
 
 		//content page:		$content_parent == "0" && $content_type == "1"
 		//review category:	$content_parent == "0" && $content_type == "10"
@@ -107,60 +87,63 @@ if(isset($_POST['convert_table'])){
 		//article:	$content_type == "0" || $content_type == "15"
 
 		//analyse unknown rows
-		$unknown_array = $ac -> analyse_unknown();
-		$unknown_bug = $unknown_array[0];
-		$unknown_bug_id = $unknown_array[1];
+		$unknown_array				= $ac -> analyse_unknown();
+		$unknown_bug				= $unknown_array[0];
+		$unknown_bug_id				= $unknown_array[1];
 
 		//create mainparent
-		$content_mainarray = $ac -> create_mainparent("content", $totaloldrowsitem_content, "1");
-		$content_main_checkpresent = $content_mainarray[0];
-		$content_main_msg = $content_mainarray[1];
+		$content_mainarray			= $ac -> create_mainparent("content", $totaloldrowsitem_content, "1");
+		$content_main_checkpresent	= $content_mainarray[0];
+		$content_main_msg			= $content_mainarray[1];
 
-		$article_mainarray = $ac -> create_mainparent("article", $totaloldrowscat_article, "2");
-		$article_main_checkpresent = $article_mainarray[0];
-		$article_main_msg = $article_mainarray[1];
+		$article_mainarray			= $ac -> create_mainparent("article", $totaloldrowscat_article, "2");
+		$article_main_checkpresent	= $article_mainarray[0];
+		$article_main_msg			= $article_mainarray[1];
 
-		$review_mainarray = $ac -> create_mainparent("review", $totaloldrowscat_review, "3");
-		$review_main_checkpresent = $review_mainarray[0];
-		$review_main_msg = $review_mainarray[1];
+		$review_mainarray			= $ac -> create_mainparent("review", $totaloldrowscat_review, "3");
+		$review_main_checkpresent	= $review_mainarray[0];
+		$review_main_msg			= $review_mainarray[1];
 
 		//convert categories
-		$article_cat_array = $ac -> convert_category("article", "content_parent = '0' AND content_type = '6'", "2");
-		$article_cat_checkpresent = $article_cat_array[0];
-		$article_cat_valid = $article_cat_array[1];
-		$article_cat_bug = $article_cat_array[2];
-		$article_cat_count = $article_cat_array[3];
+		$article_cat_array			= $ac -> convert_category("article", "content_parent = '0' AND content_type = '6'", "2");
+		$article_cat_checkpresent	= $article_cat_array[0];
+		$article_cat_valid			= $article_cat_array[1];
+		$article_cat_bug			= $article_cat_array[2];
+		$article_cat_count			= $article_cat_array[3];
 
-		$review_cat_array = $ac -> convert_category("review", "content_parent = '0' AND content_type = '10'", "3");
-		$review_cat_checkpresent = $review_cat_array[0];
-		$review_cat_valid = $review_cat_array[1];
-		$review_cat_bug = $review_cat_array[2];
-		$review_cat_count = $review_cat_array[3];
+		$review_cat_array			= $ac -> convert_category("review", "content_parent = '0' AND content_type = '10'", "3");
+		$review_cat_checkpresent	= $review_cat_array[0];
+		$review_cat_valid			= $review_cat_array[1];
+		$review_cat_bug				= $review_cat_array[2];
+		$review_cat_count			= $review_cat_array[3];
 
 		//convert rows
-		$content_array = $ac -> convert_row("content", "content_parent = '0' AND content_type = '1'", "1");
-		$content_present = $content_array[0];
-		$content_count = $content_array[1];
-		$content_valid = $content_array[2];
-		$content_bug_insert = $content_array[3];	
-		$content_bug_oldcat = $content_array[4];
-		$content_bug_newcat = $content_array[5];
+		$content_array				= $ac -> convert_row("content", "content_parent = '0' AND content_type = '1'", "1");
+		$content_present			= $content_array[0];
+		$content_count				= $content_array[1];
+		$content_valid				= $content_array[2];
+		$content_bug_insert			= $content_array[3];	
+		$content_bug_oldcat			= $content_array[4];
+		$content_bug_newcat			= $content_array[5];
 
-		$article_array = $ac -> convert_row("article", "content_type = '0' || content_type = '15'", "2");
-		$article_present = $article_array[0];
-		$article_count = $article_array[1];
-		$article_valid = $article_array[2];
-		$article_bug_insert = $article_array[3];	
-		$article_bug_oldcat = $article_array[4];
-		$article_bug_newcat = $article_array[5];
+		$article_array				= $ac -> convert_row("article", "content_type = '0' || content_type = '15'", "2");
+		$article_present			= $article_array[0];
+		$article_count				= $article_array[1];
+		$article_valid				= $article_array[2];
+		$article_bug_insert			= $article_array[3];	
+		$article_bug_oldcat			= $article_array[4];
+		$article_bug_newcat			= $article_array[5];
 
-		$review_array = $ac -> convert_row("review", "content_type = '3' || content_type = '16'", "3");
-		$review_present = $review_array[0];
-		$review_count = $review_array[1];
-		$review_valid = $review_array[2];
-		$review_bug_insert = $review_array[3];	
-		$review_bug_oldcat = $review_array[4];
-		$review_bug_newcat = $review_array[5];
+		$review_array				= $ac -> convert_row("review", "content_type = '3' || content_type = '16'", "3");
+		$review_present				= $review_array[0];
+		$review_count				= $review_array[1];
+		$review_valid				= $review_array[2];
+		$review_bug_insert			= $review_array[3];	
+		$review_bug_oldcat			= $review_array[4];
+		$review_bug_newcat			= $review_array[5];
+
+		$ac -> convert_comments();
+		$ac -> convert_rating();
 
 		$conversion_analyses_rows_total = $totaloldcontentrows;
 		$conversion_analyses_rows_converted = (count($article_cat_valid) + count($review_cat_valid) + count($content_valid) + count($article_valid) + count($review_valid));
@@ -252,29 +235,35 @@ if(isset($_POST['convert_table'])){
 
 
 //show start page for manual conversion of unknown rows
-if($action == "unknown" && !isset($sub_action)){
+if($qs[0] == "unknown" && !isset($qs[1])){
 		unset($text);
 
 		if(!is_object($sql)){ $sql = new db; }
 		if(!is_object($sql2)){ $sql2 = new db; }
-		
-		$text .= $rs -> form_open("post", e_SELF."?unknown.conversion", "dataform", "", "enctype='multipart/form-data'");
-		$text .= "<table class='fborder' style='width:95%;'>";
 
 		//get all parents into a form option array
-		$parentdetails = $aa -> getParent("", "", "");
-		for($a=0;$a<count($parentdetails);$a++){
+		$catarray	= $aa -> getCategoryTree("", "", FALSE);
+		$array		= array_keys($catarray);
+
+		$options = "";
+		foreach($array as $catid){
+			$category_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_parent", "content_id='".$catid."' ");
+			$row = $sql -> db_Fetch();
+
 			$pre = "";
-			if(strpos($parentdetails[$a][9], ".")){
-				$id = substr($parentdetails[$a][9], 2).".".substr($parentdetails[$a][9], 2).".".$parentdetails[$a][0];
-			}else{
-				$id = $parentdetails[$a][0].".".$parentdetails[$a][0];
+			$js = "";
+			if($row['content_parent'] == "0"){		//main parent level
+				$js = "style='font-weight:bold;'";
+			}else{									//sub level
+				for($b=0;$b<(count($catarray[$catid])/2)-1;$b++){
+					$pre .= "_";
+				}
 			}
-			for($b=0;$b<$parentdetails[$a][17];$b++){
-				$pre .= "_";
-			}
-			$options .= $rs -> form_option($pre.$parentdetails[$a][1], "0", $id);
+			$options .= $rs -> form_option($row['content_heading'], "0", $row['content_id'], $js );
 		}
+
+		$text .= $rs -> form_open("post", e_SELF."?unknown.conversion", "dataform", "", "enctype='multipart/form-data'");
+		$text .= "<table class='fborder' style='width:95%;'>";
 
 		for($i=0;$i<count($_POST['unknownrows']);$i++){
 			$item = $sql -> db_Select("content", "*", " content_id = '".$_POST['unknownrows'][$i]."' ");
@@ -301,12 +290,13 @@ if($action == "unknown" && !isset($sub_action)){
 		}
 		$text .= "<tr><td class='forumheader' colspan='2' style='text-align:center;'>".$rs -> form_button("submit", "convert_unknownrows", "convert unknown rows")."</td></tr>";
 		$text .= "</table>".$rs -> form_close();
+
 		$caption = "manually convert unknown rows";
 		$ns -> tablerender($caption, $text);
 }
 
 //convert unknown rows and show results
-if($action == "unknown" && $sub_action == "conversion"){
+if($qs[0] == "unknown" && $qs[1] == "conversion"){
 		unset($text);
 		if(isset($_POST['convert_unknownrows'])){
 			foreach($_POST['newcontent_parent'] as $key => $value){
@@ -320,38 +310,32 @@ if($action == "unknown" && $sub_action == "conversion"){
 				$row = $sql -> db_Fetch();
 
 				//summary can contain link to image in e107_images/link_icons/".$summary." THIS STILL NEEDS TO BE CHECKED
-				$newcontent_heading = $tp -> toDB($row['content_heading']);
-				$newcontent_subheading = ($row['content_subheading'] ? $tp -> toDB($row['content_subheading']) : "");
-				$newcontent_summary = ($row['content_summary'] ? $tp -> toDB($row['content_summary']) : "");
-				$newcontent_text = $tp -> toDB($row['content_content']);
-				$newcontent_author = (is_numeric($row['content_author']) ? $row['content_author'] : "0^".$row['content_author']);
-				$newcontent_icon = "";
-				$newcontent_attach = "";
-				$newcontent_images = "";
-				$newcontent_parent = $value;
-				$newcontent_comment = $row['content_comment'];
-				$newcontent_rate = "0";
-				$newcontent_pe = $row['content_pe_icon'];
-				$newcontent_refer = "0";
-				$newcontent_starttime = $row['content_datestamp'];
-				$newcontent_endtime = "0";
-				$newcontent_class = $row['content_class'];
-				$newcontent_pref = "";
-				$newcontent_id = $key;
+				$newcontent_heading		= $tp -> toDB($row['content_heading']);
+				$newcontent_subheading	= ($row['content_subheading'] ? $tp -> toDB($row['content_subheading']) : "");
+				$newcontent_summary		= ($row['content_summary'] ? $tp -> toDB($row['content_summary']) : "");
+				$newcontent_text		= $tp -> toDB($row['content_content']);
+				$newcontent_author		= (is_numeric($row['content_author']) ? $row['content_author'] : "0^".$row['content_author']);
+				$newcontent_icon		= "";
+				$newcontent_attach		= "";
+				$newcontent_images		= "";
+				$newcontent_parent		= $value;
+				$newcontent_comment		= $row['content_comment'];
+				$newcontent_rate		= "0";
+				$newcontent_pe			= $row['content_pe_icon'];
+				$newcontent_refer		= "0";
+				$newcontent_starttime	= $row['content_datestamp'];
+				$newcontent_endtime		= "0";
+				$newcontent_class		= $row['content_class'];
+				$newcontent_pref		= "";
 
 				if(!is_object($sql2)){ $sql2 = new db; }
-				$sql2 -> db_Insert($plugintable, "'".$newcontent_id."', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '0.0' ");
+				$sql2 -> db_Insert($plugintable, "'".$row['content_id']."', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '0.0' ");
 
 				if(!is_object($sql3)){ $sql3 = new db; }
-				if(!$sql3 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
+				if(!$sql3 -> db_Select($plugintable, "content_id", "content_heading = '".$newcontent_heading."' ")){
 					$text .= CONTENT_ICON_ERROR." conversion not succesfull : ".$row['content_id']." ".$row['content_heading']."<br />";
 				}else{
-					list($thenewcontent_id, $thenewcontent_heading) = $sql3 -> db_Fetch();
-
-					$ac -> convert_comments($row['content_id'], $thenewcontent_id);
-					$ac -> convert_rating($row['content_id'], $thenewcontent_id);
-
-					$text .= CONTENT_ICON_OK." conversion succesfull : ".$row['content_id']." ".$thenewcontent_heading."<br />";
+					$text .= CONTENT_ICON_OK." conversion succesfull : ".$row['content_id']." ".$row['content_heading']."<br />";
 				}
 			}
 		}
@@ -361,7 +345,7 @@ if($action == "unknown" && $sub_action == "conversion"){
 
 
 //show link to start managing the content management plugin
-if(isset($_POST['convert_table']) || isset($_POST['create_default']) || isset($action)){
+if(isset($_POST['convert_table']) || isset($_POST['create_default']) || isset($qs[0])){
 		$text = "<div style='text-align:center'>".CONTENT_ADMIN_CONVERSION_LAN_46."</div>";
 		$caption = CONTENT_ADMIN_CONVERSION_LAN_47;
 		$ns -> tablerender($caption, $text);
