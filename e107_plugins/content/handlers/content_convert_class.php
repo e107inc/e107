@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2005-06-06 13:28:13 $
+|		$Revision: 1.5 $
+|		$Date: 2005-06-06 17:18:08 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -23,6 +23,46 @@ $plugintable	= "pcontent";		//name of the table used in this plugin (never remov
 $datequery		= " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
 
 class content_convert{
+
+
+		//convert rows
+		function upgrade_content(){
+				global $sql, $tp, $plugintable, $eArrayStorage;
+
+				$count = "0";
+				// ##### STAGE 8 : INSERT ROW -------------------------------------------------------------
+				if(!is_object($sql)){ $sql = new db; }
+				$sql -> db_Count("pcontent", "(*)", " WHERE content_id!='0' " );
+				if(!$thiscount = $sql -> db_Select("pcontent", "*", "ORDER BY content_id ", "mode=no_where" )){
+					$check_upgrade = false;
+				}else{
+					$check_upgrade = true;
+					while($row = $sql -> db_Fetch()){
+
+						//main parent
+						if($row['content_parent'] == "0"){
+							$newparent = "0";
+
+						//subcat
+						}elseif(substr($row['content_parent'],0,2) == "0."){
+							$newparent = "0".strrchr($row['content_parent'], ".");
+
+						//item
+						}elseif( strpos($row['content_parent'], ".") && substr($row['content_parent'],0,1) != "0"){
+							$newparent = substr(strrchr($row['content_parent'], "."),1);
+						}
+
+						if(!is_object($sql5)){ $sql5 = new db; }
+						$sql5 -> db_Update("pcontent", " content_parent = '".$newparent."' WHERE content_id='".$row['content_id']."' ");
+						$count++;
+					}
+				}
+				$message = "upgrade succesfull<br /><br />".CONTENT_ADMIN_CONVERSION_LAN_46;
+				return $message;
+		}
+
+
+
 
 		function show_main_intro(){
 						global $sql, $ns, $rs, $type, $type_id, $action, $sub_action, $id, $plugintable;

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.45 $
-|		$Date: 2005-06-06 16:40:21 $
+|		$Revision: 1.46 $
+|		$Date: 2005-06-06 17:18:08 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1558,9 +1558,41 @@ class contentform{
 						global $sql, $ns, $rs, $qs, $plugintable, $plugindir;
 
 						if(!is_object($sql)){ $sql = new db; }
+						
 						$newcontent = $sql -> db_Count($plugintable, "(*)", "");
 						if($newcontent > 0){
-							return false;
+
+							$upgrade = FALSE;
+							if($thiscount = $sql -> db_Select("pcontent", "*", "ORDER BY content_id ", "mode=no_where" )){
+								while($row = $sql -> db_Fetch()){
+									if( strpos($row['content_parent'], ".") && substr($row['content_parent'],0,1) != "0"){
+										//if item with old parent value exists, you need to upgrade
+										$upgrade = TRUE;
+									}
+								}
+							}
+							if($upgrade === FALSE){
+								return false;
+							}
+
+							$text .= "
+							<div style='text-align:center'>
+							".$rs -> form_open("post", $plugindir."admin_content_convert.php", "dataform")."
+							<table class='fborder' style='".ADMIN_WIDTH."'>";
+							
+							$text .= "<tr><td class='fcaption' colspan='2'>UPGRADE CONTENT MANAGEMENT PLUGIN TABLE</td></tr>";
+							$text .= "<tr><td class='forumheader3' colspan='2'>Please click the follwowing button to convert your content table used in the previous content management plugin, to the new improved version. You have to upgrade in order to keep using the content management plugin !</td></tr>";
+							$text .= "
+							<tr>
+								<td class='forumheader3' style='width:50%; white-space:nowrap;'>UPGRADE</td>
+								<td class='forumheader3' style='width:50%; white-space:nowrap;'>".$rs -> form_button("submit", "upgrade", "upgrade")."</td>
+							</tr>";
+
+							$text .= "</table>".$rs -> form_close()."
+							</div>";
+
+							$ns -> tablerender(CONTENT_ADMIN_MAIN_LAN_7, $text);
+							return true;
 						}else{
 
 							$text .= "
@@ -1609,6 +1641,8 @@ class contentform{
 									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".$rs -> form_button("submit", "create_default", "create defaults")."</td>
 								</tr>";
 							}
+
+							
 
 							$text .= "</table>".$rs -> form_close()."
 							</div>";
