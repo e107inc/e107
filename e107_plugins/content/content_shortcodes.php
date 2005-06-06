@@ -496,8 +496,8 @@ return $datestamp;
 SC_END
 
 SC_BEGIN CONTENT_SEARCHRESULT_TABLE_TEXT
-global $CONTENT_SEARCHRESULT_TABLE_TEXT;
-return $CONTENT_SEARCHRESULT_TABLE_TEXT;
+global $CONTENT_SEARCHRESULT_TABLE_TEXT, $row, $tp;
+return ($row['content_text'] ? $tp -> toHTML($row['content_text'], TRUE, "") : "");
 SC_END
 
 

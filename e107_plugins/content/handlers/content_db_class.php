@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.19 $
-|		$Date: 2005-06-06 13:28:13 $
+|		$Revision: 1.20 $
+|		$Date: 2005-06-06 21:29:04 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -37,7 +37,8 @@ class contentdb{
 
 						if(USER){
 							if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) ){
-									$author = $_POST['content_author_id']."^".$_POST['content_author_name']."^".$_POST['content_author_email'];
+									//$author = $_POST['content_author_id']."^".$_POST['content_author_name']."^".$_POST['content_author_email'];
+									$author = "0^".$_POST['content_author_name']."^".$_POST['content_author_email'];
 							}else{
 								$author = USERID;
 							}
@@ -219,7 +220,8 @@ class contentdb{
 
 						if(USER){
 							if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) ){
-								$author = $_POST['content_author_id']."^".$_POST['content_author_name']."^".$_POST['content_author_email'];
+								//$author = $_POST['content_author_id']."^".$_POST['content_author_name']."^".$_POST['content_author_email'];
+								$author = "0^".$_POST['content_author_name']."^".$_POST['content_author_email'];
 							}else{
 								$author = USERID;
 							}
