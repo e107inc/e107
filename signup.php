@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-05-28 02:47:53 $
+|     $Revision: 1.35 $
+|     $Date: 2005-06-06 03:47:27 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -99,24 +99,25 @@ $signup_name = array("realname", "website", "icq", "aim", "msn", "birth_year", "
 
 
 if (isset($_POST['register'])) {
+	$error_message = "";
 	extract($_POST);
 	require_once(e_HANDLER."message_handler.php");
 
 	if ($use_imagecode) {
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify'])) {
-			message_handler("P_ALERT", LAN_SIGNUP_3);
+			$error_message .= LAN_SIGNUP_3."\\n";
 			$error = TRUE;
 		}
 	}
 
 	if (strstr($_POST['name'], "#") || strstr($_POST['name'], "=") || strstr($_POST['name'], "\\")) {
-		message_handler("P_ALERT", LAN_409);
+		$error_message .= LAN_409."\\n";
 		$error = TRUE;
 	}
 
 	$_POST['name'] = trim(chop(ereg_replace("&nbsp;|\#|\=", "", $_POST['name'])));
 	if ($_POST['name'] == "Anonymous") {
-		message_handler("P_ALERT", LAN_103);
+		$error_message .= LAN_103."\\n";
 		$error = TRUE;
 		$name = "";
 	}
@@ -124,11 +125,9 @@ if (isset($_POST['register'])) {
 	if(isset($pref['signup_disallow_text']))
 	{
 		$tmp = explode(",", $pref['signup_disallow_text']);
-		foreach($tmp as $disallow)
-		{
-			if(strstr($_POST['name'], $disallow))
-			{
-				message_handler("P_ALERT", LAN_103);
+		foreach($tmp as $disallow){
+			if(strstr($_POST['name'], $disallow)){
+				$error_message .= LAN_103."\\n";
 				$error = TRUE;
 				$name = "";
 			}
@@ -140,7 +139,7 @@ if (isset($_POST['register'])) {
 	}
 
 	if ($sql->db_Select("user", "*", "user_name='".$_POST['name']."' ")) {
-		message_handler("P_ALERT", LAN_104);
+		$error_message .= LAN_104."\\n";
 		$error = TRUE;
 		$name = "";
 	}
@@ -148,28 +147,28 @@ if (isset($_POST['register'])) {
 // check for multiple signups from the same IP address.
 	if($ipcount = $sql->db_Select("user", "*", "user_ip='".$e107->getip()."' and user_ban !='2' ")){
 		if($ipcount >= $pref['signup_maxip'] && trim($pref['signup_maxip']) != ""){
-		message_handler("P_ALERT",LAN_202);
+		$error_message .= LAN_202."\\n";
 		$error = TRUE;
 		}
 	}
 
 
 	if ($_POST['password1'] != $_POST['password2']) {
-		message_handler("P_ALERT", LAN_105);
+		$error_message .= LAN_105."\\n";
 		$error = TRUE;
 		$password1 = "";
 		$password2 = "";
 	}
 
 	if (strlen($_POST['password1']) < $pref['signup_pass_len']) {
-		message_handler("P_ALERT", LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5);
+		$error_message .= LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5."\\n";
 		$error = TRUE;
 		$password1 = "";
 		$password2 = "";
 	}
 
 	if ($_POST['name'] == "" || $_POST['password1'] == "" || $_POST['password2'] = "") {
-		message_handler("P_ALERT", LAN_185);
+		$error_message .= LAN_185."\\n";
 		$error = TRUE;
 	}
 
@@ -179,46 +178,64 @@ if (isset($_POST['register'])) {
 	{
 		$postvalue = $signup_name[$i];
 		if ($signupval[$i] == 2 && $_POST[$postvalue] == "") {
-			message_handler("P_ALERT", LAN_SIGNUP_6.$signup_title[$i].LAN_SIGNUP_7);
+			$error_message .= LAN_SIGNUP_6.$signup_title[$i].LAN_SIGNUP_7."\\n";
 			$error = TRUE;
 		}
 	}
 
 	if ($sql->db_Select("user", "user_email", "user_email='".$_POST['email']."' ")) {
-		message_handler("P_ALERT", LAN_408);
+		$error_message .= LAN_408."\\n";
 		$error = TRUE;
 	}
 
 	$extList = $usere->user_extended_get_fieldList();
-	foreach($extList as $ext)
-	{
+	foreach($extList as $ext){
 		$ueRef["user_".$ext['user_extended_struct_name']] = $ext['user_extended_struct_id'];
 	}
-	foreach($_POST['ue'] as $key => $val)
-	{
-		if($extList[$ueRef[$key]]['user_extended_struct_signup'] == 2 && trim($val) == "")
-		{
-			echo "error on [$key] <br />";
-			$error_ext = LAN_SIGNUP_6."[".$extList[$ueRef[$key]]['user_extended_struct_text']."]".LAN_SIGNUP_7;
-			message_handler("P_ALERT", $error_ext);
+	foreach($_POST['ue'] as $key => $val){
+		if($extList[$ueRef[$key]]['user_extended_struct_signup'] == 2 && trim($val) == ""){
+			$error_message .= LAN_SIGNUP_6." ".$extList[$ueRef[$key]]['user_extended_struct_text']." ".LAN_SIGNUP_7."\\n";
 			$error = TRUE;
 		}
 	}
 
-	// ========== End of verification.. ====================================================
 
 	if (!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]{1,50}@([-0-9A-Z]+\.){1,50}([0-9A-Z]){2,4}$/i', $_POST['email'])) {
 		message_handler("P_ALERT", LAN_106);
-		$error = TRUE;
+		$error_message .= LAN_106."\\n";
+     	$error = TRUE;
 	}
+
+	$wc = "*".trim(substr($_POST['email'], strpos($_POST['email'], "@")));
+	if ($sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."' OR banlist_ip='$wc'")) {
+		$brow = $sql -> db_Fetch();
+	 	$error = TRUE;
+		if($brow['banlist_reason']){
+			$repl = array("\n","\r","<br />");
+			$error_message = str_replace($repl,"\\n",$tp->toHTML($brow['banlist_reason'],"","nobreak defs"))."\\n";
+		}else{
+			exit;
+		}
+	}
+
+
+	if($error_message){
+		message_handler("P_ALERT", $error_message);
+	}
+
+
+
+	// ========== End of verification.. ====================================================
+
+
 	if (preg_match('#^www\.#si', $_POST['website'])) {
 		$_POST['website'] = "http://$homepage";
-	}
-	else if (!preg_match('#^[a-z0-9]+://#si', $_POST['website'])) {
+	}else if (!preg_match('#^[a-z0-9]+://#si', $_POST['website'])) {
 		$_POST['website'] = "";
 	}
-	if (!$error)
-	{
+
+
+	if (!$error){
 		$fp = new floodprotect;
 		if ($fp->flood("user", "user_join") == FALSE) {
 			header("location:".e_BASE."index.php");
@@ -229,10 +246,6 @@ if (isset($_POST['register'])) {
 			exit;
 		}
 
-		$wc = "*".substr($_POST['email'], strpos($_POST['email'], "@"));
-		if ($sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."' OR banlist_ip='$wc'")) {
-			exit;
-		}
 
 		$username = strip_tags($_POST['name']);
 		$loginname = strip_tags($_POST['loginname']);
@@ -241,8 +254,7 @@ if (isset($_POST['register'])) {
 		$birthday = $_POST['birth_year']."/".$_POST['birth_month']."/".$_POST['birth_day'];
 
 		$ue_fields = "";
-		foreach($_POST['ue'] as $key => $val)
-		{
+		foreach($_POST['ue'] as $key => $val){
 			$val = $tp->toDB($val);
 			$ue_fields .= ($ue_fields) ? ", " : "";
 			$ue_fields .= $key."='".$val."'";
