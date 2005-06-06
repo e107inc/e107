@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_cat_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-06 13:28:15 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-06 22:51:33 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -81,6 +81,9 @@ $sc_style['CONTENT_CAT_LIST_TABLE_ICON']['post'] = "</td>";
 $sc_style['CONTENT_CAT_LIST_TABLE_SUBHEADING']['pre'] = "<tr><td class='content_subheading' colspan='2'>";
 $sc_style['CONTENT_CAT_LIST_TABLE_SUBHEADING']['post'] = "</td></tr>";
 
+$sc_style['CONTENT_CAT_LIST_TABLE_AUTHORDETAILS']['pre'] = " / ";
+$sc_style['CONTENT_CAT_LIST_TABLE_AUTHORDETAILS']['post'] = "";
+
 $sc_style['CONTENT_CAT_LIST_TABLE_RATING']['pre'] = "<tr><td class='content_rate' colspan='2'>";
 $sc_style['CONTENT_CAT_LIST_TABLE_RATING']['post'] = "</td></tr>";
 
@@ -98,7 +101,7 @@ if(!$CONTENT_CAT_LIST_TABLE){
 		</tr>
 			{CONTENT_CAT_LIST_TABLE_SUBHEADING}
 			<tr>
-				<td class='content_info'>{CONTENT_CAT_LIST_TABLE_DATE} / {CONTENT_CAT_LIST_TABLE_AUTHORDETAILS} {CONTENT_CAT_LIST_TABLE_EPICONS}</td>
+				<td class='content_info'>{CONTENT_CAT_LIST_TABLE_DATE} {CONTENT_CAT_LIST_TABLE_AUTHORDETAILS} {CONTENT_CAT_LIST_TABLE_EPICONS}</td>
 				<td class='content_info' style='text-align:right;'>{CONTENT_CAT_LIST_TABLE_COMMENT}</td>
 			</tr>
 			{CONTENT_CAT_LIST_TABLE_RATING}

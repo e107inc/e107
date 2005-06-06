@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-06-06 13:28:14 $
+|     $Revision: 1.43 $
+|     $Date: 2005-06-06 22:51:33 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -169,7 +169,7 @@ define("CONTENT_ADMIN_OPT_LAN_67", "search menu");
 define("CONTENT_ADMIN_OPT_LAN_68", "should the search menu be shown");
 define("CONTENT_ADMIN_OPT_LAN_69", "if checked a navigation and search menu will be shown to search in content or navigate to other overview pages in content as well as an option to order the content items in the list pages");
 define("CONTENT_ADMIN_OPT_LAN_70", "content item preview (used in all content pages where an overview of recent content items is shown)");
-define("CONTENT_ADMIN_OPT_LAN_71", "choose which sections should be shown when viewing a content item in the list pages");
+define("CONTENT_ADMIN_OPT_LAN_71", "choose which sections should be displayed when viewing a content item in the list pages");
 define("CONTENT_ADMIN_OPT_LAN_72", "subheading");
 define("CONTENT_ADMIN_OPT_LAN_73", "summary");
 define("CONTENT_ADMIN_OPT_LAN_74", "date");
@@ -207,13 +207,13 @@ define("CONTENT_ADMIN_OPT_LAN_105", "if enabled it shows the rating system for a
 define("CONTENT_ADMIN_OPT_LAN_106", "page sort/order");
 define("CONTENT_ADMIN_OPT_LAN_107", "choose a default sort and order method");
 define("CONTENT_ADMIN_OPT_LAN_108", "order by 'order' will use the ordering number you have provided in the Manage Order area");
-define("CONTENT_ADMIN_OPT_LAN_109", "");
-define("CONTENT_ADMIN_OPT_LAN_110", "");
-define("CONTENT_ADMIN_OPT_LAN_111", "");
-define("CONTENT_ADMIN_OPT_LAN_112", "");
-define("CONTENT_ADMIN_OPT_LAN_113", "");
-define("CONTENT_ADMIN_OPT_LAN_114", "");
-define("CONTENT_ADMIN_OPT_LAN_115", "");
+define("CONTENT_ADMIN_OPT_LAN_109", "amount items");
+define("CONTENT_ADMIN_OPT_LAN_110", "choose which sections should be displayed in the list of all content categories");
+define("CONTENT_ADMIN_OPT_LAN_111", "choose which sections of the category item should be displayed");
+define("CONTENT_ADMIN_OPT_LAN_112", "choose which sections in the list of subcategories should be displayed");
+define("CONTENT_ADMIN_OPT_LAN_113", "all categories page");
+define("CONTENT_ADMIN_OPT_LAN_114", "view category page");
+define("CONTENT_ADMIN_OPT_LAN_115", "if enabled, a link to the category item will be placed on the postfix string");
 define("CONTENT_ADMIN_OPT_LAN_116", "");
 define("CONTENT_ADMIN_OPT_LAN_117", "");
 define("CONTENT_ADMIN_OPT_LAN_118", "");
