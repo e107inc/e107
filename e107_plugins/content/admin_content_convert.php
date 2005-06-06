@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_convert.php,v $
-|		$Revision: 1.10 $
-|		$Date: 2005-06-06 13:28:13 $
+|		$Revision: 1.11 $
+|		$Date: 2005-06-06 17:18:08 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -42,6 +42,15 @@ if (e_QUERY){
 }
 
 $stylespacer = "style='height:20px; border:0;'";
+
+//upgrade to version 2 of the content management plugin
+if(isset($_POST['upgrade'])){
+	$text .= $ac -> upgrade_content();
+
+	$caption = "upgrade";
+	$ns -> tablerender($caption, $text);
+}
+
 
 //create default mainparent category for content, review and article
 if(isset($_POST['create_default'])){
