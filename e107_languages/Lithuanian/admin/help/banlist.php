@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $caption = "Patekimo į svetainę ribojimas";
 $text = "Jūs galite apriboti nepageidaujamų lankytojų patekimą į jūsų svetainę.<br />
 Galite uždrausti patekimą lankytojų su konkrečiu IP adresu arba, naudojant pakaitos simbolį (*), uždaryti savo svetainės duris visai eilei lankytojų. You can also enter an email address to stop a user registering as a member on your site.<br /><br />
