@@ -1,101 +1,87 @@
 <?php
+global $plugindir;
+require_once($plugindir."handlers/content_defines.php");
+$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_help.php';
+include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content_help.php');
 
-$lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content_help.php';
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content_help.php');
 
-if(e_QUERY){
-        $tmp = explode(".", e_QUERY);
-        $type = $tmp[0];
-		$type_id = $tmp[1];
-		$action = $tmp[2];
-        $sub_action = $tmp[3];
-        $id = $tmp[4];
-        unset($tmp);
-}
-
-//Manage Existing Content (no category selected)
-if(!$type){
+if(!e_QUERY){
 	$text = CONTENT_ADMIN_HELP_ITEM_1;
-}
+}else{
+	$qs = explode(".", e_QUERY);
 
-//Manage Existing Content (category selected)
-if($type == "type" && is_numeric($type_id)){
-	if(!$action || ($action == "c" && $sub_action) ){
-		$text = CONTENT_ADMIN_HELP_ITEM_2;
-	}
-	
-	if($action == "create"){
-		//Create New Content (no category selected)
-		if(!$sub_action){
-			$text = CONTENT_ADMIN_HELP_ITEMCREATE_1;
+	//##### CONTENT --------------------------------------------------
+		//manage content items
+		if($qs[0] == "content" && is_numeric($qs[1]) ){
+			$text = CONTENT_ADMIN_HELP_ITEM_2;
 
-		//Create New Content (category selected)
-		}elseif(is_numeric($sub_action)){
+		//edit content item
+		}elseif($qs[0] == "content" && $qs[1] == "edit" && is_numeric($qs[2]) ){
+			$text = CONTENT_ADMIN_HELP_ITEMEDIT_1;
+
+		//post submitted content item
+		}elseif($qs[0] == "content" && $qs[1] == "sa" && is_numeric($qs[2]) ){
 			$text = CONTENT_ADMIN_HELP_ITEMCREATE_2;
 
-		//Manage Existing Content (edit page)
-		}elseif($sub_action == "edit"){
-			$text = CONTENT_ADMIN_HELP_ITEMEDIT_1;
-		}
-	}
+		//create content item
+		}elseif($qs[0] == "content" && $qs[1] == "create" ){
+			//Create New Content (no category selected)
+			if(!$qs[2]){
+				$text = CONTENT_ADMIN_HELP_ITEMCREATE_1;
 
-	if($action == "cat"){
-		//Manage Existing Categories
-		if(!$sub_action){
-			$text = CONTENT_ADMIN_HELP_CAT_1;
-			//Manage Existing Categories (show contentmanager link)
-			if(getperms("0")){
-				$text .= CONTENT_ADMIN_HELP_CAT_2;
+			//Create New Content (category selected)
+			}elseif(is_numeric($qs[2])){
+				$text = CONTENT_ADMIN_HELP_ITEMCREATE_2;
 			}
 
-		//Create New Category
-		}elseif($sub_action == "create"){
-			//Create New Category (no category selected)
-			if(!$id){
-				$text = CONTENT_ADMIN_HELP_CAT_3;
-
-			//Create New Category (category selected)
-			}elseif(is_numeric($id)){
-				$text = CONTENT_ADMIN_HELP_CAT_4;
-			}
-
-		//Manage Existing Categories (edit page)
-		}elseif($sub_action == "edit"){
-			$text = CONTENT_ADMIN_HELP_CAT_5;
-
-		//Manage Existing Categories (options page)
-		}elseif($sub_action == "options"){
-			$text = CONTENT_ADMIN_HELP_CAT_6;
-
-		//Manage Existing Categories (contentmanager page)
-		}elseif($sub_action == "contentmanager"){
-			$text = CONTENT_ADMIN_HELP_CAT_7;
-		}
-
-	}
-
-	//Submitted Content Items
-	if($action == "sa"){
-		$text = CONTENT_ADMIN_HELP_SUBMIT_1;
-	}
-
-	//Manage Order
-	if($action == "order"){
-
-		//Manage Order (category order)
-		if($sub_action == "cat"){
+	//##### ORDER --------------------------------------------------
+		//order : view categories
+		}elseif($qs[0] == "order" && (!isset($qs[1]) || $qs[1] == "inc" || $qs[1] == "dec")){
 			$text = CONTENT_ADMIN_HELP_ORDER_1;
 
-		//Manage Order (items order in category)
-		}elseif($sub_action == "item"){
+		//order global items of parent='2'
+		}elseif($qs[0] == "order" && is_numeric($qs[1]) && (!isset($qs[2]) || $qs[2] == "inc" || $qs[2] == "dec") ){
+			$text = CONTENT_ADMIN_HELP_ORDER_3;
+
+		//order items with parent=2 or category='5'
+		}elseif($qs[0] == "order" && is_numeric($qs[1]) && is_numeric($qs[2]) && (!isset($qs[3]) || $qs[3] == "inc" || $qs[3] == "dec") ){
 			$text = CONTENT_ADMIN_HELP_ORDER_2;
 
-		//Manage Order (global items order)
-		}elseif($sub_action == "all"){
-			$text = CONTENT_ADMIN_HELP_ORDER_3;
-		}
-	}
+	//##### SUBMITTED --------------------------------------------------
+		}elseif($qs[0] == "submitted" && !isset($qs[1]) ){
+			$text = CONTENT_ADMIN_HELP_SUBMIT_1;
 
+	//##### OPTION --------------------------------------------------
+		//option: mainpage
+		}elseif($qs[0] == "option" && !isset($qs[1]) ){
+			$text = CONTENT_ADMIN_HELP_OPTION_1;
+
+		//option: with main parent selected, show all options
+		}elseif($qs[0] == "option" && isset($qs[1]) && (is_numeric($qs[1]) || $qs[1] == "default") ){
+			$text = CONTENT_ADMIN_HELP_OPTION_2;
+
+	//##### CATEGORY --------------------------------------------------
+		//category content manager : choose category
+		}elseif($qs[0] == "manager" && !isset($qs[1]) ){
+			$text = CONTENT_ADMIN_HELP_MANAGER_1;
+
+		//category content manager : view contentmanager
+		}elseif($qs[0] == "manager" && isset($qs[1]) && is_numeric($qs[1]) ){
+			$text = CONTENT_ADMIN_HELP_MANAGER_2;
+
+		//overview all categories
+		}elseif($qs[0] == "cat" && !isset($qs[1]) ){
+			$text = CONTENT_ADMIN_HELP_CAT_1;
+
+		//create category
+		}elseif($qs[0] == "cat" && $qs[1] == "create" ){
+			$text = CONTENT_ADMIN_HELP_CAT_2;
+
+		//edit category
+		}elseif($qs[0] == "cat" && $qs[1] == "edit" && is_numeric($qs[2]) ){
+			$text = CONTENT_ADMIN_HELP_CAT_3;
+
+		}
 }
 
 $ns -> tablerender(CONTENT_ADMIN_HELP_1, $text);

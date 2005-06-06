@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_search.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-09 17:58:19 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-06 13:28:13 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,8 +30,7 @@ $results = $ps['results'];
 
 function search_content($row) {
 	global $con;
-	$type = explode('.', $row['content_parent']);
-	$res['link'] = e_PLUGIN."content/content.php?type.".$type[0].".content.".$row['content_id'];
+	$res['link'] = e_PLUGIN."content/content.php?content.".$row['content_id'];
 	$res['pre_title'] = "";
 	$res['title'] = $row['content_heading'];
 	$res['summary'] = $row['content_summary'].' '.$row['content_text'];

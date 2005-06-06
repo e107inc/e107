@@ -12,27 +12,28 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.18 $
-|		$Date: 2005-05-16 09:29:26 $
+|		$Revision: 1.19 $
+|		$Date: 2005-06-06 13:28:13 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
-//$plugintable = "pcontent";		//name of the table used in this plugin
+$plugindir		= e_PLUGIN."content/";
+$plugintable	= "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
+$datequery		= " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
 
 if (!defined('ADMIN_WIDTH')) { define("ADMIN_WIDTH", "width:98%;"); }
 
 class contentdb{
 
 			function dbContentUpdate($mode){
-						global $pref, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache;
-						global $type, $type_id, $action, $sub_action, $id;
+						global $pref, $qs, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache, $eArrayStorage;
 
-						$_POST['content_heading'] = $tp -> toDB($_POST['content_heading']);
-						$_POST['content_subheading'] = $tp -> toDB($_POST['content_subheading']);
-						$_POST['content_text'] = $tp -> toDB($_POST['content_text']);
-						//$_POST['parent'] = ($_POST['parent'] ? $_POST['parent'] : "0");
-						$_POST['parent'] = ($_POST['parent1'] ? $_POST['parent1'] : "0");
+						$_POST['content_heading']		= $tp -> toDB($_POST['content_heading']);
+						$_POST['content_subheading']	= $tp -> toDB($_POST['content_subheading']);
+						$_POST['content_text']			= $tp -> toDB($_POST['content_text']);
+						$_POST['parent']				= ($_POST['parent'] ? $_POST['parent'] : "0");
+						$_POST['content_class']			= ($_POST['content_class'] ? $_POST['content_class'] : "0");
 
 						if(USER){
 							if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) ){
@@ -44,12 +45,13 @@ class contentdb{
 							$author = "0^".$_POST['content_author_name']."^".$_POST['content_author_email'];
 						}
 
-						$content_pref = $aa -> getContentPref($type_id);
-						$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$type_id}"]);
-						$content_cat_icon_path_small = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$type_id}"]);
-						$content_icon_path = $aa -> parseContentPathVars($content_pref["content_icon_path_{$type_id}"]);
-						$content_image_path = $aa -> parseContentPathVars($content_pref["content_image_path_{$type_id}"]);
-						$content_file_path = $aa -> parseContentPathVars($content_pref["content_file_path_{$type_id}"]);
+						$mainparent						= $aa -> getMainParent($_POST['parent']);
+						$content_pref					= $aa -> getContentPref($mainparent);
+						$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$mainparent}"]);
+						$content_cat_icon_path_small	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$mainparent}"]);
+						$content_icon_path				= $aa -> parseContentPathVars($content_pref["content_icon_path_{$mainparent}"]);
+						$content_image_path				= $aa -> parseContentPathVars($content_pref["content_image_path_{$mainparent}"]);
+						$content_file_path				= $aa -> parseContentPathVars($content_pref["content_file_path_{$mainparent}"]);
 
 						if($_POST['uploadtype1'] == "icon"){
 								$_FILES['file_userfile'] = $_FILES['file_userfile1'];
@@ -63,11 +65,13 @@ class contentdb{
 								} else {
 									$fileorgicon = $uploadedicon[0]['name'];
 									$fileext2icon = substr(strrchr($fileorgicon, "."), 0);
+									$fileorgiconname = substr($fileorgicon, 0, -(strlen($fileext2icon)) );
+									
 									if($fileorgicon){
-										$icon = $newpid."_contenticon".$fileext2icon;
+										$icon = $newpid."_".$fileorgiconname."".$fileext2icon;
 										rename($pathicon.$fileorgicon , $pathicon.$icon);
 										require_once(e_HANDLER."resize_handler.php");
-										resize_image($pathicon.$uploadedicon[0]['name'], $pathicon.$uploadedicon[0]['name'], '100', "nocopy");
+										resize_image($pathicon.$icon, $pathicon.$icon, '100', "nocopy");
 									} else {
 										$icon = "";
 									}
@@ -97,8 +101,10 @@ class contentdb{
 									} else {
 										$fileorgattach[$i] = $uploadedattach[$i]['name'];
 										$fileext2attach[$i] = substr(strrchr($fileorgattach[$i], "."), 0);
+										$fileorgattachname[$i] = substr($fileorgattach[$i], 0, -(strlen($fileext2attach[$i])) );
+
 										if($fileorgattach[$i]){
-											$attach{$i} = $newpid."_contentfile_".$n."".$fileext2attach[$i]."";
+											$attach{$i} = $newpid."_".$n."_".$fileorgattachname[$i]."".$fileext2attach[$i]."";
 											rename($pathattach.$fileorgattach[$i] , $pathattach.$attach{$i});
 											$totalattach .= "[file]".$attach{$i};
 										} else {
@@ -132,9 +138,10 @@ class contentdb{
 									} else {
 										$fileorgimage[$i] = $uploadedimage[$i]['name'];
 										$fileext2image[$i] = substr(strrchr($fileorgimage[$i], "."), 0);
+										$fileorgimagename[$i] = substr($fileorgimage[$i], 0, -(strlen($fileext2image[$i])) );
 
 										if($fileorgimage[$i]){
-											$images{$i} = $newpid."_contentimage_".$n.$fileext2image[$i];
+											$images{$i} = $newpid."_".$n."_".$fileorgimagename[$i]."".$fileext2image[$i];
 											rename($pathimage.$fileorgimage[$i] , $pathimage.$images{$i});
 											require_once(e_HANDLER."resize_handler.php");
 											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, '500', "nocopy");
@@ -150,19 +157,15 @@ class contentdb{
 						}
 						$contentrefer = ($_POST['content_refer'] && $_POST['content_refer'] != "sa" ? $_POST['content_refer'] : "");
 
-						//if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
-						//	$starttime = mktime( 0, 0, 0, $_POST['ne_month'], $_POST['ne_day'], $_POST['ne_year']);
-						//}else{
-							if($_POST['update_datestamp']){
-								$starttime = time();
+						if($_POST['update_datestamp']){
+							$starttime = time();
+						}else{
+							if(isset($_POST['content_datestamp']) && $_POST['content_datestamp'] != "" && $_POST['content_datestamp'] != "0"){
+								$starttime = $_POST['content_datestamp'];
 							}else{
-								if(isset($_POST['content_datestamp']) && $_POST['content_datestamp'] != "" && $_POST['content_datestamp'] != "0"){
-									$starttime = $_POST['content_datestamp'];
-								}else{
-									$starttime = time();
-								}
+								$starttime = time();
 							}
-						//}
+						}
 
 						if($_POST['end_day'] != "none" && $_POST['end_month'] != "none" && $_POST['end_year'] != "none"){
 							$endtime = mktime( 0, 0, 0, $_POST['end_month'], $_POST['end_day'], $_POST['end_year']);
@@ -170,23 +173,34 @@ class contentdb{
 							$endtime = "0";
 						}
 
-						$custom["content_custom_score"] = ($_POST['content_score'] != "none" && $_POST['content_score'] ? $_POST['content_score'] : "");
-						$custom["content_custom_meta"] = ($_POST['content_meta'] ? $_POST['content_meta'] : "");
-						$custom["content_custom_template"] = ($_POST['content_template'] ? $_POST['content_template'] : "");
+						$custom["content_custom_score"]		= ($_POST['content_score'] != "none" && $_POST['content_score'] ? $_POST['content_score'] : "");
+						$custom["content_custom_meta"]		= ($_POST['content_meta'] ? $_POST['content_meta'] : "");
+						$custom["content_custom_template"]	= ($_POST['content_template'] ? $_POST['content_template'] : "");
 
-						for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
+						//custom additional data tags
+						for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){
+							echo $i." - ".$_POST["content_custom_key_{$i}"]." - ".$_POST["content_custom_value_{$i}"]."<br />";
 							if(isset($_POST["content_custom_key_{$i}"]) && isset($_POST["content_custom_value_{$i}"]) && $_POST["content_custom_value_{$i}"] != ""){
 								$keystring = $_POST["content_custom_key_{$i}"];
 								$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
 							}
 						}
-						$contentprefvalue = addslashes(serialize($custom));
+						//preset additional data tags
+						if(is_array($_POST['content_custom_preset_key'])){
+							for($i=0;$i<count($_POST['content_custom_preset_key']);$i++){
+								if(isset($_POST['content_custom_preset_value'][$i]) && $_POST['content_custom_preset_value'][$i] != ""){
+									$keystring = $_POST['content_custom_preset_key'][$i];
+									$custom["content_custom_preset_{$keystring}"] = $_POST['content_custom_preset_value'][$i];
+								}
+							}
+						}
+						$contentprefvalue = $eArrayStorage->WriteArray($custom);
 
 						$sql -> db_Update($plugintable, "content_heading = '".$_POST['content_heading']."', content_subheading = '".$_POST['content_subheading']."', content_summary = '".$_POST['content_summary']."', content_text = '".$_POST['content_text']."', content_author = '".$author."', content_icon = '".$icon."', content_file = '".$totalattach."', content_image = '".$totalimages."', content_parent = '".$_POST['parent']."', content_comment = '".$_POST['content_comment']."', content_rate = '".$_POST['content_rate']."', content_pe = '".$_POST['content_pe']."', content_refer = '".$contentrefer."', content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['content_class']."', content_pref = '".$contentprefvalue."' WHERE content_id = '".$_POST['content_id']."' ");
 
 						if($mode == "admin"){
 							$e107cache->clear($plugintable);
-							header("location:".e_SELF."?".$type.".".$type_id.".create.edit.".$_POST['content_id'].".cu"); exit;
+							header("location:".e_SELF."?".e_QUERY.".cu"); exit;
 						}elseif($mode == "contentmanager"){
 							$e107cache->clear($plugintable);
 							header("location:".e_SELF."?u"); exit;
@@ -195,13 +209,13 @@ class contentdb{
 
 
 		function dbContentCreate($mode){
-						global $pref, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache;
-						global $type, $type_id, $action, $sub_action, $id;
+						global $pref, $qs, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache, $eArrayStorage;
 
-						$_POST['content_heading'] = $tp -> toDB($_POST['content_heading']);
-						$_POST['content_subheading'] = $tp -> toDB($_POST['content_subheading']);
-						$_POST['content_text'] = $tp -> toDB($_POST['content_text']);
-						$_POST['parent'] = ($_POST['parent'] ? $_POST['parent'] : "0");
+						$_POST['content_heading']		= $tp -> toDB($_POST['content_heading']);
+						$_POST['content_subheading']	= $tp -> toDB($_POST['content_subheading']);
+						$_POST['content_text']			= $tp -> toDB($_POST['content_text']);
+						$_POST['parent']				= ($_POST['parent'] ? $_POST['parent'] : "");
+						$_POST['content_class']			= ($_POST['content_class'] ? $_POST['content_class'] : "0");
 
 						if(USER){
 							if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) ){
@@ -224,12 +238,13 @@ class contentdb{
 							$endtime = "0";
 						}
 
-						$content_pref = $aa -> getContentPref($type_id);
-						$content_cat_icon_path_large = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$type_id}"]);
-						$content_cat_icon_path_small = $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$type_id}"]);
-						$content_icon_path = $aa -> parseContentPathVars($content_pref["content_icon_path_{$type_id}"]);
-						$content_image_path = $aa -> parseContentPathVars($content_pref["content_image_path_{$type_id}"]);
-						$content_file_path = $aa -> parseContentPathVars($content_pref["content_file_path_{$type_id}"]);
+						$mainparent						= $aa -> getMainParent($_POST['parent']);
+						$content_pref					= $aa -> getContentPref($mainparent);
+						$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$mainparent}"]);
+						$content_cat_icon_path_small	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$mainparent}"]);
+						$content_icon_path				= $aa -> parseContentPathVars($content_pref["content_icon_path_{$mainparent}"]);
+						$content_image_path				= $aa -> parseContentPathVars($content_pref["content_image_path_{$mainparent}"]);
+						$content_file_path				= $aa -> parseContentPathVars($content_pref["content_file_path_{$mainparent}"]);
 
 						$sql -> db_select($plugintable, "MAX(content_id) as aid", "content_id!='0' ");
 						list($aid) = $sql -> db_Fetch();
@@ -247,16 +262,19 @@ class contentdb{
 								} else {
 									$fileorgicon = $uploadedicon[0]['name'];
 									$fileext2icon = substr(strrchr($fileorgicon, "."), 0);
+									$fileorgiconname = substr($fileorgicon, 0, -(strlen($fileext2icon)) );
+
 									if($fileorgicon){
-										$icon = $newpid."_contenticon".$fileext2icon;
+										$icon = $newpid."_".$fileorgiconname."".$fileext2icon;
 										rename($pathicon.$fileorgicon , $pathicon.$icon);
 										require_once(e_HANDLER."resize_handler.php");
-										resize_image($pathicon.$uploadedicon[0]['name'], $pathicon.$uploadedicon[0]['name'], '100', "nocopy");
+										resize_image($pathicon.$icon, $pathicon.$icon, '100', "nocopy");
 									} else {
 										$icon = "";
 									}
 								}
 						}
+
 						if($_POST['uploadtype2'] == "file"){
 								$_FILES['file_userfile'] = $_FILES['file_userfile2'];
 								$pref['upload_storagetype'] = "1";
@@ -280,8 +298,9 @@ class contentdb{
 									} else {
 										$attachorgattach[$i] = $uploadedattach[$i]['name'];
 										$attachext2attach[$i] = substr(strrchr($attachorgattach[$i], "."), 0);
+										$attachorgname[$i] = substr($attachorgattach[$i], 0, -(strlen($attachext2attach[$i])) );
 										if($attachorgattach[$i]){
-											$attach{$i} = $newpid."_contentfile_".$n."".$attachext2attach[$i]."";
+											$attach{$i} = $newpid."_".$n."_".$attachorgname[$i]."".$attachext2attach[$i]."";
 											rename($pathattach.$attachorgattach[$i] , $pathattach.$attach{$i});
 											$totalattach .= "[file]".$attach{$i};
 										} else {
@@ -291,6 +310,7 @@ class contentdb{
 									}
 								}
 						}
+
 						if($_POST['uploadtype3'] == "image"){
 								$_FILES['file_userfile'] = $_FILES['file_userfile3'];
 								$pref['upload_storagetype'] = "1";
@@ -314,8 +334,10 @@ class contentdb{
 									} else {
 										$fileorgimage[$i] = $uploadedimage[$i]['name'];
 										$fileext2image[$i] = substr(strrchr($fileorgimage[$i], "."), 0);
+										$fileorgimagename[$i] = substr($fileorgimage[$i], 0, -(strlen($fileext2image[$i])) );
+
 										if($fileorgimage[$i]){
-											$images{$i} = $newpid."_contentimage_".$n."".$fileext2image[$i]."";
+											$images{$i} = $newpid."_".$n."_".$fileorgimagename[$i]."".$fileext2image[$i];
 											rename($pathimage.$fileorgimage[$i] , $pathimage.$images{$i});
 											require_once(e_HANDLER."resize_handler.php");
 											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, '500', "nocopy");
@@ -330,20 +352,30 @@ class contentdb{
 								}
 						}
 
-						$custom["content_custom_score"] = ($_POST['content_score'] != "none" && $_POST['content_score'] ? $_POST['content_score'] : "");
-						$custom["content_custom_meta"] = ($_POST['content_meta'] ? $_POST['content_meta'] : "");
-						$custom["content_custom_template"] = ($_POST['content_template'] ? $_POST['content_template'] : "");
+						$custom["content_custom_score"]		= ($_POST['content_score'] != "none" && $_POST['content_score'] ? $_POST['content_score'] : "");
+						$custom["content_custom_meta"]		= ($_POST['content_meta'] ? $_POST['content_meta'] : "");
+						$custom["content_custom_template"]	= ($_POST['content_template'] ? $_POST['content_template'] : "");
 
-						for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
+						//custom additional data tags
+						for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){
 							if(isset($_POST["content_custom_key_{$i}"]) && isset($_POST["content_custom_value_{$i}"]) && $_POST["content_custom_value_{$i}"] != ""){
 								$keystring = $_POST["content_custom_key_{$i}"];
 								$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
 							}
 						}
-						$contentprefvalue = addslashes(serialize($custom));
+						//preset additional data tags
+						if(is_array($_POST['content_custom_preset_key'])){
+							for($i=0;$i<count($_POST['content_custom_preset_key']);$i++){
+								if(isset($_POST['content_custom_preset_value'][$i]) && $_POST['content_custom_preset_value'][$i] != ""){
+									$keystring = $_POST['content_custom_preset_key'][$i];
+									$custom["content_custom_preset_{$keystring}"] = $_POST['content_custom_preset_value'][$i];
+								}
+							}
+						}
+						$contentprefvalue = $eArrayStorage->WriteArray($custom);
 
 						if($mode == "submit"){
-							$refer = ($content_pref["content_submit_directpost_{$type_id}"] ? "" : "sa");
+							$refer = ($content_pref["content_submit_directpost_{$mainparent}"] ? "" : "sa");
 						}else{
 							$refer = "";
 						}
@@ -352,7 +384,7 @@ class contentdb{
 						
 						if($mode == "admin"){
 							$e107cache->clear($plugintable);
-							header("location:".e_SELF."?".$type.".".$type_id.".create.cc"); exit;
+							header("location:".e_SELF."?".e_QUERY.".cc"); exit;
 
 						}elseif($mode == "contentmanager"){
 							$e107cache->clear($plugintable);
@@ -360,7 +392,7 @@ class contentdb{
 
 						}elseif($mode == "submit"){
 							$e107cache->clear($plugintable);
-							if($content_pref["content_submit_directpost_{$type_id}"]){
+							if($content_pref["content_submit_directpost_{$mainparent}"]){
 								header("location:".e_SELF."?s"); exit;
 							}else{
 								header("location:".e_SELF."?d"); exit;
@@ -372,12 +404,12 @@ class contentdb{
 
 		function dbCategoryUpdate($mode){
 						global $pref, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache;
-						global $type, $type_id, $action, $sub_action, $id, $id2;
 
-						$_POST['cat_heading'] = $tp -> toDB($_POST['cat_heading']);
-						$_POST['cat_subheading'] = $tp -> toDB($_POST['cat_subheading']);
-						$_POST['cat_text'] = $tp -> toDB($_POST['cat_text']);
-						$_POST['parent'] = ($_POST['parent'] == "none" ? "0" : $_POST['parent']);
+						$_POST['cat_heading']		= $tp -> toDB($_POST['cat_heading']);
+						$_POST['cat_subheading']	= $tp -> toDB($_POST['cat_subheading']);
+						$_POST['cat_text']			= $tp -> toDB($_POST['cat_text']);
+						$_POST['parent']			= ($_POST['parent'] == "0" ? "0" : "0.".$_POST['parent']);
+						$_POST['cat_class']			= ($_POST['cat_class'] ? $_POST['cat_class'] : "0");
 
 						if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
 							$starttime = mktime( 0, 0, 0, $_POST['ne_month'], $_POST['ne_day'], $_POST['ne_year']);
@@ -393,21 +425,27 @@ class contentdb{
 						$sql -> db_Update($plugintable, "content_heading = '".$_POST['cat_heading']."', content_subheading = '".$_POST['cat_subheading']."', content_summary = '', content_text = '".$_POST['cat_text']."', content_author = '".ADMINID."', content_icon = '".$_POST['cat_icon']."', content_image = '', content_parent = '".$_POST['parent']."', content_comment = '".$_POST['cat_comment']."', content_rate = '".$_POST['cat_rate']."', content_pe = '".$_POST['cat_pe']."', content_refer = '0', content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['cat_class']."' WHERE content_id = '".$_POST['cat_id']."' ");
 						//, content_pref = ''
 
+						// check and insert default pref values if new main parent + create menu file
+						if($_POST['parent'] == "0"){
+							$content_pref = $aa -> getContentPref($_POST['cat_id']);
+							$aa -> CreateParentMenu($_POST['cat_id']);
+						}
+
 						if($mode == "admin"){
 							$e107cache->clear($plugintable);
-							header("location:".e_SELF."?".$type.".".$type_id.".".$action.".edit.".$_POST['cat_id'].".pu"); exit;
+							header("location:".e_SELF."?".e_QUERY.".pu"); exit;
 						}
 		}
 
 
 		function dbCategoryCreate($mode){
 						global $pref, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache;
-						global $type, $type_id, $action, $sub_action, $id, $id2;
 
-						$_POST['cat_heading'] = $tp -> toDB($_POST['cat_heading']);
-						$_POST['cat_subheading'] = $tp -> toDB($_POST['cat_subheading']);
-						$_POST['cat_text'] = $tp -> toDB($_POST['cat_text']);
-						$_POST['parent'] = ($_POST['parent1'] == "none" ? "0" : $_POST['parent1']);
+						$_POST['cat_heading']		= $tp -> toDB($_POST['cat_heading']);
+						$_POST['cat_subheading']	= $tp -> toDB($_POST['cat_subheading']);
+						$_POST['cat_text']			= $tp -> toDB($_POST['cat_text']);
+						$_POST['cat_class']			= ($_POST['cat_class'] ? $_POST['cat_class'] : "0");
+						$_POST['parent']			= ($_POST['parent'] == "0" ? "0" : "0.".$_POST['parent']);
 
 						if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
 							$starttime = mktime( 0, 0, 0, $_POST['ne_month'], $_POST['ne_day'], $_POST['ne_year']);
@@ -432,16 +470,32 @@ class contentdb{
 
 						if($mode == "admin"){
 							$e107cache->clear($plugintable);
-							header("location:".e_SELF."?".$type.".".$type_id.".".$action.".".$sub_action.".pc"); exit;
+							header("location:".e_SELF."?".e_QUERY.".pc"); exit;
 						}
 		}
 
 
-		function dbAssignAdmins($mode){
-						global $plugintable, $sql, $_POST;
+		function dbAssignAdmins($mode, $id, $value){
+						global $plugintable, $sql, $eArrayStorage;
 
 						if($mode == "admin"){
-							$sql -> db_Update($plugintable, "content_pref = '".$_POST['class_id']."' WHERE content_id = '".$_POST['cat_id']."' ");
+							$sql -> db_Select($plugintable, "content_pref", "content_id = '".$id."' ");
+							$row = $sql -> db_Fetch();
+
+							//get current preferences
+							$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
+
+							//assign new preferences
+							if($value == "clear"){
+								$content_pref["content_manager_allowed_{$id}"] = "";
+							}else{
+								$content_pref["content_manager_allowed_{$id}"] = $value;
+							}
+							
+							//create new array of preferences
+							$tmp = $eArrayStorage->WriteArray($content_pref);
+
+							$sql -> db_Update($plugintable, "content_pref = '{$tmp}' WHERE content_id = '".$id."' ");
 							$message = CONTENT_ADMIN_CAT_LAN_34;
 							return $message;
 						}else{
@@ -474,83 +528,94 @@ class contentdb{
 		}
 
 		
-		function dbSetOrder($mode, $idorder){
-						global $plugintable, $sql, $_POST, $type_id, $sub_action, $id;
+		function dbSetOrder($mode, $type, $order){
+						global $plugintable, $sql, $aa, $qs, $_POST;
+						//$mode		:	all, inc, dec
+						//$type		:	cc (category order), ai (global all items), ci (items in category)
+						//$order	:	posted values or id-currentorder
 
-						if($mode == "inc"){
-							$qs = explode("-", $idorder);
-							$ctype = $qs[0];
-							$cid = $qs[1];
-							$corder = $qs[2];
-							$corderitem = $qs[3];
-
-							if($ctype == "cc"){				//category order
-								$query = ($type_id == $cid ? "content_parent = '0' && content_id = '".$type_id."'" : "LEFT(content_parent, ".(strlen($type_id)+2).") = '0.".$type_id."'" );
-								$sql->db_Update($plugintable, "content_order=content_order+1 WHERE ".$query." AND content_order='".($corder-1)."' " );
-								$sql->db_Update($plugintable, "content_order=content_order-1 WHERE content_id='".$cid."' " );
-							
-							}elseif($ctype == "ci"){		//order of items in category
-								$cat = str_replace("-", ".", $id);
-								$sql->db_Update($plugintable, "content_order=content_order+1 WHERE content_parent = '".$cat."' AND SUBSTRING_INDEX(content_order, '.', 1) = '".($corder-1)."' " );
-								$sql->db_Update($plugintable, "content_order='".($corder-1).".".$corderitem."' WHERE content_id='".$cid."' " );
+						if($mode == "all"){
+							foreach ($order as $cid){
+								//each order value in the db has two numbers (a-b) where a = category item order, and b = global item order
+								//146.3.cat		:	category order
+								//35.3.ci.1-0	:	category item order
+								//35.3.ai.1-0	:	global item order
 								
-							}elseif($ctype == "ai"){		//global order of items
-								$sql->db_Update($plugintable, "content_order='".$corder.".".$corderitem."' WHERE content_order='".$corder.".".($corderitem-1)."' " );
-								$sql->db_Update($plugintable, "content_order='".$corder.".".($corderitem-1)."' WHERE content_id='".$cid."' " );
-							}
-							$message = CONTENT_ADMIN_ORDER_LAN_0;
-							
-						}elseif($mode == "dec"){
-							$qs = explode("-", $idorder);
-							$ctype = $qs[0];
-							$cid = $qs[1];
-							$corder = $qs[2];
-							$corderitem = $qs[3];
+								$tmp		= explode(".", $cid);
+								$old		= explode("-", $tmp[3]);
+								$old[0]		= ($old[0] == "" ? "0" : $old[0]);
+								$old[1]		= ($old[1] == "" ? "0" : $old[1]);								
 
-							if($ctype == "cc"){				//category order
-								$query = ($type_id == $cid ? "content_parent = '0' && content_id = '".$type_id."'" : "LEFT(content_parent, ".(strlen($type_id)+2).") = '0.".$type_id."'" );
-								$sql->db_Update($plugintable, "content_order=content_order-1 WHERE ".$query." AND content_order='".($corder+1)."' " );
-								$sql->db_Update($plugintable, "content_order=content_order+1 WHERE content_id='".$cid."' " );
-							
-							}elseif($ctype == "ci"){		//order of items in category
-								$cat = str_replace("-", ".", $id);
-								$sql->db_Update($plugintable, "content_order=content_order-1 WHERE content_parent = '".$cat."' AND SUBSTRING_INDEX(content_order, '.', 1) = '".($corder+1)."' " );
-								$sql->db_Update($plugintable, "content_order='".($corder+1).".".$corderitem."' WHERE content_id='".$cid."' " );
-								
-							}elseif($ctype == "ai"){		//global order of items
-								$sql->db_Update($plugintable, "content_order='".$corder.".".$corderitem."' WHERE content_order='".$corder.".".($corderitem+1)."' " );
-								$sql->db_Update($plugintable, "content_order='".$corder.".".($corderitem+1)."' WHERE content_id='".$cid."' " );
-							
-							}
-							$message = CONTENT_ADMIN_ORDER_LAN_1;
-							
-						}elseif($mode == "all"){
-
-							foreach ($_POST['order'] as $cid){
-								
-								$tmp = explode(".", $cid);
-								$iid = $tmp[0];
-								$neworder = $tmp[1];
-								$style = $tmp[2];
-								$tmp1 = explode("-", $tmp[3]);
-								$oldordercat = $tmp1[0];
-								$oldorderitem = $tmp1[1];
-
-								if($style == "cat"){
+								if($tmp[2] == "cat"){
 									$sql->db_Update($plugintable, "content_order='".$tmp[1]."' WHERE content_id='".$tmp[0]."' " );
 
-								}elseif($style == "catitem"){
-									$oldorderitem = ($oldorderitem == "" ? "0" : $oldorderitem);
-									$sql->db_Update($plugintable, "content_order='".$neworder.".".$oldorderitem."' WHERE content_id='".$iid."' " );
+								}elseif($tmp[2] == "ci"){
+									$sql->db_Update($plugintable, "content_order='".$tmp[1].".".$old[1]."' WHERE content_id='".$tmp[0]."' " );
 
-								}elseif($style == "allitem"){
-									$sql->db_Update($plugintable, "content_order='".$oldordercat.".".$neworder."' WHERE content_id='".$iid."' " );
+								}elseif($tmp[2] == "ai"){
+									$sql->db_Update($plugintable, "content_order='".$old[0].".".$tmp[1]."' WHERE content_id='".$tmp[0]."' " );
 								}
 
 								$message = CONTENT_ADMIN_ORDER_LAN_2;
 							}
 
+						}elseif($mode == "inc"){
+
+							$tmp = explode("-", $order);
+							if($type == "cc"){
+								
+								$mainparent		= $aa -> getMainParent($tmp[0]);
+								$array			= $aa -> getCategoryTree("", $mainparent, TRUE);
+								$validparent	= implode(",", array_keys($array));
+								$qry			= " content_id REGEXP '".$aa -> CONTENTREGEXP($validparent)."' AND content_order='".($tmp[1]-1)."' ";
+								$sql->db_Update($plugintable, "content_order=content_order+1 WHERE ".$qry." " );
+								$sql->db_Update($plugintable, "content_order=content_order-1 WHERE content_id='".$tmp[0]."' " );
+
+							}elseif($type == "ci"){
+
+								$sql->db_Update($plugintable, "content_order='".$tmp[1].".".$tmp[2]."' WHERE content_parent = '".$qs[2]."' AND SUBSTRING_INDEX(content_order, '.', 1) = '".($tmp[1]-1)."' " );
+								$sql->db_Update($plugintable, "content_order='".($tmp[1]-1).".".$tmp[2]."' WHERE content_id='".$tmp[0]."' " );
+
+							}elseif($type == "ai"){
+
+								$array			= $aa -> getCategoryTree("", $qs[1], TRUE);
+								$validparent	= implode(",", array_keys($array));
+								$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' AND SUBSTRING_INDEX(content_order, '.', -1) = '".($tmp[2]-1)."' ";
+								$sql->db_Update($plugintable, " content_order=content_order+0.1 WHERE ".$qry." " );
+								$sql->db_Update($plugintable, "content_order='".$tmp[1].".".($tmp[2]-1)."' WHERE content_id='".$tmp[0]."' " );
+
+							}
+							$message = CONTENT_ADMIN_ORDER_LAN_0;
+
+						}elseif($mode == "dec"){
+
+							$tmp = explode("-", $order);
+							if($type == "cc"){
+								
+								$mainparent		= $aa -> getMainParent($tmp[0]);
+								$array			= $aa -> getCategoryTree("", $mainparent, TRUE);
+								$validparent	= implode(",", array_keys($array));
+								$qry			= " content_id REGEXP '".$aa -> CONTENTREGEXP($validparent)."' AND content_order='".($tmp[1]+1)."' ";
+								$sql->db_Update($plugintable, "content_order=content_order-1 WHERE ".$qry." " );
+								$sql->db_Update($plugintable, "content_order=content_order+1 WHERE content_id='".$tmp[0]."' " );
+
+							}elseif($type == "ci"){
+
+								$sql->db_Update($plugintable, "content_order='".$tmp[1].".".$tmp[2]."' WHERE content_parent = '".$qs[2]."' AND SUBSTRING_INDEX(content_order, '.', 1) = '".($tmp[1]+1)."' " );
+								$sql->db_Update($plugintable, "content_order='".($tmp[1]+1).".".$tmp[2]."' WHERE content_id='".$tmp[0]."' " );
+
+							}elseif($type == "ai"){
+
+								$array			= $aa -> getCategoryTree("", $qs[1], TRUE);
+								$validparent	= implode(",", array_keys($array));
+								$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' AND SUBSTRING_INDEX(content_order, '.', -1) = '".($tmp[2]+1)."' ";
+								$sql->db_Update($plugintable, "content_order=content_order-0.1 WHERE ".$qry." " );
+								$sql->db_Update($plugintable, "content_order='".$tmp[1].".".($tmp[2]+1)."' WHERE content_id='".$tmp[0]."' " );
+
+							}
+							$message = CONTENT_ADMIN_ORDER_LAN_1;
 						}
+						
 						return $message;
 
 		}

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.35 $
-|		$Date: 2005-05-18 20:27:13 $
+|		$Revision: 1.36 $
+|		$Date: 2005-06-06 13:28:12 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -23,37 +23,33 @@ require_once("../../class2.php");
 if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
 $e_sub_cat = 'content';
 $e_wysiwyg = "content_text,cat_text";
+$plugindir = e_PLUGIN."content/";
 
-$lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content.php');
+$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
+include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
 
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 require_once(e_HANDLER."userclass_class.php");
-require_once(e_PLUGIN."content/handlers/content_class.php");
+require_once($plugindir."handlers/content_class.php");
 $aa = new content;
-require_once(e_PLUGIN."content/handlers/content_db_class.php");
+require_once($plugindir."handlers/content_db_class.php");
 $adb = new contentdb;
-require_once(e_PLUGIN."content/handlers/content_form_class.php");
+require_once($plugindir."handlers/content_form_class.php");
 $aform = new contentform;
 require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
+e107_require_once(e_HANDLER.'arraystorage_class.php');
+$eArrayStorage = new ArrayData();
 
 global $tp;
 $deltest = array_flip($_POST);
+
+// check query
 if(e_QUERY){
-	$tmp		=	explode(".", e_QUERY);
-	$type		=	$tmp[0];
-	$type_id	=	$tmp[1];
-	$action		=	$tmp[2];
-	$sub_action	=	$tmp[3];
-	$id			=	$tmp[4];
-	$id2		=	$tmp[5];
-	unset($tmp);
+	$qs = explode(".", e_QUERY);
 }
-if(!isset($type)){ $type = "type"; }
-if(!isset($type_id)){ $type_id = "0"; }
 
 if(isset($_POST['delete']))
 {
@@ -62,517 +58,542 @@ if(isset($_POST['delete']))
 }
 
 // ##### DB ---------------------------------------------------------------------------------------
-$content_pref = $aa -> getContentPref(($type_id != "0" ? $type_id : "0"));
 
-if($delete == 'cat'){
+if(isset($delete) && $delete == 'cat'){
 
-	$sql -> db_Select($plugintable, "content_parent", "content_id = '$del_id' ");
-	list($content_parent) = $sql -> db_Fetch();
+		$sql -> db_Select($plugintable, "content_id,content_parent", "content_id = '$del_id' ");
+		list($content_id, $content_parent) = $sql -> db_Fetch();
 
-	if($content_parent == "0"){
-		$check = $del_id.".".$del_id;
-	}else{
-		$tmp = explode(".", $content_parent);
-		$check = $tmp[1].".".substr($content_parent,strlen($tmp[1])+1).".".$del_id;
-	}
+		$checkarray = $aa -> getCategoryTree("", $content_id, TRUE);
+		unset($agc);	//unset the globalised getCategoryTree array
+		$checkvalidparent = implode(",", array_keys($checkarray));
+		$checkqry = " content_parent REGEXP '".$aa -> CONTENTREGEXP($checkvalidparent)."' ";
 
-	//check if subcats present
-	$query = "AND LEFT(content_parent,".(strlen($content_parent)+1+strlen($del_id)).") = '".$content_parent.".".$del_id."' ";
-	if($sql -> db_Select($plugintable, "content_parent", "content_id != '".$del_id."' ".$query." ")){
-		//subcategories found don't delete
-		$checkermsg .= CONTENT_ADMIN_CAT_LAN_36."<br />";
-		$checksubcat = TRUE;
-	}else{
-		$checkermsg .= CONTENT_ADMIN_CAT_LAN_39."<br />";
-		$checksubcat = FALSE;
-	}
-
-	//check if items present
-	if($sql -> db_Select($plugintable, "content_parent", "LEFT(content_parent,".(strlen($content_parent)).") = '".$check."' OR content_parent = '".$check."' ")){
-		//items found, don't delete
-		$checkermsg .= CONTENT_ADMIN_CAT_LAN_37."<br />";
-		$checkitems = TRUE;
-	}else{
-		$checkermsg .= CONTENT_ADMIN_CAT_LAN_38."<br />";
-		$checkitems = FALSE;
-	}
-
-	if($checksubcat == FALSE && $checkitems == FALSE){
-		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-			$message = CONTENT_ADMIN_CAT_LAN_23."<br />";
+		//check if subcats present
+		if(count($array) > 1){
+			//subcategories found don't delete
+			$checkermsg .= CONTENT_ADMIN_CAT_LAN_36."<br />";
+			$checksubcat = TRUE;
+		}else{
+			$checkermsg .= CONTENT_ADMIN_CAT_LAN_39."<br />";
+			$checksubcat = FALSE;
 		}
-	}else{
-		$message = $checkermsg;
-	}
+
+		//check if items present
+		if($sql -> db_Count($plugintable, "(*)", "WHERE ".$checkqry." ")){
+			//items found, don't delete
+			$checkermsg .= CONTENT_ADMIN_CAT_LAN_37."<br />";
+			$checkitems = TRUE;
+		}else{
+			$checkermsg .= CONTENT_ADMIN_CAT_LAN_38."<br />";
+			$checkitems = FALSE;
+		}
+	
+		if($checksubcat == FALSE && $checkitems == FALSE){
+			if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+				$message = CONTENT_ADMIN_CAT_LAN_23."<br />";
+			}
+		}else{
+			$message = $checkermsg;
+		}
 }
 
-if($delete == 'content'){
-	if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-		$e107cache->clear("content");
-		$message = CONTENT_ADMIN_ITEM_LAN_3;
-	}
+if(isset($delete) && $delete == 'content'){
+		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+			$e107cache->clear("content");
+			$message = CONTENT_ADMIN_ITEM_LAN_3;
+		}
 }
 
-if($delete == 'submitted'){
-	if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-		$e107cache->clear("content");
-		$message = CONTENT_ADMIN_SUBMIT_LAN_8;
-	}
+if(isset($delete) && $delete == 'submitted'){
+		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+			$e107cache->clear("content");
+			$message = CONTENT_ADMIN_SUBMIT_LAN_8;
+		}
 }
 
 if(isset($_POST['updateoptions'])){
-	$content_pref = $aa -> UpdateContentPref($_POST, $_POST['options_type']);
-	$message = CONTENT_ADMIN_CAT_LAN_22."<br /><br />";
-	$message .= $aa -> CreateParentMenu($_POST['options_type']);
+		//print_r($_POST);		
+		$content_pref	= $aa -> UpdateContentPref($_POST, $_POST['options_type']);
+		$message		= CONTENT_ADMIN_CAT_LAN_22."<br /><br />";
+		$message		.= $aa -> CreateParentMenu($_POST['options_type']);
+		
 }
 
-$content_cat_icon_path_large	=	$aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$type_id}"]);
-$content_cat_icon_path_small	=	$aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$type_id}"]);
-$content_icon_path				=	$aa -> parseContentPathVars($content_pref["content_icon_path_{$type_id}"]);
-$content_image_path				=	$aa -> parseContentPathVars($content_pref["content_image_path_{$type_id}"]);
-$content_file_path				=	$aa -> parseContentPathVars($content_pref["content_file_path_{$type_id}"]);
-
 if(isset($_POST['create_category'])){
-	 if($_POST['cat_heading']){
-		$adb -> dbCategoryCreate("admin");
-	}else{
-		$message = CONTENT_ADMIN_ITEM_LAN_0;
-		$content_parent = $_POST['parent'];
-		$content_heading = $_POST['cat_heading'];
-		$content_subheading = $_POST['cat_subheading'];
-		$content_text = $_POST['cat_text'];
-		$content_icon = $_POST['cat_icon'];
-		$content_comment = $_POST['cat_comment'];
-		$content_rate = $_POST['cat_rate'];
-		$content_pe = $_POST['cat_pe'];
-		$content_class = $_POST['cat_class'];
-		$content_datestamp = $_POST['content_datestamp'];
-		$ne_day = $_POST['ne_day'];
-		$ne_month = $_POST['ne_month'];
-		$ne_year = $_POST['ne_year'];
-		$end_day = $_POST['end_day'];
-		$end_month = $_POST['end_month'];
-		$end_year = $_POST['end_year'];
-	}
+		 if($_POST['cat_heading']){
+				$adb -> dbCategoryCreate("admin");
+		}else{
+				$message			= CONTENT_ADMIN_ITEM_LAN_0;
+				$content_parent		= $_POST['parent'];
+				$content_heading	= $_POST['cat_heading'];
+				$content_subheading	= $_POST['cat_subheading'];				
+				$content_text		= $_POST['cat_text'];
+				$content_icon		= $_POST['cat_icon'];
+				$content_comment	= $_POST['cat_comment'];
+				$content_rate		= $_POST['cat_rate'];
+				$content_pe			= $_POST['cat_pe'];
+				$content_class		= $_POST['cat_class'];
+				$content_datestamp	= $_POST['content_datestamp'];
+				$ne_day				= $_POST['ne_day'];
+				$ne_month			= $_POST['ne_month'];
+				$ne_year			= $_POST['ne_year'];
+				$end_day			= $_POST['end_day'];
+				$end_month			= $_POST['end_month'];
+				$end_year			= $_POST['end_year'];
+		}
 }
 
 if(isset($_POST['update_category'])){
-	if($_POST['cat_heading']){
-		$adb -> dbCategoryUpdate("admin");
-	}else{
-		$message = CONTENT_ADMIN_ITEM_LAN_0;
-		$content_parent = $_POST['parent'];
-		$content_heading = $_POST['cat_heading'];
-		$content_subheading = $_POST['cat_subheading'];
-		$content_text = $_POST['cat_text'];
-		$content_icon = $_POST['cat_icon'];
-		$content_comment = $_POST['cat_comment'];
-		$content_rate = $_POST['cat_rate'];
-		$content_pe = $_POST['cat_pe'];
-		$content_class = $_POST['cat_class'];
-		$content_datestamp = $_POST['content_datestamp'];
-		$ne_day = $_POST['ne_day'];
-		$ne_month = $_POST['ne_month'];
-		$ne_year = $_POST['ne_year'];
-		$end_day = $_POST['end_day'];
-		$end_month = $_POST['end_month'];
-		$end_year = $_POST['end_year'];
-	}
+		if($_POST['cat_heading']){
+				$adb -> dbCategoryUpdate("admin");
+		}else{
+				$message			= CONTENT_ADMIN_ITEM_LAN_0;
+				$content_parent		= $_POST['parent'];
+				$content_heading	= $_POST['cat_heading'];
+				$content_subheading	= $_POST['cat_subheading'];				
+				$content_text		= $_POST['cat_text'];
+				$content_icon		= $_POST['cat_icon'];
+				$content_comment	= $_POST['cat_comment'];
+				$content_rate		= $_POST['cat_rate'];
+				$content_pe			= $_POST['cat_pe'];
+				$content_class		= $_POST['cat_class'];
+				$content_datestamp	= $_POST['content_datestamp'];
+				$ne_day				= $_POST['ne_day'];
+				$ne_month			= $_POST['ne_month'];
+				$ne_year			= $_POST['ne_year'];
+				$end_day			= $_POST['end_day'];
+				$end_month			= $_POST['end_month'];
+				$end_year			= $_POST['end_year'];
+		}
 }
-if(isset($_POST['assign_admins'])){
-	$message = $adb -> dbAssignAdmins("admin");
-}
+
+//if(isset($_POST['assign_admins'])){
+//		echo $_POST['class_id']." - ".$_POST['cat_id'];
+//		$message = $adb -> dbAssignAdmins("admin");
+//}
 
 if(isset($_POST['create_content'])){
-	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
-		$adb -> dbContentCreate("admin");
-	}else{
-		$message = CONTENT_ADMIN_ITEM_LAN_0;
-		$content_heading = $_POST['content_heading'];
-		$content_subheading = $_POST['content_subheading'];
-		$content_summary = $_POST['content_summary'];
-		$content_text = $_POST['content_text'];
-		$content_icon = $_POST['content_icon'];
-		$content_file = $_POST['content_file'];
-		$content_comment = $_POST['content_comment'];
-		$content_rate = $_POST['content_rate'];
-		$content_pe = $_POST['content_pe'];
-		$content_class = $_POST['content_class'];
-		$content_datestamp = $_POST['content_datestamp'];
-		$ne_day = $_POST['ne_day'];
-		$ne_month = $_POST['ne_month'];
-		$ne_year = $_POST['ne_year'];
-		$end_day = $_POST['end_day'];
-		$end_month = $_POST['end_month'];
-		$end_year = $_POST['end_year'];
-		$custom["content_custom_score"] = $_POST['content_score'];
-		$custom["content_custom_meta"] = $_POST['content_meta'];
-		for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
-			$keystring = $_POST["content_custom_key_{$i}"];
-			$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
+        if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
+				$adb -> dbContentCreate("admin");
+        }else{
+                $message			= CONTENT_ADMIN_ITEM_LAN_0;
+				$content_heading	= $_POST['content_heading'];
+				$content_subheading	= $_POST['content_subheading'];
+				$content_summary	= $_POST['content_summary'];
+				$content_text		= $_POST['content_text'];
+				$content_icon		= $_POST['content_icon'];
+				$content_file		= $_POST['content_file'];
+				$content_comment	= $_POST['content_comment'];
+				$content_rate		= $_POST['content_rate'];
+				$content_pe			= $_POST['content_pe'];
+				$content_class		= $_POST['content_class'];
+				$content_datestamp	= $_POST['content_datestamp'];
+				$ne_day				= $_POST['ne_day'];
+				$ne_month			= $_POST['ne_month'];
+				$ne_year			= $_POST['ne_year'];
+				$end_day			= $_POST['end_day'];
+				$end_month			= $_POST['end_month'];
+				$end_year			= $_POST['end_year'];
+				$custom["content_custom_score"] = $_POST['content_score'];
+				$custom["content_custom_meta"] = $_POST['content_meta'];
+				for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
+					$keystring = $_POST["content_custom_key_{$i}"];
+					$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
+				}
 		}
-	}
 }
 
-if(isset($_POST['update_content'])){
-	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
-		$adb -> dbContentUpdate("admin");
-	}else{
-		$message = CONTENT_ADMIN_ITEM_LAN_0;
-		$content_heading = $_POST['content_heading'];
-		$content_subheading = $_POST['content_subheading'];
-		$content_summary = $_POST['content_summary'];
-		$content_text = $_POST['content_text'];
-		$content_icon = $_POST['content_icon'];
-		$content_comment = $_POST['content_comment'];
-		$content_rate = $_POST['content_rate'];
-		$content_pe = $_POST['content_pe'];
-		$content_class = $_POST['content_class'];
-		$content_datestamp = $_POST['content_datestamp'];
-		$ne_day = $_POST['ne_day'];
-		$ne_month = $_POST['ne_month'];
-		$ne_year = $_POST['ne_year'];
-		$end_day = $_POST['end_day'];
-		$end_month = $_POST['end_month'];
-		$end_year = $_POST['end_year'];
-		$custom["content_custom_score"] = $_POST['content_score'];
-		$custom["content_custom_meta"] = $_POST['content_meta'];
-		for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
-			$keystring = $_POST["content_custom_key_{$i}"];
-			$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
+If(isset($_POST['update_content'])){
+        if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
+				$adb -> dbContentUpdate("admin");
+		}else{
+				$message			= CONTENT_ADMIN_ITEM_LAN_0;
+				$content_heading	= $_POST['content_heading'];
+				$content_subheading	= $_POST['content_subheading'];
+				$content_summary	= $_POST['content_summary'];
+				$content_text		= $_POST['content_text'];
+				$content_icon		= $_POST['content_icon'];
+				$content_comment	= $_POST['content_comment'];
+				$content_rate		= $_POST['content_rate'];
+				$content_pe			= $_POST['content_pe'];
+				$content_class		= $_POST['content_class'];
+				$content_datestamp	= $_POST['content_datestamp'];
+				$ne_day				= $_POST['ne_day'];
+				$ne_month			= $_POST['ne_month'];
+				$ne_year			= $_POST['ne_year'];
+				$end_day			= $_POST['end_day'];
+				$end_month			= $_POST['end_month'];
+				$end_year			= $_POST['end_year'];
+				$custom["content_custom_score"] = $_POST['content_score'];
+				$custom["content_custom_meta"] = $_POST['content_meta'];
+				for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
+					$keystring = $_POST["content_custom_key_{$i}"];
+					$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
+				}
 		}
-	}
 }
+
+
 
 if(isset($_POST['preview'])){
-	$content_heading = $tp -> post_toHTML($_POST['content_heading']);
-	$content_subheading = $tp -> post_toHTML($_POST['content_subheading']);
-	$content_summary = $tp -> post_toHTML($_POST['content_summary']);
-	$content_text = $tp -> post_toHTML($_POST['content_text']);
+		$content_heading	= $tp -> post_toHTML($_POST['content_heading']);
+		$content_subheading	= $tp -> post_toHTML($_POST['content_subheading']);
+		$content_summary	= $tp -> post_toHTML($_POST['content_summary']);
+		$content_text		= $tp -> post_toHTML($_POST['content_text']);
 
-	$text = "
-	<div style='text-align:center'>
-	<table class='fborder' style='".ADMIN_WIDTH."' border='0'>
-	<tr><td>".$content_heading."</td></tr>
-	<tr><td>".$content_subheading."</td></tr>
-	<tr><td>".$content_summary."</td></tr>
-	<tr><td>".$content_text."</td></tr>
-	</table>
-	</div>";
+		$text = "
+		<div style='text-align:center'>
+		<table class='fborder' style='".ADMIN_WIDTH."' border='0'>
+		<tr><td>".$content_heading."</td></tr>
+		<tr><td>".$content_subheading."</td></tr>
+		<tr><td>".$content_summary."</td></tr>
+		<tr><td>".$content_text."</td></tr>
+		</table>
+		</div>";
+			  
+		$ns -> tablerender($content_heading, $text);
 
-	$ns -> tablerender($content_heading, $text);
+		$content_authorname		= $_POST['content_authorname'];
+		$content_authoremail	= $_POST['content_authoremail'];
+		$content_parent			= $_POST['parent'];
+		$content_heading		= $tp -> post_toForm($_POST['content_heading']);
+		$content_subheading		= $tp -> post_toForm($_POST['content_subheading']);
+		$content_summary		= $tp -> post_toForm($_POST['content_summary']);
+		$content_text			= $tp -> post_toForm($_POST['content_text']);
+		$content_comment		= $_POST['content_comment'];
+		$content_rate			= $_POST['content_rate'];
+		$content_pe				= $_POST['content_pe'];
+		$content_class			= $_POST['content_class'];
+		$ne_day					= $_POST['ne_day'];
+		$ne_month				= $_POST['ne_month'];
+		$ne_year				= $_POST['ne_year'];
+		$end_day				= $_POST['end_day'];
+		$end_month				= $_POST['end_month'];
+		$end_year				= $_POST['end_year'];
+		$custom["content_custom_score"] = $_POST['content_score'];
+		$custom["content_custom_meta"] = $_POST['content_meta'];
+		for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
+			$keystring = $_POST["content_custom_key_{$i}"];
+			$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
+		}
 
-	$content_authorname = $_POST['content_authorname'];
-	$content_authoremail = $_POST['content_authoremail'];
-	$content_parent = $_POST['parent'];
-	$content_heading = $tp -> post_toForm($_POST['content_heading']);
-	$content_subheading = $tp -> post_toForm($_POST['content_subheading']);
-	$content_summary = $tp -> post_toForm($_POST['content_summary']);
-	$content_text = $tp -> post_toForm($_POST['content_text']);
-	$content_comment = $_POST['content_comment'];
-	$content_rate = $_POST['content_rate'];
-	$content_pe = $_POST['content_pe'];
-	$content_class = $_POST['content_class'];
-	$ne_day = $_POST['ne_day'];
-	$ne_month = $_POST['ne_month'];
-	$ne_year = $_POST['ne_year'];
-	$end_day = $_POST['end_day'];
-	$end_month = $_POST['end_month'];
-	$end_year = $_POST['end_year'];
-	$custom["content_custom_score"] = $_POST['content_score'];
-	$custom["content_custom_meta"] = $_POST['content_meta'];
-	for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
-		$keystring = $_POST["content_custom_key_{$i}"];
-		$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
-	}
-
-	$content_icon = $_FILES['file_userfile1']['name'][0];							//won't work, cause file isn't upoaded
-	for($i=0;$i<$content_pref["content_admin_files_number_{$type_id}"];$i++){
-		$content_files{$i} = $_POST['content_files{$i}'];							//won't work, cause file isn't upoaded
-	}
-	for($i=0;$i<$content_pref["content_admin_images_number_{$type_id}"];$i++){
-		$content_images{$i} = $_POST['content_images{$i}'];							//won't work, cause file isn't upoaded
-	}
+		$content_icon = $_FILES['file_userfile1']['name'][0];							//won't work, cause file isn't upoaded
+		for($i=0;$i<$content_pref["content_admin_files_number_{$type_id}"];$i++){
+			$content_files{$i} = $_POST['content_files{$i}'];							//won't work, cause file isn't upoaded
+		}
+		for($i=0;$i<$content_pref["content_admin_images_number_{$type_id}"];$i++){
+			$content_images{$i} = $_POST['content_images{$i}'];							//won't work, cause file isn't upoaded
+		}
 }
 
 if(isset($_POST['update_order'])){
-	$message = $adb -> dbSetOrder("all", $_POST['order']);
+	if(isset($qs[1])){
+		if(isset($qs[2])){
+			$message = $adb -> dbSetOrder("all", "ci", $_POST['order']);
+		}else{
+			$message = $adb -> dbSetOrder("all", "ai", $_POST['order']);
+		}
+	}else{
+		$message = $adb -> dbSetOrder("all", "cc", $_POST['order']);
+	}
 }
 
 if(IsSet($message)){
-	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+        $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
+
 // ##### End --------------------------------------------------------------------------------------
 
 if(!e_QUERY){																//show main categories
-	$intro = $aform -> show_main_intro();
-	if($intro == false){
-		$aform -> show_main_parent("edit");
-	}
-	require_once(e_ADMIN."footer.php");
-	exit;
 
-}else{
-	if($type=="type" && is_numeric($type_id)){
+		$intro = $aform -> show_main_intro();
+		if($intro == false){
+			//$aform -> show_main_parent("edit");
+			$aform -> show_manage_content("", "", "");
+		}
 		
-		if(!$action || ($action == "c" && $sub_action)){
-			if($type_id == "0"){
-				header("location:".e_SELF); exit;
-			}else{															//item; overview by category
-				$aform -> show_main_parent("edit");
-				$aform -> show_content_manage("admin");
-			}
+		require_once(e_ADMIN."footer.php");
+		exit;
+}else{
+	$qs = explode(".", e_QUERY);
+
+	//manage content items
+	if($qs[0] == "content" && is_numeric($qs[1]) ){
+		$aform -> show_manage_content("", "", "");
+
+	//edit content item
+	}elseif($qs[0] == "content" && $qs[1] == "edit" && is_numeric($qs[2]) ){
+		$newqs = array_reverse($qs);
+		if($newqs[0] == "cu"){										//item; update redirect
+			$mainparent = $aa -> getMainParent($qs[2]);
+			$message = CONTENT_ADMIN_ITEM_LAN_2."<br /><br />";
+			$message .= CONTENT_ADMIN_ITEM_LAN_88." <a href='".e_SELF."?content.create.".$mainparent."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+			$message .= CONTENT_ADMIN_ITEM_LAN_89." <a href='".e_SELF."?content.".$mainparent."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+			$message .= CONTENT_ADMIN_ITEM_LAN_91." <a href='".e_SELF."?content.edit.".$qs[2]."'>".CONTENT_ADMIN_ITEM_LAN_90."</a>";
+			$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+			require_once(e_ADMIN."footer.php");
+			exit;
 		}
+		$aform -> show_create_content("admin", $userid="", $username="");
 
-		if($action == "create"){											//item
-			if($sub_action == "cc"){										//item; create redirect
-					$message = CONTENT_ADMIN_ITEM_LAN_1."<br /><br />";
-					$message .= CONTENT_ADMIN_ITEM_LAN_88." <a href='".e_SELF."?type.".$type_id.".create'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
-					$message .= CONTENT_ADMIN_ITEM_LAN_89." <a href='".e_SELF."?type.".$type_id."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
-					$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-					require_once(e_ADMIN."footer.php");
-					exit;
-			}elseif(!$sub_action || is_numeric($sub_action)){
-				if($type_id == "0"){										//item; create; show main categories
-					$aform -> show_main_parent("create");
-					require_once(e_ADMIN."footer.php");
-					exit;
-				}else{														//item; create form; use selected main category
-					$aform -> show_content_create("admin");
-				}
-			}elseif(($sub_action == "edit" || $sub_action == "sa")){
-				if(!is_numeric($id)){
-					header("location:".e_SELF."?type.".$type_id); exit;
-				}else{														//item; edit form
-					if($id2 == "cu"){										//item; update redirect
-						$message = CONTENT_ADMIN_ITEM_LAN_2."<br /><br />";
-						$message .= CONTENT_ADMIN_ITEM_LAN_88." <a href='".e_SELF."?type.".$type_id.".create'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
-						$message .= CONTENT_ADMIN_ITEM_LAN_89." <a href='".e_SELF."?type.".$type_id."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
-						$message .= CONTENT_ADMIN_ITEM_LAN_91." <a href='".e_SELF."?type.".$type_id.".create.edit.".$id."'>".CONTENT_ADMIN_ITEM_LAN_90."</a>";
-						$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-						require_once(e_ADMIN."footer.php");
-						exit;
-					}
-					$aform -> show_content_create("admin","","");
-				}
-			}else{
-				header("location:".e_SELF."?type.".$type_id); exit;
-			}
+	//post submitted content item
+	}elseif($qs[0] == "content" && $qs[1] == "sa" && is_numeric($qs[2]) ){
+		$aform -> show_create_content("sa", $userid="", $username="");
+
+	//create content item
+	}elseif($qs[0] == "content" && $qs[1] == "create" ){
+		$newqs = array_reverse($qs);
+		if($newqs[0] == "cc"){										//item; create redirect
+			$mainparent = $aa -> getMainParent($qs[2]);
+			$message = CONTENT_ADMIN_ITEM_LAN_1."<br /><br />";
+			$message .= CONTENT_ADMIN_ITEM_LAN_88." <a href='".e_SELF."?content.create.".$mainparent."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+			$message .= CONTENT_ADMIN_ITEM_LAN_89." <a href='".e_SELF."?content.".$mainparent."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+			$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+			require_once(e_ADMIN."footer.php");
+			exit;
 		}
+		$aform -> show_create_content("admin", $userid="", $username="");
 
-		if($action == "sa"){												//submit; overview content items
-			$aform -> show_content_submitted("admin");
+
+
+	//order : view categories
+	}elseif($qs[0] == "order" && !isset($qs[1])){
+		$aform -> show_order();
+
+	//order global items of parent='2'
+	}elseif($qs[0] == "order" && is_numeric($qs[1]) && !isset($qs[2]) ){
+		$aform -> show_content_order("ai");
+
+	//increase order of global items
+	}elseif($qs[0] == "order" && is_numeric($qs[1]) && $qs[2] == "inc" && isset($qs[3]) ){
+		$message = $adb -> dbSetOrder("inc", "ai", $qs[3]);
+		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+		$aform -> show_content_order("ai");
+
+	//decrease order of global items
+	}elseif($qs[0] == "order" && is_numeric($qs[1]) && $qs[2] == "dec" && isset($qs[3]) ){
+		$message = $adb -> dbSetOrder("dec", "ai", $qs[3]);
+		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+		$aform -> show_content_order("ai");
+
+	//order items with parent=2 or category='5'
+	}elseif($qs[0] == "order" && is_numeric($qs[1]) && is_numeric($qs[2]) && !isset($qs[3]) ){
+		$aform -> show_content_order("ci");
+	
+	//increase order of items in category
+	}elseif($qs[0] == "order" && is_numeric($qs[1]) && is_numeric($qs[2]) && $qs[3] == "inc" && isset($qs[4]) ){
+		$message = $adb -> dbSetOrder("inc", "ci", $qs[4]);
+		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+		$aform -> show_content_order("ci");
+
+	//decrease order of items in category
+	}elseif($qs[0] == "order" && is_numeric($qs[1]) && is_numeric($qs[2]) && $qs[3] == "dec" && isset($qs[4]) ){
+		$message = $adb -> dbSetOrder("dec", "ci", $qs[4]);
+		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+		$aform -> show_content_order("ci");
+
+	//increase category order
+	}elseif($qs[0] == "order" && $qs[1] == "inc" && isset($qs[2]) ){
+		$message = $adb -> dbSetOrder("inc", "cc", $qs[2]);
+		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+		$aform -> show_order("admin");
+
+	//decrease category order
+	}elseif($qs[0] == "order" && $qs[1] == "dec" && isset($qs[2]) ){
+		$message = $adb -> dbSetOrder("dec", "cc", $qs[2]);
+		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+		$aform -> show_order("admin");
+
+
+
+
+	}elseif($qs[0] == "submitted" && !isset($qs[1]) ){
+		$aform -> show_submitted();
+
+
+
+
+	}elseif($qs[0] == "option" && !isset($qs[1]) ){
+		$aform -> show_options();
+
+	}elseif($qs[0] == "option" && isset($qs[1]) && (is_numeric($qs[1]) || $qs[1] == "default") ){
+		$aform -> show_options_cat();
+
+
+
+
+	//category content manager : choose category
+	}elseif($qs[0] == "manager" && !isset($qs[1]) ){
+		if(!getperms("0")){ header("location:".e_SELF); exit; }
+		//$aform -> show_admin_contentmanager();
+		$aform -> show_manage("manager");
+	
+	//category content manager : view contentmanager
+	}elseif($qs[0] == "manager" && isset($qs[1]) && is_numeric($qs[1]) ){
+		if(!getperms("0")){ header("location:".e_SELF); exit; }
+		if(isset($qs[2])){
+			$message = $adb -> dbAssignAdmins("admin", $qs[1], $qs[2]);
+			$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 		}
+		$aform -> show_admin_contentmanager_category();
 
-		if($action == "order"){
 
-			if($sub_action == "cat" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
-				if($sub_action == "cat" && substr($id,0,3) == "inc"){			//increase order
-					$adb -> dbSetOrder("inc", "cc-".substr($id,4));
-				}elseif($sub_action == "cat" && substr($id,0,3) == "dec"){		//decrease order
-					$adb -> dbSetOrder("dec", "cc-".substr($id,4));
-				}
-				$aform -> show_cat_order("admin");								//show categories from selected main parent
 
-			//all items (global order)
-			}elseif($sub_action == "all" && $type_id != "0" && (!$id || substr($id,0,3) == "inc" || substr($id,0,3) == "dec") ){
-				if(substr($id,0,3) == "inc"){									//increase order
-					$adb -> dbSetOrder("inc", "ai-".substr($id,4));
-				}elseif(substr($id,0,3) == "dec"){								//decrease order
-					$adb -> dbSetOrder("dec", "ai-".substr($id,4));
-				}
-				$aform -> show_content_order("admin", "allitem");				//show global content items order
 
-			//items in category (category items order)
-			}elseif($sub_action == "item" && ($id != "" || substr($id2,0,3) == "inc" || substr($id2,0,3) == "dec")  ){
+	//overview all categories
+	}elseif($qs[0] == "cat" && !isset($qs[1]) ){
+		$aform -> show_manage("category");
 
-				if(substr($id2,0,3) == "inc"){									//increase order
-					$adb -> dbSetOrder("inc", "ci-".substr($id2,4));
-				}elseif(substr($id2,0,3) == "dec"){								//decrease order
-					$adb -> dbSetOrder("dec", "ci-".substr($id2,4));
-				}
-				$aform -> show_content_order("admin", "catitem");				//show order of content items from selected category
-
-			}else{
-				header("location:".e_SELF."?type.".$type_id.".order"); exit;
-			}
+	//create category
+	}elseif($qs[0] == "cat" && $qs[1] == "create" ){
+		$newqs = array_reverse($qs);
+		if($newqs[0] == "pc"){									//category; create redirect
+				$message = CONTENT_ADMIN_CAT_LAN_11."<br /><br />";
+				$message .= "<br /><br />".CONTENT_ADMIN_CAT_LAN_50."<br /><br />";
+				$message .= "
+				".CONTENT_ADMIN_CAT_LAN_44." <a href='".e_SELF."?cat.create'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />
+				".CONTENT_ADMIN_CAT_LAN_42." <a href='".e_SELF."?cat.edit.".$qs[3]."'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />
+				";
+				$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+				require_once(e_ADMIN."footer.php");
+				exit;
 		}
+		$aform -> show_create_category();
 
-		if($action == "cat"){												//category
-
-			if(!$sub_action){												//category; main parents
-					$aform -> show_cat_manage();							//category; overview subcategories
-			}elseif($sub_action == "edit"){									//category; edit
-				if(is_numeric($id)){										//category; edit form
-					if($id2 != "" && $id2 == "pu"){							//category; update redirect
-						$message = CONTENT_ADMIN_CAT_LAN_12."<br />".CONTENT_ADMIN_CAT_LAN_42." <a href='".e_SELF."?type.".$type_id.".cat.edit'>".CONTENT_ADMIN_CAT_LAN_43."</a>";
-						$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-						require_once(e_ADMIN."footer.php");
-						exit;
-					}
-					$aform -> show_cat_create("admin");
-				}else{
-					header("location:".e_SELF."?type.".$type_id.".cat"); exit;
-				}
-			}elseif($sub_action == "create"){
-				if($id && !is_numeric($id) && $id != "pc"){
-					header("location:".e_SELF."?type.".$type_id.".cat.create"); exit;
-				}else{													//category; create form
-					if($id == "pc"){									//category; create redirect
-						$message = CONTENT_ADMIN_CAT_LAN_11."<br /><br />";
-						if($type_id == "0"){ 
-							$message .= "<br /><br />".CONTENT_ADMIN_CAT_LAN_50."<br /><br />";
-						}
-						$message .= "
-						".CONTENT_ADMIN_CAT_LAN_44." <a href='".e_SELF."?type.".$type_id.".cat.create'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />
-						".CONTENT_ADMIN_CAT_LAN_42." <a href='".e_SELF."?type.".$type_id.".cat.edit'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />
-						";
-						$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-						require_once(e_ADMIN."footer.php");
-						exit;
-					}
-					$aform -> show_cat_create("admin");
-				}
-			}elseif($sub_action == "options"){							//category; options
-					$aform -> show_cat_options();
-
-			}elseif($sub_action == "contentmanager"){					//category; contentmanager users for category
-				if(!getperms("0")){
-					header("location:".e_SELF."?".$type.".".$type_id.".cat"); exit;
-				}
-				if(is_numeric($id)){
-					$aform -> show_admin_contentmanager();
-				}
-			}else{
-				header("location:".e_SELF."?type.0.cat"); exit;
-			}
+	//edit category
+	}elseif($qs[0] == "cat" && $qs[1] == "edit" && is_numeric($qs[2]) ){
+		$newqs = array_reverse($qs);
+		if($newqs[0] == "pu"){										//category; update redirect
+				$message = CONTENT_ADMIN_CAT_LAN_12."<br /><br />
+				".CONTENT_ADMIN_CAT_LAN_42." <a href='".e_SELF."?cat.edit.".$qs[2]."'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />
+				".CONTENT_ADMIN_CAT_LAN_53." <a href='".e_SELF."?cat'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />";
+				$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+				require_once(e_ADMIN."footer.php");
+				exit;
 		}
+		$aform -> show_create_category();
+
+
 	}
 }
+
 // ##### End --------------------------------------------------------------------------------------
 
 
 // ##### Display options --------------------------------------------------------------------------
 function admin_content_config_adminmenu(){
 
-                global $sql, $plugintable;
-				global $action, $sub_action, $type, $type_id;
-
-				require_once(e_PLUGIN."content/handlers/content_class.php");
-				$aa = new content;
+                global $sql, $plugintable, $aa;
 
 				if(e_QUERY){
-					$tmp		=	explode(".", e_QUERY);
-					$type		=	$tmp[0];
-					$type_id	=	$tmp[1];
-					$action		=	$tmp[2];
-					$sub_action	=	$tmp[3];
-					$id			=	$tmp[4];
-					$id2		=	$tmp[5];
-					unset($tmp);
+					$qs		=	explode(".", e_QUERY);
 				}
 
-				if($action == "cat"){
-					if($sub_action == "create"){
-						$act = $action.".".$sub_action;
-					}else{
-						$act = $action;
-					}
-				}elseif($action == "create"){
-					if(!$sub_action || is_numeric($sub_action)){
-						$act = $action;
-					}elseif($sub_action == "edit"){
-						$act = "main";
-					}
-				}elseif($action == "c"){
-					if(!$sub_action){
-						$act = $action;
-					}else{
-						$act = $action.".".$sub_action;
-					}
+				if(isset($qs[0]) && $qs[0] == "cat" && $qs[1] == "create"){
+					$act	= $qs[0].".".$qs[1];
+
+				}elseif(isset($qs[0]) && $qs[0] == "content" && $qs[1] == "create"){
+					$act	= $qs[0].".".$qs[1];
+
 				}else{
-					$act = $action;
+					$act	= (isset($qs[0]) ? $qs[0] : "");
 				}
 
-                if($act==""){$act="main";}
+                if($act==""){$act="content";}
 
-                $var['main']['text']=CONTENT_ADMIN_MENU_LAN_0;
-                $var['main']['link']=e_SELF;
+                $var['content']['text']			= CONTENT_ADMIN_MENU_LAN_0;
+                $var['content']['link']			= e_SELF;
 
-                $var['create']['text']=CONTENT_ADMIN_MENU_LAN_1;
-                $var['create']['link']=e_SELF."?type.0.create";
+                $var['content.create']['text']	= CONTENT_ADMIN_MENU_LAN_1;
+                $var['content.create']['link']	= e_SELF."?content.create";
 
-                $var['cat']['text']=CONTENT_ADMIN_MENU_LAN_2;
-                $var['cat']['link']=e_SELF."?type.0.cat";
+                $var['cat']['text']				= CONTENT_ADMIN_MENU_LAN_2;
+                $var['cat']['link']				= e_SELF."?cat";
 
-				$var['cat.create']['text']=CONTENT_ADMIN_MENU_LAN_3;
-                $var['cat.create']['link']=e_SELF."?type.0.cat.create";
+				$var['cat.create']['text']		= CONTENT_ADMIN_MENU_LAN_3;
+                $var['cat.create']['link']		= e_SELF."?cat.create";
 
-				$var['order']['text']=CONTENT_ADMIN_MENU_LAN_15;
-                $var['order']['link']=e_SELF."?type.0.order.cat";
+				$var['order']['text']			= CONTENT_ADMIN_MENU_LAN_15;
+                $var['order']['link']			= e_SELF."?order";
+
+				$var['option']['text']			= CONTENT_ADMIN_MENU_LAN_6;
+                $var['option']['link']			= e_SELF."?option";
+
+				$var['manager']['text']			= CONTENT_ADMIN_MENU_LAN_17;
+                $var['manager']['link']			= e_SELF."?manager";
 
                 if($submittedcontents = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer ='sa' ")){
-					$var['sa']['text']=CONTENT_ADMIN_MENU_LAN_4." (".$submittedcontents.")";
-					$var['sa']['link']=e_SELF."?type.0.sa";
+                        $var['submitted']['text']	= CONTENT_ADMIN_MENU_LAN_4." (".$submittedcontents.")";
+                        $var['submitted']['link']	= e_SELF."?submitted";
                 }
 
 				show_admin_menu(CONTENT_ADMIN_MENU_LAN_6, $act,$var);
 
-				if($sub_action == "options"){
+				if(isset($qs[0]) && $qs[0] == "option" && isset($qs[1])){
 					unset($var);
 					$var=array();
-					$var['creation']['text'] = CONTENT_ADMIN_MENU_LAN_7;
-					$var['submission']['text'] = CONTENT_ADMIN_MENU_LAN_8;
-					$var['paththeme']['text'] = CONTENT_ADMIN_MENU_LAN_9;
-					$var['general']['text'] = CONTENT_ADMIN_MENU_LAN_10;
-					$var['recentpages']['text'] = CONTENT_ADMIN_MENU_LAN_11;
-					$var['catpages']['text'] = CONTENT_ADMIN_MENU_LAN_12;
-					$var['contentpages']['text'] = CONTENT_ADMIN_MENU_LAN_13;
-					$var['archivepage']['text'] = CONTENT_ADMIN_MENU_LAN_16;
-					$var['menu']['text'] = CONTENT_ADMIN_MENU_LAN_14;
+					$var['creation']['text']		= CONTENT_ADMIN_MENU_LAN_7;
+					$var['submission']['text']		= CONTENT_ADMIN_MENU_LAN_8;
+					$var['paththeme']['text']		= CONTENT_ADMIN_MENU_LAN_9;
+					$var['general']['text']			= CONTENT_ADMIN_MENU_LAN_10;
+					$var['recentpages']['text']		= CONTENT_ADMIN_MENU_LAN_11;
+					$var['catpages']['text']		= CONTENT_ADMIN_MENU_LAN_12;
+					$var['contentpages']['text']	= CONTENT_ADMIN_MENU_LAN_13;
+					$var['authorpage']['text']		= CONTENT_ADMIN_MENU_LAN_18;
+					$var['archivepage']['text']		= CONTENT_ADMIN_MENU_LAN_16;
+					$var['contentmanager']['text']	= CONTENT_ADMIN_MENU_LAN_19;
+					$var['menu']['text']			= CONTENT_ADMIN_MENU_LAN_14;
 					
 
 					$sql = new db;
-					$category_total = $sql -> db_Select($plugintable, "content_heading", "content_id='".$type_id."' ");
-					list($content_heading) = $sql -> db_Fetch();
+					$category_total			= $sql -> db_Select($plugintable, "content_heading", "content_id='".$qs[1]."' ");
+					list($content_heading)	= $sql -> db_Fetch();
 
 					show_admin_menu(CONTENT_ADMIN_MENU_LAN_6.": ".$content_heading."", $act, $var, TRUE);
-
+				
 				}else{
-					$sql2 = new db;
-					if($category_total = $sql2 -> db_Select($plugintable, "content_id, content_heading", "content_parent='0' ")){
-						while($row = $sql2 -> db_Fetch()){
+						$sql2 = new db;
+						if($category_total = $sql2 -> db_Select($plugintable, "content_id, content_heading", "content_parent='0' ")){
+							while($row = $sql2 -> db_Fetch()){
 
-							unset($var);
-							$var=array();
+								unset($var);
+								$var=array();
 
-							$array = $aa -> getParent("", "", $row['content_id']);		//get all categories from each main parent
-							for($a=0;$a<count($array);$a++){
-								$pre = "";
-								if(!$array[$a][17] || $array[$a][17] == "0"){
-								}else{
-									for($b=0;$b<$array[$a][17];$b++){
-										$pre .= "_";
+								$array		= $aa -> getCategoryTree("", $row['content_id'], FALSE);	//get all categories from each main parent
+								$newarray	= array_merge_recursive($array);
+								
+								$newparent=array();
+								for($a=0;$a<count($newarray);$a++){
+									for($b=0;$b<count($newarray[$a]);$b++){
+										$newparent[$newarray[$a][$b]] = $newarray[$a][$b+1];
+										$b++;
 									}
 								}
-								if(strpos($array[$a][9], ".")){
-									$tmp = explode(".", $array[$a][9]);
-									$mainparent = $tmp[1];
-									$id = $tmp[1].".".substr($array[$a][9], 2).".".$array[$a][0];
-								}else{
-									$id = $array[$a][0].".".$array[$a][0];
-									$mainparent = $array[$a][0];
+
+								foreach($newparent as $key => $value){
+									$var['c'.$key]['text']	= $value;
+									$var['c'.$key]['link']	= e_SELF."?content.".$key;
 								}
-								$id = str_replace(".", "-", $id);
-								$string[] = array($array[$a][0], $pre.$array[$a][1], $array[$a][9], $id, $mainparent);
+								if( isset($qs[0]) && $qs[0] == "content" && isset($qs[1]) && $qs[1] == "create"){
+									$act = "";
+								}elseif( isset($qs[0]) && $qs[0] == "cat" && isset($qs[1]) && ($qs[1] == "create" || $qs[1] == "edit") ){
+									$act = "";
+								}elseif( isset($qs[0]) && $qs[0] == "order" ){
+									$act = "";
+								}elseif( isset($qs[0]) && $qs[0] == "manager" ){
+									$act = "";
+								}else{
+									if(isset($qs[0])){
+										$act = "c".$qs[1];
+									}else{
+										$act = "c";
+									}
+								}
 
-								$var['c'.$id]['text']=$pre.$array[$a][1];
-								$var['c'.$id]['link']=e_SELF."?type.".$mainparent.".c.{$id}";
+								show_admin_menu(CONTENT_ADMIN_MENU_LAN_5." : ".$row['content_heading']."", $act, $var);
 							}
-
-							show_admin_menu(CONTENT_ADMIN_MENU_LAN_5." : ".$row['content_heading']."", 'c'.$sub_action, $var);
 						}
-					}
 				}
 
 }
@@ -582,109 +603,128 @@ function admin_content_config_adminmenu(){
 require_once(e_ADMIN."footer.php");
 
 function headerjs(){
-	global $tp;
+	global $tp, $plugindir;
 
 	$script = "
-	<script type='text/javascript' src='".e_PLUGIN."content/content.js'></script>\n
+	<script type='text/javascript' src='".$plugindir."content.js'></script>\n
 	<script type=\"text/javascript\">
 
 	function confirm2_(mode, number, name){
-		if(mode == 'image'){
-			var x=confirm(\"".CONTENT_ADMIN_JS_LAN_2." [".CONTENT_ADMIN_JS_LAN_4.": \" + name + \"] \");
-		}
-		if(mode == 'icon'){
-			var x=confirm(\"".CONTENT_ADMIN_JS_LAN_7." [".CONTENT_ADMIN_JS_LAN_8.": \" + name + \"] \");
-		}
-		if(mode == 'file'){
-			var x=confirm(\"".CONTENT_ADMIN_JS_LAN_3." [".CONTENT_ADMIN_JS_LAN_5.": \" + name + \"] \");
-		}
-		var i;
-		var imagemax = 10;
-		if(x){
-			if(mode == 'image'){
-				for (i = 0; i < imagemax; i++){
-					if(number == i){
-						document.getElementById('content_images' + i).value = '';
-					}
-				}
-			}
-			if(mode == 'icon'){
-				document.getElementById('content_icon').value = '';
-			}
-			if(mode == 'file'){
-				for (i = 0; i < imagemax; i++){
-					if(number == i){
-						document.getElementById('content_files' + i).value = '';
-					}
-				}
-			}
-		}
+	if(mode == 'image'){
+	var x=confirm(\"".CONTENT_ADMIN_JS_LAN_2." [".CONTENT_ADMIN_JS_LAN_4.": \" + name + \"] \");
 	}
-
+	if(mode == 'icon'){
+	var x=confirm(\"".CONTENT_ADMIN_JS_LAN_7." [".CONTENT_ADMIN_JS_LAN_8.": \" + name + \"] \");
+	}
+	if(mode == 'file'){
+	var x=confirm(\"".CONTENT_ADMIN_JS_LAN_3." [".CONTENT_ADMIN_JS_LAN_5.": \" + name + \"] \");
+	}
+	var i;
+	var imagemax = 10;
+	if(x){
+	if(mode == 'image'){
+	for (i = 0; i < imagemax; i++){
+	if(number == i){
+	document.getElementById('content_images' + i).value = '';
+	}
+	}
+	}
+	if(mode == 'icon'){
+	document.getElementById('content_icon').value = '';
+	}
+	if(mode == 'file'){
+	for (i = 0; i < imagemax; i++){
+	if(number == i){
+	document.getElementById('content_files' + i).value = '';
+	}
+	}
+	}
+	}
+	}
 	//<![CDATA[
 	// Adapted from original:  Kathi O'Shea (Kathi.O'Shea@internet.com)
 	function moveOver() {
-		var boxLength = document.getElementById('assignclass2').length;
-		var selectedItem = document.getElementById('assignclass1').selectedIndex;
-		var selectedText = document.getElementById('assignclass1').options[selectedItem].text;
-		var selectedValue = document.getElementById('assignclass1').options[selectedItem].value;
-		var i;
-		var isNew = true;
-		var newvalues;
-		if (boxLength != 0) {
-			for (i = 0; i < boxLength; i++) {
-				thisitem = document.getElementById('assignclass2').options[i].text;
-				if (thisitem == selectedText) {
-					isNew = false;
-					break;
-				}
-			}
-		}
-		if (isNew) {
-			newoption = new Option(selectedText, selectedValue, false, false);
-			document.getElementById('assignclass2').options[boxLength] = newoption;
-			document.getElementById('assignclass1').options[selectedItem].text = '';
-			newvalues = selectedValue + ','
-		}
-		document.getElementById('assignclass1').selectedIndex=-1;
-		document.getElementById('class_id').value = document.getElementById('class_id').value + newvalues
+	var boxLength = document.getElementById('assignclass2').length;
+	var selectedItem = document.getElementById('assignclass1').selectedIndex;
+	var selectedText = document.getElementById('assignclass1').options[selectedItem].text;
+	var selectedValue = document.getElementById('assignclass1').options[selectedItem].value;
+	var i;
+	//var newvalues;
+	var isNew = true;
+	if (boxLength != 0) {
+	for (i = 0; i < boxLength; i++) {
+	thisitem = document.getElementById('assignclass2').options[i].text;
+	if (thisitem == selectedText) {
+	isNew = false;
+	break;
+	}
+	}
+	}
+	if (isNew) {
+	newoption = new Option(selectedText, selectedValue, false, false);
+	document.getElementById('assignclass2').options[boxLength] = newoption;
+	document.getElementById('assignclass1').options[selectedItem].text = '';
+	}
+	document.getElementById('assignclass1').selectedIndex=-1;
 	}
 
+
 	function removeMe() {
-		var boxLength = document.getElementById('assignclass2').length;
-		var boxLength2 = document.getElementById('assignclass1').length;
-		arrSelected = new Array();
-		var count = 0;
-		for (i = 0; i < boxLength; i++) {
-			if (document.getElementById('assignclass2').options[i].selected) {
-				arrSelected[count] = document.getElementById('assignclass2').options[i].value;
-				var valname = document.getElementById('assignclass2').options[i].text;
-				for (j = 0; j < boxLength2; j++) {
-					if (document.getElementById('assignclass1').options[j].value == arrSelected[count]){
-						document.getElementById('assignclass1').options[j].text = valname;
-					}
-				}
-			}
-			count++;
-		}
-		var x;
-		for (i = 0; i < boxLength; i++) {
-			for (x = 0; x < arrSelected.length; x++) {
-				if (document.getElementById('assignclass2').options[i].value == arrSelected[x]) {
-					document.getElementById('assignclass2').options[i] = null;
-				}
-			}
-			boxLength = document.getElementById('assignclass2').length;
-		}
-		boxLengthvalues = document.getElementById('assignclass2').length;
-		var newvalues = '';
-		for (i = 0; i < boxLengthvalues; i++) {
-			selectedValuevalues = document.getElementById('assignclass2').options[i].value;
-			newvalues = newvalues + selectedValuevalues + ','
-		}
-		document.getElementById('class_id').value = newvalues
-	}	
-	
+	var boxLength = document.getElementById('assignclass2').length;
+	var boxLength2 = document.getElementById('assignclass1').length;
+	arrSelected = new Array();
+	var count = 0;
+	for (i = 0; i < boxLength; i++) {
+	if (document.getElementById('assignclass2').options[i].selected) {
+	arrSelected[count] = document.getElementById('assignclass2').options[i].value;
+	var valname = document.getElementById('assignclass2').options[i].text;
+	for (j = 0; j < boxLength2; j++) {
+	if (document.getElementById('assignclass1').options[j].value == arrSelected[count]){
+	document.getElementById('assignclass1').options[j].text = valname;
+	}
+	}
+
+	// document.getElementById('assignclass1').options[i].text = valname;
+	}
+	count++;
+	}
+	var x;
+	for (i = 0; i < boxLength; i++) {
+	for (x = 0; x < arrSelected.length; x++) {
+	if (document.getElementById('assignclass2').options[i].value == arrSelected[x]) {
+	document.getElementById('assignclass2').options[i] = null;
+	}
+	}
+	boxLength = document.getElementById('assignclass2').length;
+	}
+	}
+
+	function clearMe(clid) {
+	location.href = document.location + \".clear\";
+	}
+
+	function saveMe(clid) {
+	var strValues = \"\";
+	var boxLength = document.getElementById('assignclass2').length;
+	var count = 0;
+	if (boxLength != 0) {
+	for (i = 0; i < boxLength; i++) {
+	if (count == 0) {
+	strValues = document.getElementById('assignclass2').options[i].value;
+	} else {
+	strValues = strValues + \",\" + document.getElementById('assignclass2').options[i].value;
+	}
+	count++;
+	}
+	}
+	if (strValues.length == 0) {
+	//alert(\"You have not made any selections\");
+	}
+	else {
+	location.href = document.location + \".\" + strValues;
+	}
+	}
+	//]]>
 	</script>";
 
 	return $script;

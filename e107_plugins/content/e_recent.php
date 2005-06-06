@@ -10,7 +10,7 @@
 	global $RECENT_DISPLAYSTYLE, $RECENT_CAPTION, $RECENT_STYLE_CAPTION, $RECENT_STYLE_BODY;
 
 	require_once(e_PLUGIN."content/handlers/content_class.php");
-	$aa = new content;
+	if(!is_object($aa)){ $aa = new content; }
 
 	$plugintable = "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
 	$datequery = " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
@@ -23,7 +23,9 @@
 	//get main parent types
 	$sqlm = new db;
 	if(!$mainparents = $sqlm -> db_Select($plugintable, "*", "content_class REGEXP '".e_CLASS_REGEXP."' AND content_parent = '0' ".$datequery." ".$headingquery." ORDER BY content_heading")){
+		//$RECENT_CAPTION = "content";
 		$RECENT_DATA = "no valid content category";
+		break;
 
 	}else{		
 		while($rowm = $sqlm -> db_Fetch()){
@@ -55,6 +57,7 @@
 				if(!$resultitem = $sqli -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id_recent)).") = '".$type_id_recent."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ORDER BY content_datestamp DESC LIMIT 0,".$arr[7]." ")){
 
 					$RECENT_DATA = "no items in ".$rowm['content_heading'];
+					break;
 				}else{
 					
 					$RECENT_DISPLAYSTYLE = ($arr[2] ? "" : "none");
