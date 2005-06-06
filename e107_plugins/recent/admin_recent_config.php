@@ -76,7 +76,7 @@ $styletable = "style='width:90%; border:1px solid #444; border-collapse:collapse
 //template for non expanding row
 $TOPIC_ROW_NOEXPAND = "
 <tr>
-	<td class='forumheader3' style='width:20%; white-space:nowrap;'>{TOPIC_TOPIC}</td>
+	<td class='forumheader3' style='width:20%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
 	<td class='forumheader3'>{TOPIC_FIELD}</td>
 </tr>
 ";
@@ -84,7 +84,7 @@ $TOPIC_ROW_NOEXPAND = "
 //template for expanding row
 $TOPIC_ROW = "
 <tr>
-	<td class='forumheader3' style='width:20%; white-space:nowrap;'>{TOPIC_TOPIC}</td>
+	<td class='forumheader3' style='width:20%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
 	<td class='forumheader3'>
 		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>{TOPIC_HEADING}</a>
 		<div style='display: none;'>

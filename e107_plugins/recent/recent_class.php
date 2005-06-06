@@ -27,21 +27,19 @@ class recent {
 	function getContentSections($mode){
 		global $sql, $sections, $titles, $content_types, $content_name;
 
-		$plugintable = "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
 		$datequery = " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
 
 		//get main parent types
-		if($mainparents = $sql -> db_Select($plugintable, "*", "content_parent = '0' ".$datequery." ORDER BY content_heading")){
+		if($mainparents = $sql -> db_Select("pcontent", "*", "content_parent = '0' ".$datequery." ORDER BY content_heading")){
 			while($row = $sql -> db_Fetch()){
-				$content_types[] = $row['content_heading'];
+				$content_types[] = "content_".$row['content_id'];
 				$content_name = 'content';
 				if($mode == "add"){
-					$sections[] = $row['content_heading'];
+					$sections[] = "content_".$row['content_id'];
 					$titles[] = $content_name." : ".$row['content_heading'];
 				}
 			}
-		}
-		
+		}		
 		$content_types = array_unique($content_types);
 
 		return;
@@ -118,7 +116,7 @@ class recent {
 
 					$recent_pref["$sections[$i]_icon"] = "";
 					$recent_pref["$sections[$i]_order"] = ($i+1);
-					$recent_pref["$sections[$i]_caption"] = $sections[$i];
+					$recent_pref["$sections[$i]_caption"] = $titles[$i];
 				}
 			}else{
 				$recent_pref["$sections[$i]_menudisplay"] = "1";
@@ -180,7 +178,8 @@ class recent {
 		$RECENT_DATA = "";
 
 		$this -> getContentSections("");
-
+//print_r($content_types);
+//echo $arr[9]."<br />";
 		if(in_array($arr[9], $content_types)){
 			
 			$file = $content_name;
@@ -371,7 +370,7 @@ class recent {
 
 		$text = "
 		<tr>
-			<td class='forumheader3' style='width:10%; white-space:nowrap;'>".$title."</td>
+			<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$title."</td>
 			<td class='forumheader3'>
 				".$rs -> form_radio($section."_menudisplay", "1", ($recent_pref[$section."_menudisplay"] ? "1" : "0"), "", "").RECENT_ADMIN_7."
 				".$rs -> form_radio($section."_menudisplay", "0", ($recent_pref[$section."_menudisplay"] ? "0" : "1"), "", "").RECENT_ADMIN_8."
@@ -390,7 +389,7 @@ class recent {
 		
 		$text = "
 		<tr>
-			<td class='forumheader3' style='width:10%; white-space:nowrap;'>".$title."</td>
+			<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$title."</td>
 			<td class='forumheader3'>
 				".$rs -> form_radio($section."_menuopen", "1", ($recent_pref[$section."_menuopen"] ? "1" : "0"), "", "").RECENT_ADMIN_9."
 				".$rs -> form_radio($section."_menuopen", "0", ($recent_pref[$section."_menuopen"] ? "0" : "1"), "", "").RECENT_ADMIN_10."
@@ -409,7 +408,7 @@ class recent {
 
 		$text = "
 		<tr>
-			<td class='forumheader3' style='width:10%; white-space:nowrap;'>".$title."</td>
+			<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$title."</td>
 			<td class='forumheader3'>
 				".$rs -> form_radio($section."_menuauthor", "1", ($recent_pref[$section."_menuauthor"] ? "1" : "0"), "", "").RECENT_ADMIN_7."
 				".$rs -> form_radio($section."_menuauthor", "0", ($recent_pref[$section."_menuauthor"] ? "0" : "1"), "", "").RECENT_ADMIN_8."
@@ -428,7 +427,7 @@ class recent {
 
 		$text = "
 		<tr>
-			<td class='forumheader3' style='width:10%; white-space:nowrap;'>".$title."</td>
+			<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$title."</td>
 			<td class='forumheader3'>
 				".$rs -> form_radio($section."_menucategory", "1", ($recent_pref[$section."_menucategory"] ? "1" : "0"), "", "").RECENT_ADMIN_7."
 				".$rs -> form_radio($section."_menucategory", "0", ($recent_pref[$section."_menucategory"] ? "0" : "1"), "", "").RECENT_ADMIN_8."
@@ -447,7 +446,7 @@ class recent {
 
 		$text = "
 		<tr>
-			<td class='forumheader3' style='width:10%; white-space:nowrap;'>".$title."</td>
+			<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$title."</td>
 			<td class='forumheader3'>
 				".$rs -> form_radio($section."_menudate", "1", ($recent_pref[$section."_menudate"] ? "1" : "0"), "", "").RECENT_ADMIN_7."
 				".$rs -> form_radio($section."_menudate", "0", ($recent_pref[$section."_menudate"] ? "0" : "1"), "", "").RECENT_ADMIN_8."
@@ -467,7 +466,7 @@ class recent {
 
 		$text = "
 		<tr>
-			<td class='forumheader3' style='width:10%; white-space:nowrap;'>".$title."</td>
+			<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$title."</td>
 			<td class='forumheader3'>
 				".$rs -> form_select_open($section."_menuamount");
 				for($a=1; $a<=$maxitems_amount; $a++){
@@ -492,7 +491,7 @@ class recent {
 
 		$text = "
 		<tr>
-			<td class='forumheader3' style='width:10%; white-space:nowrap;'>".$title."</td>
+			<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$title."</td>
 			<td class='forumheader3'>
 				".$rs -> form_text($section."_icon", 15, $recent_pref[$section."_icon"], 100)."
 				<input class='button' type='button' style='cursor:hand' size='30' value='".RECENT_ADMIN_12."' onClick='expandit(this)' />
@@ -512,7 +511,7 @@ class recent {
 
 		$text = "
 		<tr>
-			<td class='forumheader3' style='width:10%; white-space:nowrap;'>".$title."</td>
+			<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$title."</td>
 			<td class='forumheader3'>
 				".$rs -> form_select_open($section."_order");
 				for($a=1; $a<=$max; $a++){
@@ -530,7 +529,7 @@ class recent {
 
 		$text = "
 		<tr>
-			<td class='forumheader3' style='width:10%; white-space:nowrap;'>".$title."</td>
+			<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$title."</td>
 			<td class='forumheader3'>".$rs -> form_text($section."_caption", "30", $recent_pref[$section."_caption"], "50", "tbox")."</td>
 		</tr>";
 

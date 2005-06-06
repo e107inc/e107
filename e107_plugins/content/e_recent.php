@@ -12,21 +12,18 @@
 	require_once(e_PLUGIN."content/handlers/content_class.php");
 	if(!is_object($aa)){ $aa = new content; }
 
-	$plugintable = "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
 	$datequery = " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
 
 	global $contentmode;
+	//contentmode : content_144 (content_ + idvalue)
 	if($contentmode){
-		$headingquery = " AND content_heading = '".$contentmode."' ";
+		$headingquery = " AND content_id = '".substr($contentmode,8)."' ";
 	}
 
 	//get main parent types
 	$sqlm = new db;
-	if(!$mainparents = $sqlm -> db_Select($plugintable, "*", "content_class REGEXP '".e_CLASS_REGEXP."' AND content_parent = '0' ".$datequery." ".$headingquery." ORDER BY content_heading")){
-		//$RECENT_CAPTION = "content";
+	if(!$mainparents = $sqlm -> db_Select("pcontent", "*", "content_class REGEXP '".e_CLASS_REGEXP."' AND content_parent = '0' ".$datequery." ".$headingquery." ORDER BY content_heading")){
 		$RECENT_DATA = "no valid content category";
-		break;
-
 	}else{		
 		while($rowm = $sqlm -> db_Fetch()){
 			$ICON = "";
@@ -35,46 +32,45 @@
 			$CATEGORY = "";
 			$DATE = "";
 			$INFO = "";
-			$RECENT_CAPTION = $rowm['content_heading'];
+			$RECENT_CAPTION	= $rowm['content_heading'];
 
 			//global var for this main parent
-			$type_id = $rowm['content_id'];
-			$type_id_recent = $rowm['content_id'];
+			$mainparent = $rowm['content_id'];
 
 			//get path variables
-			$content_recent_pref = $aa -> getContentPref($type_id_recent);
-			$content_recent_pref["content_icon_path_{$type_id_recent}"] = ($content_recent_pref["content_icon_path_{$type_id_recent}"] ? $content_recent_pref["content_icon_path_{$type_id_recent}"] : "{e_PLUGIN}content/images/icon/" );
-			$content_icon_path = $aa -> parseContentPathVars($content_recent_pref["content_icon_path_{$type_id_recent}"]);
+			$content_recent_pref = $aa -> getContentPref($mainparent);
+			$content_recent_pref["content_icon_path_{$mainparent}"] = ($content_recent_pref["content_icon_path_{$mainparent}"] ? $content_recent_pref["content_icon_path_{$mainparent}"] : "{e_PLUGIN}content/images/icon/" );
+			$content_icon_path = $aa -> parseContentPathVars($content_recent_pref["content_icon_path_{$mainparent}"]);
 
-			//get unvalid content (check class and date)
-			$unvalidcontent = $aa -> checkMainCat($type_id_recent);
-			$unvalidcontent = ($unvalidcontent == "" ? "" : "AND ".substr($unvalidcontent, 0, -3) );
+			//prepare query string
+			$array = $aa -> getCategoryTree("", $mainparent, TRUE);
+			$validparent = implode(",", array_keys($array));
+			$qry = " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 
 			//check so only the preferences from the correct content_type (article, content, review etc) are used and rendered
-			if($contentmode == $rowm['content_heading']){
+			if(substr($contentmode,8) == $rowm['content_id']){
 				//get recent content for each main parent
 				$sqli = new db;
-				if(!$resultitem = $sqli -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_text, content_author, content_icon, content_file, content_image, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_class", "content_refer !='sa' AND LEFT(content_parent,".(strlen($type_id_recent)).") = '".$type_id_recent."' ".$unvalidcontent." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ORDER BY content_datestamp DESC LIMIT 0,".$arr[7]." ")){
-
+				if(!$resultitem = $sqli -> db_Select("pcontent", "*", "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ORDER BY content_datestamp DESC LIMIT 0,".$arr[7]." ")){
 					$RECENT_DATA = "no items in ".$rowm['content_heading'];
-					break;
 				}else{
-					
 					$RECENT_DISPLAYSTYLE = ($arr[2] ? "" : "none");
 
 					while($rowi = $sqli -> db_Fetch()){
-
 						$rowheading = $this -> parse_heading($rowi['content_heading'], $mode);
+						$HEADING = "<a href='".e_PLUGIN."content/content.php?content.".$rowi['content_id']."' title='".$rowi['content_heading']."'>".$rowheading."</a>";
+						//category
+						if($arr[4]){
+							$crumb = "";
+							if(array_key_exists($rowi['content_parent'], $array)){
+								$newarr = $array[$rowi['content_parent']];
+								$newarr = array_reverse($newarr);
+								$CATEGORY = "<a href='".e_PLUGIN."content/content.php?cat.".$newarr[1]."'>".$newarr[0]."</a>";
+							}
+						}
 
-						$HEADING = "<a href='".e_PLUGIN."content/content.php?type.".$type_id_recent.".content.".$rowi['content_id']."' title='".$rowi['content_heading']."'>".$rowheading."</a>";
-						$CATEGORY = ($arr[4] ? $aa -> getCat($rowi['content_parent']) : "");
 						$DATE = ($arr[5] ? $this -> getRecentDate($rowi['content_datestamp'], $mode) : "");
-
-						//if($rowi['content_icon']){
-						//	$ICON = "<img src='".$content_icon_path.$rowi['content_icon']."' style='padding-bottom:2px; width:25px; border:0; vertical-align:middle;' alt='' />";
-						//}else{
-							$ICON = $this -> getBullet($arr[6], $mode);
-						//}
+						$ICON = $this -> getBullet($arr[6], $mode);
 
 						//get author details
 						if($arr[3]){
@@ -93,7 +89,6 @@
 					}
 				}
 			}
-			
 		}
 	}
 
