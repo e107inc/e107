@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-06-06 03:47:27 $
+|     $Revision: 1.36 $
+|     $Date: 2005-06-06 03:54:33 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -213,6 +213,7 @@ if (isset($_POST['register'])) {
 		if($brow['banlist_reason']){
 			$repl = array("\n","\r","<br />");
 			$error_message = str_replace($repl,"\\n",$tp->toHTML($brow['banlist_reason'],"","nobreak defs"))."\\n";
+			$email = "";
 		}else{
 			exit;
 		}
