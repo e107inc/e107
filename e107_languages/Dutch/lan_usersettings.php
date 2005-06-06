@@ -85,6 +85,8 @@ define("LAN_USET_5", "Geabonneerd op");
 define("LAN_USET_6", "Abonneren op onze mailing-list(s) en/of secties van deze site.");
 define("LAN_USET_7", "Diversen");
 define("LAN_USET_8", "Ondertekening / tijdzone");
+define("LAN_USET_9", "Sommige verplichte informatie ontbreekt in je instellingen (verplichte velden zijn gemarkeerd met een *).");
+define("LAN_USET_10","Je moet deze gegevens eerst bijwerken voordat je verder kunt gaan.");
 
 define("LAN_CUSTOMTITLE", "Maatwerk titel");
 define("LAN_ICQNUMBER", "ICQ nummer mag alleen bestaan uit cijfers");

@@ -100,6 +100,9 @@ define("USRLAN_129", "Bewerken weergave opties");
 define("USRLAN_130", "Activeren online gebruikersweergave");
 define("USRLAN_131", "Je moet deze optie activeren om online gebruikersweergave, zoals online.php, forum online info en online menu's te kunnen gebruiken");
 define("USRLAN_132", "Activeren");
+define("USRLAN_133", "Verplicht gebruiker om zijn/haar instellingen bij te werken");
+define("USRLAN_134", "Het activeren van deze optie zal de gebruiker automatisch naar zijn/haar instellingen pagina sturen als een verplicht veld niet is ingevuld.");
+
 define("LAN_MAINADMIN","Hoofdbeheerder");
 define("LAN_ADMIN","Beheerder");
 define("LAN_NOTVERIFIED","Niet geverifieerd");
