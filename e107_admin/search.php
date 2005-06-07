@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-06-07 17:21:22 $
+|     $Revision: 1.18 $
+|     $Date: 2005-06-07 19:26:20 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -39,6 +39,7 @@ if (isset($_POST['updatesettings'])) {
 	$search_prefs['relevance'] = $_POST['relevance'];
 	$search_prefs['user_select'] = $_POST['user_select'];
 	$search_prefs['multisearch'] = $_POST['multisearch'];
+	$search_prefs['selector'] = $_POST['selector'];
 	$search_prefs['time_restrict'] = $_POST['time_restrict'];
 	$search_prefs['time_secs'] = $_POST['time_secs'] > 300 ? 300 : $_POST['time_secs'];
 	if ($_POST['search_sort'] == 'mysql') {
@@ -130,11 +131,19 @@ $text .= "<tr>
 </tr>";
 
 $text .= "<tr>
+<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_19."</td>
+<td style='width:50%;' colspan='2' class='forumheader3'>
+<input type='radio' name='multisearch' value='1'".($search_prefs['multisearch'] ? " checked='checked'" : "")." /> ".SEALAN_16."&nbsp;&nbsp;
+<input type='radio' name='multisearch' value='0'".(!$search_prefs['multisearch'] ? " checked='checked'" : "")." /> ".SEALAN_17."
+</td>
+</tr>";
+
+$text .= "<tr>
 <td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_35."</td>
 <td style='width:50%;' colspan='2' class='forumheader3'>
-<input type='radio' name='multisearch' value='2'".($search_prefs['multisearch'] == '2' ? " checked='checked'" : "")." /> ".SEALAN_36."&nbsp;&nbsp;
-<input type='radio' name='multisearch' value='1'".($search_prefs['multisearch'] == '1' ? " checked='checked'" : "")." /> ".SEALAN_37."&nbsp;&nbsp;
-<input type='radio' name='multisearch' value='0'".($search_prefs['multisearch'] == '0' ? " checked='checked'" : "")." /> ".SEALAN_38."
+<input type='radio' name='selector' value='2'".($search_prefs['selector'] == '2' ? " checked='checked'" : "")." /> ".SEALAN_36."&nbsp;&nbsp;
+<input type='radio' name='selector' value='1'".($search_prefs['selector'] == '1' ? " checked='checked'" : "")." /> ".SEALAN_37."&nbsp;&nbsp;
+<input type='radio' name='selector' value='0'".($search_prefs['selector'] == '0' ? " checked='checked'" : "")." /> ".SEALAN_38."
 </td>
 </tr>";
 

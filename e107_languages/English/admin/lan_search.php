@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_search.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-07 17:21:22 $
+|     $Revision: 1.15 $
+|     $Date: 2005-06-07 19:26:20 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ define("SEALAN_15", "Search page accessible to user class");
 define("SEALAN_16", "On");
 define("SEALAN_17", "Off");
 define("SEALAN_18", "Searchable Comments Areas (when comments search is activated)");
-define("SEALAN_20", "General Settings");
+define("SEALAN_19", "Allow users to search more than one area at a time:");
 define("SEALAN_21", "Searchable Areas");
 define("SEALAN_22", "Default");
 define("SEALAN_23", "Alternative:");
