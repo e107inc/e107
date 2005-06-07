@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/languages/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-08 12:15:42 $
-|     $Author: stevedunstan $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 06:55:10 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 define("BACKEND_MENU_L1", " can be syndicated by using these rss feeds.");
 define("BACKEND_MENU_L2", "RSS Feeds");
 
@@ -20,4 +20,5 @@ define("BACKEND_MENU_L6", "Our forum posts");
 
 define("BACKEND_MENU_L7", "Our chatbox posts");
 define("BACKEND_MENU_L8", "Our bugtracker reports");
+define("BACKEND_MENU_L9", "Our downloads"); 
 ?>
