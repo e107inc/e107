@@ -6,9 +6,9 @@ if (!isset($SEARCH_COMPACT_TABLE)) {
 	<form id='searchform' method='get' action='".e_SELF."'>
 	<table style='width:95%' class='fborder'>\n
 	<tr>
-	<td class='forumheader3' style='width:30%'>{SEARCH_DROPDOWN}</td>
-	<td class='forumheader3' style='width:70%; white-space: nowrap; text-align: right'>
-	{SEARCH_MAIN_SEARCHFIELD} {SEARCH_MAIN_SUBMIT}<br />{SEARCH_MESSAGE}
+	<td class='forumheader3' style='width:30%; vertical-align: top'>{SEARCH_DROPDOWN}</td>
+	<td class='forumheader3' style='width:70%; white-space: nowrap; text-align: right; vertical-align: top'>
+	{SEARCH_MAIN_SEARCHFIELD} {SEARCH_MAIN_SUBMIT}<div style='padding-top: 5px'>{SEARCH_MESSAGE}</div>
 	</td>
 	</tr>
 	</table>
