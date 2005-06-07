@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2005-06-04 20:38:15 $
-|     $Author: sweetas $
+|     $Revision: 1.69 $
+|     $Date: 2005-06-07 15:38:55 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -250,28 +250,46 @@ else
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2
-		GROUP by n.news_id ORDER BY news_sticky DESC, ".$order." DESC LIMIT $from,".$ITEMVIEW1;
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' 
+		AND n.news_start < ".time()." 
+		AND (n.news_end=0 || n.news_end>".time().") 
+		AND n.news_render_type<2
+		GROUP by n.news_id 
+		ORDER BY news_sticky DESC, ".$order." DESC LIMIT $from,".$ITEMVIEW1;
 
-		$query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+		$query2 = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 		LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2
-		GROUP by n.news_id ORDER BY news_sticky DESC, ".$order." DESC LIMIT $from,".$ITEMVIEW1;
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' 
+		AND n.news_start < ".time()." 
+		AND (n.news_end=0 || n.news_end>".time().") 
+		AND n.news_render_type<2
+		AND n.news_sticky = 0
+		GROUP by n.news_id 
+		ORDER BY ".$order." DESC LIMIT $from2,".$ITEMVIEW2;
 	}
 	else
 	{
 		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2 ORDER BY news_sticky DESC, ".$order." DESC LIMIT $from,".$ITEMVIEW1;
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' 
+		AND n.news_start < ".time()." 
+		AND (n.news_end=0 || n.news_end>".time().") 
+		AND n.news_render_type<2 
+		ORDER BY n.news_sticky DESC, ".$order." DESC LIMIT $from,".$ITEMVIEW1;
 
 		// news archive
 		$query2 = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2 ORDER BY ".$order." DESC LIMIT $from2,".$ITEMVIEW2;
+		WHERE news_class REGEXP '".e_CLASS_REGEXP."' 
+		AND n.news_start < ".time()." 
+		AND (n.news_end=0 || n.news_end>".time().") 
+		AND n.news_render_type<2 
+		AND n.news_sticky = 0
+		ORDER BY ".$order." DESC LIMIT $from2,".$ITEMVIEW2;
 	}
 	// #### END ---------------------------------------------------------------------------------------------------
 }
