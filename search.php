@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-06-01 15:35:29 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.36 $
+|     $Date: 2005-06-07 15:50:32 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once('class2.php');
@@ -25,8 +25,13 @@ if (!check_class($pref['search_restrict'])) {
 }
 $search_prefs = $sysprefs -> getArray('search_prefs');
 
-if (isset($_GET['q']) && strlen($_GET['q']) > 2) {
-	$query = trim($_GET['q']);
+if (isset($_GET['q'])) {
+	if (MAGIC_QUOTES_GPC == TRUE) {
+		$_GET['q'] = stripslashes($_GET['q']);
+	}
+	 if (strlen($_GET['q']) > 2) {
+		$query = trim($_GET['q']);
+	}
 }
 
 e107_require(e_HANDLER.'search_class.php');
