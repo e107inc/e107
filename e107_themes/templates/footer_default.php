@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-05-28 10:46:22 $
+|     $Revision: 1.26 $
+|     $Date: 2005-06-07 23:11:55 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-global $eTraffic,$db_time,$sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER, $e107;
+global $eTraffic, $error_handler, $db_time,$sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER, $e107;
 
 if(!is_object($sql)){
 	// reinstigate db connection if another connection from third-party script closed it ...
@@ -137,6 +137,16 @@ if (ob_get_level() != $start_ob_level ) {
 		while (@ob_end_flush()); // kill all output buffering
 	}
 	echo $obdbg;
+}
+
+if($error_handler->debug == true) {
+	echo "
+	<br /><br />
+	<div>
+		<h3>PHP Errors:</h3><br />
+		".$error_handler->return_errors()."
+	</div>
+	";
 }
 
 echo "</body></html>";

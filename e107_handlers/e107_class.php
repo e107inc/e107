@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-06-04 21:28:14 $
+|     $Revision: 1.26 $
+|     $Date: 2005-06-07 23:11:55 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,6 @@ class e107{
 	var $relative_base_path;
 
 	function e107($e107_paths, $class2_file){
-		error_reporting(E_ERROR | E_WARNING | E_PARSE);
 		if(defined("COMPRESS_OUTPUT") && COMPRESS_OUTPUT === true) {
 			ob_start ("ob_gzhandler");
 		}
