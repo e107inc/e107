@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.47 $
-|		$Date: 2005-06-06 22:51:33 $
+|		$Revision: 1.48 $
+|		$Date: 2005-06-07 07:03:39 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1053,6 +1053,7 @@ class contentform{
 										}
 										if(isset($pcmcontent_pref["content_manager_allowed_{$catid}"])){
 											$pcm		= explode(",", $pcmcontent_pref["content_manager_allowed_{$catid}"]);
+											if($pcm[0]==""){ unset($pcm[0]); }
 											$pcmusers	= count($pcm);
 											$options	.= " ".($pcmusers ? "(".$pcmusers." ".($pcmusers == 1 ? CONTENT_ADMIN_CAT_LAN_54 : CONTENT_ADMIN_CAT_LAN_55).")" : "");
 										}
