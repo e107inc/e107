@@ -1,34 +1,34 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_email.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:47:58 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 21:01:03 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Email");
+ddefine("PAGE_NAME", "El. paštas"); 
 
-define("LAN_5", "Email article to a friend");
-define("LAN_6", "Email news_item to a friend");
-define("LAN_7", "Login Name: ");
-define("LAN_8", "Comment");
-define("LAN_9", "Sorry - unable to send email");
-define("LAN_10", "Mail sent to");
-define("LAN_11", "Email sent");
-define("LAN_12", "Error");
-define("LAN_106", "That doesn't appear to be a valid email address");
-define("LAN_185", "Send Article");
-define("LAN_186", "Send News Item");
-define("LAN_187", "Email address to send to");
-define("LAN_188", "I thought you might be interested in this news story from");
-define("LAN_189", "I thought you might be interested in this article from");
+define("LAN_5", "Nusiųsti straipsnį draugui");
+define("LAN_6", "Nusiųsti naujieną draugui");
+define("LAN_7", "Prisijungimo vardas: ");
+define("LAN_8", "Komentaras");
+define("LAN_9", "Atsiprašome, laiško išsiųsti negalime");
+define("LAN_10", "Laiškas išsiųstas adresu");
+define("LAN_11", "Laiškas išsiųstas");
+define("LAN_12", "Klaida");
+define("LAN_106", "Tai nėra taisyklingas el. pašto adresas.");
+define("LAN_185", "Siųsti straipsnį");
+define("LAN_186", "Siųsti naujieną");
+define("LAN_187", "Gavėjo el. pašto adresas:");
+define("LAN_188", "Manau, jog tave gali sudominti ši naujiena");
+define("LAN_189", "Manau, jog tave gali sudominti šis straipsnis");
 
-define("LAN_email_1", "From:");
-define("LAN_email_2", "IP address of sender:");
-define("LAN_email_3", "Emailed item from ");
+define("LAN_email_1", "Nuo:");
+define("LAN_email_2", "Siuntėjo IP adresas:");
+define("LAN_email_3", "Naujiena ");
 define("LAN_email_4", "Send Email");
 define("LAN_email_5", "Email item to a friend");
 define("LAN_email_6", "I thought you might be interested in this item from");

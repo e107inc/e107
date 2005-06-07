@@ -1,40 +1,40 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_signup.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:47:59 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 21:01:03 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Register");
-define("LAN_7", "Display Name: ");
-define("LAN_8", "the name that will be displayed on site");
-define("LAN_9", "Login Name: ");
-define("LAN_10", "the name that you use to login");
-define("LAN_17", "Password: ");
-define("LAN_103", "That user name cannot be accepted as valid, please choose a different user name");
-define("LAN_104", "That user name already exists in the database, please choose a different user name");
-define("LAN_105", "The two passwords do not match");
-define("LAN_106", "That doesn't appear to be a valid email address");
-define("LAN_107", "Thankyou! You are now a registered member of");
+define("PAGE_NAME", "Registracija");
+define("LAN_7", "Vardas: ");
+define("LAN_8", "vardas, kuris bus matomas svetainėje");
+define("LAN_9", "Prisijungimo vardas: ");
+define("LAN_10", "vardas, kurį naudosite prisijungiant");
+define("LAN_17", "Slaptažodis: ");
+define("LAN_103", "Šis vardas negali būti naudojamas, pasirinkite kitą");
+define("LAN_104", "jau yra narys šiuo vardu, prašome pasirinkti kitą vardą");
+define("LAN_105", "Slaptažodžiai nevienodi");
+define("LAN_106", "Neteisingas el. pašto adresas");
+define("LAN_107", "Dėkojame! Jūs prisiregistravote kaip narys svetainėje");
 define("LAN_108", "Registration complete");
-define("LAN_109", "This site complies with The Children's Online Privacy Protection Act of 1998 (COPPA) and as such cannot accept registrations from users under the age of 13 without a written permission document from their parent or guardian. For more information you can read the legislation");
-define("LAN_110", "Registration");
-define("LAN_111", "Re-type Password: ");
-define("LAN_112", "Email Address: ");
-define("LAN_113", "Hide email address?: ");
-define("LAN_114", "This will prevent your email address from being displayed on site");
-define("LAN_123", "Register");
-define("LAN_185", "You left required field(s) blank");
-define("LAN_201", "Yes");
-define("LAN_200", "No");
-define("LAN_202", "Registration failed");
-define("LAN_309", "Please enter your details below.");
-define("LAN_399", "Continue");
-define("LAN_400", "Usernames and passwords are <b>case-sensitive</b>");
+define("LAN_109", "Ši diskusijų administratoriai ir moderatoriai visais būdais stengiasi pašalinti netinkamas žinutes, tačiau neįmanoma pašalinti ir peržiūrėti visų žinučių, todėl jūs turite suprasti, kad visos žinutės šiuose forumuose yra jų autorių, o ne administratorių ar moderatorių nuomonė ir pažiūros (išskyrus šių žmonių žinutes). Taigi administratoriai ir/arba moderatoriai negali būti atsakingi už jų turinį.<br /><br />Jūs sutinkate nerašyti įžeidžiančių, nešvankių, vulgarių, šmeižiančių, grasinančių ir kitokių vietinius įstatymus pažeidžiančių žinučių. Priešingu atveju tuojau pat būsite blokuotas (banned) ir apie tai pranešta jūsų Interneto tiekėjui. Visų žinučių IP adresas yra įrašomas į duomenų bazę. Jūs sutinkate, kad administratoriai ir/arba moderatoriai turi teisę ištrinti, redaguoti, perkelti arba uždaryti betkurią temą/žinutę, jeigu jie mato tai reikalinga. Kaip vartotojas sutinkate su tuo, kad bet kokia jūsų įvesta informacija būtų saugoma duomenų bazėje. Ši informacija nebus suteikta jokioms trečioms šalims, tačiau administratoriai ir/arba moderatoriai negali užtikrinti visiško informacijos saugumo.<br /><br />Ši diskusijų lenta naudoja sausainėlius (cookies). Juose nesaugoma jokia jūsų įvesta informacija. Sausainėliai naudojami tik kaip pagalbinė dizaino ir struktūros priemonė suteikdami jums patogumo. Jūsų el. pašto adresas naudojamas tik patvirtinti jūsų registracijos detales (taip pat atsiųsti jums naują slaptažodį, jeigu kartais užmiršote esamą).");
+define("LAN_110", "Registracija");
+define("LAN_111", "Pakartokite slaptažodį: ");
+define("LAN_112", "El. pašto adresas: ");
+define("LAN_113", "Paslėpti el. pašto adresą?: ");
+define("LAN_114", "Tai paslėps jūsų el. pašto adresą nuo svetainės lankytojų akių");
+define("LAN_123", "Registruotis");
+define("LAN_185", "Jūs palikote tuščią(-us) laukelius");
+define("LAN_201", "Taip");
+define("LAN_200", "Ne");
+define("LAN_202", "Registracija nepavyko");
+define("LAN_309", "Įveskite kontaktinę informaciją. ");
+define("LAN_399", "Tęsti");
+define("LAN_400", "Atkreipkite dėmesį, kad vartotojų vardai ir slaptažodžiai gali būti sudaryti <b>ir iš mažųjų, ir iš didžiųjų raidžių</b><br /><br />");
 define("LAN_401", "Your account has now been activated, please");
 define("LAN_402", "Registration activated");
 define("LAN_403", "Welcome to");
@@ -52,7 +52,7 @@ define("LAN_SIGNUP_6", "Your ");
 define("LAN_SIGNUP_7", " is required");
 define("LAN_SIGNUP_8", "Thankyou!");
 define("LAN_SIGNUP_9", "Unable to proceed.");
-define("LAN_SIGNUP_10", "Yes");
+define("LAN_SIGNUP_10", "Taip");
 define("LAN_SIGNUP_11", ".");
 
 define("LAN_409", "Invalid characters in username");
@@ -77,6 +77,6 @@ define("LAN_SIGNUP_27", "Show");
 
 define("LAN_SIGNUP_28", "choice of Content/Mail-lists");
 
-define("LAN_SIGNUP_29", "A verification email will be sent to the email address you enter here so it must be valid.");
-define("LAN_SIGNUP_30", "If you do not wish to display your email address on this site, please tick the 'hide email address' box.");
+define("LAN_SIGNUP_29", "Nurodytu el. pašto adresu jums bus išsiųstas registracijos patvirtinimo laiškas,<br />todėl įrašykite veikiantį el. pašto adresą. ");
+define("LAN_SIGNUP_30", "Jei nenorite, kad jūsų el. pašto adresas būtų matomas kitiems, pažymėkite atitinkamą langelį.");
 ?>

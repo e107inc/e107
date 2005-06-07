@@ -1,64 +1,64 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_online.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:47:58 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 21:01:03 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
 
 //v.616
-define("ONLINE_EL1", "Guests: ");
-define("ONLINE_EL2", "Members: ");
-define("ONLINE_EL3", "On this page: ");
-define("ONLINE_EL4", "Online");
-define("ONLINE_EL5", "Members");
-define("ONLINE_EL6", "Newest member");
-define("ONLINE_EL7", "viewing");
-define("ONLINE_EL8", "most ever online: ");
-define("ONLINE_EL9", "on");
-define("ONLINE_EL10", "Member Name");
-define("ONLINE_EL11", "Viewing Page");
-define("ONLINE_EL12", "Replying to");
-define("ONLINE_EL13", "Forum");
-define("ONLINE_EL14", "Thread");
-define("ONLINE_EL15", "Page");
-define("CLASSRESTRICTED", "Class Restricted Page");
-define("ARTICLEPAGE", "Article/Review");
-define("CHAT", "Chat");
-define("COMMENT", "Comments");
-define("DOWNLOAD", "Downloads");
+define("ONLINE_EL1", "Svečiai: ");
+define("ONLINE_EL2", "Dalyviai: ");
+define("ONLINE_EL3", "Šiame puslapyje: ");
+define("ONLINE_EL4", "Prisijungę naršo");
+define("ONLINE_EL5", "Dalyviai");
+define("ONLINE_EL6", "Naujausias dalyvis");
+define("ONLINE_EL7", "peržiūri");
+define("ONLINE_EL8", "daugiausia naršė: ");
+define("ONLINE_EL9", "");
+define("ONLINE_EL10", "Dalyvio vardas");
+define("ONLINE_EL11", "Peržiūri puslapį");
+define("ONLINE_EL12", "Atsako į");
+define("ONLINE_EL13", "Forumas");
+define("ONLINE_EL14", "Tema");
+define("ONLINE_EL15", "Puslapis");
+define("CLASSRESTRICTED", "Ribotai dalyvių grupei prieinamas puslapis");
+define("ARTICLEPAGE", "Straipsnis/apžvalga");
+define("CHAT", "Pokalbiai");
+define("COMMENT", "Komentarai");
+define("DOWNLOAD", "Failai");
 define("EMAIL", "email.php");
-define("FORUM", "Main Forum Index");
-define("LINKS", "Links");
-define("NEWS", "News");
-define("OLDPOLLS", "Old Polls");
-define("POLLCOMMENT", "Poll");
-define("PRINTPAGE", "Print");
-define("LOGIN", "Logging In");
-define("SEARCH", "Searching");
-define("STATS", "Site Stats");
-define("SUBMITNEWS", "Submit News");
-define("UPLOAD", "Uploads");
-define("USERPAGE", "User Profiles");
-define("USERSETTINGS", "User Settings");
-define("ONLINE", "Online Users");
-define("LISTNEW", "List New Items");
-define("USERPOSTS", "User Posts");
-define("SUBCONTENT", "Submit Article/Review");
-define("TOP", "Top Posters/Most Active Threads");
-define("ADMINAREA", "Admin Area");
-define("BUGTRACKER", "Bugtracker");
-define("EVENT", "Events List");
-define("CALENDAR", "Events Calendar");
-define("FAQ", "Faq");
-define("PM", "Private Messaging");
-define("SURVEY", "Survey");
-define("ARTICLE", "Article");
-define("CONTENT", "Content Page");
-define("REVIEW", "Review");
+define("FORUM", "Pagrindinė forumo rodyklė");
+define("LINKS", "Nuorodos");
+define("NEWS", "Naujienos");
+define("OLDPOLLS", "Ankstesnės apklausos");
+define("POLLCOMMENT", "Apklausa");
+define("PRINTPAGE", "Atspausdinti");
+define("LOGIN", "Jungiamasi");
+define("SEARCH", "Ieškoma");
+define("STATS", "Tinklalapio statistika");
+define("SUBMITNEWS", "Paskelbti naujienas");
+define("UPLOAD", "Atsiųsti failai");
+define("USERPAGE", "Vartotojo dosjė");
+define("USERSETTINGS", "Vartotojo parametrai");
+define("ONLINE", "Prisijungę dalyviai");
+define("LISTNEW", "Rodyti pasikeitimus");
+define("USERPOSTS", "Dalyvio pranešimai");
+define("SUBCONTENT", "Paskelbti Straipsnį/Apžvalgą");
+define("TOP", "Aktyviausi pranešėjai/Aktyviausiai diskutuojamos temos");
+define("ADMINAREA", "Administratoriaus sritis");
+define("BUGTRACKER", "Klaidų seklys");
+define("EVENT", "Įvykių sąrašas");
+define("CALENDAR", "Įvykių kalendorius");
+define("FAQ", "DUK");
+define("PM", "Privati žinutė");
+define("SURVEY", "Apklausa");
+define("ARTICLE", "Straipsnis");
+define("CONTENT", "Turinys");
+define("REVIEW", "Apžvalga");
 
 ?>

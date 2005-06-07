@@ -1,48 +1,48 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_fpw.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:47:58 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 21:01:03 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Password Reset");
+define("PAGE_NAME", "Atšaukti slaptažodį");
 
-define("LAN_02", "Sorry, unable to send email - please contact the main site administrator.");
-define("LAN_03", "Password Reset");
-define("LAN_05", "To reset your password please enter the following information");
-define("LAN_06", "Attempted password reset");
-define("LAN_07", "Someone with ip address ");
-define("LAN_08", "attempted to reset the main admin password.");
-define("LAN_09", "Password reset from ");
-define("LAN_112", "Email Address used when signing up ");
-define("LAN_156", "Submit");
-define("LAN_213", "That username/email address was not found in database.");
-define("LAN_214", "Unable to reset password");
-define("LAN_216", "To validate your new password please go to the following URL ...");
-define("LAN_217", "Your new password is now validated, you may now login using your new password.");
-define("LAN_218", "Your username is:");
-define("LAN_219", "The password associated with that email address has already been reset and cannot be reset again. Please contact the site administrator for more details.");
-define("LAN_FPW1","User Name");
-define("LAN_FPW2","Enter code");
-define("LAN_FPW3","Incorrect code entered");
-define("LAN_FPW4","A request has already been sent to reset this password, if you did not receive the email, please contact the site administrator for help.");
-define("LAN_FPW5","A request to reset your password for");
-define("LAN_FPW6","An email has been sent to you with a link that will allow you to reset your password.");
-define("LAN_FPW7","This is not a valid link to reset your password.<br />Please contact the site administrator for more details.");
-define("LAN_FPW8","The password for username");
-define("LAN_FPW9","has been successfully changed.<br /><br />The new password is:");
-define("LAN_FPW10","Please");
-define("LAN_FPW11","log in now");
-define("LAN_FPW12","and immediately change your password, for security purposes.");
+define("LAN_02", "Atsiprašome, laiškas nebuvo išsiųstas - susisiekite su tinklalapio administratoriumi.");
+define("LAN_03", "Atšaukti slaptažodį");
+define("LAN_05", "Norėdami atšaukti slaptažodį, įveskite sekančią informaciją");
+define("LAN_06", "Bandymas atšaukti slaptažodį");
+define("LAN_07", "Kažkas iš šio IP adreso ");
+define("LAN_08", "bandė atšaukti pagrindinio administratoriaus slaptažodį.");
+define("LAN_09", "Slaptažodis atšauktas ");
+define("LAN_112", "El. pašto adresas, kurį nurodėte prisiregistruodami ");
+define("LAN_156", "Patvirtinti");
+define("LAN_213", "Šio vardo/el. pašto adreso nėra duomenų bazėje.");
+define("LAN_214", "Neįmanoma atšaukti slaptažodžio");
+define("LAN_216", "Slaptažodžiui patvirtinti sekite šia nuoroda ...");
+define("LAN_217", "Jūsų slaptažodis patvirtintas - galite prisijungti.");
+define("LAN_218", "Jūsų vardas yra:");
+define("LAN_219", "Su šiuo el. pašto adresu susietas slaptažodis jau buvo atšauktas ir negali būti atšauktas pakartotinai. Prašome susisiekti su tinklalapio administratoriumi.");
+define("LAN_FPW1","Vardas");
+define("LAN_FPW2","Įveskite kodą");
+define("LAN_FPW3","Įvestas netinkamas kodas");
+define("LAN_FPW4","Reikalavimas atšaukti šį slaptažodį jau buvo išsiųstas. Susisiekite su tinklalapio administratoriumi, jei negavote laiško.");
+define("LAN_FPW5","Kažkas pareikalavo atšaukti slaptažodį.");
+define("LAN_FPW6","Jums buvo išsiųstas laiškas su nuoroda, kuri atšauks jūsų slaptažodį.");
+define("LAN_FPW7","Neteisinga nuoroda slaptažodžio atšaukimui.<br />Dėl tolesnės pagalbos susisiekite su tinklalapio administratoriumi.");
+define("LAN_FPW8","Slaptažodis vartotojui");
+define("LAN_FPW9","buvo sėkmingai pakeistas.<br /><br />Naujas slaptažodis yra:");
+define("LAN_FPW10","Prašome");
+define("LAN_FPW11","prisiregistruoti");
+define("LAN_FPW12","ir dėl saugumo iš karto pakeisti slaptažodį.");
 
-define("LAN_FPW13", "please follow the instructions in the email to validate your password.");
-define("LAN_FPW14", "has been submitted by someone with the IP of");
-define("LAN_FPW15", "This does not mean your password has yet been reset.  You must navigate to the link shown below to complete the reset process.");
-define("LAN_FPW16", "If it was not you the requested the password be reset and you do NOT want it reset, you can simply ignore this email");
-define("LAN_FPW17", "The link below will be valid for 48 hours.");
+define("LAN_FPW13", "prašome laikytis el. paštu atsiųstų intrukcijų, jei norite patvirtinti savo slaptažodį.");
+define("LAN_FPW14", "šio asmens IP adresas buvo");
+define("LAN_FPW15", "Tai jokiu būdu nereiškia, kad jūsų slaptažodis buvo atšauktas. Sekite žemiau pateikta nuoroda, jei norite pabaigti atšaukimo procesą.");
+define("LAN_FPW16", "Jei tai ne jūs norėjote atšaukti slaptažodį ar NENORITE jo atšaukti, tiesiog ignoruokite šį laišką");
+define("LAN_FPW17", "Nuoroda veiks 48 valandas.");
 
 ?>

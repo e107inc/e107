@@ -1,32 +1,32 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_top.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:47:59 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 21:01:04 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
 
-define("TOP_LAN_0", "Top Forum Posters");
-define("TOP_LAN_1", "User Name");
-define("TOP_LAN_2", "Posts");
-define("TOP_LAN_3", "Top Comment Posters");
-define("TOP_LAN_4", "Comments");
-define("TOP_LAN_5", "Top Chatbox Posters");
-define("TOP_LAN_6", "Site Rating");
+define("TOP_LAN_0", "Aktyviausi forumo dalyviai");
+define("TOP_LAN_1", "Vardas");
+define("TOP_LAN_2", "Pranešimai");
+define("TOP_LAN_3", "Aktyviausi komentatoriai");
+define("TOP_LAN_4", "Komentarai");
+define("TOP_LAN_5", "Aktyviausi pokalbių dalyviai");
+define("TOP_LAN_6", "Svetainės reitingas");
 
 //v.616
-define("LAN_1", "Thread");
-define("LAN_2", "Poster");
-define("LAN_3", "Views");
-define("LAN_4", "Replies");
-define("LAN_5", "Lastpost");
-define("LAN_6", "Threads");
-define("LAN_7", "Most Active Threads");
-define("LAN_8", "Top Posters");
+define("LAN_1", "Tema");
+define("LAN_2", "Autorius");
+define("LAN_3", "Peržiūros");
+define("LAN_4", "Atsakymai");
+define("LAN_5", "Paskutinis pranešimas");
+define("LAN_6", "Temos");
+define("LAN_7", "Aktyviausiai diskutuojamos temos");
+define("LAN_8", "Aktyviausi dalyviai");
 
 
 ?>

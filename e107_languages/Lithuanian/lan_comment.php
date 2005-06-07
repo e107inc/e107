@@ -1,56 +1,56 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_comment.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:47:58 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 21:01:03 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Comments");
+define("PAGE_NAME", "Komentarai");
 
-define("LAN_0", "[blocked by admin]");
-define("LAN_1", "Unblock");
-define("LAN_2", "Block");
-define("LAN_3", "Delete");
-define("LAN_4", "Info");
-define("LAN_5", "Comments ...");
-define("LAN_6", "You must be logged in to post comments on this site - please either log in or if you are not registered click");
-define("LAN_7", "Main site administrator");
-define("LAN_8", "Comment");
-define("LAN_9", "Submit comment");
-define("LAN_10", "Administrator");
-define("LAN_11", "Was unable to enter your comment into the database - please retype leaving out any non-standard characters.");
-define("LAN_16", "Username: ");
-define("LAN_99", "Comments");
-define("LAN_100", "News");
-define("LAN_101", "Poll");
-define("LAN_102", "Replying to: ");
-define("LAN_103", "Article");
-define("LAN_104", "Review");
-define("LAN_105", "Content");
-define("LAN_145", "Registered: ");
-define("LAN_194", "Guest");
-define("LAN_195", "Registered member");
-define("LAN_310", "Unable to accept post as that username is registered - if it is your username please login to post.");
-define("LAN_312", "Duplicate post - unable to accept.");
-define("LAN_313", "Location");
-define("LAN_314", "moderate comments");
-define("COMLAN_1", "here");
+define("LAN_0", "[blokuotas administratoriaus]");
+define("LAN_1", "Leisti");
+define("LAN_2", "Uždrausti");
+define("LAN_3", "Ištrinti");
+define("LAN_4", "Informacija");
+define("LAN_5", "Komentarai ...");
+define("LAN_6", "Turite prisijungti, jei pageidaujate komentuoti. Jei nesate užsiregistravęs, prašome prisiregistruoti");
+define("LAN_7", "Svetainės administratorius");
+define("LAN_8", "Komentuoti");
+define("LAN_9", "Įrašyti komentarą");
+define("LAN_10", "Administratorius");
+define("LAN_11", "Sistema neįrašė jūsų komentarų į duomenų bazę. Pamėginkite iš naujo nenaudodami nestandartinių simbolių.");
+define("LAN_16", "Vartotojo vardas: ");
+define("LAN_99", "Komentarai");
+define("LAN_100", "Naujienos");
+define("LAN_101", "Apklausa");
+define("LAN_102", "Atsakyti: ");
+define("LAN_103", "Straipsnis");
+define("LAN_104", "Apžvalga");
+define("LAN_105", "Turinys");
+define("LAN_145", "Prisiregistruota: ");
+define("LAN_194", "Svečias");
+define("LAN_195", "Registruoti nariai");
+define("LAN_310", "Neįmanoma įrašyti žinutės, nes šis vartotojo vardas jau užregistruotas. Jei tai jūsų vardas, prašome prisijungti.");
+define("LAN_312", "Atmesta - žinutė dubliuojasi.");
+define("LAN_313", "Vieta");
+define("LAN_314", "tvarkyti komentarus");
+define("COMLAN_1", "čia");
 define("COMLAN_2", "to signup");
-define("COMLAN_3", "Error!");
+define("COMLAN_3", "Klaida!");
 define("COMLAN_4", 'Subject');
 define("COMLAN_5", 'Re:');
-define("COMLAN_6", 'Reply to this');
+define("COMLAN_6", 'Atsakyti');
 
-define("LAN_315", "Trackbacks");
+define("LAN_315", "Trackback'ai");
 define("LAN_316", "No trackbacks for this newspost.");
 define("LAN_317", "Moderate trackbacks");
 
-define("LAN_318", "Edit comment");
-define("LAN_319", "edited");
-define("LAN_320", "Update comment");
+define("LAN_318", "Taisyti komentarą");
+define("LAN_319", "taisyta");
+define("LAN_320", "Atnaujinti komentarą");
 
 ?>

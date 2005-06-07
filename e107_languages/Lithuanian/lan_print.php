@@ -1,24 +1,24 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_print.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:47:59 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 21:01:03 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Printer Friendly");
+define("PAGE_NAME", "Spausdinti");
 
-define("LAN_86", "Category:");
-define("LAN_87", "by ");
-define("LAN_94", "Posted by");
-define("LAN_135", "News Item: ");
-define("LAN_303", "This news item is from ");
-define("LAN_304", "Title: ");
-define("LAN_305", "Subheading: ");
-define("LAN_306", "This is from: ");
-define("LAN_307", "Print this page");
+define("LAN_86", "Rubrika:");
+define("LAN_87", " ");
+define("LAN_94", "Paskelbė");
+define("LAN_135", "Naujienų pranešimas: ");
+define("LAN_303", "Šis naujienų pranešimas yra iš ");
+define("LAN_304", "Straipsnio pavadinimas: ");
+define("LAN_305", "Paantraštė: ");
+define("LAN_306", "Šis straipsnis yra iš ");
+define("LAN_307", "Atspausdinti šį puslapį");
 
 ?>

@@ -1,63 +1,63 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:47:58 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 21:01:03 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Downloads");
+define("PAGE_NAME", "Bylos");
 
-define("LAN_dl_1", "(Restricted)");
-define("LAN_dl_2", "No downloads yet, please check back soon");
-define("LAN_dl_3", "No downloads in this category yet");
-define("LAN_dl_4", "Files available: ");
-define("LAN_dl_5", "Total size of files: ");
-define("LAN_dl_6", "Files downloaded: ");
-define("LAN_dl_7", "Description");
-define("LAN_dl_8", "Get");
-define("LAN_dl_9", "Return to Category List");
-define("LAN_dl_10", "Filesize");
-define("LAN_dl_11", "Image");
-define("LAN_dl_12", "Rating");
-define("LAN_dl_13", "Not rated");
-define("LAN_dl_14", "Rate this download");
-define("LAN_dl_15", "Thanks for rating");
-define("LAN_dl_16", "download(s) from");
-define("LAN_dl_17", "files");
-define("LAN_dl_18", "Downloads");
-define("LAN_dl_19", "Category");
-define("LAN_dl_20", "Files");
-define("LAN_dl_21", "Size");
-define("LAN_dl_22", "Date");
-define("LAN_dl_23", "Filename");
-define("LAN_dl_24", "Author");
-define("LAN_dl_25", "Ascending");
-define("LAN_dl_26", "Descending");
-define("LAN_dl_27", "Go");
-define("LAN_dl_28", "Name");
+define("LAN_dl_1", "(Apribota)");
+define("LAN_dl_2", "Failų nėra, apsilankykite vėliau");
+define("LAN_dl_3", "Šioje kategorijoje failų dar nėra");
+define("LAN_dl_4", "Prienami failai: ");
+define("LAN_dl_5", "Bendra failų apimtis: ");
+define("LAN_dl_6", "Atsisiųsta failų: ");
+define("LAN_dl_7", "Aprašymas");
+define("LAN_dl_8", "Gauti");
+define("LAN_dl_9", "Grįžti prie kategorijų sąrašo");
+define("LAN_dl_10", "Dydis");
+define("LAN_dl_11", "Nuotrauka");
+define("LAN_dl_12", "Reitingas");
+define("LAN_dl_13", "Neįvertinta");
+define("LAN_dl_14", "Įvertinti šį failą");
+define("LAN_dl_15", "Dėkojame už įvertinimą");
+define("LAN_dl_16", "atsisiųsta iš");
+define("LAN_dl_17", "failai");
+define("LAN_dl_18", "Failai");
+define("LAN_dl_19", "Kategorija");
+define("LAN_dl_20", "Failai");
+define("LAN_dl_21", "Dydis");
+define("LAN_dl_22", "Data");
+define("LAN_dl_23", "Failo pavadinimas");
+define("LAN_dl_24", "Autorius");
+define("LAN_dl_25", "Didėjančia tvarka");
+define("LAN_dl_26", "Mažėjančia tvarka");
+define("LAN_dl_27", "Eiti");
+define("LAN_dl_28", "Vardas");
 define("LAN_dl_29", "DL's");
-define("LAN_dl_30", "Author email");
-define("LAN_dl_31", "Author website");
-define("LAN_dl_32", "Download");
-define("LAN_dl_33", "Previous");
-define("LAN_dl_34", "Next");
-define("LAN_dl_35", "Back to list");
-define("LAN_dl_36", "New downloads");
+define("LAN_dl_30", "Autoriaus el. paštas");
+define("LAN_dl_31", "Autoriaus tinklalapis");
+define("LAN_dl_32", "Atsisiųsti");
+define("LAN_dl_33", "Atgal");
+define("LAN_dl_34", "Sekantis");
+define("LAN_dl_35", "Atgal prie sąrašo");
+define("LAN_dl_36", "Nauji failai");
 
-define("LAN_dl_37", "View");
-define("LAN_dl_38", "Order by");
-define("LAN_dl_39", "Sort");
+define("LAN_dl_37", "Peržiūrėti");
+define("LAN_dl_38", "Rūšiuoti pagal");
+define("LAN_dl_39", "Rūšiuoti");
 
-define("LAN_dl_40", "Click here for screenshot");
-define("LAN_dl_41", "Search Downloads");
+define("LAN_dl_40", "Paspauskite, jei norite pažiūrėti į nuotrauką");
+define("LAN_dl_41", "Ieškoti failų");
 
-define("LAN_dl_42", "Sub-category");
-define("LAN_dl_43", "vote");
-define("LAN_dl_44", "votes");
+define("LAN_dl_42", "Pakategoris");
+define("LAN_dl_43", "balsas");
+define("LAN_dl_44", "balsai");
 define("LAN_dl_45", "Report broken download");
 define("LAN_dl_46", "click here to download");
 

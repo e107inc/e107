@@ -1,50 +1,50 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_links.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:47:58 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 21:01:03 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Links");
+define("PAGE_NAME", "Nuorodos");
 
-define("LAN_61", "Link Categories");
-define("LAN_62", "categories");
-define("LAN_63", "category");
-define("LAN_64", "in this category");
-define("LAN_65", "link");
-define("LAN_66", "links");
-define("LAN_67", "Show All Links");
-define("LAN_68", "edit");
-define("LAN_69", "delete");
-define("LAN_86", "Category:");
-define("LAN_88", "Referrals:");
-define("LAN_89", "Admin: ");
-define("LAN_90", "add new link in this category");
-define("LAN_91", "add new category");
+define("LAN_61", "Nuorodų grupės");
+define("LAN_62", "grupės");
+define("LAN_63", "grupė");
+define("LAN_64", "šioje grupėje");
+define("LAN_65", "nuoroda");
+define("LAN_66", "nuorodos");
+define("LAN_67", "Rodyti visas nuorodas");
+define("LAN_68", "redaguoti");
+define("LAN_69", "trinti");
+define("LAN_86", "Grupė:");
+define("LAN_88", "Nukreipimai(-ų):");
+define("LAN_89", "Administratorius: ");
+define("LAN_90", "pridėti naują nuorodą šioje grupėje");
+define("LAN_91", "pridėti naują grupę");
 
-define("LAN_92", "Submit a link");
-define("LAN_93", "After submitting your link it will be reviewed by a site admin and if appropriate it will be added to the main links page.");
-define("LAN_94", "Link Name:");
-define("LAN_95", "Link URL:");
-define("LAN_96", "Link Description:");
-define("LAN_97", "URL to link button:");
-define("LAN_98", "Submit Link");
+efine("LAN_92", "Pasiūlyti nuorodą");
+define("LAN_93", "Pasiūlyta nuoroda bus įvertinta ir įdėta, jei atitiks mūsų reikalavimus.");
+define("LAN_94", "Nuorodos pavadinimas:");
+define("LAN_95", "Nuorodos adresas:");
+define("LAN_96", "Nuorodos aprašymas:");
+define("LAN_97", "Adresas į nuorodos mygtuką:");
+define("LAN_98", "Pasiūlyti nuorodą");
 
-define("LAN_99", "Thankyou");
-define("LAN_100", "Your link has been saved and will be reviewed by a site administrator.");
-define("LAN_101", "Please click here to submit a link");
+define("LAN_99", "Dėkojame");
+define("LAN_100", "Jūsų nuoroda įrašyta ir bus įvertinta.");
+define("LAN_101", "Norėdami pasiūlyti nuorodą paspauskite čia");
 
-define("LAN_102", "There");
-define("LAN_103", "is");
-define("LAN_104", "are");
-define("LAN_105", "total in");
-define("LAN_106", "Underlined fields are required.");
+define("LAN_102", "Čia");
+define("LAN_103", "yra");
+define("LAN_104", "yra");
+define("LAN_105", "iš viso");
+define("LAN_106", "Pabraukti laukeliai būtini.");
 
-define("LAN_Links_1", "Total links");
-define("LAN_Links_2", "Total links activated");
-define("LAN_LINKS_3", "Anonymous");
+define("LAN_Links_1", "Iš viso nuorodų");
+define("LAN_Links_2", "Iš viso aktyvuotų nuorodų");
+define("LAN_LINKS_3", "Anoniminis");
 ?>

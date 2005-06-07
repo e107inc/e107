@@ -1,41 +1,40 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_upload.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:47:59 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 21:01:04 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Upload");
+define("PAGE_NAME", "Atsiųsti");
 
-define("LAN_20", "Error");
-define("LAN_61", "Your Name: ");
-define("LAN_112", "Email Address: ");
-define("LAN_144", "Website URL: ");
-define("LAN_402", "You must be a registered member to upload files to this server.");
-define("LAN_403", "You do not have the correct permissions to upload files to this server.");
-define("LAN_404", "Thank you. Your upload will be reviewed by an administrator and posted to the site if appropriate.");
-define("LAN_405", "File exceeds specified maximum size limit - deleted.");
-define("LAN_406", "Please note");
-define("LAN_407", "Any other filetypes uploaded will be instantly deleted.");
-define("LAN_408", "Underlined");
-define("LAN_409", "Name of file");
-define("LAN_410", "Version");
-define("LAN_411", "File");
-define("LAN_412", "Screenshot");
-define("LAN_413", "Description");
-define("LAN_414", "Working demo");
-define("LAN_415", "enter URL to site where demo can be viewed");
-define("LAN_416", "Submit and Upload");
-define("LAN_417", "Upload File");
-define("LAN_418", "Maximum file size: ");
-define("DOWLAN_11", "Category");
-define("LAN_419", "Allowed filetypes");
-define("LAN_420", "fields are required");
-
+define("LAN_20", "Klaida");
+define("LAN_61", "Jūsų vardas: ");
+define("LAN_112", "El. pašto adresas: ");
+define("LAN_144", "Tinklalapio adresas: ");
+define("LAN_402", "Privalote užsiregistruoti, jei norite atsiųsti failus į šį serverį.");
+define("LAN_403", "Jūs neturite teisės atsiųsti failų į šį serverį.");
+define("LAN_404", "Dėkojame. Jūsų pateiktas failas bur peržiūrėtas ir, jei tikslinga, patalpintas Failų puslapyje.");
+define("LAN_405", "Failas per didelis - ištrintas.");
+define("LAN_406", "Dėmesio");
+define("LAN_407", "Kiti failai bus iš karto pašalinti.");
+define("LAN_408", "Pabrauktus");
+define("LAN_409", "Failo pavadinimas");
+define("LAN_410", "Versija");
+define("LAN_411", "Failas");
+define("LAN_412", "Paveiksliukas");
+define("LAN_413", "Aprašymas");
+define("LAN_414", "Veikianti demonstracinė versija");
+define("LAN_415", "įveskite veikiančios demonstracinės versijos nuorodą");
+define("LAN_416", "Pateikti ir atsiųsti");
+define("LAN_417", "Atsiųsti failą");
+define("LAN_418", "Maksimali failo apimtis: ");
+define("DOWLAN_11", "Kategorija");
+define("LAN_419", "Leidžiami failų tipai");
+define("LAN_420", "laukelius užpildyti būtina");
 
 
 ?>

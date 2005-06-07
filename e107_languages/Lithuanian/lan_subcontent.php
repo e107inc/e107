@@ -1,53 +1,53 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_subcontent.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:47:59 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 21:01:03 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("ARLAN_0", "Thank you, your article has been saved and will be reviewed by a site administrator in due course.");
-define("ARLAN_1", "Fields left blank.");
-define("ARLAN_2", "Thankyou, your review has been saved and will be reviewed by a site administrator in due course.");
-define("ARLAN_15", "Submit Article");
-define("ARLAN_17", "Heading");
-define("ARLAN_18", "Sub-Heading");
-define("ARLAN_19", "Summary");
-define("ARLAN_20", "Article");
-define("ARLAN_21", "Allow comments?");
-define("ARLAN_22", "On");
-define("ARLAN_23", "Off");
-define("ARLAN_24", "Add email/print icons?");
-define("ARLAN_25", "Yes");
-define("ARLAN_26", "No");
-define("ARLAN_27", "Submit Article");
-define("ARLAN_28", "Preview");
-define("ARLAN_55", "Visible to");
-define("ARLAN_73", "Open HTML Editor");
-define("ARLAN_74", "Category");
-define("ARLAN_75", "None");
-define("ARLAN_82", "Author Details");
-define("ARLAN_84", "author name");
-define("ARLAN_85", "author email address");
-define("ARLAN_86", "Review");
-define("ARLAN_87", "Rating");
-define("ARLAN_88", "Please select rating");
-define("ARLAN_89", "Submit Review");
+define("ARLAN_0", "Dėkojame, jūsų straipsnis išsaugotas ir bus peržiūrėtas administratoriaus.");
+define("ARLAN_1", "Palikote tuščius laukelius.");
+define("ARLAN_2", "Dėkojame, jūsų apžvalga išsaugota ir bus peržiūrėta administratoriaus.");
+define("ARLAN_15", "Paskelbti straipsnį");
+define("ARLAN_17", "Antraštė");
+define("ARLAN_18", "Paantraštė");
+define("ARLAN_19", "Santrauka");
+define("ARLAN_20", "Straipsnis");
+define("ARLAN_21", "Lesti komentuoti?");
+define("ARLAN_22", "Įjungti");
+define("ARLAN_23", "Išjungti");
+define("ARLAN_24", "Pridėti el.paštas/spaudinti piktogramas?");
+define("ARLAN_25", "Taip");
+define("ARLAN_26", "Ne");
+define("ARLAN_27", "Paskelbti straipsnį");
+define("ARLAN_28", "Peržiūrėti");
+define("ARLAN_55", "Bus matoma");
+define("ARLAN_73", "Atidaryti HTML redaktorių");
+define("ARLAN_74", "Kategorija");
+define("ARLAN_75", "Nėra");
+define("ARLAN_82", "Apie autorių");
+define("ARLAN_84", "autoriaus vardas");
+define("ARLAN_85", "autoriaus el. paštas");
+define("ARLAN_86", "Atsiliepimas");
+define("ARLAN_87", "Įvertinimas");
+define("ARLAN_88", "Įvertinkite");
+define("ARLAN_89", "Paskelbti atsiliepimą");
 
-define("ARLAN_90", "Fields left blank, please press the back button in your browser and confirm all fields are filled in.");
-define("ARLAN_91", "Preview again");
-define("ARLAN_92", "Please enter your name/email address");
+define("ARLAN_90", "Palikote tuščius laukelius, prašome grįžti atgal ir įsitikinti, kad visi laukeliai užpildyti.");
+define("ARLAN_91", "Vėl peržiūrėti");
+define("ARLAN_92", "Prašome įvesti savo vardą/el. paštą");
 
 
-define("ARLAN_93", "article");
-define("ARLAN_94", "review");
-define("ARLAN_95", "User submission of Articles is currently disabled");
-define("ARLAN_96", "User submission of Reviews is currently disabled");
-define("ARLAN_97", "You do not have enough privileges to Submit Articles");
-define("ARLAN_98", "You do not have enough privileges to Submit Reviews");
+define("ARLAN_93", "straipsnis");
+define("ARLAN_94", "atsiliepimas");
+define("ARLAN_95", "Šiuo metu dalyviai neturi teisės skelbti straipsnių");
+define("ARLAN_96", "Šiuo metu dalyviai neturi teisės skelbti atsiliepimų");
+define("ARLAN_97", "Jūs neturite teisės paskelbti straipsnio");
+define("ARLAN_98", "Jūs neturite teisės paskelbti atsiliepimo");
 
 
 define("ARLAN_99", "What would you like to submit?");

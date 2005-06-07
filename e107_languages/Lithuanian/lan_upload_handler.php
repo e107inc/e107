@@ -1,25 +1,25 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_upload_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:47:59 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 21:01:04 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("LANUPLOAD_1", "The filetype");
-define("LANUPLOAD_2", "is not allowed and has been deleted.");
-define("LANUPLOAD_3", "Successfully uploaded");
-define("LANUPLOAD_4", "Either destination folder does not exist or is not writable.");
-define("LANUPLOAD_5", "The uploaded file exceeds the upload_max_filesize directive in php.ini.");
-define("LANUPLOAD_6", "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the html form.");
-define("LANUPLOAD_7", "The uploaded file was only partially uploaded.");
-define("LANUPLOAD_8", "No file was uploaded.");
-define("LANUPLOAD_9", "Uploaded file size 0 bytes");
-define("LANUPLOAD_10", "Upload failed [Duplicate filename] - A file with the same name already exits.");
-define("LANUPLOAD_11", "The file did not upload. Filename: ");
-define("LANUPLOAD_12", "Error");
+define("LANUPLOAD_1", "Failo tipas");
+define("LANUPLOAD_2", "nepriimtinas, todėl buvo ištrintas.");
+define("LANUPLOAD_3", "Sėkmingai atsiųsta");
+define("LANUPLOAD_4", "Paskirties vieta neegzistuoja arba į ją neturima teisės įrašyti.");
+define("LANUPLOAD_5", "Atsiųstas failas viršija upload_max_filesize ribas php.ini faile.");
+define("LANUPLOAD_6", "Atsiųstas failas viršija MAX_FILE_SIZE ribas, nurodytas html formoje.");
+define("LANUPLOAD_7", "Atsiuntimas nepavyko.");
+define("LANUPLOAD_8", "Failai nebuvo atsiųsti.");
+define("LANUPLOAD_9", "Atsiųst failo dydis yra 0 baitų");
+define("LANUPLOAD_10", "Atsiuntimas nepavyko [tas pats failo pavadinimas] - failas tokiu pavadinimu jau egzistuoja.");
+define("LANUPLOAD_11", "Failas nebuvo atsiųstas. Failo pavadinimas: ");
+define("LANUPLOAD_12", "Klaida");
 
 ?>

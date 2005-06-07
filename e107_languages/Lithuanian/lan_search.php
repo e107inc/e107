@@ -1,45 +1,45 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_search.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:47:59 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 21:01:03 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Search");
+define("PAGE_NAME", "Paieška");
 
-define("LAN_20", "Error");
-define("LAN_98", "News Items");
-define("LAN_99", "Comments");
-define("LAN_140", "Registered members");
-define("LAN_180", "Search");
-define("LAN_192", "All categories");
-define("LAN_193", "Event Calendar");
-define("LAN_194", "All Categories");
-define("LAN_195", "Searching");
-define("LAN_196", "matches");
+define("LAN_20", "Klaida");
+define("LAN_98", "Naujienų pranešimai");
+define("LAN_99", "Komentarai");
+define("LAN_140", "Užsiregistravę nariai");
+define("LAN_180", "Paieška");
+define("LAN_192", "Visi skyriai");
+define("LAN_193", "Įvykių kalendorius");
+define("LAN_194", "Visi skyriai");
+define("LAN_195", "Ieškoma");
+define("LAN_196", "rasta");
 
-define("LAN_197", "Downloads");
-define("LAN_198", "No matches found");
-define("LAN_199", "Search for:");
-define("LAN_200", "Categories:");
+define("LAN_197", "Failai");
+define("LAN_198", "Nerasta");
+define("LAN_199", "Ieškoti:");
+define("LAN_200", "Kategorijose:");
 
-define("LAN_201", "Please redefine your search query");
-define("LAN_416", "You must be logged in to access this page");
-define("LAN_417", "Search terms must be at least 3 characters.");
+define("LAN_201", "Prašome kitaip suformuluoti užklausą");
+define("LAN_416", "Norėdami pasiekti šį puslapį turite prisijungti");
+define("LAN_417", "Paieškos užklausa turi būti ne mažiau 3 simbolių.");
 
-define("LAN_SEARCH_1", "Check All");
-define("LAN_SEARCH_2", "Uncheck All");
-define("LAN_SEARCH_3", "Posted on ");
-define("LAN_SEARCH_4", "Match found in news title");
-define("LAN_SEARCH_5", "Match found in news text");
-define("LAN_SEARCH_6", "Match found in extended news text");
-define("LAN_SEARCH_7", "Posted by ");
-define("LAN_SEARCH_8", " on ");
-define("LAN_SEARCH_9", "Untitled");
+define("LAN_SEARCH_1", "Pažymėti visus");
+define("LAN_SEARCH_2", "Panaikinti žymėjimus");
+define("LAN_SEARCH_3", "pranešimas paskelbtas ");
+define("LAN_SEARCH_4", "Rasta naujienų antraštėje");
+define("LAN_SEARCH_5", "Rasta naujienų tekste");
+define("LAN_SEARCH_6", "Rasta išplėstajame naujienų tekste");
+define("LAN_SEARCH_7", "paskelbė ");
+define("LAN_SEARCH_8", "  ");
+define("LAN_SEARCH_9", "Be pavadinimo");
 define("LAN_SEARCH_10", "Go to page:");
 define("LAN_SEARCH_11", "Results");
 define("LAN_SEARCH_12", " of ");

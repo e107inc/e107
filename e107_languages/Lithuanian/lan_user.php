@@ -1,64 +1,65 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_user.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:47:59 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 21:01:04 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Members");
+define("PAGE_NAME", "Nariai");
 
-define("LAN_20", "Error");
-define("LAN_112", "Email Address");
-define("LAN_115", "ICQ Number");
-define("LAN_116", "AIM Address");
-define("LAN_117", "MSN Messenger");
-define("LAN_118", "Birthday");
-define("LAN_119", "Location");
-define("LAN_120", "Signature");
-define("LAN_137", "There is no information for that user as they are not registered at");
-define("LAN_138", "Registered members: ");
+define("LAN_20", "Klaida");
+define("LAN_112", "El. pašto adresas");
+define("LAN_115", "ICQ numeris");
+define("LAN_116", "AIM adresas");
+define("LAN_117", "MSN žinučių siuntikas");
+define("LAN_118", "Gimimo diena");
+define("LAN_119", "Vieta");
+define("LAN_120", "Parašas");
+define("LAN_137", "Informacijos apie šį vartotoją nėra, nes jis neužsiregistravęs");
+define("LAN_138", "Registruoti nariai: ");
 define("LAN_139", "Order: ");
-define("LAN_140", "Registered members");
-define("LAN_141", "No registered members yet.");
-define("LAN_142", "Member");
-define("LAN_143", "[hidden by request]");
-define("LAN_144", "Website URL");
-define("LAN_145", "Joined");
-define("LAN_146", "Visits to site since registration");
-define("LAN_147", "Chatbox posts");
-define("LAN_148", "Comments posted");
-define("LAN_149", "Forum posts");
-define("LAN_308", "Real Name");
-define("LAN_400", "That is not a valid user.");
-define("LAN_401", "no information");
-define("LAN_402", "Member Profile");
-define("LAN_403", "Site Stats");
-define("LAN_404", "Last visit");
-define("LAN_405", "days ago");
-define("LAN_406", "Rating");
-define("LAN_407", "none");
-define("LAN_408", "no photo");
+define("LAN_140", "Registruoti nariai");
+define("LAN_141", "Registruotų narių dar nėra.");
+define("LAN_142", "Dalyvis");
+define("LAN_143", "[nerodomas]");
+define("LAN_144", "Tinklalapis");
+define("LAN_145", "Užsiregistravo");
+define("LAN_146", "Apsilankymo skaičius po registracijos");
+define("LAN_147", "Pokalbiai");
+define("LAN_148", "Komentarai");
+define("LAN_149", "Pranešimai forumuose");
+define("LAN_308", "Pilnas vardas ir pavardė");
+define("LAN_400", "Tokio vartotojo nėra.");
+define("LAN_401", "informacijos nėra");
+define("LAN_402", "Nario duomenys");
+define("LAN_403", "Puslapio statistika");
+define("LAN_404", "Paskutinį kartą lankėsi prieš");
+define("LAN_405", "dienas(-ų)");
+define("LAN_406", "Reitingas");
+define("LAN_407", "nėra");
+define("LAN_408", "nuotraukos nėra");
 define("LAN_409", "points");
-define("LAN_410", "Miscellaneous");
-define("LAN_411", "Click here to update your information");
-define("LAN_412", "Click here to edit this user's information");
-define("LAN_413", "delete photo");
-define("LAN_414", "previous member");
-define("LAN_415", "next member");
-define("LAN_416", "You must be logged in to access this page");
-define("LAN_417", "Main site administrator");
-define("LAN_418", "Site administrator");
-define("LAN_419", "Show");
-define("LAN_420", "DESC");
-define("LAN_421", "ASC");
-define("LAN_422", "Go");
-define("LAN_423", "Click here to View User Comments");
-define("LAN_424", "Click here to View Forum Posts");
-define("LAN_425", "Send Private Message");
+define("LAN_410", "Įvairūs");
+define("LAN_411", "Atnaujinti informaciją");
+define("LAN_412", "Redaguoti informaciją apie dalyvį");
+define("LAN_413", "ištrinti nuotrauką");
+define("LAN_414", "ankstesnis dalyvis");
+define("LAN_415", "kitas dalyvis");
+define("LAN_416", "Privalote prisijungti, jei norite pasiekti šį puslapį");
+define("LAN_417", "Pagrindinis Administratorius");
+define("LAN_418", "Tinklalapio administratorius");
+
+define("LAN_419", "Rodyti");
+define("LAN_420", "MAŽ");
+define("LAN_421", "DID");
+define("LAN_422", "Eiti");
+define("LAN_423", "Paspauskite čia, jei norite peržiūrėti dalyvio komentarus");
+define("LAN_424", "Paspauskite čia, jei norite peržiūrėti pranešimus forumuose");
+define("LAN_425", "Išsiųsti privačią žinutę");
 define("LAN_426", "ago");
 
 define("USERLAN_1", "Peer Rating");
