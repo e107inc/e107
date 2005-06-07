@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_search.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-21 22:11:47 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 15:28:17 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -21,10 +21,11 @@ $return_fields = 'tp.thread_name AS parent_name, t.thread_id, t.thread_name, t.t
 $search_fields = array('t.thread_name', 't.thread_thread');
 $weights = array('1.2', '0.6');
 $no_results = LAN_198;
-$where = "f.forum_class IN (".USERCLASS_LIST.") AND";
+$where = "f.forum_class REGEXP '".e_CLASS_REGEXP."' AND fp.forum_class REGEXP '".e_CLASS_REGEXP."' AND";
 $order = array('thread_datestamp' => DESC);
-$table = "forum_t AS t LEFT JOIN #user AS u ON t.thread_user = u.user_id 
+$table = "forum_t AS t LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
 		LEFT JOIN #forum AS f ON t.thread_forum_id = f.forum_id
+		LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
 		LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id";
 
 $ps = $sch -> parsesearch($table, $return_fields, $search_fields, $weights, 'search_forum', $no_results, $where, $order);
