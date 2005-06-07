@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.92 $
-|     $Date: 2005-06-05 19:51:28 $
-|     $Author: streaky $
+|     $Revision: 1.93 $
+|     $Date: 2005-06-07 05:35:07 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -52,7 +52,7 @@ function update_check() {
 }
 
 function update_61x_to_700($type) {
-	global $sql, $ns, $mySQLdefaultdb, $pref, $tp;
+	global $sql, $ns, $mySQLdefaultdb, $pref, $tp, $sysprefs;
 	if ($type == "do") {
 		set_time_limit(180);
 		$s_prefs = FALSE;
@@ -193,7 +193,7 @@ function update_61x_to_700($type) {
 
 		// start links update -------------------------------------------------------------------------------------------
 		if ($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."link_category")) {
-			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $pref;
+			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY;
 			$sql->db_Select_gen("CREATE TABLE ".MPREFIX."links_page_cat (
 			link_category_id int(10) unsigned NOT NULL auto_increment,
 			link_category_name varchar(100) NOT NULL default '',
@@ -488,7 +488,6 @@ function update_61x_to_700($type) {
 
 		// start chatbox update -------------------------------------------------------------------------------------------
 		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
-			global $pref;
 			$sql->db_Insert("plugin", "0, 'Chatbox', '1.0', 'chatbox_menu', 1");
 			$pref['plug_status'] = $pref['plug_status'].",chatbox_menu";
 			$s_prefs = TRUE;
@@ -531,10 +530,8 @@ function update_61x_to_700($type) {
 		");
 
 		// Search Update
-		global $pref, $sysprefs;
-		$search_prefs = $sysprefs -> getArray('search_prefs');
 		if (!isset($pref['search_highlight'])) {
-			$serial_prefs = "a:10:{s:11:\"search_sort\";s:3:\"php\";s:11:\"multisearch\";s:1:\"1\";s:9:\"relevance\";s:1:\"1\";s:11:\"user_select\";s:1:\"1\";s:13:\"time_restrict\";s:1:\"0\";s:9:\"time_secs\";s:2:\"60\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}s:13:\"plug_handlers\";N;}";
+			$serial_prefs = "a:10:{s:11:\"multisearch\";s:1:\"1\";s:9:\"relevance\";s:1:\"1\";s:11:\"user_select\";s:1:\"1\";s:13:\"time_restrict\";s:1:\"0\";s:9:\"time_secs\";s:2:\"60\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}s:13:\"plug_handlers\";N;s:10:\"mysql_sort\";b:0;}";
 			$search_prefs = unserialize(stripslashes($serial_prefs));
 			$handle = opendir(e_PLUGIN);
 			while (false !== ($file = readdir($handle))) {
@@ -556,10 +553,16 @@ function update_61x_to_700($type) {
 					}
 				}
 			}
+			preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
+			if (version_compare($mysql_version[1], '4.0.1', '<')) {
+				$search_prefs['mysql_sort'] = FALSE;
+			} else {
+				$search_prefs['mysql_sort'] = TRUE;
+			}
 			$serial_prefs = addslashes(serialize($search_prefs));
 			if (!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) {
 				$sql -> db_Insert("core", "'search_prefs', '".$serial_prefs."'");
-				} else {
+			} else {
 				$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
 			}
 			if ($pref['search_restrict']) {
@@ -662,7 +665,6 @@ function update_61x_to_700($type) {
 
 		// Notify
 		if (!isset($pref['notify'])) {
-			global $pref, $sysprefs;
 			$serial_prefs = "a:1:{s:5:\"event\";a:9:{s:7:\"usersup\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:8:\"userveri\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:5:\"flood\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:7:\"subnews\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:5:\"login\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:6:\"logout\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:8:\"newspost\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:7:\"newsupd\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:7:\"newsdel\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}}}";
 			$notify_prefs = unserialize(stripslashes($serial_prefs));
 			$handle = opendir(e_PLUGIN);
@@ -689,8 +691,7 @@ function update_61x_to_700($type) {
 		}
 		
 		// Admin Password Change Menu Display
-		
-		global $pref;
+
 		if (!isset($pref['adminpwordchange'])) {
 			$pref['adminpwordchange'] = TRUE;
 			$s_prefs = TRUE;
@@ -718,6 +719,20 @@ function update_61x_to_700($type) {
 			$pref['frontpage']['all'] = $up_pref;
 			$s_prefs = TRUE;
 		}
+		
+		// search sort method update
+		$search_prefs = $sysprefs -> getArray('search_prefs');
+		if (isset($search_prefs['search_sort'])) {
+			preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
+			if (version_compare($mysql_version[1], '4.0.1', '<')) {
+				$search_prefs['mysql_sort'] = FALSE;
+			} else {
+				$search_prefs['mysql_sort'] = TRUE;
+			}
+			unset($search_prefs['search_sort']);
+			$serial_prefs = addslashes(serialize($search_prefs));
+			$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
+		}
 
 		
 		// Save all prefs that were set in above update routines
@@ -727,6 +742,11 @@ function update_61x_to_700($type) {
 		// -----------------------------------------------------	
 
 	} else {
+		global $sysprefs;
+		$search_prefs = $sysprefs -> getArray('search_prefs');
+		if (isset($search_prefs['search_sort'])) {
+			return FALSE;
+		}
 		
 		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = "SHOW CREATE TABLE `".MPREFIX."user`";
@@ -749,12 +769,6 @@ function update_61x_to_700($type) {
 			return FALSE;
 		}
 
-		
-		
-		//global $pref;
-		//if (!isset($pref['adminpwordchange'])) {
-		//	return FALSE;
-		//}
 
 /*
 		if(!$sql -> db_Select("core", "*", "e107_name='emote_default' "))
@@ -828,15 +842,7 @@ function update_61x_to_700($type) {
 		{
 			return FALSE;
 		}
-
-		if ($sql -> db_Select("news", "news_id, news_thumbnail", "news_thumbnail LIKE '%thumb:%'")) {
-			return FALSE;
-		}
-
-		if (!$sql -> db_Select('news', 'news_thumbnail')) {
-			return FALSE;
-		}
-
+		
 		if(!isset($pref['signup_maxip'])){
 			return FALSE;
 		}
@@ -867,14 +873,6 @@ function update_61x_to_700($type) {
 
 		//		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
 */
-		/*
-		global $pref;
-		if (!isset($pref['search_highlight'])) {
-		return FALSE;
-		} else {
-		return TRUE;
-		}
-		*/
 
 		// No updates needed
 	 	return TRUE;

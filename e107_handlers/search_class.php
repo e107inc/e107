@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-05-06 13:52:21 $
+|     $Revision: 1.27 $
+|     $Date: 2005-06-07 05:35:07 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -90,7 +90,7 @@ class e_search {
 
 	function parsesearch($table, $return_fields, $search_fields, $weights, $handler, $no_results, $where, $order) {
 		global $sql, $query, $tp, $search_prefs, $pre_title, $search_chars, $search_res, $result_flag;
-		if ($search_prefs['search_sort'] == 'php') {
+		if (!$search_prefs['mysql_sort']) {
 			$field_operator = 'AND ';
 			foreach ($this -> keywords['match'] as $k_key => $key) {
 				$boolean_regex = '';
@@ -168,7 +168,7 @@ class e_search {
 		}
 
 		if ($ps['results'] = $sql -> db_Select_gen($sql_query)) {
-			if ($search_prefs['search_sort'] == 'php') {
+			if (!$search_prefs['mysql_sort']) {
 			$x = 0;
 			foreach ($search_fields as $field_key => $field) {
 				$crop_fields[] = preg_replace('/(.*?)\./', '', $field);
@@ -280,7 +280,7 @@ class e_search {
 		} else {
 			$ps['text'] = $no_results;
 		}
-		if ($search_prefs['search_sort'] == 'mysql') {
+		if ($search_prefs['mysql_sort']) {
 			$sql -> db_Query("SELECT FOUND_ROWS()");
 			$frows = $sql -> db_Fetch();
 			$ps['results'] = $frows[0];
@@ -307,7 +307,7 @@ class e_search {
 		global $search_prefs;
 		if (($key{(strlen($key) - 1)} != '*') && ($key{0} != '+')) {
 			if (strlen($key) > 2) {
-				if ($search_prefs['search_sort'] == 'php') {
+				if (!$search_prefs['mysql_sort']) {
 					$delimiter = '||';
 				} else {
 					$delimiter = '|';

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-05-06 13:52:09 $
+|     $Revision: 1.16 $
+|     $Date: 2005-06-07 05:34:52 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -41,7 +41,17 @@ if (isset($_POST['updatesettings'])) {
 	$search_prefs['multisearch'] = $_POST['multisearch'];
 	$search_prefs['time_restrict'] = $_POST['time_restrict'];
 	$search_prefs['time_secs'] = $_POST['time_secs'] > 300 ? 300 : $_POST['time_secs'];
-	$search_prefs['search_sort'] = $_POST['search_sort'];
+	if ($_POST['search_sort'] == 'mysql') {
+		preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
+		if (version_compare($mysql_version[1], '4.0.1', '<')) {
+			$search_prefs['mysql_sort'] = FALSE;
+			$message = SEALAN_33."<br />".SEALAN_34." ".$mysql_version[1];
+		} else {
+			$search_prefs['mysql_sort'] = TRUE;
+		}
+	} else {
+		$search_prefs['mysql_sort'] = FALSE;
+	}
 	$search_prefs['php_limit'] = $_POST['php_limit'];
 	$search_prefs['google'] = $_POST['google'];
 
@@ -69,7 +79,7 @@ if (isset($_POST['updatesettings'])) {
 
 	$tmp = addslashes(serialize($search_prefs));
 	$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
-	$message = TRUE;
+	$message = $message ? $message : LAN_UPDATED;
 }
 
 require_once(e_HANDLER."form_handler.php");
@@ -78,7 +88,7 @@ $rs = new form;
 $handlers_total = count($search_prefs['core_handlers']) + count($search_prefs['plug_handlers']);
 
 if (isset($message)) {
-		$ns->tablerender("", "<div style='text-align:center'><b>".LAN_UPDATED."</b></div>");
+		$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 $text = "<form method='post' action='".e_SELF."'><div style='text-align:center'>
@@ -138,8 +148,8 @@ $text .= "<tr>
 $text .= "<tr>
 <td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_3."</td>
 <td style='width:50%;' colspan='2' class='forumheader3'>
-".$rs -> form_radio('search_sort', 'mysql', ($search_prefs['search_sort'] == 'mysql' ? 1 : 0))."MySql
-".$rs -> form_radio('search_sort', 'php', ($search_prefs['search_sort'] == 'php' ? 1 : 0)).SEALAN_31." 
+".$rs -> form_radio('search_sort', 'mysql', ($search_prefs['mysql_sort'] == TRUE ? 1 : 0))."MySql
+".$rs -> form_radio('search_sort', 'php', ($search_prefs['mysql_sort'] == TRUE ? 0 : 1)).SEALAN_31." 
 ".$rs -> form_text("php_limit", 5, $search_prefs['php_limit'], 5)." ".SEALAN_32." 
 </td>
 </tr>";
