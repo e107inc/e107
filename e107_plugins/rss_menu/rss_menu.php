@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-10 12:38:39 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-07 06:55:10 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_PLUGIN")){ exit; }
@@ -44,6 +44,11 @@ if(strstr(e_SELF, "/bugtracker")) {
 	$des = BACKEND_MENU_L8;
 }
 
+if(strstr(e_SELF, "download.php")) {
+	$type = 12;
+	$des = BACKEND_MENU_L9;
+}
+
 if(!$des) {
 	$type = 1;
 	$des = BACKEND_MENU_L3;
@@ -55,8 +60,8 @@ $text = "<div style='text-align:center' class='smalltext'>
 <div class='spacer'><a href='".$path."rss.php?$type.2'><img src='".$path."images/rss2.png' alt='rss2.0' style='border:0' /></a></div>
 <div class='spacer'><a href='".$path."rss.php?$type.3'><img src='".$path."images/rss3.png' alt='rdf' style='border:0' /></a><br /></div>
 </div>";
-	
+
 $caption = (file_exists(THEME."images/backend_menu.png") ? "<img src='".THEME."images/backend_menu.png' alt='' style='vertical-align:middle' /> ".BACKEND_MENU_L2 : BACKEND_MENU_L2);
-	
+
 $ns->tablerender($caption, $text, 'backend');
 ?>
