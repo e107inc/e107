@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/new.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-05-21 03:47:55 $
+|     $Revision: 1.16 $
+|     $Date: 2005-06-07 13:37:40 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -84,7 +84,8 @@ if($ITEMS = $sql->db_Select("chatbox", "*", "cb_datestamp>$lvisit ORDER BY cb_da
 
 
 /* --- forum --- */
-$query = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_parent, f.forum_id, f.forum_name FROM #forum_t AS t 
+$query = "
+SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_parent, f.forum_id, f.forum_name FROM #forum_t AS t 
 LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id 
 LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id 
 WHERE f.forum_class  IN (".USERCLASS_LIST.") 
@@ -99,7 +100,7 @@ if($ITEMS = $sql->db_Select_gen($query))
 	{
 		extract($item);
 		$FORUM = "<a href='".e_PLUGIN."forum/forum_viewforum.php?$forum_id'>$forum_name</a>";
-		$TITLE = ($thread_parent ? "Re: <a href='".e_PLUGIN."forum/forum_viewtopic.php?$thread_parent#$thread_id'>".$tp -> toHTML($parent_name)."</a>" : "<a href='".e_PLUGIN."forum/forum_viewtopic.php?$thread_id'>".$tp -> toHTML($thread_name)."</a>");
+		$TITLE = ($thread_parent ? "Re: <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$thread_id}.post'>".$tp -> toHTML($parent_name)."</a>" : "<a href='".e_PLUGIN."forum/forum_viewtopic.php?$thread_id'>".$tp -> toHTML($thread_name)."</a>");
 		$mainStr .= preg_replace("/\{(.*?)\}/e", '$\1', $LISTNEW_MAIN_FORUM);
 	}
 	$mainStr .= preg_replace("/\{(.*?)\}/e", '$\1', $LISTNEW_END_FORUM);

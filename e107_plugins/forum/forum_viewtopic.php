@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-06-06 20:08:43 $
-|     $Author: e107coders $
+|     $Revision: 1.31 $
+|     $Date: 2005-06-07 13:37:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -72,7 +72,7 @@ if($from === 'post')
 		$from = ($pages-1) * $pref['forum_postspage'];
 		if($post_num['parent'] != $thread_id)
 		{
-			header("location: ".e_SELF."?{$post_num['parent']}.{$from}#{$thread_id}");
+			header("location: ".e_SELF."?{$post_num['parent']}.{$from}#post_{$thread_id}");
 			exit;
 		}
 	}
@@ -140,14 +140,14 @@ if ($action == "report") {
 		if ($pref['reported_post_email']) {
 			require_once(e_HANDLER."mail.php");
 			$report_add = $tp->toDB($_POST['report_add']);
-			$report = LAN_422.SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/")."forum_viewtopic.php?".$forum_id.".".$report_thread_id."#".$thread_id."\n".LAN_425.$user."\n".$report_add;
+			$report = LAN_422.SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/")."forum_viewtopic.php?".$report_thread_id.".post\n".LAN_425.$user."\n".$report_add;
 			$subject = LAN_421." ".SITENAME;
 			sendemail(SITEADMINEMAIL, $subject, $report);
 		}
 		$sql->db_Insert('generic',"0,'Reported Forum Post',".time().",'".USERID."','{$_POST['report_thread_name']}',{$_POST['report_thread_id']},'{$_POST['report_add']}'");
 		define("e_PAGETITLE", LAN_01." / ".LAN_428);
 		require_once(HEADERF);
-		$text = LAN_424."<br /><br /><a href='forum_viewtopic.php?".$report_thread_id."#".$thread_id."'>".LAN_429."</a";
+		$text = LAN_424."<br /><br /><a href='forum_viewtopic.php?".$report_thread_id.".post'>".LAN_429."</a";
 		$ns->tablerender(LAN_414, $text);
 	} else {
 		$number = $thread_id;
@@ -159,7 +159,7 @@ if ($action == "report") {
 		$text = "<form action='".e_PLUGIN."forum/forum_viewtopic.php?".e_QUERY."' method='post'> <table style='width:100%'>
 			<tr>
 			<td  style='width:50%' >
-			".LAN_415.": ".$thread_name." <a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_info['head']['thread_id']."#".$number."'><span class='smalltext'>".LAN_420." </span>
+			".LAN_415.": ".$thread_name." <a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_info['head']['thread_id'].".post'><span class='smalltext'>".LAN_420." </span>
 			</a>
 			</td>
 			<td style='text-align:center;width:50%'>
