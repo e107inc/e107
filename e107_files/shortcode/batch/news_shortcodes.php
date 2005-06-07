@@ -51,7 +51,7 @@ SC_END
 SC_BEGIN NEWSAUTHOR
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-return  "<a href='".e_BASE."user.php?id.".$news_item['user_id']."'>".$news_item['user_name']."</a>";
+return ($news_item['user_id'] ? "<a href='".e_BASE."user.php?id.".$news_item['user_id']."'>".$news_item['user_name']."</a>" : "<a href='http://e107.org'>e107</a>");
 SC_END
 	
 SC_BEGIN NEWSDATE
