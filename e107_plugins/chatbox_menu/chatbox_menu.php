@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-06-05 02:28:48 $
-|     $Author: sweetas $
+|     $Revision: 1.41 $
+|     $Date: 2005-06-07 19:41:59 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -110,7 +110,7 @@ else
 
 	$texta .= "\n<textarea class='tbox chatbox' name='cmessage' cols='20' rows='5' style='width:".$cb_width."; overflow: auto' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>\n<br />\n<input class='button' type='submit' name='chat_submit' value='".CHATBOX_L4."' />\n<input class='button' type='reset' name='reset' value='".CHATBOX_L5."' />";
 
-	if($pref['cb_emote']){
+	if($pref['cb_emote'] && $pref['smiley_activate']){
 		$texta .= " \n<input class='button' type ='button' style='cursor:hand; cursor:pointer' size='30' value='".CHATBOX_L14."' onclick=\"expandit('emote')\" />\n<div style='display:none' id='emote'>".r_emote()."\n</div>\n";
 	}
 
