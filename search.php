@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-06-07 19:26:20 $
+|     $Revision: 1.39 $
+|     $Date: 2005-06-07 22:14:01 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -264,7 +264,11 @@ foreach ($sch -> stop_keys as $stop_key) {
 }
 
 if ($search_prefs['selector'] == 2) {
-	$text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_COMPACT_TABLE);
+	$text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_COMPACT_TABLE_TOP);
+	if ($stop_count) {
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_COMPACT_TABLE_MSG);
+	}
+	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_COMPACT_TABLE_BOT);
 } else {
 	$text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TOP_TABLE);
 

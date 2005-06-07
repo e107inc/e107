@@ -1,17 +1,27 @@
 <?php
 
-if (!isset($SEARCH_COMPACT_TABLE)) {
-	$SEARCH_COMPACT_TABLE = "
-	<div style='text-align:center'>
+if (!isset($SEARCH_COMPACT_TABLE_TOP)) {
+	$SEARCH_COMPACT_TABLE_TOP = "<div style='text-align:center'>
 	<form id='searchform' method='get' action='".e_SELF."'>
-	<table style='width:95%' class='fborder'>\n
+	<table style='width:95%' class='fborder'>
 	<tr>
-	<td class='forumheader3' style='width:30%; vertical-align: top'>{SEARCH_DROPDOWN}</td>
-	<td class='forumheader3' style='width:70%; white-space: nowrap; text-align: right; vertical-align: top'>
-	{SEARCH_MAIN_SEARCHFIELD} {SEARCH_MAIN_SUBMIT}<div style='padding-top: 5px'>{SEARCH_MESSAGE}</div>
+	<td class='forumheader3' style='width:30%'>{SEARCH_DROPDOWN}</td>
+	<td class='forumheader3' style='width:70%; white-space: nowrap; text-align: right'>
+	{SEARCH_MAIN_SEARCHFIELD} {SEARCH_MAIN_SUBMIT}
 	</td>
-	</tr>
-	</table>
+	</tr>";
+}
+
+if (!isset($SEARCH_COMPACT_TABLE_MSG)) {
+	$SEARCH_COMPACT_TABLE_MSG = "<tr>
+	<td class='forumheader3' style='text-align: center' colspan='2'>
+	{SEARCH_MESSAGE}
+	</td>
+	</tr>";
+}
+
+if (!isset($SEARCH_COMPACT_TABLE_BOT)) {
+	$SEARCH_COMPACT_TABLE_BOT = "</table>
 	</form>
 	</div>";
 }
