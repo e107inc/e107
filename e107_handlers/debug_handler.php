@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-04-11 23:12:49 $
+|     $Revision: 1.14 $
+|     $Date: 2005-06-07 23:11:55 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -67,11 +67,6 @@ class e107_debug {
 	}
 
 	function set_error_reporting() {
-		if ($this->debug_level & 32768) {
-			error_reporting(E_ALL);
-		} else {
-			error_reporting(E_ERROR | E_WARNING | E_PARSE);
-		}
 	}
 }
 

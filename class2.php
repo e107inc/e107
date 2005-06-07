@@ -12,11 +12,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.160 $
-|     $Date: 2005-06-06 22:40:49 $
+|     $Revision: 1.161 $
+|     $Date: 2005-06-07 23:11:53 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
+
+// setup error handling first of all.
+error_reporting(E_ALL);
+$error_handler = new error_handler();
+set_error_handler(array($error_handler, "handle_error"));
 
 // Honest global beginning point for processing time
 $eTimingStart = microtime();
@@ -30,7 +35,7 @@ if(function_exists('ini_get')) {
 // Destroy! (if we need to)
 if($register_globals == true){
 	while (list($global) = each($GLOBALS)) {
-		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart|start_ob_level)$/', $global)) {
+		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart|start_ob_level|error_handler)$/', $global)) {
 			unset($$global);
 		}
 	}
@@ -118,15 +123,6 @@ if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY) {
 @require_once(e_HANDLER.'traffic_class.php');
 $eTraffic=new e107_traffic; // We start traffic counting ASAP
 $eTraffic->Calibrate($eTraffic);
-
-if (!e107_include(e_HANDLER."errorhandler_class.php")) {
-	echo "<div style='text-align:center; font: 12px Verdana, Tahoma'>Path error</div>";
-	exit;
-}
-
-if (!$e107_debug) {
-	set_error_handler("error_handler");
-}
 
 if (!$mySQLuser) {
 	header("location:install.php");
@@ -285,7 +281,7 @@ if (isset($pref['multilanguage']) && $pref['multilanguage']) {
 	closedir($handle);
 	$tmplan = implode(",",$lanlist);
 }
-define("e_LANLIST",($tmplan ? $tmplan : ""));
+define("e_LANLIST",(isset($tmplan) ? $tmplan : ""));
 $page=substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
 
@@ -413,7 +409,7 @@ init_session();
 
 if(USER && $pref['force_userupdate'] && e_PAGE != "usersettings.php"){
 	if(force_userupdate()){
-    	header("Location: ".e_BASE."usersettings.php?update");
+		header("Location: ".e_BASE."usersettings.php?update");
 	};
 }
 
@@ -1144,8 +1140,12 @@ function utf8_html_entity_decode($string) {
 	return $string;
 }
 
-function print_a($var) {
-	echo '<pre>'.print_r($var, true).'</pre>';
+function print_a($var, $return = false) {
+	if(!$return){
+		echo '<pre>'.print_r($var, true).'</pre>';
+	} else {
+		return '<pre>'.print_r($var, true).'</pre>';
+	}
 }
 
 function force_userupdate(){
@@ -1154,19 +1154,19 @@ function force_userupdate(){
 	$signupval = explode(".", $pref['signup_options']);
 	if(in_array("2",$signupval)){
 		$signup_name = array("realname", "website", "icq", "aim", "msn", "birthday", "location", "signature", "image", "timezone", "usrclass");
-        foreach($signupval as $key=>$sign){
+		foreach($signupval as $key=>$sign){
 			$field = "user_".$signup_name[$key];
 			$req = $signupval[$key];
 			if($req ==2 && $currentUser[$field] == ""){
-	   		  	return TRUE;
+				return TRUE;
 			}
 		}
 	}
 
 	// extended user.
-    if($sql -> db_Select("user_extended_struct", "user_extended_struct_name", " user_extended_struct_required = '1' ")){
-    	while($row = $sql -> db_Fetch()){
-         	extract($row);
+	if($sql -> db_Select("user_extended_struct", "user_extended_struct_name", " user_extended_struct_required = '1' ")){
+		while($row = $sql -> db_Fetch()){
+			extract($row);
 			if(!$currentUser["user_".$user_extended_struct_name]){
 				return TRUE;
 			}
@@ -1174,6 +1174,58 @@ function force_userupdate(){
 	}
 
 	return FALSE;
+}
+
+class error_handler {
+
+	var $notices;
+	var $warnings;
+	var $debug = false;
+	
+	function error_handler() {
+		if (preg_match('/debug=(.*)/', $_SERVER['QUERY_STRING']) || isset($_COOKIE['e107_debug_level'])) {
+			$this->debug = true;
+		}
+	}
+	
+	function handle_error($type, $message, $file, $line, $context) {
+		switch($type) {
+			case E_NOTICE:
+				if ($this->debug == true) {
+					$error['short'] = "Notice: {$message}, Line {$line} of {$file}<br />\n";
+					$trace = debug_backtrace();
+					$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
+					$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
+					//$error['trace'] = $backtrace;
+					$this->notices[] = $error;
+				}
+			break;
+			case E_WARNING:
+				if ($this->debug == true) {
+					$error['short'] = "Warning: {$message}, Line {$line} of {$file}<br />\n";
+					$trace = debug_backtrace();
+					$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
+					$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
+					$error['trace'] = $backtrace;
+					$this->warnings[] = $error;
+				}
+			break;
+			default:
+				return true;
+			break;
+		}
+	}
+	
+	function return_errors() {
+		$ret = "";
+		foreach ($this->warnings as $key => $value) {
+			$ret .= "[{$key}]: {$value['short']}<br />\n";
+		}
+		foreach ($this->notices as $key => $value) {
+			$ret .= "[{$key}]: {$value['short']}<br />\n";
+		}
+		return $ret;		
+	}
 }
 
 $sql->db_Mark_Time('(After class2)');
