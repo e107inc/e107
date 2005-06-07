@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.50 $
-|		$Date: 2005-06-07 19:37:22 $
+|		$Revision: 1.51 $
+|		$Date: 2005-06-07 22:02:33 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -89,6 +89,7 @@ class content{
 				$content_pref["content_breadcrumb_seperator{$id}"] = ">";				//seperator character between breadcrumb
 				$content_pref["content_breadcrumb_rendertype_{$id}"] = "2";				//how to render the breadcrumb
 				$content_pref["content_searchmenu_{$id}"] = "0";						//show searchmenu
+				$content_pref["content_searchmenu_rendertype_{$id}"] = "1";				//rendertype for searchmenu (1=echo, 2=in seperate menu)
 				$content_pref["content_nextprev_{$id}"] = "1";							//use nextprev buttons
 				$content_pref["content_nextprev_number_{$id}"] = "10";					//how many items on a page
 				$content_pref["content_defaultorder_{$id}"] = "orderddate";				//default sort and order method
@@ -185,6 +186,8 @@ class content{
 				$content_pref["content_content_editicon_{$id}"] = "0";					//show link in content page to admin edit item
 				$content_pref["content_content_customtags_{$id}"] = "0";				//should additional data be shown
 				$content_pref["content_content_presettags_{$id}"] = "0";				//should preset data tags be shown
+				$content_pref["content_content_attach_{$id}"] = "0";					//show attachments
+				$content_pref["content_content_images_{$id}"] = "0";					//show images
 
 				//AUTHOR PAGE
 				$content_pref["content_author_lastitem_{$id}"] = "0";					//show last item reference
@@ -203,6 +206,13 @@ class content{
 				$content_pref["content_archive_authoremail_{$id}"] = "0";				//archive : section: show author email
 				$content_pref["content_archive_authoremail_nonmember_{$id}"] = "0";		//archive : show link to email of non-member author
 
+				//TOP RATED PAGE
+				$content_pref["content_top_icon_{$id}"] = "0";							//top : section: show icon
+				$content_pref["content_top_authorname_{$id}"] = "0";					//top : section: show authorname
+				$content_pref["content_top_authorprofile_{$id}"] = "0";					//top : section: show link to author profile
+				$content_pref["content_top_authoricon_{$id}"] = "0";					//top : section: show link to author list
+				$content_pref["content_top_authoremail_{$id}"] = "0";					//top : section: show author email
+				$content_pref["content_top_authoremail_nonmember_{$id}"] = "0";			//top : show link to email of non-member author
 
 				//CONTENT MANAGER
 				$content_pref["content_manager_class_{$id}"] = "0";						//contentmanager: class to narrow down the userlist
@@ -458,8 +468,8 @@ class content{
 						$page .= " / ".$row['content_heading']." / ".CONTENT_PAGETITLE_LAN_2;
 
 					//item
-					}elseif($qs[0] == "content" && isset($qs[1]) && is_numeric($qs[1]) && isset($qs[2]) && is_numeric($qs[2])){
-						$sql -> db_Select($plugintable, "content_heading", "content_id='".$qs[2]."' ");
+					}elseif($qs[0] == "content" && isset($qs[1]) && is_numeric($qs[1]) ){
+						$sql -> db_Select($plugintable, "content_heading", "content_id='".$qs[1]."' ");
 						$row2 = $sql -> db_Fetch();
 						$page .= " / ".$row2['content_heading'];
 

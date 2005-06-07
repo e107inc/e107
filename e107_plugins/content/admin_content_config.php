@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.36 $
-|		$Date: 2005-06-06 13:28:12 $
+|		$Revision: 1.37 $
+|		$Date: 2005-06-07 22:02:32 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -542,9 +542,9 @@ function admin_content_config_adminmenu(){
 					$var['contentpages']['text']	= CONTENT_ADMIN_MENU_LAN_13;
 					$var['authorpage']['text']		= CONTENT_ADMIN_MENU_LAN_18;
 					$var['archivepage']['text']		= CONTENT_ADMIN_MENU_LAN_16;
+					$var['toppage']['text']			= CONTENT_ADMIN_MENU_LAN_20;
 					$var['contentmanager']['text']	= CONTENT_ADMIN_MENU_LAN_19;
 					$var['menu']['text']			= CONTENT_ADMIN_MENU_LAN_14;
-					
 
 					$sql = new db;
 					$category_total			= $sql -> db_Select($plugintable, "content_heading", "content_id='".$qs[1]."' ");
@@ -562,7 +562,7 @@ function admin_content_config_adminmenu(){
 
 								$array		= $aa -> getCategoryTree("", $row['content_id'], FALSE);	//get all categories from each main parent
 								$newarray	= array_merge_recursive($array);
-								
+
 								$newparent=array();
 								for($a=0;$a<count($newarray);$a++){
 									for($b=0;$b<count($newarray[$a]);$b++){

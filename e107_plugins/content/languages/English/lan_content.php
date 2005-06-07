@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-06-07 19:37:23 $
+|     $Revision: 1.45 $
+|     $Date: 2005-06-07 22:02:33 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -14,7 +14,7 @@ define("CONTENT_ICON_LAN_0", "edit");
 define("CONTENT_ICON_LAN_1", "delete");
 define("CONTENT_ICON_LAN_2", "options");
 define("CONTENT_ICON_LAN_3", "user details");
-define("CONTENT_ICON_LAN_4", "download attchment");
+define("CONTENT_ICON_LAN_4", "download attachment");
 define("CONTENT_ICON_LAN_5", "new");
 define("CONTENT_ICON_LAN_6", "submit content");
 define("CONTENT_ICON_LAN_7", "author list");
@@ -372,8 +372,10 @@ define("CONTENT_ADMIN_OPT_LAN_262", "define the caption of the links to other co
 define("CONTENT_ADMIN_OPT_LAN_263", "this caption will only be used if the links are shown as 'normallinks' and will not be used in the dropdown");
 define("CONTENT_ADMIN_OPT_LAN_264", "icon : category default");
 define("CONTENT_ADMIN_OPT_LAN_265", "define the default icon if no category icon is present (only if you selected 'category icon' to be displayed)");
-define("CONTENT_ADMIN_OPT_LAN_266", "");
-
+define("CONTENT_ADMIN_OPT_LAN_266", "top rated page");
+define("CONTENT_ADMIN_OPT_LAN_267", "searchmenu rendertype");
+define("CONTENT_ADMIN_OPT_LAN_268", "define how to show the searchmenu menu");
+define("CONTENT_ADMIN_OPT_LAN_269", "define how to render the searchmenu information. you have two options: one to just echo it out at the top of the page and one to render it in a seperate menu.");
 
 
 
@@ -551,6 +553,7 @@ define("CONTENT_ADMIN_MENU_LAN_16", "Archive Page");
 define("CONTENT_ADMIN_MENU_LAN_17", "ContentManager");
 define("CONTENT_ADMIN_MENU_LAN_18", "Author Page");
 define("CONTENT_ADMIN_MENU_LAN_19", "Content Manager");
+define("CONTENT_ADMIN_MENU_LAN_20", "Top Rated Page");
 
 define("CONTENT_ADMIN_JS_LAN_0", "Are you sure you want to delete this category?");
 define("CONTENT_ADMIN_JS_LAN_1", "Are you sure you want to delete this content?");
@@ -661,7 +664,7 @@ define("CONTENT_LAN_37", "no content items rated yet");
 define("CONTENT_LAN_38", "Top Rated Content");
 define("CONTENT_LAN_39", "author list");
 define("CONTENT_LAN_40", "author user details");
-define("CONTENT_LAN_41", "download attached");
+define("CONTENT_LAN_41", "attached");
 define("CONTENT_LAN_42", "file");
 define("CONTENT_LAN_43", "files");
 define("CONTENT_LAN_44", "hits:");

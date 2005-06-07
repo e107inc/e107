@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.45 $
-|		$Date: 2005-06-07 19:37:22 $
+|		$Revision: 1.46 $
+|		$Date: 2005-06-07 22:02:32 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -181,7 +181,7 @@ if(!e_QUERY){
 // ##### ------------------------------------------------------------------------------
 
 // ##### CONTENT SEARCH MENU ----------------------------
-function show_content_search_menu($mode="page"){
+function show_content_search_menu(){
 				global $qs, $plugindir, $content_shortcodes, $tp, $ns, $rs, $aa;
 				global $plugintable, $gen, $content_pref;
 				global $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD;
@@ -204,13 +204,14 @@ function show_content_search_menu($mode="page"){
 				$CONTENT_SEARCH_TABLE_SELECT = $aa -> showOptionsSelect("page", $thismain);
 				$CONTENT_SEARCH_TABLE_ORDER = $aa -> showOptionsOrder("page", $thismain);
 
-				if($mode == "page"){
-					$text = $tp -> parseTemplate($CONTENT_SEARCH_TABLE, FALSE, $content_shortcodes);
+				$text = $tp -> parseTemplate($CONTENT_SEARCH_TABLE, FALSE, $content_shortcodes);
+				
+				if($content_pref["content_searchmenu_rendertype_{$thismain}"] == "2"){
+					$caption = CONTENT_LAN_77;
+					$ns -> tablerender($caption, $text);
 				}else{
-					$text = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_SEARCH_TABLE);
+					echo $text;
 				}
-				$caption = CONTENT_LAN_77;
-				$ns -> tablerender($caption, $text);
 				return TRUE;
 
 }
@@ -600,6 +601,16 @@ function show_content_cat_all(){
 							$comment_total = $sqlc -> db_Select("comments", "*",  "comment_item_id='".$key."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 						}
 
+						$date	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_DATE}');
+						$auth	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_AUTHORDETAILS}');
+						$ep		= $tp -> parseTemplate('{CONTENT_CAT_TABLE_EPICONS}');
+						$com	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_COMMENT}');
+
+						if ($date!="" || $auth!="" || $ep!="" || $com!="" ) {
+							$CONTENT_CAT_TABLE_INFO_PRE = TRUE;
+							$CONTENT_CAT_TABLE_INFO_POST = TRUE;
+						}
+
 						$content_cat_table_string .= $tp -> parseTemplate($CONTENT_CAT_TABLE, FALSE, $content_shortcodes);
 
 					}
@@ -631,7 +642,7 @@ function show_content_cat_all(){
 
 function show_content_cat($mode=""){
 				global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery, $from;
-				global $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END;
+				global $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST;
 				global $content_cat_icon_path_small, $content_cat_icon_path_large, $content_icon_path, $mainparent;
 
 				$mainparent		= $aa -> getMainParent($qs[1]);
@@ -697,6 +708,16 @@ function show_content_cat($mode=""){
 							header("location:".e_SELF."?cat.list.".$mainparent); exit;
 						}else{
 							$row = $sql -> db_Fetch();
+
+							$date = $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_DATE}');
+							$auth = $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_AUTHORDETAILS}');
+							$ep = $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_EPICONS}');
+							$com = $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_COMMENT}');
+
+							if ($date!="" || $auth!="" || $ep!="" || $com!="" ) {
+								$CONTENT_CAT_LIST_TABLE_INFO_PRE = TRUE;
+								$CONTENT_CAT_LIST_TABLE_INFO_POST = TRUE;
+							}
 
 							if(!is_object($gen)){ $gen = new convert; }
 							//$authordetails		= $aa -> getAuthor($row['content_author']);
@@ -1165,7 +1186,7 @@ function show_content_top(){
 // ##### CONTENT ITEM ------------------------------------------
 function show_content_item(){
 				global $pref, $content_pref;
-				global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS, $CONTENT_CONTENT_TABLE_PARENT;
+				global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS, $CONTENT_CONTENT_TABLE_PARENT, $CONTENT_CONTENT_TABLE_INFO_PRE, $CONTENT_CONTENT_TABLE_INFO_POST;
 				global $content_icon_path, $content_image_path, $content_file_path, $custom;
 				global $plugindir, $plugintable, $content_shortcodes, $datequery, $order, $nextprevquery, $from, $number;
 				global $qs, $gen, $sql, $aa, $tp, $rs, $cobj, $e107, $e107cache, $eArrayStorage, $ns, $rater, $ep, $row, $authordetails, $mainparent; 
@@ -1214,6 +1235,20 @@ function show_content_item(){
 
 						if($content_pref["content_content_parent_{$mainparent}"]){
 							$CONTENT_CONTENT_TABLE_PARENT = $aa -> getCrumbItem($row['content_parent'], $array);
+						}
+
+						$date = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_DATE}');
+						$auth = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_AUTHORDETAILS}');
+						$ep = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EPICONS}');
+						$edit = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EDITICON}');
+						$par = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_PARENT}');
+						$com = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_COMMENT}');
+						$score = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_SCORE}');
+						$ref = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_REFER}');
+
+						if ($date!="" || $auth!="" || $ep!="" || $edit!="" || $par!="" || $com!="" || $score!="" || $ref!="") {
+							$CONTENT_CONTENT_TABLE_INFO_PRE = TRUE;
+							$CONTENT_CONTENT_TABLE_INFO_POST = TRUE;
 						}
 
 						$CONTENT_CONTENT_TABLE_TEXT = $row['content_text'];
@@ -1338,7 +1373,8 @@ function show_content_item(){
 						}
 					}
 
-					$caption = CONTENT_LAN_34;
+					//$caption = CONTENT_LAN_34;
+					$caption = $row['content_heading'];
 					$ns -> tablerender($caption, $text);
 
 					if(preg_match_all("/\[newpage.*?]/si", $row['content_text'], $matches)){
