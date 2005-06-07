@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-06-06 13:05:59 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.25 $
+|     $Date: 2005-06-07 20:03:41 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 @include(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
@@ -130,10 +130,12 @@ class poll
 		$voteTotal = array_sum($voteArray);
 
 		$percentage = array();
-		if(isset($votes)){
+
+
+//		if(isset($votes)){
 			foreach($voteArray as $votes){
 				$percentage[] = round(($votes/$voteTotal) * 100, 2);
-			}
+//			}
 		}
 		/* get template */
 		if (file_exists(THEME."poll_template.php"))
