@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_searchresult_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-07 19:37:24 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-07 22:02:34 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -32,7 +32,7 @@ if(!$CONTENT_SEARCHRESULT_TABLE_START){
 }
 if(!$CONTENT_SEARCHRESULT_TABLE){
 				$CONTENT_SEARCHRESULT_TABLE .= "
-				<table class='fborder'>
+				<table class='fborder' style='width:98%; text-align:left;'>
 					<tr>
 						{CONTENT_SEARCHRESULT_TABLE_ICON}
 						<td>

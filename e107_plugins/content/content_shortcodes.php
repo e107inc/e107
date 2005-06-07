@@ -66,6 +66,7 @@ return CONTENT_LAN_68;
 SC_END
 
 
+
 // CONTENT_TOP_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_TOP_TABLE_HEADING
 global $CONTENT_TOP_TABLE_HEADING, $row, $qs;
@@ -74,19 +75,37 @@ SC_END
 
 SC_BEGIN CONTENT_TOP_TABLE_ICON
 global $CONTENT_TOP_TABLE_ICON, $aa, $row, $content_pref, $content_icon_path, $qs, $mainparent;
+if($content_pref["content_top_icon_{$mainparent}"]){
 return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], "50", $content_pref["content_blank_icon_{$mainparent}"]);
+}
 SC_END
 
 SC_BEGIN CONTENT_TOP_TABLE_AUTHOR
-global $CONTENT_TOP_TABLE_AUTHOR, $authordetails, $qs, $row;
-	$CONTENT_TOP_TABLE_AUTHOR = $authordetails[1]." ";
-	if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0"){
-		$CONTENT_TOP_TABLE_AUTHOR .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-	}else{
-		//$CONTENT_TOP_TABLE_AUTHOR .= " ".CONTENT_ICON_USER;
+global $CONTENT_TOP_TABLE_AUTHOR, $content_pref, $qs, $row, $aa, $mainparent;
+if($content_pref["content_top_authorname_{$mainparent}"] || $content_pref["content_top_authoremail_{$mainparent}"] || $content_pref["content_top_authoricon_{$mainparent}"] || $content_pref["content_top_authorprofile_{$mainparent}"]){
+	$authordetails = $aa -> getAuthor($row['content_author']);
+	if($content_pref["content_top_authorname_{$mainparent}"]){
+		if(isset($content_pref["content_top_authoremail_{$mainparent}"]) && $authordetails[2]){
+			if($authordetails[0] == "0"){
+				if($content_pref["content_top_authoremail_nonmember_{$mainparent}"] && strpos($authordetails[2], "@") ){
+					$CONTENT_TOP_TABLE_AUTHOR = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
+				}else{
+					$CONTENT_TOP_TABLE_AUTHOR = $authordetails[1];
+				}
+			}else{
+				$CONTENT_TOP_TABLE_AUTHOR = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
+			}
+		}else{
+			$CONTENT_TOP_TABLE_AUTHOR = $authordetails[1];
+		}
+		if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && $content_pref["content_top_authorprofile_{$mainparent}"]){
+			$CONTENT_TOP_TABLE_AUTHOR .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
+		}
 	}
-	$CONTENT_TOP_TABLE_AUTHOR .= " <a href='".e_SELF."?author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
-
+	if($content_pref["content_top_authoricon_{$mainparent}"]){
+		$CONTENT_TOP_TABLE_AUTHOR .= " <a href='".e_SELF."?author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
+	}
+}
 return $CONTENT_TOP_TABLE_AUTHOR;
 SC_END
 
@@ -182,6 +201,21 @@ SC_END
 
 
 // CONTENT_CAT_TABLE ------------------------------------------------
+SC_BEGIN CONTENT_CAT_TABLE_INFO_PRE
+global $CONTENT_CAT_TABLE_INFO_PRE;
+if($CONTENT_CAT_TABLE_INFO_PRE === TRUE){
+$CONTENT_CAT_TABLE_INFO_PRE = " ";
+return $CONTENT_CAT_TABLE_INFO_PRE;
+}
+SC_END
+SC_BEGIN CONTENT_CAT_TABLE_INFO_POST
+global $CONTENT_CAT_TABLE_INFO_POST;
+if($CONTENT_CAT_TABLE_INFO_POST === TRUE){
+$CONTENT_CAT_TABLE_INFO_POST = " ";
+return $CONTENT_CAT_TABLE_INFO_POST;
+}
+SC_END
+
 SC_BEGIN CONTENT_CAT_TABLE_ICON
 global $CONTENT_CAT_TABLE_ICON, $aa, $row, $content_pref, $qs, $content_cat_icon_path_large, $mainparent;
 if($content_pref["content_catall_icon_{$mainparent}"]){
@@ -308,6 +342,21 @@ SC_END
 
 
 // CONTENT_CAT_LIST_TABLE ------------------------------------------------
+SC_BEGIN CONTENT_CAT_LIST_TABLE_INFO_PRE
+global $CONTENT_CAT_LIST_TABLE_INFO_PRE;
+if($CONTENT_CAT_LIST_TABLE_INFO_PRE === TRUE){
+$CONTENT_CAT_LIST_TABLE_INFO_PRE = " ";
+return $CONTENT_CAT_LIST_TABLE_INFO_PRE;
+}
+SC_END
+SC_BEGIN CONTENT_CAT_LIST_TABLE_INFO_POST
+global $CONTENT_CAT_LIST_TABLE_INFO_POST;
+if($CONTENT_CAT_LIST_TABLE_INFO_POST === TRUE){
+$CONTENT_CAT_LIST_TABLE_INFO_POST = " ";
+return $CONTENT_CAT_LIST_TABLE_INFO_POST;
+}
+SC_END
+
 SC_BEGIN CONTENT_CAT_LIST_TABLE_ICON
 global $CONTENT_CAT_LIST_TABLE_ICON, $aa, $row, $qs, $content_pref, $content_cat_icon_path_large, $mainparent;
 if($content_pref["content_cat_icon_{$mainparent}"]){
@@ -898,7 +947,8 @@ return $CONTENT_CONTENT_TABLE_RATING;
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_FILE
-global $CONTENT_CONTENT_TABLE_FILE, $row, $content_file_path;
+global $CONTENT_CONTENT_TABLE_FILE, $row, $content_file_path, $content_pref, $mainparent;
+if($content_pref["content_content_attach_{$mainparent}"]){
 $filestmp = explode("[file]", $row['content_file']);
 foreach($filestmp as $key => $value) { 
 	if($value == "") { 
@@ -919,6 +969,7 @@ for($i=0;$i<count($files);$i++){
 }
 $CONTENT_CONTENT_TABLE_FILE = ($filesexisting == "0" ? "" : CONTENT_LAN_41." ".($filesexisting == 1 ? CONTENT_LAN_42 : CONTENT_LAN_43)." ".$file." ");
 return $CONTENT_CONTENT_TABLE_FILE;
+}
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_SCORE
@@ -944,8 +995,25 @@ global $CONTENT_CONTENT_TABLE_TEXT;
 return $CONTENT_CONTENT_TABLE_TEXT;
 SC_END
 
+SC_BEGIN CONTENT_CONTENT_TABLE_INFO_PRE
+global $CONTENT_CONTENT_TABLE_INFO_PRE;
+if($CONTENT_CONTENT_TABLE_INFO_PRE === TRUE){
+$CONTENT_CONTENT_TABLE_INFO_PRE = " ";
+return $CONTENT_CONTENT_TABLE_INFO_PRE;
+}
+SC_END
+SC_BEGIN CONTENT_CONTENT_TABLE_INFO_POST
+global $CONTENT_CONTENT_TABLE_INFO_POST;
+if($CONTENT_CONTENT_TABLE_INFO_POST === TRUE){
+$CONTENT_CONTENT_TABLE_INFO_POST = " ";
+return $CONTENT_CONTENT_TABLE_INFO_POST;
+}
+SC_END
+
+
 SC_BEGIN CONTENT_CONTENT_TABLE_IMAGES
-global $CONTENT_CONTENT_TABLE_IMAGES, $row, $content_image_path, $aa, $tp, $authordetails;
+global $CONTENT_CONTENT_TABLE_IMAGES, $row, $content_image_path, $aa, $tp, $authordetails, $content_pref, $mainparent;
+if($content_pref["content_content_images_{$mainparent}"]){
 $authordetails = $aa -> getAuthor($row['content_author']);
 $imagestmp = explode("[img]", $row['content_image']);
 foreach($imagestmp as $key => $value) { 
@@ -968,6 +1036,7 @@ for($i=0;$i<count($images);$i++){
 	//$myimagelink .= $aa -> popup($oSrc, $oSrcThumb, $oMaxWidth, $oTitle, $oText);
 }
 return $CONTENT_CONTENT_TABLE_IMAGES;
+}
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_CUSTOM_TAGS

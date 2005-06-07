@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.49 $
-|		$Date: 2005-06-07 19:37:22 $
+|		$Revision: 1.50 $
+|		$Date: 2005-06-07 22:02:33 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -2260,6 +2260,17 @@ class contentform{
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
+						//content_searchmenu_rendertype_
+						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_267;
+						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_268;
+						$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_269;
+						$TOPIC_FIELD = "
+						".$rs -> form_select_open("content_searchmenu_rendertype_{$id}")."
+						".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_64, ($content_pref["content_searchmenu_rendertype_{$id}"] == "1" ? "1" : "0"), "1")."
+						".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_65, ($content_pref["content_searchmenu_rendertype_{$id}"] == "2" ? "1" : "0"), "2")."
+						".$rs -> form_select_close();
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
 						//content_nextprev_
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_94;
 						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_95;
@@ -2662,6 +2673,8 @@ class contentform{
 						".$rs -> form_checkbox("content_content_editicon_{$id}", 1, ($content_pref["content_content_editicon_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_204."<br />
 						".$rs -> form_checkbox("content_content_customtags_{$id}", 1, ($content_pref["content_content_customtags_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_206."<br />
 						".$rs -> form_checkbox("content_content_presettags_{$id}", 1, ($content_pref["content_content_presettags_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_221."<br />
+						".$rs -> form_checkbox("content_content_attach_{$id}", 1, ($content_pref["content_content_attach_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_5."<br />
+						".$rs -> form_checkbox("content_content_images_{$id}", 1, ($content_pref["content_content_images_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_6."<br />
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -2818,6 +2831,43 @@ class contentform{
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 						$text .= $TOPIC_TABLE_END;
+
+
+
+
+						$text .= "
+						<div id='toppage' style='display:none; text-align:center'>
+						<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+						$TOPIC_CAPTION = CONTENT_ADMIN_OPT_LAN_266;
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
+
+						//content_top_sections
+						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_2;
+						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_139;
+						$TOPIC_HELP = "";
+						$TOPIC_FIELD = "
+						".$rs -> form_checkbox("content_top_icon_{$id}", 1, ($content_pref["content_top_icon_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_4."<br />
+						".$rs -> form_checkbox("content_top_authorname_{$id}", 1, ($content_pref["content_top_authorname_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_75."<br />
+						".$rs -> form_checkbox("content_top_authorprofile_{$id}", 1, ($content_pref["content_top_authorprofile_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_118."<br />
+						".$rs -> form_checkbox("content_top_authoricon_{$id}", 1, ($content_pref["content_top_authoricon_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_117."<br />
+						".$rs -> form_checkbox("content_top_authoremail_{$id}", 1, ($content_pref["content_top_authoremail_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_76."<br />
+						";
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+						//content_top_authoremail_nonmember_
+						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_91;
+						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_92;
+						$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_93;
+						$TOPIC_FIELD = "
+						".$rs -> form_radio("content_top_authoremail_nonmember_{$id}", "1", ($content_pref["content_top_authoremail_nonmember_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
+						".$rs -> form_radio("content_top_authoremail_nonmember_{$id}", "0", ($content_pref["content_top_authoremail_nonmember_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+						";
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+						$text .= $TOPIC_TABLE_END;
+
+
 
 
 

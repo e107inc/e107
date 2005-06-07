@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_cat_template.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-07 19:37:24 $
+|     $Revision: 1.12 $
+|     $Date: 2005-06-07 22:02:33 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -46,6 +46,12 @@ $sc_style['CONTENT_CAT_TABLE_RATING']['post'] = "<br /></td></tr>";
 $sc_style['CONTENT_CAT_TABLE_AMOUNT']['pre'] = "(";
 $sc_style['CONTENT_CAT_TABLE_AMOUNT']['post'] = ")";
 
+$sc_style['CONTENT_CAT_TABLE_INFO_PRE']['pre'] = "<tr><td class='forumheader3'>";
+$sc_style['CONTENT_CAT_TABLE_INFO_PRE']['post'] = "";
+
+$sc_style['CONTENT_CAT_TABLE_INFO_POST']['pre'] = "";
+$sc_style['CONTENT_CAT_TABLE_INFO_POST']['post'] = "</td></tr>";
+
 // ##### CONTENT CAT ----------------------------------------------------------
 if(!$CONTENT_CAT_TABLE_START){
 				$CONTENT_CAT_TABLE_START = "";
@@ -57,9 +63,11 @@ if(!$CONTENT_CAT_TABLE){
 					{CONTENT_CAT_TABLE_ICON}
 					<td class='fcaption' >{CONTENT_CAT_TABLE_HEADING} {CONTENT_CAT_TABLE_AMOUNT}</td>
 				</tr>
-				<tr>
-					<td class='forumheader3'>{CONTENT_CAT_TABLE_DATE} {CONTENT_CAT_TABLE_AUTHORDETAILS} {CONTENT_CAT_TABLE_EPICONS} {CONTENT_CAT_TABLE_COMMENT}<br /></td>
-				</tr>
+
+				{CONTENT_CAT_TABLE_INFO_POST}
+					{CONTENT_CAT_TABLE_DATE} {CONTENT_CAT_TABLE_AUTHORDETAILS} {CONTENT_CAT_TABLE_EPICONS} {CONTENT_CAT_TABLE_COMMENT}
+				{CONTENT_CAT_TABLE_INFO_POST}
+
 				{CONTENT_CAT_TABLE_SUBHEADING}
 				{CONTENT_CAT_TABLE_TEXT}
 				{CONTENT_CAT_TABLE_RATING}
@@ -91,6 +99,12 @@ $sc_style['CONTENT_CAT_LIST_TABLE_TEXT']['post'] = "</td></tr>";
 $sc_style['CONTENT_CAT_LIST_TABLE_AMOUNT']['pre'] = "(";
 $sc_style['CONTENT_CAT_LIST_TABLE_AMOUNT']['post'] = ")";
 
+$sc_style['CONTENT_CAT_LIST_TABLE_INFO_PRE']['pre'] = "<tr><td class='forumheader3'>";
+$sc_style['CONTENT_CAT_LIST_TABLE_INFO_PRE']['post'] = "";
+
+$sc_style['CONTENT_CAT_LIST_TABLE_INFO_POST']['pre'] = "";
+$sc_style['CONTENT_CAT_LIST_TABLE_INFO_POST']['post'] = "</td></tr>";
+
 // ##### CONTENT CAT_LIST -----------------------------------------------------
 if(!$CONTENT_CAT_LIST_TABLE){
 		$CONTENT_CAT_LIST_TABLE = "
@@ -100,7 +114,11 @@ if(!$CONTENT_CAT_LIST_TABLE){
 			<td class='forumheader3'>{CONTENT_CAT_LIST_TABLE_HEADING} {CONTENT_CAT_LIST_TABLE_AMOUNT}</td>
 		</tr>
 		{CONTENT_CAT_LIST_TABLE_SUBHEADING}
-		<tr><td class='forumheader3'>{CONTENT_CAT_LIST_TABLE_DATE} {CONTENT_CAT_LIST_TABLE_AUTHORDETAILS} {CONTENT_CAT_LIST_TABLE_EPICONS} {CONTENT_CAT_LIST_TABLE_COMMENT}<br /></td></tr>
+		
+		{CONTENT_CAT_LIST_TABLE_INFO_PRE}
+			{CONTENT_CAT_LIST_TABLE_DATE} {CONTENT_CAT_LIST_TABLE_AUTHORDETAILS} {CONTENT_CAT_LIST_TABLE_EPICONS} {CONTENT_CAT_LIST_TABLE_COMMENT}
+		{CONTENT_CAT_LIST_TABLE_INFO_POST}
+
 		{CONTENT_CAT_LIST_TABLE_RATING}
 		{CONTENT_CAT_LIST_TABLE_TEXT}
 		</table><br />\n";
