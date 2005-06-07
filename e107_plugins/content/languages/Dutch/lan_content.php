@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 04:44:53 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-07 20:18:05 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -25,26 +25,7 @@ define("CONTENT_ICON_LAN_11", "volgorde onderdelen per categorie");
 define("CONTENT_ICON_LAN_12", "volgorde onderdelen in hoofdonderwerp");
 define("CONTENT_ICON_LAN_13", "persoonlijke beheerder");
 define("CONTENT_ICON_LAN_14", "persoonlijke contentbeheerder");
-
-if (!defined('CONTENT_ICON_EDIT')) { define("CONTENT_ICON_EDIT", "<img src='".e_PLUGIN."content/images/maintain_16.png' alt='".CONTENT_ICON_LAN_0."' style='border:0; cursor:pointer;' />"); }
-//maintain_16
-//edit_16
-
-if (!defined('CONTENT_ICON_DELETE')) { define("CONTENT_ICON_DELETE", "<img src='".e_PLUGIN."content/images/banlist_16.png' alt='".CONTENT_ICON_LAN_1."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_DELETE_BASE')) { define("CONTENT_ICON_DELETE_BASE", e_PLUGIN."content/images/banlist_16.png"); }
-if (!defined('CONTENT_ICON_OPTIONS')) { define("CONTENT_ICON_OPTIONS", "<img src='".e_PLUGIN."content/images/cat_settings_16.png' alt='".CONTENT_ICON_LAN_2."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_USER')) { define("CONTENT_ICON_USER", "<img src='".e_PLUGIN."content/images/users_16.png' alt='".CONTENT_ICON_LAN_3."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_FILE')) { define("CONTENT_ICON_FILE", "<img src='".e_PLUGIN."content/images/file_16.png' alt='".CONTENT_ICON_LAN_4."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_NEW')) { define("CONTENT_ICON_NEW", "<img src='".e_PLUGIN."content/images/articles_16.png' alt='".CONTENT_ICON_LAN_5."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_SUBMIT')) { define("CONTENT_ICON_SUBMIT", "<img src='".e_PLUGIN."content/images/redo.png' alt='".CONTENT_ICON_LAN_6."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_AUTHORLIST')) { define("CONTENT_ICON_AUTHORLIST", "<img src='".e_PLUGIN."content/images/personal.png' alt='".CONTENT_ICON_LAN_7."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_WARNING')) { define("CONTENT_ICON_WARNING", "<img src='".e_PLUGIN."content/images/warning_16.png' alt='".CONTENT_ICON_LAN_8."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_OK')) { define("CONTENT_ICON_OK", "<img src='".e_PLUGIN."content/images/ok_16.png' alt='".CONTENT_ICON_LAN_9."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_ERROR')) { define("CONTENT_ICON_ERROR", "<img src='".e_PLUGIN."content/images/error_16.png' alt='".CONTENT_ICON_LAN_10."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_ORDERCAT')) { define("CONTENT_ICON_ORDERCAT", "<img src='".e_PLUGIN."content/images/view_remove.png' alt='".CONTENT_ICON_LAN_11."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_ORDERALL')) { define("CONTENT_ICON_ORDERALL", "<img src='".e_PLUGIN."content/images/window_new.png' alt='".CONTENT_ICON_LAN_12."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_CONTENTMANAGER')) { define("CONTENT_ICON_CONTENTMANAGER", "<img src='".e_PLUGIN."content/images/manager_48.png' alt='".CONTENT_ICON_LAN_14."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_CONTENTMANAGER_SMALL')) { define("CONTENT_ICON_CONTENTMANAGER_SMALL", "<img src='".e_PLUGIN."content/images/manager_16.png' alt='".CONTENT_ICON_LAN_13."' style='border:0; cursor:pointer;' />"); }
+define("CONTENT_ICON_LAN_15", "Bekijken");
 
 define("LAN_38", "stem");
 define("LAN_39", "stemmen");
@@ -80,12 +61,12 @@ define("CONTENT_ADMIN_CAT_LAN_24", "id");
 define("CONTENT_ADMIN_CAT_LAN_25", "pictogram");
 define("CONTENT_ADMIN_CAT_LAN_26", "nieuwe hoofdcategorie");
 define("CONTENT_ADMIN_CAT_LAN_27", "categorie");
-define("CONTENT_ADMIN_CAT_LAN_28", "Toewijzen beheerders aan de persoonlijke beheerder van deze categorie");
+define("CONTENT_ADMIN_CAT_LAN_28", "Wijs gebruikers uit het linker venster toe aan de categorie Persoonlijk Beheerd");
 define("CONTENT_ADMIN_CAT_LAN_29", "Beheerders - klik om te verplaatsen ... ");
-define("CONTENT_ADMIN_CAT_LAN_30", "Persoonlijke beheerders van deze categorie ...");
+define("CONTENT_ADMIN_CAT_LAN_30", "Persoonlijke content beheerder");
 define("CONTENT_ADMIN_CAT_LAN_31", "verwijder");
-define("CONTENT_ADMIN_CAT_LAN_32", "schonen klasse");
-define("CONTENT_ADMIN_CAT_LAN_33", "toewijzen beheerders aan categorie");
+define("CONTENT_ADMIN_CAT_LAN_32", "schonen beheerders");
+define("CONTENT_ADMIN_CAT_LAN_33", "toewijzen persoonlijke content beheerders");
 define("CONTENT_ADMIN_CAT_LAN_34", "beheerders succesvol toegewezen aan de categorie");
 define("CONTENT_ADMIN_CAT_LAN_35", "onderwerp subcategorie verwijderd");
 define("CONTENT_ADMIN_CAT_LAN_36", "categorie controle: er zijn nog steeds subcategorieën aanwezig, de categorie wordt NIET verwijderd. Verwijder eerst alle subcategorieën en probeer het daarna nogmaals.");
@@ -95,8 +76,7 @@ define("CONTENT_ADMIN_CAT_LAN_39", "categorie controle: geen subcategorieën gev
 define("CONTENT_ADMIN_CAT_LAN_40", "Hieronder staat een overzicht van de hoofdcategorie en alle eventuele subcategorieën.<br />");
 
 define("CONTENT_ADMIN_CAT_LAN_41", "De persoonlijke beheerder van contentcategorieën staat je toe om bepaalde andere beheerders aan een categorie toe te voegen. Met dit recht kunnen deze beheerders hun eigen en onderwerpen in deze specifieke categorie beheren, zonder de volledige contentbeheer plugin te hoeven gebruiken. In de normale content pagina buiten de beheerfunctie zien ze alleen het personalmanager pictogram dat ze naar de personal manager pagina leidt.");
-define("CONTENT_ADMIN_CAT_LAN_42", "om een categorie van de eerder geselecteerde hoofdcategorie te bewerken");
-
+define("CONTENT_ADMIN_CAT_LAN_42", "om dezelfde categorie te bewerken");
 define("CONTENT_ADMIN_CAT_LAN_43", "klik hier");
 define("CONTENT_ADMIN_CAT_LAN_44", "om een andere categorie in de eerder geselecteerde hoofdcategorie toe te voegen");
 define("CONTENT_ADMIN_CAT_LAN_45", "bepalen of reacties zijn toegestaan");
@@ -110,10 +90,12 @@ Dit menubestand is opgeslagen in de /menus directory.<br />
 Om dit menu te gebruiken moet je het eerst activeren in het <a href='".e_ADMIN."menus.php'>menubeheerscherm</a>.<br /><br />");
 define("CONTENT_ADMIN_CAT_LAN_51", "fout; menubestand niet gecreëerd");
 define("CONTENT_ADMIN_CAT_LAN_52", "kies ALTIJD EERST een categorie voordat je de andere velden invult!");
-define("CONTENT_ADMIN_CAT_LAN_53", "hoofd ouder categorie");
+define("CONTENT_ADMIN_CAT_LAN_53", "om een andere categorie te beheren");
+define("CONTENT_ADMIN_CAT_LAN_54", "gebruiker");
+define("CONTENT_ADMIN_CAT_LAN_55", "gebruikers");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "opties");
-define("CONTENT_ADMIN_OPT_LAN_1", "beheeropties: aanmaken van onderwerpen");
+define("CONTENT_ADMIN_OPT_LAN_1", "creëren formulier voor contentonderwerp in het beheerscherm");
 define("CONTENT_ADMIN_OPT_LAN_2", "secties");
 define("CONTENT_ADMIN_OPT_LAN_3", "bepaal welke secties beschikbaar zijn bij het creëren van een contentonderwerp in het beheerscherm");
 define("CONTENT_ADMIN_OPT_LAN_4", "pictogram");
@@ -127,14 +109,14 @@ define("CONTENT_ADMIN_OPT_LAN_11", "zichtbaarheid");
 define("CONTENT_ADMIN_OPT_LAN_12", "meta definitie");
 define("CONTENT_ADMIN_OPT_LAN_13", "maatwerk gegevenstags");
 define("CONTENT_ADMIN_OPT_LAN_14", "bepaal het aantal aanvullende gegevenstags");
-define("CONTENT_ADMIN_OPT_LAN_15", "met behulp van maatwerk tags kun je sleutel => waarde paren maken waarin aanvullende gegevens bij een onderwerp kunnen worden vastgelegd. als je bijvoorbeeld toe wilt voegen 'fotografie: door beheerder', wordt ´fotografie´ de sleutel en ´door beheerder´ de waarde.");
+define("CONTENT_ADMIN_OPT_LAN_15", "met behulp van maatwerk tags kun je sleutel <-> waarde paren maken waarin aanvullende gegevens bij een onderwerp kunnen worden vastgelegd. Als je bijvoorbeeld toe wilt voegen 'fotografie: door beheerder', wordt ´fotografie´ de sleutel en ´door beheerder´ de waarde.");
 define("CONTENT_ADMIN_OPT_LAN_16", "afbeeldingen");
 define("CONTENT_ADMIN_OPT_LAN_17", "instellen hoeveel afbeeldingen bij een onderwerp kunnen worden geupload");
 define("CONTENT_ADMIN_OPT_LAN_18", "dit geldt alleen als afbeeldingen bij dit onderwerp zijn toegestaan in de bovenstaande secties");
 define("CONTENT_ADMIN_OPT_LAN_19", "bijlagen");
 define("CONTENT_ADMIN_OPT_LAN_20", "instellen hoeveel bijlagen bij een onderwerp kunnen worden geupload");
 define("CONTENT_ADMIN_OPT_LAN_21", "dit geldt alleen als bijlagen bij dit onderwerp zijn toegestaan in de bovenstaande secties");
-define("CONTENT_ADMIN_OPT_LAN_22", "aanmelding: opties voor content aanmeldpagina en formulier");
+define("CONTENT_ADMIN_OPT_LAN_22", "aanmeldingsopties");
 define("CONTENT_ADMIN_OPT_LAN_23", "aanmelden onderwerpen");
 define("CONTENT_ADMIN_OPT_LAN_24", "Toestaan dat onderwerpen kunnen worden aangemeld");
 define("CONTENT_ADMIN_OPT_LAN_25", "wanneer toegestaan, kunnen bezoekers onderwerpen aanmelden");
@@ -145,7 +127,7 @@ define("CONTENT_ADMIN_OPT_LAN_29", "toestaan van het direct plaatsen van aangeme
 define("CONTENT_ADMIN_OPT_LAN_30", "wanneer Direct plaatsen is aangekruist, wordt een aangemeld onderwerp direct toegevoegd aan de database en wordt het onmiddellijk op de site getoond. wanneer dit niet is aangekruist, zal een beheerder het aangemelde onderwerp ter beoordeling te zien krijgen in het beheerscherm.");
 define("CONTENT_ADMIN_OPT_LAN_31", "bepaal welke secties beschikbaar zijn voor aanmelding");
 define("CONTENT_ADMIN_OPT_LAN_32", "kies in welke onderdelen je bezoekers onderwerpen wilt laten aanmelden");
-define("CONTENT_ADMIN_OPT_LAN_33", "paden");
+define("CONTENT_ADMIN_OPT_LAN_33", "paden, thema, layout en css instellingen");
 define("CONTENT_ADMIN_OPT_LAN_34", "hier kun je bepalen waar de afbeeldingen zijn of worden opgeslagen. gebruik accolades ( { } ) als aanduiding van de gebruikelijke e107 gerelateerde padnamen (zoals ( {e_PLUGIN} of {e_IMAGE} ). er zijn twee prictogrammen nodig voor onderwerpcategorieën: een kleine en een grote set pictogrammen.");
 define("CONTENT_ADMIN_OPT_LAN_35", "pad : cat pictogrammen groot");
 define("CONTENT_ADMIN_OPT_LAN_36", "bepaal het pad naar content cat pictogrammen (groot)");
@@ -158,9 +140,9 @@ define("CONTENT_ADMIN_OPT_LAN_42", "bepaal het pad naar onderwerp afbeeldingen")
 define("CONTENT_ADMIN_OPT_LAN_43", "pad : onderwerp bijlagen");
 define("CONTENT_ADMIN_OPT_LAN_44", "bepaal het pad naar onderwerp bijlagen");
 define("CONTENT_ADMIN_OPT_LAN_45", "thema");
-define("CONTENT_ADMIN_OPT_LAN_46", "bepaal de thema layout voor deze hoofdcategorie");
-define("CONTENT_ADMIN_OPT_LAN_47", "kies een layout thema voor deze hoofdcategorie. je kunt een nieuw thema creëren door een map in de content plugin sjabloondirectorie aan te maken.");
-define("CONTENT_ADMIN_OPT_LAN_48", "algemeen");
+define("CONTENT_ADMIN_OPT_LAN_46", "bepaal de thema voor deze hoofdcategorie");
+define("CONTENT_ADMIN_OPT_LAN_47", "kies een thema voor deze hoofdcategorie. je kunt een nieuw thema creëren door een map in de content plugin sjabloondirectorie aan te maken.");
+define("CONTENT_ADMIN_OPT_LAN_48", "algemene opties");
 define("CONTENT_ADMIN_OPT_LAN_49", "verwijzingsteller");
 define("CONTENT_ADMIN_OPT_LAN_50", "activeren logging van aantal verwijzingen");
 define("CONTENT_ADMIN_OPT_LAN_51", "wanneer aangekruist wordt een verwijzingsteller voor elk onderwerp opgeslagen gebaseerd op unieke IP adressen.");
@@ -182,7 +164,7 @@ define("CONTENT_ADMIN_OPT_LAN_66", "combineer in één menu");
 define("CONTENT_ADMIN_OPT_LAN_67", "zoekmenu");
 define("CONTENT_ADMIN_OPT_LAN_68", "moet het zoekmenu worden getoond");
 define("CONTENT_ADMIN_OPT_LAN_69", "wanneer aangekruist wordt een zoek en navigatiemenu getoond om in de content te zoeken of tussen de overige overzichtspagina´s te navigeren en waarin ook de mogelijkheid wordt geboden om de onderwerpen te sorteren in de overzichtspagina's");
-define("CONTENT_ADMIN_OPT_LAN_70", "overzichtspagina's (recent (content.php?type.X), content per categorie (content.php?type.X.cat.Y), contents per auteur (content.php?type.X.author.Y))");
+define("CONTENT_ADMIN_OPT_LAN_70", "contentpagina voorbeeldweergave (wordt voor alle contentpagina's gebruikt als een overzicht wordt getoond");
 define("CONTENT_ADMIN_OPT_LAN_71", "kies welke secties moeten worden getoond bij het bekijken van een onderwerp in de overzichtspagina's");
 define("CONTENT_ADMIN_OPT_LAN_72", "onderkop");
 define("CONTENT_ADMIN_OPT_LAN_73", "samenvatting");
@@ -221,17 +203,18 @@ define("CONTENT_ADMIN_OPT_LAN_105", "wanneer dit is geactiveerd, kunnen alle ond
 define("CONTENT_ADMIN_OPT_LAN_106", "pagina sorteren/volgorde");
 define("CONTENT_ADMIN_OPT_LAN_107", "kies een standaard soorteer en volgorde methode");
 define("CONTENT_ADMIN_OPT_LAN_108", "sorteren op 'volgorde' ebruikt het volgordenummer die je hebt opgegeven in de Beheren volgorde sectie");
-define("CONTENT_ADMIN_OPT_LAN_109", "kop (OPL)");
-define("CONTENT_ADMIN_OPT_LAN_110", "kop (AFL)");
-define("CONTENT_ADMIN_OPT_LAN_111", "datum (OPL)");
-define("CONTENT_ADMIN_OPT_LAN_112", "datum (AFL)");
-define("CONTENT_ADMIN_OPT_LAN_113", "verwijzer (OPL)");
-define("CONTENT_ADMIN_OPT_LAN_114", "verwijzer (AFL)");
-define("CONTENT_ADMIN_OPT_LAN_115", "ouder (OPL)");
-define("CONTENT_ADMIN_OPT_LAN_116", "ouder (AFL)");
-define("CONTENT_ADMIN_OPT_LAN_117", "volgorde (OPL)");
-define("CONTENT_ADMIN_OPT_LAN_118", "volgorde (AFL)");
-define("CONTENT_ADMIN_OPT_LAN_119", "content categorie pagina (content.php?type.X.cat.Y)");
+define("CONTENT_ADMIN_OPT_LAN_109", "aantal onderwerpen");
+define("CONTENT_ADMIN_OPT_LAN_110", "kies de te tonen secties in het overzicht met onderwerp categorieën");
+define("CONTENT_ADMIN_OPT_LAN_111", "kies welke secties van het categorieonderwerp moeten worden getoond");
+define("CONTENT_ADMIN_OPT_LAN_112", "kies welke secties in het subcategorieoverzicht moeten worden getoond");
+define("CONTENT_ADMIN_OPT_LAN_113", "alle categorieën pagina");
+define("CONTENT_ADMIN_OPT_LAN_114", "bekijk categorie pagina");
+define("CONTENT_ADMIN_OPT_LAN_115", "wanneer geactiveerd, wordt een link naar het categorieonderwerp geplaatst in de postfix tekst");
+define("CONTENT_ADMIN_OPT_LAN_116", "aantal reacties");
+define("CONTENT_ADMIN_OPT_LAN_117", "link naar auteursoverzicht");
+define("CONTENT_ADMIN_OPT_LAN_118", "link naar auteursprofiel");
+define("CONTENT_ADMIN_OPT_LAN_119", "content categorie pagina's");
+
 define("CONTENT_ADMIN_OPT_LAN_120", "ouder onderwerp");
 define("CONTENT_ADMIN_OPT_LAN_121", "moet het onderwerp van de ouder worden getoond");
 define("CONTENT_ADMIN_OPT_LAN_122", "ouder subcategorieën");
@@ -250,7 +233,7 @@ define("CONTENT_ADMIN_OPT_LAN_134", "kies een weergavemethode voor alle menus");
 define("CONTENT_ADMIN_OPT_LAN_135", "je kunt de ouder weergeven, sub en kinder onderwerpen elk in een eigen menu, of je kunt ze combineren in een enkel menu");
 define("CONTENT_ADMIN_OPT_LAN_136", "elk in een eigen menu");
 define("CONTENT_ADMIN_OPT_LAN_137", "combineren in een enkel menu");
-define("CONTENT_ADMIN_OPT_LAN_138", "content pagina (content.php?type.X.content.Y)");
+define("CONTENT_ADMIN_OPT_LAN_138", "content pagina's");
 define("CONTENT_ADMIN_OPT_LAN_139", "kies welke secties moeten worden getoond bij het bekijken van een content onderwerp");
 define("CONTENT_ADMIN_OPT_LAN_140", "menu eigenschappen");
 define("CONTENT_ADMIN_OPT_LAN_141", "titelbalk");
@@ -274,8 +257,8 @@ define("CONTENT_ADMIN_OPT_LAN_158", "pictogram : links");
 define("CONTENT_ADMIN_OPT_LAN_159", "bepaal het te tonen pictogram");
 define("CONTENT_ADMIN_OPT_LAN_160", "geen (), bullet (), middot (&middot;), witte bullet (º), pijltje (&raquo;)");
 define("CONTENT_ADMIN_OPT_LAN_161", "categorieën");
-define("CONTENT_ADMIN_OPT_LAN_162", "subcategorieën");
-define("CONTENT_ADMIN_OPT_LAN_163", "moeten de (sub) categorieën worden getoond als de aanwezig zijn?");
+define("CONTENT_ADMIN_OPT_LAN_162", "categorieën");
+define("CONTENT_ADMIN_OPT_LAN_163", "moeten een overzicht met categorieën worden getoond?");
 define("CONTENT_ADMIN_OPT_LAN_164", "aantal onderwerpen");
 define("CONTENT_ADMIN_OPT_LAN_165", "moet het totale aantal onderwerpen in elke categorie worden getoond?");
 define("CONTENT_ADMIN_OPT_LAN_166", "pictogram : categorie");
@@ -309,13 +292,15 @@ define("CONTENT_ADMIN_OPT_LAN_193", "geen (), bullet (), middot (·), witte bull
 define("CONTENT_ADMIN_OPT_LAN_194", "content pictogram");
 define("CONTENT_ADMIN_OPT_LAN_195", "pictogram : breedte");
 define("CONTENT_ADMIN_OPT_LAN_196", "bepaal de breedte van het picrogram");
-define("CONTENT_ADMIN_OPT_LAN_197", "if you have chosen to display the 'content icon', specify the width of the content icon to show. enter only a numeric value of the amount of pixels you want. do not add the 'px' to the number.");
+define("CONTENT_ADMIN_OPT_LAN_197", "als je ervoor hebt gekozen om het 'content pictogram' te tonen, geef dan de breedte op van het te tonen pictogram. Voer alleen de numerieke waarde in van het aantal pixels, zet er niet iets als px achter.");
+define("CONTENT_ADMIN_OPT_LAN_198", "titel : categorieoverzicht");
+define("CONTENT_ADMIN_OPT_LAN_199", "voer de titel van het categorieoverzicht in");
 define("CONTENT_ADMIN_OPT_LAN_200", "bijwerk opties");
 define("CONTENT_ADMIN_OPT_LAN_201", "negeren reacties systeem");
 define("CONTENT_ADMIN_OPT_LAN_202", "toestaan reacties voor alle onderwerpen");
 define("CONTENT_ADMIN_OPT_LAN_203", "wanneer geactiveerd, is het mogelijk om reacties te plaatsen bij alle onderwerpen ongeacht de individuele instelling");
 define("CONTENT_ADMIN_OPT_LAN_204", "bewerk pictogram: toon pictogram met link naar het beheerscherm om het onderwerp te bewerken");
-define("CONTENT_ADMIN_OPT_LAN_205", "layout sjablonen");
+define("CONTENT_ADMIN_OPT_LAN_205", "layout schema's");
 define("CONTENT_ADMIN_OPT_LAN_206", "maatwerk gegevens");
 define("CONTENT_ADMIN_OPT_LAN_207", "categorieën weergavetype");
 define("CONTENT_ADMIN_OPT_LAN_208", "geef op hoe de categorieën moeten worden weergegeven");
@@ -328,6 +313,56 @@ define("CONTENT_ADMIN_OPT_LAN_214", "datumstijl");
 define("CONTENT_ADMIN_OPT_LAN_215", "kies een datumstijl voor het weergeven van de datum");
 define("CONTENT_ADMIN_OPT_LAN_216", "Voor meer informatie over datumformaten zie de <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime functie pagina van php.net</a>");
 define("CONTENT_ADMIN_OPT_LAN_217", "archiefpagina");
+
+define("CONTENT_ADMIN_OPT_LAN_218", "standaard voorkeuren");
+define("CONTENT_ADMIN_OPT_LAN_219", "kies welke secties worden getoond bij het bekijken van de archief pagina");
+define("CONTENT_ADMIN_OPT_LAN_220", "pictogram auteurslijst");
+define("CONTENT_ADMIN_OPT_LAN_221", "vooringestelde data tags");
+define("CONTENT_ADMIN_OPT_LAN_222", "bepaal de standaard vooringestelde maatwerk data tags");
+define("CONTENT_ADMIN_OPT_LAN_223", "Hier kun je extra vooringestelde data tags instellen. De velden die je hier opgeeft, zijn de sleutels van de sleutel <-> waarde data tags. Ze zijn voorzien van een tekstveld voor het creatieformulier voor beheer. Let op: ze horen niet bij het aantal maatwerk data tags dat je hierboven opgaf, maar ze worden aanvullend gebruikt.<br />Deze vooringestelde Tags zijn nuttig als je een bepaalde maatwerk tag beschikbaar wilt hebben voor elk nieuw onderwerk. Bijvoorbeeld als je altijd een waarde voor 'fotograaf' wilt invullen, kun je een dergelijke voorinstelling opgeven, die altijd wordt getoond bij ieder onderwerp bij deze hoofdouder.");
+define("CONTENT_ADMIN_OPT_LAN_224", "css");
+define("CONTENT_ADMIN_OPT_LAN_225", "bepaal het thema css stylesheet voo deze hoofdouder");
+define("CONTENT_ADMIN_OPT_LAN_226", "als het geselecteerde css bestand niet bestaat, wordt het standaard content thema layout css bestand gebruikt");
+define("CONTENT_ADMIN_OPT_LAN_227", "layout schema");
+define("CONTENT_ADMIN_OPT_LAN_228", "bepaal het standaard layout schema");
+define("CONTENT_ADMIN_OPT_LAN_229", "selecteer een layout schema");
+define("CONTENT_ADMIN_OPT_LAN_230", "huidige site thema");
+define("CONTENT_ADMIN_OPT_LAN_231", "huidige content thema layout");
+define("CONTENT_ADMIN_OPT_LAN_232", "standaard content thema layout");
+define("CONTENT_ADMIN_OPT_LAN_233", "tekst link");
+define("CONTENT_ADMIN_OPT_LAN_234", "bepaal of een link wordt getoond op de postfix");
+define("CONTENT_ADMIN_OPT_LAN_235", "wanneer geacr\tiveerd, wordt een link naar het contentonderwerp geplaatst op de postfix tekst");
+define("CONTENT_ADMIN_OPT_LAN_236", "tekst tekens");
+define("CONTENT_ADMIN_OPT_LAN_237", "bepaal het aantal woorden van de tekst");
+define("CONTENT_ADMIN_OPT_LAN_238", "hoeveel woorden uit de tekst moeten worden getoond? Niets invullen om niets te tonen");
+define("CONTENT_ADMIN_OPT_LAN_239", "tekst postfix");
+define("CONTENT_ADMIN_OPT_LAN_240", "bepaal de postfix als de tekst langer is");
+define("CONTENT_ADMIN_OPT_LAN_241", "tekst (geef het aantal te tonen woorden op)");
+define("CONTENT_ADMIN_OPT_LAN_242", "kies welke secties getoond moeten worden bij het bekijken van de auteurspagina");
+define("CONTENT_ADMIN_OPT_LAN_243", "laatste onderwerp van elke auteur");
+define("CONTENT_ADMIN_OPT_LAN_244", "aantal onderwerpen bij elke auteur");
+define("CONTENT_ADMIN_OPT_LAN_245", "wanneer geactiveers, wordt slechts een beperkt aantal auteurs per pagina getoond en kun je bladeren door de overige pagina's met auteurs.");
+define("CONTENT_ADMIN_OPT_LAN_246", "hoeveel auteurs moeten per pagina worden getoond?");
+define("CONTENT_ADMIN_OPT_LAN_247", "auteursoverzicht pagina");
+define("CONTENT_ADMIN_OPT_LAN_248", "content beheerder");
+define("CONTENT_ADMIN_OPT_LAN_249", "klasse");
+define("CONTENT_ADMIN_OPT_LAN_250", "welke ledenklasse mag de beschikking hebben over de beheer content manager zone");
+define("CONTENT_ADMIN_OPT_LAN_251", "het gebruikersoverzicht in de beheer content manager zone bevat alleen de leden in de betreffende klasse. Je moet nog steeds leden per categorie toewijzen! Deze klasse beperkt slechts het overzicht van gebrikers waaruit je kunt kiezen");
+define("CONTENT_ADMIN_OPT_LAN_252", "links");
+define("CONTENT_ADMIN_OPT_LAN_253", "moet een selectie met links naar andere content pagina's worden getoond?");
+define("CONTENT_ADMIN_OPT_LAN_254", "waneer gedeactiveerd worden alle onderstaande link opties genegeerd");
+define("CONTENT_ADMIN_OPT_LAN_255", "hoofdcategorie");
+define("CONTENT_ADMIN_OPT_LAN_256", "moet de hoofdcategorie in het categorieoverzicht worden getoond?");
+define("CONTENT_ADMIN_OPT_LAN_257", "link weergavetype ");
+define("CONTENT_ADMIN_OPT_LAN_258", "bepaal hoe de links worden weergegeven");
+define("CONTENT_ADMIN_OPT_LAN_259", "je kunt de links in een keuzelijstje tonen of als gewone links");
+define("CONTENT_ADMIN_OPT_LAN_260", "pictogram : links");
+define("CONTENT_ADMIN_OPT_LAN_261", "titel : links overzicht");
+define("CONTENT_ADMIN_OPT_LAN_262", "bepaal de titel van de links naar andere content pagina's");
+define("CONTENT_ADMIN_OPT_LAN_263", "deze titel wordt alleen gebruikt als de links als 'normale links' worden getoond en niet in de uitklalijst");
+define("CONTENT_ADMIN_OPT_LAN_264", "pictogram : standaard categorie");
+define("CONTENT_ADMIN_OPT_LAN_265", "bepaal het standaard pr\ictogram als er geen categoriepictogram aanwezig is (alleen als je te tonen 'categorie pictogram' hebt geselecteerd)");
+define("CONTENT_ADMIN_OPT_LAN_266", "");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "verplicht veld niet ingevuld");
 define("CONTENT_ADMIN_ITEM_LAN_1", "onderwerp aangemaakt");
@@ -385,7 +420,7 @@ define("CONTENT_ADMIN_ITEM_LAN_52", "aanmelden content onderwerp");
 define("CONTENT_ADMIN_ITEM_LAN_53", "meta sleutelwoorden voor dit content onderwerp (scheiden met comma's, spaties niet toegestaan !)");
 define("CONTENT_ADMIN_ITEM_LAN_54", "aanvullende gegevens");
 define("CONTENT_ADMIN_ITEM_LAN_55", "Terug naar de  <a href='".e_SELF."'>hoofd contentmanager pagina</a> om meer van je persoonlijke content te beheren<br />or<br />Ga naar de <a href='".e_PLUGIN."content/content.php'>hoofd content pagina</a> om de onderwerpen te bekijken.");
-define("CONTENT_ADMIN_ITEM_LAN_56", "persoonlijke content manager");
+define("CONTENT_ADMIN_ITEM_LAN_56", "persoonlijke content beheerder");
 define("CONTENT_ADMIN_ITEM_LAN_57", "categorie");
 define("CONTENT_ADMIN_ITEM_LAN_58", "onderwerpen");
 define("CONTENT_ADMIN_ITEM_LAN_59", "verplaats");
@@ -421,9 +456,9 @@ define("CONTENT_ADMIN_ITEM_LAN_88", "om een onderwerp in de eerder geselecteerde
 define("CONTENT_ADMIN_ITEM_LAN_89", "om een onderwerp in de eerder geselecteerde hoofdcategorie te bewerken");
 define("CONTENT_ADMIN_ITEM_LAN_90", "klik hier");
 define("CONTENT_ADMIN_ITEM_LAN_91", "om ditzelfde onderwerp opnieuw te bewerken");
-define("CONTENT_ADMIN_ITEM_LAN_92", "sjabloon");
-define("CONTENT_ADMIN_ITEM_LAN_93", "kies een layout sjabloon");
-define("CONTENT_ADMIN_ITEM_LAN_94", "selecteer een layout sjabloon");
+define("CONTENT_ADMIN_ITEM_LAN_92", "layout");
+define("CONTENT_ADMIN_ITEM_LAN_93", "kies een layout schema");
+define("CONTENT_ADMIN_ITEM_LAN_94", "selecteer een layout schema");
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "volgorde is verhoogd");
 define("CONTENT_ADMIN_ORDER_LAN_1", "volgorde is verlaagd");
@@ -481,24 +516,26 @@ define("CONTENT_ADMIN_MAIN_LAN_24", "Dit is een nieuwe installatie / De oude con
 define("CONTENT_ADMIN_MAIN_LAN_25", "Omdat de oude aanwezige content tabel nog geen records bevat, kun je nu gewoon beginnen met het beheren van nieuwe content.<br />
 Door te klikken op de Volgende knop, maak je automatisch een nieuwe standaard set categorieën aan, namelijk Content, Review en Artikel.<br />");
 
-define("CONTENT_ADMIN_MENU_LAN_0", "Beheren aanwezige content");
-define("CONTENT_ADMIN_MENU_LAN_1", "Aanmaken nieuwe content");
-define("CONTENT_ADMIN_MENU_LAN_2", "Beheren aanwezige categorieën");
-define("CONTENT_ADMIN_MENU_LAN_3", "Creëren nieuwe categorie");
+define("CONTENT_ADMIN_MENU_LAN_0", "Beheren content");
+define("CONTENT_ADMIN_MENU_LAN_1", "Aanmaken content");
+define("CONTENT_ADMIN_MENU_LAN_2", "Beheren categorieën");
+define("CONTENT_ADMIN_MENU_LAN_3", "Creëren categorie");
 define("CONTENT_ADMIN_MENU_LAN_4", "Aangemelden onderwerpen");
 define("CONTENT_ADMIN_MENU_LAN_5", "Categorie");
 define("CONTENT_ADMIN_MENU_LAN_6", "Opties");
-define("CONTENT_ADMIN_MENU_LAN_7", "Creëren");
-define("CONTENT_ADMIN_MENU_LAN_8", "Aanmelden");
-define("CONTENT_ADMIN_MENU_LAN_9", "Pad en thema");
+define("CONTENT_ADMIN_MENU_LAN_7", "Beheerder creëren");
+define("CONTENT_ADMIN_MENU_LAN_8", "Aanmelden onderwerpen");
+define("CONTENT_ADMIN_MENU_LAN_9", "Pad, thema", Css);
 define("CONTENT_ADMIN_MENU_LAN_10", "Algemeen");
-define("CONTENT_ADMIN_MENU_LAN_11", "Recente pagina's");
+define("CONTENT_ADMIN_MENU_LAN_11", "Voorbeeldweergave");
 define("CONTENT_ADMIN_MENU_LAN_12", "Categorie pagina's");
 define("CONTENT_ADMIN_MENU_LAN_13", "Content pagina's");
 define("CONTENT_ADMIN_MENU_LAN_14", "Menu");
-define("CONTENT_ADMIN_MENU_LAN_15", "Beheren volgorde");
+define("CONTENT_ADMIN_MENU_LAN_15", "Volgorde");
 define("CONTENT_ADMIN_MENU_LAN_16", "Archiefpagina");
-
+define("CONTENT_ADMIN_MENU_LAN_17", "ContentManager");
+define("CONTENT_ADMIN_MENU_LAN_18", "Auteurspagina");
+define("CONTENT_ADMIN_MENU_LAN_19", "Content Beheerder");
 define("CONTENT_ADMIN_JS_LAN_0", "Weet je zeker dat je deze categorie wilt verwijderen?");
 define("CONTENT_ADMIN_JS_LAN_1", "Weet je zeker dat je dit onderwerp wilt verwijderen?");
 define("CONTENT_ADMIN_JS_LAN_2", "weet je zeker dat je de huidige afbeelding wilt verwijderen?");
@@ -531,6 +568,36 @@ define("CONTENT_ADMIN_DATE_LAN_16", "instellen einddatum");
 define("CONTENT_ADMIN_DATE_LAN_17", "je kunt een startdatum voor dit onderwerp opgeven. niet invullen voor de huidige tijd");
 define("CONTENT_ADMIN_DATE_LAN_18", "je kunt een einddatum voor dit onderwerp opgeven. niet invullen voor onbepaalde duur");
 
+define("CONTENT_PAGETITLE_LAN_0", "Content");
+define("CONTENT_PAGETITLE_LAN_1", "Hoofd");
+define("CONTENT_PAGETITLE_LAN_2", "Recent");
+define("CONTENT_PAGETITLE_LAN_3", "Categorie");
+define("CONTENT_PAGETITLE_LAN_4", "Hoogst gewaardeerd");
+define("CONTENT_PAGETITLE_LAN_5", "Auteur");
+define("CONTENT_PAGETITLE_LAN_6", "Archief");
+define("CONTENT_PAGETITLE_LAN_7", "Aanmelden");
+define("CONTENT_PAGETITLE_LAN_8", "Aanmelden content onderwerp");
+define("CONTENT_PAGETITLE_LAN_9", "Persoonlijk contentbeheer");
+define("CONTENT_PAGETITLE_LAN_10", "Bekijk onderwerpen");
+define("CONTENT_PAGETITLE_LAN_11", "Bewerk onderwerp");
+define("CONTENT_PAGETITLE_LAN_12", "Creëer onderwerpen");
+define("CONTENT_PAGETITLE_LAN_13", "Categorieën");
+define("CONTENT_PAGETITLE_LAN_14", "Auteursoverzicht");
+define("CONTENT_SEARCH_LAN_0", "heen onderwerpen gevonden met deze zoektermen.");
+define("CONTENT_ORDER_LAN_0", "sorteren op ...");
+define("CONTENT_ORDER_LAN_1", "kop (op)");
+define("CONTENT_ORDER_LAN_2", "kop (neer)");
+define("CONTENT_ORDER_LAN_3", "datum (op)");
+define("CONTENT_ORDER_LAN_4", "datum (neer)");
+define("CONTENT_ORDER_LAN_5", "verwijzing (op)");
+define("CONTENT_ORDER_LAN_6", "verwijzing (neer)");
+define("CONTENT_ORDER_LAN_7", "ouder (op)");
+define("CONTENT_ORDER_LAN_8", "ouder (neer)");
+define("CONTENT_ORDER_LAN_9", "volgorde (op)");
+define("CONTENT_ORDER_LAN_10", "volgorde (neer)");
+define("CONTENT_ORDER_LAN_11", "auteur (op)");
+define("CONTENT_ORDER_LAN_12", "auteur (neer)");
+
 define("CONTENT_LAN_0", "Content");
 define("CONTENT_LAN_1", "Overzicht recent");
 define("CONTENT_LAN_2", "Overzicht categorie");
@@ -540,16 +607,15 @@ define("CONTENT_LAN_5", "Auteur");
 define("CONTENT_LAN_6", "alle categorieën");
 define("CONTENT_LAN_7", "alle auteurs");
 define("CONTENT_LAN_8", "hoogst gewaardeerd");
-define("CONTENT_LAN_9", "sorteren op ...");
-
-define("CONTENT_LAN_10", "koptekst_op");
-define("CONTENT_LAN_11", "koptekst_neer");
-define("CONTENT_LAN_12", "datum_op");
-define("CONTENT_LAN_13", "datum_neer");
-define("CONTENT_LAN_14", "verwijs_op");
-define("CONTENT_LAN_15", "verwijs_neer");
-define("CONTENT_LAN_16", "ouder_op");
-define("CONTENT_LAN_17", "ouder_neer");
+define("CONTENT_LAN_9", "in");
+define("CONTENT_LAN_10", "op");
+define("CONTENT_LAN_11", "door");
+define("CONTENT_LAN_12", "");
+define("CONTENT_LAN_13", "");
+define("CONTENT_LAN_14", "");
+define("CONTENT_LAN_15", "");
+define("CONTENT_LAN_16", "");
+define("CONTENT_LAN_17", "");
 define("CONTENT_LAN_18", "zoek naar sleutelwoord");
 define("CONTENT_LAN_19", "zoeken");
 
@@ -606,8 +672,7 @@ define("CONTENT_LAN_69", "e-mailen van het");
 define("CONTENT_LAN_70", "afdrukken van het");
 define("CONTENT_LAN_71", "content onderwerp");
 define("CONTENT_LAN_72", "categorie onderwerp");
-define("CONTENT_LAN_73", "order_asc");
-define("CONTENT_LAN_74", "order_desc");
+
 define("CONTENT_LAN_75", "aanmelden content onderwerp");
 define("CONTENT_LAN_76", "creëren van een pdf bestand van het");
 define("CONTENT_LAN_77", "content zoeken");
@@ -618,6 +683,7 @@ define("CONTENT_LAN_81", "categorieën");
 define("CONTENT_LAN_82", "nog geen onderwerpen in ");
 define("CONTENT_LAN_83", "onderwerparchief");
 define("CONTENT_LAN_84", "content archief");
+define("CONTENT_LAN_85", "auteursoverzicht");
 
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "geen van de inhoudscategorieën is beschikbaar voor aanmelding door gewone leden");
 define("CONTENT_ADMIN_SUBMIT_LAN_1", "inhoud aanmeldingstype");
@@ -625,8 +691,8 @@ define("CONTENT_ADMIN_SUBMIT_LAN_2", "Bedankt, je onderwerp is aangemeld.");
 define("CONTENT_ADMIN_SUBMIT_LAN_3", "Bedankt, je onderwerp is aangemeld en wordt z.s.m. beoordeeld door een beheerder.");
 define("CONTENT_ADMIN_SUBMIT_LAN_4", "verplicht(e) veld(en) niet ingevuld");
 define("CONTENT_ADMIN_SUBMIT_LAN_5", "Ga terug naar de <a href='".e_SELF."'>hoofd aanmeldingspagina</a> om meer inhoud aan te melden<br />or<br />Ga naar de <a href='".e_PLUGIN."content/content.php'>inhoud hoofdpagina</a> om de inhoud te zien.");
-define("CONTENT_ADMIN_SUBMIT_LAN_6", "Inhoud type overzicht");
-define("CONTENT_ADMIN_SUBMIT_LAN_7", "Inhoud type aanmelding");
+define("CONTENT_ADMIN_SUBMIT_LAN_6", "");
+define("CONTENT_ADMIN_SUBMIT_LAN_7", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_8", "aangemeld content onderwerp verwijderd");
 
 define("CONTENT_ADMIN_CONVERSION_LAN_0", "inhoud");
@@ -687,4 +753,11 @@ define("CONTENT_ADMIN_CONVERSION_LAN_54", "aanmaken van een standaard set met ho
 define("CONTENT_ADMIN_CONVERSION_LAN_55", "content management plugin : converteer opties");
 define("CONTENT_ADMIN_CONVERSION_LAN_56", "druk op de knop om naar de Content Creëren nieuwe categorie pagina te gaan.");
 define("CONTENT_ADMIN_CONVERSION_LAN_57", "kies ouder");
+
+define("CONTENT_MENU_LAN_0", "content Menu :");
+define("CONTENT_MENU_LAN_1", "nog geen content onderwerpen");
+define("CONTENT_MENU_LAN_2", "recente onderwerpen");
+define("CONTENT_MENU_LAN_3", "categorieën");
+define("CONTENT_MENU_LAN_4", "content links");
+
 ?>

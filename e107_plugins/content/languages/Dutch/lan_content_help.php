@@ -4,132 +4,95 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_help.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 04:44:53 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-07 20:18:05 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
 
 define("CONTENT_ADMIN_HELP_ORDER_1", "
 <i>deze pagina toont alle aanwezige categorieën en subcategorieën.</i><br /><br />
-<b>detail overzicht</b><br />hier zie je de categorie id en de categorienaam. ook tref je verschillende opties aan om de volgorde van de categorieën te wijzigen.<br />
-<br />
+<b>detail overzicht</b><br />hier zie je de categorie id en de categorienaam. ook tref je verschillende opties aan om de volgorde van de categorieën te wijzigen.<br /><br />
 <b>uitleg van de gebruikte pictogrammen</b><br />
-".CONTENT_ICON_ORDERALL." beheer de algemen volgorde van de content onderwerpen, ongeacht hun categorie.<br />
+".CONTENT_ICON_ORDERALL." beheer de algemene volgorde van de contentonderwerpen, ongeacht hun categorie.<br />
 ".CONTENT_ICON_ORDERCAT." beheer de volgorde van de content onderwerpen in de betreffende categorie.<br />
 <img src='".e_IMAGE."admin_images/up.png' alt='' /> de omhoog knop laat je een content onderwerp één positie omhoog verplaatsen.<br />
 <img src='".e_IMAGE."admin_images/down.png' alt='' /> de omlaag knop laat je een content onderwerp één positie omlaag plaatsen.<br />
 <br />
-<b>volgorde</b><br />hier kun je handmatig de volgorde van alle categorieën in elke ouder bepalen. Je moet de waarde in de selectievelden wijzigen in de gewenste waarde en daarna druk je op de Bijwerken knop hieronder om de nieuwe volgorde vast te leggen.<br />
-");
-define("CONTENT_ADMIN_HELP_ORDER_2", "
-<i>deze pagina toont alle content onderwerpen in de geselecteerde categorie.</i><br /><br />
+<b>volgorde</b><br />hier kun je handmatig de volgorde van alle categorieën in elke ouder bepalen. Je moet de waarde in de selectievelden wijzigen in de gewenste waarde en daarna druk je op de Bijwerken knop hieronder om de nieuwe volgorde vast te leggen.<br />");
+define("CONTENT_ADMIN_HELP_ORDER_2", "<i>deze pagina toont alle content onderwerpen in de geselecteerde categorie.</i><br /><br />
 <b>detail overzicht</b><br />je ziet het content id, de content auteur en de content kop. ook staan hier verschillende opties om de volgorde van de content onderwerpen te wijzigen.<br />
-<br />
-<b>uitleg over de gebruikte pictogrammen</b><br />
+<br /><b>uitleg over de gebruikte pictogrammen</b><br />
 <img src='".e_IMAGE."admin_images/up.png' alt='' /> de omhoog knop laat je een content onderwerp één positie omhoog verplaatsen.<br />
 <img src='".e_IMAGE."admin_images/down.png' alt='' /> de omlaag knop laat je een content onderwerp één positie omlaag plaatsen.<br />
-<br />
-<b>order</b><br />hier kun je handmatig de volgorde van alle categorieën in elke ouder bepalen. Je moet de waarde in de selectievelden wijzigen in de gewenste waarde en daarna druk je op de Bijwerken knop hieronder om de nieuwe volgorde vast te leggen.<br />
-");
+<br /><b>volgorde</b><br />hier kun je handmatig de volgorde van alle categorieën in elke ouder bepalen. Je moet de waarde in de selectievelden wijzigen in de gewenste waarde en daarna druk je op de Bijwerken knop hieronder om de nieuwe volgorde vast te leggen.<br />");
 define("CONTENT_ADMIN_HELP_ORDER_3", "
 <i>deze pagina toont alle content onderwerpen in de geselecteerde oudercategorie.</i><br /><br />
-<b>detailed list</b><br />je ziet het content id, de content auteur en de content kop. ook staan hier verschillende opties om de volgorde van de content onderwerpen te wijzigen.<br />
-<br />
-<b>explanation of icons</b><br />
+<b>detail overzicht</b><br />je ziet het content id, de content auteur en de content kop. ook staan hier verschillende opties om de volgorde van de content onderwerpen te wijzigen.<br />
+<br /><b>uitleg over de gebruikte pictogrammen</b><br />
 <img src='".e_IMAGE."admin_images/up.png' alt='' /> de omhoog knop laat je een content onderwerp één positie omhoog verplaatsen.<br />
 <img src='".e_IMAGE."admin_images/down.png' alt='' /> de omlaag knop laat je een content onderwerp één positie omlaag verplaatsen.<br />
+<br /><b>volgorde</b><br />hier kun je handmatig de volgorde van alle categorieën in elke ouder bepalen. Je moet de waarde in de selectievelden wijzigen in de gewenste waarde en daarna druk je op de Bijwerken knop hieronder om de nieuwe volgorde vast te leggen.<br />");
+
+define("CONTENT_ADMIN_HELP_SUBMIT_1", "<i>Op deze pagina zie je een overzicht van alle door gebruikers aangemelde content onderwerpen.</i><br /><br />
+<b>detail overzicht</b><br />Je ziet hier een overzicht van deze content onderwerpen met hun id, pictogram, hoofd ouder, kop [onderkop], auteur en opties.<br /><br /><b>opties</b><br />je kunt een content onderwerp met behulp van de knoppen plaatsen of verwijderen.");
+
+
+define("CONTENT_ADMIN_HELP_CAT_1", "<i>deze pagina toont alle aanwezige categorieën en subcategorieën.</i><br /><br />
+<b>detail overzicht</b><br />Je ziet een overzicht met alle subcategorieën met hun id, pictogram, auteur, categorie [onderkop] en opties.<br >
 <br />
-<b>order</b><br />hier kun je handmatig de volgorde van alle categorieën in elke ouder bepalen. Je moet de waarde in de selectievelden wijzigen in de gewenste waarde en daarna druk je op de Bijwerken knop hieronder om de nieuwe volgorde vast te leggen.<br />
-");
-
-
-
-define("CONTENT_ADMIN_HELP_SUBMIT_1", "
-<i>Op deze pagina zie je een overzicht van alle door gebruikers aangemelde content onderwerpen.</i><br /><br />
-<b>detail overzicht</b><br />Je ziet hier een overzicht van deze content onderwerpen met hun id, pictogram, hoofd ouder, kop [onderkop], auteur en opties.<br /><br />
-<b>opties</b><br />je kunt een content onderwerp met behulp van de knoppen plaatsen of verwijderen.
-");
-
-
-
-define("CONTENT_ADMIN_HELP_CAT_1", "
-<i>deze pagina toont alle aanwezigecategorieën en subcategorieën.</i><br /><br />
-<b>detail overzicht</b><br />Je ziet een overzicht met alle subcategorieën met hun id, pictogram, auteur, categorie [onderkop] en opties.<br />
-<br />
-<b>explanation of icons</b><br />
-".CONTENT_ICON_EDIT." : for all categories you can click this button to edit the category.<br />
-".CONTENT_ICON_DELETE." : for all categories you can click this button to delete the category.<br />
-".CONTENT_ICON_OPTIONS." : for only the main category (at the top of the list) you can click this button to set and control all options.<br />
-");
-define("CONTENT_ADMIN_HELP_CAT_2", "
-".CONTENT_ICON_CONTENTMANAGER_SMALL." : (site admin only) for each subcategory you can click this button to manage the personalmanager for other admins.<br />
-<br />
-<b>personal manager</b><br />you can assign admins to certain categories. In doing so, these admins can manage their personal content items within these categories from outside of the admin page (content_manager.php).
-");
-define("CONTENT_ADMIN_HELP_CAT_3", "
-<i>this page allows you to create a new category</i><br /><br />
+<b>uitleg over de gebruikte pictogrammen</b><br />
+".CONTENT_ICON_EDIT." : voor alle categorieën kun je deze knop gebruiken om de categorie wilt bewerken.<br />
+".CONTENT_ICON_DELETE." : voor alle categorieën kun je deze knop gebruiken om de categorie wilt verwijderen.<br />
+".CONTENT_ICON_OPTIONS." : alleen voor de hoofdcategorie (bovenan de lijst) kun je de knop gebruiken om alle opties in te stellen en beheren.<br />");
+define("CONTENT_ADMIN_HELP_CAT_2", "".CONTENT_ICON_CONTENTMANAGER_SMALL." : (alleen hoofdbeheerder) for each subcategory you can click this button to manage the personalmanager for other admins.<br />
+<br /><b>persoonlijke beheerder</b><br />you can assign admins to certain categories. In doing so, these admins can manage their personal content items within these categories from outside of the admin page (content_manager.php).");
+define("CONTENT_ADMIN_HELP_CAT_3", "<i>this page allows you to create a new category</i><br /><br />
 ALWAYS CHOOSE A PARENT CATEGORY BEFORE YOU FILL IN THE OTHER FIELDS !<br /><br />
-This must be done, because some unique category preferences need to be loaded in the system.
-");
-define("CONTENT_ADMIN_HELP_CAT_4", "
-<i>this page shows the category edit form.</i><br /><br />
-<b>category edit form</b><br />you can now edit all information for this (sub)category and submit your changes.
-");
-define("CONTENT_ADMIN_HELP_CAT_5", "
-");
-define("CONTENT_ADMIN_HELP_CAT_6", "
-<i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />
-<b>default values</b><br />By default all values are present and already updated in the preferences when you view this page, but change any setting to your own standards.<br /><br />
-<b>division into eight sections</b><br />the options are divided into eight main sections. You see the different section in the right menu. you can click on them to go to the specific set of options for that section.<br /><br />
-<b>create</b><br />in this section you can specify options for the creation of content items on the admin pages on the admins end.<br /><br />
-<b>submit</b><br />in this section you can specify options for the submit form of content items.<br /><br />
-<b>path and theme</b><br />in this section you can set a theme for this main parent, and provide path locations to where you have stored your images for this main parent.<br /><br /><b>general</b><br />in this section you can specify general options to use throughout all the content pages.<br /><br />
-<b>list pages</b><br />in this section you can specify options pages, where content items are listed.<br /><br />
-<b>category pages</b><br />in this section you can specify options how to show the category pages.<br /><br />
-<b>content pages</b><br />in this section you can specify options how to show the content item page.<br /><br />
+This must be done, because some unique category preferences need to be loaded in the system.");
+define("CONTENT_ADMIN_HELP_CAT_4", "<i>this page shows the category edit form.</i><br /><br />
+<b>category edit form</b><br />you can now edit all information for this (sub)category and submit your changes.");
+define("CONTENT_ADMIN_HELP_CAT_5", "");
+define("CONTENT_ADMIN_HELP_CAT_6", "<i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />
+<b>standaardwaarden</b><br />By default all values are present and already updated in the preferences when you view this page, but change any setting to your own standards.<br /><br />
+<b>verdeling in acht secties</b><br />the options are divided into eight main sections. You see the different section in the right menu. you can click on them to go to the specific set of options for that section.<br /><br />
+<b>creëren</b><br />in this section you can specify options for the creation of content items on the admin pages on the admins end.<br /><br />
+<b>aanmelden</b><br />in this section you can specify options for the submit form of content items.<br /><br />
+<b>pad en thema</b><br />in this section you can set a theme for this main parent, and provide path locations to where you have stored your images for this main parent.<br /><br /><b>general</b><br />in this section you can specify general options to use throughout all the content pages.<br /><br />
+<b>overzicht pagina's</b><br />in this section you can specify options pages, where content items are listed.<br /><br />
+<b>categoriepagina's</b><br />in this section you can specify options how to show the category pages.<br /><br />
+<b>content pagina's</b><br />in this section you can specify options how to show the content item page.<br /><br />
 <b>menu</b><br />in this section you can specify options for the menu of this main parent.<br /><br />
 ");
-define("CONTENT_ADMIN_HELP_CAT_7", "
-<i>on this page you can assign admins to the selected category you have clicked</i><br /><br />
-Assign admin from the left colomn by clicking their name. you will see these names move to the right colomn. After clicking the assign button the admins in the right colomn are assigned to this category.
-");
+define("CONTENT_ADMIN_HELP_CAT_7", "<i>on this page you can assign admins to the selected category you have clicked</i><br /><br />
+Assign admin from the left colomn by clicking their name. you will see these names move to the right colomn. After clicking the assign button the admins in the right colomn are assigned to this category.");
 
-define("CONTENT_ADMIN_HELP_ITEMCREATE_1", "
-<b>category</b><br />please select a category from the select box to create your content item for.<br />
-");
-define("CONTENT_ADMIN_HELP_ITEMCREATE_2", "
-always select a category before you fill in other fields !<br />
+define("CONTENT_ADMIN_HELP_ITEMCREATE_1", "<b>categorie</b><br />please select a category from the select box to create your content item for.<br />");
+define("CONTENT_ADMIN_HELP_ITEMCREATE_2", "always select a category before you fill in other fields !<br />
 this needs to be done, because each main parent category (and subcategories in it) can have different preferences.<br /><br />
 <b>creation form</b><br />you can now provide all information for this content item and submit it.<br /><br />
-Be aware of the fact that diffenent main parent categories can have a different set of preferences, and therefore can have more fields available for you to fill in.
-");
+Be aware of the fact that diffenent main parent categories can have a different set of preferences, and therefore can have more fields available for you to fill in.");
 
-
-define("CONTENT_ADMIN_HELP_ITEM_1", "
-<i>if you have not yet added main parent categories, please do so at the <a href='".e_SELF."?type.0.cat.create'>Create New Category</a> page.</i><br /><br />
-<b>category</b><br />select a category from the pulldown menu to manage content for that category.<br /><br />
+define("CONTENT_ADMIN_HELP_ITEM_1", "<i>if you have not yet added main parent categories, please do so at the <a href='".e_SELF."?type.0.cat.create'>Creëren nieuwe categorie</a> page.</i><br /><br />
+<b>categorie</b><br />select a category from the pulldown menu to manage content for that category.<br /><br />
 the main parents are shown in bold and have the (ALL) extenstion behind them. selecting one of these will show all items from this main parent.<br /><br />
-for each main parent all the subcategories are shown including the main parent category itself (these are all shown in plain text). Selecting on of these categories will shown all items from that category only.
-");
-define("CONTENT_ADMIN_HELP_ITEM_2", "
-<b>first letters</b><br />if multiple content item starting letters of the content_heading are present, you will see buttons to select only those content items starting with that letter. Selecting the 'all' button will show a list containing all content items in this category.<br /><br />
-<b>detailed list</b><br />You see a list of all content items with their id, icon, author, heading [subheading] and options.<br /><br />
-<b>explanation of icons</b><br />
-".CONTENT_ICON_EDIT." : edit the content item.<br />
-".CONTENT_ICON_DELETE." : delete the content item.<br />
-");
+for each main parent all the subcategories are shown including the main parent category itself (these are all shown in plain text). Selecting on of these categories will shown all items from that category only.");
+define("CONTENT_ADMIN_HELP_ITEM_2", "<b>eerste letters</b><br />if multiple content item starting letters of the content_heading are present, you will see buttons to select only those content items starting with that letter. Selecting the 'all' button will show a list containing all content items in this category.<br /><br />
+<b>detail overzicht</b><br />You see a list of all content items with their id, icon, author, heading [subheading] and options.<br /><br />
+<b>uitleg van de gebruikte pictogrammen</b><br />
+".CONTENT_ICON_EDIT." : bewerk het contentonderwerp.<br />".CONTENT_ICON_DELETE." : verwijder het contentonderwerp.<br />");
 
+define("CONTENT_ADMIN_HELP_ITEMEDIT_1", "<b>bewerk formulier</b><br />you can now edit all information for this content item and submit your changes.<br /><br />
+if you change the category of this content item to another main parent category, you probably want to re-edit this item after the category change.<br />Because you change the main parent category other preferences may be available to fill in.");
 
-define("CONTENT_ADMIN_HELP_ITEMEDIT_1", "
-<b>edit form</b><br />you can now edit all information for this content item and submit your changes.<br /><br />
-if you change the category of this content item to another main parent category, you probably want to re-edit this item after the category change.<br />Because you change the main parent category other preferences may be available to fill in.
-");
-
-define("CONTENT_ADMIN_HELP_1", "Content Management Help Area");
-
+define("CONTENT_ADMIN_HELP_1", "Contentbeheer hulp");
 
 define("CONTENT_ADMIN_HELP_ITEM_LETTERS", "Below you see the distinct letters of the content heading for all items in this category.<br />By clicking on one of the letters you will see a list of all items starting with the selected letter. You can also choose the ALL button to display all items in this category.");
 
+
+define("CONTENT_ADMIN_HELP_OPTION_1", "On this page you can select a main parent category to set options for, or you can choose to edit the default preferences.<br /><br /><b>uitleg van de gebruikte pictogrammen</b><br />".CONTENT_ICON_USER." : link naar het auteursprofiel<br />".CONTENT_ICON_LINK." : link naar de categorie<br />".CONTENT_ICON_OPTIONS." : bewerk de opties<br />");
+define("CONTENT_ADMIN_HELP_OPTION_2", "
+define("CONTENT_ADMIN_HELP_MANAGER_1", "On this page you see a list of all categories. You can manage the 'personal content manager' for each category by clicking the icon.<br /><br /><b>uitleg van de gebruikte pictogrammen</b><br />".CONTENT_ICON_USER." : link naar het auteursprofiel<br />".CONTENT_ICON_LINK." : link naar de categorie<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : bewerk de persoonlijke content beheerders<br />");
+define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>on this page you can assign users to the selected category you have clicked</i><br /><br /><b>personal manager</b><br />you can assign users to certain categories. In doing so, these users can manage their personal content items within these categories from outside of the admin page (content_manager.php).<br /><br />Assign users from the left colomn by clicking their name. you will see these names move to the right colomn. After clicking the assign button the users in the right colomn are assigned to this category.");
 
 ?>

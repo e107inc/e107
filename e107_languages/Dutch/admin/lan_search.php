@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 04:44:52 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-07 20:17:38 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -36,4 +36,10 @@ define("SEALAN_28", "Resultaten");
 define("SEALAN_30", "Markeren zoektermen op de verwijzigingspagina:");
 define("SEALAN_31", "PHP gelimiteerd op");
 define("SEALAN_32", "resultaten (niets invullen voor onbeperkt)");
+define("SEALAN_33", "Kan de MySql sorteermethode niet gebruiken, omdat die alleen werkt bij versie 4.0.1 of hoger van MySql.");
+define("SEALAN_34", "Je huidige versie is");
+define("SEALAN_35", "Doorzoekbare sectie selectiemethode:");
+define("SEALAN_36", "Uitklaplijst");
+define("SEALAN_37", "Keuzevakjes");
+define("SEALAN_38", "Radioknop");
 ?>
