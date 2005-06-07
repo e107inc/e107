@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.93 $
-|     $Date: 2005-06-07 05:35:07 $
+|     $Revision: 1.94 $
+|     $Date: 2005-06-07 19:26:20 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -531,7 +531,7 @@ function update_61x_to_700($type) {
 
 		// Search Update
 		if (!isset($pref['search_highlight'])) {
-			$serial_prefs = "a:10:{s:11:\"multisearch\";s:1:\"1\";s:9:\"relevance\";s:1:\"1\";s:11:\"user_select\";s:1:\"1\";s:13:\"time_restrict\";s:1:\"0\";s:9:\"time_secs\";s:2:\"60\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}s:13:\"plug_handlers\";N;s:10:\"mysql_sort\";b:0;}";
+			$serial_prefs = "a:11:{s:11:\"user_select\";s:1:\"1\";s:9:\"time_secs\";s:2:\"60\";s:13:\"time_restrict\";s:1:\"0\";s:8:\"selector\";i:2;s:9:\"relevance\";i:0;s:13:\"plug_handlers\";N;s:10:\"mysql_sort\";i:0;s:11:\"multisearch\";s:1:\"1\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}}";
 			$search_prefs = unserialize(stripslashes($serial_prefs));
 			$handle = opendir(e_PLUGIN);
 			while (false !== ($file = readdir($handle))) {
@@ -720,15 +720,17 @@ function update_61x_to_700($type) {
 			$s_prefs = TRUE;
 		}
 		
-		// search sort method update
+		// search sort method and search selector updates
 		$search_prefs = $sysprefs -> getArray('search_prefs');
-		if (isset($search_prefs['search_sort'])) {
+		if (!isset($search_prefs['selector'])) {
 			preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
 			if (version_compare($mysql_version[1], '4.0.1', '<')) {
 				$search_prefs['mysql_sort'] = FALSE;
 			} else {
 				$search_prefs['mysql_sort'] = TRUE;
 			}
+			$search_prefs['selector'] = 2;
+			$search_prefs['multisearch'] = 1;
 			unset($search_prefs['search_sort']);
 			$serial_prefs = addslashes(serialize($search_prefs));
 			$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
@@ -744,7 +746,7 @@ function update_61x_to_700($type) {
 	} else {
 		global $sysprefs;
 		$search_prefs = $sysprefs -> getArray('search_prefs');
-		if (isset($search_prefs['search_sort'])) {
+		if (!isset($search_prefs['selector'])) {
 			return FALSE;
 		}
 		

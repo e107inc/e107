@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-06-07 17:21:22 $
+|     $Revision: 1.38 $
+|     $Date: 2005-06-07 19:26:20 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -104,7 +104,7 @@ $search_info = arraySort($search_info, 'order', SORT_ASC);
 $search_count = count($search_info);
 $google_id = $search_count + 1;
 
-if ($search_prefs['multisearch'] == 1) {
+if ($search_prefs['selector'] == 1) {
 	if (isset($query) && isset($_GET['t'][$google_id]) && $_GET['t'][$google_id]) {
 		header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $query)));
 		exit;
@@ -197,23 +197,25 @@ if (!isset($SEARCH_MAIN_TABLE)) {
 	}
 }
 
-if ($search_prefs['multisearch'] == 2) {
+if ($search_prefs['selector'] == 2) {
 	$SEARCH_DROPDOWN = "<select name='t' class='tbox' style='width: 100%'>";
-	$SEARCH_DROPDOWN .= "<option value='all'>".LAN_SEARCH_19." All Areas</option>";
+	if ($search_prefs['multisearch']) {
+		$SEARCH_DROPDOWN .= "<option value='all'>".LAN_SEARCH_19." All Areas</option>";
+	}
 } else {
 	$SEARCH_MAIN_CHECKBOXES = '';
 }
 
 foreach($search_info as $key => $si) {
-	if ($search_prefs['multisearch'] == 2) {
+	if ($search_prefs['selector'] == 2) {
 		$sel = (isset($searchtype[$key]) && $searchtype[$key]) ? " selected='selected'" : "";
 	} else {
 		$sel = (isset($searchtype[$key]) && $searchtype[$key]) ? " checked='checked'" : "";
 	}
 	$google_js = check_class($search_prefs['google']) ? "onclick=\"uncheckG();\" " : "";
-	if ($search_prefs['multisearch'] == 2) {
+	if ($search_prefs['selector'] == 2) {
 		$SEARCH_DROPDOWN .= "<option value='".$key."' ".$sel.">".$si['qtype']."</option>";
-	} else if ($search_prefs['multisearch']== 1) {
+	} else if ($search_prefs['selector'] == 1) {
 		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input ".$google_js." type='checkbox' name='t[".$key."]' ".$sel." />".$si['qtype'].$POST_CHECKBOXES;
 	} else {
 		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input type='radio' name='t' value='".$key."' ".$sel." />".$si['qtype'].$POST_CHECKBOXES;		
@@ -221,22 +223,22 @@ foreach($search_info as $key => $si) {
 }
 
 if (check_class($search_prefs['google'])) {
-	if ($search_prefs['multisearch'] == 2) {
+	if ($search_prefs['selector'] == 2) {
 		$SEARCH_DROPDOWN .= "<option value='".$google_id."'>Google</option>";
-	} else if ($search_prefs['multisearch'] == 1) {
+	} else if ($search_prefs['selector'] == 1) {
 		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input id='google' type='checkbox' name='t[".$google_id."]' onclick='uncheckAll(this)' />Google".$POST_CHECKBOXES;
 	} else {
 		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input id='google' type='radio' name='t' value='".$google_id."' />Google".$POST_CHECKBOXES;
 	}
 }
 
-if ($search_prefs['multisearch'] == 2) {
+if ($search_prefs['selector'] == 2) {
 	$SEARCH_DROPDOWN .= "</select>";
 }
 
 $value = isset($query) ? $query : "";
 $SEARCH_MAIN_SEARCHFIELD = "<input class='tbox m_search' type='text' name='q' size='40' value='".$value."' maxlength='50' />";
-if ($search_prefs['multisearch'] == 1) {
+if ($search_prefs['selector'] == 1) {
 	$SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
 	$SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 }
@@ -261,7 +263,7 @@ foreach ($sch -> stop_keys as $stop_key) {
 	$SEARCH_MESSAGE = "";
 }
 
-if ($search_prefs['multisearch'] == 2) {
+if ($search_prefs['selector'] == 2) {
 	$text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_COMPACT_TABLE);
 } else {
 	$text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TOP_TABLE);
@@ -324,7 +326,7 @@ function parsesearch($text, $match) {
 
 function headerjs() {
 	global $search_count, $google_id, $search_prefs;
-	if ($search_prefs['multisearch']) {
+	if ($search_prefs['selector'] == 1) {
 	$script = "<script type='text/javascript'>
 	<!--
 	function checkAll(allbox) {

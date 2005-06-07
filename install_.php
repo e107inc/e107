@@ -1,9 +1,9 @@
-<?php
+ï»¿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-06-07 05:35:07 $
+|     $Revision: 1.27 $
+|     $Date: 2005-06-07 19:26:20 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -402,7 +402,7 @@ function stage6() {
 function stage7() {
 
 	$fpath = str_replace(strrchr($_SERVER['PHP_SELF'], "/"), "", $_SERVER['PHP_SELF'])."/";
-	$data = chr(60)."?php\n". chr(47)."*\n+---------------------------------------------------------------+\n|        e107 website system\n|        /e107_config.php\n|\n|        ©Steve Dunstan 2001-2002\n|        http://e107.org\n|        jalist@e107.org\n|\n|        Released under the terms and conditions of the\n|        GNU General Public License (http://gnu.org).\n+---------------------------------------------------------------+\n\n".INSLAN64."\n\n*". chr(47)."\n\n". chr(36)."mySQLserver = ".chr(34).$_POST['mysql_server'].chr(34).";\n". chr(36)."mySQLuser = ".chr(34).$_POST['mysql_name'].chr(34).";\n". chr(36)."mySQLpassword = ".chr(34).$_POST['mysql_password'].chr(34).";\n". chr(36)."mySQLdefaultdb = ".chr(34).$_POST['mysql_db'].chr(34).";\n". chr(36)."mySQLprefix = ".chr(34).$_POST['mysql_prefix'].chr(34).";\n\n".
+	$data = chr(60)."?php\n". chr(47)."*\n+---------------------------------------------------------------+\n|        e107 website system\n|        /e107_config.php\n|\n|        Â©Steve Dunstan 2001-2002\n|        http://e107.org\n|        jalist@e107.org\n|\n|        Released under the terms and conditions of the\n|        GNU General Public License (http://gnu.org).\n+---------------------------------------------------------------+\n\n".INSLAN64."\n\n*". chr(47)."\n\n". chr(36)."mySQLserver = ".chr(34).$_POST['mysql_server'].chr(34).";\n". chr(36)."mySQLuser = ".chr(34).$_POST['mysql_name'].chr(34).";\n". chr(36)."mySQLpassword = ".chr(34).$_POST['mysql_password'].chr(34).";\n". chr(36)."mySQLdefaultdb = ".chr(34).$_POST['mysql_db'].chr(34).";\n". chr(36)."mySQLprefix = ".chr(34).$_POST['mysql_prefix'].chr(34).";\n\n".
 	chr(36)."ADMIN_DIRECTORY = ".chr(34)."e107_admin/".chr(34).";\n". chr(36)."FILES_DIRECTORY = ".chr(34)."e107_files/".chr(34).";\n". chr(36)."IMAGES_DIRECTORY = ".chr(34)."e107_images/".chr(34).";\n". chr(36)."THEMES_DIRECTORY = ".chr(34)."e107_themes/".chr(34).";\n". chr(36)."PLUGINS_DIRECTORY = ".chr(34)."e107_plugins/".chr(34).";\n". chr(36)."HANDLERS_DIRECTORY = ".chr(34)."e107_handlers/".chr(34).";\n". chr(36)."LANGUAGES_DIRECTORY = ".chr(34)."e107_languages/".chr(34).";\n". chr(36)."HELP_DIRECTORY = ".chr(34)."e107_docs/help/".chr(34).";\n". chr(36)."DOWNLOADS_DIRECTORY =  ".chr(34)."e107_files/downloads/".chr(34).";\n". "// ".chr(36)."DOWNLOADS_DIRECTORY =  ".chr(34)."<fullpath>/downloads/".chr(34).";\n". "// eg. ".chr(36)."DOWNLOADS_DIRECTORY =  ".chr(34)."/home/downloads/".chr(34).";\n\n". "define(".chr(34)."e_HTTP".chr(34).", ".chr(34).$fpath.chr(34).");\n\n?".
 	chr(62);
 
@@ -514,9 +514,9 @@ function create_tables() {
 	
 	preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
 	if (version_compare($mysql_version[1], '4.0.1', '<')) {
-		$search_prefs = 'a:10:{s:11:\"multisearch\";s:1:\"1\";s:9:\"relevance\";s:1:\"1\";s:11:\"user_select\";s:1:\"1\";s:13:\"time_restrict\";s:1:\"0\";s:9:\"time_secs\";s:2:\"60\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}s:13:\"plug_handlers\";N;s:10:\"mysql_sort\";b:0;}';
+		$search_prefs = 'a:11:{s:11:\"user_select\";s:1:\"1\";s:9:\"time_secs\";s:2:\"60\";s:13:\"time_restrict\";s:1:\"0\";s:8:\"selector\";i:2;s:9:\"relevance\";i:0;s:13:\"plug_handlers\";N;s:10:\"mysql_sort\";i:0;s:11:\"multisearch\";s:1:\"1\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}}';
 	} else {
-		$search_prefs = 'a:10:{s:11:\"multisearch\";s:1:\"1\";s:9:\"relevance\";s:1:\"1\";s:11:\"user_select\";s:1:\"1\";s:13:\"time_restrict\";s:1:\"0\";s:9:\"time_secs\";s:2:\"60\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}s:13:\"plug_handlers\";N;s:10:\"mysql_sort\";b:1;}';
+		$search_prefs = 'a:11:{s:11:\"user_select\";s:1:\"1\";s:9:\"time_secs\";s:2:\"60\";s:13:\"time_restrict\";s:1:\"0\";s:8:\"selector\";i:2;s:9:\"relevance\";i:0;s:13:\"plug_handlers\";N;s:10:\"mysql_sort\";i:1;s:11:\"multisearch\";s:1:\"1\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}}';
 	}
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('search_prefs', '$search_prefs') ");
 
