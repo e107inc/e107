@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-06 21:56:09 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-07 09:57:17 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -204,13 +204,13 @@ define("CONTENT_ADMIN_OPT_LAN_105", "Activado, muestra el sistema de valoración
 define("CONTENT_ADMIN_OPT_LAN_106", "Orden página");
 define("CONTENT_ADMIN_OPT_LAN_107", "Escoja el método de ordenación");
 define("CONTENT_ADMIN_OPT_LAN_108", "Ordenar por 'orden' usará el número de orden dado en Área de Gestión de Orden");
-define("CONTENT_ADMIN_OPT_LAN_109", "");
-define("CONTENT_ADMIN_OPT_LAN_110", "");
-define("CONTENT_ADMIN_OPT_LAN_111", "");
-define("CONTENT_ADMIN_OPT_LAN_112", "");
-define("CONTENT_ADMIN_OPT_LAN_113", "");
-define("CONTENT_ADMIN_OPT_LAN_114", "");
-define("CONTENT_ADMIN_OPT_LAN_115", "");
+define("CONTENT_ADMIN_OPT_LAN_109", "Cantidad de elementos");
+define("CONTENT_ADMIN_OPT_LAN_110", "Escoja que secciones se mostrarán en todas las categorías de contenidos");
+define("CONTENT_ADMIN_OPT_LAN_111", "Escoja que secciones de la categoría se mostrarán");
+define("CONTENT_ADMIN_OPT_LAN_112", "Escoja que secciones en la lista de subcategorías se mostrarán");
+define("CONTENT_ADMIN_OPT_LAN_113", "Página de todas las categorías");
+define("CONTENT_ADMIN_OPT_LAN_114", "Página de ver categorías");
+define("CONTENT_ADMIN_OPT_LAN_115", "Activado, se insertará un enlace a la categoría en la cadena del sufijo");
 define("CONTENT_ADMIN_OPT_LAN_116", "");
 define("CONTENT_ADMIN_OPT_LAN_117", "");
 define("CONTENT_ADMIN_OPT_LAN_118", "");

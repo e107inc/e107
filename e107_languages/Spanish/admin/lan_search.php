@@ -4,20 +4,18 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_search.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:41 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-07 09:57:41 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("SEALAN_1", "Configuración de búsquedas");
 define("SEALAN_2", "Número de carácteres a mostrar en el resumen de búsquedas:");
 define("SEALAN_3", "Método corto de búsqueda:");
-//define("SEALAN_4", "Áreas de búsqueda:");
-//define("SEALAN_5", "Noticias");
+
 define("SEALAN_6", "Comentarios");
 define("SEALAN_7", "Miembros reg.");
-//define("SEALAN_8", "Descargas");
-//define("SEALAN_9", "Número de resultados a mostrar por página:");
+
 define("SEALAN_10", "Mostrar valor de importancia:");
 define("SEALAN_11", "Permitir al usuario seleccionar áreas de búsqueda:");
 define("SEALAN_12", "Restringir el tiempo entre búsquedas (max 5 mins):");
@@ -37,7 +35,7 @@ define("SEALAN_25", "Clase de Usuario");
 define("SEALAN_26", "Texto pre-título");
 define("SEALAN_27", "Caract.");
 define("SEALAN_28", "Result.");
-//define("SEALAN_29", "Orden");
+
 define("SEALAN_30", "Resaltar palabras referidas en la página:");
 define("SEALAN_31", "PHP limitado a");
 define("SEALAN_32", "resultados (dejar en blanco para no limitar)");
