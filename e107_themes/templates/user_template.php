@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-01 21:26:29 $
-|     $Author: qnome $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-07 17:10:34 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
-global $user_shortcodes;
+global $user_shortcodes, $pref;
 $EXTENDED_CATEGORY_START = "<tr><td colspan='2' class='forumheader' style='text-align:left'>{EXTENDED_NAME}</td></tr>";
 
 $EXTENDED_CATEGORY_TABLE = "
@@ -42,22 +42,6 @@ $USER_SHORT_TEMPLATE = "
 </tr>
 ";
 
-
-$sc_style['USER_SENDPM']['pre'] = "<tr><td style='width:100%' class='forumheader3'><span style='float:left'>";
-$sc_style['USER_SENDPM']['post'] = "</span><span style='float:right;'>".LAN_425."</span></td></tr>";
-
-if($tp->parseTemplate("{USER_SENDPM}", FALSE, $user_shortcodes))
-{
-	$sendpm = "{USER_SENDPM}";
-}
-else
-{
-	$sendpm = "";
-}
-
-//$sc_style['USER_PICTURE']['pre'] = "";
-//$sc_style['USER_PICTURE']['post'] = $sendpm;
-
 $sc_style['USER_SIGNATURE']['pre'] = "<tr><td colspan='2' class='forumheader3' style='text-align:left'>";
 $sc_style['USER_SIGNATURE']['post'] = "</td></tr>";
 
@@ -70,7 +54,35 @@ $sc_style['USER_FORUM_LINK']['post'] = "</td></tr>";
 $sc_style['USER_UPDATE_LINK']['pre'] = "<tr><td colspan='2' class='forumheader3' style='text-align:center'>";
 $sc_style['USER_UPDATE_LINK']['post'] = "</td></tr>";
 
-$span = ($sendpm) ? 5 : 4;
+if(isset($pref['photo_upload']) && $pref['photo_upload'])
+{
+	$user_picture =  "{USER_PICTURE}";
+	$colspan = " colspan='2'";
+	$main_colspan = "";
+}
+else
+{
+	$user_picture =  "";
+	$colspan = "";
+	$main_colspan = " colspan = '2' ";
+}	
+
+$sc_style['USER_SENDPM']['pre'] = "<tr><td colspan='2' style='width:100%' class='forumheader3'><span style='float:left'>";
+$sc_style['USER_SENDPM']['post'] = "</span><span style='float:right;'>".LAN_425."</span></td></tr>";
+
+if($tp->parseTemplate("{USER_SENDPM}", FALSE, $user_shortcodes))
+{
+	$sendpm = "{USER_SENDPM}";
+}
+else
+{
+	$sendpm = "";
+}
+
+$span = " rowspan='".($sendpm ? "5" : "4")."' ";
+$sc_style['USER_PICTURE']['pre']="<td {$span} class='forumheader3' style='width:20%; vertical-align:middle; text-align:center'>";
+$sc_style['USER_PICTURE']['post']="</td>";
+
 $USER_FULL_TEMPLATE = "
 <div style='text-align:center'>
 <table style='width:95%' class='fborder'>
@@ -78,31 +90,29 @@ $USER_FULL_TEMPLATE = "
 	<td colspan='2' class='fcaption' style='text-align:center'>".LAN_142." {USER_ID}: {USER_NAME}</td>
 </tr>
 <tr>
-	<td rowspan='{$span}' class='forumheader3' style='width:20%; vertical-align:middle; text-align:center'>
-	{USER_PICTURE}
-	</td>
-	<td class='forumheader3' style='width:100%'>
+	$user_picture
+	<td {$main_colspan} class='forumheader3' style='width:100%'>
 		<span style='float:left'>{USER_REALNAME_ICON} ".LAN_308."</span>
 		<span style='float:right; text-align:right'>{USER_REALNAME}</span>
 	</td>
 </tr>
 
 <tr>
-	<td style='width:100%' class='forumheader3'>
+	<td  {$main_colspan} style='width:100%' class='forumheader3'>
 		<span style='float:left'>{USER_EMAIL_ICON} ".LAN_112."</span>
 		<span style='float:right; text-align:right'>{USER_EMAIL_LINK}</span>
 	</td>
 </tr>
 
 <tr>
-	<td style='width:100%' class='forumheader3'>
+	<td  {$main_colspan} style='width:100%' class='forumheader3'>
 		<span style='float:left'>".LAN_406.":</span>
 		<span style='float:right; text-align:right'>{USER_LEVEL}</span>
 	</td>
 </tr>
 
 <tr>
-	<td style='width:100%' class='forumheader3'>
+	<td  {$main_colspan} style='width:100%' class='forumheader3'>
 		<span style='float:left'>".LAN_404.":&nbsp;&nbsp;</span>
 		<span style='float:right; text-align:right'>{USER_LASTVISIT}<br />{USER_LASTVISIT_LAPSE}</span>
 	</td>
