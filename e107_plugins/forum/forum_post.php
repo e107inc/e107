@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-06-02 15:33:17 $
+|     $Revision: 1.37 $
+|     $Date: 2005-06-07 14:43:29 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -113,11 +113,10 @@ define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']." / ".($action == "
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-if (IsSet($_POST['submitpoll']))
+if (isset($_POST['submitpoll']))
 {
-	require(e_PLUGIN."poll/poll_class.php");
+	require_once(e_PLUGIN."poll/poll_class.php");
 	$poll = new poll;
-	//$poll->submit_poll(0, $_POST['poll_title'], $_POST['poll_option'], $_POST['activate'], 0, $forum_id, "forum");
 
 	require_once(HEADERF);
 	if (!$FORUMPOST)
