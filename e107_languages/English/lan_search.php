@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_search.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-04-09 17:58:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-07 17:21:22 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -14,7 +14,7 @@ define("PAGE_NAME", "Search");
 define("LAN_20", "Error");
 define("LAN_98", "News Items");
 define("LAN_99", "Comments");
-define("LAN_140", "Registered members");
+define("LAN_140", "Members");
 define("LAN_180", "Search");
 define("LAN_192", "All categories");
 define("LAN_193", "Event Calendar");
@@ -24,7 +24,7 @@ define("LAN_196", "matches");
 
 define("LAN_197", "Downloads");
 define("LAN_198", "No matches found");
-define("LAN_199", "Search for:");
+define("LAN_199", "Search For:");
 define("LAN_200", "Categories:");
 
 define("LAN_201", "Please redefine your search query");
@@ -49,7 +49,7 @@ define("LAN_SEARCH_15", "Author:");
 define("LAN_SEARCH_16", "Search Restricted");
 define("LAN_SEARCH_17", "Sorry, search is restricted to one search every ");
 define("LAN_SEARCH_18", " seconds.");
-define("LAN_SEARCH_19", "Search in:");
+define("LAN_SEARCH_19", "Search In:");
 define("LAN_SEARCH_20", "Authorisation Required");
 define("LAN_SEARCH_21", "You are not authorised to view this page.");
 

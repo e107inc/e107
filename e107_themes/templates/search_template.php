@@ -1,16 +1,30 @@
 <?php
 
+if (!isset($SEARCH_COMPACT_TABLE)) {
+	$SEARCH_COMPACT_TABLE = "
+	<div style='text-align:center'>
+	<form id='searchform' method='get' action='".e_SELF."'>
+	<table style='width:95%' class='fborder'>\n
+	<tr>
+	<td class='forumheader3' style='width:30%'>{SEARCH_DROPDOWN}</td>
+	<td class='forumheader3' style='width:70%; white-space: nowrap; text-align: right'>
+	{SEARCH_MAIN_SEARCHFIELD} {SEARCH_MAIN_SUBMIT}<br />{SEARCH_MESSAGE}
+	</td>
+	</tr>
+	</table>
+	</form>
+	</div>";
+}
+
 if (!isset($SEARCH_TOP_TABLE)) {
 	$SEARCH_TOP_TABLE = "
 	<div style='text-align:center'>
 	<form id='searchform' method='get' action='".e_SELF."'>
 	<table style='width:95%' class='fborder'>\n
 	<tr>
-	<td class='forumheader3' style='width:30%'>".LAN_199."<br /><span class='smalltext'>".LAN_417."</span></td>
-	<td class='forumheader3' style='width:70%'>
-	{SEARCH_MAIN_SEARCHFIELD} {SEARCH_MAIN_SUBMIT}
-	<br />
-	{SEARCH_MESSAGE}
+	<td class='forumheader3' style='width:30%'>".LAN_199."</td>
+	<td class='forumheader3' style='width:70%; white-space: nowrap'>
+	{SEARCH_MAIN_SEARCHFIELD} {SEARCH_MAIN_SUBMIT}<br />{SEARCH_MESSAGE}
 	</td>
 	</tr>";
 }
@@ -33,7 +47,7 @@ if (!isset($SEARCH_CAT_TABLE)) {
 if (!isset($SEARCH_BOT_TABLE)) {
 	$SEARCH_BOT_TABLE = "</table>
 	</form>
-	</div>\n";
+	</div>";
 }
 
 if (!isset($PRE_CHECKBOXES)) {

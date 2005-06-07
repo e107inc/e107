@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-06-07 15:50:32 $
+|     $Revision: 1.37 $
+|     $Date: 2005-06-07 17:21:22 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -104,7 +104,7 @@ $search_info = arraySort($search_info, 'order', SORT_ASC);
 $search_count = count($search_info);
 $google_id = $search_count + 1;
 
-if ($search_prefs['multisearch']) {
+if ($search_prefs['multisearch'] == 1) {
 	if (isset($query) && isset($_GET['t'][$google_id]) && $_GET['t'][$google_id]) {
 		header("location:http://www.google.com/search?q=".stripslashes(str_replace(" ", "+", $query)));
 		exit;
@@ -197,11 +197,23 @@ if (!isset($SEARCH_MAIN_TABLE)) {
 	}
 }
 
-$SEARCH_MAIN_CHECKBOXES = '';
+if ($search_prefs['multisearch'] == 2) {
+	$SEARCH_DROPDOWN = "<select name='t' class='tbox' style='width: 100%'>";
+	$SEARCH_DROPDOWN .= "<option value='all'>".LAN_SEARCH_19." All Areas</option>";
+} else {
+	$SEARCH_MAIN_CHECKBOXES = '';
+}
+
 foreach($search_info as $key => $si) {
-	$sel = (isset($searchtype[$key]) && $searchtype[$key]) ? " checked='checked'" : "";
+	if ($search_prefs['multisearch'] == 2) {
+		$sel = (isset($searchtype[$key]) && $searchtype[$key]) ? " selected='selected'" : "";
+	} else {
+		$sel = (isset($searchtype[$key]) && $searchtype[$key]) ? " checked='checked'" : "";
+	}
 	$google_js = check_class($search_prefs['google']) ? "onclick=\"uncheckG();\" " : "";
-	if ($search_prefs['multisearch']) {
+	if ($search_prefs['multisearch'] == 2) {
+		$SEARCH_DROPDOWN .= "<option value='".$key."' ".$sel.">".$si['qtype']."</option>";
+	} else if ($search_prefs['multisearch']== 1) {
 		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input ".$google_js." type='checkbox' name='t[".$key."]' ".$sel." />".$si['qtype'].$POST_CHECKBOXES;
 	} else {
 		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input type='radio' name='t' value='".$key."' ".$sel." />".$si['qtype'].$POST_CHECKBOXES;		
@@ -209,15 +221,22 @@ foreach($search_info as $key => $si) {
 }
 
 if (check_class($search_prefs['google'])) {
-	if ($search_prefs['multisearch']) {
+	if ($search_prefs['multisearch'] == 2) {
+		$SEARCH_DROPDOWN .= "<option value='".$google_id."'>Google</option>";
+	} else if ($search_prefs['multisearch'] == 1) {
 		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input id='google' type='checkbox' name='t[".$google_id."]' onclick='uncheckAll(this)' />Google".$POST_CHECKBOXES;
 	} else {
 		$SEARCH_MAIN_CHECKBOXES .= $PRE_CHECKBOXES."<input id='google' type='radio' name='t' value='".$google_id."' />Google".$POST_CHECKBOXES;
 	}
 }
+
+if ($search_prefs['multisearch'] == 2) {
+	$SEARCH_DROPDOWN .= "</select>";
+}
+
 $value = isset($query) ? $query : "";
-$SEARCH_MAIN_SEARCHFIELD = "<input class='tbox m_search' type='text' name='q' size='60' value='".$value."' maxlength='50' />";
-if ($search_prefs['multisearch']) {
+$SEARCH_MAIN_SEARCHFIELD = "<input class='tbox m_search' type='text' name='q' size='40' value='".$value."' maxlength='50' />";
+if ($search_prefs['multisearch'] == 1) {
 	$SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
 	$SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
 }
@@ -242,20 +261,24 @@ foreach ($sch -> stop_keys as $stop_key) {
 	$SEARCH_MESSAGE = "";
 }
 
-$text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TOP_TABLE);
+if ($search_prefs['multisearch'] == 2) {
+	$text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_COMPACT_TABLE);
+} else {
+	$text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TOP_TABLE);
 
-if ($search_prefs['user_select']) {
-	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_CAT_TABLE);
+	if ($search_prefs['user_select']) {
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_CAT_TABLE);
+	}
+
+	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_BOT_TABLE);
 }
-
-$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_BOT_TABLE);
 	
 $ns->tablerender(PAGE_NAME." ".SITENAME, $text);
 
 if (isset($query)) {
 	if ($perform_search == 'perform') {
 		foreach ($search_info as $key => $a) {
-			if (isset($searchtype[$key])) {
+			if (isset($searchtype[$key]) || isset($searchtype['all'])) {
 				unset($text);
 				if (file_exists($search_info[$key]['sfile'])) {
 					$pre_title = ($search_info[$key]['pre_title'] == 2) ? $search_info[$key]['pre_title_alt'] : $search_info[$key]['pre_title'];
