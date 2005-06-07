@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_archive_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-06 13:28:15 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-07 19:37:23 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -22,19 +22,21 @@ $CONTENT_ARCHIVE_TABLE = "";
 $CONTENT_ARCHIVE_TABLE_END = "";
 global $sc_style, $content_shortcodes, $content_pref, $aa, $qs, $row;
 
+$sc_style['CONTENT_ARCHIVE_TABLE_AUTHOR']['pre'] = "<tr><td class='forumheader3' colspan='2' style='white-space:nowrap; text-align:left;'>";
+$sc_style['CONTENT_ARCHIVE_TABLE_AUTHOR']['post'] = "</td></tr>";
+
 // ##### CONTENT ARCHIVE --------------------------------------------------
 if(!$CONTENT_ARCHIVE_TABLE_START){
 				$CONTENT_ARCHIVE_TABLE_START = "
-				<table class='content_table'>";
+				<table class='fborder'>";
 }
 if(!$CONTENT_ARCHIVE_TABLE){
 				$CONTENT_ARCHIVE_TABLE = "
-				<tr><td class='content_heading' colspan='2'>{CONTENT_ARCHIVE_TABLE_HEADING}</td></tr>
 				<tr>
-					<td class='content_info' style='white-space:nowrap; text-align:left;'>{CONTENT_ARCHIVE_TABLE_AUTHOR}</td>
-					<td class='content_info' style='width:5%; white-space:nowrap; text-align:right;'>{CONTENT_ARCHIVE_TABLE_DATE}</td>
+					<td class='forumheader3'>{CONTENT_ARCHIVE_TABLE_HEADING}</td>
+					<td class='forumheader3' style='width:5%; white-space:nowrap; text-align:right;'>{CONTENT_ARCHIVE_TABLE_DATE}</td>
 				</tr>
-				<tr><td class='content_spacer' colspan='2'></td></tr>
+				{CONTENT_ARCHIVE_TABLE_AUTHOR}
 				\n";
 }
 if(!$CONTENT_ARCHIVE_TABLE_END){

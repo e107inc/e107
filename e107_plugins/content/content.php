@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.44 $
-|		$Date: 2005-06-06 21:29:04 $
+|		$Revision: 1.45 $
+|		$Date: 2005-06-07 19:37:22 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -35,8 +35,6 @@ require_once($plugindir."handlers/content_class.php");
 $aa = new content;
 e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
-
-$eplug_css = $aa -> setContentCss();
 
 //include lan file
 $lan_file = $plugindir."languages/".e_LANGUAGE."/lan_content.php";
@@ -62,7 +60,7 @@ require_once(HEADERF);
 function core_head(){
 	global $qs, $sql, $tp, $pref, $plugintable, $eArrayStorage;
 
-	if($qs[0] == "content" && is_numeric($qs[1]) && is_numeric($qs[2])){
+	if($qs[0] == "content" && isset($qs[1]) && is_numeric($qs[1]) && isset($qs[2]) && is_numeric($qs[2])){
 		if($sql -> db_Select($plugintable, "content_pref as custom", "content_id='".$qs[2]."'")){
 			list($custom) = $sql -> db_Fetch();
 
@@ -701,7 +699,7 @@ function show_content_cat($mode=""){
 							$row = $sql -> db_Fetch();
 
 							if(!is_object($gen)){ $gen = new convert; }
-							$authordetails		= $aa -> getAuthor($row['content_author']);
+							//$authordetails		= $aa -> getAuthor($row['content_author']);
 							$comment_total		= $sql -> db_Select("comments", "*",  "comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 							$textparent			= $tp -> parseTemplate($CONTENT_CAT_LIST_TABLE, FALSE, $content_shortcodes);
 							$captionparent		= CONTENT_LAN_26;
@@ -754,9 +752,12 @@ function show_content_cat($mode=""){
 						if($resultitem = $sql1 -> db_Select($plugintable, "*", "content_refer !='sa' AND ".$qrycat." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
 
 							$content_recent_table_string = "";
+							$crumb = "";
 							while($row = $sql1 -> db_Fetch()){
 								if(!is_object($gen)){ $gen = new convert; }
-								$crumb							= $aa -> getCrumbItem($row['content_parent'], $array);
+								if($content_pref["content_list_parent_{$mainparent}"]){
+									$crumb							= $aa -> getCrumbItem($row['content_parent'], $array);
+								}
 								$content_recent_table_string	.= $tp -> parseTemplate($CONTENT_RECENT_TABLE, FALSE, $content_shortcodes);
 							}
 							$textchild		= $CONTENT_RECENT_TABLE_START.$content_recent_table_string.$CONTENT_RECENT_TABLE_END;
@@ -1164,7 +1165,7 @@ function show_content_top(){
 // ##### CONTENT ITEM ------------------------------------------
 function show_content_item(){
 				global $pref, $content_pref;
-				global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS;
+				global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS, $CONTENT_CONTENT_TABLE_PARENT;
 				global $content_icon_path, $content_image_path, $content_file_path, $custom;
 				global $plugindir, $plugintable, $content_shortcodes, $datequery, $order, $nextprevquery, $from, $number;
 				global $qs, $gen, $sql, $aa, $tp, $rs, $cobj, $e107, $e107cache, $eArrayStorage, $ns, $rater, $ep, $row, $authordetails, $mainparent; 
@@ -1209,6 +1210,10 @@ function show_content_item(){
 								$sql = new db;
 								$sql -> db_Update($plugintable, "content_refer='".$contentrefernew."' WHERE content_id='".$qs[1]."' ");
 							}
+						}
+
+						if($content_pref["content_content_parent_{$mainparent}"]){
+							$CONTENT_CONTENT_TABLE_PARENT = $aa -> getCrumbItem($row['content_parent'], $array);
 						}
 
 						$CONTENT_CONTENT_TABLE_TEXT = $row['content_text'];
@@ -1361,10 +1366,10 @@ function show_content_item(){
 							unset($text);
 							$query = ($pref['nested_comments'] ?
 							"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location FROM #comments
-							LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$qs[2]."' AND comment_type='".$plugintable."' AND comment_pid='0' ORDER BY comment_datestamp"
+							LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' AND comment_pid='0' ORDER BY comment_datestamp"
 							:
 							"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location FROM #comments
-							LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$qs[2]."' AND comment_type='".$plugintable."' ORDER BY comment_datestamp"
+							LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' ORDER BY comment_datestamp"
 							);
 
 							$comment_total = $sql->db_Select_gen($query); 

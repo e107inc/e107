@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-06-06 22:51:33 $
+|     $Revision: 1.44 $
+|     $Date: 2005-06-07 19:37:23 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -131,7 +131,7 @@ define("CONTENT_ADMIN_OPT_LAN_29", "allow direct posting of submitted content it
 define("CONTENT_ADMIN_OPT_LAN_30", "if direct posting is checked, a submitted item is directly added in the database and will be immediately visible. if not checked, the admin will see a submitted content item in the admin area to review.");
 define("CONTENT_ADMIN_OPT_LAN_31", "define which sections should be available for submission");
 define("CONTENT_ADMIN_OPT_LAN_32", "choose which areas you would like have allowed in user submission of items");
-define("CONTENT_ADMIN_OPT_LAN_33", "path locations, theme, layout and css settings");
+define("CONTENT_ADMIN_OPT_LAN_33", "path locations and theme settings");
 define("CONTENT_ADMIN_OPT_LAN_34", "here you can define where your images are or will be stored. use braces ( { } ) for the general e107 related path variables (like ( {e_PLUGIN} or {e_IMAGE} ). for the content category icons two versions are needed, one small and one large set of icons.");
 define("CONTENT_ADMIN_OPT_LAN_35", "path : cat icons large");
 define("CONTENT_ADMIN_OPT_LAN_36", "define path to content cat icons (large)");
@@ -173,7 +173,7 @@ define("CONTENT_ADMIN_OPT_LAN_71", "choose which sections should be displayed wh
 define("CONTENT_ADMIN_OPT_LAN_72", "subheading");
 define("CONTENT_ADMIN_OPT_LAN_73", "summary");
 define("CONTENT_ADMIN_OPT_LAN_74", "date");
-define("CONTENT_ADMIN_OPT_LAN_75", "authordetails");
+define("CONTENT_ADMIN_OPT_LAN_75", "authorname");
 define("CONTENT_ADMIN_OPT_LAN_76", "authoremail");
 define("CONTENT_ADMIN_OPT_LAN_77", "rating");
 define("CONTENT_ADMIN_OPT_LAN_78", "email/print/pdf icon");
@@ -214,9 +214,9 @@ define("CONTENT_ADMIN_OPT_LAN_112", "choose which sections in the list of subcat
 define("CONTENT_ADMIN_OPT_LAN_113", "all categories page");
 define("CONTENT_ADMIN_OPT_LAN_114", "view category page");
 define("CONTENT_ADMIN_OPT_LAN_115", "if enabled, a link to the category item will be placed on the postfix string");
-define("CONTENT_ADMIN_OPT_LAN_116", "");
-define("CONTENT_ADMIN_OPT_LAN_117", "");
-define("CONTENT_ADMIN_OPT_LAN_118", "");
+define("CONTENT_ADMIN_OPT_LAN_116", "amount of comments");
+define("CONTENT_ADMIN_OPT_LAN_117", "link to author list");
+define("CONTENT_ADMIN_OPT_LAN_118", "link to author profile");
 define("CONTENT_ADMIN_OPT_LAN_119", "content category pages");
 define("CONTENT_ADMIN_OPT_LAN_120", "parent item");
 define("CONTENT_ADMIN_OPT_LAN_121", "should the parent item be shown");
@@ -540,7 +540,7 @@ define("CONTENT_ADMIN_MENU_LAN_5", "Category");
 define("CONTENT_ADMIN_MENU_LAN_6", "Options");
 define("CONTENT_ADMIN_MENU_LAN_7", "Admin Create");
 define("CONTENT_ADMIN_MENU_LAN_8", "Submit Items");
-define("CONTENT_ADMIN_MENU_LAN_9", "Path, Theme, Css");
+define("CONTENT_ADMIN_MENU_LAN_9", "Path And Theme");
 define("CONTENT_ADMIN_MENU_LAN_10", "General");
 define("CONTENT_ADMIN_MENU_LAN_11", "Content Item Preview");
 define("CONTENT_ADMIN_MENU_LAN_12", "Category pages");
@@ -643,22 +643,22 @@ define("CONTENT_LAN_19", "search");
 define("CONTENT_LAN_20", "content search results");
 define("CONTENT_LAN_21", "no content types yet.");
 define("CONTENT_LAN_22", "content types");
-define("CONTENT_LAN_23", "content recent list");
+define("CONTENT_LAN_23", "Recent Content List");
 define("CONTENT_LAN_24", "breadcrumb");
-define("CONTENT_LAN_25", "content categories");
-define("CONTENT_LAN_26", "parent");
+define("CONTENT_LAN_25", "Content Categories");
+define("CONTENT_LAN_26", "Content Category");
 define("CONTENT_LAN_27", "subcategories");
 define("CONTENT_LAN_28", "parent subcategories");
 define("CONTENT_LAN_29", "unknown");
 define("CONTENT_LAN_30", "content item");
 define("CONTENT_LAN_31", "content items");
-define("CONTENT_LAN_32", "content author list");
+define("CONTENT_LAN_32", "Content Author List");
 define("CONTENT_LAN_33", "Go To Page");
 define("CONTENT_LAN_34", "content");
 define("CONTENT_LAN_35", "comments");
 define("CONTENT_LAN_36", "moderate comments");
 define("CONTENT_LAN_37", "no content items rated yet");
-define("CONTENT_LAN_38", "top rated content items");
+define("CONTENT_LAN_38", "Top Rated Content");
 define("CONTENT_LAN_39", "author list");
 define("CONTENT_LAN_40", "author user details");
 define("CONTENT_LAN_41", "download attached");
@@ -704,7 +704,7 @@ define("CONTENT_LAN_80", "recent items : ");
 define("CONTENT_LAN_81", "categories");
 define("CONTENT_LAN_82", "no items yet in");
 define("CONTENT_LAN_83", "item archive");
-define("CONTENT_LAN_84", "content archive");
+define("CONTENT_LAN_84", "Content Archive");
 define("CONTENT_LAN_85", "authorlist");
 define("CONTENT_LAN_86", "");
 define("CONTENT_LAN_87", "");

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/content_manager_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-06 13:28:15 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-07 19:37:23 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -21,17 +21,17 @@ global $sc_style, $content_shortcodes, $parentheading, $catidstring, $row;
 // ##### CONTENT CONTENTMANAGER LIST --------------------------------------------------
 if(!$CONTENT_CONTENTMANAGER_TABLE_START){
 				$CONTENT_CONTENTMANAGER_TABLE_START = "
-				<table class='content_table'>
+				<table class='fborder' style='width:98%; text-align:left;'>
 				<tr>
-					<td class='content_caption'>".CONTENT_ADMIN_ITEM_LAN_57."</td>
-					<td class='content_caption'>".CONTENT_ADMIN_ITEM_LAN_12."</td>
+					<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_57."</td>
+					<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_12."</td>
 				</tr>\n";
 }
 if(!$CONTENT_CONTENTMANAGER_TABLE){
 				$CONTENT_CONTENTMANAGER_TABLE = "
 				<tr>
-					<td class='content_heading'>{CONTENT_CONTENTMANAGER_CATEGORY}</td>
-					<td class='content_info' style='width:10%;'>{CONTENT_CONTENTMANAGER_ICONEDIT} {CONTENT_CONTENTMANAGER_ICONNEW}</td>
+					<td class='forumheader3'>{CONTENT_CONTENTMANAGER_CATEGORY}</td>
+					<td class='forumheader3' style='width:10%;'>{CONTENT_CONTENTMANAGER_ICONEDIT} {CONTENT_CONTENTMANAGER_ICONNEW}</td>
 				</tr>";
 }
 if(!$CONTENT_CONTENTMANAGER_TABLE_END){

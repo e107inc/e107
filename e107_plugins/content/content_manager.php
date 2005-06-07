@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.9 $
-|		$Date: 2005-06-06 13:28:13 $
+|		$Revision: 1.10 $
+|		$Date: 2005-06-07 19:37:22 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -38,8 +38,6 @@ require_once($plugindir."handlers/content_db_class.php");
 $adb = new contentdb;
 require_once($plugindir."handlers/content_form_class.php");
 $aform = new contentform;
-
-$eplug_css = $aa -> setContentCss();
 
 $lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
 include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
