@@ -1,16 +1,12 @@
 <!--
 
-if(parent.frames[0])
-{
-parent.location.href = self.location.href;
-}
 /*
 + ----------------------------------------------------------------------------+
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.12 $
-|	$Date: 2005-05-10 17:39:42 $
+|	$Revision: 1.13 $
+|	$Date: 2005-06-07 20:05:22 $
 |	$Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
