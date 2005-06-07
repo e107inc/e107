@@ -11,15 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emote.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-07 19:50:59 $
+|     $Revision: 1.12 $
+|     $Date: 2005-06-07 19:54:03 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 function r_emote()
 {
 	global $sysprefs, $pref;
-	if(!$pref['emotepack'])	$pref['emotepack'] = "default";
+	if(!$pref['emotepack'])	
+	{	
+		$pref['emotepack'] = "default";
+		save_prefs();
+	}
 	$emotes = $sysprefs->getArray("emote_".$pref['emotepack']);
 	foreach($emotes as $key => $value)
 	{
