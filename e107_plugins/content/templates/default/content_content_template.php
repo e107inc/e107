@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-06 13:28:15 $
+|     $Revision: 1.11 $
+|     $Date: 2005-06-07 19:37:24 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -26,74 +26,67 @@ $CONTENT_CONTENT_TABLE_CUSTOM_PRE = "";
 $CONTENT_CONTENT_TABLE_CUSTOM_PRE2 = "";
 global $sc_style, $content_shortcodes, $qs, $row, $content_pref, $gen, $tp, $sql, $plugintable, $rater, $aa, $content_image_path, $content_icon_path, $content_file_path, $custom;
 
-$sc_style['CONTENT_CONTENT_TABLE_REFER']['pre'] = CONTENT_LAN_44." ";
-$sc_style['CONTENT_CONTENT_TABLE_REFER']['post'] = "";
+$sc_style['CONTENT_CONTENT_TABLE_REFER']['pre'] = "(".CONTENT_LAN_44." ";
+$sc_style['CONTENT_CONTENT_TABLE_REFER']['post'] = ")";
 
-$sc_style['CONTENT_CONTENT_TABLE_COMMENT']['pre'] = CONTENT_LAN_57." ";
+$sc_style['CONTENT_CONTENT_TABLE_COMMENT']['pre'] = "<br />".CONTENT_LAN_57." ";
 $sc_style['CONTENT_CONTENT_TABLE_COMMENT']['post'] = "";
 
-$sc_style['CONTENT_CONTENT_TABLE_SCORE']['pre'] = CONTENT_LAN_45." ";
+$sc_style['CONTENT_CONTENT_TABLE_SCORE']['pre'] = "<br />".CONTENT_LAN_45." ";
 $sc_style['CONTENT_CONTENT_TABLE_SCORE']['post'] = "";
 
-$sc_style['CONTENT_CONTENT_TABLE_RATING']['pre'] = "<tr><td class='content_rate' colspan='2'>";
+$sc_style['CONTENT_CONTENT_TABLE_RATING']['pre'] = "<tr><td class='forumheader3'>";
 $sc_style['CONTENT_CONTENT_TABLE_RATING']['post'] = "</td></tr>";
 
-$sc_style['CONTENT_CONTENT_TABLE_AUTHORDETAILS']['pre'] = " / ";
+$sc_style['CONTENT_CONTENT_TABLE_AUTHORDETAILS']['pre'] = "<br />".CONTENT_LAN_11." ";
 $sc_style['CONTENT_CONTENT_TABLE_AUTHORDETAILS']['post'] = "";
 
-$sc_style['CONTENT_CONTENT_TABLE_ICON']['pre'] = "<td class='content_icon'>";
+$sc_style['CONTENT_CONTENT_TABLE_ICON']['pre'] = "<td class='forumheader3' rowspan='4' style='vertical-align:top; width:10%; white-space:nowrap;'>";
 $sc_style['CONTENT_CONTENT_TABLE_ICON']['post'] = "</td>";
 
-$sc_style['CONTENT_CONTENT_TABLE_PAGENAMES']['pre'] = "<tr><td class='content_text' colspan='4' style='border-top:1px solid #000;'><br /><div class='content_bold'>".CONTENT_LAN_46."</div>";
+$sc_style['CONTENT_CONTENT_TABLE_PAGENAMES']['pre'] = "<tr><td class='forumheader3' colspan='2'>".CONTENT_LAN_46."<br />";
 $sc_style['CONTENT_CONTENT_TABLE_PAGENAMES']['post'] = "</td></tr>";
 
-$sc_style['CONTENT_CONTENT_TABLE_CUSTOM_TAGS']['pre'] = "<tr><td colspan='4' style='border-top:1px solid #000;'><br /></td></tr>";
-$sc_style['CONTENT_CONTENT_TABLE_CUSTOM_TAGS']['post'] = "<tr><td colspan='4'><br /></td></tr>";
+$sc_style['CONTENT_CONTENT_TABLE_CUSTOM_TAGS']['pre'] = "";
+$sc_style['CONTENT_CONTENT_TABLE_CUSTOM_TAGS']['post'] = "";
 
-$sc_style['CONTENT_CONTENT_TABLE_SUMMARY']['pre'] = "<i>";
-$sc_style['CONTENT_CONTENT_TABLE_SUMMARY']['post'] = "</i><br /><br />";
+$sc_style['CONTENT_CONTENT_TABLE_SUMMARY']['pre'] = "<tr><td class='forumheader3' colspan='2'>";
+$sc_style['CONTENT_CONTENT_TABLE_SUMMARY']['post'] = "</td></tr>";
 
-$sc_style['CONTENT_CONTENT_TABLE_IMAGES']['pre'] = "<td class='content_image'>";
+$sc_style['CONTENT_CONTENT_TABLE_TEXT']['pre'] = "<tr><td class='forumheader3' colspan='2'>";
+$sc_style['CONTENT_CONTENT_TABLE_TEXT']['post'] = "</td></tr>";
+
+$sc_style['CONTENT_CONTENT_TABLE_IMAGES']['pre'] = "<td class='forumheader3' rowspan='4'>";
 $sc_style['CONTENT_CONTENT_TABLE_IMAGES']['post'] = "</td>";
+
+$sc_style['CONTENT_CONTENT_TABLE_SUBHEADING']['pre'] = "<tr><td class='forumheader3'>";
+$sc_style['CONTENT_CONTENT_TABLE_SUBHEADING']['post'] = "</td></tr>";
+
+$sc_style['CONTENT_CONTENT_TABLE_FILE']['pre'] = "<tr><td class='forumheader3'>";
+$sc_style['CONTENT_CONTENT_TABLE_FILE']['post'] = "</td></tr>";
+
+$sc_style['CONTENT_CONTENT_TABLE_DATE']['pre'] = CONTENT_LAN_10." ";
+$sc_style['CONTENT_CONTENT_TABLE_DATE']['post'] = "";
+
+$sc_style['CONTENT_CONTENT_TABLE_PARENT']['pre'] = "<br />".CONTENT_LAN_9." ";
+$sc_style['CONTENT_CONTENT_TABLE_PARENT']['post'] = "";
 
 if(!$CONTENT_CONTENT_TABLE){
 				$CONTENT_CONTENT_TABLE .= "
-				<table class='content_table' border='0'>
+				<table class='fborder' style='width:98%;'>
 				<tr>
 					{CONTENT_CONTENT_TABLE_ICON}
-					<td colspan='3' style='width:97%;'>
-						<table style='width:100%;' border='0' cellpadding='0' cellspacing='0'>
-						<tr>
-							<td class='content_heading'>{CONTENT_CONTENT_TABLE_HEADING}</td>
-							<td class='content_info' style='text-align:right;'>{CONTENT_CONTENT_TABLE_REFER}</td>
-						</tr>
-						<tr>
-							<td class='content_subheading'>{CONTENT_CONTENT_TABLE_SUBHEADING}</td>
-							<td class='content_info' style='text-align:right;'>{CONTENT_CONTENT_TABLE_COMMENT}</td>
-						</tr>
-						<tr>
-							<td class='content_info' colspan='2'>
-								{CONTENT_CONTENT_TABLE_DATE} {CONTENT_CONTENT_TABLE_AUTHORDETAILS} {CONTENT_CONTENT_TABLE_EPICONS} {CONTENT_CONTENT_TABLE_EDITICON}
-							</td>
-						</tr>
-						{CONTENT_CONTENT_TABLE_RATING}
-						<tr>
-							<td class='content_info'>{CONTENT_CONTENT_TABLE_FILE}</td>
-							<td class='content_info' style='text-align:right;'>{CONTENT_CONTENT_TABLE_SCORE}</td>
-						</tr>
-						</table>
-					</td>
+					<td class='fcaption'>{CONTENT_CONTENT_TABLE_HEADING} {CONTENT_CONTENT_TABLE_REFER}</td>
 				</tr>
-				<tr>
-					<td colspan='4'><br /></td>
-				</tr>
-				<tr>
-					<td colspan='4' style='border-top:1px solid #000;'><br /></td>
-				</tr>
-				<tr>
-					<td class='content_text' colspan='3' style='width:97%;'>{CONTENT_CONTENT_TABLE_SUMMARY}{CONTENT_CONTENT_TABLE_TEXT}<br /></td>
-					{CONTENT_CONTENT_TABLE_IMAGES}
-				</tr>
+				{CONTENT_CONTENT_TABLE_SUBHEADING}
+				<tr><td class='forumheader3'>{CONTENT_CONTENT_TABLE_DATE} {CONTENT_CONTENT_TABLE_AUTHORDETAILS} {CONTENT_CONTENT_TABLE_EPICONS} {CONTENT_CONTENT_TABLE_EDITICON} {CONTENT_CONTENT_TABLE_PARENT} {CONTENT_CONTENT_TABLE_COMMENT} {CONTENT_CONTENT_TABLE_SCORE}</td></tr>
+				{CONTENT_CONTENT_TABLE_RATING}
+				{CONTENT_CONTENT_TABLE_FILE}
+				</table><br />
+				<table class='fborder' style='width:98%;'>
+				{CONTENT_CONTENT_TABLE_SUMMARY}
+				{CONTENT_CONTENT_TABLE_IMAGES}
+				{CONTENT_CONTENT_TABLE_TEXT}
 				{CONTENT_CONTENT_TABLE_CUSTOM_TAGS}
 				{CONTENT_CONTENT_TABLE_PAGENAMES}
 				</table>\n";
@@ -103,10 +96,10 @@ if(!$CONTENT_CONTENT_TABLE){
 if(!$CONTENT_CONTENT_TABLE_CUSTOM){
 	$CONTENT_CONTENT_TABLE_CUSTOM = "
 	<tr>
-		<td class='content_bold' style='width:5%;'>
+		<td class='forumheader3' style='width:5%;'>
 			{CONTENT_CONTENT_TABLE_CUSTOM_KEY}
 		</td>
-		<td class='content_text' colspan='2' style='width:95%;'>
+		<td class='forumheader3' style='width:95%;'>
 			{CONTENT_CONTENT_TABLE_CUSTOM_VALUE}
 		</td>
 	</tr>";
