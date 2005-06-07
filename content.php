@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/content.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-05-19 08:57:26 $
+|     $Revision: 1.16 $
+|     $Date: 2005-06-07 23:17:54 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -21,6 +21,9 @@ require_once("class2.php");
 
 //##### REDIRECTION MANAGEMENT -----------------------------------------------------------------------------
 if($content_install = $sql -> db_Select("plugin", "*", "plugin_path = 'content' AND plugin_installflag = '1' ")){
+	//require_once($plugindir."handlers/content_class.php");
+	//$aa = new content;
+	
 	$tmp = explode(".", e_QUERY);
 	if($tmp[0]){
 		//get type_id from the row with heading content, article or review
@@ -35,51 +38,31 @@ if($content_install = $sql -> db_Select("plugin", "*", "plugin_path = 'content' 
 		if (is_numeric($tmp[1])) {						//content view
 			
 			$tmp[1] = intval($tmp[1]);
-			//get parent type_id from the item content_id
-			if(!$sql -> db_Select("pcontent", "content_id,content_parent", "content_id='".$tmp[1]."'")){
-				header("location:".e_PLUGIN."content/content.php?type.".$row['content_id']);
-			}else{
-				$rowcitem = $sql -> db_Fetch();
-				$typeid = explode(".", $rowcitem['content_parent']);
-				header("location:".e_PLUGIN."content/content.php?type.".$typeid[0].".content.".$tmp[1]);
-			}
+			header("location:".e_PLUGIN."content/content.php?content.".$tmp[1]);
 
 		}else{											//content recent page
-			header("location:".e_PLUGIN."content/content.php?type.".$row['content_id']);
+			header("location:".e_PLUGIN."content/content.php?recent.".$row['content_id']);
 		}
 
 	}elseif ($tmp[0] == "article" || $tmp[0] == "review") {
 
 		if (is_numeric($tmp[1])) {						//item view
-			
-			//get parent type_id from the items content_id
-			if(!$sql -> db_Select("pcontent", "content_parent", "content_id='".$tmp[1]."'")){
-				header("location:".e_PLUGIN."content/content.php?type.".$row['content_id']);
-			}else{
-				$rowitem = $sql -> db_Fetch();
-				$typeid = explode(".", $rowitem['content_parent']);
-				header("location:".e_PLUGIN."content/content.php?type.".$typeid[0].".content.".$tmp[1]);
-			}
+			$tmp[1] = intval($tmp[1]);
+			header("location:".e_PLUGIN."content/content.php?content.".$tmp[1]);
 		
 		}elseif($tmp[1] == "cat" ) {					//category page
 			
-			if($tmp[2] == "0") {						//all categories
-				header("location:".e_PLUGIN."content/content.php?type.".$row['content_id'].".cat");
+			if(!$tmp[2] || $tmp[2] == "0") {			//all categories
+				//$mainparent = $aa -> getMainParent($tmp[2]);
+				//header("location:".e_PLUGIN."content/content.php?cat.list.".$mainparent."");
+				header("location:".e_PLUGIN."content/content.php");
 			
 			}else{										//view category
-				//get parent type_id from the category content_id
-				if(!$sql -> db_Select("pcontent", "content_id,content_parent", "content_id='".$tmp[2]."'")){
-					header("location:".e_PLUGIN."content/content.php?type.".$row['content_id'].".cat");
-				}else{
-					$rowcat = $sql -> db_Fetch();
-					$type = explode(".", $rowcat['content_parent']);
-					$typeid = ($row['content_parent'] == 0 ? $rowcat['content_id'] : $type[1]);
-					header("location:".e_PLUGIN."content/content.php?type.".$typeid.".cat.".$tmp[2]);
-				}
+				header("location:".e_PLUGIN."content/content.php?cat.".$tmp[2]);
 			}
 		
 		} else {										//recent page
-			header("location:".e_PLUGIN."content/content.php?type.".$row['content_id']);
+			header("location:".e_PLUGIN."content/content.php?recent.".$row['content_id']);
 		}
 	}else{												//redirect to new content main page
 		header("location:".e_PLUGIN."content/content.php");
