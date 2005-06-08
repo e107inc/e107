@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.50 $
-|		$Date: 2005-06-07 22:02:33 $
+|		$Revision: 1.51 $
+|		$Date: 2005-06-08 09:19:53 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -2455,7 +2455,14 @@ class contentform{
 						".$rs -> form_checkbox("content_catall_subheading_{$id}", 1, ($content_pref["content_catall_subheading_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_72."<br />
 						".$rs -> form_checkbox("content_catall_text_{$id}", 1, ($content_pref["content_catall_text_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_241."<br />
 						".$rs -> form_checkbox("content_catall_date_{$id}", 1, ($content_pref["content_catall_date_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_74."<br />
+
 						".$rs -> form_checkbox("content_catall_authordetails_{$id}", 1, ($content_pref["content_catall_authordetails_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_75."<br />
+						
+						".$rs -> form_checkbox("content_catall_authorname_{$id}", 1, ($content_pref["content_catall_authorname_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_75."<br />
+						".$rs -> form_checkbox("content_catall_authoremail_{$id}", 1, ($content_pref["content_catall_authoremail_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_76."<br />
+						".$rs -> form_checkbox("content_catall_authorprofile_{$id}", 1, ($content_pref["content_catall_authorprofile_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_118."<br />
+						".$rs -> form_checkbox("content_catall_authoricon_{$id}", 1, ($content_pref["content_catall_authoricon_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_117."<br />
+
 						".$rs -> form_checkbox("content_catall_rating_{$id}", 1, ($content_pref["content_catall_rating_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_77."<br />
 						".$rs -> form_checkbox("content_catall_peicon_{$id}", 1, ($content_pref["content_catall_peicon_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_78."<br />
 						".$rs -> form_checkbox("content_catall_comment_{$id}", 1, ($content_pref["content_catall_comment_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_7."<br />
@@ -2503,6 +2510,8 @@ class contentform{
 						".$rs -> form_checkbox("content_cat_date_{$id}", 1, ($content_pref["content_cat_date_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_74."<br />
 						".$rs -> form_checkbox("content_cat_authorname_{$id}", 1, ($content_pref["content_cat_authorname_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_75."<br />
 						".$rs -> form_checkbox("content_cat_authoremail_{$id}", 1, ($content_pref["content_cat_authoremail_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_76."<br />
+						".$rs -> form_checkbox("content_cat_authorprofile_{$id}", 1, ($content_pref["content_cat_authorprofile_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_118."<br />
+						".$rs -> form_checkbox("content_cat_authoricon_{$id}", 1, ($content_pref["content_cat_authoricon_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_117."<br />
 						".$rs -> form_checkbox("content_cat_rating_{$id}", 1, ($content_pref["content_cat_rating_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_77."<br />
 						".$rs -> form_checkbox("content_cat_peicon_{$id}", 1, ($content_pref["content_cat_peicon_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_78."<br />
 						".$rs -> form_checkbox("content_cat_comment_{$id}", 1, ($content_pref["content_cat_comment_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_7."<br />
@@ -2785,9 +2794,9 @@ class contentform{
 						$TOPIC_FIELD = "
 						".$rs -> form_checkbox("content_archive_date_{$id}", 1, ($content_pref["content_archive_date_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_74."<br />
 						".$rs -> form_checkbox("content_archive_authorname_{$id}", 1, ($content_pref["content_archive_authorname_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_75."<br />
+						".$rs -> form_checkbox("content_archive_authoremail_{$id}", 1, ($content_pref["content_archive_authoremail_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_76."<br />
 						".$rs -> form_checkbox("content_archive_authorprofile_{$id}", 1, ($content_pref["content_archive_authorprofile_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_118."<br />
 						".$rs -> form_checkbox("content_archive_authoricon_{$id}", 1, ($content_pref["content_archive_authoricon_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_117."<br />
-						".$rs -> form_checkbox("content_archive_authoremail_{$id}", 1, ($content_pref["content_archive_authoremail_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_76."<br />
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -2849,9 +2858,9 @@ class contentform{
 						$TOPIC_FIELD = "
 						".$rs -> form_checkbox("content_top_icon_{$id}", 1, ($content_pref["content_top_icon_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_4."<br />
 						".$rs -> form_checkbox("content_top_authorname_{$id}", 1, ($content_pref["content_top_authorname_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_75."<br />
+						".$rs -> form_checkbox("content_top_authoremail_{$id}", 1, ($content_pref["content_top_authoremail_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_76."<br />
 						".$rs -> form_checkbox("content_top_authorprofile_{$id}", 1, ($content_pref["content_top_authorprofile_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_118."<br />
 						".$rs -> form_checkbox("content_top_authoricon_{$id}", 1, ($content_pref["content_top_authoricon_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_117."<br />
-						".$rs -> form_checkbox("content_top_authoremail_{$id}", 1, ($content_pref["content_top_authoremail_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_76."<br />
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 

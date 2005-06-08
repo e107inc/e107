@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.46 $
-|		$Date: 2005-06-07 22:02:32 $
+|		$Revision: 1.47 $
+|		$Date: 2005-06-08 09:19:53 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -723,7 +723,7 @@ function show_content_cat($mode=""){
 							//$authordetails		= $aa -> getAuthor($row['content_author']);
 							$comment_total		= $sql -> db_Select("comments", "*",  "comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 							$textparent			= $tp -> parseTemplate($CONTENT_CAT_LIST_TABLE, FALSE, $content_shortcodes);
-							$captionparent		= CONTENT_LAN_26;
+							$captionparent		= CONTENT_LAN_26." : ".$row['content_heading'];
 						}
 					}
 
@@ -769,6 +769,7 @@ function show_content_cat($mode=""){
 
 						$contenttotal = $sql -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND ".$qrycat." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ");
 
+						$textchild = "";
 						$sql1 = new db;
 						if($resultitem = $sql1 -> db_Select($plugintable, "*", "content_refer !='sa' AND ".$qrycat." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
 
@@ -776,7 +777,7 @@ function show_content_cat($mode=""){
 							$crumb = "";
 							while($row = $sql1 -> db_Fetch()){
 								if(!is_object($gen)){ $gen = new convert; }
-								if($content_pref["content_list_parent_{$mainparent}"]){
+								if(isset($content_pref["content_list_parent_{$mainparent}"]) && $content_pref["content_list_parent_{$mainparent}"]){
 									$crumb							= $aa -> getCrumbItem($row['content_parent'], $array);
 								}
 								$content_recent_table_string	.= $tp -> parseTemplate($CONTENT_RECENT_TABLE, FALSE, $content_shortcodes);
