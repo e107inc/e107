@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.85 $
-|     $Date: 2005-06-08 00:03:08 $
-|     $Author: streaky $
+|     $Revision: 1.86 $
+|     $Date: 2005-06-08 15:54:23 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -229,6 +229,11 @@ class e_parse
 			return constant(trim($text));
 		}
 
+		// replace all {e_XXX} constants with their e107 value
+		if(strpos($modifiers, "constants") !== FALSE)
+		{
+			$text = $this->replaceConstants($text);
+		}
 
 		if(!$wrap) $wrap = $pref['main_wordwrap'];
 		$text = " ".$text;
@@ -249,7 +254,6 @@ class e_parse
 			}
 		}
 
-
 		if (strpos($modifiers, 'emotes_off') === FALSE) {
 			if ($pref['smiley_activate'] || strpos($modifiers,'emotes_on') !== FALSE) {
 				if (!is_object($this->e_emote)) {
@@ -263,12 +267,7 @@ class e_parse
 		if (strpos($modifiers, 'nobreak') === FALSE) {
 			$text = preg_replace("#[\r]*\n[\r]*#", "[E_NL]", $text);
 		}
-
-		if (strpos($modifiers,'parse_sc') !== FALSE)
-		{
-			$text = $this->parseTemplate($text, TRUE);
-		}
-
+		
 		// Start parse [bb][/bb] codes
 		if ($parseBB === TRUE) {
 			if (!is_object($this->e_bb)) {
@@ -285,6 +284,11 @@ class e_parse
 				$this->e_pf = new e_profanityFilter;
 			}
 			$text = $this->e_pf->filterProfanities($text);
+		}
+
+		if (strpos($modifiers,'parse_sc') !== FALSE)
+		{
+			$text = $this->parseTemplate($text, TRUE);
 		}
 
 		//Run any hooked in parsers
@@ -364,5 +368,21 @@ class e_parse
 		$text = str_replace($search, $replace, $text);
 		return $text;
 	}
+	
+	function replaceConstants($text)
+	{
+		$text = preg_replace_callback("#\{(e_[A-Z]*)\}#s", array($this, 'doReplace'), $text);
+		return $text;
+	}
+	
+	function doReplace($matches)
+	{
+		if(defined($matches[1]) && ($matches[1] != 'e_ADMIN' || ADMIN))
+		{
+			return constant($matches[1]);
+		}
+		return $matches[1];
+	}
+		
 }
 ?>
