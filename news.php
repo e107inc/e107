@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2005-06-07 15:38:55 $
+|     $Revision: 1.70 $
+|     $Date: 2005-06-08 14:15:13 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -179,6 +179,7 @@ if (Empty($order)){
 	$order = "news_datestamp";
 }
 
+$interval = 10;
 if ($action == "list"){
 	$sub_action = intval($sub_action);
 	$news_total = $sql->db_Count("news", "(*)", "WHERE news_category=$sub_action AND news_class REGEXP '".e_CLASS_REGEXP."' AND news_render_type!=2");
@@ -228,23 +229,13 @@ else
 {
 	$news_total = $sql->db_Count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_render_type<2" );
 
-	// #### changed for news archive ------------------------------------------------------------------------------
 	if(!isset($pref['newsposts_archive']))
 	{
 		$pref['newsposts_archive'] = 0;
 	}
 	$interval = $pref['newsposts']-$pref['newsposts_archive'];
-	$from2 = $interval+$from;
-	$ITEMVIEW2 = ITEMVIEW-$interval;
-	$ITEMVIEW1 = $interval;
 
-	/*
-	changes by jalist 19/01/05:
-	altered database query to reduce calls to db
-	*/
-
-	// normal newsitems
-
+	// Get number of news item to show
 	if(isset($pref['trackbackEnabled'])) {
 		$query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon, COUNT(*) AS tbcount FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -255,19 +246,7 @@ else
 		AND (n.news_end=0 || n.news_end>".time().") 
 		AND n.news_render_type<2
 		GROUP by n.news_id 
-		ORDER BY news_sticky DESC, ".$order." DESC LIMIT $from,".$ITEMVIEW1;
-
-		$query2 = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
-		LEFT JOIN #user AS u ON n.news_author = u.user_id
-		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' 
-		AND n.news_start < ".time()." 
-		AND (n.news_end=0 || n.news_end>".time().") 
-		AND n.news_render_type<2
-		AND n.news_sticky = 0
-		GROUP by n.news_id 
-		ORDER BY ".$order." DESC LIMIT $from2,".$ITEMVIEW2;
+		ORDER BY news_sticky DESC, ".$order." DESC LIMIT $from,".$pref['newsposts'];
 	}
 	else
 	{
@@ -278,23 +257,22 @@ else
 		AND n.news_start < ".time()." 
 		AND (n.news_end=0 || n.news_end>".time().") 
 		AND n.news_render_type<2 
-		ORDER BY n.news_sticky DESC, ".$order." DESC LIMIT $from,".$ITEMVIEW1;
-
-		// news archive
-		$query2 = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
-		LEFT JOIN #user AS u ON n.news_author = u.user_id
-		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE news_class REGEXP '".e_CLASS_REGEXP."' 
-		AND n.news_start < ".time()." 
-		AND (n.news_end=0 || n.news_end>".time().") 
-		AND n.news_render_type<2 
-		AND n.news_sticky = 0
-		ORDER BY ".$order." DESC LIMIT $from2,".$ITEMVIEW2;
+		ORDER BY n.news_sticky DESC, ".$order." DESC LIMIT $from,".$pref['newsposts'];
 	}
 	// #### END ---------------------------------------------------------------------------------------------------
 }
 
 checkNewsCache($cacheString, TRUE, TRUE);
+if (!$sql->db_Select_gen($query))
+{
+	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
+	require_once(FOOTERF);
+	exit;
+}
+else
+{
+	$newsAr = $sql -> db_getList();
+}
 
 /*
 changes by jalist 03/02/2005:
@@ -306,17 +284,13 @@ if($pref['news_unstemplate'] && file_exists(THEME."news_template.php")) {
 	$newscolumns = (isset($NEWSCOLUMNS) ? $NEWSCOLUMNS : 1);
 	$newspercolumn = (isset($NEWSITEMSPERCOLUMN) ? $NEWSITEMSPERCOLUMN : 10);
 	$newsdata = array();
-	if (!$sql->db_Select_gen($query)) {
-		echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
-	} else {
-		$loop = 1;
-		$newsAr = $sql -> db_getList();
-		foreach($newsAr as $news){
-			$newsdata[$loop] .= $ix->render_newsitem($news, "return");
-			$loop ++;
-			if($loop > $newscolumns) {
-				$loop = 1;
-			}
+	$loop = 1;
+	$newsAr = $sql -> db_getList();
+	foreach($newsAr as $news){
+		$newsdata[$loop] .= $ix->render_newsitem($news, "return");
+		$loop ++;
+		if($loop > $newscolumns) {
+			$loop = 1;
 		}
 	}
 	$loop = 1;
@@ -346,24 +320,22 @@ if($pref['news_unstemplate'] && file_exists(THEME."news_template.php")) {
 	// #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
 	ob_start();
 
-	if (!$sql->db_Select_gen($query)) {
-		echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
-	} else {
-		$newsAr = $sql -> db_getList();
-		foreach($newsAr as $news)
-		{
-			//        render new date header if pref selected ...
-			$thispostday = strftime("%j", $news['news_datestamp']);
-			if ($newpostday != $thispostday && (isset($pref['news_newdateheader']) && $pref['news_newdateheader'])) {
-				echo "<div class='".DATEHEADERCLASS."'>".strftime("%A %d %B %Y", $news['news_datestamp'])."</div>";
-			}
-			$newpostday = $thispostday;
-			$news['category_id'] = $news['news_category'];
-			if ($action == "item") {
-				unset($news['news_render_type']);
-			}
-			$ix->render_newsitem($news);
+	$i= 1;
+	while(isset($newsAr[$i]) && $i <= $interval)
+	{
+		$news = $newsAr[$i];
+		//        render new date header if pref selected ...
+		$thispostday = strftime("%j", $news['news_datestamp']);
+		if ($newpostday != $thispostday && (isset($pref['news_newdateheader']) && $pref['news_newdateheader'])) {
+			echo "<div class='".DATEHEADERCLASS."'>".strftime("%A %d %B %Y", $news['news_datestamp'])."</div>";
 		}
+		$newpostday = $thispostday;
+		$news['category_id'] = $news['news_category'];
+		if ($action == "item") {
+			unset($news['news_render_type']);
+		}
+		$ix->render_newsitem($news);
+		$i++;
 	}
 }
 
@@ -372,12 +344,10 @@ if($pref['news_unstemplate'] && file_exists(THEME."news_template.php")) {
 // #### new: news archive ---------------------------------------------------------------------------------------------
 if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 	// do not show the newsarchive on the news.php?item.X page (but only on the news mainpage)
-	if ($sql->db_Select_gen($query2)) {
-		while ($news2 = $sql->db_Fetch()) {
-			if (check_class($news2['news_class'])) {
-				if ($action == "item") {
-					unset($news2['news_render_type']);
-				}
+	$i = $interval + 1;
+	while(isset($newsAr[$i]))
+	{
+		$news2 = $newsAr[$i];
 				// Code from Lisa
 				// copied from the rss creation, but added here to make sure the url for the newsitem is to the news.php?item.X
 				// instead of the actual hyperlink that may have been added to a newstitle on creation
@@ -409,11 +379,10 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 					</tr>
 					</table>
 					</div>";
-			}
+				$i++;
 		}
 		$ns->tablerender($pref['newsposts_archive_title'], $textnewsarchive);
 	}
-}
 // #### END -----------------------------------------------------------------------------------------------------------
 
 if ($action != "item") {
