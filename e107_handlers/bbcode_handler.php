@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-06-01 19:49:24 $
+|     $Revision: 1.29 $
+|     $Date: 2005-06-08 15:54:23 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -89,13 +89,7 @@ class e_bbcode {
 
 	function doCode($matches)
 	{
-		global $tp;
-		global $postID;
-		global $single_bb;
-		global $full_text;
-		global $code_text;
-		global $code;
-		global $parm;
+		global $tp, $postID, $single_bb, $full_text, $code_text, $code, $parm;
 
 		$code = $matches[1];
 		if($single_bb == true) {
@@ -107,8 +101,8 @@ class e_bbcode {
 		}
 
 		$parm = substr($matches[4], 1);
-		$code_text = $matches[5];
-		$full_text = $matches[0];
+		$code_text = $tp->replaceConstants($matches[5]);
+		$full_text = $tp->replaceConstants($matches[0]);
 
 		if (is_array($this->bbList) && array_key_exists($code, $this->bbList)) {
 			$bbcode = $this->bbList[$code];
