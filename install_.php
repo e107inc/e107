@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-06-08 08:51:39 $
-|     $Author: streaky $
+|     $Revision: 1.30 $
+|     $Date: 2005-06-08 22:13:28 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 //@include("e107_handlers/errorhandler_class.php");
@@ -520,7 +520,7 @@ function create_tables() {
 	}
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('search_prefs', '$search_prefs') ");
 
-	$notify_prefs = "a:1:{s:5:'event';a:9:{s:7:'usersup';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:8:'userveri';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:5:'flood';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:7:'subnews';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:5:'login';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:6:'logout';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:8:'newspost';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:7:'newsupd';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}s:7:'newsdel';a:3:{s:4:'type';s:3:'off';s:5:'class';s:3:'254';s:5:'email';s:0:'';}}}";
+	$notify_prefs = "array ('event' => array ('usersup' => array ('type' => 'off', 'class' => '253', 'email' => '',),'userveri' => array ( 'type' => 'off', 'class' => '253', 'email' => '', ), 'login' => array ( 'type' => 'off', 'class' => '253', 'email' => '', ), 'logout' => array ( 'type' => 'off', 'class' => '253', 'email' => '', ), 'flood' => array ( 'type' => 'off', 'class' => '253', 'email' => '', ), 'subnews' => array ( 'type' => 'off', 'class' => '253', 'email' => '', ), 'newspost' => array ( 'type' => 'off', 'class' => '253', 'email' => '', ), 'newsupd' => array ( 'type' => 'off', 'class' => '253', 'email' => '', ), 'newsdel' => array ( 'type' => 'off', 'class' => '253', 'email' => '', ), ), )";
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('notify_prefs', '$notify_prefs') ");
 
 	mysql_query("INSERT INTO ".$mySQLprefix."banner VALUES (0, 'e107', 'e107login', 'e107password', 'e107.jpg', 'http://e107.org', 0, 0, 0, 0, 0, 0, '', 'campaign_one') ");
