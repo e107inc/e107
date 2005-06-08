@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-08 17:04:10 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-08 17:24:59 $
 |     $Author: tpruvot $
 +----------------------------------------------------------------------------+
 */
@@ -121,7 +121,7 @@ define("ADLAN_112", "Internautes bannis ");
 define("ADLAN_113", "Messages sur le forum ");
 define("ADLAN_114", "Commentaires ");
 define("ADLAN_115", "Messages (Chatbox) ");
-define("ADLAN_116", "Log d'Administration ...");
+define("ADLAN_116", "Log d'administration...");
 define("ADLAN_117", "Voir toutes les entrées");
 define("ADLAN_118", "Effacer les logs");
 
@@ -179,7 +179,7 @@ define('ADLAN_CL_6', 'Outils');
 define('ADLAN_CL_7', 'Plugins');
 define('ADLAN_CL_8', 'Docs');
 
-define("ADLAN_LAT_1", "Dernières");
+define("ADLAN_LAT_1", "Dernièrement");
 
 define("ADLAN_LAT_2", "Nouvelles soumises");
 define("ADLAN_LAT_3", "Articles soumis");
