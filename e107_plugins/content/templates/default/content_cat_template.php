@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_cat_template.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-07 22:02:33 $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-08 12:05:26 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ $CONTENT_CAT_LISTSUB_TABLE_END = "";
 global $sc_style, $content_shortcodes, $content_cat_icon_path_large;
 global $aa, $qs, $row, $content_pref, $datestamp, $tp, $comment_total, $gen, $authordetails, $rater, $crumb, $amount;
 
-$sc_style['CONTENT_CAT_TABLE_ICON']['pre'] = "<td class='forumheader3' rowspan='5'>";
+$sc_style['CONTENT_CAT_TABLE_ICON']['pre'] = "<td class='forumheader3' rowspan='5' style='width:5%; white-space:nowrap;'>";
 $sc_style['CONTENT_CAT_TABLE_ICON']['post'] = "</td>";
 
 $sc_style['CONTENT_CAT_TABLE_AUTHORDETAILS']['pre'] = " ";
@@ -64,7 +64,7 @@ if(!$CONTENT_CAT_TABLE){
 					<td class='fcaption' >{CONTENT_CAT_TABLE_HEADING} {CONTENT_CAT_TABLE_AMOUNT}</td>
 				</tr>
 
-				{CONTENT_CAT_TABLE_INFO_POST}
+				{CONTENT_CAT_TABLE_INFO_PRE}
 					{CONTENT_CAT_TABLE_DATE} {CONTENT_CAT_TABLE_AUTHORDETAILS} {CONTENT_CAT_TABLE_EPICONS} {CONTENT_CAT_TABLE_COMMENT}
 				{CONTENT_CAT_TABLE_INFO_POST}
 
@@ -111,7 +111,7 @@ if(!$CONTENT_CAT_LIST_TABLE){
 		<table class='fborder' style='width:98%; text-align:left;'>
 		<tr>
 			{CONTENT_CAT_LIST_TABLE_ICON}
-			<td class='forumheader3'>{CONTENT_CAT_LIST_TABLE_HEADING} {CONTENT_CAT_LIST_TABLE_AMOUNT}</td>
+			<td class='fcaption'>{CONTENT_CAT_LIST_TABLE_HEADING} {CONTENT_CAT_LIST_TABLE_AMOUNT}</td>
 		</tr>
 		{CONTENT_CAT_LIST_TABLE_SUBHEADING}
 		
@@ -145,7 +145,7 @@ if(!$CONTENT_CAT_LISTSUB_TABLE){
 				<table class='fborder' style='width:98%; text-align:left;'>
 				<tr>
 					{CONTENT_CAT_LISTSUB_TABLE_ICON}
-					<td class='forumheader3'>{CONTENT_CAT_LISTSUB_TABLE_HEADING} {CONTENT_CAT_LISTSUB_TABLE_AMOUNT}</td>
+					<td class='fcaption'>{CONTENT_CAT_LISTSUB_TABLE_HEADING} {CONTENT_CAT_LISTSUB_TABLE_AMOUNT}</td>
 				</tr>
 				{CONTENT_CAT_LISTSUB_TABLE_SUBHEADING}
 				</table>\n";

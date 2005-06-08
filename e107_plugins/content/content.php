@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.47 $
-|		$Date: 2005-06-08 09:19:53 $
+|		$Revision: 1.48 $
+|		$Date: 2005-06-08 12:05:24 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -545,7 +545,7 @@ function show_content_recent(){
 
 // ##### CATEGORY LIST ------------------------------------
 function show_content_cat_all(){
-				global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $aa, $e107cache, $tp, $pref, $content_pref, $keytocount, $CONTENT_CAT_TABLE;
+				global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $aa, $e107cache, $tp, $pref, $content_pref, $keytocount, $CONTENT_CAT_TABLE, $CONTENT_CAT_TABLE_INFO_PRE, $CONTENT_CAT_TABLE_INFO_POST;
 				global $sql, $datequery, $crumb, $amount, $from, $content_cat_icon_path_large, $content_icon_path, $n, $CONTENT_CAT_TABLE_HEADING, $mainparent;
 
 				unset($text);
@@ -605,7 +605,8 @@ function show_content_cat_all(){
 						$auth	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_AUTHORDETAILS}');
 						$ep		= $tp -> parseTemplate('{CONTENT_CAT_TABLE_EPICONS}');
 						$com	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_COMMENT}');
-
+						$CONTENT_CAT_TABLE_INFO_PRE = FALSE;
+						$CONTENT_CAT_TABLE_INFO_POST = FALSE;
 						if ($date!="" || $auth!="" || $ep!="" || $com!="" ) {
 							$CONTENT_CAT_TABLE_INFO_PRE = TRUE;
 							$CONTENT_CAT_TABLE_INFO_POST = TRUE;
