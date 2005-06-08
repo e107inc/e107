@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.94 $
-|     $Date: 2005-06-07 19:26:20 $
+|     $Revision: 1.95 $
+|     $Date: 2005-06-08 21:53:08 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -52,7 +52,7 @@ function update_check() {
 }
 
 function update_61x_to_700($type) {
-	global $sql, $ns, $mySQLdefaultdb, $pref, $tp, $sysprefs;
+	global $sql, $ns, $mySQLdefaultdb, $pref, $tp, $sysprefs, $eArrayStorage;
 	if ($type == "do") {
 		set_time_limit(180);
 		$s_prefs = FALSE;
@@ -736,6 +736,12 @@ function update_61x_to_700($type) {
 			$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
 		}
 
+		// convert notify prefs from serialised to eArrayStorage
+		if ($notify_prefs = $sysprefs -> getArray('notify_prefs')) {
+			$s_prefs = $tp -> recurse_toDB($notify_prefs, true);
+			$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
+			$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs' ");
+		}
 		
 		// Save all prefs that were set in above update routines
 		if ($s_prefs == TRUE) {
@@ -745,6 +751,11 @@ function update_61x_to_700($type) {
 
 	} else {
 		global $sysprefs;
+		
+		if ($notify_prefs = $sysprefs -> getArray('notify_prefs')) {
+			return FALSE;
+		}
+			
 		$search_prefs = $sysprefs -> getArray('search_prefs');
 		if (!isset($search_prefs['selector'])) {
 			return FALSE;
