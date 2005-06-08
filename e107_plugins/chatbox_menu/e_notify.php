@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/e_notify.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 17:02:29 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-08 00:09:47 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
-if (file_exists(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php")) {
+if (defined("e_LANGUAGE") && is_readable(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php")) {
 	include_once(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
 } else {
 	include_once(e_PLUGIN."chatbox_menu/languages/English/English.php");
