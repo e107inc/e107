@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.37 $
-|		$Date: 2005-06-07 22:02:32 $
+|		$Revision: 1.38 $
+|		$Date: 2005-06-08 12:05:24 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -168,11 +168,6 @@ if(isset($_POST['update_category'])){
 		}
 }
 
-//if(isset($_POST['assign_admins'])){
-//		echo $_POST['class_id']." - ".$_POST['cat_id'];
-//		$message = $adb -> dbAssignAdmins("admin");
-//}
-
 if(isset($_POST['create_content'])){
         if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
 				$adb -> dbContentCreate("admin");
@@ -204,7 +199,7 @@ if(isset($_POST['create_content'])){
 		}
 }
 
-If(isset($_POST['update_content'])){
+if(isset($_POST['update_content'])){
         if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
 				$adb -> dbContentUpdate("admin");
 		}else{
@@ -236,7 +231,7 @@ If(isset($_POST['update_content'])){
 
 
 
-if(isset($_POST['preview'])){
+if(isset($_POST['preview_content'])){
 		$content_heading	= $tp -> post_toHTML($_POST['content_heading']);
 		$content_subheading	= $tp -> post_toHTML($_POST['content_subheading']);
 		$content_summary	= $tp -> post_toHTML($_POST['content_summary']);

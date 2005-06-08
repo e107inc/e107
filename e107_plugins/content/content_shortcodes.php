@@ -294,10 +294,8 @@ SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_COMMENT
 global $CONTENT_CAT_TABLE_COMMENT, $row, $qs, $comment_total, $mainparent, $content_pref;
-$COMMENT = "";
 if($row['content_comment'] && isset($content_pref["content_catall_comment_{$mainparent}"]) && $content_pref["content_catall_comment_{$mainparent}"]){
-	$COMMENT = "<a style='text-decoration:none;' href='".e_SELF."?cat.".$row['content_id'].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
-return $COMMENT;
+return "<a style='text-decoration:none;' href='".e_SELF."?cat.".$row['content_id'].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
 }
 SC_END
 
