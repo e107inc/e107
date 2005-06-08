@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.84 $
-|     $Date: 2005-06-06 22:40:49 $
+|     $Revision: 1.85 $
+|     $Date: 2005-06-08 00:03:08 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -288,7 +288,7 @@ class e_parse
 		}
 
 		//Run any hooked in parsers
-		if($pref['tohtml_hook'])
+		if(isset($pref['tohtml_hook']) && $pref['tohtml_hook'])
 		{
 			foreach(explode(",",$pref['tohtml_hook']) as $hook)
 			{
