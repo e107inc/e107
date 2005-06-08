@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-08 17:24:59 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-08 17:37:35 $
 |     $Author: tpruvot $
 +----------------------------------------------------------------------------+
 */
@@ -193,7 +193,7 @@ define("ADLAN_LAT_8", "Il y a des messages administrateur non modérés");
 define("LAN_EDIT","Modifier");
 define("LAN_DELETE","Supprimer");
 define("LAN_CREATE","Créer");
-define("LAN_UPDATE","Valider");
+define("LAN_UPDATE","Mise à jour");
 define("LAN_SAVE","Enregistrer");
 define("LAN_SAVED","Enregistré");
 define("LAN_SETSAVED","Paramètres enregistrés");
