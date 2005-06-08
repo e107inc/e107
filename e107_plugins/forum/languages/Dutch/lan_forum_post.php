@@ -43,7 +43,7 @@ define("LAN_62", "Onderwerp: ");
 define("LAN_63", "Plaats: ");
 define("LAN_64", "Plaats nieuwe discussie");
 define("LAN_73", "Reactie: ");
-define("LAN_74", "Reactie op discussie");
+define("LAN_74", "Plaats reactie");
 define("LAN_77", "Bijwerken discussie");
 define("LAN_78", "Bijwerken reactie");
 define("LAN_94", "Geplaatst door");

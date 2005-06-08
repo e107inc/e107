@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_help.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-07 20:18:05 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-08 16:51:38 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -45,13 +45,13 @@ define("CONTENT_ADMIN_HELP_CAT_1", "<i>deze pagina toont alle aanwezige categori
 ".CONTENT_ICON_EDIT." : voor alle categorieën kun je deze knop gebruiken om de categorie wilt bewerken.<br />
 ".CONTENT_ICON_DELETE." : voor alle categorieën kun je deze knop gebruiken om de categorie wilt verwijderen.<br />
 ".CONTENT_ICON_OPTIONS." : alleen voor de hoofdcategorie (bovenan de lijst) kun je de knop gebruiken om alle opties in te stellen en beheren.<br />");
-define("CONTENT_ADMIN_HELP_CAT_2", "".CONTENT_ICON_CONTENTMANAGER_SMALL." : (alleen hoofdbeheerder) for each subcategory you can click this button to manage the personalmanager for other admins.<br />
-<br /><b>persoonlijke beheerder</b><br />you can assign admins to certain categories. In doing so, these admins can manage their personal content items within these categories from outside of the admin page (content_manager.php).");
-define("CONTENT_ADMIN_HELP_CAT_3", "<i>this page allows you to create a new category</i><br /><br />
-ALWAYS CHOOSE A PARENT CATEGORY BEFORE YOU FILL IN THE OTHER FIELDS !<br /><br />
-This must be done, because some unique category preferences need to be loaded in the system.");
-define("CONTENT_ADMIN_HELP_CAT_4", "<i>this page shows the category edit form.</i><br /><br />
-<b>category edit form</b><br />you can now edit all information for this (sub)category and submit your changes.");
+define("CONTENT_ADMIN_HELP_CAT_2", "".CONTENT_ICON_CONTENTMANAGER_SMALL." : (alleen hoofdbeheerder) voor elke subcategorie kun je via de knop het Persoonlijke Beheer voor andere beheerders regelen.<br />
+<br /><b>persoonlijke beheerder</b><br />je kunt beheerders toewijzen aan bepaalde categorieën. Hierdoor kunnen deze beheerders hun persoonlijke content voor deze categorieën beheren zonder het beheerscherm te moeten gebruiken (content_manager.php).");
+define("CONTENT_ADMIN_HELP_CAT_3", "<i>op deze pagina kun je een nieuwe categorie maken</i><br /><br />
+KIES ALTIJD EERST DE OUDERCATEGORIE VOORDAT JE DE ANDERE VELDEN INVULT !<br /><br />
+Dit moet je doen omdat sommige unieke categorieinformatie eerst in het formulier moet worden geladen.");
+define("CONTENT_ADMIN_HELP_CAT_4", "<i>deze pagina toont het formulier om categorieën te bewerken.</i><br /><br />
+<b>bewerk categorie formulier</b><br />je kunt nu alle gegevens voor deze (sub)categorie bewerken en de wijzigingen aanmelden.");
 define("CONTENT_ADMIN_HELP_CAT_5", "");
 define("CONTENT_ADMIN_HELP_CAT_6", "<i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />
 <b>standaardwaarden</b><br />By default all values are present and already updated in the preferences when you view this page, but change any setting to your own standards.<br /><br />

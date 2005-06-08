@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-07 20:18:05 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-08 16:51:37 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -363,6 +363,9 @@ define("CONTENT_ADMIN_OPT_LAN_263", "deze titel wordt alleen gebruikt als de lin
 define("CONTENT_ADMIN_OPT_LAN_264", "pictogram : standaard categorie");
 define("CONTENT_ADMIN_OPT_LAN_265", "bepaal het standaard pr\ictogram als er geen categoriepictogram aanwezig is (alleen als je te tonen 'categorie pictogram' hebt geselecteerd)");
 define("CONTENT_ADMIN_OPT_LAN_266", "");
+define("CONTENT_ADMIN_OPT_LAN_267", "zoekmenu weergavemethode");
+define("CONTENT_ADMIN_OPT_LAN_268", "bepaal hoe het zoekmenu wordt weergegeven");
+define("CONTENT_ADMIN_OPT_LAN_269", "bepaal hoe de zoekmenu informatie wordt weergegeven. Je hebt twee mogelijkheden: weergave bovenaan de pagina en het weergeven van het zoekmenu in een apart menu.");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "verplicht veld niet ingevuld");
 define("CONTENT_ADMIN_ITEM_LAN_1", "onderwerp aangemaakt");
@@ -514,7 +517,7 @@ define("CONTENT_ADMIN_MAIN_LAN_23", "Als je met een nieuwe installatie wilt star
 In deze standaard set worden drie hoofd oudercategorieën aangemaakt, namelijk Content, Review en Artikel.<br />");
 define("CONTENT_ADMIN_MAIN_LAN_24", "Dit is een nieuwe installatie / De oude content tabel bevat geen record");
 define("CONTENT_ADMIN_MAIN_LAN_25", "Omdat de oude aanwezige content tabel nog geen records bevat, kun je nu gewoon beginnen met het beheren van nieuwe content.<br />
-Door te klikken op de Volgende knop, maak je automatisch een nieuwe standaard set categorieën aan, namelijk Content, Review en Artikel.<br />");
+Door te klikken op de Volgende knop, maak je automatisch een nieuwe standaardset categorieën aan, namelijk Content, Review en Artikel.<br />");
 
 define("CONTENT_ADMIN_MENU_LAN_0", "Beheren content");
 define("CONTENT_ADMIN_MENU_LAN_1", "Aanmaken content");
@@ -536,6 +539,7 @@ define("CONTENT_ADMIN_MENU_LAN_16", "Archiefpagina");
 define("CONTENT_ADMIN_MENU_LAN_17", "ContentManager");
 define("CONTENT_ADMIN_MENU_LAN_18", "Auteurspagina");
 define("CONTENT_ADMIN_MENU_LAN_19", "Content Beheerder");
+define("CONTENT_ADMIN_MENU_LAN_20", "Hoogst gewaardeerde pagina");
 define("CONTENT_ADMIN_JS_LAN_0", "Weet je zeker dat je deze categorie wilt verwijderen?");
 define("CONTENT_ADMIN_JS_LAN_1", "Weet je zeker dat je dit onderwerp wilt verwijderen?");
 define("CONTENT_ADMIN_JS_LAN_2", "weet je zeker dat je de huidige afbeelding wilt verwijderen?");

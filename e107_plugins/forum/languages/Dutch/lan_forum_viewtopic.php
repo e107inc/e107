@@ -39,7 +39,7 @@ define("LAN_391", "volg deze discussie");
 define("LAN_392", "volg deze discussie niet meer");
 define("LAN_393", "Snelle reactie");
 define("LAN_394", "Bekijk");
-define("LAN_395", "Reageer op discussie");
+define("LAN_395", "Plaats reactie");
 define("LAN_396", "Website");
 define("LAN_397", "E-mail");
 define("LAN_398", "Profiel");

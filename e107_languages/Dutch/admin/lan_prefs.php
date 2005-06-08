@@ -123,6 +123,8 @@ define("PRFLAN_136", "Maximaal toegestane aantal aanmeldingen van hetzelfde IP a
 define("PRFLAN_137", "Toon geheugengebruik");
 define("PRFLAN_138", "Activeren Afbeelding-code verificatie bij vergeten wachtwoord.");
 define("PRFLAN_139", "Tonen waarschuwing als het wachtwoord van de hoofdbeheerder de laatste 30 dagen niet is gewijzigd");
+define("PRFLAN_140", "Te tonen tekst na het insturen van het aanmeldingsformulier.");  
+
 define("CUSTSIG_1", "Instellingen opgeslagen!");
 define("CUSTSIG_2", "Echte naam:");
 define("CUSTSIG_3", "Website:");
