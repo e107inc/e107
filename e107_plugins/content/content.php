@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.48 $
-|		$Date: 2005-06-08 12:05:24 $
+|		$Revision: 1.49 $
+|		$Date: 2005-06-08 16:52:37 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -591,16 +591,7 @@ function show_content_cat_all(){
 						$keytocount = $key;
 						$sql -> db_Select($plugintable, "*", "content_id = '".$key."' ");
 						$row = $sql -> db_Fetch();
-						$CONTENT_CAT_TABLE_HEADING = "<a href='".e_SELF."?cat.".$key."'>".$row['content_heading']."</a>";
 						
-						if(!is_object($gen)){ $gen = new convert; }
-						$authordetails = $aa -> getAuthor($row['content_author']);
-						//if(!is_object($sqlc)){ $sqlc = new db; }
-						$sqlc = new db;
-						if($row['content_comment']){
-							$comment_total = $sqlc -> db_Select("comments", "*",  "comment_item_id='".$key."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
-						}
-
 						$date	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_DATE}');
 						$auth	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_AUTHORDETAILS}');
 						$ep		= $tp -> parseTemplate('{CONTENT_CAT_TABLE_EPICONS}');
@@ -714,15 +705,11 @@ function show_content_cat($mode=""){
 							$auth = $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_AUTHORDETAILS}');
 							$ep = $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_EPICONS}');
 							$com = $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_COMMENT}');
-
 							if ($date!="" || $auth!="" || $ep!="" || $com!="" ) {
 								$CONTENT_CAT_LIST_TABLE_INFO_PRE = TRUE;
 								$CONTENT_CAT_LIST_TABLE_INFO_POST = TRUE;
 							}
 
-							if(!is_object($gen)){ $gen = new convert; }
-							//$authordetails		= $aa -> getAuthor($row['content_author']);
-							$comment_total		= $sql -> db_Select("comments", "*",  "comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 							$textparent			= $tp -> parseTemplate($CONTENT_CAT_LIST_TABLE, FALSE, $content_shortcodes);
 							$captionparent		= CONTENT_LAN_26." : ".$row['content_heading'];
 						}
@@ -775,13 +762,8 @@ function show_content_cat($mode=""){
 						if($resultitem = $sql1 -> db_Select($plugintable, "*", "content_refer !='sa' AND ".$qrycat." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
 
 							$content_recent_table_string = "";
-							$crumb = "";
 							while($row = $sql1 -> db_Fetch()){
-								if(!is_object($gen)){ $gen = new convert; }
-								if(isset($content_pref["content_list_parent_{$mainparent}"]) && $content_pref["content_list_parent_{$mainparent}"]){
-									$crumb							= $aa -> getCrumbItem($row['content_parent'], $array);
-								}
-								$content_recent_table_string	.= $tp -> parseTemplate($CONTENT_RECENT_TABLE, FALSE, $content_shortcodes);
+								$content_recent_table_string .= $tp -> parseTemplate($CONTENT_RECENT_TABLE, FALSE, $content_shortcodes);
 							}
 							$textchild		= $CONTENT_RECENT_TABLE_START.$content_recent_table_string.$CONTENT_RECENT_TABLE_END;
 							$captionchild	= "contents";
@@ -948,7 +930,6 @@ function show_content_author_all(){
 						$content_author_table_string = "";
 						for($i=0;$i<count($authordetails);$i++){
 							if(!is_object($sql2)){ $sql2 = new db; }
-							if(!is_object($gen)){ $gen = new convert; }
 							$totalcontent = $sql2 -> db_Select($plugintable, "content_id, content_heading, content_datestamp", "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' AND content_author = '".$authordetails[$i][3]."' ORDER BY content_datestamp DESC");
 							list($row['content_id'], $row['content_heading'], $row['content_datestamp']) = $sql2 -> db_Fetch();
 
@@ -1028,21 +1009,17 @@ function show_content_author(){
 						header("location:".e_SELF."?author.list.".$mainparent); exit;
 					}else{
 						list($content_author)	= $sqla -> db_Fetch();
-						$authordetails			= $aa -> getAuthor($content_author);
-
 						$sqlb = new db;
-						$query				= " content_author = '".$authordetails[3]."' || content_author REGEXP '^".$authordetails[1]."^' ".(is_numeric($content_author) ? " || content_author = '".$authordetails[0]."' " : "")." ";
-
-						$validparent		= implode(",", array_keys($array));
-						$qry				= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
-
+						$authordetails			= $aa -> getAuthor($content_author);						
+						$query					= " content_author = '".$authordetails[3]."' || content_author REGEXP '^".$authordetails[1]."^' ".(is_numeric($content_author) ? " || content_author = '".$authordetails[0]."' " : "")." ";
+						$validparent			= implode(",", array_keys($array));
+						$qry					= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 						$contenttotal			= $sqlb -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND ".$qry." AND (".$query.") ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ");
 
 						if($result = $sqlb -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_author, content_icon, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_pref as contentprefvalue", "content_refer !='sa' AND ".$qry." AND (".$query.") ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
-							
+
 							$content_recent_table_string = "";
 							while($row = $sqlb -> db_Fetch()){
-								$crumb							= $aa -> getCrumbItem($row['content_parent'], $array);
 								$content_recent_table_string	.= $tp -> parseTemplate($CONTENT_RECENT_TABLE, FALSE, $content_shortcodes);
 							}
 							$text = $CONTENT_RECENT_TABLE_START.$content_recent_table_string.$CONTENT_RECENT_TABLE_END;
@@ -1147,7 +1124,6 @@ function show_content_top(){
 							if(isset($rate_array[$i])){
 								if($sql2 -> db_Select($plugintable, "content_id, content_heading, content_author, content_icon", "content_id='".$rate_array[$i][0]."' " )){
 									while($row = $sql2 -> db_Fetch()){
-										$authordetails				= $aa -> getAuthor($row['content_author']);
 										$thisratearray				= $rate_array[$i];
 										$content_top_table_string	.= $tp -> parseTemplate($CONTENT_TOP_TABLE, FALSE, $content_shortcodes);
 									}
@@ -1235,19 +1211,14 @@ function show_content_item(){
 							}
 						}
 
-						if($content_pref["content_content_parent_{$mainparent}"]){
-							$CONTENT_CONTENT_TABLE_PARENT = $aa -> getCrumbItem($row['content_parent'], $array);
-						}
-
-						$date = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_DATE}');
-						$auth = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_AUTHORDETAILS}');
-						$ep = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EPICONS}');
-						$edit = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EDITICON}');
-						$par = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_PARENT}');
-						$com = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_COMMENT}');
-						$score = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_SCORE}');
-						$ref = $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_REFER}');
-
+						$date	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_DATE}');
+						$auth	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_AUTHORDETAILS}');
+						$ep		= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EPICONS}');
+						$edit	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EDITICON}');
+						$par	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_PARENT}');
+						$com	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_COMMENT}');
+						$score	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_SCORE}');
+						$ref	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_REFER}');
 						if ($date!="" || $auth!="" || $ep!="" || $edit!="" || $par!="" || $com!="" || $score!="" || $ref!="") {
 							$CONTENT_CONTENT_TABLE_INFO_PRE = TRUE;
 							$CONTENT_CONTENT_TABLE_INFO_POST = TRUE;
@@ -1266,9 +1237,9 @@ function show_content_item(){
 							}elseif(count($pages) < count($matches[0])){
 							}
 
-							$CONTENT_CONTENT_TABLE_TEXT = $pages[(!$qs[3] ? 0 : $qs[3]-1)];
+							$CONTENT_CONTENT_TABLE_TEXT = $pages[(!$qs[2] ? 0 : $qs[2]-1)];
 							for ($i=0; $i < count($pages); $i++) {
-								if(!isset($qs[3])){ $idp = 1; }else{ $idp = $qs[3]; }
+								if(!isset($qs[3])){ $idp = 1; }else{ $idp = $qs[2]; }
 								if($idp == $i+1){ $pre = " - current"; }else{ $pre = ""; }
 								if($matches[0][$i] == "[newpage]"){
 									$pagename[$i] = CONTENT_LAN_78;
