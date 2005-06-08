@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.51 $
-|		$Date: 2005-06-07 22:02:33 $
+|		$Revision: 1.52 $
+|		$Date: 2005-06-08 09:19:53 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -127,8 +127,11 @@ class content{
 				$content_pref["content_catall_subheading_{$id}"] = "1";					//show subheading
 				$content_pref["content_catall_text_{$id}"] = "0";						//show text
 				$content_pref["content_catall_date_{$id}"] = "0";						//show date
-				$content_pref["content_catall_authordetails_{$id}"] = "0";				//show authordetails
 				$content_pref["content_catall_rating_{$id}"] = "1";						//show rating
+				$content_pref["content_catall_authorname_{$id}"] = "0";					//show author name
+				$content_pref["content_catall_authoremail_{$id}"] = "0";				//show author email
+				$content_pref["content_catall_authorprofile_{$id}"] = "0";				//show link to author profile
+				$content_pref["content_catall_authoricon_{$id}"] = "0";					//show link to author list
 				$content_pref["content_catall_peicon_{$id}"] = "1";						//show pe icons
 				$content_pref["content_catall_comment_{$id}"] = "1";					//show amount of comments
 				$content_pref["content_catall_amount_{$id}"] = "0";						//show amount of items
@@ -141,8 +144,10 @@ class content{
 				$content_pref["content_cat_subheading_{$id}"] = "1";					//show subheading
 				$content_pref["content_cat_text_{$id}"] = "0";							//show text
 				$content_pref["content_cat_date_{$id}"] = "0";							//show date
-				$content_pref["content_cat_authorname_{$id}"] = "0";					//show authorname
-				$content_pref["content_cat_authoremail_{$id}"] = "0";					//show authoremail
+				$content_pref["content_cat_authorname_{$id}"] = "0";					//show author name
+				$content_pref["content_cat_authoremail_{$id}"] = "0";					//show author email
+				$content_pref["content_cat_authorprofile_{$id}"] = "0";					//show link to author profile
+				$content_pref["content_cat_authoricon_{$id}"] = "0";					//show link to author list
 				$content_pref["content_cat_rating_{$id}"] = "1";						//show rating
 				$content_pref["content_cat_peicon_{$id}"] = "1";						//show pe icons
 				$content_pref["content_cat_comment_{$id}"] = "1";						//show amount of comments
@@ -434,7 +439,7 @@ class content{
 			if($qs[0] == "top"){
 				$crumb .= " ".$sep." <a href='".e_SELF."?top.".$arr[$parent][0]."'>".CONTENT_LAN_8."</a>";
 			}
-			return $crumb;
+			return $crumb."<br /><br />";
 		}
 
 		function countCatItems($id){

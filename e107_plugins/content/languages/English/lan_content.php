@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-06-07 22:02:33 $
+|     $Revision: 1.46 $
+|     $Date: 2005-06-08 09:19:53 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -173,8 +173,8 @@ define("CONTENT_ADMIN_OPT_LAN_71", "choose which sections should be displayed wh
 define("CONTENT_ADMIN_OPT_LAN_72", "subheading");
 define("CONTENT_ADMIN_OPT_LAN_73", "summary");
 define("CONTENT_ADMIN_OPT_LAN_74", "date");
-define("CONTENT_ADMIN_OPT_LAN_75", "authorname");
-define("CONTENT_ADMIN_OPT_LAN_76", "authoremail");
+define("CONTENT_ADMIN_OPT_LAN_75", "author : name");
+define("CONTENT_ADMIN_OPT_LAN_76", "author : email");
 define("CONTENT_ADMIN_OPT_LAN_77", "rating");
 define("CONTENT_ADMIN_OPT_LAN_78", "email/print/pdf icon");
 define("CONTENT_ADMIN_OPT_LAN_79", "parent breadcrumb");
@@ -215,8 +215,8 @@ define("CONTENT_ADMIN_OPT_LAN_113", "all categories page");
 define("CONTENT_ADMIN_OPT_LAN_114", "view category page");
 define("CONTENT_ADMIN_OPT_LAN_115", "if enabled, a link to the category item will be placed on the postfix string");
 define("CONTENT_ADMIN_OPT_LAN_116", "amount of comments");
-define("CONTENT_ADMIN_OPT_LAN_117", "link to author list");
-define("CONTENT_ADMIN_OPT_LAN_118", "link to author profile");
+define("CONTENT_ADMIN_OPT_LAN_117", "author : link to author list");
+define("CONTENT_ADMIN_OPT_LAN_118", "author : link to author profile");
 define("CONTENT_ADMIN_OPT_LAN_119", "content category pages");
 define("CONTENT_ADMIN_OPT_LAN_120", "parent item");
 define("CONTENT_ADMIN_OPT_LAN_121", "should the parent item be shown");
