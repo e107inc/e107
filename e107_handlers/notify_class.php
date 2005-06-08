@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/notify_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-05-31 21:38:40 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-08 00:08:10 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -29,8 +29,12 @@ class notify {
 				$e_event -> register($id, 'notify_'.$id);
 			}
 		}
-		@include_once(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
-		@include_once(e_LANGUAGEDIR.'English/lan_notify.php');
+		
+		if(defined("e_LANGUAGE") && is_readable(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php')) {
+			include_once(e_LANGUAGEDIR.e_LANGUAGE.'/lan_notify.php');
+		} else {
+			include_once(e_LANGUAGEDIR.'English/lan_notify.php');
+		}
 	}
 	
 	function send($id, $subject, $message) {
