@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/admin_config.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-03-14 15:39:11 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-08 07:08:59 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -190,5 +190,5 @@ $text = "<div style='text-align:center'>
 	
 $ns->tablerender(NFLAN_09, $text);
 
-require_once("footer.php");
+require_once(e_ADMIN."footer.php");
 ?>

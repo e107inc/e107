@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-05-13 17:07:04 $
+|     $Revision: 1.12 $
+|     $Date: 2005-06-08 07:08:59 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -218,7 +218,7 @@ $text = "<div style='text-align:center'>
 	</div>";
 	
 $ns->tablerender(ADSTAT_L16, $text);
-require_once("footer.php");
+require_once(e_ADMIN."footer.php");
 
 
 
