@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-06-07 23:11:55 $
+|     $Revision: 1.27 $
+|     $Date: 2005-06-08 19:37:47 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -62,16 +62,10 @@ class e107{
 
 		$this->relative_base_path = $link_prefix;
 
-		if ($_SERVER['SERVER_PORT'] != 80) {
-			$url_port = ":{$_SERVER['SERVER_PORT']}";
-		} else {
-			$url_port = "";
-		}
-
 		$this->server_path = $server_path;
 
-		$this->http_path = "http://{$_SERVER['HTTP_HOST']}{$url_port}{$this->server_path}";
-		$this->https_path = "https://{$_SERVER['HTTP_HOST']}{$url_port}{$this->server_path}";
+		$this->http_path = "http://{$_SERVER['HTTP_HOST']}{$this->server_path}";
+		$this->https_path = "https://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->file_path = $e107_root_folder;
 
 		define("e_HTTP", $this->server_path);
