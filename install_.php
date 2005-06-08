@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-06-08 08:36:51 $
+|     $Revision: 1.29 $
+|     $Date: 2005-06-08 08:51:39 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
