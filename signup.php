@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-06-08 03:01:25 $
+|     $Revision: 1.39 $
+|     $Date: 2005-06-08 03:02:52 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -178,7 +178,6 @@ if (isset($_POST['register'])) {
 	{
 		$postvalue = $signup_name[$i];
 		if ($signupval[$i] == 2 && $_POST[$postvalue] == "") {
-			print_a($_POST);
 			$error_message .= LAN_SIGNUP_6.$signup_title[$i].LAN_SIGNUP_7."\\n";
 			$error = TRUE;
 		}
