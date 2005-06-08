@@ -34,8 +34,8 @@ if($sql -> db_Select("banner", "*", $query)){
 	}
 	elseif($fileext1 == 'php' || $fileext1 == 'html' || $fileext1 == 'js')
 	{
-		include(e_IMAGE."banners/".$row['banner_image']);
-		return;
+		$file_data = file_get_contents(e_IMAGE."banners/".$row['banner_image']);
+		return $file_data;
 	}
 	else
 	{
