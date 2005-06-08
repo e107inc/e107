@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/admin/lan_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-08 15:12:03 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-08 17:04:10 $
 |     $Author: tpruvot $
 +----------------------------------------------------------------------------+
 */
-define("ADLAN_0", "News");
+define("ADLAN_0", "Nouvelles");
 define("ADLAN_1", "Ajouter/modifier/supprimer des nouvelles");
 define("ADLAN_2", "Catégories de nouvelles");
 define("ADLAN_3", "Ajouter/modifier/supprimer des catégories de nouvelles");
@@ -50,14 +50,14 @@ define("ADLAN_38", "Groupes");
 define("ADLAN_39", "Créer/modifier les groupes d'utilisateur");
 define("ADLAN_40", "Maintenance");
 define("ADLAN_41", "Désactiver le site pour effectuer une maintenance");
-define("ADLAN_42", "Menus/Pages personalisées");
+define("ADLAN_42", "Menus/Pages perso.");
 define("ADLAN_43", "Créer des menus personalisés");
 define("ADLAN_44", "Base de données");
 define("ADLAN_45", "Outils pour la base de données");
 define("ADLAN_46", "Déconnexion");
 define("ADLAN_47", "Bienvenue");
 define("ADLAN_48", "Connecté");
-define("ADLAN_49", "Administrateur principal du site");
+define("ADLAN_49", "Admin. principal du site");
 define("ADLAN_50", "permissions");
 define("ADLAN_51", "Veuillez vous identifier pour accéder au panneau d'administration");
 define("ADLAN_52", "Accueil Administration");
@@ -80,12 +80,12 @@ define("ADLAN_68", "Infos PHP");
 define("ADLAN_69", "Page d'information sur la configuration PHP du serveur web");
 define("ADLAN_70", "Sondages");
 define("ADLAN_71", "Ajouter/modifier des Sondages");
-define("ADLAN_72", "Upload Publique");
+define("ADLAN_72", "Upload Public");
 define("ADLAN_73", "Configurer la réception de fichiers du public");
 define("ADLAN_74", "Mise en Cache");
 define("ADLAN_75", "Statut du système de mise en cache");
 define("ADLAN_77", "Il y a une nouvelle en attente de validation - cliquez ici pour la valider.");
-define("ADLAN_78", "Champs utilisateurs étendus");
+define("ADLAN_78", "Champs utilisateur étendus");
 define("ADLAN_79", "Modification des informations étendues des utilisateurs");
 
 
@@ -149,7 +149,7 @@ define("ADLAN_133", "défaut");
 define("ADLAN_134", "Statut");
 define("ADLAN_135", "Log Admin");
 
-define("ADLAN_136", "Mail");
+define("ADLAN_136", "Emails");
 define("ADLAN_137", "Paramètres Email et d'envoi");
 
 define("ADLAN_138", "Liens du site");
@@ -167,7 +167,7 @@ define("ADLAN_146", "Tentatives de connexion échouées");
 define("ADLAN_147", "Inspecteur de Fichiers");
 define("ADLAN_148", "Vérifier les fichiers du site");
 
-define("ADLAN_149", "Alertes");
+define("ADLAN_149", "Alertes par Email");
 define("ADLAN_150", "Alertes d'admininistration par mail");
 
 define('ADLAN_CL_1', 'Préférences');
