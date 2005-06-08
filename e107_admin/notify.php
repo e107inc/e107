@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/notify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-05-29 18:34:31 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-08 21:53:08 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -39,8 +39,9 @@ class notify_config {
 	var $notify_prefs;
 	
 	function notify_config() {
-		global $sysprefs;
-		$this -> notify_prefs = $sysprefs -> getArray('notify_prefs');
+		global $sysprefs, $eArrayStorage;
+		$this -> notify_prefs = $sysprefs -> get('notify_prefs');
+		$this -> notify_prefs = $eArrayStorage -> ReadArray($this -> notify_prefs);
 	}
 	
 	function config() {
@@ -99,7 +100,7 @@ class notify_config {
 	}
 	
 	function render_event($id, $description) {
-		global $rs;
+		global $rs, $tp;
 		$text .= "<tr>
 		<td class='forumheader3' style='width: 30%'>
 		".$description.":
@@ -110,22 +111,23 @@ class notify_config {
 		<input type='radio' name='event[".$id."][type]' value='class' ".($this -> notify_prefs['event'][$id]['type'] == 'class' ? " checked='checked'" : "")." /> ".NT_LAN_5.": 
 		".r_userclass('event['.$id.'][class]', $this -> notify_prefs['event'][$id]['class'], 'off', 'member,admin,classes')." 
 		<input type='radio' name='event[".$id."][type]' value='email' ".($this -> notify_prefs['event'][$id]['type'] == 'email' ? " checked='checked'" : "")." /> ".NT_LAN_6.": 
-		".$rs -> form_text('event['.$id.'][email]', 17, $this -> notify_prefs['event'][$id]['email'])."
+		".$rs -> form_text('event['.$id.'][email]', 17, $tp -> toForm($this -> notify_prefs['event'][$id]['email']))."
 		</td>
 		</tr>";
 		return $text;
 	}
 	
 	function update() {
-		global $sql, $pref;
+		global $sql, $pref, $tp, $eArrayStorage;
 		foreach ($_POST['event'] as $key => $value) {
 			if ($this -> update_event($key)) {
 				$active = TRUE;
 			}
 		}
 		
-		$serialised_prefs = addslashes(serialize($this -> notify_prefs));
-		$sql -> db_Update("core", "e107_value='".$serialised_prefs."' WHERE e107_name='notify_prefs' ");
+		$s_prefs = $tp -> recurse_toDB($this -> notify_prefs, true);
+		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
+		$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs' ");
 		if ($active) {
 			$pref['notify'] = TRUE;
 		} else {
