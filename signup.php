@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-06-06 17:38:46 $
+|     $Revision: 1.38 $
+|     $Date: 2005-06-08 03:01:25 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -178,6 +178,7 @@ if (isset($_POST['register'])) {
 	{
 		$postvalue = $signup_name[$i];
 		if ($signupval[$i] == 2 && $_POST[$postvalue] == "") {
+			print_a($_POST);
 			$error_message .= LAN_SIGNUP_6.$signup_title[$i].LAN_SIGNUP_7."\\n";
 			$error = TRUE;
 		}
@@ -540,7 +541,7 @@ if ($signupval[5]) {
 	$today = getdate();
 	$year = $today['year'];
 	for($a = 1; $a <= 31; $a++) {
-		$text .= ($birth_day == $a ? $rs->form_option($a, 1) : $rs->form_option($a, 0));
+		$text .= ($birth_day == $a ? $rs->form_option($a, 1, $a) : $rs->form_option($a, 0, $a));
 	}
 	$text .= $rs->form_select_close(). $rs->form_select_open("birth_month"). $rs->form_option("", 0);
 	for($a = 1; $a <= 12; $a++) {
@@ -548,7 +549,7 @@ if ($signupval[5]) {
 	}
 	$text .= $rs->form_select_close(). $rs->form_select_open("birth_year"). $rs->form_option("", 0);
 	for($a = 1900; $a <= $year; $a++) {
-		$text .= ($birth_year == $a ? $rs->form_option($a, 1) : $rs->form_option($a, 0));
+		$text .= ($birth_year == $a ? $rs->form_option($a, 1, $a) : $rs->form_option($a, 0, $a));
 	}
 	$text .= $rs->form_select_close();
 	$text .= "</td></tr>";
