@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_search.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-07 09:57:41 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-08 04:46:21 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ define("SEALAN_15", "Página de la búsqueda accesible a la clase del usuario");
 define("SEALAN_16", "On");
 define("SEALAN_17", "Off");
 define("SEALAN_18", "Áreas de comentarios de búsqueda (Si activa búsqueda de comentarios)");
-define("SEALAN_19", "Permitir al usuario buscar más de un área a la vez:");
+define("SEALAN_19", "Permitir a los usuarios buscar en más de un área a la vez:");
 define("SEALAN_20", "Ajustes generales");
 define("SEALAN_21", "Áreas de búsqueda");
 define("SEALAN_22", "P.def.");
@@ -39,5 +39,11 @@ define("SEALAN_28", "Result.");
 define("SEALAN_30", "Resaltar palabras referidas en la página:");
 define("SEALAN_31", "PHP limitado a");
 define("SEALAN_32", "resultados (dejar en blanco para no limitar)");
+define("SEALAN_33", "No puedo conectar con el método corto en MySql ya que requiere una versión superior a 4.0.1 de MySql.");
+define("SEALAN_34", "Su versión actual es");
+define("SEALAN_35", "Método de selección de áreas de búsqueda:");
+define("SEALAN_36", "Lista desplegable");
+define("SEALAN_37", "Caja de texto");
+define("SEALAN_38", "Radio");
 
 ?>

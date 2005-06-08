@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-07 09:57:17 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-08 04:45:59 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -128,7 +128,7 @@ define("CONTENT_ADMIN_OPT_LAN_29", "Permitir envios directos de contenidos");
 define("CONTENT_ADMIN_OPT_LAN_30", "Activando los envíos directos, el envío se añadirá directamente en la base de datos y se mostrará inmediatamente. Desactivo, el admin deberá aprovar el contenido tras su revisión.");
 define("CONTENT_ADMIN_OPT_LAN_31", "Defina que secciones estarán disponibles para nuevos envios");
 define("CONTENT_ADMIN_OPT_LAN_32", "Escoja que áreas quiere permitir a los envíos de usuario");
-define("CONTENT_ADMIN_OPT_LAN_33", "Rutas de temas, plantillas y ajustes de estilos css");
+define("CONTENT_ADMIN_OPT_LAN_33", "Rutas y ajustes de temas");
 define("CONTENT_ADMIN_OPT_LAN_34", "Aquí definirá donde estarán sus imagenes o se almacenarán. Use paréntesis ( { } ) para las variables de ruta relacionadas con e107 (como ( {e_PLUGIN} o {e_IMAGE} ). Para los iconos de categorías de contenidos se necesitan 2 versiones, un set de iconos pequeños y otra grande.");
 define("CONTENT_ADMIN_OPT_LAN_35", "ruta : iconos de categorías grandes");
 define("CONTENT_ADMIN_OPT_LAN_36", "Defina una ruta para iconos de categoría (grandes)");
@@ -170,7 +170,7 @@ define("CONTENT_ADMIN_OPT_LAN_71", "Escoja que secciones se mostrarán cuando ve
 define("CONTENT_ADMIN_OPT_LAN_72", "Subcabecera");
 define("CONTENT_ADMIN_OPT_LAN_73", "Sumario");
 define("CONTENT_ADMIN_OPT_LAN_74", "Fecha");
-define("CONTENT_ADMIN_OPT_LAN_75", "Autordetalles");
+define("CONTENT_ADMIN_OPT_LAN_75", "Autornombre");
 define("CONTENT_ADMIN_OPT_LAN_76", "Autoremail");
 define("CONTENT_ADMIN_OPT_LAN_77", "Valoración");
 define("CONTENT_ADMIN_OPT_LAN_78", "Icono email/imprimir/pdf");
@@ -211,9 +211,9 @@ define("CONTENT_ADMIN_OPT_LAN_112", "Escoja que secciones en la lista de subcate
 define("CONTENT_ADMIN_OPT_LAN_113", "Página de todas las categorías");
 define("CONTENT_ADMIN_OPT_LAN_114", "Página de ver categorías");
 define("CONTENT_ADMIN_OPT_LAN_115", "Activado, se insertará un enlace a la categoría en la cadena del sufijo");
-define("CONTENT_ADMIN_OPT_LAN_116", "");
-define("CONTENT_ADMIN_OPT_LAN_117", "");
-define("CONTENT_ADMIN_OPT_LAN_118", "");
+define("CONTENT_ADMIN_OPT_LAN_116", "Cantidad de comentarios");
+define("CONTENT_ADMIN_OPT_LAN_117", "Enlace a lista de autor");
+define("CONTENT_ADMIN_OPT_LAN_118", "Enlace a perfil de autor");
 define("CONTENT_ADMIN_OPT_LAN_119", "Páginas de categorías de contenidos");
 define("CONTENT_ADMIN_OPT_LAN_120", "Padre");
 define("CONTENT_ADMIN_OPT_LAN_121", "¿Debe mostrar el padre?");
@@ -361,7 +361,10 @@ define("CONTENT_ADMIN_OPT_LAN_262", "Defina el título de los enlaces a otras p�
 define("CONTENT_ADMIN_OPT_LAN_263", "Esta opción solo se usará si los enlaces se muestran como 'enalcesnormales' y no en una lista desplegable");
 define("CONTENT_ADMIN_OPT_LAN_264", "Icono : Categoría por defecto");
 define("CONTENT_ADMIN_OPT_LAN_265", "Defina el icono por defecto si no existe icono para la categoría (solo si ha seleccionado 'Icono de categoría' a mostrar)");
-define("CONTENT_ADMIN_OPT_LAN_266", "");
+define("CONTENT_ADMIN_OPT_LAN_266", "Página más valorada");
+define("CONTENT_ADMIN_OPT_LAN_267", "Tipo de render del menú de búsqueda");
+define("CONTENT_ADMIN_OPT_LAN_268", "Defina como mostrará el menú de búsqueda");
+define("CONTENT_ADMIN_OPT_LAN_269", "Defina como renderizará la información del menú de búsqueda. Tiene 2 opciones:: UNa enviarlo arriba en la página y otra renderizarlo en un menú separado");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "campos obligatorios en blanco");
 define("CONTENT_ADMIN_ITEM_LAN_1", "contenido creado");
@@ -540,7 +543,7 @@ define("CONTENT_ADMIN_MENU_LAN_5", "Categoría");
 define("CONTENT_ADMIN_MENU_LAN_6", "Opciones");
 define("CONTENT_ADMIN_MENU_LAN_7", "Admin Crear");
 define("CONTENT_ADMIN_MENU_LAN_8", "Enviar elementos");
-define("CONTENT_ADMIN_MENU_LAN_9", "Ruta, css y tema");
+define("CONTENT_ADMIN_MENU_LAN_9", "Ruta y tema");
 define("CONTENT_ADMIN_MENU_LAN_10", "General");
 define("CONTENT_ADMIN_MENU_LAN_11", "Previsualizar contenido");
 define("CONTENT_ADMIN_MENU_LAN_12", "Páginas de categorías");
@@ -551,6 +554,7 @@ define("CONTENT_ADMIN_MENU_LAN_16", "Página archivo");
 define("CONTENT_ADMIN_MENU_LAN_17", "GestorContenidos");
 define("CONTENT_ADMIN_MENU_LAN_18", "Página autor");
 define("CONTENT_ADMIN_MENU_LAN_19", "Gestor de contenidos");
+ define("CONTENT_ADMIN_MENU_LAN_20", "Página más valorada");
 
 define("CONTENT_ADMIN_JS_LAN_0", "¿Está seguro de eliminar esta categoría?");
 define("CONTENT_ADMIN_JS_LAN_1", "¿Está seguro de eliminar este contenido?");
@@ -639,25 +643,25 @@ define("CONTENT_LAN_19", "buscar");
 define("CONTENT_LAN_20", "resultados de la búsqueda de contenidos");
 define("CONTENT_LAN_21", "sin tipos de contenidos.");
 define("CONTENT_LAN_22", "tipos de contenidos");
-define("CONTENT_LAN_23", "lista contenidos recientes");
+define("CONTENT_LAN_23", "Lista contenidos recientes");
 define("CONTENT_LAN_24", "señuelo");
-define("CONTENT_LAN_25", "catgorías de contenido");
-define("CONTENT_LAN_26", "padre");
+define("CONTENT_LAN_25", "Catgorías de contenido");
+define("CONTENT_LAN_26", "Categoría de contenido");
 define("CONTENT_LAN_27", "subcategorías");
 define("CONTENT_LAN_28", "padre subcategorías");
 define("CONTENT_LAN_29", "desconocido");
 define("CONTENT_LAN_30", "contenido");
 define("CONTENT_LAN_31", "contenidos");
-define("CONTENT_LAN_32", "lista autor contenido");
+define("CONTENT_LAN_32", "Lista de contenido de autor");
 define("CONTENT_LAN_33", "Ir a la página");
 define("CONTENT_LAN_34", "contenido");
 define("CONTENT_LAN_35", "comentarios");
 define("CONTENT_LAN_36", "moderar comentarios");
 define("CONTENT_LAN_37", "no hay contenidos valorados aún");
-define("CONTENT_LAN_38", "loc ontenidos más valorados");
+define("CONTENT_LAN_38", "Los contenidos más valorados");
 define("CONTENT_LAN_39", "lista autor");
 define("CONTENT_LAN_40", "detalles del autor");
-define("CONTENT_LAN_41", "descargar adjunto");
+define("CONTENT_LAN_41", "Adjunto");
 define("CONTENT_LAN_42", "archivo");
 define("CONTENT_LAN_43", "archivos");
 define("CONTENT_LAN_44", "clicks:");
