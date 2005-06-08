@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.52 $
-|		$Date: 2005-06-08 09:19:53 $
+|		$Revision: 1.53 $
+|		$Date: 2005-06-08 09:36:14 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -224,39 +224,39 @@ class content{
 
 				//MENU OPTIONS
 				$content_pref["content_menu_caption_{$id}"] = CONTENT_MENU_LAN_0;		//caption of menu
-				$content_pref["content_menu_search_{$id}"] = "1";						//show search keyword
-				$content_pref["content_menu_sort_{$id}"] = "1";							//show sorting methods
+				$content_pref["content_menu_search_{$id}"] = "0";						//show search keyword
+				$content_pref["content_menu_sort_{$id}"] = "0";							//show sorting methods
 
 				$content_pref["content_menu_links_{$id}"] = "1";						//show content links
-				$content_pref["content_menu_links_dropdown_{$id}"] = "1";				//rendertype of content links (in dropdown or as normal links)
-				$content_pref["content_menu_links_icon_{$id}"] = "1";					//define icon for content links (only with normallinks)
+				$content_pref["content_menu_links_dropdown_{$id}"] = "0";				//rendertype of content links (in dropdown or as normal links)
+				$content_pref["content_menu_links_icon_{$id}"] = "0";					//define icon for content links (only with normallinks)
 				$content_pref["content_menu_links_caption_{$id}"] = CONTENT_MENU_LAN_4;	//define caption for link list (only is normallinks is selected)
 				$content_pref["content_menu_viewallcat_{$id}"] = "1";					//menu: view link to all categories
 				$content_pref["content_menu_viewallauthor_{$id}"] = "1";				//menu: view link to all authors
 				$content_pref["content_menu_viewallitems_{$id}"] = "1";					//menu: view link to all items (archive)
 				$content_pref["content_menu_viewtoprated_{$id}"] = "1";					//menu: view link to top rated items
 				$content_pref["content_menu_viewrecent_{$id}"] = "1";					//menu: view link to recent items
-				$content_pref["content_menu_viewsubmit_{$id}"] = "1";					//view link to submit content item (only if it is allowed)
-				$content_pref["content_menu_viewicon_{$id}"] = "1";						//choose icon to display for links
+				$content_pref["content_menu_viewsubmit_{$id}"] = "0";					//view link to submit content item (only if it is allowed)
+				$content_pref["content_menu_viewicon_{$id}"] = "0";						//choose icon to display for links
 
 				$content_pref["content_menu_cat_{$id}"] = "1";							//view categories
 				$content_pref["content_menu_cat_main_{$id}"] = "1";						//show main parent in the category list				
 				$content_pref["content_menu_cat_number_{$id}"] = "1";					//show number of items in category				
-				$content_pref["content_menu_cat_icon_{$id}"] = "5";						//choose icon to display for categories
-				$content_pref["content_menu_cat_icon_default_{$id}"] = "1";				//choose default icon is no icon present (only if category_icon is selected)
+				$content_pref["content_menu_cat_icon_{$id}"] = "0";						//choose icon to display for categories
+				$content_pref["content_menu_cat_icon_default_{$id}"] = "0";				//choose default icon is no icon present (only if category_icon is selected)
 				$content_pref["content_menu_cat_caption_{$id}"] = CONTENT_MENU_LAN_3;	//define caption for category list
-				$content_pref["content_menu_cat_dropdown_{$id}"] = "1";					//rendertype of categories (in dropdown or as normal links)
+				$content_pref["content_menu_cat_dropdown_{$id}"] = "0";					//rendertype of categories (in dropdown or as normal links)
 
 				$content_pref["content_menu_recent_{$id}"] = "1";						//view recent list
 				$content_pref["content_menu_recent_caption_{$id}"] = CONTENT_MENU_LAN_2;	//caption of recent list
 				$content_pref["content_menu_recent_number_{$id}"] = "5";				//number of recent items to show
-				$content_pref["content_menu_recent_date_{$id}"] = "1";					//show date in recent list
+				$content_pref["content_menu_recent_date_{$id}"] = "0";					//show date in recent list
 				$content_pref["content_menu_recent_datestyle_{$id}"] = "%d %b %Y";		//choose datestyle for given date
-				$content_pref["content_menu_recent_author_{$id}"] = "1";				//show author in recent list
-				$content_pref["content_menu_recent_subheading_{$id}"] = "1";			//show subheading in recent list
+				$content_pref["content_menu_recent_author_{$id}"] = "0";				//show author in recent list
+				$content_pref["content_menu_recent_subheading_{$id}"] = "0";			//show subheading in recent list
 				$content_pref["content_menu_recent_subheading_char_{$id}"] = "80";		//number of characters of subheading to show
 				$content_pref["content_menu_recent_subheading_post_{$id}"] = "[...]";	//postfix for too long subheadings
-				$content_pref["content_menu_recent_icon_{$id}"] = "5";					//choose icon to display for recent items
+				$content_pref["content_menu_recent_icon_{$id}"] = "0";					//choose icon to display for recent items
 				$content_pref["content_menu_recent_icon_width_{$id}"] = "50";			//specify width of icon (only if content_icon is set)
 
 				return $content_pref;
@@ -1212,6 +1212,7 @@ class content{
 				$data .= "	if( ".chr(36)."content_pref[\"content_menu_viewsubmit_".chr(36)."menutypeid\"] && ".chr(36)."content_pref[\"content_submit_".chr(36)."menutypeid\"] && check_class(".chr(36)."content_pref[\"content_submit_class_".chr(36)."menutypeid\"]) ){\n";
 				$data .= "		".chr(36)."text .= ".chr(36)."linksicon.\" <a href='\".".chr(36)."plugindir.\"content_submit.php'>\".CONTENT_LAN_75.\"</a><br />\";\n";
 				$data .= "	}\n";
+				$data .= "	".chr(36)."text .= \"<br />\";\n";
 				$data .= "}\n";
 				$data .= "\n";
 				$data .= "//get category array\n";
@@ -1220,7 +1221,6 @@ class content{
 				$data .= "//##### CATEGORY LIST --------------------------------------------------\n";
 				$data .= "if(!".chr(36)."content_pref[\"content_menu_cat_dropdown_".chr(36)."menutypeid\"]){\n";
 				$data .= "	if(".chr(36)."content_pref[\"content_menu_cat_".chr(36)."menutypeid\"]){\n";
-				$data .= "		".chr(36)."text .= \"<br />\";\n";
 				$data .= "		".chr(36)."text .= (".chr(36)."content_pref[\"content_menu_cat_caption_".chr(36)."menutypeid\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_cat_caption_".chr(36)."menutypeid\"] : CONTENT_MENU_LAN_3).\"<br />\";\n";
 				$data .= "\n";
 				$data .= "		".chr(36)."newarray = array_merge_recursive(".chr(36)."array);\n";
@@ -1257,7 +1257,7 @@ class content{
 				$data .= "					}\n";
 				$data .= "				}\n";
 				$data .= "				//display category list\n";
-				$data .= "				".chr(36)."text .= \"<table style='border:0;' cellpadding='0' cellspacing='0'>\";\n";
+				$data .= "				".chr(36)."text .= \"<table style='width:98%; text-align:left; border:0;' cellpadding='0' cellspacing='0'>\";\n";
 				$data .= "				".chr(36)."text .= \"<tr>\";\n";
 				$data .= "				".chr(36)."text .= (".chr(36)."ICON ? \"<td style='width:2%; white-space:nowrap; padding-right:5px;'><a href='\".e_PLUGIN.\"content/content.php?cat.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."ICON.\"</a></td>\" : \"\");\n";
 				$data .= "				".chr(36)."text .= \"<td colspan='2'>\";\n";
@@ -1272,6 +1272,7 @@ class content{
 				$data .= "}\n";
 				$data .= "\n";
 				$data .= "//##### RECENT --------------------------------------------------\n";
+				$data .= "if(".chr(36)."content_pref[\"content_menu_recent_".chr(36)."menutypeid\"]){\n";
 				$data .= chr(36)."text .= \"<br />\";\n";
 				$data .= "\n";
 				$data .= "//prepare query paramaters\n";
@@ -1331,7 +1332,7 @@ class content{
 				$data .= "		}\n";
 				$data .= "\n";
 				$data .= "		//display recent list\n";
-				$data .= "		".chr(36)."text .= \"<table style='width:98%; text-align:left; border:0;' cellpadding='0' cellspacing='0'>\";\n";
+				$data .= "		".chr(36)."text .= \"<table style='width:98%; text-align:left; border:0; margin-bottom:10px;' cellpadding='0' cellspacing='0'>\";\n";
 				$data .= "		".chr(36)."text .= \"<tr>\";\n";
 				$data .= "		".chr(36)."text .= (".chr(36)."ICON ? \"<td style='width:1%; white-space:nowrap; vertical-align:top; padding-right:10px;'><a href='\".e_PLUGIN.\"content/content.php?content.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."ICON.\"</a></td>\" : \"\");\n";
 				$data .= "		".chr(36)."text .= \"<td style='width:99%; vertical-align:top;'>\";\n";
@@ -1341,10 +1342,11 @@ class content{
 				$data .= "		".chr(36)."text .= (".chr(36)."SUBHEADING ? ".chr(36)."SUBHEADING.\"<br />\" : \"\" );\n";
 				$data .= "		".chr(36)."text .= \"</td>\";\n";
 				$data .= "		".chr(36)."text .= \"</tr>\";\n";
-				$data .= "		".chr(36)."text .= \"</table><br />\";\n";
+				$data .= "		".chr(36)."text .= \"</table>\";\n";
 				$data .= "	}\n";
 				$data .= "}\n";
-				$data .= "\n";
+				$data .= "}\n";
+				$data .= "\n";				
 				$data .= "if(!isset(".chr(36)."text)){ ".chr(36)."text = CONTENT_MENU_LAN_1; }\n";
 				$data .= chr(36)."caption = (".chr(36)."content_pref[\"content_menu_caption_".chr(36)."menutypeid\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_caption_".chr(36)."menutypeid\"] : CONTENT_MENU_LAN_0.\" \".".chr(36)."menuname);\n";
 				$data .= chr(36)."ns -> tablerender(".chr(36)."caption, ".chr(36)."text);\n";
