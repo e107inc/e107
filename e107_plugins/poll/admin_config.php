@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-05-25 08:13:05 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-08 07:10:15 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -152,7 +152,7 @@ $poll_total = $sql->db_Select("polls");
 $text = $poll -> renderPollForm();
 
 $ns->tablerender(POLLAN_2, $text);
-require_once("footer.php");
+require_once(e_ADMIN."footer.php");
 function headerjs() {
 	global $tp;
 	$headerjs = "<script type=\"text/javascript\">
