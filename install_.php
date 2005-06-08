@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/install_.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-06-07 19:26:20 $
-|     $Author: sweetas $
+|     $Revision: 1.28 $
+|     $Date: 2005-06-08 08:36:51 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-@include("e107_handlers/errorhandler_class.php");
-set_error_handler("error_handler");
+//@include("e107_handlers/errorhandler_class.php");
+//set_error_handler("error_handler");
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 if (isset($_POST['frontpage'])) {
