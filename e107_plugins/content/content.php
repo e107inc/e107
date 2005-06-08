@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.50 $
-|		$Date: 2005-06-08 17:50:40 $
+|		$Revision: 1.51 $
+|		$Date: 2005-06-08 20:00:27 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -172,7 +172,8 @@ if(!e_QUERY){
 		show_content_author();
 
 	//archive of parent='2'
-	}elseif( $qs[0] == "list" && is_numeric($qs[1]) && ( !isset($qs[2]) || substr($qs[2],0,5) == "order" ) ){
+	}elseif( $qs[0] == "list" && is_numeric($qs[1])  ){
+		//&& ( !isset($qs[2]) || substr($qs[2],0,5) == "order" )
 		show_content_archive();
 	}else{
 		//header("location:".e_SELF); exit;
@@ -392,7 +393,7 @@ function show_content(){
 function show_content_archive(){
 				global $ns, $plugindir, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
 				global $nextprevquery, $from, $number, $mainparent;
-				global $CONTENT_ARCHIVE_TABLE, $datequery, $prefetchbreadcrumb, $unvalidcontent;
+				global $CONTENT_ARCHIVE_TABLE, $CONTENT_ARCHIVE_TABLE_START, $datequery, $prefetchbreadcrumb, $unvalidcontent, $CONTENT_ARCHIVE_TABLE_LETTERS;
 				global $qs;
 
 				$mainparent		= $aa -> getMainParent($qs[1]);
@@ -416,24 +417,46 @@ function show_content_archive(){
 				}else{
 					ob_start();
 					
+					$text = "";
 					$array			= $aa -> getCategoryTree("", $mainparent, TRUE);
 					$validparent	= implode(",", array_keys($array));
 					$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 					$number			= ($content_pref["content_archive_nextprev_number_{$mainparent}"] ? $content_pref["content_archive_nextprev_number_{$mainparent}"] : "30");
 					$order			= $aa -> getOrder();
 					$nextprevquery	= ($content_pref["content_archive_nextprev_{$mainparent}"] ? "LIMIT ".$from.",".$number : "");
-
 					$sql1 = new db;
+					
+					if($content_pref["content_archive_letterindex_{$mainparent}"]){
+						//show first letters heading
+						$distinctfirstletter = $sql1 -> db_Select($plugintable, "DISTINCT(LEFT(content_heading,1)) as letter", "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ORDER BY content_heading ASC ");
+						if ($distinctfirstletter > 1){
+							$CONTENT_ARCHIVE_TABLE_LETTERS = "<form method='post' action='".e_SELF."?list.".$mainparent."'>";
+							while($row = $sql1 -> db_Fetch()){
+								if($row['letter'] != ""){
+									//$CONTENT_ARCHIVE_TABLE_LETTERS .= "<input class='button' style='width:20' type='submit' name='letter' value='".strtoupper($row['letter'])."' />";
+									$thisletter = $row['letter'];
+									$CONTENT_ARCHIVE_TABLE_LETTERS .= "<input class='button' style='width:20' type='button' name='letter' value='".strtoupper($row['letter'])."' onclick=\"document.location='".e_SELF."?list.".$mainparent.".".strtoupper($thisletter)."'\" />";
+								}
+							}
+							$CONTENT_ARCHIVE_TABLE_LETTERS .= "<input class='button' style='width:20' type='submit' name='letter' value='all' />";
+							$CONTENT_ARCHIVE_TABLE_LETTERS .= "</form>";
+						}
+						//check posted letter
+						//$letter=(isset($_POST['letter']) ? $_POST['letter'] : "");
+						$letter=(isset($qs[2]) && strlen($qs[2]) == "1" && substr($qs[2],0,5) != "order" ? $qs[2] : "");
+						if ($letter != "" && $letter != "all" ) { $qry .= " AND content_heading LIKE '".$letter."%' "; }else{ $qry .= ""; }
+					}
+					$CONTENT_ARCHIVE_TABLE_START = $tp -> parseTemplate($CONTENT_ARCHIVE_TABLE_START, FALSE, $content_shortcodes);
+
 					$contenttotal = $sql1 -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ");
 					if($from > $contenttotal-1){ header("location:".e_SELF); exit; }
 
 					if($item = $sql1 -> db_Select($plugintable, "*", "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
-						
 						$content_archive_table_string = "";
 						while($row = $sql1 -> db_Fetch()){
 							$content_archive_table_string .= $tp -> parseTemplate($CONTENT_ARCHIVE_TABLE, FALSE, $content_shortcodes);
 						}
-						$text = $CONTENT_ARCHIVE_TABLE_START.$content_archive_table_string.$CONTENT_ARCHIVE_TABLE_END;
+						$text .= $CONTENT_ARCHIVE_TABLE_START.$content_archive_table_string.$CONTENT_ARCHIVE_TABLE_END;
 					}
 
 					if($content_pref["content_breadcrumb_{$mainparent}"]){
@@ -449,7 +472,6 @@ function show_content_archive(){
 
 					$caption = CONTENT_LAN_84;
 					$ns->tablerender($caption, $text);
-
 					if($content_pref["content_archive_nextprev_{$mainparent}"]){
 						require_once(e_HANDLER."np_class.php");
 						$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");

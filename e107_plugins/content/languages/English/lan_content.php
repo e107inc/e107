@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-06-08 09:19:53 $
+|     $Revision: 1.47 $
+|     $Date: 2005-06-08 20:00:29 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -377,6 +377,17 @@ define("CONTENT_ADMIN_OPT_LAN_267", "searchmenu rendertype");
 define("CONTENT_ADMIN_OPT_LAN_268", "define how to show the searchmenu menu");
 define("CONTENT_ADMIN_OPT_LAN_269", "define how to render the searchmenu information. you have two options: one to just echo it out at the top of the page and one to render it in a seperate menu.");
 
+define("CONTENT_ADMIN_OPT_LAN_270", "letterindex");
+define("CONTENT_ADMIN_OPT_LAN_271", "define if you want to show a letter index");
+define("CONTENT_ADMIN_OPT_LAN_272", "the letterindex is a list of buttons with all the first letters of the content heading fields. you can narrow down the archive list by clicking a certain letter so only content items starting with that letter will be displayed on the screen.");
+define("CONTENT_ADMIN_OPT_LAN_273", "");
+define("CONTENT_ADMIN_OPT_LAN_274", "");
+define("CONTENT_ADMIN_OPT_LAN_275", "");
+define("CONTENT_ADMIN_OPT_LAN_276", "");
+define("CONTENT_ADMIN_OPT_LAN_277", "");
+define("CONTENT_ADMIN_OPT_LAN_278", "");
+define("CONTENT_ADMIN_OPT_LAN_279", "");
+
 
 
 
@@ -526,8 +537,8 @@ define("CONTENT_ADMIN_MAIN_LAN_25", "
 Since the old existing content table does not contain any records, you can now start managing new content.<br />
 By clicking the next button, you will automatically create a default set of categories, namely Content, Review and Article.<br />
 ");
-define("CONTENT_ADMIN_MAIN_LAN_26", "");
-define("CONTENT_ADMIN_MAIN_LAN_27", "");
+define("CONTENT_ADMIN_MAIN_LAN_26", "preview");
+define("CONTENT_ADMIN_MAIN_LAN_27", "preview again");
 define("CONTENT_ADMIN_MAIN_LAN_28", "");
 define("CONTENT_ADMIN_MAIN_LAN_29", "");
 
@@ -696,7 +707,7 @@ define("CONTENT_LAN_69", "email the");
 define("CONTENT_LAN_70", "print the");
 define("CONTENT_LAN_71", "content item");
 define("CONTENT_LAN_72", "category item");
-define("CONTENT_LAN_73", "");
+define("CONTENT_LAN_73", "no content items yet");
 define("CONTENT_LAN_74", "");
 define("CONTENT_LAN_75", "submit content item");
 define("CONTENT_LAN_76", "create pdf file of the");

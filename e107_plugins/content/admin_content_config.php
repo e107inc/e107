@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.38 $
-|		$Date: 2005-06-08 12:05:24 $
+|		$Revision: 1.39 $
+|		$Date: 2005-06-08 20:00:26 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -229,59 +229,6 @@ if(isset($_POST['update_content'])){
 		}
 }
 
-
-
-if(isset($_POST['preview_content'])){
-		$content_heading	= $tp -> post_toHTML($_POST['content_heading']);
-		$content_subheading	= $tp -> post_toHTML($_POST['content_subheading']);
-		$content_summary	= $tp -> post_toHTML($_POST['content_summary']);
-		$content_text		= $tp -> post_toHTML($_POST['content_text']);
-
-		$text = "
-		<div style='text-align:center'>
-		<table class='fborder' style='".ADMIN_WIDTH."' border='0'>
-		<tr><td>".$content_heading."</td></tr>
-		<tr><td>".$content_subheading."</td></tr>
-		<tr><td>".$content_summary."</td></tr>
-		<tr><td>".$content_text."</td></tr>
-		</table>
-		</div>";
-			  
-		$ns -> tablerender($content_heading, $text);
-
-		$content_authorname		= $_POST['content_authorname'];
-		$content_authoremail	= $_POST['content_authoremail'];
-		$content_parent			= $_POST['parent'];
-		$content_heading		= $tp -> post_toForm($_POST['content_heading']);
-		$content_subheading		= $tp -> post_toForm($_POST['content_subheading']);
-		$content_summary		= $tp -> post_toForm($_POST['content_summary']);
-		$content_text			= $tp -> post_toForm($_POST['content_text']);
-		$content_comment		= $_POST['content_comment'];
-		$content_rate			= $_POST['content_rate'];
-		$content_pe				= $_POST['content_pe'];
-		$content_class			= $_POST['content_class'];
-		$ne_day					= $_POST['ne_day'];
-		$ne_month				= $_POST['ne_month'];
-		$ne_year				= $_POST['ne_year'];
-		$end_day				= $_POST['end_day'];
-		$end_month				= $_POST['end_month'];
-		$end_year				= $_POST['end_year'];
-		$custom["content_custom_score"] = $_POST['content_score'];
-		$custom["content_custom_meta"] = $_POST['content_meta'];
-		for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
-			$keystring = $_POST["content_custom_key_{$i}"];
-			$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
-		}
-
-		$content_icon = $_FILES['file_userfile1']['name'][0];							//won't work, cause file isn't upoaded
-		for($i=0;$i<$content_pref["content_admin_files_number_{$type_id}"];$i++){
-			$content_files{$i} = $_POST['content_files{$i}'];							//won't work, cause file isn't upoaded
-		}
-		for($i=0;$i<$content_pref["content_admin_images_number_{$type_id}"];$i++){
-			$content_images{$i} = $_POST['content_images{$i}'];							//won't work, cause file isn't upoaded
-		}
-}
-
 if(isset($_POST['update_order'])){
 	if(isset($qs[1])){
 		if(isset($qs[2])){
@@ -294,8 +241,8 @@ if(isset($_POST['update_order'])){
 	}
 }
 
-if(IsSet($message)){
-        $ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+if(isset($message)){
+	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 // ##### End --------------------------------------------------------------------------------------

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-07 22:02:34 $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-08 20:00:30 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -44,7 +44,7 @@ $sc_style['CONTENT_CONTENT_TABLE_AUTHORDETAILS']['post'] = "";
 $sc_style['CONTENT_CONTENT_TABLE_ICON']['pre'] = "<div style='float:left; padding-right:10px;'>";
 $sc_style['CONTENT_CONTENT_TABLE_ICON']['post'] = "</div>";
 
-$sc_style['CONTENT_CONTENT_TABLE_PAGENAMES']['pre'] = "<div>".CONTENT_LAN_46."<br />";
+$sc_style['CONTENT_CONTENT_TABLE_PAGENAMES']['pre'] = "<br /><div>".CONTENT_LAN_46."<br />";
 $sc_style['CONTENT_CONTENT_TABLE_PAGENAMES']['post'] = "</div>";
 
 $sc_style['CONTENT_CONTENT_TABLE_CUSTOM_TAGS']['pre'] = "";

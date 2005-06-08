@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_recent_template.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-07 19:37:24 $
+|     $Revision: 1.15 $
+|     $Date: 2005-06-08 20:00:30 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@
 $CONTENT_RECENT_TABLE_START = "";
 $CONTENT_RECENT_TABLE_END = "";
 
-global $sc_style, $content_shortcodes, $qs, $content_pref, $aa, $prefetchbreadcrumb, $row, $gen, $rater, $plugintable, $crumb;
+global $sc_style, $content_shortcodes, $qs, $array, $content_pref, $aa, $prefetchbreadcrumb, $row, $gen, $rater, $plugintable, $crumb;
 
 $sc_style['CONTENT_RECENT_TABLE_ICON']['pre'] = "<td class='forumheader3' rowspan='7' style='vertical-align:top; width:10%; white-space:nowrap; padding-right:10px;'>";
 $sc_style['CONTENT_RECENT_TABLE_ICON']['post'] = "</td>";
