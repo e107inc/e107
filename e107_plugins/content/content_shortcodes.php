@@ -192,6 +192,7 @@ SC_END
 SC_BEGIN CONTENT_AUTHOR_TABLE_LASTITEM
 global $CONTENT_AUTHOR_TABLE_LASTITEM, $gen, $row, $mainparent, $content_pref;
 if($content_pref["content_author_lastitem_{$mainparent}"]){
+if(!is_object($gen)){ $gen = new convert; }
 $CONTENT_AUTHOR_TABLE_LASTITEM = ereg_replace(" -.*", "", $gen -> convert_date($row['content_datestamp'], "short"));
 $CONTENT_AUTHOR_TABLE_LASTITEM .= " : <a href='".e_SELF."?content.".$row['content_id']."'>".$row['content_heading']."</a>";
 return $CONTENT_AUTHOR_TABLE_LASTITEM;
@@ -223,8 +224,8 @@ return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_l
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_HEADING
-global $CONTENT_CAT_TABLE_HEADING;
-return $CONTENT_CAT_TABLE_HEADING;
+global $CONTENT_CAT_TABLE_HEADING, $row;
+return "<a href='".e_SELF."?cat.".$row['content_id']."'>".$row['content_heading']."</a>";
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_AMOUNT
@@ -244,8 +245,9 @@ return ($row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], T
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_DATE
-global $CONTENT_CAT_TABLE_DATE, $gen, $row, $mainparent, $content_pref;
+global $CONTENT_CAT_TABLE_DATE, $gen, $row, $mainparent, $content_pref, $gen;
 if(isset($content_pref["content_catall_date_{$mainparent}"]) && $content_pref["content_catall_date_{$mainparent}"]){
+if(!is_object($gen)){ $gen = new convert; }
 $datestamp = ereg_replace(" -.*", "", $gen -> convert_date($row['content_datestamp'], "long"));
 $DATE = ($datestamp != "" ? $datestamp : "");
 return $DATE;
@@ -293,8 +295,10 @@ return $EPICONS;
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_COMMENT
-global $CONTENT_CAT_TABLE_COMMENT, $row, $qs, $comment_total, $mainparent, $content_pref;
+global $CONTENT_CAT_TABLE_COMMENT, $row, $qs, $comment_total, $mainparent, $content_pref, $plugintable;
 if($row['content_comment'] && isset($content_pref["content_catall_comment_{$mainparent}"]) && $content_pref["content_catall_comment_{$mainparent}"]){
+$sqlc = new db;
+$comment_total = $sqlc -> db_Select("comments", "*",  "comment_item_id='".$row['content_id']."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 return "<a style='text-decoration:none;' href='".e_SELF."?cat.".$row['content_id'].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
 }
 SC_END
@@ -416,8 +420,9 @@ return ($row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], T
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_DATE
-global $CONTENT_CAT_LIST_TABLE_DATE, $row, $gen, $mainparent, $content_pref;
+global $CONTENT_CAT_LIST_TABLE_DATE, $row, $gen, $mainparent, $content_pref, $gen;
 if(isset($content_pref["content_cat_date_{$mainparent}"]) && $content_pref["content_cat_date_{$mainparent}"]){
+if(!is_object($gen)){ $gen = new convert; }
 $datestamp = ereg_replace(" -.*", "", $gen -> convert_date($row['content_datestamp'], "long"));
 return ($datestamp != "" ? $datestamp : "");
 }
@@ -464,10 +469,10 @@ return $EPICONS;
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_COMMENT
-global $CONTENT_CAT_LIST_TABLE_COMMENT, $qs, $row, $comment_total, $mainparent, $content_pref;
+global $CONTENT_CAT_LIST_TABLE_COMMENT, $qs, $row, $comment_total, $mainparent, $content_pref, $sql, $plugintable;
 if($row['content_comment'] && isset($content_pref["content_cat_comment_{$mainparent}"]) && $content_pref["content_cat_comment_{$mainparent}"]){
-	$CONTENT_CAT_LIST_TABLE_COMMENT = "<a style='text-decoration:none;' href='".e_SELF."?cat.".$qs[1].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
-return $CONTENT_CAT_LIST_TABLE_COMMENT;
+	$comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
+	return "<a style='text-decoration:none;' href='".e_SELF."?cat.".$qs[1].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
 }
 SC_END
 
@@ -666,7 +671,7 @@ SC_END
 
 
 SC_BEGIN CONTENT_RECENT_TABLE_DATE
-global $CONTENT_RECENT_TABLE_DATE, $gen, $content_pref, $qs, $row, $mainparent;
+global $CONTENT_RECENT_TABLE_DATE, $content_pref, $qs, $row, $mainparent;
 if(isset($content_pref["content_list_date_{$mainparent}"]) && $content_pref["content_list_date_{$mainparent}"]){
 $datestyle = ($content_pref["content_list_datestyle_{$mainparent}"] ? $content_pref["content_list_datestyle_{$mainparent}"] : "%d %b %Y");
 return strftime($datestyle, $row['content_datestamp']);
@@ -759,15 +764,22 @@ return $CONTENT_RECENT_TABLE_RATING;
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_PARENT
-global $crumb, $content_pref, $mainparent;
+global $crumb, $content_pref, $mainparent, $row, $array, $aa;
 if(isset($content_pref["content_list_parent_{$mainparent}"]) && $content_pref["content_list_parent_{$mainparent}"]){
-return $crumb;
+return $aa -> getCrumbItem($row['content_parent'], $array);
 }
 SC_END
 
 
 
 // CONTENT_ARCHIVE_TABLE ------------------------------------------------
+SC_BEGIN CONTENT_ARCHIVE_TABLE_LETTERS
+global $CONTENT_ARCHIVE_TABLE_LETTERS, $content_pref, $mainparent;
+if($content_pref["content_archive_letterindex_{$mainparent}"]){
+return $CONTENT_ARCHIVE_TABLE_LETTERS;
+}
+SC_END
+
 SC_BEGIN CONTENT_ARCHIVE_TABLE_HEADING
 global $CONTENT_ARCHIVE_TABLE_HEADING, $row, $qs;
 return "<a href='".e_SELF."?content.".$row['content_id']."'>".$row['content_heading']."</a>";
@@ -815,9 +827,9 @@ SC_END
 
 // CONTENT_CONTENT_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_CONTENT_TABLE_PARENT
-global $CONTENT_CONTENT_TABLE_PARENT, $content_pref, $mainparent;
+global $CONTENT_CONTENT_TABLE_PARENT, $aa, $array, $row, $content_pref, $mainparent;
 if(isset($content_pref["content_content_parent_{$mainparent}"]) && $content_pref["content_content_parent_{$mainparent}"]){
-return $CONTENT_CONTENT_TABLE_PARENT;
+return $aa -> getCrumbItem($row['content_parent'], $array);
 }
 SC_END
 

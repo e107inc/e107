@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.53 $
-|		$Date: 2005-06-08 09:36:14 $
+|		$Revision: 1.54 $
+|		$Date: 2005-06-08 20:00:28 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -203,6 +203,7 @@ class content{
 				//ARCHIVE PAGE
 				$content_pref["content_archive_nextprev_{$id}"] = "1";					//archive : choose to show next/prev links
 				$content_pref["content_archive_nextprev_number_{$id}"] = "30";			//archive : choose amount to use in next/prev
+				$content_pref["content_archive_letterindex_{$id}"] = "0";				//archive : letter index
 				$content_pref["content_archive_datestyle_{$id}"] = "%d %b %Y";			//archive : choose datestyle for given date
 				$content_pref["content_archive_date_{$id}"] = "1";						//archive : section: show date
 				$content_pref["content_archive_authorname_{$id}"] = "0";				//archive : section: show authorname
@@ -957,7 +958,6 @@ class content{
 
 					return $popup;
 		}
-
 
 		//search by keyword
 		function showOptionsSearch($mode, $searchtypeid=""){

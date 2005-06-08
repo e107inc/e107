@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.53 $
-|		$Date: 2005-06-08 12:08:38 $
+|		$Revision: 1.54 $
+|		$Date: 2005-06-08 20:00:29 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -55,6 +55,8 @@ class contentform{
 		function show_create_content($mode, $userid="", $username=""){
 						global $qs, $sql, $ns, $rs, $aa, $fl, $tp, $plugintable, $plugindir, $pref, $eArrayStorage;
 						global $message, $stylespacer, $TOPIC_ROW_SPACER, $TOPIC_ROW, $TOPIC_ROW_NOEXPAND;
+
+						$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
 
 						//if create, first show category select (as preferences need to be loaded from the selected category)
 						if( $qs[1] == "create" && !isset($qs[2]) ){
@@ -207,7 +209,9 @@ class contentform{
 						if( !isset($authordetails) ){
 							$authordetails = $aa -> getAuthor(USERID);
 						}
-						
+
+						//$formurl = e_SELF."?".e_QUERY.".cc";
+
 						if( ($qs[1] == "edit" || $qs[1] == "sa") && is_numeric($qs[2]) && !isset($_POST['preview']) && !isset($message)){
 							if(!$sql -> db_Select($plugintable, "*", "content_id='".$qs[2]."' ")){
 								header("location:".e_SELF."?content"); exit;
@@ -220,31 +224,68 @@ class contentform{
 								//$row['content_text'] = $tp -> post_toHTML($row['content_text'], TRUE);
 								$authordetails				= $aa -> getAuthor($row['content_author']);
 							}
+							//$formurl = e_SELF."?".e_QUERY.".cu";
 						}
 
-						
-						if(isset($_POST['preview']) || isset($message)){
-						/*
-							global $custom, $_POST, $ne_day, $ne_month, $ne_year, $content_heading, $content_author_id, $content_author_name, $content_author_email, $content_parent, $content_subheading, $content_summary, $content_text, $content_icon, $content_comment, $content_rate, $content_pe, $content_class, $custom, $content_images, $content_files;
+						//preview not yet working ok ........
+						if(isset($_POST['preview_content']) || isset($message)){
+								$text = "
+								<div style='text-align:center'>
+								<table class='fborder' style='".ADMIN_WIDTH."' border='0'>
+								<tr><td>".$_POST['content_heading']."</td></tr>
+								<tr><td>".$_POST['content_subheading']."</td></tr>
+								<tr><td>".$_POST['content_summary']."</td></tr>
+								<tr><td>".$_POST['content_text']."</td></tr>
+								</table>
+								</div>";									  
+								$ns -> tablerender($content_heading, $text);
 
-							for($i=0;$i<$checkcustomnumber;$i++){
-								$keystring = $_POST["content_custom_key_{$i}"];
-								$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
-							}
-						*/
-						}
-						
+								//$tp -> post_toHTML()
+								$row['content_parent']				= $_POST['parent'];
+								$row['content_heading']				= $_POST['content_heading'];
+								$row['content_subheading']			= $_POST['content_subheading'];
+								$row['content_summary']				= $_POST['content_summary'];
+								$row['content_text']				= $_POST['content_text'];
+								$row['content_author_name']			= $_POST['content_author_name'];
+								$row['content_author_email']		= $_POST['content_author_email'];
+								$row['content_author_id']			= $_POST['content_author_id'];
+								$row['ne_day']						= $_POST['ne_day'];
+								$row['ne_month']					= $_POST['ne_month'];
+								$row['ne_year']						= $_POST['ne_year'];
+								$row['end_day']						= $_POST['end_day'];
+								$row['end_month']					= $_POST['end_month'];
+								$row['end_year']					= $_POST['end_year'];
+								$row['content_comment']				= $_POST['content_comment'];
+								$row['content_rate']				= $_POST['content_rate'];
+								$row['content_pe']					= $_POST['content_pe'];
+								$row['content_class']				= $_POST['content_class'];
+								$row['content_refer']				= $_POST['content_refer'];
+								$row['content_datestamp']			= $_POST['content_datestamp'];
+								$custom['content_custom_score']		= $_POST['content_score'];
+								$custom['content_custom_meta']		= $_POST['content_meta'];
+								$custom['content_custom_template']	= $_POST['content_template'];
+								
+								//custom tags
+								for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){
+									$keystring = $_POST["content_custom_key_{$i}"];
+									$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
+								}
+								
+								//custom preset tags
+								for($i=0;$i<count($_POST['content_custom_preset_key']);$i++){
+									$keystring = "content_custom_preset_".$_POST['content_custom_preset_key'][$i];
+									$custom[$keystring] = $_POST['content_custom_preset_value'][$i];
+								}
+						}						
 
 						$content_author_id		= (isset($content_author_id) ? $content_author_id : (isset($authordetails[0]) && $authordetails[0] != "" ? $authordetails[0] : USERID) );
 						$content_author_name	= (isset($content_author_name) ? $content_author_name : (isset($authordetails[1]) && $authordetails[1] != "" ? $authordetails[1] : USERNAME) );
 						$content_author_email	= (isset($content_author_email) ? $content_author_email : (isset($authordetails[2]) && $authordetails[2] != "" ? $authordetails[2] : USEREMAIL) );
-						//$authordetails[0] = ($authordetails[0] ? $authordetails[0] : USERID);
-						//$authordetails[1] = ($authordetails[1] ? $authordetails[1] : USERNAME);
-						//$authordetails[2] = ($authordetails[2] ? $authordetails[2] : USEREMAIL);
 
+						$formurl = e_SELF."?".e_QUERY;
 						$text = "
 						<div style='text-align:center;'>
-						".$rs -> form_open("post", e_SELF."?".e_QUERY."", "dataform", "", "enctype='multipart/form-data'")."
+						".$rs -> form_open("post", $formurl, "dataform", "", "enctype='multipart/form-data'")."
 						<table style='".ADMIN_WIDTH."' class='fborder'>";
 
 						if($mode == "contentmanager"){
@@ -328,8 +369,6 @@ class contentform{
 
 						$smarray = getdate();
 						$current_year = $smarray['year'];
-
-						$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
 
 						//start date
 						$TOPIC_TOPIC = CONTENT_ADMIN_DATE_LAN_15;
@@ -590,10 +629,11 @@ class contentform{
 							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 						}
 
-						$custom['content_custom_score']	= "";
-						$custom['content_custom_meta']	= "";
-						$custom['content_custom_template']	= "";
-						if(!(isset($_POST['preview']) || isset($message))){
+						
+						if(!(isset($_POST['preview_content']) || isset($message))){
+							$custom['content_custom_score']	= "";
+							$custom['content_custom_meta']	= "";
+							$custom['content_custom_template']	= "";
 							if(isset($row['content_pref'])){
 								$custom = $eArrayStorage->ReadArray($row['content_pref']);
 							}
@@ -702,12 +742,12 @@ class contentform{
 						}
 						if($checkcustom && $checkcustomnumber){ $TOPIC_FIELD .= "</table>"; }
 						if($TOPIC_CHECK_VALID){ $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW); }
-
 						
 						//preset custom data fields
 						if(count($content_pref["content_custom_preset_key"]) > 0){
 							$text .= $TOPIC_ROW_SPACER;
 						}
+
 						for($i=0;$i<count($content_pref["content_custom_preset_key"]);$i++){
 							$value = "";
 							if($custom){
@@ -742,10 +782,12 @@ class contentform{
 							if($qs[1] == "edit" || $qs[1] == "sa" || isset($_POST['editp']) ){
 								$text .= $rs -> form_hidden("content_refer", $row['content_refer']);
 								$text .= $rs -> form_hidden("content_datestamp", $row['content_datestamp']);
+								//$text .= $rs -> form_button("submit", "preview_content", (isset($_POST['preview_content']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26), $js);
 								$text .= $rs -> form_button("submit", "update_content", ($qs[1] == "sa" ? CONTENT_ADMIN_ITEM_LAN_43 : CONTENT_ADMIN_ITEM_LAN_45), $js );
 								$text .= $rs -> form_hidden("content_id", $qs[2]);
 								$text .= $rs -> form_checkbox("update_datestamp", 1, 0)." ".CONTENT_ADMIN_ITEM_LAN_42;
 							}else{
+								//$text .= $rs -> form_button("submit", "preview_content", (isset($_POST['preview_content']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26), $js);
 								$text .= $rs -> form_button("submit", "create_content", CONTENT_ADMIN_ITEM_LAN_44, $js);								
 							}
 							$text .= "
@@ -1103,6 +1145,7 @@ class contentform{
 							if(!$sql -> db_Select($plugintable, "*", "content_id='".$qs[2]."' ")){
 								header("location:".e_SELF."?cat"); exit;
 							}
+							$formurl = e_SELF."?".e_QUERY.".pc";
 						}
 						if( $qs[0] == "cat" && $qs[1] == "edit" && isset($qs[2]) && is_numeric($qs[2]) ){
 							if(!$sql -> db_Select($plugintable, "*", "content_id='".$qs[2]."' ")){
@@ -1113,8 +1156,11 @@ class contentform{
 									header("location:".e_SELF."?cat"); exit;
 								}
 							}
+							$formurl = e_SELF."?".e_QUERY.".pu";
 						}
 						if(isset($_POST['preview_category'])){
+							$formurl = e_SELF."?".e_QUERY;
+
 							$cat_heading			= $tp -> post_toHTML($_POST['cat_heading']);
 							$cat_subheading			= $tp -> post_toHTML($_POST['cat_subheading']);
 							$cat_text				= $tp -> post_toHTML($_POST['cat_text']);
@@ -1163,7 +1209,7 @@ class contentform{
 
 						$text = "
 						<div style='text-align:center'>
-						".$rs -> form_open("post", e_SELF."?".e_QUERY, "dataform")."
+						".$rs -> form_open("post", $formurl, "dataform")."
 						<table class='fborder' style='".ADMIN_WIDTH."'>";
 						
 						//category parent
@@ -1203,7 +1249,7 @@ class contentform{
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 
-						if(isset($row['content_datestamp'])){
+						if(isset($row['content_datestamp']) && $row['content_datestamp'] != "0"){
 							$startdate = getdate($row['content_datestamp']);
 							$ne_day = $startdate['mday'];
 							$ne_month = $startdate['mon'];
@@ -1213,7 +1259,7 @@ class contentform{
 							$ne_month = (isset($ne_month) ? $ne_month : "");
 							$ne_year = (isset($ne_year) ? $ne_year : "");
 						}
-						if(isset($row['content_enddate'])){
+						if(isset($row['content_enddate']) && $row['content_enddate'] != "0"){
 							$enddate = getdate($row['content_enddate']);
 							$end_day = $enddate['mday'];
 							$end_month = $enddate['mon'];
@@ -1261,19 +1307,19 @@ class contentform{
 						$TOPIC_HELP = CONTENT_ADMIN_DATE_LAN_18;
 						$TOPIC_FIELD = "
 							".$rs -> form_select_open("end_day")."
-							".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_12, 0, "none");
+							".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_12, 1, "none");
 							for($count=1; $count<=31; $count++){
 								$TOPIC_FIELD .= $rs -> form_option($count, ($end_day == $count ? "1" : "0"), $count);
 							}
 							$TOPIC_FIELD .= $rs -> form_select_close()."
 							".$rs -> form_select_open("end_month")."
-							".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_13, 0, "none");
+							".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_13, 1, "none");
 							for($count=1; $count<=12; $count++){
 								$TOPIC_FIELD .= $rs -> form_option($months[($count-1)], ($end_month == $count ? "1" : "0"), $count);
 							}
 							$TOPIC_FIELD .= $rs -> form_select_close()."
 							".$rs -> form_select_open("end_year")."
-							".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_14, 0, "none");
+							".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_14, 1, "none");
 							for($count=($current_year-5); $count<=$current_year; $count++){
 								$TOPIC_FIELD .= $rs -> form_option($count, ($end_year == $count ? "1" : "0"), $count);
 							}
@@ -1346,11 +1392,12 @@ class contentform{
 							<td class='forumheader' style='text-align:center' colspan='2'>";
 							if($qs[1] == "edit" && is_numeric($qs[2]) ){
 								$js = "onclick=\"document.getElementById('parent').value = document.getElementById('parent1').options[document.getElementById('parent1').selectedIndex].label;\" ";
+								$text .= $rs -> form_button("submit", "preview_category", (isset($_POST['preview_category']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26), $js);
 								$text .= $rs -> form_button("submit", "update_category", CONTENT_ADMIN_CAT_LAN_7, $js).$rs -> form_button("submit", "category_clear", CONTENT_ADMIN_CAT_LAN_21).$rs -> form_hidden("cat_id", $qs[2]).$rs -> form_hidden("id", $qs[2]);
 								$caption = CONTENT_ADMIN_CAT_LAN_1;
 							}else{
 								$js = "onclick=\"document.getElementById('parent').value = document.getElementById('parent1').options[document.getElementById('parent1').selectedIndex].label;\" ";
-								$text .= $rs -> form_button("submit", "preview_category", (isset($_POST['preview_category']) ? "preview again" : "preview"), $js);
+								$text .= $rs -> form_button("submit", "preview_category", (isset($_POST['preview_category']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26), $js);
 								$text .= $rs -> form_button("submit", "create_category", CONTENT_ADMIN_CAT_LAN_6, $js);
 								$caption = CONTENT_ADMIN_CAT_LAN_0;
 							}
@@ -2869,6 +2916,16 @@ class contentform{
 							$i++;
 						}
 						$TOPIC_FIELD .= $rs -> form_select_close();
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+						//content_archive_letterindex_
+						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_270;
+						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_271;
+						$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_272;
+						$TOPIC_FIELD = "
+						".$rs -> form_radio("content_archive_letterindex_{$id}", "1", ($content_pref["content_archive_letterindex_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
+						".$rs -> form_radio("content_archive_letterindex_{$id}", "0", ($content_pref["content_archive_letterindex_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 						//content_archive_datestyle_
