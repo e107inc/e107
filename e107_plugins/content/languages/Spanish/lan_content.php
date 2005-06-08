@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-08 04:45:59 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-08 19:13:33 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -170,8 +170,8 @@ define("CONTENT_ADMIN_OPT_LAN_71", "Escoja que secciones se mostrarán cuando ve
 define("CONTENT_ADMIN_OPT_LAN_72", "Subcabecera");
 define("CONTENT_ADMIN_OPT_LAN_73", "Sumario");
 define("CONTENT_ADMIN_OPT_LAN_74", "Fecha");
-define("CONTENT_ADMIN_OPT_LAN_75", "Autornombre");
-define("CONTENT_ADMIN_OPT_LAN_76", "Autoremail");
+define("CONTENT_ADMIN_OPT_LAN_75", "Autor: nombre");
+define("CONTENT_ADMIN_OPT_LAN_76", "Autor: email");
 define("CONTENT_ADMIN_OPT_LAN_77", "Valoración");
 define("CONTENT_ADMIN_OPT_LAN_78", "Icono email/imprimir/pdf");
 define("CONTENT_ADMIN_OPT_LAN_79", "Señuelo padre");
@@ -212,8 +212,8 @@ define("CONTENT_ADMIN_OPT_LAN_113", "Página de todas las categorías");
 define("CONTENT_ADMIN_OPT_LAN_114", "Página de ver categorías");
 define("CONTENT_ADMIN_OPT_LAN_115", "Activado, se insertará un enlace a la categoría en la cadena del sufijo");
 define("CONTENT_ADMIN_OPT_LAN_116", "Cantidad de comentarios");
-define("CONTENT_ADMIN_OPT_LAN_117", "Enlace a lista de autor");
-define("CONTENT_ADMIN_OPT_LAN_118", "Enlace a perfil de autor");
+define("CONTENT_ADMIN_OPT_LAN_117", "Autor: Enlace a lista de autor");
+define("CONTENT_ADMIN_OPT_LAN_118", "Autor: Enlace a perfil de autor");
 define("CONTENT_ADMIN_OPT_LAN_119", "Páginas de categorías de contenidos");
 define("CONTENT_ADMIN_OPT_LAN_120", "Padre");
 define("CONTENT_ADMIN_OPT_LAN_121", "¿Debe mostrar el padre?");
