@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-06-07 20:05:22 $
+|     $Revision: 1.27 $
+|     $Date: 2005-06-09 16:44:24 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -173,7 +173,7 @@ class poll
 				foreach($optionArray as $option) {
 				//	$MODE = ($mode) ? $mode : "";		/* debug */
 					$OPTIONBUTTON = ($pollArray['poll_allow_multiple'] ? "<input type='checkbox' name='votea[]' value='$count' />" : "<input type='radio' name='votea' value='$count' />");
-					$OPTION = $tp->toHTML($option,"","emotes_off defs");
+					$OPTION = $tp->toHTML($option, TRUE);
 					if($POLL_NOTVOTED_LOOP_ALT && $type != "forum"){ // alternating style
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', ($alt == 0 ? $POLL_NOTVOTED_LOOP : $POLL_NOTVOTED_LOOP_ALT));
 						$alt = ($alt ==0) ? 1 : 0;
@@ -202,7 +202,7 @@ class poll
 					$count = 0;
 					foreach($optionArray as $option)
 					{
-						$OPTION = $option;
+						$OPTION = $tp->toHTML($option, TRUE);
 
 						$BAR = ($percentage[$count] ? "<div style='width: 100%'><div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div><div style='background-image: url($bar); width: ".(floor($percentage[$count]) != 100 ? floor($percentage[$count]) : 90)."%; height: 14px; float: left;'></div><div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div></div>" : "");
 
@@ -221,7 +221,7 @@ class poll
 				foreach($optionArray as $option)
 				{
 					$MODE = $mode;		/* debug */
-					$OPTION = $option;
+					$OPTION = $tp->toHTML($option, TRUE);
 					$text .= preg_replace("/\{(.*?)\}/e", '$\1', $POLL_DISALLOWED_LOOP);
 					$count ++;
 				}
