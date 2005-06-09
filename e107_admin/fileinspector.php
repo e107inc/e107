@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-06-09 05:32:19 $
+|     $Revision: 1.22 $
+|     $Date: 2005-06-09 06:15:39 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -25,13 +25,16 @@ if (!getperms('Y')) {
 $e_sub_cat = 'fileinspector';
 
 require_once('auth.php');
-$DOCS_DIRECTORY = str_replace('help/', '', $HELP_DIRECTORY);
-require_once('core_image.php');
-$fi = new file_inspector;
 require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
+$fi = new file_inspector;
 
-if (e_QUERY == 'snapshot' || e_QUERY == 's') {
+$DOCS_DIRECTORY = str_replace('help/', '', $HELP_DIRECTORY);
+if (!e_QUERY) {
+	require_once('core_image.php');
+}
+
+if (e_QUERY) {
 	$fi -> snapshot_interface();
 } else if (isset($_POST['scan'])) {
 	$fi -> scan_results();
@@ -348,32 +351,19 @@ class file_inspector {
 	
 	function create_image($dir) {
 		global $ADMIN_DIRECTORY, $FILES_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $DOWNLOADS_DIRECTORY, $DOCS_DIRECTORY;
-		$this -> image = $this -> scan($dir);
-		$data = "<?php\n";
-		//$data .= stripslashes($this -> write_image($this -> image, "\$core_image['root']"));
-		$data .= "\$core_image = ".var_export($this -> image, true)."\n\n";
-		/*
-		$data .= "\$core_image = array(
-		";
-		foreach($this -> image as $path_key => $path_value) {
-			$root = str_replace($dir."/", "'", $path_key);
-			$search = array("'".$ADMIN_DIRECTORY, "'".$FILES_DIRECTORY, "'".$IMAGES_DIRECTORY, "'".$THEMES_DIRECTORY, "'".$PLUGINS_DIRECTORY, "'".$HANDLERS_DIRECTORY, "'".$LANGUAGES_DIRECTORY, "'".$HELP_DIRECTORY, "'".$DOWNLOADS_DIRECTORY, "'".$DOCS_DIRECTORY);
-			$replace = array("\$ADMIN_DIRECTORY.'", "\$FILES_DIRECTORY.'", "\$IMAGES_DIRECTORY.'", "\$THEMES_DIRECTORY.'", "\$PLUGINS_DIRECTORY.'", "\$HANDLERS_DIRECTORY.'", "\$LANGUAGES_DIRECTORY.'", "\$HELP_DIRECTORY.'", "\$DOWNLOADS_DIRECTORY.'", "\$DOCS_DIRECTORY.'");
-			$root = str_replace($search, $replace, $root);
-			$core_array[] = $root."' => '".$path_value."'";
+		$base_dirs = array($ADMIN_DIRECTORY, $FILES_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $DOWNLOADS_DIRECTORY, $DOCS_DIRECTORY);
+		foreach ($base_dirs as $trim_key => $trim_dirs) {
+			$search_dirs[$trim_key] = "'".substr($trim_dirs, 0, -1)."'";
 		}
-		$data .= implode(', 
-		', $core_array);
-		$data .= "\n);\n";
-		*/
+		$this -> image = $this -> scan($dir);
+		$image_array = var_export($this -> image, true);
+		$replace = array("\$ADMIN_DIRECTORY", "\$FILES_DIRECTORY", "\$IMAGES_DIRECTORY", "\$THEMES_DIRECTORY", "\$PLUGINS_DIRECTORY", "\$HANDLERS_DIRECTORY", "\$LANGUAGES_DIRECTORY", "\$HELP_DIRECTORY", "\$DOWNLOADS_DIRECTORY", "\$DOCS_DIRECTORY");
+		$image_array = str_replace($search_dirs, $replace, $image_array);
+		$data = "<?php\n";
+		$data .= "\$core_image = ".$image_array."\n\n";
 		$data .= "?>";
 		$fp = fopen(e_ADMIN.'core_image.php', 'w');
 		fwrite($fp, $data);
-	}
-	
-	function checksum($filename, $create = FALSE) {
-		$checksum = md5(str_replace(chr(13).chr(10), chr(10), file_get_contents($filename)));
-		return $checksum;
 	}
 	
 	function snapshot_interface() {
@@ -424,6 +414,11 @@ class file_inspector {
 
 		$ns -> tablerender('Snapshot', $text);
 
+	}
+	
+	function checksum($filename, $create = FALSE) {
+		$checksum = md5(str_replace(chr(13).chr(10), chr(10), file_get_contents($filename)));
+		return $checksum;
 	}
 	
 	function parsesize($size, $dec = 0) {
