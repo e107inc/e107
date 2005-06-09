@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.55 $
-|		$Date: 2005-06-09 12:36:18 $
+|		$Revision: 1.56 $
+|		$Date: 2005-06-09 22:58:26 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -694,7 +694,7 @@ class content{
 							if($row['content_parent'] == 0){
 								$name	= strtoupper($row['content_heading']);
 								$js		= "style='font-weight:bold;'";
-								$string	.= $rs -> form_option($emptystring, "0", "none");
+								$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
 							}else{
 								$name	= $pre.$row['content_heading'];
 								$js		= "";
@@ -710,7 +710,7 @@ class content{
 							if($row['content_parent'] == 0){
 								$name	= strtoupper($row['content_heading']);
 								$js		= "style='font-weight:bold;'";
-								$string	.= $rs -> form_option($emptystring, "0", "none");
+								$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
 							}else{
 								$name	= $pre.$row['content_heading'];
 								$js		= "";
@@ -729,7 +729,7 @@ class content{
 								if($row['content_parent'] == 0){
 									$name	= strtoupper($row['content_heading']);
 									$js		= "style='font-weight:bold;'";
-									$string	.= $rs -> form_option($emptystring, "0", "none");
+									$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
 
 								}else{
 									$name	= $pre.$row['content_heading'];
@@ -750,27 +750,27 @@ class content{
 								if($row['content_parent'] == 0){
 									$name	= strtoupper($row['content_heading']);
 									$js		= "style='font-weight:bold;'";
-									$string	.= $rs -> form_option($emptystring, "0", "none");
+									$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
 								}else{
 									$name	= $pre.$row['content_heading'];
 									$js		= "";
 								}
 							}
 					}
-					$string	.= $rs -> form_option($name, $sel, $value, ($label ? "label='".$label."' ".$js : $js) ).$catstring;
+					$string	.= $rs -> form_option($name, $sel, $value, ($label ? "label='".$label."'" : "label='none'")." ".$js ).$catstring;
 
 				}
 				$selectjs	= " onchange=\" document.getElementById('parent').value=this.options[this.selectedIndex].label; ".$selectjs." \"";
 				$text		= $rs -> form_select_open("parent1", $selectjs);
 
 				if(!isset($qs[0])){
-					$text .= $rs -> form_option("choose category ...", "0", "none");
+					$text .= $rs -> form_option("choose category ...", "0", "none", "label='none'");
 				}elseif( $qs[0] == "content" && $qs[1] == "edit" && is_numeric($qs[2]) ){
-					$text .= $rs -> form_option("choose category ...", "0", "none");
+					$text .= $rs -> form_option("choose category ...", "0", "none", "label='none'");
 				}elseif( $qs[0] == "content" && ($qs[1] == "create" || $qs[1] == "submit") ){
-					$text .= $rs -> form_option("choose category ...", "0", "none");
+					$text .= $rs -> form_option("choose category ...", "0", "none", "label='none'");
 				}elseif( $qs[0] == "content" && is_numeric($qs[1]) ){
-					$text .= $rs -> form_option("choose category ...", "0", "none");
+					$text .= $rs -> form_option("choose category ...", "0", "none", "label='none'");
 				}elseif($qs[0] == "cat" && $qs[1] == "create"){
 					$text .= $rs -> form_option("NEW MAIN CATEGORY", (isset($qs[2]) ? "0" : "1"), e_SELF."?cat.create", "label='0' style='font-weight:bold;'");
 				}else{

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.39 $
-|		$Date: 2005-06-08 20:00:26 $
+|		$Revision: 1.40 $
+|		$Date: 2005-06-09 22:58:24 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -61,172 +61,93 @@ if(isset($_POST['delete']))
 
 if(isset($delete) && $delete == 'cat'){
 
-		$sql -> db_Select($plugintable, "content_id,content_parent", "content_id = '$del_id' ");
-		list($content_id, $content_parent) = $sql -> db_Fetch();
+	$sql -> db_Select($plugintable, "content_id,content_parent", "content_id = '$del_id' ");
+	list($content_id, $content_parent) = $sql -> db_Fetch();
 
-		$checkarray = $aa -> getCategoryTree("", $content_id, TRUE);
-		unset($agc);	//unset the globalised getCategoryTree array
-		$checkvalidparent = implode(",", array_keys($checkarray));
-		$checkqry = " content_parent REGEXP '".$aa -> CONTENTREGEXP($checkvalidparent)."' ";
+	$checkarray = $aa -> getCategoryTree("", $content_id, TRUE);
+	unset($agc);	//unset the globalised getCategoryTree array
+	$checkvalidparent = implode(",", array_keys($checkarray));
+	$checkqry = " content_parent REGEXP '".$aa -> CONTENTREGEXP($checkvalidparent)."' ";
 
-		//check if subcats present
-		if(count($array) > 1){
-			//subcategories found don't delete
-			$checkermsg .= CONTENT_ADMIN_CAT_LAN_36."<br />";
-			$checksubcat = TRUE;
-		}else{
-			$checkermsg .= CONTENT_ADMIN_CAT_LAN_39."<br />";
-			$checksubcat = FALSE;
-		}
+	//check if subcats present
+	if(count($array) > 1){
+		//subcategories found don't delete
+		$checkermsg .= CONTENT_ADMIN_CAT_LAN_36."<br />";
+		$checksubcat = TRUE;
+	}else{
+		$checkermsg .= CONTENT_ADMIN_CAT_LAN_39."<br />";
+		$checksubcat = FALSE;
+	}
 
-		//check if items present
-		if($sql -> db_Count($plugintable, "(*)", "WHERE ".$checkqry." ")){
-			//items found, don't delete
-			$checkermsg .= CONTENT_ADMIN_CAT_LAN_37."<br />";
-			$checkitems = TRUE;
-		}else{
-			$checkermsg .= CONTENT_ADMIN_CAT_LAN_38."<br />";
-			$checkitems = FALSE;
+	//check if items present
+	if($sql -> db_Count($plugintable, "(*)", "WHERE ".$checkqry." ")){
+		//items found, don't delete
+		$checkermsg .= CONTENT_ADMIN_CAT_LAN_37."<br />";
+		$checkitems = TRUE;
+	}else{
+		$checkermsg .= CONTENT_ADMIN_CAT_LAN_38."<br />";
+		$checkitems = FALSE;
+	}
+
+	if($checksubcat == FALSE && $checkitems == FALSE){
+		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+			$message = CONTENT_ADMIN_CAT_LAN_23."<br />";
 		}
-	
-		if($checksubcat == FALSE && $checkitems == FALSE){
-			if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-				$message = CONTENT_ADMIN_CAT_LAN_23."<br />";
-			}
-		}else{
-			$message = $checkermsg;
-		}
+	}else{
+		$message = $checkermsg;
+	}
 }
 
 if(isset($delete) && $delete == 'content'){
-		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-			$e107cache->clear("content");
-			$message = CONTENT_ADMIN_ITEM_LAN_3;
-		}
+	if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+		$e107cache->clear("content");
+		$message = CONTENT_ADMIN_ITEM_LAN_3;
+	}
 }
 
 if(isset($delete) && $delete == 'submitted'){
-		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-			$e107cache->clear("content");
-			$message = CONTENT_ADMIN_SUBMIT_LAN_8;
-		}
+	if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+		$e107cache->clear("content");
+		$message = CONTENT_ADMIN_SUBMIT_LAN_8;
+	}
 }
 
 if(isset($_POST['updateoptions'])){
-		//print_r($_POST);		
-		$content_pref	= $aa -> UpdateContentPref($_POST, $_POST['options_type']);
-		$message		= CONTENT_ADMIN_CAT_LAN_22."<br /><br />";
-		$message		.= $aa -> CreateParentMenu($_POST['options_type']);
-		
+	$content_pref	= $aa -> UpdateContentPref($_POST, $_POST['options_type']);
+	$message		= CONTENT_ADMIN_CAT_LAN_22."<br /><br />";
+	$message		.= $aa -> CreateParentMenu($_POST['options_type']);
 }
 
 if(isset($_POST['create_category'])){
-		 if($_POST['cat_heading']){
-				$adb -> dbCategoryCreate("admin");
-		}else{
-				$message			= CONTENT_ADMIN_ITEM_LAN_0;
-				$content_parent		= $_POST['parent'];
-				$content_heading	= $_POST['cat_heading'];
-				$content_subheading	= $_POST['cat_subheading'];				
-				$content_text		= $_POST['cat_text'];
-				$content_icon		= $_POST['cat_icon'];
-				$content_comment	= $_POST['cat_comment'];
-				$content_rate		= $_POST['cat_rate'];
-				$content_pe			= $_POST['cat_pe'];
-				$content_class		= $_POST['cat_class'];
-				$content_datestamp	= $_POST['content_datestamp'];
-				$ne_day				= $_POST['ne_day'];
-				$ne_month			= $_POST['ne_month'];
-				$ne_year			= $_POST['ne_year'];
-				$end_day			= $_POST['end_day'];
-				$end_month			= $_POST['end_month'];
-				$end_year			= $_POST['end_year'];
-		}
+	if($_POST['cat_heading'] && $_POST['parent'] != "none"){
+		$adb -> dbCategoryCreate("admin");				
+	}else{
+		$message	= CONTENT_ADMIN_ITEM_LAN_0;
+	}
 }
 
 if(isset($_POST['update_category'])){
-		if($_POST['cat_heading']){
-				$adb -> dbCategoryUpdate("admin");
-		}else{
-				$message			= CONTENT_ADMIN_ITEM_LAN_0;
-				$content_parent		= $_POST['parent'];
-				$content_heading	= $_POST['cat_heading'];
-				$content_subheading	= $_POST['cat_subheading'];				
-				$content_text		= $_POST['cat_text'];
-				$content_icon		= $_POST['cat_icon'];
-				$content_comment	= $_POST['cat_comment'];
-				$content_rate		= $_POST['cat_rate'];
-				$content_pe			= $_POST['cat_pe'];
-				$content_class		= $_POST['cat_class'];
-				$content_datestamp	= $_POST['content_datestamp'];
-				$ne_day				= $_POST['ne_day'];
-				$ne_month			= $_POST['ne_month'];
-				$ne_year			= $_POST['ne_year'];
-				$end_day			= $_POST['end_day'];
-				$end_month			= $_POST['end_month'];
-				$end_year			= $_POST['end_year'];
-		}
+	if($_POST['cat_heading'] && $_POST['parent'] != "none"){
+		$adb -> dbCategoryUpdate("admin");
+	}else{
+		$message	= CONTENT_ADMIN_ITEM_LAN_0;
+	}
 }
 
 if(isset($_POST['create_content'])){
-        if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
-				$adb -> dbContentCreate("admin");
-        }else{
-                $message			= CONTENT_ADMIN_ITEM_LAN_0;
-				$content_heading	= $_POST['content_heading'];
-				$content_subheading	= $_POST['content_subheading'];
-				$content_summary	= $_POST['content_summary'];
-				$content_text		= $_POST['content_text'];
-				$content_icon		= $_POST['content_icon'];
-				$content_file		= $_POST['content_file'];
-				$content_comment	= $_POST['content_comment'];
-				$content_rate		= $_POST['content_rate'];
-				$content_pe			= $_POST['content_pe'];
-				$content_class		= $_POST['content_class'];
-				$content_datestamp	= $_POST['content_datestamp'];
-				$ne_day				= $_POST['ne_day'];
-				$ne_month			= $_POST['ne_month'];
-				$ne_year			= $_POST['ne_year'];
-				$end_day			= $_POST['end_day'];
-				$end_month			= $_POST['end_month'];
-				$end_year			= $_POST['end_year'];
-				$custom["content_custom_score"] = $_POST['content_score'];
-				$custom["content_custom_meta"] = $_POST['content_meta'];
-				for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
-					$keystring = $_POST["content_custom_key_{$i}"];
-					$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
-				}
-		}
+	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
+		$adb -> dbContentCreate("admin");
+	}else{
+		$message	= CONTENT_ADMIN_ITEM_LAN_0;
+	}
 }
 
 if(isset($_POST['update_content'])){
-        if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
-				$adb -> dbContentUpdate("admin");
-		}else{
-				$message			= CONTENT_ADMIN_ITEM_LAN_0;
-				$content_heading	= $_POST['content_heading'];
-				$content_subheading	= $_POST['content_subheading'];
-				$content_summary	= $_POST['content_summary'];
-				$content_text		= $_POST['content_text'];
-				$content_icon		= $_POST['content_icon'];
-				$content_comment	= $_POST['content_comment'];
-				$content_rate		= $_POST['content_rate'];
-				$content_pe			= $_POST['content_pe'];
-				$content_class		= $_POST['content_class'];
-				$content_datestamp	= $_POST['content_datestamp'];
-				$ne_day				= $_POST['ne_day'];
-				$ne_month			= $_POST['ne_month'];
-				$ne_year			= $_POST['ne_year'];
-				$end_day			= $_POST['end_day'];
-				$end_month			= $_POST['end_month'];
-				$end_year			= $_POST['end_year'];
-				$custom["content_custom_score"] = $_POST['content_score'];
-				$custom["content_custom_meta"] = $_POST['content_meta'];
-				for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
-					$keystring = $_POST["content_custom_key_{$i}"];
-					$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
-				}
-		}
+	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
+		$adb -> dbContentUpdate("admin");
+	}else{
+		$message	= CONTENT_ADMIN_ITEM_LAN_0;
+	}
 }
 
 if(isset($_POST['update_order'])){
@@ -249,14 +170,12 @@ if(isset($message)){
 
 if(!e_QUERY){																//show main categories
 
-		$intro = $aform -> show_main_intro();
-		if($intro == false){
-			//$aform -> show_main_parent("edit");
-			$aform -> show_manage_content("", "", "");
-		}
-		
-		require_once(e_ADMIN."footer.php");
-		exit;
+	$intro = $aform -> show_main_intro();
+	if($intro == false){
+		$aform -> show_manage_content("", "", "");
+	}
+	require_once(e_ADMIN."footer.php");
+	exit;
 }else{
 	$qs = explode(".", e_QUERY);
 

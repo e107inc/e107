@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.54 $
-|		$Date: 2005-06-08 20:00:29 $
+|		$Revision: 1.55 $
+|		$Date: 2005-06-09 22:58:27 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -212,7 +212,7 @@ class contentform{
 
 						//$formurl = e_SELF."?".e_QUERY.".cc";
 
-						if( ($qs[1] == "edit" || $qs[1] == "sa") && is_numeric($qs[2]) && !isset($_POST['preview']) && !isset($message)){
+						if( ($qs[1] == "edit" || $qs[1] == "sa") && is_numeric($qs[2]) && !isset($_POST['preview_content']) && !isset($message)){
 							if(!$sql -> db_Select($plugintable, "*", "content_id='".$qs[2]."' ")){
 								header("location:".e_SELF."?content"); exit;
 							}else{
@@ -226,9 +226,12 @@ class contentform{
 							}
 							//$formurl = e_SELF."?".e_QUERY.".cu";
 						}
-
+						
+						
 						//preview not yet working ok ........
-						if(isset($_POST['preview_content']) || isset($message)){
+						//if( ($qs[1] == "create" || $qs[1] == "edit" || $qs[1] == "sa") && is_numeric($qs[2]) && (isset($_POST['preview_content']) || isset($message)) ){
+						if(isset($_POST['preview_content'])){
+								/*
 								$text = "
 								<div style='text-align:center'>
 								<table class='fborder' style='".ADMIN_WIDTH."' border='0'>
@@ -239,7 +242,9 @@ class contentform{
 								</table>
 								</div>";									  
 								$ns -> tablerender($content_heading, $text);
-
+								*/
+						}
+						if( isset($_POST['preview_content']) || isset($message) ){
 								//$tp -> post_toHTML()
 								$row['content_parent']				= $_POST['parent'];
 								$row['content_heading']				= $_POST['content_heading'];
@@ -1129,7 +1134,7 @@ class contentform{
 
 		function show_create_category(){
 						global $qs, $plugintable, $plugindir, $sql, $ns, $rs, $aa, $fl, $pref, $tp;
-						global $content_parent, $content_heading, $content_subheading, $content_text, $content_icon, $content_comment, $content_rate, $content_pe, $content_class;
+						global $message, $content_parent, $content_heading, $content_subheading, $content_text, $content_icon, $content_comment, $content_rate, $content_pe, $content_class;
 						global $stylespacer, $TOPIC_ROW_SPACER, $TOPIC_ROW, $TOPIC_ROW_NOEXPAND;
 
 						$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
@@ -1156,8 +1161,9 @@ class contentform{
 									header("location:".e_SELF."?cat"); exit;
 								}
 							}
-							$formurl = e_SELF."?".e_QUERY.".pu";
+							$formurl = e_SELF."?".e_QUERY;
 						}
+						
 						if(isset($_POST['preview_category'])){
 							$formurl = e_SELF."?".e_QUERY;
 
@@ -1189,7 +1195,9 @@ class contentform{
 							</div>";
 								  
 							$ns -> tablerender($cat_heading, $text);
+						}
 
+						if( isset($_POST['preview_category']) || isset($message) ){
 							$row['content_heading']		= $tp -> post_toForm($_POST['cat_heading']);
 							$row['content_subheading']	= $tp -> post_toForm($_POST['cat_subheading']);
 							$row['content_text']		= $tp -> post_toForm($_POST['cat_text']);
