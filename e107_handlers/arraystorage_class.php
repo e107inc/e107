@@ -37,6 +37,7 @@ class ArrayData {
 		$ArrayData = '$data = '.trim($ArrayData).';';
 		@eval($ArrayData);
 		if (!isset($data) || !is_array($data)) {
+			trigger_error("Bad stored array data - <br /><br />".htmlentities($ArrayData), E_USER_ERROR);
 			return false;
 		}
 		return $data;
