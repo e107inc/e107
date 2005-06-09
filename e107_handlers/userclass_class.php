@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-09 20:51:59 $
+|     $Revision: 1.12 $
+|     $Date: 2005-06-09 22:42:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -120,6 +120,7 @@ function r_userclass_radio($fieldname, $curval = '')
 
 function r_userclass_check($fieldname, $curval = '', $optlist = "")
 {
+	global $pref;
 	$sql = new db;
 	$curArray = explode(",", $curval);
 	$ret = "";
@@ -171,6 +172,18 @@ function r_userclass_check($fieldname, $curval = '', $optlist = "")
 			}
 		}
 	}
+
+	if (preg_match("#language#", $optlist) && $pref['multilanguage']) {
+			$ret .= "<hr />\n";
+		$tmpl = explode(",",e_LANLIST);
+        foreach($tmpl as $lang){
+				$c = (in_array($lang, $curArray)) ? " checked='checked' " : "";
+        		$ret .= "<input type='checkbox' name='{$fieldname}[{$lang}]'  value='1' {$c} /> {$lang}<br />";
+		}
+	}
+
+
+
 	$ret .= "</div>";
 	return $ret;
 }

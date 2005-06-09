@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.85 $
-|   $Date: 2005-06-09 12:41:15 $
+|   $Revision: 1.86 $
+|   $Date: 2005-06-09 22:42:40 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -787,7 +787,7 @@ class newspost {
 
 		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>".NWSLAN_84."</a>
 		<div style='display: none;'>
-		".r_userclass_check("news_userclass", $_POST['news_class'], "nobody,public,guest,member,admin,classes")."
+		".r_userclass_check("news_userclass", $_POST['news_class'], "nobody,public,guest,member,admin,classes,language")."
 		</div>
 		</td></tr>
 

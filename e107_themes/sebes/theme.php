@@ -34,7 +34,7 @@ define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_1."</i>");
 // [layout]
 
 $layout = "_default";
-
+$register_sc[]='USER_CONTRIBUTIONS';
 $HEADER = "
 <div class='mainbox'>
 <div id='banner'>
@@ -134,7 +134,7 @@ function tablestyle($caption, $text, $mode)
 }
 
 $COMMENTSTYLE = "
-<div class='comment'> 
+<div class='comment'>
 <div class='lowlight'><div class='compad'>{USERNAME} {TIMEDATE}</div></div>
 <div class='compad'>{COMMENT}</div>
 </div>
