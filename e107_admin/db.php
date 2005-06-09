@@ -126,8 +126,12 @@ function getsql($mySQLdefaultdb) {
 	$ext = "sql";
 	$mime_type = "'application/octet-stream";
 	$now = gmdate('D, d M Y H:i:s') . ' GMT';
-    $filename = "e107_backup_".date("Y-m-d_His");
 
+	$filename = str_replace(".","_",SITEURL)."_".date("Y-m-d_His");
+    $filename = str_replace("http://","",$filename);
+    $filename = str_replace("https://","",$filename);
+	$filename = str_replace("www_","",$filename);
+    $filename = str_replace("/","-",$filename);
 
 	header('Content-Type: ' . $mime_type);
 	header('Expires: ' . $now);
