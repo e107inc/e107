@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/classis.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-12 10:43:46 $
-|     $Author: sweetas $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-09 23:05:56 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 	
@@ -56,6 +56,6 @@ $text .= render_clean();
 	
 $text .= "</table></div>";
 	
-$ns->tablerender('Plugins', $text);
+$ns->tablerender(ADLAN_CL_7, $text);
 	
 ?>
