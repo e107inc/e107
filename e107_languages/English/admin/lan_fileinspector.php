@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_fileinspector.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-05-20 11:14:39 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-09 05:32:20 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -13,21 +13,23 @@
 define("FC_LAN_1", "File Inspector");
 define("FC_LAN_2", "Scan Options");
 define("FC_LAN_3", "Show");
-define("FC_LAN_4", "All Files");
+define("FC_LAN_4", "All");
 define("FC_LAN_5", "Core Files");
-define("FC_LAN_6", "Core Files (Integrity Fail)");
+define("FC_LAN_6", "Integrity Fail Only");
 define("FC_LAN_7", "Non Core Files");
 define("FC_LAN_8", "Check Integrity Of Core Files");
 define("FC_LAN_9", "On");
 define("FC_LAN_10", "Off");
 define("FC_LAN_11", "Scan Now");
+define("FC_LAN_12", "None");
+define("FC_LAN_13", "Missing Core Files");
 
 define("FR_LAN_1", "Scanning");
 define("FR_LAN_2", "Scan Results");
 define("FR_LAN_3", "Overview");
-define("FR_LAN_4", "Core files scanned");
-define("FR_LAN_5", "Non core files scanned");
-define("FR_LAN_6", "Total files scanned");
+define("FR_LAN_4", "Core files");
+define("FR_LAN_5", "Non core files");
+define("FR_LAN_6", "Total files");
 define("FR_LAN_7", "Integrity Check");
 define("FR_LAN_8", "Core files passed");
 define("FR_LAN_9", "Core files failed");
@@ -51,6 +53,6 @@ after the latest core image snapshot was created.");
 define("FR_LAN_19", "files failed");
 define("FR_LAN_20", "All files passed");
 define("FR_LAN_21", "none");
-
+define("FR_LAN_22", "Missing core files");
 
 ?>
