@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-05-27 09:53:03 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2005-06-09 22:14:10 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -370,7 +370,7 @@ class rssCreate {
 		header('Content-type: text/xml', TRUE);
 		switch ($this -> rssType) {
 			case 1:		// Rss 1.0
-				echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>
+				echo "<?xml version=\"1.0\" encoding=\"".CHARSET."\" ?>
 						<!-- generator=\"e107\" -->
 						<!-- content type=\"".$this -> contentType."\" -->
 						<rss version=\"0.92\">
@@ -396,7 +396,7 @@ class rssCreate {
 
 				case 2: // rss 2.0
 			$sitebutton = (strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON);
-			echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>
+			echo "<?xml version=\"1.0\" encoding=\"".CHARSET."\"?>
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this -> contentType."\" -->
 				<rss version=\"2.0\">
@@ -452,7 +452,7 @@ class rssCreate {
 			break;
 
 			case 3: // rdf
-			echo "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+			echo "<?xml version=\"1.0\" encoding=\"".CHARSET."\" ?>
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this -> contentType."\" -->
 				<rdf:RDF xmlns=\"http://purl.org/rss/1.0/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:sy=\"http://purl.org/rss/1.0/modules/syndication/\" xmlns:admin=\"http://webns.net/mvcb/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\">
