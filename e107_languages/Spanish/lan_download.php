@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_download.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-09 20:03:44 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -25,8 +25,8 @@ define("LAN_dl_12", "Puntuación");
 define("LAN_dl_13", "Sin puntuación");
 define("LAN_dl_14", "Valore esta descarga");
 define("LAN_dl_15", "Gracias por su voto");
-define("LAN_dl_16", "descarga(s) desde");
-define("LAN_dl_17", "ficheros");
+define("LAN_dl_16", "Descarga(s) desde");
+define("LAN_dl_17", "Ficheros");
 define("LAN_dl_18", "Descargas");
 define("LAN_dl_19", "Categoría");
 define("LAN_dl_20", "Ficheros");
@@ -42,7 +42,7 @@ define("LAN_dl_29", "Veces");
 define("LAN_dl_30", "Email del Autor");
 define("LAN_dl_31", "Web del Autor");
 define("LAN_dl_32", "Descargar");
-define("LAN_dl_33", "Previo");
+define("LAN_dl_33", "Anterior");
 define("LAN_dl_34", "Siguiente");
 define("LAN_dl_35", "Volver a la lista");
 define("LAN_dl_36", "Nuevas descargas");
@@ -52,8 +52,8 @@ define("LAN_dl_39", "Orden");
 define("LAN_dl_40", "Pulse para ver imagen");
 define("LAN_dl_41", "Buscar Descargas");
 define("LAN_dl_42", "Sub-categorias");
-define("LAN_dl_43", "voto");
-define("LAN_dl_44", "votos");
+define("LAN_dl_43", "Voto");
+define("LAN_dl_44", "Votos");
 define("LAN_dl_45", "Informar descarga no válida");
 define("LAN_dl_46", "Click aquí para descargar");
 define("LAN_dl_47", "El envío ha sido informado");

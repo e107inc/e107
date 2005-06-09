@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_user.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-09 20:03:44 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -13,7 +13,7 @@ define("PAGE_NAME", "Miembros");
 
 define("LAN_20", "Error");
 
-define("LAN_112", "Dirección Email: ");
+define("LAN_112", "Dirección email: ");
 
 define("LAN_115", "Número ICQ: ");
 define("LAN_116", "Dirección AIM: ");
@@ -48,10 +48,10 @@ define("LAN_406", "Puntuación");
 define("LAN_407", "nada");
 define("LAN_408", "Sin Foto");
 define("LAN_409", "puntos");
-define("LAN_410", "Miscelanea");
+define("LAN_410", "Miscelánea");
 define("LAN_411", "Pulse aquí para actualizar su información");
 define("LAN_412", "Pulse aquí para editar la información de este usuario");
-define("LAN_413", "borrar foto");
+define("LAN_413", "Borrar foto");
 define("LAN_414", "Miembro anterior");
 define("LAN_415", "Miembro siguiente");
 define("LAN_416", "Debe iniciar sesión para acceder a esta página");

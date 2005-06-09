@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_login.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-09 20:03:44 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -13,14 +13,14 @@ define("LAN_27", "Ha dejado en blanco campos requeridos");
 
 define("LAN_300", "Conexión fallida. Los datos introducidos no corresponden a un usuario registrado. Comprueba si tiene la tecla CAPS-LOCK MAYUSCULAS activada. Las conexiones son sensibles a Mayúsculas/minúsculas");
 
-define("LAN_302", "No ha activado su cuenta de usuario. Ha debido recibir un email con instrucciones para activar su cuenta de usuario, si no es así, por favor pongase en contacto con el administrador del sitio.");
+define("LAN_302", "No ha activado su cuenta de usuario. Ha debido recibir un email con instrucciones para activar su cuenta de usuario, si no es así, por favor póngase en contacto con el administrador del sitio.");
 define("LAN_303", "Código incorrecto.");
 define("LAN_304", "Esa combinación usuario/contraseña está en uso.");
 
 define("LAN_LOGIN_1", "Usuario");
 define("LAN_LOGIN_2", "Contraseña");
 define("LAN_LOGIN_3", "Servidor protegido");
-define("LAN_LOGIN_4", "por favor escriba sus detalles para ganar acceso");
+define("LAN_LOGIN_4", "Por favor escriba sus detalles para tener acceso");
 define("LAN_LOGIN_5", "Pulse aquí para registrarse");
 define("LAN_LOGIN_6", "No se aceptan miembros nuevos en este momento");
 define("LAN_LOGIN_7", "Código");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_comment.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-09 20:03:44 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -42,20 +42,19 @@ define("LAN_310", "No se pudo aceptar el envio, ese un nombre de usuario está r
 
 define("LAN_312", "Envío duplicado - no se pudo aceptar.");
 define("LAN_313", "Localización");
-define("LAN_314", "moderar comentarios");
+define("LAN_314", "Moderar comentarios");
 define("LAN_315", "Trackbacks");
 define("LAN_316", "Sin trackbacks para este nuevo envío.");
 define("LAN_317", "Moderar trackbacks");
 define("LAN_318", "Editar comentario");
-define("LAN_319", "editado");
+define("LAN_319", "Editado");
 define("LAN_320", "Actualizar comentario");
 
-define("COMLAN_1", "aquí");
+define("COMLAN_1", "Aquí");
 define("COMLAN_2", "para registrarse");
 define("COMLAN_3", "¡Error!");
-define("COMLAN_4", 'Tema');
-define("COMLAN_5", 'Re:');
-define("COMLAN_6", 'Responderle');
-
+define("COMLAN_4", '"Tema");
+define("COMLAN_5", "Re:");
+define("COMLAN_6", "Responderle");
 
 ?>

@@ -4,19 +4,19 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_top.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-09 20:03:44 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Top Usuarios");
+define("PAGE_NAME", "Top usuarios");
 
-define("TOP_LAN_0", "Top Foros");
+define("TOP_LAN_0", "Top foros");
 define("TOP_LAN_1", "Usuario");
 define("TOP_LAN_2", "Mensajes");
-define("TOP_LAN_3", "Top Comentarios");
+define("TOP_LAN_3", "Top comentarios");
 define("TOP_LAN_4", "Comentarios");
-define("TOP_LAN_5", "Top Chatbox");
+define("TOP_LAN_5", "Top chatbox");
 define("TOP_LAN_6", "Puntuación del sitio");
 
 //v.616

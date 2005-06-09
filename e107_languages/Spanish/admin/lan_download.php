@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_download.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-09 20:03:44 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@ define("DOWLAN_7", "Descargas");
 define("DOWLAN_11", "Categoría");
 define("DOWLAN_12", "Nombre");
 define("DOWLAN_13", "Fichero");
-define("DOWLAN_14", "escriba url si es un fichero externo");
+define("DOWLAN_14", "Escriba url si es un fichero externo");
 define("DOWLAN_15", "Autor");
 define("DOWLAN_16", "Email del Autor");
 define("DOWLAN_17", "Web del Autor");
@@ -52,9 +52,9 @@ define("DOWLAN_43", "Visible para");
 define("DOWLAN_44", "Hará la categoría solo visible a los usuarios de la clase seleccionada");
 define("DOWLAN_45", "Crear Categoría");
 define("DOWLAN_46", "Actualizar categoría");
-define("DOWLAN_47", "Categoría Creada");
-define("DOWLAN_48", "Categoría Actualizada");
-define("DOWLAN_49", "Categoría de desacrgas");
+define("DOWLAN_47", "Categoría creada");
+define("DOWLAN_48", "Categoría actualizada");
+define("DOWLAN_49", "Categoría de descargas");
 define("DOWLAN_50", "Ir a la página: ");
 define("DOWLAN_51", "Buscar descargas");
 define("DOWLAN_52", "Archivos");
@@ -70,7 +70,7 @@ define("DOWLAN_62", "Ascendente");
 define("DOWLAN_63", "Descendente");
 define("DOWLAN_64", "Opciones de Actualización");
 define("DOWLAN_65", "Opciones de Actualización");
-define("DOWLAN_66", "tamaño");
+define("DOWLAN_66", "Tamaño");
 define("DOWLAN_67", "ID");
 define("DOWLAN_68", "¡Archivo Perdido!");
 define("DOWLAN_69", "Descargas creadas por PHP");
@@ -79,9 +79,9 @@ define("DOWLAN_70", "Enviar descargas a través de PHP.");
 define("DOWLAN_100", "Activar aceptación de licencia");
 define("DOWLAN_101", "Texto de licencia");
 define("DOWLAN_102", "¿Permitir comentarios?");
-define("DOWLAN_103", "Eliminar de las subidas");
-define("DOWLAN_104", "fué eliminado de las subidas públicas");
-define("DOWLAN_105", "Volver a las subidas públicas");
+define("DOWLAN_103", "Eliminar de las transferencias");
+define("DOWLAN_104", "fué eliminado de las transferencias públicas");
+define("DOWLAN_105", "Volver a las transferencias públicas");
 define("DOWLAN_106", "Descarga disponible para");
 define("DOWLAN_107", "Limitar cuenta de descargas");
 define("DOWLAN_108", "Limitar transferencia de descargas");
@@ -105,14 +105,14 @@ define("DOWLAN_125", "Límites de descarga activos");
 define("DOWLAN_126", "Estado de activación actualizado");
 define("DOWLAN_127", "Solo entrar el tamaño si la descarga es externa");
 define("DOWLAN_128", "Zonas");
-define("DOWLAN_129", "dejar en blanco si no usas zonas");
+define("DOWLAN_129", "Dejar en blanco si no usas zonas");
 define("DOWLAN_130", "Añadir otra zona");
 define("DOWLAN_131", "Seleccionar archivo local");
 define("DOWLAN_132", "Escriba la zona a usar, luego la dirección de la descarga");
 define("DOWLAN_133", "Zona actualizada en la BD");
 define("DOWLAN_134", "Zona guardada en la BD");
 define("DOWLAN_135", "Zona eliminada");
-define("DOWLAN_136", "imagen");
+define("DOWLAN_136", "Imagen");
 define("DOWLAN_137", "¿Está seguro de eliminar la zona?");
 define("DOWLAN_138", "Zonas ya existentes");
 define("DOWLAN_139", "Dirección");
@@ -120,6 +120,8 @@ define("DOWLAN_140", "Transferir imágenes locales en e107_files/downloadimages 
 define("DOWLAN_141", "Localización");
 define("DOWLAN_142", "Actualizar zona");
 define("DOWLAN_143", "Crear zona");
-define("DOWLAN_144", "Np hay zonas definidas, ir a la sección de zonas para añadir una.");
+define("DOWLAN_144", "No hay zonas definidas, ir a la sección de zonas para añadir una.");
+define("DOWLAN_145", "Descarga visible para");
+define("DOWLAN_146", "Mensaje de negación de descarga o URL");
 
 ?>

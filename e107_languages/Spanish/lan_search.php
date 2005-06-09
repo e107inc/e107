@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_search.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-08 04:46:21 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-09 20:03:44 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@ define("LAN_192", "Todas las categorías");
 define("LAN_193", "Calendario");
 define("LAN_194", "Todas las categorías");
 define("LAN_195", "Buscando");
-define("LAN_196", "resultados");
+define("LAN_196", "Resultados");
 define("LAN_197", "Descargas");
 define("LAN_198", "Sin resultados");
 define("LAN_199", "Buscar");
@@ -39,11 +39,11 @@ define("LAN_417", "(+ de 3 caracteres.)");
 
 define("LAN_SEARCH_1", "Marcar Todo");
 define("LAN_SEARCH_2", "Desmarcar Todo");
-define("LAN_SEARCH_3", "enviado el ");
-define("LAN_SEARCH_4", "Encontrado en Título de Noticia");
-define("LAN_SEARCH_5", "Encontrado en Texto de Noticia");
-define("LAN_SEARCH_6", "Encontrado en Texto de Noticia extendido");
-define("LAN_SEARCH_7", "enviado por ");
+define("LAN_SEARCH_3", "Enviado el ");
+define("LAN_SEARCH_4", "Encontrado en Título de noticia");
+define("LAN_SEARCH_5", "Encontrado en Texto de noticia");
+define("LAN_SEARCH_6", "Encontrado en Texto de noticia extendida");
+define("LAN_SEARCH_7", "Enviado por ");
 define("LAN_SEARCH_8", " el ");
 define("LAN_SEARCH_9", "Sin Título");
 define("LAN_SEARCH_10", "Ir a la página:");

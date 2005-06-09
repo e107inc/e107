@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_usersettings.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-06 14:08:56 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-09 20:03:44 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -19,10 +19,10 @@ define("LAN_10", "El nombre para conectarse al sitio");
 define("LAN_20", "Error");
 
 define("LAN_105", "Las dos contraseñas no coinciden");
-define("LAN_106", "Esta no parece una dirección Email válida");
+define("LAN_106", "Esta no parece una dirección email válida");
 
-define("LAN_112", "Dirección Email: ");
-define("LAN_113", "¿Ocultar dirección Email?: ");
+define("LAN_112", "Dirección email: ");
+define("LAN_113", "¿Ocultar dirección email?: ");
 define("LAN_114", "Esto previene que su dirección email sea mostrada en el portal");
 define("LAN_115", "Número ICQ: ");
 define("LAN_116", "Dirección AIM: ");
@@ -52,7 +52,7 @@ define("LAN_403", "Elegir avatar");
 define("LAN_404", "Tenga en cuenta que: Las imágenes subidas a nuestro servidor y que sean consideradas por los administradores no apropiadas serán borradas inmediatamente.");
 
 define("LAN_410", "Configuración para");
-define("LAN_411", "Actualize su Configuración");
+define("LAN_411", "Actualize su configuración");
 define("LAN_412", "Cambie su contraseña");
 define("LAN_413", "Elija un Avatar");
 define("LAN_414", "Suba su fotografía");
@@ -64,8 +64,8 @@ define("LAN_419", "Información Personal / Contacto");
 define("LAN_420", "Avatar");
 define("LAN_421", "Elegir avatar");
 define("LAN_422", "Usar avatar remoto");
-define("LAN_423", "Por favor escriba la dirección completa ala imagen");
-define("LAN_424", "Pulse el botón para ver los avatar disponibles en este sitio");
+define("LAN_423", "Por favor escriba la dirección completa a la imagen");
+define("LAN_424", "Pulse el botón para ver los avatarares disponibles en este sitio");
 define("LAN_425", "Fotografía");
 define("LAN_426", "Será mostrada en su página de perfil");
 define("LAN_427", "Enviar ...");
@@ -89,7 +89,7 @@ define("LAN_USET_4", "El alto máximo permitido es");
 
 // v.616
 define("LAN_CUSTOMTITLE", "Título");
-define("LAN_ICQNUMBER", "la cuenta ICQ debe contener solo números");
+define("LAN_ICQNUMBER", "La cuenta ICQ debe contener solo números");
 
 //v.617
 define("LAN_408", "Existe un usuario con esta dirección email. ");
