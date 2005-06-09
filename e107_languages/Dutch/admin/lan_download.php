@@ -79,7 +79,7 @@ define("DOWLAN_102", "Toestaan reacties?");
 define("DOWLAN_103", "Verwijder uit uploads");
 define("DOWLAN_104", "was verwijderd uit openbare uploads");
 define("DOWLAN_105", "Terug naar openbare uploads");
-define("DOWLAN_106", "Download beschikbaar voor");
+define("DOWLAN_106", "Mag worden opgehaald door");
 define("DOWLAN_107", "Limiteer download aantal");
 define("DOWLAN_108", "Limiteer download bandbreedte");
 define("DOWLAN_109", "elke");
@@ -118,4 +118,6 @@ define("DOWLAN_141", "Lokatie");
 define("DOWLAN_142", "Bijwerken mirror");
 define("DOWLAN_143", "Opvoeren mirror");
 define("DOWLAN_144", "Geen mirrors opgegeven, ga naar de mirror sectie om ze toe te voegen.");
+define("DOWLAN_145", "Download zichtbaar voor");
+define("DOWLAN_146", "Maatwerk Download-weiger melding of URL");
 ?>

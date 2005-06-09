@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-08 16:51:37 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-09 21:22:10 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -169,8 +169,8 @@ define("CONTENT_ADMIN_OPT_LAN_71", "kies welke secties moeten worden getoond bij
 define("CONTENT_ADMIN_OPT_LAN_72", "onderkop");
 define("CONTENT_ADMIN_OPT_LAN_73", "samenvatting");
 define("CONTENT_ADMIN_OPT_LAN_74", "datum");
-define("CONTENT_ADMIN_OPT_LAN_75", "auteursgegevens");
-define("CONTENT_ADMIN_OPT_LAN_76", "auteurs e-mailadres");
+define("CONTENT_ADMIN_OPT_LAN_75", "auteur: naam");
+define("CONTENT_ADMIN_OPT_LAN_76", "auteurs: e-mail");
 define("CONTENT_ADMIN_OPT_LAN_77", "beoordeling");
 define("CONTENT_ADMIN_OPT_LAN_78", "e-mail/afdruk/pdf pictogram");
 define("CONTENT_ADMIN_OPT_LAN_79", "ouder kruimel");
@@ -211,15 +211,15 @@ define("CONTENT_ADMIN_OPT_LAN_113", "alle categorieën pagina");
 define("CONTENT_ADMIN_OPT_LAN_114", "bekijk categorie pagina");
 define("CONTENT_ADMIN_OPT_LAN_115", "wanneer geactiveerd, wordt een link naar het categorieonderwerp geplaatst in de postfix tekst");
 define("CONTENT_ADMIN_OPT_LAN_116", "aantal reacties");
-define("CONTENT_ADMIN_OPT_LAN_117", "link naar auteursoverzicht");
-define("CONTENT_ADMIN_OPT_LAN_118", "link naar auteursprofiel");
-define("CONTENT_ADMIN_OPT_LAN_119", "content categorie pagina's");
+define("CONTENT_ADMIN_OPT_LAN_117", "auteur: link naar auteursoverzicht");
+define("CONTENT_ADMIN_OPT_LAN_118", "auteur: link naar auteursprofiel");
+define("CONTENT_ADMIN_OPT_LAN_119", "contentcategorie pagina's");
 
-define("CONTENT_ADMIN_OPT_LAN_120", "ouder onderwerp");
+define("CONTENT_ADMIN_OPT_LAN_120", "ouderonderwerp");
 define("CONTENT_ADMIN_OPT_LAN_121", "moet het onderwerp van de ouder worden getoond");
 define("CONTENT_ADMIN_OPT_LAN_122", "ouder subcategorieën");
 define("CONTENT_ADMIN_OPT_LAN_123", "moeten de subcategorieën van de ouder worden getoond");
-define("CONTENT_ADMIN_OPT_LAN_124", "wanneer geactiveerd, worden alle onderliggende subcategorieën met de oudercategorie getoond . Wanner gedeactiveerd worden uitsluitend de ouderonderwerpen getoond");
+define("CONTENT_ADMIN_OPT_LAN_124", "wanneer geactiveerd, worden alle onderliggende subcategorieën met de oudercategorie getoond . Wanneer gedeactiveerd worden uitsluitend de ouderonderwerpen getoond");
 define("CONTENT_ADMIN_OPT_LAN_125", "ouder subcategorie onderwerp");
 define("CONTENT_ADMIN_OPT_LAN_126", "moeten de onderwerpen van de ouder subcategorieën worden getoond");
 define("CONTENT_ADMIN_OPT_LAN_127", "wanneer geactiveerd, worden alle onderwerpen van de geselecteerde categorie en de onderwerpen uit de onderliggende categorieën getoond. Wanneer gedeactiveerd, worden alleen de onderwerpen van de geselecteerde categorie getoond");
@@ -366,6 +366,9 @@ define("CONTENT_ADMIN_OPT_LAN_266", "");
 define("CONTENT_ADMIN_OPT_LAN_267", "zoekmenu weergavemethode");
 define("CONTENT_ADMIN_OPT_LAN_268", "bepaal hoe het zoekmenu wordt weergegeven");
 define("CONTENT_ADMIN_OPT_LAN_269", "bepaal hoe de zoekmenu informatie wordt weergegeven. Je hebt twee mogelijkheden: weergave bovenaan de pagina en het weergeven van het zoekmenu in een apart menu.");
+define("CONTENT_ADMIN_OPT_LAN_270", "letterindex");
+define("CONTENT_ADMIN_OPT_LAN_271", "geef op of je een letterindex wilt tonen");
+define("CONTENT_ADMIN_OPT_LAN_272", "de letterindex is een lijst met knoppen met de eerste letters van de contentkoppen.  Je kunt de selectie uit het archief beperken door op een letter te klikken, waardoor alleen de onderwerpen die met die letter beginnen, worden getoond.");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "verplicht veld niet ingevuld");
 define("CONTENT_ADMIN_ITEM_LAN_1", "onderwerp aangemaakt");
@@ -518,6 +521,8 @@ In deze standaard set worden drie hoofd oudercategorieën aangemaakt, namelijk C
 define("CONTENT_ADMIN_MAIN_LAN_24", "Dit is een nieuwe installatie / De oude content tabel bevat geen record");
 define("CONTENT_ADMIN_MAIN_LAN_25", "Omdat de oude aanwezige content tabel nog geen records bevat, kun je nu gewoon beginnen met het beheren van nieuwe content.<br />
 Door te klikken op de Volgende knop, maak je automatisch een nieuwe standaardset categorieën aan, namelijk Content, Review en Artikel.<br />");
+define("CONTENT_ADMIN_MAIN_LAN_26", "bekijk");
+define("CONTENT_ADMIN_MAIN_LAN_27", "bekijk nogmaals");
 
 define("CONTENT_ADMIN_MENU_LAN_0", "Beheren content");
 define("CONTENT_ADMIN_MENU_LAN_1", "Aanmaken content");
@@ -676,6 +681,7 @@ define("CONTENT_LAN_69", "e-mailen van het");
 define("CONTENT_LAN_70", "afdrukken van het");
 define("CONTENT_LAN_71", "content onderwerp");
 define("CONTENT_LAN_72", "categorie onderwerp");
+define("CONTENT_LAN_73", "nog geen content onderwerpen");
 
 define("CONTENT_LAN_75", "aanmelden content onderwerp");
 define("CONTENT_LAN_76", "creëren van een pdf bestand van het");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_help.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-08 16:51:38 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-09 21:22:10 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -53,7 +53,7 @@ Dit moet je doen omdat sommige unieke categorieinformatie eerst in het formulier
 define("CONTENT_ADMIN_HELP_CAT_4", "<i>deze pagina toont het formulier om categorieën te bewerken.</i><br /><br />
 <b>bewerk categorie formulier</b><br />je kunt nu alle gegevens voor deze (sub)categorie bewerken en de wijzigingen aanmelden.");
 define("CONTENT_ADMIN_HELP_CAT_5", "");
-define("CONTENT_ADMIN_HELP_CAT_6", "<i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />
+define("CONTENT_ADMIN_HELP_CAT_6", "<i>deze pagina toont de opties die je voor de hoofdouder in kunt stellen. Iedere hoofdouder heeft een eigen set specifieke opties, let er dus op om ze allemaal goed in te stellen.</i><br /><br />
 <b>standaardwaarden</b><br />By default all values are present and already updated in the preferences when you view this page, but change any setting to your own standards.<br /><br />
 <b>verdeling in acht secties</b><br />the options are divided into eight main sections. You see the different section in the right menu. you can click on them to go to the specific set of options for that section.<br /><br />
 <b>creëren</b><br />in this section you can specify options for the creation of content items on the admin pages on the admins end.<br /><br />
