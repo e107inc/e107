@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.52 $
-|		$Date: 2005-06-09 08:59:55 $
+|		$Revision: 1.53 $
+|		$Date: 2005-06-09 10:53:42 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -60,8 +60,8 @@ require_once(HEADERF);
 function core_head(){
 	global $qs, $sql, $tp, $pref, $plugintable, $eArrayStorage;
 
-	if($qs[0] == "content" && isset($qs[1]) && is_numeric($qs[1]) && isset($qs[2]) && is_numeric($qs[2])){
-		if($sql -> db_Select($plugintable, "content_pref as custom", "content_id='".$qs[2]."'")){
+	if($qs[0] == "content" && isset($qs[1]) && is_numeric($qs[1]) ){
+		if($sql -> db_Select($plugintable, "content_pref as custom", "content_id='".$qs[1]."'")){
 			list($custom) = $sql -> db_Fetch();
 
 			$custom = $eArrayStorage->ReadArray($custom);
