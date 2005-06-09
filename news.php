@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2005-06-08 14:15:13 $
+|     $Revision: 1.71 $
+|     $Date: 2005-06-09 12:52:44 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -236,7 +236,7 @@ else
 	$interval = $pref['newsposts']-$pref['newsposts_archive'];
 
 	// Get number of news item to show
-	if(isset($pref['trackbackEnabled'])) {
+	if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled']) {
 		$query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon, COUNT(*) AS tbcount FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -278,23 +278,26 @@ else
 changes by jalist 03/02/2005:
 news page templating
 */
-if($pref['news_unstemplate'] && file_exists(THEME."news_template.php")) {
+if($pref['news_unstemplate'] && file_exists(THEME."news_template.php"))
+{
 	// theme specific template required ...
 	require_once(THEME."news_template.php");
 	$newscolumns = (isset($NEWSCOLUMNS) ? $NEWSCOLUMNS : 1);
 	$newspercolumn = (isset($NEWSITEMSPERCOLUMN) ? $NEWSITEMSPERCOLUMN : 10);
 	$newsdata = array();
 	$loop = 1;
-	$newsAr = $sql -> db_getList();
-	foreach($newsAr as $news){
+	foreach($newsAr as $news)
+	{
 		$newsdata[$loop] .= $ix->render_newsitem($news, "return");
 		$loop ++;
-		if($loop > $newscolumns) {
+		if($loop > $newscolumns)
+		{
 			$loop = 1;
 		}
 	}
 	$loop = 1;
-	foreach($newsdata as $data) {
+	foreach($newsdata as $data)
+	{
 		$var = "ITEMS$loop";
 		$$var = $data;
 		$loop++;
