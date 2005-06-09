@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.84 $
-|   $Date: 2005-06-05 07:45:52 $
-|   $Author: sweetas $
+|   $Revision: 1.85 $
+|   $Date: 2005-06-09 12:41:15 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -68,8 +68,9 @@ $amount = 50;
 
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
 
-$_POST['news_class'] = implode(",", array_keys($_POST['news_userclass']));
-
+if($_POST['news_class']){
+	$_POST['news_class'] = implode(",", array_keys($_POST['news_userclass']));
+}
 if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LAN_DELETE)], $matches)) {
 	$delete = $matches[1];
 	$del_id = $matches[2];
@@ -373,6 +374,7 @@ class newspost {
 		/* 08-08-2004 - unknown - fixed `Insert Image' display to use $IMAGES_DIRECTORY */
 		global $sql, $rs, $ns, $pref, $fl, $IMAGES_DIRECTORY, $tp, $pst, $e107;
 		$thumblist = $fl->get_files(e_IMAGE."newspost_images/", 'thumb_');
+
 
 		$rejecthumb = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*');
 		$imagelist = $fl->get_files(e_IMAGE."newspost_images/","",$rejecthumb);
