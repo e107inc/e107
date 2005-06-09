@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-06-05 04:11:25 $
+|     $Revision: 1.21 $
+|     $Date: 2005-06-09 05:32:19 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -31,9 +31,9 @@ $fi = new file_inspector;
 require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
 
-if (e_QUERY == 'snapshot' || e_QUERY == 's' || (strpos(e_QUERY, '.s') !== false)) {
+if (e_QUERY == 'snapshot' || e_QUERY == 's') {
 	$fi -> snapshot_interface();
-} else if (e_QUERY == 'results') {
+} else if (isset($_POST['scan'])) {
 	$fi -> scan_results();
 	$fi -> scan_config();
 } else {
@@ -55,7 +55,7 @@ class file_inspector {
 		if (substr($this -> root_dir, -1) == '/') {
 			$this -> root_dir = substr($this -> root_dir, 0, -1);
 		}
-		if ($_POST['display'] == 'fail') {
+		if ($_POST['core'] == 'fail') {
 			$_POST['integrity'] = TRUE;
 		}
 	}
@@ -64,7 +64,7 @@ class file_inspector {
 		global $ns, $rs;
 
 		$text = "<div style='text-align: center'>
-		<form action='".e_SELF."?results' method='post' id='scanform'>
+		<form action='".e_SELF."' method='post' id='scanform'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 		<tr>
 		<td class='fcaption' colspan='2'>".FC_LAN_2."</td>
@@ -72,13 +72,32 @@ class file_inspector {
 		
 		$text .= "<tr>
 		<td class='forumheader3' style='width: 35%'>
-		".FC_LAN_3.":
+		".FC_LAN_3." ".FC_LAN_5.":
 		</td>
 		<td colspan='2' class='forumheader3' style='width: 65%'>
-		<input type='radio' name='display' value='all'".(($_POST['display'] == 'all' || !isset($_POST['display'])) ? " checked='checked'" : "")." /> ".FC_LAN_4."&nbsp;&nbsp;
-		<input type='radio' name='display' value='core'".($_POST['display'] == 'core' ? " checked='checked'" : "")." /> ".FC_LAN_5."&nbsp;&nbsp;
-		<input type='radio' name='display' value='fail'".($_POST['display'] == 'fail' ? " checked='checked'" : "")." /> ".FC_LAN_6."&nbsp;&nbsp;
-		<input type='radio' name='display' value='non'".($_POST['display'] == 'non' ? " checked='checked'" : "")." /> ".FC_LAN_7."&nbsp;&nbsp;
+		<input type='radio' name='core' value='all'".(($_POST['core'] == 'all' || !isset($_POST['core'])) ? " checked='checked'" : "")." /> ".FC_LAN_4."&nbsp;&nbsp;
+		<input type='radio' name='core' value='fail'".($_POST['core'] == 'fail' ? " checked='checked'" : "")." /> ".FC_LAN_6."&nbsp;&nbsp;
+		<input type='radio' name='core' value='none'".($_POST['core'] == 'none' ? " checked='checked'" : "")." /> ".FC_LAN_12."&nbsp;&nbsp;
+		</td>
+		</tr>";
+		
+		$text .= "<tr>
+		<td class='forumheader3' style='width: 35%'>
+		".FC_LAN_3." ".FC_LAN_13.":
+		</td>
+		<td colspan='2' class='forumheader3' style='width: 65%'>
+		<input type='radio' name='missing' value='1'".(($_POST['missing'] == '1' || !isset($_POST['missing'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
+		<input type='radio' name='missing' value='0'".($_POST['missing'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
+		</td>
+		</tr>";
+		
+		$text .= "<tr>
+		<td class='forumheader3' style='width: 35%'>
+		".FC_LAN_3." ".FC_LAN_7.":
+		</td>
+		<td colspan='2' class='forumheader3' style='width: 65%'>
+		<input type='radio' name='noncore' value='1'".(($_POST['noncore'] == '1' || !isset($_POST['noncore'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
+		<input type='radio' name='noncore' value='0'".($_POST['noncore'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
 		</td>
 		</tr>";
 		
@@ -87,7 +106,7 @@ class file_inspector {
 		".FC_LAN_8.":
 		</td>
 		<td class='forumheader3' style='width: 65%; vertical-align: top'>
-		<input type='radio' name='integrity' value='1'".(($_POST['integrity'] == '1' || !isset($_POST['integrityy'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
+		<input type='radio' name='integrity' value='1'".(($_POST['integrity'] == '1' || !isset($_POST['integrity'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
 		<input type='radio' name='integrity' value='0'".($_POST['integrity'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
 		</td></tr>
 		<tr>
@@ -109,20 +128,20 @@ class file_inspector {
 				if (is_dir($path)) {
 					$dirs[$path] = $readdir;
 				} else {
-					$files[] = $readdir;
+					$files[$readdir] = $this -> checksum($path, TRUE);
 				}
 			}
 		}
 		closedir($handle);
 		
-		asort ($dirs);
-		sort ($files);
+		ksort ($dirs);
+		ksort ($files);
 		
 		foreach ($dirs as $dir_path => $dir_list) {
-			$list[$dir_list] = $this -> scan($dir_path);
+			$list[$dir_list] = $this -> scan($dir_path) ? $this -> scan($dir_path) : array();
 		}
-		foreach ($files as $file_list) {
-			$list[] = $file_list;
+		foreach ($files as $file_name => $file_list) {
+			$list[$file_name] = $file_list;
 		}
 		return $list;
 	}
@@ -136,6 +155,7 @@ class file_inspector {
 		$this -> files[$dir_id]['.']['parent'] = $this -> parent;
 		$directory = $level ? basename($dir) : SITENAME;
 		$level++;
+		
 		foreach ($list as $key => $value) {
 			$this -> parent = $dir_id;
 			if (is_array($value)) {
@@ -149,48 +169,74 @@ class file_inspector {
 					$last_expand = true;
 				}
 			} else {
-				$path = $dir.'/'.$value;
-				$i_path = str_replace($this -> root_dir.'/', '', $path);
-					if ($_POST['display'] == 'all' || ($_POST['display'] == 'fail' && isset($core_image[$i_path]) && $value != 'core_image.php' && $this -> checksum($path) != $core_image[$i_path]) || ($_POST['display'] == 'core' && isset($core_image[$i_path])) || ($_POST['display'] == 'non' && !isset($core_image[$i_path]))) {
-						$fid = strtolower($value);
-						$filesize = filesize($path);
-						if (isset($core_image[$i_path])) {
+				if ($key != 'core_image.php') {
+					$path = $dir.'/'.$key;
+					$fid = strtolower($key);
+					$this -> files[$dir_id][$fid]['file'] = $key;
+					if (($this -> files[$dir_id][$fid]['size'] = filesize($path)) !== FALSE) {
+						if ($_POST['core'] != 'none') {
 							$this -> count['core']['num']++;
-							$this -> count['core']['size'] += $filesize;
-						}
-						if ($_POST['display'] != 'fail' && !isset($core_image[$i_path])) {
-							$this -> count['unknown']['num']++;
-							$this -> count['unknown']['size'] += $filesize;
-							$file_icon = 'file_unknown.png';
-							$dir_icon = ($dir_icon == 'folder_warning.png') ? 'folder_warning.png' : 'folder_unknown.png';
-							$parent_expand = TRUE;
-						} else if ($_POST['display'] != 'fail' && !$_POST['integrity']) {
-							$file_icon = 'file_core.png';
-							$dir_icon = ($dir_icon == 'folder_unknown.png') ? 'folder_unknown.png' : 'folder_core.png';
-						} else if ($value != 'core_image.php') {
-							if ($_POST['display'] == 'fail' || $this -> checksum($path) != $core_image[$i_path]) {
-								$this -> count['fail']['num']++;
-								$this -> count['fail']['size'] += $filesize;
-								$file_icon = 'file_warning.png';
-								$dir_icon = 'folder_warning.png';
-								$parent_expand = TRUE;
+							$this -> count['core']['size'] += $this -> files[$dir_id][$fid]['size'];
+							if ($_POST['integrity']) {
+								if ($this -> checksum($path) != $value) {
+									$this -> count['fail']['num']++;
+									$this -> count['fail']['size'] += $this -> files[$dir_id][$fid]['size'];
+									$this -> files[$dir_id][$fid]['icon'] = 'file_warning.png';
+									$dir_icon = 'folder_warning.png';
+									$parent_expand = TRUE;
+								} else {
+									if ($_POST['core'] != 'fail') {
+										$this -> count['pass']['num']++;
+										$this -> count['pass']['size'] += $this -> files[$dir_id][$fid]['size'];
+										$this -> files[$dir_id][$fid]['icon'] = 'file_check.png';
+										$dir_icon = ($dir_icon == 'folder_warning.png' || $dir_icon == 'folder_missing.png') ? $dir_icon : 'folder_check.png';
+									} else {
+										unset($this -> files[$dir_id][$fid]);
+										$known[$dir_id][$fid] = true;
+									}
+								}
 							} else {
-								$this -> count['pass']['num']++;
-								$this -> count['pass']['size'] += $filesize;
-								$file_icon = 'file_check.png';
-								$dir_icon = ($dir_icon == 'folder_warning.png' || $dir_icon == 'folder_unknown.png') ? $dir_icon : 'folder_check.png';
+								$this -> files[$dir_id][$fid]['icon'] = 'file_core.png';
 							}
+						} else if (!$_POST['noncore']){
+							unset ($this -> files[$dir_id][$fid]);
 						}
-						$this -> files[$dir_id][$fid]['file'] = $value;
-						$this -> files[$dir_id][$fid]['icon'] = $file_icon;
-						$this -> files[$dir_id][$fid]['size'] = $filesize;
+					} else if ($_POST['missing']) {
+						$this -> count['missing']['num']++;
+						$this -> files[$dir_id][$fid]['icon'] = 'file_missing.png';
+						$dir_icon = ($dir_icon == 'folder_warning.png') ? $dir_icon : 'folder_missing.png';
+						$parent_expand = TRUE;
+					} else {
+						unset ($this -> files[$dir_id][$fid]);
 					}
+				}
 			}
 		}
 		
-		if (!$dir_icon) {
-			$dir_icon = 'folder.png';
+		if ($_POST['noncore']) {
+			$handle = opendir($dir.'/');
+			while (false !== ($readdir = readdir($handle))) {
+				if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
+					if (!is_dir($dir.'/'.$readdir)) {
+						$aid = strtolower($readdir);
+						if (!isset($this -> files[$dir_id][$aid]['file']) && !$known[$dir_id][$aid]) {
+							$this -> files[$dir_id][$aid]['file'] = $readdir;
+							$this -> files[$dir_id][$aid]['size'] = filesize($dir.'/'.$readdir);
+							$this -> files[$dir_id][$aid]['icon'] = 'file_unknown.png';
+							$this -> count['unknown']['num']++;
+							$this -> count['unknown']['size'] += $this -> files[$dir_id][$aid]['size'];
+							$dir_icon = ($dir_icon == 'folder_warning.png' || $dir_icon == 'folder_missing.png') ? $dir_icon : 'folder_unknown.png';
+							$parent_expand = TRUE;
+						} else if ($_POST['core'] == 'none') {
+							unset($this -> files[$dir_id][$aid]);
+						}
+					}
+				}
+			}
+			closedir($handle);
 		}
+		
+		$dir_icon = $dir_icon ? $dir_icon : 'folder.png';
 		$icon = "<img src='".e_IMAGE."fileinspector/".$dir_icon."' class='i' alt='' />";
 		$hide = ($last_expand && $dir_icon != 'folder_core.png') ? "" : "style='display: none'";
 		$text = "<div class='d' style='margin-left: ".($level * 8)."px'>";
@@ -203,9 +249,8 @@ class file_inspector {
 	}
 
 	function scan_results() {
-		global $ns, $rs;
-		$list = $this -> scan($this -> root_dir);
-		$scan_text = $this -> inspect($list, 0, $this -> root_dir);
+		global $ns, $rs, $core_image;
+		$scan_text = $this -> inspect($core_image, 0, $this -> root_dir);
 		
 		$text = "<div style='text-align:center'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -228,28 +273,27 @@ class file_inspector {
 		<img src='".e_IMAGE."fileinspector/fileinspector.png' class='i' alt='' />&nbsp;<b>".FR_LAN_3."</b></td>
 		<td class='s' style='text-align: right; padding-right: 4px' onclick=\"sh('f_".dechex(crc32($this -> root_dir))."')\">
 		<img src='".e_IMAGE."fileinspector/forward.png' class='i' alt='' /></td></tr>";
-		if ($_POST['display'] != 'fail' && $_POST['display'] != 'non') {
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_core.png' class='i' alt='' />&nbsp;".FR_LAN_4.":&nbsp;".($this -> count['core']['num'] ? $this -> count['core']['num'] : 'none')."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['core']['size'], 2)."</td></tr>";
+		if ($_POST['core'] != 'none') {
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_core.png' class='i' alt='' />&nbsp;".FR_LAN_4.":&nbsp;".($this -> count['core']['num'] ? $this -> count['core']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['core']['size'], 2)."</td></tr>";
 		}
-		if ($_POST['display'] != 'fail' && $_POST['display'] != 'core') {
+		if ($_POST['missing']) {
+			$text .= "<tr><td class='f' colspan='2'><img src='".e_IMAGE."fileinspector/file_missing.png' class='i' alt='' />&nbsp;".FR_LAN_22.":&nbsp;".($this -> count['missing']['num'] ? $this -> count['missing']['num'] : FR_LAN_21)."&nbsp;</td></tr>";
+		}
+		if ($_POST['noncore']) {
 			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_unknown.png' class='i' alt='' />&nbsp;".FR_LAN_5.":&nbsp;".($this -> count['unknown']['num'] ? $this -> count['unknown']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['unknown']['size'], 2)."</td></tr>";
 		}
-		if ($_POST['display'] == 'all') {
+		if ($_POST['core'] == 'all') {
 			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_6.":&nbsp;".($this -> count['core']['num'] + $this -> count['unknown']['num'])."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['core']['size'] + $this -> count['unknown']['size'], 2)."</td></tr>";
 		}
-		if ($_POST['integrity'] && $_POST['display'] != 'non') {
+		if ($_POST['integrity'] && $_POST['core'] != 'none') {
 			$integrity_icon = $this -> count['fail']['num'] ? 'integrity_fail.png' : 'integrity_pass.png';
 			$integrity_text = $this -> count['fail']['num'] ? '( '.$this -> count['fail']['num'].' '.FR_LAN_19.' )' : '( '.FR_LAN_20.' )';
 			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
 			$text .= "<tr><td class='f' style='padding-left: 4px' colspan='2'>
 			<img src='".e_IMAGE."fileinspector/".$integrity_icon."' class='i' alt='' />&nbsp;<b>".FR_LAN_7."</b> ".$integrity_text."</td></tr>";
 		
-			if ($_POST['display'] != 'fail' && $_POST['display'] != 'non' && $_POST['integrity']) {
-				$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_check.png' class='i' alt='' />&nbsp;".FR_LAN_8.":&nbsp;".($this -> count['pass']['num'] ? $this -> count['pass']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['pass']['size'], 2)."</td></tr>";
-			}
-			if ($_POST['display'] != 'non' && $_POST['integrity']) {
-				$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_warning.png' class='i' alt='' />&nbsp;".FR_LAN_9.":&nbsp;".($this -> count['fail']['num'] ? $this -> count['fail']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['fail']['size'], 2)."</td></tr>";
-			}
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_check.png' class='i' alt='' />&nbsp;".FR_LAN_8.":&nbsp;".($this -> count['pass']['num'] ? $this -> count['pass']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['pass']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_warning.png' class='i' alt='' />&nbsp;".FR_LAN_9.":&nbsp;".($this -> count['fail']['num'] ? $this -> count['fail']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['fail']['size'], 2)."</td></tr>";
 		
 			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
 
@@ -302,26 +346,13 @@ class file_inspector {
 		$ns -> tablerender(FR_LAN_1.'...', $text);
 	}
 	
-	function image_scan($dir) {
-		$handle = opendir($dir.'/');
-		while (false !== ($readdir = readdir($handle))) {
-			if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
-				$path = $dir.'/'.$readdir;
-				if (is_dir($path)) {
-					$this -> image_scan($path);
-				} else {
-					$this -> image[$path] = $this -> checksum($path, TRUE);
-				}
-			}
-		}
-		return FALSE;
-		closedir($handle);
-	}
-	
 	function create_image($dir) {
 		global $ADMIN_DIRECTORY, $FILES_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $DOWNLOADS_DIRECTORY, $DOCS_DIRECTORY;
-		$this -> image_scan($dir);
+		$this -> image = $this -> scan($dir);
 		$data = "<?php\n";
+		//$data .= stripslashes($this -> write_image($this -> image, "\$core_image['root']"));
+		$data .= "\$core_image = ".var_export($this -> image, true)."\n\n";
+		/*
 		$data .= "\$core_image = array(
 		";
 		foreach($this -> image as $path_key => $path_value) {
@@ -334,6 +365,7 @@ class file_inspector {
 		$data .= implode(', 
 		', $core_array);
 		$data .= "\n);\n";
+		*/
 		$data .= "?>";
 		$fp = fopen(e_ADMIN.'core_image.php', 'w');
 		fwrite($fp, $data);
