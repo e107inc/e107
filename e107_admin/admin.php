@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-05-06 02:29:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.24 $
+|     $Date: 2005-06-09 17:51:33 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -100,8 +100,8 @@ function render_links($link, $title, $description, $perms, $icon = FALSE, $mode 
 					onmouseover=\"eover(this, 'forumheader5')\" onmouseout=\"eover(this, 'td')\" onclick=\"document.location.href='".$link."'\">".$icon." ".$title."</td>";
 			}
 			else if ($mode == 'classis') {
-				$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a href='".$link."'>".$icon."</a><br />
-					<a href='".$link."'><b>".$title."</b></a><br />".$description."<br /><br /></td>";
+				$text .= "<td style='text-align:center; vertical-align:top; width:20%'><a href='".$link."' title='$description'>".$icon."</a><br />
+					<a href='".$link."' title='$description'><b>".$title."</b></a><br /><br /></td>";
 			}elseif ($mode == 'beginner'){
                 $text .= "<td style='text-align:center; vertical-align:top; width:20%' ><a href='".$link."' >".$icon."</a>
 					<div style='padding:5px'>
