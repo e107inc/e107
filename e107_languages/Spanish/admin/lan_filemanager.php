@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_filemanager.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-09 22:54:12 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -46,7 +46,7 @@ define("FMLAN_36", "Directorio Custom");
 define("FMLAN_37", "Directorio CustomPages");
 define("FMLAN_38", "Archivo/s movido/s con éxito a");
 define("FMLAN_39", "Imposible mover el/los archivo/s a");
-define("FMLAN_40", "Directorio de Newspost-Images");
+define("FMLAN_40", "Directorio Newspost-Images");
 define("FMLAN_41", "Mover al dir. descargas.");
 define("FMLAN_42", "Mover al dir. downloadimages.");
 define("FMLAN_43", "Eliminar archivos seleccionados");

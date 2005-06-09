@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-09 04:59:23 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-09 22:54:12 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -19,16 +19,16 @@ define("CONTENT_ICON_LAN_5", "Nuevo");
 define("CONTENT_ICON_LAN_6", "Enviar contenido");
 define("CONTENT_ICON_LAN_7", "Lista del autor");
 define("CONTENT_ICON_LAN_8", "Atención");
-define("CONTENT_ICON_LAN_9", "ok");
-define("CONTENT_ICON_LAN_10", "error");
-define("CONTENT_ICON_LAN_11", "ordenar por categoría");
-define("CONTENT_ICON_LAN_12", "ordenar por padre principal");
+define("CONTENT_ICON_LAN_9", "Ok");
+define("CONTENT_ICON_LAN_10", "Error");
+define("CONTENT_ICON_LAN_11", "Ordenar por categoría");
+define("CONTENT_ICON_LAN_12", "Ordenar por categoría principal");
 define("CONTENT_ICON_LAN_13", "Admin personal");
 define("CONTENT_ICON_LAN_14", "Conf. contenidos personal");
 define("CONTENT_ICON_LAN_15", "Ver");
 
-define("LAN_38", "votar");
-define("LAN_39", "votos");
+define("LAN_38", "Votar");
+define("LAN_39", "Votos");
 define("LAN_40", "¿Como valoraría este contenido?");
 define("LAN_41", "Gracias por su voto");
 
@@ -49,17 +49,17 @@ define("CONTENT_ADMIN_CAT_LAN_11", "Categoría de contenido creada");
 define("CONTENT_ADMIN_CAT_LAN_12", "Categoría de contenido actualizada");
 define("CONTENT_ADMIN_CAT_LAN_13", "Hay campos obligatorios en blanco");
 define("CONTENT_ADMIN_CAT_LAN_14", "Comentarios");
-define("CONTENT_ADMIN_CAT_LAN_15", "Valorarión");
+define("CONTENT_ADMIN_CAT_LAN_15", "Valoración");
 define("CONTENT_ADMIN_CAT_LAN_16", "Iconos de email e imprimir");
 define("CONTENT_ADMIN_CAT_LAN_17", "Ver");
-define("CONTENT_ADMIN_CAT_LAN_18", "autor");
+define("CONTENT_ADMIN_CAT_LAN_18", "Autor");
 define("CONTENT_ADMIN_CAT_LAN_19", "Categoría de contenido");
-define("CONTENT_ADMIN_CAT_LAN_20", "opciones");
-define("CONTENT_ADMIN_CAT_LAN_21", "limpiar formulario");
+define("CONTENT_ADMIN_CAT_LAN_20", "Opciones");
+define("CONTENT_ADMIN_CAT_LAN_21", "Limpiar formulario");
 define("CONTENT_ADMIN_CAT_LAN_22", "Opciones actualizadas");
 define("CONTENT_ADMIN_CAT_LAN_23", "Categoría de contenido eliminada");
-define("CONTENT_ADMIN_CAT_LAN_24", "id");
-define("CONTENT_ADMIN_CAT_LAN_25", "icono");
+define("CONTENT_ADMIN_CAT_LAN_24", "Id");
+define("CONTENT_ADMIN_CAT_LAN_25", "Icono");
 define("CONTENT_ADMIN_CAT_LAN_26", "Nueva categoría principal");
 define("CONTENT_ADMIN_CAT_LAN_27", "Categoría");
 define("CONTENT_ADMIN_CAT_LAN_28", "Asignar usuarios desde la columa de la izquierda al Gestor personal de contenidos para esta categoría");
@@ -69,29 +69,29 @@ define("CONTENT_ADMIN_CAT_LAN_31", "Eliminar");
 define("CONTENT_ADMIN_CAT_LAN_32", "Limpiar Gestores de contenidos");
 define("CONTENT_ADMIN_CAT_LAN_33", "Asignar gestores de personal de contenidos");
 define("CONTENT_ADMIN_CAT_LAN_34", "Admins asignados a la categoría con éxito");
-define("CONTENT_ADMIN_CAT_LAN_35", "eliminada la subcategoría del contenido");
+define("CONTENT_ADMIN_CAT_LAN_35", "Eliminada la subcategoría del contenido");
 define("CONTENT_ADMIN_CAT_LAN_36", "Comprobación categoría: existen subcategorías, la categoría no puede ser eliminada. Primero elimine las subcategorías y pruebe de nuevo.");
 define("CONTENT_ADMIN_CAT_LAN_37", "Comprobación contenidos: existen contenidos, la categoría no puede ser eliminada. Primero elimine los contenidos y pruebe de nuevo.");
 define("CONTENT_ADMIN_CAT_LAN_38", "Comprobación contenidos: no hay contenidos");
 define("CONTENT_ADMIN_CAT_LAN_39", "Comprobación categoría: no hay categorías");
 define("CONTENT_ADMIN_CAT_LAN_40", "Debajo verá una lista de las categorías principales y sus subcategorías, si esxisten.<br />");
-define("CONTENT_ADMIN_CAT_LAN_41", "El manejador personal de las categorías de contenidos le permite asignar otros admins a una categoría. Con este privilegio, estos administradores su/s propio/s, y solo su/s propio/s contenido/s en su categoría correspondiente, sin la necesidad de tener control sobre el plugin de contenidos. Desde la página de contenidos fuera del área de administración, verá un icono que redirijirá a su página personal de configuración.");
+define("CONTENT_ADMIN_CAT_LAN_41", "El gestor personal de las categorías de contenidos le permite asignar otros admins a una categoría. Con este privilegio, estos administradores su/s propio/s, y solo su/s propio/s contenido/s en su categoría correspondiente, sin la necesidad de tener control sobre el plugin de contenidos. Desde la página de contenidos fuera del área de administración, verá un icono que redirijirá a su página personal de configuración.");
 define("CONTENT_ADMIN_CAT_LAN_41", "");
-define("CONTENT_ADMIN_CAT_LAN_42", "para re-editar la misma categoría");
+define("CONTENT_ADMIN_CAT_LAN_42", "Para re-editar la misma categoría");
 define("CONTENT_ADMIN_CAT_LAN_43", "pulsar aquí");
-define("CONTENT_ADMIN_CAT_LAN_44", "para añadir otra categoría en la última categoría principal seleccionada");
+define("CONTENT_ADMIN_CAT_LAN_44", "Para añadir otra categoría en la última categoría principal seleccionada");
 define("CONTENT_ADMIN_CAT_LAN_45", "Defina si se permitirá comentarios");
 define("CONTENT_ADMIN_CAT_LAN_46", "Defina si se permitirá valorar");
 define("CONTENT_ADMIN_CAT_LAN_47", "Defina si los iconos imprimir/email se mostrarán");
 define("CONTENT_ADMIN_CAT_LAN_48", "Escoja que usuarios verán este elemento");
 define("CONTENT_ADMIN_CAT_LAN_49", "Escoja un icono para esta categoría");
-define("CONTENT_ADMIN_CAT_LAN_50", "Solo si ha creado una categoría Padre Principal, se creará un archivo menú<br />
+define("CONTENT_ADMIN_CAT_LAN_50", "Solo si ha creado una categoría principal, se creará un archivo menú<br />
   	 Esta archivo se ha creado en la carpeta /menus.<br />
   	 Para ver el menu en acción, necesita activar este menú en <a href='".e_ADMIN."menus.php'>area admin menú</a>.
   	 ");
-define("CONTENT_ADMIN_CAT_LAN_51", "error; archivo menú no creado");
+define("CONTENT_ADMIN_CAT_LAN_51", "Error; archivo menú no creado");
 define("CONTENT_ADMIN_CAT_LAN_52", "Escoja SIEMPRE una categoría antes completar otros campos!");
-define("CONTENT_ADMIN_CAT_LAN_53", "para manejar otra categoría");
+define("CONTENT_ADMIN_CAT_LAN_53", "Para manejar otra categoría");
 define("CONTENT_ADMIN_CAT_LAN_54", "Usuario");
 define("CONTENT_ADMIN_CAT_LAN_55", "Usuarios");
 
@@ -174,7 +174,7 @@ define("CONTENT_ADMIN_OPT_LAN_75", "Autor: nombre");
 define("CONTENT_ADMIN_OPT_LAN_76", "Autor: email");
 define("CONTENT_ADMIN_OPT_LAN_77", "Valoración");
 define("CONTENT_ADMIN_OPT_LAN_78", "Icono email/imprimir/pdf");
-define("CONTENT_ADMIN_OPT_LAN_79", "Señuelo padre");
+define("CONTENT_ADMIN_OPT_LAN_79", "Señuelo categoría principal");
 define("CONTENT_ADMIN_OPT_LAN_80", "Refer (solo con el registro activo)");
 define("CONTENT_ADMIN_OPT_LAN_81", "Carácteres de la subcabecera");
 define("CONTENT_ADMIN_OPT_LAN_82", "Defina la cantidad de carácteres de la subcabecera");
@@ -191,16 +191,16 @@ define("CONTENT_ADMIN_OPT_LAN_92", "Mostrar email de autores no-miembros");
 define("CONTENT_ADMIN_OPT_LAN_93", "Defina si se mostrará el autor de un no-miembro. Solo  si el emailautor se fija en la sección de encima.");
 define("CONTENT_ADMIN_OPT_LAN_94", "Previos");
 define("CONTENT_ADMIN_OPT_LAN_95", "Mostrar botones previos");
-define("CONTENT_ADMIN_OPT_LAN_96", "Activado, solo un límitado número de elementos se mostrarán en la lista de página, y Vd puede navegar a través de un número de páginas para mostrar otros contenidos.");
+define("CONTENT_ADMIN_OPT_LAN_96", "Activado, solo un límitado número de elementos se mostrarán en la lista de página, y Usted puede navegar a través de un número de páginas para mostrar otros contenidos.");
 define("CONTENT_ADMIN_OPT_LAN_97", "Elementos por página");
 define("CONTENT_ADMIN_OPT_LAN_98", "¿Cuantos contenidosse mostrarán en una página?");
 define("CONTENT_ADMIN_OPT_LAN_99", "Solo se usarán si las limitaciones previas están chequeadas");
 define("CONTENT_ADMIN_OPT_LAN_100", "Sobreescribir imprimir/email/pdf");
 define("CONTENT_ADMIN_OPT_LAN_101", "Mostrar iconos imprimir/email/pdf para todos los elementos");
-define("CONTENT_ADMIN_OPT_LAN_102", "Activado, muestra los iconos de todos los contenidos y padres, sin contar con su ajuste personal");
+define("CONTENT_ADMIN_OPT_LAN_102", "Activado, muestra los iconos de todos los contenidos y categorías principales, sin contar con su ajuste personal");
 define("CONTENT_ADMIN_OPT_LAN_103", "sobreescribir sistema de valoración");
 define("CONTENT_ADMIN_OPT_LAN_104", "Mostrar sistema de valoración para todos los elementos");
-define("CONTENT_ADMIN_OPT_LAN_105", "Activado, muestra el sistema de valoración para todos los contenidos y padres, sin contar con su ajuste personal");
+define("CONTENT_ADMIN_OPT_LAN_105", "Activado, muestra el sistema de valoración para todos los contenidos y categorías pricipales, sin contar con su ajuste personal");
 define("CONTENT_ADMIN_OPT_LAN_106", "Orden página");
 define("CONTENT_ADMIN_OPT_LAN_107", "Escoja el método de ordenación");
 define("CONTENT_ADMIN_OPT_LAN_108", "Ordenar por 'orden' usará el número de orden dado en Área de Gestión de Orden");
@@ -215,22 +215,22 @@ define("CONTENT_ADMIN_OPT_LAN_116", "Cantidad de comentarios");
 define("CONTENT_ADMIN_OPT_LAN_117", "Autor: Enlace a lista de autor");
 define("CONTENT_ADMIN_OPT_LAN_118", "Autor: Enlace a perfil de autor");
 define("CONTENT_ADMIN_OPT_LAN_119", "Páginas de categorías de contenidos");
-define("CONTENT_ADMIN_OPT_LAN_120", "Padre");
-define("CONTENT_ADMIN_OPT_LAN_121", "¿Debe mostrar el padre?");
-define("CONTENT_ADMIN_OPT_LAN_122", "Subcategorías padre");
-define("CONTENT_ADMIN_OPT_LAN_123", "¿Deben mostrarse las subcategorías padre?");
-define("CONTENT_ADMIN_OPT_LAN_124", "Activado, se mostrarán todas las subcategorías subrayadas con su categoría padre. Desactivado, se mostrará solo el padre");
-define("CONTENT_ADMIN_OPT_LAN_125", "Subcategoría padre");
-define("CONTENT_ADMIN_OPT_LAN_126", "¿Deben mostrarse los elementos de subcategorías padres?");
+define("CONTENT_ADMIN_OPT_LAN_120", "Categoría principal");
+define("CONTENT_ADMIN_OPT_LAN_121", "¿Debe mostrar la categoría principal?");
+define("CONTENT_ADMIN_OPT_LAN_122", "Subcategorías principales");
+define("CONTENT_ADMIN_OPT_LAN_123", "¿Deben mostrarse las subcategorías principales?");
+define("CONTENT_ADMIN_OPT_LAN_124", "Activado, se mostrarán todas las subcategorías subrayadas con su categoría principal. Desactivado, se mostrará solo la categoría principal");
+define("CONTENT_ADMIN_OPT_LAN_125", "Subcategoría principal");
+define("CONTENT_ADMIN_OPT_LAN_126", "¿Deben mostrarse los elementos de subcategorías principales?");
 define("CONTENT_ADMIN_OPT_LAN_127", "Activado, se mostrarán los elementos de las categorías seleccionadas o subrayadas. Desactivado, se mostrarán solo los elementos de las categorías seleccionadas");
-define("CONTENT_ADMIN_OPT_LAN_128", "Orden padres-hijos");
-define("CONTENT_ADMIN_OPT_LAN_129", "Defina el orden de padres e hijos");
-define("CONTENT_ADMIN_OPT_LAN_130", "Escoja el orden que se mostrarán padres e hijos");
-define("CONTENT_ADMIN_OPT_LAN_131", "Padres por encima de hijos");
-define("CONTENT_ADMIN_OPT_LAN_132", "Hijos por encima de padres");
+define("CONTENT_ADMIN_OPT_LAN_128", "Orden principales-hijos");
+define("CONTENT_ADMIN_OPT_LAN_129", "Defina el orden de principales e hijos");
+define("CONTENT_ADMIN_OPT_LAN_130", "Escoja el orden que se mostrarán principales y hijos");
+define("CONTENT_ADMIN_OPT_LAN_131", "Principales por encima de hijos");
+define("CONTENT_ADMIN_OPT_LAN_132", "Hijos por encima de principales");
 define("CONTENT_ADMIN_OPT_LAN_133", "Tiporender de menús");
 define("CONTENT_ADMIN_OPT_LAN_134", "Escoja método de renderizado para los menús");
-define("CONTENT_ADMIN_OPT_LAN_135", "Puede renderizar el padre, sub e hijos de cada menú, o puede combinarlos juntos en un solo menú");
+define("CONTENT_ADMIN_OPT_LAN_135", "Puede renderizar el principal, sub e hijos de cada menú, o puede combinarlos juntos en un solo menú");
 define("CONTENT_ADMIN_OPT_LAN_136", "Cada uno en menús separados");
 define("CONTENT_ADMIN_OPT_LAN_137", "Combinar en un menú");
 define("CONTENT_ADMIN_OPT_LAN_138", "Páginas de contenidos");
@@ -264,9 +264,9 @@ define("CONTENT_ADMIN_OPT_LAN_165", "¿Necesita mostrar el nº total de elemento
 define("CONTENT_ADMIN_OPT_LAN_166", "Icono : categoría");
 define("CONTENT_ADMIN_OPT_LAN_167", "none (), bullet (), middot (&middot;), white bullet (º), arrow (&raquo;), category_icon()");
 define("CONTENT_ADMIN_OPT_LAN_168", "Nada");
-define("CONTENT_ADMIN_OPT_LAN_169", "Bullet");
-define("CONTENT_ADMIN_OPT_LAN_170", "Middot");
-define("CONTENT_ADMIN_OPT_LAN_171", "White bullet");
+define("CONTENT_ADMIN_OPT_LAN_169", "Bala");
+define("CONTENT_ADMIN_OPT_LAN_170", "PuntoMedio");
+define("CONTENT_ADMIN_OPT_LAN_171", "Bala blanca");
 define("CONTENT_ADMIN_OPT_LAN_172", "Flecha");
 define("CONTENT_ADMIN_OPT_LAN_173", "Icono de categoría");
 define("CONTENT_ADMIN_OPT_LAN_174", "Lista reciente");
@@ -305,8 +305,8 @@ define("CONTENT_ADMIN_OPT_LAN_206", "Datos personalizados");
 define("CONTENT_ADMIN_OPT_LAN_207", "Categorías de renderizado");
 define("CONTENT_ADMIN_OPT_LAN_208", "Defina como necesita mostrar las categorías");
 define("CONTENT_ADMIN_OPT_LAN_209", "Puede unir las categorías con otros enlaces en la caja de selección, o mostrarlo como enlaces normales");
-define("CONTENT_ADMIN_OPT_LAN_210", "Cajaselección");
-define("CONTENT_ADMIN_OPT_LAN_211", "Enlacesnormales");
+define("CONTENT_ADMIN_OPT_LAN_210", "Caja selección");
+define("CONTENT_ADMIN_OPT_LAN_211", "Enlaces normales");
 define("CONTENT_ADMIN_OPT_LAN_212", "Enlace : todos los contenidos");
 define("CONTENT_ADMIN_OPT_LAN_213", "Necesita la página del enlace 'todos los contenidos' (la página archivo) mostrarse?");
 define("CONTENT_ADMIN_OPT_LAN_214", "Estilo de fecha");
@@ -318,9 +318,9 @@ define("CONTENT_ADMIN_OPT_LAN_219", "Escoja que secciones se mostrarán cuando v
 define("CONTENT_ADMIN_OPT_LAN_220", "Icono listaAutor");
 define("CONTENT_ADMIN_OPT_LAN_221", "Tags de datos preseleccionados");
 define("CONTENT_ADMIN_OPT_LAN_222", "Defina tags de datos preseleccionados personalizados");
-define("CONTENT_ADMIN_OPT_LAN_223", "Aquí puede proveer tags de datos preseleccionados. Los campos que provea aquí son las claves para la clave=>valor de tags de datos. Tendrán un campo de texto para el valor a fijar el el formulario de creación  del admin. Nota: No forman parte de los tags de dtos personalizados que especificó arriba, y serán usados adicionalmente.<br />Estos tags rpeseleccionados son muy útiles si desea crear un tag estandar disponible para cada elemento. POr ejemplo, si quiere poder definir siempre un valor para  'fotógrafo' puede crear un tag preseleccionado, el cual siempre se mostrará para cada nuevo elemento de este padre principal.");
+define("CONTENT_ADMIN_OPT_LAN_223", "Aquí puede proveer tags de datos preseleccionados. Los campos que provea aquí son las claves para la clave=>valor de tags de datos. Tendrán un campo de texto para el valor a fijar el el formulario de creación  del admin. Nota: No forman parte de los tags de dtos personalizados que especificó arriba, y serán usados adicionalmente.<br />Estos tags rpeseleccionados son muy útiles si desea crear un tag estandar disponible para cada elemento. POr ejemplo, si quiere poder definir siempre un valor para  'fotógrafo' puede crear un tag preseleccionado, el cual siempre se mostrará para cada nuevo elemento de esta categoría principal.");
 define("CONTENT_ADMIN_OPT_LAN_224", "css");
-define("CONTENT_ADMIN_OPT_LAN_225", "Defina la hoja de cascada de estilos css del tema para este padre principal");
+define("CONTENT_ADMIN_OPT_LAN_225", "Defina la hoja de cascada de estilos css del tema para esta categoría principal");
 define("CONTENT_ADMIN_OPT_LAN_226", "Si el css seleccionado no existe, se usará el css de contenido por defecto");
 define("CONTENT_ADMIN_OPT_LAN_227", "Esquema de plantilla");
 define("CONTENT_ADMIN_OPT_LAN_228", "Defina un esquema de plantilla por defecto");
@@ -376,78 +376,78 @@ define("CONTENT_ADMIN_OPT_LAN_277", "");
 define("CONTENT_ADMIN_OPT_LAN_278", "");
 define("CONTENT_ADMIN_OPT_LAN_279", "");
 
-define("CONTENT_ADMIN_ITEM_LAN_0", "campos obligatorios en blanco");
-define("CONTENT_ADMIN_ITEM_LAN_1", "contenido creado");
-define("CONTENT_ADMIN_ITEM_LAN_2", "contenido actualizado");
-define("CONTENT_ADMIN_ITEM_LAN_3", "contenido eliminado");
-define("CONTENT_ADMIN_ITEM_LAN_4", "sin contenidos");
-define("CONTENT_ADMIN_ITEM_LAN_5", "contenidos existentes");
-define("CONTENT_ADMIN_ITEM_LAN_6", "primeras letras");
+define("CONTENT_ADMIN_ITEM_LAN_0", "Campos obligatorios en blanco");
+define("CONTENT_ADMIN_ITEM_LAN_1", "Contenido creado");
+define("CONTENT_ADMIN_ITEM_LAN_2", "Contenido actualizado");
+define("CONTENT_ADMIN_ITEM_LAN_3", "Contenido eliminado");
+define("CONTENT_ADMIN_ITEM_LAN_4", "Sin contenidos");
+define("CONTENT_ADMIN_ITEM_LAN_5", "Contenidos existentes");
+define("CONTENT_ADMIN_ITEM_LAN_6", "Primeras letras");
 define("CONTENT_ADMIN_ITEM_LAN_7", "Seleccione una letra de arriba.");
-define("CONTENT_ADMIN_ITEM_LAN_8", "id");
-define("CONTENT_ADMIN_ITEM_LAN_9", "icono");
-define("CONTENT_ADMIN_ITEM_LAN_10", "autor");
-define("CONTENT_ADMIN_ITEM_LAN_11", "cabecera");
-define("CONTENT_ADMIN_ITEM_LAN_12", "opciones");
-define("CONTENT_ADMIN_ITEM_LAN_13", "escoja categoría padre");
-define("CONTENT_ADMIN_ITEM_LAN_14", "nombre autor");
-define("CONTENT_ADMIN_ITEM_LAN_15", "dirección email autor");
-define("CONTENT_ADMIN_ITEM_LAN_16", "subcabecera");
-define("CONTENT_ADMIN_ITEM_LAN_17", "sumario");
-define("CONTENT_ADMIN_ITEM_LAN_18", "texto");
-define("CONTENT_ADMIN_ITEM_LAN_19", "transferir icono");
+define("CONTENT_ADMIN_ITEM_LAN_8", "Id");
+define("CONTENT_ADMIN_ITEM_LAN_9", "Icono");
+define("CONTENT_ADMIN_ITEM_LAN_10", "Autor");
+define("CONTENT_ADMIN_ITEM_LAN_11", "Cabecera");
+define("CONTENT_ADMIN_ITEM_LAN_12", "Opciones");
+define("CONTENT_ADMIN_ITEM_LAN_13", "Escoja categoría principal");
+define("CONTENT_ADMIN_ITEM_LAN_14", "Nombre autor");
+define("CONTENT_ADMIN_ITEM_LAN_15", "Dirección email autor");
+define("CONTENT_ADMIN_ITEM_LAN_16", "Subcabecera");
+define("CONTENT_ADMIN_ITEM_LAN_17", "Sumario");
+define("CONTENT_ADMIN_ITEM_LAN_18", "Texto");
+define("CONTENT_ADMIN_ITEM_LAN_19", "Transferir icono");
 define("CONTENT_ADMIN_ITEM_LAN_20", "Icono del contenido");
-define("CONTENT_ADMIN_ITEM_LAN_21", "esta opción estará desactivada si las subidas estan desactivadas en el servidor");
+define("CONTENT_ADMIN_ITEM_LAN_21", "Esta opción estará desactivada si las subidas estan desactivadas en el servidor");
 define("CONTENT_ADMIN_ITEM_LAN_22", "La carpeta");
-define("CONTENT_ADMIN_ITEM_LAN_23", "no es escribible, necesita CHMOD 777 a la carpeta antes de transferir");
+define("CONTENT_ADMIN_ITEM_LAN_23", "No es escribible, necesita CHMOD 777 a la carpeta antes de transferir");
 define("CONTENT_ADMIN_ITEM_LAN_24", "Transferir adjuntos");
 define("CONTENT_ADMIN_ITEM_LAN_25", "Transferir nuevo icono");
 define("CONTENT_ADMIN_ITEM_LAN_26", "Eliminar");
 define("CONTENT_ADMIN_ITEM_LAN_27", "Archivos del contenido");
 define("CONTENT_ADMIN_ITEM_LAN_28", "Transferir nuevo archivo");
-define("CONTENT_ADMIN_ITEM_LAN_29", "no hay archivos");
+define("CONTENT_ADMIN_ITEM_LAN_29", "No hay archivos");
 define("CONTENT_ADMIN_ITEM_LAN_30", "Archivo de contenido");
 define("CONTENT_ADMIN_ITEM_LAN_31", "Transferir imágenes");
 define("CONTENT_ADMIN_ITEM_LAN_32", "Imagenes del contenido");
-define("CONTENT_ADMIN_ITEM_LAN_33", "Suir nueva imagen");
+define("CONTENT_ADMIN_ITEM_LAN_33", "Subir nueva imagen");
 define("CONTENT_ADMIN_ITEM_LAN_34", "Imagen del contenido");
 define("CONTENT_ADMIN_ITEM_LAN_35", "Fijar ajustes para este contenido");
 define("CONTENT_ADMIN_ITEM_LAN_36", "Permitir comentarios");
 define("CONTENT_ADMIN_ITEM_LAN_37", "Permitir valorar");
 define("CONTENT_ADMIN_ITEM_LAN_38", "Mostrar iconos imprimir/email");
-define("CONTENT_ADMIN_ITEM_LAN_39", "ver");
+define("CONTENT_ADMIN_ITEM_LAN_39", "Ver");
 define("CONTENT_ADMIN_ITEM_LAN_40", "Puntuación");
 define("CONTENT_ADMIN_ITEM_LAN_41", "Seleccionar puntuación ...");
 define("CONTENT_ADMIN_ITEM_LAN_42", "Active para ajustar la hora/fecha a la actual");
-define("CONTENT_ADMIN_ITEM_LAN_43", "contenidos enviados por usuarios");
-define("CONTENT_ADMIN_ITEM_LAN_44", "crear contenido");
-define("CONTENT_ADMIN_ITEM_LAN_45", "actualizar contenido");
+define("CONTENT_ADMIN_ITEM_LAN_43", "Contenidos enviados por usuarios");
+define("CONTENT_ADMIN_ITEM_LAN_44", "Crear contenido");
+define("CONTENT_ADMIN_ITEM_LAN_45", "Actualizar contenido");
 define("CONTENT_ADMIN_ITEM_LAN_46", "Previsualizar");
 define("CONTENT_ADMIN_ITEM_LAN_47", "Previsualizar de nuevo");
-define("CONTENT_ADMIN_ITEM_LAN_48", "padre principal");
-define("CONTENT_ADMIN_ITEM_LAN_49", "contenidos enviados");
-define("CONTENT_ADMIN_ITEM_LAN_50", "no hay contenidos enviados");
-define("CONTENT_ADMIN_ITEM_LAN_51", "detalles autor");
+define("CONTENT_ADMIN_ITEM_LAN_48", "Categoría principal");
+define("CONTENT_ADMIN_ITEM_LAN_49", "Contenidos enviados");
+define("CONTENT_ADMIN_ITEM_LAN_50", "No hay contenidos enviados");
+define("CONTENT_ADMIN_ITEM_LAN_51", "Detalles autor");
 define("CONTENT_ADMIN_ITEM_LAN_52", "Enviar contenido");
-define("CONTENT_ADMIN_ITEM_LAN_53", "meta keywords");
+define("CONTENT_ADMIN_ITEM_LAN_53", "Meta keywords");
 define("CONTENT_ADMIN_ITEM_LAN_54", "Datos adicionales");
 define("CONTENT_ADMIN_ITEM_LAN_55", "Vuelva a  <a href='".e_SELF."'>página conf de contenidos</a> para configurar mejor su contenido personal<br />or<br />vaya a <a href='".e_PLUGIN."content/content.php'>página principal de contenidos</a> para ver los contenidos.");
-define("CONTENT_ADMIN_ITEM_LAN_56", "Conf personal de contenidos");
-define("CONTENT_ADMIN_ITEM_LAN_57", "categoría");
-define("CONTENT_ADMIN_ITEM_LAN_58", "contenidos");
-define("CONTENT_ADMIN_ITEM_LAN_59", "mover");
-define("CONTENT_ADMIN_ITEM_LAN_60", "order");
-define("CONTENT_ADMIN_ITEM_LAN_61", "actualizar orden");
-define("CONTENT_ADMIN_ITEM_LAN_62", "oprdenar categorías");
-define("CONTENT_ADMIN_ITEM_LAN_63", "inc");
-define("CONTENT_ADMIN_ITEM_LAN_64", "dec");
-define("CONTENT_ADMIN_ITEM_LAN_65", "ordenar contenidos");
-define("CONTENT_ADMIN_ITEM_LAN_66", "Debajo verá idstintas letras de las cabeceras de los contenidos en esta categoría.<br />Haciendo click en una de las letras verá una lista de los contenidos que empiezans por esa letra. También puede escoger TODOS los botones para mostrar los contenidos de esta categoría.");
-define("CONTENT_ADMIN_ITEM_LAN_67", "Debajo verá los contenidos listados porla categoría seleccionada o encogido con la letra seleccionada.<br />Puede eliminar o editar un elemento haciendo click en el botón apropiado de la derecha.");
+define("CONTENT_ADMIN_ITEM_LAN_56", "Conf. personal de contenidos");
+define("CONTENT_ADMIN_ITEM_LAN_57", "Categoría");
+define("CONTENT_ADMIN_ITEM_LAN_58", "Contenidos");
+define("CONTENT_ADMIN_ITEM_LAN_59", "Mover");
+define("CONTENT_ADMIN_ITEM_LAN_60", "Ordenar");
+define("CONTENT_ADMIN_ITEM_LAN_61", "Actualizar orden");
+define("CONTENT_ADMIN_ITEM_LAN_62", "Ordenar categorías");
+define("CONTENT_ADMIN_ITEM_LAN_63", "Inc");
+define("CONTENT_ADMIN_ITEM_LAN_64", "Dec");
+define("CONTENT_ADMIN_ITEM_LAN_65", "Ordenar contenidos");
+define("CONTENT_ADMIN_ITEM_LAN_66", "Debajo verá distintas letras de las cabeceras de los contenidos en esta categoría.<br />Haciendo click en una de las letras verá una lista de los contenidos que empiezan por esa letra. También puede escoger TODOS los botones para mostrar los contenidos de esta categoría.");
+define("CONTENT_ADMIN_ITEM_LAN_67", "Debajo verá los contenidos listados por la categoría seleccionada o encogido con la letra seleccionada.<br />Puede eliminar o editar un elemento haciendo click en el botón apropiado de la derecha.");
 define("CONTENT_ADMIN_ITEM_LAN_68", "Debajo tendrá la disponibilidad de añadir datos personalizados para el elemento. Cada dato personalizado necesita tener su clave y valor. Puede especificar la clave en el campo izquierdo y su valor en el derecho.<br />(por ejemplo, clave='fotografía' y valor='todas las fotos están hechas por mi'.");
 define("CONTENT_ADMIN_ITEM_LAN_69", "Aquí puede transferir iconos, adjuntos y/o imágenes con el contenido. Los tipos permitidos son : ");
 define("CONTENT_ADMIN_ITEM_LAN_70", "En la caja siguiente podrá especificar meta keywords para ir al contenido. Estos meta keywords se muestran en la cabecera de la página. Separe cada palabra con comas, LOS ESPACIOS NO ESTÁN PERMITIDOS !");
-define("CONTENT_ADMIN_ITEM_LAN_71", "dejarlo si lo ha escrito usted");
+define("CONTENT_ADMIN_ITEM_LAN_71", "Dejarlo si lo ha escrito usted");
 define("CONTENT_ADMIN_ITEM_LAN_72", "Defina detalles de autor");
 define("CONTENT_ADMIN_ITEM_LAN_73", "Defina una fecha de inicio (déjelo si no necesita)");
 define("CONTENT_ADMIN_ITEM_LAN_74", "Defina una fecha fín (déjelo si no necesita)");
@@ -464,8 +464,8 @@ define("CONTENT_ADMIN_ITEM_LAN_84", "Defina campos de datos personalizados (clav
 define("CONTENT_ADMIN_ITEM_LAN_85", "Activado");
 define("CONTENT_ADMIN_ITEM_LAN_86", "Desactivado");
 define("CONTENT_ADMIN_ITEM_LAN_87", "Escoja un icono para esta categoría");
-define("CONTENT_ADMIN_ITEM_LAN_88", "para crear un elemento en la última categoría principal seleccionada");
-define("CONTENT_ADMIN_ITEM_LAN_89", "para editar un elemento en la última categoría principal seleccionada");
+define("CONTENT_ADMIN_ITEM_LAN_88", "Para crear un elemento en la última categoría principal seleccionada");
+define("CONTENT_ADMIN_ITEM_LAN_89", "Para editar un elemento en la última categoría principal seleccionada");
 define("CONTENT_ADMIN_ITEM_LAN_90", "click aquí");
 define("CONTENT_ADMIN_ITEM_LAN_91", "para re-editar el mismo elemento");
 define("CONTENT_ADMIN_ITEM_LAN_92", "Plantilla");
@@ -473,18 +473,18 @@ define("CONTENT_ADMIN_ITEM_LAN_93", "Escoja un esquema de plantilla");
 define("CONTENT_ADMIN_ITEM_LAN_94", "Seleccione un esquema de plantilla");
 define("CONTENT_ADMIN_ITEM_LAN_95", "");
 
-define("CONTENT_ADMIN_ORDER_LAN_0", "orden incrementado");
-define("CONTENT_ADMIN_ORDER_LAN_1", "orden decrementado");
-define("CONTENT_ADMIN_ORDER_LAN_2", "guardado el orden de los contenidos");
+define("CONTENT_ADMIN_ORDER_LAN_0", "Orden incrementado");
+define("CONTENT_ADMIN_ORDER_LAN_1", "Orden decrementado");
+define("CONTENT_ADMIN_ORDER_LAN_2", "Guardado el orden de los contenidos");
 
 define("CONTENT_ADMIN_MAIN_LAN_0", "Categorías de contenidos existentes");
 define("CONTENT_ADMIN_MAIN_LAN_1", "No hay categorías de contenidos");
 define("CONTENT_ADMIN_MAIN_LAN_2", "Principales categorías de contenidos");
 define("CONTENT_ADMIN_MAIN_LAN_3", "Contenido eliminado");
-define("CONTENT_ADMIN_MAIN_LAN_4", "Texto padre");
-define("CONTENT_ADMIN_MAIN_LAN_5", "Icono padre");
+define("CONTENT_ADMIN_MAIN_LAN_4", "Texto principal");
+define("CONTENT_ADMIN_MAIN_LAN_5", "Icono principal");
 define("CONTENT_ADMIN_MAIN_LAN_6", "");
-define("CONTENT_ADMIN_MAIN_LAN_7", "WBienvenido al CMS !");
+define("CONTENT_ADMIN_MAIN_LAN_7", "¡Bienvenido al CMS !");
 define("CONTENT_ADMIN_MAIN_LAN_8", "Lea con atención la siguiente información y escoja lo que quiera hacer");
 define("CONTENT_ADMIN_MAIN_LAN_9", "Esta información se muestra porque la tabla del plugin del CMS no contiene registros.");
 define("CONTENT_ADMIN_MAIN_LAN_10", "Puede organizar los elementos en esta página. Primero decida la categoría de contenido a configurar. Seleccione una categoría en la caja de selección para empezar a manejar contenidos para esa categoría.");
@@ -493,15 +493,15 @@ define("CONTENT_ADMIN_MAIN_LAN_11", "
 Debido a esta situación puede hacer dos cosas:<br />
 <br />
 <b>a) convertir registros</b><br />
- Lo primero que necesita hacer es crear una copia de seguridad de las tablas de contenido existentes así como los comenatrios y la tabla de valoraciones.<br />
+ Lo primero que necesita hacer es crear una copia de seguridad de las tablas de contenido existentes así como los comentarios y la tabla de valoraciones.<br />
   	 Use un programa para realizar una copia de sus tablas de contenido como phpmyadmin.<br />
-  	 Después de crear la copia de su vieja tabla de contenido, puede empezar convirtiendo los registros al nuevo plugin de Manejador de Contenidos.<br />
-  	 Después de convertir su viejo contenido, ya no debería ver esta información, y poder manejar su contenido existente.<br />
+  	 Después de crear la copia de su vieja tabla de contenido, puede empezar convirtiendo los registros al nuevo plugin de Gestor de Contenidos.<br />
+  	 Después de convertir su viejo contenido, ya no debería ver esta información, y poder gestionar su contenido existente.<br />
   	 Por favor, vaya a la página <a href='".e_PLUGIN."content/admin_content_convert.php'>Script de conversión de contenidos</a><br />
   	 <br />
   	 <b>b) no converir los registros y comenzar un nuevo contenido</b><br />
   	 Si no va a necesitar los registros de su viejo contenido,<br />
-  	 y simplemente quiere empezar con una nueva tabla de Manejador de Contenidos,<br />
+  	 y simplemente quiere empezar con una nueva tabla de Gestor de Contenidos,<br />
   	 puede empezar creando una nueva categoría.<br />
   	 Por favor, vaya a la página <a href='".e_SELF."?type.0.cat.create'>Crear nueva categoría</a>.<br />
   	 ");
@@ -511,9 +511,9 @@ define("CONTENT_ADMIN_MAIN_LAN_12", "
   	 Lo primero que necesita es crear una nueva categoría.<br />
   	 Por favor, vaya a la página <a href='".e_SELF."?type.0.cat.create'>Crear nueva categoría</a>.<br />
   	 ");
-define("CONTENT_ADMIN_MAIN_LAN_13", "Puede crear nuevos contenidos en esta página. Primero decida la categoría a la que quiere manejar contenido. Click en el botón de los padres principales listado debajo para crear nuevo contenido en la categoría principal.");
-define("CONTENT_ADMIN_MAIN_LAN_14", "Puede fijar el orden de los contenidos en esta página. Click en el botón de los padres principales mostrados debajo para comenzar a ordenar contenidos de la categoría principal seleccionada.");
-define("CONTENT_ADMIN_MAIN_LAN_15", "Puede manejar categorías en esta página. Escoja la categoría principal en los botones listados debajo para mostrar una vista de todas la categorías y subcategorías de esta categoría principal.");
+define("CONTENT_ADMIN_MAIN_LAN_13", "Puede crear nuevos contenidos en esta página. Primero decida la categoría a la que quiere manejar contenido. Click en el botón de las categorías principales listado abajo para crear nuevo contenido en la categoría principal.");
+define("CONTENT_ADMIN_MAIN_LAN_14", "Puede fijar el orden de los contenidos en esta página. Click en el botón de las categorías principales mostradas abajo para comenzar a ordenar contenidos de la categoría principal seleccionada.");
+define("CONTENT_ADMIN_MAIN_LAN_15", "Puede gestionar categorías en esta página. Escoja la categoría principal en los botones listados debajo para mostrar una vista de todas la categorías y subcategorías de esta categoría principal.");
 define("CONTENT_ADMIN_MAIN_LAN_16", "Puede crear nuevas categorías en esta página. Por defecto, el formulario de creación para una nueva categoría principal se mostrará. Si quiere crear una subcategoría para una categoría principal existente, haga click en uno de los botones listados debajo para mostrar el formulario de creación de una subcategoría de la categoría principal seleccionada.");
 define("CONTENT_ADMIN_MAIN_LAN_18", "Convertir registros");
 define("CONTENT_ADMIN_MAIN_LAN_19", "
@@ -525,19 +525,19 @@ Después de convertir su contenido, ya no debería ver esta información, y debe
 define("CONTENT_ADMIN_MAIN_LAN_20", "Comenzar con una tabla vacía de contenido");
 define("CONTENT_ADMIN_MAIN_LAN_21", "
 Si no necesitara sus viejos registros de tablas de contenidos,<br />
-y deseara comenzar con una nueva tabla limpia de egstor de contenidos,<br />
+y deseara comenzar con una nueva tabla limpia de gestor de contenidos,<br />
 sin querer crear un ajuste por defecto de categorías,<br />
 puede comenzar creando una nueva categoría.<br />
 ");
 define("CONTENT_ADMIN_MAIN_LAN_22", "Crear un ajuste por defecto de categorías");
 define("CONTENT_ADMIN_MAIN_LAN_23", "
 Si quiere comenzar con una instalación limpia, primero debe crear un ajuste por defecto de categorías de contenidos.<br />
-Con este ajuste, 3 categorías padres principales se crearán, Contenido, Análisis y Artículo.<br />
+Con este ajuste, 3 categorías principales se crearán, content, review y article.<br />
 ");
 define("CONTENT_ADMIN_MAIN_LAN_24", "Es una instalación limpia / La vieja tabla de contenidos no contiene registros");
 define("CONTENT_ADMIN_MAIN_LAN_25", "
 Como no contiene registros, puede comenzar a crear contenidos.<br />
-Pulsando en el botón siguiente, automáticamente creará un ajuste por defecto de categorías, Contenido, Análisi y Artículos.<br />
+Pulsando en el botón siguiente, automáticamente creará un ajuste por defecto de categorías, content, review y article.<br />
 ");
 define("CONTENT_ADMIN_MAIN_LAN_26", "Previsualizar");
 define("CONTENT_ADMIN_MAIN_LAN_27", "Previsualizar de nuevo");
@@ -570,11 +570,11 @@ define("CONTENT_ADMIN_JS_LAN_0", "¿Está seguro de eliminar esta categoría?");
 define("CONTENT_ADMIN_JS_LAN_1", "¿Está seguro de eliminar este contenido?");
 define("CONTENT_ADMIN_JS_LAN_2", "¿Está seguro de eliminar la imagen actual?");
 define("CONTENT_ADMIN_JS_LAN_3", "¿Está seguro de eliminar el archivo actual?");
-define("CONTENT_ADMIN_JS_LAN_4", "imagen");
+define("CONTENT_ADMIN_JS_LAN_4", "Imagen");
 define("CONTENT_ADMIN_JS_LAN_5", "Archivo");
 define("CONTENT_ADMIN_JS_LAN_6", "ID");
 define("CONTENT_ADMIN_JS_LAN_7", "¿Está seguro de eliminar el icono actual ?");
-define("CONTENT_ADMIN_JS_LAN_8", "icono");
+define("CONTENT_ADMIN_JS_LAN_8", "Icono");
 define("CONTENT_ADMIN_JS_LAN_9", "ATENCIÓN :\\nsolo las categorías vacías se podrán eliminar.\\n La categoría esta vacía cuando no contiene subcategorías y\\n no contiene contenidos en éstas!");
 define("CONTENT_ADMIN_JS_LAN_10", "¿Está seguro de eliminar el contenido enviado antes de enviarlo?");
 
@@ -623,8 +623,8 @@ define("CONTENT_ORDER_LAN_3", "Fecha (ASC)");
 define("CONTENT_ORDER_LAN_4", "Fecha (DESC)");
 define("CONTENT_ORDER_LAN_5", "Referencia (ASC)");
 define("CONTENT_ORDER_LAN_6", "Referencia (DESC)");
-define("CONTENT_ORDER_LAN_7", "Padre (ASC)");
-define("CONTENT_ORDER_LAN_8", "Padre (DESC)");
+define("CONTENT_ORDER_LAN_7", "Categoría principal (ASC)");
+define("CONTENT_ORDER_LAN_8", "Categoría principal (DESC)");
 define("CONTENT_ORDER_LAN_9", "Orden (ASC)");
 define("CONTENT_ORDER_LAN_10", "Orden (DESC)");
 define("CONTENT_ORDER_LAN_11", "Autor (ASC)");
@@ -648,71 +648,71 @@ define("CONTENT_LAN_14", "");
 define("CONTENT_LAN_15", "");
 define("CONTENT_LAN_16", "");
 define("CONTENT_LAN_17", "");
-define("CONTENT_LAN_18", "buscar por clave");
-define("CONTENT_LAN_19", "buscar");
-define("CONTENT_LAN_20", "resultados de la búsqueda de contenidos");
-define("CONTENT_LAN_21", "sin tipos de contenidos.");
-define("CONTENT_LAN_22", "tipos de contenidos");
+define("CONTENT_LAN_18", "Buscar por clave");
+define("CONTENT_LAN_19", "Buscar");
+define("CONTENT_LAN_20", "Resultados de la búsqueda de contenidos");
+define("CONTENT_LAN_21", "Sin tipos de contenidos.");
+define("CONTENT_LAN_22", "Tipos de contenidos");
 define("CONTENT_LAN_23", "Lista contenidos recientes");
-define("CONTENT_LAN_24", "señuelo");
-define("CONTENT_LAN_25", "Catgorías de contenido");
+define("CONTENT_LAN_24", "Señuelo");
+define("CONTENT_LAN_25", "Categorías de contenido");
 define("CONTENT_LAN_26", "Categoría de contenido");
-define("CONTENT_LAN_27", "subcategorías");
-define("CONTENT_LAN_28", "padre subcategorías");
-define("CONTENT_LAN_29", "desconocido");
-define("CONTENT_LAN_30", "contenido");
-define("CONTENT_LAN_31", "contenidos");
+define("CONTENT_LAN_27", "Subcategorías");
+define("CONTENT_LAN_28", "Subcategorías principales");
+define("CONTENT_LAN_29", "Desconocido");
+define("CONTENT_LAN_30", "Contenido");
+define("CONTENT_LAN_31", "Contenidos");
 define("CONTENT_LAN_32", "Lista de contenido de autor");
 define("CONTENT_LAN_33", "Ir a la página");
-define("CONTENT_LAN_34", "contenido");
-define("CONTENT_LAN_35", "comentarios");
-define("CONTENT_LAN_36", "moderar comentarios");
-define("CONTENT_LAN_37", "no hay contenidos valorados aún");
+define("CONTENT_LAN_34", "Contenido");
+define("CONTENT_LAN_35", "Comentarios");
+define("CONTENT_LAN_36", "Moderar comentarios");
+define("CONTENT_LAN_37", "No hay contenidos valorados aún");
 define("CONTENT_LAN_38", "Los contenidos más valorados");
-define("CONTENT_LAN_39", "lista autor");
-define("CONTENT_LAN_40", "detalles del autor");
+define("CONTENT_LAN_39", "Lista autor");
+define("CONTENT_LAN_40", "Detalles del autor");
 define("CONTENT_LAN_41", "Adjunto");
-define("CONTENT_LAN_42", "archivo");
-define("CONTENT_LAN_43", "archivos");
-define("CONTENT_LAN_44", "clicks:");
-define("CONTENT_LAN_45", "puntuación obtenida del autor:");
-define("CONTENT_LAN_46", "índice articulos");
-define("CONTENT_LAN_47", "autor");
-define("CONTENT_LAN_48", "contenidos");
-define("CONTENT_LAN_49", "último contenido");
-define("CONTENT_LAN_50", "fecha");
-define("CONTENT_LAN_51", "lista tipos");
-define("CONTENT_LAN_52", "no se encontraron autores válidos");
-define("CONTENT_LAN_53", "artículo");
-define("CONTENT_LAN_54", "artículos");
-define("CONTENT_LAN_55", "último artículo de");
+define("CONTENT_LAN_42", "Archivo");
+define("CONTENT_LAN_43", "Archivos");
+define("CONTENT_LAN_44", "Clicks:");
+define("CONTENT_LAN_45", "Puntuación obtenida del autor:");
+define("CONTENT_LAN_46", "Índice articulos");
+define("CONTENT_LAN_47", "Autor");
+define("CONTENT_LAN_48", "Contenidos");
+define("CONTENT_LAN_49", "Último contenido");
+define("CONTENT_LAN_50", "Fecha");
+define("CONTENT_LAN_51", "Lista tipos");
+define("CONTENT_LAN_52", "No se encontraron autores válidos");
+define("CONTENT_LAN_53", "Artículo");
+define("CONTENT_LAN_54", "Artículos");
+define("CONTENT_LAN_55", "Último artículo de");
 define("CONTENT_LAN_56", "Mostrar por");
-define("CONTENT_LAN_57", "comentarios:");
+define("CONTENT_LAN_57", "Comentarios:");
 define("CONTENT_LAN_58", "Inicio");
-define("CONTENT_LAN_59", "contenido");
-define("CONTENT_LAN_60", "reciente");
-define("CONTENT_LAN_61", "ver artículos recientes");
-define("CONTENT_LAN_62", "ver todas las categorías");
-define("CONTENT_LAN_63", "ver todos loa autores");
-define("CONTENT_LAN_64", "ver los más valorados");
-define("CONTENT_LAN_65", "enviar contenido");
+define("CONTENT_LAN_59", "Contenido");
+define("CONTENT_LAN_60", "Reciente");
+define("CONTENT_LAN_61", "Ver artículos recientes");
+define("CONTENT_LAN_62", "Ver todas las categorías");
+define("CONTENT_LAN_63", "Ver todos loa autores");
+define("CONTENT_LAN_64", "Ver los más valorados");
+define("CONTENT_LAN_65", "Enviar contenido");
 define("CONTENT_LAN_66", "Haga click para enviar un contenido, puede escoger la categoría en la página de envios.");
-define("CONTENT_LAN_67", "Conf personal de contenidos");
+define("CONTENT_LAN_67", "Conf. personal de contenidos");
 define("CONTENT_LAN_68", "Haga click para configurar sus contenidos.");
-define("CONTENT_LAN_69", "email");
-define("CONTENT_LAN_70", "imprimir");
-define("CONTENT_LAN_71", "contenido");
-define("CONTENT_LAN_72", "categoría");
+define("CONTENT_LAN_69", "Email");
+define("CONTENT_LAN_70", "Imprimir");
+define("CONTENT_LAN_71", "Contenido");
+define("CONTENT_LAN_72", "Categoría");
 define("CONTENT_LAN_73", "No hay contenidos aún");
 define("CONTENT_LAN_74", "");
-define("CONTENT_LAN_75", "enviar contenido");
-define("CONTENT_LAN_76", "crear archivo pdf de");
-define("CONTENT_LAN_77", "buscar contenido");
-define("CONTENT_LAN_78", "página sin título");
-define("CONTENT_LAN_79", "página");
-define("CONTENT_LAN_80", "elementos recientes : ");
-define("CONTENT_LAN_81", "categorías");
-define("CONTENT_LAN_82", "sin elementos todavía");
+define("CONTENT_LAN_75", "Enviar contenido");
+define("CONTENT_LAN_76", "Crear archivo pdf de");
+define("CONTENT_LAN_77", "Buscar contenido");
+define("CONTENT_LAN_78", "Página sin título");
+define("CONTENT_LAN_79", "Página");
+define("CONTENT_LAN_80", "Elementos recientes : ");
+define("CONTENT_LAN_81", "Categorías");
+define("CONTENT_LAN_82", "Sin elementos todavía");
 define("CONTENT_LAN_83", "Elemento archivo");
 define("CONTENT_LAN_84", "Contenido archivo");
 define("CONTENT_LAN_85", "ListaAutor");
@@ -722,10 +722,10 @@ define("CONTENT_LAN_88", "");
 define("CONTENT_LAN_89", "");
 
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "En este punto no se permiten sumisiones de categorías de contenido");
-define("CONTENT_ADMIN_SUBMIT_LAN_1", "tipos de contenidos enviados");
+define("CONTENT_ADMIN_SUBMIT_LAN_1", "Tipos de contenidos enviados");
 define("CONTENT_ADMIN_SUBMIT_LAN_2", "Gracias, su contenido ha sido enviado.");
 define("CONTENT_ADMIN_SUBMIT_LAN_3", "Gracias, su contenido ha sido enviado y será revisado por un administrador para ser aceptado.");
-define("CONTENT_ADMIN_SUBMIT_LAN_4", "campos obligatorios en blanco");
+define("CONTENT_ADMIN_SUBMIT_LAN_4", "Campos obligatorios en blanco");
 define("CONTENT_ADMIN_SUBMIT_LAN_5", "Vuelva a <a href='".e_SELF."'>página principal de envios</a> para enviar más contenidos<br />or<br />Vaya a <a href='".e_PLUGIN."content/content.php'>página principal de contenidos</a> para ver los contenidos.");
 define("CONTENT_ADMIN_SUBMIT_LAN_6", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_7", "");
@@ -748,31 +748,31 @@ define("CONTENT_ADMIN_CONVERSION_LAN_1", "Análisis");
 define("CONTENT_ADMIN_CONVERSION_LAN_2", "Artículo");
 define("CONTENT_ADMIN_CONVERSION_LAN_3", "Categoría");
 define("CONTENT_ADMIN_CONVERSION_LAN_4", "Categorías");
-define("CONTENT_ADMIN_CONVERSION_LAN_5", "página");
-define("CONTENT_ADMIN_CONVERSION_LAN_6", "páginas");
-define("CONTENT_ADMIN_CONVERSION_LAN_7", "padre principal insertada");
-define("CONTENT_ADMIN_CONVERSION_LAN_8", "Prefs de padre principal insertadas");
+define("CONTENT_ADMIN_CONVERSION_LAN_5", "Página");
+define("CONTENT_ADMIN_CONVERSION_LAN_6", "Páginas");
+define("CONTENT_ADMIN_CONVERSION_LAN_7", "Categoría principal insertada");
+define("CONTENT_ADMIN_CONVERSION_LAN_8", "Prefs de categoría principal insertadas");
 define("CONTENT_ADMIN_CONVERSION_LAN_9", "no");
-define("CONTENT_ADMIN_CONVERSION_LAN_10", "necesaria padre principal");
+define("CONTENT_ADMIN_CONVERSION_LAN_10", "Necesaria categoría principal");
 define("CONTENT_ADMIN_CONVERSION_LAN_11", "ANALISIS DE CONVERSIÓN");
 define("CONTENT_ADMIN_CONVERSION_LAN_12", "Filas totales a convertir");
 define("CONTENT_ADMIN_CONVERSION_LAN_13", "filas totales convertidas");
 define("CONTENT_ADMIN_CONVERSION_LAN_14", "Advertencias totales");
 define("CONTENT_ADMIN_CONVERSION_LAN_15", "Fallos totales");
 define("CONTENT_ADMIN_CONVERSION_LAN_16", "VIEJA TABLA DE CONTENIDO : ANALISIS");
-define("CONTENT_ADMIN_CONVERSION_LAN_17", "filas totales");
-define("CONTENT_ADMIN_CONVERSION_LAN_18", "filas desconocidas");
-define("CONTENT_ADMIN_CONVERSION_LAN_19", "todas las filas son familiares");
-define("CONTENT_ADMIN_CONVERSION_LAN_20", "padre PRINCIPAL DE CONTENIDO");
-define("CONTENT_ADMIN_CONVERSION_LAN_21", "ANALIZAR padre PRINCIPAL");
-define("CONTENT_ADMIN_CONVERSION_LAN_22", "ARTICULO padre PRINCIPAL");
+define("CONTENT_ADMIN_CONVERSION_LAN_17", "Filas totales");
+define("CONTENT_ADMIN_CONVERSION_LAN_18", "Filas desconocidas");
+define("CONTENT_ADMIN_CONVERSION_LAN_19", "Todas las filas son familiares");
+define("CONTENT_ADMIN_CONVERSION_LAN_20", "CATEGORÍA PRINCIPAL DE CONTENIDO");
+define("CONTENT_ADMIN_CONVERSION_LAN_21", "ANALIZAR categoría PRINCIPAL");
+define("CONTENT_ADMIN_CONVERSION_LAN_22", "ARTICULO categoría PRINCIPAL");
 define("CONTENT_ADMIN_CONVERSION_LAN_23", "Falló la inserción");
 define("CONTENT_ADMIN_CONVERSION_LAN_24", "NO HAY PÁGINAS DE CONTENIDO");
 define("CONTENT_ADMIN_CONVERSION_LAN_25", "PÁGINAS DE CONTENIDO PRESENTES");
-define("CONTENT_ADMIN_CONVERSION_LAN_26", "insertado");
-define("CONTENT_ADMIN_CONVERSION_LAN_27", "análisis de conversión");
-define("CONTENT_ADMIN_CONVERSION_LAN_28", "filas viejas totales");
-define("CONTENT_ADMIN_CONVERSION_LAN_29", "filas nuevas totales");
+define("CONTENT_ADMIN_CONVERSION_LAN_26", "Insertado");
+define("CONTENT_ADMIN_CONVERSION_LAN_27", "Análisis de conversión");
+define("CONTENT_ADMIN_CONVERSION_LAN_28", "Filas viejas totales");
+define("CONTENT_ADMIN_CONVERSION_LAN_29", "Filas nuevas totales");
 define("CONTENT_ADMIN_CONVERSION_LAN_30", "Fallo");
 define("CONTENT_ADMIN_CONVERSION_LAN_31", "Advertencia");
 define("CONTENT_ADMIN_CONVERSION_LAN_32", "Vieja categoría no existe: se han añadido a una categoría superior");
@@ -788,19 +788,19 @@ define("CONTENT_ADMIN_CONVERSION_LAN_41", "PÁGINAS DE ARTÍCULOS O ENVIADOS PRE
 define("CONTENT_ADMIN_CONVERSION_LAN_42", "Resultados de la conversión de los contenidos antiguos a los nuevos contenidos del plugin");
 define("CONTENT_ADMIN_CONVERSION_LAN_43", "Pulse el botón para convertir el antiguas tablas de contenidos");
 define("CONTENT_ADMIN_CONVERSION_LAN_44", "¡El nuevo contenido ya contiene datos !<br />¿Está seguro de convertir el antiguo contenido en las nuevas tablas de contenidos ?<br /><br />Si todavía queire conevrtir la tabla, los viejos datos de contenidos serán agregados a la nueva tabla ya existente, pero no se garantiza que todos los artículos se agreguen a las categorías existentes de manera correcta");
-define("CONTENT_ADMIN_CONVERSION_LAN_45", "Falló la inserción: padre principal no insertada");
-define("CONTENT_ADMIN_CONVERSION_LAN_46", "Comience a manejar su contenido en <a href='".e_PLUGIN."content/admin_content_config.php'> Plugin de manejo de contenidos</a> !");
+define("CONTENT_ADMIN_CONVERSION_LAN_45", "Falló la inserción: categoría principal no insertada");
+define("CONTENT_ADMIN_CONVERSION_LAN_46", "Comience a gestionar su contenido en <a href='".e_PLUGIN."content/admin_content_config.php'> Plugin de Gestor de contenidos</a> !");
 define("CONTENT_ADMIN_CONVERSION_LAN_47", "Conversión completada");
 define("CONTENT_ADMIN_CONVERSION_LAN_48", "Click aquí para detalles");
 define("CONTENT_ADMIN_CONVERSION_LAN_49", "Conversión de página");
-define("CONTENT_ADMIN_CONVERSION_LAN_50", "Conversión de padres principales");
+define("CONTENT_ADMIN_CONVERSION_LAN_50", "Conversión de categorías principales");
 define("CONTENT_ADMIN_CONVERSION_LAN_51", "Filas desconocidas");
-define("CONTENT_ADMIN_CONVERSION_LAN_52", "Creados ajustes por defecto de categ´rias principales padre");
-define("CONTENT_ADMIN_CONVERSION_LAN_53", "ya existe un padre principal con ese nombre");
-define("CONTENT_ADMIN_CONVERSION_LAN_54", "Crear ajustes por defecto de categorías padre (contenido, análisi y artículos)");
-define("CONTENT_ADMIN_CONVERSION_LAN_55", "plugin de manejo de contenidos : opciones de conversión");
+define("CONTENT_ADMIN_CONVERSION_LAN_52", "Creados ajustes por defecto de categorías principales");
+define("CONTENT_ADMIN_CONVERSION_LAN_53", "Ya existe una categoría principal con ese nombre");
+define("CONTENT_ADMIN_CONVERSION_LAN_54", "Crear ajustes por defecto de categorías principales (contenido, análisi y artículos)");
+define("CONTENT_ADMIN_CONVERSION_LAN_55", "Plugin de Gestor de contenidos : opciones de conversión");
 define("CONTENT_ADMIN_CONVERSION_LAN_56", "Click en el botón para ir a la página a Crear nueva categoría.");
-define("CONTENT_ADMIN_CONVERSION_LAN_57", "Escoja padre");
+define("CONTENT_ADMIN_CONVERSION_LAN_57", "Escoja categoría principal");
 
 define("CONTENT_MENU_LAN_0", "Menú de contenido :");
 define("CONTENT_MENU_LAN_1", "No hay contenidos todavía");
