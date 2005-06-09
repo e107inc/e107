@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm_menu/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 22:34:18 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-09 23:22:32 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -26,11 +26,11 @@ define(PMLAN_12, "USUARIO");
 define(PMLAN_13, "No existente");
 define(PMLAN_14, "Mensaje borrado");
 define(PMLAN_15, "Mensaje enviado con éxito");
-define(PMLAN_16, " En este momento no tienes permiso para usar Mensaje Privado ");
-define(PMLAN_17, "Este usuario ha bloqueado tus mensajes privados.");
-define(PMLAN_18, "Has realizado con exito el bloqueo de Mensajes Privados de ");
-define(PMLAN_19, " Ahora tiene permiso de enviarte Mensajes Privados.");
-define(PMLAN_20, "No tienes permiso de borrar este bloqueo!");
+define(PMLAN_16, " En este momento no tiene permiso para usar Mensajes Privados ");
+define(PMLAN_17, "Este usuario ha bloqueado sus mensajes privados.");
+define(PMLAN_18, "Ha realizado con éxito el bloqueo de Mensajes Privados de ");
+define(PMLAN_19, " Ahora tiene permiso para enviar Mensajes Privados.");
+define(PMLAN_20, "¡No tiene permiso para borrar este bloqueo!");
 define(PMLAN_21, "Bloqueo existente de ");
 define(PMLAN_22, "Comenzado : ");
 define(PMLAN_23, " Los mensajes han sido bloqueados hasta ahora.");
@@ -42,12 +42,12 @@ define(PMLAN_28, "Enviar Mensaje Privado");
 define(PMLAN_29, "Asunto:");
 define(PMLAN_30, "Mensaje:");
 define(PMLAN_31, "A");
-define(PMLAN_32, "Emoticons:");
+define(PMLAN_32, "Emoticonos:");
 define(PMLAN_33, "Elija destinatario");
 define(PMLAN_34, "Fecha de envío");
 define(PMLAN_35, "De");
 define(PMLAN_36, "Bloque de configuraciones");
-define(PMLAN_37, "No tienes permiso de ver este mensaje");
+define(PMLAN_37, "No tiene permiso de ver este mensaje");
 define(PMLAN_38, "Bloquear usuario");
 define(PMLAN_39, "Desbloquear usuario");
 define(PMLAN_40, "Borrar");

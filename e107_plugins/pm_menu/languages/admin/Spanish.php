@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm_menu/languages/admin/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 22:34:18 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-09 23:22:32 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -31,26 +31,26 @@ define(PM_ADLAN_17,"Borrar mensajes de/a usuario");
 define(PM_ADLAN_18,"Esto borrará todos los mensajes del sistema MP, estén leidos o no.");
 define(PM_ADLAN_19,"Borrar todos los mensajes");
 define(PM_ADLAN_20,"Configuración MP, actualizada");
-define(PM_ADLAN_21,"Título del pluglin");
-define(PM_ADLAN_22,"Mostrar imagen animada nuevo");
-define(PM_ADLAN_23,"Mostrar desplegable con lista de usuarios");
-define(PM_ADLAN_24,"Borrar mensajes leidos automáticamente");
+define(PM_ADLAN_21,"Título del plugin");
+define(PM_ADLAN_22,"¿Mostrar imagen animada [nuevo]");
+define(PM_ADLAN_23,"¿Mostrar desplegable con lista de usuarios");
+define(PM_ADLAN_24,"¿Borrar mensajes leidos automáticamente");
 define(PM_ADLAN_25,"Borrar mensajes leidos");
 define(PM_ADLAN_26,"Borrar mensajes sin leer");
-define(PM_ADLAN_27,"Notificar con Popup un nuevo MP");
+define(PM_ADLAN_27,"¿Notificar con Popup un nuevo MP");
 define(PM_ADLAN_28,"Tiempo del Popup");
 define(PM_ADLAN_29,"Restringir MP a");
 define(PM_ADLAN_30,"Todos los usuarios registrados");
-define(PM_ADLAN_31,"Calse de usuario");
+define(PM_ADLAN_31,"Clase de usuario");
 define(PM_ADLAN_32,"Borrar mensajes de mas de");
 define(PM_ADLAN_33,"Si");
 define(PM_ADLAN_34,"No");
 define(PM_ADLAN_35,"Enviar notificación por email");
 define(PM_ADLAN_36,"Por favor marca la casilla para confirmar la operación");
-define(PM_ADLAN_37,"mensajes en sistema");
+define(PM_ADLAN_37,"Mensajes en sistema");
 define(PM_ADLAN_38,"Encontrar usuario");
 define(PM_ADLAN_39,"dias");
-define(PM_ADLAN_40,"desactivado");
+define(PM_ADLAN_40,"Desactivado");
 define(PM_ADLAN_41,"segundos");
 define(PM_ADLAN_42,"Este plugin es un sistema completo de mensajería privada.");
 define(PM_ADLAN_43,"Configurar Mensajes Privados");
