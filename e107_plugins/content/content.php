@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.51 $
-|		$Date: 2005-06-08 20:00:27 $
+|		$Revision: 1.52 $
+|		$Date: 2005-06-09 08:59:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -489,8 +489,7 @@ function show_content_archive(){
 // ##### RECENT LIST ------------------------------------
 function show_content_recent(){
 				global $qs, $plugindir, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
-				global $nextprevquery, $from, $number, $mainparent;
-				global $CONTENT_RECENT_TABLE, $datequery, $content_icon_path;
+				global $nextprevquery, $from, $number, $mainparent, $datequery, $content_icon_path, $CONTENT_RECENT_TABLE;
 
 				$mainparent		= $aa -> getMainParent($qs[1]);
 				$content_pref	= $aa -> getContentPref($mainparent);
@@ -529,7 +528,17 @@ function show_content_recent(){
 
 						$content_recent_table_string = "";
 						while($row = $sql1 -> db_Fetch()){
-							$crumb = $aa -> getCrumbItem($row['content_parent'], $array);
+							$rdate	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_DATE}', FALSE, $content_shortcodes);
+							$rauth	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
+							$rep	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_EPICONS}', FALSE, $content_shortcodes);
+							$rpar	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_PARENT}', FALSE, $content_shortcodes);
+							$redi	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_EDITICON}', FALSE, $content_shortcodes);
+							$CONTENT_RECENT_TABLE_INFOPRE = FALSE;
+							$CONTENT_RECENT_TABLE_INFOPOST = FALSE;
+							if ($rdate!="" || $rauth!="" || $rep!="" || $rpar!="" || $redi!="" ) {
+								$CONTENT_RECENT_TABLE_INFOPRE = TRUE;
+								$CONTENT_RECENT_TABLE_INFOPOST = TRUE;
+							}
 							$content_recent_table_string .= $tp -> parseTemplate($CONTENT_RECENT_TABLE, FALSE, $content_shortcodes);
 						}
 					}
@@ -567,8 +576,8 @@ function show_content_recent(){
 
 // ##### CATEGORY LIST ------------------------------------
 function show_content_cat_all(){
-				global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $aa, $e107cache, $tp, $pref, $content_pref, $keytocount, $CONTENT_CAT_TABLE, $CONTENT_CAT_TABLE_INFO_PRE, $CONTENT_CAT_TABLE_INFO_POST;
-				global $sql, $datequery, $crumb, $amount, $from, $content_cat_icon_path_large, $content_icon_path, $n, $CONTENT_CAT_TABLE_HEADING, $mainparent;
+				global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $aa, $e107cache, $tp, $pref, $content_pref, $keytocount;
+				global $sql, $datequery, $amount, $from, $content_cat_icon_path_large, $content_icon_path, $n, $mainparent, $CONTENT_CAT_TABLE;
 
 				unset($text);
 
@@ -614,10 +623,10 @@ function show_content_cat_all(){
 						$sql -> db_Select($plugintable, "*", "content_id = '".$key."' ");
 						$row = $sql -> db_Fetch();
 						
-						$date	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_DATE}');
-						$auth	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_AUTHORDETAILS}');
-						$ep		= $tp -> parseTemplate('{CONTENT_CAT_TABLE_EPICONS}');
-						$com	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_COMMENT}');
+						$date	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_DATE}', FALSE, $content_shortcodes);
+						$auth	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
+						$ep		= $tp -> parseTemplate('{CONTENT_CAT_TABLE_EPICONS}', FALSE, $content_shortcodes);
+						$com	= $tp -> parseTemplate('{CONTENT_CAT_TABLE_COMMENT}', FALSE, $content_shortcodes);
 						$CONTENT_CAT_TABLE_INFO_PRE = FALSE;
 						$CONTENT_CAT_TABLE_INFO_POST = FALSE;
 						if ($date!="" || $auth!="" || $ep!="" || $com!="" ) {
@@ -656,7 +665,7 @@ function show_content_cat_all(){
 
 function show_content_cat($mode=""){
 				global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery, $from;
-				global $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST;
+				global $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END;
 				global $content_cat_icon_path_small, $content_cat_icon_path_large, $content_icon_path, $mainparent;
 
 				$mainparent		= $aa -> getMainParent($qs[1]);
@@ -715,6 +724,8 @@ function show_content_cat($mode=""){
 					$number							= ($content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "5");
 					$nextprevquery					= ($content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".$from.",".$number : "");
 					$qry							= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
+					$capqs							= array_reverse($array[$qs[1]]);
+					$caption						= CONTENT_LAN_26." : ".$capqs[0];
 
 					// parent article
 					if($content_pref["content_cat_showparent_{$mainparent}"]){
@@ -722,18 +733,15 @@ function show_content_cat($mode=""){
 							header("location:".e_SELF."?cat.list.".$mainparent); exit;
 						}else{
 							$row = $sql -> db_Fetch();
-
-							$date = $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_DATE}');
-							$auth = $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_AUTHORDETAILS}');
-							$ep = $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_EPICONS}');
-							$com = $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_COMMENT}');
+							$date	= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_DATE}', FALSE, $content_shortcodes);
+							$auth	= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
+							$ep		= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_EPICONS}', FALSE, $content_shortcodes);
+							$com	= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_COMMENT}', FALSE, $content_shortcodes);
 							if ($date!="" || $auth!="" || $ep!="" || $com!="" ) {
 								$CONTENT_CAT_LIST_TABLE_INFO_PRE = TRUE;
 								$CONTENT_CAT_LIST_TABLE_INFO_POST = TRUE;
 							}
-
-							$textparent			= $tp -> parseTemplate($CONTENT_CAT_LIST_TABLE, FALSE, $content_shortcodes);
-							$captionparent		= CONTENT_LAN_26." : ".$row['content_heading'];
+							$textparent			= $tp -> parseTemplate($CONTENT_CAT_LIST_TABLE, FALSE, $content_shortcodes);							
 						}
 					}
 
@@ -785,6 +793,17 @@ function show_content_cat($mode=""){
 
 							$content_recent_table_string = "";
 							while($row = $sql1 -> db_Fetch()){
+								$rdate	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_DATE}', FALSE, $content_shortcodes);
+								$rauth	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
+								$rep	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_EPICONS}', FALSE, $content_shortcodes);
+								$rpar	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_PARENT}', FALSE, $content_shortcodes);
+								$redi	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_EDITICON}', FALSE, $content_shortcodes);
+								$CONTENT_RECENT_TABLE_INFOPRE = FALSE;
+								$CONTENT_RECENT_TABLE_INFOPOST = FALSE;
+								if ($rdate!="" || $rauth!="" || $rep!="" || $rpar!="" || $redi!="" ) {
+									$CONTENT_RECENT_TABLE_INFOPRE = TRUE;
+									$CONTENT_RECENT_TABLE_INFOPOST = TRUE;
+								}
 								$content_recent_table_string .= $tp -> parseTemplate($CONTENT_RECENT_TABLE, FALSE, $content_shortcodes);
 							}
 							$textchild		= $CONTENT_RECENT_TABLE_START.$content_recent_table_string.$CONTENT_RECENT_TABLE_END;
@@ -813,12 +832,11 @@ function show_content_cat($mode=""){
 
 						if($content_pref["content_cat_menuorder_{$mainparent}"] == "1"){
 							if($content_pref["content_cat_rendertype_{$mainparent}"] == "1"){
-								if(isset($textparent)){		$ns -> tablerender($captionparent, $textparent); }
+								if(isset($textparent)){		$ns -> tablerender($caption, $textparent); }
 								if(isset($textsubparent)){	$ns -> tablerender($captionsubparent, $textsubparent); }
 								if(isset($textchild)){		$ns -> tablerender($captionchild, $textchild); }
 							}else{
-								//$ns -> tablerender($captionparent, $textparent.(isset($textsubparent) ? "<br /><br />".$textsubparent : "")."<br /><br />".$textchild);
-								$ns -> tablerender($captionparent, $textparent.(isset($textsubparent) ? $textsubparent : "").$textchild);
+								$ns -> tablerender($caption, (isset($textparent) ? $textparent : "").(isset($textsubparent) ? $textsubparent : "").$textchild);
 							}
 							if($content_pref["content_nextprev_{$mainparent}"]){
 								$ix = new nextprev("content.php", $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
@@ -829,15 +847,14 @@ function show_content_cat($mode=""){
 								if($content_pref["content_nextprev_{$mainparent}"]){
 									$ix = new nextprev("content.php", $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
 								}
-								if(isset($textparent)){		$ns -> tablerender($captionparent, $textparent); }
+								if(isset($textparent)){		$ns -> tablerender($caption, $textparent); }
 								if(isset($textsubparent)){	$ns -> tablerender($captionsubparent, $textsubparent); }
 							}else{
 								if(isset($textchild)){		$ns -> tablerender($captionchild, $textchild); }
 								if($content_pref["content_nextprev_{$mainparent}"]){
 									$ix = new nextprev("content.php", $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
 								}
-								//$ns -> tablerender($captionparent, $textparent.(isset($textsubparent) ? "<br /><br />".$textsubparent : ""));
-								$ns -> tablerender($captionparent, $textparent.(isset($textsubparent) ? $textsubparent : ""));
+								$ns -> tablerender($caption, (isset($textparent) ? $textparent : "").(isset($textsubparent) ? $textsubparent : ""));
 							}
 						}
 
@@ -1038,10 +1055,22 @@ function show_content_author(){
 						$qry					= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 						$contenttotal			= $sqlb -> db_Count($plugintable, "(*)", "WHERE content_refer !='sa' AND ".$qry." AND (".$query.") ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ");
 
-						if($result = $sqlb -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_summary, content_author, content_icon, content_parent, content_comment, content_rate, content_pe, content_refer, content_datestamp, content_pref as contentprefvalue", "content_refer !='sa' AND ".$qry." AND (".$query.") ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
+						if($result = $sqlb -> db_Select($plugintable, "*", "content_refer !='sa' AND ".$qry." AND (".$query.") ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
 
 							$content_recent_table_string = "";
 							while($row = $sqlb -> db_Fetch()){
+								$rdate	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_DATE}', FALSE, $content_shortcodes);
+								$rauth	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
+								$rep	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_EPICONS}', FALSE, $content_shortcodes);
+								$rpar	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_PARENT}', FALSE, $content_shortcodes);
+								$redi	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_EDITICON}', FALSE, $content_shortcodes);
+								
+								$CONTENT_RECENT_TABLE_INFOPRE = FALSE;
+								$CONTENT_RECENT_TABLE_INFOPOST = FALSE;
+								if ($rdate!="" || $rauth!="" || $rep!="" || $rpar!="" || $redi!="" ) {
+									$CONTENT_RECENT_TABLE_INFOPRE = TRUE;
+									$CONTENT_RECENT_TABLE_INFOPOST = TRUE;
+								}
 								$content_recent_table_string	.= $tp -> parseTemplate($CONTENT_RECENT_TABLE, FALSE, $content_shortcodes);
 							}
 							$text = $CONTENT_RECENT_TABLE_START.$content_recent_table_string.$CONTENT_RECENT_TABLE_END;

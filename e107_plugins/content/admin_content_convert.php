@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_convert.php,v $
-|		$Revision: 1.11 $
-|		$Date: 2005-06-06 17:18:08 $
+|		$Revision: 1.12 $
+|		$Date: 2005-06-09 08:59:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -74,6 +74,12 @@ if(isset($_POST['create_default'])){
 		$ns -> tablerender($caption, $text);
 }
 
+//show link to start managing the content management plugin
+if(isset($_POST['convert_table']) || isset($_POST['create_default']) || (isset($qs[0]) && $qs[0] != "unknown") || ($qs[0] == "unknown" && $qs[1] == "conversion") ){
+		$text = "<div style='text-align:center'>".CONTENT_ADMIN_CONVERSION_LAN_46."</div>";
+		$caption = CONTENT_ADMIN_CONVERSION_LAN_47;
+		$ns -> tablerender($caption, $text);
+}
 
 //convert old content table
 if(isset($_POST['convert_table'])){
@@ -353,12 +359,7 @@ if($qs[0] == "unknown" && $qs[1] == "conversion"){
 }
 
 
-//show link to start managing the content management plugin
-if(isset($_POST['convert_table']) || isset($_POST['create_default']) || isset($qs[0])){
-		$text = "<div style='text-align:center'>".CONTENT_ADMIN_CONVERSION_LAN_46."</div>";
-		$caption = CONTENT_ADMIN_CONVERSION_LAN_47;
-		$ns -> tablerender($caption, $text);
-}
+
 
 
 require_once(e_ADMIN."footer.php");

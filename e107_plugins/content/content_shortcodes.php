@@ -98,11 +98,11 @@ if($content_pref["content_top_authorname_{$mainparent}"] || $content_pref["conte
 		}else{
 			$CONTENT_TOP_TABLE_AUTHOR = $authordetails[1];
 		}
-		if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && $content_pref["content_top_authorprofile_{$mainparent}"]){
+		if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && isset($content_pref["content_top_authorprofile_{$mainparent}"]) && $content_pref["content_top_authorprofile_{$mainparent}"]){
 			$CONTENT_TOP_TABLE_AUTHOR .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
 		}
 	}
-	if($content_pref["content_top_authoricon_{$mainparent}"]){
+	if(isset($content_pref["content_top_authoricon_{$mainparent}"]) && $content_pref["content_top_authoricon_{$mainparent}"]){
 		$CONTENT_TOP_TABLE_AUTHOR .= " <a href='".e_SELF."?author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
 	}
 return $CONTENT_TOP_TABLE_AUTHOR;
@@ -610,15 +610,30 @@ SC_END
 
 
 // CONTENT_RECENT_TABLE ------------------------------------------------
+SC_BEGIN CONTENT_RECENT_TABLE_INFOPRE
+global $CONTENT_RECENT_TABLE_INFOPRE;
+if($CONTENT_RECENT_TABLE_INFOPRE === TRUE){
+$CONTENT_RECENT_TABLE_INFOPRE = " ";
+return $CONTENT_RECENT_TABLE_INFOPRE;
+}
+SC_END
+SC_BEGIN CONTENT_RECENT_TABLE_INFOPOST
+global $CONTENT_RECENT_TABLE_INFOPOST;
+if($CONTENT_RECENT_TABLE_INFOPOST === TRUE){
+$CONTENT_RECENT_TABLE_INFOPOST = " ";
+return $CONTENT_RECENT_TABLE_INFOPOST;
+}
+SC_END
+
 SC_BEGIN CONTENT_RECENT_TABLE_ICON
-global $CONTENT_RECENT_TABLE_ICON, $aa, $row, $tp, $qs, $content_icon_path, $content_pref, $mainparent;
+global $CONTENT_RECENT_TABLE_ICON, $aa, $row, $content_icon_path, $content_pref, $mainparent;
 if(isset($content_pref["content_list_icon_{$mainparent}"]) && $content_pref["content_list_icon_{$mainparent}"]){
 return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], "100", $content_pref["content_blank_icon_{$mainparent}"]);
 }
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_HEADING
-global $CONTENT_RECENT_TABLE_HEADING, $row, $tp, $qs;
+global $CONTENT_RECENT_TABLE_HEADING, $row;
 return ($row['content_heading'] ? "<a href='".e_SELF."?content.".$row['content_id']."'>".$row['content_heading']."</a>" : "");
 SC_END
 
@@ -656,14 +671,15 @@ if(isset($content_pref["content_list_text_{$mainparent}"]) && $content_pref["con
 	$rowtext = preg_replace("/\[newpage.*?]/si", " ", $row['content_text']);
 	//$rowtext = str_replace ("<br />", " ", $rowtext);
 	$rowtext = $tp->toHTML($rowtext, TRUE, "nobreak");
-	
 	$rowtext = strip_tags($rowtext);
 	$words = explode(" ", $rowtext);
 	$CONTENT_RECENT_TABLE_TEXT = implode(" ", array_slice($words, 0, $content_pref["content_list_text_char_{$mainparent}"]));
-	if($content_pref["content_list_text_link_{$mainparent}"]){
-		$CONTENT_RECENT_TABLE_TEXT .= " <a href='".e_SELF."?content.".$row['content_id']."'>".$content_pref["content_list_text_post_{$mainparent}"]."</a>";
-	}else{
-		$CONTENT_RECENT_TABLE_TEXT .= " ".$content_pref["content_list_text_post_{$mainparent}"];
+	if($CONTENT_RECENT_TABLE_TEXT){
+		if($content_pref["content_list_text_link_{$mainparent}"]){
+			$CONTENT_RECENT_TABLE_TEXT .= " <a href='".e_SELF."?content.".$row['content_id']."'>".$content_pref["content_list_text_post_{$mainparent}"]."</a>";
+		}else{
+			$CONTENT_RECENT_TABLE_TEXT .= " ".$content_pref["content_list_text_post_{$mainparent}"];
+		}
 	}
 }
 return $CONTENT_RECENT_TABLE_TEXT;
@@ -764,7 +780,7 @@ return $CONTENT_RECENT_TABLE_RATING;
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_PARENT
-global $crumb, $content_pref, $mainparent, $row, $array, $aa;
+global $CONTENT_RECENT_TABLE_PARENT, $content_pref, $mainparent, $row, $array, $aa;
 if(isset($content_pref["content_list_parent_{$mainparent}"]) && $content_pref["content_list_parent_{$mainparent}"]){
 return $aa -> getCrumbItem($row['content_parent'], $array);
 }
@@ -811,11 +827,11 @@ if( (isset($content_pref["content_archive_authorname_{$mainparent}"]) && $conten
 		}else{
 			$CONTENT_ARCHIVE_TABLE_AUTHOR = $authordetails[1];
 		}
-		if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && $content_pref["content_archive_authorprofile_{$mainparent}"]){
+		if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && isset($content_pref["content_archive_authorprofile_{$mainparent}"]) && $content_pref["content_archive_authorprofile_{$mainparent}"]){
 			$CONTENT_ARCHIVE_TABLE_AUTHOR .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
 		}
 	}
-	if($content_pref["content_archive_authoricon_{$mainparent}"]){
+	if(isset($content_pref["content_archive_authoricon_{$mainparent}"]) && $content_pref["content_archive_authoricon_{$mainparent}"]){
 		$CONTENT_ARCHIVE_TABLE_AUTHOR .= " <a href='".e_SELF."?author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
 	}
 return $CONTENT_ARCHIVE_TABLE_AUTHOR;
