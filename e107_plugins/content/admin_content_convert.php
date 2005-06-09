@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_convert.php,v $
-|		$Revision: 1.12 $
-|		$Date: 2005-06-09 08:59:55 $
+|		$Revision: 1.13 $
+|		$Date: 2005-06-09 21:01:34 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -111,11 +111,11 @@ if(isset($_POST['convert_table'])){
 		$content_main_checkpresent	= $content_mainarray[0];
 		$content_main_msg			= $content_mainarray[1];
 
-		$article_mainarray			= $ac -> create_mainparent("article", $totaloldrowscat_article, "2");
+		$article_mainarray			= $ac -> create_mainparent("article", $totaloldrowsitem_article, "2");
 		$article_main_checkpresent	= $article_mainarray[0];
 		$article_main_msg			= $article_mainarray[1];
 
-		$review_mainarray			= $ac -> create_mainparent("review", $totaloldrowscat_review, "3");
+		$review_mainarray			= $ac -> create_mainparent("review", $totaloldrowsitem_review, "3");
 		$review_main_checkpresent	= $review_mainarray[0];
 		$review_main_msg			= $review_mainarray[1];
 
