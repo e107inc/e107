@@ -36,10 +36,10 @@ class ArrayData {
 		}
 		$ArrayData = '$data = '.trim($ArrayData).';';
 		@eval($ArrayData);
-		if (!is_array($data)) {
+		if (!isset($data) || !is_array($data)) {
 			return false;
 		}
-		return (isset($data)) ? $data : "";
+		return $data;
 	}
 }
 
