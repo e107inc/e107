@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2005-06-06 17:18:08 $
+|		$Revision: 1.6 $
+|		$Date: 2005-06-09 12:43:14 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -351,7 +351,7 @@ class content_convert{
 						$newcontent_comment		= $row['content_comment'];
 						$newcontent_rate		= "0";
 						$newcontent_pe			= $row['content_pe_icon'];
-						$newcontent_refer		= ($row['content_type'] == "16" ? "sa" : "");
+						$newcontent_refer		= ($row['content_type'] == "15" || $row['content_type'] == "16" ? "sa" : "");
 						$newcontent_starttime	= $row['content_datestamp'];
 						$newcontent_endtime		= "0";
 						$newcontent_class		= $row['content_class'];
