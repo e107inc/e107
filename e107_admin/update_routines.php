@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.96 $
-|     $Date: 2005-06-08 22:13:28 $
-|     $Author: sweetas $
+|     $Revision: 1.97 $
+|     $Date: 2005-06-09 14:20:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -56,10 +56,10 @@ function update_61x_to_700($type) {
 	if ($type == "do") {
 		set_time_limit(180);
 		$s_prefs = FALSE;
-		
+
 		// add an index on user_ban - speeds up page render time massively on large user tables.
 		mysql_query("ALTER TABLE `".MPREFIX."user` ADD INDEX `user_ban_index`(`user_ban`);");
-		
+
 		if(!$sql -> db_Select("userclass_classes", "*", "userclass_editclass='254' ")){
 			$sql->db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
 		}
@@ -137,7 +137,7 @@ function update_61x_to_700($type) {
 		$sql -> db_Update("newsfeed", "newsfeed_timestamp='0' ");
 
 		/* start emote update */
-		$tmp = 
+		$tmp =
 		'a:28:{s:9:"alien!png";s:6:"!alien";s:10:"amazed!png";s:7:"!amazed";s:9:"angry!png";s:11:"!grr !angry";s:12:"biglaugh!png";s:4:"!lol";s:11:"cheesey!png";s:10:":D :oD :-D";s:12:"confused!png";s:10:":? :o? :-?";s:7:"cry!png";s:19:"&| &-| &o| :(( !cry";s:8:"dead!png";s:21:"x) xo) x-) x( xo( x-(";s:9:"dodge!png";s:6:"!dodge";s:9:"frown!png";s:10:":( :o( :-(";s:7:"gah!png";s:10:":@ :o@ :o@";s:8:"grin!png";s:10:":D :oD :-D";s:9:"heart!png";s:6:"!heart";s:8:"idea!png";s:10:":! :o! :-!";s:7:"ill!png";s:4:"!ill";s:7:"mad!png";s:13:"~:( ~:o( ~:-(";s:12:"mistrust!png";s:9:"!mistrust";s:11:"neutral!png";s:10:":| :o| :-|";s:12:"question!png";s:2:"?!";s:12:"rolleyes!png";s:10:"B) Bo) B-)";s:7:"sad!png";s:4:"!sad";s:10:"shades!png";s:10:"8) 8o) 8-)";s:7:"shy!png";s:4:"!shy";s:9:"smile!png";s:10:":) :o) :-)";s:11:"special!png";s:3:"%-6";s:12:"suprised!png";s:10:":O :oO :-O";s:10:"tongue!png";s:21:":p :op :-p :P :oP :-P";s:8:"wink!png";s:10:";) ;o) ;-)";}';
 		$sql->db_Insert("core", "'emote_default', '$tmp' ");
 		$pref['emotepack'] = "default";
@@ -187,7 +187,7 @@ function update_61x_to_700($type) {
 		  PRIMARY KEY  (page_id)
 		) TYPE=MyISAM;");
 		/* end */
-		
+
 		mysql_query("ALTER TABLE ".MPREFIX."page CHANGE page_class page_class VARCHAR( 250 ) NOT NULL");
 
 
@@ -659,7 +659,7 @@ function update_61x_to_700($type) {
 			$pref['signup_maxip'] = 3;
 			$s_prefs = TRUE;
 		}
-		
+
 		// Fix corrupted Plugin Table.
 		$sql -> db_Delete("plugin", " plugin_installflag='0' ");
 
@@ -690,16 +690,16 @@ function update_61x_to_700($type) {
 			$pref['notify'] = FALSE;
 			$s_prefs = TRUE;
 		}
-		
+
 		// Admin Password Change Menu Display
 
 		if (!isset($pref['adminpwordchange'])) {
 			$pref['adminpwordchange'] = TRUE;
 			$s_prefs = TRUE;
 		}
-		
+
 		// Front Page Upgrade
-		
+
 		if (!is_array($pref['frontpage'])) {
 			if (!$pref['frontpage']) {
 				$up_pref = 'news.php';
@@ -720,7 +720,7 @@ function update_61x_to_700($type) {
 			$pref['frontpage']['all'] = $up_pref;
 			$s_prefs = TRUE;
 		}
-		
+
 		// search sort method and search selector updates
 		$search_prefs = $sysprefs -> getArray('search_prefs');
 		if (!isset($search_prefs['selector'])) {
@@ -743,25 +743,44 @@ function update_61x_to_700($type) {
 			$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 			$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs' ");
 		}
-		
+
 		// Save all prefs that were set in above update routines
 		if ($s_prefs == TRUE) {
 			save_prefs();
 		}
-		// -----------------------------------------------------	
+
+		// New Downloads visibility field.
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
+		$fieldname = mysql_field_name($fields, 18);
+		if($fieldname != "download_visible"){
+			mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_visible` TEXT NOT NULL ;");
+			mysql_query("UPDATE `".MPREFIX."download` SET download_visible = download_class");
+		}
+
+
+
+
+		// -----------------------------------------------------
 
 	} else {
 		global $sysprefs;
-		
+
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
+		$fieldname = mysql_field_name($fields, 18);
+		if($fieldname != "download_visible"){
+			return FALSE;
+		}
+
+
 		if ($notify_prefs = $sysprefs -> getArray('notify_prefs')) {
 			return FALSE;
 		}
-			
+
 		$search_prefs = $sysprefs -> getArray('search_prefs');
 		if (!isset($search_prefs['selector'])) {
 			return FALSE;
 		}
-		
+
 		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = "SHOW CREATE TABLE `".MPREFIX."user`";
 		$res = mysql_query($qry);
@@ -774,14 +793,16 @@ function update_61x_to_700($type) {
 				return true;
 			}
 		}
-		
-		
+
+
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
 		global $pref;
 		if (!is_array($pref['frontpage'])) {
 			return FALSE;
 		}
+
+
 
 
 /*
@@ -803,7 +824,7 @@ function update_61x_to_700($type) {
 				return FALSE;
 			}
 		}
-		
+
 		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = "SHOW CREATE TABLE `".MPREFIX."page`";
 		$res = mysql_query($qry);
@@ -856,7 +877,7 @@ function update_61x_to_700($type) {
 		{
 			return FALSE;
 		}
-		
+
 		if(!isset($pref['signup_maxip'])){
 			return FALSE;
 		}

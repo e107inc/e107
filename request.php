@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-05-14 02:08:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.21 $
+|     $Date: 2005-06-09 14:20:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -137,7 +137,7 @@ if ($type == "file") {
 				header("Location: ".$gaddress);
 				exit();
 			}
-			
+
 			// increment download count
 			$sql->db_Update("download", "`download_requested` = `download_requested` + 1 WHERE `download_id` = '{$id}'");
 			$user_id = USER ? USERID : 0;
@@ -171,10 +171,21 @@ if ($type == "file") {
 				}
 			}
 		} else {
-			require_once(HEADERF);
-			$ns -> tablerender(LAN_dl_61, LAN_dl_63);
-			require_once(FOOTERF);
-			exit();
+			// Download Access Denied.
+		  	if((!strpos($pref['download_denied'],".php") &&
+				!strpos($pref['download_denied'],".htm") &&
+				!strpos($pref['download_denied'],".html") &&
+				!strpos($pref['download_denied'],".shtml") ||
+				(strpos($pref['download_denied'],"signup.php") && USER == TRUE)
+				)){
+				require_once(HEADERF);
+				$denied_message = ($pref['download_denied'] && !strpos($pref['download_denied'],"signup.php")) ? $tp->toHTML($pref['download_denied'],"","defs") : LAN_dl_63;
+				$ns -> tablerender(LAN_dl_61, $denied_message);
+				require_once(FOOTERF);
+		   		exit();
+            }else{
+            	header("Location: ".trim($pref['download_denied']));
+			}
 		}
 	}
 	require_once(HEADERF);

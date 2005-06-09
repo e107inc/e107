@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-04-02 19:14:19 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-09 14:20:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -82,7 +82,7 @@ define("DOWLAN_102", "Allow Comments?");
 define("DOWLAN_103", "Remove from Uploads");
 define("DOWLAN_104", "was removed from public uploads");
 define("DOWLAN_105", "Back to Public Uploads");
-define("DOWLAN_106", "Download available to");
+define("DOWLAN_106", "May be download by");
 define("DOWLAN_107", "Limit download count");
 define("DOWLAN_108", "Limit download bandwidth");
 define("DOWLAN_109", "every");
@@ -122,4 +122,8 @@ define("DOWLAN_141", "Location");
 define("DOWLAN_142", "Update Mirror");
 define("DOWLAN_143", "Create Mirror");
 define("DOWLAN_144", "No mirrors defined, go to mirror section to add them.");
+
+define("DOWLAN_145", "Download visible to");
+define("DOWLAN_146", "Custom Download-denial message or URL");
+
 ?>

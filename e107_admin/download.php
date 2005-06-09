@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-05-18 08:00:19 $
-|     $Author: stevedunstan $
+|     $Revision: 1.49 $
+|     $Date: 2005-06-09 14:20:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -108,6 +108,7 @@ if (isset($_POST['updateoptions']))
 	$pref['download_order'] = $_POST['download_order'];
 	$pref['agree_flag'] = $_POST['agree_flag'];
 	$pref['agree_text'] = $tp->toDB($_POST['agree_text']);
+	$pref['download_denied'] = $tp->toDB($_POST['download_denied']);
 	save_prefs();
 	$message = DOWLAN_65;
 }
@@ -268,7 +269,15 @@ if ($action == "opt") {
 		".DOWLAN_101."
 		</td>
 		<td class='forumheader3' style='width:30%;text-align:left'>
-		<textarea class='tbox' name='agree_text' cols='59' rows='10'>$agree_text</textarea>
+		<textarea class='tbox' name='agree_text' cols='59' rows='3'>$agree_text</textarea>
+		</td>
+		</tr>
+
+		<tr><td style='width:70%' class='forumheader3'>
+		".DOWLAN_146."
+		</td>
+		<td class='forumheader3' style='width:30%;text-align:left'>
+		<textarea class='tbox' name='download_denied' cols='59' rows='3'>".$pref['download_denied']."</textarea>
 		</td>
 		</tr>
 
@@ -774,6 +783,12 @@ class download {
 
 		$text .= "
 			<tr>
+			<td style='width:20%' class='forumheader3'>".DOWLAN_145.":</td>
+			<td style='width:80%' class='forumheader3'>".r_userclass('download_visible', $download_visible, 'off', 'public, nobody, member, admin, classes')."</td>
+			</tr>
+
+
+			<tr>
 			<td style='width:20%' class='forumheader3'>".DOWLAN_106.":</td>
 			<td style='width:80%' class='forumheader3'>".r_userclass('download_class', $download_class, 'off', 'public, nobody, member, admin, classes')."</td>
 			</tr>
@@ -870,11 +885,14 @@ class download {
 		if ($id)
 		{
 
-			$sql->db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".time()."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."', download_comment='".$_POST['download_comment']."', download_class = '{$_POST['download_class']}', download_mirror='$mirrorStr', download_mirror_type='".$_POST['download_mirror_type']."' WHERE download_id=$id");
-			$this->show_message(DOWLAN_2);
+			if($sql->db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".time()."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."', download_comment='".$_POST['download_comment']."', download_class = '{$_POST['download_class']}', download_mirror='$mirrorStr', download_mirror_type='".$_POST['download_mirror_type']."' , download_visible='".$_POST['download_visible']."' WHERE download_id=$id")){
+				$this->show_message(DOWLAN_2);
+			}else{
+                $this->show_message(LAN_UPDATED_FAILED);
+			}
 		} else {
 			$time = time();
-			if ($download_id = $sql->db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".$time."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".$_POST['download_comment']."', '{$_POST['download_class']}', '$mirrorStr', '".$_POST['download_mirror_type']."'")) {
+			if ($download_id = $sql->db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".$time."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".$_POST['download_comment']."', '{$_POST['download_class']}', '$mirrorStr', '".$_POST['download_mirror_type']."', '".$_POST['download_visible']."' ")) {
 
 				$dlinfo = array("download_id" => $download_id, "download_name" => $_POST['download_name'], "download_url" => $durl, "download_author" => $_POST['download_author'], "download_author_email" => $_POST['download_author_email'], "download_author_website" => $_POST['download_author_website'], "download_description" => $_POST['download_description'], "download_filesize" => $filesize, "download_category" => $_POST['download_category'], "download_active" => $_POST['download_active'], "download_datestamp" => $time, "download_thumb" => $_POST['download_thumb'], "download_image" => $_POST['download_image'], "download_comment" => $_POST['download_comment'] );
 				$e_event->trigger("dlpost", $dlinfo);
