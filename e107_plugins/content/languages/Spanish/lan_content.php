@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-08 19:13:33 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-09 04:59:23 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -365,6 +365,16 @@ define("CONTENT_ADMIN_OPT_LAN_266", "Página más valorada");
 define("CONTENT_ADMIN_OPT_LAN_267", "Tipo de render del menú de búsqueda");
 define("CONTENT_ADMIN_OPT_LAN_268", "Defina como mostrará el menú de búsqueda");
 define("CONTENT_ADMIN_OPT_LAN_269", "Defina como renderizará la información del menú de búsqueda. Tiene 2 opciones:: UNa enviarlo arriba en la página y otra renderizarlo en un menú separado");
+define("CONTENT_ADMIN_OPT_LAN_270", "Índice de letras");
+define("CONTENT_ADMIN_OPT_LAN_271", "Defina si quiere mostrar in índice de letras");
+define("CONTENT_ADMIN_OPT_LAN_272", "El índice de letras es una lista de botones con todas la primeras letras de las cabeceras de los campos de contenidos. Puede reducir la lista de archivos haciendo click en cierta letra, así solo se mostrarán los contenidos que comienzan con esa letra.");
+define("CONTENT_ADMIN_OPT_LAN_273", "");
+define("CONTENT_ADMIN_OPT_LAN_274", "");
+define("CONTENT_ADMIN_OPT_LAN_275", "");
+define("CONTENT_ADMIN_OPT_LAN_276", "");
+define("CONTENT_ADMIN_OPT_LAN_277", "");
+define("CONTENT_ADMIN_OPT_LAN_278", "");
+define("CONTENT_ADMIN_OPT_LAN_279", "");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "campos obligatorios en blanco");
 define("CONTENT_ADMIN_ITEM_LAN_1", "contenido creado");
@@ -529,8 +539,8 @@ define("CONTENT_ADMIN_MAIN_LAN_25", "
 Como no contiene registros, puede comenzar a crear contenidos.<br />
 Pulsando en el botón siguiente, automáticamente creará un ajuste por defecto de categorías, Contenido, Análisi y Artículos.<br />
 ");
-define("CONTENT_ADMIN_MAIN_LAN_26", "");
-define("CONTENT_ADMIN_MAIN_LAN_27", "");
+define("CONTENT_ADMIN_MAIN_LAN_26", "Previsualizar");
+define("CONTENT_ADMIN_MAIN_LAN_27", "Previsualizar de nuevo");
 define("CONTENT_ADMIN_MAIN_LAN_28", "");
 define("CONTENT_ADMIN_MAIN_LAN_29", "");
 
@@ -693,7 +703,7 @@ define("CONTENT_LAN_69", "email");
 define("CONTENT_LAN_70", "imprimir");
 define("CONTENT_LAN_71", "contenido");
 define("CONTENT_LAN_72", "categoría");
-define("CONTENT_LAN_73", "");
+define("CONTENT_LAN_73", "No hay contenidos aún");
 define("CONTENT_LAN_74", "");
 define("CONTENT_LAN_75", "enviar contenido");
 define("CONTENT_LAN_76", "crear archivo pdf de");
