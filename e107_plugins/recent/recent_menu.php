@@ -40,14 +40,13 @@ if (empty($row['e107_value'])) {
 
 	$rc -> getSections();
 	$recent_pref = $rc -> getDefaultPrefs();
+	$tmp = $eArrayStorage->WriteArray($recent_pref);
 
-	$tmp = addslashes(serialize($recent_pref));
 	$sql -> db_Insert("core", "'recent', '$tmp' ");
 	$sql -> db_Select("core", "*", "e107_name='recent' ");
 }
 
-$recent_pref = unserialize(stripslashes($row['e107_value']));
-if(!is_array($recent_pref)){ $recent_pref = unserialize($row['e107_value']); }
+$recent_pref = $eArrayStorage->ReadArray($row['e107_value']);
 
 //get all sections to use
 foreach ($recent_pref as $key => $value) {
