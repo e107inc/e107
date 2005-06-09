@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.162 $
-|     $Date: 2005-06-09 10:05:16 $
+|     $Revision: 1.163 $
+|     $Date: 2005-06-09 10:45:57 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -1178,8 +1178,7 @@ function force_userupdate(){
 
 class error_handler {
 
-	var $notices;
-	var $warnings;
+	var $errors;
 	var $debug = false;
 	
 	function error_handler() {
@@ -1196,8 +1195,8 @@ class error_handler {
 					$trace = debug_backtrace();
 					$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
 					$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
-					//$error['trace'] = $backtrace;
-					$this->notices[] = $error;
+					$error['trace'] = $backtrace;
+					$this->errors[] = $error;
 				}
 			break;
 			case E_WARNING:
@@ -1207,7 +1206,7 @@ class error_handler {
 					$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
 					$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
 					$error['trace'] = $backtrace;
-					$this->warnings[] = $error;
+					$this->errors[] = $error;
 				}
 			break;
 			default:
@@ -1217,13 +1216,14 @@ class error_handler {
 	}
 	
 	function return_errors() {
-		$ret = "";
-		foreach ($this->warnings as $key => $value) {
-			$ret .= "[{$key}]: {$value['short']}<br />\n";
+		$index = 0; $colours[0] = "#C1C1C1"; $colours[1] = "#B6B6B6";
+		$ret = "<table>\n";
+		foreach ($this->errors as $key => $value) {
+			$ret .= "\t<tr>\n\t\t<td style='background-color: {$colours[$index]};'>{$value['short']}</td><td><input class='button' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace' onclick=\"expandit('bt_{$key}')\" /></t>\n\t</tr>\n";
+			$ret .= "\t<tr>\n<td style='display: none;' colspan='2' id='bt_{$key}'>".print_a($value['trace'], true)."</td></tr>\n";
+			if($index == 0) { $index = 1; } else { $index = 0; }
 		}
-		foreach ($this->notices as $key => $value) {
-			$ret .= "[{$key}]: {$value['short']}<br />\n";
-		}
+		$ret .= "</table>";
 		return $ret;		
 	}
 }
