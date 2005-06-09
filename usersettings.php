@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-06-05 20:24:30 $
+|     $Revision: 1.33 $
+|     $Date: 2005-06-09 14:49:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -541,7 +541,7 @@ $cal_options['weekNumbers'] = false;
 $cal_options['ifFormat'] = "%Y-%m-%d";
 $cal_attrib['class'] = "tbox";
 $cal_attrib['name'] = "birthday";
-$cal_attrib['value'] = $user_birthday;
+$cal_attrib['value'] = $curVal['user_birthday'];
 $text .= $cal->make_input_field($cal_options, $cal_attrib);
 $text .= "
 	</td>
