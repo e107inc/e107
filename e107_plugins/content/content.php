@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.53 $
-|		$Date: 2005-06-09 10:53:42 $
+|		$Revision: 1.54 $
+|		$Date: 2005-06-09 21:01:34 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -435,7 +435,7 @@ function show_content_archive(){
 								if($row['letter'] != ""){
 									//$CONTENT_ARCHIVE_TABLE_LETTERS .= "<input class='button' style='width:20' type='submit' name='letter' value='".strtoupper($row['letter'])."' />";
 									$thisletter = $row['letter'];
-									$CONTENT_ARCHIVE_TABLE_LETTERS .= "<input class='button' style='width:20' type='button' name='letter' value='".strtoupper($row['letter'])."' onclick=\"document.location='".e_SELF."?list.".$mainparent.".".strtoupper($thisletter)."'\" />";
+									$CONTENT_ARCHIVE_TABLE_LETTERS .= "<input class='button' style='width:20px' type='button' name='letter' value='".strtoupper($row['letter'])."' onclick=\"document.location='".e_SELF."?list.".$mainparent.".".strtoupper($thisletter)."'\" />";
 								}
 							}
 							$CONTENT_ARCHIVE_TABLE_LETTERS .= "<input class='button' style='width:20' type='submit' name='letter' value='all' />";
