@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.164 $
-|     $Date: 2005-06-09 11:14:12 $
+|     $Revision: 1.165 $
+|     $Date: 2005-06-09 21:50:41 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -1182,7 +1182,7 @@ class error_handler {
 	var $debug = false;
 	
 	function error_handler() {
-		if (preg_match('/debug=(.*)/', $_SERVER['QUERY_STRING']) || isset($_COOKIE['e107_debug_level'])) {
+		if ((isset($_SERVER['QUERY_STRING']) && preg_match('/debug=(.*)/', $_SERVER['QUERY_STRING'])) || isset($_COOKIE['e107_debug_level'])) {
 			$this->debug = true;
 		}
 	}
