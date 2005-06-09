@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-05-18 03:08:38 $
+|     $Revision: 1.15 $
+|     $Date: 2005-06-09 22:47:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -77,10 +77,12 @@ function read_tables($tab) {
 	foreach($file as $line) {
 		$line = ltrim(stripslashes($line));
 		if (preg_match("/CREATE TABLE (.*) /", $line, $match)) {
-			$table_list[$match[1]] = 1;
-			$current_table = $match[1];
-			$x = 0;
-			$cnt = 0;
+			if($match[1] != "user_extended"){
+				$table_list[$match[1]]  = 1;
+				$current_table = $match[1];
+				$x = 0;
+				$cnt = 0;
+			}
 		}
 
 		if (preg_match("/TYPE=/", $line, $match)) {
