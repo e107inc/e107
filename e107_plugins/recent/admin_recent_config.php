@@ -41,15 +41,13 @@ $row = $sql -> db_Fetch();
 if (empty($row['recent'])) {
 
 	$recent_pref = $rc -> getDefaultPrefs();
+	$tmp = $eArrayStorage->WriteArray($recent_pref);
 
-	$tmp = addslashes(serialize($recent_pref));
 	$sql -> db_Insert("core", "'recent', '$tmp' ");
 	$sql -> db_Select("core", "*", "e107_name='recent' ");
 }
 
-$recent_pref = unserialize(stripslashes($row['e107_value']));
-if(!is_array($recent_pref)){ $recent_pref = unserialize($row['e107_value']); }
-
+$recent_pref = $eArrayStorage->ReadArray($row['e107_value']);
 
 //update preferences in database
 if(isset($_POST['update_menu'])){
@@ -57,7 +55,7 @@ if(isset($_POST['update_menu'])){
 		if($value != RECENT_ADMIN_2){ $recent_pref[$tp->toDB($key)] = $tp->toDB($value); }
 	}
 
-	$tmp = addslashes(serialize($recent_pref));
+	$tmp = $eArrayStorage->WriteArray($recent_pref);
 	$sql -> db_Update("core", "e107_value='$tmp' WHERE e107_name='recent' ");
 
 	$message = RECENT_ADMIN_3;
@@ -397,7 +395,7 @@ $TOPIC_HEADING = RECENT_ADMIN_PAGE_21;
 $TOPIC_HELP = RECENT_ADMIN_PAGE_22;
 $TOPIC_FIELD = $rs -> form_select_open("page_colomn");
 	for($a=1; $a<=count($sections); $a++){
-		$TOPIC_FIELD .= ($recent_pref['page_colomn'] == $a ? $rs -> form_option($a, 1) : $rs -> form_option($a, 0));
+		$TOPIC_FIELD .= ($recent_pref['page_colomn'] == $a ? $rs -> form_option($a, 1, $a) : $rs -> form_option($a, 0, $a));
 	}
 	$TOPIC_FIELD .= $rs -> form_select_close();
 $text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);

@@ -42,14 +42,12 @@ if (empty($row['e107_value'])) {
 
 	$rc -> getSections();
 	$recent_pref = $rc -> getDefaultPrefs();
+	$tmp = $eArrayStorage->WriteArray($recent_pref);
 
-	$tmp = addslashes(serialize($recent_pref));
 	$sql -> db_Insert("core", "'recent', '$tmp' ");
 	$sql -> db_Select("core", "*", "e107_name='recent' ");
 }
-
-$recent_pref = unserialize(stripslashes($row['e107_value']));
-if(!is_array($recent_pref)){ $recent_pref = unserialize($row['e107_value']); }
+$recent_pref = $eArrayStorage->ReadArray($row['e107_value']);
 
 //get all sections to use
 foreach ($recent_pref as $key => $value) {
@@ -86,7 +84,6 @@ if($recent_pref["page_welcometext"]){
 	$RECENT_PAGE_TABLE_WELCOMETEXT = $tp -> toHTML($recent_pref["page_welcometext"]);
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_PAGE_TABLE_WELCOME);
 }
-
 for($i=0;$i<count($arr);$i++){
 	if($arr[$i][1] == "1"){
 		if( intval($i/$recent_pref["page_colomn"]) == $i/$recent_pref["page_colomn"] ){
@@ -95,6 +92,7 @@ for($i=0;$i<count($arr);$i++){
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_PAGE_TABLE_CELL_START);
 		$text .= $rc -> show_section_recent($arr[$i], "page");
 		$text .= $RECENT_PAGE_TABLE_CELL_END;
+		$k++;
 	}
 }
 $text .= $RECENT_PAGE_TABLE_END;

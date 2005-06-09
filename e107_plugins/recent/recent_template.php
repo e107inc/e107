@@ -22,8 +22,8 @@ $sc_style['RECENT_INFO']['post'] = " ";
 
 //MENU TEMPLATE -------------------------------------------------------------------------
 $RECENT_MENU_START = "
-<div class='fcaption' style='padding:2px; cursor:pointer; border:1px solid #000;' onclick='expandit(this);'>{RECENT_CAPTION}</div>
-<div class='forumheader3' style='padding:2px; display:{RECENT_DISPLAYSTYLE}; border:1px solid #000; border-top:0px solid #000;'>\n";
+<div class='fcaption' style='padding:2px; cursor:pointer; border:0px solid #000;' onclick='expandit(this);'>{RECENT_CAPTION}</div>
+<div class='forumheader2' style='padding:2px; display:{RECENT_DISPLAYSTYLE}; border:0px solid #000; border-top:0px solid #000;'>\n";
 $RECENT_MENU = "
 <div>
 {RECENT_ICON} {RECENT_DATE} {RECENT_HEADING} {RECENT_AUTHOR} {RECENT_CATEGORY}
@@ -47,16 +47,16 @@ $RECENT_PAGE = "
 {RECENT_INFO}
 </div>";
 $RECENT_PAGE_END = "
-</div><div style='height:5px;'></div>\n";
+</div><div style='margin-bottom:20px;'></div>\n";
 
 
 
 //MULTI COLOMNS LAYOUT MASTER -----------------------------------------------------------
 $RECENT_PAGE_TABLE_START = "
 <div style='text-align:center'>
-<table class='fborder' style='width:100%' border='0' cellspacing='0' cellpadding='0'>
+<table class='fborder' style='width:100%; border:1px solid #000;' border='1' cellspacing='0' cellpadding='0'>
 <tr>";
-$RECENT_PAGE_TABLE_WELCOME = "<td colspan='{RECENT_PAGE_TABLE_COLS}' class='subheading'>{RECENT_PAGE_TABLE_WELCOMETEXT}<br /><br /></td>";
+$RECENT_PAGE_TABLE_WELCOME = "<td colspan='{RECENT_PAGE_TABLE_COLS}' class='forumheader'>{RECENT_PAGE_TABLE_WELCOMETEXT}<br /><br /></td>";
 $RECENT_PAGE_TABLE_ROWSWITCH = "</tr><tr>";
 $RECENT_PAGE_TABLE_CELL_START = "<td style='width:{RECENT_PAGE_TABLE_CELLWIDTH}%; padding-right:5px;'>";
 $RECENT_PAGE_TABLE_CELL_END = "</td>";

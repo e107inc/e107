@@ -31,5 +31,7 @@ SC_BEGIN RECENT_INFO
 global $RECENT_INFO;
 return $RECENT_INFO;
 SC_END
+
+
 */
 ?>
