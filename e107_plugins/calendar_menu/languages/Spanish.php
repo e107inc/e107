@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/calendar_menu/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 22:34:18 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-09 23:16:46 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -119,7 +119,7 @@ define('EC_LAN_ALLEVENTS', "Todos los eventos");
 define('EC_LAN_74', "Ver categoría");
 // ADMIN
 define('EC_LAN_75', "Parámetros del calendario actualizados.");
-define('EC_LAN_76', "Pueden ñadir eventos:");
+define('EC_LAN_76', "Pueden añadir eventos:");
 define('EC_LAN_77', "Actualizar parámetros");
 define('EC_LAN_78', "Parámetros del calendario");
 define('EC_LAN_79', "Vista del calendario");
@@ -199,7 +199,7 @@ define('EC_ADLAN_A27', "Imposible crear categoría");
 define('EC_ADLAN_A28', "Cambios guardados");
 define('EC_ADLAN_A29', "Imposible guardar cambios");
 define('EC_ADLAN_A30', "Categoría eliminada");
-define('EC_ADLAN_A31', "Actica la caja de confirmación para eliminar");
+define('EC_ADLAN_A31', "Activa la caja de confirmación para eliminar");
 define('EC_ADLAN_A32', "Imposible borrar esta categoría");
 define('EC_ADLAN_A33', "Nada definido");
 define('EC_ADLAN_A34', "Administrador de clases del calendario");
