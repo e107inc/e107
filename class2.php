@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.161 $
-|     $Date: 2005-06-07 23:11:53 $
+|     $Revision: 1.162 $
+|     $Date: 2005-06-09 10:05:16 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@
 // setup error handling first of all.
 error_reporting(E_ALL);
 $error_handler = new error_handler();
-set_error_handler(array($error_handler, "handle_error"));
+set_error_handler(array(&$error_handler, "handle_error"));
 
 // Honest global beginning point for processing time
 $eTimingStart = microtime();
