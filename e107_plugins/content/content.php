@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.54 $
-|		$Date: 2005-06-09 21:01:34 $
+|		$Revision: 1.55 $
+|		$Date: 2005-06-09 22:58:25 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -98,15 +98,15 @@ function headerjs(){
 //post comment
 if(isset($_POST['commentsubmit'])){
 	if(!is_object($sql)){ $sql = new db; }
-	if(!$sql -> db_Select($plugintable, "content_comment", "content_id='".$qs[0]."' ")){
+	if(!$sql -> db_Select($plugintable, "content_comment", "content_id='".$qs[1]."' ")){
 		header("location:".e_BASE."index.php"); exit;
 	}else{
 		$row = $sql -> db_Fetch();
 		if(ANON === TRUE || USER === TRUE){
 			//enter_comment($author_name, $comment, $table, $id, $pid, $subject)
 			$pid = "0";
-			$cobj -> enter_comment(USERNAME, $_POST['comment'], $plugintable, $qs[0], $pid, $_POST['subject']);
-			$e107cache->clear("comment.{$plugintable}.{$qs[0]}");
+			$cobj -> enter_comment(USERNAME, $_POST['comment'], $plugintable, $qs[1], $pid, $_POST['subject']);
+			$e107cache->clear("comment.{$plugintable}.{$qs[1]}");
 		}
 	}
 }
