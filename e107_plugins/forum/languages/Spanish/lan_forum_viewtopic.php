@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_viewtopic.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 22:34:18 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-09 16:09:03 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ define("LAN_321", "Moderadores: ");
 define("LAN_389", "Hilo anterior");
 define("LAN_390", "Hilo siguiente");
 define("LAN_391", "Rastrear este hilo");
-define("LAN_392", "Parar rastreo de este hilo");
+define("LAN_392", "Cancelar el rastreo de este hilo");
 define("LAN_393", "Respuesta rápida");
 define("LAN_394", "Vista previa");
 define("LAN_395", "Responder al hilo");

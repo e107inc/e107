@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_fileinspector.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-09 16:07:51 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -13,21 +13,23 @@
 define("FC_LAN_1", "Inspector de archivos");
 define("FC_LAN_2", "Opciones de escaneo");
 define("FC_LAN_3", "Mostrar");
-define("FC_LAN_4", "Todos los archivos");
+define("FC_LAN_4", "Todos");
 define("FC_LAN_5", "Archivos del núcleo");
-define("FC_LAN_6", "Archivos del núcleo (Fallo integridad)");
+define("FC_LAN_6", "Solo fallo de integridad");
 define("FC_LAN_7", "Archivos no del núcleo");
 define("FC_LAN_8", "Comprobar integridad de archivos del núcleo");
 define("FC_LAN_9", "On");
 define("FC_LAN_10", "Off");
 define("FC_LAN_11", "Escanear ahora");
+define("FC_LAN_12", "Nada");
+define("FC_LAN_13", "Faltan archivos del núcleo");
 
 define("FR_LAN_1", "Escaneando");
 define("FR_LAN_2", "Resultados del scan");
 define("FR_LAN_3", "Mostrar");
-define("FR_LAN_4", "Archivos núcleo escaneados");
-define("FR_LAN_5", "Archivos no núcleo escaneados");
-define("FR_LAN_6", "Total archivos escaneados");
+define("FR_LAN_4", "Archivos del núcleo");
+define("FR_LAN_5", "Otros Archivos no del núcleo");
+define("FR_LAN_6", "Total archivos");
 define("FR_LAN_7", "Comprobación integridad");
 define("FR_LAN_8", "Archivos núcleo correctos");
 define("FR_LAN_9", "Archivos núcleo incorrectos");
@@ -49,6 +51,7 @@ define("FR_LAN_18", "Si ejecuta comprobaciones en el CVS de su sitio en vez de v
 define("FR_LAN_19", "Archivos fallados");
 define("FR_LAN_20", "Todos los archivos correctos");
 define("FR_LAN_21", "nada");
+define("FR_LAN_22", "Faltan archivos del núcleo");
 
 
 ?>
