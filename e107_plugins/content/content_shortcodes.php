@@ -697,10 +697,12 @@ SC_END
 SC_BEGIN CONTENT_RECENT_TABLE_EPICONS
 global $CONTENT_RECENT_TABLE_EPICONS, $tp, $content_pref, $qs, $row, $mainparent;
 $CONTENT_RECENT_TABLE_EPICONS = "";
-if((isset($content_pref["content_list_peicon_{$mainparent}"]) && $content_pref["content_list_peicon_{$mainparent}"] && $row['content_pe']) || isset($content_pref["content_list_peicon_all_{$mainparent}"]) && $content_pref["content_list_peicon_all_{$mainparent}"]){
-	$CONTENT_RECENT_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
-	$CONTENT_RECENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
-	$CONTENT_RECENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
+if(isset($content_pref["content_list_peicon_{$mainparent}"]) && $content_pref["content_list_peicon_{$mainparent}"]){
+	if($row['content_pe'] || isset($content_pref["content_list_peicon_all_{$mainparent}"]) && $content_pref["content_list_peicon_all_{$mainparent}"]){
+		$CONTENT_RECENT_TABLE_EPICONS = $tp -> parseTemplate("{EMAIL_ITEM=".CONTENT_LAN_69." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
+		$CONTENT_RECENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PRINT_ITEM=".CONTENT_LAN_70." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
+		$CONTENT_RECENT_TABLE_EPICONS .= " ".$tp -> parseTemplate("{PDF=".CONTENT_LAN_76." ".CONTENT_LAN_71."^plugin:content.".$row['content_id']."}");
+	}
 }
 return $CONTENT_RECENT_TABLE_EPICONS;
 SC_END
@@ -753,29 +755,31 @@ SC_END
 SC_BEGIN CONTENT_RECENT_TABLE_RATING
 global $CONTENT_RECENT_TABLE_RATING, $rater, $row, $qs, $content_pref, $plugintable, $mainparent;
 $CONTENT_RECENT_TABLE_RATING = "";
-if($content_pref["content_list_rating_all_{$mainparent}"] || ($content_pref["content_list_rating_{$mainparent}"] && $row['content_rate'])){
-	if($ratearray = $rater -> getrating($plugintable, $row['content_id'])){
-		for($c=1; $c<= $ratearray[1]; $c++){
-			$CONTENT_RECENT_TABLE_RATING .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
-		}
-		if($ratearray[1] < 10){
-			for($c=9; $c>=$ratearray[1]; $c--){
-				$CONTENT_RECENT_TABLE_RATING .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
+if($content_pref["content_list_rating_{$mainparent}"]){
+	if($content_pref["content_list_rating_all_{$mainparent}"] || $row['content_rate']){
+		if($ratearray = $rater -> getrating($plugintable, $row['content_id'])){
+			for($c=1; $c<= $ratearray[1]; $c++){
+				$CONTENT_RECENT_TABLE_RATING .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
 			}
+			if($ratearray[1] < 10){
+				for($c=9; $c>=$ratearray[1]; $c--){
+					$CONTENT_RECENT_TABLE_RATING .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
+				}
+			}
+			$CONTENT_RECENT_TABLE_RATING .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
+			if($ratearray[2] == ""){ $ratearray[2] = 0; }
+			$CONTENT_RECENT_TABLE_RATING .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
+			$CONTENT_RECENT_TABLE_RATING .= ($ratearray[0] == 1 ? LAN_38 : LAN_39);
+		}else{
+			$CONTENT_RECENT_TABLE_RATING .= LAN_65;
 		}
-		$CONTENT_RECENT_TABLE_RATING .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
-		if($ratearray[2] == ""){ $ratearray[2] = 0; }
-		$CONTENT_RECENT_TABLE_RATING .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
-		$CONTENT_RECENT_TABLE_RATING .= ($ratearray[0] == 1 ? LAN_38 : LAN_39);
-	}else{
-		$CONTENT_RECENT_TABLE_RATING .= LAN_65;
+		if(!$rater -> checkrated($plugintable, $row['content_id']) && USER){
+			$CONTENT_RECENT_TABLE_RATING .= " - ".$rater -> rateselect(LAN_40, $plugintable, $row['content_id']);
+		}else if(USER){
+			$CONTENT_RECENT_TABLE_RATING .= " - ".LAN_41;
+		}
+	return $CONTENT_RECENT_TABLE_RATING;
 	}
-	if(!$rater -> checkrated($plugintable, $row['content_id']) && USER){
-		$CONTENT_RECENT_TABLE_RATING .= " - ".$rater -> rateselect(LAN_40, $plugintable, $row['content_id']);
-	}else if(USER){
-		$CONTENT_RECENT_TABLE_RATING .= " - ".LAN_41;
-	}
-return $CONTENT_RECENT_TABLE_RATING;
 }
 SC_END
 

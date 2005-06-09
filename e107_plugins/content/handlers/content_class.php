@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.54 $
-|		$Date: 2005-06-08 20:00:28 $
+|		$Revision: 1.55 $
+|		$Date: 2005-06-09 12:36:18 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1032,7 +1032,7 @@ class content{
 
 							$CONTENT_SEARCH_TABLE_SELECT = "
 							".$rs -> form_open("post", $plugindir."content.php".(e_QUERY ? "?".e_QUERY : ""), "contentredirect".$mode, "", "enctype='multipart/form-data'")."				
-							<select id='{$mode}value' name='{$mode}value' class='tbox' onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\">";					
+							<select id='{$mode}value' name='{$mode}value' class='tbox' style='width:100%;' onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\">";					
 							
 
 							if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_links_$mainparent"] && $content_pref["content_menu_links_dropdown_$mainparent"]) ){
