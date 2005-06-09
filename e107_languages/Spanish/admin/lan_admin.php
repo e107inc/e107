@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-09 20:10:14 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "Noticias");
-define("ADLAN_1", "Gestionar Noticias");
+define("ADLAN_1", "Gestionar noticias");
 define("ADLAN_2", "Cat. Noticias");
 define("ADLAN_3", "Gestionar categorías de noticias");
 define("ADLAN_4", "Preferencias");
@@ -22,7 +22,7 @@ define("ADLAN_9", "Gestionar administradores");
 define("ADLAN_10", "Clave Admin.");
 define("ADLAN_11", "Cambiar tu contraseña");
 define("ADLAN_12", "Foros");
-define("ADLAN_13", "Gestionar Foros");
+define("ADLAN_13", "Gestionar foros");
 define("ADLAN_14", "Artículos");
 define("ADLAN_15", "Gestionar artículos");
 define("ADLAN_16", "Contenido");
@@ -34,17 +34,17 @@ define("ADLAN_21", "Gestionar enlaces");
 define("ADLAN_22", "Cat. enlaces");
 define("ADLAN_23", "Gestionar categorías de enlaces");
 define("ADLAN_24", "Descargas");
-define("ADLAN_25", "Gestiona descargas");
+define("ADLAN_25", "Gestionar descargas");
 define("ADLAN_26", "Cat. descargas");
 define("ADLAN_27", "Gestionar categorías de descargas");
 define("ADLAN_28", "Mens. Bienvenida");
-define("ADLAN_29", "Crear mensaje de Bienvenida");
+define("ADLAN_29", "Crear mensaje de bienvenida");
 define("ADLAN_30", "Gestor de ficheros");
-define("ADLAN_31", "Gestiona ficheros");
+define("ADLAN_31", "Gestionar ficheros");
 define("ADLAN_32", "Noticias enviadas");
 define("ADLAN_33", "Gestionar noticias enviadas");
 define("ADLAN_34", "Expulsiones");
-define("ADLAN_35", "No permitir entrada a visitantes");
+define("ADLAN_35", "No permitir entrada a invitados");
 define("ADLAN_36", "Usuarios");
 define("ADLAN_37", "Gestionar miembros");
 define("ADLAN_38", "Clases de usuario");
@@ -134,7 +134,7 @@ define("ADLAN_127", "Crear páginas personales");
 define("ADLAN_128", "Contenido");
 define("ADLAN_129", "Comunicación");
 define("ADLAN_130", "Gestor de archivos");
-define("ADLAN_131", "Othros útiles");
+define("ADLAN_131", "Otros útiles");
 define("ADLAN_132", "Idiomas");
 define("ADLAN_133", "Por defecto");
 define("ADLAN_134", "Estados");

@@ -4,19 +4,19 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_administrator.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-09 20:10:14 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("ADMSLAN_0", "nuevo usuario/administrador creado para");
-define("ADMSLAN_1", "ahora como administrador.");
-define("ADMSLAN_2", "actualizado en la base de datos.");
-define("ADMSLAN_3", "es el administrador del sitio y no puede ser editado.");
+define("ADMSLAN_0", "Nuevo usuario/administrador creado para");
+define("ADMSLAN_1", "Ahora como administrador.");
+define("ADMSLAN_2", "Actualizado en la base de datos.");
+define("ADMSLAN_3", "Es el administrador del sitio y no puede ser editado.");
 define("ADMSLAN_4", "Continuar");
-define("ADMSLAN_5", "Error!");
-define("ADMSLAN_6", "es el administrador del sitio y no puede ser borrado.");
-define("ADMSLAN_7", "por favor confirma que deseas borrarlo");
+define("ADMSLAN_5", "¡Error!");
+define("ADMSLAN_6", "Es el administrador del sitio y no puede ser borrado.");
+define("ADMSLAN_7", "Por favor, confirme que desea borrarlo");
 define("ADMSLAN_8", "de la base de datos");
 define("ADMSLAN_9", "Cancelar");
 define("ADMSLAN_10", "Confirmar Borrado");
@@ -44,7 +44,7 @@ define("ADMSLAN_31", "Configurar emoticonos");
 define("ADMSLAN_32", "Configurar página de inicio");
 define("ADMSLAN_33", "Configurar estadísticas");
 define("ADMSLAN_34", "Configurar meta tags");
-define("ADMSLAN_35", "Configurar Subida de archivos");
+define("ADMSLAN_35", "Configurar transferencia de archivos");
 define("ADMSLAN_36", "Moderar foros");
 define("ADMSLAN_37", "Moderar comentarios");
 define("ADMSLAN_38", "Moderar/configurar chatbox");
@@ -68,7 +68,7 @@ define("ADMSLAN_56", "Administrador");
 define("ADMSLAN_57", "Opciones");
 define("ADMSLAN_58", "Administrador principal");
 define("ADMSLAN_59", "Quitar estado de administrador");
-define("ADMSLAN_60", "¿Está seguro de querer quitar el estado de administrador a");
+define("ADMSLAN_60", "¿Está seguro de querer quitar el estado de administrador?");
 define("ADMSLAN_61", "Administrador borrado");
 define("ADMSLAN_62", "Gestor de Plugins");
 define("ADMSLAN_63", "Plugin");
