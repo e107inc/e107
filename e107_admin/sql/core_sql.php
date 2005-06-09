@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-06-05 19:51:28 $
-|     $Author: streaky $
+|     $Revision: 1.32 $
+|     $Date: 2005-06-09 22:42:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -142,9 +142,10 @@ CREATE TABLE download (
   download_thumb varchar(150) NOT NULL default '',
   download_image varchar(150) NOT NULL default '',
   download_comment tinyint(3) unsigned NOT NULL default '0',
-  download_class tinyint(3) unsigned NOT NULL default '0',
+  download_class text NOT NULL,
   download_mirror text NOT NULL,
   download_mirror_type tinyint(1) unsigned NOT NULL default '0',
+  download_visible text NOT NULL,
   PRIMARY KEY  (download_id),
   UNIQUE KEY download_name (download_name)
 ) TYPE=MyISAM;
@@ -254,7 +255,7 @@ CREATE TABLE menus (
   menu_order tinyint(3) unsigned NOT NULL default '0',
   menu_class tinyint(3) unsigned NOT NULL default '0',
   menu_pages text NOT NULL,
-  menu_path varchar(100) NOT NULL default '',  
+  menu_path varchar(100) NOT NULL default '',
   PRIMARY KEY  (menu_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
@@ -317,7 +318,7 @@ CREATE TABLE online (
 
 #
 # Table structure for table `page`
-# 
+#
 
 CREATE TABLE page (
   page_id int(10) unsigned NOT NULL auto_increment,
@@ -328,7 +329,7 @@ CREATE TABLE page (
   page_rating_flag tinyint(1) unsigned NOT NULL default '0',
   page_comment_flag tinyint(1) unsigned NOT NULL default '0',
   page_password varchar(50) NOT NULL default '',
-  page_class varchar(250) default NULL,
+  page_class varchar(250) NOT NULL default '',
   page_ip_restrict text NOT NULL,
   page_theme varchar(50) NOT NULL default '',
   PRIMARY KEY  (page_id)
@@ -504,13 +505,13 @@ CREATE TABLE userclass_classes (
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
-# 
+#
 # Table structure for table `e107_user_extended`
-# 
+#
 
 CREATE TABLE user_extended (
   user_extended_id int(10) unsigned NOT NULL default '0',
-  user_hidden_fields text NOT NULL,  
+  user_hidden_fields text NOT NULL,
   PRIMARY KEY  (user_extended_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------

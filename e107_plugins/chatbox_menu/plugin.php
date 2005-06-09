@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/plugin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-20 09:02:09 $
-|     $Author: stevedunstan $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-09 22:42:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
@@ -26,21 +26,21 @@ $eplug_description = "Chatbox Menu";
 $eplug_compatible = "e107v0.7+";
 $eplug_readme = "";
 $eplug_status = TRUE;
-	
+
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "chatbox_menu";
-	
+
 // Name of menu item for plugin ----------------------------------------------------------------------------------
 $eplug_menu_name = "chatbox_menu";
-	
+
 // Name of the admin configuration file --------------------------------------------------------------------------
 $eplug_conffile = "admin_chatbox.php";
-	
+
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/chatbox_32.png";
 $eplug_icon_small = $eplug_folder."/images/chatbox_16.png";
 $eplug_caption = "Configure Chatbox";
-	
+
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array(
 	'chatbox_posts' => '10',
@@ -51,12 +51,14 @@ $eplug_prefs = array(
 	'cb_layer_height' => '200',
 	'cb_emote' => '0'
 );
-	
+
+
+
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array(
 	"chatbox"
 );
-	
+
 // List of sql requests to create tables -----------------------------------------------------------------------------
 $eplug_tables = array(
 	"CREATE TABLE ".MPREFIX."chatbox (
@@ -69,25 +71,40 @@ $eplug_tables = array(
 	PRIMARY KEY  (cb_id)
 	) TYPE=MyISAM;"
 );
-	
+
+$eplug_rss = array(
+	"id" => "chatbox",
+	"author" => "cb_nick",
+	"link" => $eplug_folder."chat.php",
+	"linkid" => "cb_id",
+	"title" => "cb_nick",
+	"description" => "cb_message",
+	"query" => "cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT 0, 9",
+	"category" => "1",
+	"datestamp" => "cb_datestamp",
+	"enc_url" => "0",
+	"enc_leng" => "200",
+	"enc_type" => "0"
+);
+
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = FALSE;
 $eplug_link_name = '';
 $eplug_link_url = '';
-	
-	
+
+
 // Text to display after plugin successfully installed ------------------------------------------------------------------
 $eplug_done = "Chatbox has successfully installed. To configure, click on the link on the admin front page.";
-	
-	
+
+
 // upgrading ... //
-	
+
 $upgrade_add_prefs = "";
-	
+
 $upgrade_remove_prefs = "";
-	
+
 $upgrade_alter_tables = "";
-	
+
 $eplug_upgrade_done = "";
 
 ?>

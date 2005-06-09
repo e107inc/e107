@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.97 $
-|     $Date: 2005-06-09 14:20:12 $
+|     $Revision: 1.98 $
+|     $Date: 2005-06-09 22:42:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -755,7 +755,9 @@ function update_61x_to_700($type) {
 		if($fieldname != "download_visible"){
 			mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_visible` TEXT NOT NULL ;");
 			mysql_query("UPDATE `".MPREFIX."download` SET download_visible = download_class");
+       		mysql_query("ALTER TABLE `".MPREFIX."download` CHANGE `download_class` `download_class` TEXT NOT NULL");
 		}
+
 
 
 
