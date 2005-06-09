@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-01 12:11:02 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.11 $
+|     $Date: 2005-06-09 20:51:59 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_userclass.php");
 @include_once(e_LANGUAGEDIR."English/lan_userclass.php");
-	
+
 /*
 With $optlist you can now specify which classes are shown in the dropdown.
 All or none can be included, separated by comma (or whatever).
@@ -31,16 +31,20 @@ readonly
 admin
 classes - shows all classes
 matchclass - if 'classes' is set, this option will only show the classes that the user is a member of
+language - list of languages.
+
 */
-	
+
 function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "") {
 	$sql = new db;
+	global $pref;
+
 	$text = "<select class='tbox' name='{$fieldname}'>\n";
 	if (!$optlist || preg_match("#public#", $optlist)) {
 		($curval == e_UC_PUBLIC) ? $s = " selected='selected'" : $s = "";
 		$text .= "<option  value='".e_UC_PUBLIC."' ".$s.">".UC_LAN_0."</option>\n";
 	}
-	 
+
 	if (!$optlist || preg_match("#guest#", $optlist)) {
 		($curval == e_UC_GUEST) ? $s = " selected='selected'" : $s = "";
 		$text .= "<option  value='".e_UC_GUEST."' ".$s.">".UC_LAN_1."</option>\n";
@@ -78,11 +82,21 @@ function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "") {
 		 $s = "";
 		$text .= "<option  value='".e_UC_READONLY."' ".$s.">".UC_LAN_4."</option>\n";
 	}
-	 
+
+	if (preg_match("#language#", $optlist) && $pref['multilanguage']) {
+			$text .= "<option value=''> ------ </option>\n";
+		$tmpl = explode(",",e_LANLIST);
+        foreach($tmpl as $lang){
+			$s = ($curval == $lang) ?  " selected='selected'" : "";
+        	$text .= "<option  value='$lang' ".$s.">".$lang."</option>\n";
+		}
+	}
+
+
 	$text .= "</select>\n";
 	return $text;
 }
-	
+
 function r_userclass_radio($fieldname, $curval = '')
 {
 	$sql = new db;
@@ -103,44 +117,45 @@ function r_userclass_radio($fieldname, $curval = '')
 	}
 	return $text;
 }
-	
+
 function r_userclass_check($fieldname, $curval = '', $optlist = "")
 {
 	$sql = new db;
 	$curArray = explode(",", $curval);
 	$ret = "";
+	$ret .= "<div class='tbox' style='margin-left:0px;margin-right:auto;width:60%;height:58px;overflow:auto'>";
 	if (!$optlist || preg_match("#public#", $optlist))
-	{	
+	{
 		$c = (in_array(e_UC_PUBLIC, $curArray)) ? " checked='checked' " : "";
 		$ret .= "<input type='checkbox' name='{$fieldname}[".e_UC_PUBLIC."]' value='1' {$c} /> ".UC_LAN_0."<br />";
 	}
-	 
+
 	if (!$optlist || preg_match("#guest#", $optlist))
-	{	
+	{
 		$c = (in_array(e_UC_GUEST, $curArray)) ? " checked='checked' " : "";
 		$ret .= "<input type='checkbox' name='{$fieldname}[".e_UC_GUEST."]' value='1' {$c} /> ".UC_LAN_1."<br />";
 	}
 
 	if (!$optlist || preg_match("#nobody#", $optlist))
-	{	
+	{
 		$c = (in_array(e_UC_NOBODY, $curArray)) ? " checked='checked' " : "";
 		$ret .= "<input type='checkbox' name='{$fieldname}[".e_UC_NOBODY."]' value='1' {$c} /> ".UC_LAN_2."<br />";
 	}
 
 	if (!$optlist || preg_match("#member#", $optlist))
-	{	
+	{
 		$c = (in_array(e_UC_MEMBER, $curArray)) ? " checked='checked' " : "";
 		$ret .= "<input type='checkbox' name='{$fieldname}[".e_UC_MEMBER."]' value='1' {$c} /> ".UC_LAN_3."<br />";
 	}
 
 	if (!$optlist || preg_match("#admin#", $optlist))
-	{	
+	{
 		$c = (in_array(e_UC_ADMIN, $curArray)) ? " checked='checked' " : "";
 		$ret .= "<input type='checkbox' name='{$fieldname}[".e_UC_ADMIN."]' value='1' {$c} /> ".UC_LAN_5."<br />";
 	}
 
 	if (!$optlist || preg_match("#readonly#", $optlist))
-	{	
+	{
 		$c = (in_array(e_UC_READONLY, $curArray)) ? " checked='checked' " : "";
 		$ret .= "<input type='checkbox' name='{$fieldname}[".e_UC_READONLY."]' value='1' {$c} /> ".UC_LAN_4."<br />";
 	}
@@ -156,6 +171,7 @@ function r_userclass_check($fieldname, $curval = '', $optlist = "")
 			}
 		}
 	}
+	$ret .= "</div>";
 	return $ret;
 }
 
@@ -197,7 +213,7 @@ function r_userclass_name($id) {
 	}
 	return $class_names[$id];
 }
-	
+
 class e_userclass {
 	function class_add($cid, $uinfoArray)
 	{
@@ -216,7 +232,7 @@ class e_userclass {
 			$sql2->db_Update('user', "user_class='{$new_userclass}' WHERE user_id={$uid}");
 		}
 	}
-	 
+
 	function class_remove($cid, $uinfoArray)
 	{
 		$sql2 = new db;
@@ -234,7 +250,7 @@ class e_userclass {
 			$sql2->db_Update('user', "user_class='{$new_userclass}' WHERE user_id={$uid}");
 		}
 	}
-	
+
 	function class_create($ulist, $class_prefix = "NEW_CLASS_", $num = 0)
 	{
 		global $sql;
@@ -253,7 +269,7 @@ class e_userclass {
 			while($row = $sql->db_Fetch())
 			{
 				$idList[$row['user_id']] = $row['user_class'];
-				
+
 			}
 			while($sql->db_Count("userclass_classes","(*)","WHERE userclass_name = '".strtoupper($class_prefix.$num)."'"))
 			{
@@ -273,13 +289,13 @@ class e_userclass {
 				return $i;
 			}
 		}
-		
+
 	}
-	
+
 	function munge(&$value, &$key)
 	{
 		$value = "'".trim($value)."'";
 	}
 }
-	
+
 ?>
