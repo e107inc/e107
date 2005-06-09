@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-05-26 01:26:52 $
+|     $Revision: 1.28 $
+|     $Date: 2005-06-09 14:20:01 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ if (!e_QUERY) {
 	MAX(d.download_datestamp) as d_last,
 	SUM(d.download_requested) as d_requests
 	FROM #download_category AS dc
-	LEFT JOIN #download AS d ON dc.download_category_id = d.download_category AND d.download_active > 0 AND d.download_class IN (".USERCLASS_LIST.")
+	LEFT JOIN #download AS d ON dc.download_category_id = d.download_category AND d.download_active > 0 AND d.download_visible IN (".USERCLASS_LIST.")
 	WHERE dc.download_category_class IN (".USERCLASS_LIST.")
 	GROUP by dc.download_category_id ORDER by dc.download_category_order
 	";
@@ -155,7 +155,7 @@ if ($action == "list") {
 		$view = ($pref['download_view'] ? $pref['download_view'] : "10");
 	}
 
-	$total_downloads = $sql->db_Select("download", "*", "download_category = '{$id}' AND download_active > 0 AND download_class IN (".USERCLASS_LIST.")");
+	$total_downloads = $sql->db_Select("download", "*", "download_category = '{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.")");
 	if (!$total_downloads) {
 		require_once(HEADERF);
 		require_once(FOOTERF);
@@ -166,7 +166,7 @@ if ($action == "list") {
 	$sql->db_Select("download_category", "*", "download_category_id='{$id}'");
 	$row = $sql->db_Fetch();
 	extract($row);
-	$core_total = $sql->db_Count("download WHERE download_category='{$id}' AND download_active > 0 AND download_class IN (".USERCLASS_LIST.")");
+	$core_total = $sql->db_Count("download WHERE download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.")");
 	$type = $download_category_name;
 
 	$type .= ($download_category_description) ? " [ ".$download_category_description." ]" :
@@ -198,7 +198,7 @@ if ($action == "list") {
 	$sql = new db;
 	 $sql2 = new db;
 
-	$filetotal = $sql->db_Select("download", "*", "download_category='{$id}' AND download_active > 0 AND download_class IN (".USERCLASS_LIST.") ORDER BY {$order} {$sort} LIMIT {$from}, {$view}");
+	$filetotal = $sql->db_Select("download", "*", "download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.") ORDER BY {$order} {$sort} LIMIT {$from}, {$view}");
 	$ft = ($filetotal < $view ? $filetotal : $view);
 	while ($row = $sql->db_Fetch()) {
 		extract($row);
@@ -244,7 +244,7 @@ if ($action == "view") {
 	}
 
 	$sql = new db;
-	if (!$sql->db_Select("download", "*", "download_id = {$id} AND download_active > 0")) {
+	if (!$sql->db_Select("download", "*", "download_id = {$id} AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.")")) {
 		require_once(HEADERF);
 		require_once(FOOTERF);
 		exit;
