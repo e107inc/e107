@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/notify_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-08 00:08:10 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-09 00:03:27 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,8 +22,9 @@ class notify {
 	var $notify_prefs;
 	
 	function notify() {
-		global $sysprefs, $e_event;
-		$this -> notify_prefs = $sysprefs -> getArray('notify_prefs');
+		global $sysprefs, $e_event, $eArrayStorage;
+		$this -> notify_prefs = $sysprefs -> get('notify_prefs');
+		$this -> notify_prefs = $eArrayStorage -> ReadArray($this -> notify_prefs);
 		foreach ($this -> notify_prefs['event'] as $id => $status) {
 			if ($status['type'] != 'off') {
 				$e_event -> register($id, 'notify_'.$id);
