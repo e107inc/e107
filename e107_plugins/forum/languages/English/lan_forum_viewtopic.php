@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_viewtopic.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-16 01:33:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-09 09:56:08 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
@@ -29,8 +29,8 @@ define("LAN_195", "Registered Member");
 define("LAN_321", "Moderators: ");
 define("LAN_389", "Previous thread");
 define("LAN_390", "Next thread");
-define("LAN_391", "track this thread");
-define("LAN_392", "stop tracking this thread");
+define("LAN_391", "Track Thread");
+define("LAN_392", "Cancel Thread Tracking");
 define("LAN_393", "Quick Reply");
 define("LAN_394", "Preview");
 define("LAN_395", "Reply To Thread");
