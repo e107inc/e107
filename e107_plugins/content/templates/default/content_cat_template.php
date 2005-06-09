@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_cat_template.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-06-08 12:05:26 $
+|     $Revision: 1.14 $
+|     $Date: 2005-06-09 08:59:55 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -27,6 +27,8 @@ $CONTENT_CAT_LISTSUB_TABLE_END = "";
 
 global $sc_style, $content_shortcodes, $content_cat_icon_path_large;
 global $aa, $qs, $row, $content_pref, $datestamp, $tp, $comment_total, $gen, $authordetails, $rater, $crumb, $amount;
+global $CONTENT_CAT_TABLE, $CONTENT_CAT_TABLE_INFO_PRE, $CONTENT_CAT_TABLE_INFO_POST;
+global $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST;
 
 $sc_style['CONTENT_CAT_TABLE_ICON']['pre'] = "<td class='forumheader3' rowspan='5' style='width:5%; white-space:nowrap;'>";
 $sc_style['CONTENT_CAT_TABLE_ICON']['post'] = "</td>";
@@ -58,7 +60,7 @@ if(!$CONTENT_CAT_TABLE_START){
 }
 if(!$CONTENT_CAT_TABLE){
 				$CONTENT_CAT_TABLE = "
-				<table class='fborder' style='width:98%; text-align:left;'>
+				<table class='fborder' style='width:98%; text-align:left; margin-bottom:5px;'>
 				<tr>
 					{CONTENT_CAT_TABLE_ICON}
 					<td class='fcaption' >{CONTENT_CAT_TABLE_HEADING} {CONTENT_CAT_TABLE_AMOUNT}</td>
@@ -71,7 +73,7 @@ if(!$CONTENT_CAT_TABLE){
 				{CONTENT_CAT_TABLE_SUBHEADING}
 				{CONTENT_CAT_TABLE_TEXT}
 				{CONTENT_CAT_TABLE_RATING}
-				</table><br />\n";
+				</table>\n";
 
 }
 if(!$CONTENT_CAT_TABLE_END){
@@ -108,7 +110,7 @@ $sc_style['CONTENT_CAT_LIST_TABLE_INFO_POST']['post'] = "</td></tr>";
 // ##### CONTENT CAT_LIST -----------------------------------------------------
 if(!$CONTENT_CAT_LIST_TABLE){
 		$CONTENT_CAT_LIST_TABLE = "
-		<table class='fborder' style='width:98%; text-align:left;'>
+		<table class='fborder' style='width:98%; text-align:left; margin-bottom:10px;'>
 		<tr>
 			{CONTENT_CAT_LIST_TABLE_ICON}
 			<td class='fcaption'>{CONTENT_CAT_LIST_TABLE_HEADING} {CONTENT_CAT_LIST_TABLE_AMOUNT}</td>
@@ -121,7 +123,7 @@ if(!$CONTENT_CAT_LIST_TABLE){
 
 		{CONTENT_CAT_LIST_TABLE_RATING}
 		{CONTENT_CAT_LIST_TABLE_TEXT}
-		</table><br />\n";
+		</table>\n";
 }
 // ##### ----------------------------------------------------------------------
 
@@ -142,7 +144,7 @@ if(!$CONTENT_CAT_LISTSUB_TABLE_START){
 }
 if(!$CONTENT_CAT_LISTSUB_TABLE){
 				$CONTENT_CAT_LISTSUB_TABLE = "
-				<table class='fborder' style='width:98%; text-align:left;'>
+				<table class='fborder' style='width:98%; text-align:left; margin-bottom:5px;'>
 				<tr>
 					{CONTENT_CAT_LISTSUB_TABLE_ICON}
 					<td class='fcaption'>{CONTENT_CAT_LISTSUB_TABLE_HEADING} {CONTENT_CAT_LISTSUB_TABLE_AMOUNT}</td>

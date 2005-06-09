@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_top_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-07 22:02:34 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-09 08:59:55 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ $sc_style['CONTENT_TOP_TABLE_ICON']['post'] = "</td>";
 $sc_style['CONTENT_TOP_TABLE_HEADING']['pre'] = "";
 $sc_style['CONTENT_TOP_TABLE_HEADING']['post'] = "";
 
-$sc_style['CONTENT_TOP_TABLE_AUTHOR']['pre'] = "<tr><td class='forumheader3' colspan='2'>";
+$sc_style['CONTENT_TOP_TABLE_AUTHOR']['pre'] = "<tr><td class='forumheader3' colspan='2'>".CONTENT_LAN_11." ";
 $sc_style['CONTENT_TOP_TABLE_AUTHOR']['post'] = "</td></tr>";
 
 $sc_style['CONTENT_TOP_TABLE_RATING']['pre'] = "<td class='fcaption' style='width:20%; white-space:nowrap; text-align:right;'>";
