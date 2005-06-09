@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-06-09 14:20:12 $
+|     $Revision: 1.50 $
+|     $Date: 2005-06-09 20:51:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -361,7 +361,7 @@ if($action == 'limits')
 	<td colspan='4'><br /><br /></td>
 	</tr>
 	<tr>
-	<td colspan='2' class='forumheader3'>".r_userclass("newlimit_class", 0, "off", "guest, member, admin, classes")."</td>
+	<td colspan='2' class='forumheader3'>".r_userclass("newlimit_class", 0, "off", "guest, member, admin, classes, language")."</td>
 	<td class='forumheader'>
 		<input type='text' class='tbox' size='5' name='new_count_num' value='' /> ".DOWLAN_109."
 		<input type='text' class='tbox' size='5' name='new_count_days' value='' /> ".DOWLAN_110."
@@ -784,13 +784,13 @@ class download {
 		$text .= "
 			<tr>
 			<td style='width:20%' class='forumheader3'>".DOWLAN_145.":</td>
-			<td style='width:80%' class='forumheader3'>".r_userclass('download_visible', $download_visible, 'off', 'public, nobody, member, admin, classes')."</td>
+			<td style='width:80%' class='forumheader3'>".r_userclass('download_visible', $download_visible, 'off', 'public, nobody, member, admin, classes, language')."</td>
 			</tr>
 
 
 			<tr>
 			<td style='width:20%' class='forumheader3'>".DOWLAN_106.":</td>
-			<td style='width:80%' class='forumheader3'>".r_userclass('download_class', $download_class, 'off', 'public, nobody, member, admin, classes')."</td>
+			<td style='width:80%' class='forumheader3'>".r_userclass('download_class', $download_class, 'off', 'public, nobody, member, admin, classes, language')."</td>
 			</tr>
 			";
 
@@ -1065,7 +1065,7 @@ class download {
 
 			<tr>
 			<td style='width:30%' class='forumheader3'>".DOWLAN_43.":<br /><span class='smalltext'>(".DOWLAN_44.")</span></td>
-			<td style='width:70%' class='forumheader3'>".r_userclass("download_category_class", $download_category_class, 'off', 'public, nobody, member, admin, classes')."
+			<td style='width:70%' class='forumheader3'>".r_userclass("download_category_class", $download_category_class, 'off', 'public, nobody, member, admin, classes, language')."
 
 			</td></tr>";
 
