@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/cascade.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-12 10:43:46 $
-|     $Author: sweetas $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-09 23:05:56 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 	
@@ -26,7 +26,7 @@ while (list($key, $funcinfo) = each($newarray)) {
 	
 $text .= "<tr>
 	<td class='fcaption' colspan='5'>
-	Plugins
+	".ADLAN_CL_7."
 	</td>
 	</tr>";
 	
