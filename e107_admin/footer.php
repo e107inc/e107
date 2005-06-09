@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-05-17 21:26:19 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2005-06-09 22:29:56 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -41,17 +41,27 @@ if (ADMIN == TRUE) {
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
 	parse_admin($ADMIN_FOOTER);
 }
-	$eTimingStop = microtime();
-	global $eTimingStart;
-	$rendertime = number_format($eTraffic->TimeDelta( $eTimingStart, $eTimingStop ), 4);
-	$db_time    = number_format($db_time,4);
-	$rinfo = '';
+$eTimingStop = microtime();
+global $eTimingStart;
+$rendertime = number_format($eTraffic->TimeDelta( $eTimingStart, $eTimingStop ), 4);
+$db_time    = number_format($db_time,4);
+$rinfo = '';
 
-	if($pref['displayrendertime']){ $rinfo .= "Render time: {$rendertime} second(s); {$db_time} of that for queries. "; }
-	if($pref['displaysql']){ $rinfo .= "DB queries: ".$sql -> db_QueryCount().". "; }
-	if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
-	echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");echo "<div style='text-align: center; margin-left: auto; margin-right: auto;'><a href='".e_ADMIN."credits.php'>Credits</a></div>";
-?>
+if($pref['displayrendertime']){ $rinfo .= "Render time: {$rendertime} second(s); {$db_time} of that for queries. "; }
+if($pref['displaysql']){ $rinfo .= "DB queries: ".$sql -> db_QueryCount().". "; }
+if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
+echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");echo "<div style='text-align: center; margin-left: auto; margin-right: auto;'><a href='".e_ADMIN."credits.php'>Credits</a></div>";
+
+if($error_handler->debug == true) {
+	echo "
+	<br /><br />
+	<div>
+		<h3>PHP Errors:</h3><br />
+		".$error_handler->return_errors()."
+	</div>
+	";
+}
+	?>
 
 </body>
 </html>
