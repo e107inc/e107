@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.163 $
-|     $Date: 2005-06-09 10:45:57 $
+|     $Revision: 1.164 $
+|     $Date: 2005-06-09 11:14:12 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -1209,6 +1209,15 @@ class error_handler {
 					$this->errors[] = $error;
 				}
 			break;
+			case E_USER_ERROR:
+				if ($this->debug == true) {
+					$error['short'] = "Internal Error Message: {$message}, Line {$line} of {$file}<br />\n";
+					$trace = debug_backtrace();
+					$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
+					$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
+					$error['trace'] = $backtrace;
+					$this->errors[] = $error;
+				}
 			default:
 				return true;
 			break;
@@ -1225,6 +1234,10 @@ class error_handler {
 		}
 		$ret .= "</table>";
 		return $ret;		
+	}
+	
+	function trigger_error($information, $level) {
+		trigger_error($information);
 	}
 }
 
