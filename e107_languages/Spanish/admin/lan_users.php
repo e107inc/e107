@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-10 17:49:36 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-10 19:29:35 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -120,7 +120,7 @@ define("USRLAN_125", "Desde");
 define("USRLAN_126", "Permitir a ususarios valorar ususarios");
 define("USRLAN_127", "Permitir comentarios en perfil de usuario");
 define("USRLAN_128", "Nombre de conexión");
-define("USRLAN_129", "Opciones de edición (mostrar)");
+
 define("USRLAN_130", "Activar tracking de usuario online");
 define("USRLAN_131", "Debe activar esta opción para usar las opciones de tracking de usuario online, como online.php, foro online info y menús online");
 define("USRLAN_132", "Activar");
