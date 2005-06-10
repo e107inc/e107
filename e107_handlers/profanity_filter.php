@@ -5,10 +5,15 @@ class e_profanityFilter {
 	 
 	function e_profanityFilter() {
 		global $pref;
-		 
+
 		$words = explode(",", $pref['profanity_words']);
+		
 		foreach($words as $word) {
-			$this->profanityList .= trim(chop($word))."|";
+			$word = trim($word);
+			if($word != "")
+			{
+				$this->profanityList .= $word."|";
+			}
 		}
 		$this->profanityList = substr($this->profanityList, 0, -1);
 		unset($words);
