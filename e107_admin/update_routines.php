@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.98 $
-|     $Date: 2005-06-09 22:42:40 $
+|     $Revision: 1.99 $
+|     $Date: 2005-06-10 00:40:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -744,28 +744,42 @@ function update_61x_to_700($type) {
 			$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs' ");
 		}
 
-		// Save all prefs that were set in above update routines
-		if ($s_prefs == TRUE) {
-			save_prefs();
-		}
+
 
 		// New Downloads visibility field.
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
 		$fieldname = mysql_field_name($fields, 18);
 		if($fieldname != "download_visible"){
-			mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_visible` TEXT NOT NULL ;");
+			mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_visible` varchar(255) NOT NULL default '0' ;");
 			mysql_query("UPDATE `".MPREFIX."download` SET download_visible = download_class");
-       		mysql_query("ALTER TABLE `".MPREFIX."download` CHANGE `download_class` `download_class` TEXT NOT NULL");
+       		mysql_query("ALTER TABLE `".MPREFIX."download` CHANGE `download_class` `download_class` varchar(255) NOT NULL default '0'");
+
+
+		}
+
+        if (!isset($pref['rss_feeds'])) {
+			mysql_query("INSERT INTO `".MPREFIX."plugin` VALUES (0, 'RSS', '1.0', 'rss_menu', 1);");
+        	$pref['rss_feeds'] = 1;
+			$s_prefs = TRUE;
+
+			mysql_query("ALTER TABLE `".MPREFIX."download_category` CHANGE `download_category_class` `download_category_class` varchar(255) NOT NULL default '0'");
+
 		}
 
 
-
-
+        // Save all prefs that were set in above update routines
+		if ($s_prefs == TRUE) {
+			save_prefs();
+		}
 
 		// -----------------------------------------------------
 
 	} else {
 		global $sysprefs;
+
+		if (!isset($pref['rss_feeds'])) {
+			return FALSE;
+		}
 
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
 		$fieldname = mysql_field_name($fields, 18);

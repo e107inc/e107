@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-09 22:14:10 $
-|     $Author: streaky $
+|     $Revision: 1.15 $
+|     $Date: 2005-06-10 00:40:48 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -65,12 +65,13 @@ class rssCreate {
 
 		switch ($content_type) {
 			case 1:
+				$topic = (is_numeric($topic_id))? " AND news_category = ".$topic_id : "";
 				$this -> contentType = "news";
 				$this -> rssQuery = "
 				SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-				WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type!=2 ORDER BY news_datestamp DESC LIMIT 0,9";
+				WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type!=2 $topic ORDER BY news_datestamp DESC LIMIT 0,9";
 				$sql->db_Select_gen($this -> rssQuery);
 
 				$tmp = $sql->db_getList();

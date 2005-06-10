@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/admin_prefs.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-26 00:24:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-10 00:40:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -27,6 +27,7 @@ require_once(e_ADMIN."auth.php");
 
 if(IsSet($_POST['updatesettings'])){
 	$pref['rss_feeds'] = implode(",",$_POST['feeds']);
+	$pref['rss_newscats'] = $_POST['rss_newscats'];
 	save_prefs();
 	$message = LAN_SAVED;
 }
@@ -46,8 +47,6 @@ $text = "<div style='text-align:center'>
 	$feedlist[6] = "Forum Threads";
 	$feedlist[7] = "Forum Posts";
 
-
-
 	$preset = explode(",",$pref['rss_feeds']);
 
 	foreach($feedlist as $key=>$name){
@@ -58,6 +57,12 @@ $text = "<div style='text-align:center'>
 
 	$text .="</td></tr>";
 	}
+
+	$text .= "<tr><td class='forumheader3'>Enable seperate feeds for each news category?</td>";
+	$text .= "<td>";
+	$sel = ($pref['rss_newscats'] == 1) ? " checked='checked' " : "";
+	$text .= "<input type='checkbox' $sel class='tbox' name='rss_newscats' value='1' />
+				</td></tr>";
 
 	$text .="<tr style='vertical-align:top'>
 	<td colspan='2'  style='text-align:center' class='forumheader'>

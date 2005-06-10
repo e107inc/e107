@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-05-26 00:25:44 $
+|     $Revision: 1.53 $
+|     $Date: 2005-06-10 00:40:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -39,15 +39,10 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 <meta http-equiv='content-style-type' content='text/css' />\n";
 
-$rss = explode(",",$pref['rss_feeds']);
-	$feedlist[1] = "News";
-	$feedlist[9] = "Chatbox Posts";
-	$feedlist[12] = "Downloads";
-	$feedlist[6] = "Forum Threads";
-	$feedlist[7] = "Forum Posts";
-foreach($rss as $rss_id){
-	echo "<link rel='alternate' type='application/rss+xml' title='".SITENAME." RSS ".$feedlist[$rss_id] ."' href='".$e107->http_abs_location("PLUGINS_DIRECTORY", "rss_menu/rss.php?{$rss_id}.2")."' />\n";
+if($pref['rss_feeds'] && file_exists(e_PLUGIN."rss_menu/rss_meta.php")){
+	require_once(e_PLUGIN."rss_menu/rss_meta.php");
 }
+
 if(isset($pref['trackbackEnabled'])){
 echo "<link rel='pingback' href='".$e107->http_abs_location("PLUGINS_DIRECTORY", "trackback/xmlrpc.php")."' />
 ";
