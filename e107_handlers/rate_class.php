@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-10 09:31:05 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-10 10:22:58 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
+@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_rate.php");
+@include_once(e_LANGUAGEDIR."English/lan_rate.php");
 class rater {
 	function rateselect($text, $table, $id, $mode=FALSE) {
 		//$mode	: if mode is set, no urljump will be used (used in combined comments+rating system)
@@ -183,12 +185,12 @@ class rater {
 				$rate .= "&nbsp;".$ratearray[1].".".$ratearray[2];
 				if(!$userid){
 					$rate .= " - ".$ratearray[0]."&nbsp;";
-					$rate .= ($ratearray[0] == 1 ? LAN_38 : LAN_39);
+					$rate .= ($ratearray[0] == 1 ? RATELAN_0 : RATELAN_1);
 				}
 			}
 		}else{
 			if($enter==TRUE){
-				$rate .= LAN_65;
+				$rate .= RATELAN_4;
 			}
 		}
 		if($enter==TRUE){
@@ -196,9 +198,9 @@ class rater {
 				$rate .= " - ";
 			}
 			if(!$this -> checkrated($table, $id) && USER){
-				$rate .= $this -> rateselect(LAN_40, $table, $id, 'comment');
+				$rate .= $this -> rateselect(RATELAN_2, $table, $id, 'comment');
 			}else if(USER){
-				$rate .= LAN_41;
+				$rate .= RATELAN_3;
 			}
 		}
 
