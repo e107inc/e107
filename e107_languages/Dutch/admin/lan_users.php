@@ -73,7 +73,6 @@ define("USRLAN_85", "leden die hun account niet hebben geactiveerd - klik hieron
 define("USRLAN_86", "Lid geverifieerd");
 define("USRLAN_87", "Ledeninstellingen bijgewerkt");
 define("USRLAN_88", "Ledenklasse bijgewerkt");
-define("USRLAN_89", "Ga naar pagina:");
 define("USRLAN_90", "Zoek leden");
 define("USRLAN_91", "Klasse");
 define("USRLAN_92", "Ongeldige tekens in gebruikersnaam");
@@ -96,7 +95,6 @@ define("USRLAN_125", "Van");
 define("USRLAN_126", "Toestaan om leden elkaar te laten beoordelen");
 define("USRLAN_127", "Toestaan reacties in ledenprofiel");
 define("USRLAN_128", "Inlognaam");
-define("USRLAN_129", "Bewerken weergave opties");
 define("USRLAN_130", "Activeren online gebruikersweergave");
 define("USRLAN_131", "Je moet deze optie activeren om online gebruikersweergave, zoals online.php, forum online info en online menu's te kunnen gebruiken");
 define("USRLAN_132", "Activeren");

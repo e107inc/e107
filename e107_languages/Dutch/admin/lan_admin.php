@@ -196,6 +196,9 @@ define("LAN_CANCEL","Annuleren");
 define("LAN_CONFDELETE","Bevestig verwijderen");
 define("LAN_PLUGIN","Plugin");
 define("LAN_ORDER","Volgorde");
+define("LAN_DISPLAYOPT", "Bewerk weergave opties");
+define("LAN_GOPAGE", "Ga naar pagina:");
+define("LAN_DATESTAMP","Datum");
 
 define('ADLAN_CL_1', "Instellingen");
 define('ADLAN_CL_2', "Leden");

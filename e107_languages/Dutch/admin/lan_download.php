@@ -55,7 +55,6 @@ define("DOWLAN_46", "Bijwerken categorie");
 define("DOWLAN_47", "Categorie aangemaakt");
 define("DOWLAN_48", "Categorie bijgewerkt");
 define("DOWLAN_49", "Downloadcategorie");
-define("DOWLAN_50", "Ga naar pagina: ");
 define("DOWLAN_51", "Zoek download");
 define("DOWLAN_52", "Bestanden");
 define("DOWLAN_53", "Sub-categorie");
@@ -120,4 +119,7 @@ define("DOWLAN_143", "Opvoeren mirror");
 define("DOWLAN_144", "Geen mirrors opgegeven, ga naar de mirror sectie om ze toe te voegen.");
 define("DOWLAN_145", "Download zichtbaar voor");
 define("DOWLAN_146", "Maatwerk Download-weiger melding of URL");
+define("DOWLAN_147", "Pictogram voor lege categorie");
+define("DOWLAN_148", "Aankruisen om datum en tijd in huidige te veranderen");
+define("DOWLAN_149", "Of klik hier om een extern bestand te gebruiken");
 ?>
