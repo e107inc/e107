@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-05-28 01:49:49 $
+|     $Revision: 1.11 $
+|     $Date: 2005-06-10 22:51:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -79,4 +79,14 @@ define("LAN_SIGNUP_28", "choice of Content/Mail-lists");
 
 define("LAN_SIGNUP_29", "A verification email will be sent to the email address you enter here so it must be valid.");
 define("LAN_SIGNUP_30", "If you do not wish to display your email address on this site, please tick the 'hide email address' box.");
+
+
+define("LAN_LOGINNAME", "Login Name");
+define("LAN_PASSWORD", "Password");
+define("LAN_USERNAME", "Display Name");
+define("LAN_EMAIL_01", "Dear");
+define("LAN_EMAIL_04", "Please keep this email for your own information.");
+define("LAN_EMAIL_05", "Your password has been encrypted and cannot be retrieved if you misplace or forget it. You can however request a new password if this happens.");
+define("LAN_EMAIL_06", "Thanks for your registration.");
+
 ?>
