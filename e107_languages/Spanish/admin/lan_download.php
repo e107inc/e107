@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_download.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-10 17:10:15 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-10 17:49:36 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -43,7 +43,7 @@ define("DOWLAN_34", "¿Está seguro de querer borrar esta categoría de descarga
 define("DOWLAN_35", "Descarga");
 define("DOWLAN_36", "Borrada");
 define("DOWLAN_37", "Categoría principal");
-define("DOWLAN_38", "No existen categorias");
+define("DOWLAN_38", "No existen categorías");
 define("DOWLAN_39", "Categorías de descargas");
 define("DOWLAN_40", "Nada - Categoría principal");
 define("DOWLAN_41", "Icono");
@@ -55,7 +55,7 @@ define("DOWLAN_46", "Actualizar categoría");
 define("DOWLAN_47", "Categoría creada");
 define("DOWLAN_48", "Categoría actualizada");
 define("DOWLAN_49", "Categoría de descargas");
-define("DOWLAN_50", "Ir a la página: ");
+
 define("DOWLAN_51", "Buscar descargas");
 define("DOWLAN_52", "Archivos");
 define("DOWLAN_53", "Subcategoría");
