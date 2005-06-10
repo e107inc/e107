@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-12 22:20:22 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-10 09:31:05 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 class rater {
-	function rateselect($text, $table, $id) {
+	function rateselect($text, $table, $id, $mode=FALSE) {
+		//$mode	: if mode is set, no urljump will be used (used in combined comments+rating system)
 
 		$table = preg_replace('/\\W/i', '', $table);
 		$id = intval($id);
@@ -26,20 +27,25 @@ class rater {
 		if ($_SERVER['QUERY_STRING']) {
 			$self .= "?".$_SERVER['QUERY_STRING'];
 		}
-
+		
+		if($mode==FALSE){
+			$jump = "onchange='urljump(this.options[selectedIndex].value)'";
+			$url = e_BASE."rate.php?";
+		}
+		
 		$str = $text."
-			<select name='rateindex' onchange='urljump(this.options[selectedIndex].value)' class='tbox'>
+			<select name='rateindex' ".$jump." class='tbox'>
 			<option selected='selected'  value='0'>Rate</option>
-			<option value='".e_BASE."rate.php?{$table}^{$id}^{$self}^1'>1</option>
-			<option value='".e_BASE."rate.php?{$table}^{$id}^{$self}^2'>2</option>
-			<option value='".e_BASE."rate.php?{$table}^{$id}^{$self}^3'>3</option>
-			<option value='".e_BASE."rate.php?{$table}^{$id}^{$self}^4'>4</option>
-			<option value='".e_BASE."rate.php?{$table}^{$id}^{$self}^5'>5</option>
-			<option value='".e_BASE."rate.php?{$table}^{$id}^{$self}^6'>6</option>
-			<option value='".e_BASE."rate.php?{$table}^{$id}^{$self}^7'>7</option>
-			<option value='".e_BASE."rate.php?{$table}^{$id}^{$self}^8'>8</option>
-			<option value='".e_BASE."rate.php?{$table}^{$id}^{$self}^9'>9</option>
-			<option value='".e_BASE."rate.php?{$table}^{$id}^{$self}^10'>10</option>
+			<option value='".$url."{$table}^{$id}^{$self}^1'>1</option>
+			<option value='".$url."{$table}^{$id}^{$self}^2'>2</option>
+			<option value='".$url."{$table}^{$id}^{$self}^3'>3</option>
+			<option value='".$url."{$table}^{$id}^{$self}^4'>4</option>
+			<option value='".$url."{$table}^{$id}^{$self}^5'>5</option>
+			<option value='".$url."{$table}^{$id}^{$self}^6'>6</option>
+			<option value='".$url."{$table}^{$id}^{$self}^7'>7</option>
+			<option value='".$url."{$table}^{$id}^{$self}^8'>8</option>
+			<option value='".$url."{$table}^{$id}^{$self}^9'>9</option>
+			<option value='".$url."{$table}^{$id}^{$self}^10'>10</option>
 			</select>";
 		return $str;
 	}
@@ -73,8 +79,11 @@ class rater {
 			return FALSE;
 		} else {
 			$row = $sql->db_Fetch();
-			extract($row);
-			if (ereg("\.".USERID."\.", $rate_voters)) {
+
+			if (ereg("\.".USERID."\.", $row['rate_voters'])) {
+				return TRUE;
+			//added option to split an individual users rating
+			}elseif (ereg("\.".USERID.chr(1)."([0-9]{1,2})\.", $row['rate_voters'])) {
 				return TRUE;
 			} else {
 				return FALSE;
@@ -82,7 +91,8 @@ class rater {
 		}
 	}
 
-	function getrating($table, $id) {
+	function getrating($table, $id, $userid=FALSE) {
+		//userid	: boolean, get rating for a single user, or get general total rating of the item
 
 		$table = preg_replace('/\\W/i', '', $table);
 		$id = intval($id);
@@ -91,17 +101,109 @@ class rater {
 		if (!$sql->db_Select("rate", "*", "rate_table = '{$table}' AND rate_itemid = '{$id}' ")) {
 			return FALSE;
 		} else {
-			$row = $sql->db_Fetch();
-			extract($row);
-			$rating[0] = $rate_votes; // $rating[0] == number of votes
-			$tmp = $rate_rating / $rate_votes;
-			$tmp = explode(".", $tmp);
-			$rating[1] = $tmp[0];
-			// $ratomg[1] = main result
-			$rating[2] = substr($tmp[1], 0, 1);
-			// $rating[2] == remainder
+			$rowgr = $sql->db_Fetch();
+			if($userid==TRUE){
+				$rating = "";
+				$rateusers = explode(".", $rowgr['rate_voters']);
+				for($i=0;$i<count($rateusers);$i++){
+					if(strpos($rateusers[$i], chr(1))){
+						$rateuserinfo[$i] = explode(chr(1), $rateusers[$i]);
+						if($userid == $rateuserinfo[$i][0]){
+							$rating[0] = 0;						//number of votes, not relevant in users rating
+							$rating[1] = $rateuserinfo[$i][1];	//the rating by this user
+							$rating[2] = 0;						//no remainder is present, because we have a single users rating
+							break;
+						}
+					}else{
+						$rating[0] = 0;		//number of votes, not relevant in users rating
+						$rating[1] = 0;		//the rating by this user
+						$rating[2] = 0;		//no remainder is present, because we have a single users rating							
+					}
+				}
+			}else{
+				$rating[0] = $rowgr['rate_votes']; // $rating[0] == number of votes
+				$tmp = $rowgr['rate_rating'] / $rowgr['rate_votes'];
+				$tmp = explode(".", $tmp);
+				$rating[1] = $tmp[0];
+				// $ratomg[1] = main result
+				$rating[2] = substr($tmp[1], 0, 1);
+				// $rating[2] == remainder
+			}
+
 			return $rating;
 		}
+	}
+
+	function enterrating($rateindex){
+		global $sql;
+
+		$qs = explode("^", $rateindex);
+			
+		if (!$qs[0] || USER == FALSE || $qs[3] > 10 || $qs[3] < 1) {
+			header("location:".e_BASE."index.php");
+			exit;
+		}
+			
+		$table = $qs[0];
+		$itemid = $qs[1];
+		$returnurl = $qs[2];
+		$rate = $qs[3];
+
+		//rating is now stored as userid-rating (to retain individual users rating)
+		//$sep = "^";
+		$sep = chr(1);
+		$voter = USERID.$sep.$qs[3];
+
+		if ($sql->db_Select("rate", "*", "rate_table='$table' AND rate_itemid='$itemid' ")) {
+			$row = $sql->db_Fetch();
+			$rate_voters = $row['rate_voters'].".".$voter.".";
+			$sql->db_Update("rate", "rate_votes=rate_votes+1, rate_rating=rate_rating+'$rate', rate_voters='$rate_voters' WHERE rate_itemid='$itemid' ");
+		} else {
+			$sql->db_Insert("rate", " 0, '$table', '$itemid', '$rate', '1', '.".$voter.".' ");
+		}
+	}
+
+	function composerating($table, $id, $enter=TRUE, $userid=FALSE){
+		//enter		: boolean to show (rateselect box + textual info) or not
+		//userid	: used to calcaulate a users given rating
+
+		$rate = "";
+		if($ratearray = $this -> getrating($table, $id, $userid)){
+			if($ratearray[1] > 0){
+				for($c=1; $c<= $ratearray[1]; $c++){
+					$rate .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
+				}
+				if($ratearray[1] < 10){
+					for($c=9; $c>=$ratearray[1]; $c--){
+						$rate .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
+					}
+				}
+				$rate .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
+				if($ratearray[2] == ""){ $ratearray[2] = 0; }
+				$rate .= "&nbsp;".$ratearray[1].".".$ratearray[2];
+				if(!$userid){
+					$rate .= " - ".$ratearray[0]."&nbsp;";
+					$rate .= ($ratearray[0] == 1 ? LAN_38 : LAN_39);
+				}
+			}
+		}else{
+			if($enter==TRUE){
+				$rate .= LAN_65;
+			}
+		}
+		if($enter==TRUE){
+			if(!isset($ratearray[1]) || $ratearray[1] > 0){
+				$rate .= " - ";
+			}
+			if(!$this -> checkrated($table, $id) && USER){
+				$rate .= $this -> rateselect(LAN_40, $table, $id, 'comment');
+			}else if(USER){
+				$rate .= LAN_41;
+			}
+		}
+
+		return $rate;
+
 	}
 }
 ?>

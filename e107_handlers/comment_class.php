@@ -12,16 +12,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-06-01 19:49:24 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.28 $
+|     $Date: 2005-06-10 09:31:05 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
 @include(e_LANGUAGEDIR."English/lan_comment.php");
 class comment {
-	function form_comment($action, $table, $id, $subject, $content_type, $return=FALSE) {
+	function form_comment($action, $table, $id, $subject, $content_type, $return=FALSE, $rating=FALSE) {
+		//rating	: boolean, to show rating system in comment
 		global $pref, $sql, $tp;
 		require_once(e_HANDLER."ren_help.php");
 		if (ANON == TRUE || USER == TRUE) {
@@ -75,10 +76,21 @@ class comment {
 				$comval = "";
 			}
 
+			//add the rating select box/result ?
+			if($rating == TRUE){
+				global $rater;
+				require_once(e_HANDLER."rate_class.php");
+				if(!is_object($rater)){ $rater = new rater; }
+				$rate = $rater -> composerating($table, $id, $enter=TRUE, USERID);
+				$rate = "<tr><td style='width:20%'>Rating:</td>\n<td style='width:80%;'>".$rate."</td></tr>\n";
+			}
+			//end rating area
+
 			if (ANON == TRUE && USER == FALSE) {
 				$text .= "<tr>\n<td style='width:20%'>".LAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>";
 			}
-			$text .= "<tr> \n<td style='width:20%'>".LAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea style='width:80%' class='tbox' name='comment' cols='1' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
+			$text .= $rate."<tr> \n
+			<td style='width:20%'>".LAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea style='width:80%' class='tbox' name='comment' cols='1' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
 			<input class='helpbox' type='text' name='helpb' style='width:80%' /><br />".ren_help(1, 'addtext', 'help')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td id='commentformbutton' style='width:80%;'>\n". ($action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').($eaction == "edit" ? "<input type='hidden' name='editpid' value='$id' />" : "").($content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".($eaction == "edit" ? LAN_320 : LAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
 			if($return)
 			{
@@ -92,8 +104,15 @@ class comment {
 			echo "<br /><div style='text-align:center'><b>".LAN_6." <a href='".e_SIGNUP."'>".COMLAN_1."</a> ".COMLAN_2."</b></div>";
 		}
 	}
-	function render_comment($row, $table, $action, $id, $width, $subject) {
+	function render_comment($row, $table, $action, $id, $width, $subject, $rating=FALSE) {
+		//rating	: boolean, to show rating system in rendered comment
 		global $COMMENTSTYLE, $pref, $tp;
+		if($rating==TRUE){
+			global $rater;
+			require_once(e_HANDLER."rate_class.php");
+			if(!is_object($rater)){ $rater = new rater; }
+		}
+
 		require_once(e_HANDLER."level_handler.php");
 		if (!$width) {
 			$width = 0;
@@ -148,6 +167,8 @@ class comment {
 			</span>
 			<br/>
 			{REPLY}
+			<br/>
+			{RATING}
 			</td>
 			<td style='width:70%; vertical-align:top'>
 			{COMMENT}
@@ -240,6 +261,10 @@ class comment {
 		require_once(e_HANDLER."encrypt_handler.php");
 		$replace[11] = (ADMIN ? "<a href='".e_BASE."userposts.php?0.comments.$comment_ip'>IP: ".decode_ip($comment_ip)."</a>" : "");
 
+		//method to render a users rating given
+		$search[12] = "/\{RATING\}(.*?)/si";
+		$replace[12] = ($rating==TRUE && $user_id ? $rater->composerating($table, $id, FALSE, $user_id) : "");
+
 
 		$text .= preg_replace($search, $replace, $renderstyle);
 		if ($action == "comment" && $pref['nested_comments']) {
@@ -260,8 +285,9 @@ class comment {
 		}
 		return stripslashes($text);
 	}
-	function enter_comment($author_name, $comment, $table, $id, $pid, $subject) {
-		global $sql, $tp, $e107cache, $e_event, $e107, $pref;
+	function enter_comment($author_name, $comment, $table, $id, $pid, $subject, $rateindex=FALSE) {
+		//rateindex	: the posted value from the rateselect box (without the urljump) (see function rateselect())
+		global $sql, $tp, $e107cache, $e_event, $e107, $pref, $rater;
 
 
 		if(strstr(e_QUERY, "edit"))
@@ -368,6 +394,10 @@ class comment {
 		else
 		{
 			define("emessage", LAN_312);
+		}
+		//if rateindex is posted, enter the rating from this user
+		if($rateindex){
+			$rater -> enterrating($rateindex);
 		}
 	}
 }
