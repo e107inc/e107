@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-09 23:12:20 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-10 17:13:24 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Enlaces");
 
 define("LCLAN_1", "Opciones Guardadas");
-define("LCLAN_2", "Enlace guardado en la dase de datos.");
+define("LCLAN_2", "Enlace guardado en la base de datos.");
 define("LCLAN_3", "Enlace actualizado en la base de datos.");
 define("LCLAN_4", "Enlace eliminado.");
 define("LCLAN_6", "Orden actualizado.");
@@ -25,13 +25,13 @@ define("LCLAN_14", "Enviar");
 define("LCLAN_15", "Nombre del enlace");
 define("LCLAN_16", "URL del enlace");
 define("LCLAN_17", "Descripción del enlace");
-define("LCLAN_18", "Icono /botón del enlace");
+define("LCLAN_18", "Icono / botón del enlace");
 define("LCLAN_19", "Tipo de apertura del enlace");
 define("LCLAN_20", "Abrir en la misma ventana");
 define("LCLAN_23", "Abrir en una ventana nueva");
 define("LCLAN_24", "Abrir en una ventana de 600x400");
 define("LCLAN_25", "Clase del enlace");
-define("LCLAN_26", "Activando hará el enlace visible solo a usuarios de esa clase");
+define("LCLAN_26", "Activando hará que el enlace sea visible solo a usuarios de esa clase");
 define("LCLAN_27", "Actualizar enlace");
 define("LCLAN_28", "Crear enlace");
 define("LCLAN_29", "Enlaces");
@@ -52,7 +52,7 @@ define("LCLAN_45", "Enviado por");
 define("LCLAN_51", "Categoría de enlaces guardada");
 define("LCLAN_52", "Categoría de enlaces actualizada");
 define("LCLAN_53", "Enlace");
-define("LCLAN_54", "eliminado");
+define("LCLAN_54", "Eliminado");
 define("LCLAN_55", "Categoría del enlace");
 define("LCLAN_56", "¿Esta seguro de eliminar esta categoría?");
 define("LCLAN_57", "¿Esta seguro de eliminar este enlace enviado?");
@@ -78,7 +78,7 @@ define("LCLAN_76", "No hay enlaces enviados");
 define("LCLAN_77", "Enlace enviado eliminado");
 define("LCLAN_78", "Mostrar descripción como Screentip");
 define("LCLAN_79", "La descripción se mostrará cuando pase por encima con el ratón");
-define("LCLAN_80", "ver imagenes");
+define("LCLAN_80", "Ver imágenes");
 define("LCLAN_81", "Limpiar formulario");
 define("LCLAN_82", "Enviado por");
 define("LCLAN_83", "Generador de Submenús");
@@ -102,5 +102,7 @@ define("LCLAN_100", "Categoría del enlace");
 define('LCLAN_101', "Configurar página de enlaces");
 define('LCLAN_102', "Página de enlaces instalada correctamente, por favor configúrela desde el menú del administrador.");
 define('LCLAN_103', "Enlaces");
+define('LCLAN_104', "Valoración de enlace");
+define('LCLAN_105', "Permitir a los usuarios valorar enlaces");
 
 ?>
