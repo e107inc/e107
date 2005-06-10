@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2005-06-09 20:51:58 $
-|     $Author: e107coders $
+|     $Revision: 1.51 $
+|     $Date: 2005-06-10 13:16:40 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -932,6 +932,12 @@ class download {
 
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
+
+				if(strstr($download_category_icon, chr(1)))
+				{
+					list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $download_category_icon);
+				}
+
 				$text .= "<tr>
 					<td style='width:5%; text-align:center' class='forumheader'>".($download_category_icon ? "<img src='".e_IMAGE."icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
 					<td colspan='2' style='width:70%' class='forumheader'><b>$download_category_name</b></td>
@@ -945,6 +951,10 @@ class download {
 				if ($sql2->db_Select("download_category", "*", "download_category_parent=$parent_id")) {
 					while ($row = $sql2->db_Fetch()) {
 						extract($row);
+							if(strstr($download_category_icon, chr(1)))
+							{
+								list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $download_category_icon);
+							}
 						$files = $sql4->db_Count("download", "(*)", "WHERE download_category='".$download_category_id."'");
 						$text .= "<tr>
 							<td style='width:5%; text-align:center' class='forumheader3'>".($download_category_icon ? "<img src='".e_IMAGE."icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
@@ -961,6 +971,10 @@ class download {
 						if ($sql3->db_Select("download_category", "*", "download_category_parent=$sub_parent_id")) {
 							while ($row = $sql3->db_Fetch()) {
 								extract($row);
+								if(strstr($download_category_icon, chr(1)))
+								{
+									list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $download_category_icon);
+								}
 								$files = $sql4->db_Count("download", "(*)", "WHERE download_category='".$download_category_id."'");
 								$text .= "<tr>
 									<td style='width:5%; text-align:center' class='forumheader3'>".($download_category_icon ? "<img src='".e_IMAGE."icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
@@ -998,6 +1012,14 @@ class download {
 				$row = $sql->db_Fetch();
 				 extract($row);
 				$main_category_parent = $download_category_parent;
+				if(strstr($download_category_icon, chr(1)))
+				{
+					list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $download_category_icon);
+				}
+				else
+				{
+					$download_category_icon_empty = "";
+				}
 			}
 		}
 
@@ -1059,9 +1081,30 @@ class download {
 			$text .= "<a href=\"javascript:insertext('$icon','download_category_icon','cat_icn')\"><img src='".e_IMAGE."icons/".$icon."' style='border:0' alt='' /></a> ";
 		}
 
+		reset($iconlist);
+
 		$text .= "
 			</div></td>
 			</tr>
+
+			<tr>
+			<td style='width:30%' class='forumheader3'>".DOWLAN_147.": </td>
+			<td style='width:70%' class='forumheader3'>
+			<input class='tbox' type='text' id='download_category_icon_empty' name='download_category_icon_empty' size='60' value='$download_category_icon_empty' maxlength='100' />
+
+			<br />
+			<input class='button' type ='button' style='cursor:hand' size='30' value='".DOWLAN_42."' onclick='expandit(this)' />
+			<div id='cat_icn_empty' style='display:none;{head}' >";
+
+		while (list($key, $icon) = each($iconlist)) {
+			$text .= "<a href=\"javascript:insertext('$icon','download_category_icon_empty','cat_icn_empty')\"><img src='".e_IMAGE."icons/".$icon."' style='border:0' alt='' /></a> ";
+		}
+
+		$text .= "
+			</div></td>
+			</tr>
+
+
 
 			<tr>
 			<td style='width:30%' class='forumheader3'>".DOWLAN_43.":<br /><span class='smalltext'>(".DOWLAN_44.")</span></td>
@@ -1091,6 +1134,12 @@ class download {
 		$download_category_name = $tp->toDB($_POST['download_category_name']);
 		$download_category_description = $tp->toDB($_POST['download_category_description']);
 		$download_category_icon = $tp->toDB($_POST['download_category_icon']);
+
+		if(isset($_POST['download_category_icon_empty']))
+		{
+			$download_category_icon .= chr(1).$tp->toDB($_POST['download_category_icon_empty']);
+		}
+
 		if ($id) {
 			$sql->db_Update("download_category", "download_category_name='$download_category_name', download_category_description='$download_category_description', download_category_icon ='$download_category_icon', download_category_parent= '".$_POST['download_category_parent']."', download_category_class='".$_POST['download_category_class']."' WHERE download_category_id='$id'");
 			$this->show_message(DOWLAN_48);
