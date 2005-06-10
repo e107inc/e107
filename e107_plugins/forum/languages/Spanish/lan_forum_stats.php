@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_stats.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 22:34:18 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-10 19:22:08 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -32,7 +32,7 @@ define("FSLAN_18", "Mejores foreros");
 define("FSLAN_19", "Nombre");
 define("FSLAN_20", "Envíos");
 define("FSLAN_21", "Los mejores foreros iniciales");
-define("FSLAN_22", "Los mejores respondedores");
+define("FSLAN_22", "Los mejores participantes");
 define("FSLAN_23", "Estadísticas del foro");
 define("FSLAN_24", "Promedio de envíos por día");
 
