@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-04-27 11:34:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-10 10:29:19 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
+require_once(e_HANDLER."rate_class.php");
+$rater = new rater;
 
 $qs = explode(".", e_QUERY);
 if (is_numeric($qs[0]))
@@ -215,7 +217,7 @@ function parse_link_submit_table() {
 }
 
 function parse_link_cat_table($row) {
-	global $LINK_CAT_TABLE, $sql, $pref, $tp, $category;
+	global $LINK_CAT_TABLE, $sql, $pref, $tp, $category, $rater;
 	extract($row);
 
 	// Body
@@ -273,6 +275,10 @@ function parse_link_cat_table($row) {
 	$LINK_CAT_URL = $link_url;
 	$LINK_CAT_DESC = $tp->toHTML($link_description, TRUE);
 	$LINK_CAT_REFER = LAN_88." ".$link_refer;
+
+	if($pref['link_rating']){
+		$LINK_CAT_RATING = $rater->composerating("links_page", $link_id, $enter=TRUE, $userid=FALSE);
+	}
 
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $LINK_CAT_TABLE));
 }

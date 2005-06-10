@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-14 15:50:46 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-10 10:29:19 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Links");
@@ -102,5 +102,7 @@ define("LCLAN_100", "Link Category");
 define('LCLAN_101', "Configure Links Page");
 define('LCLAN_102', "Links page has successfully installed, please configure it from the Links Page link on the admin front page.");
 define('LCLAN_103', "Links");
-	
+define('LCLAN_104', "Link Rating");
+define('LCLAN_105', "allow users to rate links");
+
 ?>
