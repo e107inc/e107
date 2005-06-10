@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2005-06-10 19:47:19 $
+|     $Revision: 1.55 $
+|     $Date: 2005-06-10 19:58:24 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -435,12 +435,13 @@ class download {
 				<td style='width:5%' class='fcaption'>ID</td>
 				";
 
-        // Search Display Column header.
+// Search Display Column header.----------
 			foreach($search_display as $disp){
 				if($disp == "download_name"){
 					$text .= "<td class='fcaption'><a href='".e_SELF."?main.download_name.".($id == "desc" ? "asc" : "desc").".$from'>".DOWLAN_27."</a></td>";
 				}else{
-					$text .= "<td class='fcaption'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".ucwords(str_replace("_"," ",$disp))."</a></td>";
+					$repl = array("download_","_");
+					$text .= "<td class='fcaption'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".ucwords(str_replace($repl," ",$disp))."</a></td>";
 				}
 			}
 
@@ -469,7 +470,7 @@ class download {
         	}elseif($disp == "download_filesize"){
 				$text .= ($row[$disp]) ? round(($row[$disp] / 1000))." Kb&nbsp;" : "&nbsp";
 			}elseif($disp == "download_thumb"){
-				$text .= "<a rel='external' href='".e_FILE."downloadthumbs/".$row[$disp]."' >".$row[$disp]."</a>&nbsp;";
+				$text .= ($row[$disp]) ? "<img src='".e_FILE."downloadthumbs/".$row[$disp]."' alt='' />" : "";
         	}elseif($disp == "download_image"){
 				$text .= "<a rel='external' href='".e_FILE."downloadimages/".$row[$disp]."' >".$row[$disp]."</a>&nbsp;";
 			}else{
