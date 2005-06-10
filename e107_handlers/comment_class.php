@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-06-10 09:31:05 $
+|     $Revision: 1.29 $
+|     $Date: 2005-06-10 10:30:05 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -81,7 +81,7 @@ class comment {
 				global $rater;
 				require_once(e_HANDLER."rate_class.php");
 				if(!is_object($rater)){ $rater = new rater; }
-				$rate = $rater -> composerating($table, $id, $enter=TRUE, USERID);
+				$rate = $rater -> composerating($table, $id, $enter=TRUE, USERID, TRUE);
 				$rate = "<tr><td style='width:20%'>Rating:</td>\n<td style='width:80%;'>".$rate."</td></tr>\n";
 			}
 			//end rating area
