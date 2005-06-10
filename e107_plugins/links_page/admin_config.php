@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_config.php,v $
-|    $Revision: 1.6 $
-|    $Date: 2005-05-22 14:10:11 $
-|    $Author: stevedunstan $
+|    $Revision: 1.7 $
+|    $Date: 2005-06-10 10:29:19 $
+|    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -79,6 +79,7 @@ if (IsSet($_POST['updateoptions'])) {
 	$pref['linkpage_categories'] = $_POST['linkpage_categories'];
 	$pref['link_submit'] = $_POST['link_submit'];
 	$pref['link_submit_class'] = $_POST['link_submit_class'];
+	$pref['link_rating'] = $_POST['link_rating'];
 	save_prefs();
 	$linkpost->show_message(LCLAN_1);
 }
@@ -549,6 +550,14 @@ class links {
 			<span class='smalltext'>".LCLAN_44."</span>
 			</td>
 			<td class='forumheader3' style='width:30%;text-align:center'>".r_userclass("link_submit_class", $pref['link_submit_class'])."</td>
+			</tr>
+
+			<tr>
+			<td style='width:70%' class='forumheader3'>
+			".LCLAN_104."<br />
+			<span class='smalltext'>".LCLAN_105."</span>
+			</td>
+			<td class='forumheader3' style='width:30%;text-align:center'>". ($pref['link_rating'] ? "<input type='checkbox' name='link_rating' value='1' checked='checked' />" : "<input   type='checkbox' name='link_rating'  value='1'   />")."</td>
 			</tr>
 
 			<tr style='vertical-align:top'>

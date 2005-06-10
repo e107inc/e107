@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-05 07:31:01 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-10 10:29:19 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 // MAIN TABLE -------------------------------------------------------------------------------
@@ -80,6 +80,8 @@ if (!$LINK_CAT_TABLE) {
 		<tr>
 		<td colspan='2' class='forumheader3' style='line-height:130%;'>
 		{LINK_CAT_DESC}
+		<br />
+		{LINK_CAT_RATING}
 		<br />
 		</td>
 		</tr>";
