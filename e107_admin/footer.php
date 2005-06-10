@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-09 22:29:56 $
-|     $Author: streaky $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-10 15:40:55 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -50,7 +50,12 @@ $rinfo = '';
 if($pref['displayrendertime']){ $rinfo .= "Render time: {$rendertime} second(s); {$db_time} of that for queries. "; }
 if($pref['displaysql']){ $rinfo .= "DB queries: ".$sql -> db_QueryCount().". "; }
 if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
-echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");echo "<div style='text-align: center; margin-left: auto; margin-right: auto;'><a href='".e_ADMIN."credits.php'>Credits</a></div>";
+echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");
+echo "<div style='text-align: center; margin-left: auto; margin-right: auto;'>
+<form>
+<input class='tbox' type='button' onclick=\"javascript: window.open('".e_ADMIN."credits.php', 'myWindow', 'status = 1, height = 400, width = 300, resizable = 0')\" value='Credits'>
+</form>
+";
 
 if($error_handler->debug == true) {
 	echo "
