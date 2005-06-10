@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.86 $
-|   $Date: 2005-06-09 22:42:40 $
-|   $Author: e107coders $
+|   $Revision: 1.87 $
+|   $Date: 2005-06-10 15:22:50 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
@@ -68,9 +68,11 @@ $amount = 50;
 
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
 
-if($_POST['news_class']){
+if(isset($_POST['news_userclass']))
+{
 	$_POST['news_class'] = implode(",", array_keys($_POST['news_userclass']));
 }
+
 if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LAN_DELETE)], $matches)) {
 	$delete = $matches[1];
 	$del_id = $matches[2];
