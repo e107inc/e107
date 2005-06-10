@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2005-06-10 17:38:45 $
+|     $Revision: 1.54 $
+|     $Date: 2005-06-10 19:47:19 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -21,6 +21,15 @@ if (!getperms("R")) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
+
+require_once(e_HANDLER."calendar/calendar_class.php");
+$cal = new DHTML_Calendar(true);
+function headerjs()
+{
+	global $cal;
+	return $cal->load_files();
+}
+
 $e_sub_cat = 'download';
 
 require_once(e_HANDLER."form_handler.php");
@@ -555,7 +564,7 @@ class download {
 	}
 
 	function create_download($sub_action, $id) {
-		global $sql, $rs, $ns, $file_array, $image_array, $thumb_array,$pst;
+		global $cal, $sql, $rs, $ns, $file_array, $image_array, $thumb_array,$pst;
 		$download_status[0] = DOWLAN_122;
 		$download_status[1] = DOWLAN_123;
 		$download_status[2] = DOWLAN_124;
@@ -641,13 +650,10 @@ class download {
 			</tr>
 
 			<tr>
-			<td style='width:20%; vertical-align:top' class='forumheader3'><span style='text-decoration:underline'>".DOWLAN_13."</span>:<div class='smalltext'>".DOWLAN_127."</div></td>
-			<td style='width:80%' class='forumheader3'>
+			<td style='width:20%; vertical-align:top' class='forumheader3'><span style='text-decoration:underline;cursor:help' title='".DOWLAN_127."' >".DOWLAN_13."</span>:</td>
+			<td style='width:80%' class='forumheader3'><div style='padding-bottom:5px'>".DOWLAN_131."&nbsp;&nbsp;
 
-			<table style='width: 100%;'>
-			<tr>
-			<td style='width: 40%;'>".DOWLAN_131."</td>
-			<td style='width: 60%;' colspan='2'><select name='download_url' class='tbox'>
+		   <select name='download_url' class='tbox'>
 			<option></option>
 			";
 
@@ -679,30 +685,21 @@ class download {
 			$text .= "<option value='".$download_url."' selected='selected'>".$download_url.$etext."</option>\n";
 		}
 
-		$text .= "</select>
-			</td>
-			</tr>
+		$text .= "</select></div>
+            <span style='padding-top:6px;cursor:pointer;text-decoration:underline' onclick='expandit(this)' title='".DOWLAN_14."'>".DOWLAN_149."</span>
+			<div id='use_ext' style='padding-top:6px;display:none'>
+           URL:&nbsp;
 
-			<tr>
-			<td style='width: 40%;'>".DOWLAN_14."</td>
-
-
-
-			<td style='width: 30%;'>
 			<input class='tbox' type='text' name='download_url_external' size='40' value='$download_url_external' maxlength='100' />
-			</td>
-
-			<td style='width: 30%; text-align: right;'>".DOWLAN_66."
+			&nbsp;&nbsp;&nbsp;".DOWLAN_66."
 			<input class='tbox' type='text' name='download_filesize_external' size='8' value='$download_filesize' maxlength='10' />
-			</td>
-			</tr>
-			</table>
+           </div>
 
 			</td>
 			</tr>
 
 			<tr>
-			<td style='width:20%' class='forumheader3'>".DOWLAN_128.":<div class='smalltext'>".DOWLAN_129."</div></td>
+			<td style='width:20%' class='forumheader3'><span title='".DOWLAN_129."' style='cursor:help'>".DOWLAN_128."</span>:</td>
 			<td style='width:80%' class='forumheader3'>";
 
 		if(!$sql -> db_Select("download_mirror"))
@@ -744,7 +741,7 @@ class download {
 			</tr>
 
 			<tr>
-			<td style='width:20%' class='forumheader3'>Mirror display type:<div class='smalltext'>if using mirrors, select how they will be displayed</div></td>
+			<td style='width:20%' class='forumheader3' ><span style='cursor:help' title='if using mirrors, select how they will be displayed'>Mirror display type:</span></td>
 			<td style='width:80%' class='forumheader3'>
 
 			<input type='radio' name='download_mirror_type' value='1'".($download_mirror_type ? " checked='checked'" : "")." /> show mirror list, allow user to choose mirror<br />
@@ -816,6 +813,33 @@ class download {
 		$text .= "</select>
 			</td>
 			</tr>
+
+
+		<tr>
+		<td style='width:20%' class='forumheader3'>".LAN_DATESTAMP.":</td>
+		<td style='width:80%' class='forumheader3'>
+		";
+        if(!$download_datestamp){
+        	$download_datestamp = time();
+	   	}
+		$cal_options['firstDay'] = 0;
+		$cal_options['showsTime'] = false;
+		$cal_options['showOthers'] = false;
+		$cal_options['weekNumbers'] = false;
+		$cal_options['ifFormat'] = "%d/%m/%Y";
+		$cal_attrib['class'] = "tbox";
+		$cal_attrib['size'] = "12";
+		$cal_attrib['name'] = "download_datestamp";
+		$cal_attrib['value'] = date("d/m/Y", $download_datestamp);
+		$text .= $cal->make_input_field($cal_options, $cal_attrib);
+
+		$update_checked = ($_POST['update_datestamp']) ? "checked='checked'" : "";
+		$text .= "&nbsp;&nbsp;<span><input type='checkbox' value='1' name='update_datestamp' $update_checked />".DOWLAN_148."
+		</span>
+		</td>
+		</tr>
+
+
 
 			<tr>
 			<td style='width:20%' class='forumheader3'>".DOWLAN_21.":</td>
@@ -941,6 +965,17 @@ class download {
 		$_POST['download_name'] = $tp->toDB($_POST['download_name']);
 		$_POST['download_author'] = $tp->toDB($_POST['download_author']);
 
+		if ($_POST['download_datestamp']){
+			$tmp = explode("/", $_POST['download_datestamp']);
+			$_POST['download_datestamp'] = mktime(0, 0, 0, $tmp[1], $tmp[0], $tmp[2]);
+        } else {
+          $_POST['download_datestamp'] = time();
+		}
+		if (preg_match("#(.*?)/(.*?)/(.*?) (.*?):(.*?):(.*?)$#", $_POST['download_datestamp'], $matches)){
+			$_POST['download_datestamp'] = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[1], $matches[3]);
+		}
+
+		if($_POST['update_datestamp']){	$_POST['download_datestamp'] = time();	}
 
 		$mirrorStr = "";
 		$mirrorReq = "";
@@ -962,14 +997,14 @@ class download {
 		if ($id)
 		{
 
-			if($sql->db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".time()."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."', download_comment='".$_POST['download_comment']."', download_class = '{$_POST['download_class']}', download_mirror='$mirrorStr', download_mirror_type='".$_POST['download_mirror_type']."' , download_visible='".$_POST['download_visible']."' WHERE download_id=$id")){
+			if($sql->db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".$_POST['download_datestamp']."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."', download_comment='".$_POST['download_comment']."', download_class = '{$_POST['download_class']}', download_mirror='$mirrorStr', download_mirror_type='".$_POST['download_mirror_type']."' , download_visible='".$_POST['download_visible']."' WHERE download_id=$id")){
 				$this->show_message(DOWLAN_2);
 			}else{
                 $this->show_message(LAN_UPDATED_FAILED);
 			}
 		} else {
-			$time = time();
-			if ($download_id = $sql->db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".$time."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".$_POST['download_comment']."', '{$_POST['download_class']}', '$mirrorStr', '".$_POST['download_mirror_type']."', '".$_POST['download_visible']."' ")) {
+
+			if ($download_id = $sql->db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".$_POST['download_datestamp']."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".$_POST['download_comment']."', '{$_POST['download_class']}', '$mirrorStr', '".$_POST['download_mirror_type']."', '".$_POST['download_visible']."' ")) {
 
 				$dlinfo = array("download_id" => $download_id, "download_name" => $_POST['download_name'], "download_url" => $durl, "download_author" => $_POST['download_author'], "download_author_email" => $_POST['download_author_email'], "download_author_website" => $_POST['download_author_website'], "download_description" => $_POST['download_description'], "download_filesize" => $filesize, "download_category" => $_POST['download_category'], "download_active" => $_POST['download_active'], "download_datestamp" => $time, "download_thumb" => $_POST['download_thumb'], "download_image" => $_POST['download_image'], "download_comment" => $_POST['download_comment'] );
 				$e_event->trigger("dlpost", $dlinfo);
