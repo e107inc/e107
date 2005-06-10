@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-05 20:41:56 $
+|     $Revision: 1.15 $
+|     $Date: 2005-06-10 17:18:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -121,7 +121,6 @@ define("USRLAN_126", "Allow users to rate users");
 define("USRLAN_127", "Allow comments in user profile");
 
 define("USRLAN_128", "Login name");
-define("USRLAN_129", "Edit Display Options");
 
 define("LAN_MAINADMIN","Main Admin");
 define("LAN_ADMIN","Admin");

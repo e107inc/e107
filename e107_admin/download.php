@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2005-06-10 13:16:40 $
-|     $Author: stevedunstan $
+|     $Revision: 1.52 $
+|     $Date: 2005-06-10 17:18:34 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -393,28 +393,85 @@ exit;
 class download {
 
 	function show_existing_items($action, $sub_action, $id, $from, $amount) {
-		global $sql, $rs, $ns, $tp;
+		global $sql, $rs, $ns, $tp, $mySQLdefaultdb,$pref;
 		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>";
-
-		if (isset($_POST['searchquery'])) {
-			$query = "download_name REGEXP('".$_POST['searchquery']."') OR download_url REGEXP('".$_POST['searchquery']."') OR download_author REGEXP('".$_POST['searchquery']."') OR download_description  REGEXP('".$_POST['searchquery']."') ORDER BY download_datestamp DESC";
-		} else {
-			$query = "ORDER BY ".($sub_action ? $sub_action : "download_datestamp")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
+        $sortorder = ($pref['download_order']) ? $pref['download_order'] : "download_datestamp";
+		if(isset($_POST['searchdisp'])){
+			$pref['admin_download_disp'] = implode("|",$_POST['searchdisp']);
+			save_prefs();
 		}
 
-		if ($sql->db_Select("download", "*", $query, ($_POST['searchquery'] ? 0 : "nowhere"))) {
+		if(!$pref['admin_download_disp']){
+			$search_display = array("download_name","download_class");
+		}else{
+            $search_display = explode("|",$pref['admin_download_disp']);
+		}
+
+         $query = "SELECT d.*, dc.* FROM #download AS d	LEFT JOIN #download_category AS dc ON dc. download_category_id  = d.download_category";
+
+		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "") {
+			$query .= " WHERE  download_url REGEXP('".$_POST['searchquery']."') OR download_author REGEXP('".$_POST['searchquery']."') OR download_description  REGEXP('".$_POST['searchquery']."') ";
+            foreach($search_display as $disp){
+		  		$query .= " OR $disp REGEXP('".$_POST['searchquery']."') ";
+			}
+            $query .= "  ORDER BY ".$sortorder." DESC";
+		} else {
+			$query .= " ORDER BY ".($sub_action ? $sub_action : $sortorder)." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
+		}
+
+      	if ($sql->db_Select_gen($query)) {
 			$text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform")."
 				<table class='fborder' style='width:99%'>
 				<tr>
 				<td style='width:5%' class='fcaption'>ID</td>
-				<td style='width:50%' class='fcaption'>".DOWLAN_27."</td>
-				<td style='width:45%' class='fcaption'>".LAN_OPTIONS."</td>
+				";
+
+        // Search Display Column header.
+			foreach($search_display as $disp){
+				if($disp == "download_name"){
+					$text .= "<td class='fcaption'><a href='".e_SELF."?main.download_name.".($id == "desc" ? "asc" : "desc").".$from'>".DOWLAN_27."</a></td>";
+				}else{
+					$text .= "<td class='fcaption'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".ucwords(str_replace("_"," ",$disp))."</a></td>";
+				}
+			}
+
+// ------------------------------
+			$text .="
+				<td style='width:10%' class='fcaption'>".LAN_OPTIONS."</td>
 				</tr>";
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
 				$text .= "<tr>
-					<td style='width:5%' class='forumheader3'>$download_id</td>
-					<td style='width:75%' class='forumheader3'><a href='".e_BASE."download.php?view.$download_id'>$download_name</a></td>
+					<td style='width:5%' class='forumheader3'>$download_id</td>";
+
+// Display Chosen options -------------------------------------
+
+		foreach($search_display as $disp){
+			$text .= "<td style='white-space:nowrap' class='forumheader3'>";
+
+        	if($disp == "download_name"){
+        		$text .= "<a href='".e_BASE."download.php?view.$download_id'>$download_name</a>";
+			}elseif($disp == "download_category"){
+				$text .= $row['download_category_name']."&nbsp;";
+        	}elseif($disp == "download_datestamp"){
+				$text .= ($row[$disp]) ? strftime($pref['shortdate'],$row[$disp])."&nbsp;" : "&nbsp";
+			}elseif($disp == "download_class" || $disp == "download_visible"){
+				$text .= r_userclass_name($row[$disp])."&nbsp;";
+        	}elseif($disp == "download_filesize"){
+				$text .= ($row[$disp]) ? round(($row[$disp] / 1000))." Kb&nbsp;" : "&nbsp";
+			}elseif($disp == "download_thumb"){
+				$text .= "<a rel='external' href='".e_FILE."downloadthumbs/".$row[$disp]."' >".$row[$disp]."</a>&nbsp;";
+        	}elseif($disp == "download_image"){
+				$text .= "<a rel='external' href='".e_FILE."downloadimages/".$row[$disp]."' >".$row[$disp]."</a>&nbsp;";
+			}else{
+				$text .= $row[$disp]."&nbsp;";
+        	}
+
+			$text .= "</td>";
+		}
+// -------------------------------------------------------------
+
+			$text .= "
 					<td style='width:20%; text-align:center' class='forumheader3'>
 					<a href='".e_SELF."?create.edit.{$download_id}'>".ADMIN_EDIT_ICON."</a>
 					<input type='image' title='".LAN_DELETE."' name='delete[main_{$download_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_33." [ID: $download_id ]")."') \" />
@@ -443,7 +500,37 @@ class download {
 			}
 		}
 
-		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".DOWLAN_51."' />\n</p>\n</form>\n</div>";
+		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".DOWLAN_51."' />\n</p>";
+
+// Search - display options etc. =========================.
+
+		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\">".LAN_DISPLAYOPT."</div>";
+		$text .= "<div id='sdisp' style='padding-top:4px;display:none;text-align:center;margin-left:auto;margin-right:auto'>
+		<table class='forumheader3' style='width:95%'><tr>";
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
+		$columns = mysql_num_fields($fields);
+		for ($i = 0; $i < $columns; $i++) {
+			$fname[] = mysql_field_name($fields, $i);
+		}
+        $m = 0;
+		$replacechar = array("download_","_");
+		foreach($fname as $fcol){
+        $checked = (in_array($fcol,$search_display)) ? "checked='checked'" : "";
+			$text .= "<td style='text-align:left; padding:0px'>";
+			$text .= "<input type='checkbox' name='searchdisp[]' value='".$fcol."' $checked />".str_replace($replacechar," ",$fcol) . "</td>\n";
+			$m++;
+			if($m == 5){
+				$text .= "</tr><tr>";
+				$m = 0;
+			 }
+        }
+
+		$text .= "</table></div>
+		</form>\n
+		</div>";
+// ======================
+
+	//	$text .="\n</form>\n</div>";
 
 
 		$ns->tablerender(DOWLAN_7, $text);

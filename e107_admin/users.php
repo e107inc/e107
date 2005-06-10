@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2005-06-05 20:41:56 $
+|     $Revision: 1.51 $
+|     $Date: 2005-06-10 17:18:34 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -531,7 +531,7 @@ class users{
 		<input class='button' type='submit' name='searchsubmit' value='".USRLAN_90."' />\n
 		<br /><br /></p>\n";
 
-		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\">".USRLAN_129."</div>";
+		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\">".LAN_DISPLAYOPT."</div>";
 		$text .= "<div  id='sdisp' style='padding-top:4px;display:none;text-align:center;margin-left:auto;margin-right:auto'>
 		<table class='forumheader3' style='width:95%'><tr>";
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");
