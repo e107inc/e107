@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-06 21:56:33 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-10 20:56:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -41,7 +41,7 @@ define("PRFLAN_29", "¿Permitir registro de usuarios?");
 define("PRFLAN_30", "Permite a los visitantes registrarse en su sitio");
 define("PRFLAN_31", "¿Usar verificación de email?");
 define("PRFLAN_32", "¿Permitir mensajes de anónimos?");
-define("PRFLAN_33", "<b>Off:</b> Desactivalo para permitir que solo los miembros registrados puedan enviar comentarios, etc");
+define("PRFLAN_33", "<b>Off:</b> Desactívalo para permitir que solo los miembros registrados puedan enviar comentarios, etc");
 //define("PRFLAN_34", "Seguridad");
 define("PRFLAN_35", "¿Activar protección contra Flood?");
 define("PRFLAN_36", "Tiempo Flood");
@@ -49,7 +49,7 @@ define("PRFLAN_37", "Auto Baneo (expulsión)");
 define("PRFLAN_38", "Tiempo requerido entre dos acciones en áreas donde los usuarios actuan (chatbox, foros...). si un usuario envía demasiado rápido dos acciones, será redirigido a la página principal");
 //define("PRFLAN_39", "Protección de menores");
 define("PRFLAN_40", "¿Filtrar palabras?");
-define("PRFLAN_41", "las palabras censuradas serán reemplazadas");
+define("PRFLAN_41", "Las palabras censuradas serán reemplazadas");
 define("PRFLAN_42", "Reemplazar por");
 define("PRFLAN_43", "Filtrar palabras");
 define("PRFLAN_44", "Palabras a censurar , separar con comas");
@@ -67,7 +67,7 @@ define("PRFLAN_55", "Nombre de la Cookie (si está seleccionado cookies)");
 define("PRFLAN_56", "Zona Horaria");
 //define("PRFLAN_57", "Estilo del área de administración");
 define("PRFLAN_58", "Restringir el sitio solo para miembros");
-define("PRFLAN_59", "Esto restringira el acceso a todas las areas menos la página principal y el registro a los usuarios no registrados");
+define("PRFLAN_59", "Esto restringirá el acceso a todas las areas menos la página principal y el registro a los usuarios no registrados");
 define("PRFLAN_60", "Permitir SSL");
 define("PRFLAN_61", "<b>¡Asegúrese de disponer de SSL!</b>");
 //define("PRFLAN_62", "Email");
@@ -75,7 +75,7 @@ define("PRFLAN_61", "<b>¡Asegúrese de disponer de SSL!</b>");
 //define("PRFLAN_64", "Pulsando se enviará un email de prueba al administrador principal del sitio");
 //define("PRFLAN_65", "Pulse para enviar email a");
 //define("PRFLAN_66", "Email de prueba desde");
-//define("PRFLAN_67", "Este es un email de prueba, este email confirma que su configuración funciona correctamente!\n\n.");
+//define("PRFLAN_67", "Este es un email de prueba, ¡este email confirma que su configuración funciona correctamente!\n\n.");
 //define("PRFLAN_68", "El email no pudo ser enviado. Su servidor no está configurado correctamente para enviar emails, por favor vuélvalo a intentar usando SMTP, o contacte con su proovedor de hosting para verificar el servidor email.");
 //define("PRFLAN_69", "El email se ha enviado correctamente, por favor compruebe su bandeja de entrada.");
 //define("PRFLAN_70", "Activar SMTP");
@@ -89,25 +89,25 @@ define("PRFLAN_77", "Opciones de Administrador ");
 define("PRFLAN_78", "Deje en blanco para desactivar");
 
 define("PRFLAN_80", "Pulse aquí para ver");
-define("PRFLAN_81", "Activar Código de verificación durante el login.");
+define("PRFLAN_81", "Activar Código de verificación durante la conexión.");
 
-define("PRFLAN_83", "ejemplo");
+define("PRFLAN_83", "Ejemplo");
 
 //define("PRFLAN_85", "Si un tema no se muestra asegúrese de que lo copió ocrrectamente en el servidor.");
 //define("PRFLAN_86", "Verificar archivos de Idioma");
 define("PRFLAN_87", "Comentarios");
 define("PRFLAN_88", "Ver comentarios anindados (jerarquía)");
-define("PRFLAN_89", "Mostrar icono nuevo comentario");
+define("PRFLAN_89", "Mostrar icono en nuevo comentario");
 define("PRFLAN_89", "Sitio:");
 define("PRFLAN_90", "Permitir editar sus propios comentarios");
-define("PRFLAN_91", "Si alguien ataca su sitio mediante multiples comandos a su servidor, su IP será automáticamente baneada!");
+define("PRFLAN_91", "Si alguien ataca su sitio mediante múltiples comandos a su servidor, ¡su IP será automáticamente baneada!");
 define("PRFLAN_92", "¿Ocultar contraseña en el email de confirmación?");
-define("PRFLAN_93", "página de la función strftime en php.net");
-define("PRFLAN_94", "aquí");
+define("PRFLAN_93", "Página de la función strftime en php.net");
+define("PRFLAN_94", "Aquí");
 define("PRFLAN_95", "Mostrar info de plugins:");
 define("PRFLAN_96", "Mostrará info en cada página del Admin para los plugins que soporten esta característica");
 define("PRFLAN_97", "Menú único 'Menú Plugins':");
-define("PRFLAN_98", "<b>Off:</b> cada plugin mostrará su propia información en un menú individual. <b>On:</b> toda la información se mostrará en un menú");
+define("PRFLAN_98", "<b>Off:</b> Cada plugin mostrará su propia información en un menú individual. <b>On:</b> Toda la información se mostrará en un menú");
 
 //define("PRFLAN_100", "Carga de imágenes del theme:");
 define("PRFLAN_101", "Renderizado texto");
@@ -119,7 +119,7 @@ define("PRFLAN_106", "Preferencias guardadas en la BD.");
 define("PRFLAN_107", "Texto para reemplazar enlace email");
 define("PRFLAN_108", "Se puede usar con: imagen usando el tag <img , con la ruta completa a la imagen");
 define("PRFLAN_109", "Palabras largas cortadas en el texto principal");
-define("PRFLAN_110", "Las palabras mas largas de la longitud especificada se cortarán en una nueva línea");
+define("PRFLAN_110", "Las palabras más largas de la longitud especificada se cortarán en una nueva línea");
 define("PRFLAN_111", "Palabras largas cortadas en el texto principal");
 define("PRFLAN_112", "On");
 define("PRFLAN_113", "Off");
@@ -132,19 +132,19 @@ define("PRFLAN_120", "Sintaxi Geshi predeterminada");
 define("PRFLAN_121", "Si no se especifica idioma en el código bbtag, este idioma se usará en el resaltado");
 define("PRFLAN_122", "Activar WYSIWYG");
 define("PRFLAN_123", "Mostrará un editor tipo 'Word' en las áreas que lo permita. De aplicación solo a Admins y usuarios que envíen HTML.");
-define("PRFLAN_124", "Usar apariencia 'Clasica' en Ant/Prox");
-define("PRFLAN_125", "On: mostrará las páginas Anter/Próx como 1 2 3 ... 21 22 23, en vez del nuevo aspecto de lista desplegable.");
+define("PRFLAN_124", "Usar apariencia 'Clasica' en Anterior/Próximo");
+define("PRFLAN_125", "On: mostrará las páginas Anterior/Próximo como 1 2 3 ... 21 22 23, en vez del nuevo aspecto de lista desplegable.");
 define("PRFLAN_126", "Texto a mostrar en la página de registro");
 define("PRFLAN_127", "Habilitar enlaces enviados");
-define("PRFLAN_128", "On: cambiará los enlaces enviados por hiperenlaces");
+define("PRFLAN_128", "On: Cambiará los enlaces enviados por hiperenlaces");
 define("PRFLAN_129", "No permitir conexiones múltiples");
-define("PRFLAN_130", "On: evitará que se hagan más de una conexión con el mismo usuario y contraseña (compartir detalle de conexión)");
+define("PRFLAN_130", "On: Evitará que se hagan más de una conexión con el mismo usuario y contraseña (compartir detalle de conexión)");
 define("PRFLAN_131", "Activar el uso de bbcode [php]");
-define("PRFLAN_132", "Activandolo permitiré a los ususarios autorizados a enviar código [php] en ciertas áreas");
+define("PRFLAN_132", "Activándolo permitirá a los ususarios autorizados a enviar código [php] en ciertas áreas");
 define("PRFLAN_131", "Activar uso de bbcode [php]");
-define("PRFLAN_133", "Requerida extension GD, no encontrada");
+define("PRFLAN_133", "Requerida extensión GD, no encontrada");
 define("PRFLAN_134", "Redirigir todas las peticiones a una URL");
-define("PRFLAN_135", "por ejemplo, si su sitio de arriba es http://foo.com, cualquiera que consulte http://www.foo.com será redirigido a http://foo.com");
+define("PRFLAN_135", "Por ejemplo, si su sitio de arriba es http://foo.com, cualquiera que consulte http://www.foo.com será redirigido a http://foo.com");
 define("PRFLAN_136", "Máximas conexiones permitidas para la misma dirección IP.");
 define("PRFLAN_137", "Mostrar el uso de memoria");
 define("PRFLAN_138", "Activar codigo-Imagen de verificación durante el proceso de password olvidado.");
@@ -166,10 +166,10 @@ define("CUSTSIG_12", "Ocultar");
 define("CUSTSIG_13", "Campos");
 define("CUSTSIG_14", "Mostrar");
 define("CUSTSIG_15", "Obligatorio");
-define("CUSTSIG_16", "Caracteres mínimos en Contraseña");
+define("CUSTSIG_16", "Caracteres mínimos para la contraseña");
 define("CUSTSIG_17", "Suscríbase a los contenidos por correo");
 define("CUSTSIG_18", "No permitir nombres de usuario");
-define("CUSTSIG_19", "los usuarios con el siguiente texto serán rechazados, separado entre comas");
+define("CUSTSIG_19", "Los usuarios con el siguiente texto serán rechazados, separado entre comas");
 
 
 ?>

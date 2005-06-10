@@ -4,21 +4,21 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_review.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:41 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-10 20:56:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("REVLAN_1", "Revisión añadida a base de datos.");
+define("REVLAN_1", "Revisión añadida a la base de datos.");
 define("REVLAN_2", "Campos en blanco.");
 define("REVLAN_3", "Revisión actualizada en base de datos.");
 define("REVLAN_4", "Revisión borrada.");
-define("REVLAN_5", "Por favor marca la casilla de confirmación para borrar esta revisión");
+define("REVLAN_5", "Por favor, marca la casilla de confirmación para borrar esta revisión");
 define("REVLAN_6", "No hay revisiones aún.");
 define("REVLAN_7", "Revisiones existentes");
 define("REVLAN_8", "Editar");
 define("REVLAN_9", "Borrar");
-define("REVLAN_10", "confirmar");
+define("REVLAN_10", "Confirmar");
 define("REVLAN_11", "Abrir editor HTML");
 define("REVLAN_12", "Encabezado");
 define("REVLAN_13", "Sub-Encabezado");
@@ -60,11 +60,11 @@ define("REVLAN_48", "Opciones de revisión");
 define("REVLAN_49", "¿Está seguro de querer borrar esta categoría?");
 define("REVLAN_50", "¿Está seguro de querer borrar esta revisión?");
 define("REVLAN_51", "Detalles del autor");
-define("REVLAN_52", "deje en blanco si la revisión la ha escrito usted");
+define("REVLAN_52", "Deje en blanco si la revisión la ha escrito usted");
 define("REVLAN_53", "Nombre del autor");
 define("REVLAN_54", "Email del autor");
 define("REVLAN_55", "Permitir enviar revisiones");
-define("REVLAN_56", "Permitir a los visitantes enviar revisiones");
+define("REVLAN_56", "Permitir a los invitados enviar revisiones");
 define("REVLAN_57", "Clase de envio de revisiones");
 define("REVLAN_58", "Seleccione que usuarios podrán enviar revisiones");
 define("REVLAN_59", "Actualizar opciones");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_users_extended.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-05 13:59:45 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-10 20:56:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -14,8 +14,8 @@ define("EXTLAN_2", "Previsualizar");
 define("EXTLAN_3", "Valores");
 define("EXTLAN_4", "Req'd");
 define("EXTLAN_5", "Aplicable");
-define("EXTLAN_6", "acceso lectura");
-define("EXTLAN_7", "acceso escritura");
+define("EXTLAN_6", "Acceso lectura");
+define("EXTLAN_7", "Acceso escritura");
 define("EXTLAN_8", "Acción");
 define("EXTLAN_9", "Campos extras de usuario");
 define("EXTLAN_10", "Nombre del campo");
@@ -41,12 +41,12 @@ define("EXTLAN_29", "Campos extras de usuario guardados.");
 define("EXTLAN_30", "Campo extra borrado");
 //define("EXTLAN_31", "Menú de campos extras");
 //define("EXTLAN_32", "Página extendida");
-define("EXTLAN_33", "Cancelar Editar");
+define("EXTLAN_33", "Cancelar editar");
 define("EXTLAN_34", "Campos extras");
 define("EXTLAN_35", "Categorías");
 define("EXTLAN_36", "Sin asignar categoría");
 define("EXTLAN_37", "Sin definir categoría");
-define("EXTLAN_38", "Nombre Categoría");
+define("EXTLAN_38", "Nombre categoría");
 define("EXTLAN_39", "Añadir categoría ");
 define("EXTLAN_40", "Categoría creada");
 define("EXTLAN_41", "Categoría eliminada");
@@ -81,11 +81,11 @@ define("EXTLAN_HELP_2", "Éste será el texto de ayuda de los botones radio");
 //dropdown
 define("EXTLAN_HELP_3", "Éste será el texto de ayuda de la lista desplegable");
 //db field
-define("EXTLAN_HELP_4", "<b><i>Valores:</i></b><br />SIEMPRE DEBEN HABER tres valores dados:<br /><ol><li>dbtable</li><li>Campo conteniendo el id</li><li>Campo conteniendo el valor</li></ol><br />");
+define("EXTLAN_HELP_4", "<b><i>Valores:</i></b><br />SIEMPRE DEBEN HABER tres valores dados:<br /><ol><li>Tabla BD</li><li>Campo conteniendo el id</li><li>Campo conteniendo el valor</li></ol><br />");
 //textarea
 define("EXTLAN_HELP_5", "Éste será el texto de ayuda del área de texto");
 //integer
-define("EXTLAN_HELP_6", "Éste será el texto de ayuda de los Enteros");
+define("EXTLAN_HELP_6", "Éste será el texto de ayuda de los enteros");
 //date
 define("EXTLAN_HELP_7", "Éste será el texto ayuda de la fecha");
 

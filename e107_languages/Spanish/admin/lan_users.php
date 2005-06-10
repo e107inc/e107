@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-10 19:29:35 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-10 20:56:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -13,8 +13,8 @@ define("USRLAN_1", "Opciones Guardadas.");
 define("USRLAN_2", "Campos extendidos del usuario guardados.");
 define("USRLAN_3", "Administrador listado - para configurar permisos por favor ir a");
 define("USRLAN_4", "Página de administrador");
-define("USRLAN_5", "no puedes borrar el estado del administrador");
-define("USRLAN_6", "el estado del Administrador ya ha sido removido.");
+define("USRLAN_5", "No puedes borrar el estado del administrador");
+define("USRLAN_6", "El estado del Administrador ya ha sido eliminado.");
 define("USRLAN_7", "No puedes expulsar al administrador del sitio principal");
 define("USRLAN_8", "Usuario excluído.");
 define("USRLAN_9", "Usuario no excluído.");
@@ -22,7 +22,7 @@ define("USRLAN_10", "Usuario borrado.");
 define("USRLAN_11", "Borrado cancelado.");
 define("USRLAN_12", "No puedes borrar el administrador del sitio.");
 define("USRLAN_13", "Por favor confirma que deseas borrar este miembro");
-//define("USRLAN_14", "una vez borrado no se puede recuperar");
+//define("USRLAN_14", "Una vez borrado no se puede recuperar");
 //define("USRLAN_15", "Cancelar");
 define("USRLAN_16", "Confirmar Borrado");
 define("USRLAN_17", "Confirmar Borrar Usuario");
@@ -50,20 +50,20 @@ define("USRLAN_36", "Clase");
 //define("USRLAN_39", "resultado(s)");
 //define("USRLAN_40", "Ninguno definido");
 
-define("USRLAN_44", "Permitir a miembros cargar al servidor su avatar?");
+define("USRLAN_44", "¿Permitir a los miembros cargar al servidor su avatar?");
 
 define("USRLAN_47", "Ancho máximo de avatar (en píxels)");
-define("USRLAN_48", "predeterminado es 70");
+define("USRLAN_48", "Predeterminado es 70");
 define("USRLAN_49", "Método de conversión");
 define("USRLAN_50", "Dirección de ImageMagick");
-define("USRLAN_51", "Actualizar Opciones");
-define("USRLAN_52", "Opciones de Miembro");
-define("USRLAN_53", "Permitir a miembros cargar al servidor su fotografía?");
+define("USRLAN_51", "Actualizar opciones");
+define("USRLAN_52", "Opciones de miembro");
+define("USRLAN_53", "¿Permitir a miembros cargar al servidor su fotografía?");
 define("USRLAN_54", "Pulsa aquí para borrar todos los miembros desactivados");
 define("USRLAN_55", "Limpiar");
 define("USRLAN_56", "Borrado");
 define("USRLAN_57", "Borrando Miembros desactivados ...");
-define("USRLAN_58", "transferencia de ficheros deshabilitada en php.ini");
+define("USRLAN_58", "Transferencia de ficheros deshabilitada en php.ini");
 define("USRLAN_59", "Añadir usuario rápido");
 define("USRLAN_60", "Añadir Usuario");
 define("USRLAN_61", "Usuario");
@@ -73,8 +73,8 @@ define("USRLAN_64", "Dirección Email");
 define("USRLAN_65", "Este usuario no puede ser aceptado, por favor elija un usuario diferente");
 define("USRLAN_66", "Este usuario existe en la base de datos, por favor elija un usuario diferente");
 define("USRLAN_67", "Las dos contraseñas no coinciden");
-define("USRLAN_68", "Ha dejado en blanco campos requeridos");
-define("USRLAN_69", "Esta no parece una dirección de Email válida");
+define("USRLAN_68", "Ha dejado en blanco campos obligatorios");
+define("USRLAN_69", "Ésta no parece una dirección de email válida");
 define("USRLAN_70", "Usuario creado");
 
 define("USRLAN_71", "Página principal de usuarios");
@@ -109,7 +109,7 @@ define("USRLAN_114", "Estimado");
 define("USRLAN_115", "Gracias por su registro.");
 define("USRLAN_116", "Confirme que desea re-enviar un email de confirmación a:");
 define("USRLAN_117", "Pulse el botón para probar el siguiente email:");
-define("USRLAN_118", "Probar Email");
+define("USRLAN_118", "Probar email");
 
 define("USRLAN_120", "Elegir Clases");
 define("USRLAN_121", "Mailing");
@@ -117,7 +117,7 @@ define("USRLAN_122", "Bienvenido a");
 define("USRLAN_123", "Su registro ha sido recibido y creado.");
 define("USRLAN_124", "Su cuenta está actualmente marcada como inactiva, para activarla pulse sobre el siguiente enlace");
 define("USRLAN_125", "Desde");
-define("USRLAN_126", "Permitir a ususarios valorar ususarios");
+define("USRLAN_126", "Permitir a usuarios valorar usuarios");
 define("USRLAN_127", "Permitir comentarios en perfil de usuario");
 define("USRLAN_128", "Nombre de conexión");
 
