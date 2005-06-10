@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_comment.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-09 20:03:44 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-10 18:12:33 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -16,12 +16,12 @@ define("LAN_2", "Bloquear");
 define("LAN_3", "Borrar");
 define("LAN_4", "Información");
 define("LAN_5", "Comentarios ...");
-define("LAN_6", "Debe iniciar sesión en este sitio como usuario registrado para poder dejar sus comentarios - Si no es usuario registrado pulse  <a href='".e_BASE."signup.php'>aquí</a> para realizar el registro");
+define("LAN_6", "Debe iniciar la sesión en este sitio como usuario registrado para poder dejar sus comentarios - Si no es un usuario registrado pulse  <a href='".e_BASE."signup.php'>aquí</a> para realizar el registro");
 define("LAN_7", "Administrador del sitio");
 define("LAN_8", "Comentario");
 define("LAN_9", "Enviar comentario");
 define("LAN_10", "Administrador");
-define("LAN_11", "<b>Error!</b> No ha sido posible incluir su comentario en nuestra base de datos - por favor vuelva a escrbir su cmentario evitando utilizar caracteres no estandar.");
+define("LAN_11", "<b>Error!</b> No ha sido posible incluir su comentario en nuestra base de datos - por favor vuelva a escribir su comentario evitando utilizar carácteres no estándar.");
 
 define("LAN_16", "Usuario: ");
 
@@ -35,10 +35,10 @@ define("LAN_105", "Contenido");
 
 define("LAN_145", "Registrado: ");
 
-define("LAN_194", "Visitante");
+define("LAN_194", "Invitado");
 define("LAN_195", "Miembro");
 
-define("LAN_310", "No se pudo aceptar el envio, ese un nombre de usuario está registrado - si es su nombre de usuario por favor inicie sesión para identificarse.");
+define("LAN_310", "No se pudo aceptar el envío, ese nombre de usuario está registrado - si es su nombre de usuario por favor inicie sesión para identificarse.");
 
 define("LAN_312", "Envío duplicado - no se pudo aceptar.");
 define("LAN_313", "Localización");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_frontpage.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-10 18:12:33 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -19,9 +19,9 @@ define("FRTLAN_12", "Actualizar parámetros de la página");
 define("FRTLAN_13", "Parámetros de la página");
 
 define("FRTLAN_15", "Otro (escribe url):");
-define("FRTLAN_16", "error: no hay contenido principal seleccionado");
-define("FRTLAN_17", "error: no hay subcategoría de contenido seleccionado");
-define("FRTLAN_18", "error: no hay ningún contenido seleccionado");
+define("FRTLAN_16", "Error: no hay contenido principal seleccionado");
+define("FRTLAN_17", "Error: no hay subcategoría de contenido seleccionado");
+define("FRTLAN_18", "Error: no hay ningún contenido seleccionado");
 define("FRTLAN_19", "Contenido principal");
 define("FRTLAN_20", "Categoría de contenido");
 define("FRTLAN_21", "Contenido");
