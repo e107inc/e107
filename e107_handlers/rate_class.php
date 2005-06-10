@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-10 10:22:58 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-10 10:30:05 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -165,9 +165,10 @@ class rater {
 		}
 	}
 
-	function composerating($table, $id, $enter=TRUE, $userid=FALSE){
+	function composerating($table, $id, $enter=TRUE, $userid=FALSE, $nojump=FALSE){
 		//enter		: boolean to show (rateselect box + textual info) or not
 		//userid	: used to calcaulate a users given rating
+		//nojump	: boolean, if present no urljump will be used (needed in comment_rating system)
 
 		$rate = "";
 		if($ratearray = $this -> getrating($table, $id, $userid)){
@@ -198,7 +199,8 @@ class rater {
 				$rate .= " - ";
 			}
 			if(!$this -> checkrated($table, $id) && USER){
-				$rate .= $this -> rateselect(RATELAN_2, $table, $id, 'comment');
+				$rate .= $this -> rateselect(RATELAN_2, $table, $id, $nojump);
+				
 			}else if(USER){
 				$rate .= RATELAN_3;
 			}
