@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-06-09 22:42:40 $
+|     $Revision: 1.33 $
+|     $Date: 2005-06-10 00:40:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -142,10 +142,10 @@ CREATE TABLE download (
   download_thumb varchar(150) NOT NULL default '',
   download_image varchar(150) NOT NULL default '',
   download_comment tinyint(3) unsigned NOT NULL default '0',
-  download_class text NOT NULL,
+  download_class varchar(255) NOT NULL default '0',
   download_mirror text NOT NULL,
   download_mirror_type tinyint(1) unsigned NOT NULL default '0',
-  download_visible text NOT NULL,
+  download_visible varchar(255) NOT NULL default '0',
   PRIMARY KEY  (download_id),
   UNIQUE KEY download_name (download_name)
 ) TYPE=MyISAM;
@@ -161,7 +161,7 @@ CREATE TABLE download_category (
   download_category_description text NOT NULL,
   download_category_icon varchar(100) NOT NULL default '',
   download_category_parent int(10) unsigned NOT NULL default '0',
-  download_category_class tinyint(3) unsigned NOT NULL default '0',
+  download_category_class varchar(255) NOT NULL default '0',
   download_category_order int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (download_category_id)
 ) TYPE=MyISAM;
