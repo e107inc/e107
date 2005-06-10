@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.55 $
-|		$Date: 2005-06-09 22:58:25 $
+|		$Revision: 1.56 $
+|		$Date: 2005-06-10 09:31:49 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -105,7 +105,8 @@ if(isset($_POST['commentsubmit'])){
 		if(ANON === TRUE || USER === TRUE){
 			//enter_comment($author_name, $comment, $table, $id, $pid, $subject)
 			$pid = "0";
-			$cobj -> enter_comment(USERNAME, $_POST['comment'], $plugintable, $qs[1], $pid, $_POST['subject']);
+			$rated = (isset($_POST['rateindex']) ? $_POST['rateindex'] : "");
+			$cobj -> enter_comment(USERNAME, $_POST['comment'], $plugintable, $qs[1], $pid, $_POST['subject'], $rated);
 			$e107cache->clear("comment.{$plugintable}.{$qs[1]}");
 		}
 	}
@@ -1431,15 +1432,15 @@ function show_content_item(){
 							"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location FROM #comments
 							LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' ORDER BY comment_datestamp"
 							);
-
+					$showrate = TRUE;
 							$comment_total = $sql->db_Select_gen($query); 
 							if ($comment_total) {
 								$width = 0;
 								while ($row2 = $sql->db_Fetch()) {
 									if ($pref['nested_comments']) {
-										$text .= $cobj->render_comment($row2, $plugintable , "comment", $qs[1], $width, $row['content_heading']);
+										$text .= $cobj->render_comment($row2, $plugintable , "comment", $qs[1], $width, $row['content_heading'], $showrate);
 									} else {
-										$text = $cobj->render_comment($row2, $plugintable , "comment", $qs[1], $width, $row['content_heading']);
+										$text = $cobj->render_comment($row2, $plugintable , "comment", $qs[1], $width, $row['content_heading'], $showrate);
 									}
 								}
 								$ns->tablerender(CONTENT_LAN_35, $text);
@@ -1450,7 +1451,7 @@ function show_content_item(){
 							}
 							ob_end_flush(); // dump collected data
 						}
-						$cobj->form_comment("comment", $plugintable, $qs[1], $row['content_heading']); 
+						$cobj->form_comment("comment", $plugintable, $qs[1], $row['content_heading'], "", "", $showrate);
 					}
 
 					if($pref['cachestatus']){

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.56 $
-|		$Date: 2005-06-09 22:58:26 $
+|		$Revision: 1.57 $
+|		$Date: 2005-06-10 09:31:49 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -694,7 +694,7 @@ class content{
 							if($row['content_parent'] == 0){
 								$name	= strtoupper($row['content_heading']);
 								$js		= "style='font-weight:bold;'";
-								$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
+								//$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
 							}else{
 								$name	= $pre.$row['content_heading'];
 								$js		= "";
@@ -710,7 +710,7 @@ class content{
 							if($row['content_parent'] == 0){
 								$name	= strtoupper($row['content_heading']);
 								$js		= "style='font-weight:bold;'";
-								$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
+								//$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
 							}else{
 								$name	= $pre.$row['content_heading'];
 								$js		= "";
@@ -729,7 +729,7 @@ class content{
 								if($row['content_parent'] == 0){
 									$name	= strtoupper($row['content_heading']);
 									$js		= "style='font-weight:bold;'";
-									$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
+									//$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
 
 								}else{
 									$name	= $pre.$row['content_heading'];
@@ -750,7 +750,7 @@ class content{
 								if($row['content_parent'] == 0){
 									$name	= strtoupper($row['content_heading']);
 									$js		= "style='font-weight:bold;'";
-									$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
+									//$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
 								}else{
 									$name	= $pre.$row['content_heading'];
 									$js		= "";
