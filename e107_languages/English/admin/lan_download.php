@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-10 13:16:41 $
-|     $Author: stevedunstan $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-10 17:38:46 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("DOWLAN_1", "Download added to database.");
@@ -55,8 +55,8 @@ define("DOWLAN_46", "Update Category");
 define("DOWLAN_47", "Category created");
 define("DOWLAN_48", "Category Updated");
 define("DOWLAN_49", "Download Category");
-define("DOWLAN_50", "Go to page: ");
-define("DOWLAN_51", "Search downloads");
+
+define("DOWLAN_51", "Search/Refresh downloads");
 define("DOWLAN_52", "Files");
 define("DOWLAN_53", "Subcategory");
 define("DOWLAN_54", "Download Options");

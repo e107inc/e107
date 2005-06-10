@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-06-10 17:18:34 $
+|     $Revision: 1.53 $
+|     $Date: 2005-06-10 17:38:45 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -414,7 +414,7 @@ class download {
             foreach($search_display as $disp){
 		  		$query .= " OR $disp REGEXP('".$_POST['searchquery']."') ";
 			}
-            $query .= "  ORDER BY ".$sortorder." DESC";
+            $query .= " ORDER BY ".$sortorder." DESC";
 		} else {
 			$query .= " ORDER BY ".($sub_action ? $sub_action : $sortorder)." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
 		}
@@ -484,25 +484,18 @@ class download {
 		}
 		$text .= "</div>";
 
-		$downloads = $sql->db_Count("download");
+// Next-Previous. ==========================
 
+		$downloads = $sql->db_Count("download");
 		if ($downloads > $amount && !$_POST['searchquery']) {
-			$a = $downloads/$amount;
-			$r = explode(".", $a);
-			if ($r[1] != 0 ? $pages = ($r[0]+1) : $pages = $r[0]);
-			if ($pages) {
-				$current = ($from/$amount)+1;
-				$text .= "<br />".DOWLAN_50." ";
-				for($a = 1; $a <= $pages; $a++) {
-					$text .= ($current == $a ? " <b>[$a]</b>" : " [<a href='".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.download_datestamp.desc.").(($a-1) * $amount)."'>$a</a>] ");
-				}
-				$text .= "<br />";
-			}
+			$parms = "{$downloads},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.download_id.desc.")."[FROM]";
+			$text .= "<br />".LAN_GOPAGE." ".$tp->parseTemplate("{NEXTPREV={$parms}}");
 		}
 
-		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".DOWLAN_51."' />\n</p>";
 
-// Search - display options etc. =========================.
+// Search  & display options etc. =========================.
+
+		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".DOWLAN_51."' />\n</p>";
 
 		$text .= "<div style='cursor:pointer' onclick=\"expandit('sdisp')\">".LAN_DISPLAYOPT."</div>";
 		$text .= "<div id='sdisp' style='padding-top:4px;display:none;text-align:center;margin-left:auto;margin-right:auto'>
@@ -529,9 +522,6 @@ class download {
 		</form>\n
 		</div>";
 // ======================
-
-	//	$text .="\n</form>\n</div>";
-
 
 		$ns->tablerender(DOWLAN_7, $text);
 	}

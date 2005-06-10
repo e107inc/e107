@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-06-10 17:18:34 $
+|     $Revision: 1.16 $
+|     $Date: 2005-06-10 17:38:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -92,7 +92,7 @@ define("USRLAN_85", "users who haven't activated their account - click below to 
 define("USRLAN_86", "User verified");
 define("USRLAN_87", "User settings updated");
 define("USRLAN_88", "User classes updated");
-define("USRLAN_89", "Go to page:");
+
 define("USRLAN_90", "Search/Refresh");
 define("USRLAN_91", "Class");
 define("USRLAN_92", "Invalid characters in username");

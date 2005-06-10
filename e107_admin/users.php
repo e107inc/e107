@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2005-06-10 17:18:34 $
+|     $Revision: 1.52 $
+|     $Date: 2005-06-10 17:38:45 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -521,7 +521,7 @@ class users{
 
 		if ($users > $amount && !$_POST['searchquery']) {
 			$parms = "{$users},{$amount},{$from},".e_SELF."?".(e_QUERY ? "$action.$sub_action.$id." : "main.user_id.desc.")."[FROM]";
-			$text .= "<br />".USRLAN_89." ".$tp->parseTemplate("{NEXTPREV={$parms}}");
+			$text .= "<br />".LAN_GOPAGE." ".$tp->parseTemplate("{NEXTPREV={$parms}}");
 		}
 
 // Search - display options etc. .
