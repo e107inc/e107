@@ -4,14 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_mailout.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:41 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-10 20:06:43 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_52", "Guardar cambios");
 
-define("PRFLAN_63", "Enviar Email de prueba");
+define("PRFLAN_63", "Enviar correo de prueba");
 define("PRFLAN_64", "Pulsando el botón enviará un correo de prueba al administrador principal");
 define("PRFLAN_65", "Click para enviar correo a");
 define("PRFLAN_66", "Correo de prueba de");
@@ -26,18 +26,18 @@ define("PRFLAN_74", "SMTP Contraseña");
 define("PRFLAN_75", "El correo no se pudo enviar. Compruebe su configuración SMTP, o desactive SMTP y pruebe de nuevo.");
 
 define("MAILAN_01","De (Nombre)");
-define("MAILAN_02","De (Email)");
+define("MAILAN_02","De (email)");
 define("MAILAN_03","A");
 define("MAILAN_04","Cc");
 define("MAILAN_05","Bcc");
 define("MAILAN_06","Asunto");
 define("MAILAN_07","Adjunto");
 define("MAILAN_08","Enviar email");
-define("MAILAN_09","Usar estilo del theme");
-define("MAILAN_10","Usuario subscrito");
+define("MAILAN_09","Usar estilo del tema");
+define("MAILAN_10","Usuario suscrito");
 define("MAILAN_11","Insertar variables");
 define("MAILAN_12","Todos los miembros");
 define("MAILAN_13","Todos los miembros sin verificar ");
-define("MAILAN_14","Es recomendable que active SMTP para enviar gran número de emails. Ajústelo en las preferencias de debajo");
-define("MAILAN_15","Salidas email");
+define("MAILAN_14","Es recomendable que active SMTP para enviar un gran número de correos. Ajústelo en las preferencias de debajo");
+define("MAILAN_15","Salidas correo");
 ?>

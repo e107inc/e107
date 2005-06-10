@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_menus.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:41 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-10 20:06:43 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ define("MENLAN_10", "Nuevo menú instalado");
 define("MENLAN_11", "Menú retirado");
 define("MENLAN_12", "Activar este menú");
 define("MENLAN_13", "Activar en área");
-define("MENLAN_14", "Area");
+define("MENLAN_14", "Área");
 define("MENLAN_15", "Desactivar");
 define("MENLAN_16", "Configurar");
 define("MENLAN_17", "Mover arriba");
@@ -36,7 +36,7 @@ define("MENLAN_24", "Mover al primero");
 define("MENLAN_25", "Función ...");
 define("MENLAN_26", "Este menú solo se <strong>MOSTRARÁ</strong> en las siguientes páginas");
 define("MENLAN_27", "Este menú solo se <strong>OCULTARÁ</strong> en las siguientes páginas");
-define("MENLAN_28", "Escriba una página por linea, escriba la URL completa para identificarla");
+define("MENLAN_28", "Escriba una página por línea, escriba la URL completa para identificarla");
 define("MENLAN_29", "Seleccionar plantilla");
 define("MENLAN_30", "Para ver áreas de menú y sus posiciones en las plantillas personalizadas, seleccione su plantilla personalizada aquí:");
 define("MENLAN_31", "Plantilla predeterminada");
@@ -45,7 +45,7 @@ define("MENLAN_33", "Plantilla personalizada");
 define("MENLAN_34", "Integrado");
 define("MENLAN_35", "Configurar Menús");
 define("MENLAN_36", "Escoja el/los menú/s a activar");
-define("MENLAN_37", "y luego escoja a donde lo quiere activar.");
-define("MENLAN_38", "Mantenga la tecla CRTL para seleccionar multiples menús.");
+define("MENLAN_37", "y luego escoja donde lo quiere activar.");
+define("MENLAN_38", "Mantenga la tecla CRTL para seleccionar múltiples menús.");
 
 ?>
