@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.99 $
-|     $Date: 2005-06-10 00:40:47 $
+|     $Revision: 1.100 $
+|     $Date: 2005-06-11 00:42:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -757,15 +757,7 @@ function update_61x_to_700($type) {
 
 		}
 
-        if (!isset($pref['rss_feeds'])) {
-			mysql_query("INSERT INTO `".MPREFIX."plugin` VALUES (0, 'RSS', '1.0', 'rss_menu', 1);");
-        	$pref['rss_feeds'] = 1;
-			$s_prefs = TRUE;
-
-			mysql_query("ALTER TABLE `".MPREFIX."download_category` CHANGE `download_category_class` `download_category_class` varchar(255) NOT NULL default '0'");
-
-		}
-
+		mysql_query("ALTER TABLE `".MPREFIX."download_category` CHANGE `download_category_class` `download_category_class` varchar(255) NOT NULL default '0'");
 
         // Save all prefs that were set in above update routines
 		if ($s_prefs == TRUE) {
@@ -777,9 +769,6 @@ function update_61x_to_700($type) {
 	} else {
 		global $sysprefs;
 
-		if (!isset($pref['rss_feeds'])) {
-			return FALSE;
-		}
 
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
 		$fieldname = mysql_field_name($fields, 18);
