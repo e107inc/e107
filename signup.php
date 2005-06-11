@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-06-11 16:15:04 $
-|     $Author: e107coders $
+|     $Revision: 1.46 $
+|     $Date: 2005-06-11 17:07:04 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -90,6 +90,7 @@ if (USER) {
 if (e_QUERY) {
 	$qs = explode(".", e_QUERY);
 	if ($qs[0] == "activate") {
+		$e107cache->clear("online_menu_totals");
 		if ($sql->db_Select("user", "*", "user_sess='".$qs[2]."' ")) {
 			if ($row = $sql->db_Fetch()) {
 				$sql->db_Update("user", "user_ban='0', user_sess='' WHERE user_sess='".$qs[2]."' ");
@@ -113,6 +114,7 @@ $signup_name = array("realname", "website", "icq", "aim", "msn", "birth_year", "
 
 
 if (isset($_POST['register'])) {
+	$e107cache->clear("online_menu_totals");
 	$error_message = "";
 	extract($_POST);
 	require_once(e_HANDLER."message_handler.php");

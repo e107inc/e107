@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-06-10 17:38:45 $
-|     $Author: e107coders $
+|     $Revision: 1.53 $
+|     $Date: 2005-06-11 17:07:04 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -102,6 +102,7 @@ if (isset($_POST['update_options'])) {
 }
 // ------- Prune Users. --------------
 if (isset($_POST['prune'])) {
+	$e107cache->clear("online_menu_totals");
 	$sql2 = new db;
 	$text = USRLAN_56." ";
 	if ($sql->db_Select("user", "user_id, user_name", "user_ban=2")) {
@@ -116,6 +117,7 @@ if (isset($_POST['prune'])) {
 }
 // ------- Quick Add User --------------
 if (isset($_POST['adduser'])) {
+	$e107cache->clear("online_menu_totals");
 	if (!$_POST['ac'] == md5(ADMINPWCHANGE)) {
 		exit;
 	}
