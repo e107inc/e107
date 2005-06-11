@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2005-06-08 14:41:36 $
-|     $Author: streaky $
+|     $Revision: 1.55 $
+|     $Date: 2005-06-11 23:32:35 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -172,7 +172,7 @@ class sitelinks
 
 		// Check for screentip regardless of URL.
 		if (isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description']){
-			$screentip = " title = '".$linkInfo['link_description']."'";
+			$screentip = " title = '".$tp->toHTML($linkInfo['link_description'],"","defs")."'";
 		}
 
 		// Check if its expandable first. It should override its URL.
