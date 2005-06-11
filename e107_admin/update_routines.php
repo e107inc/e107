@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.102 $
-|     $Date: 2005-06-11 11:40:14 $
+|     $Revision: 1.103 $
+|     $Date: 2005-06-11 13:19:42 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -804,7 +804,6 @@ function update_61x_to_700($type) {
 		if ($res) {
 			$row = mysql_fetch_row($res);
 			$lines = explode("\n", $row[1]);
-			print_a($lines);
 			if(!strstr($lines[40], "KEY `user_ban_index` (`user_ban`)")) {
 				return false;
 			}
