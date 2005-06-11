@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/recent/languages/Spanish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-03 22:34:19 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-11 19:01:05 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ define("RECENT_ADMIN_9", "Abierto");
 define("RECENT_ADMIN_10", "Cerrado");
 define("RECENT_ADMIN_11", "Actualizar");
 define("RECENT_ADMIN_12", "Escoger");
-define("RECENT_ADMIN_13", "Bienvenido a la página de Recientes en ".SITENAME." ! Esta página muestra un listado de las secciones más comunes con los añadidos más recientes a esas secciones.");
+define("RECENT_ADMIN_13", "¡Bienvenido a la página de Recientes en ".SITENAME." ! Esta página muestra un listado de las secciones más comunes con los añadidos más recientes a esas secciones.");
 define("RECENT_ADMIN_14", "Añadidos recientes");
 
 define("RECENT_ADMIN_SECT_1", "Secciones");
@@ -44,7 +44,7 @@ define("RECENT_ADMIN_SECT_13", "Fecha");
 define("RECENT_ADMIN_SECT_14", "Escoja si se mostrará la fecha");
 define("RECENT_ADMIN_SECT_15", "");
 
-define("RECENT_ADMIN_SECT_16", "Cantida de elementos");
+define("RECENT_ADMIN_SECT_16", "Cantidad de elementos");
 define("RECENT_ADMIN_SECT_17", "Escoja cuantos elementos se mostrarán en cada sección");
 define("RECENT_ADMIN_SECT_18", "");
 

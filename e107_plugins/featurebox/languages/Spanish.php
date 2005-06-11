@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/featurebox/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 22:34:18 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-11 19:01:05 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("FBLAN_01","Caja de Características");
-define("FBLAN_02","Este plugin le permite mostrar una caja encima de sus noticias con características / las que quiera. Los mensajes pueden girar aleatoriamente o apagarse dinámicamente.");
+define("FBLAN_02","Este plugin le permite mostrar una caja encima de sus noticias con ciertas características. Los mensajes pueden girar aleatoriamente o apagarse dinámicamente.");
 define("FBLAN_03","Configurar la caja de características");
 define("FBLAN_04","El plugin se ha instalado con éxito. Para añadir mensajes y configurarlos vaya a la página del administrador y haga click en 'caja de características' de la sección de plugins.");
 define("FBLAN_05","No hay mensajes en la caja de características");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 22:34:18 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-11 19:01:05 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -17,42 +17,42 @@ define("POLL_ADLAN04", "El plugin encuestas se instaló correctamente. Para aña
 define("POLLAN_MENU_CAPTION", "Poll");
 define("POLL_1", "Votos: ");
 define("POLL_2", "Comentarios");
-define("POLL_3", "Encuestas Antiguas");
+define("POLL_3", "Encuestas antiguas");
 define("POLL_4", "Votar");
 define("POLL_5", "Encuesta");
 define("POLL_6", "Sin Votos");
 define("POLL_7", "1 voto");
-define("POLL_8", " votos");
-define("POLL_9", "moderador");
-define("POLL_10", "solo borrar encuesta");
+define("POLL_8", " Votos");
+define("POLL_9", "Moderador");
+define("POLL_10", "Borrar solo encuesta");
 define("POLL_11", "Encuesta actualizada.");
 define("POLL_12", "Enviada por: ");
-define("POLLAN_13", "después de votar");
-define("POLLAN_14", "by clicking view results link - comments must be turned on to use this option");
+define("POLLAN_13", "Después de votar");
+define("POLLAN_14", "Pulsando en el enlace de resultados - Los comentarios deben estar activos para usar esta opción");
 define("POLLAN_15", "Permitir votar en esta encuesta");
 define("POLLAN_16", "Método de almacenamiento del voto");
-define("POLLAN_17", "cookie");
+define("POLLAN_17", "Cookie");
 define("POLLAN_18", "Dirección IP");
 define("POLLAN_19", "UserID (solo miembros pueden votar)");
 define("POLLAN_20", "¿Permitir comentarios en esta encuesta?");
-define("POLLAN_21", "Previsializar de nuevo");
+define("POLLAN_21", "Previsualizar de nuevo");
 define("POLLAN_22", "Actualizar encuesta");
 define("POLLAN_23", "Crear encuesta");
 define("POLLAN_24", "Previsualizar");
-define("POLLAN_25", "Limpiar form");
-define("POLLAN_26", "votos");
-define("POLLAN_27", "comentarios");
+define("POLLAN_25", "Limpiar formulario");
+define("POLLAN_26", "Votos");
+define("POLLAN_27", "Comentarios");
 define("POLLAN_28", "Encuestas antiguas");
-define("POLLAN_29", "enviado por");
+define("POLLAN_29", "Enviado por");
 define("POLLAN_30", "Enviar");
-define("POLLAN_31", "votos");
+define("POLLAN_31", "Votos");
 define("POLLAN_32", "Click aquí para ver resultados");
 define("POLLAN_33", "No hay encuestas antiguas.");
 define("POLLAN_34", "Título");
 define("POLLAN_35", "Enviado por");
 define("POLLAN_36", "Activa");
-define("POLLAN_37", "activa desde");
-define("POLLAN_38", "hasta");
+define("POLLAN_37", "Activa desde");
+define("POLLAN_38", "Hasta");
 define("POLLAN_39", "¡Gracias por su voto!");
 define("POLLAN_40", "Click aquí para ver los resultados");
 define("POLLAN_41", "Esta encuesta está restringida solo a los miembros");

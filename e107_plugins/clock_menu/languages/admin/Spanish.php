@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/clock_menu/languages/admin/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 22:34:18 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-11 19:01:05 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -14,7 +14,7 @@ define("CLOCK_AD_L2", "Título");
 define("CLOCK_AD_L3", "Actualizar ajustes de menú");
 define("CLOCK_AD_L4", "Config del menú del reloj");
 define("CLOCK_AD_L5", "AM/PM");
-define("CLOCK_AD_L6", "Activado, mostrará la hora en format (0-12 AM/PM). Desactivado, mostrará el formato de 0-24");
+define("CLOCK_AD_L6", "Activado, mostrará la hora en formato (0-12 AM/PM). Desactivado, mostrará la hora en formato de 0-24");
 define("CLOCK_AD_L7", "Prefijo de fecha");
 define("CLOCK_AD_L8", "Si su idioma requiere una palabra corta antes de la fecha (Ejemplo 'le' for Francés o 'den' para Alemán...), use este campo. En blanco si no se requiere.");
 define("CLOCK_AD_L9", "Sufijo 1");
