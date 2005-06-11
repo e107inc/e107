@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/email_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-11 03:05:00 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-11 16:15:04 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-$SIGNUP_SUBJECT = LAN_404." {SITENAME}";
-$SIGNUP_USETHEME = TRUE;
+$SIGNUPEMAIL_SUBJECT = LAN_404." {SITENAME}";
+$SIGNUPEMAIL_USETHEME = TRUE;
+$SIGNUPEMAIL_LINKSTYLE = "";
 
 $SIGNUPEMAIL_TEMPLATE = "
 <body>

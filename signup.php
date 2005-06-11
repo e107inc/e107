@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-06-11 11:15:11 $
-|     $Author: stevedunstan $
+|     $Revision: 1.45 $
+|     $Date: 2005-06-11 16:15:04 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -835,7 +835,7 @@ function render_email($mode=1, $preview = FALSE){
 	// 1 = Body
 	// 2 = Subject
 
-   	global $pref,$nid,$u_key,$_POST,$SIGNUP_SUBJECT,$SIGNUPEMAIL_TEMPLATE;
+   	global $pref,$nid,$u_key,$_POST,$SIGNUPEMAIL_LINKSTYLE,$SIGNUPEMAIL_SUBJECT,$SIGNUPEMAIL_TEMPLATE;
 
 	if($preview == TRUE){
     	$_POST['password1'] = "test-password";
@@ -856,6 +856,8 @@ function render_email($mode=1, $preview = FALSE){
 		require_once(e_THEME."templates/email_template.php");
 	}
 
+	$style = ($SIGNUPEMAIL_LINKSTYLE) ? "style='$SIGNUPEMAIL_LINKSTYLE'" : "";
+
 	$search[0] = "{LOGINNAME}";
 	$replace[0] = $_POST['loginname'];
 
@@ -863,13 +865,13 @@ function render_email($mode=1, $preview = FALSE){
 	$replace[1] = $pass_show;
 
 	$search[2] = "{ACTIVATION_LINK}";
-	$replace[2] = "<a href='".RETURNADDRESS."'>".RETURNADDRESS."</a>";
+	$replace[2] = "<a href='".RETURNADDRESS."' $style>".RETURNADDRESS."</a>";
 
 	$search[3] = "{SITENAME}";
 	$replace[3] = SITENAME;
 
 	$search[4] = "{SITEURL}";
-	$replace[4] = "<a href='".SITEURL."'>".SITEURL."</a>";
+	$replace[4] = "<a href='".SITEURL."' $style>".SITEURL."</a>";
 
 	$search[5] = "{USERNAME}";
 	$replace[5] = $_POST['name'];
@@ -878,14 +880,14 @@ function render_email($mode=1, $preview = FALSE){
 	$search[6] = ($_POST['website']) ? $_POST['website'] : "";
 
 	if($mode == 2){
-		$subject = str_replace($search,$replace,$SIGNUP_SUBJECT);
+		$subject = str_replace($search,$replace,$SIGNUPEMAIL_SUBJECT);
     	return $subject;
 	}
 
 	$HEAD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
 	$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
 	$HEAD .= "<head><meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
-	$HEAD .= ($SIGNUP_USETHEME == TRUE) ? "<link rel=\"stylesheet\" href=\"".SITEURL.THEME."style.css\" type=\"text/css\" />\n" : "";
+	$HEAD .= ($SIGNUPEMAIL_USETHEME == TRUE) ? "<link rel=\"stylesheet\" href=\"".SITEURL.THEME."style.css\" type=\"text/css\" />\n" : "";
 	$HEAD .= "</head>\n";
 	$FOOT = "\n</html>\n";
 
