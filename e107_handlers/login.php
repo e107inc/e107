@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-06-11 11:15:11 $
+|     $Revision: 1.16 $
+|     $Date: 2005-06-11 12:31:31 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -107,15 +107,16 @@ class userlogin {
 				{
 					require_once(e_HANDLER."xml_class.php");
 					$xml = new parseXml;
-					if($rawData = $xml -> getRemoteXmlFile($_POST['xupexist']))
+					if($rawData = $xml -> getRemoteXmlFile($user_xup))
 					{
+						preg_match_all("#\<meta name=\"(.*?)\" content=\"(.*?)\" \/\>#si", $rawData, $match);
 						$count = 0;
 						foreach($match[1] as $value)
 						{
 							$$value = $match[2][$count];
 							$count++;
 						}
-						$sql -> db_Update("user", "user_name='$NICKNAME', user_login='$FN',  user_homepage='$URL',  user_icq='$ICQ',  user_aim='$AIM',  user_msn='$MSN',  user_location='$GEO',  user_birthday='$BDAY',  user_signature='$SIG',  user_sess='$PHOTO',  user_image='$AV',  user_timezone='$TZ' 	WHERE user_id='$user_id' ");
+						$sql -> db_Update("user", "user_login='$FN',  user_homepage='$URL',  user_icq='$ICQ',  user_aim='$AIM',  user_msn='$MSN',  user_location='$GEO',  user_birthday='$BDAY',  user_signature='$SIG',  user_sess='$PHOTO',  user_image='$AV',  user_timezone='$TZ' 	WHERE user_id='$user_id' ");
 					}
 				}
 				
