@@ -51,7 +51,7 @@ if($sql->db_Select('menus','menu_id, menu_pages',"menu_name = '$name' AND menu_p
 				require_once(e_PLUGIN.$path."/languages/English.php");
 			}
 		}
-		include(e_PLUGIN.$path."/".$name.".php");
+		include_once(e_PLUGIN.$path."/".$name.".php");
 		$sql->db_Mark_Time("(After $name)");
 	}
 }
