@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.101 $
-|     $Date: 2005-06-11 11:15:10 $
-|     $Author: stevedunstan $
+|     $Revision: 1.102 $
+|     $Date: 2005-06-11 11:40:14 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -798,23 +798,17 @@ function update_61x_to_700($type) {
 			return FALSE;
 		}
 
-/*
-
-		*** THIS RETURNS FALSE AFTER UPDATE! ***
-
 		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = "SHOW CREATE TABLE `".MPREFIX."user`";
 		$res = mysql_query($qry);
 		if ($res) {
 			$row = mysql_fetch_row($res);
 			$lines = explode("\n", $row[1]);
-			if(!strstr($lines[39], "KEY `user_ban_index` (`user_ban`)")) {
+			print_a($lines);
+			if(!strstr($lines[40], "KEY `user_ban_index` (`user_ban`)")) {
 				return false;
-			} else {
-				return true;
 			}
 		}
-*/
 
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.
@@ -822,8 +816,6 @@ function update_61x_to_700($type) {
 		if (!is_array($pref['frontpage'])) {
 			return FALSE;
 		}
-
-
 
 
 /*
