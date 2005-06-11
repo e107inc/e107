@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-06-09 14:49:20 $
-|     $Author: e107coders $
+|     $Revision: 1.34 $
+|     $Date: 2005-06-11 12:31:31 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -278,7 +278,7 @@ if (isset($_POST['updatesettings'])){
 		$ret = $e_event->trigger("preuserset", $_POST);
 
 		if ($ret=='') {
-			$sql->db_Update("user", "user_name='$username', user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."' {$new_customtitle} WHERE user_id='".$inp."' ");
+			$sql->db_Update("user", "user_name='$username', user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$_POST['user_xup']."' WHERE user_id='".$inp."' ");
 
 			if(ADMIN && getperms("4")){
 				$sql -> db_Update("user", "user_loginname='$loginname' WHERE user_id='$inp' ");
@@ -698,6 +698,19 @@ if ($pref['photo_upload'] && FILE_UPLOADS) {
 		</td>
 		</tr>";
 }
+
+
+$text .= "
+<tr>
+<td colspan='2' class='forumheader'>".LAN_435."</td>
+</tr>
+<tr>
+<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_433."<br /><span class='smalltext'><a href='http://e107.org/generate_xup.php' rel-'external'>".LAN_434."</a></span></td>
+<td style='width:80%' class='forumheader2'>
+<input class='tbox' type='text' name='user_xup' size='50' value='{$curVal['user_xup']}' maxlength='100' />
+</td>
+</tr>
+";
 
 
 if (!e_QUERY) {
