@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/email_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-10 22:51:13 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-11 03:05:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -20,6 +20,7 @@ $SIGNUP_SUBJECT = LAN_404." {SITENAME}";
 $SIGNUP_USETHEME = TRUE;
 
 $SIGNUPEMAIL_TEMPLATE = "
+<body>
 <div style='padding:10px'>
 <div class='forumheader3' style='text-align:left; width:90%'>
 ".LAN_EMAIL_01." {USERNAME},<br />
@@ -43,5 +44,6 @@ LAN_403." {SITENAME}<br />
 {SITEURL}
 </div>
 </div>
+</body>
 ";
 ?>
