@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.165 $
-|     $Date: 2005-06-09 21:50:41 $
+|     $Revision: 1.166 $
+|     $Date: 2005-06-11 22:22:21 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -424,8 +424,7 @@ $sql->db_Mark_Time('Start: Signup/splash/admin');
 define("e_SIGNUP", (file_exists($e107->relative_base_path."customsignup.php") ? $e107->relative_base_path."customsignup.php" : $e107->relative_base_path."signup.php"));
 define("e_LOGIN", (file_exists($e107->relative_base_path."customlogin.php") ? $e107->relative_base_path."customlogin.php" : $e107->relative_base_path."login.php"));
 
-if ($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php') {
-
+if ($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php' && e_PAGE != 'sitedown.php') {
 	header("Location: ".$e107->http_abs_location(false, "membersonly.php"));
 	exit;
 }
@@ -460,10 +459,8 @@ define("SITEADMIN", $pref['siteadmin']);
 define("SITEADMINEMAIL", $pref['siteadminemail']);
 define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'], "", "emotes_off defs"));
 
-if ($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin", e_SELF)) {
-	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitedown.php");
-	e107_include_once(e_LANGUAGEDIR."English/lan_sitedown.php");
-	e107_require_once($e107->relative_base_path."sitedown.php");
+if ($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin.php", e_SELF) && !eregi("sitedown.php", e_SELF)) {
+	header("Location: ".$e107->http_abs_location(false, "sitedown.php"));
 	exit;
 }
 
