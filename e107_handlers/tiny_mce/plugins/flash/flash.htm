@@ -1,13 +1,16 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
 <title>{$lang_insert_flash}</title>
 <script language="javascript" type="text/javascript" src="../../tiny_mce_popup.js"></script>
 <script language="javascript">
 var url = tinyMCE.getParam("flash_external_list_url");
-if (url != null)
-	document.write('<sc'+'ript language="javascript" type="text/javascript" src="' + tinyMCE.documentBasePath + "/" + url + '"></sc'+'ript>');
+if (url != null) {
+	// Fix relative
+	if (url.charAt(0) != '/')
+		url = tinyMCE.documentBasePath + "/" + url;
+
+	document.write('<sc'+'ript language="javascript" type="text/javascript" src="' + url + '?rnd=' + new Date().getTime() + '"></sc'+'ript>');
+}
 </script>
 <script language="javascript" type="text/javascript">
 <!--
@@ -33,7 +36,7 @@ if (url != null)
             formObj.height.value  = swfheight;
         }
         formObj.file.value = swffile;
-        formObj.insert.value = tinyMCE.getLang('lang_' + tinyMCE.getWindowArg('action'));
+        formObj.insert.value = tinyMCE.getLang('lang_' + tinyMCE.getWindowArg('action'), 'Insert', true);
 
 		// Handle file browser
 		if (tinyMCE.getParam("file_browser_callback") != null) {
@@ -50,6 +53,14 @@ if (url != null)
 			html += ' class="mceButtonNormal" alt="' + tinyMCE.getLang('lang_browse') + '" />';
 
 			document.getElementById('browser').innerHTML = html;
+		}
+
+		// Auto select flash in list
+		if (typeof(tinyMCEFlashList) != "undefined" && tinyMCEFlashList.length > 0) {
+			for (var i=0; i<formObj.link_list.length; i++) {
+				if (formObj.link_list.options[i].value == tinyMCE.getWindowArg('swffile'))
+					formObj.link_list.options[i].selected = true;
+			}
 		}
 
         window.focus();
@@ -80,6 +91,7 @@ if (url != null)
                 + 'width="' + width + '" height="' + height + '" '
                 + 'border="0" alt="' + file + '" title="' + file + '" class="mce_plugin_flash" name="mce_plugin_flash" />';
             tinyMCE.execCommand("mceInsertContent",true,html);
+			tinyMCE.selectedInstance.repaint();
             top.close();
         }
     }
