@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-06-10 22:51:13 $
+|     $Revision: 1.41 $
+|     $Date: 2005-06-11 00:30:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -40,7 +40,10 @@ if(!$_POST){   // Notice Removal.
 	$_POST['ue'] = "";  $signature = "";
 }
 
-
+if(ADMIN && e_QUERY == "preview"){
+	echo render_email(1,TRUE);
+	exit;
+}
 
 
 if ($pref['membersonly_enabled']) {
@@ -282,51 +285,13 @@ if (isset($_POST['register'])) {
 			}
 
 // ========== Send Email =========>
-                                                       // ==========================================================
-			define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$nid.".".$u_key : SITEURL."/signup.php?activate.".$nid.".".$u_key));
-			$pass_show = ($pref['user_reg_secureveri'])? "*******" : $_POST['password1'];
 
 			require_once(e_HANDLER."mail.php");
-			if (file_exists(THEME."email_template.php")){
-				require_once(THEME."email_template.php");
-			}else{
-            	require_once(e_THEME."templates/email_template.php");
-			}
+            $message = render_email(1);
+			$subj = render_email(2);
 
-            $search[0] = "{LOGINNAME}";
-			$replace[0] = $_POST['loginname'];
-
-            $search[1] = "{PASSWORD}";
-			$replace[1] = $pass_show;
-
-            $search[2] = "{ACTIVATION_LINK}";
-			$replace[2] = "<a href='".RETURNADDRESS."'>".RETURNADDRESS."</a>";
-
-            $search[3] = "{SITENAME}";
-			$replace[3] = SITENAME;
-
-			$search[4] = "{SITEURL}";
-			$replace[4] = "<a href='".SITEURL."'>".SITEURL."</a>";
-
-			$search[5] = "{USERNAME}";
-			$replace[5] = $_POST['name'];
-
-			$search[6] = "{USERURL}";
-			$search[6] = ($_POST['website']) ? $_POST['website'] : "";
-
-			$HEAD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
-			$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
-			$HEAD .= "<head><meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
-			$HEAD .= ($SIGNUP_USETHEME == TRUE) ? "<link rel=\"stylesheet\" href=\"".SITEURL.THEME."style.css\" type=\"text/css\" />\n" : "";
-			$HEAD .= "</head>\n<body>\n";
-			$FOOT = "</body>\n</html>\n";
-
-			$SIGNUPEMAIL_TEMPLATE = $HEAD.$SIGNUPEMAIL_TEMPLATE.$FOOT;
-
-            $message = str_replace($search,$replace,$SIGNUPEMAIL_TEMPLATE);
-			$subject = str_replace($search,$replace,$SIGNUP_SUBJECT);
-			if(!sendemail($_POST['email'], $subject, $message, $_POST['name'])) {
-            	echo $error_message = "There was a problem, the registration mail was not sent, please contact the website administrator.";
+			if(!sendemail($_POST['email'], $subj, $message, $_POST['name'])) {
+            	$error_message = "There was a problem, the registration mail was not sent, please contact the website administrator.";
 			}
 
 			$edata_su = array("username" => $username, "email" => $_POST['email'], "website" => $_POST['website'], "icq" => $_POST['icq'], "aim" => $_POST['aim'], "msn" => $_POST['msn'], "location" => $_POST['location'], "birthday" => $birthday, "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname']);
@@ -339,7 +304,9 @@ if (isset($_POST['register'])) {
 			}else {
 				$text = LAN_405;
 			}
-
+            if(isset($error_message)){
+            	$text .= "<br /><b>".$error_message."</b><br />";
+			}
 			$ns->tablerender(LAN_406, $text);
 			require_once(FOOTERF);
 			exit;
@@ -752,4 +719,69 @@ function headerjs() {
 	return $script_txt;
 }
 
+
+function render_email($mode=1, $preview = FALSE){
+
+	// 1 = Body
+	// 2 = Subject
+
+   	global $pref,$nid,$u_key,$_POST,$SIGNUP_SUBJECT,$SIGNUPEMAIL_TEMPLATE;
+
+	if($preview == TRUE){
+    	$_POST['password1'] = "test-password";
+    	$_POST['loginname'] = "test-loginname";
+    	$_POST['name'] = "test-username";
+		$_POST['website'] = "www.test-site.com";
+		$nid = 0;
+		$u_key = "1234567890ABCDEFGHIJKLMNOP";
+	}
+
+
+	define("RETURNADDRESS", (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$nid.".".$u_key : SITEURL."/signup.php?activate.".$nid.".".$u_key));
+	$pass_show = ($pref['user_reg_secureveri'])? "*******" : $_POST['password1'];
+
+	if (file_exists(THEME."email_template.php")){
+		require_once(THEME."email_template.php");
+	}else{
+		require_once(e_THEME."templates/email_template.php");
+	}
+
+	$search[0] = "{LOGINNAME}";
+	$replace[0] = $_POST['loginname'];
+
+	$search[1] = "{PASSWORD}";
+	$replace[1] = $pass_show;
+
+	$search[2] = "{ACTIVATION_LINK}";
+	$replace[2] = "<a href='".RETURNADDRESS."'>".RETURNADDRESS."</a>";
+
+	$search[3] = "{SITENAME}";
+	$replace[3] = SITENAME;
+
+	$search[4] = "{SITEURL}";
+	$replace[4] = "<a href='".SITEURL."'>".SITEURL."</a>";
+
+	$search[5] = "{USERNAME}";
+	$replace[5] = $_POST['name'];
+
+	$search[6] = "{USERURL}";
+	$search[6] = ($_POST['website']) ? $_POST['website'] : "";
+
+	if($mode == 2){
+		$subject = str_replace($search,$replace,$SIGNUP_SUBJECT);
+    	return $subject;
+	}
+
+	$HEAD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
+	$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
+	$HEAD .= "<head><meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
+	$HEAD .= ($SIGNUP_USETHEME == TRUE) ? "<link rel=\"stylesheet\" href=\"".SITEURL.THEME."style.css\" type=\"text/css\" />\n" : "";
+	$HEAD .= "</head>\n<body>\n";
+	$FOOT = "</body>\n</html>\n";
+
+	$SIGNUPEMAIL_TEMPLATE = $HEAD.$SIGNUPEMAIL_TEMPLATE.$FOOT;
+	$message = str_replace($search,$replace,$SIGNUPEMAIL_TEMPLATE);
+
+    return $message;
+}
 ?>
