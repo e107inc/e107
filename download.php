@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-06-10 13:16:39 $
-|     $Author: stevedunstan $
+|     $Revision: 1.30 $
+|     $Date: 2005-06-11 13:46:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -56,12 +56,12 @@ if (!e_QUERY) {
 	MAX(d.download_datestamp) as d_last,
 	SUM(d.download_requested) as d_requests,
 	COUNT(d2.download_id) AS d_subcount,
-	SUM(d2.download_filesize) AS d_subsize, 
+	SUM(d2.download_filesize) AS d_subsize,
 	SUM(d2.download_requested) as d_subrequests
 	FROM #download_category AS dc
-	LEFT JOIN #download AS d ON dc.download_category_id = d.download_category AND d.download_active > 0 AND d.download_visible IN (".USERCLASS_LIST.") 
-	LEFT JOIN #download_category as dc2 ON dc2.download_category_parent=dc.download_category_id 
-	LEFT JOIN #download AS d2 ON dc2.download_category_id = d2.download_category AND d2.download_active > 0 AND d2.download_visible IN (".USERCLASS_LIST.") 
+	LEFT JOIN #download AS d ON dc.download_category_id = d.download_category AND d.download_active > 0 AND d.download_visible IN (".USERCLASS_LIST.")
+	LEFT JOIN #download_category as dc2 ON dc2.download_category_parent=dc.download_category_id
+	LEFT JOIN #download AS d2 ON dc2.download_category_id = d2.download_category AND d2.download_active > 0 AND d2.download_visible IN (".USERCLASS_LIST.")
 	WHERE dc.download_category_class IN (".USERCLASS_LIST.")
 	GROUP by dc.download_category_id ORDER by dc.download_category_order
 	";
@@ -171,7 +171,7 @@ if ($action == "list") {
 
 	/* SHOW SUBCATS ... */
 
-	
+
 
 
 
@@ -189,11 +189,11 @@ if ($action == "list") {
 		SELECT dc.*, dc2.download_category_name AS parent_name, dc2.download_category_icon as parent_icon, SUM(d.download_filesize) AS d_size,
 		COUNT(d.download_id) AS d_count,
 		MAX(d.download_datestamp) as d_last,
-		SUM(d.download_requested) as d_requests 
+		SUM(d.download_requested) as d_requests
 		FROM #download_category AS dc
-		LEFT JOIN #download AS d ON dc.download_category_id = d.download_category AND d.download_active > 0 AND d.download_visible IN (".USERCLASS_LIST.") 
-		LEFT JOIN #download_category as dc2 ON dc2.download_category_id='$id' 
-		WHERE dc.download_category_class IN (".USERCLASS_LIST.") AND dc.download_category_parent='$id' 
+		LEFT JOIN #download AS d ON dc.download_category_id = d.download_category AND d.download_active > 0 AND d.download_visible IN (".USERCLASS_LIST.")
+		LEFT JOIN #download_category as dc2 ON dc2.download_category_id='$id'
+		WHERE dc.download_category_class IN (".USERCLASS_LIST.") AND dc.download_category_parent='$id'
 		GROUP by dc.download_category_id ORDER by dc.download_category_order
 		";
 		$sql->db_Select_gen($qry);
@@ -218,7 +218,7 @@ if ($action == "list") {
 		}
 		$DOWNLOAD_CAT_MAIN_ICON = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float-left' />" : "&nbsp;");
 		$DOWNLOAD_CAT_MAIN_NAME = $row['parent_name'];
-		$download_cat_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_PARENT_TABLE);
+		$download_cat_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_START);
 		$DOWNLOAD_CAT_NEWDOWNLOAD_TEXT = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' /> ".LAN_dl_36;
 		$download_cat_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_CAT_TABLE_END);
 		$text = $download_cat_table_start.$download_cat_table_string.$download_cat_table_end;
@@ -712,6 +712,8 @@ function parse_download_cat_parent_table($row) {
 	global $current_row,$DOWNLOAD_CAT_PARENT_TABLE;
 	extract($row);
 	$current_row = ($current_row) ? 0 : 1;  // Alternating CSS for each row.(backwards compatible)
+
+
 	$template = ($current_row == 1) ? $DOWNLOAD_CAT_PARENT_TABLE : str_replace("forumheader3","forumheader3 forumheader3_alt",$DOWNLOAD_CAT_PARENT_TABLE);
 
 	if (check_class($download_category_class)) {
@@ -756,7 +758,7 @@ function parse_download_cat_child_table($row, $subList)
 
 	$download_icon = ($row['d_count'] || $row['d_subcount'] ? "<img src='".e_IMAGE."icons/$download_category_icon' alt='' style='float-left' />" : "<img src='".e_IMAGE."icons/$download_category_icon_empty' alt='' style='float-left' />");
 
-	
+
 
 
 
