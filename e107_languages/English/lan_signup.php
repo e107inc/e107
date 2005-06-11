@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-10 22:51:13 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2005-06-11 11:15:11 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Register");
@@ -74,12 +74,15 @@ define("LAN_SIGNUP_24", "Thankyou for registering at");
 define("LAN_SIGNUP_25", "Upload your avatar");
 define("LAN_SIGNUP_26", "Upload your photograph");
 define("LAN_SIGNUP_27", "Show");
-
 define("LAN_SIGNUP_28", "choice of Content/Mail-lists");
-
 define("LAN_SIGNUP_29", "A verification email will be sent to the email address you enter here so it must be valid.");
 define("LAN_SIGNUP_30", "If you do not wish to display your email address on this site, please tick the 'hide email address' box.");
 
+define("LAN_SIGNUP_31", "URL to your XUP file");
+define("LAN_SIGNUP_32", "What's an XUP file?");
+define("LAN_SIGNUP_33", "Type path or choose avatar");
+define("LAN_SIGNUP_34", "Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.");
+define("LAN_SIGNUP_35", "Click here to register using an XUP file");
 
 define("LAN_LOGINNAME", "Login Name");
 define("LAN_PASSWORD", "Password");

@@ -11,11 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.100 $
-|     $Date: 2005-06-11 00:42:15 $
-|     $Author: e107coders $
+|     $Revision: 1.101 $
+|     $Date: 2005-06-11 11:15:10 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
+
+
+
+
 require_once("../class2.php");
 
 if (!defined("LAN_UPDATE_8")) { define("LAN_UPDATE_8", ""); }
@@ -164,8 +168,8 @@ function update_61x_to_700($type) {
 
 
 		/* start user update */
-
 		mysql_query("ALTER TABLE ".MPREFIX."user ADD user_loginname VARCHAR( 100 ) NOT NULL AFTER user_name");
+		mysql_query("ALTER TABLE ".MPREFIX."user ADD user_xup VARCHAR( 100 ) NOT NULL");
 		$sql->db_Update("user", "user_loginname=user_name WHERE user_loginname=''");
 
 		/* end */
@@ -770,6 +774,14 @@ function update_61x_to_700($type) {
 		global $sysprefs;
 
 
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");
+		$fieldname = mysql_field_name($fields, 36);
+		if($fieldname != "user_xup")
+		{
+			return FALSE;
+		}
+
+
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
 		$fieldname = mysql_field_name($fields, 18);
 		if($fieldname != "download_visible"){
@@ -786,6 +798,10 @@ function update_61x_to_700($type) {
 			return FALSE;
 		}
 
+/*
+
+		*** THIS RETURNS FALSE AFTER UPDATE! ***
+
 		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = "SHOW CREATE TABLE `".MPREFIX."user`";
 		$res = mysql_query($qry);
@@ -798,7 +814,7 @@ function update_61x_to_700($type) {
 				return true;
 			}
 		}
-
+*/
 
 		// check if update is needed.
 		// FALSE = needed, TRUE = not needed.

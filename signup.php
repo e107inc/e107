@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-06-11 03:05:00 $
-|     $Author: e107coders $
+|     $Revision: 1.44 $
+|     $Date: 2005-06-11 11:15:11 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -123,6 +123,45 @@ if (isset($_POST['register'])) {
 			$error = TRUE;
 		}
 	}
+
+
+	if($_POST['xupexist'])
+	{
+		require_once(e_HANDLER."xml_class.php");
+		$xml = new parseXml;
+		if(!$rawData = $xml -> getRemoteXmlFile($_POST['xupexist']))
+		{
+			echo "Error: Unable to open remote XUP file";
+		}
+		preg_match_all("#\<meta name=\"(.*?)\" content=\"(.*?)\" \/\>#si", $rawData, $match);
+		$count = 0;
+		foreach($match[1] as $value)
+		{
+			$$value = $match[2][$count];
+			$count++;
+		}
+
+		$_POST['name'] = $NICKNAME;
+		$_POST['email'] = $EMAIL;
+		$birthday = $BDAY;
+		$_POST['website'] = $URL;
+		$_POST['icq'] = $ICQ;
+		$_POST['aim'] = $AIM;
+		$_POST['msn'] = $MSN;
+		$_POST['location'] = $GEO;
+		$_POST['signature'] = $SIG;
+		$_POST['hideemail'] = $EMAILHIDE;
+		$_POST['timezone'] = $TZ;
+		$_POST['realname'] = $FN;
+		$_POST['image'] = $AV;
+	}
+
+//	echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
+
+	if($_POST['loginnamexup']) $_POST['loginname'] = $_POST['loginnamexup'];
+	if($_POST['password1xup']) $_POST['password1'] = $_POST['password1xup'];
+	if($_POST['password2xup']) $_POST['password2'] = $_POST['password2xup'];
+
 
 	if (strstr($_POST['name'], "#") || strstr($_POST['name'], "=") || strstr($_POST['name'], "\\")) {
 		$error_message .= LAN_409."\\n";
@@ -266,7 +305,7 @@ if (isset($_POST['register'])) {
 		$loginname = strip_tags($_POST['loginname']);
 		$time = time();
 		$ip = $e107->getip();
-		$birthday = $_POST['birth_year']."/".$_POST['birth_month']."/".$_POST['birth_day'];
+		if(!$birthday) $birthday = $_POST['birth_year']."/".$_POST['birth_month']."/".$_POST['birth_day'];
 
 		$ue_fields = "";
 		foreach($_POST['ue'] as $key => $val){
@@ -277,7 +316,7 @@ if (isset($_POST['register'])) {
 
 		if ($pref['user_reg_veri']){
 			$u_key = md5(uniqid(rand(), 1));
-	   	  	$nid = $sql->db_Insert("user", "0, '".$username."', '$loginname', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."', '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
+	   	  	$nid = $sql->db_Insert("user", "0, '".$username."', '$loginname', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."', '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '', '".$_POST['xupexist']."' ");
 
 // ==== Update Userclass =======>
 
@@ -305,7 +344,7 @@ if (isset($_POST['register'])) {
             	$error_message = "There was a problem, the registration mail was not sent, please contact the website administrator.";
 			}
 
-			$edata_su = array("username" => $username, "email" => $_POST['email'], "website" => $_POST['website'], "icq" => $_POST['icq'], "aim" => $_POST['aim'], "msn" => $_POST['msn'], "location" => $_POST['location'], "birthday" => $birthday, "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname']);
+			$edata_su = array("username" => $username, "email" => $_POST['email'], "website" => $_POST['website'], "icq" => $_POST['icq'], "aim" => $_POST['aim'], "msn" => $_POST['msn'], "location" => $_POST['location'], "birthday" => $birthday, "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname'], "xup" => $_POST['xupexist']);
 			$e_event->trigger("usersup", $edata_su);
 
 			require_once(HEADERF);
@@ -323,7 +362,7 @@ if (isset($_POST['register'])) {
 			exit;
 		} else {
 			require_once(HEADERF);
-			$nid = $sql->db_Insert("user", "0, '$username', '$loginname', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."', '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '' ");
+			$nid = $sql->db_Insert("user", "0, '$username', '$loginname', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."', '".$_POST['website']."', '".$_POST['icq']."', '".$_POST['aim']."', '".$_POST['msn']."', '".$_POST['location']."', '".$birthday."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '', '".$_POST['xupexist']."' ");
 
 // ==== Update Userclass =======
 			if ($_POST['usrclass']) {
@@ -341,7 +380,7 @@ if (isset($_POST['register'])) {
 
 // ==========================================================
 
-			$edata_su = array("username" => $username, "email" => $_POST['email'], "website" => $_POST['website'], "icq" => $_POST['icq'], "aim" => $_POST['aim'], "msn" => $_POST['msn'], "location" => $_POST['location'], "birthday" => $birthday, "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname']);
+			$edata_su = array("username" => $username, "email" => $_POST['email'], "website" => $_POST['website'], "icq" => $_POST['icq'], "aim" => $_POST['aim'], "msn" => $_POST['msn'], "location" => $_POST['location'], "birthday" => $birthday, "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname'], "xup" => $_POST['xupexist']);
 			$e_event->trigger("usersup", $edata_su);
 
 			if($pref['signup_text_after']) {
@@ -409,7 +448,67 @@ $rs = new form;
 
 
 $text .= $rs->form_open("post", e_SELF, "signupform")."
-<table class='fborder' style='width:90%'>
+<table class='fborder' style='width:99%'>
+
+
+<tr>
+<td class='forumheader3' colspan='2' style='text-align: center;'>
+<input class='button' type ='button' style='cursor:hand' size='30' value='".LAN_SIGNUP_35."' onclick='expandit(this)' />
+<div style='display:none' >
+
+<table style='width: 100%;'>
+<tr>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_31."
+</td>
+<td class='forumheader3' style='width:70%'>
+<input class='tbox' type='text' name='xupexist' size='50' value='' maxlength='100' />
+</td>
+</tr>
+
+<tr>
+<td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_9."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_10."</span></td>
+<td class='forumheader3' style='width:70%'>
+".$rs->form_text("loginnamexup", 30, $loginname, 30)."
+</td>
+</tr>
+
+<tr>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_17."<span style='font-size:15px; color:red'> *</span></td>
+<td class='forumheader3' style='width:70%'>
+".$rs->form_password("password1xup", 30, $password1, 20)."
+</td>
+</tr>
+
+<tr>
+<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_111."<span style='font-size:15px; color:red'> *</span></td>
+<td class='forumheader3' style='width:70%'>
+".$rs->form_password("password2xup", 30, $password2, 20)."
+</td>
+</tr>
+
+<tr>
+<td class='forumheader3' colspan='2'  style='text-align:center'>
+<span class='smalltext'><a href='http://e107.org/generate_xup.php' rel='external'>".LAN_SIGNUP_32."</a></span>
+</td>
+</tr>
+
+
+<tr>
+<td class='forumheader' colspan='2'  style='text-align:center'>
+<input class='button' type='submit' name='register' value='".LAN_123."' />
+</td>
+</tr>
+
+</table>
+
+
+</div>
+
+</td>
+</tr>
+
+
+
 <tr>
 <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_7."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_8."</span></td>
 <td class='forumheader3' style='width:70%'>
@@ -600,7 +699,7 @@ if ($signupval[7]) {
 if ($signupval[8]) {
 	$text .= "
 		<tr>
-		<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_121.req($signupval[8])."<br /><span class='smalltext'>(".LAN_402.")</span></td>
+		<td class='forumheader3' style='width:30%; vertical-align:top;white-space:nowrap' >".LAN_121.req($signupval[8])."<br /><span class='smalltext'>(".LAN_SIGNUP_33.")</span></td>
 		<td class='forumheader3' style='width:70%;vertical-align:top' >
 		<input class='tbox' style='width:80%' id='avatar' type='text' name='image' size='40' value='$image' maxlength='100' />
 
@@ -620,16 +719,16 @@ if ($signupval[8]) {
 	}
 
 	$text .= "<br />
-		</div>";
+		</div><br />";
 
 	if ($pref['avatar_upload'] && FILE_UPLOADS) {
 		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_25."</span> <input class='tbox' name='file_userfile[]' type='file' size='40'>
-			<br /><div class='smalltext'>".LAN_404."</div>";
+			<br /><div class='smalltext'>".LAN_SIGNUP_34."</div>";
 	}
 
 	if ($pref['photo_upload'] && FILE_UPLOADS) {
 		$text .= "<br /><span class='smalltext'>".LAN_SIGNUP_26."</span> <input class='tbox' name='file_userfile[]' type='file' size='40'>
-			<br /><div class='smalltext'>".LAN_404."</div>";
+			<br /><div class='smalltext'>".LAN_SIGNUP_34."</div>";
 	}
 
 

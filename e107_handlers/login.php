@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-05 20:42:10 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2005-06-11 11:15:11 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -82,7 +82,12 @@ class userlogin {
 				$this -> checkibr($fip);
 				return FALSE;
 			} else {
-				list($user_id, $user_name) = $sql->db_Fetch();
+
+				
+				$lode = $sql -> db_Fetch();
+				$user_id = $lode['user_id'];
+				$user_name = $lode['user_name'];
+				$user_xup = $lode['user_xup'];
 
 				/* restrict more than one person logging in using same us/pw */
 				if($pref['disallowMultiLogin'])
@@ -97,6 +102,24 @@ class userlogin {
 				}
 
 				$cookieval = $user_id.".".md5($userpass);
+
+				if($user_xup)
+				{
+					require_once(e_HANDLER."xml_class.php");
+					$xml = new parseXml;
+					if($rawData = $xml -> getRemoteXmlFile($_POST['xupexist']))
+					{
+						$count = 0;
+						foreach($match[1] as $value)
+						{
+							$$value = $match[2][$count];
+							$count++;
+						}
+						$sql -> db_Update("user", "user_name='$NICKNAME', user_login='$FN',  user_homepage='$URL',  user_icq='$ICQ',  user_aim='$AIM',  user_msn='$MSN',  user_location='$GEO',  user_birthday='$BDAY',  user_signature='$SIG',  user_sess='$PHOTO',  user_image='$AV',  user_timezone='$TZ' 	WHERE user_id='$user_id' ");
+					}
+				}
+				
+
 
 				if ($pref['user_tracking'] == "session") {
 					$_SESSION[$pref['cookie_name']] = $cookieval;
