@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-06-10 00:40:47 $
-|     $Author: e107coders $
+|     $Revision: 1.34 $
+|     $Date: 2005-06-11 11:15:10 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -487,6 +487,7 @@ CREATE TABLE user (
   user_perms text NOT NULL,
   user_realm text NOT NULL,
   user_pwchange int(10) unsigned NOT NULL default '0',
+  user_xup varchar(100) NOT NULL default '',
   PRIMARY KEY  (user_id),
   UNIQUE KEY user_name (user_name),
   KEY user_ban_index (user_ban)
