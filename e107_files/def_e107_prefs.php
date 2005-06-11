@@ -111,5 +111,6 @@ $pref['track_online'] = 1;
 
 $pref['emotepack'] = "default";
 $pref['rss_feeds'] = 1;
+$pref['xup_enabled'] = 1;
 
 ?>
