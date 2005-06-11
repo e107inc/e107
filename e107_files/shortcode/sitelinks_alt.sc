@@ -5,21 +5,22 @@
 		$icon = e_IMAGE."generic/".IMODE."/arrow.png";
 	}
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
+	global $tp;
 		$cat_id = 'l_'.crc32($cat_id);
 		$text = "<a class='menuButton' href='".e_BASE.$cat_link."' ";
 		if ($cat_img != 'no_icons') {
 			$text .= "style='background-image: url(".$cat_img."); background-repeat: no-repeat;  background-position: 3px 1px; white-space: nowrap' ";
 		}
-		if ($cat_id) { 
+		if ($cat_id) {
 			$text .= "onclick=\"return buttonClick(event, '".$cat_id."');\" onmouseover=\"buttonMouseover(event, '".$cat_id."');\"";
 		}
-		$text .= ">".$cat_title."</a>";
+		$text .= ">".$tp->toHTML($cat_title,"","defs")."</a>";
 		return $text;
 	}
 
 	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
 		$text = "<a class='menuItem' href='".e_BASE.$cat_link."' ";
-		if ($cat_id) { 
+		if ($cat_id) {
 			$text .= "onclick=\"return false;\" onmouseover=\"menuItemMouseover(event, '".$cat_id."');\"";
 		}
 		$text .= ">";
@@ -27,13 +28,13 @@
 			$text .= "<span class='menuItemBuffer'>".$cat_img."</span>";
 		}
 		$text .= "<span class='menuItemText'>".$cat_title."</span>";
-		if ($cat_id) { 
+		if ($cat_id) {
 			$text .= "<span class=\"menuItemArrow\">&#9654;</span>";
 		}
 		$text .= "</a>";
 		return $text;
 	}
-	
+
 	function getLinks($extra='1') {
 		global $sql;
 		$ret=array();
@@ -44,7 +45,7 @@
 		}
 		return $ret;
 	}
-	
+
 	if (file_exists(THEME.'nav_menu.js')) {
 		$text = "<script type='text/javascript' src='".THEME."nav_menu.js'></script>";
 	} else {
@@ -70,7 +71,7 @@
 		} else {
 			$link_icon = $links_exp['link_button'] ? e_IMAGE.'icons/'.$links_exp['link_button'] : $icon;
 		}
-		
+
 		if (check_class($links_exp['link_class'])) {
 			if (isset($sub_comp[$links_exp['link_name']]) && $sub_comp[$links_exp['link_name']]) {
 				$text .= adnav_cat($links_exp['link_name'], '', $link_icon, $links_exp['link_name']);
@@ -95,4 +96,3 @@
 	$text .= "</div>";
 
 	return $text;
-
