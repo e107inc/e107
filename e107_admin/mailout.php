@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-05-27 10:44:04 $
+|     $Revision: 1.29 $
+|     $Date: 2005-06-11 01:16:50 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -62,8 +62,10 @@ if (isset($_POST['submit'])) {
 		$insert2 = ($_POST['language']) ? " AND ue.user_{$language_field} = '".$_POST['language']."' " : "";
 		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id WHERE $insert $insert2 ORDER BY u.user_name";
 
-} elseif($_POST['email_to'] == "unverified"){
+	} elseif($_POST['email_to'] == "unverified"){
         $qry = "SELECT u.* FROM #user AS u WHERE u.user_ban='2'";
+	} elseif($_POST['email_to'] == "self"){
+       $qry = "SELECT u.* FROM #user AS u WHERE u.user_id='".USERID."'";
 	} else {
         $insert = "u.user_class IN (".$_POST['email_to'].")";
 		$insert2 = ($_POST['language']) ? " AND ue.user_{$language_field} = '".$_POST['language']."' " : "";
@@ -72,14 +74,16 @@ if (isset($_POST['submit'])) {
 
 		$sql->db_Select_gen($qry);
 		$c = 0;
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
-			$recipient_name[$c] = $user_name;
-			$recipient[$c] = $user_email;
-			$recipient_key[$c] = $user_sess;
-			$recipient_id[$c] = $user_id;
-			$c++;
-		}
+			while ($row = $sql->db_Fetch()) {
+				extract($row);
+				$recipient_name[$c] = $user_name;
+				$recipient[$c] = $user_email;
+				$recipient_key[$c] = $user_sess;
+				$recipient_id[$c] = $user_id;
+				$c++;
+			}
+
+
 
 	// ===== phpmailer version.
 
@@ -98,7 +102,7 @@ if (isset($_POST['submit'])) {
 			$mail->SMTPAuth = TRUE;
 			$mail->Username = $pref['smtp_username'];
 			$mail->Password = $pref['smtp_password'];
-			$mail->$PluginDir = e_HANDLER."phpmailer/";     
+			$mail->$PluginDir = e_HANDLER."phpmailer/";
         }
 	} else {
 		$mail->Mailer = "mail";
@@ -445,7 +449,8 @@ function userclasses($name) {
 	$text .= "<select style='width:80%' class='tbox' name='$name' >
 		<option value='all'>".MAILAN_12."</option>
 		<option value='unverified'>".MAILAN_13."</option>
-		<option value='admin'>Admins</option>";
+		<option value='admin'>Admins</option>
+		<option value='self'>Self</option>";
 	$sql->db_Select("userclass_classes");
 	while ($row = $sql->db_Fetch()) {
 		extract($row);
