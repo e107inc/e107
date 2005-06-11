@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-06-11 11:15:10 $
-|     $Author: stevedunstan $
+|     $Revision: 1.35 $
+|     $Date: 2005-06-11 22:23:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -86,28 +86,6 @@ CREATE TABLE comments (
   comment_ip varchar(20) NOT NULL default '',
   comment_type varchar(10) NOT NULL default '0',
   PRIMARY KEY  (comment_id)
-) TYPE=MyISAM;
-# --------------------------------------------------------
-
-#
-# Table structure for table `content`
-#
-
-CREATE TABLE content (
-  content_id int(10) unsigned NOT NULL auto_increment,
-  content_heading tinytext NOT NULL,
-  content_subheading tinytext NOT NULL,
-  content_content text NOT NULL,
-  content_parent int(10) unsigned NOT NULL default '0',
-  content_datestamp int(10) unsigned NOT NULL default '0',
-  content_author varchar(200) NOT NULL default '',
-  content_comment tinyint(3) unsigned NOT NULL default '0',
-  content_summary text NOT NULL,
-  content_type tinyint(3) unsigned NOT NULL default '0',
-  content_review_score tinyint(3) unsigned NOT NULL default '0',
-  content_pe_icon tinyint(1) unsigned NOT NULL default '0',
-  content_class tinyint(3) unsigned NOT NULL default '0',
-  PRIMARY KEY  (content_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
