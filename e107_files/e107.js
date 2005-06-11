@@ -5,9 +5,9 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.13 $
-|	$Date: 2005-06-07 20:05:22 $
-|	$Author: stevedunstan $
+|	$Revision: 1.14 $
+|	$Date: 2005-06-11 20:58:13 $
+|	$Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -57,9 +57,10 @@ var operaaa=(agtbrw.indexOf('opera')!=-1);
 var head="display:''";
 var folder='';
 
-function expandit(curobj){
+function expandit(curobj,hide){
 if(document.getElementById(curobj)){
   folder=document.getElementById(curobj).style;
+
   }else{
 
 if(ns6==1||operaaa==true){
@@ -69,6 +70,10 @@ if(ns6==1||operaaa==true){
 }
    }
 if (folder.display=="none"){folder.display="";}else{folder.display="none";}
+if(document.getElementById(hide)){
+	hidden=document.getElementById(hide).style;   
+	if (hidden.display=="none"){hidden.display="";}else{hidden.display="none";}
+}
 }
 
 

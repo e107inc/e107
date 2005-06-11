@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2005-06-06 17:38:46 $
+|     $Revision: 1.61 $
+|     $Date: 2005-06-11 20:58:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -368,6 +368,14 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input type='radio' name='user_reg' value='1'".($pref['user_reg'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='user_reg' value='0'".(!$pref['user_reg'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_141."<br /></td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	<input type='radio' name='xup_enabled' value='1'".($pref['xup_enabled'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='xup_enabled' value='0'".(!$pref['xup_enabled'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>
 
