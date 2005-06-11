@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-05-18 08:00:21 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-11 13:46:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 /* set style of download image and thumbnail */
@@ -78,7 +78,7 @@ if(!$DOWNLOAD_CAT_SUBSUB_TABLE)
 	<td class='forumheader3'>
 		&nbsp;
 		</td>
-		<td class='forumheader3' style='width'100%'>
+		<td class='forumheader3' style='width:100%'>
 			<table>
 			<tr>
 				<td class='forumheader3' style='border:0'>".
@@ -96,7 +96,7 @@ if(!$DOWNLOAD_CAT_SUBSUB_TABLE)
 			</tr>
 			</table>
 		</td>
-	</td>
+
 	<td class='forumheader3' style='text-align:center;'>
 		{DOWNLOAD_CAT_SUBSUB_COUNT}
 	</td>
