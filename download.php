@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-06-11 13:46:13 $
+|     $Revision: 1.31 $
+|     $Date: 2005-06-11 22:50:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -339,6 +339,7 @@ if ($action == "view") {
 
 	$row = $sql->db_Fetch();
 	 extract($row);
+	$comments_enabled = $row['download_comment'];
 	$subject = $download_name;
 	$sql2->db_Select("download_category", "*", "download_category_id='".$download_category."' ");
 	$row = $sql2->db_Fetch();
@@ -494,7 +495,7 @@ if ($action == "view") {
 		$ns->tablerender($type, $text);
 	}
 	unset($text);
-	if ($download_comment) {
+	if ($comments_enabled) {
 		$query = ($pref['nested_comments'] ? "comment_item_id='{$id}' AND comment_type='2' AND comment_pid='0' ORDER BY comment_datestamp" : "comment_item_id='{$id}' AND comment_type='2' ORDER BY comment_datestamp");
 		$comment_total = $sql->db_Select("comments", "*", $query);
 		if ($comment_total) {
