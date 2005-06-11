@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-06-11 17:07:04 $
-|     $Author: streaky $
+|     $Revision: 1.47 $
+|     $Date: 2005-06-11 20:58:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -449,15 +449,16 @@ $rs = new form;
 
 
 
-$text .= $rs->form_open("post", e_SELF, "signupform")."
-<table class='fborder' style='width:99%'>
+$text .= $rs->form_open("post", e_SELF, "signupform");
 
+// Xup Signup Form -------------->
+if(isset($pref['xup_enabled']) && $pref['xup_enabled']){
+	$text .= "
+	<div style='padding:10px;text-align:center'>
+	<input class='button' type ='button' style='cursor:hand' size='30' value='".LAN_SIGNUP_35."' onclick=\"expandit('xup','default')\" />
+	</div>
 
-<tr>
-<td class='forumheader3' colspan='2' style='text-align: center;'>
-<input class='button' type ='button' style='cursor:hand' size='30' value='".LAN_SIGNUP_35."' onclick='expandit(this)' />
-<div style='display:none' >
-
+	<div id='xup' style='display:none' >
 <table style='width: 100%;'>
 <tr>
 <td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_31."
@@ -502,14 +503,14 @@ $text .= $rs->form_open("post", e_SELF, "signupform")."
 </tr>
 
 </table>
+	</div>";
+}
 
+// Default Signup Form ----->
 
-</div>
-
-</td>
-</tr>
-
-
+$text .="
+<div id='default'>
+<table class='fborder' style='width:99%'>
 
 <tr>
 <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_7."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_8."</span></td>
@@ -777,6 +778,7 @@ $text .= "
 	</td>
 	</tr>
 	</table>
+	</div>
 	</form>
 	</div>
 	";
