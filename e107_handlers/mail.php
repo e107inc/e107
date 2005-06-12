@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-05-27 10:44:17 $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-12 21:39:43 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ php 4.3.6 does NOT have this problem.
 // ini_set(sendmail_path, "/usr/sbin/sendmail -t -f ".$pref['siteadminemail']);
 
 
-function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_name, $attachments, $Cc, $Bcc, $returnpath, $returnreceipt) {
+function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_name, $attachments, $Cc, $Bcc, $returnpath, $returnreceipt,$inline ="") {
 	global $pref;
 	require_once(e_HANDLER."phpmailer/class.phpmailer.php");
 
@@ -44,7 +44,6 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 	} else {
 		$mail->Mailer = "mail";
 	}
-
 
 	($to_name)? $to_name: $send_to;
 	$mail->CharSet = CHARSET;
@@ -66,23 +65,49 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 		$Html = eregi_replace('([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})', '<a href="mailto:\\1">\\1</a>', $Html);
 		$Html = str_replace("\n", "<br>\n", $Html);
 	}
-
-	$text = str_replace("<br />", "\n", $message);
-	$text = strip_tags(str_replace("<br>", "\n", $text));
+	if(strstr($message,"</style>")){
+    	$text = strstr($message,"</style>");
+	}else{
+    	$text = $message;
+	}
+    $text = str_replace("<br />", "\n", $text);
+  	$text = strip_tags(str_replace("<br>", "\n", $text));
 
 	$mail->Body = $Html; //Main message is HTML
 	$mail->IsHTML(TRUE);
-	$mail->AltBody = $text; //Include regular plaintext as well
+ 	$mail->AltBody = $text; //Include regular plaintext as well
 	$mail->AddAddress($send_to, $to_name);
+
 
 	if ($attachments){
 		if (is_array($attachments))	{
 			for ($i = 0; $i < count($attachments); $i++){
-				$mail->AddStringAttachment($attachments[$i], $attachments[$i]);
+				$mail->AddAttachment($attachments[$i], basename($attachments[$i]),"base64",mime_content_type($attachments[$i]));
 			}
 		}else{
-			$mail->AddStringAttachment($attachments, $attachments);
+			$mail->AddAttachment($attachments, basename($attachments),"base64",mime_content_type($attachments[$i]));
 		}
+	}
+
+	if($inline){
+    	$tmp = explode(",",$inline);
+		foreach($tmp as $inline_img){
+			$mail->AddEmbeddedImage($inline_img, md5($inline_img), basename($inline_img),"base64",mime_content_type($inline_img));
+        }
+	}
+
+	if($Cc){
+        $tmp = explode(",",$Cc);
+		foreach($tmp as $addc){
+			$mail->AddCC($addc);
+        }
+	}
+
+	if($Bcc){
+        $tmp = explode(",",$Bcc);
+		foreach($tmp as $addbc){
+			$mail->AddBCC($addbc);
+        }
 	}
 
 

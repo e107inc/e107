@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-06-11 20:58:13 $
+|     $Revision: 1.48 $
+|     $Date: 2005-06-12 21:39:45 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -41,13 +41,21 @@ if(!$_POST){   // Notice Removal.
 }
 
 if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test" )){
-	echo render_email(1,TRUE);
+	$eml = render_email(TRUE);
+	echo $eml['preview'];
+
+
 	if(e_QUERY == "test"){
 		require_once(e_HANDLER."mail.php");
-		$message = render_email(1);
-		$subj = render_email(2);
+		$message = $eml['message'];
+		$subj = $eml['subject'];
+		$inline = $eml['inline-images'];
+		$Cc = $eml['cc'];
+		$Bcc = $eml['bcc'];
+		$attachments = $eml['attachments'];
 
-		if(!sendemail(USEREMAIL, $subj, $message, USERNAME)) {
+        if(!sendemail(USEREMAIL, $subj, $message, USERNAME, "", "", $attachments, $Cc, $Bcc, $returnpath, $returnreceipt,$inline)) {
+	  //	if(!sendemail(USEREMAIL, $subj, $message, USERNAME)) {
 			echo "<br /><br /><br /><br >&nbsp;&nbsp;>> There was a problem, the registration mail was not sent, please contact the website administrator.";
 		}else{
         	echo "<br /><br /><br /><br >&nbsp;&nbsp;>> Email Sent - Check your inbox!";
@@ -339,10 +347,15 @@ if (isset($_POST['register'])) {
 // ========== Send Email =========>
 
 			require_once(e_HANDLER."mail.php");
-            $message = render_email(1);
-			$subj = render_email(2);
+			$eml = render_email();
+			$message = $eml['message'];
+			$subj = $eml['subject'];
+			$inline = $eml['inline-images'];
+			$Cc = $eml['cc'];
+			$Bcc = $eml['bcc'];
+			$attachments = $eml['attachments'];
 
-			if(!sendemail($_POST['email'], $subj, $message, $_POST['name'])) {
+			if(!sendemail($_POST['email'], $subj, $message, $_POST['name'], "", "", $attachments, $Cc, $Bcc, $returnpath, $returnreceipt,$inline)) {
             	$error_message = "There was a problem, the registration mail was not sent, please contact the website administrator.";
 			}
 
@@ -834,7 +847,7 @@ function headerjs() {
 }
 
 
-function render_email($mode=1, $preview = FALSE){
+function render_email($preview = FALSE){
 
 	// 1 = Body
 	// 2 = Subject
@@ -860,6 +873,16 @@ function render_email($mode=1, $preview = FALSE){
 		require_once(e_THEME."templates/email_template.php");
 	}
 
+    $inline_images = explode(",",$SIGNUPEMAIL_IMAGES);
+    if($SIGNUPEMAIL_BACKGROUNDIMAGE){
+    	$inline_images[] = $SIGNUPEMAIL_BACKGROUNDIMAGE;
+	}
+
+	$ret['cc'] = $SIGNUPEMAIL_CC;
+	$ret['bcc'] = $SIGNUPEMAIL_BCC;
+	$ret['attachments'] = $SIGNUPEMAIL_ATTACHMENTS;
+	$ret['inline-images'] = implode(",",$inline_images);
+
 	$style = ($SIGNUPEMAIL_LINKSTYLE) ? "style='$SIGNUPEMAIL_LINKSTYLE'" : "";
 
 	$search[0] = "{LOGINNAME}";
@@ -881,23 +904,48 @@ function render_email($mode=1, $preview = FALSE){
 	$replace[5] = $_POST['name'];
 
 	$search[6] = "{USERURL}";
-	$search[6] = ($_POST['website']) ? $_POST['website'] : "";
+	$replace[6] = ($_POST['website']) ? $_POST['website'] : "";
 
-	if($mode == 2){
-		$subject = str_replace($search,$replace,$SIGNUPEMAIL_SUBJECT);
-    	return $subject;
-	}
+    $cnt=1;
+
+		foreach($inline_images as $img){
+			if(is_readable($inline_images[$cnt-1])){
+				$cid_search[] = "{IMAGE".$cnt."}";
+				$cid_replace[] = "<img alt=\"".SITENAME."\" src='cid:".md5($inline_images[$cnt-1])."' />\n";
+				$path_search[] = "{IMAGE".$cnt."}";
+				$path_replace[] = "<img alt=\"".SITENAME."\" src=\"".$inline_images[$cnt-1]."\" />\n";
+			}
+			$cnt++;
+		}
+
+	$subject = str_replace($search,$replace,$SIGNUPEMAIL_SUBJECT);
+    $ret['subject'] =  $subject;
 
 	$HEAD = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n";
 	$HEAD .= "<html xmlns='http://www.w3.org/1999/xhtml' >\n";
 	$HEAD .= "<head><meta http-equiv='content-type' content='text/html; charset=utf-8' />\n";
-	$HEAD .= ($SIGNUPEMAIL_USETHEME == TRUE) ? "<link rel=\"stylesheet\" href=\"".SITEURL.THEME."style.css\" type=\"text/css\" />\n" : "";
+	$HEAD .= ($SIGNUPEMAIL_USETHEME == 1) ? "<link rel=\"stylesheet\" href=\"".SITEURL.THEME."style.css\" type=\"text/css\" />\n" : "";
+	if($SIGNUPEMAIL_USETHEME == 2){
+      	$CSS = file_get_contents(THEME."style.css");
+      	$HEAD .= "<style>\n".$CSS."\n</style>";
+	}
+
 	$HEAD .= "</head>\n";
-	$FOOT = "\n</html>\n";
+    if($SIGNUPEMAIL_BACKGROUNDIMAGE){
+    	$HEAD .= "<body background=\"cid:".md5($SIGNUPEMAIL_BACKGROUNDIMAGE)."\" >\n";
+	}else{
+		$HEAD .= "<body>\n";
+	}
+
+
+	$FOOT = "\n<body>\n</html>\n";
 
 	$SIGNUPEMAIL_TEMPLATE = $HEAD.$SIGNUPEMAIL_TEMPLATE.$FOOT;
 	$message = str_replace($search,$replace,$SIGNUPEMAIL_TEMPLATE);
 
-    return $message;
+    $ret['message'] = str_replace($cid_search,$cid_replace,$message);
+	$ret['preview'] = str_replace($path_search,$path_replace,$message);
+
+    return $ret;
 }
 ?>
