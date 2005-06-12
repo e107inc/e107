@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-06-10 00:40:48 $
+|     $Revision: 1.16 $
+|     $Date: 2005-06-12 14:36:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -367,7 +367,7 @@ class rssCreate {
 	}
 
 	function buildRss() {
-		global $sql, $pref;
+		global $sql, $pref,$tp;
 		header('Content-type: text/xml', TRUE);
 		switch ($this -> rssType) {
 			case 1:		// Rss 1.0
@@ -376,9 +376,9 @@ class rssCreate {
 						<!-- content type=\"".$this -> contentType."\" -->
 						<rss version=\"0.92\">
 						<channel>
-						<title>".$pref['sitename']."</title>
+						<title>".$tp->toRss($pref['sitename'])."</title>
 						<link>".$pref['siteurl']."</link>
-						<description>".$pref['sitedescription']."</description>
+						<description>".$tp->toRss($pref['sitedescription'])."</description>
 						<lastBuildDate>".$itemdate = strftime("%a, %d %b %Y %I:%M:00 GMT", time())."</lastBuildDate>
 						<docs>http://backend.userland.com/rss092</docs>";
 					foreach($this -> rssItems as $value) {
@@ -404,7 +404,7 @@ class rssCreate {
 				<channel>
 				<title>".$pref['sitename']."</title>
 				<link>".$pref['siteurl']."</link>
-				<description>".$pref['sitedescription']."</description>
+				<description>".$tp->toRss($pref['sitedescription'])."</description>
 				<language>en-gb</language>
 				<copyright>".ereg_replace("<br />|\n", "", SITEDISCLAIMER)."</copyright>
 				<managingEditor>".$pref['siteadmin']." - ".$pref['siteadminemail']."</managingEditor>
@@ -415,16 +415,16 @@ class rssCreate {
 				<generator>e107 (http://e107.org)</generator>
 				<ttl>60</ttl>
 				<image>
-				<title>".$pref['sitename']."</title>
+				<title>".$tp->toRss($pref['sitename'])."</title>
 				<url>".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON)."</url>
 				<link>".$pref['siteurl']."</link>
 				<width>88</width>
 				<height>31</height>
-				<description>".$pref['sitedescription']."</description>
+				<description>".$tp->toRss($pref['sitedescription'])."</description>
 				</image>
 				<textInput>
 				<title>Search</title>
-				<description>Search ".$pref['sitename']."</description>
+				<description>Search ".$tp->toRss($pref['sitename'])."</description>
 				<name>query</name>
 				<link>".SITEURL.(substr(SITEURL, -1) == "/" ? "" : "/")."search.php</link>
 				</textInput>";
@@ -458,9 +458,9 @@ class rssCreate {
 				<!-- content type=\"".$this -> contentType."\" -->
 				<rdf:RDF xmlns=\"http://purl.org/rss/1.0/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:sy=\"http://purl.org/rss/1.0/modules/syndication/\" xmlns:admin=\"http://webns.net/mvcb/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\">
 				<channel rdf:about=\"".$pref['siteurl']."\">
-				<title>".$pref['sitename']."</title>
+				<title>".$tp->toRss($pref['sitename'])."</title>
 				<link>".$pref['siteurl']."</link>
-				<description>".$pref['sitedescription']."</description>
+				<description>".$tp->toRss($pref['sitedescription'])."</description>
 				<dc:language>en</dc:language>
 				<dc:date>".strftime("%a, %d %b %Y %I:%M:00 GMT", time())."</dc:date>
 				<dc:creator>".$pref['siteadminemail']."</dc:creator>
