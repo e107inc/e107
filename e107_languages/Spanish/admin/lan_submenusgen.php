@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_submenusgen.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-10 20:56:25 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-12 09:28:01 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("LAN_MENGEN_1","Gestionar enlaces para su menú");
 define("LAN_MENGEN_2","Generador automático de Menú");
 define("LAN_MENGEN_3","Añadir enlaces en un submenú para :");
-//define("LAN_MENGEN_4","Noticias");
+define("LAN_MENGEN_4","Noticias");
 define("LAN_MENGEN_5","Foro");
 define("LAN_MENGEN_6","Artículos");
 //define("LAN_MENGEN_7","Descargas");
@@ -46,7 +46,7 @@ define("LAN_MENGEN_34","Otros enlaces principales:");
 define("LAN_MENGEN_35","Nombres de enlaces y direcciones en submenú");
 define("LAN_MENGEN_36","Añadir enlaces en submenú para:");
 define("LAN_MENGEN_37","Nombre: ");
-define("LAN_MENGEN_38","Puede enviar de 1 a 5 enlaces para este enlace principal, pero... si es necesario, puede reusar esta utilidad para enviar más enlaces. O use PHPMyAdmin si necesita insertar muchos enlaces...");
+define("LAN_MENGEN_38","Puede enviar de 1 a 5 enlaces para este enlace principal, pero si es necesario, puede reutilizar esta herramienta para enviar más enlaces.");
 define("LAN_MENGEN_39","Dirección:");
 define("LAN_MENGEN_40"," no se puede cear, Dirección perdida...");
 define("LAN_MENGEN_41","Enlaces");

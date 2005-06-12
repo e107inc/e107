@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_signup.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-09 20:03:44 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-12 09:28:01 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -83,4 +83,17 @@ define("LAN_SIGNUP_27", "Mostrar");
 define("LAN_SIGNUP_28", "opción de contenidos y listas de correo");
 define("LAN_SIGNUP_29", "Se le enviará un correo de verificación a la dirección facilitada, por lo que debe ser una dirección válida.");
 define("LAN_SIGNUP_30", "Si no desea mostrar su dirección email en este sitio, seleccione 'ocultar dirección email'.");
+define("LAN_SIGNUP_31", "URL de su archivo XUP");
+define("LAN_SIGNUP_32", "¿Qué es un archivo XUP?");
+define("LAN_SIGNUP_33", "Escriba la ruta o escoja avatar");
+define("LAN_SIGNUP_34", "Tenga en cuenta: Cualquier imagen transferida a este servidor que sea considerada inapropiada por los Administradores será eliminada inmediatamente.");
+define("LAN_SIGNUP_35", "Click aquí para registrarse usando un archivo XUP");
+
+define("LAN_LOGINNAME", "Nombre de conexión");
+define("LAN_PASSWORD", "Contraseña");
+define("LAN_USERNAME", "Nombre a mostrar");
+define("LAN_EMAIL_01", "Sr.");
+define("LAN_EMAIL_04", "Por favor, guarde este email para su propia información.");
+define("LAN_EMAIL_05", "Su contraseña ha sido encriptada y no podrá ser recuperada si la pierde u olvida. Sin embargo, puede solicitar una nueva contraseña si esto ocurriese.");
+define("LAN_EMAIL_06", "Gracias por su registro.");
 ?>

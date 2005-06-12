@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_usersettings.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-09 20:03:44 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-12 09:28:01 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -74,6 +74,9 @@ define("LAN_429", "Enlace");
 define("LAN_430", "Descarga");
 define("LAN_431", "Artículo");
 define("LAN_432", "Revisión");
+define("LAN_433", "URL de su archivo XUP");
+define("LAN_434", "¿Qué es esto?");
+define("LAN_435", "Archivo de Protocolo de usuario XML");
 
 define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "carac.");

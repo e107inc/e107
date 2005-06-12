@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_download.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-10 17:49:36 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-12 09:28:01 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -124,5 +124,7 @@ define("DOWLAN_144", "No hay zonas definidas, vaya a la sección de zonas para a
 define("DOWLAN_145", "Descarga visible para");
 define("DOWLAN_146", "Mensaje de negación de descarga o URL");
 define("DOWLAN_147", "Icono para categoría vacía");
+define("DOWLAN_148", "Comprobar para actualizar el sello de fecha a la hora actual");
+define("DOWLAN_149", "O click aquí para usar un archivo externo");
 
 ?>

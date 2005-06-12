@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-10 20:56:25 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-12 09:28:01 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -150,6 +150,7 @@ define("PRFLAN_137", "Mostrar el uso de memoria");
 define("PRFLAN_138", "Activar codigo-Imagen de verificación durante el proceso de password olvidado.");
 define("PRFLAN_139", "Mostrar una alerta cuando la contraseña del admin principal no ha cambiado en los últimos 30 días");
 define("PRFLAN_140", "Texto a mostrar después de que se haya enviado el formulario de conexión.");
+define("PRFLAN_141", "Permitir el registro utilizando perfiles de usuario XML");
 
 define("CUSTSIG_1", "¡Configuración Guardada!");
 define("CUSTSIG_2", "Nombre Real:");
