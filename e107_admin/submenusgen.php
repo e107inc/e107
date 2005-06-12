@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/submenusgen.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-05-13 19:21:04 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2005-06-12 07:26:37 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -178,13 +178,13 @@ $text .= "<tr>
 $text .= display_addlink(ADLAN_0, "subNews", LAN_MENGEN_8);
 
 // Add news links
-$text .= display_addlink(LAN_MENGEN_41, "subLinks", LAN_MENGEN_42);
+//$text .= display_addlink(LAN_MENGEN_41, "subLinks", LAN_MENGEN_42);
 
 // Add forums links
 $text .= display_addlink(LAN_MENGEN_5, "subForums", LAN_MENGEN_9);
 
 // Add articles links
-$text .= display_addlink(LAN_MENGEN_6, "subArticles", LAN_MENGEN_11);
+//$text .= display_addlink(LAN_MENGEN_6, "subArticles", LAN_MENGEN_11);
 
 // Add downloads links
 $text .= display_addlink(ADLAN_24, "subDownloads", LAN_MENGEN_12);
@@ -248,13 +248,13 @@ $text .= "<tr>
 $text .= display_dellink(ADLAN_0, "delNews", LAN_MENGEN_21." ".LAN_MENGEN_4.LAN_MENGEN_22);
 
 // Delete Links sublinks
-$text .= display_dellink(LAN_MENGEN_41, "delLinks", LAN_MENGEN_43);
+//$text .= display_dellink(LAN_MENGEN_41, "delLinks", LAN_MENGEN_43);
 
 // Delete forums links
 $text .= display_dellink(LAN_MENGEN_5, "delForums", LAN_MENGEN_21." ".LAN_MENGEN_5.LAN_MENGEN_22);
 
 // Delete articles links
-$text .= display_dellink(LAN_MENGEN_6, "delArticles", LAN_MENGEN_21." ".LAN_MENGEN_6.LAN_MENGEN_22);
+//$text .= display_dellink(LAN_MENGEN_6, "delArticles", LAN_MENGEN_21." ".LAN_MENGEN_6.LAN_MENGEN_22);
 
 // Delete downloads links
 $text .= display_dellink(ADLAN_24, "delDownloads", LAN_MENGEN_21." ".ADLAN_24.LAN_MENGEN_22);

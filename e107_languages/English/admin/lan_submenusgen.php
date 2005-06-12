@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_submenusgen.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-05-22 14:12:34 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-12 07:26:37 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("LAN_MENGEN_1","Manage links for your main menu");
 define("LAN_MENGEN_2","Automatic Menu Generator");
 define("LAN_MENGEN_3","Add links in a submenu for :");
-// define("LAN_MENGEN_4","News");
+define("LAN_MENGEN_4","News");
 define("LAN_MENGEN_5","Forum");
 define("LAN_MENGEN_6","Articles");
 // define("LAN_MENGEN_7","Downloads");
@@ -46,7 +46,7 @@ define("LAN_MENGEN_34","Other main links:");
 define("LAN_MENGEN_35","Submenu links names and URLs");
 define("LAN_MENGEN_36","Add links in submenus for:");
 define("LAN_MENGEN_37","Name: ");
-define("LAN_MENGEN_38","You can submit from 1 to 5 links for this main link, but... if required, you can re-use this tool to submit more links. Or use PHPMyAdmin if you have too much links to insert...");
+define("LAN_MENGEN_38","You can submit from 1 to 5 links for this main link, but if required, you can re-use this tool to submit more links.");
 define("LAN_MENGEN_39","URL:");
 define("LAN_MENGEN_40"," can NOT be created, URL is missing...");
 define("LAN_MENGEN_41","Links");
