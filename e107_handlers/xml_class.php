@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/xml_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-02 09:04:50 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-12 03:34:59 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -166,6 +166,71 @@ class parseXml {
 			$this -> xmlData [$this -> current_tag] [$this -> counterArray[$this -> current_tag]] = $data;
 		}
 	}
+}
+
+//CXml class code found on php.net
+class CXml
+{
+   var $xml_data;
+   var $obj_data;
+   var $pointer;
+
+   function CXml() { }
+  
+   function Set_xml_data( &$xml_data )
+   {
+       $this->index = 0;
+       $this->pointer[] = &$this->obj_data;
+  
+       //strip white space between tags
+       $this->xml_data = eregi_replace(">"."[[:space:]]+"."<","><",$xml_data);
+       $this->xml_parser = xml_parser_create( "UTF-8" );
+  
+       xml_parser_set_option( $this->xml_parser, XML_OPTION_CASE_FOLDING, false );
+       xml_set_object( $this->xml_parser, &$this );
+       xml_set_element_handler( $this->xml_parser, "_startElement", "_endElement");
+       xml_set_character_data_handler( $this->xml_parser, "_cData" );
+      
+       xml_parse( $this->xml_parser, $this->xml_data, true );
+       xml_parser_free( $this->xml_parser );
+   }
+  
+   function _startElement( $parser, $tag, $attributeList )
+   {
+       foreach( $attributeList as $name => $value )
+       {
+           $value = $this->_cleanString( $value );
+           $object->$name = $value;
+       }
+       //replaces the special characters with the underscore (_) in tag name
+       $tag = preg_replace("/[:\-\. ]/", "_", $tag);
+       eval( "\$this->pointer[\$this->index]->" . $tag . "[] = \$object;" );
+       eval( "\$size = sizeof( \$this->pointer[\$this->index]->" . $tag . " );" );
+       eval( "\$this->pointer[] = &\$this->pointer[\$this->index]->" . $tag . "[\$size-1];" );
+          
+       $this->index++;
+   }
+
+   function _endElement( $parser, $tag )
+   {
+       array_pop( $this->pointer );
+       $this->index--;
+   }
+  
+   function _cData( $parser, $data )
+   {
+       if (empty($this->pointer[$this->index])) {
+           if (rtrim($data, "\n"))
+               $this->pointer[$this->index] = $data;
+       } else {
+           $this->pointer[$this->index] .= $data;
+       }
+   }
+
+   function _cleanString( $string )
+   {
+       return utf8_decode( trim( $string ) );
+   }
 }
 
 ?>

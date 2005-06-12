@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-06-05 00:51:48 $
-|     $Author: e107coders $
+|     $Revision: 1.23 $
+|     $Date: 2005-06-12 03:34:59 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -343,6 +343,42 @@ class e107_user_extended
 		cachevars('ue_struct',$ret);
 		return $ret;
 	}
+	
+	function parse_extended_xml($contents)
+	{
+		require_once(e_HANDLER."xml_class.php");
+		$xml = new CXml;
+		if("getfile" == $contents)
+		{
+			$contents = file_get_contents(e_FILE."cache/user_extended.xml");
+		}
+		$xml->Set_XML_data($contents);
+		$data = $xml->obj_data->e107_extended_user_fields[0];
+		$ret['version'] = $data->version;
+		unset($info);
+		foreach($data->item as $item)
+		{
+			$info = array(
+								"name" 			=> $item->name,
+								"text" 			=> "LAN_UE_".strtoupper($item->name),
+								"type" 			=> $item->type[0],
+								"values" 		=> $item->values[0],
+								"default" 		=> $item->default[0],
+								"required" 		=> $item->required[0],
+								"read" 			=> $item->read[0],
+								"write" 			=> $item->write[0],
+								"applicable" 	=> $item->applicable[0],
+								"include_text"	=> $item->include_text[0],
+								"parms"			=> $item->include_text[0],
+								"regex" 			=> $item->regex[0]
+							 );
+			if($item->regex[0])
+			{
+				$info['parms'] .= $item->include_text[0]."^,^".$item->regex[0]."^,^LAN_UE_FAIL_".strtoupper($item->name);
+			}
+			$ret[] = $info;
+		}
+		return $ret;
+	}
 }
-
 ?>
