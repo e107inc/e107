@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-12 00:18:54 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-12 00:26:29 $
 |     $Author: tpruvot $
 +----------------------------------------------------------------------------+
 */
@@ -36,7 +36,7 @@ define("LAN_81", "Sujet verouillé");
 define("LAN_100", "articles");
 define("LAN_180", "Rechercher");
 define("LAN_191", "Renseignements");
-define("LAN_192", "Les utilisateurs de ce forum ont publié un total de ");
+define("LAN_192", "Les utilisateurs de ce forum ont écrit un total de ");
 define("LAN_196", "Vous avez lu ");
 define("LAN_197", " de ces messages.");
 define("LAN_198", " Tous les nouveaux messages ont été lus.");
@@ -91,8 +91,8 @@ define("LAN_425", "Re:");
 define("LAN_426", "Qui est en ligne: ");
 define("LAN_427", "Voir la liste détaillée.");
 define("LAN_428", "Re:");
-define("LAN_429", "Meilleurs posteurs");
-define("LAN_430", "Sujets les plus actifs");
+define("LAN_429", "Les plus bavards");
+define("LAN_430", "Les plus gros sujets");
 define("LAN_431", "Mes messages");
 define("LAN_432", "Mes Préférences");
 define("LAN_433", "Règles du forum");
