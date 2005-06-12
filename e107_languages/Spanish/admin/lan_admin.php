@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-12 09:28:01 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-12 21:59:05 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -66,7 +66,7 @@ define("ADLAN_53", "Abandonar ADM");
 define("ADLAN_54", "Publicidad");
 define("ADLAN_55", "Configurar anuncios");
 define("ADLAN_56", "Chatbox");
-define("ADLAN_57", "Configurar chatbox");
+define("ADLAN_57", "Configurar Chatbox");
 define("ADLAN_58", "Emoticonos");
 define("ADLAN_59", "Configurar emoticonos");
 define("ADLAN_60", "Página de inicio");
@@ -102,9 +102,9 @@ define("ADLAN_95", "Gestor de Plugins");
 define("ADLAN_96", "Nada");
 define("ADLAN_97", "Pulsa aquí para FAQ");
 define("ADLAN_98", "Gestor de Plugins");
-define("ADLAN_99", "Gestionar plugins");
-define("ADLAN_100", "Creador de Temas");
-define("ADLAN_101", "Creador de Temas");
+define("ADLAN_99", "Gestionar Plugins");
+define("ADLAN_100", "Creador de temas");
+define("ADLAN_101", "Creador de temas");
 define("ADLAN_102", "Han pasado más de 30 días desde que cambió la contraseña de administrador - ");
 define("ADLAN_103", "Pulsa aquí para cambiar ahora");
 define("ADLAN_104", "Seguridad");
@@ -113,10 +113,10 @@ define("ADLAN_106", "Configurar Imágenes");
 define("ADLAN_107", "Noticias enviadas sin chequear");
 define("ADLAN_108", "Archivos transferidos sin chequear");
 define("ADLAN_109", "Información");
-define("ADLAN_110", "Miembros Registrados");
-define("ADLAN_111", "Miembros sin Verificar");
+define("ADLAN_110", "Miembros registrados");
+define("ADLAN_111", "Miembros sin verificar");
 define("ADLAN_112", "Usuarios expulsados");
-define("ADLAN_113", "Mensajes en Foros");
+define("ADLAN_113", "Mensajes en foros");
 define("ADLAN_114", "Comentarios");
 define("ADLAN_115", "Mensajes en Chatbox");
 define("ADLAN_116", "Registro Admin ...");
@@ -150,7 +150,7 @@ define("ADLAN_143", "Configuración de búsquedas");
 define("ADLAN_144", "Está en modo vista-simple, para cambiar a vista-avanzada");
 define("ADLAN_145", "pulse aquí");
 define("ADLAN_146", "Fallos de intentos de conexión");
-define("ADLAN_147", "Inpector de archivos");
+define("ADLAN_147", "Inspector de archivos");
 define("ADLAN_148", "Escanear archivos del sitio");
 define("ADLAN_149", "Notificación");
 define("ADLAN_150", "Notificaciones de email a Admin");
@@ -170,7 +170,7 @@ define("ADLAN_LAT_3", "Artículos enviados");
 define("ADLAN_LAT_4", "Análisis enviados");
 define("ADLAN_LAT_5", "Enlaces enviados");
 define("ADLAN_LAT_6", "Mensajes del foro");
-define("ADLAN_LAT_7", "Archivos subidos");
+define("ADLAN_LAT_7", "Archivos transferidos");
 define("ADLAN_LAT_8", "Hay mensajes del Admin sin moderar");
 
 // Common Terms
