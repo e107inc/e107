@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.166 $
-|     $Date: 2005-06-11 22:22:21 $
-|     $Author: streaky $
+|     $Revision: 1.167 $
+|     $Date: 2005-06-12 03:05:21 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -1177,13 +1177,13 @@ class error_handler {
 
 	var $errors;
 	var $debug = false;
-	
+
 	function error_handler() {
 		if ((isset($_SERVER['QUERY_STRING']) && preg_match('/debug=(.*)/', $_SERVER['QUERY_STRING'])) || isset($_COOKIE['e107_debug_level'])) {
 			$this->debug = true;
 		}
 	}
-	
+
 	function handle_error($type, $message, $file, $line, $context) {
 		switch($type) {
 			case E_NOTICE:
@@ -1220,19 +1220,19 @@ class error_handler {
 			break;
 		}
 	}
-	
+
 	function return_errors() {
 		$index = 0; $colours[0] = "#C1C1C1"; $colours[1] = "#B6B6B6";
-		$ret = "<table>\n";
+		$ret = "<table class='fborder'>\n";
 		foreach ($this->errors as $key => $value) {
-			$ret .= "\t<tr>\n\t\t<td style='background-color: {$colours[$index]};'>{$value['short']}</td><td><input class='button' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace' onclick=\"expandit('bt_{$key}')\" /></t>\n\t</tr>\n";
+			$ret .= "\t<tr>\n\t\t<td class='forumheader3' >{$value['short']}</td><td><input class='button' type ='button' style='cursor: hand; cursor: pointer;' size='30' value='Back Trace' onclick=\"expandit('bt_{$key}')\" /></t>\n\t</tr>\n";
 			$ret .= "\t<tr>\n<td style='display: none;' colspan='2' id='bt_{$key}'>".print_a($value['trace'], true)."</td></tr>\n";
 			if($index == 0) { $index = 1; } else { $index = 0; }
 		}
 		$ret .= "</table>";
-		return $ret;		
+		return $ret;
 	}
-	
+
 	function trigger_error($information, $level) {
 		trigger_error($information);
 	}
