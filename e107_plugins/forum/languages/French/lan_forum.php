@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-12 00:13:18 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-12 00:18:54 $
 |     $Author: tpruvot $
 +----------------------------------------------------------------------------+
 */
@@ -18,7 +18,7 @@ define("LAN_33", "Il y a");
 define("LAN_34", "nouveaux messages");
 define("LAN_35", "depuis votre dernière visite.");
 define("LAN_36", "Votre dernière visite date du ");
-define("LAN_37", "Maintenant, il est ");
+define("LAN_37", "Actuellement, nous sommes le ");
 define("LAN_38", ", les heures sont ");
 define("LAN_41", "Dernier membre: ");
 define("LAN_42", "Membres enregistrés: ");
@@ -31,12 +31,12 @@ define("LAN_49", "Dernier message");
 define("LAN_51", "Aucun forum pour le moment. Revenez plus tard.");
 define("LAN_52", "Aucun forum dans cette catégorie pour le moment. Revenez plus tard.");
 define("LAN_79", "Nouveaux messages");
-define("LAN_80", " Pas de nouveaux messages");
+define("LAN_80", " Rien de neuf");
 define("LAN_81", "Sujet verouillé");
 define("LAN_100", "articles");
 define("LAN_180", "Rechercher");
-define("LAN_191", "Information");
-define("LAN_192", "Les utilisateurs de ce forum ont fait un total de ");
+define("LAN_191", "Renseignements");
+define("LAN_192", "Les utilisateurs de ce forum ont publié un total de ");
 define("LAN_196", "Vous avez lu ");
 define("LAN_197", " de ces messages.");
 define("LAN_198", " Tous les nouveaux messages ont été lus.");
@@ -98,14 +98,14 @@ define("LAN_432", "Mes Préférences");
 define("LAN_433", "Règles du forum");
 define("LAN_434", "Retourner sur le forum");
 define("LAN_435", "Mon Profil");
-define("LAN_436", " (S'ouvrira dans une nouvelle fenêtre.)");
+define("LAN_436", " (dans une nouvelle fenêtre)");
 
 define("LAN_437", "enregistrer");
 define("LAN_438", "et s'identifier.");
 define("LAN_439", "ici");
 define("LAN_440", "pour aller à la page d'inscription.");	
 	
-define("LAN_441", "Statistiques");
+define("LAN_441", "Statistiques du Forum");
 	
 define('FORLAN_441', 'Aucune règle définie.');
 define('FORLAN_442', 'Mes Envois');
