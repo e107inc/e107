@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum_viewtopic.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-12 01:12:34 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-12 01:17:22 $
 |     $Author: tpruvot $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ define("LAN_07", "Localisation");
 define("LAN_08", "Site Internet");
 define("LAN_09", "Visites depuis son inscription");
 define("LAN_10", "Revenir en haut");
-define("LAN_65", "Aller à");
+define("LAN_65", "Aller au forum");
 define("LAN_66", "Ce sujet est désormais fermé");
 define("LAN_67", "messages");
 define("LAN_194", "Invité");
@@ -38,7 +38,7 @@ define("LAN_396", "Site Internet");
 define("LAN_397", "Email");
 define("LAN_398", "Profil");
 define("LAN_399", "Message Privé");
-define("LAN_400", "Editer");
+define("LAN_400", "Modifier");
 define("LAN_401", "Citer");
 
 define("LAN_402", "Auteur");
@@ -75,13 +75,13 @@ define("LAN_429", "Cliquez ici pour retourner sur le forum");
 define("LAN_430", "sondage");
 define("FORLAN_26", "Réponse supprimée");
 define("FORLAN_10", "Commencer un Nouveau Sujet");
-define("LAN_29", "Modifié");
+define("LAN_29", "Modifié le");
 
 define("LAN_431", "Flux RSS 0.92 du sujet");
 define("LAN_432", "Flux RSS 2.0 du sujet");
 define("LAN_433", "Flux RDF du sujet");
 	
-define("FORLAN_101", "Sujet Email");
+define("FORLAN_101", "Email Sujet");
 define("FORLAN_102", "Vue impression");
 define('FORLAN_103', '[membre supprimé]');
 
