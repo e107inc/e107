@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.56 $
-|		$Date: 2005-06-13 11:08:56 $
+|		$Revision: 1.57 $
+|		$Date: 2005-06-13 14:03:54 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -83,11 +83,11 @@ class contentform{
 						}
 						
 						$content_pref					= $aa -> getContentPref($mainparent);
-						$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$mainparent}"]);
-						$content_cat_icon_path_small	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$mainparent}"]);
-						$content_icon_path				= $aa -> parseContentPathVars($content_pref["content_icon_path_{$mainparent}"]);
-						$content_image_path				= $aa -> parseContentPathVars($content_pref["content_image_path_{$mainparent}"]);
-						$content_file_path				= $aa -> parseContentPathVars($content_pref["content_file_path_{$mainparent}"]);
+						$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$mainparent}"]);
+						$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_{$mainparent}"]);
+						$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
+						$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
+						$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path_{$mainparent}"]);
 
 						if(!is_object($sql)){ $sql = new db; }
 						$sql2 = new db;
@@ -841,11 +841,11 @@ class contentform{
 
 						$mainparent						= $aa -> getMainParent($qs[1]);
 						$content_pref					= $aa -> getContentPref($mainparent);
-						$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$mainparent}"]);
-						$content_cat_icon_path_small	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$mainparent}"]);
-						$content_icon_path				= $aa -> parseContentPathVars($content_pref["content_icon_path_{$mainparent}"]);
-						$content_image_path				= $aa -> parseContentPathVars($content_pref["content_image_path_{$mainparent}"]);
-						$content_file_path				= $aa -> parseContentPathVars($content_pref["content_file_path_{$mainparent}"]);
+						$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$mainparent}"]);
+						$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_{$mainparent}"]);
+						$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
+						$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
+						$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path_{$mainparent}"]);
 
 						if($mode == "contentmanager"){
 							$personalmanagercheck = FALSE;
@@ -1015,7 +1015,7 @@ class contentform{
 									$mainparentheading	= $array[$row['content_parent']][1]." [".$array[$row['content_parent']][count($array[$row['content_parent']])-1]."]";
 									$content_pref		= $aa -> getContentPref($mainparent);
 									$iconpath			= ($content_pref["content_icon_path_{$mainparent}"] ? $content_pref["content_icon_path_{$mainparent}"] : "{e_PLUGIN}content/images/icon/" );
-									$content_icon_path	= $aa -> parseContentPathVars($iconpath);
+									$content_icon_path	= $tp -> replaceConstants($iconpath);
 									$icon				= $content_icon_path.$row['content_icon'];
 								}
 								$delete_heading			= str_replace("&#39;", "\'", $row['content_heading']);										
@@ -1080,8 +1080,8 @@ class contentform{
 									$row = $sql -> db_Fetch();
 
 									$content_pref					= $aa -> getContentPref($catarray[$catid][0]);
-									$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$catarray[$catid][0]}"]);
-									$content_cat_icon_path_small	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$catarray[$catid][0]}"]);
+									$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$catarray[$catid][0]}"]);
+									$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_{$catarray[$catid][0]}"]);
 									$delete_heading					= str_replace("&#39;", "\'", $row['content_heading']);
 									$authordetails					= $aa -> getAuthor($row['content_author']);
 									$caticon						= $content_cat_icon_path_large.$row['content_icon'];
@@ -1152,7 +1152,7 @@ class contentform{
 						$array							= $aa -> getCategoryTree("", "", FALSE);
 						$mainparent						= $aa -> getMainParent( (isset($qs[3]) && is_numeric($qs[3]) ? $qs[3] : $qs[2]) );						
 						$content_pref					= $aa -> getContentPref($mainparent);
-						$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$mainparent}"]);
+						$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$mainparent}"]);
 
 						if( $qs[0] == "cat" && $qs[1] == "create" && isset($qs[2]) && is_numeric($qs[2]) ){
 							if(!$sql -> db_Select($plugintable, "*", "content_id='".$qs[2]."' ")){
@@ -1494,8 +1494,8 @@ class contentform{
 									$row = $sql -> db_Fetch();
 
 									$content_pref					= $aa -> getContentPref($catarray[$catid][0]);
-									$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$catarray[$catid][0]}"]);
-									$content_cat_icon_path_small	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$catarray[$catid][0]}"]);
+									$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$catarray[$catid][0]}"]);
+									$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_{$catarray[$catid][0]}"]);
 									$authordetails					= $aa -> getAuthor($row['content_author']);
 									$caticon						= $content_cat_icon_path_large.$row['content_icon'];
 
@@ -1610,7 +1610,7 @@ class contentform{
 							$order			= "SUBSTRING_INDEX(content_order, '.', -1)+0";
 						}
 						$content_pref		= $aa -> getContentPref($qs[1]);
-						$content_icon_path	= $aa -> parseContentPathVars($content_pref["content_icon_path_{$qs[1]}"]);
+						$content_icon_path	= $tp -> replaceConstants($content_pref["content_icon_path_{$qs[1]}"]);
 
 						$sqlo = new db;
 						if(!$content_total = $sqlo -> db_Select($plugintable, "content_id, content_heading, content_author, content_parent, content_order", "content_refer != 'sa' AND ".$qry." ORDER BY ".$order." ASC, content_heading DESC ")){
@@ -1920,8 +1920,8 @@ class contentform{
 							</tr>";
 
 							$content_pref					= $aa -> getContentPref(0);
-							$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_0"]);
-							$content_cat_icon_path_small	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_0"]);
+							$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_0"]);
+							$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_0"]);
 							
 							$text .= "
 							<tr><td colspan='5' $stylespacer></td></tr>
@@ -1939,8 +1939,8 @@ class contentform{
 							while($row = $sqlo -> db_Fetch()){
 
 								$content_pref					= $aa -> getContentPref($row['content_id']);
-								$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$row['content_id']}"]);
-								$content_cat_icon_path_small	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$row['content_id']}"]);
+								$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$row['content_id']}"]);
+								$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_{$row['content_id']}"]);
 								$authordetails					= $aa -> getAuthor($row['content_author']);
 								$caticon						= $content_cat_icon_path_large.$row['content_icon'];
 

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.58 $
-|		$Date: 2005-06-13 12:00:10 $
+|		$Revision: 1.59 $
+|		$Date: 2005-06-13 14:03:53 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -230,7 +230,7 @@ function show_content_search_result($searchkeyword){
 				$validparent		= implode(",", array_keys($array));
 				$qry				= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 				$qry				.= " AND (content_heading REGEXP '".$searchkeyword."' OR content_subheading REGEXP '".$searchkeyword."' OR content_summary REGEXP '".$searchkeyword."' OR content_text REGEXP '".$searchkeyword."' ) ";
-				$content_icon_path	= $aa -> parseContentPathVars($content_pref["content_icon_path_{$mainparent}"]);
+				$content_icon_path	= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 
 				$sqlsr = "";
 				if(!is_object($sqlsr)){ $sqlsr = new db; }
@@ -313,9 +313,9 @@ function show_content(){
 							$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
 							$content_pref["content_cat_icon_path_large_{$row['content_id']}"] = ($content_pref["content_cat_icon_path_large_{$row['content_id']}"] ? $content_pref["content_cat_icon_path_large_{$row['content_id']}"] : "{e_PLUGIN}content/images/cat/48/" );
 							$content_pref["content_cat_icon_path_small_{$row['content_id']}"] = ($content_pref["content_cat_icon_path_small_{$row['content_id']}"] ? $content_pref["content_cat_icon_path_small_{$row['content_id']}"] : "{e_PLUGIN}content/images/cat/16/" );
-							$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$row['content_id']}"]);
-							$content_cat_icon_path_small	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$row['content_id']}"]);
-							$content_icon_path				= $aa -> parseContentPathVars($content_pref["content_icon_path_{$row['content_id']}"]);
+							$content_cat_icon_path_large	= $tp->replaceConstants($content_pref["content_cat_icon_path_large_{$row['content_id']}"]);
+							$content_cat_icon_path_small	= $tp->replaceConstants($content_pref["content_cat_icon_path_small_{$row['content_id']}"]);
+							$content_icon_path				= $tp->replaceConstants($content_pref["content_icon_path_{$row['content_id']}"]);
 
 							$array			= $aa -> getCategoryTree("", $row['content_id'], TRUE);
 							$validparent	= implode(",", array_keys($array));
@@ -520,7 +520,7 @@ function show_content_recent(){
 				}else{
 					ob_start();
 
-					$content_icon_path	= $aa -> parseContentPathVars($content_pref["content_icon_path_{$mainparent}"]);
+					$content_icon_path	= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 					$array				= $aa -> getCategoryTree("", $qs[1], TRUE);
 					$validparent		= implode(",", array_keys($array));
 					$order				= $aa -> getOrder();
@@ -534,7 +534,6 @@ function show_content_recent(){
 					if($from > $contenttotal-1){ header("location:".e_SELF); exit; }
 
 					if($resultitem = $sql1 -> db_Select($plugintable, "*", "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery )){
-
 						$content_recent_table_string = "";
 						while($row = $sql1 -> db_Fetch()){
 							$rdate	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_DATE}', FALSE, $content_shortcodes);
@@ -612,8 +611,8 @@ function show_content_cat_all(){
 				}else{
 					ob_start();
 
-					$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$mainparent}"]);
-					$content_icon_path				= $aa -> parseContentPathVars($content_pref["content_icon_path_{$mainparent}"]);
+					$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$mainparent}"]);
+					$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 					$array							= $aa -> getCategoryTree("", $mainparent, TRUE);
 					$validparent					= implode(",", array_keys($array));
 					$order							= $aa -> getOrder();
@@ -728,9 +727,9 @@ function show_content_cat($mode=""){
 				}else{
 					ob_start();
 
-					$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$mainparent}"]);
-					$content_cat_icon_path_small	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$mainparent}"]);
-					$content_icon_path				= $aa -> parseContentPathVars($content_pref["content_icon_path_{$mainparent}"]);
+					$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$mainparent}"]);
+					$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_{$mainparent}"]);
+					$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 					$array							= $aa -> getCategoryTree("", $mainparent, TRUE);
 					$validparent					= "0,0.".implode(",0.", array_keys($array));
 					$order							= $aa -> getOrder();
@@ -1047,7 +1046,7 @@ function show_content_author(){
 				}else{
 					ob_start();
 
-					$content_icon_path	= $aa -> parseContentPathVars($content_pref["content_icon_path_{$mainparent}"]);
+					$content_icon_path	= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 					$array				= $aa -> getCategoryTree("", $mainparent, TRUE);
 					if(array_key_exists($qs[1], $array)){
 						$validparent	= "0,0.".implode(",0.", array_keys($array));
@@ -1150,7 +1149,7 @@ function show_content_top(){
 				}else{
 					ob_start();
 
-					$content_icon_path	= $aa -> parseContentPathVars($content_pref["content_icon_path_{$mainparent}"]);
+					$content_icon_path	= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 					$array				= $aa -> getCategoryTree("", $qs[1], TRUE);
 					$validparent		= implode(",", array_keys($array));
 					$qry				= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
@@ -1262,11 +1261,11 @@ function show_content_item(){
 						$content_pref["content_icon_path_{$mainparent}"] = ($content_pref["content_icon_path_{$mainparent}"] ? $content_pref["content_icon_path_{$mainparent}"] : "{e_PLUGIN}content/images/icon/" );
 						$content_pref["content_image_path_{$mainparent}"] = ($content_pref["content_image_path_{$mainparent}"] ? $content_pref["content_image_path_{$mainparent}"] : "{e_PLUGIN}content/images/image/" );
 						$content_pref["content_file_path_{$mainparent}"] = ($content_pref["content_file_path_{$mainparent}"] ? $content_pref["content_file_path_{$mainparent}"] : "{e_PLUGIN}content/images/file/" );
-						$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$mainparent}"]);
-						$content_cat_icon_path_small	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$mainparent}"]);
-						$content_icon_path				= $aa -> parseContentPathVars($content_pref["content_icon_path_{$mainparent}"]);
-						$content_image_path				= $aa -> parseContentPathVars($content_pref["content_image_path_{$mainparent}"]);
-						$content_file_path				= $aa -> parseContentPathVars($content_pref["content_file_path_{$mainparent}"]);
+						$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$mainparent}"]);
+						$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_{$mainparent}"]);
+						$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
+						$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
+						$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path_{$mainparent}"]);
 						$number							= ($content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "5");
 						$nextprevquery					= ($content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".$from.",".$number : "");
 
@@ -1323,7 +1322,7 @@ function show_content_item(){
 
 								if($idp==1){
 									$CONTENT_CONTENT_TABLE_SUMMARY = ($content_pref["content_content_summary_{$mainparent}"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "") : "");
-									$CONTENT_CONTENT_TABLE_SUMMARY = $aa -> parseContentPathVars($CONTENT_CONTENT_TABLE_SUMMARY);
+									$CONTENT_CONTENT_TABLE_SUMMARY = $tp -> replaceConstants($CONTENT_CONTENT_TABLE_SUMMARY);
 								}else{
 									$CONTENT_CONTENT_TABLE_SUMMARY = "";
 								}
@@ -1333,11 +1332,11 @@ function show_content_item(){
 							}
 						}else{
 							$CONTENT_CONTENT_TABLE_SUMMARY	= ($content_pref["content_content_summary_{$mainparent}"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "") : "");
-							$CONTENT_CONTENT_TABLE_SUMMARY	= $aa -> parseContentPathVars($CONTENT_CONTENT_TABLE_SUMMARY);
+							$CONTENT_CONTENT_TABLE_SUMMARY	= $tp -> replaceConstants($CONTENT_CONTENT_TABLE_SUMMARY);
 							$lastpage = TRUE;
 						}
 
-						$CONTENT_CONTENT_TABLE_TEXT		= $aa -> parseContentPathVars($CONTENT_CONTENT_TABLE_TEXT);
+						$CONTENT_CONTENT_TABLE_TEXT		= $tp -> replaceConstants($CONTENT_CONTENT_TABLE_TEXT);
 						$CONTENT_CONTENT_TABLE_TEXT		= $tp -> toHTML($CONTENT_CONTENT_TABLE_TEXT, TRUE, "");
 						$custom							= $eArrayStorage->ReadArray($row['content_pref']);
 

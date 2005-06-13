@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.59 $
-|		$Date: 2005-06-13 12:00:11 $
+|		$Revision: 1.60 $
+|		$Date: 2005-06-13 14:03:53 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -596,62 +596,6 @@ class content{
 
 		}
 
-
-		/*
-		function setContentCss($id="", $main=""){
-			//$id : category id
-			//$main : main category parent id
-			//only use one of the two values, if mainid is given, that will be used
-			global $sql, $plugintable, $plugindir;
-
-			if($main){
-				$cssmainparent		= $main;
-
-			}elseif($id){
-				$cssmainparent		= $this -> getMainParent($id);
-
-			}elseif(!$main && !$id){
-				if(e_QUERY){
-					$cssqs			= explode(".", e_QUERY);
-
-					if(is_numeric($cssqs[0])){
-						$cssfrom	= array_shift($cssqs);
-					}
-					$cssmainid		= (is_numeric($cssqs[1]) ? $cssqs[1] : $cssqs[2]);
-					$cssmainparent	= $this -> getMainParent($cssmainid);
-				}else{
-					$cssmainparent	= "";
-				}
-			}
-			$csspref				= $this -> getContentPref($cssmainparent);
-
-			//use content_css from THEME
-			if($csspref["content_css_{$cssmainparent}"] == "theme"){
-				if(file_exists(THEME."content_css.css")){						
-					$eplug_css = THEME."content_css.css";
-				}else{
-					$eplug_css = $plugindir."templates/default/content_css.css";
-				}
-
-			//use content_css from CURRENT CONTENT THEME
-			}elseif($csspref["content_css_{$cssmainparent}"] == "ctemp"){
-				if(file_exists($plugindir."templates/".$csspref["content_theme_{$cssmainparent}"]."/content_css.css")){
-					$eplug_css = $plugindir."templates/".$csspref["content_theme_{$cssmainparent}"]."/content_css.css";
-				}else{
-					$eplug_css = $plugindir."templates/default/content_css.css";
-				}
-
-			//use content_css from DEFAULT CONTENT THEME
-			//}elseif($csspref["content_css_{$cssmainparent}"] == "ctempdef"){
-			}else{
-				$eplug_css = $plugindir."templates/default/content_css.css";
-			}
-
-			return $eplug_css;
-		}
-		*/
-
-
 		function getAuthor($content_author) {
 				global $sql, $plugintable, $datequery;
 
@@ -927,12 +871,12 @@ class content{
 				return $iconstring;
 		}
 
-
-		function parseContentPathVars($srstring){
-				$search		= array("{e_BASE}", "{e_ADMIN}", "{e_IMAGE}", "{e_THEME}", "{e_PLUGIN}", "{e_FILE}", "{e_HANDLER}", "{e_LANGUAGEDIR}", "{e_DOCS}", "{e_DOCROOT}");
-				$replace	= array(e_BASE, e_ADMIN, e_IMAGE, e_THEME, e_PLUGIN, e_FILE, e_HANDLER, e_LANGUAGEDIR, e_DOCS, e_DOCROOT);
-				return(str_replace($search, $replace, $srstring));
-		}
+		//deprecated : use $tp -> replaceConstants() instead
+		//function parseContentPathVars($srstring){
+		//		$search		= array("{e_BASE}", "{e_ADMIN}", "{e_IMAGE}", "{e_THEME}", "{e_PLUGIN}", "{e_FILE}", "{e_HANDLER}", "{e_LANGUAGEDIR}", "{e_DOCS}", "{e_DOCROOT}");
+		//		$replace	= array(e_BASE, e_ADMIN, e_IMAGE, e_THEME, e_PLUGIN, e_FILE, e_HANDLER, e_LANGUAGEDIR, e_DOCS, e_DOCROOT);
+		//		return(str_replace($search, $replace, $srstring));
+		//}
 
 		//admin
 		function popup($image, $thumb, $maxwidth, $title, $text){
@@ -1067,10 +1011,10 @@ class content{
 						}
 
 						if($mode == "page" || ($mode == "menu" && ($content_pref["content_menu_links_$mainparent"] && $content_pref["content_menu_links_dropdown_$mainparent"]) || ($content_pref["content_menu_cat_$mainparent"] && $content_pref["content_menu_cat_dropdown_$mainparent"]) ) ){
-
+							if($mode == "menu"){ $style = "style='width:100%;' "; }
 							$CONTENT_SEARCH_TABLE_SELECT = "
 							".$rs -> form_open("post", $plugindir."content.php".(e_QUERY ? "?".e_QUERY : ""), "contentredirect".$mode, "", "enctype='multipart/form-data'")."				
-							<select id='{$mode}value' name='{$mode}value' class='tbox' style='width:100%;' onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\">";					
+							<select id='{$mode}value' name='{$mode}value' class='tbox' $style onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\">";					
 							
 
 							if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_links_$mainparent"] && $content_pref["content_menu_links_dropdown_$mainparent"]) ){
@@ -1197,13 +1141,14 @@ class content{
 				$data .= "require_once(e_HANDLER.'form_handler.php');\n";
 				$data .= chr(36)."rs = new form;\n";
 				$data .= chr(36)."gen = new convert;\n";
+				$data .= "global ".chr(36)."tp;\n";
 				$data .= "\n";
 				$data .= chr(36)."lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';\n";
 				$data .= "include_once(file_exists(".chr(36)."lan_file) ? ".chr(36)."lan_file : e_PLUGIN.'content/languages/English/lan_content.php');\n";
 				$data .= "\n";
 				$data .= chr(36)."content_pref					= ".chr(36)."aa -> getContentPref(".chr(36)."menutypeid);\n";
-				$data .= chr(36)."content_icon_path				= ".chr(36)."aa -> parseContentPathVars(".chr(36)."content_pref[\"content_icon_path_".chr(36)."menutypeid\"]);\n";
-				$data .= chr(36)."content_cat_icon_path_small	= ".chr(36)."aa -> parseContentPathVars(".chr(36)."content_pref[\"content_cat_icon_path_small_".chr(36)."menutypeid\"]);\n";
+				$data .= chr(36)."content_icon_path				= ".chr(36)."tp -> replaceConstants(".chr(36)."content_pref[\"content_icon_path_".chr(36)."menutypeid\"]);\n";
+				$data .= chr(36)."content_cat_icon_path_small	= ".chr(36)."tp -> replaceConstants(".chr(36)."content_pref[\"content_cat_icon_path_small_".chr(36)."menutypeid\"]);\n";
 				$data .= "\n";
 				$data .= "//##### SEARCH SELECT ORDER --------------------------------------------------\n";
 				$data .= "//show search box\n";

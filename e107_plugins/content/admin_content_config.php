@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.41 $
-|		$Date: 2005-06-13 11:08:55 $
+|		$Revision: 1.42 $
+|		$Date: 2005-06-13 14:03:52 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -120,7 +120,7 @@ if(isset($_POST['updateoptions'])){
 
 if(isset($_POST['create_category'])){
 	if($_POST['cat_heading'] && $_POST['parent'] != "none"){
-		$adb -> dbCategoryCreate("admin");				
+		$adb -> dbCategoryCreate("admin");
 	}else{
 		$message	= CONTENT_ADMIN_ITEM_LAN_0;
 	}
@@ -145,6 +145,7 @@ if(isset($_POST['create_content'])){
 if(isset($_POST['update_content'])){
 	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
 		$adb -> dbContentUpdate("admin");
+		header("location:".e_SELF."?".e_QUERY.".cu"); exit;
 	}else{
 		$message	= CONTENT_ADMIN_ITEM_LAN_0;
 	}
@@ -169,7 +170,6 @@ if(isset($message)){
 // ##### End --------------------------------------------------------------------------------------
 
 if(!e_QUERY){																//show main categories
-
 	$intro = $aform -> show_main_intro();
 	if($intro == false){
 		$aform -> show_manage_content("", "", "");

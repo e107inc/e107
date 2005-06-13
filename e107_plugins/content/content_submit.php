@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.12 $
-|		$Date: 2005-06-07 19:37:22 $
+|		$Revision: 1.13 $
+|		$Date: 2005-06-13 14:03:53 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -119,9 +119,9 @@ if(!isset($qs[0])){
 				$content_pref					= $eArrayStorage->ReadArray($row['content_pref']);
 				$content_pref["content_cat_icon_path_large_{$row['content_id']}"] = ($content_pref["content_cat_icon_path_large_{$row['content_id']}"] ? $content_pref["content_cat_icon_path_large_{$row['content_id']}"] : "{e_PLUGIN}content/images/cat/48/" );
 				$content_pref["content_cat_icon_path_small_{$row['content_id']}"] = ($content_pref["content_cat_icon_path_small_{$row['content_id']}"] ? $content_pref["content_cat_icon_path_small_{$row['content_id']}"] : "{e_PLUGIN}content/images/cat/16/" );
-				$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$row['content_id']}"]);
-				$content_cat_icon_path_small	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$row['content_id']}"]);
-				$content_icon_path				= $aa -> parseContentPathVars($content_pref["content_icon_path_{$row['content_id']}"]);
+				$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$row['content_id']}"]);
+				$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_{$row['content_id']}"]);
+				$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$row['content_id']}"]);
 				if($content_pref["content_submit_{$row['content_id']}"] && check_class($content_pref["content_submit_class_{$row['content_id']}"])){
 					$content_submit_type_table_string .= $tp -> parseTemplate($CONTENT_SUBMIT_TYPE_TABLE, FALSE, $content_shortcodes);
 					$count = $count + 1;
