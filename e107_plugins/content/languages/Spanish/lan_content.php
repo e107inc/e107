@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-09 22:54:12 $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-13 18:16:29 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -26,14 +26,14 @@ define("CONTENT_ICON_LAN_12", "Ordenar por categoría principal");
 define("CONTENT_ICON_LAN_13", "Admin personal");
 define("CONTENT_ICON_LAN_14", "Conf. contenidos personal");
 define("CONTENT_ICON_LAN_15", "Ver");
-
+/*
 define("LAN_38", "Votar");
 define("LAN_39", "Votos");
 define("LAN_40", "¿Como valoraría este contenido?");
 define("LAN_41", "Gracias por su voto");
 
 define("LAN_65", "Sin valorar");
-
+*/
 define("CONTENT_ADMIN_CAT_LAN_0", "Crear categoría de contenido");
 define("CONTENT_ADMIN_CAT_LAN_1", "Editar categoría de contenido");
 define("CONTENT_ADMIN_CAT_LAN_2", "Cabecera");
@@ -94,6 +94,8 @@ define("CONTENT_ADMIN_CAT_LAN_52", "Escoja SIEMPRE una categoría antes completa
 define("CONTENT_ADMIN_CAT_LAN_53", "Para manejar otra categoría");
 define("CONTENT_ADMIN_CAT_LAN_54", "Usuario");
 define("CONTENT_ADMIN_CAT_LAN_55", "Usuarios");
+define("CONTENT_ADMIN_CAT_LAN_56", "Elemento");
+define("CONTENT_ADMIN_CAT_LAN_57", "Elementos");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "Opciones");
 define("CONTENT_ADMIN_OPT_LAN_1", "Crear un formulario para contenidos en el área del administrador");
@@ -162,9 +164,9 @@ define("CONTENT_ADMIN_OPT_LAN_63", "Defina como renderizar la info de señuelo. 
 define("CONTENT_ADMIN_OPT_LAN_64", "Enseñar");
 define("CONTENT_ADMIN_OPT_LAN_65", "Cada uno en menús diferentes");
 define("CONTENT_ADMIN_OPT_LAN_66", "Combinar en un menú");
-define("CONTENT_ADMIN_OPT_LAN_67", "Menú buscar");
-define("CONTENT_ADMIN_OPT_LAN_68", "¿Debe mostrarse el menú búscar?");
-define("CONTENT_ADMIN_OPT_LAN_69", "Activo, un menú de navegación y búsqueda se mostrará para buscar en contenidos o navegar en otras páginas así como una opción para ordenar contenidos en la lista de páginas");
+define("CONTENT_ADMIN_OPT_LAN_67", "Buscar por clave");
+define("CONTENT_ADMIN_OPT_LAN_68", "¿Debe mostrarse buscar por clave?");
+define("CONTENT_ADMIN_OPT_LAN_69", "Activo, mostrará la opción de buscar por clave en las páginas de contenidos. Comprueba las páginas donde necesita mostrarlo.");
 define("CONTENT_ADMIN_OPT_LAN_70", "Previsualizar contenido (usado en todas las páginas de contenidos donde se ojearán los contenidos recientes)");
 define("CONTENT_ADMIN_OPT_LAN_71", "Escoja que secciones se mostrarán cuando vea un contenido en la lista de páginas");
 define("CONTENT_ADMIN_OPT_LAN_72", "Subcabecera");
@@ -208,8 +210,8 @@ define("CONTENT_ADMIN_OPT_LAN_109", "Cantidad de elementos");
 define("CONTENT_ADMIN_OPT_LAN_110", "Escoja que secciones se mostrarán en todas las categorías de contenidos");
 define("CONTENT_ADMIN_OPT_LAN_111", "Escoja que secciones de la categoría se mostrarán");
 define("CONTENT_ADMIN_OPT_LAN_112", "Escoja que secciones en la lista de subcategorías se mostrarán");
-define("CONTENT_ADMIN_OPT_LAN_113", "Página de todas las categorías");
-define("CONTENT_ADMIN_OPT_LAN_114", "Página de ver categorías");
+define("CONTENT_ADMIN_OPT_LAN_113", "Página de todas las categorías. (La página donde podrá ojear todas las categorías en la principal)");
+define("CONTENT_ADMIN_OPT_LAN_114", "Página de ver categorías. (La página donde se mostrarán la categorías y sus subcategorías)");
 define("CONTENT_ADMIN_OPT_LAN_115", "Activado, se insertará un enlace a la categoría en la cadena del sufijo");
 define("CONTENT_ADMIN_OPT_LAN_116", "Cantidad de comentarios");
 define("CONTENT_ADMIN_OPT_LAN_117", "Autor: Enlace a lista de autor");
@@ -233,7 +235,7 @@ define("CONTENT_ADMIN_OPT_LAN_134", "Escoja método de renderizado para los men�
 define("CONTENT_ADMIN_OPT_LAN_135", "Puede renderizar el principal, sub e hijos de cada menú, o puede combinarlos juntos en un solo menú");
 define("CONTENT_ADMIN_OPT_LAN_136", "Cada uno en menús separados");
 define("CONTENT_ADMIN_OPT_LAN_137", "Combinar en un menú");
-define("CONTENT_ADMIN_OPT_LAN_138", "Páginas de contenidos");
+define("CONTENT_ADMIN_OPT_LAN_138", "Páginas de contenidos. (La página donde mostrará un contenido)");
 define("CONTENT_ADMIN_OPT_LAN_139", "Escoja que secciones se mostrarán cuando vea un contenido");
 define("CONTENT_ADMIN_OPT_LAN_140", "Propiedades de menú");
 define("CONTENT_ADMIN_OPT_LAN_141", "Título");
@@ -312,7 +314,7 @@ define("CONTENT_ADMIN_OPT_LAN_213", "Necesita la página del enlace 'todos los c
 define("CONTENT_ADMIN_OPT_LAN_214", "Estilo de fecha");
 define("CONTENT_ADMIN_OPT_LAN_215", "Escoja un estilo de fecha para mostrarla");
 define("CONTENT_ADMIN_OPT_LAN_216", "Para más información sobre formatos de fecha mire en <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>función strftime en php.net</a>");
-define("CONTENT_ADMIN_OPT_LAN_217", "");
+define("CONTENT_ADMIN_OPT_LAN_217", "Página de archivo. (La página donde podrá ojear todos los contenidos)");
 define("CONTENT_ADMIN_OPT_LAN_218", "Preferencias por defecto");
 define("CONTENT_ADMIN_OPT_LAN_219", "Escoja que secciones se mostrarán cuando vea la pagina de archivos");
 define("CONTENT_ADMIN_OPT_LAN_220", "Icono listaAutor");
@@ -342,7 +344,7 @@ define("CONTENT_ADMIN_OPT_LAN_243", "Último elemento de cada autor");
 define("CONTENT_ADMIN_OPT_LAN_244", "Cantidad de elementos por cada autor");
 define("CONTENT_ADMIN_OPT_LAN_245", "Activado, solo un limitado número de autores se mostrarán en cada página, y podrá navegar sobre un número de paginas de autores.");
 define("CONTENT_ADMIN_OPT_LAN_246", "¿Cuantos autores necesita mostrar en una sola página?");
-define("CONTENT_ADMIN_OPT_LAN_247", "Página de lista de autores");
+define("CONTENT_ADMIN_OPT_LAN_247", "Página de lista de autores (La página donde podrá ojear todos los autores de los contenidos)");
 define("CONTENT_ADMIN_OPT_LAN_248", "Gestión de contenidos");
 define("CONTENT_ADMIN_OPT_LAN_249", "Clase");
 define("CONTENT_ADMIN_OPT_LAN_250", "Defina usuarios de la cual clase deberá estar disponible en el área de gestor de contenidos del administrador");
@@ -361,20 +363,40 @@ define("CONTENT_ADMIN_OPT_LAN_262", "Defina el título de los enlaces a otras p�
 define("CONTENT_ADMIN_OPT_LAN_263", "Esta opción solo se usará si los enlaces se muestran como 'enalcesnormales' y no en una lista desplegable");
 define("CONTENT_ADMIN_OPT_LAN_264", "Icono : Categoría por defecto");
 define("CONTENT_ADMIN_OPT_LAN_265", "Defina el icono por defecto si no existe icono para la categoría (solo si ha seleccionado 'Icono de categoría' a mostrar)");
-define("CONTENT_ADMIN_OPT_LAN_266", "Página más valorada");
-define("CONTENT_ADMIN_OPT_LAN_267", "Tipo de render del menú de búsqueda");
-define("CONTENT_ADMIN_OPT_LAN_268", "Defina como mostrará el menú de búsqueda");
-define("CONTENT_ADMIN_OPT_LAN_269", "Defina como renderizará la información del menú de búsqueda. Tiene 2 opciones:: UNa enviarlo arriba en la página y otra renderizarlo en un menú separado");
+define("CONTENT_ADMIN_OPT_LAN_266", "Página más valorada (La página donde podrá ojear todos los contenidos más valorados)");
+define("CONTENT_ADMIN_OPT_LAN_267", "Tipo de renderizado para navegador/buscador/orden");
+define("CONTENT_ADMIN_OPT_LAN_268", "Defina como mostrará el menú con las opciones navegador/buscador/orden");
+define("CONTENT_ADMIN_OPT_LAN_269", "Defina como renderizará la información. Tiene 2 opciones Una mostrandolo arriba en la página y otra renderizarlo en un menú separado. Usa un archivo plantilla, por lo que siempre cambie la plantilla del menú (si está seleccionada) aquí ");
 define("CONTENT_ADMIN_OPT_LAN_270", "Índice de letras");
 define("CONTENT_ADMIN_OPT_LAN_271", "Defina si quiere mostrar in índice de letras");
 define("CONTENT_ADMIN_OPT_LAN_272", "El índice de letras es una lista de botones con todas la primeras letras de las cabeceras de los campos de contenidos. Puede reducir la lista de archivos haciendo click en cierta letra, así solo se mostrarán los contenidos que comienzan con esa letra.");
-define("CONTENT_ADMIN_OPT_LAN_273", "");
-define("CONTENT_ADMIN_OPT_LAN_274", "");
-define("CONTENT_ADMIN_OPT_LAN_275", "");
-define("CONTENT_ADMIN_OPT_LAN_276", "");
-define("CONTENT_ADMIN_OPT_LAN_277", "");
-define("CONTENT_ADMIN_OPT_LAN_278", "");
+define("CONTENT_ADMIN_OPT_LAN_273", "Navegador");
+define("CONTENT_ADMIN_OPT_LAN_274", "¿Debe mostrar el navegador?");
+define("CONTENT_ADMIN_OPT_LAN_275", "Activado, una caja de navegador se mostrará para navegar en otras páginas de contenidos. Compruebe las páginas que necesitarán mostrarse");
+define("CONTENT_ADMIN_OPT_LAN_276", "Opciones de orden");
+define("CONTENT_ADMIN_OPT_LAN_277", "¿Debe mostrar una opción de orden?");
+define("CONTENT_ADMIN_OPT_LAN_278", "Activado, se mostrará una opción de orden para ordenar los contenidos de la página.Compruebe las páginas que necesitarán mostrarse");
 define("CONTENT_ADMIN_OPT_LAN_279", "");
+define("CONTENT_ADMIN_OPT_LAN_280", "Todas las categorías");
+define("CONTENT_ADMIN_OPT_LAN_281", "Un categoría");
+define("CONTENT_ADMIN_OPT_LAN_282", "Todos los autores");
+define("CONTENT_ADMIN_OPT_LAN_283", "Un autor");
+define("CONTENT_ADMIN_OPT_LAN_284", "Reciente");
+define("CONTENT_ADMIN_OPT_LAN_285", "Contenido");
+define("CONTENT_ADMIN_OPT_LAN_286", "Más valorado");
+define("CONTENT_ADMIN_OPT_LAN_287", "Archivo");
+define("CONTENT_ADMIN_OPT_LAN_288", "");
+define("CONTENT_ADMIN_OPT_LAN_289", "");
+define("CONTENT_ADMIN_OPT_LAN_290", "");
+define("CONTENT_ADMIN_OPT_LAN_291", "");
+define("CONTENT_ADMIN_OPT_LAN_292", "");
+define("CONTENT_ADMIN_OPT_LAN_293", "");
+define("CONTENT_ADMIN_OPT_LAN_294", "");
+define("CONTENT_ADMIN_OPT_LAN_295", "");
+define("CONTENT_ADMIN_OPT_LAN_296", "");
+define("CONTENT_ADMIN_OPT_LAN_297", "");
+define("CONTENT_ADMIN_OPT_LAN_298", "");
+define("CONTENT_ADMIN_OPT_LAN_299", "");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "Campos obligatorios en blanco");
 define("CONTENT_ADMIN_ITEM_LAN_1", "Contenido creado");
@@ -551,8 +573,8 @@ define("CONTENT_ADMIN_MENU_LAN_3", "Crear categoría");
 define("CONTENT_ADMIN_MENU_LAN_4", "Contenidos enviados");
 define("CONTENT_ADMIN_MENU_LAN_5", "Categoría");
 define("CONTENT_ADMIN_MENU_LAN_6", "Opciones");
-define("CONTENT_ADMIN_MENU_LAN_7", "Admin Crear");
-define("CONTENT_ADMIN_MENU_LAN_8", "Enviar elementos");
+define("CONTENT_ADMIN_MENU_LAN_7", "Admin: Crear elemento");
+define("CONTENT_ADMIN_MENU_LAN_8", "Enviar elemento");
 define("CONTENT_ADMIN_MENU_LAN_9", "Ruta y tema");
 define("CONTENT_ADMIN_MENU_LAN_10", "General");
 define("CONTENT_ADMIN_MENU_LAN_11", "Previsualizar contenido");
@@ -561,10 +583,11 @@ define("CONTENT_ADMIN_MENU_LAN_13", "Páginas de contenidos");
 define("CONTENT_ADMIN_MENU_LAN_14", "Menú");
 define("CONTENT_ADMIN_MENU_LAN_15", "Orden");
 define("CONTENT_ADMIN_MENU_LAN_16", "Página archivo");
-define("CONTENT_ADMIN_MENU_LAN_17", "GestorContenidos");
+define("CONTENT_ADMIN_MENU_LAN_17", "Gestor de contenidos personal");
 define("CONTENT_ADMIN_MENU_LAN_18", "Página autor");
 define("CONTENT_ADMIN_MENU_LAN_19", "Gestor de contenidos");
  define("CONTENT_ADMIN_MENU_LAN_20", "Página más valorada");
+define("CONTENT_ADMIN_MENU_LAN_21", "Páginas");
 
 define("CONTENT_ADMIN_JS_LAN_0", "¿Está seguro de eliminar esta categoría?");
 define("CONTENT_ADMIN_JS_LAN_1", "¿Está seguro de eliminar este contenido?");
@@ -801,6 +824,7 @@ define("CONTENT_ADMIN_CONVERSION_LAN_54", "Crear ajustes por defecto de categor�
 define("CONTENT_ADMIN_CONVERSION_LAN_55", "Plugin de Gestor de contenidos : opciones de conversión");
 define("CONTENT_ADMIN_CONVERSION_LAN_56", "Click en el botón para ir a la página a Crear nueva categoría.");
 define("CONTENT_ADMIN_CONVERSION_LAN_57", "Escoja categoría principal");
+define("CONTENT_ADMIN_CONVERSION_LAN_58", "Actualización exitosa<br /><br /><b>Tome nota:<br />Necesita reconfigurar las opciones para cada elemento principal<br />y necesita eliminar los menús que ha creado en su carpeta de menús/contenidos, y recrearlos actualizando las opciones para los principales que quiere usar como menús.</b>");
 
 define("CONTENT_MENU_LAN_0", "Menú de contenido :");
 define("CONTENT_MENU_LAN_1", "No hay contenidos todavía");
