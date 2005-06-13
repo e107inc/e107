@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-06-08 20:00:29 $
+|     $Revision: 1.48 $
+|     $Date: 2005-06-13 11:08:56 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -26,13 +26,13 @@ define("CONTENT_ICON_LAN_12", "order items in main parent");
 define("CONTENT_ICON_LAN_13", "personal admin");
 define("CONTENT_ICON_LAN_14", "personal contentmanager");
 define("CONTENT_ICON_LAN_15", "view");
-
+/*
 define("LAN_38", "vote");
 define("LAN_39", "votes");
 define("LAN_40", "how do you rate this content?");
 define("LAN_41", "thank you for your vote");
 define("LAN_65", "not rated");
-
+*/
 define("CONTENT_ADMIN_CAT_LAN_0", "create content category");
 define("CONTENT_ADMIN_CAT_LAN_1", "edit content category");
 define("CONTENT_ADMIN_CAT_LAN_2", "heading");
@@ -96,6 +96,8 @@ define("CONTENT_ADMIN_CAT_LAN_52", "ALWAYS choose a category first before you fi
 define("CONTENT_ADMIN_CAT_LAN_53", "to manage another category");
 define("CONTENT_ADMIN_CAT_LAN_54", "user");
 define("CONTENT_ADMIN_CAT_LAN_55", "users");
+define("CONTENT_ADMIN_CAT_LAN_56", "item");
+define("CONTENT_ADMIN_CAT_LAN_57", "items");
 
 
 define("CONTENT_ADMIN_OPT_LAN_0", "options");
@@ -165,9 +167,9 @@ define("CONTENT_ADMIN_OPT_LAN_63", "define how to render the breadcrumb informat
 define("CONTENT_ADMIN_OPT_LAN_64", "echo");
 define("CONTENT_ADMIN_OPT_LAN_65", "use a seperate menu");
 define("CONTENT_ADMIN_OPT_LAN_66", "combine into one menu");
-define("CONTENT_ADMIN_OPT_LAN_67", "search menu");
-define("CONTENT_ADMIN_OPT_LAN_68", "should the search menu be shown");
-define("CONTENT_ADMIN_OPT_LAN_69", "if checked a navigation and search menu will be shown to search in content or navigate to other overview pages in content as well as an option to order the content items in the list pages");
+define("CONTENT_ADMIN_OPT_LAN_67", "search by keyword");
+define("CONTENT_ADMIN_OPT_LAN_68", "should a search by keyword be displayed");
+define("CONTENT_ADMIN_OPT_LAN_69", "if checked a search by keyword option will be displayed to search in content pages. Check the pages where this needs to be displayed.");
 define("CONTENT_ADMIN_OPT_LAN_70", "content item preview (used in all content pages where an overview of recent content items is shown)");
 define("CONTENT_ADMIN_OPT_LAN_71", "choose which sections should be displayed when viewing a content item in the list pages");
 define("CONTENT_ADMIN_OPT_LAN_72", "subheading");
@@ -211,8 +213,8 @@ define("CONTENT_ADMIN_OPT_LAN_109", "amount items");
 define("CONTENT_ADMIN_OPT_LAN_110", "choose which sections should be displayed in the list of all content categories");
 define("CONTENT_ADMIN_OPT_LAN_111", "choose which sections of the category item should be displayed");
 define("CONTENT_ADMIN_OPT_LAN_112", "choose which sections in the list of subcategories should be displayed");
-define("CONTENT_ADMIN_OPT_LAN_113", "all categories page");
-define("CONTENT_ADMIN_OPT_LAN_114", "view category page");
+define("CONTENT_ADMIN_OPT_LAN_113", "all categories page (the page with the overview of all categories in the main parent)");
+define("CONTENT_ADMIN_OPT_LAN_114", "view category page (the page where the category item and additionally subcategories and items in that category are displayed");
 define("CONTENT_ADMIN_OPT_LAN_115", "if enabled, a link to the category item will be placed on the postfix string");
 define("CONTENT_ADMIN_OPT_LAN_116", "amount of comments");
 define("CONTENT_ADMIN_OPT_LAN_117", "author : link to author list");
@@ -236,7 +238,7 @@ define("CONTENT_ADMIN_OPT_LAN_134", "choose a render method of all the menus");
 define("CONTENT_ADMIN_OPT_LAN_135", "you can render the parent, sub and child items each in their own menu, or you can combine them together into one single menu");
 define("CONTENT_ADMIN_OPT_LAN_136", "each in seperate menus");
 define("CONTENT_ADMIN_OPT_LAN_137", "combine into one menu");
-define("CONTENT_ADMIN_OPT_LAN_138", "content pages");
+define("CONTENT_ADMIN_OPT_LAN_138", "content pages (the page that displays a content item)");
 define("CONTENT_ADMIN_OPT_LAN_139", "choose which sections should be shown when viewing a content item");
 define("CONTENT_ADMIN_OPT_LAN_140", "menu properties");
 define("CONTENT_ADMIN_OPT_LAN_141", "caption");
@@ -318,7 +320,7 @@ define("CONTENT_ADMIN_OPT_LAN_213", "does a link to the 'all content items' page
 define("CONTENT_ADMIN_OPT_LAN_214", "datestyle");
 define("CONTENT_ADMIN_OPT_LAN_215", "choose a datestyle to use for the displayed date");
 define("CONTENT_ADMIN_OPT_LAN_216", "For more information on date formats see the <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime function page at php.net</a>");
-define("CONTENT_ADMIN_OPT_LAN_217", "archive page");
+define("CONTENT_ADMIN_OPT_LAN_217", "archive page (the page where the overview of all content items is displayed");
 define("CONTENT_ADMIN_OPT_LAN_218", "default preferences");
 
 define("CONTENT_ADMIN_OPT_LAN_219", "choose which sections should be shown when viewing the archive page");
@@ -352,7 +354,7 @@ define("CONTENT_ADMIN_OPT_LAN_243", "last item of each author");
 define("CONTENT_ADMIN_OPT_LAN_244", "amount of items by each author");
 define("CONTENT_ADMIN_OPT_LAN_245", "if enabled only a limited number of authors are shown on a single page, and you can navigate through a number of pages to shown other auhtors.");
 define("CONTENT_ADMIN_OPT_LAN_246", "how many authors need to be shown on a single page?");
-define("CONTENT_ADMIN_OPT_LAN_247", "author list page");
+define("CONTENT_ADMIN_OPT_LAN_247", "author list page (the page with the overview of all distinct authors of all the content items in this main parent)");
 
 define("CONTENT_ADMIN_OPT_LAN_248", "content manager");
 define("CONTENT_ADMIN_OPT_LAN_249", "class");
@@ -372,21 +374,46 @@ define("CONTENT_ADMIN_OPT_LAN_262", "define the caption of the links to other co
 define("CONTENT_ADMIN_OPT_LAN_263", "this caption will only be used if the links are shown as 'normallinks' and will not be used in the dropdown");
 define("CONTENT_ADMIN_OPT_LAN_264", "icon : category default");
 define("CONTENT_ADMIN_OPT_LAN_265", "define the default icon if no category icon is present (only if you selected 'category icon' to be displayed)");
-define("CONTENT_ADMIN_OPT_LAN_266", "top rated page");
-define("CONTENT_ADMIN_OPT_LAN_267", "searchmenu rendertype");
-define("CONTENT_ADMIN_OPT_LAN_268", "define how to show the searchmenu menu");
-define("CONTENT_ADMIN_OPT_LAN_269", "define how to render the searchmenu information. you have two options: one to just echo it out at the top of the page and one to render it in a seperate menu.");
+define("CONTENT_ADMIN_OPT_LAN_266", "top rated page (the page with the overview of all rated content items in this main parent)");
+define("CONTENT_ADMIN_OPT_LAN_267", "rendertype navigator/search/order");
+define("CONTENT_ADMIN_OPT_LAN_268", "define how to show the menu with the navigator/search/order options");
+define("CONTENT_ADMIN_OPT_LAN_269", "define how to render the information. you have two options: one to just echo it out at the top of the page and one to render it in a seperate menu. It uses a template file, so you always change the layout of the menu (if selected) there.");
 
 define("CONTENT_ADMIN_OPT_LAN_270", "letterindex");
 define("CONTENT_ADMIN_OPT_LAN_271", "define if you want to show a letter index");
 define("CONTENT_ADMIN_OPT_LAN_272", "the letterindex is a list of buttons with all the first letters of the content heading fields. you can narrow down the archive list by clicking a certain letter so only content items starting with that letter will be displayed on the screen.");
-define("CONTENT_ADMIN_OPT_LAN_273", "");
-define("CONTENT_ADMIN_OPT_LAN_274", "");
-define("CONTENT_ADMIN_OPT_LAN_275", "");
-define("CONTENT_ADMIN_OPT_LAN_276", "");
-define("CONTENT_ADMIN_OPT_LAN_277", "");
-define("CONTENT_ADMIN_OPT_LAN_278", "");
+
+define("CONTENT_ADMIN_OPT_LAN_273", "navigator");
+define("CONTENT_ADMIN_OPT_LAN_274", "should a navigator be displayed");
+define("CONTENT_ADMIN_OPT_LAN_275", "if checked a navigator box will be displayed to navigate to other content pages. Check the pages where this needs to be displayed.");
+
+define("CONTENT_ADMIN_OPT_LAN_276", "order options");
+define("CONTENT_ADMIN_OPT_LAN_277", "should an order option be displayed");
+define("CONTENT_ADMIN_OPT_LAN_278", "if checked an order option will be displayed to order the content items displayed on the page. Check the pages where this needs to be displayed.");
+
 define("CONTENT_ADMIN_OPT_LAN_279", "");
+
+define("CONTENT_ADMIN_OPT_LAN_280", "all categories");
+define("CONTENT_ADMIN_OPT_LAN_281", "single category");
+define("CONTENT_ADMIN_OPT_LAN_282", "all authors");
+define("CONTENT_ADMIN_OPT_LAN_283", "single author");
+define("CONTENT_ADMIN_OPT_LAN_284", "recent");
+define("CONTENT_ADMIN_OPT_LAN_285", "content item");
+define("CONTENT_ADMIN_OPT_LAN_286", "top rated");
+define("CONTENT_ADMIN_OPT_LAN_287", "archive");
+define("CONTENT_ADMIN_OPT_LAN_288", "");
+define("CONTENT_ADMIN_OPT_LAN_289", "");
+
+define("CONTENT_ADMIN_OPT_LAN_290", "");
+define("CONTENT_ADMIN_OPT_LAN_291", "");
+define("CONTENT_ADMIN_OPT_LAN_292", "");
+define("CONTENT_ADMIN_OPT_LAN_293", "");
+define("CONTENT_ADMIN_OPT_LAN_294", "");
+define("CONTENT_ADMIN_OPT_LAN_295", "");
+define("CONTENT_ADMIN_OPT_LAN_296", "");
+define("CONTENT_ADMIN_OPT_LAN_297", "");
+define("CONTENT_ADMIN_OPT_LAN_298", "");
+define("CONTENT_ADMIN_OPT_LAN_299", "");
 
 
 
@@ -551,8 +578,8 @@ define("CONTENT_ADMIN_MENU_LAN_3", "Create Category");
 define("CONTENT_ADMIN_MENU_LAN_4", "Submitted Content Items");
 define("CONTENT_ADMIN_MENU_LAN_5", "Category");
 define("CONTENT_ADMIN_MENU_LAN_6", "Options");
-define("CONTENT_ADMIN_MENU_LAN_7", "Admin Create");
-define("CONTENT_ADMIN_MENU_LAN_8", "Submit Items");
+define("CONTENT_ADMIN_MENU_LAN_7", "Admin : Create Item");
+define("CONTENT_ADMIN_MENU_LAN_8", "Submit Item");
 define("CONTENT_ADMIN_MENU_LAN_9", "Path And Theme");
 define("CONTENT_ADMIN_MENU_LAN_10", "General");
 define("CONTENT_ADMIN_MENU_LAN_11", "Content Item Preview");
@@ -561,10 +588,13 @@ define("CONTENT_ADMIN_MENU_LAN_13", "Content pages");
 define("CONTENT_ADMIN_MENU_LAN_14", "Menu");
 define("CONTENT_ADMIN_MENU_LAN_15", "Order");
 define("CONTENT_ADMIN_MENU_LAN_16", "Archive Page");
-define("CONTENT_ADMIN_MENU_LAN_17", "ContentManager");
+define("CONTENT_ADMIN_MENU_LAN_17", "Personal Content Manager");
 define("CONTENT_ADMIN_MENU_LAN_18", "Author Page");
 define("CONTENT_ADMIN_MENU_LAN_19", "Content Manager");
 define("CONTENT_ADMIN_MENU_LAN_20", "Top Rated Page");
+define("CONTENT_ADMIN_MENU_LAN_21", "Pages");
+
+
 
 define("CONTENT_ADMIN_JS_LAN_0", "Are you sure you want to delete this category?");
 define("CONTENT_ADMIN_JS_LAN_1", "Are you sure you want to delete this content?");
@@ -806,6 +836,10 @@ define("CONTENT_ADMIN_CONVERSION_LAN_54", "create a default set of parent catego
 define("CONTENT_ADMIN_CONVERSION_LAN_55", "content management plugin : conversion options");
 define("CONTENT_ADMIN_CONVERSION_LAN_56", "click the button to go to the Content Create New Category page.");
 define("CONTENT_ADMIN_CONVERSION_LAN_57", "choose parent");
+define("CONTENT_ADMIN_CONVERSION_LAN_58", "upgrade succesfull<br /><br /><b>Please note:<br />you need to reconfigure the options for each main parent<br />and you need to delete the menus you've created in your content/menus folder, and recreate them by updating the options for the specific main parents you want to use menus for.</b>");
+
+
+
 
 define("CONTENT_MENU_LAN_0", "content Menu :");
 define("CONTENT_MENU_LAN_1", "no content items yet");

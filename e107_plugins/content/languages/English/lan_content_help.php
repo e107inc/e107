@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_help.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-06 13:28:14 $
+|     $Revision: 1.11 $
+|     $Date: 2005-06-13 11:08:57 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -28,9 +28,9 @@ define("CONTENT_ADMIN_HELP_CAT_2", "<i>this page allows you to create a new cate
 
 define("CONTENT_ADMIN_HELP_CAT_3", "<i>this page shows the category edit form.</i><br /><br /><b>category edit form</b><br />you can now edit all information for this (sub)category and submit your changes.<br /><br />If you want to change the parent location for this category, please do so first. After you have set the correct category edit all other fields.");
 
-define("CONTENT_ADMIN_HELP_ORDER_1", "<i>this page shows all categories and subcategories present.</i><br /><br /><b>detailed list</b><br />you see the category id and the category name. also you see several options to manage the order of the categories.<br /><br /><b>explanation of icons</b><br />".CONTENT_ICON_USER." : link to the author profile<br />".CONTENT_ICON_LINK." : link to the category<br />".CONTENT_ICON_ORDERALL." : manage the global order of content item regardless of category.<br />".CONTENT_ICON_ORDERCAT." : manage the order of content items in the specific category.<br />".CONTENT_ICON_ORDER_UP." : the up button allow you to move a content item one up in order.<br />".CONTENT_ICON_ORDER_DOWN." : the down button allow you to move a content item one down in order.<br /><br /><b>order</b><br />here you can manually set the order of all the categories in this each parent. You need to change the values in the select boxes to the order of your kind and then press the update button below to save the new order.<br />");
+define("CONTENT_ADMIN_HELP_ORDER_1", "<i>this page shows all categories and subcategories present.</i><br /><br /><b>detailed list</b><br />you see the category id and the category name. also you see several options to manage the order of the categories.<br /><br /><b>explanation of icons</b><br />".CONTENT_ICON_USER." : link to the author profile<br />".CONTENT_ICON_LINK." : link to the category<br />".CONTENT_ICON_ORDERALL." : manage the global order of content item regardless of category.<br />".CONTENT_ICON_ORDERCAT." : manage the order of content items in the specific category.<br />".CONTENT_ICON_ORDER_UP." : the up button allows you to move a content item one up in order.<br />".CONTENT_ICON_ORDER_DOWN." : the down button allows you to move a content item one down in order.<br /><br /><b>order</b><br />here you can manually set the order of all the categories in this each parent. You need to change the values in the select boxes to the order of your kind and then press the update button below to save the new order.<br />");
 
-define("CONTENT_ADMIN_HELP_ORDER_2", "<i>this page shows all content items from the category you have selected.</i><br /><br /><b>detailed list</b><br />you see the content id, the content author and the content heading. also you see several options to manage the order of the content items.<br /><br /><b>explanation of icons</b><br />".CONTENT_ICON_USER." : link to the author profile<br />".CONTENT_ICON_LINK." : link to the content item<br />".CONTENT_ICON_ORDER_UP." : the up button allow you to move a content item one up in order.<br />".CONTENT_ICON_ORDER_DOWN." : the down button allow you to move a content item one down in order.<br /><br /><b>order</b><br />here you can manually set the order of all the categories in this main parent. You need to change the values in the select boxes to the order of your kind and then press the update button below to save the new order.<br />");
+define("CONTENT_ADMIN_HELP_ORDER_2", "<i>this page shows all content items from the category you have selected.</i><br /><br /><b>detailed list</b><br />you see the content id, the content author and the content heading. also you see several options to manage the order of the content items.<br /><br /><b>explanation of icons</b><br />".CONTENT_ICON_USER." : link to the author profile<br />".CONTENT_ICON_LINK." : link to the content item<br />".CONTENT_ICON_ORDER_UP." : the up button allows you to move a content item one up in order.<br />".CONTENT_ICON_ORDER_DOWN." : the down button allows you to move a content item one down in order.<br /><br /><b>order</b><br />here you can manually set the order of all the categories in this main parent. You need to change the values in the select boxes to the order of your kind and then press the update button below to save the new order.<br />");
 
 define("CONTENT_ADMIN_HELP_ORDER_3", "<i>this page shows all content items from main parent category you have selected.</i><br /><br /><b>detailed list</b><br />you see the content id, the content author and the content heading. also you see several options to manage the order of the content items.<br /><br /><b>explanation of icons</b><br />".CONTENT_ICON_USER." : link to the author profile<br />".CONTENT_ICON_LINK." : link to the content item<br />".CONTENT_ICON_ORDER_UP." : the up button allow you to move a content item one up in order.<br />".CONTENT_ICON_ORDER_DOWN." : the down button allow you to move a content item one down in order.<br /><br /><b>order</b><br />here you can manually set the order of all the categories in this main parent. You need to change the values in the select boxes to the order of your kind and then press the update button below to save the new order.<br />");
 
@@ -39,6 +39,8 @@ define("CONTENT_ADMIN_HELP_OPTION_1", "On this page you can select a main parent
 define("CONTENT_ADMIN_HELP_OPTION_2", "
 <i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />
 <b>default values</b><br />By default all values are present and already updated in the preferences when you view this page, but change any setting to your own standards.<br /><br />
+");
+/*
 <b>division into eight sections</b><br />the options are divided into eight main sections. You see the different section in the right menu. you can click on them to go to the specific set of options for that section.<br /><br />
 <b>create</b><br />in this section you can specify options for the creation of content items on the admin pages on the admins end.<br /><br />
 <b>submit</b><br />in this section you can specify options for the submit form of content items.<br /><br />
@@ -47,8 +49,7 @@ define("CONTENT_ADMIN_HELP_OPTION_2", "
 <b>category pages</b><br />in this section you can specify options how to show the category pages.<br /><br />
 <b>content pages</b><br />in this section you can specify options how to show the content item page.<br /><br />
 <b>menu</b><br />in this section you can specify options for the menu of this main parent.<br /><br />
-");
-
+*/
 define("CONTENT_ADMIN_HELP_MANAGER_1", "On this page you see a list of all categories. You can manage the 'personal content manager' for each category by clicking the icon.<br /><br /><b>explanation of icons</b><br />".CONTENT_ICON_USER." : link to the author profile<br />".CONTENT_ICON_LINK." : link to the category<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : edit the personal content managers<br />");
 
 define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>on this page you can assign users to the selected category you have clicked</i><br /><br /><b>personal manager</b><br />you can assign users to certain categories. In doing so, these users can manage their personal content items within these categories from outside of the admin page (content_manager.php).<br /><br />Assign users from the left colomn by clicking their name. you will see these names move to the right colomn. After clicking the assign button the users in the right colomn are assigned to this category.");

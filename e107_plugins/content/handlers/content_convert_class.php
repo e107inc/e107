@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2005-06-09 12:43:14 $
+|		$Revision: 1.7 $
+|		$Date: 2005-06-13 11:08:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -53,11 +53,11 @@ class content_convert{
 						}
 
 						if(!is_object($sql5)){ $sql5 = new db; }
-						$sql5 -> db_Update("pcontent", " content_parent = '".$newparent."' WHERE content_id='".$row['content_id']."' ");
+						$sql5 -> db_Update("pcontent", " content_parent = '".$newparent."', content_pref='' WHERE content_id='".$row['content_id']."' ");
 						$count++;
 					}
 				}
-				$message = "upgrade succesfull<br /><br />".CONTENT_ADMIN_CONVERSION_LAN_46;
+				$message = CONTENT_ADMIN_CONVERSION_LAN_58."<br /><br />".CONTENT_ADMIN_CONVERSION_LAN_46;
 				return $message;
 		}
 
