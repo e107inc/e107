@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.23 $
-|		$Date: 2005-06-13 14:03:53 $
+|		$Revision: 1.24 $
+|		$Date: 2005-06-13 18:40:07 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -31,6 +31,7 @@ class contentdb{
 
 						$_POST['content_heading']		= $tp -> toDB($_POST['content_heading']);
 						$_POST['content_subheading']	= $tp -> toDB($_POST['content_subheading']);
+						$_POST['content_summary']		= $tp -> toDB($_POST['content_summary']);
 						$_POST['content_text']			= $tp -> toDB($_POST['content_text']);
 						$_POST['parent']				= ($_POST['parent'] ? $_POST['parent'] : "0");
 						$_POST['content_class']			= ($_POST['content_class'] ? $_POST['content_class'] : "0");
@@ -175,25 +176,26 @@ class contentdb{
 						}
 
 						$custom["content_custom_score"]		= ($_POST['content_score'] != "none" && $_POST['content_score'] ? $_POST['content_score'] : "");
-						$custom["content_custom_meta"]		= ($_POST['content_meta'] ? $_POST['content_meta'] : "");
+						$custom["content_custom_meta"]		= ($_POST['content_meta'] ? $tp->toDB($_POST['content_meta']) : "");
 						$custom["content_custom_template"]	= ($_POST['content_template'] && $_POST['content_template'] != "none" ? $_POST['content_template'] : "");
 
 						//custom additional data tags
 						for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){
 							if(isset($_POST["content_custom_key_{$i}"]) && isset($_POST["content_custom_value_{$i}"]) && $_POST["content_custom_value_{$i}"] != ""){
-								$keystring = $_POST["content_custom_key_{$i}"];
-								$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
+								$keystring = $tp->toDB($_POST["content_custom_key_{$i}"]);
+								$custom["content_custom_{$keystring}"] = $tp->toDB($_POST["content_custom_value_{$i}"]);
 							}
 						}
 						//preset additional data tags
 						if(is_array($_POST['content_custom_preset_key'])){
 							for($i=0;$i<count($_POST['content_custom_preset_key']);$i++){
 								if(isset($_POST['content_custom_preset_value'][$i]) && $_POST['content_custom_preset_value'][$i] != ""){
-									$keystring = $_POST['content_custom_preset_key'][$i];
-									$custom["content_custom_preset_{$keystring}"] = $_POST['content_custom_preset_value'][$i];
+									$keystring = $tp->toDB($_POST['content_custom_preset_key'][$i]);
+									$custom["content_custom_preset_{$keystring}"] = $tp->toDB($_POST['content_custom_preset_value'][$i]);
 								}
 							}
 						}
+
 						$contentprefvalue = $eArrayStorage->WriteArray($custom);
 
 						$sql -> db_Update($plugintable, "content_heading = '".$_POST['content_heading']."', content_subheading = '".$_POST['content_subheading']."', content_summary = '".$_POST['content_summary']."', content_text = '".$_POST['content_text']."', content_author = '".$author."', content_icon = '".$icon."', content_file = '".$totalattach."', content_image = '".$totalimages."', content_parent = '".$_POST['parent']."', content_comment = '".$_POST['content_comment']."', content_rate = '".$_POST['content_rate']."', content_pe = '".$_POST['content_pe']."', content_refer = '".$contentrefer."', content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['content_class']."', content_pref = '".$contentprefvalue."' WHERE content_id = '".$_POST['content_id']."' ");
@@ -212,6 +214,7 @@ class contentdb{
 
 						$_POST['content_heading']		= $tp -> toDB($_POST['content_heading']);
 						$_POST['content_subheading']	= $tp -> toDB($_POST['content_subheading']);
+						$_POST['content_summary']		= $tp -> toDB($_POST['content_summary']);
 						$_POST['content_text']			= $tp -> toDB($_POST['content_text']);
 						$_POST['parent']				= ($_POST['parent'] ? $_POST['parent'] : "");
 						$_POST['content_class']			= ($_POST['content_class'] ? $_POST['content_class'] : "0");
@@ -353,22 +356,22 @@ class contentdb{
 						}
 
 						$custom["content_custom_score"]		= ($_POST['content_score'] != "none" && $_POST['content_score'] ? $_POST['content_score'] : "");
-						$custom["content_custom_meta"]		= ($_POST['content_meta'] ? $_POST['content_meta'] : "");
+						$custom["content_custom_meta"]		= ($_POST['content_meta'] ? $tp->toDB($_POST['content_meta']) : "");
 						$custom["content_custom_template"]	= ($_POST['content_template'] && $_POST['content_template'] != "none" ? $_POST['content_template'] : "");
 
 						//custom additional data tags
 						for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){
 							if(isset($_POST["content_custom_key_{$i}"]) && isset($_POST["content_custom_value_{$i}"]) && $_POST["content_custom_value_{$i}"] != ""){
-								$keystring = $_POST["content_custom_key_{$i}"];
-								$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
+								$keystring = $tp->toDB($_POST["content_custom_key_{$i}"]);
+								$custom["content_custom_{$keystring}"] = $tp->toDB($_POST["content_custom_value_{$i}"]);
 							}
 						}
 						//preset additional data tags
 						if(is_array($_POST['content_custom_preset_key'])){
 							for($i=0;$i<count($_POST['content_custom_preset_key']);$i++){
 								if(isset($_POST['content_custom_preset_value'][$i]) && $_POST['content_custom_preset_value'][$i] != ""){
-									$keystring = $_POST['content_custom_preset_key'][$i];
-									$custom["content_custom_preset_{$keystring}"] = $_POST['content_custom_preset_value'][$i];
+									$keystring = $tp->toDB($_POST['content_custom_preset_key'][$i]);
+									$custom["content_custom_preset_{$keystring}"] = $tp -> toDB($_POST['content_custom_preset_value'][$i]);
 								}
 							}
 						}
