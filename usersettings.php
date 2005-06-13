@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-06-11 12:31:31 $
-|     $Author: stevedunstan $
+|     $Revision: 1.35 $
+|     $Date: 2005-06-13 12:24:36 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -268,8 +268,8 @@ if (isset($_POST['updatesettings'])){
 
 		$new_customtitle = "";
 
-		if(isset($_POST['customtitle'])){
-//			$_POST['customtitle'] = $tp->toDB($_POST['customtitle']);
+		if(isset($_POST['customtitle']) && ($pref['forum_user_customtitle'] || ADMIN))
+		{
 			$new_customtitle = ", user_customtitle = '".$tp->toDB($_POST['customtitle'])."' ";
 		}
 		unset($_POST['password1']);
