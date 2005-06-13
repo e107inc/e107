@@ -1,6 +1,9 @@
 Changelog for the Swedish Language pack:
 
-
+Mon Jun 13 2005 - mrpiercer (at) users.sourceforge.net
+- Every file is now very rougly translated. Next step is to
+  verify them on a live site, and one by one correct all
+  mistakes in spelling, grammar and plain language use.
 Wed Jun 1 2005 - mrpiercer (at) users.sourceforge.net
 - Commited language files for the themes currently in the
   CVS; crahan, e107v4, human_condition, interfectus, jayya,
