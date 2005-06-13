@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_comment.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-10 18:12:33 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-13 19:05:23 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -53,7 +53,7 @@ define("LAN_320", "Actualizar comentario");
 define("COMLAN_1", "Aquí");
 define("COMLAN_2", "para registrarse");
 define("COMLAN_3", "¡Error!");
-define("COMLAN_4", '"Tema");
+define("COMLAN_4", "Tema");
 define("COMLAN_5", "Re:");
 define("COMLAN_6", "Responderle");
 
