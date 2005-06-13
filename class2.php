@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.167 $
-|     $Date: 2005-06-12 03:05:21 $
-|     $Author: e107coders $
+|     $Revision: 1.168 $
+|     $Date: 2005-06-13 22:27:08 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -792,6 +792,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 class e_online {
 	function online($online_tracking = false, $flood_control = false) {
 		if($online_tracking == true || $flood_control == true) {
+			global $online_timeout, $online_warncount, $online_bancount;
 			if(!isset($online_timeout)) {
 				$online_timeout = 300;
 			}
