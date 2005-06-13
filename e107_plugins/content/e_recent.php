@@ -1,6 +1,6 @@
 <?php
 
-	global $sql;
+	global $sql, $tp;
 	if(!$content_install = $sql -> db_Select("plugin", "*", "plugin_path = 'content' AND plugin_installflag = '1' ")){
 		return;
 	}
@@ -40,7 +40,7 @@
 			//get path variables
 			$content_recent_pref = $aa -> getContentPref($mainparent);
 			$content_recent_pref["content_icon_path_{$mainparent}"] = ($content_recent_pref["content_icon_path_{$mainparent}"] ? $content_recent_pref["content_icon_path_{$mainparent}"] : "{e_PLUGIN}content/images/icon/" );
-			$content_icon_path = $aa -> parseContentPathVars($content_recent_pref["content_icon_path_{$mainparent}"]);
+			$content_icon_path = $tp -> replaceConstants($content_recent_pref["content_icon_path_{$mainparent}"]);
 
 			//prepare query string
 			$array = $aa -> getCategoryTree("", $mainparent, TRUE);

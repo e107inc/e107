@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.22 $
-|		$Date: 2005-06-13 11:08:55 $
+|		$Revision: 1.23 $
+|		$Date: 2005-06-13 14:03:53 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -48,11 +48,11 @@ class contentdb{
 
 						$mainparent						= $aa -> getMainParent($_POST['parent']);
 						$content_pref					= $aa -> getContentPref($mainparent);
-						$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$mainparent}"]);
-						$content_cat_icon_path_small	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$mainparent}"]);
-						$content_icon_path				= $aa -> parseContentPathVars($content_pref["content_icon_path_{$mainparent}"]);
-						$content_image_path				= $aa -> parseContentPathVars($content_pref["content_image_path_{$mainparent}"]);
-						$content_file_path				= $aa -> parseContentPathVars($content_pref["content_file_path_{$mainparent}"]);
+						$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$mainparent}"]);
+						$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_{$mainparent}"]);
+						$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
+						$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
+						$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path_{$mainparent}"]);
 
 						if($_POST['uploadtype1'] == "icon"){
 								$_FILES['file_userfile'] = $_FILES['file_userfile1'];
@@ -198,11 +198,10 @@ class contentdb{
 
 						$sql -> db_Update($plugintable, "content_heading = '".$_POST['content_heading']."', content_subheading = '".$_POST['content_subheading']."', content_summary = '".$_POST['content_summary']."', content_text = '".$_POST['content_text']."', content_author = '".$author."', content_icon = '".$icon."', content_file = '".$totalattach."', content_image = '".$totalimages."', content_parent = '".$_POST['parent']."', content_comment = '".$_POST['content_comment']."', content_rate = '".$_POST['content_rate']."', content_pe = '".$_POST['content_pe']."', content_refer = '".$contentrefer."', content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['content_class']."', content_pref = '".$contentprefvalue."' WHERE content_id = '".$_POST['content_id']."' ");
 
+						$e107cache->clear($plugintable);
 						if($mode == "admin"){
-							$e107cache->clear($plugintable);
 							header("location:".e_SELF."?".e_QUERY.".cu"); exit;
 						}elseif($mode == "contentmanager"){
-							$e107cache->clear($plugintable);
 							header("location:".e_SELF."?u"); exit;
 						}
 		}
@@ -241,11 +240,11 @@ class contentdb{
 
 						$mainparent						= $aa -> getMainParent($_POST['parent']);
 						$content_pref					= $aa -> getContentPref($mainparent);
-						$content_cat_icon_path_large	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_large_{$mainparent}"]);
-						$content_cat_icon_path_small	= $aa -> parseContentPathVars($content_pref["content_cat_icon_path_small_{$mainparent}"]);
-						$content_icon_path				= $aa -> parseContentPathVars($content_pref["content_icon_path_{$mainparent}"]);
-						$content_image_path				= $aa -> parseContentPathVars($content_pref["content_image_path_{$mainparent}"]);
-						$content_file_path				= $aa -> parseContentPathVars($content_pref["content_file_path_{$mainparent}"]);
+						$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$mainparent}"]);
+						$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_{$mainparent}"]);
+						$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
+						$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
+						$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path_{$mainparent}"]);
 
 						$sql -> db_select($plugintable, "MAX(content_id) as aid", "content_id!='0' ");
 						list($aid) = $sql -> db_Fetch();
@@ -383,16 +382,12 @@ class contentdb{
 
 						$sql -> db_Insert($plugintable, "'0', '".$_POST['content_heading']."', '".$_POST['content_subheading']."', '".$_POST['content_summary']."', '".$_POST['content_text']."', '".$author."', '".$icon."', '".$totalattach."', '".$totalimages."', '".$_POST['parent']."', '".$_POST['content_comment']."', '".$_POST['content_rate']."', '".$_POST['content_pe']."', '".$refer."', '".$starttime."', '".$endtime."', '".$_POST['content_class']."', '".$contentprefvalue."', '0' ");
 						
+						$e107cache->clear($plugintable);
 						if($mode == "admin"){
-							$e107cache->clear($plugintable);
 							header("location:".e_SELF."?".e_QUERY.".cc"); exit;
-
 						}elseif($mode == "contentmanager"){
-							$e107cache->clear($plugintable);
 							header("location:".e_SELF."?c"); exit;
-
 						}elseif($mode == "submit"){
-							$e107cache->clear($plugintable);
 							if($content_pref["content_submit_directpost_{$mainparent}"]){
 								header("location:".e_SELF."?s"); exit;
 							}else{
