@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.57 $
-|		$Date: 2005-06-10 09:31:49 $
+|		$Revision: 1.58 $
+|		$Date: 2005-06-13 11:08:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -85,14 +85,51 @@ class content{
 				$content_pref["content_log_{$id}"] = "0";								//activate log
 				$content_pref["content_blank_icon_{$id}"] = "0";						//use blank icon if no icon present
 				$content_pref["content_blank_caticon_{$id}"] = "0";						//use blank caticon if no caticon present
-				$content_pref["content_breadcrumb_{$id}"] = "0";						//show breadcrumb
+
+				//$content_pref["content_breadcrumb_{$id}"] = "0";						//show breadcrumb
+				$content_pref["content_breadcrumb_catall_{$id}"] = "0";					//show breadcrumb on all categories page
+				$content_pref["content_breadcrumb_cat_{$id}"] = "0";					//show breadcrumb on single category page
+				$content_pref["content_breadcrumb_authorall_{$id}"] = "0";				//show breadcrumb on all author page
+				$content_pref["content_breadcrumb_author_{$id}"] = "0";					//show breadcrumb on single author page
+				$content_pref["content_breadcrumb_recent_{$id}"] = "0";					//show breadcrumb on recent page
+				$content_pref["content_breadcrumb_item_{$id}"] = "0";					//show breadcrumb on content item page
+				$content_pref["content_breadcrumb_top_{$id}"] = "0";					//show breadcrumb on top rated page
+				$content_pref["content_breadcrumb_archive_{$id}"] = "0";				//show breadcrumb on archive page
+
 				$content_pref["content_breadcrumb_seperator{$id}"] = ">";				//seperator character between breadcrumb
 				$content_pref["content_breadcrumb_rendertype_{$id}"] = "2";				//how to render the breadcrumb
-				$content_pref["content_searchmenu_{$id}"] = "0";						//show searchmenu
+
+				$content_pref["content_navigator_catall_{$id}"] = "0";					//show navigator on all categories page
+				$content_pref["content_navigator_cat_{$id}"] = "0";						//show navigator on single category page
+				$content_pref["content_navigator_authorall_{$id}"] = "0";				//show navigator on all author page
+				$content_pref["content_navigator_author_{$id}"] = "0";					//show navigator on single author page
+				$content_pref["content_navigator_recent_{$id}"] = "0";					//show navigator on recent page
+				$content_pref["content_navigator_item_{$id}"] = "0";					//show navigator on content item page
+				$content_pref["content_navigator_top_{$id}"] = "0";						//show navigator on top rated page
+				$content_pref["content_navigator_archive_{$id}"] = "0";					//show navigator on archive page
+				$content_pref["content_search_catall_{$id}"] = "0";						//show search keyword on all categories page
+				$content_pref["content_search_cat_{$id}"] = "0";						//show search keyword on single category page
+				$content_pref["content_search_authorall_{$id}"] = "0";					//show search keyword on all author page
+				$content_pref["content_search_author_{$id}"] = "0";						//show search keyword on single author page
+				$content_pref["content_search_recent_{$id}"] = "0";						//show search keyword on recent page
+				$content_pref["content_search_item_{$id}"] = "0";						//show search keyword on content item page
+				$content_pref["content_search_top_{$id}"] = "0";						//show search keyword on top rated page
+				$content_pref["content_search_archive_{$id}"] = "0";					//show search keyword on archive page
+				$content_pref["content_ordering_catall_{$id}"] = "0";					//show ordering on all categories page
+				$content_pref["content_ordering_cat_{$id}"] = "0";						//show ordering on single category page
+				$content_pref["content_ordering_authorall_{$id}"] = "0";				//show ordering on all author page
+				$content_pref["content_ordering_author_{$id}"] = "0";					//show ordering on single author page
+				$content_pref["content_ordering_recent_{$id}"] = "0";					//show ordering on recent page
+				$content_pref["content_ordering_item_{$id}"] = "0";						//show ordering on content item page
+				$content_pref["content_ordering_top_{$id}"] = "0";						//show ordering on top rated page
+				$content_pref["content_ordering_archive_{$id}"] = "0";					//show ordering on archive page
+
+				//$content_pref["content_searchmenu_{$id}"] = "0";						//show searchmenu
 				$content_pref["content_searchmenu_rendertype_{$id}"] = "1";				//rendertype for searchmenu (1=echo, 2=in seperate menu)
 				$content_pref["content_nextprev_{$id}"] = "1";							//use nextprev buttons
 				$content_pref["content_nextprev_number_{$id}"] = "10";					//how many items on a page
 				$content_pref["content_defaultorder_{$id}"] = "orderddate";				//default sort and order method
+
 
 				//CONTENT ITEM PREVIEW
 				$content_pref["content_list_icon_{$id}"] = "0";							//show icon
@@ -796,7 +833,6 @@ class content{
 				}elseif(isset($qs[3]) && substr($qs[3],0,5) == "order"){
 					$orderstring	= $qs[3];
 				}else{
-					//$thisid			= (isset($qs[1]) ? $qs[1] : "0");
 					$checkmi		= (is_numeric($qs[1]) ? $qs[1] : $qs[2]);
 					$checkmp		= $this -> getMainParent($checkmi);
 					$orderstring	= ($content_pref["content_defaultorder_{$checkmp}"] ? $content_pref["content_defaultorder_{$checkmp}"] : "orderddate" );
@@ -972,10 +1008,10 @@ class content{
 						}
 
 						if($mode == "menu"){
-							$CONTENT_SEARCH_TABLE_KEYWORD = $rs -> form_open("post", $plugindir."content.php?content.$searchtypeid", "contentsearchmenu_{$mode}", "", "enctype='multipart/form-data'")."<input class='tbox' size='20' type='text' id='searchfieldmenu_{$mode}' name='searchfieldmenu_{$mode}' value='".(isset($_POST['searchfieldmenu_{$mode}']) ? $_POST['searchfieldmenu_{$mode}'] : CONTENT_LAN_18)."' maxlength='100' onfocus=\"document.forms['contentsearchmenu_{$mode}'].searchfieldmenu_$mode.value='';\" /> <input class='button' type='submit' name='searchsubmit' value='".CONTENT_LAN_19."' />".$rs -> form_close();
+							$CONTENT_SEARCH_TABLE_KEYWORD = $rs -> form_open("post", $plugindir."content.php?recent.$searchtypeid", "contentsearchmenu_{$mode}", "", "enctype='multipart/form-data'")."<input class='tbox' size='20' type='text' id='searchfieldmenu_{$mode}' name='searchfieldmenu_{$mode}' value='".(isset($_POST['searchfieldmenu_{$mode}']) ? $_POST['searchfieldmenu_{$mode}'] : CONTENT_LAN_18)."' maxlength='100' onfocus=\"document.forms['contentsearchmenu_{$mode}'].searchfieldmenu_$mode.value='';\" /> <input class='button' type='submit' name='searchsubmit' value='".CONTENT_LAN_19."' />".$rs -> form_close();
 						}else{
 							$searchfieldname = "searchfield_{$mode}";
-							$CONTENT_SEARCH_TABLE_KEYWORD = $rs -> form_open("post", $plugindir."content.php?content.$searchtypeid", "contentsearch_{$mode}", "", "enctype='multipart/form-data'")."
+							$CONTENT_SEARCH_TABLE_KEYWORD = $rs -> form_open("post", $plugindir."content.php?recent.$searchtypeid", "contentsearch_{$mode}", "", "enctype='multipart/form-data'")."
 							<input class='tbox' size='27' type='text' id='$searchfieldname' name='$searchfieldname' value='".(isset($_POST[$searchfieldname]) ? $_POST[$searchfieldname] : CONTENT_LAN_18)."' maxlength='100' onfocus=\"document.forms['contentsearch_{$mode}'].$searchfieldname.value='';\" />
 							<input class='button' type='submit' name='searchsubmit' value='".CONTENT_LAN_19."' />
 							".$rs -> form_close();
@@ -1087,8 +1123,8 @@ class content{
 					$text = "";
 					if(eregi('content.php', e_SELF)){
 						if(e_QUERY){
-							if($qs[0] == "cat" && is_numeric($qs[1]) && !isset($qs[2]) ){
-							}else{
+							//if($qs[0] == "cat" && is_numeric($qs[1]) && !isset($qs[2]) ){
+							//}else{
 
 								$check = "";
 								for($i=0;$i<count($qs);$i++){
@@ -1121,7 +1157,7 @@ class content{
 								}
 								$text .= $rs -> form_select_close();
 								$text .= $rs -> form_close();
-							}
+							//}
 						}
 					}
 					return $text;

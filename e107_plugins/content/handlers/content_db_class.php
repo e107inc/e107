@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.21 $
-|		$Date: 2005-06-06 21:37:01 $
+|		$Revision: 1.22 $
+|		$Date: 2005-06-13 11:08:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -176,7 +176,7 @@ class contentdb{
 
 						$custom["content_custom_score"]		= ($_POST['content_score'] != "none" && $_POST['content_score'] ? $_POST['content_score'] : "");
 						$custom["content_custom_meta"]		= ($_POST['content_meta'] ? $_POST['content_meta'] : "");
-						$custom["content_custom_template"]	= ($_POST['content_template'] ? $_POST['content_template'] : "");
+						$custom["content_custom_template"]	= ($_POST['content_template'] && $_POST['content_template'] != "none" ? $_POST['content_template'] : "");
 
 						//custom additional data tags
 						for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){
@@ -355,7 +355,7 @@ class contentdb{
 
 						$custom["content_custom_score"]		= ($_POST['content_score'] != "none" && $_POST['content_score'] ? $_POST['content_score'] : "");
 						$custom["content_custom_meta"]		= ($_POST['content_meta'] ? $_POST['content_meta'] : "");
-						$custom["content_custom_template"]	= ($_POST['content_template'] ? $_POST['content_template'] : "");
+						$custom["content_custom_template"]	= ($_POST['content_template'] && $_POST['content_template'] != "none" ? $_POST['content_template'] : "");
 
 						//custom additional data tags
 						for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){

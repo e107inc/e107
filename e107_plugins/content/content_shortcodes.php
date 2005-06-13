@@ -322,30 +322,10 @@ return $CONTENT_CAT_TABLE_TEXT;
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_RATING
-global $CONTENT_CAT_TABLE_RATING, $row, $rater, $mainparent, $content_pref;
+global $CONTENT_CAT_TABLE_RATING, $row, $rater, $mainparent, $content_pref, $plugintable;
 $RATING = "";
 if($row['content_rate'] && isset($content_pref["content_catall_rating_{$mainparent}"]) && $content_pref["content_catall_rating_{$mainparent}"]){
-	if($ratearray = $rater -> getrating("content_cat", $row['content_id'])){
-		for($c=1; $c<= $ratearray[1]; $c++){
-			$RATING .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
-		}
-		if($ratearray[1] < 10){
-			for($c=9; $c>=$ratearray[1]; $c--){
-				$RATING .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
-			}
-		}
-		$RATING .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
-		if($ratearray[2] == ""){ $ratearray[2] = 0; }
-		$RATING .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
-		$RATING .= ($ratearray[0] == 1 ? LAN_38 : LAN_39);
-	}else{
-		$RATING .= LAN_65;
-	}
-	if(!$rater -> checkrated("content_cat", $row['content_id']) && USER){
-		$RATING .= " - ".$rater -> rateselect(LAN_40, "content_cat", $row['content_id']);
-	}else if(USER){
-		$RATING .= " - ".LAN_41;
-	}
+return $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $userid=FALSE);
 }
 return $RATING;
 SC_END
@@ -477,30 +457,10 @@ if($row['content_comment'] && isset($content_pref["content_cat_comment_{$mainpar
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_RATING
-global $CONTENT_CAT_LIST_TABLE_RATING, $row, $rater, $content_pref, $mainparent;
+global $CONTENT_CAT_LIST_TABLE_RATING, $row, $rater, $content_pref, $mainparent, $plugintable;
 $RATING = "";
 if($content_pref["content_cat_rating_all_{$mainparent}"] || ($content_pref["content_cat_rating_{$mainparent}"] && $row['content_rate'])){
-	if($ratearray = $rater -> getrating("content_cat", $row['content_id'])){
-		for($c=1; $c<= $ratearray[1]; $c++){
-			$RATING .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
-		}
-		if($ratearray[1] < 10){
-			for($c=9; $c>=$ratearray[1]; $c--){
-				$RATING .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
-			}
-		}
-		$RATING .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
-		if($ratearray[2] == ""){ $ratearray[2] = 0; }
-		$RATING .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
-		$RATING .= ($ratearray[0] == 1 ? LAN_38 : LAN_39);
-	}else{
-		$RATING .= LAN_65;
-	}
-	if(!$rater -> checkrated("content_cat", $row['content_id']) && USER){
-		$RATING .= " - ".$rater -> rateselect(LAN_40, "content_cat", $row['content_id']);
-	}else if(USER){
-		$RATING .= " - ".LAN_41;
-	}
+	return $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $userid=FALSE);
 }
 return $RATING;
 SC_END
@@ -738,7 +698,7 @@ SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_EDITICON
 global $CONTENT_RECENT_TABLE_EDITICON, $content_pref, $qs, $row, $mainparent, $plugindir;
-if(getperms("P") && isset($content_pref["content_list_editicon_{$mainparent}"]) && $content_pref["content_list_editicon_{$mainparent}"]){
+if(ADMIN && getperms("P") && isset($content_pref["content_list_editicon_{$mainparent}"]) && $content_pref["content_list_editicon_{$mainparent}"]){
 return $CONTENT_RECENT_TABLE_EDITICON = "<a href='".$plugindir."admin_content_config.php?content.edit.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
 }
 SC_END
@@ -754,31 +714,9 @@ SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_RATING
 global $CONTENT_RECENT_TABLE_RATING, $rater, $row, $qs, $content_pref, $plugintable, $mainparent;
-$CONTENT_RECENT_TABLE_RATING = "";
 if($content_pref["content_list_rating_{$mainparent}"]){
 	if($content_pref["content_list_rating_all_{$mainparent}"] || $row['content_rate']){
-		if($ratearray = $rater -> getrating($plugintable, $row['content_id'])){
-			for($c=1; $c<= $ratearray[1]; $c++){
-				$CONTENT_RECENT_TABLE_RATING .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
-			}
-			if($ratearray[1] < 10){
-				for($c=9; $c>=$ratearray[1]; $c--){
-					$CONTENT_RECENT_TABLE_RATING .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
-				}
-			}
-			$CONTENT_RECENT_TABLE_RATING .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
-			if($ratearray[2] == ""){ $ratearray[2] = 0; }
-			$CONTENT_RECENT_TABLE_RATING .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
-			$CONTENT_RECENT_TABLE_RATING .= ($ratearray[0] == 1 ? LAN_38 : LAN_39);
-		}else{
-			$CONTENT_RECENT_TABLE_RATING .= LAN_65;
-		}
-		if(!$rater -> checkrated($plugintable, $row['content_id']) && USER){
-			$CONTENT_RECENT_TABLE_RATING .= " - ".$rater -> rateselect(LAN_40, $plugintable, $row['content_id']);
-		}else if(USER){
-			$CONTENT_RECENT_TABLE_RATING .= " - ".LAN_41;
-		}
-	return $CONTENT_RECENT_TABLE_RATING;
+		return $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $userid=FALSE);
 	}
 }
 SC_END
@@ -959,7 +897,7 @@ SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_EDITICON
 global $CONTENT_CONTENT_TABLE_EDITICON, $content_pref, $qs, $row, $plugindir, $mainparent;
-if(getperms("P") && isset($content_pref["content_content_editicon_{$mainparent}"])){
+if(ADMIN && getperms("P") && isset($content_pref["content_content_editicon_{$mainparent}"])){
 	$CONTENT_CONTENT_TABLE_EDITICON = "<a href='".$plugindir."admin_content_config.php?content.edit.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
 return $CONTENT_CONTENT_TABLE_EDITICON;
 }
@@ -968,29 +906,7 @@ SC_END
 SC_BEGIN CONTENT_CONTENT_TABLE_RATING
 global $CONTENT_CONTENT_TABLE_RATING, $content_pref, $qs, $row, $rater, $plugintable, $mainparent;
 if(($content_pref["content_content_rating_{$mainparent}"] && $row['content_rate']) || $content_pref["content_content_rating_all_{$mainparent}"] ){
-	$CONTENT_CONTENT_TABLE_RATING = "";
-	if($ratearray = $rater -> getrating($plugintable, $row['content_id'])){
-		for($c=1; $c<= $ratearray[1]; $c++){
-			$CONTENT_CONTENT_TABLE_RATING .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
-		}
-		if($ratearray[1] < 10){
-			for($c=9; $c>=$ratearray[1]; $c--){
-				$CONTENT_CONTENT_TABLE_RATING .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
-			}
-		}
-		$CONTENT_CONTENT_TABLE_RATING .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
-		if($ratearray[2] == ""){ $ratearray[2] = 0; }
-		$CONTENT_CONTENT_TABLE_RATING .= "&nbsp;".$ratearray[1].".".$ratearray[2]." - ".$ratearray[0]."&nbsp;";
-		$CONTENT_CONTENT_TABLE_RATING .= ($ratearray[0] == 1 ? LAN_38 : LAN_39);
-	}else{
-		$CONTENT_CONTENT_TABLE_RATING .= LAN_65;
-	}
-	if(!$rater -> checkrated($plugintable, $row['content_id']) && USER){
-		$CONTENT_CONTENT_TABLE_RATING .= " - ".$rater -> rateselect(LAN_40, $plugintable, $row['content_id']);
-	}else if(USER){
-		$CONTENT_CONTENT_TABLE_RATING .= " - ".LAN_41;
-	}
-return $CONTENT_CONTENT_TABLE_RATING;
+return $rater->composerating($plugintable, $row['content_id'], $enter=FALSE, $userid=FALSE);
 }
 SC_END
 
