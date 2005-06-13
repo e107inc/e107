@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.57 $
-|		$Date: 2005-06-13 11:08:55 $
+|		$Revision: 1.58 $
+|		$Date: 2005-06-13 12:00:10 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -466,7 +466,7 @@ function show_content_archive(){
 						$text .= $CONTENT_ARCHIVE_TABLE_START.$content_archive_table_string.$CONTENT_ARCHIVE_TABLE_END;
 					}
 
-					if($content_pref["content_breadcrumb_{$mainparent}"]){
+					if($content_pref["content_breadcrumb_archive_{$mainparent}"]){
 						$crumbpage = $aa -> getCrumbPage($array, $mainparent);
 						if($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
 							echo $crumbpage;					
@@ -553,7 +553,7 @@ function show_content_recent(){
 					}
 					$text = $CONTENT_RECENT_TABLE_START.$content_recent_table_string.$CONTENT_RECENT_TABLE_END;
 
-					if($content_pref["content_breadcrumb_{$mainparent}"]){
+					if($content_pref["content_breadcrumb_recent_{$mainparent}"]){
 						$crumbpage = $aa -> getCrumbPage($array, $mainparent);
 						if($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
 							echo $crumbpage;
@@ -650,7 +650,7 @@ function show_content_cat_all(){
 					}
 					$text = $CONTENT_CAT_TABLE_START.$content_cat_table_string.$CONTENT_CAT_TABLE_END;
 
-					if($content_pref["content_breadcrumb_{$mainparent}"]){
+					if($content_pref["content_breadcrumb_catall_{$mainparent}"]){
 						$crumbpage = $aa -> getCrumbPage($array, $mainparent);
 						if($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
 							echo $crumbpage;
@@ -828,7 +828,7 @@ function show_content_cat($mode=""){
 							$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
 						}
 
-						if($content_pref["content_breadcrumb_{$mainparent}"]){
+						if($content_pref["content_breadcrumb_cat_{$mainparent}"]){
 							$crumbpage = $aa -> getCrumbPage($array, $qs[1]);
 							if($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
 								echo $crumbpage;
@@ -873,7 +873,7 @@ function show_content_cat($mode=""){
 
 					}elseif($mode == "comment"){
 
-						if($content_pref["content_breadcrumb_{$mainparent}"]){
+						if($content_pref["content_breadcrumb_cat_{$mainparent}"]){
 							$crumbpage = $aa -> getCrumbPage($array, $mainparent);
 							if($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
 								echo $crumbpage;
@@ -991,7 +991,7 @@ function show_content_author_all(){
 						}
 						$text = $CONTENT_AUTHOR_TABLE_START.$content_author_table_string.$CONTENT_AUTHOR_TABLE_END;
 
-						if($content_pref["content_breadcrumb_{$mainparent}"]){
+						if($content_pref["content_breadcrumb_authorall_{$mainparent}"]){
 							$crumbpage = $aa -> getCrumbPage($array, $mainparent);
 							if($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
 								echo $crumbpage;
@@ -1093,7 +1093,7 @@ function show_content_author(){
 							$text = $CONTENT_RECENT_TABLE_START.$content_recent_table_string.$CONTENT_RECENT_TABLE_END;
 						}
 
-						if($content_pref["content_breadcrumb_{$mainparent}"]){
+						if($content_pref["content_breadcrumb_author_{$mainparent}"]){
 							$crumbpage = $aa -> getCrumbPage($array, $mainparent);
 							if($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
 								echo $crumbpage;
@@ -1201,7 +1201,7 @@ function show_content_top(){
 							}
 						}
 
-						if($content_pref["content_breadcrumb_{$mainparent}"]){
+						if($content_pref["content_breadcrumb_top_{$mainparent}"]){
 							$crumbpage = $aa -> getCrumbPage($array, $mainparent);
 							if($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
 									echo $crumbpage;
@@ -1236,7 +1236,7 @@ function show_content_item(){
 				global $pref, $content_pref;
 				global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS, $CONTENT_CONTENT_TABLE_PARENT, $CONTENT_CONTENT_TABLE_INFO_PRE, $CONTENT_CONTENT_TABLE_INFO_POST;
 				global $content_icon_path, $content_image_path, $content_file_path, $custom;
-				global $plugindir, $plugintable, $content_shortcodes, $datequery, $order, $nextprevquery, $from, $number;
+				global $plugindir, $plugintable, $array, $content_shortcodes, $datequery, $order, $nextprevquery, $from, $number;
 				global $qs, $gen, $sql, $aa, $tp, $rs, $cobj, $e107, $e107cache, $eArrayStorage, $ns, $rater, $ep, $row, $authordetails, $mainparent; 
 
 				$cachestr = "$plugintable.content.$qs[1]";
@@ -1411,7 +1411,7 @@ function show_content_item(){
 						}
 						$text = $tp -> parseTemplate($CONTENT_CONTENT_TABLE, FALSE, $content_shortcodes);
 					}
-					if($content_pref["content_breadcrumb_{$mainparent}"]){
+					if($content_pref["content_breadcrumb_item_{$mainparent}"]){
 						$crumbpage = $aa -> getCrumbPage($array, $row['content_parent']);
 						if($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
 							echo $crumbpage;
@@ -1433,6 +1433,7 @@ function show_content_item(){
 						}else{
 							ob_start();
 							unset($text);
+							$text = "";
 							$query = ($pref['nested_comments'] ?
 							"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location FROM #comments
 							LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' AND comment_pid='0' ORDER BY comment_datestamp"

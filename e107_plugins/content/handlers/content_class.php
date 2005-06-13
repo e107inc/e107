@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.58 $
-|		$Date: 2005-06-13 11:08:55 $
+|		$Revision: 1.59 $
+|		$Date: 2005-06-13 12:00:11 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -444,12 +444,14 @@ class content{
 			//$id	:	content_parent of item
 			//$arr	:	array of all categories
 			$crumb = "";
-			if(array_key_exists($id, $arr)){
-				for($i=0;$i<count($arr[$id]);$i++){
-					$crumb .= "<a href='".e_SELF."?cat.".$arr[$id][$i]."'>".$arr[$id][$i+1]."</a> > ";
-					$i++;
+			if(is_array($arr)){
+				if(array_key_exists($id, $arr)){
+					for($i=0;$i<count($arr[$id]);$i++){
+						$crumb .= "<a href='".e_SELF."?cat.".$arr[$id][$i]."'>".$arr[$id][$i+1]."</a> > ";
+						$i++;
+					}
+					$crumb = substr($crumb,0,-3);
 				}
-				$crumb = substr($crumb,0,-3);
 			}
 			return $crumb;
 		}
