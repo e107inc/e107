@@ -71,6 +71,10 @@ define("LAN_429", "Link");
 define("LAN_430", "Download");
 define("LAN_431", "Artikel");
 define("LAN_432", "Review");
+define("LAN_433", "URL naar je XUP bestand");
+define("LAN_434", "wat is dat?");
+define("LAN_435", "XML User Protocol bestand");
+
 define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "tekens");
 define("LAN_SIGNUP_4", "Je wachtwoord moet minimaal ");

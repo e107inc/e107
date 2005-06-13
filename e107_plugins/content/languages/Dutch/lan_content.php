@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-09 21:22:10 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-13 20:58:10 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -93,6 +93,8 @@ define("CONTENT_ADMIN_CAT_LAN_52", "kies ALTIJD EERST een categorie voordat je d
 define("CONTENT_ADMIN_CAT_LAN_53", "om een andere categorie te beheren");
 define("CONTENT_ADMIN_CAT_LAN_54", "gebruiker");
 define("CONTENT_ADMIN_CAT_LAN_55", "gebruikers");
+define("CONTENT_ADMIN_CAT_LAN_56", "onderwerp");
+define("CONTENT_ADMIN_CAT_LAN_57", "onderwerpen");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "opties");
 define("CONTENT_ADMIN_OPT_LAN_1", "creëren formulier voor contentonderwerp in het beheerscherm");
@@ -359,7 +361,7 @@ define("CONTENT_ADMIN_OPT_LAN_259", "je kunt de links in een keuzelijstje tonen 
 define("CONTENT_ADMIN_OPT_LAN_260", "pictogram : links");
 define("CONTENT_ADMIN_OPT_LAN_261", "titel : links overzicht");
 define("CONTENT_ADMIN_OPT_LAN_262", "bepaal de titel van de links naar andere content pagina's");
-define("CONTENT_ADMIN_OPT_LAN_263", "deze titel wordt alleen gebruikt als de links als 'normale links' worden getoond en niet in de uitklalijst");
+define("CONTENT_ADMIN_OPT_LAN_263", "deze titel wordt alleen gebruikt als de links als 'normale links' worden getoond en niet in de uitklaplijst");
 define("CONTENT_ADMIN_OPT_LAN_264", "pictogram : standaard categorie");
 define("CONTENT_ADMIN_OPT_LAN_265", "bepaal het standaard pr\ictogram als er geen categoriepictogram aanwezig is (alleen als je te tonen 'categorie pictogram' hebt geselecteerd)");
 define("CONTENT_ADMIN_OPT_LAN_266", "");
@@ -369,6 +371,21 @@ define("CONTENT_ADMIN_OPT_LAN_269", "bepaal hoe de zoekmenu informatie wordt wee
 define("CONTENT_ADMIN_OPT_LAN_270", "letterindex");
 define("CONTENT_ADMIN_OPT_LAN_271", "geef op of je een letterindex wilt tonen");
 define("CONTENT_ADMIN_OPT_LAN_272", "de letterindex is een lijst met knoppen met de eerste letters van de contentkoppen.  Je kunt de selectie uit het archief beperken door op een letter te klikken, waardoor alleen de onderwerpen die met die letter beginnen, worden getoond.");
+define("CONTENT_ADMIN_OPT_LAN_273", "navigator");
+define("CONTENT_ADMIN_OPT_LAN_274", "moet de navigator worden getoond");
+define("CONTENT_ADMIN_OPT_LAN_275", "waneer dit wordt aangekruist, wordt een navigator blok getoond, waarmee je over de contentpagina's van site kunt bladeren.  Kies de pagina's waar dit getoond moet worden.");
+define("CONTENT_ADMIN_OPT_LAN_276", "sorteeropties");
+define("CONTENT_ADMIN_OPT_LAN_277", "moet een sorteeroptie worden getoond");
+define("CONTENT_ADMIN_OPT_LAN_278", "wanneer dit is aangekruist wordt een soorteeroptie getoond om de contentonderwerpen op de pagina's te sorteren. Kies de pagina's waar dit getoond moet worden.");
+define("CONTENT_ADMIN_OPT_LAN_279", "");
+define("CONTENT_ADMIN_OPT_LAN_280", "alle categorieën");
+define("CONTENT_ADMIN_OPT_LAN_281", "enkele categorie");
+define("CONTENT_ADMIN_OPT_LAN_282", "alle auteurs");
+define("CONTENT_ADMIN_OPT_LAN_283", "enkele auteur");
+define("CONTENT_ADMIN_OPT_LAN_284", "recent");
+define("CONTENT_ADMIN_OPT_LAN_285", "content onderwerp");
+define("CONTENT_ADMIN_OPT_LAN_286", "hoogstgewaardeerd");
+define("CONTENT_ADMIN_OPT_LAN_287", "archief");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "verplicht veld niet ingevuld");
 define("CONTENT_ADMIN_ITEM_LAN_1", "onderwerp aangemaakt");
@@ -545,6 +562,8 @@ define("CONTENT_ADMIN_MENU_LAN_17", "ContentManager");
 define("CONTENT_ADMIN_MENU_LAN_18", "Auteurspagina");
 define("CONTENT_ADMIN_MENU_LAN_19", "Content Beheerder");
 define("CONTENT_ADMIN_MENU_LAN_20", "Hoogst gewaardeerde pagina");
+define("CONTENT_ADMIN_MENU_LAN_21", "Pagina's");
+
 define("CONTENT_ADMIN_JS_LAN_0", "Weet je zeker dat je deze categorie wilt verwijderen?");
 define("CONTENT_ADMIN_JS_LAN_1", "Weet je zeker dat je dit onderwerp wilt verwijderen?");
 define("CONTENT_ADMIN_JS_LAN_2", "weet je zeker dat je de huidige afbeelding wilt verwijderen?");
@@ -757,12 +776,13 @@ define("CONTENT_ADMIN_CONVERSION_LAN_48", "klik hier voor details");
 define("CONTENT_ADMIN_CONVERSION_LAN_49", "conversie van pagina's");
 define("CONTENT_ADMIN_CONVERSION_LAN_50", "conversie van hoofdouders");
 define("CONTENT_ADMIN_CONVERSION_LAN_51", "onbekende rijen");
-define("CONTENT_ADMIN_CONVERSION_LAN_52", "standaard set van hoofdouders aangemaakt");
+define("CONTENT_ADMIN_CONVERSION_LAN_52", "standaardset van hoofdouders aangemaakt");
 define("CONTENT_ADMIN_CONVERSION_LAN_53", "er bestaat al een hoofdouder met deze naam");
-define("CONTENT_ADMIN_CONVERSION_LAN_54", "aanmaken van een standaard set met hoofdcategorieën (content, review en artikelen)");
-define("CONTENT_ADMIN_CONVERSION_LAN_55", "content management plugin : converteer opties");
+define("CONTENT_ADMIN_CONVERSION_LAN_54", "aanmaken van een standaardset met hoofdcategorieën (content, review en artikelen)");
+define("CONTENT_ADMIN_CONVERSION_LAN_55", "content management plugin: converteer opties");
 define("CONTENT_ADMIN_CONVERSION_LAN_56", "druk op de knop om naar de Content Creëren nieuwe categorie pagina te gaan.");
 define("CONTENT_ADMIN_CONVERSION_LAN_57", "kies ouder");
+define("CONTENT_ADMIN_CONVERSION_LAN_58", "upgrade sucesvol<br /><br /><b>Let op:<br />je moet deze opties voor elke hoofdouder opnieuw configureren<br />en je moet de menu's die je in je content/menus folder hebt gemaakt verwijderen en opnieuw aanmaken door de opties bij te werken voor de specifieke hoofdouders waarvoor je menu's wilt maken.</b>");
 
 define("CONTENT_MENU_LAN_0", "content Menu :");
 define("CONTENT_MENU_LAN_1", "nog geen content onderwerpen");

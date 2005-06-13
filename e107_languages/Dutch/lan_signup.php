@@ -49,6 +49,9 @@ define("LAN_405", "Deze fase van de aanmelding is afgerond. Je ontvangt een beve
 define("LAN_406", "Hartelijk dank!");
 define("LAN_407", " Bewaar deze email voor je eigen administratie, aangezien je wachtwoord versleuteld is en niet opgevraagd kan worden als je een typefout maakt of het vergeten bent. Je kunt wel een nieuw wachtwoord aanvragen, mocht dit het geval zijn. Hartelijk bedankt voor je aanmelding. Van");
 define("LAN_408", "Er is al een gebruiker met dat e-mailadres aanwezig. Gebruik de Wachtwoord vergeten functie om een nieuw wachtwoord op te halen.");
+define("LAN_409", "Ongeldige tekens in de opgegeven gebruikersnaam");
+define("LAN_410", "Voer de in de afbeelding getoonde code in");
+
 define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "tekens");
 define("LAN_SIGNUP_3", "Code verificatie mislukt.");
@@ -60,8 +63,6 @@ define("LAN_SIGNUP_8", "Bedankt!");
 define("LAN_SIGNUP_9", "Kan niet verder gaan.");
 define("LAN_SIGNUP_10", "Ja");
 define("LAN_SIGNUP_11", ".");
-define("LAN_409", "Ongeldige tekens in de opgegeven gebruikersnaam");
-define("LAN_410", "Voer de in de afbeelding getoonde code in");
 define("LAN_SIGNUP_12", "bewaar je gebruikersnaam en wachtwoord op een veilige plek, want als je ze kwijt bent, kunnen ze niet worden teruggehaald.");
 define("LAN_SIGNUP_13", "Je kunt nu inloggen in het Inlogmenu.");
 define("LAN_SIGNUP_14", "hier");
@@ -81,5 +82,19 @@ define("LAN_SIGNUP_27", "Toon");
 define("LAN_SIGNUP_28", "keuze uit Inhoud/Mail-lijsten");
 define("LAN_SIGNUP_29", "Een bevestigingsmailtje wordt je toegezonden aan het opgegeven email adres, dat moet dus geldig zijn.");
 define("LAN_SIGNUP_30", "Als je niet wilt dat je emailadres wordt weergegeven, kruis dan het veldje Verbergen e-mailadres aan.");
+define("LAN_SIGNUP_31", "URL naar je XUP bestand");
+define("LAN_SIGNUP_32", "Wat is een XUP bestand?");
+define("LAN_SIGNUP_33", "Invoeren pad of kies avatar");
+define("LAN_SIGNUP_34", "Let op: elke naar deze server geuploade afbeelding die de beheerders onacceptabel vinden,  zal worden verwijderd.");
+define("LAN_SIGNUP_35", "Klik hier om gebruik te maken van een XUP bestand");
+
+define("LAN_LOGINNAME", "Inlognaam");
+define("LAN_PASSWORD", "Wachtwoord");
+define("LAN_USERNAME", "Weergavenaam");
+
+define("LAN_EMAIL_01", "Beste");
+define("LAN_EMAIL_04", "Bewaar dit e-mailtje voor je eigen archief.");
+define("LAN_EMAIL_05", "Je wachtwoord is versleuteld en kan niet worden teruggehaald als je het kwijt bent. Je kunt wel een nieuwe wachtwoord aanvragen als dat toch gebeurt.");
+define("LAN_EMAIL_06", "Hartelijk dank voor je aanmelding.");
 
 ?>

@@ -18,7 +18,7 @@
 define("LAN_MENGEN_1", "Beheer de links in je hoofdmenu");
 define("LAN_MENGEN_2", "Automatische Menu Generator");
 define("LAN_MENGEN_3", "Toevoegen links in een submenu voor :");
-// define("LAN_MENGEN_4","News");
+define("LAN_MENGEN_4", "Nieuws");
 define("LAN_MENGEN_5", "Forum");
 define("LAN_MENGEN_6", "Artikelen");
 define("LAN_MENGEN_8", "Voor elke nieuwscategorie wordt een nieuwe link in het submenu getoond voor directe toegang tot deze categorie");

@@ -90,7 +90,7 @@ define("RECENT_ADMIN_MENU_18", "kies een datumstijl als de datum vandaag is");
 define("RECENT_ADMIN_MENU_19", "Voor meer informatie over datumformaten ga naar de <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime function pagina op php.net</a>");
 
 define("RECENT_ADMIN_MENU_20", "toon niets");
-define("RECENT_ADMIN_MENU_21", "stel in of een boodschap voor lege secties moet woren getoond");
+define("RECENT_ADMIN_MENU_21", "stel in of een boodschap voor lege secties moet worden getoond");
 define("RECENT_ADMIN_MENU_22", "");
 
 define("RECENT_ADMIN_MENU_23", "pictogram: standaard");
