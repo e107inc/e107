@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-10 10:30:05 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-13 11:47:16 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -127,9 +127,11 @@ class rater {
 				$tmp = $rowgr['rate_rating'] / $rowgr['rate_votes'];
 				$tmp = explode(".", $tmp);
 				$rating[1] = $tmp[0];
-				// $ratomg[1] = main result
-				$rating[2] = substr($tmp[1], 0, 1);
-				// $rating[2] == remainder
+				if(isset($tmp[1])){
+					$rating[2] = substr($tmp[1], 0, 1);
+				}else{
+					$rating[2] = "0";
+				}
 			}
 
 			return $rating;
