@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-06-09 14:20:12 $
-|     $Author: e107coders $
+|     $Revision: 1.22 $
+|     $Date: 2005-06-14 18:03:52 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -69,8 +69,8 @@ if(strstr(e_QUERY, "mirror")) {
 					$mstr .= $mid.",".$address.",".$requests.chr(1);
 				}
 			}
-			$sql->db_Update("download", "`download_requested` = `download_requested` + 1, `download_mirror` = '{$mstr}' WHERE `download_id` = '{$download_id}'");
-			$sql->db_Update("download_mirror", "`mirror_count` = `mirror_count` + 1 WHERE `mirror_id` = '{$mirror_id}'");
+			$sql->db_Update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '{$download_id}'");
+			$sql->db_Update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '{$mirror_id}'");
 			header("Location: {$gaddress}");
 			exit();
 		}
@@ -131,15 +131,15 @@ if ($type == "file") {
 						$mstr .= "{$mid}, {$address}, {$requests}".chr(1);
 					}
 				}
-				$sql -> db_Update("download", "`download_requested` = `download_requested` + 1, `download_mirror` = '{$mstr}' WHERE `download_id` = '{$download_id}'");
-				$sql -> db_Update("download_mirror", "`mirror_count` = `mirror_count` + 1 WHERE `mirror_id` = '{$mirror_id}'");
+				$sql -> db_Update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '{$download_id}'");
+				$sql -> db_Update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '{$mirror_id}'");
 
 				header("Location: ".$gaddress);
 				exit();
 			}
 
 			// increment download count
-			$sql->db_Update("download", "`download_requested` = `download_requested` + 1 WHERE `download_id` = '{$id}'");
+			$sql->db_Update("download", "download_requested = download_requested + 1 WHERE download_id = '{$id}'");
 			$user_id = USER ? USERID : 0;
 			$ip = $e107->getip();
 			$request_data = "'0', '{$user_id}', '{$ip}', '{$id}', '".time()."'";
@@ -147,7 +147,7 @@ if ($type == "file") {
 			$sql->db_Insert("download_requests", $request_data, FALSE);
 			if (preg_match("/Binary\s(.*?)\/.*/", $download_url, $result)) {
 				$bid = $result[1];
-				$result = @mysql_query("SELECT * FROM `".MPREFIX."rbinary` WHERE `binary_id` = '{$bid}'");
+				$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id = '{$bid}'");
 				$binary_data = @mysql_result($result, 0, "binary_data");
 				$binary_filetype = @mysql_result($result, 0, "binary_filetype");
 				$binary_name = @mysql_result($result, 0, "binary_name");
@@ -194,13 +194,13 @@ if ($type == "file") {
 	exit();
 }
 
-$sql->db_Select($table, "*", "`{$table}_id` = '{$id}'");
+$sql->db_Select($table, "*", "{$table}_id = '{$id}'");
 $row = $sql->db_Fetch();
 extract($row);
 $image = ($table == "upload" ? $upload_ss : $download_image);
 if (preg_match("/Binary\s(.*?)\/.*/", $image, $result)) {
 	$bid = $result[1];
-	$result = @mysql_query("SELECT * FROM `".MPREFIX."rbinary` WHERE `binary_id` = '{$bid}'");
+	$result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id = '{$bid}'");
 	$binary_data = @mysql_result($result, 0, "binary_data");
 	$binary_filetype = @mysql_result($result, 0, "binary_filetype");
 	$binary_name = @mysql_result($result, 0, "binary_name");
@@ -299,15 +299,15 @@ function send_file($file) {
 function check_download_limits() {
 	global $pref, $sql, $ns, $HEADER, $e107;
 	// Check download count limits
-	$qry = "SELECT gen_intdata, gen_chardata, (gen_intdata/gen_chardata) as count_perday FROM #generic WHERE `gen_type` = 'download_limit' AND `gen_datestamp` IN (".USERCLASS_LIST.") AND (gen_chardata > 0 AND gen_intdata > 0) ORDER BY count_perday DESC";
+	$qry = "SELECT gen_intdata, gen_chardata, (gen_intdata/gen_chardata) as count_perday FROM #generic WHERE gen_type = 'download_limit' AND gen_datestamp IN (".USERCLASS_LIST.") AND (gen_chardata > 0 AND gen_intdata > 0) ORDER BY count_perday DESC";
 	if($sql->db_Select_gen($qry)) {
 		$limits = $sql->db_Fetch();
 		$cutoff = time() - (86400 * $limits['gen_chardata']);
 		if(USER) {
-			$where = "`dr.download_request_datestamp` > {$cutoff} AND `dr.download_request_userid` = ".USERID;
+			$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_userid = ".USERID;
 		} else {
 			$ip = $e107->getip();
-			$where = "`dr.download_request_datestamp` > {$cutoff} AND `dr.download_request_ip` = '{$ip}'";
+			$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_ip = '{$ip}'";
 		}
 		$qry = "SELECT COUNT(d.download_id) as count FROM #download_requests as dr LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1 WHERE {$where} GROUP by dr.download_request_userid";
 		if($sql->db_Select_gen($qry)) {
@@ -329,10 +329,10 @@ function check_download_limits() {
 		$limit = $sql->db_Fetch();
 		$cutoff = time() - (86400*$limit['gen_ip']);
 		if(USER) {
-			$where = "`dr.download_request_datestamp` > {$cutoff} AND `dr.download_request_userid` = ".USERID;
+			$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_userid = ".USERID;
 		} else {
 			$ip = $e107->getip();
-			$where = "`dr.download_request_datestamp` > {$cutoff} AND `dr.download_request_ip` = '{$ip}'";
+			$where = "dr.download_request_datestamp > {$cutoff} AND dr.download_request_ip = '{$ip}'";
 		}
 		$qry = "SELECT SUM(d.download_filesize) as total_bw FROM #download_requests as dr LEFT JOIN #download as d ON dr.download_request_download_id = d.download_id AND d.download_active = 1 WHERE {$where} GROUP by dr.download_request_userid";
 		if($sql->db_Select_gen($qry)) {
