@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.59 $
-|		$Date: 2005-06-14 10:41:53 $
+|		$Revision: 1.60 $
+|		$Date: 2005-06-14 22:22:19 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1357,7 +1357,7 @@ class contentform{
 
 						//choose icon
 						$TOPIC_FIELD .= "
-						1 <a href='javascript:void(0);' onclick=\"expandit('diviconex')\">choose an existing icon</a><br />
+						1 <a href='javascript:void(0);' onclick=\"expandit('diviconex')\">".CONTENT_ADMIN_CAT_LAN_60."</a><br />
 						<div id='diviconex' style='display:none'>
 							".$rs -> form_text("cat_icon", 60, $row['content_icon'], 100)."
 							".$rs -> form_button("button", '', CONTENT_ADMIN_CAT_LAN_8, "onclick=\"expandit('divcaticon')\"")."
@@ -1370,7 +1370,7 @@ class contentform{
 
 						//upload icon
 						$TOPIC_FIELD .= "
-						2 <a href='javascript:void(0);' onclick=\"expandit('diviconnew')\">or upload a new icon</a><br />
+						2 <a href='javascript:void(0);' onclick=\"expandit('diviconnew')\">".CONTENT_ADMIN_CAT_LAN_61."</a><br />
 						<div id='diviconnew' style='display:none'>";
 							if(!FILE_UPLOADS){
 								$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_21."</b>";
@@ -1378,13 +1378,11 @@ class contentform{
 								if(!is_writable($content_cat_icon_path_large)){
 									$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_cat_icon_path_large." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
 								}
-								$TOPIC_FIELD .= "
-								After you have uploaded a new category icon, you can assign this icon in the above 'choose existing icon' area<br />
-								If you upload a new icon, this icon will be scaled to 48 pixels, and additionally a small 16 pixels icon will be created as well<br /><br />
+								$TOPIC_FIELD .= CONTENT_ADMIN_CAT_LAN_62."
 								<input class='tbox' type='file' name='file_userfile[]'  size='58' /> 
 								<input type='hidden' name='iconpathlarge' value='".$content_cat_icon_path_large."'>
 								<input type='hidden' name='iconpathsmall' value='".$content_cat_icon_path_small."'>
-								<input class='button' type='submit' name='uploadcaticon' value='upload icon' />";
+								<input class='button' type='submit' name='uploadcaticon' value='".CONTENT_ADMIN_CAT_LAN_63."' />";
 							}
 						$TOPIC_FIELD .= "</div><br />";
 
