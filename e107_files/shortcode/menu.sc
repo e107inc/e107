@@ -49,18 +49,18 @@ foreach($eMenuList[$parm] as $row)
 		else
 		{
 			if(is_readable(e_LANGUAGEDIR.e_LANGUAGE."/plugins/lan_{$row['menu_path']}.php")) {
-				include(e_LANGUAGEDIR.e_LANGUAGE."/plugins/lan_{$row['menu_path']}.php");
+				include_once(e_LANGUAGEDIR.e_LANGUAGE."/plugins/lan_{$row['menu_path']}.php");
 			} elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE.".php")) {
-				include(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE.".php");	
+				include_once(e_PLUGIN.$row['menu_path']."/languages/".e_LANGUAGE.".php");	
 			} elseif (is_readable(e_LANGUAGEDIR."english/plugins/lan_{$row['menu_path']}.php")) {
-				include(e_LANGUAGEDIR."English/plugins/lan_{$row['menu_path']}.php");
+				include_once(e_LANGUAGEDIR."English/plugins/lan_{$row['menu_path']}.php");
 			} elseif (is_readable(e_PLUGIN.$row['menu_path']."/languages/English.php")) {
-				include(e_PLUGIN.$row['menu_path']."/languages/English.php");
+				include_once(e_PLUGIN.$row['menu_path']."/languages/English.php");
 			}
 			
 			if(file_exists(e_PLUGIN.$row['menu_path']."/".$mname.".php"))
 			{
-				include(e_PLUGIN.$row['menu_path']."/".$mname.".php");
+				include_once(e_PLUGIN.$row['menu_path']."/".$mname.".php");
 			}
 		}
 		$sql->db_Mark_Time("(After ".$mname.")");

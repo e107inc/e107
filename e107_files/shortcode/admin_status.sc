@@ -16,7 +16,7 @@ if (ADMIN) {
 				$stas = explode(",", $pref['plug_status']);
 				foreach($stas as $sta) {
 					if (file_exists(e_PLUGIN.$sta."/e_status.php")) {
-						include(e_PLUGIN.$sta."/e_status.php");
+						include_once(e_PLUGIN.$sta."/e_status.php");
 					}
 				}
 			}
@@ -27,7 +27,7 @@ if (ADMIN) {
 
 			foreach($pluginList as $p)
 			{
-				$text .= include($p['path'].$p['fname']);
+				$text .= include_once($p['path'].$p['fname']);
 			}
 
 			if($flo = $sql -> db_Select("generic", "*", "gen_type='failed_login' "))

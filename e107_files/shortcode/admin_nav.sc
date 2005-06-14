@@ -31,7 +31,7 @@ if (ADMIN) {
 		while($rowplug = $sql -> db_Fetch()) {
 			extract($rowplug);
 			$e107_plug[$rowplug[1]] = $rowplug[3];
-			include(e_PLUGIN.$plugin_path."/plugin.php");
+			include_once(e_PLUGIN.$plugin_path."/plugin.php");
 
 			// Links Plugins
 			if ($eplug_conffile) {

@@ -5,8 +5,8 @@ switch($custom_query[0])
 {
 		case "login":
 		case "login noprofile":
-				@include(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
-				@include(e_PLUGIN."login_menu/languages/English.php");
+				@include_once(e_PLUGIN."login_menu/languages/".e_LANGUAGE.".php");
+				@include_once(e_PLUGIN."login_menu/languages/English.php");
 
 				if (USER == TRUE){
 						$ret .= "<span class='mediumtext'>".LOGIN_MENU_L5." ".USERNAME."&nbsp;&nbsp;&nbsp;.:. ";
@@ -32,7 +32,7 @@ switch($custom_query[0])
 						return "";
 				}
 				$searchflat = TRUE;
-				include(e_PLUGIN."search_menu/search_menu.php");
+				include_once(e_PLUGIN."search_menu/search_menu.php");
 				return "";
 				break;
 
