@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.57 $
-|		$Date: 2005-06-13 14:03:54 $
+|		$Revision: 1.58 $
+|		$Date: 2005-06-14 08:34:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1148,17 +1148,19 @@ class contentform{
 						$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
 
 						if(!is_object($sql)){ $sql = new db; }
-
+						$formurl = e_SELF."?".e_QUERY;
 						$array							= $aa -> getCategoryTree("", "", FALSE);
 						$mainparent						= $aa -> getMainParent( (isset($qs[3]) && is_numeric($qs[3]) ? $qs[3] : $qs[2]) );						
 						$content_pref					= $aa -> getContentPref($mainparent);
+						$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_{$mainparent}"]);
 						$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$mainparent}"]);
 
 						if( $qs[0] == "cat" && $qs[1] == "create" && isset($qs[2]) && is_numeric($qs[2]) ){
 							if(!$sql -> db_Select($plugintable, "*", "content_id='".$qs[2]."' ")){
 								header("location:".e_SELF."?cat"); exit;
 							}
-							$formurl = e_SELF."?".e_QUERY.".pc";
+							//$formurl = e_SELF."?".e_QUERY.".pc";
+							$formurl = e_SELF."?".e_QUERY;
 						}
 						if( $qs[0] == "cat" && $qs[1] == "edit" && isset($qs[2]) && is_numeric($qs[2]) ){
 							if(!$sql -> db_Select($plugintable, "*", "content_id='".$qs[2]."' ")){
@@ -1205,7 +1207,7 @@ class contentform{
 							$ns -> tablerender($cat_heading, $text);
 						}
 
-						if( isset($_POST['preview_category']) || isset($message) ){
+						if( isset($_POST['preview_category']) || isset($message) || isset($_POST['uploadcaticon']) ){
 							$row['content_heading']		= $tp -> post_toForm($_POST['cat_heading']);
 							$row['content_subheading']	= $tp -> post_toForm($_POST['cat_subheading']);
 							$row['content_text']		= $tp -> post_toForm($_POST['cat_text']);
@@ -1225,7 +1227,7 @@ class contentform{
 
 						$text = "
 						<div style='text-align:center'>
-						".$rs -> form_open("post", $formurl, "dataform")."
+						".$rs -> form_open("post", $formurl, "dataform", "", "enctype='multipart/form-data'")."
 						<table class='fborder' style='".ADMIN_WIDTH."'>";
 						
 						//category parent
@@ -1351,14 +1353,41 @@ class contentform{
 						$TOPIC_TOPIC = CONTENT_ADMIN_CAT_LAN_5;
 						$TOPIC_HEADING = CONTENT_ADMIN_CAT_LAN_49;
 						$TOPIC_HELP = "";
-						$TOPIC_FIELD = "
-						".$rs -> form_text("cat_icon", 60, $row['content_icon'], 100)."
-						".$rs -> form_button("button", '', CONTENT_ADMIN_CAT_LAN_8, "onclick='expandit(this)'")."
-						<div id='divcaticon' style='{head}; display:none'>";
-						foreach($iconlist as $icon){
-							$TOPIC_FIELD .= "<a href=\"javascript:insertext('".$icon['fname']."','cat_icon','divcaticon')\"><img src='".$icon['path'].$icon['fname']."' style='border:0' alt='' /></a> ";
-						}
-						$TOPIC_FIELD .= "</div>";
+						$TOPIC_FIELD = "";
+
+						//choose icon
+						$TOPIC_FIELD .= "
+						1 <a href='javascript:void(0);' onclick=\"expandit('diviconex')\">choose an existing icon</a><br />
+						<div id='diviconex' style='display:none'>
+							".$rs -> form_text("cat_icon", 60, $row['content_icon'], 100)."
+							".$rs -> form_button("button", '', CONTENT_ADMIN_CAT_LAN_8, "onclick=\"expandit('divcaticon')\"")."
+							<div id='divcaticon' style='{head}; display:none'>";
+							foreach($iconlist as $icon){
+								$TOPIC_FIELD .= "<a href=\"javascript:insertext('".$icon['fname']."','cat_icon','divcaticon')\"><img src='".$icon['path'].$icon['fname']."' style='border:0' alt='' /></a> ";
+							}
+							$TOPIC_FIELD .= "</div>";
+						$TOPIC_FIELD .= "</div><br />";
+
+						//upload icon
+						$TOPIC_FIELD .= "
+						2 <a href='javascript:void(0);' onclick=\"expandit('diviconnew')\">or upload a new icon</a><br />
+						<div id='diviconnew' style='display:none'>";
+							if(!FILE_UPLOADS){
+								$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_21."</b>";
+							}else{
+								if(!is_writable($content_cat_icon_path_large)){
+									$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_cat_icon_path_large." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+								}
+								$TOPIC_FIELD .= "
+								After you have uploaded a new category icon, you can assign this icon in the above 'choose existing icon' area<br />
+								If you upload a new icon, this icon will be scaled to 48 pixels, and additionally a small 16 pixels icon will be created as well<br /><br />
+								<input class='tbox' type='file' name='file_userfile[]'  size='58' /> 
+								<input type='hidden' name='iconpathlarge' value='".$content_cat_icon_path_large."'>
+								<input type='hidden' name='iconpathsmall' value='".$content_cat_icon_path_small."'>
+								<input class='button' type='submit' name='uploadcaticon' value='upload icon' />";
+							}
+						$TOPIC_FIELD .= "</div><br />";
+
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 						
 						//comments

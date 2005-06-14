@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_cat_template.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-09 08:59:55 $
+|     $Revision: 1.15 $
+|     $Date: 2005-06-14 08:34:03 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -83,7 +83,7 @@ if(!$CONTENT_CAT_TABLE_END){
 
 
 
-$sc_style['CONTENT_CAT_LIST_TABLE_ICON']['pre'] = "<td class='forumheader3' style='width:10%; white-space:nowrap;' rowspan='5'>";
+$sc_style['CONTENT_CAT_LIST_TABLE_ICON']['pre'] = "<td class='forumheader3' style='width:5%; white-space:nowrap; padding-right:5px; ' rowspan='5'>";
 $sc_style['CONTENT_CAT_LIST_TABLE_ICON']['post'] = "</td>";
 
 $sc_style['CONTENT_CAT_LIST_TABLE_SUBHEADING']['pre'] = "<tr><td class='forumheader3'>";
@@ -129,7 +129,7 @@ if(!$CONTENT_CAT_LIST_TABLE){
 
 
 
-$sc_style['CONTENT_CAT_LISTSUB_TABLE_ICON']['pre'] = "<td class='forumheader3' style='width:10%; white-space:nowrap;' rowspan='2'>";
+$sc_style['CONTENT_CAT_LISTSUB_TABLE_ICON']['pre'] = "<td class='forumheader3' style='width:2%; white-space:nowrap; padding-right:5px; ' rowspan='2'>";
 $sc_style['CONTENT_CAT_LISTSUB_TABLE_ICON']['post'] = "</td>";
 
 $sc_style['CONTENT_CAT_LISTSUB_TABLE_SUBHEADING']['pre'] = "<tr><td class='forumheader3'>";
