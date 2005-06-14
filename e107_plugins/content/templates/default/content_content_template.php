@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-13 12:00:11 $
+|     $Revision: 1.15 $
+|     $Date: 2005-06-14 10:50:47 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -33,7 +33,7 @@ $sc_style['CONTENT_CONTENT_TABLE_COMMENT']['pre'] = "<br />".CONTENT_LAN_57." ";
 $sc_style['CONTENT_CONTENT_TABLE_COMMENT']['post'] = "";
 
 $sc_style['CONTENT_CONTENT_TABLE_SCORE']['pre'] = "<br />".CONTENT_LAN_45." ";
-$sc_style['CONTENT_CONTENT_TABLE_SCORE']['post'] = "";
+$sc_style['CONTENT_CONTENT_TABLE_SCORE']['post'] = "/100";
 
 $sc_style['CONTENT_CONTENT_TABLE_RATING']['pre'] = "<br />";
 $sc_style['CONTENT_CONTENT_TABLE_RATING']['post'] = "";
