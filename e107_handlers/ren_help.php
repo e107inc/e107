@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-05-02 04:58:49 $
-|     $Author: stevedunstan $
+|     $Revision: 1.28 $
+|     $Date: 2005-06-14 16:06:17 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
-@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_ren_help.php");
-@include(e_LANGUAGEDIR."English/lan_ren_help.php");
+@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_ren_help.php");
+@include_once(e_LANGUAGEDIR."English/lan_ren_help.php");
 function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 
 	//        $mode == TRUE : fontsize and colour dialogs are rendered
