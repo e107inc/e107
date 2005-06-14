@@ -172,8 +172,19 @@ return $CONTENT_SCORE_TABLE_AUTHOR;
 SC_END
 
 SC_BEGIN CONTENT_SCORE_TABLE_SCORE
-global $CONTENT_SCORE_TABLE_SCORE;
-return $CONTENT_SCORE_TABLE_SCORE;
+global $CONTENT_SCORE_TABLE_SCORE, $row;
+$score = $row['score'];
+$height = "height:8px;";
+$img = "";
+$img .= "<img src='".e_PLUGIN."content/images/score_end.png' alt='' style='$height width:1px; border:0;' />";
+$img .= "<img src='".e_PLUGIN."content/images/score.png' alt='' style='$height width:".$score."px; border:0;' />";
+$img .= "<img src='".e_PLUGIN."content/images/score_end.png' alt='' style='$height width:1px; border:0;' />";
+if($score < 100){
+	$empty = 100-$score;
+	$img .= "<img src='".e_PLUGIN."content/images/score_empty.png' alt='' style='$height width:".$empty."px; border:0;' />";
+}
+$img .= "<img src='".e_PLUGIN."content/images/score_end.png' alt='' style='$height width:1px; border:0;' />";
+return $img." ".$score;
 SC_END
 
 
@@ -990,9 +1001,22 @@ SC_END
 SC_BEGIN CONTENT_CONTENT_TABLE_SCORE
 global $CONTENT_CONTENT_TABLE_SCORE, $custom;
 $CONTENT_CONTENT_TABLE_SCORE="";
-if($custom['content_custom_score']){
-return $custom['content_custom_score'];
+//if($custom['content_custom_score']){
+//return $custom['content_custom_score'];
+//}
+
+$score = $custom['content_custom_score'];
+$height = "height:8px;";
+$img = "";
+$img .= "<img src='".e_PLUGIN."content/images/score_end.png' alt='' style='$height width:1px; border:0;' />";
+$img .= "<img src='".e_PLUGIN."content/images/score.png' alt='' style='$height width:".$score."px; border:0;' />";
+$img .= "<img src='".e_PLUGIN."content/images/score_end.png' alt='' style='$height width:1px; border:0;' />";
+if($score < 100){
+	$empty = 100-$score;
+	$img .= "<img src='".e_PLUGIN."content/images/score_empty.png' alt='' style='$height width:".$empty."px; border:0;' />";
 }
+$img .= "<img src='".e_PLUGIN."content/images/score_end.png' alt='' style='$height width:1px; border:0;' />";
+return $img." ".$score;
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_SUMMARY
