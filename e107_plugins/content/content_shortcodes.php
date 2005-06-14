@@ -919,7 +919,7 @@ SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_AUTHORDETAILS
 global $CONTENT_CONTENT_TABLE_AUTHORDETAILS, $content_pref, $qs, $row, $aa, $mainparent;
-if($content_pref["content_content_authorname_{$mainparent}"] || $content_pref["content_content_authoremail_{$mainparent}"] || $content_pref["content_content_authoricon_{$mainparent}"] || $content_pref["content_content_authorprofile_{$mainparent}"]){
+if($content_pref["content_content_authorname_{$mainparent}"] || $content_pref["content_content_authoremail_{$mainparent}"] || (isset($content_pref["content_content_authoricon_{$mainparent}"]) && $content_pref["content_content_authoricon_{$mainparent}"]) || $content_pref["content_content_authorprofile_{$mainparent}"]){
 	$authordetails = $aa -> getAuthor($row['content_author']);
 	if($content_pref["content_content_authorname_{$mainparent}"]){
 		if(isset($content_pref["content_content_authoremail_{$mainparent}"]) && $authordetails[2]){
@@ -935,11 +935,11 @@ if($content_pref["content_content_authorname_{$mainparent}"] || $content_pref["c
 		}else{
 			$CONTENT_CONTENT_TABLE_AUTHORDETAILS = $authordetails[1];
 		}
-		if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && $content_pref["content_content_authorprofile_{$mainparent}"]){
+		if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && isset($content_pref["content_content_authorprofile_{$mainparent}"]) && $content_pref["content_content_authorprofile_{$mainparent}"]){
 			$CONTENT_CONTENT_TABLE_AUTHORDETAILS .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
 		}
 	}
-	if($content_pref["content_content_authoricon_{$mainparent}"]){
+	if(isset($content_pref["content_content_authoricon_{$mainparent}"]) && $content_pref["content_content_authoricon_{$mainparent}"]){
 		$CONTENT_CONTENT_TABLE_AUTHORDETAILS .= " <a href='".e_SELF."?author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
 	}
 return $CONTENT_CONTENT_TABLE_AUTHORDETAILS;
