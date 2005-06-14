@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-06-11 22:50:00 $
+|     $Revision: 1.32 $
+|     $Date: 2005-06-14 02:08:27 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -336,7 +336,7 @@ if ($action == "view") {
 
 
 
-
+	$gen = new convert;
 	$row = $sql->db_Fetch();
 	 extract($row);
 	$comments_enabled = $row['download_comment'];
@@ -377,6 +377,10 @@ if ($action == "view") {
 
 	$DOWNLOAD_VIEW_DESCRIPTION_LAN = LAN_dl_7;
 	$DOWNLOAD_VIEW_DESCRIPTION = $tp->toHTML(($download_description ? $download_description : "&nbsp;"), TRUE);
+
+	$DOWNLOAD_VIEW_DATE_LAN = LAN_dl_22;
+	$DOWNLOAD_VIEW_DATE_SHORT = $gen->convert_date($download_datestamp, "short");
+	$DOWNLOAD_VIEW_DATE_LONG = $gen->convert_date($download_datestamp, "long");
 
 	$DOWNLOAD_VIEW_IMAGE_LAN = LAN_dl_11;
 	if ($download_thumb) {
