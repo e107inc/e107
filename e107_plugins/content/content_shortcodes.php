@@ -991,13 +991,7 @@ SC_BEGIN CONTENT_CONTENT_TABLE_SCORE
 global $CONTENT_CONTENT_TABLE_SCORE, $custom;
 $CONTENT_CONTENT_TABLE_SCORE="";
 if($custom['content_custom_score']){
-	//if(strlen($custom['content_custom_score']) == "2"){
-	//	$CONTENT_CONTENT_TABLE_SCORE = substr($custom['content_custom_score'],0,1).".".substr($custom['content_custom_score'],1,2);
-	//}else{
-	//	$CONTENT_CONTENT_TABLE_SCORE = "0.".$custom['content_custom_score'];
-	//}
-	$CONTENT_CONTENT_TABLE_SCORE = $custom['content_custom_score']."/100";
-return $CONTENT_CONTENT_TABLE_SCORE;
+return $custom['content_custom_score'];
 }
 SC_END
 
