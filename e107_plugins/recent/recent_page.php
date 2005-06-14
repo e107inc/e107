@@ -19,7 +19,10 @@ if(!$sql -> db_Select("plugin", "*", "plugin_path = 'recent' AND plugin_installf
 	header("location:".e_BASE."index.php"); exit;
 }
 require_once(e_PLUGIN."recent/recent_shortcodes.php");
-require_once(HEADERF);
+require_once(e_PLUGIN."recent/recent_class.php");
+$rc = new recent;
+e107_require_once(e_HANDLER.'arraystorage_class.php');
+$eArrayStorage = new ArrayData();
 
 //get language file
 $lan_file = e_PLUGIN."recent/languages/".e_LANGUAGE.".php";
@@ -27,8 +30,7 @@ include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."recent/languages/Eng
 
 unset($text);
 
-require_once(e_PLUGIN."recent/recent_class.php");
-$rc = new recent;
+require_once(HEADERF);
 
 global $tp;
 

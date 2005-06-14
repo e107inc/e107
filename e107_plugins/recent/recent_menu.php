@@ -19,7 +19,7 @@ if(!$sql -> db_Select("plugin", "*", "plugin_path = 'recent' AND plugin_installf
 	return;
 }
 
-global $sysprefs, $tp;
+global $sysprefs, $tp, $eArrayStorage;
 unset($text);
 require_once(e_PLUGIN."recent/recent_shortcodes.php");
 
