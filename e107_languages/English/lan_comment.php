@@ -4,11 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_comment.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-05-06 10:57:19 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-14 16:02:48 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
+
 define("PAGE_NAME", "Comments");
 
 define("LAN_0", "[blocked by admin]");

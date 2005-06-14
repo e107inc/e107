@@ -12,14 +12,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-06-10 10:30:05 $
+|     $Revision: 1.30 $
+|     $Date: 2005-06-14 16:02:48 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
-@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
-@include(e_LANGUAGEDIR."English/lan_comment.php");
+@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
+@include_once(e_LANGUAGEDIR."English/lan_comment.php");
+require_once(e_FILE."shortcode/batch/comment_shortcodes.php");
 class comment {
 	function form_comment($action, $table, $id, $subject, $content_type, $return=FALSE, $rating=FALSE) {
 		//rating	: boolean, to show rating system in comment
@@ -33,8 +34,9 @@ class comment {
 			$text = "\n<div style='text-align:center'><form method='post' action='".e_SELF."?".e_QUERY."' id='dataform' >\n<table style='width:95%'>";
 			if ($pref['nested_comments']) {
 				$text .= "<tr>\n<td style='width:20%'>".COMLAN_4."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='subject' size='60' value='$subject' maxlength='100' />\n</td>\n</tr>";
-				} else {
-				$text2 = "<input  type='hidden' name='subject' value='$subject'  />\n";
+				$text2 = "";
+			} else {
+				$text2 = "<input type='hidden' name='subject' value='$subject'  />\n";
 			}
 
 			if(strstr(e_QUERY, "edit"))
@@ -53,7 +55,7 @@ class comment {
 				}
 			}
 
-			if($eaction == "edit")
+			if(isset($eaction) && $eaction == "edit")
 			{
 				$id=intval($id);
 				$sql -> db_Select("comments", "*", "comment_id='$id' ");
@@ -91,7 +93,7 @@ class comment {
 			}
 			$text .= $rate."<tr> \n
 			<td style='width:20%'>".LAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea style='width:80%' class='tbox' name='comment' cols='1' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
-			<input class='helpbox' type='text' name='helpb' style='width:80%' /><br />".ren_help(1, 'addtext', 'help')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td id='commentformbutton' style='width:80%;'>\n". ($action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').($eaction == "edit" ? "<input type='hidden' name='editpid' value='$id' />" : "").($content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".($eaction == "edit" ? LAN_320 : LAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
+			<input class='helpbox' type='text' name='helpb' style='width:80%' /><br />".ren_help(1, 'addtext', 'help')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td id='commentformbutton' style='width:80%;'>\n". (isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='$id' />" : "").(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".(isset($eaction) && $eaction == "edit" ? LAN_320 : LAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
 			if($return)
 			{
 				return $text;
@@ -104,10 +106,13 @@ class comment {
 			echo "<br /><div style='text-align:center'><b>".LAN_6." <a href='".e_SIGNUP."'>".COMLAN_1."</a> ".COMLAN_2."</b></div>";
 		}
 	}
-	function render_comment($row, $table, $action, $id, $width, $subject, $rating=FALSE) {
+	function render_comment($row, $table, $action, $id, $width, $subject, $addrating=FALSE) {
 		//rating	: boolean, to show rating system in rendered comment
-		global $COMMENTSTYLE, $pref, $tp;
-		if($rating==TRUE){
+		global $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen;
+		global $pref, $comrow, $tp, $NEWIMAGE, $USERNAME, $RATING, $datestamp;
+
+		
+		if($addrating===TRUE){
 			global $rater;
 			require_once(e_HANDLER."rate_class.php");
 			if(!is_object($rater)){ $rater = new rater; }
@@ -117,69 +122,34 @@ class comment {
 		if (!$width) {
 			$width = 0;
 		}
-		define("IMAGE_nonew_comments", (file_exists(THEME."generic/nonew_comments.png") ? "<img src='".THEME."generic/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
-		define("IMAGE_new_comments", (file_exists(THEME."generic/new_comments.png") ? "<img src='".THEME."generic/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/".IMODE."/new_comments.png' alt=''  /> "));
-		$sql = new db;
-		$ns = new e107table;
-		extract($row);
-		$comment_author = eregi_replace("[0-9]+\.", '', $comment_author);
-		$comment_subject = (empty($comment_subject) ? $subject : $tp->toHTML($comment_subject, TRUE));
-		$gen = new convert;
-		$datestamp = $gen->convert_date($comment_datestamp, "short");
-		if ($user_id) {
-			$user_join = $gen->convert_date($user_join, "short");
-			if ($user_image) {
-				require_once(e_HANDLER."avatar_handler.php");
-				$user_image = avatar($user_image);
-			}
-			} else {
-			$user_id = 0;
-			$user_name = $comment_author;
+		if(!defined("IMAGE_nonew_comments")){
+			define("IMAGE_nonew_comments", (file_exists(THEME."generic/nonew_comments.png") ? "<img src='".THEME."generic/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
 		}
+		if(!defined("IMAGE_new_comments")){
+			define("IMAGE_new_comments", (file_exists(THEME."generic/new_comments.png") ? "<img src='".THEME."generic/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/".IMODE."/new_comments.png' alt=''  /> "));
+		}
+		$sql		= new db;
+		$ns			= new e107table;
+		$gen		= new convert;
 
-		$url = e_PAGE."?".e_QUERY;
-		$unblock = "[<a href='".e_BASE.e_ADMIN."comment.php?unblock-$comment_id-$url-$comment_item_id'>".LAN_1."</a>] ";
-		$block = "[<a href='".e_BASE.e_ADMIN."comment.php?block-$comment_id-$url-$comment_item_id'>".LAN_2."</a>] ";
-		$delete = "[<a href='".e_BASE.e_ADMIN."comment.php?delete-$comment_id-$url-$comment_item_id'>".LAN_3."</a>] ";
-		$userinfo = "[<a href='".e_BASE.e_ADMIN."userinfo.php?$comment_ip'>".LAN_4."</a>]";
+		$url		= e_PAGE."?".e_QUERY;
+		$unblock	= "[<a href='".e_BASE.e_ADMIN."comment.php?unblock-".$row['comment_id']."-$url-".$row['comment_item_id']."'>".LAN_1."</a>] ";
+		$block		= "[<a href='".e_BASE.e_ADMIN."comment.php?block-".$row['comment_id']."-$url-".$row['comment_item_id']."'>".LAN_2."</a>] ";
+		$delete		= "[<a href='".e_BASE.e_ADMIN."comment.php?delete-".$row['comment_id']."-$url-".$row['comment_item_id']."'>".LAN_3."</a>] ";
+		$userinfo	= "[<a href='".e_BASE.e_ADMIN."userinfo.php?".$row['comment_ip']."'>".LAN_4."</a>]";
+		
 		if (!$COMMENTSTYLE) {
-			$COMMENTSTYLE = "
-			<table style='width:100%'>
-			<tr>
-			<td colspan='2' class='forumheader3'>
-			{SUBJECT}
-			<b>
-			{USERNAME}
-			</b>
-			|
-			{TIMEDATE}
-			</td>
-			</tr>
-			<tr>
-			<td style='width:30%; vertical-align:top'>
-			<div class='spacer'>
-			{AVATAR}
-			</div>
-			<span class='smalltext'>
-			{COMMENTS}
-			<br />
-			{JOINED}
-			</span>
-			<br/>
-			{REPLY}
-			<br/>
-			{RATING}
-			</td>
-			<td style='width:70%; vertical-align:top'>
-			{COMMENT}
-			</td>
-			</tr>
-			</table>
-			<br />";
+			global $THEMES_DIRECTORY;
+			$COMMENTSTYLE = "";
+			if (file_exists(THEME."comment_template.php")) {
+				require_once(THEME."comment_template.php");
+			} else {
+				require_once(e_BASE.$THEMES_DIRECTORY."templates/comment_template.php");
+			}
 		}
 		if ($pref['nested_comments']) {
 			$width2 = 100 - $width;
-			$total_width = ($pref['standards_mode'] ? "98%" : "95%");
+			$total_width = (isset($pref['standards_mode']) && $pref['standards_mode'] ? "98%" : "95%");
 			$renderstyle = "
 			<table style='width:".$total_width."'>
 			<tr>
@@ -189,96 +159,50 @@ class comment {
 			</tr>
 			</table>";
 			if($pref['comments_icon']) {
-				if ($comment_datestamp > USERLV ) {
+				if ($row['comment_datestamp'] > USERLV ) {
 					$NEWIMAGE = IMAGE_new_comments;
-					} else {
+				} else {
 					$NEWIMAGE = IMAGE_nonew_comments;
 				}
-				} else {
+			} else {
 				$NEWIMAGE = "";
 			}
-			} else {
+		} else {
 			$renderstyle = $COMMENTSTYLE;
 		}
-		$search[0] = "/\{USERNAME\}(.*?)/si";
-		$replace[0] = ($user_id ? "<a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>\n" : $user_name."\n");
-
-		$search[1] = "/\{TIMEDATE\}(.*?)/si";
-		$replace[1] = $datestamp;
-
-		$search[2] = "/\{AVATAR\}(.*?)/si";
-		$replace[2] = ($user_image ? "<div class='spacer'><img src='".$user_image."' alt='' /></div><br />" : '');
-
-		$search[3] = "/\{COMMENTS\}(.*?)/si";
-		$replace[3] = ($user_id ? LAN_99.": ".$user_comments : LAN_194)."<br />";
 
 		$highlight_search = FALSE;
-		if (IsSet($_POST['highlight_search'])) {
+		if (isset($_POST['highlight_search'])) {
 			$highlight_search = TRUE;
 		}
 
-		$search[4] = "/\{COMMENT\}(.*?)/si";
-		$replace[4] = ($comment_blocked ? LAN_0 : $tp->toHTML($comment_comment, TRUE, FALSE, $user_id)).
-			($pref['allowCommentEdit'] && USER && $user_id == USERID && !strstr(e_QUERY, "edit") ? "<br /><div style='text-align: right;'><a href='".e_SELF."?".e_QUERY.".edit.$comment_id'><img src='".e_IMAGE."generic/".IMODE."/edit.png' alt='".LAN_318."' title='".LAN_318."' style='border: 0;' /></a></div>" : "");
-
-		$search[5] = "/\{SIGNATURE\}(.*?)/si";
-		if ($user_signature) {
-			$user_signature = $tp->toHTML($user_signature);
+		if(!defined("IMAGE_rank_main_admin_image")){
+			define("IMAGE_rank_main_admin_image", (isset($pref['rank_main_admin_image']) && $pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/main_admin.png' alt='' />"));
 		}
-		$replace[5] = $user_signature;
-		$search[6] = "/\{JOINED\}(.*?)/si";
-		if ($user_admin) {
-			$replace[6] = '';
-			} else {
-			$replace[6] = ($user_join ? LAN_145.$user_join."<br />" : '');
+		if(!defined("IMAGE_rank_moderator_image")){
+			define("IMAGE_rank_moderator_image", (isset($pref['rank_moderator_image']) && $pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
+		}
+		if(!defined("IMAGE_rank_admin_image")){
+			define("IMAGE_rank_admin_image", (isset($pref['rank_admin_image']) && $pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
 		}
 
-		$search[7] = "/\{LOCATION\}(.*?)/si";
-		$replace[7] = ($user_location ? LAN_313.": ".$tp->toHTML($user_location) : '');
+		$text = "";
+		$comrow = $row;
+		$RATING = ($addrating==TRUE && $comrow['user_id'] ? $rater->composerating($table, $id, FALSE, $comrow['user_id']) : "");
+		$text .= $tp -> parseTemplate($COMMENTSTYLE, FALSE, $comment_shortcodes);
 
-		$search[8] = "/\{LEVEL\}(.*?)/si";
-		define("IMAGE_rank_main_admin_image", ($pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/main_admin.png' alt='' />"));
-		define("IMAGE_rank_moderator_image", ($pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
-		define("IMAGE_rank_admin_image", ($pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
-		$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
-		$replace[8] = ($user_admin ? $ldata[0] : $ldata[1]);
-
-		$search[9] = "/\{REPLY\}(.*?)/si";
 		if ($action == "comment" && $pref['nested_comments']) {
-			$replace[9] = "<a href='".e_BASE."comment.php?reply.".$table.".".$comment_id.".".$id."'>".COMLAN_6."</a>";
-			} else {
-			$replace[9] = '';
-		}
-
-		$search[10] = "/\{SUBJECT\}(.*?)/si";
-		if ($pref['nested_comments']) {
-			$replace[10] = $NEWIMAGE." <b>".$comment_subject."</b>";
-			} else {
-			$replace[10] = '';
-		}
-
-		$search[11] = "/\{IPADDRESS\}(.*?)/si";
-		require_once(e_HANDLER."encrypt_handler.php");
-		$replace[11] = (ADMIN ? "<a href='".e_BASE."userposts.php?0.comments.$comment_ip'>IP: ".decode_ip($comment_ip)."</a>" : "");
-
-		//method to render a users rating given
-		$search[12] = "/\{RATING\}(.*?)/si";
-		$replace[12] = ($rating==TRUE && $user_id ? $rater->composerating($table, $id, FALSE, $user_id) : "");
-
-
-		$text .= preg_replace($search, $replace, $renderstyle);
-		if ($action == "comment" && $pref['nested_comments']) {
-			$sub_query = "comment_pid='".$comment_id."' ORDER BY comment_datestamp" ;
+			$sub_query = "comment_pid='".$row['comment_id']."' ORDER BY comment_datestamp" ;
 			$sql2 = new db;
 			if ($sub_total = $sql2->db_Select("comments", "*", $sub_query)) {
-				while ($row = $sql2->db_Fetch()) {
+				while ($row2 = $sql2->db_Fetch()) {
 					if ($pref['nested_comments']) {
 						$width = $width + 3;
 						if ($width > 80) {
 							$width = 80;
 						}
 					}
-					$text .= $this->render_comment($row, $table, $action, $id, $width);
+					$text .= $this->render_comment($row2, $table, $action, $id, $width);
 				}
 				$total ++;
 			}
