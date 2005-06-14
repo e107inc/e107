@@ -1,0 +1,9 @@
+
+Q>	Vad är denna sektion till för?
+A>	Sätter du Cache Status till på, kommer vissa delar av din sajt att buffras. Detta reducerar anropen till MySQL, och snabbar upp sajten drastiskt.
+
+Q>	Jag gjorde en del ändringar i temat jag använder, men ingen ändring syns - beror det på cachningen?
+A>	Mycket troligt. När du ändrar teman rensas cacheminnet, men ändrar du koden i din theme.php rensas inte cacheminnet. Sätt Cache Status till av tills att du är färdig.
+
+Q>	Kan jag spara cacheminnet till filer på hårddisken?
+A>	Ja. Se bara till att katalogen e107_files/cache är skrivbar (chmod 777). Klicka sedan på knappen för att spara cache på cachesidan.

@@ -1,0 +1,6 @@
+
+Q>	Vad är rättigheter?
+A>	De låter dig ge administratörer tillgång till olika nivper i adminsektionen. T.ex. kan du ge endast en admin lov att posta nyheter, rättigheterna låter dig göra det. Det finns en del adminfunktioner som endast huvudadmin kommer åt, detta av säkerhetsskäl.
+
+Q>	Jag vill göra en befintlig användare till administratör - hur?
+A>	Klicka på Användare i din adminsektion och sök efter användaren, klicka sedan på Gör till Admin. Sedan skall du omedelbart gå till Administratörssektionen och sätta rättigheterna. Du kan ockå dra tillbaka adminstatus från någon på detta sätt.

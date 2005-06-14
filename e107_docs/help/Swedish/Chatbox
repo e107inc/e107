@@ -1,0 +1,9 @@
+
+Q>	Vad är Byt ut länkar till för?
+A>	Du kan byta ut alla länkar som skrivs in i din chattruta till en annan text eller en bild. Detta hindrar att din chattruta översvämmas av långa webbadresser. För att använda en bild, markera Byt ut länk, och i rutan under anger du &lt;img src='sökväg_till_din_bild' alt='' /> så kommer alla länkar att konverteras till den bild du valt.
+
+Q>	Vad är ordbrytning till för?
+A>	Om någon skrivit ett väldigt långt ord i din chattruta kan det störa layouten på din sajt. Om du anger t.ex. 40 i ordbrytningsrutan, kommer ord längre än 40 tecken att brytas så att kolumnen inte ökar i bredd. Detta värdet får du anpassa till det tema du använder och till bredden på kolumnen som chattrutan visas i.
+
+Q>	Min sajt är öppen för alla åldrar och männsikor, ändå svär folk jämt i chattrutan - Hur kan jag stoppa detta?
+A>	Gå till preferenser i din adminsektion, leta upp alternativen för skyddande av underåriga. Där kan du lägga till en lista på ord som skall bytas ut mot något annat ord eller mening som du också anger, t.ex. ordet CENSURERAT. När något av orden i listan hittas på din sajt kommer det att bytas ut mot det du angett.

@@ -1,0 +1,6 @@
+
+Q>	Vad är en nerladdningsvärd?
+A>	Den låter dig gruppera nerladdningar i olika kategorier.
+
+Q>	Jag vill lägga till en fil för nerladdning, men den dyker inte upp i listan - varför inte?
+A>	Enbart filer i e107_files/downloads katalogen visas i rullgardinsmenyn. Kopiera filen till den katalogen så kommer den att dyka upp. Detsamma gäller bilder, de måsta finnas i e107_files/downloadimages foldern.

@@ -1,0 +1,6 @@
+
+Q>	Jag vill tillåta att användare laddar upp filer till sajten men jag är oroad över säkerheten...
+A>	Det finns några saker att göra för att öka säkerheten. Först, använd binär lagring, de uppladdade filerna kommer då att sparas i MySQL databasen och är därför inte tillgängliga för någon annan än nerladdningen. Ange också en lista över tillåtna filtyper, om någon laddar upp en annan filtyp än de tillåtna kommer filen omedelbart att raderas från din server.
+
+Q>	Jag har fått några filer uppladdade, vad gör jag nu?
+A>	Du kan välja att kopiera dem till nerladdningshanteraren för att låta andra ladda hem dem, och kopiera informationen till din nyhetssektion för att skapa en nyhetspost om filen.

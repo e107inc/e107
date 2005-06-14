@@ -1,0 +1,18 @@
+
+Q>	Jag definierade en ny banner från adminarean, men den visas inte - varför?
+A>	Temat du använder måste känna till hur det skall visa en banner. Öppna theme.php för det temat och se till att du har {BANNER} eller {BANNER=yourcampaignname} i $HEADER sektionen.
+
+Q>	Jag vill ha en uppsättning banners i en area och en annan uppsättning i en annan area - hur?
+A>	Du kan gruppera banners under 'kampanjer', och sedan sätta upp ditt tema att visa banners från särskilda kampanjer. T.ex. om du har 2 kampanjer, kallade cam_1 och cam_2, sätter du {BANNER=cam1} i en area av din $HEADER sektion i theme.php kommer den bara att visa cam_1 banners, och sätter du {BANNER=cam_2} i en annan area kommer den vara att visa cam_2 banners. Sätter du {BANNER} (utan kampanjnamn) i din theme.php kommer slumpvisa banners att visas från alla kampanjer.
+
+Q>	Vad är klients inloggning och lösenord till för?
+A>	Du kan ange ett inloggningsnamn och lösenord för dina bannerklienter, genom att använda dessa kan de få tillgång till information om deras banners resultat genom att gå till http://www.dinsajt.com/banner.php och ange sina inloggninsuppgifter.
+
+Q>	Hur kan jag få en 'stående' bannertyp i ett menyobjekt?
+A>	Först måste du definiera kampanjen för stående bannertyper (detta kommer att skilja dem från andra banners)...
+	1. Gå till din adminarea och klicka på banners.
+	2. Ange dina stående banners, se till att du använder ett nytt kampanjnamn.
+	3. Gå nu till din menykonfiguration och aktivera Banner_menu i en av dina menyområden.
+	4. Klicka på 'Konfigurera' länken i menyobjektet.
+	5. Ange rubriken (som standard är den 'Annons'), och andra kampanjnamnet du definierad förut.
+	6. Lämna din admin area och du kommer att se din(a) stående banner(s) i arean du tilldelade dem.

@@ -1,0 +1,12 @@
+
+Q>	Vad är BBCode?
+A>	BBCode är en genväg till en HTML tagg, t.ex. genom att skriva  &#91;b] Jag är fetstil! &#91;/b] i någon av dina admin textrutor så kommer texten inom &#91;b] och &#91;/b] att visas i fetstil, så [b]Jag är fetstil![/b] kommer att visas på skärmen.
+
+Q>	Men vad är det bra för?
+A>	Den spar tid när man skall använda HTML taggar. Du kan använda normala HTML taggar i dina textrutor men om du använder BBCode kommer ditt skrivande att gå mycket fortare.
+
+Q>	När jag klickar på någon av BBCode knapparna för att skriva koden klistars den in i slutet av min text, inte där markören är - varför?
+A>	Det finns en bugg i Internet Explorer som kan få den att krascha om e107 försöker att skriva koden vid markörpositione, så av kompatibilitetsskäl läggs koden in i slutet av din text.
+
+Q>	Vilka BBkoder kan jag använda?
+A>	Låt din musmarkör sväva över någon av BBkod-rutorna så kommer du att se att en liten förklaring visas just över knapparna. Det finns också koder för länkar &#91;url] &#91;/url] och e-post &#91;email] &#91;/email], även här kan vanliga HTML taggar användas. Alla webbadresser och e-postadresser som läggs in görs automatiskt till klickbara hyperlänkar.

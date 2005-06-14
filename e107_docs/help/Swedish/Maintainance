@@ -1,0 +1,6 @@
+
+Q>	Vad är detta till för?
+A>	Här kan du göra din sajt oåtkomlig för besökare, använd detta om du uppgraderar din sajt eller om du behöver ta ner sajten av någon anledning. Endast sajtens huvuadmin kan logga in på sajten när den är i underhållsläge, detta kommer också att meddelas genom en text på alla sidor.
+
+Q>	Hjälp! Jag satte underhållsflaggan och loggade ut av misstag, hur kommer jag tillbaka till min adminsektion för att sätta sajten online igen?
+A>	Gå till http://www.dinsajt.com/e107_admin.php/admin.php och logga in därifrån.

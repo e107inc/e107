@@ -1,0 +1,15 @@
+
+Q>	Hur kan jag ändra teman?
+A>	Det finns en sektion på din Preferens sida som låter dig ändra sajtens tema. Förhandsgranska temat först eftersom en del äldre teman inte längre är kompatibla och kan göra ditt system obrukbart om de används.
+
+Q>	Vad är COPPA?
+A>	Det står för Children's Online Privacy Protection Act of 1998. Det är ett globalt använt regelverk som avser att skydda barn 13 år och under. Det försäkrar bland annat att ingen information om minderåriga kommer att användas av 'Operatören' (dvs, Du) för andra skäl än att underhålla webbsajten. För mer information se http://www.cdt.org/legislation/105th/privacy/coppa.html.
+
+Q>	Vad är flödesskyddet?
+A>	Det förhindrar att din sajt blir bomarderad (flödad) av HTTP anrop som kan göra din sajt onåbar.
+
+Q>	Skall jag använda kakor eller sessioner för att spåra mina användare?
+A>	Det är upp till dig, om din sajt använder kakor (standardinställning), lämna den så. Om du föredrar PHP sessioner, använd då dem (en särskild sessionshanterare används av e107 för att lagra och hantera sessioner).
+
+Q>	Varför skall jag köra min sajt i standardläge?
+A>	Om du utvecklar ett tema och har problem med att det visas felaktigt i Firefox/Mozilla och IE, prova att markera denna rutan. IE kommer då att köras i standardläge och visa den korrekta box modellen.

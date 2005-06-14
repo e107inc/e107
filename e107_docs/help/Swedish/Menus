@@ -1,0 +1,12 @@
+
+Q>	Vad är menyer?
+A>	De är objekt som visas i menyområdena (eller kolumnerna) på din sajt. De kan innehålla text, länkar eller vad som helst.
+
+Q>	Hur kan jag aktivera ett menyobjekt?
+A>	Gå till din admin area och klicka på menyer. Då kommer du att se huvudlayouten för din sajt med en lista av alla menyer i deras respektive areor. Menyobjekten i mitten är inaktiva, du kan flytta dem till ett aktivt område genom att klicka på Aktivera denna meny. Du kan också flytta menyn uppåt eller nedåt i kolumnen när den väl är aktiverad.
+
+Q>	Jag behöver lägga in text inuti ett menyobjekt, hur gör jag det?
+A>	Gå till admin arean och klicak på Egna menyer. Därifrån kan du lägga in vilken text du vill i en meny och den sparas och blir tillgänglig som vilken annan meny som helst.
+
+Q>	Hur kan jag ändra alternativen för ett menyobjekt?
+A>	Om en konfigurationspanel är tillgänglig kommer du att se en länk till den (kallad 'Konfigurera') i menyrutan när den har aktiverats.
