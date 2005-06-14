@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/np_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-11 23:22:00 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-14 22:37:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
-@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_np.php");
-@include(e_LANGUAGEDIR."English/lan_np.php");
+@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_np.php");
+@include_once(e_LANGUAGEDIR."English/lan_np.php");
 
 class nextprev {
 	function nextprev($url, $from, $view, $total, $td, $qs = "") {

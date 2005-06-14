@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2005-06-11 23:32:35 $
+|     $Revision: 1.56 $
+|     $Date: 2005-06-14 22:37:13 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -37,13 +37,12 @@ class sitelinks
 		if ($sql->db_Select('links', '*', "link_category = $cat and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC")){
 			while ($row = $sql->db_Fetch())
 			{
-				if (substr($row['link_name'], 0, 8) == 'submenu.')
-				{
-					$tmp=explode('.', $row['link_name'], 3);
-					$this->eLinkList[$tmp[1]][]=$row;
-				}
-				else
-				{
+			//	if (substr($row['link_name'], 0, 8) == 'submenu.'){
+			//		$tmp=explode('.', $row['link_name'], 3);
+			 //		$this->eLinkList[$tmp[1]][]=$row;
+				if ($row['link_parent'] != 0){
+					$this->eLinkList['sub_'.$row['link_parent']][]=$row;
+				}else{
 					$this->eLinkList['head_menu'][] = $row;
 				}
 			}
@@ -94,23 +93,19 @@ class sitelinks
 		$menu_count = 0;
 		$text = $style['prelink'];
 
-		if ($style['linkdisplay'] != 3)
-		{
-			foreach ($this->eLinkList['head_menu'] as $link)
-			{
-				$main_linkname = $link['link_name'];
+		if ($style['linkdisplay'] != 3)	{
+			foreach ($this->eLinkList['head_menu'] as $link){
+				$main_linkid = "sub_".$link['link_id'];
 
-				$link['link_expand'] = (isset($pref['sitelinks_expandsub']) && isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])) ?  TRUE : FALSE;
+				$link['link_expand'] = (isset($pref['sitelinks_expandsub']) && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;
 
 				$text .= $this->makeLink($link,'', $style);
 
 				// if there's a submenu. :
-				if (isset($this->eLinkList[$main_linkname]) && is_array($this->eLinkList[$main_linkname])){
-
-					$substyle = (eregi($link['link_url'],e_SELF) || eregi($main_linkname,e_SELF) || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
-					$text .= "\n\n<div id='sub_".$main_linkname."' style='display:$substyle'>\n";
-					foreach ($this->eLinkList[$main_linkname] as $sub)
-					{
+				if (isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])){
+					$substyle = (eregi($link['link_url'],e_SELF) || eregi($link['link_name'],e_SELF)  || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
+					$text .= "\n\n<div id='{$main_linkid}' style='display:$substyle'>\n";
+					foreach ($this->eLinkList[$main_linkid] as $sub){
 						$text .= $this->makeLink($sub, TRUE, $style);
 					}
 					$text .= "\n</div>\n";
@@ -118,8 +113,7 @@ class sitelinks
 				}
 			}
 			$text .= $style['postlink'];
-			if ($style['linkdisplay'] == 2)
-			{
+			if ($style['linkdisplay'] == 2)	{
 				$text = $ns->tablerender(LAN_183, $text, 'sitelinks', TRUE);
 			}
 		}
@@ -127,7 +121,7 @@ class sitelinks
 		{
 			foreach($this->eLinkList['head_menu'] as $link)
 			{
-				if (!count($this->eLinkList[$link['link_name']]))
+				if (!count($this->eLinkList['sub_'.$link['link_id']]))
 				{
 					$text .= $this->makeLink($link,'', $style);
 				}
@@ -161,8 +155,10 @@ class sitelinks
 
 		// If submenu: Fix Name, Add Indentation.
 		if ($submenu == TRUE) {
-			$tmp = explode('.', $linkInfo['link_name'], 3);
-			$linkInfo['link_name'] = $tmp[2];
+			if(substr($linkInfo['link_name'],0,8) == "submenu."){
+				$tmp = explode('.', $linkInfo['link_name'], 3);
+				$linkInfo['link_name'] = $tmp[2];
+			}
 			$indent = ($style['linkdisplay'] != 3) ? "&nbsp;&nbsp;" : "";
 		}
 
@@ -177,7 +173,7 @@ class sitelinks
 
 		// Check if its expandable first. It should override its URL.
 		if (isset($linkInfo['link_expand']) && $linkInfo['link_expand']){
-			$href = " href=\"javascript: expandit('sub_".$linkInfo['link_name']."')\"";
+			$href = " href=\"javascript: expandit('sub_".$linkInfo['link_id']."')\"";
 		} elseif ($linkInfo['link_url']){
 
 			// Only add the e_BASE if it actually has an URL.
@@ -200,7 +196,7 @@ class sitelinks
 				$href = " href='".$linkInfo['link_url']."'";
 			}
 
-			// I have no idea what this does.
+			// Open link in a new window.  (equivalent of target='_blank' )
 			$link_append = ($linkInfo['link_open'] == 1) ? " rel='external'" : "";
 		}
 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/traffic_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-12 23:13:01 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-14 22:37:14 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 class e107_traffic {
@@ -161,7 +161,7 @@ class e107_traffic {
 		if (!E107_DBG_TRAFFIC) return '';
 
 		$text = '';
-		@include(e_HANDLER.'traffic_class_display.php');
+		@include_once(e_HANDLER.'traffic_class_display.php');
 		return $text;
 	}
 }

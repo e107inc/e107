@@ -12,14 +12,14 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.8 $
-|   $Date: 2005-05-22 16:04:14 $
-|   $Author: stevedunstan $
+|   $Revision: 1.9 $
+|   $Date: 2005-06-14 22:37:14 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 	
-@include(e_LANGUAGEDIR.e_LANGUAGE."/lan_upload_handler.php");
-@include(e_LANGUAGEDIR."English/lan_upload_handler.php");
+@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_upload_handler.php");
+@include_once(e_LANGUAGEDIR."English/lan_upload_handler.php");
 function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 	 
 	global $pref, $sql;

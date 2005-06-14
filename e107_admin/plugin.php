@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-05-31 14:18:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.47 $
+|     $Date: 2005-06-14 22:37:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -119,7 +119,7 @@ if ($action == 'uninstall') {
 	$plug = $plugin->getinfo($id);
 	//Uninstall Plugin
 	if ($plug['plugin_installflag'] == TRUE ) {
-		include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
+		include_once(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 
 		$func = $eplug_folder.'_uninstall';
 		if (function_exists($func)) {
@@ -222,7 +222,7 @@ if ($action == 'install') {
 
 if ($action == 'upgrade') {
 	$plug = $plugin->getinfo($id);
-	include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
+	include_once(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 
 	$func = $eplug_folder.'_upgrade';
 	if (function_exists($func)) {
@@ -363,7 +363,7 @@ function render_plugs($pluginList){
 				unset($$varname);
 			}
 		}
-		include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
+		include_once(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 
    		if ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest) {
 			$img = (!$plug['plugin_installflag'] ? "<img src='".e_IMAGE."admin_images/uninstalled.png' alt='' />" : "<img src='".e_IMAGE."admin_images/installed.png' alt='' />");

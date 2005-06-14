@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-05-29 18:19:24 $
-|     $Author: sweetas $
+|     $Revision: 1.25 $
+|     $Date: 2005-06-14 22:37:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -57,7 +57,7 @@ class e107plugin {
 					unset($$varname);
 				}
 			}
-		 	include("{$p['path']}{$p['fname']}");
+		 	include_once("{$p['path']}{$p['fname']}");
 			$plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
 			if ((!$sql->db_Select("plugin", "plugin_id", "plugin_path = '{$plugin_path}'")) && $eplug_name){
 				if (!$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_sc && !$eplug_userclass && !$eplug_module && !$eplug_bb && !$eplug_latest && !$eplug_status)
@@ -317,7 +317,7 @@ class e107plugin {
 		$plug = $this->getinfo($id);
 
 		if ($plug['plugin_installflag'] == FALSE) {
-			include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
+			include_once(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 
 			$func = $eplug_folder.'_install';
 			if (function_exists($func)) {
