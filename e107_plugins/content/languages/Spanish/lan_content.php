@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-13 18:16:29 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-14 15:59:44 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -96,6 +96,9 @@ define("CONTENT_ADMIN_CAT_LAN_54", "Usuario");
 define("CONTENT_ADMIN_CAT_LAN_55", "Usuarios");
 define("CONTENT_ADMIN_CAT_LAN_56", "Elemento");
 define("CONTENT_ADMIN_CAT_LAN_57", "Elementos");
+define("CONTENT_ADMIN_CAT_LAN_58", "Se ha transferido con éxito el icono de la categoría<br />Nota: ¡Todavía necesitarás asignar el icono a esta categoría en icono>escoger icono de área existente!<br />y por supuesto después necesitará enviar el formulario para crear o actualizar la categoría");
+define("CONTENT_ADMIN_CAT_LAN_59", "Icono de categoría no actualizado");
+define("CONTENT_ADMIN_CAT_LAN_60", "");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "Opciones");
 define("CONTENT_ADMIN_OPT_LAN_1", "Crear un formulario para contenidos en el área del administrador");
@@ -236,7 +239,7 @@ define("CONTENT_ADMIN_OPT_LAN_135", "Puede renderizar el principal, sub e hijos 
 define("CONTENT_ADMIN_OPT_LAN_136", "Cada uno en menús separados");
 define("CONTENT_ADMIN_OPT_LAN_137", "Combinar en un menú");
 define("CONTENT_ADMIN_OPT_LAN_138", "Páginas de contenidos. (La página donde mostrará un contenido)");
-define("CONTENT_ADMIN_OPT_LAN_139", "Escoja que secciones se mostrarán cuando vea un contenido");
+define("CONTENT_ADMIN_OPT_LAN_139", "Escoja que secciones deberán mostrarse cuando vea un contenido");
 define("CONTENT_ADMIN_OPT_LAN_140", "Propiedades de menú");
 define("CONTENT_ADMIN_OPT_LAN_141", "Título");
 define("CONTENT_ADMIN_OPT_LAN_142", "Defina un título al menú");
@@ -376,7 +379,7 @@ define("CONTENT_ADMIN_OPT_LAN_275", "Activado, una caja de navegador se mostrar�
 define("CONTENT_ADMIN_OPT_LAN_276", "Opciones de orden");
 define("CONTENT_ADMIN_OPT_LAN_277", "¿Debe mostrar una opción de orden?");
 define("CONTENT_ADMIN_OPT_LAN_278", "Activado, se mostrará una opción de orden para ordenar los contenidos de la página.Compruebe las páginas que necesitarán mostrarse");
-define("CONTENT_ADMIN_OPT_LAN_279", "");
+define("CONTENT_ADMIN_OPT_LAN_279", "Página de máxima puntuación (La página donde ojear los contenidos que tienen puntuación en el principal)");
 define("CONTENT_ADMIN_OPT_LAN_280", "Todas las categorías");
 define("CONTENT_ADMIN_OPT_LAN_281", "Un categoría");
 define("CONTENT_ADMIN_OPT_LAN_282", "Todos los autores");
@@ -385,12 +388,12 @@ define("CONTENT_ADMIN_OPT_LAN_284", "Reciente");
 define("CONTENT_ADMIN_OPT_LAN_285", "Contenido");
 define("CONTENT_ADMIN_OPT_LAN_286", "Más valorado");
 define("CONTENT_ADMIN_OPT_LAN_287", "Archivo");
-define("CONTENT_ADMIN_OPT_LAN_288", "");
+define("CONTENT_ADMIN_OPT_LAN_288", "Puntuación");
 define("CONTENT_ADMIN_OPT_LAN_289", "");
-define("CONTENT_ADMIN_OPT_LAN_290", "");
-define("CONTENT_ADMIN_OPT_LAN_291", "");
-define("CONTENT_ADMIN_OPT_LAN_292", "");
-define("CONTENT_ADMIN_OPT_LAN_293", "");
+define("CONTENT_ADMIN_OPT_LAN_290", "Escoja que secciones deben mostrarse cuando vea la página más valorada");
+define("CONTENT_ADMIN_OPT_LAN_291", "Escoja que secciones deben mostrarse cuando vea la página de máxima puntuación");
+define("CONTENT_ADMIN_OPT_LAN_292", "Enlace:  Máxima puntuación");
+define("CONTENT_ADMIN_OPT_LAN_293", "¿Debe mostrar el enlace 'elementos de más puntuación' en la página?");
 define("CONTENT_ADMIN_OPT_LAN_294", "");
 define("CONTENT_ADMIN_OPT_LAN_295", "");
 define("CONTENT_ADMIN_OPT_LAN_296", "");
@@ -588,6 +591,7 @@ define("CONTENT_ADMIN_MENU_LAN_18", "Página autor");
 define("CONTENT_ADMIN_MENU_LAN_19", "Gestor de contenidos");
  define("CONTENT_ADMIN_MENU_LAN_20", "Página más valorada");
 define("CONTENT_ADMIN_MENU_LAN_21", "Páginas");
+define("CONTENT_ADMIN_MENU_LAN_22", "Página de máxima puntuación");
 
 define("CONTENT_ADMIN_JS_LAN_0", "¿Está seguro de eliminar esta categoría?");
 define("CONTENT_ADMIN_JS_LAN_1", "¿Está seguro de eliminar este contenido?");
@@ -636,6 +640,7 @@ define("CONTENT_PAGETITLE_LAN_11", "Editar elementos");
 define("CONTENT_PAGETITLE_LAN_12", "Crear elementos");
 define("CONTENT_PAGETITLE_LAN_13", "Categorías");
 define("CONTENT_PAGETITLE_LAN_14", "ListaAutor");
+define("CONTENT_PAGETITLE_LAN_15", "Máxima puntuación");
   	 
 define("CONTENT_SEARCH_LAN_0", "No se encontraron contenidos con esas palabras.");
   	 
@@ -661,11 +666,11 @@ define("CONTENT_LAN_4", "Lista autor");
 define("CONTENT_LAN_5", "Autor");
 define("CONTENT_LAN_6", "Todas las categorías");
 define("CONTENT_LAN_7", "Todos los autores");
-define("CONTENT_LAN_8", "los más valorados");
+define("CONTENT_LAN_8", "Los más valorados");
 define("CONTENT_LAN_9", "en");
 define("CONTENT_LAN_10", "en");
 define("CONTENT_LAN_11", "por");
-define("CONTENT_LAN_12", "");
+define("CONTENT_LAN_12", "Elementos más puntuados");
 define("CONTENT_LAN_13", "");
 define("CONTENT_LAN_14", "");
 define("CONTENT_LAN_15", "");
@@ -739,9 +744,9 @@ define("CONTENT_LAN_82", "Sin elementos todavía");
 define("CONTENT_LAN_83", "Elemento archivo");
 define("CONTENT_LAN_84", "Contenido archivo");
 define("CONTENT_LAN_85", "ListaAutor");
-define("CONTENT_LAN_86", "");
-define("CONTENT_LAN_87", "");
-define("CONTENT_LAN_88", "");
+define("CONTENT_LAN_86", "Ver los elementos más puntuados");
+define("CONTENT_LAN_87", "Contenido de más puntuación");
+define("CONTENT_LAN_88", "No hay contenidos con puntuación todavía");
 define("CONTENT_LAN_89", "");
 
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "En este punto no se permiten sumisiones de categorías de contenido");
