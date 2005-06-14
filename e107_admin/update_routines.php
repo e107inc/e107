@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.103 $
-|     $Date: 2005-06-11 13:19:42 $
-|     $Author: streaky $
+|     $Revision: 1.104 $
+|     $Date: 2005-06-14 20:00:42 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -756,14 +756,38 @@ function update_61x_to_700($type) {
 		if($fieldname != "download_visible"){
 			mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_visible` varchar(255) NOT NULL default '0' ;");
 			mysql_query("UPDATE `".MPREFIX."download` SET download_visible = download_class");
-       		mysql_query("ALTER TABLE `".MPREFIX."download` CHANGE `download_class` `download_class` varchar(255) NOT NULL default '0'");
+			mysql_query("ALTER TABLE `".MPREFIX."download` CHANGE `download_class` `download_class` varchar(255) NOT NULL default '0'");
 
 
 		}
 
 		mysql_query("ALTER TABLE `".MPREFIX."download_category` CHANGE `download_category_class` `download_category_class` varchar(255) NOT NULL default '0'");
 
-        // Save all prefs that were set in above update routines
+
+		// Links Update for using Link_Parent. .
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."links");
+		$fieldname = mysql_field_name($fields, 7);
+		if($fieldname != "link_parent"){
+			mysql_query("ALTER TABLE `".MPREFIX."links` CHANGE `link_refer` `link_parent` INT( 10 ) UNSIGNED DEFAULT '0' NOT NULL");
+			$sql -> db_Select("links", "link_id,link_name", "link_name NOT LIKE 'submenu.%' ORDER BY link_name");
+			while($row = $sql-> db_Fetch()){
+				$name = $row['link_name'];
+				$parent[$name] = $row['link_id'];
+			}
+        	if(!is_object($sql2)){
+        		$sql2 = new db;
+			}
+			$sql -> db_Select("links", "link_id,link_name", "link_name LIKE 'submenu.%' ORDER BY link_name");
+			while($row = $sql-> db_Fetch()){
+				$tmp = explode(".",$row['link_name']);
+            	$nm = $tmp[1];
+				$id = $row['link_id'];
+		   		$sql2 -> db_Update("links", "link_parent='".$parent[$nm]."' WHERE link_id ='$id' ");
+			}
+        }
+
+
+		// Save all prefs that were set in above update routines
 		if ($s_prefs == TRUE) {
 			save_prefs();
 		}
@@ -773,11 +797,15 @@ function update_61x_to_700($type) {
 	} else {
 		global $sysprefs;
 
+		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."links");
+		$fieldname = mysql_field_name($fields, 7);
+		if($fieldname != "link_parent"){
+			return FALSE;
+		}
 
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");
 		$fieldname = mysql_field_name($fields, 36);
-		if($fieldname != "user_xup")
-		{
+		if($fieldname != "user_xup"){
 			return FALSE;
 		}
 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-05-17 14:26:14 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.38 $
+|     $Date: 2005-06-14 20:00:41 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -90,21 +90,11 @@ if (isset($_POST['updateoptions'])) {
 
 if ($delete == 'main')
 {
-	if($sql->db_Select("links", "link_id, link_name, link_order", "link_id='".$del_id."'"))
-	{
+	if($sql->db_Select("links", "link_id, link_name, link_order", "link_id='".$del_id."'")){
 		$row = $sql->db_Fetch();
-		if($sql->db_Select("links", "link_id, link_order","link_name LIKE 'submenu.{$row['link_name']}.%'"))
-		{
-			$subList = $sql->db_getList();
-		}
-		
 		$msg = $linkpost->delete_link($row);
-		foreach($subList as $row)
-		{
-			$msg .= $linkpost->delete_link($row);
-		}
-		if($msg)
-		{
+
+		if($msg){
 			$e107cache->clear("sitelinks");
 			$linkpost->show_message($msg);
 		}
@@ -149,22 +139,23 @@ class links {
 				<td class='fcaption' style='width:5%'>".LAN_ORDER."</td>
 				</tr>";
 			while ($row = $sql->db_Fetch()) {
-
-				if (substr($row['link_name'], 0, 8) == 'submenu.')				{
-					$tmp=explode('.', $row['link_name'], 3);
-					$linklist[$tmp[1]][]=$row;
+                if($row['link_parent'] ==0){
+                  	$linklist['head_menu'][] = $row;
+					$parents[] = $row['link_id'];
 				}else{
-					$linklist['head_menu'][] = $row;
+					$pid = $row['link_parent'];
+                	$linklist['sub_'.$pid][] = $row;
 				}
-
 			}
+
+
 
 			foreach ($linklist['head_menu'] as $lk) {
 				$lk['link_total'] = $link_total;
 				$text .= $this->display_row($lk);
-				$main_linkname = $lk['link_name'];
-				if($linklist[$main_linkname]){
-					foreach ($linklist[$main_linkname] as $sub) {
+				$main_linkid = $lk['link_id'];
+				if($linklist['sub_'.$main_linkid]){
+					foreach ($linklist['sub_'.$main_linkid] as $sub) {
 						$sub['link_total'] = $link_total;
 						$text .= $this->display_row($sub);
 					}
@@ -183,12 +174,13 @@ class links {
 	}
 
 	function display_row($row2,$link_total){
-		global $sql, $rs, $ns, $tp;
+		global $sql, $rs, $ns, $tp,$parents;
 		extract($row2);
-		if(eregi("submenu.",$link_name)){
+		if(eregi("submenu.",$link_name) || $link_parent !=0){
 			$tmp = explode(".",$link_name);
 			$link_name = "<span style='padding-left:30px'>".$tmp[2]."</span>";
 		}
+
 
 				$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle' title='".$link_description."'>";
 				$text .= $link_button ? "<img src='".e_IMAGE."icons/".$link_button."' alt='' /> ":
@@ -238,7 +230,6 @@ class links {
 		if(eregi("submenu.",$link_name)){
 			$tmp = explode(".",$link_name);
 			$link_name = $tmp[2];
-			$sublink = $tmp[1];
 		}
 
 		$handle = opendir(e_IMAGE."icons");
@@ -258,10 +249,10 @@ class links {
 			<td style='width:70%' class='forumheader3'>
 			<select class='tbox' name='link_parent' >
 			<option value=''>".LINKLAN_3."</option>";
-			$sql -> db_Select("links", "*", "link_name NOT LIKE 'submenu.%' ORDER BY link_name");
+			$sql -> db_Select("links", "*", "link_parent='0' ORDER BY link_name");
 			while($row = $sql-> db_Fetch()){
-				$sel = ($sublink == $row['link_name']) ? "selected='selected'" : "";
-				$text .="<option value='".$row['link_name']."' $sel>".$row['link_name']."</option>";
+				$sel = ($link_parent == $row['link_id']) ? "selected='selected'" : "";
+				$text .="<option value='".$row['link_id']."|".$row['link_name']."' $sel>".$row['link_name']."</option>";
 			}
 
 		$text .= "</select></td>
@@ -361,7 +352,9 @@ class links {
 		}
 
 		if($_POST['link_parent']){
-        	$link_name = $tp->toDB(("submenu.".$_POST['link_parent'].".".$_POST['link_name']));
+			$tmp = explode("|",$_POST['link_parent']);
+			$link_name = $tp->toDB(("submenu.".$tmp[1].".".$_POST['link_name']));
+			$parent_id = $tmp[0];
 		}else{
 			$link_name = $tp->toDB($_POST['link_name']);
 		}
@@ -370,13 +363,12 @@ class links {
 		$link_button = $tp->toDB($_POST['link_button']);
 
 		$link_t = $sql->db_Count("links", "(*)");
-
 		if ($id) {
-			$sql->db_Update("links", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".$_POST['linkrender']."', link_open='".$_POST['linkopentype']."', link_class='".$_POST['link_class']."' WHERE link_id='$id'");
+			$sql->db_Update("links", "link_parent='$parent_id', link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".$_POST['linkrender']."', link_open='".$_POST['linkopentype']."', link_class='".$_POST['link_class']."' WHERE link_id='$id'");
 			$e107cache->clear("sitelinks");
 			$this->show_message(LCLAN_3);
 		} else {
-			$sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', '".$_POST['linkrender']."', '".($link_t+1)."', '0', '".$_POST['linkopentype']."', '".$_POST['link_class']."'");
+			$sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', '".$_POST['linkrender']."', '".($link_t+1)."', '$parent_id', '".$_POST['linkopentype']."', '".$_POST['link_class']."'");
 			$e107cache->clear("sitelinks");
 			$this->show_message(LCLAN_2);
 		}
@@ -418,23 +410,28 @@ class links {
 			</div>";
 		$ns->tablerender(LCLAN_88, $text);
 	}
-	
-	function delete_link($linkInfo)
-	{
+
+	function delete_link($linkInfo)	{
 		global $sql;
-		
-		if ($sql->db_Select("links", "link_id", "link_order > '{$linkInfo['link_order']}'"))
-		{
+
+		if ($sql->db_Select("links", "link_id", "link_order > '{$linkInfo['link_order']}'")){
 			$linkList = $sql->db_getList();
-			foreach($linkList as $l)
-			{
+			foreach($linkList as $l){
 				$sql->db_Update("links", "link_order = link_order -1 WHERE link_id = '{$l['link_id']}'");
 			}
 		}
-		if ($sql->db_Delete("links", "link_id='".$linkInfo['link_id']."'"))
-		{
+
+
+		if ($sql->db_Delete("links", "link_id='".$linkInfo['link_id']."'")){
+			// Update ophaned sublinks.
+			$sql->db_Update("links", "link_name = SUBSTRING_INDEX(link_name, '.', -1) , link_parent = '0', link_class='255' WHERE link_parent= '".$linkInfo['link_id']."'");
+
 			return LCLAN_53." #".$linkInfo['link_id']." ".LCLAN_54."<br />";
+		}else{
+        	return DELETED_FAILED;
 		}
+
+
 	}
 }
 
