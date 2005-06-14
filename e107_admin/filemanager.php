@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-05-05 20:59:42 $
-|     $Author: stevedunstan $
+|     $Revision: 1.17 $
+|     $Date: 2005-06-14 23:35:14 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -70,31 +70,22 @@ foreach($_POST['deleteconfirm'] as $key=>$delfile){
 	}
 
 	// check for move to downloads or downloadimages.
-	if (isset($_POST['selectedfile'][$key]) && (isset($_POST['movetodls'])|| isset($_POST['movetodlimages'])) ){
+	if (isset($_POST['selectedfile'][$key]) && (isset($_POST['movetodls'])) ){
 	$newfile = str_replace($path,"",$delfile);
 
-	// downloads folder
+	// Move file to whatever folder.
 		if (isset($_POST['movetodls'])){
-			if (preg_match("#^/#",$DOWNLOADS_DIRECTORY) || preg_match("#.:#",$DOWNLOADS_DIRECTORY)){
-				$newpath = $DOWNLOADS_DIRECTORY;
+
+			$newpath = $_POST['movepath'];
+
+			if (rename(e_BASE.$delfile,$newpath.$newfile)){
+				$message .= FMLAN_38." ".$newpath.$newfile."<br />";
 			} else {
-				$newpath = e_BASE.$DOWNLOADS_DIRECTORY;
+				$message .= FMLAN_39." ".$newpath.$newfile."<br />";
+				$message .= (!is_writable($newpath)) ? $newpath.LAN_NOTWRITABLE : "";
 			}
 		}
-	// download images folder.
-		if (isset($_POST['movetodlimages'])){
-			$newpath = e_FILE."downloadimages/";;
-		}
-
-		if (rename(e_BASE.$delfile,$newpath.$newfile)){
-			$message .= FMLAN_38." ".$newpath.$newfile."<br />";
-		} else {
-			$message .= FMLAN_39." ".$newpath.$newfile."<br />";
-			$message .= (!is_writable($newpath)) ? $newpath.LAN_NOTWRITABLE : "";
-		}
 	}
-
-
 }
 
 
@@ -296,9 +287,43 @@ while ($files[$c]) {
 
 	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:right'>";
 
-	if ($pubfolder){
-		$text .="<input class=\"button\" type=\"submit\" name=\"movetodls\" value=\"".FMLAN_41."\" onclick=\"return jsconfirm('".$tp->toJS(FMLAN_44)."') \" />
-		<input class=\"button\" type=\"submit\" name=\"movetodlimages\" value=\"".FMLAN_42."\" onclick=\"return jsconfirm('".$tp->toJS(FMLAN_45)."') \" />";
+	if ($pubfolder || e_QUERY == ""){
+        require_once(e_HANDLER."file_class.php");
+		$fl = new e_file;
+		$dl_dirlist = $fl->get_dirs(e_DOWNLOAD);
+		$movechoice = array();
+        $movechoice[] = e_DOWNLOAD;
+		foreach($dl_dirlist as $dirs){
+        	$movechoice[] = e_DOWNLOAD.$dirs."/";
+		}
+		sort($movechoice);
+		$movechoice[] = e_FILE."downloadimages/";
+		if(e_QUERY != str_replace("../","",e_FILE."public/")){
+        	$movechoice[] = e_FILE."public/";
+		}
+		if(e_QUERY != str_replace("../","",e_FILE."downloadthumbs/")){
+        	$movechoice[] = e_FILE."downloadthumbs/";
+		}
+		if(e_QUERY != str_replace("../","",e_FILE."misc/")){
+        	$movechoice[] = e_FILE."misc/";
+		}
+		if(e_QUERY != str_replace("../","",e_IMAGE)){
+        	$movechoice[] = e_IMAGE;
+		}
+		if(e_QUERY != str_replace("../","",e_IMAGE."newspostimages/")){
+        	$movechoice[] = e_IMAGE."newspostimages/";
+		}
+
+
+
+
+        $text .= FMLAN_48."&nbsp;<select class='tbox' name='movepath'>\n";
+        foreach($movechoice as $paths){
+        	$text .= "<option value='$paths'>".str_replace("../","",$paths)."</option>\n";
+		}
+		$text .= "</select>&nbsp;";
+		$text .="<input class=\"button\" type=\"submit\" name=\"movetodls\" value=\"".FMLAN_50."\" onclick=\"return jsconfirm('".$tp->toJS(FMLAN_49)."') \" />
+		";
 	}
 
 	$text .= "<input class=\"button\" type=\"submit\" name=\"deletefiles\" value=\"".FMLAN_43."\" onclick=\"return jsconfirm('".$tp->toJS(FMLAN_46)."') \" />
