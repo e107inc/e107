@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/content_type_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-09 21:01:35 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-14 19:33:20 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ if(!$CONTENT_TYPE_TABLE_START){
 if(!$CONTENT_TYPE_TABLE){
 				$CONTENT_TYPE_TABLE = "
 				<tr>
-					<td class='forumheader3' style='width:5%; white-space:nowrap;' rowspan='2'>{CONTENT_TYPE_TABLE_ICON}</td>
+					<td class='forumheader3' style='width:5%; white-space:nowrap; padding-bottom:5px;' rowspan='2'>{CONTENT_TYPE_TABLE_ICON}</td>
 					<td class='fcaption'>{CONTENT_TYPE_TABLE_HEADING}</td>
 					<td class='forumheader' style='width:5%; white-space:nowrap; text-align:right;'>{CONTENT_TYPE_TABLE_TOTAL} {CONTENT_TYPE_TABLE_TOTAL_LAN}</td>
 				</tr>
@@ -51,7 +51,7 @@ if(!$CONTENT_TYPE_TABLE){
 if(!$CONTENT_TYPE_TABLE_SUBMIT){
 				$CONTENT_TYPE_TABLE_SUBMIT = "
 				<tr>
-					<td class='forumheader3' style='width:5%; white-space:nowrap;' rowspan='2'>{CONTENT_TYPE_TABLE_SUBMIT_ICON}</td>
+					<td class='forumheader3' style='width:5%; white-space:nowrap; padding-bottom:5px;' rowspan='2'>{CONTENT_TYPE_TABLE_SUBMIT_ICON}</td>
 					<td class='fcaption' colspan='2'>{CONTENT_TYPE_TABLE_SUBMIT_HEADING}</td>
 				</tr>
 				<tr><td class='forumheader2' colspan='2'>{CONTENT_TYPE_TABLE_SUBMIT_SUBHEADING}</td></tr>\n";
@@ -59,7 +59,7 @@ if(!$CONTENT_TYPE_TABLE_SUBMIT){
 if(!$CONTENT_TYPE_TABLE_MANAGER){
 				$CONTENT_TYPE_TABLE_MANAGER = "
 				<tr>
-					<td class='forumheader3' style='width:5%; white-space:nowrap;' rowspan='2'>{CONTENT_TYPE_TABLE_MANAGER_ICON}</td>
+					<td class='forumheader3' style='width:5%; white-space:nowrap; padding-bottom:5px;' rowspan='2'>{CONTENT_TYPE_TABLE_MANAGER_ICON}</td>
 					<td class='fcaption' colspan='2'>{CONTENT_TYPE_TABLE_MANAGER_HEADING}</td>
 				</tr>
 				<tr><td class='forumheader2' colspan='2'>{CONTENT_TYPE_TABLE_MANAGER_SUBHEADING}</td></tr>\n";
