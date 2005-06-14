@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.60 $
-|		$Date: 2005-06-13 14:03:53 $
+|		$Revision: 1.61 $
+|		$Date: 2005-06-14 10:41:53 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -257,6 +257,14 @@ class content{
 				$content_pref["content_top_authoremail_{$id}"] = "0";					//top : section: show author email
 				$content_pref["content_top_authoremail_nonmember_{$id}"] = "0";			//top : show link to email of non-member author
 
+				//TOP SCORE PAGE
+				$content_pref["content_score_icon_{$id}"] = "0";						//score : section: show icon
+				$content_pref["content_score_authorname_{$id}"] = "0";					//score : section: show authorname
+				$content_pref["content_score_authorprofile_{$id}"] = "0";				//score : section: show link to author profile
+				$content_pref["content_score_authoricon_{$id}"] = "0";					//score : section: show link to author list
+				$content_pref["content_score_authoremail_{$id}"] = "0";					//score : section: show author email
+				$content_pref["content_score_authoremail_nonmember_{$id}"] = "0";		//score : show link to email of non-member author
+
 				//CONTENT MANAGER
 				$content_pref["content_manager_class_{$id}"] = "0";						//contentmanager: class to narrow down the userlist
 
@@ -272,7 +280,8 @@ class content{
 				$content_pref["content_menu_viewallcat_{$id}"] = "1";					//menu: view link to all categories
 				$content_pref["content_menu_viewallauthor_{$id}"] = "1";				//menu: view link to all authors
 				$content_pref["content_menu_viewallitems_{$id}"] = "1";					//menu: view link to all items (archive)
-				$content_pref["content_menu_viewtoprated_{$id}"] = "1";					//menu: view link to top rated items
+				$content_pref["content_menu_viewtoprated_{$id}"] = "0";					//menu: view link to top rated items
+				$content_pref["content_menu_viewtopscore_{$id}"] = "0";					//menu: view link to top score items
 				$content_pref["content_menu_viewrecent_{$id}"] = "1";					//menu: view link to recent items
 				$content_pref["content_menu_viewsubmit_{$id}"] = "0";					//view link to submit content item (only if it is allowed)
 				$content_pref["content_menu_viewicon_{$id}"] = "0";						//choose icon to display for links
@@ -479,6 +488,9 @@ class content{
 			if($qs[0] == "top"){
 				$crumb .= " ".$sep." <a href='".e_SELF."?top.".$arr[$parent][0]."'>".CONTENT_LAN_8."</a>";
 			}
+			if($qs[0] == "score"){
+				$crumb .= " ".$sep." <a href='".e_SELF."?score.".$arr[$parent][0]."'>".CONTENT_LAN_12."</a>";
+			}
 			return $crumb."<br /><br />";
 		}
 
@@ -533,6 +545,12 @@ class content{
 						$sql -> db_Select($plugintable, "content_heading", "content_id='".$qs[1]."' ");
 						$row2 = $sql -> db_Fetch();
 						$page .= " / ".$row2['content_heading']." / ".CONTENT_PAGETITLE_LAN_4;
+
+					//top score of parent='2'
+					}elseif($qs[0] == "score" && is_numeric($qs[1]) && !isset($qs[2])){
+						$sql -> db_Select($plugintable, "content_heading", "content_id='".$qs[1]."' ");
+						$row2 = $sql -> db_Fetch();
+						$page .= " / ".$row2['content_heading']." / ".CONTENT_PAGETITLE_LAN_15;
 
 					//authorlist of parent='2'
 					}elseif($qs[0] == "author" && $qs[1] == "list" && is_numeric($qs[2])){
@@ -1011,7 +1029,7 @@ class content{
 						}
 
 						if($mode == "page" || ($mode == "menu" && ($content_pref["content_menu_links_$mainparent"] && $content_pref["content_menu_links_dropdown_$mainparent"]) || ($content_pref["content_menu_cat_$mainparent"] && $content_pref["content_menu_cat_dropdown_$mainparent"]) ) ){
-							if($mode == "menu"){ $style = "style='width:100%;' "; }
+							if($mode == "menu"){ $style = "style='width:100%;' "; }else{ $style = ""; }
 							$CONTENT_SEARCH_TABLE_SELECT = "
 							".$rs -> form_open("post", $plugindir."content.php".(e_QUERY ? "?".e_QUERY : ""), "contentredirect".$mode, "", "enctype='multipart/form-data'")."				
 							<select id='{$mode}value' name='{$mode}value' class='tbox' $style onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\">";					
@@ -1031,6 +1049,9 @@ class content{
 								}
 								if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_viewtoprated_$mainparent"])){
 								   $CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_8, 0, $plugindir."content.php?top.".$mainparent);
+								}
+								if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_viewtopscore_$mainparent"])){
+								   $CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_12, 0, $plugindir."content.php?score.".$mainparent);
 								}
 								if($mode == "page" || ($mode == "menu" && $content_pref["content_menu_viewrecent_$mainparent"])){
 								   $CONTENT_SEARCH_TABLE_SELECT .= $rs -> form_option(CONTENT_LAN_61, 0, $plugindir."content.php?recent.".$mainparent);

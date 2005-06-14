@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.58 $
-|		$Date: 2005-06-14 08:34:02 $
+|		$Revision: 1.59 $
+|		$Date: 2005-06-14 10:41:53 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -2415,8 +2415,9 @@ class contentform{
 						".$rs -> form_checkbox("content_breadcrumb_author_{$id}", 1, ($content_pref["content_breadcrumb_author_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_283."<br />
 						".$rs -> form_checkbox("content_breadcrumb_recent_{$id}", 1, ($content_pref["content_breadcrumb_recent_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_284."<br />
 						".$rs -> form_checkbox("content_breadcrumb_item_{$id}", 1, ($content_pref["content_breadcrumb_item_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_285."<br />
-						".$rs -> form_checkbox("content_breadcrumb_top_{$id}", 1, ($content_pref["content_breadcrumb_top_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_286."<br />
 						".$rs -> form_checkbox("content_breadcrumb_archive_{$id}", 1, ($content_pref["content_breadcrumb_archive_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_287."<br />
+						".$rs -> form_checkbox("content_breadcrumb_top_{$id}", 1, ($content_pref["content_breadcrumb_top_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_286."<br />
+						".$rs -> form_checkbox("content_breadcrumb_score_{$id}", 1, ($content_pref["content_breadcrumb_score_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_288."<br />
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -2464,8 +2465,9 @@ class contentform{
 						".$rs -> form_checkbox("content_navigator_author_{$id}", 1, ($content_pref["content_navigator_author_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_283."<br />
 						".$rs -> form_checkbox("content_navigator_recent_{$id}", 1, ($content_pref["content_navigator_recent_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_284."<br />
 						".$rs -> form_checkbox("content_navigator_item_{$id}", 1, ($content_pref["content_navigator_item_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_285."<br />
-						".$rs -> form_checkbox("content_navigator_top_{$id}", 1, ($content_pref["content_navigator_top_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_286."<br />
 						".$rs -> form_checkbox("content_navigator_archive_{$id}", 1, ($content_pref["content_navigator_archive_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_287."<br />
+						".$rs -> form_checkbox("content_navigator_top_{$id}", 1, ($content_pref["content_navigator_top_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_286."<br />
+						".$rs -> form_checkbox("content_navigator_score_{$id}", 1, ($content_pref["content_navigator_score_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_288."<br />
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -2480,8 +2482,9 @@ class contentform{
 						".$rs -> form_checkbox("content_search_author_{$id}", 1, ($content_pref["content_search_author_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_283."<br />
 						".$rs -> form_checkbox("content_search_recent_{$id}", 1, ($content_pref["content_search_recent_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_284."<br />
 						".$rs -> form_checkbox("content_search_item_{$id}", 1, ($content_pref["content_search_item_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_285."<br />
-						".$rs -> form_checkbox("content_search_top_{$id}", 1, ($content_pref["content_search_top_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_286."<br />
 						".$rs -> form_checkbox("content_search_archive_{$id}", 1, ($content_pref["content_search_archive_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_287."<br />
+						".$rs -> form_checkbox("content_search_top_{$id}", 1, ($content_pref["content_search_top_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_286."<br />
+						".$rs -> form_checkbox("content_search_score_{$id}", 1, ($content_pref["content_search_score_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_288."<br />
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -2490,14 +2493,15 @@ class contentform{
 						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_277;
 						$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_278;
 //".$rs -> form_checkbox("content_ordering_catall_{$id}", 1, ($content_pref["content_ordering_catall_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_280."<br />
+//".$rs -> form_checkbox("content_ordering_top_{$id}", 1, ($content_pref["content_ordering_top_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_286."<br />
+//".$rs -> form_checkbox("content_ordering_score_{$id}", 1, ($content_pref["content_ordering_score_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_288."<br />
 						$TOPIC_FIELD = "						
 						".$rs -> form_checkbox("content_ordering_cat_{$id}", 1, ($content_pref["content_ordering_cat_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_281."<br />
 						".$rs -> form_checkbox("content_ordering_authorall_{$id}", 1, ($content_pref["content_ordering_authorall_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_282."<br />
 						".$rs -> form_checkbox("content_ordering_author_{$id}", 1, ($content_pref["content_ordering_author_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_283."<br />
 						".$rs -> form_checkbox("content_ordering_recent_{$id}", 1, ($content_pref["content_ordering_recent_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_284."<br />
 						".$rs -> form_checkbox("content_ordering_item_{$id}", 1, ($content_pref["content_ordering_item_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_285."<br />
-						".$rs -> form_checkbox("content_ordering_top_{$id}", 1, ($content_pref["content_ordering_top_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_286."<br />
-						".$rs -> form_checkbox("content_ordering_archive_{$id}", 1, ($content_pref["content_ordering_archive_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_287."<br />
+						".$rs -> form_checkbox("content_ordering_archive_{$id}", 1, ($content_pref["content_ordering_archive_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_287."<br />						
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -3100,7 +3104,7 @@ class contentform{
 
 						//content_top_sections
 						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_2;
-						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_139;
+						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_290;
 						$TOPIC_HELP = "";
 						$TOPIC_FIELD = "
 						".$rs -> form_checkbox("content_top_icon_{$id}", 1, ($content_pref["content_top_icon_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_4."<br />
@@ -3118,6 +3122,40 @@ class contentform{
 						$TOPIC_FIELD = "
 						".$rs -> form_radio("content_top_authoremail_nonmember_{$id}", "1", ($content_pref["content_top_authoremail_nonmember_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
 						".$rs -> form_radio("content_top_authoremail_nonmember_{$id}", "0", ($content_pref["content_top_authoremail_nonmember_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+						";
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+						$text .= $TOPIC_TABLE_END;
+
+
+
+						$text .= "
+						<div id='scorepage' style='display:none; text-align:center'>
+						<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+						$TOPIC_CAPTION = CONTENT_ADMIN_OPT_LAN_279;
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
+
+						//content_score_sections
+						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_2;
+						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_291;
+						$TOPIC_HELP = "";
+						$TOPIC_FIELD = "
+						".$rs -> form_checkbox("content_score_icon_{$id}", 1, ($content_pref["content_score_icon_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_4."<br />
+						".$rs -> form_checkbox("content_score_authorname_{$id}", 1, ($content_pref["content_score_authorname_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_75."<br />
+						".$rs -> form_checkbox("content_score_authoremail_{$id}", 1, ($content_pref["content_score_authoremail_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_76."<br />
+						".$rs -> form_checkbox("content_score_authorprofile_{$id}", 1, ($content_pref["content_score_authorprofile_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_118."<br />
+						".$rs -> form_checkbox("content_score_authoricon_{$id}", 1, ($content_pref["content_score_authoricon_{$id}"] ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_117."<br />
+						";
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+						//content_score_authoremail_nonmember_
+						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_91;
+						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_92;
+						$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_93;
+						$TOPIC_FIELD = "
+						".$rs -> form_radio("content_score_authoremail_nonmember_{$id}", "1", ($content_pref["content_score_authoremail_nonmember_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
+						".$rs -> form_radio("content_score_authoremail_nonmember_{$id}", "0", ($content_pref["content_score_authoremail_nonmember_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -3234,6 +3272,16 @@ class contentform{
 						$TOPIC_FIELD = "
 						".$rs -> form_radio("content_menu_viewtoprated_{$id}", "1", ($content_pref["content_menu_viewtoprated_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
 						".$rs -> form_radio("content_menu_viewtoprated_{$id}", "0", ($content_pref["content_menu_viewtoprated_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+						";
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+						//content_menu_viewtopscore_
+						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_292;
+						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_293;
+						$TOPIC_HELP = "";
+						$TOPIC_FIELD = "
+						".$rs -> form_radio("content_menu_viewtopscore_{$id}", "1", ($content_pref["content_menu_viewtopscore_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
+						".$rs -> form_radio("content_menu_viewtopscore_{$id}", "0", ($content_pref["content_menu_viewtopscore_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 

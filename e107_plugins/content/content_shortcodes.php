@@ -129,6 +129,57 @@ SC_END
 
 
 
+// CONTENT_SCORE_TABLE ------------------------------------------------
+SC_BEGIN CONTENT_SCORE_TABLE_HEADING
+global $CONTENT_SCORE_TABLE_HEADING, $row, $qs;
+return "<a href='".e_SELF."?content.".$row['content_id']."'>".$row['content_heading']."</a>";
+SC_END
+
+SC_BEGIN CONTENT_SCORE_TABLE_ICON
+global $CONTENT_SCORE_TABLE_ICON, $aa, $row, $content_pref, $content_icon_path, $qs, $mainparent;
+if($content_pref["content_score_icon_{$mainparent}"]){
+return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], "50", $content_pref["content_blank_icon_{$mainparent}"]);
+}
+SC_END
+
+SC_BEGIN CONTENT_SCORE_TABLE_AUTHOR
+global $CONTENT_SCORE_TABLE_AUTHOR, $content_pref, $qs, $row, $aa, $mainparent;
+if($content_pref["content_score_authorname_{$mainparent}"] || $content_pref["content_score_authoremail_{$mainparent}"] || $content_pref["content_score_authoricon_{$mainparent}"] || $content_pref["content_score_authorprofile_{$mainparent}"]){
+	$authordetails = $aa -> getAuthor($row['content_author']);
+	if($content_pref["content_score_authorname_{$mainparent}"]){
+		if(isset($content_pref["content_score_authoremail_{$mainparent}"]) && $authordetails[2]){
+			if($authordetails[0] == "0"){
+				if($content_pref["content_score_authoremail_nonmember_{$mainparent}"] && strpos($authordetails[2], "@") ){
+					$CONTENT_SCORE_TABLE_AUTHOR = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
+				}else{
+					$CONTENT_SCORE_TABLE_AUTHOR = $authordetails[1];
+				}
+			}else{
+				$CONTENT_SCORE_TABLE_AUTHOR = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
+			}
+		}else{
+			$CONTENT_SCORE_TABLE_AUTHOR = $authordetails[1];
+		}
+		if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && isset($content_pref["content_score_authorprofile_{$mainparent}"]) && $content_pref["content_score_authorprofile_{$mainparent}"]){
+			$CONTENT_SCORE_TABLE_AUTHOR .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
+		}
+	}
+	if(isset($content_pref["content_score_authoricon_{$mainparent}"]) && $content_pref["content_score_authoricon_{$mainparent}"]){
+		$CONTENT_SCORE_TABLE_AUTHOR .= " <a href='".e_SELF."?author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
+	}
+return $CONTENT_SCORE_TABLE_AUTHOR;
+}
+SC_END
+
+SC_BEGIN CONTENT_SCORE_TABLE_SCORE
+global $CONTENT_SCORE_TABLE_SCORE;
+return $CONTENT_SCORE_TABLE_SCORE;
+SC_END
+
+
+
+
+
 // CONTENT_SUBMIT_TYPE_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_SUBMIT_TYPE_TABLE_HEADING
 global $CONTENT_SUBMIT_TYPE_TABLE_HEADING, $row;
@@ -940,11 +991,12 @@ SC_BEGIN CONTENT_CONTENT_TABLE_SCORE
 global $CONTENT_CONTENT_TABLE_SCORE, $custom;
 $CONTENT_CONTENT_TABLE_SCORE="";
 if($custom['content_custom_score']){
-	if(strlen($custom['content_custom_score']) == "2"){
-		$CONTENT_CONTENT_TABLE_SCORE = substr($custom['content_custom_score'],0,1).".".substr($custom['content_custom_score'],1,2);
-	}else{
-		$CONTENT_CONTENT_TABLE_SCORE = "0.".$custom['content_custom_score'];
-	}
+	//if(strlen($custom['content_custom_score']) == "2"){
+	//	$CONTENT_CONTENT_TABLE_SCORE = substr($custom['content_custom_score'],0,1).".".substr($custom['content_custom_score'],1,2);
+	//}else{
+	//	$CONTENT_CONTENT_TABLE_SCORE = "0.".$custom['content_custom_score'];
+	//}
+	$CONTENT_CONTENT_TABLE_SCORE = $custom['content_custom_score']."/100";
 return $CONTENT_CONTENT_TABLE_SCORE;
 }
 SC_END
