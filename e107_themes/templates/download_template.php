@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-11 13:46:13 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-14 02:08:27 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -168,107 +168,112 @@ if(!$DOWNLOAD_LIST_TABLE_START){
 }
 
 if(!$DOWNLOAD_LIST_TABLE){
-                $DOWNLOAD_LIST_TABLE .= "
-                <tr>
-                <td class='forumheader3' style='text-align:left;'>
-                        {DOWNLOAD_LIST_NEWICON} {DOWNLOAD_LIST_NAME}
-                </td>
-                <td class='forumheader3' style='text-align:center;'>
-                        {DOWNLOAD_LIST_DATESTAMP}
-                </td>
-                <td class='forumheader3' style='text-align:center;'>
-                        {DOWNLOAD_LIST_AUTHOR}
-                </td>
-                <td class='forumheader3' style='text-align:center;'>
-                        {DOWNLOAD_LIST_FILESIZE}
-                </td>
-                <td class='forumheader3' style='text-align:center;'>
-                        {DOWNLOAD_LIST_REQUESTED}
-                </td>
-                <td class='forumheader3' style='text-align:center;'>
-                        {DOWNLOAD_LIST_RATING}
-                </td>
-                <td class='forumheader3' style='text-align:center;'>
-                        {DOWNLOAD_LIST_LINK} {DOWNLOAD_LIST_ICON}
-                </td>
-                </tr>";
+		$DOWNLOAD_LIST_TABLE .= "
+		<tr>
+		<td class='forumheader3' style='text-align:left;'>
+		{DOWNLOAD_LIST_NEWICON} {DOWNLOAD_LIST_NAME}
+		</td>
+		<td class='forumheader3' style='text-align:center;'>
+		{DOWNLOAD_LIST_DATESTAMP}
+		</td>
+		<td class='forumheader3' style='text-align:center;'>
+		{DOWNLOAD_LIST_AUTHOR}
+		</td>
+		<td class='forumheader3' style='text-align:center;'>
+		{DOWNLOAD_LIST_FILESIZE}
+		</td>
+		<td class='forumheader3' style='text-align:center;'>
+		{DOWNLOAD_LIST_REQUESTED}
+		</td>
+		<td class='forumheader3' style='text-align:center;'>
+		{DOWNLOAD_LIST_RATING}
+		</td>
+		<td class='forumheader3' style='text-align:center;'>
+		{DOWNLOAD_LIST_LINK} {DOWNLOAD_LIST_ICON}
+		</td>
+		</tr>";
 }
 
 if(!$DOWNLOAD_LIST_TABLE_END){
-                $DOWNLOAD_LIST_TABLE_END = "
-                <tr><td class='forumheader3' colspan='7' style='text-align:right;'>{DOWNLOAD_LIST_TOTAL_AMOUNT} {DOWNLOAD_LIST_TOTAL_FILES}</td></tr>
-                </table>
-                </form>
-                </div>\n";
+		$DOWNLOAD_LIST_TABLE_END = "
+		<tr><td class='forumheader3' colspan='7' style='text-align:right;'>{DOWNLOAD_LIST_TOTAL_AMOUNT} {DOWNLOAD_LIST_TOTAL_FILES}</td></tr>
+		</table>
+		</form>
+		</div>\n";
 }
 // ##### ------------------------------------------------------------------------------------------
 
 
 // ##### VIEW TABLE -------------------------------------------------------------------------------
 if(!$DOWNLOAD_VIEW_TABLE_START){
-                $DOWNLOAD_VIEW_TABLE_START = "
-                <div style='text-align:center'>
-                <table class='fborder' style='width:95%'>\n";
+		$DOWNLOAD_VIEW_TABLE_START = "
+		<div style='text-align:center'>
+		<table class='fborder' style='width:95%'>\n";
 }
 
 if(!$DOWNLOAD_VIEW_TABLE){
-                $DOWNLOAD_VIEW_TABLE .= "
-                <tr>
-                <td colspan='2' class='fcaption' style='text-align:left;'>
-                        {DOWNLOAD_VIEW_NAME}
-                </td>
-                </tr>
+		$DOWNLOAD_VIEW_TABLE .= "
+		<tr>
+		<td colspan='2' class='fcaption' style='text-align:left;'>
+		{DOWNLOAD_VIEW_NAME}
+		</td>
+		</tr>
 
-        <tr>
-        <td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_AUTHOR_LAN}</td>
-        <td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_AUTHOR}</td>
-        </tr>
+		<tr>
+		<td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_AUTHOR_LAN}</td>
+		<td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_AUTHOR}</td>
+		</tr>
 
-        <tr>
-        <td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_AUTHOREMAIL_LAN}</td>
-        <td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_AUTHOREMAIL}</td>
-        </tr>
+		<tr>
+		<td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_AUTHOREMAIL_LAN}</td>
+		<td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_AUTHOREMAIL}</td>
+		</tr>
 
-        <tr>
-        <td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_AUTHORWEBSITE_LAN}</td>
-        <td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_AUTHORWEBSITE}</td>
-        </tr>
+		<tr>
+		<td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_AUTHORWEBSITE_LAN}</td>
+		<td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_AUTHORWEBSITE}</td>
+		</tr>
 
-        <tr>
-        <td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_DESCRIPTION_LAN}</td>
-        <td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_DESCRIPTION}</td>
-        </tr>
+		<tr>
+		<td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_DESCRIPTION_LAN}</td>
+		<td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_DESCRIPTION}</td>
+		</tr>
 
-        <tr>
-        <td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_IMAGE_LAN}</td>
-        <td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_IMAGE}</td>
-        </tr>
+		<tr>
+		<td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_IMAGE_LAN}</td>
+		<td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_IMAGE}</td>
+		</tr>
 
-        <tr>
-        <td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_FILESIZE_LAN}</td>
-        <td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_FILESIZE}</td>
-        </tr>
+		<tr>
+		<td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_FILESIZE_LAN}</td>
+		<td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_FILESIZE}</td>
+		</tr>
 
-        <tr>
-        <td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_REQUESTED_LAN}</td>
-        <td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_REQUESTED}</td>
-        </tr>
+		<tr>
+		<td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_DATE_LAN}</td>
+		<td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_DATE_LONG}</td>
+		</tr>
 
-        <tr>
-        <td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_LINK_LAN}</td>
-        <td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_LINK}</td>
-        </tr>
+		<tr>
+		<td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_REQUESTED_LAN}</td>
+		<td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_REQUESTED}</td>
+		</tr>
 
-        <tr>
-        <td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_RATING_LAN}</td>
-        <td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_RATING}</td>
-        </tr>";
+		<tr>
+		<td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_LINK_LAN}</td>
+		<td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_LINK}</td>
+		</tr>
+
+		<tr>
+		<td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_RATING_LAN}</td>
+		<td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_RATING}</td>
+		</tr>";
 }
 
 if(!$DOWNLOAD_VIEW_TABLE_END){
-                $DOWNLOAD_VIEW_TABLE_END = "
-                </table>
-                </div>\n";
+		$DOWNLOAD_VIEW_TABLE_END = "
+		</table>
+		</div>\n";
 }
 // ##### ------------------------------------------------------------------------------------------
 
