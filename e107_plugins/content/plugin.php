@@ -37,8 +37,8 @@ $eplug_menu_name = "";
 $eplug_conffile = "admin_content_config.php";
 
 // Icon image and caption text ------------------------------------------------------------------------------------
-$eplug_icon = $eplug_folder."/images/articles_32.png";
-$eplug_icon_small = $eplug_folder."/images/articles_16.png";
+$eplug_icon = $eplug_folder."/images/content_32.png";
+$eplug_icon_small = $eplug_folder."/images/content_16.png";
 $eplug_caption =  'Configure Content Management';
 
 // List of preferences -----------------------------------------------------------------------------------------------

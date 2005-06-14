@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.61 $
-|		$Date: 2005-06-14 10:41:53 $
+|		$Revision: 1.62 $
+|		$Date: 2005-06-14 20:32:25 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -315,29 +315,29 @@ class content{
 				$plugintable = "pcontent";
 
 				if($id && $id!="0"){	//if $id; use prefs from content table
-							$num_rows = $sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
-							$row = $sql -> db_Fetch();
+					$num_rows = $sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
+					$row = $sql -> db_Fetch();
 
-							if (empty($row['content_pref'])) {
-								$content_pref = $this -> ContentDefaultPrefs($id);
-								$tmp = $eArrayStorage->WriteArray($content_pref);
-								$sql -> db_Update($plugintable, "content_pref='{$tmp}' WHERE content_id='$id' ");
-								$sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
-								$row = $sql -> db_Fetch();
-							}
-							$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
+					if (empty($row['content_pref'])) {
+						$content_pref = $this -> ContentDefaultPrefs($id);
+						$tmp = $eArrayStorage->WriteArray($content_pref);
+						$sql -> db_Update($plugintable, "content_pref='{$tmp}' WHERE content_id='$id' ");
+						$sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
+						$row = $sql -> db_Fetch();
+					}
+					$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
 
-				}else{		//if not $id; use prefs from default core table
-							$num_rows = $sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+				}else{					//if not $id; use prefs from default core table
+					$num_rows = $sql -> db_Select("core", "*", "e107_name='$plugintable' ");
 
-							if ($num_rows == 0) {
-								$content_pref = $this -> ContentDefaultPrefs("0");
-								$tmp = $eArrayStorage->WriteArray($content_pref);
-								$sql -> db_Insert("core", "'$plugintable', '{$tmp}' ");
-								$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
-							}
-							$row = $sql -> db_Fetch();
-							$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
+					if ($num_rows == 0) {
+						$content_pref = $this -> ContentDefaultPrefs("0");
+						$tmp = $eArrayStorage->WriteArray($content_pref);
+						$sql -> db_Insert("core", "'$plugintable', '{$tmp}' ");
+						$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+					}
+					$row = $sql -> db_Fetch();
+					$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
 				}
 
 				return $content_pref;
@@ -377,9 +377,6 @@ class content{
 				}else{
 					$sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
 					$row = $sql -> db_Fetch();
-
-					//get current preferences
-					//$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
 
 					//assign new preferences
 					foreach($_POST as $k => $v){
@@ -608,7 +605,6 @@ class content{
 						$page .= " / ".CONTENT_PAGETITLE_LAN_12;
 					}
 				}
-
 			}
 			define("e_PAGETITLE", strtolower($page));
 
@@ -622,9 +618,6 @@ class content{
 						$author_id = "0";
 						$author_name = "";
 						$author_email = "";
-						//$author_id = USERID;
-						//$author_name = USERNAME;
-						//$author_email = USEREMAIL;
 					}else{
 						list($author_id, $author_name, $author_email) = $sql -> db_Fetch();
 					}
@@ -685,97 +678,68 @@ class content{
 
 					if($qs[0] == "cat"){
 
+						$js			= "";
+						$catstring	= "";
+						$name		= $pre.$row['content_heading'];
+						$selectjs	= "if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }";
+						$label		= $catid;
+						if($row['content_parent'] == 0){
+							$name	= strtoupper($row['content_heading']);
+							$js		= "style='font-weight:bold;'";
+						}
 						if($qs[1] == "create"){
 							$checkid	= (isset($qs[2]) && is_numeric($qs[2]) ? $qs[2] : "");
-							$selectjs	= "if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }";
-							$label		= $catid;
 							$sel		= ($catid == $checkid ? "1" : "0");
 							$value		= e_SELF."?cat.create.".$catid;
-							$catstring	= "";
-							if($row['content_parent'] == 0){
-								$name	= strtoupper($row['content_heading']);
-								$js		= "style='font-weight:bold;'";
-								//$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
-							}else{
-								$name	= $pre.$row['content_heading'];
-								$js		= "";
-							}
-
 						}elseif($qs[1] == "edit"){
 							$checkid	= ($currentparent ? $currentparent : "");
-							$selectjs	= "if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }";
-							$label		= $catid;
 							$sel		= ($catid == $checkid ? "1" : "0");
 							$value		= e_SELF."?cat.edit.".$qs[2].".".$catid;
-							$catstring	= "";
-							if($row['content_parent'] == 0){
-								$name	= strtoupper($row['content_heading']);
-								$js		= "style='font-weight:bold;'";
-								//$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
-							}else{
-								$name	= $pre.$row['content_heading'];
-								$js		= "";
-							}
 						}
+
 					//manage items
 					}elseif($qs[0] == "" || $qs[0] == "content"){
 
+							$catstring	= "";
+							$js			= "";
+							$label		= $catid;
+							$selectjs	= "if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }";
+							$name		= $pre.$row['content_heading'];
+							if($row['content_parent'] == 0){
+								$name	= strtoupper($row['content_heading']);
+								$js		= "style='font-weight:bold;'";
+							}
 							if($qs[1] == "create" || $qs[1] == "submit"){
 								$checkid	= (isset($qs[2]) && is_numeric($qs[2]) ? $qs[2] : "");
 								$sel		= ($catid == $checkid ? "1" : "0");
-								$selectjs	= "if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }";
-								$label		= $catid;
-								$catstring	= "";
 								$value		= e_SELF."?content.".$qs[1].".".$catid;
-								if($row['content_parent'] == 0){
-									$name	= strtoupper($row['content_heading']);
-									$js		= "style='font-weight:bold;'";
-									//$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
-
-								}else{
-									$name	= $pre.$row['content_heading'];
-									$js		= "";
-								}
-
 							}else{
 								$checkid	= ($currentparent ? $currentparent : "");
-								$selectjs	= "if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }";
-								$label		= $catid;
 								$sel		= ($catid == $checkid ? "1" : "0");
 								if($qs[1] == "" || is_numeric($qs[1])){
 									$value	= e_SELF."?content.".$catid;
 								}else{
 									$value	= e_SELF."?content.".$qs[1].".".$qs[2].".".$catid;
 								}
-								$catstring	= "";
-								if($row['content_parent'] == 0){
-									$name	= strtoupper($row['content_heading']);
-									$js		= "style='font-weight:bold;'";
-									//$string	.= $rs -> form_option($emptystring, "0", "none", "label='none'");
-								}else{
-									$name	= $pre.$row['content_heading'];
-									$js		= "";
-								}
 							}
 					}
 					$string	.= $rs -> form_option($name, $sel, $value, ($label ? "label='".$label."'" : "label='none'")." ".$js ).$catstring;
-
 				}
 				$selectjs	= " onchange=\" document.getElementById('parent').value=this.options[this.selectedIndex].label; ".$selectjs." \"";
 				$text		= $rs -> form_select_open("parent1", $selectjs);
 
 				if(!isset($qs[0])){
-					$text .= $rs -> form_option("choose category ...", "0", "none", "label='none'");
+					$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_28, "0", "none", "label='none'");
 				}elseif( $qs[0] == "content" && $qs[1] == "edit" && is_numeric($qs[2]) ){
-					$text .= $rs -> form_option("choose category ...", "0", "none", "label='none'");
+					$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_28, "0", "none", "label='none'");
 				}elseif( $qs[0] == "content" && ($qs[1] == "create" || $qs[1] == "submit") ){
-					$text .= $rs -> form_option("choose category ...", "0", "none", "label='none'");
+					$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_28, "0", "none", "label='none'");
 				}elseif( $qs[0] == "content" && is_numeric($qs[1]) ){
-					$text .= $rs -> form_option("choose category ...", "0", "none", "label='none'");
+					$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_28, "0", "none", "label='none'");
 				}elseif($qs[0] == "cat" && $qs[1] == "create"){
-					$text .= $rs -> form_option("NEW MAIN CATEGORY", (isset($qs[2]) ? "0" : "1"), e_SELF."?cat.create", "label='0' style='font-weight:bold;'");
+					$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_29, (isset($qs[2]) ? "0" : "1"), e_SELF."?cat.create", "label='0' style='font-weight:bold;'");
 				}else{
-					$text .= $rs -> form_option("NEW MAIN CATEGORY", (isset($qs[2]) ? "0" : "1"), e_SELF."?cat.edit.".$qs[2].".0", "label='0' style='font-weight:bold;'");
+					$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_29, (isset($qs[2]) ? "0" : "1"), e_SELF."?cat.edit.".$qs[2].".0", "label='0' style='font-weight:bold;'");
 				}
 
 				$text .= $string;
@@ -839,25 +803,21 @@ class content{
 
 				$blank			= (!$blank ? "0" : $blank);
 				$border			= "border:0;";
-				
+				$hrefpre		= ($linkid ? "<a href='".e_SELF."?".$linkid."'>" : "");
+				$hrefpost		= ($linkid ? "</a>" : "");
+
 				if($mode == "item"){
 					$path		= (!$path ? $content_icon_path : $path);
-					$hrefpre	= ($linkid ? "<a href='".e_SELF."?".$linkid."'>" : "");
-					$hrefpost	= ($linkid ? "</a>" : "");
 					$width		= ($width ? "width:".$width."px;" : "");
 					$border		= "border:1px solid #000;";
 					$icon		= ($icon ? $path.$icon : ($blank ? $content_icon_path."blank.gif" : ""));
 
 				}elseif($mode == "catsmall"){
 					$path		= (!$path ? $content_cat_icon_path_small : $path);
-					$hrefpre	= ($linkid ? "<a href='".e_SELF."?".$linkid."'>" : "");
-					$hrefpost	= ($linkid ? "</a>" : "");
 					$icon		= ($icon ? $path.$icon : "");
 
 				}elseif($mode == "catlarge"){
 					$path		= (!$path ? $content_cat_icon_path_large : $path);
-					$hrefpre	= ($linkid ? "<a href='".e_SELF."?".$linkid."'>" : "");
-					$hrefpost	= ($linkid ? "</a>" : "");
 					$icon		= ($icon ? $path.$icon : "");
 				}else{
 					$path		= (!$path ? $content_icon_path : $path);
@@ -870,6 +830,7 @@ class content{
 				if($icon && file_exists($icon)){
 					$iconstring	= $hrefpre."<img src='".$icon."' alt='' style='".$width." ".$border."' />".$hrefpost;
 				}else{
+					$iconstring = "";
 					if($blank){
 						if(file_exists($content_icon_path."blank.gif")){
 							if($mode == "catsmall"){
@@ -878,11 +839,7 @@ class content{
 								$width = ($width ? "width:".$width."px;" : "width:48px;");
 							}
 							$iconstring = $hrefpre."<img src='".$content_icon_path."blank.gif' alt='' style='".$width." ".$border."' />".$hrefpost;
-						}else{
-							$iconstring = "";
 						}
-					}else{
-						$iconstring = "";
 					}
 				}
 
