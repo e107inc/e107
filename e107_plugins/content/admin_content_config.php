@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.43 $
-|		$Date: 2005-06-14 08:34:02 $
+|		$Revision: 1.44 $
+|		$Date: 2005-06-14 10:41:53 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -447,6 +447,7 @@ function admin_content_config_adminmenu(){
 					$var['authorpage']['text']		= CONTENT_ADMIN_MENU_LAN_18;
 					$var['archivepage']['text']		= CONTENT_ADMIN_MENU_LAN_16;
 					$var['toppage']['text']			= CONTENT_ADMIN_MENU_LAN_20;
+					$var['scorepage']['text']		= CONTENT_ADMIN_MENU_LAN_22;
 					//$var['contentmanager']['text']	= CONTENT_ADMIN_MENU_LAN_19;
 					//$var['menu']['text']			= CONTENT_ADMIN_MENU_LAN_14;
 					show_admin_menu(CONTENT_ADMIN_MENU_LAN_21.": ".$content_heading."", $act, $var, TRUE);

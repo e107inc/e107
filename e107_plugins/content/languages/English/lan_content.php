@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-06-14 08:34:03 $
+|     $Revision: 1.50 $
+|     $Date: 2005-06-14 10:41:53 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -242,7 +242,7 @@ define("CONTENT_ADMIN_OPT_LAN_135", "you can render the parent, sub and child it
 define("CONTENT_ADMIN_OPT_LAN_136", "each in seperate menus");
 define("CONTENT_ADMIN_OPT_LAN_137", "combine into one menu");
 define("CONTENT_ADMIN_OPT_LAN_138", "content pages (the page that displays a content item)");
-define("CONTENT_ADMIN_OPT_LAN_139", "choose which sections should be shown when viewing a content item");
+define("CONTENT_ADMIN_OPT_LAN_139", "choose which sections should be displayed when viewing a content item");
 define("CONTENT_ADMIN_OPT_LAN_140", "menu properties");
 define("CONTENT_ADMIN_OPT_LAN_141", "caption");
 define("CONTENT_ADMIN_OPT_LAN_142", "define the caption of the menu");
@@ -326,7 +326,7 @@ define("CONTENT_ADMIN_OPT_LAN_216", "For more information on date formats see th
 define("CONTENT_ADMIN_OPT_LAN_217", "archive page (the page where the overview of all content items is displayed");
 define("CONTENT_ADMIN_OPT_LAN_218", "default preferences");
 
-define("CONTENT_ADMIN_OPT_LAN_219", "choose which sections should be shown when viewing the archive page");
+define("CONTENT_ADMIN_OPT_LAN_219", "choose which sections should be displayed when viewing the archive page");
 define("CONTENT_ADMIN_OPT_LAN_220", "authorlist icon");
 define("CONTENT_ADMIN_OPT_LAN_221", "preset data tags");
 define("CONTENT_ADMIN_OPT_LAN_222", "define default preset custom data tags");
@@ -352,7 +352,7 @@ define("CONTENT_ADMIN_OPT_LAN_239", "text postfix");
 define("CONTENT_ADMIN_OPT_LAN_240", "define a postfix if text is longer");
 define("CONTENT_ADMIN_OPT_LAN_241", "text (you need to define the amount of words to show)");
 
-define("CONTENT_ADMIN_OPT_LAN_242", "choose which sections should be shown when viewing the author page");
+define("CONTENT_ADMIN_OPT_LAN_242", "choose which sections should be displayed when viewing the author page");
 define("CONTENT_ADMIN_OPT_LAN_243", "last item of each author");
 define("CONTENT_ADMIN_OPT_LAN_244", "amount of items by each author");
 define("CONTENT_ADMIN_OPT_LAN_245", "if enabled only a limited number of authors are shown on a single page, and you can navigate through a number of pages to shown other auhtors.");
@@ -394,7 +394,7 @@ define("CONTENT_ADMIN_OPT_LAN_276", "order options");
 define("CONTENT_ADMIN_OPT_LAN_277", "should an order option be displayed");
 define("CONTENT_ADMIN_OPT_LAN_278", "if checked an order option will be displayed to order the content items displayed on the page. Check the pages where this needs to be displayed.");
 
-define("CONTENT_ADMIN_OPT_LAN_279", "");
+define("CONTENT_ADMIN_OPT_LAN_279", "top score page (the page with the overview of all content items who have a score in this main parent)");
 
 define("CONTENT_ADMIN_OPT_LAN_280", "all categories");
 define("CONTENT_ADMIN_OPT_LAN_281", "single category");
@@ -404,20 +404,19 @@ define("CONTENT_ADMIN_OPT_LAN_284", "recent");
 define("CONTENT_ADMIN_OPT_LAN_285", "content item");
 define("CONTENT_ADMIN_OPT_LAN_286", "top rated");
 define("CONTENT_ADMIN_OPT_LAN_287", "archive");
-define("CONTENT_ADMIN_OPT_LAN_288", "");
+define("CONTENT_ADMIN_OPT_LAN_288", "score");
 define("CONTENT_ADMIN_OPT_LAN_289", "");
 
-define("CONTENT_ADMIN_OPT_LAN_290", "");
-define("CONTENT_ADMIN_OPT_LAN_291", "");
-define("CONTENT_ADMIN_OPT_LAN_292", "");
-define("CONTENT_ADMIN_OPT_LAN_293", "");
+define("CONTENT_ADMIN_OPT_LAN_290", "choose which sections should be displayed when viewing the top rated page");
+define("CONTENT_ADMIN_OPT_LAN_291", "choose which sections should be displayed when viewing the top score page");
+define("CONTENT_ADMIN_OPT_LAN_292", "link : top score");
+define("CONTENT_ADMIN_OPT_LAN_293", "does a link to the 'top score items' page need to be shown?");
 define("CONTENT_ADMIN_OPT_LAN_294", "");
 define("CONTENT_ADMIN_OPT_LAN_295", "");
 define("CONTENT_ADMIN_OPT_LAN_296", "");
 define("CONTENT_ADMIN_OPT_LAN_297", "");
 define("CONTENT_ADMIN_OPT_LAN_298", "");
 define("CONTENT_ADMIN_OPT_LAN_299", "");
-
 
 
 
@@ -596,6 +595,7 @@ define("CONTENT_ADMIN_MENU_LAN_18", "Author Page");
 define("CONTENT_ADMIN_MENU_LAN_19", "Content Manager");
 define("CONTENT_ADMIN_MENU_LAN_20", "Top Rated Page");
 define("CONTENT_ADMIN_MENU_LAN_21", "Pages");
+define("CONTENT_ADMIN_MENU_LAN_22", "Top Score Page");
 
 
 
@@ -647,6 +647,7 @@ define("CONTENT_PAGETITLE_LAN_11", "Edit Item");
 define("CONTENT_PAGETITLE_LAN_12", "Create Item");
 define("CONTENT_PAGETITLE_LAN_13", "Categories");
 define("CONTENT_PAGETITLE_LAN_14", "Authorlist");
+define("CONTENT_PAGETITLE_LAN_15", "Top Score");
 
 
 define("CONTENT_SEARCH_LAN_0", "no content items found with these keywords.");
@@ -679,7 +680,7 @@ define("CONTENT_LAN_8", "top rated items");
 define("CONTENT_LAN_9", "in");
 define("CONTENT_LAN_10", "on");
 define("CONTENT_LAN_11", "by");
-define("CONTENT_LAN_12", "");
+define("CONTENT_LAN_12", "top score items");
 define("CONTENT_LAN_13", "");
 define("CONTENT_LAN_14", "");
 define("CONTENT_LAN_15", "");
@@ -753,9 +754,9 @@ define("CONTENT_LAN_82", "no items yet in");
 define("CONTENT_LAN_83", "item archive");
 define("CONTENT_LAN_84", "Content Archive");
 define("CONTENT_LAN_85", "authorlist");
-define("CONTENT_LAN_86", "");
-define("CONTENT_LAN_87", "");
-define("CONTENT_LAN_88", "");
+define("CONTENT_LAN_86", "view top score items");
+define("CONTENT_LAN_87", "Top Score Content");
+define("CONTENT_LAN_88", "no content items have a score yet");
 define("CONTENT_LAN_89", "");
 
 

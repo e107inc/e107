@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.59 $
-|		$Date: 2005-06-13 14:03:53 $
+|		$Revision: 1.60 $
+|		$Date: 2005-06-14 10:41:53 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -161,6 +161,11 @@ if(!e_QUERY){
 	}elseif( $qs[0] == "top" && is_numeric($qs[1]) && !isset($qs[2]) ){
 		show_content_top();
 
+	//top score of parent='2'
+	}elseif( $qs[0] == "score" && is_numeric($qs[1]) ){
+		// && !isset($qs[2])
+		show_content_score();
+
 	//authorlist of parent='2'
 	}elseif( $qs[0] == "author" && $qs[1] == "list" && is_numeric($qs[2]) && ( !isset($qs[3]) || substr($qs[3],0,5) == "order" ) ){
 		show_content_author_all();
@@ -198,13 +203,13 @@ function show_content_search_menu($mode, $mainparent){
 							}
 						}
 					}
-					if($content_pref["content_navigator_{$mode}_{$mainparent}"]){
+					if(isset($content_pref["content_navigator_{$mode}_{$mainparent}"]) && $content_pref["content_navigator_{$mode}_{$mainparent}"]){
 						$CONTENT_SEARCH_TABLE_SELECT = $aa -> showOptionsSelect("page", $mainparent);
 					}
-					if($content_pref["content_search_{$mode}_{$mainparent}"]){
+					if(isset($content_pref["content_search_{$mode}_{$mainparent}"]) && $content_pref["content_search_{$mode}_{$mainparent}"]){
 						$CONTENT_SEARCH_TABLE_KEYWORD = $aa -> showOptionsSearch("page", $mainparent);
 					}
-					if($content_pref["content_ordering_{$mode}_{$mainparent}"]){
+					if(isset($content_pref["content_ordering_{$mode}_{$mainparent}"]) && $content_pref["content_ordering_{$mode}_{$mainparent}"]){
 						$CONTENT_SEARCH_TABLE_ORDER = $aa -> showOptionsOrder("page", $mainparent);
 					}
 
@@ -1152,74 +1157,73 @@ function show_content_top(){
 					$content_icon_path	= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 					$array				= $aa -> getCategoryTree("", $qs[1], TRUE);
 					$validparent		= implode(",", array_keys($array));
-					$qry				= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
-					$order				= $aa -> getOrder();
+					$qry				= " c.content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 					$number				= ($content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "5");
-					$nextprevquery		= ($content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".$from.",".$number : "");
+
+					//$datequery		= " AND (c.content_datestamp=0 || c.content_datestamp < ".time().") AND (c.content_enddate=0 || c.content_enddate>".time().") ";
+					$qry1 = "
+					SELECT c.content_id, c.content_heading, c.content_author, c.content_icon, r.* 
+					FROM #rate AS r
+					LEFT JOIN #pcontent AS c ON c.content_id = r.rate_itemid  
+					WHERE ".$qry." ".$datequery." AND c.content_class REGEXP '".e_CLASS_REGEXP."' AND r.rate_table='".$plugintable."'
+					ORDER by r.rate_itemid
+					";
 
 					if(!is_object($sql)){ $sql = new db; }
-
-					if(!$sql -> db_Select("rate", "*", "rate_table='".$plugintable."' ORDER BY rate_itemid " )){
-						$text		= "<div style='text-align:center;'>".CONTENT_LAN_37."</div>";
-						$caption	= CONTENT_LAN_38;
-						$ns -> tablerender($caption, $text);
-						require_once(FOOTERF);
-						exit;
+					if (!$sql->db_Select_gen($qry1)){
+						$err		= CONTENT_LAN_37;
 					}else{
-
-						$sql2 = new db;
 						while($row = $sql -> db_Fetch()){
 							$tmp		= $row['rate_rating'] / $row['rate_votes'];
 							$tmp		= explode(".", $tmp);
 							$rating[1]	= $tmp[0];										// $ratomg[1] = main result
 							$rating[2]	= (!empty($tmp[1]) ? substr($tmp[1],0,1) : "");	// $rating[2] = remainder
 							$rate_avg	= $rating[1].".".($rating[2] ? $rating[2] : "0");	// rate average
-							if($sql2 -> db_Select($plugintable, "content_id, content_heading, content_author, content_icon", "content_id='".$row['rate_itemid']."' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."'")){
-								$rate_array[] = array($row['rate_itemid'], $row['rate_rating'], $row['rate_votes'], $rate_avg, $rating[1], $rating[2]);
-							}
+
+							$arrRate[] = array($row['rate_itemid'], $row['rate_rating'], $row['rate_votes'], $rate_avg, $rating[1], $rating[2], $row['content_id'], $row['content_heading'], $row['content_author'], $row['content_icon']);
 						}
-						if(empty($rate_array)){
-							$text		= "<div style='text-align:center;'>".CONTENT_LAN_37."</div>";
-							$caption	= CONTENT_LAN_38;
-							$ns -> tablerender($caption, $text);
-							require_once(FOOTERF);
-							exit;
+						if(empty($arrRate)){
+							$err		= CONTENT_LAN_37;
 						}
-						usort($rate_array, create_function('$a,$b','return $a[3]==$b[3]?0:($a[3]>$b[3]?-1:1);')); 
-						$contenttotal = count($rate_array);
+						usort($arrRate, create_function('$a,$b','return $a[3]==$b[3]?0:($a[3]>$b[3]?-1:1);'));
+						$contenttotal = count($arrRate);
 						$content_top_table_string = "";
 
 						for($i=$from;$i<$from+$number;$i++){
-							if(isset($rate_array[$i])){
-								if($sql2 -> db_Select($plugintable, "content_id, content_heading, content_author, content_icon", "content_id='".$rate_array[$i][0]."' " )){
-									while($row = $sql2 -> db_Fetch()){
-										$thisratearray				= $rate_array[$i];
-										$content_top_table_string	.= $tp -> parseTemplate($CONTENT_TOP_TABLE, FALSE, $content_shortcodes);
-									}
-								}
+							if(isset($arrRate[$i])){
+								$thisratearray				= $arrRate[$i];
+								$row['content_id']			= $arrRate[$i][6];
+								$row['content_heading']		= $arrRate[$i][7];
+								$row['content_author']		= $arrRate[$i][8];
+								$row['content_icon']		= $arrRate[$i][9];
+								$content_top_table_string	.= $tp -> parseTemplate($CONTENT_TOP_TABLE, FALSE, $content_shortcodes);
 							}
-						}
-
-						if($content_pref["content_breadcrumb_top_{$mainparent}"]){
-							$crumbpage = $aa -> getCrumbPage($array, $mainparent);
-							if($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
-									echo $crumbpage;
-							}elseif($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
-									$ns -> tablerender(CONTENT_LAN_24, $crumbpage);
-							}else{
-									$text = $crumbpage.$text;
-							}
-						}
-						$text		= $CONTENT_TOP_TABLE_START.$content_top_table_string.$CONTENT_TOP_TABLE_END;
-						$caption	= CONTENT_LAN_38;
-						$ns -> tablerender($caption, $text);
-
-						if($content_pref["content_nextprev_{$mainparent}"]){
-							require_once(e_HANDLER."np_class.php");
-							$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-							$ix = new nextprev(e_SELF, $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
 						}
 					}
+					if(isset($err)){
+						$content_top_table_string = $err;
+					}
+
+					if($content_pref["content_breadcrumb_top_{$mainparent}"]){
+						$crumbpage = $aa -> getCrumbPage($array, $mainparent);
+						if($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
+								echo $crumbpage;
+						}elseif($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
+								$ns -> tablerender(CONTENT_LAN_24, $crumbpage);
+						}else{
+								$text = $crumbpage.$text;
+						}
+					}
+					$text		= $CONTENT_TOP_TABLE_START.$content_top_table_string.$CONTENT_TOP_TABLE_END;
+					$caption	= CONTENT_LAN_38;
+					$ns -> tablerender($caption, $text);
+
+					if($content_pref["content_nextprev_{$mainparent}"]){
+						require_once(e_HANDLER."np_class.php");
+						$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
+						$ix = new nextprev(e_SELF, $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
+					}
+
 					if($pref['cachestatus']){
 						$cache = ob_get_contents();
 						$e107cache->set($cachestr, $cache);
@@ -1228,6 +1232,128 @@ function show_content_top(){
 				}
 }
 // ##### --------------------------------------------------
+
+// ##### TOP SCORE LIST -----------------------------------
+function show_content_score(){
+				global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $cobj, $content_icon_path;
+				global $from, $datequery, $content_pref, $mainparent, $eArrayStorage, $CONTENT_SCORE_TABLE_SCORE;
+
+				$mainparent		= $aa -> getMainParent($qs[1]);
+				$content_pref	= $aa -> getContentPref($mainparent);
+				show_content_search_menu("score", $mainparent);		//show navigator/search/order menu
+
+				$CONTENT_SCORE_TABLE = "";
+				if(!$CONTENT_SCORE_TABLE){
+					if(!$content_pref["content_theme_{$mainparent}"]){
+						require_once($plugindir."templates/default/content_score_template.php");
+					}else{
+						if(file_exists($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_score_template.php")){
+							require_once($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_score_template.php");
+						}else{
+							require_once($plugindir."templates/default/content_score_template.php");
+						}
+					}
+				}
+
+				$cachestr = "$plugintable.score.$qs[1]";
+				if($cache = $e107cache->retrieve($cachestr)){
+					echo $cache;
+				}else{
+					ob_start();
+
+					$content_icon_path	= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
+					$array				= $aa -> getCategoryTree("", $qs[1], TRUE);
+					$validparent		= implode(",", array_keys($array));
+					$qry				= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
+					$qry				.= " AND content_pref REGEXP ('content_custom_score') ";
+					$number				= ($content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "5");
+
+					if(!is_object($sql)){ $sql = new db; }
+
+					if(!$sql -> db_Select($plugintable, "content_id, content_heading, content_author, content_icon, content_pref", " ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ")){
+						$err = CONTENT_LAN_88;
+					}else{
+						$count=0;
+						while($row = $sql -> db_Fetch()){
+							$rowpref = $eArrayStorage->ReadArray($row['content_pref']);
+							if($rowpref["content_custom_score"] && $rowpref["content_custom_score"] != ""){
+								$row['score'] = $rowpref["content_custom_score"];
+								$arrScore[$count] = $row;
+								$count++;
+							}
+						}
+						if(!is_array($arrScore)){
+							$err = CONTENT_LAN_88;
+						}else{
+							if( isset($qs[2]) && substr($qs[2],0,5 == "order") ){
+							}else{
+								usort($arrScore, create_function('$a,$b','return $a["score"]==$b["score"]?0:($a["score"]>$b["score"]?-1:1);')); 
+							}
+							$contenttotal = count($arrScore);
+							$content_score_table_string = "";
+							$max = ($contenttotal < $from+$number ? $contenttotal : $from+$number);
+							for($i=$from;$i<$max;$i++){
+								if($arrScore[$i]){
+									$row['score']			= $arrScore[$i]['score'];
+									$row['content_id']		= $arrScore[$i]['content_id'];
+									$row['content_heading']	= $arrScore[$i]['content_heading'];
+									$row['content_author']	= $arrScore[$i]['content_author'];
+									$row['content_icon']	= $arrScore[$i]['content_icon'];
+
+									$CONTENT_SCORE_TABLE_SCORE = $row['score'];
+									$content_score_table_string	.= $tp -> parseTemplate($CONTENT_SCORE_TABLE, FALSE, $content_shortcodes);
+								}
+							}
+						}
+					}
+					if(isset($err)){
+						$content_score_table_string = $err;
+					}
+
+					if($content_pref["content_breadcrumb_score_{$mainparent}"]){
+						$crumbpage = $aa -> getCrumbPage($array, $mainparent);
+						if($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
+								echo $crumbpage;
+						}elseif($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
+								$ns -> tablerender(CONTENT_LAN_24, $crumbpage);
+						}else{
+								$text = $crumbpage.$text;
+						}
+					}
+					$text		= $CONTENT_SCORE_TABLE_START.$content_score_table_string.$CONTENT_SCORE_TABLE_END;
+					$caption	= CONTENT_LAN_87;
+					$ns -> tablerender($caption, $text);
+
+					if($content_pref["content_nextprev_{$mainparent}"]){
+						require_once(e_HANDLER."np_class.php");
+						$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
+						$ix = new nextprev(e_SELF, $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
+					}
+
+					if($pref['cachestatus']){
+						$cache = ob_get_contents();
+						$e107cache->set($cachestr, $cache);
+					}
+					ob_end_flush(); // dump collected data
+				}
+}
+// ##### --------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // ##### CONTENT ITEM ------------------------------------------
