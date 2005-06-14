@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_filemanager.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-02 21:08:06 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-14 23:35:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -50,13 +50,17 @@ define("FMLAN_37", "Custom Pages Directory");
 define("FMLAN_38", "Successfully moved file to");
 define("FMLAN_39", "Unable to move file to");
 define("FMLAN_40", "Newspost-Images Directory");
-define("FMLAN_41", "Move to Downloads dir.");
-define("FMLAN_42", "Move to Downloadimages dir.");
+
+
 define("FMLAN_43", "Delete selected files");
-define("FMLAN_44", "Please confirm that you wish to MOVE the selected files to the DOWNLOADS directory.");
-define("FMLAN_45", "Please confirm that you wish to MOVE the selected files to the DOWNLOADIMAGES directory.");
+
+
 define("FMLAN_46", "Please confirm that you wish to DELETE the selected files.");
 define("FMLAN_47", "User Uploads");
+
+define("FMLAN_48", "Move selected to");
+define("FMLAN_49", "Please confirm you wish to move the selected files.");
+define("FMLAN_50", "Move");
 
 
 
