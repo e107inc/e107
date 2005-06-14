@@ -4,15 +4,15 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-05-03 23:43:05 $
+|     $Revision: 1.12 $
+|     $Date: 2005-06-14 22:37:14 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 function wysiwyg($formids){
 define("ADMIN","");
-global $pref;
+global $pref,$HANDLERS_DIRECTORY;
 $text = "
 	<script type='text/javascript' src='".e_HANDLER."tiny_mce/tiny_mce.js'></script>
 	<script type='text/javascript'>

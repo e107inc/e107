@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/beginner.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-09 23:05:56 $
-|     $Author: streaky $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-14 22:37:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -26,10 +26,10 @@ if($_GET['mode'] == "e_advanced"){
 $text = "<div style='text-align:center;vertical-align:middle'><br /><br />
 	<table style='".ADMIN_WIDTH.";margin-top:auto;margin-bottom:auto' >";
 
-	$newarray[27] = array(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", 2, E_16_PLUGMANAGER, E_32_PLUGMANAGER);
+	$newarray[28] = array(e_ADMIN."plugin.php", ADLAN_98, ADLAN_99, "Z", 2, E_16_PLUGMANAGER, E_32_PLUGMANAGER);
 
   //	$selection = array(19,10,15,22,5,17,7,25,27,23);
-    	$selection = array(20,11,16,23,5,18,7,26,27,24);
+  $selection = array(21,11,17,24,5,19,7,27,28,25);
 	foreach($selection as $id){
 	$text .= render_links($newarray[$id][0],$newarray[$id][1],$newarray[$id][2],$newarray[$id][3],$newarray[$id][6],'beginner');
 	}

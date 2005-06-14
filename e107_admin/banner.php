@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-04-28 22:33:55 $
+|     $Revision: 1.18 $
+|     $Date: 2005-06-14 22:37:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
 
 $lan_file = e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php";
-include(file_exists($lan_file) ? $lan_file : e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
+include_once(file_exists($lan_file) ? $lan_file : e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_menus.php");
 
 
 if(e_QUERY)

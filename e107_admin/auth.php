@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/auth.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-02-28 20:03:45 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-14 22:37:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-@include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
-@include(e_LANGUAGEDIR."English/admin/lan_admin.php");
+@include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
+@include_once(e_LANGUAGEDIR."English/admin/lan_admin.php");
 if (ADMIN) {
 	require_once(e_ADMIN."header.php");
 } else {

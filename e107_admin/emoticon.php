@@ -311,7 +311,7 @@ class emotec
 				if($confFile['type'] == "php")
 				{
 					echo "<b>.conf file found</b>: installing '".$value."'<br />";
-					include(e_IMAGE."emotes/".$value."/".$confFile['file']);
+					include_once(e_IMAGE."emotes/".$value."/".$confFile['file']);
 					$sql->db_Insert("core", "'emote_".$value."', '$_emoteconf' ");
 					echo "<div style='text-align: center;'><b>New emote php found: '</b> ".$value."'</div>";
 				}
