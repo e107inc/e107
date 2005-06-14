@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.60 $
-|		$Date: 2005-06-14 10:41:53 $
+|		$Revision: 1.61 $
+|		$Date: 2005-06-14 13:04:26 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1300,7 +1300,7 @@ function show_content_score(){
 									$row['content_author']	= $arrScore[$i]['content_author'];
 									$row['content_icon']	= $arrScore[$i]['content_icon'];
 
-									$CONTENT_SCORE_TABLE_SCORE = $row['score'];
+									//$CONTENT_SCORE_TABLE_SCORE = $row['score'];
 									$content_score_table_string	.= $tp -> parseTemplate($CONTENT_SCORE_TABLE, FALSE, $content_shortcodes);
 								}
 							}
