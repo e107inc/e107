@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-10 10:29:19 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-14 22:21:23 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ define("LCLAN_14", "Post");
 define("LCLAN_15", "Link Name");
 define("LCLAN_16", "Link URL");
 define("LCLAN_17", "Link Description");
-define("LCLAN_18", "Link Button / Icon");
+define("LCLAN_18", "Link Button / Icon : Choose");
 define("LCLAN_19", "Link Open Type");
 define("LCLAN_20", "Opens in same window");
 define("LCLAN_23", "Opens in new window");
@@ -104,5 +104,18 @@ define('LCLAN_102', "Links page has successfully installed, please configure it 
 define('LCLAN_103', "Links");
 define('LCLAN_104', "Link Rating");
 define('LCLAN_105', "allow users to rate links");
+
+
+define("LCLAN_106", "Link Button / Icon : Upload");
+define("LCLAN_107", "link icon was uploaded succefully !");
+define("LCLAN_108", "link icon was not uploaded !");
+define("LCLAN_109", "upload a new icon");
+define("LCLAN_110", "Auto-Thumbnail size");
+define("LCLAN_111", "upload icon");
+define("LCLAN_112", "choose an uploaded icon");
+define("LCLAN_113", "This option is disabled as file uploading is not enabled on your server");
+define("LCLAN_114", "The");
+define("LCLAN_115", "folder is not writable, you need to CHMOD 777 the folder before uploading");
+
 
 ?>
