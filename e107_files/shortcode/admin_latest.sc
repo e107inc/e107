@@ -13,7 +13,7 @@ if (ADMIN) {
 				$lats = explode(",", $pref['plug_latest']);
 				foreach($lats as $lat) {
 					if (file_exists(e_PLUGIN.$lat."/e_latest.php")) {
-						include(e_PLUGIN.$lat."/e_latest.php");
+						include_once(e_PLUGIN.$lat."/e_latest.php");
 					}
 				}
 			}
