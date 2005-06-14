@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2005-06-14 10:41:53 $
+|     $Revision: 1.51 $
+|     $Date: 2005-06-14 20:32:26 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -568,8 +568,8 @@ By clicking the next button, you will automatically create a default set of cate
 ");
 define("CONTENT_ADMIN_MAIN_LAN_26", "preview");
 define("CONTENT_ADMIN_MAIN_LAN_27", "preview again");
-define("CONTENT_ADMIN_MAIN_LAN_28", "");
-define("CONTENT_ADMIN_MAIN_LAN_29", "");
+define("CONTENT_ADMIN_MAIN_LAN_28", "choose category ...");
+define("CONTENT_ADMIN_MAIN_LAN_29", "NEW MAIN CATEGORY");
 
 
 
