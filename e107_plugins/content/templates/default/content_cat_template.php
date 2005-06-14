@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_cat_template.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-06-14 08:34:03 $
+|     $Revision: 1.16 $
+|     $Date: 2005-06-14 19:18:22 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ global $aa, $qs, $row, $content_pref, $datestamp, $tp, $comment_total, $gen, $au
 global $CONTENT_CAT_TABLE, $CONTENT_CAT_TABLE_INFO_PRE, $CONTENT_CAT_TABLE_INFO_POST;
 global $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST;
 
-$sc_style['CONTENT_CAT_TABLE_ICON']['pre'] = "<td class='forumheader3' rowspan='5' style='width:5%; white-space:nowrap;'>";
+$sc_style['CONTENT_CAT_TABLE_ICON']['pre'] = "<td class='forumheader3' rowspan='5' style='width:5%; white-space:nowrap; padding-right:5px;'>";
 $sc_style['CONTENT_CAT_TABLE_ICON']['post'] = "</td>";
 
 $sc_style['CONTENT_CAT_TABLE_AUTHORDETAILS']['pre'] = " ";
@@ -83,7 +83,7 @@ if(!$CONTENT_CAT_TABLE_END){
 
 
 
-$sc_style['CONTENT_CAT_LIST_TABLE_ICON']['pre'] = "<td class='forumheader3' style='width:5%; white-space:nowrap; padding-right:5px; ' rowspan='5'>";
+$sc_style['CONTENT_CAT_LIST_TABLE_ICON']['pre'] = "<td class='forumheader3' style='width:5%; white-space:nowrap; padding-right:5px;' rowspan='5'>";
 $sc_style['CONTENT_CAT_LIST_TABLE_ICON']['post'] = "</td>";
 
 $sc_style['CONTENT_CAT_LIST_TABLE_SUBHEADING']['pre'] = "<tr><td class='forumheader3'>";
