@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-10 00:40:48 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-14 12:56:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_PLUGIN")){ exit; }
@@ -54,10 +54,12 @@ if(!$des) {
 	$des = BACKEND_MENU_L3;
 }
 
-if(e_PAGE == "news.php" && $pref['rss_newscats']){
+if(e_PAGE == "news.php" && $pref['rss_newscats'])
+{
 	$qry = explode(".",e_QUERY);
-    if($qry[0] == "cat" || $qry[0] == "list"){
-     $topic = $qry[1];
+	if($qry[0] == "cat" || $qry[0] == "list")
+	{
+		$topic = intval($qry[1]);
 	}
 }
 

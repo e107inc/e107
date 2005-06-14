@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-06-12 14:36:44 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2005-06-14 12:56:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -76,13 +76,9 @@ class rssCreate {
 
 				$tmp = $sql->db_getList();
 
-
-
 				$this -> rssItems = array();
 				$loop=0;
 				foreach($tmp as $value) {
-
-
 
 					$this -> rssItems[$loop]['title'] = $tp -> toRss($value['news_title']);
 					$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."news.php?item.".$value['news_id'].".".$value['news_category'];
@@ -97,7 +93,6 @@ class rssCreate {
 
 					$loop++;
 				}
-
 
 				break;
 			case 2:
@@ -138,23 +133,28 @@ class rssCreate {
 				break;
 			case 6:
 				$this -> contentType = "forum threads";
-				$this -> rssQuery = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name FROM e107_forum_t AS t
-				LEFT JOIN e107_user AS u ON t.thread_user = u.user_id
+				$this -> rssQuery = 
+				"SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name FROM e107_forum_t AS t
+				LEFT JOIN e107_user AS u ON FLOOR(t.thread_user) = u.user_id
 				LEFT JOIN e107_forum_t AS tp ON t.thread_parent = tp.thread_id
 				LEFT JOIN e107_forum AS f ON f.forum_id = t.thread_forum_id
 				WHERE f.forum_class  IN (0, 255) AND t.thread_parent=0
-				ORDER BY t.thread_datestamp DESC LIMIT 0, 9";
+				ORDER BY t.thread_datestamp DESC LIMIT 0, 9
+				";
 				$sql->db_Select_gen($this -> rssQuery);
 				$tmp = $sql->db_getList();
 
 				$this -> rssItems = array();
 				$loop=0;
 				foreach($tmp as $value) {
-					if($value['thread_user']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".$value['thread_user']." )";
+
+					if($value['user_name']) {
+						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".intval($value['thread_user'])." )";
 					} else {
-						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $value['thread_anon']);
+						$tmp=explode(".", $value['thread_user'], 2);
+						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
 					}
+
 					$this -> rssItems[$loop]['title'] = $tp -> toRss($value['thread_name']);
 					$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
 
@@ -166,8 +166,8 @@ class rssCreate {
 
 			case 7:
 				$this -> contentType = "forum posts";
-				$this -> rssQuery = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name FROM e107_forum_t AS t
-				LEFT JOIN e107_user AS u ON t.thread_user = u.user_id
+				$this -> rssQuery = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name FROM e107_forum_t AS t
+				LEFT JOIN e107_user AS u ON FLOOR(t.thread_user) = u.user_id
 				LEFT JOIN e107_forum_t AS tp ON t.thread_parent = tp.thread_id
 				LEFT JOIN e107_forum AS f ON f.forum_id = t.thread_forum_id
 				WHERE f.forum_class  IN (0, 255)
@@ -177,10 +177,12 @@ class rssCreate {
 				$this -> rssItems = array();
 				$loop=0;
 				foreach($tmp as $value) {
-					if($value['thread_user']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".$value['thread_user']." )";
+
+					if($value['user_name']) {
+						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".intval($value['thread_user'])." )";
 					} else {
-						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $value['thread_anon']);
+						$tmp=explode(".", $value['thread_user'], 2);
+						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
 					}
 
 					if($value['parent_name']) {
@@ -204,18 +206,18 @@ class rssCreate {
 				$this -> contentType = "forum topic / replies";
 
 				/* get thread ...  */
-				$this -> rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, f.forum_id, f.forum_name, f.forum_class, u.user_name
+				$this -> rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, f.forum_id, f.forum_name, f.forum_class, u.user_name
 				FROM e107_forum_t AS t
-				LEFT JOIN e107_user AS u ON t.thread_user = u.user_id
+				LEFT JOIN e107_user AS u ON FLOOR(t.thread_user) = u.user_id
 				LEFT JOIN e107_forum AS f ON f.forum_id = t.thread_forum_id
 				WHERE f.forum_class  IN (0, 255) AND t.thread_id=".$this -> topicid;
 				$sql->db_Select_gen($this -> rssQuery);
 				$topic = $sql->db_Fetch();
 
 				/* get replies ...  */
-				$this -> rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, f.forum_id, f.forum_name, f.forum_class, u.user_name
+				$this -> rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, f.forum_id, f.forum_name, f.forum_class, u.user_name
 				FROM e107_forum_t AS t
-				LEFT JOIN e107_user AS u ON t.thread_user = u.user_id
+				LEFT JOIN e107_user AS u ON FLOOR(t.thread_user) = u.user_id
 				LEFT JOIN e107_forum AS f ON f.forum_id = t.thread_forum_id
 				WHERE f.forum_class  IN (0, 255) AND t.thread_parent=".$this -> topicid;
 				$sql->db_Select_gen($this -> rssQuery);
@@ -223,20 +225,24 @@ class rssCreate {
 
 				$this -> rssItems = array();
 				$loop = 0;
-				if($topic['thread_user']) {
-					$this -> rssItems[$loop]['author'] = $topic['user_name'] . " ( ".$e107->http_path."user.php?id.".$topic['thread_user']." )";
+
+				if($value['user_name']) {
+					$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".intval($value['thread_user'])." )";
 				} else {
-					list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $topic['thread_anon']);
+					$tmp=explode(".", $value['thread_user'], 2);
+					list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
 				}
+
 				$this -> rssItems[$loop]['title'] = $tp -> toRss($topic['thread_name']);
 				$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$topic['thread_id'];
 				$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($topic['thread_thread']) : $tp -> toRss(substr($topic['thread_thread'], 0, 100)));
 				$loop ++;
 				foreach($replies as $value) {
-					if($value['thread_user']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".$value['thread_user']." )";
+					if($value['user_name']) {
+						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".intval($value['thread_user'])." )";
 					} else {
-						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $value['thread_anon']);
+						$tmp=explode(".", $value['thread_user'], 2);
+						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
 					}
 					$this -> rssItems[$loop]['title'] = "Re: ".$tp -> toRss($topic['thread_name']);
 					$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$this -> topicid;
@@ -278,28 +284,33 @@ class rssCreate {
 			break;
 
 			case 11:
-				$this -> rssQuery = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_anon, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name FROM e107_forum_t AS t
-				LEFT JOIN e107_user AS u ON t.thread_user = u.user_id
-				LEFT JOIN e107_forum_t AS tp ON t.thread_parent = tp.thread_id
-				LEFT JOIN e107_forum AS f ON f.forum_id = t.thread_forum_id
-				WHERE f.forum_class  IN (0, 255)
-				AND t.thread_forum_id = ".$this -> topicid."
-				ORDER BY t.thread_datestamp DESC LIMIT 0, 9";
+				$this -> rssQuery = "
+				SELECT f.forum_id, f.forum_name, f.forum_class, tp.thread_name AS parent_name, t.*, u.user_name from #forum_t as t
+				LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
+				LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
+				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
+				WHERE t.thread_forum_id = ".$this->topicid." 
+				AND f.forum_class IN (0, 255)
+				ORDER BY 
+				t.thread_datestamp DESC
+				LIMIT 0, 9
+				";
 				$sql->db_Select_gen($this -> rssQuery);
 				$tmp = $sql->db_getList();
 				$this -> contentType = "forum: ".$tmp[1]['forum_name'];
 				$this -> rssItems = array();
 				$loop=0;
 				foreach($tmp as $value) {
-					if($value['thread_user']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".$value['thread_user']." )";
+					if($value['user_name']) {
+						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".intval($value['thread_user'])." )";
 					} else {
-						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $value['thread_anon']);
+						$tmp=explode(".", $value['thread_user'], 2);
+						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
 					}
 
 					if($value['parent_name']) {
 						$this -> rssItems[$loop]['title'] = $tp -> toRss("Re: ".$value['parent_name']);
-						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_parent'];
+						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'].".post";
 					} else {
 						$this -> rssItems[$loop]['title'] = $tp -> toRss($value['thread_name']);
 						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
