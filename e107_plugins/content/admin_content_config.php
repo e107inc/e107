@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.42 $
-|		$Date: 2005-06-13 14:03:52 $
+|		$Revision: 1.43 $
+|		$Date: 2005-06-14 08:34:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -116,6 +116,28 @@ if(isset($_POST['updateoptions'])){
 	$content_pref	= $aa -> UpdateContentPref($_POST, $_POST['options_type']);
 	$message		= CONTENT_ADMIN_CAT_LAN_22."<br /><br />";
 	$message		.= $aa -> CreateParentMenu($_POST['options_type']);
+}
+
+
+//pre-upload a new category icon in the create/edit category form
+if(isset($_POST['uploadcaticon'])){
+
+	$pref['upload_storagetype'] = "1";
+	require_once(e_HANDLER."upload_handler.php");
+	$pathiconlarge = $_POST['iconpathlarge'];
+	$pathiconsmall = $_POST['iconpathsmall'];	
+	$uploaded = file_upload($pathiconlarge);
+	
+	$icon = "";
+	if($uploaded) {
+		$icon = $uploaded[0]['name'];
+		require_once(e_HANDLER."resize_handler.php");
+		resize_image($pathiconlarge.$icon, $pathiconlarge.$icon, '48', "nocopy");
+		resize_image($pathiconlarge.$icon, $pathiconsmall.$icon, '16', "copy");
+		rename($pathiconsmall."thumb_".$icon , $pathiconsmall.$icon);
+	}
+	$message	= ($icon ? CONTENT_ADMIN_CAT_LAN_58 : CONTENT_ADMIN_CAT_LAN_59);
+	
 }
 
 if(isset($_POST['create_category'])){
@@ -314,7 +336,7 @@ if(!e_QUERY){																//show main categories
 				$message .= "<br /><br />".CONTENT_ADMIN_CAT_LAN_50."<br /><br />";
 				$message .= "
 				".CONTENT_ADMIN_CAT_LAN_44." <a href='".e_SELF."?cat.create'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />
-				".CONTENT_ADMIN_CAT_LAN_42." <a href='".e_SELF."?cat.edit.".$qs[3]."'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />
+				".CONTENT_ADMIN_CAT_LAN_42." <a href='".e_SELF."?cat.edit.".$qs[2]."'>".CONTENT_ADMIN_CAT_LAN_43."</a><br />
 				";
 				$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 				require_once(e_ADMIN."footer.php");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-06-13 11:08:56 $
+|     $Revision: 1.49 $
+|     $Date: 2005-06-14 08:34:03 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -98,6 +98,9 @@ define("CONTENT_ADMIN_CAT_LAN_54", "user");
 define("CONTENT_ADMIN_CAT_LAN_55", "users");
 define("CONTENT_ADMIN_CAT_LAN_56", "item");
 define("CONTENT_ADMIN_CAT_LAN_57", "items");
+define("CONTENT_ADMIN_CAT_LAN_58", "category icon succesfully uploaded<br />notice: you still need to assign the icon to this category in the icon>choose existing icon area !<br />and of course after that you still need to submit the form to create/update this category");
+define("CONTENT_ADMIN_CAT_LAN_59", "category icon not uploaded");
+define("CONTENT_ADMIN_CAT_LAN_60", "");
 
 
 define("CONTENT_ADMIN_OPT_LAN_0", "options");

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.24 $
-|		$Date: 2005-06-13 18:40:07 $
+|		$Revision: 1.25 $
+|		$Date: 2005-06-14 08:34:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -438,7 +438,7 @@ class contentdb{
 
 
 		function dbCategoryCreate($mode){
-						global $pref, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache;
+						global $pref, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache, $content_cat_icon_path_large;
 
 						$_POST['cat_heading']		= $tp -> toDB($_POST['cat_heading']);
 						$_POST['cat_subheading']	= $tp -> toDB($_POST['cat_subheading']);
@@ -457,7 +457,34 @@ class contentdb{
 							$endtime = "0";
 						}
 
-						$sql -> db_Insert($plugintable, "'0', '".$_POST['cat_heading']."', '".$_POST['cat_subheading']."', '', '".$_POST['cat_text']."', '".ADMINID."', '".$_POST['cat_icon']."', '', '', '".$_POST['parent']."', '".$_POST['cat_comment']."', '".$_POST['cat_rate']."', '".$_POST['cat_pe']."', '', '".$starttime."', '".$endtime."', '".$_POST['cat_class']."', '', '0' ");
+						
+						$pref['upload_storagetype'] = "1";
+						require_once(e_HANDLER."upload_handler.php");
+						//$pref['upload_storagetype'] = "1";
+						$pathicon = $content_cat_icon_path_large;
+						$uploadedicon = file_upload($pathicon);
+						if($_POST['cat_icon'] && !$uploadedicon){
+							$icon = $_POST['cat_icon'];
+						} elseif($uploadedicon) {
+							$fileorgicon = $uploadedicon[0]['name'];
+							$fileext2icon = substr(strrchr($fileorgicon, "."), 0);
+							$fileorgiconname = substr($fileorgicon, 0, -(strlen($fileext2icon)) );
+
+							if($fileorgicon){
+								//$icon = $newpid."_".$fileorgiconname."".$fileext2icon;
+								$icon = $fileorgicon;
+								//rename($pathicon.$fileorgicon , $pathicon.$icon);
+								//require_once(e_HANDLER."resize_handler.php");
+								//resize_image($pathicon.$icon, $pathicon.$icon, '100', "nocopy");
+							} else {
+								$icon = "";
+							}
+						}else{
+							$icon = "";
+						}
+						
+
+						$sql -> db_Insert($plugintable, "'0', '".$_POST['cat_heading']."', '".$_POST['cat_subheading']."', '', '".$_POST['cat_text']."', '".ADMINID."', '".$icon."', '', '', '".$_POST['parent']."', '".$_POST['cat_comment']."', '".$_POST['cat_rate']."', '".$_POST['cat_pe']."', '', '".$starttime."', '".$endtime."', '".$_POST['cat_class']."', '', '0' ");
 
 						// check and insert default pref values if new main parent + create menu file
 						if($_POST['parent'] == "0"){
