@@ -45,7 +45,7 @@ switch($custom_query[0])
 				else
 				{
 						$quotes = file(e_BASE."quote.txt");
-						$quote = $tp->toHTML($quotes[rand(0, count($quotes))], TRUE);
+						$quote = $tp->toHTML($quotes[rand(0, count($quotes) -1 )], TRUE);
 				}
 				return $quote;
 				break;
