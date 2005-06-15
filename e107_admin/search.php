@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-06-07 19:26:20 $
+|     $Revision: 1.19 $
+|     $Date: 2005-06-15 15:18:39 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -31,6 +31,14 @@ $search_handlers['news'] = ADLAN_0;
 $search_handlers['comments'] = SEALAN_6;
 $search_handlers['users'] = SEALAN_7;
 $search_handlers['downloads'] = ADLAN_24;
+$search_handlers['pages'] = SEALAN_39;
+
+preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
+if (version_compare($mysql_version[1], '4.0.1', '<')) {
+	$mysql_supported = false;
+} else {
+	$mysql_supported = true;
+}
 
 if (isset($_POST['updatesettings'])) {
 	$pref['search_restrict'] = $_POST['search_restrict'];
@@ -43,12 +51,11 @@ if (isset($_POST['updatesettings'])) {
 	$search_prefs['time_restrict'] = $_POST['time_restrict'];
 	$search_prefs['time_secs'] = $_POST['time_secs'] > 300 ? 300 : $_POST['time_secs'];
 	if ($_POST['search_sort'] == 'mysql') {
-		preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
-		if (version_compare($mysql_version[1], '4.0.1', '<')) {
+		if ($mysql_supported) {
+			$search_prefs['mysql_sort'] = TRUE;
+		} else {
 			$search_prefs['mysql_sort'] = FALSE;
 			$message = SEALAN_33."<br />".SEALAN_34." ".$mysql_version[1];
-		} else {
-			$search_prefs['mysql_sort'] = TRUE;
 		}
 	} else {
 		$search_prefs['mysql_sort'] = FALSE;
@@ -158,7 +165,7 @@ $text .= "<tr>
 $text .= "<tr>
 <td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_3."</td>
 <td style='width:50%;' colspan='2' class='forumheader3'>
-".$rs -> form_radio('search_sort', 'mysql', ($search_prefs['mysql_sort'] == TRUE ? 1 : 0))."MySql
+".$rs -> form_radio('search_sort', 'mysql', ($search_prefs['mysql_sort'] == TRUE ? 1 : 0), 'MySql', ($mysql_supported ? "" : "disabled='true'"))."MySql
 ".$rs -> form_radio('search_sort', 'php', ($search_prefs['mysql_sort'] == TRUE ? 0 : 1)).SEALAN_31." 
 ".$rs -> form_text("php_limit", 5, $search_prefs['php_limit'], 5)." ".SEALAN_32." 
 </td>
@@ -265,7 +272,7 @@ $text .= "<tr>
 </tr>";
 
 foreach ($search_prefs['comments_handlers'] as $key => $value) {
-	$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$key.'.php' : e_PLUGIN.$value['dir'].'/comments_search.php';
+	$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$key.'.php' : e_PLUGIN.$value['dir'].'/search/search_comments.php';
 	require_once($path);
 	$text .= "<tr>
 	<td style='width:40%; white-space:nowrap' class='forumheader3'>".$comments_title."</td>
