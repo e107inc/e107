@@ -117,13 +117,13 @@ $ADMIN_FOOTER .= "</tr>
 
 $BUTTONS_START = "<table class='fborder' style='width: 100%'>";
 
-$BUTTON = "<tr><td style='border-bottom: 1px solid #000'><div class='emenuBar'>
-<div class='menuButton' onmouseover=\"eover(this, 'menuButton_over')\" onmouseout=\"eover(this, 'menuButton')\" {ONCLICK} 
+$BUTTON = "<tr><td class='link_button'><div class='emenuBar link_button'>
+<div class='menuButton link_button' onmouseover=\"eover(this, 'menuButton_over link_button')\" onmouseout=\"eover(this, 'menuButton link_button')\" {ONCLICK} 
 style='width: 98% !important; width: 100%; padding: 0px 0px 0px 2px; border-right: 0px'>
 <img src='".E_16_NAV_ARROW."' style='width: 16px; height: 16px; vertical-align: middle' alt='' />&nbsp;{LINK_TEXT}</div></div></td></tr>";
 
-$BUTTON_OVER = "<tr><td style='border-bottom: 1px solid #000'><div class='emenuBar'>
-<div class='menuButton' onmouseover=\"eover(this, 'menuButton_over')\" onmouseout=\"eover(this, 'menuButton')\" {ONCLICK} 
+$BUTTON_OVER = "<tr><td class='link_button'><div class='emenuBar link_button'>
+<div class='menuButton link_button' onmouseover=\"eover(this, 'menuButton_over link_button')\" onmouseout=\"eover(this, 'menuButton link_button')\" {ONCLICK} 
 style='width: 98% !important; width: 100%; padding: 0px 0px 0px 2px; border-right: 0px'>
 <img src='".E_16_NAV_ARROW_OVER."' style='width: 16px; height: 16px; vertical-align: middle' alt='' />&nbsp;{LINK_TEXT}</div></div></td></tr>";
 
