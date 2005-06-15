@@ -367,7 +367,7 @@ foreach($ueCatList as $catnum => $cat)
 {
 	$key = $cat[0]['user_extended_struct_name'];
 	$cat_name = $tp->parseTemplate("{EXTENDED={$key}.text.{$user_id}}", TRUE);
-	if($cat_name != FALSE)
+	if($cat_name != FALSE && count($ueFieldList[$catnum]))
 	{
 		$ret .= str_replace("{EXTENDED_NAME}", $key, $EXTENDED_CATEGORY_START);
 		foreach($ueFieldList[$catnum] as $f)
