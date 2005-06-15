@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/notify_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-09 00:03:27 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-15 14:59:08 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -120,8 +120,10 @@ function notify_newsdel($data) {
 	$nt -> send('newsdel', NT_LAN_ND_1, NT_LAN_ND_2.': '.$data);
 }
 
-foreach ($nt -> notify_prefs['plugins'] as $plugin_id => $plugin_settings) {
-	require_once(e_PLUGIN.$plugin_id.'/e_notify.php');
+if (isset($nt -> notify_prefs['plugins'])) {
+	foreach ($nt -> notify_prefs['plugins'] as $plugin_id => $plugin_settings) {
+		require_once(e_PLUGIN.$plugin_id.'/e_notify.php');
+	}
 }
 
 ?>
