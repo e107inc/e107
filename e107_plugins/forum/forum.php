@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-05-22 14:34:00 $
-|     $Author: stevedunstan $
+|     $Revision: 1.27 $
+|     $Date: 2005-06-15 23:05:01 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -422,26 +422,30 @@ if (e_QUERY == "track")
 
 if (e_QUERY == "new")
 {
-	$newpostList = $forum->post_getnew(5);
+	$newpostList = $forum->post_getnew(10);
 	foreach($newpostList as $post)
 	{
-		if (!ereg("\.".$thread_id."\.", USERVIEWED))
+		list($author_id, $author_info) = explode(".", $post['thread_user'], 2);
+		list($author_name, $tmp) = explode(chr(1), $author_info);
+		$datestamp = $gen->convert_date($post['thread_datestamp'], "forum");
+		if($author_id == 0)
 		{
-//			$author_name = $forum->thread_user($post);
-			list($author_id, $author_name) = explode(".". $post['thread_user'], 2);
-			$datestamp = $gen->convert_date($post['thread_datestamp'], "forum");
-			if($author_id == 0)
-			{
-				$STARTERTITLE = $author_name."<br />".$datestamp;
-			}
-			else
-			{
-				$STARTERTITLE = "<a href='".e_BASE."user.php?id.$author_id'>$author_name</a><br />".$datestamp;
-			}
-
-			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}.post'>".LAN_425.$post['post_subject']."</a>";
-			$forum_newstring .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_MAIN);
+			$STARTERTITLE = $author_name."<br />".$datestamp;
 		}
+		else
+		{
+			$STARTERTITLE = "<a href='".e_BASE."user.php?id.$author_id'>$author_name</a><br />".$datestamp;
+		}
+		if($post['post_subject'])
+		{
+			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}.post'>".LAN_425.$tp->toHTML($post['post_subject'], TRUE)."</a>";
+		}
+		else
+		{
+			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}'>".$tp->toHTML($post['thread_name'], TRUE)."</a>";
+		}
+	
+		$forum_newstring .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_MAIN);
 	}
 
 	if (!$newpostList)

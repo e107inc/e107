@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-06-03 11:18:27 $
+|     $Revision: 1.37 $
+|     $Date: 2005-06-15 23:05:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -716,9 +716,22 @@ class e107forum
 		return $newthread_id;
 	}
 
-	function post_getnew($count)
+	function post_getnew($count = 50, $userviewed = USERVIEWED)
 	{
 		global $sql;
+		$viewed = "";
+		if($userviewed)
+		{
+			$viewed = preg_replace("#\.+#", ".", $userviewed);
+			$viewed = preg_replace("#^\.#", "", $viewed);
+			$viewed = preg_replace("#\.$#", "", $viewed);
+			$viewed = str_replace(".", ",", $viewed);
+		}
+		if($viewed != "")
+		{
+			$viewed = " AND ft.thread_id NOT IN (".$viewed.")";
+		}
+
 		$qry = "
 		SELECT ft.*, fp.thread_name as post_subject, fp.thread_total_replies as replies, u.user_id, u.user_name, f.forum_class
 		FROM #forum_t AS ft
@@ -726,9 +739,9 @@ class e107forum
 		LEFT JOIN #user as u ON u.user_id = FLOOR(ft.thread_user) 
 		LEFT JOIN #forum as f ON f.forum_id = ft.thread_forum_id
 		WHERE ft.thread_datestamp > ".USERLV. "
-		AND
-		f.forum_class IN (".USERCLASS_LIST.")
-		ORDER BY ft.thread_datestamp DESC LIMIT 0, 50
+		AND f.forum_class IN (".USERCLASS_LIST.")
+		{$viewed}
+		ORDER BY ft.thread_datestamp DESC LIMIT 0, {$count}
 		";
 		if($sql->db_Select_gen($qry))
 		{
