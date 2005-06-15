@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-06-11 22:23:20 $
-|     $Author: e107coders $
+|     $Revision: 1.36 $
+|     $Date: 2005-06-15 09:07:31 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -214,7 +214,7 @@ CREATE TABLE links (
   link_button varchar(100) NOT NULL default '',
   link_category tinyint(3) unsigned NOT NULL default '0',
   link_order int(10) unsigned NOT NULL default '0',
-  link_refer int(10) unsigned NOT NULL default '0',
+  link_parent int(10) unsigned NOT NULL default '0',
   link_open tinyint(1) unsigned NOT NULL default '0',
   link_class tinyint(3) unsigned NOT NULL default '0',
   PRIMARY KEY  (link_id)
