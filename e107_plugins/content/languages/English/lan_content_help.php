@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_help.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-13 11:08:57 $
+|     $Revision: 1.12 $
+|     $Date: 2005-06-15 21:45:50 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,10 @@ define("CONTENT_ADMIN_HELP_ORDER_2", "<i>this page shows all content items from 
 
 define("CONTENT_ADMIN_HELP_ORDER_3", "<i>this page shows all content items from main parent category you have selected.</i><br /><br /><b>detailed list</b><br />you see the content id, the content author and the content heading. also you see several options to manage the order of the content items.<br /><br /><b>explanation of icons</b><br />".CONTENT_ICON_USER." : link to the author profile<br />".CONTENT_ICON_LINK." : link to the content item<br />".CONTENT_ICON_ORDER_UP." : the up button allow you to move a content item one up in order.<br />".CONTENT_ICON_ORDER_DOWN." : the down button allow you to move a content item one down in order.<br /><br /><b>order</b><br />here you can manually set the order of all the categories in this main parent. You need to change the values in the select boxes to the order of your kind and then press the update button below to save the new order.<br />");
 
-define("CONTENT_ADMIN_HELP_OPTION_1", "On this page you can select a main parent category to set options for, or you can choose to edit the default preferences.<br /><br /><b>explanation of icons</b><br />".CONTENT_ICON_USER." : link to the author profile<br />".CONTENT_ICON_LINK." : link to the category<br />".CONTENT_ICON_OPTIONS." : edit the options<br />");
+define("CONTENT_ADMIN_HELP_OPTION_1", "On this page you can select a main parent category to set options for, or you can choose to edit the default preferences.<br /><br /><b>explanation of icons</b><br />".CONTENT_ICON_USER." : link to the author profile<br />".CONTENT_ICON_LINK." : link to the category<br />".CONTENT_ICON_OPTIONS." : edit the options<br /><br /><br />
+The default preferences are only used when you create a new main parent. So when you create a new main parent these default preferences will be stored. You can change these to make sure newly created main parents already have a certain set of features present.
+<br /><br />
+Each main parent has its own set of options, which are unique to that specific main parent category");
 
 define("CONTENT_ADMIN_HELP_OPTION_2", "
 <i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />
