@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.87 $
-|     $Date: 2005-06-15 10:20:22 $
-|     $Author: streaky $
+|     $Revision: 1.88 $
+|     $Date: 2005-06-15 15:10:17 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -311,17 +311,19 @@ class e_parse
 		}
 
 		// Search Highlight
-		$shr = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "");
-		if ($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === FALSE) && ((strpos($shr, 'q=') !== FALSE) || (strpos($shr, 'p=') !== FALSE))) {
-			if (!isset($this -> e_query)) {
-				$query = preg_match('#(q|p)=(.*?)(&|$)#', $shr, $matches);
-				$this -> e_query = str_replace(' ', '.*?\b|\b', trim(urldecode($matches[2])));
-			}
-			preg_match_all("#<[^>]+>#", $text, $tags);
-			$text = preg_replace("#<[^>]+>#", "<|>", $text);
-			$text = preg_replace("#(\b".$this -> e_query.".*?\b)#i", "<span class='searchhighlight'>\\1</span>", $text);
-			foreach ($tags[0] as $tag) {
-				$text = preg_replace("#<\|>#", $tag, $text, 1);
+		if (strpos($modifiers, 'emotes_off') === FALSE) {
+			$shr = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "");
+			if ($pref['search_highlight'] && (strpos(e_SELF, 'search.php') === FALSE) && ((strpos($shr, 'q=') !== FALSE) || (strpos($shr, 'p=') !== FALSE))) {
+				if (!isset($this -> e_query)) {
+					$query = preg_match('#(q|p)=(.*?)(&|$)#', $shr, $matches);
+					$this -> e_query = str_replace(array('+', '*', '"', ' '), array('', '.*?', '', '\b|\b'), trim(urldecode($matches[2])));
+				}
+				preg_match_all("#<[^>]+>#", $text, $tags);
+				$text = preg_replace("#<[^>]+>#", "<|>", $text);
+				$text = preg_replace("#(\b".$this -> e_query."\b)#i", "<span class='searchhighlight'>\\1</span>", $text);
+				foreach ($tags[0] as $tag) {
+					$text = preg_replace("#<\|>#", $tag, $text, 1);
+				}
 			}
 		}
 
