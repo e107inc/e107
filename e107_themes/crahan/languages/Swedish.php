@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -13,17 +13,17 @@
 |     Swedish language file.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/crahan/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 18:14:47 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-15 08:50:56 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 
-define("LAN_THEME_1", "'CraHan' av <a href='http://e107.org' rel='external'>jalist</a>, baserat på tame av CraHan på hans hemsida <a href='http://n00.be' rel='external'>n00.be</a>");
-define("LAN_THEME_2", "Kommentarer är avaktiverade för detta objekt");
+define("LAN_THEME_1", "'CraHan' av <a href='http://e107.org' rel='external'>jalist</a>, baserat pÃ¥ tame av CraHan pÃ¥ hans hemsida <a href='http://n00.be' rel='external'>n00.be</a>");
+define("LAN_THEME_2", "Kommentarer Ã¤r avaktiverade fÃ¶r detta objekt");
 define("LAN_THEME_3", "kommentar(er): ");
-define("LAN_THEME_4", "Läs resten ...");
-define("LAN_THEME_5", "Bakåtlänk: ");
+define("LAN_THEME_4", "LÃ¤s resten ...");
+define("LAN_THEME_5", "BakÃ¥tlÃ¤nk: ");
 define("LAN_THEME_6", "Kommentar av");
 
 

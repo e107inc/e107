@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_usersettings.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-30 16:42:48 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-15 08:50:56 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -71,6 +71,10 @@ define("LAN_430", "Fil");
 define("LAN_431", "Artikel");
 define("LAN_432", "Recension");
 
+define ("LAN_433", "URL till din XUP fil");
+define("LAN_434", "Vad är detta?");
+define("LAN_435", "XML Användarprotokoll fil");
+
 define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "tecken");
 define("LAN_SIGNUP_4", "Ditt lösenord måste vara minst ");
@@ -99,4 +103,7 @@ define("LAN_USET_5", "Prenumererar på");
 define("LAN_USET_6", "Prenumerera på vår(a) e-postlista(or) och/eller sektioner av sajten.");
 define("LAN_USET_7", "Diverse");
 define("LAN_USET_8", "Signatur / Tidszon");
+define("LAN_USET_9", "Något/några av de nödvändiga fälten (markerade med *) saknas i dina inställningar.");
+define("LAN_USET_10","Vänligen uppdatera dina inställningar nu för att kunna fortsätta.");
+
 ?>

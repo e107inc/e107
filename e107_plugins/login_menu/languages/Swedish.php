@@ -4,19 +4,19 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-13 16:20:21 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-15 08:50:56 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 
-define("LOGIN_MENU_L1", "Använadnamn: ");
+define("LOGIN_MENU_L1", "Användarnamn: ");
 define("LOGIN_MENU_L2", "Lösenord: ");
 define("LOGIN_MENU_L3", "Registrera");
 define("LOGIN_MENU_L4", "Glömt lösenord?");
 define("LOGIN_MENU_L5", "Välkommen");
 define("LOGIN_MENU_L6", "Kom ihåg mig");
-define("LOGIN_MENU_L7", "Iniks användar-ID känns inte igen (möligen korrupt kaka).<br />Vänligen <a href=\"".e_BASE."index.php?logout\">klicka här</a> för att förstöra kakan.");
+define("LOGIN_MENU_L7", "Ditt användar-ID känns inte igen (möligen korrupt kaka).<br />Vänligen <a href=\"".e_BASE."index.php?logout\">klicka här</a> för att förstöra kakan.");
 define("LOGIN_MENU_L8", "Logga ut");
 define("LOGIN_MENU_L9", "Inloggningsfel");
 define("LOGIN_MENU_L10", "Underhållsflaggan satt - detta betyder att vanliga användare omdirigeras till sitedown.php. För att återställa flaggan, gå till admin/underhåll.");
@@ -37,7 +37,7 @@ define("LOGIN_MENU_L24", "Klicka här för att se en lista på nya objekt");
 define("LOGIN_MENU_L25", "Sedan ditt senaste besök har det varit");
 define("LOGIN_MENU_L26", "inga");
 define("LOGIN_MENU_L27", "och");
-define("LOGIN_MENU_L28", "Inloggning");
+define("LOGIN_MENU_L28", "Logga in");
 
 define("LOGIN_MENU_L29", "ny artikel");
 define("LOGIN_MENU_L30", "nya artiklar");

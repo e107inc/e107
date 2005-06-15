@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_signup.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-30 16:42:48 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-15 08:50:56 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -74,9 +74,21 @@ define("LAN_SIGNUP_24", "Tack för din registrering hos");
 define("LAN_SIGNUP_25", "Ladda upp din figur");
 define("LAN_SIGNUP_26", "Ladda upp ditt foto");
 define("LAN_SIGNUP_27", "Visa");
-
 define("LAN_SIGNUP_28", "val av innehåll/e-postlistor");
-
-define("LAN_SIGNUP_29", "Ett verifieringsbrev kommer att sändas till den e-postadress du anger här, så den måste vara giltig.");
+define("LAN_SIGNUP_29", " Ett verifieringsbrev kommer att sändas till den e-postadress du anger här, så den måste vara giltig.");
 define("LAN_SIGNUP_30", "Om du inte vill visa din e-postadress på sajten, klicka då i rutan med 'Göm e-postadress'.");
+
+define("LAN_SIGNUP_31", "URL till din XUP fil");
+define("LAN_SIGNUP_32", "Vad är en XUP fil?");
+define("LAN_SIGNUP_33", "Ange sökväg eller välj figur");
+define("LAN_SIGNUP_34", "Observera: En bild som laddas upp till denna serveroch som anses tvivelaktig av administratörerna kommer att omedelbart raderas.");
+define("LAN_SIGNUP_35", "Klicka här för att registrera med en XUP fil");
+
+define("LAN_LOGINNAME", "Inloggnginsnamn");
+define("LAN_PASSWORD", "Lösenord");
+define("LAN_USERNAME", "Visa namn");
+define("LAN_EMAIL_01", "Kära");
+define("LAN_EMAIL_04", "Spara detta e-postbrev för din egen referens.");
+define("LAN_EMAIL_05", "Ditt lösenord har krypterats och kan inte återskapas om glömmer bort det. Du kan däremot begära ett nytt lösenord om det skulle hända.");
+define("LAN_EMAIL_06", "Tack för din registrering.");
 ?>

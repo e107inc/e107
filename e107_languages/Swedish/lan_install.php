@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_install.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-30 16:42:48 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-15 08:50:56 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ define("INSLAN17", "Fortsätt");
 define("INSLAN18", "Testa filrättigheter igen");
 define("INSLAN19", "Alla servertest klara, klicka på knappen för att gå vidare till nästa steg");
 define("INSLAN20", "MySQL information");
-define("INSLAN21", "Ange dina MySQL uppgifter här.<br />Om du har root-åtkomst kan du skapa en ny databas genom att klicka i rutan, om inte måste du<br />skapa en databas eller använda en befintlig.<br />Om du bara har en databas, använd ett prefix så att andra skript kan dela på samma databas.<br />Om du inte känner till dina MySQL uppgifter, kontakta din webbvärd.");
+define("INSLAN21", "Ange dina MySQL uppgifter här.<br />Om du har root-åtkomst kan du skapa en ny databas genom att klicka i rutan, om inte måste du<br />skapa en databas manuellt eller använda en befintlig.<br />Om du bara har en databas, använd ett prefix så att andra skript kan dela på samma databas.<br />Om du inte känner till dina MySQL uppgifter, kontakta din webbvärd.");
 define("INSLAN22", "MySQL server");
 define("INSLAN23", "MySQL användarnamn");
 define("INSLAN24", "MySQL lösenord");
@@ -73,7 +73,7 @@ define("INSLAN57", "e107 är korrekt installerad och är nu redo att ta emot inn
 define("INSLAN58", "du kommer att hitta FAQ och dokumentation här.");
 define("INSLAN59", "Tack för att du provar e107, vi hoppas att den uppfyller dina krav.\n(Du kan radera detta meddelande från din adminsektion.)\n\n<b>Observera att denna version av e107 är en beta version och inte avsedd att användas i en produktionsmiljö.</b>");
 define("INSLAN60", "markera för att skapa");
-define("INSLAN61", "folder");
+define("INSLAN61", "mapp");
 define("INSLAN62", "eller");
 define("INSLAN63", "filrättighetsfel");
 define("INSLAN64", "Denna fil är skapad av installationsskriptet.");
