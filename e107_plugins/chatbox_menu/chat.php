@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 17:02:29 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-15 15:11:47 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -27,8 +27,8 @@ require_once(HEADERF);
 
 $sql->db_Select("menus", "*", "menu_name='chatbox_menu'");
 $row = $sql->db_Fetch();
- extract($row);
-if (!check_class($menu_class)) {
+
+if (!check_class($row['menu_class'])) {
 	$ns->tablerender(LAN_14, "<div style='text-align:center'>".LAN_15."</div>");
 	require_once(FOOTERF);
 	exit;
@@ -37,7 +37,6 @@ if (!check_class($menu_class)) {
 if (strstr(e_QUERY, "fs")) {
 	$cgtm = str_replace(".fs", "", e_QUERY);
 	$fs = TRUE;
-	unset($tmp);
 }
 
 if (e_QUERY ? $from = e_QUERY : $from = 0);
@@ -48,10 +47,24 @@ if (!$view) {
 $chat_total = $sql->db_Count("chatbox");
 
 if ($fs) {
-	$sql->db_Select("chatbox", "*", "cb_id='$cgtm'");
-} else {
-	$sql->db_Select("chatbox", "*", "cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT $from, ".$view);
+	$page_count = 0;
+	$row_count = 0;
+	$sql->db_Select("chatbox", "*", "cb_blocked=0 ORDER BY cb_datestamp DESC");
+	while ($row = $sql -> db_Fetch()) {
+		if ($row['cb_id'] == $cgtm) {
+			$from = $page_count;
+			break;
+		}
+		$row_count++;
+		if ($row_count == 30) {
+			$row_count = 0;
+			$page_count += 30;
+		}
+	}
 }
+
+$sql->db_Select("chatbox", "*", "cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT $from, ".$view);
+	
 $obj2 = new convert;
 
 while ($row = $sql->db_Fetch()) {
@@ -81,10 +94,10 @@ $text = $textstart.$textstring.$textend;
 
 $ns->tablerender(LAN_11, $text);
 
-if (!$fs) {
-	require_once(e_HANDLER."np_class.php");
-	$ix = new nextprev("chat.php", $from, 30, $chat_total, LAN_12);
-}
+
+require_once(e_HANDLER."np_class.php");
+$ix = new nextprev("chat.php", $from, 30, $chat_total, LAN_12);
+
 
 require_once(FOOTERF);
 
