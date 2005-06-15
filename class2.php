@@ -12,14 +12,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.170 $
-|     $Date: 2005-06-15 09:37:29 $
+|     $Revision: 1.171 $
+|     $Date: 2005-06-15 20:39:49 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 // setup error handling first of all.
-error_reporting(E_ALL);
+error_reporting(E_ERROR | E_PARSE);
 $error_handler = new error_handler();
 set_error_handler(array(&$error_handler, "handle_error"));
 
@@ -1186,6 +1186,9 @@ class error_handler {
 	function error_handler() {
 		if ((isset($_SERVER['QUERY_STRING']) && preg_match('/debug=(.*)/', $_SERVER['QUERY_STRING'])) || isset($_COOKIE['e107_debug_level'])) {
 			$this->debug = true;
+			error_reporting(E_ALL);
+		} else {
+			error_reporting(E_ERROR | E_PARSE);
 		}
 	}
 
