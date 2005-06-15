@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-06-01 15:00:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.20 $
+|     $Date: 2005-06-15 17:47:26 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -90,7 +90,7 @@ if (isset($_POST['create_tables']) && $_POST['language']) {
 
 
 
-$caption = "Languages";
+$caption = LANG_LAN_16;
 $text = MLAD_LAN_4."<br /><br />";
 
 
@@ -248,7 +248,7 @@ function multilang_prefs() {
 
 	$text .= "<tr style='vertical-align:top'>
 		<td colspan='2' style='text-align:center' class='forumheader'>";
-	$text .= "<input class='button' type='submit' name='submit_prefs' value='Save' />";
+	$text .= "<input class='button' type='submit' name='submit_prefs' value='".LANG_LAN_17."' />";
 	$text .= "</td>
 		</tr>
 		</table>
