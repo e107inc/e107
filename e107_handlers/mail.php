@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-06-12 21:39:43 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2005-06-15 17:59:19 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -78,22 +78,34 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
  	$mail->AltBody = $text; //Include regular plaintext as well
 	$mail->AddAddress($send_to, $to_name);
 
-
-	if ($attachments){
-		if (is_array($attachments))	{
-			for ($i = 0; $i < count($attachments); $i++){
-				$mail->AddAttachment($attachments[$i], basename($attachments[$i]),"base64",mime_content_type($attachments[$i]));
-			}
-		}else{
-			$mail->AddAttachment($attachments, basename($attachments),"base64",mime_content_type($attachments[$i]));
-		}
+	if(!function_exists("mime_content_type"))
+	{
+		echo "
+<script type='text/javascript'>
+<!--
+alert ('Unable to send attachments - mime_content_type function  not available on your server.');
+//-->
+</script>
+";
 	}
+	else
+	{
+		if ($attachments){
+			if (is_array($attachments))	{
+				for ($i = 0; $i < count($attachments); $i++){
+					$mail->AddAttachment($attachments[$i], basename($attachments[$i]),"base64",mime_content_type($attachments[$i]));
+				}
+			}else{
+				$mail->AddAttachment($attachments, basename($attachments),"base64",mime_content_type($attachments[$i]));
+			}
+		}
 
-	if($inline){
-    	$tmp = explode(",",$inline);
-		foreach($tmp as $inline_img){
-			$mail->AddEmbeddedImage($inline_img, md5($inline_img), basename($inline_img),"base64",mime_content_type($inline_img));
-        }
+		if($inline){
+			$tmp = explode(",",$inline);
+			foreach($tmp as $inline_img){
+				$mail->AddEmbeddedImage($inline_img, md5($inline_img), basename($inline_img),"base64",mime_content_type($inline_img));
+			}
+		}
 	}
 
 	if($Cc){
