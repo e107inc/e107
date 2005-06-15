@@ -53,8 +53,8 @@
 	}
 	$text .= "<div class='menuBar' style='width:100%; white-space: nowrap'>";
 
-	$main_links = getLinks("link_category='1' && link_name NOT REGEXP('submenu') ORDER BY link_order ASC");
-	$sub_links = getLinks("link_category='1' && link_name REGEXP('submenu') ORDER BY link_order ASC");
+	$main_links = getLinks("link_category='1' && link_parent = '0' ORDER BY link_order ASC");
+	$sub_links = getLinks("link_category='1' && link_parent != '0' ORDER BY link_order ASC");
 
 	foreach ($sub_links as $sub) {
 		if (check_class($sub['link_class'])) {
