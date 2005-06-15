@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.169 $
-|     $Date: 2005-06-15 08:27:52 $
+|     $Revision: 1.170 $
+|     $Date: 2005-06-15 09:37:29 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -26,6 +26,9 @@ set_error_handler(array(&$error_handler, "handle_error"));
 // Honest global beginning point for processing time
 $eTimingStart = microtime();
 $start_ob_level = ob_get_level();
+
+ini_set('magic_quotes_runtime', 0);
+ini_set('magic_quotes_sybase',  0);
 
 // Find out if register globals is enabled and destroy them if so
 $register_globals = true;
