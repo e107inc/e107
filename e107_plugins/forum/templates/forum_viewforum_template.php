@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewforum_template.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-03 18:43:21 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-15 13:51:54 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!$FORUM_VIEW_START)
@@ -24,19 +24,29 @@ $FORUM_VIEW_START = "
 	<div class='spacer'>
 	<table style='width:95%' class='fborder' >
 	<tr>
-		<td  colspan='2' class='fcaption'>{BREADCRUMB}</td>
+	<td class='fcaption'>{BREADCRUMB}</td>
 	</tr>
 	{SUBFORUMS}
 	<tr>
-		<td style='width:80%; vertical-align:middle; text-align: left;'>&nbsp;<span class='mediumtext'>{FORUMTITLE}</span><br />{THREADPAGES}</td>
-		<td style='width:20%; text-align:right'>
-		{NEWTHREADBUTTON}
-		</td>
+	<td style='width:80%' class='forumheader'>
+	<span class='mediumtext'>{FORUMTITLE}</span></td>
 	</tr>
+	</table>
+	</div>
+	
+	<table style='width: 95%'>
 	<tr>
-		<td colspan='2'>
+	<td style='width:80%'>
+	<span class='mediumtext'>{THREADPAGES}</span>
+	</td>
+	<td style='width:20%; text-align:right'>
+	{NEWTHREADBUTTON}
+	</td>
+	</tr>
+	</table>
 
-	<table style='width:100%' class='fborder'>
+	<div class='spacer'>
+	<table style='width:95%' class='fborder'>
 	<tr>
 	<td style='width:3%' class='fcaption'>&nbsp;</td>
 	<td style='width:47%' class='fcaption'>{THREADTITLE}</td>
@@ -51,7 +61,7 @@ if (!$FORUM_VIEW_FORUM) {
 	$FORUM_VIEW_FORUM = "
 		<tr>
 		<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>{ICON}</td>
-		<td style='vertical-align:middle; text-align:left; width:47%'  class='forumheader3'>
+		<td style='vertical-align:middle; text-align:left; width:47%' class='forumheader3'>
 
 		<table style='width:100%'>
 		<tr>
@@ -72,20 +82,23 @@ if (!$FORUM_VIEW_FORUM) {
 if (!$FORUM_VIEW_END) {
 	$FORUM_VIEW_END = "
 		</table>
-		<table style='width:100%'>
+		</div>
+		
+		<table style='width:95%'>
 		<tr>
 		<td style='width:80%'><span class='mediumtext'>{THREADPAGES}</span>
-		{FORUMJUMP}
 		</td>
 		<td style='width:20%; text-align:right'>
 		{NEWTHREADBUTTON}
 		</td>
 		</tr>
-		</table>
+		<tr>
+		<td colspan ='2'>
+		{FORUMJUMP}
 		</td>
 		</tr>
 		</table>
-        </div>
+
 		<div class='spacer'>
 		<table class='fborder' style='width:95%'>
 		<tr>
@@ -94,6 +107,7 @@ if (!$FORUM_VIEW_END) {
 		</tr>
 		</table>
 		</div>
+		
 		<div class='spacer'>
 		<table class='fborder' style='width:95%'>
 		<tr>
@@ -104,12 +118,13 @@ if (!$FORUM_VIEW_END) {
 		</table>
 		</div>
 		</div>
+		<div class='spacer'>
 		<div style='text-align:center;'>
 		<a href='".e_PLUGIN."rss_menu/rss.php?11.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='".LAN_431."' style='vertical-align: middle; border: 0;' /></a> 
 		<a href='".e_PLUGIN."rss_menu/rss.php?11.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_432."' style='vertical-align: middle; border: 0;' /></a> 
 		<a href='".e_PLUGIN."rss_menu/rss.php?11.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;' /></a>
 		</div>
-		<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>
+		<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div></div>
 ";
 }
 
