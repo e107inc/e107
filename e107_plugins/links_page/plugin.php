@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:53:05 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-15 20:36:14 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
@@ -44,11 +44,15 @@ $eplug_icon_small = $eplug_folder."/images/linkspage_16.png";
 $eplug_caption = LCLAN_101;
 	
 // List of preferences -----------------------------------------------------------------------------------------------
+/*
 $eplug_prefs = array(
 "link_submit" => 1,
-	"link_submit_class" => 0,
-	"linkpage_categories" => 0 );
-	
+"link_submit_class" => 0,
+"linkpage_categories" => 0 );
+*/
+$eplug_prefs = array(
+);
+
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array(
 "links_page_cat",

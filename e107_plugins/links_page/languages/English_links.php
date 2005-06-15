@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English_links.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-02 14:43:31 $
-|     $Author: stevedunstan $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-15 20:36:15 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Links");
@@ -47,6 +47,18 @@ define("LAN_106", "Underlined fields are required.");
 define("LAN_Links_1", "Total links");
 define("LAN_Links_2", "Total links activated");
 define("LAN_LINKS_3", "Anonymous");
+
+define("LAN_LINKS_4", "heading");
+define("LAN_LINKS_5", "url");
+define("LAN_LINKS_6", "order");
+define("LAN_LINKS_7", "refer");
+define("LAN_LINKS_8", "ASC");
+define("LAN_LINKS_9", "DESC");
+define("LAN_LINKS_10", "Top Links : Refer");
+define("LAN_LINKS_11", "Top Links : Rating");
+define("LAN_LINKS_12", "view top links by refer");
+define("LAN_LINKS_13", "view top links by user rating");
+define("LAN_LINKS_14", "back to links frontpage");
 
 define('LAN_107', "There are currently no links");
 
