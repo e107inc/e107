@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-06-07 19:41:59 $
-|     $Author: stevedunstan $
+|     $Revision: 1.42 $
+|     $Date: 2005-06-15 23:57:03 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -102,7 +102,7 @@ if(!USER && !$pref['anon_post']){
 else
 {
 	$cb_width = (defined("CBWIDTH") ? CBWIDTH : "100%");
-	
+
 	$texta =  "<div style='text-align:center; width: 100%'>".(e_QUERY ? "\n<form id='chatbox' method='post' action='".e_SELF."?".e_QUERY."'>" : "\n<form id='chatbox' method='post' action='".e_SELF."'>")."<p>";
 	if(($pref['anon_post'] == "1" && USER == FALSE)){
 		$texta .= "\n<input class='tbox' type='text' name='nick' value='' maxlength='50' style='width: 100%;' /><br />";
@@ -185,12 +185,12 @@ if(!$text = $e107cache->retrieve("chatbox"))
 	$e107cache->set("chatbox", $text);
 }
 
-if(ADMIN && getperms("C")){$text .= "<br /><div style='text-align: center'>[ <a href='".e_PLUGIN."chatbox_menu/admin_chatbox.php'>".CHATBOX_L13."</a> ]</div>";}
+
 $caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME."images/chatbox_menu.png' alt='' /> ".CHATBOX_L2 : CHATBOX_L2);
 
 
 $text = ($pref['cb_layer'] ? $texta."<div style='border : 0; padding : 4px; width : auto; height : ".$pref['cb_layer_height']."px; overflow : auto; '>".$text."</div>" : $texta.$text);
-
+if(ADMIN && getperms("C")){$text .= "<br /><div style='text-align: center'>[ <a href='".e_PLUGIN."chatbox_menu/admin_chatbox.php'>".CHATBOX_L13."</a> ]</div>";}  
 $ns -> tablerender($caption, $text, 'chatbox');
 
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-07 19:41:58 $
-|     $Author: stevedunstan $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-15 23:57:03 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -128,11 +128,11 @@ if (!$sql->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", $
 
 	}
 
-	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'><input class='button' type='submit' name='moderate' value='".CHBLAN_9."' />
+	$text .= "<tr><td colspan='5' class='forumheader' style='text-align:center'>
 		</td>
 		</tr>
 		</table></form></div>";
-
+    $text .= "<div style='text-align:center'><input class='button' type='submit' name='moderate' value='".CHBLAN_9."' /></div>";
 	$ns->tablerender(CHBLAN_10, $text);
 
 	echo "<br />";
