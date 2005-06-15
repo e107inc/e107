@@ -12,15 +12,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-06-15 14:56:55 $
+|     $Revision: 1.24 $
+|     $Date: 2005-06-15 16:06:17 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
 
-if (!e_QUERY || !isset($_POST['userlogin'])) {
+if (!e_QUERY || isset($_POST['userlogin'])) {
 	header("location: {$e107->http_path}");
 	exit();
 }
