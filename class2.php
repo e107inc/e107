@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.168 $
-|     $Date: 2005-06-13 22:27:08 $
+|     $Revision: 1.169 $
+|     $Date: 2005-06-15 08:27:52 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -344,7 +344,7 @@ if (!function_exists('checkvalidtheme')) {
 			$e107->site_theme = $theme_check;
 		} else {
 			function search_validtheme() {
-				$theme_found=0;
+				global $e107;
 				$th=substr(e_THEME, 0, -1);
 				$handle=opendir($th);
 				while ($file = readdir($handle)) {
@@ -588,8 +588,8 @@ if ($pref['antiflood1'] == 1) {
 	define('FLOODTIMEOUT', $pref['antiflood_timeout']);
 }
 
-define("HEADERF", e_THEME."templates/header".$layout.".php");
-define("FOOTERF", e_THEME."templates/footer".$layout.".php");
+define("HEADERF", e_THEME."templates/header{$layout}.php");
+define("FOOTERF", e_THEME."templates/footer{$layout}.php");
 
 if (!file_exists(HEADERF)) {
 	message_handler("CRITICAL_ERROR", "Unable to find file: ".HEADERF, __LINE__ - 2, __FILE__);
@@ -807,7 +807,7 @@ class e_online {
 			$page = (strstr(e_SELF, "comment")) ? e_SELF.".".e_QUERY : $page;
 			$page = (strstr(e_SELF, "content")) ? e_SELF.".".e_QUERY : $page;
 
-			global $sql, $pref, $e107, $listuserson;
+			global $sql, $pref, $e107, $listuserson, $e_event;
 			$ip = $e107->getip();
 			$udata = (USER === true ? USERID.".".USERNAME : "0");
 
@@ -821,7 +821,7 @@ class e_online {
 						if ($row['online_timestamp'] < (time() - $online_timeout)) {
 							//It has been at least 'timeout' seconds since this user has connected
 							//Update user record with timestamp, current IP, current page and set pagecount to 1
-							$query = "online_timestamp='".time()."', online_ip='{$ip}', online_location='{$page}', online_pagecount=1 WHERE online_user_id='{$online_user_id}' LIMIT 1";
+							$query = "online_timestamp='".time()."', online_ip='{$ip}', online_location='{$page}', online_pagecount=1 WHERE online_user_id='{$row['online_user_id']}' LIMIT 1";
 						} else {
 							if (!ADMIN) {
 								$row['online_pagecount'] ++;
@@ -876,7 +876,7 @@ class e_online {
 				$e_event->trigger("flood", $ip);
 				exit;
 			}
-			if ($row['online_pagecount'] >= $online_warncount && $online_ip != "127.0.0.1") {
+			if ($row['online_pagecount'] >= $online_warncount && $row['online_ip'] != "127.0.0.1") {
 				echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>Warning!</b><br /><br />The flood protection on this site has been activated and you are warned that if you carry on requesting pages you could be banned.<br /></div>";
 				exit;
 			}
@@ -1141,6 +1141,7 @@ function utf8_html_entity_decode($string) {
 function print_a($var, $return = false) {
 	if(!$return){
 		echo '<pre>'.print_r($var, true).'</pre>';
+		return true;
 	} else {
 		return '<pre>'.print_r($var, true).'</pre>';
 	}
