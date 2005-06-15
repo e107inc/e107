@@ -12,15 +12,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-06-14 18:03:52 $
+|     $Revision: 1.23 $
+|     $Date: 2005-06-15 14:56:55 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
 
-if (!e_QUERY) {
+if (!e_QUERY || !isset($_POST['userlogin'])) {
 	header("location: {$e107->http_path}");
 	exit();
 }
@@ -297,7 +297,7 @@ function send_file($file) {
 	}
 }
 function check_download_limits() {
-	global $pref, $sql, $ns, $HEADER, $e107;
+	global $pref, $sql, $ns, $HEADER, $e107, $tp;
 	// Check download count limits
 	$qry = "SELECT gen_intdata, gen_chardata, (gen_intdata/gen_chardata) as count_perday FROM #generic WHERE gen_type = 'download_limit' AND gen_datestamp IN (".USERCLASS_LIST.") AND (gen_chardata > 0 AND gen_intdata > 0) ORDER BY count_perday DESC";
 	if($sql->db_Select_gen($qry)) {
