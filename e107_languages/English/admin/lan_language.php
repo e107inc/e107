@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_language.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-15 17:47:26 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-15 19:11:12 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -26,7 +26,5 @@ define("LANG_LAN_13", "Multi-Language Preferences");
 define("LANG_LAN_14", "Default Site Language");
 define("LANG_LAN_15", "Tick to copy data from the default language.(useful for links, news-categories etc) ");
 
-define("LANG_LAN_16","Languages");
-define("LANG_LAN_17","Save");
 
 ?>
