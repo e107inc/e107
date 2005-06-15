@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_search.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-08 04:46:21 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-15 19:48:26 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -45,5 +45,9 @@ define("SEALAN_35", "Método de selección de áreas de búsqueda:");
 define("SEALAN_36", "Lista desplegable");
 define("SEALAN_37", "Caja de texto");
 define("SEALAN_38", "Radio");
+define("SEALAN_39", "Páginas personalizadas");
+
+define("LAN_98", "Noticias");
+define("LAN_197", "Descargas");
 
 ?>
