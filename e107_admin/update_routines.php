@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.104 $
-|     $Date: 2005-06-14 20:00:42 $
-|     $Author: e107coders $
+|     $Revision: 1.105 $
+|     $Date: 2005-06-15 17:45:15 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -443,8 +443,8 @@ function update_61x_to_700($type) {
 		mysql_query("ALTER TABLE ".MPREFIX."generic` CHANGE gen_chardata gen_chardata TEXT NOT NULL");
 		mysql_query("ALTER TABLE ".MPREFIX."banner CHANGE banner_active banner_active TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'");
 		mysql_query('DROP TABLE `'.MPREFIX.'cache`'); // db cache is no longer an available option..
-		$sql->db_Update("banner", "banner_active='255' WHERE banner_active = '0' ");
-		$sql->db_Update("banner", "banner_active='0' WHERE banner_active = '1' ");
+	//	$sql->db_Update("banner", "banner_active='255' WHERE banner_active = '0' ");
+	//	$sql->db_Update("banner", "banner_active='0' WHERE banner_active = '1' ");
 		$pref['wm_enclose'] = 1;
 		$s_prefs = TRUE;
 		/*
