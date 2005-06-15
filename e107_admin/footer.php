@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-06-10 15:40:55 $
-|     $Author: stevedunstan $
+|     $Revision: 1.14 $
+|     $Date: 2005-06-15 17:05:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -52,9 +52,8 @@ if($pref['displaysql']){ $rinfo .= "DB queries: ".$sql -> db_QueryCount().". "; 
 if(isset($pref['displaycacheinfo']) && $pref['displaycacheinfo']){ $rinfo .= $cachestring."."; }
 echo ($rinfo ? "\n<div style='text-align:center' class='smalltext'>{$rinfo}</div>\n" : "");
 echo "<div style='text-align: center; margin-left: auto; margin-right: auto;'>
-<form>
-<input class='tbox' type='button' onclick=\"javascript: window.open('".e_ADMIN."credits.php', 'myWindow', 'status = 1, height = 400, width = 300, resizable = 0')\" value='Credits'>
-</form>
+<input class='tbox' type='button' onclick=\"javascript: window.open('".e_ADMIN."credits.php', 'myWindow', 'status = 1, height = 400, width = 300, resizable = 0')\" value='Credits' />
+</div>
 ";
 
 if($error_handler->debug == true) {
