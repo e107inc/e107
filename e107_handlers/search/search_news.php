@@ -11,18 +11,35 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_news.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-03-21 22:11:39 $
+|     $Revision: 1.12 $
+|     $Date: 2005-06-15 15:18:40 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
+// advanced 
+$advanced_where = "";
+if (isset($_GET['cat']) && $_GET['cat'] != 'all') {
+	$advanced_where .= " c.category_id='".$_GET['cat']."' AND";
+}
+
+if (isset($_GET['time']) && is_numeric($_GET['time'])) {
+	$advanced_where .= " n.news_datestamp ".($_GET['on'] == 'new' ? '>=' : '<=')." '".(time() - $_GET['time'])."' AND";
+}
+
+if (isset($_GET['match']) && $_GET['match']) {
+	$search_fields = array('news_title');
+} else {
+	$search_fields = array('news_title', 'news_body', 'news_extended');
+}
+
+// basic
 $return_fields = 'n.news_id, n.news_title, n.news_body, n.news_extended, n.news_allow_comments, n.news_datestamp, n.news_category, c.category_name';
-$search_fields = array('news_title', 'news_body', 'news_extended');
 $weights = array('1.2', '0.6', '0.6');
 $no_results = LAN_198;
 $time = time();
-$where = "(news_start < ".$time.") AND (news_end=0 OR news_end > ".$time.") AND news_class IN (".USERCLASS_LIST.") AND";
+
+$where = "(news_start < ".$time.") AND (news_end=0 OR news_end > ".$time.") AND news_class IN (".USERCLASS_LIST.") AND".$advanced_where;
 $order = array('news_datestamp' => DESC);
 $table = "news AS n LEFT JOIN #news_category AS c ON n.news_category = c.category_id";
 

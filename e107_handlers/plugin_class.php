@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-06-14 22:37:13 $
-|     $Author: e107coders $
+|     $Revision: 1.26 $
+|     $Date: 2005-06-15 15:18:40 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -239,7 +239,7 @@ class e107plugin {
 		global $sql, $sysprefs;
 		$search_prefs = $sysprefs -> getArray('search_prefs');
 		$default = file_exists(e_PLUGIN.$eplug_folder.'/e_search.php') ? TRUE : FALSE;
-		$comments = file_exists(e_PLUGIN.$eplug_folder.'/comments_search.php') ? TRUE : FALSE;
+		$comments = file_exists(e_PLUGIN.$eplug_folder.'/search/search_comments.php') ? TRUE : FALSE;
 		if ($action == 'add'){
 			$install_default = $default ? TRUE : FALSE;
 			$install_comments = $comments ? TRUE : FALSE;
@@ -264,7 +264,7 @@ class e107plugin {
 			unset($search_prefs['plug_handlers'][$eplug_folder]);
 		}
 		if ($install_comments) {
-			require_once(e_PLUGIN.$eplug_folder.'/comments_search.php');
+			require_once(e_PLUGIN.$eplug_folder.'/search/search_comments.php');
 			$search_prefs['comments_handlers'][$eplug_folder] = array('id' => $comments_type_id, 'class' => 0, 'dir' => $eplug_folder);
 		} else if ($uninstall_comments) {
 			unset($search_prefs['comments_handlers'][$eplug_folder]);
