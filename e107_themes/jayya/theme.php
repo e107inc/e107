@@ -23,21 +23,13 @@ if(!defined("e_THEME")){ exit; }
 
 $themename = "Jayya";
 $themeversion = "1.0";
-$themeauthor = "e107";
+$themeauthor = "";
 $themedate = "";
 $themeinfo = "";
 $xhtmlcompliant = TRUE;
 $csscompliant = TRUE;
 define("THEME_DISCLAIMER", "");
 define("IMODE", "lite");
-
-
-// [output js nav css in <head>]
-
-function theme_head() {
-	return "<link rel='stylesheet' href='".THEME."nav_menu.css' />\n";
-}
-
 
 // [dont render core style sheet link]
 
@@ -167,14 +159,15 @@ function tablestyle($caption, $text, $mode){
 	global $style;
 	$caption = $caption ? $caption : '&nbsp;';
 	if ((isset($mode['style']) && $mode['style'] == 'button_menu') || (isset($mode) && ($mode == 'menus_config'))) {
-		$bodytable = 'menu_content_buttons';
+		$menu = ' buttons';
 		$bodybreak = '';
 		$but_border = ' button_menu';
 	} else {
-		$bodytable = 'menu_content';
 		$bodybreak = '<br />';
 		$but_border = '';
 	}
+	
+	$menu .= ($style && $style != 'default') ? ' non_default' : '';
 	
 	echo "<div class='cap_border".$but_border."'>";
 	if ($style == 'leftmenu') {
@@ -186,7 +179,7 @@ function tablestyle($caption, $text, $mode){
 	}
 	echo "</div>";
 	if ($text != "") {
-		echo "<div class='".$bodytable."'>".$text.$bodybreak."</div>";
+		echo "<div class='menu_content ".$menu."'>".$text.$bodybreak."</div>";
 	}
 }
 

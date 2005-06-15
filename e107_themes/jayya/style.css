@@ -25,8 +25,12 @@ a {
 	color: #1A4487;
 }
 
-a:hover {
-	color: #003300;
+a.visit:visited {
+	color: #444;
+}
+
+a:hover, a.visit:hover {
+	color: #000000;
 }
 
 img {	
@@ -38,7 +42,7 @@ form {
 }
 
 .tbox {
-	border: #5e5d63 1px solid;
+	border: #A5ACB2 1px solid;
 	background-color: #fff;
 }
 
@@ -50,7 +54,7 @@ form {
 }
 
 .button, .button:hover {
-	border: 1px solid #878787;
+	border: 1px solid #A5ACB2;
 }
 
 .button {
@@ -79,6 +83,7 @@ form {
 
 .forumheader, .forumheader2, .forumheader3, .forumheader4, .fcaption, .finfobar {
 	padding: 4px;
+	background-color: #fff;
 	border: 1px solid #878787;
 }
 
@@ -129,19 +134,19 @@ ul {
 	text-align: right;
 	padding: 3px 5px 3px 0px;
 	border-left: 1px solid #878787;
-	background-image: url(images/computer.jpg);
+	background-image: url(images/top_mid_back.jpg);
 	background-repeat: no-repeat;
-	background-color: #e1e8f0;
+	background-color: #E9EAF2;
 }
 
 .top_section_right {
 	vertical-align: middle;
 	text-align: center;
 	border-left: 1px solid #878787;
-	background-image: url(images/on.png);
+	background-image: url(images/top_right_back.jpg);
 	background-repeat: no-repeat;
 	background-position: center;
-	background-color: #e7eaee;
+	background-color: #f3f3f7;
 }
 
 .menus_container {
@@ -207,9 +212,14 @@ ul {
 
 .menu_content {
 	padding: 5px;
+	background-color: #fff;
 }
 
-.menu_content_buttons {
+.menu_content.non_default {
+	background-color: transparent;
+}
+
+.menu_content.buttons {
 	padding: 0px;
 }
 
@@ -218,4 +228,103 @@ ul {
 	background-color: #f7f7f9;
 	border-collapse: collapse;
 	border-spacing: 0px;
+}
+
+td.link_button {
+	border-bottom: 1px solid #000;
+}
+
+/* Nav Menu Classes */
+
+div.menuBar, div.menuBar a.menuButton, div.menuButton, div.menuButton_over, div.menu, div.menu a.menuItem {
+	font: normal 11px arial, verdana, tahoma, sans-serif;
+	color: #000;
+}
+
+div.menuBar {
+	background-color: #F7F9FA;
+	background-image: url(images/s_nav.png);
+	background-repeat: repeat-x;
+	border-top: 1px solid #fff;
+	padding: 4px 0px;
+	text-align: left;
+}
+
+div.emenuBar {
+	background-color: #F7F9FA;
+	border-top: 1px solid #fff;
+	text-align: left;
+}
+
+div.menuBar a.menuButton, div.menuButton, div.menuButton_over {
+	background-color: transparent;
+	border: 1px solid;
+	border-color: transparent !important;
+	border-color: #fff #F8FAFB #F0F2F3 #F8FAFB;
+	cursor: default;
+	left: 0px;
+	margin: 0px;
+	padding: 2px 4px 2px 22px;
+	position: relative;
+	text-decoration: none;
+	top: 0px;
+	z-index: 100;
+}
+
+div.menuBar a.menuButton:hover, div.menuButton:hover, div.menuButton_over {
+	background-color: transparent;
+	border-color: #fff #a5a5a5 #a5a5a5 #fff !important;
+}
+
+div.menuBar a.menuButtonActive, div.menuButtonActive, div.menuButtonActive:hover, div.menuBar a.menuButtonActive:hover {
+	background-color: #fff;
+	border-color: #a5a5a5 #fff #fff #a5a5a5 !important;
+	left: 1px;
+	top: 1px;
+}
+
+div.menu {
+	background-color: #FCFDFF;
+	border: 1px solid;
+	border-color: #fff #a5a5a5 #a5a5a5 #fff;
+	left: 0px;
+	padding: 1px;
+	position: absolute;
+	top: 0px;
+	visibility: hidden;
+	z-index: 101;
+}
+
+div.menu a.menuItem {
+	cursor: default;
+	display: block;
+	padding: 2px 11px 2px 0px;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+div.menu a.menuItem:hover, div.menu a.menuItemHighlight {
+	background-color: #F2F4FF;
+}
+
+div.menu a.menuItem span.menuItemBuffer, div.menu a.menuItem:hover span.menuItemBuffer {
+	padding: 0px 2px;
+}
+
+div.menu a.menuItem span.menuItemText {
+	padding: 0px 0px 0px 3px;
+}
+
+div.menu a.menuItem span.menuItemArrow {
+	margin-right: -.75em;
+}
+
+div.menu div.menuItemSep {
+	border-top: 1px solid #a5a5a5;
+	border-bottom: 1px solid #fff;
+	margin: 4px 2px;
+}
+
+a.menuItem.header {
+	border-bottom: 1px solid #b3b3b3;
 }
