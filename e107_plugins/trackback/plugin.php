@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/trackback/plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-15 22:46:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-15 17:27:59 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -63,6 +63,7 @@ $eplug_tables = array(
   trackback_title varchar(200) NOT NULL default '',
   trackback_excerpt varchar(250) NOT NULL default '',
   trackback_url varchar(150) NOT NULL default '',
+  trackback_blogname varchar(150) NOT NULL default '',
   PRIMARY KEY  (trackback_id)
 ) TYPE=MyISAM;");
 	
