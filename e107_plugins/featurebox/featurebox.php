@@ -11,16 +11,30 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/featurebox/featurebox.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-04-05 07:07:40 $
-|     $Author: stevedunstan $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-15 03:04:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
-if($sql -> db_Select("featurebox", "*", "fb_mode=1 AND fb_class IN (".USERCLASS_LIST.") ORDER BY fb_id DESC LIMIT 0,1"))
+if($sql -> db_Select("featurebox", "*", "fb_mode=1 AND fb_class IN (".USERCLASS_LIST.") ORDER BY fb_class ASC"))
 {
-	$entry = $sql -> db_Fetch();
-	extract($entry);
+	while($row = $sql->db_Fetch())
+	{
+		if($row['fb_class'] > 0 && $row['fb_class'] < 251)
+		{
+			extract($row);
+			continue;
+		}
+		else
+		{
+			$xentry = $row;
+		}
+	}
+	if(!isset($fb_title))
+	{
+		extract($xentry);
+	}
 }
 else if($sql -> db_Select("featurebox", "*", "fb_mode!=1 AND fb_class IN (".USERCLASS_LIST.")"))
 {
