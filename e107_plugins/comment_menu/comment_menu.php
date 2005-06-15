@@ -11,13 +11,11 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/comment_menu.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-04-11 11:55:49 $
-|     $Author: streaky $
+|     $Revision: 1.11 $
+|     $Date: 2005-06-15 17:52:53 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
-
-if(!function_exists("convert")){ exit; }
 
 global $tp, $e107;
 $gen = new convert;
@@ -38,20 +36,14 @@ if(!$results)
 else
 {
 	$text = "";
-	
-
-
 
 	foreach($commentArray as $commentInfo)
 	{
-
 		extract($commentInfo);
 		$datestamp = $gen->convert_date($comment_datestamp, "short");
 		$poster = substr($comment_author, (strpos($comment_author, ".")+1));
 		$comment_comment = strip_tags(eregi_replace("\[.*\]", "", $comment_comment)); // remove bbcode
 		$comment_comment = $tp->toHTML($comment_comment, FALSE, "", "", $pref['menu_wordwrap']);
-
-		
 		
 		if (strlen($comment_comment) > $menu_pref['comment_characters'])
 		{
@@ -70,20 +62,11 @@ else
 				break;
 
 		}
-
 		$heading = ($menu_pref['comment_title'] ? " [ Re: <i>$comment_subject</i> ]<br />" : "");
-
 		$text .= $link.$heading.$comment_comment."<br /><br />";
-		
-
 	}
 }
 
 $ns->tablerender($menu_pref['comment_caption'], $text, 'comment');
-
-
-
-
-
 
 ?>
