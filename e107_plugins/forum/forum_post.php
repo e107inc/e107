@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-06-07 14:43:29 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.38 $
+|     $Date: 2005-06-15 10:20:22 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -148,8 +148,8 @@ if (isset($_POST['fpreview']))
 		$poster = ($_POST['anonname']) ? $_POST['anonname'] : LAN_311;
 	}
 	$postdate = $gen->convert_date(time(), "forum");
-	$tsubject = $tp->post_toHTML($_POST['subject'], FALSE);
-	$tpost = $tp->post_toHTML($_POST['post']);
+	$tsubject = $tp->post_toHTML($_POST['subject'], false);
+	$tpost = $tp->post_toHTML($_POST['post'], false);
 
 	if ($_POST['poll_title'] != "" && $pref['forum_poll'])
 	{

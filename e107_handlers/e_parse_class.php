@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.86 $
-|     $Date: 2005-06-08 15:54:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.87 $
+|     $Date: 2005-06-15 10:20:22 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -87,21 +87,18 @@ class e_parse
 		}
 	}
 
-	function post_toHTML($text, $modifier=TRUE, $extra='')
-	{
+	function post_toHTML($text, $modifier = true, $extra = '') {
 		/*
 		changes by jalist 30/01/2005:
 		description had to add modifier to /not/ send formatted text on to this->toHTML at end of method, this was causing problems when MAGIC_QUOTES_GPC == TRUE.
 		*/
 		global $pref;
 
-		if(isset($pref['post_html']) && check_class($pref['post_html']))
-		{
-			$no_encode = TRUE;
+		if(isset($pref['post_html']) && check_class($pref['post_html'])) {
+			$no_encode = true;
 		}
 
-		if (ADMIN === TRUE || $no_encode === TRUE)
-		{
+		if (ADMIN === true || $no_encode === true) {
 			$search = array('$', '"', "'", '\\', "'&#092;'");
 			$replace = array('&#036;','&quot;','&#039;','&#092;','&#039;');
 			$text = str_replace($search, $replace, $text);
@@ -109,22 +106,22 @@ class e_parse
 			changes by jalist 30/01/2005:
 			description dirty fix for servers with magic_quotes_gpc == true
 			*/
-			if (MAGIC_QUOTES_GPC)
-			{
+			if (MAGIC_QUOTES_GPC) {
 				$search = array('&#092;&#092;&#092;&#092;', '&#092;&#039;', '&#092;&quot;');
 				$replace = array('&#092;&#092;','&#039;', '&quot;');
 				$text = str_replace($search, $replace, $text);
 			}
-		}
-		else
-		{
+		} else {
+
+			if (MAGIC_QUOTES_GPC) {
+				$text = stripslashes($text);
+			}
 			$text = htmlentities($text, ENT_QUOTES, CHARSET);
 		}
-		return ($modifier ? $this->toHTML($text, TRUE, $extra) : $text);
+		return ($modifier ? $this->toHTML($text, true, $extra) : $text);
 	}
 
-	function post_toForm($text)
-	{
+	function post_toForm($text) {
 		// ensure apostrophes are properly converted, or else the form item could break
 		return str_replace(array('"', "'"), array("&#039;", "&quot;"), $text);
 	}
