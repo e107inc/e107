@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-10 17:13:24 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-15 17:42:31 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ define("LCLAN_14", "Enviar");
 define("LCLAN_15", "Nombre del enlace");
 define("LCLAN_16", "URL del enlace");
 define("LCLAN_17", "Descripción del enlace");
-define("LCLAN_18", "Icono / botón del enlace");
+define("LCLAN_18", "Icono / botón del enlace: Escojer");
 define("LCLAN_19", "Tipo de apertura del enlace");
 define("LCLAN_20", "Abrir en la misma ventana");
 define("LCLAN_23", "Abrir en una ventana nueva");
@@ -104,5 +104,15 @@ define('LCLAN_102', "Página de enlaces instalada correctamente, por favor confi
 define('LCLAN_103', "Enlaces");
 define('LCLAN_104', "Valoración de enlace");
 define('LCLAN_105', "Permitir a los usuarios valorar enlaces");
+define("LCLAN_106", "Enlace de botón / Icono: Transferir");
+define("LCLAN_107", "¡El enlace de icono de transfirió con éxito!");
+define("LCLAN_108", "¡No se transfirió el enlace de icono!");
+define("LCLAN_109", "Transferir un nuevo icono");
+define("LCLAN_110", "Tamaño Auto-Thumbnail");
+define("LCLAN_111", "Transferir icono");
+define("LCLAN_112", "Escoja un icono transferido");
+define("LCLAN_113", "Esta opción está desactivada ya que la transferencia no está activa en su servidor");
+define("LCLAN_114", "La carpeta ");
+define("LCLAN_115", "fno es escribible, necesita CHMOD 777 en la carpeta antes de transferir");
 
 ?>

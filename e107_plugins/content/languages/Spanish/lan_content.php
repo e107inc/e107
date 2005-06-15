@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-14 15:59:44 $
+|     $Revision: 1.11 $
+|     $Date: 2005-06-15 17:42:31 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -98,7 +98,10 @@ define("CONTENT_ADMIN_CAT_LAN_56", "Elemento");
 define("CONTENT_ADMIN_CAT_LAN_57", "Elementos");
 define("CONTENT_ADMIN_CAT_LAN_58", "Se ha transferido con éxito el icono de la categoría<br />Nota: ¡Todavía necesitarás asignar el icono a esta categoría en icono>escoger icono de área existente!<br />y por supuesto después necesitará enviar el formulario para crear o actualizar la categoría");
 define("CONTENT_ADMIN_CAT_LAN_59", "Icono de categoría no actualizado");
-define("CONTENT_ADMIN_CAT_LAN_60", "");
+define("CONTENT_ADMIN_CAT_LAN_60", "Escojer icono de categoría");
+define("CONTENT_ADMIN_CAT_LAN_61", "o transferir nuevo icono");
+define("CONTENT_ADMIN_CAT_LAN_62", "Después de transferir un nuevo icono de categoría, puede asignar este icono arriba en en área ' escojer icono existente'<br />Si transfiere un nuevo icono, este icono debe ser a 48 pixels, y adicionalmente se creará un icono a 16 pixels<br /><br />");
+define("CONTENT_ADMIN_CAT_LAN_63", "Transferir icono");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "Opciones");
 define("CONTENT_ADMIN_OPT_LAN_1", "Crear un formulario para contenidos en el área del administrador");
@@ -566,8 +569,8 @@ Pulsando en el botón siguiente, automáticamente creará un ajuste por defecto 
 ");
 define("CONTENT_ADMIN_MAIN_LAN_26", "Previsualizar");
 define("CONTENT_ADMIN_MAIN_LAN_27", "Previsualizar de nuevo");
-define("CONTENT_ADMIN_MAIN_LAN_28", "");
-define("CONTENT_ADMIN_MAIN_LAN_29", "");
+define("CONTENT_ADMIN_MAIN_LAN_28", "Escojer categoría");
+define("CONTENT_ADMIN_MAIN_LAN_29", "NUEVA CATEGORÍA PRINCIPAL");
 
 define("CONTENT_ADMIN_MENU_LAN_0", "Gestionar contenidos");
 define("CONTENT_ADMIN_MENU_LAN_1", "Crear contenido");
