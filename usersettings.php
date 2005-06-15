@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-06-13 12:24:36 $
+|     $Revision: 1.36 $
+|     $Date: 2005-06-15 00:16:13 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -64,10 +64,12 @@ $_uid = is_numeric(e_QUERY) ? e_QUERY : "";
 
 
 
-if(getperms("4") && eregi(str_replace("../","",e_ADMIN),$_SERVER['HTTP_REFERER']) || $_POST['adminmode'] == 1){
-require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
+if(getperms("4") && eregi(str_replace("../","",e_ADMIN),$_SERVER['HTTP_REFERER']) || $_POST['adminmode'] == 1)
+{
+	require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 
-	function usersettings_adminmenu() {
+	function usersettings_adminmenu()
+	{
         $action = "main";
     	// ##### Display options ---------------------------------------------------------------------------------------------------------
 		$var['main']['text'] = USRLAN_71;
@@ -89,16 +91,12 @@ require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 }
 
 
-
-
-
-	$signupval = explode(".", $pref['signup_options']);
+$signupval = explode(".", $pref['signup_options']);
 
 // Save Form Data  --------------------------------------->
 
-
-if (isset($_POST['updatesettings'])){
-
+if (isset($_POST['updatesettings']))
+{
 	if ($_uid && ADMIN) {
 		$inp = $_uid;
 		$remflag = TRUE;
@@ -107,8 +105,7 @@ if (isset($_POST['updatesettings'])){
 		$inp = USERID;
 	}
 
-
-	$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']); // these are invalid anyways, so why allow them? (XSS Fix)
+	$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']);   // these are invalid anyways, so why allow them? (XSS Fix)
 	// check prefs for required fields =================================.
 
 	$signup_title = array(LAN_308, LAN_144, LAN_115, LAN_116, LAN_117, LAN_118, LAN_119, LAN_120, LAN_121, LAN_122);
@@ -129,27 +126,28 @@ if (isset($_POST['updatesettings'])){
 		}
 		if ($avmsg) {
 			$_POST['image'] = "";
-		  //	$ns->tablerender(" ", $avmsg);
-				$messsage = $avmsg;
+			$messsage = $avmsg;
 		}
 	}
 
-	for ($i = 0; $i < count($signup_title); $i++){
+	for ($i = 0; $i < count($signup_title); $i++)
+	{
 		$postvalue = $signup_name[$i];
-		if ($signupval[$i] == 2 && $_POST[$postvalue] == "" && !$_uid){
+		if ($signupval[$i] == 2 && $_POST[$postvalue] == "" && !$_uid)
+		{
 			$error .= LAN_SIGNUP_6.$signup_title[$i].LAN_SIGNUP_7."\\n";
 		}
-	};
-
+	}
 
 	if($sql->db_Select('user_extended_struct'))	{
-		while($row = $sql->db_Fetch()){
+		while($row = $sql->db_Fetch()) {
 			$extList["user_".$row['user_extended_struct_name']] = $row;
 		}
 	}
 
 	$ue_fields = "";
-	foreach($_POST['ue'] as $key => $val){
+	foreach($_POST['ue'] as $key => $val)
+	{
 		$err = false;
 		$parms = explode("^,^", $extList[$key]['user_extended_struct_parms']);
 		$regex = $tp->toText($parms[1]);
@@ -191,7 +189,6 @@ if (isset($_POST['updatesettings'])){
 	}
 
 	if (strlen($_POST['password1']) < $pref['signup_pass_len'] && $_POST['password1'] != "") {
-
 		$error .= LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5."\\n";
 		$password1 = "";
 		$password2 = "";
@@ -284,7 +281,7 @@ if (isset($_POST['updatesettings'])){
 				$sql -> db_Update("user", "user_loginname='$loginname' WHERE user_id='$inp' ");
 			}
 
-			if($ue_fields){
+			if($ue_fields) {
 				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$inp}')");
 				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$inp}'");
 			}
@@ -301,7 +298,6 @@ if (isset($_POST['updatesettings'])){
 					$nid = $_POST['usrclass'];
 				}
 				$sql->db_Update("user", "user_class='$nid' WHERE user_id='".USERID."' ");
-
 			}
 
 			$e_event->trigger("postuserset", $_POST);
@@ -310,17 +306,15 @@ if (isset($_POST['updatesettings'])){
 			// =======================
 
 
-            if(e_QUERY == "update"){
+			if(e_QUERY == "update") {
             	Header("Location: index.php");
 			}
-			if($ADMINAREA && !$error){
+			if($ADMINAREA && !$error) {
             	Header("Location: ".$_POST['adminreturn']);
 			}
 			$message = "<div style='text-align:center'>".LAN_150."</div>";
 			$caption = LAN_151;
-
 		} else {
-
 			$message = "<div style='text-align:center'>".$ret."</div>";
 			$caption = LAN_151;
 		}
@@ -329,18 +323,15 @@ if (isset($_POST['updatesettings'])){
 }
 // -------------------
 
-if($ADMINAREA){
+if($ADMINAREA) {
   	require_once(e_ADMIN."auth.php");
-}else{
+} else {
 	require_once(HEADERF);
 }
-
-
 
 if(isset($message)){
 	$ns->tablerender($caption, $message);
 }
-
 
 // ---------------------
 if ($error) {
@@ -349,10 +340,9 @@ if ($error) {
 	$adref = $_POST['adminreturn'];
 }
 
-
-if ($_uid){
+if ($_uid) {
 	$uuid = $_uid;
-}else{
+} else {
 	$uuid = USERID;
 }
 
@@ -365,22 +355,20 @@ WHERE u.user_id='{$uuid}'
 $sql->db_Select_gen($qry);
 $curVal=$sql->db_Fetch();
 
-if($_POST){     // Fix for all the values being lost when an error occurred.
-	foreach($_POST as $key=>$val){
-			$curVal["user_".$key] = $val;
+if($_POST) {     // Fix for all the values being lost when an error occurred.
+	foreach($_POST as $key => $val) {
+		$curVal["user_".$key] = $val;
 	}
 }
-
 
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
 $text = (e_QUERY ? $rs->form_open("post", e_SELF."?".e_QUERY, "dataform", "", " enctype='multipart/form-data'") : $rs->form_open("post", e_SELF, "dataform", "", " enctype='multipart/form-data'"));
 
-if(e_QUERY == "update"){
+if(e_QUERY == "update") {
 	$text .= "<div class='fborder' style='text-align:center'><br />".str_replace("*","<span style='color:red'>*</span>",LAN_USET_9)."<br />".LAN_USET_10."<br /><br /></div>";
 }
-
 
 $text .= "<div style='text-align:center'>
 	<table style='width:auto' class='fborder'>
@@ -395,7 +383,7 @@ $text .= "<div style='text-align:center'>
 	</tr>
 	";
 
-	if (ADMIN && getperms("4")){
+	if (ADMIN && getperms("4")) {
 		$text .= "<tr>
 		<td style='width:40%' class='forumheader3'>".LAN_9."<br /><span class='smalltext'>".LAN_10."</span></td>
 		<td style='width:60%' class='forumheader2'>". $rs->form_text("loginname", 20, $curVal['user_loginname'], 100, "tbox")."</td>
@@ -415,7 +403,7 @@ $text .= "<div style='text-align:center'>
 	".$rs->form_text("realname", 40, $curVal['user_login'], 100)."
 	</td>
 	</tr>";
-if ($pref['forum_user_customtitle'] || ADMIN){
+if ($pref['forum_user_customtitle'] || ADMIN) {
 	$text .= "
 		<tr>
 		<td style='width:30%' class='forumheader3'>".LAN_CUSTOMTITLE."</td>
@@ -426,7 +414,6 @@ if ($pref['forum_user_customtitle'] || ADMIN){
 }
 
 $text .= "
-
 	<tr>
 	<td style='width:20%' class='forumheader3'>".LAN_152."<br /><span class='smalltext'>".LAN_401."</span></td>
 	<td style='width:80%' class='forumheader2'>
@@ -473,19 +460,16 @@ if ($sql->db_Select("userclass_classes", "*", "userclass_editclass =0")) {
 	$text .= "<table style='width:100%'>";
 	$sql->db_Select("userclass_classes", "*", "userclass_id !='' order by userclass_name");
 	while ($row3 = $sql->db_Fetch()) {
-		extract($row3);
-		if ($userclass_editclass == 0) {
-			$frm_checked = check_class($userclass_id, $user_class) ? "checked='checked'" :
-			 "";
+//		extract($row3);
+		if ($row3['userclass_editclass'] == 0) {
+			$frm_checked = check_class($row3['userclass_id'], $curVal['user_class']) ? "checked='checked'" : "";
 			$text .= "<tr><td class='defaulttext'>";
-			$text .= "<input type='checkbox' name='usrclass[]' value='$userclass_id' $frm_checked />\n";
-			//   $text .= $rs->form_checkbox("usrclass[]", $userclass_id, $frm_checked);
+			$text .= "<input type='checkbox' name='usrclass[]' value='{$row3['userclass_id']}' $frm_checked />\n";
 			$text .= $tp->toHTML($row3['userclass_name'],"","defs")."</td>";
 			$text .= "<td class='smalltext'>".$tp->toHTML($row3['userclass_description'],"","defs")."</td>";
 			$text .= "</tr>\n";
 		} else {
-			$hide .= check_class($userclass_id) ? "<input type='hidden' name='usrclass[]' value='$userclass_id' />\n" :
-			 "";
+			$hide .= check_class($row3['userclass_id'], $curVal['user_class']) ? "<input type='hidden' name='usrclass[]' value='{$row3['userclass_id']}' />\n" : "";
 		}
 	}
 	$text .= "</table>\n";
@@ -651,8 +635,6 @@ $text .= "</select>
 	</td>
 	</tr>
 
-
-
 	<tr>
 	<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_421."<br /><span class='smalltext'>".LAN_424."</span></td>
 	<td style='width:80%' class='forumheader2'>
@@ -699,7 +681,6 @@ if ($pref['photo_upload'] && FILE_UPLOADS) {
 		</tr>";
 }
 
-
 $text .= "
 <tr>
 <td colspan='2' class='forumheader'>".LAN_435."</td>
@@ -715,8 +696,6 @@ $text .= "
 
 if (!e_QUERY) {
 	$text .= "
-
-
 		<tr>
 		<td colspan='2' class='forumheader'>".LAN_427."</td>
 		</tr>
@@ -743,14 +722,12 @@ if (!e_QUERY) {
 }
 $text .= "
 
-
-
 	<tr style='vertical-align:top'>
 	<td colspan='2' style='text-align:center' class='forumheader'><input class='button' type='submit' name='updatesettings' value='".LAN_154."' /></td>
 	</tr>
 	</table>
 	</div><div>";
-if($ADMINAREA){
+if($ADMINAREA) {
     $text .= "<input type='hidden' name='adminmode' value='1' />\n";
 	$ref = ($adref) ? $adref : str_replace("main","uset",$_SERVER['HTTP_REFERER']);
 	$text .= "<input type='hidden' name='adminreturn' value='".$ref."' />";
@@ -763,9 +740,9 @@ $text .= "
 	";
 
 $ns->tablerender(LAN_155, $text);
-if($ADMINAREA){
-	   	require_once(e_ADMIN."footer.php");
-}else{
+if($ADMINAREA) {
+	require_once(e_ADMIN."footer.php");
+} else {
 	require_once(FOOTERF);
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -781,7 +758,6 @@ function timezone() {
 	$timezone = array("-12", "-11", "-10", "-9", "-8", "-7", "-6", "-5", "-4", "-3", "-2", "-1", "GMT", "+1", "+2", "+3", "+4", "+5", "+6", "+7", "+8", "+9", "+10", "+11", "+12", "+13");
 	$timearea = array("International DateLine West", "Samoa", "Hawaii", "Alaska", "Pacific Time (US and Canada)", "Mountain Time (US and Canada)", "Central Time (US and Canada), Central America", "Eastern Time (US and Canada)", "Atlantic Time (Canada)", "Greenland, Brasilia, Buenos Aires, Georgetown", "Mid-Atlantic", "Azores", "GMT - UK, Ireland, Lisbon", "West Central Africa, Western Europe", "Greece, Egypt, parts of Africa", "Russia, Baghdad, Kuwait, Nairobi", "Abu Dhabi, Kabul", "Islamabad, Karachi", "Astana, Dhaka", "Bangkok, Rangoon", "Hong Kong, Singapore, Perth, Beijing", "Tokyo, Seoul", "Brisbane, Canberra, Sydney, Melbourne", "Soloman Islands", "New Zealand", "Nuku'alofa");
 }
-
 
 function req($field) {
 	global $pref;
@@ -803,11 +779,7 @@ function headerjs() {
 
 		</script>\n";
 
-
 	$script .= $cal->load_files();
 	return $script;
-
 }
-
-
 ?>
