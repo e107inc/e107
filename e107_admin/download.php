@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2005-06-10 19:58:24 $
+|     $Revision: 1.56 $
+|     $Date: 2005-06-15 23:51:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -452,12 +452,12 @@ class download {
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
 				$text .= "<tr>
-					<td style='width:5%' class='forumheader3'>$download_id</td>";
+					<td style='width:5%;vertical-align:top' class='forumheader3'>$download_id</td>";
 
 // Display Chosen options -------------------------------------
 
 		foreach($search_display as $disp){
-			$text .= "<td style='white-space:nowrap' class='forumheader3'>";
+			$text .= "<td class='forumheader3' style='vertical-align:top'>";
 
         	if($disp == "download_name"){
         		$text .= "<a href='".e_BASE."download.php?view.$download_id'>$download_name</a>";
@@ -473,6 +473,8 @@ class download {
 				$text .= ($row[$disp]) ? "<img src='".e_FILE."downloadthumbs/".$row[$disp]."' alt='' />" : "";
         	}elseif($disp == "download_image"){
 				$text .= "<a rel='external' href='".e_FILE."downloadimages/".$row[$disp]."' >".$row[$disp]."</a>&nbsp;";
+			}elseif($disp == "download_description"){
+				$text .= $tp->toHTML($row[$disp],TRUE)."&nbsp;";
 			}else{
 				$text .= $row[$disp]."&nbsp;";
         	}
@@ -482,7 +484,7 @@ class download {
 // -------------------------------------------------------------
 
 			$text .= "
-					<td style='width:20%; text-align:center' class='forumheader3'>
+					<td style='width:20%;vertical-align:top; text-align:center' class='forumheader3'>
 					<a href='".e_SELF."?create.edit.{$download_id}'>".ADMIN_EDIT_ICON."</a>
 					<input type='image' title='".LAN_DELETE."' name='delete[main_{$download_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_33." [ID: $download_id ]")."') \" />
 					</td>
