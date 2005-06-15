@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/online.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-04 18:55:50 $
-|     $Author: streaky $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-15 13:07:43 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -189,11 +189,14 @@ foreach($listuserson as $uinfo => $pinfo) {
 			} else {
 				$t_page = 1;
 			}
-			$sql->db_Select("forum_t", "thread_name", "thread_id='$tmp[1]' AND thread_parent='0'");
-			list($forum_t['thread_name']) = $sql->db_Fetch();
-			$sql->db_Select("forum", "forum_name, forum_class", "forum_id='".$tmp[0]."'");
-			list($forum['forum_name'], $forum['forum_class']) = $sql->db_Fetch();
-			$online_location_page = ONLINE_EL13." .:. ".$forum['forum_name']."->".ONLINE_EL14." .:. ".$forum_t['thread_name']."->".ONLINE_EL15.": ".$t_page;
+			$qry = "
+			SELECT t.thread_name, f.forum_name, f.forum_class from #forum_t AS t
+			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
+			WHERE t.thread_id = '{$tmp[0]}'
+			";
+			$sql->db_Select_gen($qry);
+			$forum = $sql->db_Fetch();
+			$online_location_page = ONLINE_EL13." .:. ".$forum['forum_name']."->".ONLINE_EL14." .:. ".$forum['thread_name']."->".ONLINE_EL15.": ".$t_page;
 			$online_location = str_replace("php.", "php?", $online_location);
 			if (!check_class($forum['forum_class'])) {
 				$class_check = FALSE;
