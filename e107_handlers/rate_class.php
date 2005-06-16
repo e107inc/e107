@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-13 11:47:16 $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-16 09:41:59 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -30,6 +30,8 @@ class rater {
 			$self .= "?".$_SERVER['QUERY_STRING'];
 		}
 		
+		$jump = "";
+		$url = "";
 		if($mode==FALSE){
 			$jump = "onchange='urljump(this.options[selectedIndex].value)'";
 			$url = e_BASE."rate.php?";

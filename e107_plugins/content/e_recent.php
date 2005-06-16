@@ -10,7 +10,7 @@
 	global $RECENT_DISPLAYSTYLE, $RECENT_CAPTION, $RECENT_STYLE_CAPTION, $RECENT_STYLE_BODY;
 
 	require_once(e_PLUGIN."content/handlers/content_class.php");
-	if(!is_object($aa)){ $aa = new content; }
+	$aa = new content;
 
 	$datequery = " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
 

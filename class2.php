@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.172 $
-|     $Date: 2005-06-16 00:47:05 $
-|     $Author: streaky $
+|     $Revision: 1.173 $
+|     $Date: 2005-06-16 09:41:59 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -410,7 +410,7 @@ $sql->db_Mark_Time('Start: Init session');
 $ns=new e107table;
 init_session();
 
-if(USER && $pref['force_userupdate'] && e_PAGE != "usersettings.php"){
+if(USER && isset($pref['force_userupdate']) && $pref['force_userupdate'] && e_PAGE != "usersettings.php"){
 	if(force_userupdate()){
 		header("Location: ".e_BASE."usersettings.php?update");
 	};

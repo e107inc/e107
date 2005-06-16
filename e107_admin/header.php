@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.31 $
-|   $Date: 2005-04-10 02:09:31 $
-|   $Author: sweetas $
+|   $Revision: 1.32 $
+|   $Date: 2005-06-16 09:41:59 $
+|   $Author: lisa_ $
 +---------------------------------------------------------------+
 */
 if (!defined('e_HTTP')) {
@@ -60,7 +60,7 @@ echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR
 	<title>".SITENAME." : ".LAN_head_4."</title>\n";
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 	<meta http-equiv='content-style-type' content='text/css' />\n";
-if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && $pref['admincss'] && file_exists(THEME.$pref['admincss'])) {
+if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && isset($pref['admincss']) && $pref['admincss'] && file_exists(THEME.$pref['admincss'])) {
 	echo "<link rel='stylesheet' href='".THEME.$pref['admincss']."' />\n";
 } else {
 	echo "<link rel='stylesheet' href='".THEME."style.css' />\n";
@@ -177,7 +177,7 @@ if (!function_exists('show_admin_menu')) {
 		}
 
 		foreach (array_keys($e107_vars) as $act) {
-			if (!$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
+			if (!isset($e107_vars[$act]['perm']) || !$e107_vars[$act]['perm'] || getperms($e107_vars[$act]['perm'])) {
 				if ($active_page == $act || (str_replace("?", "", e_PAGE.e_QUERY) == str_replace("?", "", $act))) {
 					$BUTTON_TEMPLATE = $sub_link ? $SUB_BUTTON_OVER : $BUTTON_OVER;
 				} else {

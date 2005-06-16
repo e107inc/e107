@@ -137,14 +137,14 @@ SC_END
 
 SC_BEGIN CONTENT_SCORE_TABLE_ICON
 global $CONTENT_SCORE_TABLE_ICON, $aa, $row, $content_pref, $content_icon_path, $qs, $mainparent;
-if($content_pref["content_score_icon_{$mainparent}"]){
+if(isset($content_pref["content_score_icon_{$mainparent}"]) && $content_pref["content_score_icon_{$mainparent}"]){
 return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], "50", $content_pref["content_blank_icon_{$mainparent}"]);
 }
 SC_END
 
 SC_BEGIN CONTENT_SCORE_TABLE_AUTHOR
 global $CONTENT_SCORE_TABLE_AUTHOR, $content_pref, $qs, $row, $aa, $mainparent;
-if($content_pref["content_score_authorname_{$mainparent}"] || $content_pref["content_score_authoremail_{$mainparent}"] || $content_pref["content_score_authoricon_{$mainparent}"] || $content_pref["content_score_authorprofile_{$mainparent}"]){
+if( (isset($content_pref["content_score_authorname_{$mainparent}"]) && $content_pref["content_score_authorname_{$mainparent}"]) || (isset($content_pref["content_score_authoremail_{$mainparent}"]) && $content_pref["content_score_authoremail_{$mainparent}"]) || (isset($content_pref["content_score_authoricon_{$mainparent}"]) && $content_pref["content_score_authoricon_{$mainparent}"]) || (isset($content_pref["content_score_authorprofile_{$mainparent}"]) && $content_pref["content_score_authorprofile_{$mainparent}"]) ){
 	$authordetails = $aa -> getAuthor($row['content_author']);
 	if($content_pref["content_score_authorname_{$mainparent}"]){
 		if(isset($content_pref["content_score_authoremail_{$mainparent}"]) && $authordetails[2]){
@@ -521,7 +521,7 @@ SC_END
 SC_BEGIN CONTENT_CAT_LIST_TABLE_RATING
 global $CONTENT_CAT_LIST_TABLE_RATING, $row, $rater, $content_pref, $mainparent, $plugintable;
 $RATING = "";
-if($content_pref["content_cat_rating_all_{$mainparent}"] || ($content_pref["content_cat_rating_{$mainparent}"] && $row['content_rate'])){
+if( (isset($content_pref["content_cat_rating_all_{$mainparent}"]) && $content_pref["content_cat_rating_all_{$mainparent}"]) || (isset($content_pref["content_cat_rating_{$mainparent}"]) && $content_pref["content_cat_rating_{$mainparent}"] && $row['content_rate'])){
 	return $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $userid=FALSE);
 }
 return $RATING;

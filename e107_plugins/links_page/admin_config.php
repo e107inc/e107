@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_config.php,v $
-|    $Revision: 1.9 $
-|    $Date: 2005-06-15 20:36:13 $
+|    $Revision: 1.10 $
+|    $Date: 2005-06-16 09:41:59 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -132,7 +132,8 @@ if(isset($_POST['uploadcatlinkicon'])){
 }
 
 if (!e_QUERY) {
-	$linkpost->show_categories($sub_action, $id);
+	//$linkpost->show_categories($sub_action, $id);
+	$linkpost->show_categories("", "");
 }
 
 if (isset($_POST['inc'])) {
@@ -299,7 +300,7 @@ class links {
 		$row['link_button']			= "";
 		$row['link_open']			= "";
 		$row['link_class']			= "";
-		$link_resize_value			= ($linkspage_pref['link_resize_value'] ? $linkspage_pref['link_resize_value'] : "100");
+		$link_resize_value			= (isset($linkspage_pref['link_resize_value']) && $linkspage_pref['link_resize_value'] ? $linkspage_pref['link_resize_value'] : "100");
 		
 		if ($sub_action == 'edit' && !$_POST['submit']) {
 			if ($sql->db_Select("links_page", "*", "link_id='$id' ")) {
@@ -327,7 +328,7 @@ class links {
 			$row['link_button']			= $_POST['link_button'];
 			$row['link_open']			= $_POST['linkopentype'];
 			$row['link_class']			= $_POST['link_class'];
-			$link_resize_value			= ($_POST['link_resize_value'] ? $_POST['link_resize_value'] : $link_resize_value);
+			$link_resize_value			= (isset($_POST['link_resize_value']) && $_POST['link_resize_value'] ? $_POST['link_resize_value'] : $link_resize_value);
 		}
 
 		$text = "
@@ -486,13 +487,13 @@ class links {
 		$row['link_category_name']			= "";
 		$row['link_category_description']	= "";
 		$row['link_category_icon']			= "";
-		$link_cat_resize_value				= ($linkspage_pref['link_cat_resize_value'] ? $linkspage_pref['link_cat_resize_value'] : "50");
+		$link_cat_resize_value				= (isset($linkspage_pref['link_cat_resize_value']) && $linkspage_pref['link_cat_resize_value'] ? $linkspage_pref['link_cat_resize_value'] : "50");
 
 		if(isset($_POST['uploadcatlinkicon'])){
 			$row['link_category_name']			= $_POST['link_category_name'];			
 			$row['link_category_description']	= $_POST['link_category_description'];
 			$row['link_category_icon']			= $_POST['link_category_icon'];
-			$link_cat_resize_value				= ($_POST['link_cat_resize_value'] ? $_POST['link_cat_resize_value'] : $link_cat_resize_value);
+			$link_cat_resize_value				= (isset($_POST['link_cat_resize_value']) && $_POST['link_cat_resize_value'] ? $_POST['link_cat_resize_value'] : $link_cat_resize_value);
 		}
 
 		if ($sub_action == "edit") {

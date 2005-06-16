@@ -25,8 +25,8 @@ e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
 
 //get language file
-$lan_file = e_PLUGIN."recent/languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."recent/languages/English.php");
+$lan_file = e_PLUGIN.'recent/languages/'.e_LANGUAGE.'.php';
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'recent/languages/English.php');
 
 unset($text);
 
@@ -94,7 +94,6 @@ for($i=0;$i<count($arr);$i++){
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $RECENT_PAGE_TABLE_CELL_START);
 		$text .= $rc -> show_section_recent($arr[$i], "page");
 		$text .= $RECENT_PAGE_TABLE_CELL_END;
-		$k++;
 	}
 }
 $text .= $RECENT_PAGE_TABLE_END;
