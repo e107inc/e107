@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.106 $
-|     $Date: 2005-06-16 01:39:15 $
+|     $Revision: 1.107 $
+|     $Date: 2005-06-16 09:05:31 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -741,15 +741,13 @@ function update_61x_to_700($type) {
 			$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
 		}
 		
-		// search content plugin id change (will be uncommented when needed)
-		/*
+		// search content plugin comments id change
 		if ($search_prefs['comments_handlers']['content']['id'] == '1') {
 			$search_prefs['comments_handlers']['content']['id'] = 'pcontent';
 			$serial_prefs = addslashes(serialize($search_prefs));
 			$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
 		}
-		*/
-		
+
 		// convert notify prefs from serialised to eArrayStorage
 		if ($notify_prefs = $sysprefs -> getArray('notify_prefs')) {
 			$s_prefs = $tp -> recurse_toDB($notify_prefs, true, true);
@@ -828,13 +826,11 @@ function update_61x_to_700($type) {
 		//	return FALSE;
 		//}
 
-		// search content plugin id change (will be uncommented when needed)
-		/*
+		// search content plugin comments id change
 		$search_prefs = $sysprefs -> getArray('search_prefs');
 		if ($search_prefs['comments_handlers']['content']['id'] == '1') {
 			return FALSE;
 		}
-		*/
 
 		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = "SHOW CREATE TABLE `".MPREFIX."user`";

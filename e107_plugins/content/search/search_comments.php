@@ -1,10 +1,10 @@
 <?php
 
 $comments_title = 'Content';
-$comments_type_id = '1';
+$comments_type_id = 'pcontent';
 $comments_return['content'] = "p.content_id, p.content_heading, p.content_parent";
-$comments_table['content'] = "LEFT JOIN #pcontent AS p ON c.comment_type='1' AND p.content_id = c.comment_item_id";
-function com_search_1($row) {
+$comments_table['content'] = "LEFT JOIN #pcontent AS p ON c.comment_type='pcontent' AND p.content_id = c.comment_item_id";
+function com_search_pcontent($row) {
 	global $con;
 	$datestamp = $con -> convert_date($row['comment_datestamp'], "long");
 	$res['link'] = e_PLUGIN."content/content.php?content.".$row['content_id'];
