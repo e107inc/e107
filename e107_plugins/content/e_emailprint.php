@@ -224,6 +224,10 @@ function print_item_pdf($id){
 	$text[0] = str_replace($search, $replace, $text[0]);		//replace some in the text
 	$text[3] = str_replace($search, $replace, $text[3]);		//replace some in the title
 
+	$search2 = array(":", "*", "?", '"', '<', '>', '|');
+	$replace2 = array('-', '-', '-', '-', '-', '-', '-');
+	$text[3] = str_replace($search2, $replace2, $text[3]);		//replace non-allowed characters
+
 	//$text[0] = strip_tags($text[0], '<b></b><i></i><u></u>[b][/b][i][/i][u][/u]');
 
 
