@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-15 20:36:15 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-16 20:37:53 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -143,8 +143,8 @@ define("LCLAN_137", "define the default ordering method");
 define("LCLAN_138", "enabled");
 define("LCLAN_139", "disabled");
 
-define("LCLAN_140", "overwrite link open type");
-define("LCLAN_141", "define the overwrite link open type method");
+define("LCLAN_140", "override link open type");
+define("LCLAN_141", "define the override link open type method");
 define("LCLAN_142", "choosing one of these options will open all links with that option, regardless of their individual setting");
 define("LCLAN_143", "use individual link setting");
 define("LCLAN_144", "sort and order");
