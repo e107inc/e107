@@ -1,6 +1,6 @@
 <?php
 
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
+error_reporting(E_ERROR | E_PARSE);
 
 if(!function_exists("print_a")) {
 	function print_a($var) {
