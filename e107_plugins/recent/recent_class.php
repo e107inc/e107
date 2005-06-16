@@ -7,6 +7,9 @@ global $RECENT_ICON, $RECENT_DATE, $RECENT_HEADING, $RECENT_AUTHOR, $RECENT_CATE
 global $RECENT_DISPLAYSTYLE, $RECENT_CAPTION, $RECENT_STYLE_CAPTION, $RECENT_STYLE_BODY;
 
 $defaultarray = array("news", "comment", "download", "members");
+//get language file
+$lan_file = e_PLUGIN.'recent/languages/'.e_LANGUAGE.'.php';
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'recent/languages/English.php');
 
 require_once(e_PLUGIN."recent/recent_template.php");
 

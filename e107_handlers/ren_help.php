@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-06-14 16:06:17 $
+|     $Revision: 1.29 $
+|     $Date: 2005-06-16 09:41:59 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -57,7 +57,7 @@ function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {
 
 	$imgpath = (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."generic/bbcode/");
 
-
+	$text = "";
 	foreach($code as $key=>$bbcode){
 		if($key == 12){
 			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('col_selector')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";
@@ -115,6 +115,7 @@ function display_help($tagid="helpb", $mode = 1, $addtextfunc = "addtext", $help
 
 	$imgpath = (file_exists(THEME."bbcode/bold.png") ? THEME."bbcode/" : e_IMAGE."generic/bbcode/");
 
+	$text = "";
 	foreach($code as $key=>$bbcode){
 		if($key == 12){
 			$text .= "<img class='bbcode' src='".$imgpath.$img[$key]."' alt='' title='".$bbcode[2]."' onclick=\"expandit('col_selector')\" ".($mode != 2 ? "onmouseout=\"{$helpfunc}('')\" onmouseover=\"{$helpfunc}('".$bbcode[2]."')\"" : "" )." />\n";

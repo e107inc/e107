@@ -53,12 +53,12 @@ $RECENT_PAGE_END = "
 
 //MULTI COLOMNS LAYOUT MASTER -----------------------------------------------------------
 $RECENT_PAGE_TABLE_START = "
-<div style='text-align:center'>
-<table class='fborder' style='width:100%; border:1px solid #000;' border='1' cellspacing='0' cellpadding='0'>
+<div style='text-align:center;'>
+<table class='fborder' style='width:100%;' cellspacing='0' cellpadding='0'>
 <tr>";
 $RECENT_PAGE_TABLE_WELCOME = "<td colspan='{RECENT_PAGE_TABLE_COLS}' class='forumheader'>{RECENT_PAGE_TABLE_WELCOMETEXT}<br /><br /></td>";
 $RECENT_PAGE_TABLE_ROWSWITCH = "</tr><tr>";
-$RECENT_PAGE_TABLE_CELL_START = "<td style='width:{RECENT_PAGE_TABLE_CELLWIDTH}%; padding-right:5px;'>";
+$RECENT_PAGE_TABLE_CELL_START = "<td style='width:{RECENT_PAGE_TABLE_CELLWIDTH}%; padding-right:5px; vertical-align:top;'>";
 $RECENT_PAGE_TABLE_CELL_END = "</td>";
 $RECENT_PAGE_TABLE_END = "</tr></table></div>";
 

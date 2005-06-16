@@ -163,6 +163,7 @@ function tablestyle($caption, $text, $mode){
 		$bodybreak = '';
 		$but_border = ' button_menu';
 	} else {
+		$menu = '';
 		$bodybreak = '<br />';
 		$but_border = '';
 	}

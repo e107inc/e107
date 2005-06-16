@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2005-06-10 00:40:48 $
-|     $Author: e107coders $
+|     $Revision: 1.54 $
+|     $Date: 2005-06-16 09:41:59 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -39,7 +39,7 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 <meta http-equiv='content-style-type' content='text/css' />\n";
 
-if($pref['rss_feeds'] && file_exists(e_PLUGIN."rss_menu/rss_meta.php")){
+if(isset($pref['rss_feeds']) && $pref['rss_feeds'] && file_exists(e_PLUGIN."rss_menu/rss_meta.php")){
 	require_once(e_PLUGIN."rss_menu/rss_meta.php");
 }
 
@@ -91,7 +91,7 @@ if (isset($theme_js_php) && $theme_js_php) {
 if (isset($WYSIWYG) && $WYSIWYG == TRUE && check_class($pref['wysiwyg'])) { require_once(e_HANDLER."tiny_mce/wysiwyg.php"); }
 if (function_exists('headerjs')){echo headerjs();  }
 
-if ($pref['statActivate']) {
+if (isset($pref['statActivate']) && $pref['statActivate']) {
 	if(!$pref['statCountAdmin'] && ADMIN) {
 		/* don't count admin visits */
 	} else {

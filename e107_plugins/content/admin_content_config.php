@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.44 $
-|		$Date: 2005-06-14 10:41:53 $
+|		$Revision: 1.45 $
+|		$Date: 2005-06-16 09:41:59 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -373,10 +373,10 @@ function admin_content_config_adminmenu(){
 					$qs		=	explode(".", e_QUERY);
 				}
 
-				if(isset($qs[0]) && $qs[0] == "cat" && $qs[1] == "create"){
+				if(isset($qs[0]) && $qs[0] == "cat" && isset($qs[1]) && $qs[1] == "create"){
 					$act	= $qs[0].".".$qs[1];
 
-				}elseif(isset($qs[0]) && $qs[0] == "content" && $qs[1] == "create"){
+				}elseif(isset($qs[0]) && $qs[0] == "content" && isset($qs[1]) && $qs[1] == "create"){
 					$act	= $qs[0].".".$qs[1];
 
 				}else{
@@ -484,7 +484,7 @@ function admin_content_config_adminmenu(){
 								}elseif( isset($qs[0]) && $qs[0] == "manager" ){
 									$act = "";
 								}else{
-									if(isset($qs[0])){
+									if(isset($qs[0]) && isset($qs[1]) ){
 										$act = "c".$qs[1];
 									}else{
 										$act = "c";

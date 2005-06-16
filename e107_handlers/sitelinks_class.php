@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2005-06-14 22:37:13 $
-|     $Author: e107coders $
+|     $Revision: 1.57 $
+|     $Date: 2005-06-16 09:41:59 $
+|     $Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -40,7 +40,7 @@ class sitelinks
 			//	if (substr($row['link_name'], 0, 8) == 'submenu.'){
 			//		$tmp=explode('.', $row['link_name'], 3);
 			 //		$this->eLinkList[$tmp[1]][]=$row;
-				if ($row['link_parent'] != 0){
+				if (isset($row['link_parent']) && $row['link_parent'] != 0){
 					$this->eLinkList['sub_'.$row['link_parent']][]=$row;
 				}else{
 					$this->eLinkList['head_menu'][] = $row;

@@ -26,7 +26,7 @@ if(!e_QUERY){
 		//create content item
 		}elseif($qs[0] == "content" && $qs[1] == "create" ){
 			//Create New Content (no category selected)
-			if(!$qs[2]){
+			if(!isset($qs[2])){
 				$text = CONTENT_ADMIN_HELP_ITEMCREATE_1;
 
 			//Create New Content (category selected)
