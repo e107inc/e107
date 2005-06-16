@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-15 17:42:31 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-16 13:46:23 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ define("LCLAN_14", "Enviar");
 define("LCLAN_15", "Nombre del enlace");
 define("LCLAN_16", "URL del enlace");
 define("LCLAN_17", "Descripción del enlace");
-define("LCLAN_18", "Icono / botón del enlace: Escojer");
+define("LCLAN_18", "Icono del enlace: Escojer");
 define("LCLAN_19", "Tipo de apertura del enlace");
 define("LCLAN_20", "Abrir en la misma ventana");
 define("LCLAN_23", "Abrir en una ventana nueva");
@@ -71,7 +71,7 @@ define("LCLAN_69", "Sin categorías de los enlaces");
 define("LCLAN_70", "Categorías de los enlaces existentes");
 define("LCLAN_71", "Nombre Categoría");
 define("LCLAN_72", "Descripción Categoría");
-define("LCLAN_73", "Icono Categoría");
+define("LCLAN_73", "Icono de la categoría: Escojer");
 define("LCLAN_74", "Actualizar categoría del enlcace");
 define("LCLAN_75", "Crear categoría del enlace");
 define("LCLAN_76", "No hay enlaces enviados");
@@ -104,7 +104,7 @@ define('LCLAN_102', "Página de enlaces instalada correctamente, por favor confi
 define('LCLAN_103', "Enlaces");
 define('LCLAN_104', "Valoración de enlace");
 define('LCLAN_105', "Permitir a los usuarios valorar enlaces");
-define("LCLAN_106", "Enlace de botón / Icono: Transferir");
+define("LCLAN_106", "Icono de enlace: Transferir");
 define("LCLAN_107", "¡El enlace de icono de transfirió con éxito!");
 define("LCLAN_108", "¡No se transfirió el enlace de icono!");
 define("LCLAN_109", "Transferir un nuevo icono");
@@ -113,6 +113,60 @@ define("LCLAN_111", "Transferir icono");
 define("LCLAN_112", "Escoja un icono transferido");
 define("LCLAN_113", "Esta opción está desactivada ya que la transferencia no está activa en su servidor");
 define("LCLAN_114", "La carpeta ");
-define("LCLAN_115", "fno es escribible, necesita CHMOD 777 en la carpeta antes de transferir");
+define("LCLAN_115", " no es escribible, necesita CHMOD 777 en la carpeta antes de transferir");
+define("LCLAN_116", "Opciones generales");
+define("LCLAN_117", "Página de categoría");
+define("LCLAN_118", "Página de enlaces");
+define("LCLAN_119", "Categoría de enlaces");
+define("LCLAN_120", "Secciones");
+define("LCLAN_121", "Escoja que información debe ser mostrada");
+define("LCLAN_122", "Icono");
+define("LCLAN_123", "Descripción");
+define("LCLAN_124", "Cantidad");
+define("LCLAN_125", "Línea de información total de la categoría (la línea de abajo)");
+define("LCLAN_126", "Orden por defecto de la categoría");
+define("LCLAN_127", "Defina el método de orden por defecto");
+define("LCLAN_128", "Orden de categoría por defecto");
+define("LCLAN_129", "Defina el método de orden por defecto");
+define("LCLAN_130", "URL");
+define("LCLAN_131", "Referido");
+define("LCLAN_132", "Icono de enlace vacío");
+define("LCLAN_133", "¿Debería este botón de enlace genérico mostrarse si no existe ningún botón?");
+define("LCLAN_134", "Orden por defecto de enlaces");
+define("LCLAN_135", "Defina el método de orden por defecto");
+define("LCLAN_136", "Orden de enlaces por defecto");
+define("LCLAN_137", "Defina el método de orden");
+define("LCLAN_138", "Activado");
+define("LCLAN_139", "Desactivado");
+define("LCLAN_140", "Tipo de sobreescritura del enlace abierto");
+define("LCLAN_141", "Defina el método del tipo de sobreescritura del enlace abierto");
+define("LCLAN_142", "Escogiendo una de esas opciones abrirá todos los enlaces con esa opción, sin tener en cuenta su ajuste individual");
+define("LCLAN_143", "Use un ajuste de enlace individual");
+define("LCLAN_144", "Ordenación");
+define("LCLAN_145", "Defina si el menú de ordenación se mostrará en la página de enlaces");
+define("LCLAN_146", "Icono de categoría vacía");
+define("LCLAN_147", "Enlace a enlaces Top : Refer");
+define("LCLAN_148", "Enlace a enlaces Top : Valorados");
+define("LCLAN_149", "Páginas Top refer y Top valorados");
+define("LCLAN_150", "Cantidad de enlaces");
+define("LCLAN_151", "Defina cuantos enlaces se mostrarán en una sola página");
+define("LCLAN_152", "Icono de categoría : Transferir");
+define("LCLAN_153", "Valor de redimensionar por defecto");
+define("LCLAN_154", "Defina el valor de redimensión del icono del enlace al transferir");
+define("LCLAN_155", "Defina el valor de redimensión del icono de la categoría al transferir");
+define("LCLAN_156", "");
+define("LCLAN_157", "");
+define("LCLAN_158", "");
+define("LCLAN_159", "");
+define("LCLAN_160", "");
+define("LCLAN_161", "");
+define("LCLAN_162", "");
+define("LCLAN_163", "");
+define("LCLAN_164", "");
+define("LCLAN_165", "");
+define("LCLAN_166", "");
+define("LCLAN_167", "");
+define("LCLAN_168", "");
+define("LCLAN_169", "");
 
 ?>

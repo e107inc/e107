@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_search.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-15 19:48:26 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-16 13:46:23 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -17,8 +17,6 @@ define("LAN_99", "Comentarios");
 define("LAN_140", "Miembros");
 
 define("LAN_180", "Buscar");
-
-define("LAN_190", "Revisiones");
 
 define("LAN_192", "Todas las categorías");
 define("LAN_193", "Calendario");
@@ -109,4 +107,5 @@ define("LAN_SEARCH_71", "Enviado en respuesta a noticia");
 define("LAN_SEARCH_72", "Firma");
 define("LAN_SEARCH_73", "Sin firma.");
 define("LAN_SEARCH_74", "Registrado desde");
+define("LAN_SEARCH_75", "Tipo de búsqueda");
 ?>

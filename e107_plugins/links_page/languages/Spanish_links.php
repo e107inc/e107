@@ -4,12 +4,24 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish_links.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-09 23:12:20 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-16 13:46:23 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Enlaces");
+
+define("LAN_LINKS_4", "Cabecera");
+define("LAN_LINKS_5", "URL");
+define("LAN_LINKS_6", "Orden");
+define("LAN_LINKS_7", "Refer");
+define("LAN_LINKS_8", "ASC");
+define("LAN_LINKS_9", "DESC");
+define("LAN_LINKS_10", "Enlaces Top : Refer");
+define("LAN_LINKS_11", "Enlaces Top : Valoración");
+define("LAN_LINKS_12", "Ver enlaces Top por refer");
+define("LAN_LINKS_13", "Ver enlaces Top por valoración");
+define("LAN_LINKS_14", "Volver a la página de enlaces");
 
 define("LAN_61", "Categorías de enlaces");
 define("LAN_62", "Categorias");
