@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.88 $
-|     $Date: 2005-06-15 15:10:17 $
-|     $Author: sweetas $
+|     $Revision: 1.89 $
+|     $Date: 2005-06-16 17:02:48 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -264,7 +264,7 @@ class e_parse
 		if (strpos($modifiers, 'nobreak') === FALSE) {
 			$text = preg_replace("#[\r]*\n[\r]*#", "[E_NL]", $text);
 		}
-		
+
 		// Start parse [bb][/bb] codes
 		if ($parseBB === TRUE) {
 			if (!is_object($this->e_bb)) {
@@ -343,6 +343,8 @@ class e_parse
 	}
 
 	function toJS($stringarray) {
+		$stringarray = str_replace("\r\n", "\\n", $stringarray);
+		$stringarray = str_replace("\r", "", $stringarray);
 		$trans_tbl = get_html_translation_table (HTML_ENTITIES);
 		$trans_tbl = array_flip ($trans_tbl);
 		return strtr ($stringarray, $trans_tbl);
@@ -367,13 +369,13 @@ class e_parse
 		$text = str_replace($search, $replace, $text);
 		return $text;
 	}
-	
+
 	function replaceConstants($text)
 	{
 		$text = preg_replace_callback("#\{(e_[A-Z]*)\}#s", array($this, 'doReplace'), $text);
 		return $text;
 	}
-	
+
 	function doReplace($matches)
 	{
 		if(defined($matches[1]) && ($matches[1] != 'e_ADMIN' || ADMIN))
@@ -382,6 +384,6 @@ class e_parse
 		}
 		return $matches[1];
 	}
-		
+
 }
 ?>

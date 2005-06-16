@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-06-16 16:21:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.35 $
+|     $Date: 2005-06-16 17:02:45 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 require_once(e_HANDLER."comment_class.php");
 unset($text);
-$agreetext = str_replace("\n", "\\n", $pref['agree_text']);
-$agreetext = str_replace("\r", "", $agreetext);
+$agreetext = $tp->toJS($pref['agree_text']);
 $cobj = new comment;
 global $tp;
 
