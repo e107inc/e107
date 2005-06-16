@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-06-14 02:08:27 $
-|     $Author: e107coders $
+|     $Revision: 1.33 $
+|     $Date: 2005-06-16 01:37:16 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -92,11 +92,11 @@ if (!e_QUERY) {
 
 	$DOWNLOAD_CAT_NEWDOWNLOAD_TEXT = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' /> ".LAN_dl_36;
 	$DOWNLOAD_CAT_SEARCH = "
-		<form method='post' action='".e_BASE."search.php'>
+		<form method='get' action='".e_BASE."search.php'>
 		<p>
-		<input class='tbox' type='text' name='searchquery' size='30' value='' maxlength='50' />
-		<input class='button' type='submit' name='searchsubmit' value='".LAN_dl_41."' />
-		<input type='hidden' name='searchtype' value='9' />
+		<input class='tbox' type='text' name='q' size='30' value='' maxlength='50' />
+		<input class='button' type='submit' name='s' value='".LAN_dl_41."' />
+		<input type='hidden' name='r' value='0' />
 		</p>
 		</form>";
 
