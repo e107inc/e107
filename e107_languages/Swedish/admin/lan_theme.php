@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_theme.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-16 08:31:11 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -34,18 +34,18 @@ define("TPVLAN_20", "Autouppladdning av tema och extrahering är avaktiverat eft
 define("TPVLAN_21", "Detta är det nuvarande sajttemat");
 
 define("TPVLAN_22", "datta tema har flera stilmallar");
-define("TPVLAN_23", "standar stilmall");
+define("TPVLAN_23", "standard stilmall");
 define("TPVLAN_24", "ingen information");
 define("TPVLAN_25", "För att välja stilmall, gå till <a href='".e_ADMIN."prefs.php'>preferenser</a> och klicka på 'Tema'.");
 
 define("TPVLAN_26", "Temahanterare");
-define("TPVLAN_27", "Välj stillmall att använda");
+define("TPVLAN_27", "Välj stilmall att använda");
 define("TPVLAN_28", "på");
 define("TPVLAN_29", "av");
-define("TPVLAN_30", "Förhandsladd temabilder:");
+define("TPVLAN_30", "Förhandsladda temabilder:");
 
 define("TPVLAN_31", "Detta är det nuvarande admintemat");
-define("TPVLAN_32", "Sätt som admintemae");
+define("TPVLAN_32", "Sätt som admintema");
 
 define("TPVLAN_33", "Nuvarande sajttema");
 define("TPVLAN_34", "Nuvarande admintema");

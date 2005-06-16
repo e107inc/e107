@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_frontpage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-16 08:31:11 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -29,5 +29,13 @@ define("FRTLAN_21", "innehållspost");
 // define("FRTLAN_24", "");
 // define("FRTLAN_25", "");
 
+define("FRTLAN_26", "alla användare");
+define("FRTLAN_27", "Gäster");
+define("FRTLAN_28", "Medlemmar");
+define("FRTLAN_29", "Administratörer");
+define("FRTLAN_31", "Alla användare");
+define("FRTLAN_32", "Användarklass");
+define("FRTLAN_33", "Nuvarande inställningar");
+define("FRTLAN_34", "Sida");
 
 ?>

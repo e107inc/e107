@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-13 16:20:21 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-16 08:31:11 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -25,33 +25,14 @@ define("CONTENT_ICON_LAN_11", "sortera objekt i kategori");
 define("CONTENT_ICON_LAN_12", "sortera objekt i huvudvärd");
 define("CONTENT_ICON_LAN_13", "personlig admin");
 define("CONTENT_ICON_LAN_14", "personlig innehållshanterare");
-
-if (!defined('CONTENT_ICON_EDIT')) { define("CONTENT_ICON_EDIT", "<img src='".e_PLUGIN."content/images/maintain_16.png' alt='".CONTENT_ICON_LAN_0."' style='border:0; cursor:pointer;' />"); }
-//maintain_16
-//edit_16
-
-if (!defined('CONTENT_ICON_DELETE')) { define("CONTENT_ICON_DELETE", "<img src='".e_PLUGIN."content/images/banlist_16.png' alt='".CONTENT_ICON_LAN_1."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_DELETE_BASE')) { define("CONTENT_ICON_DELETE_BASE", e_PLUGIN."content/images/banlist_16.png"); }
-if (!defined('CONTENT_ICON_OPTIONS')) { define("CONTENT_ICON_OPTIONS", "<img src='".e_PLUGIN."content/images/cat_settings_16.png' alt='".CONTENT_ICON_LAN_2."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_USER')) { define("CONTENT_ICON_USER", "<img src='".e_PLUGIN."content/images/users_16.png' alt='".CONTENT_ICON_LAN_3."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_FILE')) { define("CONTENT_ICON_FILE", "<img src='".e_PLUGIN."content/images/file_16.png' alt='".CONTENT_ICON_LAN_4."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_NEW')) { define("CONTENT_ICON_NEW", "<img src='".e_PLUGIN."content/images/articles_16.png' alt='".CONTENT_ICON_LAN_5."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_SUBMIT')) { define("CONTENT_ICON_SUBMIT", "<img src='".e_PLUGIN."content/images/redo.png' alt='".CONTENT_ICON_LAN_6."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_AUTHORLIST')) { define("CONTENT_ICON_AUTHORLIST", "<img src='".e_PLUGIN."content/images/personal.png' alt='".CONTENT_ICON_LAN_7."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_WARNING')) { define("CONTENT_ICON_WARNING", "<img src='".e_PLUGIN."content/images/warning_16.png' alt='".CONTENT_ICON_LAN_8."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_OK')) { define("CONTENT_ICON_OK", "<img src='".e_PLUGIN."content/images/ok_16.png' alt='".CONTENT_ICON_LAN_9."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_ERROR')) { define("CONTENT_ICON_ERROR", "<img src='".e_PLUGIN."content/images/error_16.png' alt='".CONTENT_ICON_LAN_10."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_ORDERCAT')) { define("CONTENT_ICON_ORDERCAT", "<img src='".e_PLUGIN."content/images/view_remove.png' alt='".CONTENT_ICON_LAN_11."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_ORDERALL')) { define("CONTENT_ICON_ORDERALL", "<img src='".e_PLUGIN."content/images/window_new.png' alt='".CONTENT_ICON_LAN_12."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_CONTENTMANAGER')) { define("CONTENT_ICON_CONTENTMANAGER", "<img src='".e_PLUGIN."content/images/manager_48.png' alt='".CONTENT_ICON_LAN_14."' style='border:0; cursor:pointer;' />"); }
-if (!defined('CONTENT_ICON_CONTENTMANAGER_SMALL')) { define("CONTENT_ICON_CONTENTMANAGER_SMALL", "<img src='".e_PLUGIN."content/images/manager_16.png' alt='".CONTENT_ICON_LAN_13."' style='border:0; cursor:pointer;' />"); }
-
+define("CONTENT_ICON_LAN_15", "visa");
+/*
 define("LAN_38", "röst");
 define("LAN_39", "röster");
 define("LAN_40", "vilket betyg ger du detta innehåll?");
 define("LAN_41", "tack för din röst");
 define("LAN_65", "ej betygssatt");
-
+*/
 define("CONTENT_ADMIN_CAT_LAN_0", "Skapa innehållskategori");
 define("CONTENT_ADMIN_CAT_LAN_1", "Redigera innehållskategori");
 define("CONTENT_ADMIN_CAT_LAN_2", "Rubrik");
@@ -105,11 +86,22 @@ define("CONTENT_ADMIN_CAT_LAN_47", "Skall skriv ut/e-post ikoner visas?");
 define("CONTENT_ADMIN_CAT_LAN_48", "Välj vilka användare som skall se detta objekt");
 define("CONTENT_ADMIN_CAT_LAN_49", "Välj en ikon för denna kategori");
 //define("CONTENT_ADMIN_CAT_LAN_50", "Innehållsmeny skapad<br /><br />Eftersom du skapat en huvudvärdkategori så har en meny skapats.<br />Menyfilen har sparats i din /menus folder.<br /><br />För att se menyn i aktion måste du aktivera menyn i din <a href='".e_ADMIN."menus.php'>admin menyarea</a>.");
-define("CONTENT_ADMIN_CAT_LAN_50", "Bara om du skapat en ny huvudvärdkategori så har en meny skapats.<br />Menyfilen har sparats i din /menus folder.<br />För att se menyn i aktion måste du aktivera menyn i din <a href='".e_ADMIN."menus.php'>admin menyarea</a>.");
+define("CONTENT_ADMIN_CAT_LAN_50", "
+Bara om du skapat en ny huvudvärdkategori så har en meny skapats.<br />
+Menyfilen har sparats i din /menus folder.<br />
+För att se menyn i aktion måste du aktivera menyn i din <a href='".e_ADMIN."menus.php'>admin menyarea</a>.");
 
 define("CONTENT_ADMIN_CAT_LAN_51", "Fel; Menyfil skapades inte");
 define("CONTENT_ADMIN_CAT_LAN_52", "Välj ALLTID en kategori först innan du fyller i de andra fälten!");
 define("CONTENT_ADMIN_CAT_LAN_53", "Huvudvärdkategori");
+define("CONTENT_ADMIN_CAT_LAN_54", "användare");
+define("CONTENT_ADMIN_CAT_LAN_55", "användare"); //Pluralis
+define("CONTENT_ADMIN_CAT_LAN_56", "objekt");
+define("CONTENT_ADMIN_CAT_LAN_57", "objekt"); //Pluralis
+define("CONTENT_ADMIN_CAT_LAN_58", "kategoriikon laddades upp okej<br />Notera: Du måste också tilldela ikonen till denna kategorin i Ikon>Välj befintlig ikon arean!<br />och efter det måste du också spara formuläret för att skapa/uppdatera denna kategori");
+define("CONTENT_ADMIN_CAT_LAN_59", "kategoriikon ej uppladdad");
+define("CONTENT_ADMIN_CAT_LAN_60", "");
+
 
 define("CONTENT_ADMIN_OPT_LAN_0", "Alternativ");
 define("CONTENT_ADMIN_OPT_LAN_1", "Adminalternativ : Skapande av innehållsobjekt");
@@ -333,7 +325,101 @@ define("CONTENT_ADMIN_OPT_LAN_215", "Välj en stil för visning av datum");
 define("CONTENT_ADMIN_OPT_LAN_216", "För mer information om datumformat se <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime funktionssidan på php.net</a>");
 define("CONTENT_ADMIN_OPT_LAN_217", "Arkivsida");
 define("CONTENT_ADMIN_OPT_LAN_218", "");
+
 define("CONTENT_ADMIN_OPT_LAN_219", "");
+define("CONTENT_ADMIN_OPT_LAN_220", "författarlistans ikon");
+define("CONTENT_ADMIN_OPT_LAN_221", "förhandsdefiniera data taggar");
+define("CONTENT_ADMIN_OPT_LAN_222", "definiera standard förhandsinställda egna data taggar");
+define("CONTENT_ADMIN_OPT_LAN_223", "Här kan du ange extra förhandsinställda data taggar. Fälten du anger här är nycklarna i nyckel=>värde data taggarna. De kommer att ha ett textfält som värde att sätta i admins formulär för att skapa. Notera: Dessa är inte del av mängden datataggar du specificerat ovan, och kommer att läggas till.<br />Dessa förhandsdefinierade taggar är väldigt användbara om du vill ha en särskild egen tagg tillgänglig för varje nytt objekt. T.ex. om du alltid vill ha ett värde för 'fotograf' så kan du skapa en sådan fördefinierad tagg som kommer att visas för varje nytt objekt i värden.");
+define("CONTENT_ADMIN_OPT_LAN_224", "css");
+define("CONTENT_ADMIN_OPT_LAN_225", "definiera tema css stil för denna värd");
+define("CONTENT_ADMIN_OPT_LAN_226", "om den valda css filen inte finns kommer standard temalayout för innehållet att användas");
+define("CONTENT_ADMIN_OPT_LAN_227", "layoutschema");
+define("CONTENT_ADMIN_OPT_LAN_228", "definiera standard layoutschema");
+define("CONTENT_ADMIN_OPT_LAN_229", "välj ett layoutschema");
+
+define("CONTENT_ADMIN_OPT_LAN_230", "nuvarande sajttema");
+define("CONTENT_ADMIN_OPT_LAN_231", "nuvarande temalayout för innehåll");
+define("CONTENT_ADMIN_OPT_LAN_232", "standard temalayout för innehåll");
+
+define("CONTENT_ADMIN_OPT_LAN_233", "textlänk");
+define("CONTENT_ADMIN_OPT_LAN_234", "definiera om en länk skall visas i postfix");
+define("CONTENT_ADMIN_OPT_LAN_235", "Om aktiverad, kommer en länk till innehållet att placeras i postfixsträngen");
+define("CONTENT_ADMIN_OPT_LAN_236", "text tecken");
+define("CONTENT_ADMIN_OPT_LAN_237", "definiera mängden ord från texten");
+define("CONTENT_ADMIN_OPT_LAN_238", "Hur många ord från texten skall visas? Lämna tomt för att inte visa något");
+define("CONTENT_ADMIN_OPT_LAN_239", "text postfix");
+define("CONTENT_ADMIN_OPT_LAN_240", "Definiera ett postfix om texten är längre");
+define("CONTENT_ADMIN_OPT_LAN_241", "Text (du måste ange mängden ord att visa)");
+
+define("CONTENT_ADMIN_OPT_LAN_242", "Välj vilka sektioner som skall visas när man tittar på författarens sida");
+define("CONTENT_ADMIN_OPT_LAN_243", "Senaste objekt från varje författare");
+define("CONTENT_ADMIN_OPT_LAN_244", "Mängd objekt från varje författare");
+define("CONTENT_ADMIN_OPT_LAN_245", "Om aktiverad kommer endast ett begränsat antal författare att visas per sida, och du kan navigera bland sidorna för att se andra författare.");
+define("CONTENT_ADMIN_OPT_LAN_246", "Hur många författare skall visas på en sida?");
+define("CONTENT_ADMIN_OPT_LAN_247", "Författare listsida (Sidan med översikten över alla författare till allt innehåll finns i huvudvärden)");
+
+define("CONTENT_ADMIN_OPT_LAN_248", "Innehållshanterare");
+define("CONTENT_ADMIN_OPT_LAN_249", "Klass");
+define("CONTENT_ADMIN_OPT_LAN_250", "Definiera från vilken klass användare skall få tillgång till admin innehållshanteraren");
+define("CONTENT_ADMIN_OPT_LAN_251", "Användarlistan i admins innehållshanterare kommer endast att innehålla användarna i den definierade klasse. Då måste också tilldela användarna till varje kategori! Denna klassen kommer enbart att begränsa urvalet av användare att välja från");
+define("CONTENT_ADMIN_OPT_LAN_252", "länkar");
+define("CONTENT_ADMIN_OPT_LAN_253", "Skall ett urval med länkar till andra innehållssidor visas?");
+define("CONTENT_ADMIN_OPT_LAN_254", "Om inaktiverad kommer atta länkalternativ nedan att förbises");
+define("CONTENT_ADMIN_OPT_LAN_255", "Huvudkategori");
+define("CONTENT_ADMIN_OPT_LAN_256", "Behöver huvudkategorin visas i listan över kategorier?");
+define("CONTENT_ADMIN_OPT_LAN_257", "Länkars visningstyp");
+define("CONTENT_ADMIN_OPT_LAN_258", "Definiera sättet som länkar skall visas på");
+define("CONTENT_ADMIN_OPT_LAN_259", "Du kan antingen visa dem i en valruta, eller visa dem som normala länkar");
+define("CONTENT_ADMIN_OPT_LAN_260", "Ikon : Länkar");
+define("CONTENT_ADMIN_OPT_LAN_261", "Rubrik : Länklista");
+define("CONTENT_ADMIN_OPT_LAN_262", "Ange rubriken för länkarna till andra innehållssidor");
+define("CONTENT_ADMIN_OPT_LAN_263", "Denna rubrik kommer bara att användas om länkarna visas som 'normala länkar' och visas inte i rullgardinsmenyn");
+define("CONTENT_ADMIN_OPT_LAN_264", "Ikon : Standardkategori");
+define("CONTENT_ADMIN_OPT_LAN_265", "Ange standardikonen om ingen kategoriikon finns (Bara om du valt att 'Kategoriikon' skall visas)");
+define("CONTENT_ADMIN_OPT_LAN_266", "Topprankad sida (Sidan med översikten över alla rankade objekt i denna huvudvärd)");
+define("CONTENT_ADMIN_OPT_LAN_267", "Visningstyp navigator/sök/sortera");
+define("CONTENT_ADMIN_OPT_LAN_268", "Definiera hur menyn med navigator/search/order alternativen skall visas");
+define("CONTENT_ADMIN_OPT_LAN_269", "Ange hur informationen skall visas. Du har två val: Ett för att bara visa den högst upp på sidan och ett att visa den i en separat meny. Den använder en mallfil, så du ändrar alltid layouten av menyn (om vald) där.");
+
+define("CONTENT_ADMIN_OPT_LAN_270", "Bokstavsindex");
+define("CONTENT_ADMIN_OPT_LAN_271", "Ange om du vill visa ett bokstavsindex");
+define("CONTENT_ADMIN_OPT_LAN_272", "Ett bokstavsindex är en lista med knappar med alla förstabokstäver från innehållsobjektens rubriker. Du kan begränsa arkivlistningen genom att klicka en bokstav så kommer enbart innehåll som börjar med den bokstaven att visas.");
+
+define("CONTENT_ADMIN_OPT_LAN_273", "Navigator");
+define("CONTENT_ADMIN_OPT_LAN_274", "Skall en navigator visas");
+define("CONTENT_ADMIN_OPT_LAN_275", "Om valt kommer en navigeringsruta att visas för att navigera till de andra innehållssidorna. Markera de sidor där denna skall visas.");
+
+define("CONTENT_ADMIN_OPT_LAN_276", "Sorteringsalternativ");
+define("CONTENT_ADMIN_OPT_LAN_277", "Skall ett sorteringsalternativ visas?");
+define("CONTENT_ADMIN_OPT_LAN_278", "Om markerat kommer sorteringsalternativ att visas för att sortera de objekt som visas på sidan. Markera de sidor där denna skall visas.");
+
+define("CONTENT_ADMIN_OPT_LAN_279", "Topprankad sida (Sidan med en överblick över alla objekt som har poäng i denna huvudvärd.)");
+
+define("CONTENT_ADMIN_OPT_LAN_280", "Alla kategorier");
+define("CONTENT_ADMIN_OPT_LAN_281", "En enkelt kategori");
+define("CONTENT_ADMIN_OPT_LAN_282", "Alla författare");
+define("CONTENT_ADMIN_OPT_LAN_283", "En ensam författare");
+define("CONTENT_ADMIN_OPT_LAN_284", "senaste");
+define("CONTENT_ADMIN_OPT_LAN_285", "innehållsobjekt");
+define("CONTENT_ADMIN_OPT_LAN_286", "topprankad");
+define("CONTENT_ADMIN_OPT_LAN_287", "arkiv");
+define("CONTENT_ADMIN_OPT_LAN_288", "poäng");
+define("CONTENT_ADMIN_OPT_LAN_289", "");
+
+define("CONTENT_ADMIN_OPT_LAN_290", "Välj vilka sektioner som skall visas när man tittar på topprankad sida.");
+define("CONTENT_ADMIN_OPT_LAN_291", "Välj vilka sektioner som skall visas när man tittar på sidor med mest poäng");
+define("CONTENT_ADMIN_OPT_LAN_292", "Länk : topprankad");
+define("CONTENT_ADMIN_OPT_LAN_293", "Skall en länk till 'topprankade objekt' sidan visas?");
+define("CONTENT_ADMIN_OPT_LAN_294", "");
+define("CONTENT_ADMIN_OPT_LAN_295", "");
+define("CONTENT_ADMIN_OPT_LAN_296", "");
+define("CONTENT_ADMIN_OPT_LAN_297", "");
+define("CONTENT_ADMIN_OPT_LAN_298", "");
+define("CONTENT_ADMIN_OPT_LAN_299", "");
+
+
+
 
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "Nödvändigt fält lämnat tomt");
@@ -504,6 +590,14 @@ define("CONTENT_ADMIN_MENU_LAN_13", "Innehållssidor");
 define("CONTENT_ADMIN_MENU_LAN_14", "Meny");
 define("CONTENT_ADMIN_MENU_LAN_15", "Hantera ordning");
 define("CONTENT_ADMIN_MENU_LAN_16", "Arkivsida");
+define("CONTENT_ADMIN_MENU_LAN_17", "Personlig innehållshanterare");
+define("CONTENT_ADMIN_MENU_LAN_18", "Författarsida");
+define("CONTENT_ADMIN_MENU_LAN_19", "Innehållshanterare");
+define("CONTENT_ADMIN_MENU_LAN_20", "Topprankade sida");
+define("CONTENT_ADMIN_MENU_LAN_21", "Sidor");
+define("CONTENT_ADMIN_MENU_LAN_22", "Toppoäng sida");
+
+
 
 define("CONTENT_ADMIN_JS_LAN_0", "Är du säker på att du vill ta bort denna kategori?");
 define("CONTENT_ADMIN_JS_LAN_1", "Är du säker på att du vill ta bort detta innehåll?");
@@ -536,6 +630,43 @@ define("CONTENT_ADMIN_DATE_LAN_15", "Startdatum");
 define("CONTENT_ADMIN_DATE_LAN_16", "Slutdatum");
 define("CONTENT_ADMIN_DATE_LAN_17", "Du kan ange ett startdatum för denna innehållspost. Om du anger ett framtida datum kommer innehållet att synas från det datumet och framåt. Om du inte behöver något specifikt startdatum, lämna bara fälten som de är.");
 define("CONTENT_ADMIN_DATE_LAN_18", "Du kan ange ett slutdatum för denna innehållspost. Med slutdatum definierar du fram till vilket datum posten skall visas. Om du inte behöver något specifikt slutdatum, lämna bara fälten som de är.");
+
+
+define("CONTENT_PAGETITLE_LAN_0", "Innehåll");
+define("CONTENT_PAGETITLE_LAN_1", "Huvud");
+define("CONTENT_PAGETITLE_LAN_2", "Senaste");
+define("CONTENT_PAGETITLE_LAN_3", "Kategori");
+define("CONTENT_PAGETITLE_LAN_4", "Topprankad");
+define("CONTENT_PAGETITLE_LAN_5", "Författare");
+define("CONTENT_PAGETITLE_LAN_6", "Arkiv");
+define("CONTENT_PAGETITLE_LAN_7", "Skicka");
+define("CONTENT_PAGETITLE_LAN_8", "Skicka in innehållsobjekt");
+define("CONTENT_PAGETITLE_LAN_9", "Personlig innehållshanterare");
+define("CONTENT_PAGETITLE_LAN_10", "Visa objekt");
+define("CONTENT_PAGETITLE_LAN_11", "Redigera objekt");
+define("CONTENT_PAGETITLE_LAN_12", "Skapa objekt");
+define("CONTENT_PAGETITLE_LAN_13", "Kategorier");
+define("CONTENT_PAGETITLE_LAN_14", "Författarlista");
+define("CONTENT_PAGETITLE_LAN_15", "Toppoäng");
+
+
+define("CONTENT_SEARCH_LAN_0", "Inget innehåll hittades med desaa nyckelord.");
+
+
+define("CONTENT_ORDER_LAN_0", "sortera på ...");
+define("CONTENT_ORDER_LAN_1", "Rubrik (Stig.)");
+define("CONTENT_ORDER_LAN_2", "Rubrik (Fall.)");
+define("CONTENT_ORDER_LAN_3", "Datum (Stig.)");
+define("CONTENT_ORDER_LAN_4", "Datum (Fall.)");
+define("CONTENT_ORDER_LAN_5", "Hänsvisn. (Stig.)");
+define("CONTENT_ORDER_LAN_6", "Hänsvisn. (Fall.)");
+define("CONTENT_ORDER_LAN_7", "Värd (Stig.)");
+define("CONTENT_ORDER_LAN_8", "Värd (Fall.)");
+define("CONTENT_ORDER_LAN_9", "Ordning (Stig.)");
+define("CONTENT_ORDER_LAN_10", "Ordning (Fall.)");
+define("CONTENT_ORDER_LAN_11", "Förf. (Stig.)");
+define("CONTENT_ORDER_LAN_12", "Förf. (Fall.)");
+
 
 define("CONTENT_LAN_0", "Innehåll");
 define("CONTENT_LAN_1", "Lista senaste");
@@ -709,6 +840,34 @@ define("CONTENT_ADMIN_CONVERSION_LAN_54", "Skapa en standarduppsättning av vär
 define("CONTENT_ADMIN_CONVERSION_LAN_55", "Innehållshanteraren: Konverteringsalternativ");
 define("CONTENT_ADMIN_CONVERSION_LAN_56", "Klicka på knappen för att gå till sidan för att skapa ny innehållskategori.");
 define("CONTENT_ADMIN_CONVERSION_LAN_57", "Välj värd");
+define("CONTENT_ADMIN_CONVERSION_LAN_58", "Uppgradering lyckades<br /><br /><b>Observera:<br />Du måste rekonfigurera alternativen för varje huvudvärdt<br />och du måste radera menyerna du skapat i din innehåll/meny folder, och återskapa dem genom att uppdatera alternativen för de specifika huvudvärdarna du vill ha menyer till.</b>");
+
+
+
+
+define("CONTENT_MENU_LAN_0", "Innehållsmeny :");
+define("CONTENT_MENU_LAN_1", "Inga onnehållsobjekt ännu");
+define("CONTENT_MENU_LAN_2", "Senaste objekt");
+define("CONTENT_MENU_LAN_3", "Kategorier");
+define("CONTENT_MENU_LAN_4", "Innehållslänkar");
+define("CONTENT_MENU_LAN_5", "");
+define("CONTENT_MENU_LAN_6", "");
+define("CONTENT_MENU_LAN_7", "");
+define("CONTENT_MENU_LAN_8", "");
+define("CONTENT_MENU_LAN_9", "");
+define("CONTENT_MENU_LAN_10", "");
+define("CONTENT_MENU_LAN_11", "");
+define("CONTENT_MENU_LAN_12", "");
+define("CONTENT_MENU_LAN_13", "");
+define("CONTENT_MENU_LAN_14", "");
+define("CONTENT_MENU_LAN_15", "");
+define("CONTENT_MENU_LAN_16", "");
+define("CONTENT_MENU_LAN_17", "");
+define("CONTENT_MENU_LAN_18", "");
+define("CONTENT_MENU_LAN_19", "");
+define("CONTENT_MENU_LAN_20", "");
+
+?>
 
 
 ?>

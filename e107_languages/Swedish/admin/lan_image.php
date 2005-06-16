@@ -4,14 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_image.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-16 08:31:11 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 define("IMALAN_1", "Aktivera bildpostning");
 define("IMALAN_2", "Visa bilder, detta påverkar hela sajten (kommentarer, chattruta etc)");
-define("IMALAN_3", "Metod för storl.ändr.");
+define("IMALAN_3", "Metod för storleksändring");
 define("IMALAN_4", "Metod som används för att storleksändra bilder, antingen GD1/2 biblioteken, eller ImageMagick");
 define("IMALAN_5", "Sökväg till ImageMagick (om vald)");
 define("IMALAN_6", "Full sökväg till ImageMagick konverteringsmodul");
@@ -19,7 +19,7 @@ define("IMALAN_7", "Bildinställningar");
 define("IMALAN_8", "Uppdatera bildinställningar");
 define("IMALAN_9", "Bildinställningar uppdaterade");
 define("IMALAN_10", "Klass för bildpostning");
-define("IMALAN_11", "Begränsa vilka användare som kan posta bilder (om aktiverat ovea)");
+define("IMALAN_11", "Begränsa vilka användare som kan posta bilder (om aktiverat ovan)");
 define("IMALAN_12", "Metod vid inaktiva bilder");
 define("IMALAN_13", "Vad som skall görad med postade bilder om postning avaktiveras");
 define("IMALAN_14", "Visa bildens URL");

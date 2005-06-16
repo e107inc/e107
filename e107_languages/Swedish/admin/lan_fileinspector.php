@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_fileinspector.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-16 08:31:11 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -21,6 +21,8 @@ define("FC_LAN_8", "Kolla integriteten på kärnfiler");
 define("FC_LAN_9", "På");
 define("FC_LAN_10", "Av");
 define("FC_LAN_11", "Skanna nu");
+define("FC_LAN_12", "Inga");
+define("FC_LAN_13", "Saknade kärnfiler");
 
 define("FR_LAN_1", "Skannar");
 define("FR_LAN_2", "Skaningsresultat");
@@ -50,6 +52,6 @@ att den senaste checksumman av kärnan skapades.");
 define("FR_LAN_19", "filer fallerade");
 define("FR_LAN_20", "Alla filer klara");
 define("FR_LAN_21", "inga");
-
+define("FR_LAN_22", "Saknade kärnfiler");
 
 ?>

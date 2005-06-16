@@ -4,14 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_meta.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-16 08:31:11 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 define("METLAN_1", "Meta-taggar uppdaterade i databasen");
 define("METLAN_2", "Ange meta-taggar");
-define("METLAN_3", "Ange nya meta-tag inställningar");
+define("METLAN_3", "Ange nya meta-tagg inställningar");
 define("METLAN_4", "Uppdaterat");
 define("METLAN_5", "skriv in din beskrivning här");
 define("METLAN_6", "skriv, en, lista, på, dina, nyckelord, här");
