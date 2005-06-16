@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.89 $
-|     $Date: 2005-06-16 17:02:48 $
-|     $Author: e107coders $
+|     $Revision: 1.90 $
+|     $Date: 2005-06-16 20:30:05 $
+|     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
 
@@ -385,5 +385,40 @@ class e_parse
 		return $matches[1];
 	}
 
+	function spell_check($text) 
+	{
+		$skip_len = 2;
+		$mode = PSPELL_NORMAL;
+		
+		$pspell_handle;
+		$pspell_cfg_handle;
+		
+		if (function_exists(pspell_config_create)) {
+			$pspell_cfg_handle = pspell_config_create(CORE_LC);
+			
+			pspell_config_ignore($pspell_cfg_handle,$skip_len);
+			pspell_config_mode($pspell_cfg_handle, $mode);
+			
+			$pspell_handle = pspell_new_config($pspell_cfg_handle);
+			
+			$words = split("[^[:alpha:]']+", $text);
+			
+			foreach($words as $val) {
+			
+				if(!pspell_check($pspell_handle, $val)) {
+/*
+					$sug="Suggested spellings:\n";
+					
+					foreach(pspell_suggest($pspell_handle, $val) as $suggestion) {
+						$sug.=$suggestion."\n";
+					}
+*/
+//					$text=str_replace($val,'<span style="color:red" title="'.$sug.'">'.$val.'</span>',$text);
+					$text=str_replace($val,'<span style="color:red; text-decoration:underline" >'.$val.'</span>',$text);
+				}
+			}
+		}
+		return $text;	
+	}
 }
 ?>
