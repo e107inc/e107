@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-15 17:59:19 $
-|     $Author: stevedunstan $
+|     $Revision: 1.15 $
+|     $Date: 2005-06-16 12:08:46 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -78,7 +78,7 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
  	$mail->AltBody = $text; //Include regular plaintext as well
 	$mail->AddAddress($send_to, $to_name);
 
-	if(!function_exists("mime_content_type"))
+	if(!function_exists("mime_content_type") && $attachments)
 	{
 		echo "
 <script type='text/javascript'>
