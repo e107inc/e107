@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2005-06-15 23:51:00 $
+|     $Revision: 1.57 $
+|     $Date: 2005-06-16 16:35:18 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1013,7 +1013,7 @@ class download {
 				$e_event->trigger("dlpost", $dlinfo);
 
 				if ($_POST['remove_upload']) {
-					$sql->db_Delete("upload", "upload_id=".$_POST['remove_id']);
+					$sql->db_Update("upload", "upload_active='1' WHERE upload_id='".$_POST['remove_id']."'");
 					$mes = "<br />".$_POST['download_name']." ".DOWLAN_104;
 					$mes .= "<br /><br /><a href='".e_ADMIN."upload.php'>".DOWLAN_105."</a>";
 				}
