@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-06-07 23:11:55 $
-|     $Author: streaky $
+|     $Revision: 1.27 $
+|     $Date: 2005-06-16 23:29:02 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 global $eTraffic, $error_handler, $db_time,$sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER, $e107;
@@ -147,6 +147,10 @@ if($error_handler->debug == true) {
 		".$error_handler->return_errors()."
 	</div>
 	";
+}
+
+if (function_exists('theme_foot')) {
+	echo theme_foot();
 }
 
 echo "</body></html>";

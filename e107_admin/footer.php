@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-15 17:05:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.15 $
+|     $Date: 2005-06-16 23:29:02 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -65,11 +65,13 @@ if($error_handler->debug == true) {
 	</div>
 	";
 }
-	?>
 
-</body>
-</html>
+if (function_exists('theme_foot')) {
+	echo theme_foot();
+}
 
-<?php
+echo "</body></html>";
+
 $sql->db_Close();
+
 ?>
