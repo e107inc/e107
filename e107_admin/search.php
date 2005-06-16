@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-06-16 01:39:15 $
+|     $Revision: 1.21 $
+|     $Date: 2005-06-16 05:25:35 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@ $e_sub_cat = 'search';
 require_once("auth.php");
 require_once(e_HANDLER.'userclass_class.php');
 $search_prefs = $sysprefs -> getArray('search_prefs');
-print_a($search_prefs);
+
 $search_handlers['news'] = ADLAN_0;
 $search_handlers['comments'] = SEALAN_6;
 $search_handlers['users'] = SEALAN_7;

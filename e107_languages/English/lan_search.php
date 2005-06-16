@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_search.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-15 15:18:40 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-16 05:25:35 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -63,8 +63,8 @@ define("LAN_SEARCH_25", "Must not contain word(s)");
 define("LAN_SEARCH_26", "Exact Phrase");
 define("LAN_SEARCH_27", "Word(s) beginning with");
 define("LAN_SEARCH_28", "All Has No Advanced Search");
-define("LAN_SEARCH_29", "Basic Search");
-define("LAN_SEARCH_30", "Advanced Search");
+define("LAN_SEARCH_29", "Basic");
+define("LAN_SEARCH_30", "Advanced");
 define("LAN_SEARCH_31", "Has No Advanced Search");
 define("LAN_SEARCH_32", "The following words were excluded from the search");
 define("LAN_SEARCH_33", "The following word was excluded from the search");
@@ -86,7 +86,7 @@ define("LAN_SEARCH_48", "Two years");
 define("LAN_SEARCH_49", "Three Years");
 
 define("LAN_SEARCH_50", "Date posted");
-define("LAN_SEARCH_51", "All Categories");
+define("LAN_SEARCH_51", "All categories");
 define("LAN_SEARCH_52", "Match in");
 define("LAN_SEARCH_53", "Whole item");
 define("LAN_SEARCH_54", "Title only");
@@ -111,5 +111,7 @@ define("LAN_SEARCH_71", "Posted in reply to news item");
 define("LAN_SEARCH_72", "Signature");
 define("LAN_SEARCH_73", "No Signature.");
 define("LAN_SEARCH_74", "Joined on");
+
+define("LAN_SEARCH_75", "Search type");
 
 ?>

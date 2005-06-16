@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-06-15 15:18:41 $
+|     $Revision: 1.41 $
+|     $Date: 2005-06-16 05:25:35 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -231,9 +231,9 @@ if (!$search_prefs['user_select'] && $_GET['r'] < 1) {
 
 // standard search config
 if ($search_prefs['selector'] == 2) {
-	$SEARCH_DROPDOWN = "<select name='t' id='t' class='tbox' onchange=\"sh()\">";
+	$SEARCH_DROPDOWN = "<select name='t' id='t' class='tbox' onchange=\"ab()\">";
 	if ($search_prefs['multisearch']) {
-		$SEARCH_DROPDOWN .= "<option value='all'>".LAN_SEARCH_19." ".LAN_SEARCH_22."</option>";
+		$SEARCH_DROPDOWN .= "<option value='all'>".LAN_SEARCH_22."</option>";
 	}
 } else {
 	$SEARCH_MAIN_CHECKBOXES = '';
@@ -270,7 +270,7 @@ if ($search_prefs['selector'] == 2) {
 }
 
 $value = isset($_GET['q']) ? $_GET['q'] : "";
-$SEARCH_MAIN_SEARCHFIELD = "<input class='tbox m_search' type='text' id='q' name='q' size='40' value='".$value."' maxlength='50' />";
+$SEARCH_MAIN_SEARCHFIELD = "<input class='tbox m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />";
 if ($search_prefs['selector'] == 1) {
 	$SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
 	$SEARCH_MAIN_UNCHECKALL = "<input class='button' type='button' name='UnCheckAll' value='".LAN_SEARCH_2."' onclick='uncheckAll(this); uncheckG();' />";
@@ -278,7 +278,7 @@ if ($search_prefs['selector'] == 1) {
 
 $SEARCH_MAIN_SUBMIT = "<input type='hidden' name='r' value='0' /><input class='button' type='submit' name='s' value='".LAN_180."' />";
 
-$ENHANCED_ICON = "&nbsp;<img src='".e_IMAGE."generic/".IMODE."/search_enhanced.png' style='width: 16px; height: 16px; vertical-align: top' 
+$ENHANCED_ICON = "<img src='".e_IMAGE."generic/".IMODE."/search_enhanced.png' style='width: 16px; height: 16px; vertical-align: top' 
 alt='".LAN_SEARCH_23."' title='".LAN_SEARCH_23."' onclick=\"expandit('en_in'); expandit('en_ex'); expandit('en_ep'); expandit('en_be')\"/>";
 
 $enhanced_types['in'] = LAN_SEARCH_24.':';
@@ -289,15 +289,15 @@ $enhanced_types['be'] = LAN_SEARCH_27.':';
 $ENHANCED_DISPLAY = $enhanced ? "" : "style='display: none'";
 
 // advanced search config
-if (isset($_GET['adv_x']) && !isset($_GET['a'])) {
+if ($_GET['adv'] && !isset($_GET['a'])) {
 	$_GET['a'] = $_GET['t'];
-} else if (isset($_GET['basic_x']) || $_GET['t'] == 'all' || $_GET['a'] != $_GET['t']) {
+} else if (!$_GET['adv'] || $_GET['t'] == 'all' || $_GET['a'] != $_GET['t']) {
 	foreach ($_GET as $gk => $gv) {
-		if ($gk != 't' && $gk != 'q' && $gk != 'r' && $gk != 'in' && $gk != 'ex' && $gk != 'ep' && $gk != 'be' && $gk != 'adv_x') {
+		if ($gk != 't' && $gk != 'q' && $gk != 'r' && $gk != 'in' && $gk != 'ex' && $gk != 'ep' && $gk != 'be' && $gk != 'adv') {
 			unset($_GET[$gk]);
 		} 
 	}
-	if (isset($_GET['adv_x'])) {
+	if ($_GET['adv']) {
 		$_GET['a'] = $_GET['t'];
 	}
 }
@@ -308,31 +308,23 @@ if (isset($_GET['a'])) {
 	}
 }
 
-$SEARCH_ADVANCED = "<span id='a_all' ".(isset($searchtype['all']) ? "" : "style='display: none'")."><img src='".e_IMAGE."fileinspector/blank.png'
-style='width: 16px; height: 16px; vertical-align: top' alt='".LAN_SEARCH_28."' title='".LAN_SEARCH_28."' /></span>";
+$SEARCH_TYPE_SEL = "<input type='radio' name='adv' value='0' ".($_GET['adv'] ? "" : "checked='checked'")." /> ".LAN_SEARCH_29."&nbsp;
+<input type='radio' name='adv' value='1' ".($_GET['adv'] ? "checked='checked'" : "" )." /> ".LAN_SEARCH_30;
 
 foreach ($search_info as $key => $value) {
-	if (isset($search_info[$key]['advanced'])) {
-		if (isset($searchtype[$key]) && isset($_GET['a'])) {
-			$SEARCH_ADVANCED .= "<span id='a_".$key."'><input type='image' 
-			src='".e_IMAGE."generic/".IMODE."/search_basic.png' value='".$key."' name='basic' 
-			style='width: 16px; height: 16px; vertical-align: top' alt='".$value['qtype']." ".LAN_SEARCH_29."' title='".$value['qtype']." ".LAN_SEARCH_29."' />
-			</span>";
-		} else {
-			$SEARCH_ADVANCED .= "<span id='a_".$key."' ".(isset($searchtype[$key]) ? "" : "style='display: none'")."><input type='image' 
-			src='".e_IMAGE."generic/".IMODE."/search_advanced.png' value='".$key."' name='adv' 
-			style='width: 16px; height: 16px; vertical-align: top' alt='".$value['qtype']." ".LAN_SEARCH_30."' title='".$value['qtype']." ".LAN_SEARCH_30."' />
-			</span>";
-		}
-	} else {
-		$SEARCH_ADVANCED .= "<span id='a_".$key."' ".(isset($searchtype[$key]) ? "" : "style='display: none'")."><img src='".e_IMAGE."fileinspector/blank.png'
-		style='width: 16px; height: 16px; vertical-align: top' alt='' title='".$value['qtype']." ".LAN_SEARCH_31."' /></span>";
+	if (!isset($search_info[$key]['advanced'])) {
+		$js_adv .= " && abid != ".$key;
 	}
 }
 
+if (isset($search_info[$_GET['t']]['advanced'])) {
+	$SEARCH_TYPE_DISPLAY = "";
+} else {
+	$SEARCH_TYPE_DISPLAY = "style='display: none'";
+}
+
 if (check_class($search_prefs['google'])) {
-	$SEARCH_ADVANCED .= "<span id='a_".$google_id."' style='display: none'><img src='".e_IMAGE."fileinspector/blank.png'
-	style='width: 16px; height: 16px; vertical-align: top' alt='' title='Google ".LAN_SEARCH_31."' /></span>";
+	$js_adv .= " && abid != ".$google_id;
 }
 
 if ($perform_search) {
@@ -363,7 +355,7 @@ require_once(HEADERF);
 
 // render search config
 
-if (!isset($SEARCH_MAIN_TABLE)) {
+if (!isset($SEARCH_TOP_TABLE)) {
 	if (file_exists(THEME."search_template.php")) {
 		require_once(THEME."search_template.php");
 	} else {
@@ -372,24 +364,16 @@ if (!isset($SEARCH_MAIN_TABLE)) {
 }
 
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TOP_TABLE);
-if ($search_prefs['selector'] == 2) {
-	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_STANDARD);
-	foreach ($enhanced_types as $en_id => $ENHANCED_TEXT) {
-		$ENHANCED_DISPLAY_ID = "en_".$en_id;
-		$ENHANCED_FIELD = "<input class='tbox' type='text' id='".$en_id."' name='".$en_id."' size='40' value='".$_GET[$en_id]."' maxlength='50' />";
-		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_ENHANCED);
-	}
-} else {
-	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_NON_STANDARD);
-	foreach ($enhanced_types as $en_id => $en_text) {
-		$ENHANCED_TEXT = $en_text;
-		$ENHANCED_FIELD = "<input class='tbox' type='text' id='".$en_id."' name='".$en_id."' size='40' value='".$_GET[$en_id]."' maxlength='50' />";
-		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_ENHANCED);
-	}
-	if ($search_prefs['user_select']) {
-		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_NON_STANDARD_CATS);
-	}
+foreach ($enhanced_types as $en_id => $ENHANCED_TEXT) {
+	$ENHANCED_DISPLAY_ID = "en_".$en_id;
+	$ENHANCED_FIELD = "<input class='tbox' type='text' id='".$en_id."' name='".$en_id."' size='35' value='".$_GET[$en_id]."' maxlength='50' />";
+	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_ENHANCED);
 }
+if ($search_prefs['user_select']) {
+	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_CATS);
+}
+
+$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TYPE);
 
 if (isset($_GET['a'])) {
 	if (isset($search_info[$_GET['t']]['advanced'])) {
@@ -427,7 +411,7 @@ if (isset($_GET['a'])) {
 					$SEARCH_ADV_A = $adv_value['adv_a'];
 					$SEARCH_ADV_B = $adv_value['adv_b'];
 				}
-				$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_ADV_STANDARD);
+				$text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_ADV);
 			}
 		}
 	} else {
@@ -489,7 +473,7 @@ function parsesearch($text, $match) {
 }
 
 function headerjs() {
-	global $search_count, $google_id, $search_prefs;
+	global $search_count, $google_id, $search_prefs, $js_adv;
 	if ($search_prefs['selector'] == 1) {
 		$script = "<script type='text/javascript'>
 		<!--
@@ -514,29 +498,20 @@ function headerjs() {
 		$script .= "// -->
 		</script>";
 		
-	} else if ($search_prefs['selector'] == 2) {
-		if ($search_prefs['multisearch']) {
-				$default = 'all';
-			} else {
-				$default = '0';
-			}
-		$script .= "<script type='text/javascript'>
-		<!--
-		var hideid = 'a_".(isset($_GET['t']) ? $_GET['t'] : $default)."';
-		function sh() {
-			showid = document.getElementById('t').value;
-			if (hideid != showid) {
-				show = document.getElementById('a_' + showid).style;
-				hide = document.getElementById(hideid).style;
-				show.display = '';
-				hide.display = 'none';
-				hideid = 'a_' + showid;
-			}
-		}
-		//-->
-		</script>";
-		
 	}
+		
+	$script .= "<script type='text/javascript'>
+	<!--
+	function ab() {
+		abid = document.getElementById('t').value;
+		if (abid != 'all'".$js_adv.") {
+			document.getElementById('advanced_type').style.display = '';
+		} else {
+			document.getElementById('advanced_type').style.display = 'none';
+		}
+	}
+	//-->
+	</script>";
 	
 	return $script;
 }
