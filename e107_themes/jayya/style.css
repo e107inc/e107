@@ -210,6 +210,12 @@ ul {
 	background-position: right;
 }
 
+.cont {
+	border-collapse: collapse;
+	border-spacing: 0px;
+	width: 100%;
+}
+
 .menu_content {
 	padding: 5px;
 	background-color: #fff;

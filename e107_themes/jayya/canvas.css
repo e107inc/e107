@@ -172,6 +172,12 @@ ul {
 	padding: 5px 7px 3px 7px;
 }
 
+.cont {
+	border-collapse: collapse;
+	border-spacing: 0px;
+	width: 100%;
+}
+
 .menu_content {
 	padding: 5px 7px;
 	background-color: #fff;
