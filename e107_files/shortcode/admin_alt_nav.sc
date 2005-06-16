@@ -33,7 +33,7 @@ if (ADMIN) {
 	<tr><td>
 	<div class='menuBar' style='width:100%;'>";
 
-	$text .= adnav_cat('Main', e_ADMIN.'admin.php', E_16_NAV_MAIN);
+	$text .= adnav_cat(ADLAN_151, e_ADMIN.'admin.php', E_16_NAV_MAIN);
 
 	for ($i = 1; $i < 5; $i++) {
 		$ad_tmpi = 0;
