@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Swedish_config.php,v $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Swedish/Swedish_config.php,v $
 |     $Revision: 1.1 $
-|     $Date: 2005-06-13 16:20:21 $
+|     $Date: 2005-06-16 14:03:27 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */

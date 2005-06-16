@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/calendar_menu/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-13 16:20:20 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-16 14:03:27 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -124,6 +124,7 @@ define('EC_LAN_80', "Händelselista");
 define('EC_LAN_81', "Konfigurera kalender");
 define('EC_LAN_82', "För att aktivera, gå till dina menyinställninar och lägg till calendar_menu i någon av dina menyområden.");
 define('EC_LAN_83', "Kalendar");
+
 
 define('EC_LAN_84', "CSS-element att använda för dagsrubrik");
 define('EC_LAN_85', "Standard är 'forumheader'");

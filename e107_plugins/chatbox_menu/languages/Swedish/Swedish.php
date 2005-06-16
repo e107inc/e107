@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Swedish.php,v $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Swedish/Swedish.php,v $
 |     $Revision: 1.1 $
-|     $Date: 2005-06-13 16:20:21 $
+|     $Date: 2005-06-16 14:03:27 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -27,4 +27,17 @@ define("CHATBOX_L15", "Inlägg för långt, eller tomt inlägg skickat");
 define("CHATBOX_L16", "Anonym");
 define("CHATBOX_L17", "Dublettinlägg");
 
+define("LAN_11", "Chattruta (alla inlägg)");
+define("LAN_12", "Chattinlägg");
+define("LAN_13", "den");
+define("LAN_14", "Fel!");
+define("LAN_15", "Du har inte rättigheter att se denna sida.");
+define("LAN_16", "[ detta inlägg har blockerats av admin ]");
+// Notify
+define("NT_LAN_CB_1", "Chattrutehändelser");
+define("NT_LAN_CB_2", "Meddelande postat");
+define("NT_LAN_CB_3", "Postat av");
+define("NT_LAN_CB_4", "IP-adress");
+define("NT_LAN_CB_5", "Meddelande");
+define("NT_LAN_CB_6", "Chattruteinlägg postat");
 ?>
