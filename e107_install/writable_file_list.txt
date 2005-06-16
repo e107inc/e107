@@ -1,0 +1,1 @@
+e107_config.php|{$FILES_DIRECTORY}cache/|{$FILES_DIRECTORY}public/|{$FILES_DIRECTORY}public/avatars/|{$PLUGINS_DIRECTORY}/|{$THEMES_DIRECTORY}/
