@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.25 $
-|		$Date: 2005-06-14 08:34:02 $
+|		$Revision: 1.26 $
+|		$Date: 2005-06-16 12:05:18 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -25,6 +25,10 @@ $datequery		= " AND (content_datestamp=0 || content_datestamp < ".time().") AND 
 if (!defined('ADMIN_WIDTH')) { define("ADMIN_WIDTH", "width:98%;"); }
 
 class contentdb{
+
+			//function js_location($qry){
+			//	echo "<script type='text/javascript'>document.location.href='".$qry."'</script>\n";
+			//}
 
 			function dbContentUpdate($mode){
 						global $pref, $qs, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache, $eArrayStorage;
@@ -202,9 +206,9 @@ class contentdb{
 
 						$e107cache->clear($plugintable);
 						if($mode == "admin"){
-							header("location:".e_SELF."?".e_QUERY.".cu"); exit;
+							js_location(e_SELF."?".e_QUERY.".cu");
 						}elseif($mode == "contentmanager"){
-							header("location:".e_SELF."?u"); exit;
+							js_location(e_SELF."?u");
 						}
 		}
 
@@ -387,14 +391,14 @@ class contentdb{
 						
 						$e107cache->clear($plugintable);
 						if($mode == "admin"){
-							header("location:".e_SELF."?".e_QUERY.".cc"); exit;
+							js_location(e_SELF."?".e_QUERY.".cc");
 						}elseif($mode == "contentmanager"){
-							header("location:".e_SELF."?c"); exit;
+							js_location(e_SELF."?c");
 						}elseif($mode == "submit"){
 							if($content_pref["content_submit_directpost_{$mainparent}"]){
-								header("location:".e_SELF."?s"); exit;
+								js_location(e_SELF."?s");
 							}else{
-								header("location:".e_SELF."?d"); exit;
+								js_location(e_SELF."?d");
 							}							
 						}
 						
@@ -432,10 +436,9 @@ class contentdb{
 
 						if($mode == "admin"){
 							$e107cache->clear($plugintable);
-							header("location:".e_SELF."?".e_QUERY.".pu"); exit;
+							js_location(e_SELF."?".e_QUERY.".pu");
 						}
 		}
-
 
 		function dbCategoryCreate($mode){
 						global $pref, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache, $content_cat_icon_path_large;
@@ -496,7 +499,7 @@ class contentdb{
 
 						if($mode == "admin"){
 							$e107cache->clear($plugintable);
-							header("location:".e_SELF."?".e_QUERY.".pc"); exit;
+							js_location(e_SELF."?".e_QUERY.".pc");
 						}
 		}
 

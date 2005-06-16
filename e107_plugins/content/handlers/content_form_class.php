@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.61 $
-|		$Date: 2005-06-16 09:41:59 $
+|		$Revision: 1.62 $
+|		$Date: 2005-06-16 12:05:18 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1458,25 +1458,27 @@ class contentform{
 
 		function show_contentmanager($mode, $userid="", $username=""){
 						global $content_shortcodes, $tp, $sql, $ns, $rs, $plugintable, $plugindir, $aa, $eArrayStorage;
-						global $CONTENT_CONTENTMANAGER_CATEGORY;
+						global $CONTENT_CONTENTMANAGER_CATEGORY, $CONTENT_CONTENTMANAGER_TABLE, $CONTENT_CONTENTMANAGER_TABLE_START, $CONTENT_CONTENTMANAGER_TABLE_END;
 						$personalmanagercheck = FALSE;
 
 						if(!$CONTENT_CONTENTMANAGER_TABLE){
 							require_once($plugindir."templates/content_manager_template.php");
 						}
-						$array = $aa -> getCategoryTree("", "", TRUE);
-						$catarray = array_keys($array);
+						$array		= $aa -> getCategoryTree("", "", TRUE);
+						$catarray	= array_keys($array);
+						$content_contentmanager_table_string = "";
 						foreach($catarray as $catid){
 							if($sql -> db_Select($plugintable, "content_id, content_heading, content_pref", " content_id='".$catid."' ")){
 								$row = $sql -> db_Fetch();
 								$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
 
-								//assign new preferences
-								$pcm = explode(",", $content_pref["content_manager_allowed_{$row['content_id']}"]);
+								if(isset($content_pref["content_manager_allowed_{$row['content_id']}"])){
+									$pcm = explode(",", $content_pref["content_manager_allowed_{$row['content_id']}"]);
+								}else{
+									$pcm = array();
+								}
 								if(in_array($userid, $pcm) || getperms("0")){
 									$personalmanagercheck = TRUE;
-										
-									$catidstring = $row['content_id'];
 									$content_contentmanager_table_string .= $tp -> parseTemplate($CONTENT_CONTENTMANAGER_TABLE, FALSE, $content_shortcodes);
 								}
 							}

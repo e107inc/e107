@@ -11,17 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/content_manager_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-07 19:37:23 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-16 12:05:18 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
-global $sc_style, $content_shortcodes, $parentheading, $catidstring, $row;
+global $sc_style, $content_shortcodes, $row;
 
 // ##### CONTENT CONTENTMANAGER LIST --------------------------------------------------
 if(!$CONTENT_CONTENTMANAGER_TABLE_START){
 				$CONTENT_CONTENTMANAGER_TABLE_START = "
-				<table class='fborder' style='width:98%; text-align:left;'>
+				<table class='fborder' style='width:98%; text-align:left;' cellpadding='0' cellspacing='0'>
 				<tr>
 					<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_57."</td>
 					<td class='forumheader3'>".CONTENT_ADMIN_ITEM_LAN_12."</td>
