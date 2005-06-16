@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.105 $
-|     $Date: 2005-06-15 17:45:15 $
-|     $Author: stevedunstan $
+|     $Revision: 1.106 $
+|     $Date: 2005-06-16 01:39:15 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -740,15 +740,22 @@ function update_61x_to_700($type) {
 			$serial_prefs = addslashes(serialize($search_prefs));
 			$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
 		}
-
+		
+		// search content plugin id change (will be uncommented when needed)
+		/*
+		if ($search_prefs['comments_handlers']['content']['id'] == '1') {
+			$search_prefs['comments_handlers']['content']['id'] = 'pcontent';
+			$serial_prefs = addslashes(serialize($search_prefs));
+			$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
+		}
+		*/
+		
 		// convert notify prefs from serialised to eArrayStorage
 		if ($notify_prefs = $sysprefs -> getArray('notify_prefs')) {
 			$s_prefs = $tp -> recurse_toDB($notify_prefs, true, true);
 			$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 			$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs' ");
 		}
-
-
 
 		// New Downloads visibility field.
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
@@ -817,14 +824,17 @@ function update_61x_to_700($type) {
 		}
 
 
-		if ($notify_prefs = $sysprefs -> getArray('notify_prefs')) {
-			return FALSE;
-		}
+		//if ($notify_prefs = $sysprefs -> getArray('notify_prefs')) {
+		//	return FALSE;
+		//}
 
+		// search content plugin id change (will be uncommented when needed)
+		/*
 		$search_prefs = $sysprefs -> getArray('search_prefs');
-		if (!isset($search_prefs['selector'])) {
+		if ($search_prefs['comments_handlers']['content']['id'] == '1') {
 			return FALSE;
 		}
+		*/
 
 		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = "SHOW CREATE TABLE `".MPREFIX."user`";
