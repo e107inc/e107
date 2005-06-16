@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/notify.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-08 22:00:46 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-16 09:44:29 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -105,7 +105,7 @@ class notify_config {
 		<td class='forumheader3' style='width: 30%'>
 		".$description.":
 		</td>
-		<td colspan='2' class='forumheader3' style='width: 70%; white-space: nowrap'>
+		<td class='forumheader3' style='width: 70%; white-space: nowrap'>
 		<input type='radio' name='event[".$id."][type]' value='off' ".($this -> notify_prefs['event'][$id]['type'] == 'off' ? " checked='checked'" : "")." /> ".NT_LAN_3." 
 		<input type='radio' name='event[".$id."][type]' value='main' ".($this -> notify_prefs['event'][$id]['type'] == 'main' ? " checked='checked'" : "")." /> ".NT_LAN_4." 
 		<input type='radio' name='event[".$id."][type]' value='class' ".($this -> notify_prefs['event'][$id]['type'] == 'class' ? " checked='checked'" : "")." /> ".NT_LAN_5.": 
