@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/upload.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-05-24 01:19:25 $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-16 16:35:18 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
-if (!getperms("V")) {  
+if (!getperms("V")) {
 	header("location:".e_BASE."index.php");
 	exit;
 }
@@ -29,32 +29,9 @@ if (e_QUERY) {
 }
 
 
-if ($action == "dis") {
-	if ($_POST['confirm']) {
-		$sql->db_Update("upload", "upload_active='1' WHERE upload_id='$id' ");
-		$message = UPLLAN_1;
-	} elseif($_POST['cancel']) {
-		$action = "";
-	} else {
-		$sql->db_Select("upload", "*", "upload_id='$id'");
-		$row = $sql->db_Fetch();
-		 extract($row);
-		require_once(e_HANDLER."form_handler.php");
-		$rs = new form;
-		require_once(e_ADMIN."auth.php");
-		$caption = UPLLAN_17;
-		$txt = UPLLAN_45."<br /><br />";
-		$txt .= UPLLAN_10.": ".(is_numeric($upload_file) ? "Binary file ID ".$upload_file : $upload_file);
-		$txt .= "<br />".UPLLAN_5.": ".substr($upload_poster, strpos($upload_poster, ".")+1);
-		$txt .= "<br /><br />
-			".$rs->form_open("post", e_SELF."?".e_QUERY)."
-			".$rs->form_button("submit", "confirm", LAN_DELETE)."
-			".$rs->form_button("submit", "cancel", LAN_CANCEL)."
-			".$rs->form_close();
-		$ns->tablerender($caption, $txt);
-		include_once("footer.php");
-		exit;
-	}
+
+if ($action == "dis" && isset($_POST['updelete']['upload_'.$id]) ) {
+	$message = ($sql->db_Update("upload", "upload_active='1' WHERE upload_id='$id' ")) ? UPLLAN_1 : LAN_DELETED_FAILED;
 }
 
 if ($action == "dlm") {
@@ -250,10 +227,11 @@ if (!$active_uploads = $sql->db_Select("upload", "*", "upload_active=0 ORDER BY 
 		<td style='width:20%' class='forumheader3'><a href='".e_SELF."?view.".$upload_id."'>".$upload_name ."</a></td>
 		<td style='width:20%' class='forumheader3'>".$upload_file ."</td>
 		<td style='width:50px;white-space:nowrap' class='forumheader3'>
-		<a href='".e_SELF."?dlm.$upload_id'><img src='".$imgd."filemanager/exe.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0' /></a>
-		<a href='".e_SELF."?news.$upload_id'><img src='".$imgd."filemanager/htm.png' alt='".UPLLAN_16."' title='".UPLLAN_16."' style='border:0' /></a>
-		<a href='".e_SELF."?dis.$upload_id'><img src='".$imgd."filemanager/del.png' alt='".UPLLAN_17."' title='".UPLLAN_17."' style='border:0' /></a>
-		</td>
+		<form action='".e_SELF."?dis.$upload_id' id='uploadform_{$upload_id}' method='post'>
+		<div><a href='".e_SELF."?dlm.$upload_id'><img src='".e_IMAGE."admin_images/downloads_16.png' alt='".UPLAN_COPYTODLS."' title='".UPLAN_COPYTODLS."' style='border:0' /></a>
+		<a href='".e_SELF."?news.$upload_id'><img src='".e_IMAGE."admin_images/news_16.png' alt='".UPLLAN_16."' title='".UPLLAN_16."' style='border:0' /></a>
+        <input type='image' title='".LAN_DELETE."' name='updelete[upload_{$upload_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(UPLLAN_45." [ $upload_name ]")."') \"/>
+		</div></form></td>
 		</tr>";
 	}
 }
