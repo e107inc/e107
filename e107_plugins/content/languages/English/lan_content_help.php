@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_help.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-15 21:45:50 $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-16 16:19:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -43,16 +43,7 @@ define("CONTENT_ADMIN_HELP_OPTION_2", "
 <i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />
 <b>default values</b><br />By default all values are present and already updated in the preferences when you view this page, but change any setting to your own standards.<br /><br />
 ");
-/*
-<b>division into eight sections</b><br />the options are divided into eight main sections. You see the different section in the right menu. you can click on them to go to the specific set of options for that section.<br /><br />
-<b>create</b><br />in this section you can specify options for the creation of content items on the admin pages on the admins end.<br /><br />
-<b>submit</b><br />in this section you can specify options for the submit form of content items.<br /><br />
-<b>path and theme</b><br />in this section you can set a theme for this main parent, and provide path locations to where you have stored your images for this main parent.<br /><br /><b>general</b><br />in this section you can specify general options to use throughout all the content pages.<br /><br />
-<b>list pages</b><br />in this section you can specify options pages, where content items are listed.<br /><br />
-<b>category pages</b><br />in this section you can specify options how to show the category pages.<br /><br />
-<b>content pages</b><br />in this section you can specify options how to show the content item page.<br /><br />
-<b>menu</b><br />in this section you can specify options for the menu of this main parent.<br /><br />
-*/
+
 define("CONTENT_ADMIN_HELP_MANAGER_1", "On this page you see a list of all categories. You can manage the 'personal content manager' for each category by clicking the icon.<br /><br /><b>explanation of icons</b><br />".CONTENT_ICON_USER." : link to the author profile<br />".CONTENT_ICON_LINK." : link to the category<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : edit the personal content managers<br />");
 
 define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>on this page you can assign users to the selected category you have clicked</i><br /><br /><b>personal manager</b><br />you can assign users to certain categories. In doing so, these users can manage their personal content items within these categories from outside of the admin page (content_manager.php).<br /><br />Assign users from the left colomn by clicking their name. you will see these names move to the right colomn. After clicking the assign button the users in the right colomn are assigned to this category.");
