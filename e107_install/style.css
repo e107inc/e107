@@ -4,7 +4,7 @@
 	width : 670px;
 }
 #content{
-margin: 20px -10px -20px -20px;
+margin: 15px 0px 0px -15px;
 }
 #footer{
 	background : url(images/01_footer.jpg) top no-repeat;
@@ -38,8 +38,8 @@ margin: 20px -10px -20px -20px;
 	height : 0;
 }
 .contentbody{
-	margin : 0;
-	padding : 0 0 30px 43px;
+	margin : 0px;
+	padding : 0 5px 20px 43px;
 }
 a:hover, a:active{
 	color : black;
