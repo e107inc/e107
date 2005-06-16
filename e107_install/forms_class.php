@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_install/forms_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-16 17:37:39 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-16 17:59:13 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,7 @@ class e_forms {
 	}
 	
 	function add_button($id, $title, $align = "right", $type = "submit") {	
-		$this->form .= "<div style='text-align: {$align};'><input type='{$type}' id='{$id}' value='{$title}' /></div>\n";
+		$this->form .= "<div style='text-align: {$align}; z-index: 10;'><input type='{$type}' id='{$id}' value='{$title}' /></div>\n";
 	}
 
 	function add_hidden_data($id, $data) {
