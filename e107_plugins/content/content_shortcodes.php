@@ -210,22 +210,20 @@ SC_END
 
 
 // CONTENT_CONTENT_TABLEMANAGER ------------------------------------------------
-SC_BEGIN CONTENT_CONTENT_TABLEMANAGER_ICONNEW
-global $CONTENT_CONTENT_TABLEMANAGER_ICONNEW, $catidstring;
-return "<a href='".e_SELF."?content.create.".$catidstring."'>".CONTENT_ICON_NEW."</a>";
+SC_BEGIN CONTENT_CONTENTMANAGER_ICONNEW
+global $CONTENT_CONTENTMANAGER_ICONNEW, $row;
+return "<a href='".e_SELF."?content.create.".$row['content_id']."'>".CONTENT_ICON_NEW."</a>";
 SC_END
 
-SC_BEGIN CONTENT_CONTENT_TABLEMANAGER_CATEGORY
-global $CONTENT_CONTENT_TABLEMANAGER_CATEGORY, $catidstring, $row;
-return "<a href='".e_SELF."?content.".$catidstring."'>".$row['content_heading']."</a>";
+SC_BEGIN CONTENT_CONTENTMANAGER_CATEGORY
+global $CONTENT_CONTENTMANAGER_CATEGORY, $row;
+return "<a href='".e_SELF."?content.".$row['content_id']."'>".$row['content_heading']."</a>";
 SC_END
 
-SC_BEGIN CONTENT_CONTENT_TABLEMANAGER_ICONEDIT
-global $CONTENT_CONTENT_TABLEMANAGER_ICONEDIT, $catidstring;
-return "<a href='".e_SELF."?content.".$catidstring."'>".CONTENT_ICON_EDIT."</a>";
+SC_BEGIN CONTENT_CONTENTMANAGER_ICONEDIT
+global $CONTENT_CONTENTMANAGER_ICONEDIT, $row;
+return "<a href='".e_SELF."?content.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
 SC_END
-
-
 
 
 

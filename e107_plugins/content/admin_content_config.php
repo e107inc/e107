@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.45 $
-|		$Date: 2005-06-16 09:41:59 $
+|		$Revision: 1.46 $
+|		$Date: 2005-06-16 12:05:17 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -167,7 +167,6 @@ if(isset($_POST['create_content'])){
 if(isset($_POST['update_content'])){
 	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
 		$adb -> dbContentUpdate("admin");
-		header("location:".e_SELF."?".e_QUERY.".cu"); exit;
 	}else{
 		$message	= CONTENT_ADMIN_ITEM_LAN_0;
 	}

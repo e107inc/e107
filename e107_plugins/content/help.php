@@ -83,7 +83,6 @@ if(!e_QUERY){
 
 		}
 }
-
 $ns -> tablerender(CONTENT_ADMIN_HELP_1, $text);
 
 ?>
