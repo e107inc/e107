@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.173 $
-|     $Date: 2005-06-16 09:41:59 $
+|     $Revision: 1.174 $
+|     $Date: 2005-06-16 12:03:33 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -623,6 +623,10 @@ if (!class_exists('convert'))
 //@require_once(e_HANDLER."IPB_int.php");
 //@require_once(e_HANDLER."debug_handler.php");
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+function js_location($qry){
+	echo "<script type='text/javascript'>document.location.href='".$qry."'</script>\n"; exit;
+}
+
 function check_email($var) {
 	return (preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $var)) ? $var : FALSE;
 }
