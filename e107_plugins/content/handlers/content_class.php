@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.62 $
-|		$Date: 2005-06-14 20:32:25 $
+|		$Revision: 1.63 $
+|		$Date: 2005-06-16 10:10:22 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1184,6 +1184,7 @@ class content{
 				$data .= "	if(".chr(36)."content_pref[\"content_menu_cat_".chr(36)."menutypeid\"]){\n";
 				$data .= "		".chr(36)."text .= (".chr(36)."content_pref[\"content_menu_cat_caption_".chr(36)."menutypeid\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_cat_caption_".chr(36)."menutypeid\"] : CONTENT_MENU_LAN_3).\"<br />\";\n";
 				$data .= "\n";
+				$data .= "		".chr(36)."newparent = \"\";\n";
 				$data .= "		".chr(36)."newarray = array_merge_recursive(".chr(36)."array);\n";
 				$data .= "		for(".chr(36)."a=0;".chr(36)."a<count(".chr(36)."newarray);".chr(36)."a++){\n";
 				$data .= "			for(".chr(36)."b=0;".chr(36)."b<count(".chr(36)."newarray[".chr(36)."a]);".chr(36)."b++){\n";
