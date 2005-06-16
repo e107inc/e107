@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_admin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-12 21:59:05 $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-16 20:29:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -154,6 +154,7 @@ define("ADLAN_147", "Inspector de archivos");
 define("ADLAN_148", "Escanear archivos del sitio");
 define("ADLAN_149", "Notificación");
 define("ADLAN_150", "Notificaciones de email a Admin");
+define("ADLAN_151", "Principal");
 
 define('ADLAN_CL_1', 'Parámetros');
 define('ADLAN_CL_2', 'Usuarios');

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content_help.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-16 13:46:23 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-16 20:29:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -39,6 +39,10 @@ define("CONTENT_ADMIN_HELP_OPTION_1", "En esta página puede seleccionar una cat
   	 Las preferencias predeterminadas solo se usan cuando crea una categoría principal. Por lo tanto, cuando crea una nueva categoría principal esas preferencias se almacenarán en ella. Puede cambiarlas asegurándose que las nuevas categorías principales creadas ya tienen este juego de opciones existentes.
   	 <br /><br />
   	 Cada categoría principal tiene su propio juego de opciones, las cuales son únicas para esa categoría principal específica");
+define("CONTENT_ADMIN_HELP_OPTION_2", "
+<i>Esta página muestra las opciones que puede fijar en la categoría principal. Cada categoría principal tiene su propio juego de opciones, por lo que asegúrese de fijarlas correctamente.</i><br /><br />
+<b>Valores por defecto</b><br />Por defecto, todos los valores existentes se actualizan en las preferencias cuendo navegue por esta página, pero los puede cambiar según sus estándares<br/><br />
+");
 
 define("CONTENT_ADMIN_HELP_MANAGER_1", "En esta página verá una lista de categorías. Puede gestionar el 'Gestor personal de contenidos' para cada categoría pulsando en el icono.<br /><br /><b>Explicación de inconos</b><br />".CONTENT_ICON_USER." : Enlace al perfil del autor<br />".CONTENT_ICON_LINK." : Enlace a la categoría<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : Editar los gestores personales de contenidos<br />");
 define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>En esta página puede asignar usuarios a las categorías seleccionadas</i><br /><br /><b>Gestor personal</b><br />Puede asignar usuarios a ciertas categorías. Haciendo ésto, esos ususarios pueden gestionar su contenido personal de esas categorías fuera las área del administrador (content_manager.php).<br /><br />Asigne usuarios desde la columna de la izquierda pulsando sobre su nombre. Verá como esos nombres se mueven a la columna de la derecha. Después de pulsar el botón de asignación, los usuarios de la columan de la derecha serán asignados a esa categoría.");

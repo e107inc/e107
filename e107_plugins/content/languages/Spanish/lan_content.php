@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-15 17:42:31 $
+|     $Revision: 1.12 $
+|     $Date: 2005-06-16 20:29:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -26,14 +26,7 @@ define("CONTENT_ICON_LAN_12", "Ordenar por categoría principal");
 define("CONTENT_ICON_LAN_13", "Admin personal");
 define("CONTENT_ICON_LAN_14", "Conf. contenidos personal");
 define("CONTENT_ICON_LAN_15", "Ver");
-/*
-define("LAN_38", "Votar");
-define("LAN_39", "Votos");
-define("LAN_40", "¿Como valoraría este contenido?");
-define("LAN_41", "Gracias por su voto");
 
-define("LAN_65", "Sin valorar");
-*/
 define("CONTENT_ADMIN_CAT_LAN_0", "Crear categoría de contenido");
 define("CONTENT_ADMIN_CAT_LAN_1", "Editar categoría de contenido");
 define("CONTENT_ADMIN_CAT_LAN_2", "Cabecera");
