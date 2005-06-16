@@ -179,7 +179,7 @@ function tablestyle($caption, $text, $mode){
 	}
 	echo "</div>";
 	if ($text != "") {
-		echo "<div class='menu_content ".$menu."'>".$text.$bodybreak."</div>";
+		echo "<table style='border-collapse: collapse; border-spacing: 0px'><tr><td class='menu_content ".$menu."'>".$text.$bodybreak."</td></tr></table>";
 	}
 }
 
