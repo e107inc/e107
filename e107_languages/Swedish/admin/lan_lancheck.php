@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_lancheck.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-16 09:50:21 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 define("LAN_CHECK_1", "Välj språk att verifiera");
 define("LAN_CHECK_2", "Börja verifiering");
 define("LAN_CHECK_3", "Verifiering av");
-define("LAN_CHECK_4", "Fil sakna!");
+define("LAN_CHECK_4", "Fil saknas!");
 define("LAN_CHECK_5", "Fras saknas!");
 define("LAN_CHECK_6", "OK");
 define("LAN_CHECK_7", "fras");
