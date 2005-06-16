@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-16 08:31:11 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-16 15:45:55 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -101,7 +101,9 @@ define("CONTENT_ADMIN_CAT_LAN_57", "objekt"); //Pluralis
 define("CONTENT_ADMIN_CAT_LAN_58", "kategoriikon laddades upp okej<br />Notera: Du måste också tilldela ikonen till denna kategorin i Ikon>Välj befintlig ikon arean!<br />och efter det måste du också spara formuläret för att skapa/uppdatera denna kategori");
 define("CONTENT_ADMIN_CAT_LAN_59", "kategoriikon ej uppladdad");
 define("CONTENT_ADMIN_CAT_LAN_60", "");
-
+define("CONTENT_ADMIN_CAT_LAN_61", "eller ladda upp en ny ikon");
+define("CONTENT_ADMIN_CAT_LAN_62", "När du laddat upp en ny kategoriikon kan tilldela ikonen med 'Välj befintlig ikon' arean ovan<br />Om du laddar upp en ny ikon kommer den att skalas till 48 pixlar, en mindre 16 pixlars ikonkommer också att skapas<br /><br />");
+define("CONTENT_ADMIN_CAT_LAN_63", "Ladda upp ikon");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "Alternativ");
 define("CONTENT_ADMIN_OPT_LAN_1", "Adminalternativ : Skapande av innehållsobjekt");
@@ -212,18 +214,18 @@ define("CONTENT_ADMIN_OPT_LAN_105", "Om aktiverad visas betygssystemet för allt
 define("CONTENT_ADMIN_OPT_LAN_106", "Sidors sortering/ordning");
 define("CONTENT_ADMIN_OPT_LAN_107", "Välj standardsortering och ordning.");
 define("CONTENT_ADMIN_OPT_LAN_108", "Sortera på 'ordning' kommer att använda sättet du angett i Hantera ordning arean");
-define("CONTENT_ADMIN_OPT_LAN_109", "Rubrik (Stig)");
-define("CONTENT_ADMIN_OPT_LAN_110", "Rubrik (Fall)");
-define("CONTENT_ADMIN_OPT_LAN_111", "Datum (Stig)");
-define("CONTENT_ADMIN_OPT_LAN_112", "Datum (Fall)");
-define("CONTENT_ADMIN_OPT_LAN_113", "Hänv. (Stig)");
-define("CONTENT_ADMIN_OPT_LAN_114", "Hänv. (Fall)");
-define("CONTENT_ADMIN_OPT_LAN_115", "Värd (Stig)");
-define("CONTENT_ADMIN_OPT_LAN_116", "Värd (Fall)");
-define("CONTENT_ADMIN_OPT_LAN_117", "Ordning (Stig)");
-define("CONTENT_ADMIN_OPT_LAN_118", "Ordning (Fall)");
-define("CONTENT_ADMIN_OPT_LAN_119", "Innehållskategorisida (content.php?type.X.cat.Y)");
-define("CONTENT_ADMIN_OPT_LAN_120", "Värdobjekt item");
+define("CONTENT_ADMIN_OPT_LAN_109", "Antal objekt");
+define("CONTENT_ADMIN_OPT_LAN_110", "Välj vilka sektioner som skall visas i listan över alla innehållskategorier");
+define("CONTENT_ADMIN_OPT_LAN_111", "Välj vilka sektioner av kategorins ämnen som skall visas");
+define("CONTENT_ADMIN_OPT_LAN_112", "Välj vilka sektioner i listan över underkategorier som skall visas");
+define("CONTENT_ADMIN_OPT_LAN_113", "Alla kategorier sida (Sidan med en överblick över alla kategorier i huvudvärden)");
+define("CONTENT_ADMIN_OPT_LAN_114", "Visa kategorisida (Sidan där kategoriobjektet, underkategorier och objekt i den kategorin skall visas)");
+define("CONTENT_ADMIN_OPT_LAN_115", "Om aktiverad kommer en länk till kategorin att placeras i postfixsträngen");
+define("CONTENT_ADMIN_OPT_LAN_116", "Antal kommentarer");
+define("CONTENT_ADMIN_OPT_LAN_117", "Författare: Länk till författarlista");
+define("CONTENT_ADMIN_OPT_LAN_118", "Författare: Länk till författarens profil");
+define("CONTENT_ADMIN_OPT_LAN_119", "Innehållskategorisidor");
+define("CONTENT_ADMIN_OPT_LAN_120", "Värdobjekt");
 define("CONTENT_ADMIN_OPT_LAN_121", "Skall värdobjektet visas?");
 define("CONTENT_ADMIN_OPT_LAN_122", "Värd underkategorier");
 define("CONTENT_ADMIN_OPT_LAN_123", "Skall värds underkategorier visas?");
@@ -241,7 +243,7 @@ define("CONTENT_ADMIN_OPT_LAN_134", "Välj vilken metod alla menyerna skall visa
 define("CONTENT_ADMIN_OPT_LAN_135", "Du kan visa värden, under- och barnobjekt var och en i en egen meny, eller så kan du kombinera ihop dem till en enda meny");
 define("CONTENT_ADMIN_OPT_LAN_136", "Varje i egen meny");
 define("CONTENT_ADMIN_OPT_LAN_137", "Kombinera till en meny");
-define("CONTENT_ADMIN_OPT_LAN_138", "Innehållssida (content.php?type.X.content.Y)");
+define("CONTENT_ADMIN_OPT_LAN_138", "Innehållssida (Sidan som visar ett objekt)");
 define("CONTENT_ADMIN_OPT_LAN_139", "Välj vilka sektioner som skall visas när man tittar på innehållsobjekt");
 define("CONTENT_ADMIN_OPT_LAN_140", "Menyalternativ");
 define("CONTENT_ADMIN_OPT_LAN_141", "Rubrik");
@@ -301,10 +303,10 @@ define("CONTENT_ADMIN_OPT_LAN_194", "Innehållsikon");
 define("CONTENT_ADMIN_OPT_LAN_195", "Ikon: Bredd");
 define("CONTENT_ADMIN_OPT_LAN_196", "Definiera bredden på ikonen");
 define("CONTENT_ADMIN_OPT_LAN_197", "Om du valt att visa en 'Innehållsikon', specificera bredden på ikonen som skall visas. Ange endast det numeriska värdet på antalet pixelar du vill ha. Lägg inte till 'px' efter talet.");
-define("CONTENT_ADMIN_OPT_LAN_198", "");
-define("CONTENT_ADMIN_OPT_LAN_199", "");
+define("CONTENT_ADMIN_OPT_LAN_198", "Rubrik: Kategorilista");
+define("CONTENT_ADMIN_OPT_LAN_199", "Ange rubriken till kategorilistan");
 
-define("CONTENT_ADMIN_OPT_LAN_200", "Updatera alternativ");
+define("CONTENT_ADMIN_OPT_LAN_200", "Uppdatera alternativ");
 
 define("CONTENT_ADMIN_OPT_LAN_201", "Åsidosätt kommentarssystemet");
 define("CONTENT_ADMIN_OPT_LAN_202", "Tillåt kommentarer till alla objekt");
@@ -323,10 +325,10 @@ define("CONTENT_ADMIN_OPT_LAN_213", "Skall en länk till 'Alla innehållsposter'
 define("CONTENT_ADMIN_OPT_LAN_214", "Datumvisning");
 define("CONTENT_ADMIN_OPT_LAN_215", "Välj en stil för visning av datum");
 define("CONTENT_ADMIN_OPT_LAN_216", "För mer information om datumformat se <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime funktionssidan på php.net</a>");
-define("CONTENT_ADMIN_OPT_LAN_217", "Arkivsida");
-define("CONTENT_ADMIN_OPT_LAN_218", "");
+define("CONTENT_ADMIN_OPT_LAN_217", "Arkivsida (Sidan där en översikt över alla objekt visas)");
+define("CONTENT_ADMIN_OPT_LAN_218", "Standardpreferenser");
 
-define("CONTENT_ADMIN_OPT_LAN_219", "");
+define("CONTENT_ADMIN_OPT_LAN_219", "Välj vilka sektioner som skall visas när man tittar på arkivsidan");
 define("CONTENT_ADMIN_OPT_LAN_220", "författarlistans ikon");
 define("CONTENT_ADMIN_OPT_LAN_221", "förhandsdefiniera data taggar");
 define("CONTENT_ADMIN_OPT_LAN_222", "definiera standard förhandsinställda egna data taggar");
@@ -566,25 +568,25 @@ define("CONTENT_ADMIN_MAIN_LAN_25", "
 Eftersom den befintliga tabellen inte innhåller några poster kan du nu börja hantera ditt nya innehåll.<br />
 Genom att klicka på nästa-knappen kommer standarduppsättningen automatiskt att skapas, nämligen Innehåll, Recensioner och Artiklar.<br />
 ");
-define("CONTENT_ADMIN_MAIN_LAN_26", "");
-define("CONTENT_ADMIN_MAIN_LAN_27", "");
-define("CONTENT_ADMIN_MAIN_LAN_28", "");
-define("CONTENT_ADMIN_MAIN_LAN_29", "");
+define("CONTENT_ADMIN_MAIN_LAN_26", "Förhandsgranska");
+define("CONTENT_ADMIN_MAIN_LAN_27", "Förhandsgranska igen");
+define("CONTENT_ADMIN_MAIN_LAN_28", "Välj kategori...");
+define("CONTENT_ADMIN_MAIN_LAN_29", "NY HUVUDKATEGORI");
 
 
 
-define("CONTENT_ADMIN_MENU_LAN_0", "Hantera befintligt innehåll");
+define("CONTENT_ADMIN_MENU_LAN_0", "Hantera innehåll");
 define("CONTENT_ADMIN_MENU_LAN_1", "Skapa nytt innehåll");
-define("CONTENT_ADMIN_MENU_LAN_2", "Hanter befintliga kategorier");
+define("CONTENT_ADMIN_MENU_LAN_2", "Hantera kategorier");
 define("CONTENT_ADMIN_MENU_LAN_3", "Skapa ny kategori");
 define("CONTENT_ADMIN_MENU_LAN_4", "Insänt nytt innehåll");
 define("CONTENT_ADMIN_MENU_LAN_5", "Kategori");
 define("CONTENT_ADMIN_MENU_LAN_6", "Alternativ");
-define("CONTENT_ADMIN_MENU_LAN_7", "Skapa");
+define("CONTENT_ADMIN_MENU_LAN_7", "Admin: Skapa innehåll");
 define("CONTENT_ADMIN_MENU_LAN_8", "Skicka in");
 define("CONTENT_ADMIN_MENU_LAN_9", "Sökväg och tema");
 define("CONTENT_ADMIN_MENU_LAN_10", "Generellt");
-define("CONTENT_ADMIN_MENU_LAN_11", "Senaste sidor");
+define("CONTENT_ADMIN_MENU_LAN_11", "Förhandsgranska innehållsobjekt");
 define("CONTENT_ADMIN_MENU_LAN_12", "Kategorisidor");
 define("CONTENT_ADMIN_MENU_LAN_13", "Innehållssidor");
 define("CONTENT_ADMIN_MENU_LAN_14", "Meny");
@@ -677,15 +679,15 @@ define("CONTENT_LAN_5", "Författare");
 define("CONTENT_LAN_6", "Alla kategorier");
 define("CONTENT_LAN_7", "Alla författare");
 define("CONTENT_LAN_8", "topprankade objekt");
-define("CONTENT_LAN_9", "Sortera på ...");
-define("CONTENT_LAN_10", "Rubrik (Stig)");
-define("CONTENT_LAN_11", "Rubrik (Fall)");
-define("CONTENT_LAN_12", "Datum (Stig)");
-define("CONTENT_LAN_13", "Datum (Fall)");
-define("CONTENT_LAN_14", "Hänvisn. (Stig)");
-define("CONTENT_LAN_15", "Hänvisn. (Fall)");
-define("CONTENT_LAN_16", "Värd (Stig)");
-define("CONTENT_LAN_17", "Värd (Fall)");
+define("CONTENT_LAN_9", "i");
+define("CONTENT_LAN_10", "den");
+define("CONTENT_LAN_11", "av");
+define("CONTENT_LAN_12", "topprankade objekt");
+define("CONTENT_LAN_13", "");
+define("CONTENT_LAN_14", "");
+define("CONTENT_LAN_15", "");
+define("CONTENT_LAN_16", "");
+define("CONTENT_LAN_17", "");
 define("CONTENT_LAN_18", "Sök på nyckelord");
 define("CONTENT_LAN_19", "Sök");
 define("CONTENT_LAN_20", "Sökresultat innehåll");
@@ -699,7 +701,7 @@ define("CONTENT_LAN_27", "Underkategorier");
 define("CONTENT_LAN_28", "Väd underkategorier");
 define("CONTENT_LAN_29", "Okänt");
 define("CONTENT_LAN_30", "Innehållsobjekt");
-define("CONTENT_LAN_31", "Innehållsobjekt");
+define("CONTENT_LAN_31", "Innehållsobjekt"); // Pluralis
 define("CONTENT_LAN_32", "Författarlista");
 define("CONTENT_LAN_33", "Gå till sidan");
 define("CONTENT_LAN_34", "Innehåll");
@@ -753,10 +755,10 @@ define("CONTENT_LAN_81", "Kategorier");
 define("CONTENT_LAN_82", "Inga objekt ännu i");
 define("CONTENT_LAN_83", "Objektarkiv");
 define("CONTENT_LAN_84", "Innehållsarkiv");
-define("CONTENT_LAN_85", "");
-define("CONTENT_LAN_86", "");
-define("CONTENT_LAN_87", "");
-define("CONTENT_LAN_88", "");
+define("CONTENT_LAN_85", "Författarlista");
+define("CONTENT_LAN_86", "Visa topprankade objekt");
+define("CONTENT_LAN_87", "Topprankat innehåll");
+define("CONTENT_LAN_88", "Inget innehåll är rankat ännu");
 define("CONTENT_LAN_89", "");
 
 
@@ -766,8 +768,8 @@ define("CONTENT_ADMIN_SUBMIT_LAN_2", "Tack, ditt innehåll har sänt in.");
 define("CONTENT_ADMIN_SUBMIT_LAN_3", "Tack, ditt innehåll har sänt in och kommer att granskas av en sajtadministratör snarast.");
 define("CONTENT_ADMIN_SUBMIT_LAN_4", "Nödvändigt fält lämnat tomt");
 define("CONTENT_ADMIN_SUBMIT_LAN_5", "Gå tillbaka till <a href='".e_SELF."'>sidan för insändning</a> för att skicka in mer innehåll<br />eller<br />gå till <a href='".e_PLUGIN."content/content.php'>huvudsidan för innehåll</a> för att se innehållsobjekten.");
-define("CONTENT_ADMIN_SUBMIT_LAN_6", "Lista, innehållstyper");
-define("CONTENT_ADMIN_SUBMIT_LAN_7", "Innehållstyp insändning");
+define("CONTENT_ADMIN_SUBMIT_LAN_6", "");
+define("CONTENT_ADMIN_SUBMIT_LAN_7", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_8", "Insänt innehåll raderat");
 define("CONTENT_ADMIN_SUBMIT_LAN_9", "");
 define("CONTENT_ADMIN_SUBMIT_LAN_10", "");
@@ -846,7 +848,7 @@ define("CONTENT_ADMIN_CONVERSION_LAN_58", "Uppgradering lyckades<br /><br /><b>O
 
 
 define("CONTENT_MENU_LAN_0", "Innehållsmeny :");
-define("CONTENT_MENU_LAN_1", "Inga onnehållsobjekt ännu");
+define("CONTENT_MENU_LAN_1", "Inga innehållsobjekt ännu");
 define("CONTENT_MENU_LAN_2", "Senaste objekt");
 define("CONTENT_MENU_LAN_3", "Kategorier");
 define("CONTENT_MENU_LAN_4", "Innehållslänkar");
@@ -866,8 +868,5 @@ define("CONTENT_MENU_LAN_17", "");
 define("CONTENT_MENU_LAN_18", "");
 define("CONTENT_MENU_LAN_19", "");
 define("CONTENT_MENU_LAN_20", "");
-
-?>
-
 
 ?>
