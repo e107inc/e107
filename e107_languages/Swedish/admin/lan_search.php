@@ -4,20 +4,16 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-16 13:30:44 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 define("SEALAN_1", "Sökningskonfiguration");
 define("SEALAN_2", "Antal tecken att visa i sökreslutatets summering:");
 define("SEALAN_3", "Sökning sorteringsmetod:");
-// define("SEALAN_4", "Sökbara områden:");
-// define("SEALAN_5", "Nyheter");
 define("SEALAN_6", "Kommentarer");
 define("SEALAN_7", "Registrerade medlemmar");
-// define("SEALAN_8", "Filarkiv");
-// define("SEALAN_9", "Antal resultat att visa per sida:");
 define("SEALAN_10", "Visa relevansvärde:");
 define("SEALAN_11", "Tillåt användare att välja sökbara områden:");
 define("SEALAN_12", "Begränsa tid mellan sökningar (max 5 min):");
@@ -37,9 +33,18 @@ define("SEALAN_25", "Användarklass");
 define("SEALAN_26", "Pre-Title Text");
 define("SEALAN_27", "Tecken");
 define("SEALAN_28", "Resultat");
-// define("SEALAN_29", "Ordning");
 define("SEALAN_30", "Framhäv nyckelord på refererar till sida:");
 define("SEALAN_31", "PHP begränsd till");
 define("SEALAN_32", "resultat (lämna tomt för obegränsat)");
+define("SEALAN_33", "Kunde inte byta till MySSQL sorteringsmetod eftersom detta kräver lägst version 4.0.1 av MySQL.");
+define("SEALAN_34", "Din nuvarande version är");
+define("SEALAN_35", "Sökbara områden valmetod:");
+define("SEALAN_36", "Rullgardinsmeny");
+define("SEALAN_37", "Kryssrutor");
+define("SEALAN_38", "Radioknappar");
+define("SEALAN_39", "Egna sidor");
+
+define("LAN_98", "Nyheter");
+define("LAN_197", "Nerladdningar");
 
 ?>

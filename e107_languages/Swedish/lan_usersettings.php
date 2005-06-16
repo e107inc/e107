@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_usersettings.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-15 08:50:56 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-16 13:30:44 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -71,7 +71,7 @@ define("LAN_430", "Fil");
 define("LAN_431", "Artikel");
 define("LAN_432", "Recension");
 
-define ("LAN_433", "URL till din XUP fil");
+define("LAN_433", "URL till din XUP fil");
 define("LAN_434", "Vad är detta?");
 define("LAN_435", "XML Användarprotokoll fil");
 

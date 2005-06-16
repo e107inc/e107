@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_users.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-16 13:30:44 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -121,7 +121,6 @@ define("USRLAN_126", "Tillåt användare att betygssätta användare");
 define("USRLAN_127", "Tillåt kommentarer i användarprofil");
 
 define("USRLAN_128", "Inloggngingsnamn");
-define("USRLAN_129", "Redigera visningsalternativ");
 
 define("LAN_MAINADMIN", "Huvuddmin");
 define("LAN_ADMIN", "Admin");
@@ -132,5 +131,8 @@ define("LAN_BANNED", "Spärrad");
 define("USRLAN_130", "Aktivera användarspårning online");
 define("USRLAN_131", "Du måste aktivera denna funktions för att använda användarspårning online som online.php, forum online info och online menyer");
 define("USRLAN_132", "Aktivera");
+
+define("USRLAN_133", "Tvinga användare att uppdatera inställningar");
+define("USRLAN_134", "Aktivering av detta alternativ kommer att automatiskt skicka användaren till  sina användarinställningar om ett nödvändigt fält inte är ifyllt.");
 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-16 13:30:44 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -55,7 +55,7 @@ define("DOWLAN_46", "Update Category");
 define("DOWLAN_47", "Kategori skapad");
 define("DOWLAN_48", "Kategori uppdaterad");
 define("DOWLAN_49", "Nerladdningskategori");
-define("DOWLAN_50", "Gå till sidan: ");
+
 define("DOWLAN_51", "Sök nerladdningar");
 define("DOWLAN_52", "Filer");
 define("DOWLAN_53", "Underkategori");
@@ -122,4 +122,13 @@ define("DOWLAN_141", "Plats");
 define("DOWLAN_142", "Uppdatera spegel");
 define("DOWLAN_143", "Skapa spegel");
 define("DOWLAN_144", "Inga speglar definierade, gå till speglingssektionen för att lägga till dem.");
+
+define("DOWLAN_145", "Nerladdning synlig för");
+define("DOWLAN_146", "Eget 'Nekad Nerladdning' meddelande eller URL");
+
+
+define("DOWLAN_147", "Ikon för tom kategori");
+define("DOWLAN_148", "Markera för att uppdatera datumstämpeln till nuvarande tid");
+define("DOWLAN_149", "Eller klicka här för att använda en extern fil");
+
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:03 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-16 13:30:43 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -169,6 +169,8 @@ define("ADLAN_148", "Skanna sajtfiler");
 define("ADLAN_149", "Notifiera");
 define("ADLAN_150", "Admin e-postnotifieringar");
 
+define("ADLAN_151", "Huvudsida");
+
 define('ADLAN_CL_1', 'Inställningar');
 define('ADLAN_CL_2', 'Användare');
 define('ADLAN_CL_3', 'Innehåll');
@@ -176,6 +178,7 @@ define('ADLAN_CL_4', 'Komment.');
 define('ADLAN_CL_5', 'Filer');
 define('ADLAN_CL_6', 'Verktyg');
 define('ADLAN_CL_7', 'Plugins');
+define('ADLAN_CL_8', 'Dokumentation');
 
 define("ADLAN_LAT_1", "Senaste");
 
@@ -229,5 +232,8 @@ define("LAN_ORDER", "Ordning");
 
 define("LAN_SELECT", "Välj ...");
 define("LAN_ADMIN", "Admin");
+define("LAN_DISPLAYOPT", "Redigera visningsalternativ");
+define("LAN_GOPAGE", "Gå till sida:");
+define("LAN_DATESTAMP","Datumstämpel");
 
 ?>

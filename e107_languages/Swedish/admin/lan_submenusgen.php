@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_submenusgen.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-16 13:30:44 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 define("LAN_MENGEN_1","Hantera länkar för din huvudmeny");
 define("LAN_MENGEN_2","Automatisk menygenerator");
 define("LAN_MENGEN_3","Lägg till länkar i en undermeny för:");
-// define("LAN_MENGEN_4","Nyheter");
+define("LAN_MENGEN_4","Nyheter");
 define("LAN_MENGEN_5","Forum");
 define("LAN_MENGEN_6","Artiklar");
 // define("LAN_MENGEN_7","Nerladdningar");

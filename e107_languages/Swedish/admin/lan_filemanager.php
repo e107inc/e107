@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_filemanager.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-16 13:30:44 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -50,13 +50,17 @@ define("FMLAN_37", "Katalog egna sidor");
 define("FMLAN_38", "Flyttade filen till");
 define("FMLAN_39", "Kunde inte flytta filen till");
 define("FMLAN_40", "Katalog, nyhetsbilder");
-define("FMLAN_41", "Flytta till nerladdningskatalog");
-define("FMLAN_42", "Flytta till nerladdn.bildkatalog");
-define("FMLAN_43", "Radera markerade filer");
-define("FMLAN_44", "Bekräfta att du vill FLYTTA de valda filerna till NERLADDNINGSkatalogen.");
-define("FMLAN_45", "Bekräfta att du vill FLYTTA de valda filerna till NERLADDNINGSBILDkatalogen.");
+
+
+define("FMLAN_43", "Radera valda filer");
+
+
 define("FMLAN_46", "Bekräfta att du vill RADERA de valda filerna.");
-define("FMLAN_47", "Användaruppladdningar");
+define("FMLAN_47", "Användares uppladdningar");
+
+define("FMLAN_48", "Flytta valda till");
+define("FMLAN_49", "Bekräfta att du vill flytta de valda filerna.");
+define("FMLAN_50", "Flytta");
 
 
 
