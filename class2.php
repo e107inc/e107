@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.171 $
-|     $Date: 2005-06-15 20:39:49 $
+|     $Revision: 1.172 $
+|     $Date: 2005-06-16 00:47:05 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -1141,12 +1141,14 @@ function utf8_html_entity_decode($string) {
 	return $string;
 }
 
-function print_a($var, $return = false) {
-	if(!$return){
-		echo '<pre>'.print_r($var, true).'</pre>';
-		return true;
-	} else {
-		return '<pre>'.print_r($var, true).'</pre>';
+if(!function_exists("print_a")) {
+	function print_a($var, $return = false) {
+		if(!$return){
+			echo '<pre>'.print_r($var, true).'</pre>';
+			return true;
+		} else {
+			return '<pre>'.print_r($var, true).'</pre>';
+		}
 	}
 }
 
@@ -1195,36 +1197,36 @@ class error_handler {
 	function handle_error($type, $message, $file, $line, $context) {
 		switch($type) {
 			case E_NOTICE:
-				if ($this->debug == true) {
-					$error['short'] = "Notice: {$message}, Line {$line} of {$file}<br />\n";
-					$trace = debug_backtrace();
-					$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
-					$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
-					$error['trace'] = $backtrace;
-					$this->errors[] = $error;
-				}
+			if ($this->debug == true) {
+				$error['short'] = "Notice: {$message}, Line {$line} of {$file}<br />\n";
+				$trace = debug_backtrace();
+				$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
+				$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
+				$error['trace'] = $backtrace;
+				$this->errors[] = $error;
+			}
 			break;
 			case E_WARNING:
-				if ($this->debug == true) {
-					$error['short'] = "Warning: {$message}, Line {$line} of {$file}<br />\n";
-					$trace = debug_backtrace();
-					$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
-					$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
-					$error['trace'] = $backtrace;
-					$this->errors[] = $error;
-				}
+			if ($this->debug == true) {
+				$error['short'] = "Warning: {$message}, Line {$line} of {$file}<br />\n";
+				$trace = debug_backtrace();
+				$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
+				$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
+				$error['trace'] = $backtrace;
+				$this->errors[] = $error;
+			}
 			break;
 			case E_USER_ERROR:
-				if ($this->debug == true) {
-					$error['short'] = "Internal Error Message: {$message}, Line {$line} of {$file}<br />\n";
-					$trace = debug_backtrace();
-					$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
-					$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
-					$error['trace'] = $backtrace;
-					$this->errors[] = $error;
-				}
+			if ($this->debug == true) {
+				$error['short'] = "Internal Error Message: {$message}, Line {$line} of {$file}<br />\n";
+				$trace = debug_backtrace();
+				$backtrace[0] = (isset($trace[1]) ? $trace[1] : "");
+				$backtrace[1] = (isset($trace[2]) ? $trace[2] : "");
+				$error['trace'] = $backtrace;
+				$this->errors[] = $error;
+			}
 			default:
-				return true;
+			return true;
 			break;
 		}
 	}
