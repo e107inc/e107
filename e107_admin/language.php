@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-06-15 19:11:11 $
-|     $Author: e107coders $
+|     $Revision: 1.22 $
+|     $Date: 2005-06-16 15:58:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -28,6 +28,7 @@ require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
 $tabs = table_list(); // array("news","content","links");
+
 // list of languages.
 require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
@@ -89,7 +90,6 @@ if (isset($_POST['create_tables']) && $_POST['language']) {
 // ------------- render form ---------------------------------------------------
 
 
-
 $caption = ADLAN_132; // language
 $text = MLAD_LAN_4."<br /><br />";
 
@@ -144,8 +144,6 @@ unset($text);
 
 // Grab Language configuration. ---
 if ($_POST['edit_existing']) {
-
-
 	$text = $rs->form_open("post", e_SELF);
 	$text .= "<div style='text-align:center'>";
 	$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>\n";
@@ -161,7 +159,6 @@ if ($_POST['edit_existing']) {
 			$text .= "<span id='datacopy_$table_name' style='display:none'>".LANG_LAN_15."<input type=\"checkbox\" name=\"copydata_$table_name\" value=\"1\" /> </span>";
 			$text .= "</td></tr>\n";
 		}
-
 	}
 
 	$text .= "<tr><td class='forumheader3' colspan='2'>&nbsp;";
@@ -182,7 +179,6 @@ if ($_POST['edit_existing']) {
 	$text .= "<tr>\n
 		<td colspan='2' style='width:100%; text-align: center;' class='forumheader' >\n
 		".$rs->form_button("submit", "create_tables", LANG_LAN_06, "", LANG_LAN_06, "disabled");
-	//     $text .= " ".$rs->form_button("submit", "e107ml_delete", MLAD_LAN_34, "", MLAD_LAN_34);
 	$text .= "</td>\n
 		</tr>\n";
 	$text .= "</table></div>\n";
@@ -216,7 +212,6 @@ function multilang_prefs() {
 		<td style='width:40%' class='forumheader3'>".LANG_LAN_14.": </td>
 		<td style='width:60%; text-align:center' class='forumheader3'>";
 
-	// $text .= "<a href='".e_ADMIN."lancheck.php'>".PRFLAN_86."</a>";
 
 	$text .= "
 		<select name='sitelanguage' class='tbox'>\n";
@@ -238,8 +233,7 @@ function multilang_prefs() {
 		<tr>
 		<td style='width:40%' class='forumheader3'>".LANG_LAN_12.": </td>
 		<td style='width:60%;text-align:center' class='forumheader3'>";
-	$checked = ($pref['multilanguage'] == 1) ? "checked='checked'" :
-	 "";
+	$checked = ($pref['multilanguage'] == 1) ? "checked='checked'" : "";
 	$text .= "<input type='checkbox' name='multilanguage'   value='1' $checked />
 		</td>
 		</tr>
@@ -257,7 +251,6 @@ function multilang_prefs() {
 
 	$caption = LANG_LAN_13; // "Multi-Language Preferences";
 	$ns->tablerender($caption, $text);
-
 }
 
 // ----------------------------------------------------------------------------
@@ -265,15 +258,17 @@ function multilang_prefs() {
 function db_Table_exists($table)
 {
 	global $mySQLdefaultdb;
-	$tables = mysql_list_tables($mySQLdefaultdb);
-	while (list($temp) = mysql_fetch_array($tables))
+	$tables = getcachedvars("table_list");
+	if(!$tables)
 	{
-		if ($temp == strtolower(MPREFIX."lan_".$table))
+		$tablist = mysql_list_tables($mySQLdefaultdb);
+		while($tmp = mysql_fetch_array($tablist))
 		{
-			return TRUE;
+			$tables[] = $tmp[0];
 		}
+		cachevars("table_list", $tables);
 	}
-	return FALSE;
+	return in_array(strtolower(MPREFIX."lan_".$table), $tables);
 }
 // ----------------------------------------------------------------------------
 
@@ -329,15 +324,14 @@ function table_list() {
 	$exclude[] = "pm_messages";
 	$exclude[] = "pm_blocks";
 
-	//   print_r($search);
-
 	$tables = mysql_list_tables($mySQLdefaultdb);
+
 	while (list($temp) = mysql_fetch_array($tables))
 	{
 		if(preg_match("#^".MPREFIX."#", $temp))
 		{
 			$e107tab = str_replace(MPREFIX, "", $temp);
-			if (str_replace($exclude, "", $e107tab) && !eregi("lan_",$e107tab))
+			if (!in_array($e107tab, $exclude) && !eregi("lan_",$e107tab))
 			{
 				$tabs[] = $e107tab;
 			}
