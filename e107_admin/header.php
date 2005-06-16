@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.32 $
-|   $Date: 2005-06-16 09:41:59 $
+|   $Revision: 1.33 $
+|   $Date: 2005-06-16 14:31:23 $
 |   $Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -61,9 +61,9 @@ echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 	<meta http-equiv='content-style-type' content='text/css' />\n";
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && isset($pref['admincss']) && $pref['admincss'] && file_exists(THEME.$pref['admincss'])) {
-	echo "<link rel='stylesheet' href='".THEME.$pref['admincss']."' />\n";
+	echo "<link rel='stylesheet' href='".THEME.$pref['admincss']."' type='text/css' />\n";
 } else {
-	echo "<link rel='stylesheet' href='".THEME."style.css' />\n";
+	echo "<link rel='stylesheet' href='".THEME."style.css' type='text/css' />\n";
 }
 
 if (!$no_core_css) {
