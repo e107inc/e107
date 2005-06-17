@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-06-05 00:51:48 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2005-06-17 19:07:36 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -48,8 +48,6 @@ if (e_QUERY)
 	$id = $tmp[2];
 	unset($tmp);
 }
-
-
 
 if (isset($_POST['up_x']))
 {
@@ -157,6 +155,16 @@ if ($_POST['eu_action'] == "delcat")
 	{
 		$message = EXTLAN_41;
 	}
+}
+
+if(isset($_POST['activate']))
+{
+	$message .= field_activate();
+}
+
+if(isset($_POST['deactivate']))
+{
+	$message .= field_deactivate();
 }
 
 if($message)
@@ -778,10 +786,6 @@ function show_predefined()
 {
 	global $tp, $ns, $ue, $sql;
 
-	if($_POST)
-	{
-		echo "<pre>".print_r($_POST, true)."</pre>";
-	}
 	// Get list of current extended fields
 	$curList = $ue->user_extended_get_fieldlist();
 	foreach($curList as $c)
@@ -790,23 +794,27 @@ function show_predefined()
 	}
 
 	//Get list of predefined fields, determine which are already activated.
-	$preList = get_extended_predefined();
+	$preList = $ue->parse_extended_xml('getfile');
 	ksort($preList);
-	//	echo "<pre>".print_r($preList, true)."</pre>";
 	foreach($preList as $k => $v)
 	{
-		if(array_key_exists($k, $curNames))
+		if($k != 'version')
 		{
-			$active[] = $k;
+		if(in_array($v['name'], $curNames))
+		{
+			$active[] = $v;
 		}
 		else
 		{
-			$inactive[] = $k;
+			$inactive[] = $v;
+		}
 		}
 	}
 
 	$txt = "
-	This page is not yet working, it's a work on progress.  Please ignore for now :)
+	You can activate / deactivate these fields if you want to test, but there is no upgrade script to move your existing data over yet.  It should arrive soon, please be patient.<br />
+	Once there is an upgrade script all of these will be activate and data moved over.  Any fields you don't want will have to be deactivated.<br />
+	<br />
 	<br /><br /><br />
 	<form method='post'>
 	<table class='width:".ADMIN_WIDTH."'>
@@ -818,18 +826,7 @@ function show_predefined()
 	{
 		foreach($active as $a)
 		{
-			$txt .= "
-			<tr>
-			<td class='forumheader2'>{$a}</td>
-			<td class='forumheader2'>";
-			foreach($preList[$a] as $k => $v)
-			{
-				$txt .= "<strong>{$k}:</strong>{$v}<br />";
-			}
-			$txt .= "
-			</td>
-			<td class='forumheader2'><input class='button' type='submit' name='deactivate[{$a}]' value='".EXTLAN_58."' /></td>
-			</tr>";
+			$txt .= show_field($a, 'deactivate');
 		}
 	}
 	else
@@ -844,24 +841,74 @@ function show_predefined()
 	";
 	foreach($inactive as $a)
 	{
-		$txt .= "
-		<tr>
-		<td class='forumheader2'>{$a}</td>
-		<td class='forumheader2'>";
-		foreach($preList[$a] as $k => $v)
-		{
-			$txt .= "<strong>{$k}: </strong>{$v}<br />";
-		}
-		$txt .= "
-		</td>
-		<td class='forumheader2'><input class='button' type='submit' name='activate[{$a}]' value='".EXTLAN_59."' /></td>
-		</tr>";
+		$txt .= show_field($a);
 	}
 	$txt .= "</table></form>";
-
 	$ns->tablerender(EXTLAN_56, $txt);
 	require_once('footer.php');
 	exit;
+}
+
+function show_field($var, $type='activate')
+{
+	global $tp;
+	$showlist = array('type','text', 'values', 'include_text', 'regex');
+	$txt = "
+	<tr>
+	<td class='forumheader2'>{$var['name']}</td>
+	<td class='forumheader2'>";
+	foreach($showlist as $f)
+	{
+		if($var[$f] != "")
+		{
+			$txt .= "<strong>{$f}: </strong>".$tp->toHTML($var[$f], false, 'defs')."<br />";
+		}
+	}
+	$val = ('activate' == $type) ? EXTLAN_59 : EXTLAN_60;
+	$txt .= "
+	</td>
+	<td class='forumheader2'><input class='button' type='submit' name='{$type}[{$var['name']}]' value='{$val}' /></td>
+	</tr>";
+	return $txt;
+}
+
+function field_activate()
+{
+	global $ue, $ns, $tp;
+	$ret = "";
+	$preList = $ue->parse_extended_xml('getfile');
+	$tmp = $preList;
+	foreach(array_keys($_POST['activate']) as $f)
+	{
+		$tmp[$f]['parms'] = addslashes($tmp[$f]['parms']);
+		if($ue->user_extended_add($tmp[$f]))
+		{
+			$ret .= "Field: $f has been activated <br />";
+		}
+		else
+		{
+			$ret .= "ERROR!!  Field: $f was not activated! <br />";
+		}
+	}
+	return $ret;
+}
+
+function field_deactivate()
+{
+	global $ue, $ns, $tp;
+	$ret = "";
+	foreach(array_keys($_POST['deactivate']) as $f)
+	{
+		if($ue->user_extended_remove($f, $f))
+		{
+			$ret .= "Field: $f has been deactivated <br />";
+		}
+		else
+		{
+			$ret .= "ERROR!!  Field: $f was not deactivated! <br />";
+		}
+	}
+	return $ret;
 }
 
 function headerjs()
@@ -896,10 +943,7 @@ function headerjs()
 			document.getElementById('db_mode').style.display = 'none';
 		}
 	}
-
-
 	</script>";
-
 
 	global $cal;
 	$text .= $cal->load_files();
