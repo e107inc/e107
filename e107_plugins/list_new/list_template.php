@@ -22,59 +22,49 @@ $sc_style['LIST_INFO']['post'] = " ";
 
 //LIST_MENU_NEW TEMPLATE -------------------------------------------------------------------------
 $LIST_MENU_NEW_START = "
-<div class='fcaption' style='padding:2px; cursor:pointer; border:0px solid #000;' onclick='expandit(this);'>{LIST_CAPTION}</div>
-<div class='forumheader' style='padding:2px; display:{LIST_DISPLAYSTYLE}; border:0px solid #000; border-top:0px solid #000;'>\n";
+<div class='fcaption' style='cursor:pointer;' onclick='expandit(this);'>{LIST_CAPTION}</div>
+<div class='forumheader' style='margin-bottom:5px; display:{LIST_DISPLAYSTYLE};'>\n";
 $LIST_MENU_NEW = "
 <div>
 {LIST_ICON} {LIST_DATE} {LIST_HEADING} {LIST_AUTHOR} {LIST_CATEGORY}
 </div>";
 $LIST_MENU_NEW_END = "
-</div><div style='height:5px;'></div>\n";
+</div>\n";
 
 //LIST_MENU_RECENT TEMPLATE -------------------------------------------------------------------------
 $LIST_MENU_RECENT_START = "
-<div class='fcaption' style='padding:2px; cursor:pointer; border:0px solid #000;' onclick='expandit(this);'>{LIST_CAPTION}</div>
-<div class='forumheader' style='padding:2px; display:{LIST_DISPLAYSTYLE}; border:0px solid #000; border-top:0px solid #000;'>\n";
+<div class='fcaption' style='cursor:pointer;' onclick='expandit(this);'>{LIST_CAPTION}</div>
+<div class='forumheader' style='margin-bottom:5px; display:{LIST_DISPLAYSTYLE};'>\n";
 $LIST_MENU_RECENT = "
 <div>
 {LIST_ICON} {LIST_DATE} {LIST_HEADING} {LIST_AUTHOR} {LIST_CATEGORY}
 </div>";
 $LIST_MENU_RECENT_END = "
-</div><div style='height:5px;'></div>\n";
+</div>\n";
 
 
 //PAGE TEMPLATE -------------------------------------------------------------------------
 $LIST_PAGE_RECENT_START = "
-<div class='fcaption' style='padding:2px; cursor:pointer; border:1px solid #000;' onclick='expandit(this);'>{LIST_CAPTION}</div>
-<div class='forumheader' style='padding:2px; display:{LIST_DISPLAYSTYLE}; border:1px solid #000; border-top:0px solid #000;'>\n";
+<div class='fcaption' style='cursor:pointer;' onclick='expandit(this);'>{LIST_CAPTION}</div>
+<div class='forumheader' style='margin-bottom:10px; display:{LIST_DISPLAYSTYLE};'>\n";
 $LIST_PAGE_RECENT = "
-<div style='border:0px solid #000;'>
-{LIST_ICON}
-{LIST_DATE}
-{LIST_HEADING}
-{LIST_AUTHOR}
-{LIST_CATEGORY}
-{LIST_INFO}
+<div>
+{LIST_ICON} {LIST_DATE} {LIST_HEADING} {LIST_AUTHOR} {LIST_CATEGORY} {LIST_INFO}
 </div>";
 $LIST_PAGE_RECENT_END = "
-</div><div style='margin-bottom:20px;'></div>\n";
+</div>\n";
 
 
 //NEW TEMPLATE -------------------------------------------------------------------------
 $LIST_PAGE_NEW_START = "
-<div class='fcaption' style='padding:2px; cursor:pointer; border:1px solid #000;' onclick='expandit(this);'>{LIST_CAPTION}</div>
-<div class='forumheader' style='padding:2px; display:{LIST_DISPLAYSTYLE}; border:1px solid #000; border-top:0px solid #000;'>\n";
+<div class='fcaption' style='cursor:pointer;' onclick='expandit(this);'>{LIST_CAPTION}</div>
+<div class='forumheader' style='margin-bottom:10px; display:{LIST_DISPLAYSTYLE};'>\n";
 $LIST_PAGE_NEW = "
-<div style='border:0px solid #000;'>
-{LIST_ICON}
-{LIST_DATE}
-{LIST_HEADING}
-{LIST_AUTHOR}
-{LIST_CATEGORY}
-{LIST_INFO}
+<div>
+{LIST_ICON} {LIST_DATE} {LIST_HEADING} {LIST_AUTHOR} {LIST_CATEGORY} {LIST_INFO}
 </div>";
 $LIST_PAGE_NEW_END = "
-</div><div style='margin-bottom:20px;'></div>\n";
+</div>\n";
 
 
 //MULTI COLOMNS LAYOUT MASTER -----------------------------------------------------------

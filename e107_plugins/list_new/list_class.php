@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2005-06-17 14:27:49 $
+|		$Revision: 1.3 $
+|		$Date: 2005-06-17 15:56:01 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -31,7 +31,12 @@ $defaultarray = array("news", "comment", "download", "members");
 $lan_file = $listplugindir."languages/".e_LANGUAGE.".php";
 include_once(file_exists($lan_file) ? $lan_file : $listplugindir."languages/English.php");
 
-require_once($listplugindir."list_template.php");
+if (file_exists(THEME."list_template.php")) {
+	require_once(THEME."list_template.php");
+} else {
+	require_once($listplugindir."list_template.php");
+}
+
 
 class listclass {
 
