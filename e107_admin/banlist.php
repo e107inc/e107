@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banlist.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-05-10 16:58:13 $
+|     $Revision: 1.12 $
+|     $Date: 2005-06-17 06:49:46 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -72,6 +72,7 @@ if ($action != "edit") {
 		$count = 0;
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
+			$banlist_reason = str_replace("LAN_LOGIN_18", BANLAN_11, $banlist_reason);
 			$text .= "<tr><td style='width:70%' class='forumheader3'>$banlist_ip<br />".BANLAN_7.": $banlist_reason</td>
 				<td style='width:30%; text-align:center' class='forumheader3'>".$rs->form_button("submit", "main_edit_$count", LAN_EDIT, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?edit-$banlist_ip'\"").$rs->form_button("submit", "main_delete_$count", BANLAN_4, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?remove-$banlist_ip'\"")."</td>\n</tr>";
 			$count++;
