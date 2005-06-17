@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2005-06-17 15:56:01 $
+|		$Revision: 1.4 $
+|		$Date: 2005-06-17 16:26:51 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -82,16 +82,16 @@ class listclass {
 
 		//section reference
 		for($i=0;$i<count($sections);$i++){
-			if($list_pref[$sections[$i]."_".$mode."_display"] == "1"){
-				$arr[$sections[$i]][0] = $list_pref[$sections[$i]."_".$mode."_caption"];
-				$arr[$sections[$i]][1] = $list_pref[$sections[$i]."_".$mode."_display"];
-				$arr[$sections[$i]][2] = $list_pref[$sections[$i]."_".$mode."_open"];
-				$arr[$sections[$i]][3] = $list_pref[$sections[$i]."_".$mode."_author"];
-				$arr[$sections[$i]][4] = $list_pref[$sections[$i]."_".$mode."_category"];
-				$arr[$sections[$i]][5] = $list_pref[$sections[$i]."_".$mode."_date"];
-				$arr[$sections[$i]][6] = $list_pref[$sections[$i]."_".$mode."_icon"];
-				$arr[$sections[$i]][7] = $list_pref[$sections[$i]."_".$mode."_amount"];
-				$arr[$sections[$i]][8] = $list_pref[$sections[$i]."_".$mode."_order"];
+			if(isset($list_pref[$sections[$i]."_".$mode."_display"]) && $list_pref[$sections[$i]."_".$mode."_display"] == "1"){
+				$arr[$sections[$i]][0] = (isset($list_pref[$sections[$i]."_".$mode."_caption"]) ? $list_pref[$sections[$i]."_".$mode."_caption"] : "");
+				$arr[$sections[$i]][1] = (isset($list_pref[$sections[$i]."_".$mode."_display"]) ? $list_pref[$sections[$i]."_".$mode."_display"] : "");
+				$arr[$sections[$i]][2] = (isset($list_pref[$sections[$i]."_".$mode."_open"]) ? $list_pref[$sections[$i]."_".$mode."_open"] : "");
+				$arr[$sections[$i]][3] = (isset($list_pref[$sections[$i]."_".$mode."_author"]) ? $list_pref[$sections[$i]."_".$mode."_author"] : "");
+				$arr[$sections[$i]][4] = (isset($list_pref[$sections[$i]."_".$mode."_category"]) ? $list_pref[$sections[$i]."_".$mode."_category"] : "");
+				$arr[$sections[$i]][5] = (isset($list_pref[$sections[$i]."_".$mode."_date"]) ? $list_pref[$sections[$i]."_".$mode."_date"] : "");
+				$arr[$sections[$i]][6] = (isset($list_pref[$sections[$i]."_".$mode."_icon"]) ? $list_pref[$sections[$i]."_".$mode."_icon"] : "");
+				$arr[$sections[$i]][7] = (isset($list_pref[$sections[$i]."_".$mode."_amount"]) ? $list_pref[$sections[$i]."_".$mode."_amount"] : "");
+				$arr[$sections[$i]][8] = (isset($list_pref[$sections[$i]."_".$mode."_order"]) ? $list_pref[$sections[$i]."_".$mode."_order"] : "");
 				$arr[$sections[$i]][9] = $sections[$i];
 			}
 		}
