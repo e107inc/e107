@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fla.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-22 17:52:21 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-17 07:51:40 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -57,6 +57,14 @@ if(IsSet($_POST['delbanSubmit']))
 	$message .= ", ".FLALAN_5.": ".$bancount;
 }
 
+
+if(e_QUERY == "dabl")
+{
+	$sql -> db_Delete("generic", "gen_type='auto_banned' ");
+	$message = FLALAN_17;
+}
+
+
 if($sql -> db_Select("generic", "*", "gen_type='auto_banned' ORDER BY gen_datestamp DESC"))
 {
 	$abArray = $sql -> db_getList();
@@ -65,6 +73,9 @@ if($sql -> db_Select("generic", "*", "gen_type='auto_banned' ORDER BY gen_datest
 	{
 		$message .= " - ".$ab['gen_ip'];
 	}
+
+	$message .= "<div style='text-align: right;'>( <a href='".e_SELF."?dabl'>".FLALAN_16."</a> )</div>";
+
 }
 
 if (isset($message)) {
@@ -72,10 +83,6 @@ if (isset($message)) {
 }
 
 $gen = new convert;
-
-
-
-
 
 if(!$sql -> db_Select("generic", "*", "gen_type='failed_login' ORDER BY gen_datestamp DESC"))
 {
