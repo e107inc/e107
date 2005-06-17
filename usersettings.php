@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-06-15 00:16:13 $
+|     $Revision: 1.37 $
+|     $Date: 2005-06-17 13:26:37 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -61,9 +61,6 @@ require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 $_uid = is_numeric(e_QUERY) ? e_QUERY : "";
 
-
-
-
 if(getperms("4") && eregi(str_replace("../","",e_ADMIN),$_SERVER['HTTP_REFERER']) || $_POST['adminmode'] == 1)
 {
 	require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
@@ -97,11 +94,13 @@ $signupval = explode(".", $pref['signup_options']);
 
 if (isset($_POST['updatesettings']))
 {
-	if ($_uid && ADMIN) {
+	if ($_uid && ADMIN)
+	{
 		$inp = $_uid;
 		$remflag = TRUE;
-
-	} else {
+	}
+	else
+	{
 		$inp = USERID;
 	}
 
@@ -249,13 +248,13 @@ if (isset($_POST['updatesettings']))
 		}
 	}
 
-	if (!$user_sess) {
+	if (!$user_sess)
+	{
 		$user_sess = $_POST['_user_sess'];
 	}
 
-
-	if (!$error) {
-
+	if (!$error)
+	{
 		$_POST['signature'] = $tp->toDB($_POST['signature']);
 		$_POST['location'] = $tp->toDB($_POST['location']);
 		$_POST['website'] = $tp->toDB($_POST['website']);
@@ -273,8 +272,17 @@ if (isset($_POST['updatesettings']))
 		unset($_POST['password2']);
 
 		$ret = $e_event->trigger("preuserset", $_POST);
+		if(trim($_POST['user_xup']) != "")
+		{
+			if($sql->db_Select('user', 'user_xup', "user_id = '{$inp}'"))
+			{
+				$row = $sql->db_Fetch();
+				$update_xup = ($row['user_xup'] != $_POST['user_xup']) ? TRUE : FALSE;
+			}
+		}
 
-		if ($ret=='') {
+		if ($ret=='')
+		{
 			$sql->db_Update("user", "user_name='$username', user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_homepage='".$_POST['website']."', user_icq='".$_POST['icq']."', user_aim='".$_POST['aim']."', user_msn='".$_POST['msn']."', user_location='".$_POST['location']."', user_birthday='".$birthday."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$_POST['user_xup']."' WHERE user_id='".$inp."' ");
 
 			if(ADMIN && getperms("4")){
@@ -299,12 +307,16 @@ if (isset($_POST['updatesettings']))
 				}
 				$sql->db_Update("user", "user_class='$nid' WHERE user_id='".USERID."' ");
 			}
+			
+			if($update_xup == TRUE)
+			{
+				require_once(e_HANDLER."login.php");
+				userlogin::update_xup($inp, $_POST['user_xup']);
+			}
 
 			$e_event->trigger("postuserset", $_POST);
 
-
 			// =======================
-
 
 			if(e_QUERY == "update") {
             	Header("Location: index.php");
@@ -318,8 +330,8 @@ if (isset($_POST['updatesettings']))
 			$message = "<div style='text-align:center'>".$ret."</div>";
 			$caption = LAN_151;
 		}
+		unset($_POST);
 	}
-
 }
 // -------------------
 

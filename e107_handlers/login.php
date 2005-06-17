@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-06-17 07:44:16 $
-|     $Author: stevedunstan $
+|     $Revision: 1.18 $
+|     $Date: 2005-06-17 13:26:38 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -109,22 +109,8 @@ class userlogin {
 
 				if($user_xup)
 				{
-					require_once(e_HANDLER."xml_class.php");
-					$xml = new parseXml;
-					if($rawData = $xml -> getRemoteXmlFile($user_xup))
-					{
-						preg_match_all("#\<meta name=\"(.*?)\" content=\"(.*?)\" \/\>#si", $rawData, $match);
-						$count = 0;
-						foreach($match[1] as $value)
-						{
-							$$value = $match[2][$count];
-							$count++;
-						}
-						$sql -> db_Update("user", "user_login='$FN',  user_homepage='$URL',  user_icq='$ICQ',  user_aim='$AIM',  user_msn='$MSN',  user_location='$GEO',  user_birthday='$BDAY',  user_signature='$SIG',  user_sess='$PHOTO',  user_image='$AV',  user_timezone='$TZ' 	WHERE user_id='$user_id' ");
-					}
+					$this->update_xup($user_id, $user_xup);
 				}
-				
-
 
 				if ($pref['user_tracking'] == "session") {
 					$_SESSION[$pref['cookie_name']] = $cookieval;
@@ -162,6 +148,26 @@ class userlogin {
 		}
 	}
 
+	function update_xup($user_id, $user_xup = "")
+	{
+		global $sql;
+		if($user_xup)
+		{
+			require_once(e_HANDLER."xml_class.php");
+			$xml = new parseXml;
+			if($rawData = $xml -> getRemoteXmlFile($user_xup))
+			{
+				preg_match_all("#\<meta name=\"(.*?)\" content=\"(.*?)\" \/\>#si", $rawData, $match);
+				$count = 0;
+				foreach($match[1] as $value)
+				{
+					$$value = $match[2][$count];
+					$count++;
+				}
+				$sql -> db_Update("user", "user_login='$FN',  user_homepage='$URL',  user_icq='$ICQ',  user_aim='$AIM',  user_msn='$MSN',  user_location='$GEO',  user_birthday='$BDAY',  user_signature='$SIG',  user_sess='$PHOTO',  user_image='$AV',  user_timezone='$TZ' 	WHERE user_id='$user_id' ");
+			}
+		}
+	}
 }
 
 ?>
