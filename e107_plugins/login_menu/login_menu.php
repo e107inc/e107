@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-06-05 15:37:45 $
-|     $Author: e107coders $
+|     $Revision: 1.31 $
+|     $Date: 2005-06-17 13:35:39 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -163,7 +163,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 	if (isset($NewItems) && $NewItems) {
 		$text .= '<br /><br /><span class="smalltext">'.LOGIN_MENU_L25.'<br />'.implode(',<br />', $NewItems).'</span>';
 		if ($new_total) {
-			$text .= '<br /><a href="'.e_PLUGIN.'list_new/new.php">'.LOGIN_MENU_L24.'</a>';
+			$text .= '<br /><a href="'.e_PLUGIN.'list_new/list.php?new">'.LOGIN_MENU_L24.'</a>';
 		}
 	}
 	if (file_exists(THEME.'images/login_menu.png')) {
