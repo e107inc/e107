@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-06-12 03:34:59 $
+|     $Revision: 1.24 $
+|     $Date: 2005-06-17 19:07:36 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -33,7 +33,9 @@ include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
 class e107_user_extended
 {
 	var $user_extended_types;
-
+	var $extended_xml;
+	var $typeArray;
+	
 	function e107_user_extended()
 	{
 		//		1 = text
@@ -45,6 +47,16 @@ class e107_user_extended
 		//		7 = date
 		//		8 = language
 
+		$this->typeArray = array(
+			'text' => 1, 
+			'radio' => 2, 
+			'dropdown' => 3, 
+			'db field' => 4, 
+			'textarea' => 5, 
+			'integer' => 6, 
+			'date' => 7, 
+			'language' => 7
+		);
 		$this->user_extended_types = array(
 		1 => UE_LAN_1,
 		2 => UE_LAN_2,
@@ -159,6 +171,10 @@ class e107_user_extended
 		{
 			extract($name);
 		}
+		if(!is_numeric($type))
+		{
+			$type = $this->typeArray[$type];
+		}
 		if (!($this->user_extended_field_exist($name)))
 		{
 			$field_info = $this->user_extended_type_text($type, $default);
@@ -213,7 +229,15 @@ class e107_user_extended
 		if ($this->user_extended_field_exist($name))
 		{
 			$sql->db_Select_gen("ALTER TABLE #user_extended DROP user_".$name);
-			$sql->db_Delete("user_extended_struct", "user_extended_struct_id = '$id' ");
+			if(is_numeric($id))
+			{
+				$sql->db_Delete("user_extended_struct", "user_extended_struct_id = '$id' ");
+			}
+			else
+			{
+				$sql->db_Delete("user_extended_struct", "user_extended_struct_name = '$id' ");
+			}
+			return !($this->user_extended_field_exist($name));
 		}
 	}
 
@@ -344,8 +368,13 @@ class e107_user_extended
 		return $ret;
 	}
 	
-	function parse_extended_xml($contents)
+	function parse_extended_xml($contents, $no_cache = FALSE)
 	{
+		if($no_cache == FALSE && $this->extended_xml)
+		{
+			return $this->extended_xml;
+		}
+
 		require_once(e_HANDLER."xml_class.php");
 		$xml = new CXml;
 		if("getfile" == $contents)
@@ -360,7 +389,7 @@ class e107_user_extended
 		{
 			$info = array(
 								"name" 			=> $item->name,
-								"text" 			=> "LAN_UE_".strtoupper($item->name),
+								"text" 			=> "UE_LAN_".strtoupper($item->name),
 								"type" 			=> $item->type[0],
 								"values" 		=> $item->values[0],
 								"default" 		=> $item->default[0],
@@ -376,9 +405,10 @@ class e107_user_extended
 			{
 				$info['parms'] .= $item->include_text[0]."^,^".$item->regex[0]."^,^LAN_UE_FAIL_".strtoupper($item->name);
 			}
-			$ret[] = $info;
+			$ret[$item->name] = $info;
 		}
-		return $ret;
+		$this->extended_xml = $ret;
+		return $this->extended_xml;
 	}
 }
 ?>

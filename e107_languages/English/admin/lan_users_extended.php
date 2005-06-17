@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-04 22:51:21 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2005-06-17 19:07:36 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("EXTLAN_1", "Name");
@@ -92,11 +92,5 @@ define("EXTLAN_HELP_5", "This will be the Textarea help text");
 define("EXTLAN_HELP_6", "This will be the Integer help text");
 //date
 define("EXTLAN_HELP_7", "This will be the date help text");
-
-define("EXTLAN_PRE1", "Location");
-define("EXTLAN_PRE2", "AIM");
-define("EXTLAN_PRE3", "ICQ");
-define("EXTLAN_PRE4", "Yahoo!");
-define("EXTLAN_PRE5", "Homepage");
 
 ?>
