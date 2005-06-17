@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-16 13:46:23 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-17 06:01:41 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -138,8 +138,8 @@ define("LCLAN_136", "Orden de enlaces por defecto");
 define("LCLAN_137", "Defina el método de orden");
 define("LCLAN_138", "Activado");
 define("LCLAN_139", "Desactivado");
-define("LCLAN_140", "Tipo de sobreescritura del enlace abierto");
-define("LCLAN_141", "Defina el método del tipo de sobreescritura del enlace abierto");
+define("LCLAN_140", "Tipo de anulación del enlace abierto");
+define("LCLAN_141", "Defina el método del tipo de anulación del enlace abierto");
 define("LCLAN_142", "Escogiendo una de esas opciones abrirá todos los enlaces con esa opción, sin tener en cuenta su ajuste individual");
 define("LCLAN_143", "Use un ajuste de enlace individual");
 define("LCLAN_144", "Ordenación");
