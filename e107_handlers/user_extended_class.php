@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-06-17 19:07:36 $
+|     $Revision: 1.25 $
+|     $Date: 2005-06-17 20:31:54 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -409,6 +409,40 @@ class e107_user_extended
 		}
 		$this->extended_xml = $ret;
 		return $this->extended_xml;
+	}
+	function convert_old_fields()
+	{
+		global $sql;
+		$sql2 = new db;
+		$preList = $this->parse_extended_xml('getfile');
+		$flist = array('user_aim', 'user_birthday', 'user_homepage', 'user_icq', 'user_msn', 'user_location');
+		foreach($flist as $f)
+		{
+			$f = substr($f, 5);
+			$preList[$f]['parms'] = addslashes($preList[$f]['parms']);
+			$this->user_extended_add($preList[$f]);
+		}
+		if($sql->db_Select('user', "user_id, ".implode(", ", $flist)))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$sql2->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$row['user_id']}')");
+				$newvals = "";
+				foreach($flist as $f)
+				{
+					$newvals .= "{$f} = '".$row[$f]."',";
+				}
+				$newvals = substr($newvals, 0 ,-1);
+				$qry = "
+				UPDATE #user_extended SET
+				{$newvals}
+				WHERE 
+				user_extended_id = '{$row['user_id']}'
+				";
+				$sql2->db_Select_gen($qry);
+			}
+		}
+		$sql->db_Select_gen("ALTER TABLE #user DROP user_".$f);
 	}
 }
 ?>
