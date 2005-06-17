@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_recent_menu.php,v $
-|		$Revision: 1.1 $
-|		$Date: 2005-06-17 13:35:39 $
+|		$Revision: 1.2 $
+|		$Date: 2005-06-17 14:27:49 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ $rc = new listclass;
 $list_pref	= $rc -> getListPrefs();
 $mode		= "recent_menu";
 $sections	= $rc -> prepareSection($mode);
-$arr		= $rc -> prepareSectionArray($mode);
+$arr		= $rc -> prepareSectionArray($mode, $sections);
 
 //display the sections
 $text = "";
