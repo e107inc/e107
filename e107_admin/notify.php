@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/notify.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-16 09:44:29 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-17 00:17:03 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -125,7 +125,7 @@ class notify_config {
 			}
 		}
 		
-		$s_prefs = $tp -> recurse_toDB($this -> notify_prefs, true, true);
+		$s_prefs = $tp -> recurse_toDB($this -> notify_prefs, true);
 		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 		$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs' ");
 		if ($active) {
