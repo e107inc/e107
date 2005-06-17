@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-29 15:52:14 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-17 06:59:16 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -233,11 +233,11 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 1) {
 	$END = TRUE;
 }
 
-if ($message) {
+if (isset($message)) {
 	echo "<br /><br /><div style='text-align:center'><span class='headertext'>{$message}</span></div><br />";
 }
 
-if ($END) {
+if (isset($END)) {
 	echo "<br /></div></body></html>";
 	exit;
 }
