@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.174 $
-|     $Date: 2005-06-16 12:03:33 $
-|     $Author: lisa_ $
+|     $Revision: 1.175 $
+|     $Date: 2005-06-17 00:49:30 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -776,7 +776,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 			}
 
 			// traverse the pref array, with toDB on everything
-			$_pref = $tp->recurse_toDB($pref, true, true);
+			$_pref = $tp->recurse_toDB($pref, true);
 			// Create the data to be stored
 			$PrefCache1 = $eArrayStorage->WriteArray($_pref);
 			if(!$sql->db_Update('core', "e107_value='{$PrefCache1}' WHERE e107_name = 'SitePrefs'")){
