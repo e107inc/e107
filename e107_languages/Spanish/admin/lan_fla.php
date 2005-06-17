@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_fla.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-10 18:12:33 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-17 19:23:33 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -25,5 +25,7 @@ define("FLALAN_12", "Desmarca todas las cajas de eliminación");
 define("FLALAN_13", "Marca todas las cajas de expulsión");
 define("FLALAN_14", "Desmarca todas las cajas de expulsión");
 define("FLALAN_15", "La(s) siguiente(s) IP(s) han sido autoexpulsadas - El usuario intentó la conexión más de 10 veces");
+define("FLALAN_16", "Eliminar esta lista de auto-expulsados");
+define("FLALAN_17", "Lista de auto-expulsados eliminada");
 
 ?>
