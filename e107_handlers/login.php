@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-06-11 12:31:31 $
+|     $Revision: 1.17 $
+|     $Date: 2005-06-17 07:44:16 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -38,6 +38,10 @@ class userlogin {
 		$sql = new db;
 
 		$fip = $e107->getip();
+		if($sql -> db_Select("banlist", "*", "banlist_ip='$fip' "))
+		{
+			exit;
+		}
 
 		if ($pref['auth_method'] && $pref['auth_method'] != "e107") {
 			$auth_file = e_PLUGIN."alt_auth/".$pref['auth_method']."_auth.php";
