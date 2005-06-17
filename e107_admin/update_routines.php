@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.108 $
-|     $Date: 2005-06-17 00:49:30 $
+|     $Revision: 1.109 $
+|     $Date: 2005-06-17 12:43:59 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -668,7 +668,8 @@ function update_61x_to_700($type) {
 		$sql -> db_Delete("plugin", " plugin_installflag='0' ");
 
 		// Notify
-		if (!isset($pref['notify'])) {
+		if (!$sql -> db_Select("core", "e107_name", "e107_name = 'notify_prefs'")) {
+			!$sql->db_Select("core","*","e107_name = 'user_entended'");
 			$serial_prefs = "a:1:{s:5:\"event\";a:9:{s:7:\"usersup\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:8:\"userveri\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:5:\"flood\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:7:\"subnews\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:5:\"login\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:6:\"logout\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:8:\"newspost\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:7:\"newsupd\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}s:7:\"newsdel\";a:3:{s:4:\"type\";s:3:\"off\";s:5:\"class\";s:3:\"254\";s:5:\"email\";s:0:\"\";}}}";
 			$notify_prefs = unserialize(stripslashes($serial_prefs));
 			$handle = opendir(e_PLUGIN);
@@ -822,9 +823,9 @@ function update_61x_to_700($type) {
 		}
 
 
-		//if ($notify_prefs = $sysprefs -> getArray('notify_prefs')) {
-		//	return FALSE;
-		//}
+		if (!$sql -> db_Select("core", "e107_name", "e107_name = 'notify_prefs'")) {
+			return FALSE;
+		}
 
 		// search content plugin comments id change
 		$search_prefs = $sysprefs -> getArray('search_prefs');
