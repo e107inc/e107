@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/admin_list_config.php,v $
-|		$Revision: 1.1 $
-|		$Date: 2005-06-17 13:35:39 $
+|		$Revision: 1.2 $
+|		$Date: 2005-06-17 14:27:49 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -49,20 +49,7 @@ if(isset($_POST['update_menu'])){
 }
 
 //check preferences from database
-$num_rows = $sql -> db_Select("core", "*", "e107_name='list' ");
-$row = $sql -> db_Fetch();
-
-//insert default preferences
-if (empty($row['list'])) {
-
-	$list_pref = $rc -> getDefaultPrefs();
-	$tmp = $eArrayStorage->WriteArray($list_pref);
-
-	$sql -> db_Insert("core", "'list', '$tmp' ");
-	$sql -> db_Select("core", "*", "e107_name='list' ");
-}
-
-$list_pref = $eArrayStorage->ReadArray($row['e107_value']);
+$list_pref	= $rc -> getListPrefs();
 
 
 

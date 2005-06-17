@@ -11,14 +11,14 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.1 $
-|		$Date: 2005-06-17 13:35:39 $
+|		$Revision: 1.2 $
+|		$Date: 2005-06-17 14:27:49 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 global $sql, $rc, $list_pref, $sc_style, $tp, $list_shortcodes, $defaultarray;
 
-global $LIST_MENU, $LIST_MENU_START, $LIST_MENU_END, $LIST_PAGE_START, $LIST_PAGE, $LIST_PAGE_END, $LIST_NEW_START, $LIST_NEW, $LIST_NEW_END;
+global $LIST_PAGE_NEW, $LIST_PAGE_RECENT, $LIST_MENU_NEW, $LIST_MENU_RECENT, $LIST_PAGE_NEW_START, $LIST_PAGE_RECENT_START, $LIST_MENU_NEW_START, $LIST_MENU_RECENT_START, $LIST_PAGE_NEW_END, $LIST_PAGE_RECENT_END, $LIST_MENU_NEW_END, $LIST_MENU_RECENT_END;
 global $LIST_ICON, $LIST_DATE, $LIST_HEADING, $LIST_AUTHOR, $LIST_CATEGORY, $LIST_INFO;
 global $LIST_DISPLAYSTYLE, $LIST_CAPTION, $LIST_STYLE_CAPTION, $LIST_STYLE_BODY;
 
@@ -72,21 +72,21 @@ class listclass {
 		return $sections;
 	}
 
-	function prepareSectionArray($mode){
-		global $sections, $list_pref;
+	function prepareSectionArray($mode, $sections){
+		global $list_pref;
 
 		//section reference
 		for($i=0;$i<count($sections);$i++){
-			if($list_pref["$sections[$i]_{$mode}_display"] == "1"){
-				$arr[$sections[$i]][0] = $list_pref["$sections[$i]_{$mode}_caption"];
-				$arr[$sections[$i]][1] = $list_pref["$sections[$i]_{$mode}_display"];
-				$arr[$sections[$i]][2] = $list_pref["$sections[$i]_{$mode}_open"];
-				$arr[$sections[$i]][3] = $list_pref["$sections[$i]_{$mode}_author"];
-				$arr[$sections[$i]][4] = $list_pref["$sections[$i]_{$mode}_category"];
-				$arr[$sections[$i]][5] = $list_pref["$sections[$i]_{$mode}_date"];
-				$arr[$sections[$i]][6] = $list_pref["$sections[$i]_{$mode}_icon"];
-				$arr[$sections[$i]][7] = $list_pref["$sections[$i]_{$mode}_amount"];
-				$arr[$sections[$i]][8] = $list_pref["$sections[$i]_{$mode}_order"];
+			if($list_pref[$sections[$i]."_".$mode."_display"] == "1"){
+				$arr[$sections[$i]][0] = $list_pref[$sections[$i]."_".$mode."_caption"];
+				$arr[$sections[$i]][1] = $list_pref[$sections[$i]."_".$mode."_display"];
+				$arr[$sections[$i]][2] = $list_pref[$sections[$i]."_".$mode."_open"];
+				$arr[$sections[$i]][3] = $list_pref[$sections[$i]."_".$mode."_author"];
+				$arr[$sections[$i]][4] = $list_pref[$sections[$i]."_".$mode."_category"];
+				$arr[$sections[$i]][5] = $list_pref[$sections[$i]."_".$mode."_date"];
+				$arr[$sections[$i]][6] = $list_pref[$sections[$i]."_".$mode."_icon"];
+				$arr[$sections[$i]][7] = $list_pref[$sections[$i]."_".$mode."_amount"];
+				$arr[$sections[$i]][8] = $list_pref[$sections[$i]."_".$mode."_order"];
 				$arr[$sections[$i]][9] = $sections[$i];
 			}
 		}
@@ -189,6 +189,8 @@ class listclass {
 			$list_pref["$sections[$i]_recent_menu_category"]	= "0";
 			$list_pref["$sections[$i]_recent_menu_date"]		= "1";
 			$list_pref["$sections[$i]_recent_menu_amount"]		= "5";
+			$list_pref["$sections[$i]_recent_menu_order"]		= ($i+1);
+			$list_pref["$sections[$i]_recent_menu_icon"]		= "";
 
 			$list_pref["$sections[$i]_recent_page_display"]		= "1";
 			$list_pref["$sections[$i]_recent_page_open"]		= "1";
@@ -196,6 +198,8 @@ class listclass {
 			$list_pref["$sections[$i]_recent_page_category"]	= "1";
 			$list_pref["$sections[$i]_recent_page_date"]		= "1";
 			$list_pref["$sections[$i]_recent_page_amount"]		= "10";
+			$list_pref["$sections[$i]_recent_page_order"]		= ($i+1);
+			$list_pref["$sections[$i]_recent_page_icon"]		= "1";
 
 			$list_pref["$sections[$i]_new_menu_display"]		= "1";
 			$list_pref["$sections[$i]_new_menu_open"]			= "0";
@@ -203,6 +207,8 @@ class listclass {
 			$list_pref["$sections[$i]_new_menu_category"]		= "0";
 			$list_pref["$sections[$i]_new_menu_date"]			= "1";
 			$list_pref["$sections[$i]_new_menu_amount"]			= "5";
+			$list_pref["$sections[$i]_new_menu_order"]			= ($i+1);
+			$list_pref["$sections[$i]_new_menu_icon"]			= "1";
 
 			$list_pref["$sections[$i]_new_page_display"]		= "1";
 			$list_pref["$sections[$i]_new_page_open"]			= "1";
@@ -210,10 +216,8 @@ class listclass {
 			$list_pref["$sections[$i]_new_page_category"]		= "1";
 			$list_pref["$sections[$i]_new_page_date"]			= "1";
 			$list_pref["$sections[$i]_new_page_amount"]			= "10";
-
-			$list_pref["$sections[$i]_icon"]					= "";
-			$list_pref["$sections[$i]_order"]					= ($i+1);
-			
+			$list_pref["$sections[$i]_new_page_order"]			= ($i+1);
+			$list_pref["$sections[$i]_new_page_icon"]			= "1";
 		}
 		
 		//new menu preferences
@@ -352,7 +356,6 @@ class listclass {
 
 			}
 		}
-
 
 		if($LIST_DATA != ""){
 			if($mode == "recent_menu"){
