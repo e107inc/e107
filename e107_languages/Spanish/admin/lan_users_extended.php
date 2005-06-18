@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_users_extended.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-10 20:56:25 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-18 07:48:00 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -89,9 +89,4 @@ define("EXTLAN_HELP_6", "Éste será el texto de ayuda de los enteros");
 //date
 define("EXTLAN_HELP_7", "Éste será el texto ayuda de la fecha");
 
-define("EXTLAN_PRE1", "Zona");
-define("EXTLAN_PRE2", "AIM");
-define("EXTLAN_PRE3", "ICQ");
-define("EXTLAN_PRE4", "Yahoo!");
-define("EXTLAN_PRE5", "Página Web");
 ?>
