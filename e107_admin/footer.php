@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-06-16 23:29:02 $
-|     $Author: sweetas $
+|     $Revision: 1.16 $
+|     $Date: 2005-06-18 00:38:46 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -42,7 +42,7 @@ if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
 	parse_admin($ADMIN_FOOTER);
 }
 $eTimingStop = microtime();
-global $eTimingStart;
+global $eTimingStart, $eTraffic;
 $rendertime = number_format($eTraffic->TimeDelta( $eTimingStart, $eTimingStop ), 4);
 $db_time    = number_format($db_time,4);
 $rinfo = '';
