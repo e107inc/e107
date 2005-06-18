@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Spanish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-17 19:23:33 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-18 19:48:45 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -147,7 +147,7 @@ define("LIST_MENU_15", "");
 define("LIST_MENU_16", "");
 define("LIST_MENU_17", "");
 define("LIST_MENU_18", "");
-efine("LIST_MENU_19", "");
+define("LIST_MENU_19", "");
   	 
 define("LIST_NEWS_1", "Noticias");
 define("LIST_NEWS_2", "No hay nuevas noticias");
