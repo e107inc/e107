@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_installer.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-16 20:29:25 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-18 17:41:24 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -29,8 +29,8 @@ define("LANINS_014", "Permisos de archivo");
 define("LANINS_015", "Versión PHP");
 define("LANINS_016", "MySQL");
 define("LANINS_017", "OK");
-define("LANINS_018", "Asegúrese de que estos archivos listado tienen permisos de escritura. Si tiene algún problema a la hora de configurarlos, contacte con su servidor.");
-define("LANINS_019", "La versión de PHP instalada en su servidor no es operativa para funcionar con e107. e107 requiere una versión de al menos 4.3.0 para funcionar correctamente. Actualice su versión PHP o contacte con su servidor para actualizar.");
+define("LANINS_018", "Asegúrese de que estos archivos listados tienen permisos de escritura. Si tiene algún problema a la hora de configurarlos, contacte con su servidor.");
+define("LANINS_019", "La versión de PHP instalada en su servidor no es operativa para funcionar con e107. e107 requiere una versión mayor de 4.3.0 para funcionar correctamente. Actualice su versión PHP o contacte con su servidor para actualizar.");
 define("LANINS_020", "Continúe la instalación");
 define("LANINS_021", "3");
 define("LANINS_022", "Detalles del servidor MySQL");
@@ -50,15 +50,15 @@ define("LANINS_030", "El servidor MySQL que quiere utilizar. Puede incluir el pu
 define("LANINS_031", "El nombre de usuario que desea para conectar a su servidor MySQL");
 define("LANINS_032", "La contraseña del usuario");
 define("LANINS_033", "La base de datos MySQL que desea utilizar en e107, algunas veces referenciada como una estructura. Si el usuario tiene permiso para crear bases de datos, tiene la opción de hacerlo si actualmente no existe.");
-define("LANINS_034", "El prefijo que desea utilizar para e107 encabezar las tablas. Útil para instalaciones múltiples de e107 en una misma base de datos.");
-define("LANINS_035", "Continúe");
+define("LANINS_034", "El prefijo que desea utilizar en e107 para encabezar las tablas. Útil para instalaciones múltiples de e107 en una misma base de datos.");
+define("LANINS_035", "Continuar");
 define("LANINS_036", "4");
 define("LANINS_037", "Verificación de conexión MySQL");
 define("LANINS_038", " y creación de la base de datos");
-define("LANINS_039", "Asegúrese que ha rellenado todos los campos, más importante, Servidor, Usuario y Base de datos MySQl.(Son necesarios para el servidor MySQL)");
+define("LANINS_039", "Asegúrese que ha rellenado todos los campos más importantes, Servidor, Usuario y Base de datos MySQL.(Son necesarios para el servidor MySQL)");
 define("LANINS_040", "Errores");
 define("LANINS_041", "e107 no pudo establecer conexión con el servidor MySQL usando la información dada. Por favor, vuelva a la última página para asegurarse que la información es correcta.");
-define("LANINS_042", "Conexión con el servidor MySQL server establecida y verificada.");
+define("LANINS_042", "Conexión con el servidor MySQL establecida y verificada.");
 define("LANINS_043", "Imposible crear la base de datos, por favor, asegúrese que tiene permisos suficientes para crear bases de datos en su servidor.");
 define("LANINS_044", "Base de datos creada con éxito.");
 define("LANINS_045", "Por favor, pulse el botón para pasar a la siguiente estapa.");
@@ -86,9 +86,9 @@ define("LANINS_061", "e107 no pudo crear las tablas necesarias.
 Por favor, limpie la base de datos y rectifique cualquier problema antes de probar de nuevo.");
 define("LANINS_062", "¡Bienvenido a su nuevo sitio!");
 define("LANINS_063", "e107 se ha instalado con éxito y ahora está preparado para ejecutarse.");
-define("LANINS_064", "Su sección de administración es");
+define("LANINS_064", "Su sección de administración se encuentra");
 define("LANINS_065", "localizada aquí");
-define("LANINS_066", "Click para ir ahora. NEcesitará conectarse utilizando el nombre y contraseña facilitada durante el proceso de instalación.");
+define("LANINS_066", "Click para ir ahora. Necesitará conectarse utilizando el nombre y contraseña facilitados durante el proceso de instalación.");
 define("LANINS_067", "Encontrará la documentación y FAQ aquí.");
 define("LANINS_068", "Gracias por probar e107, esperamos que cumpla sus espectativas y necesidades.\n(Puede borrar este mensaje desde su sección de noticias dentro del Administrador.)\n\n<b>Por favor, tenga en cuenta que esta versión de e107 es beta y no está plenamente preparada para usarse en páginas webs completas.</b>");
 define("LANINS_069", "¡e107 Se ha instalado con éxito!
