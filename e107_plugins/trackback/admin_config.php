@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/trackback/admin_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-15 22:46:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-19 08:37:54 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -27,18 +27,11 @@ if (!getperms("P")) {
 	
 require_once(e_ADMIN."auth.php");
 	
-if (e_QUERY == "u") {
-	$message = TRACKBACK_L4;
-}
-	
-
-	
 if (isset($_POST['updatesettings'])) {
 	$pref['trackbackEnabled'] = $_POST['trackbackEnabled'];
 	$pref['trackbackString'] = $tp->toDB($_POST['trackbackString']);
 	save_prefs();
-	header("location:".e_SELF."?u");
-	exit;
+	$message = TRACKBACK_L4;
 }
 
 	
