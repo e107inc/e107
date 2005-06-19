@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-13 20:58:10 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-19 05:55:59 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -95,6 +95,12 @@ define("CONTENT_ADMIN_CAT_LAN_54", "gebruiker");
 define("CONTENT_ADMIN_CAT_LAN_55", "gebruikers");
 define("CONTENT_ADMIN_CAT_LAN_56", "onderwerp");
 define("CONTENT_ADMIN_CAT_LAN_57", "onderwerpen");
+define("CONTENT_ADMIN_CAT_LAN_58", "categorie pictogram succesvol geupload<br />let op: je moet nog steeds het pictogram koppelen aan deze categorie in de pictogram>kies huidige picrogran zone !<br />en natuurlijk moet je daarna het formulier om deze categorie te creëren of bij te werken verwerken");
+define("CONTENT_ADMIN_CAT_LAN_59", "categorie pictogram niet geupload");
+define("CONTENT_ADMIN_CAT_LAN_60", "kies een aanwezig pictogram");
+define("CONTENT_ADMIN_CAT_LAN_61", "of upload een nieuw pictogram");
+define("CONTENT_ADMIN_CAT_LAN_62", "Nadat je een nieuw categoriepictogram hebt geupload, kun je dit toewijzen in het 'kies aanwezig pictogram' veld<br />Als je een nieuw pictogram uploadt, wordt dit verschaald naar 48 pixels en wordt gelijktijdig een verkleinde versie van 16 pixels aangemaakt<br /><br />");
+define("CONTENT_ADMIN_CAT_LAN_63", "upload pictogram");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "opties");
 define("CONTENT_ADMIN_OPT_LAN_1", "creëren formulier voor contentonderwerp in het beheerscherm");
@@ -386,6 +392,12 @@ define("CONTENT_ADMIN_OPT_LAN_284", "recent");
 define("CONTENT_ADMIN_OPT_LAN_285", "content onderwerp");
 define("CONTENT_ADMIN_OPT_LAN_286", "hoogstgewaardeerd");
 define("CONTENT_ADMIN_OPT_LAN_287", "archief");
+define("CONTENT_ADMIN_OPT_LAN_288", "score");
+define("CONTENT_ADMIN_OPT_LAN_290", "kies welke secties moeten worden getoond bij het bekijken van de hoogst gewaardeerde pagina");
+define("CONTENT_ADMIN_OPT_LAN_291", "kies welke secties moeten worden getoond bij het bekijken van de hoogst scorende pagina");
+define("CONTENT_ADMIN_OPT_LAN_292", "link : hoogst scorend");
+define("CONTENT_ADMIN_OPT_LAN_293", "moet een link naar de 'top score onderwerpen' pagina worden getoond?");
+
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "verplicht veld niet ingevuld");
 define("CONTENT_ADMIN_ITEM_LAN_1", "onderwerp aangemaakt");
@@ -540,6 +552,8 @@ define("CONTENT_ADMIN_MAIN_LAN_25", "Omdat de oude aanwezige content tabel nog g
 Door te klikken op de Volgende knop, maak je automatisch een nieuwe standaardset categorieën aan, namelijk Content, Review en Artikel.<br />");
 define("CONTENT_ADMIN_MAIN_LAN_26", "bekijk");
 define("CONTENT_ADMIN_MAIN_LAN_27", "bekijk nogmaals");
+define("CONTENT_ADMIN_MAIN_LAN_28", "kies categorie ...");
+define("CONTENT_ADMIN_MAIN_LAN_29", "NIEUWE HOOFDCATEGORIE");
 
 define("CONTENT_ADMIN_MENU_LAN_0", "Beheren content");
 define("CONTENT_ADMIN_MENU_LAN_1", "Aanmaken content");
@@ -563,6 +577,7 @@ define("CONTENT_ADMIN_MENU_LAN_18", "Auteurspagina");
 define("CONTENT_ADMIN_MENU_LAN_19", "Content Beheerder");
 define("CONTENT_ADMIN_MENU_LAN_20", "Hoogst gewaardeerde pagina");
 define("CONTENT_ADMIN_MENU_LAN_21", "Pagina's");
+define("CONTENT_ADMIN_MENU_LAN_22", "Hoogst scorende pagina");
 
 define("CONTENT_ADMIN_JS_LAN_0", "Weet je zeker dat je deze categorie wilt verwijderen?");
 define("CONTENT_ADMIN_JS_LAN_1", "Weet je zeker dat je dit onderwerp wilt verwijderen?");
@@ -611,6 +626,8 @@ define("CONTENT_PAGETITLE_LAN_11", "Bewerk onderwerp");
 define("CONTENT_PAGETITLE_LAN_12", "Creëer onderwerpen");
 define("CONTENT_PAGETITLE_LAN_13", "Categorieën");
 define("CONTENT_PAGETITLE_LAN_14", "Auteursoverzicht");
+define("CONTENT_PAGETITLE_LAN_15", "Hoogste score");
+
 define("CONTENT_SEARCH_LAN_0", "heen onderwerpen gevonden met deze zoektermen.");
 define("CONTENT_ORDER_LAN_0", "sorteren op ...");
 define("CONTENT_ORDER_LAN_1", "kop (op)");
@@ -713,6 +730,9 @@ define("CONTENT_LAN_82", "nog geen onderwerpen in ");
 define("CONTENT_LAN_83", "onderwerparchief");
 define("CONTENT_LAN_84", "content archief");
 define("CONTENT_LAN_85", "auteursoverzicht");
+define("CONTENT_LAN_86", "bekijk hoogst scorende onderwerpen");
+define("CONTENT_LAN_87", "Hoogst scorende content");
+define("CONTENT_LAN_88", "er is nog geen contentonderwerp met een score");
 
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "geen van de inhoudscategorieën is beschikbaar voor aanmelding door gewone leden");
 define("CONTENT_ADMIN_SUBMIT_LAN_1", "inhoud aanmeldingstype");

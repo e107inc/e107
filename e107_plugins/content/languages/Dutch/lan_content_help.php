@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_help.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-09 21:22:10 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-19 05:55:59 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -91,8 +91,15 @@ define("CONTENT_ADMIN_HELP_ITEM_LETTERS", "Below you see the distinct letters of
 
 
 define("CONTENT_ADMIN_HELP_OPTION_1", "On this page you can select a main parent category to set options for, or you can choose to edit the default preferences.<br /><br /><b>uitleg van de gebruikte pictogrammen</b><br />".CONTENT_ICON_USER." : link naar het auteursprofiel<br />".CONTENT_ICON_LINK." : link naar de categorie<br />".CONTENT_ICON_OPTIONS." : bewerk de opties<br />");
+
 define("CONTENT_ADMIN_HELP_OPTION_2", "
+<i>this page shows the options you can set for this main parent. Each main parent has their own specific set of options, so be sure to set them all correctly.</i><br /><br />
+<b>default values</b><br />By default all values are present and already updated in the preferences when you view this page, but change any setting to your own standards.<br /><br />
+");
+
 define("CONTENT_ADMIN_HELP_MANAGER_1", "On this page you see a list of all categories. You can manage the 'personal content manager' for each category by clicking the icon.<br /><br /><b>uitleg van de gebruikte pictogrammen</b><br />".CONTENT_ICON_USER." : link naar het auteursprofiel<br />".CONTENT_ICON_LINK." : link naar de categorie<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : bewerk de persoonlijke content beheerders<br />");
 define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>on this page you can assign users to the selected category you have clicked</i><br /><br /><b>personal manager</b><br />you can assign users to certain categories. In doing so, these users can manage their personal content items within these categories from outside of the admin page (content_manager.php).<br /><br />Assign users from the left colomn by clicking their name. you will see these names move to the right colomn. After clicking the assign button the users in the right colomn are assigned to this category.");
+
+define("CONTENT_ADMIN_HELP_SUBMIT_1", "<i>On this page you see a list of all content items that were submitted by users.</i><br /><br /><b>detailed list</b><br />You see a list of these content items with their id, icon, main parent, heading [subheading], author and options.<br /><br /><b>options</b><br />you can post or delete a content item using the buttons shown.");
 
 ?>

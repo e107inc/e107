@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Dutch.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-10 21:02:23 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-19 05:57:24 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -105,4 +105,54 @@ define('LCLAN_102', "De Links pagina is succesvol geïnstalleerd, configureer de
 define('LCLAN_103', "Links");
 define('LCLAN_104', "Link waardering");
 define('LCLAN_105', "toestaan dat gebruikers links waarderen");
+define("LCLAN_106", "Link pictogram : Upload");
+define("LCLAN_107", "link pictogram is succesvol geupload !");
+define("LCLAN_108", "link pictogram is niet geupload !");
+define("LCLAN_109", "upload een nieuw pictogram");
+define("LCLAN_110", "Auto-Thumbnail omvang");
+define("LCLAN_111", "upload pictogram");
+define("LCLAN_112", "kies een geupload pictogram");
+define("LCLAN_113", "deze optie is gedeactiveerd omdat bestandsuploads op je server niet zijn toegestaan");
+define("LCLAN_114", "De");
+define("LCLAN_115", "directoy is niet beschrijfbaar, je moet de permissies eerst instellen op CHMOD 777");
+define("LCLAN_116", "algemene opties");
+define("LCLAN_117", "categorie pagina");
+define("LCLAN_118", "links pagina");
+define("LCLAN_119", "link categorieën");
+define("LCLAN_120", "secties");
+define("LCLAN_121", "kies de te tonen informatie");
+define("LCLAN_122", "pictogram");
+define("LCLAN_123", "beschrijving");
+define("LCLAN_124", "aantal");
+define("LCLAN_125", "totale category info regel (de regel helemaal ondraan)");
+define("LCLAN_126", "standaard categorie sortering");
+define("LCLAN_127", "bepaal de standaard sorteerwijze");
+define("LCLAN_128", "standaard category volgorde");
+define("LCLAN_129", "bepaal de standaard volgorde");
+define("LCLAN_130", "url");
+define("LCLAN_131", "verwijzer");
+define("LCLAN_132", "lege link pictogram");
+define("LCLAN_133", "moet de algemene link knop worden getoond als er geen knop aanwezig is");
+define("LCLAN_134", "standaard link sortering");
+define("LCLAN_135", "bepaal de standaard sorteerwijze");
+define("LCLAN_136", "standaard link volgorde");
+define("LCLAN_137", "bepaal de standaard volgorde");
+define("LCLAN_138", "geactiveerd");
+define("LCLAN_139", "gedeactiveerd");
+define("LCLAN_140", "negeren link open type");
+define("LCLAN_141", "bepaal de negeer link open type methode");
+define("LCLAN_142", "het kiezen van een van deze opties opent alle links op deze wijze, ongeacht de individuele instellingen");
+define("LCLAN_143", "gebruik individuele link instelling");
+define("LCLAN_144", "sorteren en volgorde");
+define("LCLAN_145", "bepaal of op de links pagina een sorteer en volgorde menu wordt getoond");
+define("LCLAN_146", "lege categorie pictogram");
+define("LCLAN_147", "link naar top links : verwijzer");
+define("LCLAN_148", "link naar top links : beoordeling");
+define("LCLAN_149", "top verwijzer en top beoordeling pagina's");
+define("LCLAN_150", "aantal links");
+define("LCLAN_151", "stel in hoeveel define op een enkele pagina worden getoond");
+define("LCLAN_152", "Categorie pictogram : Upload");
+define("LCLAN_153", "standaard verschalingswaarde");
+define("LCLAN_154", "bepaal de standaard verschalingswaarde voor link pictogram uploads");
+define("LCLAN_155", "bepaal de standaard verschalingswaarde voor categorie pictogram uploads");
 ?>
