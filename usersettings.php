@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-06-17 13:26:37 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.38 $
+|     $Date: 2005-06-19 00:39:15 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -307,7 +307,7 @@ if (isset($_POST['updatesettings']))
 				}
 				$sql->db_Update("user", "user_class='$nid' WHERE user_id='".USERID."' ");
 			}
-			
+
 			if($update_xup == TRUE)
 			{
 				require_once(e_HANDLER."login.php");
@@ -410,7 +410,7 @@ $text .= "<div style='text-align:center'>
 	}
 
 	$text .= "<tr>
-	<td style='width:30%' class='forumheader3'>".LAN_308."</td>
+	<td style='width:30%' class='forumheader3'>".LAN_308.req($signupval[0])."</td>
 	<td style='width:70%' class='forumheader2'>
 	".$rs->form_text("realname", 40, $curVal['user_login'], 100)."
 	</td>
