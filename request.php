@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-06-15 16:17:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.26 $
+|     $Date: 2005-06-19 19:46:32 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -78,7 +78,7 @@ if(strstr(e_QUERY, "mirror")) {
 }
 
 $tmp = explode(".", e_QUERY);
-if (!$tmp[1]) {
+if (!$tmp[1] || strstr(e_QUERY, "pub_")) {
 	$id = intval($tmp[0]);
 	$type = "file";
 } else {
@@ -86,7 +86,17 @@ if (!$tmp[1]) {
 	$id = intval($tmp[1]);
 	$type = "image";
 }
+
 if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) {
+	if(strstr(e_QUERY, "pub_"))
+	{
+		$bid = str_replace("pub_", "", e_QUERY);
+		if (file_exists(e_FILE."public/".$bid))
+		{
+			send_file(e_FILE."public/".$bid);
+			exit();
+		}
+	}
 	if (file_exists($DOWNLOADS_DIRECTORY.e_QUERY)) {
 		send_file($DOWNLOADS_DIRECTORY.e_QUERY);
 		exit();
@@ -97,7 +107,8 @@ if (preg_match("#.*\.[a-z,A-Z]{3,4}#", e_QUERY)) {
 	exit();
 }
 
-if ($type == "file") {
+if ($type == "file")
+{
 	$qry = "SELECT d.*, dc.download_category_class FROM #download as d LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_id WHERE d.download_id = {$id}";
 	if ($sql->db_Select_gen($qry)) {
 		$row = $sql->db_Fetch();
@@ -188,6 +199,24 @@ if ($type == "file") {
 			}
 		}
 	}
+	else if(strstr(e_QUERY, "pub_"))
+	{
+		/* check to see if public upload and not in download table ... */
+		$bid = str_replace("pub_", "", e_QUERY);
+		if($result = @mysql_query("SELECT * FROM ".MPREFIX."rbinary WHERE binary_id = '$bid' "))
+		{
+			$binary_data = @mysql_result($result, 0, "binary_data");
+			$binary_filetype = @mysql_result($result, 0, "binary_filetype");
+			$binary_name = @mysql_result($result, 0, "binary_name");
+			header("Content-type: {$binary_filetype}");
+			header("Content-length: {$download_filesize}");
+			header("Content-Disposition: attachment; filename={$binary_name}");
+			header("Content-Description: PHP Generated Data");
+			echo $binary_data;
+			exit();
+		}
+	}
+
 	require_once(HEADERF);
 	$ns -> tablerender(LAN_dl_61, "<div style='text-align:center'>".LAN_dl_65."<br /><br /><a href='javascript:history.back(1)'>".LAN_dl_64."</a></div>");
 	require_once(FOOTERF);
