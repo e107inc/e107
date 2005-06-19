@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.88 $
-|   $Date: 2005-06-16 20:28:33 $
-|   $Author: asperon $
+|   $Revision: 1.89 $
+|   $Date: 2005-06-19 19:46:20 $
+|   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
 */
@@ -425,12 +425,11 @@ class newspost {
 			if ($sql->db_Select("upload", "*", "upload_id=$id")) {
 				$row = $sql->db_Fetch();
 				extract($row);
-
 				$post_author_id = substr($upload_poster, 0, strpos($upload_poster, "."));
 				$post_author_name = substr($upload_poster, (strpos($upload_poster, ".")+1));
-
+				$upload_file = "pub_" . (preg_match("#Binary\s(.*?)\/#", $upload_file, $match) ? $match[1] : $upload_file);
 				$_POST['news_title'] = NWSLAN_66.": ".$upload_name;
-				$_POST['data'] = $upload_description."\n[b]".NWSLAN_49." <a href='user.php?id.".$post_author_id."'>".$post_author_name."</a>[/b]\n\n[file=request.php?".$id."]".$upload_name."[/file]\n";
+				$_POST['data'] = $upload_description."\n[b]".NWSLAN_49." <a href='user.php?id.".$post_author_id."'>".$post_author_name."</a>[/b]\n\n[file=request.php?".$upload_file."]".$upload_name."[/file]\n";
 			}
 		}
 
