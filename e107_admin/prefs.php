@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2005-06-11 20:58:13 $
-|     $Author: e107coders $
+|     $Revision: 1.62 $
+|     $Date: 2005-06-19 08:30:44 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -602,7 +602,7 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<tr>
 	<td class='forumheader3' style='width:50%;'>".PRFLAN_120."?:  <div class='smalltext'>".PRFLAN_121."</div></td>
 	<td class='forumheader3' style='width:50%; text-align: right;'>
-	<input class='tbox' type='text' name='defaultLanGeshi' size='5' value='".($pref['defaultLanGeshi'] ? $pref['defaultLanGeshi'] : "php")."' maxlength='3' />
+	<input class='tbox' type='text' name='defaultLanGeshi' size='10' value='".($pref['defaultLanGeshi'] ? $pref['defaultLanGeshi'] : "php")."' maxlength='20' />
 	</td>
 	</tr>
 	";
