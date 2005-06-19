@@ -22,4 +22,5 @@ define("BANLAN_7", "Reden");
 define("BANLAN_8", "Blokkeer gebruiker");
 define("BANLAN_9", "Blokkeer deze site voor gebruikers");
 define("BANLAN_10", "IP / E-mail");
+define("BANLAN_11", "Auto-blok: Meer dan 10 mislukte inlogpogingen");
 ?>

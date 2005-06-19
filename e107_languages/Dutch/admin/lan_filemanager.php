@@ -44,12 +44,11 @@ define("FMLAN_37", "Maatwerkpagina's directory");
 define("FMLAN_38", "Bestand succesvol verplaatst naar");
 define("FMLAN_39", "Kon bestand niet verplaatsen naar");
 define("FMLAN_40", "Nieuwsafbeeldingen directory");
-define("FMLAN_41", "Verplaatsen naar Downloads directory.");
-define("FMLAN_42", "Verplatsen naar Downloadimages directory.");
 define("FMLAN_43", "Verwijder geselecteerde bestanden");
-define("FMLAN_44", "Bevestig dat je de geselecteerde bestanden wilt VERPLAATSEN naar de DOWNLOADS directory.");
-define("FMLAN_45", "Bevestig dat je de geselecteerde bestanden wilt VERPLAATSEN naar de DOWNLOADIMAGES directory.");
 define("FMLAN_46", "Bevestig dat je de geselecteerde bestanden wilt VERWIJDEREN.");
 define("FMLAN_47", "Leden uploads"); 
+define("FMLAN_48", "Verplaatst selectie naar");
+define("FMLAN_49", "Bevestig dat je de geselecteerde bestanden wilt verplaatsen.");
+define("FMLAN_50", "Verplaatsen");
 
 ?>

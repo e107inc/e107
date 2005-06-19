@@ -157,6 +157,7 @@ define("ADLAN_147", "Bestandeninspecteur");
 define("ADLAN_148", "Controleer sitebestanden");
 define("ADLAN_149", "Waarschuwen");
 define("ADLAN_150", "Beheerderswaarschuwingen per e-mail");
+define("ADLAN_151", "Hoofd");
 
 define("LAN_SELECT","Selecteer ...");
 define("LAN_ADMIN","Beheer");
@@ -216,5 +217,7 @@ define("ADLAN_LAT_5", "Aangemelde links");
 define("ADLAN_LAT_6", "Gemeldde forumberichten");
 define("ADLAN_LAT_7", "Bestandsuploads");
 define("ADLAN_LAT_8", "Er zijn nog niet beoordeelde beheerboodschappen");
+
+
 
 ?>

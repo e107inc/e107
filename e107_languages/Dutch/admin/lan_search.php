@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_search.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-07 20:17:38 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-19 06:39:24 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -42,4 +42,8 @@ define("SEALAN_35", "Doorzoekbare sectie selectiemethode:");
 define("SEALAN_36", "Uitklaplijst");
 define("SEALAN_37", "Keuzevakjes");
 define("SEALAN_38", "Radioknop");
+
+define("SEALAN_39", "Maatwerk pagina's");
+define("LAN_98", "Nieuws");
+define("LAN_197", "Downloads");
 ?>
