@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2005-06-16 16:35:18 $
-|     $Author: e107coders $
+|     $Revision: 1.58 $
+|     $Date: 2005-06-19 18:56:10 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -663,7 +663,6 @@ class download {
 		$counter = 0;
 		while (isset($file_array[$counter])) {
 			$fpath = str_replace(e_DOWNLOAD,"",$file_array[$counter]['path']).$file_array[$counter]['fname'];
-
 			if (eregi($download_url, $fpath)) {
 				$selected = " selected='selected'";
 				$found = 1;
@@ -787,16 +786,18 @@ class download {
 			<td style='width:20%' class='forumheader3'>".DOWLAN_19.":</td>
 			<td style='width:80%' class='forumheader3'>
 			<select name='download_image' class='tbox'>
-			<option></option>
+		
 			";
+
+
 		$counter = 0;
 		while (isset($image_array[$counter])) {
-			$ipath = str_replace(e_FILE."downloadimages/","",$image_array[$counter]['path']).$image_array[$counter]['fname'];
-        	$seld = ($download_image == $ipath) ? "selected='selected'" : "";
-			$text .= "<option value='$ipath' $seld>".$ipath."</option>\n";
+			$ipath = str_replace(e_FILE."downloadimages/", "", $image_array[$counter]);
+        	$text .= "<option value='$ipath'".($download_image == $ipath ? " selected='selected'" : "").">".$ipath."</option>\n";
 			$counter++;
 		}
-		$text .= "</select>
+		$text .= "
+			</select>
 			</td>
 			</tr>
 
