@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.175 $
-|     $Date: 2005-06-17 00:49:30 $
-|     $Author: sweetas $
+|     $Revision: 1.176 $
+|     $Date: 2005-06-19 00:39:15 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -1161,12 +1161,13 @@ function force_userupdate(){
 	global $sql,$pref,$currentUser;
 	$signupval = explode(".", $pref['signup_options']);
 	if(in_array("2",$signupval)){
-		$signup_name = array("realname", "website", "icq", "aim", "msn", "birthday", "location", "signature", "image", "timezone", "usrclass");
+		$signup_name = array("login", "homepage", "icq", "aim", "msn", "birthday", "location", "signature", "image", "timezone", "usrclass");
 		foreach($signupval as $key=>$sign){
 			$field = "user_".$signup_name[$key];
 			$req = $signupval[$key];
 			if($req ==2 && $currentUser[$field] == ""){
-				return TRUE;
+			 //	echo "field = $field ";
+			 return TRUE;
 			}
 		}
 	}
