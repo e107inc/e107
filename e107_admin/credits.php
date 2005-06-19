@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/credits.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-10 15:40:54 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-19 09:04:28 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -75,7 +75,7 @@ $contentA = array(
 	"<h3>e107 v0.7 was brought to you by ...</h3>", 
 	"<h1>Carl Cedergren</h1>[ asperon ]<br /><br /><br />\"message goes here\"",
 	"<h1>Cameron Hanly</h1>[ cameron ]<br /><br /><br />\"message goes here\"", 
-	"<h1>Steve Dunstan</h1>[ jalist ]<br /><br /><br />\"it\'s been my pleasure and priviledge :)\"", 
+	"<h1>Steve Dunstan</h1>[ jalist ]<br /><br /><br />\"message goes here\"", 
 	"<h1>Eric Vanderfeesten</h1> [ lisa ]<br /><br /><br />\"message goes here\"", 
 	"<h1>Thom Michelbrink</h1>[ McFly ]<br /><br /><br />\"message goes here\"", 
 	"<h1>William Moffett</h1>[ que ]<br /><br /><br />\"message goes here\"", 
@@ -110,7 +110,12 @@ echo "<?xml version='1.0' encoding='utf-8' ?><!DOCTYPE html PUBLIC \"-//W3C//DTD
 $fadejs = "
 <script type='text/javascript'>
 <!--
-var delay=100;
+
+var delay = 2000;
+var maxsteps=30;
+var stepdelay=40;
+var startcolor= new Array(255,255,255);
+var endcolor=new Array(0,0,0);
 var fcontent=new Array();
 ";
 
@@ -123,7 +128,7 @@ if(e_QUERY && e_QUERY == "stps")
 	foreach($creditsArray as $credits)
 	{
 		extract($credits);
-		$fadejs .= "fcontent[$count] = '<br /><br /><h1>$name</h1>version $version<br /><br />$description<br /><br />[ $url ]';
+		$fadejs .= "fcontent[$count] = '<br /><br /><h1>$name</h1>version $version<br /><br />$description<br /><br />[ <a href=\"$url\" rel=\"external\">$url</a> ]';
 		";
 		$count++;
 	}
@@ -144,82 +149,90 @@ else
 $fadejs .= <<<TEXT
 begintag='';
 closetag='';
+
+
+var fadelinks=1;
+
 var fwidth='95%';
 var fheight='220px;'
-var fadescheme=0;
-var fadelinks=1
+
 
 ///No need to edit below this line/////////////////
 
-var hex=0
-var startcolor="rgb(e8,e8,e8)";
-var endcolor="rgb(0,0,0)";
+var ie4=document.all&&!document.getElementById;
+var DOM2=document.getElementById;
+var faderdelay=0;
+var index=0;
 
-var ie4=document.all&&!document.getElementById
-var ns4=document.layers
-var DOM2=document.getElementById
-var faderdelay=0
-var index=0
 
-if (DOM2)
-faderdelay=5000
-
+/*Rafael Raposo edited function*/
 //function to change content
 function changecontent(){
-if (index>=fcontent.length)
-index=0
-if (DOM2){
-document.getElementById("fscroller").style.color=startcolor
-document.getElementById("fscroller").innerHTML=begintag+fcontent[index]+closetag
-linksobj=document.getElementById("fscroller").getElementsByTagName("A")
-if (fadelinks)
-linkcolorchange(linksobj)
-colorfade()
-}
-else if (ie4)
-document.all.fscroller.innerHTML=begintag+fcontent[index]+closetag
-else if (ns4){
-document.fscrollerns.document.fscrollerns_sub.document.write(begintag+fcontent[index]+closetag)
-document.fscrollerns.document.fscrollerns_sub.document.close()
-}
-
-index++
-setTimeout("changecontent()",delay+faderdelay)
+  if (index>=fcontent.length)
+    index=0
+  if (DOM2){
+    document.getElementById("fscroller").style.color="rgb("+startcolor[0]+", "+startcolor[1]+", "+startcolor[2]+")"
+    document.getElementById("fscroller").innerHTML=begintag+fcontent[index]+closetag
+    if (fadelinks)
+      linkcolorchange(1);
+    colorfade(1, 15);
+  }
+  else if (ie4)
+    document.all.fscroller.innerHTML=begintag+fcontent[index]+closetag;
+  index++
 }
 
 // colorfade() partially by Marcio Galli for Netscape Communications.  ////////////
 // Modified by Dynamicdrive.com
 
-frame=20;
-
-function linkcolorchange(obj){
-if (obj.length>0){
-for (i=0;i<obj.length;i++)
-obj[i].style.color="rgb("+hex+","+hex+","+hex+")"
-}
-}
-
-function colorfade() {	         	
-// 20 frames fading process
-if(frame>0) {	
-hex=(fadescheme==0)? hex-12 : hex+12 // increase or decrease color value depd on fadescheme
-document.getElementById("fscroller").style.color="rgb("+hex+","+hex+","+hex+")"; // Set color value.
-if (fadelinks)
-linkcolorchange(linksobj)
-frame--;
-setTimeout("colorfade()",100);	
+function linkcolorchange(step){
+  var obj=document.getElementById("fscroller").getElementsByTagName("A");
+  if (obj.length>0){
+    for (i=0;i<obj.length;i++)
+      obj[i].style.color=getstepcolor(step);
+  }
 }
 
-else{
-document.getElementById("fscroller").style.color=endcolor;
-frame=20;
-hex=(fadescheme==0)? 255 : 0
-}   
+/*Rafael Raposo edited function*/
+var fadecounter;
+function colorfade(step) {
+  if(step<=maxsteps) {	
+    document.getElementById("fscroller").style.color=getstepcolor(step);
+    if (fadelinks)
+      linkcolorchange(step);
+    step++;
+    fadecounter=setTimeout("colorfade("+step+")",stepdelay);
+  }else{
+    clearTimeout(fadecounter);
+    document.getElementById("fscroller").style.color="rgb("+endcolor[0]+", "+endcolor[1]+", "+endcolor[2]+")";
+    setTimeout("changecontent()", delay);
+	
+  }   
+}
+
+/*Rafael Raposo's new function*/
+function getstepcolor(step) {
+  var diff
+  var newcolor=new Array(3);
+  for(var i=0;i<3;i++) {
+    diff = (startcolor[i]-endcolor[i]);
+    if(diff > 0) {
+      newcolor[i] = startcolor[i]-(Math.round((diff/maxsteps))*step);
+    } else {
+      newcolor[i] = startcolor[i]+(Math.round((Math.abs(diff)/maxsteps))*step);
+    }
+  }
+  return ("rgb(" + newcolor[0] + ", " + newcolor[1] + ", " + newcolor[2] + ")");
 }
 
 if (ie4||DOM2)
-document.write('<div id="fscroller" style="width:'+fwidth+';height:'+fheight+';padding:2px; text-align: center;"></div>')
+  document.write('<div id="fscroller" style="text-align: center; width:'+fwidth+';height:'+fheight+'"></div>');
 
+if (window.addEventListener)
+window.addEventListener("load", changecontent, false)
+else if (window.attachEvent)
+window.attachEvent("onload", changecontent)
+else if (document.getElementById)
 window.onload=changecontent
 </script>
 <ilayer id="fscrollerns" width=&{fwidth}; height=&{fheight};><layer id="fscrollerns_sub" width=&{fwidth}; height=&{fheight}; left=0 top=0></layer></ilayer>
