@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/download_template.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-04-02 09:37:57 $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-19 09:48:19 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -33,25 +33,26 @@ $DOWNLOAD_CAT_PARENT_TABLE .= "
 
 $DOWNLOAD_CAT_CHILD_TABLE .= "
 {DOWNLOAD_CAT_SUB_ICON}
-{DOWNLOAD_CAT_SUB_NEW_ICON} {DOWNLOAD_CAT_SUB_NAME}<br />
+{DOWNLOAD_CAT_SUB_NEW_ICON} {DOWNLOAD_CAT_SUB_NAME} 
 <span class='smalltext'>
 {DOWNLOAD_CAT_SUB_DESCRIPTION}
 </span>
 ";
 
-
 $DOWNLOAD_CAT_CHILD_TABLE .= "
 <br /><span class='defaulttext'>
-{DOWNLOAD_CAT_SUBSUB_LAN}
 {DOWNLOAD_CAT_SUBSUB_NAME}
 </span>
 <span class='smalltext'>
 {DOWNLOAD_CAT_SUBSUB_DESCRIPTION}
-</span>
+</span><br />
+{DOWNLOAD_CAT_SUBSUB}
+<br />
 ";
 
 $DOWNLOAD_CAT_SUBSUB_TABLE .= "
-{DOWNLOAD_CAT_SUBSUB_NEW_ICON} {DOWNLOAD_CAT_SUBSUB_NAME}";
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{DOWNLOAD_CAT_SUBSUB_NEW_ICON} {DOWNLOAD_CAT_SUBSUB_NAME}
+";
 
 $DOWNLOAD_CAT_TABLE_END = "
 <br /><br /><br /><br />
