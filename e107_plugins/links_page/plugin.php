@@ -11,14 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-15 20:36:14 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-20 14:14:57 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
-$lan_file = e_PLUGIN."links_page/languages/".e_LANGUAGE.".php";
-@require_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."links_page/languages/English.php");
+if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE."/lan_links_page.php")) {
+	@include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE."/lan_links_page.php");
+	} else {
+	@include_once(e_PLUGIN."links_page/languages/English/lan_links_page.php");
+}
 $eplug_name = "Links Page";
 $eplug_version = "1.0";
 $eplug_author = "e107";
@@ -27,7 +30,8 @@ $eplug_email = "jalist@e107.org";
 $eplug_description = "Links Page For Displaying External Web Links";
 $eplug_compatible = "e107v6";
 $eplug_readme = "";
-$eplug_latest = TRUE;
+$eplug_latest = TRUE; //Show reported threads in admin (use e_latest.php)
+$eplug_status = TRUE; //Show post count in admin (use e_status.php)
 	
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "links_page";
