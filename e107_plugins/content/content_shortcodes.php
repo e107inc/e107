@@ -126,9 +126,6 @@ return $rating;
 SC_END
 
 
-
-
-
 // CONTENT_SCORE_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_SCORE_TABLE_HEADING
 global $CONTENT_SCORE_TABLE_HEADING, $row, $qs;
@@ -184,7 +181,7 @@ if($score < 100){
 	$img .= "<img src='".e_PLUGIN."content/images/score_empty.png' alt='' style='$height width:".$empty."px; border:0;' />";
 }
 $img .= "<img src='".e_PLUGIN."content/images/score_end.png' alt='' style='$height width:1px; border:0;' />";
-return $img." ".$score;
+return $score."/100 ".$img;
 SC_END
 
 
