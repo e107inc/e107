@@ -9,9 +9,9 @@
 
 	if($mode == "new_page" || $mode == "new_menu" ){
 		$lvisit = $this -> getlvisit();
-		$qry = " l.link_category != '1' ";
+		$qry = " l.link_datestamp>".$lvisit." AND ";		
 	}else{
-		$qry = " l.link_category != '1' ";
+		$qry = "";
 	}
 
 	$bullet = $this -> getBullet($arr[6], $mode);
@@ -20,7 +20,7 @@
 	SELECT l.*, c.link_category_id, c.link_category_name
 	FROM #links_page AS l
 	LEFT JOIN #links_page_cat AS c ON c.link_category_id = l.link_category
-	WHERE ".$qry." AND l.link_class REGEXP '".e_CLASS_REGEXP."'
+	WHERE ".$qry." l.link_class REGEXP '".e_CLASS_REGEXP."'
 	ORDER BY l.link_id DESC LIMIT 0,".$arr[7]." 
 	";
 
@@ -34,7 +34,7 @@
 			$HEADING	= "<a href='".$row['link_url']."' target='_blank' title='".$row['link_name']."'>".$rowheading."</a>";
 			$AUTHOR		= "";
 			$CATEGORY	= ($arr[4] ? "<a href='".e_PLUGIN."links_page/links.php?cat.".$row['link_category_id']."'>".$row['link_category_name']."</a>" : "");
-			$DATE		= "";
+			$DATE		= ($arr[5] ? ($row['link_datestamp'] > 0 ? $this -> getListDate($row['link_datestamp'], $mode) : "") : "");
 			$INFO		= "";
 			$LIST_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );
 
