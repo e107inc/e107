@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-20 14:14:57 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-20 22:36:43 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -23,12 +23,12 @@ if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE."/lan_links_page.php
 	@include_once(e_PLUGIN."links_page/languages/English/lan_links_page.php");
 }
 $eplug_name = "Links Page";
-$eplug_version = "1.0";
-$eplug_author = "e107";
+$eplug_version = "1.1";
+$eplug_author = "Lisa";
 $eplug_url = "http://e107.org";
-$eplug_email = "jalist@e107.org";
+$eplug_email = "lisa@eindhovenseschool.net";
 $eplug_description = "Links Page For Displaying External Web Links";
-$eplug_compatible = "e107v6";
+$eplug_compatible = "e107v7";
 $eplug_readme = "";
 $eplug_latest = TRUE; //Show reported threads in admin (use e_latest.php)
 $eplug_status = TRUE; //Show post count in admin (use e_status.php)
@@ -69,8 +69,12 @@ $eplug_tables = array(
 	link_category_name varchar(100) NOT NULL default '',
 	link_category_description varchar(250) NOT NULL default '',
 	link_category_icon varchar(100) NOT NULL default '',
+	link_category_order varchar(100) NOT NULL default '0',
+	link_category_class varchar(100) NOT NULL default '0',
+	link_category_datestamp int(10) unsigned NOT NULL default '',
 	PRIMARY KEY  (link_category_id)
 	) TYPE=MyISAM;",
+
 	"CREATE TABLE ".MPREFIX."links_page (
 	link_id int(10) unsigned NOT NULL auto_increment,
 	link_name varchar(100) NOT NULL default '',
@@ -82,6 +86,7 @@ $eplug_tables = array(
 	link_refer int(10) unsigned NOT NULL default '0',
 	link_open tinyint(1) unsigned NOT NULL default '0',
 	link_class tinyint(3) unsigned NOT NULL default '0',
+	link_datestamp int(10) unsigned NOT NULL default '',
 	PRIMARY KEY  (link_id)
 	) TYPE=MyISAM;" );
 	
@@ -98,15 +103,16 @@ $eplug_done = LCLAN_102;
 // upgrading ... //
 	
 $upgrade_add_prefs = "";
-	
 $upgrade_remove_prefs = "";
-	
-$upgrade_alter_tables = "";
-	
-$eplug_upgrade_done = "";
-	
-	
-	
-	
-	
+//$eplug_done = 'The Links_page is now installed';
+
+$upgrade_alter_tables = array(
+"ALTER TABLE ".MPREFIX."links_page ADD link_datestamp int(10) unsigned NOT NULL default '0'", 
+"ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_order varchar(100) NOT NULL default '0'", 
+"ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_class varchar(100) NOT NULL default '0'", 
+"ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_datestamp int(10) unsigned NOT NULL default '0'"
+);
+
+$eplug_upgrade_done = 'Links_page successfully upgraded, now using version: '.$eplug_version;
+
 ?>
