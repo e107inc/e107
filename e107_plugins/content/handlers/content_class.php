@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.63 $
-|		$Date: 2005-06-16 10:10:22 $
+|		$Revision: 1.64 $
+|		$Date: 2005-06-20 13:27:24 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1185,27 +1185,31 @@ class content{
 				$data .= "		".chr(36)."text .= (".chr(36)."content_pref[\"content_menu_cat_caption_".chr(36)."menutypeid\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_cat_caption_".chr(36)."menutypeid\"] : CONTENT_MENU_LAN_3).\"<br />\";\n";
 				$data .= "\n";
 				$data .= "		".chr(36)."newparent = \"\";\n";
+				$data .= "		".chr(36)."checkid = \"\";\n";
 				$data .= "		".chr(36)."newarray = array_merge_recursive(".chr(36)."array);\n";
 				$data .= "		for(".chr(36)."a=0;".chr(36)."a<count(".chr(36)."newarray);".chr(36)."a++){\n";
 				$data .= "			for(".chr(36)."b=0;".chr(36)."b<count(".chr(36)."newarray[".chr(36)."a]);".chr(36)."b++){\n";
 				$data .= "				".chr(36)."newparent[".chr(36)."newarray[".chr(36)."a][".chr(36)."b]] = ".chr(36)."newarray[".chr(36)."a][".chr(36)."b+1];\n";
+				$data .= "				if( (".chr(36)."content_pref[\"content_menu_cat_main_".chr(36)."menutypeid\"] && ".chr(36)."newarray[".chr(36)."a][".chr(36)."b] == ".chr(36)."menutypeid) || ".chr(36)."newarray[".chr(36)."a][".chr(36)."b] != ".chr(36)."menutypeid ){\n";
+				$data .= "					".chr(36)."checkid .= \" content_id = '\".".chr(36)."newarray[".chr(36)."a][".chr(36)."b].\"' OR \";\n";
+				$data .= "				}\n";
 				$data .= "				".chr(36)."b++;\n";
 				$data .= "			}\n";
 				$data .= "		}\n";
+				$data .= "		".chr(36)."checkid = substr(".chr(36)."checkid,0,-3);\n";
 				$data .= "		if(!is_object(".chr(36)."sql)){ ".chr(36)."sql = new db; }\n";
-				$data .= "			foreach(".chr(36)."newparent as ".chr(36)."key => ".chr(36)."value){\n";
-				$data .= "				if( (".chr(36)."content_pref[\"content_menu_cat_main_".chr(36)."menutypeid\"] && ".chr(36)."key == ".chr(36)."menutypeid) || ".chr(36)."key != ".chr(36)."menutypeid ){\n";
-				$data .= "					".chr(36)."sql -> db_Select(".chr(36)."plugintable, \"*\", \"content_id = '\".".chr(36)."key.\"' \");\n";
-				$data .= "					".chr(36)."row = ".chr(36)."sql -> db_Fetch();\n";
+				
+				$data .= "		if(".chr(36)."sql -> db_Select(".chr(36)."plugintable, \"*\", \" \".".chr(36)."checkid.\" ORDER BY content_order \")){\n";
+				$data .= "			while(".chr(36)."row = ".chr(36)."sql -> db_Fetch()){\n";
 				$data .= "\n";
-				$data .= "					//define icon\n";
-				$data .= "					".chr(36)."ICON = \"\";\n";
-				$data .= "					if(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"0\"){ ".chr(36)."ICON = \"\";\n";
-				$data .= "					}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"1\"){ ".chr(36)."ICON = \"<img src='\".THEME.\"images/bullet2.gif' alt='' style='border:0;' />\";\n";
-				$data .= "					}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"2\"){ ".chr(36)."ICON = \"&middot\";\n";
-				$data .= "					}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"3\"){ ".chr(36)."ICON = \"º\";\n";
-				$data .= "					}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"4\"){ ".chr(36)."ICON = \"&raquo;\";\n";
-				$data .= "					}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"5\"){\n";
+				$data .= "				//define icon\n";
+				$data .= "				".chr(36)."ICON = \"\";\n";
+				$data .= "				if(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"0\"){ ".chr(36)."ICON = \"\";\n";
+				$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"1\"){ ".chr(36)."ICON = \"<img src='\".THEME.\"images/bullet2.gif' alt='' style='border:0;' />\";\n";
+				$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"2\"){ ".chr(36)."ICON = \"&middot\";\n";
+				$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"3\"){ ".chr(36)."ICON = \"º\";\n";
+				$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"4\"){ ".chr(36)."ICON = \"&raquo;\";\n";
+				$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"5\"){\n";
 				$data .= "					if(".chr(36)."row['content_icon'] != \"\" && file_exists(".chr(36)."content_cat_icon_path_small.".chr(36)."row['content_icon']) ){\n";
 				$data .= "						".chr(36)."ICON = \"<img src='\".".chr(36)."content_cat_icon_path_small.".chr(36)."row['content_icon'].\"' alt='' style='border:0;' />\";\n";
 				$data .= "					}else{\n";
@@ -1224,7 +1228,7 @@ class content{
 				$data .= "				".chr(36)."text .= (".chr(36)."ICON ? \"<td style='width:2%; white-space:nowrap; padding-right:5px;'><a href='\".e_PLUGIN.\"content/content.php?cat.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."ICON.\"</a></td>\" : \"\");\n";
 				$data .= "				".chr(36)."text .= \"<td colspan='2'>\";\n";
 				$data .= "				".chr(36)."text .= \"<a href='\".e_PLUGIN.\"content/content.php?cat.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."row['content_heading'].\"</a>\";\n";
-				$data .= "				".chr(36)."text .= (".chr(36)."content_pref[\"content_menu_cat_number_".chr(36)."menutypeid\"] ? \" <span class='smalltext'>(\".".chr(36)."aa -> countCatItems(".chr(36)."key).\")</span>\" : \"\");\n";
+				$data .= "				".chr(36)."text .= (".chr(36)."content_pref[\"content_menu_cat_number_".chr(36)."menutypeid\"] ? \" <span class='smalltext'>(\".".chr(36)."aa -> countCatItems(".chr(36)."row['content_id']).\")</span>\" : \"\");\n";
 				$data .= "				".chr(36)."text .= \"</td>\";\n";
 				$data .= "				".chr(36)."text .= \"</tr>\";\n";
 				$data .= "				".chr(36)."text .= \"</table>\";\n";

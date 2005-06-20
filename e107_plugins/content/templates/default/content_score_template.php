@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_score_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-14 13:04:26 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-20 13:27:24 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -31,12 +31,11 @@ $sc_style['CONTENT_SCORE_TABLE_AUTHOR']['pre'] = "<tr><td class='forumheader3' c
 $sc_style['CONTENT_SCORE_TABLE_AUTHOR']['post'] = "</td></tr>";
 
 $sc_style['CONTENT_SCORE_TABLE_SCORE']['pre'] = "<td class='fcaption' style='width:20%; white-space:nowrap; text-align:right;'>";
-$sc_style['CONTENT_SCORE_TABLE_SCORE']['post'] = "/100</td>";
+$sc_style['CONTENT_SCORE_TABLE_SCORE']['post'] = "</td>";
 
 // ##### CONTENT TOP --------------------------------------------------
 if(!$CONTENT_SCORE_TABLE_START){
-				$CONTENT_SCORE_TABLE_START = "
-				";
+				$CONTENT_SCORE_TABLE_START = "";
 }
 if(!$CONTENT_SCORE_TABLE){
 				$CONTENT_SCORE_TABLE = "
@@ -50,8 +49,7 @@ if(!$CONTENT_SCORE_TABLE){
 					</table>\n";
 }
 if(!$CONTENT_SCORE_TABLE_END){
-				$CONTENT_SCORE_TABLE_END = "
-				";
+				$CONTENT_SCORE_TABLE_END = "";
 }
 // ##### ----------------------------------------------------------------------
 
