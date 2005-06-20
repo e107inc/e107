@@ -3,13 +3,60 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-17 06:01:41 $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish/lan_links_page.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2005-06-20 22:05:10 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Enlaces");
+
+define("LAN_61", "Categorías de enlaces");
+define("LAN_62", "Categorias");
+define("LAN_63", "Categoría");
+define("LAN_64", "En esta categoría");
+define("LAN_65", "Enlace");
+define("LAN_66", "Enlaces");
+define("LAN_67", "Mostrar todos los enlaces");
+define("LAN_68", "Editar");
+define("LAN_69", "Eliminar");
+define("LAN_86", "Categoría:");
+define("LAN_88", "Visitas:");
+define("LAN_89", "Admin: ");
+define("LAN_90", "Añadir nuevo enlace a esta categoría");
+define("LAN_91", "Añadir nueva categoría");
+define("LAN_92", "Enviar un enlace");
+define("LAN_93", "Después de enviar un enlace, éste será revisado por el Administrador antes de activarlo en la página de enlaces.");
+define("LAN_94", "Nombre enlace:");
+define("LAN_95", "URL enlace:");
+define("LAN_96", "Descripción enlace:");
+define("LAN_97", "URL para enlazar botón:");
+define("LAN_98", "Enviar enlace");
+define("LAN_99", "Gracias");
+define("LAN_100", "Su enlace ha sido guardado y será revisado por el Administrador.");
+define("LAN_101", "Haga click para enviar un enlace");
+define("LAN_102", "Hay");
+define("LAN_103", "");
+define("LAN_104", "");
+define("LAN_105", "total/es en");
+define("LAN_106", "Los campos subrayados son obligatorios.");
+define('LAN_107', "No hay enlaces");
+
+define("LAN_Links_1", "Enlaces totales");
+define("LAN_Links_2", "Enlaces totales activados");
+define("LAN_LINKS_3", "Invitado");
+define("LAN_LINKS_4", "Cabecera");
+define("LAN_LINKS_5", "URL");
+define("LAN_LINKS_6", "Orden");
+define("LAN_LINKS_7", "Refer");
+define("LAN_LINKS_8", "ASC");
+define("LAN_LINKS_9", "DESC");
+define("LAN_LINKS_10", "Enlaces Top : Refer");
+define("LAN_LINKS_11", "Enlaces Top : Valoración");
+define("LAN_LINKS_12", "Ver enlaces Top por refer");
+define("LAN_LINKS_13", "Ver enlaces Top por valoración");
+define("LAN_LINKS_14", "Volver a la página de enlaces");
+define("LAN_LINKS_15", "Ordenar por");
 
 define("LCLAN_1", "Opciones Guardadas");
 define("LCLAN_2", "Enlace guardado en la base de datos.");
@@ -154,19 +201,28 @@ define("LCLAN_152", "Icono de categoría : Transferir");
 define("LCLAN_153", "Valor de redimensionar por defecto");
 define("LCLAN_154", "Defina el valor de redimensión del icono del enlace al transferir");
 define("LCLAN_155", "Defina el valor de redimensión del icono de la categoría al transferir");
-define("LCLAN_156", "");
-define("LCLAN_157", "");
-define("LCLAN_158", "");
-define("LCLAN_159", "");
-define("LCLAN_160", "");
-define("LCLAN_161", "");
-define("LCLAN_162", "");
-define("LCLAN_163", "");
-define("LCLAN_164", "");
-define("LCLAN_165", "");
-define("LCLAN_166", "");
-define("LCLAN_167", "");
+define("LCLAN_156", "Clase de categoría");
+define("LCLAN_157", "Defina que usuarios pueden ver esta categoría");
+define("LCLAN_158", "Activando, hará visible la categoría solo a los usuarios de esa clase");
+define("LCLAN_159", "Defina como se abrirá el enlace");
+define("LCLAN_160", "Defina que usuarios verán este enlace");
+define("LCLAN_161", "Active para actualizar el sello de fecha a la hora actual");
+define("LCLAN_162", "Próx Ant");
+define("LCLAN_163", "Mostrar los botones Próx Ant");
+define("LCLAN_164", "Activado, solo un limitado número de enlaces se mostrarán en una sola página, y puede navegar a través de varias páginas para mostrar los otros enlaces.");
+define("LCLAN_165", "Enlaces por página");
+define("LCLAN_166", "¿Cuantos enlaces se mostrarán en una sola página?");
+define("LCLAN_167", "Esto solo se usará si las limitaciones Próx Ant están comprobadas");
 define("LCLAN_168", "");
 define("LCLAN_169", "");
+
+define("LCLAN_ADMINMENU_1", "Opciones de enlace");
+define("LCLAN_ADMINMENU_2", "Gestionar categorías de enlaces");
+define("LCLAN_ADMINMENU_3", "Crear categoría de enlace");
+define("LCLAN_ADMINMENU_4", "Gestionar enlaces");
+define("LCLAN_ADMINMENU_5", "Crear enlace");
+define("LCLAN_ADMINMENU_6", "Opciones");
+define("LCLAN_ADMINMENU_7", "Enlaces enviados");
+define("LCLAN_ADMINMENU_8", "Categorías");
 
 ?>
