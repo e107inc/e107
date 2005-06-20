@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English_notify.php,v $
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English/lan_links_page_notify.php,v $
 |     $Revision: 1.1 $
-|     $Date: 2005-05-31 21:39:16 $
-|     $Author: sweetas $
+|     $Date: 2005-06-20 13:36:44 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 

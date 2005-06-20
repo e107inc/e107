@@ -151,6 +151,16 @@ return $LINK_CAT_SUBMIT;
 SC_END
 
 
+SC_BEGIN LINK_CAT_NEW
+global $LINK_CAT_NEW, $linkspage_pref, $qs, $row;
+if(USER && $row['link_datestamp'] > USERLV){
+$LINK_CAT_NEW = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' />";
+}else{
+$LINK_CAT_NEW = "";
+}
+return $LINK_CAT_NEW;
+SC_END
+
 
 // LINK_TOP_TABLE ------------------------------------------------
 
@@ -228,8 +238,11 @@ global $LINK_RATED_DESC, $linkspage_pref, $tp, $row;
 return ($linkspage_pref['link_desc'] ? $tp->toHTML($row['link_description'], TRUE) : "");
 SC_END
 
-SC_BEGIN LINK_RATED_BACKLINK
-global $LINK_RATED_BACKLINK;
+
+
+
+SC_BEGIN LINK_BACKLINK
+global $LINK_BACKLINK;
 return "<a href='".e_PLUGIN."links_page/links.php'>".LAN_LINKS_14."</a>";
 SC_END
 

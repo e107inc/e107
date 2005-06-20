@@ -3,13 +3,68 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-16 20:37:53 $
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English/lan_links_page.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2005-06-20 13:36:44 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Links");
+	
+define("LAN_61", "Link Categories");
+define("LAN_62", "categories");
+define("LAN_63", "category");
+define("LAN_64", "in this category");
+define("LAN_65", "link");
+define("LAN_66", "links");
+define("LAN_67", "Show All Links");
+define("LAN_68", "edit");
+define("LAN_69", "delete");
+define("LAN_86", "Category:");
+define("LAN_88", "Referrals:");
+define("LAN_89", "Admin: ");
+define("LAN_90", "add new link in this category");
+define("LAN_91", "add new category");
+	
+define("LAN_92", "Submit a link");
+define("LAN_93", "After submitting your link it will be reviewed by a site admin and if appropriate it will be added to the main links page.");
+define("LAN_94", "Link Name:");
+define("LAN_95", "Link URL:");
+define("LAN_96", "Link Description:");
+define("LAN_97", "URL to link button:");
+define("LAN_98", "Submit Link");
+	
+define("LAN_99", "Thankyou");
+define("LAN_100", "Your link has been saved and will be reviewed by a site administrator.");
+define("LAN_101", "Please click here to submit a link");
+	
+define("LAN_102", "There");
+define("LAN_103", "is");
+define("LAN_104", "are");
+define("LAN_105", "total in");
+define("LAN_106", "Underlined fields are required.");
+	
+define("LAN_Links_1", "Total links");
+define("LAN_Links_2", "Total links activated");
+define("LAN_LINKS_3", "Anonymous");
+
+define("LAN_LINKS_4", "heading");
+define("LAN_LINKS_5", "url");
+define("LAN_LINKS_6", "order");
+define("LAN_LINKS_7", "refer");
+define("LAN_LINKS_8", "ASC");
+define("LAN_LINKS_9", "DESC");
+define("LAN_LINKS_10", "Top Links : Refer");
+define("LAN_LINKS_11", "Top Links : Rating");
+define("LAN_LINKS_12", "view top links by refer");
+define("LAN_LINKS_13", "view top links by user rating");
+define("LAN_LINKS_14", "back to links frontpage");
+define("LAN_LINKS_15", "sort by");
+
+define('LAN_107', "There are currently no links");
+
+
+
 
 define("LCLAN_1", "Options Saved");
 define("LCLAN_2", "Link saved to database.");
@@ -160,20 +215,28 @@ define("LCLAN_152", "Category Icon : Upload");
 define("LCLAN_153", "default resize value");
 define("LCLAN_154", "define the default resize value for link icon uploads");
 define("LCLAN_155", "define the default resize value for category icon uploads");
-define("LCLAN_156", "");
-define("LCLAN_157", "");
-define("LCLAN_158", "");
-define("LCLAN_159", "");
-
-define("LCLAN_160", "");
-define("LCLAN_161", "");
-define("LCLAN_162", "");
-define("LCLAN_163", "");
-define("LCLAN_164", "");
-define("LCLAN_165", "");
-define("LCLAN_166", "");
-define("LCLAN_167", "");
+define("LCLAN_156", "Category Class");
+define("LCLAN_157", "define which users can view this category");
+define("LCLAN_158", "Ticking will make the link category visible to only users in that class");
+define("LCLAN_159", "define how the link will be opened");
+define("LCLAN_160", "define which users can view this link");
+define("LCLAN_161", "tick to update timestamp to current time");
+define("LCLAN_162", "next prev");
+define("LCLAN_163", "show next prev buttons");
+define("LCLAN_164", "if enabled only a limited number of links is displayed on a single page, and you can navigate through a number of pages to shown other links.");
+define("LCLAN_165", "links per page");
+define("LCLAN_166", "how many links need to be displayed on a single page?");
+define("LCLAN_167", "this will only be used if the next prev limitations is checked");
 define("LCLAN_168", "");
 define("LCLAN_169", "");
+
+define("LCLAN_ADMINMENU_1", "Link Options");
+define("LCLAN_ADMINMENU_2", "Manage Link Categories");
+define("LCLAN_ADMINMENU_3", "Create Link Category");
+define("LCLAN_ADMINMENU_4", "Manage Links");
+define("LCLAN_ADMINMENU_5", "Create Link");
+define("LCLAN_ADMINMENU_6", "Options");
+define("LCLAN_ADMINMENU_7", "Submitted Links");
+define("LCLAN_ADMINMENU_8", "Categories");
 
 ?>

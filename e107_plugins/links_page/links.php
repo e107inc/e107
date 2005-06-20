@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-15 20:36:14 $
+|     $Revision: 1.12 $
+|     $Date: 2005-06-20 13:36:44 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -28,27 +28,42 @@ require_once(e_PLUGIN.'links_page/link_class.php');
 $lc = new linkclass();
 global $tp;
 
+if(!defined("IMAGE_NEW")){ define("IMAGE_NEW", (file_exists(THEME."generic/new.png") ? THEME."generic/new.png" : e_IMAGE."generic/".IMODE."/new.png")); }
+
 $linkspage_pref = $lc -> getLinksPagePref();
 
-$qs = explode(".", e_QUERY);
-if (is_numeric($qs[0]))
+if(e_QUERY){
+	$qs = explode(".", e_QUERY);
+	
+	if(is_numeric($qs[0])){
+		$from = array_shift($qs);
+	}else{
+		$from = "0";
+	}
+}
+
+if (isset($qs[0]) && $qs[0] == "view" && isset($qs[1]) && is_numeric($qs[1]))
 {
-	$id = $qs[0];
-	if($sql->db_Select("links_page", "*", "link_id='$id' AND link_class REGEXP '".e_CLASS_REGEXP."' "))
+	if($sql->db_Select("links_page", "*", "link_id='$qs[1]' AND link_class REGEXP '".e_CLASS_REGEXP."' "))
 	{
 		$row = $sql->db_Fetch();
-		$sql->db_Update("links_page", "link_refer=link_refer+1 WHERE link_id='$id' ");
+		$sql->db_Update("links_page", "link_refer=link_refer+1 WHERE link_id='$qs[1]' ");
 		header("location:".$row['link_url']);
 		exit;
 	}
 }
 
-
 require_once(HEADERF);
-if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE."_links.php")) {
-	include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE."_links.php");
+if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE."/lan_links_page.php")) {
+	include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE."/lan_links_page.php");
 	} else {
-	include_once(e_PLUGIN."links_page/languages/English_links.php");
+	include_once(e_PLUGIN."links_page/languages/English/lan_links_page.php");
+}
+
+if (file_exists(THEME."links_template.php")) {
+	require_once(THEME."links_template.php");
+	} else {
+	require_once(e_PLUGIN."links_page/links_template.php");
 }
 
 if (isset($_POST['add_link']) && check_class($linkspage_pref['link_submit_class'])) {
@@ -68,37 +83,8 @@ if (isset($_POST['add_link']) && check_class($linkspage_pref['link_submit_class'
 	}
 }
 
-if (e_QUERY == "submit" && check_class($linkspage_pref['link_submit_class'])) {
-	if (!$LINK_SUBMIT_TABLE) {
-		if (file_exists(THEME."links_template.php")) {
-			require_once(THEME."links_template.php");
-			} else {
-			require_once(e_BASE.$THEMES_DIRECTORY."templates/links_template.php");
-		}
-	}
-
-	$link_submit_table_string .= parse_link_submit_table();
-
-	$link_submit_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $LINK_SUBMIT_TABLE_START);
-	$link_submit_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $LINK_SUBMIT_TABLE_END);
-	$text .= $link_submit_table_start.$link_submit_table_string.$link_submit_table_end;
-
-	$ns->tablerender(LAN_92, $text);
-	require_once(FOOTERF);
-	exit;
-}
-
-if (e_QUERY == "" && $linkspage_pref['link_page_categories'])
+if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 {
-	if (!$LINK_MAIN_TABLE) {
-		if (file_exists(THEME."links_template.php")) {
-			require_once(THEME."links_template.php");
-			} else {
-			require_once(e_PLUGIN."links_page/links_template.php");
-		}
-	}
-	$caption = LAN_61;
-
 	if($linkspage_pref['link_cat_sort']){
 		$sort = " ORDER BY ".$linkspage_pref['link_cat_sort']." ";
 		if($linkspage_pref['link_cat_order']){
@@ -110,51 +96,61 @@ if (e_QUERY == "" && $linkspage_pref['link_page_categories'])
 		$sort = " ORDER BY link_category_name ASC ";
 	}
 
-	$category_total = $sql->db_Select("links_page_cat", "*", " ".$sort." ", "mode=no_where");
+	$category_total = $sql->db_Select("links_page_cat", "*", " link_category_class REGEXP '".e_CLASS_REGEXP."' ".$sort." ");
 	if(!is_object($sql2)){ $sql2 = new db; }
 	while ($row = $sql->db_Fetch())
 	{
 		$total_links_cat = $sql2 -> db_Count("links_page", "(*)", " WHERE link_category={$row['link_category_id']} ");
 		$link_main_table_string .= $tp -> parseTemplate($LINK_MAIN_TABLE, FALSE, $link_shortcodes);
 	}
-	$link_main_table_end .= $tp -> parseTemplate($LINK_MAIN_TABLE_END, FALSE, $link_shortcodes);
+	$link_main_table_end = $tp -> parseTemplate($LINK_MAIN_TABLE_END, FALSE, $link_shortcodes);
+	$text = $LINK_MAIN_TABLE_START.$link_main_table_string.$link_main_table_end;
 
-	$text .= $LINK_MAIN_TABLE_START.$link_main_table_string.$link_main_table_end;
-
+	$caption = LAN_61;
 	$ns->tablerender($caption, $text);
+
 } else {
-	$id = e_QUERY;
+
+	if (isset($qs[0]) && $qs[0] == "submit" && check_class($linkspage_pref['link_submit_class'])) {
+
+		$LINK_SUBMIT_CAT = "";
+		$sql = new db;
+		if ($link_cats = $sql->db_Select("links_page_cat", "*", " link_category_class REGEXP '".e_CLASS_REGEXP."' ")) {
+			$LINK_SUBMIT_CAT = "<select name='cat_name' class='tbox'>";
+			while (list($cat_id, $cat_name, $cat_description) = $sql->db_Fetch()) {
+				$LINK_SUBMIT_CAT .= "<option value='$cat_id'>".$cat_name."</option>\n";
+			}
+			$LINK_SUBMIT_CAT .= "</select>";
+		}
+		$text = preg_replace("/\{(.*?)\}/e", '$\1', $LINK_SUBMIT_TABLE);
+
+		$ns->tablerender(LAN_92, $text);
+		require_once(FOOTERF);
+		exit;
+	}
+
 	if ($qs[0] == "cat") {
 		$category = $qs[1];
-		unset($id);
-	}
-	else if ($qs[1] == "cat") {
+	}elseif ($qs[1] == "cat") {
 		$category = $qs[2];
-		$id = $qs[0];
 	}
 	if($qs[0] == "top" || $qs[0] == "rated"){
 		$category = FALSE;
 	}
 
-	if (isset($id) && $id != "top" && $id != "rated")
+	if (isset($qs[0]) && $qs[0] != "top" && $qs[0] != "rated")
 	{
-		$id = $qs[0];
 		$sql->db_Select("links_page_cat", "*");
 	}
 
 	if ($category) {
 		if ($category == "all") {
-			$sql->db_Select("links_page_cat", "*");
+			$sql->db_Select("links_page_cat", "*", "link_category_class REGEXP '".e_CLASS_REGEXP."' ORDER BY link_category_order" );
+			$nextprevquery = "";
 		} else {
-			$sql->db_Select("links_page_cat", "*", "link_category_id='$category'");
-		}
-	}
-
-	if (!$LINK_CAT_TABLE) {
-		if (file_exists(THEME."links_template.php")) {
-			require_once(THEME."links_template.php");
-		} else {
-			require_once(e_PLUGIN."links_page/links_template.php");
+			$sql->db_Select("links_page_cat", "*", "link_category_class REGEXP '".e_CLASS_REGEXP."' AND link_category_id='$category'  ORDER BY link_category_order" );
+			$number				= ($linkspage_pref["link_nextprev_number"] ? $linkspage_pref["link_nextprev_number"] : "20");
+			$nextprevquery		= ($linkspage_pref["link_nextprev"] ? "LIMIT ".$from.",".$number : "");
 		}
 	}
 
@@ -164,11 +160,13 @@ if (e_QUERY == "" && $linkspage_pref['link_page_categories'])
 	if($linkspage_pref['link_sortorder']){
 		$LINK_CAT_SORTORDER = $lc->showLinkSort();
 	}
+
 	$link_cat_table_start = $tp -> parseTemplate($LINK_CAT_TABLE_START, FALSE, $link_shortcodes);
 
 	$sql2 = new db;
 	while (list($link_category_id, $link_category_name, $link_category_description) = $sql->db_Fetch()) {
-		if ($link_total = $sql2->db_Select("links_page", "*", "link_class REGEXP '".e_CLASS_REGEXP."' AND link_category ='$link_category_id' ".$sortorder." ")) {
+		$link_total = $sql2->db_Select("links_page", "*", "link_class REGEXP '".e_CLASS_REGEXP."' AND link_category ='$link_category_id' ");
+		if ($sql2->db_Select("links_page", "*", "link_class REGEXP '".e_CLASS_REGEXP."' AND link_category ='$link_category_id' ".$sortorder." ".$nextprevquery." ")) {
 			unset($text, $link_cat_table_string);
 			$link_activ = 0;
 			while ($row = $sql2->db_Fetch()) {
@@ -190,16 +188,24 @@ if (e_QUERY == "" && $linkspage_pref['link_page_categories'])
 				$caption .= " (<b title='".(ADMIN ? LAN_Links_2 : LAN_Links_1)."' >".$link_total."</b>".(ADMIN ? "/<b title='".(ADMIN ? LAN_Links_1 : "" )."' >".$link_total."</b>" :
 				"").") ";
 				$ns->tablerender($caption, $text);
+
+				if($linkspage_pref["link_nextprev"]){
+					require_once(e_HANDLER."np_class.php");
+					$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
+					$ix = new nextprev(e_SELF, $from, $number, $link_total, NP_3, ($np_querystring ? $np_querystring : ""));
+				}
 			}
 			//$link_activ = 0;
 			$display_links = TRUE;
 		}
 	}
 
-	if($id == "top"){
+	//view top refer
+	if(isset($qs[0]) && $qs[0] == "top"){
 		$text = "";
 		$link_top_table_string = "";
-		$number = ($linkspage_pref['link_pagenumber'] ? $linkspage_pref['link_pagenumber'] : "15");
+		$number				= ($linkspage_pref["link_nextprev_number"] ? $linkspage_pref["link_nextprev_number"] : "20");
+		$nextprevquery		= ($linkspage_pref["link_nextprev"] ? "LIMIT ".$from.",".$number : "");
 
 		$qry = "
 		SELECT l.*, lc.* 
@@ -207,11 +213,12 @@ if (e_QUERY == "" && $linkspage_pref['link_page_categories'])
 		LEFT JOIN #links_page_cat AS lc ON lc.link_category_id = l.link_category  
 		WHERE l.link_class REGEXP '".e_CLASS_REGEXP."' 
 		ORDER BY l.link_refer DESC
-		LIMIT 0,".$number."
 		";
+		$qry2 = $qry." ".$nextprevquery;
 
 		if(!is_object($sql)){ $sql = new db; }
-		if($link_total = $sql2 -> db_Select_gen($qry)){
+		$link_total = $sql2 -> db_Select_gen($qry);
+		if($sql2 -> db_Select_gen($qry2)){
 			$display_links = TRUE;
 			while ($row = $sql2 -> db_Fetch()) {
 				$category = $row['link_category_id'];
@@ -226,12 +233,20 @@ if (e_QUERY == "" && $linkspage_pref['link_page_categories'])
 			$text .= $link_top_table_start.$link_top_table_string.$link_top_table_end;
 			$caption = LAN_LINKS_10;
 			$ns->tablerender($caption, $text);
+
+			if($linkspage_pref["link_nextprev"]){
+				require_once(e_HANDLER."np_class.php");
+				$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
+				$ix = new nextprev(e_SELF, $from, $number, $link_total, NP_3, ($np_querystring ? $np_querystring : ""));
+			}
 		}
 	}
 
-	if($id == "rated"){
+	//view top rated
+	if(isset($qs[0]) && $qs[0] == "rated"){
 		$text = "";
 		$link_rated_table_string = "";
+		$number				= ($linkspage_pref["link_nextprev_number"] ? $linkspage_pref["link_nextprev_number"] : "20");
 
 		$qry = "
 		SELECT l.*, r.* 
@@ -261,7 +276,7 @@ if (e_QUERY == "" && $linkspage_pref['link_page_categories'])
 			}
 			usort($arrRate, create_function('$a,$b','return $a[3]==$b[3]?0:($a[3]>$b[3]?-1:1);'));
 			$linktotalrated = count($arrRate);
-			for($i=0;$i<$linktotalrated;$i++){
+			for($i=$from;$i<$from+$number;$i++){
 				if(isset($arrRate[$i])){
 					$display_links = TRUE;
 
@@ -289,6 +304,12 @@ if (e_QUERY == "" && $linkspage_pref['link_page_categories'])
 			$text .= $link_rated_table_start.$link_rated_table_string.$link_rated_table_end;
 			$caption = LAN_LINKS_11;
 			$ns->tablerender($caption, $text);
+
+			if($linkspage_pref["link_nextprev"]){
+				require_once(e_HANDLER."np_class.php");
+				$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
+				$ix = new nextprev(e_SELF, $from, $number, $linktotalrated, NP_3, ($np_querystring ? $np_querystring : ""));
+			}
 		}
 	}
 	if (!$display_links) {
@@ -298,73 +319,32 @@ if (e_QUERY == "" && $linkspage_pref['link_page_categories'])
 
 require_once(FOOTERF);
 
-function parse_link_submit_table() {
-	global $LINK_SUBMIT_TABLE;
-	$sql = new db;
-	if ($link_cats = $sql->db_Select("links_page_cat")) {
-		$LINK_SUBMIT_CAT = "<select name='cat_name' class='tbox'>";
-		while (list($cat_id, $cat_name, $cat_description) = $sql->db_Fetch()) {
-			if ($cat_name != "Main") {
-				$LINK_SUBMIT_CAT .= "<option value='$cat_id'>".$cat_name."</option>\n";
-			}
-		}
-		$LINK_SUBMIT_CAT .= "</select>";
-	}
-	return(preg_replace("/\{(.*?)\}/e", '$\1', $LINK_SUBMIT_TABLE));
-}
 
 function parse_link_append(){
 	global $category, $linkspage_pref, $row;
 
-	if (isset($category)) {
-		//if ($qs[0] == "cat") {
-		//	$link_append = "<a href='".e_SELF."?".$row['link_id'].".cat.{$category}'>";
-		//} else {
-			if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
-				$link_open_type = $row['link_open'];
-			}else{
-				$link_open_type = $linkspage_pref['link_open_all'];
-			}
-			switch ($link_open_type) {
-				case 1:
-				$link_append = "<a href='".e_SELF."?".$row['link_id'].".cat.{$category}' rel='external'>";
-				break;
-				case 2:
-				$link_append = "<a href='".e_SELF."?".$row['link_id'].".cat.{$category}'>";
-				break;
-				case 3:
-				$link_append = "<a href='".e_SELF."?".$row['link_id'].".cat.{$category}'>";
-				break;
-				case 4:
-				$link_append = "<a href=\"javascript:open_window('".e_SELF."?".$row['link_id'].".cat.{$category}')\">";
-				break;
-				default:
-				$link_append = "<a href='".e_SELF."?".$row['link_id'].".cat.{$category}'>";
-			}
-		//}
-	} else {
-		if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
-			$link_open_type = $row['link_open'];
-		}else{
-			$link_open_type = $linkspage_pref['link_open_all'];
-		}
-		switch ($link_open_type) {
-			case 1:
-			$link_append = "<a href='".e_SELF."?".$row['link_id']."' rel='external'>";
-			break;
-			case 2:
-			$link_append = "<a href='".e_SELF."?".$row['link_id']."'>";
-			break;
-			case 3:
-			$link_append = "<a href='".e_SELF."?".$row['link_id']."'>";
-			break;
-			case 4:
-			$link_append = "<a href=\"javascript:open_window('".e_SELF."?".$row['link_id']."')\">";
-			break;
-			default:
-			$link_append = "<a href='".e_SELF."?".$row['link_id']."'>";
-		}
+	if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
+		$link_open_type = $row['link_open'];
+	}else{
+		$link_open_type = $linkspage_pref['link_open_all'];
 	}
+	switch ($link_open_type) {
+		case 1:
+		$link_append = "<a href='".e_SELF."?view.".$row['link_id']."' rel='external'>";
+		break;
+		case 2:
+		$link_append = "<a href='".e_SELF."?view.".$row['link_id']."'>";
+		break;
+		case 3:
+		$link_append = "<a href='".e_SELF."?view.".$row['link_id']."'>";
+		break;
+		case 4:
+		$link_append = "<a href=\"javascript:open_window('".e_SELF."?view.".$row['link_id']."')\">";
+		break;
+		default:
+		$link_append = "<a href='".e_SELF."?view.".$row['link_id']."'>";
+	}
+
 	return $link_append;
 }
 

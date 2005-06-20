@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-15 20:36:14 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-20 13:36:44 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@
 // MAIN TABLE -------------------------------------------------------------------------------
 global $sc_style, $link_shortcodes;
 
-$sc_style['LINK_MAIN_ICON']['pre'] = "<td rowspan='2' class='forumheader3' style='width:10%; text-align:center; padding-right:5px;'>";
+$sc_style['LINK_MAIN_ICON']['pre'] = "<td rowspan='2' class='forumheader3' style='width:5%; text-align:center; padding-right:5px;'>";
 $sc_style['LINK_MAIN_ICON']['post'] = "</td>";
 
 $sc_style['LINK_MAIN_HEADING']['pre'] = "";
@@ -62,19 +62,21 @@ if (!$LINK_MAIN_TABLE) {
 }
 if (!$LINK_MAIN_TABLE_END) {
 	$LINK_MAIN_TABLE_END = "
-		<table class='fborder' style='width:100%;' cellspacing='0' cellpadding='0'>
-		<tr><td class='forumheader' colspan='2' style='text-align:right;'>
+			<div class='smalltext' style='text-align:right;'>
 			{LINK_MAIN_TOTAL}
 			{LINK_MAIN_SHOWALL}
 			{LINK_MAIN_TOPREFER}
 			{LINK_MAIN_TOPRATED}
-		</td></tr>
-		</table>
+			</div>
 		</div>";
 }
 
 // CATEGORY LIST ----------------------------------------------------------------------------
 global $sc_style, $link_shortcodes;
+
+//general backlink to link frontpage
+$sc_style['LINK_BACKLINK']['pre'] = "<div class='smalltext' style='text-align:right;'>";
+$sc_style['LINK_BACKLINK']['post'] = "</div>";
 
 $sc_style['LINK_CAT_SORTORDER']['pre'] = "<table class='fborder' style='width:100%' cellspacing='0' cellpadding='0'><tr><td class='forumheader' colspan='3'>";
 $sc_style['LINK_CAT_SORTORDER']['post'] = "</td></tr></table><br />";
@@ -97,8 +99,8 @@ $sc_style['LINK_CAT_DESC']['post'] = "</td></tr>";
 $sc_style['LINK_CAT_RATING']['pre'] = "<tr><td colspan='2' class='forumheader' style='line-height:130%;'>";
 $sc_style['LINK_CAT_RATING']['post'] = "</td></tr>";
 
-$sc_style['LINK_CAT_SUBMIT']['pre'] = "<table class='fborder' style='width:100%' cellspacing='0' cellpadding='0'><tr><td class='forumheader' colspan='3' style='text-align:right;'>";
-$sc_style['LINK_CAT_SUBMIT']['post'] = "</td></tr></table>";
+$sc_style['LINK_CAT_SUBMIT']['pre'] = "<div class='smalltext' style='text-align:right;'>";
+$sc_style['LINK_CAT_SUBMIT']['post'] = "</div>";
 
 if (!$LINK_CAT_TABLE_START) {
 	$LINK_CAT_TABLE_START = "
@@ -112,7 +114,7 @@ if (!$LINK_CAT_TABLE) {
 		<tr>
 			{LINK_CAT_BUTTON}
 			<td class='fcaption' style='width:90%'>
-				{LINK_CAT_APPEND} {LINK_CAT_NAME} </a>
+				{LINK_CAT_NEW} {LINK_CAT_APPEND} {LINK_CAT_NAME} </a>
 			</td>
 			{LINK_CAT_REFER}
 		</tr>
@@ -123,7 +125,8 @@ if (!$LINK_CAT_TABLE) {
 }
 if (!$LINK_CAT_TABLE_END) {
 	$LINK_CAT_TABLE_END = "
-		{LINK_CAT_SUBMIT}		
+		{LINK_CAT_SUBMIT}
+		{LINK_BACKLINK}
 		</div>";
 }
 
@@ -147,9 +150,6 @@ $sc_style['LINK_RATED_DESC']['post'] = "</td></tr>";
 $sc_style['LINK_RATED_RATING']['pre'] = "<td colspan='2' class='forumheader' style='line-height:130%; width:25%; white-space:nowrap; text-align:right;'>";
 $sc_style['LINK_RATED_RATING']['post'] = "</td>";
 
-$sc_style['LINK_RATED_BACKLINK']['pre'] = "";
-$sc_style['LINK_RATED_BACKLINK']['post'] = "<br />";
-
 //TOP RATED LINKS
 if (!$LINK_RATED_TABLE_START) {
 	$LINK_RATED_TABLE_START = "
@@ -172,69 +172,46 @@ if (!$LINK_RATED_TABLE) {
 }
 if (!$LINK_RATED_TABLE_END) {
 	$LINK_RATED_TABLE_END = "
-		<table class='fborder' style='width:100%;' cellspacing='0' cellpadding='0'>
-		<tr><td class='forumheader' colspan='2' style='text-align:right;'>
-			{LINK_RATED_BACKLINK}
-		</td></tr>
-		</table>
+		{LINK_BACKLINK}
 		</div>";
 }
 
 // SUBMIT -----------------------------------------------------------------------------------
-
-if (!$LINK_SUBMIT_TABLE_START) {
-	$LINK_SUBMIT_TABLE_START = "
+if (!$LINK_SUBMIT_TABLE) {
+	$LINK_SUBMIT_TABLE = "
 		<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'>
-		<table class='fborder' style='width:100%' cellspacing='0' cellpadding='0'>";
-}
-if (!$LINK_SUBMIT_TABLE) {
-	$LINK_SUBMIT_TABLE .= "
+		<table class='fborder' style='width:100%' cellspacing='0' cellpadding='0'>
+		<tr><td colspan='2' style='text-align:center' class='forumheader2'>".LAN_93."</td></tr>
 		<tr>
-		<td colspan='2' style='text-align:center' class='forumheader2'>".LAN_93."</td>
+			<td class='forumheader3' style='width:30%'>".LAN_86."</td>
+			<td class='forumheader3' style='width:70%'>{LINK_SUBMIT_CAT}</td>
 		</tr>
 		<tr>
-		<td class='forumheader3' style='width:30%'>".LAN_86."</td>
-		<td class='forumheader3' style='width:70%'>
-		{LINK_SUBMIT_CAT}
-		</td>
+			<td class='forumheader3' style='width:30%'><u>".LAN_94."</u></td>
+			<td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_name' size='60' value='' maxlength='100' /></td>
 		</tr>
 		<tr>
-		<td class='forumheader3' style='width:30%'><u>".LAN_94."</u></td>
-		<td class='forumheader3' style='width:30%'>
-		<input class='tbox' type='text' name='link_name' size='60' value='' maxlength='100' />
-		</td>
+			<td class='forumheader3' style='width:30%'><u>".LAN_95."</u></td>
+			<td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_url' size='60' value='' maxlength='200' /></td>
 		</tr>
 		<tr>
-		<td class='forumheader3' style='width:30%'><u>".LAN_95."</u></td>
-		<td class='forumheader3' style='width:30%'>
-		<input class='tbox' type='text' name='link_url' size='60' value='' maxlength='200' />
-		</td>
+			<td class='forumheader3' style='width:30%'><u>".LAN_96."</u></td>
+			<td class='forumheader3' style='width:30%'><textarea class='tbox' name='link_description' cols='59' rows='3'></textarea></td>
 		</tr>
 		<tr>
-		<td class='forumheader3' style='width:30%'><u>".LAN_96."</u></td>
-		<td class='forumheader3' style='width:30%'>
-		<textarea class='tbox' name='link_description' cols='59' rows='3'></textarea>
-		</td>
+			<td class='forumheader3' style='width:30%'>".LAN_97."</td>
+			<td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_button' size='60' value='' maxlength='200' /></td>
 		</tr>
 		<tr>
-		<td class='forumheader3' style='width:30%'>".LAN_97."</td>
-		<td class='forumheader3' style='width:30%'>
-		<input class='tbox' type='text' name='link_button' size='60' value='' maxlength='200' />
-		</td>
+			<td colspan='2' style='text-align:center' class='forumheader3'><span class='smalltext'>".LAN_106."</span></td>
 		</tr>
 		<tr>
-		<td colspan='2' style='text-align:center' class='forumheader3'><span class='smalltext'>".LAN_106."</span></td>
+			<td colspan='2' style='text-align:center' class='forumheader'><input class='button' type='submit' name='add_link' value='".LAN_98."' /></td>
 		</tr>
-		<tr>
-		<td colspan='2' style='text-align:center' class='forumheader'>
-		<input class='button' type='submit' name='add_link' value='".LAN_98."' />
-		</td>
-		</tr>";
-}
-if (!$LINK_SUBMIT_TABLE_END) {
-	$LINK_SUBMIT_TABLE_END = "
-		</table></form></div>";
+		</table>
+		</form>
+		</div>";
 }
 
 ?>
