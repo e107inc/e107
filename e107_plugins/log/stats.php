@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-05-25 18:26:58 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.24 $
+|     $Date: 2005-06-21 21:02:24 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -31,7 +31,7 @@ if(!check_class($pref['statUserclass'])) {
 }
 
 if (!$pref['statActivate']) {
-	$text = (ADMIN ? "<div style='text-align:center'>".LAN_371."</div>" : "<div style='text-align:center'>".ADSTAT_L5."</div>");
+	$text = (ADMIN ? "<div style='text-align:center'>".ADSTAT_L41."</div>" : "<div style='text-align:center'>".ADSTAT_L5."</div>");
 	$ns->tablerender(ADSTAT_L6, $text);
 	require_once(FOOTERF);
 	exit;
@@ -45,6 +45,7 @@ if(strstr(e_QUERY, ".")) {
 }
 
 $action = intval($action);
+$toremove = $order;
 $order = intval($order);
 
 $stat = new siteStats();
@@ -129,6 +130,9 @@ switch($action) {
 		break;
 	case 11:
 			$text = $stat -> renderMonthly();
+		break;
+	case "rem":
+		$stat -> remove_entry($toremove);
 		break;
 }
 
@@ -306,16 +310,10 @@ class siteStats {
 			if($info['ttlv']){
 				$percentage = round(($info['ttlv']/$total) * 100, 2);
 				$text .= "<tr class='forumheader3'>
-				<td style='width: 20%;'><img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a>
+				<td style='width: 20%;'>
+				".(ADMIN && getperms("P") ? "<a href='".e_SELF."?rem.".$key."'><img src='".e_PLUGIN."log/images/remove.png' alt='".ADSTAT_L39."' title='".ADSTAT_L39."' style='vertical-align: middle; border: 0;' /></a> " : "")."
+				<img src='".e_PLUGIN."log/images/html.png' alt='' style='vertical-align: middle;' /> <a href='".$info['url']."'>".$key."</a>
 				";
-				
-				if(ADMIN && getperms("P"))
-				{
-					$text .= "<a href='".e_SELF."?rem".$key."'><img src='".e_PLUGIN."log/images/remove.png' alt='".ADSTAT_L39."' title='".ADSTAT_L39."' style='vertical-align: middle; border: 0;' /></a>
-					";
-				}
-				
-				
 				$text .= "</td>
 				<td style='width: 70%;'>".$this->bar($percentage, $info['ttlv'])."</td>
 				<td style='width: 10%; text-align: center;'>".$percentage."%</td>
@@ -1124,21 +1122,22 @@ class siteStats {
 	
 	function bar($percen, $val)
 	{
-		
 		if($percen > 99) $percen = 98;
-
 		$ptext = "
-			<div style='background-image: url(".$this -> barl."); width: 5px; height: 14px; float: left;'></div><div style='background-image: url(".$this -> bar."); width: ".$percen."%; height: 14px; float: left;'></div><div style='background-image: url(".$this -> barr."); width: 5px; height: 14px; float: left;'></div>
-			".($percen > 95 ? "<br />" : "")."&nbsp;".$val;
-			
-	
-		
-
+		<div style='background-image: url(".$this -> barl."); width: 5px; height: 14px; float: left;'></div><div style='background-image: url(".$this -> bar."); width: ".$percen."%; height: 14px; float: left;'></div><div style='background-image: url(".$this -> barr."); width: 5px; height: 14px; float: left;'></div>".($percen > 95 ? "<br />" : "")."&nbsp;".$val;
 		return ($ptext);
+	}
 
-
-		//return ($percen ? "<div style='background-image: url(".$this -> barl."); width: 5px; height: 14px; float: left;'></div><div style='background-image: url(".$this -> bar."); width: ".$percen."%; height: 14px; float: left;'></div><div style='background-image: url(".$this -> barr."); width: 5px; height: 14px; float: left;'></div>" : "");
-
+	function remove_entry($toremove)
+	{
+		global $sql;
+		$sql -> db_Select("logstats", "*", "log_id='pageTotal'");
+		$row = $sql -> db_Fetch();
+		$dbPageInfo = unserialize($row[2]);
+		unset($dbPageInfo[$toremove]);
+		$dbPageDone = serialize($dbPageInfo);
+		$sql -> db_Update("logstats", "log_data='$dbPageDone' WHERE log_id='pageTotal' ");
+		$this -> renderAlltimeVisits();
 	}
 
 }
