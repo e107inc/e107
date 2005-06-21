@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-06-16 12:08:46 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.16 $
+|     $Date: 2005-06-21 18:29:05 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -78,18 +78,6 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
  	$mail->AltBody = $text; //Include regular plaintext as well
 	$mail->AddAddress($send_to, $to_name);
 
-	if(!function_exists("mime_content_type") && $attachments)
-	{
-		echo "
-<script type='text/javascript'>
-<!--
-alert ('Unable to send attachments - mime_content_type function  not available on your server.');
-//-->
-</script>
-";
-	}
-	else
-	{
 		if ($attachments){
 			if (is_array($attachments))	{
 				for ($i = 0; $i < count($attachments); $i++){
@@ -106,7 +94,7 @@ alert ('Unable to send attachments - mime_content_type function  not available o
 				$mail->AddEmbeddedImage($inline_img, md5($inline_img), basename($inline_img),"base64",mime_content_type($inline_img));
 			}
 		}
-	}
+
 
 	if($Cc){
         $tmp = explode(",",$Cc);
@@ -198,5 +186,51 @@ function validatemail($Email) {
 	return $result;
 } // end of function
 
+
+if(!function_exists("mime_content_type")){
+function mime_content_type($filename){
+
+    $mime[".zip"] = "application/x-zip-compressed";
+	$mime[".gif"] = "image/gif";
+	$mime[".png"] = "image/x-png";
+	$mime[".jpg"] = "image/jpeg";
+	$mime[".jpeg"] = "image/jpeg";
+	$mime[".tif"] = "image/tiff";
+	$mime[".tiff"] = "image/tiff";
+	$mime[".pdf"] = "application/pdf";
+	$mime[".hqx"] = "application/mac-binhex40";
+	$mime[".doc"] = "application/msword";
+	$mime[".dot"] = "application/msword";
+	$mime[".exe"] = "application/octet-stream";
+	$mime[".au"] = "audio/basic";
+	$mime[".snd"] = "audio/basic";
+	$mime[".mid"] = "audio/mid";
+	$mime[".mp3"] = "audio/mpeg";
+	$mime[".aif"] = "audio/x-aiff";
+	$mime[".ra"] = "audio/x-pn-realaudio";
+	$mime[".ram"] = "audio/x-pn-realaudio";
+	$mime[".wav"] = "audio/x-wav";
+	$mime[".bmp"] = "image/bmp";
+	$mime[".ra"] = "audio/x-pn-realaudio";
+	$mime[".htm"] = "text/html";
+	$mime[".html"] = "text/html";
+	$mime[".css"] = "text/css";
+	$mime[".txt"] = "text/plain";
+	$mime[".mov"] = "video/quicktime";
+	$mime[".mpg"] = "video/mpeg";
+	$mime[".asx"] = "video/x-ms-asf";
+	$mime[".avi"] = "video/x-msvideo";
+
+
+   return $mime[strrchr($filename, '.')];
+}
+
+
+
+
+
+
+
+}
 
 ?>
