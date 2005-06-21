@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-01 03:16:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-21 22:46:38 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -74,12 +74,12 @@ define("FORLAN_62", "Forum Options");
 define("FORLAN_63", "Ranks");
 define("FORLAN_64", "Enter your levels here, if left blank generic stars will be used to denote level. Seperate levels with comma. Maximum of 10 levels, lowest first.");
 define("FORLAN_65", "Forum Title");
-	
+
 define("FORLAN_70", "Enable file / image attachments");
 define("FORLAN_71", "Allow users to upload file or image with their forum post,");
 define("FORLAN_72", "Update Order");
 define("FORLAN_73", "Order Updated");
-	
+
 define("FORLAN_75", "Parents");
 define("FORLAN_76", "Forums Front Page");
 define("FORLAN_77", "Create Forums");
@@ -93,21 +93,21 @@ define("FORLAN_84", "Members Only");
 define("FORLAN_85", "Read Only");
 define("FORLAN_86", "Admin Only");
 define("FORLAN_87", "Prune topics with no replies in this many days:");
-	
+
 define("FORLAN_88", "Prune topics with no replies in this many days:");
-	
+
 define("FORLAN_89", "Delete posts completely");
 define("FORLAN_90", "Make posts inactive");
-	
+
 define("FORLAN_91", "post(s) made inactive");
 define("FORLAN_92", "thread(s) deleted");
 define("FORLAN_93", "reply (replies) deleted");
-	
+
 define("FORLAN_94", "Set Ranks");
 define("FORLAN_95", "Ranks saved");
 define("FORLAN_96", "Forum deleted");
 define("FORLAN_97", "Parent deleted");
-	
+
 define("FORLAN_98", "Rank Name");
 define("FORLAN_99", "number of points before level change");
 define("FORLAN_100", "upload images to e107_themes/Your_Theme/forum/");
@@ -116,15 +116,15 @@ define("FORLAN_102", "Threshold");
 define("FORLAN_103", "Site Admin");
 define("FORLAN_104", "Rank Image");
 define("FORLAN_105", "Forum Moderator");
-	
-	
+
+
 define("FORLAN_106", "Prune Type:");
 define("FORLAN_107", "Forum");
 define("FORLAN_108", " deleted");
 define("FORLAN_109", "days:");
 define("FORLAN_110", "Prune");
 define("FORLAN_111", "deactivate");
-	
+
 define("FORLAN_112", "Enable Redirect");
 define("FORLAN_113", "Tick this to make browser redirect to forum page after replying");
 define("FORLAN_114", "User Custom Title");
@@ -145,7 +145,7 @@ define("WMGLAN_5", "Set Forum Rules");
 define("WMGLAN_6", "Activate?");
 define("FORLAN_124", "Links in new window");
 define("FORLAN_125", "Tick here to make all links open in a new window (<i>this will apply sitewide</i>). ");
-	
+
 //v.617
 define("FORLAN_126", "Show Tooltips");
 define("FORLAN_127", "Tick here to show a tooltip containing the first post of the thread when mouse hovers over thread name. ");
@@ -155,18 +155,18 @@ define("FORLAN_130", "click here");
 define("FORLAN_131", "to set max file size, allowed types etc");
 define("FORLAN_132", "Emphasize Sticky Threads");
 define("FORLAN_133", "Give extra emphasis to sticky threads (separate thread sections and headers)");
-	
+
 define("FORLAN_134", "Maximum width of uploaded image");
 define("FORLAN_135", "Leave blank to disable auto resizing of images");
-	
+
 define("FORLAN_136", "Create link to full size image");
 define("FORLAN_137", "Enabling this will resize larger images and also create a link to the original full size image.  If disabled, original image will be discarded");
 
 define("FORLAN_138", "Prune these forums");
-define("FORLAN_139", "To use this setting you also need to tick 'Enable image posting' on the <a href='".e_ADMIN."image.php'>images</a> page");	
+define("FORLAN_139", "To use this setting you also need to tick 'Enable image posting' on the <a href='".e_ADMIN."image.php'>images</a> page");
 
-define("FORLAN_140", "View");	
-define("FORLAN_141", "Post");	
+define("FORLAN_140", "View");
+define("FORLAN_141", "Post");
 
 define("FORLAN_142", "Post permission");
 define("FORLAN_143", "Indicates who can can post to the forum");
@@ -183,5 +183,7 @@ define("FORLAN_151", "ID");
 define("FORLAN_152", "posts");
 define("FORLAN_153", "Tools");
 define("FORLAN_154", "Reply Deleted");
+
+define("FORLAN_155", "Forum Categories");
 
 ?>

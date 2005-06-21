@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-06-14 20:46:16 $
+|     $Revision: 1.40 $
+|     $Date: 2005-06-21 22:46:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -53,7 +53,56 @@ if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LAN_DELETE)], $matches
 	$del_id = $matches[2];
 }
 
-if (IsSet($_POST['inc'])) {
+
+if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && isset($_POST['sublink_parent']) ){
+
+	$subtype = $_POST['sublink_type'];
+	$sublink = $linkpost->sublink_list($subtype);
+    if(!is_object($sql2)){
+    	$sql2 = new db;
+	}
+
+	$sql -> db_Select("links", "*", "link_id = '".$_POST['sublink_parent']."'");
+	$par = $sql-> db_Fetch();
+    extract($par);
+
+	$sql -> db_Select($sublink['table'], "*", $sublink['query']);
+	$count = 1;
+    while($row = $sql-> db_Fetch()){
+    	$subcat = $row[($sublink['fieldid'])];
+		$name = $row[($sublink['fieldname'])];
+		$subname = "submenu.$link_name.$name";
+		$suburl = str_replace("#",$subcat,$sublink['url']);
+		$subicon = ($sublink['fieldicon']) ? $row[($sublink['fieldicon'])] : $link_button;
+        $subdiz = ($sublink['fielddiz']) ? $row[($sublink['fielddiz'])] : $link_description;
+		$subparent = $_POST['sublink_parent'];
+
+	   	if($sql2->db_Insert("links", "0, '$subname', '$suburl', '$subdiz', '$subicon', '$link_category', '$count', '$subparent', '$link_open', '$link_class' ")){
+        	$message .= LAN_CREATED. " ($name)<br />";
+		}else{
+        	$message .= LAN_CREATED_FAILED. " ($name)<br />";
+		}
+
+		$count++;
+	}
+
+    if($message){
+		$ns -> tablerender(LAN_CREATED, $message);
+	}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+if (isset($_POST['inc'])) {
 	$qs = explode(".", $_POST['inc']);
 	$linkid = $qs[0];
 	$link_order = $qs[1];
@@ -61,7 +110,7 @@ if (IsSet($_POST['inc'])) {
 	$sql->db_Update("links", "link_order=link_order-1 WHERE link_id='".$linkid."'");
 }
 
-if (IsSet($_POST['dec'])) {
+if (isset($_POST['dec'])) {
 	$qs = explode(".", $_POST['dec']);
 	$linkid = $qs[0];
 	$link_order = $qs[1];
@@ -116,6 +165,10 @@ if (!e_QUERY && !isset($_POST['create']) || $action == 'main') {
 
 if ($action == 'opt') {
 	$linkpost->show_pref_options();
+}
+
+if($action == "sublinks"){
+  $linkpost->show_sublink_generator();
 }
 
 require_once('footer.php');
@@ -438,6 +491,99 @@ class links {
 
 
 	}
+
+// -------------------------- Sub links generator ------------->
+
+function show_sublink_generator() {
+	global $ns,$sql;
+
+    $sublinks = $this->sublink_list();
+
+	$text = "<div style='text-align:center'>
+	<form method='post' action='".e_SELF."?".e_QUERY."'>\n
+	<table style='".ADMIN_WIDTH."' class='fborder'>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>
+	".LINKLAN_6."<br />
+	</td>
+	<td class='forumheader3' style='width:50%;text-align:center'>
+	<select name='sublink_type' class='tbox'>\n
+	<option value=''></option>";
+    foreach($sublinks as $key=>$type){
+    	$text .= "<option value='$key'>".$type['title']."</option>\n";
+	}
+	$text .="</select>\n
+	</td>
+	</tr>
+
+    	<tr>
+	<td style='width:50%' class='forumheader3'>
+	".LINKLAN_7."<br />
+	</td>
+	<td class='forumheader3' style='width:50%;text-align:center'>
+	<select name='sublink_parent' class='tbox'>\n
+	<option value=''></option>";
+    $sql -> db_Select("links", "*", "link_parent='0' ORDER BY link_name ASC");
+	while($row = $sql-> db_Fetch()){
+		$text .= "<option value='".$row['link_id']."'>".$row['link_name']."</option>\n";
+	}
+	$text .="</select>\n
+	</td>
+	</tr>
+
+	<tr style='vertical-align:top'>
+	<td colspan='2' style='text-align:center' class='forumheader'>
+	<input class='button' type='submit' name='generate_sublinks' value='".LINKLAN_5."' />
+	</td>
+	</tr>
+
+	</table>
+	</form>
+	</div>";
+	$ns->tablerender("Sublinks Generator", $text);
+}
+
+
+
+function sublink_list($name=""){
+    global $sql,$PLUGINS_DIRECTORY;
+	$sublink_type['news']['title'] = LINKLAN_8; // "News Categories";
+	$sublink_type['news']['table'] = "news_category";
+	$sublink_type['news']['query'] = "category_id !='-2' ORDER BY category_name ASC";
+    $sublink_type['news']['url'] = "news.php?cat.#";
+	$sublink_type['news']['fieldid'] = "category_id";
+	$sublink_type['news']['fieldname'] = "category_name";
+	$sublink_type['news']['fieldicon'] = "category_icon";
+
+    $sublink_type['downloads']['title'] = LINKLAN_9; //"Download Categories";
+	$sublink_type['downloads']['table'] = "download_category";
+	$sublink_type['downloads']['query'] = "download_category_parent ='0' ORDER BY download_category_name ASC";
+	$sublink_type['downloads']['url'] =   "download.php?list.#";
+	$sublink_type['downloads']['fieldid'] = "download_category_id";
+	$sublink_type['downloads']['fieldname'] = "download_category_name";
+	$sublink_type['downloads']['fieldicon'] = "download_category_icon";
+
+
+	if ($sql -> db_Select("plugin", "plugin_path", "plugin_installflag = '1'")) {
+		while ($row = $sql -> db_Fetch()) {
+			$sublink_plugs[] = $row['plugin_path'];
+		}
+	}
+
+	foreach ($sublink_plugs as $plugin_id) {
+		if (is_readable(e_PLUGIN.$plugin_id.'/e_linkgen.php')) {
+		  	require_once(e_PLUGIN.$plugin_id.'/e_linkgen.php');
+		}
+	}
+    if($name){
+    	return $sublink_type[$name];
+	}
+
+	return $sublink_type;
+
+}
+
 }
 
 function links_adminmenu() {
@@ -454,8 +600,8 @@ function links_adminmenu() {
 	$var['opt']['text'] = LAN_OPTIONS;
 	$var['opt']['link'] = e_SELF."?opt";
 
-	$var['sub']['text'] = LCLAN_83;
-	$var['sub']['link'] = "submenusgen.php";
+	$var['sub']['text'] = LINKLAN_4;
+	$var['sub']['link'] = e_SELF."?sublinks";
 
 	show_admin_menu(LCLAN_68, $action, $var);
 }
