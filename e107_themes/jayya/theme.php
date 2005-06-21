@@ -194,6 +194,7 @@ $COMMENTSTYLE = "
 <td style='width: 10%;'>{USERNAME}<br />{TIMEDATE}<br />{AVATAR}<br />{REPLY}</td>
 <td style='width: 90%; background-color: #f9f9fd; vertical-align: top; padding: 4px'>
 {COMMENT}
+{RATING}
 </td>
 </tr>
 </table>
