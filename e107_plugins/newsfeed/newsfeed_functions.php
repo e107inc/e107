@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_functions.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-22 20:43:03 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-21 20:28:46 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -35,7 +35,6 @@ function checkUpdate($query = "newsfeed_active=2 OR newsfeed_active=3")
 				if($rawData = $xml -> getRemoteXmlFile($newsfeed_url))
 				{
 					$rss = new MagpieRSS( $rawData );
-
 					$serializedArray = addslashes(serialize($rss));
 
 					$newsfeed_des = FALSE;
@@ -155,9 +154,9 @@ function newsfeed_info($which)
 
 			foreach ($items as $item)
 			{
-				$FEEDITEMLINK = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], TRUE)."</a>";
-				$feeditemtext = strip_tags(ereg_replace("&#091;.*]", "", $tp -> toHTML($item['description'], TRUE)));
-				$FEEDITEMTEXT = (strlen($feeditemtext) > $truncate ? substr($feeditemtext, 0, $truncate).$truncate_string : $feeditemtext);
+				$FEEDITEMLINK = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], TRUE)."</a>\n";
+				$feeditemtext = preg_replace("#\[[a-z0-9=]+\]|\[\/[a-z]+\]|\{[A-Z_]+\}#si", "", $item['description']);
+				$FEEDITEMTEXT = (strlen($feeditemtext) > $truncate ? substr($feeditemtext, 0, $truncate).$truncate_string : $feeditemtext)."\n";
 				$FEEDITEMCREATOR = $tp -> toHTML($item['author'], TRUE);
 				$data .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MENU);
 			}
