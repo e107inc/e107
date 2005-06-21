@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-06-17 20:31:54 $
+|     $Revision: 1.26 $
+|     $Date: 2005-06-21 14:32:31 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -426,6 +426,7 @@ class e107_user_extended
 		{
 			while($row = $sql->db_Fetch())
 			{
+				set_time_limit(30);
 				$sql2->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$row['user_id']}')");
 				$newvals = "";
 				foreach($flist as $f)
@@ -442,7 +443,10 @@ class e107_user_extended
 				$sql2->db_Select_gen($qry);
 			}
 		}
-		$sql->db_Select_gen("ALTER TABLE #user DROP user_".$f);
+		foreach($flist as $f)
+		{
+			$sql->db_Select_gen("ALTER TABLE #user DROP {$f}");
+		}
 	}
 }
 ?>
