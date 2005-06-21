@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-06-21 07:15:43 $
-|     $Author: lisa_ $
+|     $Revision: 1.14 $
+|     $Date: 2005-06-21 17:53:26 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -34,7 +34,7 @@ $linkspage_pref = $lc -> getLinksPagePref();
 
 if(e_QUERY){
 	$qs = explode(".", e_QUERY);
-	
+
 	if(is_numeric($qs[0])){
 		$from = array_shift($qs);
 	}else{
@@ -54,11 +54,11 @@ if (isset($qs[0]) && $qs[0] == "view" && isset($qs[1]) && is_numeric($qs[1]))
 }
 
 require_once(HEADERF);
-if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE."/lan_links_page.php")) {
-	include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE."/lan_links_page.php");
+	if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php")) {
+		include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
 	} else {
-	include_once(e_PLUGIN."links_page/languages/English/lan_links_page.php");
-}
+		include_once(e_PLUGIN."links_page/languages/English.php");
+	}
 
 if (file_exists(THEME."links_template.php")) {
 	require_once(THEME."links_template.php");
@@ -210,10 +210,10 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 		$nextprevquery		= ($linkspage_pref["link_nextprev"] ? "LIMIT ".$from.",".$number : "");
 
 		$qry = "
-		SELECT l.*, lc.* 
+		SELECT l.*, lc.*
 		FROM #links_page AS l
-		LEFT JOIN #links_page_cat AS lc ON lc.link_category_id = l.link_category  
-		WHERE l.link_class REGEXP '".e_CLASS_REGEXP."' 
+		LEFT JOIN #links_page_cat AS lc ON lc.link_category_id = l.link_category
+		WHERE l.link_class REGEXP '".e_CLASS_REGEXP."'
 		ORDER BY l.link_refer DESC
 		";
 		$qry2 = $qry." ".$nextprevquery;
@@ -251,9 +251,9 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 		$number				= ($linkspage_pref["link_nextprev_number"] ? $linkspage_pref["link_nextprev_number"] : "20");
 
 		$qry = "
-		SELECT l.*, r.* 
+		SELECT l.*, r.*
 		FROM #rate AS r
-		LEFT JOIN #links_page AS l ON l.link_id = r.rate_itemid  
+		LEFT JOIN #links_page AS l ON l.link_id = r.rate_itemid
 		WHERE l.link_class REGEXP '".e_CLASS_REGEXP."' AND r.rate_table='links_page'
 		ORDER by r.rate_itemid
 		";
@@ -271,7 +271,7 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 				$rate_avg	= $rating[1].".".($rating[2] ? $rating[2] : "0");	// rate average
 
 				$arrRate[] = array($row['rate_itemid'], $row['rate_rating'], $row['rate_votes'], $rate_avg, $rating[1], $rating[2], $row['link_id'], $row['link_name'], $row['link_url'], $row['link_description'], $row['link_button'], $row['link_category'], $row['link_order'], $row['link_refer'], $row['link_open'], $row['link_class']);
-				
+
 			}
 			if(empty($arrRate)){
 				$err		= CONTENT_LAN_37;

@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_config.php,v $
-|    $Revision: 1.11 $
-|    $Date: 2005-06-20 13:36:44 $
-|    $Author: lisa_ $
+|    $Revision: 1.12 $
+|    $Date: 2005-06-21 17:53:25 $
+|    $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,11 +22,11 @@ if (!getperms("P")) {
 	header("location:".e_BASE."index.php");
 }
 
-if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE."/lan_links_page.php")) {
-	include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE."/lan_links_page.php");
-} else {
-	include_once(e_PLUGIN."links_page/languages/English/lan_links_page.php");
-}
+	if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php")) {
+		include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
+	} else {
+		include_once(e_PLUGIN."links_page/languages/English.php");
+	}
 require_once(e_ADMIN."auth.php");
 
 require_once(e_HANDLER."userclass_class.php");
@@ -64,7 +64,7 @@ if(isset($_POST['delete']))
 if (isset($_POST['create_category'])) {
 	$_POST['link_category_name']	= $tp->toDB($_POST['link_category_name'], "admin");
 	$link_t							= $sql->db_Count("links_page_cat", "(*)");
-	
+
 	$sql->db_Insert("links_page_cat", " '0', '".$_POST['link_category_name']."', '".$_POST['link_category_description']."', '".$_POST['link_category_icon']."', '".($link_t+1)."', '".$_POST['link_category_class']."', '".time()."' ");
 	$linkpost->show_message(LCLAN_51);
 }
@@ -94,7 +94,7 @@ if(isset($_POST['uploadlinkicon'])){
 	require_once(e_HANDLER."upload_handler.php");
 	$pathicon = e_PLUGIN."links_page/link_images/";
 	$uploaded = file_upload($pathicon);
-	
+
 	$icon = "";
 	if($uploaded) {
 		$icon = $uploaded[0]['name'];
@@ -114,7 +114,7 @@ if(isset($_POST['uploadcatlinkicon'])){
 	require_once(e_HANDLER."upload_handler.php");
 	$pathicon = e_PLUGIN."links_page/cat_images/";
 	$uploaded = file_upload($pathicon);
-	
+
 	$icon = "";
 	if($uploaded) {
 		$icon = $uploaded[0]['name'];
@@ -221,19 +221,19 @@ if (isset($qs[0]) && $qs[0] == 'link') {
 	//view categories (link select cat)
 	if (!isset($qs[1])){
 		$linkpost->show_categories("link");
-	
+
 	//view links in cat
 	}elseif (isset($qs[1]) && $qs[1] == 'view' && isset($qs[2]) && is_numeric($qs[2])) {
 		$linkpost->show_links();
-	
+
 	//edit link
 	}elseif (isset($qs[1]) && $qs[1] == 'edit' && isset($qs[2]) && is_numeric($qs[2])) {
 		$linkpost->show_link_create();
-	
+
 	//create link
 	}elseif (isset($qs[1]) && $qs[1] == 'create' && !isset($qs[2]) ) {
 		$linkpost->show_link_create();
-	
+
 	//post submitted
 	}elseif (isset($qs[1]) && $qs[1] == 'sn' && isset($qs[2]) && is_numeric($qs[2]) ) {
 		$linkpost->show_link_create();
@@ -260,7 +260,7 @@ class links {
 
 	function show_links() {
 		global $sql, $qs, $rs, $ns, $tp;
-		
+
 		if ($sql->db_Select("links_page_cat", "link_category_name", "link_category_id='".$qs[2]."' " )) {
 			$row = $sql->db_Fetch();
 			$caption = LCLAN_59.": ".$row['link_category_name'];
@@ -276,7 +276,7 @@ class links {
 			<td class='fcaption' style='width:5%'>".LCLAN_89."</td>
 			<td class='fcaption' style='width:65%'>".LCLAN_90."</td>
 			<td class='fcaption' style='width:10%'>".LCLAN_60."</td>
-			<td class='fcaption' style='width:10%'>".LCLAN_91."</td>			
+			<td class='fcaption' style='width:10%'>".LCLAN_91."</td>
 			<td class='fcaption' style='width:10%'>".LCLAN_97."</td>
 			</tr>";
 			while ($row = $sql->db_Fetch()) {
@@ -296,7 +296,7 @@ class links {
 				}else{
 					$down = "<input type='image' src='".e_IMAGE."admin_images/down.png' value='".$linkid.".".$row['link_order'].".".$row['link_category']."' name='dec' />";
 				}
-				
+
 				$text .= "
 				<tr>
 				<td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle'>".$img."</td>
@@ -304,13 +304,13 @@ class links {
 					<a href='".e_PLUGIN."links_page/links.php?".$row['link_id']."' rel='external'>".LINK_ICON_LINK."</a> ".$row['link_name']."
 				</td>
 				<td style='width:10%; text-align:center; white-space: nowrap' class='forumheader3'>
-					<a href='".e_SELF."?link.edit.".$linkid."' title='".LCLAN_9."'>".LINK_ICON_EDIT."</a> 
+					<a href='".e_SELF."?link.edit.".$linkid."' title='".LCLAN_9."'>".LINK_ICON_EDIT."</a>
 					<input type='image' title='delete' name='delete[main_{$linkid}]' alt='".LCLAN_10."' src='".LINK_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(LCLAN_58." [ ".$row['link_name']." ]")."')\" />
 				</td>
 				<td style='width:10%; text-align:center; white-space: nowrap' class='forumheader3'>
 					".$up."
 					".$down."
-				</td>				
+				</td>
 				<td style='width:10%; text-align:center' class='forumheader3'>
 					".$rs -> form_select_open("link_order[]");
 					for($a = 1; $a <= $link_total; $a++) {
@@ -340,7 +340,7 @@ class links {
 
 	function show_link_create() {
 		global $sql, $rs, $qs, $ns, $fl;
-		
+
 		$row['link_category']		= "";
 		$row['link_name']			= "";
 		$row['link_url']			= "";
@@ -349,7 +349,7 @@ class links {
 		$row['link_open']			= "";
 		$row['link_class']			= "";
 		$link_resize_value			= (isset($linkspage_pref['link_resize_value']) && $linkspage_pref['link_resize_value'] ? $linkspage_pref['link_resize_value'] : "100");
-		
+
 		if ($qs[1] == 'edit' && !$_POST['submit']) {
 			if ($sql->db_Select("links_page", "*", "link_id='$qs[2]' ")) {
 				$row = $sql->db_Fetch();
@@ -370,7 +370,7 @@ class links {
 
 		if(isset($_POST['uploadlinkicon'])){
 			$row['link_category']		= $_POST['cat_id'];
-			$row['link_name']			= $_POST['link_name'];			
+			$row['link_name']			= $_POST['link_name'];
 			$row['link_url']			= $_POST['link_url'];
 			$row['link_description']	= $_POST['link_description'];
 			$row['link_button']			= $_POST['link_button'];
@@ -403,7 +403,7 @@ class links {
 		$text .= "
 		</td>
 		</tr>
-		
+
 		<tr>
 		<td style='width:30%' class='forumheader3'>".LCLAN_15.":</td>
 		<td style='width:70%' class='forumheader3'>
@@ -438,7 +438,7 @@ class links {
 				}
 				$text .= "
 				<input class='tbox' type='file' name='file_userfile[]'  size='58' /><br />
-				".LCLAN_110.": ".$rs -> form_text("link_resize_value", 3, $link_resize_value, 3)."&nbsp;px 
+				".LCLAN_110.": ".$rs -> form_text("link_resize_value", 3, $link_resize_value, 3)."&nbsp;px
 				".$rs -> form_button("submit", "uploadlinkicon", LCLAN_111, "", "", "");
 			}
 		$text .= "<br /></div>
@@ -548,7 +548,7 @@ class links {
 		$link_cat_resize_value				= (isset($linkspage_pref['link_cat_resize_value']) && $linkspage_pref['link_cat_resize_value'] ? $linkspage_pref['link_cat_resize_value'] : "50");
 
 		if(isset($_POST['uploadcatlinkicon'])){
-			$row['link_category_name']			= $_POST['link_category_name'];			
+			$row['link_category_name']			= $_POST['link_category_name'];
 			$row['link_category_description']	= $_POST['link_category_description'];
 			$row['link_category_icon']			= $_POST['link_category_icon'];
 			$link_cat_resize_value				= (isset($_POST['link_cat_resize_value']) && $_POST['link_cat_resize_value'] ? $_POST['link_cat_resize_value'] : $link_cat_resize_value);
@@ -591,7 +591,7 @@ class links {
 				}
 				$text .= "
 				<input class='tbox' type='file' name='file_userfile[]'  size='58' /><br />
-				".LCLAN_110.": ".$rs -> form_text("link_cat_resize_value", 3, $link_cat_resize_value, 3)."&nbsp;px 
+				".LCLAN_110.": ".$rs -> form_text("link_cat_resize_value", 3, $link_cat_resize_value, 3)."&nbsp;px
 				".$rs -> form_button("submit", "uploadcatlinkicon", LCLAN_111, "", "", "");
 			}
 		$text .= "<br /></div>
@@ -639,7 +639,7 @@ class links {
 			$text .= $rs -> form_checkbox("update_datestamp", 1, 0)." ".LCLAN_161."<br /><br />";
 			$text .= $rs -> form_button("submit", "update_category", LCLAN_74, "", "", "");
 			$text .= $rs -> form_button("submit", "category_clear", LCLAN_81). $rs->form_hidden("link_category_id", $qs[2]);
-			
+
 		} else {
 			$text .= $rs -> form_button("submit", "create_category", LCLAN_75, "", "", "");
 		}
@@ -667,7 +667,7 @@ class links {
 			<td style='width:10%' class='fcaption'>".LCLAN_60."</td>";
 			if($mode == "cat"){
 				$text .= "
-				<td class='fcaption' style='width:10%'>".LCLAN_91."</td>			
+				<td class='fcaption' style='width:10%'>".LCLAN_91."</td>
 				<td class='fcaption' style='width:10%'>".LCLAN_97."</td>";
 			}
 			$text .= "
@@ -683,10 +683,10 @@ class links {
 				<tr>
 				<td style='width:5%; text-align:center' class='forumheader3'>".$img."</td>
 				<td class='forumheader3'>
-					<a href='".e_PLUGIN."links_page/links.php?cat.".$linkcatid."' rel='external'>".LINK_ICON_LINK."</a> 
+					<a href='".e_PLUGIN."links_page/links.php?cat.".$linkcatid."' rel='external'>".LINK_ICON_LINK."</a>
 					".$row['link_category_name']."<br /><span class='smalltext'>".$row['link_category_description']."</span>
 				</td>";
-				
+
 				if($mode == "cat"){
 					if($row['link_category_order'] == "1"){
 						$up = "&nbsp;&nbsp;&nbsp;";
@@ -700,13 +700,13 @@ class links {
 					}
 					$text .= "
 					<td style='width:10%; text-align:center; white-space: nowrap' class='forumheader3'>
-						<a href='".e_SELF."?cat.edit.".$linkcatid."' title='".LCLAN_9."'>".LINK_ICON_EDIT."</a> 
+						<a href='".e_SELF."?cat.edit.".$linkcatid."' title='".LCLAN_9."'>".LINK_ICON_EDIT."</a>
 						<input type='image' title='delete' name='delete[category_{$linkcatid}]' alt='".LCLAN_10."' src='".LINK_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(LCLAN_56." [ ".$row['link_category_name']." ]")."')\"/>
-					</td>					
+					</td>
 					<td style='width:10%; text-align:center; white-space: nowrap' class='forumheader3'>
 						".$up."
 						".$down."
-					</td>				
+					</td>
 					<td style='width:10%; text-align:center' class='forumheader3'>
 						<select name='link_category_order[]' class='tbox'>";
 						for($a = 1; $a <= $category_total; $a++) {
@@ -766,9 +766,9 @@ class links {
 				<td style='width:50%' class='forumheader3'><a href='".$submitted[2]."' rel='external'>".$submitted[2]."</a></td>
 				<td style='width:30%' class='forumheader3'>".$submitted[5]."</td>
 				<td style='width:20%; text-align:center; vertical-align:top' class='forumheader3'>
-				
+
 				".$rs->form_open("post", e_SELF."?sn", "submitted_links")."
-				<a href='".e_SELF."?link.sn.".$tmp_time."' title='".LCLAN_14."'>".LINK_ICON_EDIT."</a> 
+				<a href='".e_SELF."?link.sn.".$tmp_time."' title='".LCLAN_14."'>".LINK_ICON_EDIT."</a>
 				<input type='image' title='delete' name='delete[sn_{$tmp_time}]' alt='".LCLAN_10."' src='".LINK_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(LCLAN_57." [ ".$tmp_time." ]")."')\" />".$rs->form_close()."
 				</td>
 				</tr>\n";
@@ -816,7 +816,7 @@ class links {
 		$TOPIC_HEADING = LCLAN_40;
 		$TOPIC_HELP = LCLAN_34;
 		$TOPIC_FIELD = "
-		".$rs -> form_radio("link_page_categories", "1", ($linkspage_pref['link_page_categories'] ? "1" : "0"), "", "").LCLAN_138." 
+		".$rs -> form_radio("link_page_categories", "1", ($linkspage_pref['link_page_categories'] ? "1" : "0"), "", "").LCLAN_138."
 		".$rs -> form_radio("link_page_categories", "0", ($linkspage_pref['link_page_categories'] ? "0" : "1"), "", "").LCLAN_139;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -873,7 +873,7 @@ class links {
 		".$rs -> form_checkbox("link_cat_toprated", 1, ($linkspage_pref['link_cat_toprated'] ? "1" : "0"))." ".LCLAN_148."<br />
 		";
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
-		
+
 		$TOPIC_TOPIC = LCLAN_146;
 		$TOPIC_HEADING = LCLAN_133;
 		$TOPIC_HELP = "<br />
@@ -911,7 +911,7 @@ class links {
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 		$text .= $TOPIC_ROW_SPACER;
-		
+
 		$TOPIC_CAPTION = LCLAN_118;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
 
@@ -1000,7 +1000,7 @@ class links {
 
 		/*
 		$text .= $TOPIC_ROW_SPACER;
-		
+
 		$TOPIC_CAPTION = LCLAN_149;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
 
