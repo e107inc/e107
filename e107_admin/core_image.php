@@ -2338,8 +2338,6 @@ $core_image = array (
       array (
         'English.php' => 'ac31f90d243324616c0853d800286325',
       ),
-      '.#style.css.1.22' => 'd9e0ce9b3c0937cecf047eb6a3cdc199',
-      '.#style.css.1.24' => 'd252dc18e0a6fce054b3c2fe597d6f7a',
       'admin_template.php' => 'ecd47c91c2e9443303376bf23e8bce98',
       'canvas.css' => '1db4331bf3a7ed94349410cab9ada2c4',
       'nav_menu.css' => '5bae34254dc5184c033369d29d78367d',
