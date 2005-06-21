@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_links.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-04-15 09:24:02 $
+|     $Revision: 1.11 $
+|     $Date: 2005-06-21 22:46:38 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -67,4 +67,12 @@ define("LCLAN_81", "Sub-menus will display only after clicking their parent. (Li
 define("LINKLAN_1", "Opens in 800x600 window");
 define("LINKLAN_2", "Parent");
 define("LINKLAN_3", "No Parent (Normal Link)");
+
+define("LINKLAN_4", "Sublink Generator");
+define("LINKLAN_5", "Generate Sublinks");
+define("LINKLAN_6", "Create sublinks from:");
+define("LINKLAN_7", "Create sublinks under which link?");
+define("LINKLAN_8", "News Categories");
+define("LINKLAN_9", "Download Categories");
+
 ?>
