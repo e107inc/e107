@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-20 13:36:44 $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-21 07:15:43 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -129,7 +129,9 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 		exit;
 	}
 
-	if ($qs[0] == "cat") {
+	if (!isset($qs[0])){
+		$category = "all";
+	}elseif ($qs[0] == "cat") {
 		$category = $qs[1];
 	}elseif ($qs[1] == "cat") {
 		$category = $qs[2];
@@ -140,7 +142,7 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 
 	if (isset($qs[0]) && $qs[0] != "top" && $qs[0] != "rated")
 	{
-		$sql->db_Select("links_page_cat", "*");
+		$sql->db_Select("links_page_cat", "*", "link_category_class REGEXP '".e_CLASS_REGEXP."' ORDER BY link_category_order");
 	}
 
 	if ($category) {
