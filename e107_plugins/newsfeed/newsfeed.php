@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-04-29 19:57:07 $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-21 20:28:46 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -123,8 +123,9 @@ if($action == "show")
 			}
 			else
 			{
-				$FEEDITEMLINK = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], TRUE)."</a>";
-				$FEEDITEMTEXT = ereg_replace("&#091;.*]", "", $tp -> toHTML($item['description'], TRUE));
+				$FEEDITEMLINK = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], TRUE)."</a>\n";
+				$feeditemtext = preg_replace("#\[[a-z0-9=]+\]|\[\/[a-z]+\]|\{[A-Z_]+\}#si", "", $item['description']);
+				$FEEDITEMTEXT = $tp -> toHTML($feeditemtext, TRUE)."\n";
 			}
 			$FEEDITEMCREATOR = $tp -> toHTML($item['author'], TRUE);
 			$data .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MAIN);

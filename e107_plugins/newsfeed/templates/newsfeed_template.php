@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/templates/newsfeed_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-02 09:06:48 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-21 20:28:46 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -32,14 +32,14 @@ $NEWSFEED_LIST_END = "
 $NEWSFEED_MAIN_START = "
 <table style='width: 100%;' class='fborder'>
 <tr>
-<td class='forumheader3'>{FEEDIMAGE} {FEEDTITLE}</td>
+<td class='forumheader'>{FEEDIMAGE} {FEEDTITLE}</td>
 </tr>
 <tr>
-<td class='forumheader'>
+<td class='forumheader3'>
 <ul>\n";
 
 $NEWSFEED_MAIN = "
-<li>{FEEDITEMLINK} <span class='smalltext'>{FEEDITEMCREATOR}</span><br /><span class='mediumtext'>{FEEDITEMTEXT}</span></li>\n";
+<li><b>{FEEDITEMLINK}</b> <span class='smalltext'>{FEEDITEMCREATOR}</span><br />{FEEDITEMTEXT}<br /><br /></li>\n";
 
 
 $NEWSFEED_MAIN_END = "
