@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2005-06-16 09:41:59 $
-|     $Author: lisa_ $
+|     $Revision: 1.58 $
+|     $Date: 2005-06-21 01:49:11 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -54,7 +54,7 @@ class sitelinks
 	{
 		global $pref, $ns, $tp, $e107cache;
 
-		if ($data = $e107cache->retrieve('sitelinks'))
+		if ($data = $e107cache->retrieve('sitelinks_'.$cat))
 		{
 			return $data;
 		}
@@ -91,7 +91,7 @@ class sitelinks
 		}
 
 		$menu_count = 0;
-		$text = $style['prelink'];
+		$text = "\n\n\n<!-- Sitelinks ($cat) -->\n\n\n".$style['prelink'];
 
 		if ($style['linkdisplay'] != 3)	{
 			foreach ($this->eLinkList['head_menu'] as $link){
@@ -142,8 +142,9 @@ class sitelinks
 				$text .= $ns->tablerender($k, $mnu, 'sitelinks_sub', TRUE);
 			}
 		}
-		$e107cache->set('sitelinks', $text);
-		return $text;
+		$text .= "\n\n\n<!--- end Site Links -->\n\n\n";
+		$e107cache->set('sitelinks_'.$cat, $text);
+	 	return $text;
 	}
 
 	function makeLink($linkInfo, $submenu = FALSE, $style='')
