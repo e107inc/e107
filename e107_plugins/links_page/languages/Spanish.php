@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish/lan_links_page.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-20 22:05:10 $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-21 21:07:31 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -224,5 +224,12 @@ define("LCLAN_ADMINMENU_5", "Crear enlace");
 define("LCLAN_ADMINMENU_6", "Opciones");
 define("LCLAN_ADMINMENU_7", "Enlaces enviados");
 define("LCLAN_ADMINMENU_8", "Categorías");
+
+define("NT_LAN_LP_1", "Eventos de la página de enlaces");
+define("NT_LAN_LP_2", "Enlaces enviados por usuario");
+define("NT_LAN_LP_3", "Enlaces enviados");
+
+define("LNK_SCH_LAN_2", "Todas las categorías de enlaces");
+define("LNK_SCH_LAN_3", "Todos los detalles de enlaces");
 
 ?>
