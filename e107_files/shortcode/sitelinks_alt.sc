@@ -5,34 +5,36 @@
 		$icon = e_IMAGE."generic/".IMODE."/arrow.png";
 	}
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
+		global $tp;
 		$text = "<a class='menuButton' href='".e_BASE.$cat_link."' ";
 		if ($cat_img != 'no_icons') {
 			$text .= "style='background-image: url(".$cat_img."); background-repeat: no-repeat;  background-position: 3px 1px' ";
 		}
-		if ($cat_id) { 
+		if ($cat_id) {
 			$text .= "onclick=\"return buttonClick(event, '".$cat_id."');\" onmouseover=\"buttonMouseover(event, '".$cat_id."');\"";
 		}
-		$text .= ">".$cat_title."</a>";
+		$text .= ">".$tp->toHTML($cat_title,"","defs")."</a>";
 		return $text;
 	}
 
 	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
+		global $tp;
 		$text = "<a class='menuItem' href='".e_BASE.$cat_link."' ";
-		if ($cat_id) { 
+		if ($cat_id) {
 			$text .= "onclick=\"return false;\" onmouseover=\"menuItemMouseover(event, '".$cat_id."');\"";
 		}
 		$text .= ">";
 		if ($cat_img != 'no_icons') {
 			$text .= "<span class='menuItemBuffer'>".$cat_img."</span>";
 		}
-		$text .= "<span class='menuItemText'>".$cat_title."</span>";
-		if ($cat_id) { 
+		$text .= "<span class='menuItemText'>".$tp->toHTML($cat_title,"","defs")."</span>";
+		if ($cat_id) {
 			$text .= "<span class=\"menuItemArrow\">&#9654;</span>";
 		}
 		$text .= "</a>";
 		return $text;
 	}
-	
+
 	function getLinks($extra='1') {
 		global $sql;
 		$ret=array();
@@ -43,7 +45,7 @@
 		}
 		return $ret;
 	}
-	
+
 	if (file_exists(THEME.'nav_menu.js')) {
 		$text = "<script type='text/javascript' src='".THEME."nav_menu.js'></script>";
 	} else {
@@ -51,8 +53,8 @@
 	}
 	$text .= "<div class='menuBar' style='width:100%;'>";
 
-	$main_links = getLinks("link_category='1' && link_name NOT REGEXP('submenu') ORDER BY link_order ASC");
-	$sub_links = getLinks("link_category='1' && link_name REGEXP('submenu') ORDER BY link_order ASC");
+	$main_links = getLinks("link_category='1' && link_parent = '0' ORDER BY link_order ASC");
+	$sub_links = getLinks("link_category='1' && link_parent !='0' ORDER BY link_order ASC");
 
 	foreach ($sub_links as $sub) {
 		if (check_class($sub['link_class'])) {
@@ -69,7 +71,7 @@
 		} else {
 			$link_icon = $links_exp['link_button'] ? e_IMAGE.'icons/'.$links_exp['link_button'] : $icon;
 		}
-		
+
 		if (check_class($links_exp['link_class'])) {
 			if (isset($sub_comp[$links_exp['link_name']]) && $sub_comp[$links_exp['link_name']]) {
 				$text .= adnav_cat($links_exp['link_name'], '', $link_icon, $links_exp['link_name']);
@@ -92,4 +94,3 @@
 	$text .= "</div>";
 
 	return $text;
-
