@@ -11,17 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/e_notify.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-20 14:14:57 $
-|     $Author: lisa_ $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-21 17:53:26 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
-if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE."/lan_links_page_notify.php")) {
-	@include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE."/lan_links_page_notify.php");
+	if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php")) {
+		include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
 	} else {
-	@include_once(e_PLUGIN."links_page/languages/English/lan_links_page_notify.php");
-}
+		include_once(e_PLUGIN."links_page/languages/English.php");
+	}
 $config_category = NT_LAN_LP_1;
 $config_events = array('linksub' => NT_LAN_LP_2);
 
