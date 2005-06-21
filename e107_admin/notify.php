@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/notify.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-17 00:17:03 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-21 15:39:01 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -106,7 +106,7 @@ class notify_config {
 		".$description.":
 		</td>
 		<td class='forumheader3' style='width: 70%; white-space: nowrap'>
-		<input type='radio' name='event[".$id."][type]' value='off' ".($this -> notify_prefs['event'][$id]['type'] == 'off' ? " checked='checked'" : "")." /> ".NT_LAN_3." 
+		<input type='radio' name='event[".$id."][type]' value='off' ".(($this -> notify_prefs['event'][$id]['type'] == 'off' || !$this -> notify_prefs['event'][$id]['type']) ? " checked='checked'" : "")." /> ".NT_LAN_3." 
 		<input type='radio' name='event[".$id."][type]' value='main' ".($this -> notify_prefs['event'][$id]['type'] == 'main' ? " checked='checked'" : "")." /> ".NT_LAN_4." 
 		<input type='radio' name='event[".$id."][type]' value='class' ".($this -> notify_prefs['event'][$id]['type'] == 'class' ? " checked='checked'" : "")." /> ".NT_LAN_5.": 
 		".r_userclass('event['.$id.'][class]', $this -> notify_prefs['event'][$id]['class'], 'off', 'member,admin,classes')." 
@@ -127,7 +127,7 @@ class notify_config {
 		
 		$s_prefs = $tp -> recurse_toDB($this -> notify_prefs, true);
 		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
-		$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs' ");
+		$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 		if ($active) {
 			$pref['notify'] = TRUE;
 		} else {
