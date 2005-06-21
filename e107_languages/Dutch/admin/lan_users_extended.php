@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_users_extended.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-05 06:09:12 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-21 20:46:08 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -74,11 +74,6 @@ define("EXTLAN_62", "Tabel");
 define("EXTLAN_63", "Veld id");
 define("EXTLAN_64", "Toon waarde");
 
-define("EXTLAN_PRE1", "Plaats");
-define("EXTLAN_PRE2", "AIM");
-define("EXTLAN_PRE3", "ICQ");
-define("EXTLAN_PRE4", "Yahoo!");
-define("EXTLAN_PRE5", "Homepage");
 define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - lengte van het veld<br />maxlength - max lengte van veld<br /><br />class - css klasse van veld<br />style - css style tekst<br /><br />regex - regex validatie code<br />regexfail - validatie foutboodschap ");
 define("EXTLAN_HELP_2", "Dit wordt de radioknop hulptekst");
 define("EXTLAN_HELP_3", "Dit wordt de uitklapbox hulptekst");
