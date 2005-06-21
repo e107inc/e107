@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-06-17 19:07:36 $
+|     $Revision: 1.18 $
+|     $Date: 2005-06-21 17:03:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -815,11 +815,10 @@ function show_predefined()
 	You can activate / deactivate these fields if you want to test, but there is no upgrade script to move your existing data over yet.  It should arrive soon, please be patient.<br />
 	Once there is an upgrade script all of these will be activate and data moved over.  Any fields you don't want will have to be deactivated.<br />
 	<br />
-	<br /><br /><br />
 	<form method='post'>
 	<table class='width:".ADMIN_WIDTH."'>
 	<tr>
-	<td class='fcaption' colspan='3'>".EXTLAN_57."</td>
+	<td class='fcaption' colspan='4'>".EXTLAN_57."</td>
 	</tr>
 	";
 	if(count($active))
@@ -831,12 +830,12 @@ function show_predefined()
 	}
 	else
 	{
-		$txt .= "<tr><td colspan='3'>".EXTLAN_61."</td></tr>";
+		$txt .= "<tr><td colspan='4'>".EXTLAN_61."</td></tr>";
 	}
 
 	$txt .= "
 	<tr>
-	<td class='fcaption' colspan='3'>".EXTLAN_58."</td>
+	<td class='fcaption' colspan='4'>".EXTLAN_58."</td>
 	</tr>
 	";
 	foreach($inactive as $a)
@@ -852,18 +851,36 @@ function show_predefined()
 function show_field($var, $type='activate')
 {
 	global $tp;
-	$showlist = array('type','text', 'values', 'include_text', 'regex');
-	$txt = "
+	static $head_shown;
+	$txt = "";
+//	$showlist = array('type','text', 'values', 'include_text', 'regex');
+	if($head_shown != 1)
+	{
+	
+		$txt .= "
+		<tr>
+		<td class='fcaption'>Name</td>
+		<td class='fcaption'>Type</td>
+		<td class='fcaption'>Use</td>
+		<td class='fcaption'>&nbsp;</td>
+		</tr>
+		";
+		$head_shown = 1;
+	}
+	$txt .= "
 	<tr>
 	<td class='forumheader2'>{$var['name']}</td>
-	<td class='forumheader2'>";
-	foreach($showlist as $f)
-	{
-		if($var[$f] != "")
-		{
-			$txt .= "<strong>{$f}: </strong>".$tp->toHTML($var[$f], false, 'defs')."<br />";
-		}
-	}
+	<td class='forumheader2'>".$tp->toHTML($var['type'], false, 'defs')."</td>
+	<td class='forumheader2'>".constant(strtoupper($var['text'])."_DESC")."</td>
+	";
+//	$txt .= constant("UE_LAN_".strtoupper($var['text'])."DESC")."<br />";
+//	foreach($showlist as $f)
+//	{
+//		if($var[$f] != "" && $f != 'type' && $f !='text')
+//		{
+//			$txt .= "<strong>{$f}: </strong>".$tp->toHTML($var[$f], false, 'defs')."<br />";
+//		}
+//	}
 	$val = ('activate' == $type) ? EXTLAN_59 : EXTLAN_60;
 	$txt .= "
 	</td>
