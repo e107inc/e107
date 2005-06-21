@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-21 18:35:43 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -23,9 +23,10 @@ if (!getperms("0")) {
 }
 $e_sub_cat = 'language';
 require_once("auth.php");
-	
-	
-function show_comparison($language, $filename) {
+
+			
+function show_comparison($language, $filename)
+{
 	global $LANGUAGES_DIRECTORY;
 	$English = get_lan_phrases("English");
 	$check = get_lan_phrases($language);
@@ -55,16 +56,21 @@ function show_comparison($language, $filename) {
 }
 	
 	
-function get_lan_phrases($lang) {
+function get_lan_phrases($lang)
+{
 	$ret = array();
 	// Read English lan_ files
 	$base_dir = e_LANGUAGEDIR.$lang;
-	if ($r = opendir($base_dir)) {
-		while ($file = readdir($r)) {
+	if ($r = opendir($base_dir))
+	{
+		while ($file = readdir($r))
+		{
 			$fname = $base_dir."/".$file;
-			if (preg_match("#^lan_#", $file) && is_file($fname)) {
+			if (preg_match("#^lan_#", $file) && is_file($fname))
+			{
 				$data = file($fname);
-				foreach($data as $line) {
+				foreach($data as $line)
+				{
 					if (preg_match("#\"(.*?)\".*?\"(.*)\"#", $line, $matches)) {
 						$ret[$file][$matches[1]] = htmlentities($matches[2]);
 					}
@@ -75,13 +81,18 @@ function get_lan_phrases($lang) {
 	}
 	// Read $lang/admin lan_ files
 	$base_dir = e_LANGUAGEDIR.$lang."/admin";
-	if ($r = opendir($base_dir)) {
-		while ($file = readdir($r)) {
+	if ($r = opendir($base_dir))
+	{
+		while ($file = readdir($r))
+		{
 			$fname = $base_dir."/".$file;
-			if (preg_match("#^lan_#", $file) && is_file($fname)) {
+			if (preg_match("#^lan_#", $file) && is_file($fname))
+			{
 				$data = file($fname);
-				foreach($data as $line) {
-					if (preg_match("#\"(.*?)\".*?\"(.*)\"#", $line, $matches)) {
+				foreach($data as $line)
+				{
+					if (preg_match("#\"(.*?)\".*?\"(.*)\"#", $line, $matches))
+					{
 						$ret["admin/".$file][$matches[1]] = $matches[2];
 					}
 				}
@@ -91,8 +102,6 @@ function get_lan_phrases($lang) {
 	}
 	return $ret;
 }
-	
-	
 	
 function check_core_lanfiles($checklan) {
 	 
@@ -124,18 +133,21 @@ function check_core_lanfiles($checklan) {
 		} else {
 			$text .= "<tr><td class='forumheader3'>{$lnk}</td><td class='forumheader'>".LAN_CHECK_4."</td></tr>";
 		}
-		//                $text .= "$k<br />";
 	}
 	$text .= "</table>";
 	 
 	return $text;
 }
 	
-function show_languages() {
-	if ($r = opendir(e_LANGUAGEDIR)) {
-		while ($file = readdir($r)) {
+function show_languages()
+{
+	if ($r = opendir(e_LANGUAGEDIR))
+	{
+		while ($file = readdir($r))
+		{
 			$fname = e_LANGUAGEDIR.$file;
-			if (is_dir($fname) && $file != "English" && $file != "CVS" && $file != "." && $file != "..") {
+			if (is_dir($fname) && $file != "English" && $file != "CVS" && $file != "." && $file != "..")
+			{
 				$languages[] = $file;
 			}
 		}
@@ -145,7 +157,8 @@ function show_languages() {
 			<tr>
 			<td class='fcaption'>".LAN_CHECK_1."</td></tr>
 			<tr><td class='forumheader3'>";
-		foreach($languages as $lang) {
+		foreach($languages as $lang)
+		{
 			$text .= "<input type='radio' name='language' value='{$lang}' /> {$lang}<br />";
 		}
 		$text .= "</td></tr>
@@ -155,8 +168,44 @@ function show_languages() {
 		return $text;
 	}
 }
-	
-if (e_QUERY) {
+
+function find_plugins($path)
+{
+	static $plugin_list;
+	if($path == "")
+	{
+		$path = e_PLUGIN;
+	}
+	if(substr($path,-1) == '/') {
+		$path = substr($path, 0, -1);
+	}
+	if($handle = opendir($path))
+	{
+		while (false !== ($file = readdir($handle)))
+		{
+			if($file == "English.php")
+			{
+				$plugin_list['file'][] = $path;
+			}
+			if(is_dir($path."/".$file) && $file !== "." && $file !== ".." && $file !== "CVS")
+			{
+				if($file == "English")
+				{
+					$plugin_list['dir'][] = $path;
+				}
+				else
+				{
+						$xx = find_plugins($path."/".$file);
+				}
+			}
+		}
+		return $plugin_list;
+	}
+	return FALSE;
+}
+
+if (e_QUERY)
+{
 	$qs = explode(".", rawurldecode(e_QUERY), 2);
 	$text = show_comparison($qs[0], $qs[1]);
 	$ns->tablerender(LAN_CHECK_3.": {$qs[0]}", $text);
@@ -164,7 +213,8 @@ if (e_QUERY) {
 	exit;
 }
 	
-if ($_POST['check_lang']) {
+if ($_POST['check_lang'])
+{
 	$text = check_core_lanfiles($_POST['language']);
 	$ns->tablerender(LAN_CHECK_3.": ".$_POST['language'], $text);
 	require_once("footer.php");
@@ -172,8 +222,6 @@ if ($_POST['check_lang']) {
 }
 	
 $ns->tablerender("", show_languages());
-//$text = check_core_lanfiles();
-//$ns->tablerender(LOGLAN_13, $text);
 require_once("footer.php");
 	
 ?>
