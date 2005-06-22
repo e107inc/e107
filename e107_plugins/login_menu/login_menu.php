@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-06-17 13:35:39 $
-|     $Author: lisa_ $
+|     $Revision: 1.32 $
+|     $Date: 2005-06-22 18:36:28 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -187,9 +187,11 @@ if (USER == TRUE || ADMIN == TRUE) {
 		'.$sec_img->r_image().'
 		<br /><input class="tbox login verify" type="text" name="code_verify" size="15" maxlength="20" /><br />';
 	}
-	$text .= '<input class="button" type="submit" name="userlogin" value="'.LOGIN_MENU_L28.'" />
-	<br />
-	<input type="checkbox" name="autologin" value="1" />'.LOGIN_MENU_L6;
+	$text .= '<input class="button" type="submit" name="userlogin" value="'.LOGIN_MENU_L28.'" />';
+	if($pref['user_tracking'] != "session")
+	{
+		$text .= '<br /><input type="checkbox" name="autologin" value="1" />'.LOGIN_MENU_L6;
+	}
 
 	if ($pref['user_reg']) {
 		$text .= '<br /><br />';
