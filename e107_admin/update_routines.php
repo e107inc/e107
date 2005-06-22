@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.109 $
-|     $Date: 2005-06-17 12:43:59 $
-|     $Author: sweetas $
+|     $Revision: 1.110 $
+|     $Date: 2005-06-22 21:35:02 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -741,7 +741,7 @@ function update_61x_to_700($type) {
 			$serial_prefs = addslashes(serialize($search_prefs));
 			$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
 		}
-		
+
 		// search content plugin comments id change
 		if ($search_prefs['comments_handlers']['content']['id'] == '1') {
 			$search_prefs['comments_handlers']['content']['id'] = 'pcontent';
@@ -798,10 +798,40 @@ function update_61x_to_700($type) {
 			save_prefs();
 		}
 
+
+		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
+		$qry = "SHOW CREATE TABLE `".MPREFIX."links`";
+		$res = mysql_query($qry);
+		if ($res) {
+			$row = mysql_fetch_row($res);
+			$lines = explode("\n", $row[1]);
+			if(strpos($lines[10],"tinyint")){
+				mysql_query("ALTER TABLE `".MPREFIX."links` CHANGE `link_class` `link_class` VARCHAR( 255 ) DEFAULT '0' NOT NULL ");
+				mysql_query("ALTER TABLE `".MPREFIX."menus` CHANGE `menu_class` `menu_class` VARCHAR( 255 ) DEFAULT '0' NOT NULL "); 
+			}
+		}
+
+
+
+
+
 		// -----------------------------------------------------
 
 	} else {
 		global $sysprefs;
+
+        $result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
+		$qry = "SHOW CREATE TABLE `".MPREFIX."links`";
+		$res = mysql_query($qry);
+		if ($res) {
+			$row = mysql_fetch_row($res);
+			$lines = explode("\n", $row[1]);
+			if(strpos($lines[10],"tinyint")){
+				return FALSE;
+			}
+		}
+
+
 
 		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."links");
 		$fieldname = mysql_field_name($fields, 7);
