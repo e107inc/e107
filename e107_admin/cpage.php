@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-05-18 10:01:29 $
+|     $Revision: 1.16 $
+|     $Date: 2005-06-22 17:08:00 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -118,7 +118,7 @@ class page
 
 		if(!$sql -> db_Select("page", "*", "ORDER BY page_datestamp DESC", "nowhere"))
 		{
-			$text .= "No pages defined yet";
+			$text .= CUSLAN_42;
 		}
 		else
 		{
