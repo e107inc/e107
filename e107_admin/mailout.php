@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-06-11 01:16:50 $
-|     $Author: e107coders $
+|     $Revision: 1.30 $
+|     $Date: 2005-06-22 14:48:28 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -352,14 +352,14 @@ $text .= "
 	<td style='width:30%' class='forumheader3'>".MAILAN_11.": </td>
 	<td style='width:70%' class='forumheader3'>";
 
-if($pref['wysiwyg']){
-	$text .="<input type='button' class='button' name='usrname' value='username' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERNAME}')\" />
-	<input type='button' class='button' name='usrlink' value='signup link' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{SIGNUP_LINK}')\" />
-	<input type='button' class='button' name='usrid' value='user id' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERID}')\" />";
-}else{
-    $text .="<input type='button' class='button' name='usrname' value='username' onclick=\"addtext('{USERNAME}')\" />
-	<input type='button' class='button' name='usrlink' value='signup link' onclick=\"addtext('{SIGNUP_LINK}')\" />
-	<input type='button' class='button' name='usrid' value='user id' onclick=\"addtext('{USERID}')\" />";
+if($pref['wysiwyg']) {
+	$text .="<input type='button' class='button' name='usrname' value='".MAILAN_16."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERNAME}')\" />
+	<input type='button' class='button' name='usrlink' value='".MAILAN_17."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{SIGNUP_LINK}')\" />
+	<input type='button' class='button' name='usrid' value='".MAILAN_17."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERID}')\" />";
+} else {
+    $text .="<input type='button' class='button' name='usrname' value='".MAILAN_16."' onclick=\"addtext('{USERNAME}')\" />
+	<input type='button' class='button' name='usrlink' value='".MAILAN_17."' onclick=\"addtext('{SIGNUP_LINK}')\" />
+	<input type='button' class='button' name='usrid' value='".MAILAN_18."' onclick=\"addtext('{USERID}')\" />";
 }
 
 
