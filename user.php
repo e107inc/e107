@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-05-06 02:04:30 $
+|     $Revision: 1.21 $
+|     $Date: 2005-06-22 14:15:03 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -213,11 +213,6 @@ if (!$sql->db_Select("user", "*", "ORDER BY user_id $order LIMIT $from,$records"
 	echo "<div style='text-align:center'><b>".LAN_141."</b></div>";
 } else {
 	$userList = $sql->db_getList();
-	if ($sql->db_Select("core", " e107_value", " e107_name='user_entended'")) {
-		$row = $sql->db_Fetch();
-		$user_entended = unserialize($row[0]);
-	}
-
 	$text .= "
 	<table style='width:95%' class='fborder'>
 	<tr>
@@ -228,7 +223,7 @@ if (!$sql->db_Select("user", "*", "ORDER BY user_id $order LIMIT $from,$records"
 	</tr>";
 
 	foreach ($userList as $row) {
-		$text .= renderuser($row, $user_entended, "short");
+		$text .= renderuser($row, "short");
 	}
 
 	$text .= "</table>\n</div>";
@@ -240,7 +235,7 @@ $ns->tablerender(LAN_140, $text);
 require_once(e_HANDLER."np_class.php");
 $ix = new nextprev("user.php", $from, $records, $users_total, LAN_138, $records.".".$order);
 
-function renderuser($user_array, $user_entended, $mode = "verbose") {
+function renderuser($user_array, $mode = "verbose") {
 	global $sql, $pref, $tp, $sc_style, $user_shortcodes;
 	global $EXTENDED_START, $EXTENDED_TABLE, $EXTENDED_END, $USER_SHORT_TEMPLATE, $USER_FULL_TEMPLATE;
 	global $user;
