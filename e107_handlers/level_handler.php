@@ -11,63 +11,52 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/level_handler.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-08 18:33:40 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-22 17:36:36 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
-function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref) {
+function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref, $fmod = "")
+{
 	 
+	global $tp;
 	if (!$user_id) {
 		return FALSE;
 	}
 	 
 	if ($user_admin) {
-		if ($user_perms == "0") {
+		if ($user_perms == "0")
+		{
 			$data[0] = IMAGE_rank_main_admin_image."<br />";
 			return($data);
-		} else {
-			if (preg_match("/(^|\s)".preg_quote($user_name)."/", $forum_moderators) && getperms("A", $user_perms)) {
-				$data[0] = "<div class='spacer'>".IMAGE_rank_moderator_image."</div>";
-				return($data);
-			} else {
-				$data[0] = "<div class='spacer'>".IMAGE_rank_admin_image."</div>";
-				return($data);
-			}
 		}
 	}
-	else if(preg_match("/(^|\s)".preg_quote($user_name)."/", $forum_moderators) && getperms("A", $user_perms)) {
-		$data[0] = IMAGE_rank_moderator_image."<br />";
-	} else {
-		$data[0] = "<span class='smalltext'>".LAN_195." #".$user_id."<br />";
+	if($fmod === TRUE)
+	{
+		$data[0] = "<div class='spacer'>".IMAGE_rank_moderator_image."</div>";
+		return($data);
 	}
-	 
+	if ($user_admin)
+	{
+			$data[0] = IMAGE_rank_admin_image."<br />";
+			return($data);
+	}
+	$data[0] = "<span class='smalltext'>".LAN_195." #".$user_id."<br />";
+	$data['userid'] = "<span class='smalltext'>".LAN_195." #".$user_id."<br />";
+ 
 	$level_thresholds = ($pref['forum_thresholds'] ? explode(",", $pref['forum_thresholds']) : array(20, 100, 250, 410, 580, 760, 950, 1150, 1370, 1600));
-	 
-	if (!$pref['forum_images']) {
-		if ($pref['forum_levels']) {
-			$level_images = explode(",", $pref['forum_levels']);
-			$rank_type = "text";
-		} else {
+ 
+	$level_images = explode(",", $pref['forum_images']);
+	$level_names = explode(",", $pref['forum_levels']);
+	if(!$pref['forum_images'])
+	{
+		if(!$level_names[0])
+		{
 			$level_images = array("lev1.png", "lev2.png", "lev3.png", "lev4.png", "lev5.png", "lev6.png", "lev7.png", "lev8.png", "lev9.png", "lev10.png");
-			$rank_type = "image";
-		}
-	} else {
-		$level_images = explode(",", $pref['forum_images']);
-		if (!$level_images[0]) {
-			if ($pref['forum_levels']) {
-				$level_images = explode(",", $pref['forum_levels']);
-				$rank_type = "text";
-			} else {
-				$level_images = array("lev1.png", "lev2.png", "lev3.png", "lev4.png", "lev5.png", "lev6.png", "lev7.png", "lev8.png", "lev9.png", "lev10.png");
-				$rank_type = "image";
-			}
-		} else {
-			$rank_type = "image";
 		}
 	}
-	 
+
 	$daysregged = max(1, round((time() - $user_join) / 86400))."days";
 	$level = ceil((($user_forums * 5) + ($user_comments * 5) + ($user_chats * 2) + $user_visits)/4);
 	$ltmp = $level;
@@ -102,13 +91,22 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 	else if($level >= ($level_thresholds[8]+1)) {
 		$rank = 9;
 	}
-	if ($rank_type == "image")
+
+	$data['pic'] = (file_exists(THEME."forum/".$level_images[$rank]) ? THEME."forum/".$level_images[$rank] : e_IMAGE."rate/".IMODE."/".$level_images[$rank]);
+	$data['name'] = "[ ".$tp->toHTML($level_names[$rank], FALSE, 'defs')." ]";
+
+	$img_title = "";
+	if($level_names[$rank])
 	{
-		$pic_lev = (file_exists(THEME."forum/".$level_images[$rank]) ? THEME."forum/".$level_images[$rank] : e_IMAGE."rate/".IMODE."/".$level_images[$rank]);
+		$data[1] = "<div class='spacer'>{$data['name']}</div>";
+		$img_title = "title='{$data['name']}'";
 	}
-	$data[1] = "<div class='spacer'>
-		".($rank_type == "image" ? "<img src='".$pic_lev."' alt='' />" : "[ ".trim(chop($level_images[$rank]))." ]")."
-		</div>";
+	else
+	{
+		$data[1] = "<div class='spacer'>{$data['pic']}</div>";
+	}
+
+	$data['pic'] = "<img src='".$data['pic']."' alt='' {$img_title} />";
 	return ($data);
 }
 	

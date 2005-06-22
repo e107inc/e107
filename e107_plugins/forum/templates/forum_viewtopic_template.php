@@ -11,15 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewtopic_template.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-15 13:51:54 $
-|     $Author: sweetas $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-22 17:36:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
 $sc_style['LASTEDIT']['pre'] = "<br /><br /><span class='smallblacktext'>[ ".LAN_29." ";
 $sc_style['LASTEDIT']['post'] = " ]</span>";
 	
+$sc_style['LEVEL']['pre'] = "<div class='spacer'>";
+$sc_style['LEVEL']['post'] = "</div>";
+
 $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	<div class='spacer'>
 	<table style='width:95%' class='fborder'>
@@ -101,7 +104,7 @@ $FORUMTHREADSTYLE = "<tr>
 	{CUSTOMTITLE}
 	{AVATAR}
 	<span class='smalltext'>
-	{LEVEL}
+	{LEVEL=pic}
 	{MEMBERID}
 	{JOINED}
 	{LOCATION}
@@ -185,7 +188,7 @@ $FORUMREPLYSTYLE = "<tr>
 	{CUSTOMTITLE}
 	{AVATAR}
 	<span class='smalltext'>
-	{LEVEL}
+	{LEVEL=pic}
 	{MEMBERID}
 	{JOINED}
 	{LOCATION}
