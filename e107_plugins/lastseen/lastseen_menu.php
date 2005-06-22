@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/lastseen/lastseen_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-22 20:03:45 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:24:47 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */

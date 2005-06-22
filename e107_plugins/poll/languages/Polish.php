@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Polish.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-22 19:47:36 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-22 20:24:48 $
 |     $Author: jacek_c $ http://e107poland.org
 +----------------------------------------------------------------------------+
 */
