@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_image.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 03:34:47 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("IMALAN_1", "Włącz obrazy w postach");
@@ -43,5 +43,7 @@ define("IMALAN_31", "Tylko dla gości");
 define("IMALAN_32", "Tylko dla zarejestrowanych");
 define("IMALAN_33", "Tylko dla administratorów");
 
+define("IMALAN_34", "Włącz Sleight");
+define("IMALAN_35", "Fixes transparent PNG-24's with alpha transparency in IE 5 / 6 (Applies Sitewide)");
 
 ?>

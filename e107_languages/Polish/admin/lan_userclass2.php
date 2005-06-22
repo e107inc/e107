@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_userclass2.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 03:34:47 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("UCSLAN_1", "Usunięto wszystkich użytkowników z klasy.");
@@ -17,8 +17,8 @@ define("UCSLAN_5", "Klasa zaktualizowana.");
 define("UCSLAN_6", "Klasa zapisana w bazie danych.");
 define("UCSLAN_7", "Nie ma jeszcze klas użytkowników.");
 define("UCSLAN_8", "Istniejące klasy");
-define("UCSLAN_9", "Redaguj");
-define("UCSLAN_10", "Skasuj");
+//define("UCSLAN_9", "Redaguj");
+//define("UCSLAN_10", "Skasuj");
 define("UCSLAN_11", "zaznacz, aby potwierdzić");
 define("UCSLAN_12", "Nazwa klasy");
 define("UCSLAN_13", "Opis klasy");

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_frontpage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 03:34:47 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("FRTLAN_1", "Ustawienia strony startowej zostały zaktualizowane.");
@@ -15,7 +15,7 @@ define("FRTLAN_3", "Wiadomości (standard)");
 define("FRTLAN_4", "Dyskusje");
 define("FRTLAN_5", "Pliki do pobrania");
 define("FRTLAN_6", "Linki");
-define("FRTLAN_7", "Strony Redakcyjne");
+//define("FRTLAN_7", "Strony Redakcyjne");
 
 define("FRTLAN_12", "Aktualizuj ustawienia strony startowej");
 define("FRTLAN_13", "Ustawienia Strony Startowej");

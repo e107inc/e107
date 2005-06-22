@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_theme.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 03:34:47 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("TPVLAN_1", "Właśnie oglądasz podgląd tematu <b>'".PREVIEWTHEMENAME."'</b>.Nie został on jeszcze ustawiony jako główny wygląd serwisu.<br />Aby go ustawić,wróć do <a href='".e_ADMIN."theme.php'>Podglądu Tematów</a> i wybierz 'Jako Wygląd Serwisu'.<br />Aby zobaczyć więcej tematów <a href='".e_ADMIN."theme.php'>kliknij tutaj</a>");
@@ -59,6 +59,5 @@ define("TPVLAN_40", "Zapisano jako temat admina :");
 define("TPVLAN_41", "Wybierz styl admina");
 define("TPVLAN_42", "Zapisz opcje admina");
 define("TPVLAN_43", "Opcje wyświetleń panelu admina ,zapisano");
-
 
 ?>

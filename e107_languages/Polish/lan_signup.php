@@ -79,5 +79,13 @@ define("LAN_SIGNUP_22", "klikając tutaj");
 define("LAN_SIGNUP_23", "aby się zalogować.");
 define("LAN_SIGNUP_24", "Dziękujemy za rejestrację ");
 
+define("LAN_SIGNUP_25", "Wyślij swój avatar");
+define("LAN_SIGNUP_26", "Wyślij swoją fotografię");
+define("LAN_SIGNUP_27", "Pokaż");
+
+define("LAN_SIGNUP_28", "wybierz zawartość/Mail-listę"); //choice of Content/Mail-lists
+
+define("LAN_SIGNUP_29", "List weryfikacyjny A verification email will be sent to the email address you enter here so it must be valid.");
+define("LAN_SIGNUP_30", "If you do not wish to display your email address on this site, please tick the 'hide email address' box.");
 
 ?>

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 03:34:47 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "Nowości");
@@ -84,15 +84,18 @@ define("ADLAN_73", "Skonfiguruj ogólny upload plików");
 define("ADLAN_74", "Cache");
 define("ADLAN_75", "Skonfiguruj cache");
 define("ADLAN_77", "Masz nową wiadomość - kliknij aby ją sprawdzić");
-define("ADLAN_78", "Edytuj");
-define("ADLAN_79", "Kasuj");
-define("ADLAN_80", "zaznacz aby zatwiardzić");
-define("ADLAN_81", "Aktualizacja ");
-define("ADLAN_82", "Utwórz ");
-define("ADLAN_83", "Istniejące ");
-define("ADLAN_84", "Otwórz edytor HTML ");
-define("ADLAN_85", "Wyślij ");
-define("ADLAN_86", "<b>Błędne Hasło</b>");
+define("ADLAN_78", "Dodatkowe pola użytkownika");
+define("ADLAN_79", "Edytuj dodatkowe pola użytkownika");
+
+//define("ADLAN_80", "zaznacz aby zatwiardzić");
+//define("ADLAN_81", "Aktualizacja ");
+//define("ADLAN_82", "Utwórz ");
+//define("ADLAN_83", "Istniejące ");
+//define("ADLAN_84", "Otwórz edytor HTML ");
+//define("ADLAN_85", "Wyślij ");
+
+
+define("ADLAN_86", "Błędne hasło ");
 define("ADLAN_87", "Brak nazwy administratora w bazie danych ");
 define("ADLAN_88", "Nie można zalogować ");
 define("ADLAN_89", "Nazwa Administratora ");
@@ -150,6 +153,21 @@ define("ADLAN_135", "Logowania Adminów");
 define("ADLAN_136", "Mail");
 define("ADLAN_137", "Ustawienia email");
 
+define("ADLAN_138", "Linki w serwisie");
+define("ADLAN_139", "Dodaj/Edytuj/Kasuj linki serwisu");
+
+define("ADLAN_140", "Wygląd Serwisu");
+define("ADLAN_141", "Instaluj / Ustaw wygląd serwisu");
+
+define("ADLAN_142", "Wyszukiwanie");
+define("ADLAN_143", "Ustawienia Wyszukiwania");
+define("ADLAN_144", "Jesteś w prostym sposobie wyświetlania, przełącz się do trybu pełnego");
+define("ADLAN_145", "kliknij tutaj");
+
+define("ADLAN_146", "Błędna próba logowania");
+define("ADLAN_147", "Inspektor plików");
+define("ADLAN_148", "Skanuj pliki w serwisie");
+
 define('ADLAN_CL_1', 'Ustawienia');
 define('ADLAN_CL_2', 'Użytkownicy');
 define('ADLAN_CL_3', 'zawartość');
@@ -166,18 +184,7 @@ define("ADLAN_LAT_4", "Wysłanych Recenzji");
 define("ADLAN_LAT_5", "Wysłanych Linków");
 define("ADLAN_LAT_6", "Zawiadomień o wpisach w forum");
 define("ADLAN_LAT_7", "Wysłanych plików");
-define("ADLAN_LAT_8", "Są nie zatwierdzone informacje<br>There are unmoderated administrator messages");
-
-define("ADLAN_138", "Linki w serwisie");
-define("ADLAN_139", "Dodaj/Edytuj/Kasuj linki serwisu");
-
-define("ADLAN_140", "Wygląd Serwisu");
-define("ADLAN_141", "Instaluj / Ustaw wygląd serwisu");
-
-define("ADLAN_142", "Wyszukiwanie");
-define("ADLAN_143", "Ustawienia Wyszukiwania");
-define("ADLAN_144", "Jesteś w prostym sposobie wyświetlania, przełącz się do trybu pełnego");
-define("ADLAN_145", "kliknij tutaj");
+define("ADLAN_LAT_8", "Są nie zatwierdzone informacje<br>");
 
 // Common Terms
 define("LAN_EDIT","Edytuj");
@@ -220,4 +227,8 @@ define("LAN_CANCEL","Rezygnuj");
 define("LAN_CONFDELETE","Potwierdź kasowanie");
 define("LAN_PLUGIN","Plugin");
 define("LAN_ORDER","Porządek");
+
+define("LAN_SELECT","Wybierz ...");
+define("LAN_ADMIN","Admin");
+
 ?>

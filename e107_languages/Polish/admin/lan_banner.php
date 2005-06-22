@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_banner.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 03:34:47 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("BNRLAN_1", "Banner skasowany.");
@@ -55,42 +55,25 @@ define("BNRLAN_43", "Pokarz obrazy bannerów");
 define("BNRLAN_44", "Edycja");
 define("BNRLAN_45", "Start");
 define("BNRLAN_46", "Kod");
+define("BNRLAN_58", "strona startowa bennerów");
+define("BNRLAN_59", "utwórz nowy banner");
+define("BNRLAN_60", "kampania");
+define("BNRLAN_61", "banner menu ");
+define("BNRLAN_62", "opcje bannerów");
 
+define("BANNER_MENU_L1", "Reklama");
+define("BANNER_MENU_L2", "Ustawienia banner menu zapisane");
 
-
-define("BNRLAN_47", "visibility updated for banner");
-define("BNRLAN_48", "options updated");
-define("BNRLAN_49", "set campaign visibility");
-define("BNRLAN_50", "choose campaign ...");
-define("BNRLAN_51", "Campaign Visibility Configuration");
-define("BNRLAN_52", "visibility for banner");
-define("BNRLAN_53", "set visibility style");
-define("BNRLAN_54", "use individual banner visibility");
-define("BNRLAN_55", "use campaign visibility");
-define("BNRLAN_56", "update options");
-define("BNRLAN_57", "options");
-define("BNRLAN_58", "banner front page");
-define("BNRLAN_59", "create new banner");
-define("BNRLAN_60", "campaign visibility");
-define("BNRLAN_61", "options");
-define("BNRLAN_62", "banner options");
-define("BNRLAN_63", "visibility pages");
-define("BNRLAN_64", "individual visibility will overwrite all campaign visibility settings.");
-define("BNRLAN_65", "campaign visibility will overwrite all individual visibility settings.");
-define("BNRLAN_66", "");
-define("BNRLAN_67", "");
-define("BNRLAN_68", "");
-define("BNRLAN_69", "");
-define("BNRLAN_70", "");
-define("BNRLAN_71", "");
-define("BNRLAN_72", "");
-define("BNRLAN_73", "");
-define("BNRLAN_74", "");
-define("BNRLAN_75", "");
-define("BNRLAN_76", "");
-define("BNRLAN_77", "");
-define("BNRLAN_78", "");
-define("BNRLAN_79", "");
-define("BNRLAN_80", "");
+//v.617
+define("BANNER_MENU_L3", "Opis");
+define("BANNER_MENU_L5", "Ustawienia Bannerów"); 
+define("BANNER_MENU_L6", "wybierz kampanię do pokazania w menu");
+define("BANNER_MENU_L7", "dostępne kampanie");
+define("BANNER_MENU_L8", "zaznaczone kampanie");
+define("BANNER_MENU_L9", "usuń wybór");
+define("BANNER_MENU_L10", "Typ wyświetlania");
+define("BANNER_MENU_L12", "plain");
+define("BANNER_MENU_L13", "in captioned box");
+define("BANNER_MENU_L18", "Aktualizuj ustawienia menu");
 
 ?>

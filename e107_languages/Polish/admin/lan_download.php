@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 03:34:47 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("DOWLAN_1", "Plik do pobrania dodany do bazy danych.");
@@ -82,10 +82,49 @@ define("DOWLAN_70", "Zaznaczenie zpowoduje pobieranie plików przez funkcję PHP
 define("DOWLAN_100", "Aktywować umowę pobierania.");
 define("DOWLAN_101", "Tekst Umowy");
 define("DOWLAN_102", "Zezwolić na komentarze ?");
-
-
 define("DOWLAN_103", "Usuń z Uploadu");
 define("DOWLAN_104", "został usunięty z publicznego Uploadu");
 define("DOWLAN_105", "Z powrotem do Uploadu");
+// ##################### // 
+define("DOWLAN_106", "Download dostępny dla");
+define("DOWLAN_107", "Limit downloadu");
+define("DOWLAN_108", "Limit download bandwidth"); /// do poprawki
+define("DOWLAN_109", "zawsze"); //every
+define("DOWLAN_110", "dni");
+define("DOWLAN_111", "kb");
+define("DOWLAN_112", "Limity");
+define("DOWLAN_113", "Klasa użytkownika");
+define("DOWLAN_114", "Dodaj nowy Limit");
+define("DOWLAN_115", "Aktualizuj limity");
+define("DOWLAN_116", "Limit dla tej klasy użytkowników już istnieje.");
+define("DOWLAN_117", "Limit pomyślnie dodany");
+define("DOWLAN_118", "Limit nie dodany - nieznany błąd");
+define("DOWLAN_119", "Limit pomyślnie usunięty");
+define("DOWLAN_120", "Limit nie usunięty - nieznany błąd");
+define("DOWLAN_121", "Limit pomyślnie uaktualniony");
+define("DOWLAN_122", "Nieczynny");
+define("DOWLAN_123", "Aktywny - Plik został wysłany do limitu pobierań");
+define("DOWLAN_124", "Aktywny - Plik nie został wysłany do limitu pobierań");
+define("DOWLAN_125", "Limit pobierań aktywny");
+define("DOWLAN_126", "Status aktywacji został uaktualniony");
+define("DOWLAN_127", "Wpisz tylko rozmiar pliku jeżeli jest to zewnętrzny.");
+define("DOWLAN_128", "Mirrory");
+define("DOWLAN_129", "pozostaw puste, jeżeli nie używasz mirrorów");
+define("DOWLAN_130", "Dodaj jeszcze jeden mirror");
+define("DOWLAN_131", "Wybierz lokalny plik");
+define("DOWLAN_132", "Wpisz adres mirrora,następnie adres do pliku.");
+
+define("DOWLAN_133", "Mirror uaktualniony w bazie danych.");
+define("DOWLAN_134", "Mirror zapisany w bazie danych");
+define("DOWLAN_135", "Mirror usunięty");
+define("DOWLAN_136", "obraz");
+define("DOWLAN_137", "Czy jesteś pewien, że chcesz usunąć ten mirror?");
+define("DOWLAN_138", "Istniejące Mirrory");
+define("DOWLAN_139", "Adres");
+define("DOWLAN_140", "Załaduj lokalne grafiki do e107_files/downloadimages aby pokazać je tutaj,lub wpisz pełen adres do pliku zdalnego.");
+define("DOWLAN_141", "Lokalizacja");
+define("DOWLAN_142", "Aktualizuj Mirror");
+define("DOWLAN_143", "Utwórz Mirror");
+define("DOWLAN_144", "Brak zdefiniowanych mirrorów, udaj się do sekcji mirrorów i utwórz jakiś.");
 
 ?>

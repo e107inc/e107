@@ -1,20 +1,14 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        lan_ren_help.php Polish-utf-8 language file 
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|        Translation Updated by: jacek on the 12th Sep 2004
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_ren_help.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:06 $
+|     $Author: jacek_c $
++----------------------------------------------------------------------------+
 */
-
 define("LANHELP_1", "Czarny");
 define("LANHELP_2", "Niebieski");
 define("LANHELP_3", "Brązowy");
@@ -50,6 +44,7 @@ define("LANHELP_32", "Kod - nieformatowany tekst: [code]\$foo = bah;[/code]");
 define("LANHELP_33", "HTML - umożliwa wstawianie kodu w tekscie: [html]<table><tr><td> itd.[/html]");
 define("LANHELP_34", "Wstaw etykietkę newpage, a artykuł zostanie podzielony na więcej niż jedną stronę");
 define("LANHELP_35", "hyperlink url");
+define("LANHELP_36", "Unordered: [list]line1*line2*line3[/list] Ordered: [list=type]line1*line2*line3[/list]");
 
 
 ?>

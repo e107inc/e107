@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_message.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 03:34:47 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("MESSLAN_1", "Otrzymane Wiadomości");
@@ -23,6 +23,5 @@ define("MESSLAN_10", "Wysłana przez");
 define("MESSLAN_11", "otwarte w nowym oknie");
 define("MESSLAN_12", "Wiadomość");
 define("MESSLAN_13", "Link");
-
 
 ?>

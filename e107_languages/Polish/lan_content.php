@@ -1,20 +1,14 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        lan_content.php Polish-utf-8 language file 
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|        Translation Updated by: jacek on the 11th Sep 2004
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_content.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:06 $
+|     $Author: jacek_c $
++----------------------------------------------------------------------------+
 */
-
 define("PAGE_NAME", "Artykuły/Recenzje");
 define("LAN_1", "Artykuły");
 define("LAN_2", "Recenzje");
@@ -60,6 +54,5 @@ define("LAN_62", "Archiwalne");
 define("LAN_63", "strona");
 define("LAN_64", "Ten artykuł został oceniony:");
 define("LAN_65", "Nie oceniany");
-
 
 ?>

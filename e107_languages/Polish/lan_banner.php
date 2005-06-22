@@ -1,20 +1,14 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        lan_banner.php Polish-utf-8 language file 
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|        Translation Updated by: jacek on the 11th Sep 2004
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_banner.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:06 $
+|     $Author: jacek_c $
++----------------------------------------------------------------------------+
 */
-
 define("PAGE_NAME", "Bannery");
 define("LAN_16", "Użytkownik:");
 define("LAN_17", "Hasło:");
@@ -38,6 +32,6 @@ define("LAN_34", "Kończy się");
 define("LAN_35", "Adresy IP klikających");
 define("LAN_36", "Aktywny:");
 define("LAN_37", "Start:");
-
+define("LAN_38", "Błąd");
 
 ?>

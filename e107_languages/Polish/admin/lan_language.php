@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_language.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 03:34:47 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,5 +27,7 @@ define("LANG_LAN_12", "Włącz tabele Multi-Language");
 define("LANG_LAN_13", "Ustawienia Multi-Language");
 
 define("LANG_LAN_14", "Domyślny Język Serwisu");
+
+define("LANG_LAN_15", "Zaznacz aby skopiować dane z tabeli z domyślnym językiem.(użyteczne dla linków, news-kategorii etc) ");
 
 ?>

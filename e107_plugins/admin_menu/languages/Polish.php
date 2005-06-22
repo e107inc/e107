@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
 |	e107 website system
@@ -37,5 +37,5 @@ define("ADMIN_MENU_L18", "Lista banowanych");
 define("ADMIN_MENU_L19", "Użytkownicy");
 define("ADMIN_MENU_L20", "Konserwacja");
 define("ADMIN_MENU_L21", "Wyloguj");
-
+define("ADMIN_MENU_L22", "Cache");
 ?>

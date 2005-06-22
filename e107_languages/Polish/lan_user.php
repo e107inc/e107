@@ -1,20 +1,14 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        lan_user.php Polish-iso-8859-2 language file 
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
 |
-|        Â©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|        Translation Updated by: jacek on the 12th Sep 2004
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_user.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:06 $
+|     $Author: jacek_c $
++----------------------------------------------------------------------------+
 */
-
 define("PAGE_NAME", "Użytkownicy");
 define("LAN_20", "Błąd");
 define("LAN_112", "Adres email:");
@@ -64,6 +58,8 @@ define("LAN_422", "Idź");
 define("LAN_423", "Kliknij tutaj aby zobaczyć komentarze użytkownika");
 define("LAN_424", "Kliknij tutaj aby zobaczyć posty na forum");
 define("LAN_425", "Wyślij  Prywatną Wiadomość");
+define("LAN_426", "temu");
 
+define("USERLAN_1", "Przegląd Ocen");
 
 ?>

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 03:34:47 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("EPL_ADLAN_0", "Instaluj");
@@ -30,6 +30,7 @@ define("EPL_ADLAN_17", "Więcej informacji...");
 define("EPL_ADLAN_18", "Nie udało się utworzyć tablic(y) dla tego rozszerzenia.");
 define("EPL_ADLAN_19", "Tablice bazy danych zostały utworzone.");
 define("EPL_ADLAN_20", "Ustawienia preferencji zostały utworzone.");
+
 define("EPL_ADLAN_21", "To rozszerzenie jest już zainstalowane.");
 define("EPL_ADLAN_22", "Zainstalowane");
 define("EPL_ADLAN_23", "Nie zainstalowane");
@@ -54,13 +55,13 @@ define("EPL_ADLAN_40", "Wiadomość Admina");
 define("EPL_ADLAN_41", "Plik nie jest w prawidłowym archiwum .zip lub .tar");
 define("EPL_ADLAN_42", "Wystąpił błąd,nie można było rozpakować pliku archiwum");
 define("EPL_ADLAN_43", "Twój plugin został załadowany oraz rozpakowany, niżej możesz sprawdzić listę swoich pluginów.");
-define("EPL_ADLAN_44", "Auto plugin upload and extraction is disabled as your plugins folder does not have the correct permissions - please CHMOD your e107_plugins folder to 777."); 
-define("EPL_ADLAN_45", "Your menu item has been uploaded and unzipped, to activate go to <a href='".e_ADMIN."menu.php'>your menus page</a>.");
+define("EPL_ADLAN_44", "Auto ładowanie oraz rozpakowywanie ,jest wyłączone ponieważ katalog z pluginami nie ma odpowiednich praw - zmień CHMOD katalogu e107_plugins na 777."); 
+define("EPL_ADLAN_45", "Twoje menu zostało załadowane oraz rozpakowane, aby aktywować udaj się <a href='".e_ADMIN."menu.php'>do strony menu</a>.");
 
-define("EPL_CANCEL", "Rezygnuj");
-define("EPL_EMAIL", "email");
+// define("EPL_CANCEL", "Cancel"); use LAN_CANCEL instead !!
+// define("EPL_EMAIL", "email");
 define("EPL_WEBSITE", "Strona www");
-define("EPL_OPTIONS", "Opcje");
+// define("EPL_OPTIONS", "Options"); use LAN_OPTIONS instead!
 define("EPL_NOINSTALL", "Nie wymaga instalacji, wystarczy aktywować menu. Aby adinstalować, usuń ");
 define("EPL_DIRECTORY", "katalog.");
 define("EPL_NOINSTALL_1", "Nie wymaga instalacji, aby usunąć skasuj katalog ");

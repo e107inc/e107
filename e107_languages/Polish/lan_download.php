@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_download.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:06 $
+|     $Author: jacek_c $
++----------------------------------------------------------------------------+
+*/
 define("PAGE_NAME", "Pliki do pobrania"); 
 
 define("LAN_dl_1", "(Dostęp ograniczony)");
@@ -47,4 +56,42 @@ define("LAN_dl_41", "Szukaj w plikach do pobrania");
 define("LAN_dl_42", "Podkategoria");
 define("LAN_dl_43", "głos");
 define("LAN_dl_44", "głosów");
+
+define("LAN_dl_45", "Zgłoś uszkodzony plik");
+define("LAN_dl_46", "kliknij tutaj aby pobrać");
+
+define("LAN_dl_47", "Wpis został wysłany");
+define("LAN_dl_48", "Plik został zgłoszony do administratora.<br />Dzięki.");
+define("LAN_dl_49", "Kliknij tutaj aby wrócić do download");
+define("LAN_dl_50", "Zgłoś uszkodzony plik do administratora");
+define("LAN_dl_51", "Zgłoszony plik: ");
+define("LAN_dl_52", "Gość");
+define("LAN_dl_53", "Kliknij aby zobaczyć");
+define("LAN_dl_54", "Jeżeli uważasz za konieczne, zgłoś to administratorowi .");
+define("LAN_dl_55", "<b>Nie używaj</b> tej funkcji bez powodu.");
+define("LAN_dl_56", "Zgłoś brak pliku");
+define("LAN_dl_57", "zgłoszone przez");
+define("LAN_dl_58", "Ten wpis został wy6słany ze strony ");
+define("LAN_dl_59", "Wiadomość od: ");
+define("LAN_dl_60", "Brak pliku zgłoszony z");
+
+define("LAN_dl_61", "Download Error");
+define("LAN_dl_62", "Pobieranie pliku zostało ograniczone.");
+define("LAN_dl_63", "Nie masz uprawnień do pobierania tego pliku.");
+define("LAN_dl_64", "Z powrotem");
+define("LAN_dl_65", "Nie znaleziony");
+
+define("LAN_dl_66", "Wybierz mirror");
+
+define("LAN_dl_67", "Proszę wybrać inny mirror ...");
+define("LAN_dl_68", "Mirror Host");
+define("LAN_dl_69", "Download");
+define("LAN_dl_70", "Lokalizacja");
+define("LAN_dl_71", "O");
+
+define("LAN_dl_72", "Żądany plik: ");
+define("LAN_dl_73", "Pliki z tego mirrora: ");
+define("LAN_dl_74", "Łącznie plików z tego mirrora: ");
+
+define("LAN_dl_75", "nie wymaga obrazu ");
 ?>

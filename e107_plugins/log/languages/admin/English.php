@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-02 00:25:58 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:08 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 	
@@ -40,4 +40,13 @@ define("ADSTAT_L18", "Allow access to main statistics page to ...");
 define("ADSTAT_L19", "Recent visitors");
 define("ADSTAT_L20", "Count admin visits");
 define("ADSTAT_L21", "Maximum records to display on stats page");
+define("ADSTAT_L22", "Run update routine");
+define("ADSTAT_L23", "logs from a previous version of e107 have been detected, update them here");
+define("ADSTAT_L24", "Go to update script");
+define("ADSTAT_L25", "Selected stats reset");
+
+define("ADSTAT_L26", "Remove page entries");
+define("ADSTAT_L27", "if your stats have incorrect pages, you can remove them here");
+define("ADSTAT_L28", "Open page");
+
 ?>

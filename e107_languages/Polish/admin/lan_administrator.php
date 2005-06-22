@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_administrator.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 03:34:47 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("ADMSLAN_0", "Nowy wpis użytkownika/admina utworzono dla");
@@ -77,4 +77,6 @@ define("ADMSLAN_64", "Wyczyść cache systemu");
 define("ADMSLAN_65", "Konfiguruj ustawienia mail");
 
 define("ADMSLAN_66", "Ustawienia Wyszukiwania");
+define("ADMSLAN_67", "Skanuj wraz z inspektorem plików");
+
 ?>

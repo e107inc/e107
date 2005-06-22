@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_comment.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:06 $
+|     $Author: jacek_c $
++----------------------------------------------------------------------------+
+*/
 define("PAGE_NAME", "Komentarze");
 define("LAN_0", "[zablokowane przez administratora]");
 define("LAN_1", "Odblokuj");
@@ -32,6 +41,16 @@ define("LAN_314", "moderuj komentarze");
 define("COMLAN_1", "tutaj");
 define("COMLAN_2", "aby się zarejestrować");
 define("COMLAN_3", "Błąd !!!");
+define("COMLAN_4", 'Opis');
+define("COMLAN_5", 'Odp:');
+define("COMLAN_6", 'Odpowiedź');
 
+define("LAN_315", "Trackbacki");
+define("LAN_316", "Brak trackback dla tej nowości.");
+define("LAN_317", "Moderacja trackbacków");
+
+define("LAN_318", "Edytuj komentarz");
+define("LAN_319", "edytowany");
+define("LAN_320", "Aktualizuj komentarz");
 
 ?>

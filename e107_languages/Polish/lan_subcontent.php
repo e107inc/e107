@@ -1,20 +1,14 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        lan_subcontent.php Polish-utf-8 language file 
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|        Translation Updated by: jacek on the 12th Sep 2004
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_subcontent.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:06 $
+|     $Author: jacek_c $
++----------------------------------------------------------------------------+
 */
-
 define("ARLAN_0", "Dziękujemy, twój artykuł został zapisany i zostanie oceniony przez administratorów strony w najbliższym czasie.");
 define("ARLAN_1", "Pozostały puste pola.");
 define("ARLAN_2", "Dziękujemy, twoja recenzja została zapisana i zostanie oceniona przez administratorów strony w najbliższym czasie.");
@@ -52,5 +46,14 @@ define("ARLAN_96", "Nadsyłanie recenzji jest wyłączone");
 define("ARLAN_97", "Nie możesz wysyłać artykułów.");
 define("ARLAN_98", "Nie możesz wysyłać recenzji.");
 
+
+define("ARLAN_99", "Co chciałbyś wysłać ?");
+define("ARLAN_100", "News");
+define("ARLAN_101", " Event");
+define("ARLAN_102", "Article");
+define("ARLAN_103", "Review");
+define("ARLAN_104", "Link");
+define("ARLAN_105", "Download");
+define("ARLAN_106", "Submit Item");
 
 ?>

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 03:34:47 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("SEALAN_1", "Ustawienia wyszukiwarki");
@@ -39,5 +39,7 @@ define("SEALAN_27", "Znaków");
 define("SEALAN_28", "Wyników");
 // define("SEALAN_29", "Order");
 define("SEALAN_30", "Podświetl wyrazy zapytania ,w wynikach wyszukiwania:");
+define("SEALAN_31", "PHP ograniczony do");
+define("SEALAN_32", "wyniki (pozostaw puste jeżeli brak limitów)");
 
 ?>

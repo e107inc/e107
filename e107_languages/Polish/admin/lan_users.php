@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_users.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 03:34:47 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Opcje zapisane.");
@@ -22,33 +22,33 @@ define("USRLAN_10", "Użytkownik skasowany.");
 define("USRLAN_11", "Kasowanie anulowane.");
 define("USRLAN_12", "Nie możesz skasować głównego administratora serwisu.");
 define("USRLAN_13", "Potwierdź, że chcesz skasować tego użytkownika");
-define("USRLAN_14", "po skasowaniu zapis nie może być odtworzony");
-define("USRLAN_15", "Anuluj");
+//define("USRLAN_14", "po skasowaniu zapis nie może być odtworzony");
+//define("USRLAN_15", "Anuluj");
 define("USRLAN_16", "Potwierdź skasowanie");
 define("USRLAN_17", "Potwierdź skasowanie użytkownika");
-define("USRLAN_18", "Użytkownik aktywowany.");
-define("USRLAN_19", "Szukaj");
-define("USRLAN_20", "Sortuj według");
-define("USRLAN_21", "ID Użytkownika");
-define("USRLAN_22", "Nazwa użytkownika");
-define("USRLAN_23", "Odwiedzin serwisu");
-define("USRLAN_24", "Status administratora");
-define("USRLAN_25", "Status");
-define("USRLAN_26", "Malejąco");
-define("USRLAN_27", "Rosnąco");
-define("USRLAN_28", "Sortuj");
+//define("USRLAN_18", "Użytkownik aktywowany.");
+//define("USRLAN_19", "Szukaj");
+//define("USRLAN_20", "Sortuj według");
+//define("USRLAN_21", "ID Użytkownika");
+//define("USRLAN_22", "Nazwa użytkownika");
+//define("USRLAN_23", "Odwiedzin serwisu");
+//define("USRLAN_24", "Status administratora");
+//define("USRLAN_25", "Status");
+//define("USRLAN_26", "Malejąco");
+//define("USRLAN_27", "Rosnąco");
+//define("USRLAN_28", "Sortuj");
 define("USRLAN_29", "Skasuj");
 define("USRLAN_30", "Blokuj");
-define("USRLAN_31", "Blokuj -nieaktywowany-");
+//define("USRLAN_31", "Blokuj -nieaktywowany-");
 define("USRLAN_32", "Aktywuj");
 define("USRLAN_33", "Odblokuj");
 define("USRLAN_34", "Pozbaw praw administratora");
 define("USRLAN_35", "Nadaj prawa administratora");
 define("USRLAN_36", "Ustaw klasę");
-define("USRLAN_37", "Użytkownicy");
-define("USRLAN_38", "Wyszukano");
-define("USRLAN_39", "wyników");
-define("USRLAN_40", "Brak definicji");
+//define("USRLAN_37", "Użytkownicy");
+//define("USRLAN_38", "Wyszukano");
+//define("USRLAN_39", "wyników");
+//define("USRLAN_40", "Brak definicji");
 define("USRLAN_41", "Nazwa pola");
 define("USRLAN_42", "Dodaj pola rozszerzone");
 define("USRLAN_43", "Rozszerzone pola użytkownika");
@@ -83,14 +83,14 @@ define("USRLAN_71", "Pierwsza strona ustawień użytkowników");
 define("USRLAN_72", "Szybkie dodawanie użytkownika");
 define("USRLAN_73", "Czyść użytkowników");
 define("USRLAN_74", "Dodatkowe pola dla użytkownika");
-define("USRLAN_75", "Opcje");
+//define("USRLAN_75", "Opcje");
 define("USRLAN_76", "Opcje użytkowników");
 define("USRLAN_77", "Istniejący użytkownicy");
 define("USRLAN_78", "Nazwa użytkownika");
 define("USRLAN_79", "Status");
 define("USRLAN_80", "Info");
 define("USRLAN_81", "Edytuj");
-define("USRLAN_82", "Czy na pewno chcesz usunąć tego użytkownika?");
+//define("USRLAN_82", "Czy na pewno chcesz usunąć tego użytkownika?");
 define("USRLAN_83", "Dodatkowe pole usunięto");
 define("USRLAN_84", "W serwisie jest");
 define("USRLAN_85", "użytkowników co nie aktywowali sowich kont - Kliknij aby ich usunąć.");
@@ -138,9 +138,18 @@ define("USRLAN_125", "Od");
 define("USRLAN_126", "Zezwolić użytkownikom na wzajemne ocenianie się");
 define("USRLAN_127", "Zezwolić na komentarze w profilu użytkownika");
 
+define("USRLAN_128", "Nazwa - Login");
+define("USRLAN_129", "Edytuj Opcje Wyświetlania");
+
 define("LAN_MAINADMIN","Główny Administrator");
-define("LAN_ADMIN","Administrator");
-define("LAN_NOTVERIFIED","Nie zweryfikowany");
-define("LAN_BANNED","Zbanowany"); 
+define("LAN_ADMIN","Admin");
+define("LAN_NOTVERIFIED","Brak weryfikacji");
+define("LAN_BANNED","Banned");
+
+
+define("USRLAN_130", "Włączone śledzenie online użytkowników");
+define("USRLAN_131", "Musisz mieć włączoną tę funkcję, jeżeli chcesz użyć metody śledzenia online użytkowników.");
+define("USRLAN_132", "Włączone");
+
 
 ?>

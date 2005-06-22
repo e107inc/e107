@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_newspost.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 03:34:47 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "Treść wiadomości skasowana.");
@@ -78,8 +78,8 @@ define("NWSLAN_66", "Zapisywanie pliku");
 define("NWSLAN_67", "Obraz");
 define("NWSLAN_68", "Plik");
 define("NWSLAN_69", "Zapisz obraz lub plik do wstawienia w nowej wiadomości");
-define("NWSLAN_70", "Katalog e107_files/downloads nie jest dostępny do zapisu, musisz ustawić CHMOD 777 przed zapisem dla tego katalogu");
-define("NWSLAN_71", "Katalog e107_images/newspost_images nie jest dostępny do zapisu, musisz ustawić CHMOD 777 przed zapisem dla tego katalogu");
+define("NWSLAN_70", "Katalog ".e_FILE."downloads nie jest dostępny do zapisu, musisz ustawić CHMOD 777 przed zapisem dla tego katalogu");
+define("NWSLAN_71", "Katalog ".e_IMAGE."newspost_images nie jest dostępny do zapisu, musisz ustawić CHMOD 777 przed zapisem dla tego katalogu");
 define("NWSLAN_72", "Wiadomość pokazuj tylko pomiędzy określonymi datami");
 define("NWSLAN_73", "Sposób pokazywania");
 define("NWSLAN_74", "Wybierz jak i gdzie wiadomość jest wstawiona");
@@ -122,6 +122,7 @@ define("NWSLAN_115", "Wiadomości pokazywanych jako archiwalne");
 define("NWSLAN_116", "Jako pierwsze,zapisz ustawienia preferencji serwisu z ustawieniami ile wiadomości ma być pokazywanych na pierwszej stronie.Następnie ponownie zapisz ustawienia wiadomości archiwalnych. (0 znaczy nieaktywne)");
 define("NWSLAN_117", "Podaj tytuł nagłówka wiadomości archiwalnych");
 define("NWSLAN_118", "Pokazywać grafiki");
+define("NWSLAN_119", "Ustawienia Zapisane");
 
 define("LAN_NEWS_5", "Błąd !!! - Nie można było zaktualizować wiadomości w bazie danych.");
 define("LAN_NEWS_6", "News zapisany w bazie danych.");
@@ -156,5 +157,17 @@ define("LAN_NEWS_34", "Trackback");
 define("LAN_NEWS_35", "Dodaj adres url dla trackback");
 define("LAN_NEWS_36", "<b>Pingback</b> (send a pingback to all url's in this post)");
 define("LAN_NEWS_37", "<b>Trackback url's:</b> (jeden adres url w linii)");
+
+define("LAN_NEWS_38", "Dołącz obrazy");
+
+define("LAN_NEWS_39", "click on file to insert at cursor position");
+define("LAN_NEWS_40", "Wpisz link do pliku");
+
+define("LAN_NEWS_41", "Miniatura / Ikona");
+define("LAN_NEWS_42", "Pliki");
+define("LAN_NEWS_43", "(brak obrazków w /e107_images/newspost_images)");
+define("LAN_NEWS_44", "Trackback nie włączony.");
+
+define("LAN_NEWS_45", "ID");
 
 ?>

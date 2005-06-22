@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/clock_menu/languages/admin/Polish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-02 00:25:57 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
 |     $Author: Jacek 
 |      www.e107poland.net
 +----------------------------------------------------------------------------+

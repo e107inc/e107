@@ -1,18 +1,14 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        lan_usersettings.php Polish-utf language file
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
 |
-|        ÂŠSteve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_usersettings.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:06 $
+|     $Author: jacek_c $
++----------------------------------------------------------------------------+
 */
-
 define("PAGE_NAME", "Ustawienia użytkownika");
 define("LAN_7", "Nazwa użytkownika:");
 define("LAN_20", "Błąd");
@@ -65,16 +61,19 @@ define("LAN_429", "Link");
 define("LAN_430", "Download");
 define("LAN_431", "Artykuły");
 define("LAN_432", "Recenzje");
+
 define("LAN_SIGNUP_1", "min.");
 define("LAN_SIGNUP_2", "znaków");
 define("LAN_SIGNUP_4", "Twoje hasło musi zawierać conajmniej");
 define("LAN_SIGNUP_5", " znak zbyt długi");
 define("LAN_SIGNUP_6", "Twój");
 define("LAN_SIGNUP_7", "są wymagane");
+
 define("LAN_USET_1", "Szerokość avatara jest zbyt duża");
 define("LAN_USET_2", "Maksymalna dopuszczalna szerokość to");
 define("LAN_USET_3", "Wysokość avatara jest zbyt duża");
 define("LAN_USET_4", "Maksymalna dopuszczalna wysokość to");
+
 define("LAN_CUSTOMTITLE", "Nazwa Własna");
 define("LAN_ICQNUMBER", "Nazwa ICQ musi zawierać tylko numery.");
 define("LAN_408", "Użytkownik o podanym adresie e-mail już istnieje !");
@@ -83,5 +82,9 @@ define("MAX_AVHEIGHT", "Maksymalna wysokość avatara, to");
 define("GIF_RESIZE", "Proszę zmienić rozmiar grafiki,lub przekonwertować do innego rozmiaru.");
 define("RESIZE_NOT_SUPPORTED", "Zmiana rozmiaru jest nie możliwa na tym serwerze.Proszę zmienić grafikę lub wybrać inną.Plik został usunięty.");
 
-
+// v0.7
+define("LAN_USET_5", "Subskrypcja");
+define("LAN_USET_6", "Zapisz się do naszej listy subskrypcyjnej.");
+define("LAN_USET_7", "Rózne");
+define("LAN_USET_8", "Podpis / Strefa czasowa");
 ?>

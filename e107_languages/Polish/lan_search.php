@@ -39,6 +39,7 @@ define("LAN_200", "Kategorie:");
 define("LAN_201", "Proszę przedefiniuj swoje zapytanie o wyszukanie");
 define("LAN_416", "Musisz być zalogowany, aby uzyskać dostęp do tej strony");
 define("LAN_417", "Słowo dla wyszukiwań musi zawierać min. 3 znaki.");
+
 define("LAN_SEARCH_1", "Zaznacz wszystko");
 define("LAN_SEARCH_2", "Odznacz wszystko");
 define("LAN_SEARCH_3", "wiadomości napisanych w");
@@ -48,6 +49,18 @@ define("LAN_SEARCH_6", "Znaleziono w tekscie rozwiniętym");
 define("LAN_SEARCH_7", "napisane przez");
 define("LAN_SEARCH_8", "w");
 define("LAN_SEARCH_9", "Bez tytułu");
+define("LAN_SEARCH_10", "Idź do strony:");
+define("LAN_SEARCH_11", "Wyniki");
+define("LAN_SEARCH_12", " wł. ");
+define("LAN_SEARCH_13", " w ");
+define("LAN_SEARCH_14", "Kategoria:");
+define("LAN_SEARCH_15", "Autor:");
+define("LAN_SEARCH_16", "Wyszukiwanie ograniczone");
+define("LAN_SEARCH_17", "Sorry, wyszukiwanie jest ograniczone ");
+define("LAN_SEARCH_18", " sekund.");
+define("LAN_SEARCH_19", "Szukaj w:");
+define("LAN_SEARCH_20", "Wymaga autoryzacji");
+define("LAN_SEARCH_21", "Brak autoryzacji do przeglądania tej strony.");
 
 
 ?>

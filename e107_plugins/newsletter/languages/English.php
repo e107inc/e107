@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsletter/languages/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 04:44:55 $
-|     $Author: mijnheer $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:08 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 

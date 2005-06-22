@@ -4,22 +4,24 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_filemanager.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 03:34:47 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:07 $
+|     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("FMLAN_1", "Załaduj");
 define("FMLAN_2", "do");
-define("FMLAN_3", "(foldera)");
+define("FMLAN_3", "foldera");
 define("FMLAN_4", "Rozmiar ładowanego pliku przekracza wartość upload_max_filesize znajdującą się w pliku konfiguracyjnym php.ini.");
-define("FMLAN_5", "Rozmiar ładowanego pliku przekracza wartość MAX_FILE_SIZE określoną w formularzu HTML.");
-define("FMLAN_6", "Plik został tylko częściowo załadowany.");
-define("FMLAN_7", "Nie załadowano żadnych plików.");
-define("FMLAN_8", "Ładowany plik ma rozmiar 0 bajtów");
-define("FMLAN_9", "Nie załadowano żadnych plików.");
-define("FMLAN_10", "Błąd");
-define("FMLAN_11", "Prawdopodobnie uprawnienia do katalogu foldera plików są niewystarczające.");
+
+//define("FMLAN_5", "Rozmiar ładowanego pliku przekracza wartość MAX_FILE_SIZE określoną w formularzu HTML.");
+//define("FMLAN_6", "Plik został tylko częściowo załadowany.");
+//define("FMLAN_7", "Nie załadowano żadnych plików.");
+//define("FMLAN_8", "Ładowany plik ma rozmiar 0 bajtów");
+//define("FMLAN_9", "Nie załadowano żadnych plików.");
+//define("FMLAN_10", "Błąd");
+//define("FMLAN_11", "Prawdopodobnie uprawnienia do katalogu foldera plików są niewystarczające.");
+
 define("FMLAN_12", "plik");
 define("FMLAN_13", "pliki");
 define("FMLAN_14", "folder");
@@ -58,6 +60,7 @@ define("FMLAN_44", "Proszę potwierdzić ,chęć przeniesienia zaznaczonych plik
 define("FMLAN_45", "Proszę potwierdzić ,chęć przeniesienia zaznaczonych plików do DOWNLOADIMAGES.");
 define("FMLAN_46", "Proszę potwierdzić ,chęć <b>usunięcia</b> zaznaczonych plików.");
 define("FMLAN_47", "Upload Użytkowników"); 
+
 
 
 

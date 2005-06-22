@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_mail_handler.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:06 $
+|     $Author: jacek_c $
++----------------------------------------------------------------------------+
+*/
 define("LANMAILH_1", "Napisane przez e107 website system");
 define("LANMAILH_2", "To jest wieloczęściowa wiadomość.");
 define("LANMAILH_3", " jest nie właściwie sformatowane");
@@ -9,5 +18,6 @@ define("LANMAILH_6", "Nie może znaleźć serwera poczty.");
 define("LANMAILH_7", " ukazuje się by obowiązywać.");
 define("LANMAILH_8", "");
 define("LANMAILH_9", "");
+
 
 ?>

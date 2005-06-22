@@ -1,21 +1,14 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        lan_userposts.php Polish-utf language file 
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
 |
-|        Â©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|        Translation Updated by: jacek on the 12th Sep 2004
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_userposts.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 18:16:06 $
+|     $Author: jacek_c $
++----------------------------------------------------------------------------+
 */
-
-
 define("PAGE_NAME", "Wpisy użytkownika");
 define("UP_LAN_0", "Wszystkie wpisy forum");
 define("UP_LAN_1", "Wszystkie komentarze");
@@ -29,7 +22,9 @@ define("UP_LAN_8", "Brak postów");
 define("UP_LAN_9", "w");
 define("UP_LAN_10", "Odpowiedź");
 define("UP_LAN_11", "Wpisał w:");
-define("UP_LAN_12", "Szukaj");
-
-
+define("UP_LAN_12", "Szukaj w");
+define("UP_LAN_13", "Komentarzach");
+define("UP_LAN_14", "Wątkach forum");
+define("UP_LAN_15", "Odp.");
+define("UP_LAN_16", "Adresach IP");
 ?>
