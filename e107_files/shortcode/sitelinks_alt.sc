@@ -8,7 +8,7 @@
 		global $tp;
 		$text = "<a class='menuButton' href='".e_BASE.$cat_link."' ";
 		if ($cat_img != 'no_icons') {
-			$text .= "style='background-image: url(".$cat_img."); background-repeat: no-repeat;  background-position: 3px 1px' ";
+			$text .= "style='background-image: url(".$cat_img."); background-repeat: no-repeat; background-position: 3px 1px; white-space: nowrap' ";
 		}
 		if ($cat_id) {
 			$text .= "onclick=\"return buttonClick(event, '".$cat_id."');\" onmouseover=\"buttonMouseover(event, '".$cat_id."');\"";
@@ -51,10 +51,10 @@
 	} else {
 		$text = "<script type='text/javascript' src='".e_FILE."nav_menu.js'></script>";
 	}
-	$text .= "<div class='menuBar' style='width:100%;'>";
+	$text .= "<div class='menuBar' style='width:100%; white-space: nowrap'>";
 
 	$main_links = getLinks("link_category='1' && link_parent = '0' ORDER BY link_order ASC");
-	$sub_links = getLinks("link_category='1' && link_parent !='0' ORDER BY link_order ASC");
+	$sub_links = getLinks("link_category='1' && link_parent != '0' ORDER BY link_order ASC");
 
 	foreach ($sub_links as $sub) {
 		if (check_class($sub['link_class'])) {
@@ -65,6 +65,7 @@
 		}
 	}
 
+	$did = 0;
 	foreach ($main_links as $links_exp) {
 		if ($parm == 'no_icons') {
 			$link_icon = 'no_icons';
@@ -74,21 +75,24 @@
 
 		if (check_class($links_exp['link_class'])) {
 			if (isset($sub_comp[$links_exp['link_name']]) && $sub_comp[$links_exp['link_name']]) {
-				$text .= adnav_cat($links_exp['link_name'], '', $link_icon, $links_exp['link_name']);
-				$text .= "<div id='".$links_exp['link_name']."' class='menu' onmouseover=\"menuMouseover(event)\">";
+				$text .= adnav_cat($links_exp['link_name'], '', $link_icon, 'l_'.$did);
+				$text .= "<div id='l_".$did."' class='menu' onmouseover=\"menuMouseover(event)\">";
 				foreach ($sub_comp[$links_exp['link_name']]['link_name'] as $sub_comp_key => $sub_comp_value) {
-					if ($parm == 'no_icons') {
+					if (!$sub_comp[$links_exp['link_name']]['link_button'][$sub_comp_key] && $parm == 'no_icons') {
 						$sub_link_icon = 'no_icons';
 					} else {
-						$sub_link_icon = $sub_comp[$links_exp['link_name']]['link_button'][$sub_comp_key] ? e_IMAGE.'icons/'.$sub_comp[$links_exp['link_name']]['link_button'][$sub_comp_key] : $icon;
+						$sub_link_icon = "<img src='";
+						$sub_link_icon .= $sub_comp[$links_exp['link_name']]['link_button'][$sub_comp_key] ? e_IMAGE.'icons/'.$sub_comp[$links_exp['link_name']]['link_button'][$sub_comp_key] : $icon;
+						$sub_link_icon .= "' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />";
 					}
-					$text .= adnav_main($sub_comp_value, $sub_comp[$links_exp['link_name']]['link_url'][$sub_comp_key], "<img src='".$sub_link_icon."' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />");
+					$text .= adnav_main($sub_comp_value, $sub_comp[$links_exp['link_name']]['link_url'][$sub_comp_key], $sub_link_icon);
 				}
 				$text .= "</div>";
 			} else {
 				$text .= adnav_cat($links_exp['link_name'], $links_exp['link_url'], $link_icon);
 			}
 		}
+		$did++;
 	}
 
 	$text .= "</div>";
