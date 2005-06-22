@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_mailout.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-21 18:52:31 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-22 14:48:28 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_52", "Save Changes");
@@ -40,5 +40,8 @@ define("MAILAN_13","All Unverified Members ");
 define("MAILAN_14","It is recommended that you enable SMTP for sending large numbers of emails - set in preferences below.");
 define("MAILAN_15","Mail-Out");
 
+define("MAILAN_16","username");
+define("MAILAN_17","signup link");
+define("MAILAN_18","user id");
 
 ?>
