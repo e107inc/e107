@@ -59,4 +59,10 @@ define("LCLAN_95", "Klasse");
 define("LINKLAN_1", "Opent in een 800x600 venster");
 define("LINKLAN_2", "Ouder");
 define("LINKLAN_3", "Geen ouder (normale link)");
+define("LINKLAN_4", "Sublink generator");
+define("LINKLAN_5", "Genereren sublinks");
+define("LINKLAN_6", "Creëer sublinks van:");
+define("LINKLAN_7", "Creëer sublinks onder welke link?");
+define("LINKLAN_8", "Nieuwscategorieën");
+define("LINKLAN_9", "Downloadcategorieën");
 ?>

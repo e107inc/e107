@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_cpage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 04:44:51 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 19:32:11 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -49,4 +49,5 @@ define("CUSLAN_38", "aan");
 define("CUSLAN_39", "uit");
 define("CUSLAN_40", "Bewaren instellingen");
 define("CUSLAN_41", "Tonen auteurs- en datuminformatie");
+define("CUSLAN_42", "Nog geen pagina's gedefinieerd");
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_mailout.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 04:44:51 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 19:32:12 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,9 @@ define("MAILAN_12","Alle leden");
 define("MAILAN_13","Alle onbevestigde leden ");
 define("MAILAN_14","Geadviseerd wordt om <a href='prefs.php'>SMTP</a> te gebruiken voor het verzenden van grotere aantallen e-mails.");
 define("MAILAN_15","Mail-Out");
-
+define("MAILAN_16","gebruikersnaam");
+define("MAILAN_17","aanmeldlink");
+define("MAILAN_18","user id");
 
 
 ?>

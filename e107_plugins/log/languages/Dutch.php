@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/Dutch.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 04:44:54 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 19:32:12 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
 	
 	
-define("ADSTAT_L1", "Deze plugin logt alle bezoeken aan je site en creëert statistiekoverzichten gebaseerd op de verzamelde gegevens.");
-define("ADSTAT_L2", "De statistiek logger is succesvol geïnstalleerd.");
+define("ADSTAT_L1", "Deze plugin logt alle bezoeken aan je site en creÃ«ert statistiekoverzichten gebaseerd op de verzamelde gegevens.");
+define("ADSTAT_L2", "De statistiek logger is succesvol geÃ¯nstalleerd.");
 define("ADSTAT_L3", "Statistiek log");
 
 define("PAGE_NAME", "Statistieken");
@@ -60,4 +60,5 @@ define("ADSTAT_L37", "Bezoeken per maand");
 define("ADSTAT_L38", "Unieke bezoeken per maand");
 define("ADSTAT_L39", "verwijder deze regel");	
 define("ADSTAT_L40", "dagen");
+define("ADSTAT_L41", "Fout");
 ?>

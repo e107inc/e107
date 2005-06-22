@@ -164,6 +164,8 @@ define("FORLAN_151", "ID");
 define("FORLAN_152", "berichten");
 define("FORLAN_153", "Hulpmiddelen");
 define("FORLAN_154", "Reactie verwijderd");
+define("FORLAN_155", "Forumcategorieën");
+
 define("WMGLAN_1", "Regels voor gasten");
 define("WMGLAN_2", "Regels voor leden");
 define("WMGLAN_3", "Regels voor beheerders");
