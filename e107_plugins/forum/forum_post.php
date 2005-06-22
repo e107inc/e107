@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-06-15 10:20:22 $
-|     $Author: streaky $
+|     $Revision: 1.39 $
+|     $Date: 2005-06-22 14:05:25 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -148,8 +148,8 @@ if (isset($_POST['fpreview']))
 		$poster = ($_POST['anonname']) ? $_POST['anonname'] : LAN_311;
 	}
 	$postdate = $gen->convert_date(time(), "forum");
-	$tsubject = $tp->post_toHTML($_POST['subject'], false);
-	$tpost = $tp->post_toHTML($_POST['post'], false);
+	$tsubject = $tp->post_toHTML($_POST['subject'], true);
+	$tpost = $tp->post_toHTML($_POST['post'], true);
 
 	if ($_POST['poll_title'] != "" && $pref['forum_poll'])
 	{
@@ -178,8 +178,8 @@ if (isset($_POST['fpreview']))
 	}
 	$ns->tablerender(LAN_323, $text);
 	$anonname = $tp->post_toHTML($_POST['anonname'], FALSE);
-	$post = $tp->post_toHTML($_POST['post'], FALSE);
-	$subject = $tp->post_toHTML($_POST['subject'], FALSE);
+	$post = $tp->post_toHTML($_POST['post'], TRUE);
+	$subject = $tp->post_toHTML($_POST['subject'], TRUE);
 
 	if ($action == "edit")
 	{
