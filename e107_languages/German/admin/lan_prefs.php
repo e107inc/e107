@@ -4,11 +4,10 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_prefs.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:07:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:33 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
-|     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
 */
 
@@ -193,7 +192,10 @@ define("PRFLAN_135", "zum Beispiel, falls Sie die Seiten URL oben auf http://foo
 define("PRFLAN_136", "Maximal erlaubte Registrierungen mit der selben IP Adresse.");
 
 define("PRFLAN_137", "Memory Benutzung anzeigen");
-
+define("PRFLAN_138", "Bild-Code Vertifizierung freischalten bei vergessenem Passwort.");
+define("PRFLAN_139", "Warnung anzeigen, wenn Passwort des Hauptseitenadministratorsinnerhalb letzter 30 Tage nicht geändert wurde");
+define("PRFLAN_140", "Text der angezeigt wird, nachdem das Registrierungsformular ausgefüllt wurde.");
+define("PRFLAN_141", "Registrierung erlauben mit XML User Profilen");
 
 
 ?>

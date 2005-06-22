@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_users.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:07:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:33 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
@@ -97,7 +97,7 @@ define("USRLAN_85", "User, die Ihren Account nicht aktiviert haben - klicken Sie
 define("USRLAN_86", "Bestätigte User");
 define("USRLAN_87", "User Einstellungen upgedated");
 define("USRLAN_88", "User Klassen upgedated");
-define("USRLAN_89", "Gehe zur Seite:");
+
 define("USRLAN_90", "Finde Mitglieder");
 define("USRLAN_91", "Klassen");
 define("USRLAN_92", "Ungültige Zeichen im Benutzernamen");
@@ -124,7 +124,7 @@ define("USRLAN_126", "Erlaube Mitgliedern Mitglieder zu bewerten");
 define("USRLAN_127", "Erlaube Kommentare in Mitgliederprofilen");
 
 define("USRLAN_128", "Login Name");
-define("USRLAN_129", "Anzeigeoptionen bearbeiten");
+
 
 define("LAN_MAINADMIN","Haupt Admin");
 define("LAN_ADMIN","Admin");
@@ -134,6 +134,8 @@ define("LAN_BANNED","Gebannt");
 define("USRLAN_130", "Online User Tracking freischalten");
 define("USRLAN_131", "Sie müssen diese Option freischalten um Online User Tracking Optionen verwenden zu können, wie online.php, Forum Online Info und Online Menüs");
 define("USRLAN_132", "Freischalten");
+define("USRLAN_133", "Benutzer zum Aktualisieren ihrer Einstellungen zwingen");
+define("USRLAN_134", "Wenn diese Option freigeschalten ist, wird der Benutzer automatisch zur Benutzer-Einstellungsseite weitergeleitet falls ein erforderliches Feld nicht ausgefüllt wurde.");
 
 
 

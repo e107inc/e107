@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/lan_user.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:06:39 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:32 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
@@ -45,7 +45,7 @@ define("LAN_406", "Beurteilung");
 define("LAN_407", "keines");
 define("LAN_408", "Kein Foto");
 define("LAN_409", "Punkte");
-define("LAN_410", "Miscellaneous");
+define("LAN_410", "Erweiterte Informationen");
 define("LAN_411", "Klicken Sie hier um Ihre Informationen upzudaten");
 define("LAN_412", "Klicken Sie hier um die Informationen diese Mitglieds upzudaten");
 define("LAN_413", "Foto löschen");

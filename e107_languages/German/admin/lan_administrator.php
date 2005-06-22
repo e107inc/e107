@@ -4,11 +4,10 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_administrator.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:07:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:32 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
-|     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
 */
 define("ADMSLAN_0", "Neuer User/Admin Zugang erstellt für");
@@ -72,6 +71,7 @@ define("ADMSLAN_64", "System Cache säubern/leeren");
 define("ADMSLAN_65", "E-mail Einstellungen und Mailout konfigurieren");
 define("ADMSLAN_66", "Suche Konfigurieren");
 define("ADMSLAN_67", "Mit dem Fileinspektor scannen");
+define("ADMSLAN_68", "E-mail Benachrichtigung konfigurieren");
 
 
 ?>

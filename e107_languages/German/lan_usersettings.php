@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/lan_usersettings.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:06:39 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:32 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
@@ -67,6 +67,9 @@ define("LAN_429", "Link");
 define("LAN_430", "Download");
 define("LAN_431", "Artikel");
 define("LAN_432", "Bericht");
+define("LAN_433", "URL zu Ihrer XUP Datei");
+define("LAN_434", "Was ist das?");
+define("LAN_435", "XML Benutzer Protokoll Datei");
 define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "Zeichen.");
 define("LAN_SIGNUP_4", "Ihr Passwort muss mindestens ");
@@ -87,8 +90,10 @@ define("RESIZE_NOT_SUPPORTED", "Bildverkleinerungsmethode wird durch ihren Serve
 // v0.7
 define("LAN_USET_5", "Angemeldet für");
 define("LAN_USET_6", "Angemeldet für unsere Mailing-Liste(n) und/oder Bereiche dieser Seite.");
-define("LAN_USET_7", "Miscellaneous");
+define("LAN_USET_7", "Erweiterte Informationen");
 define("LAN_USET_8", "Signatur / Zeitzone");
+define("LAN_USET_9", "Einige erforderliche Felder (markiert mit einem *) fehlen in Ihren Einstellungen.");
+define("LAN_USET_10","Bitte aktualisieren Sie Ihre Einstellungen um fortfahren zu können.");
 
 
 ?>

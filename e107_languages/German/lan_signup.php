@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/lan_signup.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:06:39 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:32 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
@@ -14,7 +14,6 @@
 define("PAGE_NAME", "Registrierung");
 define("LAN_7", "Angezeigter Name: ");
 define("LAN_8", "dies ist der Name, der auf der Seite angezeigt wird");
-
 define("LAN_9", "Login Name: ");
 define("LAN_10", "dies ist der Name, den Sie für das Login benutzen");
 define("LAN_17", "Passwort: ");
@@ -77,6 +76,23 @@ define("LAN_SIGNUP_26", "Ihr Foto hochladen");
 define("LAN_SIGNUP_27", "Zeige");
 
 define("LAN_SIGNUP_28", "Wahl des Inhalts/Mail-Listen");
+
+define("LAN_SIGNUP_29", "Eine Bestätigungs-E-mail wird an die hier eingegebene Adresse verschickt, deshalb muss die Adresse gültig sein, die Sie eingeben.");
+define("LAN_SIGNUP_30", "Falls Sie es nicht wünschen, dass Ihre E-mail Adresse auf der Seite angezeigt wird, markieren Sie bitte die 'verstecke e-mail' Box.");
+
+define("LAN_SIGNUP_31", "URL zu Ihrer XUP Datei");
+define("LAN_SIGNUP_32", "Was ist eine XUP Datei?");
+define("LAN_SIGNUP_33", "Pfad angeben oder Avatar wählen");
+define("LAN_SIGNUP_34", "Merke: Jegliche Bilduploads zu diesem Server die vom Administrator für unpassend gehalten werden, werden sofort gelöscht.");
+define("LAN_SIGNUP_35", "Bitte hier klicken um sich zu registrieren wenn Sie eine XUP Datei haben");
+
+define("LAN_LOGINNAME", "Login Name");
+define("LAN_PASSWORD", "Passwort");
+define("LAN_USERNAME", "Angezeigter Name");
+define("LAN_EMAIL_01", "Lieber");
+define("LAN_EMAIL_04", "Bitte diese E-mail zur eigenen Information aufbewahren.");
+define("LAN_EMAIL_05", "Ihr Passwort wurde verschlüsselt und kann nicht wiederhergestellt werden falls Sie es verlegt oder vergessen haben. Sie können aber ein neues beantragen, falls dies passiert ist.");
+define("LAN_EMAIL_06", "Danke für Ihre Registrierung.");
 
 
 ?>

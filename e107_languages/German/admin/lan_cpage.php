@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_cpage.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:07:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:32 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
@@ -30,7 +30,7 @@ define("CUSLAN_17", "Linkname eingeben um zu erstellen");
 define("CUSLAN_18", "Seite / Link sichtbar für");
 define("CUSLAN_19", "Seite aktualisieren");
 define("CUSLAN_20", "Seite erstellen");
-define("CUSLAN_21", "Menü aktulaisieren");
+define("CUSLAN_21", "Menü aktualisieren");
 define("CUSLAN_22", "Menü erstellen");
 define("CUSLAN_23", "Seite bearbeiten");
 define("CUSLAN_24", "Neue Seite erstellen");

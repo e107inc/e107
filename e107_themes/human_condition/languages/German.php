@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/human_condition/languages/German.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:07:23 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:42 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 |     $ UTF-8 encoded $

@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: German.php,v 1.1 2005-05-29 02:21:27 e107coders Exp $
+// $Id: German.php,v 1.2 2005-06-22 20:02:34 e107coders Exp $
 // $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 define(EC_ADLAN_1,"Kalender");
 define(EC_ADLAN_2,"Kalender konfigurieren");

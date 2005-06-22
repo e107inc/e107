@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:07:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:32 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
@@ -64,7 +64,6 @@ define("DOWLAN_47", "Kategorie erstellt");
 define("DOWLAN_48", "Kategorie aktualisiert");
 define("DOWLAN_49", "Download Kategorie");
 
-define("DOWLAN_50", "Gehe zur Seite: ");
 define("DOWLAN_51", "Downloads durchsuchen");
 
 define("DOWLAN_52", "Dateien");
@@ -137,5 +136,11 @@ define("DOWLAN_141", "Ort");
 define("DOWLAN_142", "Mirror aktualisieren");
 define("DOWLAN_143", "Mirror erstellen");
 define("DOWLAN_144", "Keine Mirrors angelegt, gehen Sie in den Mirror-Bereich um welche anzulegen.");
+
+define("DOWLAN_145", "Download sichtbar für");
+define("DOWLAN_146", "Eigene Download-denial Nachricht oder URL");
+define("DOWLAN_147", "Icon für leere Kategorie");
+define("DOWLAN_148", "Hier markieren um den Datumsstempel auf die jetzige Zeit zu aktualisieren");
+define("DOWLAN_149", "oder hier markieren um einen exterene Datei zu wählen");
 
 ?>

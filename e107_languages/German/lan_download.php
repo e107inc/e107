@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/lan_download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:06:39 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:31 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_users_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:07:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:34 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
@@ -30,11 +30,11 @@ define("EXTLAN_15", "Feld Typ Parameter");
 define("EXTLAN_16", "Gesetzer Wert");
 define("EXTLAN_17", "Trage die Werte getrennt durch komma ein, z.B. value1,value2 usw <br /> Für DB Tabellen bitte das Format benutzen: dbtable,field-value,field-name.");
 define("EXTLAN_18", "Erforderlich");
-define("EXTLAN_19", "Für benutzer wird es erforderlich sein hier einen Wert einzugeben, wenn Sie Ihre Einstellungen aktualisieren.");
+define("EXTLAN_19", "Für Benutzer wird es erforderlich sein hier einen Wert einzugeben, wenn Sie Ihre Einstellungen aktualisieren.");
 define("EXTLAN_20", "Legt fest welchen Benutzern dieses Feld angezeigt wird.");
 define("EXTLAN_21", "Legt fest wer dieses feld in seinen Einstellungen sieht.");
 define("EXTLAN_22", "Legt fest wer den Wert auf der Benutzerseite angezeigt bekommt.");
-define("EXTLAN_23", "Erweitertes Benutzerfeld hinzufügen");
+define("EXTLAN_23", "Erweitertes Benutzerfeld hinzufÜgen");
 define("EXTLAN_24", "Erweitertes Benutzerfeld aktualisieren");
 
 define("EXTLAN_25", "Nach unten");
@@ -67,18 +67,18 @@ define("EXTLAN_51", "<i>parm_name=parm_value</i><br />Bitte sehen Sie in die Hil
 define("EXTLAN_52", "Regex Registrierungscode");
 define("EXTLAN_53", "Geben Sie den Regex Code ein um Ihre Eingaben gültig zu machen <br />**Regex Delimiters sind nötig**");
 define("EXTLAN_54", "Regex Textfehler");
-define("EXTLAN_55", "Geben Sie hier die Fehlernachricht ein, die angezeigt wird, falls die Regex-Registrierung fehl schlägt.");
+define("EXTLAN_55", "Geben Sie hier die Fehlernachricht ein, die angezeigt wird, falls die Regex-Registrierung fehlschlägt.");
 define("EXTLAN_56", "Vorgefertigte Felder");
 define("EXTLAN_57", "Aktiviert");
 define("EXTLAN_58", "Nicht aktiviert");
 define("EXTLAN_59", "Aktivieren");
 define("EXTLAN_60", "Deaktivieren");
 define("EXTLAN_61", "keine");
-define("EXTLAN_62", "Tabelle wählen");
-define("EXTLAN_63", "Feld Id wählen");
-define("EXTLAN_64", "Anzeigemodus wählen");
+define("EXTLAN_62", "Tabelle wÃ¤hlen");
+define("EXTLAN_63", "Feld Id wÃ¤hlen");
+define("EXTLAN_64", "Anzeigemodus wÃ¤hlen");
 //textbox
-define("EXTLAN_HELP_1", "<b><i>Parameter:</i></b><br />size - Grösse des Feldes<br />maxlength - maximale Länge des Feldes<br />class - css Klasse des Feldes<br />");
+define("EXTLAN_HELP_1", "<b><i>Parameter:</i></b><br />size - Grösse des Feldes<br />maxlength - maximale LÃ¤nge des Feldes<br />class - css Klasse des Feldes<br />");
 //radio buttons
 define("EXTLAN_HELP_2", "This will be the radio buttons help text");
 //dropdown
@@ -92,9 +92,5 @@ define("EXTLAN_HELP_6", "This will be the Integer help text");
 //date
 define("EXTLAN_HELP_7", "This will be the date help text");
 
-define("EXTLAN_PRE1", "Ort");
-define("EXTLAN_PRE2", "AIM");
-define("EXTLAN_PRE3", "ICQ");
-define("EXTLAN_PRE4", "Yahoo!");
-define("EXTLAN_PRE5", "Homepage");
+
 ?>

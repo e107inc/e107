@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_submenusgen.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:07:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:33 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
@@ -54,7 +54,7 @@ define("LAN_MENGEN_39", "URL:");
 define("LAN_MENGEN_40", " Kann nicht erstellt werden, URL fehlt...");
 define("LAN_MENGEN_41", "Links");
 define("LAN_MENGEN_42", "Für jede Linkkategorie wird ein neuer Link im Submenü erstellt um diese Kategorie direkt zu erreichen");
-define("LAN_MENGEN_43", "Alle angezeigten Links im ");
+define("LAN_MENGEN_43", "Alle angezeigten Links im Links Submenü werden gelöscht");
 
 
 ?>

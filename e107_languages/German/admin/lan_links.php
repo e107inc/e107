@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:07:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:33 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
@@ -71,5 +71,11 @@ define("LCLAN_81", "Sub-Menüs werden nur angezeigt wenn der Hauptlink geklickt 
 define("LINKLAN_1", "Öffnet in einem 800x600 Fenster");
 define("LINKLAN_2", "Hauptkategorie");
 define("LINKLAN_3", "Keine Hauptkategorie (Normaler Link)");
+define("LINKLAN_4", "Sublink Generator");
+define("LINKLAN_5", "Sublinks erstellen");
+define("LINKLAN_6", "Sublinks erstellen von:");
+define("LINKLAN_7", "Unter welchem Link soll ein Sublink erstellt werden?");
+define("LINKLAN_8", "News Kategorien");
+define("LINKLAN_9", "Download Kategorien");
 
 ?>

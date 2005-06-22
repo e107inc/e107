@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_fileinspector.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:07:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:32 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
@@ -19,7 +19,7 @@ define("FC_LAN_4", "Alle Files");
 define("FC_LAN_5", "Core Files");
 define("FC_LAN_6", "Core Files (Integrität Fehler)");
 define("FC_LAN_7", "Nicht Core Files");
-define("FC_LAN_8", "Integrit&aum;t der Core Files überprüfen");
+define("FC_LAN_8", "Integrität der Core Files überprüfen");
 define("FC_LAN_9", "An");
 define("FC_LAN_10", "Aus");
 define("FC_LAN_11", "Jetzt scannen");
@@ -34,7 +34,7 @@ define("FR_LAN_7", "Integritäts Check");
 define("FR_LAN_8", "Core files durchlaufen");
 define("FR_LAN_9", "Core files fehlerhaft");
 define("FR_LAN_10", "Mögliche Gründe für fehlerhafte Core Files");
-define("FR_LAN_11", "Die File iste beschädigt");
+define("FR_LAN_11", "Die File ist beschädigt");
 define("FR_LAN_12", "Dies kann mehrere Ursachen haben, wie z.B. das die File schon in der Zip-Datei besch&aum;digt ist, beim entzippen 
 beschädigt wurde oder beim hochladen via ftp besch&aum;digt wurde. Sie sollten die File nochmals hochladen 
 und den Scan nochmals laufen lassen um zu sehen ob dies das Problem löst.");
@@ -52,6 +52,7 @@ des Entwicklungsteams gerade verändert wurdenund noch kein Core Image Snapshot 
 define("FR_LAN_19", "Files fehlerhaft");
 define("FR_LAN_20", "Alle Files durchlaufen");
 define("FR_LAN_21", "Keine");
+define("FR_LAN_22", "Fehlende Core-Files");
 
 
 ?>

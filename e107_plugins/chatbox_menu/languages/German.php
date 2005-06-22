@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/German.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:21:31 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:34 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
@@ -35,5 +35,22 @@ define("CHATBOX_L14", "Smilies");
 define("CHATBOX_L15", "Der Eintrag ist zu lang, oder es wurde ein leerer Eintrag getätigt.");
 define("CHATBOX_L16", "Unbekannt");
 define("CHATBOX_L17", "Doppelter Eintrag");
+
+define("LAN_11", "Chatbox (Alle Einträge)");
+define("LAN_12", "Chat Einträge");
+define("LAN_13", "am");
+
+define("LAN_14", "Fehler!");
+define("LAN_15", "Sie haben nicht die erforderlichen Rechte, diese Seite anzusehen.");
+
+define("LAN_16", "[ dieser Eintrag wurde vonm Admin geblockt ]");
+
+define("NT_LAN_CB_1", "Chatbox Ereignisse");
+define("NT_LAN_CB_2", "Nachricht gepostet");
+define("NT_LAN_CB_3", "Geschrieben von");
+define("NT_LAN_CB_4", "IP Adresse");
+define("NT_LAN_CB_5", "Nachricht");
+define("NT_LAN_CB_6", "Chatbox Nachricht gepostet");
+
 	
 ?>

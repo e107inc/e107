@@ -4,13 +4,17 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/German/lan_forum_search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:21:53 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:36 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
 */
 
 define("FOR_SCH_LAN_1", "Forum");
+define("FOR_SCH_LAN_2", "Suche im Forum");
+define("FOR_SCH_LAN_3", "Alle Foren");
+define("FOR_SCH_LAN_4", "Ganzer Post");
+define("FOR_SCH_LAN_5", "Als Teil des Threads");
 
 ?>

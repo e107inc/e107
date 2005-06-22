@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_filemanager.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:07:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:32 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
@@ -29,7 +29,7 @@ define("FMLAN_14", "Verzeichnis");
 define("FMLAN_15", "Verzeichnisse");
 define("FMLAN_16", "Root Verzeichnis");
 define("FMLAN_17", "Name");
-define("FMLAN_18", "Grö&szlig;e");
+define("FMLAN_18", "Grösse");
 define("FMLAN_19", "Zuletzt modifiziert");
 
 define("FMLAN_21", "Datei Upload in dieses Verzeichnis");
@@ -58,6 +58,9 @@ define("FMLAN_44", "Bitte bestätigen Sie die ausgewählte Datei in das DOWNLOAD
 define("FMLAN_45", "Bitte bestätigen Sie die ausgewählte Datei in das DOWNLOADIMAGES Verzeichnis verscheiben zu wollen.");
 define("FMLAN_46", "Bitte bestätigen Sie die ausgewählte Datei löschen zu wollen.");
 define("FMLAN_47", "Benutzer Uploads");
+define("FMLAN_48", "Ausgewähltes verschieben nach");
+define("FMLAN_49", "Bitte bestätigen Sie, ausgewählte Datei verschieben zu wollen.");
+define("FMLAN_50", "Verschieben");
 
 
 ?>

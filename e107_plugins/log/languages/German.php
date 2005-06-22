@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/German.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-29 02:22:11 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-22 20:02:36 $
 |     $Author: e107coders $
 |     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
@@ -59,6 +59,7 @@ define("ADSTAT_L37", "Besuche pro Monat");
 define("ADSTAT_L38", "Einzigartige Besuche im Monat");
 define("ADSTAT_L39", "Diesen Eintrag entfernen");
 define("ADSTAT_L40", "Tage");
+define("ADSTAT_L41", "Fehler");
 
 	
 	
