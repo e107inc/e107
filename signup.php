@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-06-12 21:39:45 $
+|     $Revision: 1.49 $
+|     $Date: 2005-06-22 22:34:07 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ if(ADMIN && (e_QUERY == "preview" || e_QUERY == "test" )){
 	  //	if(!sendemail(USEREMAIL, $subj, $message, USERNAME)) {
 			echo "<br /><br /><br /><br >&nbsp;&nbsp;>> There was a problem, the registration mail was not sent, please contact the website administrator.";
 		}else{
-        	echo "<br /><br /><br /><br >&nbsp;&nbsp;>> Email Sent - Check your inbox!";
+        	echo "<br /><br />&nbsp;&nbsp;>> Email Sent to: ".USEREMAIL." - Check your inbox!";
 		}
 	}
 	exit;
