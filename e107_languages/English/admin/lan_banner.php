@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_banner.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-04-06 21:29:36 $
-|     $Author: stevedunstan $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-22 22:21:37 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("BNRLAN_1", "Banner deleted.");
@@ -53,6 +53,8 @@ define("BNRLAN_59", "create new banner");
 define("BNRLAN_60", "campaigns");
 define("BNRLAN_61", "banner menu ");
 define("BNRLAN_62", "banner options");
+define("BNRLAN_63", "Banner Created");
+define("BNRLAN_64", "Banner Updated");
 
 define("BANNER_MENU_L1", "Advertisement");
 define("BANNER_MENU_L2", "Banner menu configuration saved");
