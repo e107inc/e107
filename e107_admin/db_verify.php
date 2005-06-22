@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-06-09 22:47:30 $
-|     $Author: e107coders $
+|     $Revision: 1.16 $
+|     $Date: 2005-06-22 22:37:07 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -258,11 +258,20 @@ global $table_list;
 if(isset($_POST['do_fix'])){
 	$text = "<div><table class='fborder' style='width:100%'>";
 	foreach( $_POST['fix_active'] as $key=>$val){
-		$table= $_POST['fix_table'][$key][0];
+		
+		if (MAGIC_QUOTES_GPC == TRUE) {
+			$table = stripslashes($_POST['fix_table'][$key][0]);
+			$newval = stripslashes($_POST['fix_newval'][$key][0]);
+			$mode = stripslashes($_POST['fix_mode'][$key][0]);
+			$after = stripslashes($_POST['fix_after'][$key][0]);
+		} else {
+			$table = $_POST['fix_table'][$key][0];
+			$newval = $_POST['fix_newval'][$key][0];
+			$mode = $_POST['fix_mode'][$key][0];
+			$after = $_POST['fix_after'][$key][0];
+		}
+		
 		$field= $key;
-		$newval= $_POST['fix_newval'][$key][0];
-		$mode = $_POST['fix_mode'][$key][0];
-		$after = $_POST['fix_after'][$key][0];
 
 		if($mode == "alter"){
 			$query = "ALTER TABLE `".MPREFIX.$table."` CHANGE `$field` `$field` $newval";
