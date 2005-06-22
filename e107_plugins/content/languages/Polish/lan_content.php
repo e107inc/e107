@@ -4,12 +4,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Polish/lan_content.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-22 20:31:54 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-22 20:33:11 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
-
 
 define("CONTENT_ICON_LAN_0", "edytuj");
 define("CONTENT_ICON_LAN_1", "usuń");
