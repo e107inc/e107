@@ -153,7 +153,7 @@ $COMMENTSTYLE = "
 <table style='width: 450px;'>
 <tr>
 <td style='width: 30%; vertical-align: top;'><span class='mediumtext'>{USERNAME}</span><br /><span class='smalltext'>{TIMEDATE}</span><br />{AVATAR}{REPLY}</td>
-<td style='width: 70%; vertical-align: top;'><span class='mediumtext'>{COMMENT}</span></td>
+<td style='width: 70%; vertical-align: top;'><span class='mediumtext'>{COMMENT} {COMMENTEDIT}</span></td>
 </tr>
 </table>
 <br /><br />

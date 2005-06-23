@@ -130,7 +130,7 @@ $COMMENTSTYLE = "
 <div id='bglefright'>
 <div id='bqcontent'>
 <div id='bqtext'>
-{COMMENT}
+{COMMENT} {COMMENTEDIT}
 </div>
 </div>
 </div>

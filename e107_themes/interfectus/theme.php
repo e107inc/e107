@@ -263,7 +263,7 @@ function tablestyle($caption, $text)
 
 $COMMENTSTYLE = "<br /><br />
 <div class='captiontext'><img src='".THEME."images/bullet1.gif' alt='' style='vertical-align: middle;' /> {USERNAME} | {TIMEDATE}</div>
-{COMMENT}<br />
+{COMMENT} {COMMENTEDIT}<br />
 <span class='smalltext'>{REPLY}{IPADDRESS}</span>
 ";
 

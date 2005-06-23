@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/human_condition/theme.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-03-25 11:38:50 $
-|     $Author: stevedunstan $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-23 11:24:38 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_THEME")){ exit; }
@@ -160,7 +160,7 @@ $COMMENTSTYLE = "
 {REPLY}
 </td>
 <td style='width:70%; vertical-align:top'>
-{COMMENT}
+{COMMENT} {COMMENTEDIT}
 </td>
 </tr>
 </table>
