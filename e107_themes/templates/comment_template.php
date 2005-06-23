@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/comment_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-23 11:09:17 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-23 11:26:13 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -61,17 +61,17 @@ $sc_style['SIGNATURE']['post'] = "<br />";
 
 
 $COMMENTSTYLE = "
-<table class='fborder' style='width:100%;' border='0'>
+<table class='fborder' style='width:100%;'>
 <tr>
-	<td colspan='2' class='forumheader' style='border:1px solid #000;'>
+	<td colspan='2' class='forumheader''>
 		{SUBJECT} {USERNAME} {TIMEDATE} {REPLY} {COMMENTEDIT}
 	</td>
 </tr>
 <tr>
-	<td style='width:30%; vertical-align:top; border:1px solid #000;'>
+	<td style='width:30%; vertical-align:top;'>
 		{AVATAR}<span class='smalltext'>{COMMENTS}{JOINED}</span>
 	</td>
-	<td style='width:70%; vertical-align:top; border:1px solid #000;'>
+	<td style='width:70%; vertical-align:top;'>
 		{COMMENT}
 		{RATING}
 		{IPADDRESS}
