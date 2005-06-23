@@ -110,7 +110,7 @@ SC_END
 
 SC_BEGIN SIGNATURE
 global $SIGNATURE, $comrow, $tp;
-$SIGNATURE = ($comrow['user_signature'] ? $tp->toHTML($comrow['user_signature']) : '');
+$SIGNATURE = ($comrow['user_signature'] ? $tp->toHTML($comrow['user_signature'], true) : '');
 return $SIGNATURE;
 SC_END
 
