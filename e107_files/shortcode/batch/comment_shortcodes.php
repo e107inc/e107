@@ -6,7 +6,7 @@ $comment_shortcodes = e_shortcode::parse_scbatch(__FILE__);
 SC_BEGIN SUBJECT
 global $SUBJECT, $comrow, $pref, $NEWIMAGE, $tp;
 if ($pref['nested_comments']) {
-	$SUBJECT = $NEWIMAGE." <b>".(empty($comrow['comment_subject']) ? $subject : $tp->toHTML($comrow['comment_subject'], TRUE))."</b>";
+	$SUBJECT = $NEWIMAGE." ".(empty($comrow['comment_subject']) ? $subject : $tp->toHTML($comrow['comment_subject'], TRUE));
 } else {
 	$SUBJECT = '';
 }

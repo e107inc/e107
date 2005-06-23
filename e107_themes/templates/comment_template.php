@@ -11,17 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/comment_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-23 11:26:13 $
-|     $Author: lisa_ $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-23 16:51:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
 global $sc_style, $comment_shortcodes;
 global $pref, $comrow, $row2, $tp, $NEWIMAGE, $USERNAME, $RATING;
 
-$sc_style['SUBJECT']['pre'] = "";
-$sc_style['SUBJECT']['post'] = "";
+$sc_style['SUBJECT']['pre'] = "<b>";
+$sc_style['SUBJECT']['post'] = "</b>";
 
 $sc_style['USERNAME']['pre'] = "<b>";
 $sc_style['USERNAME']['post'] = "</b>";
