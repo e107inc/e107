@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-06-21 18:29:05 $
+|     $Revision: 1.17 $
+|     $Date: 2005-06-23 20:35:01 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,6 @@ php 4.3.6 does NOT have this problem.
 */
 // Comment out the line below if you have trouble with some people not receiving emails.
 // ini_set(sendmail_path, "/usr/sbin/sendmail -t -f ".$pref['siteadminemail']);
-
 
 function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_name, $attachments, $Cc, $Bcc, $returnpath, $returnreceipt,$inline ="") {
 	global $pref;
@@ -190,6 +189,8 @@ function validatemail($Email) {
 if(!function_exists("mime_content_type")){
 function mime_content_type($filename){
 
+    $filename = basename($filename);
+
     $mime[".zip"] = "application/x-zip-compressed";
 	$mime[".gif"] = "image/gif";
 	$mime[".png"] = "image/x-png";
@@ -221,8 +222,8 @@ function mime_content_type($filename){
 	$mime[".asx"] = "video/x-ms-asf";
 	$mime[".avi"] = "video/x-msvideo";
 
-
-   return $mime[strrchr($filename, '.')];
+    $ext = strrchr($filename, '.');
+   return $mime[$ext];
 }
 
 
