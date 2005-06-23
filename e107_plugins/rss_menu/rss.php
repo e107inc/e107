@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-06-19 04:21:33 $
+|     $Revision: 1.19 $
+|     $Date: 2005-06-23 16:24:43 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -134,11 +134,10 @@ class rssCreate {
 			case 6:
 				$this -> contentType = "forum threads";
 				$this -> rssQuery = 
-				"SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name FROM e107_forum_t AS t
+				"SELECT t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, u.user_name FROM e107_forum_t AS t
 				LEFT JOIN e107_user AS u ON FLOOR(t.thread_user) = u.user_id
-				LEFT JOIN e107_forum_t AS tp ON t.thread_parent = tp.thread_id
 				LEFT JOIN e107_forum AS f ON f.forum_id = t.thread_forum_id
-				WHERE f.forum_class  IN (0, 251, 255) AND t.thread_parent=0
+				WHERE f.forum_class IN (0, 251, 252) AND t.thread_parent=0
 				ORDER BY t.thread_datestamp DESC LIMIT 0, 9
 				";
 				$sql->db_Select_gen($this -> rssQuery);
@@ -170,7 +169,7 @@ class rssCreate {
 				LEFT JOIN e107_user AS u ON FLOOR(t.thread_user) = u.user_id
 				LEFT JOIN e107_forum_t AS tp ON t.thread_parent = tp.thread_id
 				LEFT JOIN e107_forum AS f ON f.forum_id = t.thread_forum_id
-				WHERE f.forum_class  IN (0, 251, 255)
+				WHERE f.forum_class  IN (0, 251, 252)
 				ORDER BY t.thread_datestamp DESC LIMIT 0, 9";
 				$sql->db_Select_gen($this -> rssQuery);
 				$tmp = $sql->db_getList();
