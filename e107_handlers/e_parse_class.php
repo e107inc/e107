@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.91 $
-|     $Date: 2005-06-21 20:28:46 $
-|     $Author: stevedunstan $
+|     $Revision: 1.92 $
+|     $Date: 2005-06-23 15:45:57 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -204,7 +204,69 @@ class e_parse
 		}
 		return $drain;
 	}
-
+	
+	function html_truncate ($text, $len = 200, $more = "[more]")
+	{
+		$pos = 0;
+		$curlen = 0;
+		$tmp_pos = 0;
+		while($curlen < $len && $curlen < strlen($text))
+		{
+			switch($text{$pos})
+			{
+				case "<" : 
+								if($text{$pos+1} == "/")
+								{
+									$closing_tag = TRUE;
+								}
+								$intag = TRUE; 
+								$tmp_pos = $pos-1; 
+								$pos++; 
+								break;
+				case ">" : 
+								if($text{$pos-1} == "/")
+								{
+									$closing_tag = TRUE;
+								}
+								if($closing_tag == TRUE)
+								{
+									$tmp_pos = 0;
+									$closing_tag = FALSE;
+								}
+								$intag = FALSE; 
+								$pos++; 
+								break;
+				case "&" :
+					if($text{$pos+1} == "#")
+					{
+						$end = strpos(substr($text, $pos, 7), ";");
+						if($end !== FALSE)
+						{
+							$pos+=($end+1);
+							if(!$intag) {$curlen++;}
+							break;
+						}
+					}
+					else
+					{
+						$pos++;
+						if(!$intag) {$curlen++;}
+						break;
+					}
+				default:
+					$pos++;
+					if(!$intag) {$curlen++;}
+					break;
+			}
+		}
+		$ret = ($tmp_pos > 0 ? substr($text, 0, $tmp_pos) : substr($text, 0, $pos));
+		if($pos < strlen($text))
+		{
+			$ret = $ret.$more;
+		}
+		return $ret;
+	}
+		
 	function textclean ($text, $wrap=100)
 	{
 		$text = str_replace ("\n\n\n", "\n\n", $text);
