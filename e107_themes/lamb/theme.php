@@ -142,7 +142,7 @@ $COMMENTSTYLE = "
 <div id='bglefright'>
 <div id='bqcontent'>
 <div id='bqtext'>
-{COMMENT}
+{COMMENT} {COMMENTEDIT}
 <div style='text-align: right;' class='smallext'>{IPADDRESS}</div>
 </div>
 </div>

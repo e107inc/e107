@@ -136,7 +136,7 @@ function tablestyle($caption, $text, $mode)
 $COMMENTSTYLE = "
 <div class='comment'>
 <div class='lowlight'><div class='compad'>{USERNAME} {TIMEDATE}</div></div>
-<div class='compad'>{COMMENT}</div>
+<div class='compad'>{COMMENT} {COMMENTEDIT}</div>
 </div>
 ";
 

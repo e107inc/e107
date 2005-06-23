@@ -111,7 +111,7 @@ function tablestyle($caption, $text, $mode)
 }
 
 $COMMENTSTYLE = "
-<div style='padding-left: 25px;'>{COMMENT}<br /><br />
+<div style='padding-left: 25px;'>{COMMENT} {COMMENTEDIT}<br /><br />
 <div class='newssmalltext'>[ ".LAN_THEME_6." {USERNAME} :: {TIMEDATE} ]</div>
 </div>
 <br /><br />

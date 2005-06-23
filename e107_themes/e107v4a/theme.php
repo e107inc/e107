@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-04-13 12:18:11 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-23 11:24:38 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_THEME")){ exit; }
@@ -263,7 +263,7 @@ $COMMENTSTYLE = "
 </span>
 </td>
 <td style='width:70%; vertical-align:top'>
-{COMMENT}
+{COMMENT} {COMMENTEDIT}
 </td>
 </tr>
 </table>
