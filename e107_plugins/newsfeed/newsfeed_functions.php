@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_functions.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-21 20:28:46 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-23 15:45:57 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -156,7 +156,8 @@ function newsfeed_info($which)
 			{
 				$FEEDITEMLINK = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], TRUE)."</a>\n";
 				$feeditemtext = preg_replace("#\[[a-z0-9=]+\]|\[\/[a-z]+\]|\{[A-Z_]+\}#si", "", $item['description']);
-				$FEEDITEMTEXT = (strlen($feeditemtext) > $truncate ? substr($feeditemtext, 0, $truncate).$truncate_string : $feeditemtext)."\n";
+				$FEEDITEMTEXT = $tp->html_truncate($feeditemtext, $truncate, $truncate_string);
+				
 				$FEEDITEMCREATOR = $tp -> toHTML($item['author'], TRUE);
 				$data .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MENU);
 			}
