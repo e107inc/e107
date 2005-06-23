@@ -11,15 +11,15 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_recent_menu.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2005-06-17 16:26:51 $
+|		$Revision: 1.4 $
+|		$Date: 2005-06-23 11:10:08 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
-if(!getperms("P")){
-	return;
-}
+//if(!getperms("P")){
+//	return;
+//}
 if(!$sql -> db_Select("plugin", "*", "plugin_path = 'list_new' AND plugin_installflag = '1' ")){
 	return;
 }
