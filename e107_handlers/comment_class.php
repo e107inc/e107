@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-06-23 11:09:17 $
-|     $Author: lisa_ $
+|     $Revision: 1.32 $
+|     $Date: 2005-06-23 15:44:16 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -281,23 +281,22 @@ class comment {
 			if ($_POST['comment']) {
 				if (USER == TRUE) {
 					$nick = USERID.".".USERNAME;
-					$sql->db_Update("user", "user_comments=user_comments+1, user_lastpost='".time()."' WHERE user_id='".USERID."' ");
-				}
-				else if($_POST['author_name'] == '') {
+				} else if($_POST['author_name'] == '') {
 					$nick = "0.Anonymous";
-					} else {
+				} else {
 					$sql2 = new db;
 					if ($sql2->db_Select("user", "*", "user_name='".$_POST['author_name']."' ")) {
 						if ($sql2->db_Select("user", "*", "user_name='".$_POST['author_name']."' AND user_ip='$ip' ")) {
 							list($cuser_id, $cuser_name) = $sql2->db_Fetch();
 							$nick = $cuser_id.".".$cuser_name;
-							} else {
+						} else {
 							define("emessage", LAN_310);
 						}
-						} else {
+					} else {
 						$nick = "0.".$tp->toDB($author_name, "public");
 					}
 				}
+				
 				if (!defined("emessage"))
 				{
 					$ip = $e107->getip();
@@ -319,6 +318,9 @@ class comment {
 					}
 					else
 					{
+						if (USER == TRUE) {
+							$sql -> db_Update("user", "user_comments=user_comments+1, user_lastpost='".time()."' WHERE user_id='".USERID."' ");
+						}
 						$edata_li = array("comment_type" => $type, "comment_subject" => $subject, "comment_item_id" => $id, "comment_nick" => $nick, "comment_time" => $_t, "comment_comment" => $comment);
 						$e_event->trigger("postcomment", $edata_li);
 						$e107cache->clear("comment");
