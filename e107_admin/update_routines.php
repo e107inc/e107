@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.112 $
-|     $Date: 2005-06-23 02:35:25 $
+|     $Revision: 1.113 $
+|     $Date: 2005-06-23 03:23:29 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -749,7 +749,8 @@ function update_61x_to_700($type) {
 		}
 
 		// convert notify prefs from serialised to eArrayStorage
-		if ($notify_prefs = $sysprefs -> getArray('notify_prefs')) {
+		$notify_prefs = $sysprefs -> getArray('notify_prefs');
+		if (is_array($notify_prefs)) {
 			$s_prefs = $tp -> recurse_toDB($notify_prefs, true);
 			$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 			$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs' ");
