@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-06-23 15:44:16 $
-|     $Author: sweetas $
+|     $Revision: 1.33 $
+|     $Date: 2005-06-23 16:00:33 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -200,11 +200,24 @@ class comment {
 		$text = $tp -> parseTemplate($renderstyle, FALSE, $comment_shortcodes);
 
 		if ($action == "comment" && $pref['nested_comments']) {
+		
+			if($thistable == "news"){ $type = 0;
+			}elseif($thistable == "content"){ $type = 1;
+			}elseif($thistable == "download"){ $type = 2;
+			}elseif($thistable == "faq"){ $type = 3;
+			}elseif($thistable == "poll"){ $type = 4;
+			}elseif($thistable == "docs"){ $type = 5;
+			}elseif($thistable == "bugtrack"){ $type = 6;
+			}elseif($thistable == "news"){ $type = 0;
+			}else{
+				$type = $thistable;
+			}
+
 			$sub_query = "
 			SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location, user_forums, user_chats, user_visits, user_perms 
 			FROM #comments 
 			LEFT JOIN #user ON #comments.comment_author = #user.user_id 
-			WHERE comment_item_id='".$thisid."' AND comment_type='".$thistable."' AND comment_pid='".$comrow['comment_id']."' 
+			WHERE comment_item_id='".$thisid."' AND comment_type='".$type."' AND comment_pid='".$comrow['comment_id']."' 
 			ORDER BY comment_datestamp
 			";
 			$sql2 = new db;
