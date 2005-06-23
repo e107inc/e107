@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_mailout.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-10 20:06:43 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-23 16:21:59 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -40,4 +40,7 @@ define("MAILAN_12","Todos los miembros");
 define("MAILAN_13","Todos los miembros sin verificar ");
 define("MAILAN_14","Es recomendable que active SMTP para enviar un gran número de correos. Ajústelo en las preferencias de debajo");
 define("MAILAN_15","Salidas correo");
+define("MAILAN_16","Usuario");
+define("MAILAN_17","Enlace de registro");
+define("MAILAN_18","ID Usuario");
 ?>

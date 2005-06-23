@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 22:34:18 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-23 16:22:00 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -49,4 +49,5 @@ define("ADSTAT_L37", "Visitas por mes");
 define("ADSTAT_L38", "Visitas únicas por mes");
 define("ADSTAT_L39", "Eliminar esta entrada");
 define("ADSTAT_L40", "Días");
+define("ADSTAT_L41", "Error");
 ?>

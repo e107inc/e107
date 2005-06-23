@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-10 19:22:08 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-23 16:22:00 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -170,5 +170,6 @@ define("FORLAN_151", "ID");
 define("FORLAN_152", "Envíos");
 define("FORLAN_153", "Herramientas");
 define("FORLAN_154", "Respuesta eliminada");
+define("FORLAN_155", "Categorías de foros");
 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_banner.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-10 17:49:36 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-23 16:21:59 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -59,6 +59,8 @@ define("BNRLAN_59", "Crear nuevo anuncio");
 define("BNRLAN_60", "Campañas");
 define("BNRLAN_61", "Menú de anuncios");
 define("BNRLAN_62", "Opciones del anuncio");
+define("BNRLAN_63", "Anuncio creado");
+define("BNRLAN_64", "Anuncio actualizado");
 
 
 define("anuncio_MENU_L1", "Aviso");

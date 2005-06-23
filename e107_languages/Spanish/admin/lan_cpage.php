@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_cpage.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-10 18:12:32 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-23 16:21:59 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -49,5 +49,6 @@ define("CUSLAN_38", "On");
 define("CUSLAN_39", "Off");
 define("CUSLAN_40", "Guardar opciones");
 define("CUSLAN_41", "Mostrar información de autor y fecha");
+define("CUSLAN_42", "No hay páginas definidas todavía");
 
 ?>
