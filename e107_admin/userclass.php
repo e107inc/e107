@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-05-02 10:08:57 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2005-06-23 00:45:22 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,15 +22,22 @@ if (!getperms("4")) {
 	 exit;
 }
 
-
-
-
-
 if (!e_QUERY) {
   	header("location:".e_ADMIN."admin.php");
 	exit;
 } else {
 	$id = e_QUERY;
+}
+
+$sql->db_Select("userclass_classes");
+$c = 0;
+while ($row = $sql->db_Fetch()) {
+	if (getperms("0") || check_class($row['userclass_editclass'])) {
+		$class[$c][0] = $row['userclass_id'];
+		$class[$c][1] = $row['userclass_name'];
+		$class[$c][2] = $row['userclass_description'];
+		$c++;
+	}
 }
 
 if (isset($_POST['updateclass'])) {
@@ -44,23 +51,20 @@ if (isset($_POST['updateclass'])) {
 	}
 	$sql->db_Update("user", "user_class='$svar' WHERE user_id='$id' ");
         $message = UCSLAN_9;
-	$sql->db_Select("user", "user_name", "user_id='$id' ");
+	$sql->db_Select("user", "*", "user_id='$id' ");
 	$row = $sql->db_Fetch();
 	if ($_POST['notifyuser']) {
 		$message .= "<br />".UCSLAN_1.":</b> ".$row['user_name']."<br />";
-	}
-
-    if ($_POST['notifyuser']) {
 		require_once(e_HANDLER."mail.php");
    		unset($messaccess);
 		for($a = 0; $a <= (count($class)-1); $a++) {
-			if (check_class($class[$a][0], $user_class)) {
-				$messaccess .= " - " . $class[$a][2]. "\n";
+			if (check_class($class[$a][0], $row['user_class'])) {
+				$messaccess .= $class[$a][1]." - " . $class[$a][2]. "\n";
 			}
 		}
-		$send_to = $user_email;
+		$send_to = $row['user_email'];
 		$subject = UCSLAN_2;
-        	$message = UCSLAN_3." " . $user_name. ",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL . " )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN."\n( ".SITENAME." )";
+        $message = UCSLAN_3." " . $row['user_name']. ",\n\n".UCSLAN_4." ".SITENAME."\n( ".SITEURL . " )\n\n".UCSLAN_5.": \n\n".$messaccess."\n".UCSLAN_10."\n".SITEADMIN."\n( ".SITENAME." )";
 		sendemail($send_to, $subject, $message);
 	}
 
@@ -78,21 +82,7 @@ require_once("auth.php");
 
 $sql->db_Select("user", "*", "user_id='$id' ");
 $row = $sql->db_Fetch();
- extract($row);
-
-$sql->db_Select("userclass_classes");
-$c = 0;
-while ($row = $sql->db_Fetch()) {
-	if (getperms("0") || check_class($row['userclass_editclass'])) {
-		$class[$c][0] = $row['userclass_id'];
-		$class[$c][1] = $row['userclass_name'];
-		$class[$c][2] = $row['userclass_description'];
-		$c++;
-	}
-}
-
-
-
+extract($row);
 
 $caption = UCSLAN_6." <b>".$user_name."</b> (".$user_class.")";
 
