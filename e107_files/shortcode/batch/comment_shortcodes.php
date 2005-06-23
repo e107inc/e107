@@ -31,9 +31,9 @@ return $datestamp;
 SC_END
 
 SC_BEGIN REPLY
-global $REPLY, $comrow, $action, $pref, $table, $id;
-if ($action == "comment" && $pref['nested_comments']) {
-	$REPLY = "<a href='".e_BASE."comment.php?reply.".$table.".".$comrow['comment_id'].".".$id."'>".COMLAN_6."</a>";
+global $REPLY, $comrow, $action, $pref, $table, $id, $thisaction, $thistable, $thisid;
+if ($thisaction == "comment" && $pref['nested_comments']) {
+	$REPLY = "<a href='".e_BASE."comment.php?reply.".$thistable.".".$comrow['comment_id'].".".$thisid."'>".COMLAN_6."</a>";
 } else {
 	$REPLY = '';
 }
@@ -71,9 +71,19 @@ if ($comrow['user_id'] && !$comrow['user_admin']) {
 return $JOINED;
 SC_END
 
+//SC_BEGIN COMMENT
+//global $COMMENT, $comrow, $tp, $pref;
+//return ($comrow['comment_blocked'] ? LAN_0 : $tp->toHTML($comrow['comment_comment'], TRUE, FALSE, $comrow['user_id'])).($pref['allowCommentEdit'] && USER && $comrow['user_id'] == USERID && !strstr(e_QUERY, "edit") ? "<br /><div style='text-align: right;'><a href='".e_SELF."?".e_QUERY.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/".IMODE."/edit.png' alt='".LAN_318."' title='".LAN_318."' style='border: 0;' /></a></div>" : "");
+//SC_END
+
 SC_BEGIN COMMENT
 global $COMMENT, $comrow, $tp, $pref;
-return ($comrow['comment_blocked'] ? LAN_0 : $tp->toHTML($comrow['comment_comment'], TRUE, FALSE, $comrow['user_id'])).($pref['allowCommentEdit'] && USER && $comrow['user_id'] == USERID && !strstr(e_QUERY, "edit") ? "<br /><div style='text-align: right;'><a href='".e_SELF."?".e_QUERY.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/".IMODE."/edit.png' alt='".LAN_318."' title='".LAN_318."' style='border: 0;' /></a></div>" : "");
+return ($comrow['comment_blocked'] ? LAN_0 : $tp->toHTML($comrow['comment_comment'], TRUE, FALSE, $comrow['user_id']));
+SC_END
+
+SC_BEGIN COMMENTEDIT
+global $COMMENTEDIT, $pref, $comrow;
+return ($pref['allowCommentEdit'] && USER && $comrow['user_id'] == USERID && !strstr(e_QUERY, "edit") ? "<a href='".e_SELF."?".e_QUERY.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/".IMODE."/edit.png' alt='".LAN_318."' title='".LAN_318."' style='border: 0;' /></a>" : "");
 SC_END
 
 SC_BEGIN RATING
