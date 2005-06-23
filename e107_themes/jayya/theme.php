@@ -123,9 +123,9 @@ $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'><div class='beve
 <img src='".THEME."images/postedby_16.png' style='width: 16px; height: 16px' alt='' />
 </td>
 <td style='width: 100%; padding: 0px; padding-bottom: 0px; padding-left: 2px'>
-Posted by 
+".LAN_THEME_5." 
 {NEWSAUTHOR}
- on 
+ ".LAN_THEME_6." 
 {NEWSDATE}
 </td><td style='text-align: center; padding: 3px; padding-bottom: 0px; white-space: nowrap'>
 <img src='".THEME."images/comments_16.png' style='width: 16px; height: 16px' alt='' />
@@ -184,23 +184,50 @@ function tablestyle($caption, $text, $mode){
 	}
 }
 
+
+// chatbox post style
 $CHATBOXSTYLE = "
 <img src='".e_IMAGE."admin_images/chatbox_16.png' alt='' style='width: 16px; height: 16px; vertical-align: bottom' />
 <b>{USERNAME}</b><br />{TIMEDATE}<br />{MESSAGE}<br /><br />";
 
-$COMMENTSTYLE = "
-<table style='width: 100%;'>
+
+// comment post style
+$sc_style['REPLY']['pre'] = "<tr><td class='forumheader'>";
+$sc_style['REPLY']['post'] = "";
+
+$sc_style['SUBJECT']['pre'] = "<td class='forumheader'>";
+$sc_style['SUBJECT']['post'] = "</td></tr>";
+
+$sc_style['COMMENTEDIT']['pre'] = "<tr>
+<td class='forumheader' colspan='2' style='text-align: right'>";
+$sc_style['COMMENTEDIT']['post'] = "</td></tr>";
+
+$COMMENTSTYLE = "<div class='spacer'><table class='fborder' style='width: 95%'>
 <tr>
-<td style='width: 10%;'>{USERNAME}<br />{TIMEDATE}<br />{AVATAR}<br />{REPLY}</td>
-<td style='width: 90%; background-color: #f9f9fd; vertical-align: top; padding: 4px'>
-{COMMENT} {COMMENTEDIT}
-{RATING}
+<td class='fcaption' colspan='2'>".LAN_THEME_5." {USERNAME} ".LAN_THEME_6." {TIMEDATE}
 </td>
 </tr>
+{REPLY}{SUBJECT}
+<tr>
+<td style='width: 20%' class='forumheader3'>
+<span class='smalltext'>{COMMENTS}</span><br />
+<div style='text-align: center'>
+{AVATAR}
+</div>
+<span class='smallext'>{LOCATION}<br />{IPADDRESS}</span><br />
+</td>
+<td style='width: 80%; vertical-align: top' class='forumheader3' colspan='2'>
+{COMMENT}<br />
+{RATING}<br /><br />
+{SIGNATURE} 
+</td>
+</tr>
+{COMMENTEDIT}
 </table>
-<br />
-";
+</div>";
 
+
+// poll style
 $POLLSTYLE = "<img src='".THEME."images/polls.png' style='width: 10px; height: 14px; vertical-align: bottom' /> {QUESTION}
 <br /><br />
 {OPTIONS=<img src='".THEME."images/bullet2.gif' style='width: 10px; height: 10px' /> OPTION<br />BAR<br /><span class='smalltext'>PERCENTAGE VOTES</span><br /><br />}
