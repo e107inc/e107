@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.19 $
-| $Date: 2005-04-12 23:13:01 $
-| $Author: streaky $
+| $Revision: 1.20 $
+| $Date: 2005-06-23 17:23:27 $
+| $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -67,7 +67,7 @@ class e_shortcode {
 	 
 	function doCode($matches)
 	{
-		global $pref, $e107cache, $menu_pref, $sc_style;
+		global $pref, $e107cache, $menu_pref, $sc_style, $parm;
 		if (strpos($matches[1], '='))
 		{
 			list($code, $parm) = explode("=", $matches[1], 2);
@@ -77,7 +77,7 @@ class e_shortcode {
 			$code = $matches[1];
 			$parm = '';
 		}
-		$parm = trim(chop($parm));
+		$parm = trim($parm);
 
 		if (E107_DEBUG_LEVEL)
 		{
