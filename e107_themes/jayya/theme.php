@@ -209,7 +209,7 @@ $COMMENTSTYLE = "<div class='spacer'><table class='fborder' style='width: 95%'>
 </tr>
 {REPLY}{SUBJECT}
 <tr>
-<td style='width: 20%' class='forumheader3'>
+<td style='width: 20%; vertical-align: top' class='forumheader3'>
 <span class='smalltext'>{COMMENTS}</span><br />
 <div style='text-align: center'>
 {AVATAR}
