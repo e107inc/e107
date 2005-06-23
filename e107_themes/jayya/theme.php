@@ -216,7 +216,7 @@ $COMMENTSTYLE = "<div class='spacer'><table class='fborder' style='width: 95%'>
 </div>
 <span class='smallext'>{LOCATION}<br />{IPADDRESS}</span><br />
 </td>
-<td style='width: 80%; vertical-align: top' class='forumheader3' colspan='2'>
+<td style='width: 80%; vertical-align: top' class='forumheader3'>
 {COMMENT}<br />
 {RATING}<br /><br />
 {SIGNATURE} 

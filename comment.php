@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-05-08 19:53:26 $
-|     $Author: stevedunstan $
+|     $Revision: 1.31 $
+|     $Date: 2005-06-23 18:02:04 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -263,9 +263,11 @@ if($pref['trackbackEnabled'] && $table == "news"){
 $comment_total = $sql->db_Select_gen($query);
 if ($comment_total) {
 	$width = 0;
+	$text = "<div style='text-align: center'>";
 	while ($row = $sql->db_Fetch()) {
 		$text .= $cobj->render_comment($row, $table, $action, $id, $width, $subject);
 	}
+	$text .= "</div>";
 	$ns->tablerender(LAN_5, $text);
 }
 	
