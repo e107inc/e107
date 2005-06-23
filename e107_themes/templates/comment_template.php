@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/comment_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-14 16:02:49 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-23 11:09:17 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 global $sc_style, $comment_shortcodes;
-global $pref, $comrow, $tp, $NEWIMAGE, $USERNAME, $RATING;
+global $pref, $comrow, $row2, $tp, $NEWIMAGE, $USERNAME, $RATING;
 
 $sc_style['SUBJECT']['pre'] = "";
 $sc_style['SUBJECT']['post'] = "";
@@ -61,17 +61,17 @@ $sc_style['SIGNATURE']['post'] = "<br />";
 
 
 $COMMENTSTYLE = "
-<table class='fborder' style='width:100%; border:1px solid #000;' border='0'>
+<table class='fborder' style='width:100%;' border='0'>
 <tr>
-	<td colspan='2' class='forumheader'>
-		{SUBJECT} {USERNAME} {TIMEDATE} {REPLY}
+	<td colspan='2' class='forumheader' style='border:1px solid #000;'>
+		{SUBJECT} {USERNAME} {TIMEDATE} {REPLY} {COMMENTEDIT}
 	</td>
 </tr>
 <tr>
-	<td style='width:30%; vertical-align:top'>
+	<td style='width:30%; vertical-align:top; border:1px solid #000;'>
 		{AVATAR}<span class='smalltext'>{COMMENTS}{JOINED}</span>
 	</td>
-	<td style='width:70%; vertical-align:top'>
+	<td style='width:70%; vertical-align:top; border:1px solid #000;'>
 		{COMMENT}
 		{RATING}
 		{IPADDRESS}

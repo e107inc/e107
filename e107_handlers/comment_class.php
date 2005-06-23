@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-06-14 16:02:48 $
+|     $Revision: 1.31 $
+|     $Date: 2005-06-23 11:09:17 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -27,13 +27,14 @@ class comment {
 		global $pref, $sql, $tp;
 		require_once(e_HANDLER."ren_help.php");
 		if (ANON == TRUE || USER == TRUE) {
+			$itemid = $id;
 			$ns = new e107table;
 			if ($action == "reply" && substr($subject, 0, 4) != "Re: ") {
 				$subject = COMLAN_5.' '.$subject;
 			}
-			$text = "\n<div style='text-align:center'><form method='post' action='".e_SELF."?".e_QUERY."' id='dataform' >\n<table style='width:95%'>";
+			$text = "\n<div style='text-align:center'><form method='post' action='".e_SELF."?".e_QUERY."' id='dataform' >\n<table style='width:100%'>";
 			if ($pref['nested_comments']) {
-				$text .= "<tr>\n<td style='width:20%'>".COMLAN_4."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='subject' size='60' value='$subject' maxlength='100' />\n</td>\n</tr>";
+				$text .= "<tr>\n<td style='width:20%'>".COMLAN_4."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='subject' size='66' value='$subject' maxlength='100' />\n</td>\n</tr>";
 				$text2 = "";
 			} else {
 				$text2 = "<input type='hidden' name='subject' value='$subject'  />\n";
@@ -83,16 +84,16 @@ class comment {
 				global $rater;
 				require_once(e_HANDLER."rate_class.php");
 				if(!is_object($rater)){ $rater = new rater; }
-				$rate = $rater -> composerating($table, $id, $enter=TRUE, USERID, TRUE);
-				$rate = "<tr><td style='width:20%'>Rating:</td>\n<td style='width:80%;'>".$rate."</td></tr>\n";
+				$rate = $rater -> composerating($table, $itemid, $enter=TRUE, USERID, TRUE);
+				$rate = "<tr><td style='width:20%; vertical-align:top;'>Rating:</td>\n<td style='width:80%;'>".$rate."</td></tr>\n";
 			}
 			//end rating area
 
 			if (ANON == TRUE && USER == FALSE) {
-				$text .= "<tr>\n<td style='width:20%'>".LAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>";
+				$text .= "<tr>\n<td style='width:20%; vertical-align:top;'>".LAN_16."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='author_name' size='60' value='$author_name' maxlength='100' />\n</td>\n</tr>";
 			}
 			$text .= $rate."<tr> \n
-			<td style='width:20%'>".LAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea style='width:80%' class='tbox' name='comment' cols='1' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
+			<td style='width:20%; vertical-align:top;'>".LAN_8.":</td>\n<td id='commentform' style='width:80%;'>\n<textarea style='width:80%' class='tbox' name='comment' cols='1' rows='7' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$comval</textarea>\n<br />
 			<input class='helpbox' type='text' name='helpb' style='width:80%' /><br />".ren_help(1, 'addtext', 'help')."</td></tr>\n<tr style='vertical-align:top'> \n<td style='width:20%'>".$text2."</td>\n<td id='commentformbutton' style='width:80%;'>\n". (isset($action) && $action == "reply" ? "<input type='hidden' name='pid' value='$id' />" : '').(isset($eaction) && $eaction == "edit" ? "<input type='hidden' name='editpid' value='$id' />" : "").(isset($content_type) && $content_type ? "<input type='hidden' name='content_type' value='$content_type' />" : ''). "<input class='button' type='submit' name='".$action."submit' value='".(isset($eaction) && $eaction == "edit" ? LAN_320 : LAN_9)."' />\n</td>\n</tr>\n</table>\n</form></div>";
 			if($return)
 			{
@@ -110,7 +111,12 @@ class comment {
 		//rating	: boolean, to show rating system in rendered comment
 		global $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen;
 		global $pref, $comrow, $tp, $NEWIMAGE, $USERNAME, $RATING, $datestamp;
-
+		global $thisaction, $thistable, $thisid, $row2;
+		
+		$comrow		= $row;
+		$thistable	= $table;
+		$thisid		= $id;
+		$thisaction	= $action;
 		
 		if($addrating===TRUE){
 			global $rater;
@@ -133,10 +139,10 @@ class comment {
 		$gen		= new convert;
 
 		$url		= e_PAGE."?".e_QUERY;
-		$unblock	= "[<a href='".e_BASE.e_ADMIN."comment.php?unblock-".$row['comment_id']."-$url-".$row['comment_item_id']."'>".LAN_1."</a>] ";
-		$block		= "[<a href='".e_BASE.e_ADMIN."comment.php?block-".$row['comment_id']."-$url-".$row['comment_item_id']."'>".LAN_2."</a>] ";
-		$delete		= "[<a href='".e_BASE.e_ADMIN."comment.php?delete-".$row['comment_id']."-$url-".$row['comment_item_id']."'>".LAN_3."</a>] ";
-		$userinfo	= "[<a href='".e_BASE.e_ADMIN."userinfo.php?".$row['comment_ip']."'>".LAN_4."</a>]";
+		$unblock	= "[<a href='".e_BASE.e_ADMIN."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_1."</a>] ";
+		$block		= "[<a href='".e_BASE.e_ADMIN."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_2."</a>] ";
+		$delete		= "[<a href='".e_BASE.e_ADMIN."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_3."</a>] ";
+		$userinfo	= "[<a href='".e_BASE.e_ADMIN."userinfo.php?".$comrow['comment_ip']."'>".LAN_4."</a>]";
 		
 		if (!$COMMENTSTYLE) {
 			global $THEMES_DIRECTORY;
@@ -150,16 +156,20 @@ class comment {
 		if ($pref['nested_comments']) {
 			$width2 = 100 - $width;
 			$total_width = (isset($pref['standards_mode']) && $pref['standards_mode'] ? "98%" : "95%");
-			$renderstyle = "
-			<table style='width:".$total_width."'>
-			<tr>
-			<td style='width:".$width."%' ></td>
-			<td style='width:".$width2."%'>" .$COMMENTSTYLE. "
-			</td>
-			</tr>
-			</table>";
+			if($width){
+				$renderstyle = "
+				<table style='width:".$total_width."' border='0'>
+				<tr>
+				<td style='width:".$width."%' ></td>
+				<td style='width:".$width2."%'>" .$COMMENTSTYLE. "
+				</td>
+				</tr>
+				</table>";
+			}else{
+				$renderstyle = $COMMENTSTYLE;
+			}
 			if($pref['comments_icon']) {
-				if ($row['comment_datestamp'] > USERLV ) {
+				if ($comrow['comment_datestamp'] > USERLV ) {
 					$NEWIMAGE = IMAGE_new_comments;
 				} else {
 					$NEWIMAGE = IMAGE_nonew_comments;
@@ -186,15 +196,19 @@ class comment {
 			define("IMAGE_rank_admin_image", (isset($pref['rank_admin_image']) && $pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
 		}
 
-		$text = "";
-		$comrow = $row;
-		$RATING = ($addrating==TRUE && $comrow['user_id'] ? $rater->composerating($table, $id, FALSE, $comrow['user_id']) : "");
-		$text .= $tp -> parseTemplate($COMMENTSTYLE, FALSE, $comment_shortcodes);
+		$RATING = ($addrating==TRUE && $comrow['user_id'] ? $rater->composerating($thistable, $thisid, FALSE, $comrow['user_id']) : "");
+		$text = $tp -> parseTemplate($renderstyle, FALSE, $comment_shortcodes);
 
 		if ($action == "comment" && $pref['nested_comments']) {
-			$sub_query = "comment_pid='".$row['comment_id']."' ORDER BY comment_datestamp" ;
+			$sub_query = "
+			SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location, user_forums, user_chats, user_visits, user_perms 
+			FROM #comments 
+			LEFT JOIN #user ON #comments.comment_author = #user.user_id 
+			WHERE comment_item_id='".$thisid."' AND comment_type='".$thistable."' AND comment_pid='".$comrow['comment_id']."' 
+			ORDER BY comment_datestamp
+			";
 			$sql2 = new db;
-			if ($sub_total = $sql2->db_Select("comments", "*", $sub_query)) {
+			if ($sub_total = $sql2->db_Select_gen($sub_query)) {
 				while ($row2 = $sql2->db_Fetch()) {
 					if ($pref['nested_comments']) {
 						$width = $width + 3;
@@ -202,7 +216,8 @@ class comment {
 							$width = 80;
 						}
 					}
-					$text .= $this->render_comment($row2, $table, $action, $id, $width);
+					$text .= $this->render_comment($row2, $table, $action, $id, $width, $subject, $addrating);
+					unset($width);
 				}
 				$total ++;
 			}
