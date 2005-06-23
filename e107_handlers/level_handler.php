@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/level_handler.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-22 17:36:36 $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-23 17:23:28 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -95,18 +95,18 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 	$data['pic'] = (file_exists(THEME."forum/".$level_images[$rank]) ? THEME."forum/".$level_images[$rank] : e_IMAGE."rate/".IMODE."/".$level_images[$rank]);
 	$data['name'] = "[ ".$tp->toHTML($level_names[$rank], FALSE, 'defs')." ]";
 
-	$img_title = "";
 	if($level_names[$rank])
 	{
 		$data[1] = "<div class='spacer'>{$data['name']}</div>";
 		$img_title = "title='{$data['name']}'";
+		$data['pic'] = "<img src='".$data['pic']."' alt='' {$img_title} />";
 	}
 	else
 	{
+		$data['pic'] = "<img src='".$data['pic']."' alt='' />";
 		$data[1] = "<div class='spacer'>{$data['pic']}</div>";
 	}
 
-	$data['pic'] = "<img src='".$data['pic']."' alt='' {$img_title} />";
 	return ($data);
 }
 	
