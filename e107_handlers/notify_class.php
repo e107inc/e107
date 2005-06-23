@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/notify_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-15 14:59:08 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-23 23:10:14 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -87,7 +87,7 @@ function notify_login($data) {
 
 function notify_logout() {
 	global $nt;
-	$nt -> send('logout', NT_LAN_LO_1);
+	$nt -> send('logout', NT_LAN_LO_1, USERID.'. '.USERNAME.' '.NT_LAN_LO_2);
 }
 
 function notify_flood($data) {
