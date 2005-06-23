@@ -105,7 +105,7 @@ SC_END
 
 SC_BEGIN LOCATION
 global $LOCATION, $comrow, $tp;
-return ($comrow['user_location '] ? LAN_313.": ".$tp->toHTML($comrow['user_location']) : '');
+return ($comrow['user_location '] ? LAN_313.": ".$tp->toHTML($comrow['user_location'], TRUE) : '');
 SC_END
 
 SC_BEGIN SIGNATURE
