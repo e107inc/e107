@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Spanish/Spanish_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-03 22:34:19 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-24 10:06:48 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -40,5 +40,6 @@ define("CHBLAN_28", "Chatbox purga.");
 define("CHBLAN_29", "Mostrar chatbox dentro de un scroll");
 define("CHBLAN_30", "Alto del scroll");
 define("CHBLAN_31", "Mostrar emoticonos");
+define("CHBLAN_32", "Clase de usuario del moderador");
 
 ?>

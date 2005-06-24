@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_notify.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-09 20:03:44 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-24 10:06:43 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -17,6 +17,7 @@ define("NT_LAN_UV_2", "Cadena de la sesión de usuarios");
 define("NT_LAN_LI_1", "Usuario conectado");
 
 define("NT_LAN_LO_1", "Usuario desconectado");
+define("NT_LAN_LO_2", " desconectado del sitio");
 
 define("NT_LAN_FL_1", "Expulsión flood");
 define("NT_LAN_FL_2", "Expulsiones IP por flooding");
