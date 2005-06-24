@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-06-15 23:57:03 $
-|     $Author: e107coders $
+|     $Revision: 1.43 $
+|     $Date: 2005-06-24 03:50:47 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -125,6 +125,12 @@ if(!$text = $e107cache->retrieve("chatbox"))
 {
 	global $pref,$tp;
 	$chatbox_posts = $pref['chatbox_posts'];
+	if(!isset($pref['cb_mod']))
+	{
+		$pref['cb_mod'] = e_UC_ADMIN;
+	}
+	define("CB_MOD", check_class($pref['cb_mod']));
+	
 	if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$chatbox_posts, $mode="no_where"))
 	{
 		$obj2 = new convert;
@@ -178,9 +184,9 @@ if(!$text = $e107cache->retrieve("chatbox"))
 		$text .= "<span class='mediumtext'>".CHATBOX_L11."</span>";
 	}
 	$total_chats = $sql -> db_Count("chatbox");
-	if($total_chats > $chatbox_posts)
+	if($total_chats > $chatbox_posts || CB_MOD)
 	{
-		$text .= "<br /><div style='text-align:center'><a href='".e_PLUGIN."chatbox_menu/chat.php'>".CHATBOX_L12."</a> (".$total_chats.")</div>";
+		$text .= "<br /><div style='text-align:center'><a href='".e_PLUGIN."chatbox_menu/chat.php'>".(CB_MOD ? CHATBOX_L13 : CHATBOX_L12)."</a> (".$total_chats.")</div>";
 	}
 	$e107cache->set("chatbox", $text);
 }
@@ -190,7 +196,7 @@ $caption = (file_exists(THEME."images/chatbox_menu.png") ? "<img src='".THEME."i
 
 
 $text = ($pref['cb_layer'] ? $texta."<div style='border : 0; padding : 4px; width : auto; height : ".$pref['cb_layer_height']."px; overflow : auto; '>".$text."</div>" : $texta.$text);
-if(ADMIN && getperms("C")){$text .= "<br /><div style='text-align: center'>[ <a href='".e_PLUGIN."chatbox_menu/admin_chatbox.php'>".CHATBOX_L13."</a> ]</div>";}  
+//if(ADMIN && getperms("C")){$text .= "<br /><div style='text-align: center'>[ <a href='".e_PLUGIN."chatbox_menu/admin_chatbox.php'>".CHATBOX_L13."</a> ]</div>";}  
 $ns -> tablerender($caption, $text, 'chatbox');
 
 ?>

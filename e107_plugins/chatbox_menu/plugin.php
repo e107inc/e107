@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/plugin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-09 22:42:40 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-24 03:50:47 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
@@ -49,7 +49,8 @@ $eplug_prefs = array(
 	'cb_linkreplace' => '1',
 	'cb_layer' => '0',
 	'cb_layer_height' => '200',
-	'cb_emote' => '0'
+	'cb_emote' => '0',
+	'cb_mod' => e_UC_ADMIN
 );
 
 
