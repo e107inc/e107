@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-20 22:36:43 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-24 16:16:36 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE."/lan_links_page.php
 }
 $eplug_name = "Links Page";
 $eplug_version = "1.1";
-$eplug_author = "Lisa";
+$eplug_author = "Eric Vanderfeesten (lisa)";
 $eplug_url = "http://e107.org";
 $eplug_email = "lisa@eindhovenseschool.net";
 $eplug_description = "Links Page For Displaying External Web Links";
@@ -48,19 +48,12 @@ $eplug_icon_small = $eplug_folder."/images/linkspage_16.png";
 $eplug_caption = LCLAN_101;
 	
 // List of preferences -----------------------------------------------------------------------------------------------
-/*
-$eplug_prefs = array(
-"link_submit" => 1,
-"link_submit_class" => 0,
-"linkpage_categories" => 0 );
-*/
-$eplug_prefs = array(
-);
+$eplug_prefs = array();
 
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array(
 "links_page_cat",
-	"links_page" );
+"links_page" );
 	
 // List of sql requests to create tables -----------------------------------------------------------------------------
 $eplug_tables = array(
