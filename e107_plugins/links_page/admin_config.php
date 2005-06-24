@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_config.php,v $
-|    $Revision: 1.12 $
-|    $Date: 2005-06-21 17:53:25 $
-|    $Author: e107coders $
+|    $Revision: 1.13 $
+|    $Date: 2005-06-24 16:16:35 $
+|    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -889,8 +889,8 @@ class links {
 		$TOPIC_HELP = "";
 		$TOPIC_FIELD = "
 		".$rs -> form_select_open("link_cat_sort")."
-		".$rs -> form_option("link category name", ($linkspage_pref['link_cat_sort'] == "link_category_name" ? "1" : "0"), "link_category_name", "")."
-		".$rs -> form_option("link category id", ($linkspage_pref['link_cat_sort'] == "link_category_id" ? "1" : "0"), "link_category_id", "")."
+		".$rs -> form_option(LCLAN_176, ($linkspage_pref['link_cat_sort'] == "link_category_name" ? "1" : "0"), "link_category_name", "")."
+		".$rs -> form_option(LCLAN_177, ($linkspage_pref['link_cat_sort'] == "link_category_id" ? "1" : "0"), "link_category_id", "")."
 		".$rs -> form_select_close();
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -899,8 +899,8 @@ class links {
 		$TOPIC_HELP = "";
 		$TOPIC_FIELD = "
 		".$rs -> form_select_open("link_cat_order")."
-		".$rs -> form_option("ASC", ($linkspage_pref['link_cat_order'] == "ASC" ? "1" : "0"), "ASC", "")."
-		".$rs -> form_option("DESC", ($linkspage_pref['link_cat_order'] == "DESC" ? "1" : "0"), "DESC", "")."
+		".$rs -> form_option(LCLAN_168, ($linkspage_pref['link_cat_order'] == "ASC" ? "1" : "0"), "ASC", "")."
+		".$rs -> form_option(LCLAN_169, ($linkspage_pref['link_cat_order'] == "DESC" ? "1" : "0"), "DESC", "")."
 		".$rs -> form_select_close();
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -919,10 +919,10 @@ class links {
 		$TOPIC_HEADING = LCLAN_121;
 		$TOPIC_HELP = "";
 		$TOPIC_FIELD = "
-		".$rs -> form_checkbox("link_icon", 1, ($linkspage_pref['link_icon'] ? "1" : "0"))." ".LCLAN_122."<br />
-		".$rs -> form_checkbox("link_referal", 1, ($linkspage_pref['link_referal'] ? "1" : "0"))." ".LCLAN_131."<br />
-		".$rs -> form_checkbox("link_url", 1, ($linkspage_pref['link_url'] ? "1" : "0"))." ".LCLAN_130."<br />
-		".$rs -> form_checkbox("link_desc", 1, ($linkspage_pref['link_desc'] ? "1" : "0"))." ".LCLAN_123."<br />
+		".$rs -> form_checkbox(LCLAN_174, 1, ($linkspage_pref['link_icon'] ? "1" : "0"))." ".LCLAN_122."<br />
+		".$rs -> form_checkbox(LCLAN_173, 1, ($linkspage_pref['link_referal'] ? "1" : "0"))." ".LCLAN_131."<br />
+		".$rs -> form_checkbox(LCLAN_171, 1, ($linkspage_pref['link_url'] ? "1" : "0"))." ".LCLAN_130."<br />
+		".$rs -> form_checkbox(LCLAN_175, 1, ($linkspage_pref['link_desc'] ? "1" : "0"))." ".LCLAN_123."<br />
 		";
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -957,10 +957,10 @@ class links {
 		$TOPIC_HELP = "";
 		$TOPIC_FIELD = "
 		".$rs -> form_select_open("link_sort")."
-		".$rs -> form_option("link_name", ($linkspage_pref['link_sort'] == "link_name" ? "1" : "0"), "link_name", "")."
-		".$rs -> form_option("link_url", ($linkspage_pref['link_sort'] == "link_url" ? "1" : "0"), "link_url", "")."
-		".$rs -> form_option("link_order", ($linkspage_pref['link_sort'] == "link_order" ? "1" : "0"), "link_order", "")."
-		".$rs -> form_option("link_refer", ($linkspage_pref['link_sort'] == "link_refer" ? "1" : "0"), "link_refer", "")."
+		".$rs -> form_option(LCLAN_170, ($linkspage_pref['link_sort'] == "link_name" ? "1" : "0"), "link_name", "")."
+		".$rs -> form_option(LCLAN_171, ($linkspage_pref['link_sort'] == "link_url" ? "1" : "0"), "link_url", "")."
+		".$rs -> form_option(LCLAN_172, ($linkspage_pref['link_sort'] == "link_order" ? "1" : "0"), "link_order", "")."
+		".$rs -> form_option(LCLAN_173, ($linkspage_pref['link_sort'] == "link_refer" ? "1" : "0"), "link_refer", "")."
 		".$rs -> form_select_close();
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -969,8 +969,8 @@ class links {
 		$TOPIC_HELP = "";
 		$TOPIC_FIELD = "
 		".$rs -> form_select_open("link_order")."
-		".$rs -> form_option("ASC", ($linkspage_pref['link_order'] == "ASC" ? "1" : "0"), "ASC", "")."
-		".$rs -> form_option("DESC", ($linkspage_pref['link_order'] == "DESC" ? "1" : "0"), "DESC", "")."
+		".$rs -> form_option(LCLAN_168, ($linkspage_pref['link_order'] == "ASC" ? "1" : "0"), "ASC", "")."
+		".$rs -> form_option(LCLAN_169, ($linkspage_pref['link_order'] == "DESC" ? "1" : "0"), "DESC", "")."
 		".$rs -> form_select_close();
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 

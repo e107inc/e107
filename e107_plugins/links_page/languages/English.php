@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-21 17:53:26 $
-|     $Author: e107coders $
+|     $Revision: 1.11 $
+|     $Date: 2005-06-24 16:16:36 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Links");
@@ -227,8 +227,18 @@ define("LCLAN_164", "if enabled only a limited number of links is displayed on a
 define("LCLAN_165", "links per page");
 define("LCLAN_166", "how many links need to be displayed on a single page?");
 define("LCLAN_167", "this will only be used if the next prev limitations is checked");
-define("LCLAN_168", "");
-define("LCLAN_169", "");
+define("LCLAN_168", "ASC");
+define("LCLAN_169", "DESC");
+define("LCLAN_170", "link_name");
+define("LCLAN_171", "link_url");
+define("LCLAN_172", "link_order");
+define("LCLAN_173", "link_refer");
+define("LCLAN_174", "link_icon");
+define("LCLAN_175", "link_desc");
+define("LCLAN_176", "link category name");
+define("LCLAN_177", "link category id");
+
+
 
 define("LCLAN_ADMINMENU_1", "Link Options");
 define("LCLAN_ADMINMENU_2", "Manage Link Categories");
