@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-06-02 20:57:40 $
+|     $Revision: 1.28 $
+|     $Date: 2005-06-24 15:55:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -83,13 +83,13 @@ if(isset($_POST['tools']))
 		if(isset($_POST['counts']))
 		{
 			$for->forum_update_counts($fid);
-			$msg .= "Counts updated for forum: $fid <br />";
+			$msg .= FORLAN_167.": $fid <br />";
 		}
 		if(isset($_POST['lastpost']))
 		{
 			$with_threads = (isset($_POST['lastpost_nothread'])) ? FALSE : TRUE;
 			$for->update_lastpost('forum', $fid, $with_threads);
-			$msg .= "Lastpost info updated for forum: $fid <br />";
+			$msg .= FORLAN_168.": $fid <br />";
 		}
 	}
 	if(isset($_POST['userpostcounts']))
@@ -99,7 +99,7 @@ if(isset($_POST['tools']))
 		{
 			$sql->db_Update("user","user_forums = '{$cnt}' WHERE user_id = '{$uid}'");
 		}
-		$msg .= "User forum counts updated <br />";
+		$msg .= FORLAN_169." <br />";
 	}
 
 	$forum->show_message($msg);
@@ -932,7 +932,7 @@ class forum
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
 		<table style='width:".ADMIN_WIDTH."'>
 		<tr style='width:100%'>
-		<td class='fcaption'>Select forum(s) to perform action on</td>
+		<td class='fcaption'>".FORLAN_156."</td>
 		</tr>
 		<tr>
 		<td class='forumheader3'>
@@ -944,45 +944,45 @@ class forum
 			{
 				$txt .= "<input type='checkbox' name='forumlist[{$f['forum_id']}]' value='1' /> ".$tp->toHTML($f['forum_name'])."<br />";
 			}
-			$txt .= "<input type='checkbox' name='forum_all' value='1' /> All Forums";
+			$txt .= "<input type='checkbox' name='forum_all' value='1' /> ".FORLAN_157;
 		}
 		$txt .= "
 		</td>
 		</tr>
 		<tr>
-		<td class='fcaption'>Recalculate forum lastpost info</td>
+		<td class='fcaption'>".FORLAN_158."</td>
 		</tr>
 		<tr>
 		<td class='forumheader3'>
-			<input type='checkbox' name='lastpost' value='1' /> Select to recalculate lastpost info <br />&nbsp;&nbsp;&nbsp;&nbsp;
-			<input type='checkbox' name='lastpost_nothread' value='1' checked='checked' /> Select to perform this on forums only, not threads
+			<input type='checkbox' name='lastpost' value='1' /> ".FORLAN_159." <br />&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type='checkbox' name='lastpost_nothread' value='1' checked='checked' /> ".FORLAN_160."
 		</td>
 		</tr>
 		<tr>
-		<td class='fcaption'>Recalculate post / reply counts</td>
+		<td class='fcaption'>".FORLAN_161."</td>
 		</tr>
 		<tr>
 		<td class='forumheader3'>
-			<input type='checkbox' name='counts' value='1' /> Select to recalculate forum thread/reply counts<br />
+			<input type='checkbox' name='counts' value='1' /> ".FORLAN_162."<br />
 		</td>
 		</tr>
 		<tr>
-		<td class='fcaption'>Recalculate user forum posts counts</td>
+		<td class='fcaption'>".FORLAN_163."</td>
 		</tr>
 		<tr>
 		<td class='forumheader3'>
-			<input type='checkbox' name='userpostcounts' value='1' /> Select to recalculate user forum counts<br />
+			<input type='checkbox' name='userpostcounts' value='1' /> ".FORLAN_164."<br />
 		</td>
 		</tr>
 		<tr>
 		<td class='forumheader3' style='text-align:center'>
-			<input class='button' type='submit' name='tools' value='Execute functions' />
+			<input class='button' type='submit' name='tools' value='".FORLAN_165."' />
 		</td>
 		</tr>
 		</table>
 		</form>
 		";
-		$ns->tablerender("Forum Tools", $txt);
+		$ns->tablerender(FORLAN_166, $txt);
 	}
 
 	function show_prefs()
