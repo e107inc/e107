@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2005-06-16 16:19:40 $
+|     $Revision: 1.54 $
+|     $Date: 2005-06-24 14:33:03 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -837,6 +837,14 @@ define("CONTENT_ADMIN_CONVERSION_LAN_55", "content management plugin : conversio
 define("CONTENT_ADMIN_CONVERSION_LAN_56", "click the button to go to the Content Create New Category page.");
 define("CONTENT_ADMIN_CONVERSION_LAN_57", "choose parent");
 define("CONTENT_ADMIN_CONVERSION_LAN_58", "upgrade succesfull<br /><br /><b>Please note:<br />you need to reconfigure the options for each main parent<br />and you need to delete the menus you've created in your content/menus folder, and recreate them by updating the options for the specific main parents you want to use menus for.</b>");
+
+define("CONTENT_ADMIN_CONVERSION_LAN_59", "convert table");
+define("CONTENT_ADMIN_CONVERSION_LAN_60", "create defaults");
+define("CONTENT_ADMIN_CONVERSION_LAN_61", "create new category");
+define("CONTENT_ADMIN_CONVERSION_LAN_62", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_63", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_64", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_65", "");
 
 
 

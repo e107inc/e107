@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.26 $
-|		$Date: 2005-06-16 12:05:18 $
+|		$Revision: 1.27 $
+|		$Date: 2005-06-24 14:33:03 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -191,14 +191,16 @@ class contentdb{
 							}
 						}
 						//preset additional data tags
-						if(is_array($_POST['content_custom_preset_key'])){
-							for($i=0;$i<count($_POST['content_custom_preset_key']);$i++){
-								if(isset($_POST['content_custom_preset_value'][$i]) && $_POST['content_custom_preset_value'][$i] != ""){
-									$keystring = $tp->toDB($_POST['content_custom_preset_key'][$i]);
-									$custom["content_custom_preset_{$keystring}"] = $tp->toDB($_POST['content_custom_preset_value'][$i]);
-								}
-							}
-						}
+							//if(is_array($_POST['content_custom_preset_key'])){
+							//	for($i=0;$i<count($_POST['content_custom_preset_key']);$i++){
+							//		if(isset($_POST['content_custom_preset_value'][$i]) && $_POST['content_custom_preset_value'][$i] != ""){
+							//			$keystring = $tp->toDB($_POST['content_custom_preset_key'][$i]);
+							//			$custom["content_custom_preset_{$keystring}"] = $tp->toDB($_POST['content_custom_preset_value'][$i]);
+							//		}
+							//	}
+							//}
+						$custom['content_custom_presettags'] = $_POST['content_custom_preset_key'];
+						$contentprefvalue = $eArrayStorage->WriteArray($custom);
 
 						$contentprefvalue = $eArrayStorage->WriteArray($custom);
 
@@ -371,14 +373,15 @@ class contentdb{
 							}
 						}
 						//preset additional data tags
-						if(is_array($_POST['content_custom_preset_key'])){
-							for($i=0;$i<count($_POST['content_custom_preset_key']);$i++){
-								if(isset($_POST['content_custom_preset_value'][$i]) && $_POST['content_custom_preset_value'][$i] != ""){
-									$keystring = $tp->toDB($_POST['content_custom_preset_key'][$i]);
-									$custom["content_custom_preset_{$keystring}"] = $tp -> toDB($_POST['content_custom_preset_value'][$i]);
-								}
-							}
-						}
+							//if(is_array($_POST['content_custom_preset_key'])){
+							//	for($i=0;$i<count($_POST['content_custom_preset_key']);$i++){
+							//		if(isset($_POST['content_custom_preset_value'][$i]) && $_POST['content_custom_preset_value'][$i] != ""){
+							//			$keystring = $tp->toDB($_POST['content_custom_preset_key'][$i]);
+							//			$custom["content_custom_preset_{$keystring}"] = $tp -> toDB($_POST['content_custom_preset_value'][$i]);
+							//		}
+							//	}
+							//}
+						$custom['content_custom_presettags'] = $_POST['content_custom_preset_key'];
 						$contentprefvalue = $eArrayStorage->WriteArray($custom);
 
 						if($mode == "submit"){

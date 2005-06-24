@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.61 $
-|		$Date: 2005-06-14 13:04:26 $
+|		$Revision: 1.62 $
+|		$Date: 2005-06-24 14:33:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -979,7 +979,7 @@ function show_content_author_all(){
 							$authordetails[] = $aa -> getAuthor($row['content_author']);
 						}
 						//sort by authorname ascending (default or $qs[3] == "orderaauthor")
-						usort($authordetails, create_function('$a,$b','return strcasecmp ($a[1], $b[1]);')); 
+						usort($authordetails, create_function('$a,$b','return strcasecmp ($a[1], $b[1]);'));
 						//sort by authorname descending ($qs[3] == "orderdauthor")
 						if(isset($qs[3]) && $qs[3] == "orderdauthor"){
 							$authordetails = array_reverse($authordetails);
@@ -1510,6 +1510,8 @@ function show_content_item(){
 							}
 						}
 
+						$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
+
 						$CONTENT_CONTENT_TABLE_CUSTOM_TAGS = "";
 						if($lastpage === TRUE && !empty($custom)){
 							$CONTENT_CONTENT_TABLE_CUSTOM_PRE = "";
@@ -1517,19 +1519,30 @@ function show_content_item(){
 							//ksort($custom);
 							foreach($custom as $k => $v){
 								if(!($k == "content_custom_score" || $k == "content_custom_meta" || $k == "content_custom_template")){
-									if(substr($k,0,22) == "content_custom_preset_"){
+									if($k == "content_custom_presettags"){
 										if($content_pref["content_content_presettags_{$mainparent}"]){
-											$key = substr($k,22);
+											foreach($v as $ck => $cv){
+												if(is_array($cv)){	//date
+													$vv = $cv['day']." ".$months[($cv['month']-1)]." ".$cv['year'];
+												}else{
+													$vv = $cv;
+												}
+												if( isset($ck) && $ck != "" && isset($vv) && $vv!="" ){
+													$CONTENT_CONTENT_TABLE_CUSTOM_KEY		= $ck;
+													$CONTENT_CONTENT_TABLE_CUSTOM_VALUE		= $vv;
+													$CONTENT_CONTENT_TABLE_CUSTOM_TAGS		.= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE_CUSTOM);
+												}
+											}
 										}
 									}else{
 										if($content_pref["content_content_customtags_{$mainparent}"]){
 											$key = substr($k,15);
+											if( isset($key) && $key != "" && isset($v) && $v!="" ){
+												$CONTENT_CONTENT_TABLE_CUSTOM_KEY		= $key;
+												$CONTENT_CONTENT_TABLE_CUSTOM_VALUE		= $v;
+												$CONTENT_CONTENT_TABLE_CUSTOM_TAGS		.= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE_CUSTOM);
+											}
 										}
-									}
-									if( isset($key) && $key != "" && isset($v) && $v!="" ){
-										$CONTENT_CONTENT_TABLE_CUSTOM_KEY		= $key;
-										$CONTENT_CONTENT_TABLE_CUSTOM_VALUE		= $v;
-										$CONTENT_CONTENT_TABLE_CUSTOM_TAGS		.= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE_CUSTOM);
 									}
 								}
 							}
@@ -1560,13 +1573,18 @@ function show_content_item(){
 							unset($text);
 							$text = "";
 							$query = ($pref['nested_comments'] ?
-							"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location FROM #comments
+							"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location, user_forums, user_chats, user_visits, user_perms FROM #comments
 							LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' AND comment_pid='0' ORDER BY comment_datestamp"
 							:
-							"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location FROM #comments
+							"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location, user_forums, user_chats, user_visits, user_perms FROM #comments
 							LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' ORDER BY comment_datestamp"
 							);
-					$showrate = TRUE;
+
+							if(($content_pref["content_content_rating_{$mainparent}"] && $row['content_rate']) || $content_pref["content_content_rating_all_{$mainparent}"] ){
+								$showrate = TRUE;
+							}else{
+								$showrate = FALSE;
+							}
 							$comment_total = $sql->db_Select_gen($query); 
 							if ($comment_total) {
 								$width = 0;

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-06-14 10:50:47 $
+|     $Revision: 1.16 $
+|     $Date: 2005-06-24 14:33:03 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -101,7 +101,7 @@ if(!$CONTENT_CONTENT_TABLE){
 
 if(!$CONTENT_CONTENT_TABLE_CUSTOM){
 	$CONTENT_CONTENT_TABLE_CUSTOM = "
-	<table style='width:98%;margin-left:0;padding-left:0;' ><tr>
+	<table style='width:100%;margin-left:0;padding-left:0;' ><tr>
 		<td style='width:10%;'>
 			{CONTENT_CONTENT_TABLE_CUSTOM_KEY}
 		</td>
