@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-06-23 20:35:01 $
+|     $Revision: 1.18 $
+|     $Date: 2005-06-24 00:08:17 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -79,18 +79,24 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 
 		if ($attachments){
 			if (is_array($attachments))	{
-				for ($i = 0; $i < count($attachments); $i++){
-					$mail->AddAttachment($attachments[$i], basename($attachments[$i]),"base64",mime_content_type($attachments[$i]));
+				foreach($attachments as $attach){
+                    if(is_readable($attach)){
+						$mail->AddAttachment($attach, basename($attach),"base64",mime_content_type($attach));
+                    }
 				}
 			}else{
-				$mail->AddAttachment($attachments, basename($attachments),"base64",mime_content_type($attachments[$i]));
+				if(is_readable($attachments)){
+					$mail->AddAttachment($attachments, basename($attachments),"base64",mime_content_type($attachments));
+                }
 			}
 		}
 
 		if($inline){
 			$tmp = explode(",",$inline);
 			foreach($tmp as $inline_img){
-				$mail->AddEmbeddedImage($inline_img, md5($inline_img), basename($inline_img),"base64",mime_content_type($inline_img));
+				if(is_readable($inline_img)){
+					$mail->AddEmbeddedImage($inline_img, md5($inline_img), basename($inline_img),"base64",mime_content_type($inline_img));
+				}
 			}
 		}
 
