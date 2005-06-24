@@ -10,20 +10,17 @@ if(isset($_POST['addpreset'])){
 	if(!$_POST['field']){
 		$err = "<br /><b>".CONTENT_PRESET_LAN_0."</b><br /><br />";
 	}else{
+		$err = "";
 		if($_POST['type'] == "text"){
 			if(!($_POST['text_size'] && $_POST['text_maxsize'] && is_numeric($_POST['text_size']) && is_numeric($_POST['text_maxsize'])) ){
-				$err .= "<br /><b>".CONTENT_PRESET_LAN_1."<br />";
-				$err .= CONTENT_PRESET_LAN_2."<br />";
-				$err .= CONTENT_PRESET_LAN_3."</b><br />";
+				$err .= "<br /><b>".CONTENT_PRESET_LAN_1."<br />".CONTENT_PRESET_LAN_3."</b><br />";
 			}else{
 				$value = $_POST['field']."^".$_POST['type']."^".$_POST['text_size']."^".$_POST['text_maxsize'];
 			}
 		}
 		if($_POST['type'] == "area"){
 			if(!($_POST['area_cols'] && $_POST['area_rows'] && is_numeric($_POST['area_cols']) && is_numeric($_POST['area_rows'])) ){
-				$err .= "<br /><b>".CONTENT_PRESET_LAN_1."</b><br />";
-				$err .= CONTENT_PRESET_LAN_2."<br />";
-				$err .= CONTENT_PRESET_LAN_4."</b><br />";
+				$err .= "<br /><b>".CONTENT_PRESET_LAN_1."<br />".CONTENT_PRESET_LAN_4."</b><br />";
 			}else{
 				$value = $_POST['field']."^".$_POST['type']."^".$_POST['area_cols']."^".$_POST['area_rows'];
 			}
@@ -31,20 +28,38 @@ if(isset($_POST['addpreset'])){
 		if($_POST['type'] == "select"){
 			$options = implode("^", $_POST['options']);
 			if(!$_POST['options']){
-				$err .= "<br /><b>".CONTENT_PRESET_LAN_1."</b><br />";
-				$err .= CONTENT_PRESET_LAN_2."<br />";
-				$err .= CONTENT_PRESET_LAN_5."</b><br />";
+				$err .= "<br /><b>".CONTENT_PRESET_LAN_1."<br />".CONTENT_PRESET_LAN_5."</b><br />";
 			}else{
 				$value = $_POST['field']."^".$_POST['type']."^".$options;
 			}
 		}
 		if($_POST['type'] == "date"){
 			if(!($_POST['date_year_from'] && $_POST['date_year_to'] && is_numeric($_POST['date_year_from']) && is_numeric($_POST['date_year_to'])) ){
-				$err .= "<br /><b>".CONTENT_PRESET_LAN_1."</b><br />";
-				$err .= CONTENT_PRESET_LAN_2."<br />";
-				$err .= CONTENT_PRESET_LAN_6."</b><br />";
+				$err .= "<br /><b>".CONTENT_PRESET_LAN_1."<br />".CONTENT_PRESET_LAN_6."</b><br />";
 			}else{
 				$value = $_POST['field']."^".$_POST['type']."^".$_POST['date_year_from']."^".$_POST['date_year_to'];
+			}
+		}
+		if($_POST['type'] == "checkbox"){
+			if(!$_POST['checkbox_value']){
+				$err .= "<br /><b>".CONTENT_PRESET_LAN_1."<br />".CONTENT_PRESET_LAN_20."</b><br />";
+			}else{
+				$value = $_POST['field']."^".$_POST['type']."^".$_POST['checkbox_value'];
+			}
+		}
+		if($_POST['type'] == "radio"){			
+			if(!($_POST['radio_value'] && $_POST['radio_text'] && $_POST['radio_value']!="" && $_POST['radio_text']!="")){
+				$err .= "<br /><b>".CONTENT_PRESET_LAN_1."<br />".CONTENT_PRESET_LAN_19."</b><br />";
+			}else{
+				if(count($_POST['radio_value']) != count($_POST['radio_text'])){
+					$err .= CONTENT_PRESET_LAN_19;
+				}else{
+					for($i=0;$i<count($_POST['radio_text']);$i++){
+						$radio .= $_POST['radio_text'][$i]."^".$_POST['radio_value'][$i]."^";
+					}
+					$radio = substr($radio,0,-1);
+					$value = $_POST['field']."^".$_POST['type']."^".$radio;
+				}
 			}
 		}
 	}
@@ -183,6 +198,27 @@ if($qs[0] == "select"){
 		<span id='selectline' style='white-space:nowrap;'>
 			<input class='tbox' type='text' name='options[]' size='10' maxlength='50' />
 		<input type='button' class='button' value='".CONTENT_PRESET_LAN_17."' onclick=\"duplicateHTML('selectline','select_container');\"  />
+		</span><br />
+		</div>
+	</td></tr>
+	";
+}
+if($qs[0] == "checkbox"){
+	//form_checkbox($form_name, $form_value, $form_checked = 0, $form_tooltip = "", $form_js = "")
+	$text .= "
+	<tr><td class='leftcell'>".CONTENT_PRESET_LAN_22."</td><td>".$rs -> form_text("checkbox_value", 3, $_POST['checkbox_value'], 4)."</td></tr>
+	";
+}
+if($qs[0] == "radio"){
+	//form_radio($form_name, $form_value, $form_checked = 0, $form_tooltip = "", $form_js = "")
+	$text .= "
+	<tr><td class='leftcell'></td>
+		<td>
+		<div id='radio_container' style='width:40%;white-space:nowrap;'>
+		<span id='radioline' style='white-space:nowrap;'>
+			".CONTENT_PRESET_LAN_21." <input class='tbox' type='text' name='radio_text[]' value='".$_POST['radio_text[]']."' size='8' maxlength='50' />
+			".CONTENT_PRESET_LAN_22." <input class='tbox' type='text' name='radio_value[]' value='".$_POST['radio_value[]']."' size='2' maxlength='50' />
+		<input type='button' class='button' value='".CONTENT_PRESET_LAN_17."' onclick=\"duplicateHTML('radioline','radio_container');\"  />
 		</span><br />
 		</div>
 	</td></tr>

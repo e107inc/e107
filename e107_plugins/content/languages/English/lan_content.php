@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2005-06-24 16:57:55 $
+|     $Revision: 1.56 $
+|     $Date: 2005-06-24 22:08:21 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -412,8 +412,8 @@ define("CONTENT_ADMIN_OPT_LAN_295", "text");
 define("CONTENT_ADMIN_OPT_LAN_296", "textarea");
 define("CONTENT_ADMIN_OPT_LAN_297", "select");
 define("CONTENT_ADMIN_OPT_LAN_298", "date");
-define("CONTENT_ADMIN_OPT_LAN_299", "");
-
+define("CONTENT_ADMIN_OPT_LAN_299", "checkbox");
+define("CONTENT_ADMIN_OPT_LAN_300", "radio");
 
 
 
@@ -875,8 +875,8 @@ define("CONTENT_MENU_LAN_20", "");
 
 //preset tags
 define("CONTENT_PRESET_LAN_0", "error : fieldname not filled in");
-define("CONTENT_PRESET_LAN_1", "error : not all fields are filled in correctly");
-define("CONTENT_PRESET_LAN_2", "all fields need to be filled in");
+define("CONTENT_PRESET_LAN_1", "error : not all fields are filled in correctly<br />all fields need to be filled in");
+define("CONTENT_PRESET_LAN_2", "");
 define("CONTENT_PRESET_LAN_3", "both size and maxsize need to be numeric values");
 define("CONTENT_PRESET_LAN_4", "both cols and rows need to be numeric values");
 define("CONTENT_PRESET_LAN_5", "you need to provide some options");
@@ -893,8 +893,10 @@ define("CONTENT_PRESET_LAN_15", "years to");
 define("CONTENT_PRESET_LAN_16", "options");
 define("CONTENT_PRESET_LAN_17", "add more");
 define("CONTENT_PRESET_LAN_18", "add preset");
-define("CONTENT_PRESET_LAN_19", "");
-define("CONTENT_PRESET_LAN_20", "");
+define("CONTENT_PRESET_LAN_19", "you need to provide an equal amount of text and value fields");
+define("CONTENT_PRESET_LAN_20", "you need to provide a value for the checkbox");
+define("CONTENT_PRESET_LAN_21", "text");
+define("CONTENT_PRESET_LAN_22", "value");
 
 
 
