@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.65 $
-|		$Date: 2005-06-24 14:33:02 $
+|		$Revision: 1.66 $
+|		$Date: 2005-06-24 16:43:24 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -678,9 +678,10 @@ class content{
 					if($row['content_parent'] == "0"){		//main parent level
 					}else{									//sub level
 						for($b=0;$b<(count($catarray[$catid])/2)-1;$b++){
-							$pre .= "_";
+							$pre .= "&nbsp;&nbsp;";
 						}
 					}
+					
 					$emptystring = "----------------";
 
 					if($qs[0] == "cat"){
@@ -691,7 +692,7 @@ class content{
 						$selectjs	= "if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }";
 						$label		= $catid;
 						if($row['content_parent'] == 0){
-							$name	= strtoupper($row['content_heading']);
+							$name	= $row['content_heading'];
 							$js		= "style='font-weight:bold;'";
 						}
 						if($qs[1] == "create"){
@@ -713,7 +714,7 @@ class content{
 							$selectjs	= "if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }";
 							$name		= $pre.$row['content_heading'];
 							if($row['content_parent'] == 0){
-								$name	= strtoupper($row['content_heading']);
+								$name	= $row['content_heading'];
 								$js		= "style='font-weight:bold;'";
 							}
 							if($qs[1] == "create" || $qs[1] == "submit"){
@@ -744,9 +745,9 @@ class content{
 				}elseif( $qs[0] == "content" && is_numeric($qs[1]) ){
 					$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_28, "0", "none", "label='none'");
 				}elseif($qs[0] == "cat" && $qs[1] == "create"){
-					$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_29, (isset($qs[2]) ? "0" : "1"), e_SELF."?cat.create", "label='0' style='font-weight:bold;'");
+					$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_29."&nbsp;&nbsp;", (isset($qs[2]) ? "0" : "1"), e_SELF."?cat.create", "label='0' style='font-weight:bold;'");
 				}else{
-					$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_29, (isset($qs[2]) ? "0" : "1"), e_SELF."?cat.edit.".$qs[2].".0", "label='0' style='font-weight:bold;'");
+					$text .= $rs -> form_option(CONTENT_ADMIN_MAIN_LAN_29."&nbsp;&nbsp;", (isset($qs[2]) ? "0" : "1"), e_SELF."?cat.edit.".$qs[2].".0", "label='0' style='font-weight:bold;'");
 				}
 
 				$text .= $string;
