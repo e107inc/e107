@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-06-22 21:35:02 $
-|     $Author: e107coders $
+|     $Revision: 1.38 $
+|     $Date: 2005-06-24 12:01:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -216,7 +216,7 @@ CREATE TABLE links (
   link_order int(10) unsigned NOT NULL default '0',
   link_parent int(10) unsigned NOT NULL default '0',
   link_open tinyint(1) unsigned NOT NULL default '0',
-  link_class varchar(255) NOT NULL default '0' ,
+  link_class varchar(255) NOT NULL default '0',
   PRIMARY KEY  (link_id)
 ) TYPE=MyISAM;
 
