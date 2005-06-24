@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.63 $
-|		$Date: 2005-06-24 14:33:03 $
+|		$Revision: 1.64 $
+|		$Date: 2005-06-24 16:57:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -2223,8 +2223,7 @@ class contentform{
 						$i=0;
 						$existing = 0;
 						$TOPIC_FIELD .= "
-						<div id='div_content_custom_preset' style='width:80%;'>";
-						
+						<div id='div_content_custom_preset' style='width:80%;'>";						
 						for($i=0;$i<count($content_pref["content_custom_preset_key"]);$i++){
 							if(!empty($content_pref["content_custom_preset_key"][$i])){
 								$TOPIC_FIELD .= "
@@ -2235,21 +2234,17 @@ class contentform{
 								$existing++;
 							}
 						}
-					//$arr[] = array("datetest", "D.all.all.1995-2010");	//Date.fromtodays.fromtomonths.fromtoyears (seperated with -, or use all to show full)
-					//$arr[] = array("textfield", "T.57.200");				//textField.size.max
-					//$arr[] = array("textarea", "A.57.3");					//textArea.cols.rows
-					//$arr[] = array("dropdown", "S.a.b.c.d.e.f");			//Select.dotseperatedvalues
 						$TOPIC_FIELD .= "
 						<br />
 						<span id='upline_new' style='white-space:nowrap;'></span><br />
 						</div><br />
 						<div id='upline_type' style='white-space:nowrap;'>
 							".$rs -> form_select_open("type")."
-							".$rs -> form_option("add field ...", "1", "none", "")."
-							".$rs -> form_option("text", "", "text", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?text' ,'400', '400');\"")."
-							".$rs -> form_option("textarea", "", "area", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?area' ,'400', '400');\"")."
-							".$rs -> form_option("selectbox", "", "select", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?select' ,'400', '400');\"")."
-							".$rs -> form_option("date", "", "date", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?date' ,'400', '400');\"")."
+							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_294, "1", "none", "")."
+							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_295, "", "text", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?text' ,'400', '400');\"")."
+							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_296, "", "area", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?area' ,'400', '400');\"")."
+							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_297, "", "select", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?select' ,'400', '400');\"")."
+							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_298, "", "date", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?date' ,'400', '400');\"")."
 							".$rs -> form_select_close()."
 						</div><br />";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
