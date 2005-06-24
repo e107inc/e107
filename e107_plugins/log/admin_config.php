@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-08 07:08:59 $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-24 17:36:27 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -248,9 +248,9 @@ function rempage()
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 
 	<tr>
-	<td style='width:30%' class='forumheader'>Page Name</td>
+	<td style='width:30%' class='forumheader'>".ADSTAT_L29."</td>
 	<td style='width:50%' class='forumheader'>URL</td>
-	<td style='width:30%; text-align: center;' class='forumheader'>Check to remove ...</td>
+	<td style='width:30%; text-align: center;' class='forumheader'>".ADSTAT_L30." ...</td>
 	</tr>
 	";
 
@@ -268,7 +268,7 @@ function rempage()
 	$text .= "
 
 	<tr>
-	<td colspan='3' class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='remSelP' value='Remove selected pages' />
+	<td colspan='3' class='forumheader3' style='text-align: center;'><input class='button' type='submit' name='remSelP' value='".ADSTAT_L31."' />
 	</td>
 	</tr>
 
@@ -277,7 +277,7 @@ function rempage()
 	</div>
 	";
 
-	$ns -> tablerender("Page Tidy", $text);
+	$ns -> tablerender(ADSTAT_L32, $text);
 }
 
 
