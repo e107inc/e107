@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banlist.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-17 06:49:46 $
-|     $Author: stevedunstan $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-24 17:32:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -34,7 +34,7 @@ if (e_QUERY) {
 	unset($tmp);
 }
 
-if (isset($_POST['add_ban'])) {
+if (isset($_POST['add_ban']) && $_POST['ban_ip'] != "") {
 	$bd = $_POST['ban_ip'];
 	$_POST['ban_reason'] = $tp->toDB($_POST['ban_reason']);
 	$sql->db_Insert("banlist", "'$bd', '".ADMINID."', '".$_POST['ban_reason']."' ");
