@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/date_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-29 14:49:56 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-24 11:23:45 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ class convert
 		}
 	}
 
-	function computeLapse($older_date, $newer_date = FALSE, $mode = FALSE, $show_secs = TRUE) 
+	function computeLapse($older_date, $newer_date = FALSE, $mode = FALSE, $show_secs = TRUE, $format = 'long') 
 	{
 
 		/*
@@ -52,6 +52,20 @@ class convert
 
 		$newer_date = ($newer_date == FALSE ? (time()) : $newer_date);
 		$since = $newer_date - $older_date;
+		if($format == 'short')
+		{
+			$sec = LANDT_09;
+			$secs = LANDT_09s;
+			$min = LANDT_08;
+			$mins = LANDT_08s;
+		}
+		else
+		{
+			$sec = LANDT_07;
+			$secs = LANDT_07s;
+			$min = LANDT_06;
+			$mins = LANDT_06s;
+		}
 
 		$timings = array(
 			array(31536000 , LANDT_01,LANDT_01s),
@@ -59,11 +73,11 @@ class convert
 			array(604800, LANDT_03, LANDT_03s),
 			array(86400 , LANDT_04, LANDT_04s),
 			array(3600 , LANDT_05, LANDT_05s),
-			array(60 , LANDT_06, LANDT_06s)
+			array(60 , $min, $mins)
 		);
 		if($show_secs)
 		{
-			$timings[] = array(1 , LANDT_07, LANDT_07s);
+			$timings[] = array(1 , $sec, $secs);
 		}
 		$newer_date = ($newer_date == FALSE ? (time()) : $newer_date);
 		$since = $newer_date - $older_date;
