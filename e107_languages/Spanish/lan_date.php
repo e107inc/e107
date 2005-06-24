@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_date.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-09 20:03:44 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-24 14:49:26 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -23,4 +23,9 @@ define("LANDT_04s", "Días");
 define("LANDT_05s", "Horas");
 define("LANDT_06s", "Minutos");
 define("LANDT_07s", "Segundos");
+define("LANDT_08", "min");
+define("LANDT_08s", "mins");
+define("LANDT_09", "seg");
+define("LANDT_09s", "segs");
+define("LANDT_AGO", "hace");
 ?>
