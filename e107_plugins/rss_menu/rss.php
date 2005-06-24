@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-06-23 16:24:43 $
+|     $Revision: 1.20 $
+|     $Date: 2005-06-24 16:14:48 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -134,9 +134,9 @@ class rssCreate {
 			case 6:
 				$this -> contentType = "forum threads";
 				$this -> rssQuery = 
-				"SELECT t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, u.user_name FROM e107_forum_t AS t
-				LEFT JOIN e107_user AS u ON FLOOR(t.thread_user) = u.user_id
-				LEFT JOIN e107_forum AS f ON f.forum_id = t.thread_forum_id
+				"SELECT t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, u.user_name FROM #forum_t AS t
+				LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
+				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 				WHERE f.forum_class IN (0, 251, 252) AND t.thread_parent=0
 				ORDER BY t.thread_datestamp DESC LIMIT 0, 9
 				";
@@ -165,10 +165,10 @@ class rssCreate {
 
 			case 7:
 				$this -> contentType = "forum posts";
-				$this -> rssQuery = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name FROM e107_forum_t AS t
-				LEFT JOIN e107_user AS u ON FLOOR(t.thread_user) = u.user_id
-				LEFT JOIN e107_forum_t AS tp ON t.thread_parent = tp.thread_id
-				LEFT JOIN e107_forum AS f ON f.forum_id = t.thread_forum_id
+				$this -> rssQuery = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name FROM #forum_t AS t
+				LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
+				LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
+				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 				WHERE f.forum_class  IN (0, 251, 252)
 				ORDER BY t.thread_datestamp DESC LIMIT 0, 9";
 				$sql->db_Select_gen($this -> rssQuery);
@@ -206,18 +206,18 @@ class rssCreate {
 
 				/* get thread ...  */
 				$this -> rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, f.forum_id, f.forum_name, f.forum_class, u.user_name
-				FROM e107_forum_t AS t
-				LEFT JOIN e107_user AS u ON FLOOR(t.thread_user) = u.user_id
-				LEFT JOIN e107_forum AS f ON f.forum_id = t.thread_forum_id
+				FROM #forum_t AS t
+				LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
+				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 				WHERE f.forum_class  IN (0, 251, 255) AND t.thread_id=".$this -> topicid;
 				$sql->db_Select_gen($this -> rssQuery);
 				$topic = $sql->db_Fetch();
 
 				/* get replies ...  */
 				$this -> rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, f.forum_id, f.forum_name, f.forum_class, u.user_name
-				FROM e107_forum_t AS t
-				LEFT JOIN e107_user AS u ON FLOOR(t.thread_user) = u.user_id
-				LEFT JOIN e107_forum AS f ON f.forum_id = t.thread_forum_id
+				FROM #forum_t AS t
+				LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
+				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 				WHERE f.forum_class  IN (0, 251, 255) AND t.thread_parent=".$this -> topicid;
 				$sql->db_Select_gen($this -> rssQuery);
 				$replies = $sql->db_getList();
