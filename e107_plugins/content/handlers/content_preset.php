@@ -196,7 +196,7 @@ if($qs[0] == "select"){
 		<td>
 		<div id='select_container' style='width:40%;white-space:nowrap;'>
 		<span id='selectline' style='white-space:nowrap;'>
-			<input class='tbox' type='text' name='options[]' size='10' maxlength='50' />
+			<input class='tbox' type='text' name='options[]' size='10' maxlength='100' />
 		<input type='button' class='button' value='".CONTENT_PRESET_LAN_17."' onclick=\"duplicateHTML('selectline','select_container');\"  />
 		</span><br />
 		</div>
@@ -206,7 +206,7 @@ if($qs[0] == "select"){
 if($qs[0] == "checkbox"){
 	//form_checkbox($form_name, $form_value, $form_checked = 0, $form_tooltip = "", $form_js = "")
 	$text .= "
-	<tr><td class='leftcell'>".CONTENT_PRESET_LAN_22."</td><td>".$rs -> form_text("checkbox_value", 3, $_POST['checkbox_value'], 4)."</td></tr>
+	<tr><td class='leftcell'>".CONTENT_PRESET_LAN_22."</td><td>".$rs -> form_text("checkbox_value", 3, $_POST['checkbox_value'], 100)."</td></tr>
 	";
 }
 if($qs[0] == "radio"){
@@ -216,8 +216,8 @@ if($qs[0] == "radio"){
 		<td>
 		<div id='radio_container' style='width:40%;white-space:nowrap;'>
 		<span id='radioline' style='white-space:nowrap;'>
-			".CONTENT_PRESET_LAN_21." <input class='tbox' type='text' name='radio_text[]' value='".$_POST['radio_text[]']."' size='8' maxlength='50' />
-			".CONTENT_PRESET_LAN_22." <input class='tbox' type='text' name='radio_value[]' value='".$_POST['radio_value[]']."' size='2' maxlength='50' />
+			".CONTENT_PRESET_LAN_21." <input class='tbox' type='text' name='radio_text[]' value='".$_POST['radio_text[]']."' size='8' maxlength='100' />
+			".CONTENT_PRESET_LAN_22." <input class='tbox' type='text' name='radio_value[]' value='".$_POST['radio_value[]']."' size='2' maxlength='100' />
 		<input type='button' class='button' value='".CONTENT_PRESET_LAN_17."' onclick=\"duplicateHTML('radioline','radio_container');\"  />
 		</span><br />
 		</div>

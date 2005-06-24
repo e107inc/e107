@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-06-24 14:33:03 $
+|     $Revision: 1.17 $
+|     $Date: 2005-06-24 23:08:45 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -47,8 +47,8 @@ $sc_style['CONTENT_CONTENT_TABLE_ICON']['post'] = "</div>";
 $sc_style['CONTENT_CONTENT_TABLE_PAGENAMES']['pre'] = "<br /><div>".CONTENT_LAN_46."<br />";
 $sc_style['CONTENT_CONTENT_TABLE_PAGENAMES']['post'] = "</div>";
 
-$sc_style['CONTENT_CONTENT_TABLE_CUSTOM_TAGS']['pre'] = "";
-$sc_style['CONTENT_CONTENT_TABLE_CUSTOM_TAGS']['post'] = "";
+$sc_style['CONTENT_CONTENT_TABLE_CUSTOM_TAGS']['pre'] = "<br /><br />";
+$sc_style['CONTENT_CONTENT_TABLE_CUSTOM_TAGS']['post'] = "<br /><br />";
 
 $sc_style['CONTENT_CONTENT_TABLE_SUMMARY']['pre'] = "<div>";
 $sc_style['CONTENT_CONTENT_TABLE_SUMMARY']['post'] = "<br /><br /></div>";
@@ -98,17 +98,21 @@ if(!$CONTENT_CONTENT_TABLE){
 }
 // ##### ----------------------------------------------------------------------
 
-
+if(!$CONTENT_CONTENT_TABLE_CUSTOM_START){
+	$CONTENT_CONTENT_TABLE_CUSTOM_START = "<table style='width:100%;margin-left:0;padding-left:0;' cellspacing='0' cellpadding='0' >";
+}
 if(!$CONTENT_CONTENT_TABLE_CUSTOM){
 	$CONTENT_CONTENT_TABLE_CUSTOM = "
-	<table style='width:100%;margin-left:0;padding-left:0;' ><tr>
-		<td style='width:10%;'>
+	<tr>
+		<td style='width:25%;white-space:nowrap; vertical-align:top; line-height:150%;'>
 			{CONTENT_CONTENT_TABLE_CUSTOM_KEY}
 		</td>
-		<td style='width:90%;'>
+		<td style='width:90%; line-height:150%;'>
 			{CONTENT_CONTENT_TABLE_CUSTOM_VALUE}
 		</td>
-	</tr></table>";
+	</tr>";
 }
-
+if(!$CONTENT_CONTENT_TABLE_CUSTOM_END){
+	$CONTENT_CONTENT_TABLE_CUSTOM_END = "</table>";
+}
 ?>
