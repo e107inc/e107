@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-06-23 18:02:04 $
-|     $Author: sweetas $
+|     $Revision: 1.32 $
+|     $Date: 2005-06-24 17:04:30 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -294,7 +294,7 @@ if($pref['trackbackEnabled'] && $table == "news"){
 		$tbArray = $sql -> db_getList();
 
 		if (file_exists(THEME."trackback_template.php")) {
-			require_once(THEME."news_template.php");
+			require_once(THEME."trackback_template.php");
 		} else {
 			require_once(e_THEME."templates/trackback_template.php");
 		}
