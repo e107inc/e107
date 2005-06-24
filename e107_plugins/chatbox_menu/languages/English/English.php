@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/languages/English/English.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-05 15:26:51 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-24 03:50:47 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -34,6 +34,7 @@ define("CHATBOX_L14", "Emotes");
 define("CHATBOX_L15", "Post too long, or empty post submitted");
 define("CHATBOX_L16", "Anonymous");
 define("CHATBOX_L17", "Duplicate post");
+define("CHATBOX_L18", "Chatbox messages moderated");
 
 define("LAN_11", "Chatbox (all posts)");
 define("LAN_12", "Chat Posts");

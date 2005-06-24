@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-16 06:41:15 $
-|     $Author: stevedunstan $
+|     $Revision: 1.11 $
+|     $Date: 2005-06-24 03:50:47 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -28,29 +28,7 @@ if (file_exists(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE."_c
 }
 
 require_once(e_ADMIN."auth.php");
-
-
-if (isset($_POST['moderate'])) {
-
-	extract($_POST);
-	if (is_array($cb_blocked)) {
-		while (list ($key, $id) = each ($cb_blocked)) {
-			$sql->db_Update("chatbox", "cb_blocked='1' WHERE cb_id='$id' ");
-		}
-	}
-	if (is_array($cb_unblocked)) {
-		while (list ($key, $id) = each ($cb_unblocked)) {
-			$sql->db_Update("chatbox", "cb_blocked='0' WHERE cb_id='$id' ");
-		}
-	}
-	if (is_array($cb_delete)) {
-		while (list ($key, $id) = each ($cb_delete)) {
-			$sql->db_Delete("chatbox", "cb_id='$id' ");
-		}
-	}
-	$e107cache->clear("chatbox");
-	$message = CHBLAN_2;
-}
+require_once(e_HANDLER."userclass_class.php");
 
 if (isset($_POST['updatesettings'])) {
 
@@ -60,6 +38,7 @@ if (isset($_POST['updatesettings'])) {
 	$pref['cb_layer'] = $_POST['cb_layer'];
 	$pref['cb_layer_height'] = ($_POST['cb_layer_height'] ? $_POST['cb_layer_height'] : 200);
 	$pref['cb_emote'] = $_POST['cb_emote'];
+	$pref['cb_mod'] = $_POST['cb_mod'];
 	save_prefs();
 	$e107cache->clear("chatbox");
 	$message = CHBLAN_1;
@@ -78,67 +57,6 @@ if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-
-if (!$sql->db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", $mode = "no_where")) {
-	$text = "<div style='text-align:center'>".CHBLAN_3."</div>";
-} else {
-	$con = new convert;
-	$aj = new textparse();
-
-	$text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>
-		<form method='post' action='".e_SELF."'>
-		<table style='width:99%' class='fborder'>";
-
-	$cbArray = $sql -> db_getList();
-
-
-	foreach($cbArray as $row)
-	{
-		extract($row);
-
-		$datestamp = $con->convert_date($cb_datestamp, "short");
-
-		$cb_ida = substr($cb_nick, 0, strpos($cb_nick, "."));
-
-		if ($cb_ida) {
-			$sql->db_Select("user", "*", "user_id='$cb_ida' ");
-			$row = $sql->db_Fetch();
-			 extract($row);
-			$cb_nick = "<a href='".e_BASE."user.php?id.".$user_id."'>".$user_name."</a>";
-			$cb_str = "".CHBLAN_4." ".$user_id;
-		} else {
-			$cb_str = CHBLAN_5;
-			$cb_nick = eregi_replace("[0-9]+\.", "", $cb_nick);
-		}
-
-		$cb_message = str_replace('&amp;#', '&#', $cb_message);
-		$cb_message = $aj->tpa($cb_message, "on");
-
-		$text .= "<tr>
-			<td class='forumheader3' style='width:5%; text-align: center'>".($cb_blocked ? "<img src='".e_IMAGE."generic/blocked.png' />" : "&nbsp;")."</td>
-			<td class='forumheader3' style='width:15%'>".$datestamp."</td>
-			<td class='forumheader3' style='width:20%'><b>".$cb_nick."</b><br />".$cb_str."<br />IP: ".$cb_ip."</td>
-			<td class='forumheader3' style='width:40%'>".$cb_message."</td>
-			<td class='forumheader3' style='width:20%;text-align:center' >".
-
-		($cb_blocked ? "<input type='checkbox' name='cb_unblocked[]' value='$cb_id' /> ".CHBLAN_6 : "<input type='checkbox' name='cb_blocked[]' value='$cb_id' />".CHBLAN_7)."
-			&nbsp;<input type='checkbox' name='cb_delete[]' value='$cb_id' />".CHBLAN_8."
-			</td>
-			</tr>";
-
-	}
-
-	$text .= "<tr>
-	<td colspan='5' class='forumheader' style='text-align:center'><input class='button' type='submit' name='moderate' value='".CHBLAN_9."' /></td>
-	</tr>
-	</table></form></div>";
-	$ns->tablerender(CHBLAN_10, $text);
-
-	echo "<br />";
-
-}
-
-
 $chatbox_posts = $pref['chatbox_posts'];
 $cb_linkreplace = $pref['cb_linkreplace'];
 $cb_linkc = $pref['cb_linkc'];
@@ -147,7 +65,7 @@ $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."' id='cbform'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-	<td class='forumheader3' style='width:40%'>".CHBLAN_11."?:  <div class='smalltext'>".CHBLAN_12."</div></td>
+	<td class='forumheader3' style='width:40%'>".CHBLAN_11.":  <div class='smalltext'>".CHBLAN_12."</div></td>
 	<td class='forumheader3' style='width:60%'>
 	<select name='chatbox_posts' class='tbox'>";
 if ($chatbox_posts == 5) {
@@ -176,7 +94,17 @@ if ($chatbox_posts == 25) {
 	$text .= "<option>25</option>\n";
 }
 
+if(!isset($pref['cb_mod']))
+{
+	$pref['cb_mod'] = e_UC_ADMIN;
+}
+
 $text .= "</select>
+	</td>
+	</tr>
+
+	<tr><td class='forumheader3' style='width:40%'>".CHBLAN_32.": </td>
+	<td class='forumheader3' style='width:60%'>". r_userclass("cb_mod", $pref['cb_mod'], 'off', "admin, classes")."
 	</td>
 	</tr>
 
