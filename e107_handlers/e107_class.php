@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-06-09 09:48:07 $
-|     $Author: streaky $
+|     $Revision: 1.29 $
+|     $Date: 2005-06-24 17:32:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -102,10 +102,10 @@ class e107{
 
 		$tmp = gethostbyaddr(getenv('REMOTE_ADDR'));
 		preg_match("/[\w]+\.[\w]+$/si", $tmp, $match);
-		$bhost = (isset($match[0]) ? $match[0] : "");
+		$bhost = (isset($match[0]) ? " OR banlist_ip='$match[0]' " : "");
 
 		if ($ip != '127.0.0.1') {
-			if ($sql->db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='$ip' OR banlist_ip='$wildcard' OR banlist_ip='$bhost'")) {
+			if ($sql->db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='$ip' OR banlist_ip='$wildcard' {$bhost}")) {
 				// enter a message here if you want some text displayed to banned users ...
 				exit;
 			}
