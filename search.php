@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-06-16 05:25:35 $
+|     $Revision: 1.42 $
+|     $Date: 2005-06-24 12:21:14 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -435,9 +435,10 @@ if ($perform_search) {
 				$search_res = $search_info[$key]['results'];
 				@require_once($search_info[$key]['sfile']);
 				$parms = $results.",".$search_res.",".$_GET['r'].",".e_SELF."?q=".$_GET['q']."&t=".$key."&r=[FROM]".(isset($_GET['a']) ? "&a=".$_GET['a'] : "");
-				if (isset($advanced)) {
-					foreach ($advanced as $adv_key => $adv_value) {
-						$parms .= isset($_GET[$adv_key]) ? "&".$adv_key."=".$_GET[$adv_key] : "";
+				$core_parms = array('r' => '', 'q' => '', 't' => '', 'a' => '', 's' => '');
+				foreach ($_GET as $pparm_key => $pparm_value) {
+					if (!isset($core_parms[$pparm_key])) {
+						$parms .= "&".$pparm_key."=".$_GET[$pparm_key];
 					}
 				}
 				if ($results > $search_res) {
