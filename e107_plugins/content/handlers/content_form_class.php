@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.64 $
-|		$Date: 2005-06-24 16:57:55 $
+|		$Revision: 1.65 $
+|		$Date: 2005-06-24 22:08:21 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -774,6 +774,7 @@ class contentform{
 							$text .= $TOPIC_ROW_SPACER;
 						}
 
+						$hidden = "";
 						for($i=0;$i<count($content_pref["content_custom_preset_key"]);$i++){
 							$value = "";
 							if($custom){
@@ -784,29 +785,23 @@ class contentform{
 							}
 							if(!empty($content_pref["content_custom_preset_key"][$i])){
 								if($checkpreset){
-									$text .= $this -> parseCustomPresetTag($content_pref["content_custom_preset_key"][$i]);
-
-									/*
-									//preset additional custom data tags
-									$TOPIC_TOPIC = $content_pref["content_custom_preset_key"][$i];
-									$TOPIC_HEADING = "";
-									$TOPIC_HELP = "";
-									$TOPIC_FIELD = "
-									<input type='hidden' name='content_custom_preset_key[$i]' value='".$content_pref["content_custom_preset_key"][$i]."' />
-									<input class='tbox' type='text' name='content_custom_preset_value[$i]' value='".$value."' size='70' maxlength='250' />";
-									$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-									*/
+									$text .= $this -> parseCustomPresetTag($content_pref["content_custom_preset_key"][$i], $custom['content_custom_presettags']);
 								}else{
-									$text .= "
-									".$rs -> form_hidden("content_custom_preset_key[$i]", $content_pref["content_custom_preset_key"][$i])."
-									".$rs -> form_hidden("content_custom_preset_value[$i]", $value);
+									$tmp = explode("^", $content_pref["content_custom_preset_key"][$i]);
+									if(is_array($custom['content_custom_presettags'][$tmp[0]])){
+										$hidden .= $rs -> form_hidden("content_custom_preset_key[$tmp[0]][day]", $custom['content_custom_presettags'][$tmp[0]][day]);
+										$hidden .= $rs -> form_hidden("content_custom_preset_key[$tmp[0]][month]", $custom['content_custom_presettags'][$tmp[0]][month]);
+										$hidden .= $rs -> form_hidden("content_custom_preset_key[$tmp[0]][year]", $custom['content_custom_presettags'][$tmp[0]][year]);
+									}else{
+										$hidden .= $rs -> form_hidden("content_custom_preset_key[$tmp[0]]", $custom['content_custom_presettags'][$tmp[0]]);
+									}									
 								}
 							}
 						}
 
 						$text .= $TOPIC_ROW_SPACER."
 						<tr>
-							<td colspan='2' style='text-align:center' class='forumheader'>";
+							<td colspan='2' style='text-align:center' class='forumheader'>".($hidden ? $hidden : "");
 							
 							$js = "onclick=\"document.getElementById('parent').value = document.getElementById('parent1').options[document.getElementById('parent1').selectedIndex].label;\" ";
 							if($qs[1] == "edit" || $qs[1] == "sa" || isset($_POST['editp']) ){
@@ -833,45 +828,59 @@ class contentform{
 		}
 
 
-		function parseCustomPresetTag($tag){
+		function parseCustomPresetTag($tag, $values){
 			global $rs, $TOPIC_ROW_NOEXPAND, $months;
 
 			$tmp = explode("^", $tag);
 
 			if($tmp[1] == "text"){
-				$str = $rs -> form_text("content_custom_preset_key[{$tmp[0]}]", $tmp[2], "", $tmp[3], "tbox", "", "", "");
+					$str = $rs -> form_text("content_custom_preset_key[{$tmp[0]}]", $tmp[2], $values[$tmp[0]], $tmp[3], "tbox", "", "", "");
 
 			}elseif($tmp[1] == "area"){
-				$str = $rs -> form_textarea("content_custom_preset_key[{$tmp[0]}]", $tmp[2], $tmp[3], "", "", "", "", "", "");
+					$str = $rs -> form_textarea("content_custom_preset_key[{$tmp[0]}]", $tmp[2], $tmp[3], $values[$tmp[0]], "", "", "", "", "");
 
 			}elseif($tmp[1] == "select"){
-				$str = $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}]", "");
-				for($i=2;$i<count($tmp);$i++){
-					$str .= $rs -> form_option($tmp[$i], "", $tmp[$i], "");
-				}
-				$str .= $rs -> form_select_close();
+					$str = $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}]", "");
+					for($i=2;$i<count($tmp);$i++){
+						$str .= $rs -> form_option($tmp[$i], ($values[$tmp[0]] == $tmp[$i] ? "1" : "0"), $tmp[$i], "");
+					}				
+					$str .= $rs -> form_select_close();
 				
 			}elseif($tmp[1] == "date"){
-				$str = $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}][day]", "")."
-				".$rs -> form_option("day", "0", "");
-				for($i=1;$i<=31;$i++){
-					$str .= $rs -> form_option($i, "", $i, "");
-				}
-				$str .= $rs -> form_select_close();
+					$str = $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}][day]", "")."
+					".$rs -> form_option("day", "0", "");
+					for($i=1;$i<=31;$i++){
+						$str .= $rs -> form_option($i, ($values[$tmp[0]]['day'] == $i ? "1" : "0"), $i, "");
+					}
+					$str .= $rs -> form_select_close();
 
-				$str .= $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}][month]", "")."
-				".$rs -> form_option("month", "0", "");
-				for($i=1;$i<=12;$i++){
-					$str .= $rs -> form_option($months[($i-1)], "", $i, "");
-				}
-				$str .= $rs -> form_select_close();
+					$str .= $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}][month]", "")."
+					".$rs -> form_option("month", "0", "");
+					for($i=1;$i<=12;$i++){
+						$str .= $rs -> form_option($months[($i-1)], ($values[$tmp[0]]['month'] == $i ? "1" : "0"), $i, "");
+					}
+					$str .= $rs -> form_select_close();
 
-				$str .= $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}][year]", "")."
-				".$rs -> form_option("year", "0", "");
-				for($i=$tmp[2];$i<=$tmp[3];$i++){
-					$str .= $rs -> form_option($i, "", $i, "");
-				}
-				$str .= $rs -> form_select_close();
+					$str .= $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}][year]", "")."
+					".$rs -> form_option("year", "0", "");
+					for($i=$tmp[2];$i<=$tmp[3];$i++){
+						$str .= $rs -> form_option($i, ($values[$tmp[0]]['year'] == $i ? "1" : "0"), $i, "");
+					}
+					$str .= $rs -> form_select_close();
+			
+			}elseif($tmp[1] == "radio"){
+					//secondradio^radio^opt1^1^opt2^2^opt3^3
+					//form_radio($form_name, $form_value, $form_checked = 0, $form_tooltip = "", $form_js = "")
+					$str = "";
+					for($i=2;$i<count($tmp);$i++){
+						$str .= $rs -> form_radio("content_custom_preset_key[{$tmp[0]}]", $tmp[$i], ($values[$tmp[0]] == $tmp[$i] ? "1" : "0"), "", "")." ".$tmp[$i];
+						$i++;					
+					}
+
+			}elseif($tmp[1] == "checkbox"){
+					//somecheckbox^checkbox^graduation
+					//form_checkbox($form_name, $form_value, $form_checked = 0, $form_tooltip = "", $form_js = "")
+					$str = $rs -> form_checkbox("content_custom_preset_key[{$tmp[0]}]", $tmp[2], ($values[$tmp[0]] == $tmp[2] ? "1" : "0"), "", "");
 			}
 
 			$TOPIC_TOPIC = $tmp[0];
@@ -2226,14 +2235,16 @@ class contentform{
 						<div id='div_content_custom_preset' style='width:80%;'>";						
 						for($i=0;$i<count($content_pref["content_custom_preset_key"]);$i++){
 							if(!empty($content_pref["content_custom_preset_key"][$i])){
+								//<span id='upline_ex' style='white-space:nowrap;'>
 								$TOPIC_FIELD .= "
-								<span id='upline_ex' style='white-space:nowrap;'>
+								<span style='white-space:nowrap;'>
 									".$rs -> form_text("content_custom_preset_key[$existing]", 50, $content_pref["content_custom_preset_key"][$existing], 100)."
 									".$rs -> form_button("button", "x", "x", "onclick=\"document.getElementById('content_custom_preset_key[$existing]').value='';\"", "", "")."
 								</span>";
 								$existing++;
 							}
 						}
+						$url = e_PLUGIN."content/handlers/content_preset.php";
 						$TOPIC_FIELD .= "
 						<br />
 						<span id='upline_new' style='white-space:nowrap;'></span><br />
@@ -2241,10 +2252,12 @@ class contentform{
 						<div id='upline_type' style='white-space:nowrap;'>
 							".$rs -> form_select_open("type")."
 							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_294, "1", "none", "")."
-							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_295, "", "text", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?text' ,'400', '400');\"")."
-							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_296, "", "area", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?area' ,'400', '400');\"")."
-							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_297, "", "select", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?select' ,'400', '400');\"")."
-							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_298, "", "date", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?date' ,'400', '400');\"")."
+							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_295, "", "text", "onclick=\"open_window('".$url."?text' ,'400', '400');\"")."
+							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_296, "", "area", "onclick=\"open_window('".$url."?area' ,'400', '400');\"")."
+							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_297, "", "select", "onclick=\"open_window('".$url."?select' ,'400', '400');\"")."
+							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_298, "", "date", "onclick=\"open_window('".$url."?date' ,'400', '400');\"")."
+							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_299, "", "checkbox", "onclick=\"open_window('".$url."?checkbox' ,'400', '400');\"")."
+							".$rs -> form_option(CONTENT_ADMIN_OPT_LAN_300, "", "radio", "onclick=\"open_window('".$url."?radio' ,'400', '400');\"")."
 							".$rs -> form_select_close()."
 						</div><br />";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
