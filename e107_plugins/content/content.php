@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.62 $
-|		$Date: 2005-06-24 14:33:02 $
+|		$Revision: 1.63 $
+|		$Date: 2005-06-24 23:08:44 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1528,8 +1528,8 @@ function show_content_item(){
 													$vv = $cv;
 												}
 												if( isset($ck) && $ck != "" && isset($vv) && $vv!="" ){
-													$CONTENT_CONTENT_TABLE_CUSTOM_KEY		= $ck;
-													$CONTENT_CONTENT_TABLE_CUSTOM_VALUE		= $vv;
+													$CONTENT_CONTENT_TABLE_CUSTOM_KEY		= $tp->toHTML($ck, true);
+													$CONTENT_CONTENT_TABLE_CUSTOM_VALUE		= $tp->toHTML($vv, true);
 													$CONTENT_CONTENT_TABLE_CUSTOM_TAGS		.= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE_CUSTOM);
 												}
 											}
@@ -1538,14 +1538,16 @@ function show_content_item(){
 										if($content_pref["content_content_customtags_{$mainparent}"]){
 											$key = substr($k,15);
 											if( isset($key) && $key != "" && isset($v) && $v!="" ){
-												$CONTENT_CONTENT_TABLE_CUSTOM_KEY		= $key;
-												$CONTENT_CONTENT_TABLE_CUSTOM_VALUE		= $v;
+												$CONTENT_CONTENT_TABLE_CUSTOM_KEY		= $tp->toHTML($key, true);
+												$CONTENT_CONTENT_TABLE_CUSTOM_VALUE		= $tp->toHTML($v, true);
 												$CONTENT_CONTENT_TABLE_CUSTOM_TAGS		.= preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_TABLE_CUSTOM);
 											}
 										}
 									}
 								}
 							}
+							$CONTENT_CONTENT_TABLE_CUSTOM_TAGS = $CONTENT_CONTENT_TABLE_CUSTOM_START.$CONTENT_CONTENT_TABLE_CUSTOM_TAGS.$CONTENT_CONTENT_TABLE_CUSTOM_END;
+						
 						}
 						$text = $tp -> parseTemplate($CONTENT_CONTENT_TABLE, FALSE, $content_shortcodes);
 					}
