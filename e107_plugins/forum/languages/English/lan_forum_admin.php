@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-06-21 22:46:38 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2005-06-24 15:55:20 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -145,8 +145,6 @@ define("WMGLAN_5", "Set Forum Rules");
 define("WMGLAN_6", "Activate?");
 define("FORLAN_124", "Links in new window");
 define("FORLAN_125", "Tick here to make all links open in a new window (<i>this will apply sitewide</i>). ");
-
-//v.617
 define("FORLAN_126", "Show Tooltips");
 define("FORLAN_127", "Tick here to show a tooltip containing the first post of the thread when mouse hovers over thread name. ");
 define("FORLAN_128", "Length of tooltip");
@@ -155,25 +153,18 @@ define("FORLAN_130", "click here");
 define("FORLAN_131", "to set max file size, allowed types etc");
 define("FORLAN_132", "Emphasize Sticky Threads");
 define("FORLAN_133", "Give extra emphasis to sticky threads (separate thread sections and headers)");
-
 define("FORLAN_134", "Maximum width of uploaded image");
 define("FORLAN_135", "Leave blank to disable auto resizing of images");
-
 define("FORLAN_136", "Create link to full size image");
 define("FORLAN_137", "Enabling this will resize larger images and also create a link to the original full size image.  If disabled, original image will be discarded");
-
 define("FORLAN_138", "Prune these forums");
 define("FORLAN_139", "To use this setting you also need to tick 'Enable image posting' on the <a href='".e_ADMIN."image.php'>images</a> page");
-
 define("FORLAN_140", "View");
 define("FORLAN_141", "Post");
-
 define("FORLAN_142", "Post permission");
 define("FORLAN_143", "Indicates who can can post to the forum");
-
 define("FORLAN_144", "Moderators set");
 define("FORLAN_145", "Configure sub-forums");
-
 define("FORLAN_146", "No sub-forums yet");
 define("FORLAN_147", "Update sub-forums");
 define("FORLAN_148", "Create sub-forums");
@@ -183,7 +174,26 @@ define("FORLAN_151", "ID");
 define("FORLAN_152", "posts");
 define("FORLAN_153", "Tools");
 define("FORLAN_154", "Reply Deleted");
-
 define("FORLAN_155", "Forum Categories");
+
+define("FORLAN_156", "Select forum(s) to perform action on");
+define("FORLAN_157", "All Forums");
+define("FORLAN_158", "Recalculate forum lastpost info");
+define("FORLAN_159", "Select to recalculate lastpost info");
+define("FORLAN_160", "Select to perform this on forums only, not threads");
+define("FORLAN_161", "Recalculate post / reply counts");
+define("FORLAN_162", "Select to recalculate forum thread/reply counts");
+define("FORLAN_163", "Recalculate user forum posts counts");
+define("FORLAN_164", "Select to recalculate user forum counts");
+define("FORLAN_165", "Execute functions");
+define("FORLAN_166", "Forum Tools");
+define("FORLAN_167", "Counts updated for forum");
+define("FORLAN_168", "Lastpost info updated for forum");
+define("FORLAN_169", "User forum counts updated");
+define("FORLAN_166", "Forum Tools");
+define("FORLAN_166", "Forum Tools");
+define("FORLAN_166", "Forum Tools");
+
+
 
 ?>
