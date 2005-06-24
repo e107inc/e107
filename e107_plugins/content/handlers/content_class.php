@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.64 $
-|		$Date: 2005-06-20 13:27:24 $
+|		$Revision: 1.65 $
+|		$Date: 2005-06-24 14:33:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -378,7 +378,14 @@ class content{
 					$sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
 					$row = $sql -> db_Fetch();
 
-					//assign new preferences
+					//create array of custom preset tags
+					foreach($_POST['content_custom_preset_key'] as $ck => $cv){
+						if(!empty($cv)){
+							$string[] = $cv;
+						}
+					}
+					$_POST['content_custom_preset_key'] = $string;
+
 					foreach($_POST as $k => $v){
 						if(preg_match("#^content_#",$k)){
 							$content_pref[$k] = $tp->toDB($v, true);
@@ -1166,6 +1173,9 @@ class content{
 				$data .= "	}\n";
 				$data .= "	if(".chr(36)."content_pref[\"content_menu_viewtoprated_".chr(36)."menutypeid\"]){\n";
 				$data .= "		".chr(36)."text .= ".chr(36)."linksicon.\" <a href='\".".chr(36)."plugindir.\"content.php?top.\".".chr(36)."menutypeid.\"'>\".CONTENT_LAN_8.\"</a><br />\";\n";
+				$data .= "	}\n";
+				$data .= "	if(".chr(36)."content_pref[\"content_menu_viewtopscore_".chr(36)."menutypeid\"]){\n";
+				$data .= "		".chr(36)."text .= ".chr(36)."linksicon.\" <a href='\".".chr(36)."plugindir.\"content.php?score.\".".chr(36)."menutypeid.\"'>\".CONTENT_LAN_12.\"</a><br />\";\n";
 				$data .= "	}\n";
 				$data .= "	if(".chr(36)."content_pref[\"content_menu_viewrecent_".chr(36)."menutypeid\"]){\n";
 				$data .= "		".chr(36)."text .= ".chr(36)."linksicon.\" <a href='\".".chr(36)."plugindir.\"content.php?recent.\".".chr(36)."menutypeid.\"'>\".CONTENT_LAN_61.\"</a><br />\";\n";

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_recent_template.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-06-09 08:59:55 $
+|     $Revision: 1.17 $
+|     $Date: 2005-06-24 14:33:03 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -70,7 +70,7 @@ if(!$CONTENT_RECENT_TABLE){
 					{CONTENT_RECENT_TABLE_SUBHEADING}
 					
 					{CONTENT_RECENT_TABLE_INFOPRE}
-						{CONTENT_RECENT_TABLE_DATE} {CONTENT_RECENT_TABLE_PARENT} {CONTENT_RECENT_TABLE_AUTHORDETAILS} {CONTENT_RECENT_TABLE_EPICONS} {CONTENT_RECENT_TABLE_EDITICON}
+						{CONTENT_RECENT_TABLE_DATE} {CONTENT_RECENT_TABLE_AUTHORDETAILS} {CONTENT_RECENT_TABLE_PARENT} {CONTENT_RECENT_TABLE_EPICONS} {CONTENT_RECENT_TABLE_EDITICON}
 					{CONTENT_RECENT_TABLE_INFOPOST}
 
 					{CONTENT_RECENT_TABLE_SUMMARY}

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.62 $
-|		$Date: 2005-06-16 12:05:18 $
+|		$Revision: 1.63 $
+|		$Date: 2005-06-24 14:33:03 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -21,6 +21,8 @@
 $plugindir		= e_PLUGIN."content/";
 $plugintable	= "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
 $datequery		= " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
+
+$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
 
 if (!defined('ADMIN_WIDTH')) { define("ADMIN_WIDTH", "width:98%;"); }
 
@@ -251,15 +253,15 @@ class contentform{
 								$row['content_subheading']			= $_POST['content_subheading'];
 								$row['content_summary']				= $_POST['content_summary'];
 								$row['content_text']				= $_POST['content_text'];
-								$row['content_author_name']			= $_POST['content_author_name'];
-								$row['content_author_email']		= $_POST['content_author_email'];
-								$row['content_author_id']			= $_POST['content_author_id'];
-								$row['ne_day']						= $_POST['ne_day'];
-								$row['ne_month']					= $_POST['ne_month'];
-								$row['ne_year']						= $_POST['ne_year'];
-								$row['end_day']						= $_POST['end_day'];
-								$row['end_month']					= $_POST['end_month'];
-								$row['end_year']					= $_POST['end_year'];
+								$authordetails[0]					= $_POST['content_author_id'];
+								$authordetails[1]					= $_POST['content_author_name'];
+								$authordetails[2]					= $_POST['content_author_email'];
+								$ne_day								= $_POST['ne_day'];
+								$ne_month							= $_POST['ne_month'];
+								$ne_year							= $_POST['ne_year'];
+								$end_day							= $_POST['end_day'];
+								$end_month							= $_POST['end_month'];
+								$end_year							= $_POST['end_year'];
 								$row['content_comment']				= $_POST['content_comment'];
 								$row['content_rate']				= $_POST['content_rate'];
 								$row['content_pe']					= $_POST['content_pe'];
@@ -269,7 +271,7 @@ class contentform{
 								$custom['content_custom_score']		= $_POST['content_score'];
 								$custom['content_custom_meta']		= $_POST['content_meta'];
 								$custom['content_custom_template']	= $_POST['content_template'];
-								
+
 								//custom tags
 								for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){
 									$keystring = $_POST["content_custom_key_{$i}"];
@@ -283,9 +285,9 @@ class contentform{
 								}
 						}						
 
-						$content_author_id		= (isset($content_author_id) ? $content_author_id : (isset($authordetails[0]) && $authordetails[0] != "" ? $authordetails[0] : USERID) );
-						$content_author_name	= (isset($content_author_name) ? $content_author_name : (isset($authordetails[1]) && $authordetails[1] != "" ? $authordetails[1] : USERNAME) );
-						$content_author_email	= (isset($content_author_email) ? $content_author_email : (isset($authordetails[2]) && $authordetails[2] != "" ? $authordetails[2] : USEREMAIL) );
+						$content_author_id		= (isset($authordetails[0]) && $authordetails[0] != "" ? $authordetails[0] : USERID);
+						$content_author_name	= (isset($authordetails[1]) && $authordetails[1] != "" ? $authordetails[1] : USERNAME);
+						$content_author_email	= (isset($authordetails[2]) && $authordetails[2] != "" ? $authordetails[2] : USEREMAIL);
 
 						$formurl = e_SELF."?".e_QUERY;
 						$text = "
@@ -359,18 +361,16 @@ class contentform{
 							</td></tr></table>";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-						if(isset($row['content_enddate'])){
-							$enddate	= getdate($row['content_enddate']);
-							$end_day	= $enddate['mday'];
-							$end_month	= $enddate['mon'];
-							$end_year	= $enddate['year'];
-						}
 
-						if(isset($row['content_datestamp'])){
+						if(isset($row['content_datestamp']) && $row['content_datestamp'] != "0" && $row['content_datestamp'] != ""){
 							$startdate	= getdate($row['content_datestamp']);
 							$ne_day		= $startdate['mday'];
 							$ne_month	= $startdate['mon'];
 							$ne_year	= $startdate['year'];
+						}else{
+							$ne_day		= (isset($ne_day) ? $ne_day : "0");
+							$ne_month	= (isset($ne_month) ? $ne_month : "0");
+							$ne_year	= (isset($ne_year) ? $ne_year : "0");
 						}
 
 						$smarray = getdate();
@@ -401,6 +401,18 @@ class contentform{
 							$TOPIC_FIELD .= $rs -> form_select_close()."
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+
+						if(isset($row['content_enddate']) && $row['content_enddate'] != "0" && $row['content_enddate'] != ""){
+							$enddate	= getdate($row['content_enddate']);
+							$end_day	= $enddate['mday'];
+							$end_month	= $enddate['mon'];
+							$end_year	= $enddate['year'];
+						}else{
+							$end_day	= (isset($end_day) ? $end_day : "0");
+							$end_month	= (isset($end_month) ? $end_month : "0");
+							$end_year	= (isset($end_year) ? $end_year : "0");
+						}
 
 						//end date
 						$TOPIC_TOPIC = CONTENT_ADMIN_DATE_LAN_16;
@@ -772,6 +784,9 @@ class contentform{
 							}
 							if(!empty($content_pref["content_custom_preset_key"][$i])){
 								if($checkpreset){
+									$text .= $this -> parseCustomPresetTag($content_pref["content_custom_preset_key"][$i]);
+
+									/*
 									//preset additional custom data tags
 									$TOPIC_TOPIC = $content_pref["content_custom_preset_key"][$i];
 									$TOPIC_HEADING = "";
@@ -780,6 +795,7 @@ class contentform{
 									<input type='hidden' name='content_custom_preset_key[$i]' value='".$content_pref["content_custom_preset_key"][$i]."' />
 									<input class='tbox' type='text' name='content_custom_preset_value[$i]' value='".$value."' size='70' maxlength='250' />";
 									$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+									*/
 								}else{
 									$text .= "
 									".$rs -> form_hidden("content_custom_preset_key[$i]", $content_pref["content_custom_preset_key"][$i])."
@@ -815,6 +831,60 @@ class contentform{
 						$caption = ($qs[1] == "edit" ? CONTENT_ADMIN_ITEM_LAN_45 : CONTENT_ADMIN_ITEM_LAN_44);
 						$ns -> tablerender($caption, $text);
 		}
+
+
+		function parseCustomPresetTag($tag){
+			global $rs, $TOPIC_ROW_NOEXPAND, $months;
+
+			$tmp = explode("^", $tag);
+
+			if($tmp[1] == "text"){
+				$str = $rs -> form_text("content_custom_preset_key[{$tmp[0]}]", $tmp[2], "", $tmp[3], "tbox", "", "", "");
+
+			}elseif($tmp[1] == "area"){
+				$str = $rs -> form_textarea("content_custom_preset_key[{$tmp[0]}]", $tmp[2], $tmp[3], "", "", "", "", "", "");
+
+			}elseif($tmp[1] == "select"){
+				$str = $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}]", "");
+				for($i=2;$i<count($tmp);$i++){
+					$str .= $rs -> form_option($tmp[$i], "", $tmp[$i], "");
+				}
+				$str .= $rs -> form_select_close();
+				
+			}elseif($tmp[1] == "date"){
+				$str = $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}][day]", "")."
+				".$rs -> form_option("day", "0", "");
+				for($i=1;$i<=31;$i++){
+					$str .= $rs -> form_option($i, "", $i, "");
+				}
+				$str .= $rs -> form_select_close();
+
+				$str .= $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}][month]", "")."
+				".$rs -> form_option("month", "0", "");
+				for($i=1;$i<=12;$i++){
+					$str .= $rs -> form_option($months[($i-1)], "", $i, "");
+				}
+				$str .= $rs -> form_select_close();
+
+				$str .= $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}][year]", "")."
+				".$rs -> form_option("year", "0", "");
+				for($i=$tmp[2];$i<=$tmp[3];$i++){
+					$str .= $rs -> form_option($i, "", $i, "");
+				}
+				$str .= $rs -> form_select_close();
+			}
+
+			$TOPIC_TOPIC = $tmp[0];
+			$TOPIC_HEADING = "";
+			$TOPIC_HELP = "";
+			$TOPIC_FIELD = $str;
+			$text = preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			return $text;
+		}
+
+
+
 
 		function show_manage_content($mode, $userid="", $username=""){
 						global $qs, $sql, $ns, $rs, $aa, $plugintable, $plugindir, $tp, $eArrayStorage;
@@ -2048,13 +2118,37 @@ class contentform{
 								hideid = showid;
 							}
 						}
+
+						function showhide(showid, arrhide){
+							var i;
+							for (i = 0; i < arrhide.length; i++){
+								var hideit;
+								hideit=arrhide[i];
+								hide=document.getElementById(hideit).style;
+								hide.display=\"none\";
+							}
+							show=document.getElementById(showid).style;
+							show.display=\"\";							
+						}
+
+						function shows(showid){
+							show1=document.getElementById(showid).style;
+							show1.display=\"\";							
+						}
+
+						function hides(hideit){
+							hide=document.getElementById(hideit).style;
+							hide.display=\"none\";							
+						}
+						
+
 						//-->
 						</script>";
 
 
 						$text .= "
 						<div style='text-align:center'>
-						<form method='post' action='".e_SELF."?".e_QUERY."'>\n
+						<form method='post' name='optform' action='".e_SELF."?".e_QUERY."'>\n
 
 						<div id='creation' style='text-align:center'>
 						<table style='".ADMIN_WIDTH."' class='fborder'>";						
@@ -2127,25 +2221,43 @@ class contentform{
 						$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_223;
 						$TOPIC_FIELD = "";
 						$i=0;
+						$existing = 0;
 						$TOPIC_FIELD .= "
-						<div id='up_container' style='width:40%;'>";
+						<div id='div_content_custom_preset' style='width:80%;'>";
+						
 						for($i=0;$i<count($content_pref["content_custom_preset_key"]);$i++){
 							if(!empty($content_pref["content_custom_preset_key"][$i])){
-								$TOPIC_FIELD .= "	
+								$TOPIC_FIELD .= "
 								<span id='upline_ex' style='white-space:nowrap;'>
-								".$rs -> form_text("content_custom_preset_key[]", 50, $content_pref["content_custom_preset_key"][$i], 100)."
+									".$rs -> form_text("content_custom_preset_key[$existing]", 50, $content_pref["content_custom_preset_key"][$existing], 100)."
+									".$rs -> form_button("button", "x", "x", "onclick=\"document.getElementById('content_custom_preset_key[$existing]').value='';\"", "", "")."
 								</span>";
+								$existing++;
 							}
 						}
+					//$arr[] = array("datetest", "D.all.all.1995-2010");	//Date.fromtodays.fromtomonths.fromtoyears (seperated with -, or use all to show full)
+					//$arr[] = array("textfield", "T.57.200");				//textField.size.max
+					//$arr[] = array("textarea", "A.57.3");					//textArea.cols.rows
+					//$arr[] = array("dropdown", "S.a.b.c.d.e.f");			//Select.dotseperatedvalues
 						$TOPIC_FIELD .= "
-							<span id='upline' style='white-space:nowrap;'>
-							<input class='tbox' type='text' name='content_custom_preset_key[]' value='' size='50' maxlength='100' />
-							</span>
+						<br />
+						<span id='upline_new' style='white-space:nowrap;'></span><br />
 						</div><br />
-						<input type='button' class='button' value='add more' onclick=\"duplicateHTML('upline','up_container');\"  />";
+						<div id='upline_type' style='white-space:nowrap;'>
+							".$rs -> form_select_open("type")."
+							".$rs -> form_option("add field ...", "1", "none", "")."
+							".$rs -> form_option("text", "", "text", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?text' ,'400', '400');\"")."
+							".$rs -> form_option("textarea", "", "area", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?area' ,'400', '400');\"")."
+							".$rs -> form_option("selectbox", "", "select", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?select' ,'400', '400');\"")."
+							".$rs -> form_option("date", "", "date", "onclick=\"open_window('".e_PLUGIN."content/handlers/content_preset.php?date' ,'400', '400');\"")."
+							".$rs -> form_select_close()."
+						</div><br />";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 						$text .= $TOPIC_TABLE_END;
+
+
+
 
 						$text .= "
 						<div id='submission' style='display:none; text-align:center'>
@@ -2920,9 +3032,9 @@ class contentform{
 						".$rs -> form_checkbox("content_content_summary_{$id}", 1, (isset($content_pref["content_content_summary_{$id}"]) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_73."<br />
 						".$rs -> form_checkbox("content_content_date_{$id}", 1, (isset($content_pref["content_content_date_{$id}"]) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_74."<br />
 						".$rs -> form_checkbox("content_content_authorname_{$id}", 1, (isset($content_pref["content_content_authorname_{$id}"]) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_75."<br />
-						".$rs -> form_checkbox("content_content_authorprofile_{$id}", 1, (isset($content_pref["content_content_authorprofile_{$id}"]) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_118."<br />
-						".$rs -> form_checkbox("content_content_authoricon_{$id}", 1, (isset($content_pref["content_content_authoricon_{$id}"]) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_117."<br />
 						".$rs -> form_checkbox("content_content_authoremail_{$id}", 1, (isset($content_pref["content_content_authoremail_{$id}"]) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_76."<br />
+						".$rs -> form_checkbox("content_content_authorprofile_{$id}", 1, (isset($content_pref["content_content_authorprofile_{$id}"]) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_118."<br />
+						".$rs -> form_checkbox("content_content_authoricon_{$id}", 1, (isset($content_pref["content_content_authoricon_{$id}"]) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_117."<br />						
 						".$rs -> form_checkbox("content_content_parent_{$id}", 1, (isset($content_pref["content_content_parent_{$id}"]) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_79."<br />
 						".$rs -> form_checkbox("content_content_rating_{$id}", 1, (isset($content_pref["content_content_rating_{$id}"]) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_77."<br />
 						".$rs -> form_checkbox("content_content_peicon_{$id}", 1, (isset($content_pref["content_content_peicon_{$id}"]) ? "1" : "0"))." ".CONTENT_ADMIN_OPT_LAN_78."<br />

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.7 $
-|		$Date: 2005-06-13 11:08:55 $
+|		$Revision: 1.8 $
+|		$Date: 2005-06-24 14:33:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -89,7 +89,7 @@ class content_convert{
 								$text .= "
 								<tr>
 									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_43."</td>
-									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".$rs -> form_button("submit", "convert_table", "convert table")."</td>
+									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".$rs -> form_button("submit", "convert_table", CONTENT_ADMIN_CONVERSION_LAN_59)."</td>
 								</tr>";
 
 								$text .= "<tr><td style='height:20px; border:0;' colspan='2'></td></tr>";
@@ -98,7 +98,7 @@ class content_convert{
 								$text .= "
 								<tr>
 									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_54."</td>
-									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".$rs -> form_button("submit", "create_default", "create defaults")."</td>
+									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".$rs -> form_button("submit", "create_default", CONTENT_ADMIN_CONVERSION_LAN_60)."</td>
 								</tr>";
 
 								$text .= "<tr><td style='height:20px; border:0;' colspan='2'></td></tr>";
@@ -107,7 +107,7 @@ class content_convert{
 								$text .= "
 								<tr>
 									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_56."</td>
-									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".$rs -> form_button("button", "fresh", "create new category", "onclick=\"document.location='".e_PLUGIN."content/admin_content_config.php?type.0.cat.create'\"
+									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".$rs -> form_button("button", "fresh", CONTENT_ADMIN_CONVERSION_LAN_61, "onclick=\"document.location='".e_PLUGIN."content/admin_content_config.php?type.0.cat.create'\"
 								")."</td>
 								</tr>";
 
@@ -117,7 +117,7 @@ class content_convert{
 								$text .= "
 								<tr>
 									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_54."</td>
-									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".$rs -> form_button("submit", "create_default", "create defaults")."</td>
+									<td class='forumheader3' style='width:50%; white-space:nowrap;'>".$rs -> form_button("submit", "create_default", CONTENT_ADMIN_CONVERSION_LAN_60)."</td>
 								</tr>";
 							}
 
