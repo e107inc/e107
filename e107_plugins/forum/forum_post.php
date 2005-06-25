@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-06-22 14:05:25 $
+|     $Revision: 1.40 $
+|     $Date: 2005-06-25 03:50:23 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -178,8 +178,8 @@ if (isset($_POST['fpreview']))
 	}
 	$ns->tablerender(LAN_323, $text);
 	$anonname = $tp->post_toHTML($_POST['anonname'], FALSE);
-	$post = $tp->post_toHTML($_POST['post'], TRUE);
-	$subject = $tp->post_toHTML($_POST['subject'], TRUE);
+	$post = $tp->post_toHTML($_POST['post'], false);
+	$subject = $tp->post_toHTML($_POST['subject'], false);
 
 	if ($action == "edit")
 	{
