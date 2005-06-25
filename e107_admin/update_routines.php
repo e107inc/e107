@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.113 $
-|     $Date: 2005-06-23 03:23:29 $
-|     $Author: sweetas $
+|     $Revision: 1.114 $
+|     $Date: 2005-06-25 05:30:45 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -144,7 +144,9 @@ function update_61x_to_700($type) {
 		$tmp =
 		'a:28:{s:9:"alien!png";s:6:"!alien";s:10:"amazed!png";s:7:"!amazed";s:9:"angry!png";s:11:"!grr !angry";s:12:"biglaugh!png";s:4:"!lol";s:11:"cheesey!png";s:10:":D :oD :-D";s:12:"confused!png";s:10:":? :o? :-?";s:7:"cry!png";s:19:"&| &-| &o| :(( !cry";s:8:"dead!png";s:21:"x) xo) x-) x( xo( x-(";s:9:"dodge!png";s:6:"!dodge";s:9:"frown!png";s:10:":( :o( :-(";s:7:"gah!png";s:10:":@ :o@ :o@";s:8:"grin!png";s:10:":D :oD :-D";s:9:"heart!png";s:6:"!heart";s:8:"idea!png";s:10:":! :o! :-!";s:7:"ill!png";s:4:"!ill";s:7:"mad!png";s:13:"~:( ~:o( ~:-(";s:12:"mistrust!png";s:9:"!mistrust";s:11:"neutral!png";s:10:":| :o| :-|";s:12:"question!png";s:2:"?!";s:12:"rolleyes!png";s:10:"B) Bo) B-)";s:7:"sad!png";s:4:"!sad";s:10:"shades!png";s:10:"8) 8o) 8-)";s:7:"shy!png";s:4:"!shy";s:9:"smile!png";s:10:":) :o) :-)";s:11:"special!png";s:3:"%-6";s:12:"suprised!png";s:10:":O :oO :-O";s:10:"tongue!png";s:21:":p :op :-p :P :oP :-P";s:8:"wink!png";s:10:";) ;o) ;-)";}';
 		$sql->db_Insert("core", "'emote_default', '$tmp' ");
-		$pref['emotepack'] = "default";
+		if(!$pref['emotepack']){
+          $pref['emotepack'] = "default";
+		}
 
 		mysql_query("ALTER TABLE".MPREFIX."core CHANGE e107_name e107_name VARCHAR( 100 ) NOT NULL");
 
@@ -511,10 +513,12 @@ function update_61x_to_700($type) {
 
 		// News Updates -----------------
 
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."news");
-		$columns = mysql_num_fields($fields);
 
-		if($columns != 16){
+		$field1 = $sql->db_Field("news",13);
+        $field2 = $sql->db_Field("news",14);
+		$field3 = $sql->db_Field("news",15);
+
+		if($field1 != "news_summary" && $field1 != "news_thumbnail" && $field3 != "news_sticky"){
 			mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_summary` TEXT DEFAULT NULL;");
 			mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_thumbnail` TEXT DEFAULT NULL;");
 			mysql_query("ALTER TABLE ".MPREFIX."news ADD news_sticky TINYINT ( 3 ) UNSIGNED NOT NULL");
@@ -757,9 +761,8 @@ function update_61x_to_700($type) {
 		}
 
 		// New Downloads visibility field.
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
-		$fieldname = mysql_field_name($fields, 18);
-		if($fieldname != "download_visible"){
+
+		if($sql->db_Field("download",18) != "download_visible"){
 			mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_visible` varchar(255) NOT NULL default '0' ;");
 			mysql_query("UPDATE `".MPREFIX."download` SET download_visible = download_class");
 			mysql_query("ALTER TABLE `".MPREFIX."download` CHANGE `download_class` `download_class` varchar(255) NOT NULL default '0'");
@@ -771,9 +774,8 @@ function update_61x_to_700($type) {
 
 
 		// Links Update for using Link_Parent. .
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."links");
-		$fieldname = mysql_field_name($fields, 7);
-		if($fieldname != "link_parent"){
+
+		if($sql->db_Field("links",7) != "link_parent"){
 			mysql_query("ALTER TABLE `".MPREFIX."links` CHANGE `link_refer` `link_parent` INT( 10 ) UNSIGNED DEFAULT '0' NOT NULL");
 			$sql -> db_Select("links", "link_id,link_name", "link_name NOT LIKE 'submenu.%' ORDER BY link_name");
 			while($row = $sql-> db_Fetch()){
@@ -807,11 +809,13 @@ function update_61x_to_700($type) {
 			$lines = explode("\n", $row[1]);
 			if(strpos($lines[10],"tinyint")){
 				mysql_query("ALTER TABLE `".MPREFIX."links` CHANGE `link_class` `link_class` VARCHAR( 255 ) DEFAULT '0' NOT NULL ");
-				mysql_query("ALTER TABLE `".MPREFIX."menus` CHANGE `menu_class` `menu_class` VARCHAR( 255 ) DEFAULT '0' NOT NULL "); 
+				mysql_query("ALTER TABLE `".MPREFIX."menus` CHANGE `menu_class` `menu_class` VARCHAR( 255 ) DEFAULT '0' NOT NULL ");
 			}
 		}
 
-
+		if($sql->db_Field("plugin",5) != "plugin_rss"){
+			mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_rss` VARCHAR( 255 ) NOT NULL ;");
+		}
 
 
 
@@ -831,30 +835,24 @@ function update_61x_to_700($type) {
 			}
 		}
 
+		if($sql->db_Field("plugin",5) != "plugin_rss"){
+		 	return FALSE;
+		}
 
-
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."links");
-		$fieldname = mysql_field_name($fields, 7);
-		if($fieldname != "link_parent"){
+		if($sql->db_Field("links",7) != "link_parent"){
 			return FALSE;
 		}
 
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user");
-		$fieldname = mysql_field_name($fields, 36);
-		if($fieldname != "user_xup"){
-			return FALSE;
+		if($sql->db_Field("user",36) != "user_xup"){
+		 	return FALSE;
 		}
 
-
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."download");
-		$fieldname = mysql_field_name($fields, 18);
-		if($fieldname != "download_visible"){
-			return FALSE;
+		if($sql->db_Field("download",18) != "download_visible"){
+		 	return FALSE;
 		}
-
 
 		if (!$sql -> db_Select("core", "e107_name", "e107_name = 'notify_prefs'")) {
-			return FALSE;
+		 	return FALSE;
 		}
 
 		// search content plugin comments id change
@@ -880,7 +878,7 @@ function update_61x_to_700($type) {
 		if (!is_array($pref['frontpage'])) {
 			return FALSE;
 		}
-		
+
 		if ((!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) || !isset($pref['search_highlight'])) {
 			return FALSE;
 		}
@@ -952,8 +950,7 @@ function update_61x_to_700($type) {
 			}
 		}
 
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."user_extended");
-		$fieldname = mysql_field_name($fields, 1);
+		$fieldname = $sql->db_Field("user_extended",1);
 		if($fieldname != "user_hidden_fields")
 		{
 			return FALSE;
@@ -998,20 +995,18 @@ function update_61x_to_700($type) {
 
 function update_616_to_617($type) {
 	global $sql;
+
 	if ($type == "do") {
 		mysql_query("ALTER TABLE  ".MPREFIX."poll ADD poll_comment TINYINT( 3 ) UNSIGNED DEFAULT '1' NOT NULL ");
 		mysql_query("ALTER TABLE  ".MPREFIX."menus ADD menu_pages TEXT NOT NULL ");
 		$sql2 = new db;
 		$sql2->db_Update("poll", "poll_comment='1' WHERE poll_id!='0'");
 		} else {
-		global $mySQLdefaultdb;
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."menus");
-		$columns = mysql_num_fields($fields);
-		for ($i = 0; $i < $columns; $i++) {
-			if ("menu_pages" == mysql_field_name($fields, $i)) {
+
+			if($sql->db_Field("menus",5) == "menu_pages"){
 				return TRUE;
 			}
-		}
+
 		return FALSE;
 	}
 }
@@ -1032,14 +1027,11 @@ function update_615_to_616($type) {
 		mysql_query("ALTER TABLE ".MPREFIX."userclass_classes ADD userclass_editclass TINYINT( 3 ) UNSIGNED NOT NULL ");
 		update_extended_616();
 		} else {
-		global $mySQLdefaultdb;
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."userclass_classes");
-		$columns = mysql_num_fields($fields);
-		for ($i = 0; $i < $columns; $i++) {
-			if ("userclass_editclass" == mysql_field_name($fields, $i)) {
-				return TRUE;
-			}
+
+		if($sql->db_Field("userclass_classes",3) == "userclass_editclass"){
+			return TRUE;
 		}
+
 		return FALSE;
 	}
 }
@@ -1061,13 +1053,11 @@ function update_614_to_615($type) {
 		}
 		} else {
 		global $mySQLdefaultdb;
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."submitnews");
-		$columns = mysql_num_fields($fields);
-		for ($i = 0; $i < $columns; $i++) {
-			if ("submitnews_file" == mysql_field_name($fields, $i)) {
-				return TRUE;
-			}
+
+		if($sql->db_Field("submitnews",9) == "submitnews_file"){
+        	return TRUE;
 		}
+
 		return FALSE;
 	}
 }
@@ -1079,13 +1069,11 @@ function update_611_to_612($type) {
 		mysql_query("ALTER TABLE ".MPREFIX."content CHANGE content_parent content_parent INT UNSIGNED DEFAULT '0' NOT NULL ");
 		} else {
 		global $mySQLdefaultdb;
-		$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."news");
-		$columns = mysql_num_fields($fields);
-		for ($i = 0; $i < $columns; $i++) {
-			if ("news_render_type" == mysql_field_name($fields, $i)) {
-				return TRUE;
-			}
+
+		if($sql->db_Field("news",11) == "news_render_type"){
+        	return TRUE;
 		}
+
 		return FALSE;
 	}
 }
@@ -1100,7 +1088,7 @@ function update_603_to_604($type) {
 		mysql_query("ALTER TABLE ".MPREFIX."content CHANGE content_author content_author VARCHAR( 200 ) NOT NULL");
 		mysql_query("ALTER TABLE ".MPREFIX."content ADD content_pe_icon TINYINT( 1 ) UNSIGNED NOT NULL AFTER content_review_score");
 		} else {
-		global $mySQLdefaultdb;
+   		global $mySQLdefaultdb;
 		if ($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."link_category")) {
 			$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."link_category");
 			$columns = mysql_num_fields($fields);
