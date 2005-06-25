@@ -38,3 +38,4 @@ tinyMCELang['lang_table_cut_row_desc'] = 'Cut table row';
 tinyMCELang['lang_table_copy_row_desc'] = 'Copy table row';
 tinyMCELang['lang_table_paste_row_before_desc'] = 'Paste table row before';
 tinyMCELang['lang_table_paste_row_after_desc'] = 'Paste table row after';
+tinyMCELang['lang_table_insert_desc'] = 'Insert a new table';

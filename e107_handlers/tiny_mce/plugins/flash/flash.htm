@@ -9,7 +9,7 @@ if (url != null) {
 	if (url.charAt(0) != '/')
 		url = tinyMCE.documentBasePath + "/" + url;
 
-	document.write('<sc'+'ript language="javascript" type="text/javascript" src="' + url + '?rnd=' + new Date().getTime() + '"></sc'+'ript>');
+	document.write('<sc'+'ript language="javascript" type="text/javascript" src="' + url + '"></sc'+'ript>');
 }
 </script>
 <script language="javascript" type="text/javascript">
@@ -62,8 +62,6 @@ if (url != null) {
 					formObj.link_list.options[i].selected = true;
 			}
 		}
-
-        window.focus();
     }
 
     function insertFlash() {
@@ -92,12 +90,15 @@ if (url != null) {
                 + 'border="0" alt="' + file + '" title="' + file + '" class="mce_plugin_flash" name="mce_plugin_flash" />';
             tinyMCE.execCommand("mceInsertContent",true,html);
 			tinyMCE.selectedInstance.repaint();
-            top.close();
+
+			// Close the dialog
+			tinyMCE.closeDialog();
         }
     }
 
     function cancelAction() {
-        top.close();
+		// Close the dialog
+		tinyMCE.closeDialog();
     }
 
 //-->
@@ -114,7 +115,7 @@ if (url != null) {
 </head>
 <body onload="init();">
     <form onsubmit="insertFlash();return false;">
-        <table border="0" cellpadding="0" cellspacing="4" width="100%">
+        <table border="0" cellpadding="0" cellspacing="4" width="350">
             <tr>
                 <td class="title">{$lang_insert_flash}</td>
             </tr>
@@ -124,7 +125,7 @@ if (url != null) {
             <tr>
                 <td align="center" valign="middle"><table border="0" cellpadding="4" cellspacing="0">
                     <tr>
-                        <td align="right">{$lang_insert_flash_file}:</td>
+                        <td align="right" nowrap="nowrap">{$lang_insert_flash_file}:</td>
                       <td nowrap="nowrap">
                             <table border="0" cellspacing="0" cellpadding="0">
                               <tr>
@@ -153,7 +154,7 @@ if (url != null) {
 				  </script>
 				  <!-- /Link list -->
                     <tr>
-                        <td align="right">{$lang_insert_flash_size}:</td>
+                        <td align="right" nowrap="nowrap">{$lang_insert_flash_size}:</td>
                         <td nowrap="nowrap">
                             <input name="width" type="text" id="width" value="" onfocus="this.select();" style="width: 50px; vertical-align: middle;" />
                             <select name="width2" id="width2" style="width: 50px; vertical-align: middle;">

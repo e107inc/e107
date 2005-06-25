@@ -36,3 +36,4 @@ tinyMCELang['lang_bold_img'] = 'bold.gif';
 tinyMCELang['lang_italic_img'] = 'italic.gif';
 tinyMCELang['lang_underline_img'] = "underline.gif";
 tinyMCELang['lang_clipboard_msg'] = 'Copy/Cut/Paste není použitelné v Mozille a Firefoxu.\nChcete více informací o tomto problému?';
+tinyMCELang['lang_popup_blocked'] = 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.';

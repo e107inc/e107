@@ -114,6 +114,7 @@ function TinyMCE_contextmenu_showContextMenu(e, inst) {
 						contextMenu.addItem(tinyMCE.baseURL + "/themes/" + theme + "/images/right.gif", "$lang_justifyright_desc", "JustifyRight", "", false);
 						contextMenu.addItem(tinyMCE.baseURL + "/themes/" + theme + "/images/full.gif", "$lang_justifyfull_desc", "JustifyFull", "", false);*/
 						contextMenu.addSeparator();
+						contextMenu.addItem(tinyMCE.baseURL + "/plugins/table/images/table.gif", "$lang_table_insert_desc", "mceInsertTable", "insert");
 						contextMenu.addItem(tinyMCE.baseURL + "/plugins/table/images/table.gif", "$lang_table_props_desc", "mceInsertTable");
 						contextMenu.addItem(tinyMCE.baseURL + "/plugins/table/images/table_cell_props.gif", "$lang_table_cell_desc", "mceTableCellProps");
 						contextMenu.addSeparator();
@@ -155,7 +156,10 @@ function TinyMCE_contextmenu_commandHandler(command, value) {
 	if (command == "mceInsertTable" || command == "mceTableCellProps" || command == "mceTableRowProps" || command == "mceTableMergeCells")
 		ui = true;
 
-	TinyMCE_contextmenu_contextMenu.inst.execCommand(command, ui);
+	if (command == "Paste")
+		value = null;
+
+	TinyMCE_contextmenu_contextMenu.inst.execCommand(command, ui, value);
 }
 
 // Context menu class

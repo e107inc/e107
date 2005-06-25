@@ -9,13 +9,10 @@ if (url != null) {
 	if (url.charAt(0) != '/')
 		url = tinyMCE.documentBasePath + "/" + url;
 
-	document.write('<sc'+'ript language="javascript" type="text/javascript" src="' + url + '?rnd=' + new Date().getTime() + '"></sc'+'ript>');
+	document.write('<sc'+'ript language="javascript" type="text/javascript" src="' + url + '"></sc'+'ript>');
 }
 </script>
 <script language="javascript">
-	// Disable auto resize
-	tinyMCE.getWindowArg('mce_windowresize', false);
-
 	function init() {
 		for (var i=0; i<document.forms[0].target.options.length; i++) {
 			var option = document.forms[0].target.options[i];
@@ -27,6 +24,38 @@ if (url != null) {
 		document.forms[0].href.value = tinyMCE.getWindowArg('href');
 		document.forms[0].linktitle.value = tinyMCE.getWindowArg('title');
 		document.forms[0].insert.value = tinyMCE.getLang('lang_' + tinyMCE.getWindowArg('action'), 'Insert', true); 
+
+		var className = tinyMCE.getWindowArg('className');
+		var styleSelectElm = document.forms[0].styleSelect;
+		var stylesAr = tinyMCE.getParam('theme_advanced_styles', false);
+		if (stylesAr) {
+			stylesAr = stylesAr.split(';');
+
+			for (var i=0; i<stylesAr.length; i++) {
+				var key, value;
+
+				key = stylesAr[i].split('=')[0];
+				value = stylesAr[i].split('=')[1];
+
+				styleSelectElm.options[styleSelectElm.length] = new Option(key, value);
+				if (value == className)
+					styleSelectElm.options.selectedIndex = styleSelectElm.options.length-1;
+			}
+		} else {
+			var csses = tinyMCE.getCSSClasses(tinyMCE.getWindowArg('editor_id'));
+			for (var i=0; i<csses.length; i++) {
+				styleSelectElm.options[styleSelectElm.length] = new Option(csses[i], csses[i]);
+				if (csses[i] == className)
+					styleSelectElm.options.selectedIndex = styleSelectElm.options.length-1;
+			}
+		}
+
+		// Hide it if there is no styles
+		if (styleSelectElm.options.length == 1) {
+			document.getElementById('styleSelectRow').style.display = "none";
+			document.getElementById('styleSelectRow').style.overflow = "hidden";
+			document.getElementById('styleSelectRow').style.height = "0px";
+		}
 
 		// Handle file browser
 		if (tinyMCE.getParam("file_browser_callback") != null) {
@@ -54,10 +83,6 @@ if (url != null) {
 					formObj.link_list.options[i].selected = true;
 			}
 		}
-
-		// Autoresize and focus
-		TinyMCEPopup_autoResize();
-		window.focus();
 	}
 
 	function insertLink() {
@@ -65,14 +90,16 @@ if (url != null) {
 			var href = document.forms[0].href.value;
 			var target = document.forms[0].target.options[document.forms[0].target.selectedIndex].value;
 			var title = document.forms[0].linktitle.value;
+			var style_class = document.forms[0].styleSelect.value;
+			var dummy;
 
-			window.opener.tinyMCE.insertLink(href, target, title);
-			top.close();
+			window.opener.tinyMCE.insertLink(href, target, title, dummy, style_class);
+			tinyMCE.closeDialog();
 		}
 	}
 
 	function cancelAction() {
-		top.close();
+		tinyMCE.closeDialog();
 	}
 </script>
 </head>
@@ -116,11 +143,37 @@ if (url != null) {
             <td><select name="target" style="width: 200px">
                 <option value="_self">{$lang_insert_link_target_same}</option>
                 <option value="_blank">{$lang_insert_link_target_blank}</option>
+				<script language="javascript">
+					var targets = tinyMCE.getParam('theme_advanced_link_targets', '').split(';');
+
+					for (var i=0; i<targets.length; i++) {
+						var key, value;
+
+						if (targets[i] == "")
+							continue;
+
+						key = targets[i].split('=')[0];
+						value = targets[i].split('=')[1];
+
+						html += '<option value="' + value + '">' + key + '</option>';
+					}
+
+					document.write(html);
+				</script>
             </select></td>
           </tr>
           <tr>
             <td nowrap="nowrap">{$lang_theme_insert_link_titlefield}:</td>
             <td><input name="linktitle" type="text" id="linktitle" value="" style="width: 200px"></td>
+          </tr>
+          <tr id="styleSelectRow">
+            <td>{$lang_class}:</td>
+            <td>
+			 <select name="styleSelect">
+                <option value="" selected>{$lang_theme_style_select}</option>
+             </select></td>
+            <td align="right">&nbsp;</td>
+            <td align="right">&nbsp;</td>
           </tr>
           <tr>
             <td><input type="button" id="insert" name="insert" value="{$lang_insert}" onclick="insertLink();">

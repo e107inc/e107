@@ -1,5 +1,5 @@
 /* Import plugin specific language pack */
-tinyMCE.importPluginLanguagePack('iespell', 'cs,el,en,fr_ca,it,ko,sv,zh_cn,fr,de,pl');
+tinyMCE.importPluginLanguagePack('iespell', 'cs,el,en,fr_ca,it,ko,sv,zh_cn,fr,de,pl,pt_br,nl');
 
 /**
  * Returns the HTML contents of the iespell control.
