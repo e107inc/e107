@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     ©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,20 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/featurebox/languages/Polish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 21:08:29 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-25 21:23:09 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 
-define("FBLAN_01", "Feature Box");
+define("FBLAN_01", "Opcje możliwości");
 define("FBLAN_02", "This plugin allows you to display a box above your news items with features / whatever you like in it. The messages can either be revolved randomly or dynamically faded.");
-define("FBLAN_03", "Configure feature box");
+define("FBLAN_03", "Ustawienia feature box");
 define("FBLAN_04", "Feature Box plugin has been successfully installed. To add messages and configure, return to the main admin page and click on the feature box icon in the plugin section.");
 define("FBLAN_05", "No feature box messages defined yet");
 define("FBLAN_06", "Existing Feature Box Messages");
-define("FBLAN_07", "Title / Caption");
-define("FBLAN_08", "Message text");
+define("FBLAN_07", "Tytuł / Opis");
+define("FBLAN_08", "Wiadomość tekstowa");
 define("FBLAN_09", "Visibility of message");
 define("FBLAN_10", "Create Feature Box Message");
 define("FBLAN_11", "Update Feature Box Message");
