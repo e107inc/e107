@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/jayya/languages/Polish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-25 21:08:29 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 21:42:19 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -21,6 +21,5 @@ define("LAN_THEME_1", "Dopisywanie komentarzy zostało wyłaczone");
 define("LAN_THEME_2", "Czytaj/Pisz Komentarze: ");
 define("LAN_THEME_3", "Czytaj resztę...");
 define("LAN_THEME_4", "Trackbacks: ");
-
 
 ?>
