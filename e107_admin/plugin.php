@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-06-15 01:15:01 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.49 $
+|     $Date: 2005-06-25 00:01:42 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -126,8 +126,10 @@ if ($action == 'uninstall') {
 			$text .= call_user_func($func);
 		}
 
-        if(is_array($eplug_rss) && $eplug_rss['title']){
-			$sql -> db_Delete("generic", "gen_type='rss' AND gen_ip='$eplug_folder'");
+        if(is_array($eplug_rss)){
+			foreach($eplug_rss as $key=>$values){
+				$text .= ($sql -> db_Delete("generic", "gen_type='rss' AND gen_ip='$key'")) ? EPL_ADLAN_47 .". ($key)<br />" : EPL_ADLAN_49 .". ($key)<br />";
+            }
 		}
 
 		if (is_array($eplug_table_names)) {
@@ -206,7 +208,7 @@ if ($action == 'uninstall') {
 		}
 
 		$plugin -> manage_search('remove', $eplug_folder);
-		
+
 		$plugin -> manage_notify('remove', $eplug_folder);
 
 		$sql->db_Update('plugin', "plugin_installflag=0, plugin_version='{$eplug_version}' WHERE plugin_id='{$id}' ");
@@ -300,7 +302,7 @@ if ($action == 'upgrade') {
 	}
 
 	$plugin -> manage_search('upgrade', $eplug_folder);
-	
+
 	$plugin -> manage_notify('upgrade', $eplug_folder);
 
 	$text .= '<br />'.$eplug_upgrade_done;

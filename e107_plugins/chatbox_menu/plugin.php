@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/plugin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-24 03:50:47 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-25 00:01:43 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
@@ -73,18 +73,18 @@ $eplug_tables = array(
 	) TYPE=MyISAM;"
 );
 
-$eplug_rss = array(
+$eplug_rss['chatbox'] = array(
 	"id" => "chatbox",
 	"author" => "cb_nick",
-	"link" => $eplug_folder."chat.php",
+	"link" => $eplug_folder."/chat.php?#",
 	"linkid" => "cb_id",
-	"title" => "cb_nick",
+	"title" => "",
 	"description" => "cb_message",
-	"query" => "cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT 0, 9",
+	"query" => "SELECT * FROM #chatbox WHERE cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT 0, 9",
 	"category" => "1",
 	"datestamp" => "cb_datestamp",
 	"enc_url" => "0",
-	"enc_leng" => "200",
+	"enc_leng" => "0",
 	"enc_type" => "0"
 );
 

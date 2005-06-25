@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_plugin.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-04-27 11:53:00 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2005-06-25 00:01:43 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("EPL_ADLAN_0", "Install");
@@ -66,8 +66,10 @@ define("EPL_NOINSTALL", "No install required, just activate from your menus scre
 define("EPL_DIRECTORY", "directory.");
 define("EPL_NOINSTALL_1", "No install required, to remove delete the ");
 define("EPL_UPGRADE", "Upgrade");
-
 define("EPL_CONFIGURE", "Configure");
-
-
+              
+define("EPL_ADLAN_46", "RSS settings successfully created");
+define("EPL_ADLAN_47", "RSS settings successfully deleted");
+define("EPL_ADLAN_48", "Unable to successfully create RSS settings");
+define("EPL_ADLAN_49", "Unable to successfully delete RSS settings");
 ?>
