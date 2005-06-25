@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.27 $
-|		$Date: 2005-06-24 14:33:03 $
+|		$Revision: 1.28 $
+|		$Date: 2005-06-25 12:15:25 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -72,12 +72,13 @@ class contentdb{
 									$fileorgicon = $uploadedicon[0]['name'];
 									$fileext2icon = substr(strrchr($fileorgicon, "."), 0);
 									$fileorgiconname = substr($fileorgicon, 0, -(strlen($fileext2icon)) );
-									
+									$resize = (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
+
 									if($fileorgicon){
 										$icon = $newpid."_".$fileorgiconname."".$fileext2icon;
 										rename($pathicon.$fileorgicon , $pathicon.$icon);
 										require_once(e_HANDLER."resize_handler.php");
-										resize_image($pathicon.$icon, $pathicon.$icon, '100', "nocopy");
+										resize_image($pathicon.$icon, $pathicon.$icon, $resize, "nocopy");
 									} else {
 										$icon = "";
 									}
@@ -145,13 +146,15 @@ class contentdb{
 										$fileorgimage[$i] = $uploadedimage[$i]['name'];
 										$fileext2image[$i] = substr(strrchr($fileorgimage[$i], "."), 0);
 										$fileorgimagename[$i] = substr($fileorgimage[$i], 0, -(strlen($fileext2image[$i])) );
+										$resize = (isset($content_pref["content_upload_image_size_{$mainparent}"]) && $content_pref["content_upload_image_size_{$mainparent}"] ? $content_pref["content_upload_image_size_{$mainparent}"] : "500");
+										$resizethumb = (isset($content_pref["content_upload_image_size_thumb_{$mainparent}"]) && $content_pref["content_upload_image_size_thumb_{$mainparent}"] ? $content_pref["content_upload_image_size_thumb_{$mainparent}"] : "100");
 
 										if($fileorgimage[$i]){
 											$images{$i} = $newpid."_".$n."_".$fileorgimagename[$i]."".$fileext2image[$i];
 											rename($pathimage.$fileorgimage[$i] , $pathimage.$images{$i});
 											require_once(e_HANDLER."resize_handler.php");
-											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, '500', "nocopy");
-											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, '100', "copy");
+											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, $resize, "nocopy");
+											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, $resizethumb, "copy");
 
 											$totalimages .= "[img]".$images{$i};
 										} else {
@@ -272,12 +275,13 @@ class contentdb{
 									$fileorgicon = $uploadedicon[0]['name'];
 									$fileext2icon = substr(strrchr($fileorgicon, "."), 0);
 									$fileorgiconname = substr($fileorgicon, 0, -(strlen($fileext2icon)) );
+									$resize = (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
 
 									if($fileorgicon){
 										$icon = $newpid."_".$fileorgiconname."".$fileext2icon;
 										rename($pathicon.$fileorgicon , $pathicon.$icon);
 										require_once(e_HANDLER."resize_handler.php");
-										resize_image($pathicon.$icon, $pathicon.$icon, '100', "nocopy");
+										resize_image($pathicon.$icon, $pathicon.$icon, $resize, "nocopy");
 									} else {
 										$icon = "";
 									}
@@ -344,13 +348,15 @@ class contentdb{
 										$fileorgimage[$i] = $uploadedimage[$i]['name'];
 										$fileext2image[$i] = substr(strrchr($fileorgimage[$i], "."), 0);
 										$fileorgimagename[$i] = substr($fileorgimage[$i], 0, -(strlen($fileext2image[$i])) );
+										$resize = (isset($content_pref["content_upload_image_size_{$mainparent}"]) && $content_pref["content_upload_image_size_{$mainparent}"] ? $content_pref["content_upload_image_size_{$mainparent}"] : "500");
+										$resizethumb = (isset($content_pref["content_upload_image_size_thumb_{$mainparent}"]) && $content_pref["content_upload_image_size_thumb_{$mainparent}"] ? $content_pref["content_upload_image_size_thumb_{$mainparent}"] : "100");
 
 										if($fileorgimage[$i]){
 											$images{$i} = $newpid."_".$n."_".$fileorgimagename[$i]."".$fileext2image[$i];
 											rename($pathimage.$fileorgimage[$i] , $pathimage.$images{$i});
 											require_once(e_HANDLER."resize_handler.php");
-											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, '500', "nocopy");
-											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, '100', "copy");
+											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, $resize, "nocopy");
+											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, $resizethumb, "copy");
 
 											$totalimages .= "[img]".$images{$i};
 										} else {

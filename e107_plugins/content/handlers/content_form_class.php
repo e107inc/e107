@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.66 $
-|		$Date: 2005-06-25 11:23:54 $
+|		$Revision: 1.67 $
+|		$Date: 2005-06-25 12:15:25 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -2684,6 +2684,27 @@ class contentform{
 						".$rs -> form_option(CONTENT_ORDER_LAN_10, ($content_pref["content_defaultorder_{$id}"] == "orderdorder" ? "1" : "0"), "orderdorder")."
 						".$rs -> form_select_close()."
 						";
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+						//content_upload_image_size_
+						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_304;
+						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_305;
+						$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_306;
+						$TOPIC_FIELD = $rs -> form_text("content_upload_image_size_{$id}", 10, $content_pref["content_upload_image_size_{$id}"], 3)." px";
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+						//content_upload_image_size_thumb_
+						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_307;
+						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_308;
+						$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_309;
+						$TOPIC_FIELD = $rs -> form_text("content_upload_image_size_thumb_{$id}", 10, $content_pref["content_upload_image_size_thumb_{$id}"], 3)." px";
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+						//content_upload_icon_size_
+						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_310;
+						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_311;
+						$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_312;
+						$TOPIC_FIELD = $rs -> form_text("content_upload_icon_size_{$id}", 10, $content_pref["content_upload_icon_size_{$id}"], 3)." px";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 						$text .= $TOPIC_TABLE_END;

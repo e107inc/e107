@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.67 $
-|		$Date: 2005-06-25 11:23:54 $
+|		$Revision: 1.68 $
+|		$Date: 2005-06-25 12:15:25 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -129,6 +129,11 @@ class content{
 				$content_pref["content_nextprev_{$id}"] = "1";							//use nextprev buttons
 				$content_pref["content_nextprev_number_{$id}"] = "10";					//how many items on a page
 				$content_pref["content_defaultorder_{$id}"] = "orderddate";				//default sort and order method
+
+				//upload icon/image size handling
+				$content_pref["content_upload_image_size_{$id}"] = "500";				//resize size of uploaded image
+				$content_pref["content_upload_image_size_thumb_{$id}"] = "100";			//resize size of created thumb on uploaded image
+				$content_pref["content_upload_icon_size_{$id}"] = "100";				//resize size of uploaded icon
 
 
 				//CONTENT ITEM PREVIEW
@@ -863,7 +868,7 @@ class content{
 		//}
 
 		//admin
-		function popup($image, $thumb, $maxwidth, $title, $text){
+		function popup($image, $thumb, $iconwidth='100', $maxwidth, $title, $text){
 					//$image	:	full path to the large image you want to popup
 					//$thumb	:	full path to the small image to show on screen
 					//$maxwidth	:	the maximum size (width or height) an image may be popup'ed
@@ -897,7 +902,7 @@ class content{
 								$height		= $imagearray[1];
 							}
 						}
-						$iconwidth = ($title == "help" ? "" : "width:100px;");
+						$iconwidth = ($title == "help" ? "" : ($iconwidth ? "width:".$iconwidth."px;" : "width:100px;") );
 
 						$popup = "<a href=\"javascript:openPerfectPopup('".$image."',".$width.",'".$title."','".$text."')\" style='cursor:pointer;' onmouseover=\"window.status='click to enlarge image'; return true;\" onmouseout=\"window.status=''; return true;\" ><img src='".$thumb."' style='border:1px solid #000; ".$iconwidth."' alt='' /></a><br /><br />";
 
