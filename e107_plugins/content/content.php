@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.65 $
-|		$Date: 2005-06-25 11:23:54 $
+|		$Revision: 1.66 $
+|		$Date: 2005-06-25 12:35:33 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1408,19 +1408,6 @@ function show_content_item(){
 							}
 						}
 
-						$date	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_DATE}', FALSE, $content_shortcodes);
-						$auth	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
-						$ep		= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EPICONS}', FALSE, $content_shortcodes);
-						$edit	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EDITICON}', FALSE, $content_shortcodes);
-						$par	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_PARENT}', FALSE, $content_shortcodes);
-						$com	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_COMMENT}', FALSE, $content_shortcodes);
-						$score	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_SCORE}', FALSE, $content_shortcodes);
-						$ref	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_REFER}', FALSE, $content_shortcodes);
-						if ($date!="" || $auth!="" || $ep!="" || $edit!="" || $par!="" || $com!="" || $score!="" || $ref!="") {
-							$CONTENT_CONTENT_TABLE_INFO_PRE = TRUE;
-							$CONTENT_CONTENT_TABLE_INFO_POST = TRUE;
-						}
-
 						$CONTENT_CONTENT_TABLE_TEXT = $row['content_text'];
 
 						$lastpage = FALSE;		//boolean whether or not the current page is the last page
@@ -1482,6 +1469,24 @@ function show_content_item(){
 						$CONTENT_CONTENT_TABLE_TEXT		= $tp -> replaceConstants($CONTENT_CONTENT_TABLE_TEXT);
 						$CONTENT_CONTENT_TABLE_TEXT		= $tp -> toHTML($CONTENT_CONTENT_TABLE_TEXT, TRUE, "");
 						$custom							= $eArrayStorage->ReadArray($row['content_pref']);
+
+						$date	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_DATE}', FALSE, $content_shortcodes);
+						$auth	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
+						$ep		= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EPICONS}', FALSE, $content_shortcodes);
+						$edit	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EDITICON}', FALSE, $content_shortcodes);
+						$par	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_PARENT}', FALSE, $content_shortcodes);
+						$com	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_COMMENT}', FALSE, $content_shortcodes);
+						$score	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_SCORE}', FALSE, $content_shortcodes);
+						$ref	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_REFER}', FALSE, $content_shortcodes);
+						$ico	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_ICON}', FALSE, $content_shortcodes);
+						$sub	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_SUBHEADING}', FALSE, $content_shortcodes);
+						$rat	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_RATING}', FALSE, $content_shortcodes);
+						$fil	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_FILE}', FALSE, $content_shortcodes);
+
+						if ($date!="" || $auth!="" || $ep!="" || $edit!="" || $par!="" || $com!="" || $score!="" || $ref!="" || $ico!="" || $sub!="" || $rat!="" || $fil!="") {
+							$CONTENT_CONTENT_TABLE_INFO_PRE = TRUE;
+							$CONTENT_CONTENT_TABLE_INFO_POST = TRUE;
+						}
 
 						$CONTENT_CONTENT_TABLE = "";
 						if(!$CONTENT_CONTENT_TABLE){
