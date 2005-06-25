@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-06-15 15:18:40 $
-|     $Author: sweetas $
+|     $Revision: 1.27 $
+|     $Date: 2005-06-25 00:01:43 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -272,7 +272,7 @@ class e107plugin {
 		$tmp = addslashes(serialize($search_prefs));
 		$sql->db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = 'search_prefs' ");
 	}
-	
+
 	function manage_notify($action, $eplug_folder) {
 		global $sql, $sysprefs;
 		$notify_prefs = $sysprefs -> getArray('notify_prefs');
@@ -335,9 +335,11 @@ class e107plugin {
 				}
 			}
 
-			if(is_array($eplug_rss) && $eplug_rss['title']){
-                $tmp = serialize($eplug_rss);
-				$sql -> db_Insert("generic", "0, 'rss', '', '', '$eplug_folder', '', '$tmp' ");
+			if(is_array($eplug_rss)){
+				foreach($eplug_rss as $key=>$values){
+                	$tmp = serialize($values);
+					$text .= ($sql -> db_Insert("generic", "0, 'rss', '', '', '$key', '', '$tmp' ")) ? EPL_ADLAN_46 . ". ($key)<br />" : EPL_ADLAN_48 . ". ($key)<br />";
+                }
 			}
 
 			if (is_array($eplug_prefs)) {
@@ -398,7 +400,7 @@ class e107plugin {
 			}
 
 			$this -> manage_search('add', $eplug_folder);
-			
+
 			$this -> manage_notify('add', $eplug_folder);
 
 			$sql->db_Update('plugin', "plugin_installflag = 1 WHERE plugin_id = '{$id}'");

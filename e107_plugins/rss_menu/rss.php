@@ -11,26 +11,28 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-06-24 16:14:48 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.21 $
+|     $Date: 2005-06-25 00:01:44 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
 /*
 Query string: content_type.rss_type.[topic id]
 1: news
+5: comments
+12: downloads (option: specify category)
+
+The following should be using $eplug_rss in their plugin.php file (see chatbox)
+----------------------------------------------------------------
 2: articles
 3: reviews
 4: content pages
-5: comments
 6: forum threads
 7: forum posts
 8: forum specific post (specify id)
-9: chatbox
 10: bugtracker
 11: forum
-12: downloads (option: specify category)
 */
 
 require_once("../../class2.php");
@@ -133,7 +135,7 @@ class rssCreate {
 				break;
 			case 6:
 				$this -> contentType = "forum threads";
-				$this -> rssQuery = 
+				$this -> rssQuery =
 				"SELECT t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, u.user_name FROM #forum_t AS t
 				LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
 				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
@@ -250,21 +252,6 @@ class rssCreate {
 				}
 			break;
 
-			case 9:
-				$this -> contentType = "chatbox posts";
-				$sql->db_Select("chatbox", "*", "cb_blocked=0 ORDER BY cb_datestamp DESC LIMIT 0, 9");
-				$tmp = $sql->db_getList();
-				$this -> rssItems = array();
-				$loop=0;
-				foreach($tmp as $value) {
-					$nick = eregi_replace("[0-9]+\.", "", $value['cb_nick']);
-					$this -> rssItems[$loop]['author'] = $nick;
-					$this -> rssItems[$loop]['title'] = "";
-					$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."chat.php";
-					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['cb_message']) : $tp -> toRss(substr($value['cb_message'], 0, 100)));
-					$loop++;
-				}
-			break;
 
 			case 10:
 				$this -> contentType = "bugtracker reports";
@@ -288,9 +275,9 @@ class rssCreate {
 				LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
 				LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
 				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-				WHERE t.thread_forum_id = ".$this->topicid." 
+				WHERE t.thread_forum_id = ".$this->topicid."
 				AND f.forum_class IN (0, 251, 255)
-				ORDER BY 
+				ORDER BY
 				t.thread_datestamp DESC
 				LIMIT 0, 9
 				";
@@ -346,26 +333,30 @@ class rssCreate {
 			while($row2 = $sql_rs -> db_Fetch()){
 					$rs = unserialize($row2['gen_chardata']);
        				extract($rs);
-					$sql -> db_Select_gen($query);
+				if($sql -> db_Select_gen($query)){
+
    					$this -> contentType = $content_type;
                     $this -> rssItems = array();
 					$tmp = $sql->db_getList();
 					$loop=0;
 					foreach($tmp as $row) {
+
 						$this -> rssItems[$loop]['author'] = $tp -> toRss($row[$author]);
 						$this -> rssItems[$loop]['title'] = $tp -> toRss($row[$title]);
-						if($item_id){ $link = $link.$row[$itemid]; }
-						$this -> rssItems[$loop]['link'] = $e107->http_path.$link;
-						$this -> rssItems[$loop]['description'] = $tp -> toRss($row[$description]);
-                       	if(enc_url){ $this -> rssItems[$loop]['enc_url'] = $e107->http_path.$enc_url.$row[$item_id]; }
+                        $item = ($itemid) ? $row[$itemid] : "";
+						$link = str_replace("#",$item,$link);
+						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY.$link;
+						$this -> rssItems[$loop]['description'] = ($rss_type == 3) ? $tp -> toRss($row[$description]) : $tp -> toRss(substr($row[$description], 0, 100));
+                       	if(enc_url){ $this -> rssItems[$loop]['enc_url'] = $e107->http_path.$PLUGINS_DIRECTORY.$enc_url.$row[$item_id]; }
 						if($enc_leng){ $this -> rssItems[$loop]['enc_leng'] = $row[$enc_leng]; }
 						if($enc_type){ $this -> rssItems[$loop]['enc_type'] = $this->getmime($row[$enc_type]); }
-						$catlink = ($categorylink) ? $categorylink : "";
-						$catlink .= ($categoryid) ? $row[$categoryid] : "";
-						if($categoryname){ $this -> rssItems[$loop]['category'] = "<category domain='".SITEURL.$catlink."'>".$tp -> toRss($row[$categoryname])."</category>"; }
+                        $catid = ($categoryid) ? $row[$categoryid] : "";
+						$catlink = ($categorylink) ? str_replace("#",$catid,$categorylink) : "";
+						if($categoryname){ $this -> rssItems[$loop]['category'] = "<category domain='".$e107->http_path.$catlink."'>".$tp -> toRss($row[$categoryname])."</category>"; }
 						if($datestamp){	$this -> rssItems[$loop]['pubdate'] = strftime("%a, %d %b %Y %I:%M:00 GMT", $row[$datestamp]);  }
                         $loop++;
 					}
+				}
           	}
       }
 }

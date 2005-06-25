@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/admin_prefs.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-10 00:40:48 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-25 00:01:43 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -42,11 +42,15 @@ $text = "<div style='text-align:center'>
 <tr><td class='fcaption'>".BACKEND_MENU_L2."</td><td class='fcaption'>Enable</td></tr>";
 
 	$feedlist[1] = "News";
-	$feedlist[9] = "Chatbox Posts";
 	$feedlist[12] = "Downloads";
 	$feedlist[6] = "Forum Threads";
 	$feedlist[7] = "Forum Posts";
-
+    if($sql -> db_Select("generic","*","gen_type = 'rss'")){
+		while($row = $sql -> db_Fetch()){
+			$key = $row['gen_ip'];
+			$feedlist[$key] = ucfirst($key);
+		}
+    }
 	$preset = explode(",",$pref['rss_feeds']);
 
 	foreach($feedlist as $key=>$name){
