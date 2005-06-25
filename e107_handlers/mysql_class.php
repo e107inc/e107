@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-06-05 23:48:40 $
-|     $Author: streaky $
+|     $Revision: 1.43 $
+|     $Date: 2005-06-25 05:30:45 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,8 +25,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.42 $
-* @author $Author: streaky $
+* @version $Revision: 1.43 $
+* @author $Author: e107coders $
 */
 class db {
 
@@ -80,10 +80,22 @@ class db {
 	* @access public
 	*/
 	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb) {
-		$this->mySQLserver = $mySQLserver;
-		$this->mySQLuser = $mySQLuser;
-		$this->mySQLpassword = $mySQLpassword;
-		$this->mySQLdefaultdb = $mySQLdefaultdb;
+		if(!is_array($mySQLserver)){
+			$this->mySQLserver = $mySQLserver;
+			$this->mySQLuser = $mySQLuser;
+			$this->mySQLpassword = $mySQLpassword;
+			$this->mySQLdefaultdb = $mySQLdefaultdb;
+		}else{
+            foreach($mySQLserver as $key=>$val){
+              	if(eregi($_SERVER["HTTP_HOST"],$key)){
+                  	$this->mySQLserver = $mySQLserver[$key];
+					$this->mySQLuser = $mySQLuser[$key];
+					$this->mySQLpassword = $mySQLpassword[$key];
+					$this->mySQLdefaultdb = $mySQLdefaultdb[$key];
+					continue;
+			   	}
+			}
+		}
 		$temp = $this->mySQLerror;
 		$this->mySQLerror = FALSE;
 		if(defined("USE_PERSISTANT_DB") && USE_PERSISTANT_DB == true){
@@ -623,7 +635,11 @@ class db {
 		}
 	}
 
+    function db_Field($table,$fieldid=""){
+		$fields = mysql_list_fields($this->mySQLdefaultdb, MPREFIX.$table);
+		return mysql_field_name($fields, $fieldid);
 
+	}
 
 
 }
