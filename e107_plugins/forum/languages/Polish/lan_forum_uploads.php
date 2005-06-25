@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum_uploads.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-22 20:24:47 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-25 21:08:29 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */

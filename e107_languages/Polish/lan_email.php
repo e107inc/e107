@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_email.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-22 20:24:47 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-25 21:08:28 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */

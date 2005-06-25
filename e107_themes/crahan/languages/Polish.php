@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/crahan/languages/Polish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:24:48 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-25 21:08:29 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */

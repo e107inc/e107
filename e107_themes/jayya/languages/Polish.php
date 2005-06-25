@@ -10,18 +10,17 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_themes/lamb/languages/Polish.php,v $
-|     $Revision: 1.3 $
+|     $Source: /cvs_backup/e107_langpacks/e107_themes/jayya/languages/Polish.php,v $
+|     $Revision: 1.1 $
 |     $Date: 2005-06-25 21:08:29 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 
-define("LAN_THEME_1", "'lamb' temat graficzny napisany przez <a href='http://e107.org' rel='external'>jalist</a>");
-define("LAN_THEME_2", "Dopisywanie komentarzy wyłączono");
-define("LAN_THEME_3", "komentarz: ");
-define("LAN_THEME_4", "Czytaj resztę ...");
-define("LAN_THEME_5", "Trackbacks: ");
+define("LAN_THEME_1", "Dopisywanie komentarzy zostało wyłaczone");
+define("LAN_THEME_2", "Czytaj/Pisz Komentarze: ");
+define("LAN_THEME_3", "Czytaj resztę...");
+define("LAN_THEME_4", "Trackbacks: ");
 
 
 ?>
