@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.68 $
-|		$Date: 2005-06-25 22:18:17 $
+|		$Revision: 1.69 $
+|		$Date: 2005-06-25 23:13:48 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -334,6 +334,15 @@ class contentform{
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 						//text
+						if($mode == "contentmanager"){
+							//$e_wysiwyg = "content_text,cat_text";
+							//$pref['allow_html'] = "1";
+						  	//require_once(e_HANDLER."tiny_mce/wysiwyg.php");
+							//echo wysiwyg($e_wysiwyg);
+
+						}
+						//$e_wysiwyg = "content_text,cat_text";
+						//$pref['allow_html'] = "1";
 						$row['content_text'] = (isset($row['content_text']) ? $row['content_text'] : "");
 						require_once(e_HANDLER."ren_help.php");
 						$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_18;
