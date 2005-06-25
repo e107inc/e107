@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.114 $
-|     $Date: 2005-06-25 05:30:45 $
-|     $Author: e107coders $
+|     $Revision: 1.115 $
+|     $Date: 2005-06-25 22:19:35 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -28,6 +28,16 @@ if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
 {
 	include_once(e_PLUGIN.'forum/forum_update_check.php');
 }
+
+//content
+//if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content' AND plugin_installflag='1' "))
+//{
+	if(file_exists(e_PLUGIN.'content/content_update_check.php'))
+	{
+		include_once(e_PLUGIN.'content/content_update_check.php');
+	}
+//}
+
 $dbupdate["61x_to_700"] = LAN_UPDATE_8." .61x ".LAN_UPDATE_9." .7";
 $dbupdate["616_to_617"] = LAN_UPDATE_8." .616 ".LAN_UPDATE_9." .617";
 $dbupdate["615_to_616"] = LAN_UPDATE_8." .615 ".LAN_UPDATE_9." .616";
@@ -55,7 +65,7 @@ function update_check() {
 	}
 }
 
-function update_61x_to_700($type) {
+function update_61x_to_700($type='') {
 	global $sql, $ns, $mySQLdefaultdb, $pref, $tp, $sysprefs, $eArrayStorage;
 	if ($type == "do") {
 		set_time_limit(180);
@@ -993,7 +1003,7 @@ function update_61x_to_700($type) {
 }
 
 
-function update_616_to_617($type) {
+function update_616_to_617($type='') {
 	global $sql;
 
 	if ($type == "do") {
@@ -1002,7 +1012,6 @@ function update_616_to_617($type) {
 		$sql2 = new db;
 		$sql2->db_Update("poll", "poll_comment='1' WHERE poll_id!='0'");
 		} else {
-
 			if($sql->db_Field("menus",5) == "menu_pages"){
 				return TRUE;
 			}
@@ -1011,7 +1020,7 @@ function update_616_to_617($type) {
 	}
 }
 
-function update_615_to_616($type) {
+function update_615_to_616($type='') {
 	global $sql;
 	if ($type == "do") {
 		mysql_query("INSERT INTO ".MPREFIX."wmessage VALUES (4, 'This text (if activated) will appear on a page when \"Forum Rules\" link is clicked on.', '0')");
@@ -1036,7 +1045,7 @@ function update_615_to_616($type) {
 	}
 }
 
-function update_614_to_615($type) {
+function update_614_to_615($type='') {
 	global $sql;
 	if ($type == "do") {
 		mysql_query("ALTER TABLE ".MPREFIX."submitnews ADD submitnews_category TINYINT(3) UNSIGNED NOT NULL DEFAULT '0' AFTER submitnews_title");
@@ -1062,7 +1071,7 @@ function update_614_to_615($type) {
 	}
 }
 
-function update_611_to_612($type) {
+function update_611_to_612($type='') {
 	global $sql;
 	if ($type == "do") {
 		mysql_query("ALTER TABLE ".MPREFIX."news ADD news_render_type TINYINT UNSIGNED NOT NULL ");
@@ -1078,7 +1087,7 @@ function update_611_to_612($type) {
 	}
 }
 
-function update_603_to_604($type) {
+function update_603_to_604($type='') {
 	global $sql;
 	if ($type == "do") {
 		mysql_query("ALTER TABLE ".MPREFIX."link_category ADD link_category_icon VARCHAR( 100 ) NOT NULL");
