@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-23 16:22:00 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-25 08:35:06 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,6 @@ define("FORLAN_44", "Adjuntar tablas");
 define("FORLAN_45", "Mostrar el foro con la tabla de temas");
 define("FORLAN_65", "Título del foro");
 define("FORLAN_46", "Título mostrado si la adjunción de tablas es marcada");
-define("LAN_46", "Foros");
 define("FORLAN_47", "Permitir noficación por email");
 define("FORLAN_48", "Marcar para permitir a sus usuarios tener la opción de recibir un email cuando alguien responde a sus mensajes");
 define("FORLAN_49", "Permitir votaciones");
@@ -131,15 +130,16 @@ define("FORLAN_120", "Marque para permitir a los usuario cambiar el título de s
 define("FORLAN_121", "No hay mensajes de informes");
 define("FORLAN_122", "Pulse aquí para enviar un mensaje al administrador cuando alguien informe un mensaje en el foro");
 define("FORLAN_123", "Normas del foro");
+
 define("WMGLAN_1", "Normas para Invitados");
 define("WMGLAN_2", "Normas para Miembros");
 define("WMGLAN_3", "Normas para Administradores");
 define("WMGLAN_4", "Enviar");
 define("WMGLAN_5", "Cambiar normas del foro");
 define("WMGLAN_6", "¿Activar?");
+
 define("FORLAN_124", "Enlaces en nueva ventana");
 define("FORLAN_125", "Marque para que los enlaces se abran en una nueva ventana. ");
-//v.617
 define("FORLAN_126", "Mostrar Tooltips");
 define("FORLAN_127", "Marque aquí para mostrar un tooltip conteniendo el primer mensaje del tema cuando el puntero del ratón pase por encima del nombre del tema. ");
 define("FORLAN_128", "Longitud de tooltip");
@@ -160,7 +160,6 @@ define("FORLAN_142", "Permisos de envíos");
 define("FORLAN_143", "Indica quien puede realizar envíos al foro");
 define("FORLAN_144", "Fijar moderadores");
 define("FORLAN_145", "Configurar sub-foros");
-
 define("FORLAN_146", "No hay sub-foros todavía");
 define("FORLAN_147", "Actualizar sub-foros");
 define("FORLAN_148", "Crear sub-foros");
@@ -171,5 +170,21 @@ define("FORLAN_152", "Envíos");
 define("FORLAN_153", "Herramientas");
 define("FORLAN_154", "Respuesta eliminada");
 define("FORLAN_155", "Categorías de foros");
+define("FORLAN_156", "Seleccionar foro(s) para actuar en");
+define("FORLAN_157", "Todos los foros");
+define("FORLAN_158", "Recalcular información último envío");
+define("FORLAN_159", "Seleccionar para recalcular info último envío");
+define("FORLAN_160", "Select to perform this on forums only, not threads");
+define("FORLAN_161", "Recalcular contador de envíos / Respuestas");
+define("FORLAN_162", "Seleccionar para recalcular contador de temas / Respuestas");
+define("FORLAN_163", "Recalcular contador de envíos de usuario");
+define("FORLAN_164", "Seleccionar para recalcular contador de foro de usuario");
+define("FORLAN_165", "Ejecutar funciones");
+define("FORLAN_166", "Herramientas del foro");
+define("FORLAN_167", "Contadores actualziados en el foro");
+define("FORLAN_168", "Información último envío actualizada para el foro");
+define("FORLAN_169", "Contador de foro de usuario actualizado");
 
+
+define("LAN_46", "Foros");
 ?>

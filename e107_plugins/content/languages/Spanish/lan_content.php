@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-16 20:29:25 $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-25 08:35:06 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -390,12 +390,13 @@ define("CONTENT_ADMIN_OPT_LAN_290", "Escoja que secciones deben mostrarse cuando
 define("CONTENT_ADMIN_OPT_LAN_291", "Escoja que secciones deben mostrarse cuando vea la página de máxima puntuación");
 define("CONTENT_ADMIN_OPT_LAN_292", "Enlace:  Máxima puntuación");
 define("CONTENT_ADMIN_OPT_LAN_293", "¿Debe mostrar el enlace 'elementos de más puntuación' en la página?");
-define("CONTENT_ADMIN_OPT_LAN_294", "");
-define("CONTENT_ADMIN_OPT_LAN_295", "");
-define("CONTENT_ADMIN_OPT_LAN_296", "");
-define("CONTENT_ADMIN_OPT_LAN_297", "");
-define("CONTENT_ADMIN_OPT_LAN_298", "");
-define("CONTENT_ADMIN_OPT_LAN_299", "");
+define("CONTENT_ADMIN_OPT_LAN_294", "Añadir campo ...");
+define("CONTENT_ADMIN_OPT_LAN_295", "Texto");
+define("CONTENT_ADMIN_OPT_LAN_296", "Área de texto");
+define("CONTENT_ADMIN_OPT_LAN_297", "Selección");
+define("CONTENT_ADMIN_OPT_LAN_298", "Fecha");
+define("CONTENT_ADMIN_OPT_LAN_299", "Checkbox");
+define("CONTENT_ADMIN_OPT_LAN_300", "Radio");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "Campos obligatorios en blanco");
 define("CONTENT_ADMIN_ITEM_LAN_1", "Contenido creado");
@@ -826,6 +827,13 @@ define("CONTENT_ADMIN_CONVERSION_LAN_55", "Plugin de Gestor de contenidos : opci
 define("CONTENT_ADMIN_CONVERSION_LAN_56", "Click en el botón para ir a la página a Crear nueva categoría.");
 define("CONTENT_ADMIN_CONVERSION_LAN_57", "Escoja categoría principal");
 define("CONTENT_ADMIN_CONVERSION_LAN_58", "Actualización exitosa<br /><br /><b>Tome nota:<br />Necesita reconfigurar las opciones para cada elemento principal<br />y necesita eliminar los menús que ha creado en su carpeta de menús/contenidos, y recrearlos actualizando las opciones para los principales que quiere usar como menús.</b>");
+define("CONTENT_ADMIN_CONVERSION_LAN_59", "Convertir tabla");
+define("CONTENT_ADMIN_CONVERSION_LAN_60", "Crear por defectos");
+define("CONTENT_ADMIN_CONVERSION_LAN_61", "Crear nueva categoría");
+define("CONTENT_ADMIN_CONVERSION_LAN_62", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_63", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_64", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_65", "");
 
 define("CONTENT_MENU_LAN_0", "Menú de contenido :");
 define("CONTENT_MENU_LAN_1", "No hay contenidos todavía");
@@ -848,5 +856,30 @@ define("CONTENT_MENU_LAN_17", "");
 define("CONTENT_MENU_LAN_18", "");
 define("CONTENT_MENU_LAN_19", "");
 define("CONTENT_MENU_LAN_20", "");
+
+//preset tags
+define("CONTENT_PRESET_LAN_0", "Error : nombre del campo sin rellenar");
+define("CONTENT_PRESET_LAN_1", "Error : no se ha rellenado todos los campos correctamente<br />Todos los campos deben ser rellenados");
+define("CONTENT_PRESET_LAN_2", "");
+define("CONTENT_PRESET_LAN_3", "El tamaño y tamaño máximo deben ser valores numéricos");
+define("CONTENT_PRESET_LAN_4", "Columans y filas tienen que tener valores numéricos");
+define("CONTENT_PRESET_LAN_5", Necesita proveer algunas opciones");
+define("CONTENT_PRESET_LAN_6", "Años desde y años a tiene que ser valores numéricos");
+define("CONTENT_PRESET_LAN_7", "Generador de campos preseleccionados de contenido");
+define("CONTENT_PRESET_LAN_8", "Formulario para crear una nueva preselección de fecha");
+define("CONTENT_PRESET_LAN_9", "Campo nombre");
+define("CONTENT_PRESET_LAN_10", "Tamaño");
+define("CONTENT_PRESET_LAN_11", "Máx. longitud");
+define("CONTENT_PRESET_LAN_12", "Columnas");
+define("CONTENT_PRESET_LAN_13", "Filas");
+define("CONTENT_PRESET_LAN_14", "Año desde");
+define("CONTENT_PRESET_LAN_15", "Años a");
+define("CONTENT_PRESET_LAN_16", "Opciones");
+define("CONTENT_PRESET_LAN_17", "Añadir más");
+define("CONTENT_PRESET_LAN_18", "Añadir preselección");
+define("CONTENT_PRESET_LAN_19", "Necesita proveer una cantidad igual de texto y valores de campos");
+define("CONTENT_PRESET_LAN_20", "Necesita proveer un valor para el Checkbox");
+define("CONTENT_PRESET_LAN_21", "Texto");
+define("CONTENT_PRESET_LAN_22", "Valor");
 
 ?>

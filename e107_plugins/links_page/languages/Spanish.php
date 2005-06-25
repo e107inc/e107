@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-21 21:07:31 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-25 08:35:06 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -213,8 +213,16 @@ define("LCLAN_164", "Activado, solo un limitado número de enlaces se mostrarán
 define("LCLAN_165", "Enlaces por página");
 define("LCLAN_166", "¿Cuantos enlaces se mostrarán en una sola página?");
 define("LCLAN_167", "Esto solo se usará si las limitaciones Próx Ant están comprobadas");
-define("LCLAN_168", "");
-define("LCLAN_169", "");
+define("LCLAN_168", "ASC");
+define("LCLAN_169", "DESC");
+define("LCLAN_170", "link_name");
+define("LCLAN_171", "link_url");
+define("LCLAN_172", "link_order");
+define("LCLAN_173", "link_refer");
+define("LCLAN_174", "link_icon");
+define("LCLAN_175", "link_desc");
+define("LCLAN_176", "link category name");
+define("LCLAN_177", "link category id");
 
 define("LCLAN_ADMINMENU_1", "Opciones de enlace");
 define("LCLAN_ADMINMENU_2", "Gestionar categorías de enlaces");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_plugin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-10 20:06:43 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-25 08:35:06 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -55,6 +55,10 @@ define("EPL_ADLAN_42", "Ocurrió un error, no se pudo descomprimir el archivo");
 define("EPL_ADLAN_43", "Su plugin ha sido transferido y descomprimido, compruebe su plugin en la lista.");
 define("EPL_ADLAN_44", "La transferencia y extracción automática ha sido desactivada por falta de permisos en la carpeta - CHMOD la carpeta e107_plugins a 777.");
 define("EPL_ADLAN_45", "Su menú ha sido transferido y descomprimido, para activar ir a <a href='".e_ADMIN."menus.php'>su página de menús</a>.");
+define("EPL_ADLAN_46", "Parámetros RSS creados");
+define("EPL_ADLAN_47", "Parámetros RSS eliminados");
+define("EPL_ADLAN_48", "No se pueden crear los parámetros RSS");
+define("EPL_ADLAN_49", "No se pueden eliminar los parámetros RSS");
 
 //define("EPL_CANCEL", "Cancelar");
 //define("EPL_EMAIL", "Email");
@@ -65,4 +69,5 @@ define("EPL_DIRECTORY", " .");
 define("EPL_NOINSTALL_1", "No se requiere instalación, para desinstalar borre la carpeta ");
 define("EPL_UPGRADE", "Actualizar");
 define("EPL_CONFIGURE", "Configurar");
+
 ?>
