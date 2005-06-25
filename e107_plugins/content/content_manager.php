@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.11 $
-|		$Date: 2005-06-25 22:18:17 $
+|		$Revision: 1.12 $
+|		$Date: 2005-06-25 23:13:47 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -21,7 +21,6 @@
 require_once("../../class2.php");
 
 $plugindir = e_PLUGIN."content/";
-
 require_once($plugindir."content_shortcodes.php");
 
 global $tp;
@@ -172,7 +171,10 @@ if(!e_QUERY){
 		header("location:".$plugindir."content.php"); exit;
 	}
 }else{
-
+	//echo "-1-".$pref['allow_html'];
+	$e_wysiwyg = "content_text,cat_text";
+	$pref['allow_html'] = "1";
+	//echo "-2-".$pref['allow_html'];
 	if($qs[0] == "c"){
 		$message = CONTENT_ADMIN_ITEM_LAN_1."<br /><br />".CONTENT_ADMIN_ITEM_LAN_55;
 		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
@@ -206,8 +208,15 @@ if(!e_QUERY){
 require_once(FOOTERF);
 
 function headerjs(){
-	global $tp, $plugindir;
-	
+	global $tp, $plugindir, $qs;
+
+	if( ($qs[0] == "content" && $qs[1] == "create" && is_numeric($qs[2])) || ($qs[0] == "content" && $qs[1] == "edit" && is_numeric($qs[2])) ){
+		$e_wysiwyg			= "content_text";
+		$pref['allow_html']	= "1";
+		require_once(e_HANDLER."tiny_mce/wysiwyg.php");
+		echo wysiwyg($e_wysiwyg);
+	}
+
 	$script = "
 	<script type='text/javascript' src='".$plugindir."content.js'></script>\n
 	<script type=\"text/javascript\">
