@@ -27,7 +27,7 @@ if(isset($_POST['addpreset'])){
 		}
 		if($_POST['type'] == "select"){
 			$options = implode("^", $_POST['options']);
-			if(!$_POST['options']){
+			if(!$_POST['options'][0] && !$_POST['options'][1]){
 				$err .= "<br /><b>".CONTENT_PRESET_LAN_1."<br />".CONTENT_PRESET_LAN_5."</b><br />";
 			}else{
 				$value = $_POST['field']."^".$_POST['type']."^".$options;
@@ -192,6 +192,9 @@ if($qs[0] == "date"){
 
 if($qs[0] == "select"){
 	$text .= "
+	<tr><td class='leftcell' style='vertical-align:top;'>".CONTENT_PRESET_LAN_23."</td>
+		<td><input class='tbox' type='text' name='options[0]' size='10' maxlength='100' /> (".CONTENT_PRESET_LAN_24.")</td>
+	</tr>
 	<tr><td class='leftcell' style='vertical-align:top;'>".CONTENT_PRESET_LAN_16."</td>
 		<td>
 		<div id='select_container' style='width:40%;white-space:nowrap;'>

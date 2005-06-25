@@ -11,20 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-06-24 23:08:45 $
+|     $Revision: 1.18 $
+|     $Date: 2005-06-25 11:23:54 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 // ##### CONTENT CONTENT ------------------------------------------------------
-$CONTENT_CONTENT_TABLE_START = "";
-$CONTENT_CONTENT_TABLE = "";
-$CONTENT_CONTENT_TABLE_END = "";
-$CONTENT_CONTENT_TABLE_CUSTOM = "";
-$CONTENT_CONTENT_TABLE_CUSTOM_PRE = "";
-$CONTENT_CONTENT_TABLE_CUSTOM_PRE2 = "";
-global $sc_style, $content_shortcodes, $qs, $row, $content_pref, $array, $gen, $tp, $sql, $plugintable, $rater, $aa, $content_image_path, $content_icon_path, $content_file_path, $custom;
+global $sc_style, $content_shortcodes, $qs, $row, $content_pref, $gen, $tp, $sql, $plugintable, $rater, $aa, $content_image_path, $content_icon_path, $content_file_path, $custom;
 
 $sc_style['CONTENT_CONTENT_TABLE_REFER']['pre'] = "<br />".CONTENT_LAN_44." ";
 $sc_style['CONTENT_CONTENT_TABLE_REFER']['post'] = "";
@@ -40,9 +34,6 @@ $sc_style['CONTENT_CONTENT_TABLE_RATING']['post'] = "";
 
 $sc_style['CONTENT_CONTENT_TABLE_AUTHORDETAILS']['pre'] = "<br />".CONTENT_LAN_11." ";
 $sc_style['CONTENT_CONTENT_TABLE_AUTHORDETAILS']['post'] = "";
-
-$sc_style['CONTENT_CONTENT_TABLE_ICON']['pre'] = "<div style='float:left; padding-right:10px;'>";
-$sc_style['CONTENT_CONTENT_TABLE_ICON']['post'] = "</div>";
 
 $sc_style['CONTENT_CONTENT_TABLE_PAGENAMES']['pre'] = "<br /><div>".CONTENT_LAN_46."<br />";
 $sc_style['CONTENT_CONTENT_TABLE_PAGENAMES']['post'] = "</div>";
@@ -71,48 +62,59 @@ $sc_style['CONTENT_CONTENT_TABLE_DATE']['post'] = "";
 $sc_style['CONTENT_CONTENT_TABLE_PARENT']['pre'] = "<br />".CONTENT_LAN_9." ";
 $sc_style['CONTENT_CONTENT_TABLE_PARENT']['post'] = "";
 
-$sc_style['CONTENT_CONTENT_TABLE_INFO_PRE']['pre'] = "<div style='clear:both;'><div style='float:left;'>";
+//$sc_style['CONTENT_CONTENT_TABLE_INFO_PRE']['pre'] = "<div style='clear:both;'><div style='float:left;'>";
+//$sc_style['CONTENT_CONTENT_TABLE_INFO_PRE']['post'] = "";
+//$sc_style['CONTENT_CONTENT_TABLE_INFO_POST']['pre'] = "";
+//$sc_style['CONTENT_CONTENT_TABLE_INFO_POST']['post'] = "</div></div>";
+
+//$sc_style['CONTENT_CONTENT_TABLE_ICON']['pre'] = "<div style='float:left; padding-right:10px;'>";
+//$sc_style['CONTENT_CONTENT_TABLE_ICON']['post'] = "</div>";
+
+$sc_style['CONTENT_CONTENT_TABLE_ICON']['pre'] = "<td style='width:10%; white-space:nowrap; vertical-align:top; padding-right:10px;'>";
+$sc_style['CONTENT_CONTENT_TABLE_ICON']['post'] = "</td>";
+
+$sc_style['CONTENT_CONTENT_TABLE_INFO_PRE']['pre'] = "<table cellpadding='0' cellspacing='0' style='width:100%;margin-bottom:20px;'><tr>";
 $sc_style['CONTENT_CONTENT_TABLE_INFO_PRE']['post'] = "";
 $sc_style['CONTENT_CONTENT_TABLE_INFO_POST']['pre'] = "";
-$sc_style['CONTENT_CONTENT_TABLE_INFO_POST']['post'] = "</div></div>";
+$sc_style['CONTENT_CONTENT_TABLE_INFO_POST']['post'] = "</tr></table>";
 
-if(!$CONTENT_CONTENT_TABLE){
-				$CONTENT_CONTENT_TABLE .= "
-				<div style='clear:both;'>
+$CONTENT_CONTENT_TABLE = "<table class='fborder' cellpadding='0' cellspacing='0'><tr><td>
+<div style='clear:both;'>
 
-					{CONTENT_CONTENT_TABLE_INFO_PRE}
-						{CONTENT_CONTENT_TABLE_ICON}
-						{CONTENT_CONTENT_TABLE_SUBHEADING}
-						{CONTENT_CONTENT_TABLE_DATE} {CONTENT_CONTENT_TABLE_AUTHORDETAILS} {CONTENT_CONTENT_TABLE_EPICONS} {CONTENT_CONTENT_TABLE_EDITICON} {CONTENT_CONTENT_TABLE_PARENT} {CONTENT_CONTENT_TABLE_COMMENT} {CONTENT_CONTENT_TABLE_SCORE} {CONTENT_CONTENT_TABLE_REFER}
-						{CONTENT_CONTENT_TABLE_RATING}
-						{CONTENT_CONTENT_TABLE_FILE}
-					{CONTENT_CONTENT_TABLE_INFO_POST}
-					<div style='clear:both;'><br /></div>
-				
-					{CONTENT_CONTENT_TABLE_IMAGES}
-					{CONTENT_CONTENT_TABLE_SUMMARY}
-					{CONTENT_CONTENT_TABLE_TEXT}
-					{CONTENT_CONTENT_TABLE_CUSTOM_TAGS}
-					{CONTENT_CONTENT_TABLE_PAGENAMES}
-				</div>\n";
-}
+	{CONTENT_CONTENT_TABLE_INFO_PRE}
+		{CONTENT_CONTENT_TABLE_ICON}
+		<td>
+		{CONTENT_CONTENT_TABLE_SUBHEADING}
+		{CONTENT_CONTENT_TABLE_DATE} {CONTENT_CONTENT_TABLE_AUTHORDETAILS} {CONTENT_CONTENT_TABLE_EPICONS} {CONTENT_CONTENT_TABLE_EDITICON} {CONTENT_CONTENT_TABLE_PARENT} {CONTENT_CONTENT_TABLE_COMMENT} {CONTENT_CONTENT_TABLE_SCORE} {CONTENT_CONTENT_TABLE_REFER}
+		{CONTENT_CONTENT_TABLE_RATING}
+		{CONTENT_CONTENT_TABLE_FILE}
+		</td>
+	{CONTENT_CONTENT_TABLE_INFO_POST}
+	<div style='clear:both;'><br /></div>
+	<table cellpadding='0' cellspacing='0'><tr><td>
+		{CONTENT_CONTENT_TABLE_IMAGES}
+		{CONTENT_CONTENT_TABLE_SUMMARY}
+		{CONTENT_CONTENT_TABLE_TEXT}
+		{CONTENT_CONTENT_TABLE_CUSTOM_TAGS}
+		{CONTENT_CONTENT_TABLE_PAGENAMES}
+	</td></tr></table>
+</div>
+</td></tr></table>\n";
+
 // ##### ----------------------------------------------------------------------
 
-if(!$CONTENT_CONTENT_TABLE_CUSTOM_START){
-	$CONTENT_CONTENT_TABLE_CUSTOM_START = "<table style='width:100%;margin-left:0;padding-left:0;' cellspacing='0' cellpadding='0' >";
-}
-if(!$CONTENT_CONTENT_TABLE_CUSTOM){
-	$CONTENT_CONTENT_TABLE_CUSTOM = "
-	<tr>
-		<td style='width:25%;white-space:nowrap; vertical-align:top; line-height:150%;'>
-			{CONTENT_CONTENT_TABLE_CUSTOM_KEY}
-		</td>
-		<td style='width:90%; line-height:150%;'>
-			{CONTENT_CONTENT_TABLE_CUSTOM_VALUE}
-		</td>
-	</tr>";
-}
-if(!$CONTENT_CONTENT_TABLE_CUSTOM_END){
-	$CONTENT_CONTENT_TABLE_CUSTOM_END = "</table>";
-}
+$CONTENT_CONTENT_TABLE_CUSTOM_START = "<table style='width:100%;margin-left:0;padding-left:0;' cellspacing='0' cellpadding='0' >";
+
+$CONTENT_CONTENT_TABLE_CUSTOM = "
+<tr>
+	<td style='width:25%;white-space:nowrap; vertical-align:top; line-height:150%;'>
+		{CONTENT_CONTENT_TABLE_CUSTOM_KEY}
+	</td>
+	<td style='width:90%; line-height:150%;'>
+		{CONTENT_CONTENT_TABLE_CUSTOM_VALUE}
+	</td>
+</tr>";
+
+$CONTENT_CONTENT_TABLE_CUSTOM_END = "</table>";
+
 ?>

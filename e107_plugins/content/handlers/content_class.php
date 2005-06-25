@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.66 $
-|		$Date: 2005-06-24 16:43:24 $
+|		$Revision: 1.67 $
+|		$Date: 2005-06-25 11:23:54 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -230,6 +230,7 @@ class content{
 				$content_pref["content_content_presettags_{$id}"] = "0";				//should preset data tags be shown
 				$content_pref["content_content_attach_{$id}"] = "0";					//show attachments
 				$content_pref["content_content_images_{$id}"] = "0";					//show images
+				$content_pref["content_content_pagenames_rendertype_{$id}"] = "0";		//rendertype for articleindex on multipage content items
 
 				//AUTHOR PAGE
 				$content_pref["content_author_lastitem_{$id}"] = "0";					//show last item reference
