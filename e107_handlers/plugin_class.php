@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-06-25 05:26:48 $
+|     $Revision: 1.29 $
+|     $Date: 2005-06-25 23:03:16 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -57,10 +57,11 @@ class e107plugin {
 					unset($$varname);
 				}
 			}
+
 		 	include_once("{$p['path']}{$p['fname']}");
 			$plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
 			if ((!$sql->db_Select("plugin", "plugin_id", "plugin_path = '{$plugin_path}'")) && $eplug_name){
-				if (!$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_sc && !$eplug_userclass && !$eplug_module && !$eplug_bb && !$eplug_latest && !$eplug_status){
+				if (!$eplug_link_url && !$eplug_link && !$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_sc && !$eplug_userclass && !$eplug_module && !$eplug_bb && !$eplug_latest && !$eplug_status){
 					if(is_array($eplug_rss)){
                     	foreach($eplug_rss as $key=>$val){
                         	$feeds[] = $key;
@@ -143,7 +144,7 @@ class e107plugin {
 			$path = str_replace("../", "", $link_url);
 			$link_t = $sql->db_Count('links');
 			if (!$sql->db_Count('links', '(*)', "link_name = '{$link_name}'")) {
-				return $sql->db_Insert('links', "0, '{$link_name}', '{$path}', '', '', '1', '".($link_t + 1)."', '0', '0', '' ");
+				return $sql->db_Insert('links', "0, '{$link_name}', '{$path}', '', '', '1', '".($link_t + 1)."', '0', '0', '0' ");
 			} else {
 				return FALSE;
 			}
@@ -407,7 +408,7 @@ class e107plugin {
 				foreach($eplug_rss as $key=>$values){
 					$rssfeeds[] = $key;
                 	$tmp = serialize($values);
-					$rssmess .= EPL_ADLAN_46 . ". ($key)<br />"; 
+					$rssmess .= EPL_ADLAN_46 . ". ($key)<br />";
                 }
 				$feeds = implode(",",$rssfeeds);
 			}
