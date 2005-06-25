@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-19 05:55:59 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-25 09:18:07 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -397,7 +397,13 @@ define("CONTENT_ADMIN_OPT_LAN_290", "kies welke secties moeten worden getoond bi
 define("CONTENT_ADMIN_OPT_LAN_291", "kies welke secties moeten worden getoond bij het bekijken van de hoogst scorende pagina");
 define("CONTENT_ADMIN_OPT_LAN_292", "link : hoogst scorend");
 define("CONTENT_ADMIN_OPT_LAN_293", "moet een link naar de 'top score onderwerpen' pagina worden getoond?");
-
+define("CONTENT_ADMIN_OPT_LAN_294", "toevoegen veld ...");
+define("CONTENT_ADMIN_OPT_LAN_295", "tekst");
+define("CONTENT_ADMIN_OPT_LAN_296", "tekstveld");
+define("CONTENT_ADMIN_OPT_LAN_297", "selecteer");
+define("CONTENT_ADMIN_OPT_LAN_298", "datum");
+define("CONTENT_ADMIN_OPT_LAN_299", "aankruisveld");
+define("CONTENT_ADMIN_OPT_LAN_300", "radio");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "verplicht veld niet ingevuld");
 define("CONTENT_ADMIN_ITEM_LAN_1", "onderwerp aangemaakt");
@@ -803,11 +809,38 @@ define("CONTENT_ADMIN_CONVERSION_LAN_55", "content management plugin: converteer
 define("CONTENT_ADMIN_CONVERSION_LAN_56", "druk op de knop om naar de Content Creëren nieuwe categorie pagina te gaan.");
 define("CONTENT_ADMIN_CONVERSION_LAN_57", "kies ouder");
 define("CONTENT_ADMIN_CONVERSION_LAN_58", "upgrade sucesvol<br /><br /><b>Let op:<br />je moet deze opties voor elke hoofdouder opnieuw configureren<br />en je moet de menu's die je in je content/menus folder hebt gemaakt verwijderen en opnieuw aanmaken door de opties bij te werken voor de specifieke hoofdouders waarvoor je menu's wilt maken.</b>");
+define("CONTENT_ADMIN_CONVERSION_LAN_59", "converteren tabel");
+define("CONTENT_ADMIN_CONVERSION_LAN_60", "standaard creëren");
+define("CONTENT_ADMIN_CONVERSION_LAN_61", "creëren nieuwe categorie");
 
 define("CONTENT_MENU_LAN_0", "content Menu :");
 define("CONTENT_MENU_LAN_1", "nog geen content onderwerpen");
 define("CONTENT_MENU_LAN_2", "recente onderwerpen");
 define("CONTENT_MENU_LAN_3", "categorieën");
 define("CONTENT_MENU_LAN_4", "content links");
+
+define("CONTENT_PRESET_LAN_0", "fout : veldnaam niet ingevuld");
+define("CONTENT_PRESET_LAN_1", "fout : niet alle velden juist ingevuld<br />alle velden moeten worden ingevuld");
+define("CONTENT_PRESET_LAN_2", "");
+define("CONTENT_PRESET_LAN_3", "zowel grootte als maxgrootte moeten numerieke waarden zijn");
+define("CONTENT_PRESET_LAN_4", "zowel kolommen als rijen moeten numerieke waarden zijn");
+define("CONTENT_PRESET_LAN_5", "je moet verschillende opties opgeven");
+define("CONTENT_PRESET_LAN_6", "zowel jaar-vanaf als jaat-tot moeten numerieke waarden zijn");
+define("CONTENT_PRESET_LAN_7", "Content voorkeuzeveld generator");
+define("CONTENT_PRESET_LAN_8", "formulier om een nieuwe voorkeuze te creëren voor datatag van type");
+define("CONTENT_PRESET_LAN_9", "veldnaam");
+define("CONTENT_PRESET_LAN_10", "grootte");
+define("CONTENT_PRESET_LAN_11", "maxlengte");
+define("CONTENT_PRESET_LAN_12", "kolommen");
+define("CONTENT_PRESET_LAN_13", "rijen");
+define("CONTENT_PRESET_LAN_14", "jaar-vanaf");
+define("CONTENT_PRESET_LAN_15", "jaar-tot");
+define("CONTENT_PRESET_LAN_16", "opties");
+define("CONTENT_PRESET_LAN_17", "meer toevoegen");
+define("CONTENT_PRESET_LAN_18", "voorkeuze toevoegen");
+define("CONTENT_PRESET_LAN_19", "je moet een gelijk aantal tekst en waarde velden opgeven");
+define("CONTENT_PRESET_LAN_20", "je moet een waarde voor het selectieveld opgeven");
+define("CONTENT_PRESET_LAN_21", "tekst");
+define("CONTENT_PRESET_LAN_22", "waarde");
 
 ?>

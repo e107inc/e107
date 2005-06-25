@@ -61,11 +61,17 @@ define("EPL_ADLAN_42", "Er is een fout opgetreden, kan het bestand niet uitpakke
 define("EPL_ADLAN_43", "De plugin is geupload en uitgepakt, blader omlaag om de plugin in de lijst te zien.");
 define("EPL_ADLAN_44", "Auto plugin upload en uitpakken is gedeactiveerd omdat de plugins directory niet de juiste permissies heeft. Wijzig de rechten op de e107_plugins directory in CHMOD 777."); 
 define("EPL_ADLAN_45", "Het menuscript is geupload en uitgepakt. Ga naar <a href='".e_ADMIN."menu.php'>je beheerpagina</a> om te activeren.");
+define("EPL_ADLAN_46", "RSS instellingen succesvol gecreëerd");
+define("EPL_ADLAN_47", "RSS instellingen succesvol verwijderd");
+define("EPL_ADLAN_48", "Kon de RSS instellingen niet aanmaken");
+define("EPL_ADLAN_49", "Kon de RSS instellingen niet verwijderen");
 define("EPL_WEBSITE", "website");
 define("EPL_NOINSTALL", "Geen installatie nodig, activeer de plugin in het menubeheer scherm. Voor de-installatie, verwijder de ");
 define("EPL_DIRECTORY", "directorie.");
 define("EPL_NOINSTALL_1", "Voor de-installatie, verwijder de ");
 define("EPL_UPGRADE", "Upgrade");
 define("EPL_CONFIGURE", "Configureren");
+
+
 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/lan_date.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 04:44:35 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 09:18:07 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -24,6 +24,9 @@ define("LANDT_04s", "dagen");
 define("LANDT_05s", "uren");
 define("LANDT_06s", "minuten");
 define("LANDT_07s", "seconden");
-
-
+define("LANDT_08", "min");
+define("LANDT_08s", "min");
+define("LANDT_09", "sec");
+define("LANDT_09s", "sec");
+define("LANDT_AGO", "geleden");
 ?>

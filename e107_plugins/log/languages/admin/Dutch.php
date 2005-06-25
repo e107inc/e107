@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/Dutch.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 04:44:54 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 09:18:07 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -47,4 +47,8 @@ define("ADSTAT_L25", "Geselecteerde statistieken op nul gesteld");
 define("ADSTAT_L26", "Verwijder pagina regels");
 define("ADSTAT_L27", "als je stats onjuiste pagina's bevat, kun je ze hier verwijderen");
 define("ADSTAT_L28", "Open pagina");
+define("ADSTAT_L29", "Paginanaam");
+define("ADSTAT_L30", "Aankruisen om te verwijderen");
+define("ADSTAT_L31", "Verwijder geselecteerde pagina's");
+define("ADSTAT_L32", "Pagina schonen");
 ?>

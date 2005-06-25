@@ -31,7 +31,7 @@ define("BNRLAN_34", "Aangeschafte doorkliks");
 define("BNRLAN_35", "onbeperkt");
 define("BNRLAN_36", "Startdatum");
 define("BNRLAN_37", "Einddatum");
-define("BNRLAN_38", "blanco = onbegrensd");
+define("BNRLAN_38", "blanco is onbegrensd");
 define("BNRLAN_39", "Actief");
 define("BNRLAN_40", "Bijwerken banner");
 define("BNRLAN_41", "Maak nieuwe banner");
@@ -44,6 +44,8 @@ define("BNRLAN_59", "creëer nieuwe banner");
 define("BNRLAN_60", "campagnes");
 define("BNRLAN_61", "banner menu ");
 define("BNRLAN_62", "banner opties");
+define("BNRLAN_63", "Banner aangemaakt");
+define("BNRLAN_64", "Banner bijgewerkt");
 
 define("BANNER_MENU_L1", "Advertentie");
 define("BANNER_MENU_L2", "Banner menu configuratie opgeslagen");

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Dutch.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-22 18:26:25 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-25 09:18:07 $
+|     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Links");
@@ -213,21 +213,29 @@ define("LCLAN_158", "Aankruisen maakt de link categorie alleen zichtbaar voor de
 define("LCLAN_159", "bepaal hoe de link wordt geopend");
 define("LCLAN_160", "bepaa; welke gebruikers deze link kunnen zien");
 define("LCLAN_161", "aankruisen om datum en tijd op de huidige tijd in te stellen");
-define("LCLAN_162", "volg vorig");
-define("LCLAN_163", "toon volg vorig knoppen");
+define("LCLAN_162", "volg-vorig");
+define("LCLAN_163", "toon volg_vorig knoppen");
 define("LCLAN_164", "wanneer geactiveerd wordt slechts een beperkt aantal links op een enkele pagina getoond en kun je door de pagina's navigeren om meer links te zien.");
 define("LCLAN_165", "links per pagina");
 define("LCLAN_166", "hoeveel links wil je op een pagina tonen?");
-define("LCLAN_167", "dit wordt alleen gebruikt als de vol vorig beperking is ingesteld");
-define("LCLAN_168", "");
-define("LCLAN_169", "");
+define("LCLAN_167", "dit wordt alleen gebruikt als de volg_vorig beperking is ingesteld");
+define("LCLAN_168", "OP");
+define("LCLAN_169", "NEER");
+define("LCLAN_170", "link_naam");
+define("LCLAN_171", "link_url");
+define("LCLAN_172", "link_volgorde");
+define("LCLAN_173", "link_verwijzer");
+define("LCLAN_174", "link_pictogram");
+define("LCLAN_175", "link_neer");
+define("LCLAN_176", "link categorienaam");
+define("LCLAN_177", "link categorie id");
 
 define("LCLAN_ADMINMENU_1", "Link opties");
 define("LCLAN_ADMINMENU_2", "Beheren linkcategorieën");
 define("LCLAN_ADMINMENU_3", "Creëren linkcategorie");
 define("LCLAN_ADMINMENU_4", "Beheren links");
 define("LCLAN_ADMINMENU_5", "Creëren link");
-define("LCLAN_ADMINMENU_6", "Optirs");
+define("LCLAN_ADMINMENU_6", "Opties");
 define("LCLAN_ADMINMENU_7", "Aangemelde links");
 define("LCLAN_ADMINMENU_8", "Categorieën");
 
