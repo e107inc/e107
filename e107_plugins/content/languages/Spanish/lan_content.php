@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-06-25 08:35:06 $
+|     $Revision: 1.14 $
+|     $Date: 2005-06-25 23:14:45 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -319,7 +319,7 @@ define("CONTENT_ADMIN_OPT_LAN_219", "Escoja que secciones se mostrarán cuando v
 define("CONTENT_ADMIN_OPT_LAN_220", "Icono listaAutor");
 define("CONTENT_ADMIN_OPT_LAN_221", "Tags de datos preseleccionados");
 define("CONTENT_ADMIN_OPT_LAN_222", "Defina tags de datos preseleccionados personalizados");
-define("CONTENT_ADMIN_OPT_LAN_223", "Aquí puede proveer tags de datos preseleccionados. Los campos que provea aquí son las claves para la clave=>valor de tags de datos. Tendrán un campo de texto para el valor a fijar el el formulario de creación  del admin. Nota: No forman parte de los tags de dtos personalizados que especificó arriba, y serán usados adicionalmente.<br />Estos tags rpeseleccionados son muy útiles si desea crear un tag estandar disponible para cada elemento. POr ejemplo, si quiere poder definir siempre un valor para  'fotógrafo' puede crear un tag preseleccionado, el cual siempre se mostrará para cada nuevo elemento de esta categoría principal.");
+define("CONTENT_ADMIN_OPT_LAN_223", "Aquí puede proveer tags de datos preseleccionados. Los campos que provea aquí son las claves para la clave=>valor de tags de datos. Tendrán un campo de texto para el valor a fijar el el formulario de creación  del admin. Puede escoger desde el menú desplegable que tipo de preselección quiere para el tag de datos. Nota: No forman parte de los tags de dtos personalizados que especificó arriba, y serán usados adicionalmente.<br />Estos tags rpeseleccionados son muy útiles si desea crear un tag estandar disponible para cada elemento. POr ejemplo, si quiere poder definir siempre un valor para  'fotógrafo' puede crear un tag preseleccionado, el cual siempre se mostrará para cada nuevo elemento de esta categoría principal.");
 define("CONTENT_ADMIN_OPT_LAN_224", "css");
 define("CONTENT_ADMIN_OPT_LAN_225", "Defina la hoja de cascada de estilos css del tema para esta categoría principal");
 define("CONTENT_ADMIN_OPT_LAN_226", "Si el css seleccionado no existe, se usará el css de contenido por defecto");
@@ -397,6 +397,18 @@ define("CONTENT_ADMIN_OPT_LAN_297", "Selección");
 define("CONTENT_ADMIN_OPT_LAN_298", "Fecha");
 define("CONTENT_ADMIN_OPT_LAN_299", "Checkbox");
 define("CONTENT_ADMIN_OPT_LAN_300", "Radio");
+define("CONTENT_ADMIN_OPT_LAN_301", "Índice de artículos");
+define("CONTENT_ADMIN_OPT_LAN_302", "Defina el tipo de renderizado para las multipáginas en el índice de artículos");
+define("CONTENT_ADMIN_OPT_LAN_303", "Si tiene artículos multipágina, puede mostrar el índice de artículos como una lista de enlaces, o mostrarlos en una caja de selección");
+define("CONTENT_ADMIN_OPT_LAN_304", "Tamaño máx de imagen");
+define("CONTENT_ADMIN_OPT_LAN_305", "Defina el tamaño al que lre redimensionarán las imágenes transferidas");
+define("CONTENT_ADMIN_OPT_LAN_306", "Si el alto o ancho de la imagen transferida es mayor que la dada, la imagen se redimensionará a este valor.<br />las imágenes popup también estarán redimensionadas.");
+define("CONTENT_ADMIN_OPT_LAN_307", "Tamaño imagen miniatura");
+define("CONTENT_ADMIN_OPT_LAN_308", "Defina el tamaño de la imágenes miniatura con las imágenes transferidas");
+define("CONTENT_ADMIN_OPT_LAN_309", "Si el tamaño de las imágenes transferidas es mayor que el valor dado, la imagen se redimensionará a este valor.<br />Las imágenes también se mostrarán así en la página de contenidos.");
+define("CONTENT_ADMIN_OPT_LAN_310", "Ancho máx de icono");
+define("CONTENT_ADMIN_OPT_LAN_311", "Defina el ancho máximo del icono a transferir");
+define("CONTENT_ADMIN_OPT_LAN_312", "Si el tamaño del icono es mayor que el dado, el icono se redimensionará al este valor.<br />El icono también se mostrará a este valor.");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "Campos obligatorios en blanco");
 define("CONTENT_ADMIN_ITEM_LAN_1", "Contenido creado");
@@ -744,7 +756,7 @@ define("CONTENT_LAN_85", "ListaAutor");
 define("CONTENT_LAN_86", "Ver los elementos más puntuados");
 define("CONTENT_LAN_87", "Contenido de más puntuación");
 define("CONTENT_LAN_88", "No hay contenidos con puntuación todavía");
-define("CONTENT_LAN_89", "");
+define("CONTENT_LAN_89", "Seleccione página");
 
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "En este punto no se permiten sumisiones de categorías de contenido");
 define("CONTENT_ADMIN_SUBMIT_LAN_1", "Tipos de contenidos enviados");
@@ -881,5 +893,7 @@ define("CONTENT_PRESET_LAN_19", "Necesita proveer una cantidad igual de texto y 
 define("CONTENT_PRESET_LAN_20", "Necesita proveer un valor para el Checkbox");
 define("CONTENT_PRESET_LAN_21", "Texto");
 define("CONTENT_PRESET_LAN_22", "Valor");
+define("CONTENT_PRESET_LAN_23", "Escoja texto");
+define("CONTENT_PRESET_LAN_24", "La primera opción sin valor");
 
 ?>
