@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.13 $
-|		$Date: 2005-06-13 14:03:53 $
+|		$Revision: 1.14 $
+|		$Date: 2005-06-25 22:18:17 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -144,14 +144,14 @@ if(isset($qs[0]) && $qs[0]=="content" && $qs[1] == "submit" && is_numeric($qs[2]
 		$array			= $aa -> getCategoryTree("", $qs[2], TRUE);
 		$validparent	= implode(",", array_keys($array));
 		$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
-		
+
 		$sql2 = new db;
 		$contenttotal = $sql2 -> db_Count($plugintable, "(*)", "WHERE ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' " );
-		if($contenttotal == "0"){
+		//if($contenttotal == "0"){
 			//header("location:".e_SELF); exit;
-		}else{
+		//}else{
 			$aform -> show_create_content("submit");
-		}
+		//}
 }
 
 require_once(FOOTERF);

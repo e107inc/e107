@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.8 $
-|		$Date: 2005-06-24 14:33:02 $
+|		$Revision: 1.9 $
+|		$Date: 2005-06-25 22:18:17 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -22,21 +22,34 @@ $plugindir		= e_PLUGIN."content/";
 $plugintable	= "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
 $datequery		= " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
 
+$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
+include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
+
+require_once($plugindir."handlers/content_class.php");
+$aa = new content;
+
 class content_convert{
 
+		//update table structure
+		function upgrade_1_2(){
+			global $sql;
+			$sql = new db;
+			$sql->db_Select_gen("ALTER TABLE ".MPREFIX."pcontent ADD content_score INT( 3 ) UNSIGNED NOT NULL default '0'");
+			$sql->db_Select_gen("ALTER TABLE ".MPREFIX."pcontent ADD content_meta TEXT NOT NULL");
+			$sql->db_Select_gen("ALTER TABLE ".MPREFIX."pcontent ADD content_layout varchar( 100 ) NOT NULL default ''");
+			return "Content Management Plugin table structure updated<br />";
+		}
 
 		//convert rows
-		function upgrade_content(){
+		function upgrade_1_1(){
 				global $sql, $tp, $plugintable, $eArrayStorage;
+				$plugintable	= "pcontent";
 
 				$count = "0";
 				// ##### STAGE 8 : INSERT ROW -------------------------------------------------------------
-				if(!is_object($sql)){ $sql = new db; }
-				$sql -> db_Count("pcontent", "(*)", " WHERE content_id!='0' " );
-				if(!$thiscount = $sql -> db_Select("pcontent", "*", "ORDER BY content_id ", "mode=no_where" )){
-					$check_upgrade = false;
-				}else{
-					$check_upgrade = true;
+				$sql = new db;
+				$thiscount = $sql -> db_Count("pcontent", "(*)");
+				if($thiscount > 0){
 					while($row = $sql -> db_Fetch()){
 
 						//main parent
@@ -52,13 +65,10 @@ class content_convert{
 							$newparent = substr(strrchr($row['content_parent'], "."),1);
 						}
 
-						if(!is_object($sql5)){ $sql5 = new db; }
-						$sql5 -> db_Update("pcontent", " content_parent = '".$newparent."', content_pref='' WHERE content_id='".$row['content_id']."' ");
-						$count++;
+						$sql -> db_Update("pcontent", " content_parent = '".$newparent."', content_pref='' WHERE content_id='".$row['content_id']."' ");
 					}
 				}
-				$message = CONTENT_ADMIN_CONVERSION_LAN_58."<br /><br />".CONTENT_ADMIN_CONVERSION_LAN_46;
-				return $message;
+				return CONTENT_ADMIN_CONVERSION_LAN_58."<br /><br />".CONTENT_ADMIN_CONVERSION_LAN_46;
 		}
 
 
@@ -66,6 +76,7 @@ class content_convert{
 
 		function show_main_intro(){
 						global $sql, $ns, $rs, $type, $type_id, $action, $sub_action, $id, $plugintable;
+						$plugintable	= "pcontent";
 
 						if(!is_object($sql)){ $sql = new db; }
 						$newcontent = $sql -> db_Count($plugintable, "(*)", "");
@@ -133,7 +144,14 @@ class content_convert{
 		//function to insert default preferences for a main parent
 		function insert_default_prefs($id){
 				global $sql, $aa, $plugintable, $eArrayStorage;
+				$plugintable	= "pcontent";
+				$plugindir		= e_PLUGIN."content/";
 				unset($content_pref, $tmp);
+				
+				if(!is_object($aa)){
+					require_once($plugindir."handlers/content_class.php");
+					$aa = new content;
+				}
 
 				$content_pref = $aa -> ContentDefaultPrefs($id);
 				$tmp = $eArrayStorage->WriteArray($content_pref);
@@ -145,6 +163,7 @@ class content_convert{
 		//function to convert comments
 		function convert_comments(){
 				global $plugintable;
+				$plugintable	= "pcontent";
 
 				if(!is_object($sqlcc)){ $sqlcc = new db; }
 				$numc = $sqlcc -> db_Count("comments", "(*)", "WHERE comment_type = '1' ");
@@ -157,14 +176,8 @@ class content_convert{
 		//function to convert rating
 		function convert_rating(){
 				global $plugintable;
+				$plugintable	= "pcontent";
 
-				/*
-				if(!is_object($sqlcr)){ $sqlcr = new db; }
-				$numr = $sqlcr -> db_Count("rate", "(*)", "WHERE rate_table = '".$table."' ");
-				if($numr > 0){
-					$sqlcr -> db_Update("rate", "rate_table = '".$plugintable."' WHERE rate_table = '".$table."' ");
-				}
-				*/
 				if(!is_object($sqlcr)){ $sqlcr = new db; }
 				$numr = $sqlcr -> db_Count("rate", "(*)", "WHERE (rate_table = 'article' || rate_table = 'review' || rate_table = 'content') ");
 				if($numr > 0){
@@ -176,20 +189,23 @@ class content_convert{
 		//create main parent
 		function create_mainparent($name, $tot, $order){
 				global $sql, $aa, $plugintable;
+				$plugintable	= "pcontent";
 
+				$sql = new db;
 				$sql -> db_Select("content", "MAX(content_id) as maxcid", "", "mode=no_where");
 				list($maxcid) = $sql -> db_Fetch();
 				$newid = $maxcid + $order;
 
 				// ##### STAGE 4 : INSERT MAIN PARENT FOR ARTICLE ---------------------------------------------
 				$checkinsert = FALSE;
-				if($tot > "0"){
-					if(!is_object($sql)){ $sql = new db; }
+				if($tot > 0){
+					//if(!is_object($sql)){ $sql = new db; }
 					if(!$sql -> db_Select($plugintable, "content_heading", "content_heading = '".$name."' AND content_parent = '0' ")){
-						$sql -> db_Insert($plugintable, "'".$newid."', '".$name."', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '".$order."' ");
+						$sql -> db_Insert($plugintable, "'".$newid."', '".$name."', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '".$order."', '', '', '' ");
 
 						//check if row is present in the db (is it a valid insert)
-						if(!is_object($sql2)){ $sql2 = new db; }
+						//if(!is_object($sql2)){ $sql2 = new db; }
+						$sql2 = new db;
 						if(!$sql2 -> db_Select($plugintable, "content_id", "content_heading = '".$name."' ")){
 							$message = CONTENT_ADMIN_CONVERSION_LAN_45;
 						}else{
@@ -197,7 +213,8 @@ class content_convert{
 							$checkinsert = TRUE;
 
 							//select main parent id
-							if(!is_object($sql3)){ $sql3 = new db; }
+							$sql3 = new db;
+							//if(!is_object($sql3)){ $sql3 = new db; }
 							$sql3 -> db_Select($plugintable, "content_id", "content_heading = '".$name."' AND content_parent = '0' ");
 							list($main_id) = $sql3 -> db_Fetch();
 
@@ -228,8 +245,9 @@ class content_convert{
 				$totaloldrowsunknown = $sql -> db_Select("content", "*", " NOT ( (content_parent = '0' AND content_type = '1') || (content_parent = '0' AND content_type = '6') || (content_parent = '0' AND content_type = '10') || (content_type = '3' || content_type = '16') || (content_type = '0' || content_type = '15') ) ");
 
 				while($row = $sql -> db_Fetch()){
-					$unknown_bug[]		= $row['content_id']." ".$row['content_heading']." - parent=".$row['content_parent']." - type=".$row['content_type'];
+					$unknown_bug[]		= $row['content_id']." ".$row['content_heading'];
 					$unknown_bug_id[]	= $row['content_id'];
+					$unknown_bug_type[]	= "parent=".$row['content_parent']." - type=".$row['content_type'];
 				}
 				$analyse_unknown = array($unknown_bug, $unknown_bug_id);
 				return $analyse_unknown;
@@ -239,6 +257,7 @@ class content_convert{
 		//convert categories
 		function convert_category($name, $query, $ordernr){
 				global $sql, $plugintable, $tp;
+				$plugintable	= "pcontent";
 
 				// ##### STAGE 7 : INSERT CATEGORY ----------------------------------------------------
 				if(!is_object($sql)){ $sql = new db; }
@@ -272,9 +291,12 @@ class content_convert{
 						$newcontent_endtime		= "0";
 						$newcontent_class		= $row['content_class'];
 						$newcontent_pref		= "";
+						$newcontent_score		= "";
+						$newcontent_meta		= "";
+						$newcontent_layout		= "";
 
 						if(!is_object($sql3)){ $sql3 = new db; }
-						$sql3 -> db_Insert($plugintable, "'".$row['content_id']."', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '".$count."' ");
+						$sql3 -> db_Insert($plugintable, "'".$row['content_id']."', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '".$count."', '".$newcontent_score."', '".$newcontent_meta."', '".$newcontent_layout."' ");
 
 						if(!$sql3 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
 							$bug_cat_insert[]	= $row['content_id']." ".$row['content_heading'];
@@ -292,6 +314,7 @@ class content_convert{
 		//convert rows
 		function convert_row($name, $query, $startorder){
 				global $sql, $tp, $plugintable, $eArrayStorage;
+				$plugintable	= "pcontent";
 
 				// ##### STAGE 8 : INSERT ROW -------------------------------------------------------------
 				if(!is_object($sql)){ $sql = new db; }
@@ -355,16 +378,13 @@ class content_convert{
 						$newcontent_starttime	= $row['content_datestamp'];
 						$newcontent_endtime		= "0";
 						$newcontent_class		= $row['content_class'];
-								
-						$custom["content_custom_score"] = ($row['content_review_score'] && $row['content_review_score'] != "none" ? $row['content_review_score'] : "");
-						if($custom["content_custom_score"] != ""){
-							$newcontent_pref = $eArrayStorage->WriteArray($custom);
-						}else{
-							$newcontent_pref = "";
-						}
+						$newcontent_pref		= "";
+						$newcontent_score		= ($row['content_review_score'] && $row['content_review_score'] != "none" ? $row['content_review_score'] : "");
+						$newcontent_meta		= "";
+						$newcontent_layout		= "";
 
 						if(!is_object($sql5)){ $sql5 = new db; }
-						$sql5 -> db_Insert($plugintable, "'".$row['content_id']."', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '1.".$count."' ");
+						$sql5 -> db_Insert($plugintable, "'".$row['content_id']."', '".$newcontent_heading."', '".$newcontent_subheading."', '".$newcontent_summary."', '".$newcontent_text."', '".$newcontent_author."', '".$newcontent_icon."', '".$newcontent_attach."', '".$newcontent_images."', '".$newcontent_parent."', '".$newcontent_comment."', '".$newcontent_rate."', '".$newcontent_pe."', '".$newcontent_refer."', '".$newcontent_starttime."', '".$newcontent_endtime."', '".$newcontent_class."', '".$newcontent_pref."', '1.".$count."', '".$newcontent_score."', '".$newcontent_meta."', '".$newcontent_layout."' ");
 
 						if(!is_object($sql6)){ $sql6 = new db; }
 						if(!$sql6 -> db_Select($plugintable, "content_id, content_heading", "content_heading = '".$newcontent_heading."' ")){
@@ -396,7 +416,7 @@ class content_convert{
 					if(count($array[1]) > 0 ){
 						$text .= "
 						<tr>
-							<td class='forumheader3' style='width:5%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_3." : ".count($array[1])." ".CONTENT_ADMIN_CONVERSION_LAN_38."</td>
+							<td class='forumheader3' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ADMIN_CONVERSION_LAN_3." : ".count($array[1])." ".CONTENT_ADMIN_CONVERSION_LAN_38."</td>
 							<td class='forumheader3'><a style='cursor:pointer;' onclick=\"expandit('validcat_{$name}');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
 								<div id='validcat_{$name}' style='display: none;'>
 									<table style='width:100%; border:0;'>";
@@ -418,7 +438,7 @@ class content_convert{
 					if(count($array[2]) > 0 ){
 						$text .= "
 						<tr>
-							<td class='forumheader3' style='width:5%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_3." : ".count($array[2])." ".CONTENT_ADMIN_CONVERSION_LAN_39."</td>
+							<td class='forumheader3' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ADMIN_CONVERSION_LAN_3." : ".count($array[2])." ".CONTENT_ADMIN_CONVERSION_LAN_39."</td>
 							<td class='forumheader3'><a style='cursor:pointer;' onclick=\"expandit('failedcat_{$name}');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
 								<div id='failedcat_{$name}' style='display: none;'>
 									<table style='width:100%; border:0;'>";
@@ -437,13 +457,15 @@ class content_convert{
 					}
 					$text .= "
 					<tr>
-						<td class='forumheader3' style='width:5%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_3." : ".CONTENT_ADMIN_CONVERSION_LAN_27."</td>
+						<td class='forumheader3' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ADMIN_CONVERSION_LAN_3." : ".CONTENT_ADMIN_CONVERSION_LAN_27."</td>
 						<td class='forumheader3'>
 							<a style='cursor: pointer; cursor: hand' onclick=\"expandit('analysecat_{$name}');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
 							<div id='analysecat_{$name}' style='display: none;'>
-								".$oldrows." ".CONTENT_ADMIN_CONVERSION_LAN_28."<br />
-								".count($array[1])." ".CONTENT_ADMIN_CONVERSION_LAN_29."<br />
-								".count($array[2])." ".CONTENT_ADMIN_CONVERSION_LAN_30."<br />
+								<table style='width:100%; border:0;'>
+								<tr><td style='width:25%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_28."</td><td>".$oldrows."</td></tr>
+								<tr><td style='width:25%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_29."</td><td>".count($array[1])."</td></tr>
+								<tr><td style='width:25%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_30."</td><td>".count($array[2])."</td></tr>
+								</table>
 							</div>
 						</td>
 					</tr>";
@@ -466,7 +488,7 @@ class content_convert{
 					if(count($array[2]) > 0 ){
 						$text .= "
 						<tr>
-							<td class='forumheader3' style='width:5%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_6." : ".count($array[2])." ".CONTENT_ADMIN_CONVERSION_LAN_38."</td>
+							<td class='forumheader3' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ADMIN_CONVERSION_LAN_6." : ".count($array[2])." ".CONTENT_ADMIN_CONVERSION_LAN_38."</td>
 							<td class='forumheader3'>
 								<a style='cursor:pointer;' onclick=\"expandit('valid_{$name}');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
 								<div id='valid_{$name}' style='display: none;'>
@@ -488,7 +510,7 @@ class content_convert{
 					if(count($array[4]) > 0 ){
 						$text .= "
 						<tr>
-							<td class='forumheader3' style='width:5%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_6." : ".count($array[4])." ".CONTENT_ADMIN_CONVERSION_LAN_31."</td>
+							<td class='forumheader3' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ADMIN_CONVERSION_LAN_6." : ".count($array[4])." ".CONTENT_ADMIN_CONVERSION_LAN_31."</td>
 							<td class='forumheader3'>
 								<a style='cursor:pointer;' onclick=\"expandit('oldcat_{$name}');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
 								<div id='oldcat_{$name}' style='display: none;'>
@@ -510,7 +532,7 @@ class content_convert{
 					if(count($array[5]) > 0 ){
 						$text .= "
 						<tr>
-							<td class='forumheader3' style='width:5%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_6." : ".count($array[5])." ".CONTENT_ADMIN_CONVERSION_LAN_31."</td>
+							<td class='forumheader3' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ADMIN_CONVERSION_LAN_6." : ".count($array[5])." ".CONTENT_ADMIN_CONVERSION_LAN_31."</td>
 							<td class='forumheader3'>
 								<a style='cursor:pointer;' onclick=\"expandit('newcat_{$name}');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
 								<div id='newcat_{$name}' style='display: none;'>
@@ -532,7 +554,7 @@ class content_convert{
 					if(count($array[3]) > 0 ){
 						$text .= "
 						<tr>
-							<td class='forumheader3' style='width:5%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_6." : ".count($array[3])." ".CONTENT_ADMIN_CONVERSION_LAN_39."</td>
+							<td class='forumheader3' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ADMIN_CONVERSION_LAN_6." : ".count($array[3])." ".CONTENT_ADMIN_CONVERSION_LAN_39."</td>
 							<td class='forumheader3'>
 								<a style='cursor: pointer; cursor: hand' onclick=\"expandit('failed_{$name}');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
 								<div id='failed_{$name}' style='display: none;'>
@@ -554,19 +576,22 @@ class content_convert{
 					//analyses
 					$text .= "
 					<tr>
-						<td class='forumheader3' style='width:5%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_6." : ".CONTENT_ADMIN_CONVERSION_LAN_27."</td>
+						<td class='forumheader3' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ADMIN_CONVERSION_LAN_6." : ".CONTENT_ADMIN_CONVERSION_LAN_27."</td>
 						<td class='forumheader3'>
 							<a style='cursor: pointer; cursor: hand' onclick=\"expandit('analyse_{$name}');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
 							<div id='analyse_{$name}' style='display: none;'>
-								".$oldrows." ".CONTENT_ADMIN_CONVERSION_LAN_28."<br />
-								".count($array[2])." ".CONTENT_ADMIN_CONVERSION_LAN_29."<br />
-								".count($array[3])." ".CONTENT_ADMIN_CONVERSION_LAN_30."<br />
-								".count($array[4])." ".CONTENT_ADMIN_CONVERSION_LAN_31."<br />
-								".count($array[5])." ".CONTENT_ADMIN_CONVERSION_LAN_31."<br />
+								<table style='width:100%; border:0;'>
+								<tr><td style='width:25%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_28."</td><td>".$oldrows."</td></tr>
+								<tr><td style='width:25%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_29."</td><td>".count($array[2])."</td></tr>
+								<tr><td style='width:25%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_30."</td><td>".count($array[3])."</td></tr>
+								<tr><td style='width:25%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_31."</td><td>".count($array[4])."</td></tr>
+								<tr><td style='width:25%; white-space:nowrap;'>".CONTENT_ADMIN_CONVERSION_LAN_31."</td><td>".count($array[5])."</td></tr>
+								</table>
 							</div>
 						</td>
 					</tr>";
 				}
+
 
 				return $text;
 		}
@@ -577,17 +602,34 @@ class content_convert{
 				$text = "<tr><td class='fcaption' colspan='2'>".CONTENT_ADMIN_CONVERSION_LAN_50."</td></tr>";
 				$text .= "
 				<tr>
-					<td class='forumheader3' style='width:5%; white-space:nowrap;'>".($content[0] == "1" ? CONTENT_ICON_OK : CONTENT_ICON_ERROR)." ".CONTENT_ADMIN_CONVERSION_LAN_20."</td>
-					<td class='forumheader3'>".$content[1]."</td>
+					<td class='forumheader3' style='width:5%; white-space:nowrap; vertical-align:top;'>".($content[0] == "1" ? CONTENT_ICON_OK : CONTENT_ICON_ERROR)." ".CONTENT_ADMIN_CONVERSION_LAN_20."</td>
+					<td class='forumheader3'>
+						<a style='cursor: pointer; cursor: hand' onclick=\"expandit('contentmain');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
+						<div id='contentmain' style='display: none;'>
+							".$content[1]."
+						</div>
+					</td>
 				</tr>
 				<tr>
-					<td class='forumheader3' style='width:5%; white-space:nowrap;'>".($review[0] == "1" ? CONTENT_ICON_OK : CONTENT_ICON_ERROR)." ".CONTENT_ADMIN_CONVERSION_LAN_21."</td>
-					<td class='forumheader3'>".$review[1]."</td>
+					<td class='forumheader3' style='width:5%; white-space:nowrap; vertical-align:top;'>".($review[0] == "1" ? CONTENT_ICON_OK : CONTENT_ICON_ERROR)." ".CONTENT_ADMIN_CONVERSION_LAN_21."</td>
+					<td class='forumheader3'>
+						<a style='cursor: pointer; cursor: hand' onclick=\"expandit('reviewmain');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
+						<div id='reviewmain' style='display: none;'>
+							".$review[1]."
+						</div>
+					</td>
 				</tr>
 				<tr>
-					<td class='forumheader3' style='width:5%; white-space:nowrap;'>".($article[0] == "1" ? CONTENT_ICON_OK : CONTENT_ICON_ERROR)." ".CONTENT_ADMIN_CONVERSION_LAN_22."</td>
-					<td class='forumheader3'>".$article[1]."</td>
+					<td class='forumheader3' style='width:5%; white-space:nowrap; vertical-align:top;'>".($article[0] == "1" ? CONTENT_ICON_OK : CONTENT_ICON_ERROR)." ".CONTENT_ADMIN_CONVERSION_LAN_22."</td>
+					<td class='forumheader3'>
+						<a style='cursor: pointer; cursor: hand' onclick=\"expandit('articlemain');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
+						<div id='articlemain' style='display: none;'>
+							".$article[1]."
+						</div>
+					</td>
 				</tr>";
+
+							
 
 				return $text;
 		}

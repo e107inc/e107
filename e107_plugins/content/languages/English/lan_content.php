@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2005-06-25 12:15:25 $
+|     $Revision: 1.59 $
+|     $Date: 2005-06-25 22:18:17 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -800,23 +800,23 @@ define("CONTENT_ADMIN_CONVERSION_LAN_7", "main parent inserted");
 define("CONTENT_ADMIN_CONVERSION_LAN_8", "main parent preferences inserted");
 define("CONTENT_ADMIN_CONVERSION_LAN_9", "no");
 define("CONTENT_ADMIN_CONVERSION_LAN_10", "main parent needed");
-define("CONTENT_ADMIN_CONVERSION_LAN_11", "CONVERSION ANALYSIS");
+define("CONTENT_ADMIN_CONVERSION_LAN_11", "conversion analysis");
 define("CONTENT_ADMIN_CONVERSION_LAN_12", "total rows to convert");
 define("CONTENT_ADMIN_CONVERSION_LAN_13", "total converted rows");
 define("CONTENT_ADMIN_CONVERSION_LAN_14", "total warnings");
 define("CONTENT_ADMIN_CONVERSION_LAN_15", "total failures");
-define("CONTENT_ADMIN_CONVERSION_LAN_16", "OLD CONTENT TABLE : ANALYSIS");
+define("CONTENT_ADMIN_CONVERSION_LAN_16", "analysis of the old content table");
 define("CONTENT_ADMIN_CONVERSION_LAN_17", "total rows");
 define("CONTENT_ADMIN_CONVERSION_LAN_18", "unknown rows");
 define("CONTENT_ADMIN_CONVERSION_LAN_19", "all rows are familiar");
-define("CONTENT_ADMIN_CONVERSION_LAN_20", "CONTENT MAIN PARENT");
-define("CONTENT_ADMIN_CONVERSION_LAN_21", "REVIEW MAIN PARENT");
-define("CONTENT_ADMIN_CONVERSION_LAN_22", "ARTICLE MAIN PARENT");
+define("CONTENT_ADMIN_CONVERSION_LAN_20", "content main parent");
+define("CONTENT_ADMIN_CONVERSION_LAN_21", "review main parent");
+define("CONTENT_ADMIN_CONVERSION_LAN_22", "article main parent");
 define("CONTENT_ADMIN_CONVERSION_LAN_23", "insertion failed");
-define("CONTENT_ADMIN_CONVERSION_LAN_24", "NO CONTENT PAGES PRESENT");
-define("CONTENT_ADMIN_CONVERSION_LAN_25", "CONTENT PAGES PRESENT");
+define("CONTENT_ADMIN_CONVERSION_LAN_24", "no content pages present");
+define("CONTENT_ADMIN_CONVERSION_LAN_25", "content pages present");
 define("CONTENT_ADMIN_CONVERSION_LAN_26", "inserted");
-define("CONTENT_ADMIN_CONVERSION_LAN_27", "conversion analysis");
+define("CONTENT_ADMIN_CONVERSION_LAN_27", "analysis of the conversion");
 define("CONTENT_ADMIN_CONVERSION_LAN_28", "total old rows");
 define("CONTENT_ADMIN_CONVERSION_LAN_29", "total new rows");
 define("CONTENT_ADMIN_CONVERSION_LAN_30", "failed");
@@ -852,8 +852,8 @@ define("CONTENT_ADMIN_CONVERSION_LAN_58", "upgrade succesfull<br /><br /><b>Plea
 define("CONTENT_ADMIN_CONVERSION_LAN_59", "convert table");
 define("CONTENT_ADMIN_CONVERSION_LAN_60", "create defaults");
 define("CONTENT_ADMIN_CONVERSION_LAN_61", "create new category");
-define("CONTENT_ADMIN_CONVERSION_LAN_62", "");
-define("CONTENT_ADMIN_CONVERSION_LAN_63", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_62", "Content Management Plugin Version updated to version:");
+define("CONTENT_ADMIN_CONVERSION_LAN_63", "upgrade");
 define("CONTENT_ADMIN_CONVERSION_LAN_64", "");
 define("CONTENT_ADMIN_CONVERSION_LAN_65", "");
 

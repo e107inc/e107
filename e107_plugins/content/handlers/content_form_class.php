@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.67 $
-|		$Date: 2005-06-25 12:15:25 $
+|		$Revision: 1.68 $
+|		$Date: 2005-06-25 22:18:17 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -188,23 +188,22 @@ class contentform{
 
 						//normal admin content create preferences
 						}else{
-							$checkicon = (isset($content_pref["content_admin_icon_{$mainparent}"]) ? $content_pref["content_admin_icon_{$mainparent}"] : "");
-							$checkattach = (isset($content_pref["content_admin_attach_{$mainparent}"]) ? $content_pref["content_admin_attach_{$mainparent}"] : "");
-							$checkattachnumber = (isset($content_pref["content_admin_files_number_{$mainparent}"]) ? $content_pref["content_admin_files_number_{$mainparent}"] : "");
-							$checkimages = (isset($content_pref["content_admin_images_{$mainparent}"]) ? $content_pref["content_admin_images_{$mainparent}"] : "");
-							$checkimagesnumber = (isset($content_pref["content_admin_images_number_{$mainparent}"]) ? $content_pref["content_admin_images_number_{$mainparent}"] : "");
-							$checkcomment = (isset($content_pref["content_admin_comment_{$mainparent}"]) ? $content_pref["content_admin_comment_{$mainparent}"] : "");
-							$checkrating = (isset($content_pref["content_admin_rating_{$mainparent}"]) ? $content_pref["content_admin_rating_{$mainparent}"] : "");
-							$checkscore = (isset($content_pref["content_admin_score_{$mainparent}"]) ? $content_pref["content_admin_score_{$mainparent}"] : "");
-							$checkpe = (isset($content_pref["content_admin_pe_{$mainparent}"]) ? $content_pref["content_admin_pe_{$mainparent}"] : "");
-							$checkvisibility = (isset($content_pref["content_admin_visibility_{$mainparent}"]) ? $content_pref["content_admin_visibility_{$mainparent}"] : "");
-							$checkmeta = (isset($content_pref["content_admin_meta_{$mainparent}"]) ? $content_pref["content_admin_meta_{$mainparent}"] : "");
-							$checkcustom = (isset($content_pref["content_admin_customtags_{$mainparent}"]) ? $content_pref["content_admin_customtags_{$mainparent}"] : "");
-							$checkcustomnumber = (isset($content_pref["content_admin_custom_number_{$mainparent}"]) ? $content_pref["content_admin_custom_number_{$mainparent}"] : "");
-							$checklayout = (isset($content_pref["content_admin_layout_{$mainparent}"]) ? $content_pref["content_admin_layout_{$mainparent}"] : "");
-							$checkpreset = (isset($content_pref["content_admin_presettags_{$mainparent}"]) ? $content_pref["content_admin_presettags_{$mainparent}"] : "");
+							$checkicon			= (isset($content_pref["content_admin_icon_{$mainparent}"]) ? $content_pref["content_admin_icon_{$mainparent}"] : "");
+							$checkattach		= (isset($content_pref["content_admin_attach_{$mainparent}"]) ? $content_pref["content_admin_attach_{$mainparent}"] : "");
+							$checkattachnumber	= (isset($content_pref["content_admin_files_number_{$mainparent}"]) ? $content_pref["content_admin_files_number_{$mainparent}"] : "");
+							$checkimages		= (isset($content_pref["content_admin_images_{$mainparent}"]) ? $content_pref["content_admin_images_{$mainparent}"] : "");
+							$checkimagesnumber	= (isset($content_pref["content_admin_images_number_{$mainparent}"]) ? $content_pref["content_admin_images_number_{$mainparent}"] : "");
+							$checkcomment		= (isset($content_pref["content_admin_comment_{$mainparent}"]) ? $content_pref["content_admin_comment_{$mainparent}"] : "");
+							$checkrating		= (isset($content_pref["content_admin_rating_{$mainparent}"]) ? $content_pref["content_admin_rating_{$mainparent}"] : "");
+							$checkscore			= (isset($content_pref["content_admin_score_{$mainparent}"]) ? $content_pref["content_admin_score_{$mainparent}"] : "");
+							$checkpe			= (isset($content_pref["content_admin_pe_{$mainparent}"]) ? $content_pref["content_admin_pe_{$mainparent}"] : "");
+							$checkvisibility	= (isset($content_pref["content_admin_visibility_{$mainparent}"]) ? $content_pref["content_admin_visibility_{$mainparent}"] : "");
+							$checkmeta			= (isset($content_pref["content_admin_meta_{$mainparent}"]) ? $content_pref["content_admin_meta_{$mainparent}"] : "");
+							$checkcustom		= (isset($content_pref["content_admin_customtags_{$mainparent}"]) ? $content_pref["content_admin_customtags_{$mainparent}"] : "");
+							$checkcustomnumber	= (isset($content_pref["content_admin_custom_number_{$mainparent}"]) ? $content_pref["content_admin_custom_number_{$mainparent}"] : "");
+							$checklayout		= (isset($content_pref["content_admin_layout_{$mainparent}"]) ? $content_pref["content_admin_layout_{$mainparent}"] : "");
+							$checkpreset		= (isset($content_pref["content_admin_presettags_{$mainparent}"]) ? $content_pref["content_admin_presettags_{$mainparent}"] : "");
 						}
-
 						if($mode == "contentmanager"){ // used in contentmanager
 							$authordetails = $aa -> getAuthor(USERID);
 						}
@@ -223,6 +222,7 @@ class contentform{
 								$row['content_subheading']	= $tp -> toForm($row['content_subheading'], TRUE);
 								$row['content_summary']		= $tp -> toForm($row['content_summary'], TRUE);
 								$row['content_text']		= $tp -> toForm($row['content_text'], TRUE);
+								$row['content_meta']		= $tp -> toForm($row['content_meta'], TRUE);
 								//$row['content_text'] = $tp -> post_toHTML($row['content_text'], TRUE);
 								$authordetails				= $aa -> getAuthor($row['content_author']);
 							}
@@ -268,9 +268,9 @@ class contentform{
 								$row['content_class']				= $_POST['content_class'];
 								$row['content_refer']				= $_POST['content_refer'];
 								$row['content_datestamp']			= $_POST['content_datestamp'];
-								$custom['content_custom_score']		= $_POST['content_score'];
-								$custom['content_custom_meta']		= $_POST['content_meta'];
-								$custom['content_custom_template']	= $_POST['content_template'];
+								$row['content_score']				= $_POST['content_score'];
+								$row['content_meta']				= $_POST['content_meta'];
+								$row['content_layout']				= $_POST['content_layout'];
 
 								//custom tags
 								for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){
@@ -647,16 +647,6 @@ class contentform{
 							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 						}
 
-						
-						if(!(isset($_POST['preview_content']) || isset($message))){
-							$custom['content_custom_score']	= "";
-							$custom['content_custom_meta']	= "";
-							$custom['content_custom_template']	= "";
-							if(isset($row['content_pref'])){
-								$custom = $eArrayStorage->ReadArray($row['content_pref']);
-							}
-						}
-
 						if($checkscore){
 							//score
 							$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_40;
@@ -666,7 +656,7 @@ class contentform{
 								".$rs -> form_select_open("content_score")."
 								".$rs -> form_option(CONTENT_ADMIN_ITEM_LAN_41, 0, "none");
 								for($a=1; $a<=100; $a++){
-									$TOPIC_FIELD .= $rs -> form_option($a, ($custom['content_custom_score'] == $a ? "1" : "0"), $a);
+									$TOPIC_FIELD .= $rs -> form_option($a, ($row['content_score'] == $a ? "1" : "0"), $a);
 								}
 								$TOPIC_FIELD .= $rs -> form_select_close()."
 							";
@@ -678,7 +668,7 @@ class contentform{
 							$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_53;
 							$TOPIC_HEADING = CONTENT_ADMIN_ITEM_LAN_83;
 							$TOPIC_HELP = CONTENT_ADMIN_ITEM_LAN_70;
-							$TOPIC_FIELD = $rs -> form_text("content_meta", 80, $custom['content_custom_meta'], 250);
+							$TOPIC_FIELD = $rs -> form_text("content_meta", 80, $row['content_meta'], 250);
 							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 						}
 
@@ -699,8 +689,8 @@ class contentform{
 							$templatelist = $fl->get_files($dir,"content_content",$rejectlist);
 
 							//template
-							if(isset($custom['content_custom_template']) && $custom['content_custom_template'] != ""){
-								$check = $custom['content_custom_template'];
+							if(isset($row['content_layout']) && $row['content_layout'] != ""){
+								$check = $row['content_layout'];
 							}else{
 								if(isset($content_pref["content_layout_{$mainparent}"])){
 									$check = $content_pref["content_layout_{$mainparent}"];
@@ -712,7 +702,7 @@ class contentform{
 							$TOPIC_HEADING = CONTENT_ADMIN_ITEM_LAN_93;
 							$TOPIC_HELP = "";
 							$TOPIC_FIELD = "
-							".$rs -> form_select_open("content_template")."
+							".$rs -> form_select_open("content_layout")."
 							".$rs -> form_option(CONTENT_ADMIN_ITEM_LAN_94, 0, "none");
 							foreach($templatelist as $template){
 								$templatename = substr($template['fname'], 25, -4);
@@ -726,6 +716,12 @@ class contentform{
 						if( $checkcustom && $checkcustomnumber ){
 							$text .= $TOPIC_ROW_SPACER;
 						}
+						
+						if(!(isset($_POST['preview_content']) || isset($message))){
+							if(isset($row['content_pref']) && $row['content_pref']){
+								$custom = $eArrayStorage->ReadArray($row['content_pref']);
+							}
+						}
 
 						//custom data
 						$existing_custom = "0";
@@ -737,7 +733,7 @@ class contentform{
 						if($checkcustom && $checkcustomnumber){ $TOPIC_FIELD = "<table style='width:100%; border:0;'>"; }
 						if(!empty($custom)){						
 							foreach($custom as $k => $v){
-								if(substr($k,0,22) != "content_custom_preset_" && $k != "content_custom_presettags" && $k != "content_custom_score" && $k != "content_custom_meta" && $k != "content_custom_template"){
+								if(substr($k,0,22) != "content_custom_preset_" && $k != "content_custom_presettags"){
 									$key = substr($k,15);
 									if($checkcustom && $checkcustomnumber){
 										$TOPIC_FIELD .= "
@@ -1820,7 +1816,7 @@ class contentform{
 
 						return;
 		}
-
+/*
 		function show_main_intro(){
 						global $sql, $ns, $rs, $qs, $plugintable, $plugindir;
 
@@ -1918,7 +1914,7 @@ class contentform{
 							return true;
 						}
 		}
-
+*/
 		function show_admin_contentmanager_category(){
 						global $plugintable, $qs, $sql, $ns, $rs, $aa, $eArrayStorage;
 

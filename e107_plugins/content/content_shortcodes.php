@@ -176,7 +176,7 @@ SC_END
 
 SC_BEGIN CONTENT_SCORE_TABLE_SCORE
 global $CONTENT_SCORE_TABLE_SCORE, $row;
-$score = $row['score'];
+$score = $row['content_score'];
 $height = "height:8px;";
 $img = "";
 $img .= "<img src='".e_PLUGIN."content/images/score_end.png' alt='' style='$height width:1px; border:0;' />";
@@ -1007,8 +1007,8 @@ return $CONTENT_CONTENT_TABLE_FILE;
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_SCORE
-global $CONTENT_CONTENT_TABLE_SCORE, $custom;
-$score = $custom['content_custom_score'];
+global $CONTENT_CONTENT_TABLE_SCORE, $row;
+$score = $row['content_score'];
 if($score){
 	$height = "height:8px;";
 	$img = "";

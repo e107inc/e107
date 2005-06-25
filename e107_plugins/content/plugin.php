@@ -16,7 +16,7 @@
 global $PLUGINS_DIRECTORY;
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "Content Management";
-$eplug_version = "1.0";
+$eplug_version = "1.2";
 $eplug_author = "Eric Vanderfeesten (lisa)";
 $eplug_logo = "";
 $eplug_url = "http://eindhovenseschool.net";
@@ -58,12 +58,12 @@ $eplug_table_names = array(
 $eplug_tables = array(
 	"CREATE TABLE ".MPREFIX."pcontent (
 	content_id int(10) unsigned NOT NULL auto_increment,
-	content_heading varchar(250) NOT NULL default '',
-	content_subheading varchar(250) NOT NULL default '',
+	content_heading varchar(255) NOT NULL default '',
+	content_subheading varchar(255) NOT NULL default '',
 	content_summary text NOT NULL,
 	content_text longtext NOT NULL,
-	content_author varchar(100) NOT NULL default '',
-	content_icon varchar(250) NOT NULL default '',
+	content_author varchar(255) NOT NULL default '',
+	content_icon varchar(255) NOT NULL default '',
 	content_file text NOT NULL,
 	content_image text NOT NULL,
 	content_parent varchar(50) NOT NULL default '',
@@ -73,9 +73,12 @@ $eplug_tables = array(
 	content_refer text NOT NULL,
 	content_datestamp int(10) unsigned NOT NULL default '0',
 	content_enddate int(10) unsigned NOT NULL default '0',
-	content_class varchar(100) NOT NULL default '', 
+	content_class varchar(255) NOT NULL default '',
 	content_pref text NOT NULL, 
 	content_order varchar(10) NOT NULL default '0',
+	content_score tinyint(3) unsigned NOT NULL default '0',
+	content_meta text NOT NULL,
+	content_layout varchar(255) NOT NULL default '',
 	PRIMARY KEY  (content_id)
 	) TYPE=MyISAM;"
 );

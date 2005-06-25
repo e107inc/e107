@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.46 $
-|		$Date: 2005-06-16 12:05:17 $
+|		$Revision: 1.47 $
+|		$Date: 2005-06-25 22:18:16 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -191,10 +191,10 @@ if(isset($message)){
 // ##### End --------------------------------------------------------------------------------------
 
 if(!e_QUERY){																//show main categories
-	$intro = $aform -> show_main_intro();
-	if($intro == false){
+	//$intro = $aform -> show_main_intro();
+	//if($intro == false){
 		$aform -> show_manage_content("", "", "");
-	}
+	//}
 	require_once(e_ADMIN."footer.php");
 	exit;
 }else{
