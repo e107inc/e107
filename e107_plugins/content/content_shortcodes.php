@@ -76,7 +76,10 @@ SC_END
 SC_BEGIN CONTENT_TOP_TABLE_ICON
 global $CONTENT_TOP_TABLE_ICON, $aa, $row, $content_pref, $content_icon_path, $qs, $mainparent;
 if($content_pref["content_top_icon_{$mainparent}"]){
-return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], "50", $content_pref["content_blank_icon_{$mainparent}"]);
+
+$width = (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
+
+return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon_{$mainparent}"]);
 }
 SC_END
 
@@ -135,7 +138,10 @@ SC_END
 SC_BEGIN CONTENT_SCORE_TABLE_ICON
 global $CONTENT_SCORE_TABLE_ICON, $aa, $row, $content_pref, $content_icon_path, $qs, $mainparent;
 if(isset($content_pref["content_score_icon_{$mainparent}"]) && $content_pref["content_score_icon_{$mainparent}"]){
-return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], "50", $content_pref["content_blank_icon_{$mainparent}"]);
+
+$width = (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
+
+return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon_{$mainparent}"]);
 }
 SC_END
 
@@ -582,7 +588,8 @@ SC_END
 // CONTENT_SEARCHRESULT_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_SEARCHRESULT_TABLE_ICON
 global $CONTENT_SEARCHRESULT_TABLE_ICON, $aa, $row, $content_icon_path, $qs, $content_pref, $mainparent;
-return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], "50", $content_pref["content_blank_icon_{$mainparent}"]);
+$width = (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
+return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon_{$mainparent}"]);
 SC_END
 
 SC_BEGIN CONTENT_SEARCHRESULT_TABLE_HEADING
@@ -645,7 +652,10 @@ SC_END
 SC_BEGIN CONTENT_RECENT_TABLE_ICON
 global $CONTENT_RECENT_TABLE_ICON, $aa, $row, $content_icon_path, $content_pref, $mainparent;
 if(isset($content_pref["content_list_icon_{$mainparent}"]) && $content_pref["content_list_icon_{$mainparent}"]){
-return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], "100", $content_pref["content_blank_icon_{$mainparent}"]);
+
+$width = (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
+
+return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon_{$mainparent}"]);
 }
 SC_END
 
@@ -866,7 +876,10 @@ SC_END
 SC_BEGIN CONTENT_CONTENT_TABLE_ICON
 global $CONTENT_CONTENT_TABLE_ICON, $qs, $row, $aa, $content_pref, $content_icon_path, $mainparent;
 if(isset($content_pref["content_content_icon_{$mainparent}"]) && $content_pref["content_content_icon_{$mainparent}"]){
-return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "", "100", $content_pref["content_blank_icon_{$mainparent}"]);
+
+$width = (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
+
+return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "", $width, $content_pref["content_blank_icon_{$mainparent}"]);
 }
 SC_END
 
@@ -1039,11 +1052,14 @@ $datestamp = ereg_replace(" -.*", "", $gen -> convert_date($row['content_datesta
 for($i=0;$i<count($images);$i++){		
 	$oSrc = $content_image_path.$images[$i];
 	$oSrcThumb = $content_image_path."thumb_".$images[$i];
-	$oMaxWidth = 500;
+
+	$oIconWidth = (isset($content_pref["content_upload_image_size_thumb_{$mainparent}"]) && $content_pref["content_upload_image_size_thumb_{$mainparent}"] ? $content_pref["content_upload_image_size_thumb_{$mainparent}"] : "100");
+	
+	$oMaxWidth = (isset($content_pref["content_upload_image_size_{$mainparent}"]) && $content_pref["content_upload_image_size_{$mainparent}"] ? $content_pref["content_upload_image_size_{$mainparent}"] : "500");
+	
 	$oTitle = $content_image_popup_name." ".($i+1);
 	$oText = $content_image_popup_name." ".($i+1)."<br />".$tp -> toHTML($row['content_subheading'], TRUE, "")."<br />".$authordetails[1]." (".$datestamp.")";
-	$CONTENT_CONTENT_TABLE_IMAGES .= $aa -> popup($oSrc, $oSrcThumb, $oMaxWidth, $oTitle, $oText);
-	//$myimagelink .= $aa -> popup($oSrc, $oSrcThumb, $oMaxWidth, $oTitle, $oText);
+	$CONTENT_CONTENT_TABLE_IMAGES .= $aa -> popup($oSrc, $oSrcThumb, $oIconWidth, $oMaxWidth, $oTitle, $oText);
 }
 return $CONTENT_CONTENT_TABLE_IMAGES;
 }

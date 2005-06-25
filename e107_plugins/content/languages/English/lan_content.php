@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2005-06-25 11:23:54 $
+|     $Revision: 1.58 $
+|     $Date: 2005-06-25 12:15:25 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -402,7 +402,6 @@ define("CONTENT_ADMIN_OPT_LAN_286", "top rated");
 define("CONTENT_ADMIN_OPT_LAN_287", "archive");
 define("CONTENT_ADMIN_OPT_LAN_288", "score");
 define("CONTENT_ADMIN_OPT_LAN_289", "");
-
 define("CONTENT_ADMIN_OPT_LAN_290", "choose which sections should be displayed when viewing the top rated page");
 define("CONTENT_ADMIN_OPT_LAN_291", "choose which sections should be displayed when viewing the top score page");
 define("CONTENT_ADMIN_OPT_LAN_292", "link : top score");
@@ -417,6 +416,15 @@ define("CONTENT_ADMIN_OPT_LAN_300", "radio");
 define("CONTENT_ADMIN_OPT_LAN_301", "article index");
 define("CONTENT_ADMIN_OPT_LAN_302", "define the rendertype for the article index of multipages");
 define("CONTENT_ADMIN_OPT_LAN_303", "if you have a multipage article, you can either show the article index of these pages as a list of normal hyperlinks, or show them in a selectbox");
+define("CONTENT_ADMIN_OPT_LAN_304", "max image size");
+define("CONTENT_ADMIN_OPT_LAN_305", "define the size to which uploaded images will be resized to");
+define("CONTENT_ADMIN_OPT_LAN_306", "if the width or height of the uploaded image is greater than the given value, the image will be resized to this value.<br />the popup images will also be displayed with this value.");
+define("CONTENT_ADMIN_OPT_LAN_307", "thumb image size");
+define("CONTENT_ADMIN_OPT_LAN_308", "define the size of the thumb images that will be created with the uploaded image");
+define("CONTENT_ADMIN_OPT_LAN_309", "if the width or height of the uploaded image is greater than the given value, the image will be resized to this value.<br />the images will also be displayed with this value on the content page.");
+define("CONTENT_ADMIN_OPT_LAN_310", "max icon width");
+define("CONTENT_ADMIN_OPT_LAN_311", "define the maximum width of the icon on icon upload");
+define("CONTENT_ADMIN_OPT_LAN_312", "if the uploaded icon is greater than the given value, the icon will be resized to this value.<br />the icon will also be displayed with this value.");
 
 
 
