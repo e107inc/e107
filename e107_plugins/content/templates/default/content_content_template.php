@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-06-25 11:23:54 $
+|     $Revision: 1.19 $
+|     $Date: 2005-06-25 12:35:33 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -83,7 +83,7 @@ $CONTENT_CONTENT_TABLE = "<table class='fborder' cellpadding='0' cellspacing='0'
 
 	{CONTENT_CONTENT_TABLE_INFO_PRE}
 		{CONTENT_CONTENT_TABLE_ICON}
-		<td>
+		<td style='vertical-align:top;'>
 		{CONTENT_CONTENT_TABLE_SUBHEADING}
 		{CONTENT_CONTENT_TABLE_DATE} {CONTENT_CONTENT_TABLE_AUTHORDETAILS} {CONTENT_CONTENT_TABLE_EPICONS} {CONTENT_CONTENT_TABLE_EDITICON} {CONTENT_CONTENT_TABLE_PARENT} {CONTENT_CONTENT_TABLE_COMMENT} {CONTENT_CONTENT_TABLE_SCORE} {CONTENT_CONTENT_TABLE_REFER}
 		{CONTENT_CONTENT_TABLE_RATING}

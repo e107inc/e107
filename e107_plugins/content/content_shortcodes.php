@@ -976,7 +976,7 @@ SC_END
 SC_BEGIN CONTENT_CONTENT_TABLE_RATING
 global $CONTENT_CONTENT_TABLE_RATING, $content_pref, $qs, $row, $rater, $plugintable, $mainparent;
 if(($content_pref["content_content_rating_{$mainparent}"] && $row['content_rate']) || $content_pref["content_content_rating_all_{$mainparent}"] ){
-return $rater->composerating($plugintable, $row['content_id'], $enter=FALSE, $userid=FALSE);
+return $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $userid=FALSE);
 }
 SC_END
 
