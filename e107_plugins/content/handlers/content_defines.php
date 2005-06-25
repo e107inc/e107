@@ -1,11 +1,13 @@
 <?php
 
 global $plugindir;
-
+$plugindir = e_PLUGIN."content/";
 $imagedir = e_IMAGE."admin_images/";
 
 $lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content.php');
+
+
 
 if (!defined('CONTENT_ICON_EDIT')) { define("CONTENT_ICON_EDIT", "<img src='".$imagedir."maintain_16.png' alt='".CONTENT_ICON_LAN_0."' style='border:0; cursor:pointer;' />"); }
 if (!defined('CONTENT_ICON_LINK')) { define("CONTENT_ICON_LINK", "<img src='".$imagedir."leave_16.png' alt='".CONTENT_ICON_LAN_15."' style='border:0; cursor:pointer;' />"); }

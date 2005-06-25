@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_content_template.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-06-25 12:35:33 $
+|     $Revision: 1.20 $
+|     $Date: 2005-06-25 22:18:17 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -73,7 +73,7 @@ $sc_style['CONTENT_CONTENT_TABLE_PARENT']['post'] = "";
 $sc_style['CONTENT_CONTENT_TABLE_ICON']['pre'] = "<td style='width:10%; white-space:nowrap; vertical-align:top; padding-right:10px;'>";
 $sc_style['CONTENT_CONTENT_TABLE_ICON']['post'] = "</td>";
 
-$sc_style['CONTENT_CONTENT_TABLE_INFO_PRE']['pre'] = "<table cellpadding='0' cellspacing='0' style='width:100%;margin-bottom:20px;'><tr>";
+$sc_style['CONTENT_CONTENT_TABLE_INFO_PRE']['pre'] = "<table cellpadding='0' cellspacing='0' style='width:100%; margin-bottom:20px;'><tr>";
 $sc_style['CONTENT_CONTENT_TABLE_INFO_PRE']['post'] = "";
 $sc_style['CONTENT_CONTENT_TABLE_INFO_POST']['pre'] = "";
 $sc_style['CONTENT_CONTENT_TABLE_INFO_POST']['post'] = "</tr></table>";
@@ -91,7 +91,7 @@ $CONTENT_CONTENT_TABLE = "<table class='fborder' cellpadding='0' cellspacing='0'
 		</td>
 	{CONTENT_CONTENT_TABLE_INFO_POST}
 	<div style='clear:both;'><br /></div>
-	<table cellpadding='0' cellspacing='0'><tr><td>
+	<table cellpadding='0' cellspacing='0' style='width:100%;'><tr><td>
 		{CONTENT_CONTENT_TABLE_IMAGES}
 		{CONTENT_CONTENT_TABLE_SUMMARY}
 		{CONTENT_CONTENT_TABLE_TEXT}

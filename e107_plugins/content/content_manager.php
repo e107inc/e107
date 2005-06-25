@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.10 $
-|		$Date: 2005-06-07 19:37:22 $
+|		$Revision: 1.11 $
+|		$Date: 2005-06-25 22:18:17 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -139,8 +139,8 @@ if(isset($_POST['preview'])){
 		$content_rate			= $_POST['content_rate'];
 		$content_pe				= $_POST['content_pe'];
 		$content_class			= $_POST['content_class'];
-		$custom["content_custom_score"]	= $_POST['content_score'];
-		$custom["content_custom_meta"]	= $_POST['content_meta'];
+		$content_score			= $_POST['content_score'];
+		$content_meta			= $_POST['content_meta'];
 		for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
 			$keystring = $_POST["content_custom_key_{$i}"];
 			$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];

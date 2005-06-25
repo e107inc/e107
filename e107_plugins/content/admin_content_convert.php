@@ -12,11 +12,13 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_convert.php,v $
-|		$Revision: 1.13 $
-|		$Date: 2005-06-09 21:01:34 $
+|		$Revision: 1.14 $
+|		$Date: 2005-06-25 22:18:17 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
+
+/* this file will be removed, conversion has been moved to the update routines instead */
 
 require_once("../../class2.php");
 
@@ -250,7 +252,7 @@ if(isset($_POST['convert_table'])){
 
 
 //show start page for manual conversion of unknown rows
-if($qs[0] == "unknown" && !isset($qs[1])){
+if(isset($qs[0]) && $qs[0] == "unknown" && !isset($qs[1])){
 		unset($text);
 
 		if(!is_object($sql)){ $sql = new db; }
@@ -311,7 +313,7 @@ if($qs[0] == "unknown" && !isset($qs[1])){
 }
 
 //convert unknown rows and show results
-if($qs[0] == "unknown" && $qs[1] == "conversion"){
+if(isset($qs[0]) && $qs[0] == "unknown" && $qs[1] == "conversion"){
 		unset($text);
 		if(isset($_POST['convert_unknownrows'])){
 			foreach($_POST['newcontent_parent'] as $key => $value){
