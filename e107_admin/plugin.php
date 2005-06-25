@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-06-25 00:01:42 $
+|     $Revision: 1.50 $
+|     $Date: 2005-06-25 05:26:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -128,7 +128,7 @@ if ($action == 'uninstall') {
 
         if(is_array($eplug_rss)){
 			foreach($eplug_rss as $key=>$values){
-				$text .= ($sql -> db_Delete("generic", "gen_type='rss' AND gen_ip='$key'")) ? EPL_ADLAN_47 .". ($key)<br />" : EPL_ADLAN_49 .". ($key)<br />";
+				$text .= ($sql -> db_Update("plugin", "plugin_rss = '' WHERE plugin_id='{$id}'")) ? EPL_ADLAN_47 .". ($key)<br />" : EPL_ADLAN_49 .". ($key)<br />";
             }
 		}
 

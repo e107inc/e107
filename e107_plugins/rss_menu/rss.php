@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-06-25 00:01:44 $
+|     $Revision: 1.22 $
+|     $Date: 2005-06-25 05:26:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -329,12 +329,13 @@ class rssCreate {
 		}
 
         // Get Plugin RSS feeds.
-   	   if($sql_rs->db_Select("generic","*","gen_type = 'rss' and gen_ip = '$content_type' ")){
-			while($row2 = $sql_rs -> db_Fetch()){
-					$rs = unserialize($row2['gen_chardata']);
-       				extract($rs);
+	if($sql_rs->db_Select("plugin","*","plugin_rss REGEXP('$content_type')")){
+		$row2 = $sql_rs -> db_Fetch();
+		require_once(e_PLUGIN.$row2['plugin_path']."/plugin.php");
+        foreach($eplug_rss as $key=>$rs){
+			extract($rs);  // id, author, link, linkid, title, description, query, category, datestamp, enc_url, enc_length, enc_type
+    // dear McFly, I remember why I used extract() now..  to avoid this: $row[($something['whatever'])]
 				if($sql -> db_Select_gen($query)){
-
    					$this -> contentType = $content_type;
                     $this -> rssItems = array();
 					$tmp = $sql->db_getList();
