@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/featurebox/languages/Polish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-25 21:23:09 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-25 21:28:17 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ define("FBLAN_05", "No feature box messages defined yet");
 define("FBLAN_06", "Existing Feature Box Messages");
 define("FBLAN_07", "Tytuł / Opis");
 define("FBLAN_08", "Wiadomość tekstowa");
-define("FBLAN_09", "Visibility of message");
+define("FBLAN_09", "Wiadomość widoczna");
 define("FBLAN_10", "Create Feature Box Message");
 define("FBLAN_11", "Update Feature Box Message");
 define("FBLAN_12", "Mode");
@@ -35,9 +35,9 @@ define("FBLAN_15", "Message added to database.");
 define("FBLAN_16", "Message updated in database.");
 define("FBLAN_17", "Field(s) left blank");
 define("FBLAN_18", "Feature Box Message deleted");
-define("FBLAN_19", "Options");
-define("FBLAN_20", "Edit");
-define("FBLAN_21", "Delete");
+define("FBLAN_19", "Opcje");
+define("FBLAN_20", "Edycja");
+define("FBLAN_21", "Kasowanie");
 define("FBLAN_22", "Render type");
 define("FBLAN_23", "In theme box");
 define("FBLAN_24", "Plain");
