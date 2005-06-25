@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.93 $
-|     $Date: 2005-06-25 20:40:55 $
-|     $Author: streaky $
+|     $Revision: 1.94 $
+|     $Date: 2005-06-25 21:25:10 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -458,8 +458,8 @@ class e_parse
 			pspell_config_ignore($pspell_cfg_handle, $skip_len);
 			pspell_config_mode($pspell_cfg_handle, $mode);
 			$pspell_handle = pspell_new_config($pspell_cfg_handle);
-			
-			$words = split("[^[:alpha:]']+", $text);
+	
+			$words = array_unique(split("[^[:alpha:]']+", $text));
 			
 			foreach($words as $val) {
 				if(!pspell_check($pspell_handle, $val)) {
