@@ -28,7 +28,7 @@
 			$rowheading	= $this -> parse_heading($cb_message, $mode);
 			$ICON		= $bullet;
 			$HEADING	= $rowheading;
-			$AUTHOR		= ($arr[3] ? ($cb_id != 0 ? "<a href='".e_BASE."user.php?id.$cb_id'>".$cb_name."</a>" : $cb_name) : "");
+			$AUTHOR		= ($arr[3] ? ($cb_id != 0 ? "<a href='".e_BASE."user.php?id.$cb_id'>".$cb_nick."</a>" : $cb_nick) : "");
 			$CATEGORY	= "";
 			$DATE		= ($arr[5] ? ($row['cb_datestamp'] ? $this -> getListDate($row['cb_datestamp'], $mode) : "") : "");
 			$INFO		= "";
