@@ -36,3 +36,4 @@ tinyMCELang['lang_bold_img'] = "bold_de_se.gif";
 tinyMCELang['lang_italic_img'] = "italic_de_se.gif";
 tinyMCELang['lang_underline_img'] = "underline.gif";
 tinyMCELang['lang_clipboard_msg'] = 'Kopieren/Ausschneiten/Einf&uuml;gen ist mit Mozilla und Firefox nicht verf&uuml;gbar.\nWollen Sie mehr Informationen dar&uuml;ber erhalten?';
+tinyMCELang['lang_popup_blocked'] = 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.';

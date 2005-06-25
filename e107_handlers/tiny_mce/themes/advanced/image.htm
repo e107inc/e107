@@ -9,13 +9,10 @@ if (url != null) {
 	if (url.charAt(0) != '/')
 		url = tinyMCE.documentBasePath + "/" + url;
 
-	document.write('<sc'+'ript language="javascript" type="text/javascript" src="' + url + '?rnd=' + new Date().getTime() + '"></sc'+'ript>');
+	document.write('<sc'+'ript language="javascript" type="text/javascript" src="' + url + '"></sc'+'ript>');
 }
 </script>
 <script language="javascript">
-	// Disable auto resize
-	tinyMCE.getWindowArg('mce_windowresize', false);
-
 	function insertImage() {
 		if (window.opener) {
 			var src = document.forms[0].src.value;
@@ -73,14 +70,10 @@ if (url != null) {
 					formObj.image_list.options[i].selected = true;
 			}
 		}
-
-		// Autoresize and focus
-		TinyMCEPopup_autoResize();
-		window.focus();
 	}
 
 	function cancelAction() {
-		top.close();
+		tinyMCE.closeDialog();
 	}
 
 	var preloadImg = new Image();
@@ -108,7 +101,7 @@ if (url != null) {
 	}
 </script>
 </head>
-<body onload="window.focus();init();">
+<body onload="init();">
 <form onsubmit="insertImage();return false;">
   <table border="0" cellpadding="0" cellspacing="0" width="200">
     <tr>

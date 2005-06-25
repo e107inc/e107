@@ -3,27 +3,20 @@
 <title>{$lang_insert_anchor_title}</title>
 <script language="javascript" src="../../tiny_mce_popup.js"></script>
 <script language="javascript">
-	// Disable auto resize
-	tinyMCE.getWindowArg('mce_windowresize', false);
-
 	function init() {
 		document.forms[0].anchorName.value = tinyMCE.getWindowArg('name');
 		document.forms[0].insert.value = tinyMCE.getLang('lang_' + tinyMCE.getWindowArg('action'), 'Insert', true);
-
-		// Autoresize and focus
-		TinyMCEPopup_autoResize();
-		window.focus();
 	}
 
 	function insertAnchor() {
 		if (window.opener) {
 			tinyMCE.execInstanceCommand(tinyMCE.getWindowArg('editor_id'), 'mceAnchor', false, document.forms[0].anchorName.value);
-			top.close();
+			tinyMCE.closeDialog();
 		}
 	}
 
 	function cancelAction() {
-		top.close();
+		tinyMCE.closeDialog();
 	}
 </script>
 </head>

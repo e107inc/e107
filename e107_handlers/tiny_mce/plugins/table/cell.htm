@@ -3,8 +3,6 @@
 <title>{$lang_table_cell_title}</title>
 <script language="javascript" type="text/javascript" src="../../tiny_mce_popup.js"></script>
 <script language="javascript" type="text/javascript">
-// Disable auto resize
-tinyMCE.getWindowArg('mce_windowresize', false);
 
 function insertTable() {
 	if (window.opener) {
@@ -19,7 +17,9 @@ function insertTable() {
 		args["bgcolor"] = document.forms[0].bgcolor.value;
 
 		window.opener.tinyMCE.execCommand("mceTableCellProps", false, args);
-		top.close();
+
+		// Close the dialog
+		tinyMCE.closeDialog();
 	}
 }
 
@@ -70,18 +70,16 @@ function init() {
 	var formObj = document.forms[0];
 	formObj.width.value = tinyMCE.getWindowArg('width');
 	formObj.height.value = tinyMCE.getWindowArg('height');
-
-	// Autoresize and focus
-	TinyMCEPopup_autoResize();
-	window.focus();
 }
 
 function cancelAction() {
-	top.close();
+	// Close the dialog
+	tinyMCE.closeDialog();
 }
+
 </script>
 </head>
-<body onload="window.focus();init();">
+<body onload="init();">
 <form onsubmit="insertTable();return false;">
   <table border="0" cellpadding="0" cellspacing="0" width="200">
     <tr>

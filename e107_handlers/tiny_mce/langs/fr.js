@@ -36,3 +36,4 @@ tinyMCELang['lang_bold_img'] = "bold.gif";
 tinyMCELang['lang_italic_img'] = "italic.gif";
 tinyMCELang['lang_underline_img'] = "underline.gif";
 tinyMCELang['lang_clipboard_msg'] = 'Copier/Couper/Coller ne sont pas disponibles pour Mozilla et Firefox.\nVoulez vous plus d\'informatios à ce sujet?';
+tinyMCELang['lang_popup_blocked'] = 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.';

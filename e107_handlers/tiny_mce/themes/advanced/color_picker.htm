@@ -8,14 +8,13 @@
         var color = document.getElementById("selectedColorBox").value;
         if (window.opener)
             window.opener.tinyMCE.execInstanceCommand(tinyMCE.getWindowArg('editor_id'),tinyMCE.getWindowArg('command'),false,color);
-        window.close();
+
+        tinyMCE.closeDialog();
     }
     function showColor(color) {
         document.getElementById("selectedColor").style.backgroundColor = color;
         document.getElementById("selectedColorBox").value = color;
     }
-
-    window.focus();
 
     var colorPicker = "";
     var colors = new Array(

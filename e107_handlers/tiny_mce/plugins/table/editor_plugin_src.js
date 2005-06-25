@@ -384,7 +384,7 @@ function TinyMCE_table_execCommand(editor_id, element, command, user_interface, 
 
 				tinyMCE.tableElm = tinyMCE.getParentElement(inst.getFocusElement(), "table");
 
-				if (tinyMCE.tableElm) {
+				if (tinyMCE.tableElm && value != "insert") {
 					var rowsAr = tinyMCE.tableElm.rows;
 					var cols = 0;
 					for (var i=0; i<rowsAr.length; i++)
@@ -432,7 +432,7 @@ function TinyMCE_table_execCommand(editor_id, element, command, user_interface, 
 				tinyMCE.openWindow(template, {editor_id : inst.editorId, cols : cols, rows : rows, border : border, cellpadding : cellpadding, cellspacing : cellspacing, align : align, width : width, height : height, bordercolor : bordercolor, bgcolor : bgcolor, action : action, className : className});
 			} else {
 				var html = '';
-				var cols = 2, rows = 2, border = 0, cellpadding = -1, cellspacing = -1, align, width, height, className;
+				var cols = 2, rows = 2, border = 0, cellpadding = -1, cellspacing = -1, align, width, height, className, action;
 
 				if (typeof(value) == 'object') {
 					cols = value['cols'];
@@ -446,10 +446,11 @@ function TinyMCE_table_execCommand(editor_id, element, command, user_interface, 
 					bordercolor = value['bordercolor'];
 					bgcolor = value['bgcolor'];
 					className = value['className'];
+					action = value['action'];
 				}
 
 				// Update table
-				if (tinyMCE.tableElm) {
+				if (tinyMCE.tableElm && action == "update") {
 					inst.execCommand("mceAddUndoLevel");
 
 					tinyMCE.setAttrib(tinyMCE.tableElm, 'cellPadding', cellpadding, true);

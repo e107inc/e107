@@ -1,5 +1,5 @@
 /* Import plugin specific language pack */
-tinyMCE.importPluginLanguagePack('flash', 'en,de,sv,zh_cn,cs,fa,fr_ca,fr,pl');
+tinyMCE.importPluginLanguagePack('flash', 'en,de,sv,zh_cn,cs,fa,fr_ca,fr,pl,pt_br,nl');
 
 function TinyMCE_flash_initInstance(inst) {
 	if (!tinyMCE.settings['flash_skip_plugin_css'])
@@ -184,15 +184,19 @@ function TinyMCE_flash_cleanup(type, content) {
 				endPos += 2;
 
 				var embedHTML = '';
+				var wmode = tinyMCE.getParam("flash_wmode", "");
+				var quality = tinyMCE.getParam("flash_quality", "high");
+				var menu = tinyMCE.getParam("flash_menu", "false");
 
 				// Insert object + embed
 				embedHTML += '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"';
 				embedHTML += ' codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0"';
 				embedHTML += ' width="' + attribs["width"] + '" height="' + attribs["height"] + '">';
 				embedHTML += '<param name="movie" value="' + attribs["title"] + '" />';
-				embedHTML += '<param name="quality" value="high" />';
-				embedHTML += '<param name="menu" value="false" />';
-				embedHTML += '<embed src="' + attribs["title"] + '" quality="high" menu="false" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="' + attribs["width"] + '" height="' + attribs["height"] + '"></embed></object>';
+				embedHTML += '<param name="quality" value="' + quality + '" />';
+				embedHTML += '<param name="menu" value="' + menu + '" />';
+				embedHTML += '<param name="wmode" value="' + wmode + '" />';
+				embedHTML += '<embed src="' + attribs["title"] + '" wmode="' + wmode + '" quality="' + quality + '" menu="' + menu + '" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="' + attribs["width"] + '" height="' + attribs["height"] + '"></embed></object>';
 
 				// Insert embed/object chunk
 				chunkBefore = content.substring(0, startPos);

@@ -304,8 +304,8 @@
 
     function insertChar(chr) {
         tinyMCE.execInstanceCommand(tinyMCE.getWindowArg('editor_id'), 'mceInsertContent', false, '\&#' + chr + ';');
-        //window.close();
-        self.focus();
+        //tinyMCE.closeDialog();
+        // self.focus();
     }
 
     function previewChar(codeA, codeB, codeN) {
@@ -324,8 +324,6 @@
         elmA.innerHTML = '&amp;' + codeB;
         elmN.innerHTML = codeN;
     }
-
-    window.focus();
 //-->
 </script>
 </head>
