@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.63 $
-|		$Date: 2005-06-24 23:08:44 $
+|		$Revision: 1.64 $
+|		$Date: 2005-06-25 09:19:50 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -190,7 +190,8 @@ function show_content_search_menu($mode, $mainparent){
 				global $plugintable, $gen, $content_pref;
 				global $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD;
 
-				if($content_pref["content_navigator_{$mode}_{$mainparent}"] || $content_pref["content_search_{$mode}_{$mainparent}"] || $content_pref["content_ordering_{$mode}_{$mainparent}"]){
+				if( (isset($content_pref["content_navigator_{$mode}_{$mainparent}"]) && $content_pref["content_navigator_{$mode}_{$mainparent}"]) || (isset($content_pref["content_search_{$mode}_{$mainparent}"]) && $content_pref["content_search_{$mode}_{$mainparent}"]) || (isset($content_pref["content_ordering_{$mode}_{$mainparent}"]) && $content_pref["content_ordering_{$mode}_{$mainparent}"]) ){
+
 					$CONTENT_SEARCH_TABLE = "";
 					if(!$CONTENT_SEARCH_TABLE){
 						if(!$content_pref["content_theme_{$mainparent}"]){
@@ -654,11 +655,11 @@ function show_content_cat_all(){
 					}
 					$text = $CONTENT_CAT_TABLE_START.$content_cat_table_string.$CONTENT_CAT_TABLE_END;
 
-					if($content_pref["content_breadcrumb_catall_{$mainparent}"]){
+					if(isset($content_pref["content_breadcrumb_catall_{$mainparent}"]) && $content_pref["content_breadcrumb_catall_{$mainparent}"]){
 						$crumbpage = $aa -> getCrumbPage($array, $mainparent);
-						if($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
+						if(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
 							echo $crumbpage;
-						}elseif($content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
+						}elseif(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
 							$ns -> tablerender(CONTENT_LAN_24, $crumbpage);
 						}else{
 							$text = $crumbpage.$text;
@@ -745,7 +746,7 @@ function show_content_cat($mode=""){
 					$caption						= CONTENT_LAN_26." : ".$capqs[0];
 
 					// parent article
-					if($content_pref["content_cat_showparent_{$mainparent}"]){
+					if(isset($content_pref["content_cat_showparent_{$mainparent}"]) && $content_pref["content_cat_showparent_{$mainparent}"]){
 						if(!$resultitem = $sql -> db_Select($plugintable, "*", "content_id = '".$qs[1]."' AND content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' " )){
 							header("location:".e_SELF."?cat.list.".$mainparent); exit;
 						}else{
@@ -765,7 +766,7 @@ function show_content_cat($mode=""){
 					if(!$mode || $mode == ""){
 
 						//list subcategories
-						if($content_pref["content_cat_showparentsub_{$mainparent}"]){
+						if(isset($content_pref["content_cat_showparentsub_{$mainparent}"]) && $content_pref["content_cat_showparentsub_{$mainparent}"]){
 							$check			= (isset($qs[1]) && is_numeric($qs[1]) ? $qs[1] : $mainparent);
 							$array1			= $aa -> getCategoryTree("", $check, TRUE);
 							$newarray		= array_merge_recursive($array1);
@@ -795,7 +796,7 @@ function show_content_cat($mode=""){
 						unset($text);
 
 						//also show content items of subcategories of this category ?
-						if($content_pref["content_cat_listtype_{$mainparent}"]){
+						if(isset($content_pref["content_cat_listtype_{$mainparent}"]) && $content_pref["content_cat_listtype_{$mainparent}"]){
 							$validitem		= implode(",", $subparent);
 							$qrycat			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validitem)."' ";
 						}else{
@@ -827,7 +828,7 @@ function show_content_cat($mode=""){
 							$captionchild	= "contents";
 						}
 
-						if($content_pref["content_nextprev_{$mainparent}"]){
+						if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
 							require_once(e_HANDLER."np_class.php");
 							$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
 						}
@@ -855,20 +856,20 @@ function show_content_cat($mode=""){
 							}else{
 								$ns -> tablerender($caption, (isset($textparent) ? $textparent : "").(isset($textsubparent) ? $textsubparent : "").$textchild);
 							}
-							if($content_pref["content_nextprev_{$mainparent}"]){
+							if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
 								$ix = new nextprev("content.php", $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
 							}
 						}else{
 							if($content_pref["content_cat_rendertype_{$mainparent}"] == "1"){
 								if(isset($textchild)){		$ns -> tablerender($captionchild, $textchild); }
-								if($content_pref["content_nextprev_{$mainparent}"]){
+								if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
 									$ix = new nextprev("content.php", $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
 								}
 								if(isset($textparent)){		$ns -> tablerender($caption, $textparent); }
 								if(isset($textsubparent)){	$ns -> tablerender($captionsubparent, $textsubparent); }
 							}else{
 								if(isset($textchild)){		$ns -> tablerender($captionchild, $textchild); }
-								if($content_pref["content_nextprev_{$mainparent}"]){
+								if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
 									$ix = new nextprev("content.php", $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
 								}
 								$ns -> tablerender($caption, (isset($textparent) ? $textparent : "").(isset($textsubparent) ? $textsubparent : ""));
@@ -1111,7 +1112,7 @@ function show_content_author(){
 						$caption = CONTENT_LAN_32." : ".$authordetails[1];
 						$ns -> tablerender($caption, $text);
 
-						if($content_pref["content_nextprev_{$mainparent}"]){
+						if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
 							require_once(e_HANDLER."np_class.php");
 							$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
 							$ix = new nextprev(e_SELF, $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
@@ -1218,7 +1219,7 @@ function show_content_top(){
 					$caption	= CONTENT_LAN_38;
 					$ns -> tablerender($caption, $text);
 
-					if($content_pref["content_nextprev_{$mainparent}"]){
+					if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
 						require_once(e_HANDLER."np_class.php");
 						$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
 						$ix = new nextprev(e_SELF, $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
@@ -1324,7 +1325,7 @@ function show_content_score(){
 					$caption	= CONTENT_LAN_87;
 					$ns -> tablerender($caption, $text);
 
-					if($content_pref["content_nextprev_{$mainparent}"]){
+					if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
 						require_once(e_HANDLER."np_class.php");
 						$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
 						$ix = new nextprev(e_SELF, $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));

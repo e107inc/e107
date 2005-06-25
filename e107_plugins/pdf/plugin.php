@@ -16,7 +16,7 @@
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "PDF";
 $eplug_version = "1.0";
-$eplug_author = "Lisa";
+$eplug_author = "Eric Vanderfeesten (lisa)";
 $eplug_logo = "";
 $eplug_url = "http://eindhovenseschool.net";
 $eplug_email = "lisa@eindhovenseschool.net";

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-21 17:53:26 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2005-06-25 09:19:50 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -54,11 +54,11 @@ if (isset($qs[0]) && $qs[0] == "view" && isset($qs[1]) && is_numeric($qs[1]))
 }
 
 require_once(HEADERF);
-	if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php")) {
-		include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
+if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php")) {
+	include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
 	} else {
-		include_once(e_PLUGIN."links_page/languages/English.php");
-	}
+	include_once(e_PLUGIN."links_page/languages/English.php");
+}
 
 if (file_exists(THEME."links_template.php")) {
 	require_once(THEME."links_template.php");
@@ -97,7 +97,8 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 	}
 
 	$category_total = $sql->db_Select("links_page_cat", "*", " link_category_class REGEXP '".e_CLASS_REGEXP."' ".$sort." ");
-	if(!is_object($sql2)){ $sql2 = new db; }
+	$sql2 = new db;
+	$link_main_table_string = "";
 	while ($row = $sql->db_Fetch())
 	{
 		$total_links_cat = $sql2 -> db_Count("links_page", "(*)", " WHERE link_category={$row['link_category_id']} ");
@@ -131,12 +132,12 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 
 	if (!isset($qs[0])){
 		$category = "all";
-	}elseif ($qs[0] == "cat") {
+	}elseif (isset($qs[0]) && $qs[0] == "cat") {
 		$category = $qs[1];
-	}elseif ($qs[1] == "cat") {
+	}elseif (isset($qs[1]) && $qs[1] == "cat") {
 		$category = $qs[2];
 	}
-	if($qs[0] == "top" || $qs[0] == "rated"){
+	if(isset($qs[0]) && ($qs[0] == "top" || $qs[0] == "rated") ){
 		$category = FALSE;
 	}
 
@@ -156,8 +157,8 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 		}
 	}
 
-	$link_sort = ($_POST['link_sort'] ? $_POST['link_sort'] : ($linkspage_pref['link_sort'] ? $linkspage_pref['link_sort'] : "link_order" ) );
-	$link_order = ($_POST['link_order'] ? $_POST['link_order'] : ($linkspage_pref['link_order'] ? $linkspage_pref['link_order'] : "ASC" ) );
+	$link_sort = (isset($_POST['link_sort']) && $_POST['link_sort'] ? $_POST['link_sort'] : (isset($linkspage_pref['link_sort']) && $linkspage_pref['link_sort'] ? $linkspage_pref['link_sort'] : "link_order" ) );
+	$link_order = (isset($_POST['link_order']) && $_POST['link_order'] ? $_POST['link_order'] : (isset($linkspage_pref['link_order']) && $linkspage_pref['link_order'] ? $linkspage_pref['link_order'] : "ASC" ) );
 	$sortorder = " ORDER BY ".$link_sort." ".$link_order." ";
 	if($linkspage_pref['link_sortorder']){
 		$LINK_CAT_SORTORDER = $lc->showLinkSort();
@@ -165,11 +166,14 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 
 	$link_cat_table_start = $tp -> parseTemplate($LINK_CAT_TABLE_START, FALSE, $link_shortcodes);
 
+	
 	$sql2 = new db;
 	while (list($link_category_id, $link_category_name, $link_category_description) = $sql->db_Fetch()) {
 		$link_total = $sql2->db_Select("links_page", "*", "link_class REGEXP '".e_CLASS_REGEXP."' AND link_category ='$link_category_id' ");
 		if ($sql2->db_Select("links_page", "*", "link_class REGEXP '".e_CLASS_REGEXP."' AND link_category ='$link_category_id' ".$sortorder." ".$nextprevquery." ")) {
 			unset($text, $link_cat_table_string);
+			$text = "";
+			$link_cat_table_string = "";
 			$link_activ = 0;
 			while ($row = $sql2->db_Fetch()) {
 				$link_append = parse_link_append();
@@ -191,7 +195,7 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 				"").") ";
 				$ns->tablerender($caption, $text);
 
-				if($linkspage_pref["link_nextprev"]){
+				if($category != "all" && isset($linkspage_pref["link_nextprev"]) && $linkspage_pref["link_nextprev"]){
 					require_once(e_HANDLER."np_class.php");
 					$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
 					$ix = new nextprev(e_SELF, $from, $number, $link_total, NP_3, ($np_querystring ? $np_querystring : ""));
@@ -236,7 +240,7 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 			$caption = LAN_LINKS_10;
 			$ns->tablerender($caption, $text);
 
-			if($linkspage_pref["link_nextprev"]){
+			if(isset($linkspage_pref["link_nextprev"]) && $linkspage_pref["link_nextprev"]){
 				require_once(e_HANDLER."np_class.php");
 				$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
 				$ix = new nextprev(e_SELF, $from, $number, $link_total, NP_3, ($np_querystring ? $np_querystring : ""));
@@ -307,7 +311,7 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 			$caption = LAN_LINKS_11;
 			$ns->tablerender($caption, $text);
 
-			if($linkspage_pref["link_nextprev"]){
+			if(isset($linkspage_pref["link_nextprev"]) && $linkspage_pref["link_nextprev"]){
 				require_once(e_HANDLER."np_class.php");
 				$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
 				$ix = new nextprev(e_SELF, $from, $number, $linktotalrated, NP_3, ($np_querystring ? $np_querystring : ""));

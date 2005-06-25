@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-20 13:36:44 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-25 09:19:50 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -44,32 +44,29 @@ $sc_style['LINK_MAIN_TOPREFER']['post'] = "<br />";
 $sc_style['LINK_MAIN_TOPRATED']['pre'] = "";
 $sc_style['LINK_MAIN_TOPRATED']['post'] = "<br />";
 
-if (!$LINK_MAIN_TABLE_START) {
-	$LINK_MAIN_TABLE_START = "
-		<div style='text-align:center'>";
-}
-if (!$LINK_MAIN_TABLE) {
-	$LINK_MAIN_TABLE .= "
-		<table class='fborder' style='width:100%; margin-bottom:20px;' cellspacing='0' cellpadding='0'>
-		<tr>
-			{LINK_MAIN_ICON}
-			<td class='fcaption' style='width:90%'>{LINK_MAIN_HEADING}</td>
-			{LINK_MAIN_NUMBER}
-		</tr>
-		{LINK_MAIN_DESC}
-		</table>";
 
-}
-if (!$LINK_MAIN_TABLE_END) {
-	$LINK_MAIN_TABLE_END = "
-			<div class='smalltext' style='text-align:right;'>
-			{LINK_MAIN_TOTAL}
-			{LINK_MAIN_SHOWALL}
-			{LINK_MAIN_TOPREFER}
-			{LINK_MAIN_TOPRATED}
-			</div>
-		</div>";
-}
+$LINK_MAIN_TABLE_START = "
+	<div style='text-align:center'>";
+
+$LINK_MAIN_TABLE = "
+	<table class='fborder' style='width:100%; margin-bottom:20px;' cellspacing='0' cellpadding='0'>
+	<tr>
+		{LINK_MAIN_ICON}
+		<td class='fcaption' style='width:90%'>{LINK_MAIN_HEADING}</td>
+		{LINK_MAIN_NUMBER}
+	</tr>
+	{LINK_MAIN_DESC}
+	</table>";
+
+$LINK_MAIN_TABLE_END = "
+		<div class='smalltext' style='text-align:right;'>
+		{LINK_MAIN_TOTAL}
+		{LINK_MAIN_SHOWALL}
+		{LINK_MAIN_TOPREFER}
+		{LINK_MAIN_TOPRATED}
+		</div>
+	</div>";
+
 
 // CATEGORY LIST ----------------------------------------------------------------------------
 global $sc_style, $link_shortcodes;
@@ -102,33 +99,30 @@ $sc_style['LINK_CAT_RATING']['post'] = "</td></tr>";
 $sc_style['LINK_CAT_SUBMIT']['pre'] = "<div class='smalltext' style='text-align:right;'>";
 $sc_style['LINK_CAT_SUBMIT']['post'] = "</div>";
 
-if (!$LINK_CAT_TABLE_START) {
-	$LINK_CAT_TABLE_START = "
-		<div style='text-align:center'>
-		{LINK_CAT_SORTORDER}
-		";
-}
-if (!$LINK_CAT_TABLE) {
-	$LINK_CAT_TABLE .= "
-		<table class='fborder' style='width:100%; margin-bottom:20px;' cellspacing='0' cellpadding='0'>
-		<tr>
-			{LINK_CAT_BUTTON}
-			<td class='fcaption' style='width:90%'>
-				{LINK_CAT_NEW} {LINK_CAT_APPEND} {LINK_CAT_NAME} </a>
-			</td>
-			{LINK_CAT_REFER}
-		</tr>
-		{LINK_CAT_URL}
-		{LINK_CAT_DESC}
-		{LINK_CAT_RATING}
-		</table>";
-}
-if (!$LINK_CAT_TABLE_END) {
-	$LINK_CAT_TABLE_END = "
-		{LINK_CAT_SUBMIT}
-		{LINK_BACKLINK}
-		</div>";
-}
+
+$LINK_CAT_TABLE_START = "
+	<div style='text-align:center'>
+	{LINK_CAT_SORTORDER}";
+
+$LINK_CAT_TABLE = "
+	<table class='fborder' style='width:100%; margin-bottom:20px;' cellspacing='0' cellpadding='0'>
+	<tr>
+		{LINK_CAT_BUTTON}
+		<td class='fcaption' style='width:90%'>
+			{LINK_CAT_NEW} {LINK_CAT_APPEND} {LINK_CAT_NAME} </a>
+		</td>
+		{LINK_CAT_REFER}
+	</tr>
+	{LINK_CAT_URL}
+	{LINK_CAT_DESC}
+	{LINK_CAT_RATING}
+	</table>";
+
+$LINK_CAT_TABLE_END = "
+	{LINK_CAT_SUBMIT}
+	{LINK_BACKLINK}
+	</div>";
+
 
 
 
@@ -151,67 +145,63 @@ $sc_style['LINK_RATED_RATING']['pre'] = "<td colspan='2' class='forumheader' sty
 $sc_style['LINK_RATED_RATING']['post'] = "</td>";
 
 //TOP RATED LINKS
-if (!$LINK_RATED_TABLE_START) {
-	$LINK_RATED_TABLE_START = "
-		<div style='text-align:center'>
-		";
-}
-if (!$LINK_RATED_TABLE) {
-	$LINK_RATED_TABLE .= "
-		<table class='fborder' style='width:100%; margin-bottom:20px;' cellspacing='0' cellpadding='0'>
-		<tr>
-			{LINK_RATED_BUTTON}
-			<td class='fcaption' style='width:75%;'>
-				{LINK_RATED_APPEND} {LINK_RATED_NAME} </a>
-			</td>
-			{LINK_RATED_RATING}
-		</tr>
-		{LINK_RATED_URL}
-		{LINK_RATED_DESC}		
-		</table>";
-}
-if (!$LINK_RATED_TABLE_END) {
-	$LINK_RATED_TABLE_END = "
-		{LINK_BACKLINK}
-		</div>";
-}
+$LINK_RATED_TABLE_START = "
+	<div style='text-align:center'>
+	";
+
+$LINK_RATED_TABLE = "
+	<table class='fborder' style='width:100%; margin-bottom:20px;' cellspacing='0' cellpadding='0'>
+	<tr>
+		{LINK_RATED_BUTTON}
+		<td class='fcaption' style='width:75%;'>
+			{LINK_RATED_APPEND} {LINK_RATED_NAME} </a>
+		</td>
+		{LINK_RATED_RATING}
+	</tr>
+	{LINK_RATED_URL}
+	{LINK_RATED_DESC}		
+	</table>";
+
+$LINK_RATED_TABLE_END = "
+	{LINK_BACKLINK}
+	</div>";
+
 
 // SUBMIT -----------------------------------------------------------------------------------
-if (!$LINK_SUBMIT_TABLE) {
-	$LINK_SUBMIT_TABLE = "
-		<div style='text-align:center'>
-		<form method='post' action='".e_SELF."'>
-		<table class='fborder' style='width:100%' cellspacing='0' cellpadding='0'>
-		<tr><td colspan='2' style='text-align:center' class='forumheader2'>".LAN_93."</td></tr>
-		<tr>
-			<td class='forumheader3' style='width:30%'>".LAN_86."</td>
-			<td class='forumheader3' style='width:70%'>{LINK_SUBMIT_CAT}</td>
-		</tr>
-		<tr>
-			<td class='forumheader3' style='width:30%'><u>".LAN_94."</u></td>
-			<td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_name' size='60' value='' maxlength='100' /></td>
-		</tr>
-		<tr>
-			<td class='forumheader3' style='width:30%'><u>".LAN_95."</u></td>
-			<td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_url' size='60' value='' maxlength='200' /></td>
-		</tr>
-		<tr>
-			<td class='forumheader3' style='width:30%'><u>".LAN_96."</u></td>
-			<td class='forumheader3' style='width:30%'><textarea class='tbox' name='link_description' cols='59' rows='3'></textarea></td>
-		</tr>
-		<tr>
-			<td class='forumheader3' style='width:30%'>".LAN_97."</td>
-			<td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_button' size='60' value='' maxlength='200' /></td>
-		</tr>
-		<tr>
-			<td colspan='2' style='text-align:center' class='forumheader3'><span class='smalltext'>".LAN_106."</span></td>
-		</tr>
-		<tr>
-			<td colspan='2' style='text-align:center' class='forumheader'><input class='button' type='submit' name='add_link' value='".LAN_98."' /></td>
-		</tr>
-		</table>
-		</form>
-		</div>";
-}
+$LINK_SUBMIT_TABLE = "
+	<div style='text-align:center'>
+	<form method='post' action='".e_SELF."'>
+	<table class='fborder' style='width:100%' cellspacing='0' cellpadding='0'>
+	<tr><td colspan='2' style='text-align:center' class='forumheader2'>".LAN_93."</td></tr>
+	<tr>
+		<td class='forumheader3' style='width:30%'>".LAN_86."</td>
+		<td class='forumheader3' style='width:70%'>{LINK_SUBMIT_CAT}</td>
+	</tr>
+	<tr>
+		<td class='forumheader3' style='width:30%'><u>".LAN_94."</u></td>
+		<td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_name' size='60' value='' maxlength='100' /></td>
+	</tr>
+	<tr>
+		<td class='forumheader3' style='width:30%'><u>".LAN_95."</u></td>
+		<td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_url' size='60' value='' maxlength='200' /></td>
+	</tr>
+	<tr>
+		<td class='forumheader3' style='width:30%'><u>".LAN_96."</u></td>
+		<td class='forumheader3' style='width:30%'><textarea class='tbox' name='link_description' cols='59' rows='3'></textarea></td>
+	</tr>
+	<tr>
+		<td class='forumheader3' style='width:30%'>".LAN_97."</td>
+		<td class='forumheader3' style='width:30%'><input class='tbox' type='text' name='link_button' size='60' value='' maxlength='200' /></td>
+	</tr>
+	<tr>
+		<td colspan='2' style='text-align:center' class='forumheader3'><span class='smalltext'>".LAN_106."</span></td>
+	</tr>
+	<tr>
+		<td colspan='2' style='text-align:center' class='forumheader'><input class='button' type='submit' name='add_link' value='".LAN_98."' /></td>
+	</tr>
+	</table>
+	</form>
+	</div>";
+
 
 ?>
