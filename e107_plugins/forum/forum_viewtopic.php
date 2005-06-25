@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-06-25 14:38:21 $
-|     $Author: e107coders $
+|     $Revision: 1.33 $
+|     $Date: 2005-06-25 18:57:10 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -28,7 +28,6 @@ if (file_exists(THEME.'forum_design.php'))
 }
 
 $forum = new e107forum;
-
 if (IsSet($_POST['fjsubmit']))
 {
 	header("location:".e_PLUGIN."forum/forum_viewforum.php?".$_POST['forumjump']);
@@ -417,18 +416,19 @@ function showmodoptions()
 	global $thread_info;
 	global $forum_info;
 	global $post_info;
+	$forum_id = $forum_info['forum_id'];
 	if ($post_info['thread_parent'] == FALSE)
 	{
 		$type = 'thread';
+		$ret = "<form method='post' action='".e_PLUGIN."forum/forum_viewforum.php?{$forum_id}' id='frmMod_{$forum_id}_{$post_info['thread_id']}'>";
 	}
 	else
 	{
 		$type = 'reply';
+		$ret = "<form method='post' action='".e_SELF."?".e_QUERY."' id='frmMod_{$forum_id}_{$post_info['thread_id']}'>";
 	}
-
-	$forum_id = $forum_info['forum_id'];
-	$ret = "
-		<form method='post' action='".e_PLUGIN."forum/forum_viewforum.php?{$forum_id}' id='frmMod_{$forum_id}_{$post_info['thread_id']}'>
+	
+	$ret .= "
 		<div>
 		<a href='".e_PLUGIN."forum/forum_post.php?edit.{$post_info['thread_id']}.{$from}'>".IMAGE_admin_edit."</a>
 		<input type='image' ".IMAGE_admin_delete." name='delete_{$post_info['thread_id']}' value='thread_action' onclick=\"return confirm_('{$type}', {$forum_id}, {$thread_id}, '{$post_info['user_name']}')\" />
