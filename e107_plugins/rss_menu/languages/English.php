@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/languages/English.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-07 06:55:10 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-25 05:26:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -20,5 +20,8 @@ define("BACKEND_MENU_L6", "Our forum posts");
 
 define("BACKEND_MENU_L7", "Our chatbox posts");
 define("BACKEND_MENU_L8", "Our bugtracker reports");
-define("BACKEND_MENU_L9", "Our downloads"); 
+define("BACKEND_MENU_L9", "Our downloads");
+
+define("RSS_LAN01", "Enable seperate feeds for each news category?");
+define("RSS_LAN02", "Enable seperate feeds for each download category?");
 ?>

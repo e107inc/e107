@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-06-25 00:01:43 $
+|     $Revision: 1.28 $
+|     $Date: 2005-06-25 05:26:48 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -60,15 +60,20 @@ class e107plugin {
 		 	include_once("{$p['path']}{$p['fname']}");
 			$plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
 			if ((!$sql->db_Select("plugin", "plugin_id", "plugin_path = '{$plugin_path}'")) && $eplug_name){
-				if (!$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_sc && !$eplug_userclass && !$eplug_module && !$eplug_bb && !$eplug_latest && !$eplug_status)
-				{
+				if (!$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_sc && !$eplug_userclass && !$eplug_module && !$eplug_bb && !$eplug_latest && !$eplug_status){
+					if(is_array($eplug_rss)){
+                    	foreach($eplug_rss as $key=>$val){
+                        	$feeds[] = $key;
+						}
+						$plugin_rss = implode(",",$feeds);
+					}
 					// new plugin, assign entry in plugin table, install is not necessary so mark it as intalled
-					$sql->db_Insert("plugin", "0, '{$eplug_name}', '{$eplug_version}', '{$eplug_folder}', 1");
+					$sql->db_Insert("plugin", "0, '{$eplug_name}', '{$eplug_version}', '{$eplug_folder}', 1, '{$plugin_rss}' ");
 				}
 				else
 				{
 					// new plugin, assign entry in plugin table, install is necessary
-					$sql->db_Insert("plugin", "0, '{$eplug_name}', '{$eplug_version}', '{$eplug_folder}', 0");
+					$sql->db_Insert("plugin", "0, '{$eplug_name}', '{$eplug_version}', '{$eplug_folder}', 0, '' ");
 				}
 			}
 		}
@@ -335,12 +340,7 @@ class e107plugin {
 				}
 			}
 
-			if(is_array($eplug_rss)){
-				foreach($eplug_rss as $key=>$values){
-                	$tmp = serialize($values);
-					$text .= ($sql -> db_Insert("generic", "0, 'rss', '', '', '$key', '', '$tmp' ")) ? EPL_ADLAN_46 . ". ($key)<br />" : EPL_ADLAN_48 . ". ($key)<br />";
-                }
-			}
+
 
 			if (is_array($eplug_prefs)) {
 				$this->manage_prefs('add', $eplug_prefs);
@@ -403,7 +403,17 @@ class e107plugin {
 
 			$this -> manage_notify('add', $eplug_folder);
 
-			$sql->db_Update('plugin', "plugin_installflag = 1 WHERE plugin_id = '{$id}'");
+			if(is_array($eplug_rss)){
+				foreach($eplug_rss as $key=>$values){
+					$rssfeeds[] = $key;
+                	$tmp = serialize($values);
+					$rssmess .= EPL_ADLAN_46 . ". ($key)<br />"; 
+                }
+				$feeds = implode(",",$rssfeeds);
+			}
+            $plugin_rss = ($feeds) ? $feeds : "";
+			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_rss = '$plugin_rss' WHERE plugin_id = '{$id}'");
+            if($rssmess){ $text .= $rssmess; }
 			$text .= ($eplug_done ? "<br />{$eplug_done}" : "");
 		} else {
 			$text = EPL_ADLAN_21;
