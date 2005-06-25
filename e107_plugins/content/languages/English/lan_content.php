@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2005-06-24 22:08:21 $
+|     $Revision: 1.57 $
+|     $Date: 2005-06-25 11:23:54 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -326,7 +326,7 @@ define("CONTENT_ADMIN_OPT_LAN_219", "choose which sections should be displayed w
 define("CONTENT_ADMIN_OPT_LAN_220", "authorlist icon");
 define("CONTENT_ADMIN_OPT_LAN_221", "preset data tags");
 define("CONTENT_ADMIN_OPT_LAN_222", "define default preset custom data tags");
-define("CONTENT_ADMIN_OPT_LAN_223", "Here you can provide additional preset data tags. The fields you provide here are the keys of the key=>value data tags. They will have a textfield for the value to be set in the admin creation form. Note: these are not part of the amount of custom data tags you have specified above, and will be used additionally.<br />These Preset Tags are very usefull if you want to have a certain custom tag available standard for each new item. for instance, if you always want to be able to define a value for 'photographer' you can create such a preset tag, which will always be displayed for each new item in this main parent.");
+define("CONTENT_ADMIN_OPT_LAN_223", "Here you can provide additional preset data tags. The fields you provide here are the keys of the key=>value data tags. They will have a input element for the value to be set in the admin creation form. You can choose from the pulldown menu which type of element you want the preset data tag to be. Note: these are not part of the amount of custom data tags you have specified above, and will be used additionally.<br />These Preset Tags are very usefull if you want to have a certain custom tag available standard for each new item. for instance, if you always want to be able to define a value for 'photographer' you can create such a preset tag, which will always be displayed for each new item in this main parent.");
 define("CONTENT_ADMIN_OPT_LAN_224", "css");
 define("CONTENT_ADMIN_OPT_LAN_225", "define theme css stylesheet for this main parent");
 define("CONTENT_ADMIN_OPT_LAN_226", "if the selected css file does not exist, the default content theme layout css file will be used");
@@ -414,6 +414,9 @@ define("CONTENT_ADMIN_OPT_LAN_297", "select");
 define("CONTENT_ADMIN_OPT_LAN_298", "date");
 define("CONTENT_ADMIN_OPT_LAN_299", "checkbox");
 define("CONTENT_ADMIN_OPT_LAN_300", "radio");
+define("CONTENT_ADMIN_OPT_LAN_301", "article index");
+define("CONTENT_ADMIN_OPT_LAN_302", "define the rendertype for the article index of multipages");
+define("CONTENT_ADMIN_OPT_LAN_303", "if you have a multipage article, you can either show the article index of these pages as a list of normal hyperlinks, or show them in a selectbox");
 
 
 
@@ -753,7 +756,7 @@ define("CONTENT_LAN_85", "authorlist");
 define("CONTENT_LAN_86", "view top score items");
 define("CONTENT_LAN_87", "Top Score Content");
 define("CONTENT_LAN_88", "no content items have a score yet");
-define("CONTENT_LAN_89", "");
+define("CONTENT_LAN_89", "select page");
 
 
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "no content categories allow user submission at this point");
@@ -897,6 +900,8 @@ define("CONTENT_PRESET_LAN_19", "you need to provide an equal amount of text and
 define("CONTENT_PRESET_LAN_20", "you need to provide a value for the checkbox");
 define("CONTENT_PRESET_LAN_21", "text");
 define("CONTENT_PRESET_LAN_22", "value");
+define("CONTENT_PRESET_LAN_23", "choose text");
+define("CONTENT_PRESET_LAN_24", "the first option with no value");
 
 
 

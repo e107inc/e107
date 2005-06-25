@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.65 $
-|		$Date: 2005-06-24 22:08:21 $
+|		$Revision: 1.66 $
+|		$Date: 2005-06-25 11:23:54 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -452,7 +452,7 @@ class contentform{
 							$TOPIC_HELP = "";
 							$TOPIC_FIELD = "
 								".$rs -> form_hidden("uploadtype1", "icon");
-								if (isset($row['content_icon'])){
+								if (isset($row['content_icon']) && $row['content_icon']){
 									$TOPIC_FIELD .= "
 									01 ".$rs -> form_text("content_icon", 50, $row['content_icon'], 100, "tbox", TRUE)."
 									".$rs -> form_button("button", "removeicon", CONTENT_ADMIN_ITEM_LAN_26, "onClick=\"confirm2_('icon', '', '".$row['content_icon']."');\"").$rs -> form_button("button", "newicon", CONTENT_ADMIN_ITEM_LAN_25, "onClick='expandit(this)'")."
@@ -737,7 +737,7 @@ class contentform{
 						if($checkcustom && $checkcustomnumber){ $TOPIC_FIELD = "<table style='width:100%; border:0;'>"; }
 						if(!empty($custom)){						
 							foreach($custom as $k => $v){
-								if(substr($k,0,22) != "content_custom_preset_" && $k != "content_custom_score" && $k != "content_custom_meta" && $k != "content_custom_template"){
+								if(substr($k,0,22) != "content_custom_preset_" && $k != "content_custom_presettags" && $k != "content_custom_score" && $k != "content_custom_meta" && $k != "content_custom_template"){
 									$key = substr($k,15);
 									if($checkcustom && $checkcustomnumber){
 										$TOPIC_FIELD .= "
@@ -841,28 +841,29 @@ class contentform{
 
 			}elseif($tmp[1] == "select"){
 					$str = $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}]", "");
-					for($i=2;$i<count($tmp);$i++){
+					$str .= $rs -> form_option($tmp[2], ($values[$tmp[0]] == $tmp[2] ? "1" : "0"), "", "");
+					for($i=3;$i<count($tmp);$i++){
 						$str .= $rs -> form_option($tmp[$i], ($values[$tmp[0]] == $tmp[$i] ? "1" : "0"), $tmp[$i], "");
 					}				
 					$str .= $rs -> form_select_close();
 				
 			}elseif($tmp[1] == "date"){
 					$str = $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}][day]", "")."
-					".$rs -> form_option("day", "0", "");
+					".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_12, "0", "");
 					for($i=1;$i<=31;$i++){
 						$str .= $rs -> form_option($i, ($values[$tmp[0]]['day'] == $i ? "1" : "0"), $i, "");
 					}
 					$str .= $rs -> form_select_close();
 
 					$str .= $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}][month]", "")."
-					".$rs -> form_option("month", "0", "");
+					".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_13, "0", "");
 					for($i=1;$i<=12;$i++){
 						$str .= $rs -> form_option($months[($i-1)], ($values[$tmp[0]]['month'] == $i ? "1" : "0"), $i, "");
 					}
 					$str .= $rs -> form_select_close();
 
 					$str .= $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}][year]", "")."
-					".$rs -> form_option("year", "0", "");
+					".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_14, "0", "");
 					for($i=$tmp[2];$i<=$tmp[3];$i++){
 						$str .= $rs -> form_option($i, ($values[$tmp[0]]['year'] == $i ? "1" : "0"), $i, "");
 					}
@@ -3093,6 +3094,16 @@ class contentform{
 						$TOPIC_FIELD = "
 						".$rs -> form_radio("content_content_comment_all_{$id}", "1", ($content_pref["content_content_comment_all_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_ITEM_LAN_85."
 						".$rs -> form_radio("content_content_comment_all_{$id}", "0", ($content_pref["content_content_comment_all_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_ITEM_LAN_86."
+						";
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+						//content_content_pagenames_rendertype_
+						$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_301;
+						$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_302;
+						$TOPIC_HELP = CONTENT_ADMIN_OPT_LAN_303;
+						$TOPIC_FIELD = "
+						".$rs -> form_radio("content_content_pagenames_rendertype_{$id}", "0", ($content_pref["content_content_pagenames_rendertype_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_211."
+						".$rs -> form_radio("content_content_pagenames_rendertype_{$id}", "1", ($content_pref["content_content_pagenames_rendertype_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_210."
 						";
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 

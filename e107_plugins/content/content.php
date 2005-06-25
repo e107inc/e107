@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.64 $
-|		$Date: 2005-06-25 09:19:50 $
+|		$Revision: 1.65 $
+|		$Date: 2005-06-25 11:23:54 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -488,7 +488,7 @@ function show_content_archive(){
 					if($content_pref["content_archive_nextprev_{$mainparent}"]){
 						require_once(e_HANDLER."np_class.php");
 						$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-						$ix = new nextprev(e_SELF, $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
+						$ix = new nextprev(e_SELF, $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
 					}
 					
 					if($pref['cachestatus']){
@@ -574,7 +574,7 @@ function show_content_recent(){
 					if($content_pref["content_nextprev_{$mainparent}"]){
 						require_once(e_HANDLER."np_class.php");
 						$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-						$ix = new nextprev(e_SELF, $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
+						$ix = new nextprev(e_SELF, $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
 					}
 
 					if($pref['cachestatus']){
@@ -857,20 +857,20 @@ function show_content_cat($mode=""){
 								$ns -> tablerender($caption, (isset($textparent) ? $textparent : "").(isset($textsubparent) ? $textsubparent : "").$textchild);
 							}
 							if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
-								$ix = new nextprev("content.php", $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
+								$ix = new nextprev("content.php", $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
 							}
 						}else{
 							if($content_pref["content_cat_rendertype_{$mainparent}"] == "1"){
 								if(isset($textchild)){		$ns -> tablerender($captionchild, $textchild); }
 								if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
-									$ix = new nextprev("content.php", $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
+									$ix = new nextprev("content.php", $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
 								}
 								if(isset($textparent)){		$ns -> tablerender($caption, $textparent); }
 								if(isset($textsubparent)){	$ns -> tablerender($captionsubparent, $textsubparent); }
 							}else{
 								if(isset($textchild)){		$ns -> tablerender($captionchild, $textchild); }
 								if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
-									$ix = new nextprev("content.php", $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
+									$ix = new nextprev("content.php", $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
 								}
 								$ns -> tablerender($caption, (isset($textparent) ? $textparent : "").(isset($textsubparent) ? $textsubparent : ""));
 							}
@@ -1013,7 +1013,7 @@ function show_content_author_all(){
 					if($content_pref["content_author_nextprev_{$mainparent}"]){
 						require_once(e_HANDLER."np_class.php");
 						$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-						$ix = new nextprev(e_SELF, $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
+						$ix = new nextprev(e_SELF, $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
 					}
 
 					if($pref['cachestatus']){
@@ -1115,7 +1115,7 @@ function show_content_author(){
 						if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
 							require_once(e_HANDLER."np_class.php");
 							$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-							$ix = new nextprev(e_SELF, $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
+							$ix = new nextprev(e_SELF, $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
 						}
 					}
 					if($pref['cachestatus']){
@@ -1222,7 +1222,7 @@ function show_content_top(){
 					if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
 						require_once(e_HANDLER."np_class.php");
 						$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-						$ix = new nextprev(e_SELF, $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
+						$ix = new nextprev(e_SELF, $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
 					}
 
 					if($pref['cachestatus']){
@@ -1328,7 +1328,7 @@ function show_content_score(){
 					if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
 						require_once(e_HANDLER."np_class.php");
 						$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-						$ix = new nextprev(e_SELF, $from, $number, $contenttotal, CONTENT_LAN_33, ($np_querystring ? $np_querystring : ""));
+						$ix = new nextprev(e_SELF, $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
 					}
 
 					if($pref['cachestatus']){
@@ -1408,14 +1408,14 @@ function show_content_item(){
 							}
 						}
 
-						$date	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_DATE}');
-						$auth	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_AUTHORDETAILS}');
-						$ep		= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EPICONS}');
-						$edit	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EDITICON}');
-						$par	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_PARENT}');
-						$com	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_COMMENT}');
-						$score	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_SCORE}');
-						$ref	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_REFER}');
+						$date	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_DATE}', FALSE, $content_shortcodes);
+						$auth	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
+						$ep		= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EPICONS}', FALSE, $content_shortcodes);
+						$edit	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_EDITICON}', FALSE, $content_shortcodes);
+						$par	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_PARENT}', FALSE, $content_shortcodes);
+						$com	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_COMMENT}', FALSE, $content_shortcodes);
+						$score	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_SCORE}', FALSE, $content_shortcodes);
+						$ref	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_REFER}', FALSE, $content_shortcodes);
 						if ($date!="" || $auth!="" || $ep!="" || $edit!="" || $par!="" || $com!="" || $score!="" || $ref!="") {
 							$CONTENT_CONTENT_TABLE_INFO_PRE = TRUE;
 							$CONTENT_CONTENT_TABLE_INFO_POST = TRUE;
@@ -1436,6 +1436,7 @@ function show_content_item(){
 							}
 
 							$CONTENT_CONTENT_TABLE_TEXT = $pages[(!$qs[2] ? 0 : $qs[2]-1)];
+							$options = "";
 							for ($i=0; $i < count($pages); $i++) {
 								if(!isset($qs[2])){ $idp = 1; }else{ $idp = $qs[2]; }
 								if($idp == $i+1){ $pre = " - current"; }else{ $pre = ""; }
@@ -1445,7 +1446,15 @@ function show_content_item(){
 									$arrpagename = explode("[newpage=", $matches[0][$i]);
 									$pagename[$i] = substr($arrpagename[1],0,-1);
 								}
-								$CONTENT_CONTENT_TABLE_PAGENAMES .= CONTENT_LAN_79." ".($i+1)." ".$pre." : <a href='".e_SELF."?".$qs[0].".".$qs[1].".".($i+1)."'>".$pagename[$i]."</a><br />";
+								//0:normal links, 1:selectbox
+								//$content_pref["content_content_pagenames_rendertype_{$mainparent}"] = "1";
+								if($content_pref["content_content_pagenames_rendertype_{$mainparent}"] == "1"){
+									$page = CONTENT_LAN_79." ".($i+1)." ".$pre." ".$pagename[$i];
+									$url = e_SELF."?".$qs[0].".".$qs[1].".".($i+1);
+									$options .= $rs -> form_option($page, ($idp == ($i+1) ? "1" : "0"), $url , "");
+								}else{
+									$options .= CONTENT_LAN_79." ".($i+1)." ".$pre." : <a href='".e_SELF."?".$qs[0].".".$qs[1].".".($i+1)."'>".$pagename[$i]."</a><br />";
+								}
 
 								if($idp==1){
 									$CONTENT_CONTENT_TABLE_SUMMARY = ($content_pref["content_content_summary_{$mainparent}"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "") : "");
@@ -1457,6 +1466,13 @@ function show_content_item(){
 									$lastpage = TRUE;
 								}
 							}
+							if($content_pref["content_content_pagenames_rendertype_{$mainparent}"] == "1"){
+								$selectjs	= "onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\"";
+								$CONTENT_CONTENT_TABLE_PAGENAMES = $rs -> form_select_open("pagenames", $selectjs).$rs -> form_option("select page", "1", "none" , "").$options.$rs -> form_select_close();
+							}else{
+								$CONTENT_CONTENT_TABLE_PAGENAMES = $options;
+							}
+
 						}else{
 							$CONTENT_CONTENT_TABLE_SUMMARY	= ($content_pref["content_content_summary_{$mainparent}"] && $row['content_summary'] ? $tp -> toHTML($row['content_summary'], TRUE, "") : "");
 							$CONTENT_CONTENT_TABLE_SUMMARY	= $tp -> replaceConstants($CONTENT_CONTENT_TABLE_SUMMARY);
@@ -1524,7 +1540,10 @@ function show_content_item(){
 										if($content_pref["content_content_presettags_{$mainparent}"]){
 											foreach($v as $ck => $cv){
 												if(is_array($cv)){	//date
-													$vv = $cv['day']." ".$months[($cv['month']-1)]." ".$cv['year'];
+													if($cv['day']=="" && $cv['month']=="" && $cv['year']==""){
+													}else{
+														$vv = $cv['day']." ".$months[($cv['month']-1)]." ".$cv['year'];
+													}
 												}else{
 													$vv = $cv;
 												}
