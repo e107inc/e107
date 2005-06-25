@@ -18,17 +18,18 @@
 	if($downloads == 0) {
 		$LIST_DATA = LIST_DOWNLOAD_2;
 	}else{
-		$row = $sql -> db_Fetch();
+		while($row = $sql -> db_Fetch()){
 
-		$rowheading	= $this -> parse_heading($row['download_name'], $mode);
-		$ICON		= $bullet;
-		$HEADING	= "<a href='".e_BASE."download.php?view.".$row['download_id']."' title='".$row['download_name']."'>".$rowheading."</a>";
-		$AUTHOR		= ($arr[3] ? $row['download_author'] : "");
-		//$AUTHOR	= ($arr[3] ? (USERID ? "<a href='".e_BASE."user.php?id.".$row['download_author_id']."'>".$row['download_author']."</a>" : $row['download_author']) : "");
-		$CATEGORY	= ($arr[4] ? "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$row['download_category_name']."</a>" : "");
-		$DATE		= ($arr[5] ? $this -> getListDate($row['download_datestamp'], $mode) : "");
-		$INFO		= "";
-		$LIST_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );
+			$rowheading	= $this -> parse_heading($row['download_name'], $mode);
+			$ICON		= $bullet;
+			$HEADING	= "<a href='".e_BASE."download.php?view.".$row['download_id']."' title='".$row['download_name']."'>".$rowheading."</a>";
+			$AUTHOR		= ($arr[3] ? $row['download_author'] : "");
+			//$AUTHOR	= ($arr[3] ? (USERID ? "<a href='".e_BASE."user.php?id.".$row['download_author_id']."'>".$row['download_author']."</a>" : $row['download_author']) : "");
+			$CATEGORY	= ($arr[4] ? "<a href='".e_BASE."download.php?list.".$row['download_category_id']."'>".$row['download_category_name']."</a>" : "");
+			$DATE		= ($arr[5] ? $this -> getListDate($row['download_datestamp'], $mode) : "");
+			$INFO		= "";
+			$LIST_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );
+		}
 	}
 
 ?>
