@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_ren_help.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-30 16:42:48 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:34 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -48,6 +48,5 @@ define("LANHELP_33", "HTML - tar bort radbrytningar from text: [html]&lt;table&g
 define("LANHELP_34", "[newpage] eller [newpage=title] Infogar sidbrytning, delar artikeln på fler än en sida");
 define("LANHELP_35", "hyperlänk url");
 define("LANHELP_36", "Osorterad lista: [list]line1*line2*line3[/list] Sorterad lista: [list=typ]line1*line2*line3[/list]");
-
 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_administrator.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:03 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -70,8 +70,9 @@ define("ADMSLAN_61", "Administratör raderad");
 define("ADMSLAN_62", "Pluginhanterare");
 
 define("ADMSLAN_64", "Rensa systemcache");
-define("ADMSLAN_65", "Konfigurera e-postinställningar och post-ut");
+define("ADMSLAN_65", "Konfigurera e-postinställningar och e-postutskick");
 define("ADMSLAN_66", "Konfigurera sökning");
 define("ADMSLAN_67", "Skanna med filinspektören");
-define("ADMSLAN_68", "Konfigurera e-postnotifikation");
+define("ADMSLAN_68", "Konfigurera e-postnotifiering");
+
 ?>

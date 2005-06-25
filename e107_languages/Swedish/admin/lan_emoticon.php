@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_emoticon.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -16,7 +16,7 @@ define("EMOLAN_4", "Aktivera smajlys?");
 
 define("EMOLAN_5", "Bild");
 define("EMOLAN_6", "Smajly kod");
-define("EMOLAN_7", "seperera multipla smajlys med mellanslag");
+define("EMOLAN_7", "seperera multipla smajlykoder med mellanslag");
 
 define("EMOLAN_8", "Status");
 define("EMOLAN_9", "Alternativ");

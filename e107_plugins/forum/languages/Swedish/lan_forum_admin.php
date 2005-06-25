@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Swedish/lan_forum_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-13 16:20:21 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "Du måste ange antal dagar du vill rensa.");
-define("FORLAN_2", "Väl om du vill radera rensade poster helt, eller göra dem inaktiva (raderas ej, men visas inte i forum)");
+define("FORLAN_2", "Välj om du vill radera rensade poster helt, eller göra dem inaktiva (raderas ej, men visas inte i forum)");
 define("FORLAN_3", "Radera");
 define("FORLAN_4", "Inaktivera");
 define("FORLAN_5", "Genomför rensning");
@@ -62,7 +62,7 @@ define("FORLAN_50", "Markera detta för att tillåta användarna att sätta upp 
 define("FORLAN_51", "Aktivera bevakningar");
 define("FORLAN_52", "Markera detta för att låta användare att bevaka trådar och få e-post när ett svar postas i tråden.");
 define("FORLAN_53", "E-postprefix");
-define("FORLAN_54", "The text you enter will prefix the subject on any emails sent through the forum");
+define("FORLAN_54", "Texten du anger här kommer att vara prefix till ämnet i alla e-postbrev som skickas genom forumen");
 define("FORLAN_55", "Populär tråd gränsvärde");
 define("FORLAN_56", "Antal inlägg i en tråd innan den markeras som populär");
 define("FORLAN_57", "Inlägg per sida");
@@ -129,7 +129,7 @@ define("FORLAN_112", "Aktivera omdirigering");
 define("FORLAN_113", "Markera här för att automatiskt omdirigera webbläsaren till forumsidan efter postning");
 define("FORLAN_114", "Användares egen titel");
 define("FORLAN_115", "Markera för att låta användare att själva ändra egen titel");
-define("FORLAN_116", "Reported Posts");
+define("FORLAN_116", "Rapporterade inlägg");
 define("FORLAN_117", "Detta kommer att radera posten för det rapporterade inlägget, inte inlägget i sig självt.");
 define("FORLAN_118", "Rapporterat inlägg raderat");
 define("FORLAN_119", "Klickning på länkar kommer att öppna forum i nytt fönster.");
@@ -154,7 +154,7 @@ define("FORLAN_129", "Anger hur många tecken som skall visas i verktygstipset. 
 define("FORLAN_130", "klicka här");
 define("FORLAN_131", "för att sätta max filstorlek, tillåtna filtyper m.m.");
 define("FORLAN_132", "Framhäv klistrade trådar");
-define("FORLAN_133", "Give extra emphasis to sticky threads (separate thread sections and headers)");
+define("FORLAN_133", "Framhäv klistrade trådar (separera trådarnas sektion och rubrik)");
 
 define("FORLAN_134", "Maximal bredd på uppladdad bild");
 define("FORLAN_135", "Lämna tomt för att avaktivera automatisk skalning av bilder");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_download.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-30 16:42:48 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:34 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -95,4 +95,5 @@ define("LAN_dl_73", "Nerladdningar från denna spegel: ");
 define("LAN_dl_74", "Totala nerladdningar från denna spegel: ");
 
 define("LAN_dl_75", "ingen bild tillgänglig ");
+
 ?>

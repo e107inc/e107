@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_header.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -15,7 +15,7 @@ define("LAN_head_3", "Din server körs med en 'baskatalog' restriktion aktiverad
 
 define("LAN_head_4", "Admin area");
 
-define("LAN_head_5", "språk visat i admin arean: ");
+define("LAN_head_5", "språk visat i adminarean: ");
 define("LAN_head_6", "Plugin info");
 
 ?>

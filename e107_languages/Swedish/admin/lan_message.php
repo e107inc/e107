@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_message.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -23,6 +23,5 @@ define("MESSLAN_10", "Skickat av");
 define("MESSLAN_11", "öppnas i nytt fönster");
 define("MESSLAN_12", "Meddelande");
 define("MESSLAN_13", "Länk");
-
 
 ?>

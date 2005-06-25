@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_fla.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -24,5 +24,7 @@ define("FLALAN_12", "avmarkera alla radera-rutorna");
 define("FLALAN_13", "markera alla spärra-rutorna");
 define("FLALAN_14", "avmarkera alla spärra-rutorna");
 define("FLALAN_15", "Följande IP adress(er) har blivit auto-spärrade - användare har gjort fler än tio felaktiga inloggningar");
+define("FLALAN_16", "Radera denna autospärrlista");
+define("FLALAN_17", "Autospärrlista raderad");
 
 ?>

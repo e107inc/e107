@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_fileinspector.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-16 08:31:11 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -35,7 +35,7 @@ define("FR_LAN_8", "Kärnfiler klara");
 define("FR_LAN_9", "Kärnfiler felaktiga");
 define("FR_LAN_10", "Möjliga orsaker till felaktigheter i filer");
 define("FR_LAN_11", "Filen är korrupt");
-define("FR_LAN_12", "Detta kan bero på ett antal saker, till exempel att filen skadades i zip/tar.gz-arkivet, blev skadad under
+define("FR_LAN_12", "Detta kan bero på ett antal saker, till exempel att filen var skadad i zip/tar.gz-arkivet, blev skadad under
 extraheringen eller skadades under uppladdning via FTP. Du bör prova att ladda upp filen på nytt till din server
 och köra skanningen igen för att se om det rättar till problemet.");
 define("FR_LAN_13", "Filen är för gammal");
@@ -45,6 +45,7 @@ define("FR_LAN_15", "Filen har blivit redigerad");
 define("FR_LAN_16", "Om du har redigerat denna filen på något vis så kommer den inte att klara en integritetskontroll. Om du
 redigerat den avsiktligt behöver du inte oroa dig och kan ignorera att kontrollen fallerar. Om filen däremot
 blivit redigerad av någon annan utan tillåtelse så bör du ladda upp en färsk version av filen från e107 arkivet.");
+
 define("FR_LAN_17", "Om du är en CVS användare");
 define("FR_LAN_18", "Om du kör med e107 CVS chackouts på din sajt istället för den officiella och stabila e107
 utgåvan så kommer du att se att filer fallerar integritetskontrollen på grund av att de ändrats av en utvecklare efter

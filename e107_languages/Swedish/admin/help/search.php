@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/help/search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 16:26:44 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -15,4 +15,5 @@ och inkluderar boolsk sökningsfunktionalitet.<br /><br />
 <b>Tecken</b> Detta är antalet tecken som kommer att visas i sökresultatets summering.<br /><br />
 <b>Resultat</b> Detta är antalet resultat som visas på varje sida.";
 $ns -> tablerender("Sökhjälp", $text);
+
 ?>

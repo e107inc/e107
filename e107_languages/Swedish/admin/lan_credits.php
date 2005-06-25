@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_credits.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:03 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -16,7 +16,5 @@ define("CRELAN_2", "Nedan är en lista på tredjeparts mjukvara / resurser anvä
 // define("CRELAN_5", "Webbsajt");
 // define("CRELAN_6", "Tillåtelse");
 define("CRELAN_7", "version");
-
-
 
 ?>

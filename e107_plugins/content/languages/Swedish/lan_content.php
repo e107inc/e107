@@ -1,11 +1,11 @@
-<?php
+	<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-16 15:45:55 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -100,7 +100,7 @@ define("CONTENT_ADMIN_CAT_LAN_56", "objekt");
 define("CONTENT_ADMIN_CAT_LAN_57", "objekt"); //Pluralis
 define("CONTENT_ADMIN_CAT_LAN_58", "kategoriikon laddades upp okej<br />Notera: Du måste också tilldela ikonen till denna kategorin i Ikon>Välj befintlig ikon arean!<br />och efter det måste du också spara formuläret för att skapa/uppdatera denna kategori");
 define("CONTENT_ADMIN_CAT_LAN_59", "kategoriikon ej uppladdad");
-define("CONTENT_ADMIN_CAT_LAN_60", "");
+define("CONTENT_ADMIN_CAT_LAN_60", "Välj en befintlig ikon");
 define("CONTENT_ADMIN_CAT_LAN_61", "eller ladda upp en ny ikon");
 define("CONTENT_ADMIN_CAT_LAN_62", "När du laddat upp en ny kategoriikon kan tilldela ikonen med 'Välj befintlig ikon' arean ovan<br />Om du laddar upp en ny ikon kommer den att skalas till 48 pixlar, en mindre 16 pixlars ikonkommer också att skapas<br /><br />");
 define("CONTENT_ADMIN_CAT_LAN_63", "Ladda upp ikon");
@@ -292,7 +292,7 @@ define("CONTENT_ADMIN_OPT_LAN_183", "Författare");
 define("CONTENT_ADMIN_OPT_LAN_184", "Skall författaren visas?");
 define("CONTENT_ADMIN_OPT_LAN_185", "Underrubrik");
 define("CONTENT_ADMIN_OPT_LAN_186", "Skall underrubriken visas?");
-define("CONTENT_ADMIN_OPT_LAN_187", "Underrubrik: Antal tecken);
+define("CONTENT_ADMIN_OPT_LAN_187", "Underrubrik: Antal tecken");
 define("CONTENT_ADMIN_OPT_LAN_188", "Hur många tecken av underrubriken skall visas?");
 define("CONTENT_ADMIN_OPT_LAN_189", "Lämna tomt för att visa hela underrubriken");
 define("CONTENT_ADMIN_OPT_LAN_190", "Underrubrik: Postfix");

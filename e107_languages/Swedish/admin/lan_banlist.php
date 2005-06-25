@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_banlist.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:03 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -18,5 +18,6 @@ define("BANLAN_7", "Anledning");
 define("BANLAN_8", "Spärra användare");
 define("BANLAN_9", "Spärra användare från sajten");
 define("BANLAN_10", "IP / E-post / Orsak");
+define("BANLAN_11", "Auto-spärra: Fler än 10 misslyckade inloggningsförsök");
 
 ?>

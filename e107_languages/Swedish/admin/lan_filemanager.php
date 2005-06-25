@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_filemanager.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-16 13:30:44 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -61,7 +61,5 @@ define("FMLAN_47", "Användares uppladdningar");
 define("FMLAN_48", "Flytta valda till");
 define("FMLAN_49", "Bekräfta att du vill flytta de valda filerna.");
 define("FMLAN_50", "Flytta");
-
-
 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_users_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -79,7 +79,7 @@ define("EXTLAN_64", "Välj visat värde");
 
 
 //textbox
-define("EXTLAN_HELP_1", "<b><i>Parametrar:</i></b><br />size - storlek på fält<br />maxlength - max fältlängd<br /><br />class - fältets css klassd<br />style - css stilsträng<br /><br />regex - regex valideringskod<br />regexfail - validering feltext");
+define("EXTLAN_HELP_1", "<b><i>Parametrar:</i></b><br />size - storlek på fält<br />maxlength - max fältlängd<br /><br />class - fältets css klass<br />style - css stilsträng<br /><br />regex - regex valideringskod<br />regexfail - validering feltext");
 //radio buttons
 define("EXTLAN_HELP_2", "Detta kommer att vara radioknappshjälptexten");
 //dropdown
@@ -92,11 +92,5 @@ define("EXTLAN_HELP_5", "Detta kommer att vara textareahjälptexten");
 define("EXTLAN_HELP_6", "Detta kommer att vara heltalshjälptexten");
 //date
 define("EXTLAN_HELP_7", "Detta kommer att vara datumhjälptexten");
-
-define("EXTLAN_PRE1", "Plats");
-define("EXTLAN_PRE2", "AIM");
-define("EXTLAN_PRE3", "ICQ");
-define("EXTLAN_PRE4", "Yahoo!");
-define("EXTLAN_PRE5", "Hemsida");
 
 ?>

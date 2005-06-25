@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_upload.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ define("UPLLAN_14", "Demo");
 define("UPLLAN_16", "kopiera till nyhetspost");
 define("UPLLAN_17", "ta bort uppladdning från lista");
 define("UPLLAN_18", "Visa detaljer");
-define("UPLLAN_19", "Det finns inga omodererade publika uppladningar");
+define("UPLLAN_19", "Det finns inga omodererade publika uppladdade filer");
 define("UPLLAN_20", "Det");
 define("UPLLAN_21", "omodererade publika uppladdningar");
 define("UPLLAN_22", "ID");
@@ -63,7 +63,7 @@ define("UPLLAN_45", "Är du säker på att du vill radera följande fil...");
 
 define("UPLAN_COPYTODLM", "kopiera till nerladdningshanteraren");
 define("UPLAN_IS", "är ");
-define("UPLAN_ARE", "är ");
+define("UPLAN_ARE", "är "); //Pluralis
 define("UPLAN_COPYTODLS", "Kopiera till nerladdning");
 
 ?>

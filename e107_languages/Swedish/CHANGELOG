@@ -1,5 +1,16 @@
 Changelog for the Swedish Language pack:
 
+Wed Jun 22 2005 - mrpiercer (at) users.sourceforge.net
+- The documentation files in ~/e107_docs/help/Swedish
+  cannot have Swedish characters like åäö in them, this
+  because there is no translation table between menu choices
+  and file names.  The file name turns into the menu selection
+  entry, and since all installations of a webserver on
+  different platforms has a different file system character
+  encoding, the filenames are restricted to the basic characters.
+Tue Jun 21 2005 - mrpiercer (at) users.sourceforge.net
+- Now all the core files are updated to correspond to CVS
+  version 2005-06-16.
 Mon Jun 13 2005 - mrpiercer (at) users.sourceforge.net
 - Every file is now very rougly translated. Next step is to
   verify them on a live site, and one by one correct all

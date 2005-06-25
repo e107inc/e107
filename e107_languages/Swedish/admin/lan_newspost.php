@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_newspost.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -79,7 +79,7 @@ define("NWSLAN_69", "Ladda upp en bild eller fil att använda i nyheten");
 define("NWSLAN_70", "Katalogen ".e_FILE."downloads är skrivskyddad, du måste sätta CHMOD 777 på katalogen innan uppladdning av filer.");
 define("NWSLAN_71", "Katalogen ".e_IMAGE."newspost_images är skrivskyddad, du måste sätte CHMOD 777 på katalogen innan uppladdning av bilder.");
 define("NWSLAN_72", "Visa bara nyheter mellan vissa datum");
-define("NWSLAN_73", "Renderingstyp");
+define("NWSLAN_73", "Visningstyp");
 define("NWSLAN_74", "Välj var och hur nyheten skall postas");
 define("NWSLAN_75", "Standard - posta på förstasidan");
 define("NWSLAN_76", "Endast rubrik - posta på förstasidan");
@@ -102,7 +102,7 @@ define("NWSLAN_102", "bredd i pixlar<br /> eller lämna blankt för avaktivering
 define("NWSLAN_103", "Posta om");
 define("NWSLAN_104", "av");
 define("NWSLAN_105", "Markera rutan för att uppdatera tidstämpeln på nyheten till aktuell tid");
-define("NWSLAN_106", "Åtkomst till Skicka in nyhet av:");
+define("NWSLAN_106", "Åtkomst till Skicka in nyhet för:");
 define("NWSLAN_107", "Aktivera WYSIWYG redigerare på Skicka in nyhet sidan.");
 
 define("NWSLAN_111", "Visa nytt datum-huvud");
@@ -113,7 +113,7 @@ define("NWSLAN_114", "om temat du använder har en layoutmall för nyheter, anv�
 
 define("NWSLAN_115", "Nyhetsposter att visa i arkiv?");
 define("NWSLAN_116", "Uppdatera först preferenserna med det ändrade antalet per sida, uppdatera sedan igeng efter att du satt prefernserna för nyhetsarkivet. (0 är avaktiverat)");
-define("NWSLAN_117", "sätt rubriken för nyhetsarkivet");
+define("NWSLAN_117", "Sätt rubriken för nyhetsarkivet");
 define("NWSLAN_118", "Visa bilder");
 define("NWSLAN_119", "Inställningar sparade");
 

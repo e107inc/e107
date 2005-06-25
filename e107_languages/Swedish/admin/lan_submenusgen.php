@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_submenusgen.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-16 13:30:44 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -46,10 +46,11 @@ define("LAN_MENGEN_34","Andra huvudlänkar:");
 define("LAN_MENGEN_35","Undermeny länknamn och URLer");
 define("LAN_MENGEN_36","Lägg till länkar i undermenyer för:");
 define("LAN_MENGEN_37","Namn: ");
-define("LAN_MENGEN_38","Du kan lägga till från 1 till 5 länkar för denna huvudlänk, men... Om nödvändigt kan du återanvända detta verktyg för att lägga till fler länkar. Eller använd phpMyAdmin om du har för många länkar att lägga till...");
+define("LAN_MENGEN_38","Du kan lägga till från 1 till 5 länkar för denna huvudlänk, men... Om nödvändigt kan du återanvända detta verktyg för att lägga till fler länkar. Eller använd phpMyAdmin om du har många länkar att lägga till...");
 define("LAN_MENGEN_39","URL:");
 define("LAN_MENGEN_40"," kan INTE skapas, URL saknas...");
 define("LAN_MENGEN_41","Länkar");
 define("LAN_MENGEN_42","En ny länk för varje länkkategori kommer att visas i undermenyn för direktåtkomst till denna kategori");
 define("LAN_MENGEN_43","Alla länkar visade i länkundermenyn kommer att raderas.");
+
 ?>

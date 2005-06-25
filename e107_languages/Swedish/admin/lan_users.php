@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_users.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-16 13:30:44 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -50,7 +50,7 @@ define("USRLAN_36", "Sätt klass");
 // define("USRLAN_39", "resultat");
 // define("USRLAN_40", "Inget definierat");
 
-define("USRLAN_44", "Tillåt medlemmat att ladda upp en figur?");
+define("USRLAN_44", "Tillåt att medlemmar laddar upp en figur?");
 
 define("USRLAN_47", "Maximal figurbredd (i pixlar)");
 define("USRLAN_48", "standard är 120");
@@ -117,19 +117,19 @@ define("USRLAN_123", "Din registrering har tagits emot och konto skapats.");
 define("USRLAN_124", "Ditt konto är i nuläget markerat som inaktivt. För att aktivera kontot, gå till följande länk");
 define("USRLAN_125", "Från");
 
-define("USRLAN_126", "Tillåt användare att betygssätta användare");
+define("USRLAN_126", "Tillåt användare att betygssätta andra användare");
 define("USRLAN_127", "Tillåt kommentarer i användarprofil");
 
-define("USRLAN_128", "Inloggngingsnamn");
+define("USRLAN_128", "Inloggningsnamn");
 
-define("LAN_MAINADMIN", "Huvuddmin");
+define("LAN_MAINADMIN", "Huvudadmin");
 define("LAN_ADMIN", "Admin");
 define("LAN_NOTVERIFIED", "Ej verifierad");
 define("LAN_BANNED", "Spärrad");
 
 
 define("USRLAN_130", "Aktivera användarspårning online");
-define("USRLAN_131", "Du måste aktivera denna funktions för att använda användarspårning online som online.php, forum online info och online menyer");
+define("USRLAN_131", "Du måste aktivera denna funktion för att använda användarspårning online som online.php, forum online info och online menyer");
 define("USRLAN_132", "Aktivera");
 
 define("USRLAN_133", "Tvinga användare att uppdatera inställningar");

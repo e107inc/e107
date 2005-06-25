@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/integrity_check/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-13 16:20:21 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ define("Integ_12", "Skapa sfv-fil");
 define("Integ_13", "Kontrollerar integritet");
 define("Integ_14", "Kan ej skapa SFV eftersom katalogen ".e_PLUGIN."integrity_check/<b>{output}</b> är skrivskyddad. Sätt chmod på denna katalog till 777!");
 define("Integ_15", "Alla filer har kontrollerats och är o.k.!");
-define("Integ_16", "Ingeno kärn-crc-fil tillgänglig");
+define("Integ_16", "Ingen kärn-crc-fil tillgänglig");
 define("Integ_17", "Inga plugin-crc-filer tillgängliga");
 define("Integ_18", "Skapa plugin-CRC-fil");
 define("Integ_19", "Kärn-checksumme-filer");

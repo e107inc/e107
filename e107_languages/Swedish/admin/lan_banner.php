@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_banner.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:03 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -41,7 +41,7 @@ define("BNRLAN_35", "obegränsat");
 define("BNRLAN_36", "Startdatum");
 define("BNRLAN_37", "Slutdatum");
 define("BNRLAN_38", "tom = ingen begränsning");
-define("BNRLAN_39", "visas för klass");
+define("BNRLAN_39", "Visas för klass");
 define("BNRLAN_40", "Uppdatera banner");
 define("BNRLAN_41", "Skapa ny banner");
 define("BNRLAN_42", "Banner rotationssystem");
@@ -60,10 +60,10 @@ define("BANNER_MENU_L2", "Banner menykonfiguration sparad");
 //v.617
 define("BANNER_MENU_L3", "Rubrik");
 define("BANNER_MENU_L5", "Bannerkonfiguration");
-define("BANNER_MENU_L6", "välj kampanjer att visa i menyn");
-define("BANNER_MENU_L7", "tillgängliga kampanjer");
-define("BANNER_MENU_L8", "valda kampanjer");
-define("BANNER_MENU_L9", "radera valda");
+define("BANNER_MENU_L6", "Välj kampanjer att visa i menyn");
+define("BANNER_MENU_L7", "Tillgängliga kampanjer");
+define("BANNER_MENU_L8", "Valda kampanjer");
+define("BANNER_MENU_L9", "Radera valda");
 define("BANNER_MENU_L10", "Renderingstyp");
 define("BANNER_MENU_L12", "enkel");
 define("BANNER_MENU_L13", "i rubricerad ruta");

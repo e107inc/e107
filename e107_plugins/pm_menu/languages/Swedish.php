@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm_menu/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-13 16:20:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -15,7 +15,7 @@ define('PMLAN_1', "mottagna meddelande");
 define('PMLAN_2', "skickade meddelande");
 define('PMLAN_3', "användare blockerad");
 define('PMLAN_4', "användare blockerade");
-define('PMLAN_5', "Skicka nytt privat meddelande");
+define('PMLAN_5', "Skicka privat meddelande");
 define('PMLAN_6', "visa");
 define('PMLAN_7', "Ej tillåtet");
 define('PMLAN_8', "Du måste vara en registrerad och inloggad användare för att använda privata meddelanden.");

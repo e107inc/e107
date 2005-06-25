@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/online_extended_menu/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-13 16:20:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -20,4 +20,5 @@ define("ONLINE_EL7", "läser");
 
 define("ONLINE_EL8", "flest online någonsin: ");
 define("ONLINE_EL9", "den");
+
 ?>

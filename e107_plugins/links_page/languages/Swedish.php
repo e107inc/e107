@@ -4,12 +4,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-13 16:20:21 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
-
 define("PAGE_NAME", "Länkar");
 
 define("LCLAN_1", "Alternativ sparade");
@@ -103,5 +102,78 @@ define("LCLAN_100", "Länkkategori");
 define('LCLAN_101', "Konfigurera länksidan");
 define('LCLAN_102', "Länksidan har installerats, konfigurera den från Länksida på admins förstasida.");
 define('LCLAN_103', "Länkar");
+define('LCLAN_104', "Länkbetyg");
+define('LCLAN_105', "Tillåt användare betygssätta länkar");
+
+define("LCLAN_106", "Länkikon : Ladda upp");
+define("LCLAN_107", "Länkikon uppladdad korrekt!");
+define("LCLAN_108", "Länkikonen laddades inte upp!");
+define("LCLAN_109", "Ladda upp en ny ikon");
+define("LCLAN_110", "Auto-tumnagel skalning");
+define("LCLAN_111", "Ladda upp ikon");
+define("LCLAN_112", "Välj en uppladdad ikon");
+define("LCLAN_113", "Detta alternativ är avaktiverat eftersom din server inte har uppladdning aktiverat");
+define("LCLAN_114", ""); // 'The'
+define("LCLAN_115", "foldern är skrivskyddad, du måste sätta CHMOD 777 på den innan du kan ladda upp");
+
+define("LCLAN_116", "Generella alternativ");
+define("LCLAN_117", "Kategorisida");
+define("LCLAN_118", "Länksida");
+define("LCLAN_119", "Länkkategorier");
+
+define("LCLAN_120", "Sektioner");
+define("LCLAN_121", "Välj vilken information som behöver visas");
+define("LCLAN_122", "Ikon");
+define("LCLAN_123", "Beskrivning");
+define("LCLAN_124", "antal");
+define("LCLAN_125", "Total kategori inforad (raden längst ner)");
+define("LCLAN_126", "Standardsortering kategorier");
+define("LCLAN_127", "Definiera standard sorteringsmetod");
+define("LCLAN_128", "Standard kategoriordning");
+define("LCLAN_129", "Definiera standard sorteringsordning");
+
+define("LCLAN_130", "URL");
+define("LCLAN_131", "Hänvisning");
+define("LCLAN_132", "Tom länkikon");
+define("LCLAN_133", "Skall denna generella länkknapp visas om ingen annan knapp är tillgänglig?");
+define("LCLAN_134", "Standard länksortering");
+define("LCLAN_135", "Definiera standard sorteringsmetod");
+define("LCLAN_136", "Standard länkordning");
+define("LCLAN_137", "Definiera standard sorteringsordning");
+define("LCLAN_138", "aktiverad");
+define("LCLAN_139", "avaktiverad");
+
+define("LCLAN_140", "Åsidosätt länkars öppningsmetod");
+define("LCLAN_141", "Definiera hur länkarnas öppningsmetod skall åsidosättas");
+define("LCLAN_142", "Val av någon av dessa kommer att åsidosätta öppningstypen för alla länkar, oavsett deras individuella inställningar");
+define("LCLAN_143", "Använd individuella länkinställningar");
+define("LCLAN_144", "Sortera och ordna");
+define("LCLAN_145", "Definiera om en meny för sortering och ordning skall visas på länksidan");
+define("LCLAN_146", "Tom kategoriikon");
+define("LCLAN_147", "Länk till topplänkar: hänvisning");
+define("LCLAN_148", "Länk till topplänkar: rankning");
+define("LCLAN_149", "Topphänvisningar och topprankade sidor");
+
+define("LCLAN_150", "Antal länkar");
+define("LCLAN_151", "Ange hur många länkar som skall visas per sida");
+define("LCLAN_152", "Kategoriikon: Ladda upp");
+define("LCLAN_153", "Standard skalningsvärde");
+define("LCLAN_154", "Ange standardvärde för storleksändring av uppladdade länkikoner");
+define("LCLAN_155", "Ange standardvärde för storleksändring av uppladdade kategoriikoner");
+define("LCLAN_156", "");
+define("LCLAN_157", "");
+define("LCLAN_158", "");
+define("LCLAN_159", "");
+
+define("LCLAN_160", "");
+define("LCLAN_161", "");
+define("LCLAN_162", "");
+define("LCLAN_163", "");
+define("LCLAN_164", "");
+define("LCLAN_165", "");
+define("LCLAN_166", "");
+define("LCLAN_167", "");
+define("LCLAN_168", "");
+define("LCLAN_169", "");
 
 ?>

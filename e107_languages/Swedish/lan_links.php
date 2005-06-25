@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-30 16:42:48 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:34 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -40,11 +40,12 @@ define("LAN_101", "Klicka här för att skicka in en länk");
 
 define("LAN_102", "Det");
 define("LAN_103", "finns");
-define("LAN_104", "finns");
+define("LAN_104", "finns"); // Pluralis
 define("LAN_105", "totalt i");
 define("LAN_106", "Understrukna fält är nödvändiga.");
 
 define("LAN_Links_1", "Totalt länkar");
 define("LAN_Links_2", "Totalt aktiva länkar");
 define("LAN_LINKS_3", "Anonym");
+
 ?>

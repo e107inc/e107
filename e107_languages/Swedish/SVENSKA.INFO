@@ -8,6 +8,15 @@ det engelska originalet.
 Feedback, förslag och kommentarer emottas mycket tacksamt!
 -----
 
+Ons Jun 22 2005 - mrpiercer (at) users.sourceforge.net
+- Dokumentationsfilerna i ~/e107_docs/help/Swedish
+  kan inte ha svenska tecken som äåö i filnamnet, detta
+  beror på att det inte finns någon översättningstabell
+  mellan filnamn och menyvalstext. Filnamnet används direkt som
+  menyvalstext, och eftersom alla olika installationer av
+  webbservrar och olika operativsystemsplatformar har olika
+  teckenuppsättning för filsystemen så kan filnamnen endast
+  innehålla standardtecken.
 Mån Jun 13 2005 - Alla filer
 - Nu börjar arbetet med att få saker språkligt korrekta.
   Detta jobbet är nog det värsta, hör av er till mig med

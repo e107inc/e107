@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_prefs.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-16 08:31:11 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -39,13 +39,13 @@ define("PRFLAN_23", "Långt datumformat");
 define("PRFLAN_24", "Forum datumformat");
 define("PRFLAN_25", "För mer information om datumformat se");
 define("PRFLAN_26", "Tidsoffset");
-define("PRFLAN_27", "T.ex. om du sätter detta till +2 kommer alla tider på din sajt att få timmar adderade till dem.");
+define("PRFLAN_27", "T.ex. om du sätter detta till +2 kommer alla tider på din sajt att få två timmar adderade till dem.");
 define("PRFLAN_28", "Användarregistrering/postning");
 define("PRFLAN_29", "Aktivera användarregistrering?");
-define("PRFLAN_30", "tillåt användare att registrera sig som medlemmar på din sajt");
+define("PRFLAN_30", "Tillåt användare att registrera sig som medlemmar på din sajt");
 define("PRFLAN_31", "Använd e-postverifiering för nyregistrering?");
 define("PRFLAN_32", "Tillåt anonym postning?");
-define("PRFLAN_33", "slå av detta för att enbart tillåta regsitrerade medlemmar att posta kommentarer etc");
+define("PRFLAN_33", "Slå av detta för att enbart tillåta regsitrerade medlemmar att posta kommentarer etc");
 
 // define("PRFLAN_34", "Säkerhet");
 
@@ -62,7 +62,7 @@ define("PRFLAN_42", "Ersättningssträng");
 define("PRFLAN_43", "Filtrera ord");
 define("PRFLAN_44", "ord att censurera, separera med ett komma");
 define("PRFLAN_45", "Använd COPPA på registreringssidan?");
-define("PRFLAN_46", "för mer info om COPPA se");
+define("PRFLAN_46", "För mer info om COPPA se");
 define("PRFLAN_47", "Säkerhet & Skydd");
 define("PRFLAN_48", "Metod för användarspårning");
 define("PRFLAN_49", "Kakor");
@@ -132,7 +132,7 @@ define("CUSTSIG_15", "Krävs");
 define("CUSTSIG_16", "Minimum längd på lösenord");
 define("CUSTSIG_17", "Prenumerera på innehåll/e-postutskick");
 define("CUSTSIG_18", "Förbjud användarnamn");
-define("CUSTSIG_19", "användarnamn innehållande följande text kommer att avslås, separera poster med komma");
+define("CUSTSIG_19", "Användarnamn innehållande följande text kommer att avslås, separera poster med kommatecken");
 
 // define("PRFLAN_90", "Klicka här för att tvinga Internet Explorer att använda standardläge. Standard är 'fixläge'.");
 
@@ -162,7 +162,7 @@ define("PRFLAN_111", "Bryt långa ord i menytext");
 define("PRFLAN_112", "På");
 define("PRFLAN_113", "Av");
 define("PRFLAN_116", "Tillåt HTML-postning");
-define("PRFLAN_117", "Detta tillåter anväbdare att posta HTML-kod varsomhelst på sajten, välj användarklass att tillåta detta.");
+define("PRFLAN_117", "Detta tillåter användare att posta HTML-kod var som helst på sajten, välj användarklass att tillåta detta.");
 define("PRFLAN_118", "Använd Geshi för syntaxframhävning");
 define("PRFLAN_119", "Geshi är en öppen källkodslösning för att framhäva syntax i flera språk, se http://qbnz.com/highlighter/ för mer information");
 define("PRFLAN_120", "Standard syntaxspråk för Geshi");
@@ -185,7 +185,7 @@ define("PRFLAN_135", "t.ex. om din URL ovan är satt till http://foo.com, kommer
 define("PRFLAN_136", "Maximala registreringar tillåtna från samma IP adress.");
 define("PRFLAN_137", "Visa minnesanvändning");
 
-define("PRFLAN_138", "Använd Bildkods-verifikation vid Glömt lösenord.");
+define("PRFLAN_138", "Använd Bildkods-verifikation vid glömt lösenord.");
 define("PRFLAN_139", "Visa en varning när huvudadministratörens lösenord inte bytts ut under de senaste 30 dagarna");
 
 define("PRFLAN_140", "Text att visa efter att registreringsforuläret har sänts in.");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -67,4 +67,5 @@ define("LCLAN_81", "Undermenyer visas endast efter klick på dess värd. (Länkv
 define("LINKLAN_1", "Öppnas i 800x600 fönster");
 define("LINKLAN_2", "Värd");
 define("LINKLAN_3", "Ingen värd (Normal länk)");
+
 ?>

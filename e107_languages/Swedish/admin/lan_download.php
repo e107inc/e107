@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-16 13:30:44 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -13,7 +13,7 @@ define("DOWLAN_1", "Nerladdning tillagd i databasen.");
 define("DOWLAN_2", "Nerladdning uppdaterad i databasen.");
 define("DOWLAN_3", "Nerladdning raderad.");
 define("DOWLAN_4", "Markera i bekräftelserutan för att radera nerladdningen");
-define("DOWLAN_5", "Det finns inga nerladdningskategorier definierade ännu, innan du definierat någonkan du inte lägga till några nerladdningar.");
+define("DOWLAN_5", "Det finns inga nerladdningskategorier definierade ännu, innan du definierat någon kan du inte lägga till några nerladdningar.");
 define("DOWLAN_6", "Inga befintliga nerladdningar");
 define("DOWLAN_7", "Befintliga nerladdningar");
 
@@ -49,9 +49,9 @@ define("DOWLAN_40", "Inga - huvudvärd");
 define("DOWLAN_41", "Ikon");
 define("DOWLAN_42", "Visa bilder");
 define("DOWLAN_43", "Synlig för");
-define("DOWLAN_44", "MArkering kommer att göra kategoin synlig endast för medlemmarna i den klassen");
+define("DOWLAN_44", "Markering kommer att göra kategorin synlig endast för medlemmarna i den klassen");
 define("DOWLAN_45", "Skapa kategori");
-define("DOWLAN_46", "Update Category");
+define("DOWLAN_46", "Uppdatera kategori");
 define("DOWLAN_47", "Kategori skapad");
 define("DOWLAN_48", "Kategori uppdaterad");
 define("DOWLAN_49", "Nerladdningskategori");
@@ -113,7 +113,7 @@ define("DOWLAN_132", "Ange spegel att använda, sedan nerladdningsadressen");
 define("DOWLAN_133", "Spegel uppdaterad i databasen");
 define("DOWLAN_134", "Spegel sparad i databasen");
 define("DOWLAN_135", "Spegel raderad");
-define("DOWLAN_136", "bild");
+define("DOWLAN_136", "Bild");
 define("DOWLAN_137", "Är du säker på att du vill radera denna spegel?");
 define("DOWLAN_138", "Befintliga speglar");
 define("DOWLAN_139", "Adress");

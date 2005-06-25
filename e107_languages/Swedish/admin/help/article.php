@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/help/article.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 16:26:44 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:34 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -14,4 +14,5 @@ $text = "Från denna sida kan du lägga till en- eller flersidiga artiklar.<br /
 <br /><br />
 Om din artikel innehåller HTML taggar som du vill bevara, kapsla in koden med [html] [/html]. T.ex om du skriver texten '&lt;table>&lt;tr>&lt;td>Hallå &lt;/td>&lt;/tr>&lt;/table>' i din artikel kommer en tabell att visas innehållande ordet Hallå. Om du skriver '[html]&lt;table>&lt;tr>&lt;td>Hello &lt;/td>&lt;/tr>&lt;/table>[/html]' kommer koden du skrev att visas och inte tabellen koden skapar.";
 $ns -> tablerender("Artikelhjälp", $text);
+
 ?>

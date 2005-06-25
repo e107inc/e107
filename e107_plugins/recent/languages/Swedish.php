@@ -4,14 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/recent/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-13 16:20:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:53 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 
 define("RECENT_ADMIN_1", "Senaste");
-define("RECENT_ADMIN_2", "Uppdateringsinställningar");
+define("RECENT_ADMIN_2", "Uppdatera inställningar");
 define("RECENT_ADMIN_3", "Inställningar uppdaterade");
 define("RECENT_ADMIN_4", "Sektion");
 define("RECENT_ADMIN_5", "Meny");
@@ -23,7 +23,7 @@ define("RECENT_ADMIN_10", "Stängd");
 define("RECENT_ADMIN_11", "Uppdatera");
 define("RECENT_ADMIN_12", "Välj");
 define("RECENT_ADMIN_13", "Välkommen till Senaste sidan på ".SITENAME." ! Denna sidan visar en lista med de senaste tilläggen till de vanligaste sektionerna på sajten.");
-define("RECENT_ADMIN_14", "Senaste tilläggen");
+define("RECENT_ADMIN_14", "Senaste händelserna");
 
 define("RECENT_ADMIN_SECT_1", "Sektioner");
 define("RECENT_ADMIN_SECT_2", "Välj vilka sektioner att visa");

@@ -4,15 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_frontpage.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-16 08:31:11 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
+
 define("FRTLAN_1", "Förstasidans inställningar uppdaterade.");
-define("FRTLAN_2", "Visa");
-
-
+define("FRTLAN_2", "Sätt förstasida för");
 define("FRTLAN_6", "Länkar");
 // define("FRTLAN_7", "Innehållssida");
 define("FRTLAN_12", "Uppdatera förstasidans inställningar");
@@ -29,7 +28,7 @@ define("FRTLAN_21", "innehållspost");
 // define("FRTLAN_24", "");
 // define("FRTLAN_25", "");
 
-define("FRTLAN_26", "alla användare");
+define("FRTLAN_26", "Alla användare");
 define("FRTLAN_27", "Gäster");
 define("FRTLAN_28", "Medlemmar");
 define("FRTLAN_29", "Administratörer");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/help/forum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 16:26:44 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -30,4 +30,5 @@ Markera namnen på de listade administratörerna för att ge dem moderatorstatus
 Sätt dina användarranger här. Om ett bildfält fylls i kommer bilder att användas, för att använda rangnamn istället så ange namnen och se till att motsvarande bildfält är tomt.<br />Tröskelvärdet är antalet poäng en användare behöver för att nå rangen.";
 $ns -> tablerender($caption, $text);
 unset($text);
+
 ?>

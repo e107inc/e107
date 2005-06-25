@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_signup.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-15 08:50:56 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-25 11:07:34 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -91,4 +91,5 @@ define("LAN_EMAIL_01", "Kära");
 define("LAN_EMAIL_04", "Spara detta e-postbrev för din egen referens.");
 define("LAN_EMAIL_05", "Ditt lösenord har krypterats och kan inte återskapas om glömmer bort det. Du kan däremot begära ett nytt lösenord om det skulle hända.");
 define("LAN_EMAIL_06", "Tack för din registrering.");
+
 ?>

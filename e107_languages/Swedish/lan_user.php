@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_user.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-01 13:40:03 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-25 11:07:34 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -40,7 +40,7 @@ define("LAN_403", "Sajtstatistik");
 define("LAN_404", "Senaste besök");
 define("LAN_405", "dagar sedan");
 define("LAN_406", "Nivå");
-define("LAN_407", "igen");
+define("LAN_407", "ingen");
 define("LAN_408", "inget foto");
 define("LAN_409", "poäng");
 define("LAN_410", "Diverse");

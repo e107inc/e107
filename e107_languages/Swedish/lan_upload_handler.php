@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_upload_handler.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-30 16:42:48 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:34 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
-define("LANUPLOAD_1", "Filetypen");
+define("LANUPLOAD_1", "Filtypen");
 define("LANUPLOAD_2", "är inte tillåten och har raderats.");
 define("LANUPLOAD_3", "Uppladdningen lyckades");
 define("LANUPLOAD_4", "Antingen finns inte mottagande folder, eller så är den inte skrivbar.");

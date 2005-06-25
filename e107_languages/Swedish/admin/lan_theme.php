@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_theme.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-16 08:31:11 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -59,4 +59,5 @@ define("TPVLAN_40", "Admintema satt till");
 define("TPVLAN_41", "Välj admin layoutstil att använda");
 define("TPVLAN_42", "Spara adminalternativ");
 define("TPVLAN_43", "Adminalternativ sparade");
+
 ?>

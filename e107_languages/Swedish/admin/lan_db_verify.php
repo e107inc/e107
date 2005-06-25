@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_db_verify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:03 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -30,4 +30,5 @@ define("DBLAN_18", "tabeller");
 define("DBLAN_19", "Försök att rätta");
 define("DBLAN_20", "Försöker att rätta tabeller");
 define("DBLAN_21", "Rätta valda objekt");
+
 ?>

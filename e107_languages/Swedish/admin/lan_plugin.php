@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -68,6 +68,5 @@ define("EPL_NOINSTALL_1", "Ingen installation krävs. För att ta bort, radera "
 define("EPL_UPGRADE", "Uppgradera");
 
 define("EPL_CONFIGURE", "Konfigurera");
-
 
 ?>

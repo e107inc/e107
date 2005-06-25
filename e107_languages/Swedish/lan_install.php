@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_install.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-15 08:50:56 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-25 11:07:34 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -94,6 +94,5 @@ define("INSLAN75", "misslyckas måste du kontrollera din MySQL status.");
 define("INSLAN76", "Din administrationssektion");
 define("INSLAN77", "finns här");
 define("INSLAN78", "klicka för att gå dit nu. Du kommer att få logga in med det namn och lösenord du angav under installationsprocessen.");
-
 
 ?>

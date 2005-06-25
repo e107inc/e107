@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_login.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-30 16:42:48 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:34 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -34,4 +34,5 @@ define("LAN_LOGIN_16", "Användare försökte logga in med användarnamn/löseno
 define("LAN_LOGIN_17", "Användarlösenord (hashed)");
 define("LAN_LOGIN_18", "Auto-avstängd: Fler än 10 misslyckade inloggningsförsök");
 define("LAN_LOGIN_19", "> 10 misslyckade inloggningsförsök");
+
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_review.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 13:40:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-25 11:07:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -33,6 +33,8 @@ define("REVLAN_21", "Synlig för");
 define("REVLAN_22", "Uppdatera recension");
 define("REVLAN_23", "Skicka recension");
 define("REVLAN_24", "Recensioner");
+
+
 
 
 define("REVLAN_25", "Recensionskategori sparad");
@@ -87,4 +89,5 @@ define("REVLAN_70", "Klicka här för att fylla författarfälten");
 define("REVLAN_71", "Lägg till e-post/skriv-ut ikoner?");
 define("REVLAN_72", "Ja");
 define("REVLAN_73", "Nej");
+
 ?>
