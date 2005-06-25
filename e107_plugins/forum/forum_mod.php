@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_mod.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-27 04:00:42 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-25 18:57:10 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -80,7 +80,6 @@ function forum_delete_thread($thread_id)
 		{
 			$sql->db_Update("user", "user_forums=user_forums-1 WHERE user_id='".$uid."'");
 		}
-		exit;
 		return FORLAN_154;
 	}
 	else
