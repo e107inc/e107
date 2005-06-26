@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2005-06-25 22:18:17 $
+|     $Revision: 1.60 $
+|     $Date: 2005-06-26 22:41:12 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -99,6 +99,9 @@ define("CONTENT_ADMIN_CAT_LAN_61", "or upload a new icon");
 define("CONTENT_ADMIN_CAT_LAN_62", "After you have uploaded a new category icon, you can assign this icon in the above 'choose existing icon' area<br />If you upload a new icon, this icon will be scaled to 48 pixels, and additionally a small 16 pixels icon will be created as well<br /><br />");
 define("CONTENT_ADMIN_CAT_LAN_63", "upload icon");
 
+
+
+
 define("CONTENT_ADMIN_OPT_LAN_0", "options");
 define("CONTENT_ADMIN_OPT_LAN_1", "create form for content item in admin area");
 define("CONTENT_ADMIN_OPT_LAN_2", "sections");
@@ -117,10 +120,10 @@ define("CONTENT_ADMIN_OPT_LAN_14", "define number of additional data tags");
 define("CONTENT_ADMIN_OPT_LAN_15", "with custom tags you can create key => value pairs of additional data to be stored for an item. for instance if you want to add 'photography: by admin', photography is the key, and by admin is the value.");
 define("CONTENT_ADMIN_OPT_LAN_16", "images");
 define("CONTENT_ADMIN_OPT_LAN_17", "set the amount of images you can upload with an item");
-define("CONTENT_ADMIN_OPT_LAN_18", "this will be only be used if images are enabled in the above sections area");
+define("CONTENT_ADMIN_OPT_LAN_18", "this will only be used if images are enabled in the above sections area");
 define("CONTENT_ADMIN_OPT_LAN_19", "attachments");
 define("CONTENT_ADMIN_OPT_LAN_20", "set the amount of attachments you can upload with an item");
-define("CONTENT_ADMIN_OPT_LAN_21", "this will be only be used if attachments are enabled in the above sections area");
+define("CONTENT_ADMIN_OPT_LAN_21", "this will only be used if attachments are enabled in the above sections area");
 define("CONTENT_ADMIN_OPT_LAN_22", "submit options");
 define("CONTENT_ADMIN_OPT_LAN_23", "submit items");
 define("CONTENT_ADMIN_OPT_LAN_24", "Allow if items can be submitted");
@@ -524,7 +527,40 @@ define("CONTENT_ADMIN_ITEM_LAN_91", "to re-edit the same item");
 define("CONTENT_ADMIN_ITEM_LAN_92", "layout");
 define("CONTENT_ADMIN_ITEM_LAN_93", "choose a layout scheme");
 define("CONTENT_ADMIN_ITEM_LAN_94", "select a layout scheme");
-define("CONTENT_ADMIN_ITEM_LAN_95", "");
+
+define("CONTENT_ADMIN_ITEM_LAN_95", "upload a new icon");
+define("CONTENT_ADMIN_ITEM_LAN_96", "choose an existing icon");
+define("CONTENT_ADMIN_ITEM_LAN_97", "After you have uploaded a new icon, you can assign it in the below 'choose an existing icon' area");
+
+define("CONTENT_ADMIN_ITEM_LAN_98", "upload a new attachment");
+define("CONTENT_ADMIN_ITEM_LAN_99", "choose an existing attachment");
+define("CONTENT_ADMIN_ITEM_LAN_100", "After you have uploaded a new attachment, you can assign it in the below 'choose an existing attachment' area");
+
+define("CONTENT_ADMIN_ITEM_LAN_101", "upload a new image");
+define("CONTENT_ADMIN_ITEM_LAN_102", "choose an existing image");
+define("CONTENT_ADMIN_ITEM_LAN_103", "After you have uploaded a new image, you can assign it in the below 'choose an existing image' area");
+
+define("CONTENT_ADMIN_ITEM_LAN_104", "upload");
+define("CONTENT_ADMIN_ITEM_LAN_105", "view");
+
+define("CONTENT_ADMIN_ITEM_LAN_106", "icon succesfully uploaded<br />notice: you still need to assign the icon to this content item in the 'choose an existing icon' area !<br />and of course after that you still need to submit the form to create/update the content item");
+define("CONTENT_ADMIN_ITEM_LAN_107", "icon not uploaded");
+
+define("CONTENT_ADMIN_ITEM_LAN_108", "attachment succesfully uploaded<br />notice: you still need to assign the attachment to this content item in the 'choose an existing attachment' area !<br />and of course after that you still need to submit the form to create/update the content item");
+define("CONTENT_ADMIN_ITEM_LAN_109", "attachment not uploaded");
+
+define("CONTENT_ADMIN_ITEM_LAN_110", "image succesfully uploaded<br />notice: you still need to assign the image to this content item in the 'choose an existing image' area !<br />and of course after that you still need to submit the form to create/update the content item");
+define("CONTENT_ADMIN_ITEM_LAN_111", "image not uploaded");
+
+define("CONTENT_ADMIN_ITEM_LAN_112", "upload an icon, attachment or image");
+define("CONTENT_ADMIN_ITEM_LAN_113", "choose the type of upload in the select box before you upload the file");
+define("CONTENT_ADMIN_ITEM_LAN_114", "icon");
+define("CONTENT_ADMIN_ITEM_LAN_115", "attachment");
+define("CONTENT_ADMIN_ITEM_LAN_116", "image");
+
+
+
+
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "order is increased");
 define("CONTENT_ADMIN_ORDER_LAN_1", "order is decreased");

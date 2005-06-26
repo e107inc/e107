@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.30 $
-|		$Date: 2005-06-26 12:31:37 $
+|		$Revision: 1.31 $
+|		$Date: 2005-06-26 22:41:11 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -59,111 +59,48 @@ class contentdb{
 						$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 						$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
 						$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path_{$mainparent}"]);
+						$content_tmppath_icon			= e_PLUGIN."content/images/icon/tmp/";
+						$content_tmppath_file			= e_PLUGIN."content/images/file/tmp/";
+						$content_tmppath_image			= e_PLUGIN."content/images/image/tmp/";
 
-						if($_POST['uploadtype1'] == "icon"){
-								$_FILES['file_userfile'] = $_FILES['file_userfile1'];
-								$pref['upload_storagetype'] = "1";
-								require_once(e_HANDLER."upload_handler.php");
-								$pathicon = $content_icon_path;
-								$uploadedicon = file_upload($pathicon);
-								$newpid = $_POST['content_id'];
-								if($_POST['content_icon'] && !$uploadedicon){
-									$icon = $_POST['content_icon'];
-								} else {
-									$fileorgicon = $uploadedicon[0]['name'];
-									$fileext2icon = substr(strrchr($fileorgicon, "."), 0);
-									$fileorgiconname = substr($fileorgicon, 0, -(strlen($fileext2icon)) );
-									$resize = (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
-
-									if($fileorgicon){
-										$icon = $newpid."_".$fileorgiconname."".$fileext2icon;
-										rename($pathicon.$fileorgicon , $pathicon.$icon);
-										require_once(e_HANDLER."resize_handler.php");
-										resize_image($pathicon.$icon, $pathicon.$icon, $resize, "nocopy");
-									} else {
-										$icon = "";
-									}
-								}
+						//move icon to correct folder
+						if($_POST['content_icon']){
+							$icon = $_POST['content_icon'];							
+							if(file_exists($content_tmppath_icon.$icon)){
+								rename($content_tmppath_icon.$icon, $content_icon_path.$icon);
+							}
 						}
-						if($_POST['uploadtype2'] == "file"){
-								$_FILES['file_userfile'] = $_FILES['file_userfile2'];
-								$pref['upload_storagetype'] = "1";
-								require_once(e_HANDLER."upload_handler.php");
-								$pathattach = $content_file_path;
-								$uploadedattach = file_upload($pathattach);
-								$newpid = $_POST['content_id'];
-								$sumf=0;
-								foreach($_POST as $k => $v){
-									if(preg_match("#^content_files#",$k)){
-										$sumf = $sumf+1;
-									}
-								}
-								if(is_array($uploadedattach)){
-									$sumf = $sumf + count($uploadedattach);
-								}
-								for($i=0;$i<$sumf;$i++){
-									$n = $i+1;
-									if($_POST["content_files{$i}"] && !$uploadedattach[$i]['name']){
-										$attach{$i} = $_POST["content_files{$i}"];
-										$totalattach .= "[file]".$attach{$i};
-									} else {
-										$fileorgattach[$i] = $uploadedattach[$i]['name'];
-										$fileext2attach[$i] = substr(strrchr($fileorgattach[$i], "."), 0);
-										$fileorgattachname[$i] = substr($fileorgattach[$i], 0, -(strlen($fileext2attach[$i])) );
 
-										if($fileorgattach[$i]){
-											$attach{$i} = $newpid."_".$n."_".$fileorgattachname[$i]."".$fileext2attach[$i]."";
-											rename($pathattach.$fileorgattach[$i] , $pathattach.$attach{$i});
-											$totalattach .= "[file]".$attach{$i};
-										} else {
-											$attach{$i} = "";
-											$totalattach .= "";
-										}
-									}
-								}
+						$sumf = 0;
+						$sumi = 0;
+						foreach($_POST as $k => $v){
+							if(preg_match("#^content_files#",$k)){
+								$sumf = $sumf+1;
+							}
+							if(preg_match("#^content_images#",$k)){
+								$sumi = $sumi+1;
+							}
 						}
-						if($_POST['uploadtype3'] == "image"){
-								$_FILES['file_userfile'] = $_FILES['file_userfile3'];
-								$pref['upload_storagetype'] = "1";
-								require_once(e_HANDLER."upload_handler.php");
-								$pathimage = $content_image_path;
-								$uploadedimage = file_upload($pathimage);
-								$newpid = $_POST['content_id'];
-								$sumi=0;
-								foreach($_POST as $k => $v){
-									if(preg_match("#^content_images#",$k)){
-										$sumi = $sumi+1;
-									}
-								}
-								if(is_array($uploadedimage)){
-									$sumi = $sumi + count($uploadedimage);
-								}
-								for($i=0;$i<$sumi;$i++){
-									$n = $i+1;
-									if($_POST["content_images{$i}"] && !$uploadedimage[$i]['name']){
-										$images{$i} = $_POST["content_images{$i}"];
-										$totalimages .= "[img]".$images{$i};
-									} else {
-										$fileorgimage[$i] = $uploadedimage[$i]['name'];
-										$fileext2image[$i] = substr(strrchr($fileorgimage[$i], "."), 0);
-										$fileorgimagename[$i] = substr($fileorgimage[$i], 0, -(strlen($fileext2image[$i])) );
-										$resize = (isset($content_pref["content_upload_image_size_{$mainparent}"]) && $content_pref["content_upload_image_size_{$mainparent}"] ? $content_pref["content_upload_image_size_{$mainparent}"] : "500");
-										$resizethumb = (isset($content_pref["content_upload_image_size_thumb_{$mainparent}"]) && $content_pref["content_upload_image_size_thumb_{$mainparent}"] ? $content_pref["content_upload_image_size_thumb_{$mainparent}"] : "100");
-
-										if($fileorgimage[$i]){
-											$images{$i} = $newpid."_".$n."_".$fileorgimagename[$i]."".$fileext2image[$i];
-											rename($pathimage.$fileorgimage[$i] , $pathimage.$images{$i});
-											require_once(e_HANDLER."resize_handler.php");
-											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, $resize, "nocopy");
-											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, $resizethumb, "copy");
-
-											$totalimages .= "[img]".$images{$i};
-										} else {
-											$images{$i} = "";
-											$totalimages .= "";
-										}
-									}
-								}
+						//move attachments to correct folder
+						$totalattach = "";
+						for($i=0;$i<$sumf;$i++){
+							$attach{$i} = $_POST["content_files{$i}"];
+							if(file_exists($content_tmppath_file.$attach{$i})){
+								rename($content_tmppath_file.$attach{$i}, $content_file_path.$attach{$i});
+							}
+							$totalattach .= "[file]".$attach{$i};
+						}
+						//move images to correct folder
+						$totalimages = "";
+						for($i=0;$i<$sumi;$i++){
+							$image{$i} = $_POST["content_images{$i}"];
+							if(file_exists($content_tmppath_image.$image{$i})){
+								rename($content_tmppath_image.$image{$i}, $content_image_path.$image{$i});
+							}
+							if(file_exists($content_tmppath_image."thumb_".$image{$i})){
+								rename($content_tmppath_image."thumb_".$image{$i}, $content_image_path."thumb_".$image{$i});
+							}
+							$totalimages .= "[img]".$image{$i};
 						}
 
 						if($_POST['update_datestamp']){
@@ -252,114 +189,48 @@ class contentdb{
 						$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 						$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
 						$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path_{$mainparent}"]);
+						$content_tmppath_icon			= e_PLUGIN."content/images/icon/tmp/";
+						$content_tmppath_file			= e_PLUGIN."content/images/file/tmp/";
+						$content_tmppath_image			= e_PLUGIN."content/images/image/tmp/";
 
-						$sql -> db_select($plugintable, "MAX(content_id) as aid", "content_id!='0' ");
-						list($aid) = $sql -> db_Fetch();
-						$newpid = $aid+1;
-
-						if($_POST['uploadtype1'] == "icon"){
-								$_FILES['file_userfile'] = $_FILES['file_userfile1'];
-								$pref['upload_storagetype'] = "1";
-								require_once(e_HANDLER."upload_handler.php");
-								$pref['upload_storagetype'] = "1";
-								$pathicon = $content_icon_path;
-								$uploadedicon = file_upload($pathicon);
-								if($_POST['content_icon'] && !$uploadedicon){
-									$icon = $_POST['content_icon'];
-								} else {
-									$fileorgicon = $uploadedicon[0]['name'];
-									$fileext2icon = substr(strrchr($fileorgicon, "."), 0);
-									$fileorgiconname = substr($fileorgicon, 0, -(strlen($fileext2icon)) );
-									$resize = (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
-
-									if($fileorgicon){
-										$icon = $newpid."_".$fileorgiconname."".$fileext2icon;
-										rename($pathicon.$fileorgicon , $pathicon.$icon);
-										require_once(e_HANDLER."resize_handler.php");
-										resize_image($pathicon.$icon, $pathicon.$icon, $resize, "nocopy");
-									} else {
-										$icon = "";
-									}
-								}
+						//move icon to correct folder
+						if($_POST['content_icon']){
+							$icon = $_POST['content_icon'];							
+							if(file_exists($content_tmppath_icon.$icon)){
+								rename($content_tmppath_icon.$icon, $content_icon_path.$icon);
+							}
 						}
 
-						if($_POST['uploadtype2'] == "file"){
-								$_FILES['file_userfile'] = $_FILES['file_userfile2'];
-								$pref['upload_storagetype'] = "1";
-								require_once(e_HANDLER."upload_handler.php");
-								$pathattach = $content_file_path;
-								$uploadedattach = file_upload($pathattach);
-								$sumf=0;
-								foreach($_POST as $k => $v){
-									if(preg_match("#^content_files#",$k)){
-										$sumf = $sumf+1;
-									}
-								}
-								if(is_array($uploadedattach)){
-									$sumf = $sumf + count($uploadedattach);
-								}						
-								for($i=0;$i<$sumf;$i++){
-									$n = $i+1;
-									if($_POST["content_files{$i}"] && !$uploadedattach[$i]['name']){
-										$attach{$i} = $_POST["content_files{$i}"];
-										$totalattach .= "[file]".$attach{$i};
-									} else {
-										$attachorgattach[$i] = $uploadedattach[$i]['name'];
-										$attachext2attach[$i] = substr(strrchr($attachorgattach[$i], "."), 0);
-										$attachorgname[$i] = substr($attachorgattach[$i], 0, -(strlen($attachext2attach[$i])) );
-										if($attachorgattach[$i]){
-											$attach{$i} = $newpid."_".$n."_".$attachorgname[$i]."".$attachext2attach[$i]."";
-											rename($pathattach.$attachorgattach[$i] , $pathattach.$attach{$i});
-											$totalattach .= "[file]".$attach{$i};
-										} else {
-											$attach{$i} = "";
-											$totalattach .= "";
-										}
-									}
-								}
+						$sumf = 0;
+						$sumi = 0;
+						foreach($_POST as $k => $v){
+							if(preg_match("#^content_files#",$k)){
+								$sumf = $sumf+1;
+							}
+							if(preg_match("#^content_images#",$k)){
+								$sumi = $sumi+1;
+							}
 						}
-
-						if($_POST['uploadtype3'] == "image"){
-								$_FILES['file_userfile'] = $_FILES['file_userfile3'];
-								$pref['upload_storagetype'] = "1";
-								require_once(e_HANDLER."upload_handler.php");
-								$pathimage = $content_image_path;
-								$uploadedimage = file_upload($pathimage);
-								$sumi=0;
-								foreach($_POST as $k => $v){
-									if(preg_match("#^content_images#",$k)){
-										$sumi = $sumi+1;
-									}
-								}
-								if(is_array($uploadedimage)){
-									$sumi = $sumi + count($uploadedimage);
-								}						
-								for($i=0;$i<$sumi;$i++){
-									$n = $i+1;
-									if($_POST["content_images{$i}"] && !$uploadedimage[$i]['name']){
-										$images{$i} = $_POST["content_images{$i}"];
-										$totalimages .= "[img]".$images{$i};
-									} else {
-										$fileorgimage[$i] = $uploadedimage[$i]['name'];
-										$fileext2image[$i] = substr(strrchr($fileorgimage[$i], "."), 0);
-										$fileorgimagename[$i] = substr($fileorgimage[$i], 0, -(strlen($fileext2image[$i])) );
-										$resize = (isset($content_pref["content_upload_image_size_{$mainparent}"]) && $content_pref["content_upload_image_size_{$mainparent}"] ? $content_pref["content_upload_image_size_{$mainparent}"] : "500");
-										$resizethumb = (isset($content_pref["content_upload_image_size_thumb_{$mainparent}"]) && $content_pref["content_upload_image_size_thumb_{$mainparent}"] ? $content_pref["content_upload_image_size_thumb_{$mainparent}"] : "100");
-
-										if($fileorgimage[$i]){
-											$images{$i} = $newpid."_".$n."_".$fileorgimagename[$i]."".$fileext2image[$i];
-											rename($pathimage.$fileorgimage[$i] , $pathimage.$images{$i});
-											require_once(e_HANDLER."resize_handler.php");
-											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, $resize, "nocopy");
-											resize_image($pathimage.$images{$i}, $pathimage.$images{$i}, $resizethumb, "copy");
-
-											$totalimages .= "[img]".$images{$i};
-										} else {
-											$images{$i} = "";
-											$totalimages .= "";
-										}
-									}
-								}
+						//move attachments to correct folder
+						$totalattach = "";
+						for($i=0;$i<$sumf;$i++){
+							$attach{$i} = $_POST["content_files{$i}"];
+							if(file_exists($content_tmppath_file.$attach{$i})){
+								rename($content_tmppath_file.$attach{$i}, $content_file_path.$attach{$i});
+							}
+							$totalattach .= "[file]".$attach{$i};
+						}
+						//move images to correct folder
+						$totalimages = "";
+						for($i=0;$i<$sumi;$i++){
+							$image{$i} = $_POST["content_images{$i}"];
+							if(file_exists($content_tmppath_image.$image{$i})){
+								rename($content_tmppath_image.$image{$i}, $content_image_path.$image{$i});
+							}
+							if(file_exists($content_tmppath_image."thumb_".$image{$i})){
+								rename($content_tmppath_image."thumb_".$image{$i}, $content_image_path."thumb_".$image{$i});
+							}
+							$totalimages .= "[img]".$image{$i};
 						}
 
 						//custom additional data tags
