@@ -92,4 +92,15 @@ define("LANINS_070", "e107 was unable to save the main config file to your serve
 Please ensure the <b>e107_config.php</b> file has the correct permissions");
 define("LANINS_071", "Finalising Installation");
 
+define("LANINS_072", "Admin Username");
+define("LANINS_073", "This is the name you will use to login into the site. If you wish to use this as your display name also");
+define("LANINS_074", "Admin Display Name");
+define("LANINS_075", "This is the name that you wish your users to see displayed in your profile, forums and other areas. If you wish to use the same as your login name then leave this blank.");
+define("LANINS_076", "Admin Password");
+define("LANINS_077", "Please type the admin password you wish to use here");
+define("LANINS_078", "Admin Password Confirmation");
+define("LANINS_079", "Please type the admin password again for confirmation");
+define("LANINS_080", "Admin Email");
+define("LANINS_081", "Enter your email address");
+
 ?>
