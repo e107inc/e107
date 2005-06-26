@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_installer.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-18 17:41:24 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-26 22:53:13 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -101,5 +101,15 @@ define("LANINS_070", "e107 no pudo guardar la archivo de configuración principa
 
 Asegúrese que el archivo <b>e107_config.php</b> tiene los permisos correctos");
 define("LANINS_071", "Finalizando la instalación");
+define("LANINS_072", "Nombre Admin");
+define("LANINS_073", "Este es el nombre que usará al conectarse. Si lo desea, utilícelo como nombre a mostrar");
+define("LANINS_074", "Nombre Admin a mostrar");
+define("LANINS_075", "Este es el nombre que se mostrará en su perfil y en todo el sitio. Si desea mostrar el mismo nombre que el nombre de conexión, déjelo en blanco.");
+define("LANINS_076", "Contraseña Admin");
+define("LANINS_077", "Por favor, indique la contraseña que asignará al administrador");
+define("LANINS_078", "Admin Password Confirmation");
+define("LANINS_079", "Vuelva a escribir la contraseña para confrimarla");
+define("LANINS_080", "Email Admin");
+define("LANINS_081", "Escriba su dirección email");
 
 ?>

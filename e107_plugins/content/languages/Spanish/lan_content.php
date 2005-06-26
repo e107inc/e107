@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-25 23:14:45 $
+|     $Revision: 1.15 $
+|     $Date: 2005-06-26 22:53:13 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -791,23 +791,23 @@ define("CONTENT_ADMIN_CONVERSION_LAN_7", "Categoría principal insertada");
 define("CONTENT_ADMIN_CONVERSION_LAN_8", "Prefs de categoría principal insertadas");
 define("CONTENT_ADMIN_CONVERSION_LAN_9", "no");
 define("CONTENT_ADMIN_CONVERSION_LAN_10", "Necesaria categoría principal");
-define("CONTENT_ADMIN_CONVERSION_LAN_11", "ANALISIS DE CONVERSIÓN");
+define("CONTENT_ADMIN_CONVERSION_LAN_11", "Análisis de conversión");
 define("CONTENT_ADMIN_CONVERSION_LAN_12", "Filas totales a convertir");
 define("CONTENT_ADMIN_CONVERSION_LAN_13", "filas totales convertidas");
 define("CONTENT_ADMIN_CONVERSION_LAN_14", "Advertencias totales");
 define("CONTENT_ADMIN_CONVERSION_LAN_15", "Fallos totales");
-define("CONTENT_ADMIN_CONVERSION_LAN_16", "VIEJA TABLA DE CONTENIDO : ANALISIS");
+define("CONTENT_ADMIN_CONVERSION_LAN_16", "Análisis de la vieja tabla de contenido");
 define("CONTENT_ADMIN_CONVERSION_LAN_17", "Filas totales");
 define("CONTENT_ADMIN_CONVERSION_LAN_18", "Filas desconocidas");
 define("CONTENT_ADMIN_CONVERSION_LAN_19", "Todas las filas son familiares");
-define("CONTENT_ADMIN_CONVERSION_LAN_20", "CATEGORÍA PRINCIPAL DE CONTENIDO");
-define("CONTENT_ADMIN_CONVERSION_LAN_21", "ANALIZAR categoría PRINCIPAL");
-define("CONTENT_ADMIN_CONVERSION_LAN_22", "ARTICULO categoría PRINCIPAL");
+define("CONTENT_ADMIN_CONVERSION_LAN_20", "Categoría principal de contenido");
+define("CONTENT_ADMIN_CONVERSION_LAN_21", "Analizar categoría principal");
+define("CONTENT_ADMIN_CONVERSION_LAN_22", "Artículo categoría principal");
 define("CONTENT_ADMIN_CONVERSION_LAN_23", "Falló la inserción");
-define("CONTENT_ADMIN_CONVERSION_LAN_24", "NO HAY PÁGINAS DE CONTENIDO");
-define("CONTENT_ADMIN_CONVERSION_LAN_25", "PÁGINAS DE CONTENIDO PRESENTES");
+define("CONTENT_ADMIN_CONVERSION_LAN_24", "No hay páginas de contenido");
+define("CONTENT_ADMIN_CONVERSION_LAN_25", "Páginas de contenido existentes");
 define("CONTENT_ADMIN_CONVERSION_LAN_26", "Insertado");
-define("CONTENT_ADMIN_CONVERSION_LAN_27", "Análisis de conversión");
+define("CONTENT_ADMIN_CONVERSION_LAN_27", "Análisis de la conversión");
 define("CONTENT_ADMIN_CONVERSION_LAN_28", "Filas viejas totales");
 define("CONTENT_ADMIN_CONVERSION_LAN_29", "Filas nuevas totales");
 define("CONTENT_ADMIN_CONVERSION_LAN_30", "Fallo");
@@ -842,8 +842,8 @@ define("CONTENT_ADMIN_CONVERSION_LAN_58", "Actualización exitosa<br /><br /><b>
 define("CONTENT_ADMIN_CONVERSION_LAN_59", "Convertir tabla");
 define("CONTENT_ADMIN_CONVERSION_LAN_60", "Crear por defectos");
 define("CONTENT_ADMIN_CONVERSION_LAN_61", "Crear nueva categoría");
-define("CONTENT_ADMIN_CONVERSION_LAN_62", "");
-define("CONTENT_ADMIN_CONVERSION_LAN_63", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_62", "Plugin de gestor de contenidos actualizado a la versión:");
+define("CONTENT_ADMIN_CONVERSION_LAN_63", "Actualice");
 define("CONTENT_ADMIN_CONVERSION_LAN_64", "");
 define("CONTENT_ADMIN_CONVERSION_LAN_65", "");
 
