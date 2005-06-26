@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-06-22 14:48:28 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.31 $
+|     $Date: 2005-06-26 19:11:49 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -37,14 +37,20 @@ $language_field = $row['user_extended_struct_name'];
 }
 
 if (isset($_POST['testemail'])) {
-	require_once(e_HANDLER."mail.php");
-	$add = ($pref['smtp_enable']) ? " (SMTP)" : " (PHP)";
-	if (!sendemail(SITEADMINEMAIL, PRFLAN_66." ".SITENAME.$add, PRFLAN_67)) {
-		$message = ($pref['smtp_enable'] ? PRFLAN_75 : PRFLAN_68);
-	} else {
-		$message = PRFLAN_69;
+    if(SITEADMINEMAIL == ""){
+		$message = MAILAN_19;
+	}else{
+		require_once(e_HANDLER."mail.php");
+		$add = ($pref['mailer']) ? " (".strtoupper($pref['mailer']).")" : " (PHP)";
+		if (!sendemail(SITEADMINEMAIL, PRFLAN_66." ".SITENAME.$add, PRFLAN_67)) {
+			$message = ($pref['mailer'] == "smtp")  ? PRFLAN_75 : PRFLAN_68;
+		} else {
+			$message = PRFLAN_69;
+		}
 	}
 }
+
+
 
 if (isset($_POST['submit'])) {
 
@@ -94,7 +100,7 @@ if (isset($_POST['submit'])) {
 	$mail->From = ($_POST['email_from_email'])? $_POST['email_from_email']:	$pref['siteadminemail'];
 	$mail->FromName = ($_POST['email_from_name'])? $_POST['email_from_name']: $pref['siteadmin'];
 	//  $mail->Host     = "smtp1.site.com;smtp2.site.com";
-	if ($pref['smtp_enable']) {
+	if ($pref['mailer']== 'smtp' || $pref['smtp_enable']==1) {
 		$mail->Mailer = "smtp";
 		$mail->SMTPKeepAlive = TRUE;
 		$mail->Host = $pref['smtp_server'];
@@ -104,8 +110,11 @@ if (isset($_POST['submit'])) {
 			$mail->Password = $pref['smtp_password'];
 			$mail->$PluginDir = e_HANDLER."phpmailer/";
         }
+    } elseif ($pref['mailer']== 'sendmail'){
+		$mail->Mailer = "sendmail";
+		$mail->Sendmail = ($pref['sendmail']) ? $pref['sendmail'] : "/usr/sbin/sendmail -t -i -r '".$pref['siteadminemail']."'";
 	} else {
-		$mail->Mailer = "mail";
+        $mail->Mailer = "mail";
 	}
 
 	$mail->AddCC = ($_POST['email_cc']);
@@ -213,7 +222,8 @@ if (isset($_POST['submit'])) {
 //. Update Preferences.
 
 if (isset($_POST['updateprefs'])) {
-
+	$pref['mailer'] = $_POST['mailer'];
+	$pref['sendmail'] = $_POST['sendmail'];
 	$pref['smtp_enable'] = $_POST['smtp_enable'];
 	$pref['smtp_server'] = $tp->toDB($_POST['smtp_server']);
 	$pref['smtp_username'] = $tp->toDB($_POST['smtp_username']);
@@ -387,37 +397,65 @@ $text = "
 	<div id='mail' style='text-align:center;'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_63."<br /><span class='smalltext'>".PRFLAN_64."</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'><input class='button' type='submit' name='testemail' value='".PRFLAN_65." ".SITEADMINEMAIL."' />
+	<td style='width:40%' class='forumheader3'><span title='".PRFLAN_64."' style='cursor:help'>".PRFLAN_63."<span><br /></td>
+	<td style='width:60%; text-align:right' class='forumheader3'><input class='button' type='submit' name='testemail' value='".PRFLAN_65." ".SITEADMINEMAIL."' />
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_70."<br /><span class='smalltext'>".PRFLAN_71."</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>". ($pref['smtp_enable'] ? "<input type='checkbox' name='smtp_enable' value='1' checked='checked' />" : "<input type='checkbox' name='smtp_enable' value='1' />")." </td>
-	</tr>
-
-
-	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_72.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input class='tbox' type='text' name='smtp_server' size='30' value='".$pref['smtp_server']."' maxlength='50' />
+	<td style='vertical-align:top' class='forumheader3'>".PRFLAN_70."<br /><span class='smalltext'>".PRFLAN_71."</span></td>
+	<td style='text-align:right' class='forumheader3'>
+	<select class='tbox' name='mailer' onchange='disp(this.value)'>\n";
+	$mailers = array("php","smtp","sendmail");
+    foreach($mailers as $opt){
+		$sel = ($pref['mailer'] == $opt) ? "selected='selected'" : "";
+    	$text .= "<option value='$opt' $sel>$opt</option>\n";
+	}
+	$text .="</select><br />";
+  // SMTP. -------------->
+	$smtpdisp = ($pref['mailer'] != "smtp") ? "display:none;" : "";
+	$text .= "<div id='smtp' style='$smtpdisp text-align:right'><table style='margin-right:0px;margin-left:auto;border:0px'>";
+	$text .= "	<tr>
+	<td style='text-align:right' >".PRFLAN_72.":&nbsp;&nbsp;</td>
+	<td style='width:50%; text-align:right' >
+	<input class='tbox' type='text' name='smtp_server' size='40' value='".$pref['smtp_server']."' maxlength='50' />
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_73.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input class='tbox' type='text' name='smtp_username' size='30' value='".$pref['smtp_username']."' maxlength='50' />
+	<td style='text-align:right' >".PRFLAN_73.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
+	<td style='width:50%; text-align:right' >
+	<input class='tbox' type='text' name='smtp_username' size='40' value='".$pref['smtp_username']."' maxlength='50' />
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_74.": </td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input class='tbox' type='password' name='smtp_password' size='30' value='".$pref['smtp_password']."' maxlength='50' />
+	<td style='text-align:right' >".PRFLAN_74.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
+	<td style='width:50%; text-align:right' >
+	<input class='tbox' type='password' name='smtp_password' size='40' value='".$pref['smtp_password']."' maxlength='50' />
 	</td>
 	</tr>
+
+	</table></div>";
+
+  // Sendmail. -------------->
+    $senddisp = ($pref['mailer'] != "sendmail") ? "display:none;" : "";
+	$text .= "<div id='sendmail' style='$senddisp text-align:right'><table style='margin-right:0px;margin-left:auto;border:0px'>";
+	$text .= "
+
+	<tr>
+	<td >".MAILAN_20.":&nbsp;&nbsp;</td>
+	<td text-align:right' >
+	<input class='tbox' type='text' name='sendmail' size='60' value=\"".(!$pref['sendmail'] ? "/usr/sbin/sendmail -t -i -r '".$pref['siteadminemail']."'" : $pref['sendmail'])."\" maxlength='80' />
+	</td>
+	</tr>
+
+	</table></div>";
+	$text .="</td>
+	</tr>
+
+
+
 
 	<tr>
 	<td style='text-align:center' colspan='2' class='forumheader'>
@@ -494,6 +532,30 @@ global $action;
 $action = "mailing";
 show_options($action);
 }*/
+function headerjs()
+{
+	$text = "
+	<script type='text/javascript'>
+	function disp(type) {
 
 
+		if(type == 'smtp'){
+			document.getElementById('smtp').style.display = '';
+			document.getElementById('sendmail').style.display = 'none';
+			return;
+		}
+
+		if(type =='sendmail'){
+            document.getElementById('smtp').style.display = 'none';
+			document.getElementById('sendmail').style.display = '';
+			return;
+		}
+
+		document.getElementById('smtp').style.display = 'none';
+		document.getElementById('sendmail').style.display = 'none';
+
+	}
+	</script>";
+	return $text;
+}
 ?>
