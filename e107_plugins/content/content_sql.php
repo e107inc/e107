@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_sql.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 22:18:17 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-26 07:51:02 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ exit;
 # Table structure for table `content`
 #
 
-CREATE TABLE content (
+CREATE TABLE pcontent (
   content_id int(10) unsigned NOT NULL auto_increment,
   content_heading varchar(255) NOT NULL default '',
   content_subheading varchar(255) NOT NULL default '',

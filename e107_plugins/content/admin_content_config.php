@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.47 $
-|		$Date: 2005-06-25 22:18:16 $
+|		$Revision: 1.48 $
+|		$Date: 2005-06-26 07:51:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -115,7 +115,9 @@ if(isset($delete) && $delete == 'submitted'){
 if(isset($_POST['updateoptions'])){
 	$content_pref	= $aa -> UpdateContentPref($_POST, $_POST['options_type']);
 	$message		= CONTENT_ADMIN_CAT_LAN_22."<br /><br />";
-	$message		.= $aa -> CreateParentMenu($_POST['options_type']);
+	if($_POST['options_type'] != "0"){
+		$message		.= $aa -> CreateParentMenu($_POST['options_type']);
+	}
 }
 
 
