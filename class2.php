@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.178 $
-|     $Date: 2005-06-26 22:36:32 $
+|     $Revision: 1.179 $
+|     $Date: 2005-06-26 22:44:26 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -53,10 +53,10 @@ if(!isset($ADMIN_DIRECTORY)){
 }
 
 // class to clean user input. yay! more memory usage, but it's important and fairly lightweight so we can't complain :)
-e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'input_class.php');
+e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'/input_class.php');
 
 // clever stuff that figures out where the paths are on the fly.. no more need fo hard-coded e_HTTP :)
-e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'e107_class.php');
+e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'/e107_class.php');
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
 $e107 = new e107($e107_paths, __FILE__);
 
@@ -482,7 +482,7 @@ $sql->db_Mark_Time('(Start: Login/logout/ban/tz)');
 
 if (isset($_POST['userlogin'])) {
 	e107_require_once(e_HANDLER."login.php");
-	$usr=new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']);
+	$usr = new userlogin($_POST['username'], $_POST['userpass'], $_POST['autologin']);
 }
 
 if (e_QUERY == 'logout') {
