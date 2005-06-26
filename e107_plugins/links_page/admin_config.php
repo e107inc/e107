@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_config.php,v $
-|    $Revision: 1.15 $
-|    $Date: 2005-06-26 17:35:25 $
-|    $Author: e107coders $
+|    $Revision: 1.16 $
+|    $Date: 2005-06-26 18:11:50 $
+|    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -783,19 +783,10 @@ class links {
 	function show_pref_options() {
 		global $linkspage_pref, $ns, $rs, $pref;
 
-		$TOPIC_ROW_NOEXPAND = "
-		<tr>
-			<td class='forumheader3' style='width:25%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
-			<td class='forumheader3'>{TOPIC_FIELD}</td>
-		</tr>";
-
 		$TOPIC_ROW = "
 		<tr>
-			<td class='forumheader3' style='width:25%; white-space:nowrap; vertical-align:top;'><span title='{TOPIC_HEADING}' style='cursor:help'>{TOPIC_TOPIC}</span></td>
-			<td class='forumheader3' style='vertical-align:top;'>
-				<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'></a>
-					{TOPIC_FIELD}
-			</td>
+			<td class='forumheader3' style='width:25%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
+			<td class='forumheader3' style='vertical-align:top;'>{TOPIC_FIELD}</td>
 		</tr>";
 
 		$TOPIC_TITLE_ROW = "<tr><td colspan='2' class='fcaption'>{TOPIC_CAPTION}</td></tr>";
@@ -806,45 +797,35 @@ class links {
 		".$rs -> form_open("post", e_SELF."?".e_QUERY, "", "", "", "")."
 		<table style='".ADMIN_WIDTH."' class='fborder'>";
 
-		$TOPIC_CAPTION = LCLAN_116;
+		$TOPIC_CAPTION = LCLAN_OPT_1;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
 
-		$TOPIC_TOPIC = LCLAN_119;
-		$TOPIC_HEADING = LCLAN_40;
-		$TOPIC_HELP = LCLAN_34;
+		$TOPIC_TOPIC = LCLAN_OPT_7;
 		$TOPIC_FIELD = "
-		".$rs -> form_radio("link_page_categories", "1", ($linkspage_pref['link_page_categories'] ? "1" : "0"), "", "").LCLAN_138."
-		".$rs -> form_radio("link_page_categories", "0", ($linkspage_pref['link_page_categories'] ? "0" : "1"), "", "").LCLAN_139;
+		".$rs -> form_radio("link_page_categories", "1", ($linkspage_pref['link_page_categories'] ? "1" : "0"), "", "").LCLAN_OPT_3."
+		".$rs -> form_radio("link_page_categories", "0", ($linkspage_pref['link_page_categories'] ? "0" : "1"), "", "").LCLAN_OPT_4;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-		$TOPIC_TOPIC = LCLAN_41;
-		$TOPIC_HEADING = LCLAN_42;
-		$TOPIC_HELP = "";
+		$TOPIC_TOPIC = LCLAN_OPT_8;
 		$TOPIC_FIELD = "
-		".$rs -> form_radio("link_submit", "1", ($linkspage_pref['link_submit'] ? "1" : "0"), "", "").LCLAN_138."
-		".$rs -> form_radio("link_submit", "0", ($linkspage_pref['link_submit'] ? "0" : "1"), "", "").LCLAN_139;
+		".$rs -> form_radio("link_submit", "1", ($linkspage_pref['link_submit'] ? "1" : "0"), "", "").LCLAN_OPT_3."
+		".$rs -> form_radio("link_submit", "0", ($linkspage_pref['link_submit'] ? "0" : "1"), "", "").LCLAN_OPT_4;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-		$TOPIC_TOPIC = LCLAN_43;
-		$TOPIC_HEADING = LCLAN_44;
-		$TOPIC_HELP = "";
+		$TOPIC_TOPIC = LCLAN_OPT_9;
 		$TOPIC_FIELD = r_userclass("link_submit_class", $linkspage_pref['link_submit_class']);
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 		//link_nextprev
-		$TOPIC_TOPIC = LCLAN_162;
-		$TOPIC_HEADING = LCLAN_163;
-		$TOPIC_HELP = LCLAN_164;
+		$TOPIC_TOPIC = LCLAN_OPT_10;
 		$TOPIC_FIELD = "
-		".$rs -> form_radio("link_nextprev", "1", ($linkspage_pref["link_nextprev"] ? "1" : "0"), "", "").LCLAN_138."
-		".$rs -> form_radio("link_nextprev", "0", ($linkspage_pref["link_nextprev"] ? "0" : "1"), "", "").LCLAN_139."
+		".$rs -> form_radio("link_nextprev", "1", ($linkspage_pref["link_nextprev"] ? "1" : "0"), "", "").LCLAN_OPT_3."
+		".$rs -> form_radio("link_nextprev", "0", ($linkspage_pref["link_nextprev"] ? "0" : "1"), "", "").LCLAN_OPT_4."
 		";
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 		//link_nextprev_number
-		$TOPIC_TOPIC = LCLAN_165;
-		$TOPIC_HEADING = LCLAN_166;
-		$TOPIC_HELP = LCLAN_167;
+		$TOPIC_TOPIC = LCLAN_OPT_11;
 		$TOPIC_FIELD = $rs -> form_select_open("link_nextprev_number");
 		for($i=2;$i<52;$i++){
 			$TOPIC_FIELD .= $rs -> form_option($i, ($linkspage_pref["link_nextprev_number"] == $i ? "1" : "0"), $i);
@@ -855,119 +836,93 @@ class links {
 
 		$text .= $TOPIC_ROW_SPACER;
 
-		$TOPIC_CAPTION = LCLAN_117;
+		$TOPIC_CAPTION = LCLAN_OPT_12;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
 
-		$TOPIC_TOPIC = LCLAN_120;
-		$TOPIC_HEADING = LCLAN_121;
-		$TOPIC_HELP = "";
+		$TOPIC_TOPIC = LCLAN_OPT_13;
 		$TOPIC_FIELD = "
-		".$rs -> form_checkbox("link_cat_icon", 1, ($linkspage_pref['link_cat_icon'] ? "1" : "0"))." ".LCLAN_122."<br />
-		".$rs -> form_checkbox("link_cat_desc", 1, ($linkspage_pref['link_cat_desc'] ? "1" : "0"))." ".LCLAN_123."<br />
-		".$rs -> form_checkbox("link_cat_amount", 1, ($linkspage_pref['link_cat_amount'] ? "1" : "0"))." ".LCLAN_124."<br />
-		".$rs -> form_checkbox("link_cat_total", 1, ($linkspage_pref['link_cat_total'] ? "1" : "0"))." ".LCLAN_125."<br />
-		".$rs -> form_checkbox("link_cat_toprefer", 1, ($linkspage_pref['link_cat_toprefer'] ? "1" : "0"))." ".LCLAN_147."<br />
-		".$rs -> form_checkbox("link_cat_toprated", 1, ($linkspage_pref['link_cat_toprated'] ? "1" : "0"))." ".LCLAN_148."<br />
+		".$rs -> form_checkbox("link_cat_icon", 1, ($linkspage_pref['link_cat_icon'] ? "1" : "0"))." ".LCLAN_OPT_14."<br />
+		".$rs -> form_checkbox("link_cat_desc", 1, ($linkspage_pref['link_cat_desc'] ? "1" : "0"))." ".LCLAN_OPT_15."<br />
+		".$rs -> form_checkbox("link_cat_amount", 1, ($linkspage_pref['link_cat_amount'] ? "1" : "0"))." ".LCLAN_OPT_16."<br />
+		".$rs -> form_checkbox("link_cat_total", 1, ($linkspage_pref['link_cat_total'] ? "1" : "0"))." ".LCLAN_OPT_19."<br />
+		".$rs -> form_checkbox("link_cat_toprefer", 1, ($linkspage_pref['link_cat_toprefer'] ? "1" : "0"))." ".LCLAN_OPT_20."<br />
+		".$rs -> form_checkbox("link_cat_toprated", 1, ($linkspage_pref['link_cat_toprated'] ? "1" : "0"))." ".LCLAN_OPT_21."<br />
 		";
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-		$TOPIC_TOPIC = LCLAN_146;
-		$TOPIC_HEADING = LCLAN_133;
-		$TOPIC_HELP = "<br />
-		<img src='".e_THEME.$pref['sitetheme']."/images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' style='vertical-align:middle;' /><br />
-		".e_THEME.$pref['sitetheme']."/images/".(defined("BULLET") ? BULLET : "bullet2.gif");
+		$TOPIC_TOPIC = LCLAN_OPT_22;
 		$TOPIC_FIELD = "
-		".$rs -> form_radio("link_cat_icon_empty", "1", ($linkspage_pref['link_cat_icon_empty'] ? "1" : "0"), "", "").LCLAN_138."
-		".$rs -> form_radio("link_cat_icon_empty", "0", ($linkspage_pref['link_cat_icon_empty'] ? "0" : "1"), "", "").LCLAN_139;
+		".$rs -> form_radio("link_cat_icon_empty", "1", ($linkspage_pref['link_cat_icon_empty'] ? "1" : "0"), "", "").LCLAN_OPT_3."
+		".$rs -> form_radio("link_cat_icon_empty", "0", ($linkspage_pref['link_cat_icon_empty'] ? "0" : "1"), "", "").LCLAN_OPT_4;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-		$TOPIC_TOPIC = LCLAN_126;
-		$TOPIC_HEADING = LCLAN_127;
-		$TOPIC_HELP = "";
+		$TOPIC_TOPIC = LCLAN_OPT_23;
 		$TOPIC_FIELD = "
 		".$rs -> form_select_open("link_cat_sort")."
-		".$rs -> form_option(LCLAN_176, ($linkspage_pref['link_cat_sort'] == "link_category_name" ? "1" : "0"), "link_category_name", "")."
-		".$rs -> form_option(LCLAN_177, ($linkspage_pref['link_cat_sort'] == "link_category_id" ? "1" : "0"), "link_category_id", "")."
+		".$rs -> form_option(LCLAN_OPT_40, ($linkspage_pref['link_cat_sort'] == "link_category_name" ? "1" : "0"), "link_category_name", "")."
+		".$rs -> form_option(LCLAN_OPT_41, ($linkspage_pref['link_cat_sort'] == "link_category_id" ? "1" : "0"), "link_category_id", "")."
 		".$rs -> form_select_close();
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-		$TOPIC_TOPIC = LCLAN_128;
-		$TOPIC_HEADING = LCLAN_129;
-		$TOPIC_HELP = "";
+		$TOPIC_TOPIC = LCLAN_OPT_24;
 		$TOPIC_FIELD = "
 		".$rs -> form_select_open("link_cat_order")."
-		".$rs -> form_option(LCLAN_168, ($linkspage_pref['link_cat_order'] == "ASC" ? "1" : "0"), "ASC", "")."
-		".$rs -> form_option(LCLAN_169, ($linkspage_pref['link_cat_order'] == "DESC" ? "1" : "0"), "DESC", "")."
+		".$rs -> form_option(LCLAN_OPT_30, ($linkspage_pref['link_cat_order'] == "ASC" ? "1" : "0"), "ASC", "")."
+		".$rs -> form_option(LCLAN_OPT_31, ($linkspage_pref['link_cat_order'] == "DESC" ? "1" : "0"), "DESC", "")."
 		".$rs -> form_select_close();
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-		$TOPIC_TOPIC = LCLAN_153;
-		$TOPIC_HEADING = LCLAN_155;
-		$TOPIC_HELP = "";
-		$TOPIC_FIELD = $rs -> form_text("link_cat_resize_value", "3", $linkspage_pref['link_cat_resize_value'], "3", "tbox", "", "", "")." px";
+		$TOPIC_TOPIC = LCLAN_OPT_25;
+		$TOPIC_FIELD = $rs -> form_text("link_cat_resize_value", "3", $linkspage_pref['link_cat_resize_value'], "3", "tbox", "", "", "")." ".LCLAN_OPT_5;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 		$text .= $TOPIC_ROW_SPACER;
 
-		$TOPIC_CAPTION = LCLAN_118;
+		$TOPIC_CAPTION = LCLAN_OPT_26;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
 
-		$TOPIC_TOPIC = LCLAN_120;
-		$TOPIC_HEADING = LCLAN_121;
-		$TOPIC_HELP = "";
+		$TOPIC_TOPIC = LCLAN_OPT_13;
 		$TOPIC_FIELD = "
-		".$rs -> form_checkbox(LCLAN_174, 1, ($linkspage_pref['link_icon'] ? "1" : "0"))." ".LCLAN_122."<br />
-		".$rs -> form_checkbox(LCLAN_173, 1, ($linkspage_pref['link_referal'] ? "1" : "0"))." ".LCLAN_131."<br />
-		".$rs -> form_checkbox(LCLAN_171, 1, ($linkspage_pref['link_url'] ? "1" : "0"))." ".LCLAN_130."<br />
-		".$rs -> form_checkbox(LCLAN_175, 1, ($linkspage_pref['link_desc'] ? "1" : "0"))." ".LCLAN_123."<br />
+		".$rs -> form_checkbox(LCLAN_OPT_38, 1, ($linkspage_pref['link_icon'] ? "1" : "0"))." ".LCLAN_OPT_14."<br />
+		".$rs -> form_checkbox(LCLAN_OPT_37, 1, ($linkspage_pref['link_referal'] ? "1" : "0"))." ".LCLAN_OPT_17."<br />
+		".$rs -> form_checkbox(LCLAN_OPT_35, 1, ($linkspage_pref['link_url'] ? "1" : "0"))." ".LCLAN_OPT_18."<br />
+		".$rs -> form_checkbox(LCLAN_OPT_39, 1, ($linkspage_pref['link_desc'] ? "1" : "0"))." ".LCLAN_OPT_15."<br />
 		";
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-		$TOPIC_TOPIC = LCLAN_104;
-		$TOPIC_HEADING = LCLAN_105;
-		$TOPIC_HELP = "";
+		$TOPIC_TOPIC = LCLAN_OPT_27;
 		$TOPIC_FIELD = "
-		".$rs -> form_radio("link_rating", "1", ($linkspage_pref['link_rating'] ? "1" : "0"), "", "").LCLAN_138."
-		".$rs -> form_radio("link_rating", "0", ($linkspage_pref['link_rating'] ? "0" : "1"), "", "").LCLAN_139;
+		".$rs -> form_radio("link_rating", "1", ($linkspage_pref['link_rating'] ? "1" : "0"), "", "").LCLAN_OPT_3."
+		".$rs -> form_radio("link_rating", "0", ($linkspage_pref['link_rating'] ? "0" : "1"), "", "").LCLAN_OPT_4;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-		$TOPIC_TOPIC = LCLAN_132;
-		$TOPIC_HEADING = LCLAN_133;
-		$TOPIC_HELP = "<br />
-		<img style='border:0; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /><br />
-		".e_PLUGIN."links_page/images/generic.png";
+		$TOPIC_TOPIC = LCLAN_OPT_28;
 		$TOPIC_FIELD = "
-		".$rs -> form_radio("link_icon_empty", "1", ($linkspage_pref['link_icon_empty'] ? "1" : "0"), "", "").LCLAN_138."
-		".$rs -> form_radio("link_icon_empty", "0", ($linkspage_pref['link_icon_empty'] ? "0" : "1"), "", "").LCLAN_139;
+		".$rs -> form_radio("link_icon_empty", "1", ($linkspage_pref['link_icon_empty'] ? "1" : "0"), "", "").LCLAN_OPT_3."
+		".$rs -> form_radio("link_icon_empty", "0", ($linkspage_pref['link_icon_empty'] ? "0" : "1"), "", "").LCLAN_OPT_4;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-		$TOPIC_TOPIC = LCLAN_144;
-		$TOPIC_HEADING = LCLAN_145;
-		$TOPIC_HELP = "";
+		$TOPIC_TOPIC = LCLAN_OPT_29;
 		$TOPIC_FIELD = "
-		".$rs -> form_radio("link_sortorder", "1", ($linkspage_pref['link_sortorder'] ? "1" : "0"), "", "").LCLAN_138."
-		".$rs -> form_radio("link_sortorder", "0", ($linkspage_pref['link_sortorder'] ? "0" : "1"), "", "").LCLAN_139;
+		".$rs -> form_radio("link_sortorder", "1", ($linkspage_pref['link_sortorder'] ? "1" : "0"), "", "").LCLAN_OPT_3."
+		".$rs -> form_radio("link_sortorder", "0", ($linkspage_pref['link_sortorder'] ? "0" : "1"), "", "").LCLAN_OPT_4;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-		$TOPIC_TOPIC = LCLAN_134;
-		$TOPIC_HEADING = LCLAN_135;
-		$TOPIC_HELP = "";
+		$TOPIC_TOPIC = LCLAN_OPT_23;
 		$TOPIC_FIELD = "
 		".$rs -> form_select_open("link_sort")."
-		".$rs -> form_option(LCLAN_170, ($linkspage_pref['link_sort'] == "link_name" ? "1" : "0"), "link_name", "")."
-		".$rs -> form_option(LCLAN_171, ($linkspage_pref['link_sort'] == "link_url" ? "1" : "0"), "link_url", "")."
-		".$rs -> form_option(LCLAN_172, ($linkspage_pref['link_sort'] == "link_order" ? "1" : "0"), "link_order", "")."
-		".$rs -> form_option(LCLAN_173, ($linkspage_pref['link_sort'] == "link_refer" ? "1" : "0"), "link_refer", "")."
+		".$rs -> form_option(LCLAN_OPT_34, ($linkspage_pref['link_sort'] == "link_name" ? "1" : "0"), "link_name", "")."
+		".$rs -> form_option(LCLAN_OPT_35, ($linkspage_pref['link_sort'] == "link_url" ? "1" : "0"), "link_url", "")."
+		".$rs -> form_option(LCLAN_OPT_36, ($linkspage_pref['link_sort'] == "link_order" ? "1" : "0"), "link_order", "")."
+		".$rs -> form_option(LCLAN_OPT_37, ($linkspage_pref['link_sort'] == "link_refer" ? "1" : "0"), "link_refer", "")."
 		".$rs -> form_select_close();
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-		$TOPIC_TOPIC = LCLAN_136;
-		$TOPIC_HEADING = LCLAN_137;
-		$TOPIC_HELP = "";
+		$TOPIC_TOPIC = LCLAN_OPT_24;
 		$TOPIC_FIELD = "
 		".$rs -> form_select_open("link_order")."
-		".$rs -> form_option(LCLAN_168, ($linkspage_pref['link_order'] == "ASC" ? "1" : "0"), "ASC", "")."
-		".$rs -> form_option(LCLAN_169, ($linkspage_pref['link_order'] == "DESC" ? "1" : "0"), "DESC", "")."
+		".$rs -> form_option(LCLAN_OPT_30, ($linkspage_pref['link_order'] == "ASC" ? "1" : "0"), "ASC", "")."
+		".$rs -> form_option(LCLAN_OPT_31, ($linkspage_pref['link_order'] == "DESC" ? "1" : "0"), "DESC", "")."
 		".$rs -> form_select_close();
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
@@ -977,42 +932,20 @@ class links {
 		// 3    = _top
 		// 4    = miniwindow
 		// 5	= use individual settings of each link
-		$TOPIC_TOPIC = LCLAN_140;
-		$TOPIC_HEADING = LCLAN_141;
-		$TOPIC_HELP = LCLAN_142;
+		$TOPIC_TOPIC = LCLAN_OPT_32;
 		$TOPIC_FIELD = "
 		".$rs -> form_select_open("link_open_all")."
-		".$rs -> form_option(LCLAN_143, ($linkspage_pref['link_open_all'] == "5" ? "1" : "0"), "5", "")."
-		".$rs -> form_option(LCLAN_20, ($linkspage_pref['link_open_all'] == "0" ? "1" : "0"), "0", "")."
-		".$rs -> form_option(LCLAN_23, ($linkspage_pref['link_open_all'] == "1" ? "1" : "0"), "1", "")."
-		".$rs -> form_option(LCLAN_24, ($linkspage_pref['link_open_all'] == "4" ? "1" : "0"), "4", "")."
+		".$rs -> form_option(LCLAN_OPT_42, ($linkspage_pref['link_open_all'] == "5" ? "1" : "0"), "5", "")."
+		".$rs -> form_option(LCLAN_OPT_43, ($linkspage_pref['link_open_all'] == "0" ? "1" : "0"), "0", "")."
+		".$rs -> form_option(LCLAN_OPT_44, ($linkspage_pref['link_open_all'] == "1" ? "1" : "0"), "1", "")."
+		".$rs -> form_option(LCLAN_OPT_45, ($linkspage_pref['link_open_all'] == "4" ? "1" : "0"), "4", "")."
 		".$rs -> form_select_close();
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-		$TOPIC_TOPIC = LCLAN_153;
-		$TOPIC_HEADING = LCLAN_154;
-		$TOPIC_HELP = "";
-		$TOPIC_FIELD = $rs -> form_text("link_resize_value", "3", $linkspage_pref['link_resize_value'], "3", "tbox", "", "", "")." px";
+		$TOPIC_TOPIC = LCLAN_OPT_33;
+		$TOPIC_FIELD = $rs -> form_text("link_resize_value", "3", $linkspage_pref['link_resize_value'], "3", "tbox", "", "", "")." ".LCLAN_OPT_5;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
-		/*
-		$text .= $TOPIC_ROW_SPACER;
-
-		$TOPIC_CAPTION = LCLAN_149;
-		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
-
-		$TOPIC_TOPIC = LCLAN_150;
-		$TOPIC_HEADING = LCLAN_151;
-		$TOPIC_HELP = "";
-		$TOPIC_FIELD = "
-		".$rs -> form_select_open("link_pagenumber");
-		for($i=2;$i<52;$i++){
-			$TOPIC_FIELD .= $rs -> form_option($i, ($linkspage_pref['link_pagenumber'] == $i ? "1" : "0"), $i, "");
-			$i++;
-		}
-		$TOPIC_FIELD .= $rs -> form_select_close();
-		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
-		*/
 		$text .= $TOPIC_ROW_SPACER;
 
 		$text .= "
@@ -1025,7 +958,7 @@ class links {
 		</table>
 		".$rs->form_close()."
 		</div>";
-		$ns->tablerender(LCLAN_36, $text);
+		$ns->tablerender(LCLAN_OPT_2, $text);
 	}
 }
 
