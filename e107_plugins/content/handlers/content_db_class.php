@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.29 $
-|		$Date: 2005-06-25 22:18:17 $
+|		$Revision: 1.30 $
+|		$Date: 2005-06-26 12:31:37 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -165,7 +165,6 @@ class contentdb{
 									}
 								}
 						}
-						$contentrefer = ($_POST['content_refer'] && $_POST['content_refer'] != "sa" ? $_POST['content_refer'] : "");
 
 						if($_POST['update_datestamp']){
 							$starttime = time();
@@ -191,14 +190,20 @@ class contentdb{
 							}
 						}
 						//preset additional data tags
-						$custom['content_custom_presettags'] = $_POST['content_custom_preset_key'];
-						$contentprefvalue = $eArrayStorage->WriteArray($custom);
+						if(isset($_POST['content_custom_preset_key']) && $_POST['content_custom_preset_key']){
+							$custom['content_custom_presettags'] = $_POST['content_custom_preset_key'];
+							$contentprefvalue = $eArrayStorage->WriteArray($custom);
+						}else{
+							$contentprefvalue = "";
+						}
 
-						$contentprefvalue = $eArrayStorage->WriteArray($custom);
+						$_POST['content_layout'] = (!$_POST['content_layout'] || $_POST['content_layout'] == "content_content_template.php" ? "" : $_POST['content_layout']);
+						
+						//content_order + content_refer : are not added in the sql
+						$sql -> db_Update($plugintable, "content_heading = '".$_POST['content_heading']."', content_subheading = '".$_POST['content_subheading']."', content_summary = '".$_POST['content_summary']."', content_text = '".$_POST['content_text']."', content_author = '".$author."', content_icon = '".$icon."', content_file = '".$totalattach."', content_image = '".$totalimages."', content_parent = '".$_POST['parent']."', content_comment = '".$_POST['content_comment']."', content_rate = '".$_POST['content_rate']."', content_pe = '".$_POST['content_pe']."', content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['content_class']."', content_pref = '".$contentprefvalue."', content_score='".$_POST['content_score']."', content_meta='".$_POST['content_meta']."', content_layout='".$_POST['content_layout']."' WHERE content_id = '".$_POST['content_id']."' ");
 
-						$sql -> db_Update($plugintable, "content_heading = '".$_POST['content_heading']."', content_subheading = '".$_POST['content_subheading']."', content_summary = '".$_POST['content_summary']."', content_text = '".$_POST['content_text']."', content_author = '".$author."', content_icon = '".$icon."', content_file = '".$totalattach."', content_image = '".$totalimages."', content_parent = '".$_POST['parent']."', content_comment = '".$_POST['content_comment']."', content_rate = '".$_POST['content_rate']."', content_pe = '".$_POST['content_pe']."', content_refer = '".$contentrefer."', content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['content_class']."', content_pref = '".$contentprefvalue."', content_score='".$_POST['content_score']."', content_meta='".$_POST['content_meta']."', content_layout='".$_POST['content_layout']."' WHERE content_id = '".$_POST['content_id']."' ");
-
-						$e107cache->clear($plugintable);
+						$e107cache->clear("comment.$plugintable.{$_POST['content_id']}");
+						$e107cache->clear("$plugintable.content.{$_POST['content_id']}");
 						if($mode == "admin"){
 							js_location(e_SELF."?".e_QUERY.".cu");
 						}elseif($mode == "contentmanager"){
@@ -446,36 +451,6 @@ class contentdb{
 						}else{
 							$endtime = "0";
 						}
-		
-						/*
-						$pref['upload_storagetype'] = "1";
-						require_once(e_HANDLER."upload_handler.php");
-						$pathicon = $content_cat_icon_path_large;
-						$pathiconthumb = $content_cat_icon_path_small;
-						$uploadedicon = file_upload($pathicon);
-						
-						if($_POST["cat_icon"] && !$uploadedicon){
-							$icon = $_POST['cat_icon'];
-						} elseif($uploadedicon) {
-							$fileorgicon = $uploadedicon[0]['name'];
-							$fileext2icon = substr(strrchr($fileorgicon, "."), 0);
-							$fileorgiconname = substr($fileorgicon, 0, -(strlen($fileext2icon)) );
-
-							$resize = "48";
-							$resizethumb = "16";
-
-							if($fileorgicon){
-								$icon = $fileorgicon;
-								require_once(e_HANDLER."resize_handler.php");
-								resize_image($pathicon.$icon, $pathicon.$icon, $resize, "nocopy");
-								resize_image($pathicon.$icon, $pathiconthumb.$icon, $resizethumb, "copy");
-							} else {
-								$icon = "";
-							}
-						}else{
-							$icon = "";
-						}
-						*/
 
 						$sql -> db_Insert($plugintable, "'0', '".$_POST['cat_heading']."', '".$_POST['cat_subheading']."', '', '".$_POST['cat_text']."', '".ADMINID."', '".$_POST["cat_icon"]."', '', '', '".$_POST['parent']."', '".$_POST['cat_comment']."', '".$_POST['cat_rate']."', '".$_POST['cat_pe']."', '', '".$starttime."', '".$endtime."', '".$_POST['cat_class']."', '', '0', '', '', '' ");
 
@@ -524,17 +499,18 @@ class contentdb{
 
 
 		function dbDelete($mode, $cat, $del_id){
-						global $plugintable, $sql, $_POST;
+						global $plugintable, $sql, $_POST, $e107cache;
 
 						if($mode == "admin"){
 							if($cat == "cat"){
 								if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+									$e107cache->clear($plugintable);
 									$message = CONTENT_ADMIN_CAT_LAN_23;
 									return $message;
 								}
 							}elseif($cat == "content"){
 								if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-									$e107cache->clear("content");
+									$e107cache->clear($plugintable);
 									$message = CONTENT_ADMIN_ITEM_LAN_3;
 									return $message;
 								}
@@ -548,7 +524,7 @@ class contentdb{
 
 		
 		function dbSetOrder($mode, $type, $order){
-						global $plugintable, $sql, $aa, $qs, $_POST;
+						global $plugintable, $sql, $aa, $qs, $_POST, $e107cache;
 						//$mode		:	all, inc, dec
 						//$type		:	cc (category order), ai (global all items), ci (items in category)
 						//$order	:	posted values or id-currentorder
@@ -634,6 +610,7 @@ class contentdb{
 							}
 							$message = CONTENT_ADMIN_ORDER_LAN_1;
 						}
+						$e107cache->clear($plugintable);
 						
 						return $message;
 
