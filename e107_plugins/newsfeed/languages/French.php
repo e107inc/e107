@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/French.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-25 19:36:06 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-26 04:33:30 $
 |     $Author: tpruvot $
 +----------------------------------------------------------------------------+
 */
@@ -34,11 +34,11 @@ define("NFLAN_13", "Nul part (inactif)");
 define("NFLAN_14", "Uniquement dans le menu");
 define("NFLAN_15", "Créer le flux");
 define("NFLAN_16", "Modifier le flux");
-define("NFLAN_17", "entrez 'default' dans le champ pour utiliser l'image définie dans le fil, pour utiliser votre propre image, entrez le chemin (url) complet, laissez à blanc si vous ne voulez pas d'image.");
+define("NFLAN_17", "entrez 'default' dans le champ pour utiliser l'image définie dans le fil, pour utiliser votre propre image, entrez le chemin (url) complet, sinon laissez à blanc si vous ne voulez pas d'image.");
 define("NFLAN_18", "Interval de mise à jour en secondes");
-define("NFLAN_19", "ex, 3600: pour une mise à jour toutes les heures");
+define("NFLAN_19", "ex: 3600 pour une mise à jour toutes les heures");
 define("NFLAN_20", "Uniquement sur la page principale du flux");
-define("NFLAN_21", "Dans le menu ansi que sur la page du flux");
+define("NFLAN_21", "Dans le menu ainsi que sur la page du flux");
 define("NFLAN_22", "spécifiez où vous voulez afficher le flux");
 define("NFLAN_23", "Flux ajouté dans la base de données.");
 define("NFLAN_24", "Des champs obligatoires ont été oubliés.");
