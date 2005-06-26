@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.116 $
-|     $Date: 2005-06-26 14:12:48 $
+|     $Revision: 1.117 $
+|     $Date: 2005-06-26 16:04:18 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -660,6 +660,13 @@ function update_61x_to_700($type='') {
 			$s_prefs = TRUE;
 		}
 		// end content update -------------------------------------------------------------------------------------------
+
+		// start list_new update -------------------------------------------------------------------------------------------
+		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='list_new'")) {
+			$sql->db_Insert("plugin", "0, 'List', '1.0', 'list_new', 1");
+			$s_prefs = TRUE;
+		}
+		// end list_new update -------------------------------------------------------------------------------------------
 
 
 
