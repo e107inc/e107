@@ -1,4 +1,6 @@
 <?php
+
+
 define('PMLAN_PM',"Prywatna Wiadomość");
 define('PMLAN_0', "Nowa wiadomość");
 define('PMLAN_1', "otrzymana wiadomość");
