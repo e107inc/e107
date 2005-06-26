@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-06-24 00:08:17 $
+|     $Revision: 1.19 $
+|     $Date: 2005-06-26 19:11:50 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -29,7 +29,7 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 
 	$mail = new PHPMailer();
 
-    if ($pref['smtp_enable']) {
+    if ($pref['mailer']== 'smtp' || $pref['smtp_enable']==1) {
 		$mail->Mailer = "smtp";
 	 	$mail->SMTPKeepAlive = FALSE;
 		$mail->Host = $pref['smtp_server'];
@@ -40,11 +40,15 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 			$mail->$PluginDir = e_HANDLER."phpmailer/";
 		}
 
+	} elseif ($pref['mailer']== 'sendmail'){
+		$mail->Mailer = "sendmail";
+		$mail->Sendmail = ($pref['sendmail']) ? $pref['sendmail'] : "/usr/sbin/sendmail -t -i -r '".$pref['siteadminemail']."'";
 	} else {
-		$mail->Mailer = "mail";
+        $mail->Mailer = "mail";
 	}
 
-	($to_name)? $to_name: $send_to;
+	$to_name = ($to_name) ? $to_name: $send_to;
+
 	$mail->CharSet = CHARSET;
 	$mail->From = ($send_from)? $send_from: $pref['siteadminemail'];
 	$mail->FromName = ($from_name)? $from_name:	$pref['siteadmin'];
@@ -58,7 +62,7 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 	if (preg_match('/<(font|br|a|img|b)/i', $message)) {
 		$Html = $message; // Assume html if it begins with one of these tags
 	} else {
-		$Html = htmlentities($message);
+		$Html = htmlspecialchars($message);
 		$Html = preg_replace('%(http|ftp|https)(://\S+)%', '<a href="\1\2">\1\2</a>', $Html);
 		$Html = eregi_replace('([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&//=]+)', '\\1<a href="http://\\2">\\2</a>', $Html);
 		$Html = eregi_replace('([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})', '<a href="mailto:\\1">\\1</a>', $Html);
