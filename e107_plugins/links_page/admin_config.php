@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_config.php,v $
-|    $Revision: 1.13 $
-|    $Date: 2005-06-24 16:16:35 $
+|    $Revision: 1.14 $
+|    $Date: 2005-06-26 17:18:03 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -785,13 +785,13 @@ class links {
 
 		$TOPIC_ROW_NOEXPAND = "
 		<tr>
-			<td class='forumheader3' style='width:20%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
+			<td class='forumheader3' style='width:25%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
 			<td class='forumheader3'>{TOPIC_FIELD}</td>
 		</tr>";
 
 		$TOPIC_ROW = "
 		<tr>
-			<td class='forumheader3' style='width:20%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
+			<td class='forumheader3' style='width:25%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
 			<td class='forumheader3' style='vertical-align:top;'>
 				<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>{TOPIC_HEADING}</a>
 				<div style='display: none;'>

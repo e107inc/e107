@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-24 16:16:36 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-26 17:18:03 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
-if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE."/lan_links_page.php")) {
-	@include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE."/lan_links_page.php");
+if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php")) {
+	@include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
 	} else {
-	@include_once(e_PLUGIN."links_page/languages/English/lan_links_page.php");
+	@include_once(e_PLUGIN."links_page/languages/English.php");
 }
 $eplug_name = "Links Page";
 $eplug_version = "1.1";
