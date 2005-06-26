@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-06-23 16:00:33 $
+|     $Revision: 1.34 $
+|     $Date: 2005-06-26 12:34:19 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -107,8 +107,10 @@ class comment {
 			echo "<br /><div style='text-align:center'><b>".LAN_6." <a href='".e_SIGNUP."'>".COMLAN_1."</a> ".COMLAN_2."</b></div>";
 		}
 	}
+
+
 	function render_comment($row, $table, $action, $id, $width, $subject, $addrating=FALSE) {
-		//rating	: boolean, to show rating system in rendered comment
+		//addrating	: boolean, to show rating system in rendered comment
 		global $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen;
 		global $pref, $comrow, $tp, $NEWIMAGE, $USERNAME, $RATING, $datestamp;
 		global $thisaction, $thistable, $thisid, $row2;
@@ -354,6 +356,45 @@ class comment {
 			$rater -> enterrating($rateindex);
 		}
 	}
+
+
+	//compose comment	: single call function will render the existing comments and show the form_comment
+	//enter				: boolean to show/hide the form_comment area, default TRUE
+	//rate				: boolean, to show/hide rating system in comment, default FALSE
+	function compose_comment($table, $action, $id, $width, $subject, $rate=FALSE, $enter=TRUE){
+		global $pref, $sql, $ns, $e107cache;
+
+		$text = "";
+		$query = ($pref['nested_comments'] ?
+		"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location, user_forums, user_chats, user_visits, user_perms FROM #comments
+		LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$id."' AND comment_type='".$table."' AND comment_pid='0' ORDER BY comment_datestamp"
+		:
+		"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location, user_forums, user_chats, user_visits, user_perms FROM #comments
+		LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$id."' AND comment_type='".$table."' ORDER BY comment_datestamp"
+		);
+
+		$comment_total = $sql->db_Select_gen($query); 
+		if ($comment_total) {
+			$width = 0;
+			while ($row2 = $sql->db_Fetch()) {
+				if ($pref['nested_comments']) {
+					$text .= $this->render_comment($row2, $table , $action, $id, $width, $subject, $rate);
+				} else {
+					$text = $this->render_comment($row2, $table , $action, $id, $width, $subject, $rate);
+				}
+			}
+			$ns->tablerender(LAN_99, $text);
+
+			if(ADMIN && getperms("B")){
+				echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?$table.$id'>".LAN_314."</a></div><br />";
+			}
+		}
+		if($enter){
+			$this->form_comment($action, $table, $id, $subject, "", "", $rate);
+		}
+		return;
+	}
+
 }
 
 ?>
