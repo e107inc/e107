@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-06-25 09:19:50 $
+|     $Revision: 1.16 $
+|     $Date: 2005-06-26 20:16:57 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -75,7 +75,7 @@ if (isset($_POST['add_link']) && check_class($linkspage_pref['link_submit_class'
 		$username			= (defined('USERNAME')) ? USERNAME : LAN_LINKS_3;
 		$submitted_link		= $_POST['cat_name']."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".$username;
 		$sql->db_Insert("tmp", "'submitted_link', '".time()."', '$submitted_link' ");
-		$ns->tablerender(LAN_99, "<div style='text-align:center'>".LAN_100."</div>");
+		$ns->tablerender(LAN_LINKS_28, "<div style='text-align:center'>".LAN_LINKS_29."</div>");
 		$edata_ls = array("link_name" => $link_name, "link_url" => $link_url, "link_description" => $link_description, "link_button" => $link_button, "username" => $username, "submitted_link" => $submitted_link);
 		$e_event->trigger("linksub", $edata_ls);
 		} else {
@@ -107,7 +107,7 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 	$link_main_table_end = $tp -> parseTemplate($LINK_MAIN_TABLE_END, FALSE, $link_shortcodes);
 	$text = $LINK_MAIN_TABLE_START.$link_main_table_string.$link_main_table_end;
 
-	$caption = LAN_61;
+	$caption = LAN_LINKS_30;
 	$ns->tablerender($caption, $text);
 
 } else {
@@ -125,7 +125,7 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 		}
 		$text = preg_replace("/\{(.*?)\}/e", '$\1', $LINK_SUBMIT_TABLE);
 
-		$ns->tablerender(LAN_92, $text);
+		$ns->tablerender(LAN_LINKS_31, $text);
 		require_once(FOOTERF);
 		exit;
 	}
@@ -186,12 +186,12 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 				$text .= $link_cat_table_start.$link_cat_table_string.$link_cat_table_end;
 
 				// Caption
-				$caption = LAN_86." ".$link_category_name;
+				$caption = LAN_LINKS_32." ".$link_category_name;
 				if ($link_category_description != "") {
 					$caption .= " <i>[".$link_category_description."]</i>";
 				}
 				// Number of links displayed
-				$caption .= " (<b title='".(ADMIN ? LAN_Links_2 : LAN_Links_1)."' >".$link_total."</b>".(ADMIN ? "/<b title='".(ADMIN ? LAN_Links_1 : "" )."' >".$link_total."</b>" :
+				$caption .= " (<b title='".(ADMIN ? LAN_LINKS_2 : LAN_LINKS_1)."' >".$link_total."</b>".(ADMIN ? "/<b title='".(ADMIN ? LAN_LINKS_1 : "" )."' >".$link_total."</b>" :
 				"").") ";
 				$ns->tablerender($caption, $text);
 
@@ -252,7 +252,7 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 	if(isset($qs[0]) && $qs[0] == "rated"){
 		$text = "";
 		$link_rated_table_string = "";
-		$number				= ($linkspage_pref["link_nextprev_number"] ? $linkspage_pref["link_nextprev_number"] : "20");
+		$number	= ($linkspage_pref["link_nextprev_number"] ? $linkspage_pref["link_nextprev_number"] : "20");
 
 		$qry = "
 		SELECT l.*, r.*
@@ -278,7 +278,7 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 
 			}
 			if(empty($arrRate)){
-				$err		= CONTENT_LAN_37;
+				$err		= LAN_LINKS_33;
 			}
 			usort($arrRate, create_function('$a,$b','return $a[3]==$b[3]?0:($a[3]>$b[3]?-1:1);'));
 			$linktotalrated = count($arrRate);
@@ -319,7 +319,7 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 		}
 	}
 	if (!$display_links) {
-		$ns->tablerender("Links", "<div style='text-align: center'>".LAN_107."</div>");
+		$ns->tablerender("Links", "<div style='text-align: center'>".LAN_LINKS_34."</div>");
 	}
 }
 

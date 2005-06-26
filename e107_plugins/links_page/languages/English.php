@@ -4,13 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-06-26 18:11:50 $
+|     $Revision: 1.14 $
+|     $Date: 2005-06-26 20:16:57 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Links");
-
 
 define("LCLAN_OPT_1", "general options");
 define("LCLAN_OPT_2", "Link Page Options");
@@ -58,249 +57,124 @@ define("LCLAN_OPT_43", "Opens in same window");
 define("LCLAN_OPT_44", "Opens in new window");
 define("LCLAN_OPT_45", "Opens in 600x400 miniwindow");
 
+define("LCLAN_ADMIN_1", "update");
+define("LCLAN_ADMIN_2", "Link saved to database.");
+define("LCLAN_ADMIN_3", "Link updated in database.");
+define("LCLAN_ADMIN_4", "Link Category Saved");
+define("LCLAN_ADMIN_5", "Link Category Updated");
+define("LCLAN_ADMIN_6", "Options Saved");
+define("LCLAN_ADMIN_7", "link icon was uploaded succefully !");
+define("LCLAN_ADMIN_8", "link icon was not uploaded !");
+define("LCLAN_ADMIN_9", "Order updated");
+define("LCLAN_ADMIN_10", "Link");
+define("LCLAN_ADMIN_11", "deleted");
+define("LCLAN_ADMIN_12", "Link Category");
+define("LCLAN_ADMIN_13", "Submitted link deleted");
+define("LCLAN_ADMIN_14", "Links");
+define("LCLAN_ADMIN_15", "Links Page");
+define("LCLAN_ADMIN_16", "Configure Links Page");
+define("LCLAN_ADMIN_17", "Links Page For Displaying External Web Links");
+define("LCLAN_ADMIN_18", "Links page has successfully installed, please configure it from the Links Page link on the admin front page.");
+define("LCLAN_ADMIN_19", "Links_page successfully upgraded, now using version");
 
+define("LCLAN_SL_1", "Submitted Links");
+define("LCLAN_SL_2", "No submitted links");
+define("LCLAN_SL_3", "Link");
+define("LCLAN_SL_4", "Submitted by");
+define("LCLAN_SL_5", "Options");
+define("LCLAN_SL_6", "Post");
+define("LCLAN_SL_7", "Delete");
+define("LCLAN_SL_8", "Are you sure you want to delete this submitted link?");
+define("LCLAN_SL_9", "After submitting your link it will be reviewed by a site admin and if appropriate it will be added to the main links page.");
+define("LCLAN_SL_10", "Category:");
+define("LCLAN_SL_11", "name");
+define("LCLAN_SL_12", "url");
+define("LCLAN_SL_13", "description");
+define("LCLAN_SL_14", "URL to link button:");
+define("LCLAN_SL_15", "Underlined fields are required.");
+define("LCLAN_SL_16", "Submit Link");
+define("LCLAN_SL_17", "");
+define("LCLAN_SL_18", "");
 
+define("LCLAN_CAT_1", "Image");
+define("LCLAN_CAT_2", "Category");
+define("LCLAN_CAT_3", "Options");
+define("LCLAN_CAT_4", "Move");
+define("LCLAN_CAT_5", "Order");
+define("LCLAN_CAT_6", "Edit");
+define("LCLAN_CAT_7", "Are");
+define("LCLAN_CAT_8", "Are you sure you want to delete this category?");
+define("LCLAN_CAT_9", "View Links");
+define("LCLAN_CAT_10", "Reorder");
+define("LCLAN_CAT_11", "No link categories");
+define("LCLAN_CAT_12", "Existing Link Categories");
+define("LCLAN_CAT_13", "Name:");
+define("LCLAN_CAT_14", "Description:");
+define("LCLAN_CAT_15", "Upload a new icon:");
+define("LCLAN_CAT_16", "Auto-Thumbnail size:");
+define("LCLAN_CAT_17", "This option is disabled as file uploading is not enabled on your server");
+define("LCLAN_CAT_18", "The");
+define("LCLAN_CAT_19", "folder is not writable, you need to CHMOD 777 the folder before uploading");
+define("LCLAN_CAT_20", "px");
+define("LCLAN_CAT_21", "upload");
+define("LCLAN_CAT_22", "Choose an icon:");
+define("LCLAN_CAT_23", "View Images");
+define("LCLAN_CAT_24", "Visible for:");
+define("LCLAN_CAT_25", "tick to update timestamp to current time");
+define("LCLAN_CAT_26", "Update Link Category");
+define("LCLAN_CAT_27", "Clear Form");
+define("LCLAN_CAT_28", "Create Link Category");
+define("LCLAN_CAT_29", "Link Category");
 
-
-
-
-
-
-
-
-
-
-
-
-
-define("LAN_61", "Link Categories");
-define("LAN_62", "categories");
-define("LAN_63", "category");
-define("LAN_64", "in this category");
-define("LAN_65", "link");
-define("LAN_66", "links");
-define("LAN_67", "Show All Links");
-define("LAN_68", "edit");
-define("LAN_69", "delete");
-define("LAN_86", "Category:");
-define("LAN_88", "Referrals:");
-define("LAN_89", "Admin: ");
-define("LAN_90", "add new link in this category");
-define("LAN_91", "add new category");
-
-define("LAN_92", "Submit a link");
-define("LAN_93", "After submitting your link it will be reviewed by a site admin and if appropriate it will be added to the main links page.");
-define("LAN_94", "Link Name:");
-define("LAN_95", "Link URL:");
-define("LAN_96", "Link Description:");
-define("LAN_97", "URL to link button:");
-define("LAN_98", "Submit Link");
-
-define("LAN_99", "Thankyou");
-define("LAN_100", "Your link has been saved and will be reviewed by a site administrator.");
-define("LAN_101", "Please click here to submit a link");
-
-define("LAN_102", "There");
-define("LAN_103", "is");
-define("LAN_104", "are");
-define("LAN_105", "total in");
-define("LAN_106", "Underlined fields are required.");
-
-define("LAN_Links_1", "Total links");
-define("LAN_Links_2", "Total links activated");
-define("LAN_LINKS_3", "Anonymous");
-
-define("LAN_LINKS_4", "heading");
-define("LAN_LINKS_5", "url");
-define("LAN_LINKS_6", "order");
-define("LAN_LINKS_7", "refer");
-define("LAN_LINKS_8", "ASC");
-define("LAN_LINKS_9", "DESC");
-define("LAN_LINKS_10", "Top Links : Refer");
-define("LAN_LINKS_11", "Top Links : Rating");
-define("LAN_LINKS_12", "view top links by refer");
-define("LAN_LINKS_13", "view top links by user rating");
-define("LAN_LINKS_14", "back to links frontpage");
-define("LAN_LINKS_15", "sort by");
-
-define('LAN_107', "There are currently no links");
-
-
-
-
-define("LCLAN_1", "Options Saved");
-define("LCLAN_2", "Link saved to database.");
-define("LCLAN_3", "Link updated in database.");
-define("LCLAN_4", "Link deleted.");
-define("LCLAN_6", "Order updated.");
-define("LCLAN_8", "Existing Links");
-define("LCLAN_9", "Edit");
-define("LCLAN_10", "Delete");
-define("LCLAN_12", "Category");
-define("LCLAN_13", "Cannot edit the main category.");
-define("LCLAN_14", "Post");
-define("LCLAN_15", "Name");
-define("LCLAN_16", "URL");
-define("LCLAN_17", "Description");
-define("LCLAN_18", "Icon : Choose");
-define("LCLAN_19", "Open Type");
-define("LCLAN_20", "Opens in same window");
-define("LCLAN_23", "Opens in new window");
-define("LCLAN_24", "Opens in 600x400 miniwindow");
-define("LCLAN_25", "Class");
-define("LCLAN_26", "Ticking will make the link visible to only users in that class");
-define("LCLAN_27", "Update Link");
-define("LCLAN_28", "Create link");
-define("LCLAN_29", "Links");
-define("LCLAN_30", "move up");
-define("LCLAN_31", "move down");
-define("LCLAN_32", "Update Order");
-define("LCLAN_33", "Link Order");
-define("LCLAN_34", "");
-define("LCLAN_35", "Update Options");
-define("LCLAN_36", "Link Page Options");
-define("LCLAN_39", "View Images");
-define("LCLAN_40", "");
-define("LCLAN_41", "allow links to be submitted");
-define("LCLAN_42", "");
-define("LCLAN_43", "who can submit links");
-define("LCLAN_44", "");
-define("LCLAN_45", "Submitted by");
-define("LCLAN_51", "Link Category Saved");
-define("LCLAN_52", "Link Category Updated");
-define("LCLAN_53", "Link");
-define("LCLAN_54", "deleted");
-define("LCLAN_55", "Link Category");
-define("LCLAN_56", "Are you sure you want to delete this category?");
-define("LCLAN_57", "Are you sure you want to delete this submitted link?");
-define("LCLAN_58", "Are you sure you want to delete this link?");
-define("LCLAN_59", "Category");
-define("LCLAN_60", "Options");
-define("LCLAN_61", "No links");
-define("LCLAN_62", "Links Front Page");
-define("LCLAN_63", "Create New Link");
-define("LCLAN_64", "Set Link Order");
-define("LCLAN_65", "Categories");
-define("LCLAN_66", "Submitted Links");
-define("LCLAN_67", "Options");
-define("LCLAN_68", "Links Options");
-define("LCLAN_69", "No link categories");
-define("LCLAN_70", "Existing Link Categories");
-define("LCLAN_71", "Name");
-define("LCLAN_72", "Description");
-define("LCLAN_73", "Icon : Choose");
-define("LCLAN_74", "Update Link Category");
-define("LCLAN_75", "Create Link Category");
-define("LCLAN_76", "No submitted links");
-define("LCLAN_77", "Submitted link deleted");
-define("LCLAN_78", "Show Description as Screen-Tip");
-define("LCLAN_79", "Description will be shown when the mouse hovers over the link");
-define("LCLAN_80", "View Images");
-define("LCLAN_81", "Clear Form");
-define("LCLAN_82", "Submitted by");
-define("LCLAN_83", "Submenus Generator");
-define("LCLAN_84", "Please upload your link images to e107_plugins/links_page/link_images/");
-define("LCLAN_85", "Please upload your link category images to e107_plugins/links_page/cat_images/");
-define("LCLAN_86", "Image");
-define("LCLAN_87", "View Links");
-define("LCLAN_88", "Site Links Options");
-define("LCLAN_89", "Image");
-define("LCLAN_90", "Link Name");
-define("LCLAN_91", "Move");
-define("LCLAN_92", "Up");
-define("LCLAN_93", "Down");
-define("LCLAN_94", "Reorder");
-define("LCLAN_95", "Name");
-define("LCLAN_96", "Description");
-define("LCLAN_97", "Order");
-define("LCLAN_98", "Update");
-define("LCLAN_99", "Categories");
-define("LCLAN_100", "Link Category");
-define('LCLAN_101', "Configure Links Page");
-define('LCLAN_102', "Links page has successfully installed, please configure it from the Links Page link on the admin front page.");
-define('LCLAN_103', "Links");
-define('LCLAN_104', "allow users to rate links");
-define('LCLAN_105', "");
-
-define("LCLAN_106", "Icon : Upload");
-define("LCLAN_107", "link icon was uploaded succefully !");
-define("LCLAN_108", "link icon was not uploaded !");
-define("LCLAN_109", "upload a new icon");
-define("LCLAN_110", "Auto-Thumbnail size");
-define("LCLAN_111", "upload icon");
-define("LCLAN_112", "choose an uploaded icon");
-define("LCLAN_113", "This option is disabled as file uploading is not enabled on your server");
-define("LCLAN_114", "The");
-define("LCLAN_115", "folder is not writable, you need to CHMOD 777 the folder before uploading");
-
-define("LCLAN_116", "general options");
-define("LCLAN_117", "category page");
-define("LCLAN_118", "links page");
-define("LCLAN_119", "divide categories into individual pages");
-
-define("LCLAN_120", "display which sections");
-define("LCLAN_121", "");
-define("LCLAN_122", "icon");
-define("LCLAN_123", "description");
-define("LCLAN_124", "amount");
-define("LCLAN_125", "total category info line (the line at the bottom)");
-define("LCLAN_126", "default sort method");
-define("LCLAN_127", "");
-define("LCLAN_128", "default order method");
-define("LCLAN_129", "");
-
-define("LCLAN_130", "url");
-define("LCLAN_131", "referal");
-define("LCLAN_132", "show default icon if none present");
-define("LCLAN_133", "");
-define("LCLAN_134", "default sort method");
-define("LCLAN_135", "");
-define("LCLAN_136", "default order method");
-define("LCLAN_137", "");
-define("LCLAN_138", "enabled");
-define("LCLAN_139", "disabled");
-
-define("LCLAN_140", "use override of link open method");
-define("LCLAN_141", "");
-define("LCLAN_142", "");
-define("LCLAN_143", "");
-define("LCLAN_144", "display sort and order menu");
-define("LCLAN_145", "");
-define("LCLAN_146", "show default icon if none is present");
-define("LCLAN_147", "link to top links : refer");
-define("LCLAN_148", "link to top links : rated");
-define("LCLAN_149", "top refer and top rated pages");
-
-define("LCLAN_150", "amount links");
-define("LCLAN_151", "define how many links will be displayed on a single page");
-define("LCLAN_152", "Icon : Upload");
-define("LCLAN_153", "default resize value");
-define("LCLAN_154", "");
-define("LCLAN_155", "");
-define("LCLAN_156", "Class");
-define("LCLAN_157", "define which users can view this category");
-define("LCLAN_158", "Ticking will make the link category visible to only users in that class");
-define("LCLAN_159", "define how the link will be opened");
-define("LCLAN_160", "define which users can view this link");
-define("LCLAN_161", "tick to update timestamp to current time");
-define("LCLAN_162", "show all links on one page");
-define("LCLAN_163", "");
-define("LCLAN_164", "");
-define("LCLAN_165", "number of links per page");
-define("LCLAN_166", "");
-define("LCLAN_167", "");
-define("LCLAN_168", "ASC");
-define("LCLAN_169", "DESC");
-define("LCLAN_170", "link_name");
-define("LCLAN_171", "link_url");
-define("LCLAN_172", "link_order");
-define("LCLAN_173", "link_refer");
-define("LCLAN_174", "link_icon");
-define("LCLAN_175", "link_desc");
-define("LCLAN_176", "link category name");
-define("LCLAN_177", "link category id");
-
-
+define("LCLAN_ITEM_1", "Submitted by");
+define("LCLAN_ITEM_2", "Category:");
+define("LCLAN_ITEM_3", "no categories yet");
+define("LCLAN_ITEM_4", "Name:");
+define("LCLAN_ITEM_5", "Url:");
+define("LCLAN_ITEM_6", "Description:");
+define("LCLAN_ITEM_7", "Upload an icon:");
+define("LCLAN_ITEM_8", "Auto-Thumbnail size:");
+define("LCLAN_ITEM_9", "This option is disabled as file uploading is not enabled on your server");
+define("LCLAN_ITEM_10", "The");
+define("LCLAN_ITEM_11", "folder is not writable, you need to CHMOD 777 the folder before uploading");
+define("LCLAN_ITEM_12", "px");
+define("LCLAN_ITEM_13", "upload");
+define("LCLAN_ITEM_14", "Choose an icon:");
+define("LCLAN_ITEM_15", "View Images");
+define("LCLAN_ITEM_16", "Open Type:");
+define("LCLAN_ITEM_17", "Opens in same window");
+define("LCLAN_ITEM_18", "Opens in new window");
+define("LCLAN_ITEM_19", "Opens in 600x400 miniwindow");
+define("LCLAN_ITEM_20", "Visible for:");
+define("LCLAN_ITEM_21", "tick to update timestamp to current time");
+define("LCLAN_ITEM_22", "Update Link");
+define("LCLAN_ITEM_23", "Create link");
+define("LCLAN_ITEM_24", "Links");
+define("LCLAN_ITEM_25", "Image");
+define("LCLAN_ITEM_26", "Link Name");
+define("LCLAN_ITEM_27", "Options");
+define("LCLAN_ITEM_28", "Move");
+define("LCLAN_ITEM_29", "Order");
+define("LCLAN_ITEM_30", "Reorder");
+define("LCLAN_ITEM_31", "edit");
+define("LCLAN_ITEM_32", "delete");
+define("LCLAN_ITEM_33", "Are you sure you want to delete this link?");
+define("LCLAN_ITEM_34", "");
+define("LCLAN_ITEM_35", "");
+define("LCLAN_ITEM_36", "");
+define("LCLAN_ITEM_37", "");
+define("LCLAN_ITEM_38", "");
+define("LCLAN_ITEM_39", "");
+define("LCLAN_ITEM_40", "");
+define("LCLAN_ITEM_41", "");
+define("LCLAN_ITEM_42", "");
+define("LCLAN_ITEM_43", "");
+define("LCLAN_ITEM_44", "");
+define("LCLAN_ITEM_45", "");
+define("LCLAN_ITEM_46", "");
+define("LCLAN_ITEM_47", "");
+define("LCLAN_ITEM_48", "");
+define("LCLAN_ITEM_49", "");
 
 define("LCLAN_ADMINMENU_1", "Link Options");
 define("LCLAN_ADMINMENU_2", "Manage Link Categories");
@@ -317,5 +191,67 @@ define("NT_LAN_LP_3", "Link Submitted");
 
 define("LNK_SCH_LAN_2", "All Links Categories");
 define("LNK_SCH_LAN_3", "All links details");
+
+define("LAN_LINKS_1", "Total links");
+define("LAN_LINKS_2", "Total links activated");
+define("LAN_LINKS_3", "Anonymous");
+define("LAN_LINKS_4", "heading");
+define("LAN_LINKS_5", "url");
+define("LAN_LINKS_6", "order");
+define("LAN_LINKS_7", "refer");
+define("LAN_LINKS_8", "ASC");
+define("LAN_LINKS_9", "DESC");
+define("LAN_LINKS_10", "Top Links : Refer");
+define("LAN_LINKS_11", "Top Links : Rating");
+define("LAN_LINKS_12", "view top links by refer");
+define("LAN_LINKS_13", "view top links by user rating");
+define("LAN_LINKS_14", "back to links frontpage");
+define("LAN_LINKS_15", "sort by");
+define("LAN_LINKS_16", "in this category");
+define("LAN_LINKS_17", "link");
+define("LAN_LINKS_18", "links");
+define("LAN_LINKS_19", "categories");
+define("LAN_LINKS_20", "category");
+define("LAN_LINKS_21", "There");
+define("LAN_LINKS_22", "is");
+define("LAN_LINKS_23", "are");
+define("LAN_LINKS_24", "total in");
+define("LAN_LINKS_25", "Show All Links");
+define("LAN_LINKS_26", "Referrals:");
+define("LAN_LINKS_27", "Please click here to submit a link");
+define("LAN_LINKS_28", "Thankyou");
+define("LAN_LINKS_29", "Your link has been saved and will be reviewed by a site administrator.");
+define("LAN_LINKS_30", "Link Categories");
+define("LAN_LINKS_31", "Submit a link");
+define("LAN_LINKS_32", "Category:");
+define("LAN_LINKS_33", "No Links are rated yet.");
+define("LAN_LINKS_34", "There are currently no links");
+define("LAN_LINKS_35", "");
+define("LAN_LINKS_36", "");
+define("LAN_LINKS_37", "");
+define("LAN_LINKS_38", "");
+define("LAN_LINKS_39", "");
+
+define("LAN_LINKS_40", "");
+define("LAN_LINKS_41", "");
+define("LAN_LINKS_42", "");
+define("LAN_LINKS_43", "");
+define("LAN_LINKS_44", "");
+define("LAN_LINKS_45", "");
+define("LAN_LINKS_46", "");
+define("LAN_LINKS_47", "");
+define("LAN_LINKS_48", "");
+define("LAN_LINKS_49", "");
+
+define("LAN_LINKS_50", "");
+define("LAN_LINKS_51", "");
+define("LAN_LINKS_52", "");
+define("LAN_LINKS_53", "");
+define("LAN_LINKS_54", "");
+define("LAN_LINKS_55", "");
+define("LAN_LINKS_56", "");
+define("LAN_LINKS_57", "");
+define("LAN_LINKS_58", "");
+define("LAN_LINKS_59", "");
 
 ?>

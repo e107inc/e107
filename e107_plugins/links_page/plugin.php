@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 17:18:03 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-26 20:16:57 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -27,8 +27,8 @@ $eplug_version = "1.1";
 $eplug_author = "Eric Vanderfeesten (lisa)";
 $eplug_url = "http://e107.org";
 $eplug_email = "lisa@eindhovenseschool.net";
-$eplug_description = "Links Page For Displaying External Web Links";
-$eplug_compatible = "e107v7";
+$eplug_description = LCLAN_ADMIN_17;
+$eplug_compatible = "e107v0.7";
 $eplug_readme = "";
 $eplug_latest = TRUE; //Show reported threads in admin (use e_latest.php)
 $eplug_status = TRUE; //Show post count in admin (use e_status.php)
@@ -45,7 +45,7 @@ $eplug_conffile = "admin_config.php";
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/linkspage_32.png";
 $eplug_icon_small = $eplug_folder."/images/linkspage_16.png";
-$eplug_caption = LCLAN_101;
+$eplug_caption = LCLAN_ADMIN_16;
 	
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array();
@@ -85,12 +85,12 @@ $eplug_tables = array(
 	
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;
-$eplug_link_name = LCLAN_103;
+$eplug_link_name = LCLAN_ADMIN_14;
 $eplug_link_url = e_PLUGIN."links_page/links.php";
 	
 	
 // Text to display after plugin successfully installed ------------------------------------------------------------------
-$eplug_done = LCLAN_102;
+$eplug_done = LCLAN_ADMIN_18;
 	
 	
 // upgrading ... //
@@ -106,6 +106,6 @@ $upgrade_alter_tables = array(
 "ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_datestamp int(10) unsigned NOT NULL default '0'"
 );
 
-$eplug_upgrade_done = 'Links_page successfully upgraded, now using version: '.$eplug_version;
+$eplug_upgrade_done = LCLAN_ADMIN_19.': '.$eplug_version;
 
 ?>

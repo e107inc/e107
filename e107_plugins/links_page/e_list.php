@@ -25,7 +25,7 @@
 	";
 
 	if(!$sql -> db_Select_gen($qry)){
-		$LIST_DATA = "no links yet";
+		$LIST_DATA = LIST_LINKS_2;
 	}else{
 		while($row = $sql -> db_Fetch()){
 

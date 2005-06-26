@@ -18,7 +18,7 @@ SC_END
 SC_BEGIN LINK_MAIN_NUMBER
 global $LINK_MAIN_NUMBER, $total_links_cat, $linkspage_pref;
 if(isset($linkspage_pref['link_cat_amount']) && $linkspage_pref['link_cat_amount']){
-$LINK_MAIN_NUMBER = $total_links_cat." ".($total_links_cat == 1 ? LAN_65 : LAN_66)." ".LAN_64;
+$LINK_MAIN_NUMBER = $total_links_cat." ".($total_links_cat == 1 ? LAN_LINKS_17 : LAN_LINKS_18)." ".LAN_LINKS_16;
 }else{
 $LINK_MAIN_NUMBER = "";
 }
@@ -50,7 +50,7 @@ SC_BEGIN LINK_MAIN_TOTAL
 global $LINK_MAIN_TOTAL, $sql, $category_total, $linkspage_pref;
 if(isset($linkspage_pref['link_cat_total']) && $linkspage_pref['link_cat_total']){
 $total_links = $sql->db_Count("links_page", "(*)");
-$LINK_MAIN_TOTAL = LAN_102." ".($total_links == 1 ? LAN_103 : LAN_104)." ".$total_links." ".($total_links == 1 ? LAN_65 : LAN_66)." ".LAN_105." ".$category_total." ".($category_total == 1 ? LAN_63 : LAN_62);
+$LINK_MAIN_TOTAL = LAN_LINKS_21." ".($total_links == 1 ? LAN_LINKS_22 : LAN_LINKS_23)." ".$total_links." ".($total_links == 1 ? LAN_LINKS_17 : LAN_LINKS_18)." ".LAN_LINKS_24." ".$category_total." ".($category_total == 1 ? LAN_LINKS_20 : LAN_LINKS_19);
 }else{
 $LINK_MAIN_TOTAL = "";
 }
@@ -59,7 +59,7 @@ SC_END
 
 SC_BEGIN LINK_MAIN_SHOWALL
 global $LINK_MAIN_SHOWALL, $linkspage_pref;
-return (isset($linkspage_pref['link_cat_total']) && $linkspage_pref['link_cat_total'] ? "<a href='".e_PLUGIN."links_page/links.php?cat.all'>".LAN_67."</a>" : "");
+return (isset($linkspage_pref['link_cat_total']) && $linkspage_pref['link_cat_total'] ? "<a href='".e_PLUGIN."links_page/links.php?cat.all'>".LAN_LINKS_25."</a>" : "");
 SC_END
 
 SC_BEGIN LINK_MAIN_TOPREFER
@@ -126,7 +126,7 @@ SC_END
 
 SC_BEGIN LINK_CAT_REFER
 global $LINK_CAT_REFER, $linkspage_pref, $row;
-return (isset($linkspage_pref['link_referal']) && $linkspage_pref['link_referal'] ? LAN_88." ".$row['link_refer'] : "");
+return (isset($linkspage_pref['link_referal']) && $linkspage_pref['link_referal'] ? LAN_LINKS_26." ".$row['link_refer'] : "");
 SC_END
 
 SC_BEGIN LINK_CAT_DESC
@@ -146,7 +146,7 @@ SC_END
 SC_BEGIN LINK_CAT_SUBMIT
 global $LINK_CAT_SUBMIT, $linkspage_pref, $qs;
 if ($qs[0] != "top" && isset($linkspage_pref['link_submit']) && $linkspage_pref['link_submit'] && check_class($linkspage_pref['link_submit_class'])) {
-$LINK_CAT_SUBMIT = "<a href='".e_SELF."?submit'>".LAN_101."</a>";
+$LINK_CAT_SUBMIT = "<a href='".e_SELF."?submit'>".LAN_LINKS_27."</a>";
 }
 return $LINK_CAT_SUBMIT;
 SC_END
@@ -231,7 +231,7 @@ SC_END
 
 SC_BEGIN LINK_RATED_REFER
 global $LINK_RATED_REFER, $linkspage_pref, $row;
-return (isset($linkspage_pref['link_referal']) && $linkspage_pref['link_referal'] ? LAN_88." ".$row['link_refer'] : "");
+return (isset($linkspage_pref['link_referal']) && $linkspage_pref['link_referal'] ? LAN_LINKS_26." ".$row['link_refer'] : "");
 SC_END
 
 SC_BEGIN LINK_RATED_DESC
