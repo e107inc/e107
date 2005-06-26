@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.177 $
-|     $Date: 2005-06-22 17:59:36 $
-|     $Author: e107coders $
+|     $Revision: 1.178 $
+|     $Date: 2005-06-26 22:36:32 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -52,8 +52,11 @@ if(!isset($ADMIN_DIRECTORY)){
 	header("Location: install.php");
 }
 
+// class to clean user input. yay! more memory usage, but it's important and fairly lightweight so we can't complain :)
+e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'input_class.php');
+
 // clever stuff that figures out where the paths are on the fly.. no more need fo hard-coded e_HTTP :)
-e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'/e107_class.php');
+e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'e107_class.php');
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
 $e107 = new e107($e107_paths, __FILE__);
 
