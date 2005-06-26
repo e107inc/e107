@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Polish.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-25 21:08:29 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-26 20:51:18 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
