@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.69 $
-|		$Date: 2005-06-26 00:09:23 $
+|		$Revision: 1.70 $
+|		$Date: 2005-06-26 07:51:02 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -362,50 +362,33 @@ class content{
 						$sql -> db_Insert("core", "'$plugintable', '{$tmp}' ");
 					}else{
 						$row = $sql -> db_Fetch();
-
-						//create array of custom preset tags
-						foreach($_POST['content_custom_preset_key'] as $ck => $cv){
-							if(!empty($cv)){
-								$string[] = $cv;
-							}
-						}
-						$_POST['content_custom_preset_key'] = $string;
-						
-						//assign new preferences
-						foreach($_POST as $k => $v){
-							if(preg_match("#^content_#",$k)){
-								$content_pref[$k] = $tp->toDB($v, true);
-							}
-						}
-
-						//create new array of preferences
-						$tmp = $eArrayStorage->WriteArray($content_pref);
-
-						$sql -> db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = '$plugintable' ");
 					}
 
 				//insert category preferences into plugintable
 				}else{
 					$sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
 					$row = $sql -> db_Fetch();
+				}
 
-					//create array of custom preset tags
-					foreach($_POST['content_custom_preset_key'] as $ck => $cv){
-						if(!empty($cv)){
-							$string[] = $cv;
-						}
+				//create array of custom preset tags
+				foreach($_POST['content_custom_preset_key'] as $ck => $cv){
+					if(!empty($cv)){
+						$string[] = $cv;
 					}
-					$_POST['content_custom_preset_key'] = $string;
+				}
+				$_POST['content_custom_preset_key'] = $string;
 
-					foreach($_POST as $k => $v){
-						if(preg_match("#^content_#",$k)){
-							$content_pref[$k] = $tp->toDB($v, true);
-						}
+				foreach($_POST as $k => $v){
+					if(preg_match("#^content_#",$k)){
+						$content_pref[$k] = $tp->toDB($v, true);
 					}
+				}
 
-					//create new array of preferences
-					$tmp = $eArrayStorage->WriteArray($content_pref);
-
+				//create new array of preferences
+				$tmp = $eArrayStorage->WriteArray($content_pref);
+				if($id == "0"){
+					$sql -> db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = '$plugintable' ");
+				}else{
 					$sql -> db_Update($plugintable, "content_pref='{$tmp}' WHERE content_id='$id' ");
 				}
 
