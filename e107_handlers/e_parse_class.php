@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.94 $
-|     $Date: 2005-06-25 21:25:10 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.95 $
+|     $Date: 2005-06-26 03:27:15 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -380,12 +380,7 @@ class e_parse
 					$query = preg_match('#(q|p)=(.*?)(&|$)#', $shr, $matches);
 					$this -> e_query = str_replace(array('+', '*', '"', ' '), array('', '.*?', '', '\b|\b'), trim(urldecode($matches[2])));
 				}
-				preg_match_all("#<[^>]+>#", $text, $tags);
-				$text = preg_replace("#<[^>]+>#", "<|>", $text);
-				$text = preg_replace("#(\b".$this -> e_query."\b)#i", "<span class='searchhighlight'>\\1</span>", $text);
-				foreach ($tags[0] as $tag) {
-					$text = preg_replace("#<\|>#", $tag, $text, 1);
-				}
+				$text = $this -> e_highlight($text, $this -> e_query);
 			}
 		}
 
@@ -471,6 +466,16 @@ class e_parse
 					$text = str_replace($val, "<span style='color:red; text-decoration: underline;'>{$val}</span>", $text);
 				}
 			}
+		}
+		return $text;
+	}
+	
+	function e_highlight($text, $match) {
+		preg_match_all("#<[^>]+>#", $text, $tags);
+		$text = preg_replace("#<[^>]+>#", "<|>", $text);
+		$text = preg_replace("#(\b".$match."\b)#i", "<span class='searchhighlight'>\\1</span>", $text);
+		foreach ($tags[0] as $tag) {
+			$text = preg_replace("#<\|>#", $tag, $text, 1);
 		}
 		return $text;
 	}
