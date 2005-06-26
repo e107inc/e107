@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_install/installer_handling_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-26 12:13:39 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-26 14:43:33 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -296,29 +296,29 @@ class e_install {
 			<div style='width: 100%; padding-left: auto; padding-right: auto;'>
 			  <table cellspacing='0'>
 			    <tr>
-			      <td class='row-border'><label for='u_name'>Admin Username</label></td>
+			      <td class='row-border'><label for='u_name'>".LANINS_072."</label></td>
 			      <td class='row-border'><input class='tbox' type='text' name='u_name' id='u_name' size='30' value='".($this->previous_steps['admin']['user'] ? $this->previous_steps['admin']['user'] : "")."' maxlength='60' /></td>
-				  <td class='row-border'>This is the name you will use to login into the site. If you wish to use this as your display name also </td>
+				  <td class='row-border'>".LANINS_073."</td>
 			    </tr>
 			    <tr>
-			      <td class='row-border'><label for='d_name'>Admin Display Name</label></td>
+			      <td class='row-border'><label for='d_name'>".LANINS_074."</label></td>
 			      <td class='row-border'><input class='tbox' type='text' name='d_name' id='d_name' size='30' value='".($this->previous_steps['admin']['display'] ? $this->previous_steps['admin']['display'] : "")."' maxlength='60' /></td>
-				  <td class='row-border'>This is the name that you wish your users to see displayed in your profile, forums and other areas. If you wish to use the same as your login name then leave this blank.</td>
+				  <td class='row-border'>".LANINS_075."</td>
 			    </tr>
 			    <tr>
-			      <td class='row-border'><label for='pass1'>Admin Password</label></td>
+			      <td class='row-border'><label for='pass1'>".LANINS_076."</label></td>
 			      <td class='row-border'><input type='password' name='pass1' size='30' id='pass1' value='' maxlength='60' /></td>
-				  <td class='row-border'>Please type the admin password you wish to use here</td>
+				  <td class='row-border'>".LANINS_077."</td>
 			    </tr>
 			    <tr>
-			      <td class='row-border'><label for='pass2'>Admin Password Confirmation</label></td>
+			      <td class='row-border'><label for='pass2'>".LANINS_078."</label></td>
 			      <td class='row-border'><input type='password' name='pass2' size='30' id='pass2' value='' maxlength='60' /></td>
-				  <td class='row-border'>Please type the admin password again for confirmation</td>
+				  <td class='row-border'>".LANINS_079."</td>
 			    </tr>
 			    <tr>
-			      <td class='row-border'><label for='email'>Admin Email</label></td>
+			      <td class='row-border'><label for='email'>".LANINS_080."</label></td>
 			      <td class='row-border'><input type='text' name='email' size='30' id='email' value='".($this->previous_steps['admin']['email'] ? $this->previous_steps['admin']['email'] : "user@yoursite.com")."' maxlength='100' /></td>
-				  <td class='row-border'>".LANINS_034."</td>
+				  <td class='row-border'>".LANINS_081."</td>
 			    </tr>
 			  </table>
 			</div>
