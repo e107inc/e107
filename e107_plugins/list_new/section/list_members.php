@@ -9,7 +9,7 @@
 	}else{
 		$qry = " ";
 	}
-	$qry .= " user_class REGEXP '".e_CLASS_REGEXP."' ORDER BY user_join DESC LIMIT 0,".$arr[7];
+	$qry .= " (user_class = '' || user_class REGEXP '".e_CLASS_REGEXP."') ORDER BY user_join DESC LIMIT 0,".$arr[7];
 
 	$bullet = $this -> getBullet($arr[6], $mode);
 
