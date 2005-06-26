@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-25 22:18:17 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-26 15:50:17 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -48,7 +48,7 @@ if($content_version < 1.2){
 
 	$text = "";
 	//upgrade to 1.1
-	$upgrade_1_1 = FALSE;
+	$upgrade_1_1 = TRUE;
 	$newcontent = $sql -> db_Count($plugintable, "(*)", "");
 	if($newcontent > 0){
 		
