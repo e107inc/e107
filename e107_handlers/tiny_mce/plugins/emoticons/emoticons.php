@@ -7,16 +7,14 @@ $HEADER = "";
 require_once(HEADERF);
 
 
-	$emote = $sysprefs -> getArray('emote');
+	$emotes = $sysprefs->getArray("emote_".$pref['emotepack']);
 	$str = "<div class='spacer' style='text-align:center'>";
-	$c = 0;
-	$orig = array();
-	while(list($code, $name) = @each($emote[$c])){
-		if(!array_key_exists($name,$orig)){
-	$str .= "\n<a href='javascript:void(0);' onmousedown=\"javascript:insertEmotion('$name')\"><img src=\"".e_IMAGE."emoticons/$name\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
-			$orig[$name] = TRUE;
-		}
-		$c++;
+    foreach($emotes as $key => $value){
+		$key = str_replace("!", ".", $key);
+		$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
+		$value2 = substr($value, 0, strpos($value, " "));
+		$value = ($value2 ? $value2 : $value);
+		$str .= "\n<a href='javascript:void(0);' onmousedown=\"javascript:insertEmotion('$key')\"><img src=\"".e_IMAGE."emotes/" . $pref['emotepack'] . "/$key\" style=\"border:0; padding-top:2px;\" alt=\"\" /></a> ";
 	}
 
 	$str .= "</div>";
@@ -24,12 +22,12 @@ require_once(HEADERF);
  echo $str;
 
 function headerjs(){
-	global $IMAGES_DIRECTORY;
+	global $IMAGES_DIRECTORY,$pref;
 	$js = "<script type='text/javascript' src='../../tiny_mce_popup.js'></script>";
 	$js .= " <script type='text/javascript'>
 	function insertEmotion(file_name) {
 		if (window.opener) {
-			tinyMCE.insertImage('".SITEURL.$IMAGES_DIRECTORY."emoticons/' + file_name,file_name);
+			tinyMCE.insertImage('".SITEURL.$IMAGES_DIRECTORY."emotes/" . $pref['emotepack'] . "/' + file_name,file_name);
 			window.close();
 		}
 	}
