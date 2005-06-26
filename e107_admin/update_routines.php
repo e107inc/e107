@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.117 $
-|     $Date: 2005-06-26 16:04:18 $
+|     $Revision: 1.118 $
+|     $Date: 2005-06-26 20:52:39 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -810,6 +810,22 @@ function update_61x_to_700($type='') {
 		   		$sql2 -> db_Update("links", "link_parent='".$parent[$nm]."' WHERE link_id ='$id' ");
 			}
         }
+		
+
+		//20050626 : update links_page_cat and links_page
+		$field1 = $sql->db_Field("links_page_cat",5);
+		$field2 = $sql->db_Field("links_page_cat",6);
+		$field3 = $sql->db_Field("links_page_cat",7);
+
+		if($field1 != "link_category_order" && $field2 != "link_category_class" && $field3 != "link_category_datestamp"){
+			mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_order VARCHAR ( 100 ) NOT NULL DEFAULT '0';");
+			mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_class VARCHAR ( 100 ) NOT NULL DEFAULT '0';");
+			mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_datestamp INT ( 10 ) UNSIGNED NOT NULL DEFAULT '';");
+		}
+		if($sql->db_Field("links_page",11) != "link_datestamp"){
+			mysql_query("ALTER TABLE ".MPREFIX."links_page ADD link_datestamp INT ( 10 ) UNSIGNED NOT NULL DEFAULT '';");
+		}
+
 
 
 		// Save all prefs that were set in above update routines
