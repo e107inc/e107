@@ -4,13 +4,41 @@
 * User input cleaning class
 *
 * @package e107
-* @version $Revision: 1.3 $
+* @version $Revision: 1.4 $
 * @author $Author: streaky $
 */
 class einput {
 
 	/**
-	 * Escape SQL data to prevent injections
+	 * Handle user input, including SQL escaping, number validation (integers), word value cleaning and custom regexp cleaning
+	 *
+	 * @param string $string Input data
+	 * @param bool $word_value Data should be a word value [a-z, A-Z, 0-9]
+	 * @param bool $numeric Data should be a number
+	 * @param bool $sql Input data will be used in an sql query (escape data to prevent SQL injections)
+	 * @param string $custom_regexp preg_replace() regexp to perform on input data (replaced with a null string), see http://us2.php.net/preg-replace
+	 * @return string clean data
+	 */
+	function clean_input($string = "", $sql = false, $word_value = false, $numeric = false, $custom_regexp = false) {
+
+		if ($numeric == true && is_numeric($string) == false) {
+			return intval($string);
+		}
+		if( $word_value == true && is_numeric($string) == false) {
+			$string = preg_replace("#\W#", "", $string);
+		}
+		if ($custom_regexp == true) {
+			preg_replace($custom_regexp, "", $string);
+		}
+		if ($sql == true && is_numeric($string) == false) {
+			$string = (is_object($this) ? $this->sql_escape_string($string) : einput::sql_escape_string($string));
+		}
+
+		return $string;
+	}
+
+	/**
+	 * Escape SQL data to help prevent injections
 	 *
 	 * @param string $string [dirty input data]
 	 * @return string [escaped data]
@@ -20,30 +48,16 @@ class einput {
 	}
 
 	/**
-	 * Handle user input, including SQL escaping, number validation (integers), word value cleaning and custom regexp cleaning
+	 * Strip slashes from string - takes into account magic_quotes_gpc setting, i.e. only stips if it's on - or the second arg is true
 	 *
-	 * @param string $string Input data
-	 * @param bool $word_value Data should be a word value [a-z, A-Z, 0-9]
-	 * @param bool $numeric Data should be numeric [0-9]
-	 * @param bool $sql Input data will be used in an sql query (escape data to prevent SQL injections)
-	 * @param string $custom_regexp preg_replace() regexp to perform on input data (replaced with a null string), see http://us2.php.net/preg-replace
-	 * @return string [int if numeric == true]
+	 * @param string $string [input string]
+	 * @param bool $ignore_magic_quotes_gpc [overide magic_quotes_gpc setting, i.e. always strip slashes
+	 * @return string
 	 */
-	function clean_input($string, $sql = false, $word_value = false, $integer = false, $custom_regexp = false) {
-		
-		if ($numeric == true) {
-			return intval($string);
+	function strip_input($string = "", $ignore_magic_quotes_gpc = false) {
+		if(get_magic_quotes_gpc() == true || $ignore_magic_quotes_gpc == true) {
+			$string = stripslashes($string);
 		}
-		if( $word_value == true) {
-			$string = preg_replace("#\W#", "", $string);
-		}
-		if ($custom_regexp == true) {
-			preg_replace($custom_regexp, "", $string);
-		}
-		if ($sql == true) {
-			$string = (is_object($this) ? $this->sql_escape_string($string) : einput::sql_escape_string($string));
-		}
-		
 		return $string;
 	}
 }
