@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.115 $
-|     $Date: 2005-06-25 22:19:35 $
+|     $Revision: 1.116 $
+|     $Date: 2005-06-26 14:12:48 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -30,13 +30,13 @@ if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
 }
 
 //content
-//if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content' AND plugin_installflag='1' "))
-//{
+if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content' AND plugin_installflag='1' "))
+{
 	if(file_exists(e_PLUGIN.'content/content_update_check.php'))
 	{
 		include_once(e_PLUGIN.'content/content_update_check.php');
 	}
-//}
+}
 
 $dbupdate["61x_to_700"] = LAN_UPDATE_8." .61x ".LAN_UPDATE_9." .7";
 $dbupdate["616_to_617"] = LAN_UPDATE_8." .616 ".LAN_UPDATE_9." .617";
