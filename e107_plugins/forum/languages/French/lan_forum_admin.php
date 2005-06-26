@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/French/lan_forum_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-12 16:28:12 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-26 03:21:53 $
 |     $Author: tpruvot $
 +----------------------------------------------------------------------------+
 */
@@ -53,7 +53,7 @@ define("FORLAN_41", "remonter");
 define("FORLAN_42", "descendre");
 define("FORLAN_43", "Prévisualiser / Ordre des Forum");
 define("FORLAN_44", "Encadrer le forum");
-define("FORLAN_45", "Cochez cette case si vous souhaitez afficher le forum dans une table en utilisant votre thème");
+define("FORLAN_45", "Cochez cette case si vous souhaitez afficher le forum en utilisant une table de votre thème");
 define("FORLAN_46", "Titre affiché dans le cadre si 'Encadrer le forum' est coché");
 define("FORLAN_47", "Activer la notification par email");
 define("FORLAN_48", "Cochez cette case pour permettre à vos membres d'activer la notification par email lorsque quelqu'un répond à l'un de ses messages");
@@ -81,14 +81,14 @@ define("FORLAN_72", "Modifier l'ordre");
 define("FORLAN_73", "Ordre mis à jour");
 	
 define("FORLAN_75", "Catégories");
-define("FORLAN_76", "Vue générale du Forum");
-define("FORLAN_77", "Création de Forums");
-define("FORLAN_78", "Ordre du Forum");
+define("FORLAN_76", "Arborescence du Forum");
+define("FORLAN_77", "Ajouter un Forum");
+define("FORLAN_78", "Ordre des Forums");
 define("FORLAN_79", "Préférences");
 define("FORLAN_80", "Options");
 define("FORLAN_81", "Etes-vous sûr de vouloir supprimer cette catégorie? - Les FORUMS de cette catégorie seront AUSSI supprimé");
 define("FORLAN_82", "Etes-vous sûr de vouloir supprimer ce forum?");
-define("FORLAN_83", "Création de Catégories");
+define("FORLAN_83", "Ajouter une Catégorie");
 define("FORLAN_84", "Membres Seulement");
 define("FORLAN_85", "Lecture seule");
 define("FORLAN_86", "Admin Seulement");
@@ -168,7 +168,7 @@ define("FORLAN_139", "Pour utiliser cette fonctionalité, vous devez aussi coche
 define("FORLAN_140", "Voir");	
 define("FORLAN_141", "Message");	
 
-define("FORLAN_142", "Permissions d'envoi de message");
+define("FORLAN_142", "Permission d'envoi de message");
 define("FORLAN_143", "Indique qui peut publier sur le forum");
 
 define("FORLAN_144", "Modérateur défini");
