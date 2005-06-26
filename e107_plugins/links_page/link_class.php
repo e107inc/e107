@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.2 $
-|    $Date: 2005-06-20 13:36:44 $
+|    $Revision: 1.3 $
+|    $Date: 2005-06-26 20:16:56 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -96,30 +96,25 @@ class linkclass {
 
 	function showLinkSort(){
 		global $rs, $ns, $link_sort, $link_order;
+	
+		$sotext = "
+		".$rs -> form_open("post", e_SELF."?".e_QUERY, "linksort")."
+			".LAN_LINKS_15." 
+			".$rs -> form_select_open("link_sort")."
+			".$rs -> form_option(LAN_LINKS_4, ($link_sort == "link_name" ? "1" : "0"), "link_name", "")."
+			".$rs -> form_option(LAN_LINKS_5, ($link_sort == "link_url" ? "1" : "0"), "link_url", "")."
+			".$rs -> form_option(LAN_LINKS_6, ($link_sort == "link_order" ? "1" : "0"), "link_order", "")."
+			".$rs -> form_option(LAN_LINKS_7, ($link_sort == "link_refer" ? "1" : "0"), "link_refer", "")."
+			".$rs -> form_select_close()."
+			".LAN_LINKS_6." 
+			".$rs -> form_select_open("link_order")."
+			".$rs -> form_option(LAN_LINKS_8, ($link_order == "ASC" ? "1" : "0"), "ASC", "")."
+			".$rs -> form_option(LAN_LINKS_9, ($link_order == "DESC" ? "1" : "0"), "DESC", "")."
+			".$rs -> form_select_close()."
+			<input class='button' style='width:25px' type='submit' name='submit' value='go'>
+		".$rs -> form_close();
 
-		//if($pref['linkpage_sortorder'] && $cat){		
-			$sotext = "
-			".$rs -> form_open("post", e_SELF."?".e_QUERY, "linksort")."
-				".LAN_LINKS_15." 
-				".$rs -> form_select_open("link_sort")."
-				".$rs -> form_option(LAN_LINKS_4, ($link_sort == "link_name" ? "1" : "0"), "link_name", "")."
-				".$rs -> form_option(LAN_LINKS_5, ($link_sort == "link_url" ? "1" : "0"), "link_url", "")."
-				".$rs -> form_option(LAN_LINKS_6, ($link_sort == "link_order" ? "1" : "0"), "link_order", "")."
-				".$rs -> form_option(LAN_LINKS_7, ($link_sort == "link_refer" ? "1" : "0"), "link_refer", "")."
-				".$rs -> form_select_close()."
-				".LAN_LINKS_6." 
-				".$rs -> form_select_open("link_order")."
-				".$rs -> form_option(LAN_LINKS_8, ($link_order == "ASC" ? "1" : "0"), "ASC", "")."
-				".$rs -> form_option(LAN_LINKS_9, ($link_order == "DESC" ? "1" : "0"), "DESC", "")."
-				".$rs -> form_select_close()."
-				<input class='button' style='width:25px' type='submit' name='submit' value='go'>
-			".$rs -> form_close();
-
-			//$socaption = "sort and order";
-			//$ns -> tablerender($socaption, $sotext);
-			return $sotext;
-		//}
-
+		return $sotext;
 	}
 
 }
