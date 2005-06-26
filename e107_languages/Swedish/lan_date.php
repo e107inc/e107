@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_date.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:34 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-26 11:12:22 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -25,5 +25,10 @@ define("LANDT_05s", "timmar");
 define("LANDT_06s", "minuter");
 define("LANDT_07s", "sekunder");
 
+define("LANDT_08", "min");
+define("LANDT_08s", "min"); // Pluralis
+define("LANDT_09", "sek");
+define("LANDT_09s", "sek"); // Pluralis
+define("LANDT_AGO", "sedan");
 
 ?>

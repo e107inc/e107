@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_cpage.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-26 11:12:22 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -50,5 +50,6 @@ define("CUSLAN_39", "från");
 define("CUSLAN_40", "Spara alternativ");
 
 define("CUSLAN_41", "Visa information om författare och datum");
+define("CUSLAN_42", "Inga sidor definierade ännu");
 
 ?>

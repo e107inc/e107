@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content_help.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-16 15:45:55 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-26 11:12:23 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -43,16 +43,7 @@ define("CONTENT_ADMIN_HELP_OPTION_2", "
 <i>Denna sida visar vilka alternativ du kan sätta för denna värd. Varje värd har sin egen specifika uppsättning alternativ, så försäkra dig om att du sätter alla korrekt.</i><br /><br />
 <b>Standardvärden</b><br />Som standard finns alla värden och är redan uppdaterade i preferenserna när du öppnar denna sidan, men ändra värdena så de passar dina behov.<br /><br />
 ");
-/*
-<b>Uppdelning i åtta sektioner</b><br />the options are divided into eight main sections. Du ser de olika sektionerna i den högra menyn. Du kan klicka på dem för att gå till den specifika uppsättningen alternativ för den kategorin.<br /><br />
-<b>Skapa</b><br />I denna sktion kan du specificera alternativ för skapandet av innehållsobjekt på adminsidorna ur admins vinkel.<br /><br />
-<b>Skicka</b><br />I denna sektionkan du ange alternativ för formuläret för att skicka in innehållsobjekt.<br /><br />
-<b>Sökväg och Tema</b><br />I denna sektion kan du sätta temat för denna huvudvärd och ange sökvägar till var du lagrat dina bilder för denna värd.<br /><br /><b>Generellt</b><br />I denna sektion kan du specificera alternativ som skall anväändas över alla innehållssidor.<br /><br />
-<b>Listsidor</b><br />I denna sektion anger du alternativsidor där innehållsobjekt listas.<br /><br />
-<b>Kategorisidor</b><br />I denna sektion specificerar du alternativen för hur kategorisidorna skall visas.<br /><br />
-<b>Innehålssidor</b><br />I denna sektion kan du ange hur innehållsobjektets sida skall visas.<br /><br />
-<b>Meny</b><br />I denna sektion specificerar du alternativen för menyn till denna värd.<br /><br />
-*/
+
 define("CONTENT_ADMIN_HELP_MANAGER_1", "På denna sidan ser du en lista över alla kategorier. Du kan använda den 'Personliga innehållshanteraren' för varje kategori genom att klicka på ikonen.<br /><br /><b>Förklaring av ikoner</b><br />".CONTENT_ICON_USER." : Länk till författarens profil<br />".CONTENT_ICON_LINK." : Länk till kategorin<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : Redigera de personliga innehållshanterarna<br />");
 
 define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>På denna sidan kan du tilldela användare till den valda kategorin du klickat på</i><br /><br /><b>Personlig hanterare</b><br />Du kan tilldela användare till vissa kategorier. Genom det kan användarna hantera sina personliga innehållsobjekt inom dessa kategorier utan att besöka adminsidan (content_manager.php).<br /><br />Tilldela användare från den vänstra kolumnen genom att klicka på deras namn, du kommer att se dessa namn flyttas till den högra kolumnen. Efter att du klickat på tilldelningsknappen kommer användarna i den högra kolumnen att vara tilldelade denna kategori.");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-26 11:12:23 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -26,13 +26,7 @@ define("CONTENT_ICON_LAN_12", "sortera objekt i huvudvärd");
 define("CONTENT_ICON_LAN_13", "personlig admin");
 define("CONTENT_ICON_LAN_14", "personlig innehållshanterare");
 define("CONTENT_ICON_LAN_15", "visa");
-/*
-define("LAN_38", "röst");
-define("LAN_39", "röster");
-define("LAN_40", "vilket betyg ger du detta innehåll?");
-define("LAN_41", "tack för din röst");
-define("LAN_65", "ej betygssatt");
-*/
+
 define("CONTENT_ADMIN_CAT_LAN_0", "Skapa innehållskategori");
 define("CONTENT_ADMIN_CAT_LAN_1", "Redigera innehållskategori");
 define("CONTENT_ADMIN_CAT_LAN_2", "Rubrik");
@@ -413,13 +407,13 @@ define("CONTENT_ADMIN_OPT_LAN_290", "Välj vilka sektioner som skall visas när 
 define("CONTENT_ADMIN_OPT_LAN_291", "Välj vilka sektioner som skall visas när man tittar på sidor med mest poäng");
 define("CONTENT_ADMIN_OPT_LAN_292", "Länk : topprankad");
 define("CONTENT_ADMIN_OPT_LAN_293", "Skall en länk till 'topprankade objekt' sidan visas?");
-define("CONTENT_ADMIN_OPT_LAN_294", "");
-define("CONTENT_ADMIN_OPT_LAN_295", "");
-define("CONTENT_ADMIN_OPT_LAN_296", "");
-define("CONTENT_ADMIN_OPT_LAN_297", "");
-define("CONTENT_ADMIN_OPT_LAN_298", "");
-define("CONTENT_ADMIN_OPT_LAN_299", "");
-
+define("CONTENT_ADMIN_OPT_LAN_294", "Lägg till fält...");
+define("CONTENT_ADMIN_OPT_LAN_295", "Text");
+define("CONTENT_ADMIN_OPT_LAN_296", "Textarea");
+define("CONTENT_ADMIN_OPT_LAN_297", "Välj");
+define("CONTENT_ADMIN_OPT_LAN_298", "Datum");
+define("CONTENT_ADMIN_OPT_LAN_299", "Kryssruta");
+define("CONTENT_ADMIN_OPT_LAN_300", "Radio");
 
 
 
@@ -844,6 +838,14 @@ define("CONTENT_ADMIN_CONVERSION_LAN_56", "Klicka på knappen för att gå till 
 define("CONTENT_ADMIN_CONVERSION_LAN_57", "Välj värd");
 define("CONTENT_ADMIN_CONVERSION_LAN_58", "Uppgradering lyckades<br /><br /><b>Observera:<br />Du måste rekonfigurera alternativen för varje huvudvärdt<br />och du måste radera menyerna du skapat i din innehåll/meny folder, och återskapa dem genom att uppdatera alternativen för de specifika huvudvärdarna du vill ha menyer till.</b>");
 
+define("CONTENT_ADMIN_CONVERSION_LAN_59", "Konvertera tabell");
+define("CONTENT_ADMIN_CONVERSION_LAN_60", "Skapa standard");
+define("CONTENT_ADMIN_CONVERSION_LAN_61", "Skapa ny kategori");
+define("CONTENT_ADMIN_CONVERSION_LAN_62", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_63", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_64", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_65", "");
+
 
 
 
@@ -868,5 +870,32 @@ define("CONTENT_MENU_LAN_17", "");
 define("CONTENT_MENU_LAN_18", "");
 define("CONTENT_MENU_LAN_19", "");
 define("CONTENT_MENU_LAN_20", "");
+
+
+
+//preset tags
+define("CONTENT_PRESET_LAN_0", "Fel: Fältnamn ej ifyllt");
+define("CONTENT_PRESET_LAN_1", "Fel: Alla fält är inte korrekt ifyllda<br />Alla fält måste fyllas i");
+define("CONTENT_PRESET_LAN_2", "");
+define("CONTENT_PRESET_LAN_3", "Både storlek och maxstorlek måste vara numeriska värden");
+define("CONTENT_PRESET_LAN_4", "Både kolumner och rader måste vara numeriska värden");
+define("CONTENT_PRESET_LAN_5", "Du behöver ange några alternativ");
+define("CONTENT_PRESET_LAN_6", "Både Från år och Till år måste vara numeriska värden");
+define("CONTENT_PRESET_LAN_7", "Generator för förinställda fält till innehåll");
+define("CONTENT_PRESET_LAN_8", "Formulär för att skapa förinställda data taggar av typ");
+define("CONTENT_PRESET_LAN_9", "Fältnamn");
+define("CONTENT_PRESET_LAN_10", "Storlek");
+define("CONTENT_PRESET_LAN_11", "Maxlängd");
+define("CONTENT_PRESET_LAN_12", "Kolumner");
+define("CONTENT_PRESET_LAN_13", "Rader");
+define("CONTENT_PRESET_LAN_14", "Från år");
+define("CONTENT_PRESET_LAN_15", "Till år");
+define("CONTENT_PRESET_LAN_16", "Alternativ");
+define("CONTENT_PRESET_LAN_17", "Lägg till mer");
+define("CONTENT_PRESET_LAN_18", "Lägg till fördefinierat");
+define("CONTENT_PRESET_LAN_19", "Du måste ange samma antal text och värdefält");
+define("CONTENT_PRESET_LAN_20", "Du måste ange ett värde för kryssrutan");
+define("CONTENT_PRESET_LAN_21", "Text");
+define("CONTENT_PRESET_LAN_22", "Värde");
 
 ?>

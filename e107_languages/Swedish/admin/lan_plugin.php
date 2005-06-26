@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_plugin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-26 11:12:22 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -66,7 +66,11 @@ define("EPL_NOINSTALL", "Ingen installation krävs, aktivera bara från din meny
 define("EPL_DIRECTORY", "katalogen.");
 define("EPL_NOINSTALL_1", "Ingen installation krävs. För att ta bort, radera ");
 define("EPL_UPGRADE", "Uppgradera");
-
 define("EPL_CONFIGURE", "Konfigurera");
+
+define("EPL_ADLAN_46", "RSS inställningar skapades");
+define("EPL_ADLAN_47", "RSS inställningar raderades");
+define("EPL_ADLAN_48", "Kan inte skapa RSS inställningar");
+define("EPL_ADLAN_49", "Kan inte radera RSS inställningar");
 
 ?>

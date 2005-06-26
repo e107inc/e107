@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/Swedish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:52 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-26 11:12:24 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -37,9 +37,16 @@ define("ADSTAT_L22", "Kör uppdateringsrutin");
 define("ADSTAT_L23", "Loggar från en tidigare version av e107 har hittats, uppdatera dem här");
 define("ADSTAT_L24", "Gå till uppdateringsskriptet");
 define("ADSTAT_L25", "Vald statistik nollställd");
-
 define("ADSTAT_L26", "Radera sidposter");
 define("ADSTAT_L27", "om din statistik har felaktiga sidor kan du ta bort dem här");
 define("ADSTAT_L28", "Öppna sida");
+
+
+define("ADSTAT_L29", "Sidonamn");
+define("ADSTAT_L30", "Markera för att ta bort");
+define("ADSTAT_L31", "Ta bort valda sidor");
+define("ADSTAT_L32", "Städa sidor");
+define("ADSTAT_L10", "Hänvisningar");
+define("ADSTAT_L10", "Hänvisningar");
 
 ?>

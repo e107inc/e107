@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_mailout.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-26 11:12:22 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -39,5 +39,9 @@ define("MAILAN_12", "Alla medlemmar");
 define("MAILAN_13", "Alla overifierade medlemmar ");
 define("MAILAN_14", "Det rekommenderas att du använder SMTP för att skicka stora mängder e-post - sätt i preferenser nedan.");
 define("MAILAN_15", "E-postutskick");
+
+define("MAILAN_16","Användarnamn");
+define("MAILAN_17","Registreringslänk");
+define("MAILAN_18","Användar-id");
 
 ?>

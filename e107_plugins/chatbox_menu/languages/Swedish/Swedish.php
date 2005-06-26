@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Swedish/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-16 14:03:27 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-26 11:12:23 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -26,6 +26,7 @@ define("CHATBOX_L14", "Smajlys");
 define("CHATBOX_L15", "Inlägg för långt, eller tomt inlägg skickat");
 define("CHATBOX_L16", "Anonym");
 define("CHATBOX_L17", "Dublettinlägg");
+define("CHATBOX_L18", "Chattrutans meddelande modererade");
 
 define("LAN_11", "Chattruta (alla inlägg)");
 define("LAN_12", "Chattinlägg");
@@ -40,4 +41,5 @@ define("NT_LAN_CB_3", "Postat av");
 define("NT_LAN_CB_4", "IP-adress");
 define("NT_LAN_CB_5", "Meddelande");
 define("NT_LAN_CB_6", "Chattruteinlägg postat");
+
 ?>

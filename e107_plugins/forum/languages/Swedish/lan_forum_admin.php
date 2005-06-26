@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Swedish/lan_forum_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-26 11:12:24 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -145,8 +145,6 @@ define("WMGLAN_5", "Sätt forumregler");
 define("WMGLAN_6", "Aktivera?");
 define("FORLAN_124", "Länkar i nytt fönster");
 define("FORLAN_125", "Markera här för att alla länkar skall öppnas i nytt fönster (<i>Detta kommer att gälla <b>hela</b> sajten</i>). ");
-
-//v.617
 define("FORLAN_126", "Visa verktygstips");
 define("FORLAN_127", "Markera för att visa verktygstips innehållande det första inlägget i tråden när musen svävar över trådens namn. ");
 define("FORLAN_128", "Längd på verktygstips");
@@ -155,25 +153,18 @@ define("FORLAN_130", "klicka här");
 define("FORLAN_131", "för att sätta max filstorlek, tillåtna filtyper m.m.");
 define("FORLAN_132", "Framhäv klistrade trådar");
 define("FORLAN_133", "Framhäv klistrade trådar (separera trådarnas sektion och rubrik)");
-
 define("FORLAN_134", "Maximal bredd på uppladdad bild");
 define("FORLAN_135", "Lämna tomt för att avaktivera automatisk skalning av bilder");
-
 define("FORLAN_136", "Skapa länk till fullskalig bild");
 define("FORLAN_137", "Aktivering av detta kommer att förminska större bilder och också skapa en länk till den större originalbilden.  Om avaktiverad kommer bilden att kastas.");
-
 define("FORLAN_138", "Rensa dessa forum");
 define("FORLAN_139", "För att använda denna inställning måste du också markera 'Aktivera bildpostning' på <a href='".e_ADMIN."image.php'>sidan för bilder</a>");
-
 define("FORLAN_140", "Visa");
 define("FORLAN_141", "Posta");
-
 define("FORLAN_142", "Postningstillåtelse");
 define("FORLAN_143", "Indikerar vem som kan skriva i forum");
-
 define("FORLAN_144", "Moderatörer satta");
 define("FORLAN_145", "Konfigurera underforum");
-
 define("FORLAN_146", "Inga underforum ännu");
 define("FORLAN_147", "Uppdatera underforum");
 define("FORLAN_148", "Skapa underforum");
@@ -183,5 +174,24 @@ define("FORLAN_151", "ID");
 define("FORLAN_152", "inlägg");
 define("FORLAN_153", "Verktyg");
 define("FORLAN_154", "Svar raderat");
+define("FORLAN_155", "Forumkategorier");
+
+define("FORLAN_156", "Välj forum att utföra åtgärd på");
+define("FORLAN_157", "Alla forum");
+define("FORLAN_158", "Räkna om info för forums senaste inlägg");
+define("FORLAN_159", "Välj för att räkna om info om senaste inlägg");
+define("FORLAN_160", "Välj för att endast utföra på forum och inte trådar");
+define("FORLAN_161", "Räkna om antalen inlägg/svar");
+define("FORLAN_162", "Välj för att räkna om antal inlägg/svar i forum");
+define("FORLAN_163", "Räkna om antal inlägg för användare");
+define("FORLAN_164", "Välj för att räkna om användares inlägg");
+define("FORLAN_165", "Utför åtgärderna");
+define("FORLAN_166", "Forumverktyg");
+define("FORLAN_167", "Räknare för forum uppdaterade");
+define("FORLAN_168", "Info om senaste inlägg uppdaterade för forum");
+define("FORLAN_169", "Räknare för användares inlägg uppdaterade");
+define("FORLAN_166", "Forumverktyg");
+define("FORLAN_166", "Forumverktyg");
+define("FORLAN_166", "Forumverktyg");
 
 ?>

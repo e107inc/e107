@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/Swedish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:52 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-26 11:12:24 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -52,5 +52,6 @@ define("ADSTAT_L37", "Besök per månad");
 define("ADSTAT_L38", "Unika besök per månad");
 define("ADSTAT_L39", "ta bort denna post");
 define("ADSTAT_L40", "dagar");
+define("ADSTAT_L41", "Fel");
 
 ?>
