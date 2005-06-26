@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.68 $
-|		$Date: 2005-06-25 12:15:25 $
+|		$Revision: 1.69 $
+|		$Date: 2005-06-26 00:09:23 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -363,9 +363,14 @@ class content{
 					}else{
 						$row = $sql -> db_Fetch();
 
-						//get current preferences
-						$content_pref = $eArrayStorage->ReadArray($row['e107_value']);
-
+						//create array of custom preset tags
+						foreach($_POST['content_custom_preset_key'] as $ck => $cv){
+							if(!empty($cv)){
+								$string[] = $cv;
+							}
+						}
+						$_POST['content_custom_preset_key'] = $string;
+						
 						//assign new preferences
 						foreach($_POST as $k => $v){
 							if(preg_match("#^content_#",$k)){
