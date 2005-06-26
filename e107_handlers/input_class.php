@@ -4,7 +4,7 @@
 * User input cleaning class
 *
 * @package e107
-* @version $Revision: 1.2 $
+* @version $Revision: 1.3 $
 * @author $Author: streaky $
 */
 class einput {
@@ -26,10 +26,10 @@ class einput {
 	 * @param bool $word_value Data should be a word value [a-z, A-Z, 0-9]
 	 * @param bool $numeric Data should be numeric [0-9]
 	 * @param bool $sql Input data will be used in an sql query (escape data to prevent SQL injections)
-	 * @param string $regexp preg_replace() regexp to perform on input data (replaced with a null string), see http://us2.php.net/preg-replace
+	 * @param string $custom_regexp preg_replace() regexp to perform on input data (replaced with a null string), see http://us2.php.net/preg-replace
 	 * @return string [int if numeric == true]
 	 */
-	function clean_input($string, $word_value = false, $integer = false, $sql = false, $regexp = false) {
+	function clean_input($string, $sql = false, $word_value = false, $integer = false, $custom_regexp = false) {
 		
 		if ($numeric == true) {
 			return intval($string);
@@ -37,8 +37,8 @@ class einput {
 		if( $word_value == true) {
 			$string = preg_replace("#\W#", "", $string);
 		}
-		if ($regexp == true) {
-			preg_replace($regexp, "", $string);
+		if ($custom_regexp == true) {
+			preg_replace($custom_regexp, "", $string);
 		}
 		if ($sql == true) {
 			$string = (is_object($this) ? $this->sql_escape_string($string) : einput::sql_escape_string($string));
