@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2005-06-21 01:49:11 $
+|     $Revision: 1.59 $
+|     $Date: 2005-06-26 21:58:18 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -54,8 +54,7 @@ class sitelinks
 	{
 		global $pref, $ns, $tp, $e107cache;
 
-		if ($data = $e107cache->retrieve('sitelinks_'.$cat))
-		{
+		if ($data = $e107cache->retrieve('sitelinks_'.$cat)) {
 			return $data;
 		}
 
@@ -68,12 +67,10 @@ class sitelinks
 
 		// are these defines used at all ?
 
-		if(!defined('PRELINKTITLE'))
-		{
+		if(!defined('PRELINKTITLE')){
 			define('PRELINKTITLE', '');
 		}
-		if(!defined('PRELINKTITLE'))
-		{
+		if(!defined('PRELINKTITLE')){
 			define('POSTLINKTITLE', '');
 		}
 		// -----------------------------
@@ -88,6 +85,16 @@ class sitelinks
 			$style['linkstart'] = LINKSTART;
 			$style['linkdisplay'] = LINKDISPLAY;
 			$style['linkend'] = LINKEND;
+		}
+
+    // Sublink styles.- replacing the tree-menu.
+        if(isset($style['sublinkdisplay']) || isset($style['subindent']) || isset($style['sublinkclass']) || isset($style['sublinkstart']) || isset($style['sublinkend']) || isset($style['subpostlink'])){
+			foreach($style as $key=>$val){
+			  	$substyle[$key] = ($style["sub".$key]) ? $style["sub".$key] : $style[$key];
+			}
+        }else{
+				$style['subindent'] = "&nbsp;&nbsp;";
+				$substyle = $style;
 		}
 
 		$menu_count = 0;
@@ -108,7 +115,7 @@ class sitelinks
 					foreach ($this->eLinkList[$main_linkid] as $sub){
 						$text .= $this->makeLink($sub, TRUE, $style);
 					}
-					$text .= "\n</div>\n";
+					$text .= "\n</div>\n\n";
 
 				}
 			}
@@ -160,7 +167,7 @@ class sitelinks
 				$tmp = explode('.', $linkInfo['link_name'], 3);
 				$linkInfo['link_name'] = $tmp[2];
 			}
-			$indent = ($style['linkdisplay'] != 3) ? "&nbsp;&nbsp;" : "";
+			$indent = ($style['linkdisplay'] != 3) ? $style['subindent'] : "";
 		}
 
 		// By default links are not highlighted.
