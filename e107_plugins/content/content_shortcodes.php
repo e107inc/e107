@@ -514,7 +514,7 @@ SC_END
 SC_BEGIN CONTENT_CAT_LIST_TABLE_COMMENT
 global $CONTENT_CAT_LIST_TABLE_COMMENT, $qs, $row, $comment_total, $mainparent, $content_pref, $sql, $plugintable;
 if($row['content_comment'] && isset($content_pref["content_cat_comment_{$mainparent}"]) && $content_pref["content_cat_comment_{$mainparent}"]){
-	$comment_total = $sql -> db_Select("comments", "*",  "comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
+	$comment_total = $sql -> db_Count("comments", "(*)",  "WHERE comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 	return "<a style='text-decoration:none;' href='".e_SELF."?cat.".$qs[1].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
 }
 SC_END
@@ -775,7 +775,9 @@ global $CONTENT_RECENT_TABLE_REFER, $content_pref, $qs, $row, $mainparent;
 if($content_pref["content_log_{$mainparent}"] && $content_pref["content_list_refer_{$mainparent}"]){
 	$refercounttmp = explode("^", $row['content_refer']);
 	$CONTENT_RECENT_TABLE_REFER = ($refercounttmp[0] ? $refercounttmp[0] : "0");
-return $CONTENT_RECENT_TABLE_REFER;
+	if($CONTENT_RECENT_TABLE_REFER > 0){
+		return $CONTENT_RECENT_TABLE_REFER;
+	}
 }
 SC_END
 
@@ -909,10 +911,10 @@ SC_END
 SC_BEGIN CONTENT_CONTENT_TABLE_COMMENT
 global $CONTENT_CONTENT_TABLE_COMMENT, $row, $plugintable, $content_pref, $qs, $sql, $mainparent;
 if((isset($content_pref["content_content_comment_{$mainparent}"]) && $content_pref["content_content_comment_{$mainparent}"] && $row['content_comment']) || $content_pref["content_content_comment_all_{$mainparent}"] ){
-	$CONTENT_CONTENT_TABLE_COMMENT = $sql -> db_Select("comments", "*",  "comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
+	$CONTENT_CONTENT_TABLE_COMMENT = $sql -> db_Count("comments", "(*)",  "WHERE comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 	if(!$CONTENT_CONTENT_TABLE_COMMENT){ $CONTENT_CONTENT_TABLE_COMMENT = "0"; }
-return $CONTENT_CONTENT_TABLE_COMMENT;
 }
+return $CONTENT_CONTENT_TABLE_COMMENT;
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_DATE

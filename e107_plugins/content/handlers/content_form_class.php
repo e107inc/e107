@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.70 $
-|		$Date: 2005-06-26 00:09:23 $
+|		$Revision: 1.71 $
+|		$Date: 2005-06-26 12:31:38 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -466,7 +466,7 @@ class contentform{
 									}
 									$TOPIC_FIELD .= "01 <input class='tbox' type='file' name='file_userfile1[]'  size='50' />";
 								}
-								if (isset($row['content_icon'])){
+								if (isset($row['content_icon']) && $row['content_icon']){
 									$TOPIC_FIELD .= "</div>";
 								}
 							
@@ -801,7 +801,7 @@ class contentform{
 							
 							$js = "onclick=\"document.getElementById('parent').value = document.getElementById('parent1').options[document.getElementById('parent1').selectedIndex].label;\" ";
 							if($qs[1] == "edit" || $qs[1] == "sa" || isset($_POST['editp']) ){
-								$text .= $rs -> form_hidden("content_refer", $row['content_refer']);
+								//$text .= $rs -> form_hidden("content_refer", $row['content_refer']);
 								$text .= $rs -> form_hidden("content_datestamp", $row['content_datestamp']);
 								//$text .= $rs -> form_button("submit", "preview_content", (isset($_POST['preview_content']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26), $js);
 								$text .= $rs -> form_button("submit", "update_content", ($qs[1] == "sa" ? CONTENT_ADMIN_ITEM_LAN_43 : CONTENT_ADMIN_ITEM_LAN_45), $js );

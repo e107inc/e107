@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.48 $
-|		$Date: 2005-06-26 07:51:02 $
+|		$Revision: 1.49 $
+|		$Date: 2005-06-26 12:31:35 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -100,14 +100,14 @@ if(isset($delete) && $delete == 'cat'){
 
 if(isset($delete) && $delete == 'content'){
 	if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-		$e107cache->clear("content");
+		$e107cache->clear($plugintable);
 		$message = CONTENT_ADMIN_ITEM_LAN_3;
 	}
 }
 
 if(isset($delete) && $delete == 'submitted'){
 	if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-		$e107cache->clear("content");
+		$e107cache->clear($plugintable);
 		$message = CONTENT_ADMIN_SUBMIT_LAN_8;
 	}
 }
@@ -118,6 +118,7 @@ if(isset($_POST['updateoptions'])){
 	if($_POST['options_type'] != "0"){
 		$message		.= $aa -> CreateParentMenu($_POST['options_type']);
 	}
+	$e107cache->clear($plugintable);
 }
 
 
@@ -193,10 +194,7 @@ if(isset($message)){
 // ##### End --------------------------------------------------------------------------------------
 
 if(!e_QUERY){																//show main categories
-	//$intro = $aform -> show_main_intro();
-	//if($intro == false){
-		$aform -> show_manage_content("", "", "");
-	//}
+	$aform -> show_manage_content("", "", "");
 	require_once(e_ADMIN."footer.php");
 	exit;
 }else{
