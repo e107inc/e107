@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_config.php,v $
-|    $Revision: 1.14 $
-|    $Date: 2005-06-26 17:18:03 $
-|    $Author: lisa_ $
+|    $Revision: 1.15 $
+|    $Date: 2005-06-26 17:35:25 $
+|    $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -791,13 +791,10 @@ class links {
 
 		$TOPIC_ROW = "
 		<tr>
-			<td class='forumheader3' style='width:25%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
+			<td class='forumheader3' style='width:25%; white-space:nowrap; vertical-align:top;'><span title='{TOPIC_HEADING}' style='cursor:help'>{TOPIC_TOPIC}</span></td>
 			<td class='forumheader3' style='vertical-align:top;'>
-				<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>{TOPIC_HEADING}</a>
-				<div style='display: none;'>
-					<div class='smalltext'>{TOPIC_HELP}</div><br />
+				<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'></a>
 					{TOPIC_FIELD}
-				</div>
 			</td>
 		</tr>";
 
