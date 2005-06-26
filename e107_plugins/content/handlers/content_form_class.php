@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.71 $
-|		$Date: 2005-06-26 12:31:38 $
+|		$Revision: 1.72 $
+|		$Date: 2005-06-26 22:41:11 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -445,155 +445,142 @@ class contentform{
 							$text .= $TOPIC_ROW_SPACER;
 						}
 
+
+						//upload icon
+						$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_104;
+						$TOPIC_HEADING = CONTENT_ADMIN_ITEM_LAN_112;
+						$TOPIC_HELP = CONTENT_ADMIN_ITEM_LAN_113;
+						$content_tmppath_icon	= e_PLUGIN."content/images/icon/tmp/";
+						$content_tmppath_file	= e_PLUGIN."content/images/file/tmp/";
+						$content_tmppath_image	= e_PLUGIN."content/images/image/tmp/";
+						$rejectlist			= array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', 'thumb_*');
+						$iconlist			= $fl->get_files($content_tmppath_icon,"",$rejectlist);
+						$filelist			= $fl->get_files($content_tmppath_file,"",$rejectlist);
+						$imagelist			= $fl->get_files($content_tmppath_image,"",$rejectlist);
+
+						$TOPIC_FIELD = "";
+							if(!FILE_UPLOADS){
+								$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_21."</b>";
+							}else{
+								if(!is_writable($content_tmppath_icon)){
+									$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_tmppath_icon." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+								}
+								if(!is_writable($content_tmppath_file)){
+									$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_tmppath_file." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+								}
+								if(!is_writable($content_tmppath_image)){
+									$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_tmppath_image." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+								}
+								$js = "onclick=\"document.getElementById('parent').value = document.getElementById('parent1').options[document.getElementById('parent1').selectedIndex].label;\" ";
+								$TOPIC_FIELD .= "<br />
+								<input class='tbox' type='file' name='file_userfile[]'  size='36' /> 
+									".$rs -> form_select_open("uploadtype")."
+									".$rs -> form_option(CONTENT_ADMIN_ITEM_LAN_114, "0", "1")."
+									".$rs -> form_option(CONTENT_ADMIN_ITEM_LAN_115, "0", "2")."
+									".$rs -> form_option(CONTENT_ADMIN_ITEM_LAN_116, "0", "3")."
+									".$rs -> form_select_close()."
+								<input type='hidden' name='tmppathicon' value='".$content_tmppath_icon."' />
+								<input type='hidden' name='tmppathfile' value='".$content_tmppath_file."' />
+								<input type='hidden' name='tmppathimage' value='".$content_tmppath_image."' />
+								<input class='button' type='submit' name='uploadfile' value='".CONTENT_ADMIN_ITEM_LAN_104."' $js />";
+							}
+						$TOPIC_FIELD .= "<br />";
+						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
 						if($checkicon){
 							//icon
+							$row['content_icon'] = (isset($row['content_icon']) ? $row['content_icon'] : "");
 							$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_20;
 							$TOPIC_HEADING = CONTENT_ADMIN_ITEM_LAN_75;
 							$TOPIC_HELP = "";
 							$TOPIC_FIELD = "
-								".$rs -> form_hidden("uploadtype1", "icon");
-								if (isset($row['content_icon']) && $row['content_icon']){
-									$TOPIC_FIELD .= "
-									01 ".$rs -> form_text("content_icon", 50, $row['content_icon'], 100, "tbox", TRUE)."
-									".$rs -> form_button("button", "removeicon", CONTENT_ADMIN_ITEM_LAN_26, "onClick=\"confirm2_('icon', '', '".$row['content_icon']."');\"").$rs -> form_button("button", "newicon", CONTENT_ADMIN_ITEM_LAN_25, "onClick='expandit(this)'")."
-									<div style='display:none;'>";
-								}
-								if(!FILE_UPLOADS){
-									$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_21."</b>";
-								}else{
-									if(!is_writable($content_icon_path)){
-										$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_icon_path." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+								".$rs -> form_text("content_icon", 60, $row['content_icon'], 100)."
+								".$rs -> form_button("button", '', CONTENT_ADMIN_ITEM_LAN_105, "onclick=\"expandit('divicon')\"")."
+								<div id='divicon' style='{head}; display:none'>";
+								foreach($iconlist as $icon){
+									if(file_exists($icon['path']."thumb_".$icon['fname'])){
+										$img = "<img src='".$icon['path']."thumb_".$icon['fname']."' style='width:100px; border:0' alt='' />";
+									}else{
+										$img = "<img src='".$icon['path'].$icon['fname']."' style='width:100px; border:0' alt='' />";
 									}
-									$TOPIC_FIELD .= "01 <input class='tbox' type='file' name='file_userfile1[]'  size='50' />";
+									$TOPIC_FIELD .= "<a href=\"javascript:insertext('".$icon['fname']."','content_icon','divicon')\">".$img."</a> ";
 								}
-								if (isset($row['content_icon']) && $row['content_icon']){
-									$TOPIC_FIELD .= "</div>";
-								}
-							
-							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+								$TOPIC_FIELD .= "</div>";
 
+							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 						}
 
 						if($checkattach){
-							//attachments
+							//file
 							$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_24;
 							$TOPIC_HEADING = CONTENT_ADMIN_ITEM_LAN_76;
 							$TOPIC_HELP = "";
-							$TOPIC_FIELD = "
-									<table style='width:100%; text-align:left;'>";
-									$filetmp = explode("[file]", $row['content_file']);
-									foreach($filetmp as $key => $value) { 
-										if($value == "") { 
-											unset($filetmp[$key]); 
-										} 
-									} 
-									$attachments = array_values($filetmp);
-									for($i=0;$i<count($attachments);$i++){
-										$k=$i+1;
-										$num = (strlen($k) == 1 ? "0".$k : $k);
-										$TOPIC_FIELD .= "
-										<tr>
-											<td>".$num." ".$rs -> form_hidden("uploadtype2", "file");
-												if ($attachments[$i]){
-													$TOPIC_FIELD .= "
-													".$rs -> form_text("content_files".$i."", 50, $attachments[$i], 100, "tbox", TRUE)."
-													".$rs -> form_button("button", "removefile".$i."", CONTENT_ADMIN_ITEM_LAN_26, "onClick=\"confirm2_('file', '$i', '$attachments[$i]');\"").$rs -> form_button("button", "newfile".$i."", CONTENT_ADMIN_ITEM_LAN_28, "onClick='expandit(this)'")."
-													<div style='display:none; &{head};'>
-													<input class='tbox' type='file' name='file_userfile2[]' value='".$attachments[$i]."' size='50' />
-													</div>
-													";
-												} else {
-													$TOPIC_FIELD .= "<i>".CONTENT_ADMIN_ITEM_LAN_29."</i><br /><input class='tbox' name='file_userfile2[]' type='file' size='50' />";
-												}
-											$TOPIC_FIELD .= "
-											</td>
-										</tr>";
-									}
+							$TOPIC_FIELD = "";
+							$filetmp = explode("[file]", $row['content_file']);
+							foreach($filetmp as $key => $value) { 
+								if($value == "") { 
+									unset($filetmp[$key]); 
+								} 
+							} 
+							$attachments = array_values($filetmp);
+							for($i=0;$i<$checkattachnumber;$i++){
+								$k=$i+1;
+								$num = (strlen($k) == 1 ? "0".$k : $k);
+								$attachments[$i] = ($attachments[$i] ? $attachments[$i] : "");
 
-									if(count($attachments) < $checkattachnumber){
-										for($i=0;$i<$checkattachnumber-count($attachments);$i++){
-											$num = (strlen($i+1+count($attachments)) == 1 ? "0".($i+1+count($attachments)) : ($i+1+count($attachments)));
-											$TOPIC_FIELD .= "
-											<tr>
-												<td>".$num." ".$rs -> form_hidden("uploadtype2", "file");
-												if(!FILE_UPLOADS){
-													$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_21."</b>";
-												}else{
-													if(!is_writable($content_file_path)){
-														$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_file_path." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
-													}
-													$TOPIC_FIELD .= "<input class='tbox' type='file' name='file_userfile2[]' size='50' />";
-												}
-												$TOPIC_FIELD .= "
-												</td>
-											</tr>";
-										}
-									}
-									$TOPIC_FIELD .= "
-									</table>
-							";
+								//choose file
+								$TOPIC_FIELD .= "
+								<div style='padding:2px;'>
+								".$num." ".$rs -> form_text("content_files".$i."", 60, $attachments[$i], 100)."
+								".$rs -> form_button("button", '', CONTENT_ADMIN_ITEM_LAN_105, "onclick=\"expandit('divfile".$i."')\"")."
+								<div id='divfile".$i."' style='{head}; display:none'>";
+								foreach($filelist as $file){
+									$TOPIC_FIELD .= CONTENT_ICON_FILE." <a href=\"javascript:insertext('".$file['fname']."','content_files".$i."','divfile".$i."')\">".$file['fname']."</a><br />";
+								}
+								$TOPIC_FIELD .= "</div></div>";
+							}
 							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 						}
 
 						if($checkimages){
-							//images
+							//image
 							$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_31;
 							$TOPIC_HEADING = CONTENT_ADMIN_ITEM_LAN_77;
 							$TOPIC_HELP = "";
-							$TOPIC_FIELD = "
-									<table style='width:100%; text-align:left;'>";
-									$imagestmp = explode("[img]", $row['content_image']);
-									foreach($imagestmp as $key => $value) { 
-										if($value == "") { 
-											unset($imagestmp[$key]); 
-										} 
-									} 
-									$imagesarray = array_values($imagestmp);
-									for($i=0;$i<count($imagesarray);$i++){
-										$k=$i+1;
-										$num = (strlen($k) == 1 ? "0".$k : $k);
-										$TOPIC_FIELD .= "
-										<tr>
-											<td>".$num." ".$rs -> form_hidden("uploadtype3", "image");
-												if ($imagesarray[$i]){
-													$TOPIC_FIELD .= "
-													".$rs -> form_text("content_images".$i."", 50, $imagesarray[$i], 100, "tbox", TRUE)."
-													".$rs -> form_button("button", "removeimage".$i."", CONTENT_ADMIN_ITEM_LAN_26, "onClick=\"confirm2_('image', '$i', '$imagesarray[$i]');\"").$rs -> form_button("button", "newimage".$i."", CONTENT_ADMIN_ITEM_LAN_33, "onClick='expandit(this)'")."
-													<div style='display:none; &{head};'>
-													<input class='tbox' type='file' name='file_userfile3[]' value='".$imagesarray[$i]."' size='50' />
-													</div>
-													";
-												} else {
-													$TOPIC_FIELD .= "<input class='tbox' name='file_userfile3[]' type='file' size='50' />";
-												}
-											$TOPIC_FIELD .= "
-											</td>
-										</tr>";
+							$TOPIC_FIELD = "";
+							$imagestmp = explode("[img]", $row['content_image']);
+							foreach($imagestmp as $key => $value) { 
+								if($value == "") { 
+									unset($imagestmp[$key]); 
+								} 
+							} 
+							$imagesarray = array_values($imagestmp);
+							for($i=0;$i<$checkimagesnumber;$i++){
+								$k=$i+1;
+								$num = (strlen($k) == 1 ? "0".$k : $k);
+								$imagesarray[$i] = ($imagesarray[$i] ? $imagesarray[$i] : "");
+
+								//choose image
+								$TOPIC_FIELD .= "								
+								<div style='padding:2px;'>
+								".$num." ".$rs -> form_text("content_images".$i."", 60, $imagesarray[$i], 100)."
+								".$rs -> form_button("button", '', CONTENT_ADMIN_ITEM_LAN_105, "onclick=\"expandit('divimage".$i."')\"")."
+								<div id='divimage".$i."' style='{head}; display:none'>";
+								foreach($imagelist as $image){
+									if(file_exists($image['path']."thumb_".$image['fname'])){
+										$img = "<img src='".$image['path']."thumb_".$image['fname']."' style='width:100px; border:0' alt='' />";
+									}else{
+										$img = "<img src='".$image['path'].$image['fname']."' style='width:100px; border:0' alt='' />";
 									}
-									if(count($imagesarray) < $checkimagesnumber){
-										for($i=0;$i<$checkimagesnumber-count($imagesarray);$i++){
-											$num = (strlen($i+1+count($imagesarray)) == 1 ? "0".($i+1+count($imagesarray)) : ($i+1+count($imagesarray)));
-											$TOPIC_FIELD .= "
-											<tr>
-												<td>".$num." ".$rs -> form_hidden("uploadtype3", "image");
-												if(!FILE_UPLOADS){
-													$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_21."</b>";
-												}else{
-													if(!is_writable($content_image_path)){
-														$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_image_path." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
-													}
-													$TOPIC_FIELD .= "<input class='tbox' type='file' name='file_userfile3[]' size='50' />";
-												}
-												$TOPIC_FIELD .= "
-												</td>
-											</tr>";
-										}
-									}
-									$TOPIC_FIELD .= "
-									</table>
-							";
+									$TOPIC_FIELD .= "<a href=\"javascript:insertext('".$image['fname']."','content_images".$i."','divimage".$i."')\">".$img."</a> ";
+								}
+								$TOPIC_FIELD .= "</div></div>";								
+							}
 							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 						}
+
+
+
 
 						if($checkcomment || $checkrating || $checkpe || $checkvisibility || $checkscore || $checkmeta || $checklayout ){
 							$text .= $TOPIC_ROW_SPACER;
@@ -1268,16 +1255,16 @@ class contentform{
 							<tr><td class='forumheader3'>".$cat_subheading."</td></tr>
 							<tr><td class='forumheader3'>".$cat_text."</td></tr>
 							<tr><td colspan='2'>&nbsp;</td></tr>
-							<tr><td class='forumheader3'>start date</td><td class='forumheader3'>
+							<tr><td class='forumheader3'>".CONTENT_ADMIN_DATE_LAN_15."</td><td class='forumheader3'>
 								".($_POST['ne_day'] != "none" ? $_POST['ne_day'] : "")." ".$months[($_POST['ne_month']-1)]." ".($_POST['ne_year'] != "none" ? $_POST['ne_year'] : "")."
 							</td></tr>
-							<tr><td class='forumheader3'>end date</td><td class='forumheader3'>
+							<tr><td class='forumheader3'>".CONTENT_ADMIN_DATE_LAN_16."</td><td class='forumheader3'>
 								".($_POST['end_day'] != "none" ? $_POST['end_day'] : "")." ".$months[($_POST['end_month']-1)]." ".($_POST['end_year'] != "none" ? $_POST['end_year'] : "")."
 							</td></tr>
-							<tr><td class='forumheader3'>class</td><td class='forumheader3'>".r_userclass_name($_POST['cat_class'])."</td></tr>
-							<tr><td class='forumheader3'>comments</td><td class='forumheader3'>".($_POST['cat_comment'] == "1" ? "enabled" : "disabled")."</td></tr>
-							<tr><td class='forumheader3'>rating</td><td class='forumheader3'>".($_POST['cat_rate'] == "1" ? "enabled" : "disabled")."</td></tr>
-							<tr><td class='forumheader3'>print/email icons</td><td class='forumheader3'>".($_POST['cat_pe'] == "1" ? "enabled" : "disabled")."</td></tr>
+							<tr><td class='forumheader3'>".CONTENT_ADMIN_CAT_LAN_17."</td><td class='forumheader3'>".r_userclass_name($_POST['cat_class'])."</td></tr>
+							<tr><td class='forumheader3'>".CONTENT_ADMIN_CAT_LAN_14."</td><td class='forumheader3'>".($_POST['cat_comment'] == "1" ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86)."</td></tr>
+							<tr><td class='forumheader3'>".CONTENT_ADMIN_CAT_LAN_15."</td><td class='forumheader3'>".($_POST['cat_rate'] == "1" ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86)."</td></tr>
+							<tr><td class='forumheader3'>".CONTENT_ADMIN_CAT_LAN_16."</td><td class='forumheader3'>".($_POST['cat_pe'] == "1" ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86)."</td></tr>
 							</table>
 							</div>";
 								  
@@ -1457,8 +1444,8 @@ class contentform{
 								}
 								$TOPIC_FIELD .= CONTENT_ADMIN_CAT_LAN_62."
 								<input class='tbox' type='file' name='file_userfile[]'  size='58' /> 
-								<input type='hidden' name='iconpathlarge' value='".$content_cat_icon_path_large."'>
-								<input type='hidden' name='iconpathsmall' value='".$content_cat_icon_path_small."'>
+								<input type='hidden' name='iconpathlarge' value='".$content_cat_icon_path_large."' />
+								<input type='hidden' name='iconpathsmall' value='".$content_cat_icon_path_small."' />
 								<input class='button' type='submit' name='uploadcaticon' value='".CONTENT_ADMIN_CAT_LAN_63."' />";
 							}
 						$TOPIC_FIELD .= "</div><br />";
