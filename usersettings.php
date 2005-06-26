@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-06-19 00:39:15 $
+|     $Revision: 1.39 $
+|     $Date: 2005-06-26 19:24:26 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -692,46 +692,46 @@ if ($pref['photo_upload'] && FILE_UPLOADS) {
 		</td>
 		</tr>";
 }
-
-$text .= "
-<tr>
-<td colspan='2' class='forumheader'>".LAN_435."</td>
-</tr>
-<tr>
-<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_433."<br /><span class='smalltext'><a href='http://e107.org/generate_xup.php' rel-'external'>".LAN_434."</a></span></td>
-<td style='width:80%' class='forumheader2'>
-<input class='tbox' type='text' name='user_xup' size='50' value='{$curVal['user_xup']}' maxlength='100' />
-</td>
-</tr>
-";
-
-
-if (!e_QUERY) {
+if(isset($pref['xup_enabled']) && $pref['xup_enabled'] ==1){
 	$text .= "
-		<tr>
-		<td colspan='2' class='forumheader'>".LAN_427."</td>
-		</tr>
-		<tr>
-		<td colspan='2' class='forumheader3' style='text-align:center'>
-
-		<input class='button' type='submit' name='sub_news' value='".LAN_428."' />&nbsp;&nbsp;";
-	if ($pref['link_submit'] && check_class($pref['link_submit_class'])) {
-		$text .= "<input class='button' type='submit' name='sub_link' value='".LAN_429."' />&nbsp;&nbsp;";
-	}
-	if ($pref['upload_enabled'] && (!$pref['upload_class'] || check_class($pref['upload_class']))) {
-		$text .= "<input class='button' type='submit' name='sub_download' value='".LAN_430."' />&nbsp;&nbsp;";
-	}
-
-	if ($pref['article_submit'] && check_class($pref['article_submit_class'])) {
-		$text .= "<input class='button' type='submit' name='sub_article' value='".LAN_431."' />&nbsp;&nbsp;";
-	}
-	if ($pref['review_submit'] && check_class($pref['review_submit_class'])) {
-		$text .= "<input class='button' type='submit' name='sub_review' value='".LAN_432."' />&nbsp;&nbsp;";
-	}
-
-	$text .= "</td>
-		</tr>";
+	<tr>
+	<td colspan='2' class='forumheader'>".LAN_435."</td>
+	</tr>
+	<tr>
+	<td style='width:20%; vertical-align:top' class='forumheader3'>".LAN_433."<br /><span class='smalltext'><a href='http://e107.org/generate_xup.php' rel-'external'>".LAN_434."</a></span></td>
+	<td style='width:80%' class='forumheader2'>
+	<input class='tbox' type='text' name='user_xup' size='50' value='{$curVal['user_xup']}' maxlength='100' />
+	</td>
+	</tr>
+	";
 }
+
+/*if (!e_QUERY) {
+    $text .= "
+        <tr>
+        <td colspan='2' class='forumheader'>".LAN_427."</td>
+        </tr>
+        <tr>
+        <td colspan='2' class='forumheader3' style='text-align:center'>
+
+        <input class='button' type='submit' name='sub_news' value='".LAN_428."' />&nbsp;&nbsp;";
+    if ($pref['link_submit'] && check_class($pref['link_submit_class'])) {
+        $text .= "<input class='button' type='submit' name='sub_link' value='".LAN_429."' />&nbsp;&nbsp;";
+    }
+    if ($pref['upload_enabled'] && (!$pref['upload_class'] || check_class($pref['upload_class']))) {
+        $text .= "<input class='button' type='submit' name='sub_download' value='".LAN_430."' />&nbsp;&nbsp;";
+    }
+
+    if ($pref['article_submit'] && check_class($pref['article_submit_class'])) {
+        $text .= "<input class='button' type='submit' name='sub_article' value='".LAN_431."' />&nbsp;&nbsp;";
+    }
+    if ($pref['review_submit'] && check_class($pref['review_submit_class'])) {
+        $text .= "<input class='button' type='submit' name='sub_review' value='".LAN_432."' />&nbsp;&nbsp;";
+    }
+
+    $text .= "</td>
+        </tr>";
+}*/
 $text .= "
 
 	<tr style='vertical-align:top'>
