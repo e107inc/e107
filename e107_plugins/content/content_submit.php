@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.14 $
-|		$Date: 2005-06-25 22:18:17 $
+|		$Revision: 1.15 $
+|		$Date: 2005-06-27 09:37:18 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -52,33 +52,11 @@ $aa -> setPageTitle();
 require_once(HEADERF);
 
 if(isset($_POST['create_content'])){
-        if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none" && $_POST['content_author_name'] != "" && $_POST['content_author_email'] != ""){
-				$adb -> dbContentCreate("submit");
-        }else{
-                $message			= CONTENT_ADMIN_SUBMIT_LAN_4;
-				$content_heading	= $_POST['content_heading'];
-				$content_subheading	= $_POST['content_subheading'];
-				$content_summary	= $_POST['content_summary'];
-				$content_text		= $_POST['content_text'];
-				$content_icon		= $_POST['content_icon'];
-				$content_file		= $_POST['content_file'];
-				$content_comment	= $_POST['content_comment'];
-				$content_rate		= $_POST['content_rate'];
-				$content_pe			= $_POST['content_pe'];
-				$content_class		= $_POST['content_class'];
-				$ne_day				= $_POST['ne_day'];
-				$ne_month			= $_POST['ne_month'];
-				$ne_year			= $_POST['ne_year'];
-				$end_day			= $_POST['end_day'];
-				$end_month			= $_POST['end_month'];
-				$end_year			= $_POST['end_year'];
-				$custom["content_custom_score"]	= $_POST['content_score'];
-				$custom["content_custom_meta"]	= $_POST['content_meta'];
-				for($i=0;$i<$content_pref["content_submit_custom_number_{$qs[2]}"];$i++){
-					$keystring = $_POST["content_custom_key_{$i}"];
-					$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
-				}
-        }
+	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none" && $_POST['content_author_name'] != "" && $_POST['content_author_email'] != ""){
+		$adb -> dbContentCreate("submit");
+	}else{
+		$message = CONTENT_ADMIN_SUBMIT_LAN_4;
+	}
 }
 
 if(isset($qs[0]) && $qs[0] == "s"){
