@@ -4,13 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_installer.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-26 11:12:22 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-27 12:05:42 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 define("LANINS_001", "e107 Installation");
-
 
 define("LANINS_002", "Steg ");
 define("LANINS_003", "1");
@@ -18,7 +17,7 @@ define("LANINS_004", "Språkval");
 define("LANINS_005", "Välj språk att använda under installationsprocessen");
 define("LANINS_006", "Sätt språk");
 define("LANINS_007", "2");
-define("LANINS_008", "PHP &amp; MySQL versionskontroll / Kontroll av filrättigheter");
+define("LANINS_008", "PHP & MySQL versionskontroll / Kontroll av filrättigheter");
 define("LANINS_009", "Testa filrättigheterna igen");
 define("LANINS_010", "Kan inte skriva till fil: ");
 define("LANINS_011", "Fel");
@@ -33,12 +32,7 @@ define("LANINS_019", "PHP versionen installerad på din server kan inte köra e1
 define("LANINS_020", "Fortsätt installation");
 define("LANINS_021", "3");
 define("LANINS_022", "MySQL server detaljer");
-define("LANINS_023", "Ange dina MySQL uppgifter här.
-
-Om du har root-åtkomst kan du skapa en ny databas genom att klicka i rutan, om inte måste du skapa en databas manuellt eller använda en befintlig.
-
-Om du bara har en databas, använd ett prefix så att andra skript kan dela på samma databas.
-Om du inte känner till dina MySQL uppgifter, kontakta din webbvärd.");
+define("LANINS_023", "Ange dina MySQL uppgifter här.<br /><br />Om du har root-åtkomst kan du skapa en ny databas genom att klicka i rutan 'Skapa databas', om inte måste du skapa en databas manuellt eller använda en befintlig.<br /><br />Om du bara har en databas, använd ett prefix så att andra skript kan dela på samma databas.<br />Om du inte känner till dina MySQL uppgifter, kontakta din webbvärd.");
 define("LANINS_024", "MySQL Server:");
 define("LANINS_025", "MySQL användarnamn:");
 define("LANINS_026", "MySQL lösenord:");
@@ -52,8 +46,8 @@ define("LANINS_033", "MySQL databasen du vill att e107 skall befinna sig i, i vi
 define("LANINS_034", "Prefixet du vill att e107 skall använda när tabellerna skall skapas. Användbart för att köra flera olika e107 eller andra applikationer i samma databas/schema.");
 define("LANINS_035", "Fortsätt");
 define("LANINS_036", "4");
-define("LANINS_037", "MySQL verifiering av anslutning");
-define("LANINS_038", " och databas skapande");
+define("LANINS_037", "Verifiering av MySQL anslutning");
+define("LANINS_038", " och skapande av databas");
 define("LANINS_039", "Se till att du fyller i alla fält, viktigast är MySQL Server, MySQL användarnamn och MySQL databas (Dessa krävs alltid av MySQL servern)");
 define("LANINS_040", "Fel"); // Pluralis
 define("LANINS_041", "e107 kunde inte ansluta till MySQL med den information du angett. Återgå till förra sidan och kontrollera att informationen är korrekt.");
@@ -72,17 +66,10 @@ define("LANINS_053", "e107 .700 kräver att PHP XML modulen är installerad. Kon
 define("LANINS_054", " innan du fortsätter");
 define("LANINS_055", "Installationsbekräftelse");
 define("LANINS_056", "6");
-define("LANINS_057", " e107 har nu all information som behövs för att avsluta installationen.
-
-Klicka på knappen för att skapa databastabellerna och spara alla dina inställningar.
-
-");
+define("LANINS_057", "e107 har nu all information som behövs för att avsluta installationen.<br /><br />Klicka på knappen för att skapa databastabellerna och spara alla dina inställningar.");
 define("LANINS_058", "7");
-define("LANINS_060", "Kan inte läsa SQL datafilen.
-
-Försäkra dig om att filen <b>core_sql.php</b> existerar i <b>/e107_admin/sql</b> katalogen.");
-define("LANINS_061", "e107 kunde inte skapa alla nödvändiga databastebeller.
-Vänligen rensa databasen och korrigera eventuella problem innan du provar igen.");
+define("LANINS_060", "Kan inte läsa SQL datafilen.<br /><br />Försäkra dig om att filen <b>core_sql.php</b> existerar i <b>/e107_admin/sql</b> katalogen.");
+define("LANINS_061", "e107 kunde inte skapa alla nödvändiga databastabeller.<br />Vänligen rensa databasen och korrigera eventuella problem innan du provar igen.");
 define("LANINS_062", "Välkommen till din nya webbsajt!");
 define("LANINS_063", "e107 är korrekt installerad och är nu redo att ta emot innehåll.");
 define("LANINS_064", "Din administrationssektion ");
@@ -90,15 +77,8 @@ define("LANINS_065", "finns här");
 define("LANINS_066", "klicka för att gå dit nu. Du kommer att få logga in med det namn och lösenord du angav under installationsprocessen.");
 define("LANINS_067", "du kommer att hitta FAQ och dokumentation här.");
 define("LANINS_068", "Tack för att du provar e107, vi hoppas att den uppfyller dina krav.\n(Du kan radera detta meddelande från din adminsektion.)\n\n<b>Observera att denna version av e107 är en beta version och inte avsedd att användas i en produktionsmiljö.</b>");
-define("LANINS_069", "e107 har installerats korrekt!
-
-Av säkerhetsskäl skall du nu sätta filrättigheterna på <b>e107_config.php</b> filen tillbaka till 644.
-
-Radera också install.php och e107_install katalogen från din server efter att du klickat på knappen nedan.
-");
-define("LANINS_070", "e107 kunde inte spara huvudkonfigurationsfilen på din server.
-
-Försäkra dig om att filen <b>e107_config.php</b> har korrekta rättigheter");
+define("LANINS_069", "e107 har installerats korrekt!<br /><br />Av säkerhetsskäl skall du nu sätta filrättigheterna på <b>e107_config.php</b> filen tillbaka till 644.<br /><br />Radera också install.php och e107_install katalogen från din server efter att du klickat på knappen nedan.");
+define("LANINS_070", "e107 kunde inte spara huvudkonfigurationsfilen på din server.<br /><br />Försäkra dig om att filen <b>e107_config.php</b> har korrekta rättigheter");
 define("LANINS_071", "Avslutar installation");
 
 ?>

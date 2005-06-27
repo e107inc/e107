@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-27 12:05:42 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ define("DOWLAN_11", "Kategori");
 define("DOWLAN_12", "Namn");
 define("DOWLAN_13", "Fil");
 define("DOWLAN_14", "Ange adress om nerladdningen är en extern fil");
-define("DOWLAN_15", "Förfatare");
+define("DOWLAN_15", "Författare");
 define("DOWLAN_16", "Författarens e-post");
 define("DOWLAN_17", "Författarens webbsajt");
 define("DOWLAN_18", "Beskrivning");

@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:34 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-27 12:05:42 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Filarkiv");
+define("PAGE_NAME", "Nerladdningar");
 
 define("LAN_dl_1", "(Begränsad)");
 define("LAN_dl_2", "Inga filer ännu, kom tillbaka senare");
@@ -39,7 +39,7 @@ define("LAN_dl_25", "Stigande");
 define("LAN_dl_26", "Fallande");
 define("LAN_dl_27", "Kör");
 define("LAN_dl_28", "Namn");
-define("LAN_dl_29", "Nedladdn");
+define("LAN_dl_29", "Nedladdning");
 define("LAN_dl_30", "Författarens e-post");
 define("LAN_dl_31", "Författarens webbsajt");
 define("LAN_dl_32", "Ladda hem");
