@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-06-24 12:21:14 $
+|     $Revision: 1.43 $
+|     $Date: 2005-06-27 22:23:50 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -289,22 +289,11 @@ $enhanced_types['be'] = LAN_SEARCH_27.':';
 $ENHANCED_DISPLAY = $enhanced ? "" : "style='display: none'";
 
 // advanced search config
-if ($_GET['adv'] && !isset($_GET['a'])) {
-	$_GET['a'] = $_GET['t'];
-} else if (!$_GET['adv'] || $_GET['t'] == 'all' || $_GET['a'] != $_GET['t']) {
+if (!$_GET['adv'] || $_GET['t'] == 'all') {
 	foreach ($_GET as $gk => $gv) {
 		if ($gk != 't' && $gk != 'q' && $gk != 'r' && $gk != 'in' && $gk != 'ex' && $gk != 'ep' && $gk != 'be' && $gk != 'adv') {
 			unset($_GET[$gk]);
 		} 
-	}
-	if ($_GET['adv']) {
-		$_GET['a'] = $_GET['t'];
-	}
-}
-
-if (isset($_GET['a'])) {
-	if (isset($search_info[$_GET['t']]['advanced'])) {
-		$SEARCH_MAIN_SUBMIT .= "<input type='hidden' name='a' value='".$_GET['a']."' />";
 	}
 }
 
@@ -375,10 +364,9 @@ if ($search_prefs['user_select']) {
 
 $text .= preg_replace("/\{(.*?)\}/e", '$\1', $SEARCH_TYPE);
 
-if (isset($_GET['a'])) {
+if ($_GET['adv']) {
 	if (isset($search_info[$_GET['t']]['advanced'])) {
 		@require_once($search_info[$_GET['t']]['advanced']);
-		$SEARCH_MAIN_SUBMIT .= "<input type='hidden' name='a' value='".$_GET['a']."' />";
 		foreach ($advanced as $adv_key => $adv_value) {
 			if ($adv_value['type'] == 'single') {
 				$SEARCH_ADV_TEXT = $adv_value['text'];
@@ -415,7 +403,7 @@ if (isset($_GET['a'])) {
 			}
 		}
 	} else {
-		unset($_GET['a']);
+		$_GET['adv'] = 0;
 	}
 }
 
@@ -434,7 +422,7 @@ if ($perform_search) {
 				$search_chars = $search_info[$key]['chars'];
 				$search_res = $search_info[$key]['results'];
 				@require_once($search_info[$key]['sfile']);
-				$parms = $results.",".$search_res.",".$_GET['r'].",".e_SELF."?q=".$_GET['q']."&t=".$key."&r=[FROM]".(isset($_GET['a']) ? "&a=".$_GET['a'] : "");
+				$parms = $results.",".$search_res.",".$_GET['r'].",".e_SELF."?q=".$_GET['q']."&t=".$key."&r=[FROM]";
 				$core_parms = array('r' => '', 'q' => '', 't' => '', 'a' => '', 's' => '');
 				foreach ($_GET as $pparm_key => $pparm_value) {
 					if (!isset($core_parms[$pparm_key])) {
