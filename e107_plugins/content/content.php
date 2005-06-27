@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.69 $
-|		$Date: 2005-06-26 22:41:11 $
+|		$Revision: 1.70 $
+|		$Date: 2005-06-27 00:20:30 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -91,7 +91,7 @@ function core_head(){
 
 //include js
 function headerjs(){
-	echo "<script type='text/javascript' src='".e_PLUGIN."content/content.js'></script>\n";
+	echo "<script type='text/javascript' src='".e_FILE."popup.js'></script>\n";
 }
 
 //post comment

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.72 $
-|		$Date: 2005-06-26 22:41:11 $
+|		$Revision: 1.73 $
+|		$Date: 2005-06-27 00:20:30 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -90,6 +90,9 @@ class contentform{
 						$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 						$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
 						$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path_{$mainparent}"]);
+						$content_tmppath_icon			= e_PLUGIN."content/images/icon/tmp/";
+						$content_tmppath_file			= e_PLUGIN."content/images/file/tmp/";
+						$content_tmppath_image			= e_PLUGIN."content/images/image/tmp/";
 
 						if(!is_object($sql)){ $sql = new db; }
 						$sql2 = new db;
@@ -233,18 +236,84 @@ class contentform{
 						//preview not yet working ok ........
 						//if( ($qs[1] == "create" || $qs[1] == "edit" || $qs[1] == "sa") && is_numeric($qs[2]) && (isset($_POST['preview_content']) || isset($message)) ){
 						if(isset($_POST['preview_content'])){
-								/*
+								
 								$text = "
 								<div style='text-align:center'>
-								<table class='fborder' style='".ADMIN_WIDTH."' border='0'>
-								<tr><td>".$_POST['content_heading']."</td></tr>
-								<tr><td>".$_POST['content_subheading']."</td></tr>
-								<tr><td>".$_POST['content_summary']."</td></tr>
-								<tr><td>".$_POST['content_text']."</td></tr>
+								<table class='fborder' style='".ADMIN_WIDTH."'>
+								<tr><td class='fcaption' colspan='2'>preview for ".$_POST['content_heading']."</td></tr>
+								<tr><td class='forumheader3'>heading</td><td class='forumheader3'>".$_POST['content_heading']."</td></tr>
+								<tr><td class='forumheader3'>subheading</td><td class='forumheader3'>".$_POST['content_subheading']."</td></tr>
+								<tr><td class='forumheader3'>summary</td><td class='forumheader3'>".$_POST['content_summary']."</td></tr>
+								<tr><td class='forumheader3'>text</td><td class='forumheader3'>".$_POST['content_text']."</td></tr>
+								<tr><td class='forumheader3'>author</td><td class='forumheader3'>".$_POST['content_author_name']." , ".$_POST['content_author_email']."</td></tr>
+								<tr><td class='forumheader3'>".$_POST['parent']."</td><td class='forumheader3'>".$_POST['parent1']."</td></tr>
+								<tr><td class='forumheader3'>startdate</td><td class='forumheader3'>";
+								if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
+									$text .= $_POST['ne_day']." ".$months[($_POST['ne_month']-1)]." ".$_POST['ne_year'];
+								}else{
+									$text .= "no start date specified";
+								}
+								$text .= "
+								</td></tr>
+								<tr><td class='forumheader3'>end date</td><td class='forumheader3'>";
+								if($_POST['end_day'] != "none" && $_POST['end_month'] != "none" && $_POST['end_year'] != "none"){
+									$text .= $_POST['end_day']." ".$months[($_POST['end_month']-1)]." ".$_POST['end_year'];
+								}else{
+									$text .= "no end date specified";
+								}
+								$text .= "
+								</td></tr>
+								<tr><td class='forumheader3'>comments</td><td class='forumheader3'>".($_POST['content_comment'] == "1" ? "enabled" : "disabled")."</td></tr>
+								<tr><td class='forumheader3'>rating</td><td class='forumheader3'>".($_POST['content_rate'] == "1" ? "enabled" : "disabled")."</td></tr>
+								<tr><td class='forumheader3'>print email/icons</td><td class='forumheader3'>".($_POST['content_pe'] == "1" ? "enabled" : "disabled")."</td></tr>
+								<tr><td class='forumheader3'>visible for</td><td class='forumheader3'>".r_userclass_name($_POST['content_class'])."</td></tr>
+								<tr><td class='forumheader3'>score</td><td class='forumheader3'>".$_POST['content_score']."</td></tr>
+								<tr><td class='forumheader3'>meta keywords</td><td class='forumheader3'>".$_POST['content_meta']."</td></tr>
+								<tr><td class='forumheader3'>layout</td><td class='forumheader3'>".$_POST['content_layout']."</td></tr>";
+
+								if(file_exists($content_tmppath_icon.$_POST['content_icon'])){
+									$text .= "<tr><td class='forumheader3'>icon</td><td class='forumheader3'><img src='".$content_tmppath_icon.$_POST['content_icon']."' alt='' style='width:100px; border:0;' /></td></tr>";
+								}elseif(file_exists($content_icon_path.$_POST['content_icon'])){
+									$text .= "<tr><td class='forumheader3'>icon</td><td class='forumheader3'><img src='".$content_icon_path.$_POST['content_icon']."' alt='' style='width:100px; border:0;' /></td></tr>";
+								}else{
+									$text .= "<tr><td class='forumheader3'>icon</td><td class='forumheader3'>no icon assigned</td></tr>";
+								}
+								
+								$nofile = FALSE;
+								$noimage = FALSE;
+								foreach($_POST as $k => $v){
+									if(preg_match("#^content_files#",$k)){
+										if($v && file_exists($content_tmppath_image.$v)){
+											$text .= "<tr><td class='forumheader3'>attachments</td><td class='forumheader3'>".CONTENT_ICON_FILE." ".$v."</td></tr>";
+										}elseif($v && file_exists($content_file_path.$v)){
+											$text .= "<tr><td class='forumheader3'>attachments</td><td class='forumheader3'><img src='".$content_file_path.$v."' alt='' style='width:100px; border:0;' /></td></tr>";
+										}
+									}
+									if(preg_match("#^content_images#",$k)){
+										if($v && file_exists($content_tmppath_image.$v)){
+											$text .= "<tr><td class='forumheader3'>images</td><td class='forumheader3'><img src='".$content_tmppath_image.$v."' alt='' style='width:100px; border:0;' /></td></tr>";
+										}elseif($v && file_exists($content_image_path.$v)){
+											$text .= "<tr><td class='forumheader3'>images</td><td class='forumheader3'><img src='".$content_image_path.$v."' alt='' style='width:100px; border:0;' /></td></tr>";
+										}
+									}
+								}
+								
+								//custom tags
+								for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){
+									$text .= "<tr><td class='forumheader3'>".$_POST["content_custom_key_{$i}"]."</td><td class='forumheader3'>".$_POST["content_custom_value_{$i}"]."</td></tr>";
+								}
+								
+								//custom preset tags
+								foreach($_POST['content_custom_preset_key'] as $k => $v){
+								//for($i=0;$i<count($_POST['content_custom_preset_key']);$i++){
+								//	$text .= "<tr><td class='forumheader3'>".$_POST['content_custom_preset_key'][$i]."</td><td class='forumheader3'>".$_POST['content_custom_preset_value'][$i]."</td></tr>";
+									$text .= "<tr><td class='forumheader3'>".$k."</td><td class='forumheader3'>".$v."</td></tr>";
+								}
+								$text .= "
 								</table>
 								</div>";									  
 								$ns -> tablerender($content_heading, $text);
-								*/
+								
 						}
 						if( isset($_POST['preview_content']) || isset($message) ){
 								//$tp -> post_toHTML()
@@ -272,16 +341,23 @@ class contentform{
 								$row['content_meta']				= $_POST['content_meta'];
 								$row['content_layout']				= $_POST['content_layout'];
 
+								foreach($_POST as $k => $v){
+									if(preg_match("#^content_files#",$k)){
+										$row['content_file'] .= "[file]".$v;
+									}
+									if(preg_match("#^content_images#",$k)){
+										$row['content_image'] .= "[img]".$v;
+									}
+								}
+
 								//custom tags
 								for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){
 									$keystring = $_POST["content_custom_key_{$i}"];
 									$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
 								}
-								
-								//custom preset tags
-								for($i=0;$i<count($_POST['content_custom_preset_key']);$i++){
-									$keystring = "content_custom_preset_".$_POST['content_custom_preset_key'][$i];
-									$custom[$keystring] = $_POST['content_custom_preset_value'][$i];
+
+								foreach($_POST['content_custom_preset_key'] as $k => $v){
+									$custom['content_custom_presettags'][$k] = $v;
 								}
 						}						
 
@@ -450,9 +526,7 @@ class contentform{
 						$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_104;
 						$TOPIC_HEADING = CONTENT_ADMIN_ITEM_LAN_112;
 						$TOPIC_HELP = CONTENT_ADMIN_ITEM_LAN_113;
-						$content_tmppath_icon	= e_PLUGIN."content/images/icon/tmp/";
-						$content_tmppath_file	= e_PLUGIN."content/images/file/tmp/";
-						$content_tmppath_image	= e_PLUGIN."content/images/image/tmp/";
+						
 						$rejectlist			= array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', 'thumb_*');
 						$iconlist			= $fl->get_files($content_tmppath_icon,"",$rejectlist);
 						$filelist			= $fl->get_files($content_tmppath_file,"",$rejectlist);
@@ -760,12 +834,12 @@ class contentform{
 						$hidden = "";
 						for($i=0;$i<count($content_pref["content_custom_preset_key"]);$i++){
 							$value = "";
-							if($custom){
-								$keystring = "content_custom_preset_".$content_pref["content_custom_preset_key"][$i];
-								if(array_key_exists($keystring, $custom)){
-									$value = $custom[$keystring];
-								}
-							}
+							//if($custom){
+							//	$keystring = "content_custom_preset_".$content_pref["content_custom_preset_key"][$i];
+							//	if(array_key_exists($keystring, $custom)){
+							//		$value = $custom[$keystring];
+							//	}
+							//}
 							if(!empty($content_pref["content_custom_preset_key"][$i])){
 								if($checkpreset){
 									$text .= $this -> parseCustomPresetTag($content_pref["content_custom_preset_key"][$i], $custom['content_custom_presettags']);
@@ -790,12 +864,12 @@ class contentform{
 							if($qs[1] == "edit" || $qs[1] == "sa" || isset($_POST['editp']) ){
 								//$text .= $rs -> form_hidden("content_refer", $row['content_refer']);
 								$text .= $rs -> form_hidden("content_datestamp", $row['content_datestamp']);
-								//$text .= $rs -> form_button("submit", "preview_content", (isset($_POST['preview_content']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26), $js);
+								$text .= $rs -> form_button("submit", "preview_content", (isset($_POST['preview_content']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26), $js);
 								$text .= $rs -> form_button("submit", "update_content", ($qs[1] == "sa" ? CONTENT_ADMIN_ITEM_LAN_43 : CONTENT_ADMIN_ITEM_LAN_45), $js );
 								$text .= $rs -> form_hidden("content_id", $qs[2]);
 								$text .= $rs -> form_checkbox("update_datestamp", 1, 0)." ".CONTENT_ADMIN_ITEM_LAN_42;
 							}else{
-								//$text .= $rs -> form_button("submit", "preview_content", (isset($_POST['preview_content']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26), $js);
+								$text .= $rs -> form_button("submit", "preview_content", (isset($_POST['preview_content']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26), $js);
 								$text .= $rs -> form_button("submit", "create_content", CONTENT_ADMIN_ITEM_LAN_44, $js);								
 							}
 							$text .= "
@@ -1003,10 +1077,6 @@ class contentform{
 							$text .= "<div style='text-align:center'>".CONTENT_ADMIN_ITEM_LAN_4."</div>";
 						}else{
 							if($content_total < 50 || isset($letter)){
-									//if($mode != "contentmanager"){
-									//	$oText = str_replace("'", "\'", CONTENT_ADMIN_ITEM_LAN_67);
-									//	$popuphelp = $aa -> popupHelp($oText, "", "", "");
-									//}
 									$text .= "
 									<div style='text-align:center'>
 									".$rs -> form_open("post", e_SELF."?".e_QUERY, "deletecontentform","","", "")."
@@ -1993,10 +2063,7 @@ class contentform{
 						".$rs -> form_close()."
 						</div>";
 
-						$oText = str_replace("'", "\'", CONTENT_ADMIN_CAT_LAN_41);
-						$popuphelp = $aa -> popupHelp($oText, "", "", "");
-						
-						$ns -> tablerender($caption." ".$popuphelp, $text);
+						$ns -> tablerender($caption, $text);
 		}
 
 		function show_options(){

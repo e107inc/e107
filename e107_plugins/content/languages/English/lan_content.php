@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2005-06-26 22:41:12 $
+|     $Revision: 1.61 $
+|     $Date: 2005-06-27 00:20:30 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -251,15 +251,15 @@ define("CONTENT_ADMIN_OPT_LAN_145", "sort and order");
 define("CONTENT_ADMIN_OPT_LAN_146", "does a selection to use sorting options need to be shown?");
 define("CONTENT_ADMIN_OPT_LAN_147", "links to pages");
 define("CONTENT_ADMIN_OPT_LAN_148", "link : all categories");
-define("CONTENT_ADMIN_OPT_LAN_149", "does a link to the 'all categories' page need to be shown?");
+define("CONTENT_ADMIN_OPT_LAN_149", "display link to 'all categories'?");
 define("CONTENT_ADMIN_OPT_LAN_150", "link : all authors");
-define("CONTENT_ADMIN_OPT_LAN_151", "does a link to the 'all authors' page need to be shown?");
+define("CONTENT_ADMIN_OPT_LAN_151", "display link to 'all authors'?");
 define("CONTENT_ADMIN_OPT_LAN_152", "link : top rated");
-define("CONTENT_ADMIN_OPT_LAN_153", "does a link to the 'top rated items' page need to be shown?");
+define("CONTENT_ADMIN_OPT_LAN_153", "display link to 'top rated items'?");
 define("CONTENT_ADMIN_OPT_LAN_154", "link : recent items");
-define("CONTENT_ADMIN_OPT_LAN_155", "does a link to the 'recent content items' page need to be shown?");
+define("CONTENT_ADMIN_OPT_LAN_155", "display link to 'recent content items'?");
 define("CONTENT_ADMIN_OPT_LAN_156", "link : submit item");
-define("CONTENT_ADMIN_OPT_LAN_157", "does a link to the 'submit content item' page need to be shown?");
+define("CONTENT_ADMIN_OPT_LAN_157", "display link to the 'submit content item'?");
 define("CONTENT_ADMIN_OPT_LAN_158", "icon : links");
 define("CONTENT_ADMIN_OPT_LAN_159", "define the icon to display");
 define("CONTENT_ADMIN_OPT_LAN_160", "none (), bullet (), middot (&middot;), white bullet (º), arrow (&raquo;)");
@@ -318,7 +318,7 @@ define("CONTENT_ADMIN_OPT_LAN_209", "you can either place the categories in the 
 define("CONTENT_ADMIN_OPT_LAN_210", "selectbox");
 define("CONTENT_ADMIN_OPT_LAN_211", "normallinks");
 define("CONTENT_ADMIN_OPT_LAN_212", "link : all content items");
-define("CONTENT_ADMIN_OPT_LAN_213", "does a link to the 'all content items' page (the archive page) need to be shown?");
+define("CONTENT_ADMIN_OPT_LAN_213", "display link to 'all content items' (the archive page)?");
 define("CONTENT_ADMIN_OPT_LAN_214", "datestyle");
 define("CONTENT_ADMIN_OPT_LAN_215", "choose a datestyle to use for the displayed date");
 define("CONTENT_ADMIN_OPT_LAN_216", "For more information on date formats see the <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime function page at php.net</a>");
@@ -408,7 +408,7 @@ define("CONTENT_ADMIN_OPT_LAN_289", "");
 define("CONTENT_ADMIN_OPT_LAN_290", "choose which sections should be displayed when viewing the top rated page");
 define("CONTENT_ADMIN_OPT_LAN_291", "choose which sections should be displayed when viewing the top score page");
 define("CONTENT_ADMIN_OPT_LAN_292", "link : top score");
-define("CONTENT_ADMIN_OPT_LAN_293", "does a link to the 'top score items' page need to be shown?");
+define("CONTENT_ADMIN_OPT_LAN_293", "display link to 'top score items'?");
 define("CONTENT_ADMIN_OPT_LAN_294", "add field ...");
 define("CONTENT_ADMIN_OPT_LAN_295", "text");
 define("CONTENT_ADMIN_OPT_LAN_296", "textarea");

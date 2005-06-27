@@ -1049,6 +1049,8 @@ foreach($imagestmp as $key => $value) {
 $images = array_values($imagestmp);
 $content_image_popup_name = ereg_replace("'", "", $row['content_heading']);
 $CONTENT_CONTENT_TABLE_IMAGES = "";
+require_once(e_HANDLER."popup_handler.php");
+$pp = new popup;
 $gen = new convert;
 $datestamp = ereg_replace(" -.*", "", $gen -> convert_date($row['content_datestamp'], "long"));
 for($i=0;$i<count($images);$i++){		
@@ -1061,7 +1063,7 @@ for($i=0;$i<count($images);$i++){
 	
 	$oTitle = $content_image_popup_name." ".($i+1);
 	$oText = $content_image_popup_name." ".($i+1)."<br />".$tp -> toHTML($row['content_subheading'], TRUE, "")."<br />".$authordetails[1]." (".$datestamp.")";
-	$CONTENT_CONTENT_TABLE_IMAGES .= $aa -> popup($oSrc, $oSrcThumb, $oIconWidth, $oMaxWidth, $oTitle, $oText);
+	$CONTENT_CONTENT_TABLE_IMAGES .= $pp -> popup($oSrc, $oSrcThumb, $oIconWidth, $oMaxWidth, $oTitle, $oText);
 }
 return $CONTENT_CONTENT_TABLE_IMAGES;
 }
