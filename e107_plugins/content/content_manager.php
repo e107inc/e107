@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.12 $
-|		$Date: 2005-06-25 23:13:47 $
+|		$Revision: 1.13 $
+|		$Date: 2005-06-27 11:31:52 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -41,9 +41,6 @@ $aform = new contentform;
 $lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
 include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
 
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_help.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content_help.php');
-
 $deltest = array_flip($_POST);
 
 if(e_QUERY){
@@ -62,105 +59,48 @@ if(preg_match("#(.*?)_delete_(\d+)#",$deltest[$tp->toJS("delete")],$matches)){
 
 require_once(HEADERF);
 
+//include js
+function headerjs(){
+	global $tp, $plugindir, $qs;
+
+	if( ($qs[0] == "content" && $qs[1] == "create" && is_numeric($qs[2])) || ($qs[0] == "content" && $qs[1] == "edit" && is_numeric($qs[2])) ){
+		$e_wysiwyg			= "content_text";
+		if($pref['wysiwyg']){
+			$pref['allow_html']	= "1";
+			require_once(e_HANDLER."tiny_mce/wysiwyg.php");
+			echo wysiwyg($e_wysiwyg);
+		}
+	}
+	echo "<script type='text/javascript' src='".e_FILE."popup.js'></script>\n";
+}
+
+
 if(isset($_POST['create_content'])){
-        if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
-				$adb -> dbContentCreate("contentmanager");
-        }else{
-                $message			= CONTENT_ADMIN_ITEM_LAN_0;
-				$content_heading	= $_POST['content_heading'];
-				$content_subheading	= $_POST['content_subheading'];
-				$content_summary	= $_POST['content_summary'];
-				$content_text		= $_POST['content_text'];
-				$content_icon		= $_POST['content_icon'];
-				$content_file		= $_POST['content_file'];
-				$content_comment	= $_POST['content_comment'];
-				$content_rate		= $_POST['content_rate'];
-				$content_pe			= $_POST['content_pe'];
-				$content_class		= $_POST['content_class'];
-        }
+	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
+		$adb -> dbContentCreate("contentmanager");
+	}else{
+		$message = CONTENT_ADMIN_ITEM_LAN_0;
+	}
 }
 
-If(isset($_POST['update_content'])){
-        if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
-				$adb -> dbContentUpdate("contentmanager");
-		}else{
-				$message			= CONTENT_ADMIN_ITEM_LAN_0;
-				$content_heading	= $_POST['content_heading'];
-				$content_subheading	= $_POST['content_subheading'];
-				$content_summary	= $_POST['content_summary'];
-				$content_text		= $_POST['content_text'];
-				$content_icon		= $_POST['content_icon'];
-				$content_file		= $_POST['content_file'];
-				$content_comment	= $_POST['content_comment'];
-				$content_rate		= $_POST['content_rate'];
-				$content_pe			= $_POST['content_pe'];
-				$content_class		= $_POST['content_class'];
-		}
+if(isset($_POST['update_content'])){
+	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
+		$adb -> dbContentUpdate("contentmanager");
+	}else{
+		$message = CONTENT_ADMIN_ITEM_LAN_0;
+	}
 }
 
-if($delete == 'content'){
-		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-			$message = CONTENT_ADMIN_ITEM_LAN_3;
-			$e107cache->clear("content");
-		}
-}
-
-if(isset($_POST['preview'])){
-
-		$content_heading	= $tp -> post_toHTML($_POST['content_heading']);
-		$content_subheading	= $tp -> post_toHTML($_POST['content_subheading']);
-		$content_summary	= $tp -> post_toHTML($_POST['content_summary']);
-		$content_text		= $tp -> post_toHTML($_POST['content_text']);
-
-		$text = "
-		<div style='text-align:center'>
-		<table class='fborder' style='".ADMIN_WIDTH."' border='0'>
-		<tr><td>".$content_heading."</td></tr>
-		<tr><td>".$content_subheading."</td></tr>
-		<tr><td>".$content_summary."</td></tr>
-		<tr><td>".$content_text."</td></tr>
-		</table>
-		</div>";
-		  
-		$ns -> tablerender($content_heading, $text);
-
-		$ne_day					= $_POST['ne_day'];
-		$ne_month				= $_POST['ne_month'];
-		$ne_year				= $_POST['ne_year'];	
-		$content_authorname		= $_POST['content_authorname'];
-		$content_authoremail	= $_POST['content_authoremail'];
-		$content_parent			= $_POST['parent'];
-		$content_heading		= $tp -> post_toForm($_POST['content_heading']);
-		$content_subheading		= $tp -> post_toForm($_POST['content_subheading']);
-		$content_summary		= $tp -> post_toForm($_POST['content_summary']);
-		$content_text			= $tp -> post_toForm($_POST['content_text']);
-		$content_comment		= $_POST['content_comment'];
-		$content_rate			= $_POST['content_rate'];
-		$content_pe				= $_POST['content_pe'];
-		$content_class			= $_POST['content_class'];
-		$content_score			= $_POST['content_score'];
-		$content_meta			= $_POST['content_meta'];
-		for($i=0;$i<$content_pref["content_admin_custom_number_{$type_id}"];$i++){
-			$keystring = $_POST["content_custom_key_{$i}"];
-			$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
-		}
-
-		$content_icon = $_FILES['file_userfile1'][name][0];								//won't work, cause file isn't upoaded
-		for($i=0;$i<$content_pref["content_admin_files_number_{$type_id}"];$i++){
-			$content_files{$i} = $_POST['content_files{$i}'];							//won't work, cause file isn't upoaded
-		}
-		for($i=0;$i<$content_pref["content_admin_images_number_{$type_id}"];$i++){
-			$content_images{$i} = $_POST['content_images{$i}'];							//won't work, cause file isn't upoaded
-		}
-
+if($delete == 'content' && is_numeric($del_id)){
+	if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+		$message = CONTENT_ADMIN_ITEM_LAN_3;
+		$e107cache->clear("content");
+	}
 }
 
 if(isset($message)){
 	$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
-
-//$breadcrumb = $aa -> drawBreadcrumbFromUrl(e_PAGE, e_QUERY, $base=true, $nolink=false);
-//echo $breadcrumb."<br /><br />";
 
 if(!e_QUERY){
 	if(USERID){
@@ -171,10 +111,7 @@ if(!e_QUERY){
 		header("location:".$plugindir."content.php"); exit;
 	}
 }else{
-	//echo "-1-".$pref['allow_html'];
-	$e_wysiwyg = "content_text,cat_text";
-	$pref['allow_html'] = "1";
-	//echo "-2-".$pref['allow_html'];
+
 	if($qs[0] == "c"){
 		$message = CONTENT_ADMIN_ITEM_LAN_1."<br /><br />".CONTENT_ADMIN_ITEM_LAN_55;
 		$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
@@ -207,59 +144,6 @@ if(!e_QUERY){
 
 require_once(FOOTERF);
 
-function headerjs(){
-	global $tp, $plugindir, $qs;
 
-	if( ($qs[0] == "content" && $qs[1] == "create" && is_numeric($qs[2])) || ($qs[0] == "content" && $qs[1] == "edit" && is_numeric($qs[2])) ){
-		$e_wysiwyg			= "content_text";
-		$pref['allow_html']	= "1";
-		require_once(e_HANDLER."tiny_mce/wysiwyg.php");
-		echo wysiwyg($e_wysiwyg);
-	}
-
-	$script = "
-	<script type='text/javascript' src='".$plugindir."content.js'></script>\n
-	<script type=\"text/javascript\">
-	function addtext2(sc){
-	document.getElementById('dataform').cat_icon.value = sc;
-	}
-
-	function confirm_(mode, content_heading, content_id){
-	if(mode == 'cat'){
-	return confirm(\"".$tp->toJS(CONTENT_ADMIN_JS_LAN_0)." [".CONTENT_ADMIN_JS_LAN_6." \" + content_id + \": \" + content_heading + \"]\");
-	}else{
-	return confirm(\"".$tp->toJS(CONTENT_ADMIN_JS_LAN_1)." [".CONTENT_ADMIN_JS_LAN_6." \" + content_id + \": \" + content_heading + \"]\");
-	}
-	}
-
-	function confirm2_(mode, number, name){
-	if(mode == 'image'){
-	var x=confirm(\"".CONTENT_ADMIN_JS_LAN_2." [".CONTENT_ADMIN_JS_LAN_4.": \" + name + \"] \");
-	}else{
-	var x=confirm(\"".CONTENT_ADMIN_JS_LAN_2." [".CONTENT_ADMIN_JS_LAN_5.": \" + name + \"] \");
-	}
-	var i;
-	var imagemax = 10;
-	if(x){
-	if(mode == 'image'){
-	for (i = 0; i < imagemax; i++){
-	if(number == i){
-	document.getElementById('content_images' + i).value = '';
-	}
-	}
-	}else{
-	for (i = 0; i < imagemax; i++){
-	if(number == i){
-	document.getElementById('content_files' + i).value = '';
-	}
-	}
-	}
-	}
-	}
-
-	</script>";
-
-	return $script;
-}
 
 ?>
