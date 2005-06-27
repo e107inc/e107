@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-06-21 14:32:31 $
+|     $Revision: 1.27 $
+|     $Date: 2005-06-27 02:48:19 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -410,10 +410,10 @@ class e107_user_extended
 		$this->extended_xml = $ret;
 		return $this->extended_xml;
 	}
+
 	function convert_old_fields()
 	{
 		global $sql;
-		$sql2 = new db;
 		$preList = $this->parse_extended_xml('getfile');
 		$flist = array('user_aim', 'user_birthday', 'user_homepage', 'user_icq', 'user_msn', 'user_location');
 		foreach($flist as $f)
@@ -422,31 +422,22 @@ class e107_user_extended
 			$preList[$f]['parms'] = addslashes($preList[$f]['parms']);
 			$this->user_extended_add($preList[$f]);
 		}
-		if($sql->db_Select('user', "user_id, ".implode(", ", $flist)))
-		{
-			while($row = $sql->db_Fetch())
-			{
-				set_time_limit(30);
-				$sql2->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$row['user_id']}')");
-				$newvals = "";
-				foreach($flist as $f)
-				{
-					$newvals .= "{$f} = '".$row[$f]."',";
-				}
-				$newvals = substr($newvals, 0 ,-1);
-				$qry = "
-				UPDATE #user_extended SET
-				{$newvals}
-				WHERE 
-				user_extended_id = '{$row['user_id']}'
-				";
-				$sql2->db_Select_gen($qry);
-			}
-		}
-		foreach($flist as $f)
-		{
-			$sql->db_Select_gen("ALTER TABLE #user DROP {$f}");
-		}
+		$sql->db_Select_gen("INSERT IGNORE INTO #user_extended (user_extended_id) SELECT user_id FROM #user ");
+		$qry = "
+		UPDATE #user_extended AS ue , #user as u SET 
+		ue.user_aim = u.user_aim, 
+		ue.user_birthday = u.user_birthday, 
+		ue.user_homepage = u.user_homepage, 
+		ue.user_icq = u.user_icq, 
+		ue.user_msn = u.user_msn, 
+		ue.user_location = u.user_location
+		WHERE ue.user_extended_id = u.user_id
+		";
+		$sql->db_Select_gen($qry);
+		$dlist = implode(", DROP ", $flist);
+		$dlist = "DROP ".$dlist;
+		$qry = "ALTER TABLE #user ".$dlist;
+		$sql->db_Select_gen($qry);
 	}
 }
 ?>
