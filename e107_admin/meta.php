@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/meta.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-02-08 08:21:06 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-27 18:06:50 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -47,22 +47,20 @@ $text = "<div style='text-align:center'>
 	rows='10' style='width:90%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$tp->toForm($pref['meta_tag'],TRUE)."</textarea>
 	<br />";
 $text .= "
-	<input class='button' type='button' value='description'
+	<input class='button' type='button' value='".METLAN_9."'
 	onclick=\"addtext('<meta name=\'description\' content=\'".METLAN_5."\' />\\n')\" />
 
-	<input class='button' type='button' value='keywords'
+	<input class='button' type='button' value='".METLAN_10."'
 	onclick=\"addtext('<meta name=\'keywords\' content=\'".METLAN_6."\' />\\n')\" />
 
-	<input class='button' type='button' value='copyright'
+	<input class='button' type='button' value='".METLAN_11."'
 	onclick=\"addtext('<meta name=\'copyright\' content=\'".METLAN_7."\' />\\n')\" />
 </td>
 </tr>
 
 <tr><td colspan='2' style='text-align:center' class='forumheader'>
 
-<input class='button' type='submit' name='metasubmit'
-
-value='".METLAN_3."' />
+<input class='button' type='submit' name='metasubmit' value='".METLAN_3."' />
 </td>
 </tr>
 </table>
