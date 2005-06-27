@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-06-26 19:11:50 $
+|     $Revision: 1.20 $
+|     $Date: 2005-06-27 14:46:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 
 	} elseif ($pref['mailer']== 'sendmail'){
 		$mail->Mailer = "sendmail";
-		$mail->Sendmail = ($pref['sendmail']) ? $pref['sendmail'] : "/usr/sbin/sendmail -t -i -r '".$pref['siteadminemail']."'";
+		$mail->Sendmail = ($pref['sendmail']) ? $pref['sendmail'] : "/usr/sbin/sendmail -t -i -r ".$pref['siteadminemail'];
 	} else {
         $mail->Mailer = "mail";
 	}

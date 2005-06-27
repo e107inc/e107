@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-06-26 19:11:49 $
+|     $Revision: 1.32 $
+|     $Date: 2005-06-27 14:46:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -112,7 +112,7 @@ if (isset($_POST['submit'])) {
         }
     } elseif ($pref['mailer']== 'sendmail'){
 		$mail->Mailer = "sendmail";
-		$mail->Sendmail = ($pref['sendmail']) ? $pref['sendmail'] : "/usr/sbin/sendmail -t -i -r '".$pref['siteadminemail']."'";
+		$mail->Sendmail = ($pref['sendmail']) ? $pref['sendmail'] : "/usr/sbin/sendmail -t -i -r ".$pref['siteadminemail'];
 	} else {
         $mail->Mailer = "mail";
 	}
@@ -446,7 +446,7 @@ $text = "
 	<tr>
 	<td >".MAILAN_20.":&nbsp;&nbsp;</td>
 	<td text-align:right' >
-	<input class='tbox' type='text' name='sendmail' size='60' value=\"".(!$pref['sendmail'] ? "/usr/sbin/sendmail -t -i -r '".$pref['siteadminemail']."'" : $pref['sendmail'])."\" maxlength='80' />
+	<input class='tbox' type='text' name='sendmail' size='60' value=\"".(!$pref['sendmail'] ? "/usr/sbin/sendmail -t -i -r ".$pref['siteadminemail'] : $pref['sendmail'])."\" maxlength='80' />
 	</td>
 	</tr>
 
