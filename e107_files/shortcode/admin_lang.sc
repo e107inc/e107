@@ -11,9 +11,21 @@ if (ADMIN) {
 		$fl = new e_file;
 		$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
 
+		foreach($GLOBALS['mySQLtablelist'] as $tabs){
+			$clang = strtolower($sql->mySQLlanguage);
+        	if(strpos($tabs,"lan_".$clang) && $clang !=""){
+            	$aff[] = str_replace(MPREFIX."lan_".$clang."_","",$tabs);
+			}
+		}
 
+		$text .= "<div><img src='".e_IMAGE."admin_images/language_16.png' alt='' />&nbsp;";
+		$text .= ($sql->mySQLlanguage) ? $sql->mySQLlanguage.": " : LAN_INACTIVE;
+		if(isset($aff)){
+			$text .= implode(",",$aff);
+		}
+        $text .= "<br /><br /></div>";
 
-		$text = "<div style='text-align:center'>
+		$text .= "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'>
 		<div>
 		<select name='sitelanguage' class='tbox'>";
@@ -29,6 +41,7 @@ if (ADMIN) {
 			$selected = ($langval == $sql->mySQLlanguage) ? "selected='selected'" : "";
 			if (table_exists("lan_".$langname) && getperms($langname)) {
 				$text .= "<option value='".$langval."' $selected>$langname</option>\n ";
+				$affects[] = $langname;
 				$valid = $langname;
 			}
 		}
@@ -39,6 +52,8 @@ if (ADMIN) {
 		</div>
 		</form>
 		</div>";
+
+
 
 		if(!getperms($sql->mySQLlanguage) && !$valid){
 			Header("Location: ".e_BASE."index.php");

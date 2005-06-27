@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-06-26 19:11:50 $
+|     $Revision: 1.37 $
+|     $Date: 2005-06-27 21:35:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -236,5 +236,7 @@ define("LAN_DISPLAYOPT", "Edit Display Options");
 define("LAN_GOPAGE", "Go to page:");
 define("LAN_DATESTAMP","Datestamp");
 define("LAN_OPTIONAL", "optional");
+define("LAN_INACTIVE","Inactive");
+
 
 ?>
