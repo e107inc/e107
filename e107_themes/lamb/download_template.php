@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/download_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-19 09:48:19 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-27 17:38:12 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@
 $DOWNLOAD_CAT_TABLE_RENDERPLAIN = TRUE;
 
 $DOWNLOAD_CAT_TABLE_START = "
-<img src='".e_THEME."lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>Downloads</span>\n
+<img src='".e_THEME."lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>".LAN_dl_18."</span>\n
 <br /><br />
 ";
 
@@ -66,7 +66,7 @@ $DOWNLOAD_LIST_TABLE_RENDERPLAIN = TRUE;
 if(!$DOWNLOAD_LIST_TABLE_START){
 
                 $DOWNLOAD_LIST_TABLE_START = "
-<img src='".e_THEME."lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>Downloads: {DOWNLOAD_CATEGORY}</span><br /><br />{DOWNLOAD_CATEGORY_DESCRIPTION}<br /><br />
+<img src='".e_THEME."lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>".LAN_dl_18.": {DOWNLOAD_CATEGORY}</span><br /><br />{DOWNLOAD_CATEGORY_DESCRIPTION}<br /><br />
 
 <form method='post' action='".e_SELF."?".e_QUERY."'>
 <p>
@@ -138,7 +138,7 @@ $DOWNLOAD_VIEW_TABLE_RENDERPLAIN = TRUE;
 if(!$DOWNLOAD_VIEW_TABLE_START){
                 $DOWNLOAD_VIEW_TABLE_START = "
 
-<img src='".e_THEME."lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>Downloads: {DOWNLOAD_CATEGORY}</span><br /><br /><br />\n";
+<img src='".e_THEME."lamb/images/download.png' alt='' style='vertical-align: middle;' /> <span class='dlmain'>".LAN_dl_18.": {DOWNLOAD_CATEGORY}</span><br /><br /><br />\n";
 }
 
 if(!$DOWNLOAD_VIEW_TABLE){
