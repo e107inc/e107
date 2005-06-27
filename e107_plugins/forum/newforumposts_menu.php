@@ -11,13 +11,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-05-30 00:31:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-27 17:34:59 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 global $tp;
 $gen = new convert;
+
+if (file_exists(e_PLUGIN."forum/languages/".e_LANGUAGE."/lan_newforumposts_menu.php"))
+{
+	include_once(e_PLUGIN."forum/languages/".e_LANGUAGE."/lan_newforumposts_menu.php");
+}
+else
+{
+	include_once(e_PLUGIN."forum/languages/English/lan_newforumposts_menu.php");
+}
 
 $query2 = "
 SELECT tp.thread_name AS parent_name, t.thread_datestamp, t.thread_thread, t.thread_name, t.thread_id, t.thread_user, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class FROM #forum_t AS t 
