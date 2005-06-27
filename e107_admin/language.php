@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-06-16 15:58:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.23 $
+|     $Date: 2005-06-27 21:52:03 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -53,6 +53,8 @@ if (isset($_POST['del_existing']) && $_POST['lang_choices']) {
 			 $_POST['lang_choices']." $del_table couldn't be deleted<br />";
 		}
 	}
+	global $cachevar;
+	unset($cachevar['table_list']);
 	$ns->tablerender("Result", $message);
 }
 
@@ -84,6 +86,8 @@ if (isset($_POST['create_tables']) && $_POST['language']) {
 			}
 		}
 	}
+    global $cachevar;
+	unset($cachevar['table_list']);
 	$ns->tablerender("Result", $message);
 }
 
