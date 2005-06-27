@@ -78,5 +78,7 @@ $LIST_COL_CELL_START = "<td style='width:{LIST_COL_CELLWIDTH}%; padding-right:5p
 $LIST_COL_CELL_END = "</td>";
 $LIST_COL_END = "</tr></table></div>";
 
+//TIMELAPSE SELECT -----------------------------------------------------------
+$LIST_TIMELAPSE_TABLE = "<div class='forumheader3' style='margin-bottom:20px;'>{LIST_TIMELAPSE}</div>";
 
 ?>

@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/admin_list_config.php,v $
-|		$Revision: 1.2 $
-|		$Date: 2005-06-17 14:27:49 $
+|		$Revision: 1.3 $
+|		$Date: 2005-06-27 14:05:37 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -468,6 +468,25 @@ function parse_page_options($type){
 	$TOPIC_HELP = LIST_ADMIN_LAN_25;
 	$TOPIC_FIELD = $rs -> form_textarea($type."_welcometext", "50", "5", $list_pref[$type."_welcometext"], "", "tbox");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+	if($type == "new_page"){
+		//timelapse:show
+		$TOPIC_TOPIC = LIST_ADMIN_LAN_36;
+		$TOPIC_HEADING = LIST_ADMIN_LAN_37;
+		$TOPIC_HELP = LIST_ADMIN_LAN_38;
+		$TOPIC_FIELD = "
+			".$rs -> form_radio($type."_timelapse", "1", ($list_pref[$type."_timelapse"] ? "1" : "0"), "", "").LIST_ADMIN_7."
+			".$rs -> form_radio($type."_timelapse", "0", ($list_pref[$type."_timelapse"] ? "0" : "1"), "", "").LIST_ADMIN_8."
+		";
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+		//timelapse day number maximum
+		$TOPIC_TOPIC = LIST_ADMIN_LAN_32;
+		$TOPIC_HEADING = LIST_ADMIN_LAN_33;
+		$TOPIC_HELP = LIST_ADMIN_LAN_34;
+		$TOPIC_FIELD = $rs -> form_text($type."_timelapse_days", "3", $list_pref[$type."_timelapse_days"], "3", "tbox")." ".LIST_ADMIN_LAN_35;
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+	}
 
 	$text .= $TOPIC_ROW_SPACER;
 	$text .= $TOPIC_TABLE_END;

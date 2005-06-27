@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2005-06-23 11:10:08 $
+|		$Revision: 1.5 $
+|		$Date: 2005-06-27 14:05:37 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -27,6 +27,8 @@ $listplugindir = e_PLUGIN."list_new/";
 require_once($listplugindir."list_shortcodes.php");
 require_once($listplugindir."list_class.php");
 $rc = new listclass;
+require_once(e_HANDLER."form_handler.php");
+$rs = new form;
 e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
 
@@ -57,11 +59,37 @@ $list_pref	= $rc -> getListPrefs();
 $sections	= $rc -> prepareSection($mode);
 $arr		= $rc -> prepareSectionArray($mode, $sections);
 
+
+$text = "";
+$timelapse = 0;
+if(isset($qs[0]) && $qs[0] == "new"){
+	if(isset($list_pref['new_page_timelapse']) && is_numeric($list_pref['new_page_timelapse']) && $list_pref['new_page_timelapse']){
+		$days = $list_pref['new_page_timelapse'];
+	}else{
+		$days = "30";
+	}
+	if(isset($qs[1]) && is_numeric($qs[1]) && $qs[1] <= $days){
+		$timelapse = $qs[1];
+	}
+	$url		= e_PLUGIN."list_new/list.php?new";
+	$selectjs	= "onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }\"";
+
+	$LIST_TIMELAPSE = LIST_MENU_6;
+	$LIST_TIMELAPSE .= $rs -> form_select_open("timelapse", $selectjs).$rs -> form_option(LIST_MENU_5, 0);
+	for($a=1; $a<=$days; $a++){
+		$LIST_TIMELAPSE .= $rs -> form_option($a, ($timelapse == $a ? "1" : "0"), $url.".".$a);
+	}
+	$LIST_TIMELAPSE .= $rs -> form_select_close();
+	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $LIST_TIMELAPSE_TABLE);
+}
+
+
+
 //display the sections
 $LIST_COL_COLS = $list_pref[$mode."_colomn"];
 
 $LIST_COL_CELLWIDTH = round((100/$list_pref[$mode."_colomn"]),0);
-$text = $LIST_COL_START;
+$text .= $LIST_COL_START;
 
 if($list_pref[$mode."_welcometext"]){
 	$LIST_COL_WELCOMETEXT = $tp -> toHTML($list_pref[$mode."_welcometext"]);

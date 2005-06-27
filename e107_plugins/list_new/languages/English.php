@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-17 13:35:39 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-27 14:05:38 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -156,15 +156,22 @@ define("LIST_ADMIN_LAN_29", "icon : default");
 define("LIST_ADMIN_LAN_30", "use default theme bullet if no icon is present or if icon:use is disabled");
 define("LIST_ADMIN_LAN_31", "");
 
+define("LIST_ADMIN_LAN_32", "timelapse:days");
+define("LIST_ADMIN_LAN_33", "maximum of days users can look back");
+define("LIST_ADMIN_LAN_34", "");
+define("LIST_ADMIN_LAN_35", "days");
 
+define("LIST_ADMIN_LAN_36", "timelapse");
+define("LIST_ADMIN_LAN_37", "display a select box with number of days to look back?");
+define("LIST_ADMIN_LAN_38", "");
 
 
 define("LIST_MENU_1", "recent additions");
 define("LIST_MENU_2", "by");
 define("LIST_MENU_3", "on");
 define("LIST_MENU_4", "in");
-define("LIST_MENU_5", "");
-define("LIST_MENU_6", "");
+define("LIST_MENU_5", "days");
+define("LIST_MENU_6", "view content for how may days?");
 define("LIST_MENU_7", "");
 define("LIST_MENU_8", "");
 define("LIST_MENU_9", "");
