@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-06-21 22:46:38 $
+|     $Revision: 1.41 $
+|     $Date: 2005-06-27 21:35:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -119,12 +119,13 @@ if (isset($_POST['dec'])) {
 }
 
 if (isset($_POST['update'])) {
+
 	foreach ($_POST['link_order'] as $loid) {
 		$tmp = explode(".", $loid);
 		$sql->db_Update("links", "link_order=".$tmp[1]." WHERE link_id=".$tmp[0]);
 	}
 	foreach ($_POST['link_class'] as $lckey => $lcid) {
-		$sql->db_Update("links", "link_class=".$lcid." WHERE link_id=".$lckey);
+	 	$sql->db_Update("links", "link_class='".$lcid."' WHERE link_id=".$lckey);
 	}
 	$e107cache->clear("sitelinks");
 	$linkpost->show_message(LAN_UPDATED);
@@ -248,7 +249,7 @@ class links {
 				$text .= $rs->form_button("button", "main_edit_{$link_id}", LAN_EDIT, "onclick=\"document.location='".e_SELF."?create.edit.$link_id'\"");
 				$text .= $rs->form_button("submit", "main_delete_".$link_id, LAN_DELETE, "onclick=\"return jsconfirm('".$tp->toJS(LCLAN_58." [ $link_name ]")."')\"");
 				$text .= "</td>";
-				$text .= "<td style='width:10%; text-align:center' class='forumheader3'>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,admin,classes,languages")."</td>";
+				$text .= "<td style='width:10%; text-align:center' class='forumheader3'>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,admin,classes")."</td>";
 				$text .= "<td style='width:5%; text-align:center; white-space: nowrap' class='forumheader3'>";
 				$text .= "<input type='image' src='".e_IMAGE."admin_images/up.png' title='".LCLAN_30."' value='".$link_id.".".$link_order."' name='inc' />";
 				$text .= "<input type='image' src='".e_IMAGE."admin_images/down.png' title='".LCLAN_31."' value='".$link_id.".".$link_order."' name='dec' />";
