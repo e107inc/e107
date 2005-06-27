@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-06-16 17:02:45 $
-|     $Author: e107coders $
+|     $Revision: 1.36 $
+|     $Date: 2005-06-27 17:19:13 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -133,7 +133,12 @@ if (isset($_POST['commentsubmit'])) {
 	} else {
 		$row = $sql->db_Fetch();
 		if ($row[0] && (ANON === TRUE || USER === TRUE)) {
-			$cobj->enter_comment($_POST['author_name'], $_POST['comment'], "download", $id, $pid, $_POST['subject']);
+			
+			$clean_authorname = einput::clean_input(einput::strip_input($_POST['author_name']), true);
+			$clean_comment = einput::clean_input(einput::strip_input($_POST['comment']), true);
+			$clean_subject = einput::clean_input(einput::strip_input($_POST['subject']), true);
+			
+			$cobj->enter_comment($clean_authorname, $clean_comment, "download", $id, $pid, $clean_subject);
 			$e107cache->clear("comment.download.{$sub_action}");
 		}
 	}
@@ -182,7 +187,7 @@ if ($action == "list") {
 
 
 
-	if($sql -> db_Select("download_category", "download_category_id", "download_category_parent='$id' "))
+	if($sql -> db_Select("download_category", "download_category_id", "download_category_parent='{$id}' "))
 	{
 		/* there are subcats - display them ... */
 		$qry = "
@@ -192,8 +197,8 @@ if ($action == "list") {
 		SUM(d.download_requested) as d_requests
 		FROM #download_category AS dc
 		LEFT JOIN #download AS d ON dc.download_category_id = d.download_category AND d.download_active > 0 AND d.download_visible IN (".USERCLASS_LIST.")
-		LEFT JOIN #download_category as dc2 ON dc2.download_category_id='$id'
-		WHERE dc.download_category_class IN (".USERCLASS_LIST.") AND dc.download_category_parent='$id'
+		LEFT JOIN #download_category as dc2 ON dc2.download_category_id='{$id}'
+		WHERE dc.download_category_class IN (".USERCLASS_LIST.") AND dc.download_category_parent='{$id}'
 		GROUP by dc.download_category_id ORDER by dc.download_category_order
 		";
 		$sql->db_Select_gen($qry);
@@ -554,7 +559,9 @@ if ($action == "report") {
 		$download_name = $tp -> toDB($_POST['report_download_name']);
 		$user = $tp -> toDB($_POST['user']);
 
-		$sql->db_Insert('generic', "0, 'Broken Download', ".time().",'".USERID."', '$download_name', ".$_POST['report_download_id'].", '$report_add'");
+		$clean_report_id = intval($_POST['report_download_id']);
+		
+		$sql->db_Insert('generic', "0, 'Broken Download', ".time().",'".USERID."', '{$download_name}', {$clean_report_id}, '{$report_add}'");
 
 		define("e_PAGETITLE", PAGE_NAME." / ".LAN_dl_47);
 		require_once(HEADERF);
@@ -761,7 +768,7 @@ function parse_download_cat_child_table($row, $subList)
 	}
 
 
-	$download_icon = ($row['d_count'] || $row['d_subcount'] ? "<img src='".e_IMAGE."icons/$download_category_icon' alt='' style='float-left' />" : "<img src='".e_IMAGE."icons/$download_category_icon_empty' alt='' style='float-left' />");
+	$download_icon = ($row['d_count'] || $row['d_subcount'] ? "<img src='".e_IMAGE."icons/{$download_category_icon}' alt='' style='float-left' />" : "<img src='".e_IMAGE."icons/{$download_category_icon_empty}' alt='' style='float-left' />");
 
 
 
