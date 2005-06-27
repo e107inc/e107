@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-16 09:41:59 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-27 11:45:50 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ class rater {
 		
 		$str = $text."
 			<select name='rateindex' ".$jump." class='tbox'>
-			<option selected='selected'  value='0'>Rate</option>
+			<option selected='selected'  value='0'>".RATELAN_5."</option>
 			<option value='".$url."{$table}^{$id}^{$self}^1'>1</option>
 			<option value='".$url."{$table}^{$id}^{$self}^2'>2</option>
 			<option value='".$url."{$table}^{$id}^{$self}^3'>3</option>
@@ -194,11 +194,11 @@ class rater {
 				}
 			}
 		}else{
-			if($enter==TRUE){
+			if($enter===TRUE){
 				$rate .= RATELAN_4;
 			}
 		}
-		if($enter==TRUE){
+		if($enter===TRUE){
 			if(!isset($ratearray[1]) || $ratearray[1] > 0){
 				$rate .= " - ";
 			}
