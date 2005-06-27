@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/backend.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-01-27 19:51:37 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-27 01:45:02 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -29,8 +29,8 @@ $rss = "<?xml version=\"1.0\"?>
 	<copyright>".SITEDISCLAIMER."</copyright>
 	<managingEditor>".SITEADMIN."</managingEditor>
 	<webMaster>".SITEADMINEMAIL."</webMaster>
-	<pubDate>$pubdate</pubDate>
-	<lastBuildDate>$pubdate</lastBuildDate>
+	<pubDate>{$pubdate}</pubDate>
+	<lastBuildDate>{$pubdate}</lastBuildDate>
 	<docs>http://backend.userland.com/rss</docs>
 	<skipDays><day></day></skipDays>
 	<skipHours><hour></hour></skipHours>
@@ -59,11 +59,11 @@ $sql->db_Select("news", "*", "news_class=0 AND (news_start=0 || news_start < ".t
 while ($row = $sql->db_Fetch()) {
 	extract($row);
 	 
-	$sql2->db_Select("news_category", "*", "category_id='$news_category' ");
+	$sql2->db_Select("news_category", "*", "category_id='{$news_category}'");
 	$row = $sql->db_Fetch();
 	 extract($row);
 	 
-	$sql2->db_Select("user", "user_name", "user_id='".$news_author."' ");
+	$sql2->db_Select("user", "user_name", "user_id='{$news_author}' ");
 	$row = $sql->db_Fetch();
 	 extract($row);
 	 
@@ -100,15 +100,6 @@ $rss .= "</channel>
 	</rss>";
 	
 	
-echo $rss;
-	
-	
-	
-	
-	
-	
-	
-	
-	
+echo $rss;	
 	
 ?>

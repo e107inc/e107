@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.179 $
-|     $Date: 2005-06-26 22:44:26 $
+|     $Revision: 1.180 $
+|     $Date: 2005-06-27 01:45:02 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -253,14 +253,14 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan'])) {
 	if($_GET['elan']){  // query support, for language selection splash pages. etc
 	$_POST['sitelanguage'] = $_GET['elan'];
 	}
-	$sql->mySQLlanguage=$_POST['sitelanguage'];
+	$sql->mySQLlanguage = $_POST['sitelanguage'];
 	if ($pref['user_tracking'] == "session") {
 		$_SESSION['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
 	} else {
 		setcookie('e107language_'.$pref['cookie_name'], $_POST['sitelanguage'], time() + 86400, "/");
-		$_COOKIE['e107language_'.$pref['cookie_name']]=$_POST['sitelanguage'];
+		$_COOKIE['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
 		if (!eregi(e_ADMIN, e_SELF)) {
-			Header("Location:".e_SELF);
+			header("Location:".e_SELF);
 		}
 	}
 }
