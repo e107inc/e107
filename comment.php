@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-06-27 01:45:02 $
+|     $Revision: 1.34 $
+|     $Date: 2005-06-27 17:09:57 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -128,18 +128,13 @@ if (isset($_POST['replysubmit'])) {
 	}
 }
 
-/* input validated properly to here, so far (streaky) */
-
-
-
-
 if ($action == "reply") {
 	if (!$pref['nested_comments']) {
-		header("location:".e_BASE."comment.php?comment.".$table.".".$nid."");
+		header("Location: ".e_BASE."comment.php?comment.{$table}.{$nid}");
 		exit;
 	}
-	$query = "comment_id='$id' LIMIT 0,1";
-	if ($sql->db_Select("comments", "comment_subject", "comment_id='$id'")) {
+	$query = "`comment_id` = '{$id}' LIMIT 0,1";
+	if ($sql->db_Select("comments", "comment_subject", "`comment_id` = '{$id}'")) {
 		list($comments['comment_subject']) = $sql->db_Fetch();
 		$not_parsed_subject = $comments['comment_subject'];
 		$subject = $tp->toHTML($comments['comment_subject']);
@@ -147,8 +142,8 @@ if ($action == "reply") {
 	}
 	if ($subject == "") {
 		if ($table == "news") {
-			if (!$sql->db_Select("news", "news_title", "news_id='$nid' ")) {
-				header("location:".e_BASE."index.php");
+			if (!$sql->db_Select("news", "news_title", "news_id='{$nid}' ")) {
+				header("location: ".e_BASE."index.php");
 				exit;
 			} else {
 				list($news['news_title']) = $sql->db_Fetch();
@@ -156,7 +151,7 @@ if ($action == "reply") {
 				$title = LAN_100;
 			}
 		} elseif ($table == "poll") {
-			if (!$sql->db_Select("polls", "poll_title", "poll_id='$nid' ")) {
+			if (!$sql->db_Select("polls", "poll_title", "poll_id='{$nid}' ")) {
 				header("location:".e_BASE."index.php");
 				exit;
 			} else {
@@ -165,15 +160,15 @@ if ($action == "reply") {
 				$title = LAN_101;
 			}
 		} elseif ($table == "content") {
-			$sql->db_Select("content", "content_heading", "content_id='$nid'");
+			$sql->db_Select("content", "content_heading", "content_id='{$nid}'");
 			$subject = $content['content_heading'];
 		} elseif ($table == "bugtracker") {
-			$sql->db_Select("bugtrack", "bugtrack_summary", "bugtrack_id='$nid'");
+			$sql->db_Select("bugtrack", "bugtrack_summary", "bugtrack_id='{$nid}'");
 			$subject = $content['content_heading'];
 		}
 	}
 	if ($table == "content") {
-		$sql->db_Select("content", "content_type", "content_id='$nid'");
+		$sql->db_Select("content", "content_type", "content_id='{$nid}'");
 		list($content['content_type']) = $sql->db_Fetch();
 		if ($content['content_type'] == "0") {
 			$content_type = "article";
@@ -192,7 +187,7 @@ if ($action == "reply") {
 } else {
 
 
-	if ($cache = $e107cache->retrieve("comment.php?$table.$id")) {
+	if ($cache = $e107cache->retrieve("comment.php?{$table}.{$id}")) {
 		require_once(HEADERF);
 		echo $cache;
 		require_once(FOOTERF);
@@ -210,7 +205,7 @@ if ($action == "reply") {
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id 
 				LEFT JOIN #trackback AS tb ON tb.trackback_pid  = n.news_id 
 				WHERE n.news_class IN (".USERCLASS_LIST.") 
-				AND n.news_id=$id 
+				AND n.news_id={$id} 
 				AND n.news_allow_comments=0
 				GROUP by n.news_id";
 			} else {
@@ -218,7 +213,7 @@ if ($action == "reply") {
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id 
 				WHERE n.news_class IN (".USERCLASS_LIST.") 
-				AND n.news_id=$id 
+				AND n.news_id={$id} 
 				AND n.news_allow_comments=0";
 			}
 
@@ -229,7 +224,7 @@ if ($action == "reply") {
 				$news = $sql->db_Fetch();
 				$not_parsed_subject = $news['news_title'];
 				$subject = $tp->toHTML($news['news_title']);
-				define(e_PAGETITLE, LAN_100." / ".LAN_99." / ".$subject."");
+				define(e_PAGETITLE, LAN_100." / ".LAN_99." / {$subject}");
 				require_once(HEADERF);
 				ob_start();
 				$ix = new news;
@@ -239,7 +234,7 @@ if ($action == "reply") {
 			}
 		}
 		else if($table == "poll") {
-			if (!$sql->db_Select("polls", "*", "poll_id='$id'")) {
+			if (!$sql->db_Select("polls", "*", "poll_id='{$id}'")) {
 				header("location:".e_BASE."index.php");
 				exit;
 			} else {
@@ -263,15 +258,15 @@ if ($action == "reply") {
 		require_once(HEADERF);
 		$query = ($pref['nested_comments'] ?
 		"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
-			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='$field' AND comment_type='$comtype' AND comment_pid='0' ORDER BY comment_datestamp"
+			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='{$field}' AND comment_type='{$comtype}' AND comment_pid='0' ORDER BY comment_datestamp"
 		:
 		"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
-			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='$field' AND comment_type='$comtype'  ORDER BY comment_datestamp");
+			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='{$field}' AND comment_type='{$comtype}'  ORDER BY comment_datestamp");
 	}
 }
 
 if($pref['trackbackEnabled'] && $table == "news"){
-	echo "<span class='smalltext'><b>".$pref['trackbackString']."</b> ".$e107->http_path.e_PLUGIN."trackback/trackback.php?pid=$id</span>";
+	echo "<span class='smalltext'><b>".$pref['trackbackString']."</b> ".$e107->http_path.e_PLUGIN."trackback/trackback.php?pid={$id}</span>";
 }
 
 $comment_total = $sql->db_Select_gen($query);
@@ -303,7 +298,7 @@ ob_end_flush(); // dump the buffer we started
 
 
 if($pref['trackbackEnabled'] && $table == "news"){
-	if($sql->db_Select("trackback", "*", "trackback_pid=$id"))
+	if($sql->db_Select("trackback", "*", "trackback_pid={$id}"))
 	{
 		$tbArray = $sql -> db_getList();
 
@@ -320,7 +315,7 @@ if($pref['trackbackEnabled'] && $table == "news"){
 			extract($trackback);
 			$TITLE = $trackback_title;
 			$EXCERPT = $trackback_excerpt;
-			$BLOGNAME = "<a href='$trackback_url' rel='external'>$trackback_blogname</a>";
+			$BLOGNAME = "<a href='{$trackback_url}' rel='external'>{$trackback_blogname}</a>";
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TRACKBACK);
 		}
 
