@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2005-06-27 01:08:39 $
+|     $Revision: 1.60 $
+|     $Date: 2005-06-27 02:28:16 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -107,6 +107,16 @@ if (isset($_POST['submit_download'])) {
 	$download->submit_download($sub_action, $id);
 	$action = "main";
 	unset($sub_action, $id);
+}
+
+
+if(isset($_POST['update_catorder'])){
+ 	foreach($_POST['catorder'] as $key=>$order){
+		if($_POST['catorder'][$key]){
+			$sql -> db_Update("download_category", "download_category_order='$order' WHERE download_category_id='$key' ");
+	  	}
+	}
+   	$ns->tablerender("", "<div style='text-align:center'><b>".LAN_UPDATED."</b></div>");                
 }
 
 if (isset($_POST['updateoptions']))
@@ -1031,15 +1041,18 @@ class download {
 		if (!is_object($sql4)) {
 			$sql4 = new db;
 		}
-		$text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>";
-		if ($download_total = $sql->db_Select("download_category", "*", "download_category_parent=0")) {
-			$text .= $rs->form_open("post", e_SELF."?".e_QUERY, "myform")."
+		$text = $rs->form_open("post", e_SELF."?".e_QUERY, "myform");
+		$text .= "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>";
+		if ($download_total = $sql->db_Select("download_category", "*", "download_category_parent=0 ORDER BY download_category_order")) {
+
+			$text .= "
 			<table class='fborder' style='width:99%'>
 				<tr>
 				<td style='width:5%; text-align:center' class='fcaption'>&nbsp;</td>
 				<td style='width:70%; text-align:center' class='fcaption'>".DOWLAN_11."</td>
 				<td style='width:5%; text-align:center' class='fcaption'>".DOWLAN_52."</td>
-				<td style='width:25%; text-align:center' class='fcaption'>".LAN_OPTIONS."</td>
+				<td style='width:5%; text-align:center' class='fcaption'>".LAN_ORDER."</td>
+				<td style='width:20%; text-align:center' class='fcaption'>".LAN_OPTIONS."</td>
 				</tr>";
 
 			while ($row = $sql->db_Fetch()) {
@@ -1053,25 +1066,31 @@ class download {
 				$text .= "<tr>
 					<td style='width:5%; text-align:center' class='forumheader'>".($download_category_icon ? "<img src='".e_IMAGE."icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
 					<td colspan='2' style='width:70%' class='forumheader'><b>$download_category_name</b></td>
-					<td style='width:20%; text-align:center' class='forumheader'>
+					<td class='forumheader3'>
+					 <input class='tbox' type='text' name='catorder[$download_category_id]' value='$download_category_order' size='3' />
+					</td>
+					<td style='text-align:center' class='forumheader'>
 					<a href='".e_SELF."?cat.edit.{$download_category_id}'>".ADMIN_EDIT_ICON."</a>
 					<input type='image' title='".LAN_DELETE."' name='delete[category_{$download_category_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: $download_category_id ]")."') \"/>
 					</td>
 					</tr>";
 
 				$parent_id = $download_category_id;
-				if ($sql2->db_Select("download_category", "*", "download_category_parent=$parent_id")) {
+				if ($sql2->db_Select("download_category", "*", "download_category_parent=$parent_id ORDER BY download_category_order")) {
 					while ($row = $sql2->db_Fetch()) {
 						extract($row);
 							if(strstr($download_category_icon, chr(1)))
 							{
 								list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $download_category_icon);
 							}
-						$files = $sql4->db_Count("download", "(*)", "WHERE download_category='".$download_category_id."'");
+						$files = $sql4->db_Count("download", "(*)", "WHERE download_category='".$download_category_id."' ");
 						$text .= "<tr>
 							<td style='width:5%; text-align:center' class='forumheader3'>".($download_category_icon ? "<img src='".e_IMAGE."icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
 							<td style='width:70%' class='forumheader3'>$download_category_name<br /><span class='smalltext'>$download_category_description</span></td>
 							<td style='width:5%; text-align:center' class='forumheader3'>$files</td>
+							<td class='forumheader3'>
+                            <input class='tbox' type='text' name='catorder[$download_category_id]' value='$download_category_order' size='3' />
+							</td>
 							<td style='width:20%; text-align:center' class='forumheader3'>
 							<a href='".e_SELF."?cat.edit.{$download_category_id}'>".ADMIN_EDIT_ICON."</a>
 							<input type='image' title='".LAN_DELETE."' name='delete[category_{$download_category_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: $download_category_id ]")."') \"/>
@@ -1080,18 +1099,20 @@ class download {
 
 
 						$sub_parent_id = $download_category_id;
-						if ($sql3->db_Select("download_category", "*", "download_category_parent=$sub_parent_id")) {
+						if ($sql3->db_Select("download_category", "*", "download_category_parent=$sub_parent_id ORDER BY download_category_order")) {
 							while ($row = $sql3->db_Fetch()) {
 								extract($row);
 								if(strstr($download_category_icon, chr(1)))
 								{
 									list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $download_category_icon);
 								}
-								$files = $sql4->db_Count("download", "(*)", "WHERE download_category='".$download_category_id."'");
+								$files = $sql4->db_Count("download", "(*)", "WHERE download_category='".$download_category_id."' ");
 								$text .= "<tr>
 									<td style='width:5%; text-align:center' class='forumheader3'>".($download_category_icon ? "<img src='".e_IMAGE."icons/$download_category_icon' style='vertical-align:middle; border:0' alt='' />" : "&nbsp;")."</td>
 									<td style='width:70%' class='forumheader3'>&nbsp;&nbsp;&nbsp;&nbsp;".DOWLAN_53.": $download_category_name<br />&nbsp;&nbsp;&nbsp;&nbsp;<span class='smalltext'>$download_category_description</span></td>
 									<td style='width:5%; text-align:center' class='forumheader3'>$files</td>
+									<td>
+									</td>
 									<td style='width:20%; text-align:center' class='forumheader3'>
 									<a href='".e_SELF."?cat.edit.{$download_category_id}'>".ADMIN_EDIT_ICON."</a>
 									<input type='image' title='".LAN_DELETE."' name='delete[category_{$download_category_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(DOWLAN_34." [ID: $download_category_id ]")."') \"/>
@@ -1102,11 +1123,14 @@ class download {
 					}
 				}
 			}
-			$text .= "</table></form>";
+			$text .= "</table></div>";
+			$text .= "<div style='text-align:center'>
+				<input class='button' type='submit' name='update_catorder' value='".LAN_UPDATE."' />
+				</div>";
 		} else {
 			$text .= "<div style='text-align:center'>".DOWLAN_38."</div>";
 		}
-		$text .= "</div>";
+		$text .= "</form>";
 		$ns->tablerender(DOWLAN_37, $text);
 
 		unset($download_category_id, $download_category_name, $download_category_description, $download_category_parent, $download_category_icon, $download_category_class);
