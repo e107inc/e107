@@ -4,16 +4,19 @@
 * User input cleaning class
 *
 * @package e107
-* @version $Revision: 1.5 $
+* @version $Revision: 1.6 $
 * @author $Author: streaky $
 */
 class einput {
 
 	/**
 	 * Handle user input, including SQL escaping, number validation (integers), word value cleaning and custom regexp cleaning
+	 * 
+	 * Example (escapes data for use in an SQL query and forces it to word values ([a-z, A-Z, 0-9, _]) - strip slashes first if from request data - use einput::strip_input():
+	 * <code>$text = einput::clean_input($text, true, true);</code>
 	 *
 	 * @param string $string Input data
-	 * @param bool $word_value Data should be a word value [a-z, A-Z, 0-9]
+	 * @param bool $word_value Data should be a word value [a-z, A-Z, 0-9, _]
 	 * @param bool $numeric Data should be a number
 	 * @param bool $sql Input data will be used in an sql query (escape data to prevent SQL injections)
 	 * @param string $custom_regexp preg_replace() regexp to perform on input data (replaced with a null string), see http://us2.php.net/preg-replace
@@ -48,7 +51,7 @@ class einput {
 	}
 
 	/**
-	 * Strip slashes from string - takes into account magic_quotes_gpc setting, i.e. only stips if it's on - or the second arg is true
+	 * Strip slashes from string, for use before escaping data for sql queries - takes into account magic_quotes_gpc setting, i.e. only stips if it's on - or the second arg is true
 	 *
 	 * @param string $string [input string]
 	 * @param bool $ignore_magic_quotes_gpc [overide magic_quotes_gpc setting, i.e. always strip slashes
