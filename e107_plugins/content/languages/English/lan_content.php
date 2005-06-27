@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2005-06-27 00:20:30 $
+|     $Revision: 1.62 $
+|     $Date: 2005-06-27 09:37:19 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -74,9 +74,9 @@ define("CONTENT_ADMIN_CAT_LAN_42", "to re-edit the same category");
 
 define("CONTENT_ADMIN_CAT_LAN_43", "click here");
 define("CONTENT_ADMIN_CAT_LAN_44", "to add another category in the earlier selected main category");
-define("CONTENT_ADMIN_CAT_LAN_45", "define if comments should be allowed");
-define("CONTENT_ADMIN_CAT_LAN_46", "define if rating should be allowed");
-define("CONTENT_ADMIN_CAT_LAN_47", "define if print/email icons should be shown");
+define("CONTENT_ADMIN_CAT_LAN_45", "allow comments?");
+define("CONTENT_ADMIN_CAT_LAN_46", "allow rating?");
+define("CONTENT_ADMIN_CAT_LAN_47", "display print/email icons?");
 define("CONTENT_ADMIN_CAT_LAN_48", "choose which users see this item");
 define("CONTENT_ADMIN_CAT_LAN_49", "choose an icon for this category");
 //define("CONTENT_ADMIN_CAT_LAN_50", "content menu created<br /><br />Because you have created a Main Parent Category, a Menu has been generated.<br />The menu file has been created in your /menus folder.<br /><br />In order to see the menu in action, you still need to activate this menu in your <a href='".e_ADMIN."menus.php'>admin menus area</a>.");
@@ -94,9 +94,9 @@ define("CONTENT_ADMIN_CAT_LAN_56", "item");
 define("CONTENT_ADMIN_CAT_LAN_57", "items");
 define("CONTENT_ADMIN_CAT_LAN_58", "category icon succesfully uploaded<br />notice: you still need to assign the icon to this category in the icon>choose existing icon area !<br />and of course after that you still need to submit the form to create/update this category");
 define("CONTENT_ADMIN_CAT_LAN_59", "category icon not uploaded");
-define("CONTENT_ADMIN_CAT_LAN_60", "choose an existing icon");
-define("CONTENT_ADMIN_CAT_LAN_61", "or upload a new icon");
-define("CONTENT_ADMIN_CAT_LAN_62", "After you have uploaded a new category icon, you can assign this icon in the above 'choose existing icon' area<br />If you upload a new icon, this icon will be scaled to 48 pixels, and additionally a small 16 pixels icon will be created as well<br /><br />");
+define("CONTENT_ADMIN_CAT_LAN_60", "assign an icon");
+define("CONTENT_ADMIN_CAT_LAN_61", "upload a new icon");
+define("CONTENT_ADMIN_CAT_LAN_62", "After you have uploaded a new category icon, you can assign this icon in the below 'icon' area<br />If you upload a new icon, this icon will be scaled to 48 pixels, and additionally a small 16 pixels icon will be created as well<br /><br />");
 define("CONTENT_ADMIN_CAT_LAN_63", "upload icon");
 
 
@@ -507,12 +507,12 @@ define("CONTENT_ADMIN_ITEM_LAN_71", "leave if item written by you");
 define("CONTENT_ADMIN_ITEM_LAN_72", "define author details");
 define("CONTENT_ADMIN_ITEM_LAN_73", "define a start date for this item (leave if none needed)");
 define("CONTENT_ADMIN_ITEM_LAN_74", "define an end date for this item (leave if none needed)");
-define("CONTENT_ADMIN_ITEM_LAN_75", "upload and assign an icon to go with this item");
-define("CONTENT_ADMIN_ITEM_LAN_76", "upload and assign attachments to go with this item");
-define("CONTENT_ADMIN_ITEM_LAN_77", "upload and assign images to go with this item");
-define("CONTENT_ADMIN_ITEM_LAN_78", "define if comments should be allowed");
-define("CONTENT_ADMIN_ITEM_LAN_79", "define if rating should be allowed");
-define("CONTENT_ADMIN_ITEM_LAN_80", "define if print/email icons should be shown");
+define("CONTENT_ADMIN_ITEM_LAN_75", "assign an icon");
+define("CONTENT_ADMIN_ITEM_LAN_76", "assign attachments");
+define("CONTENT_ADMIN_ITEM_LAN_77", "assign images");
+define("CONTENT_ADMIN_ITEM_LAN_78", "allow comments?");
+define("CONTENT_ADMIN_ITEM_LAN_79", "allow rating?");
+define("CONTENT_ADMIN_ITEM_LAN_80", "display print/email icons?");
 define("CONTENT_ADMIN_ITEM_LAN_81", "choose which users see this item");
 define("CONTENT_ADMIN_ITEM_LAN_82", "define a score");
 define("CONTENT_ADMIN_ITEM_LAN_83", "define meta keywords");
@@ -557,6 +557,7 @@ define("CONTENT_ADMIN_ITEM_LAN_113", "choose the type of upload in the select bo
 define("CONTENT_ADMIN_ITEM_LAN_114", "icon");
 define("CONTENT_ADMIN_ITEM_LAN_115", "attachment");
 define("CONTENT_ADMIN_ITEM_LAN_116", "image");
+define("CONTENT_ADMIN_ITEM_LAN_117", "submitted content item posted");
 
 
 

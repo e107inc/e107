@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.50 $
-|		$Date: 2005-06-26 22:41:11 $
+|		$Revision: 1.51 $
+|		$Date: 2005-06-27 09:37:18 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -305,6 +305,17 @@ if(!e_QUERY){																//show main categories
 
 	//post submitted content item
 	}elseif($qs[0] == "content" && $qs[1] == "sa" && is_numeric($qs[2]) ){
+		$newqs = array_reverse($qs);
+		if($newqs[0] == "cu"){										//item; submit post / update redirect
+			$mainparent = $aa -> getMainParent($qs[2]);
+			$message = CONTENT_ADMIN_ITEM_LAN_117."<br /><br />";
+			$message .= CONTENT_ADMIN_ITEM_LAN_88." <a href='".e_SELF."?content.create.".$mainparent."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+			$message .= CONTENT_ADMIN_ITEM_LAN_89." <a href='".e_SELF."?content.".$mainparent."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+			$message .= CONTENT_ADMIN_ITEM_LAN_91." <a href='".e_SELF."?content.edit.".$qs[2]."'>".CONTENT_ADMIN_ITEM_LAN_90."</a>";
+			$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+			require_once(e_ADMIN."footer.php");
+			exit;
+		}
 		$aform -> show_create_content("sa", $userid="", $username="");
 
 	//create content item
