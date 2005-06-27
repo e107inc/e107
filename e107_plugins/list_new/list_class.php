@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2005-06-17 16:26:51 $
+|		$Revision: 1.5 $
+|		$Date: 2005-06-27 14:05:38 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -246,6 +246,8 @@ class listclass {
 		$list_pref['new_page_showempty']			= "1";
 		$list_pref['new_page_colomn']				= "1";
 		$list_pref['new_page_welcometext']			= LIST_ADMIN_16;
+		$list_pref['new_page_timelapse']			= "1";
+		$list_pref['new_page_timelapse_days']		= "30";
 
 		//recent menu preferences
 		$list_pref['recent_menu_caption']			= LIST_ADMIN_14;
@@ -395,10 +397,26 @@ class listclass {
 	}
 
 	function getlvisit(){
-		global $qs;
-		$lvisit = (isset($qs[0]) && $qs[0] != "new" ? intval(e_QUERY) : USERLV);
-		$lvisit = ($lvisit <= 14 ? time()-$lvisit*86400 : $lvisit);
-		//$lvisit = $lvisit - 5*86400; //just for testing, so more content is shown in the new page
+		global $qs, $list_pref;
+
+		if(isset($qs[0]) && $qs[0] == "new"){
+			if(isset($list_pref['new_page_timelapse']) && $list_pref['new_page_timelapse']){
+				if(isset($list_pref['new_page_timelapse_days']) && is_numeric($list_pref['new_page_timelapse_days']) && $list_pref['new_page_timelapse_days']){
+					$days = $list_pref['new_page_timelapse_days'];
+				}else{
+					$days = "30";
+				}
+				if(isset($qs[1]) && is_numeric($qs[1]) && $qs[1] <= $days){
+					$lvisit = time()-$qs[1]*86400;
+				}else{
+					$lvisit = USERLV;
+				}
+			}else{
+				$lvisit = USERLV;
+			}
+		}else{
+			$lvisit = USERLV;
+		}
 		return $lvisit;
 	}
 
