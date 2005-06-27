@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/calendar_menu/languages/Swedish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-16 14:03:27 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-27 17:57:03 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 define('EC_ADLAN_1', "Kalender");
-define('EC_ADLAN_2', "Konfigurera kalendar");
+define('EC_ADLAN_2', "Konfigurera kalender");
 define('EC_INSTALL', "Installera kalender");
-define('EC_UNINSTALL', "Avinstallera kalendar");
+define('EC_UNINSTALL', "Avinstallera kalender");
 define('EC_LAN_0', "Januari");
 define('EC_LAN_1', "Februari");
 define('EC_LAN_2', "Mars");
@@ -123,7 +123,7 @@ define('EC_LAN_79', "Kalendervisning");
 define('EC_LAN_80', "Händelselista");
 define('EC_LAN_81', "Konfigurera kalender");
 define('EC_LAN_82', "För att aktivera, gå till dina menyinställninar och lägg till calendar_menu i någon av dina menyområden.");
-define('EC_LAN_83', "Kalendar");
+define('EC_LAN_83', "Kalender");
 
 
 define('EC_LAN_84', "CSS-element att använda för dagsrubrik");

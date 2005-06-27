@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-26 11:12:23 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-27 17:57:03 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -402,7 +402,6 @@ define("CONTENT_ADMIN_OPT_LAN_286", "topprankad");
 define("CONTENT_ADMIN_OPT_LAN_287", "arkiv");
 define("CONTENT_ADMIN_OPT_LAN_288", "poäng");
 define("CONTENT_ADMIN_OPT_LAN_289", "");
-
 define("CONTENT_ADMIN_OPT_LAN_290", "Välj vilka sektioner som skall visas när man tittar på topprankad sida.");
 define("CONTENT_ADMIN_OPT_LAN_291", "Välj vilka sektioner som skall visas när man tittar på sidor med mest poäng");
 define("CONTENT_ADMIN_OPT_LAN_292", "Länk : topprankad");
@@ -414,9 +413,18 @@ define("CONTENT_ADMIN_OPT_LAN_297", "Välj");
 define("CONTENT_ADMIN_OPT_LAN_298", "Datum");
 define("CONTENT_ADMIN_OPT_LAN_299", "Kryssruta");
 define("CONTENT_ADMIN_OPT_LAN_300", "Radio");
-
-
-
+define("CONTENT_ADMIN_OPT_LAN_301", "Artikel index");
+define("CONTENT_ADMIN_OPT_LAN_302", "Ange visningstyp för artikelindex av flersidiga");
+define("CONTENT_ADMIN_OPT_LAN_303", "Om du har en flersidig artikel kan du antingen visa ett artikelindex av dessa sidor, eller visa dem i en valruta");
+define("CONTENT_ADMIN_OPT_LAN_304", "Max bildstorlek");
+define("CONTENT_ADMIN_OPT_LAN_305", "Ange den storlek som uppladdade bilder kommer att skalas till");
+define("CONTENT_ADMIN_OPT_LAN_306", "Om bredden eller höjden på den uppladdade bilden är större än detta värdet kommer bilden att förminskas till angivet värde.<br />Popup bilder kommer också att visas med detta värde.");
+define("CONTENT_ADMIN_OPT_LAN_307", "Tumnagel storlek");
+define("CONTENT_ADMIN_OPT_LAN_308", "Ange storleken på tumnagelbilderna som skapas till den uppladdade bilden");
+define("CONTENT_ADMIN_OPT_LAN_309", "Om bredden eller höjden på den uppladdade bilden är större än detta värdet kommer bilden att förminskas till angivet värde.<br />Bilderna kommer också att visas med denna storlek på innehållssidan.");
+define("CONTENT_ADMIN_OPT_LAN_310", "Max ikonbredd");
+define("CONTENT_ADMIN_OPT_LAN_311", "Ange den maximala bredden på en uppladdad ikon");
+define("CONTENT_ADMIN_OPT_LAN_312", "Om en uppladdad ikon är större än angivet värde kommer den att förminskas till detta maxvärde.<br />Ikonen kommer också att visas med denna storlek.");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "Nödvändigt fält lämnat tomt");
 define("CONTENT_ADMIN_ITEM_LAN_1", "Innehållsobjekt skapat");
@@ -513,7 +521,40 @@ define("CONTENT_ADMIN_ITEM_LAN_91", "för att åter redigera samma objekt");
 define("CONTENT_ADMIN_ITEM_LAN_92", "Mall");
 define("CONTENT_ADMIN_ITEM_LAN_93", "Välj en layoutmall");
 define("CONTENT_ADMIN_ITEM_LAN_94", "Välj en layoutmall");
-define("CONTENT_ADMIN_ITEM_LAN_95", "");
+
+define("CONTENT_ADMIN_ITEM_LAN_95", "Ladda upp en ny ikon");
+define("CONTENT_ADMIN_ITEM_LAN_96", "Välj en befintlig ikon");
+define("CONTENT_ADMIN_ITEM_LAN_97", "Efter att du laddat upp en ny ikon kan du tilldela den nedan med 'Välj en befintlig ikon'");
+
+define("CONTENT_ADMIN_ITEM_LAN_98", "Ladda upp en ny bilaga");
+define("CONTENT_ADMIN_ITEM_LAN_99", "Välj en befintlig bilaga");
+define("CONTENT_ADMIN_ITEM_LAN_100", "Efter att du laddat upp en ny bilaga kan du tilldela den nedan med 'Välj en befintlig bilaga'");
+
+define("CONTENT_ADMIN_ITEM_LAN_101", "Ladda upp en ny bild");
+define("CONTENT_ADMIN_ITEM_LAN_102", "Välj en befintlig bild");
+define("CONTENT_ADMIN_ITEM_LAN_103", "Efter att du laddat upp en ny bild kan du tilldela den nedan med 'Välj en befintlig bild'");
+
+define("CONTENT_ADMIN_ITEM_LAN_104", "Ladda upp");
+define("CONTENT_ADMIN_ITEM_LAN_105", "Visa");
+
+define("CONTENT_ADMIN_ITEM_LAN_106", "Ikon uppladdad<br />OBSERVERA: Du måste fortfarande tilldela denna ikonen till innehållsobjektet med 'Välj en befintlig ikon'!<br />Självklart måste du efter det också spara inställningarna genom att skicka in formuläret.");
+define("CONTENT_ADMIN_ITEM_LAN_107", "Ikon laddades inte upp");
+
+define("CONTENT_ADMIN_ITEM_LAN_108", "Bilaga uppladdad<br />OBSERVERA: Du måste fortfarande tilldela denna bilagan till innehållsobjektet med 'Välj en befintlig bilaga'!<br />Självklart måste du efter det också spara inställningarna genom att skicka in formuläret.");
+define("CONTENT_ADMIN_ITEM_LAN_109", "Bilaga laddades inte upp");
+
+define("CONTENT_ADMIN_ITEM_LAN_110", "Bild uppladdad<br />OBSERVERA: Du måste fortfarande tilldela denna bilden till innehållsobjektet med 'Välj en befintlig bild'!<br />Självklart måste du efter det också spara inställningarna genom att skicka in formuläret.");
+define("CONTENT_ADMIN_ITEM_LAN_111", "Bild laddades inte upp");
+
+define("CONTENT_ADMIN_ITEM_LAN_112", "Ladda upp en ikon, bilaga eller bild");
+define("CONTENT_ADMIN_ITEM_LAN_113", "Välj typen av uppladdning i valrutan före du laddar upp filen");
+define("CONTENT_ADMIN_ITEM_LAN_114", "Ikon");
+define("CONTENT_ADMIN_ITEM_LAN_115", "Bilaga");
+define("CONTENT_ADMIN_ITEM_LAN_116", "Bild");
+define("CONTENT_ADMIN_ITEM_LAN_117", "Insänt innehållsobjekt postat");
+define("CONTENT_ADMIN_ITEM_LAN_118", "Inga");
+define("CONTENT_ADMIN_ITEM_LAN_119", "tilldelad");
+define("CONTENT_ADMIN_ITEM_LAN_120", "standardlayout");
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "Ordningen är stigande");
 define("CONTENT_ADMIN_ORDER_LAN_1", "Ordningen är fallande");
@@ -753,7 +794,7 @@ define("CONTENT_LAN_85", "Författarlista");
 define("CONTENT_LAN_86", "Visa topprankade objekt");
 define("CONTENT_LAN_87", "Topprankat innehåll");
 define("CONTENT_LAN_88", "Inget innehåll är rankat ännu");
-define("CONTENT_LAN_89", "");
+define("CONTENT_LAN_89", "Välj sida");
 
 
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "Ingen kategori tillåter postning från användare just nu.");
@@ -841,8 +882,8 @@ define("CONTENT_ADMIN_CONVERSION_LAN_58", "Uppgradering lyckades<br /><br /><b>O
 define("CONTENT_ADMIN_CONVERSION_LAN_59", "Konvertera tabell");
 define("CONTENT_ADMIN_CONVERSION_LAN_60", "Skapa standard");
 define("CONTENT_ADMIN_CONVERSION_LAN_61", "Skapa ny kategori");
-define("CONTENT_ADMIN_CONVERSION_LAN_62", "");
-define("CONTENT_ADMIN_CONVERSION_LAN_63", "");
+define("CONTENT_ADMIN_CONVERSION_LAN_62", "Innehållshanteringsplugin uppgraderad till version:");
+define("CONTENT_ADMIN_CONVERSION_LAN_63", "Uppgradera");
 define("CONTENT_ADMIN_CONVERSION_LAN_64", "");
 define("CONTENT_ADMIN_CONVERSION_LAN_65", "");
 
@@ -897,5 +938,7 @@ define("CONTENT_PRESET_LAN_19", "Du måste ange samma antal text och värdefält
 define("CONTENT_PRESET_LAN_20", "Du måste ange ett värde för kryssrutan");
 define("CONTENT_PRESET_LAN_21", "Text");
 define("CONTENT_PRESET_LAN_22", "Värde");
+define("CONTENT_PRESET_LAN_23", "Välj text");
+define("CONTENT_PRESET_LAN_24", "Det första alternativet utan värde");
 
 ?>

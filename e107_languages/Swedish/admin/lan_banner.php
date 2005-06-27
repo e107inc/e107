@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_banner.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-27 17:57:02 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -53,6 +53,8 @@ define("BNRLAN_59", "skapa ny banner");
 define("BNRLAN_60", "kampanjer");
 define("BNRLAN_61", "bannermeny ");
 define("BNRLAN_62", "banneralternativ");
+define("BNRLAN_63", "Banner skapad");
+define("BNRLAN_64", "Banner uppdaterad");
 
 define("BANNER_MENU_L1", "Annons");
 define("BANNER_MENU_L2", "Banner menykonfiguration sparad");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_installer.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-27 12:05:42 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-27 17:57:02 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -80,5 +80,15 @@ define("LANINS_068", "Tack för att du provar e107, vi hoppas att den uppfyller 
 define("LANINS_069", "e107 har installerats korrekt!<br /><br />Av säkerhetsskäl skall du nu sätta filrättigheterna på <b>e107_config.php</b> filen tillbaka till 644.<br /><br />Radera också install.php och e107_install katalogen från din server efter att du klickat på knappen nedan.");
 define("LANINS_070", "e107 kunde inte spara huvudkonfigurationsfilen på din server.<br /><br />Försäkra dig om att filen <b>e107_config.php</b> har korrekta rättigheter");
 define("LANINS_071", "Avslutar installation");
+define("LANINS_072", "Admin användarnamn");
+define("LANINS_073", "Detta är namnet du använder för att logga in på sajten. Du kan även använda detta som ditt visade namn.");
+define("LANINS_074", "Visat Admin namn");
+define("LANINS_075", "Detta är namnet som du vill att användarna skall se i din profil, i forum och i andra areor. Om du vill visa samma namn som inloggningsnamnet, lämna tomt här.");
+define("LANINS_076", "Admin lösenord");
+define("LANINS_077", "Ange det lösenord du vill ha för admin.");
+define("LANINS_078", "Admin lösenordsbekräftelse");
+define("LANINS_079", "Ange admins lösenord igen för verifiering.");
+define("LANINS_080", "Admin e-post");
+define("LANINS_081", "Ange din e-postadress här.");
 
 ?>
