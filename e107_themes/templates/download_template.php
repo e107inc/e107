@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-14 02:08:27 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-27 20:17:54 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -215,6 +215,7 @@ if(!$DOWNLOAD_VIEW_TABLE){
 		$DOWNLOAD_VIEW_TABLE .= "
 		<tr>
 		<td colspan='2' class='fcaption' style='text-align:left;'>
+
 		{DOWNLOAD_VIEW_NAME}
 		</td>
 		</tr>
@@ -273,6 +274,7 @@ if(!$DOWNLOAD_VIEW_TABLE){
 if(!$DOWNLOAD_VIEW_TABLE_END){
 		$DOWNLOAD_VIEW_TABLE_END = "
 		</table>
+		<div style='text-align:right'>{DOWNLOAD_ADMIN_EDIT}&nbsp;&nbsp;</div> 
 		</div>\n";
 }
 // ##### ------------------------------------------------------------------------------------------

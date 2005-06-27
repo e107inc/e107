@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-05-29 18:34:31 $
-|     $Author: sweetas $
+|     $Revision: 1.17 $
+|     $Date: 2005-06-27 20:17:26 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -209,8 +209,8 @@ $text .= checkb("1", $a_perms).ADMSLAN_19."<br />";
 $text .= checkb("2", $a_perms).ADMSLAN_20."<br />";
 $text .= checkb("3", $a_perms).ADMSLAN_21."<br />";
 $text .= checkb("4", $a_perms).ADMSLAN_22."<br />"; // Moderate users/bans etc
-$text .= checkb("5", $a_perms).ADMSLAN_23."<br />";
-$text .= checkb("Q", $a_perms).ADMSLAN_24."<br />";
+// $text .= checkb("5", $a_perms).ADMSLAN_23."<br />";   Create edit forums deprecated.
+$text .= checkb("Q", $a_perms).ADMSLAN_24."<br />"; // Manage download categories
 $text .= checkb("6", $a_perms).ADMSLAN_25."<br />";  //Upload /manage files
 $text .= checkb("Y", $a_perms).ADMSLAN_67."<br />"; // file inspector
 $text .= checkb("O", $a_perms).ADMSLAN_68."<br />"; // notify
@@ -231,7 +231,7 @@ $text .= checkb("X", $a_perms).ADMSLAN_66."<br />";
 
 // $text .= checkb("A", $a_perms).ADMSLAN_36."<br />"; // Moderate forums   - PLUGIN.
 $text .= checkb("B", $a_perms).ADMSLAN_37."<br />";
-$text .= checkb("C", $a_perms).ADMSLAN_38."<br /><br />"; // Moderate/configure chatbox
+// $text .= checkb("C", $a_perms).ADMSLAN_38."<br /><br />"; // Moderate/configure chatbox
 
 $text .= checkb("H", $a_perms).ADMSLAN_39."<br />";
 $text .= checkb("I", $a_perms).ADMSLAN_40."<br />";
