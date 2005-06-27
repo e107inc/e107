@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.74 $
-|		$Date: 2005-06-27 09:37:18 $
+|		$Revision: 1.75 $
+|		$Date: 2005-06-27 11:31:52 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -54,8 +54,8 @@ $TOPIC_ROW_SPACER = "";
 
 class contentform{
 
-function ContentItemPreview($_POST){
-	global $ns, $sql, $aa, $qs, $tp, $mainparent;
+		function ContentItemPreview($_POST){
+				global $ns, $sql, $aa, $qs, $tp, $mainparent;
 
 				$TRPRE = "<tr>";
 				$TRPOST = "</tr>";
@@ -118,7 +118,7 @@ function ContentItemPreview($_POST){
 				$CONTENT_CONTENT_PREVIEW_CLASS			= $TRPRE.$TDPRE1."visible for".$TDPOST.$TDPRE2.r_userclass_name($_POST['content_class']).$TDPOST.$TRPOST;
 				$CONTENT_CONTENT_PREVIEW_SCORE			= ($_POST['content_score'] ? $TRPRE.$TDPRE1."score".$TDPOST.$TDPRE2.($_POST['content_score']!="none" ? $_POST['content_score']."/100" : "no score assigned").$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_META			= ($_POST['content_meta'] ? $TRPRE.$TDPRE1."meta keywords".$TDPOST.$TDPRE2.$_POST['content_meta'].$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_LAYOUT			= ($_POST['content_layout'] ? $TRPRE.$TDPRE1."layout".$TDPOST.$TDPRE2.($_POST['content_layout'] == "none" ? "default layout" : substr($_POST['content_layout'],25 ,-4)).$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_LAYOUT			= ($_POST['content_layout'] ? $TRPRE.$TDPRE1."layout".$TDPOST.$TDPRE2.($_POST['content_layout'] == "none" || $_POST['content_layout'] =="content_content_template.php" ? "default layout" : substr($_POST['content_layout'],25 ,-4)).$TDPOST.$TRPOST : "");
 
 				//start date
 				if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
@@ -133,6 +133,7 @@ function ContentItemPreview($_POST){
 				$CONTENT_CONTENT_PREVIEW_ENDDATE		= $TRPRE.$TDPRE1."enddate".$TDPOST.$TDPRE2."no end date specified".$TDPOST.$TRPOST;
 				}
 				$CONTENT_CONTENT_PREVIEW_CUSTOM = "";
+				
 				//custom tags
 				for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){
 				if($_POST["content_custom_key_{$i}"] != "" && $_POST["content_custom_value_{$i}"] != ""){
@@ -141,8 +142,11 @@ function ContentItemPreview($_POST){
 				}
 				//custom preset tags
 				foreach($_POST['content_custom_preset_key'] as $k => $v){
+				if($k != "" && $v != ""){
 				$CONTENT_CONTENT_PREVIEW_CUSTOM			.= $TRPRE.$TDPRE1.$k.$TDPOST.$TDPRE2.$v.$TDPOST.$TRPOST;
 				}
+				}
+				
 				//icon
 				if($_POST['content_icon'] && file_exists($content_tmppath_icon.$_POST['content_icon'])){
 					$ICON		= "<img src='".$content_tmppath_icon.$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
@@ -154,25 +158,35 @@ function ContentItemPreview($_POST){
 				$CONTENT_CONTENT_PREVIEW_ICON = $TRPRE.$TDPRE1."icon".$TDPOST.$TDPRE2.$ICON.$TDPOST.$TRPOST;
 
 				//images and attachments
-				$nofile		= FALSE;
-				$noimage	= FALSE;
+				$file	= FALSE;
+				$image	= FALSE;
 				$ATTACH			= $TRPRE.$TDPRE1."attachments".$TDPOST.$TDPRE2;
 				$IMAGES			= $TRPRE.$TDPRE1."images".$TDPOST.$TDPRE2;
 				foreach($_POST as $k => $v){
 					if(preg_match("#^content_files#",$k)){
 						if($v && file_exists($content_tmppath_file.$v)){
 							$ATTACH .= CONTENT_ICON_FILE." ".$v."<br />";
+							$file = TRUE;
 						}elseif($v && file_exists($content_file_path.$v)){
 							$ATTACH .= CONTENT_ICON_FILE." ".$v."<br />";
+							$file = TRUE;
 						}
 					}
 					if(preg_match("#^content_images#",$k)){
 						if($v && file_exists($content_tmppath_image.$v)){
 							$IMAGES .= "<img src='".$content_tmppath_image.$v."' alt='' style='width:100px; border:0;' /> ";
+							$image	= TRUE;
 						}elseif($v && file_exists($content_image_path.$v)){
 							$IMAGES .= "<img src='".$content_image_path.$v."' alt='' style='width:100px; border:0;' /> ";
+							$image	= TRUE;
 						}
 					}
+				}
+				if($file !== TRUE){
+					$ATTACH .= "no attachments assigned";
+				}
+				if($image !== TRUE){
+					$IMAGES .= "no images assigned";
 				}
 				$CONTENT_CONTENT_PREVIEW_ATTACH = $ATTACH.$TDPOST.$TRPOST;
 				$CONTENT_CONTENT_PREVIEW_IMAGES = $IMAGES.$TDPOST.$TRPOST;
