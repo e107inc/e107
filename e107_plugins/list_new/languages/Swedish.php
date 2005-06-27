@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Swedish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-26 11:12:24 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-27 21:41:56 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -149,15 +149,23 @@ define("LIST_ADMIN_LAN_29", "Ikon: Standard");
 define("LIST_ADMIN_LAN_30", "Använd standardikonen från satt tema om ingen ikon finns, eller om Ikon: Använd är avaktiverad");
 define("LIST_ADMIN_LAN_31", "");
 
+define("LIST_ADMIN_LAN_32", "Tidspännvidd: Dagar");
+define("LIST_ADMIN_LAN_33", "Maximum antal dagar en användare kan se bakåt");
+define("LIST_ADMIN_LAN_34", "");
+define("LIST_ADMIN_LAN_35", "dagar");
+
+define("LIST_ADMIN_LAN_36", "Tidspännvidd");
+define("LIST_ADMIN_LAN_37", "Visa en valruta med antale dagar att se tillbaka?");
+define("LIST_ADMIN_LAN_38", "");
 
 
 
 define("LIST_MENU_1", "Senaste tilläggen");
 define("LIST_MENU_2", "av");
 define("LIST_MENU_3", "den");
-define("LIST_MENU_4", "i");
-define("LIST_MENU_5", "");
-define("LIST_MENU_6", "");
+define("LIST_MENU_4", "under");
+define("LIST_MENU_5", "dagar");
+define("LIST_MENU_6", "visa innehåll under hur många dagar?");
 define("LIST_MENU_7", "");
 define("LIST_MENU_8", "");
 define("LIST_MENU_9", "");
