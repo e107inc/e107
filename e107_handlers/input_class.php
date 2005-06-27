@@ -4,7 +4,7 @@
 * User input cleaning class
 *
 * @package e107
-* @version $Revision: 1.4 $
+* @version $Revision: 1.5 $
 * @author $Author: streaky $
 */
 class einput {
@@ -31,7 +31,7 @@ class einput {
 			preg_replace($custom_regexp, "", $string);
 		}
 		if ($sql == true && is_numeric($string) == false) {
-			$string = (is_object($this) ? $this->sql_escape_string($string) : einput::sql_escape_string($string));
+			$string = einput::sql_escape_string($string);
 		}
 
 		return $string;
