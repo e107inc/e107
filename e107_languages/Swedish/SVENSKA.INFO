@@ -1,3 +1,12 @@
++ ----------------------------------------------------------------------------+
+|     e107 website system - Svensk översättning
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/SVENSKA.INFO,v $
+|     $Revision: 1.5 $
+|     $Author: mrpiercer $
++----------------------------------------------------------------------------+
+
+
 For Swedish users only.
 Author: mrpiercer (at) users.sourceforge.net
 
@@ -8,6 +17,10 @@ det engelska originalet.
 Feedback, förslag och kommentarer emottas mycket tacksamt!
 -----
 
+Mån Jun 27 2005 - mrpiercer (at) users.sourceforge.net
+- Nu tycks det övergripande språkliga vara tämligen
+  korrekt. Nu följer att uppdatera filerna efterhand
+  som koden i CVS trädet ändras.
 Ons Jun 22 2005 - mrpiercer (at) users.sourceforge.net
 - Dokumentationsfilerna i ~/e107_docs/help/Swedish
   kan inte ha svenska tecken som äåö i filnamnet, detta
