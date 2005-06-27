@@ -91,7 +91,7 @@ define("RECENT_ADMIN_MENU_18", "pasirinkite datos stiliø, jei data ðiandienos");
 define("RECENT_ADMIN_MENU_19", "Norëdami daugiau indormacijos apie datø formatus aplankykite <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime funkcijos puslapá php.net</a>");
 
 define("RECENT_ADMIN_MENU_20", "rodyti tuðèià");
-define("RECENT_ADMIN_MENU_21", "paþymëkite, jei norite sekcijos be rezultatø naudoti þinutæ");
+define("RECENT_ADMIN_MENU_21", "paþymëkite, jei sekcijoms be rezultatø bus naudojama þinutë");
 define("RECENT_ADMIN_MENU_22", "");
 
 define("RECENT_ADMIN_MENU_23", "piktograma : numatytoji");
@@ -110,42 +110,42 @@ define("RECENT_ADMIN_PAGE_5", "piktograma : naudojima");
 define("RECENT_ADMIN_PAGE_6", "puslapyje naudokite piktogramà ið kiekvienos sekcijos");
 define("RECENT_ADMIN_PAGE_7", "");
 
-define("RECENT_ADMIN_PAGE_8", "characters");
-define("RECENT_ADMIN_PAGE_9", "choose how many characters of the heading will be shown");
-define("RECENT_ADMIN_PAGE_10", "leave blank to show full heading");
+define("RECENT_ADMIN_PAGE_8", "simboliai");
+define("RECENT_ADMIN_PAGE_9", "pasirinkite, kiek simboliø pavadinime bus rodoma");
+define("RECENT_ADMIN_PAGE_10", "palikite tuðèià, jei norite neriboti pavadinimo ilgio");
 
-define("RECENT_ADMIN_PAGE_11", "postfix");
-define("RECENT_ADMIN_PAGE_12", "choose a postfix if the heading is larger then the given amount of characters");
-define("RECENT_ADMIN_PAGE_13", "leave blank to show no postfix");
+define("RECENT_ADMIN_PAGE_11", "praneðimo taisymas");
+define("RECENT_ADMIN_PAGE_12", "pasirinkite praneðimo taisymà, jei pavadinimas yra ilgesnis nei ribojamas simboliø skaièius");
+define("RECENT_ADMIN_PAGE_13", "palikite tuðèià, jei nenorite rodyti praneðimo taisymo");
 
-define("RECENT_ADMIN_PAGE_14", "date");
-define("RECENT_ADMIN_PAGE_15", "choose a date style");
-define("RECENT_ADMIN_PAGE_16", "For more information on date formats see the <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime function page at php.net</a>");
+define("RECENT_ADMIN_PAGE_14", "data");
+define("RECENT_ADMIN_PAGE_15", "pasirinkite datos stiliø");
+define("RECENT_ADMIN_PAGE_16", "Norëdami daugiau indormacijos apie datø formatus aplankykite <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime funkcijos puslapá php.net</a>");
 
-define("RECENT_ADMIN_PAGE_17", "today date");
-define("RECENT_ADMIN_PAGE_18", "choose a date style if the date is today");
-define("RECENT_ADMIN_PAGE_19", "For more information on date formats see the <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime function page at php.net</a>");
+define("RECENT_ADMIN_PAGE_17", "ðiandienos data");
+define("RECENT_ADMIN_PAGE_18", "pasirinkite datos stiliø, jei data ðiandienos");
+define("RECENT_ADMIN_PAGE_19", "Norëdami daugiau indormacijos apie datø formatus aplankykite <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime funkcijos puslapá php.net</a>");
 
-define("RECENT_ADMIN_PAGE_20", "colomns");
-define("RECENT_ADMIN_PAGE_21", "choose an amount of colomns");
-define("RECENT_ADMIN_PAGE_22", "define how many colomns you want to use. the number you specify will seperate the page into an equal amount of colomns");
+define("RECENT_ADMIN_PAGE_20", "stulpeliai");
+define("RECENT_ADMIN_PAGE_21", "pasirinkite stulpeliø skaièiø");
+define("RECENT_ADMIN_PAGE_22", "paþymëkite kiek norësite naudoti stulpeliø. Puslapis bus padalintas lygiomis dalimis stulpeliais");
 
-define("RECENT_ADMIN_PAGE_23", "welcome text");
-define("RECENT_ADMIN_PAGE_24", "define a welcome text that will be rendered at the top of the page");
+define("RECENT_ADMIN_PAGE_23", "pasisveikinimo tekstas");
+define("RECENT_ADMIN_PAGE_24", "nustatykite pasisveikinimo tekstà, kuris bus rodomas puslapio virðuje");
 define("RECENT_ADMIN_PAGE_25", "");
 
-define("RECENT_ADMIN_PAGE_26", "show empty");
-define("RECENT_ADMIN_PAGE_27", "define if for sections with no results a message needs to be shown");
+define("RECENT_ADMIN_PAGE_26", "rodyti tuðèià");
+define("RECENT_ADMIN_PAGE_27", "paþymëkite, jei sekcijoms be rezultatø bus naudojama þinutë");
 define("RECENT_ADMIN_PAGE_28", "");
 
-define("RECENT_ADMIN_PAGE_29", "icon : default");
-define("RECENT_ADMIN_PAGE_30", "use default theme bullet if no icon is present or if icon:use is disabled");
+define("RECENT_ADMIN_PAGE_29", "piktograma : numatytoji");
+define("RECENT_ADMIN_PAGE_30", "naudoti numatytàjá temos þenklelá, jei jokios piktogramos nëra ar piktograma:naudojama yra neágalinta");
 define("RECENT_ADMIN_PAGE_31", "");
 
 
 
 
-define("RECENT_MENU_1", "recent additions");
+define("RECENT_MENU_1", "naujausi papildymai");
 define("RECENT_MENU_2", "by");
 define("RECENT_MENU_3", "on");
 define("RECENT_MENU_4", "in");
@@ -165,45 +165,45 @@ define("RECENT_MENU_17", "");
 define("RECENT_MENU_18", "");
 define("RECENT_MENU_19", "");
 
-define("RECENT_NEWS_1", "news");
-define("RECENT_NEWS_2", "no news items");
+define("RECENT_NEWS_1", "naujienos");
+define("RECENT_NEWS_2", "nëra naujø dalykø");
 
-define("RECENT_COMMENT_1", "comments");
-define("RECENT_COMMENT_2", "no comments");
-define("RECENT_COMMENT_3", "news");
-define("RECENT_COMMENT_4", "faq");
-define("RECENT_COMMENT_5", "poll");
-define("RECENT_COMMENT_6", "docs");
+define("RECENT_COMMENT_1", "komentarai");
+define("RECENT_COMMENT_2", "nëra komentarø");
+define("RECENT_COMMENT_3", "naujienos");
+define("RECENT_COMMENT_4", "DUK");
+define("RECENT_COMMENT_5", "apklausa");
+define("RECENT_COMMENT_6", "dokumentai");
 define("RECENT_COMMENT_7", "bugtrack");
-define("RECENT_COMMENT_8", "content");
-define("RECENT_COMMENT_9", "download");
+define("RECENT_COMMENT_8", "turinys");
+define("RECENT_COMMENT_9", "parsisiuntimai");
 define("RECENT_COMMENT_10", "");
 
 
 
-define("RECENT_DOWNLOAD_1", "downloads");
-define("RECENT_DOWNLOAD_2", "no downloads");
+define("RECENT_DOWNLOAD_1", "parsisiuntimai");
+define("RECENT_DOWNLOAD_2", "nëra parsisiuntimø");
 
-define("RECENT_MEMBER_1", "members");
-define("RECENT_MEMBER_2", "no members");
+define("RECENT_MEMBER_1", "nariai");
+define("RECENT_MEMBER_2", "nëra nariø");
 
-define("RECENT_CONTENT_1", "content");
-define("RECENT_CONTENT_2", "no content");
+define("RECENT_CONTENT_1", "turinys");
+define("RECENT_CONTENT_2", "nëra naujo turinio");
 
-define("RECENT_CHATBOX_1", "chatbox");
-define("RECENT_CHATBOX_2", "no chatbox posts");
+define("RECENT_CHATBOX_1", "pokalbiai");
+define("RECENT_CHATBOX_2", "nëra pokalbiø praneðimø");
 
-define("RECENT_CALENDAR_1", "calendar");
-define("RECENT_CALENDAR_2", "no calendar events");
+define("RECENT_CALENDAR_1", "kalendorius");
+define("RECENT_CALENDAR_2", "nëra kalendoriuje ávykiø");
 
-define("RECENT_LINKS_1", "links");
-define("RECENT_LINKS_2", "no links");
+define("RECENT_LINKS_1", "nuorodos");
+define("RECENT_LINKS_2", "nëra nuorodø");
 
-define("RECENT_FORUM_1", "forum");
-define("RECENT_FORUM_2", "no forum posts");
-define("RECENT_FORUM_3", "views:");
-define("RECENT_FORUM_4", "replies:");
-define("RECENT_FORUM_5", "lastpost:");
+define("RECENT_FORUM_1", "diskusijos");
+define("RECENT_FORUM_2", "nëra diskusijø praneðimø");
+define("RECENT_FORUM_3", "perþiûrëta:");
+define("RECENT_FORUM_4", "atsakyta:");
+define("RECENT_FORUM_5", "paskutinis praneðimas:");
 define("RECENT_FORUM_6", "on:");
 
 
