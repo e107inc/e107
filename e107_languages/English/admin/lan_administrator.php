@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_administrator.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-29 18:34:37 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-27 20:17:31 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("ADMSLAN_0", "New user/admin entry created for");
@@ -26,7 +26,7 @@ define("ADMSLAN_19", "Alter site preferences");
 define("ADMSLAN_20", "Alter Menus");
 define("ADMSLAN_21", "Add site administrators");
 define("ADMSLAN_22", "Moderate users/bans etc");
-define("ADMSLAN_23", "Create/edit forums");
+// define("ADMSLAN_23", "Create/edit forums");
 define("ADMSLAN_24", "Manage download categories");
 define("ADMSLAN_25", "Upload /manage files");
 define("ADMSLAN_26", "Oversee news categories");
@@ -39,9 +39,9 @@ define("ADMSLAN_32", "Configure front page content");
 define("ADMSLAN_33", "Configure log/stats");
 define("ADMSLAN_34", "Configure meta tags");
 define("ADMSLAN_35", "Configure public file uploads");
-define("ADMSLAN_36", "Moderate forums");
+// define("ADMSLAN_36", "Moderate forums");
 define("ADMSLAN_37", "Moderate comments");
-define("ADMSLAN_38", "Moderate/configure chatbox");
+// define("ADMSLAN_38", "Moderate/configure chatbox");
 define("ADMSLAN_39", "Post news");
 define("ADMSLAN_40", "Post links");
 define("ADMSLAN_41", "Post articles");

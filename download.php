@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-06-27 19:18:04 $
+|     $Revision: 1.38 $
+|     $Date: 2005-06-27 20:17:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -355,6 +355,9 @@ if ($action == "view") {
 		require_once(FOOTERF);
 		exit;
 	}
+
+    $DOWNLOAD_ADMIN_EDIT = (ADMIN && getperms('6')) ? "<a href='".e_ADMIN."download.php?create.edit.$download_id' title='edit'><img src='".e_IMAGE."generic/lite/edit.png' alt='' style='padding:0px;border:0px' /></a>" : "";
+
 
 	$DOWNLOAD_REPORT_LINK = "<a href='".e_SELF."?report.{$download_id}'>".LAN_dl_45."</a>";
 	$DOWNLOAD_CATEGORY = $download_category_name;
