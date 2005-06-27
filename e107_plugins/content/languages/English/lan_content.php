@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2005-06-27 09:37:19 $
+|     $Revision: 1.63 $
+|     $Date: 2005-06-27 11:44:05 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -558,6 +558,9 @@ define("CONTENT_ADMIN_ITEM_LAN_114", "icon");
 define("CONTENT_ADMIN_ITEM_LAN_115", "attachment");
 define("CONTENT_ADMIN_ITEM_LAN_116", "image");
 define("CONTENT_ADMIN_ITEM_LAN_117", "submitted content item posted");
+define("CONTENT_ADMIN_ITEM_LAN_118", "no");
+define("CONTENT_ADMIN_ITEM_LAN_119", "assigned");
+define("CONTENT_ADMIN_ITEM_LAN_120", "default layout");
 
 
 
