@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.75 $
-|		$Date: 2005-06-27 11:31:52 $
+|		$Revision: 1.76 $
+|		$Date: 2005-06-27 11:43:54 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -105,63 +105,63 @@ class contentform{
 					$PARENT = $row['content_heading'];
 				}
 
-				$CONTENT_CONTENT_PREVIEW_CATEGORY		= ($_POST['parent'] ? $TRPRE.$TDPRE1."category".$TDPOST.$TDPRE2.$PARENT.$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_HEADING		= ($_POST['content_heading'] ? $TRPRE.$TDPRE1."heading".$TDPOST.$TDPRE2.$_POST['content_heading'].$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_SUBHEADING		= ($_POST['content_subheading'] ? $TRPRE.$TDPRE1."subheading".$TDPOST.$TDPRE2.$_POST['content_subheading'].$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_SUMMARY		= ($_POST['content_summary'] ? $TRPRE.$TDPRE1."summary".$TDPOST.$TDPRE2.$_POST['content_summary'].$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_TEXT			= ($_POST['content_text'] ? $TRPRE.$TDPRE1."text".$TDPOST.$TDPRE2.$_POST['content_text'].$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_AUTHORNAME		= ($_POST['content_author_name'] ? $TRPRE.$TDPRE1."authorname".$TDPOST.$TDPRE2.$_POST['content_author_name'].$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_AUTHOREMAIL	= ($_POST['content_author_email'] ? $TRPRE.$TDPRE1."authoremail".$TDPOST.$TDPRE2.$_POST['content_author_email'].$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_COMMENT		= $TRPRE.$TDPRE1."comments".$TDPOST.$TDPRE2.($_POST['content_comment'] ? "enabled" : "disabled").$TDPOST.$TRPOST;
-				$CONTENT_CONTENT_PREVIEW_RATE			= $TRPRE.$TDPRE1."rating".$TDPOST.$TDPRE2.($_POST['content_rate'] ? "enabled" : "disabled").$TDPOST.$TRPOST;
-				$CONTENT_CONTENT_PREVIEW_PE				= $TRPRE.$TDPRE1."print email icons".$TDPOST.$TDPRE2.($_POST['content_pe'] ? "enabled" : "disabled").$TDPOST.$TRPOST;
-				$CONTENT_CONTENT_PREVIEW_CLASS			= $TRPRE.$TDPRE1."visible for".$TDPOST.$TDPRE2.r_userclass_name($_POST['content_class']).$TDPOST.$TRPOST;
-				$CONTENT_CONTENT_PREVIEW_SCORE			= ($_POST['content_score'] ? $TRPRE.$TDPRE1."score".$TDPOST.$TDPRE2.($_POST['content_score']!="none" ? $_POST['content_score']."/100" : "no score assigned").$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_META			= ($_POST['content_meta'] ? $TRPRE.$TDPRE1."meta keywords".$TDPOST.$TDPRE2.$_POST['content_meta'].$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_LAYOUT			= ($_POST['content_layout'] ? $TRPRE.$TDPRE1."layout".$TDPOST.$TDPRE2.($_POST['content_layout'] == "none" || $_POST['content_layout'] =="content_content_template.php" ? "default layout" : substr($_POST['content_layout'],25 ,-4)).$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_CATEGORY = ($_POST['parent'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_57.$TDPOST.$TDPRE2.$PARENT.$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_HEADING = ($_POST['content_heading'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_11.$TDPOST.$TDPRE2.$_POST['content_heading'].$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_SUBHEADING = ($_POST['content_subheading'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_16.$TDPOST.$TDPRE2.$_POST['content_subheading'].$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_SUMMARY = ($_POST['content_summary'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_17.$TDPOST.$TDPRE2.$_POST['content_summary'].$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_TEXT = ($_POST['content_text'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_18.$TDPOST.$TDPRE2.$_POST['content_text'].$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_AUTHORNAME = ($_POST['content_author_name'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_10." ".CONTENT_ADMIN_ITEM_LAN_14.$TDPOST.$TDPRE2.$_POST['content_author_name'].$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_AUTHOREMAIL = ($_POST['content_author_email'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_10." ".CONTENT_ADMIN_ITEM_LAN_15.$TDPOST.$TDPRE2.$_POST['content_author_email'].$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_COMMENT = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_36.$TDPOST.$TDPRE2.($_POST['content_comment'] ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86).$TDPOST.$TRPOST;
+				$CONTENT_CONTENT_PREVIEW_RATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_37.$TDPOST.$TDPRE2.($_POST['content_rate'] ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86).$TDPOST.$TRPOST;
+				$CONTENT_CONTENT_PREVIEW_PE = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_38.$TDPOST.$TDPRE2.($_POST['content_pe'] ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86).$TDPOST.$TRPOST;
+				$CONTENT_CONTENT_PREVIEW_CLASS = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_39.$TDPOST.$TDPRE2.r_userclass_name($_POST['content_class']).$TDPOST.$TRPOST;
+				$CONTENT_CONTENT_PREVIEW_SCORE = ($_POST['content_score'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_40.$TDPOST.$TDPRE2.($_POST['content_score']!="none" ? $_POST['content_score']."/100" : CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_40." ".CONTENT_ADMIN_ITEM_LAN_119).$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_META = ($_POST['content_meta'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_53.$TDPOST.$TDPRE2.($_POST['content_meta']!="" ? $_POST['content_meta'] : CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_53." ".CONTENT_ADMIN_ITEM_LAN_119).$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_LAYOUT = ($_POST['content_layout'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_92.$TDPOST.$TDPRE2.($_POST['content_layout'] == "none" || $_POST['content_layout'] =="content_content_template.php" ? CONTENT_ADMIN_ITEM_LAN_120 : substr($_POST['content_layout'],25 ,-4)).$TDPOST.$TRPOST : "");
 
 				//start date
 				if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
-				$CONTENT_CONTENT_PREVIEW_STARTDATE		= $TRPRE.$TDPRE1."startdate".$TDPOST.$TDPRE2.$_POST['ne_day']." ".$months[($_POST['ne_month']-1)]." ".$_POST['ne_year'].$TDPOST.$TRPOST;
+				$CONTENT_CONTENT_PREVIEW_STARTDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_15.$TDPOST.$TDPRE2.$_POST['ne_day']." ".$months[($_POST['ne_month']-1)]." ".$_POST['ne_year'].$TDPOST.$TRPOST;
 				}else{
-				$CONTENT_CONTENT_PREVIEW_STARTDATE		= $TRPRE.$TDPRE1."startdate".$TDPOST.$TDPRE2.strftime("%d %b %Y", time()).$TDPOST.$TRPOST;
+				$CONTENT_CONTENT_PREVIEW_STARTDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_15.$TDPOST.$TDPRE2.strftime("%d %b %Y", time()).$TDPOST.$TRPOST;
 				}
 				//end date
 				if($_POST['end_day'] != "none" && $_POST['end_month'] != "none" && $_POST['end_year'] != "none"){
-				$CONTENT_CONTENT_PREVIEW_ENDDATE		= $TRPRE.$TDPRE1."enddate".$TDPOST.$TDPRE2.$_POST['end_day']." ".$months[($_POST['end_month']-1)]." ".$_POST['end_year'].$TDPOST.$TRPOST;
+				$CONTENT_CONTENT_PREVIEW_ENDDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_16.$TDPOST.$TDPRE2.$_POST['end_day']." ".$months[($_POST['end_month']-1)]." ".$_POST['end_year'].$TDPOST.$TRPOST;
 				}else{
-				$CONTENT_CONTENT_PREVIEW_ENDDATE		= $TRPRE.$TDPRE1."enddate".$TDPOST.$TDPRE2."no end date specified".$TDPOST.$TRPOST;
+				$CONTENT_CONTENT_PREVIEW_ENDDATE = $TRPRE.$TDPRE1.CONTENT_ADMIN_DATE_LAN_16.$TDPOST.$TDPRE2.CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_DATE_LAN_16." ".CONTENT_ADMIN_ITEM_LAN_119.$TDPOST.$TRPOST;
 				}
 				$CONTENT_CONTENT_PREVIEW_CUSTOM = "";
 				
 				//custom tags
 				for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){
 				if($_POST["content_custom_key_{$i}"] != "" && $_POST["content_custom_value_{$i}"] != ""){
-				$CONTENT_CONTENT_PREVIEW_CUSTOM			.= $TRPRE.$TDPRE1.$_POST["content_custom_key_{$i}"].$TDPOST.$TDPRE2.$_POST["content_custom_value_{$i}"].$TDPOST.$TRPOST;
+				$CONTENT_CONTENT_PREVIEW_CUSTOM .= $TRPRE.$TDPRE1.$_POST["content_custom_key_{$i}"].$TDPOST.$TDPRE2.$_POST["content_custom_value_{$i}"].$TDPOST.$TRPOST;
 				}
 				}
 				//custom preset tags
 				foreach($_POST['content_custom_preset_key'] as $k => $v){
 				if($k != "" && $v != ""){
-				$CONTENT_CONTENT_PREVIEW_CUSTOM			.= $TRPRE.$TDPRE1.$k.$TDPOST.$TDPRE2.$v.$TDPOST.$TRPOST;
+				$CONTENT_CONTENT_PREVIEW_CUSTOM .= $TRPRE.$TDPRE1.$k.$TDPOST.$TDPRE2.$v.$TDPOST.$TRPOST;
 				}
 				}
 				
 				//icon
 				if($_POST['content_icon'] && file_exists($content_tmppath_icon.$_POST['content_icon'])){
-					$ICON		= "<img src='".$content_tmppath_icon.$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
+					$ICON = "<img src='".$content_tmppath_icon.$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
 				}elseif($_POST['content_icon'] && file_exists($content_icon_path.$_POST['content_icon'])){
-					$ICON		= "<img src='".$content_icon_path.$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
+					$ICON = "<img src='".$content_icon_path.$_POST['content_icon']."' alt='' style='width:100px; border:0;' />";
 				}else{
-					$ICON		= "no icon assigned";
+					$ICON = CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_114." ".CONTENT_ADMIN_ITEM_LAN_119;
 				}
-				$CONTENT_CONTENT_PREVIEW_ICON = $TRPRE.$TDPRE1."icon".$TDPOST.$TDPRE2.$ICON.$TDPOST.$TRPOST;
+				$CONTENT_CONTENT_PREVIEW_ICON = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_114.$TDPOST.$TDPRE2.$ICON.$TDPOST.$TRPOST;
 
 				//images and attachments
 				$file	= FALSE;
 				$image	= FALSE;
-				$ATTACH			= $TRPRE.$TDPRE1."attachments".$TDPOST.$TDPRE2;
-				$IMAGES			= $TRPRE.$TDPRE1."images".$TDPOST.$TDPRE2;
+				$ATTACH = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_24.$TDPOST.$TDPRE2;
+				$IMAGES = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_31.$TDPOST.$TDPRE2;
 				foreach($_POST as $k => $v){
 					if(preg_match("#^content_files#",$k)){
 						if($v && file_exists($content_tmppath_file.$v)){
@@ -183,15 +183,15 @@ class contentform{
 					}
 				}
 				if($file !== TRUE){
-					$ATTACH .= "no attachments assigned";
+					$ATTACH .= CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_24." ".CONTENT_ADMIN_ITEM_LAN_119;
 				}
 				if($image !== TRUE){
-					$IMAGES .= "no images assigned";
+					$IMAGES .= CONTENT_ADMIN_ITEM_LAN_118." ".CONTENT_ADMIN_ITEM_LAN_31." ".CONTENT_ADMIN_ITEM_LAN_119;
 				}
 				$CONTENT_CONTENT_PREVIEW_ATTACH = $ATTACH.$TDPOST.$TRPOST;
 				$CONTENT_CONTENT_PREVIEW_IMAGES = $IMAGES.$TDPOST.$TRPOST;
 
-				$caption = "preview for ".$_POST['content_heading'];
+				$caption = CONTENT_ADMIN_ITEM_LAN_46." ".$_POST['content_heading'];
 				$preview = preg_replace("/\{(.*?)\}/e", '$\1', $CONTENT_CONTENT_PREVIEW);
 				$ns -> tablerender($caption, $preview);
 		}
