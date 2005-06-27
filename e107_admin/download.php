@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2005-06-19 18:56:10 $
-|     $Author: stevedunstan $
+|     $Revision: 1.59 $
+|     $Date: 2005-06-27 01:08:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -786,7 +786,7 @@ class download {
 			<td style='width:20%' class='forumheader3'>".DOWLAN_19.":</td>
 			<td style='width:80%' class='forumheader3'>
 			<select name='download_image' class='tbox'>
-		
+
 			";
 
 
@@ -830,11 +830,12 @@ class download {
 		$cal_options['showsTime'] = false;
 		$cal_options['showOthers'] = false;
 		$cal_options['weekNumbers'] = false;
-		$cal_options['ifFormat'] = "%d/%m/%Y";
+		$cal_options['ifFormat'] = "%d/%m/%Y %H:%M:%S";
+		$cal_options['timeFormat'] = "24";
 		$cal_attrib['class'] = "tbox";
 		$cal_attrib['size'] = "12";
 		$cal_attrib['name'] = "download_datestamp";
-		$cal_attrib['value'] = date("d/m/Y", $download_datestamp);
+		$cal_attrib['value'] = date("d/m/Y H:i:s", $download_datestamp);
 		$text .= $cal->make_input_field($cal_options, $cal_attrib);
 
 		$update_checked = ($_POST['update_datestamp']) ? "checked='checked'" : "";
@@ -936,8 +937,7 @@ class download {
 	function submit_download($sub_action, $id) {
 		global $tp, $sql, $DOWNLOADS_DIRECTORY, $e_event;
 
-
-		//echo "<pre>"; print_r($_POST); echo "</pre>"; exit;
+		//echo print_a($_POST); exit;
 
 		if ($_POST['download_url_external'] && $_POST['download_url'] == '') {
 			$durl = $_POST['download_url_external'];
@@ -969,14 +969,10 @@ class download {
 		$_POST['download_name'] = $tp->toDB($_POST['download_name']);
 		$_POST['download_author'] = $tp->toDB($_POST['download_author']);
 
-		if ($_POST['download_datestamp']){
-			$tmp = explode("/", $_POST['download_datestamp']);
-			$_POST['download_datestamp'] = mktime(0, 0, 0, $tmp[1], $tmp[0], $tmp[2]);
-        } else {
-          $_POST['download_datestamp'] = time();
-		}
 		if (preg_match("#(.*?)/(.*?)/(.*?) (.*?):(.*?):(.*?)$#", $_POST['download_datestamp'], $matches)){
 			$_POST['download_datestamp'] = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[1], $matches[3]);
+		}else{
+           $_POST['download_datestamp'] = time();
 		}
 
 		if($_POST['update_datestamp']){	$_POST['download_datestamp'] = time();	}
