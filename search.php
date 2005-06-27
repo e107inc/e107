@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-06-27 22:29:18 $
+|     $Revision: 1.45 $
+|     $Date: 2005-06-27 22:58:09 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -71,7 +71,7 @@ if ($search_info[$search_id] = search_info('pages', 'core', false, array('sfile'
 }
 //plugin search routines
 foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
-	if(is_readable(e_PLUGIN.$plug_dir."/e_search.php")) {
+	if (is_readable(e_PLUGIN.$plug_dir."/e_search.php")) {
 		if ($search_info[$search_id] = search_info($plug_dir, 'plug', e_PLUGIN.$plug_dir."/e_search.php")) {
 			$search_id++;
 		}
@@ -187,16 +187,6 @@ if ($search_prefs['selector'] == 1) {
 	}
 }
 
-// determine referer for preselected search area
-
-if (isset($_SERVER['HTTP_REFERER'])) {
-	if (!$refpage = substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))) {
-		$refpage = "index.php";
-	}
-} else {
-	$refpage = "";
-}
-
 // determine areas being searched
 if (!$search_prefs['user_select'] && $_GET['r'] < 1) {
 	foreach($search_info as $key => $value) {
@@ -210,11 +200,28 @@ if (!$search_prefs['user_select'] && $_GET['r'] < 1) {
 			$searchtype[$_GET['t']] = true;
 		}
 	} else {
-		foreach($search_info as $key => $value) {
-			if ($value['refpage']) {
-				if (eregi($value['refpage'], $refpage)) {
+		if (isset($_GET['ref'])) {
+			foreach($search_info as $key => $value) {
+				if ($value['id'] == $_GET['ref']) {
 					$searchtype[$key] = true;
 					$_GET['t'] = $key;
+				}
+			}
+		} else {
+			if (isset($_SERVER['HTTP_REFERER'])) {
+				if (!$refpage = substr($_SERVER['HTTP_REFERER'], (strrpos($_SERVER['HTTP_REFERER'], "/")+1))) {
+					$refpage = "index.php";
+				}
+			} else {
+				$refpage = "";
+			}
+		
+			foreach($search_info as $key => $value) {
+				if ($value['refpage']) {
+					if (eregi($value['refpage'], $refpage)) {
+						$searchtype[$key] = true;
+						$_GET['t'] = $key;
+					}
 				}
 			}
 		}
