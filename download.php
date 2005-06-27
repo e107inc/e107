@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-06-27 17:19:13 $
-|     $Author: streaky $
+|     $Revision: 1.37 $
+|     $Date: 2005-06-27 19:18:04 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -133,11 +133,11 @@ if (isset($_POST['commentsubmit'])) {
 	} else {
 		$row = $sql->db_Fetch();
 		if ($row[0] && (ANON === TRUE || USER === TRUE)) {
-			
+
 			$clean_authorname = einput::clean_input(einput::strip_input($_POST['author_name']), true);
 			$clean_comment = einput::clean_input(einput::strip_input($_POST['comment']), true);
 			$clean_subject = einput::clean_input(einput::strip_input($_POST['subject']), true);
-			
+
 			$cobj->enter_comment($clean_authorname, $clean_comment, "download", $id, $pid, $clean_subject);
 			$e107cache->clear("comment.download.{$sub_action}");
 		}
@@ -204,21 +204,18 @@ if ($action == "list") {
 		$sql->db_Select_gen($qry);
 		$scArray = $sql -> db_getList();
 		if (!$DOWNLOAD_CAT_PARENT_TABLE) {
-			if (file_exists(THEME."download_template.php"))
-			{
+			if (file_exists(THEME."download_template.php"))	{
 				require_once(THEME."download_template.php");
 			} else {
 				require_once(e_BASE.$THEMES_DIRECTORY."templates/download_template.php");
 			}
 		}
 		if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:1px solid blue");}
-		foreach($scArray as $row)
-		{
+		foreach($scArray as $row)	{
 			$download_cat_table_string .= parse_download_cat_child_table($row, FALSE);
 		}
 		require_once(HEADERF);
-		if(strstr($row['parent_icon'], chr(1)))
-		{
+		if(strstr($row['parent_icon'], chr(1)))	{
 			list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $row['parent_icon']);
 		}
 		$DOWNLOAD_CAT_MAIN_ICON = ($download_category_icon ? "<img src='".e_IMAGE."icons/".$download_category_icon."' alt='' style='float-left' />" : "&nbsp;");
@@ -560,7 +557,7 @@ if ($action == "report") {
 		$user = $tp -> toDB($_POST['user']);
 
 		$clean_report_id = intval($_POST['report_download_id']);
-		
+
 		$sql->db_Insert('generic', "0, 'Broken Download', ".time().",'".USERID."', '{$download_name}', {$clean_report_id}, '{$report_add}'");
 
 		define("e_PAGETITLE", PAGE_NAME." / ".LAN_dl_47);
@@ -768,11 +765,7 @@ function parse_download_cat_child_table($row, $subList)
 	}
 
 
-	$download_icon = ($row['d_count'] || $row['d_subcount'] ? "<img src='".e_IMAGE."icons/{$download_category_icon}' alt='' style='float-left' />" : "<img src='".e_IMAGE."icons/{$download_category_icon_empty}' alt='' style='float-left' />");
-
-
-
-
+	$download_icon = ((!$row['d_count'] || !$row['d_subcount']) && $download_category_icon_empty) ? "<img src='".e_IMAGE."icons/{$download_category_icon_empty}' alt='' style='float-left' />" : "<img src='".e_IMAGE."icons/".$row['download_category_icon']."' alt='' style='float-left' />" ;
 
 	$DOWNLOAD_CAT_SUB_ICON = ($row['download_category_icon'] ? $download_icon : "&nbsp;");
 	$DOWNLOAD_CAT_SUB_NEW_ICON = $new;
