@@ -70,7 +70,9 @@ if (!isset($SEARCH_TABLE_MSG)) {
 }
 
 if (!isset($SEARCH_BOT_TABLE)) {
-	$SEARCH_BOT_TABLE = "</table>
+	$SEARCH_BOT_TABLE = "<tr style='display: none !important; display: visible'>
+	<td style='display: none' colspan='2'></td>
+	</tr></table>
 	</form>
 	</div>";
 }
