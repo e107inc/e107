@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-06-26 12:34:19 $
+|     $Revision: 1.35 $
+|     $Date: 2005-06-28 21:31:30 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -113,7 +113,7 @@ class comment {
 		//addrating	: boolean, to show rating system in rendered comment
 		global $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen;
 		global $pref, $comrow, $tp, $NEWIMAGE, $USERNAME, $RATING, $datestamp;
-		global $thisaction, $thistable, $thisid, $row2;
+		global $thisaction, $thistable, $thisid;
 		
 		$comrow		= $row;
 		$thistable	= $table;
@@ -139,7 +139,6 @@ class comment {
 		$sql		= new db;
 		$ns			= new e107table;
 		$gen		= new convert;
-
 		$url		= e_PAGE."?".e_QUERY;
 		$unblock	= "[<a href='".e_BASE.e_ADMIN."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_1."</a>] ";
 		$block		= "[<a href='".e_BASE.e_ADMIN."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_2."</a>] ";
@@ -192,31 +191,22 @@ class comment {
 			define("IMAGE_rank_main_admin_image", (isset($pref['rank_main_admin_image']) && $pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/main_admin.png' alt='' />"));
 		}
 		if(!defined("IMAGE_rank_moderator_image")){
-			define("IMAGE_rank_moderator_image", (isset($pref['rank_moderator_image']) && $pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
+			define("IMAGE_rank_moderator_image", (isset($pref['rank_moderator_image']) && $pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
 		}
 		if(!defined("IMAGE_rank_admin_image")){
 			define("IMAGE_rank_admin_image", (isset($pref['rank_admin_image']) && $pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
 		}
 
 		$RATING = ($addrating==TRUE && $comrow['user_id'] ? $rater->composerating($thistable, $thisid, FALSE, $comrow['user_id']) : "");
+
 		$text = $tp -> parseTemplate($renderstyle, FALSE, $comment_shortcodes);
 
 		if ($action == "comment" && $pref['nested_comments']) {
 		
-			if($thistable == "news"){ $type = 0;
-			}elseif($thistable == "content"){ $type = 1;
-			}elseif($thistable == "download"){ $type = 2;
-			}elseif($thistable == "faq"){ $type = 3;
-			}elseif($thistable == "poll"){ $type = 4;
-			}elseif($thistable == "docs"){ $type = 5;
-			}elseif($thistable == "bugtrack"){ $type = 6;
-			}elseif($thistable == "news"){ $type = 0;
-			}else{
-				$type = $thistable;
-			}
+			$type = $this -> getCommentType($thistable);
 
 			$sub_query = "
-			SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location, user_forums, user_chats, user_visits, user_perms 
+			SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_forums, user_chats, user_visits, user_perms
 			FROM #comments 
 			LEFT JOIN #user ON #comments.comment_author = #user.user_id 
 			WHERE comment_item_id='".$thisid."' AND comment_type='".$type."' AND comment_pid='".$comrow['comment_id']."' 
@@ -224,14 +214,14 @@ class comment {
 			";
 			$sql2 = new db;
 			if ($sub_total = $sql2->db_Select_gen($sub_query)) {
-				while ($row2 = $sql2->db_Fetch()) {
+				while ($row1 = $sql2->db_Fetch()) {
 					if ($pref['nested_comments']) {
 						$width = $width + 3;
 						if ($width > 80) {
 							$width = 80;
 						}
 					}
-					$text .= $this->render_comment($row2, $table, $action, $id, $width, $subject, $addrating);
+					$text .= $this->render_comment($row1, $table, $action, $id, $width, $subject, $addrating);
 					unset($width);
 				}
 				$total ++;
@@ -260,36 +250,8 @@ class comment {
 			}
 		}
 
-		switch($table) {
-			case "news":
-			$type = 0;
-			break;
-			case "content" :
-			$type = 1;
-			break;
-			case "download" :
-			$type = 2;
-			break;
-			case "faq" :
-			$type = 3;
-			break;
-			case "poll" :
-			$type = 4;
-			break;
-			case "docs" :
-			$type = 5;
-			break;
-			case "bugtrack" :
-			$type = 6;
-			break;
-			/****************************************
-			Add your comment type here in same format as above, ie ...
-			case "your_comment_type"; $type = your_type_id; break;
-			****************************************/
-		}
-		if (!Isset($type)) {
-			$type = $table;
-		}
+		$type = $this -> getCommentType($table);
+
 		$comment = $tp->toDB($comment, "public");
 		$subject = $tp->toDB($subject, "public");
 		if (!$sql->db_Select("comments", "*", "comment_comment='".$comment."' AND comment_item_id='$id' AND comment_type='$type' ")) {
@@ -358,29 +320,66 @@ class comment {
 	}
 
 
+	function getCommentType($table){
+			switch($table) {
+				case "news":
+				$type = 0;
+				break;
+				case "content" :
+				$type = 1;
+				break;
+				case "download" :
+				$type = 2;
+				break;
+				case "faq" :
+				$type = 3;
+				break;
+				case "poll" :
+				$type = 4;
+				break;
+				case "docs" :
+				$type = 5;
+				break;
+				case "bugtrack" :
+				$type = 6;
+				break;
+				/****************************************
+				Add your comment type here in same format as above, ie ...
+				case "your_comment_type"; $type = your_type_id; break;
+				****************************************/
+			}
+			if (!isset($type)) {
+				$type = $table;
+			}
+			return $type;
+	}
+
 	//compose comment	: single call function will render the existing comments and show the form_comment
 	//enter				: boolean to show/hide the form_comment area, default TRUE
 	//rate				: boolean, to show/hide rating system in comment, default FALSE
 	function compose_comment($table, $action, $id, $width, $subject, $rate=FALSE, $enter=TRUE){
-		global $pref, $sql, $ns, $e107cache;
+		global $pref, $sql, $ns, $e107cache, $tp;
+
+		$type = $this -> getCommentType($table);
 
 		$text = "";
 		$query = ($pref['nested_comments'] ?
-		"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location, user_forums, user_chats, user_visits, user_perms FROM #comments
-		LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$id."' AND comment_type='".$table."' AND comment_pid='0' ORDER BY comment_datestamp"
+		"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_forums, user_chats, user_visits, user_perms FROM #comments
+		LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$id."' AND comment_type='".$type."' AND comment_pid='0' ORDER BY comment_datestamp"
 		:
-		"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_location, user_forums, user_chats, user_visits, user_perms FROM #comments
-		LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$id."' AND comment_type='".$table."' ORDER BY comment_datestamp"
+		"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_forums, user_chats, user_visits, user_perms FROM #comments
+		LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$id."' AND comment_type='".$type."' ORDER BY comment_datestamp"
 		);
 
 		$comment_total = $sql->db_Select_gen($query); 
 		if ($comment_total) {
 			$width = 0;
-			while ($row2 = $sql->db_Fetch()) {
+			while ($row = $sql->db_Fetch()) {
+				$subject = $tp->toHTML($subject);
 				if ($pref['nested_comments']) {
-					$text .= $this->render_comment($row2, $table , $action, $id, $width, $subject, $rate);
+					$text .= $this->render_comment($row, $table , $action, $id, $width, $subject, $rate);
 				} else {
-					$text = $this->render_comment($row2, $table , $action, $id, $width, $subject, $rate);
+					$text = $this->render_comment($row, $table , $action, $id, $width, $subject, $rate);
 				}
 			}
 			$ns->tablerender(LAN_99, $text);

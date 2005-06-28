@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/level_handler.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-23 17:23:28 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-28 21:31:30 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 	
@@ -21,10 +21,10 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 {
 	 
 	global $tp;
+
 	if (!$user_id) {
 		return FALSE;
 	}
-	 
 	if ($user_admin) {
 		if ($user_perms == "0")
 		{
@@ -106,7 +106,6 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 		$data['pic'] = "<img src='".$data['pic']."' alt='' />";
 		$data[1] = "<div class='spacer'>{$data['pic']}</div>";
 	}
-
 	return ($data);
 }
 	
