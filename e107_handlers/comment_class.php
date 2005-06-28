@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-06-28 21:50:27 $
+|     $Revision: 1.38 $
+|     $Date: 2005-06-28 21:51:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -221,7 +221,6 @@ class comment {
 							$width = 80;
 						}
 					}
-					echo $width."<br />";
 					$text .= $this->render_comment($row1, $table, $action, $id, $width, $subject, $addrating);
 					unset($width);
 				}
