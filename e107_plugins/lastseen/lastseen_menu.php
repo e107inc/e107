@@ -11,11 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/lastseen/lastseen_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-24 11:23:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-28 20:13:14 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
+
+if (file_exists(e_PLUGIN."lastseen/languages/".e_LANGUAGE.".php"))
+{
+	include_once(e_PLUGIN."lastseen/languages/".e_LANGUAGE.".php");
+}
+else
+{
+	include_once(e_PLUGIN."lastseen/languages/English.php");
+}
 
 $sql -> db_Select("user", "user_id, user_name, user_currentvisit", "ORDER BY user_currentvisit DESC LIMIT 0,10", "nowhere");
 $userArray = $sql -> db_getList();
@@ -30,5 +39,5 @@ foreach($userArray as $user)
 }
 $text .= "</ul>";
 
-$ns->tablerender("Last seen", $text);
+$ns->tablerender(LSP_LAN_1, $text);
 ?>
