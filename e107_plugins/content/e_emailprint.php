@@ -7,7 +7,10 @@ function print_item($id)
 
 		require_once(e_PLUGIN."content/handlers/content_class.php");
 		$aa = new content;
-		
+
+		$lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php";
+		include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content.php");
+
 		if(!is_object($sql)){ $sql = new db; }
 		$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_parent, content_datestamp, content_class", "content_id='$id' ");
 		$row = $sql -> db_Fetch();
@@ -30,7 +33,7 @@ function print_item($id)
 		<br /><br />
 		".$row['content_text']."
 		<br /><br /><hr />
-		this content item is from ".SITENAME."
+		".CONTENT_EMAILPRINT_LAN_1." ".SITENAME."
 		<br />
 		( http://".$_SERVER[HTTP_HOST].e_HTTP.e_PLUGIN."content/content.php?content.".$row['content_id']." )        
 		";
