@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-06-28 11:07:20 $
+|     $Revision: 1.35 $
+|     $Date: 2005-06-28 16:32:08 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -110,7 +110,7 @@ if ($action == "next")
 	else
 	{
 		require_once(HEADERF);
-		$ns->tablerender('', FORLAN_105);
+		$ns->tablerender('', LAN_405);
 		require_once(FOOTERF);
 		exit;
 	}
@@ -123,7 +123,7 @@ if ($action == "prev") {
 		exit;
 	} else {
 		require_once(HEADERF);
-		$ns->tablerender('', FORLAN_104);
+		$ns->tablerender('', LAN_404);
 		require_once(FOOTERF);
 		exit;
 	}
