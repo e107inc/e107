@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-06-27 17:41:19 $
-|     $Author: stevedunstan $
+|     $Revision: 1.40 $
+|     $Date: 2005-06-28 14:33:12 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -437,12 +437,6 @@ CREATE TABLE user (
   user_password varchar(32) NOT NULL default '',
   user_sess varchar(100) NOT NULL default '',
   user_email varchar(100) NOT NULL default '',
-  user_homepage varchar(150) NOT NULL default '',
-  user_icq varchar(10) NOT NULL default '',
-  user_aim varchar(100) NOT NULL default '',
-  user_msn varchar(100) NOT NULL default '',
-  user_location varchar(150) NOT NULL default '',
-  user_birthday date NOT NULL default '0000-00-00',
   user_signature text NOT NULL,
   user_image varchar(100) NOT NULL default '',
   user_timezone char(3) NOT NULL default '',
