@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/fpw.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-29 23:48:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-28 12:23:05 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -88,8 +88,10 @@ if (isset($_POST['pwsubmit'])) {
 			fpw_error(LAN_FPW3);
 		}
 	}
-
-	if ($sql->db_Select("user", "*", "user_email='{$_POST['email']}' AND user_name='{$_POST['username']}' ")) {
+	
+	$clean_email = einput::clean_input(einput::strip_input($_POST['email']), true);
+	$clean_username = einput::clean_input(einput::strip_input($_POST['username']), true);
+	if ($sql->db_Select("user", "*", "user_email='{$clean_email}' AND user_name='{$clean_username}' ")) {
 		$row = $sql->db_Fetch();
 		 extract($row);
 
@@ -108,7 +110,7 @@ if (isset($_POST['pwsubmit'])) {
 		$maxran = 1000000;
 		$rand_num = mt_rand(0, $maxran);
 		$datekey = date("r");
-		$rcode = md5($_SERVER[HTTP_USER_AGENT] . serialize($pref). $rand_num . $datekey);
+		$rcode = md5($_SERVER['HTTP_USER_AGENT'] . serialize($pref). $rand_num . $datekey);
 
 		$link = SITEURL."fpw.php?{$rcode}";
 		$message = LAN_FPW5." ".SITENAME." ".LAN_FPW14." : ".$e107->getip().".\n\n".LAN_FPW15."\n\n".LAN_FPW16."\n\n".LAN_FPW17."\n\n{$link}";
