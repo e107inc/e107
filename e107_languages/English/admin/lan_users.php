@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-06-10 17:38:46 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2005-06-28 19:09:31 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Options Saved.");
@@ -134,5 +134,43 @@ define("USRLAN_132", "Enable");
 
 define("USRLAN_133", "Force user to update settings");
 define("USRLAN_134", "Enabling this option will automatically send the user to their user-settings if a required user field is not filled.");
+
+define("DUSRLAN_1", "ID");
+define("DUSRLAN_2", "Display Name");
+define("DUSRLAN_3", "Username");
+define("DUSRLAN_4", "Custom Title");
+define("DUSRLAN_5", "Password");
+define("DUSRLAN_6", "Session");
+define("DUSRLAN_7", "Email");
+define("DUSRLAN_8", "Website");
+define("DUSRLAN_9", "ICQ");
+define("DUSRLAN_10", "AIM");
+define("DUSRLAN_11", "MSN");
+define("DUSRLAN_12", "Location");
+define("DUSRLAN_13", "Birthday");
+define("DUSRLAN_14", "Signature");
+define("DUSRLAN_15", "Image");
+define("DUSRLAN_16", "Timezone");
+define("DUSRLAN_17", "Hide Email");
+define("DUSRLAN_18", "Join Date");
+define("DUSRLAN_19", "Last Visit");
+define("DUSRLAN_20", "Current Visit");
+define("DUSRLAN_21", "Last Post");
+define("DUSRLAN_22", "Chatbox Posts");
+define("DUSRLAN_23", "Comments");
+define("DUSRLAN_24", "Forum Posts");
+define("DUSRLAN_25", "IP");
+define("DUSRLAN_26", "Ban");
+define("DUSRLAN_27", "Prefs");
+define("DUSRLAN_28", "New");
+define("DUSRLAN_29", "Viewed");
+define("DUSRLAN_30", "Visits");
+define("DUSRLAN_31", "Admin");
+define("DUSRLAN_32", "Real Name");
+define("DUSRLAN_33", "User Class");
+define("DUSRLAN_34", "Perms");
+define("DUSRLAN_35", "Picture");
+define("DUSRLAN_36", "Password Change");
+define("DUSRLAN_37", "XUP");
 
 ?>
