@@ -12,15 +12,15 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.9 $
-|		$Date: 2005-06-25 22:18:17 $
+|		$Revision: 1.10 $
+|		$Date: 2005-06-28 11:32:06 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
 $plugindir		= e_PLUGIN."content/";
 $plugintable	= "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
-$datequery		= " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
+$datequery		= " AND content_datestamp < ".time()." AND (content_enddate=0 || content_enddate>".time().") ";
 
 $lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
 include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
@@ -29,6 +29,31 @@ require_once($plugindir."handlers/content_class.php");
 $aa = new content;
 
 class content_convert{
+
+		//update content_author
+		function upgrade_1_21(){
+			global $sql;
+			$sql = new db; $sql1 = new db;
+			$upgrade = FALSE;
+			if($sql -> db_Select("pcontent", "content_id, content_author", "content_author != '' ")){
+				while($row = $sql -> db_Fetch()){
+					if(is_numeric($row['content_author'])){
+					}else{
+						$upgrade = TRUE;
+						$tmp = explode("^", $row['content_author']);
+						if($tmp[0] == "0"){
+							$newauthor = $tmp[1].($tmp[2] ? "^".$tmp[2] : "");
+							$sql1 -> db_Update("pcontent", " content_author = '".$newauthor."' WHERE content_id='".$row['content_id']."' ");
+						}
+					}
+				}
+			}
+			if($upgrade){
+				return "Content Management Plugin : content_author updated<br />";
+			}else{
+				return FALSE;
+			}
+		}
 
 		//update table structure
 		function upgrade_1_2(){
@@ -46,7 +71,6 @@ class content_convert{
 				$plugintable	= "pcontent";
 
 				$count = "0";
-				// ##### STAGE 8 : INSERT ROW -------------------------------------------------------------
 				$sql = new db;
 				$thiscount = $sql -> db_Count("pcontent", "(*)");
 				if($thiscount > 0){
@@ -68,7 +92,7 @@ class content_convert{
 						$sql -> db_Update("pcontent", " content_parent = '".$newparent."', content_pref='' WHERE content_id='".$row['content_id']."' ");
 					}
 				}
-				return CONTENT_ADMIN_CONVERSION_LAN_58."<br /><br />".CONTENT_ADMIN_CONVERSION_LAN_46;
+				return CONTENT_ADMIN_CONVERSION_LAN_58."<br /><br />".CONTENT_ADMIN_CONVERSION_LAN_46."<br />";
 		}
 
 
@@ -188,7 +212,7 @@ class content_convert{
 
 		//create main parent
 		function create_mainparent($name, $tot, $order){
-				global $sql, $aa, $plugintable;
+				global $sql, $aa, $plugintable, $tp;
 				$plugintable	= "pcontent";
 
 				$sql = new db;
@@ -201,6 +225,7 @@ class content_convert{
 				if($tot > 0){
 					//if(!is_object($sql)){ $sql = new db; }
 					if(!$sql -> db_Select($plugintable, "content_heading", "content_heading = '".$name."' AND content_parent = '0' ")){
+						$name = $tp -> toDB($name);
 						$sql -> db_Insert($plugintable, "'".$newid."', '".$name."', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '".$order."', '', '', '' ");
 
 						//check if row is present in the db (is it a valid insert)

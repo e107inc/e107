@@ -236,6 +236,9 @@ global $CONTENT_AUTHOR_TABLE_NAME, $authordetails, $i, $qs, $row;
 $name = ($authordetails[$i][1] == "" ? "... ".CONTENT_LAN_29." ..." : $authordetails[$i][1]);
 $authorlink = "<a href='".e_SELF."?author.".$row['content_id']."'>".$name."</a>";
 return $authorlink;
+//global $authorname;
+//$authorlink = "<a href='".e_SELF."?author.".$row['content_id']."'>".$authorname."</a>";
+//return $authorlink;
 SC_END
 
 SC_BEGIN CONTENT_AUTHOR_TABLE_ICON
