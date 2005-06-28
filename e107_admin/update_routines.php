@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.118 $
-|     $Date: 2005-06-26 20:52:39 $
-|     $Author: lisa_ $
+|     $Revision: 1.119 $
+|     $Date: 2005-06-28 00:37:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -826,7 +826,13 @@ function update_61x_to_700($type='') {
 			mysql_query("ALTER TABLE ".MPREFIX."links_page ADD link_datestamp INT ( 10 ) UNSIGNED NOT NULL DEFAULT '';");
 		}
 
-
+		// custom pages search added
+		$search_prefs = $sysprefs -> getArray('search_prefs');
+		if (!isset($search_prefs['core_handlers']['pages'])) {
+			$search_prefs['core_handlers']['pages'] = array('class' => 0, 'chars' => 150, 'results' => 10, 'pre_title' => 1, 'pre_title_alt' => '', 'order' => 13);
+			$serial_prefs = addslashes(serialize($search_prefs));
+			$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
+		}
 
 		// Save all prefs that were set in above update routines
 		if ($s_prefs == TRUE) {
@@ -891,6 +897,11 @@ function update_61x_to_700($type='') {
 		// search content plugin comments id change
 		$search_prefs = $sysprefs -> getArray('search_prefs');
 		if ($search_prefs['comments_handlers']['content']['id'] == '1') {
+			return FALSE;
+		}
+		
+		// custom pages search added
+		if (!isset($search_prefs['core_handlers']['pages'])) {
 			return FALSE;
 		}
 
