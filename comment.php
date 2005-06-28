@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-06-28 21:31:29 $
+|     $Revision: 1.37 $
+|     $Date: 2005-06-28 21:49:30 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -257,7 +257,7 @@ if ($action == "reply") {
 if($pref['trackbackEnabled'] && $table == "news"){
 	echo "<span class='smalltext'><b>".$pref['trackbackString']."</b> ".$e107->http_path.e_PLUGIN."trackback/trackback.php?pid={$id}</span>";
 }
-
+$field = ($field ? $field : ($id ? $id : ""));
 $cobj->compose_comment($table, $action, $field, $width, $subject, $rate=FALSE, $enter=TRUE);
 
 if (!strstr(e_QUERY, "poll")) {

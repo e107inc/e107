@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-06-28 21:31:30 $
+|     $Revision: 1.36 $
+|     $Date: 2005-06-28 21:49:31 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -205,6 +205,7 @@ class comment {
 		
 			$type = $this -> getCommentType($thistable);
 
+
 			$sub_query = "
 			SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_forums, user_chats, user_visits, user_perms
 			FROM #comments 
@@ -212,6 +213,7 @@ class comment {
 			WHERE comment_item_id='".$thisid."' AND comment_type='".$type."' AND comment_pid='".$comrow['comment_id']."' 
 			ORDER BY comment_datestamp
 			";
+			echo $sub_query;
 			$sql2 = new db;
 			if ($sub_total = $sql2->db_Select_gen($sub_query)) {
 				while ($row1 = $sql2->db_Fetch()) {
@@ -221,6 +223,7 @@ class comment {
 							$width = 80;
 						}
 					}
+					echo $width."<br />";
 					$text .= $this->render_comment($row1, $table, $action, $id, $width, $subject, $addrating);
 					unset($width);
 				}
