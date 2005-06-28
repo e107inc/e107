@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Swedish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-27 21:41:56 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-28 09:19:45 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -114,7 +114,7 @@ define("LIST_ADMIN_LAN_3", "Ange en rubrik");
 define("LIST_ADMIN_LAN_4", "");
 
 define("LIST_ADMIN_LAN_5", "Ikon: Använd");
-define("LIST_ADMIN_LAN_6", "Använd ikon från varje sektion);
+define("LIST_ADMIN_LAN_6", "Använd ikon från varje sektion");
 define("LIST_ADMIN_LAN_7", "");
 
 define("LIST_ADMIN_LAN_8", "Tecken");
