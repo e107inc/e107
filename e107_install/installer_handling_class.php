@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_install/installer_handling_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-26 14:43:33 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-28 10:16:59 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -317,7 +317,7 @@ class e_install {
 			    </tr>
 			    <tr>
 			      <td class='row-border'><label for='email'>".LANINS_080."</label></td>
-			      <td class='row-border'><input type='text' name='email' size='30' id='email' value='".($this->previous_steps['admin']['email'] ? $this->previous_steps['admin']['email'] : "user@yoursite.com")."' maxlength='100' /></td>
+			      <td class='row-border'><input type='text' name='email' size='30' id='email' value='".($this->previous_steps['admin']['email'] ? $this->previous_steps['admin']['email'] : LANINS_082)."' maxlength='100' /></td>
 				  <td class='row-border'>".LANINS_081."</td>
 			    </tr>
 			  </table>

@@ -103,4 +103,6 @@ define("LANINS_079", "Please type the admin password again for confirmation");
 define("LANINS_080", "Admin Email");
 define("LANINS_081", "Enter your email address");
 
+define("LANINS_082", "user@yoursite.com");
+
 ?>
