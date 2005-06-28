@@ -1,14 +1,22 @@
-	<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-28 13:47:33 $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-28 16:28:12 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
+
+define("CONTENT_PLUGIN_LAN_1", "Innehållshantering");
+define("CONTENT_PLUGIN_LAN_2", "En komplett sektion för innehållshantering.");
+define("CONTENT_PLUGIN_LAN_3", "Konfigurera innehållshanteraren");
+define("CONTENT_PLUGIN_LAN_4", "Denna plugin är nu klar att användas.");
+define("CONTENT_PLUGIN_LAN_5", "innehåll");
+
+define("CONTENT_EMAILPRINT_LAN_1", "Detta innehåll kommer från");
 
 define("CONTENT_ICON_LAN_0", "redigera");
 define("CONTENT_ICON_LAN_1", "radera");

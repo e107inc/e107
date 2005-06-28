@@ -4,12 +4,19 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Swedish.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-27 17:53:05 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-28 16:28:12 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Länkar");
+
+define("LCLAN_PLUGIN_LAN_1", "Länksida");
+define("LCLAN_PLUGIN_LAN_2", "Länksida för att visa externa webblänkar");
+define("LCLAN_PLUGIN_LAN_3", "Konfigurera länksida");
+define("LCLAN_PLUGIN_LAN_4", "Länkar");
+define("LCLAN_PLUGIN_LAN_5", "Länksidan installerades korrekt, gå till Länksida från din admin förstasida för att konfigurera den.");
+define("LCLAN_PLUGIN_LAN_6", "Länksaidan uppgraderades korrekt, nu används version");
 
 define("LCLAN_OPT_1", "Allmänna alternativ");
 define("LCLAN_OPT_2", "Länksida alternativ");
@@ -71,11 +78,6 @@ define("LCLAN_ADMIN_11", "raderad");
 define("LCLAN_ADMIN_12", "Länkkategori");
 define("LCLAN_ADMIN_13", "Insänd länk raderad");
 define("LCLAN_ADMIN_14", "Länkar");
-define("LCLAN_ADMIN_15", "Länksida");
-define("LCLAN_ADMIN_16", "Konfigurera länksida");
-define("LCLAN_ADMIN_17", "Länksida för att visa externa webblänkar");
-define("LCLAN_ADMIN_18", "Länksida har installerats, konfigurera den från Länksidan på admins förstasida.");
-define("LCLAN_ADMIN_19", "Länksida uppgraderad, nu används version");
 
 define("LCLAN_SL_1", "Insända länkar");
 define("LCLAN_SL_2", "Inga insända länkar");

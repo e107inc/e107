@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Swedish.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-28 13:13:31 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-28 16:28:12 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -44,6 +44,12 @@ define("LIST_21", "Artiklar");
 define("LIST_22", "Idéer");
 //allt ovan kommer att tas bort vid senare tillfälle
 
+define("LIST_PLUGIN_1", "Lista nya tillägg");
+define("LIST_PLUGIN_2", "Denna plugin låter dig se en lista på nya tillägg i alla e107 kategorier. Du kan antingen visa listan med data sedan ditt senaste besök, eller visa en generell lista på senaste tillägg. Förutom sidan finns även en meny. Alla sektioner är konfigurerbara i adminsektionen.");
+define("LIST_PLUGIN_3", "Konfigurera huvudmeny");
+define("LIST_PLUGIN_4", "Plugin för nya tillägg är nu klar att användas.");
+define("LIST_PLUGIN_5", "lista");
+
 define("LIST_ADMIN_1", "Senaste");
 define("LIST_ADMIN_2", "Uppdatera inställningar");
 define("LIST_ADMIN_3", "Inställningarna uppdaterade");
@@ -59,7 +65,7 @@ define("LIST_ADMIN_12", "Välj");
 define("LIST_ADMIN_13", "Välkommen till de senaste händelserna på ".SITENAME.". Denna sidan visar de senaste tilläggen för de vanligaste delarna av sajten.");
 define("LIST_ADMIN_14", "Senaste tilläggen");
 define("LIST_ADMIN_15", "Nya sedan ditt senaste besök");
-define("LIST_ADMIN_16", "Välkommen till nya händelser på ".SITENAME." ! Denna sidan visar nya tillägg sedan ditt senaste besök för de vanligaste delarna av sajten.");
+define("LIST_ADMIN_16", "Välkommen till nya händelser på ".SITENAME."! Denna sidan visar nya tillägg sedan ditt senaste besök för de vanligaste delarna av sajten.");
 
 define("LIST_ADMIN_SECT_1", "Sektioner");
 define("LIST_ADMIN_SECT_2", "Välj vilka sektioner som skall visas");
@@ -193,8 +199,6 @@ define("LIST_COMMENT_7", "Buggspårning");
 define("LIST_COMMENT_8", "Innehåll");
 define("LIST_COMMENT_9", "Nerladdningar");
 define("LIST_COMMENT_10", "Idéer");
-
-
 
 define("LIST_DOWNLOAD_1", "Nerladdningar");
 define("LIST_DOWNLOAD_2", "Inga nerladdningar");
