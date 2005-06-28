@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_installer.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-27 17:57:02 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-28 15:21:08 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -90,5 +90,6 @@ define("LANINS_078", "Admin lösenordsbekräftelse");
 define("LANINS_079", "Ange admins lösenord igen för verifiering.");
 define("LANINS_080", "Admin e-post");
 define("LANINS_081", "Ange din e-postadress här.");
+define("LANINS_082", "namn@dinsajt.se");
 
 ?>
