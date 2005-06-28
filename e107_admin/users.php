@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2005-06-28 14:48:28 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.56 $
+|     $Date: 2005-06-28 19:09:31 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -387,11 +387,50 @@ class users{
 
 
 // Search Display Column header.
+	$display_lan = array('user_id' => DUSRLAN_1, 
+	'user_id' => DUSRLAN_1, 
+	'user_name' => DUSRLAN_2, 
+	'user_loginname' => DUSRLAN_3, 
+	'user_customtitle' => DUSRLAN_4, 
+	'user_password' => DUSRLAN_5, 
+	'user_sess' => DUSRLAN_6, 
+	'user_email' => DUSRLAN_7, 
+	'user_homepage' => DUSRLAN_8, 
+	'user_icq' => DUSRLAN_9, 
+	'user_aim' => DUSRLAN_10, 
+	'user_msn' => DUSRLAN_11, 
+	'user_location' => DUSRLAN_12, 
+	'user_birthday' => DUSRLAN_13, 
+	'user_signature' => DUSRLAN_14, 
+	'user_image' => DUSRLAN_15, 
+	'user_timezone' => DUSRLAN_16, 
+	'user_hideemail' => DUSRLAN_17, 
+	'user_join' => DUSRLAN_18, 
+	'user_lastvisit' => DUSRLAN_19, 
+	'user_currentvisit' => DUSRLAN_20, 
+	'user_lastpost' => DUSRLAN_21, 
+	'user_chats' => DUSRLAN_22, 
+	'user_comments' => DUSRLAN_23, 
+	'user_forums' => DUSRLAN_24, 
+	'user_ip' => DUSRLAN_25, 
+	'user_ban' => DUSRLAN_26, 
+	'user_prefs' => DUSRLAN_27, 
+	'user_new' => DUSRLAN_28, 
+	'user_viewed' => DUSRLAN_29, 
+	'user_visits' => DUSRLAN_30, 
+	'user_admin' => DUSRLAN_31, 
+	'user_login' => DUSRLAN_32, 
+	'user_class' => DUSRLAN_33, 
+	'user_perms' => DUSRLAN_34, 
+	'user_realm' => DUSRLAN_35, 
+	'user_pwchange' => DUSRLAN_36,
+	'user_xup' => DUSRLAN_37
+	);
 
 			foreach($search_display as $disp){
-				if($disp == "user_class"){
-					$text .= "<td style='width:15%' class='fcaption'><a href='".e_SELF."?main.user_class.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_91."</a></td>";
-				}else{
+				if (isset($display_lan[$disp])) {
+					$text .= "<td style='width:15%' class='fcaption'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".$display_lan[$disp]."</a></td>";
+				} else {
 					$text .= "<td style='width:15%' class='fcaption'><a href='".e_SELF."?main.$disp.".($id == "desc" ? "asc" : "desc").".$from'>".ucwords(str_replace("_"," ",$disp))."</a></td>";
 				}
 			}
