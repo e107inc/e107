@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-06-27 17:09:57 $
+|     $Revision: 1.35 $
+|     $Date: 2005-06-28 12:14:24 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -26,8 +26,6 @@ if (!e_QUERY) {
 }
 
 $cobj =& new comment;
-
-$temp_query[];
 
 $temp_query = explode(".", e_QUERY);
 $action = $temp_query[0];
