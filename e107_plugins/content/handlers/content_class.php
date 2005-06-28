@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.70 $
-|		$Date: 2005-06-26 07:51:02 $
+|		$Revision: 1.71 $
+|		$Date: 2005-06-28 11:32:06 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@
 global $plugindir, $plugintable, $datequery;
 $plugindir		= e_PLUGIN."content/";
 $plugintable	= "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
-$datequery		= " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
+$datequery		= " AND content_datestamp < ".time()." AND (content_enddate=0 || content_enddate>".time().") ";
 
 require_once($plugindir."handlers/content_defines.php");
 
@@ -625,9 +625,9 @@ class content{
 					$getauthor = array($author_id, $author_name, $author_email, $content_author);
 				}else{
 					$tmp = explode("^", $content_author);
-					$author_id = $tmp[0];
-					$author_name = $tmp[1];
-					$author_email = $tmp[2];
+					$author_id = "0";
+					$author_name = $tmp[0];
+					$author_email = $tmp[1];
 					$getauthor = array($author_id, $author_name, $author_email, $content_author);
 				}
 				return $getauthor;
@@ -1114,7 +1114,7 @@ class content{
 				$data .= "\n";
 				$data .= chr(36)."plugindir		= e_PLUGIN.'content/';\n";
 				$data .= chr(36)."plugintable	= \"pcontent\";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)\n";
-				$data .= chr(36)."datequery		= \" AND (content_datestamp=0 || content_datestamp < \".time().\") AND (content_enddate=0 || content_enddate>\".time().\") \";\n";
+				$data .= chr(36)."datequery		= \" AND content_datestamp < \".time().\" AND (content_enddate=0 || content_enddate>\".time().\") \";\n";
 				$data .= "\n";
 				$data .= "require_once(e_PLUGIN.'content/handlers/content_class.php');\n";
 				$data .= chr(36)."aa = new content;\n";

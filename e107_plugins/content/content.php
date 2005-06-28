@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.70 $
-|		$Date: 2005-06-27 00:20:30 $
+|		$Revision: 1.71 $
+|		$Date: 2005-06-28 11:32:06 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -345,7 +345,7 @@ function show_content(){
 						}
 
 						$SUBMIT_LINE = FALSE;
-						$count = "0";
+						$submit = FALSE;
 						$sql3 = "";
 						if(!is_object($sql3)){ $sql3 = new db; }
 						if($sql3 -> db_Select($plugintable, "content_id, content_pref", "content_parent = '0' ".$datequery." ORDER BY content_parent")){
@@ -354,10 +354,11 @@ function show_content(){
 									$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
 								}
 								if($content_pref["content_submit_{$row['content_id']}"] && check_class($content_pref["content_submit_class_{$row['content_id']}"])){
-									$count = $count + 1;
+									$submit = TRUE;
+									break;
 								}
 							}
-							if($count > "0"){
+							if($submit === TRUE){
 								$content_type_table_string .= $CONTENT_TYPE_TABLE_LINE;
 								$content_type_table_string .= $tp -> parseTemplate($CONTENT_TYPE_TABLE_SUBMIT, FALSE, $content_shortcodes);
 								$SUBMIT_LINE = TRUE;
@@ -366,29 +367,34 @@ function show_content(){
 
 						if(USERID){
 							$personalmanagercheck = FALSE;
-
 							$array = $aa -> getCategoryTree("", "", TRUE);
 							$catarray = array_keys($array);
+							$qry = "";
 							foreach($catarray as $catid){
-								if($sql -> db_Select($plugintable, "content_id, content_heading, content_pref", " content_id='".$catid."' ")){
-									$row = $sql -> db_Fetch();
-
+								$qry .= " content_id='".$catid."' || ";
+							}
+							$qry = substr($qry,0,-3);
+							if($sql -> db_Select($plugintable, "content_id, content_heading, content_pref", " ".$qry." ")){
+								while($row = $sql -> db_Fetch()){
 									if(isset($row['content_pref']) && $row['content_pref']){
 										$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
 									}
-
 									//assign new preferences
 									if(getperms("0") ){
 										$personalmanagercheck = TRUE;
+										break;
 									}
-									if(isset($content_pref['content_manager_allowed']) ){
-										$pcm = explode(",", $content_pref['content_manager_allowed']);
+									$contentid = $row['content_id'];
+									if(isset($content_pref["content_manager_allowed_{$row['content_id']}"]) ){
+										$pcm = explode(",", $content_pref["content_manager_allowed_{$row['content_id']}"]);
 										if(in_array(USERID, $pcm)){
 											$personalmanagercheck = TRUE;
+											break;
 										}
 									}
 								}
 							}
+							
 							if($personalmanagercheck == TRUE){
 								if($SUBMIT_LINE != TRUE){
 									$content_type_table_string .= $CONTENT_TYPE_TABLE_LINE;
@@ -515,7 +521,7 @@ function show_content_archive(){
 //this function renders the preview of a content_item
 //used in recent list, view author list, category items list
 function displayPreview($qry){
-				global $sql, $tp, $plugintable, $plugindir, $content_pref, $mainparent;
+				global $sql, $tp, $plugintable, $plugindir, $content_pref, $mainparent, $CONTENT_RECENT_TABLE;
 
 				if(!$CONTENT_RECENT_TABLE){
 					if(!$content_pref["content_theme_{$mainparent}"]){
@@ -579,10 +585,11 @@ function show_content_recent(){
 					$contenttotal = $sql1 -> db_Count($plugintable, "(*)", "WHERE content_refer != 'sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' " );
 
 					if($from > $contenttotal-1){ js_location(e_SELF); }
-
+					
 					$recentqry			= "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery;
 					$text				= displayPreview($recentqry);
 
+					$crumbpage = $aa -> getCrumbPage($array, $mainparent);
 					if(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
 						echo $crumbpage;
 					}elseif(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
@@ -936,33 +943,81 @@ function show_content_author_all(){
 					$validparent	= implode(",", array_keys($array));
 					$number			= (isset($content_pref["content_author_nextprev_number_{$mainparent}"]) && $content_pref["content_author_nextprev_number_{$mainparent}"] ? $content_pref["content_author_nextprev_number_{$mainparent}"] : "5");
 					$nextprevquery	= (isset($content_pref["content_author_nextprev_{$mainparent}"]) && $content_pref["content_author_nextprev_{$mainparent}"] ? "LIMIT ".$from.",".$number : "");
-					$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
+					$qry			= " p.content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
+					$dateqry		= "AND p.content_datestamp < ".time()." AND (p.content_enddate=0 || p.content_enddate>".time().")";
 
-					$sql1 = new db;
-					$contenttotal = $sql1 -> db_Select($plugintable, "DISTINCT(content_author)", "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."'");					
-					if(!$result = $sql1 -> db_Select($plugintable, "DISTINCT(content_author)", "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ORDER BY content_author ".$nextprevquery )){
-						$text = "<div style='text-align:center;'>".CONTENT_LAN_52."</div>";
-					}else{
+					$sql1 = new db; $sql2 = new db;
+					$contenttotal = $sql1 -> db_Select($plugintable." AS p", "DISTINCT(p.content_author)", "p.content_refer !='sa' AND ".$qry." ".$datequery." AND p.content_class REGEXP '".e_CLASS_REGEXP."'");					
+					
+					$qry = "
+					SELECT DISTINCT(p.content_author), p.content_heading, p.content_datestamp, p.content_id, u.user_id, u.user_name, u.user_email, SUBSTRING_INDEX(p.content_author, '^', 0) AS user_name2, COUNT(i.content_id) as amount 
+					FROM #$plugintable AS p
+					LEFT JOIN #$plugintable AS i ON i.content_author = p.content_author  
+					LEFT JOIN #user AS u ON (u.user_id = p.content_author || SUBSTRING_INDEX(p.content_author, '^', 1) REGEXP 'u.user_name') 
+					WHERE p.content_refer !='sa' AND ".$qry." ".$dateqry." AND p.content_class REGEXP '".e_CLASS_REGEXP."' AND i.content_class REGEXP '".e_CLASS_REGEXP."'
+					GROUP BY i.content_datestamp
+					ORDER BY p.content_datestamp ASC, SUBSTRING_INDEX(p.content_author, '^', 0)
+					";
+
+					$author = array();
+					$options = "";
+					if ($sql1->db_Select_gen($qry)){
 						while($row = $sql1 -> db_Fetch()){
-							$authordetails[] = $aa -> getAuthor($row['content_author']);
-						}
-						//sort by authorname ascending (default or $qs[3] == "orderaauthor")
-						usort($authordetails, create_function('$a,$b','return strcasecmp ($a[1], $b[1]);'));
-						//sort by authorname descending ($qs[3] == "orderdauthor")
-						if(isset($qs[3]) && $qs[3] == "orderdauthor"){
-							$authordetails = array_reverse($authordetails);
-						}
-						$sql2 = "";
-						$content_author_table_string = "";
-						for($i=0;$i<count($authordetails);$i++){
-							if(!is_object($sql2)){ $sql2 = new db; }
-							$totalcontent = $sql2 -> db_Select($plugintable, "content_id, content_heading, content_datestamp", "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' AND content_author = '".$authordetails[$i][3]."' ORDER BY content_datestamp DESC");
-							list($row['content_id'], $row['content_heading'], $row['content_datestamp']) = $sql2 -> db_Fetch();
+							if(strpos($row['content_author'], "^")){
+								$tmp = explode("^", $row['content_author']);
+								$row['content_author'] = $tmp[0];
+							}
+							if(is_numeric($row['content_author'])){
+								$name = ($row['user_name'] ? $row['user_name'] : CONTENT_LAN_29);
+							}else{
+								$name = ($row['content_author'] ? $row['content_author'] : CONTENT_LAN_29);
+							}
+							if(is_array($author)){
+								if(!in_array($name, $author)){
 
-							$content_author_table_string .= $tp -> parseTemplate($CONTENT_AUTHOR_TABLE, FALSE, $content_shortcodes);
+									$display = (strlen($name) > 29 ? substr($name,0,29)."..." : $name);
+									$arrData[] = array($name, $row['content_id'], $row['content_heading'], $row['content_datestamp'], $row['amount']);
+									$author[] = $name;
+								}
+							}
+						}
+
+						function cmp($a, $b)
+						{
+							$posa = strrpos($a[0], " ");
+							if($posa == TRUE){
+								$la = substr($a[0], $posa);
+							}elseif($posa == FALSE){
+								$la = $a[0];
+							}
+
+							$posb = strrpos($b[0], " ");
+							if($posb == TRUE){
+								$lb = substr($b[0], $posb);
+							}elseif($posb == FALSE){
+								$lb = $b[0];
+							}
+
+							if ($la == $lb) {
+								return 0;
+							}
+							return strcasecmp ($la, $lb);
+						}
+						usort($arrData, "cmp");
+
+						$content_author_table_string = "";
+						$max = $from+$number;
+						for($i=$from;$i<$max;$i++){
+							if(is_array($arrData[$i])){
+								$authordetails[$i][1] = $arrData[$i][0];
+								$row['content_id'] = $arrData[$i][1];
+								$row['content_heading'] = $arrData[$i][2];
+								$row['content_datestamp'] = $arrData[$i][3];
+								$totalcontent = $arrData[$i][4];
+								$content_author_table_string .= $tp -> parseTemplate($CONTENT_AUTHOR_TABLE, FALSE, $content_shortcodes);
+							}
 						}
 						$text = $CONTENT_AUTHOR_TABLE_START.$content_author_table_string.$CONTENT_AUTHOR_TABLE_END;
-
 						if(isset($content_pref["content_breadcrumb_authorall_{$mainparent}"]) && $content_pref["content_breadcrumb_authorall_{$mainparent}"]){
 							$crumbpage = $aa -> getCrumbPage($array, $mainparent);
 							if(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
@@ -974,6 +1029,7 @@ function show_content_author_all(){
 							}
 						}
 					}
+
 					$caption = CONTENT_LAN_32;
 					$ns -> tablerender($caption, $text);
 

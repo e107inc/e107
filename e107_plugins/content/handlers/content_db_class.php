@@ -12,23 +12,19 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.32 $
-|		$Date: 2005-06-27 09:37:18 $
+|		$Revision: 1.33 $
+|		$Date: 2005-06-28 11:32:06 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
 $plugindir		= e_PLUGIN."content/";
 $plugintable	= "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
-$datequery		= " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
+$datequery		= " AND content_datestamp < ".time()." AND (content_enddate=0 || content_enddate>".time().") ";
 
 if (!defined('ADMIN_WIDTH')) { define("ADMIN_WIDTH", "width:98%;"); }
 
 class contentdb{
-
-			//function js_location($qry){
-			//	echo "<script type='text/javascript'>document.location.href='".$qry."'</script>\n";
-			//}
 
 			function dbContentUpdate($mode){
 						global $pref, $qs, $sql, $ns, $rs, $aa, $tp, $plugintable, $e107cache, $eArrayStorage;
@@ -43,13 +39,12 @@ class contentdb{
 
 						if(USER){
 							if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) ){
-									//$author = $_POST['content_author_id']."^".$_POST['content_author_name']."^".$_POST['content_author_email'];
-									$author = "0^".$_POST['content_author_name']."^".$_POST['content_author_email'];
+									$author = $_POST['content_author_name']."^".$_POST['content_author_email'];
 							}else{
 								$author = USERID;
 							}
 						}else{
-							$author = "0^".$_POST['content_author_name']."^".$_POST['content_author_email'];
+							$author = $_POST['content_author_name']."^".$_POST['content_author_email'];
 						}
 
 						$mainparent						= $aa -> getMainParent($_POST['parent']);
@@ -140,8 +135,6 @@ class contentdb{
 						//content_refer : only added in sql if posting submitted item
 						$refer = (isset($_POST['content_refer']) && $_POST['content_refer']=='sa' ? ", content_refer='' " : "");
 
-//echo "content_heading = '".$_POST['content_heading']."', content_subheading = '".$_POST['content_subheading']."', content_summary = '".$_POST['content_summary']."', content_text = '".$_POST['content_text']."', content_author = '".$author."', content_icon = '".$icon."', content_file = '".$totalattach."', content_image = '".$totalimages."', content_parent = '".$_POST['parent']."', content_comment = '".$_POST['content_comment']."', content_rate = '".$_POST['content_rate']."', content_pe = '".$_POST['content_pe']."' ".$refer.", content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['content_class']."', content_pref = '".$contentprefvalue."', content_score='".$_POST['content_score']."', content_meta='".$_POST['content_meta']."', content_layout='".$_POST['content_layout']."' WHERE content_id = '".$_POST['content_id']."' ";
-
 						$sql -> db_Update($plugintable, "content_heading = '".$_POST['content_heading']."', content_subheading = '".$_POST['content_subheading']."', content_summary = '".$_POST['content_summary']."', content_text = '".$_POST['content_text']."', content_author = '".$author."', content_icon = '".$icon."', content_file = '".$totalattach."', content_image = '".$totalimages."', content_parent = '".$_POST['parent']."', content_comment = '".$_POST['content_comment']."', content_rate = '".$_POST['content_rate']."', content_pe = '".$_POST['content_pe']."' ".$refer.", content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['content_class']."', content_pref = '".$contentprefvalue."', content_score='".$_POST['content_score']."', content_meta='".$_POST['content_meta']."', content_layout='".$_POST['content_layout']."' WHERE content_id = '".$_POST['content_id']."' ");
 
 						$e107cache->clear("comment.$plugintable.{$_POST['content_id']}");
@@ -167,13 +160,12 @@ class contentdb{
 
 						if(USER){
 							if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) ){
-								//$author = $_POST['content_author_id']."^".$_POST['content_author_name']."^".$_POST['content_author_email'];
-								$author = "0^".$_POST['content_author_name']."^".$_POST['content_author_email'];
+								$author = $_POST['content_author_name']."^".$_POST['content_author_email'];
 							}else{
 								$author = USERID;
 							}
 						}else{
-							$author = "0^".$_POST['content_author_name']."^".$_POST['content_author_email'];
+							$author = $_POST['content_author_name']."^".$_POST['content_author_email'];
 						}
 
 						if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){

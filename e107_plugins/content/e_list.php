@@ -7,7 +7,7 @@
 	require_once(e_PLUGIN."content/handlers/content_class.php");
 	$aa = new content;
 
-	$datequery = " AND (content_datestamp=0 || content_datestamp < ".time().") AND (content_enddate=0 || content_enddate>".time().") ";
+	$datequery = " AND content_datestamp < ".time()." AND (content_enddate=0 || content_enddate>".time().") ";
 
 	global $contentmode;
 	//contentmode : content_144 (content_ + idvalue)

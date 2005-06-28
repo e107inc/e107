@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-26 15:50:17 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-28 11:32:06 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -44,11 +44,11 @@ if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content'"))
 	$content_version = $row['plugin_version'];
 }
 
-if($content_version < 1.2){
+if($content_version < 1.21){
 
 	$text = "";
-	//upgrade to 1.1
-	$upgrade_1_1 = TRUE;
+	//upgrade to 1.1 (update content_parent string)
+	$upgrade_1_1 = FALSE;
 	$newcontent = $sql -> db_Count($plugintable, "(*)", "");
 	if($newcontent > 0){
 		
@@ -65,30 +65,29 @@ if($content_version < 1.2){
 		}
 	}
 
-	//upgrade to 1.2
-//	$upgrade_1_2 = FALSE;
-//	$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."pcontent");
-//	$columns = mysql_num_fields($fields);
-//	for ($i = 0; $i < $columns; $i++){
-//		if("content_score" == mysql_field_name($fields, $i)){
-//			$score = TRUE;
-//		}
-//		if("content_layout" == mysql_field_name($fields, $i)){
-//			$layout = TRUE;
-//		}
-//		if("content_meta" == mysql_field_name($fields, $i)){
-//			$meta = TRUE;
-//		}
-//		if($score === TRUE && $layout === TRUE && $meta === TRUE){
-//			$upgrade_1_2 = FALSE;
-//		}else{
-//			$upgrade_1_2 = TRUE;
-//		}
-//	}
-//	if($upgrade_1_2 === TRUE){
+	//upgrade to 1.2 (add score, meta, layout fields)
+	$upgrade_1_2 = FALSE;
+	$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."pcontent");
+	$columns = mysql_num_fields($fields);
+	for ($i = 0; $i < $columns; $i++)
+	{
+		if("content_score" == mysql_field_name($fields, $i))
+		{
+			$upgrade_1_2 = TRUE;
+		}
+	}
+	if(!$upgrade_1_2){
 		$text .= $ac -> upgrade_1_2();
-//	}
-	if($upgrade_1_1 === TRUE || $upgrade_1_2 === TRUE){
+	}
+
+
+	//upgrade to 1.21 (update content_author fields)
+	$upgrade_1_21 = $ac -> upgrade_1_21();
+	if($upgrade_1_21){
+		$text .= $upgrade_1_21;
+	}
+
+	if($upgrade_1_1 || $upgrade_1_2 || $upgrade_1_21){
 		$caption = CONTENT_ADMIN_CONVERSION_LAN_63;
 		$ns -> tablerender($caption, $text);
 		set_content_version();
@@ -306,7 +305,7 @@ function showlink()
 function set_content_version()
 {
 	global $sql;
-	$new_version = "1.2";
+	$new_version = "1.21";
 	$sql->db_Update('plugin',"plugin_version = '{$new_version}' WHERE plugin_path='content'");
 	return CONTENT_ADMIN_CONVERSION_LAN_62." $new_version <br />";
 }	
