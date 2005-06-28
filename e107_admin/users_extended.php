@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-06-21 17:03:06 $
+|     $Revision: 1.19 $
+|     $Date: 2005-06-28 16:22:00 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -812,8 +812,6 @@ function show_predefined()
 	}
 
 	$txt = "
-	You can activate / deactivate these fields if you want to test, but there is no upgrade script to move your existing data over yet.  It should arrive soon, please be patient.<br />
-	Once there is an upgrade script all of these will be activate and data moved over.  Any fields you don't want will have to be deactivated.<br />
 	<br />
 	<form method='post'>
 	<table class='width:".ADMIN_WIDTH."'>
@@ -859,9 +857,9 @@ function show_field($var, $type='activate')
 	
 		$txt .= "
 		<tr>
-		<td class='fcaption'>Name</td>
-		<td class='fcaption'>Type</td>
-		<td class='fcaption'>Use</td>
+		<td class='fcaption'>".UE_LAN_9."</td>
+		<td class='fcaption'>".UE_LAN_10."</td>
+		<td class='fcaption'>".UE_LAN_11."</td>
 		<td class='fcaption'>&nbsp;</td>
 		</tr>
 		";
