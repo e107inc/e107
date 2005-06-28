@@ -14,15 +14,18 @@
 */
 
 global $PLUGINS_DIRECTORY;
+$lan_file = e_PLUGIN."list_new/languages/".e_LANGUAGE.".php";
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."list_new/languages/English.php");
+
 // Plugin info -------------------------------------------------------------------------------------------------------
-$eplug_name = "List";
+$eplug_name = LIST_PLUGIN_0;
 $eplug_version = "1.0";
 $eplug_author = "Eric Vanderfeesten (lisa)";
 $eplug_logo = "";
 $eplug_url = "http://eindhovenseschool.net";
 $eplug_email = "lisa@eindhovenseschool.net";
-$eplug_description = "This plugin allows you to view a list of recent additions in all e107 categories. You can either view the list with data since your last visit, or view a general latest additions list. Besides the page a menu is also present. Every section is configurable in the admin area.";
-$eplug_compatible = "e107v7";
+$eplug_description = LIST_PLUGIN_2;
+$eplug_compatible = "e107v0.7+";
 $eplug_readme = "";        // leave blank if no readme file
 
 
@@ -38,7 +41,7 @@ $eplug_conffile = "admin_list_config.php";
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/icon/list_32.png";
 $eplug_icon_small = $eplug_folder."/icon/list_16.png";
-$eplug_caption =  "Configure Main Menu";
+$eplug_caption =  LIST_PLUGIN_3;
 
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array();
@@ -52,12 +55,12 @@ $eplug_tables = "";
 
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;
-$eplug_link_name = "list";
+$eplug_link_name = LIST_PLUGIN_5;
 $eplug_link_url = e_PLUGIN."list_new/list.php";
 
 
 // Text to display after plugin successfully installed ------------------------------------------------------------------
-$eplug_done = "This plugin is now ready to be used.";
+$eplug_done = LIST_PLUGIN_4;
 
 
 // upgrading ... //

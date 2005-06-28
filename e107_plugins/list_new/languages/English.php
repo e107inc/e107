@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-27 14:05:38 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-28 12:27:47 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -50,6 +50,16 @@ define("LIST_20", "Bugtracker");
 define("LIST_21", "Articles");
 define("LIST_22", "Ideas");
 //all above will be deprecated sometime
+
+
+
+
+define("LIST_PLUGIN_1", "List");
+define("LIST_PLUGIN_2", "This plugin allows you to view a list of recent additions in all e107 categories. You can either view the list with data since your last visit, or view a general latest additions list. Besides the page a menu is also present. Every section is configurable in the admin area.");
+define("LIST_PLUGIN_3", "Configure Main Menu");
+define("LIST_PLUGIN_4", "The List_new plugin is now ready to be used.");
+define("LIST_PLUGIN_5", "list");
+
 
 define("LIST_ADMIN_1", "recent");
 define("LIST_ADMIN_2", "update settings");
