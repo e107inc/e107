@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Swedish/lan_forum_viewtopic.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-13 16:20:21 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-28 13:13:29 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -44,7 +44,7 @@ define("LAN_401", "Citera");
 define("LAN_402", "Författare");
 define("LAN_403", "Post");
 define("LAN_404", "Ingen föregående tråd");
-define("LAN_405", "Ingen fler trådar");
+define("LAN_405", "Inga fler trådar");
 
 define("LAN_406", "Moderator: Redigera");
 define("LAN_435", "Moderator: Radera");

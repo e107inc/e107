@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Swedish.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-28 09:19:45 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-28 13:13:31 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ define("LIST_ADMIN_9", "Öppen");
 define("LIST_ADMIN_10", "Stängd");
 define("LIST_ADMIN_11", "Uppdatera");
 define("LIST_ADMIN_12", "Välj");
-define("LIST_ADMIN_13", "Välkommen till de senaste händelserna på ".SITENAME." ! Denna sidan visar de senaste tilläggen för de vanligaste delarna av sajten.");
+define("LIST_ADMIN_13", "Välkommen till de senaste händelserna på ".SITENAME.". Denna sidan visar de senaste tilläggen för de vanligaste delarna av sajten.");
 define("LIST_ADMIN_14", "Senaste tilläggen");
 define("LIST_ADMIN_15", "Nya sedan ditt senaste besök");
 define("LIST_ADMIN_16", "Välkommen till nya händelser på ".SITENAME." ! Denna sidan visar nya tillägg sedan ditt senaste besök för de vanligaste delarna av sajten.");
@@ -181,7 +181,7 @@ define("LIST_MENU_18", "");
 define("LIST_MENU_19", "");
 
 define("LIST_NEWS_1", "Nyheter");
-define("LIST_NEWS_2", "Inge nyhetsämnen");
+define("LIST_NEWS_2", "Inga nyhetsämnen");
 
 define("LIST_COMMENT_1", "Kommentarer");
 define("LIST_COMMENT_2", "Inga kommentarer");

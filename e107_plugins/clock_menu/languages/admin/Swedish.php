@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/clock_menu/languages/admin/Swedish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-16 15:45:55 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-28 13:13:29 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ define("CLOCK_AD_L9", "Suffix 1");
 define("CLOCK_AD_L10", "Suffix 2");
 define("CLOCK_AD_L11", "Suffix 3");
 define("CLOCK_AD_L12", "Suffix 4 och mer");
-define("CLOCK_AD_L13", "Om ditt språk behöver ett suffix direkt efter datumets siffror, fyll då i dessa fält med bara suffixen. (T.ex: 'sta' för 1, 'a' för 2, 'dje' för 3 och 'de' för 4 och så vidare). Om inte, lämna tomma fält.");
+define("CLOCK_AD_L13", "Om ditt språk behöver ett suffix direkt efter datumets siffror, fyll då i dessa fält med bara suffixen. (T.ex: 'sta' för 1, 'a' för 2, 'e' för 3 och 'de' för 4 och så vidare). Om inte, lämna tomma fält.");
 define("CLOCK_AD_L14", "");
 define("CLOCK_AD_L15", "");
 define("CLOCK_AD_L16", "");
