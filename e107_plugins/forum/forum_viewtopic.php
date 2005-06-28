@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-06-25 18:57:10 $
+|     $Revision: 1.34 $
+|     $Date: 2005-06-28 11:07:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -110,7 +110,7 @@ if ($action == "next")
 	else
 	{
 		require_once(HEADERF);
-		$ns->tablerender('', 'No next thread');
+		$ns->tablerender('', FORLAN_105);
 		require_once(FOOTERF);
 		exit;
 	}
@@ -123,7 +123,7 @@ if ($action == "prev") {
 		exit;
 	} else {
 		require_once(HEADERF);
-		$ns->tablerender('', 'No previous thread');
+		$ns->tablerender('', FORLAN_104);
 		require_once(FOOTERF);
 		exit;
 	}
