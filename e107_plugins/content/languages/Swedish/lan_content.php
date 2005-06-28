@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-28 13:13:29 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-28 13:47:33 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -442,7 +442,7 @@ define("CONTENT_ADMIN_ITEM_LAN_12", "Alternativ");
 define("CONTENT_ADMIN_ITEM_LAN_13", "Välj värdkategori");
 define("CONTENT_ADMIN_ITEM_LAN_14", "Namn");
 define("CONTENT_ADMIN_ITEM_LAN_15", "E-post");
-define("CONTENT_ADMIN_ITEM_LAN_16", "Underrukbrik");
+define("CONTENT_ADMIN_ITEM_LAN_16", "Underrubrik");
 define("CONTENT_ADMIN_ITEM_LAN_17", "Summering");
 define("CONTENT_ADMIN_ITEM_LAN_18", "Text");
 define("CONTENT_ADMIN_ITEM_LAN_19", "Ladda upp ikon");
@@ -497,7 +497,7 @@ define("CONTENT_ADMIN_ITEM_LAN_67", "Nedan ser du innehållet listat för den va
 define("CONTENT_ADMIN_ITEM_LAN_68", "Nedan kan du lägga till egen data för detta objekt. Varje eget datapar måste ha både nyckel och värde. Du kan specificera nyckeln i vänstra fältet och tillhörande värde i det högra fältet.<br />(t.ex. nyckel'fotografi' och värde='alla foton tagna av mig'.");
 define("CONTENT_ADMIN_ITEM_LAN_69", "Här kan du ladda upp ikoner, bilagor och/eller bilder till ditt innehåll. De tillåtna filtyperna är: ");
 define("CONTENT_ADMIN_ITEM_LAN_70", "I nästa ruta kan du specificera metanyckelord till ditt innehåll. Dessa metanyckelord visas i sidans huvud. Separera orden med kommatecken, och inga mellanslag är tillåtna!");
-define("CONTENT_ADMIN_ITEM_LAN_71", "Lämna tomt om skrivet av dig");
+define("CONTENT_ADMIN_ITEM_LAN_71", "Lämna om skrivet av dig");
 define("CONTENT_ADMIN_ITEM_LAN_72", "Ange författardetaljer");
 define("CONTENT_ADMIN_ITEM_LAN_73", "Ange ett startdatum för detta objekt (Lämna tomt om inget behövs)");
 define("CONTENT_ADMIN_ITEM_LAN_74", "Ange ett slutdatum för detta objekt (Lämna tomt om inget behövs)");
