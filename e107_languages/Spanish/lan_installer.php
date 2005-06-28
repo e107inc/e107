@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_installer.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-26 22:53:13 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-28 21:02:21 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -111,5 +111,6 @@ define("LANINS_078", "Admin Password Confirmation");
 define("LANINS_079", "Vuelva a escribir la contraseña para confrimarla");
 define("LANINS_080", "Email Admin");
 define("LANINS_081", "Escriba su dirección email");
+define("LANINS_082", "usuario@susitio.com");
 
 ?>

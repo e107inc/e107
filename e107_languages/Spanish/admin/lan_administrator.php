@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_administrator.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-09 20:10:14 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-28 21:02:21 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -35,7 +35,7 @@ define("ADMSLAN_22", "Moderar usuarios/expulsiones etc");
 define("ADMSLAN_23", "Crear/editar foros");
 define("ADMSLAN_24", "Gestionar categorías de descargas");
 define("ADMSLAN_25", "Transferir/gestionar archivos");
-define("ADMSLAN_26", "Supervisar categorías de noticias");
+//define("ADMSLAN_26", "Supervisar categorías de noticias");
 define("ADMSLAN_27", "Supervisar categorías de enlaces");
 define("ADMSLAN_28", "Apagar sitio por mantenimiento");
 define("ADMSLAN_29", "Gestionar anuncios/publicidad");
@@ -45,9 +45,9 @@ define("ADMSLAN_32", "Configurar página de inicio");
 define("ADMSLAN_33", "Configurar estadísticas");
 define("ADMSLAN_34", "Configurar meta tags");
 define("ADMSLAN_35", "Configurar transferencia de archivos");
-define("ADMSLAN_36", "Moderar foros");
+//define("ADMSLAN_36", "Moderar foros");
 define("ADMSLAN_37", "Moderar comentarios");
-define("ADMSLAN_38", "Moderar/configurar chatbox");
+//define("ADMSLAN_38", "Moderar/configurar chatbox");
 define("ADMSLAN_39", "Añadir Noticias");
 define("ADMSLAN_40", "Añadir Enlaces");
 define("ADMSLAN_41", "Añadir Artículos");

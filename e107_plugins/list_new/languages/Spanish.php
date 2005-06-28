@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Spanish.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-28 20:23:08 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-28 21:02:21 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -39,6 +39,12 @@ define("LIST_19", "Documentos");
 define("LIST_20", "Bugtracker");
 define("LIST_21", "Artículos");
 define("LIST_22", "Ideas");
+
+define("LIST_PLUGIN_1", "Lista");
+define("LIST_PLUGIN_2", "Este plugin le permite ver las últimas entradas añadidas en las categorías de e107. Puede ver la lista de datos desde su última visita o ver las últimas entradas generales. Cada sección es configurable desde el área del administrador.");
+define("LIST_PLUGIN_3", "Configurar el menú principal");
+define("LIST_PLUGIN_4", "El plugin list_new esta instalado y listo para usar.");
+define("LIST_PLUGIN_5", "Lista");
 
 //all above will be deprecated sometime
   	 

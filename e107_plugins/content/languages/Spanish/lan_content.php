@@ -4,11 +4,18 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-06-28 20:23:08 $
+|     $Revision: 1.17 $
+|     $Date: 2005-06-28 21:02:21 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
+define("CONTENT_PLUGIN_LAN_1", "Gestor de contenidos");
+define("CONTENT_PLUGIN_LAN_2", "Una sección completa de gestor de contenidos.");
+define("CONTENT_PLUGIN_LAN_3", "Configurar el gestor de contenidos");
+define("CONTENT_PLUGIN_LAN_4", "Este plugin está listo para ser usado.");
+define("CONTENT_PLUGIN_LAN_5", "Contenido");
+
+define("CONTENT_EMAILPRINT_LAN_1", "Este contenido es de");
 
 define("CONTENT_ICON_LAN_0", "Editar");
 define("CONTENT_ICON_LAN_1", "Eliminar");

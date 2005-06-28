@@ -4,12 +4,19 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-28 20:23:08 $
+|     $Revision: 1.12 $
+|     $Date: 2005-06-28 21:02:21 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Enlaces");
+
+define("LCLAN_PLUGIN_LAN_1", "Página de enlaces");
+define("LCLAN_PLUGIN_LAN_2", "Página de enlaces para mostrar enlaces externos");
+define("LCLAN_PLUGIN_LAN_3", "Configurar la página de enlaces");
+define("LCLAN_PLUGIN_LAN_4", "Enlaces");
+define("LCLAN_PLUGIN_LAN_5", "La página de enlaces se instaló correctamente, configúrela desde la página de enlaces en el área del administrador.");
+define("LCLAN_PLUGIN_LAN_6", "La página de enlaces actualizada correctamente, ahora la versión es");
 
 define("LCLAN_OPT_1", "Opciones generales");
 define("LCLAN_OPT_2", "OPciones de la página de enlaces");
@@ -71,11 +78,7 @@ define("LCLAN_ADMIN_11", "Eliminado");
 define("LCLAN_ADMIN_12", "Categoría de enlace");
 define("LCLAN_ADMIN_13", "Enlace enviado eliminado");
 define("LCLAN_ADMIN_14", "Enlaces");
-define("LCLAN_ADMIN_15", "Página de enlaces");
-define("LCLAN_ADMIN_16", "Configurar página de enlaces");
-define("LCLAN_ADMIN_17", "Página de enlaces para mostar enlaces externos");
-define("LCLAN_ADMIN_18", "La página de enlaces se ha instalado correctamente, configúrela desde la página de enlaces en el área del Admin.");
-define("LCLAN_ADMIN_19", "Links_page actualizada correctamente, la nueva versión es");
+
 
 define("LCLAN_SL_1", "Enlaces enviados");
 define("LCLAN_SL_2", "No hay enlaces enviados");
