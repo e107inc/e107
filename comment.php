@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-06-28 12:14:24 $
-|     $Author: streaky $
+|     $Revision: 1.36 $
+|     $Date: 2005-06-28 21:31:29 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -220,7 +220,6 @@ if ($action == "reply") {
 				exit;
 			} else {
 				$news = $sql->db_Fetch();
-				$not_parsed_subject = $news['news_title'];
 				$subject = $tp->toHTML($news['news_title']);
 				define(e_PAGETITLE, LAN_100." / ".LAN_99." / {$subject}");
 				require_once(HEADERF);
@@ -237,16 +236,14 @@ if ($action == "reply") {
 				exit;
 			} else {
 				$row = $sql->db_Fetch();
-				extract($row);
-
-				$subject = $poll_title;
+				$subject = $row['poll_title'];
 				define("e_PAGETITLE", LAN_101." / ".LAN_99." / ".$subject."");
 				require_once(HEADERF);
 				require(e_PLUGIN."poll/poll_menu.php");
-				$field = $poll_id;
+				$field = $row['poll_id'];
 				$comtype = 4;
 
-				if(!$poll_comment)
+				if(!$row['poll_comment'])
 				{
 					require_once(FOOTERF);
 					exit;
@@ -254,12 +251,6 @@ if ($action == "reply") {
 			}
 		}
 		require_once(HEADERF);
-		$query = ($pref['nested_comments'] ?
-		"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
-			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='{$field}' AND comment_type='{$comtype}' AND comment_pid='0' ORDER BY comment_datestamp"
-		:
-		"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
-			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='{$field}' AND comment_type='{$comtype}'  ORDER BY comment_datestamp");
 	}
 }
 
@@ -267,26 +258,7 @@ if($pref['trackbackEnabled'] && $table == "news"){
 	echo "<span class='smalltext'><b>".$pref['trackbackString']."</b> ".$e107->http_path.e_PLUGIN."trackback/trackback.php?pid={$id}</span>";
 }
 
-$comment_total = $sql->db_Select_gen($query);
-if ($comment_total) {
-	$width = 0;
-	$text = "<div style='text-align: center'>";
-	while ($row = $sql->db_Fetch()) {
-		$text .= $cobj->render_comment($row, $table, $action, $id, $width, $subject);
-	}
-	$text .= "</div>";
-	$ns->tablerender(LAN_5, $text);
-}
-
-
-if (ADMIN && getperms("B")) {
-	if (!strstr(e_QUERY, ".")) {
-		$ct = "news.";
-	}
-	echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?".$table.".".$id."'>".LAN_314."</a></div><br />";
-}
-
-$cobj->form_comment($action, $table, $id, $not_parsed_subject, $content_type);
+$cobj->compose_comment($table, $action, $field, $width, $subject, $rate=FALSE, $enter=TRUE);
 
 if (!strstr(e_QUERY, "poll")) {
 	$cache = ob_get_contents();
