@@ -14,15 +14,18 @@
 */
 
 global $PLUGINS_DIRECTORY;
+$lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php";
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content.php");
+
 // Plugin info -------------------------------------------------------------------------------------------------------
-$eplug_name = "Content Management";
-$eplug_version = "1.2";
+$eplug_name = CONTENT_PLUGIN_LAN_1;
+$eplug_version = "1.21";
 $eplug_author = "Eric Vanderfeesten (lisa)";
 $eplug_logo = "";
 $eplug_url = "http://eindhovenseschool.net";
 $eplug_email = "lisa@eindhovenseschool.net";
-$eplug_description = "A Complete Content Management Section.";
-$eplug_compatible = "e107v7";
+$eplug_description = CONTENT_PLUGIN_LAN_2;
+$eplug_compatible = "e107v0.7+";
 $eplug_readme = "";        // leave blank if no readme file
 $eplug_latest = TRUE; //Show reported threads in admin (use latest.php)
 $eplug_status = TRUE; //Show post count in admin (use status.php)
@@ -39,7 +42,7 @@ $eplug_conffile = "admin_content_config.php";
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/content_32.png";
 $eplug_icon_small = $eplug_folder."/images/content_16.png";
-$eplug_caption =  'Configure Content Management';
+$eplug_caption = CONTENT_PLUGIN_LAN_3;
 
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array(
@@ -85,12 +88,12 @@ $eplug_tables = array(
 
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;
-$eplug_link_name = "Content";
+$eplug_link_name = CONTENT_PLUGIN_LAN_5;
 $eplug_link_url = $PLUGINS_DIRECTORY.'content/content.php';
 $eplug_link_icon = "";
 
 // Text to display after plugin successfully installed ------------------------------------------------------------------
-$eplug_done = "This plugin is now ready to be used.";
+$eplug_done = CONTENT_PLUGIN_LAN_4;
 
 // upgrading ... //
 $upgrade_add_prefs = "";

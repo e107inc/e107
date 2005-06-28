@@ -11,24 +11,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-26 20:16:57 $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-28 12:37:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
-if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php")) {
-	@include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
-	} else {
-	@include_once(e_PLUGIN."links_page/languages/English.php");
-}
-$eplug_name = "Links Page";
+$lan_file = e_PLUGIN."links_page/languages/".e_LANGUAGE.".php";
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."links_page/languages/English.php");
+
+$eplug_name = LCLAN_PLUGIN_LAN_1;
 $eplug_version = "1.1";
 $eplug_author = "Eric Vanderfeesten (lisa)";
 $eplug_url = "http://e107.org";
 $eplug_email = "lisa@eindhovenseschool.net";
-$eplug_description = LCLAN_ADMIN_17;
-$eplug_compatible = "e107v0.7";
+$eplug_description = LCLAN_PLUGIN_LAN_2;
+$eplug_compatible = "e107v0.7+";
 $eplug_readme = "";
 $eplug_latest = TRUE; //Show reported threads in admin (use e_latest.php)
 $eplug_status = TRUE; //Show post count in admin (use e_status.php)
@@ -45,7 +43,7 @@ $eplug_conffile = "admin_config.php";
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/linkspage_32.png";
 $eplug_icon_small = $eplug_folder."/images/linkspage_16.png";
-$eplug_caption = LCLAN_ADMIN_16;
+$eplug_caption = LCLAN_PLUGIN_LAN_3;
 	
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array();
@@ -85,20 +83,16 @@ $eplug_tables = array(
 	
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;
-$eplug_link_name = LCLAN_ADMIN_14;
+$eplug_link_name = LCLAN_PLUGIN_LAN_4;
 $eplug_link_url = e_PLUGIN."links_page/links.php";
 	
 	
 // Text to display after plugin successfully installed ------------------------------------------------------------------
-$eplug_done = LCLAN_ADMIN_18;
-	
-	
-// upgrading ... //
-	
+$eplug_done = LCLAN_PLUGIN_LAN_5;
 $upgrade_add_prefs = "";
 $upgrade_remove_prefs = "";
-//$eplug_done = 'The Links_page is now installed';
 
+// upgrading ... //
 $upgrade_alter_tables = array(
 "ALTER TABLE ".MPREFIX."links_page ADD link_datestamp int(10) unsigned NOT NULL default '0'", 
 "ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_order varchar(100) NOT NULL default '0'", 
@@ -106,6 +100,6 @@ $upgrade_alter_tables = array(
 "ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_datestamp int(10) unsigned NOT NULL default '0'"
 );
 
-$eplug_upgrade_done = LCLAN_ADMIN_19.': '.$eplug_version;
+$eplug_upgrade_done = LCLAN_PLUGIN_LAN_6.': '.$eplug_version;
 
 ?>
