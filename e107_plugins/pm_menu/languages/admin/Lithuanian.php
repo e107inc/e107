@@ -39,7 +39,7 @@ define(PM_ADLAN_34, "Ne");
 define(PM_ADLAN_35, "Siøsti e-paðto Send email perspëjimus");
 define(PM_ADLAN_36, "Praðome paþymëti operacijos patvirtinimui");
 define(PM_ADLAN_37, "þinutës sistemoje");
-define(PM_ADLAN_38, "Rasti vartotojo vardo");
+define(PM_ADLAN_38, "Rasti vartotojo vardà");
 define(PM_ADLAN_39, "dienos(ø)");
 define(PM_ADLAN_40, "neágalinta");
 define(PM_ADLAN_41, "sekundës(iø)");
