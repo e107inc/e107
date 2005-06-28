@@ -6,6 +6,7 @@ define("LAN_3", "Views");
 define("LAN_4", "Replies");
 define("LAN_5", "Lastpost");
 define("LAN_6", "Threads");
+define("LAN_7", "by");
 	
 define("NFPM_L1", "This plugin displays a list of new forum posts on your front page");
 define("NFPM_L2", "Latest Forum Posts");
