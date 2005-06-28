@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/error.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-12 23:11:56 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-28 12:10:30 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -40,13 +40,21 @@ switch(e_QUERY) {
 		<br /><div class='installh'>".LAN_2."<a href='index.php'>".LAN_20."</a></div>";
 	break;
 	default:
+
+	
 	case 404:
-	$text = "<div class='installe'>".LAN_7."</div><br /><div class='installh'>".LAN_8."</div><br /><div class='smalltext'>".LAN_9."</div>
-		<br /><div class='installh'>".LAN_2."
-		<br />".LAN_16." <b>{$errTo}</b> ".LAN_16;
-	if (strlen($errFrom)) $text .= "<br />".LAN_18." {$errFrom} -- ".LAN_19;
-	$text .= "<br /> <a href='index.php'>".LAN_20."</a></div>";
+	$text = "<h3>".LAN_7."</h3><br />".LAN_ERROR_01."<br /><br />".LAN_ERROR_03."<b>{$errTo}</b>".LAN_ERROR_04."<br /><br />";
+	
+	if (strlen($errFrom)) $text .= LAN_9." ( <a href='{$errFrom}' rel='external'>{$errFrom}</a> ) -- ".LAN_19."<br />";
+	
+	$base_path = $e107->http_abs_location();
+	
+	$text .= "<br /><a href='{$base_path}index.php'>".LAN_20."</a><br />";
+	$text .= "<a href='{$base_path}search.php'>".LAN_ERROR_02."</a></p>";
+	
 	break;
+	
+	
 	case 500:
 	$text = "<div class='installe'>".LAN_10."</div><br /><div class='installh'>".LAN_11."</div><br /><div class='smalltext'>".LAN_12."</div>
 		<br /><div class='installh'>".LAN_2."<a href='index.php'>".LAN_20."</a></div>";
@@ -55,6 +63,6 @@ switch(e_QUERY) {
 		<br /><div class='installh'>".LAN_2."<a href='index.php'>".LAN_20."</a></div>";
 }
 
-$ns->tablerender(PAGE_NAME." ".e_QUERY, $text);
+$ns->tablerender(PAGE_NAME, $text);
 require_once(FOOTERF);
 ?>
