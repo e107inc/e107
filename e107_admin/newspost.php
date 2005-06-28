@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.89 $
-|   $Date: 2005-06-19 19:46:20 $
+|   $Revision: 1.90 $
+|   $Date: 2005-06-28 08:01:09 $
 |   $Author: stevedunstan $
 +---------------------------------------------------------------+
 
@@ -829,20 +829,13 @@ class newspost {
 
 
 		$text .= "<tr style='vertical-align: top;'>
-		<td colspan='2'  style='text-align:center' class='forumheader'>";
+		<td colspan='2'  style='text-align:center' class='forumheader'>".
 
-		if (isset($_POST['preview'])) {
-			$text .= "<input class='button' type='submit' name='preview' value='".NWSLAN_24."' /> ";
-			if ($id && $sub_action != "sn" && $sub_action != "upload") {
-				$text .= "<input class='button' type='submit' name='submit' value='".NWSLAN_25."' /> ";
-				//	$text .= "<br /><span class='smalltext'><input type='checkbox' name='update_datestamp' /> ".NWSLAN_105."</span>";
-				} else {
-				$text .= "<input class='button' type='submit' name='submit' value='".NWSLAN_26."' /> ";
-			}
-			} else {
-			$text .= "<input class='button' type='submit' name='preview' value='".NWSLAN_27."' />";
-		}
-		$text .= "<input type='hidden' name='news_id' value='$news_id' />  \n</td>
+		(isset($_POST['preview']) ? "<input class='button' type='submit' name='preview' value='".NWSLAN_24."' /> " : "<input class='button' type='submit' name='preview' value='".NWSLAN_27."' /> ").
+		($id && $sub_action != "sn" && $sub_action != "upload" ? "<input class='button' type='submit' name='submit' value='".NWSLAN_25."' /> " : "<input class='button' type='submit' name='submit' value='".NWSLAN_26."' /> ")."
+
+
+		<input type='hidden' name='news_id' value='$news_id' />  \n</td>
 		</tr>
 		</table>
 
