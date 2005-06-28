@@ -4,12 +4,19 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-26 20:16:57 $
+|     $Revision: 1.15 $
+|     $Date: 2005-06-28 12:37:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Links");
+
+define("LCLAN_PLUGIN_LAN_1", "Links Page");
+define("LCLAN_PLUGIN_LAN_2", "Links Page For Displaying External Web Links");
+define("LCLAN_PLUGIN_LAN_3", "Configure Links Page");
+define("LCLAN_PLUGIN_LAN_4", "links");
+define("LCLAN_PLUGIN_LAN_5", "Links page has successfully installed, please configure it from the Links Page link on the admin front page.");
+define("LCLAN_PLUGIN_LAN_6", "Links_page successfully upgraded, now using version");
 
 define("LCLAN_OPT_1", "general options");
 define("LCLAN_OPT_2", "Link Page Options");
@@ -71,11 +78,6 @@ define("LCLAN_ADMIN_11", "deleted");
 define("LCLAN_ADMIN_12", "Link Category");
 define("LCLAN_ADMIN_13", "Submitted link deleted");
 define("LCLAN_ADMIN_14", "Links");
-define("LCLAN_ADMIN_15", "Links Page");
-define("LCLAN_ADMIN_16", "Configure Links Page");
-define("LCLAN_ADMIN_17", "Links Page For Displaying External Web Links");
-define("LCLAN_ADMIN_18", "Links page has successfully installed, please configure it from the Links Page link on the admin front page.");
-define("LCLAN_ADMIN_19", "Links_page successfully upgraded, now using version");
 
 define("LCLAN_SL_1", "Submitted Links");
 define("LCLAN_SL_2", "No submitted links");

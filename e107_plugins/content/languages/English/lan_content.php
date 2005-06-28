@@ -4,11 +4,18 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2005-06-27 11:44:05 $
+|     $Revision: 1.64 $
+|     $Date: 2005-06-28 12:37:39 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
+
+
+define("CONTENT_PLUGIN_LAN_1", "Content Management");
+define("CONTENT_PLUGIN_LAN_2", "A Complete Content Management Section.");
+define("CONTENT_PLUGIN_LAN_3", "Configure Content Management");
+define("CONTENT_PLUGIN_LAN_4", "This plugin is now ready to be used.");
+define("CONTENT_PLUGIN_LAN_5", "content");
 
 define("CONTENT_ICON_LAN_0", "edit");
 define("CONTENT_ICON_LAN_1", "delete");
