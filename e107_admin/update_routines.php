@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.119 $
-|     $Date: 2005-06-28 00:37:46 $
-|     $Author: sweetas $
+|     $Revision: 1.120 $
+|     $Date: 2005-06-28 14:12:14 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -183,7 +183,6 @@ function update_61x_to_700($type='') {
 		mysql_query("ALTER TABLE ".MPREFIX."user ADD user_loginname VARCHAR( 100 ) NOT NULL AFTER user_name");
 		mysql_query("ALTER TABLE ".MPREFIX."user ADD user_xup VARCHAR( 100 ) NOT NULL");
 		$sql->db_Update("user", "user_loginname=user_name WHERE user_loginname=''");
-
 		/* end */
 
 		/* start page update */
@@ -364,66 +363,68 @@ function update_61x_to_700($type='') {
 		require_once(e_HANDLER."user_extended_class.php");
 		$ue = new e107_user_extended;
 
-		$sql->db_Select("core", " e107_value", " e107_name='user_entended'", 'default');
-		$row = $sql->db_Fetch();
-
-		$user_extended = unserialize($row['e107_value']);
-		$new_types = array('text' => 1, 'radio' => 2, 'dropdown' => 3, 'table' => 4);
-
-		foreach($user_extended as $key => $val)
+		if($sql->db_Select("core", " e107_value", " e107_name='user_entended'", 'default'))
 		{
-			unset($new_field);
-			$parms = explode("|", $val);
-			$ext_name['ue_'.$key] = 'user_'.$parms[0];
-			$new_field['name'] = preg_replace("#\W#","",$parms[0]);
-			$new_field['text'] = $parms[0];
-			$new_field['type'] = $new_types[$parms[1]];
-			$new_field['values'] = $parms[2];
-			$new_field['default'] = $parms[3];
-			$new_field['applicable'] = $parms[4];
-			$new_field['read'] = $parms[5];
-			$new_field['write'] = e_UC_MEMBER;
-			$new_field['signup'] = $pref['signup_ext'.$key];
-			$new_field['parms'] = "";
-			$new_field['required'] = 0;
-			unset($pref['signup_ext'.$key]);
-			unset($pref['signup_ext_req'.$key]);
-			$ue->user_extended_add($new_field);
-		}
-		$s_prefs = TRUE;
-		if($sql->db_Select('user','user_id, user_prefs',"1 ORDER BY user_id"))
-		{
-			$sql2 = new db;
-			while($row = $sql->db_Fetch())
+			$row = $sql->db_Fetch();
+
+			$user_extended = unserialize($row['e107_value']);
+			$new_types = array('text' => 1, 'radio' => 2, 'dropdown' => 3, 'table' => 4);
+
+			foreach($user_extended as $key => $val)
 			{
-				set_time_limit(30);
-				$user_pref = unserialize($row['user_prefs']);
-				$new_values = "";
-				foreach($user_pref as $key => $val)
+				unset($new_field);
+				$parms = explode("|", $val);
+				$ext_name['ue_'.$key] = 'user_'.$parms[0];
+				$new_field['name'] = preg_replace("#\W#","",$parms[0]);
+				$new_field['text'] = $parms[0];
+				$new_field['type'] = $new_types[$parms[1]];
+				$new_field['values'] = $parms[2];
+				$new_field['default'] = $parms[3];
+				$new_field['applicable'] = $parms[4];
+				$new_field['read'] = $parms[5];
+				$new_field['write'] = e_UC_MEMBER;
+				$new_field['signup'] = $pref['signup_ext'.$key];
+				$new_field['parms'] = "";
+				$new_field['required'] = 0;
+				unset($pref['signup_ext'.$key]);
+				unset($pref['signup_ext_req'.$key]);
+				$ue->user_extended_add($new_field);
+			}
+			$s_prefs = TRUE;
+			if($sql->db_Select('user','user_id, user_prefs',"1 ORDER BY user_id"))
+			{
+				$sql2 = new db;
+				while($row = $sql->db_Fetch())
 				{
-					if(array_key_exists($key, $ext_name))
+					set_time_limit(30);
+					$user_pref = unserialize($row['user_prefs']);
+					$new_values = "";
+					foreach($user_pref as $key => $val)
 					{
-						unset($user_pref[$key]);
-						if($val)
+						if(array_key_exists($key, $ext_name))
 						{
-							if($new_values)
+							unset($user_pref[$key]);
+							if($val)
 							{
-								$new_values .= " ,";
+								if($new_values)
+								{
+									$new_values .= " ,";
+								}
+								$new_values .= $ext_name[$key]."='".$val."'";
 							}
-							$new_values .= $ext_name[$key]."='".$val."'";
 						}
 					}
-				}
-				foreach ($user_pref as $key => $prefvalue) {
-					$user_pref[$key] = $tp->toDB($prefvalue);
-				}
-				$tmp=addslashes(serialize($user_pref));
-				$sql2->db_Update("user", "user_prefs='$tmp' WHERE user_id='{$row['user_id']}'");
-				if($new_values)
-				{
-					$sql2->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$row['user_id']}')");
-					$sql2->db_Update('user_extended', $new_values." WHERE user_extended_id = '{$row['user_id']}'");
-				}
+					foreach ($user_pref as $key => $prefvalue) {
+						$user_pref[$key] = $tp->toDB($prefvalue);
+					}
+					$tmp=addslashes(serialize($user_pref));
+					$sql2->db_Update("user", "user_prefs='$tmp' WHERE user_id='{$row['user_id']}'");
+					if($new_values)
+					{
+						$sql2->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$row['user_id']}')");
+						$sql2->db_Update('user_extended', $new_values." WHERE user_extended_id = '{$row['user_id']}'");
+					}
+				}	
 			}
 		}
 		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
@@ -669,7 +670,6 @@ function update_61x_to_700($type='') {
 		// end list_new update -------------------------------------------------------------------------------------------
 
 
-
 		// Truncate logstats table if log_id = pageTotal not found
 		/* log update - previous log entries are not compatible with later versions, sorry but we have to clear the table :\ */
 		if(!$sql->db_Select("logstats","log_id","log_id = 'pageTotal'"))
@@ -810,7 +810,6 @@ function update_61x_to_700($type='') {
 		   		$sql2 -> db_Update("links", "link_parent='".$parent[$nm]."' WHERE link_id ='$id' ");
 			}
         }
-		
 
 		//20050626 : update links_page_cat and links_page
 		$field1 = $sql->db_Field("links_page_cat",5);
@@ -839,7 +838,6 @@ function update_61x_to_700($type='') {
 			save_prefs();
 		}
 
-
 		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = "SHOW CREATE TABLE `".MPREFIX."links`";
 		$res = mysql_query($qry);
@@ -856,14 +854,21 @@ function update_61x_to_700($type='') {
 			mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_rss` VARCHAR( 255 ) NOT NULL ;");
 		}
 
-
+		if($sql->db_Field("user", 8) == "user_icq")
+		{
+			require_once(e_HANDLER."user_extended_class.php");
+			$ue = new e107_user_extended;
+			$ue->convert_old_fields();
+		}
 
 		// -----------------------------------------------------
 
 	} else {
+		// check if update is needed.
+		// FALSE = needed, TRUE = not needed.
 		global $sysprefs;
 
-        $result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
+      $result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = "SHOW CREATE TABLE `".MPREFIX."links`";
 		$res = mysql_query($qry);
 		if ($res) {
@@ -882,7 +887,12 @@ function update_61x_to_700($type='') {
 			return FALSE;
 		}
 
-		if($sql->db_Field("user",36) != "user_xup"){
+		if($sql->db_Field("user", 8) == "user_icq")
+		{
+			return FALSE;
+		}
+		
+		if($sql->db_Field("user",36) != "user_xup" && $sql->db_Field("user", 30) != "user_xup"){
 		 	return FALSE;
 		}
 
@@ -910,14 +920,11 @@ function update_61x_to_700($type='') {
 		$res = mysql_query($qry);
 		if ($res) {
 			$row = mysql_fetch_row($res);
-			$lines = explode("\n", $row[1]);
-			if(!strstr($lines[40], "KEY `user_ban_index` (`user_ban`)")) {
+			if(!strstr($row[1], "KEY `user_ban_index` (`user_ban`)")) {
 				return false;
 			}
 		}
 
-		// check if update is needed.
-		// FALSE = needed, TRUE = not needed.
 		global $pref;
 		if (!is_array($pref['frontpage'])) {
 			return FALSE;
@@ -926,7 +933,6 @@ function update_61x_to_700($type='') {
 		if ((!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) || !isset($pref['search_highlight'])) {
 			return FALSE;
 		}
-
 
 /*
 		if(!$sql -> db_Select("core", "*", "e107_name='emote_default' "))
