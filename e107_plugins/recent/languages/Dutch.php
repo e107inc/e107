@@ -138,7 +138,7 @@ define("RECENT_ADMIN_PAGE_29", "pictogram: standaard");
 define("RECENT_ADMIN_PAGE_30", "gebruik het standaard theme bullet als er geen pictogram aanwezig is of als icon:use is gedeactiveerd");
 define("RECENT_ADMIN_PAGE_31", "");
 
-define("RECENT_MENU_1", "recent aanvullingen");
+define("RECENT_MENU_1", "recente aanvullingen");
 define("RECENT_MENU_2", "door");
 define("RECENT_MENU_3", "op");
 define("RECENT_MENU_4", "in");

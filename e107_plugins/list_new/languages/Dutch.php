@@ -12,6 +12,12 @@
 +---------------------------------------------------------------+
 */
 
+define("LIST_PLUGIN_1", "List");
+define("LIST_PLUGIN_2", "Deze plugin laat een overzicht met recente aanvullingen in alle e107 categorieën zien. Je kunt een overzicht met gegevens zien sinds je vorige bezoek, of een algemeen overzicht met alle laatste aanvullingen. Behalve een pagina is ook een menu beschikbaar. Iedere sectie is configureerbaar in het beheerscherm.");
+define("LIST_PLUGIN_3", "Configureren hoofdmenu");
+define("LIST_PLUGIN_4", "De List_new plugin is nu gereed voor gebruik.");
+define("LIST_PLUGIN_5", "list");
+
 define("PAGE_NAME", "Overzicht nieuwe onderwerpen");
 define("LIST_1", "Nieuwsberichten");
 define("LIST_2", "Commentaren");
@@ -120,10 +126,22 @@ define("LIST_ADMIN_LAN_28", "");
 define("LIST_ADMIN_LAN_29", "pictogram : standaard");
 define("LIST_ADMIN_LAN_30", "gebruik het standaard thema bullet als er geen pictogran aanwezig is of als pictogram:gebruiken is gedeactiveerd");
 define("LIST_ADMIN_LAN_31", "");
+
+define("LIST_ADMIN_LAN_32", "tijdsduur:dagen");
+define("LIST_ADMIN_LAN_33", "maximum aantal dagen dat een gebruiker terug kan kijken");
+define("LIST_ADMIN_LAN_34", "");
+define("LIST_ADMIN_LAN_35", "dagen");
+define("LIST_ADMIN_LAN_36", "tijdsduur");
+define("LIST_ADMIN_LAN_37", "tonen selectiefunctie met aantal terugkijkdagen?");
+define("LIST_ADMIN_LAN_38", "");
+
 define("LIST_MENU_1", "recente toevoegingen");
 define("LIST_MENU_2", "door");
 define("LIST_MENU_3", "op");
 define("LIST_MENU_4", "in");
+define("LIST_MENU_5", "dagen");
+define("LIST_MENU_6", "hoeveel dagen content bekijken?");
+
 define("LIST_NEWS_1", "nieuws");
 define("LIST_NEWS_2", "geen nieuwsberichten");
 define("LIST_COMMENT_1", "reacties");

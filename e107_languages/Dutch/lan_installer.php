@@ -92,5 +92,16 @@ define("LANINS_070", "e107 kon het hoofdconfiguratiebestand niet wegschrijven op
 
 Let erop dat het <b>e107_config.php</b> bestand de juiste permissies kent");
 define("LANINS_071", "Afronden installatie");
+define("LANINS_072", "Gebruikersnaam beheerder");
+define("LANINS_073", "Dit is de naam waarmee je moet inloggen op de site. Als je deze naam ook als weergegeven naam wilt gebruiken");
+define("LANINS_074", "Weergegeven naam beheerder");
+define("LANINS_075", "Dit is de naam die je gebruikers op de site weergegeven zien in je profiel, de forums en de andere onderdelen. Als je je loginnaam hiervoor wilt gebruiken, vul dan niets in.");
+define("LANINS_076", "Beheerders wachtwoord");
+define("LANINS_077", "Geef het beheerderswachtwoord op");
+define("LANINS_078", "Bevestig het beheerderswachtwoord");
+define("LANINS_079", "Voer het beheerderswachtwoord nogmaals in ter bevestiging");
+define("LANINS_080", "E-mailadres beheerder");
+define("LANINS_081", "Geef je e-mailadres op");
+define("LANINS_082", "gebruiker@jouwsite.net");
 
 ?>

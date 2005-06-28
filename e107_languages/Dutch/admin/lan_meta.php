@@ -24,6 +24,8 @@ define("METLAN_5", "voer hier de beschrijving in");
 define("METLAN_6", "geef, hier, een, serie, sleutelwoorden, op");
 define("METLAN_7", "voer hier de auteursrecht info in");
 define("METLAN_8", "Meta tags");
-
+define("METLAN_9", "omschrijving");
+define("METLAN_10", "sleutelwoorden");
+define("METLAN_11", "auteursrecht");
 
 ?>

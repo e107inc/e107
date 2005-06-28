@@ -200,6 +200,8 @@ define("LAN_ORDER","Volgorde");
 define("LAN_DISPLAYOPT", "Bewerk weergave opties");
 define("LAN_GOPAGE", "Ga naar pagina:");
 define("LAN_DATESTAMP","Datum");
+define("LAN_OPTIONAL", "optioneel");
+define("LAN_INACTIVE","Inactief");
 
 define('ADLAN_CL_1', "Instellingen");
 define('ADLAN_CL_2', "Leden");
@@ -217,7 +219,6 @@ define("ADLAN_LAT_5", "Aangemelde links");
 define("ADLAN_LAT_6", "Gemeldde forumberichten");
 define("ADLAN_LAT_7", "Bestandsuploads");
 define("ADLAN_LAT_8", "Er zijn nog niet beoordeelde beheerboodschappen");
-
 
 
 ?>

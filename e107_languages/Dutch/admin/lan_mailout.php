@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_mailout.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 19:32:12 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-28 20:35:48 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -42,6 +42,7 @@ define("MAILAN_15","Mail-Out");
 define("MAILAN_16","gebruikersnaam");
 define("MAILAN_17","aanmeldlink");
 define("MAILAN_18","user id");
-
+define("MAILAN_19","Er bestaat geen e-mailadres voor de sitebeheerder. Controleer je voorkeursinstellingen en probeer het nogmaals.");
+define("MAILAN_20","Sendmail-pad");
 
 ?>
