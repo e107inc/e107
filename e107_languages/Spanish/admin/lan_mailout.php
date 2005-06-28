@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_mailout.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-23 16:21:59 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-28 20:23:08 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -18,8 +18,8 @@ define("PRFLAN_66", "Correo de prueba de");
 define("PRFLAN_67", "¡Este es un correo de prueba, parece que su configuración de correo funciona bien!\n\nSaludos\ndesde e107.");
 define("PRFLAN_68", "El correo no pudo enviarse. Parece que tu servidor no esta correctamente configurado y no puede enviar correos, pruebe otra vez usando SMTP, o contacte a su Host para comprobar la configuración del envio de correo.");
 define("PRFLAN_69", "El correo se envió correctamente, compruebe su bandeja de entrada.");
-define("PRFLAN_70", "Activar SMTP");
-define("PRFLAN_71", "Activando usará SMTP para enviar correos");
+define("PRFLAN_70", "Método de envíos");
+define("PRFLAN_71", "Si no está seguro, déjelo en php");
 define("PRFLAN_72", "SMTP Servidor");
 define("PRFLAN_73", "SMTP Usuario");
 define("PRFLAN_74", "SMTP Contraseña");
@@ -43,4 +43,6 @@ define("MAILAN_15","Salidas correo");
 define("MAILAN_16","Usuario");
 define("MAILAN_17","Enlace de registro");
 define("MAILAN_18","ID Usuario");
+define("MAILAN_19","No hay una dirección email para el admin del sitio. Compruebe sus perfil y pruebe de nuevo.");
+define("MAILAN_20","Ruta Sendmail");
 ?>

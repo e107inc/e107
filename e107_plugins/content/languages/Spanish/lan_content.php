@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-06-26 22:53:13 $
+|     $Revision: 1.16 $
+|     $Date: 2005-06-28 20:23:08 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -73,9 +73,9 @@ define("CONTENT_ADMIN_CAT_LAN_41", "");
 define("CONTENT_ADMIN_CAT_LAN_42", "Para re-editar la misma categoría");
 define("CONTENT_ADMIN_CAT_LAN_43", "pulsar aquí");
 define("CONTENT_ADMIN_CAT_LAN_44", "Para añadir otra categoría en la última categoría principal seleccionada");
-define("CONTENT_ADMIN_CAT_LAN_45", "Defina si se permitirá comentarios");
-define("CONTENT_ADMIN_CAT_LAN_46", "Defina si se permitirá valorar");
-define("CONTENT_ADMIN_CAT_LAN_47", "Defina si los iconos imprimir/email se mostrarán");
+define("CONTENT_ADMIN_CAT_LAN_45", "¿Permitir comentarios?");
+define("CONTENT_ADMIN_CAT_LAN_46", "¿Permitir valorar?");
+define("CONTENT_ADMIN_CAT_LAN_47", "¿Mostrar iconos imprimir/email?");
 define("CONTENT_ADMIN_CAT_LAN_48", "Escoja que usuarios verán este elemento");
 define("CONTENT_ADMIN_CAT_LAN_49", "Escoja un icono para esta categoría");
 define("CONTENT_ADMIN_CAT_LAN_50", "Solo si ha creado una categoría principal, se creará un archivo menú<br />
@@ -91,9 +91,9 @@ define("CONTENT_ADMIN_CAT_LAN_56", "Elemento");
 define("CONTENT_ADMIN_CAT_LAN_57", "Elementos");
 define("CONTENT_ADMIN_CAT_LAN_58", "Se ha transferido con éxito el icono de la categoría<br />Nota: ¡Todavía necesitarás asignar el icono a esta categoría en icono>escoger icono de área existente!<br />y por supuesto después necesitará enviar el formulario para crear o actualizar la categoría");
 define("CONTENT_ADMIN_CAT_LAN_59", "Icono de categoría no actualizado");
-define("CONTENT_ADMIN_CAT_LAN_60", "Escojer icono de categoría");
-define("CONTENT_ADMIN_CAT_LAN_61", "o transferir nuevo icono");
-define("CONTENT_ADMIN_CAT_LAN_62", "Después de transferir un nuevo icono de categoría, puede asignar este icono arriba en en área ' escojer icono existente'<br />Si transfiere un nuevo icono, este icono debe ser a 48 pixels, y adicionalmente se creará un icono a 16 pixels<br /><br />");
+define("CONTENT_ADMIN_CAT_LAN_60", "Asigne un icono");
+define("CONTENT_ADMIN_CAT_LAN_61", "Transfiera un nuevo icono");
+define("CONTENT_ADMIN_CAT_LAN_62", "Después de transferir un nuevo icono de categoría, puede asignar este icono arriba en en área 'icono'<br />Si transfiere un nuevo icono, este icono debe ser a 48 pixels, y adicionalmente se creará un icono a 16 pixels<br /><br />");
 define("CONTENT_ADMIN_CAT_LAN_63", "Transferir icono");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "Opciones");
@@ -485,12 +485,12 @@ define("CONTENT_ADMIN_ITEM_LAN_71", "Dejarlo si lo ha escrito usted");
 define("CONTENT_ADMIN_ITEM_LAN_72", "Defina detalles de autor");
 define("CONTENT_ADMIN_ITEM_LAN_73", "Defina una fecha de inicio (déjelo si no necesita)");
 define("CONTENT_ADMIN_ITEM_LAN_74", "Defina una fecha fín (déjelo si no necesita)");
-define("CONTENT_ADMIN_ITEM_LAN_75", "Transfiera y asígnale un icono");
-define("CONTENT_ADMIN_ITEM_LAN_76", "Transfiera y asígnale un archivo adjunto");
-define("CONTENT_ADMIN_ITEM_LAN_77", "Transfiera y asígnale imágenes");
-define("CONTENT_ADMIN_ITEM_LAN_78", "Defina si permitirá comentarios");
-define("CONTENT_ADMIN_ITEM_LAN_79", "Defina si permitirá valorar");
-define("CONTENT_ADMIN_ITEM_LAN_80", "Defina si se mostrarán los iconos de email e imprimir");
+define("CONTENT_ADMIN_ITEM_LAN_75", "Asigne un icono");
+define("CONTENT_ADMIN_ITEM_LAN_76", "Asigne adjuntos");
+define("CONTENT_ADMIN_ITEM_LAN_77", "Asigne imágenes");
+define("CONTENT_ADMIN_ITEM_LAN_78", "¿Permitir comentario?");
+define("CONTENT_ADMIN_ITEM_LAN_79", "¿Permitir valorar?");
+define("CONTENT_ADMIN_ITEM_LAN_80", "¿Mostrar iconos imprimir/email?");
 define("CONTENT_ADMIN_ITEM_LAN_81", "Escoja que usuarios lo podrán ver");
 define("CONTENT_ADMIN_ITEM_LAN_82", "Defina una puntuación");
 define("CONTENT_ADMIN_ITEM_LAN_83", "Defina meta keywords");
@@ -505,7 +505,32 @@ define("CONTENT_ADMIN_ITEM_LAN_91", "para re-editar el mismo elemento");
 define("CONTENT_ADMIN_ITEM_LAN_92", "Plantilla");
 define("CONTENT_ADMIN_ITEM_LAN_93", "Escoja un esquema de plantilla");
 define("CONTENT_ADMIN_ITEM_LAN_94", "Seleccione un esquema de plantilla");
-define("CONTENT_ADMIN_ITEM_LAN_95", "");
+define("CONTENT_ADMIN_ITEM_LAN_95", "Transferir un nuevo icono");
+define("CONTENT_ADMIN_ITEM_LAN_96", "Escoja un icono existente");
+define("CONTENT_ADMIN_ITEM_LAN_97", "Después que haya transferido el icono, puede asignarlo en el área 'escoja un icono existente'");
+define("CONTENT_ADMIN_ITEM_LAN_98", "Transferir un nuevo adjunto");
+define("CONTENT_ADMIN_ITEM_LAN_99", "Escoja un adjunto existente");
+define("CONTENT_ADMIN_ITEM_LAN_100", "Después que haya transferido el adjunto, puede asignarlo en el área 'escoja un adjunto existente'");
+define("CONTENT_ADMIN_ITEM_LAN_101", "Transferir una nueva imagen");
+define("CONTENT_ADMIN_ITEM_LAN_102", "Escoja una imagen existente");
+define("CONTENT_ADMIN_ITEM_LAN_103", "Después que haya transferido la imagen, puede asignarlo en el área 'escoja una imagen existente'");
+define("CONTENT_ADMIN_ITEM_LAN_104", "Transferir");
+define("CONTENT_ADMIN_ITEM_LAN_105", "Ver");
+define("CONTENT_ADMIN_ITEM_LAN_106", "Icono transferido con éxito<br />Nota: Todavía necesita asignar el icono a este contenido en el área "escoja un icono existente'<br />y por supuesto enviarlo al formulario de crear/actualizar el contenido");
+define("CONTENT_ADMIN_ITEM_LAN_107", "Icono no transferido");
+define("CONTENT_ADMIN_ITEM_LAN_108", "Adjunto transferido con éxito<br />Nota: Todavía necesita asignar el adjunto a este contenido en el área "escoja un adjunton existente'<br />y por supuesto enviarlo al formulario de crear/actualizar el contenido");
+define("CONTENT_ADMIN_ITEM_LAN_109", "Adjunto no transferido");
+define("CONTENT_ADMIN_ITEM_LAN_110", "Imagen transferida con éxito<br />Nota: Todavía necesita asignar la imagen a este contenido en el área "escoja una imagen existente'<br />y por supuesto enviarlo al formulario de crear/actualizar el contenido");
+define("CONTENT_ADMIN_ITEM_LAN_111", "Imagen no transferida");
+define("CONTENT_ADMIN_ITEM_LAN_112", "Transferir un icono, adjunto i imagen");
+define("CONTENT_ADMIN_ITEM_LAN_113", "Escoja el tipo de transferencia en la caja de selección antes de transferir el archivo");
+define("CONTENT_ADMIN_ITEM_LAN_114", "Icono");
+define("CONTENT_ADMIN_ITEM_LAN_115", "Adjunto");
+define("CONTENT_ADMIN_ITEM_LAN_116", "Imagen");
+define("CONTENT_ADMIN_ITEM_LAN_117", "Contenido enviado");
+define("CONTENT_ADMIN_ITEM_LAN_118", "No");
+define("CONTENT_ADMIN_ITEM_LAN_119", "Sin asignar");
+define("CONTENT_ADMIN_ITEM_LAN_120", "Plantilla por defecto");
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "Orden incrementado");
 define("CONTENT_ADMIN_ORDER_LAN_1", "Orden decrementado");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_meta.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-10 20:06:43 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-28 20:23:08 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -17,4 +17,7 @@ define("METLAN_5", "Escriba aquí su descripción");
 define("METLAN_6", "Escriba, una, lista, de, sus, palabras, clave, aquí");
 define("METLAN_7", "Escriba la información de Copyright aquí");
 define("METLAN_8", "Meta-Tags");
+define("METLAN_9", "Descripción");
+define("METLAN_10", "PalabrasClave");
+define("METLAN_11", "Copyright");
 ?>

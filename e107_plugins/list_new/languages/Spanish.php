@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Spanish.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-18 19:48:45 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-28 20:23:08 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -128,13 +128,20 @@ define("LIST_ADMIN_LAN_28", "");
 define("LIST_ADMIN_LAN_29", "Icono : por defecto");
 define("LIST_ADMIN_LAN_30", "Use un tema por defecto cuando no exista un icono o esté desactivado");
 define("LIST_ADMIN_LAN_31", "");
+define("LIST_ADMIN_LAN_32", "Lapsodetiempo:días");
+define("LIST_ADMIN_LAN_33", "Máximo de días en que el usuario volverá a mirar");
+define("LIST_ADMIN_LAN_34", "");
+define("LIST_ADMIN_LAN_35", "Días");
+define("LIST_ADMIN_LAN_36", "Laspsodetiempo");
+define("LIST_ADMIN_LAN_37", "¿Mostrar una caja de selección con el número de diías a volver a mirar?");
+define("LIST_ADMIN_LAN_38", "");
  	 
 define("LIST_MENU_1", "Añadidos recientes");
 define("LIST_MENU_2", "por");
 define("LIST_MENU_3", "en");
 define("LIST_MENU_4", "en");
-define("LIST_MENU_5", "");
-define("LIST_MENU_6", "");
+define("LIST_MENU_5", "Días");
+define("LIST_MENU_6", "¿Ver contenido de cuantos días?");
 define("LIST_MENU_7", "");
 define("LIST_MENU_8", "");
 define("LIST_MENU_9", "");
