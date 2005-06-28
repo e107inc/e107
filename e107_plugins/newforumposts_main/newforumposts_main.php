@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-06-28 16:57:13 $
+|     $Revision: 1.18 $
+|     $Date: 2005-06-28 18:37:04 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -77,8 +77,9 @@ if (!is_object($gen)) {
 $ICON = "<img src='".e_PLUGIN."forum/images/".IMODE."/new_small.png' alt='' />";
 $TOTAL_TOPICS = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
 $TOTAL_REPLIES = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
-$TOTAL_VIEWS = $sql->db_Count("SELECT sum(thread_views) FROM ".MPREFIX."forum_t", "generic");
-	
+$sql->db_Select_gen("SELECT sum(thread_views) FROM ".MPREFIX."forum_t");
+$tmp = $sql->db_Fetch();
+$TOTAL_VIEWS = $tmp[0];
 $text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWFORUMPOSTSTYLE_HEADER);
 
 foreach($forumArray as $forumInfo)
