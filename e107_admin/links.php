@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-06-27 21:35:00 $
-|     $Author: e107coders $
+|     $Revision: 1.42 $
+|     $Date: 2005-06-28 20:17:46 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -381,7 +381,7 @@ class links {
 				$text .="<option value='$i' $sel>$i - ".$rentype[$i]."</option>";
 			};
 
-			$text .="</select><span class='smalltext'> Shown in your theme as {SITELINKS=flat:[rendertype number]}</span>
+			$text .="</select><span class='smalltext'> ".LCLAN_96." {SITELINKS=flat:[rendertype number]}</span>
 			</td>
 			</tr>
 			<tr>
