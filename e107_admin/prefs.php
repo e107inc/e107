@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2005-06-19 08:30:44 $
-|     $Author: stevedunstan $
+|     $Revision: 1.63 $
+|     $Date: 2005-06-28 14:27:47 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -38,8 +38,8 @@ if (!$pref['timezone']) {
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
-$signup_title = array(CUSTSIG_2, CUSTSIG_3, "ICQ", "Aim", "MSN", CUSTSIG_4, CUSTSIG_5, CUSTSIG_6, CUSTSIG_7, CUSTSIG_8, CUSTSIG_17);
-$signup_name = array("real", "url", "icq", "aim", "msn", "dob", "loc", "sig", "avt", "zone", "usrclass");
+$signup_title = array(CUSTSIG_2, "null", "null", "null", "null", "null", "null", CUSTSIG_6, CUSTSIG_7, CUSTSIG_8, CUSTSIG_17);
+$signup_name = array("real", "null", "null", "null", "null", "null", "null", "sig", "avt", "zone", "usrclass");
 
 
 if (isset($_POST['updateprefs']))
@@ -47,22 +47,14 @@ if (isset($_POST['updateprefs']))
 	unset($_POST['updateprefs']);
 	foreach($_POST as $key => $value)
 	{
-		if(substr($key, 0, 9) != "uesignup_")
-		{
-			$pref[$key] = $tp->toDB($value);
-		}
-		else
-		{
-			$fid = intval(substr($key, 9));
-			$sql->db_Update("user_extended_struct", "user_extended_struct_signup = '{$value}' WHERE user_extended_struct_id = '{$fid}'");
-		}
+		$pref[$key] = $tp->toDB($value);
 	}
 	$signup_options = "";
-	for ($i = 0; $i < count($signup_title); $i++) {
+	for ($i = 0; $i < count($signup_title); $i++)
+	{
 		$valuesignup = $signup_name[$i];
 		$signup_options .= $_POST[$valuesignup];
-		$signup_options .= $i < (count($signup_title)-1)?".":
-		"";
+		$signup_options .= $i < (count($signup_title)-1) ? "." : "";
 	}
 	$pref['signup_options'] = $signup_options;
 	$e107cache->clear();
@@ -464,40 +456,21 @@ $text .= "<div id='signup' style='display:none; text-align:center'>
 $signupval = explode(".", $pref['signup_options']);
 for ($i = 0; $i < count($signup_title); $i++)
 {
-	$text .= "
-		<tr>
-			<td style='width:50%' class='forumheader3'>".$signup_title[$i]."</td>
-			<td style='width:50%' class='forumheader3' >". ($signupval[$i] == "0" || $$signup_name[$i] == "" ? "<input type='radio' name='".$signup_name[$i]."' value='0' checked='checked' /> ".CUSTSIG_12 : "<input type='radio' name='".$signup_name[$i]."' value='0' /> ".CUSTSIG_12)."&nbsp;&nbsp;". ($signupval[$i] == "1" ? "<input type='radio' name='".$signup_name[$i]."' value='1' checked='checked' /> ".CUSTSIG_14 : "<input type='radio' name='".$signup_name[$i]."' value='1' /> ".CUSTSIG_14)."&nbsp;&nbsp;". ($signupval[$i] == "2" ? "<input type='radio' name='".$signup_name[$i]."' value='2' checked='checked' /> ".CUSTSIG_15 : "<input type='radio' name='".$signup_name[$i]."' value='2' /> ".CUSTSIG_15)."&nbsp;&nbsp;</td>
-		</tr>";
+	if($signup_title[$i] != "null")
+	{
+		$text .= "
+			<tr>
+				<td style='width:50%' class='forumheader3'>".$signup_title[$i]."</td>
+				<td style='width:50%' class='forumheader3' >". ($signupval[$i] == "0" || $$signup_name[$i] == "" ? "<input type='radio' name='".$signup_name[$i]."' value='0' checked='checked' /> ".CUSTSIG_12 : "<input type='radio' name='".$signup_name[$i]."' value='0' /> ".CUSTSIG_12)."&nbsp;&nbsp;". ($signupval[$i] == "1" ? "<input type='radio' name='".$signup_name[$i]."' value='1' checked='checked' /> ".CUSTSIG_14 : "<input type='radio' name='".$signup_name[$i]."' value='1' /> ".CUSTSIG_14)."&nbsp;&nbsp;". ($signupval[$i] == "2" ? "<input type='radio' name='".$signup_name[$i]."' value='2' checked='checked' /> ".CUSTSIG_15 : "<input type='radio' name='".$signup_name[$i]."' value='2' /> ".CUSTSIG_15)."&nbsp;&nbsp;</td>
+			</tr>";
+	}
+	else
+	{
+		$text .= "<input type='hidden' name='{$signup_name[$i]}' valye='0' />";
+	}
 }
 
 // Custom Fields.
-
-$extList = $ue->user_extended_get_fieldList();
-if($extList)
-{
-	foreach($extList as $ext)
-	{
-		$fname = $ext['user_extended_struct_name'];
-		$fid = $ext['user_extended_struct_id'];
-		$curval = $ext['user_extended_struct_signup'];
-		$text .= "
-			<tr>
-				<td style='width:50%' class='forumheader3'>".$fname." <span class='smalltext'>(custom field)</span></td>
-				<td style='width:50%' class='forumheader3' >
-		";
-		$chk = (!$curval) ? " checked='checked' " : "";
-		$text .= "\n<input type='radio' name='uesignup_{$fid}' {$chk} value='0' /> ".CUSTSIG_12."&nbsp;\n";
-
-		$chk = ($curval == 1) ? " checked='checked' " : "";
-		$text .= "<input type='radio' name='uesignup_{$fid}' {$chk} value='1' /> ".CUSTSIG_14."&nbsp;\n";
-
-		$chk = ($curval == 2) ? " checked='checked' " : "";
-		$text .= "<input type='radio' name='uesignup_{$fid}' {$chk} value='2' /> ".CUSTSIG_15."\n";
-		$text .= "</td></tr>";
-
-	}
-}
 
 $text .= pref_submit();
 $text .= "</table></div>";
