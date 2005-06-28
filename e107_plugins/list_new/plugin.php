@@ -18,7 +18,7 @@ $lan_file = e_PLUGIN."list_new/languages/".e_LANGUAGE.".php";
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."list_new/languages/English.php");
 
 // Plugin info -------------------------------------------------------------------------------------------------------
-$eplug_name = LIST_PLUGIN_0;
+$eplug_name = LIST_PLUGIN_1;
 $eplug_version = "1.0";
 $eplug_author = "Eric Vanderfeesten (lisa)";
 $eplug_logo = "";
