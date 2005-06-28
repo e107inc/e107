@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_meta.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-28 14:37:58 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -17,5 +17,9 @@ define("METLAN_5", "skriv in din beskrivning här");
 define("METLAN_6", "skriv, en, lista, på, dina, nyckelord, här");
 define("METLAN_7", "skriv in din copyright info här");
 define("METLAN_8", "Meta-taggar");
+
+define("METLAN_9", "Beskrivning");
+define("METLAN_10", "Nyckelord");
+define("METLAN_11", "Copyright");
 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_administrator.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-28 14:37:58 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@ define("ADMSLAN_19", "Ändra sajtpreferenser");
 define("ADMSLAN_20", "Ändra menyer");
 define("ADMSLAN_21", "Lägg till sajtadministratörer");
 define("ADMSLAN_22", "Moderera användare/spärrar etc");
-define("ADMSLAN_23", "Skapa/redigera forum");
+// define("ADMSLAN_23", "Skapa/redigera forum");
 define("ADMSLAN_24", "Hantera filkategorier");
 define("ADMSLAN_25", "Ladda upp/hantera filer");
 define("ADMSLAN_26", "Se över nyhetskategorier");
@@ -39,9 +39,9 @@ define("ADMSLAN_32", "Konfigurera förstasidans innehåll");
 define("ADMSLAN_33", "Konfigurera logg/statistik");
 define("ADMSLAN_34", "Konfigurera metataggar");
 define("ADMSLAN_35", "Konfigurera publika filuppladdningar");
-define("ADMSLAN_36", "Moderera forum");
+// define("ADMSLAN_36", "Moderera forum");
 define("ADMSLAN_37", "Moderera kommentarer");
-define("ADMSLAN_38", "Moderera/konfigurera chattruta");
+// define("ADMSLAN_38", "Moderera/konfigurera chattruta");
 define("ADMSLAN_39", "Posta nyheter");
 define("ADMSLAN_40", "Posta länkar");
 define("ADMSLAN_41", "Posta artiklar");

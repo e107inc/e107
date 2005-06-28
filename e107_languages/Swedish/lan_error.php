@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_error.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:34 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-28 14:37:58 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -31,5 +31,10 @@ define("LAN_17", "har sparats.");
 define("LAN_18", "Det verkar som om du sänts hit av");
 define("LAN_19", "Tyvärr finns det en ogiltig eller helt felaktig länk på den adressen.");
 define("LAN_20", "Vänligen klicka för att komma till första sidan");
+
+define("LAN_ERROR_01", "Den begärda URLen kan inte hittas på denna servern. Länken du klickat på är antagligen gammal.");
+define("LAN_ERROR_02", "Klicka här för att gå till denna sajts söksida");
+define("LAN_ERROR_03", "Ditt försök att nå ");
+define("LAN_ERROR_04", " misslyckades.");
 
 ?>
