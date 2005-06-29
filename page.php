@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-16 17:28:35 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 14:07:02 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -102,13 +102,13 @@ class pageClass
 		switch ($val)
 		{
 			case 1:
-				$text .= "No page selected.";
+			$text .= "No page selected.";
 			break;
 			case 2:
-				$text .= "Invalid page.";
+			$text .= "Invalid page.";
 			break;
 			case 3:
-				$text .= "You do not have the correct permissions to view this page.";
+			$text .= "You do not have the correct permissions to view this page.";
 			break;
 		}
 		$text .= "</div>
@@ -120,7 +120,7 @@ class pageClass
 	function showPage()
 	{
 		global $sql, $ns;
-		$query = "SELECT p.*, u.user_id, u.user_name FROM #page AS p 
+		$query = "SELECT p.*, u.user_id, u.user_name FROM #page AS p
 		LEFT JOIN #user AS u ON p.page_author = u.user_id 
 		WHERE p.page_id='".$this -> pageID."' AND p.page_class IN (".USERCLASS_LIST.") ";
 
@@ -146,7 +146,7 @@ class pageClass
 		{
 			echo "<b>pageText</b> ".$this -> pageText." <br />";
 		}
-		
+
 		$this -> parsePage();
 
 		$gen = new convert;
@@ -186,7 +186,7 @@ class pageClass
 		{
 			$this -> pageTitles[] = $title;
 		}
-		
+
 
 		if(!trim(chop($pages[0])))
 		{
@@ -304,13 +304,18 @@ class pageClass
 				{
 					$row = $sql->db_Fetch();
 					if ($row[0] && (ANON === TRUE || USER === TRUE)) {
-						$cobj->enter_comment($_POST['author_name'], $_POST['comment'], "page", $this -> pageID, $pid, $_POST['subject']);
+
+						$clean_authorname = einput::clean_input(einput::strip_input($_POST['author_name']), true);
+						$clean_comment = einput::clean_input(einput::strip_input($_POST['comment']), true);
+						$clean_subject = einput::clean_input(einput::strip_input($_POST['subject']), true);
+
+						$cobj->enter_comment($clean_authorname, $clean_comment, "page", $this -> pageID, $pid, $clean_subject);
 						$e107cache->clear("comment.page.".$this -> pageID);
 					}
 				}
 			}
 
-			$query = ($pref['nested_comments'] ? 
+			$query = ($pref['nested_comments'] ?
 			"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
 			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$this -> pageID."' AND comment_type='page' AND comment_pid='0' ORDER BY comment_datestamp"
 			:
@@ -337,10 +342,10 @@ class pageClass
 				{
 					$ns->tablerender(LAN_5, $text);
 				}
-					if(ADMIN == TRUE && $comment_total)
-					{
-						echo "<a href='".e_BASE.e_ADMIN."modcomment.php?page.".$this -> pageID."'>".LAN_314."</a>";
-					}
+				if(ADMIN == TRUE && $comment_total)
+				{
+					echo "<a href='".e_BASE.e_ADMIN."modcomment.php?page.".$this -> pageID."'>".LAN_314."</a>";
+				}
 			}
 			$cobj->form_comment("comment", "page", $id, $subject, $content_type);
 		}
@@ -350,7 +355,7 @@ class pageClass
 	{
 		global $ns;
 		$cookiename = "e107page_".$this -> pageID;
-		if(IsSet($_COOKIE[$cookiename]))
+		if(isset($_COOKIE[$cookiename]))
 		{
 
 			if($_COOKIE[$cookiename] != md5($page_password.USERID))
@@ -362,9 +367,7 @@ class pageClass
 			{
 				return TRUE;
 			}
-		}
-		else
-		{
+		} else {
 			$text = "
 			<div style='text-align:center; margin-left:auto; margin-right: auto;'>
 			<form method='post' action='".e_SELF."?".e_QUERY."' id='pwform'>
