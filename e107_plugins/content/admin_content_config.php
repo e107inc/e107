@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.52 $
-|		$Date: 2005-06-29 16:38:19 $
+|		$Revision: 1.53 $
+|		$Date: 2005-06-29 23:01:54 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -31,6 +31,7 @@ include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/
 $lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
 include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
 
+
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
@@ -45,6 +46,8 @@ require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
 e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
+
+
 
 global $tp;
 $deltest = array_flip($_POST);
@@ -509,12 +512,6 @@ function admin_content_config_adminmenu(){
 					$var['submission']['text']		= CONTENT_ADMIN_MENU_LAN_8;
 					$var['paththeme']['text']		= CONTENT_ADMIN_MENU_LAN_9;
 					$var['general']['text']			= CONTENT_ADMIN_MENU_LAN_10;
-					//$var['recentpages']['text']		= CONTENT_ADMIN_MENU_LAN_11;
-					//$var['catpages']['text']		= CONTENT_ADMIN_MENU_LAN_12;
-					//$var['contentpages']['text']	= CONTENT_ADMIN_MENU_LAN_13;
-					//$var['authorpage']['text']		= CONTENT_ADMIN_MENU_LAN_18;
-					//$var['archivepage']['text']		= CONTENT_ADMIN_MENU_LAN_16;
-					//$var['toppage']['text']			= CONTENT_ADMIN_MENU_LAN_20;
 					$var['contentmanager']['text']	= CONTENT_ADMIN_MENU_LAN_19;
 					$var['menu']['text']			= CONTENT_ADMIN_MENU_LAN_14;
 
@@ -526,10 +523,6 @@ function admin_content_config_adminmenu(){
 
 					unset($var);
 					$var=array();
-					//$var['creation']['text']		= CONTENT_ADMIN_MENU_LAN_7;
-					//$var['submission']['text']		= CONTENT_ADMIN_MENU_LAN_8;
-					//$var['paththeme']['text']		= CONTENT_ADMIN_MENU_LAN_9;
-					//$var['general']['text']			= CONTENT_ADMIN_MENU_LAN_10;
 					$var['recentpages']['text']		= CONTENT_ADMIN_MENU_LAN_11;
 					$var['catpages']['text']		= CONTENT_ADMIN_MENU_LAN_12;
 					$var['contentpages']['text']	= CONTENT_ADMIN_MENU_LAN_13;
@@ -537,8 +530,6 @@ function admin_content_config_adminmenu(){
 					$var['archivepage']['text']		= CONTENT_ADMIN_MENU_LAN_16;
 					$var['toppage']['text']			= CONTENT_ADMIN_MENU_LAN_20;
 					$var['scorepage']['text']		= CONTENT_ADMIN_MENU_LAN_22;
-					//$var['contentmanager']['text']	= CONTENT_ADMIN_MENU_LAN_19;
-					//$var['menu']['text']			= CONTENT_ADMIN_MENU_LAN_14;
 					show_admin_menu(CONTENT_ADMIN_MENU_LAN_21.": ".$content_heading."", $act, $var, TRUE);
 				
 				}else{

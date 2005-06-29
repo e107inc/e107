@@ -2,7 +2,6 @@
 include_once(e_HANDLER.'shortcode_handler.php');
 $content_shortcodes = e_shortcode::parse_scbatch(__FILE__);
 /*
-
 // CONTENT_TYPE_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_TYPE_TABLE_TOTAL
 global $contenttotal;
@@ -31,7 +30,6 @@ if($contenttotal != "0"){
 return $CONTENT_TYPE_TABLE_ICON;
 SC_END
 
-
 // CONTENT_TYPE_TABLE_SUBMIT ------------------------------------------------
 SC_BEGIN CONTENT_TYPE_TABLE_SUBMIT_ICON
 global $CONTENT_TYPE_TABLE_SUBMIT_ICON, $plugindir;
@@ -47,7 +45,6 @@ SC_BEGIN CONTENT_TYPE_TABLE_SUBMIT_SUBHEADING
 global $CONTENT_TYPE_TABLE_SUBMIT_SUBHEADING;
 return CONTENT_LAN_66;
 SC_END
-
 
 // CONTENT_TYPE_TABLE_MANAGER ------------------------------------------------
 SC_BEGIN CONTENT_TYPE_TABLE_MANAGER_ICON
@@ -65,8 +62,6 @@ global $CONTENT_TYPE_TABLE_MANAGER_SUBHEADING;
 return CONTENT_LAN_68;
 SC_END
 
-
-
 // CONTENT_TOP_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_TOP_TABLE_HEADING
 global $CONTENT_TOP_TABLE_HEADING, $row, $qs;
@@ -76,40 +71,14 @@ SC_END
 SC_BEGIN CONTENT_TOP_TABLE_ICON
 global $CONTENT_TOP_TABLE_ICON, $aa, $row, $content_pref, $content_icon_path, $qs, $mainparent;
 if($content_pref["content_top_icon_{$mainparent}"]){
-
 $width = (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
-
 return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon_{$mainparent}"]);
 }
 SC_END
 
 SC_BEGIN CONTENT_TOP_TABLE_AUTHOR
-global $CONTENT_TOP_TABLE_AUTHOR, $content_pref, $qs, $row, $aa, $mainparent;
-if($content_pref["content_top_authorname_{$mainparent}"] || $content_pref["content_top_authoremail_{$mainparent}"] || $content_pref["content_top_authoricon_{$mainparent}"] || $content_pref["content_top_authorprofile_{$mainparent}"]){
-	$authordetails = $aa -> getAuthor($row['content_author']);
-	if($content_pref["content_top_authorname_{$mainparent}"]){
-		if(isset($content_pref["content_top_authoremail_{$mainparent}"]) && $authordetails[2]){
-			if($authordetails[0] == "0"){
-				if($content_pref["content_top_authoremail_nonmember_{$mainparent}"] && strpos($authordetails[2], "@") ){
-					$CONTENT_TOP_TABLE_AUTHOR = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-				}else{
-					$CONTENT_TOP_TABLE_AUTHOR = $authordetails[1];
-				}
-			}else{
-				$CONTENT_TOP_TABLE_AUTHOR = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-			}
-		}else{
-			$CONTENT_TOP_TABLE_AUTHOR = $authordetails[1];
-		}
-		if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && isset($content_pref["content_top_authorprofile_{$mainparent}"]) && $content_pref["content_top_authorprofile_{$mainparent}"]){
-			$CONTENT_TOP_TABLE_AUTHOR .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-		}
-	}
-	if(isset($content_pref["content_top_authoricon_{$mainparent}"]) && $content_pref["content_top_authoricon_{$mainparent}"]){
-		$CONTENT_TOP_TABLE_AUTHOR .= " <a href='".e_SELF."?author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
-	}
+global $CONTENT_TOP_TABLE_AUTHOR;
 return $CONTENT_TOP_TABLE_AUTHOR;
-}
 SC_END
 
 SC_BEGIN CONTENT_TOP_TABLE_RATING
@@ -128,7 +97,6 @@ $rating .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vert
 return $rating;
 SC_END
 
-
 // CONTENT_SCORE_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_SCORE_TABLE_HEADING
 global $CONTENT_SCORE_TABLE_HEADING, $row, $qs;
@@ -138,40 +106,14 @@ SC_END
 SC_BEGIN CONTENT_SCORE_TABLE_ICON
 global $CONTENT_SCORE_TABLE_ICON, $aa, $row, $content_pref, $content_icon_path, $qs, $mainparent;
 if(isset($content_pref["content_score_icon_{$mainparent}"]) && $content_pref["content_score_icon_{$mainparent}"]){
-
 $width = (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
-
 return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon_{$mainparent}"]);
 }
 SC_END
 
 SC_BEGIN CONTENT_SCORE_TABLE_AUTHOR
-global $CONTENT_SCORE_TABLE_AUTHOR, $content_pref, $qs, $row, $aa, $mainparent;
-if( (isset($content_pref["content_score_authorname_{$mainparent}"]) && $content_pref["content_score_authorname_{$mainparent}"]) || (isset($content_pref["content_score_authoremail_{$mainparent}"]) && $content_pref["content_score_authoremail_{$mainparent}"]) || (isset($content_pref["content_score_authoricon_{$mainparent}"]) && $content_pref["content_score_authoricon_{$mainparent}"]) || (isset($content_pref["content_score_authorprofile_{$mainparent}"]) && $content_pref["content_score_authorprofile_{$mainparent}"]) ){
-	$authordetails = $aa -> getAuthor($row['content_author']);
-	if($content_pref["content_score_authorname_{$mainparent}"]){
-		if(isset($content_pref["content_score_authoremail_{$mainparent}"]) && $authordetails[2]){
-			if($authordetails[0] == "0"){
-				if($content_pref["content_score_authoremail_nonmember_{$mainparent}"] && strpos($authordetails[2], "@") ){
-					$CONTENT_SCORE_TABLE_AUTHOR = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-				}else{
-					$CONTENT_SCORE_TABLE_AUTHOR = $authordetails[1];
-				}
-			}else{
-				$CONTENT_SCORE_TABLE_AUTHOR = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-			}
-		}else{
-			$CONTENT_SCORE_TABLE_AUTHOR = $authordetails[1];
-		}
-		if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && isset($content_pref["content_score_authorprofile_{$mainparent}"]) && $content_pref["content_score_authorprofile_{$mainparent}"]){
-			$CONTENT_SCORE_TABLE_AUTHOR .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-		}
-	}
-	if(isset($content_pref["content_score_authoricon_{$mainparent}"]) && $content_pref["content_score_authoricon_{$mainparent}"]){
-		$CONTENT_SCORE_TABLE_AUTHOR .= " <a href='".e_SELF."?author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
-	}
+global $CONTENT_SCORE_TABLE_AUTHOR;
 return $CONTENT_SCORE_TABLE_AUTHOR;
-}
 SC_END
 
 SC_BEGIN CONTENT_SCORE_TABLE_SCORE
@@ -190,10 +132,6 @@ $img .= "<img src='".e_PLUGIN."content/images/score_end.png' alt='' style='$heig
 return $score."/100 ".$img;
 SC_END
 
-
-
-
-
 // CONTENT_SUBMIT_TYPE_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_SUBMIT_TYPE_TABLE_HEADING
 global $CONTENT_SUBMIT_TYPE_TABLE_HEADING, $row;
@@ -210,8 +148,6 @@ global $CONTENT_SUBMIT_TYPE_TABLE_ICON, $aa, $row, $content_cat_icon_path_large,
 return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "content.submit.".$row['content_id'], "", $content_pref["content_blank_caticon_{$row['content_id']}"]);
 SC_END
 
-
-
 // CONTENT_CONTENT_TABLEMANAGER ------------------------------------------------
 SC_BEGIN CONTENT_CONTENTMANAGER_ICONNEW
 global $CONTENT_CONTENTMANAGER_ICONNEW, $row;
@@ -227,8 +163,6 @@ SC_BEGIN CONTENT_CONTENTMANAGER_ICONEDIT
 global $CONTENT_CONTENTMANAGER_ICONEDIT, $row;
 return "<a href='".e_SELF."?content.".$row['content_id']."'>".CONTENT_ICON_EDIT."</a>";
 SC_END
-
-
 
 // CONTENT_AUTHOR_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_AUTHOR_TABLE_NAME
@@ -251,7 +185,6 @@ return $CONTENT_AUTHOR_TABLE_TOTAL;
 }
 SC_END
 
-
 SC_BEGIN CONTENT_AUTHOR_TABLE_LASTITEM
 global $CONTENT_AUTHOR_TABLE_LASTITEM, $gen, $row, $mainparent, $content_pref;
 if($content_pref["content_author_lastitem_{$mainparent}"]){
@@ -261,7 +194,6 @@ $CONTENT_AUTHOR_TABLE_LASTITEM .= " : <a href='".e_SELF."?content.".$row['conten
 return $CONTENT_AUTHOR_TABLE_LASTITEM;
 }
 SC_END
-
 
 // CONTENT_CAT_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_CAT_TABLE_INFO_PRE
@@ -318,32 +250,8 @@ return $DATE;
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_AUTHORDETAILS
-global $CONTENT_CAT_TABLE_AUTHORDETAILS, $content_pref, $qs, $row, $aa, $mainparent;
-if($content_pref["content_catall_authorname_{$mainparent}"] || $content_pref["content_catall_authoremail_{$mainparent}"] || (isset($content_pref["content_catall_authoricon_{$mainparent}"]) && $content_pref["content_catall_authoricon_{$mainparent}"]) || $content_pref["content_catall_authorprofile_{$mainparent}"]){
-	$authordetails = $aa -> getAuthor($row['content_author']);
-	if($content_pref["content_catall_authorname_{$mainparent}"]){
-		if(isset($content_pref["content_catall_authoremail_{$mainparent}"]) && $authordetails[2]){
-			if($authordetails[0] == "0"){
-				if($content_pref["content_catall_authoremail_nonmember_{$mainparent}"] && strpos($authordetails[2], "@") ){
-					$AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-				}else{
-					$AUTHORDETAILS = $authordetails[1];
-				}
-			}else{
-				$AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-			}
-		}else{
-			$AUTHORDETAILS = $authordetails[1];
-		}
-		if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && isset($content_pref["content_catall_authorprofile_{$mainparent}"]) && $content_pref["content_catall_authorprofile_{$mainparent}"]){
-			$AUTHORDETAILS .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-		}
-	}
-	if(isset($content_pref["content_catall_authoricon_{$mainparent}"]) && $content_pref["content_catall_authoricon_{$mainparent}"]){
-		$AUTHORDETAILS .= " <a href='".e_SELF."?author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
-	}
-return $AUTHORDETAILS;
-}
+global $CONTENT_CAT_TABLE_AUTHORDETAILS;
+return $CONTENT_CAT_TABLE_AUTHORDETAILS;
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_EPICONS
@@ -392,8 +300,6 @@ return $rater->composerating($plugintable, $row['content_id'], $enter=TRUE, $use
 }
 return $RATING;
 SC_END
-
-
 
 // CONTENT_CAT_LIST_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_CAT_LIST_TABLE_INFO_PRE
@@ -472,32 +378,8 @@ return ($datestamp != "" ? $datestamp : "");
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_AUTHORDETAILS
-global $CONTENT_CAT_LIST_TABLE_AUTHORDETAILS, $content_pref, $qs, $row, $aa, $mainparent;
-if($content_pref["content_cat_authorname_{$mainparent}"] || $content_pref["content_cat_authoremail_{$mainparent}"] || (isset($content_pref["content_cat_authoricon_{$mainparent}"]) && $content_pref["content_cat_authoricon_{$mainparent}"]) || $content_pref["content_cat_authorprofile_{$mainparent}"]){
-	$authordetails = $aa -> getAuthor($row['content_author']);
-	if($content_pref["content_cat_authorname_{$mainparent}"]){
-		if(isset($content_pref["content_cat_authoremail_{$mainparent}"]) && $authordetails[2]){
-			if($authordetails[0] == "0"){
-				if($content_pref["content_cat_authoremail_nonmember_{$mainparent}"] && strpos($authordetails[2], "@") ){
-					$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-				}else{
-					$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS = $authordetails[1];
-				}
-			}else{
-				$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-			}
-		}else{
-			$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS = $authordetails[1];
-		}
-		if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && isset($content_pref["content_cat_authorprofile_{$mainparent}"]) && $content_pref["content_cat_authorprofile_{$mainparent}"]){
-			$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-		}
-	}
-	if(isset($content_pref["content_cat_authoricon_{$mainparent}"]) && $content_pref["content_cat_authoricon_{$mainparent}"]){
-		$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS .= " <a href='".e_SELF."?author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
-	}
+global $CONTENT_CAT_LIST_TABLE_AUTHORDETAILS;
 return $CONTENT_CAT_LIST_TABLE_AUTHORDETAILS;
-}
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_EPICONS
@@ -528,11 +410,6 @@ if( (isset($content_pref["content_cat_rating_all_{$mainparent}"]) && $content_pr
 return $RATING;
 SC_END
 
-
-
-
-
-
 // CONTENT_CAT_LISTSUB ------------------------------------------------
 SC_BEGIN CONTENT_CAT_LISTSUB_TABLE_ICON
 global $CONTENT_CAT_LISTSUB_TABLE_ICON, $aa, $row, $content_pref, $qs, $mainparent, $content_cat_icon_path_small;
@@ -562,8 +439,6 @@ return ($row['content_subheading'] ? $tp -> toHTML($row['content_subheading'], T
 }
 SC_END
 
-
-
 // CONTENT_SEARCH_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_SEARCH_TABLE_SELECT
 global $CONTENT_SEARCH_TABLE_SELECT;
@@ -579,11 +454,6 @@ SC_BEGIN CONTENT_SEARCH_TABLE_KEYWORD
 global $CONTENT_SEARCH_TABLE_KEYWORD;
 return $CONTENT_SEARCH_TABLE_KEYWORD;
 SC_END
-
-
-
-
-
 
 // CONTENT_SEARCHRESULT_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_SEARCHRESULT_TABLE_ICON
@@ -630,9 +500,6 @@ global $CONTENT_SEARCHRESULT_TABLE_TEXT, $row, $tp;
 return ($row['content_text'] ? $tp -> toHTML($row['content_text'], TRUE, "") : "");
 SC_END
 
-
-
-
 // CONTENT_RECENT_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_RECENT_TABLE_INFOPRE
 global $CONTENT_RECENT_TABLE_INFOPRE;
@@ -652,9 +519,7 @@ SC_END
 SC_BEGIN CONTENT_RECENT_TABLE_ICON
 global $CONTENT_RECENT_TABLE_ICON, $aa, $row, $content_icon_path, $content_pref, $mainparent;
 if(isset($content_pref["content_list_icon_{$mainparent}"]) && $content_pref["content_list_icon_{$mainparent}"]){
-
 $width = (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
-
 return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content.".$row['content_id'], $width, $content_pref["content_blank_icon_{$mainparent}"]);
 }
 SC_END
@@ -712,7 +577,6 @@ if(isset($content_pref["content_list_text_{$mainparent}"]) && $content_pref["con
 return $CONTENT_RECENT_TABLE_TEXT;
 SC_END
 
-
 SC_BEGIN CONTENT_RECENT_TABLE_DATE
 global $CONTENT_RECENT_TABLE_DATE, $content_pref, $qs, $row, $mainparent;
 if(isset($content_pref["content_list_date_{$mainparent}"]) && $content_pref["content_list_date_{$mainparent}"]){
@@ -735,32 +599,8 @@ return $CONTENT_RECENT_TABLE_EPICONS;
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_AUTHORDETAILS
-global $CONTENT_RECENT_TABLE_AUTHORDETAILS, $content_pref, $qs, $row, $aa, $mainparent;
-if($content_pref["content_list_authorname_{$mainparent}"] || $content_pref["content_list_authoremail_{$mainparent}"] || (isset($content_pref["content_list_authoricon_{$mainparent}"]) && $content_pref["content_list_authoricon_{$mainparent}"]) || $content_pref["content_list_authorprofile_{$mainparent}"]){
-	$authordetails = $aa -> getAuthor($row['content_author']);
-	if($content_pref["content_list_authorname_{$mainparent}"]){
-		if(isset($content_pref["content_list_authoremail_{$mainparent}"]) && $authordetails[2]){
-			if($authordetails[0] == "0"){
-				if($content_pref["content_list_authoremail_nonmember_{$mainparent}"] && strpos($authordetails[2], "@") ){
-					$CONTENT_RECENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-				}else{
-					$CONTENT_RECENT_TABLE_AUTHORDETAILS = $authordetails[1];
-				}
-			}else{
-				$CONTENT_RECENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-			}
-		}else{
-			$CONTENT_RECENT_TABLE_AUTHORDETAILS = $authordetails[1];
-		}
-		if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && isset($content_pref["content_list_authorprofile_{$mainparent}"]) && $content_pref["content_list_authorprofile_{$mainparent}"]){
-			$CONTENT_RECENT_TABLE_AUTHORDETAILS .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-		}
-	}
-	if(isset($content_pref["content_list_authoricon_{$mainparent}"]) && $content_pref["content_list_authoricon_{$mainparent}"]){
-		$CONTENT_RECENT_TABLE_AUTHORDETAILS .= " <a href='".e_SELF."?author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
-	}
+global $CONTENT_RECENT_TABLE_AUTHORDETAILS;
 return $CONTENT_RECENT_TABLE_AUTHORDETAILS;
-}
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_EDITICON
@@ -797,8 +637,6 @@ return $aa -> getCrumbItem($row['content_parent'], $array);
 }
 SC_END
 
-
-
 // CONTENT_ARCHIVE_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_ARCHIVE_TABLE_LETTERS
 global $CONTENT_ARCHIVE_TABLE_LETTERS, $content_pref, $mainparent;
@@ -821,36 +659,9 @@ return strftime($datestyle, $row['content_datestamp']);
 SC_END
 
 SC_BEGIN CONTENT_ARCHIVE_TABLE_AUTHOR
-global $CONTENT_ARCHIVE_TABLE_AUTHOR, $row, $qs, $aa, $content_pref, $mainparent;
-if( (isset($content_pref["content_archive_authorname_{$mainparent}"]) && $content_pref["content_archive_authorname_{$mainparent}"]) || (isset($content_pref["content_archive_authoremail_{$mainparent}"]) && $content_pref["content_archive_authoremail_{$mainparent}"]) || (isset($content_pref["content_archive_authoricon_{$mainparent}"]) && $content_pref["content_archive_authoricon_{$mainparent}"]) || (isset($content_pref["content_archive_authorprofile_{$mainparent}"]) && $content_pref["content_archive_authorprofile_{$mainparent}"]) ){
-	$authordetails = $aa -> getAuthor($row['content_author']);
-	if($content_pref["content_archive_authorname_{$mainparent}"]){
-		if(isset($content_pref["content_archive_authoremail_{$mainparent}"]) && $authordetails[2]){
-			if($authordetails[0] == "0"){
-				if($content_pref["content_archive_authoremail_nonmember_{$mainparent}"] && strpos($authordetails[2], "@") ){
-					$CONTENT_ARCHIVE_TABLE_AUTHOR = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-				}else{
-					$CONTENT_ARCHIVE_TABLE_AUTHOR = $authordetails[1];
-				}
-			}else{
-				$CONTENT_ARCHIVE_TABLE_AUTHOR = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-			}
-		}else{
-			$CONTENT_ARCHIVE_TABLE_AUTHOR = $authordetails[1];
-		}
-		if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && isset($content_pref["content_archive_authorprofile_{$mainparent}"]) && $content_pref["content_archive_authorprofile_{$mainparent}"]){
-			$CONTENT_ARCHIVE_TABLE_AUTHOR .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-		}
-	}
-	if(isset($content_pref["content_archive_authoricon_{$mainparent}"]) && $content_pref["content_archive_authoricon_{$mainparent}"]){
-		$CONTENT_ARCHIVE_TABLE_AUTHOR .= " <a href='".e_SELF."?author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
-	}
+global $CONTENT_ARCHIVE_TABLE_AUTHOR;
 return $CONTENT_ARCHIVE_TABLE_AUTHOR;
-}
 SC_END
-
-
-
 
 // CONTENT_CONTENT_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_CONTENT_TABLE_INFO_PRE
@@ -878,9 +689,7 @@ SC_END
 SC_BEGIN CONTENT_CONTENT_TABLE_ICON
 global $CONTENT_CONTENT_TABLE_ICON, $qs, $row, $aa, $content_pref, $content_icon_path, $mainparent;
 if(isset($content_pref["content_content_icon_{$mainparent}"]) && $content_pref["content_content_icon_{$mainparent}"]){
-
 $width = (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
-
 return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "", $width, $content_pref["content_blank_icon_{$mainparent}"]);
 }
 SC_END
@@ -928,32 +737,8 @@ return $CONTENT_CONTENT_TABLE_DATE;
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_AUTHORDETAILS
-global $CONTENT_CONTENT_TABLE_AUTHORDETAILS, $content_pref, $qs, $row, $aa, $mainparent;
-if($content_pref["content_content_authorname_{$mainparent}"] || $content_pref["content_content_authoremail_{$mainparent}"] || (isset($content_pref["content_content_authoricon_{$mainparent}"]) && $content_pref["content_content_authoricon_{$mainparent}"]) || $content_pref["content_content_authorprofile_{$mainparent}"]){
-	$authordetails = $aa -> getAuthor($row['content_author']);
-	if($content_pref["content_content_authorname_{$mainparent}"]){
-		if(isset($content_pref["content_content_authoremail_{$mainparent}"]) && $authordetails[2]){
-			if($authordetails[0] == "0"){
-				if($content_pref["content_content_authoremail_nonmember_{$mainparent}"] && strpos($authordetails[2], "@") ){
-					$CONTENT_CONTENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-				}else{
-					$CONTENT_CONTENT_TABLE_AUTHORDETAILS = $authordetails[1];
-				}
-			}else{
-				$CONTENT_CONTENT_TABLE_AUTHORDETAILS = "<a href='mailto:".$authordetails[2]."'>".$authordetails[1]."</a>";
-			}
-		}else{
-			$CONTENT_CONTENT_TABLE_AUTHORDETAILS = $authordetails[1];
-		}
-		if(USER && is_numeric($authordetails[0]) && $authordetails[0] != "0" && isset($content_pref["content_content_authorprofile_{$mainparent}"]) && $content_pref["content_content_authorprofile_{$mainparent}"]){
-			$CONTENT_CONTENT_TABLE_AUTHORDETAILS .= " <a href='".e_BASE."user.php?id.".$authordetails[0]."' title='".CONTENT_LAN_40."'>".CONTENT_ICON_USER."</a>";
-		}
-	}
-	if(isset($content_pref["content_content_authoricon_{$mainparent}"]) && $content_pref["content_content_authoricon_{$mainparent}"]){
-		$CONTENT_CONTENT_TABLE_AUTHORDETAILS .= " <a href='".e_SELF."?author.".$row['content_id']."' title='".CONTENT_LAN_39."'>".CONTENT_ICON_AUTHORLIST."</a>";
-	}
+global $CONTENT_CONTENT_TABLE_AUTHORDETAILS;
 return $CONTENT_CONTENT_TABLE_AUTHORDETAILS;
-}
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_EPICONS
