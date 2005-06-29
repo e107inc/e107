@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_links.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:26 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -72,5 +72,11 @@ define("LCLAN_81", "Sub-menu będzie wyświetlone dopiero wtedy gdy zostanie kli
 define("LINKLAN_1", "Otwarcie w oknie 800x600");
 define("LINKLAN_2", "Nadrzędny");
 define("LINKLAN_3", "Brak nadrzędnych (Normalny Link)");
+define("LINKLAN_4", "Generator Podlinków");
+define("LINKLAN_5", "Generuj Podlinki");
+define("LINKLAN_6", "Utwórz podlinki z:");
+define("LINKLAN_7", "Pod którym linkiem utworzyć podlinki ?");
+define("LINKLAN_8", "Kategorie Nowości");
+define("LINKLAN_9", "Kategorie Download");
 
 ?>

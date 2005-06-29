@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_search.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:26 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -41,5 +41,14 @@ define("SEALAN_28", "Wyników");
 define("SEALAN_30", "Podświetl wyrazy zapytania ,w wynikach wyszukiwania:");
 define("SEALAN_31", "PHP ograniczony do");
 define("SEALAN_32", "wyniki (pozostaw puste jeżeli brak limitów)");
+define("SEALAN_33", "Nie można przełączyć do metody MySql tak jak wymagano, możliwe dopiero od wersji 4.0.1  MySql.");
+define("SEALAN_34", "Twoja wersja jest prawidłowa");
+define("SEALAN_35", "Metoda wyboru obszaru przeszukującego:");
+define("SEALAN_36", "Rozwijana lista");
+define("SEALAN_37", "Zaznaczenie");
+define("SEALAN_38", "Radio");
+define("SEALAN_39", "Własne Strony");
 
+define("LAN_98", "Nowości");
+define("LAN_197", "Downloads");
 ?>

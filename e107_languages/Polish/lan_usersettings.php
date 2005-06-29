@@ -4,13 +4,19 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_usersettings.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:17 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:27 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Ustawienia użytkownika");
-define("LAN_7", "Nazwa użytkownika:");
+define("LAN_7", "Pokazywana Nazwa: ");
+define("LAN_8", "ta nazwa będzie pokazywana na stronie");
+define("LAN_9", "Nazwa Logowania: ");
+define("LAN_10", "tę nazwę zobaczysz w oknie logowania");
+define("LAN_11", "nazwa użyta do logowania się w serwisie nie może być zmieniona, skontaktuj się z administratorem jeżeli chcesz ją zmienić w celu bezpieczeństwa.");
+
+
 define("LAN_20", "Błąd");
 define("LAN_105", "Hasło i powtórka hasła nie są identyczne");
 define("LAN_106", "Adres email jest prawdopodobnie nieprawidłowy.");
@@ -85,6 +91,6 @@ define("RESIZE_NOT_SUPPORTED", "Zmiana rozmiaru jest nie możliwa na tym serwerz
 // v0.7
 define("LAN_USET_5", "Subskrypcja");
 define("LAN_USET_6", "Zapisz się do naszej listy subskrypcyjnej.");
-define("LAN_USET_7", "Rózne");
+define("LAN_USET_7", "Informacje Dodatkowe");
 define("LAN_USET_8", "Podpis / Strefa czasowa");
 ?>

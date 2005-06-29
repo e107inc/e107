@@ -4,13 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:27 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
-
-define("PAGE_NAME", "Forum");
+define("e_PAGETITLE", "Forum");
 define("LAN_30", "Witaj");
 define("LAN_31", "Nie ma nowych wpisów");
 define("LAN_32", "Jest 1 nowy wpis");
@@ -94,8 +93,10 @@ define("LAN_437", "zarejestrować");
 define("LAN_438", "lub zalogować");
 define("LAN_439", "tutaj");
 define("LAN_440", "aby przejść do strony rejestracji.");
+define("LAN_441", "Zobacz statystyki forum");
 	
 define('FORLAN_441', 'Brak zdefiniowanych zasad.');
 define('FORLAN_442', 'Pliki wysłane');
-	
+define('FORLAN_443', '[użytkownik usunięty]');	
+define('FORLAN_444', 'sub-forum');
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum_post.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:27 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -96,8 +96,12 @@ define("LAN_413", "Twoja ankieta została dodana.");
 define("LAN_414", "Zobacz tutaj jak wygląda Twoja ankieta");
 define("LAN_415", "Twoja odpowiedź, została zapisana.");
 define("LAN_416", "Plik załącznika");
+define("LAN_417", "Dodaj jeszcze jeden załącznik");
 
 define("POLL_506", "Zezwolić na wielokrotny wybór?");
 define("POLL_507", "tak");
 define("POLL_508", "nie");
+
+define("LAN_FORUM_1", "Nadsyłanie wyłączone: ".e_FILE."public katalog nie jest zapisywalny");
+define("LAN_FORUM_2", "Powielony wpis");
 ?>

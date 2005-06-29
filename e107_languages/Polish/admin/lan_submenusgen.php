@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_submenusgen.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:26 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 define("LAN_MENGEN_1", "Zarządzanie linkami menu głównego");
 define("LAN_MENGEN_2", "Automatyczny Generator Menu");
 define("LAN_MENGEN_3", "Dodaj linki w podmenu dla:");
-//define("LAN_MENGEN_4", "Nowości");
+define("LAN_MENGEN_4", "Nowości");
 define("LAN_MENGEN_5", "Forum");
 define("LAN_MENGEN_6", "Artykułów");
 //define("LAN_MENGEN_7", "Download");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_cpage.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-29 22:46:26 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -37,18 +37,18 @@ define("CUSLAN_26", "Utwórz nowe menu");
 define("CUSLAN_27", "Strona zapisana w bazie danych.");
 define("CUSLAN_28", "Strona usunięta");
 define("CUSLAN_29", "Lista stron, jeżeli żadna nie została //List pages if no page selected");
-define("CUSLAN_30", "Expiry time for cookie (in seconds)");
+define("CUSLAN_30", "Czas do wygaśnięcia cookie (w sekundach)");
 define("CUSLAN_31", "Utwórz menu");
-define("CUSLAN_32", "Convert old pages/menus");
-define("CUSLAN_33", "Page Options");
-define("CUSLAN_34", "Beginning conversion");
-define("CUSLAN_35", "Finished custom page update - updated");
-define("CUSLAN_36", "To set your preferences for each page, please return to front page and edit the pages.");
-define("CUSLAN_37", "Custom Page Update");
-define("CUSLAN_38", "on");
-define("CUSLAN_39", "off");
-define("CUSLAN_40", "Save Options");
+define("CUSLAN_32", "Przekonwertuj stare strony/menu");
+define("CUSLAN_33", "Opcje strony");
+define("CUSLAN_34", "Start konwersji");
+define("CUSLAN_35", "Zakończenie aktualizacji własnej strony");
+define("CUSLAN_36", "Aby zapisać własne ustawienia dla każdej ze stron,wróć do strony głównej i zredaguj strony.");
+define("CUSLAN_37", "Aktualizacja własnej strony");
+define("CUSLAN_38", "wł");
+define("CUSLAN_39", "wył");
+define("CUSLAN_40", "Zapisz Opcje");
 
-define("CUSLAN_41", "Display author and date information");
-
+define("CUSLAN_41", "Pokazuj nazwę autora oraz datę publikacji");
+define("CUSLAN_42", "Brak zdefiniowanych stron");
 ?>

@@ -31,6 +31,11 @@ define("LAN_12", "Proszę poinformować administratora odnośnie tej strony, je�
 define("LAN_13", "Error - Nieznany");
 define("LAN_14", "Serwer napotkał błąd");
 define("LAN_15", "Proszę poinformować administratora odnośnie tej strony, jeśli uważasz, iż ta strona błędu została pokazana przez pomyłkę.");
+define("LAN_16", "Twoja nieudana próba uzyskania dostęp do");
+define("LAN_17", "została zapisana.");
+define("LAN_18", "Widocznie, zostałeś odesłany tutaj przez");
+define("LAN_19", "Niestety, jest przestarzały albo tylko zwykły niepoprawny link w tym adresie.");
+
 define("LAN_20", "Proszę kliknąć tutaj i powrócić do pierwszej strony.");
 
 

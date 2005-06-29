@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:27 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -145,23 +145,47 @@ define("FORLAN_128", "Długość podpowiedzi");
 define("FORLAN_129", "Określa ilość wpisów wyświetlanych w podpowiedzi.");
 define("FORLAN_130", "Kliknij tutaj");
 define("FORLAN_131", "aby ustawić rozmiar pliku,typy zezwoleń itp.");
-
 define("FORLAN_132", "Wyróżnij Ważny Wątek");
 define("FORLAN_133", "Nałóż nacisk na ważny wątek (separacja takiego wątku w sekcji)");
-	
 define("FORLAN_134", "Maksymalna szerokość ładowanej grafiki");
 define("FORLAN_135", "Pozostaw puste, aby wyłączyć auto rozmiarowanie grafiki");
-	
 define("FORLAN_136", "Utwórz link do oryginalnego rozmiaru grafiki");
 define("FORLAN_137", "Włączenie tego spowoduje zmianę rozmiaru dużych grafik oraz utworzy link do oryginalnego rozmiaru. Jeżeli wyłączone, oryginalna grafika będzie odrzucona");
-
 define("FORLAN_138", "Oczyść to forum");
 define("FORLAN_139", "Aby użyć tych ustawień, musisz zaznaczyć 'Włącz obrazy w postach' na stronie <a href='".e_ADMIN."image.php'> zdjęć </a>");	
-
 define("FORLAN_140", "Zobaczą");	
 define("FORLAN_141", "Wpiszą");	
-
 define("FORLAN_142", "Pozwolenie wpisów");
 define("FORLAN_143", "Wskaże, kto będzie mógł wypowiadać się na tym forum");
 
+define("FORLAN_144", "Moderators set");
+define("FORLAN_145", "Configure sub-forums");
+define("FORLAN_146", "No sub-forums yet");
+define("FORLAN_147", "Update sub-forums");
+define("FORLAN_148", "Create sub-forums");
+define("FORLAN_149", "sub-forums");
+define("FORLAN_150", "sub-forum");
+define("FORLAN_151", "ID");
+define("FORLAN_152", "posts");
+define("FORLAN_153", "Tools");
+define("FORLAN_154", "Reply Deleted");
+define("FORLAN_155", "Forum Categories");
+
+define("FORLAN_156", "Select forum(s) to perform action on");
+define("FORLAN_157", "All Forums");
+define("FORLAN_158", "Recalculate forum lastpost info");
+define("FORLAN_159", "Select to recalculate lastpost info");
+define("FORLAN_160", "Select to perform this on forums only, not threads");
+define("FORLAN_161", "Recalculate post / reply counts");
+define("FORLAN_162", "Select to recalculate forum thread/reply counts");
+define("FORLAN_163", "Recalculate user forum posts counts");
+define("FORLAN_164", "Select to recalculate user forum counts");
+define("FORLAN_165", "Execute functions");
+define("FORLAN_166", "Forum Tools");
+define("FORLAN_167", "Counts updated for forum");
+define("FORLAN_168", "Lastpost info updated for forum");
+define("FORLAN_169", "User forum counts updated");
+define("FORLAN_166", "Forum Tools");
+define("FORLAN_166", "Forum Tools");
+define("FORLAN_166", "Forum Tools");
 ?>

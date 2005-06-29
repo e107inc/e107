@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:26 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -167,6 +167,10 @@ define("ADLAN_145", "kliknij tutaj");
 define("ADLAN_146", "Błędna próba logowania");
 define("ADLAN_147", "Inspektor plików");
 define("ADLAN_148", "Skanuj pliki w serwisie");
+define("ADLAN_149", "Powiadomienie");
+define("ADLAN_150", "Powiadomienia admina");
+
+define("ADLAN_151", "Główna");
 
 define('ADLAN_CL_1', 'Ustawienia');
 define('ADLAN_CL_2', 'Użytkownicy');
@@ -174,7 +178,8 @@ define('ADLAN_CL_3', 'zawartość');
 define('ADLAN_CL_4', 'Coms');
 define('ADLAN_CL_5', 'Pliki');
 define('ADLAN_CL_6', 'Narzędzia');
-define('ADLAN_CL_7', 'Dodatki');
+define('ADLAN_CL_7', 'Pluginy');
+define('ADLAN_CL_8', 'Dokument');
 
 define("ADLAN_LAT_1", "Ostatnio");
 
@@ -211,17 +216,17 @@ define("LAN_OK","OK");
 
 define("LAN_PRESET","Wstępnie wyznaczony<br>Preset"); // popraw to !!!
 
-define("LAN_PRESET_SAVED","Preset saved successfully");
-define("LAN_PRESET_DELETED","Preset successfully deleted");
-define("LAN_PRESET_CONFIRMDEL","Are you sure you want to delete this preset?");
-define("LAN_NOTWRITABLE"," is not writable, you need to CHMOD 777 the folder first.");
+define("LAN_PRESET_SAVED","Preset pomyślnie zapisany");
+define("LAN_PRESET_DELETED","Preset pomyślnie usunięty");
+define("LAN_PRESET_CONFIRMDEL","Czy jesteś pewien że chcesz usunąć ten preset?");
+define("LAN_NOTWRITABLE"," nie jest zapisywalny, najpierw ustaw CHMOD 777 dla tego katalogu.");
 define("LAN_DATE","Data");
 define("LAN_TIME","Czas");
 define("LAN_YES","Tak");
 define("LAN_NO","Nie");
 define("LAN_EMPTY","Brak wpisów w bazie danych");
 
-define("LAN_EXISTING","Existing Entries");
+define("LAN_EXISTING","Istniejące wpisy");
 
 define("LAN_CANCEL","Rezygnuj");
 define("LAN_CONFDELETE","Potwierdź kasowanie");
@@ -230,5 +235,8 @@ define("LAN_ORDER","Porządek");
 
 define("LAN_SELECT","Wybierz ...");
 define("LAN_ADMIN","Admin");
-
+define("LAN_DISPLAYOPT", "Edytuj Opcje Wyświetlania");
+define("LAN_GOPAGE", "Do strony:");
+define("LAN_DATESTAMP","Data");
+define("LAN_OPTIONAL", "opcjonalne");
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_users.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:26 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -150,6 +150,7 @@ define("LAN_BANNED","Banned");
 define("USRLAN_130", "Włączone śledzenie online użytkowników");
 define("USRLAN_131", "Musisz mieć włączoną tę funkcję, jeżeli chcesz użyć metody śledzenia online użytkowników.");
 define("USRLAN_132", "Włączone");
-
+define("USRLAN_133", "Wymuś od użytkownika aktualizacji swoich danych");
+define("USRLAN_134", "Włączenie tej opcji, automatycznie wyśle użytkownikowi przypomnienie o wypełnieniu wszystkich wymaganych danych w jego ustawieniach.");
 
 ?>

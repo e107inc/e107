@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/lan_user.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:17 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:27 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ define("LAN_406", "Ocena");
 define("LAN_407", "brak");
 define("LAN_408", "brak zdjęcia");
 define("LAN_409", "punktów");
-define("LAN_410", "Różnie");
+define("LAN_410", "Dodatkowe Informacje");
 define("LAN_411", "Kliknij, aby zaktualizować informacje");
 define("LAN_412", "Kliknij, aby redagować informacje o tym użytkowniku");
 define("LAN_413", "usuń zdjęcie");

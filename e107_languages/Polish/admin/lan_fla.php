@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_fla.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-29 22:46:26 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -24,5 +24,7 @@ define("FLALAN_12", "uncheck all delete checkboxes");
 define("FLALAN_13", "check all ban checkboxes");
 define("FLALAN_14", "uncheck all ban checkboxes");
 define("FLALAN_15", "Następujące adresy IP ,zostały automatycznie zablokowane - użytkownicy próbowali więcej niż 10 razy zalogować się podając błędne dane.");
+define("FLALAN_16", "usuń listę automatycznie zablokowanych");
+define("FLALAN_17", "Lista usunięta");
 
 ?>

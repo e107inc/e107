@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_prefs.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:26 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -179,16 +179,19 @@ define("PRFLAN_127", "Klikalne linki we wpisach");
 define("PRFLAN_128", "Włączenie tej funkcji zamieni linki na hyperlinki");
 define("PRFLAN_129", "Nie zezwalaj na wielokrotne logowanie"); ///Disallow multiple logins
 define("PRFLAN_130", "Aktywowanie tej funkcji ,Activating this will prevent more than one person logging in with the same username/password (login detail sharing)");
-define("PRFLAN_131", "Aktywować use of [php] bbcode");
-define("PRFLAN_132", "Activating this will allow authorized users to post [php] code in certain areas");
+define("PRFLAN_131", "Aktywować używanie [php] bbcode");
+define("PRFLAN_132", "Aktywacja tego, umożliwi użytkownikom na wpisywanie kodu [php] w pewnych obszarach");
 define("PRFLAN_133", "Wymagane rozszerzenie GD, nie znalezione");
 
-define("PRFLAN_134", "Przekierowywanie all requests to site URL");
-define("PRFLAN_135", "for example, if your site URL above is set http://foo.com, anyone requesting http://www.foo.com will be redirected to http://foo.com");
-
+define("PRFLAN_134", "Przekierowywanie wszystkich odwołań do strony");
+define("PRFLAN_135", "na przykład, jeżeli adres Twojej strony to http://foo.com, ktoś wpisujący adres http://www.foo.com zostanie przekierowany na adres http://foo.com");
 define("PRFLAN_136", "Maksymalna ilość rejestrujących się z tego samego adresu IP.");
+define("PRFLAN_137", "Wyświetlaj użycie pamięci");
+define("PRFLAN_138", "Włącz weryfikację Image-code (kod cyfrowy w obrazie) podczas odnawiania hasła.");
+define("PRFLAN_139", "Pokazuj ostrzeżenie gdy hasło Głównego Administratora serwisu nie będzie zmienione po okresie 30 dni.");
 
+define("PRFLAN_140", "Tekst wysłany wraz z formą potwierdzenia rejestracji.");
+define("PRFLAN_141", "Zezwolić rejestrującym na użycie profilu XML User");
 
-define("PRFLAN_137", "Display Memory Usage");
 
 ?>

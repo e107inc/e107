@@ -4,12 +4,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum_viewforum.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:27 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
-
 define("PAGE_NAME", "Forum");
 define("LAN_01", "Forum");
 define("LAN_02", "Powrót do góry");
@@ -79,7 +78,10 @@ define("FORLAN_15", "Wątek przytwierdzony");
 define("FORLAN_16", "Zamknięty przytwierdzony wątek");
 define("FORLAN_17", "Wątek jako ogłoszenie");
 define("FORLAN_18", "Zamknięty wątek");
-
+define('FORLAN_19', '[użytkownik usunięty]');
+define('FORLAN_20', 'Sub-forum');
+define('FORLAN_21', 'Wątki');
+define('FORLAN_22', 'Ostatni Wpis');
 
 	
 ?>

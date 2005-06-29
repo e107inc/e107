@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_filemanager.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:26 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -60,6 +60,9 @@ define("FMLAN_44", "Proszę potwierdzić ,chęć przeniesienia zaznaczonych plik
 define("FMLAN_45", "Proszę potwierdzić ,chęć przeniesienia zaznaczonych plików do DOWNLOADIMAGES.");
 define("FMLAN_46", "Proszę potwierdzić ,chęć <b>usunięcia</b> zaznaczonych plików.");
 define("FMLAN_47", "Upload Użytkowników"); 
+define("FMLAN_48", "Przesuń zaznaczone do");
+define("FMLAN_49", "Potwierdź jeżeli chcesz przesunąć zaznaczone pliki.");
+define("FMLAN_50", "Przesuń");
 
 
 

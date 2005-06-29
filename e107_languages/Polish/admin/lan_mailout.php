@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_mailout.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:26 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -42,6 +42,10 @@ define("MAILAN_13","Wszyscy niezweryfikowani użytkownicy ");
 
 define("MAILAN_14","Jeżeli chcesz wysłać wiekszą ilość maili, lepiej włączyć SMTP - ustaw to w preferencjach .");
 define("MAILAN_15","Mail-Out");
-
+define("MAILAN_16","nazwa użytkownika");
+define("MAILAN_17","link do rejestracji");
+define("MAILAN_18","id użytkownika");
+define("MAILAN_19","Brak adresów email dla administratora. Sprawdź swoje ustawienia i spróbuj ponownie.");
+define("MAILAN_20","Ścieżka do programu mail");
 
 ?>

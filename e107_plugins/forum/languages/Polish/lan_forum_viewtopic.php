@@ -4,12 +4,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Polish/lan_forum_viewtopic.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:27 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
-
 define("PAGE_NAME", "Forum");
 define("LAN_01", "Forum");
 define("LAN_02", "Idź do strony");
@@ -70,6 +69,8 @@ define("LAN_428", "Wpis został raportowany");
 define("LAN_429", "Kliknij tutaj ,aby powrócić do forum");
 define("LAN_430", "ankieta");
 
+define("LAN_435", "Moderator: Skasuj");
+
 define("FORLAN_26", "Odpowiedź skasowana");
 define("FORLAN_10", "Rozpocznij Nowy Temat");
 define("LAN_29", "Edytowany");
@@ -80,4 +81,6 @@ define("LAN_433", "Zobacz ten wątek w : RDF");
 	
 define("FORLAN_101", "Wyślij wątek pocztą");
 define("FORLAN_102", "Podgląd wydruku");
+define('FORLAN_103', '[użytkownik usunięty]');
+
 ?>

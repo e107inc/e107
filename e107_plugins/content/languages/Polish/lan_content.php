@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Polish/lan_content.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-29 22:46:27 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -83,7 +83,7 @@ define("CONTENT_ADMIN_CAT_LAN_43", "kliknij tutaj");
 define("CONTENT_ADMIN_CAT_LAN_44", "aby dodać jeszcze jedną kategorię we wcześniej zaznaczonej kategorii głównej");
 define("CONTENT_ADMIN_CAT_LAN_45", "zaznacz,jeżeli komentarze mają być pokazywane"); //define if comments should be allowed
 define("CONTENT_ADMIN_CAT_LAN_46", "zaznacz,jeżeli oceny mają być pokazywane");//define if rating should be allowed
-define("CONTENT_ADMIN_CAT_LAN_47", "zaznacz jeżeli ijony drukuj/email mają być pokazywane");
+define("CONTENT_ADMIN_CAT_LAN_47", "zaznacz jeżeli ikony drukuj/email mają być pokazywane");
 define("CONTENT_ADMIN_CAT_LAN_48", "wybierz którzy użytkownicy zobaczą tę zawartość");
 define("CONTENT_ADMIN_CAT_LAN_49", "wybierz ikonę dla tej kategorii");
 //define("CONTENT_ADMIN_CAT_LAN_50", "content menu created<br /><br />Because you have created a Main Parent Category, a Menu has been generated.<br />The menu file has been created in your /menus folder.<br /><br />In order to see the menu in action, you still need to activate this menu in your <a href='".e_ADMIN."menus.php'>admin menus area</a>.");
@@ -97,6 +97,15 @@ define("CONTENT_ADMIN_CAT_LAN_52", "ZAWSZE na początku wybierz kategorię zanim
 define("CONTENT_ADMIN_CAT_LAN_53", "główna nadrzędna kategoria");
 define("CONTENT_ADMIN_CAT_LAN_54", "użytkownik");
 define("CONTENT_ADMIN_CAT_LAN_55", "użytkownicy");
+define("CONTENT_ADMIN_CAT_LAN_56", "pozycja");
+define("CONTENT_ADMIN_CAT_LAN_57", "pozycje");
+define("CONTENT_ADMIN_CAT_LAN_58", "ikona kategorii pomyślnie została załadowana<br />uwaga: nadal musisz przydzielić ikonę do tej kategorii z obszaru ikona > wybierz istniejące ikony !<br />");
+define("CONTENT_ADMIN_CAT_LAN_59", "ikona kategorii nie została załadowana");
+define("CONTENT_ADMIN_CAT_LAN_60", "wybierz istniejące ikony");
+define("CONTENT_ADMIN_CAT_LAN_61", "wyślij nową ikonę");
+define("CONTENT_ADMIN_CAT_LAN_62", "Po nadesłaniu nowej ikony kategorii, możesz zobaczyć tę ikonę poniżej w zakładce 'ikona'<br />Jeżeli nadsyłasz nową ikonę, będzie miała zmieniony rozmiar do 48 pixeli, i dodatkowo zostanie utworzona mniejsza o rozmiarze 16 pixeli<br /><br />");
+define("CONTENT_ADMIN_CAT_LAN_63", "wyślij ...");
+
 
 
 
@@ -304,8 +313,8 @@ define("CONTENT_ADMIN_OPT_LAN_195", "ikona : szerokość");
 define("CONTENT_ADMIN_OPT_LAN_196", "określ szerokość ikony");
 define("CONTENT_ADMIN_OPT_LAN_197", "jeżeli wybrałeś pokazywanie 'ikona zawartości' ustaw jej szerokość.
 Wpisz tylko wartości liczbowe, nie dodawaj 'px' lub '%'.");
-define("CONTENT_ADMIN_OPT_LAN_198", "");
-define("CONTENT_ADMIN_OPT_LAN_199", "");
+define("CONTENT_ADMIN_OPT_LAN_198", "nagłówek : lista kategorii");
+define("CONTENT_ADMIN_OPT_LAN_199", "wpisz nagłówek listy kategorii");
 
 define("CONTENT_ADMIN_OPT_LAN_200", "aktualizuj opcje");
 
@@ -327,7 +336,7 @@ define("CONTENT_ADMIN_OPT_LAN_214", "styl daty");
 define("CONTENT_ADMIN_OPT_LAN_215", "wybierz styl daty do pokazania");
 define("CONTENT_ADMIN_OPT_LAN_216", "Więcej informacji o formatowaniu daty, możesz przeczytać na <a href='http://www.php.net/manual/pl/function.strftime.php' rel='external'> stronie php.net </a>");
 define("CONTENT_ADMIN_OPT_LAN_217", "strona archiwalna");
-define("CONTENT_ADMIN_OPT_LAN_218", "default preferences");
+define("CONTENT_ADMIN_OPT_LAN_218", "domyślne ustawienia");
 
 define("CONTENT_ADMIN_OPT_LAN_219", "choose which sections should be shown when viewing the archive page");
 define("CONTENT_ADMIN_OPT_LAN_220", "authorlist icon");
@@ -388,13 +397,49 @@ define("CONTENT_ADMIN_OPT_LAN_269", "define how to render the searchmenu informa
 define("CONTENT_ADMIN_OPT_LAN_270", "letterindex");
 define("CONTENT_ADMIN_OPT_LAN_271", "define if you want to show a letter index");
 define("CONTENT_ADMIN_OPT_LAN_272", "the letterindex is a list of buttons with all the first letters of the content heading fields. you can narrow down the archive list by clicking a certain letter so only content items starting with that letter will be displayed on the screen.");
-define("CONTENT_ADMIN_OPT_LAN_273", "");
-define("CONTENT_ADMIN_OPT_LAN_274", "");
-define("CONTENT_ADMIN_OPT_LAN_275", "");
-define("CONTENT_ADMIN_OPT_LAN_276", "");
-define("CONTENT_ADMIN_OPT_LAN_277", "");
-define("CONTENT_ADMIN_OPT_LAN_278", "");
-define("CONTENT_ADMIN_OPT_LAN_279", "");
+define("CONTENT_ADMIN_OPT_LAN_273", "navigator");
+define("CONTENT_ADMIN_OPT_LAN_274", "should a navigator be displayed");
+define("CONTENT_ADMIN_OPT_LAN_275", "if checked a navigator box will be displayed to navigate to other content pages. Check the pages where this needs to be displayed.");
+
+define("CONTENT_ADMIN_OPT_LAN_276", "order options");
+define("CONTENT_ADMIN_OPT_LAN_277", "should an order option be displayed");
+define("CONTENT_ADMIN_OPT_LAN_278", "if checked an order option will be displayed to order the content items displayed on the page. Check the pages where this needs to be displayed.");
+
+define("CONTENT_ADMIN_OPT_LAN_279", "top score page (the page with the overview of all content items who have a score in this main parent)");
+
+define("CONTENT_ADMIN_OPT_LAN_280", "all categories");
+define("CONTENT_ADMIN_OPT_LAN_281", "single category");
+define("CONTENT_ADMIN_OPT_LAN_282", "all authors");
+define("CONTENT_ADMIN_OPT_LAN_283", "single author");
+define("CONTENT_ADMIN_OPT_LAN_284", "recent");
+define("CONTENT_ADMIN_OPT_LAN_285", "content item");
+define("CONTENT_ADMIN_OPT_LAN_286", "top rated");
+define("CONTENT_ADMIN_OPT_LAN_287", "archive");
+define("CONTENT_ADMIN_OPT_LAN_288", "score");
+//define("CONTENT_ADMIN_OPT_LAN_289", "");
+define("CONTENT_ADMIN_OPT_LAN_290", "choose which sections should be displayed when viewing the top rated page");
+define("CONTENT_ADMIN_OPT_LAN_291", "choose which sections should be displayed when viewing the top score page");
+define("CONTENT_ADMIN_OPT_LAN_292", "link : top score");
+define("CONTENT_ADMIN_OPT_LAN_293", "display link to 'top score items'?");
+define("CONTENT_ADMIN_OPT_LAN_294", "add field ...");
+define("CONTENT_ADMIN_OPT_LAN_295", "text");
+define("CONTENT_ADMIN_OPT_LAN_296", "textarea");
+define("CONTENT_ADMIN_OPT_LAN_297", "select");
+define("CONTENT_ADMIN_OPT_LAN_298", "date");
+define("CONTENT_ADMIN_OPT_LAN_299", "checkbox");
+define("CONTENT_ADMIN_OPT_LAN_300", "radio");
+define("CONTENT_ADMIN_OPT_LAN_301", "article index");
+define("CONTENT_ADMIN_OPT_LAN_302", "define the rendertype for the article index of multipages");
+define("CONTENT_ADMIN_OPT_LAN_303", "if you have a multipage article, you can either show the article index of these pages as a list of normal hyperlinks, or show them in a selectbox");
+define("CONTENT_ADMIN_OPT_LAN_304", "max image size");
+define("CONTENT_ADMIN_OPT_LAN_305", "define the size to which uploaded images will be resized to");
+define("CONTENT_ADMIN_OPT_LAN_306", "if the width or height of the uploaded image is greater than the given value, the image will be resized to this value.<br />the popup images will also be displayed with this value.");
+define("CONTENT_ADMIN_OPT_LAN_307", "thumb image size");
+define("CONTENT_ADMIN_OPT_LAN_308", "define the size of the thumb images that will be created with the uploaded image");
+define("CONTENT_ADMIN_OPT_LAN_309", "if the width or height of the uploaded image is greater than the given value, the image will be resized to this value.<br />the images will also be displayed with this value on the content page.");
+define("CONTENT_ADMIN_OPT_LAN_310", "max icon width");
+define("CONTENT_ADMIN_OPT_LAN_311", "define the maximum width of the icon on icon upload");
+define("CONTENT_ADMIN_OPT_LAN_312", "if the uploaded icon is greater than the given value, the icon will be resized to this value.<br />the icon will also be displayed with this value.");
 
 
 
@@ -504,11 +549,50 @@ define("CONTENT_ADMIN_ITEM_LAN_91", "aby ponownie edytować tę samą pozycję")
 define("CONTENT_ADMIN_ITEM_LAN_92", "template");
 define("CONTENT_ADMIN_ITEM_LAN_93", "wybierz styl graficzny");
 define("CONTENT_ADMIN_ITEM_LAN_94", "wybierz styl graficzny");
-define("CONTENT_ADMIN_ITEM_LAN_95", "");
+define("CONTENT_ADMIN_ITEM_LAN_95", "wyślij nową ikonę");
+define("CONTENT_ADMIN_ITEM_LAN_96", "choose an existing icon");
+define("CONTENT_ADMIN_ITEM_LAN_97", "After you have uploaded a new icon, you can assign it in the below 'choose an existing icon' area");
+
+define("CONTENT_ADMIN_ITEM_LAN_98", "upload a new attachment");
+define("CONTENT_ADMIN_ITEM_LAN_99", "choose an existing attachment");
+define("CONTENT_ADMIN_ITEM_LAN_100", "After you have uploaded a new attachment, you can assign it in the below 'choose an existing attachment' area");
+
+define("CONTENT_ADMIN_ITEM_LAN_101", "upload a new image");
+define("CONTENT_ADMIN_ITEM_LAN_102", "choose an existing image");
+define("CONTENT_ADMIN_ITEM_LAN_103", "After you have uploaded a new image, you can assign it in the below 'choose an existing image' area");
+
+define("CONTENT_ADMIN_ITEM_LAN_104", "upload");
+define("CONTENT_ADMIN_ITEM_LAN_105", "view");
+
+define("CONTENT_ADMIN_ITEM_LAN_106", "icon succesfully uploaded<br />notice: you still need to assign the icon to this content item in the 'choose an existing icon' area !<br />and of course after that you still need to submit the form to create/update the content item");
+define("CONTENT_ADMIN_ITEM_LAN_107", "icon not uploaded");
+
+define("CONTENT_ADMIN_ITEM_LAN_108", "attachment succesfully uploaded<br />notice: you still need to assign the attachment to this content item in the 'choose an existing attachment' area !<br />and of course after that you still need to submit the form to create/update the content item");
+define("CONTENT_ADMIN_ITEM_LAN_109", "attachment not uploaded");
+
+define("CONTENT_ADMIN_ITEM_LAN_110", "image succesfully uploaded<br />notice: you still need to assign the image to this content item in the 'choose an existing image' area !<br />and of course after that you still need to submit the form to create/update the content item");
+define("CONTENT_ADMIN_ITEM_LAN_111", "image not uploaded");
+
+define("CONTENT_ADMIN_ITEM_LAN_112", "upload an icon, attachment or image");
+define("CONTENT_ADMIN_ITEM_LAN_113", "choose the type of upload in the select box before you upload the file");
+define("CONTENT_ADMIN_ITEM_LAN_114", "icon");
+define("CONTENT_ADMIN_ITEM_LAN_115", "attachment");
+define("CONTENT_ADMIN_ITEM_LAN_116", "image");
+define("CONTENT_ADMIN_ITEM_LAN_117", "submitted content item posted");
+define("CONTENT_ADMIN_ITEM_LAN_118", "no");
+define("CONTENT_ADMIN_ITEM_LAN_119", "assigned");
+define("CONTENT_ADMIN_ITEM_LAN_120", "default layout");
+
+
+
+
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "porządek jest rosnący");
 define("CONTENT_ADMIN_ORDER_LAN_1", "porządek jest malejący");
 define("CONTENT_ADMIN_ORDER_LAN_2", "zapisano nowe ustawienia kolejności.");
+
+
+
 
 define("CONTENT_ADMIN_MAIN_LAN_0", "istniejące kategorie zawartości");
 define("CONTENT_ADMIN_MAIN_LAN_1", "brak kategorii zawartości");
@@ -516,7 +600,7 @@ define("CONTENT_ADMIN_MAIN_LAN_2", "główna kategoria zawartości");
 define("CONTENT_ADMIN_MAIN_LAN_3", "pozycja zawartości usunięta");
 define("CONTENT_ADMIN_MAIN_LAN_4", "nadrzędny tekst");
 define("CONTENT_ADMIN_MAIN_LAN_5", "nadrzędna ikona");
-define("CONTENT_ADMIN_MAIN_LAN_6", "");
+//define("CONTENT_ADMIN_MAIN_LAN_6", "");
 define("CONTENT_ADMIN_MAIN_LAN_7", "Witamy w Content Management System !");
 define("CONTENT_ADMIN_MAIN_LAN_8", "Ta informacja jest pokazywana, ponieważ System Zawartości Stron nie ma żadnych wpisów.");
 
@@ -524,7 +608,7 @@ define("CONTENT_ADMIN_MAIN_LAN_9", "Zapoznaj się z następującymi informacjami
 define("CONTENT_ADMIN_MAIN_LAN_10", "Na tej stronie możesz zarządzać pozycjami zawartości.
  Najpierw zdecyduj którę kategorią chcesz zarządzać.Zaznacz kategorię, aby zacząć zarządzanie zawartością.");
 define("CONTENT_ADMIN_MAIN_LAN_11", "Od tąd dla starszych zawartości zawartych w tabelach ,możesz wybrać następujące trzy opcje:");
-define("CONTENT_ADMIN_MAIN_LAN_12", "");
+//define("CONTENT_ADMIN_MAIN_LAN_12", "");
 define("CONTENT_ADMIN_MAIN_LAN_13", "Możesz utworzyć nową pozycję zawartości na tej stronie.
  Najpierw zdecyduj którę kategorią chcesz zarządzać.Kliknij w button w liście głównych nadrzędnych poniżej, aby utworzyć nową zawartość w tej głównej kategorii zawartości.");
 define("CONTENT_ADMIN_MAIN_LAN_14", "Możesz ustawić porządek pozycji zawartości na tej stronie.
@@ -560,8 +644,8 @@ Klikając w button 'następny' automatycznie utworzysz domyślne ustawienia kate
 ");
 define("CONTENT_ADMIN_MAIN_LAN_26", "podgląd");
 define("CONTENT_ADMIN_MAIN_LAN_27", "ponowny podgląd");
-define("CONTENT_ADMIN_MAIN_LAN_28", "");
-define("CONTENT_ADMIN_MAIN_LAN_29", "");
+define("CONTENT_ADMIN_MAIN_LAN_28", "wybierz kategorię ...");
+define("CONTENT_ADMIN_MAIN_LAN_29", "NOWA GŁÓWNA KATEGORIA");
 
 
 
@@ -586,7 +670,8 @@ define("CONTENT_ADMIN_MENU_LAN_17", "ContentManager");
 define("CONTENT_ADMIN_MENU_LAN_18", "Strona Autora");
 define("CONTENT_ADMIN_MENU_LAN_19", "Content Manager");
 define("CONTENT_ADMIN_MENU_LAN_20", "Lista Najlepiej Ocenianych");
-
+define("CONTENT_ADMIN_MENU_LAN_21", "Stron");
+define("CONTENT_ADMIN_MENU_LAN_22", "Lista Najlepszych Stron");
 
 
 
@@ -641,6 +726,8 @@ define("CONTENT_PAGETITLE_LAN_11", "Edytuj Pozycję");
 define("CONTENT_PAGETITLE_LAN_12", "Utwórz Pozycję");
 define("CONTENT_PAGETITLE_LAN_13", "Kategorie");
 define("CONTENT_PAGETITLE_LAN_14", "Lista Autorów");
+define("CONTENT_PAGETITLE_LAN_15", "Lista Wyników");
+
 
 define("CONTENT_SEARCH_LAN_0", "Nie znaleziono żadnych wpisów.");
 
@@ -746,10 +833,10 @@ define("CONTENT_LAN_82", "brak pozycji w ");
 define("CONTENT_LAN_83", "pozycje archiwalne");
 define("CONTENT_LAN_84", "zawartości archiwalne");
 define("CONTENT_LAN_85", "Lista Autorów");
-define("CONTENT_LAN_86", "");
-define("CONTENT_LAN_87", "");
-define("CONTENT_LAN_88", "");
-define("CONTENT_LAN_89", "");
+define("CONTENT_LAN_86", "zobacz listę najlepszych pozycji");
+define("CONTENT_LAN_87", "Lista Najlepszych Zawartości");
+define("CONTENT_LAN_88", "żadne pozycje zawartości nie zostały jeszcze ocenione");
+define("CONTENT_LAN_89", "wybierz stronę");
 
 
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "no content categories allow user submission at this point !!!"); // no content categories allow user submission at this point
@@ -760,20 +847,20 @@ define("CONTENT_ADMIN_SUBMIT_LAN_4", "wymagane pola pozostały puste");
 define("CONTENT_ADMIN_SUBMIT_LAN_5", "
 Wróć do <a href='".e_SELF."'>głównej strony wysyłania</a> aby wysłać więcej stron zawartości<br />lub<br />
 Udaj się do <a href='".e_PLUGIN."content/content.php'>głównej strony zawartości</a> aby przeglądać pozycje zawartości.");
-define("CONTENT_ADMIN_SUBMIT_LAN_6", ""); // Content Type List
-define("CONTENT_ADMIN_SUBMIT_LAN_7", ""); //Content Type Submission
+//define("CONTENT_ADMIN_SUBMIT_LAN_6", ""); // Content Type List
+//define("CONTENT_ADMIN_SUBMIT_LAN_7", ""); //Content Type Submission
 define("CONTENT_ADMIN_SUBMIT_LAN_8", "nadesłane pozycje zawartości zostały usunięte");
-define("CONTENT_ADMIN_SUBMIT_LAN_9", "");
-define("CONTENT_ADMIN_SUBMIT_LAN_10", "");
-define("CONTENT_ADMIN_SUBMIT_LAN_11", "");
-define("CONTENT_ADMIN_SUBMIT_LAN_12", "");
-define("CONTENT_ADMIN_SUBMIT_LAN_13", "");
-define("CONTENT_ADMIN_SUBMIT_LAN_14", "");
-define("CONTENT_ADMIN_SUBMIT_LAN_15", "");
-define("CONTENT_ADMIN_SUBMIT_LAN_16", "");
-define("CONTENT_ADMIN_SUBMIT_LAN_17", "");
-define("CONTENT_ADMIN_SUBMIT_LAN_18", "");
-define("CONTENT_ADMIN_SUBMIT_LAN_19", "");
+//define("CONTENT_ADMIN_SUBMIT_LAN_9", "");
+//define("CONTENT_ADMIN_SUBMIT_LAN_10", "");
+//define("CONTENT_ADMIN_SUBMIT_LAN_11", "");
+//define("CONTENT_ADMIN_SUBMIT_LAN_12", "");
+//define("CONTENT_ADMIN_SUBMIT_LAN_13", "");
+//define("CONTENT_ADMIN_SUBMIT_LAN_14", "");
+//define("CONTENT_ADMIN_SUBMIT_LAN_15", "");
+//define("CONTENT_ADMIN_SUBMIT_LAN_16", "");
+//define("CONTENT_ADMIN_SUBMIT_LAN_17", "");
+//define("CONTENT_ADMIN_SUBMIT_LAN_18", "");
+//define("CONTENT_ADMIN_SUBMIT_LAN_19", "");
 
 
 define("CONTENT_ADMIN_CONVERSION_LAN_0", "zawartość");
@@ -836,6 +923,12 @@ define("CONTENT_ADMIN_CONVERSION_LAN_54", "utwórz domyślne ustawienia nadrzęd
 define("CONTENT_ADMIN_CONVERSION_LAN_55", "content management plugin : opcje konwertowania");
 define("CONTENT_ADMIN_CONVERSION_LAN_56", "kliknij w button aby przejść do strony Tworzenia Nowych Kategorii.");
 define("CONTENT_ADMIN_CONVERSION_LAN_57", "wybierz nadrzędną");
+define("CONTENT_ADMIN_CONVERSION_LAN_58", "pomyślnie zaktualizowano<br /><br /><b>Uwaga:<br />musisz przekonfigurować opcje dla każdej głównej nadrzędnej<br />oraz musisz usunąć menu, które utworzyłeś dla tej zawartości / menu katalogu i odtworzyć je uaktualniając opcje do wyboru dla określonych głównych nadrzędnych dla których chcesz użyć menu.</b>");
+define("CONTENT_ADMIN_CONVERSION_LAN_59", "konwertuj tebele");
+define("CONTENT_ADMIN_CONVERSION_LAN_60", "utwórz domyślne");
+define("CONTENT_ADMIN_CONVERSION_LAN_61", "utwórz nową kategorię");
+define("CONTENT_ADMIN_CONVERSION_LAN_62", "Content Management Plugin Version updated to version:");
+define("CONTENT_ADMIN_CONVERSION_LAN_63", "aktualizuj");
 
 
 define("CONTENT_MENU_LAN_0", "Menu Zawartości :");
@@ -843,21 +936,33 @@ define("CONTENT_MENU_LAN_1", "brak pozycji zawartości");
 define("CONTENT_MENU_LAN_2", "ostatnie pozycje");
 define("CONTENT_MENU_LAN_3", "kategorie");
 define("CONTENT_MENU_LAN_4", "linki zawartości");
-define("CONTENT_MENU_LAN_5", "");
-define("CONTENT_MENU_LAN_6", "");
-define("CONTENT_MENU_LAN_7", "");
-define("CONTENT_MENU_LAN_8", "");
-define("CONTENT_MENU_LAN_9", "");
-define("CONTENT_MENU_LAN_10", "");
-define("CONTENT_MENU_LAN_11", "");
-define("CONTENT_MENU_LAN_12", "");
-define("CONTENT_MENU_LAN_13", "");
-define("CONTENT_MENU_LAN_14", "");
-define("CONTENT_MENU_LAN_15", "");
-define("CONTENT_MENU_LAN_16", "");
-define("CONTENT_MENU_LAN_17", "");
-define("CONTENT_MENU_LAN_18", "");
-define("CONTENT_MENU_LAN_19", "");
-define("CONTENT_MENU_LAN_20", "");
+
+
+//preset tags
+define("CONTENT_PRESET_LAN_0", "błąd : fieldname not filled in");
+define("CONTENT_PRESET_LAN_1", "error : not all fields are filled in correctly<br />all fields need to be filled in");
+define("CONTENT_PRESET_LAN_2", "");
+define("CONTENT_PRESET_LAN_3", "both size and maxsize need to be numeric values");
+define("CONTENT_PRESET_LAN_4", "both cols and rows need to be numeric values");
+define("CONTENT_PRESET_LAN_5", "you need to provide some options");
+define("CONTENT_PRESET_LAN_6", "both year from and year to need to be numeric values");
+define("CONTENT_PRESET_LAN_7", "Content Preset Field Generator");
+define("CONTENT_PRESET_LAN_8", "form to create a new preset data tag of type");
+define("CONTENT_PRESET_LAN_9", "fieldname");
+define("CONTENT_PRESET_LAN_10", "size");
+define("CONTENT_PRESET_LAN_11", "maxlength");
+define("CONTENT_PRESET_LAN_12", "cols");
+define("CONTENT_PRESET_LAN_13", "rows");
+define("CONTENT_PRESET_LAN_14", "years from");
+define("CONTENT_PRESET_LAN_15", "years to");
+define("CONTENT_PRESET_LAN_16", "options");
+define("CONTENT_PRESET_LAN_17", "add more");
+define("CONTENT_PRESET_LAN_18", "add preset");
+define("CONTENT_PRESET_LAN_19", "you need to provide an equal amount of text and value fields");
+define("CONTENT_PRESET_LAN_20", "you need to provide a value for the checkbox");
+define("CONTENT_PRESET_LAN_21", "text");
+define("CONTENT_PRESET_LAN_22", "value");
+define("CONTENT_PRESET_LAN_23", "choose text");
+define("CONTENT_PRESET_LAN_24", "the first option with no value");
 
 ?>

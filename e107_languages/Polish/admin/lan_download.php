@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Polish/admin/lan_download.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 22:46:26 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
@@ -86,7 +86,7 @@ define("DOWLAN_103", "Usuń z Uploadu");
 define("DOWLAN_104", "został usunięty z publicznego Uploadu");
 define("DOWLAN_105", "Z powrotem do Uploadu");
 // ##################### // 
-define("DOWLAN_106", "Download dostępny dla");
+define("DOWLAN_106", "Download dostępny dla"); // !!!!!!!!!!!!!1
 define("DOWLAN_107", "Limit downloadu");
 define("DOWLAN_108", "Limit download bandwidth"); /// do poprawki
 define("DOWLAN_109", "zawsze"); //every
@@ -126,5 +126,13 @@ define("DOWLAN_141", "Lokalizacja");
 define("DOWLAN_142", "Aktualizuj Mirror");
 define("DOWLAN_143", "Utwórz Mirror");
 define("DOWLAN_144", "Brak zdefiniowanych mirrorów, udaj się do sekcji mirrorów i utwórz jakiś.");
+define("DOWLAN_145", "Plik widoczny dla"); // !!!!!!!!!!!
+define("DOWLAN_146", "Własny wpis odmowy pobierania lub adres URL");
+
+
+define("DOWLAN_147", "Ikona dla pustej kategorii");
+define("DOWLAN_148", "Zaznacz aby zastąpić datę aktualną");
+define("DOWLAN_149", "Lub kliknij tutaj aby użyć innego pliku");
+
 
 ?>
