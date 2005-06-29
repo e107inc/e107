@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-06-16 05:25:35 $
+|     $Revision: 1.22 $
+|     $Date: 2005-06-29 20:39:30 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -26,6 +26,13 @@ $e_sub_cat = 'search';
 require_once("auth.php");
 require_once(e_HANDLER.'userclass_class.php');
 $search_prefs = $sysprefs -> getArray('search_prefs');
+$original_prefs = 'a:12:{s:11:"multisearch";s:1:"1";s:9:"relevance";s:1:"1";s:11:"user_select";s:1:"1";s:13:"time_restrict";s:1:"0";s:9:"time_secs";s:2:"60";s:6:"google";s:1:"0";s:13:"core_handlers";a:5:{s:4:"news";a:6:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"0";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";s:5:"order";s:1:"1";}s:8:"comments";a:6:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";s:5:"order";s:1:"2";}s:5:"users";a:6:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";s:5:"order";s:1:"3";}s:9:"downloads";a:6:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";s:5:"order";s:1:"4";}s:5:"pages";a:6:{s:5:"class";s:1:"0";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"order";s:2:"13";}}s:17:"comments_handlers";a:6:{s:4:"news";a:3:{s:2:"id";i:0;s:3:"dir";s:4:"core";s:5:"class";s:1:"0";}s:8:"download";a:3:{s:2:"id";i:2;s:3:"dir";s:4:"core";s:5:"class";s:1:"0";}s:11:"bugtracker2";a:3:{s:2:"id";i:6;s:5:"class";s:1:"0";s:3:"dir";s:11:"bugtracker2";}s:5:"ideas";a:3:{s:2:"id";s:5:"ideas";s:5:"class";s:1:"0";s:3:"dir";s:5:"ideas";}s:4:"poll";a:3:{s:2:"id";i:4;s:5:"class";s:1:"0";s:3:"dir";s:4:"poll";}s:7:"content";a:3:{s:2:"id";s:8:"pcontent";s:5:"class";s:1:"0";s:3:"dir";s:7:"content";}}s:13:"plug_handlers";a:8:{s:11:"bugtracker2";a:6:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";s:5:"order";s:1:"5";}s:13:"calendar_menu";a:6:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";s:5:"order";s:1:"6";}s:12:"chatbox_menu";a:6:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";s:5:"order";s:1:"7";}s:5:"forum";a:6:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";s:5:"order";s:1:"9";}s:5:"ideas";a:6:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";s:5:"order";s:2:"10";}s:3:"faq";a:6:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";s:5:"order";s:2:"11";}s:10:"links_page";a:6:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";s:5:"order";s:2:"12";}s:7:"content";a:6:{s:5:"class";s:1:"0";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"chars";s:3:"150";s:7:"results";s:2:"10";s:5:"order";s:1:"1";}}s:9:"php_limit";s:3:"500";s:10:"mysql_sort";b:1;s:8:"selector";s:1:"2";}';
+//$serial_prefs = 'a:14:{s:11:"multisearch";s:1:"1";s:9:"relevance";s:1:"1";s:11:"user_select";s:1:"0";s:13:"time_restrict";s:1:"0";s:9:"time_secs";s:2:"60";s:6:"google";s:1:"0";s:13:"core_handlers";a:5:{s:4:"news";s:2:"1n";s:8:"comments";s:2:"2n";s:5:"users";s:2:"3n";s:9:"downloads";s:2:"4n";s:5:"pages";a:6:{s:5:"class";s:1:"0";s:5:"chars";s:1:"5";s:7:"results";s:0:"";s:9:"pre_title";s:1:"1";s:13:"pre_title_alt";s:0:"";s:5:"order";s:1:"5";}}s:17:"comments_handlers";a:4:{s:4:"news";a:3:{s:2:"id";i:0;s:3:"dir";s:4:"core";s:5:"class";s:1:"0";}s:8:"download";a:3:{s:2:"id";i:2;s:3:"dir";s:4:"core";s:5:"class";s:1:"0";}s:7:"content";a:3:{s:2:"id";s:8:"pcontent";s:5:"class";s:1:"0";s:3:"dir";s:7:"content";}s:4:"poll";a:3:{s:2:"id";i:4;s:5:"class";s:1:"0";s:3:"dir";s:4:"poll";}}s:13:"plug_handlers";a:4:{s:12:"chatbox_menu";s:2:"6n";s:7:"content";s:2:"7n";s:5:"forum";s:2:"8n";s:10:"links_page";s:2:"9n";}s:12:"search_chars";s:0:"";s:10:"search_res";s:0:"";s:9:"php_limit";s:0:"";s:10:"mysql_sort";b:1;s:8:"selector";s:1:"2";}';
+$search_prefs = unserialize($original_prefs);
+//print_a($serial_prefs);
+//print_a($_POST);
+//print_a($search_prefs);
+
 
 $search_handlers['news'] = ADLAN_0;
 $search_handlers['comments'] = SEALAN_6;
@@ -41,15 +48,12 @@ if (version_compare($mysql_version[1], '4.0.1', '<')) {
 }
 
 if (isset($_POST['updatesettings'])) {
-	$pref['search_restrict'] = $_POST['search_restrict'];
-	$pref['search_highlight'] = $_POST['search_highlight'];
-	save_prefs();
 	$search_prefs['relevance'] = $_POST['relevance'];
 	$search_prefs['user_select'] = $_POST['user_select'];
 	$search_prefs['multisearch'] = $_POST['multisearch'];
 	$search_prefs['selector'] = $_POST['selector'];
 	$search_prefs['time_restrict'] = $_POST['time_restrict'];
-	$search_prefs['time_secs'] = $_POST['time_secs'] > 300 ? 300 : $_POST['time_secs'];
+	$search_prefs['time_secs'] = $_POST['time_secs'] > 300 ? 300 : $tp -> toDB($_POST['time_secs']);
 	if ($_POST['search_sort'] == 'mysql') {
 		if ($mysql_supported) {
 			$search_prefs['mysql_sort'] = TRUE;
@@ -60,21 +64,22 @@ if (isset($_POST['updatesettings'])) {
 	} else {
 		$search_prefs['mysql_sort'] = FALSE;
 	}
-	$search_prefs['php_limit'] = $_POST['php_limit'];
+	$search_prefs['php_limit'] = $tp -> toDB($_POST['php_limit']);
 	$search_prefs['google'] = $_POST['google'];
 
 	foreach($search_handlers as $s_key => $s_value) {
 		$search_prefs['core_handlers'][$s_key]['class'] = $_POST['core_handlers'][$s_key]['class'];
-		$search_prefs['core_handlers'][$s_key]['chars'] = $_POST['core_handlers'][$s_key]['chars'];
+		$search_prefs['core_handlers'][$s_key]['chars'] = $tp -> toDB($_POST['core_handlers'][$s_key]['chars']);
 		$search_prefs['core_handlers'][$s_key]['results'] = $tp -> toDB($_POST['core_handlers'][$s_key]['results']);
 		$search_prefs['core_handlers'][$s_key]['pre_title'] = $_POST['core_handlers'][$s_key]['pre_title'];
 		$search_prefs['core_handlers'][$s_key]['pre_title_alt'] = $tp -> toDB($_POST['core_handlers'][$s_key]['pre_title_alt']);
 		$search_prefs['core_handlers'][$s_key]['order'] = $_POST['core_handlers'][$s_key]['order'];
+		echo $search_prefs['core_handlers'][$s_key]['chars'].'<br />';
 	}
 
 	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
 		$search_prefs['plug_handlers'][$plug_dir]['class'] = $_POST['plug_handlers'][$plug_dir]['class'];
-		$search_prefs['plug_handlers'][$plug_dir]['chars'] = $_POST['plug_handlers'][$plug_dir]['chars'];
+		$search_prefs['plug_handlers'][$plug_dir]['chars'] = $tp -> toDB($_POST['plug_handlers'][$plug_dir]['chars']);
 		$search_prefs['plug_handlers'][$plug_dir]['results'] = $tp -> toDB($_POST['plug_handlers'][$plug_dir]['results']);
 		$search_prefs['plug_handlers'][$plug_dir]['pre_title'] = $_POST['plug_handlers'][$plug_dir]['pre_title'];
 		$search_prefs['plug_handlers'][$plug_dir]['pre_title_alt'] = $tp -> toDB($_POST['plug_handlers'][$plug_dir]['pre_title_alt']);
@@ -86,8 +91,15 @@ if (isset($_POST['updatesettings'])) {
 	}
 
 	$tmp = addslashes(serialize($search_prefs));
-	$sql->db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs' ");
-	$message = $message ? $message : LAN_UPDATED;
+	if ($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'")) {
+		$message = $message ? $message : LAN_UPDATED;
+	} else {
+		$message = $message ? $message : 'failed';
+	}
+	
+	$pref['search_restrict'] = $_POST['search_restrict'];
+	$pref['search_highlight'] = $_POST['search_highlight'];
+	save_prefs();
 }
 
 require_once(e_HANDLER."form_handler.php");
@@ -159,7 +171,7 @@ $text .= "<tr>
 <td style='width:50%;' colspan='2' class='forumheader3'>
 <input type='radio' name='time_restrict' value='0'".(!$search_prefs['time_restrict'] ? " checked='checked'" : "")." /> ".SEALAN_17."&nbsp;&nbsp;
 <input type='radio' name='time_restrict' value='1'".($search_prefs['time_restrict'] ? " checked='checked'" : "")." />
-".SEALAN_13." ".$rs -> form_text("time_secs", 3, $search_prefs['time_secs'], 3)." ".SEALAN_14."</td>
+".SEALAN_13." ".$rs -> form_text("time_secs", 3, $tp -> toForm($search_prefs['time_secs']), 3)." ".SEALAN_14."</td>
 </tr>";
 
 $text .= "<tr>
@@ -167,7 +179,7 @@ $text .= "<tr>
 <td style='width:50%;' colspan='2' class='forumheader3'>
 ".$rs -> form_radio('search_sort', 'mysql', ($search_prefs['mysql_sort'] == TRUE ? 1 : 0), 'MySql', ($mysql_supported ? "" : "disabled='true'"))."MySql
 ".$rs -> form_radio('search_sort', 'php', ($search_prefs['mysql_sort'] == TRUE ? 0 : 1)).SEALAN_31." 
-".$rs -> form_text("php_limit", 5, $search_prefs['php_limit'], 5)." ".SEALAN_32." 
+".$rs -> form_text("php_limit", 5, $tp -> toForm($search_prefs['php_limit']), 5)." ".SEALAN_32." 
 </td>
 </tr>";
 
@@ -200,8 +212,8 @@ foreach($search_handlers as $key => $value) {
 	<td style='width:10%' class='forumheader3'>";
 	$text .= r_userclass("core_handlers[".$key."][class]", $search_prefs['core_handlers'][$key]['class'], "off", "public,guest,nobody,member,admin,classes");
 	$text .= "</td>
-	<td style='width:5%; text-align: center' class='forumheader3'>".$rs -> form_text("core_handlers[".$key."][chars]", 4, $search_prefs['core_handlers'][$key]['chars'], 4)."</td>
-	<td style='width:5%; text-align: center' class='forumheader3'>".$rs -> form_text("core_handlers[".$key."][results]", 4, $search_prefs['core_handlers'][$key]['results'], 4)."</td>
+	<td style='width:5%; text-align: center' class='forumheader3'>".$rs -> form_text("core_handlers[".$key."][chars]", 4, $tp -> toForm($search_prefs['core_handlers'][$key]['chars']), 4)."</td>
+	<td style='width:5%; text-align: center' class='forumheader3'>".$rs -> form_text("core_handlers[".$key."][results]", 4, $tp -> toForm($search_prefs['core_handlers'][$key]['results']), 4)."</td>
 	<td style='width:35%; text-align: center; white-space:nowrap' class='forumheader3'>
 	<input type='radio' name='core_handlers[".$key."][pre_title]' value='1'".(($search_prefs['core_handlers'][$key]['pre_title'] == 1) ? " checked='checked'" : "")." /> ".SEALAN_22."&nbsp;&nbsp;
 	<input type='radio' name='core_handlers[".$key."][pre_title]' value='0'".(($search_prefs['core_handlers'][$key]['pre_title'] == 0) ? " checked='checked'" : "")." /> ".SEALAN_17."&nbsp;&nbsp;
@@ -226,8 +238,8 @@ foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
 	$text .= r_userclass("plug_handlers[".$plug_dir."][class]", $search_prefs['plug_handlers'][$plug_dir]['class'], "off", "public,guest,nobody,member,admin,classes");
 	unset($search_info);
 	$text .= "</td>
-	<td style='width:5%; text-align: center' class='forumheader3'>".$rs -> form_text("plug_handlers[".$plug_dir."][chars]", 4, $search_prefs['plug_handlers'][$plug_dir]['chars'], 4)."</td>
-	<td style='width:5%; text-align: center' class='forumheader3'>".$rs -> form_text("plug_handlers[".$plug_dir."][results]", 4, $search_prefs['plug_handlers'][$plug_dir]['results'], 4)."</td>
+	<td style='width:5%; text-align: center' class='forumheader3'>".$rs -> form_text("plug_handlers[".$plug_dir."][chars]", 4, $tp -> toForm($search_prefs['plug_handlers'][$plug_dir]['chars']), 4)."</td>
+	<td style='width:5%; text-align: center' class='forumheader3'>".$rs -> form_text("plug_handlers[".$plug_dir."][results]", 4, $tp -> toForm($search_prefs['plug_handlers'][$plug_dir]['results']), 4)."</td>
 	<td style='width:35%; text-align: center' class='forumheader3'>
 	<input type='radio' name='plug_handlers[".$plug_dir."][pre_title]' value='1'".(($search_prefs['plug_handlers'][$plug_dir]['pre_title'] == 1) ? " checked='checked'" : "")." /> ".SEALAN_22."&nbsp;&nbsp;
 	<input type='radio' name='plug_handlers[".$plug_dir."][pre_title]' value='0'".(($search_prefs['plug_handlers'][$plug_dir]['pre_title'] == 0) ? " checked='checked'" : "")." /> ".SEALAN_17."&nbsp;&nbsp;
