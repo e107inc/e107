@@ -55,6 +55,7 @@ define("LCLAN_89", "Afbeelding");
 define("LCLAN_90", "Link naam");
 define("LCLAN_91", "Verplaats");
 define("LCLAN_95", "Klasse");
+define("LCLAN_96", "In je thema getoond als");
 
 define("LINKLAN_1", "Opent in een 800x600 venster");
 define("LINKLAN_2", "Ouder");

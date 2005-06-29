@@ -4,13 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-29 21:28:37 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-29 21:34:12 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
 
 define("CONTENT_EMAILPRINT_LAN_1", "dit content onderwerp is van");
+
+define("CONTENT_SEARCH_LAN_0", "geen onderwerpen gevonden met deze sleutelwoorden.");
 
 define("CONTENT_ICON_LAN_0", "bewerk");
 define("CONTENT_ICON_LAN_1", "verwijder");

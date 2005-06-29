@@ -87,6 +87,7 @@ define("LAN_SIGNUP_32", "Wat is een XUP bestand?");
 define("LAN_SIGNUP_33", "Invoeren pad of kies avatar");
 define("LAN_SIGNUP_34", "Let op: elke naar deze server geuploade afbeelding die de beheerders onacceptabel vinden,  zal worden verwijderd.");
 define("LAN_SIGNUP_35", "Klik hier om gebruik te maken van een XUP bestand");
+define("LAN_SIGNUP_36", "Er is een fout opgetreden bij het aanmaken van je gebruikersinformatie. Neem contact op met de beheerder van deze site");
 
 define("LAN_LOGINNAME", "Inlognaam");
 define("LAN_PASSWORD", "Wachtwoord");
