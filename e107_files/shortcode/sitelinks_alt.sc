@@ -3,9 +3,9 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-06-23 14:39:08 $
-|     $Author: e107coders $
+|     $Revision: 1.19 $
+|     $Date: 2005-06-29 03:32:47 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -101,7 +101,7 @@
 				} else {
 					$sub_icon = "<img src='";
 					$sub_icon .= ($sub['link_button']) ? e_IMAGE.'icons/'.$sub['link_button'] : $icon;
-					$sub_icon .= "' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />";
+					$sub_icon .= "' alt='' class='jsn' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />";
 				}
 
 				$text .= adnav_main($subname, $sub['link_url'], $sub_icon);
