@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-28 11:32:06 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-29 16:38:23 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -35,8 +35,8 @@ $aa = new content;
 require_once($plugindir."handlers/content_convert_class.php");
 $ac = new content_convert;
 
-$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
-include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
+$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php';
+include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content_admin.php');
 
 if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content'"))
 {

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.51 $
-|		$Date: 2005-06-27 09:37:18 $
+|		$Revision: 1.52 $
+|		$Date: 2005-06-29 16:38:19 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -24,6 +24,9 @@ if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
 $e_sub_cat = 'content';
 $e_wysiwyg = "content_text,cat_text";
 $plugindir = e_PLUGIN."content/";
+
+$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php';
+include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content_admin.php');
 
 $lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
 include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
@@ -165,17 +168,15 @@ if(isset($_POST['uploadfile'])){
 
 	//icon
 	if($_POST['uploadtype'] == "1"){
+		$pref['upload_storagetype'] = "1";
 		$pathtmp		= $_POST['tmppathicon'];
 		$uploaded		= file_upload($pathtmp);
 		$new = "";
 		if($uploaded){
 			$uporg		= $uploaded[0]['name'];
-			$upext2		= substr(strrchr($uporg, "."), 0);
-			$uporgname	= substr($uporg, 0, -(strlen($upext2)) );
 			$resize		= (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
-
 			if($uporg){
-				$new = $newpid."_".$uporgname.$upext2;
+				$new = $newpid."_".$uporg;
 				rename($pathtmp.$uporg, $pathtmp.$new);
 				require_once(e_HANDLER."resize_handler.php");
 				resize_image($pathtmp.$new, $pathtmp.$new, $resize, "nocopy");
@@ -185,16 +186,14 @@ if(isset($_POST['uploadfile'])){
 
 	//file
 	}elseif($_POST['uploadtype'] == "2"){
+		$pref['upload_storagetype'] = "1";
 		$pathtmp		= $_POST['tmppathfile'];
 		$uploaded		= file_upload($pathtmp);
 		$new = "";
 		if($uploaded){
 			$uporg		= $uploaded[0]['name'];
-			$upext2		= substr(strrchr($uporg, "."), 0);
-			$uporgname	= substr($uporg, 0, -(strlen($upext2)) );
-
 			if($uporg){
-				$new = $newpid."_".$uporgname.$upext2;
+				$new = $newpid."_".$uporg;
 				rename($pathtmp.$uporg, $pathtmp.$new);
 			}
 		}
@@ -202,24 +201,20 @@ if(isset($_POST['uploadfile'])){
 
 	//image
 	}elseif($_POST['uploadtype'] == "3"){
+		$pref['upload_storagetype'] = "1";
 		$pathtmp		= $_POST['tmppathimage'];
 		$uploaded		= file_upload($pathtmp);
 		$new = "";
 		if($uploaded){
 			$uporg		= $uploaded[0]['name'];
-			$upext2		= substr(strrchr($uporg, "."), 0);
-			$uporgname	= substr($uporg, 0, -(strlen($upext2)) );
 			$resize		= (isset($content_pref["content_upload_image_size_{$mainparent}"]) && $content_pref["content_upload_image_size_{$mainparent}"] ? $content_pref["content_upload_image_size_{$mainparent}"] : "500");
 			$resizethumb	= (isset($content_pref["content_upload_image_size_thumb_{$mainparent}"]) && $content_pref["content_upload_image_size_thumb_{$mainparent}"] ? $content_pref["content_upload_image_size_thumb_{$mainparent}"] : "100");
-
 			if($uporg){
-				$new = $newpid."_".$uporgname."".$upext2;
+				$new = $newpid."_".$uporg;
 				rename($pathtmp.$uporg, $pathtmp.$new);
-				
 				require_once(e_HANDLER."resize_handler.php");
 				resize_image($pathtmp.$new, $pathtmp.$new, $resizethumb, "copy");
 				resize_image($pathtmp.$new, $pathtmp.$new, $resize, "nocopy");
-				
 			}
 		}
 		$message = ($new ? CONTENT_ADMIN_ITEM_LAN_110 : CONTENT_ADMIN_ITEM_LAN_111);

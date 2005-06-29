@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_convert.php,v $
-|		$Revision: 1.14 $
-|		$Date: 2005-06-25 22:18:17 $
+|		$Revision: 1.15 $
+|		$Date: 2005-06-29 16:38:20 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -26,8 +26,12 @@ if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
 $e_sub_cat = 'content';
 $plugindir = e_PLUGIN."content/";
 
+$lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_admin.php';
+include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content_admin.php');
+
 $lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content.php';
 include_once(file_exists($lan_file) ? $lan_file : $plugindir.'languages/English/lan_content.php');
+
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;

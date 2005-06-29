@@ -3,8 +3,8 @@ require_once("../../../class2.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
-$lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php";
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content.php");
+$lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content_options.php";
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content_options.php");
 
 if(isset($_POST['addpreset'])){
 	if(!$_POST['field']){
