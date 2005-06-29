@@ -11,11 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/rate.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:51:38 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-29 14:08:13 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
+
+// DIRTY - needs input validation, streaky
+
 require_once("class2.php");
 	
 $qs = explode("^", e_QUERY);
