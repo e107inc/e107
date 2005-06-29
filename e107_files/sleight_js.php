@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/sleight_js.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-29 03:32:47 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-29 04:41:20 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,6 @@ header("Content-type: application/x-javascript");
 
 ?>
 if (navigator.platform == "Win32" && navigator.appName == "Microsoft Internet Explorer" && window.attachEvent) {
-	document.writeln('<style type="text/css">img, input.image { visibility:hidden; } </style>');
 	window.attachEvent("onload", fnLoadPngs);
 }
 
@@ -39,21 +38,19 @@ function fnLoadPngs() {
 	var itsAllGood = (rslt != null && Number(rslt[1]) >= 5.5 && Number(rslt[1]) < 7);
 
 	for (var i = document.images.length - 1, img = null; (img = document.images[i]); i--) {
-		if (itsAllGood && img.src.match(/\.png$/i) != null && img.class != 'jsn') {
+		if (itsAllGood && img.src.match(/\.png$/i) != null && img.className.match(/\bjsn\b/i) == null) {
 			fnFixPng(img);
 			img.attachEvent("onpropertychange", fnPropertyChanged);
 		}
-		img.style.visibility = "visible";
 	}
 
 	var nl = document.getElementsByTagName("INPUT");
 	for (var i = nl.length - 1, e = null; (e = nl[i]); i--) {
-		if (e.className && e.className.match(/\bimage\b/i) != null) {
-			if (e.src.match(/\.png$/i) != null && img.class != 'jsn') {
+		if (e.className && e.className.match(/\bimage\b/i) != null && e.className.match(/\bjsn\b/i) == null) {
+			if (e.src.match(/\.png$/i) != null) {
 				fnFixPng(e);
 				e.attachEvent("onpropertychange", fnPropertyChanged);
 			}
-			e.style.visibility = "visible";
 		}
 	}
 }
