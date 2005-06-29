@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-29 16:38:23 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-29 23:01:56 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -161,7 +161,7 @@ define("CONTENT_ADMIN_ITEM_LAN_66", "Below you see the distinct letters of the c
 define("CONTENT_ADMIN_ITEM_LAN_67", "Below you see the content items listed for the selected category or narrowed down with a selected letter.<br />You can edit or delete an item by clicking the appropriate buttons on the right.");
 define("CONTENT_ADMIN_ITEM_LAN_68", "Below you have the ability to add custom data for this content item. Each custom data needs to have both a key and a value data present. You can specify the key in the left field and the corresponding value in the right field.<br />(for instance, key='photography' and value='all photos are made by me'.");
 define("CONTENT_ADMIN_ITEM_LAN_69", "Here you can upload icons, attachments and/or images to go with the content item. The allowed filetypes are : ");
-define("CONTENT_ADMIN_ITEM_LAN_70", "In the next box you can specify specific meta keywords to go with this content item. These meta keywords are rendered in the header of the page. Seperate each word with commas, and no spaces are allowed !");
+define("CONTENT_ADMIN_ITEM_LAN_70", "Seperate each word with commas, no spaces are allowed !");
 define("CONTENT_ADMIN_ITEM_LAN_71", "leave if item written by you");
 define("CONTENT_ADMIN_ITEM_LAN_72", "define author details");
 define("CONTENT_ADMIN_ITEM_LAN_73", "define a start date for this item (leave if none needed)");
@@ -513,9 +513,7 @@ define("CONTENT_ADMIN_OPT_LAN_4", "number of attachments that can be uploaded");
 define("CONTENT_ADMIN_OPT_LAN_5", "number of custom data tags available");
 define("CONTENT_ADMIN_OPT_LAN_6", "preset data tags");
 define("CONTENT_ADMIN_OPT_LAN_7", "define default preset data tags");
-define("CONTENT_ADMIN_OPT_LAN_8", "
-Here you can provide additional preset data tags. The fields you provide here are the keys of the key=>value data tags. They will have a input element for the value to be set in the admin creation form. You can choose from the pulldown menu which type of element you want the preset data tag to be. Note: these are not part of the amount of custom data tags you have specified above, and will be used additionally.
-These Preset Tags are very usefull if you want to have a certain custom tag available standard for each new item. for instance, if you always want to be able to define a value for 'photographer' you can create such a preset tag, which will always be displayed for each new item in this main parent.");
+//define("CONTENT_ADMIN_OPT_LAN_8", "Here you can provide additional preset data tags. The fields you provide here are the keys of the key=>value data tags. They will have a input element for the value to be set in the admin creation form. You can choose from the pulldown menu which type of element you want the preset data tag to be. Note: these are not part of the amount of custom data tags you have specified above, and will be used additionally.These Preset Tags are very usefull if you want to have a certain custom tag available standard for each new item. for instance, if you always want to be able to define a value for 'photographer' you can create such a preset tag, which will always be displayed for each new item in this main parent.");
 define("CONTENT_ADMIN_OPT_LAN_9", "allow submit items ?");
 define("CONTENT_ADMIN_OPT_LAN_10", "who can submit items ?");
 define("CONTENT_ADMIN_OPT_LAN_11", "direct posting");
@@ -570,7 +568,7 @@ define("CONTENT_ADMIN_OPT_LAN_59", "define the maximum width of the icon on icon
 define("CONTENT_ADMIN_OPT_LAN_60", "if the uploaded icon is greater than the given value, the icon will be resized to this value.<br />the icon will also be displayed with this value.");
 define("CONTENT_ADMIN_OPT_LAN_61", "px");
 define("CONTENT_ADMIN_OPT_LAN_62", "choose managers from this userclass");
-define("CONTENT_ADMIN_OPT_LAN_63", "the userlist in the admin content manager area will consist of only the users in the defined class. You still need to assign users to each category! This class will just narrow down the list of users to choose from");
+define("CONTENT_ADMIN_OPT_LAN_63", "The userlist in the admin content manager area will consist of only the users in the defined class. You still need to assign users to each category! This class will just narrow down the list of users to choose from");
 define("CONTENT_ADMIN_OPT_LAN_64", "display email of non-member author");
 define("CONTENT_ADMIN_OPT_LAN_65", "display a letter index");
 define("CONTENT_ADMIN_OPT_LAN_66", "the letterindex is a list of buttons with all the first letters of the content heading fields. you can narrow down the archive list by clicking a certain letter so only content items starting with that letter will be displayed on the screen.");
