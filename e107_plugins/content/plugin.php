@@ -14,8 +14,8 @@
 */
 
 global $PLUGINS_DIRECTORY;
-$lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php";
-include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content.php");
+$lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content_admin.php";
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content_admin.php");
 
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = CONTENT_PLUGIN_LAN_1;
