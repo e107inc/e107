@@ -202,7 +202,7 @@ $sc_style['COMMENTEDIT']['pre'] = "<tr>
 <td class='forumheader' colspan='2' style='text-align: right'>";
 $sc_style['COMMENTEDIT']['post'] = "</td></tr>";
 
-$COMMENTSTYLE = "<div class='spacer'><table class='fborder' style='width: 95%'>
+$COMMENTSTYLE = "<div class='spacer' style='text-align:center'><table class='fborder' style='width: 95%'>
 <tr>
 <td class='fcaption' colspan='2'>".LAN_THEME_5." {USERNAME} ".LAN_THEME_6." {TIMEDATE}
 </td>
