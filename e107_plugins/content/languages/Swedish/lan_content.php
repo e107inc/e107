@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-28 16:28:12 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-29 15:07:48 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -773,7 +773,7 @@ define("CONTENT_LAN_56", "Visa översikt på");
 define("CONTENT_LAN_57", "Kommentarer:");
 define("CONTENT_LAN_58", "Hem");
 define("CONTENT_LAN_59", "Innehåll");
-define("CONTENT_LAN_60", "Sensate");
+define("CONTENT_LAN_60", "Senaste");
 define("CONTENT_LAN_61", "Visa senaste objekt");
 define("CONTENT_LAN_62", "Visa alla kategorier");
 define("CONTENT_LAN_63", "Visa alla författare");

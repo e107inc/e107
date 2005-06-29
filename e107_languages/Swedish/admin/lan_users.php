@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_users.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-29 15:07:48 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -134,5 +134,43 @@ define("USRLAN_132", "Aktivera");
 
 define("USRLAN_133", "Tvinga användare att uppdatera inställningar");
 define("USRLAN_134", "Aktivering av detta alternativ kommer att automatiskt skicka användaren till  sina användarinställningar om ett nödvändigt fält inte är ifyllt.");
+
+define("DUSRLAN_1", "ID");
+define("DUSRLAN_2", "Visat namn");
+define("DUSRLAN_3", "Användarnamn");
+define("DUSRLAN_4", "Egen titel");
+define("DUSRLAN_5", "Lösenord");
+define("DUSRLAN_6", "Session");
+define("DUSRLAN_7", "E-post");
+define("DUSRLAN_8", "Webbsajt");
+define("DUSRLAN_9", "ICQ");
+define("DUSRLAN_10", "AIM");
+define("DUSRLAN_11", "MSN");
+define("DUSRLAN_12", "Plats");
+define("DUSRLAN_13", "Födelsedag");
+define("DUSRLAN_14", "Signatur");
+define("DUSRLAN_15", "Bild");
+define("DUSRLAN_16", "Tidszon");
+define("DUSRLAN_17", "Göm e-post");
+define("DUSRLAN_18", "Registreringsdatum");
+define("DUSRLAN_19", "Senaste besök");
+define("DUSRLAN_20", "Nuvarande inloggning");
+define("DUSRLAN_21", "Senaste inlägg");
+define("DUSRLAN_22", "Chattruteinlägg");
+define("DUSRLAN_23", "Kommentarer");
+define("DUSRLAN_24", "Foruminlägg");
+define("DUSRLAN_25", "IP");
+define("DUSRLAN_26", "Spärra");
+define("DUSRLAN_27", "Preferenser");
+define("DUSRLAN_28", "Ny");
+define("DUSRLAN_29", "Visad");
+define("DUSRLAN_30", "Besök");
+define("DUSRLAN_31", "Admin");
+define("DUSRLAN_32", "Riktigt namn");
+define("DUSRLAN_33", "Användarklass");
+define("DUSRLAN_34", "Rättigheter");
+define("DUSRLAN_35", "Foto");
+define("DUSRLAN_36", "Ändta lösenord");
+define("DUSRLAN_37", "XUP");
 
 ?>

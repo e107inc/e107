@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_mailout.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-27 12:05:42 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-29 15:07:48 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -43,6 +43,7 @@ define("MAILAN_15", "E-postutskick");
 define("MAILAN_16","Användarnamn");
 define("MAILAN_17","Registreringslänk");
 define("MAILAN_18","Användar-id");
+define("MAILAN_19","Det finns ingen e-postadress angiven för sajtadmin. Kontrollera dina preferenser och försök igen.");
 define("MAILAN_20","Sökväg till sendmail");
 
 ?>
