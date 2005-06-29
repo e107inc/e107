@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/membersonly.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-12 22:43:13 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-06-29 16:35:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 
-echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
+echo "<?xml version='1.0' encoding='utf-8' ?>\n";
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -29,7 +29,7 @@ echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
 <?php
 echo "\n<link rel='stylesheet' href='".THEME."style.css' />\n";
 ?>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="content-style-type" content="text/css" />
 <?php
 echo $pref['meta_tag'][1]."\n";
