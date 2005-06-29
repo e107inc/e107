@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/sleight_js.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-29 20:39:30 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-29 20:58:17 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -63,19 +63,6 @@ function fnPropertyChanged() {
 			el.src = "<?php echo $folder; ?>sleight_img.gif";
 		}
 	}
-}
-
-function dbg(o) {
-	var s = "";
-	var i = 0;
-	for (var p in o) {
-		s += p + ": " + o[p] + "\n";
-		if (++i % 10 == 0) {
-			alert(s);
-			s = "";
-		}
-	}
-	alert(s);
 }
 
 function fnFixPng(img) {
