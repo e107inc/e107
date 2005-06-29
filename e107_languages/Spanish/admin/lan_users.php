@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-10 20:56:25 $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-29 06:10:54 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -126,6 +126,44 @@ define("USRLAN_131", "Debe activar esta opción para usar las opciones de tracki
 define("USRLAN_132", "Activar");
 define("USRLAN_133", "Forzar al usuario que actualice sus ajustes");
 define("USRLAN_134", "Activando esta opción se enviará al usuario a sus ajustes automáticamente, si algún campo requerido no se ha rellenado.");
+
+define("DUSRLAN_1", "ID");
+define("DUSRLAN_2", "Nombre a mostrar");
+define("DUSRLAN_3", "Usuario");
+define("DUSRLAN_4", "Título personalizado");
+define("DUSRLAN_5", "Contraseña");
+define("DUSRLAN_6", "Sesión");
+define("DUSRLAN_7", "Email");
+define("DUSRLAN_8", "Página web");
+define("DUSRLAN_9", "ICQ");
+define("DUSRLAN_10", "AIM");
+define("DUSRLAN_11", "MSN");
+define("DUSRLAN_12", "Zona");
+define("DUSRLAN_13", "Cunmpleaños");
+define("DUSRLAN_14", "Firma");
+define("DUSRLAN_15", "Imagen");
+define("DUSRLAN_16", "Zona horaria");
+define("DUSRLAN_17", "Ocultar email");
+define("DUSRLAN_18", "Fecha de ingreso");
+define("DUSRLAN_19", "Última visita");
+define("DUSRLAN_20", "Visita actual");
+define("DUSRLAN_21", "Último envío");
+define("DUSRLAN_22", "Envíos de Chat");
+define("DUSRLAN_23", "Comentarios");
+define("DUSRLAN_24", "Envíos de foros");
+define("DUSRLAN_25", "IP");
+define("DUSRLAN_26", "Expulsado");
+define("DUSRLAN_27", "Prefs");
+define("DUSRLAN_28", "Nuevo");
+define("DUSRLAN_29", "Visto");
+define("DUSRLAN_30", "Visitas");
+define("DUSRLAN_31", "Admin");
+define("DUSRLAN_32", "Nombre real");
+define("DUSRLAN_33", "Clase de usuario");
+define("DUSRLAN_34", "Permisos");
+define("DUSRLAN_35", "Foto");
+define("DUSRLAN_36", "Cambiar contraseña");
+define("DUSRLAN_37", "XUP");
 
 define("LAN_MAINADMIN","Admin Jefe");
 define("LAN_ADMIN","Admin");

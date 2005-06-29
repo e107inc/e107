@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_links.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-23 16:21:59 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-29 06:10:53 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -53,10 +53,11 @@ define("LCLAN_68", "Opciones de enlaces");
 
 define("LCLAN_78", "Mostrar Descripción como Screen-Tip");
 define("LCLAN_79", "Se mostrará la descripción cuando el cursor del ratón pase por encima del enlace");
-define("LCLAN_80", "Activar submenús expandidos");
-define("LCLAN_81", "Los submenús se mostrarán después de hacer click en su raíz. (Desactivado enlace Raíz)");
+define("LCLAN_80", "Activar sub-menús expandidos");
+define("LCLAN_81", "Los sub-menús se mostrarán solo después de hacer click en su raíz. (Categoría principal desactivada)");
 define("LCLAN_82", "Abrir en ventana 800x600");
 define("LCLAN_83", "Generador de Submenús");
+
 
 define("LCLAN_88", "Opciones de los enlaces");
 define("LCLAN_89", "Imagen");
@@ -64,6 +65,7 @@ define("LCLAN_90", "Nombre enlace");
 define("LCLAN_91", "Mover");
 
 define("LCLAN_95", "Clase");
+ define("LCLAN_96", "Mostar en tu tema como");
 
 define("LINKLAN_1", "Abrir en ventana 800x600");
 define("LINKLAN_2", "Raíz");
