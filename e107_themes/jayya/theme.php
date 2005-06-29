@@ -50,7 +50,7 @@ $HEADER = "<table class='top_section'>
 </td>
 
 <td class='top_section_right' style='padding: 0px; white-space: nowrap; width: 170px'>
-{CUSTOM=search+default}
+{CUSTOM=search+".THEME."images/search.png+35+38}
 </td>
 </tr>
 </table>
