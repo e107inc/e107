@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-11 11:15:11 $
-|     $Author: stevedunstan $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-29 19:56:05 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Register");
@@ -83,6 +83,7 @@ define("LAN_SIGNUP_32", "What's an XUP file?");
 define("LAN_SIGNUP_33", "Type path or choose avatar");
 define("LAN_SIGNUP_34", "Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.");
 define("LAN_SIGNUP_35", "Click here to register using an XUP file");
+define("LAN_SIGNUP_36", "An error has occured creating your user information, please contact the site admin");
 
 define("LAN_LOGINNAME", "Login Name");
 define("LAN_PASSWORD", "Password");
