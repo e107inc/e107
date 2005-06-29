@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-06-19 19:46:32 $
-|     $Author: stevedunstan $
+|     $Revision: 1.27 $
+|     $Date: 2005-06-29 14:09:48 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -46,6 +46,8 @@ if (!is_numeric(e_QUERY)) {
 
 if(strstr(e_QUERY, "mirror")) {
 	list($action, $download_id, $mirror_id) = explode(".", e_QUERY);
+	$download_id = intval($download_id);
+	$mirror_id = intval($mirror_id);
 	$qry = "SELECT d.*, dc.download_category_class FROM #download as d LEFT JOIN #download_category AS dc ON dc.download_category_id = d.download_id WHERE d.download_id = {$download_id}";
 	if ($sql->db_Select_gen($qry)) {
 		$row = $sql->db_Fetch();
