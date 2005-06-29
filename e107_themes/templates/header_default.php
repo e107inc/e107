@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2005-06-16 09:41:59 $
-|     $Author: lisa_ $
+|     $Revision: 1.55 $
+|     $Date: 2005-06-29 21:18:22 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -47,7 +47,7 @@ if(isset($pref['trackbackEnabled'])){
 echo "<link rel='pingback' href='".$e107->http_abs_location("PLUGINS_DIRECTORY", "trackback/xmlrpc.php")."' />
 ";
 }
-if(isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) {
+if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
 	echo "<script type='text/javascript' src='".$e107->http_abs_location("FILES_DIRECTORY", "sleight_js.php")."'></script>\n";
 }
 
@@ -82,7 +82,7 @@ if (file_exists(e_BASE."favicon.ico")) { echo "<link rel='icon' href='".e_BASE."
 
 echo $pref['meta_tag'] ? str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'], FALSE, "nobreak, no_hook, no_make_clickable"))."\n" : "";
 if (isset($theme_js_php) && $theme_js_php) {
-	echo "<link rel='stylesheet' href='".THEME."theme-js.php' type='text/css' />";
+	echo "<link rel='stylesheet' href='".THEME."theme-js.php' type='text/css% />";
 } else {
 	echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>\n";
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME."theme.js'></script>\n"; }
