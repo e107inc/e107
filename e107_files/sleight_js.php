@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/sleight_js.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-29 20:58:17 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-29 21:10:21 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,7 @@ function fnLoadPngs() {
 	var itsAllGood = (rslt != null && Number(rslt[1]) >= 5.5 && Number(rslt[1]) < 7);
 
 	for (var i = document.images.length - 1, img = null; (img = document.images[i]); i--) {
-		if (itsAllGood && img.src.match(/\.png$/i) != null && img.className != 'jsn') {
+		if (itsAllGood && img.src.match(/\.png$/i) != null) {
 			fnFixPng(img);
 			img.attachEvent("onpropertychange", fnPropertyChanged);
 		}
@@ -46,7 +46,7 @@ function fnLoadPngs() {
 
 	var nl = document.getElementsByTagName("input");
 	for (var i = nl.length - 1, e = null; (e = nl[i]); i--) {
-		if (e.type == 'image' && e.className != 'jsn') {
+		if (e.type == 'image') {
 			if (e.src.match(/\.png$/i) != null) {
 				fnFixPng(e);
 				e.attachEvent("onpropertychange", fnPropertyChanged);
