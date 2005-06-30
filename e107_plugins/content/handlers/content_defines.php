@@ -2,6 +2,8 @@
 global $plugindir;
 $plugindir = e_PLUGIN."content/";
 $imagedir = e_IMAGE."admin_images/";
+$lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content_admin.php';
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content_admin.php');
 $lan_file = e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content.php';
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN.'content/languages/English/lan_content.php');
 
