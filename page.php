@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-29 14:07:02 $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-30 13:08:26 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -305,9 +305,9 @@ class pageClass
 					$row = $sql->db_Fetch();
 					if ($row[0] && (ANON === TRUE || USER === TRUE)) {
 
-						$clean_authorname = einput::clean_input(einput::strip_input($_POST['author_name']), true);
-						$clean_comment = einput::clean_input(einput::strip_input($_POST['comment']), true);
-						$clean_subject = einput::clean_input(einput::strip_input($_POST['subject']), true);
+						$clean_authorname = einput::escape($_POST['author_name']);
+						$clean_comment = einput::escape($_POST['comment']);
+						$clean_subject = einput::escape($_POST['subject']);
 
 						$cobj->enter_comment($clean_authorname, $clean_comment, "page", $this -> pageID, $pid, $clean_subject);
 						$e107cache->clear("comment.page.".$this -> pageID);
