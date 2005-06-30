@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/auth.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-14 22:37:12 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-30 12:11:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
@@ -63,9 +63,9 @@ class auth {
 		/*
 		# Admin auth login
 		#
-		# - parameters                none
-		# - return                                null
-		# - scope                                        public
+		# - parameters	none
+		# - return		null
+		# - scope		public
 		*/
 		 
 		$text = "<div style='text-align:center'>
@@ -103,8 +103,8 @@ class auth {
 		*/
 		$sql_auth = new db;
 		$authname = ereg_replace("\sOR\s|\=|\#", "", $authname);
-		if ($sql_auth->db_Select("user", "*", "user_name='$authname' AND user_admin='1' ")) {
-			if ($sql_auth->db_Select("user", "*", "user_name='$authname' AND user_password='".md5($authpass)."' AND user_admin='1' ")) {
+		if ($sql_auth->db_Select("user", "*", "user_loginname='$authname' AND user_admin='1' ")) {
+			if ($sql_auth->db_Select("user", "*", "user_loginname='$authname' AND user_password='".md5($authpass)."' AND user_admin='1' ")) {
 				$row = $sql_auth->db_Fetch();
 				return $row;
 			} else {
@@ -119,6 +119,4 @@ class auth {
 }
 	
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-	
-	
 ?>
