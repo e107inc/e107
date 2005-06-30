@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_page_sql.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-29 20:22:08 $
+|     $Revision: 1.2 $
+|     $Date: 2005-06-30 22:12:19 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ CREATE TABLE links_page_cat (
   link_category_icon varchar(100) NOT NULL default '',
   link_category_order varchar(100) NOT NULL default '0',
   link_category_class varchar(100) NOT NULL default '0',
-  link_category_datestamp int(10) unsigned NOT NULL default '',
+  link_category_datestamp int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (link_category_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
@@ -46,7 +46,8 @@ CREATE TABLE links_page (
   link_refer int(10) unsigned NOT NULL default '0',
   link_open tinyint(1) unsigned NOT NULL default '0',
   link_class tinyint(3) unsigned NOT NULL default '0',
-  link_datestamp int(10) unsigned NOT NULL default '',
+  link_datestamp int(10) unsigned NOT NULL default '0',
+  link_author varchar(255) NOT NULL default '',
   PRIMARY KEY  (link_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------

@@ -11,15 +11,45 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-26 20:16:57 $
+|     $Revision: 1.9 $
+|     $Date: 2005-06-30 22:12:19 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
-// MAIN TABLE -------------------------------------------------------------------------------
-global $sc_style, $link_shortcodes;
+global $sc_style, $link_shortcodes, $rs;
 
+//general backlink to link frontpage
+$sc_style['LINK_BACKLINK']['pre'] = "<div style='text-align:right;'>";
+$sc_style['LINK_BACKLINK']['post'] = " >></div>";
+
+$sc_style['LINK_MANAGER_LINK']['pre'] = "<div style='text-align:right;'>";
+$sc_style['LINK_MANAGER_LINK']['post'] = " >></div>";
+
+
+$sc_style['LINK_MANAGE_NEWLINK']['pre'] = "<div style='text-align:right;'>";
+$sc_style['LINK_MANAGE_NEWLINK']['post'] = " >></div>";
+
+$LINK_TABLE_MANAGE_START = "
+	".$rs -> form_open("post", e_SELF."?".e_QUERY, "linkmanagerform", "", "enctype='multipart/form-data'", "")."
+	<table class='fborder' style='width:100%;' cellspacing='0' cellpadding='0'>
+	<tr>
+	<td style='width:15%' class='fcaption'>".LAN_LINKS_MANAGER_5."</td>
+	<td style='width:75%' class='fcaption'>".LAN_LINKS_MANAGER_1."</td>
+	<td style='width:10%' class='fcaption'>".LAN_LINKS_MANAGER_2."</td>
+	</tr>";
+
+$LINK_TABLE_MANAGE = "
+	<tr>
+	<td style='width:15%; padding-bottom:5px;' class='forumheader3'>{LINK_MANAGE_CAT}</td>
+	<td style='width:75%; padding-bottom:5px;' class='forumheader3'>{LINK_MANAGE_ICON} {LINK_MANAGE_NAME}</td>
+	<td style='width:10%; padding-bottom:5px; text-align:center; vertical-align:top;' class='forumheader3'>{LINK_MANAGE_OPTIONS}</td>
+	</tr>";
+
+$LINK_TABLE_MANAGE_END = "</table>".$rs -> form_close()."<br />{LINK_MANAGE_NEWLINK} {LINK_BACKLINK}";
+
+
+// MAIN TABLE -------------------------------------------------------------------------------
 $sc_style['LINK_MAIN_ICON']['pre'] = "<td rowspan='2' class='forumheader3' style='width:5%; text-align:center; padding-right:5px;'>";
 $sc_style['LINK_MAIN_ICON']['post'] = "</td>";
 
@@ -36,13 +66,13 @@ $sc_style['LINK_MAIN_TOTAL']['pre'] = "";
 $sc_style['LINK_MAIN_TOTAL']['post'] = "<br />";
 
 $sc_style['LINK_MAIN_SHOWALL']['pre'] = "";
-$sc_style['LINK_MAIN_SHOWALL']['post'] = "<br />";
+$sc_style['LINK_MAIN_SHOWALL']['post'] = " >><br />";
 
 $sc_style['LINK_MAIN_TOPREFER']['pre'] = "";
-$sc_style['LINK_MAIN_TOPREFER']['post'] = "<br />";
+$sc_style['LINK_MAIN_TOPREFER']['post'] = " >><br />";
 
 $sc_style['LINK_MAIN_TOPRATED']['pre'] = "";
-$sc_style['LINK_MAIN_TOPRATED']['post'] = "<br />";
+$sc_style['LINK_MAIN_TOPRATED']['post'] = " >><br />";
 
 
 $LINK_MAIN_TABLE_START = "
@@ -59,21 +89,18 @@ $LINK_MAIN_TABLE = "
 	</table>";
 
 $LINK_MAIN_TABLE_END = "
-		<div class='smalltext' style='text-align:right;'>
+		<div style='text-align:right;'>
 		{LINK_MAIN_TOTAL}
 		{LINK_MAIN_SHOWALL}
 		{LINK_MAIN_TOPREFER}
 		{LINK_MAIN_TOPRATED}
+		{LINK_MANAGER_LINK}
 		</div>
 	</div>";
 
 
 // CATEGORY LIST ----------------------------------------------------------------------------
 global $sc_style, $link_shortcodes;
-
-//general backlink to link frontpage
-$sc_style['LINK_BACKLINK']['pre'] = "<div class='smalltext' style='text-align:right;'>";
-$sc_style['LINK_BACKLINK']['post'] = "</div>";
 
 $sc_style['LINK_CAT_SORTORDER']['pre'] = "<table class='fborder' style='width:100%' cellspacing='0' cellpadding='0'><tr><td class='forumheader' colspan='3'>";
 $sc_style['LINK_CAT_SORTORDER']['post'] = "</td></tr></table><br />";
@@ -96,7 +123,7 @@ $sc_style['LINK_CAT_DESC']['post'] = "</td></tr>";
 $sc_style['LINK_CAT_RATING']['pre'] = "<tr><td colspan='2' class='forumheader' style='line-height:130%;'>";
 $sc_style['LINK_CAT_RATING']['post'] = "</td></tr>";
 
-$sc_style['LINK_CAT_SUBMIT']['pre'] = "<div class='smalltext' style='text-align:right;'>";
+$sc_style['LINK_CAT_SUBMIT']['pre'] = "<div style='text-align:right;'>";
 $sc_style['LINK_CAT_SUBMIT']['post'] = "</div>";
 
 
@@ -120,6 +147,7 @@ $LINK_CAT_TABLE = "
 
 $LINK_CAT_TABLE_END = "
 	{LINK_CAT_SUBMIT}
+	{LINK_MANAGER_LINK}
 	{LINK_BACKLINK}
 	</div>";
 
@@ -170,7 +198,7 @@ $LINK_RATED_TABLE_END = "
 // SUBMIT -----------------------------------------------------------------------------------
 $LINK_SUBMIT_TABLE = "
 	<div style='text-align:center'>
-	<form method='post' action='".e_SELF."'>
+	<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>	
 	<table class='fborder' style='width:100%' cellspacing='0' cellpadding='0'>
 	<tr><td colspan='2' style='text-align:center' class='forumheader2'>".LCLAN_SL_9."</td></tr>
 	<tr>

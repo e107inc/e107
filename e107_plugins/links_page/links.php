@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-06-26 20:16:57 $
+|     $Revision: 1.17 $
+|     $Date: 2005-06-30 22:12:18 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -20,10 +20,13 @@ require_once('../../class2.php');
 require_once(e_HANDLER."rate_class.php");
 $rater = new rater;
 require_once(e_PLUGIN.'links_page/link_shortcodes.php');
+require_once(e_HANDLER."userclass_class.php");
 e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
+require_once(e_HANDLER."file_class.php");
+$fl = new e_file;
 require_once(e_PLUGIN.'links_page/link_class.php');
 $lc = new linkclass();
 global $tp;
@@ -31,6 +34,8 @@ global $tp;
 if(!defined("IMAGE_NEW")){ define("IMAGE_NEW", (file_exists(THEME."generic/new.png") ? THEME."generic/new.png" : e_IMAGE."generic/".IMODE."/new.png")); }
 
 $linkspage_pref = $lc -> getLinksPagePref();
+
+$deltest = array_flip($_POST);
 
 if(e_QUERY){
 	$qs = explode(".", e_QUERY);
@@ -66,20 +71,13 @@ if (file_exists(THEME."links_template.php")) {
 	require_once(e_PLUGIN."links_page/links_template.php");
 }
 
+//submit / manage link
 if (isset($_POST['add_link']) && check_class($linkspage_pref['link_submit_class'])) {
-	if ($_POST['link_name'] && $_POST['link_url'] && $_POST['link_description']) {
-		$link_name			= $tp->toDB($_POST['link_name']);
-		$link_url			= $tp->toDB($_POST['link_url']);
-		$link_description	= $tp->toDB($_POST['link_description']);
-		$link_button		= $tp->toDB($_POST['link_button']);
-		$username			= (defined('USERNAME')) ? USERNAME : LAN_LINKS_3;
-		$submitted_link		= $_POST['cat_name']."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".$username;
-		$sql->db_Insert("tmp", "'submitted_link', '".time()."', '$submitted_link' ");
-		$ns->tablerender(LAN_LINKS_28, "<div style='text-align:center'>".LAN_LINKS_29."</div>");
-		$edata_ls = array("link_name" => $link_name, "link_url" => $link_url, "link_description" => $link_description, "link_button" => $link_button, "username" => $username, "submitted_link" => $submitted_link);
-		$e_event->trigger("linksub", $edata_ls);
-		} else {
-		message_handler("ALERT", 5);
+	if($qs[0] == "submit"){
+		$lc -> dbLinkCreate("submit");
+	}
+	if($qs[0] == "manage"){
+		$lc -> dbLinkCreate();
 	}
 }
 
@@ -112,6 +110,64 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 
 } else {
 
+	//personal link managers
+	if (isset($qs[0]) && $qs[0] == "manage"){
+		if(!(isset($linkspage_pref['link_manager']) && $linkspage_pref['link_manager'])){
+			js_location(e_SELF);
+		}
+		if($linkspage_pref['link_directdelete']){
+			if(isset($_POST['delete'])){
+				$tmp = array_pop(array_flip($_POST['delete']));
+				list($delete, $del_id) = explode("_", $tmp);
+			}
+			//delete link
+			if (isset($delete) && $delete == 'main') {
+				$sql->db_Select("links_page", "link_order", "link_id='".$del_id."'");
+				$row = $sql->db_Fetch();
+				$sql2 = new db;
+				$sql->db_Select("links_page", "link_id", "link_order>'".$row['link_order']."' && link_category='".$id."'");
+				while ($row = $sql->db_Fetch()) {
+					$sql2->db_Update("links_page", "link_order=link_order-1 WHERE link_id='".$row['link_id']."'");
+				}
+				if ($sql->db_Delete("links_page", "link_id='".$del_id."'")) {
+					$lc->show_message(LCLAN_ADMIN_10." #".$del_id." ".LCLAN_ADMIN_11);
+				}
+			}
+		}
+		//upload link icon
+		if(isset($_POST['uploadlinkicon'])){
+			$lc -> uploadLinkIcon($_POST);
+		}
+
+		if(check_class($linkspage_pref['link_manager_class'])){
+			$qry = "
+			SELECT l.*, lc.*
+			FROM #links_page AS l
+			LEFT JOIN #links_page_cat AS lc ON lc.link_category_id = l.link_category
+			WHERE l.link_author = '".USERID."'
+			ORDER BY l.link_name
+			";
+			if(!$manager_total = $sql -> db_Select_gen($qry)){
+				$text = LAN_LINKS_MANAGER_4;
+			}else{
+				$link_table_manage_start	= $tp -> parseTemplate($LINK_TABLE_MANAGE_START, FALSE, $link_shortcodes);
+				while($row = $sql -> db_Fetch()){
+					$link_table_manage .= $tp -> parseTemplate($LINK_TABLE_MANAGE, FALSE, $link_shortcodes);
+				}
+				$link_table_manage_end		= $tp -> parseTemplate($LINK_TABLE_MANAGE_END, FALSE, $link_shortcodes);
+				$text .= $link_table_manage_start.$link_table_manage.$link_table_manage_end;
+			}
+			$ns->tablerender(LAN_LINKS_35, $text);
+
+			$lc->show_link_create();
+		}else{
+			js_location(e_SELF);
+		}
+		require_once(FOOTERF);
+		exit;
+	}
+
+	//submit link
 	if (isset($qs[0]) && $qs[0] == "submit" && check_class($linkspage_pref['link_submit_class'])) {
 
 		$LINK_SUBMIT_CAT = "";
