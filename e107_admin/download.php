@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2005-06-27 02:28:16 $
+|     $Revision: 1.61 $
+|     $Date: 2005-06-30 16:35:49 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -95,7 +95,7 @@ if($image_array = $fl->get_files(e_FILE."downloadimages/", "",$reject,1)){
 }
 
 if($thumb_array = $fl->get_files(e_FILE."downloadthumbs/", "",$reject,1)){
-	sort($image_array);
+	sort($thumb_array);
 }
 
 
@@ -116,7 +116,7 @@ if(isset($_POST['update_catorder'])){
 			$sql -> db_Update("download_category", "download_category_order='$order' WHERE download_category_id='$key' ");
 	  	}
 	}
-   	$ns->tablerender("", "<div style='text-align:center'><b>".LAN_UPDATED."</b></div>");                
+   	$ns->tablerender("", "<div style='text-align:center'><b>".LAN_UPDATED."</b></div>");
 }
 
 if (isset($_POST['updateoptions']))
@@ -728,16 +728,14 @@ class download {
 
 			$m_count = (count($mirrorArray) ? count($mirrorArray) : 1);
 
-			for($count = 1; $count <= $m_count; $count++)
-			{
+			for($count = 1; $count <= $m_count; $count++){
 
 				$opt = ($count==1) ? "id='mirror'" : "";
 				$text .="<span $opt>
 				<select name='download_mirror_name[]' class='tbox'>
 					<option></option>";
 
-				foreach($mirrorList as $mirror)
-				{
+				foreach($mirrorList as $mirror)	{
 					extract($mirror);
 					$text .= "<option value='$mirror_id'".($mirror_id == $mirrorArray[($count-1)]['id'] ? " selected='selected'" : "").">$mirror_name</option>\n";
 				}
@@ -796,16 +794,14 @@ class download {
 			<td style='width:20%' class='forumheader3'>".DOWLAN_19.":</td>
 			<td style='width:80%' class='forumheader3'>
 			<select name='download_image' class='tbox'>
+			<option value=''></option>";
 
-			";
+			foreach($image_array as $img){
+				$fpath = str_replace(e_FILE."downloadimages/","",$img['path'].$img['fname']);
+            	$sel = ($download_image == $fpath) ? " selected='selected'" : "";
+            	$text .= "<option value='".$fpath."' $sel>".$fpath."</option>\n";
+			}
 
-
-		$counter = 0;
-		while (isset($image_array[$counter])) {
-			$ipath = str_replace(e_FILE."downloadimages/", "", $image_array[$counter]);
-        	$text .= "<option value='$ipath'".($download_image == $ipath ? " selected='selected'" : "").">".$ipath."</option>\n";
-			$counter++;
-		}
 		$text .= "
 			</select>
 			</td>
@@ -817,13 +813,13 @@ class download {
 			<select name='download_thumb' class='tbox'>
 			<option></option>
 			";
-        $counter = 0;
-		while (isset($thumb_array[$counter])) {
-			$tpath = str_replace(e_FILE."downloadthumbs/","",$thumb_array[$counter]['path']).$thumb_array[$counter]['fname'];
-        	$seld = ($download_thumb == $tpath) ? "selected='selected'" : "";
-			$text .= "<option value='$tpath' $seld>".$tpath."</option>\n";
-			$counter++;
-		}
+
+			foreach($thumb_array as $thm){
+				$tpath = str_replace(e_FILE."downloadthumbs/","",$thm['path'].$thm['fname']);
+            	$sel = ($download_thumb == $tpath) ? " selected='selected'" : "";
+            	$text .= "<option value='".$tpath."' $sel>".$tpath."</option>\n";
+			}
+
 		$text .= "</select>
 			</td>
 			</tr>
@@ -862,17 +858,9 @@ class download {
 			<select name='download_active' class='tbox'>
 			";
 
-			foreach($download_status as $key => $val)
-			{
-				if($download_active == $key)
-				{
-					$sel = " selected = 'selected' ";
-				}
-				else
-				{
-					$sel = "";
-				}
-				$text .= "<option value='{$key}' {$sel}>{$val}</option>\n";
+			foreach($download_status as $key => $val){
+				$sel = ($download_active == $key) ? " selected = 'selected' " : "";
+            	$text .= "<option value='{$key}' {$sel}>{$val}</option>\n";
 			}
 			$text .= "</select>";
 
