@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-29 16:38:23 $
+|     $Revision: 1.5 $
+|     $Date: 2005-06-30 16:50:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -65,26 +65,24 @@ if($content_version < 1.21){
 		}
 	}
 
-	//upgrade to 1.2 (add score, meta, layout fields)
+	//upgrade to 1.2 table structure (add score, meta, layout fields)
 	$upgrade_1_2 = FALSE;
-	$fields = mysql_list_fields($mySQLdefaultdb, MPREFIX."pcontent");
-	$columns = mysql_num_fields($fields);
-	for ($i = 0; $i < $columns; $i++)
-	{
-		if("content_score" == mysql_field_name($fields, $i))
-		{
-			$upgrade_1_2 = TRUE;
-		}
+	$field1 = $sql->db_Field("pcontent",19);
+	$field2 = $sql->db_Field("pcontent",20);
+	$field3 = $sql->db_Field("pcontent",21);
+	if($field1 != "content_score" && $field2 != "content_meta" && $field3 != "content_layout"){
+		$upgrade_1_2 = TRUE;
+		mysql_query("ALTER TABLE ".MPREFIX."pcontent ADD content_score INT ( 3 ) UNSIGNED NOT NULL DEFAULT '0';");
+		mysql_query("ALTER TABLE ".MPREFIX."pcontent ADD content_meta TEXT NOT NULL;");
+		mysql_query("ALTER TABLE ".MPREFIX."pcontent ADD content_layout VARCHAR ( 100 ) NOT NULL DEFAULT '';");
+		$text .= "Content Management Plugin table structure updated<br />";
 	}
-	if(!$upgrade_1_2){
-		$text .= $ac -> upgrade_1_2();
-	}
-
 
 	//upgrade to 1.21 (update content_author fields)
 	$upgrade_1_21 = $ac -> upgrade_1_21();
 	if($upgrade_1_21){
 		$text .= $upgrade_1_21;
+		$upgrade_1_21 = TRUE;
 	}
 
 	if($upgrade_1_1 || $upgrade_1_2 || $upgrade_1_21){

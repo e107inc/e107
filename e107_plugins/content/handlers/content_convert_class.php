@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.10 $
-|		$Date: 2005-06-28 11:32:06 $
+|		$Revision: 1.11 $
+|		$Date: 2005-06-30 16:50:40 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -53,16 +53,6 @@ class content_convert{
 			}else{
 				return FALSE;
 			}
-		}
-
-		//update table structure
-		function upgrade_1_2(){
-			global $sql;
-			$sql = new db;
-			$sql->db_Select_gen("ALTER TABLE ".MPREFIX."pcontent ADD content_score INT( 3 ) UNSIGNED NOT NULL default '0'");
-			$sql->db_Select_gen("ALTER TABLE ".MPREFIX."pcontent ADD content_meta TEXT NOT NULL");
-			$sql->db_Select_gen("ALTER TABLE ".MPREFIX."pcontent ADD content_layout varchar( 100 ) NOT NULL default ''");
-			return "Content Management Plugin table structure updated<br />";
 		}
 
 		//convert rows
