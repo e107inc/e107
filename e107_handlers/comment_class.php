@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-06-30 14:18:21 $
+|     $Revision: 1.40 $
+|     $Date: 2005-06-30 14:23:24 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -385,7 +385,7 @@ class comment {
 				echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?$table.$id'>".LAN_314."</a></div><br />";
 			}
 		}
-		if($lock != "1" && $enter){
+		if($lock != "1"){
 			$this->form_comment($action, $table, $id, $subject, "", "", $rate);
 		}else{
 			echo "<br /><div style='text-align:center'><b>".COMLAN_8."</b></div>";
