@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-30 12:42:41 $
+|     $Revision: 1.13 $
+|     $Date: 2005-06-30 12:46:34 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
