@@ -219,14 +219,14 @@ return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_l
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_HEADING
-global $CONTENT_CAT_TABLE_HEADING, $row;
-return "<a href='".e_SELF."?cat.".$row['content_id']."'>".$row['content_heading']."</a>";
+global $CONTENT_CAT_TABLE_HEADING, $row, $totalitems, $tp;
+return ($totalitems > 0 ? "<a href='".e_SELF."?cat.".$row['content_id']."'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>" : $tp -> toHTML($row['content_heading'], TRUE, "") );
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_AMOUNT
-global $CONTENT_CAT_TABLE_AMOUNT, $aa, $row, $keytocount, $mainparent, $content_pref;
+global $CONTENT_CAT_TABLE_AMOUNT, $aa, $row, $totalitems, $mainparent, $content_pref;
 if(isset($content_pref["content_catall_amount_{$mainparent}"]) && $content_pref["content_catall_amount_{$mainparent}"]){
-$n = $aa -> countCatItems($keytocount);
+$n = $totalitems;
 $CONTENT_CAT_TABLE_AMOUNT = $n." ".($n == "1" ? CONTENT_LAN_53 : CONTENT_LAN_54);
 return $CONTENT_CAT_TABLE_AMOUNT;
 }
@@ -325,8 +325,8 @@ return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_l
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_HEADING
-global $CONTENT_CAT_LIST_TABLE_HEADING, $tp, $row;
-return ($row['content_heading'] ? $tp -> toHTML($row['content_heading'], TRUE, "") : "");
+global $CONTENT_CAT_LIST_TABLE_HEADING, $tp, $row, $totalparent, $tp;
+return ($totalparent > 0 ? "<a href='".e_SELF."?cat.".$row['content_id']."'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>" : $tp -> toHTML($row['content_heading'], TRUE, "") );
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_SUMMARY
@@ -353,9 +353,9 @@ return $CONTENT_CAT_LIST_TABLE_TEXT;
 SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_AMOUNT
-global $CONTENT_CAT_LIST_TABLE_AMOUNT, $aa, $row, $mainparent, $content_pref;
+global $CONTENT_CAT_LIST_TABLE_AMOUNT, $aa, $row, $mainparent, $content_pref, $totalparent;
 if(isset($content_pref["content_cat_amount_{$mainparent}"]) && $content_pref["content_cat_amount_{$mainparent}"]){
-$n = $aa -> countCatItems($row['content_id']);
+$n = $totalparent;
 $n = $n." ".($n == "1" ? CONTENT_LAN_53 : CONTENT_LAN_54);
 return $n;
 }
@@ -419,14 +419,14 @@ return $aa -> getIcon("catsmall", $row['content_icon'], $content_cat_icon_path_s
 SC_END
 
 SC_BEGIN CONTENT_CAT_LISTSUB_TABLE_HEADING
-global $CONTENT_CAT_LISTSUB_TABLE_HEADING, $qs, $row, $tp;
-return "<a href='".e_SELF."?cat.".$row['content_id']."'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>";
+global $CONTENT_CAT_LISTSUB_TABLE_HEADING, $tp, $row, $totalsubcat, $tp;
+return ($totalsubcat > 0 ? "<a href='".e_SELF."?cat.".$row['content_id']."'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>" : $tp -> toHTML($row['content_heading'], TRUE, "") );
 SC_END
 
 SC_BEGIN CONTENT_CAT_LISTSUB_TABLE_AMOUNT
-global $CONTENT_CAT_LISTSUB_TABLE_AMOUNT, $aa, $row, $content_pref, $mainparent;
+global $CONTENT_CAT_LISTSUB_TABLE_AMOUNT, $aa, $row, $content_pref, $mainparent, $totalsubcat;
 if(isset($content_pref["content_catsub_amount_{$mainparent}"]) && $content_pref["content_catsub_amount_{$mainparent}"]){
-$n = $aa -> countCatItems($row['content_id']);
+$n = $totalsubcat;
 $n = $n." ".($n == "1" ? CONTENT_LAN_53 : CONTENT_LAN_54);
 return $n;
 }
