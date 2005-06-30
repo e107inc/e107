@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-06-28 21:51:40 $
+|     $Revision: 1.39 $
+|     $Date: 2005-06-30 14:18:21 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -80,12 +80,12 @@ class comment {
 			}
 
 			//add the rating select box/result ?
-			if($rating == TRUE){
+			if($rating == TRUE && !(ANON == TRUE && USER == FALSE) ){
 				global $rater;
 				require_once(e_HANDLER."rate_class.php");
 				if(!is_object($rater)){ $rater = new rater; }
 				$rate = $rater -> composerating($table, $itemid, $enter=TRUE, USERID, TRUE);
-				$rate = "<tr><td style='width:20%; vertical-align:top;'>Rating:</td>\n<td style='width:80%;'>".$rate."</td></tr>\n";
+				$rate = "<tr><td style='width:20%; vertical-align:top;'>".COMLAN_7.":</td>\n<td style='width:80%;'>".$rate."</td></tr>\n";
 			}
 			//end rating area
 
@@ -111,19 +111,18 @@ class comment {
 
 	function render_comment($row, $table, $action, $id, $width, $subject, $addrating=FALSE) {
 		//addrating	: boolean, to show rating system in rendered comment
-		global $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen;
+		global $sql, $sql2, $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen;
 		global $pref, $comrow, $tp, $NEWIMAGE, $USERNAME, $RATING, $datestamp;
 		global $thisaction, $thistable, $thisid;
-		
-		$comrow		= $row;
-		$thistable	= $table;
-		$thisid		= $id;
-		$thisaction	= $action;
+
+		$comrow				= $row;
+		$thistable			= $table;
+		$thisid				= $id;
+		$thisaction			= $action;
 		
 		if($addrating===TRUE){
-			global $rater;
 			require_once(e_HANDLER."rate_class.php");
-			if(!is_object($rater)){ $rater = new rater; }
+			if(!$rater || !is_object($rater)){ $rater = new rater; }
 		}
 
 		require_once(e_HANDLER."level_handler.php");
@@ -136,9 +135,8 @@ class comment {
 		if(!defined("IMAGE_new_comments")){
 			define("IMAGE_new_comments", (file_exists(THEME."generic/new_comments.png") ? "<img src='".THEME."generic/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/".IMODE."/new_comments.png' alt=''  /> "));
 		}
-		$sql		= new db;
 		$ns			= new e107table;
-		$gen		= new convert;
+		if(!$gen || !is_object($gen)){ $gen = new convert; }
 		$url		= e_PAGE."?".e_QUERY;
 		$unblock	= "[<a href='".e_BASE.e_ADMIN."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_1."</a>] ";
 		$block		= "[<a href='".e_BASE.e_ADMIN."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_2."</a>] ";
@@ -202,7 +200,7 @@ class comment {
 		$text = $tp -> parseTemplate($renderstyle, FALSE, $comment_shortcodes);
 
 		if ($action == "comment" && $pref['nested_comments']) {
-		
+
 			$type = $this -> getCommentType($thistable);
 
 			$sub_query = "
@@ -212,7 +210,7 @@ class comment {
 			WHERE comment_item_id='".$thisid."' AND comment_type='".$type."' AND comment_pid='".$comrow['comment_id']."' 
 			ORDER BY comment_datestamp
 			";
-			$sql2 = new db;
+
 			if ($sub_total = $sql2->db_Select_gen($sub_query)) {
 				while ($row1 = $sql2->db_Fetch()) {
 					if ($pref['nested_comments']) {
@@ -224,15 +222,14 @@ class comment {
 					$text .= $this->render_comment($row1, $table, $action, $id, $width, $subject, $addrating);
 					unset($width);
 				}
-				$total ++;
 			}
 		}
 		return stripslashes($text);
 	}
+
 	function enter_comment($author_name, $comment, $table, $id, $pid, $subject, $rateindex=FALSE) {
 		//rateindex	: the posted value from the rateselect box (without the urljump) (see function rateselect())
-		global $sql, $tp, $e107cache, $e_event, $e107, $pref, $rater;
-
+		global $sql, $sql2, $tp, $e107cache, $e_event, $e107, $pref, $rater;
 
 		if(strstr(e_QUERY, "edit"))
 		{
@@ -261,7 +258,6 @@ class comment {
 				} else if($_POST['author_name'] == '') {
 					$nick = "0.Anonymous";
 				} else {
-					$sql2 = new db;
 					if ($sql2->db_Select("user", "*", "user_name='".$_POST['author_name']."' ")) {
 						if ($sql2->db_Select("user", "*", "user_name='".$_POST['author_name']."' AND user_ip='$ip' ")) {
 							list($cuser_id, $cuser_name) = $sql2->db_Fetch();
@@ -289,7 +285,7 @@ class comment {
 						return;
 					}
 
-					if (!$sql->db_Insert("comments", "0, '$pid', '$id', '$subject', '$nick', '', '".$_t."', '$comment', '0', '$ip', '$type' "))
+					if (!$sql->db_Insert("comments", "0, '$pid', '$id', '$subject', '$nick', '', '".$_t."', '$comment', '0', '$ip', '$type', '0' "))
 					{
 						echo "<b>".COMLAN_3."</b> ".LAN_11;
 					}
@@ -322,27 +318,13 @@ class comment {
 
 	function getCommentType($table){
 			switch($table) {
-				case "news":
-				$type = 0;
-				break;
-				case "content" :
-				$type = 1;
-				break;
-				case "download" :
-				$type = 2;
-				break;
-				case "faq" :
-				$type = 3;
-				break;
-				case "poll" :
-				$type = 4;
-				break;
-				case "docs" :
-				$type = 5;
-				break;
-				case "bugtrack" :
-				$type = 6;
-				break;
+				case "news"		: $type = 0; break;
+				case "content"	: $type = 1; break;
+				case "download"	: $type = 2; break;
+				case "faq"		: $type = 3; break;
+				case "poll"		: $type = 4; break;
+				case "docs"		: $type = 5; break;
+				case "bugtrack"	: $type = 6; break;
 				/****************************************
 				Add your comment type here in same format as above, ie ...
 				case "your_comment_type"; $type = your_type_id; break;
@@ -354,11 +336,25 @@ class comment {
 			return $type;
 	}
 
+	function count_comments($table, $id){
+		global $sql;
+
+		if(is_numeric($table)){
+			$type = $table;
+		}else{
+			$type = $this -> getCommentType($table);
+		}
+		$count_comments = $sql -> db_Count("comments", "(*)", "WHERE comment_item_id='".$id."' AND comment_type='".$type."' ORDER BY comment_item_id");
+		return $count_comments;
+	}
+
+
 	//compose comment	: single call function will render the existing comments and show the form_comment
-	//enter				: boolean to show/hide the form_comment area, default TRUE
 	//rate				: boolean, to show/hide rating system in comment, default FALSE
-	function compose_comment($table, $action, $id, $width, $subject, $rate=FALSE, $enter=TRUE){
-		global $pref, $sql, $ns, $e107cache, $tp;
+	function compose_comment($table, $action, $id, $width, $subject, $rate=FALSE){
+		global $pref, $sql, $ns, $e107cache, $tp, $totcc;
+
+		$count_comments = $this -> count_comments($table, $id, $pid=FALSE);
 
 		$type = $this -> getCommentType($table);
 
@@ -371,10 +367,11 @@ class comment {
 		LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$id."' AND comment_type='".$type."' ORDER BY comment_datestamp"
 		);
 
-		$comment_total = $sql->db_Select_gen($query); 
+		$comment_total = $sql->db_Select_gen($query);
 		if ($comment_total) {
 			$width = 0;
 			while ($row = $sql->db_Fetch()) {
+				$lock = $row['comment_lock'];
 				$subject = $tp->toHTML($subject);
 				if ($pref['nested_comments']) {
 					$text .= $this->render_comment($row, $table , $action, $id, $width, $subject, $rate);
@@ -384,12 +381,14 @@ class comment {
 			}
 			$ns->tablerender(LAN_99, $text);
 
-			if(ADMIN && getperms("B")){
+			if(ADMIN==TRUE && getperms("B")){
 				echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?$table.$id'>".LAN_314."</a></div><br />";
 			}
 		}
-		if($enter){
+		if($lock != "1" && $enter){
 			$this->form_comment($action, $table, $id, $subject, "", "", $rate);
+		}else{
+			echo "<br /><div style='text-align:center'><b>".COMLAN_8."</b></div>";
 		}
 		return;
 	}

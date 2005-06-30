@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.72 $
-|		$Date: 2005-06-29 23:01:54 $
+|		$Revision: 1.73 $
+|		$Date: 2005-06-30 14:18:21 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -869,8 +869,7 @@ function show_content_cat($mode=""){
 						}else{
 							$showrate = FALSE;
 						}
-						//usage: $cobj->compose_comment($row, $table, $action, $id, $width, $subject, $showrate, $enter);
-						$cobj->compose_comment($plugintable, "comment", $qs[1], $width, $row['content_heading'], $showrate, $entercomment=TRUE);
+						$cobj->compose_comment($plugintable, "comment", $qs[1], $width, $row['content_heading'], $showrate);
 
 						if($pref['cachestatus']){
 							$cache = ob_get_contents();
@@ -1529,8 +1528,7 @@ function show_content_item(){
 						}else{
 							$showrate = FALSE;
 						}
-						//$text .= $cobj->compose_comment($table, $action, $id, $width, $subject, $showrate, $enter);
-						$cobj->compose_comment($plugintable, "comment", $qs[1], $width, $row['content_heading'], $showrate, $entercomment=TRUE);
+						$cobj->compose_comment($plugintable, "comment", $qs[1], $width, $row['content_heading'], $showrate);
 
 						if($pref['cachestatus']){
 							$cache = ob_get_contents();

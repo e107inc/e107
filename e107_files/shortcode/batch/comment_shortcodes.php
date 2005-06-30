@@ -32,10 +32,11 @@ SC_END
 
 SC_BEGIN REPLY
 global $REPLY, $comrow, $action, $pref, $table, $id, $thisaction, $thistable, $thisid;
-if ($thisaction == "comment" && $pref['nested_comments']) {
-	$REPLY = "<a href='".e_BASE."comment.php?reply.".$thistable.".".$comrow['comment_id'].".".$thisid."'>".COMLAN_6."</a>";
-} else {
-	$REPLY = '';
+$REPLY = '';
+if($comrow['comment_lock'] != "1"){
+	if ($thisaction == "comment" && $pref['nested_comments']) {
+		$REPLY = "<a href='".e_BASE."comment.php?reply.".$thistable.".".$comrow['comment_id'].".".$thisid."'>".COMLAN_6."</a>";
+	}
 }
 return $REPLY;
 SC_END
@@ -83,7 +84,7 @@ SC_END
 
 SC_BEGIN COMMENTEDIT
 global $COMMENTEDIT, $pref, $comrow;
-return ($pref['allowCommentEdit'] && USER && $comrow['user_id'] == USERID && !strstr(e_QUERY, "edit") ? "<a href='".e_SELF."?".e_QUERY.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/".IMODE."/newsedit.png' alt='".LAN_318."' title='".LAN_318."' style='border: 0;' /></a>" : "");
+return ($pref['allowCommentEdit'] && (ADMIN || (USER && $comrow['user_id'] == USERID && $comrow['comment_lock'] != "1")) && !strstr(e_QUERY, "edit") ? "<a href='".e_SELF."?".e_QUERY.".edit.".$comrow['comment_id']."'><img src='".e_IMAGE."generic/".IMODE."/newsedit.png' alt='".LAN_318."' title='".LAN_318."' style='border: 0;' /></a>" : "");
 SC_END
 
 SC_BEGIN RATING

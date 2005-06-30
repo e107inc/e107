@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_comment.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-14 16:02:48 $
+|     $Revision: 1.7 $
+|     $Date: 2005-06-30 14:18:21 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -45,6 +45,8 @@ define("COMLAN_3", "Error!");
 define("COMLAN_4", 'Subject');
 define("COMLAN_5", 'Re:');
 define("COMLAN_6", 'Reply to this');
+define("COMLAN_7", 'Rating');
+define("COMLAN_8", 'Comments are locked');
 
 define("LAN_315", "Trackbacks");
 define("LAN_316", "No trackbacks for this newspost.");

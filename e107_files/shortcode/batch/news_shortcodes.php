@@ -78,7 +78,7 @@ switch($parm)
 		break;
 }	
 SC_END
-	
+
 SC_BEGIN NEWSCOMMENTS
 global $pref, $sql;
 $news_item = getcachedvars('current_news_item');

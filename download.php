@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-06-30 13:08:26 $
-|     $Author: streaky $
+|     $Revision: 1.40 $
+|     $Date: 2005-06-30 14:18:20 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -505,27 +505,7 @@ if ($action == "view") {
 	}
 	unset($text);
 	if ($comments_enabled) {
-		$query = ($pref['nested_comments'] ? "comment_item_id='{$id}' AND comment_type='2' AND comment_pid='0' ORDER BY comment_datestamp" : "comment_item_id='{$id}' AND comment_type='2' ORDER BY comment_datestamp");
-		$comment_total = $sql->db_Select("comments", "*", $query);
-		if ($comment_total) {
-			$width = 0;
-			while ($row = $sql->db_Fetch()) {
-				if ($pref['nested_comments']) {
-					$text = $cobj->render_comment($row, "download", "comment", $id, $width, $subject);
-					$ns->tablerender(LAN_5, $text);
-				} else {
-					$text .= $cobj->render_comment($row, "download", "comment", $id, $width, $subject);
-				}
-			}
-			if (!$pref['nested_comments']) {
-				$ns->tablerender(LAN_5, $text);
-			}
-				if(ADMIN == TRUE && $comment_total)
-				{
-					echo "<a href='".e_BASE.e_ADMIN."modcomment.php?download.{$dl_id}'>".LAN_314."</a>";
-				}
-		}
-		$cobj->form_comment("comment", "download", $id, $subject, $content_type);
+		$cobj->compose_comment("download", "comment", $id, $width, $subject, $showrate=FALSE, $enter=TRUE);
 	}
 
 	require_once(FOOTERF);
