@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.120 $
-|     $Date: 2005-06-28 14:12:14 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.121 $
+|     $Date: 2005-06-30 14:18:21 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,6 +30,15 @@ if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
 }
 
 //content
+if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content' AND plugin_installflag='1' "))
+{
+	if(file_exists(e_PLUGIN.'content/content_update_check.php'))
+	{
+		include_once(e_PLUGIN.'content/content_update_check.php');
+	}
+}
+
+//links_page
 if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content' AND plugin_installflag='1' "))
 {
 	if(file_exists(e_PLUGIN.'content/content_update_check.php'))
@@ -854,6 +863,11 @@ function update_61x_to_700($type='') {
 			mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_rss` VARCHAR( 255 ) NOT NULL ;");
 		}
 
+		//20050630: added comment_lock to comments
+		if($sql->db_Field("comments",12) != "comment_lock"){
+			mysql_query("ALTER TABLE `".MPREFIX."comments` ADD `comment_lock` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '0';");
+		}
+
 		if($sql->db_Field("user", 8) == "user_icq")
 		{
 			require_once(e_HANDLER."user_extended_class.php");
@@ -931,6 +945,10 @@ function update_61x_to_700($type='') {
 		}
 
 		if ((!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) || !isset($pref['search_highlight'])) {
+			return FALSE;
+		}
+
+		if(!$sql->db_Field("comments",12) != "comment_lock"){
 			return FALSE;
 		}
 

@@ -718,12 +718,10 @@ return $CONTENT_CONTENT_TABLE_SUBHEADING;
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_COMMENT
-global $CONTENT_CONTENT_TABLE_COMMENT, $row, $plugintable, $content_pref, $qs, $sql, $mainparent;
+global $CONTENT_CONTENT_TABLE_COMMENT, $cobj, $qs, $content_pref, $mainparent, $row, $plugintable;
 if((isset($content_pref["content_content_comment_{$mainparent}"]) && $content_pref["content_content_comment_{$mainparent}"] && $row['content_comment']) || $content_pref["content_content_comment_all_{$mainparent}"] ){
-	$CONTENT_CONTENT_TABLE_COMMENT = $sql -> db_Count("comments", "(*)",  "WHERE comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
-	if(!$CONTENT_CONTENT_TABLE_COMMENT){ $CONTENT_CONTENT_TABLE_COMMENT = "0"; }
+return $cobj -> count_comments($plugintable, $qs[1]);
 }
-return $CONTENT_CONTENT_TABLE_COMMENT;
 SC_END
 
 SC_BEGIN CONTENT_CONTENT_TABLE_DATE
