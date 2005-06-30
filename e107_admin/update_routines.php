@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.121 $
-|     $Date: 2005-06-30 14:18:21 $
+|     $Revision: 1.122 $
+|     $Date: 2005-06-30 15:00:31 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -948,7 +948,7 @@ function update_61x_to_700($type='') {
 			return FALSE;
 		}
 
-		if(!$sql->db_Field("comments",12) != "comment_lock"){
+		if($sql->db_Field("comments",12) != "comment_lock"){
 			return FALSE;
 		}
 
