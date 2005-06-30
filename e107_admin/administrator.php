@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-06-27 20:17:26 $
+|     $Revision: 1.18 $
+|     $Date: 2005-06-30 19:22:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -255,14 +255,15 @@ while ($row = $sql->db_Fetch()) {
 
 // Language Rights.. --------------
 if($pref['multilanguage']){
+	sort($lanlist);
 	$text .= "<br /><div class='fcaption'>".ADLAN_132."</div><br />\n";
 	$text .= checkb($pref['sitelanguage'], $a_perms).$pref['sitelanguage']."<br />\n";
 	foreach($lanlist as $langval){
 			$langname = $langval;
 			$langval = ($langval == $pref['sitelanguage']) ? "" : $langval;
-			if (table_exists("lan_".$langname)) {
+		  	if ($langval) {
 				$text .= checkb($langval, $a_perms).$langval."<br />\n";
-			}
+		 	}
 	}
 }
 // -------------------------
