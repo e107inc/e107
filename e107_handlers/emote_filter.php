@@ -11,25 +11,31 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emote_filter.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-04 20:54:41 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2005-06-30 18:37:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 class e_emotefilter {
 	var $search;
 	var $replace;
+	var $emotes;
 	 
 	function e_emotefilter() /* constructor */
 	{
 		global $sysprefs, $pref;
-		$emotes = $sysprefs -> getArray("emote_".$pref['emotepack']);
+		if(!$pref['emotepack'])	
+		{	
+			$pref['emotepack'] = "default";
+			save_prefs();
+		}
+		$this->emotes = $sysprefs->getArray("emote_".$pref['emotepack']);
 
-		foreach($emotes as $key => $value)
+		foreach($this->emotes as $key => $value)
 		{
 			$key = preg_replace("#!(\w{3,}?)$#si", ".\\1", $key);
 			$key = preg_replace("#_(\w{3})$#", ".\\1", $key);
-			$key =  str_replace("!", "_", $key);
+			$key = str_replace("!", "_", $key);
 
 			$value = trim(chop($value));
 
@@ -61,9 +67,6 @@ class e_emotefilter {
 				}
 			}
 		}
-
-	
-
 	}
 	 
 	function filterEmotes($text)

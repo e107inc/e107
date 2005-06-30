@@ -33,22 +33,26 @@ class prefs {
 	var $prefArrays;
 
 	// List of rows that shouldn't be automatically extracted (delimeted by '|')
-	var $DefaultIgnoreRows = 'pref_backup|SitePrefs_Backup';
+	var $DefaultRows = "e107_name='e107' OR e107_name='menu_pref' OR e107_name='notify_prefs'";
 
-	function ExtractPrefs() {
+	function ExtractPrefs($RowList = "", $use_default = FALSE) {
 		global $sql;
-		$IgnoredRowsArray = explode('|', $this->DefaultIgnoreRows);
 		$Args = '';
-		$i = 0;
-		foreach ($IgnoredRowsArray as $Name){
-			$Args .= ($i == 0 ? '' : ' AND ').'`e107_name` != \''.$Name.'\'';
-			$i++;
+		if($use_default)
+		{
+			$Args = $this->DefaultRows;
 		}
-		$Args = trim($Args);
+		if(is_array($RowList))
+		{
+			foreach($RowList as $v)
+			{
+				$Args .= ($Args ? " OR e107_name='{$v}'" : "e107_name='{$v}'");
+			}
+		} 
 		$sql->db_Select('core', '*', $Args, 'default');
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
-			$this->prefVals['core'][$e107_name] = $e107_value;
+		while ($row = $sql->db_Fetch())
+		{
+			$this->prefVals['core'][$row['e107_name']] = $row['e107_value'];
 		}
 	}
 
@@ -70,7 +74,7 @@ class prefs {
 			}
 		} elseif($sql->db_Select('core', '*', "`e107_name` = '{$Name}'", 'default')) {
 			$row = $sql->db_Fetch();
-			$this->prefVals['core'][$Name] = $row['e107_name'];
+			$this->prefVals['core'][$Name] = $row['e107_value'];
 			return $this->prefVals['core'][$Name];
 		} else {
 			$this->prefVals['core'][$Name] = '### ROW CACHE FALSE ###';
