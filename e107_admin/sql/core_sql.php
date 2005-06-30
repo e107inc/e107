@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-06-28 14:33:12 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.41 $
+|     $Date: 2005-06-30 15:08:58 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -85,6 +85,7 @@ CREATE TABLE comments (
   comment_blocked tinyint(3) unsigned NOT NULL default '0',
   comment_ip varchar(20) NOT NULL default '',
   comment_type varchar(10) NOT NULL default '0',
+  comment_lock tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (comment_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
