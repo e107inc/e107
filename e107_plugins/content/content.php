@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.73 $
-|		$Date: 2005-06-30 14:18:21 $
+|		$Revision: 1.74 $
+|		$Date: 2005-06-30 22:48:59 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -598,7 +598,7 @@ function show_content_recent(){
 
 // ##### CATEGORY LIST ------------------------------------
 function show_content_cat_all(){
-		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $aa, $e107cache, $tp, $pref, $content_pref, $keytocount;
+		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $aa, $e107cache, $tp, $pref, $content_pref, $totalitems;
 		global $sql, $datequery, $amount, $from, $content_cat_icon_path_large, $content_icon_path, $n, $mainparent, $CONTENT_CAT_TABLE, $CONTENT_CAT_TABLE_AUTHORDETAILS;
 
 		unset($text);
@@ -643,7 +643,7 @@ function show_content_cat_all(){
 				}
 			}
 			foreach($newparent as $key => $value){
-				$keytocount = $key;
+				$totalitems = $aa -> countCatItems($key);
 				$sql -> db_Select($plugintable, "*", "content_id = '".$key."' ");
 				$row = $sql -> db_Fetch();
 				
@@ -687,7 +687,7 @@ function show_content_cat_all(){
 function show_content_cat($mode=""){
 		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery, $from;
 		global $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END, $CONTENT_CAT_LIST_TABLE_AUTHORDETAILS;
-		global $content_cat_icon_path_small, $content_cat_icon_path_large, $content_icon_path, $mainparent;
+		global $content_cat_icon_path_small, $content_cat_icon_path_large, $content_icon_path, $mainparent, $totalparent, $totalsubcat;
 
 		$mainparent		= $aa -> getMainParent($qs[1]);
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -738,6 +738,7 @@ function show_content_cat($mode=""){
 						$CONTENT_CAT_LIST_TABLE_INFO_PRE = TRUE;
 						$CONTENT_CAT_LIST_TABLE_INFO_POST = TRUE;
 					}
+					$totalparent = $aa -> countCatItems($row['content_id']);
 					$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS = $aa -> prepareAuthor("cat", $row['content_author'], $row['content_id']);
 					$textparent			= $tp -> parseTemplate($CONTENT_CAT_LIST_TABLE, FALSE, $content_shortcodes);							
 				}
@@ -745,25 +746,27 @@ function show_content_cat($mode=""){
 
 			if(!$mode || $mode == ""){
 
+				$check			= (isset($qs[1]) && is_numeric($qs[1]) ? $qs[1] : $mainparent);
+				$array1			= $aa -> getCategoryTree("", $check, TRUE);
+				$newarray		= array_merge_recursive($array1);
+				for($a=0;$a<count($newarray);$a++){
+					for($b=0;$b<count($newarray[$a]);$b++){
+						$subparent[$newarray[$a][$b]] = $newarray[$a][$b+1];
+						$b++;
+					}
+				}
+				$subparent		= array_keys($subparent);
+				$validsub		= "0.".implode(",0.", $subparent);
+				$subqry			= " content_refer !='sa' AND content_parent REGEXP '".$aa -> CONTENTREGEXP($validsub)."' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ";
+
 				//list subcategories
 				if(isset($content_pref["content_cat_showparentsub_{$mainparent}"]) && $content_pref["content_cat_showparentsub_{$mainparent}"]){
-					$check			= (isset($qs[1]) && is_numeric($qs[1]) ? $qs[1] : $mainparent);
-					$array1			= $aa -> getCategoryTree("", $check, TRUE);
-					$newarray		= array_merge_recursive($array1);
-					for($a=0;$a<count($newarray);$a++){
-						for($b=0;$b<count($newarray[$a]);$b++){
-							$subparent[$newarray[$a][$b]] = $newarray[$a][$b+1];
-							$b++;
-						}
-					}
-					$subparent		= array_keys($subparent);
-					$validsub		= "0.".implode(",0.", $subparent);
-					$subqry			= " content_refer !='sa' AND content_parent REGEXP '".$aa -> CONTENTREGEXP($validsub)."' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ";
 
 					$content_cat_listsub_table_string = "";
 					for($i=0;$i<count($subparent);$i++){
 						if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_icon, content_parent", " content_id = '".$subparent[$i]."' AND ".$subqry." " )){
 							while($row = $sql -> db_Fetch()){
+								$totalsubcat = $aa -> countCatItems($row['content_id']);
 								$content_cat_listsub_table_string .= $tp -> parseTemplate($CONTENT_CAT_LISTSUB_TABLE, FALSE, $content_shortcodes);
 							}
 							$textsubparent = $CONTENT_CAT_LISTSUB_TABLE_START.$content_cat_listsub_table_string.$CONTENT_CAT_LISTSUB_TABLE_END;
