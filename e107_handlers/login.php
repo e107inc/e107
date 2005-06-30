@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-06-26 23:07:03 $
+|     $Revision: 1.20 $
+|     $Date: 2005-06-30 13:18:42 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -43,9 +43,9 @@ class userlogin {
 			exit;
 		}
 
-		$username = einput::clean_input(einput::strip_input($username), true);
-		$password = einput::clean_input(einput::strip_input($userpass), true);
-		$autologin = einput::clean_input(einput::strip_input($autologin), true, false, true);
+		$username = einput::escape($username);
+		$password = einput::escape($userpass);
+		$autologin = intval($autologin);
 		
 		if ($pref['auth_method'] && $pref['auth_method'] != "e107") {
 			$auth_file = e_PLUGIN."alt_auth/".$pref['auth_method']."_auth.php";
