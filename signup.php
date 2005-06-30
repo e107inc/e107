@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2005-06-29 19:56:05 $
+|     $Revision: 1.51 $
+|     $Date: 2005-06-30 12:02:42 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -333,7 +333,7 @@ if (isset($_POST['register']))
 		}
 
 		$u_key = md5(uniqid(rand(), 1));
-		$nid = $sql->db_Insert("user", "0, '$username', '$loginname', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '', '".$_POST['xupexist']."' ");
+		$nid = $sql->db_Insert("user", "0, '".$username."', '$loginname', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '', '".$_POST['xupexist']."' ");
 		if(!$nid)
 		{
 			require_once(HEADERF);
@@ -399,6 +399,12 @@ if (isset($_POST['register']))
 		else
 		{
 			require_once(HEADERF);
+			$nid = $sql->db_Insert("user", "0, '$username', '$loginname', '', '".md5($_POST['password1'])."', '', '".$_POST['email']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '', '".$_POST['xupexist']."' ");
+			if(!$nid)
+			{
+				$ns->tablerender("", LAN_SIGNUP_26);
+				require_once(FOOTERF);
+			}
 
 // ==== Update Userclass =======
 			if ($_POST['usrclass'])
