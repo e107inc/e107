@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.122 $
-|     $Date: 2005-06-30 15:00:31 $
+|     $Revision: 1.123 $
+|     $Date: 2005-06-30 15:18:58 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -821,16 +821,16 @@ function update_61x_to_700($type='') {
         }
 
 		//20050626 : update links_page_cat and links_page
-		$field1 = $sql->db_Field("links_page_cat",5);
-		$field2 = $sql->db_Field("links_page_cat",6);
-		$field3 = $sql->db_Field("links_page_cat",7);
+		$field1 = $sql->db_Field("links_page_cat",4);
+		$field2 = $sql->db_Field("links_page_cat",5);
+		$field3 = $sql->db_Field("links_page_cat",6);
 
 		if($field1 != "link_category_order" && $field2 != "link_category_class" && $field3 != "link_category_datestamp"){
 			mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_order VARCHAR ( 100 ) NOT NULL DEFAULT '0';");
 			mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_class VARCHAR ( 100 ) NOT NULL DEFAULT '0';");
 			mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_datestamp INT ( 10 ) UNSIGNED NOT NULL DEFAULT '';");
 		}
-		if($sql->db_Field("links_page",11) != "link_datestamp"){
+		if($sql->db_Field("links_page",10) != "link_datestamp"){
 			mysql_query("ALTER TABLE ".MPREFIX."links_page ADD link_datestamp INT ( 10 ) UNSIGNED NOT NULL DEFAULT '';");
 		}
 
@@ -864,7 +864,7 @@ function update_61x_to_700($type='') {
 		}
 
 		//20050630: added comment_lock to comments
-		if($sql->db_Field("comments",12) != "comment_lock"){
+		if($sql->db_Field("comments",11) != "comment_lock"){
 			mysql_query("ALTER TABLE `".MPREFIX."comments` ADD `comment_lock` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '0';");
 		}
 
@@ -948,7 +948,7 @@ function update_61x_to_700($type='') {
 			return FALSE;
 		}
 
-		if($sql->db_Field("comments",12) != "comment_lock"){
+		if($sql->db_Field("comments",11) != "comment_lock"){
 			return FALSE;
 		}
 
