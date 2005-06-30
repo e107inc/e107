@@ -11,37 +11,37 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/featurebox/languages/Polish.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-26 20:51:18 $
+|     $Revision: 1.6 $
+|     $Date: 2005-06-30 20:59:16 $
 |     $Author: jacek_c $
 +----------------------------------------------------------------------------+
 */
 
-define("FBLAN_01", "Opcje możliwości");
-define("FBLAN_02", "This plugin allows you to display a box above your news items with features / whatever you like in it. The messages can either be revolved randomly or dynamically faded.");
+define("FBLAN_01", "Feature Box");
+define("FBLAN_02", "Ten plugin umożliwia pokazywanie losowych informacji w menu ,w sposób jaki ustalisz. Te informacje będą pokazywane losowo lub jeśli tak ustawisz, jedna z nich widoczna będzie przez cały czas.");
 define("FBLAN_03", "Ustawienia feature box");
-define("FBLAN_04", "Feature Box plugin has been successfully installed. To add messages and configure, return to the main admin page and click on the feature box icon in the plugin section.");
-define("FBLAN_05", "No feature box messages defined yet");
-define("FBLAN_06", "Existing Feature Box Messages");
+define("FBLAN_04", "Feature Box plugin, został pomyślnie zainstalowany. Aby dodać wiadomości i skonfigurować go, udaj się do głównej strony administracyjnej i kliknij w link do pluginu feature box.");
+define("FBLAN_05", "Brak zdefiniowanych wiadomości.");
+define("FBLAN_06", "Istniejące Wiadomości w Feature Box");
 define("FBLAN_07", "Tytuł / Opis");
 define("FBLAN_08", "Wiadomość tekstowa");
-define("FBLAN_09", "Visibility of message");
-define("FBLAN_10", "Create Feature Box Message");
-define("FBLAN_11", "Update Feature Box Message");
-define("FBLAN_12", "Mode");
-define("FBLAN_13", "Randomly revolve messages");
-define("FBLAN_14", "Show this message only");
-define("FBLAN_15", "Message added to database.");
-define("FBLAN_16", "Message updated in database.");
-define("FBLAN_17", "Field(s) left blank");
-define("FBLAN_18", "Feature Box Message deleted");
-define("FBLAN_19", "Options");
-define("FBLAN_20", "Edit");
-define("FBLAN_21", "Delete");
-define("FBLAN_22", "Render type");
-define("FBLAN_23", "In theme box");
-define("FBLAN_24", "Plain");
-define("FBLAN_25", "Template");
-define("FBLAN_26", "you can use a different template for each message, add templates to e107_plugins/featurebox/templates/ folder");
+define("FBLAN_09", "Wiadomość widoczna dla");
+define("FBLAN_10", "Utwórz wiadomość Feature Box");
+define("FBLAN_11", "Aktualizuj Feature Box");
+define("FBLAN_12", "Sposób pokazywania");
+define("FBLAN_13", "Losowa kolejność wiadomości");
+define("FBLAN_14", "Tylko ta wiadomość pokazywana");
+define("FBLAN_15", "Wiadomość dodana do bazy danych.");
+define("FBLAN_16", "Wiadomość zaktualizowana w bazie danych.");
+define("FBLAN_17", "Wszystkie pola wymagane");
+define("FBLAN_18", "Wiadomość w Feature Box usunięta");
+define("FBLAN_19", "Opcje");
+define("FBLAN_20", "Edycja");
+define("FBLAN_21", "Usunięcie");
+define("FBLAN_22", "Sposób wyświetlania");
+define("FBLAN_23", "W menu tematycznym");
+define("FBLAN_24", "Zwykły");
+define("FBLAN_25", "Szablon");
+define("FBLAN_26", "możesz użyć różnych szablonów dla każdej z wiadomości, własne szablony umieszczaj w katalogu e107_plugins/featurebox/templates/ ");
 
 ?>
