@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-06-30 14:23:24 $
+|     $Revision: 1.41 $
+|     $Date: 2005-06-30 17:07:21 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -197,7 +197,7 @@ class comment {
 
 		$RATING = ($addrating==TRUE && $comrow['user_id'] ? $rater->composerating($thistable, $thisid, FALSE, $comrow['user_id']) : "");
 
-		$text = $tp -> parseTemplate($renderstyle, FALSE, $comment_shortcodes);
+		$text .= $tp -> parseTemplate($renderstyle, FALSE, $comment_shortcodes);
 
 		if ($action == "comment" && $pref['nested_comments']) {
 
@@ -367,6 +367,7 @@ class comment {
 		LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$id."' AND comment_type='".$type."' ORDER BY comment_datestamp"
 		);
 
+		$text = "";
 		$comment_total = $sql->db_Select_gen($query);
 		if ($comment_total) {
 			$width = 0;
@@ -376,7 +377,7 @@ class comment {
 				if ($pref['nested_comments']) {
 					$text .= $this->render_comment($row, $table , $action, $id, $width, $subject, $rate);
 				} else {
-					$text = $this->render_comment($row, $table , $action, $id, $width, $subject, $rate);
+					$text .= $this->render_comment($row, $table , $action, $id, $width, $subject, $rate);
 				}
 			}
 			$ns->tablerender(LAN_99, $text);
