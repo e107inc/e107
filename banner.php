@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/banner.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-27 01:45:02 $
+|     $Revision: 1.8 $
+|     $Date: 2005-06-30 13:08:26 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 	
 if (e_QUERY) {
-	$query_string = einput::clean_input(e_QUERY, false, false, true);
+	$query_string = intval(e_QUERY);
 	$sql->db_Select("banner", "*", "banner_id = '{$query_string}' ");
 	$row = $sql->db_Fetch();
 	$ip = $e107->getip();
@@ -35,8 +35,8 @@ require_once(HEADERF);
 	
 if (isset($_POST['clientsubmit'])) {
 	
-	$clean_login = einput::clean_input(einput::strip_input($_POST['clientlogin']), true);
-	$clean_password = einput::clean_input(einput::strip_input($_POST['clientpassword']), true);
+	$clean_login = einput::escape($_POST['clientlogin']);
+	$clean_password = einput::escape($_POST['clientpassword']);
 	
 	if (!$sql->db_Select("banner", "*", "`banner_clientlogin` = '{$clean_login}' AND `banner_clientpassword` = '{$clean_password}'")) {
 		$ns->tablerender(LAN_38, "<br /><div style='text-align:center'>".LAN_20."</div><br />");

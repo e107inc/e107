@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-06-28 21:49:30 $
-|     $Author: lisa_ $
+|     $Revision: 1.38 $
+|     $Date: 2005-06-30 13:08:26 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -29,10 +29,10 @@ $cobj =& new comment;
 
 $temp_query = explode(".", e_QUERY);
 $action = $temp_query[0];
-$table = einput::clean_input($temp_query[1], true, true);
-$id = einput::clean_input($temp_query[2], false, false, true);
-$nid = einput::clean_input($temp_query[3], false, false, true);
-$xid = einput::clean_input($temp_query[4], false, false, true);
+$table = einput::escape($temp_query[1]);
+$id = intval($temp_query[2]);
+$nid = intval($temp_query[3]);
+$xid = intval($temp_query[4]);
 unset($temp_query);
 
 if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit'])) {
@@ -49,13 +49,13 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit'])) {
 	}
 
 	$pid = (isset($_POST['pid']) ? $_POST['pid'] : 0);
-	$pid = einput::clean_input($pid, false, false, true);
+	$pid = intval($pid);
 
-	$editpid = einput::clean_input((isset($_POST['editpid']) ? $_POST['editpid'] : false), false, false, true);
+	$editpid = intval((isset($_POST['editpid']) ? $_POST['editpid'] : false));
 
-	$clean_authorname = einput::clean_input(einput::strip_input($_POST['author_name']), true);
-	$clean_comment = einput::clean_input(einput::strip_input($_POST['comment']), true);
-	$clean_subject = einput::clean_input(einput::strip_input($_POST['subject']), true);
+	$clean_authorname = einput::escape($_POST['author_name']);
+	$clean_comment = einput::escape($_POST['comment']);
+	$clean_subject = einput::escape($_POST['subject']);
 
 	$cobj->enter_comment($clean_authorname, $clean_comment, $table, $id, $pid, $clean_subject);
 	if ($table == "news") {
@@ -79,11 +79,11 @@ if (isset($_POST['replysubmit'])) {
 		$row = $sql->db_Fetch();
 		if (!$row['news_id']) {
 			$pid = (isset($_POST['pid']) ? $_POST['pid'] : 0);
-			$pid = einput::clean_input($pid, false, false, true);
+			$pid = intval($pid);
 
-			$clean_authorname = einput::clean_input(einput::strip_input($_POST['author_name']), true);
-			$clean_comment = einput::clean_input(einput::strip_input($_POST['comment']), true);
-			$clean_subject = einput::clean_input(einput::strip_input($_POST['subject']), true);
+			$clean_authorname = einput::escape($_POST['author_name']);
+			$clean_comment = einput::escape($_POST['comment']);
+			$clean_subject = einput::escape($_POST['subject']);
 
 			$cobj->enter_comment($clean_authorname, $clean_comment, $table, $nid, $pid, $clean_subject);
 			$e107cache->clear("comment.php?{$table}.{$id}");
