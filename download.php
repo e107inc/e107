@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-06-30 14:18:20 $
+|     $Revision: 1.41 $
+|     $Date: 2005-06-30 17:52:52 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -505,7 +505,7 @@ if ($action == "view") {
 	}
 	unset($text);
 	if ($comments_enabled) {
-		$cobj->compose_comment("download", "comment", $id, $width, $subject, $showrate=FALSE, $enter=TRUE);
+		$cobj->compose_comment("download", "comment", $id, $width, $subject, $showrate=FALSE);
 	}
 
 	require_once(FOOTERF);

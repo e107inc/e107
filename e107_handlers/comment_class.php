@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-06-30 17:07:21 $
+|     $Revision: 1.42 $
+|     $Date: 2005-06-30 17:52:52 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -80,6 +80,7 @@ class comment {
 			}
 
 			//add the rating select box/result ?
+			$rate = "";
 			if($rating == TRUE && !(ANON == TRUE && USER == FALSE) ){
 				global $rater;
 				require_once(e_HANDLER."rate_class.php");
@@ -197,7 +198,7 @@ class comment {
 
 		$RATING = ($addrating==TRUE && $comrow['user_id'] ? $rater->composerating($thistable, $thisid, FALSE, $comrow['user_id']) : "");
 
-		$text .= $tp -> parseTemplate($renderstyle, FALSE, $comment_shortcodes);
+		$text = $tp -> parseTemplate($renderstyle, FALSE, $comment_shortcodes);
 
 		if ($action == "comment" && $pref['nested_comments']) {
 
