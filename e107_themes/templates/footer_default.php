@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-06-16 23:29:02 $
-|     $Author: sweetas $
+|     $Revision: 1.28 $
+|     $Date: 2005-06-30 10:35:07 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-global $eTraffic, $error_handler, $db_time,$sql, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER, $e107;
+global $eTraffic, $error_handler, $db_time, $sql, $sql2, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER, $e107;
 
 if(!is_object($sql)){
 	// reinstigate db connection if another connection from third-party script closed it ...
@@ -78,6 +78,7 @@ if($e107_popup!=1){
 }
 
 $sql -> db_Close();
+$sql2 -> db_Close();
 
 /*
 changes by jalist 24/01/2005:

@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.180 $
-|     $Date: 2005-06-27 01:45:02 $
+|     $Revision: 1.181 $
+|     $Date: 2005-06-30 10:35:07 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -139,8 +139,11 @@ define("MPREFIX", $mySQLprefix);
 e107_require_once(e_HANDLER."mysql_class.php");
 e107_require_once(e_HANDLER.'e_parse_class.php');
 
-$tp=new e_parse;
-$sql=new db;
+$tp = new e_parse;
+
+$sql =& new db;
+$sql2 =& new db;
+
 $sql->db_SetErrorReporting(FALSE);
 
 $sql->db_Mark_Time('Start: SQL Connect');
