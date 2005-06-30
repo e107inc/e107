@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-28 12:37:40 $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-30 22:12:19 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ $lan_file = e_PLUGIN."links_page/languages/".e_LANGUAGE.".php";
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."links_page/languages/English.php");
 
 $eplug_name = LCLAN_PLUGIN_LAN_1;
-$eplug_version = "1.1";
+$eplug_version = "1.12";
 $eplug_author = "Eric Vanderfeesten (lisa)";
 $eplug_url = "http://e107.org";
 $eplug_email = "lisa@eindhovenseschool.net";
@@ -62,7 +62,7 @@ $eplug_tables = array(
 	link_category_icon varchar(100) NOT NULL default '',
 	link_category_order varchar(100) NOT NULL default '0',
 	link_category_class varchar(100) NOT NULL default '0',
-	link_category_datestamp int(10) unsigned NOT NULL default '',
+	link_category_datestamp int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (link_category_id)
 	) TYPE=MyISAM;",
 
@@ -77,7 +77,8 @@ $eplug_tables = array(
 	link_refer int(10) unsigned NOT NULL default '0',
 	link_open tinyint(1) unsigned NOT NULL default '0',
 	link_class tinyint(3) unsigned NOT NULL default '0',
-	link_datestamp int(10) unsigned NOT NULL default '',
+	link_datestamp int(10) unsigned NOT NULL default '0',
+	link_author varchar(255) NOT NULL default '',
 	PRIMARY KEY  (link_id)
 	) TYPE=MyISAM;" );
 	
@@ -95,6 +96,7 @@ $upgrade_remove_prefs = "";
 // upgrading ... //
 $upgrade_alter_tables = array(
 "ALTER TABLE ".MPREFIX."links_page ADD link_datestamp int(10) unsigned NOT NULL default '0'", 
+"ALTER TABLE ".MPREFIX."links_page ADD link_author varchar(255) NOT NULL default ''", 
 "ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_order varchar(100) NOT NULL default '0'", 
 "ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_class varchar(100) NOT NULL default '0'", 
 "ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_datestamp int(10) unsigned NOT NULL default '0'"

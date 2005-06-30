@@ -3,6 +3,53 @@ include_once(e_HANDLER.'shortcode_handler.php');
 $link_shortcodes = e_shortcode::parse_scbatch(__FILE__);
 /*
 
+// LINK_TABLE_MANAGER ------------------------------------------------
+SC_BEGIN LINK_MANAGER_LINK
+global $LINK_MANAGER_LINK, $linkspage_pref;
+if(isset($linkspage_pref['link_manager']) && $linkspage_pref['link_manager'] && check_class($linkspage_pref['link_manager_class'])){
+return "<a href='".e_PLUGIN."links_page/links.php?manage'>".LCLAN_ITEM_35."</a>";
+}
+SC_END
+
+SC_BEGIN LINK_MANAGE_ICON
+global $LINK_MANAGE_ICON, $row;
+//$LINK_MANAGE_ICON = "";
+//$iconpath = e_PLUGIN."links_page/link_images/";
+//if ($row['link_button'] && file_exists($iconpath.$row['link_button'])) {
+//	$LINK_MANAGE_ICON = "<img src='".$iconpath.$row['link_button']."' alt='' style='width:50px;' />";
+//}
+$LINK_MANAGE_ICON = "<img src='".e_IMAGE."admin_images/leave_16.png' alt='' />";
+return $LINK_MANAGE_ICON;
+SC_END
+
+SC_BEGIN LINK_MANAGE_NAME
+global $LINK_MANAGE_NAME, $row, $tp;
+return $tp->toHTML($row['link_name'], TRUE);
+SC_END
+
+SC_BEGIN LINK_MANAGE_OPTIONS
+global $LINK_MANAGE_OPTIONS, $row, $tp, $linkspage_pref;
+$linkid = $row['link_id'];
+$LINK_MANAGE_OPTIONS = "<a href='".e_SELF."?manage.edit.".$linkid."' title='".LCLAN_ITEM_31."'>".LINK_ICON_EDIT."</a>";
+if (isset($linkspage_pref['link_directdelete']) && $linkspage_pref['link_directdelete']){
+	$LINK_MANAGE_OPTIONS .= " <input type='image' title='delete' name='delete[main_{$linkid}]' alt='".LCLAN_ITEM_32."' src='".LINK_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(LCLAN_ITEM_33." [ ".$row['link_name']." ]")."')\" style='vertical-align:top;' />";
+}
+return $LINK_MANAGE_OPTIONS;
+SC_END
+
+SC_BEGIN LINK_MANAGE_CAT
+global $LINK_MANAGE_CAT, $tp, $row;
+return $tp->toHTML($row['link_category_name'], TRUE);
+SC_END
+
+SC_BEGIN LINK_MANAGE_NEWLINK
+global $LINK_MANAGE_NEWLINK;
+return "<a href='".e_SELF."?manage'>".LAN_LINKS_MANAGER_3."</a>";
+SC_END
+
+
+
+
 // LINK_MAIN_TABLE ------------------------------------------------
 SC_BEGIN LINK_MAIN_HEADING
 global $LINK_MAIN_HEADING, $total_links_cat, $row, $tp;
@@ -81,6 +128,7 @@ SC_END
 
 SC_BEGIN LINK_CAT_BUTTON
 global $LINK_CAT_BUTTON, $linkspage_pref, $row, $LINK_CAT_NAME, $LINK_CAT_APPEND;
+$LINK_CAT_BUTTON = "";
 if(isset($linkspage_pref['link_icon']) && $linkspage_pref['link_icon']){
 	if ($row['link_button']) {
 		if (strpos($row['link_button'], "http://") !== FALSE) {
@@ -95,16 +143,12 @@ if(isset($linkspage_pref['link_icon']) && $linkspage_pref['link_icon']){
 	} else {
 		if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
 			$LINK_CAT_BUTTON = $LINK_CAT_APPEND."\n<img style='border:0; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='".$LINK_CAT_NAME."' /></a>";
-		}else{
-			$LINK_CAT_BUTTON = "";
 		}
 	}
 }else{
 	if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
 		$LINK_CAT_BUTTON = $LINK_CAT_APPEND."\n<img style='border:0; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='".$LINK_CAT_NAME."' /></a>";
-	}else{
-		$LINK_CAT_BUTTON = "";
-	}	
+	}
 }
 return $LINK_CAT_BUTTON;
 SC_END
@@ -154,10 +198,9 @@ SC_END
 
 SC_BEGIN LINK_CAT_NEW
 global $LINK_CAT_NEW, $linkspage_pref, $qs, $row;
+$LINK_CAT_NEW = "";
 if(USER && $row['link_datestamp'] > USERLV){
 $LINK_CAT_NEW = "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' />";
-}else{
-$LINK_CAT_NEW = "";
 }
 return $LINK_CAT_NEW;
 SC_END
