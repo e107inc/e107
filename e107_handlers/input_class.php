@@ -4,7 +4,7 @@
 * User input cleaning class
 *
 * @package e107
-* @version $Revision: 1.6 $
+* @version $Revision: 1.7 $
 * @author $Author: streaky $
 */
 class einput {
@@ -47,7 +47,8 @@ class einput {
 	 * @return string [escaped data]
 	 */
 	function sql_escape_string($string = "") {
-		return mysql_real_escape_string($string);
+		//return mysql_real_escape_string($string);
+		return addslashes($string);
 	}
 
 	/**
