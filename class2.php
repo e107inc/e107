@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.181 $
-|     $Date: 2005-06-30 10:35:07 $
-|     $Author: streaky $
+|     $Revision: 1.182 $
+|     $Date: 2005-06-30 18:37:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,7 +22,6 @@
 error_reporting(E_ERROR | E_PARSE);
 $error_handler = new error_handler();
 set_error_handler(array(&$error_handler, "handle_error"));
-
 // Honest global beginning point for processing time
 $eTimingStart = microtime();
 $start_ob_level = ob_get_level();
@@ -38,13 +37,12 @@ if(function_exists('ini_get')) {
 // Destroy! (if we need to)
 if($register_globals == true){
 	while (list($global) = each($GLOBALS)) {
-		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart|start_ob_level|error_handler)$/', $global)) {
+		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart|start_ob_level|error_handler|retrieve_prefs)$/', $global)) {
 			unset($$global);
 		}
 	}
 	unset($global);
 }
-
 // Grab e107_config, get directory paths, and create the $e107 object
 @include_once(realpath(dirname(__FILE__).'/').'/e107_config.php');
 if(!isset($ADMIN_DIRECTORY)){
@@ -178,7 +176,8 @@ $sql->db_Mark_Time('Start: Extracting Core Prefs');
 $PrefCache = ecache::retrieve('SitePrefs', 24 * 60, true);
 if(!$PrefCache){
 	// No cache of the prefs array, going for the db copy..
-	$sysprefs->ExtractPrefs();
+	$retrieve_prefs[] = 'SitePrefs';
+	$sysprefs->ExtractPrefs($retrieve_prefs, TRUE);
 	$PrefData = $sysprefs->get('SitePrefs');
 	$pref = $eArrayStorage->ReadArray($PrefData);
 	if(!$pref){
@@ -221,7 +220,7 @@ if(!$PrefCache){
 	// cache of core prefs was found, so grab all the useful core rows we need
 	$sysprefs->DefaultIgnoreRows .= '|SitePrefs';
 	$sysprefs->prefVals['core']['SitePrefs'] = $PrefCache;
-	$sysprefs->ExtractPrefs();
+	$sysprefs->ExtractPrefs($retrieve_prefs, TRUE);
 	$pref = $eArrayStorage->ReadArray($PrefCache);
 }
 
