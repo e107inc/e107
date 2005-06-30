@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-30 13:08:26 $
-|     $Author: streaky $
+|     $Revision: 1.10 $
+|     $Date: 2005-06-30 17:52:52 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -292,7 +292,7 @@ class pageClass
 
 	function pageComment($page_comment_flag)
 	{
-		global $sql, $ns, $e107cache;
+		global $sql, $ns, $e107cache, $tp, $comment_shortcodes;
 		if($page_comment_flag)
 		{
 			require_once(e_HANDLER."comment_class.php");
@@ -314,40 +314,7 @@ class pageClass
 					}
 				}
 			}
-
-			$query = ($pref['nested_comments'] ?
-			"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
-			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$this -> pageID."' AND comment_type='page' AND comment_pid='0' ORDER BY comment_datestamp"
-			:
-			"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
-			LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$this -> pageID."' AND comment_type='page'  ORDER BY comment_datestamp");
-
-			$comment_total = $sql->db_Select_gen($query);
-
-			if ($comment_total) {
-				$width = 0;
-				while ($row = $sql->db_Fetch())
-				{
-					if ($pref['nested_comments'])
-					{
-						$text = $cobj->render_comment($row, "page", "comment", $this -> pageID, $width, $subject);
-						$ns->tablerender(LAN_5, $text);
-					}
-					else
-					{
-						$text .= $cobj->render_comment($row, "page", "comment", $this -> pageID, $width, $subject);
-					}
-				}
-				if (!$pref['nested_comments'])
-				{
-					$ns->tablerender(LAN_5, $text);
-				}
-				if(ADMIN == TRUE && $comment_total)
-				{
-					echo "<a href='".e_BASE.e_ADMIN."modcomment.php?page.".$this -> pageID."'>".LAN_314."</a>";
-				}
-			}
-			$cobj->form_comment("comment", "page", $id, $subject, $content_type);
+			$cobj->compose_comment("page", "comment", $this -> pageID, $width, $subject, $showrate=FALSE);
 		}
 	}
 
