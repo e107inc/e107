@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_comment.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:34 $
+|     $Revision: 1.3 $
+|     $Date: 2005-06-30 16:27:38 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -44,7 +44,9 @@ define("COMLAN_2", "för att registrera");
 define("COMLAN_3", "Fel!");
 define("COMLAN_4", 'Ämne');
 define("COMLAN_5", 'Ang:');
-define("COMLAN_6", 'Svara på¨detta');
+define("COMLAN_6", 'Svara på detta');
+define("COMLAN_7", 'Betyg');
+define("COMLAN_8", 'Kommentarer är låsta');
 
 define("LAN_315", "Bakgrunder");
 define("LAN_316", "Inga bakgrunder till denna nyhet.");
