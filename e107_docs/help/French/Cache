@@ -1,0 +1,7 @@
+
+Q>	A quoi sert cette section ?  
+R>	Régler le système de mise en cache sur On (activé) sauvegardera certains secteurs du site dans votre base de données. Cela réduit les requêtes au serveur de base de données et accélère donc l'affichage de votre site.
+
+Q>	J'ai apporté quelques modifications au thème du site que j'emploie mais elles n'ont pas été prises en compte, le thème reste inchangé - Est-ce parce qu'il fait partie du cache ?
+R>	Très probablement. Quand vous modifiez un thème le cache se vide mais altère le code dans votre script theme.php.
+Ne videz pas le cache mais réglez le système de mise en cache sur off (desactivé) jusqu'à ce que vous ayez fini.

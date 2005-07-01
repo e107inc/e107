@@ -1,0 +1,12 @@
+
+Q>	A quoi sert la section Remplacez les Liens?
+R>	Vous pouvez convertir les liens saisis dans le Chatbox en texte, ou sous la forme d'image. Ceci empêche votre chatbox d'être submergé de longues adresses web.
+    Pour utiliser une image, cochez remplacer les liens, et écrivez en remplacement &lt;img src='path_to_your_image' alt='' />, ainsi tous les liens écrits seront substitués par l'image que vous avez saisi.
+
+Q>	A quoi sert le 'Wordwrap'?
+R>	Si quelqu'un écrit un mot très long dans votre chatbox, cela pourrait perturber la disposition de votre site.  
+    Si vous saisissez 40 dans la boîte de Wordrap, tout ajout de plus que 40 caractères sera découpé, et la colonne où se situe votre Chatbox ne subira aucune modification de largeur.  
+    Vous devez définir cette valeur en fonction du thème que vous employez et de la largeur de la colonne du Chatbox.
+
+Q>	Mon site est créé pour tout public. Pourtant quelqu'un ne peut s'empêcher de proférer des jurons dans le Chatbox - comment est-ce que je peux mettre un terme à cela?
+R>	Accédez à l'écran Préférences dans votre espace Administrateur, et trouvez les options de protection des mineurs.  Vous pouvez ajouter une liste de mots interdits qui seront remplacés par un mot ou une phrase de votre choix, par exemple CENSURÉ! Ainsi le juron envoyé sur votre site sera remplacé par le texte que vous avez écrit.

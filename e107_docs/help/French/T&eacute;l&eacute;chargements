@@ -1,0 +1,8 @@
+
+Q>	Qu'est-ce qu'une catégorie de téléchargement ?
+R>	Les catégories de téléchargement vous permettent de regrouper vos téléchargements sous différents groupes.
+
+Q>	Je veux ajouter un téléchargement mais le fichier n'apparaît pas dans la liste - pourquoi ?
+R> Seul les fichiers dans la dossiers d'e107_files/downloads apparaissent dans la liste déroulante.  
+Copiez le fichier dans ce dossier et il apparaîtra.  
+Cela s'applique aussi aux images, elles doivent être dans le dossier d'e107_files/downloadimages.

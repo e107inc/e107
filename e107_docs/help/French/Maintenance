@@ -1,0 +1,7 @@
+
+Q>	A quoi sert cette section? 
+R>  Cet section vous permet de rendre votre site inaccessable aux visiteurs, utilisez-la quand vous voulez améliorer votre site ou lorsque vous avez besoin de le désactiver pour toute autre raison.
+Seul l'administrateur principal du site peut accéder au site en mode de maintenance, vous en serez averti par un message s'affichant sur les pages.
+
+Q>	A l'aide! J'ai activé l'indicateur de maintenance et je me suis déconnecté accidentellement, comment est-ce que je peux revenir à la zone d'administration pour réactiver le site?
+R>  Rendez vous directement à la page http://yoursite.com/e107_admin.php/admin.php et connectez vous.

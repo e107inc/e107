@@ -1,0 +1,26 @@
+
+Q>	J'ai défini une nouvelle bannière de pub depuis la zone d'administration. Pourquoi n'apparaît-elle pas ?
+R>	Le thème que vous employez à besoin de savoir où afficher la dite bannière.  
+Ouvrez le fichier "theme.php" du thème utilisé et assurez-vous d'avoir {BANNER} ou {BANNER=yourcampaignname} dans la section $HEADER.
+
+Q>	Je veux un ensemble de bannières publicitaires dans une zone et un ensemble différent dans une autre. Comment faire?  
+R>	Vous pouvez grouper vos bannières dans des 'campagnes ', et configurer votre thème pour afficher les bannières de certaines campagnes.  
+Par exemple, si vous aviez deux campagnes, appelées cam_1 et le cam_2, 
+Mettre { BANNER=cam_1 } dans une zone de votre section $HEADER dans le fichier theme.php affichera seulement les bannières de la campage cam_1.
+Mettre { BANNER=cam_2 } dans une autre zone affichera seulement les bannières cam_2.
+Mettre { BANNIÈRE } (aucun nom de campagne) dans votre theme.php affichera aléatoirement des bannières de toutes les campagnes.
+
+Q>	Qu'est-ce que l'Identifiant Client(login) et le Mot de passe Client?
+R>	Vous pouvez définir un identifiant ou pseudo (login) et un mot de passe pour chacun de vos clients de bannière,
+ils peuvent alors employer ces informations pour obtenir des statistiques sur l'affichage de leurs bannières
+en allant http://yoursite.com/banner.php et en entrant leur login et mot de passe.
+
+Q>	Comment puis-je avoir une bannière de type 'tour ' (une bannière verticale) dans un article de menu?
+R>	D'abord vous devez définir la campagne pour les bannières de type tour (ceci les dissociera des bannières de type barre)... 
+1. Allez dans la zone d'administration du site et cliquez sur Bannières (Menu Contenu).
+2. Entrez le nom de votre bannière de type tour, en utilisant un nouveau nom de campagne, par exemple 'tours '.
+3. Allez ensuite dans la zone d'administration des menus, et activez le menu 'banner ' dans une de vos zones de menus. 
+4. Sélectionnez l'option 'configurer ' de ce nouveau menu. 
+5. Entrez un titre (par exemple 'Publicité '), et sélectionnez le nom de la campagne que vous avez créé précédemment. 
+6. Quittez alors la zone d'administration et vous verrez votre bannière de type tour dans le nouveau menu.
+

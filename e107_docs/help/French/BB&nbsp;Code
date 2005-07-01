@@ -1,0 +1,13 @@
+
+Q>	Qu'est ce que le BBCode?
+R>	Un <b><i>BBCode</i></b> est un <b><i>raccourci</i></b> <b><i>d'une balise (Tag) HTML</i></b>, par exemple entrant [b ] je suis du texte en gras (bold)! [/b ] dans n'importe laquelle de vos zones de saisie admin cela mettra le texte à l'intérieur du [b ] et [/b ] en gras, ainsi [b]Je suis du text en gras![/b] devrait être affiché en ce moment en gras à l'écran.
+
+Q>	Mais pourquoi faire?
+R>	Il vous économise du temps lorsque vous entrez les balises (Tag) HTML. Vous pouvez employer certaines balises HTML normales dans des vos zones de saisie mais l'utilisation des BBCodes accélèrent l'affichage du texte.
+
+Q>	Quand je clique sur un des boutons BBCode pour écrire le code, il l'insère à la fin de mon texte, pas à l'endroit où le curseur se trouve, pourquoi cela?
+R>	Il y a un bogue dans Internet Explorer qui peut poser problème si e107 essaye d'écrire le code à la position de curseur, ainsi par soucis de compatibilité le code est écrit à la fin de votre texte.
+
+Q>	Quels BBCodes puis-je utiliser?
+R>	Placez votre curseur de souris au-dessus d'un de ces boutons BBCode et vous verrez une petite explication apparaître au-dessus des boutons. 
+    Il y a également des codes pour les liens [ URL ] [/URL ] et les adresses email [ email ] [/email ], bien que l'utilisation des balises HTML normales reste correct. Néanmoins, toutes les adresses web et adresses email que vous écrirez seront automatiquement transformées en liens hypertexte.

@@ -1,0 +1,17 @@
+
+Q>	Qu'est-ce que les menus?
+R>	Ce sont des cadres ou fenêtres qui apparaissent dans les zones de menu (ou les colonnes) de votre site.
+    Ceux-ci peuvent contenir du texte, des liens, ou autre chose.
+
+Q>	Comment activer un menu?  
+R>  Dans votre espace d'administration, cliquez sur la section Menus (Contenu).  
+Vous verrez le thème central de votre site avec la liste des menus dans leurs zone respective.  
+Les éléments de la liste au centre de la page sont des menus inactifs, vous pouvez les activer dans une zone active en cliquant sur 'Activer ce menu'.  
+Vous pouvez également modifier la zone où le menu est affiché et le déplacer dans la colonne une fois qu'il est activé.
+
+Q>	Je dois mettre un certain texte à l'intérieur d'un menu, comment puis-je y arriver?
+R>	Accédez à votre espace d'administration et cliquez sur Menus/Pages Perso.
+Vous pourrez y créer un menu avec ce que vous souhaitez. Il sera affiché comme n'importe quel autre menu.
+
+Q>	Comment est-ce que je peux changer les options d'un menu ?
+R>	Si un panneau de configuration est disponible vous verrez une option ('configurer ') dans le sélecteur d'options du menu activé.

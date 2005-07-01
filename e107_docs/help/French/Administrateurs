@@ -1,0 +1,10 @@
+
+Q>	Qu'est-ce que c'est que des permissions ?
+R>	Elles vous permettent de donner à des administrateurs différents niveaux d'accès à la section d'administration.  
+Par exemple pour laisser apparaître seulement certaines pages d'administration, il faut allouer des permissions.  
+Il y a des fonctions d'administration qui ne sont seulement accessible à l'administateur principal, ceci pour des raisons de sécurité.
+
+Q>	Je veux transformer un membre enregistré existant en administrateur - comment faire ?
+R>	Cliquez sur Membres dans votre zone d'administration et recherchez le membre enregistré, cliquez ensuite sur "Définir Administrateur" (vous pouvez également lui enlever le statut d'admin de cette façon) 
+Allez ensuite dans la section Administrateurs et définissez lui ses permissions.
+
