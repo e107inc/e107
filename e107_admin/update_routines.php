@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.124 $
-|     $Date: 2005-06-30 22:12:17 $
-|     $Author: lisa_ $
+|     $Revision: 1.125 $
+|     $Date: 2005-07-01 12:26:12 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -742,11 +742,9 @@ function update_61x_to_700($type='') {
 			} else if ($pref['frontpage'] == 'forum') {
 				$up_pref = $PLUGINS_DIRECTORY.'forum/forum.php';
 			} else if (is_numeric($pref['frontpage'])) {
-				$up_pref = $PLUGINS_DIRECTORY.'content/content.php?type.'.$pref['frontpage'];
-			} else if (strpos($pref['frontpage'], '.')===FALSE) {
-				if (!preg_match("#/$#",$pref['frontpage'])) {
-					$up_pref = $pref['frontpage'].'.php';
-				}
+				$up_pref = $PLUGINS_DIRECTORY.'content/content.php?content.'.$pref['frontpage'];
+			} else if (substr($pref['frontpage'], -1) != '/' && strpos($pref['frontpage'], '.') === FALSE) {
+				$up_pref = $pref['frontpage'].'.php';
 			} else {
 				$up_pref = $pref['frontpage'];
 			}

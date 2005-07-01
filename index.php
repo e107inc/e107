@@ -11,8 +11,8 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-06-04 20:16:39 $
+|     $Revision: 1.14 $
+|     $Date: 2005-07-01 12:26:13 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -27,11 +27,9 @@ if (!is_array($pref['frontpage'])) {
 	} else if ($pref['frontpage'] == 'forum') {
 		$up_pref = $PLUGINS_DIRECTORY.'forum/forum.php';
 	} else if (is_numeric($pref['frontpage'])) {
-		$up_pref = $PLUGINS_DIRECTORY.'content/content.php?type.'.$pref['frontpage'];
-	} else if (strpos($pref['frontpage'], '.') === FALSE) {
-		if (!preg_match("#/$#",$pref['frontpage'])) {
-			$up_pref = $pref['frontpage'].'.php';
-		}
+		$up_pref = $PLUGINS_DIRECTORY.'content/content.php?content.'.$pref['frontpage'];
+	} else if (substr($pref['frontpage'], -1) != '/' && strpos($pref['frontpage'], '.') === FALSE) {
+		$up_pref = $pref['frontpage'].'.php';
 	} else {
 		$up_pref = $pref['frontpage'];
 	}
