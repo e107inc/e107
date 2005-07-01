@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.72 $
-|		$Date: 2005-06-29 23:01:55 $
+|		$Revision: 1.73 $
+|		$Date: 2005-07-01 10:18:00 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1055,6 +1055,13 @@ class content{
 			}else{
 				$row = $sqlcreatemenu -> db_Fetch();
 			}
+			
+			$content_path_menu			= $plugindir."menus/";
+			if(!is_writable($content_path_menu)){
+				echo "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_path_menu." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+				return FALSE;
+			}
+
 			$menufile = "content_".$row['content_heading'];
 			$menuname = $row['content_heading'];
 
