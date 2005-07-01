@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.5 $
-|    $Date: 2005-07-01 08:03:58 $
+|    $Revision: 1.6 $
+|    $Date: 2005-07-01 09:24:36 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -282,13 +282,13 @@ class linkclass {
 		$row['link_class']			= "";
 		$link_resize_value			= (isset($linkspage_pref['link_resize_value']) && $linkspage_pref['link_resize_value'] ? $linkspage_pref['link_resize_value'] : "100");
 
-		if ($qs[1] == 'edit' && !$_POST['submit']) {
+		if (isset($qs[1]) && $qs[1] == 'edit' && !isset($_POST['submit'])) {
 			if ($sql->db_Select("links_page", "*", "link_id='$qs[2]' ")) {
 				$row = $sql->db_Fetch();
 			}
 		}
 
-		if ($qs[1] == 'sn') {
+		if (isset($qs[1]) && $qs[1] == 'sn') {
 			if ($sql->db_Select("tmp", "*", "tmp_time='$qs[2]'")) {
 				$row = $sql->db_Fetch();
 				$submitted					= explode("^", $row['tmp_info']);
@@ -414,7 +414,7 @@ class linkclass {
 		</tr>
 		<tr style='vertical-align:top'>
 		<td colspan='2' style='text-align:center' class='forumheader'>";
-		if ($qs[2] && $qs[1] == "edit") {
+		if (isset($qs[2]) && $qs[2] && $qs[1] == "edit") {
 			$text .= $rs -> form_hidden("link_datestamp", $row['link_datestamp']);
 			$text .= $rs -> form_checkbox("update_datestamp", 1, 0)." ".LCLAN_ITEM_21."<br /><br />";
 			$text .= $rs -> form_button("submit", "add_link", LCLAN_ITEM_22, "", "", "").$rs -> form_hidden("link_id", $row['link_id']);
@@ -779,6 +779,13 @@ class linkclass {
 		$TOPIC_FIELD .= $rs -> form_select_close();
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
+		//link_comment
+		$TOPIC_TOPIC = LCLAN_OPT_55;
+		$TOPIC_FIELD = "
+		".$rs -> form_radio("link_comment", "1", ($linkspage_pref["link_comment"] ? "1" : "0"), "", "").LCLAN_OPT_3."
+		".$rs -> form_radio("link_comment", "0", ($linkspage_pref["link_comment"] ? "0" : "1"), "", "").LCLAN_OPT_4;
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
 		$text .= $TOPIC_ROW_SPACER;
 
 		$TOPIC_CAPTION = LCLAN_OPT_52;
@@ -856,11 +863,11 @@ class linkclass {
 
 		$TOPIC_TOPIC = LCLAN_OPT_13;
 		$TOPIC_FIELD = "<table style='width:100%;' cellpadding='0' cellspacing='0'><tr><td style='white-space:nowrap; width:20%;'>
-		".$rs -> form_checkbox(LCLAN_OPT_38, 1, ($linkspage_pref['link_icon'] ? "1" : "0"))." ".LCLAN_OPT_14."<br />
-		".$rs -> form_checkbox(LCLAN_OPT_37, 1, ($linkspage_pref['link_referal'] ? "1" : "0"))." ".LCLAN_OPT_17."<br />
+		".$rs -> form_checkbox("link_icon", 1, ($linkspage_pref['link_icon'] ? "1" : "0"))." ".LCLAN_OPT_14."<br />
+		".$rs -> form_checkbox("link_referal", 1, ($linkspage_pref['link_referal'] ? "1" : "0"))." ".LCLAN_OPT_17."<br />
 		</td><td style='white-space:nowrap;'>
-		".$rs -> form_checkbox(LCLAN_OPT_35, 1, ($linkspage_pref['link_url'] ? "1" : "0"))." ".LCLAN_OPT_18."<br />
-		".$rs -> form_checkbox(LCLAN_OPT_39, 1, ($linkspage_pref['link_desc'] ? "1" : "0"))." ".LCLAN_OPT_15."<br />
+		".$rs -> form_checkbox("link_url", 1, ($linkspage_pref['link_url'] ? "1" : "0"))." ".LCLAN_OPT_18."<br />
+		".$rs -> form_checkbox("link_desc", 1, ($linkspage_pref['link_desc'] ? "1" : "0"))." ".LCLAN_OPT_15."<br />
 		</td></tr></table>";
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 

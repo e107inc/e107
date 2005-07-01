@@ -173,6 +173,12 @@ global $LINK_CAT_REFER, $linkspage_pref, $row;
 return (isset($linkspage_pref['link_referal']) && $linkspage_pref['link_referal'] ? LAN_LINKS_26." ".$row['link_refer'] : "");
 SC_END
 
+SC_BEGIN LINK_CAT_COMMENT
+global $LINK_CAT_COMMENT, $linkspage_pref, $row, $cobj;
+$n = $cobj -> count_comments("links_page", $row['link_id']);
+return (isset($linkspage_pref['link_comment']) && $linkspage_pref['link_comment'] ? "<a href='".e_SELF."?comment.".$row['link_id']."'>".LAN_LINKS_37." ".$n."</a>" : "");
+SC_END
+
 SC_BEGIN LINK_CAT_DESC
 global $LINK_CAT_DESC, $linkspage_pref, $tp, $row;
 return (isset($linkspage_pref['link_desc']) && $linkspage_pref['link_desc'] ? $tp->toHTML($row['link_description'], TRUE) : "");
