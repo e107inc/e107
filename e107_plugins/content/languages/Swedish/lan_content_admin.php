@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-07-01 12:17:38 $
+|     $Revision: 1.5 $
+|     $Date: 2005-07-01 15:00:37 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -161,9 +161,9 @@ define("CONTENT_ADMIN_ITEM_LAN_71", "Lämna om skrivet av dig");
 define("CONTENT_ADMIN_ITEM_LAN_72", "Ange författardetaljer");
 define("CONTENT_ADMIN_ITEM_LAN_73", "Ange ett startdatum för detta objekt (Lämna tomt om inget behövs)");
 define("CONTENT_ADMIN_ITEM_LAN_74", "Ange ett slutdatum för detta objekt (Lämna tomt om inget behövs)");
-define("CONTENT_ADMIN_ITEM_LAN_75", "Ladda upp och tilldela en ikon till detta objekt");
-define("CONTENT_ADMIN_ITEM_LAN_76", "Ladda upp och tilldela bilagor till detta objekt");
-define("CONTENT_ADMIN_ITEM_LAN_77", "Ladda upp och tilldela bilder till detta objekt");
+define("CONTENT_ADMIN_ITEM_LAN_75", "Tilldela en ikon till detta objekt");
+define("CONTENT_ADMIN_ITEM_LAN_76", "Tilldela bilagor till detta objekt");
+define("CONTENT_ADMIN_ITEM_LAN_77", "Tilldela bilder till detta objekt");
 define("CONTENT_ADMIN_ITEM_LAN_78", "Ange om kommentarer skall tillåtas");
 define("CONTENT_ADMIN_ITEM_LAN_79", "Ange om betygssättning skall tillåtas");
 define("CONTENT_ADMIN_ITEM_LAN_80", "Ange om skriv ut/e-post ikoner skall visas");
