@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.79 $
-|		$Date: 2005-06-29 23:01:56 $
+|		$Revision: 1.80 $
+|		$Date: 2005-07-01 10:18:00 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -578,47 +578,46 @@ class contentform{
 						//$text .= $TOPIC_ROW_SPACER;
 						if( $checkicon || $checkattach || $checkimages ){
 							$text .= $TOPIC_ROW_SPACER;
+
+							//upload icon
+							$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_104;
+							$TOPIC_HEADING = CONTENT_ADMIN_ITEM_LAN_112;
+							$TOPIC_HELP = CONTENT_ADMIN_ITEM_LAN_113;
+							
+							$rejectlist			= array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', 'thumb_*');
+							$iconlist			= $fl->get_files($content_tmppath_icon,"",$rejectlist);
+							$filelist			= $fl->get_files($content_tmppath_file,"",$rejectlist);
+							$imagelist			= $fl->get_files($content_tmppath_image,"",$rejectlist);
+
+							$TOPIC_FIELD = "";
+								if(!FILE_UPLOADS){
+									$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_21."</b>";
+								}else{
+									if(!is_writable($content_tmppath_icon)){
+										$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_tmppath_icon." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+									}
+									if(!is_writable($content_tmppath_file)){
+										$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_tmppath_file." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+									}
+									if(!is_writable($content_tmppath_image)){
+										$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_tmppath_image." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
+									}
+									$js = "onclick=\"document.getElementById('parent').value = document.getElementById('parent1').options[document.getElementById('parent1').selectedIndex].label;\" ";
+									$TOPIC_FIELD .= "<br />
+									<input class='tbox' type='file' name='file_userfile[]'  size='36' /> 
+										".$rs -> form_select_open("uploadtype")."
+										".$rs -> form_option(CONTENT_ADMIN_ITEM_LAN_114, "0", "1")."
+										".$rs -> form_option(CONTENT_ADMIN_ITEM_LAN_115, "0", "2")."
+										".$rs -> form_option(CONTENT_ADMIN_ITEM_LAN_116, "0", "3")."
+										".$rs -> form_select_close()."
+									<input type='hidden' name='tmppathicon' value='".$content_tmppath_icon."' />
+									<input type='hidden' name='tmppathfile' value='".$content_tmppath_file."' />
+									<input type='hidden' name='tmppathimage' value='".$content_tmppath_image."' />
+									<input class='button' type='submit' name='uploadfile' value='".CONTENT_ADMIN_ITEM_LAN_104."' $js />";
+								}
+							$TOPIC_FIELD .= "<br />";
+							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 						}
-
-
-						//upload icon
-						$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_104;
-						$TOPIC_HEADING = CONTENT_ADMIN_ITEM_LAN_112;
-						$TOPIC_HELP = CONTENT_ADMIN_ITEM_LAN_113;
-						
-						$rejectlist			= array('$.','$..','/','CVS','thumbs.db','Thumbs.db','*._$', 'index', 'null*', 'thumb_*');
-						$iconlist			= $fl->get_files($content_tmppath_icon,"",$rejectlist);
-						$filelist			= $fl->get_files($content_tmppath_file,"",$rejectlist);
-						$imagelist			= $fl->get_files($content_tmppath_image,"",$rejectlist);
-
-						$TOPIC_FIELD = "";
-							if(!FILE_UPLOADS){
-								$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_21."</b>";
-							}else{
-								if(!is_writable($content_tmppath_icon)){
-									$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_tmppath_icon." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
-								}
-								if(!is_writable($content_tmppath_file)){
-									$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_tmppath_file." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
-								}
-								if(!is_writable($content_tmppath_image)){
-									$TOPIC_FIELD .= "<b>".CONTENT_ADMIN_ITEM_LAN_22." ".$content_tmppath_image." ".CONTENT_ADMIN_ITEM_LAN_23."</b><br />";
-								}
-								$js = "onclick=\"document.getElementById('parent').value = document.getElementById('parent1').options[document.getElementById('parent1').selectedIndex].label;\" ";
-								$TOPIC_FIELD .= "<br />
-								<input class='tbox' type='file' name='file_userfile[]'  size='36' /> 
-									".$rs -> form_select_open("uploadtype")."
-									".$rs -> form_option(CONTENT_ADMIN_ITEM_LAN_114, "0", "1")."
-									".$rs -> form_option(CONTENT_ADMIN_ITEM_LAN_115, "0", "2")."
-									".$rs -> form_option(CONTENT_ADMIN_ITEM_LAN_116, "0", "3")."
-									".$rs -> form_select_close()."
-								<input type='hidden' name='tmppathicon' value='".$content_tmppath_icon."' />
-								<input type='hidden' name='tmppathfile' value='".$content_tmppath_file."' />
-								<input type='hidden' name='tmppathimage' value='".$content_tmppath_image."' />
-								<input class='button' type='submit' name='uploadfile' value='".CONTENT_ADMIN_ITEM_LAN_104."' $js />";
-							}
-						$TOPIC_FIELD .= "<br />";
-						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 						if($checkicon){
 							//icon
