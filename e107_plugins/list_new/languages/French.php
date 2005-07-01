@@ -107,10 +107,10 @@ define("LIST_ADMIN_SECT_27", "");
 
 
 define("LIST_ADMIN_OPT_1", "Général");
-define("LIST_ADMIN_OPT_2", "Page Récent");
-define("LIST_ADMIN_OPT_3", "Menu Récent");
-define("LIST_ADMIN_OPT_4", "Nouvelle page");
-define("LIST_ADMIN_OPT_5", "Nouveau menu");
+define("LIST_ADMIN_OPT_2", "Page des derniers Ajouts");
+define("LIST_ADMIN_OPT_3", "Menu des derniers Ajouts");
+define("LIST_ADMIN_OPT_4", "Page des Nouveautés");
+define("LIST_ADMIN_OPT_5", "Menu des Nouveautés");
 define("LIST_ADMIN_OPT_6", "Options");
 
 define("LIST_ADMIN_MENU_2", "Icône par défaut");
