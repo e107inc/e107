@@ -62,7 +62,7 @@ define("LIST_ADMIN_7", "activé");
 define("LIST_ADMIN_8", "desactivé");
 define("LIST_ADMIN_9", "ouvert");
 define("LIST_ADMIN_10", "fermé");
-define("LIST_ADMIN_11", "modifier");
+define("LIST_ADMIN_11", "Modifier");
 define("LIST_ADMIN_12", "sélectionnez");
 define("LIST_ADMIN_13", "Bienvenue sur la page des modifications récentes du site ".SITENAME." ! Cette page affiche la liste des ajouts les plus récents pour la plupart des sections de ce site.");
 define("LIST_ADMIN_14", "Ajout récents");
