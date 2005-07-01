@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-06-30 14:18:20 $
+|     $Revision: 1.40 $
+|     $Date: 2005-07-01 09:31:07 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -30,9 +30,9 @@ $cobj =& new comment;
 $temp_query = explode(".", e_QUERY);
 $action = $temp_query[0];
 $table = einput::escape($temp_query[1]);
-$id = intval($temp_query[2]);
-$nid = intval($temp_query[3]);
-$xid = intval($temp_query[4]);
+$id = (isset($temp_query[2]) ? intval($temp_query[2]) : "");
+$nid = (isset($temp_query[3]) ? intval($temp_query[3]) : "");
+$xid = (isset($temp_query[4]) ? intval($temp_query[4]) : "");
 unset($temp_query);
 
 if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit'])) {
@@ -180,7 +180,7 @@ if ($action == "reply") {
 		}
 	}
 
-	define(e_PAGETITLE, $title." / ".LAN_99." / ".LAN_102.$subject."");
+	define('e_PAGETITLE', $title." / ".LAN_99." / ".LAN_102.$subject."");
 	require_once(HEADERF);
 } else {
 
@@ -197,7 +197,7 @@ if ($action == "reply") {
 			updated db query removed one call
 			*/
 
-			if($pref['trackbackEnabled']) {
+			if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled']) {
 				$query = "SELECT COUNT(tb.trackback_pid) AS tb_count, n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id 
@@ -254,10 +254,11 @@ if ($action == "reply") {
 	}
 }
 
-if($pref['trackbackEnabled'] && $table == "news"){
+if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == "news"){
 	echo "<span class='smalltext'><b>".$pref['trackbackString']."</b> ".$e107->http_path.e_PLUGIN."trackback/trackback.php?pid={$id}</span>";
 }
 $field = ($field ? $field : ($id ? $id : ""));
+$width = (isset($width) && $width ? $width : "");
 $cobj->compose_comment($table, $action, $field, $width, $subject, $rate=FALSE);
 
 if (!strstr(e_QUERY, "poll")) {
@@ -267,7 +268,7 @@ if (!strstr(e_QUERY, "poll")) {
 ob_end_flush(); // dump the buffer we started
 
 
-if($pref['trackbackEnabled'] && $table == "news"){
+if(isset($pref['trackbackEnabled']) && $pref['trackbackEnabled'] && $table == "news"){
 	if($sql->db_Select("trackback", "*", "trackback_pid={$id}"))
 	{
 		$tbArray = $sql -> db_getList();

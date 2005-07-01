@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-27 11:45:50 $
+|     $Revision: 1.11 $
+|     $Date: 2005-07-01 09:31:07 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -171,7 +171,7 @@ class rater {
 
 	function composerating($table, $id, $enter=TRUE, $userid=FALSE, $nojump=FALSE){
 		//enter		: boolean to show (rateselect box + textual info) or not
-		//userid	: used to calcaulate a users given rating
+		//userid	: used to calculate a users given rating
 		//nojump	: boolean, if present no urljump will be used (needed in comment_rating system)
 
 		$rate = "";

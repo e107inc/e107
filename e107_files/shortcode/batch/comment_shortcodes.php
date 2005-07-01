@@ -5,7 +5,7 @@ $comment_shortcodes = e_shortcode::parse_scbatch(__FILE__);
 
 SC_BEGIN SUBJECT
 global $SUBJECT, $comrow, $pref, $NEWIMAGE, $tp;
-if ($pref['nested_comments']) {
+if (isset($pref['nested_comments']) && $pref['nested_comments']) {
 	$SUBJECT = $NEWIMAGE." ".(empty($comrow['comment_subject']) ? $subject : $tp->toHTML($comrow['comment_subject'], TRUE));
 } else {
 	$SUBJECT = '';
@@ -15,7 +15,7 @@ SC_END
 
 SC_BEGIN USERNAME
 global $USERNAME, $comrow;
-if ($comrow['user_id']) {
+if (isset($comrow['user_id']) && $comrow['user_id']) {
 	$USERNAME = "<a href='".e_BASE."user.php?id.".$comrow['user_id']."'>".$comrow['user_name']."</a>\n";
 }else{
 	$comrow['user_id'] = 0;
@@ -43,8 +43,8 @@ SC_END
 
 SC_BEGIN AVATAR
 global $AVATAR, $comrow;
-if ($comrow['user_id']) {
-	if ($comrow['user_image']) {
+if (isset($comrow['user_id']) && $comrow['user_id']) {
+	if (isset($comrow['user_image']) && $comrow['user_image']) {
 		require_once(e_HANDLER."avatar_handler.php");
 		$comrow['user_image'] = avatar($comrow['user_image']);
 		$comrow['user_image'] = "<div class='spacer'><img src='".$comrow['user_image']."' alt='' /></div><br />";
@@ -59,7 +59,7 @@ SC_END
 
 SC_BEGIN COMMENTS
 global $COMMENTS, $comrow;
-return ($comrow['user_id'] ? LAN_99.": ".$comrow['user_comments'] : LAN_194)."<br />";
+return (isset($comrow['user_id']) && $comrow['user_id'] ? LAN_99.": ".$comrow['user_comments'] : LAN_194)."<br />";
 SC_END
 
 SC_BEGIN JOINED
@@ -79,7 +79,7 @@ SC_END
 
 SC_BEGIN COMMENT
 global $COMMENT, $comrow, $tp, $pref;
-return ($comrow['comment_blocked'] ? LAN_0 : $tp->toHTML($comrow['comment_comment'], TRUE, FALSE, $comrow['user_id']));
+return (isset($comrow['comment_blocked']) && $comrow['comment_blocked'] ? LAN_0 : $tp->toHTML($comrow['comment_comment'], TRUE, FALSE, $comrow['user_id']));
 SC_END
 
 SC_BEGIN COMMENTEDIT
@@ -106,12 +106,12 @@ SC_END
 
 SC_BEGIN LOCATION
 global $LOCATION, $comrow, $tp;
-return ($comrow['user_location'] ? LAN_313.": ".$tp->toHTML($comrow['user_location'], TRUE) : '');
+return (isset($comrow['user_location']) && $comrow['user_location'] ? LAN_313.": ".$tp->toHTML($comrow['user_location'], TRUE) : '');
 SC_END
 
 SC_BEGIN SIGNATURE
 global $SIGNATURE, $comrow, $tp;
-$SIGNATURE = ($comrow['user_signature'] ? $tp->toHTML($comrow['user_signature'], true) : '');
+$SIGNATURE = (isset($comrow['user_signature']) && $comrow['user_signature'] ? $tp->toHTML($comrow['user_signature'], true) : '');
 return $SIGNATURE;
 SC_END
 
