@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.73 $
-|		$Date: 2005-07-01 10:18:00 $
+|		$Revision: 1.74 $
+|		$Date: 2005-07-01 13:15:18 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -448,35 +448,57 @@ class content{
 			return $crumb;
 		}
 
+		function ShowNextPrev($mode='', $from='0', $number, $total){
+			global $content_pref, $mainparent, $qs;
+			$modepref = ($mode ? "content_{$mode}_nextprev_{$mainparent}" : "content_nextprev_{$mainparent}");
+			if(isset($content_pref[$modepref]) && $content_pref[$modepref]){
+				require_once(e_HANDLER."np_class.php");
+				$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
+				$ix = new nextprev(e_SELF, $from, $number, $total, NP_3, ($np_querystring ? $np_querystring : ""));
+			}
+		}
 
+		function getCrumbPage($mode, $arr, $parent){
+			global $qs, $ns, $content_pref, $mainparent;
 
-		function getCrumbPage($arr, $parent){
-			global $qs, $content_pref, $mainparent;
-
-			if(array_key_exists($parent, $arr)){
-				$sep = (isset($content_pref["content_breadcrumb_seperator_{$mainparent}"]) ? $content_pref["content_breadcrumb_seperator_{$mainparent}"] : ">");
-				$crumb = "<a href='".e_BASE."'>".CONTENT_LAN_58."</a> ".$sep." <a href='".e_SELF."'>".CONTENT_LAN_59."</a>";
-				for($i=0;$i<count($arr[$parent]);$i++){
-					$crumb .= " ".$sep." <a href='".e_SELF."?cat.".$arr[$parent][$i]."'>".$arr[$parent][$i+1]."</a>";
-					$i++;
+			if(isset($content_pref["content_breadcrumb_{$mode}_{$mainparent}"]) && $content_pref["content_breadcrumb_{$mode}_{$mainparent}"]){
+				if(array_key_exists($parent, $arr)){
+					$sep = (isset($content_pref["content_breadcrumb_seperator_{$mainparent}"]) ? $content_pref["content_breadcrumb_seperator_{$mainparent}"] : ">");
+					$crumb = "<a href='".e_BASE."'>".CONTENT_LAN_58."</a> ".$sep." <a href='".e_SELF."'>".CONTENT_LAN_59."</a>";
+					for($i=0;$i<count($arr[$parent]);$i++){
+						$crumb .= " ".$sep." <a href='".e_SELF."?cat.".$arr[$parent][$i]."'>".$arr[$parent][$i+1]."</a>";
+						$i++;
+					}
 				}
+				if($qs[0] == "recent"){
+					$crumb .= " ".$sep." <a href='".e_SELF."?recent.".$arr[$parent][0]."'>".CONTENT_LAN_60."</a>";
+				}
+				if($qs[0] == "author"){
+					$crumb .= " ".$sep." <a href='".e_SELF."?author.list.".$arr[$parent][0]."'>".CONTENT_LAN_85."</a>";
+				}
+				if($qs[0] == "list"){
+					$crumb .= " ".$sep." <a href='".e_SELF."?list.".$arr[$parent][0]."'>list</a>";
+				}
+				if($qs[0] == "top"){
+					$crumb .= " ".$sep." <a href='".e_SELF."?top.".$arr[$parent][0]."'>".CONTENT_LAN_8."</a>";
+				}
+				if($qs[0] == "score"){
+					$crumb .= " ".$sep." <a href='".e_SELF."?score.".$arr[$parent][0]."'>".CONTENT_LAN_12."</a>";
+				}
+
+				$margin = "<br /><br />";
+				if(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
+					echo $crumb.$margin;
+					return "";
+				}elseif(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
+					$ns -> tablerender(CONTENT_LAN_24, $crumb.$margin);
+					return "";
+				}else{
+					return $crumb.$margin;
+				}
+			}else{
+				return "";
 			}
-			if($qs[0] == "recent"){
-				$crumb .= " ".$sep." <a href='".e_SELF."?recent.".$arr[$parent][0]."'>".CONTENT_LAN_60."</a>";
-			}
-			if($qs[0] == "author"){
-				$crumb .= " ".$sep." <a href='".e_SELF."?author.list.".$arr[$parent][0]."'>".CONTENT_LAN_85."</a>";
-			}
-			if($qs[0] == "list"){
-				$crumb .= " ".$sep." <a href='".e_SELF."?list.".$arr[$parent][0]."'>list</a>";
-			}
-			if($qs[0] == "top"){
-				$crumb .= " ".$sep." <a href='".e_SELF."?top.".$arr[$parent][0]."'>".CONTENT_LAN_8."</a>";
-			}
-			if($qs[0] == "score"){
-				$crumb .= " ".$sep." <a href='".e_SELF."?score.".$arr[$parent][0]."'>".CONTENT_LAN_12."</a>";
-			}
-			return $crumb."<br /><br />";
 		}
 
 
