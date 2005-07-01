@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.74 $
-|		$Date: 2005-06-30 22:48:59 $
+|		$Revision: 1.75 $
+|		$Date: 2005-07-01 13:15:18 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -201,7 +201,7 @@ function show_content_search_menu($mode, $mainparent){
 				if(!$content_pref["content_theme_{$mainparent}"]){
 					require_once($plugindir."templates/default/content_search_template.php");
 				}else{
-					if(file_exists($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_search_template.php")){
+					if(is_readable($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_search_template.php")){
 						require_once($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_search_template.php");
 					}else{
 						require_once($plugindir."templates/default/content_search_template.php");
@@ -252,7 +252,7 @@ function show_content_search_result($searchkeyword){
 				if(!$content_pref["content_theme_{$mainparent}"]){
 					require_once($plugindir."templates/default/content_searchresult_template.php");
 				}else{
-					if(file_exists($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_searchresult_template.php")){
+					if(is_readable($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_searchresult_template.php")){
 						require_once($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_searchresult_template.php");
 					}else{
 						require_once($plugindir."templates/default/content_searchresult_template.php");
@@ -330,7 +330,6 @@ function show_content(){
 					$validparent	= implode(",", array_keys($array));
 					$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 					$contenttotal	= $sql2 -> db_Count($plugintable, "(*)", "WHERE content_refer != 'sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."'" );
-
 					$content_type_table_string .= $tp -> parseTemplate($CONTENT_TYPE_TABLE, FALSE, $content_shortcodes);
 				}
 
@@ -421,7 +420,7 @@ function show_content_archive(){
 			if(!$content_pref["content_theme_{$mainparent}"]){
 				require_once($plugindir."templates/default/content_archive_template.php");
 			}else{
-				if(file_exists($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_archive_template.php")){
+				if(is_readable($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_archive_template.php")){
 					require_once($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_archive_template.php");
 				}else{
 					require_once($plugindir."templates/default/content_archive_template.php");
@@ -474,24 +473,10 @@ function show_content_archive(){
 				}
 				$text .= $CONTENT_ARCHIVE_TABLE_START.$content_archive_table_string.$CONTENT_ARCHIVE_TABLE_END;
 			}
-
-			if(isset($content_pref["content_breadcrumb_archive_{$mainparent}"]) && $content_pref["content_breadcrumb_archive_{$mainparent}"]){
-				$crumbpage = $aa -> getCrumbPage($array, $mainparent);
-				if(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
-					echo $crumbpage;					
-				}elseif(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
-					$ns -> tablerender(CONTENT_LAN_24, $crumbpage);
-				}else{
-					$text = $crumbpage.$text;
-				}
-			}
-			$caption = CONTENT_LAN_84;
+			$text		= $aa -> getCrumbPage("archive", $array, $mainparent).$text;
+			$caption	= CONTENT_LAN_84;
 			$ns->tablerender($caption, $text);
-			if(isset($content_pref["content_archive_nextprev_{$mainparent}"]) && $content_pref["content_archive_nextprev_{$mainparent}"]){
-				require_once(e_HANDLER."np_class.php");
-				$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-				$ix = new nextprev(e_SELF, $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
-			}
+			$aa -> ShowNextPrev("archive", $from, $number, $contenttotal);
 			if($pref['cachestatus']){
 				$cache = ob_get_contents();
 				$e107cache->set($cachestr, $cache);
@@ -503,24 +488,22 @@ function show_content_archive(){
 //this function renders the preview of a content_item
 //used in recent list, view author list, category items list
 function displayPreview($qry){
-		global $sql, $tp, $plugintable, $plugindir, $content_pref, $mainparent, $CONTENT_RECENT_TABLE, $CONTENT_RECENT_TABLE_AUTHORDETAILS;
+		global $sql, $sql2, $tp, $plugintable, $plugindir, $content_pref, $mainparent, $CONTENT_RECENT_TABLE, $CONTENT_RECENT_TABLE_AUTHORDETAILS;
 
 		if(!$CONTENT_RECENT_TABLE){
 			if(!$content_pref["content_theme_{$mainparent}"]){
 				require_once($plugindir."templates/default/content_recent_template.php");
 			}else{
-				if(file_exists($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_recent_template.php")){
+				if(is_readable($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_recent_template.php")){
 					require_once($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_recent_template.php");
 				}else{
 					require_once($plugindir."templates/default/content_recent_template.php");
 				}
 			}
 		}
-
-		$sql1 = new db;
-		if($resultitem = $sql1 -> db_Select($plugintable, "*", $qry )){
+		if($resultitem = $sql2 -> db_Select($plugintable, "*", $qry )){
 			$content_recent_table_string = "";
-			while($row = $sql1 -> db_Fetch()){
+			while($row = $sql2 -> db_Fetch()){
 				$rdate	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_DATE}', FALSE, $content_shortcodes);
 				$rauth	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
 				$rep	= $tp -> parseTemplate('{CONTENT_RECENT_TABLE_EPICONS}', FALSE, $content_shortcodes);
@@ -543,7 +526,7 @@ function displayPreview($qry){
 
 // ##### RECENT LIST ------------------------------------
 function show_content_recent(){
-		global $qs, $plugindir, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
+		global $qs, $sql2, $plugindir, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
 		global $nextprevquery, $from, $number, $mainparent, $datequery, $content_icon_path, $CONTENT_RECENT_TABLE;
 
 		$mainparent		= $aa -> getMainParent($qs[1]);
@@ -564,30 +547,16 @@ function show_content_recent(){
 			$nextprevquery		= ($content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".$from.",".$number : "");
 			$qry				= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 
-			$sql1 = new db;
-			$contenttotal = $sql1 -> db_Count($plugintable, "(*)", "WHERE content_refer != 'sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' " );
+			$contenttotal = $sql2 -> db_Count($plugintable, "(*)", "WHERE content_refer != 'sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' " );
 
 			if($from > $contenttotal-1){ js_location(e_SELF); }
 			
 			$recentqry			= "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ".$order." ".$nextprevquery;
 			$text				= displayPreview($recentqry);
-
-			$crumbpage = $aa -> getCrumbPage($array, $mainparent);
-			if(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
-				echo $crumbpage;
-			}elseif(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
-				$ns -> tablerender(CONTENT_LAN_24, $crumbpage);
-			}else{
-				$text = $crumbpage.$text;
-			}
-
-			$caption = CONTENT_LAN_23;
+			$text				= $aa -> getCrumbPage("recent", $array, $mainparent).$text;
+			$caption			= CONTENT_LAN_23;
 			$ns -> tablerender($caption, $text);
-			if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
-				require_once(e_HANDLER."np_class.php");
-				$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-				$ix = new nextprev(e_SELF, $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
-			}
+			$aa -> ShowNextPrev("", $from, $number, $contenttotal);
 			if($pref['cachestatus']){
 				$cache = ob_get_contents();
 				$e107cache->set($cachestr, $cache);
@@ -611,7 +580,7 @@ function show_content_cat_all(){
 			if(!$content_pref["content_theme_{$mainparent}"]){
 				require_once($plugindir."templates/default/content_cat_template.php");
 			}else{
-				if(file_exists($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_cat_template.php")){
+				if(is_readable($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_cat_template.php")){
 					require_once($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_cat_template.php");
 				}else{
 					require_once($plugindir."templates/default/content_cat_template.php");
@@ -661,19 +630,9 @@ function show_content_cat_all(){
 				$content_cat_table_string .= $tp -> parseTemplate($CONTENT_CAT_TABLE, FALSE, $content_shortcodes);
 
 			}
-			$text = $CONTENT_CAT_TABLE_START.$content_cat_table_string.$CONTENT_CAT_TABLE_END;
-
-			if(isset($content_pref["content_breadcrumb_catall_{$mainparent}"]) && $content_pref["content_breadcrumb_catall_{$mainparent}"]){
-				$crumbpage = $aa -> getCrumbPage($array, $mainparent);
-				if(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
-					echo $crumbpage;
-				}elseif(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
-					$ns -> tablerender(CONTENT_LAN_24, $crumbpage);
-				}else{
-					$text = $crumbpage.$text;
-				}
-			}
-			$caption = CONTENT_LAN_25;
+			$text		= $CONTENT_CAT_TABLE_START.$content_cat_table_string.$CONTENT_CAT_TABLE_END;
+			$text		= $aa -> getCrumbPage("catall", $array, $mainparent).$text;
+			$caption	= CONTENT_LAN_25;
 			$ns -> tablerender($caption, $text);
 
 			if($pref['cachestatus']){
@@ -701,11 +660,40 @@ function show_content_cat($mode=""){
 			if(!$content_pref["content_theme_{$mainparent}"]){
 				require_once($plugindir."templates/default/content_cat_template.php");
 			}else{
-				if(file_exists($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_cat_template.php")){
+				if(is_readable($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_cat_template.php")){
 					require_once($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_cat_template.php");
 				}else{
 					require_once($plugindir."templates/default/content_cat_template.php");
 				}
+			}
+		}
+
+		$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$mainparent}"]);
+		$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_{$mainparent}"]);
+		$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);					
+		$order							= $aa -> getOrder();
+		$number							= (isset($content_pref["content_nextprev_number_{$mainparent}"]) && $content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "5");
+		$nextprevquery					= (isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".$from.",".$number : "");
+		$capqs							= array_reverse($array[$qs[1]]);
+		$caption						= CONTENT_LAN_26." : ".$capqs[0];
+
+		// parent article
+		if(isset($content_pref["content_cat_showparent_{$mainparent}"]) && $content_pref["content_cat_showparent_{$mainparent}"]){
+			if(!$resultitem = $sql -> db_Select($plugintable, "*", $qry )){
+				header("location:".e_SELF."?cat.list.".$mainparent); exit;
+			}else{
+				$row = $sql -> db_Fetch();
+				$date	= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_DATE}', FALSE, $content_shortcodes);
+				$auth	= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
+				$ep		= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_EPICONS}', FALSE, $content_shortcodes);
+				$com	= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_COMMENT}', FALSE, $content_shortcodes);
+				if ($date!="" || $auth!="" || $ep!="" || $com!="" ) {
+					$CONTENT_CAT_LIST_TABLE_INFO_PRE = TRUE;
+					$CONTENT_CAT_LIST_TABLE_INFO_POST = TRUE;
+				}
+				$totalparent = $aa -> countCatItems($row['content_id']);
+				$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS = $aa -> prepareAuthor("cat", $row['content_author'], $row['content_id']);
+				$textparent			= $tp -> parseTemplate($CONTENT_CAT_LIST_TABLE, FALSE, $content_shortcodes);							
 			}
 		}
 
@@ -714,35 +702,6 @@ function show_content_cat($mode=""){
 			echo $cache;
 		}else{
 			ob_start();
-
-			$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$mainparent}"]);
-			$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_{$mainparent}"]);
-			$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);					
-			$order							= $aa -> getOrder();
-			$number							= (isset($content_pref["content_nextprev_number_{$mainparent}"]) && $content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "5");
-			$nextprevquery					= (isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".$from.",".$number : "");
-			$capqs							= array_reverse($array[$qs[1]]);
-			$caption						= CONTENT_LAN_26." : ".$capqs[0];
-
-			// parent article
-			if(isset($content_pref["content_cat_showparent_{$mainparent}"]) && $content_pref["content_cat_showparent_{$mainparent}"]){
-				if(!$resultitem = $sql -> db_Select($plugintable, "*", $qry )){
-					header("location:".e_SELF."?cat.list.".$mainparent); exit;
-				}else{
-					$row = $sql -> db_Fetch();
-					$date	= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_DATE}', FALSE, $content_shortcodes);
-					$auth	= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_AUTHORDETAILS}', FALSE, $content_shortcodes);
-					$ep		= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_EPICONS}', FALSE, $content_shortcodes);
-					$com	= $tp -> parseTemplate('{CONTENT_CAT_LIST_TABLE_COMMENT}', FALSE, $content_shortcodes);
-					if ($date!="" || $auth!="" || $ep!="" || $com!="" ) {
-						$CONTENT_CAT_LIST_TABLE_INFO_PRE = TRUE;
-						$CONTENT_CAT_LIST_TABLE_INFO_POST = TRUE;
-					}
-					$totalparent = $aa -> countCatItems($row['content_id']);
-					$CONTENT_CAT_LIST_TABLE_AUTHORDETAILS = $aa -> prepareAuthor("cat", $row['content_author'], $row['content_id']);
-					$textparent			= $tp -> parseTemplate($CONTENT_CAT_LIST_TABLE, FALSE, $content_shortcodes);							
-				}
-			}
 
 			if(!$mode || $mode == ""){
 
@@ -795,19 +754,11 @@ function show_content_cat($mode=""){
 					require_once(e_HANDLER."np_class.php");
 					$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
 				}
-				if(isset($content_pref["content_breadcrumb_cat_{$mainparent}"]) && $content_pref["content_breadcrumb_cat_{$mainparent}"]){
-					$crumbpage = $aa -> getCrumbPage($array, $qs[1]);
-					if(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
-						echo $crumbpage;
-					}elseif(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
-						$ns -> tablerender(CONTENT_LAN_24, $crumbpage);
-					}else{
-						if(isset($textparent)){ 
-							$textparent = $crumbpage.$textparent;
-						}else{
-							$textchild = $crumbpage.$textparent;
-						}
-					}
+				$crumbpage = $aa -> getCrumbPage("cat", $array, $qs[1]);
+				if(isset($textparent)){ 
+					$textparent = $crumbpage.$textparent;
+				}else{
+					$textchild = $crumbpage.$textparent;
 				}
 				if(isset($content_pref["content_cat_menuorder_{$mainparent}"]) && $content_pref["content_cat_menuorder_{$mainparent}"] == "1"){
 					if(isset($content_pref["content_cat_rendertype_{$mainparent}"]) && $content_pref["content_cat_rendertype_{$mainparent}"] == "1"){
@@ -836,21 +787,7 @@ function show_content_cat($mode=""){
 						$ns -> tablerender($caption, (isset($textparent) ? $textparent : "").(isset($textsubparent) ? $textsubparent : ""));
 					}
 				}
-
-			}elseif($mode == "comment"){
-				if(isset($content_pref["content_breadcrumb_cat_{$mainparent}"]) && $content_pref["content_breadcrumb_cat_{$mainparent}"]){
-					$crumbpage = $aa -> getCrumbPage($array, $mainparent);
-					if(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
-						echo $crumbpage;
-					}elseif(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
-						$ns -> tablerender(CONTENT_LAN_24, $crumbpage);
-					}else{
-						$textparent = $crumbpage.$textparent;
-					}
-				}
-				if(isset($textparent)){ $ns -> tablerender($captionparent, $textparent); }
 			}
-
 			if($pref['cachestatus']){
 				$cache = ob_get_contents();
 				$e107cache->set($cachestr, $cache);
@@ -859,6 +796,9 @@ function show_content_cat($mode=""){
 		}
 
 		if($mode == "comment"){
+			$textparent = $aa -> getCrumbPage("cat", $array, $mainparent).$textparent;
+			if(isset($textparent)){ $ns -> tablerender($captionparent, $textparent); }
+
 			if($resultitem = $sql -> db_Select($plugintable, "*", $qry )){
 				$row = $sql -> db_Fetch();
 				if($row['content_comment']){
@@ -897,7 +837,7 @@ function show_content_author_all(){
 			if(!$content_pref["content_theme_{$mainparent}"]){
 				require_once($plugindir."templates/default/content_author_template.php");
 			}else{
-				if(file_exists($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_author_template.php")){
+				if(is_readable($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_author_template.php")){
 					require_once($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_author_template.php");
 				}else{
 					require_once($plugindir."templates/default/content_author_template.php");
@@ -990,26 +930,12 @@ function show_content_author_all(){
 					}
 				}
 				$text = $CONTENT_AUTHOR_TABLE_START.$content_author_table_string.$CONTENT_AUTHOR_TABLE_END;
-				if(isset($content_pref["content_breadcrumb_authorall_{$mainparent}"]) && $content_pref["content_breadcrumb_authorall_{$mainparent}"]){
-					$crumbpage = $aa -> getCrumbPage($array, $mainparent);
-					if(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
-						echo $crumbpage;
-					}elseif(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
-						$ns -> tablerender(CONTENT_LAN_24, $crumbpage);
-					}else{
-						$text = $crumbpage.$text;
-					}
-				}
+				$text = $aa -> getCrumbPage("authorall", $array, $mainparent).$text;
 			}
 
 			$caption = CONTENT_LAN_32;
 			$ns -> tablerender($caption, $text);
-
-			if(isset($content_pref["content_author_nextprev_{$mainparent}"]) && $content_pref["content_author_nextprev_{$mainparent}"]){
-				require_once(e_HANDLER."np_class.php");
-				$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-				$ix = new nextprev(e_SELF, $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
-			}
+			$aa -> ShowNextPrev("author", $from, $number, $contenttotal);
 			if($pref['cachestatus']){
 				$cache = ob_get_contents();
 				$e107cache->set($cachestr, $cache);
@@ -1051,32 +977,17 @@ function show_content_author(){
 			}else{
 				list($content_author)	= $sqla -> db_Fetch();
 				$sqlb = new db;
-				$authordetails			= $aa -> getAuthor($content_author);						
-				$query					= " content_author = '".$authordetails[3]."' || content_author REGEXP '^".$authordetails[1]."^' ".(is_numeric($content_author) ? " || content_author = '".$authordetails[0]."' " : "")." ";
-				$validparent			= implode(",", array_keys($array));
-				$qry					= " content_refer !='sa' AND content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' AND (".$query.") ";
-				$contenttotal			= $sqlb -> db_Count($plugintable, "(*)", "WHERE ".$qry." ");
-				$authorqry			= $qry." ".$order." ".$nextprevquery;
-				$text				= displayPreview($authorqry);
-
-				if(isset($content_pref["content_breadcrumb_author_{$mainparent}"]) && $content_pref["content_breadcrumb_author_{$mainparent}"]){
-					$crumbpage = $aa -> getCrumbPage($array, $mainparent);
-					if(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
-						echo $crumbpage;
-					}elseif(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
-						$ns -> tablerender(CONTENT_LAN_24, $crumbpage);
-					}else{
-						$text = $crumbpage.$text;
-					}
-				}
-				$caption = CONTENT_LAN_32." : ".$authordetails[1];
+				$authordetails	= $aa -> getAuthor($content_author);						
+				$query			= " content_author = '".$authordetails[3]."' || content_author REGEXP '^".$authordetails[1]."^' ".(is_numeric($content_author) ? " || content_author = '".$authordetails[0]."' " : "")." ";
+				$validparent	= implode(",", array_keys($array));
+				$qry			= " content_refer !='sa' AND content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' AND (".$query.") ";
+				$contenttotal	= $sqlb -> db_Count($plugintable, "(*)", "WHERE ".$qry." ");
+				$authorqry		= $qry." ".$order." ".$nextprevquery;
+				$text			= displayPreview($authorqry);
+				$text			= $aa -> getCrumbPage("author", $array, $mainparent).$text;
+				$caption		= CONTENT_LAN_32." : ".$authordetails[1];
 				$ns -> tablerender($caption, $text);
-
-				if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
-					require_once(e_HANDLER."np_class.php");
-					$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-					$ix = new nextprev(e_SELF, $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
-				}
+				$aa -> ShowNextPrev("", $from, $number, $contenttotal);
 			}
 			if($pref['cachestatus']){
 				$cache = ob_get_contents();
@@ -1096,12 +1007,12 @@ function show_content_top(){
 		$content_pref	= $aa -> getContentPref($mainparent);
 		show_content_search_menu("top", $mainparent);		//show navigator/search/order menu
 
-		$CONTENT_TOP_TABLE = "";
+		//$CONTENT_TOP_TABLE = "";
 		if(!$CONTENT_TOP_TABLE){
 			if(!$content_pref["content_theme_{$mainparent}"]){
 				require_once($plugindir."templates/default/content_top_template.php");
 			}else{
-				if(file_exists($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_top_template.php")){
+				if(is_readable($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_top_template.php")){
 					require_once($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_top_template.php");
 				}else{
 					require_once($plugindir."templates/default/content_top_template.php");
@@ -1165,25 +1076,11 @@ function show_content_top(){
 			if(isset($err)){
 				$content_top_table_string = $err;
 			}
-			if(isset($content_pref["content_breadcrumb_top_{$mainparent}"]) && $content_pref["content_breadcrumb_top_{$mainparent}"]){
-				$crumbpage = $aa -> getCrumbPage($array, $mainparent);
-				if(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
-						echo $crumbpage;
-				}elseif(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
-						$ns -> tablerender(CONTENT_LAN_24, $crumbpage);
-				}else{
-						$text = $crumbpage.$text;
-				}
-			}
+			$content_top_table_string		= $aa -> getCrumbPage("top", $array, $mainparent).$content_top_table_string;
 			$text		= $CONTENT_TOP_TABLE_START.$content_top_table_string.$CONTENT_TOP_TABLE_END;
 			$caption	= CONTENT_LAN_38;
 			$ns -> tablerender($caption, $text);
-
-			if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
-				require_once(e_HANDLER."np_class.php");
-				$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-				$ix = new nextprev(e_SELF, $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
-			}
+			$aa -> ShowNextPrev("", $from, $number, $contenttotal);
 			if($pref['cachestatus']){
 				$cache = ob_get_contents();
 				$e107cache->set($cachestr, $cache);
@@ -1206,7 +1103,7 @@ function show_content_score(){
 			if(!$content_pref["content_theme_{$mainparent}"]){
 				require_once($plugindir."templates/default/content_score_template.php");
 			}else{
-				if(file_exists($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_score_template.php")){
+				if(is_readable($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_score_template.php")){
 					require_once($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_score_template.php");
 				}else{
 					require_once($plugindir."templates/default/content_score_template.php");
@@ -1236,25 +1133,11 @@ function show_content_score(){
 					$content_score_table_string	.= $tp -> parseTemplate($CONTENT_SCORE_TABLE, FALSE, $content_shortcodes);
 				}
 			}
-			if(isset($content_pref["content_breadcrumb_score_{$mainparent}"]) && $content_pref["content_breadcrumb_score_{$mainparent}"]){
-				$crumbpage = $aa -> getCrumbPage($array, $mainparent);
-				if(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
-						echo $crumbpage;
-				}elseif(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
-						$ns -> tablerender(CONTENT_LAN_24, $crumbpage);
-				}else{
-						$text = $crumbpage.$text;
-				}
-			}
+			$content_score_table_string = $aa -> getCrumbPage("score", $array, $mainparent).$content_score_table_string;
 			$text		= $CONTENT_SCORE_TABLE_START.$content_score_table_string.$CONTENT_SCORE_TABLE_END;
 			$caption	= CONTENT_LAN_87;
 			$ns -> tablerender($caption, $text);
-
-			if(isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"]){
-				require_once(e_HANDLER."np_class.php");
-				$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "").(isset($qs[3]) ? ".".$qs[3] : "").(isset($qs[4]) ? ".".$qs[4] : "");
-				$ix = new nextprev(e_SELF, $from, $number, $contenttotal, NP_3, ($np_querystring ? $np_querystring : ""));
-			}
+			$aa -> ShowNextPrev("", $from, $number, $contenttotal);
 			if($pref['cachestatus']){
 				$cache = ob_get_contents();
 				$e107cache->set($cachestr, $cache);
@@ -1409,7 +1292,7 @@ function show_content_item(){
 							//if custom layout is set
 							if($row['content_layout']){
 								//if custom layout file exists
-								if(file_exists($plugindir."templates/default/".$row['content_layout'])){
+								if(is_readable($plugindir."templates/default/".$row['content_layout'])){
 									require_once($plugindir."templates/default/".$row['content_layout']);
 								}else{
 									require_once($plugindir."templates/default/content_content_template.php");
@@ -1421,11 +1304,11 @@ function show_content_item(){
 							//if custom layout is set
 							if($row['content_layout']){
 								//if custom layout file exists
-								if(file_exists($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/".$row['content_layout'])){
+								if(is_readable($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/".$row['content_layout'])){
 									require_once($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/".$row['content_layout']);
 								}else{
 									//if default layout from the set theme exists
-									if(file_exists($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_content_template.php")){
+									if(is_readable($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_content_template.php")){
 										require_once($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_content_template.php");
 									//else use default theme, default layout
 									}else{
@@ -1435,7 +1318,7 @@ function show_content_item(){
 							//if no custom layout is set
 							}else{
 								//if default layout from the set theme exists
-								if(file_exists($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_content_template.php")){
+								if(is_readable($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_content_template.php")){
 									require_once($plugindir."templates/".$content_pref["content_theme_{$mainparent}"]."/content_content_template.php");
 								//else use default theme, default layout
 								}else{
@@ -1488,19 +1371,9 @@ function show_content_item(){
 							$CONTENT_CONTENT_TABLE_CUSTOM_TAGS = $CONTENT_CONTENT_TABLE_CUSTOM_START.$CONTENT_CONTENT_TABLE_CUSTOM_TAGS.$CONTENT_CONTENT_TABLE_CUSTOM_END;
 						}
 					}
-					$text = $tp -> parseTemplate($CONTENT_CONTENT_TABLE, FALSE, $content_shortcodes);
-				
-					if(isset($content_pref["content_breadcrumb_item_{$mainparent}"]) && $content_pref["content_breadcrumb_item_{$mainparent}"]){
-						$crumbpage = $aa -> getCrumbPage($array, $row['content_parent']);
-						if(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "1"){
-							echo $crumbpage;
-						}elseif(isset($content_pref["content_breadcrumb_rendertype_{$mainparent}"]) && $content_pref["content_breadcrumb_rendertype_{$mainparent}"] == "2"){
-							$ns -> tablerender(CONTENT_LAN_24, $crumbpage);
-						}else{
-							$text = $crumbpage.$text;
-						}
-					}
-					$caption = $row['content_heading'];
+					$text		= $tp -> parseTemplate($CONTENT_CONTENT_TABLE, FALSE, $content_shortcodes);
+					$text		= $aa -> getCrumbPage("item", $array, $row['content_parent']).$text;
+					$caption	= $row['content_heading'];
 					$ns -> tablerender($caption, $text);
 
 					if($pref['cachestatus']){
