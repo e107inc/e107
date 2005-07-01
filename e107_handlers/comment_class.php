@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-06-30 17:52:52 $
+|     $Revision: 1.43 $
+|     $Date: 2005-07-01 09:31:07 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -112,7 +112,7 @@ class comment {
 
 	function render_comment($row, $table, $action, $id, $width, $subject, $addrating=FALSE) {
 		//addrating	: boolean, to show rating system in rendered comment
-		global $sql, $sql2, $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen;
+		global $sql, $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen;
 		global $pref, $comrow, $tp, $NEWIMAGE, $USERNAME, $RATING, $datestamp;
 		global $thisaction, $thistable, $thisid;
 
@@ -212,6 +212,7 @@ class comment {
 			ORDER BY comment_datestamp
 			";
 
+			$sql2 = new db;	/* a new db must be created here, for nested comment  */
 			if ($sub_total = $sql2->db_Select_gen($sub_query)) {
 				while ($row1 = $sql2->db_Fetch()) {
 					if ($pref['nested_comments']) {
@@ -225,6 +226,7 @@ class comment {
 				}
 			}
 		}
+		//echo $text;
 		return stripslashes($text);
 	}
 
