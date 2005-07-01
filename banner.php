@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/banner.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-30 13:08:26 $
+|     $Revision: 1.9 $
+|     $Date: 2005-07-01 13:48:37 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -35,8 +35,8 @@ require_once(HEADERF);
 	
 if (isset($_POST['clientsubmit'])) {
 	
-	$clean_login = einput::escape($_POST['clientlogin']);
-	$clean_password = einput::escape($_POST['clientpassword']);
+	$clean_login = $_POST['clientlogin'];
+	$clean_password = $_POST['clientpassword'];
 	
 	if (!$sql->db_Select("banner", "*", "`banner_clientlogin` = '{$clean_login}' AND `banner_clientpassword` = '{$clean_password}'")) {
 		$ns->tablerender(LAN_38, "<br /><div style='text-align:center'>".LAN_20."</div><br />");

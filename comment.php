@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-07-01 09:31:07 $
-|     $Author: lisa_ $
+|     $Revision: 1.41 $
+|     $Date: 2005-07-01 13:48:37 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -29,7 +29,7 @@ $cobj =& new comment;
 
 $temp_query = explode(".", e_QUERY);
 $action = $temp_query[0];
-$table = einput::escape($temp_query[1]);
+$table = $temp_query[1];
 $id = (isset($temp_query[2]) ? intval($temp_query[2]) : "");
 $nid = (isset($temp_query[3]) ? intval($temp_query[3]) : "");
 $xid = (isset($temp_query[4]) ? intval($temp_query[4]) : "");
@@ -53,9 +53,9 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit'])) {
 
 	$editpid = intval((isset($_POST['editpid']) ? $_POST['editpid'] : false));
 
-	$clean_authorname = einput::escape($_POST['author_name']);
-	$clean_comment = einput::escape($_POST['comment']);
-	$clean_subject = einput::escape($_POST['subject']);
+	$clean_authorname = $_POST['author_name'];
+	$clean_comment = $_POST['comment'];
+	$clean_subject = $_POST['subject'];
 
 	$cobj->enter_comment($clean_authorname, $clean_comment, $table, $id, $pid, $clean_subject);
 	if ($table == "news") {
@@ -81,9 +81,9 @@ if (isset($_POST['replysubmit'])) {
 			$pid = (isset($_POST['pid']) ? $_POST['pid'] : 0);
 			$pid = intval($pid);
 
-			$clean_authorname = einput::escape($_POST['author_name']);
-			$clean_comment = einput::escape($_POST['comment']);
-			$clean_subject = einput::escape($_POST['subject']);
+			$clean_authorname = $_POST['author_name'];
+			$clean_comment = $_POST['comment'];
+			$clean_subject = $_POST['subject'];
 
 			$cobj->enter_comment($clean_authorname, $clean_comment, $table, $nid, $pid, $clean_subject);
 			$e107cache->clear("comment.php?{$table}.{$id}");
