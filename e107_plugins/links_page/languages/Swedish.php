@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Swedish.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-28 16:28:12 $
+|     $Revision: 1.6 $
+|     $Date: 2005-07-01 12:17:38 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -47,22 +47,32 @@ define("LCLAN_OPT_26", "Länksida");
 define("LCLAN_OPT_27", "Tillåt användare att betygssätta länkar");
 define("LCLAN_OPT_28", "Visa standardikon om ingen annan finns");
 define("LCLAN_OPT_29", "Visa sortera och ordna meny");
-define("LCLAN_OPT_30", "STIG");
-define("LCLAN_OPT_31", "FALL");
+define("LCLAN_OPT_30", "Stigande");
+define("LCLAN_OPT_31", "Fallande");
 define("LCLAN_OPT_32", "Åsidosätta länkars öppningsmetod");
 define("LCLAN_OPT_33", "Standard skalningsvärde");
-define("LCLAN_OPT_34", "Länknamn");
-define("LCLAN_OPT_35", "Länk URL");
-define("LCLAN_OPT_36", "Länkordning");
-define("LCLAN_OPT_37", "Länkhänsvisn");
-define("LCLAN_OPT_38", "Länkikon");
-define("LCLAN_OPT_39", "Länkbeskrivn");
-define("LCLAN_OPT_40", "Länkkategori namn");
-define("LCLAN_OPT_41", "Länkkategori ID");
+define("LCLAN_OPT_34", "Namn");
+define("LCLAN_OPT_35", "URL");
+define("LCLAN_OPT_36", "Ordning");
+define("LCLAN_OPT_37", "Hänvisn");
+define("LCLAN_OPT_38", "");
+define("LCLAN_OPT_39", "");
+define("LCLAN_OPT_40", "Namn");
+define("LCLAN_OPT_41", "ID");
 define("LCLAN_OPT_42", "Använd individuella länkinställningar");
 define("LCLAN_OPT_43", "Öppnas i samma fönster");
 define("LCLAN_OPT_44", "Öppnas i nytt fönster");
 define("LCLAN_OPT_45", "Öppnas i 600x400 minifönster");
+define("LCLAN_OPT_46", "Vem kan hantera länkar");
+define("LCLAN_OPT_47", "Dessa användare kan lägga till/redigera sina egna personliga länkar");
+define("LCLAN_OPT_48", "Tillåt direktpostning");
+define("LCLAN_OPT_49", "Om aktiverad kommer länkar att postas direkt, annars måste en sajtadmin godkänna dem först");
+define("LCLAN_OPT_50", "Tillåt direkt radering");
+define("LCLAN_OPT_51", "Om aktiverad kan länkhanterare själva radera sina if enabled the link managers can delete their own links");
+define("LCLAN_OPT_52", "Personliga länkhanterare");
+define("LCLAN_OPT_53", "Datum");
+define("LCLAN_OPT_54", "Tillåt personlig hantering av länkar");
+define("LCLAN_OPT_55", "Tillåt kommentarer till alla länkar");
 
 define("LCLAN_ADMIN_1", "Uppdatera");
 define("LCLAN_ADMIN_2", "Länk sparad till databasen.");
@@ -161,8 +171,8 @@ define("LCLAN_ITEM_30", "Ordna om");
 define("LCLAN_ITEM_31", "Redigera");
 define("LCLAN_ITEM_32", "Radera");
 define("LCLAN_ITEM_33", "Är du säker på att du vill radera denna länk?");
-define("LCLAN_ITEM_34", "");
-define("LCLAN_ITEM_35", "");
+define("LCLAN_ITEM_34", "Ingen ikon");
+define("LCLAN_ITEM_35", "Hantera egna länkar");
 define("LCLAN_ITEM_36", "");
 define("LCLAN_ITEM_37", "");
 define("LCLAN_ITEM_38", "");
@@ -228,22 +238,22 @@ define("LAN_LINKS_31", "Sänd in en länk");
 define("LAN_LINKS_32", "Kategori:");
 define("LAN_LINKS_33", "Inga betygssatta länkar ännu.");
 define("LAN_LINKS_34", "Det finns för närvarande inga länkar");
-define("LAN_LINKS_35", "");
-define("LAN_LINKS_36", "");
-define("LAN_LINKS_37", "");
+define("LAN_LINKS_35", "Personlig länkhanterare");
+define("LAN_LINKS_36", "Länkkommentarer");
+define("LAN_LINKS_37", "Kommentarer:");
 define("LAN_LINKS_38", "");
 define("LAN_LINKS_39", "");
 
-define("LAN_LINKS_40", "");
-define("LAN_LINKS_41", "");
-define("LAN_LINKS_42", "");
-define("LAN_LINKS_43", "");
-define("LAN_LINKS_44", "");
-define("LAN_LINKS_45", "");
-define("LAN_LINKS_46", "");
-define("LAN_LINKS_47", "");
-define("LAN_LINKS_48", "");
-define("LAN_LINKS_49", "");
+define("LAN_LINKS_MANAGER_0", "Ikon");
+define("LAN_LINKS_MANAGER_1", "Länk");
+define("LAN_LINKS_MANAGER_2", "Alternativ");
+define("LAN_LINKS_MANAGER_3", "Skapa ny länk");
+define("LAN_LINKS_MANAGER_4", "Du har inga tillgängliga länkar");
+define("LAN_LINKS_MANAGER_5", "Kategori");
+define("LAN_LINKS_MANAGER_6", "");
+define("LAN_LINKS_MANAGER_7", "");
+define("LAN_LINKS_MANAGER_8", "");
+define("LAN_LINKS_MANAGER_9", "");
 
 define("LAN_LINKS_50", "");
 define("LAN_LINKS_51", "");
@@ -255,5 +265,52 @@ define("LAN_LINKS_56", "");
 define("LAN_LINKS_57", "");
 define("LAN_LINKS_58", "");
 define("LAN_LINKS_59", "");
+
+
+define("LAN_ADMIN_HELP_0", "Länksidans hjälp");
+
+define("LAN_ADMIN_HELP_1", "<i>Sidan Hantera länkar visar alla tillgängliga kategorier.</i><br /><br /><b>Detaljerad lista</b><br />Här ser du en lista med alla kategorier och deras ikoner, namn, beskrivning, alternativ och sorteringsinställningar.<br /><br /><b>Förklaring av ikoner</b><br />
+".LINK_ICON_LINK." : Länk till kategorin<br /><br />
+".LINK_ICON_EDIT." : Redigera kategorin<br /><br />
+".LINK_ICON_DELETE." : Radera kategorin<br /><br />
+".LINK_ICON_ORDER_UP." : Uppåtknappen låter dig flytta kategorin en placering uppåt i listan.<br /><br />
+".LINK_ICON_ORDER_DOWN." : Nedåtknappen låter dig flytta kategorin en placering nedåt i listan.<br />
+<br />
+<b>Ordning</b><br />Här kan du manuellt sätta ordningen på alla kategorierna. Du måste ändra ordningen i valrutorna till den önskade ordningen och sedan klicka på sortera om knappen nedan för att spara den nya ordningen.<br />");
+
+
+define("LAN_ADMIN_HELP_2", "<i>Skapa länkkategori låter dig lägga till nya kategorier</i><br /><br />Du kan ladda upp en ny ikon och tilldela den till kategorin efter uppladdning.");
+define("LAN_ADMIN_HELP_3", "<i>Sidan för länkhantering visar först alla kategorier.</i><br /><br />".LINK_ICON_LINK." : Länk till kategorin<br /><br />".LINK_ICON_EDIT." : Klicka på ikonen för att se länkarna i denna ketagori<br />");
+define("LAN_ADMIN_HELP_4", "<i>Skapa länk låter dig skapa en ny länk</i><br /><br />Du kan ladda upp en ny ikon och tilldela den till länken efter uppladdning.<br /><br />Öppningstypen låter dig bestämma på vilket sätt länken skall öppnas när användaren klickar på den.");
+define("LAN_ADMIN_HELP_5", "<i>Sidan för insända länkar visar alla länkar som användare skickat in</i><br /><br /><b>Detaljerad lista</b><br />Du ser en länk URL, namnetr på användaren som skickat in länken och alternativ.<br /><br /><b>Förklaring av ikoner</b><br />
+".LINK_ICON_EDIT." : Posta den insända länken till formuläret för att skapa länk<br /><br />
+".LINK_ICON_DELETE." : Radera den insända länken<br />
+");
+define("LAN_ADMIN_HELP_6", "<i>Sidan med alternativ låter dig ändra alternativen för länkside-plugin modulen</i><br /><br />
+Generella alternativ<br />
+Dessa alternativ används på alla länksidor.<br /><br />
+Hanterare av personliga länkar<br />
+Dessa användare har rättigheter att själva hantera sina egna länkar.<br /><br />
+Kategorisida<br />
+Här ändrar du alternativen för kategorisidan.<br /><br />
+Länksida<br />
+Dessa alternativ används på länksidorna.<br />
+");
+
+
+
+define("LAN_ADMIN_HELP_7", "<i>Sidan ör redigering av kategorier låter dig redigera befintliga kategorier</i><br /><br />Du kan ladda upp en ny ikon och tilldela den till kategorin efter uppladdning.<br />Du kan också uppdatera tidsstämpeln för länken genom att markera i kryssrutan.");
+
+define("LAN_ADMIN_HELP_8", "<i>Denna sida visar alla befintliga länkar i den valda kategorin.</i><br /><br /><b>Detaljerad lista</b><br />YDu ser en lista med länkar och deras bild, namn, alternativ och sortringsordning.<br /><br /><b>Förklaring av ikoner</b><br />
+".LINK_ICON_LINK." : Länk till webbsajten<br /><br />
+".LINK_ICON_EDIT." : Redigera länken<br /><br />
+".LINK_ICON_DELETE." : Radera länken<br /><br />
+".LINK_ICON_ORDER_UP." : Uppåtpilen låter dig flytta länken en placering uppåt i listan.<br /><br />
+".LINK_ICON_ORDER_DOWN." : Nedåtknappen låter dig flytta länken en placering nedåt i listan.<br />
+<br />
+<b>Ordning</b><br />Här kan du manuellt sätta ordningen på alla länkarna. Du måste ändra ordningen i valrutorna till den önskade ordningen och sedan klicka på sortera om knappen nedan för att spara den nya ordningen.<br />");
+
+define("LAN_ADMIN_HELP_9", "<i>Sidan för att redigera länk låter dig redigera en befintlig länk</i><br /><br />Du kan ladda upp en ny ikon och tilldela den till länken efter uppladdning.<br /><br />Öppningstypen låter dig bestämma på vilket sätt länken skall öppnas när användaren klickar på den.");
+define("LAN_ADMIN_HELP_10", "<i>Sidan för att posta en insänd länk låter dig lägga till den insända länken till den befintliga länksamlingen</i><br /><br />En kort text om insänd länk läggs till i fältet med beskrivningen.<br /><br />Du kan ladda upp en ny ikon och tilldela den till länken efter uppladdning.<br /><br />Öppningstypen låter dig bestämma på vilket sätt länken skall öppnas när användaren klickar på den.");
 
 ?>

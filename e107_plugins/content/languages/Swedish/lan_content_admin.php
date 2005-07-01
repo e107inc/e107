@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-30 13:27:33 $
+|     $Revision: 1.4 $
+|     $Date: 2005-07-01 12:17:38 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -70,11 +70,7 @@ define("CONTENT_ADMIN_CAT_LAN_47", "Skall skriv ut/e-post ikoner visas?");
 define("CONTENT_ADMIN_CAT_LAN_48", "Välj vilka användare som skall se detta objekt");
 define("CONTENT_ADMIN_CAT_LAN_49", "Välj en ikon för denna kategori");
 //define("CONTENT_ADMIN_CAT_LAN_50", "Innehållsmeny skapad<br /><br />Eftersom du skapat en huvudvärdkategori så har en meny skapats.<br />Menyfilen har sparats i din /menus folder.<br /><br />För att se menyn i aktion måste du aktivera menyn i din <a href='".e_ADMIN."menus.php'>admin menyarea</a>.");
-define("CONTENT_ADMIN_CAT_LAN_50", "
-Bara om du skapat en ny huvudvärdkategori så har en meny skapats.<br />
-Menyfilen har sparats i din /menus folder.<br />
-För att se menyn i aktion måste du aktivera menyn i din <a href='".e_ADMIN."menus.php'>admin menyarea</a>.");
-
+define("CONTENT_ADMIN_CAT_LAN_50", "Bara om du skapat en ny huvudvärdkategori så har en meny skapats.<br />Menyfilen har sparats i din /menus folder.<br />För att se menyn i aktion måste du aktivera menyn i din <a href='".e_ADMIN."menus.php'>admin menyarea</a>.");
 define("CONTENT_ADMIN_CAT_LAN_51", "Fel; Menyfil skapades inte");
 define("CONTENT_ADMIN_CAT_LAN_52", "Välj ALLTID en kategori först innan du fyller i de andra fälten!");
 define("CONTENT_ADMIN_CAT_LAN_53", "Huvudvärdkategori");
@@ -88,7 +84,6 @@ define("CONTENT_ADMIN_CAT_LAN_60", "Välj en befintlig ikon");
 define("CONTENT_ADMIN_CAT_LAN_61", "eller ladda upp en ny ikon");
 define("CONTENT_ADMIN_CAT_LAN_62", "När du laddat upp en ny kategoriikon kan tilldela ikonen med 'Välj befintlig ikon' arean ovan<br />Om du laddar upp en ny ikon kommer den att skalas till 48 pixlar, en mindre 16 pixlars ikonkommer också att skapas<br /><br />");
 define("CONTENT_ADMIN_CAT_LAN_63", "Ladda upp ikon");
-
 
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "Nödvändigt fält lämnat tomt");
@@ -115,14 +110,14 @@ define("CONTENT_ADMIN_ITEM_LAN_20", "Ikon");
 define("CONTENT_ADMIN_ITEM_LAN_21", "Detta alternativ är avaktiverat eftersom filuppladdning inte är påkopplat på din server");
 define("CONTENT_ADMIN_ITEM_LAN_22", "Foldern");
 define("CONTENT_ADMIN_ITEM_LAN_23", "är skrivskyddad, du måste sätta CHMOD 777 på den innan du kan ladda upp");
-define("CONTENT_ADMIN_ITEM_LAN_24", "Bilagor");
+define("CONTENT_ADMIN_ITEM_LAN_24", "bilaga");
 define("CONTENT_ADMIN_ITEM_LAN_25", "Ladda upp ny ikon");
 define("CONTENT_ADMIN_ITEM_LAN_26", "Ta bort");
 define("CONTENT_ADMIN_ITEM_LAN_27", "Nuvarande innehållsfil");
 define("CONTENT_ADMIN_ITEM_LAN_28", "Ladda upp ny fil");
 define("CONTENT_ADMIN_ITEM_LAN_29", "Ingen fil ännu");
 define("CONTENT_ADMIN_ITEM_LAN_30", "Innehållsfil");
-define("CONTENT_ADMIN_ITEM_LAN_31", "Bilder");
+define("CONTENT_ADMIN_ITEM_LAN_31", "bild");
 define("CONTENT_ADMIN_ITEM_LAN_32", "Befintlig innehållsbild");
 define("CONTENT_ADMIN_ITEM_LAN_33", "Ladda upp ny bild");
 define("CONTENT_ADMIN_ITEM_LAN_34", "Innehållsbild");
@@ -135,7 +130,7 @@ define("CONTENT_ADMIN_ITEM_LAN_40", "Poäng");
 define("CONTENT_ADMIN_ITEM_LAN_41", "Välj en poäng...");
 define("CONTENT_ADMIN_ITEM_LAN_42", "Markera för att uppdatera tidsstämpeln till nuvarande tid");
 define("CONTENT_ADMIN_ITEM_LAN_43", "Posta användarinsänd innehållspost");
-define("CONTENT_ADMIN_ITEM_LAN_44", "Skapa innehållapost");
+define("CONTENT_ADMIN_ITEM_LAN_44", "Skapa innehållspost");
 define("CONTENT_ADMIN_ITEM_LAN_45", "Uppdatera innehållsämne");
 define("CONTENT_ADMIN_ITEM_LAN_46", "Förhandsgranska");
 define("CONTENT_ADMIN_ITEM_LAN_47", "Förhandsgranska igen");
@@ -213,11 +208,11 @@ define("CONTENT_ADMIN_ITEM_LAN_111", "Bild laddades inte upp");
 
 define("CONTENT_ADMIN_ITEM_LAN_112", "Ladda upp en ikon, bilaga eller bild");
 define("CONTENT_ADMIN_ITEM_LAN_113", "Välj typen av uppladdning i valrutan före du laddar upp filen");
-define("CONTENT_ADMIN_ITEM_LAN_114", "Ikon");
-define("CONTENT_ADMIN_ITEM_LAN_115", "Bilaga");
-define("CONTENT_ADMIN_ITEM_LAN_116", "Bild");
+define("CONTENT_ADMIN_ITEM_LAN_114", "ikon");
+define("CONTENT_ADMIN_ITEM_LAN_115", "bilaga");
+define("CONTENT_ADMIN_ITEM_LAN_116", "bild");
 define("CONTENT_ADMIN_ITEM_LAN_117", "Insänt innehållsobjekt postat");
-define("CONTENT_ADMIN_ITEM_LAN_118", "Inga");
+define("CONTENT_ADMIN_ITEM_LAN_118", "Ingen");
 define("CONTENT_ADMIN_ITEM_LAN_119", "tilldelad");
 define("CONTENT_ADMIN_ITEM_LAN_120", "standardlayout");
 
@@ -505,7 +500,7 @@ define("CONTENT_ADMIN_OPT_LAN_16", "Sökväg till kategoriikoner (små)");
 define("CONTENT_ADMIN_OPT_LAN_17", "Sökväg till objektikoner");
 define("CONTENT_ADMIN_OPT_LAN_18", "Sökväg till objektbilder");
 define("CONTENT_ADMIN_OPT_LAN_19", "Sökväg till objektbilagor");
-");
+
 define("CONTENT_ADMIN_OPT_LAN_20", "Ange temat för denna kategori");
 define("CONTENT_ADMIN_OPT_LAN_21", "Definiera standard layoutschema");
 define("CONTENT_ADMIN_OPT_LAN_22", "Aktivera loggning av hänvisningsräknare");
