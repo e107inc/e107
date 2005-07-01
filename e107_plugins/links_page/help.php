@@ -1,4 +1,6 @@
 <?php
+$lan_file = $plugindir."languages/".e_LANGUAGE.".php";
+include_once(file_exists($lan_file) ? $lan_file : $plugindir."languages/English.php");
 
 if(!e_QUERY){
 	$text = LAN_ADMIN_HELP_1;

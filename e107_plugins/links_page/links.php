@@ -11,15 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-06-30 22:12:18 $
+|     $Revision: 1.18 $
+|     $Date: 2005-07-01 08:22:10 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
+
 require_once(e_HANDLER."rate_class.php");
 $rater = new rater;
 require_once(e_PLUGIN.'links_page/link_shortcodes.php');
+require_once(e_PLUGIN.'links_page/link_defines.php');
 require_once(e_HANDLER."userclass_class.php");
 e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
@@ -30,8 +32,6 @@ $fl = new e_file;
 require_once(e_PLUGIN.'links_page/link_class.php');
 $lc = new linkclass();
 global $tp;
-
-if(!defined("IMAGE_NEW")){ define("IMAGE_NEW", (file_exists(THEME."generic/new.png") ? THEME."generic/new.png" : e_IMAGE."generic/".IMODE."/new.png")); }
 
 $linkspage_pref = $lc -> getLinksPagePref();
 
@@ -59,12 +59,12 @@ if (isset($qs[0]) && $qs[0] == "view" && isset($qs[1]) && is_numeric($qs[1]))
 }
 
 require_once(HEADERF);
+
 if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php")) {
 	include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
 	} else {
 	include_once(e_PLUGIN."links_page/languages/English.php");
 }
-
 if (file_exists(THEME."links_template.php")) {
 	require_once(THEME."links_template.php");
 	} else {

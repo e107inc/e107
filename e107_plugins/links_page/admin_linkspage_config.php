@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_linkspage_config.php,v $
-|    $Revision: 1.1 $
-|    $Date: 2005-07-01 08:03:58 $
+|    $Revision: 1.2 $
+|    $Date: 2005-07-01 08:22:10 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -21,20 +21,7 @@ require_once("../../class2.php");
 if (!getperms("P")) {
 	header("location:".e_BASE."index.php");
 }
-
-$imagedir = e_IMAGE."/admin_images/";
-if (!defined('LINK_ICON_EDIT')) { define("LINK_ICON_EDIT", "<img src='".$imagedir."maintain_16.png' alt='' style='border:0; cursor:pointer;' />"); }
-if (!defined('LINK_ICON_DELETE')) { define("LINK_ICON_DELETE", "<img src='".$imagedir."delete_16.png' alt='' style='border:0; cursor:pointer;' />"); }
-if (!defined('LINK_ICON_DELETE_BASE')) { define("LINK_ICON_DELETE_BASE", $imagedir."delete_16.png"); }
-if (!defined('LINK_ICON_LINK')) { define("LINK_ICON_LINK", "<img src='".$imagedir."leave_16.png' alt='' style='border:0; cursor:pointer;' />"); }
-if (!defined('LINK_ICON_ORDER_UP_BASE')) { define("LINK_ICON_ORDER_UP_BASE", $imagedir."up.png"); }
-if (!defined('LINK_ICON_ORDER_DOWN_BASE')) { define("LINK_ICON_ORDER_DOWN_BASE", $imagedir."down.png"); }
-if (!defined('LINK_ICON_ORDER_UP')) { define("LINK_ICON_ORDER_UP", "<img src='".$imagedir."up.png' alt='' style='border:0; cursor:pointer;' />"); }
-if (!defined('LINK_ICON_ORDER_DOWN')) { define("LINK_ICON_ORDER_DOWN", "<img src='".$imagedir."down.png' alt='' style='border:0; cursor:pointer;' />"); }
-
-$lan_file = $plugindir."languages/".e_LANGUAGE.".php";
-include_once(file_exists($lan_file) ? $lan_file : $plugindir."languages/English.php");
-
+require_once(e_PLUGIN.'links_page/link_defines.php');
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."form_handler.php");
@@ -45,6 +32,9 @@ e107_require_once(e_HANDLER.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
 require_once(e_PLUGIN.'links_page/link_class.php');
 $lc = new linkclass();
+
+$lan_file = $plugindir."languages/".e_LANGUAGE.".php";
+include_once(file_exists($lan_file) ? $lan_file : $plugindir."languages/English.php");
 
 $linkspage_pref = $lc -> getLinksPagePref();
 
