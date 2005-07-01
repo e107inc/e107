@@ -10,9 +10,9 @@
 |    Released   under the   terms and   conditions of the
 |    GNU    General Public  License (http://gnu.org).
 |
-|    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_config.php,v $
-|    $Revision: 1.18 $
-|    $Date: 2005-06-30 22:12:18 $
+|    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_linkspage_config.php,v $
+|    $Revision: 1.1 $
+|    $Date: 2005-07-01 08:03:58 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -21,11 +21,20 @@ require_once("../../class2.php");
 if (!getperms("P")) {
 	header("location:".e_BASE."index.php");
 }
-if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php")) {
-	include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
-} else {
-	include_once(e_PLUGIN."links_page/languages/English.php");
-}
+
+$imagedir = e_IMAGE."/admin_images/";
+if (!defined('LINK_ICON_EDIT')) { define("LINK_ICON_EDIT", "<img src='".$imagedir."maintain_16.png' alt='' style='border:0; cursor:pointer;' />"); }
+if (!defined('LINK_ICON_DELETE')) { define("LINK_ICON_DELETE", "<img src='".$imagedir."delete_16.png' alt='' style='border:0; cursor:pointer;' />"); }
+if (!defined('LINK_ICON_DELETE_BASE')) { define("LINK_ICON_DELETE_BASE", $imagedir."delete_16.png"); }
+if (!defined('LINK_ICON_LINK')) { define("LINK_ICON_LINK", "<img src='".$imagedir."leave_16.png' alt='' style='border:0; cursor:pointer;' />"); }
+if (!defined('LINK_ICON_ORDER_UP_BASE')) { define("LINK_ICON_ORDER_UP_BASE", $imagedir."up.png"); }
+if (!defined('LINK_ICON_ORDER_DOWN_BASE')) { define("LINK_ICON_ORDER_DOWN_BASE", $imagedir."down.png"); }
+if (!defined('LINK_ICON_ORDER_UP')) { define("LINK_ICON_ORDER_UP", "<img src='".$imagedir."up.png' alt='' style='border:0; cursor:pointer;' />"); }
+if (!defined('LINK_ICON_ORDER_DOWN')) { define("LINK_ICON_ORDER_DOWN", "<img src='".$imagedir."down.png' alt='' style='border:0; cursor:pointer;' />"); }
+
+$lan_file = $plugindir."languages/".e_LANGUAGE.".php";
+include_once(file_exists($lan_file) ? $lan_file : $plugindir."languages/English.php");
+
 require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
 require_once(e_HANDLER."form_handler.php");
@@ -159,6 +168,59 @@ if (isset($qs[0]) && $qs[0] == 'sn') {
 //options
 if (isset($qs[0]) && $qs[0] == 'opt') {
 	$lc->show_pref_options();
+}
+
+// ##### Display options --------------------------------------------------------------------------
+function admin_linkspage_config_adminmenu(){
+	global $qs, $sql;
+	if ($qs[0] == "") {
+		$act = "cat";
+	}else{
+		$act = $qs[0];
+		if(isset($qs[1])){
+			if($qs[1] == "create"){
+				$act .= ".create";
+			}
+			if($qs[1] == "edit"){
+				$act .= "";
+			}
+			if($qs[1] == "view"){
+				$act .= "";
+			}
+		}
+	}
+
+	$var['cat']['text'] = LCLAN_ADMINMENU_2;
+	$var['cat']['link'] = e_SELF;
+
+	$var['cat.create']['text'] = LCLAN_ADMINMENU_3;
+	$var['cat.create']['link'] = e_SELF."?cat.create";
+
+	$var['link']['text'] = LCLAN_ADMINMENU_4;
+	$var['link']['link'] = e_SELF."?link";
+
+	$var['link.create']['text'] = LCLAN_ADMINMENU_5;
+	$var['link.create']['link'] = e_SELF."?link.create";
+		
+	if ($tot = $sql->db_Select("tmp", "*", "tmp_ip='submitted_link' ")) {
+		$var['sn']['text'] = LCLAN_ADMINMENU_7." (".$tot.")";
+		$var['sn']['link'] = e_SELF."?sn";
+	}
+		
+	$var['opt']['text'] = LCLAN_ADMINMENU_6;
+	$var['opt']['link'] = e_SELF."?opt";
+		
+	show_admin_menu(LCLAN_ADMINMENU_1, $act, $var);
+		
+	if ($sql->db_Select("links_page_cat", "*")) {
+		while ($row = $sql->db_Fetch()) {
+			$cat_var[$row['link_category_id']]['text'] = $row['link_category_name'];
+			$cat_var[$row['link_category_id']]['link'] = e_SELF."?link.view.".$row['link_category_id'];
+		}
+		 
+		$active = ($qs[0] == 'link') ? $id : FALSE;
+		show_admin_menu(LCLAN_ADMINMENU_8, $active, $cat_var);
+	}
 }
 
 require_once(e_ADMIN.'footer.php');

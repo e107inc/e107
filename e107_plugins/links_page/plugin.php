@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-30 22:12:19 $
+|     $Revision: 1.11 $
+|     $Date: 2005-07-01 08:03:58 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,7 @@ $eplug_folder = "links_page";
 $eplug_menu_name = "";
 	
 // Name of the admin configuration file --------------------------------------------------------------------------
-$eplug_conffile = "admin_config.php";
+$eplug_conffile = "admin_linkspage_config.php";
 	
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/linkspage_32.png";
