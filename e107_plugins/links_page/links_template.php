@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-30 22:12:19 $
+|     $Revision: 1.10 $
+|     $Date: 2005-07-01 09:24:36 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -126,6 +126,9 @@ $sc_style['LINK_CAT_RATING']['post'] = "</td></tr>";
 $sc_style['LINK_CAT_SUBMIT']['pre'] = "<div style='text-align:right;'>";
 $sc_style['LINK_CAT_SUBMIT']['post'] = "</div>";
 
+$sc_style['LINK_CAT_COMMENT']['pre'] = "<span class='forumheader' style='vertical-align:middle;'>";
+$sc_style['LINK_CAT_COMMENT']['post'] = "</span>";
+
 
 $LINK_CAT_TABLE_START = "
 	<div style='text-align:center'>
@@ -137,6 +140,7 @@ $LINK_CAT_TABLE = "
 		{LINK_CAT_BUTTON}
 		<td class='fcaption' style='width:90%'>
 			{LINK_CAT_NEW} {LINK_CAT_APPEND} {LINK_CAT_NAME} </a>
+			{LINK_CAT_COMMENT}
 		</td>
 		{LINK_CAT_REFER}
 	</tr>

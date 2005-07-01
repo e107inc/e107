@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-07-01 08:03:58 $
+|     $Revision: 1.18 $
+|     $Date: 2005-07-01 09:24:35 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -55,8 +55,8 @@ define("LCLAN_OPT_34", "name");
 define("LCLAN_OPT_35", "url");
 define("LCLAN_OPT_36", "order");
 define("LCLAN_OPT_37", "refer");
-define("LCLAN_OPT_38", "link_icon");
-define("LCLAN_OPT_39", "link_desc");
+define("LCLAN_OPT_38", "");
+define("LCLAN_OPT_39", "");
 define("LCLAN_OPT_40", "name");
 define("LCLAN_OPT_41", "id");
 define("LCLAN_OPT_42", "use individual link setting");
@@ -72,6 +72,7 @@ define("LCLAN_OPT_51", "if enabled the link managers can delete their own links"
 define("LCLAN_OPT_52", "personal link managers");
 define("LCLAN_OPT_53", "date");
 define("LCLAN_OPT_54", "allow personal management on links");
+define("LCLAN_OPT_55", "allow comments on all links");
 
 define("LCLAN_ADMIN_1", "update");
 define("LCLAN_ADMIN_2", "Link saved to database.");
@@ -238,8 +239,8 @@ define("LAN_LINKS_32", "Category:");
 define("LAN_LINKS_33", "No Links are rated yet.");
 define("LAN_LINKS_34", "There are currently no links");
 define("LAN_LINKS_35", "personal links manager");
-define("LAN_LINKS_36", "");
-define("LAN_LINKS_37", "");
+define("LAN_LINKS_36", "link comments");
+define("LAN_LINKS_37", "comments:");
 define("LAN_LINKS_38", "");
 define("LAN_LINKS_39", "");
 

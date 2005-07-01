@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-07-01 08:22:10 $
+|     $Revision: 1.19 $
+|     $Date: 2005-07-01 09:24:36 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -29,6 +29,8 @@ require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
+require_once(e_HANDLER."comment_class.php");
+$cobj = new comment;
 require_once(e_PLUGIN.'links_page/link_class.php');
 $lc = new linkclass();
 global $tp;
@@ -44,6 +46,23 @@ if(e_QUERY){
 		$from = array_shift($qs);
 	}else{
 		$from = "0";
+	}
+}
+
+if (isset($_POST['commentsubmit'])) {
+	if (!$sql->db_Select("links_page", "link_id", "link_id = '{$qs[1]}' ")) {
+		header("location:".e_BASE."index.php");
+		exit;
+	} else {
+		$row = $sql->db_Fetch();
+		if ($row[0] && (ANON === TRUE || USER === TRUE)) {
+
+			$clean_authorname = einput::escape($_POST['author_name']);
+			$clean_comment = einput::escape($_POST['comment']);
+			$clean_subject = einput::escape($_POST['subject']);
+			$cobj->enter_comment($clean_authorname, $clean_comment, "links_page", $qs[1], $pid, $clean_subject);
+			$e107cache->clear("comment.links_page.{$qs[1]}");
+		}
 	}
 }
 
@@ -110,12 +129,44 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 
 } else {
 
+	//comments on links
+	if (isset($qs[0]) && $qs[0] == "comment" && isset($qs[1]) && is_numeric($qs[1]) ){
+		if(isset($linkspage_pref["link_comment"]) && $linkspage_pref["link_comment"]){
+			$qry = "
+			SELECT l.*, lc.*
+			FROM #links_page AS l
+			LEFT JOIN #links_page_cat AS lc ON lc.link_category_id = l.link_category
+			WHERE l.link_id = '".$qs[1]."'
+			";
+			$link_comment_table_string = "";
+			if(!$linkcomment = $sql -> db_Select_gen($qry)){
+				js_location(e_SELF);
+			}else{
+				$row = $sql->db_Fetch();
+				$link_append = parse_link_append();
+				$LINK_CAT_APPEND	= $link_append;
+				$LINK_CAT_NAME		= $row['link_name'];
+				$subject			= $row['link_name'];
+				$text = $tp -> parseTemplate($LINK_CAT_TABLE, FALSE, $link_shortcodes);
+				$ns->tablerender(LAN_LINKS_36, $text);
+
+
+				$cobj->compose_comment("links_page", "comment", $qs[1], $width, $subject, $showrate=FALSE);
+				unset($row);
+				require_once(FOOTERF);
+				exit;
+			}
+		}else{
+			js_location(e_SELF);
+		}
+	}
+
 	//personal link managers
 	if (isset($qs[0]) && $qs[0] == "manage"){
 		if(!(isset($linkspage_pref['link_manager']) && $linkspage_pref['link_manager'])){
 			js_location(e_SELF);
 		}
-		if($linkspage_pref['link_directdelete']){
+		if(isset($linkspage_pref['link_directdelete']) && $linkspage_pref['link_directdelete']){
 			if(isset($_POST['delete'])){
 				$tmp = array_pop(array_flip($_POST['delete']));
 				list($delete, $del_id) = explode("_", $tmp);
@@ -147,6 +198,7 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 			WHERE l.link_author = '".USERID."'
 			ORDER BY l.link_name
 			";
+			$link_table_manage = "";
 			if(!$manager_total = $sql -> db_Select_gen($qry)){
 				$text = LAN_LINKS_MANAGER_4;
 			}else{
@@ -155,7 +207,7 @@ if (!isset($qs[0]) && $linkspage_pref['link_page_categories'])
 					$link_table_manage .= $tp -> parseTemplate($LINK_TABLE_MANAGE, FALSE, $link_shortcodes);
 				}
 				$link_table_manage_end		= $tp -> parseTemplate($LINK_TABLE_MANAGE_END, FALSE, $link_shortcodes);
-				$text .= $link_table_manage_start.$link_table_manage.$link_table_manage_end;
+				$text = $link_table_manage_start.$link_table_manage.$link_table_manage_end;
 			}
 			$ns->tablerender(LAN_LINKS_35, $text);
 
