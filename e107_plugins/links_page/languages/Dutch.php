@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Dutch.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-07-01 19:53:01 $
+|     $Revision: 1.9 $
+|     $Date: 2005-07-01 19:55:46 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -55,8 +55,8 @@ define("LCLAN_OPT_34", "link_naam");
 define("LCLAN_OPT_35", "link_url");
 define("LCLAN_OPT_36", "link_volgorde");
 define("LCLAN_OPT_37", "link_verwijzer");
-define("LCLAN_OPT_38", "link_pictogram");
-define("LCLAN_OPT_39", "link_beschr");
+define("LCLAN_OPT_38", "");
+define("LCLAN_OPT_39", "");
 define("LCLAN_OPT_40", "link categorienaam");
 define("LCLAN_OPT_41", "link categorie id");
 define("LCLAN_OPT_42", "gebruiken individuele link instelling");
