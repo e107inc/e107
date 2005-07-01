@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_users_extended.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-21 20:46:08 $
+|     $Revision: 1.4 $
+|     $Date: 2005-07-01 19:53:00 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
 define("EXTLAN_1", "Naam");
 define("EXTLAN_2", "Type");
 define("EXTLAN_3", "Waarden");
-define("EXTLAN_4", "verpl");
+define("EXTLAN_4", "Verplicht");
 define("EXTLAN_5", "Van toepassing");
 define("EXTLAN_6", "Leestoegang");
 define("EXTLAN_7", "Schrijftoegang");
@@ -32,7 +32,7 @@ define("EXTLAN_20", "Bepaalt voor welke gebruikers dit veld van toepassing is.")
 define("EXTLAN_21", "Bepaalt welke gebruikers dit veld in hun instellingen te zien krijgen.");
 define("EXTLAN_22", "Bepaalt welke gebruikers dit veld in hun gebruikerspagina te zien krijgen.");
 define("EXTLAN_23", "Toevoegen uitgebreid veld");
-define("EXTLAN_24", "Bijwerken uitgebried veld");
+define("EXTLAN_24", "Bijwerken uitgebreid veld");
 define("EXTLAN_25", "omlaag");
 define("EXTLAN_26", "omhoog");
 define("EXTLAN_27", "Bevestig verwijderen");

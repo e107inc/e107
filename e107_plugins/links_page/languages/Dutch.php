@@ -4,13 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Dutch.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-28 20:35:48 $
+|     $Revision: 1.8 $
+|     $Date: 2005-07-01 19:53:01 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
-define("pagina_NAME", "Links");
-
+define("PAGE_NAME", "Links");
 define("LCLAN_PLUGIN_LAN_1", "Linkspagina");
 define("LCLAN_PLUGIN_LAN_2", "Linkspagina waarop externe weblinks kunnen worden getoond");
 define("LCLAN_PLUGIN_LAN_3", "Configureren linkspagina");
@@ -60,10 +59,22 @@ define("LCLAN_OPT_38", "link_pictogram");
 define("LCLAN_OPT_39", "link_beschr");
 define("LCLAN_OPT_40", "link categorienaam");
 define("LCLAN_OPT_41", "link categorie id");
-define("LCLAN_OPT_42", "gebriken individuele link instelling");
+define("LCLAN_OPT_42", "gebruiken individuele link instelling");
 define("LCLAN_OPT_43", "Openen in hetzelfde venster");
 define("LCLAN_OPT_44", "Openen in nieuw venster");
 define("LCLAN_OPT_45", "Openen in 600x400 minivenster");
+
+define("LCLAN_OPT_46", "wie kan de links beheren");
+define("LCLAN_OPT_47", "deze gebruikers kunnen hun persoonlijke links beheren");
+define("LCLAN_OPT_48", "direct plaatsen toegestaan");
+define("LCLAN_OPT_49", "wanneer geactiveerd, worden links direct geplaatst, anders moet eerst een beheerder ze goedkeuren");
+define("LCLAN_OPT_50", "direct verwijderen toegestaan");
+define("LCLAN_OPT_51", "wanneer geactiveerd kunnen de linkbeheerders hun eigen links verwijderen");
+define("LCLAN_OPT_52", "persoonlijke link beheerders");
+define("LCLAN_OPT_53", "datum");
+define("LCLAN_OPT_54", "persoonlijk beheer van links toestaan");
+define("LCLAN_OPT_55", "reacties bij alle links toestaan");
+
 define("LCLAN_ADMIN_1", "bijwerken");
 define("LCLAN_ADMIN_2", "Link opgeslagen in database.");
 define("LCLAN_ADMIN_3", "Link bijgewerkt in database.");
@@ -158,8 +169,9 @@ define("LCLAN_ITEM_30", "hersorteren");
 define("LCLAN_ITEM_31", "bewerken");
 define("LCLAN_ITEM_32", "verwijderen");
 define("LCLAN_ITEM_33", "Weet je zeker dat je deze link wilt verwijderen?");
-define("LCLAN_ITEM_34", "");
-define("LCLAN_ITEM_49", "");
+define("LCLAN_ITEM_34", "geen pictogram");
+define("LCLAN_ITEM_35", "beheren persoonlijke links");
+
 define("LAN_LINKS_1", "Aantal links");
 define("LAN_LINKS_2", "Aantal geactiveerde links");
 define("LAN_LINKS_16", "in deze categorie");
@@ -181,6 +193,16 @@ define("LAN_LINKS_31", "Een link aanmelden");
 define("LAN_LINKS_32", "Categorie:");
 define("LAN_LINKS_33", "Nog geen links beoordeeld.");
 define("LAN_LINKS_34", "Momenteel geen links aanwezig");
+define("LAN_LINKS_35", "persoonlijke links beheerder");
+define("LAN_LINKS_36", "link reacties");
+define("LAN_LINKS_37", "reacties:");
+
+define("LAN_LINKS_MANAGER_0", "pictogram");
+define("LAN_LINKS_MANAGER_1", "link");
+define("LAN_LINKS_MANAGER_2", "opties");
+define("LAN_LINKS_MANAGER_3", "creëren nieuwe link");
+define("LAN_LINKS_MANAGER_4", "je hebt nu nog geen links");
+define("LAN_LINKS_MANAGER_5", "categorie");
 
 define("LAN_61", "Link categorieën");
 define("LAN_62", "categorieën");
@@ -416,5 +438,27 @@ define("NT_LAN_LP_3", "Link aangemeld");
 
 define("LNK_SCH_LAN_2", "Alle linkcategorieën");
 define("LNK_SCH_LAN_3", "Alle linkdetails");
+
+define("LAN_ADMIN_HELP_0", "linkspage helpfunctie");
+
+define("LAN_ADMIN_HELP_1", "<i>the manage link categories page shows all categories present.</i><br /><br /><b>detailed list</b><br />You see a list of all categories with their icon, name and description, options, and sorting options.<br /><br /><b>explanation of icons</b><br />
+
+define("LAN_ADMIN_HELP_2", "<i>the create link category page allows you to add new categories</i><br /><br />You can upload a new icon, and after uploading assign the icon to the category.");
+
+define("LAN_ADMIN_HELP_3", "<i>the manage links page first show all categories.</i><br /><br />".LINK_ICON_LINK." : link to the category<br /><br />".LINK_ICON_EDIT." : click the icon to view all links in this category<br />");
+
+define("LAN_ADMIN_HELP_4", "<i>the create link page allows you to add a new link</i><br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
+
+define("LAN_ADMIN_HELP_5", "<i>the submitted links page shows all links that are submitted by users</i><br /><br /><b>detailed list</b><br />You see the link url, the name of the user who submitted the link and options.<br /><br /><b>explanation of icons</b><br />
+
+define("LAN_ADMIN_HELP_6", "<i>the options page allows you to change the behaviour of the links_page plugin</i><br /><br />
+
+define("LAN_ADMIN_HELP_7", "<i>the edit link category page allows you to edit an existing category</i><br /><br />You can upload a new icon, and after uploading assign the icon to the category.<br />You can update the timestamp of the link by checking the box.");
+
+define("LAN_ADMIN_HELP_8", "<i>this page shows all existing links in the selected category.</i><br /><br /><b>detailed list</b><br />You see a list of the links with their image, name, options, and sorting options.<br /><br /><b>explanation of icons</b><br />
+
+define("LAN_ADMIN_HELP_9", "<i>the edit link page allows you to edit an existing link</i><br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
+
+define("LAN_ADMIN_HELP_10", "<i>the post submitted link page allows you to add a submitted link to the existing links</i><br /><br />A small submitted text is added into the description field.<br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
 
 ?>

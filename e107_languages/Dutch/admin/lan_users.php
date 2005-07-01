@@ -104,7 +104,7 @@ define("USRLAN_134", "Het activeren van deze optie zal de gebruiker automatisch 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Weergavenaam");
 define("DUSRLAN_3", "Gebruikersnaam");
-define("DUSRLAN_4", "Maatwerk titel);
+define("DUSRLAN_4", "Maatwerk titel");
 define("DUSRLAN_5", "Wachtwoord");
 define("DUSRLAN_6", "Sessie");
 define("DUSRLAN_7", "E-mailadres");

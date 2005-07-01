@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_help.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-21 20:45:32 $
+|     $Revision: 1.7 $
+|     $Date: 2005-07-01 19:53:00 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -77,10 +77,8 @@ define("CONTENT_ADMIN_HELP_ORDER_3", "
 
 define("CONTENT_ADMIN_HELP_OPTION_1", "Op deze pagina kun je de opties voor hoofdoudercategorie instellen, of je kunt de standaardvoorkeuren wijzigen.<br /><br /><b>uitleg van de gebruikte pictogrammen</b><br />".CONTENT_ICON_USER." : link naar het auteursprofiel<br />".CONTENT_ICON_LINK." : link naar de categorie<br />".CONTENT_ICON_OPTIONS." : bewerk de opties<br />");
 
-define("CONTENT_ADMIN_HELP_OPTION_2", "
-<i>deze pagina toont de opties die je voor de hoofdouder kunt instellen. Elke hoofdouder heeft een eigen set opties, let er dus op de juiste gegevens goed in te vullen.</i><br /><br />
-<b>standaardwaarden</b><br />Standaard zijn alle waarden al aanwezig en bijgewerkt in de voorkeuren als je deze pagina bekijkt, je kunt alles naar willekeur aanpassen.<br /><br />
-");
+//define("CONTENT_ADMIN_HELP_OPTION_2", "<i>deze pagina toont de opties die je voor de hoofdouder kunt instellen. Elke hoofdouder heeft een eigen set opties, let er dus op de juiste gegevens goed in te vullen.</i><br /><br />");
+//<b>standaardwaarden</b><br />Standaard zijn alle waarden al aanwezig en bijgewerkt in de voorkeuren als je deze pagina bekijkt, je kunt alles naar willekeur aanpassen.<br /><br />
 
 define("CONTENT_ADMIN_HELP_MANAGER_1", "Op deze pagina zie je het overzicht van alle categorieën. Je kunt de 'persoonlijke content beheerder' voor elke categorie beheren door op het pictogram te kliken.<br /><br /><b>uitleg van de gebruikte pictogrammen</b><br />".CONTENT_ICON_USER." : link naar het auteursprofiel<br />".CONTENT_ICON_LINK." : link naar de categorie<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : bewerk de persoonlijke content beheerders<br />");
 
@@ -88,8 +86,6 @@ define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>op deze pagina kun je gebruikers toew
 
 define("CONTENT_ADMIN_HELP_SUBMIT_1", "<i>Op deze pagina zie je een overzicht van alle door gebruikers aangemelde contentonderwerpen.</i><br /><br />
 <b>detail overzicht</b><br />Je ziet hier een overzicht van deze content onderwerpen met hun id, pictogram, hoofd ouder, kop [onderkop], auteur en opties.<br /><br /><b>opties</b><br />je kunt een content onderwerp met behulp van de knoppen plaatsen of verwijderen.");
-
-
 
 define("CONTENT_ADMIN_HELP_CAT_5", "");
 
@@ -110,6 +106,36 @@ define("CONTENT_ADMIN_HELP_CAT_7", "<i>op deze pagina kun je beheerders toewijze
 Wijs de beheerders toe vanuit de linkerkolom door op de naam te klikken. de naam wordt verplaatst naar de rechterkolom. na het klikken op de toewijsknop worden de beheerders in de rechterkolom toegewezen aan deze catagorie.");
 
 define("CONTENT_ADMIN_HELP_ITEM_LETTERS", "Hieronder zie je een lijst met de beginletters van de koppen van onderwerpen in deze categorie.<br />Door op een letter te klikken zie je een overzicht met allen onderwerpen die met die letter beginnen. Je kunt ook de ALLES knop indrukken om alle onderwerpen in deze categorie te laten tonen.");
+
+
+
+
+
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_1", "this page allows you to set options for the admin create item page.<br /><br />You can define which sections are available when an admin (or personal content manager) creates a new content item<br /><br /><b>custom data tags</b><br />you can allow a user or admin to add optional fields to the content item by using these custom data tags. These optional fields are blank key = > value pairs. For instance: you could add a key field for 'photographer' and provide the value field with 'all photos by me'. Both these key and value fields are empty textfields which will be present in the create form.<br /><br /><b>preset data tags</b><br />apart from the custom data tags, you can provide preset data tags. The difference is that in preset data tags, the key field already is given and the user only needs to provide the value field for the preset. In the same example as above 'photographer' can be predefined, and the user needs to provide 'all photos by me'. You can choose the element type by selecting one option in the selectbox. In the popup window, you can provide all the information for the preset data tag.<br />");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_2", "The Submit Options have affect on the user submit form for content items.<br /><br />You can define which sections are available for a user when submitting a content item.<br /><br />".CONTENT_ADMIN_OPT_LAN_11.":<br />".CONTENT_ADMIN_OPT_LAN_12."");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_3", "In the Path and Theme Options you can define where images and files are stored.<br /><br />you can define which theme will be used by this main parent. You can create additional themes by copying (and renaming) the whole 'default' directory in your templates directory.<br /><br />You can define a default layout scheme for new content items. You can create new layout schemes by creating a content_content_template_XXX.php file in your 'templates/default' folder. These layouts can be used to give each content item in this main parent a different layout.<br /><br />");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_4", "The General Options are options that are used throughout the content pages of the content management plugin.");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_5", "These options have affect on the Personal Content Manager area on the content management admin area.<br /><br />".CONTENT_ADMIN_OPT_LAN_63."");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_6", "These Options are used in the Menu for this main parent if you have activated the menu.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."<br /><br />".CONTENT_ADMIN_OPT_LAN_118.":<br />".CONTENT_ADMIN_OPT_LAN_119."<br /><br />");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_7", "The Content Item Preview options have affect on the small preview that is given for a content item.<br /><br />This preview is given on several pages, like the recent page, the view items in category page and the view items of author page.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_8", "The Category Pages show information on the content categories in this main parent.<br /><br />There are two distinct areas present:<br /><br />all categories page:<br />this page shows all the categories in this main parent<br /><br />view category page:<br />this page shows the category item, optionally the subcategories in that category and the content items in that category or those categories<br />");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_9", "The Content Page shows the Content Item.<br /><br />you can define which sections to show by checking/unchecking the boxes.<br /><br />you can show the emailaddress of a non-member author.<br /><br />you can override the email/print/pdf icons, the rating system and the comments.<br /><br />".CONTENT_ADMIN_OPT_LAN_74."");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_10", "The Author Page shows a list of all unique authors of the content items in this main parent.<br /><br />you can define which sections to show by checking/unchecking the boxes.<br /><br />You can limit the number of items to show per page.<br />");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_11", "The Archive Page shows all content items in the main parent.<br /><br />you can define which sections to show by checking/unchecking the boxes.<br /><br />you can show the emailaddress of a non-member author.<br /><br />You can limit the number of items to show per page.<br /><br />".CONTENT_ADMIN_OPT_LAN_66."<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "The Top Rated Page shows all content items that have been rated by users.<br /><br />You can choose the sections to display by checking the boxes.<br /><br />Also you can define if the emailaddress of a non-member author will be displayed.");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "The Top Score Page shows all content items that have been given a score by the author of the content item.<br /><br />You can choose the sections to display by checking the boxes.<br /><br />Also you can define if the emailaddress of a non-member author will be displayed.");
 
 
 ?>

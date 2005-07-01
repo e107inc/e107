@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_theme.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 04:44:52 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-01 19:53:00 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -50,7 +50,7 @@ define("TPVLAN_37", "Theme opties opgeslagen");
 define("TPVLAN_38", "Upload theme");
 define("TPVLAN_39", "Beschikbare themes");
 define("TPVLAN_40", "Beheerscherm theme ingesteld op");
-define("TPVLAN_41", "Select de te gebruiken beheerscherm layout");
+define("TPVLAN_41", "Kies de te gebruiken beheerscherm layout");
 define("TPVLAN_42", "Opslaan beheerscherm opties");
 define("TPVLAN_43", "Beheerscherm opties opgeslagen");
 ?>

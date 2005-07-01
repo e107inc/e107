@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-29 21:28:37 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-01 19:53:00 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -155,7 +155,7 @@ define("CONTENT_ADMIN_ITEM_LAN_66", "Hieronder die je de startletters van de con
 define("CONTENT_ADMIN_ITEM_LAN_67", "Hieronder zie je de lijst met contentonderwerpen in de geselecteerde categorie of die beginnen met de gekozen letter.<br />Je kunt onderwerpen bewerken of verwijderen door op de betreffende knop rechts te drukken.");
 define("CONTENT_ADMIN_ITEM_LAN_68", "Hieronder kun je maatwerk informatie toevoegen bij dit contentonderwerp. Alle maatwerkgegevens moeten zowel een sleutel als een waarde hebben. Je kunt sleutel in het linker veld definiëren en de bijbehorende waarde in het rechterveld.<br />(bij voorbeeld: sleutel='fotografie' en waarde ='al mijn eigen foto's'.");
 define("CONTENT_ADMIN_ITEM_LAN_69", "Hier kun je picrogrammen, bijlagen en-of afbeeldingen uploaden die bij het onderwerp horen. De toegestane bestandsformaten zijn: ");
-define("CONTENT_ADMIN_ITEM_LAN_70", "In het volgende veld kun je bepaalde meta sleutelwoorden die bij dit onderwerp horen opgeven. Deze sleutelwoorden worden bovenaan de pagine weergegeven. De verschillende worden moeten met comma's worden gescheiden, spaties zijn niet toegestaan!");
+define("CONTENT_ADMIN_ITEM_LAN_70", "De verschillende woorden moeten met comma's worden gescheiden, spaties zijn niet toegestaan!");
 define("CONTENT_ADMIN_ITEM_LAN_71", "laten staan al jij het onderwerp hebt geschreven");
 define("CONTENT_ADMIN_ITEM_LAN_72", "bepalen auteursgegevens");
 define("CONTENT_ADMIN_ITEM_LAN_73", "opgeven startdatum voor dit onderwerp (niet invullen als niet benodigd)");
@@ -475,7 +475,7 @@ define("CONTENT_ADMIN_OPT_LAN_4", "aantal bijlagen dat kan worden geupload");
 define("CONTENT_ADMIN_OPT_LAN_5", "aantal beschikbare maatwerk datatags");
 define("CONTENT_ADMIN_OPT_LAN_6", "vooringestelde datatags");
 define("CONTENT_ADMIN_OPT_LAN_7", "bepaal de standaard vooringestelde datatags");
-define("CONTENT_ADMIN_OPT_LAN_8", "
+//define("CONTENT_ADMIN_OPT_LAN_8", "
 Hier kun je extra vooringestelde data tags instellen. De velden die je hier opgeeft, zijn de sleutels van de sleutel <-> waarde data tags. Ze zijn voorzien van een tekstveld voor het creatieformulier voor beheer. Let op: ze horen niet bij het aantal maatwerk data tags dat je hierboven opgaf, maar ze worden aanvullend gebruikt.<br />Deze vooringestelde Tags zijn nuttig als je een bepaalde maatwerk tag beschikbaar wilt hebben voor elk nieuw onderwerk. Bijvoorbeeld als je altijd een waarde voor 'fotograaf' wilt invullen, kun je een dergelijke voorinstelling opgeven, die altijd wordt getoond bij ieder onderwerp bij deze hoofdouder.");
 define("CONTENT_ADMIN_OPT_LAN_9", "toestaan aanmelden onderwerpen ?");
 define("CONTENT_ADMIN_OPT_LAN_10", "wie kan onderwerpen aanmelden ?");
