@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-07-01 09:24:36 $
-|     $Author: lisa_ $
+|     $Revision: 1.20 $
+|     $Date: 2005-07-01 13:48:38 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -57,10 +57,7 @@ if (isset($_POST['commentsubmit'])) {
 		$row = $sql->db_Fetch();
 		if ($row[0] && (ANON === TRUE || USER === TRUE)) {
 
-			$clean_authorname = einput::escape($_POST['author_name']);
-			$clean_comment = einput::escape($_POST['comment']);
-			$clean_subject = einput::escape($_POST['subject']);
-			$cobj->enter_comment($clean_authorname, $clean_comment, "links_page", $qs[1], $pid, $clean_subject);
+			$cobj->enter_comment($_POST['author_name'], $_POST['comment'], "links_page", $qs[1], $pid, $_POST['subject']);
 			$e107cache->clear("comment.links_page.{$qs[1]}");
 		}
 	}

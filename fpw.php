@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/fpw.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-30 13:08:26 $
+|     $Revision: 1.10 $
+|     $Date: 2005-07-01 13:48:37 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -89,8 +89,8 @@ if (isset($_POST['pwsubmit'])) {
 		}
 	}
 	
-	$clean_email = einput::escape($_POST['email']);
-	$clean_username = einput::escape($_POST['username']);
+	$clean_email = $_POST['email'];
+	$clean_username = $_POST['username'];
 	if ($sql->db_Select("user", "*", "user_email='{$clean_email}' AND user_name='{$clean_username}' ")) {
 		$row = $sql->db_Fetch();
 		 extract($row);
