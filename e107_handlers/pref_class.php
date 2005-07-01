@@ -128,7 +128,10 @@ class prefs {
 
 		switch ($table ) {
 			case 'core':
-			$sql->db_Update($table, "e107_value='$val' WHERE e107_name='$name'");
+			if(!$sql->db_Update($table, "e107_value='$val' WHERE e107_name='$name'"))
+			{
+				$sql->db_Insert($table, "'{$name}', '{$val}'");
+			}
 			$this->prefVals[$table][$name] = $val;
 			unset($this->prefArrays[$table][$name]);
 			break;
