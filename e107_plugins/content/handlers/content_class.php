@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.74 $
-|		$Date: 2005-07-01 13:15:18 $
+|		$Revision: 1.75 $
+|		$Date: 2005-07-01 16:29:39 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -695,7 +695,6 @@ class content{
 					$name		= $pre.$row['content_heading'];
 					$selectjs	= "if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }";
 					$label		= $catid;
-					$sel		= ($catid == $checkid ? "1" : "0");
 					if($row['content_parent'] == 0){
 						$name	= $row['content_heading'];
 						$js		= "style='font-weight:bold;'";
@@ -703,9 +702,11 @@ class content{
 					if($qs[1] == "create"){
 						$checkid	= (isset($qs[2]) && is_numeric($qs[2]) ? $qs[2] : "");
 						$value		= e_SELF."?cat.create.".$catid;
+						$sel		= ($catid == $checkid ? "1" : "0");
 					}elseif($qs[1] == "edit"){
 						$checkid	= ($currentparent ? $currentparent : "");
 						$value		= e_SELF."?cat.edit.".$qs[2].".".$catid;
+						$sel		= ($catid == $checkid ? "1" : "0");
 					}
 
 				//manage items
@@ -716,7 +717,6 @@ class content{
 					$label		= $catid;
 					$selectjs	= "if(this.options[this.selectedIndex].value != 'none'){ return document.location=this.options[this.selectedIndex].value; }";
 					$name		= $pre.$row['content_heading'];
-					$sel		= ($catid == $checkid ? "1" : "0");
 					if($row['content_parent'] == 0){
 						$name	= $row['content_heading'];
 						$js		= "style='font-weight:bold;'";
@@ -724,8 +724,10 @@ class content{
 					if($qs[1] == "create" || $qs[1] == "submit"){
 						$checkid	= (isset($qs[2]) && is_numeric($qs[2]) ? $qs[2] : "");
 						$value		= e_SELF."?content.".$qs[1].".".$catid;
+						$sel		= ($catid == $checkid ? "1" : "0");
 					}else{
 						$checkid	= ($currentparent ? $currentparent : "");
+						$sel		= ($catid == $checkid ? "1" : "0");
 						if($qs[1] == "" || is_numeric($qs[1])){
 							$value	= e_SELF."?content.".$catid;
 						}else{
