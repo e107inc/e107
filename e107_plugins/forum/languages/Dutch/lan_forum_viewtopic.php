@@ -84,6 +84,6 @@ define("FORLAN_26", "Reactie verwijderd");
 define("FORLAN_10", "Begin nieuwe discussie");
 define("FORLAN_101", "E-mail discussie");
 define("FORLAN_102", "Afdrukken Overzicht");
-define("FORLAN_103", "[user deleted]");
+define("FORLAN_103", "[gebruiker verwijderd]");
 
 ?>

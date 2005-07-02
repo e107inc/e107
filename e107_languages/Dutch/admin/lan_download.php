@@ -108,7 +108,7 @@ define("DOWLAN_132", "Voer de te gebruiken mirror in, kies vervolgens het downlo
 define("DOWLAN_133", "Mirror bijgewerkt in database");
 define("DOWLAN_134", "Mirror opgeslagen in database");
 define("DOWLAN_135", "Mirror verwijderd");
-define("DOWLAN_136", "afbeelding");
+define("DOWLAN_136", "Afbeelding");
 define("DOWLAN_137", "Weet je zeker dat je deze mirror wilt verwijderen?");
 define("DOWLAN_138", "Aanwezige mirrors");
 define("DOWLAN_139", "Adres");

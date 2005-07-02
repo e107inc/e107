@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-01 19:53:00 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-02 20:08:31 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -475,8 +475,9 @@ define("CONTENT_ADMIN_OPT_LAN_4", "aantal bijlagen dat kan worden geupload");
 define("CONTENT_ADMIN_OPT_LAN_5", "aantal beschikbare maatwerk datatags");
 define("CONTENT_ADMIN_OPT_LAN_6", "vooringestelde datatags");
 define("CONTENT_ADMIN_OPT_LAN_7", "bepaal de standaard vooringestelde datatags");
-//define("CONTENT_ADMIN_OPT_LAN_8", "
-Hier kun je extra vooringestelde data tags instellen. De velden die je hier opgeeft, zijn de sleutels van de sleutel <-> waarde data tags. Ze zijn voorzien van een tekstveld voor het creatieformulier voor beheer. Let op: ze horen niet bij het aantal maatwerk data tags dat je hierboven opgaf, maar ze worden aanvullend gebruikt.<br />Deze vooringestelde Tags zijn nuttig als je een bepaalde maatwerk tag beschikbaar wilt hebben voor elk nieuw onderwerk. Bijvoorbeeld als je altijd een waarde voor 'fotograaf' wilt invullen, kun je een dergelijke voorinstelling opgeven, die altijd wordt getoond bij ieder onderwerp bij deze hoofdouder.");
+
+//define("CONTENT_ADMIN_OPT_LAN_8", "Hier kun je extra vooringestelde data tags instellen. De velden die je hier opgeeft, zijn de sleutels van de sleutel <-> waarde data tags. Ze zijn voorzien van een tekstveld voor het creatieformulier voor beheer. Let op: ze horen niet bij het aantal maatwerk data tags dat je hierboven opgaf, maar ze worden aanvullend gebruikt.<br />Deze vooringestelde Tags zijn nuttig als je een bepaalde maatwerk tag beschikbaar wilt hebben voor elk nieuw onderwerk. Bijvoorbeeld als je altijd een waarde voor 'fotograaf' wilt invullen, kun je een dergelijke voorinstelling opgeven, die altijd wordt getoond bij ieder onderwerp bij deze hoofdouder.");
+
 define("CONTENT_ADMIN_OPT_LAN_9", "toestaan aanmelden onderwerpen ?");
 define("CONTENT_ADMIN_OPT_LAN_10", "wie kan onderwerpen aanmelden ?");
 define("CONTENT_ADMIN_OPT_LAN_11", "direct plaatsen");

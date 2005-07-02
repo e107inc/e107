@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Dutch.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-07-01 19:55:46 $
+|     $Revision: 1.10 $
+|     $Date: 2005-07-02 20:08:31 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -441,7 +441,7 @@ define("LNK_SCH_LAN_3", "Alle linkdetails");
 
 define("LAN_ADMIN_HELP_0", "linkspage helpfunctie");
 
-define("LAN_ADMIN_HELP_1", "<i>the manage link categories page shows all categories present.</i><br /><br /><b>detailed list</b><br />You see a list of all categories with their icon, name and description, options, and sorting options.<br /><br /><b>explanation of icons</b><br />
+define("LAN_ADMIN_HELP_1", "<i>the manage link categories page shows all categories present.</i><br /><br /><b>detailed list</b><br />You see a list of all categories with their icon, name and description, options, and sorting options.<br /><br /><b>explanation of icons</b><br />");
 
 define("LAN_ADMIN_HELP_2", "<i>the create link category page allows you to add new categories</i><br /><br />You can upload a new icon, and after uploading assign the icon to the category.");
 
@@ -449,13 +449,13 @@ define("LAN_ADMIN_HELP_3", "<i>the manage links page first show all categories.<
 
 define("LAN_ADMIN_HELP_4", "<i>the create link page allows you to add a new link</i><br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
 
-define("LAN_ADMIN_HELP_5", "<i>the submitted links page shows all links that are submitted by users</i><br /><br /><b>detailed list</b><br />You see the link url, the name of the user who submitted the link and options.<br /><br /><b>explanation of icons</b><br />
+define("LAN_ADMIN_HELP_5", "<i>the submitted links page shows all links that are submitted by users</i><br /><br /><b>detailed list</b><br />You see the link url, the name of the user who submitted the link and options.<br /><br /><b>explanation of icons</b><br />");
 
-define("LAN_ADMIN_HELP_6", "<i>the options page allows you to change the behaviour of the links_page plugin</i><br /><br />
+define("LAN_ADMIN_HELP_6", "<i>the options page allows you to change the behaviour of the links_page plugin</i><br /><br />");
 
 define("LAN_ADMIN_HELP_7", "<i>the edit link category page allows you to edit an existing category</i><br /><br />You can upload a new icon, and after uploading assign the icon to the category.<br />You can update the timestamp of the link by checking the box.");
 
-define("LAN_ADMIN_HELP_8", "<i>this page shows all existing links in the selected category.</i><br /><br /><b>detailed list</b><br />You see a list of the links with their image, name, options, and sorting options.<br /><br /><b>explanation of icons</b><br />
+define("LAN_ADMIN_HELP_8", "<i>this page shows all existing links in the selected category.</i><br /><br /><b>detailed list</b><br />You see a list of the links with their image, name, options, and sorting options.<br /><br /><b>explanation of icons</b><br />");
 
 define("LAN_ADMIN_HELP_9", "<i>the edit link page allows you to edit an existing link</i><br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
 

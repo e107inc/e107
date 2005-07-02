@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_help.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-07-01 19:53:00 $
+|     $Revision: 1.8 $
+|     $Date: 2005-07-02 20:08:31 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -18,27 +18,15 @@ de hoofdouders zijn vet weergegeven en hebben de (ALLE) extensie. het kiezen hie
 voor iedere hoofdouder worden alle subcategorieën getoond, inclusief de hoofdoudercategorie zelf (deze worden in normale tekstopmaak getoond). Het kiezen van een van deze categorieën toont alleen de onderwerpen uit de betreffende categorie.");
 
 define("CONTENT_ADMIN_HELP_ITEM_2", "<b>eerste letters</b><br />als er meerdere content onderwerpen beginnen met dezelfe letter in de kop, dan zie je de beginletters staan , waardoor je de onderwerpen kunt selecteren die met die letter beginnen. Het drukken op de 'alle' knop toont alle onderwerpen in deze categorie.<br /><br />
-<b>detail overzicht</b><br />Je ziet het overzicht van alle onderwerpen met hun id, pictogram, auteur, kop [onderkop] en opties.<br /><br />
-<b>uitleg van de gebruikte pictogrammen</b><br />
-".CONTENT_ICON_EDIT." : bewerk het contentonderwerp.<br />".CONTENT_ICON_DELETE." : verwijder het contentonderwerp.<br />");
+<b>detail overzicht</b><br />Je ziet het overzicht van alle onderwerpen met hun id, pictogram, auteur, kop [onderkop] en opties.<br /><br /><b>uitleg van de gebruikte pictogrammen</b><br />".CONTENT_ICON_EDIT." : bewerk het contentonderwerp.<br />".CONTENT_ICON_DELETE." : verwijder het contentonderwerp.<br />");
 
-define("CONTENT_ADMIN_HELP_ITEMEDIT_1", "<b>bewerk formulier</b><br />je kunt nu alle informatie voor dit contentonderwerp invullen en je wijzigingen aanmelden.<br /><br />
-Als je de categorie van dit contentonderwerp verandert in een andere hoofdoudercategorie, zul je dit onderwerp waarschjinlijk willen bewerken na de categoriewijziging.<br />Als je een categorie wijzigt, kunnen er andere instellingen gelden waardoor je meer of minder velden in kunt vullen.");
+define("CONTENT_ADMIN_HELP_ITEMEDIT_1", "<b>bewerk formulier</b><br />je kunt nu alle informatie voor dit contentonderwerp invullen en je wijzigingen aanmelden.<br /><br />Als je de categorie van dit contentonderwerp verandert in een andere hoofdoudercategorie, zul je dit onderwerp waarschijnlijk willen bewerken na de categoriewijziging.<br />Als je een categorie wijzigt, kunnen er andere instellingen gelden waardoor je meer of minder velden in kunt vullen.");
 
 define("CONTENT_ADMIN_HELP_ITEMCREATE_1", "<b>categorie</b><br />selecteer de categorie uit de keuzelijst waarvoor je een contentonderwerp wilt aanmaken.<br />");
 
-define("CONTENT_ADMIN_HELP_ITEMCREATE_2", "selecteer altijd eerst de categorie voordat je andere velden invult !<br />
-dat is nodig omdat iedere hoofdoudercategorie (en subcategorieën daarin) andere voorkeuren kunnen hebben.<br /><br />
-<b>aanmaakformulier</b><br />je kunt nu alle informatie voor dit contentonderwerp invullen en het aanmelden.<br /><br />
-Let erop dat iedere hoofdoudercategorie andere voorkeuren kan hebben en dat er dus meer of minder velden in te vullen zijn.");
+define("CONTENT_ADMIN_HELP_ITEMCREATE_2", "selecteer altijd eerst de categorie voordat je andere velden invult !<br />dat is nodig omdat iedere hoofdoudercategorie (en subcategorieën daarin) andere voorkeuren kunnen hebben.<br /><br /><b>aanmaakformulier</b><br />je kunt nu alle informatie voor dit contentonderwerp invullen en het aanmelden.<br /><br />Let erop dat iedere hoofdoudercategorie andere voorkeuren kan hebben en dat er dus meer of minder velden in te vullen zijn.");
 
-define("CONTENT_ADMIN_HELP_CAT_1", "<i>deze pagina toont alle aanwezige categorieën en subcategorieën.</i><br /><br />
-<b>detail overzicht</b><br />Je ziet een overzicht met alle subcategorieën met hun id, pictogram, auteur, categorie [onderkop] en opties.<br >
-<br />
-<b>uitleg over de gebruikte pictogrammen</b><br />
-".CONTENT_ICON_EDIT." : voor alle categorieën kun je deze knop gebruiken om de categorie wilt bewerken.<br />
-".CONTENT_ICON_DELETE." : voor alle categorieën kun je deze knop gebruiken om de categorie wilt verwijderen.<br />
-".CONTENT_ICON_OPTIONS." : alleen voor de hoofdcategorie (bovenan de lijst) kun je de knop gebruiken om alle opties in te stellen en beheren.<br />");
+define("CONTENT_ADMIN_HELP_CAT_1", "<i>deze pagina toont alle aanwezige categorieën en subcategorieën.</i><br /><br /><b>detail overzicht</b><br />Je ziet een overzicht met alle subcategorieën met hun id, pictogram, auteur, categorie [onderkop] en opties.<br ><br /><b>uitleg over de gebruikte pictogrammen</b><br />".CONTENT_ICON_EDIT." : voor alle categorieën kun je deze knop gebruiken om de categorie wilt bewerken.<br />".CONTENT_ICON_DELETE." : voor alle categorieën kun je deze knop gebruiken om de categorie wilt verwijderen.<br />".CONTENT_ICON_OPTIONS." : alleen voor de hoofdcategorie (bovenan de lijst) kun je de knop gebruiken om alle opties in te stellen en beheren.<br />");
 
 define("CONTENT_ADMIN_HELP_CAT_2", "".CONTENT_ICON_CONTENTMANAGER_SMALL." : (alleen hoofdbeheerder) voor elke subcategorie kun je via de knop het Persoonlijke Beheer voor andere beheerders regelen.<br />
 <br /><b>persoonlijke beheerder</b><br />je kunt beheerders toewijzen aan bepaalde categorieën. Hierdoor kunnen deze beheerders hun persoonlijke content voor deze categorieën beheren zonder het beheerscherm te moeten gebruiken (content_manager.php).");
