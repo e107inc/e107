@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/Lithuanian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-02 08:44:03 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-02 11:54:09 $
 |     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ define("PAGE_NAME", "Statistika");
 	
 define("ADSTAT_L1", "Ðis áskiepis áraðys visà informacijà apie apsilankymus Jûsø svetainëje ir pateiks iðsamius statistinius duomenis.");
 define("ADSTAT_L2", "Statistikos áskiepis sëkmingai ádiegtas. Norëdami perversti Jûsø esamus statistikos duomenis praðome <a href='".e_PLUGIN."log/update_routine.php'>paspausti èia ir atnaujinti paprogramæ</a>.");
-define("ADSTAT_L3", "Statistikos prijungimas");
+define("ADSTAT_L3", "Statistikos rinkimas");
 define("ADSTAT_L4", "Jûs neturite leidimo perþiûrëti ðio puslapio.");
 define("ADSTAT_L5", "Ðio puslapio funkcijos iðjungtos.");
 define("ADSTAT_L6", "Svetainës statisktika");
