@@ -4,11 +4,37 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content_help.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-07-02 10:35:04 $
+|     $Revision: 1.5 $
+|     $Date: 2005-07-02 16:37:58 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
+
+define("CONTENT_ADMIN_HELP_1", "Innehållshantering hjälp");
+
+define("CONTENT_ADMIN_HELP_ITEM_1", "<i>Om du ännu inte lagt till några huvudvärdkategorier, gö det nu på sidan <a href='".e_SELF."?cat.create'>Skapa ny kategori</a>.</i><br /><br /><b>Kategori</b><br />Välj en kategori från rullgardinsmenyn för att hantera innehåll för den kategorin.<br /><br />Om du väljer en huvudvärdkategori från menyn kommer allt innehåll i den huvudkategorin att visas.<br />Väljer du en underkategori kommer enbart innehållet under den underkategorin att visas.<br /><br />Du kan också använda menyn till höger för att visa allt innehåll i en specificerad kategori.");
+
+define("CONTENT_ADMIN_HELP_ITEM_2", "<b>Första bokstäverna</b><br />Om du klickar på en bokstavsknapp kommer endast innehåll med denna initialbokstav i rubriken att visas. Väljer du knappen 'alla' så kommer en lista med alla objekt i den valda kategorin att visas.<br /><br /><b>Detaljerad lista</b><br />Visar en lista över allt innehåll med dess id, ikon, författare, rubrik [underrubrik] och alternativ.<br /><br /><b>Förklaring av ikoner</b><br />".CONTENT_ICON_USER." : Länk till författarens profil<br />".CONTENT_ICON_LINK." : Länk till innehållsobjektet<br />".CONTENT_ICON_EDIT." : Redigera innehållsobjektet<br />".CONTENT_ICON_DELETE." : Radera innehållsobjektet<br />");
+
+define("CONTENT_ADMIN_HELP_ITEMEDIT_1", "<b>Redigeringsformulär</b><br />Här kan du redigera all information för detta objekt och spara dina ändringar.<br /><br />Om du behöver byta kategori för objektet, gör det först. Efter att du valt rätt kategori, ändra eller lägg till fält innan du sparar ändringarna.");
+
+define("CONTENT_ADMIN_HELP_ITEMCREATE_1", "<b>Kategori</b><br />Välj den kategori från rutan för att skapa ett nytt objekt i den.<br />");
+
+define("CONTENT_ADMIN_HELP_ITEMCREATE_2", "<b>Formulär för att skapa</b><br />Här anger du all information för detta innehållsobjekt och sparar det.<br /><br />Tänk på att olika huvudkategorier kan ha olika preferensinställningar så det kan finna olika fält att fylla i. Därför måste du alltid välja kategori innan du fyller i något i de andra fälten!");
+
+define("CONTENT_ADMIN_HELP_CAT_1", "<i>Denna sida visar alla tillgängliga kategorier och underkategorier.</i><br /><br /><b>Detaljerad lista</b><br />Här ser du en lista på alla underkategorier med dess id, ikon, författare, kategori [underrubrik] och alternativ.<br /><br /><b>Förklaring av ikoner</b><br />".CONTENT_ICON_USER." : Länk till författarens profil<br />".CONTENT_ICON_LINK." : Länk till kategorin<br />".CONTENT_ICON_EDIT." : Redigera kategorin<br />".CONTENT_ICON_DELETE." : Radera kategorin<br />");
+
+define("CONTENT_ADMIN_HELP_CAT_2", "<i>Denna sida låter dig skapa en ny kategori</i><br /><br />Välj alltid en värdkategori innan du fyller i de andra fälten!<br /><br />Detta måste göras eftersom egenskaper unika för varje kategori måste laddas av systemet.<br /><br />Som standard visas sidan för att skapa en ny hyvydkategori.");
+
+define("CONTENT_ADMIN_HELP_CAT_3", "<i>Denna sida visar formuläret för att redigera kategori.</i><br /><br /><b>Kategori redigering</b><br />Här kan du ändra all information för denna (under)kategori och spara dina ändringar.<br /><br />Om du vill byta värd för denna kategori, gör det först. Efter att du valt rätt värd kan du ändra de övriga fälten.");
+
+define("CONTENT_ADMIN_HELP_ORDER_1", "<i>Denna sida visar alla tillgängliga kategorier och underkategorier.</i><br /><br /><b>Detaljerad lista</b><br />Här ser du kategorins id och namn. Du ser också flera alternativ för att hantera ordningen på kategorierna.<br /><br /><b>Förklaring av ikoner</b><br />".CONTENT_ICON_USER." : Länk till författarens profil<br />".CONTENT_ICON_LINK." : Länk till kategorin<br />".CONTENT_ICON_ORDERALL." : Hantera den globala ordningen av innehållsobjekt oavsett kategori.<br />".CONTENT_ICON_ORDERCAT." : Hantera ordningen av innehållsobjekt i den specifika kategorin.<br />".CONTENT_ICON_ORDER_UP." : Uppåtknappen flyttar objektet ett steg uppåt i ordningen.<br />".CONTENT_ICON_ORDER_DOWN." : Nedåtknappen flyttar objektet ett steg nedåt i ordningen.<br /><br /><b>Ordning</b><br />Här kan du manuellt ange ordningen på alla kategorier i varje värd. Du ändrar värdet i valrutorna och klickar sedan på knappen för uppdatering nedan för att spara den.<br />");
+
+define("CONTENT_ADMIN_HELP_ORDER_2", "<i>Denna sida visar alla innehållsobjekt i kategorin du valt.</i><br /><br /><b>Detaljerad lista</b><br />Du ser här innehållsobjektets id, författare och rubrik. Du ser också flera alternativ för att hantera ordningen på objekten.<br /><br /><b>Förklaring av ikoner</b><br />".CONTENT_ICON_USER." : Länk till författarens profil<br />".CONTENT_ICON_LINK." : Länk till objektet<br />".CONTENT_ICON_ORDER_UP." : Uppåtknappen flyttar objektet ett steg uppåt i ordningen.<br />".CONTENT_ICON_ORDER_DOWN." : Nedåtknappen flyttar objektet ett steg nedåt i ordningen.<br /><br /><b>Ordning</b><br />Här sätter du manuellt ordningen på alla kategorierna i denna huvudvärd. Du ändrar värdet i valrutorna och klickar sedan på knappen för uppdatering nedan för att spara den.<br />");
+
+define("CONTENT_ADMIN_HELP_ORDER_3", "<i>Denna sida visar alla innehållsobjekt i den huvudvärdkategori du valt.</i><br /><br /><b>Detaljerad lista</b><br />Du ser objektets id, författare och rubrik. Du ser också flera alternativ för att hantera ordningen på objekten.<br /><br /><b>Förklaring av ikoner</b><br />".CONTENT_ICON_USER." : Länk till författarens profil<br />".CONTENT_ICON_LINK." : Länk till objektet<br />".CONTENT_ICON_ORDER_UP." : Uppåtknappen flyttar objektet ett steg uppåt i ordningen.<br />".CONTENT_ICON_ORDER_DOWN." : Nedåtknappen flyttar objektet ett steg nedåt i ordningen.<br /><br /><b>Ordning</b><br />Här sätter du manuellt ordningen på alla kategorierna i denna huvudvärd. Du ändrar värdet i valrutorna och klickar sedan på knappen för uppdatering nedan för att spara den.<br />");
+
+define("CONTENT_ADMIN_HELP_OPTION_1", "På denna sida väljer du en huvudvärdkategori att sätta alternativ för eller så kan du välja att redigera standardpreferenserna.<br /><br /><b>Förklaring av ikoner</b><br />".CONTENT_ICON_USER." : Länk till författarens profil<br />".CONTENT_ICON_LINK." : Länk till kategorin<br />".CONTENT_ICON_OPTIONS." : Redigera alternativen<br /><br /><br />Standardprefernserna används bara när du skapar en ny värd. Så när du skapar en ny huvudvärd kommer dessa inställningar att sparas. Du kan ändra dessa för att försäkra dig om att nyskapade värdar alltid har en viss uppsättning alternativ tillgängliga.<br /><br />Varje huvudvärd har sina egna inställningar som är unika för den specifika huvudvärdkategorin");
 
 //define("CONTENT_ADMIN_HELP_OPTION_2", "<i>Denna sida visar de alternativ du kan sätta för denna värd. Varje värd har sin egen uppsättning alternativ, så försäkra dig om att alla sätts korrekt.</i><br /><br />");
 //<b>Standardvärden</b><br />Som standard finns alla värden och är uppdaterade i preferenser när du tittar på denna sidan, men du måste gå genom och ändra alla värden efter dina behov.<br /><br />
