@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.125 $
-|     $Date: 2005-07-01 12:26:12 $
+|     $Revision: 1.126 $
+|     $Date: 2005-07-02 06:18:51 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -557,50 +557,7 @@ function update_61x_to_700($type='') {
 		) TYPE=MyISAM;
 		");
 
-		// Search Update
-		if ((!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) || !isset($pref['search_highlight'])) {
-			$serial_prefs = "a:11:{s:11:\"user_select\";s:1:\"1\";s:9:\"time_secs\";s:2:\"60\";s:13:\"time_restrict\";s:1:\"0\";s:8:\"selector\";i:2;s:9:\"relevance\";i:0;s:13:\"plug_handlers\";N;s:10:\"mysql_sort\";i:0;s:11:\"multisearch\";s:1:\"1\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}}";
-			$search_prefs = unserialize(stripslashes($serial_prefs));
-			$handle = opendir(e_PLUGIN);
-			while (false !== ($file = readdir($handle))) {
-				if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
-					$plugin_handle = opendir(e_PLUGIN.$file."/");
-					while (false !== ($file2 = readdir($plugin_handle))) {
-						if ($file2 == "e_search.php" || $file2 == "comments_search.php") {
-							if ($sql -> db_Select("plugin", "plugin_path", "plugin_path='".$file."' AND plugin_installflag='1'")) {
-								if ($file2 == "e_search.php") {
-									$search_prefs['plug_handlers'][$file] = array('class' => 0, 'pre_title' => 1, 'pre_title_alt' => '', 'chars' => 150, 'results' => 10);
-								}
-								if ($file2 == "comments_search.php") {
-									require_once(e_PLUGIN.$file.'/comments_search.php');
-									$search_prefs['comments_handlers'][$file] = array('id' => $comments_type_id, 'class' => '0', 'dir' => $file);
-									unset($comments_type_id);
-								}
-							}
-						}
-					}
-				}
-			}
-			preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
-			if (version_compare($mysql_version[1], '4.0.1', '<')) {
-				$search_prefs['mysql_sort'] = FALSE;
-			} else {
-				$search_prefs['mysql_sort'] = TRUE;
-			}
-			$serial_prefs = addslashes(serialize($search_prefs));
-			if (!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) {
-				$sql -> db_Insert("core", "'search_prefs', '".$serial_prefs."'");
-			} else {
-				$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
-			}
-			if ($pref['search_restrict']) {
-				$pref['search_restrict'] = 253;
-				} else {
-				$pref['search_restrict'] = 0;
-			}
-			$pref['search_highlight'] = TRUE;
-			$s_prefs = TRUE;
-		}
+
 
 		// Missing Forum upgrade stuff by Cam.
 		global $PLUGINS_DIRECTORY;
@@ -753,28 +710,7 @@ function update_61x_to_700($type='') {
 			$s_prefs = TRUE;
 		}
 
-		// search sort method and search selector updates
-		$search_prefs = $sysprefs -> getArray('search_prefs');
-		if (!isset($search_prefs['selector'])) {
-			preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
-			if (version_compare($mysql_version[1], '4.0.1', '<')) {
-				$search_prefs['mysql_sort'] = FALSE;
-			} else {
-				$search_prefs['mysql_sort'] = TRUE;
-			}
-			$search_prefs['selector'] = 2;
-			$search_prefs['multisearch'] = 1;
-			unset($search_prefs['search_sort']);
-			$serial_prefs = addslashes(serialize($search_prefs));
-			$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
-		}
 
-		// search content plugin comments id change
-		if ($search_prefs['comments_handlers']['content']['id'] == '1') {
-			$search_prefs['comments_handlers']['content']['id'] = 'pcontent';
-			$serial_prefs = addslashes(serialize($search_prefs));
-			$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
-		}
 
 		// convert notify prefs from serialised to eArrayStorage
 		$notify_prefs = $sysprefs -> getArray('notify_prefs');
@@ -832,13 +768,77 @@ function update_61x_to_700($type='') {
 			mysql_query("ALTER TABLE ".MPREFIX."links_page ADD link_datestamp INT ( 10 ) UNSIGNED NOT NULL DEFAULT '0';");
 		}
 
-		// custom pages search added
+		// Search Update
 		$search_prefs = $sysprefs -> getArray('search_prefs');
+		if ((!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) || !isset($pref['search_highlight'])) {
+			$serial_prefs = "a:11:{s:11:\"user_select\";s:1:\"1\";s:9:\"time_secs\";s:2:\"60\";s:13:\"time_restrict\";s:1:\"0\";s:8:\"selector\";i:2;s:9:\"relevance\";i:0;s:13:\"plug_handlers\";N;s:10:\"mysql_sort\";i:0;s:11:\"multisearch\";s:1:\"1\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}}";
+			$search_prefs = unserialize(stripslashes($serial_prefs));
+			$handle = opendir(e_PLUGIN);
+			while (false !== ($file = readdir($handle))) {
+				if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
+					if ($sql -> db_Select("plugin", "plugin_path", "plugin_path='".$file."' AND plugin_installflag='1'") || $file == 'content' || $file == 'forum' || $file == 'links_page' || $file == 'chatbox_menu') {
+						$plugin_handle = opendir(e_PLUGIN.$file."/");
+						while (false !== ($file2 = readdir($plugin_handle))) {
+							if ($file2 == "e_search.php") {
+								$search_prefs['plug_handlers'][$file] = array('class' => 0, 'pre_title' => 1, 'pre_title_alt' => '', 'chars' => 150, 'results' => 10);
+							}
+							if ($file2 == "search" && is_readable(e_PLUGIN.$file.'/search/search_comments.php')) {
+								require_once(e_PLUGIN.$file.'/search/search_comments.php');
+								$search_prefs['comments_handlers'][$file] = array('id' => $comments_type_id, 'class' => '0', 'dir' => $file);
+								unset($comments_type_id);
+							}
+						}
+					}
+				}
+			}
+			preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
+			if (version_compare($mysql_version[1], '4.0.1', '<')) {
+				$search_prefs['mysql_sort'] = FALSE;
+			} else {
+				$search_prefs['mysql_sort'] = TRUE;
+			}
+			$serial_prefs = addslashes(serialize($search_prefs));
+			if (!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) {
+				$sql -> db_Insert("core", "'search_prefs', '".$serial_prefs."'");
+			} else {
+				$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
+			}
+			if ($pref['search_restrict']) {
+				$pref['search_restrict'] = 253;
+				} else {
+				$pref['search_restrict'] = 0;
+			}
+			$pref['search_highlight'] = TRUE;
+			$s_prefs = TRUE;
+		}
+		
+		// search sort method and search selector updates
+		if (!isset($search_prefs['selector'])) {
+			preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
+			if (version_compare($mysql_version[1], '4.0.1', '<')) {
+				$search_prefs['mysql_sort'] = FALSE;
+			} else {
+				$search_prefs['mysql_sort'] = TRUE;
+			}
+			$search_prefs['selector'] = 2;
+			$search_prefs['multisearch'] = 1;
+			unset($search_prefs['search_sort']);
+		}
+
+		// search content plugin comments id change
+		if ($search_prefs['comments_handlers']['content']['id'] == '1') {
+			$search_prefs['comments_handlers']['content']['id'] = 'pcontent';
+		}
+		
+		// custom pages search added
 		if (!isset($search_prefs['core_handlers']['pages'])) {
 			$search_prefs['core_handlers']['pages'] = array('class' => 0, 'chars' => 150, 'results' => 10, 'pre_title' => 1, 'pre_title_alt' => '', 'order' => 13);
-			$serial_prefs = addslashes(serialize($search_prefs));
-			$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
 		}
+		
+		$serial_prefs = addslashes(serialize($search_prefs));
+		$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs'");
+		
+		// end search updates
 
 		// Save all prefs that were set in above update routines
 		if ($s_prefs == TRUE) {
