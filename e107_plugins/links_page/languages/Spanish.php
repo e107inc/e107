@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-28 21:02:21 $
+|     $Revision: 1.13 $
+|     $Date: 2005-07-02 11:03:21 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -36,7 +36,7 @@ define("LCLAN_OPT_15", "Descripción");
 define("LCLAN_OPT_16", "Cantidad");
 define("LCLAN_OPT_17", "Referente");
 define("LCLAN_OPT_18", "URL");
-define("LCLAN_OPT_19", "Línea de info de la categoría total (la línea inferior");
+define("LCLAN_OPT_19", "Línea de info de la categoría total");
 define("LCLAN_OPT_20", "Enlace a enlaces top: refer");
 define("LCLAN_OPT_21", "Enlace a enlaces top : valorado");
 define("LCLAN_OPT_22", "Mostrar icono por defecto si no existe");
@@ -47,22 +47,32 @@ define("LCLAN_OPT_26", "Página de enlaces");
 define("LCLAN_OPT_27", "Permitir a los usuarios valorar enlaces");
 define("LCLAN_OPT_28", "Mostrar icono por defecto si no existe");
 define("LCLAN_OPT_29", "Mostrar menú de ordenación");
-define("LCLAN_OPT_30", "ASC");
-define("LCLAN_OPT_31", "DESC");
+define("LCLAN_OPT_30", "Ascendente");
+define("LCLAN_OPT_31", "Descendente");
 define("LCLAN_OPT_32", "Usar método de anulación del enlace");
 define("LCLAN_OPT_33", "Valor redimensionado por defecto");
-define("LCLAN_OPT_34", "link_name");
-define("LCLAN_OPT_35", "link_url");
-define("LCLAN_OPT_36", "link_order");
-define("LCLAN_OPT_37", "link_refer");
+define("LCLAN_OPT_34", "Nombre");
+define("LCLAN_OPT_35", "URL");
+define("LCLAN_OPT_36", "Orden");
+define("LCLAN_OPT_37", "Referente");
 define("LCLAN_OPT_38", "link_icon");
 define("LCLAN_OPT_39", "link_desc");
-define("LCLAN_OPT_40", "Nombre del enlace de la categoría");
-define("LCLAN_OPT_41", "Id de la categoría del enlace");
+define("LCLAN_OPT_40", "Nombre");
+define("LCLAN_OPT_41", "Id");
 define("LCLAN_OPT_42", "Usar ajustes individuales en los enlaces");
 define("LCLAN_OPT_43", "Abrir en la misma ventana");
 define("LCLAN_OPT_44", "Abrir en una nueva ventana");
 define("LCLAN_OPT_45", "Abrir en una ventana de 600x400");
+define("LCLAN_OPT_46", "¿Quien puede gestionar enlaces?");
+define("LCLAN_OPT_47", "Estos ususarios pueden añadir/editar sus propios enlaces");
+define("LCLAN_OPT_48", "Permitir envíos directos");
+define("LCLAN_OPT_49", "Si está activado, los enlaces se envían directamente, si no, necesitan ser aprobados por un administrador");
+define("LCLAN_OPT_50", "Permitir eliminación directa");
+define("LCLAN_OPT_51", "Si está activado, los gestores de enlaces pueden borrar sus propios enlaces");
+define("LCLAN_OPT_52", "Gestores personales de enlaces");
+define("LCLAN_OPT_53", "Fecha");
+define("LCLAN_OPT_54", "Permitir gestión personal en los enlaces");
+define("LCLAN_OPT_55", "Permitir comentarios en todos los enlaces");
 
 define("LCLAN_ADMIN_1", "Actualziar");
 define("LCLAN_ADMIN_2", "Enlace guardado en la base de datos.");
@@ -162,8 +172,8 @@ define("LCLAN_ITEM_30", "Reordenar");
 define("LCLAN_ITEM_31", "Editar");
 define("LCLAN_ITEM_32", "Eliminar");
 define("LCLAN_ITEM_33", "¿Está seguro de eliminar este enlace?");
-define("LCLAN_ITEM_34", "");
-define("LCLAN_ITEM_35", "");
+define("LCLAN_ITEM_34", "No hay iconos");
+define("LCLAN_ITEM_35", "Gestionar enlaces personales");
 define("LCLAN_ITEM_36", "");
 define("LCLAN_ITEM_37", "");
 define("LCLAN_ITEM_38", "");
@@ -202,8 +212,8 @@ define("LAN_LINKS_4", "Cabecera");
 define("LAN_LINKS_5", "URL");
 define("LAN_LINKS_6", "Orden");
 define("LAN_LINKS_7", "Refer");
-define("LAN_LINKS_8", "ASC");
-define("LAN_LINKS_9", "DESC");
+define("LAN_LINKS_8", "Ascendente");
+define("LAN_LINKS_9", "Descendente");
 define("LAN_LINKS_10", "Enlaces Top : Refer");
 define("LAN_LINKS_11", "Enlaces Top : Valoración");
 define("LAN_LINKS_12", "Ver enlaces Top por refer");
@@ -229,18 +239,18 @@ define("LAN_LINKS_31", "Enviar un enlace");
 define("LAN_LINKS_32", "Categoría:");
 define("LAN_LINKS_33", "No hay enlaces valorados todavía.");
 define("LAN_LINKS_34", "No hay enlaces");
-define("LAN_LINKS_35", "");
-define("LAN_LINKS_36", "");
-define("LAN_LINKS_37", "");
+define("LAN_LINKS_35", "Gestor personal de enlaces");
+define("LAN_LINKS_36", "Comentarios de enlaces");
+define("LAN_LINKS_37", "Comentarios:");
 define("LAN_LINKS_38", "");
 define("LAN_LINKS_39", "");
 
-define("LAN_LINKS_40", "");
-define("LAN_LINKS_41", "");
-define("LAN_LINKS_42", "");
-define("LAN_LINKS_43", "");
-define("LAN_LINKS_44", "");
-define("LAN_LINKS_45", "");
+define("LAN_LINKS_40", "Icono");
+define("LAN_LINKS_41", "Enlace");
+define("LAN_LINKS_42", "Opciones");
+define("LAN_LINKS_43", "Crear un nuevo enlace");
+define("LAN_LINKS_44", "No tiene enlaces");
+define("LAN_LINKS_45", "Categoría");
 define("LAN_LINKS_46", "");
 define("LAN_LINKS_47", "");
 define("LAN_LINKS_48", "");
@@ -256,5 +266,51 @@ define("LAN_LINKS_56", "");
 define("LAN_LINKS_57", "");
 define("LAN_LINKS_58", "");
 define("LAN_LINKS_59", "");
+
+define("LAN_ADMIN_HELP_0", "Área de ayuda de la página de enlaces");
+  	 
+define("LAN_ADMIN_HELP_1", "<i>La página gestra de categorías de enlaces muestra las categorías existentes.</i><br /><br /><b>Lista detallada</b><br />Verá una lista de todas las categorías con su icono, nombre descripción, opciones y métodos de ordenación.<br /><br /><b>Explicación de iconos</b><br />
+  	 ".LINK_ICON_LINK." : Enlace de la categoría<br /><br />
+  	 ".LINK_ICON_EDIT." : Editar la categoría<br /><br />
+  	 ".LINK_ICON_DELETE." : Eliminar la categoría<br /><br />
+  	 ".LINK_ICON_ORDER_UP." : Sube una posición respecto al orden.<br /><br />
+  	 ".LINK_ICON_ORDER_DOWN." : Baja una posición respecto al orden.<br />
+  	 <br />
+  	 <b>order</b><br />Aquí puede fijar manualmente el orden de todas las categorías. Necesita cambiar los valores en las cajas para poder el orden deseado y luego pulsar el bot´n de reordenar para actualizarlo.<br />");
+  	 
+  	 
+define("LAN_ADMIN_HELP_2", "<i>La página de creación de categoría de enlace le permitirá añadir nuevas categorías</i><br /><br />Puede transferir un icono y depués asignarlo a la categoría.");
+define("LAN_ADMIN_HELP_3", "<i>La página de gestor de enlaces muestra primeramente las categorías.</i><br /><br />".LINK_ICON_LINK." : enlace a la categoría<br /><br />".LINK_ICON_EDIT." : Click en el icono para ver todos los enlaces de esta categoría<br />");
+define("LAN_ADMIN_HELP_4", "<i>La página de creación de enlaces le permitirá añadir un nuevo enlace</i><br /><br />Puede transferir un icono y depués asignarlo aal enlace.<br /><br />El tipo de apertura definirá como se abrirá el enlace al pulsar sobre él.");
+define("LAN_ADMIN_HELP_5", "<i>La página de envíos de enlaces muestra todos los enlaces enviados por los uauarios</i><br /><br /><b>Lista detallada</b><br />Verá la URL, el nombre del usuario que envió el enlace y opciones.<br /><br /><b>Explicación de iconos</b><br />
+  	 ".LINK_ICON_EDIT." : Envía el enlace al formulario de creación<br /><br />
+  	 ".LINK_ICON_DELETE." : Elimina el enlace enviado<br />
+  	 ");
+  	 define("LAN_ADMIN_HELP_6", "<i>La página de opciones permite cambiar el comportamiento del plugin links_page</i><br /><br />
+  	 Opciones generales<br />
+  	 Estas opciones son generalmente usadas a través de la página de enlaces.<br /><br />
+  	 Gestores personales de enlaces<br />
+  	 Los gestores personales de enlaces son usuarios privilegiados que pueden gestionar sus enlaces añadidos personalmente.<br /><br />
+  	 Página de categoría<br />
+  	 Aquí puede cambiar las opciones de la página de categoría.<br /><br />
+  	 Página de enlaces<br />
+  	 Estas opciones se usan en las páginas de enlaces.<br />
+  	 ");
+  	 
+  	 
+  	 
+define("LAN_ADMIN_HELP_7", "<i>La página de edición de categorías le permite editar la categoría del enlace</i><br /><br />Puede transferir un icono y depués asignarlo a la categoría.<br />Puede actualizar el sello de fecha del enlace activando la caja de selección.");
+  	 
+define("LAN_ADMIN_HELP_8", "<i>Esta página muestra todos los enlaces en la categoría seleccionada.</i><br /><br /><b>Lista detallada</b><br />Puede ver una lista de enlaces con su imagen, nombre, opciones y métodos de ordenación.<br /><br /><b>Explicación de iconos</b><br />
+  	 ".LINK_ICON_LINK." : enlace a la página web<br /><br />
+  	 ".LINK_ICON_EDIT." : editar enlace<br /><br />
+  	 ".LINK_ICON_DELETE." : eliminar el enlace<br /><br />
+  	 ".LINK_ICON_ORDER_UP." : sube 1 posición de orden.<br /><br />
+  	 ".LINK_ICON_ORDER_DOWN." : baja una posición de orden.<br />
+  	 <br />
+  	 <b>order</b><br />Aquí puede manualmente fijat el orden de los enalces. Necesita cambiar los valores de las cajas de selección al orden que desee, y luego pulsar el botón de reordenar para actualizar.<br />");
+  	 
+define("LAN_ADMIN_HELP_9", "<i>La página de edición de enlaces le permite editar los enlaces</i><br /><br />Puede transferir un nuevo icono, y después asignarlo al enlace.<br /><br />El tipo de apertura le permite como se abrirá el enlace cuando se pulse sobre él.");
+define("LAN_ADMIN_HELP_10", "<i>La página de envío de enlaces le permite añadir un enlace a los enlaces existentes</i><br /><br />Se añadira un pequeño texto en el campo de descripción del envío.<br /><br />Puede transferir un nuevo icono, y después asignarlo al enlace.<br /><br />El tipo de apertura le permite como se abrirá el enlace cuando se pulse sobre él.");
 
 ?>

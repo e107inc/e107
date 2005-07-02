@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_signup.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-12 09:28:01 $
+|     $Revision: 1.7 $
+|     $Date: 2005-07-02 11:03:20 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -88,6 +88,7 @@ define("LAN_SIGNUP_32", "¿Qué es un archivo XUP?");
 define("LAN_SIGNUP_33", "Escriba la ruta o escoja avatar");
 define("LAN_SIGNUP_34", "Tenga en cuenta: Cualquier imagen transferida a este servidor que sea considerada inapropiada por los Administradores será eliminada inmediatamente.");
 define("LAN_SIGNUP_35", "Click aquí para registrarse usando un archivo XUP");
+define("LAN_SIGNUP_36", "Ocurrió un error al crear la información de usuario, Por favor, contacte con el Administrador");
 
 define("LAN_LOGINNAME", "Nombre de conexión");
 define("LAN_PASSWORD", "Contraseña");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_comment.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-13 19:05:23 $
+|     $Revision: 1.8 $
+|     $Date: 2005-07-02 11:03:20 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -56,5 +56,7 @@ define("COMLAN_3", "¡Error!");
 define("COMLAN_4", "Tema");
 define("COMLAN_5", "Re:");
 define("COMLAN_6", "Responderle");
+define("COMLAN_7", 'Valoración');
+define("COMLAN_8", 'Comentarios bloqueados');
 
 ?>

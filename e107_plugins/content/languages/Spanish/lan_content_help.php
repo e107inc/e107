@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content_help.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-16 20:29:25 $
+|     $Revision: 1.8 $
+|     $Date: 2005-07-02 11:03:21 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -39,14 +39,40 @@ define("CONTENT_ADMIN_HELP_OPTION_1", "En esta página puede seleccionar una cat
   	 Las preferencias predeterminadas solo se usan cuando crea una categoría principal. Por lo tanto, cuando crea una nueva categoría principal esas preferencias se almacenarán en ella. Puede cambiarlas asegurándose que las nuevas categorías principales creadas ya tienen este juego de opciones existentes.
   	 <br /><br />
   	 Cada categoría principal tiene su propio juego de opciones, las cuales son únicas para esa categoría principal específica");
-define("CONTENT_ADMIN_HELP_OPTION_2", "
+/*define("CONTENT_ADMIN_HELP_OPTION_2", "
 <i>Esta página muestra las opciones que puede fijar en la categoría principal. Cada categoría principal tiene su propio juego de opciones, por lo que asegúrese de fijarlas correctamente.</i><br /><br />
 <b>Valores por defecto</b><br />Por defecto, todos los valores existentes se actualizan en las preferencias cuendo navegue por esta página, pero los puede cambiar según sus estándares<br/><br />
 ");
-
+*/
 define("CONTENT_ADMIN_HELP_MANAGER_1", "En esta página verá una lista de categorías. Puede gestionar el 'Gestor personal de contenidos' para cada categoría pulsando en el icono.<br /><br /><b>Explicación de inconos</b><br />".CONTENT_ICON_USER." : Enlace al perfil del autor<br />".CONTENT_ICON_LINK." : Enlace a la categoría<br />".CONTENT_ICON_CONTENTMANAGER_SMALL." : Editar los gestores personales de contenidos<br />");
 define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>En esta página puede asignar usuarios a las categorías seleccionadas</i><br /><br /><b>Gestor personal</b><br />Puede asignar usuarios a ciertas categorías. Haciendo ésto, esos ususarios pueden gestionar su contenido personal de esas categorías fuera las área del administrador (content_manager.php).<br /><br />Asigne usuarios desde la columna de la izquierda pulsando sobre su nombre. Verá como esos nombres se mueven a la columna de la derecha. Después de pulsar el botón de asignación, los usuarios de la columan de la derecha serán asignados a esa categoría.");
 
 define("CONTENT_ADMIN_HELP_SUBMIT_1", "<i>En esta página verá una lista de todos los contenidos que han enviado los usuarios.</i><br /><br /><b>Lista detallada</b><br />Verá una lista de esos contenidos con su id, autor, categoría principal, cabecera [subcabecera] y opciones.<br /><br /><b>Opciones</b><br />Puede enviar o eliminar contenidos usando los botones mostrados.");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_1", "this page allows you to set options for the admin create item page.<br /><br />You can define which sections are available when an admin (or personal content manager) creates a new content item<br /><br /><b>custom data tags</b><br />you can allow a user or admin to add optional fields to the content item by using these custom data tags. These optional fields are blank key=>value pairs. For instance: you could add a key field for 'photographer' and provide the value field with 'all photos by me'. Both these key and value fields are empty textfields which will be present in the create form.<br /><br /><b>preset data tags</b><br />apart from the custom data tags, you can provide preset data tags. The difference is that in preset data tags, the key field already is given and the user only needs to provide the value field for the preset. In the same example as above 'photographer' can be predefined, and the user needs to provide 'all photos by me'. You can choose the element type by selecting one option in the selectbox. In the popup window, you can provide all the information for the preset data tag.<br />");
+  	 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_2", "El envío de opciones afectan sobre el evío de contenidos del ususario.<br /><br />Puede definir que secciones están disponibles para el usuario cuando envío un contenido.<br /><br />".CONTENT_ADMIN_OPT_LAN_11.":<br />".CONTENT_ADMIN_OPT_LAN_12."");
+  	 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_3", "En la ruta y opciones de temas, puede definir donde se almacenarán las imágenes y archivos.<br /><br />Puede definir que tema se usará como principal. Puede crear temas adicionales copiando y renombrando el directorio  'default' en sus carpetas de templates.<br /><br />Puede definir una estructura de plantilla por defecto para los nuevos contenidos. Puede crear una nueva plantilla creando el archivo content_content_template_XXX.php en su carpeta 'templates/default'. Estas plantillas pueden ser usadas para diferentes contenidos en la categoría principal.<br /><br />");
+  	 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_4", "Las opciones generales son opciones que se usan a través de páginas de contenidos del plugin gestor de contenidos.");
+  	 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_5", "Estas opciones afectan sobre el área de los contenidos personales en el área del administrador del gestor de contenidos.<br /><br />".CONTENT_ADMIN_OPT_LAN_63."");
+  	 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_6", "Estas opciones se usan en el menú para esta categoría principal si la ha activado en el menú.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."<br /><br />".CONTENT_ADMIN_OPT_LAN_118.":<br />".CONTENT_ADMIN_OPT_LAN_119."<br /><br />");
+  	 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_7", "Las opciones de previsualización de contenidos afectan sobre la pequeña previsualización que se da a cada contenido.<br /><br />Esta previsualización se da en diversas páginas, como la página reciente, la vista de elementos en la página de categorías y en la vista de elementos por autor.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
+  	 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_8", "Las páginas de categorías muestran información de las categorías de contenidos.<br /><br />Existen dos áreas presentes:<br /><br />Página de todas las categorías:<br />Esta página muestra todas las categorías de este principal<br /><br />Ver página de categoría:<br />Esta página muestra la categoría, opcionalmente sus subcategorías y los contenidos presentes en ellas<br />");
+  	 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_9", "La página de contenidos muestra los contenidos.<br /><br />Puede definir que secciones mostrar activando/desactivando las cajas de selección.<br /><br />Puede mostrar la dirección de correo de un autor no-miembro.<br /><br />Puede sobreescribir los iconos email/imprimir/pdf , el sistema de valoración y los comentarios.<br /><br />".CONTENT_ADMIN_OPT_LAN_74."");
+  	 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_10", "La página del autor muestra una lista única de autores de los contenidos.<br /><br />Puede definir que seccione smostrar activando/desactivando las cajas de selección.<br /><br />Puede limitar el número de contenidos por página.<br />");
+  	 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_11", "La página de archivos muestra todos los contenidos.<br /><br />Puede definir que secciones mostrar activando/desactivando las cajas de selección.<br /><br />Puede mostrar las direcciones de correo de los autores no.miembros.<br /><br />Puede limitar el número de elementos a mostrar por página.<br /><br />".CONTENT_ADMIN_OPT_LAN_66."<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
+  	 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "La página más valorada muestra los contenidos que han sido valorados por los usuarios.<br /><br />Puede escojer que secciones mostrar activando las cajas de selección.<br /><br />También puede definir si se mostrará la dirección de correo del un autor no-miembro.");
+  	 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "La página más puntuada muestra todos los contenidos que han sido puntuados por el autor en los contenidos.<br /><br />Puede escojer que secciones mostrar activando las cajas de selección.<br /><br />También puede definir si se mostrará la dirección de correo del un autor no-miembro.");
 
 ?>
