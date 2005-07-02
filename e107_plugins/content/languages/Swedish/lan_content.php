@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-07-01 12:17:37 $
+|     $Revision: 1.15 $
+|     $Date: 2005-07-02 10:35:04 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -127,7 +127,7 @@ define("CONTENT_LAN_41", "Ladda ner bilagor");
 define("CONTENT_LAN_42", "Fil");
 define("CONTENT_LAN_43", "Filer");
 define("CONTENT_LAN_44", "Träffar:");
-define("CONTENT_LAN_45", "Författarförtjänt poäng:");
+define("CONTENT_LAN_45", "Författarens poäng:");
 define("CONTENT_LAN_46", "Artikelindex");
 define("CONTENT_LAN_47", "Författare");
 define("CONTENT_LAN_48", "Innehållsobjekt");
