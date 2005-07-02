@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.9 $
-|   $Date: 2005-06-14 22:37:14 $
-|   $Author: e107coders $
+|   $Revision: 1.10 $
+|   $Date: 2005-07-02 13:20:43 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 	
@@ -108,7 +108,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 
 			$uploaded[$c]['name'] = $name;
 			$uploaded[$c]['type'] = $files['type'][$key];
-			$uploaded[$c]['size'] = $files['size'][$key];
+			$uploaded[$c]['size'] = 0;
 			 
 			$method = (OPEN_BASEDIR == FALSE ? "copy" : "move_uploaded_file");
 			 
@@ -131,6 +131,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 				$f_message .= "".LANUPLOAD_3." '".$files['name'][$key]."'.<br />";
 				$uploaded[$c]['size'] = $files['size'][$key];
 			} else {
+				$uploaded[$c]['error'] = $files['error'][$key];
 				switch ($files['error'][$key]) {
 					case 0:
 					$error = LANUPLOAD_4." [".str_replace("../", "", $uploaddir)."]";
