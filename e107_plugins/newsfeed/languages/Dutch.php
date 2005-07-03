@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Dutch.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 04:44:55 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-03 06:37:39 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -70,7 +70,7 @@ define("NFLAN_42", "<b>&raquo;</b> <u>Feed Naam:</u>
 	Als de feed een afbeelding heeft gedefinieerd, voer je 'default' in om die te gebruiken. Om een eigen afbeelding te gebruiken, voer je het volledige pad in, of niets om geen afbeelding te tonen.
 	<br /><br />
 	<b>&raquo;</b> <u>Beschrijving:</u>
-	Voer een korte beschrijvong van de feed in, of 'default' om de in de feed gedefinieerde beschrijving te tonen (als die er is).
+	Voer een korte beschrijving van de feed in, of 'default' om de in de feed gedefinieerde beschrijving te tonen (als die er is).
 	<br /><br />
 	<b>&raquo;</b> <u>Bijwerk interval in seconden:</u>
 	Het aantal seconden dat moet verstrijken voordat de feed wordt bijgewerkt, bijv, 1800: 30 minuten, 3600: één uur.
