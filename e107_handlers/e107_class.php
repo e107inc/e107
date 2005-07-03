@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-06-24 17:32:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.30 $
+|     $Date: 2005-07-03 23:59:52 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,48 +27,36 @@ class e107{
 	var $relative_base_path;
 	var $_ip_cache;
 
-	function e107($e107_paths, $class2_file){
+	function e107($e107_paths, $e107_root_path){
 		if(defined("COMPRESS_OUTPUT") && COMPRESS_OUTPUT === true) {
 			ob_start ("ob_gzhandler");
 		}
 		$this->e107_dirs = $e107_paths;
-		$this->set_e107_dirs($class2_file);
+		$this->set_e107_dirs();
+		$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
 	}
 
-	function set_e107_dirs($class2_file){
-		$this->fix_missing_doc_root();
-
-		$_SERVER['DOCUMENT_ROOT'] = $this->fix_windows_paths(realpath($_SERVER['DOCUMENT_ROOT']));
-
-		$e107_root_folder = realpath(dirname($class2_file));
-		$e107_root_folder = $this->fix_windows_paths($e107_root_folder);
-
-		// define server path in e107_config.php if you have problems, just leave it if everything works.
-		if(defined("SERVER_PATH")){
-			$server_path = SERVER_PATH;
-		} else {
-			$server_path = str_replace($_SERVER['DOCUMENT_ROOT'], '', $e107_root_folder)."/";
+	function set_e107_dirs(){
+		$path = "./"; $i = 0;
+		while (!file_exists("{$path}class2.php")) {
+			$path .= "../";
+			$i++;
 		}
-
-		$relative_path = substr_replace(dirname($_SERVER['PHP_SELF']), "", 0, strlen($server_path));
-
-		$link_prefix = '';
-		$prefix_array = explode("/", $relative_path."/");
-
-		foreach ($prefix_array as $val) {
-			if(trim($val) != ""){
-				$link_prefix .= "../";
-			}
+		$path_array = explode("/", $path);
+		$http_path = dirname($_SERVER['PHP_SELF']);
+		$http_path = explode("/", $http_path);
+		$http_path = array_reverse($http_path);
+		$j = 0;
+		while ($j < $i) {
+			unset($http_path[$j]);
+			$j++;
 		}
-
-		$this->relative_base_path = $link_prefix;
-
-		$this->server_path = $server_path;
-
+		$http_path = array_reverse($http_path);
+		$this->server_path = implode("/", $http_path)."/";
+		$this->relative_base_path = $path;
 		$this->http_path = "http://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->https_path = "https://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->file_path = $e107_root_folder;
-
 		define("e_HTTP", $this->server_path);
 	}
 
@@ -76,14 +64,6 @@ class e107{
 		$fixed_path = str_replace(array('\\\\', '\\'), array('/', '/'), $path);
 		$fixed_path = (substr($fixed_path, 1, 2) == ":/" ? substr($fixed_path, 2) : $fixed_path);
 		return $fixed_path;
-	}
-
-	function fix_missing_doc_root() {
-		if($_SERVER['DOCUMENT_ROOT'] == '') {
-			$_SERVER['PATH_INFO'] = $this->fix_windows_paths($_SERVER['PATH_INFO']);
-			$_SERVER['PATH_TRANSLATED'] = $this->fix_windows_paths($_SERVER['PATH_TRANSLATED']);
-			$_SERVER['DOCUMENT_ROOT'] = str_replace($_SERVER['PATH_INFO'], '', $_SERVER['PATH_TRANSLATED']);
-		}
 	}
 
 	function http_abs_location($dir_type = false, $extended = false, $secure = false) {
