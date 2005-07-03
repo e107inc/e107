@@ -36,7 +36,7 @@ define("LANINS_026", "MySQL wachtwoord:");
 define("LANINS_027", "MySQL database:");
 define("LANINS_028", "Aanmaken database?");
 define("LANINS_029", "Tabel prefix:");
-define("LANINS_030", "De MySQL server die je voor e107 wilt gebruiken. Het kan ook een poortnummer bevatten,  bijv. \"systeemnaam:poort\" of een pad naar een lokale socket bij. \":/pad/naar/socket\" voor de localhost.");
+define("LANINS_030", "De MySQL server die je voor e107 wilt gebruiken. Het kan ook een poortnummer bevatten,  bijv. \"systeemnaam:poort\" of een pad naar een lokale socket bijv \":/pad/naar/socket\" voor de localhost.");
 define("LANINS_031", "De gebruikersnaam waarmee e107 een verbinding maakt met de MySQL server");
 define("LANINS_032", "Het wachtwoord voor de gebruikersnaam die je net opgaf");
 define("LANINS_033", "De MySQL database waar e107 gebruik van maakt heet ook wel een schema. Als de gebruiker de rechten heeft om een database te creëren, kun je ervoor kiezen om de database automatisch te laten aanmaken als die tenminste nog niet bestaat.");
@@ -75,7 +75,7 @@ define("LANINS_060", "Het sql gegevensbestand kon niet worden gelezen.
 Controleer of het bestand <b>core_sql.php</b> bestaat in de <b>/e107_admin/sql</b> directory.");
 define("LANINS_061", "e107 kon niet alle vereiste databasetabellen aanmaken.
 Maak de database leeg en herstel de problemen en probeer het daarna nog eens.");
-define("LANINS_062", "Welkom bji je nieuwe website!");
+define("LANINS_062", "Welkom bij je nieuwe website!");
 define("LANINS_063", "e107 is succesvol geïnstaleerden klaar voor gebruik.");
 define("LANINS_064", "Je beheerscherm");
 define("LANINS_065", "is hier");
