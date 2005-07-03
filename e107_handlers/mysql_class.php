@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-06-26 15:34:22 $
+|     $Revision: 1.45 $
+|     $Date: 2005-07-03 14:37:46 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.44 $
+* @version $Revision: 1.45 $
 * @author $Author: e107coders $
 */
 class db {
@@ -80,22 +80,12 @@ class db {
 	* @access public
 	*/
 	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb) {
-		if(!is_array($mySQLserver)){
+
 			$this->mySQLserver = $mySQLserver;
 			$this->mySQLuser = $mySQLuser;
 			$this->mySQLpassword = $mySQLpassword;
 			$this->mySQLdefaultdb = $mySQLdefaultdb;
-		}else{
-            foreach($mySQLserver as $key=>$val){
-              	if(eregi($_SERVER["HTTP_HOST"],$key)){
-                  	$this->mySQLserver = $mySQLserver[$key];
-					$this->mySQLuser = $mySQLuser[$key];
-					$this->mySQLpassword = $mySQLpassword[$key];
-					$this->mySQLdefaultdb = $mySQLdefaultdb[$key];
-					continue;
-			   	}
-			}
-		}
+
 		$temp = $this->mySQLerror;
 		$this->mySQLerror = FALSE;
 		if(defined("USE_PERSISTANT_DB") && USE_PERSISTANT_DB == true){
