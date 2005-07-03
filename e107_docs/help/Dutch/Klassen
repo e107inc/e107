@@ -1,5 +1,5 @@
 
-Q>	Wat zijn Gebruikersklassen? Wat kun je er mee doen?
-A>	Met gebruikersklassen kun je de toegang tot bepaalde delen van je site afschermen. Als je eerst een klasse definieert en vervolgens gebruikers lid maakt van zo'n klasse, kun je bijvoorbeeld de zichtbaarheid van verschillende functies beperken tot die klasse.
-Er is bij installatie al een standaardklasse PRIVATEFORUM aanwezig. Je kunt gebruikers aan die klasse toevoegen, waarna je een forum voor die klasse kunt aanmaken. Daarna kunnen alleen de gebruikers binnen die klasse dat forum gebruiken. Je kunt verschillende andere gebieden en functies op deze wijze afschermen, bijvoorbeeld nieuwsberichten, links, downloads enz.
+Q>	Wat zijn Ledenklassen? Wat kun je er mee doen?
+A>	Met ledenklassen kun je de toegang tot bepaalde delen van je site afschermen. Als je eerst een klasse definieert en vervolgens leden lid maakt van zo'n klasse, kun je bijvoorbeeld de zichtbaarheid van verschillende functies beperken tot die klasse.
+Er is bij installatie al een standaardklasse PRIVATEFORUM aanwezig. Je kunt leden aan die klasse toevoegen, waarna je een forum voor die klasse kunt aanmaken. Daarna kunnen alleen de gebruikers binnen die klasse dat forum gebruiken. Je kunt verschillende andere gebieden en functies op deze wijze afschermen, bijvoorbeeld nieuwsberichten, links, downloads enz.
 

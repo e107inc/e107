@@ -1,9 +1,9 @@
 
-Q>	Ik een paar wijzigingen aan mijn site gemaakt en nu zie ik mySQL fouten en de site is niet te zien.
-A>	Het kan zijn dat je 'core' verminkt is. De core bevat de hoofdinstellingen en variabelen van e107. Om de core te herstellen, ga je naar http://jewebsite.com/e107_files/resetcore.php. Always back up your core (from the Database screen) before you apply changes, you can then restore the core backup if something goes wrong (again from resetcore.php).
+Q>	Ik heb een paar wijzigingen aan mijn site gemaakt en nu zie ik mySQL fouten en de site is niet te zien.
+A>	Het kan zijn dat je 'core' verminkt is. De core bevat de hoofdinstellingen en variabelen van e107. Om de core te herstellen, ga je naar http://jewebsite.com/e107_files/resetcore.php. Maak eerst altijd een backup van je core (in het Database scherm) voordat je de wijzigingen aanbrengt, je kunt dan tenminste altijd de oude instellingen restoren als er iets fout ging (bij resetcore.php).
 
 Q>	Ik ben het wachtwoord van de hoofdbeheerder vergeten en kan de beheerfubcties niet meer benaderen.
-A>	Vanwege beveiligingsredenen is het niet mogelijk om het beheerderswachtwoord te wijzigen tenzij je bent ingelogd. Als je het wachtwoord nog niet hebt opgeschreven, doe het dan NU, dan zul je je geen zorgen hoeven te maken. Als het toch fuot gaar, moet je het wachtwoord handmatig via PHPMyAdmin of een soortgelijke mySQL manager moeten wijzigen. Ga naar de gebruikers tabel, de Hoofdbeheerder heeft userid 1. Klik op bewerk en wijzig het wachtwoord in 4cb9c8a8048fd02294477fcb1a41191a, dit wijzigt het wachtwoord in 'changeme'(zonder aanhalingstekens). Log nu in en [b]wijzig je wachtwoord meteen[/b].
+A>	Vanwege beveiligingsredenen is het niet mogelijk om het beheerderswachtwoord te wijzigen tenzij je bent ingelogd. Als je het wachtwoord nog niet hebt opgeschreven, doe het dan NU, dan zul je je geen zorgen hoeven te maken. Als het toch fout gaat, moet je het wachtwoord handmatig via PHPMyAdmin of een soortgelijke mySQL manager moeten wijzigen. Ga naar de gebruikers tabel, de Hoofdbeheerder heeft userid 1. Klik op bewerk en wijzig het wachtwoord in 4cb9c8a8048fd02294477fcb1a41191a, dit wijzigt het wachtwoord in 'changeme'(zonder aanhalingstekens). Log nu in en [b]wijzig je wachtwoord meteen[/b].
 
-Q>	Ik heb een theme/plugin geïnstalleerd en nu doet mijn site het niet meer, wat kan ik doen?
+Q>	Ik heb een theme/plugin geÃ¯nstalleerd en nu doet mijn site het niet meer, wat kan ik doen?
 A>	Gebruik resetcore.php (zie boven).
