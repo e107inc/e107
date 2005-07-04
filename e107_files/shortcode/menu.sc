@@ -1,6 +1,7 @@
 global $sql;
 global $ns;
 global $eMenuList;
+global $error_handler;
 if (!array_key_exists($parm,$eMenuList)) {
 	return;
 }
@@ -35,6 +36,10 @@ foreach($eMenuList[$parm] as $row)
 		}
 	}
 	if($show_menu) {
+		if($error_handler->debug == true) {
+			$_menu = $row['menu_name'];
+			echo "\n<!-- Menu Start: {$_menu} -->\n";
+		}
 		$sql->db_Mark_Time($row['menu_name']);
 		$mname = $row['menu_name'];
 		if(is_numeric($row['menu_path']))
@@ -64,5 +69,8 @@ foreach($eMenuList[$parm] as $row)
 			}
 		}
 		$sql->db_Mark_Time("(After ".$mname.")");
+		if ($error_handler->debug == true) {
+			echo "\n<!-- Menu End: {$_menu} -->\n";
+		}
 	}
 }
