@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.185 $
-|     $Date: 2005-07-04 14:55:53 $
+|     $Revision: 1.186 $
+|     $Date: 2005-07-04 23:39:20 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -80,26 +80,6 @@ if (preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)) {
 define("e_TBQS", $_SERVER['QUERY_STRING']);
 $_SERVER['QUERY_STRING'] = e_QUERY;
 
-$link_prefix = $e107->relative_base_path;
-// define e_BASE for backwards compatability
-define("e_BASE", $e107->relative_base_path);
-
-define("e_ADMIN", $e107->relative_base_path.$ADMIN_DIRECTORY);
-define("e_IMAGE", $e107->relative_base_path.$IMAGES_DIRECTORY);
-define("e_THEME", $e107->relative_base_path.$THEMES_DIRECTORY);
-define("e_PLUGIN", $e107->relative_base_path.$PLUGINS_DIRECTORY);
-define("e_FILE", $e107->relative_base_path.$FILES_DIRECTORY);
-define("e_HANDLER", $e107->relative_base_path.$HANDLERS_DIRECTORY);
-define("e_LANGUAGEDIR", $e107->relative_base_path.$LANGUAGES_DIRECTORY);
-
-if ($DOWNLOADS_DIRECTORY{0} == "/") {
-	define("e_DOWNLOAD", $DOWNLOADS_DIRECTORY);
-} else {
-	define("e_DOWNLOAD", $e107->relative_base_path.$DOWNLOADS_DIRECTORY);
-}
-
-define("e_DOCS", $e107->relative_base_path.$HELP_DIRECTORY);
-define("e_DOCROOT", $_SERVER['DOCUMENT_ROOT']."/");
 define("e_UC_PUBLIC", 0);
 define("e_UC_READONLY", 251);
 define("e_UC_GUEST", 252);
