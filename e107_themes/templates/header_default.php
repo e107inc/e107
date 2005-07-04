@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2005-06-29 21:18:22 $
-|     $Author: sweetas $
+|     $Revision: 1.56 $
+|     $Date: 2005-07-04 00:16:41 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -58,15 +58,16 @@ if(defined("PREVIEWTHEME")) {
 	echo "<link rel='stylesheet' href='".PREVIEWTHEME."style.css' type='text/css' />\n";
 } else {
 	if (isset($theme_css_php) && $theme_css_php) {
-		echo "<link rel='stylesheet' href='".THEME."/theme-css.php' type='text/css' />\n";
+		echo "<link rel='stylesheet' href='{$e107->http_theme_dir}theme-css.php' type='text/css' />\n";
 	} else {
 		if(isset($pref['themecss']) && $pref['themecss'] && file_exists(THEME.$pref['themecss']))
 		{
-			echo "<link rel='stylesheet' href='".THEME.$pref['themecss']."' type='text/css' />\n";
+			echo "<link rel='stylesheet' href='{$e107->http_theme_dir}{$pref['themecss']}' type='text/css' />\n";
 		}
 		else
 		{
-			echo "<link rel='stylesheet' href='".THEME."style.css' type='text/css' />\n";
+			
+			echo "<link rel='stylesheet' href='{$e107->http_theme_dir}style.css' type='text/css' />\n";
 		}
 		if (!isset($no_core_css) || !$no_core_css) {
 			echo "<link rel='stylesheet' href='".e_FILE."e107.css' type='text/css' />\n";
@@ -78,14 +79,14 @@ if(function_exists('theme_head')){
 	echo theme_head();
 }
 if(function_exists('core_head')){ echo core_head(); }
-if (file_exists(e_BASE."favicon.ico")) { echo "<link rel='icon' href='".e_BASE."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".e_BASE."favicon.ico' type='image/xicon' />\n"; }
+if (file_exists(e_BASE."favicon.ico")) { echo "<link rel='icon' href='{$e107->server_path}favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='{$e107->server_path}favicon.ico' type='image/xicon' />\n"; }
 
 echo $pref['meta_tag'] ? str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'], FALSE, "nobreak, no_hook, no_make_clickable"))."\n" : "";
 if (isset($theme_js_php) && $theme_js_php) {
-	echo "<link rel='stylesheet' href='".THEME."theme-js.php' type='text/css% />";
+	echo "<link rel='stylesheet' href='{$e107->http_theme_dir}theme-js.php' type='text/css% />";
 } else {
 	echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>\n";
-	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME."theme.js'></script>\n"; }
+	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='{$e107->http_theme_dir}theme.js'></script>\n"; }
 	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n"; }
 }
 if (isset($WYSIWYG) && $WYSIWYG == TRUE && check_class($pref['wysiwyg'])) { require_once(e_HANDLER."tiny_mce/wysiwyg.php"); }
@@ -112,7 +113,7 @@ if ($pref['image_preload']) {
 	$ejs_listpics = substr($ejs_listpics, 0, -1);
 	closedir($handle);
 
-	$script_text .= "ejs_preload('".THEME."images/','".$ejs_listpics."');\n";
+	$script_text .= "ejs_preload('{$e107->http_theme_dir}images/','".$ejs_listpics."');\n";
 }
 if (isset($script_text) && $script_text) {
 	echo "<script type='text/javascript'>\n";
