@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.183 $
-|     $Date: 2005-07-03 23:59:52 $
+|     $Revision: 1.184 $
+|     $Date: 2005-07-04 00:16:41 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -370,7 +370,8 @@ if (!function_exists('checkvalidtheme')) {
 				echo '<script>alert("'.$tp->toJS(CORE_LAN1).'")</script>';
 			}
 		}
-		$e107->http_theme_dir = $e107->http_abs_location("THEMES_DIRECTORY", "{$e107->site_theme}/");
+		$themes_dir = $e107->e107_dirs["THEMES_DIRECTORY"];
+		$e107->http_theme_dir = "{$e107->server_path}{$themes_dir}{$e107->site_theme}/";
 	}
 }
 
