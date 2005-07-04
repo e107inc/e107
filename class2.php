@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.184 $
-|     $Date: 2005-07-04 00:16:41 $
+|     $Revision: 1.185 $
+|     $Date: 2005-07-04 14:55:53 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -44,7 +44,7 @@ if($register_globals == true){
 	unset($global);
 }
 // Grab e107_config, get directory paths, and create the $e107 object
-@include_once(realpath(dirname(__FILE__).'/').'/e107_config.php');
+@include_once(realpath(dirname(__FILE__).'/e107_config.php'));
 if(!isset($ADMIN_DIRECTORY)){
 	// e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
 	header("Location: install.php");
