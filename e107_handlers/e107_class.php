@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-07-04 23:39:20 $
+|     $Revision: 1.33 $
+|     $Date: 2005-07-04 23:44:01 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -62,7 +62,7 @@ class e107{
 		$this->file_path = $e107_root_folder;
 
 		define("e_HTTP", $this->server_path);
-		define("e_BASE", $e107->relative_base_path);
+		define("e_BASE", $this->relative_base_path);
 		define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
 		define("e_IMAGE", e_BASE.$IMAGES_DIRECTORY);
 		define("e_THEME", e_BASE.$THEMES_DIRECTORY);
