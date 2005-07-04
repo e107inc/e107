@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-07-03 23:59:52 $
+|     $Revision: 1.31 $
+|     $Date: 2005-07-04 11:25:51 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -43,6 +43,9 @@ class e107{
 			$i++;
 		}
 		$path_array = explode("/", $path);
+		
+		if($_SERVER['PHP_SELF'] == "") { $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME']; }
+		
 		$http_path = dirname($_SERVER['PHP_SELF']);
 		$http_path = explode("/", $http_path);
 		$http_path = array_reverse($http_path);
