@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-07-01 09:24:35 $
+|     $Revision: 1.19 $
+|     $Date: 2005-07-04 22:36:12 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Links");
+if(!defined("PAGE_NAME")){define("PAGE_NAME", "Links");}
 
 define("LCLAN_PLUGIN_LAN_1", "Links Page");
 define("LCLAN_PLUGIN_LAN_2", "Links Page For Displaying External Web Links");
@@ -17,6 +17,13 @@ define("LCLAN_PLUGIN_LAN_3", "Configure Links Page");
 define("LCLAN_PLUGIN_LAN_4", "links");
 define("LCLAN_PLUGIN_LAN_5", "Links page has successfully installed, please configure it from the Links Page link on the admin front page.");
 define("LCLAN_PLUGIN_LAN_6", "Links_page successfully upgraded, now using version");
+
+define("LCLAN_OPT_MENU_1", "general options");
+define("LCLAN_OPT_MENU_2", "personal link managers");
+define("LCLAN_OPT_MENU_3", "category page");
+define("LCLAN_OPT_MENU_4", "links display");
+define("LCLAN_OPT_MENU_5", "refer page");
+define("LCLAN_OPT_MENU_6", "rating page");
 
 define("LCLAN_OPT_1", "general options");
 define("LCLAN_OPT_2", "Link Page Options");
@@ -27,7 +34,7 @@ define("LCLAN_OPT_6", "");
 define("LCLAN_OPT_7", "divide categories into individual pages");
 define("LCLAN_OPT_8", "allow links to be submitted");
 define("LCLAN_OPT_9", "who can submit links");
-define("LCLAN_OPT_10", "show all links on one page");
+define("LCLAN_OPT_10", "use multiple pages to show the links");
 define("LCLAN_OPT_11", "number of links per page");
 define("LCLAN_OPT_12", "category page");
 define("LCLAN_OPT_13", "display which sections");
@@ -37,8 +44,8 @@ define("LCLAN_OPT_16", "amount");
 define("LCLAN_OPT_17", "referal");
 define("LCLAN_OPT_18", "url");
 define("LCLAN_OPT_19", "total category info line");
-define("LCLAN_OPT_20", "link to top links : refer");
-define("LCLAN_OPT_21", "link to top links : rated");
+define("LCLAN_OPT_20", "link to top refer");
+define("LCLAN_OPT_21", "link to top rated");
 define("LCLAN_OPT_22", "show default icon if none is present");
 define("LCLAN_OPT_23", "default sort method");
 define("LCLAN_OPT_24", "default order method");
@@ -73,6 +80,19 @@ define("LCLAN_OPT_52", "personal link managers");
 define("LCLAN_OPT_53", "date");
 define("LCLAN_OPT_54", "allow personal management on links");
 define("LCLAN_OPT_55", "allow comments on all links");
+define("LCLAN_OPT_56", "minimum refer value");
+define("LCLAN_OPT_57", "only links with a refer count larger then the given value are displayed (0 or empty = all)");
+define("LCLAN_OPT_58", "link to submit link");
+define("LCLAN_OPT_59", "link to personal manager (only if allowed)");
+define("LCLAN_OPT_60", "link to link frontpage");
+define("LCLAN_OPT_61", "link to all categories");
+define("LCLAN_OPT_62", "show these navigator links");
+define("LCLAN_OPT_63", "minimum rating value");
+define("LCLAN_OPT_64", "only links with a rating larger then the given value are displayed (0 or empty = all)");
+define("LCLAN_OPT_65", "show empty categories");
+define("LCLAN_OPT_66", "link to each category");
+define("LCLAN_OPT_67", "link to all links");
+define("LCLAN_OPT_68", "view all links");
 
 define("LCLAN_ADMIN_1", "update");
 define("LCLAN_ADMIN_2", "Link saved to database.");
@@ -173,20 +193,10 @@ define("LCLAN_ITEM_32", "delete");
 define("LCLAN_ITEM_33", "Are you sure you want to delete this link?");
 define("LCLAN_ITEM_34", "no icon");
 define("LCLAN_ITEM_35", "manage personal links");
-define("LCLAN_ITEM_36", "");
+define("LCLAN_ITEM_36", "go");
 define("LCLAN_ITEM_37", "");
 define("LCLAN_ITEM_38", "");
 define("LCLAN_ITEM_39", "");
-define("LCLAN_ITEM_40", "");
-define("LCLAN_ITEM_41", "");
-define("LCLAN_ITEM_42", "");
-define("LCLAN_ITEM_43", "");
-define("LCLAN_ITEM_44", "");
-define("LCLAN_ITEM_45", "");
-define("LCLAN_ITEM_46", "");
-define("LCLAN_ITEM_47", "");
-define("LCLAN_ITEM_48", "");
-define("LCLAN_ITEM_49", "");
 
 define("LCLAN_ADMINMENU_1", "Link Options");
 define("LCLAN_ADMINMENU_2", "Manage Link Categories");
@@ -204,6 +214,17 @@ define("NT_LAN_LP_3", "Link Submitted");
 define("LNK_SCH_LAN_2", "All Links Categories");
 define("LNK_SCH_LAN_3", "All links details");
 
+define("LAN_LINKS_MANAGER_0", "icon");
+define("LAN_LINKS_MANAGER_1", "link");
+define("LAN_LINKS_MANAGER_2", "options");
+define("LAN_LINKS_MANAGER_3", "create new link");
+define("LAN_LINKS_MANAGER_4", "you don't have any links present");
+define("LAN_LINKS_MANAGER_5", "category");
+define("LAN_LINKS_MANAGER_6", "");
+define("LAN_LINKS_MANAGER_7", "");
+define("LAN_LINKS_MANAGER_8", "");
+define("LAN_LINKS_MANAGER_9", "");
+
 define("LAN_LINKS_1", "Total links");
 define("LAN_LINKS_2", "Total links activated");
 define("LAN_LINKS_3", "Anonymous");
@@ -215,9 +236,9 @@ define("LAN_LINKS_8", "ascending");
 define("LAN_LINKS_9", "descending");
 define("LAN_LINKS_10", "Top Links : Refer");
 define("LAN_LINKS_11", "Top Links : Rating");
-define("LAN_LINKS_12", "view top links by refer");
-define("LAN_LINKS_13", "view top links by user rating");
-define("LAN_LINKS_14", "back to links frontpage");
+define("LAN_LINKS_12", "view links by refer");
+define("LAN_LINKS_13", "view links by rating");
+define("LAN_LINKS_14", "view links frontpage");
 define("LAN_LINKS_15", "sort by");
 define("LAN_LINKS_16", "in this category");
 define("LAN_LINKS_17", "link");
@@ -230,7 +251,7 @@ define("LAN_LINKS_23", "are");
 define("LAN_LINKS_24", "total in");
 define("LAN_LINKS_25", "show all links");
 define("LAN_LINKS_26", "Referrals:");
-define("LAN_LINKS_27", "Please click here to submit a link");
+define("LAN_LINKS_27", "submit a link");
 define("LAN_LINKS_28", "Thankyou");
 define("LAN_LINKS_29", "Your link has been saved and will be reviewed by a site administrator.");
 define("LAN_LINKS_30", "Link Categories");
@@ -241,31 +262,18 @@ define("LAN_LINKS_34", "There are currently no links");
 define("LAN_LINKS_35", "personal links manager");
 define("LAN_LINKS_36", "link comments");
 define("LAN_LINKS_37", "comments:");
-define("LAN_LINKS_38", "");
-define("LAN_LINKS_39", "");
-
-define("LAN_LINKS_MANAGER_0", "icon");
-define("LAN_LINKS_MANAGER_1", "link");
-define("LAN_LINKS_MANAGER_2", "options");
-define("LAN_LINKS_MANAGER_3", "create new link");
-define("LAN_LINKS_MANAGER_4", "you don't have any links present");
-define("LAN_LINKS_MANAGER_5", "category");
-define("LAN_LINKS_MANAGER_6", "");
-define("LAN_LINKS_MANAGER_7", "");
-define("LAN_LINKS_MANAGER_8", "");
-define("LAN_LINKS_MANAGER_9", "");
-
-define("LAN_LINKS_50", "");
-define("LAN_LINKS_51", "");
-define("LAN_LINKS_52", "");
-define("LAN_LINKS_53", "");
-define("LAN_LINKS_54", "");
-define("LAN_LINKS_55", "");
-define("LAN_LINKS_56", "");
-define("LAN_LINKS_57", "");
-define("LAN_LINKS_58", "");
-define("LAN_LINKS_59", "");
-
+define("LAN_LINKS_38", "date");
+define("LAN_LINKS_39", "Links");
+define("LAN_LINKS_40", "Category");
+define("LAN_LINKS_41", "no categories yet");
+define("LAN_LINKS_42", "no links are referred yet");
+define("LAN_LINKS_43", "view all categories");
+define("LAN_LINKS_44", "id");
+define("LAN_LINKS_45", "Link Category");
+define("LAN_LINKS_46", "Link Subcategories");
+define("LAN_LINKS_47", "");
+define("LAN_LINKS_48", "");
+define("LAN_LINKS_49", "");
 
 define("LAN_ADMIN_HELP_0", "linkspage help area");
 
@@ -277,7 +285,6 @@ define("LAN_ADMIN_HELP_1", "<i>the manage link categories page shows all categor
 ".LINK_ICON_ORDER_DOWN." : the down button allows you to move the category item one down in order.<br />
 <br />
 <b>order</b><br />here you can manually set the order of all the categories. You need to change the values in the select boxes to the order of your kind and press the reorder button below to save the new order.<br />");
-
 
 define("LAN_ADMIN_HELP_2", "<i>the create link category page allows you to add new categories</i><br /><br />You can upload a new icon, and after uploading assign the icon to the category.");
 define("LAN_ADMIN_HELP_3", "<i>the manage links page first show all categories.</i><br /><br />".LINK_ICON_LINK." : link to the category<br /><br />".LINK_ICON_EDIT." : click the icon to view all links in this category<br />");
@@ -294,10 +301,12 @@ the personal link managers are priviliged users who can manage their own persona
 category page<br />
 here you can change options for the category page.<br /><br />
 links page<br />
-These options are used on the link pages.<br />
+These options are used on the link pages.<br /><br />
+refer page<br />
+These options are used on the top refer links page.<br /><br />
+rating page<br />
+These options are used on the top rated links page.<br />
 ");
-
-
 
 define("LAN_ADMIN_HELP_7", "<i>the edit link category page allows you to edit an existing category</i><br /><br />You can upload a new icon, and after uploading assign the icon to the category.<br />You can update the timestamp of the link by checking the box.");
 

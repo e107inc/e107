@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_linkspage_config.php,v $
-|    $Revision: 1.2 $
-|    $Date: 2005-07-01 08:22:10 $
+|    $Revision: 1.3 $
+|    $Date: 2005-07-04 22:36:12 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -202,14 +202,26 @@ function admin_linkspage_config_adminmenu(){
 		
 	show_admin_menu(LCLAN_ADMINMENU_1, $act, $var);
 		
-	if ($sql->db_Select("links_page_cat", "*")) {
-		while ($row = $sql->db_Fetch()) {
-			$cat_var[$row['link_category_id']]['text'] = $row['link_category_name'];
-			$cat_var[$row['link_category_id']]['link'] = e_SELF."?link.view.".$row['link_category_id'];
+	if($qs[0] != "opt"){
+		if ($sql->db_Select("links_page_cat", "*")) {
+			while ($row = $sql->db_Fetch()) {
+				$cat_var[$row['link_category_id']]['text'] = $row['link_category_name'];
+				$cat_var[$row['link_category_id']]['link'] = e_SELF."?link.view.".$row['link_category_id'];
+			}
+			$active = ($qs[0] == 'link') ? $id : FALSE;
+			show_admin_menu(LCLAN_ADMINMENU_8, $active, $cat_var);
 		}
-		 
-		$active = ($qs[0] == 'link') ? $id : FALSE;
-		show_admin_menu(LCLAN_ADMINMENU_8, $active, $cat_var);
+	}
+	if(isset($qs[0]) && $qs[0] == "opt"){
+		unset($var);
+		$var=array();
+		$var['optgeneral']['text']		= LCLAN_OPT_MENU_1;
+		$var['optmanager']['text']		= LCLAN_OPT_MENU_2;
+		$var['optcategory']['text']	= LCLAN_OPT_MENU_3;
+		$var['optlinks']['text']		= LCLAN_OPT_MENU_4;
+		$var['optrefer']['text']		= LCLAN_OPT_MENU_5;
+		$var['optrating']['text']			= LCLAN_OPT_MENU_6;
+		show_admin_menu(LCLAN_ADMINMENU_6, $qs[0], $var, TRUE);
 	}
 }
 
