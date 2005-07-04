@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.6 $
-|    $Date: 2005-07-01 09:24:36 $
-|    $Author: lisa_ $
+|    $Revision: 1.7 $
+|    $Date: 2005-07-04 17:37:30 $
+|    $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -162,7 +162,7 @@ class linkclass {
 	}
 
 	function dbCategoryCreate($_POST) {
-		global $sql;
+		global $sql, $tp;
 		$_POST['link_category_name']	= $tp->toDB($_POST['link_category_name'], "admin");
 		$link_t							= $sql->db_Count("links_page_cat", "(*)");
 		$sql->db_Insert("links_page_cat", " '0', '".$_POST['link_category_name']."', '".$_POST['link_category_description']."', '".$_POST['link_category_icon']."', '".($link_t+1)."', '".$_POST['link_category_class']."', '".time()."' ");
