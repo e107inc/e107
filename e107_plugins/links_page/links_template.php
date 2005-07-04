@@ -11,20 +11,32 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-07-01 09:24:36 $
+|     $Revision: 1.11 $
+|     $Date: 2005-07-04 22:36:12 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
-global $sc_style, $link_shortcodes, $rs;
+global $sc_style, $link_shortcodes;
 
-//general backlink to link frontpage
-$sc_style['LINK_BACKLINK']['pre'] = "<div style='text-align:right;'>";
-$sc_style['LINK_BACKLINK']['post'] = " >></div>";
+//general : backlink to link frontpage
+$sc_style['LINK_NAVIGATOR']['pre'] = "<td style='text-align:right;'>";
+$sc_style['LINK_NAVIGATOR']['post'] = "</td>";
 
-$sc_style['LINK_MANAGER_LINK']['pre'] = "<div style='text-align:right;'>";
-$sc_style['LINK_MANAGER_LINK']['post'] = " >></div>";
+//general : order menu
+$sc_style['LINK_SORTORDER']['pre'] = "<td style='text-align:left;'>";
+$sc_style['LINK_SORTORDER']['post'] = "</td>";
+
+$sc_style['LINK_CATMENU']['pre'] = "<td style='text-align:left;'>";
+$sc_style['LINK_CATMENU']['post'] = "</td>";
+
+$sc_style['LINK_NAVIGATOR_TABLE_PRE']['pre'] = "<table cellpadding='0' cellspacing='0' style='width:100%; margin-bottom:20px;'><tr>";
+$sc_style['LINK_NAVIGATOR_TABLE_PRE']['post'] = "";
+$sc_style['LINK_NAVIGATOR_TABLE_POST']['pre'] = "";
+$sc_style['LINK_NAVIGATOR_TABLE_POST']['post'] = "</tr></table>";
+
+$LINK_NAVIGATOR_TABLE = "{LINK_NAVIGATOR_TABLE_PRE}{LINK_SORTORDER}{LINK_NAVIGATOR}{LINK_NAVIGATOR_TABLE_POST}";
+
 
 
 $sc_style['LINK_MANAGE_NEWLINK']['pre'] = "<div style='text-align:right;'>";
@@ -46,33 +58,25 @@ $LINK_TABLE_MANAGE = "
 	<td style='width:10%; padding-bottom:5px; text-align:center; vertical-align:top;' class='forumheader3'>{LINK_MANAGE_OPTIONS}</td>
 	</tr>";
 
-$LINK_TABLE_MANAGE_END = "</table>".$rs -> form_close()."<br />{LINK_MANAGE_NEWLINK} {LINK_BACKLINK}";
+$LINK_TABLE_MANAGE_END = "</table>".$rs -> form_close()."<br />{LINK_MANAGE_NEWLINK}";
+
 
 
 // MAIN TABLE -------------------------------------------------------------------------------
-$sc_style['LINK_MAIN_ICON']['pre'] = "<td rowspan='2' class='forumheader3' style='width:5%; text-align:center; padding-right:5px;'>";
+$sc_style['LINK_MAIN_ICON']['pre'] = "<td rowspan='2' class='forumheader3' style='width:2%; text-align:left; padding-right:10px;'>";
 $sc_style['LINK_MAIN_ICON']['post'] = "</td>";
 
 $sc_style['LINK_MAIN_HEADING']['pre'] = "";
 $sc_style['LINK_MAIN_HEADING']['post'] = "";
 
-$sc_style['LINK_MAIN_DESC']['pre'] = "<tr><td class='forumheader3' colspan='2'>";
+$sc_style['LINK_MAIN_DESC']['pre'] = "<tr><td class='forumheader3' colspan='3'>";
 $sc_style['LINK_MAIN_DESC']['post'] = "</td></tr>";
 
-$sc_style['LINK_MAIN_NUMBER']['pre'] = "<td class='forumheader' style='width:30%; white-space:nowrap;'>";
+$sc_style['LINK_MAIN_NUMBER']['pre'] = "<td class='forumheader' style='width:8%; white-space:nowrap;'>";
 $sc_style['LINK_MAIN_NUMBER']['post'] = "</td>";
 
 $sc_style['LINK_MAIN_TOTAL']['pre'] = "";
 $sc_style['LINK_MAIN_TOTAL']['post'] = "<br />";
-
-$sc_style['LINK_MAIN_SHOWALL']['pre'] = "";
-$sc_style['LINK_MAIN_SHOWALL']['post'] = " >><br />";
-
-$sc_style['LINK_MAIN_TOPREFER']['pre'] = "";
-$sc_style['LINK_MAIN_TOPREFER']['post'] = " >><br />";
-
-$sc_style['LINK_MAIN_TOPRATED']['pre'] = "";
-$sc_style['LINK_MAIN_TOPRATED']['post'] = " >><br />";
 
 
 $LINK_MAIN_TABLE_START = "
@@ -82,7 +86,7 @@ $LINK_MAIN_TABLE = "
 	<table class='fborder' style='width:100%; margin-bottom:20px;' cellspacing='0' cellpadding='0'>
 	<tr>
 		{LINK_MAIN_ICON}
-		<td class='fcaption' style='width:90%'>{LINK_MAIN_HEADING}</td>
+		<td class='fcaption'>{LINK_MAIN_HEADING}</td>
 		{LINK_MAIN_NUMBER}
 	</tr>
 	{LINK_MAIN_DESC}
@@ -91,74 +95,65 @@ $LINK_MAIN_TABLE = "
 $LINK_MAIN_TABLE_END = "
 		<div style='text-align:right;'>
 		{LINK_MAIN_TOTAL}
-		{LINK_MAIN_SHOWALL}
-		{LINK_MAIN_TOPREFER}
-		{LINK_MAIN_TOPRATED}
-		{LINK_MANAGER_LINK}
 		</div>
 	</div>";
 
-
-// CATEGORY LIST ----------------------------------------------------------------------------
-global $sc_style, $link_shortcodes;
-
-$sc_style['LINK_CAT_SORTORDER']['pre'] = "<table class='fborder' style='width:100%' cellspacing='0' cellpadding='0'><tr><td class='forumheader' colspan='3'>";
-$sc_style['LINK_CAT_SORTORDER']['post'] = "</td></tr></table><br />";
-
-$sc_style['LINK_CAT_BUTTON']['pre'] = "<td rowspan='4' class='forumheader3' style='width:10%; text-align:center; padding-right:5px;'>";
-$sc_style['LINK_CAT_BUTTON']['post'] = "</td>";
-
-$sc_style['LINK_CAT_NAME']['pre'] = "";
-$sc_style['LINK_CAT_NAME']['post'] = "";
-
-$sc_style['LINK_CAT_URL']['pre'] = "<tr><td colspan='2' class='forumheader2' style='line-height:130%;'><i>";
-$sc_style['LINK_CAT_URL']['post'] = "</i></td></tr>";
-
-$sc_style['LINK_CAT_REFER']['pre'] = "<td class='forumheader' style='white-space:nowrap;'>";
-$sc_style['LINK_CAT_REFER']['post'] = "</td>";
-
-$sc_style['LINK_CAT_DESC']['pre'] = "<tr><td colspan='2' class='forumheader3' style='line-height:130%;'>";
-$sc_style['LINK_CAT_DESC']['post'] = "</td></tr>";
-
-$sc_style['LINK_CAT_RATING']['pre'] = "<tr><td colspan='2' class='forumheader' style='line-height:130%;'>";
-$sc_style['LINK_CAT_RATING']['post'] = "</td></tr>";
-
-$sc_style['LINK_CAT_SUBMIT']['pre'] = "<div style='text-align:right;'>";
-$sc_style['LINK_CAT_SUBMIT']['post'] = "</div>";
-
-$sc_style['LINK_CAT_COMMENT']['pre'] = "<span class='forumheader' style='vertical-align:middle;'>";
-$sc_style['LINK_CAT_COMMENT']['post'] = "</span>";
-
-
-$LINK_CAT_TABLE_START = "
-	<div style='text-align:center'>
-	{LINK_CAT_SORTORDER}";
-
-$LINK_CAT_TABLE = "
-	<table class='fborder' style='width:100%; margin-bottom:20px;' cellspacing='0' cellpadding='0'>
-	<tr>
-		{LINK_CAT_BUTTON}
-		<td class='fcaption' style='width:90%'>
-			{LINK_CAT_NEW} {LINK_CAT_APPEND} {LINK_CAT_NAME} </a>
-			{LINK_CAT_COMMENT}
-		</td>
-		{LINK_CAT_REFER}
-	</tr>
-	{LINK_CAT_URL}
-	{LINK_CAT_DESC}
-	{LINK_CAT_RATING}
-	</table>";
-
-$LINK_CAT_TABLE_END = "
-	{LINK_CAT_SUBMIT}
-	{LINK_MANAGER_LINK}
-	{LINK_BACKLINK}
+$LINK_MAIN_TABLE_START_ALL = "
+	<div style='text-align:center'>";
+$LINK_MAIN_TABLE_END_ALL = "
 	</div>";
 
 
 
 
-$sc_style['LINK_RATED_BUTTON']['pre'] = "<td rowspan='4' class='forumheader3' style='width:10%; text-align:center; padding-right:5px;'>";
+// LINKS ITEM ----------------------------------------------------------------------------
+
+$sc_style['LINK_BUTTON']['pre'] = "<td rowspan='4' class='forumheader3' style='width:10%; text-align:center; padding-right:5px;'>";
+$sc_style['LINK_BUTTON']['post'] = "</td>";
+
+$sc_style['LINK_NAME']['pre'] = "";
+$sc_style['LINK_NAME']['post'] = "";
+
+$sc_style['LINK_URL']['pre'] = "<tr><td colspan='2' class='forumheader2' style='line-height:130%;'><i>";
+$sc_style['LINK_URL']['post'] = "</i></td></tr>";
+
+$sc_style['LINK_REFER']['pre'] = "<td class='forumheader' style='white-space:nowrap;'>";
+$sc_style['LINK_REFER']['post'] = "</td>";
+
+$sc_style['LINK_DESC']['pre'] = "<tr><td colspan='2' class='forumheader3' style='line-height:130%;'>";
+$sc_style['LINK_DESC']['post'] = "</td></tr>";
+
+$sc_style['LINK_RATING']['pre'] = "<tr><td colspan='2' class='forumheader' style='line-height:130%;'>";
+$sc_style['LINK_RATING']['post'] = "</td></tr>";
+
+$sc_style['LINK_COMMENT']['pre'] = "<span class='forumheader' style='vertical-align:middle;'>";
+$sc_style['LINK_COMMENT']['post'] = "</span>";
+
+$LINK_TABLE_START = "
+	<div style='text-align:center'>";
+
+$LINK_TABLE = "
+	<table class='fborder' style='width:100%; margin-bottom:20px;' cellspacing='0' cellpadding='0'>
+	<tr>
+		{LINK_BUTTON}
+		<td class='fcaption' style='width:90%'>
+			{LINK_NEW} {LINK_APPEND} {LINK_NAME} </a>
+			{LINK_COMMENT}
+		</td>
+		{LINK_REFER}
+	</tr>
+	{LINK_URL}
+	{LINK_DESC}
+	{LINK_RATING}
+	</table>";
+
+$LINK_TABLE_END = "
+	</div>";
+
+
+
+// RATED -----------------------------------------------------------------------------------
+$sc_style['LINK_RATED_BUTTON']['pre'] = "<td rowspan='5' class='forumheader3' style='width:10%; text-align:center; padding-right:5px;'>";
 $sc_style['LINK_RATED_BUTTON']['post'] = "</td>";
 
 $sc_style['LINK_RATED_NAME']['pre'] = "";
@@ -176,7 +171,9 @@ $sc_style['LINK_RATED_DESC']['post'] = "</td></tr>";
 $sc_style['LINK_RATED_RATING']['pre'] = "<td colspan='2' class='forumheader' style='line-height:130%; width:25%; white-space:nowrap; text-align:right;'>";
 $sc_style['LINK_RATED_RATING']['post'] = "</td>";
 
-//TOP RATED LINKS
+$sc_style['LINK_RATED_CATEGORY']['pre'] = "<tr><td colspan='2' class='forumheader2' style='line-height:130%;'><i>";
+$sc_style['LINK_RATED_CATEGORY']['post'] = "</i></td></tr>";
+
 $LINK_RATED_TABLE_START = "
 	<div style='text-align:center'>
 	";
@@ -191,12 +188,13 @@ $LINK_RATED_TABLE = "
 		{LINK_RATED_RATING}
 	</tr>
 	{LINK_RATED_URL}
+	{LINK_RATED_CATEGORY}
 	{LINK_RATED_DESC}		
 	</table>";
 
 $LINK_RATED_TABLE_END = "
-	{LINK_BACKLINK}
 	</div>";
+
 
 
 // SUBMIT -----------------------------------------------------------------------------------
@@ -233,7 +231,8 @@ $LINK_SUBMIT_TABLE = "
 	</tr>
 	</table>
 	</form>
-	</div>";
+	</div>
+	";
 
 
 ?>
