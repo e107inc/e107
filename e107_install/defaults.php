@@ -15,6 +15,4 @@ $LANGUAGES_DIRECTORY = "e107_languages/";
 $HELP_DIRECTORY      = "e107_docs/help/";
 $DOWNLOADS_DIRECTORY = "e107_files/downloads/";
 
-//define("SERVER_PATH", "/path_to_e107/"); // to be used only if necessary
-
 ?>
