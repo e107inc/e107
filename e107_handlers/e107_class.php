@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-07-04 11:25:51 $
+|     $Revision: 1.32 $
+|     $Date: 2005-07-04 23:39:20 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -32,20 +32,20 @@ class e107{
 			ob_start ("ob_gzhandler");
 		}
 		$this->e107_dirs = $e107_paths;
-		$this->set_e107_dirs();
+		$this->set_paths();
 		$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
 	}
 
-	function set_e107_dirs(){
+	function set_paths(){
+		global $DOWNLOADS_DIRECTORY;
 		$path = "./"; $i = 0;
 		while (!file_exists("{$path}class2.php")) {
 			$path .= "../";
 			$i++;
 		}
 		$path_array = explode("/", $path);
-		
 		if($_SERVER['PHP_SELF'] == "") { $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME']; }
-		
+
 		$http_path = dirname($_SERVER['PHP_SELF']);
 		$http_path = explode("/", $http_path);
 		$http_path = array_reverse($http_path);
@@ -60,7 +60,24 @@ class e107{
 		$this->http_path = "http://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->https_path = "https://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->file_path = $e107_root_folder;
+
 		define("e_HTTP", $this->server_path);
+		define("e_BASE", $e107->relative_base_path);
+		define("e_ADMIN", e_BASE.$ADMIN_DIRECTORY);
+		define("e_IMAGE", e_BASE.$IMAGES_DIRECTORY);
+		define("e_THEME", e_BASE.$THEMES_DIRECTORY);
+		define("e_PLUGIN", e_BASE.$PLUGINS_DIRECTORY);
+		define("e_FILE", e_BASE.$FILES_DIRECTORY);
+		define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
+		define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
+
+		define("e_DOCS", e_BASE.$HELP_DIRECTORY);
+		define("e_DOCROOT", $_SERVER['DOCUMENT_ROOT']."/");
+		if ($DOWNLOADS_DIRECTORY{0} == "/") {
+			define("e_DOWNLOAD", $DOWNLOADS_DIRECTORY);
+		} else {
+			define("e_DOWNLOAD", e_BASE.$DOWNLOADS_DIRECTORY);
+		}
 	}
 
 	function fix_windows_paths($path) {
