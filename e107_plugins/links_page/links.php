@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-07-04 22:36:12 $
+|     $Revision: 1.22 $
+|     $Date: 2005-07-05 12:27:49 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -72,8 +72,8 @@ if (isset($qs[0]) && $qs[0] == "view" && isset($qs[1]) && is_numeric($qs[1]))
 	{
 		$row = $sql->db_Fetch();
 		$sql->db_Update("links_page", "link_refer=link_refer+1 WHERE link_id='$qs[1]' ");
-		header("location:".$row['link_url']);
-		exit;
+		//header("location:".$row['link_url']); exit;
+		js_location($row['link_url']);
 	}
 }
 
