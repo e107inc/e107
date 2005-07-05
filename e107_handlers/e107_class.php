@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-07-04 23:44:01 $
+|     $Revision: 1.34 $
+|     $Date: 2005-07-05 00:00:34 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -37,8 +37,9 @@ class e107{
 	}
 
 	function set_paths(){
-		global $DOWNLOADS_DIRECTORY;
-		$path = "./"; $i = 0;
+		global $DOWNLOADS_DIRECTORY, $ADMIN_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY,
+				$FILES_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY;
+		$path = ""; $i = 0;
 		while (!file_exists("{$path}class2.php")) {
 			$path .= "../";
 			$i++;
