@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/error.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-28 12:10:30 $
+|     $Revision: 1.8 $
+|     $Date: 2005-07-05 15:18:39 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -47,7 +47,7 @@ switch(e_QUERY) {
 	
 	if (strlen($errFrom)) $text .= LAN_9." ( <a href='{$errFrom}' rel='external'>{$errFrom}</a> ) -- ".LAN_19."<br />";
 	
-	$base_path = $e107->http_abs_location();
+	$base_path = e_HTTP;
 	
 	$text .= "<br /><a href='{$base_path}index.php'>".LAN_20."</a><br />";
 	$text .= "<a href='{$base_path}search.php'>".LAN_ERROR_02."</a></p>";

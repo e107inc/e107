@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-07-05 14:32:17 $
+|     $Revision: 1.39 $
+|     $Date: 2005-07-05 15:18:39 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -100,15 +100,6 @@ class e107{
 		$fixed_path = str_replace(array('\\\\', '\\'), array('/', '/'), $path);
 		$fixed_path = (substr($fixed_path, 1, 2) == ":/" ? substr($fixed_path, 2) : $fixed_path);
 		return $fixed_path;
-	}
-
-	function http_abs_location($dir_type = false, $extended = false, $secure = false) {
-		global $pref;
-		if ($pref['ssl_enabled']) {
-			$secure = true;
-		}
-		$site_uri = ($secure ? $this->https_path : $this->http_path);
-		return "{$site_uri}".($dir_type ? $this->e107_dirs[$dir_type] : "").($extended ? $extended : "");
 	}
 
 	function ban() {
