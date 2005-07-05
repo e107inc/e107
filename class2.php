@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.187 $
-|     $Date: 2005-07-05 14:13:51 $
+|     $Revision: 1.188 $
+|     $Date: 2005-07-05 15:18:38 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -223,8 +223,8 @@ define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SER
 
 // if the option to force users to use a particular url for the site is enabled, redirect users there
 if($pref['redirectsiteurl'] && $pref['siteurl']) {
-	if(!strstr($pref['siteurl'], substr($e107->http_abs_location(), 0, -1))) {
-		$location = str_replace($e107->http_abs_location(), $pref['siteurl'], e_SELF).(e_QUERY ? "?".e_QUERY : "");
+	if(!strstr($pref['siteurl'], substr(SITEURL.e_HTTP, 0, -1))) {
+		$location = str_replace(SITEURL.e_HTTP, $pref['siteurl'], e_SELF).(e_QUERY ? "?".e_QUERY : "");
 		header("Location: {$location}");
 		exit();
 	}
@@ -414,7 +414,7 @@ define("e_SIGNUP", (file_exists($e107->relative_base_path."customsignup.php") ? 
 define("e_LOGIN", (file_exists($e107->relative_base_path."customlogin.php") ? $e107->relative_base_path."customlogin.php" : $e107->relative_base_path."login.php"));
 
 if ($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php' && e_PAGE != 'sitedown.php') {
-	header("Location: ".$e107->http_abs_location(false, "membersonly.php"));
+	header("Location: ".SITEURL.e_HTTP."membersonly.php");
 	exit;
 }
 
@@ -449,7 +449,7 @@ define("SITEADMINEMAIL", $pref['siteadminemail']);
 define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'], "", "emotes_off defs"));
 
 if ($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin.php", e_SELF) && !eregi("sitedown.php", e_SELF)) {
-	header("Location: ".$e107->http_abs_location(false, "sitedown.php"));
+	header("Location: ".SITEURL.e_HTTP."sitedown.php");
 	exit;
 }
 
@@ -480,7 +480,7 @@ if (e_QUERY == 'logout') {
 
 	cookie($pref['cookie_name'], "", (time() - 2592000));
 	$e_event->trigger("logout");
-	echo "<script type='text/javascript'>document.location.href = '".$e107->http_abs_location()."index.php'</script>\n";
+	echo "<script type='text/javascript'>document.location.href = '".SITEURL.e_HTTP."index.php'</script>\n";
 	exit;
 }
 
