@@ -82,7 +82,7 @@ if ($parms[1] == 'value')
 	}
 	if($ret_data)
 	{
-		return $tp->toHTML($ret_data, TRUE, "", "class:{$udata['user_class']}");
+		return $tp->toHTML($ret_data, TRUE, "no_make_clickable", "class:{$udata['user_class']}");
 	}
 	return FALSE;
 }
