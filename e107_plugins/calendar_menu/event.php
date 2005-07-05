@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-05-01 04:37:02 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2005-07-05 21:31:42 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
+require_once(e_PLUGIN."calendar_menu/calendar_shortcodes.php");
 if (isset($_POST['viewallevents']))
 {
     Header("Location: " . e_PLUGIN . "calendar_menu/calendar.php?" . $_POST['enter_new_val']);
@@ -31,17 +32,17 @@ if (isset($_POST['subs']))
     Header("Location: " . e_PLUGIN . "calendar_menu/subscribe.php");
 } 
 
-$ec_dir = e_PLUGIN . "calendar_menu/";
-$lan_file = $ec_dir . "languages/" . e_LANGUAGE . ".php";
+$ec_dir		= e_PLUGIN . "calendar_menu/";
+$lan_file	= $ec_dir . "languages/" . e_LANGUAGE . ".php";
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN . "calendar_menu/languages/English.php");
 define("PAGE_NAME", EC_LAN_80);
 
-$cal_super = check_class($pref['eventpost_super']);
+$cal_super	= check_class($pref['eventpost_super']);
 
-
-require_once(e_HANDLER . "calendar/calendar_class.php");
+require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
-// enter new category into db ------------------------------------------------------------------------
+
+// enter new category into db
 if (isset($_POST['ne_cat_create']))
 {
     if ($_POST['ne_new_category'] != "")
@@ -54,7 +55,7 @@ if (isset($_POST['ne_cat_create']))
         header("location:event.php?" . $_POST['qs'] . ".m3");
     } 
 } 
-// enter new event into db ----------------------------------------------------------------------------
+// enter new event into db
 if (isset($_POST['ne_insert']) && USER == true)
 {
     if ($_POST['ne_event'] != "")
@@ -87,8 +88,8 @@ if (isset($_POST['ne_insert']) && USER == true)
         header("location:event.php?" . $ev_start . ".m3");
     } 
 } 
-// ----------------------------------------------------------------------------------------------------------
-// update event in db ----------------------------------------------------------------------------------
+
+// update event in db
 if (isset($_POST['ne_update']) && USER == true)
 {
     if ($_POST['ne_event'] != "")
@@ -123,7 +124,8 @@ if (isset($_POST['ne_update']) && USER == true)
         header("location:event.php?" . $ev_start . ".m3");
     } 
 } 
-// ----------------------------------------------------------------------------------------------------------
+
+
 require_once(HEADERF);
 
 if (isset($_POST['jump']))
@@ -167,12 +169,12 @@ if (isset($_POST['confirm']))
 if ($action == "de")
 {
     $text = "<div style='text-align:center'>
-	<b>" . EC_LAN_48 . "</b>
+	<b>".EC_LAN_48."</b>
 	<br /><br />
-	<form method='post' action='" . e_SELF . "' id='calformz' >
-	<input class='button' type='submit' name='cancel' value='" . EC_LAN_49 . "' />
-	<input class='button' type='submit' name='confirm' value='" . EC_LAN_50 . "' />
-	<input type='hidden' name='existing' value='" . $qs[1] . "' />
+	<form method='post' action='".e_SELF."' id='calformz' >
+	<input class='button' type='submit' name='cancel' value='".EC_LAN_49."' />
+	<input class='button' type='submit' name='confirm' value='".EC_LAN_50."' />
+	<input type='hidden' name='existing' value='".$qs[1]."' />
 	<input type='hidden' name='subbed' value='no' />
 	</form>
 	</div>";
@@ -184,20 +186,22 @@ if (isset($_POST['cancel']))
 {
     $message = EC_LAN_47; 
     // Delete Cancelled
-} 
+}
+
 // set up data arrays ----------------------------------------------------------------------------------
 if ($pref['eventpost_weekstart'] == 'sun')
 {
-    $days = Array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);
+    $days	= Array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);
 } 
 else
 {
-    $days = Array(EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24, EC_LAN_25);
+    $days	= Array(EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24, EC_LAN_25);
 } 
-$dayslo = array('1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '10.', '11.', '12.', '13.', '14.', '15.', '16.', '17.', '18.', '19.', '20.', '21.', '22.', '23.', '24.', '25.', '26.', '27.', '28.', '29.', '30.', '31.');
-$monthabb = Array(EC_LAN_JAN, EC_LAN_FEB, EC_LAN_MAR, EC_LAN_APR, EC_LAN_MAY, EC_LAN_JUN, EC_LAN_JUL, EC_LAN_AUG, EC_LAN_SEP, EC_LAN_OCT, EC_LAN_NOV, EC_LAN_DEC);
-$months = array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
+$dayslo		= array('1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '10.', '11.', '12.', '13.', '14.', '15.', '16.', '17.', '18.', '19.', '20.', '21.', '22.', '23.', '24.', '25.', '26.', '27.', '28.', '29.', '30.', '31.');
+$monthabb	= Array(EC_LAN_JAN, EC_LAN_FEB, EC_LAN_MAR, EC_LAN_APR, EC_LAN_MAY, EC_LAN_JUN, EC_LAN_JUL, EC_LAN_AUG, EC_LAN_SEP, EC_LAN_OCT, EC_LAN_NOV, EC_LAN_DEC);
+$months		= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
 // ----------------------------------------------------------------------------------------------------------
+
 if ($qs[2] == "m1")
 {
     $message = EC_LAN_41; //"New category created.";
@@ -215,14 +219,15 @@ else if ($qs[2] == "m4")
     $message = EC_LAN_44; //"New event created and entered into database.";
 } elseif ($qs[2] == "m5")
 {
-    $message = EC_LAN_45; // "Event updated in database.";
+    $message = EC_LAN_45; //"Event updated in database.";
 } 
 
 if (isset($message))
 {
     $ns->tablerender("", "<div style='text-align:center'><b>" . $message . "</b></div>");
-} 
-// enter new event form---------------------------------------------------------------------------------
+}
+
+// enter new event form
 if ($action == "ne" || $action == "ed")
 {
     if ($cal_super || check_class($pref['eventpost_admin']))
@@ -268,21 +273,20 @@ if ($action == "ne" || $action == "ed")
 			var sdate = temp[0] + temp[1] + temp[2] + thisform.ne_hour.options[thisform.ne_hour.selectedIndex].value + thisform.ne_minute.options[thisform.ne_minute.selectedIndex].value
 			temp = thisform.end_date.value.split(\"-\");
 			var edate = temp[0] + temp[1] + temp[2] + thisform.end_hour.options[thisform.end_hour.selectedIndex].value + thisform.end_minute.options[thisform.end_minute.selectedIndex].value
-			
-				testresults=true;
 
-			
-				if (edate <= sdate && !thisform.allday.checked && testresults )
-				{
-					alert('" . EC_LAN_99 . "');
-					testresults=false;
-				}
-				if ((thisform.ne_title.value=='' || thisform.ne_event.value=='') && testresults)
-				{
-					alert('" . EC_LAN_98 . "');
-					testresults=false;
-				}
-			
+			testresults=true;
+
+			if (edate <= sdate && !thisform.allday.checked && testresults )
+			{
+				alert('" . EC_LAN_99 . "');
+				testresults=false;
+			}
+			if ((thisform.ne_title.value=='' || thisform.ne_event.value=='') && testresults)
+			{
+				alert('" . EC_LAN_98 . "');
+				testresults=false;
+			}
+
 			if (testresults)
 			{
 				if (thisform.subbed.value=='no')
@@ -305,8 +309,8 @@ if ($action == "ne" || $action == "ed")
 
         if ($action == "ed")
         {
-            $caption = EC_LAN_66; 
-            // edit Event
+            $caption = EC_LAN_66; // edit Event 
+            
         } elseif ($action == "ne")
         {
             $caption = EC_LAN_28; // Enter New Event
@@ -509,12 +513,12 @@ if ($action == "ne" || $action == "ed")
 
             $text .= "</div>";
             $text .= "<div style='text-align:center'>
-			<input class='button' type='submit' name='ne_cat_create' value='" . EC_LAN_56 . "' /></div>";
+			<input class='button' type='submit' name='ne_cat_create' value='" . EC_LAN_56 . "' /></div>
+			</td>
+			</tr>";
         } 
 
-        $text .= "</td>
-		</tr>
-
+        $text .= "
 		<tr>
 		<td class='forumheader3' style='width:20%'>" . EC_LAN_32 . " </td>
 		<td class='forumheader3' style='width:80%'>
@@ -592,143 +596,71 @@ if ($action == "ne" || $action == "ed")
         exit;
     } 
 } 
-// ----------------------------------------------------------------------------------------------------------
-// show events-------------------------------------------------------------------------------------------
-// get fir. and la. days of month in unix format---------------------------------------------------
-$monthstart = mktime(0, 0, 0, $month, 1, $year);
-$firstdayarray = getdate($monthstart);
-$monthend = mktime(0, 0, 0, $month + 1, 1, $year) -1 ;
-$lastdayarray = getdate($monthend);
-// ----------------------------------------------------------------------------------------------------------
-// echo current month with links to previous/next months ----------------------------------------
-$prevmonth = ($month-1);
-$prevyear = $year;
+
+// show events
+$monthstart		= mktime(0, 0, 0, $month, 1, $year);
+$firstdayarray	= getdate($monthstart);
+$monthend		= mktime(0, 0, 0, $month + 1, 1, $year) -1 ;
+$lastdayarray	= getdate($monthend);
+
+$prevmonth		= ($month-1);
+$prevyear		= $year;
 if ($prevmonth == 0)
 {
-    $prevmonth = 12;
-    $prevyear = ($year-1);
+    $prevmonth	= 12;
+    $prevyear	= ($year-1);
 } 
-$previous = mktime(0, 0, 0, $prevmonth, 1, $prevyear);
+$previous		= mktime(0, 0, 0, $prevmonth, 1, $prevyear);
 
-$nextmonth = ($month + 1);
-$nextyear = $year;
+$nextmonth		= ($month + 1);
+$nextyear		= $year;
 if ($nextmonth == 13)
 {
-    $nextmonth = 1;
-    $nextyear = ($year + 1);
+    $nextmonth	= 1;
+    $nextyear	= ($year + 1);
 } 
-$next = mktime(0, 0, 0, $nextmonth, 1, $nextyear);
+$next			= mktime(0, 0, 0, $nextmonth, 1, $nextyear);
 
-$todayarray = getdate();
-$current_month = $todayarray['mon'];
-$current_year = $todayarray['year'];
-$current = mktime(0, 0, 0, $current_month, 1, $current_year);
+$todayarray		= getdate();
+$current_month	= $todayarray['mon'];
+$current_year	= $todayarray['year'];
+$current		= mktime(0, 0, 0, $current_month, 1, $current_year);
 
-$prop = mktime(0, 0, 0, $month, 1, $year);
+$prop			= mktime(0, 0, 0, $month, 1, $year);
+$next			= mktime(0, 0, 0, $nextmonth, 1, $nextyear);
+$py				= $year-1;
+$prevlink		= mktime(0, 0, 0, $month, 1, $py);
+$ny				= $year + 1;
+$nextlink		= mktime(0, 0, 0, $month, 1, $ny);
 
-$next = mktime(0, 0, 0, $nextmonth, 1, $nextyear);
-$py = $year-1;
-$prevlink = mktime(0, 0, 0, $month, 1, $py);
-$ny = $year + 1;
-$nextlink = mktime(0, 0, 0, $month, 1, $ny);
-
-$text2 .= "<table style='width:98%' class='fborder'>
-<tr>
-<td class='forumheader' style='width:18%; text-align:left;'><span class='defaulttext'><a href='" . e_SELF . "?" . $previous . "'>&lt;&lt; " . $months[($prevmonth-1)] . "</a></span></td>";
-if ($pref['eventpost_dateformat'] == 'my')
-{
-    $text2 .= "<td class='fcaption' style='width:64%; text-align:center'><b>" . $months[($month-1)] . " " . $year . "</b></td>";
-} 
-else
-{
-    $text2 .= "<td class='fcaption' style='width:64%; text-align:center'><b>" . $year . " " . $months[($month-1)] . "</b></td>";
-} 
-// end
-$text2 .= "<td class='forumheader' style='width:185%; text-align:right;'><span class='defaulttext'><a href='" . e_SELF . "?" . $next . "'> " . $months[($nextmonth-1)] . " &gt;&gt;</a></span> </td>
-</tr>
-<tr><td colspan='3'></td></tr>
-<tr>
-<td class='forumheader' style='text-align:left;'><a href='event.php?" . $prevlink . "'>&lt;&lt; " . $py . "</a></td>
-<td class='fcaption' style='text-align:center;'>";
-for ($ii = 0; $ii < 13; $ii++)
-{
-    $m = $ii + 1;
-    $monthjump = mktime(0, 0, 0, $m, 1, $year);
-    $text2 .= "<a href='event.php?" . $monthjump . "'>" . $monthabb[$ii] . "</a> &nbsp;";
-} 
-$text2 .= "</td>
-<td class='forumheader' style='text-align:right'><a href='event.php?" . $nextlink . "'>" . $ny . " &gt;&gt;</a></td>
-</tr></table>";
-
-$text2 .= "<div style='text-align:center'>";
-
-$text2 .= "<br /><form method='post' action='" . e_SELF . "?" . e_QUERY . "' id='calformc'><table border='0' cellpadding='2' cellspacing='3' class='forumheader3'>
-<tr><td style='text-align:right;'>
-
-<select name='event_cat_ids' class='tbox' style='width:140px;' onchange='this.form.submit()'>
-<option class='tbox' value='all'>" . EC_LAN_97 . "</option>";
-
-$event_cat_id = !isset($_POST['event_cat_ids']) ? null : $_POST['event_cat_ids'];
-// * *BK* If supervisor then can do anything and see all
-if ($cal_super)
-{
-    $cal_arg = "";
-} 
-else
-{
-    $cal_arg = " find_in_set(event_cat_class,'" . USERCLASS_LIST . "') ";
-} 
-
-$sql->db_Select("event_cat", "*", $cal_arg);
-
-while ($row = $sql->db_Fetch())
-{
-    if ($row['event_cat_id'] == $_POST['event_cat_ids'])
-    {
-        $text2 .= "<option class='tbox' value='$event_cat_id' selected='selected'>" . $row['event_cat_name'] . "</option>";
-    } 
-    else
-    {
-        $text2 .= "<option value='{$row['event_cat_id']}'>" . $row['event_cat_name'] . "</option>";
-    } 
-} 
-
-$text2 .= "</select></td><td style='text-align:center;'>
-<input class='button' type='submit' style='width:140px;' name='viewallevents' value='" . EC_LAN_96 . "' title='" . EC_LAN_96 . "' />
-</td></tr>
-<tr><td align='right'><input type='hidden' name='do' value='vc' />
-<input class='button' type='submit' style='width:140px;' name='viewcat' value='" . EC_LAN_92 . "' />
-</td><td style='text-align:center;'><input type='hidden' name='enter_new_val' value='" . $prop . "' /> ";
-
-if (check_class($pref['eventpost_admin']) || getperms('0'))
-{ 
-    // start no admin preference
-    $text2 .= "<input class='button' type='submit' style='width:140px;' name='doit' value='" . EC_LAN_94 . "' />";
-} 
-if ($pref['eventpost_asubs']>0) {
-    
-
-$text2 .= "</td>
-	</tr>
-	<tr><td align='center' colspan='2'><input class='button' type='submit' style='width:140px;' name='subs' value='" . EC_LAN_123 . "' /></td>
-	</tr>";
+if (is_readable(THEME."calendar_template.php")) {
+	require_once(THEME."calendar_template.php");
+	} else {
+	require_once(e_PLUGIN."calendar_menu/calendar_template.php");
 }
-$text2 .= "</table></form></div><br />";
-// --------------------------------------------------------------------------------
-// extra stuff for Category.
+
+// time switch buttons
+$text2 .= $tp -> parseTemplate($CALENDAR_TIME_TABLE, FALSE, $calendar_shortcodes);
+
+// navigation buttons
+$text2 .= $tp -> parseTemplate($CALENDAR_NAVIGATION_TABLE, FALSE, $calendar_shortcodes);
+
 $sql2 = new db;
 if ($ds == "event")
 { 
-    // * *BK*
-    // * *BK* Added by Barry to show one event when clicked on
-    // * *BK*
-    $sql2->db_Select("event", "*", "event_id='$eveid'");
+	$qry = "
+	SELECT e.*, ec.*
+	FROM #event as e
+	LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
+	WHERE e.event_id='".$eveid."' 
+	";
+	$sql2->db_Select_gen($qry);
     $row = $sql2->db_Fetch();
     $event[] = $row;
     $next10_start = $event[0]['event_start'];
-    $text2 .= "<table style='width:98%' class='fborder'>"; 
-    $text2 .= show_event($event);
-    $text2 .= "</table>";
+	$text2 .= $tp -> parseTemplate($EVENT_EVENT_TABLE_START, FALSE, $calendar_shortcodes);
+	$text2 .= show_event($event);
+	$text2 .= $tp -> parseTemplate($EVENT_EVENT_TABLE_END, FALSE, $calendar_shortcodes);
 } 
 else
 {
@@ -738,18 +670,18 @@ else
 
     if ($ds == 'one')
     {
-        $tmp = getdate($action);
-        $selected_day = $tmp['mday'];
-        $selected_mon = $tmp['mon'];
-        $start_time = $action;
-        $end_time = $action + 86399;
-        $cap_title = " - " . $months[$selected_mon-1] . " " . $selected_day;
+        $tmp			= getdate($action);
+        $selected_day	= $tmp['mday'];
+        $selected_mon	= $tmp['mon'];
+        $start_time		= $action;
+        $end_time		= $action + 86399;
+        $cap_title		= " - " . $months[$selected_mon-1] . " " . $selected_day;
     } 
     else
     {
-        $start_time = $monthstart;
-        $end_time = $monthend;
-        $cap_title = '';
+        $start_time		= $monthstart;
+        $end_time		= $monthend;
+        $cap_title		= '';
     } 
     $extra = " OR e.event_rec_y = {$month} ";
 
@@ -833,205 +765,69 @@ else
         } 
     } 
 } 
-$text2 .= "<table style='width:98%' class='fborder'>";
 
-if ($ds == 'one')
-{ 
-    // echo "selected month: $selected_mon <br />";
-    $text2 .= "<tr><td class='fcaption' colspan='2'><strong>" . EC_LAN_111 . $months[$selected_mon-1] . " " . $dayslo[$selected_day-1] . "</strong></td></tr>";
-} elseif ($ds != 'event')
-{
-    $text2 .= "<tr><td class='fcaption' colspan='2'><strong>" . EC_LAN_112 . " " . $months[date("m", $monthstart)-1] . "</strong></td></tr>";
-} 
-// echo "<pre>".print_r($events, TRUE)."</pre>";
-foreach ($events as $dom => $event)
-{ 
-    // echo "selected day = $selected_day, dom = $dom <br />";
-    if ($ds == 'one')
-    {
-        if ($dom == $selected_day)
-        {
+
+// event list
+$text2 .= $tp -> parseTemplate($EVENT_EVENTLIST_TABLE_START, FALSE, $calendar_shortcodes);
+foreach ($events as $dom => $event){ 
+    if ($ds == 'one'){
+        if ($dom == $selected_day){
             $text2 .= show_event($event);
         } 
-    } 
-    else
-    {
+    }else{
         $text2 .= show_event($event);
     } 
 } 
+$text2 .= $tp -> parseTemplate($EVENT_EVENTLIST_TABLE_END, FALSE, $calendar_shortcodes);
 
-$text2 .= "</table>";
-// -----------------------------------------------------------------------------------------------------------
+
+// event archive
 $nextmonth = mktime(0, 0, 0, $month + 1, 1, $year)-1;
 if (!$next10_start)
 {
     $next10_start = $nextmonth;
 } 
-// echo date('r', $next10_start)."<br />";
 $sql->db_Select("event", "*", "event_start > '{$next10_start}' ORDER BY event_start ASC LIMIT 0,10");
 $num = $sql->db_Rows();
-// added by rezso
-$gen = new convert;
-// end
-$_title = str_replace("-NUM-", $num, EC_LAN_62);
-$text2 .= "<br /><table style='width:98%' class='fborder'>
-<tr>
-<td colspan='2' class='forumheader'><span class='defaulttext'>{$_title}</span></td></tr>";
+
 if ($num != 0)
 {
-    while ($events = $sql->db_Fetch())
-    {
-        extract($events); 
-        // changed by rezso
-        // $startds = ereg_replace(" 0", " ", date("l d F Y H:i:s", $event_start));
-        $startds = $gen->convert_date($event_start, "long");
-        $text2 .= "<tr><td style='width:35%; vertical-align:top' class='forumheader3'><a href='event.php?" . $event_start . "'>" . $startds . "</a></td>
-		<td style='width:65%' class='forumheader3'>" . $event_details . "</td></tr>";
-    } 
+	$gen = new convert;
+	while ($events = $sql->db_Fetch())
+	{
+		$archive_events .= $tp -> parseTemplate($EVENT_ARCHIVE_TABLE, FALSE, $calendar_shortcodes);
+	} 
 } 
 else
 {
-    $text2 .= "<tr><td colspan='2' class='forumheader3'>" . EC_LAN_37 . "</td></tr>";
+	$archive_events = $tp -> parseTemplate($EVENT_ARCHIVE_TABLE_EMPTY, FALSE, $calendar_shortcodes);
 } 
+$text2 .= $tp -> parseTemplate($EVENT_ARCHIVE_TABLE_START, FALSE, $calendar_shortcodes);
+$text2 .= $archive_events;
+$text2 .= $tp -> parseTemplate($EVENT_ARCHIVE_TABLE_END, FALSE, $calendar_shortcodes);
 
-$text2 .= "</table>";
+
 $caption = EC_LAN_80; // "Event List";
 $ns->tablerender($caption . $cap_title, $text2);
 require_once(FOOTERF);
 
+
 function show_event($day_events)
 { 
-    // echo "<pre>".print_r($day_events, true)."</pre>";
     foreach($day_events as $event)
     {
-        global $tp, $cal_super,$ds;
+        global $tp, $cal_super, $_POST, $ds, $thisevent, $EVENT_ID, $EVENT_EVENT_TABLE, $calendar_shortcodes, $event_author_id, $event_author_name;
+		$thisevent = $event;
         $gen = new convert;
-        if (($_POST['do'] == null || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $event['event_cat_id']))
+        if (($_POST['do'] == null || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $thisevent['event_cat_id']))
         {
-            $evf = getdate($event['event_start']);
-            $tmp = $evf['mday'];
-            if ($event['event_allday'] == 0)
-            {
-                if ($event['event_start'] > $event['event_end'])
-                {
-                    $event['event_end'] = $event['event_start'];
-                } 
-            } 
-
-            $startds = cal_landate($event['event_start'], $event['event_recurring'], $event['event_allday']);
-            $endds = cal_landate($event['event_end'], $event['event_recurring'], $event['event_allday']);
-
-            $lp = explode(".", $event['event_author']);
+            $lp = explode(".", $thisevent['event_author']);
             if (ereg("[0-9]+", $lp[0]))
             {
                 $event_author_id = $lp[0];
                 $event_author_name = $lp[1];
-            } 
-            // Start producing the details
-            // Header in $text3
-            $text3 = "";
-            if ($event['event_cat_icon'])
-            {
-                $text3 .= "<img style='border:0' src='" . e_PLUGIN . "calendar_menu/images/" . $event['event_cat_icon'] . "' alt='' /> " . $event['event_title'] ;
-            } 
-            else
-            {
-                $text3 .= "<strong>" . EC_LAN_57 . "</strong> " . $event['event_title'];
-            } 
-
-            $text3 .= "&nbsp;&nbsp;";
-            if ($event['event_allday'])
-            {
-                $text3 .= "<b>" . EC_LAN_68 . "</b>: $startds";
-            } 
-            else if ($startds == $endds)
-            {
-                $text3 .= "<b>" . EC_LAN_29 . "</b>: " . $startds . "";
-            } 
-            else
-            {
-                $text3 .= "<b>" . EC_LAN_29 . "</b>: " . $startds . "
-				<b>" . EC_LAN_69 . "</b>: " . $endds . "";
-            } 
-            // End of header line
- // If one event or one day expand otherwise it is a whole months list so display them compressed
-           if ($ds=="event" )
-            {
-                $cal_exp = "show";
-            } 
-            else
-            {
-                $cal_exp = "none";
-            } 
-            $text2 .= "<tr>
-			<td >
-			<div class='fcaption' title='" . EC_LAN_132 . "' style='cursor:pointer;cursor:hand;text-align:left;border:1px solid black' onclick=\"expandit('calevent" . $event['event_id'] . "')\">" . $text3 . "</div>
-			<div id='calevent" . $event['event_id'] . "' style='display:" . $cal_exp . ";text-align:left'>
-			<table width='100%' class='fborder' >
-			<tr >
-			<td colspan='2' class='forumheader3'>" . $tp->toHTML($event['event_details'], true) . "
-			</td>
-			</tr>
-			<tr><td style='width:50%' class='forumheader3'>";
-
-            if ($event['event_cat_icon'])
-            {
-                $text2 .= "<b>" . EC_LAN_30 . "</b> <img style='border:0' src='" . e_PLUGIN . "calendar_menu/images/" . $event['event_cat_icon'] . "' alt='' width='12' height='12' /> " . $event['event_cat_name'];
-            } 
-            else
-            {
-                $text2 .= "<b>" . EC_LAN_30 . "</b> " . $event['event_cat_name'] ;
-            } 
-
-            $text2 .= "</td><td style='width:50%' class='forumheader3'><b>" . EC_LAN_32 . "</b> ";
-            if ($event['event_location'] == "")
-            {
-                $text2 .= EC_LAN_38;
-            } 
-            else
-            {
-                $text2 .= $event['event_location'];
-            } 
-            $text2 .= "</td></tr>
-			<tr>
-			<td style='width:33%' class='forumheader3'><b>" . EC_LAN_31 . "</b> <a href='" . e_BASE . "user.php?id." . $event_author_id . "'>" . $event_author_name . "</a></td>
-			<td style='width:33%' class='forumheader3'><b>" . EC_LAN_33 . "</b> ";
-            if ($event['event_contact'] == "")
-            {
-                $text2 .= EC_LAN_38; // Not Specified ;
-            } 
-            else
-            {
-                $smailaddr = explode("@", $event['event_contact']);
-
-                $text2 .= "<script type='text/javascript'>
-				<!--
-				var contact='" . $smailaddr[0] . " at " . $smailaddr[1] . "';
-				var email='" . $smailaddr[0] . "';
-				var emailHost='" . $smailaddr[1] . "';
-				document.write(\"<a href=\" + \"mail\" + \"to:\" + email + \"@\" + emailHost+ \">\" + contact + \"</a>\" + \"\")
-				//-->
-				</script>"; 
-                // $text2 .= "<a href='mailto:" . $event['event_contact'] . "'>" . $event['event_contact'] . "</a>";
-            } 
-
-            $text2 .= "</td></tr>
-			<tr>
-			<td style='width:50%' class='fcaption'>" .
-            ($event['event_thread'] ? "<span class='smalltext'><a href='{$event['event_thread']}'><img src='" . e_PLUGIN . "forum/images/e.png' alt='' style='border:0' width='16' height='16' align='absmiddle'> " . EC_LAN_39 . "</a></span>" : "&nbsp;") . "
-			</td>
-			<td style='width:50%;text-align:right' class='fcaption' >";
-
-            if (USERNAME == $event_author_name || $cal_super)
-            {
-                $text2 .= "<a href='event.php?ed." . $event['event_id'] . "'>
-				<img style='border:0;' src='" . e_IMAGE . "admin_images/edit_16.png' title='" . EC_LAN_35 . "' alt='" . EC_LAN_35 . "'/></a>&nbsp;&nbsp;
-				<a href='" . e_PLUGIN . "calendar_menu/event.php?de." . $event['event_id'] . "'>
-				<img style='border:0;' src='" . e_IMAGE . "admin_images/delete_16.png' title='" . EC_LAN_36 . "' alt='" . EC_LAN_36 . "'/></a>";
-            } 
-
-            $text2 .= "</td>
-			</tr></table></div></td></tr>";
+            }
+			$text2 = $tp -> parseTemplate($EVENT_EVENT_TABLE, FALSE, $calendar_shortcodes);
         } 
     } 
     return $text2;
@@ -1062,7 +858,11 @@ function cal_landate($dstamp, $recurring = false, $allday = false)
     } 
     else
     {
-        return sprintf("%s %02d %s %d - %02d:%02d", $dow, $now['mday'], $moy, $now['year'], $now['hours'], $now['minutes']);
+		if($now['hours'] == 0 && $now['minutes'] == 0){
+			return sprintf("%s %02d %s %d", $dow, $now['mday'], $moy, $now['year'], 0, 0);
+		}else{
+	        return sprintf("%s %02d %s %d - %02d:%02d", $dow, $now['mday'], $moy, $now['year'], $now['hours'], $now['minutes']);
+		}
     } 
 } 
 
