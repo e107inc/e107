@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-07-02 16:18:14 $
+|     $Revision: 1.41 $
+|     $Date: 2005-07-05 12:59:42 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -182,20 +182,19 @@ if (isset($_POST['updatesettings']))
 
 	// ====================================================================
 
+	$pwreset = "";
 	if ($_POST['password1'] != $_POST['password2']) {
 		$error .= LAN_105."\\n";
+	}
+	else
+	{
+		$pwreset = ", user_password = '".md5($_POST['password1'])."' ";
 	}
 
 	if (strlen($_POST['password1']) < $pref['signup_pass_len'] && $_POST['password1'] != "") {
 		$error .= LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5."\\n";
 		$password1 = "";
 		$password2 = "";
-	}
-
-	if ($_POST['password1'] == "" || $_POST['password2'] == "") {
-		$password = $_POST['_pw'];
-	} else {
-		$password = md5($_POST['password1']);
 	}
 
 	if (!preg_match('/^[-!#$%&\'*+\\.\/0-9=?A-Z^_`{|}~]+@([-0-9A-Z]+\.)+([0-9A-Z]){2,4}$/i', $_POST['email'])) {
@@ -208,24 +207,32 @@ if (isset($_POST['updatesettings']))
 
 	$username = strip_tags($_POST['username']);
 	$loginname = strip_tags($_POST['loginname']);
-	if (!$loginname) {
+	if (!$loginname)
+	{
 		$row = $sql -> db_Fetch();
 		$loginname = $row['user_name'];
 	}
-	if ($file_userfile['error'] != 4) {
+	
+	$user_sess = "";
+	if ($file_userfile['error'] != 4)
+	{
 		require_once(e_HANDLER."upload_handler.php");
 		require_once(e_HANDLER."resize_handler.php");
-		if ($uploaded = file_upload(e_FILE."public/avatars/", "avatar")) {
-			if ($uploaded[0]['name'] && $pref['avatar_upload']) {
+		if ($uploaded = file_upload(e_FILE."public/avatars/", "avatar"))
+		{
+			if ($uploaded[0]['name'] && $pref['avatar_upload'])
+			{
 				// avatar uploaded
 				$_POST['image'] = "-upload-".$uploaded[0]['name'];
-				if (!resize_image(e_FILE."public/avatars/".$uploaded[0]['name'], e_FILE."public/avatars/".$uploaded[0]['name'], "avatar")) {
+				if (!resize_image(e_FILE."public/avatars/".$uploaded[0]['name'], e_FILE."public/avatars/".$uploaded[0]['name'], "avatar"))
+				{
 					unset($message);
 					$error .= RESIZE_NOT_SUPPORTED."\\n";
 					@unlink(e_FILE."public/avatars/".$uploaded[0]['name']);
 				}
 			}
-			if ($uploaded[1]['name'] || (!$pref['avatar_upload'] && $uploaded[0]['name'])) {
+			if ($uploaded[1]['name'] || (!$pref['avatar_upload'] && $uploaded[0]['name']))
+			{
 				// photograph uploaded
 				$user_sess = ($pref['avatar_upload'] ? $uploaded[1]['name'] : $uploaded[0]['name']);
 				resize_image(e_FILE."public/avatars/".$user_sess, e_FILE."public/avatars/".$user_sess, 180);
@@ -233,9 +240,9 @@ if (isset($_POST['updatesettings']))
 		}
 	}
 
-	if (!$user_sess)
+	if ($user_sess != "")
 	{
-		$user_sess = $_POST['_user_sess'];
+		$sesschange = ", user_sess = '{$user_sess}' ";
 	}
 
 	if (!$error)
@@ -262,11 +269,12 @@ if (isset($_POST['updatesettings']))
 			}
 		}
 
-		if ($ret=='')
+		if ($ret == '')
 		{
-			$sql->db_Update("user", "user_name='$username', user_password='$password', user_sess='$user_sess', user_email='".$_POST['email']."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$_POST['user_xup']."' WHERE user_id='".$inp."' ");
+			$sql->db_Update("user", "user_name='$username' {$pwreset} {$sesschange}, user_email='".$_POST['email']."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$_POST['user_xup']."' WHERE user_id='".$inp."' ");
 
-			if(ADMIN && getperms("4")){
+			if(ADMIN && getperms("4"))
+			{
 				$sql -> db_Update("user", "user_loginname='$loginname' WHERE user_id='$inp' ");
 			}
 
@@ -665,14 +673,12 @@ $text .= "
 
 if($ADMINAREA)
 {
-    $text .= "<input type='hidden' name='adminmode' value='1' />\n";
+	$text .= "<input type='hidden' name='adminmode' value='1' />\n";
 	$ref = ($adref) ? $adref : str_replace("main", "uset", $_SERVER['HTTP_REFERER']);
 	$text .= "<input type='hidden' name='adminreturn' value='".$ref."' />";
 }
 $text .= "
 	<input type='hidden' name='_uid' value='$_uid' />
-	<input type='hidden' name='_pw' value='".$curVal['user_password']."' />
-	<input type='hidden' name='_user_sess' value='".$curVal['user_sess']."' /></div>
 	</form>
 	";
 
