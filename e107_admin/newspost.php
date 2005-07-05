@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.90 $
-|   $Date: 2005-06-28 08:01:09 $
-|   $Author: stevedunstan $
+|   $Revision: 1.91 $
+|   $Date: 2005-07-05 16:03:24 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
@@ -1191,26 +1191,25 @@ class newspost {
 
 
 	function submitted_news($sub_action, $id) {
-		global $sql, $rs, $ns, $tp;
+		global $rs, $ns, $tp;
+		$sql2 = new db;
 		$text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 300px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
-		if ($category_total = $sql->db_Select("submitnews", "*", "submitnews_id !='' ORDER BY submitnews_id DESC")) {
+		if ($category_total = $sql2->db_Select("submitnews", "*", "submitnews_id !='' ORDER BY submitnews_id DESC")) {
 			$text .= "<table class='fborder' style='width:99%'>
 			<tr>
 			<td style='width:5%' class='fcaption'>ID</td>
 			<td style='width:70%' class='fcaption'>".NWSLAN_57."</td>
 			<td style='width:25%; text-align:center' class='fcaption'>".LAN_OPTIONS."</td>
 			</tr>";
-			while ($row = $sql->db_Fetch()) {
+			while ($row = $sql2->db_Fetch()) {
 				extract($row);
 				$text .= "<tr>
 				<td style='width:5%; text-align:center; vertical-align:top' class='forumheader3'>$submitnews_id</td>
 				<td style='width:70%' class='forumheader3'>";
-				$text .= ($submitnews_auth == 0)? "<b>".$tp->toHTML($submitnews_title)."</b>":
-				$tp->toHTML($submitnews_title);
+				$text .= ($submitnews_auth == 0)? "<b>".$tp->toHTML($submitnews_title)."</b>": $tp->toHTML($submitnews_title);
 				$text .= " [ ".NWSLAN_104." $submitnews_name on ".date("D dS M y, g:ia", $submitnews_datestamp)."]<br />".$tp->toHTML($submitnews_item)."</td>
 				<td style='width:25%; text-align:right; vertical-align:top' class='forumheader3'>";
-				$buttext = ($submitnews_auth == 0)? NWSLAN_58 :
-				NWSLAN_103;
+				$buttext = ($submitnews_auth == 0)? NWSLAN_58 :	NWSLAN_103;
 				$text .= $rs->form_open("post", e_SELF."?sn", "myform__{$submitnews_id}", "", "", " onsubmit=\"return jsconfirm('".$tp->toJS(NWSLAN_38." [ID: $submitnews_id ]")."')\"   ")
 				."<div>".$rs->form_button("button", "category_edit_{$submitnews_id}", $buttext, "onclick=\"document.location='".e_SELF."?create.sn.$submitnews_id'\"")."
 				".$rs->form_button("submit", "sn_delete_{$submitnews_id}", LAN_DELETE)."
