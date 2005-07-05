@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-29 23:01:56 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-05 09:13:55 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -478,7 +478,7 @@ define("CONTENT_PRESET_LAN_4", "both cols and rows need to be numeric values");
 define("CONTENT_PRESET_LAN_5", "you need to provide some options");
 define("CONTENT_PRESET_LAN_6", "both year from and year to need to be numeric values");
 define("CONTENT_PRESET_LAN_7", "Content Preset Field Generator");
-define("CONTENT_PRESET_LAN_8", "form to create a new preset data tag of type");
+define("CONTENT_PRESET_LAN_8", "create a new preset data tag of type");
 define("CONTENT_PRESET_LAN_9", "fieldname");
 define("CONTENT_PRESET_LAN_10", "size");
 define("CONTENT_PRESET_LAN_11", "maxlength");
@@ -502,6 +502,7 @@ define("CONTENT_PRESET_LAN_28", "select");
 define("CONTENT_PRESET_LAN_29", "date");
 define("CONTENT_PRESET_LAN_30", "checkbox");
 define("CONTENT_PRESET_LAN_31", "radio");
+define("CONTENT_PRESET_LAN_32", "example:");
 
 
 
