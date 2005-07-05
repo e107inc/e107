@@ -3,8 +3,11 @@ require_once("../../../class2.php");
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
+$lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php";
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content.php");
 $lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content_admin.php";
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content_admin.php");
+$months = array(CONTENT_ADMIN_DATE_LAN_0, CONTENT_ADMIN_DATE_LAN_1, CONTENT_ADMIN_DATE_LAN_2, CONTENT_ADMIN_DATE_LAN_3, CONTENT_ADMIN_DATE_LAN_4, CONTENT_ADMIN_DATE_LAN_5, CONTENT_ADMIN_DATE_LAN_6, CONTENT_ADMIN_DATE_LAN_7, CONTENT_ADMIN_DATE_LAN_8, CONTENT_ADMIN_DATE_LAN_9, CONTENT_ADMIN_DATE_LAN_10, CONTENT_ADMIN_DATE_LAN_11);
 
 if(isset($_POST['addpreset'])){
 	if(!$_POST['field']){
@@ -156,15 +159,21 @@ td{
 	padding:2px;
 	cursor:pointer;
 }
+.example {
+	border: #999 1px dashed;
+	padding: 5px;
+	margin: 5px;
+	background-color: #f7f7f9;
+}
 </style>
 </head>
-<body>";
+<body onload=self.focus()>";
 
 $qs = explode(".", e_QUERY);
 
 $text .= "
 <form method='post' action='".e_SELF."?".e_QUERY."'>\n
-<table class='fborder'>
+<table class='fborder' style='width:350px;'>
 ".($err ? "<tr><td colspan='2' class='err' style='padding-bottom:10px;'>".$err."</td></tr>" : "")."
 <tr><td colspan='2' class='fcaption' style='padding-bottom:10px;'>".CONTENT_PRESET_LAN_8." : ".$qs[0]."</td></tr>
 <tr><td class='leftcell'>".CONTENT_PRESET_LAN_9."</td><td>".$rs -> form_text("field", 40, $_POST['field'], 50)."</td></tr>";
@@ -174,6 +183,7 @@ if($qs[0] == "text"){
 	<tr><td class='leftcell'>".CONTENT_PRESET_LAN_10."</td><td>".$rs -> form_text("text_size", 3, $_POST['text_size'], 3)."</td></tr>
 	<tr><td class='leftcell'>".CONTENT_PRESET_LAN_11."</td><td>".$rs -> form_text("text_maxsize", 3, $_POST['text_maxsize'], 3)."</td></tr>
 	";
+	$example = CONTENT_PRESET_LAN_32."<br /><br />".$rs -> form_text("extext", 40, "".CONTENT_PRESET_LAN_9."=".CONTENT_PRESET_LAN_32.", ".CONTENT_PRESET_LAN_10."=40, ".CONTENT_PRESET_LAN_11."=10", 10);
 }
 
 if($qs[0] == "area"){
@@ -181,6 +191,7 @@ if($qs[0] == "area"){
 	<tr><td class='leftcell'>".CONTENT_PRESET_LAN_12."</td><td>".$rs -> form_text("area_cols", 3, $_POST['area_cols'], 3)."</td></tr>
 	<tr><td class='leftcell'>".CONTENT_PRESET_LAN_13."</td><td>".$rs -> form_text("area_rows", 3, $_POST['area_rows'], 3)."</td></tr>
 	";
+	$example = CONTENT_PRESET_LAN_32."<br /><br />".$rs -> form_textarea("exarea", 30, 4, "".CONTENT_PRESET_LAN_9."=".CONTENT_PRESET_LAN_32."\n".CONTENT_PRESET_LAN_12."=30\n".CONTENT_PRESET_LAN_13."=4", $form_js = "", $form_style = "", $form_wrap = "", $form_readonly = "", $form_tooltip = "");
 }
 
 if($qs[0] == "date"){
@@ -188,6 +199,27 @@ if($qs[0] == "date"){
 	<tr><td class='leftcell'>".CONTENT_PRESET_LAN_14."</td><td>".$rs -> form_text("date_year_from", 3, $_POST['date_year_from'], 4)."</td></tr>
 	<tr><td class='leftcell'>".CONTENT_PRESET_LAN_15."</td><td>".$rs -> form_text("date_year_to", 3, $_POST['date_year_to'], 4)."</td></tr>
 	";
+	$example = CONTENT_PRESET_LAN_32." ".CONTENT_PRESET_LAN_14." 1990, ".CONTENT_PRESET_LAN_15." 2000<br /><br />
+		".$rs -> form_select_open("exday", "")."
+		".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_12, "0", "");
+		for($i=1;$i<=31;$i++){
+			$example .= $rs -> form_option($i, ($values[$tmp[0]]['day'] == $i ? "1" : "0"), $i, "");
+		}
+		$example .= $rs -> form_select_close();
+
+		$example .= $rs -> form_select_open("exmonth", "")."
+		".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_13, "0", "");
+		for($i=1;$i<=12;$i++){
+			$example .= $rs -> form_option($months[($i-1)], ($values[$tmp[0]]['month'] == $i ? "1" : "0"), $i, "");
+		}
+		$example .= $rs -> form_select_close();
+
+		$example .= $rs -> form_select_open("exyear", "")."
+		".$rs -> form_option(CONTENT_ADMIN_DATE_LAN_14, "0", "");
+		for($i=1990;$i<=2000;$i++){
+			$example .= $rs -> form_option($i, "0", $i, "");
+		}
+		$example .= $rs -> form_select_close();
 }
 
 if($qs[0] == "select"){
@@ -205,15 +237,19 @@ if($qs[0] == "select"){
 		</div>
 	</td></tr>
 	";
+	$example = CONTENT_PRESET_LAN_32." ".CONTENT_PRESET_LAN_23." = ".CONTENT_PRESET_LAN_32.", options=a,b,c<br /><br />
+		".$rs -> form_select_open("exselect", "");
+		$example .= $rs -> form_option(CONTENT_PRESET_LAN_32, "0", "", "");
+		$example .= $rs -> form_option("a", "0", "a", "");
+		$example .= $rs -> form_option("b", "0", "b", "");
+		$example .= $rs -> form_option("c", "0", "c", "");
+		$example .= $rs -> form_select_close();
 }
 if($qs[0] == "checkbox"){
-	//form_checkbox($form_name, $form_value, $form_checked = 0, $form_tooltip = "", $form_js = "")
-	$text .= "
-	<tr><td class='leftcell'>".CONTENT_PRESET_LAN_22."</td><td>".$rs -> form_text("checkbox_value", 3, $_POST['checkbox_value'], 100)."</td></tr>
-	";
+	$text .= "<tr><td class='leftcell'>".CONTENT_PRESET_LAN_22."</td><td>".$rs -> form_text("checkbox_value", 3, $_POST['checkbox_value'], 50)."</td></tr>";
+	$example = CONTENT_PRESET_LAN_32." ".CONTENT_PRESET_LAN_9." = ".CONTENT_PRESET_LAN_32.", ".CONTENT_PRESET_LAN_22." = 1<br /><br />".CONTENT_PRESET_LAN_32." ".$rs -> form_checkbox("excheckbox", "ex1", $form_checked = 0, $form_tooltip = "", $form_js = "");
 }
 if($qs[0] == "radio"){
-	//form_radio($form_name, $form_value, $form_checked = 0, $form_tooltip = "", $form_js = "")
 	$text .= "
 	<tr><td class='leftcell'></td>
 		<td>
@@ -226,11 +262,13 @@ if($qs[0] == "radio"){
 		</div>
 	</td></tr>
 	";
+	$example = CONTENT_PRESET_LAN_32."<br /><br />".$rs -> form_radio("exradio", CONTENT_PRESET_LAN_32." 1", "0", "", "")." ".CONTENT_PRESET_LAN_32." 1 ".$rs -> form_radio("exradio", CONTENT_PRESET_LAN_32." 2", "0", "", "")." ".CONTENT_PRESET_LAN_32." 2";
 }
 
 //process button
 $text .= "
-<tr><td class='leftcell'></td><td style='text-align:right;'><input type='hidden' name='type' value='".$qs[0]."' /><input type='submit' class='button' name='addpreset' value='".CONTENT_PRESET_LAN_18."' /></td></tr>\n
+<tr><td class='leftcell'>&nbsp;</td><td style='text-align:right;'><input type='hidden' name='type' value='".$qs[0]."' /><input type='submit' class='button' name='addpreset' value='".CONTENT_PRESET_LAN_18."' /><br /><br /></td></tr>\n
+<tr><td colspan='2' class='example'>".$example."</td></tr>
 </table>\n
 </form>\n
 </body>\n

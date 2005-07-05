@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.80 $
-|		$Date: 2005-07-01 10:18:00 $
+|		$Revision: 1.81 $
+|		$Date: 2005-07-05 09:13:30 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -2161,7 +2161,7 @@ class contentform{
 			$TOPIC_FIELD .= $rs -> form_select_close();
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
-			//content_admin_custom_present_
+			//content_admin_custom_preset_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_6;
 			$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_7;
 			$TOPIC_HELP = "";
@@ -2172,29 +2172,31 @@ class contentform{
 			<div id='div_content_custom_preset' style='width:80%;'>";						
 			for($i=0;$i<count($content_pref["content_custom_preset_key"]);$i++){
 				if(!empty($content_pref["content_custom_preset_key"][$i])){
-					//<span id='upline_ex' style='white-space:nowrap;'>
 					$TOPIC_FIELD .= "
 					<span style='white-space:nowrap;'>
-						".$rs -> form_text("content_custom_preset_key[$existing]", 50, $content_pref["content_custom_preset_key"][$existing], 100)."
-						".$rs -> form_button("button", "x", "x", "onclick=\"document.getElementById('content_custom_preset_key[$existing]').value='';\"", "", "")."
+					".$rs -> form_text("content_custom_preset_key[$existing]", 50, $content_pref["content_custom_preset_key"][$existing], 100)."
+					".$rs -> form_button("button", "x", "x", "onclick=\"document.getElementById('content_custom_preset_key[$existing]').value='';\"", "", "")."	
 					</span>";
 					$existing++;
 				}
 			}
-			$url = e_PLUGIN."content/handlers/content_preset.php";
 			$TOPIC_FIELD .= "
 			<br />
 			<span id='upline_new' style='white-space:nowrap;'></span><br />
-			</div><br />
+			</div><br />";
+
+			$url = e_PLUGIN."content/handlers/content_preset.php";
+			$selectjs	= "onchange=\"if(this.options[this.selectedIndex].value != 'none'){ return window.open(this.options[this.selectedIndex].value, 'myWindow', 'status = 1, height = 400, width = 400, resizable = 1'); }\"";
+			$TOPIC_FIELD .= "
 			<div id='upline_type' style='white-space:nowrap;'>
-				".$rs -> form_select_open("type")."
+				".$rs -> form_select_open("type", $selectjs)."
 				".$rs -> form_option(CONTENT_PRESET_LAN_25, "1", "none", "")."
-				".$rs -> form_option(CONTENT_PRESET_LAN_26, "", "text", "onclick=\"open_window('".$url."?text' ,'400', '400');\"")."
-				".$rs -> form_option(CONTENT_PRESET_LAN_27, "", "area", "onclick=\"open_window('".$url."?area' ,'400', '400');\"")."
-				".$rs -> form_option(CONTENT_PRESET_LAN_28, "", "select", "onclick=\"open_window('".$url."?select' ,'400', '400');\"")."
-				".$rs -> form_option(CONTENT_PRESET_LAN_29, "", "date", "onclick=\"open_window('".$url."?date' ,'400', '400');\"")."
-				".$rs -> form_option(CONTENT_PRESET_LAN_30, "", "checkbox", "onclick=\"open_window('".$url."?checkbox' ,'400', '400');\"")."
-				".$rs -> form_option(CONTENT_PRESET_LAN_31, "", "radio", "onclick=\"open_window('".$url."?radio' ,'400', '400');\"")."
+				".$rs -> form_option(CONTENT_PRESET_LAN_26, "", $url."?text", "")."
+				".$rs -> form_option(CONTENT_PRESET_LAN_27, "", $url."?area", "")."
+				".$rs -> form_option(CONTENT_PRESET_LAN_28, "", $url."?select", "")."
+				".$rs -> form_option(CONTENT_PRESET_LAN_29, "", $url."?date", "")."
+				".$rs -> form_option(CONTENT_PRESET_LAN_30, "", $url."?checkbox", "")."
+				".$rs -> form_option(CONTENT_PRESET_LAN_31, "", $url."?radio", "")."
 				".$rs -> form_select_close()."
 			</div><br />";
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);

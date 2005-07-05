@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.75 $
-|		$Date: 2005-07-01 13:15:18 $
+|		$Revision: 1.76 $
+|		$Date: 2005-07-05 09:13:29 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1030,21 +1030,29 @@ function show_content_top(){
 			$array				= $aa -> getCategoryTree("", $qs[1], TRUE);
 			$validparent		= implode(",", array_keys($array));
 			$qry				= " c.content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
-			$number				= (isset($content_pref["content_nextprev_number_{$mainparent}"]) && $content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "5");
+			$number				= (isset($content_pref["content_nextprev_number_{$mainparent}"]) && $content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "");
+			$np					= ($number ? " LIMIT ".$from.", ".$number : "");
 
 			$qry1 = "
-			SELECT c.content_id, c.content_heading, c.content_author, c.content_icon, r.* 
+			SELECT c.content_id, c.content_heading, c.content_author, c.content_icon, r.*
 			FROM #rate AS r
 			LEFT JOIN #pcontent AS c ON c.content_id = r.rate_itemid  
 			WHERE ".$qry." ".$datequery." AND c.content_class REGEXP '".e_CLASS_REGEXP."' AND r.rate_table='".$plugintable."'
-			ORDER by r.rate_itemid
+			ORDER BY r.rate_id DESC
 			";
+			//, (r.rate_rating / r.rate_votes) as rate_avg 
+			//ORDER BY rate_avg DESC
+			$qry2 = $qry1." ".$np;
 
 			if(!is_object($sql)){ $sql = new db; }
-			if (!$sql->db_Select_gen($qry1)){
+			$contenttotal = $sql -> db_Select_gen($qry1);
+			//echo $qry1;
+			if (!$sql->db_Select_gen($qry2)){
 				$err		= CONTENT_LAN_37;
 			}else{
 				while($row = $sql -> db_Fetch()){
+					//echo $number." - ".$row['content_id']." - ".$row['rate_avg']."<br />";
+					
 					$tmp		= $row['rate_rating'] / $row['rate_votes'];
 					$tmp		= explode(".", $tmp);
 					$rating[1]	= $tmp[0];										// $ratomg[1] = main result
@@ -1062,11 +1070,13 @@ function show_content_top(){
 
 					for($i=$from;$i<$from+$number;$i++){
 						if(isset($arrRate[$i])){
+							
 							$thisratearray				= $arrRate[$i];
 							$row['content_id']			= $arrRate[$i][6];
 							$row['content_heading']		= $arrRate[$i][7];
 							$row['content_author']		= $arrRate[$i][8];
 							$row['content_icon']		= $arrRate[$i][9];
+							
 							$CONTENT_TOP_TABLE_AUTHOR	= $aa -> prepareAuthor("top", $row['content_author'], $row['content_id']);
 							$content_top_table_string	.= $tp -> parseTemplate($CONTENT_TOP_TABLE, FALSE, $content_shortcodes);
 						}
