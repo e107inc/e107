@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.186 $
-|     $Date: 2005-07-04 23:39:20 $
+|     $Revision: 1.187 $
+|     $Date: 2005-07-05 14:13:51 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -440,7 +440,7 @@ $pref[$key] = $tp->toFORM($prefvalue);
 }*/
 
 define("SITENAME", trim($tp->toHTML($pref['sitename'], "", "emotes_off defs")));
-define("SITEURL", (substr($pref['siteurl'], -1) == "/" ? $pref['siteurl'] : $pref['siteurl']."/"));
+define("SITEURL", ($pref['ssl_enabled'] == '1' ? "https://" : "http://").$_SERVER['HTTP_HOST']);
 define("SITEBUTTON", $pref['sitebutton']);
 define("SITETAG", $tp->toHTML($pref['sitetag'], FALSE, "emotes_off defs"));
 define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off defs"));
