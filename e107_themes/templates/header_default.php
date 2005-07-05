@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2005-07-04 00:16:41 $
+|     $Revision: 1.57 $
+|     $Date: 2005-07-05 14:50:33 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -44,11 +44,10 @@ if(isset($pref['rss_feeds']) && $pref['rss_feeds'] && file_exists(e_PLUGIN."rss_
 }
 
 if(isset($pref['trackbackEnabled'])){
-echo "<link rel='pingback' href='".$e107->http_abs_location("PLUGINS_DIRECTORY", "trackback/xmlrpc.php")."' />
-";
+echo "<link rel='pingback' href='".SITEURL.e_PLUGIN_ABS."trackback/xmlrpc.php' />\n";
 }
 if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
-	echo "<script type='text/javascript' src='".$e107->http_abs_location("FILES_DIRECTORY", "sleight_js.php")."'></script>\n";
+	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n";
 }
 
 if (isset($eplug_css) && $eplug_css) { echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n"; }
@@ -70,7 +69,7 @@ if(defined("PREVIEWTHEME")) {
 			echo "<link rel='stylesheet' href='{$e107->http_theme_dir}style.css' type='text/css' />\n";
 		}
 		if (!isset($no_core_css) || !$no_core_css) {
-			echo "<link rel='stylesheet' href='".e_FILE."e107.css' type='text/css' />\n";
+			echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 		}
 	}
 }
@@ -79,15 +78,15 @@ if(function_exists('theme_head')){
 	echo theme_head();
 }
 if(function_exists('core_head')){ echo core_head(); }
-if (file_exists(e_BASE."favicon.ico")) { echo "<link rel='icon' href='{$e107->server_path}favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='{$e107->server_path}favicon.ico' type='image/xicon' />\n"; }
+if (file_exists(e_BASE."favicon.ico")) { echo "<link rel='icon' href='".SITEURL.e_HTTP."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL.e_HTTP."favicon.ico' type='image/xicon' />\n"; }
 
 echo $pref['meta_tag'] ? str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'], FALSE, "nobreak, no_hook, no_make_clickable"))."\n" : "";
 if (isset($theme_js_php) && $theme_js_php) {
 	echo "<link rel='stylesheet' href='{$e107->http_theme_dir}theme-js.php' type='text/css% />";
 } else {
-	echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>\n";
+	echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='{$e107->http_theme_dir}theme.js'></script>\n"; }
-	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n"; }
+	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
 }
 if (isset($WYSIWYG) && $WYSIWYG == TRUE && check_class($pref['wysiwyg'])) { require_once(e_HANDLER."tiny_mce/wysiwyg.php"); }
 if (function_exists('headerjs')){echo headerjs();  }
@@ -97,7 +96,7 @@ if (isset($pref['statActivate']) && $pref['statActivate']) {
 		/* don't count admin visits */
 	} else {
 		require_once(e_PLUGIN."log/consolidate.php");
-		$script_text = "document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );\n";
+		$script_text = "document.write( '<link rel=\"stylesheet\" type=\"text/css\" href=\"".e_PLUGIN_ABS."log/log.php?referer=' + ref + '&color=' + colord + '&eself=' + eself + '&res=' + res + '\">' );\n";
 	}
 }
 
