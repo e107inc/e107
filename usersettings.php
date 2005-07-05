@@ -11,15 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-07-05 12:59:42 $
+|     $Revision: 1.42 $
+|     $Date: 2005-07-05 15:07:10 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 require_once("class2.php");
 require_once(e_HANDLER."user_extended_class.php");
-
 $ue = new e107_user_extended;
 
 if (isset($_POST['sub_news'])) {
@@ -188,7 +187,10 @@ if (isset($_POST['updatesettings']))
 	}
 	else
 	{
-		$pwreset = ", user_password = '".md5($_POST['password1'])."' ";
+		if($_POST['password1'] != "")
+		{
+			$pwreset = ", user_password = '".md5($_POST['password1'])."' ";
+		}
 	}
 
 	if (strlen($_POST['password1']) < $pref['signup_pass_len'] && $_POST['password1'] != "") {
@@ -284,19 +286,32 @@ if (isset($_POST['updatesettings']))
 			}
 
 			// Update Userclass =======
-			if ($_POST['usrclass']) {
-				if(is_array($_POST['usrclass'])) {
-					if(count($_POST['usrclass'] == 1)) {
-						$nid = $_POST['usrclass'][0];
-					} else {
-						$nid = explode(',',array_dif($_POST['usrclass'],array('')));
+			if ($sql->db_Select("userclass_classes", "*", "userclass_editclass = 0"))
+			{
+				$ucList = $sql->db_getList();
+				if ($sql->db_Select("user", "user_class", "user_id = '{$inp}'"))
+				{
+					$row = $sql->db_Fetch();
+					$cur_classes = explode(",", $row['user_class']);
+					$newclist = array_flip($cur_classes);
+					foreach($ucList as $c)
+					{
+						$cid = $c['userclass_id'];
+						if(!in_array($cid, $_POST['usrclass']))
+						{
+							unset($newclist[$cid]);
+						}
+						else
+						{
+							$newclist[$cid] = 1;
+						}
 					}
-				} else {
-					$nid = $_POST['usrclass'];
+					$newclist = array_keys($newclist);
+					$nid = implode(',', array_diff($newclist, array('')));
+					$sql->db_Update("user", "user_class='$nid' WHERE user_id='{$inp}'");
 				}
-				$sql->db_Update("user", "user_class='$nid' WHERE user_id='".USERID."' ");
 			}
-
+			
 			if($update_xup == TRUE)
 			{
 				require_once(e_HANDLER."login.php");
@@ -468,27 +483,20 @@ if ($sql->db_Select("userclass_classes", "*", "userclass_editclass =0"))
 		</td>
 		<td style='width:60%' class='forumheader2'>";
 	$text .= "<table style='width:95%'>";
-	$sql->db_Select("userclass_classes", "*", "userclass_id !='' order by userclass_name");
+	$sql->db_Select("userclass_classes", "*", "userclass_editclass = 0 ORDER BY userclass_name");
 	while ($row3 = $sql->db_Fetch())
 	{
-		if ($row3['userclass_editclass'] == 0)
+		$inclass = check_class($row3['userclass_id'], $curVal['user_class']) ? TRUE : FALSE;
+		if(isset($_POST['usrclass']))
 		{
-			$inclass = check_class($row3['userclass_id'], $curVal['user_class']) ? "checked='checked'" : "";
-			if(isset($_POST))
-			{
-				$inclass = in_array($row3['userclass_id'], $_POST['usrclass']);
-			}
-			$frm_checked = $inclass ? "checked='checked'" : "";
-			$text .= "<tr><td class='defaulttext'>";
-			$text .= "<input type='checkbox' name='usrclass[]' value='{$row3['userclass_id']}' $frm_checked />\n";
-			$text .= $tp->toHTML($row3['userclass_name'],"","defs")."</td>";
-			$text .= "<td class='smalltext'>".$tp->toHTML($row3['userclass_description'],"","defs")."</td>";
-			$text .= "</tr>\n";
+			$inclass = in_array($row3['userclass_id'], $_POST['usrclass']);
 		}
-		else
-		{
-			$hide .= check_class($row3['userclass_id'], $curVal['user_class']) ? "<input type='hidden' name='usrclass[]' value='{$row3['userclass_id']}' />\n" : "";
-		}
+		$frm_checked = $inclass ? "checked='checked'" : "";
+		$text .= "<tr><td class='defaulttext'>";
+		$text .= "<input type='checkbox' name='usrclass[]' value='{$row3['userclass_id']}' $frm_checked />\n";
+		$text .= $tp->toHTML($row3['userclass_name'],"","defs")."</td>";
+		$text .= "<td class='smalltext'>".$tp->toHTML($row3['userclass_description'],"","defs")."</td>";
+		$text .= "</tr>\n";
 	}
 	$text .= "</table>\n";
 	$text .= $hide;
