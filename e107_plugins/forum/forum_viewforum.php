@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-06-27 22:58:09 $
-|     $Author: sweetas $
+|     $Revision: 1.35 $
+|     $Date: 2005-07-05 16:18:01 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -83,7 +83,7 @@ $forum_info['forum_name'] = $tp->toHTML($forum_info['forum_name'], TRUE);
 $forum_info['forum_description'] = $tp->toHTML($forum_info['forum_description'], TRUE);
 
 define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']);
-define("MODERATOR", check_class($forum_info['forum_moderators']));
+define("MODERATOR", $forum_info['forum_moderators'] != "" && check_class($forum_info['forum_moderators']));
 $modArray = $forum->forum_getmods($forum_info['forum_moderators']);
 $message = "";
 if (MODERATOR)

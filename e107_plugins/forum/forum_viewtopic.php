@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-06-28 16:32:08 $
+|     $Revision: 1.36 $
+|     $Date: 2005-07-05 16:18:00 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -207,7 +207,7 @@ $forum->thread_incview($thread_id);
 
 define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']." / ".$thread_info['head']['thread_name']);
 //define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_info['forum_moderators']) && getperms('A') ? TRUE : FALSE));
-define("MODERATOR", check_class($forum_info['forum_moderators']));
+define("MODERATOR", $forum_info['forum_moderators'] != "" && check_class($forum_info['forum_moderators']));
 $modArray = $forum->forum_getmods($forum_info['forum_moderators']);
 
 $message = '';
