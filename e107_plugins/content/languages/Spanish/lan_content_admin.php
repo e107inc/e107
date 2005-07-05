@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-02 12:59:27 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-05 22:56:08 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -488,6 +488,7 @@ define("CONTENT_PRESET_LAN_28", "Selección");
 define("CONTENT_PRESET_LAN_29", "Fecha");
 define("CONTENT_PRESET_LAN_30", "Caja de texto");
 define("CONTENT_PRESET_LAN_31", "Radio");
+define("CONTENT_PRESET_LAN_32", "Ejemplo:");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "Opciones");
 define("CONTENT_ADMIN_OPT_LAN_1", "Preferencias por defecto");
