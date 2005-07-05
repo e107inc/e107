@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-30 16:50:40 $
+|     $Revision: 1.6 $
+|     $Date: 2005-07-05 17:32:46 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -72,9 +72,9 @@ if($content_version < 1.21){
 	$field3 = $sql->db_Field("pcontent",21);
 	if($field1 != "content_score" && $field2 != "content_meta" && $field3 != "content_layout"){
 		$upgrade_1_2 = TRUE;
-		mysql_query("ALTER TABLE ".MPREFIX."pcontent ADD content_score INT ( 3 ) UNSIGNED NOT NULL DEFAULT '0';");
+		mysql_query("ALTER TABLE ".MPREFIX."pcontent ADD content_score TINYINT ( 3 ) UNSIGNED NOT NULL DEFAULT '0';");
 		mysql_query("ALTER TABLE ".MPREFIX."pcontent ADD content_meta TEXT NOT NULL;");
-		mysql_query("ALTER TABLE ".MPREFIX."pcontent ADD content_layout VARCHAR ( 100 ) NOT NULL DEFAULT '';");
+		mysql_query("ALTER TABLE ".MPREFIX."pcontent ADD content_layout VARCHAR ( 255 ) NOT NULL DEFAULT '';");
 		$text .= "Content Management Plugin table structure updated<br />";
 	}
 
