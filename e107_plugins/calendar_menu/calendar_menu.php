@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-07-05 21:31:42 $
+|     $Revision: 1.17 $
+|     $Date: 2005-07-05 21:54:31 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -119,6 +119,10 @@ $cal_daycss		= (isset($pref['eventpost_daycss']) && $pref['eventpost_daycss']) ?
 $cal_todaycss	= (isset($pref['eventpost_todaycss']) && $pref['eventpost_todaycss']) ? $pref['eventpost_todaycss'] : "indent";
 $cal_evtoday	= (isset($pref['eventpost_evtoday']) && $pref['eventpost_evtoday']) ? $pref['eventpost_evtoday'] : "indent";
 $cal_start		= $cal_monthstart;
+//added hardcoded padding
+//cause eg. indent uses a large padding in standard themes
+//which caused overflow
+$padding		= "padding:1px;";
 
 $cal_text .= "<br /><br />
 <table cellpadding='0' cellspacing='1' style='width:100%' class='fborder'><tr>";
@@ -137,7 +141,7 @@ if ($pref['eventpost_weekstart'] == 'mon'){
     $firstdayoffset = $cal_firstdayarray['wday'] ;
 } 
 for($cal_c = 0; $cal_c < $firstdayoffset; $cal_c++){
-    $cal_text .= "<td class='$cal_daycss' style='text-align:center'><br /></td>";
+    $cal_text .= "<td class='$cal_daycss' style='".$padding." text-align:center'><br /></td>";
 } 
 $cal_loop = $firstdayoffset; 
 
@@ -148,17 +152,17 @@ for($cal_c = 1; $cal_c <= 31; $cal_c++)
     {
         if ($cal_thisday == $cal_c)
         {
-            $cal_text .= "<td class='$cal_todaycss' style='text-align:center; width: 14.28%;'>";
+            $cal_text .= "<td class='$cal_todaycss' style='".$padding." width: 14.28%; text-align:center; '>";
         } 
         else
         {
             if (isset($cal_events) && array_key_exists($cal_c, $cal_events))
             {
-                $cal_text .= "<td class='$cal_evtoday' style='text-align:center; width: 14.28%;'>";
+                $cal_text .= "<td class='$cal_evtoday' style='".$padding." width: 14.28%; text-align:center; '>";
             } 
             else
             {
-                $cal_text .= "<td class='$cal_daycss' style='text-align:center; width: 14.28%;'>";
+                $cal_text .= "<td class='$cal_daycss' style='".$padding." width: 14.28%; text-align:center; ;'>";
             } 
         } 
 
@@ -170,7 +174,8 @@ for($cal_c = 1; $cal_c <= 31; $cal_c++)
             // *BK* It then tries to put in the icon which doesn't exist
             if (!empty($cal_events[$cal_c][0]['event_cat_icon']) && file_exists($cal_event_icon))
             {
-                $cal_img = "<img style='border:0' src='{$cal_event_icon}' alt='' height='10' width='10'/>";
+                $cal_img = "<img style='border:0' src='{$cal_event_icon}' alt='' />";
+				//height='10' width='10'
             } 
             else
             {
