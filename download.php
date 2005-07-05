@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-07-01 13:48:37 $
-|     $Author: streaky $
+|     $Revision: 1.43 $
+|     $Date: 2005-07-05 23:17:11 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 require_once(e_HANDLER."comment_class.php");
+require_once(e_FILE."shortcode/batch/download_shortcodes.php");
 unset($text);
-$agreetext = $tp->toJS($pref['agree_text']);
+
 $cobj = new comment;
 global $tp;
 
@@ -784,42 +785,14 @@ function parse_download_cat_child_table($row, $subList)
 }
 
 function parse_download_list_table($row) {
-	global $current_row,$DOWNLOAD_LIST_TABLE, $rater, $pref, $gen, $agreetext;
-	extract($row);
+	global $download_shortcodes,$tp,$current_row,$DOWNLOAD_LIST_TABLE, $rater, $pref, $gen, $agreetext;
+
 
 	$current_row = ($current_row) ? 0 : 1;  // Alternating CSS for each row.(backwards compatible)
 	$template = ($current_row == 1) ? $DOWNLOAD_LIST_TABLE : str_replace("forumheader3","forumheader3 forumheader3_alt",$DOWNLOAD_LIST_TABLE);
 
-	$gen = new convert;
-	$rater = new rater;
+	return $tp->parseTemplate($template,TRUE,$download_shortcodes);
 
-	$DOWNLOAD_LIST_NEWICON = (USER && $download_datestamp > USERLV ? "<img src='".IMAGE_NEW."' alt='' style='vertical-align:middle' />" : "");
-
-	$DOWNLOAD_LIST_DATESTAMP = $gen->convert_date($download_datestamp, "short");
-	$DOWNLOAD_LIST_FILESIZE = parsesize($download_filesize);
-	$ratearray = $rater->getrating("download", $download_id);
-	if (!$ratearray[0]) {
-		$DOWNLOAD_LIST_RATING = LAN_dl_13;
-	} else {
-		$DOWNLOAD_LIST_RATING = ($ratearray[2] ? "{$ratearray[1]}.{$ratearray[2]}/{$ratearray[0]}" : "{$ratearray[1]}/{$ratearray[0]}");
-	}
-
-
-	if($download_mirror_type)
-	{
-		$DOWNLOAD_LIST_LINK = ($pref['agree_flag'] ? "<a href='".e_SELF."?mirror.{$download_id}' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_SELF."?mirror.{$download_id}'>");
-	}
-	else
-	{
-		$DOWNLOAD_LIST_LINK = ($pref['agree_flag'] ? "<a href='".e_BASE."request.php?{$download_id}' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."request.php?{$download_id}'>");
-	}
-
-	$DOWNLOAD_LIST_NAME = "<a href='".e_SELF."?view.{$download_id}'>{$download_name}</a>";
-	$DOWNLOAD_LIST_AUTHOR = $download_author;
-	$DOWNLOAD_LIST_REQUESTED = $download_requested;
-	$DOWNLOAD_LIST_ICON = "<img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
-	$DOWNLOAD_LIST_THUMB = "<img src='".e_FILE."downloadthumbs/".$download_thumb."' alt='' style='".DL_IMAGESTYLE."' />";
-	return(preg_replace("/\{(.*?)\}/e", '$\1', $template));
 }
 
 ?>
