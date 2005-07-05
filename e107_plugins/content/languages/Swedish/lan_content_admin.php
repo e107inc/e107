@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-07-01 15:00:37 $
+|     $Revision: 1.6 $
+|     $Date: 2005-07-05 09:56:32 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -454,7 +454,7 @@ define("CONTENT_PRESET_LAN_4", "Både kolumner och rader måste vara numeriska v
 define("CONTENT_PRESET_LAN_5", "Du behöver ange några alternativ");
 define("CONTENT_PRESET_LAN_6", "Både Från år och Till år måste vara numeriska värden");
 define("CONTENT_PRESET_LAN_7", "Generator för förinställda fält till innehåll");
-define("CONTENT_PRESET_LAN_8", "Formulär för att skapa förinställda data taggar av typ");
+define("CONTENT_PRESET_LAN_8", "Skapa nya förinställda data taggar av typ");
 define("CONTENT_PRESET_LAN_9", "Fältnamn");
 define("CONTENT_PRESET_LAN_10", "Storlek");
 define("CONTENT_PRESET_LAN_11", "Maxlängd");
@@ -478,6 +478,7 @@ define("CONTENT_PRESET_LAN_28", "Välj");
 define("CONTENT_PRESET_LAN_29", "Datum");
 define("CONTENT_PRESET_LAN_30", "Kryssruta");
 define("CONTENT_PRESET_LAN_31", "Radioknapp");
+define("CONTENT_PRESET_LAN_32", "Exempel:");
 
 
 

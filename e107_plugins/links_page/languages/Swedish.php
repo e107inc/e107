@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Swedish.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-07-01 12:17:38 $
+|     $Revision: 1.7 $
+|     $Date: 2005-07-05 09:56:32 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Länkar");
+if(!defined("PAGE_NAME")){define("PAGE_NAME", "Länkar");}
 
 define("LCLAN_PLUGIN_LAN_1", "Länksida");
 define("LCLAN_PLUGIN_LAN_2", "Länksida för att visa externa webblänkar");
@@ -17,6 +17,13 @@ define("LCLAN_PLUGIN_LAN_3", "Konfigurera länksida");
 define("LCLAN_PLUGIN_LAN_4", "Länkar");
 define("LCLAN_PLUGIN_LAN_5", "Länksidan installerades korrekt, gå till Länksida från din admin förstasida för att konfigurera den.");
 define("LCLAN_PLUGIN_LAN_6", "Länksaidan uppgraderades korrekt, nu används version");
+
+define("LCLAN_OPT_MENU_1", "Generella alternativ");
+define("LCLAN_OPT_MENU_2", "Personliga länkhanterare");
+define("LCLAN_OPT_MENU_3", "Kategorisida");
+define("LCLAN_OPT_MENU_4", "Länkvisning");
+define("LCLAN_OPT_MENU_5", "Hänvisningar sida");
+define("LCLAN_OPT_MENU_6", "Betygssida");
 
 define("LCLAN_OPT_1", "Allmänna alternativ");
 define("LCLAN_OPT_2", "Länksida alternativ");
@@ -27,7 +34,7 @@ define("LCLAN_OPT_6", "");
 define("LCLAN_OPT_7", "Dela kategorier till individuella sidor");
 define("LCLAN_OPT_8", "Tillåt insändning av länkar");
 define("LCLAN_OPT_9", "Vem får sända in länkar");
-define("LCLAN_OPT_10", "Visa alla länkar på en sida");
+define("LCLAN_OPT_10", "Använd flera sidor för att visa länkar");
 define("LCLAN_OPT_11", "Antal länkar per sida");
 define("LCLAN_OPT_12", "Kategorisida");
 define("LCLAN_OPT_13", "Visa vilka sektioner");
@@ -37,8 +44,8 @@ define("LCLAN_OPT_16", "Mängd");
 define("LCLAN_OPT_17", "Hänvisning");
 define("LCLAN_OPT_18", "URL");
 define("LCLAN_OPT_19", "Total kategori inforad (raden längst ner)");
-define("LCLAN_OPT_20", "Länk till topplänkar: Hänvisning");
-define("LCLAN_OPT_21", "Länk till topplänkar: Betyg");
+define("LCLAN_OPT_20", "Länk till topp hänvisningar");
+define("LCLAN_OPT_21", "Länk till toppbetyg");
 define("LCLAN_OPT_22", "Visa standardikon om ingen annan finns");
 define("LCLAN_OPT_23", "Standard sorteringsmetod");
 define("LCLAN_OPT_24", "Standard ordningsmetod");
@@ -68,11 +75,24 @@ define("LCLAN_OPT_47", "Dessa användare kan lägga till/redigera sina egna pers
 define("LCLAN_OPT_48", "Tillåt direktpostning");
 define("LCLAN_OPT_49", "Om aktiverad kommer länkar att postas direkt, annars måste en sajtadmin godkänna dem först");
 define("LCLAN_OPT_50", "Tillåt direkt radering");
-define("LCLAN_OPT_51", "Om aktiverad kan länkhanterare själva radera sina if enabled the link managers can delete their own links");
+define("LCLAN_OPT_51", "Om aktiverad kan länkhanterare själva radera sina egna länkar");
 define("LCLAN_OPT_52", "Personliga länkhanterare");
 define("LCLAN_OPT_53", "Datum");
 define("LCLAN_OPT_54", "Tillåt personlig hantering av länkar");
 define("LCLAN_OPT_55", "Tillåt kommentarer till alla länkar");
+define("LCLAN_OPT_56", "Minimum hänvisning värde");
+define("LCLAN_OPT_57", "Endast länkar med fler hänvisningar än det givna antalet visas (0 eller tomt = alla)");
+define("LCLAN_OPT_58", "Länk för att sända in länk");
+define("LCLAN_OPT_59", "Länk till personliga hanteraren (bara om tillåten)");
+define("LCLAN_OPT_60", "Länk till länkars förstasida");
+define("LCLAN_OPT_61", "Länk till alla kategorier");
+define("LCLAN_OPT_62", "Visa dessa navigeringslänkar");
+define("LCLAN_OPT_63", "Minimum betygsvärde");
+define("LCLAN_OPT_64", "Endast länkar med högre betyg än angivet värde kommer att visas (0 eller tomt = alla)");
+define("LCLAN_OPT_65", "Visa tomma kategorier");
+define("LCLAN_OPT_66", "Länk till varje kategori");
+define("LCLAN_OPT_67", "Länk till alla länkar");
+define("LCLAN_OPT_68", "Visa alla länkar");
 
 define("LCLAN_ADMIN_1", "Uppdatera");
 define("LCLAN_ADMIN_2", "Länk sparad till databasen.");
@@ -173,20 +193,10 @@ define("LCLAN_ITEM_32", "Radera");
 define("LCLAN_ITEM_33", "Är du säker på att du vill radera denna länk?");
 define("LCLAN_ITEM_34", "Ingen ikon");
 define("LCLAN_ITEM_35", "Hantera egna länkar");
-define("LCLAN_ITEM_36", "");
+define("LCLAN_ITEM_36", "Kör");
 define("LCLAN_ITEM_37", "");
 define("LCLAN_ITEM_38", "");
 define("LCLAN_ITEM_39", "");
-define("LCLAN_ITEM_40", "");
-define("LCLAN_ITEM_41", "");
-define("LCLAN_ITEM_42", "");
-define("LCLAN_ITEM_43", "");
-define("LCLAN_ITEM_44", "");
-define("LCLAN_ITEM_45", "");
-define("LCLAN_ITEM_46", "");
-define("LCLAN_ITEM_47", "");
-define("LCLAN_ITEM_48", "");
-define("LCLAN_ITEM_49", "");
 
 define("LCLAN_ADMINMENU_1", "Länkalternativ");
 define("LCLAN_ADMINMENU_2", "Hantera länkkategorier");
@@ -204,6 +214,17 @@ define("NT_LAN_LP_3", "Länk insänd");
 define("LNK_SCH_LAN_2", "Alla länkkategorier");
 define("LNK_SCH_LAN_3", "Alla linkdetaljer");
 
+define("LAN_LINKS_MANAGER_0", "Ikon");
+define("LAN_LINKS_MANAGER_1", "Länk");
+define("LAN_LINKS_MANAGER_2", "Alternativ");
+define("LAN_LINKS_MANAGER_3", "Skapa ny länk");
+define("LAN_LINKS_MANAGER_4", "Du har inga tillgängliga länkar");
+define("LAN_LINKS_MANAGER_5", "Kategori");
+define("LAN_LINKS_MANAGER_6", "");
+define("LAN_LINKS_MANAGER_7", "");
+define("LAN_LINKS_MANAGER_8", "");
+define("LAN_LINKS_MANAGER_9", "");
+
 define("LAN_LINKS_1", "Totalt länkar");
 define("LAN_LINKS_2", "Totalt aktiva länkar");
 define("LAN_LINKS_3", "Anonym");
@@ -215,9 +236,9 @@ define("LAN_LINKS_8", "STIG");
 define("LAN_LINKS_9", "FALL");
 define("LAN_LINKS_10", "Topplänkar: Hänvisning");
 define("LAN_LINKS_11", "Topplänkar: Betyg");
-define("LAN_LINKS_12", "Visa topplänkar per hänvisning");
-define("LAN_LINKS_13", "Visa topplänkar per användarbetyg");
-define("LAN_LINKS_14", "Tillbaka till länkars förstasida");
+define("LAN_LINKS_12", "Visa per hänvisning");
+define("LAN_LINKS_13", "Visa per användarbetyg");
+define("LAN_LINKS_14", "Visa länkars förstasida");
 define("LAN_LINKS_15", "Sortera på");
 define("LAN_LINKS_16", "i denna kategori");
 define("LAN_LINKS_17", "länk");
@@ -230,7 +251,7 @@ define("LAN_LINKS_23", "finns"); // Pluralis
 define("LAN_LINKS_24", "totalt i");
 define("LAN_LINKS_25", "Visa alla länkar");
 define("LAN_LINKS_26", "Hänvisningar:");
-define("LAN_LINKS_27", "Klicka här för att sända in en länk");
+define("LAN_LINKS_27", "Sänd in en länk");
 define("LAN_LINKS_28", "Tack");
 define("LAN_LINKS_29", "Din länk har sparats och kommer att granskas av en sajtadmin.");
 define("LAN_LINKS_30", "Länkkategorier");
@@ -241,31 +262,18 @@ define("LAN_LINKS_34", "Det finns för närvarande inga länkar");
 define("LAN_LINKS_35", "Personlig länkhanterare");
 define("LAN_LINKS_36", "Länkkommentarer");
 define("LAN_LINKS_37", "Kommentarer:");
-define("LAN_LINKS_38", "");
-define("LAN_LINKS_39", "");
-
-define("LAN_LINKS_MANAGER_0", "Ikon");
-define("LAN_LINKS_MANAGER_1", "Länk");
-define("LAN_LINKS_MANAGER_2", "Alternativ");
-define("LAN_LINKS_MANAGER_3", "Skapa ny länk");
-define("LAN_LINKS_MANAGER_4", "Du har inga tillgängliga länkar");
-define("LAN_LINKS_MANAGER_5", "Kategori");
-define("LAN_LINKS_MANAGER_6", "");
-define("LAN_LINKS_MANAGER_7", "");
-define("LAN_LINKS_MANAGER_8", "");
-define("LAN_LINKS_MANAGER_9", "");
-
-define("LAN_LINKS_50", "");
-define("LAN_LINKS_51", "");
-define("LAN_LINKS_52", "");
-define("LAN_LINKS_53", "");
-define("LAN_LINKS_54", "");
-define("LAN_LINKS_55", "");
-define("LAN_LINKS_56", "");
-define("LAN_LINKS_57", "");
-define("LAN_LINKS_58", "");
-define("LAN_LINKS_59", "");
-
+define("LAN_LINKS_38", "Datum");
+define("LAN_LINKS_39", "Länkar");
+define("LAN_LINKS_40", "Kategori");
+define("LAN_LINKS_41", "Inga kategorier ännu");
+define("LAN_LINKS_42", "Inga länkar har blivit hänvisade till ännu");
+define("LAN_LINKS_43", "Visa alla kategorier");
+define("LAN_LINKS_44", "ID");
+define("LAN_LINKS_45", "Länk kategori");
+define("LAN_LINKS_46", "Länk underkategorier");
+define("LAN_LINKS_47", "");
+define("LAN_LINKS_48", "");
+define("LAN_LINKS_49", "");
 
 define("LAN_ADMIN_HELP_0", "Länksidans hjälp");
 
@@ -294,7 +302,11 @@ Dessa användare har rättigheter att själva hantera sina egna länkar.<br /><b
 Kategorisida<br />
 Här ändrar du alternativen för kategorisidan.<br /><br />
 Länksida<br />
-Dessa alternativ används på länksidorna.<br />
+Dessa alternativ används på länksidorna.<br /><br />
+Hänvisare sida<br />
+Dessa alternativ används på sidan för topphänvisare.<br /><br />
+Betygssida<br />
+Dessa alternativ används på sidan för länkar med toppbetyg.<br />
 ");
 
 
