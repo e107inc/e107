@@ -98,8 +98,15 @@ $eplug_done = CONTENT_PLUGIN_LAN_4;
 // upgrading ... //
 $upgrade_add_prefs = "";
 $upgrade_remove_prefs = "";
-$upgrade_alter_tables = "";
-$eplug_upgrade_done = "";
+
+$upgrade_alter_tables = array(
+"ALTER TABLE ".MPREFIX."pcontent ADD content_score TINYINT ( 3 ) UNSIGNED NOT NULL DEFAULT '0';", 
+"ALTER TABLE ".MPREFIX."pcontent ADD content_meta TEXT NOT NULL;", 
+"ALTER TABLE ".MPREFIX."pcontent ADD content_layout VARCHAR ( 255 ) NOT NULL DEFAULT '';", 
+);
+$eplug_upgrade_done = "Content Management Plugin table structure updated<br />";
+
+
 
 
 ?>
