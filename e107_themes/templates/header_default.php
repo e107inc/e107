@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2005-07-05 14:50:33 $
+|     $Revision: 1.58 $
+|     $Date: 2005-07-05 15:29:21 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -82,7 +82,7 @@ if (file_exists(e_BASE."favicon.ico")) { echo "<link rel='icon' href='".SITEURL.
 
 echo $pref['meta_tag'] ? str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'], FALSE, "nobreak, no_hook, no_make_clickable"))."\n" : "";
 if (isset($theme_js_php) && $theme_js_php) {
-	echo "<link rel='stylesheet' href='{$e107->http_theme_dir}theme-js.php' type='text/css% />";
+	echo "<link rel='stylesheet' href='{$e107->http_theme_dir}theme-js.php' type='text/css />";
 } else {
 	echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='{$e107->http_theme_dir}theme.js'></script>\n"; }
