@@ -27,8 +27,8 @@ $e_install = new e_install();
 require_once("./{$installer_folder_name}/forms_class.php");
 $e_forms = new e_forms();
 
-$e_install->template->SetTag("installer_css_http", e_HTTP.$installer_folder_name."style.css"));
-$e_install->template->SetTag("installer_folder_http", e_HTTP.$installer_folder_name);
+$e_install->template->SetTag("installer_css_http", e_HTTP.$installer_folder_name."/style.css");
+$e_install->template->SetTag("installer_folder_http", e_HTTP.$installer_folder_name."/");
 $e_install->template->SetTag("files_dir_http", e_FILE_ABS);
 
 if(!$_POST['stage']) {
