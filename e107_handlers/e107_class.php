@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-07-05 00:14:51 $
+|     $Revision: 1.36 $
+|     $Date: 2005-07-05 12:12:26 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -44,7 +44,6 @@ class e107{
 			$path .= "../";
 			$i++;
 		}
-		$path_array = explode("/", $path);
 		if($_SERVER['PHP_SELF'] == "") { $_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME']; }
 
 		$http_path = dirname($_SERVER['PHP_SELF']);
@@ -57,13 +56,13 @@ class e107{
 		}
 		$http_path = array_reverse($http_path);
 		$this->server_path = implode("/", $http_path)."/";
-		if ($this->server_path = "//") {
+		if ($this->server_path == "//") {
 			$this->server_path = "/";
 		}
 		$this->relative_base_path = $path;
 		$this->http_path = "http://{$_SERVER['HTTP_HOST']}{$this->server_path}";
 		$this->https_path = "https://{$_SERVER['HTTP_HOST']}{$this->server_path}";
-		$this->file_path = $e107_root_folder;
+		$this->file_path = $path;
 
 		define("e_HTTP", $this->server_path);
 		define("e_BASE", $this->relative_base_path);
@@ -144,7 +143,6 @@ class e107{
 	}
 
 	function get_memory_usage(){
-		global $dbg;
 		if(function_exists("memory_get_usage")){
 			$memusage = memory_get_usage();
 			$memunit = 'b';
