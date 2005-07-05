@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/secure_img_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-11 13:28:00 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2005-07-05 16:55:16 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 	
@@ -30,9 +30,9 @@ class secure_image {
 
 		require_once('e107_class.php');
 		$e107 = new e107(false, false);
-		$e107->set_e107_dirs(__FILE__);
+		$e107->set_paths();
 
-		$imgpy = str_replace($HANDLERS_DIRECTORY, "", $e107->e107_file_root);
+		$imgpy = str_replace($HANDLERS_DIRECTORY, "", $e107->file_path);
 
 		$imgp = $imgpy.$IMAGES_DIRECTORY;
 		mt_srand ((double)microtime() * 1000000);
