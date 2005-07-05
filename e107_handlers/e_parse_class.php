@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.95 $
-|     $Date: 2005-06-26 03:27:15 $
-|     $Author: sweetas $
+|     $Revision: 1.96 $
+|     $Date: 2005-07-05 20:00:29 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -204,7 +204,7 @@ class e_parse
 		}
 		return $drain;
 	}
-	
+
 	function html_truncate ($text, $len = 200, $more = "[more]")
 	{
 		$pos = 0;
@@ -214,16 +214,16 @@ class e_parse
 		{
 			switch($text{$pos})
 			{
-				case "<" : 
+				case "<" :
 								if($text{$pos+1} == "/")
 								{
 									$closing_tag = TRUE;
 								}
-								$intag = TRUE; 
-								$tmp_pos = $pos-1; 
-								$pos++; 
+								$intag = TRUE;
+								$tmp_pos = $pos-1;
+								$pos++;
 								break;
-				case ">" : 
+				case ">" :
 								if($text{$pos-1} == "/")
 								{
 									$closing_tag = TRUE;
@@ -233,8 +233,8 @@ class e_parse
 									$tmp_pos = 0;
 									$closing_tag = FALSE;
 								}
-								$intag = FALSE; 
-								$pos++; 
+								$intag = FALSE;
+								$pos++;
 								break;
 				case "&" :
 					if($text{$pos+1} == "#")
@@ -266,7 +266,7 @@ class e_parse
 		}
 		return $ret;
 	}
-		
+
 	function textclean ($text, $wrap=100)
 	{
 		$text = str_replace ("\n\n\n", "\n\n", $text);
@@ -305,7 +305,8 @@ class e_parse
 			if($pref['link_replace'] && strpos($modifiers, 'no_replace') === FALSE) {
 				$text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<,]*)#is", "\\1<a href=\"\\2\" rel=\"external\">".$pref['link_text']."</a>", $text);
 				$text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<,]*)#is", "\\1<a href=\"http://\\2\" rel=\"external\">".$pref['link_text']."</a>", $text);
-				$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href='javascript:window.location=\"mail\"+\"to:\"+\"\\2\"+\"@\"+\"\\3\";' onmouseover='window.status=\"mail\"+\"to:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$pref['email_text']."</a>", $text);
+				$email_text = ($pref['email_text']) ? $pref['email_text'] : "\\1\\2©\\3";
+				$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a href='javascript:window.location=\"mail\"+\"to:\"+\"\\2\"+\"@\"+\"\\3\";' onmouseover='window.status=\"mail\"+\"to:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>", $text);
 			} else {
 				$text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<,]*)#is", "\\1<a href=\"\\2\" rel=\"external\">\\2</a>", $text);
 				$text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<,]*)#is", "\\1<a href=\"http://\\2\" rel=\"external\">\\2</a>", $text);
@@ -443,19 +444,19 @@ class e_parse
 	function spell_check($text) {
 		$skip_len = 2;
 		$mode = PSPELL_NORMAL;
-		
+
 		$pspell_handle;
 		$pspell_cfg_handle;
-		
+
 		if (function_exists("pspell_config_create")) {
 			$pspell_cfg_handle = pspell_config_create(CORE_LC);
-			
+
 			pspell_config_ignore($pspell_cfg_handle, $skip_len);
 			pspell_config_mode($pspell_cfg_handle, $mode);
 			$pspell_handle = pspell_new_config($pspell_cfg_handle);
-	
+
 			$words = array_unique(split("[^[:alpha:]']+", $text));
-			
+
 			foreach($words as $val) {
 				if(!pspell_check($pspell_handle, $val)) {
 					/*$sug="Suggested spellings:\n";
@@ -469,7 +470,7 @@ class e_parse
 		}
 		return $text;
 	}
-	
+
 	function e_highlight($text, $match) {
 		preg_match_all("#<[^>]+>#", $text, $tags);
 		$text = preg_replace("#<[^>]+>#", "<|>", $text);
