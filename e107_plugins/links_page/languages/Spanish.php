@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-07-02 11:03:21 $
+|     $Revision: 1.14 $
+|     $Date: 2005-07-05 15:06:47 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Enlaces");
+if(!defined("PAGE_NAME")){define("PAGE_NAME", "Enlaces");}
 
 define("LCLAN_PLUGIN_LAN_1", "Página de enlaces");
 define("LCLAN_PLUGIN_LAN_2", "Página de enlaces para mostrar enlaces externos");
@@ -17,6 +17,13 @@ define("LCLAN_PLUGIN_LAN_3", "Configurar la página de enlaces");
 define("LCLAN_PLUGIN_LAN_4", "Enlaces");
 define("LCLAN_PLUGIN_LAN_5", "La página de enlaces se instaló correctamente, configúrela desde la página de enlaces en el área del administrador.");
 define("LCLAN_PLUGIN_LAN_6", "La página de enlaces actualizada correctamente, ahora la versión es");
+
+define("LCLAN_OPT_MENU_1", "Opciones generales");
+define("LCLAN_OPT_MENU_2", "Gestor personal de enlaces");
+define("LCLAN_OPT_MENU_3", "Página de cateogías");
+define("LCLAN_OPT_MENU_4", "Muestra de enlaces");
+define("LCLAN_OPT_MENU_5", "Página de referidos");
+define("LCLAN_OPT_MENU_6", "Página de valoración");
 
 define("LCLAN_OPT_1", "Opciones generales");
 define("LCLAN_OPT_2", "OPciones de la página de enlaces");
@@ -27,7 +34,7 @@ define("LCLAN_OPT_6", "");
 define("LCLAN_OPT_7", "Divide categorías en páginas individuales");
 define("LCLAN_OPT_8", "Permitir enviar enlaces");
 define("LCLAN_OPT_9", "Quien puede enviar enlaces");
-define("LCLAN_OPT_10", "Mostrar todos los enlaces en una sola página");
+define("LCLAN_OPT_10", "Usar múltiples páginas para mostrar los enlaces");
 define("LCLAN_OPT_11", "Número de enlaces por página");
 define("LCLAN_OPT_12", "Página de categoría");
 define("LCLAN_OPT_13", "Que secciones mostrar");
@@ -37,8 +44,8 @@ define("LCLAN_OPT_16", "Cantidad");
 define("LCLAN_OPT_17", "Referente");
 define("LCLAN_OPT_18", "URL");
 define("LCLAN_OPT_19", "Línea de info de la categoría total");
-define("LCLAN_OPT_20", "Enlace a enlaces top: refer");
-define("LCLAN_OPT_21", "Enlace a enlaces top : valorado");
+define("LCLAN_OPT_20", "Enlace al máx referido");
+define("LCLAN_OPT_21", "Enlace al máx valorado");
 define("LCLAN_OPT_22", "Mostrar icono por defecto si no existe");
 define("LCLAN_OPT_23", "Método de ordenación por defecto");
 define("LCLAN_OPT_24", "Método de ordenación por defecto");
@@ -73,8 +80,21 @@ define("LCLAN_OPT_52", "Gestores personales de enlaces");
 define("LCLAN_OPT_53", "Fecha");
 define("LCLAN_OPT_54", "Permitir gestión personal en los enlaces");
 define("LCLAN_OPT_55", "Permitir comentarios en todos los enlaces");
+define("LCLAN_OPT_56", "Valor mínimo de referencia");
+define("LCLAN_OPT_57", "Solo se mostrán los valores dados con cuentas de referidos grandes (0 o vacío = todo)");
+define("LCLAN_OPT_58", "lEnlace para enviar enlace");
+define("LCLAN_OPT_59", "Enlace al gestor personal de enlaces (solo si está permitido)");
+define("LCLAN_OPT_60", "Enlace a la página de enlaces");
+define("LCLAN_OPT_61", "Enlace a todas las categorías");
+define("LCLAN_OPT_62", "Mostrar enlaces del navegador");
+define("LCLAN_OPT_63", "Valor mínimo de valoración");
+define("LCLAN_OPT_64", "Solo se mostrán los valores dados con cuentas de valoraciones grandes (0 o vacío = todo)");
+define("LCLAN_OPT_65", "Mostrar categorías vacías");
+define("LCLAN_OPT_66", "Enlace a cada categoría");
+define("LCLAN_OPT_67", "Enlace a todos los enlaces");
+define("LCLAN_OPT_68", "Ver todos los enlaces");
 
-define("LCLAN_ADMIN_1", "Actualziar");
+define("LCLAN_ADMIN_1", "Actualizar");
 define("LCLAN_ADMIN_2", "Enlace guardado en la base de datos.");
 define("LCLAN_ADMIN_3", "Enlace actualziado en la base de datos.");
 define("LCLAN_ADMIN_4", "Categoría de enlace guardada");
@@ -174,20 +194,10 @@ define("LCLAN_ITEM_32", "Eliminar");
 define("LCLAN_ITEM_33", "¿Está seguro de eliminar este enlace?");
 define("LCLAN_ITEM_34", "No hay iconos");
 define("LCLAN_ITEM_35", "Gestionar enlaces personales");
-define("LCLAN_ITEM_36", "");
+define("LCLAN_ITEM_36", "Ir");
 define("LCLAN_ITEM_37", "");
 define("LCLAN_ITEM_38", "");
 define("LCLAN_ITEM_39", "");
-define("LCLAN_ITEM_40", "");
-define("LCLAN_ITEM_41", "");
-define("LCLAN_ITEM_42", "");
-define("LCLAN_ITEM_43", "");
-define("LCLAN_ITEM_44", "");
-define("LCLAN_ITEM_45", "");
-define("LCLAN_ITEM_46", "");
-define("LCLAN_ITEM_47", "");
-define("LCLAN_ITEM_48", "");
-define("LCLAN_ITEM_49", "");
 
 define("LCLAN_ADMINMENU_1", "Opciones de enlace");
 define("LCLAN_ADMINMENU_2", "Gestionar categorías de enlaces");
@@ -205,6 +215,17 @@ define("NT_LAN_LP_3", "Enlaces enviados");
 define("LNK_SCH_LAN_2", "Todas las categorías de enlaces");
 define("LNK_SCH_LAN_3", "Todos los detalles de enlaces");
 
+define("LAN_LINKS_MANAGER_0", "Icono");
+define("LAN_LINKS_MANAGER_1", "Enlace");
+define("LAN_LINKS_MANAGER_2", "Opciones");
+define("LAN_LINKS_MANAGER_3", "Crear nuevo enlace");
+define("LAN_LINKS_MANAGER_4", "No tiene enlaces");
+define("LAN_LINKS_MANAGER_5", "Categoría");
+define("LAN_LINKS_MANAGER_6", "");
+define("LAN_LINKS_MANAGER_7", "");
+define("LAN_LINKS_MANAGER_8", "");
+define("LAN_LINKS_MANAGER_9", "");
+
 define("LAN_LINKS_1", "Enlaces totales");
 define("LAN_LINKS_2", "Enlaces totales activados");
 define("LAN_LINKS_3", "Invitado");
@@ -216,9 +237,9 @@ define("LAN_LINKS_8", "Ascendente");
 define("LAN_LINKS_9", "Descendente");
 define("LAN_LINKS_10", "Enlaces Top : Refer");
 define("LAN_LINKS_11", "Enlaces Top : Valoración");
-define("LAN_LINKS_12", "Ver enlaces Top por refer");
-define("LAN_LINKS_13", "Ver enlaces Top por valoración");
-define("LAN_LINKS_14", "Volver a la página de enlaces");
+define("LAN_LINKS_12", "Ver enlaces por refer");
+define("LAN_LINKS_13", "Ver enlaces por valoración");
+define("LAN_LINKS_14", "Ver la página de enlaces");
 define("LAN_LINKS_15", "Ordenar por");
 define("LAN_LINKS_16", "en esta categoría");
 define("LAN_LINKS_17", "Enlace");
@@ -231,7 +252,7 @@ define("LAN_LINKS_23", "");
 define("LAN_LINKS_24", " en total en");
 define("LAN_LINKS_25", "Mostrar todos los enlaces");
 define("LAN_LINKS_26", "Referentes:");
-define("LAN_LINKS_27", "Por favor, click para enviar un enlace");
+define("LAN_LINKS_27", "Enviar un enlace");
 define("LAN_LINKS_28", "Gracias");
 define("LAN_LINKS_29", "Su enlace ha sido enviado y será revisado por un Administrador.");
 define("LAN_LINKS_30", "Categorías de enlaces");
@@ -242,20 +263,18 @@ define("LAN_LINKS_34", "No hay enlaces");
 define("LAN_LINKS_35", "Gestor personal de enlaces");
 define("LAN_LINKS_36", "Comentarios de enlaces");
 define("LAN_LINKS_37", "Comentarios:");
-define("LAN_LINKS_38", "");
-define("LAN_LINKS_39", "");
-
-define("LAN_LINKS_40", "Icono");
-define("LAN_LINKS_41", "Enlace");
-define("LAN_LINKS_42", "Opciones");
-define("LAN_LINKS_43", "Crear un nuevo enlace");
-define("LAN_LINKS_44", "No tiene enlaces");
-define("LAN_LINKS_45", "Categoría");
-define("LAN_LINKS_46", "");
+define("LAN_LINKS_38", "Fecha");
+define("LAN_LINKS_39", "Enlace");
+define("LAN_LINKS_40", "Categoría");
+define("LAN_LINKS_41", "No categorías todavía");
+define("LAN_LINKS_42", "No hay enlaces referenciados");
+define("LAN_LINKS_43", "Ver todas las categorías");
+define("LAN_LINKS_44", "id");
+define("LAN_LINKS_45", "Categoría de enlace");
+define("LAN_LINKS_46", "Subcategorías de enlace");
 define("LAN_LINKS_47", "");
 define("LAN_LINKS_48", "");
 define("LAN_LINKS_49", "");
-
 define("LAN_LINKS_50", "");
 define("LAN_LINKS_51", "");
 define("LAN_LINKS_52", "");
@@ -294,7 +313,11 @@ define("LAN_ADMIN_HELP_5", "<i>La página de envíos de enlaces muestra todos lo
   	 Página de categoría<br />
   	 Aquí puede cambiar las opciones de la página de categoría.<br /><br />
   	 Página de enlaces<br />
-  	 Estas opciones se usan en las páginas de enlaces.<br />
+  	 Estas opciones se usan en la página de enlaces.<br /><br />
+  	 Página de referidos<br />
+  	 Estas opciones se usan en la página top de enlaces de referidos.<br /><br />
+  	 Página de valoración<br />
+  	 Estas opciones se usan en la página top de valoraciones.<br />
   	 ");
   	 
   	 
