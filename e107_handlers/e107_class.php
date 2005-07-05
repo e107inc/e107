@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-07-05 12:12:26 $
+|     $Revision: 1.37 $
+|     $Date: 2005-07-05 14:08:46 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -56,6 +56,8 @@ class e107{
 		}
 		$http_path = array_reverse($http_path);
 		$this->server_path = implode("/", $http_path)."/";
+		$this->server_path = $this->fix_windows_paths($this->server_path);
+		
 		if ($this->server_path == "//") {
 			$this->server_path = "/";
 		}
