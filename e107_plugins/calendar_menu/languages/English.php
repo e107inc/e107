@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: English.php,v 1.9 2005-05-01 04:37:13 mcfly_e107 Exp $
+// $Id: English.php,v 1.10 2005-07-05 21:31:43 lisa_ Exp $
 	
 	
 define('EC_ADLAN_1', "Event Calendar");
@@ -58,7 +58,7 @@ define('EC_LAN_35', "Edit");
 define('EC_LAN_36', "Delete");
 define('EC_LAN_37', "None Listed.");
 define('EC_LAN_38', "Not specified");
-define('EC_LAN_39', "Click here to discuss on forum");
+define('EC_LAN_39', "Click here for more information");
 define('EC_LAN_40', "Current Month");
 define('EC_LAN_41', "New category created.");
 define('EC_LAN_42', "Event cannot end before it starts.");
@@ -77,7 +77,7 @@ define('EC_LAN_54', "Name:");
 define('EC_LAN_55', "Icon:");
 define('EC_LAN_56', "Create");
 define('EC_LAN_57', "Event:");
-define('EC_LAN_58', "URL to forum thread:");
+define('EC_LAN_58', "source info URL:");
 define('EC_LAN_59', "Contact email:");
 define('EC_LAN_60', "Update Event");
 define('EC_LAN_61', "Go");

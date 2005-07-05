@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-05-01 04:37:02 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.12 $
+|     $Date: 2005-07-05 21:31:42 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */ 
-// *BK* Comments or notes added by Barry are prefixed by  *BK*
-// get current date information ---------------------------------------------------------------------
+
+
 require_once("../../class2.php");
+require_once(e_PLUGIN."calendar_menu/calendar_shortcodes.php");
 if (isset($_POST['viewallevents']))
 {
     Header("Location: " . e_PLUGIN . "calendar_menu/event.php?" . $_POST['enter_new_val']);
@@ -32,357 +33,289 @@ if (isset($_POST['subs']))
     Header("Location: " . e_PLUGIN . "calendar_menu/subscribe.php");
 } 
 
-$ec_dir = e_PLUGIN . "calendar_menu/";
-$lan_file = $ec_dir . "languages/" . e_LANGUAGE . ".php";
-include(file_exists($lan_file) ? $lan_file : e_PLUGIN . "calendar_menu/languages/English.php");
+$ec_dir		= e_PLUGIN . "calendar_menu/";
+$lan_file	= $ec_dir . "languages/" . e_LANGUAGE . ".php";
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN . "calendar_menu/languages/English.php");
 define("PAGE_NAME", EC_LAN_121);
-// *
-// *  *BK* See if they in are calendar supervisor class -they will have access to extra things like editing records see all categories etc
-// *  *BK* This means a specific userclass can be defined as an administrator of calendar rather than just any person with admin rights
-$cal_super = check_class($pref['eventpost_super']);
-// *
-$num = $_POST['num'];
+
+if (is_readable(THEME."calendar_template.php")) {
+	require_once(THEME."calendar_template.php");
+	} else {
+	require_once(e_PLUGIN."calendar_menu/calendar_template.php");
+}
+
+$cal_super	= check_class($pref['eventpost_super']);
+$num		= $_POST['num'];
 
 require_once(HEADERF);
-/* moved to top of file
-$ec_dir = e_PLUGIN . "calendar_menu/";
-$lan_file = $ec_dir . "languages/" . e_LANGUAGE . ".php";
-include(file_exists($lan_file) ? $lan_file : e_PLUGIN . "calendar_menu/languages/English.php");
-*/
-// new part by cam.
+
+// get current date information ---------------------------------------------------------------------
 $qs = explode(".", e_QUERY);
-$action = $qs[0];
-if ($action == "")
+if($qs[0] == "")
 {
-    $datearray = getdate();
-    $month = $datearray['mon'];
-    $year = $datearray['year'];
-    $day = $datearray['day'];
+    $datearray	= getdate();
+    $month		= $datearray['mon'];
+    $year		= $datearray['year'];
+    $day		= $datearray['day'];
 } 
 else
 {
-    $datearray = getdate($action);
-    $month = $datearray['mon'];
-    $year = $datearray['year'];
-} 
+    $datearray	= getdate($qs[0]);
+    $month		= $datearray['mon'];
+    $year		= $datearray['year'];
+}
+
 // set up arrays for calender display ------------------------------------------------------------------
-// changed by rezso
-//$week = Array('S', 'M', 'T', 'W', 'T', 'F', 'S');
 if($pref['eventpost_weekstart'] == 'sun') {
-$week = Array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);
+	$week	= Array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);
 	} else {
-$week = Array(EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24, EC_LAN_25);
+	$week	= Array(EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24, EC_LAN_25);
 }	
-$months = Array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
-$monthabb = Array(EC_LAN_JAN, EC_LAN_FEB, EC_LAN_MAR, EC_LAN_APR, EC_LAN_MAY, EC_LAN_JUN, EC_LAN_JUL, EC_LAN_AUG, EC_LAN_SEP, EC_LAN_OCT, EC_LAN_NOV, EC_LAN_DEC);
-if($pref['eventpost_dateformat'] == 'my') {
-$calendar_title = "<a href='" . e_PLUGIN . "calendar_menu/event.php' class='mmenu'>" . $months[$datearray[mon]-1] . " " . $current_year . "</a>"; 
-	} else {
-$calendar_title = "<a href='" . e_PLUGIN . "calendar_menu/event.php' class='mmenu'>" . $current_year . " " . $months[$datearray[mon]-1] . "</a>";
-}	
+$months		= Array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
+$monthabb	= Array(EC_LAN_JAN, EC_LAN_FEB, EC_LAN_MAR, EC_LAN_APR, EC_LAN_MAY, EC_LAN_JUN, EC_LAN_JUL, EC_LAN_AUG, EC_LAN_SEP, EC_LAN_OCT, EC_LAN_NOV, EC_LAN_DEC);
+
 // show events-------------------------------------------------------------------------------------------
-// get first and last days of month in unix format---------------------------------------------------
-$monthstart = mktime(0, 0, 0, $month, 1, $year);
-$firstdayarray = getdate($monthstart);
-// *BK* Make it the end of the last day of the month not the beginning of the last day of the month ie 23:59:59
-$monthend = mktime(0, 0, 0, $month + 1, 1, $year) - 1;
-$lastdayarray = getdate($monthend);
-// ----------------------------------------------------------------------------------------------------------
-// echo current month with links to previous/next months ----------------------------------------
-$prevmonth = ($month-1);
-$prevyear = $year;
+$monthstart		= mktime(0, 0, 0, $month, 1, $year);
+$firstdayarray	= getdate($monthstart);
+$monthend		= mktime(0, 0, 0, $month + 1, 1, $year) - 1;
+$lastdayarray	= getdate($monthend);
+
+$prevmonth		= ($month-1);
+$prevyear		= $year;
 if ($prevmonth == 0)
 {
-    $prevmonth = 12;
-    $prevyear = ($year-1);
+    $prevmonth	= 12;
+    $prevyear	= ($year-1);
 } 
 $previous = mktime(0, 0, 0, $prevmonth, 1, $prevyear);
 
-$nextmonth = ($month + 1);
-$nextyear = $year;
+$nextmonth		= ($month + 1);
+$nextyear		= $year;
 if ($nextmonth == 13)
 {
-    $nextmonth = 1;
-    $nextyear = ($year + 1);
+    $nextmonth	= 1;
+    $nextyear	= ($year + 1);
 } 
-$next = mktime(0, 0, 0, $nextmonth, 1, $nextyear);
-$py = $year-1;
-$prevlink = mktime(0, 0, 0, $month, 1, $py);
-$ny = $year + 1;
-$nextlink = mktime(0, 0, 0, $month, 1, $ny);
-$cal_text = "<table style='width:98%' class='fborder'>
-	<tr>
-	<td class='forumheader' style='width:18%; text-align:left'><span class='defaulttext'><a href='" . e_SELF . "?" . $previous . "'>&lt;&lt; " . $months[($prevmonth-1)] . "</a></span></td>";
-if($pref['eventpost_dateformat'] == 'my') {	
-$cal_text .= "<td class='fcaption' style='width:64%; text-align:center'><b>" . $months[($month-1)] . " " . $year . "</b></td>";
-	} else {
-$cal_text .= "<td class='fcaption' style='width:64%; text-align:center'><b>" . $year . " " . $months[($month-1)] . "</b></td>";
-}
-$cal_text .= "<td class='forumheader' style='width:185%; text-align:right'><span class='defaulttext'><a href='" . e_SELF . "?" . $next . "'> " . $months[($nextmonth-1)] . " &gt;&gt;</a></span> </td>
-	</tr>
-	<tr>
-	<td class='forumheader3' style='text-align:left'><a href='calendar.php?" . $prevlink . "'>&lt;&lt; " . $py . "</a></td>
-	<td class='fcaption' style='text-align:center; vertical-align:middle'>";
-for ($ii = 0; $ii < 13; $ii++)
-{
-    $m = $ii + 1;
-    $monthjump = mktime(0, 0, 0, $m, 1, $year);
-    $cal_text .= "<a href='calendar.php?" . $monthjump . "'>" . $monthabb[$ii] . "</a> ";
-} 
-$cal_text .= "</td>
-	<td class='forumheader3' style='text-align:right'>
-	<a href='calendar.php?" . $nextlink . "'>" . $ny . " &gt;&gt;</a>
-	</td>
-	</tr>
-	</table>";
+$next			= mktime(0, 0, 0, $nextmonth, 1, $nextyear);
+$py				= $year-1;
+$prevlink		= mktime(0, 0, 0, $month, 1, $py);
+$ny				= $year + 1;
+$nextlink		= mktime(0, 0, 0, $month, 1, $ny);
 
-$cal_text .= "<div style='text-align:center'>";
+$prop		= mktime(0, 0, 0, $month, 1, $year);
+$nowarray	= getdate();
+$nowmonth	= $nowarray['mon'];
+$nowyear	= $nowarray['year'];
+$nowday		= $nowarray['mday'];
+$current	= mktime(0, 0, 0, $nowmonth, 1, $nowyear); 
 
-$prop = mktime(0, 0, 0, $month, 1, $year);
+// time switch buttons
+$cal_text = $tp -> parseTemplate($CALENDAR_TIME_TABLE, FALSE, $calendar_shortcodes);
 
-$nowarray = getdate();
-$nowmonth = $nowarray['mon'];
-$nowyear = $nowarray['year'];
-$nowday = $nowarray['mday'];
-$current = mktime(0, 0, 0, $nowmonth, 1, $nowyear); 
-// #### Check for access.
-// ------------ Navigation Buttons. ------------------------------------------------------
-$nav_text = "<br />
-	<form method='post' action='" . e_SELF . "?" . e_QUERY . "' id='calform'>
-	<table border='0' cellpadding='2' cellspacing='3' class='forumheader3'>
-	<tr>
-	<td align='right'>
-	<select name='event_cat_ids' class='tbox' style='width:140px;' onchange='this.form.submit()' >
-	<option value='all'>" . EC_LAN_97 . "</option>";
 
-$event_cat_id = !isset($_POST['event_cat_ids'])? null : $_POST['event_cat_ids'];
-$sql->db_Select("event_cat", "*", " find_in_set(event_cat_class,'".USERCLASS_LIST."') ");
+// navigation buttons
+$nav_text = $tp -> parseTemplate($CALENDAR_NAVIGATION_TABLE, FALSE, $calendar_shortcodes);
 
-while ($row = $sql->db_Fetch())
-{
-    extract($row);
-    if ($event_cat_id == $_POST['event_cat_ids'])
-    {
-        $nav_text .= "<option value='$event_cat_id' selected='selected'>" . $event_cat_name . "</option>";
-    } 
-    else
-    {
-        $nav_text .= "<option value='$event_cat_id'>" . $event_cat_name . "</option>";
-    } 
-} 
-$nav_text .= "</select>
-	</td>
-	<td align='center'>
-	<input class='button' type='submit' style='width:140px;' name='viewallevents' value='" . EC_LAN_93 . "' />
-	</td>
-	</tr>
-	<tr>
-	<td align='right'>
-	<input type='hidden' name='do' value='vc' />
-	<input class='button' type='submit' style='width:140px;' name='viewcat' value='" . EC_LAN_92 . "' />
-	</td>
-	<td align='center'>
-	<input type='hidden' name='enter_new_val' value='" . $prop . "' /> ";
-
-if (check_class($pref['eventpost_admin']) || getperms('0'))
-{ 
-    // start no admin preference
-    $nav_text .= "<input class='button' type='submit' style='width:140px;' name='doit' value='" . EC_LAN_94 . "' />";
-} 
-// end admin preference activated.
-$nav_text .= "</td>
-	</tr>
-	<tr><td align='center' colspan='2'><input class='button' type='submit' style='width:140px;' name='subs' value='" . EC_LAN_123 . "' /></td>
-	</tr>
-	</table>
-	</form>
-	<br />"; 
-// --------------------------------------------------------------------------------
-if ($month != $nowmonth || $year != $nowyear)
-{
-    $nav_text .= " <span class='button' style='width:120px; '><a href='" . e_SELF . "?$current'>" . EC_LAN_40 . "</a></span>";
-} 
-
-$nav_text .= "</div><br />"; 
-// get events from current month----------------------------------------------------------------------
-// *BK* If supervisor then all events can be seen irrespective of userclass
-// *BK* Uses mysql find_in_set if not supervisor
-
+// get events from current month
 if ($cal_super)
 {
     $qry = "SELECT e.*, ec.*
 			FROM #event as e
 			LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
-			WHERE ((e.event_start >= {$monthstart} AND e.event_start <= {$monthend}) OR (e.event_end >= {$monthstart} AND e.event_end <= {$monthend}) OR e.event_rec_y = {$month})
+			WHERE e.event_id != ''
 			ORDER BY e.event_start";
+			//WHERE ((e.event_start >= {$monthstart} AND e.event_start <= {$monthend}) OR (e.event_end >= {$monthstart} AND e.event_end <= {$monthend}) OR e.event_rec_y = {$month})
 } 
 else
 {
     $qry = "SELECT e.*, ec.*
 			FROM #event as e
 			LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
-			WHERE ((e.event_start >= {$monthstart} AND e.event_start <= {$monthend}) OR (e.event_end >= {$monthstart} AND e.event_end <= {$monthend}) OR e.event_rec_y = {$month})
+			WHERE e.event_id != ''
 			AND find_in_set(event_cat_class,'".USERCLASS_LIST."') 
 			ORDER BY e.event_start";
+			//WHERE ((e.event_start >= {$monthstart} AND e.event_start <= {$monthend}) OR (e.event_end >= {$monthstart} AND e.event_end <= {$monthend}) OR e.event_rec_y = {$month})
 } 
+
 if ($sql->db_Select_gen($qry))
 {
     while ($row = $sql->db_Fetch())
     {
-        if ($row['event_rec_y'] == $month)
-        {
-            $events[$row['event_rec_m']][] = $row;
-        } 
-        else
-        {
-            $tmp = getdate($row['event_start']);
-            if ($tmp['year'] == $year)
-            {
-                $start_day = $tmp['mday'];
-            } 
-            else
-            {
-                $start_day = 1;
-            } 
-            $tmp = getdate($row['event_end']);
-            if ($tmp['year'] == $year)
-            {
-                $end_day = $tmp['mday'];
-            } 
-            else
-            {
-                $end_day = 31;
-            } 
-            for ($i = $start_day; $i <= $end_day; $i++)
-            {
-                $events[$i][] = $row;
-            } 
-        } 
-    } 
-} 
-// -----------------------------------------------------------------------------------------------------------
-$start = $monthstart;
-$text .= "<div style='text-align:center'>
-	<table cellpadding='0' cellspacing='1' class='fborder' style='background-color:#DDDDDD; width:98%'>
-	<tr>";
+		/* changes by lisa_ */
+		$evf = getdate($row['event_start']);
+		$tmp = $evf['mday'];
+		$eve = getdate($row['event_end']);
+		$tmp2 = $eve['mday'];
+		$tmp3 = date("t", $monthstart); // number of days in this month
 
+		// check for recurring events in this month
+		if($row['event_recurring']=='1' && $month == $row['event_rec_y']){
+			$event_start = mktime(0,0,0,$row['event_rec_y'],$row['event_rec_m'],$year);
+		}
+		//1) start in month, end in month
+		if(($row['event_start']>=$monthstart && $row['event_start']<=$monthend) && $row['event_end']<=$monthend){
+			//$cevent_title[$tmp][] = $event_title;
+			//$event_true[$tmp][] = $event_start;
+			//$cevent_cat[$tmp][] = $event_category;
+			//$cevent_start[$tmp][] = $event_start;
+			$events[$tmp][] = $row;
+			for ($c=($tmp+1); $c<($tmp2+1); $c++) {
+				$event_true_end[$c][] = ($c!=$tmp2 ? 1 : 2);
+				//$cevent_title[$c][] = $event_title;
+				//$cevent_cat[$c][] = $event_category;
+				//$cevent_start[$c][] = $event_start;
+				$events[$c][] = $row;
+			}
+
+		//2) start in month, end after month
+		}elseif(($row['event_start']>=$monthstart && $row['event_start']<=$monthend) && $row['event_end']>=$monthend){
+			//$cevent_title[$tmp][] = $event_title;
+			//$event_true[$tmp][] = $event_start;
+			//$cevent_cat[$tmp][] = $event_category;
+			//$cevent_start[$tmp][] = $event_start;
+			$events[$tmp][] = $row;
+			for ($c=($tmp+1); $c<=$tmp3; $c++){
+				//$event_true_end[$c][] = 1;
+				$row['event_true_end'] = 1;
+				//$cevent_title[$c][] = $event_title;
+				//$cevent_cat[$c][] = $event_category;
+				//$cevent_start[$c][] = $event_start;	
+				$events[$c][] = $row;
+			}
+
+		//3) start before month, end in month
+		}elseif($row['event_start']<=$monthstart && ($row['event_end']>=$monthstart && $row['event_end']<=$monthend)){
+			for ($c=1; $c<=$tmp2; $c++){
+				//$event_true_end[$c][] = ($c!=$tmp2 ? 1 : 2);
+				$row['event_true_end'] = ($c!=$tmp2 ? 1 : 2);
+				//$cevent_title[$c][] = $event_title;
+				//$cevent_cat[$c][] = $event_category;
+				//$cevent_start[$c][] = $event_start;
+				$events[$c][] = $row;
+			}
+
+		//4) start before month, end after month
+		}elseif($row['event_start']<=$monthstart && $row['event_end']>=$monthend){
+			for ($c=1; $c<=$tmp3; $c++){
+				//$event_true_end[$c][] = 1;
+				$row['event_true_end'] = 1;
+				//$cevent_title[$c][] = $event_title;
+				//$cevent_cat[$c][] = $event_category;
+				//$cevent_start[$c][] = $event_start;
+				$events[$c][] = $row;
+			}
+		}
+		/* end lisa_ */
+
+
+		/*
+		if ($row['event_rec_y'] == $month){
+			$events[$row['event_rec_m']][] = $row;
+		}else{
+			$tmp = getdate($row['event_start']);
+			if ($tmp['year'] == $year){
+				$start_day = $tmp['mday'];
+			}else{
+				$start_day = 1;
+			} 
+			$tmp = getdate($row['event_end']);
+			if ($tmp['year'] == $year){
+				$end_day = $tmp['mday'];
+			}else{
+				$end_day = 31;
+			} 
+			for ($i = $start_day; $i <= $end_day; $i++){
+				$events[$i][] = $row;
+			}
+		}
+		*/
+	}
+}
+
+$start		= $monthstart;
+$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_START, FALSE, $calendar_shortcodes);
+$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_HEADER_START, FALSE, $calendar_shortcodes);
 foreach($week as $day)
 {
-    $text .= "<td class='fcaption' style='z-index: -1;background-color:black; width:90px;height:20px;text-align:center'>
-		<strong>".substr($day,0,$pref['eventpost_lenday'])."</strong>
-		<img src='" . THEME . "images/blank.gif' alt='' height='12%' width='14%' />
-		</td>";
+	$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_HEADER, FALSE, $calendar_shortcodes);
 } 
-$text .= "</tr><tr>";
-$calmonth = $datearray['mon'];
-$calday = $datearray['mday'];
-$calyear = $datearray['year'];
+$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_HEADER_END, FALSE, $calendar_shortcodes);
 
-// changed by rezso
+$calmonth	= $datearray['mon'];
+$calday		= $datearray['mday'];
+$calyear	= $datearray['year'];
+
 if ($pref['eventpost_weekstart'] == 'mon') {
 	$firstdayoffset = ($firstdayarray['wday'] == 0 ? $firstdayarray['wday']+6 : $firstdayarray['wday']-1);
 	} else {
 	$firstdayoffset = $firstdayarray['wday'] ;
 }
 for ($c=0; $c<$firstdayoffset; $c++) {
-    $text .= "<td style='width:12%;height:60px;'></td>";
+	$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_DAY_NON, FALSE, $calendar_shortcodes);
 }
 $loop = $firstdayoffset;
-/*
-for ($c = 0; $c < $firstdayarray['wday']; $c++)
-{
-    $text .= "<td style=' width:90px;height:60px;'></td>";
-}
-$loop = $firstdayarray['wday'];
-*/
+
 for ($c = 1; $c <= 31; $c++)
 {
-    $dayarray = getdate($start + (($c-1) * 86400));
-    $stopp = mktime(24, 0, 0, $calmonth, $c, $calyear);
-    $startt = mktime(0, 0, 0, $calmonth, $c, $calyear); 
+    $dayarray	= getdate($start + (($c-1) * 86400));
+    $stopp		= mktime(24, 0, 0, $calmonth, $c, $calyear);
+    $startt		= mktime(0, 0, 0, $calmonth, $c, $calyear); 
     // Highlight the current day.
     if ($dayarray['mon'] == $calmonth)
     {
         if ($nowday == $c && $calmonth == $nowmonth && $calyear == $nowyear)
         {
-        		//today
-            $text .= "<td  class='forumheader3' style='vertical-align:top; width:14%; height:90px; padding-bottom:0px;padding-right:0px; margin-right:0px'>";
-            $text .= "<div style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
-				<b>
-				<a href='" . e_PLUGIN . "calendar_menu/event.php?" . $startt . ".one'>" . $c . "</a>
-				</b>
-				<span class='smalltext'>[" . EC_LAN_95 . "]</span>
-				</div>";
-        } 
-        elseif (array_key_exists($c, $events))
-        {
-        		//day has events
-            $text .= "<td class='forumheader3' style='z-index: 1;vertical-align:top; width:14%; height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
-            $text .= "<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
-				<a href='" . e_PLUGIN . "calendar_menu/event.php?" . $startt . ".one'>
-				<strong>" . $c . "</strong>
-				</a>
-				</span>";
+        	//today
+			$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_DAY_TODAY, FALSE, $calendar_shortcodes);
+        //}elseif (array_key_exists($c, $events)){
+		}elseif(count($events[$c]) > 0){
+			//day has events
+			$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_DAY_EVENT, FALSE, $calendar_shortcodes);
         } 
         else
         {
             // no events and not today
-            $text .= "<td class='forumheader2 ' style='z-index: 1;vertical-align:top; width:14%; height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px'>";
-            $text .= "<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
-				<a href='" . e_PLUGIN . "calendar_menu/event.php?" . $startt . ".one'>
-				<strong>" . $c . "</strong>
-				</a>
-				</span>";
+			$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_DAY_EMPTY, FALSE, $calendar_shortcodes);
         } 
-
-        // If there are events then list them
-        if (array_key_exists($c, $events))
-        {
+        // if there are events then list them
+        if (array_key_exists($c, $events)){
             foreach($events[$c] as $ev)
             {
-                $text .= show_event($ev, $c);
-            } 
+				//if ($event_true_end[$c][$a]){
+				if($ev['event_true_end']){
+					//$ev['indicat'] = ($ev['event_true_end']==1 ? "->" : "|");
+					$ev['indicat'] = "";
+					$ev['imagesize'] = "4";
+					$ev['fulltopic'] = FALSE;
+					$ev['startofevent'] = FALSE;
+				}else{
+					$ev['indicat'] = "";
+					$ev['imagesize'] = "8";
+					$ev['fulltopic'] = TRUE;
+					$ev['startofevent'] = TRUE;
+				}
+				
+				if (($_POST['do'] == null || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $event['event_cat_id']))
+				{
+					$text .= $tp -> parseTemplate($CALENDAR_SHOWEVENT, FALSE, $calendar_shortcodes);
+				} 
+			} 
         } 
-
-        $text .= '</td>';
+		$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_DAY_END, FALSE, $calendar_shortcodes);
     } 
     $loop++;
     if ($loop == 7)
     {
         $loop = 0;
-        $text .= '</tr><tr>';
+		$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_WEEKSWITCH, FALSE, $calendar_shortcodes);
     } 
 } 
+$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_END, FALSE, $calendar_shortcodes);
 
-$text .= "</tr></table></div>";
-$caption = EC_LAN_79; // "Calendar View";
-$nav = $cal_text . $nav_text . $text;
+$caption	= EC_LAN_79; // "Calendar View";
+$nav		= $cal_text . $nav_text . $text;
 $ns->tablerender($caption, $nav);
+
 require_once(FOOTERF);
-
-function show_event($event, $dom)
-{
-    global $datearray, $ec_dir;
-    $ret = "";
-    $linkut = mktime(0 , 0 , 0 , $datearray['mon'], $dom, $datearray['year']);
-    if (($_POST['do'] == null || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $event['event_cat_id']))
-    {
-        if (strlen($event['event_title']) > 10)
-        {
-            $show_title = substr($event['event_title'], 0, 10) . "...";
-        } 
-        else
-        {
-            $show_title = $event['event_title'];
-        } 
-
-        $ret = "<br />
-			<img style='border:0' src='" . e_PLUGIN . "calendar_menu/images/" . $event['event_cat_icon'] . "' alt='' height='8' width='8' />
-			<a title='{$event['event_title']}' href='" . e_PLUGIN . "calendar_menu/event.php?" . $linkut . ".event." . $event['event_id'] . "'>
-			<span class='smalltext' style='color:black;' >" . $show_title . "</span>
-			</a>";
-    } 
-    return $ret;
-} 
 
 ?>
