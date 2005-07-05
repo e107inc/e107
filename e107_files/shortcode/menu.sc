@@ -36,12 +36,11 @@ foreach($eMenuList[$parm] as $row)
 		}
 	}
 	if($show_menu) {
+		$mname = $row['menu_name'];
 		if($error_handler->debug == true) {
-			$_menu = $row['menu_name'];
-			echo "\n<!-- Menu Start: {$_menu} -->\n";
+			echo "\n<!-- Menu Start: ".$mname." -->\n";
 		}
 		$sql->db_Mark_Time($row['menu_name']);
-		$mname = $row['menu_name'];
 		if(is_numeric($row['menu_path']))
 		{
 			global $tp;
@@ -70,7 +69,7 @@ foreach($eMenuList[$parm] as $row)
 		}
 		$sql->db_Mark_Time("(After ".$mname.")");
 		if ($error_handler->debug == true) {
-			echo "\n<!-- Menu End: {$_menu} -->\n";
+			echo "\n<!-- Menu Start: ".$mname." -->\n";			
 		}
 	}
 }
