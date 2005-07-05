@@ -21,7 +21,7 @@
 	FROM #links_page AS l
 	LEFT JOIN #links_page_cat AS c ON c.link_category_id = l.link_category
 	WHERE ".$qry." l.link_class REGEXP '".e_CLASS_REGEXP."'
-	ORDER BY l.link_id DESC LIMIT 0,".$arr[7]." 
+	ORDER BY l.link_datestamp DESC LIMIT 0,".$arr[7]." 
 	";
 
 	if(!$sql -> db_Select_gen($qry)){
