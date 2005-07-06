@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore/resetcore.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-06 11:33:29 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-06 11:36:17 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -128,6 +128,7 @@ if (isset($_POST['usubmit'])) {
 
 if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2)
 {
+	if(!$ACTIVE) exit;
 	$a_name = preg_replace("/\\W/i", '',  $_POST['a_name']);
 	$a_password = preg_replace("/\\W/i", '', $_POST['a_password']);
 	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_loginname='$a_name' AND user_password = '$a_password' AND user_perms = '0' ")) {
@@ -184,9 +185,7 @@ function recurse_pref($ppost) {
 
 if (isset($_POST['coreedit_sub']))
 {
-	
-	echo "<b>Debug5</b> ".$variable." <br />";
-
+	if(!$ACTIVE) exit;
 	$a_name = preg_replace("/\\W/i", '',  $_POST['a_name']);
 	$a_password = preg_replace("/\\W/i", '', $_POST['a_password']);
 	
@@ -212,7 +211,7 @@ if (isset($_POST['coreedit_sub']))
 }
 
 if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 3) {
-	
+	if(!$ACTIVE) exit;
 	$a_name = preg_replace("/\\W/i", '',  $_POST['a_name']);
 	$a_password = preg_replace("/\\W/i", '', $_POST['a_password']);
 	
@@ -242,6 +241,7 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 3) {
 
 if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 1)
 {
+	if(!$ACTIVE) exit;
 	$a_name = preg_replace("/\\W/i", '', $_POST['a_name']);
 	$a_password = preg_replace("/\\W/i", '', $_POST['a_password']);
 	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_loginname='$a_name' AND user_password='$a_password' AND user_perms='0' "))
