@@ -4,8 +4,8 @@
 |     e107 website system - French Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_search.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-07-06 08:20:17 $
+|     $Revision: 1.6 $
+|     $Date: 2005-07-06 09:14:26 $
 |     $Author: tpruvot $
 |     Encoding: UTF-8
 +----------------------------------------------------------------------------+
@@ -36,7 +36,7 @@ define("LAN_418", "Autres Pages");
 define("LAN_SEARCH_1", "Tout sélectionner");
 define("LAN_SEARCH_2", "Tout désélectionner");
 define("LAN_SEARCH_3", "Envoyé sur ");
-define("LAN_SEARCH_4", "Correspondance trouvée dqas le titre de la nouvelle");
+define("LAN_SEARCH_4", "Correspondance trouvée dans le titre de la nouvelle");
 define("LAN_SEARCH_5", "Correspondance trouvée dans le texte de la nouvelle");
 define("LAN_SEARCH_6", "Correspondance trouvée dans l'extension de la nouvelle");
 define("LAN_SEARCH_7", "Envoyé par ");
@@ -61,7 +61,7 @@ define("LAN_SEARCH_22", "Toutes les zones");
 define("LAN_SEARCH_23", "Recherche avancée");
 define("LAN_SEARCH_24", "Doit contenir le(s) mot(s)");
 define("LAN_SEARCH_25", "Ne doit pas contenir le(s) mot(s)");
-define("LAN_SEARCH_26", "Phrase éxacte");
+define("LAN_SEARCH_26", "Phrase exacte");
 define("LAN_SEARCH_27", "Mot(s) commencant par");
 define("LAN_SEARCH_28", "Tout n'a pas de recherche avancée");
 define("LAN_SEARCH_29", "Basic");
@@ -93,10 +93,10 @@ define("LAN_SEARCH_53", "Tout l'élément");
 define("LAN_SEARCH_54", "Titre seulement");
 define("LAN_SEARCH_55", "Rechercher dans la catégorie de nouvelle");
 define("LAN_SEARCH_56", "Toutes les catégories de nouvelles");
-define("LAN_SEARCH_57", "Commentaires envoyés vers");
+define("LAN_SEARCH_57", "Commentaires envoyés sur");
 define("LAN_SEARCH_58", "Toutes les zones");
 define("LAN_SEARCH_59", "Tous les Commentaires");
-define("LAN_SEARCH_60", "Commentaires envoyés vers");
+define("LAN_SEARCH_60", "Commentaires envoyés sur");
 define("LAN_SEARCH_61", "Par auteur");
 define("LAN_SEARCH_62", "Date d'inscription");
 define("LAN_SEARCH_63", "Rechercher dans la catégorie de téléchargement");
@@ -105,7 +105,7 @@ define("LAN_SEARCH_65", "Téléchargements");
 define("LAN_SEARCH_66", "Date d'ajout");
 define("LAN_SEARCH_67", "All downloads details");
 define("LAN_SEARCH_68", "Date");
-define("LAN_SEARCH_69", "Relevance");
+define("LAN_SEARCH_69", "Pertinence");
 
 define("LAN_SEARCH_70", "Envoyé sur un téléchargement");
 define("LAN_SEARCH_71", "Envoyé en réponse d'une nouvelle");
