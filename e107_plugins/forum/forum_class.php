@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-06-15 23:05:01 $
+|     $Revision: 1.38 $
+|     $Date: 2005-07-06 01:29:49 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -688,7 +688,7 @@ class e107forum
 			{
 				$gen = new convert;
 				$email_name = $parent_thread[0]['user_name'];
-				$message = LAN_384.SITENAME.".\n\n". LAN_382.$datestamp."\n". LAN_94.": ".$thread_poster['post_user_name']."\n\n". LAN_385.$email_post."\n\n". LAN_383."\n\n".$mail_link;
+				$message = LAN_384.SITENAME.".<br /><br />". LAN_382.$datestamp."<br />". LAN_94.": ".$thread_poster['post_user_name']."<br /><br />". LAN_385.$email_post."<br /><br />". LAN_383."<br /><br />".$mail_link;
 				include_once(e_HANDLER."mail.php");
 				sendemail($parent_thread[0]['user_email'], $pref['forum_eprefix']." '".$thread_name."', ".LAN_381.SITENAME, $message);
 			}
@@ -697,7 +697,7 @@ class e107forum
 			if ($sql->db_Select("user", "*", "user_realm REGEXP('-".$thread_parent."-') "))
 			{
 				include_once(e_HANDLER.'mail.php');
-				$message = LAN_385.SITENAME.".\n\n". LAN_382.$datestamp."\n". LAN_94.": ".$thread_poster['post_user_name']."\n\n". LAN_385.$email_post."\n\n". LAN_383."\n\n".$mail_link;
+				$message = LAN_385.SITENAME.".<br /><br />". LAN_382.$datestamp."<br />". LAN_94.": ".$thread_poster['post_user_name']."<br /><br />". LAN_385.$email_post."<br /><br />". LAN_383."<br /><br />".$mail_link;
 				while ($row = $sql->db_Fetch())
 				{
 					if ($row['user_email'])
