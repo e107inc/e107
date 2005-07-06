@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 ## Russian Language Pack for e107 Version 0.700
 ##      Copyright © 2005 - Russian e107
@@ -6,7 +6,7 @@
 ##
 ##	Last updated - 31.03.2005 - 16:05:35 GMT+2
 
-define("PAGE_NAME", "Баннерная сеть"); 
+define("PAGE_NAME", "Баннерная сеть");
 
 define("LAN_16", "Имя пользователя: ");
 define("LAN_17", "Пароль: ");
