@@ -4,17 +4,17 @@
 |     e107 website system - French Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_search.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-06 08:14:27 $
+|     $Revision: 1.4 $
+|     $Date: 2005-07-06 08:16:35 $
 |     $Author: tpruvot $
 |     Encoding: UTF-8
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Recherche");
 
-define("LAN_98", "Articles des Nouvelles");
+define("LAN_98", "Nouvelles");
 define("LAN_99", "Commentaires");
-define("LAN_140", "Membres enregistrés");
+define("LAN_140", "Membres");
 define("LAN_180", "Recherche");
 define("LAN_192", "Toutes catégories");
 define("LAN_193", "Calendrier d'évènements");
@@ -113,6 +113,6 @@ define("LAN_SEARCH_72", "Signature");
 define("LAN_SEARCH_73", "Pas de Signature.");
 define("LAN_SEARCH_74", "Inscrit le");
 
-define("LAN_SEARCH_75", "Type de Recherche");
+define("LAN_SEARCH_75", "Type de recherche");
 
 ?>
