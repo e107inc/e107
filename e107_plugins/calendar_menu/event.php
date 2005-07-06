@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-07-06 11:24:20 $
+|     $Revision: 1.16 $
+|     $Date: 2005-07-06 11:28:28 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -365,14 +365,14 @@ if ($action == "ne" || $action == "ed")
         for($count = "00"; $count <= "23"; $count++)
         {
             $val = sprintf("%02d", $count);
-            $text .= "<option value='{$val}' ".(isset($ne_hour) && $count == $ne_hour ? "checked='checked'" :"")." >".$val."</option>";
+            $text .= "<option value='{$val}' ".(isset($ne_hour) && $count == $ne_hour ? "selected='selected'" :"")." >".$val."</option>";
         } 
         $text .= "</select>
 		<select name='ne_minute' class='tbox'>";
         for($count = "00"; $count <= "59"; $count++)
         {
             $val = sprintf("%02d", $count);
-            $text .= "<option ".(isset($ne_minute) && $count == $ne_minute ? "checked='checked'" :"")." value='{$val}'>".$val."</option>";
+            $text .= "<option ".(isset($ne_minute) && $count == $ne_minute ? "selected='selected'" :"")." value='{$val}'>".$val."</option>";
         } 
         $text .= "</select>
 
@@ -380,14 +380,14 @@ if ($action == "ne" || $action == "ed")
         for($count = "00"; $count <= "23"; $count++)
         {
             $val = sprintf("%02d", $count);
-            $text .= "<option ".(isset($end_hour) && $count == $end_hour ? "checked='checked'" :"")." value='{$val}'>".$val."</option>";
+            $text .= "<option ".(isset($end_hour) && $count == $end_hour ? "selected='selected'" :"")." value='{$val}'>".$val."</option>";
         } 
         $text .= "</select>
 		<select name='end_minute' class='tbox'>";
         for($count = "00"; $count <= "59"; $count++)
         {
             $val = sprintf("%02d", $count);
-            $text .= "<option ".(isset($end_minute) && $count == $end_minute ? "checked='checked'" :"")." value='{$val}'>".$val."</option>";
+            $text .= "<option ".(isset($end_minute) && $count == $end_minute ? "selected='selected'" :"")." value='{$val}'>".$val."</option>";
         } 
         $text .= "</select>";
 		$text .= "<br /><input type='checkbox' name='allday' value='1' ".(isset($allday) && $allday == 1 ? "checked='checked'" :"")." />";
