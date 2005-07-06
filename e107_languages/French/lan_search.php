@@ -4,8 +4,8 @@
 |     e107 website system - French Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_search.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-07-06 08:16:35 $
+|     $Revision: 1.5 $
+|     $Date: 2005-07-06 08:20:17 $
 |     $Author: tpruvot $
 |     Encoding: UTF-8
 +----------------------------------------------------------------------------+
@@ -71,7 +71,7 @@ define("LAN_SEARCH_32", "Les mots suivants ont été exclus de la recherche");
 define("LAN_SEARCH_33", "Le mot suivant a été exclu de la recherche");
 define("LAN_SEARCH_34", "Plus récent que");
 define("LAN_SEARCH_35", "Plus vieux que");
-define("LAN_SEARCH_36", "Toute heure");
+define("LAN_SEARCH_36", "- Tous -");
 define("LAN_SEARCH_37", "Un jour");
 define("LAN_SEARCH_38", "Deux jours");
 define("LAN_SEARCH_39", "Trois jours");
