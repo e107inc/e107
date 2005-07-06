@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.96 $
-|     $Date: 2005-07-05 20:00:29 $
-|     $Author: e107coders $
+|     $Revision: 1.97 $
+|     $Date: 2005-07-06 12:14:13 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -42,8 +42,8 @@ class e_parse
 		}
 		if (getperms("0") || $no_encode)
 		{
-			$search = array('$', '"', "'", '\\', '“', '”');
-			$replace = array('&#036;','&quot;','&#039;','&#092;', '&#147;', '&#148;');
+			$search = array('$', '"', "'", '\\', '“', '”', '<?');
+			$replace = array('&#036;','&quot;','&#039;','&#092;', '&#147;', '&#148;', '&lt?');
 			$text = str_replace($search, $replace, $text);
 		}
 		else
@@ -282,6 +282,10 @@ class e_parse
 			return $text;
 		}
 		global $pref;
+
+
+		$text = str_replace(array("&#092;&quot;", "&#092;&#039;", "&#092;&#092;"), array("&quot;", "&#039;", "&#092;"), $text);
+
 
 		// support for converting defines(constants) within text. eg. Lan_XXXX
 		if(strpos($modifiers,"defs") !== FALSE && strlen($text) < 20 && defined(trim($text))){
