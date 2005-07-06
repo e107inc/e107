@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emote_filter.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-30 18:37:19 $
+|     $Revision: 1.12 $
+|     $Date: 2005-07-06 01:29:49 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -40,6 +40,7 @@ class e_emotefilter {
 			$value = trim(chop($value));
 
 			$filename = e_IMAGE."emotes/" . $pref['emotepack'] . "/" . $key;
+			$fileloc = SITEURL.e_IMAGE_ABS."emotes/" . $pref['emotepack'] . "/" . $key;
 
 			if(file_exists($filename))
 			{
@@ -50,8 +51,8 @@ class e_emotefilter {
 					{
 						$this->search[] = " ".$code;
 						$this->search[] = "\n".$code;
-						$this->replace[] = " <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
-						$this->replace[] = "\n <img src='".$filename."' alt='' style='vertical-align:middle; border:0' /> ";
+						$this->replace[] = " <img src='".$fileloc."' alt='' style='vertical-align:middle; border:0' /> ";
+						$this->replace[] = "\n <img src='".$fileloc."' alt='' style='vertical-align:middle; border:0' /> ";
 					}
 					unset($tmp);
 				}
