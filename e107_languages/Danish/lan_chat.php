@@ -1,5 +1,5 @@
 <?php
-/*+---------------------------------------------------------------+|        e107 website system  Language File||        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_chat.php,v $|        $Revision: 1.1 $|        $Date: 2005-07-06 21:44:20 $|        $Author: e107dk $+---------------------------------------------------------------+*/
+/*+---------------------------------------------------------------+|        e107 website system  Language File||        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_chat.php,v $|        $Revision: 1.2 $|        $Date: 2005-07-06 22:11:59 $|        $Author: e107dk $+---------------------------------------------------------------+*/
 define("PAGE_NAME", "Chatboks");
 define("LAN_11", "Chatboks (alle indlæg)");
 define("LAN_12", "Chatboksindlæg");

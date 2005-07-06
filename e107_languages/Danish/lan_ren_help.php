@@ -1,7 +1,7 @@
 <?php
 /*
 +---------------------------------------------------------------+|        e107 website system  Language File|     
-|        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_ren_help.php,v $|        $Revision: 1.1 $|        $Date: 2005-07-06 21:44:20 $|        $Author: e107dk $+---------------------------------------------------------------+*/
+|        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_ren_help.php,v $|        $Revision: 1.2 $|        $Date: 2005-07-06 22:12:00 $|        $Author: e107dk $+---------------------------------------------------------------+*/
 define("LANHELP_1", "Sort");
 define("LANHELP_2", "Blå");
 define("LANHELP_3", "Brun");

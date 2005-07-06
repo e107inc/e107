@@ -1,7 +1,7 @@
 <?php
 /*
 +---------------------------------------------------------------+|        e107 website system  Language File|     
-|        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_log.php,v $|        $Revision: 1.1 $|        $Date: 2005-07-06 21:44:31 $|        $Author: e107dk $+---------------------------------------------------------------+*/
+|        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_log.php,v $|        $Revision: 1.2 $|        $Date: 2005-07-06 22:12:01 $|        $Author: e107dk $+---------------------------------------------------------------+*/
 define("LOGLAN_1", "Indstillinger opdateret.");
 define("LOGLAN_2", "Statistiktabeller tømt.");
 define("LOGLAN_3", "Aktiver log/tæller?");

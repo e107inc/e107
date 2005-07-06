@@ -1,7 +1,7 @@
 <?php
 /*
 +---------------------------------------------------------------+|        e107 website system  Language File|
-|        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_subcontent.php,v $|        $Revision: 1.1 $|        $Date: 2005-07-06 21:44:20 $|        $Author: e107dk $+---------------------------------------------------------------+*/
+|        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_subcontent.php,v $|        $Revision: 1.2 $|        $Date: 2005-07-06 22:12:00 $|        $Author: e107dk $+---------------------------------------------------------------+*/
 define("ARLAN_0", "Mange tak, din artikel er gemt og vil blive gennemlæst inden længe.");
 define("ARLAN_1", "Felter ikke udfyldt.");
 define("ARLAN_2", "Mange tak, din anmeldelse er gemt og vil blive gennemlæst inden længe.");

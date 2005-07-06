@@ -1,5 +1,5 @@
 <?php
-/*+---------------------------------------------------------------+|        e107 website system  Language File||        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_userclass.php,v $|        $Revision: 1.1 $|        $Date: 2005-07-06 21:44:31 $|        $Author: e107dk $+---------------------------------------------------------------+*/
+/*+---------------------------------------------------------------+|        e107 website system  Language File||        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_userclass.php,v $|        $Revision: 1.2 $|        $Date: 2005-07-06 22:12:01 $|        $Author: e107dk $+---------------------------------------------------------------+*/
 define("UC_LAN_0", "Alle (offentlig)");
 define("UC_LAN_1", "Kun gæster");
 define("UC_LAN_2", "Ingen (inaktiv)");
