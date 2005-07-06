@@ -36,7 +36,7 @@ SC_END
 SC_BEGIN MONTH_LIST
 global $MONTH_LIST, $year, $monthjump, $monthabb;
 $MONTH_LIST = "";
-for ($ii = 0; $ii < 13; $ii++)
+for ($ii = 0; $ii < 12; $ii++)
 {
     $m = $ii + 1;
     $monthjump = mktime(0, 0, 0, $m, 1, $year);
@@ -71,8 +71,7 @@ SC_END
 SC_BEGIN NAV_BUT_ENTEREVENT
 global $NAV_BUT_ENTEREVENT, $pref, $prop;
 $NAV_BUT_ENTEREVENT = "<input type='hidden' name='enter_new_val' value='".$prop."' />";
-if (check_class($pref['eventpost_admin']) || getperms('0'))
-{ 
+if (check_class($pref['eventpost_admin']) || getperms('0')){ 
     // start no admin preference
     $NAV_BUT_ENTEREVENT .= "<input class='button' type='submit' style='width:140px;' name='doit' value='".EC_LAN_94."' />";
 } 
@@ -82,30 +81,24 @@ SC_END
 SC_BEGIN NAV_LINKCURRENTMONTH
 global $NAV_LINKCURRENTMONTH, $month, $nowmonth, $year, $nowyear, $current;
 $NAV_LINKCURRENTMONTH = "";
-echo $month." - ".$nowmonth." - ".$year." - ".$nowyear;
-if ($month != $nowmonth || $year != $nowyear)
-{
+if ($month != $nowmonth || $year != $nowyear){
 	$NAV_LINKCURRENTMONTH = "<input class='button' type='button' style='width:140px;' name='cur' value='".EC_LAN_40."' onclick=\"javascript:document.location='".e_SELF."?$current'\" />";
 }
 return $NAV_LINKCURRENTMONTH;
 SC_END
 
 SC_BEGIN NAV_CATEGORIES
-global $NAV_CATEGORIES, $sql, $pref, $_POST;
+global $NAV_CATEGORIES, $sql, $pref, $_POST, $cal_super;
 $NAV_CATEGORIES = "<select name='event_cat_ids' class='tbox' style='width:140px;' onchange='this.form.submit()' ><option class='tbox' value='all'>".EC_LAN_97."</option>";
-$event_cat_id = !isset($_POST['event_cat_ids'])? null : $_POST['event_cat_ids'];
-$cal_arg = ($cal_super ? "" : " find_in_set(event_cat_class,'" . USERCLASS_LIST . "') ");
+$event_cat_id = ( isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] ? $_POST['event_cat_ids'] : null);
+
+$cal_arg = ($cal_super ? "" : " find_in_set(event_cat_class,'".USERCLASS_LIST."') ");
 $sql->db_Select("event_cat", "*", $cal_arg);
-while ($row = $sql->db_Fetch())
-{
-    extract($row);
-    if ($row['event_cat_id'] == $_POST['event_cat_ids'])
-    {
+while ($row = $sql->db_Fetch()){
+    if ($row['event_cat_id'] == $event_cat_id){
         $NAV_CATEGORIES .= "<option class='tbox' value='".$row['event_cat_id']."' selected='selected'>".$row['event_cat_name']."</option>";
-    } 
-    else
-    {
-        $NAV_CATEGORIES .= "<option value='$event_cat_id'>".$event_cat_name."</option>";
+    }else{
+        $NAV_CATEGORIES .= "<option value='".$row['event_cat_id']."'>".$row['event_cat_name']."</option>";
     } 
 } 
 $NAV_CATEGORIES .= "</select>";
@@ -134,7 +127,7 @@ SC_END
 SC_BEGIN SHOWEVENT_HEADING
 global $SHOWEVENT_HEADING, $ev, $datearray, $c;
 $linkut = mktime(0 , 0 , 0 , $datearray['mon'], $c, $datearray['year']);
-if($ev['fulltopic']){
+if(isset($ev['fulltopic']) && $ev['fulltopic']){
 	$show_title = $ev['event_title'];
 }else{
 if (strlen($ev['event_title']) > 10){
