@@ -195,9 +195,13 @@ global $post_info, $ldata, $pref, $forum_info;
 if ($post_info['anon']) {
 return "";
 }
-$fmod = check_class($forum_info['forum_moderators'], $post_info['user_class']);
+$fmod = ($post_info['user_class'] != "" && check_class($forum_info['forum_moderators'], $post_info['user_class']));
+if(!$fmod && $forum_info['forum_moderators'] == e_UC_ADMIN)
+{
+	$fmod = $post_info['user_admin'];
+}
 if (!array_key_exists($post_info['user_id'],$ldata)) {
-$ldata[$post_info['user_id']] = get_level($post_info['user_id'], $post_info['user_forums'], $post_info['user_comments'], $post_info['user_chats'], $post_info['user_visits'], $post_info['user_join'], $post_info['user_admin'], $post_info['user_perms'], $pref, $fmod);
+	$ldata[$post_info['user_id']] = get_level($post_info['user_id'], $post_info['user_forums'], $post_info['user_comments'], $post_info['user_chats'], $post_info['user_visits'], $post_info['user_join'], $post_info['user_admin'], $post_info['user_perms'], $pref, $fmod);
 }
 return $ldata[$post_info['user_id']][0];
 SC_END
@@ -207,7 +211,11 @@ global $post_info, $ldata, $pref, $forum_info;
 if ($post_info['anon']) {
 return "";
 }
-$fmod = check_class($forum_info['forum_moderators'], $post_info['user_class']);
+$fmod = ($post_info['user_class'] != "" && check_class($forum_info['forum_moderators'], $post_info['user_class']));
+if(!$fmod && $forum_info['forum_moderators'] == e_UC_ADMIN)
+{
+	$fmod = $post_info['user_admin'];
+}
 if (!array_key_exists($post_info['user_id'],$ldata)) {
 $ldata[$post_info['user_id']] = get_level($post_info['user_id'], $post_info['user_forums'], $post_info['user_comments'], $post_info['user_chats'], $post_info['user_visits'], $post_info['user_join'], $post_info['user_admin'], $post_info['user_perms'], $pref, $fmod);
 }
