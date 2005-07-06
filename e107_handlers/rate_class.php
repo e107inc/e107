@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-07-01 09:31:07 $
+|     $Revision: 1.12 $
+|     $Date: 2005-07-06 13:48:39 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -74,11 +74,12 @@ class rater {
 	}
 
 	function checkrated($table, $id) {
+		global $sql;
 
 		$table = preg_replace('/\\W/i', '', $table);
 		$id = intval($id);
 
-		$sql = new db;
+		//$sql = new db;
 		if (!$sql->db_Select("rate", "*", "rate_table = '{$table}' AND rate_itemid = '{$id}' ")) {
 			return FALSE;
 		} else {
@@ -96,12 +97,13 @@ class rater {
 	}
 
 	function getrating($table, $id, $userid=FALSE) {
+		global $sql;
 		//userid	: boolean, get rating for a single user, or get general total rating of the item
 
 		$table = preg_replace('/\\W/i', '', $table);
 		$id = intval($id);
 
-		$sql = new db;
+		//$sql = new db;
 		if (!$sql->db_Select("rate", "*", "rate_table = '{$table}' AND rate_itemid = '{$id}' ")) {
 			return FALSE;
 		} else {

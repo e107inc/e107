@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.76 $
-|		$Date: 2005-07-05 09:13:29 $
+|		$Revision: 1.77 $
+|		$Date: 2005-07-06 13:48:39 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -196,8 +196,7 @@ function show_content_search_menu($mode, $mainparent){
 
 		if( (isset($content_pref["content_navigator_{$mode}_{$mainparent}"]) && $content_pref["content_navigator_{$mode}_{$mainparent}"]) || (isset($content_pref["content_search_{$mode}_{$mainparent}"]) && $content_pref["content_search_{$mode}_{$mainparent}"]) || (isset($content_pref["content_ordering_{$mode}_{$mainparent}"]) && $content_pref["content_ordering_{$mode}_{$mainparent}"]) ){
 
-			$CONTENT_SEARCH_TABLE = "";
-			if(!$CONTENT_SEARCH_TABLE){
+			if(!isset($CONTENT_SEARCH_TABLE)){
 				if(!$content_pref["content_theme_{$mainparent}"]){
 					require_once($plugindir."templates/default/content_search_template.php");
 				}else{
@@ -247,8 +246,7 @@ function show_content_search_result($searchkeyword){
 		if(!$sqlsr -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_icon, content_datestamp", " ".$qry." ".$datequery." ORDER BY content_heading")){
 			$textsr = "<div style='text-align:center;'>".CONTENT_SEARCH_LAN_0."</div>";
 		}else{
-			$CONTENT_SEARCHRESULT_TABLE = "";
-			if(!$CONTENT_SEARCHRESULT_TABLE){
+			if(!isset($CONTENT_SEARCHRESULT_TABLE)){
 				if(!$content_pref["content_theme_{$mainparent}"]){
 					require_once($plugindir."templates/default/content_searchresult_template.php");
 				}else{
@@ -298,8 +296,7 @@ function parsesearch($text, $match, $amount){
 function show_content(){
 		global $qs, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $content_cat_icon_path_large, $content_cat_icon_path_small, $datequery, $content_icon_path, $eArrayStorage;
 
-		$CONTENT_TYPE_TABLE = "";
-		if(!$CONTENT_TYPE_TABLE){
+		if(!isset($CONTENT_TYPE_TABLE)){
 			require_once(e_PLUGIN."content/templates/content_type_template.php");
 		}
 
@@ -416,7 +413,7 @@ function show_content_archive(){
 		show_content_search_menu("archive", $mainparent);		//show navigator/search/order menu
 
 		$CONTENT_ARCHIVE_TABLE = "";
-		if(!$CONTENT_ARCHIVE_TABLE){
+		if(!isset($CONTENT_ARCHIVE_TABLE)){
 			if(!$content_pref["content_theme_{$mainparent}"]){
 				require_once($plugindir."templates/default/content_archive_template.php");
 			}else{
@@ -490,7 +487,7 @@ function show_content_archive(){
 function displayPreview($qry){
 		global $sql, $sql2, $tp, $plugintable, $plugindir, $content_pref, $mainparent, $CONTENT_RECENT_TABLE, $CONTENT_RECENT_TABLE_AUTHORDETAILS;
 
-		if(!$CONTENT_RECENT_TABLE){
+		if(!isset($CONTENT_RECENT_TABLE)){
 			if(!$content_pref["content_theme_{$mainparent}"]){
 				require_once($plugindir."templates/default/content_recent_template.php");
 			}else{
@@ -576,7 +573,7 @@ function show_content_cat_all(){
 		$content_pref	= $aa -> getContentPref($mainparent);
 		show_content_search_menu("catall", $mainparent);		//show navigator/search/order menu
 
-		if(!$CONTENT_CAT_TABLE){
+		if(!isset($CONTENT_CAT_TABLE)){
 			if(!$content_pref["content_theme_{$mainparent}"]){
 				require_once($plugindir."templates/default/content_cat_template.php");
 			}else{
@@ -656,7 +653,7 @@ function show_content_cat($mode=""){
 
 		show_content_search_menu("cat", $mainparent);		//show navigator/search/order menu
 
-		if(!$CONTENT_CAT_LIST_TABLE){
+		if(!isset($CONTENT_CAT_LIST_TABLE)){
 			if(!$content_pref["content_theme_{$mainparent}"]){
 				require_once($plugindir."templates/default/content_cat_template.php");
 			}else{
@@ -832,8 +829,7 @@ function show_content_author_all(){
 		$content_pref	= $aa -> getContentPref($mainparent);
 		show_content_search_menu("authorall", $mainparent);		//show navigator/search/order menu
 
-		$CONTENT_AUTHOR_TABLE = "";
-		if(!$CONTENT_AUTHOR_TABLE){
+		if(!isset($CONTENT_AUTHOR_TABLE)){
 			if(!$content_pref["content_theme_{$mainparent}"]){
 				require_once($plugindir."templates/default/content_author_template.php");
 			}else{
@@ -1007,8 +1003,7 @@ function show_content_top(){
 		$content_pref	= $aa -> getContentPref($mainparent);
 		show_content_search_menu("top", $mainparent);		//show navigator/search/order menu
 
-		//$CONTENT_TOP_TABLE = "";
-		if(!$CONTENT_TOP_TABLE){
+		if(!isset($CONTENT_TOP_TABLE)){
 			if(!$content_pref["content_theme_{$mainparent}"]){
 				require_once($plugindir."templates/default/content_top_template.php");
 			}else{
@@ -1108,8 +1103,7 @@ function show_content_score(){
 		$content_pref	= $aa -> getContentPref($mainparent);
 		show_content_search_menu("score", $mainparent);		//show navigator/search/order menu
 
-		$CONTENT_SCORE_TABLE = "";
-		if(!$CONTENT_SCORE_TABLE){
+		if(!isset($CONTENT_SCORE_TABLE)){
 			if(!$content_pref["content_theme_{$mainparent}"]){
 				require_once($plugindir."templates/default/content_score_template.php");
 			}else{
@@ -1294,8 +1288,7 @@ function show_content_item(){
 						$CONTENT_CONTENT_TABLE_INFO_POST = TRUE;
 					}
 
-					$CONTENT_CONTENT_TABLE = "";
-					if(!$CONTENT_CONTENT_TABLE){
+					if(!isset($CONTENT_CONTENT_TABLE)){
 						//if no theme has been set, use default theme
 						if(!$content_pref["content_theme_{$mainparent}"]){
 
