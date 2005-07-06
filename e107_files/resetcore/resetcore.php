@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore/resetcore.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-06 11:36:17 $
+|     $Revision: 1.4 $
+|     $Date: 2005-07-06 11:38:42 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -78,7 +78,11 @@ echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
 <br />
 <?php
 
-if(!$ACTIVE) exit;
+if(!$ACTIVE)
+{
+	echo "<span class='headertext2'>Currently disabled. To enable please open this file in a text editor and follow the instructions to activate.</span>";
+	exit;
+}
 
 if (isset($_POST['usubmit'])) {
 
