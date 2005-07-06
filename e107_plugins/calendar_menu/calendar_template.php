@@ -19,8 +19,10 @@ $sc_style['MONTH_LIST']['post'] = "";
 $sc_style['NEXT_YEAR']['pre'] = "";
 $sc_style['NEXT_YEAR']['post'] = "";
 
+//<table style='width:98%;' class='fborder'>
+
 $CALENDAR_TIME_TABLE = "
-<table style='width:98%;' class='fborder'>
+<table cellpadding='0' cellspacing='1' class='fborder' style='width:100%'>
 <tr>
 	<td class='forumheader' style='width:18%; text-align:left'>{PREV_MONTH}</td>
 	<td class='fcaption' style='width:64%; text-align:center'>{CURRENT_MONTH}</td>
@@ -43,13 +45,13 @@ $sc_style['NAV_LINKCURRENTMONTH']['post'] = "";
 
 $CALENDAR_NAVIGATION_TABLE = "
 <div style='text-align:center; margin-bottom:20px;'>
-	<form method='post' action='" . e_SELF . "?" . e_QUERY . "' id='calform'>
-	<table border='0' cellpadding='2' cellspacing='3' class='forumheader3' style='width:100%;'>
-	<tr>
-		<td style='text-align:center;'>{NAV_CATEGORIES} {NAV_BUT_ALLEVENTS} {NAV_BUT_VIEWCAT} {NAV_BUT_ENTEREVENT} {NAV_BUT_SUBSCRIPTION} {NAV_LINKCURRENTMONTH}</td>
-	</tr>
-	</table>
-	</form>
+<form method='post' action='" . e_SELF . "?" . e_QUERY . "' id='calform'>
+<table border='0' cellpadding='0' cellspacing='0' style='width:100%;'>
+<tr>
+	<td style='text-align:center;'>{NAV_CATEGORIES} {NAV_BUT_ALLEVENTS} {NAV_BUT_VIEWCAT} {NAV_BUT_ENTEREVENT} {NAV_BUT_SUBSCRIPTION} {NAV_LINKCURRENTMONTH}</td>
+</tr>
+</table>
+</form>
 </div>";
 /*
 	<table border='0' cellpadding='2' cellspacing='3' class='forumheader3' style='width:100%;'>
@@ -72,7 +74,7 @@ $CALENDAR_NAVIGATION_TABLE = "
 $sc_style['EVENTLIST_CAPTION']['pre'] = "<tr><td class='fcaption' colspan='2'>";
 $sc_style['EVENTLIST_CAPTION']['post'] = ":<br /><br /></td></tr>";
 
-$EVENT_EVENTLIST_TABLE_START = "<table style='width:98%' class='fborder'>{EVENTLIST_CAPTION}";
+$EVENT_EVENTLIST_TABLE_START = "<table style='width:100%' class='fborder'>{EVENTLIST_CAPTION}";
 $EVENT_EVENTLIST_TABLE_END = "</table>";
 
 
@@ -81,20 +83,20 @@ $EVENT_EVENTLIST_TABLE_END = "</table>";
 $sc_style['EVENTARCHIVE_CAPTION']['pre'] = "<tr><td colspan='2' class='fcaption'>";
 $sc_style['EVENTARCHIVE_CAPTION']['post'] = "</td></tr>";
 
-$EVENT_ARCHIVE_TABLE_START = "<br /><table style='width:98%' class='fborder'>{EVENTARCHIVE_CAPTION}";
+$EVENT_ARCHIVE_TABLE_START = "<br /><table style='width:100%' class='fborder'>{EVENTARCHIVE_CAPTION}";
 $EVENT_ARCHIVE_TABLE = "
 <tr>
-	<td style='width:35%; vertical-align:top' class='forumheader3'>{EVENTARCHIVE_HEADING}</td>
-	<td style='width:65%' class='forumheader3'>{EVENTARCHIVE_DETAILS}</td>
+	<td style='width:35%; vertical-align:top' class='forumheader3'>{EVENTARCHIVE_DATE}</td>
+	<td style='width:65%' class='forumheader3'>{EVENTARCHIVE_HEADING}</td>
 </tr>";
-
+//<br />{EVENTARCHIVE_DETAILS}
 $EVENT_ARCHIVE_TABLE_EMPTY = "<tr><td colspan='2' class='forumheader3'>{EVENTARCHIVE_EMPTY}</td></tr>";
 $EVENT_ARCHIVE_TABLE_END = "</table>";
 
 
 
 // EVENT SHOW EVENT ------------------------------------------------------------
-$EVENT_EVENT_TABLE_START = "<table style='width:98%' class='fborder'>";
+$EVENT_EVENT_TABLE_START = "<table style='width:100%' class='fborder' cellspacing='0' cellpadding='0'>";
 $EVENT_EVENT_TABLE_END = "</table>";
 
 $sc_style['EVENT_DETAILS']['pre'] = "<tr><td colspan='2' class='forumheader3'>";
@@ -123,13 +125,13 @@ $sc_style['EVENT_DATE_END']['post'] = "";
 
 $EVENT_EVENT_TABLE = "
 <tr>
-	<td style='padding-bottom:10px;'>
-		<div class='fcaption' title='".EC_LAN_132."' style='cursor:pointer; text-align:left; border:0px solid #000;' onclick=\"expandit('{EVENT_ID}')\">{EVENT_HEADING}</div>
-		<div id='{EVENT_ID}' style='display:{EVENT_DISPLAYSTYLE}; text-align:left;'>
-			<table style='width:100%;' class='fborder' >
-				<tr><td colspan='2' class='forumheader'>{EVENT_AUTHOR} {EVENT_CATEGORY} {EVENT_CONTACT} {EVENT_OPTIONS}</td></tr>
-				<tr><td colspan='2' class='forumheader'>{EVENT_DATE_START} {EVENT_DATE_END}</td></tr>
-				<tr><td colspan='2' class='forumheader'>{EVENT_LOCATION}</td></tr>
+	<td >
+		<div title='".EC_LAN_132."' class='fcaption' style='cursor:pointer; text-align:left; border:0px solid #000;' onclick=\"expandit('{EVENT_ID}')\">{EVENT_HEADING}</div>
+		<div id='{EVENT_ID}' style='display:{EVENT_DISPLAYSTYLE}; padding-top:10px; padding-bottom:10px; text-align:left;'>
+			<table style='width:100%;'  cellspacing='0' cellpadding='0'>
+				<tr><td colspan='2' class='forumheader3'>{EVENT_AUTHOR} {EVENT_CATEGORY} {EVENT_CONTACT} {EVENT_OPTIONS}</td></tr>
+				<tr><td colspan='2' class='forumheader3'>{EVENT_DATE_START} {EVENT_DATE_END}</td></tr>
+				<tr><td colspan='2' class='forumheader3'>{EVENT_LOCATION}</td></tr>
 				{EVENT_DETAILS}
 				{EVENT_THREAD}
 			</table>
@@ -137,7 +139,6 @@ $EVENT_EVENT_TABLE = "
 	</td>
 </tr>
 ";
-
 
 
 // CALENDAR SHOW EVENT ------------------------------------------------------------
@@ -148,7 +149,7 @@ $CALENDAR_SHOWEVENT = "<table cellspacing='0' cellpadding='0' style='width:100%;
 // CALENDAR CALENDAR ------------------------------------------------------------
 $CALENDAR_CALENDAR_START = "
 <div style='text-align:center'>
-<table cellpadding='0' cellspacing='1' class='fborder' style='background-color:#DDDDDD; width:98%'>";
+<table cellpadding='0' cellspacing='1' class='fborder' style='background-color:#DDDDDD; width:100%'>";
 
 $CALENDAR_CALENDAR_END = "
 </tr></table></div>";
@@ -166,23 +167,17 @@ $CALENDAR_CALENDAR_WEEKSWITCH = "</tr><tr>";
 //today
 $CALENDAR_CALENDAR_DAY_TODAY = "
 <td class='forumheader3' style='vertical-align:top; width:14%; height:90px; padding-bottom:0px;padding-right:0px; margin-right:0px; padding:2px;'>
-<div style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
-{CALENDAR_CALENDAR_DAY_TODAY_HEADING}
-</div>";
+<div style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>{CALENDAR_CALENDAR_DAY_TODAY_HEADING}</div>";
 
 //day has events
 $CALENDAR_CALENDAR_DAY_EVENT = "
 <td class='forumheader3' style='z-index: 1;vertical-align:top; width:14%; height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px; padding:2px;'>
-<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
-{CALENDAR_CALENDAR_DAY_EVENT_HEADING}
-</span>";
+<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'><b>{CALENDAR_CALENDAR_DAY_EVENT_HEADING}</b></span>";
 
 // no events and not today
 $CALENDAR_CALENDAR_DAY_EMPTY = "
 <td class='forumheader2' style='z-index: 1;vertical-align:top; width:14%; height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px; padding:2px;'>
-<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>
-{CALENDAR_CALENDAR_DAY_EMPTY_HEADING}
-</span>";
+<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'><b>{CALENDAR_CALENDAR_DAY_EMPTY_HEADING}</b></span>";
 
 $CALENDAR_CALENDAR_DAY_END = "</td>";
 

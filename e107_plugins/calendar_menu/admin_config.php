@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/admin_config.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-07-05 21:31:42 $
+|     $Revision: 1.12 $
+|     $Date: 2005-07-06 10:04:17 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -283,122 +283,105 @@ if(!isset($qs[0]) || (isset($qs[0]) && $qs[0] == "config")){
 	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
 	<table style='width:97%' class='fborder'>
+	<tr><td style='vertical-align:top;' colspan='2' class='fcaption'>".EC_LAN_78." </td></tr>
 	<tr>
-	<td style='vertical-align:top;' colspan='2' class='fcaption'>".EC_LAN_78." </td>
-	</td>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_76." </td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'>". r_userclass("eventpost_admin", $pref['eventpost_admin'], "off", 'public, nobody, member, admin, classes')."
+		</td>
 	</tr>
 	<tr>
-	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_76." </td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'>". r_userclass("eventpost_admin", $pref['eventpost_admin'], "off", 'public, nobody, member, admin, classes')."
-	</td>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_100." </td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'>". r_userclass("eventpost_addcat", $pref['eventpost_addcat'], "off",  'public, nobody, member, admin, classes')."
+		<br /><em>".EC_LAN_101."</em>
+		</td>
 	</tr>
 	<tr>
-	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_100." </td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'>". r_userclass("eventpost_addcat", $pref['eventpost_addcat'], "off",  'public, nobody, member, admin, classes')."
-	<br /><em>".EC_LAN_101."</em>
-	</td>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_104." </td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'>". r_userclass("eventpost_super", $pref['eventpost_super'], "off",  'public, nobody, member, admin, classes')."
+		</td>
 	</tr>
 	<tr>
-	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_104." </td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'>". r_userclass("eventpost_super", $pref['eventpost_super'], "off",  'public, nobody, member, admin, classes')."
-	</td>
-	</tr>
-	<tr>
-	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_84."<br /><span class='smalltext'><em>".EC_LAN_85."</em></span></td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_headercss' size='20' value='".$pref['eventpost_headercss']."' maxlength='100' />
-	</td>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_84."<br /><span class='smalltext'><em>".EC_LAN_85."</em></span></td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_headercss' size='20' value='".$pref['eventpost_headercss']."' maxlength='100' />
+		</td>
 	</tr>
 
 	<tr>
-	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_86."<br /><span class='smalltext'><em>".EC_LAN_87."</em></span></td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_daycss' size='20' value='".$pref['eventpost_daycss']."' maxlength='100' />
-	</td>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_86."<br /><span class='smalltext'><em>".EC_LAN_87."</em></span></td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_daycss' size='20' value='".$pref['eventpost_daycss']."' maxlength='100' />
+		</td>
 	</tr>
 
 	<tr>
-	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_88."<br /><span class='smalltext'><em>".EC_LAN_89."</em></span></td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_todaycss' size='20' value='".$pref['eventpost_todaycss']."' maxlength='100' />
-	</td>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_88."<br /><span class='smalltext'><em>".EC_LAN_89."</em></span></td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_todaycss' size='20' value='".$pref['eventpost_todaycss']."' maxlength='100' />
+		</td>
 	</tr>
 
 	<tr>
-	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_122."<br /><span class='smalltext'><em>".EC_LAN_89."</em></span></td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_evtoday' size='20' value='".$pref['eventpost_evtoday']."' maxlength='100' />
-	</td>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_122."<br /><span class='smalltext'><em>".EC_LAN_89."</em></span></td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_evtoday' size='20' value='".$pref['eventpost_evtoday']."' maxlength='100' />
+		</td>
 	</tr>
 
 	<tr>
-	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_102."<br /><span class='smalltext'><em>".EC_LAN_103."</em></span></td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_forum' value='1' ".
-	($pref['eventpost_forum']==1?" checked='checked' ":"")." />
-	</td>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_102."<br /><span class='smalltext'><em>".EC_LAN_103."</em></span></td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_forum' value='1' ".($pref['eventpost_forum']==1?" checked='checked' ":"")." /></td>
 	</tr>
 	<tr>
-	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_114."</td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'>
-	<select name='eventpost_weekstart' class='tbox'>
-	<option value='sun' ".
-	($pref['eventpost_weekstart']=='sun'?" selected='selected' ":"")." />".EC_LAN_115."</option>
-	<option value='mon' ".
-	($pref['eventpost_weekstart']=='mon'?" selected='selected' ":"")." />".EC_LAN_116."</option>
-	</select>
-	</td>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_114."</td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'>
+			<select name='eventpost_weekstart' class='tbox'>
+			<option value='sun' ".($pref['eventpost_weekstart']=='sun'?" selected='selected' ":"")." >".EC_LAN_115."</option>
+			<option value='mon' ".($pref['eventpost_weekstart']=='mon'?" selected='selected' ":"")." >".EC_LAN_116."</option>
+			</select>
+		</td>
 	</tr>
 	<tr>
-	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_117."<br /></td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'>
-	<select name='eventpost_lenday' class='tbox'>
-	<option value='1' ".
-	($pref['eventpost_lenday']=='1'?" selected='selected' ":"")." /> 1 </option>
-	<option value='2' ".
-	($pref['eventpost_lenday']=='2'?" selected='selected' ":"")." /> 2 </option>
-	<option value='3' ".
-	($pref['eventpost_lenday']=='3'?" selected='selected' ":"")." /> 3 </option>
-	</select>
-	</td>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_117."<br /></td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'>
+			<select name='eventpost_lenday' class='tbox'>
+			<option value='1' ".($pref['eventpost_lenday']=='1'?" selected='selected' ":"")." > 1 </option>
+			<option value='2' ".($pref['eventpost_lenday']=='2'?" selected='selected' ":"")." > 2 </option>
+			<option value='3' ".($pref['eventpost_lenday']=='3'?" selected='selected' ":"")." > 3 </option>
+			</select>
+		</td>
 	</tr>
 	<tr>
-	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_118."<br /></td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'>
-	<select name='eventpost_dateformat' class='tbox'>
-	<option value='my' ".
-	($pref['eventpost_dateformat']=='my'?" selected='selected' ":"")." />".EC_LAN_119."</option>
-	<option value='ym' ".
-	($pref['eventpost_dateformat']=='ym'?" selected='selected' ":"")." />".EC_LAN_120."</option>
-	</select>
-	</td>
-	</tr>
-	
-		<tr>
-	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A95."</td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_asubs' value='1' ".
-	($pref['eventpost_asubs']==1?" checked='checked' ":"")." /><br /><span class='smalltext'><em>".EC_ADLAN_A96."</em></span>
-	</td>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_LAN_118."<br /></td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'>
+			<select name='eventpost_dateformat' class='tbox'>
+			<option value='my' ".($pref['eventpost_dateformat']=='my'?" selected='selected' ":"")." >".EC_LAN_119."</option>
+			<option value='ym' ".($pref['eventpost_dateformat']=='ym'?" selected='selected' ":"")." >".EC_LAN_120."</option>
+			</select>
+		</td>
 	</tr>
 	
 	<tr>
-	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A92."</td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_mailfrom' size='40' value='".$pref['eventpost_mailfrom']."' maxlength='100' />
-	</td>
-	</tr>  
-
-	<tr>
-	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A91."</td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_mailsubject' size='40' value='".$pref['eventpost_mailsubject']."' maxlength='100' />
-	</td>
-	</tr>  
-
-	<tr>
-	<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A93."</td>
-	<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_mailaddress' size='40' value='".$pref['eventpost_mailaddress']."' maxlength='100' />
-	</td>
-	</tr>  
-
-	<tr style='vertical-align:top'>
-	<td colspan='2'  style='text-align:left' class='fcaption'>
-	<input class='button' type='submit' name='updatesettings' value='".EC_LAN_77."' />
-	</td>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A95."</td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='checkbox' name='eventpost_asubs' value='1' ".($pref['eventpost_asubs']==1?" checked='checked' ":"")." /><br /><span class='smalltext'><em>".EC_ADLAN_A96."</em></span>
+		</td>
 	</tr>
+	
+	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A92."</td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_mailfrom' size='40' value='".$pref['eventpost_mailfrom']."' maxlength='100' />
+		</td>
+	</tr>  
+
+	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A91."</td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_mailsubject' size='40' value='".$pref['eventpost_mailsubject']."' maxlength='100' />
+		</td>
+	</tr>  
+
+	<tr>
+		<td style='width:40%;vertical-align:top;' class='forumheader3'>".EC_ADLAN_A93."</td>
+		<td style='width:60%;vertical-align:top;' class='forumheader3'><input class='tbox' type='text' name='eventpost_mailaddress' size='40' value='".$pref['eventpost_mailaddress']."' maxlength='100' />
+		</td>
+	</tr>  
+
+	<tr><td colspan='2'  style='text-align:left' class='fcaption'><input class='button' type='submit' name='updatesettings' value='".EC_LAN_77."' /></td></tr>
 	</table>
 	</form>
 	</div>";

@@ -56,7 +56,8 @@ SC_END
 
 SC_BEGIN NAV_BUT_VIEWCAT
 global $NAV_BUT_VIEWCAT;
-return "<input type='hidden' name='do' value='vc' /><input class='button' type='submit' style='width:140px;' name='viewcat' value='".EC_LAN_92."' />";
+//return "<input type='hidden' name='do' value='vc' /><input class='button' type='submit' style='width:140px;' name='viewcat' value='".EC_LAN_92."' />";
+return "<input type='hidden' name='do' value='vc' />";
 SC_END
 
 SC_BEGIN NAV_BUT_SUBSCRIPTION
@@ -80,6 +81,8 @@ SC_END
 
 SC_BEGIN NAV_LINKCURRENTMONTH
 global $NAV_LINKCURRENTMONTH, $month, $nowmonth, $year, $nowyear, $current;
+$NAV_LINKCURRENTMONTH = "";
+echo $month." - ".$nowmonth." - ".$year." - ".$nowyear;
 if ($month != $nowmonth || $year != $nowyear)
 {
 	$NAV_LINKCURRENTMONTH = "<input class='button' type='button' style='width:140px;' name='cur' value='".EC_LAN_40."' onclick=\"javascript:document.location='".e_SELF."?$current'\" />";
@@ -156,20 +159,22 @@ return "<strong>".substr($day,0,$pref['eventpost_lenday'])."</strong><img src='"
 SC_END
 
 SC_BEGIN CALENDAR_CALENDAR_DAY_TODAY_HEADING
-global $CALENDAR_CALENDAR_DAY_TODAY_HEADING, $startt, $c;
-return "<b><a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>".$c."</a></b> <span class='smalltext'>[".EC_LAN_95."]</span>";
+global $CALENDAR_CALENDAR_DAY_TODAY_HEADING, $startt, $c, $days;
+//return "<b><a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>".$days[($c-1)]."</a></b> <span class='smalltext'>[".EC_LAN_TODAY."]</span>";
+return "<b><a href='".e_PLUGIN."calendar_menu/event.php?".$startt."'>".$days[($c-1)]."</a></b> <span class='smalltext'>[".EC_LAN_TODAY."]</span>";
 SC_END
 
 SC_BEGIN CALENDAR_CALENDAR_DAY_EVENT_HEADING
-global $CALENDAR_CALENDAR_DAY_EVENT_HEADING, $startt, $c;
-return "<a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'><strong>".$c."</strong></a>";
+global $CALENDAR_CALENDAR_DAY_EVENT_HEADING, $startt, $c, $days;
+//return "<a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>".$days[($c-1)]."</a>";
+return "<a href='".e_PLUGIN."calendar_menu/event.php?".$startt."'>".$days[($c-1)]."</a>";
 SC_END
 
 SC_BEGIN CALENDAR_CALENDAR_DAY_EMPTY_HEADING
-global $CALENDAR_CALENDAR_DAY_EMPTY_HEADING, $startt, $c;
-return "<a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'><strong>".$c."</strong></a>";
+global $CALENDAR_CALENDAR_DAY_EMPTY_HEADING, $startt, $c, $days;
+//return "<a href='".e_PLUGIN."calendar_menu/event.php?".$startt.".one'>".$days[($c-1)]."</a>";
+return "<a href='".e_PLUGIN."calendar_menu/event.php?".$startt."'>".$days[($c-1)]."</a>";
 SC_END
-
 
 
 // EVENT LIST ------------------------------------------------
@@ -188,16 +193,20 @@ SC_END
 // EVENT ARCHIVE ------------------------------------------------------------
 SC_BEGIN EVENTARCHIVE_CAPTION
 global $EVENTARCHIVE_CAPTION, $num;
+if($num == 0){
+$EVENTARCHIVE_CAPTION = str_replace("-NUM-", "", EC_LAN_62);
+}else{
 $EVENTARCHIVE_CAPTION = str_replace("-NUM-", $num, EC_LAN_62);
+}
 return $EVENTARCHIVE_CAPTION;
 SC_END
 
-SC_BEGIN EVENTARCHIVE_HEADING
-global $EVENTARCHIVE_HEADING, $gen, $events;
+SC_BEGIN EVENTARCHIVE_DATE
+global $EVENTARCHIVE_DATE, $gen, $events;
 $startds = cal_landate($events['event_start'], $recurring = false, $allday = false);
 //$startds = $gen->convert_date($events['event_start'], "long");
-$EVENTARCHIVE_HEADING = "<a href='event.php?".$events['event_start']."'>".$startds."</a>";
-return $EVENTARCHIVE_HEADING;
+$EVENTARCHIVE_DATE = "<a href='event.php?".$events['event_start'].".event.".$events['event_id']."'>".$startds."</a>";
+return $EVENTARCHIVE_DATE;
 SC_END
 
 SC_BEGIN EVENTARCHIVE_DETAILS
@@ -208,7 +217,7 @@ $rowtext = strip_tags($rowtext);
 $words = explode(" ", $rowtext);
 $EVENTARCHIVE_DETAILS = implode(" ", array_slice($words, 0, $number));
 if(count($words) > $number){
-$EVENTARCHIVE_DETAILS .= " [read more] ";
+$EVENTARCHIVE_DETAILS .= " ".EC_LAN_133." ";
 }
 return $EVENTARCHIVE_DETAILS;
 //return $events['event_details'];
@@ -219,19 +228,28 @@ global $EVENTARCHIVE_EMPTY;
 return EC_LAN_37;
 SC_END
 
+SC_BEGIN EVENTARCHIVE_HEADING
+global $EVENTARCHIVE_HEADING, $events;
+$EVENTARCHIVE_HEADING = "";
+$EVENTARCHIVE_HEADING = $events['event_title'];
+return $EVENTARCHIVE_HEADING;
+SC_END
+
+
 
 
 // EVENT SHOWEVENT ------------------------------------------------------------
 SC_BEGIN EVENT_HEADING
 global $EVENT_HEADING, $thisevent;
 $EVENT_HEADING = "";
-//if ($thisevent['event_cat_icon'] && file_exists(e_PLUGIN."calendar_menu/images/".$thisevent['event_cat_icon'])){
-//	$EVENT_HEADING .= "<img style='border:0' src='".e_PLUGIN."calendar_menu/images/".$thisevent['event_cat_icon']."' alt='' /> ".$thisevent['event_title'] ;
-//}else{
-//	$EVENT_HEADING .= EC_LAN_57." ".$thisevent['event_title'];
-//}
-$EVENT_HEADING = $thisevent['event_title'];
+if ($thisevent['event_cat_icon'] && file_exists(e_PLUGIN."calendar_menu/images/".$thisevent['event_cat_icon'])){
+	$EVENT_HEADING = "<img style='border:0' src='".e_PLUGIN."calendar_menu/images/".$thisevent['event_cat_icon']."' alt='' /> ".$thisevent['event_title'] ;
+}else{
+	//$EVENT_HEADING = EC_LAN_57." ".$thisevent['event_title'];
+	$EVENT_HEADING = $thisevent['event_title'];
+}
 return $EVENT_HEADING;
+//return $thisevent['event_title'];
 SC_END
 
 SC_BEGIN EVENT_DATE_START
@@ -275,11 +293,12 @@ SC_END
 
 SC_BEGIN EVENT_DISPLAYSTYLE
 global $EVENT_DISPLAYSTYLE, $ds;
-if ($ds=="event" ){
+if ($ds=="event"){
 	$EVENT_DISPLAYSTYLE = "show";
 }else{
 	$EVENT_DISPLAYSTYLE = "none";
-} 
+}
+return $EVENT_DISPLAYSTYLE;
 SC_END
 
 SC_BEGIN EVENT_DETAILS
@@ -310,7 +329,12 @@ SC_END
 
 SC_BEGIN EVENT_AUTHOR
 global $EVENT_AUTHOR, $event_author_id, $event_author_name;
-return "<a href='".e_BASE."user.php?id.".$event_author_id."'>".$event_author_name."</a>";
+if(USER){
+	$EVENT_AUTHOR = "<a href='".e_BASE."user.php?id.".$event_author_id."'>".$event_author_name."</a>";
+}else{
+	$EVENT_AUTHOR = $event_author_name;
+}
+return $EVENT_AUTHOR;
 SC_END
 
 SC_BEGIN EVENT_CONTACT

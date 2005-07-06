@@ -1,12 +1,78 @@
 <?php
 // e107 Language File.
-// $Id: English.php,v 1.10 2005-07-05 21:31:43 lisa_ Exp $
+// $Id: English.php,v 1.11 2005-07-06 10:04:18 lisa_ Exp $
 	
 	
 define('EC_ADLAN_1', "Event Calendar");
 define('EC_ADLAN_2', "Configure Event Calendar");
 define('EC_INSTALL', "Install Event Calendar");
 define('EC_UNINSTALL', "Uninstall Event Calendar");
+define('EC_LAN_TODAY', "today");
+
+define('EC_LAN_DAY_1', "1");
+define('EC_LAN_DAY_2', "2");
+define('EC_LAN_DAY_3', "3");
+define('EC_LAN_DAY_4', "4");
+define('EC_LAN_DAY_5', "5");
+define('EC_LAN_DAY_6', "6");
+define('EC_LAN_DAY_7', "7");
+define('EC_LAN_DAY_8', "8");
+define('EC_LAN_DAY_9', "9");
+define('EC_LAN_DAY_10', "10");
+define('EC_LAN_DAY_11', "11");
+define('EC_LAN_DAY_12', "12");
+define('EC_LAN_DAY_13', "13");
+define('EC_LAN_DAY_14', "14");
+define('EC_LAN_DAY_15', "15");
+define('EC_LAN_DAY_16', "16");
+define('EC_LAN_DAY_17', "17");
+define('EC_LAN_DAY_18', "18");
+define('EC_LAN_DAY_19', "19");
+define('EC_LAN_DAY_20', "20");
+define('EC_LAN_DAY_21', "21");
+define('EC_LAN_DAY_22', "22");
+define('EC_LAN_DAY_23', "23");
+define('EC_LAN_DAY_24', "24");
+define('EC_LAN_DAY_25', "25");
+define('EC_LAN_DAY_26', "26");
+define('EC_LAN_DAY_27', "27");
+define('EC_LAN_DAY_28', "28");
+define('EC_LAN_DAY_29', "29");
+define('EC_LAN_DAY_30', "30");
+define('EC_LAN_DAY_31', "31");
+/*
+define('EC_LAN_DAY_1', "1st");
+define('EC_LAN_DAY_2', "2nd");
+define('EC_LAN_DAY_3', "3rd");
+define('EC_LAN_DAY_4', "4th");
+define('EC_LAN_DAY_5', "5th");
+define('EC_LAN_DAY_6', "6th");
+define('EC_LAN_DAY_7', "7th");
+define('EC_LAN_DAY_8', "8th");
+define('EC_LAN_DAY_9', "9th");
+define('EC_LAN_DAY_10', "10th");
+define('EC_LAN_DAY_11', "11th");
+define('EC_LAN_DAY_12', "12th");
+define('EC_LAN_DAY_13', "13th");
+define('EC_LAN_DAY_14', "14th");
+define('EC_LAN_DAY_15', "15th");
+define('EC_LAN_DAY_16', "16th");
+define('EC_LAN_DAY_17', "17th");
+define('EC_LAN_DAY_18', "18th");
+define('EC_LAN_DAY_19', "19th");
+define('EC_LAN_DAY_20', "20th");
+define('EC_LAN_DAY_21', "21st");
+define('EC_LAN_DAY_22', "22nd");
+define('EC_LAN_DAY_23', "23rd");
+define('EC_LAN_DAY_24', "24th");
+define('EC_LAN_DAY_25', "25th");
+define('EC_LAN_DAY_26', "26th");
+define('EC_LAN_DAY_27', "27th");
+define('EC_LAN_DAY_28', "28th");
+define('EC_LAN_DAY_29', "29th");
+define('EC_LAN_DAY_30', "30th");
+define('EC_LAN_DAY_31', "31st");
+*/
 define('EC_LAN_0', "January");
 define('EC_LAN_1', "February");
 define('EC_LAN_2', "March");
@@ -47,7 +113,7 @@ define('EC_LAN_24', "Sat");
 define('EC_LAN_25', "Sun");
 define('EC_LAN_26', "Events this Month");
 define('EC_LAN_27', "No events for this month.");
-define('EC_LAN_28', "Enter new event");
+define('EC_LAN_28', "Enter New Event");
 define('EC_LAN_29', "When:");
 define('EC_LAN_30', "Category:");
 define('EC_LAN_31', "Posted by:");
@@ -171,6 +237,8 @@ define('EC_LAN_129', "Update");
 define('EC_LAN_130', "Subscriptions updated");
 define('EC_LAN_131', "Return");
 define('EC_LAN_132', "Expand details");
+define('EC_LAN_133', "[read more]");
+define('EC_LAN_134', "You have to provide a category name");
 
 define('EC_ADLAN_A10', "Configuration");
 define('EC_ADLAN_A11', "Categories");
@@ -219,4 +287,5 @@ define('EC_ADLAN_A94', "Add new event class");
 define('EC_ADLAN_A95', "Enable subscriptions");
 define('EC_ADLAN_A96', "Disabling this removes the subscriptions button and overrides the category subscription setting.");
 define('EC_ADLAN_A97', "If set to force subscriptions this category will not be displayed in the available subscription list for the user.");
+
 ?>
