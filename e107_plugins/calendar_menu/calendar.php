@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-07-05 21:31:42 $
+|     $Revision: 1.13 $
+|     $Date: 2005-07-06 10:04:17 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */ 
@@ -74,6 +74,8 @@ if($pref['eventpost_weekstart'] == 'sun') {
 $months		= Array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
 $monthabb	= Array(EC_LAN_JAN, EC_LAN_FEB, EC_LAN_MAR, EC_LAN_APR, EC_LAN_MAY, EC_LAN_JUN, EC_LAN_JUL, EC_LAN_AUG, EC_LAN_SEP, EC_LAN_OCT, EC_LAN_NOV, EC_LAN_DEC);
 
+$days = array(EC_LAN_DAY_1, EC_LAN_DAY_2, EC_LAN_DAY_3, EC_LAN_DAY_4, EC_LAN_DAY_5, EC_LAN_DAY_6, EC_LAN_DAY_7, EC_LAN_DAY_8, EC_LAN_DAY_9, EC_LAN_DAY_10, EC_LAN_DAY_11, EC_LAN_DAY_12, EC_LAN_DAY_13, EC_LAN_DAY_14, EC_LAN_DAY_15, EC_LAN_DAY_16, EC_LAN_DAY_17, EC_LAN_DAY_18, EC_LAN_DAY_19, EC_LAN_DAY_20, EC_LAN_DAY_21, EC_LAN_DAY_22, EC_LAN_DAY_23, EC_LAN_DAY_24, EC_LAN_DAY_25, EC_LAN_DAY_26, EC_LAN_DAY_27, EC_LAN_DAY_28, EC_LAN_DAY_29, EC_LAN_DAY_30, EC_LAN_DAY_31);
+
 // show events-------------------------------------------------------------------------------------------
 $monthstart		= mktime(0, 0, 0, $month, 1, $year);
 $firstdayarray	= getdate($monthstart);
@@ -112,7 +114,6 @@ $current	= mktime(0, 0, 0, $nowmonth, 1, $nowyear);
 // time switch buttons
 $cal_text = $tp -> parseTemplate($CALENDAR_TIME_TABLE, FALSE, $calendar_shortcodes);
 
-
 // navigation buttons
 $nav_text = $tp -> parseTemplate($CALENDAR_NAVIGATION_TABLE, FALSE, $calendar_shortcodes);
 
@@ -137,98 +138,49 @@ else
 			//WHERE ((e.event_start >= {$monthstart} AND e.event_start <= {$monthend}) OR (e.event_end >= {$monthstart} AND e.event_end <= {$monthend}) OR e.event_rec_y = {$month})
 } 
 
-if ($sql->db_Select_gen($qry))
-{
-    while ($row = $sql->db_Fetch())
-    {
-		/* changes by lisa_ */
-		$evf = getdate($row['event_start']);
-		$tmp = $evf['mday'];
-		$eve = getdate($row['event_end']);
-		$tmp2 = $eve['mday'];
-		$tmp3 = date("t", $monthstart); // number of days in this month
+if ($sql->db_Select_gen($qry)){
+    while ($row = $sql->db_Fetch()){
+		$evf	= getdate($row['event_start']);
+		$tmp	= $evf['mday'];
+		$eve	= getdate($row['event_end']);
+		$tmp2	= $eve['mday'];
+		$tmp3	= date("t", $monthstart); // number of days in this month
 
 		// check for recurring events in this month
 		if($row['event_recurring']=='1' && $month == $row['event_rec_y']){
-			$event_start = mktime(0,0,0,$row['event_rec_y'],$row['event_rec_m'],$year);
+			$row['event_start'] = mktime(0,0,0,$row['event_rec_y'],$row['event_rec_m'],$year);
 		}
+
 		//1) start in month, end in month
 		if(($row['event_start']>=$monthstart && $row['event_start']<=$monthend) && $row['event_end']<=$monthend){
-			//$cevent_title[$tmp][] = $event_title;
-			//$event_true[$tmp][] = $event_start;
-			//$cevent_cat[$tmp][] = $event_category;
-			//$cevent_start[$tmp][] = $event_start;
 			$events[$tmp][] = $row;
 			for ($c=($tmp+1); $c<($tmp2+1); $c++) {
 				$event_true_end[$c][] = ($c!=$tmp2 ? 1 : 2);
-				//$cevent_title[$c][] = $event_title;
-				//$cevent_cat[$c][] = $event_category;
-				//$cevent_start[$c][] = $event_start;
 				$events[$c][] = $row;
 			}
 
 		//2) start in month, end after month
 		}elseif(($row['event_start']>=$monthstart && $row['event_start']<=$monthend) && $row['event_end']>=$monthend){
-			//$cevent_title[$tmp][] = $event_title;
-			//$event_true[$tmp][] = $event_start;
-			//$cevent_cat[$tmp][] = $event_category;
-			//$cevent_start[$tmp][] = $event_start;
 			$events[$tmp][] = $row;
 			for ($c=($tmp+1); $c<=$tmp3; $c++){
-				//$event_true_end[$c][] = 1;
 				$row['event_true_end'] = 1;
-				//$cevent_title[$c][] = $event_title;
-				//$cevent_cat[$c][] = $event_category;
-				//$cevent_start[$c][] = $event_start;	
 				$events[$c][] = $row;
 			}
 
 		//3) start before month, end in month
 		}elseif($row['event_start']<=$monthstart && ($row['event_end']>=$monthstart && $row['event_end']<=$monthend)){
 			for ($c=1; $c<=$tmp2; $c++){
-				//$event_true_end[$c][] = ($c!=$tmp2 ? 1 : 2);
 				$row['event_true_end'] = ($c!=$tmp2 ? 1 : 2);
-				//$cevent_title[$c][] = $event_title;
-				//$cevent_cat[$c][] = $event_category;
-				//$cevent_start[$c][] = $event_start;
 				$events[$c][] = $row;
 			}
 
 		//4) start before month, end after month
 		}elseif($row['event_start']<=$monthstart && $row['event_end']>=$monthend){
 			for ($c=1; $c<=$tmp3; $c++){
-				//$event_true_end[$c][] = 1;
 				$row['event_true_end'] = 1;
-				//$cevent_title[$c][] = $event_title;
-				//$cevent_cat[$c][] = $event_category;
-				//$cevent_start[$c][] = $event_start;
 				$events[$c][] = $row;
 			}
 		}
-		/* end lisa_ */
-
-
-		/*
-		if ($row['event_rec_y'] == $month){
-			$events[$row['event_rec_m']][] = $row;
-		}else{
-			$tmp = getdate($row['event_start']);
-			if ($tmp['year'] == $year){
-				$start_day = $tmp['mday'];
-			}else{
-				$start_day = 1;
-			} 
-			$tmp = getdate($row['event_end']);
-			if ($tmp['year'] == $year){
-				$end_day = $tmp['mday'];
-			}else{
-				$end_day = 31;
-			} 
-			for ($i = $start_day; $i <= $end_day; $i++){
-				$events[$i][] = $row;
-			}
-		}
-		*/
 	}
 }
 
@@ -295,7 +247,7 @@ for ($c = 1; $c <= 31; $c++)
 					$ev['startofevent'] = TRUE;
 				}
 				
-				if (($_POST['do'] == null || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $event['event_cat_id']))
+				if (($_POST['do'] == null || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $ev['event_cat_id']))
 				{
 					$text .= $tp -> parseTemplate($CALENDAR_SHOWEVENT, FALSE, $calendar_shortcodes);
 				} 
