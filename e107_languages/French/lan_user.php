@@ -4,8 +4,8 @@
 |     e107 website system - French Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/French/lan_user.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-12 16:46:25 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-06 07:45:40 $
 |     $Author: tpruvot $
 |     Encoding: UTF-8
 +----------------------------------------------------------------------------+
@@ -60,7 +60,7 @@ define("LAN_422", "Go");
 define("LAN_423", "Cliquer ici pour voir les commentaires des utilisateurs");
 define("LAN_424", "Cliquer ici pour voir les messages du forum");
 define("LAN_425", "Envoyer un message privé");
-define("LAN_426", "ago");
+define("LAN_426", "");
 
 define("USERLAN_1", "Evaluation des pairs");
 
