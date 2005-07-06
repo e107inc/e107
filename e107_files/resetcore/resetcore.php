@@ -11,31 +11,35 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_files/resetcore.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-07-06 10:06:44 $
-|     $Author: sweetas $
+|     $Source: /cvs_backup/e107_0.7/e107_files/resetcore/resetcore.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2005-07-06 11:27:10 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
 $register_globals = true;
-if(function_exists('ini_get')) {
+if(function_exists('ini_get'))
+{
 	$register_globals = ini_get('register_globals');
 }
-if($register_globals == true){
-	while (list($global) = each($GLOBALS)) {
-		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart)$/', $global)) {
+if($register_globals == true)
+{
+	while (list($global) = each($GLOBALS))
+	{
+		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart)$/', $global))
+		{
 			unset($$global);
 		}
 	}
 	unset($global);
 }
 
-require_once("../e107_config.php");
+require_once("../../e107_config.php");
 mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
 mysql_select_db($mySQLdefaultdb);
 
-require_once('../'.$HANDLERS_DIRECTORY.'arraystorage_class.php');
+require_once('../../'.$HANDLERS_DIRECTORY.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
 
 echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
@@ -44,16 +48,14 @@ echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title><e107 resetcore></title>
-<link rel="stylesheet" href="../e107_docs/style.css" />
+<link rel="stylesheet" href="style.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta http-equiv="content-style-type" content="text/css" />
 </head>
 <body>
 <div class='mainbox'>
-<a href="http://e107.org"><img src="../e107_images/logo.png" alt="Logo" style="border: 0px;" /></a>
+<a href="http://e107.org"><img src="../../e107_images/logo_template_large.png" alt="Logo" style="border: 0px; vertical-align: middle;" /></a> <span class='headertext'>e107 Reset Core Utility</span>
 <br />
-<br />
-<span class="smalltext">©Steve Dunstan 2002-2004. See gpl.txt for license details.</span>
 <br />
 <br />
 <br />
@@ -64,8 +66,11 @@ if (isset($_POST['usubmit'])) {
 	$a_name = preg_replace("/\\W/i", '',  $_POST['a_name']);
 	$a_password = md5($_POST['a_password']);
 
-	if ($result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name = '{$a_name}' AND user_password = '{$a_password}' AND user_perms = '0'")) {
-		if ($row = mysql_fetch_array($result)) {
+	if ($result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE  user_loginname = '$a_name' AND user_password = '$a_password' AND user_perms = '0'"))
+	{
+
+		if ($row = mysql_fetch_array($result))
+		{
 			extract($row);
 
 			$result = mysql_query("SELECT * FROM ".$mySQLprefix."core WHERE e107_name='pref_backup' ");
@@ -74,16 +79,22 @@ if (isset($_POST['usubmit'])) {
 			$admin_directory = "e107_admin";
 
 			echo "<span class='headertext2'><b>Please select which method you want to use, then click the button to proceed ...</b></span><br /><br /><br /><br />
-				<div style='text-align:center'>
-				<form method='post' action='".$_SERVER['PHP_SELF']."'>
-				<input type='radio' name='mode' value='1'> <span class='headertext'>Manually edit core values</span><br />
-				<input type='radio' name='mode' value='2'> <span class='headertext'>Reset core to default values</span><br />". ($bu_exist ? "<input type='radio' name='mode' value='3'> <span class='headertext'>Restore core backup</span>" : " <span class='headertext'>[ No core backup found - unable to restore core ]</span>")."<br /><br /><input class='button' type='submit' name='reset_core_sub' value='Select method then click here to continue' />
+			<table style='width: auto; margin-left:auto; margin-right: auto;'>
+			<tr>
+			<td>
+			<form method='post' action='".$_SERVER['PHP_SELF']."'>
+			<input type='radio' name='mode' value='1'> <span class='headertext2'>Manually edit core values</span><br />
+			<input type='radio' name='mode' value='2'> <span class='headertext2'>Reset core to default values</span><br />". ($bu_exist ? "<input type='radio' name='mode' value='3'> <span class='headertext2'>Restore core backup</span>" : "<br />( There is no backed-up core - unable to offer option to restore backup )")."<br /><br /><input class='button' type='submit' name='reset_core_sub' value='Select method then click here to continue' />
 				 
-				<input type='hidden' name='a_name' value='{$a_name}' />
-				<input type='hidden' name='a_password' value='{$a_password}' />
+			<input type='hidden' name='a_name' value='$a_name' />
+			<input type='hidden' name='a_password' value='$a_password' />
 				 
-				</form>
-				</div>";
+			</form>
+			</td>
+			</tr>
+			</table>
+			";
+
 			$END = TRUE;
 		} else {
 			$message = "<b>Administrator not found in database / incorrect password / insufficient permissions - aborting.</b><br />";
@@ -96,10 +107,11 @@ if (isset($_POST['usubmit'])) {
 }
 
 
-if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2) {
+if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2)
+{
 	$a_name = preg_replace("/\\W/i", '',  $_POST['a_name']);
 	$a_password = preg_replace("/\\W/i", '', $_POST['a_password']);
-	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='{$a_name}' AND user_password = '{$a_password}' AND user_perms = '0' ")) {
+	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_loginname='$a_name' AND user_password = '$a_password' AND user_perms = '0' ")) {
 		exit;
 	}
 	$at = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
@@ -133,7 +145,7 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2) {
 		$END = TRUE;
 	} else {
 		mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs_Backup', '{$PrefOutput}')");
-		$message = "Core reset. <br /><br /><a href='../index.php'>Click here to continue</a>";
+		$message = "Core reset. <br /><br /><a href='../../index.php'>Click here to continue</a>";
 		$END = TRUE;
 	}
 }
@@ -151,12 +163,16 @@ function recurse_pref($ppost) {
 	return $ret;
 }
 
-if (isset($_POST['coreedit_sub'])) {
+if (isset($_POST['coreedit_sub']))
+{
 	
+	echo "<b>Debug5</b> ".$variable." <br />";
+
 	$a_name = preg_replace("/\\W/i", '',  $_POST['a_name']);
 	$a_password = preg_replace("/\\W/i", '', $_POST['a_password']);
 	
-	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='{$a_name}' AND user_password='{$a_password}' AND user_perms='0' ")) {
+	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_loginname='$a_name' AND user_password='$a_password' AND user_perms='0' "))
+	{
 		exit;
 	}
 	$at = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
@@ -172,7 +188,7 @@ if (isset($_POST['coreedit_sub'])) {
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs', '{$PrefOutput}')");
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs_Backup', '{$PrefOutput}')");
 
-	$message = "Core settings successfully updated. <br /><br /><a href='../index.php'>Click here to continue</a>";
+	$message = "Core settings successfully updated. <br /><br /><a href='../../index.php'>Click here to continue</a>";
 	$END = TRUE;
 }
 
@@ -181,7 +197,7 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 3) {
 	$a_name = preg_replace("/\\W/i", '',  $_POST['a_name']);
 	$a_password = preg_replace("/\\W/i", '', $_POST['a_password']);
 	
-	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='{$a_name}' AND user_password='{$a_password}' AND user_perms='0' ")) {
+	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_loginname='$a_name' AND user_password='$a_password' AND user_perms='0' ")) {
 		exit;
 	}
 	$at = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
@@ -200,22 +216,25 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 3) {
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs', '{$PrefOutput}')");
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs_Backup', '{$PrefOutput}')");
 	
-	$message = "Core backup successfully restored. <br /><br /><a href='../index.php'>Click here to continue</a>";
+	$message = "Core backup successfully restored. <br /><br /><a href='../../index.php'>Click here to continue</a>";
 	$END = TRUE;
 }
 
 
-if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 1) {
-	
+if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 1)
+{
 	$a_name = preg_replace("/\\W/i", '', $_POST['a_name']);
 	$a_password = preg_replace("/\\W/i", '', $_POST['a_password']);
-	
-	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='{$a_name}' AND user_password='{$a_password}' AND user_perms=0")) {
+	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_loginname='$a_name' AND user_password='$a_password' AND user_perms='0' "))
+	{
 		exit;
 	}
 
 	$at = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
-	if(!$at){ exit; }
+	if(!$at)
+	{
+		exit;
+	}
 
 	$result = @mysql_query("SELECT * FROM ".$mySQLprefix."core WHERE e107_name='SitePrefs'");
 	$row = @mysql_fetch_array($result);
@@ -230,12 +249,12 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 1) {
 	while (list($key, $prefr) = each($pref)) {
 		if (is_array($prefr)) {
 			foreach ($prefr as $akey => $apref) {
-				echo "<tr><td class='headertext' style='width:50%; text-align:right;'>{$key}[{$akey}]&nbsp;&nbsp;</td>
+				echo "<tr><td class='headertext2' style='width:50%; text-align:right;'>{$key}[{$akey}]&nbsp;&nbsp;</td>
 				<td style='width:50%'><input type='text' name='{$key}[{$akey}]' value='{$apref}' size='50' maxlength='100' /></td></tr>\n";
 		
 			}
 		} else {
-		echo "<tr><td class='headertext' style='width:50%; text-align:right;'>{$key}&nbsp;&nbsp;</td>
+		echo "<tr><td class='headertext2' style='width:50%; text-align:right;'>{$key}&nbsp;&nbsp;</td>
 			<td style='width:50%'><input type='text' name='{$key}' value='{$prefr}' size='50' maxlength='100' /></td></tr>\n";
 		}
 	}
@@ -251,7 +270,7 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 1) {
 }
 
 if (isset($message)) {
-	echo "<br /><br /><div style='text-align:center'><span class='headertext'>{$message}</span></div><br />";
+	echo "<br /><br /><div style='text-align:center'><span class='headertext2'>{$message}</span></div><br />";
 }
 
 if (isset($END)) {
