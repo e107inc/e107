@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-07-01 09:31:07 $
-|     $Author: lisa_ $
+|     $Revision: 1.29 $
+|     $Date: 2005-07-06 07:29:22 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 @include_once(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
@@ -46,6 +46,7 @@ class poll
 		$active_start = (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
 		$active_end = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
 		$poll_options = "";
+
 		foreach($poll_option as $key => $value)
 		{
 			$poll_options .= $tp -> toDB($poll_option[$key]).chr(1);
@@ -54,6 +55,24 @@ class poll
 		if(POLLACTION == "edit")
 		{
 			$sql -> db_Update("polls", "poll_title='$poll_title', poll_options='$poll_options', poll_type=$mode, poll_comment='$poll_comment', poll_allow_multiple=$multipleChoice, poll_result_type=$showResults, poll_vote_userclass=$pollUserclass, poll_storage_method=$storageMethod WHERE poll_id=".POLLID);
+
+			/* update poll results - bugtracker #1124 .... */
+			$sql -> db_Select("polls", "poll_votes", "poll_id='".POLLID."' ");
+			$foo = $sql -> db_Fetch();
+			$voteA = explode(chr(1), $foo['poll_votes']);
+
+			$opt = count($poll_option) - count($voteA);
+
+			if($opt)
+			{
+				for($a=0; $a<=$opt; $a++)
+				{
+					$foo['poll_votes'] .= "0".chr(1);
+				}
+				$sql -> db_Update("polls", "poll_votes='".$foo['poll_votes']."' WHERE poll_id='".POLLID."' ");
+			}
+			
+	
 			$message = POLLAN_27;
 		} else {
 
