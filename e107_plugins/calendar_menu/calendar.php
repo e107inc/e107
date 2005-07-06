@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-07-06 10:04:17 $
+|     $Revision: 1.14 $
+|     $Date: 2005-07-06 11:24:20 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */ 
@@ -45,7 +45,7 @@ if (is_readable(THEME."calendar_template.php")) {
 }
 
 $cal_super	= check_class($pref['eventpost_super']);
-$num		= $_POST['num'];
+$num		= (isset($_POST['num']) && $_POST['num'] ? $_POST['num'] : "");
 
 require_once(HEADERF);
 
@@ -56,7 +56,7 @@ if($qs[0] == "")
     $datearray	= getdate();
     $month		= $datearray['mon'];
     $year		= $datearray['year'];
-    $day		= $datearray['day'];
+    $day		= $datearray['mday'];
 } 
 else
 {
@@ -185,6 +185,7 @@ if ($sql->db_Select_gen($qry)){
 }
 
 $start		= $monthstart;
+$text = "";
 $text .= $tp -> parseTemplate($CALENDAR_CALENDAR_START, FALSE, $calendar_shortcodes);
 $text .= $tp -> parseTemplate($CALENDAR_CALENDAR_HEADER_START, FALSE, $calendar_shortcodes);
 foreach($week as $day)
@@ -220,7 +221,7 @@ for ($c = 1; $c <= 31; $c++)
         	//today
 			$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_DAY_TODAY, FALSE, $calendar_shortcodes);
         //}elseif (array_key_exists($c, $events)){
-		}elseif(count($events[$c]) > 0){
+		}elseif(isset($events[$c]) && is_array($events[$c]) && !empty($events[$c]) && count($events[$c]) > 0){
 			//day has events
 			$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_DAY_EVENT, FALSE, $calendar_shortcodes);
         } 
@@ -234,7 +235,7 @@ for ($c = 1; $c <= 31; $c++)
             foreach($events[$c] as $ev)
             {
 				//if ($event_true_end[$c][$a]){
-				if($ev['event_true_end']){
+				if(isset($ev['event_true_end']) && $ev['event_true_end']){
 					//$ev['indicat'] = ($ev['event_true_end']==1 ? "->" : "|");
 					$ev['indicat'] = "";
 					$ev['imagesize'] = "4";
@@ -247,8 +248,7 @@ for ($c = 1; $c <= 31; $c++)
 					$ev['startofevent'] = TRUE;
 				}
 				
-				if (($_POST['do'] == null || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $ev['event_cat_id']))
-				{
+				if ( ( !isset($_POST['do']) || (isset($_POST['do']) && $_POST['do'] == null)) || (isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] == "all") || (isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] == $ev['event_cat_id']) ){
 					$text .= $tp -> parseTemplate($CALENDAR_SHOWEVENT, FALSE, $calendar_shortcodes);
 				} 
 			} 

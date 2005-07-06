@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-07-06 10:04:18 $
+|     $Revision: 1.15 $
+|     $Date: 2005-07-06 11:24:20 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -117,27 +117,29 @@ require_once(HEADERF);
 
 if (isset($_POST['jump']))
 {
-    $smarray = getdate(mktime(0, 0, 0, $_POST['jumpmonth'], 1, $_POST['jumpyear']));
-    $month = $smarray['mon'];
-    $year = $smarray['year'];
+		$smarray	= getdate(mktime(0, 0, 0, $_POST['jumpmonth'], 1, $_POST['jumpyear']));
+		$month		= $smarray['mon'];
+		$year		= $smarray['year'];
 } 
 else
 {
-    $qs = explode(".", e_QUERY);
-    $action = $qs[0];
-    $ds = $qs[1];
-    $eveid = $qs[2];
+    if(e_QUERY){
+		$qs			= explode(".", e_QUERY);
+		$action		= $qs[0];
+		$ds			= (isset($qs[1]) ? $qs[1] : "");
+		$eveid		= (isset($qs[2]) ? $qs[2] : "");
+	}
     if ($action == "")
     {
-        $nowarray = getdate();
-        $month = $nowarray['mon'];
-        $year = $nowarray['year'];
+        $nowarray	= getdate();
+        $month		= $nowarray['mon'];
+        $year		= $nowarray['year'];
     } 
     else
     {
-        $smarray = getdate($action);
-        $month = $smarray['mon'];
-        $year = $smarray['year'];
+        $smarray	= getdate($action);
+        $month		= $smarray['mon'];
+        $year		= $smarray['year'];
     } 
 } 
 
@@ -189,22 +191,22 @@ $monthabb	= Array(EC_LAN_JAN, EC_LAN_FEB, EC_LAN_MAR, EC_LAN_APR, EC_LAN_MAY, EC
 $months		= array(EC_LAN_0, EC_LAN_1, EC_LAN_2, EC_LAN_3, EC_LAN_4, EC_LAN_5, EC_LAN_6, EC_LAN_7, EC_LAN_8, EC_LAN_9, EC_LAN_10, EC_LAN_11);
 // ----------------------------------------------------------------------------------------------------------
 
-if ($qs[2] == "m1")
+if (isset($qs[2]) && $qs[2] == "m1")
 {
     $message = EC_LAN_41; //"New category created.";
 } 
-else if ($qs[2] == "m2")
+else if (isset($qs[2]) && $qs[2] == "m2")
 {
     $message = EC_LAN_42; //"Event cannot end before it starts.";
 } 
-else if ($qs[2] == "m3")
+else if (isset($qs[2]) && $qs[2] == "m3")
 {
     $message = EC_LAN_43; //"You left required field(s) blank.";
 } 
-else if ($qs[2] == "m4")
+else if (isset($qs[2]) && $qs[2] == "m4")
 {
     $message = EC_LAN_44; //"New event created and entered into database.";
-} elseif ($qs[2] == "m5")
+} elseif (isset($qs[2]) && $qs[2] == "m5")
 {
     $message = EC_LAN_45; //"Event updated in database.";
 } 
@@ -363,14 +365,14 @@ if ($action == "ne" || $action == "ed")
         for($count = "00"; $count <= "23"; $count++)
         {
             $val = sprintf("%02d", $count);
-            $text .= "<option value='{$val}' ".($count == $ne_hour ? "checked='checked'" :"")." >".$val."</option>";
+            $text .= "<option value='{$val}' ".(isset($ne_hour) && $count == $ne_hour ? "checked='checked'" :"")." >".$val."</option>";
         } 
         $text .= "</select>
 		<select name='ne_minute' class='tbox'>";
         for($count = "00"; $count <= "59"; $count++)
         {
             $val = sprintf("%02d", $count);
-            $text .= "<option ".($count == $ne_minute ? "checked='checked'" :"")." value='{$val}'>".$val."</option>";
+            $text .= "<option ".(isset($ne_minute) && $count == $ne_minute ? "checked='checked'" :"")." value='{$val}'>".$val."</option>";
         } 
         $text .= "</select>
 
@@ -378,31 +380,31 @@ if ($action == "ne" || $action == "ed")
         for($count = "00"; $count <= "23"; $count++)
         {
             $val = sprintf("%02d", $count);
-            $text .= "<option ".($count == $end_hour ? "checked='checked'" :"")." value='{$val}'>".$val."</option>";
+            $text .= "<option ".(isset($end_hour) && $count == $end_hour ? "checked='checked'" :"")." value='{$val}'>".$val."</option>";
         } 
         $text .= "</select>
 		<select name='end_minute' class='tbox'>";
         for($count = "00"; $count <= "59"; $count++)
         {
             $val = sprintf("%02d", $count);
-            $text .= "<option ".($count == $end_minute ? "checked='checked'" :"")." value='{$val}'>".$val."</option>";
+            $text .= "<option ".(isset($end_minute) && $count == $end_minute ? "checked='checked'" :"")." value='{$val}'>".$val."</option>";
         } 
         $text .= "</select>";
-		$text .= "<br /><input type='checkbox' name='allday' value='1' ".($allday == 1 ? "checked='checked'" :"")." />";
+		$text .= "<br /><input type='checkbox' name='allday' value='1' ".(isset($allday) && $allday == 1 ? "checked='checked'" :"")." />";
         $text .= EC_LAN_64."
 		</td>
 		</tr>
 		<tr>
 		<td class='forumheader3' style='width:20%'>".EC_LAN_65."</td>
 		<td class='forumheader3' style='width:80%'>";
-		$text .= "<input type='checkbox' name='recurring' value='1'  ".($recurring == 1 ? "checked='checked'" : "")." />";
+		$text .= "<input type='checkbox' name='recurring' value='1'  ".(isset($recurring) && $recurring == 1 ? "checked='checked'" : "")." />";
         $text .= EC_LAN_63."
 		</td>
 		</tr>
 		<tr>
 		<td class='forumheader3' style='width:20%'>".EC_LAN_70." *</td>
 		<td class='forumheader3' style='width:80%'>
-		<input class='tbox' type='text' name='ne_title' size='75' value='$ne_title' maxlength='200' style='width:95%' />
+		<input class='tbox' type='text' name='ne_title' size='75' value='".(isset($ne_title) ? $ne_title : "")."' maxlength='200' style='width:95%' />
 		</td>
 		</tr>
 		<tr>
@@ -413,7 +415,7 @@ if ($action == "ne" || $action == "ed")
 		$cal_arg = ($cal_super ? "" : "find_in_set(event_cat_addclass,'".USERCLASS_LIST."')");
         if ($sql->db_Select("event_cat", "*", $cal_arg)){
             while ($row = $sql->db_Fetch()){
-				$text .= "<option value='{$row['event_cat_id']}' ".($ne_category == $row['event_cat_id'] ? "selected='selected'" :"")." >".$row['event_cat_name']."</option>";
+				$text .= "<option value='{$row['event_cat_id']}' ".(isset($ne_category) && $ne_category == $row['event_cat_id'] ? "selected='selected'" :"")." >".$row['event_cat_name']."</option>";
             } 
         }else{
             $text .= "<option value=''>".EC_LAN_91."</option>";
@@ -432,7 +434,7 @@ if ($action == "ne" || $action == "ed")
             $text .= "<tr>
 			<td class='forumheader3' style='width:20%' rowspan='2'>".EC_LAN_53." </td>
 			<td class='forumheader3' style='width:80%'>".EC_LAN_54."
-			<input class='tbox' type='text' name='ne_new_category' size='30' value='$ne_new_category' maxlength='100' style='width:95%' /> ";
+			<input class='tbox' type='text' name='ne_new_category' size='30' value='".(isset($ne_new_category) ? $ne_new_category : "")."' maxlength='100' style='width:95%' /> ";
             $text .= "</td></tr>
 			<tr><td class='forumheader3' style='width:80%'>".EC_LAN_55;
             $text .= " <input class='tbox' style='width:150px' type='text' id='ne_new_category_icon' name='ne_new_category_icon' />";
@@ -455,27 +457,27 @@ if ($action == "ne" || $action == "ed")
 		<tr>
 		<td class='forumheader3' style='width:20%'>".EC_LAN_32." </td>
 		<td class='forumheader3' style='width:80%'>
-		<input class='tbox' type='text' name='ne_location' size='60' value='$ne_location' maxlength='200' style='width:95%' />
+		<input class='tbox' type='text' name='ne_location' size='60' value='".(isset($ne_location) ? $ne_location : "")."' maxlength='200' style='width:95%' />
 		</td>
 		</tr>
 
 		<tr>
 		<td class='forumheader3' style='width:20%'>".EC_LAN_57." *</td>
 		<td class='forumheader3' style='width:80%'>
-		<textarea class='tbox' name='ne_event' cols='59' rows='8' style='width:95%'>$ne_event</textarea>
+		<textarea class='tbox' name='ne_event' cols='59' rows='8' style='width:95%'>".(isset($ne_event) ? $ne_event : "")."</textarea>
 		</td>
 		</tr>"; 
         // * *BK*
         // * *BK* Only display for forum thread if it is required.  No point in being in if not wanted
         // * *BK* or if forums are inactive
         // * *BK*
-        if ($pref[eventpost_forum] == 1)
+        if (isset($pref['eventpost_forum']) && $pref['eventpost_forum'] == 1)
         {
             $text .= "
 			<tr>
 			<td class='forumheader3' style='width:20%'>".EC_LAN_58." </td>
 			<td class='forumheader3' style='width:80%'>
-			<input class='tbox' type='text' name='ne_thread' size='60' value='$ne_thread' maxlength='100' style='width:95%' />
+			<input class='tbox' type='text' name='ne_thread' size='60' value='".(isset($ne_thread) ? $ne_thread : "")."' maxlength='100' style='width:95%' />
 			</td>
 			</tr>";
         } 
@@ -568,6 +570,7 @@ if (is_readable(THEME."calendar_template.php")) {
 	require_once(e_PLUGIN."calendar_menu/calendar_template.php");
 }
 
+$text2 = "";
 // time switch buttons
 $text2 .= $tp -> parseTemplate($CALENDAR_TIME_TABLE, FALSE, $calendar_shortcodes);
 
@@ -640,7 +643,7 @@ if ($ds == "event"){
                 } 
             }else{
                 if ($ds == 'one'){
-                    if (!in_array($row['event_id'], $idArray)){
+                    if (!isset($idArray) || !is_array($idArray) || !in_array($row['event_id'], $idArray)){
                         $events[$selected_day][] = $row;
                         $idArray[] = $row['event_id'];
                     } 
@@ -650,7 +653,7 @@ if ($ds == "event"){
                     $tmp		= getdate($row['event_end']);
 					$end_day	= ($tmp['year'] == $year ? $tmp['mday'] : "31");
                     for ($i = $start_day; $i <= $end_day; $i++){
-                        if (!in_array($row['event_id'], $idArray)){
+                        if (!isset($idArray) || !is_array($idArray) || !in_array($row['event_id'], $idArray)){
                             $events[$i][] = $row;
                             $idArray[] = $row['event_id'];
                         } 
@@ -663,22 +666,24 @@ if ($ds == "event"){
 
 
 // event list
-$text2 .= $tp -> parseTemplate($EVENT_EVENTLIST_TABLE_START, FALSE, $calendar_shortcodes);
-foreach ($events as $dom => $event){ 
-	$text2 .= show_event($event);
-} 
-$text2 .= $tp -> parseTemplate($EVENT_EVENTLIST_TABLE_END, FALSE, $calendar_shortcodes);
-
+if(isset($events) && is_array($events)){
+	$text2 .= $tp -> parseTemplate($EVENT_EVENTLIST_TABLE_START, FALSE, $calendar_shortcodes);
+	foreach ($events as $dom => $event){ 
+		$text2 .= show_event($event);
+	} 
+	$text2 .= $tp -> parseTemplate($EVENT_EVENTLIST_TABLE_END, FALSE, $calendar_shortcodes);
+}
 
 // event archive
 $nextmonth = mktime(0, 0, 0, $month + 1, 1, $year)-1;
-if (!$next10_start){
+if (!isset($next10_start)){
     $next10_start = $nextmonth;
 } 
 $sql->db_Select("event", "*", "event_start > '{$next10_start}' ORDER BY event_start ASC LIMIT 0,10");
 $num = $sql->db_Rows();
 if ($num != 0){
 	$gen = new convert;
+	$archive_events = "";
 	while ($events = $sql->db_Fetch()){
 		$archive_events .= $tp -> parseTemplate($EVENT_ARCHIVE_TABLE, FALSE, $calendar_shortcodes);
 	} 
@@ -691,19 +696,21 @@ $text2 .= $tp -> parseTemplate($EVENT_ARCHIVE_TABLE_END, FALSE, $calendar_shortc
 
 
 $caption = EC_LAN_80; // "Event List";
-$ns->tablerender($caption . $cap_title, $text2);
+$ns->tablerender($caption.(isset($cap_title) ? $cap_title : ""), $text2);
 require_once(FOOTERF);
 
 
 function show_event($day_events)
 { 
-    foreach($day_events as $event)
+    $texxt2 = "";
+	foreach($day_events as $event)
     {
         global $tp, $cal_super, $_POST, $ds, $thisevent, $EVENT_ID, $EVENT_EVENT_TABLE, $calendar_shortcodes, $event_author_id, $event_author_name;
 		$thisevent = $event;
         $gen = new convert;
-        if (($_POST['do'] == null || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $thisevent['event_cat_id']))
-        {
+        if ( ( !isset($_POST['do']) || (isset($_POST['do']) && $_POST['do'] == null)) || (isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] == "all") || (isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] == $thisevent['event_cat_id']) ){
+			
+		//if (($_POST['do'] == null || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $thisevent['event_cat_id'])){
             $lp = explode(".", $thisevent['event_author']);
             if (ereg("[0-9]+", $lp[0]))
             {
