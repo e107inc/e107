@@ -1,5 +1,4 @@
 <?php
-
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -12,11 +11,29 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore/resetcore.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-06 11:27:10 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-06 11:33:29 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
+
+
+/* #################################################### 
+
+
+To use this file, you must edit the following line, and change it to TRUE.
+If you don't, the script will not be usable.
+
+*/
+
+
+$ACTIVE = FALSE;
+
+
+/* #################################################### */
+
+
+
 
 $register_globals = true;
 if(function_exists('ini_get'))
@@ -60,6 +77,8 @@ echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
 <br />
 <br />
 <?php
+
+if(!$ACTIVE) exit;
 
 if (isset($_POST['usubmit'])) {
 
