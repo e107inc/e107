@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-05 23:07:55 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-06 00:41:10 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -20,8 +20,8 @@ include_once(e_HANDLER.'shortcode_handler.php');
 $download_shortcodes = e_shortcode::parse_scbatch(__FILE__);
 /*
 SC_BEGIN DOWNLOAD_LIST_NAME
-global $row;
-return  "<a href='".e_SELF."?view.".$row['download_id']."'>".$row['download_name']."</a>";
+global $row,$tp;
+return  "<a href='".e_SELF."?view.".$row['download_id']."'>".$tp->toHTML($row['download_name'])."</a>";
 SC_END
 
 
