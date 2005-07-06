@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2005-06-30 16:35:49 $
+|     $Revision: 1.62 $
+|     $Date: 2005-07-06 00:41:09 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1257,11 +1257,10 @@ class download {
 		global $sql, $tp;
 		$download_category_name = $tp->toDB($_POST['download_category_name']);
 		$download_category_description = $tp->toDB($_POST['download_category_description']);
-		$download_category_icon = $tp->toDB($_POST['download_category_icon']);
+	  	$download_category_icon = $tp->toDB($_POST['download_category_icon']);
 
-		if(isset($_POST['download_category_icon_empty']))
-		{
-			$download_category_icon .= chr(1).$tp->toDB($_POST['download_category_icon_empty']);
+		if(isset($_POST['download_category_icon_empty']) && $_POST['download_category_icon_empty'] != ""){
+			$download_category_icon .= trim(chr(1).$tp->toDB($_POST['download_category_icon_empty']));
 		}
 
 		if ($id) {
