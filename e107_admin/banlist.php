@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banlist.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-06-24 17:32:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2005-07-06 02:01:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -61,7 +61,7 @@ if (isset($message)) {
 
 if ($action != "edit") {
 	$text = $rs->form_open("post", e_SELF, "ban_form")."<div style='text-align:center'>".$rs->form_hidden("ban_secure", "1")."<div style='padding : 1px; ".ADMIN_WIDTH."; height : 170px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
-	if (!$ban_total = $sql->db_Select("banlist")) {
+	if (!$ban_total = $sql->db_Select("banlist","*","ORDER BY banlist_ip","nowhere")) {
 		$text .= "<div style='text-align:center'>".BANLAN_2."</div>";
 	} else {
 		$text .= "<table class='fborder' style='width:99%;'>
