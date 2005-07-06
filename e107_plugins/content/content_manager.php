@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.14 $
-|		$Date: 2005-06-29 16:38:23 $
+|		$Revision: 1.15 $
+|		$Date: 2005-07-06 10:33:15 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -64,9 +64,9 @@ require_once(HEADERF);
 
 //include js
 function headerjs(){
-	global $tp, $plugindir, $qs;
+	global $tp, $plugindir, $qs, $pref;
 
-	if( ($qs[0] == "content" && $qs[1] == "create" && is_numeric($qs[2])) || ($qs[0] == "content" && $qs[1] == "edit" && is_numeric($qs[2])) ){
+	if( $qs[0] == "content" && ($qs[1] == "create" || $qs[1] == "edit") && is_numeric($qs[2]) ){
 		$e_wysiwyg			= "content_text";
 		if($pref['wysiwyg']){
 			$pref['allow_html']	= "1";

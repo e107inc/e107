@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.16 $
-|		$Date: 2005-06-27 11:31:52 $
+|		$Revision: 1.17 $
+|		$Date: 2005-07-06 10:33:15 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -50,6 +50,20 @@ if(e_QUERY){
 $aa -> setPageTitle();
 
 require_once(HEADERF);
+
+//include js
+function headerjs(){
+	global $tp, $plugindir, $qs, $pref;
+
+	if( $qs[0] == "content" && $qs[1] == "submit" && is_numeric($qs[2]) ){
+		$e_wysiwyg			= "content_text";
+		if($pref['wysiwyg']){
+			$pref['allow_html']	= "1";
+			require_once(e_HANDLER."tiny_mce/wysiwyg.php");
+			echo wysiwyg($e_wysiwyg);
+		}
+	}
+}
 
 if(isset($_POST['create_content'])){
 	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none" && $_POST['content_author_name'] != "" && $_POST['content_author_email'] != ""){
