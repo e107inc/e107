@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.81 $
-|		$Date: 2005-07-05 09:13:30 $
+|		$Revision: 1.82 $
+|		$Date: 2005-07-06 10:33:15 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -477,7 +477,7 @@ class contentform{
 						$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_18;
 						$insertjs = (!$pref['wysiwyg'] ? "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'" : "");
 						$TOPIC_FIELD = $rs -> form_textarea("content_text", 74, 20, $row['content_text'], $insertjs)."<br />";
-						if (!$pref['wysiwyg']) { $TOPIC_FIELD .= $rs -> form_text("helpb", 90, '', '', "helpbox")."<br />". display_help("helpb"); }
+						if (!$pref['wysiwyg']) { $TOPIC_FIELD .= $rs -> form_text("helpb", 90, '', '', "helpbox")."<br />".display_help("helpb"); }
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 						$text .= $TOPIC_ROW_SPACER;
@@ -771,7 +771,7 @@ class contentform{
 						if($checkmeta){
 							//meta
 							$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_53;
-							$TOPIC_FIELD = CONTENT_ADMIN_ITEM_LAN_70."<br />".$rs -> form_text("content_meta", 80, $row['content_meta'], 250);
+							$TOPIC_FIELD = CONTENT_ADMIN_ITEM_LAN_70."<br />".$rs -> form_text("content_meta", 74, $row['content_meta'], 250);
 							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 						}
 
