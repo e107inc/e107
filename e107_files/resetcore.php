@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-17 06:59:16 $
-|     $Author: stevedunstan $
+|     $Revision: 1.11 $
+|     $Date: 2005-07-06 10:06:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -138,6 +138,18 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2) {
 	}
 }
 
+function recurse_pref($ppost) {
+	$search = array("\"", "'", "\\", '\"', "\'", "$", "©");
+	$replace = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&#036;", "&copy;");
+	foreach ($ppost as $key => $value) {
+		if(!is_array($value)){
+			$ret[$key] = str_replace($search, $replace, $text);
+		} else {
+			$ret[$key] = recurse_pref($value);
+		}
+	}
+	return $ret;
+}
 
 if (isset($_POST['coreedit_sub'])) {
 	
@@ -152,10 +164,7 @@ if (isset($_POST['coreedit_sub'])) {
 		exit;
 	}
 
-	while (list($key, $prefvalue) = each($_POST)) {
-		$pref[$key] = formtpa($prefvalue);
-		$pref[$key] = str_replace('©', '&copy;', $pref[$key]);
-	}
+	$pref = recurse_pref($_POST);
 
 	$PrefOutput = $eArrayStorage->WriteArray($pref);
 	
@@ -219,8 +228,16 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 1) {
 		<table style='width:95%'>\n";
 
 	while (list($key, $prefr) = each($pref)) {
+		if (is_array($prefr)) {
+			foreach ($prefr as $akey => $apref) {
+				echo "<tr><td class='headertext' style='width:50%; text-align:right;'>{$key}[{$akey}]&nbsp;&nbsp;</td>
+				<td style='width:50%'><input type='text' name='{$key}[{$akey}]' value='{$apref}' size='50' maxlength='100' /></td></tr>\n";
+		
+			}
+		} else {
 		echo "<tr><td class='headertext' style='width:50%; text-align:right;'>{$key}&nbsp;&nbsp;</td>
 			<td style='width:50%'><input type='text' name='{$key}' value='{$prefr}' size='50' maxlength='100' /></td></tr>\n";
+		}
 	}
 	echo "
 		<tr>
@@ -272,12 +289,5 @@ echo "<span class='headertext2'>
 	</div>
 	</body>
 	</html>";
-
-function formtpa($text) {
-	$search = array("\"", "'", "\\", '\"', "\'", "$");
-	$replace = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&#036;");
-	$text = str_replace($search, $replace, $text);
-	return $text;
-}
 
 ?>
