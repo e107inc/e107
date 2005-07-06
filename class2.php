@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.188 $
-|     $Date: 2005-07-05 15:18:38 $
-|     $Author: streaky $
+|     $Revision: 1.189 $
+|     $Date: 2005-07-06 08:11:03 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -537,24 +537,26 @@ if(!is_array($menu_data)) {
 
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 
-if ((strstr(e_SELF, "usersettings.php") && is_numeric(e_QUERY) && getperms("4") && ADMIN) || (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
-	if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') !== FALSE) {
-		checkvalidtheme($pref['sitetheme']);
-	} else if (strstr(e_SELF, "newspost.php")) {
-		define("MAINTHEME", e_THEME.$pref['sitetheme']."/");
-		checkvalidtheme($pref['admintheme']);
-	}
-	else {
-		checkvalidtheme($pref['admintheme']);
-	}
-} else {
-	if (USERTHEME != FALSE && USERTHEME != "USERTHEME") {
-		checkvalidtheme(USERTHEME);
+if(!defined("THEME")){ 
+	if ((strstr(e_SELF, "usersettings.php") && is_numeric(e_QUERY) && getperms("4") && ADMIN) || (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
+
+		if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') !== FALSE) {
+			checkvalidtheme($pref['sitetheme']);
+		} else if (strstr(e_SELF, "newspost.php")) {
+			define("MAINTHEME", e_THEME.$pref['sitetheme']."/");
+			checkvalidtheme($pref['admintheme']);
+		}
+		else {
+			checkvalidtheme($pref['admintheme']);
+		}
 	} else {
-		checkvalidtheme($pref['sitetheme']);
+		if (USERTHEME !== FALSE && USERTHEME != "USERTHEME") {
+			checkvalidtheme(USERTHEME);
+		} else {
+			checkvalidtheme($pref['sitetheme']);
+		}
 	}
 }
-
 
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || (isset($eplug_admin) && $eplug_admin == TRUE))) {
 	if (file_exists(THEME.'admin_theme.php')) {
