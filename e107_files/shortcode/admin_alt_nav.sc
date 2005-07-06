@@ -3,6 +3,7 @@ if (ADMIN) {
 	require(e_ADMIN.'ad_links.php');
 	require_once(e_HANDLER.'admin_handler.php');
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
+		$cat_link = ($cat_link ? $cat_link : "javascript:void(0);");
 		$text = "<a class='menuButton' href='".$cat_link."' style='background-image: url(".$cat_img."); background-repeat: no-repeat;  background-position: 3px 1px' ";
 		if ($cat_id) { 
 			$text .= "onclick=\"return buttonClick(event, '".$cat_id."');\" onmouseover=\"buttonMouseover(event, '".$cat_id."');\"";
