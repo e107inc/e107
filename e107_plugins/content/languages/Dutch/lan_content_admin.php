@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-07-03 06:37:39 $
+|     $Revision: 1.5 $
+|     $Date: 2005-07-06 22:11:11 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -466,6 +466,7 @@ define("CONTENT_PRESET_LAN_28", "selecteer");
 define("CONTENT_PRESET_LAN_29", "datum");
 define("CONTENT_PRESET_LAN_30", "aankruisvlak");
 define("CONTENT_PRESET_LAN_31", "radio");
+define("CONTENT_PRESET_LAN_32", "voorbeeld:");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "opties");
 define("CONTENT_ADMIN_OPT_LAN_1", "standaard voorkeuren");

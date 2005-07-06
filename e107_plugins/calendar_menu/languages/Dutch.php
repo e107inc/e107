@@ -1,4 +1,7 @@
 <?php
+
+define('EC_LAN_TODAY', "today");
+
 define('EC_LAN_0', "Januari");
 define('EC_LAN_1', "Februari");
 define('EC_LAN_2', "Maart");
@@ -209,4 +212,70 @@ define('EC_UNINSTALL',"De-installeren kalender");
 define('EC_LAN_VIEWCALENDAR', "Bekijk kalender");
 define('EC_LAN_VIEWALLEVENTS', "Bekijk alles");
 define('EC_LAN_ALLEVENTS', "Alle gebeurtenissen");
+
+define('EC_LAN_DAY_1', "1");
+define('EC_LAN_DAY_2', "2");
+define('EC_LAN_DAY_3', "3");
+define('EC_LAN_DAY_4', "4");
+define('EC_LAN_DAY_5', "5");
+define('EC_LAN_DAY_6', "6");
+define('EC_LAN_DAY_7', "7");
+define('EC_LAN_DAY_8', "8");
+define('EC_LAN_DAY_9', "9");
+define('EC_LAN_DAY_10', "10");
+define('EC_LAN_DAY_11', "11");
+define('EC_LAN_DAY_12', "12");
+define('EC_LAN_DAY_13', "13");
+define('EC_LAN_DAY_14', "14");
+define('EC_LAN_DAY_15', "15");
+define('EC_LAN_DAY_16', "16");
+define('EC_LAN_DAY_17', "17");
+define('EC_LAN_DAY_18', "18");
+define('EC_LAN_DAY_19', "19");
+define('EC_LAN_DAY_20', "20");
+define('EC_LAN_DAY_21', "21");
+define('EC_LAN_DAY_22', "22");
+define('EC_LAN_DAY_23', "23");
+define('EC_LAN_DAY_24', "24");
+define('EC_LAN_DAY_25', "25");
+define('EC_LAN_DAY_26', "26");
+define('EC_LAN_DAY_27', "27");
+define('EC_LAN_DAY_28', "28");
+define('EC_LAN_DAY_29', "29");
+define('EC_LAN_DAY_30', "30");
+define('EC_LAN_DAY_31', "31");
+
+define('EC_LAN_DAY_1', "1e");
+define('EC_LAN_DAY_2', "2e");
+define('EC_LAN_DAY_3', "3e");
+define('EC_LAN_DAY_4', "4e");
+define('EC_LAN_DAY_5', "5e");
+define('EC_LAN_DAY_6', "6e");
+define('EC_LAN_DAY_7', "7e");
+define('EC_LAN_DAY_8', "8e");
+define('EC_LAN_DAY_9', "9e");
+define('EC_LAN_DAY_10', "10e");
+define('EC_LAN_DAY_11', "11e");
+define('EC_LAN_DAY_12', "12e");
+define('EC_LAN_DAY_13', "13e");
+define('EC_LAN_DAY_14', "14e");
+define('EC_LAN_DAY_15', "15e");
+define('EC_LAN_DAY_16', "16e");
+define('EC_LAN_DAY_17', "17e");
+define('EC_LAN_DAY_18', "18e");
+define('EC_LAN_DAY_19', "19e");
+define('EC_LAN_DAY_20', "20e");
+define('EC_LAN_DAY_21', "21e");
+define('EC_LAN_DAY_22', "22e");
+define('EC_LAN_DAY_23', "23e");
+define('EC_LAN_DAY_24', "24e");
+define('EC_LAN_DAY_25', "25e");
+define('EC_LAN_DAY_26', "26e");
+define('EC_LAN_DAY_27', "27e");
+define('EC_LAN_DAY_28', "28e");
+define('EC_LAN_DAY_29', "29e");
+define('EC_LAN_DAY_30', "30e");
+define('EC_LAN_DAY_31', "31e");
+define('EC_LAN_133', "[lees verder]");
+define('EC_LAN_134', "Je moet een categorienaam opgeven");
 ?>

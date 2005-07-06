@@ -4,18 +4,27 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Dutch.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-07-02 20:08:31 $
+|     $Revision: 1.11 $
+|     $Date: 2005-07-06 22:11:11 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Links");
+
+if(!defined("PAGE_NAME")){define("PAGE_NAME", "Links");}
+
 define("LCLAN_PLUGIN_LAN_1", "Linkspagina");
 define("LCLAN_PLUGIN_LAN_2", "Linkspagina waarop externe weblinks kunnen worden getoond");
 define("LCLAN_PLUGIN_LAN_3", "Configureren linkspagina");
 define("LCLAN_PLUGIN_LAN_4", "links");
 define("LCLAN_PLUGIN_LAN_5", "De linkspagina is succesvol geïnstalleerd, configureer de functie ni de Linkspagina link in het beheerscherm.");
 define("LCLAN_PLUGIN_LAN_6", "Links_pagina succesvol geupgrade, nu gebruiken we versie");
+
+define("LCLAN_OPT_MENU_1", "algemene opties");
+define("LCLAN_OPT_MENU_2", "persoonlijke link beheerders");
+define("LCLAN_OPT_MENU_3", "categoriepagina");
+define("LCLAN_OPT_MENU_4", "links weergave");
+define("LCLAN_OPT_MENU_5", "verwijzingenpagina");
+define("LCLAN_OPT_MENU_6", "beoordelingenpagina");
 
 define("LCLAN_OPT_1", "algemene opties");
 define("LCLAN_OPT_2", "Linkpagina opties");
@@ -24,7 +33,6 @@ define("LCLAN_OPT_4", "gedeactiveerd");
 define("LCLAN_OPT_5", "px");
 define("LCLAN_OPT_6", "");
 define("LCLAN_OPT_7", "verdeel categorieën in individuele pagina's");
-
 define("LCLAN_OPT_8", "aanmelden van links toestaan");
 define("LCLAN_OPT_9", "wie kunnen links aanmelden");
 define("LCLAN_OPT_10", "toon alle links op één pagina");
@@ -63,7 +71,6 @@ define("LCLAN_OPT_42", "gebruiken individuele link instelling");
 define("LCLAN_OPT_43", "Openen in hetzelfde venster");
 define("LCLAN_OPT_44", "Openen in nieuw venster");
 define("LCLAN_OPT_45", "Openen in 600x400 minivenster");
-
 define("LCLAN_OPT_46", "wie kan de links beheren");
 define("LCLAN_OPT_47", "deze gebruikers kunnen hun persoonlijke links beheren");
 define("LCLAN_OPT_48", "direct plaatsen toegestaan");
@@ -74,6 +81,19 @@ define("LCLAN_OPT_52", "persoonlijke link beheerders");
 define("LCLAN_OPT_53", "datum");
 define("LCLAN_OPT_54", "persoonlijk beheer van links toestaan");
 define("LCLAN_OPT_55", "reacties bij alle links toestaan");
+define("LCLAN_OPT_56", "minimum aantal verwijzingen");
+define("LCLAN_OPT_57", "uitsluitend links waarvandaan vaker dan de opgegeven waarde wordt verwezen, worden getoond (0 of leeg betekent alles)");
+define("LCLAN_OPT_58", "link om link aan te melden");
+define("LCLAN_OPT_59", "link naar de persoonlijke beheerder (alleen wanner toegestaan)");
+define("LCLAN_OPT_60", "link naar link hoofdpagina");
+define("LCLAN_OPT_61", "link naar alle categorieën");
+define("LCLAN_OPT_62", "toon deze navigator links");
+define("LCLAN_OPT_63", "minimum waardering");
+define("LCLAN_OPT_64", "uitsluitend links met een hogere beoordeling dan de opgegeven waarde worden getoond (0 of leeg betekent alles)");
+define("LCLAN_OPT_65", "toon lege categorieën");
+define("LCLAN_OPT_66", "link naar elke categorie");
+define("LCLAN_OPT_67", "link naar alle links");
+define("LCLAN_OPT_68", "bekijk alle links");
 
 define("LCLAN_ADMIN_1", "bijwerken");
 define("LCLAN_ADMIN_2", "Link opgeslagen in database.");
@@ -89,6 +109,7 @@ define("LCLAN_ADMIN_11", "verwijderd");
 define("LCLAN_ADMIN_12", "Linkcategorie");
 define("LCLAN_ADMIN_13", "Aangemelde link verwijderd");
 define("LCLAN_ADMIN_14", "Links");
+
 define("LCLAN_SL_1", "Aangemelde links");
 define("LCLAN_SL_2", "Geen aangemelde links");
 define("LCLAN_SL_3", "Link");
@@ -107,6 +128,7 @@ define("LCLAN_SL_15", "Onderstreepte velden zijn verplicht.");
 define("LCLAN_SL_16", "Aanmelden link");
 define("LCLAN_SL_17", "");
 define("LCLAN_SL_18", "");
+
 define("LCLAN_CAT_1", "Afbeelding");
 define("LCLAN_CAT_2", "Categorie");
 define("LCLAN_CAT_3", "Opties");
@@ -136,6 +158,7 @@ define("LCLAN_CAT_26", "Update linkcategorie");
 define("LCLAN_CAT_27", "Schoonmaken formulier");
 define("LCLAN_CAT_28", "Creëren linkcategorie");
 define("LCLAN_CAT_29", "Linkcategorie");
+
 define("LCLAN_ITEM_1", "Aangemeld door");
 define("LCLAN_ITEM_2", "Categorie:");
 define("LCLAN_ITEM_3", "nog geen categorieën");
@@ -171,9 +194,46 @@ define("LCLAN_ITEM_32", "verwijderen");
 define("LCLAN_ITEM_33", "Weet je zeker dat je deze link wilt verwijderen?");
 define("LCLAN_ITEM_34", "geen pictogram");
 define("LCLAN_ITEM_35", "beheren persoonlijke links");
+define("LCLAN_ITEM_36", "ga");
 
-define("LAN_LINKS_1", "Aantal links");
-define("LAN_LINKS_2", "Aantal geactiveerde links");
+define("LCLAN_ADMINMENU_1", "Link opties");
+define("LCLAN_ADMINMENU_2", "Beheren linkcategorieën");
+define("LCLAN_ADMINMENU_3", "Creëren linkcategorie");
+define("LCLAN_ADMINMENU_4", "Beheren links");
+define("LCLAN_ADMINMENU_5", "Creëren link");
+define("LCLAN_ADMINMENU_6", "Opties");
+define("LCLAN_ADMINMENU_7", "Aangemelde links");
+define("LCLAN_ADMINMENU_8", "Categorieën");
+
+define("NT_LAN_LP_1", "Links pagina gebeurtenissen");
+define("NT_LAN_LP_2", "Link aangemeld door gebruiker");
+define("NT_LAN_LP_3", "Link aangemeld");
+
+define("LNK_SCH_LAN_2", "Alle linkcategorieën");
+define("LNK_SCH_LAN_3", "Alle linkdetails");
+
+define("LAN_LINKS_MANAGER_0", "pictogram");
+define("LAN_LINKS_MANAGER_1", "link");
+define("LAN_LINKS_MANAGER_2", "opties");
+define("LAN_LINKS_MANAGER_3", "creëren nieuwe link");
+define("LAN_LINKS_MANAGER_4", "je hebt nu nog geen links");
+define("LAN_LINKS_MANAGER_5", "categorie");
+
+define("LAN_LINKS_1", "Totaal aantal links");
+define("LAN_LINKS_2", "Totaal actieve links");
+define("LAN_LINKS_3", "Anoniem");
+define("LAN_LINKS_4", "kop");
+define("LAN_LINKS_5", "url");
+define("LAN_LINKS_6", "volgorde");
+define("LAN_LINKS_7", "verwijzer");
+define("LAN_LINKS_8", "OP");
+define("LAN_LINKS_9", "NEER");
+define("LAN_LINKS_10", "Top Links : verwijzer");
+define("LAN_LINKS_11", "Top Links : beoordeling");
+define("LAN_LINKS_12", "bekijk top links op verwijzer");
+define("LAN_LINKS_13", "bekijk top links op waardering");
+define("LAN_LINKS_14", "terug naar links startpagina");
+define("LAN_LINKS_15", "sorteren op");
 define("LAN_LINKS_16", "in deze categorie");
 define("LAN_LINKS_17", "link");
 define("LAN_LINKS_18", "links");
@@ -196,248 +256,16 @@ define("LAN_LINKS_34", "Momenteel geen links aanwezig");
 define("LAN_LINKS_35", "persoonlijke links beheerder");
 define("LAN_LINKS_36", "link reacties");
 define("LAN_LINKS_37", "reacties:");
+define("LAN_LINKS_38", "datum");
+define("LAN_LINKS_39", "Links");
+define("LAN_LINKS_40", "Categorie");
+define("LAN_LINKS_41", "nog geen categorieën");
+define("LAN_LINKS_42", "nog geen verwijzingslinks");
+define("LAN_LINKS_43", "bekijk alle categorieën");
+define("LAN_LINKS_44", "id");
+define("LAN_LINKS_45", "Link categorie");
+define("LAN_LINKS_46", "Link subcategorieën");
 
-define("LAN_LINKS_MANAGER_0", "pictogram");
-define("LAN_LINKS_MANAGER_1", "link");
-define("LAN_LINKS_MANAGER_2", "opties");
-define("LAN_LINKS_MANAGER_3", "creëren nieuwe link");
-define("LAN_LINKS_MANAGER_4", "je hebt nu nog geen links");
-define("LAN_LINKS_MANAGER_5", "categorie");
-
-define("LAN_61", "Link categorieën");
-define("LAN_62", "categorieën");
-define("LAN_63", "categorie");
-define("LAN_64", "in deze categorie");
-define("LAN_65", "link");
-define("LAN_66", "links");
-define("LAN_67", "Toon alle links");
-define("LAN_68", "bewerk");
-define("LAN_69", "verwijder");
-define("LAN_86", "Categorie:");
-define("LAN_88", "Verwijzingen:");
-define("LAN_89", "Beheer: ");
-define("LAN_90", "toevoegen nieuwe link in deze categorie");
-define("LAN_91", "toevoegen nieuwe categorie");
-	
-define("LAN_92", "Aanmelden link");
-define("LAN_93", "Elke aangemelde link wordt eerst beoordeeld door een beheerder en pas daarna, eventueel, geplaats op de links-pagina.");
-define("LAN_94", "Link naam:");
-define("LAN_95", "Link URL:");
-define("LAN_96", "Link omschrijving:");
-define("LAN_97", "URL naar link knop:");
-define("LAN_98", "Aanmelden link");
-	
-define("LAN_99", "Hartelijk dank");
-define("LAN_100", "De link is opgeslagen en wordt beoordeeld door een beheerder.");
-define("LAN_101", "Klik hier om een link aan te melden");
-	
-define("LAN_102", "Er");
-define("LAN_103", "is");
-define("LAN_104", "zijn");
-define("LAN_105", "totaal");
-define("LAN_106", "Onderstreepte velden zijn verplicht.");
-define('LAN_107', "Momenteel geen links aanwezig");
-	
-define("LAN_Links_1", "Totaal aantal links");
-define("LAN_Links_2", "Totaal actieve links");
-define("LAN_LINKS_3", "Anoniem");
-define("LAN_LINKS_4", "kop");
-define("LAN_LINKS_5", "url");
-define("LAN_LINKS_6", "volgorde");
-define("LAN_LINKS_7", "verwijzer");
-define("LAN_LINKS_8", "OP");
-define("LAN_LINKS_9", "NEER");
-define("LAN_LINKS_10", "Top Links : verwijzer");
-define("LAN_LINKS_11", "Top Links : beoordeling");
-define("LAN_LINKS_12", "bekijk top links op verwijzer");
-define("LAN_LINKS_13", "bekijk top links op waardering");
-define("LAN_LINKS_14", "terug naar links startpagina");
-define("LAN_LINKS_15", "sorteren op");
-
-define("LCLAN_1", "Opties opgeslagen");
-define("LCLAN_2", "Link opgeslagen in database.");
-define("LCLAN_3", "Link bijgewerkt in database.");
-define("LCLAN_4", "Link verwijderd.");
-define("LCLAN_6", "Volgorde bijgewerkt.");
-define("LCLAN_8", "Aanwezige links");
-define("LCLAN_9", "Bewerk");
-define("LCLAN_10", "Verwijder");
-define("LCLAN_12", "Link categorie");
-define("LCLAN_13", "Kan de hoofdcategorie niet bewerken.");
-define("LCLAN_14", "Plaats");
-define("LCLAN_15", "Link naam");
-define("LCLAN_16", "Link URL");
-define("LCLAN_17", "Link omschrijving");
-define("LCLAN_18", "Link knop / pictogram");
-define("LCLAN_19", "Link open type");
-define("LCLAN_20", "Opent in zelfde venster");
-//define("LCLAN_21", "target=_blank");
-//define("LCLAN_22", "target=_parent");
-define("LCLAN_23", "Opent in nieuw venster");
-define("LCLAN_24", "Opent in 600x400 minivenster");
-define("LCLAN_25", "Link klasse");
-define("LCLAN_26", "Aankruisen maakt de link alleen zichtbaar voor leden in deze klasse");
-define("LCLAN_27", "Bijwerken link");
-define("LCLAN_28", "Aanmaken link");
-define("LCLAN_29", "Links");
-define("LCLAN_30", "omhoog");
-define("LCLAN_31", "omlaag");
-define("LCLAN_32", "Bijwerken volgorde");
-define("LCLAN_33", "Link volgorde");
-define("LCLAN_34", "Aankruisen om alleen de link categorieën op de Linkspagina te tonen. Handig als er veel links zijn.");
-define("LCLAN_35", "Bijwerk opties");
-define("LCLAN_36", "Linkpagina opties");
-define("LCLAN_39", "Bekijk afbeeldingen");
-define("LCLAN_40", "Toon alleen link categorieën");
-define("LCLAN_41", "Toestaan aanmelden links");
-define("LCLAN_42", "Sta bezoekers toe links aan te melden");
-define("LCLAN_43", "Link aanmeld klasse");
-define("LCLAN_44", "Selecteer welke gebruikers links kunnen aanmelden");
-define("LCLAN_45", "Aangemeld door");
-define("LCLAN_51", "Link categorie opgeslagen");
-define("LCLAN_52", "Link categorie bijgewerkt");
-define("LCLAN_53", "Link");
-define("LCLAN_54", "verwijderd");
-define("LCLAN_55", "Link categorie");
-define("LCLAN_56", "Weet je zeker dat je deze categorie wilt verwijderen?");
-define("LCLAN_57", "Weet je zeker dat je deze aangemelde link wilt verwijderen?");
-define("LCLAN_58", "Weet je zeker dat je deze link wilt verwijderen?");
-define("LCLAN_59", "Categorie");
-define("LCLAN_60", "Opties");
-define("LCLAN_61", "Geen links");
-define("LCLAN_62", "Links Hoofdpagina");
-define("LCLAN_63", "Aanmaken nieuwe link");
-define("LCLAN_64", "Instellen linkvolgorde");
-define("LCLAN_65", "Categorieën");
-define("LCLAN_66", "Aangemelde links");
-define("LCLAN_67", "Opties");
-define("LCLAN_68", "Links opties");
-define("LCLAN_69", "Geen link categorieën");
-define("LCLAN_70", "Aanwezige link categorieën");
-define("LCLAN_71", "Categorienaam");
-define("LCLAN_72", "Categorie beschrijving");
-define("LCLAN_73", "Categorie pictogram");
-define("LCLAN_74", "Bijwerken link categorie");
-define("LCLAN_75", "Aanmaken link categorie");
-define("LCLAN_76", "Geen aangemelde links");
-define("LCLAN_77", "Aangemelde link verwijderd");
-define("LCLAN_78", "Toon omschrijving als Schermhulpje");
-define("LCLAN_79", "De beschrijving wordt getoond als de muis over de link beweegt");
-define("LCLAN_80", "Bekijk afbeeldingen");
-define("LCLAN_81", "Schonen formulier");
-define("LCLAN_82", "Aangemeld door");
-define("LCLAN_83", "Submenu Generator");
-define("LCLAN_84", "Upload je link afbeeldingen naar e107_plugins/links_page/link_images/");
-define("LCLAN_85", "Upload je link categorie afbeeldingen naar e107_plugins/links_page/cat_images/");
-define("LCLAN_86", "Afbeelding");
-define("LCLAN_87", "Bekijk links");
-define("LCLAN_88", "Site links opties");
-define("LCLAN_89", "Afbeelding");
-define("LCLAN_90", "Linknaam");
-define("LCLAN_91", "Verplaats");
-define("LCLAN_92", "Omhoog");
-define("LCLAN_93", "Omlaag");
-define("LCLAN_94", "Sorteren");
-define("LCLAN_95", "Naam");
-define("LCLAN_96", "Bescrhijving");
-define("LCLAN_97", "Volgorde");
-define("LCLAN_98", "Bijwerken");
-define("LCLAN_99", "Categorieën");
-define("LCLAN_100", "Link categorie");
-define('LCLAN_101', "Configureren Links pagina");
-define('LCLAN_102', "De Linkspagina is succesvol geïnstalleerd, configureer de pagina vanuit de Linkspagina link in het Beheerscherm.");
-define('LCLAN_103', "Links");
-define('LCLAN_104', "Link waardering");
-define('LCLAN_105', "toestaan dat gebruikers links waarderen");
-define("LCLAN_106", "Link pictogram : Upload");
-define("LCLAN_107", "link pictogram is succesvol geupload !");
-define("LCLAN_108", "link pictogram is niet geupload !");
-define("LCLAN_109", "upload een nieuw pictogram");
-define("LCLAN_110", "Auto-Thumbnail omvang");
-define("LCLAN_111", "upload pictogram");
-define("LCLAN_112", "kies een geupload pictogram");
-define("LCLAN_113", "deze optie is gedeactiveerd omdat bestandsuploads op je server niet zijn toegestaan");
-define("LCLAN_114", "De");
-define("LCLAN_115", "directoy is niet beschrijfbaar, je moet de permissies eerst instellen op CHMOD 777");
-define("LCLAN_116", "algemene opties");
-define("LCLAN_117", "categorie pagina");
-define("LCLAN_118", "links pagina");
-define("LCLAN_119", "link categorieën");
-define("LCLAN_120", "secties");
-define("LCLAN_121", "kies de te tonen informatie");
-define("LCLAN_122", "pictogram");
-define("LCLAN_123", "beschrijving");
-define("LCLAN_124", "aantal");
-define("LCLAN_125", "totale category info regel (de regel helemaal ondraan)");
-define("LCLAN_126", "standaard categorie sortering");
-define("LCLAN_127", "bepaal de standaard sorteerwijze");
-define("LCLAN_128", "standaard category volgorde");
-define("LCLAN_129", "bepaal de standaard volgorde");
-define("LCLAN_130", "url");
-define("LCLAN_131", "verwijzer");
-define("LCLAN_132", "lege link pictogram");
-define("LCLAN_133", "moet de algemene link knop worden getoond als er geen knop aanwezig is");
-define("LCLAN_134", "standaard link sortering");
-define("LCLAN_135", "bepaal de standaard sorteerwijze");
-define("LCLAN_136", "standaard link volgorde");
-define("LCLAN_137", "bepaal de standaard volgorde");
-define("LCLAN_138", "geactiveerd");
-define("LCLAN_139", "gedeactiveerd");
-define("LCLAN_140", "negeren link open type");
-define("LCLAN_141", "bepaal de negeer link open type methode");
-define("LCLAN_142", "het kiezen van een van deze opties opent alle links op deze wijze, ongeacht de individuele instellingen");
-define("LCLAN_143", "gebruik individuele link instelling");
-define("LCLAN_144", "sorteren en volgorde");
-define("LCLAN_145", "bepaal of op de links pagina een sorteer en volgorde menu wordt getoond");
-define("LCLAN_146", "lege categorie pictogram");
-define("LCLAN_147", "link naar top links : verwijzer");
-define("LCLAN_148", "link naar top links : beoordeling");
-define("LCLAN_149", "top verwijzer en top beoordeling pagina's");
-define("LCLAN_150", "aantal links");
-define("LCLAN_151", "stel in hoeveel define op een enkele pagina worden getoond");
-define("LCLAN_152", "Categorie pictogram : Upload");
-define("LCLAN_153", "standaard verschalingswaarde");
-define("LCLAN_154", "bepaal de standaard verschalingswaarde voor link pictogram uploads");
-define("LCLAN_155", "bepaal de standaard verschalingswaarde voor categorie pictogram uploads");
-
-define("LCLAN_156", "Categorie klasse");
-define("LCLAN_157", "stel in welke gebruikers deze categorie kunnen bekijken");
-define("LCLAN_158", "Aankruisen maakt de link categorie alleen zichtbaar voor de gebruikers in deze klasse");
-define("LCLAN_159", "bepaal hoe de link wordt geopend");
-define("LCLAN_160", "bepaa; welke gebruikers deze link kunnen zien");
-define("LCLAN_161", "aankruisen om datum en tijd op de huidige tijd in te stellen");
-define("LCLAN_162", "volg-vorig");
-define("LCLAN_163", "toon volg_vorig knoppen");
-define("LCLAN_164", "wanneer geactiveerd wordt slechts een beperkt aantal links op een enkele pagina getoond en kun je door de pagina's navigeren om meer links te zien.");
-define("LCLAN_165", "links per pagina");
-define("LCLAN_166", "hoeveel links wil je op een pagina tonen?");
-define("LCLAN_167", "dit wordt alleen gebruikt als de volg_vorig beperking is ingesteld");
-define("LCLAN_168", "OP");
-define("LCLAN_169", "NEER");
-define("LCLAN_170", "link_naam");
-define("LCLAN_171", "link_url");
-define("LCLAN_172", "link_volgorde");
-define("LCLAN_173", "link_verwijzer");
-define("LCLAN_174", "link_pictogram");
-define("LCLAN_175", "link_neer");
-define("LCLAN_176", "link categorienaam");
-define("LCLAN_177", "link categorie id");
-
-define("LCLAN_ADMINMENU_1", "Link opties");
-define("LCLAN_ADMINMENU_2", "Beheren linkcategorieën");
-define("LCLAN_ADMINMENU_3", "Creëren linkcategorie");
-define("LCLAN_ADMINMENU_4", "Beheren links");
-define("LCLAN_ADMINMENU_5", "Creëren link");
-define("LCLAN_ADMINMENU_6", "Opties");
-define("LCLAN_ADMINMENU_7", "Aangemelde links");
-define("LCLAN_ADMINMENU_8", "Categorieën");
-
-define("NT_LAN_LP_1", "Links pagina gebeurtenissen");
-define("NT_LAN_LP_2", "Link aangemeld door gebruiker");
-define("NT_LAN_LP_3", "Link aangemeld");
-
-define("LNK_SCH_LAN_2", "Alle linkcategorieën");
-define("LNK_SCH_LAN_3", "Alle linkdetails");
 
 define("LAN_ADMIN_HELP_0", "linkspage helpfunctie");
 
