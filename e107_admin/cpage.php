@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-06-22 17:08:00 $
+|     $Revision: 1.17 $
+|     $Date: 2005-07-06 06:46:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -108,6 +108,12 @@ class page
 {
 
 	var $message;
+
+	function page()
+	{
+		/* constructor - added to prevent 'Cannot access empty property' php bug (Bug #28444)... */
+		$this -> message = "";
+	}
 
 	function showExistingPages()
 	{
