@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.97 $
-|     $Date: 2005-07-06 12:14:13 $
-|     $Author: stevedunstan $
+|     $Revision: 1.98 $
+|     $Date: 2005-07-07 16:56:11 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -42,8 +42,8 @@ class e_parse
 		}
 		if (getperms("0") || $no_encode)
 		{
-			$search = array('$', '"', "'", '\\', '“', '”', '<?');
-			$replace = array('&#036;','&quot;','&#039;','&#092;', '&#147;', '&#148;', '&lt?');
+			$search = array('$', '"', "'", '\\', '<?');
+			$replace = array('&#036;','&quot;','&#039;', '&#092;', '&lt?');
 			$text = str_replace($search, $replace, $text);
 		}
 		else
