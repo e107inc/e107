@@ -1,23 +1,23 @@
-<?php
+ï»¿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/rss_menu/languages/Lithuanian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-02 11:45:50 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-07 18:14:49 $
 |     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
 	
-define("BACKEND_MENU_L1", " gali bûti sindikuota naudojant ðá rss tiekimà.");
+define("BACKEND_MENU_L1", " gali bÅ«ti sindikuota naudojant Å¡Ä¯ rss tiekimÄ….");
 define("BACKEND_MENU_L2", "RSS tiekimas");
 
-define("BACKEND_MENU_L3", "Mûsø naujienos");
-define("BACKEND_MENU_L4", "Mûsø komentarai");
-define("BACKEND_MENU_L5", "Mûsø diskusijø temos");
-define("BACKEND_MENU_L6", "Mûsø diskusijø praneðimai");
+define("BACKEND_MENU_L3", "MÅ«sÅ³ naujienos");
+define("BACKEND_MENU_L4", "MÅ«sÅ³ komentarai");
+define("BACKEND_MENU_L5", "MÅ«sÅ³ diskusijÅ³ temos");
+define("BACKEND_MENU_L6", "MÅ«sÅ³ diskusijÅ³ praneÅ¡imai");
 
-define("BACKEND_MENU_L7", "Mûsø pokalbiø (chatbox) praneðimai");
-define("BACKEND_MENU_L8", "Mûsø klaidø seklio raportai");
+define("BACKEND_MENU_L7", "MÅ«sÅ³ pokalbiÅ³ (chatbox) praneÅ¡imai");
+define("BACKEND_MENU_L8", "MÅ«sÅ³ klaidÅ³ seklio raportai");
 ?>
