@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Swedish.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-07-05 09:56:32 $
+|     $Revision: 1.8 $
+|     $Date: 2005-07-07 16:06:45 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -194,8 +194,8 @@ define("LCLAN_ITEM_33", "Är du säker på att du vill radera denna länk?");
 define("LCLAN_ITEM_34", "Ingen ikon");
 define("LCLAN_ITEM_35", "Hantera egna länkar");
 define("LCLAN_ITEM_36", "Kör");
-define("LCLAN_ITEM_37", "");
-define("LCLAN_ITEM_38", "");
+define("LCLAN_ITEM_37", "Visa alla länkar");
+define("LCLAN_ITEM_38", "Alla länkar");
 define("LCLAN_ITEM_39", "");
 
 define("LCLAN_ADMINMENU_1", "Länkalternativ");
