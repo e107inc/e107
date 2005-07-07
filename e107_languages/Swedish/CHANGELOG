@@ -1,5 +1,8 @@
 Changelog for the Swedish Language pack:
 
+Wed Jul 7 2005 - mrpiercer (at) users.sourceforge.net
+- Seems like things are looking okay now, so from now on
+  I'll focus on keeping up with the developers changes.
 Wed Jun 22 2005 - mrpiercer (at) users.sourceforge.net
 - The documentation files in ~/e107_docs/help/Swedish
   cannot have Swedish characters like åäö in them, this
