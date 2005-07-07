@@ -1,6 +1,6 @@
 // ** I18N
 
-// Calendar EN language
+// Calendar NL language
 // Author: Mihai Bazon, <mihai_bazon@yahoo.com>
 // Encoding: any
 // Distributed under the same terms as the calendar itself.
@@ -49,8 +49,8 @@ Calendar._FD = 0;
 
 // full month names
 Calendar._MN = new Array
-("Januar1",
- "Februar1",
+("Januari",
+ "Februari",
  "Maart",
  "April",
  "Mei",
@@ -82,33 +82,33 @@ Calendar._TT = {};
 Calendar._TT["INFO"] = "Over de kalender";
 
 Calendar._TT["ABOUT"] =
-"DHTML Datum/Tiijd selector\n" +
-"(c) dynarch.com 2002-2005 / Auteur: Mihai Bazon\n" + // don't translate this this ;-)
-"For latest version visit: http://www.dynarch.com/projects/calendar/\n" +
+"DHTML Date/Time Selector\n" +
+"(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" + // don't translate this this ;-)
+"Voor de laatste versie bezoek: http://www.dynarch.com/projects/calendar/\n" +
 "Distributed under GNU LGPL.  See http://gnu.org/licenses/lgpl.html for details." +
 "\n\n" +
 "Datum selectie:\n" +
-"- Gebruik de \xab, \xbb knoppen om jaar te kiezen\n" +
-"- Gebruik de " + String.fromCharCode(0x2039) + ", " + String.fromCharCode(0x203a) + " knoppen om de maand te kiezen\n" +
-"- Muisknop op een van de knoppen indrukken voor snellere selectie.";
+"- Gebruik de  \xab, \xbb knoppen om het jaar te kiezen\n" +
+"- Gebruik de " + String.fromCharCode(0x2039) + ", " + String.fromCharCode(0x203a) + " knoppen om maand te kiezen\n" +
+"- Houdt de muisknop ingedrukt boven een knop voor snellere keuze.";
 Calendar._TT["ABOUT_TIME"] = "\n\n" +
-"Tijd selectie:\n" +
-"- Klikop een deel van de tijd om te verhogen\n" +
-"- of Shift-klik om te verlagen\n" +
+"Tijdkeuze:\n" +
+"- Klik op een tijdindicatie om die te verhogen\n" +
+"- of Shift-klik om die te verlagen\n" +
 "- of klik en sleep voor snellere selectie.";
 
-Calendar._TT["PREV_YEAR"] = "Vorig jaar (indrukken voor menu)";
-Calendar._TT["PREV_MONTH"] = "Vorige maand (indrukken voor menu)";
-Calendar._TT["GO_TODAY"] = "Naar vandaag";
-Calendar._TT["NEXT_MONTH"] = "Volgende maand (indrukken voor menu)";
-Calendar._TT["NEXT_YEAR"] = "Volgend jaar (indrukken voor menu)";
+Calendar._TT["PREV_YEAR"] = "vor. jaar (vasthouden voor menu)";
+Calendar._TT["PREV_MONTH"] = "Vor. maand (vasthouden voor menu)";
+Calendar._TT["GO_TODAY"] = "Vandaag";
+Calendar._TT["NEXT_MONTH"] = "Volg. maand (vasthouden voor menu)";
+Calendar._TT["NEXT_YEAR"] = "Volg. jaar (vasthouden voor menu)";
 Calendar._TT["SEL_DATE"] = "Kies datum";
-Calendar._TT["DRAG_TO_MOVE"] = "Sleep voor verplaatsen";
+Calendar._TT["DRAG_TO_MOVE"] = "Slepen is verplaatsen";
 Calendar._TT["PART_TODAY"] = " (vandaag)";
 
 // the following is to inform that "%s" is to be the first day of week
 // %s will be replaced with the day name.
-Calendar._TT["DAY_FIRST"] = "Toon %s eerste";
+Calendar._TT["DAY_FIRST"] = "Toon %s eerst";
 
 // This may be locale-dependent.  It specifies the week-end days, as an array
 // of comma-separated numbers.  The numbers are from 0 to 6: 0 means Sunday, 1
@@ -117,10 +117,10 @@ Calendar._TT["WEEKEND"] = "0,6";
 
 Calendar._TT["CLOSE"] = "Sluiten";
 Calendar._TT["TODAY"] = "Vandaag";
-Calendar._TT["TIME_PART"] = "(Shift-)Klik of sleep om te veranderen";
+Calendar._TT["TIME_PART"] = "(Shift-)Klik of sleep om waarde te wijzigen";
 
 // date formats
-Calendar._TT["DEF_DATE_FORMAT"] = "%J-%m-%d";
+Calendar._TT["DEF_DATE_FORMAT"] = "%Y-%m-%d";
 Calendar._TT["TT_DATE_FORMAT"] = "%a, %b %e";
 
 Calendar._TT["WK"] = "wk";
