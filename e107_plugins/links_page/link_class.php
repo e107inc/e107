@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.8 $
-|    $Date: 2005-07-04 22:36:12 $
+|    $Revision: 1.9 $
+|    $Date: 2005-07-07 12:52:10 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -386,13 +386,18 @@ class linkclass {
 		$link_description	= $tp->toDB($_POST['link_description'], TRUE);
 		$link_button		= $tp->toDB($_POST['link_button'], TRUE);
 		
+		if (!strstr($link_url, "http")) {
+			$link_url = "http://".$link_url;
+		}
+			
 		if(isset($mode) && $mode == "submit"){
 			if ($_POST['link_name'] && $_POST['link_url'] && $_POST['link_description']) {
 				$username			= (defined('USERNAME')) ? USERNAME : LAN_LINKS_3;
+
 				$submitted_link		= $_POST['cat_name']."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".$username;
 				$sql->db_Insert("tmp", "'submitted_link', '".time()."', '$submitted_link' ");
 				
-				$edata_ls = array("link_name" => $link_name, "link_url" => $link_url, "link_description" => $link_description, "link_button" => $link_button, "username" => $username, "submitted_link" => $submitted_link);
+				$edata_ls = array("link_category" => $_POST['cat_name'], "link_name" => $link_name, "link_url" => $link_url, "link_description" => $link_description, "link_button" => $link_button, "username" => $username, "submitted_link" => $submitted_link);
 				$e_event->trigger("linksub", $edata_ls);
 				header("location:".e_SELF."?s");
 				} else {
@@ -410,10 +415,12 @@ class linkclass {
 					$link_author = ($_POST['link_author'] ? $_POST['link_author'] : USERID);
 					$link_class = $_POST['link_class'];
 				}
+
 				$sql->db_Update("links_page", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button',   link_category='".$_POST['cat_id']."', link_open='".$_POST['linkopentype']."', link_class='".$link_class."', link_datestamp='".$time."', link_author='".$link_author."' WHERE link_id='$qs[2]'");
 				$e107cache->clear("sitelinks");
 				$this->show_message(LCLAN_ADMIN_3);
 			} else {
+
 				$sql->db_Insert("links_page", "0, '$link_name', '$link_url', '$link_description', '$link_button', '".$_POST['cat_id']."', '".($link_t+1)."', '0', '".$_POST['linkopentype']."', '".$_POST['link_class']."', '".time()."', '".USERID."' ");
 				$e107cache->clear("sitelinks");
 				$this->show_message(LCLAN_ADMIN_2);
@@ -451,6 +458,7 @@ class linkclass {
 				$row['link_url']			= $submitted[2];
 				$row['link_description']	= $submitted[3]."\n[i]".LCLAN_ITEM_1." ".$submitted[5]."[/i]";
 				$row['link_button']			= $submitted[4];
+				
 			}
 		}
 
@@ -478,7 +486,7 @@ class linkclass {
 		} else {
 			$text .= $rs -> form_select_open("cat_id", "");
 			while (list($cat_id, $cat_name, $cat_description) = $sql->db_Fetch()) {
-				if ( (isset($link_category) && $row['link_category'] == $cat_id) || (isset($row['linkid']) && $cat_id == $row['linkid'] && $action == "add") ) {
+				if ( (isset($row['link_category']) && $row['link_category'] == $cat_id) || (isset($row['linkid']) && $cat_id == $row['linkid'] && $action == "add") ) {
 					$text .= $rs -> form_option($cat_name, "1", $cat_id, "");
 				} else {
 					$text .= $rs -> form_option($cat_name, "0", $cat_id, "");
@@ -589,14 +597,22 @@ class linkclass {
 	}
 
 	function show_links() {
-		global $sql, $qs, $rs, $ns, $tp;
+		global $sql, $qs, $rs, $ns, $tp, $from;
+		$number = "20";
 
-		if ($sql->db_Select("links_page_cat", "link_category_name", "link_category_id='".$qs[2]."' " )) {
-			$row = $sql->db_Fetch();
-			$caption = LCLAN_ITEM_2." ".$row['link_category_name'];
+		if($qs[2] == "all"){
+			$caption = LCLAN_ITEM_38;
+			$qry = " link_id != '' ORDER BY link_name ASC";
+		}else{
+			if ($sql->db_Select("links_page_cat", "link_category_name", "link_category_id='".$qs[2]."' " )) {
+				$row = $sql->db_Fetch();
+				$caption = LCLAN_ITEM_2." ".$row['link_category_name'];
+			}
+			$qry = " link_category=".$qs[2]." ORDER BY link_order, link_id ASC";
 		}
 
-		if (!$link_total = $sql->db_Select("links_page", "*", "link_category=".$qs[2]." ORDER BY link_order, link_id ASC")) {
+		$link_total = $sql->db_Select("links_page", "*", " ".$qry." ");
+		if (!$sql->db_Select("links_page", "*", " ".$qry." LIMIT ".$from.",".$number." ")) {
 			js_location(e_SELF."?link");
 		}else{
 			$text = $rs->form_open("post", e_SELF.(e_QUERY ? "?".e_QUERY : ""), "myform_{$row['link_id']}", "", "");
@@ -668,6 +684,10 @@ class linkclass {
 			".$rs->form_close();
 		}
 		$ns->tablerender($caption, $text);
+
+		require_once(e_HANDLER."np_class.php");
+		$np_querystring = (isset($qs[0]) ? $qs[0] : "").(isset($qs[1]) ? ".".$qs[1] : "").(isset($qs[2]) ? ".".$qs[2] : "");
+		$ix = new nextprev(e_SELF, $from, $number, $link_total, NP_3, ($np_querystring ? $np_querystring : ""));
 	}
 
 	function show_cat_create() {
@@ -837,6 +857,13 @@ class linkclass {
 				".$rs->form_button("submit", "update_category_order", LCLAN_CAT_10)."
 				</td>
 				</tr>";
+			}else{
+				$text .= "
+				<tr>
+				<td class='forumheader' colspan='2'>&nbsp;</td>
+				<td class='forumheader' style='width:5%; text-align:center'>".$rs->form_button("button", "viewalllinks", LCLAN_ITEM_37, "onclick=\"document.location='".e_SELF."?link.view.all';\"")."
+				</td>
+				</tr>";
 			}
 			$text .= "
 			</table>
@@ -852,13 +879,12 @@ class linkclass {
 	function show_submitted() {
 		global $sql, $rs, $qs, $ns, $tp;
 
-		$text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
 		if (!$submitted_total = $sql->db_Select("tmp", "*", "tmp_ip='submitted_link' ")) {
-			$text .= "<div style='text-align:center'>".LCLAN_SL_2."</div>";
+			$text = "<div style='text-align:center'>".LCLAN_SL_2."</div>";
 		}else{
-			$text .= "
+			$text = "
 			".$rs->form_open("post", e_SELF."?sn", "submitted_links")."
-			<table class='fborder' style='width:99%'>
+			<table class='fborder' style='".ADMIN_WIDTH."'>
 			<tr>
 			<td style='width:60%' class='fcaption'>".LCLAN_SL_3."</td>
 			<td style='width:30%' class='fcaption'>".LCLAN_SL_4."</td>
@@ -881,7 +907,6 @@ class linkclass {
 			}
 			$text .= "</table>".$rs->form_close();
 		}
-		$text .= "</div>";
 		$ns->tablerender(LCLAN_SL_1, $text);
 	}
 

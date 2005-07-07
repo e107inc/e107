@@ -5,7 +5,15 @@ include_once(file_exists($lan_file) ? $lan_file : $plugindir."languages/English.
 if(!e_QUERY){
 	$text = LAN_ADMIN_HELP_1;
 }else{
-	$qs = explode(".", e_QUERY);
+	if(e_QUERY){
+		$qs = explode(".", e_QUERY);
+
+		if(is_numeric($qs[0])){
+			$from = array_shift($qs);
+		}else{
+			$from = "0";
+		}
+	}
 
 	//##### LINK --------------------------------------------------
 		//manage Link items
@@ -15,7 +23,7 @@ if(!e_QUERY){
 		}elseif($qs[0] == "link" && $qs[1] == "edit" && is_numeric($qs[2]) ){
 			$text = LAN_ADMIN_HELP_9;
 		//view links in cat
-		}elseif($qs[0] == "link" && $qs[1] == "view" && is_numeric($qs[2]) ){
+		}elseif($qs[0] == "link" && $qs[1] == "view" && (is_numeric($qs[2]) || $qs[2] == "all") ){
 			$text = LAN_ADMIN_HELP_8;
 		//create
 		}elseif($qs[0] == "link" && $qs[1] == "create" && !isset($qs[2])){

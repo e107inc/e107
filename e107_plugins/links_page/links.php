@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-07-05 12:27:49 $
+|     $Revision: 1.23 $
+|     $Date: 2005-07-07 12:52:10 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -340,7 +340,7 @@ function displayLinkComment(){
 }
 
 function displayLinkSubmit(){
-	global $qs, $sql, $tp, $rs, $ns, $linkspage_pref, $link_shortcodes, $LINK_SUBMIT_TABLE;
+	global $qs, $sql, $tp, $rs, $ns, $linkspage_pref, $link_shortcodes, $LINK_SUBMIT_TABLE, $LINK_SUBMIT_CAT;
 	if ($link_cats = $sql->db_Select("links_page_cat", "*", " link_category_class REGEXP '".e_CLASS_REGEXP."' ")) {
 		$LINK_SUBMIT_CAT = $rs -> form_select_open("cat_name");
 		while (list($cat_id, $cat_name, $cat_description) = $sql->db_Fetch()) {
