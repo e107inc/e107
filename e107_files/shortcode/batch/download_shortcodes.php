@@ -1,21 +1,4 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-07 15:08:14 $
-|     $Author: e107coders $
-+----------------------------------------------------------------------------+
-*/
 include_once(e_HANDLER.'shortcode_handler.php');
 $download_shortcodes = e_shortcode::parse_scbatch(__FILE__);
 /*
@@ -100,7 +83,6 @@ SC_END
 SC_BEGIN DOWNLOAD_LIST_LINK
 global $tp,$row,$pref;
 $agreetext = $tp->toJS($pref['agree_text']);
-
 	if($row['download_mirror_type']){
 		return ($pref['agree_flag'] ? "<a href='".e_SELF."?mirror.".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_SELF."?mirror.".$row['download_id']."'>");
 	}else{
