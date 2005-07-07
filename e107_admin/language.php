@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-06-27 21:52:03 $
+|     $Revision: 1.24 $
+|     $Date: 2005-07-07 14:59:56 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -32,7 +32,8 @@ $tabs = table_list(); // array("news","content","links");
 // list of languages.
 require_once(e_HANDLER."file_class.php");
 $fl = new e_file;
-$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
+$omit = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$',$pref['sitelanguage']);
+$lanlist = $fl->get_dirs(e_LANGUAGEDIR,'',$omit);
 
 if (isset($_POST['submit_prefs']) ) {
 
