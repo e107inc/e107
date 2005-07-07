@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-07-04 22:36:12 $
+|     $Revision: 1.20 $
+|     $Date: 2005-07-07 12:52:10 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -194,8 +194,8 @@ define("LCLAN_ITEM_33", "Are you sure you want to delete this link?");
 define("LCLAN_ITEM_34", "no icon");
 define("LCLAN_ITEM_35", "manage personal links");
 define("LCLAN_ITEM_36", "go");
-define("LCLAN_ITEM_37", "");
-define("LCLAN_ITEM_38", "");
+define("LCLAN_ITEM_37", "view all links");
+define("LCLAN_ITEM_38", "All Links");
 define("LCLAN_ITEM_39", "");
 
 define("LCLAN_ADMINMENU_1", "Link Options");

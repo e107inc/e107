@@ -392,5 +392,14 @@ return (isset($linkspage_pref['link_desc']) && $linkspage_pref['link_desc'] ? $t
 SC_END
 
 
+
+
+
+// LINK_SUBMIT_TABLE ------------------------------------------------
+SC_BEGIN LINK_SUBMIT_CAT
+global $LINK_SUBMIT_CAT;
+return $LINK_SUBMIT_CAT;
+SC_END
+
 */
 ?>

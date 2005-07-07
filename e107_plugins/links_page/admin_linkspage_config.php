@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_linkspage_config.php,v $
-|    $Revision: 1.3 $
-|    $Date: 2005-07-04 22:36:12 $
+|    $Revision: 1.4 $
+|    $Date: 2005-07-07 12:52:08 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -40,10 +40,18 @@ $linkspage_pref = $lc -> getLinksPagePref();
 
 $deltest = array_flip($_POST);
 
-if (e_QUERY) {
+//if (e_QUERY) {
+//	$qs = explode(".", e_QUERY);
+//}
+if(e_QUERY){
 	$qs = explode(".", e_QUERY);
-}
 
+	if(is_numeric($qs[0])){
+		$from = array_shift($qs);
+	}else{
+		$from = "0";
+	}
+}
 if(isset($_POST['delete'])){
 	$tmp = array_pop(array_flip($_POST['delete']));
 	list($delete, $del_id) = explode("_", $tmp);
@@ -133,7 +141,7 @@ if (isset($qs[0]) && $qs[0] == 'link') {
 		$lc->show_categories("link");
 
 	//view links in cat
-	}elseif (isset($qs[1]) && $qs[1] == 'view' && isset($qs[2]) && is_numeric($qs[2])) {
+	}elseif (isset($qs[1]) && $qs[1] == 'view' && isset($qs[2]) && (is_numeric($qs[2]) || $qs[2] == "all") ) {
 		$lc->show_links();
 
 	//edit link
@@ -203,13 +211,15 @@ function admin_linkspage_config_adminmenu(){
 	show_admin_menu(LCLAN_ADMINMENU_1, $act, $var);
 		
 	if($qs[0] != "opt"){
+		unset($var);
+		$var=array();
 		if ($sql->db_Select("links_page_cat", "*")) {
 			while ($row = $sql->db_Fetch()) {
-				$cat_var[$row['link_category_id']]['text'] = $row['link_category_name'];
-				$cat_var[$row['link_category_id']]['link'] = e_SELF."?link.view.".$row['link_category_id'];
+				$var[$row['link_category_id']]['text'] = $row['link_category_name'];
+				$var[$row['link_category_id']]['link'] = e_SELF."?link.view.".$row['link_category_id'];
 			}
 			$active = ($qs[0] == 'link') ? $id : FALSE;
-			show_admin_menu(LCLAN_ADMINMENU_8, $active, $cat_var);
+			show_admin_menu(LCLAN_ADMINMENU_8, $active, $var);
 		}
 	}
 	if(isset($qs[0]) && $qs[0] == "opt"){
