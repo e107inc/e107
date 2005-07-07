@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-07-06 00:41:08 $
+|     $Revision: 1.45 $
+|     $Date: 2005-07-07 15:16:57 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@ require_once("class2.php");
 require_once(e_HANDLER."comment_class.php");
 require_once(e_FILE."shortcode/batch/download_shortcodes.php");
 unset($text);
-
+$agreetext = $tp->toJS($pref['agree_text']);
 $cobj = new comment;
 global $tp;
 
@@ -784,9 +784,9 @@ function parse_download_cat_child_table($row, $subList)
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $template));
 }
 
+
 function parse_download_list_table($row) {
 	global $download_shortcodes,$tp,$current_row,$DOWNLOAD_LIST_TABLE, $rater, $pref, $gen, $agreetext;
-
 
 	$current_row = ($current_row) ? 0 : 1;  // Alternating CSS for each row.(backwards compatible)
 	$template = ($current_row == 1) ? $DOWNLOAD_LIST_TABLE : str_replace("forumheader3","forumheader3 forumheader3_alt",$DOWNLOAD_LIST_TABLE);
