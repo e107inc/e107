@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-07-05 09:56:32 $
+|     $Revision: 1.7 $
+|     $Date: 2005-07-08 12:54:56 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -216,6 +216,9 @@ define("CONTENT_ADMIN_ITEM_LAN_118", "Ingen");
 define("CONTENT_ADMIN_ITEM_LAN_119", "tilldelad");
 define("CONTENT_ADMIN_ITEM_LAN_120", "standardlayout");
 
+define("CONTENT_ADMIN_ITEM_LAN_121", "Ingen ny okon uppladdad ännu");
+define("CONTENT_ADMIN_ITEM_LAN_122", "Ingen ny bilaga uppladdad ännu");
+define("CONTENT_ADMIN_ITEM_LAN_123", "Ingen ny bild uppladdad ännu");
 
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "Ordningen är stigande");
@@ -495,7 +498,7 @@ define("CONTENT_ADMIN_OPT_LAN_9", "Tillåt insändning av objekt?");
 define("CONTENT_ADMIN_OPT_LAN_10", "Vem kan sända in objekt?");
 define("CONTENT_ADMIN_OPT_LAN_11", "Direktpostning");
 define("CONTENT_ADMIN_OPT_LAN_12", "Om aktiverad kommer ett insänt objekt att läggas till i databasen och bli synligt omgående, annars måste en sajtadmin godkänna objektet.");
-define("CONTENT_ADMIN_OPT_LAN_13", "Här kan du ange var dina bilder finns, eller kommer att sparas. Använd paranteserna ( { } ) för de generella e107 relaterade sökvägsvariablerna (som t.ex. ( {e_PLUGIN} eller {e_IMAGE} ). Det behövs två versioner för kategoriikoner, en liten och en stor version av ikonerna.");
+define("CONTENT_ADMIN_OPT_LAN_13", "Här kan du ange var dina bilder finns, eller kommer att sparas. Använd paranteserna ( { } ) för de generella e107 relaterade sökvägsvariablerna (som t.ex. ( {e_PLUGIN} eller {e_IMAGE} ). Det behövs två versioner för kategoriikoner, en liten och en stor version av ikonerna. TMP-variablerna krävs för uppladdning, du måste skapa dem!");
 define("CONTENT_ADMIN_OPT_LAN_15", "Sökväg till kategoriikoner (stora)");
 define("CONTENT_ADMIN_OPT_LAN_16", "Sökväg till kategoriikoner (små)");
 define("CONTENT_ADMIN_OPT_LAN_17", "Sökväg till objektikoner");
@@ -520,7 +523,7 @@ define("CONTENT_ADMIN_OPT_LAN_34", "Arkiv");
 define("CONTENT_ADMIN_OPT_LAN_35", "Rankning");
 define("CONTENT_ADMIN_OPT_LAN_36", "Delningstecken för bakåtspårningen");
 define("CONTENT_ADMIN_OPT_LAN_37", "Ange hur bakåtspårningsinformationen skall visas");
-define("CONTENT_ADMIN_OPT_LAN_38", "");
+define("CONTENT_ADMIN_OPT_LAN_38", "TMP");
 define("CONTENT_ADMIN_OPT_LAN_39", "eko");
 define("CONTENT_ADMIN_OPT_LAN_40", "Använd separat meny");
 define("CONTENT_ADMIN_OPT_LAN_41", "Kombinera i en meny");
