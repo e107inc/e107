@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-06 16:18:15 $
+|     $Revision: 1.5 $
+|     $Date: 2005-07-08 03:54:41 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
@@ -228,6 +228,11 @@ define("LAN_PLUGIN","Įskiepis");
 define("LAN_ORDER","Eilė");
 
 define("LAN_SELECT","Pasirinkti ...");
-define("LAN_ADMIN","Admin");
+define("LAN_ADMIN","Administruoti");
+define("LAN_DISPLAYOPT", "Redaguoti ekrano nuostatas");
+define("LAN_GOPAGE", "Go to page:");
+define("LAN_DATESTAMP","Datos šablonas");
+define("LAN_OPTIONAL", "pasirinktinai");
+define("LAN_INACTIVE","Neaktyvus");
 
 ?>

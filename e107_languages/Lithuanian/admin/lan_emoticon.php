@@ -1,39 +1,33 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_emoticon.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:32:34 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-08 03:54:41 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("EMOLAN_1", "Emote activation");
-define("EMOLAN_2", "Name");
-define("EMOLAN_3", "Emotes");
-define("EMOLAN_4", "Activate emoticons?");
+define("EMOLAN_1", "Jausmukų aktyvacija");
+define("EMOLAN_2", "Pavadinimas");
+define("EMOLAN_3", "Jausmukai");
+define("EMOLAN_4", "Aktyvuoti jausmukus?");
 
-define("EMOLAN_5", "Image");
-define("EMOLAN_6", "Emote Code");
-define("EMOLAN_7", "seperate multiple entries with spaces");
+define("EMOLAN_5", "Piktograma");
+define("EMOLAN_6", "Jausmuko kodas");
+define("EMOLAN_7", "atskirkite kelis jausmuko kodus tuščiu tarpu");
 
-define("EMOLAN_8", "Status");
-define("EMOLAN_9", "Options");
-define("EMOLAN_10", "Active");
-define("EMOLAN_11", "Activate pack'");
+define("EMOLAN_8", "Būsena");
+define("EMOLAN_9", "Nuostatos");
+define("EMOLAN_10", "Aktyvi");
+define("EMOLAN_11", "Aktyvuoti kolekciją'");
 
-define("EMOLAN_12", "Edit / configure this pack");
-define("EMOLAN_13", "Installed packs");
+define("EMOLAN_12", "Redaguoti / tvarkyti šią kolekciją");
+define("EMOLAN_13", "Įdiegtos kolekcijos");
 
-define("EMOLAN_14", "Save configuration");
-define("EMOLAN_15", "Edit / configure emotes");
-define("EMOLAN_16", "Emote configuration saved");
-define("EMOLAN_2", "Name");
-define("EMOLAN_2", "Name");
-define("EMOLAN_2", "Name");
-define("EMOLAN_2", "Name");
-define("EMOLAN_2", "Name");
-define("EMOLAN_2", "Name");
+define("EMOLAN_14", "Išsaugoti nuostatas");
+define("EMOLAN_15", "Redaguoti / tvarkyti jausmukų kolekciją");
+define("EMOLAN_16", "Jausmukų nuostatos išsaugotos");
 
 ?>
