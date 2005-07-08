@@ -1,3 +1,5 @@
+//<?php
+
 global $pref, $e107cache;
 
 if($pref['smiley_activate']) {
@@ -9,6 +11,7 @@ $replace = array("\r\n","\\",'$');
 $code_text = str_replace($search, $replace, $code_text);
 
 if($pref['useGeshi'] && file_exists(e_PLUGIN."geshi/geshi.php")) {
+
 	$code_md5 = md5($code_text);
 	if(!$CodeCache = $e107cache->retrieve('GeshiParsed_'.$code_md5)) {
 		require_once(e_PLUGIN."geshi/geshi.php");
@@ -17,6 +20,7 @@ if($pref['useGeshi'] && file_exists(e_PLUGIN."geshi/geshi.php")) {
 		} else {
 			$geshi = new GeSHi($code_text, ($pref['defaultLanGeshi'] ? $pref['defaultLanGeshi'] : 'php'), e_PLUGIN."geshi/geshi/");
 		}
+		$geshi->set_encoding(CHARSET);
 		$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
 		$geshi->set_header_type(GESHI_HEADER_DIV);
 		$CodeCache = $geshi->parse_code();
