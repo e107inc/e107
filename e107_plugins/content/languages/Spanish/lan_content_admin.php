@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-05 22:56:08 $
+|     $Revision: 1.4 $
+|     $Date: 2005-07-08 17:26:08 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -464,8 +464,8 @@ define("CONTENT_PRESET_LAN_4", "Columnas y filas tienen que tener valores numér
 define("CONTENT_PRESET_LAN_5", Necesita proveer algunas opciones");
 define("CONTENT_PRESET_LAN_6", "Años desde y años a tiene que ser valores numéricos");
 define("CONTENT_PRESET_LAN_7", "Generador de campos preseleccionados de contenido");
-define("CONTENT_PRESET_LAN_8", "Formulario para crear una nueva preselección de fecha");
-define("CONTENT_PRESET_LAN_9", "Campo nombre");
+define("CONTENT_PRESET_LAN_8", "Crear una nueva preselección de tipo de tag de datos");
+define("CONTENT_PRESET_LAN_9", "Nombre del campo");
 define("CONTENT_PRESET_LAN_10", "Tamaño");
 define("CONTENT_PRESET_LAN_11", "Máx. longitud");
 define("CONTENT_PRESET_LAN_12", "Columnas");
