@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-05 09:13:55 $
+|     $Revision: 1.4 $
+|     $Date: 2005-07-08 10:02:40 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -221,6 +221,9 @@ define("CONTENT_ADMIN_ITEM_LAN_118", "no");
 define("CONTENT_ADMIN_ITEM_LAN_119", "assigned");
 define("CONTENT_ADMIN_ITEM_LAN_120", "default layout");
 
+define("CONTENT_ADMIN_ITEM_LAN_121", "no new icon uploaded yet");
+define("CONTENT_ADMIN_ITEM_LAN_122", "no new attachment uploaded yet");
+define("CONTENT_ADMIN_ITEM_LAN_123", "no new image uploaded yet");
 
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "order is increased");
@@ -519,7 +522,7 @@ define("CONTENT_ADMIN_OPT_LAN_9", "allow submit items ?");
 define("CONTENT_ADMIN_OPT_LAN_10", "who can submit items ?");
 define("CONTENT_ADMIN_OPT_LAN_11", "direct posting");
 define("CONTENT_ADMIN_OPT_LAN_12", "if enabled, a submitted item is directly added in the database and will be immediately visible, else a site admin needs to approve the item.");
-define("CONTENT_ADMIN_OPT_LAN_13", "here you can define where your images are or will be stored. use braces ( { } ) for the general e107 related path variables (like ( {e_PLUGIN} or {e_IMAGE} ). for the content category icons two versions are needed, one small and one large set of icons.");
+define("CONTENT_ADMIN_OPT_LAN_13", "here you can define where your images are or will be stored. use braces ( { } ) for the general e107 related path variables (like ( {e_PLUGIN} or {e_IMAGE} ). for the content category icons two versions are needed, one small and one large set of icons. The TMP paths are needed for upload, you must create these !");
 define("CONTENT_ADMIN_OPT_LAN_15", "path to content cat icons (large)");
 define("CONTENT_ADMIN_OPT_LAN_16", "path to content cat icons (small)");
 define("CONTENT_ADMIN_OPT_LAN_17", "path to content item icons");
@@ -544,7 +547,7 @@ define("CONTENT_ADMIN_OPT_LAN_34", "archive");
 define("CONTENT_ADMIN_OPT_LAN_35", "score");
 define("CONTENT_ADMIN_OPT_LAN_36", "breadcrumb seperator character");
 define("CONTENT_ADMIN_OPT_LAN_37", "define how to render the breadcrumb information");
-define("CONTENT_ADMIN_OPT_LAN_38", "");
+define("CONTENT_ADMIN_OPT_LAN_38", "tmp");
 define("CONTENT_ADMIN_OPT_LAN_39", "echo");
 define("CONTENT_ADMIN_OPT_LAN_40", "use a seperate menu");
 define("CONTENT_ADMIN_OPT_LAN_41", "combine into one menu");

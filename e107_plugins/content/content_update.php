@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-07-05 17:32:46 $
+|     $Revision: 1.7 $
+|     $Date: 2005-07-08 10:02:22 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -205,22 +205,24 @@ if($newcontent == 0){
 			$text .= $SPACER;
 
 			//unknown rows
-			$text .= "<tr><td class='fcaption' colspan='2'>".CONTENT_ADMIN_CONVERSION_LAN_51."</td></tr>";
-			$text .= "
-			<tr>
-				<td class='forumheader3' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ICON_ERROR." ".count($unknown_array[0])." ".CONTENT_ADMIN_CONVERSION_LAN_51."</td>
-				<td class='forumheader3'>
-					<a style='cursor: pointer; cursor: hand' onclick=\"expandit('unknownrows');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
-					<div id='unknownrows' style='display: none;'>
-						<table style='width:100%; border:0;'>";
-						for($i=0;$i<count($unknown_array[0]);$i++){
-							$text .= "<tr><td style='width:25%; white-space:nowrap;'>".CONTENT_ICON_ERROR." ".$unknown_array[0][$i]."</td><td>".$unknown_array[2][$i]." ".$rs -> form_hidden("unknownrows[]", $unknown_array[1][$i])."</td></tr>";
-						}
-						$text .= "
-						</table>
-					</div>
-				</td>
-			</tr>";	
+			if(count($unknown_array[0]) > 0){
+				$text .= "<tr><td class='fcaption' colspan='2'>".CONTENT_ADMIN_CONVERSION_LAN_51."</td></tr>";
+				$text .= "
+				<tr>
+					<td class='forumheader3' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ICON_ERROR." ".count($unknown_array[0])." ".CONTENT_ADMIN_CONVERSION_LAN_51."</td>
+					<td class='forumheader3'>
+						<a style='cursor: pointer; cursor: hand' onclick=\"expandit('unknownrows');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
+						<div id='unknownrows' style='display: none;'>
+							<table style='width:100%; border:0;'>";
+							for($i=0;$i<count($unknown_array[0]);$i++){
+								$text .= "<tr><td style='width:25%; white-space:nowrap;'>".CONTENT_ICON_ERROR." ".$unknown_array[0][$i]."</td><td>".$unknown_array[2][$i]." ".$rs -> form_hidden("unknownrows[]", $unknown_array[1][$i])."</td></tr>";
+							}
+							$text .= "
+							</table>
+						</div>
+					</td>
+				</tr>";
+			}
 
 			$text .= "
 

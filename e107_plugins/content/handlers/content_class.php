@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.75 $
-|		$Date: 2005-07-01 16:29:39 $
+|		$Revision: 1.76 $
+|		$Date: 2005-07-08 10:02:22 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -74,9 +74,16 @@ class content{
 			//PATH THEME CSS
 			$content_pref["content_cat_icon_path_large_{$id}"] = "{e_PLUGIN}content/images/cat/48/";	//default path to large categry icons
 			$content_pref["content_cat_icon_path_small_{$id}"] = "{e_PLUGIN}content/images/cat/16/";	//default path to small category icons
+
 			$content_pref["content_icon_path_{$id}"] = "{e_PLUGIN}content/images/icon/";				//default path to item icons
+			$content_pref["content_icon_path_tmp_{$id}"] = "{e_PLUGIN}content/images/icon/tmp/";		//default tmp path to item icons
+			
 			$content_pref["content_image_path_{$id}"] = "{e_PLUGIN}content/images/image/";				//default path to item images
+			$content_pref["content_image_path_tmp_{$id}"] = "{e_PLUGIN}content/images/image/tmp/";		//default tmp path to item images
+			
 			$content_pref["content_file_path_{$id}"] = "{e_PLUGIN}content/images/file/";				//default path to item file attachments
+			$content_pref["content_file_path_tmp_{$id}"] = "{e_PLUGIN}content/images/file/tmp/";		//default tmp path to item file attachments
+			
 			$content_pref["content_theme_{$id}"] = "default";											//choose theme for main parent
 			$content_pref["content_layout_{$id}"] = "content_content_template.php";						//choose default layout scheme
 
