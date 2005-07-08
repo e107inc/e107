@@ -1,9 +1,9 @@
 global $pref, $e107cache;
 
-if($pref['smiley_activate'])
-{
+if($pref['smiley_activate']) {
 	$code_text = $tp -> e_emote -> filterEmotesRev($code_text);
 }
+
 $search = array('[E_NL]','&#092;','&#036;');
 $replace = array("\r\n","\\",'$');
 $code_text = str_replace($search, $replace, $code_text);
@@ -17,7 +17,7 @@ if($pref['useGeshi'] && file_exists(e_PLUGIN."geshi/geshi.php")) {
 		} else {
 			$geshi = new GeSHi($code_text, ($pref['defaultLanGeshi'] ? $pref['defaultLanGeshi'] : 'php'), e_PLUGIN."geshi/geshi/");
 		}
-		$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);	
+		$geshi->enable_line_numbers(GESHI_NORMAL_LINE_NUMBERS);
 		$geshi->set_header_type(GESHI_HEADER_DIV);
 		$CodeCache = $geshi->parse_code();
 		$e107cache->set('GeshiParsed_'.$code_md5, $CodeCache);
@@ -25,7 +25,13 @@ if($pref['useGeshi'] && file_exists(e_PLUGIN."geshi/geshi.php")) {
 	return str_replace("&amp;", "&", $CodeCache);
 }
 
-$highlighted_text = highlight_string(html_entity_decode($code_text,ENT_QUOTES,CHARSET),TRUE);
+if(CHARSET == 'utf-8' && function_exists("utf8_encode")) {
+	$code_text = utf8_html_entity_decode($code_text);
+} else {
+	$code_text = html_entity_decode($code_text, ENT_QUOTES, CHARSET);
+}
+$highlighted_text = highlight_string($code_text, TRUE);
+
 $divClass = ($parm) ? $parm : 'code_highlight';
 
 return "<div class='{$divClass}'>{$highlighted_text}</div>";
