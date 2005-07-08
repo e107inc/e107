@@ -167,11 +167,11 @@ $CALENDAR_CALENDAR_WEEKSWITCH = "</tr><tr>";
 //today
 $CALENDAR_CALENDAR_DAY_TODAY = "
 <td class='forumheader3' style='vertical-align:top; width:14%; height:90px; padding-bottom:0px;padding-right:0px; margin-right:0px; padding:2px;'>
-<div style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>{CALENDAR_CALENDAR_DAY_TODAY_HEADING}</div>";
+<span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'>{CALENDAR_CALENDAR_DAY_TODAY_HEADING}</span>";
 
 //day has events
 $CALENDAR_CALENDAR_DAY_EVENT = "
-<td class='forumheader3' style='z-index: 1;vertical-align:top; width:14%; height:90px;padding-bottom:0px;padding-right:0px; margin-right:0px; padding:2px;'>
+<td class='forumheader3' style='z-index: 1;vertical-align:top; width:14%; height:90px; padding-bottom:0px;padding-right:0px; margin-right:0px; padding:2px;'>
 <span style='z-index: 2; position:relative; top:1px; height:10px;padding-right:0px'><b>{CALENDAR_CALENDAR_DAY_EVENT_HEADING}</b></span>";
 
 // no events and not today
