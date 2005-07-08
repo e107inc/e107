@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.82 $
-|		$Date: 2005-07-06 10:33:15 $
+|		$Revision: 1.83 $
+|		$Date: 2005-07-08 10:02:23 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -96,20 +96,26 @@ class contentform{
 				$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 				$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
 				$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path_{$mainparent}"]);
-				$content_tmppath_icon			= e_PLUGIN."content/images/icon/tmp/";
-				$content_tmppath_file			= e_PLUGIN."content/images/file/tmp/";
-				$content_tmppath_image			= e_PLUGIN."content/images/image/tmp/";
+				
+				$content_pref["content_icon_path_tmp_{$mainparent}"] = ($content_pref["content_icon_path_tmp_{$mainparent}"] ? $content_pref["content_icon_path_tmp_{$mainparent}"] : $content_pref["content_icon_path_{$mainparent}"]."tmp/");
+				$content_pref["content_file_path_tmp_{$mainparent}"] = ($content_pref["content_file_path_tmp_{$mainparent}"] ? $content_pref["content_file_path_tmp_{$mainparent}"] : $content_pref["content_file_path_{$mainparent}"]."tmp/");
+				$content_pref["content_image_path_tmp_{$mainparent}"] = ($content_pref["content_image_path_tmp_{$mainparent}"] ? $content_pref["content_image_path_tmp_{$mainparent}"] : $content_pref["content_image_path_{$mainparent}"]."tmp/");
+						
+				$content_tmppath_icon			= $tp -> replaceConstants($content_pref["content_icon_path_tmp_{$mainparent}"]);
+				$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp_{$mainparent}"]);
+				$content_tmppath_image			= $tp -> replaceConstants($content_pref["content_image_path_tmp_{$mainparent}"]);
 
 				if($sql -> db_Select("pcontent", "content_heading", " content_id='".$_POST['parent']."' ")){
 					$row = $sql -> db_Fetch();
 					$PARENT = $row['content_heading'];
 				}
+				$content_text = $tp -> post_toHTML($_POST['content_text']);
 
 				$CONTENT_CONTENT_PREVIEW_CATEGORY = ($_POST['parent'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_57.$TDPOST.$TDPRE2.$PARENT.$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_HEADING = ($_POST['content_heading'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_11.$TDPOST.$TDPRE2.$_POST['content_heading'].$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_SUBHEADING = ($_POST['content_subheading'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_16.$TDPOST.$TDPRE2.$_POST['content_subheading'].$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_SUMMARY = ($_POST['content_summary'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_17.$TDPOST.$TDPRE2.$_POST['content_summary'].$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_TEXT = ($_POST['content_text'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_18.$TDPOST.$TDPRE2.$_POST['content_text'].$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_TEXT = ($_POST['content_text'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_18.$TDPOST.$TDPRE2.$content_text.$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_AUTHORNAME = ($_POST['content_author_name'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_10." ".CONTENT_ADMIN_ITEM_LAN_14.$TDPOST.$TDPRE2.$_POST['content_author_name'].$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_AUTHOREMAIL = ($_POST['content_author_email'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_10." ".CONTENT_ADMIN_ITEM_LAN_15.$TDPOST.$TDPRE2.$_POST['content_author_email'].$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_COMMENT = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_36.$TDPOST.$TDPRE2.($_POST['content_comment'] ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86).$TDPOST.$TRPOST;
@@ -233,9 +239,14 @@ class contentform{
 						$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 						$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
 						$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path_{$mainparent}"]);
-						$content_tmppath_icon			= e_PLUGIN."content/images/icon/tmp/";
-						$content_tmppath_file			= e_PLUGIN."content/images/file/tmp/";
-						$content_tmppath_image			= e_PLUGIN."content/images/image/tmp/";
+						
+						$content_pref["content_icon_path_tmp_{$mainparent}"] = ($content_pref["content_icon_path_tmp_{$mainparent}"] ? $content_pref["content_icon_path_tmp_{$mainparent}"] : $content_pref["content_icon_path_{$mainparent}"]."tmp/");
+						$content_pref["content_file_path_tmp_{$mainparent}"] = ($content_pref["content_file_path_tmp_{$mainparent}"] ? $content_pref["content_file_path_tmp_{$mainparent}"] : $content_pref["content_file_path_{$mainparent}"]."tmp/");
+						$content_pref["content_image_path_tmp_{$mainparent}"] = ($content_pref["content_image_path_tmp_{$mainparent}"] ? $content_pref["content_image_path_tmp_{$mainparent}"] : $content_pref["content_image_path_{$mainparent}"]."tmp/");
+						
+						$content_tmppath_icon			= $tp -> replaceConstants($content_pref["content_icon_path_tmp_{$mainparent}"]);
+						$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp_{$mainparent}"]);
+						$content_tmppath_image			= $tp -> replaceConstants($content_pref["content_image_path_tmp_{$mainparent}"]);
 
 						if(!is_object($sql)){ $sql = new db; }
 						$sql2 = new db;
@@ -629,13 +640,17 @@ class contentform{
 								".$rs -> form_text("content_icon", 60, $row['content_icon'], 100)."
 								".$rs -> form_button("button", '', CONTENT_ADMIN_ITEM_LAN_105, "onclick=\"expandit('divicon')\"")."
 								<div id='divicon' style='{head}; display:none'>";
-								foreach($iconlist as $icon){
-									if(file_exists($icon['path']."thumb_".$icon['fname'])){
-										$img = "<img src='".$icon['path']."thumb_".$icon['fname']."' style='width:100px; border:0' alt='' />";
-									}else{
-										$img = "<img src='".$icon['path'].$icon['fname']."' style='width:100px; border:0' alt='' />";
+								if(empty($iconlist)){
+									$TOPIC_FIELD .= CONTENT_ADMIN_ITEM_LAN_121;
+								}else{
+									foreach($iconlist as $icon){
+										if(file_exists($icon['path']."thumb_".$icon['fname'])){
+											$img = "<img src='".$icon['path']."thumb_".$icon['fname']."' style='width:100px; border:0' alt='' />";
+										}else{
+											$img = "<img src='".$icon['path'].$icon['fname']."' style='width:100px; border:0' alt='' />";
+										}
+										$TOPIC_FIELD .= "<a href=\"javascript:insertext('".$icon['fname']."','content_icon','divicon')\">".$img."</a> ";
 									}
-									$TOPIC_FIELD .= "<a href=\"javascript:insertext('".$icon['fname']."','content_icon','divicon')\">".$img."</a> ";
 								}
 								$TOPIC_FIELD .= "</div>";
 
@@ -666,8 +681,12 @@ class contentform{
 								".$num." ".$rs -> form_text("content_files".$i."", 60, $attachments[$i], 100)."
 								".$rs -> form_button("button", '', CONTENT_ADMIN_ITEM_LAN_105, "onclick=\"expandit('divfile".$i."')\"")."
 								<div id='divfile".$i."' style='{head}; display:none'>";
-								foreach($filelist as $file){
-									$TOPIC_FIELD .= CONTENT_ICON_FILE." <a href=\"javascript:insertext('".$file['fname']."','content_files".$i."','divfile".$i."')\">".$file['fname']."</a><br />";
+								if(empty($iconlist)){
+									$TOPIC_FIELD .= CONTENT_ADMIN_ITEM_LAN_122;
+								}else{
+									foreach($filelist as $file){
+										$TOPIC_FIELD .= CONTENT_ICON_FILE." <a href=\"javascript:insertext('".$file['fname']."','content_files".$i."','divfile".$i."')\">".$file['fname']."</a><br />";
+									}
 								}
 								$TOPIC_FIELD .= "</div></div>";
 							}
@@ -698,13 +717,17 @@ class contentform{
 								".$num." ".$rs -> form_text("content_images".$i."", 60, $imagesarray[$i], 100)."
 								".$rs -> form_button("button", '', CONTENT_ADMIN_ITEM_LAN_105, "onclick=\"expandit('divimage".$i."')\"")."
 								<div id='divimage".$i."' style='{head}; display:none'>";
-								foreach($imagelist as $image){
-									if(file_exists($image['path']."thumb_".$image['fname'])){
-										$img = "<img src='".$image['path']."thumb_".$image['fname']."' style='width:100px; border:0' alt='' />";
-									}else{
-										$img = "<img src='".$image['path'].$image['fname']."' style='width:100px; border:0' alt='' />";
+								if(empty($iconlist)){
+									$TOPIC_FIELD .= CONTENT_ADMIN_ITEM_LAN_123;
+								}else{
+									foreach($imagelist as $image){
+										if(file_exists($image['path']."thumb_".$image['fname'])){
+											$img = "<img src='".$image['path']."thumb_".$image['fname']."' style='width:100px; border:0' alt='' />";
+										}else{
+											$img = "<img src='".$image['path'].$image['fname']."' style='width:100px; border:0' alt='' />";
+										}
+										$TOPIC_FIELD .= "<a href=\"javascript:insertext('".$image['fname']."','content_images".$i."','divimage".$i."')\">".$img."</a> ";
 									}
-									$TOPIC_FIELD .= "<a href=\"javascript:insertext('".$image['fname']."','content_images".$i."','divimage".$i."')\">".$img."</a> ";
 								}
 								$TOPIC_FIELD .= "</div></div>";								
 							}
@@ -2304,22 +2327,43 @@ class contentform{
 			$TOPIC_FIELD = $rs -> form_text("content_cat_icon_path_small_{$id}", 60, $content_pref["content_cat_icon_path_small_{$id}"], 100);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
+			$text .= "<tr><td style='border:0; height:20px;' colspan='2'></td></tr>";
+			
 			//content_icon_path_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_17;
 			$TOPIC_FIELD = $rs -> form_text("content_icon_path_{$id}", 60, $content_pref["content_icon_path_{$id}"], 100);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
+			//content_icon_path_tmp_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_38." ".CONTENT_ADMIN_OPT_LAN_17;
+			$TOPIC_FIELD = $rs -> form_text("content_icon_path_tmp_{$id}", 60, $content_pref["content_icon_path_tmp_{$id}"], 100);
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			$text .= "<tr><td style='border:0; height:20px;' colspan='2'></td></tr>";
+			
 			//content_image_path_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_18;
 			$TOPIC_FIELD = $rs -> form_text("content_image_path_{$id}", 60, $content_pref["content_image_path_{$id}"], 100);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
+			//content_image_path_tmp_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_38." ".CONTENT_ADMIN_OPT_LAN_18;
+			$TOPIC_FIELD = $rs -> form_text("content_image_path_tmp_{$id}", 60, $content_pref["content_image_path_tmp_{$id}"], 100);
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			$text .= "<tr><td style='border:0; height:20px;' colspan='2'></td></tr>";
+			
 			//content_file_path_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_19;
 			$TOPIC_FIELD = $rs -> form_text("content_file_path_{$id}", 60, $content_pref["content_file_path_{$id}"], 100);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
-			$text .= $TOPIC_ROW_SPACER;
+			//content_file_path_tmp_
+			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_38." ".CONTENT_ADMIN_OPT_LAN_19;
+			$TOPIC_FIELD = $rs -> form_text("content_file_path_tmp_{$id}", 60, $content_pref["content_file_path_tmp_{$id}"], 100);
+			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
+
+			$text .= "<tr><td style='border:0; height:20px;' colspan='2'></td></tr>";
 
 			//content_theme_
 			$dirlist = $fl->get_dirs($plugindir."templates/");
