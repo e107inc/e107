@@ -1,11 +1,18 @@
 <?php
 /*
-+---------------------------------------------------------------+|        e107 website system  Language File|     
-|        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_e107_update.php,v $|        $Revision: 1.2 $|        $Date: 2005-07-06 22:12:01 $|        $Author: e107dk $+---------------------------------------------------------------+*/
-define("LAN_UPDATE_1", "Opdater");
++---------------------------------------------------------------+
+|        e107 website system  Language File
+|     
+|        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_e107_update.php,v $
+|        $Revision: 1.3 $
+|        $Date: 2005-07-09 10:43:47 $
+|        $Author: e107dk $
++---------------------------------------------------------------+
+*/
+
 define("LAN_UPDATE_2", "Handling");
 define("LAN_UPDATE_3", "Ikke nødvendig");
-define("LAN_UPDATE_4", "Opdatering");
+
 define("LAN_UPDATE_5", "Opdateringer er tilgængelig");
 define("LAN_UPDATE_6", "Opdater alle");
 define("LAN_UPDATE_7", "Udført");
