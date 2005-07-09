@@ -4,18 +4,18 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_links.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:01 $
+|        $Revision: 1.3 $
+|        $Date: 2005-07-09 10:55:38 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
 define("LCLAN_1", "Indstillinger gemt");
-define("LCLAN_2", "Link oprettet.");
-define("LCLAN_3", "Link opdateret.");
+define("LCLAN_2", "Link oprettet i databasen.");
+define("LCLAN_3", "Link opdateret i databasen.");
 // define("LCLAN_4", "Link slettet.");
-define("LCLAN_6", "Ordnen oprettet");
+define("LCLAN_6", "Ordnen opateret");
 define("LCLAN_8", "Eksisterende links");
-define("LCLAN_12", "Linkkategori");
+define("LCLAN_12", "Link afviklings type");
 define("LCLAN_15", "Linknavn");
 define("LCLAN_16", "Link URL");
 define("LCLAN_17", "Linkbeskrivelse");
@@ -43,7 +43,7 @@ define("LCLAN_78", "Vis beskrivelse som Skærmtip");
 define("LCLAN_79", "Beskrivelse vil blive vist når musen peger på linket");
 define("LCLAN_80", "Aktiver udvidene under-menuer");
 define("LCLAN_83", "Undermenu generator");
-define("LCLAN_88", "Site links egenskaber");
+define("LCLAN_88", "Site Links Egenskaber");
 define("LCLAN_89", "Billede");
 define("LCLAN_90", "Link Navn");
 define("LCLAN_91", "Flyt");
@@ -51,7 +51,6 @@ define("LCLAN_95", "Gruppe");
 
 define("LCLAN_96", "Vist i dit tema som");
 
-define("LCLAN_81", "Under-menuer vil kun blive vist ved klik på deres forælder. (Link forælder er slået fra)");
 
 define("LINKLAN_1", "Åbner i et 800x600 vindue");
 define("LINKLAN_2", "Forælder");
