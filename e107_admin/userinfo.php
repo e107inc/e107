@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userinfo.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-04-02 21:06:52 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2005-07-09 14:39:52 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -45,7 +45,7 @@ if (isset($ipd)) {
 		$datestamp = $obj->convert_date($cb_datestamp, "short");
 		$post_author_id = substr($cb_nick, 0, strpos($cb_nick, "."));
 		$post_author_name = substr($cb_nick, (strpos($cb_nick, ".")+1));
-		$text .= "<img src='".THEME."images/".BULLET."' alt='bullet' />
+		$text .= "<img src='".THEME_ABS."images/".BULLET."' alt='bullet' />
 			<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>\n<div class=\"mediumtext\">".$datestamp."<br />". $cb_message."
 			</div><br />";
 	}
@@ -59,7 +59,7 @@ if (isset($ipd)) {
 		$datestamp = $obj->convert_date($comment_datestamp, "short");
 		$post_author_id = substr($comment_author, 0, strpos($comment_author, "."));
 		$post_author_name = substr($comment_author, (strpos($comment_author, ".")+1));
-		$text .= "<img src='".THEME."images/".BULLET."' alt='bullet' />
+		$text .= "<img src='".THEME_ABS."images/".BULLET."' alt='bullet' />
 			<span class=\"defaulttext\"><i>".$post_author_name." (".USFLAN_6.": ".$post_author_id.")</i></span>\n<div class=\"mediumtext\">".$datestamp."<br />". $comment_comment."</div><br />";
 	}
 

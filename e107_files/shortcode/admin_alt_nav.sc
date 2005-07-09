@@ -25,9 +25,9 @@ if (ADMIN) {
 		return $text;
 	}
 	if (file_exists(THEME.'nav_menu.js')) {
-		$text = "<script type='text/javascript' src='".THEME."nav_menu.js'></script>";
+		$text = "<script type='text/javascript' src='".THEME_ABS."nav_menu.js'></script>";
 	} else {
-		$text = "<script type='text/javascript' src='".e_FILE."nav_menu.js'></script>";
+		$text = "<script type='text/javascript' src='".e_FILE_ABS."nav_menu.js'></script>";
 	}
 	
 	$text .= "<div style='width: 100%'><table border='0' cellspacing='0' cellpadding='0' style='width: 100%'>
@@ -62,7 +62,7 @@ if (ADMIN) {
 			if(getperms('P'.$row['plugin_id'])){
 				include_once(e_PLUGIN.$row['plugin_path']."/plugin.php");
 				if($eplug_conffile){
-					$plugin_icon = $eplug_icon_small ? "<img src='".e_PLUGIN.$eplug_icon_small."' alt='".$eplug_caption."' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />" : E_16_PLUGIN;
+					$plugin_icon = $eplug_icon_small ? "<img src='".e_PLUGIN_ABS.$eplug_icon_small."' alt='".$eplug_caption."' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />" : E_16_PLUGIN;
 					$plugin_array[ucfirst($eplug_name)] = adnav_main($eplug_name, e_PLUGIN.$row['plugin_path']."/".$eplug_conffile, $plugin_icon);
 				}
 				unset($eplug_conffile, $eplug_name, $eplug_caption, $eplug_icon_small);
