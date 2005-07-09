@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-07-01 09:31:07 $
-|     $Author: lisa_ $
+|     $Revision: 1.44 $
+|     $Date: 2005-07-09 14:39:53 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -131,18 +131,18 @@ class comment {
 			$width = 0;
 		}
 		if(!defined("IMAGE_nonew_comments")){
-			define("IMAGE_nonew_comments", (file_exists(THEME."generic/nonew_comments.png") ? "<img src='".THEME."generic/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/nonew_comments.png' alt=''  />"));
+			define("IMAGE_nonew_comments", (file_exists(THEME."generic/nonew_comments.png") ? "<img src='".THEME_ABS."generic/nonew_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/nonew_comments.png' alt=''  />"));
 		}
 		if(!defined("IMAGE_new_comments")){
-			define("IMAGE_new_comments", (file_exists(THEME."generic/new_comments.png") ? "<img src='".THEME."generic/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE."generic/".IMODE."/new_comments.png' alt=''  /> "));
+			define("IMAGE_new_comments", (file_exists(THEME."generic/new_comments.png") ? "<img src='".THEME_ABS."generic/new_comments.png' alt=''  /> " : "<img src='".e_IMAGE_ABS."generic/".IMODE."/new_comments.png' alt=''  /> "));
 		}
 		$ns			= new e107table;
 		if(!$gen || !is_object($gen)){ $gen = new convert; }
 		$url		= e_PAGE."?".e_QUERY;
-		$unblock	= "[<a href='".e_BASE.e_ADMIN."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_1."</a>] ";
-		$block		= "[<a href='".e_BASE.e_ADMIN."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_2."</a>] ";
-		$delete		= "[<a href='".e_BASE.e_ADMIN."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_3."</a>] ";
-		$userinfo	= "[<a href='".e_BASE.e_ADMIN."userinfo.php?".$comrow['comment_ip']."'>".LAN_4."</a>]";
+		$unblock	= "[<a href='".e_ADMIN_ABS."comment.php?unblock-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_1."</a>] ";
+		$block		= "[<a href='".e_ADMIN_ABS."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_2."</a>] ";
+		$delete		= "[<a href='".e_ADMIN_ABS."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_3."</a>] ";
+		$userinfo	= "[<a href='".e_ADMIN_ABS."userinfo.php?".$comrow['comment_ip']."'>".LAN_4."</a>]";
 		
 		if (!$COMMENTSTYLE) {
 			global $THEMES_DIRECTORY;
@@ -187,13 +187,13 @@ class comment {
 		}
 
 		if(!defined("IMAGE_rank_main_admin_image")){
-			define("IMAGE_rank_main_admin_image", (isset($pref['rank_main_admin_image']) && $pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/main_admin.png' alt='' />"));
+			define("IMAGE_rank_main_admin_image", (isset($pref['rank_main_admin_image']) && $pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_IMAGE_ABS."forum/main_admin.png' alt='' />"));
 		}
 		if(!defined("IMAGE_rank_moderator_image")){
-			define("IMAGE_rank_moderator_image", (isset($pref['rank_moderator_image']) && $pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
+			define("IMAGE_rank_moderator_image", (isset($pref['rank_moderator_image']) && $pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_IMAGE_ABS."forum/admin.png' alt='' />"));
 		}
 		if(!defined("IMAGE_rank_admin_image")){
-			define("IMAGE_rank_admin_image", (isset($pref['rank_admin_image']) && $pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE."forum/admin.png' alt='' />"));
+			define("IMAGE_rank_admin_image", (isset($pref['rank_admin_image']) && $pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_IMAGE_ABS."forum/admin.png' alt='' />"));
 		}
 
 		$RATING = ($addrating==TRUE && $comrow['user_id'] ? $rater->composerating($thistable, $thisid, FALSE, $comrow['user_id']) : "");
@@ -386,7 +386,7 @@ class comment {
 			$ns->tablerender(LAN_99, $text);
 
 			if(ADMIN==TRUE && getperms("B")){
-				echo "<div style='text-align:right'><a href='".e_ADMIN."modcomment.php?$table.$id'>".LAN_314."</a></div><br />";
+				echo "<div style='text-align:right'><a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".LAN_314."</a></div><br />";
 			}
 		}
 		if($lock != "1"){

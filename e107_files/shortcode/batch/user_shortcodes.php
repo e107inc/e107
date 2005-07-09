@@ -130,9 +130,9 @@ if(defined("USER_REALNAME_ICON"))
 }
 if(file_exists(THEME."generic/user_realname.png"))
 {
-	return "<img src='".THEME."generic/user_realname.png' alt='' style='border:0px;vertical-align:middle;' /> ";
+	return "<img src='".THEME_ABS."generic/user_realname.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE."user_icons/user_realname_".IMODE.".png' alt='' style='border:0px;vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE_ABS."user_icons/user_realname_".IMODE.".png' alt='' style='border:0px;vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_REALNAME
@@ -147,9 +147,9 @@ if(defined("USER_EMAIL_ICON"))
 }
 if(file_exists(THEME."generic/email.png"))
 {
-	return "<img src='".THEME."generic/email.png' alt='' style='vertical-align:middle;' /> ";
+	return "<img src='".THEME_ABS."generic/email.png' alt='' style='vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE."generic/".IMODE."/email.png' alt='' style='vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE_ABS."generic/".IMODE."/email.png' alt='' style='vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_EMAIL_LINK
@@ -169,9 +169,9 @@ if(defined("USER_ICON"))
 }
 if(file_exists(THEME."generic/user.png"))
 {
-	return "<img src='".THEME."generic/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
+	return "<img src='".THEME_ABS."generic/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE."user_icons/user_".IMODE.".png' alt='' style='border:0px;vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE_ABS."user_icons/user_".IMODE.".png' alt='' style='border:0px;vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_ICON_LINK
@@ -182,11 +182,11 @@ if(defined("USER_ICON"))
 }
 else if(file_exists(THEME."generic/user.png"))
 {
-	$icon = "<img src='".THEME."generic/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
+	$icon = "<img src='".THEME_ABS."generic/user.png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
 else
 {
-	$icon = "<img src='".e_IMAGE."user_icons/user_".IMODE.".png' alt='' style='border:0px;vertical-align:middle;' /> ";
+	$icon = "<img src='".e_IMAGE_ABS."user_icons/user_".IMODE.".png' alt='' style='border:0px;vertical-align:middle;' /> ";
 }
 return "<a href='".e_SELF."?id.{$user['user_id']}'>{$icon}</a>";
 SC_END
@@ -213,9 +213,9 @@ if(defined("USER_BIRTHDAY_ICON"))
 }
 if(file_exists(THEME."generic/user_birthday.png"))
 {
-	return "<img src='".THEME."generic/user_birthday.png' alt='' style='vertical-align:middle;' /> ";
+	return "<img src='".THEME_ABS."generic/user_birthday.png' alt='' style='vertical-align:middle;' /> ";
 }
-return "<img src='".e_IMAGE."user_icons/user_birthday_".IMODE.".png' alt='' style='vertical-align:middle;' /> ";
+return "<img src='".e_IMAGE_ABS."user_icons/user_birthday_".IMODE.".png' alt='' style='vertical-align:middle;' /> ";
 SC_END
 
 SC_BEGIN USER_BIRTHDAY
@@ -237,12 +237,12 @@ SC_END
 
 SC_BEGIN USER_COMMENTS_LINK
 global $user;
-return $user['user_comments'] ? "<a href='".e_BASE."userposts.php?0.comments.".$user['user_id']."'>".LAN_423."</a>" : "";
+return $user['user_comments'] ? "<a href='".e_HTTP."userposts.php?0.comments.".$user['user_id']."'>".LAN_423."</a>" : "";
 SC_END
 
 SC_BEGIN USER_FORUM_LINK
 global $user;
-return $user['user_forums'] ? "<a href='".e_BASE."userposts.php?0.forums.".$user['user_id']."'>".LAN_424."</a>" : "";
+return $user['user_forums'] ? "<a href='".e_HTTP."userposts.php?0.forums.".$user['user_id']."'>".LAN_424."</a>" : "";
 SC_END
 
 SC_BEGIN USER_SENDPM
@@ -262,7 +262,7 @@ if($pref['profile_rate'] && USER)
 		$num = $rating[1];
 		for($i=1; $i<= $num; $i++)
 		{
-			$ret .= "<img src='".e_IMAGE."user_icons/user_star_".IMODE.".png' style='border:0' alt='' />";
+			$ret .= "<img src='".e_IMAGE_ABS."user_icons/user_star_".IMODE.".png' style='border:0' alt='' />";
 		}
 	}
 	if($rater->checkrated('user', $user['user_id']))
@@ -278,10 +278,10 @@ SC_END
 SC_BEGIN USER_UPDATE_LINK
 global $user;
 if (USERID == $user['user_id']) {
-	return "<a href='".e_BASE."usersettings.php'>".LAN_411."</a>";
+	return "<a href='".e_HTTP."usersettings.php'>".LAN_411."</a>";
 }
 else if(ADMIN && getperms("4") && !$user['user_admin']) {
-	return "<a href='".e_BASE."usersettings.php?".$user['user_id']."'>".LAN_412."</a>";
+	return "<a href='".e_HTTP."usersettings.php?".$user['user_id']."'>".LAN_412."</a>";
 }
 SC_END
 
@@ -322,7 +322,7 @@ SC_BEGIN USER_PICTURE
 global $user;
 if ($user['user_sess'] && file_exists(e_FILE."public/avatars/".$user['user_sess']))
 {
-	return "<img src='".e_FILE."public/avatars/".$user['user_sess']."' alt='' />";
+	return "<img src='".e_FILE_ABS."public/avatars/".$user['user_sess']."' alt='' />";
 }
 else
 {

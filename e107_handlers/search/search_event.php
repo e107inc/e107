@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_event.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:52:31 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-09 14:40:02 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -57,7 +57,7 @@ while (list($event_id, $event_stake, $event_ward, $event_organisation, $event_st
 	if (!$event_url_) {
 		$event_threat_ = $event_threat;
 	}
-	$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"event.php?".$event_start."\">$event_title</a>$event_details<br />";
+	$text .= "<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' /> <a href=\"event.php?".$event_start."\">{$event_title}</a>{$event_details}<br />";
 }
 $qtype = LAN_911;
 ?>

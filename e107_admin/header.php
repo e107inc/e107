@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.33 $
-|   $Date: 2005-06-16 14:31:23 $
-|   $Author: lisa_ $
+|   $Revision: 1.34 $
+|   $Date: 2005-07-09 14:39:51 $
+|   $Author: streaky $
 +---------------------------------------------------------------+
 */
 if (!defined('e_HTTP')) {
@@ -44,13 +44,13 @@ if (file_exists(THEME.'admin_template.php')) {
 
 if (!defined('ADMIN_EDIT_ICON'))
 {
-	define("ADMIN_EDIT_ICON", "<img src='".e_IMAGE."admin_images/edit_16.png' alt='' title='".LAN_EDIT."' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_EDIT_ICON", "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt='' title='".LAN_EDIT."' style='border:0px; height:16px; width:16px' />");
 	define("ADMIN_EDIT_ICON_PATH", e_IMAGE."admin_images/edit_16.png");
 }
 
 if (!defined('ADMIN_DELETE_ICON'))
 {
-	define("ADMIN_DELETE_ICON", "<img src='".e_IMAGE."admin_images/delete_16.png' alt='' title='".LAN_DELETE."' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_DELETE_ICON", "<img src='".e_IMAGE_ABS."admin_images/delete_16.png' alt='' title='".LAN_DELETE."' style='border:0px; height:16px; width:16px' />");
 	define("ADMIN_DELETE_ICON_PATH", e_IMAGE."admin_images/delete_16.png");
 }
 
@@ -61,25 +61,25 @@ echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 	<meta http-equiv='content-style-type' content='text/css' />\n";
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && isset($pref['admincss']) && $pref['admincss'] && file_exists(THEME.$pref['admincss'])) {
-	echo "<link rel='stylesheet' href='".THEME.$pref['admincss']."' type='text/css' />\n";
+	echo "<link rel='stylesheet' href='".THEME_ABS.$pref['admincss']."' type='text/css' />\n";
 } else {
-	echo "<link rel='stylesheet' href='".THEME."style.css' type='text/css' />\n";
+	echo "<link rel='stylesheet' href='".THEME_ABS."style.css' type='text/css' />\n";
 }
 
 if (!$no_core_css) {
-	echo "<link rel='stylesheet' href='".e_FILE."e107.css' type='text/css' />\n";
+	echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
 }
 if (function_exists('theme_head')) {
    	echo theme_head();
 }
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
-	echo "<script type='text/javascript' src='".e_FILE."e107.js'></script>\n";
+	echo "<script type='text/javascript' src='".e_FILE_ABS."e107.js'></script>\n";
 }
 if (file_exists(THEME."theme.js")) {
-	echo "<script type='text/javascript' src='".THEME."theme.js'></script>\n";
+	echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n";
 }
 if (filesize(e_FILE.'user.js')) {
-	echo "<script type='text/javascript' src='".e_FILE."user.js'></script>\n";
+	echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n";
 }
 if (function_exists("headerjs")) {
 	echo headerjs();

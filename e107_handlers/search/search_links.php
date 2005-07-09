@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_links.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:52:31 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-09 14:40:02 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ if ($results = $sql->db_Select("links", "*", "link_name REGEXP('".$query."') OR 
 		if (!$link_name_) {
 			$link_name_ = $link_name;
 		}
-		$text .= "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"".$link_url."\">".$link_name."</a><br />";
+		$text .= "<img src=\"".THEME_ABS."images/bullet2.gif\" alt=\"bullet\" /> <a href=\"".$link_url."\">".$link_name."</a><br />";
 	}
 } else {
 	$text .= LAN_198;
