@@ -56,7 +56,7 @@ $HEADER = "<table class='top_section'>
 </table>
 
 <div>
-{SITELINKS_ALT=".THEME."images/arrow.png}
+{SITELINKS_ALT=".THEME_ABS."images/arrow.png}
 </div>
 
 <table class='main_section'>
@@ -120,7 +120,7 @@ $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'><div class='beve
 <table class='news_info'>
 <tr>
 <td style='text-align: center; padding: 3px; padding-bottom: 0px; white-space: nowrap'>
-<img src='".THEME."images/postedby_16.png' style='width: 16px; height: 16px' alt='' />
+<img src='".THEME_ABS."images/postedby_16.png' style='width: 16px; height: 16px' alt='' />
 </td>
 <td style='width: 100%; padding: 0px; padding-bottom: 0px; padding-left: 2px'>
 ".LAN_THEME_5." 
@@ -128,7 +128,7 @@ $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'><div class='beve
  ".LAN_THEME_6." 
 {NEWSDATE}
 </td><td style='text-align: center; padding: 3px; padding-bottom: 0px; white-space: nowrap'>
-<img src='".THEME."images/comments_16.png' style='width: 16px; height: 16px' alt='' />
+<img src='".THEME_ABS."images/comments_16.png' style='width: 16px; height: 16px' alt='' />
 </td>
 <td style='padding: 0px; padding-left: 2px; white-space: nowrap'>
 {NEWSCOMMENTS}
@@ -228,9 +228,9 @@ $COMMENTSTYLE = "<div class='spacer' style='text-align:center'><table class='fbo
 
 
 // poll style
-$POLLSTYLE = "<img src='".THEME."images/polls.png' style='width: 10px; height: 14px; vertical-align: bottom' /> {QUESTION}
+$POLLSTYLE = "<img src='".THEME_ABS."images/polls.png' style='width: 10px; height: 14px; vertical-align: bottom' /> {QUESTION}
 <br /><br />
-{OPTIONS=<img src='".THEME."images/bullet2.gif' style='width: 10px; height: 10px' /> OPTION<br />BAR<br /><span class='smalltext'>PERCENTAGE VOTES</span><br /><br />}
+{OPTIONS=<img src='".THEME_ABS."images/bullet2.gif' style='width: 10px; height: 10px' /> OPTION<br />BAR<br /><span class='smalltext'>PERCENTAGE VOTES</span><br /><br />}
 <div style='text-align:center' class='smalltext'>{AUTHOR}<br />{VOTE_TOTAL} {COMMENTS}
 <br />
 {OLDPOLLS}
