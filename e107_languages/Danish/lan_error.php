@@ -4,10 +4,11 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_error.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:00 $
+|        $Revision: 1.3 $
+|        $Date: 2005-07-09 10:37:18 $
 |        $Author: e107dk $
-+---------------------------------------------------------------+*/
++---------------------------------------------------------------+
+*/
 define("PAGE_NAME", "Fejl");
 
 define("LAN_1", "Fejl 401 - Adgang nægtet");
@@ -17,7 +18,6 @@ define("LAN_4", "Fejl 403 - Godkendelse slog fejl");
 define("LAN_5", "URL du har forespurgt kræver et korrekt brugernavn og adgangskode. Enten har du skrevet forkert brugernavn/adgangskode, eller din browser understøtter ikke denne funktion.");
 define("LAN_6", "Informer administratoren på den side du kommer fra hvis du mener denne fejl side er blevet vist ved en fejl.");
 define("LAN_7", "Fejl 404 - Dokument ikke fundet");
-define("LAN_8", "Denne URL blev ikke fundet på serveren. Det link du fulgte er forældet, forkert, eller serveren er blevet instrueret til ikke at give adgang til det.");
 define("LAN_9", "Informer administratoren på den side du kommer fra hvis du mener denne fejl side er blevet vist ved en fejl.");
 define("LAN_10", "Fejl 500 - Malformeret Header");
 define("LAN_11", "Serveren fandt en intern fejl eller fejl konfiguration og var ikke istand til at fuldføre din forspørgsel");
