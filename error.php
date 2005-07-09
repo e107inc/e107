@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/error.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-07-05 15:18:39 $
+|     $Revision: 1.9 $
+|     $Date: 2005-07-09 13:32:03 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -32,18 +32,18 @@ $errTo = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 	
 switch(e_QUERY) {
 	case 401:
-	$text = "<div class='installe'>".LAN_1."</div><br /><div class='installh'>".LAN_2."</div><br /><div class='smalltext'>".LAN_3."</div>
+	$text = "<div class='installe'><img src='".e_IMAGE_ABS."icons/icon3.png' alt='Error Icon'> ".LAN_1."</div><br /><div class='installh'>".LAN_2."</div><br /><div class='smalltext'>".LAN_3."</div>
 		<br /><div class='installh'>".LAN_2."<a href='index.php'>".LAN_20."</a></div>";
 	break;
 	case 403:
-	$text = "<div class='installe'>".LAN_4."</div><br /><div class='installh'>".LAN_5."</div><br /><div class='smalltext'>".LAN_6."</div>
+	$text = "<div class='installe'><img src='".e_IMAGE_ABS."icons/icon3.png' alt='Error Icon'> ".LAN_4."</div><br /><div class='installh'>".LAN_5."</div><br /><div class='smalltext'>".LAN_6."</div>
 		<br /><div class='installh'>".LAN_2."<a href='index.php'>".LAN_20."</a></div>";
 	break;
 	default:
 
 	
 	case 404:
-	$text = "<h3>".LAN_7."</h3><br />".LAN_ERROR_01."<br /><br />".LAN_ERROR_03."<b>{$errTo}</b>".LAN_ERROR_04."<br /><br />";
+	$text = "<h3><img src='".e_IMAGE_ABS."icons/icon3.png' alt='Error Icon'> ".LAN_7."</h3><br />".LAN_ERROR_01."<br /><br />".LAN_ERROR_03."<b>{$errTo}</b>".LAN_ERROR_04."<br /><br />";
 	
 	if (strlen($errFrom)) $text .= LAN_9." ( <a href='{$errFrom}' rel='external'>{$errFrom}</a> ) -- ".LAN_19."<br />";
 	
@@ -56,7 +56,7 @@ switch(e_QUERY) {
 	
 	
 	case 500:
-	$text = "<div class='installe'>".LAN_10."</div><br /><div class='installh'>".LAN_11."</div><br /><div class='smalltext'>".LAN_12."</div>
+	$text = "<div class='installe'><img src='".e_IMAGE_ABS."icons/icon3.png' alt='Error Icon'> ".LAN_10."</div><br /><div class='installh'>".LAN_11."</div><br /><div class='smalltext'>".LAN_12."</div>
 		<br /><div class='installh'>".LAN_2."<a href='index.php'>".LAN_20."</a></div>";
 	break;
 	$text = "<div class='installe'>".LAN_13." (".$_SERVER['QUERY_STRING'].")</div><br /><div class='installh'>".LAN_14."</div><br /><div class='smalltext'>".LAN_15."</div>
