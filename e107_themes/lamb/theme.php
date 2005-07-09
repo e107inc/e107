@@ -71,10 +71,10 @@ $FOOTER = "
 <div style='text-align: center;' class='smalltext'>
 {SITEDISCLAIMER}<br />{THEMEDISCLAIMER}
 <br />
-<img src='".e_IMAGE."generic/php-small-trans-light.gif' alt='' /> <img src='".e_IMAGE."button.png' alt='' /> 
-<img src='".e_IMAGE."generic/poweredbymysql-88.png' alt=''  /> &nbsp;&nbsp;&nbsp;&nbsp;
-<a href='http://validator.w3.org/check?uri=referer' rel='external'><img src='".e_IMAGE."generic/valid-xhtml11.png' alt='' style='border: 0;' /></a> 
-<a href='http://jigsaw.w3.org/css-validator/check/referer' rel='external'><img src='".e_IMAGE."generic/vcss.png' alt='' style='border: 0;' /></a>
+<img src='".e_IMAGE_ABS."generic/php-small-trans-light.gif' alt='' /> <img src='".e_IMAGE_ABS."button.png' alt='' /> 
+<img src='".e_IMAGE_ABS."generic/poweredbymysql-88.png' alt=''  /> &nbsp;&nbsp;&nbsp;&nbsp;
+<a href='http://validator.w3.org/check?uri=referer' rel='external'><img src='".e_IMAGE_ABS."generic/valid-xhtml11.png' alt='' style='border: 0;' /></a> 
+<a href='http://jigsaw.w3.org/css-validator/check/referer' rel='external'><img src='".e_IMAGE_ABS."generic/vcss.png' alt='' style='border: 0;' /></a>
 <br />
 <a href='http://www.spreadfirefox.com/?q=affiliates&amp;id=0&amp;t=86'><img alt='e107 recommends Mozilla Firefox' title='e107 recommends Mozilla Firefox' src=' http://sfx-images.mozilla.org/affiliates/Buttons/125x50/takebacktheweb_125x50.png' style='border: 0;' /></a>
 </div>		
@@ -115,8 +115,8 @@ define("TRACKBACKBEFORESTRING", " | ");
 
 define('PRELINK', "");
 define('POSTLINK', "");
-define('LINKSTART', "<img src='".THEME."images/bullet2.gif' alt='' /> ");
-define("LINKSTART_HILITE", "<img src='".THEME."images/bluearrow_greybg.png' alt='' /> ");
+define('LINKSTART', "<img src='".THEME_ABS."images/bullet2.gif' alt='' /> ");
+define("LINKSTART_HILITE", "<img src='".THEME_ABS."images/bluearrow_greybg.png' alt='' /> ");
 define('LINKEND', "<br />");
 define('LINKDISPLAY', 2);
 define('LINKALIGN', "left");
@@ -126,7 +126,7 @@ define('LINKALIGN', "left");
 
 function tablestyle($caption, $text, $mode)
 {
-	echo "<h4><img src='".THEME."images/bluearrow_greybg.png' alt='' width='6' height='9' /> {$caption}</h4>\n<br />
+	echo "<h4><img src='".THEME_ABS."images/bluearrow_greybg.png' alt='' width='6' height='9' /> {$caption}</h4>\n<br />
 	{$text}
 	<br /><br />\n";	
 }
@@ -156,7 +156,7 @@ $COMMENTSTYLE = "
 ";
 
 $CHATBOXSTYLE = "
-<img src='".e_IMAGE."admin_images/chatbox_16.png' alt='' style='vertical-align: middle;' />
+<img src='".e_IMAGE_ABS."admin_images/chatbox_16.png' alt='' style='vertical-align: middle;' />
 <b>{USERNAME}</b>
 <div class='smalltext'>
 {MESSAGE}

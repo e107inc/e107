@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/human_condition/theme.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-23 11:24:38 $
-|     $Author: lisa_ $
+|     $Revision: 1.11 $
+|     $Date: 2005-07-09 14:02:26 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_THEME")){ exit; }
@@ -60,7 +60,7 @@ $FOOTER = "
 
 ";
 
-define("TP_commenticon", "<img src='".THEME."images/comment.png' alt='' style='vertical-align:middle;' />");
+define("TP_commenticon", "<img src='".THEME_ABS."images/comment.png' alt='' style='vertical-align:middle;' />");
 
 $NEWSSTYLE = "
 <div class='textstyle4'>{STICKY_ICON}<b>{NEWSTITLE}</b></div>
@@ -87,8 +87,8 @@ define("POST_EXTENDEDSTRING", " ]<br />");
 
 define(PRELINK, "");
 define(POSTLINK, "");
-define(LINKSTART, "<span><img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
-define(LINKSTART_HILITE, "<span style='font-weight:bold'><img src='".THEME."images/bullet2.png' alt='bullet' /> ");
+define(LINKSTART, "<span><img src='".THEME_ABS."images/bullet2.gif' alt='bullet' /> ");
+define(LINKSTART_HILITE, "<span style='font-weight:bold'><img src='".THEME_ABS."images/bullet2.png' alt='bullet' /> ");
 define(LINKEND, "</span><br />");
 define(LINKDISPLAY, 2);                        // 1 - along top, 2 - in left or right column
 define(LINKALIGN, "left");
@@ -177,7 +177,7 @@ $POLLSTYLE = <<< EOF
 EOF;
 
 $CHATBOXSTYLE = "
-<img src='".THEME."images/bullet2.gif' alt='bullet' />
+<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' />
 <b>{USERNAME}</b><br />{TIMEDATE}
 <div class='smalltext'>
 {MESSAGE}
