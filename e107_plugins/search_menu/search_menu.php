@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/search_menu/search_menu.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-03-25 03:38:16 $
-|     $Author: sweetas $
+|     $Revision: 1.14 $
+|     $Date: 2005-07-09 13:44:28 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_PLUGIN")){ exit; }
@@ -43,14 +43,14 @@ if (strstr(e_PAGE, "news.php")) {
 }
 
 if (isset($custom_query[1]) && $custom_query[1] != '') {
-	$image_file = ($custom_query[1] != 'default') ? $custom_query[1] : e_PLUGIN.'search_menu/images/search.png';
+	$image_file = ($custom_query[1] != 'default') ? $custom_query[1] : e_PLUGIN_ABS.'search_menu/images/search.png';
 	$width = (isset($custom_query[2]) && $custom_query[2]) ? $custom_query[2] : '16';
 	$height = (isset($custom_query[3]) && $custom_query[3]) ? $custom_query[3] : '16';
 	$search_button = "<input type='image' src='".$image_file."' value='".LAN_180."' style='width: ".$width."px; height: ".$height."px; border: 0px; vertical-align: middle' name='s' />";
 } else {
 	$search_button = "<input class='button search' type='submit' name='s' value='".LAN_180."' />";
 }
-$text = "<form method='get' action='".e_BASE."search.php'>
+$text = "<form method='get' action='".e_HTTP."search.php'>
 	<p>
 	<input class='tbox search' type='text' name='q' size='20' value='' maxlength='50' />
 	<input type='hidden' name='r' value='0' />
