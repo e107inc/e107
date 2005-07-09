@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_user_extended.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:01 $
+|        $Revision: 1.3 $
+|        $Date: 2005-07-09 10:35:02 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -26,11 +26,11 @@ define("UE_LAN_HIDE", "Skjul for brugere");
 
 define("UE_LAN_LOCATION", "Sted");
 define("UE_LAN_LOCATION_DESC", "Bruger sted");
-define("UE_LAN_AIM", "AIM");
+define("UE_LAN_AIM", "AIM Adresse");
 define("UE_LAN_AIM_DESC", "AIM Adresse");
 define("UE_LAN_ICQ", "ICQ");
 define("UE_LAN_ICQ_DESC", "ICQ Number");
-define("UE_LAN_YAHOO", "Yahoo!");
+define("UE_LAN_YAHOO", "Yahoo! Adresse");
 define("UE_LAN_YAHOO_DESC", "Yahoo! Adresse");
 define("UE_LAN_MSN", "MSN");
 define("UE_LAN_MSN_DESC", "MSN Adresse");
