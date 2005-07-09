@@ -4,13 +4,13 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_users.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:01 $
+|        $Revision: 1.3 $
+|        $Date: 2005-07-09 11:01:26 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
 define("USRLAN_1", "Indstillinger er gemt.");
-define("USRLAN_2", "Udvidede brugerfelter er gemt.");
+
 define("USRLAN_3", "Nu oprettet som administrator - for at indstille tilladelser gå til ");
 define("USRLAN_4", "Administratorer side");
 define("USRLAN_5", "Du kan ikke fjerne admin status fra hovedadministrator ");
@@ -22,8 +22,8 @@ define("USRLAN_10", "Bruger slettet.");
 define("USRLAN_11", "Sletning annulleret.");
 define("USRLAN_12", "Du kan ikke slette hovedadministrator.");
 define("USRLAN_13", "Bekræft at du vil slette dette medlem");
-define("USRLAN_14", "når oplysningerne er slettet kan det ikke fortrydes");
-define("USRLAN_15", "Annuller");
+// define("USRLAN_14", "når oplysningerne er slettet kan det ikke fortrydes");
+// define("USRLAN_15", "Annuller");
 define("USRLAN_16", "Bekræft slet");
 define("USRLAN_17", "Bekræft slet bruger");
 define("USRLAN_18", "Bruger aktiveret.");
@@ -45,20 +45,15 @@ define("USRLAN_32", "Aktiver");
 define("USRLAN_33", "Ophæv banlysning");
 define("USRLAN_34", "Fjern administrator status");
 define("USRLAN_35", "Opret administrator ");
-define("USRLAN_36", "Sæt gruppe");
+define("USRLAN_36", "Indstil gruppe");
 
 define("USRLAN_37", "Medlemmer");
 define("USRLAN_38", "Søgningen returnerede");
 define("USRLAN_39", "resultat(er)");
 define("USRLAN_40", "Ikke defineret");
 
-define("USRLAN_41", "Feltnavn");
-define("USRLAN_42", "Tilføj udvidede felter");
-define("USRLAN_43", "Udvidede brugerfelter");
 define("USRLAN_44", "Tillad medlemmer at uploade et profillogo?");
 
-define("USRLAN_45", "Ja");
-define("USRLAN_46", "Nej");
 define("USRLAN_47", "Maksimum bredde for profillogo (i pixels)");
 define("USRLAN_48", "standard er 120");
 define("USRLAN_49", "Maksimum højde for profillogo (i pixels)");
@@ -86,7 +81,6 @@ define("USRLAN_70", "Bruger tilføjet");
 define("USRLAN_71", "Brugeres forside");
 define("USRLAN_72", "Lyn tilføj bruger");
 define("USRLAN_73", "Beskær brugere");
-define("USRLAN_74", "Udvidede brugerfelter");
 define("USRLAN_75", "Indstillinger");
 define("USRLAN_76", "Brugerindstillinger");
 define("USRLAN_77", "Eksisterende brugere");
@@ -95,7 +89,6 @@ define("USRLAN_79", "Status");
 define("USRLAN_80", "Info");
 
 define("USRLAN_82", "Er du sikker på du vil slette denne bruger?");
-define("USRLAN_83", "Udvidet felt slettet");
 define("USRLAN_84", "Der er");
 define("USRLAN_85", "Brugere der ikke har aktiveret deres konto - klik herunder for at slette.");
 define("USRLAN_86", "Bruger verificeret");
