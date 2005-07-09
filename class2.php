@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.189 $
-|     $Date: 2005-07-06 08:11:03 $
-|     $Author: lisa_ $
+|     $Revision: 1.190 $
+|     $Date: 2005-07-09 13:53:59 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -325,10 +325,12 @@ if (!function_exists('checkvalidtheme')) {
 			define("PREVIEWTHEME", e_THEME.$themeArray[$id]."/");
 			define("PREVIEWTHEMENAME", $themeArray[$id]);
 			define("THEME", e_THEME.$themeArray[$id]."/");
+			define("THEME_ABS", e_THEME_ABS.$themeArray[$id]."/");
 			return;
 		}
 		if (@fopen(e_THEME.$theme_check."/theme.php", r)) {
 			define("THEME", e_THEME.$theme_check."/");
+			define("THEME_ABS", e_THEME_ABS.$theme_check."/");
 			$e107->site_theme = $theme_check;
 		} else {
 			function search_validtheme() {
@@ -346,6 +348,7 @@ if (!function_exists('checkvalidtheme')) {
 			}
 			$e107tmp_theme = search_validtheme();
 			define("THEME", e_THEME.$e107tmp_theme."/");
+			define("THEME_ABS", e_THEME_ABS.$e107tmp_theme."/");
 			if (ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)) {
 				echo '<script>alert("'.$tp->toJS(CORE_LAN1).'")</script>';
 			}
