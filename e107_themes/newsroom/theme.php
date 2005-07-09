@@ -1,4 +1,6 @@
-<?
+<?php
+
+
 
 $themename = "newsroom";
 $themeversion = "1.0";
@@ -18,10 +20,10 @@ $HEADER = "
 <div style='text-align:left'>
 <div style='margin-left:0px;margin-right:auto;padding-left:3px;padding-right:3px;width:770px;background-color:#6A6A6A;border:1px solid black'>
 <div style='width:770px;padding:0px;'>
-<table cellpadding='0' cellspacing='0' style=\"background-image: url('".THEME."images/logo_bg.png');margin-bottom:0px;padding:0px;width:100%;\">
+<table cellpadding='0' cellspacing='0' style=\"background-image: url('".THEME_ABS."images/logo_bg.png');margin-bottom:0px;padding:0px;width:100%;\">
 	<tr>
 		<td style='padding-left:5px;'>
-			<img src=\"".THEME."images/logo_text.png\" style='display:block' alt=\"newsroom\"  />
+			<img src=\"".THEME_ABS."images/logo_text.png\" style='display:block' alt=\"newsroom\"  />
 		</td>
 		<td style='text-align:right;padding-right:4px'>
 
@@ -115,7 +117,7 @@ $FOOTERBASE = "
 <table style='width:100%;' border=\"0\" cellpadding=\"3\" cellspacing=\"0\">
 	<tr>
 	<td>&nbsp;
-	<a href='".e_BASE."' style='color:silver;'>".SITENAME."</a>
+	<a href='".e_HTTP."' style='color:silver;'>".SITENAME."</a>
 	</td>
 	<td style='text-align:center'>
 	{CUSTOM=language}
@@ -135,7 +137,7 @@ $FOOTERBASE = "
 </table>
 </div>
 
-<div style=\"border-top:2px solid white;background-image: url('".THEME."images/logo_bg.png');text-align:center\">
+<div style=\"border-top:2px solid white;background-image: url('".THEME_ABS."images/logo_bg.png');text-align:center\">
 <table style='width:100%;'><tr>
 <td style='vertical-align:top;padding:10px;width:50%;border-right:1px dotted silver'>
 {SITEDISCLAIMER}
@@ -323,9 +325,9 @@ switch ($style) {
 	<tr>
 	<td>
 	<div class='leftcap'>
-	$caption
+	{$caption}
 	</div>
-	<div class=\"forumheader3\" >$text</div>
+	<div class=\"forumheader3\" >{$text}</div>
 	</td></tr></table></div>";
 	break;
 
@@ -361,8 +363,8 @@ switch ($style) {
 
 	case "bottom":
 	echo "<div style='padding:3px;border-top:1px solid #CCCCCC;border-bottom:1px solid #CCCCCC'>
-	<b style=\"font-size:12px;color: #c00;\">$caption</b>
-	</div><div style='padding:3px;text-align:center'>$text</div>";
+	<b style=\"font-size:12px;color: #c00;\">{$caption}</b>
+	</div><div style='padding:3px;text-align:center'>{$text}</div>";
 	break;
 
 	default:
@@ -373,7 +375,7 @@ switch ($style) {
 	<div class=\"caption2\" style='color:white;padding:3px'>
 	$caption
 	</div>
-	<div class=\"forumheader3\" style='padding:6px'>$text</div>
+	<div class=\"forumheader3\" style='padding:6px'>{$text}</div>
 	</td></tr></table></div>";
 
 	break;
@@ -472,3 +474,5 @@ NEWSTITLELINK =
 
 ";
 */
+
+?>
