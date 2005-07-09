@@ -49,7 +49,7 @@ $HEADER = "
 </div>
 <div id='main'>
 <div id='sitebanner'>
-<div id='$logo'><div class='smalltext' style='text-align: right; vertical-align: bottom;'>{SITENAME}&nbsp;</div></div>
+<div id='{$logo}'><div class='smalltext' style='text-align: right; vertical-align: bottom;'>{SITENAME}&nbsp;</div></div>
 <div id='navbar'>
 {SITELINKS}
 </div>
@@ -107,7 +107,7 @@ define('LINKALIGN', "left");
 
 function tablestyle($caption, $text, $mode)
 {
-	echo "<div class='header'>$caption</div>\n$text\n<br /><br />\n";
+	echo "<div class='header'>{$caption}</div>\n{$text}\n<br /><br />\n";
 }
 
 $COMMENTSTYLE = "
@@ -119,7 +119,7 @@ $COMMENTSTYLE = "
 
 
 $CHATBOXSTYLE = "
-<img src='".e_IMAGE."admin_images/chatbox_16.png' alt='' style='vertical-align: middle;' />
+<img src='".e_IMAGE_ABS."admin_images/chatbox_16.png' alt='' style='vertical-align: middle;' />
 <b>{USERNAME}</b>
 <div class='smalltext'>
 {MESSAGE}
