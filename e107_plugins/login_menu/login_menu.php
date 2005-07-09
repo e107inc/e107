@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-07-09 13:50:25 $
+|     $Revision: 1.34 $
+|     $Date: 2005-07-09 13:55:17 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@ if(!defined("e_HANDLER")){ exit; }
 global $eMenuActive, $e107;
 $ip = $e107->getip();
 
-$bullet = (defined("BULLET") ? "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle;' />" : "<img src='".THEME."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />");
+$bullet = (defined("BULLET") ? "<img src='".THEME_ABS."images/".BULLET."' alt='' style='vertical-align: middle;' />" : "<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />");
 
 if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE) {
 	$text = "<div style='text-align:center'>".LOGIN_MENU_L7."<br /><br />
@@ -167,7 +167,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 		}
 	}
 	if (file_exists(THEME.'images/login_menu.png')) {
-		$caption = '<img src="'.THEME.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5.' '.USERNAME;
+		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5.' '.USERNAME;
 	} else {
 		$caption = LOGIN_MENU_L5.' '.USERNAME;
 	}
@@ -201,7 +201,7 @@ if (USER == TRUE || ADMIN == TRUE) {
 	}
 	$text .= '</div></form>';
 	if (file_exists(THEME.'images/login_menu.png')) {
-		$caption = '<img src="'.THEME.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5;
+		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5;
 	} else {
 		$caption = LOGIN_MENU_L5;
 	}

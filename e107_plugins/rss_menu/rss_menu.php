@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-14 12:56:07 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.11 $
+|     $Date: 2005-07-09 13:56:34 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_PLUGIN")){ exit; }
@@ -70,7 +70,7 @@ $text = "<div style='text-align:center' class='smalltext'>
 <div class='spacer'><a href='".$path."rss.php?$type.3.$topic'><img src='".$path."images/rss3.png' alt='rdf' style='border:0' /></a><br /></div>
 </div>";
 
-$caption = (file_exists(THEME."images/backend_menu.png") ? "<img src='".THEME."images/backend_menu.png' alt='' style='vertical-align:middle' /> ".BACKEND_MENU_L2 : BACKEND_MENU_L2);
+$caption = (file_exists(THEME."images/backend_menu.png") ? "<img src='".THEME_ABS."images/backend_menu.png' alt='' style='vertical-align:middle' /> ".BACKEND_MENU_L2 : BACKEND_MENU_L2);
 
 $ns->tablerender($caption, $text, 'backend');
 ?>
