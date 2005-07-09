@@ -48,7 +48,7 @@ $HEADER = "
 <tr>
 <td id='logo2'>&nbsp;</td>
 <td id='searchbox'>
-{CUSTOM=search+".THEME."images/search.png+19+18}
+{CUSTOM=search+".THEME_ABS."images/search.png+19+18}
 </td>
 </tr>
 </table>
@@ -57,7 +57,7 @@ $HEADER = "
 <td id='doclinkcolumn'>
 <div class='docinnerbox'>
 {SETSTYLE=menu}
-<div class='center'>[ <a href='".e_BASE."index.php'>{SITENAME}</a> ]</div><br /><br />
+<div class='center'>[ <a href='".e_HTTP."index.php'>{SITENAME}</a> ]</div><br /><br />
 {SITELINKS}
 {MENU=1}
 </div>
@@ -82,8 +82,8 @@ $FOOTER = "
 
 define('PRELINK', "");
 define('POSTLINK', "");
-define('LINKSTART', "<img src='".THEME."images/arrow.png' alt='' /> ");
-define("LINKSTART_HILITE", "<img src='".THEME."images/selarrow.png' alt='' /> ");
+define('LINKSTART', "<img src='".THEME_ABS."images/arrow.png' alt='' /> ");
+define("LINKSTART_HILITE", "<img src='".THEME_ABS."images/selarrow.png' alt='' /> ");
 define('LINKEND', "<br />");
 define('LINKDISPLAY', 2);
 define('LINKALIGN', "left");
@@ -94,7 +94,7 @@ define("BULLET", "arrow.png");
 /*	[newsstyle]	*/
 
 $NEWSSTYLE = "
-<div class='captiontext'><img src='".THEME."images/marrow.png' alt='' /> {NEWSTITLE}</div>
+<div class='captiontext'><img src='".THEME_ABS."images/marrow.png' alt='' /> {NEWSTITLE}</div>
 <div class='smalltext'>{NEWSAUTHOR} on {NEWSDATE} | {NEWSCOMMENTS}{TRACKBACK}
 </div>
 {NEWSBODY}
@@ -118,13 +118,13 @@ function tablestyle($caption, $text, $mode)
 	global $style;
 	if($style == "menu")
 	{
-		echo "<div class='spacer'><div class='caption'><img src='".THEME."images/oarrow.png' alt='' /> $caption</div><div class='text'>$text</div></div><br />\n";
+		echo "<div class='spacer'><div class='caption'><img src='".THEME_ABS."images/oarrow.png' alt='' /> {$caption}</div><div class='text'>{$text}</div></div><br />\n";
 	}
 	else
 	{
 		if($caption)
 		{
-			echo "<div class='spacer'><div class='caption'><img src='".THEME."images/marrow.png' alt='' /> $caption</div><br /></div>$text\n";
+			echo "<div class='spacer'><div class='caption'><img src='".THEME_ABS."images/marrow.png' alt='' /> {$caption}</div><br /></div>{$text}\n";
 		}
 		else
 		{
@@ -142,7 +142,7 @@ $COMMENTSTYLE = "
 
 
 $CHATBOXSTYLE = "
-<div class='link2'><div class='linktext'><hr /><img src='".THEME."images/arrow.png' alt='' style='vertical-align: middle;' /> {USERNAME} | <span class='cbdate'>{TIMEDATE}</span></div></div>
+<div class='link2'><div class='linktext'><hr /><img src='".THEME_ABS."images/arrow.png' alt='' style='vertical-align: middle;' /> {USERNAME} | <span class='cbdate'>{TIMEDATE}</span></div></div>
 <div class='smalltext'>
 {MESSAGE}
 </div>";
