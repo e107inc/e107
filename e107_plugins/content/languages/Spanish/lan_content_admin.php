@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-07-08 17:26:08 $
+|     $Revision: 1.5 $
+|     $Date: 2005-07-09 09:10:52 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -205,6 +205,9 @@ define("CONTENT_ADMIN_ITEM_LAN_117", "Contenido enviado");
 define("CONTENT_ADMIN_ITEM_LAN_118", "No");
 define("CONTENT_ADMIN_ITEM_LAN_119", "Sin asignar");
 define("CONTENT_ADMIN_ITEM_LAN_120", "Plantilla por defecto");
+define("CONTENT_ADMIN_ITEM_LAN_121", "No hay nuevos iconos transferidos todavía");
+define("CONTENT_ADMIN_ITEM_LAN_122", "No hay nuevos adjuntos transferidos todavía");
+define("CONTENT_ADMIN_ITEM_LAN_123", "No hay nuevas imágenes transferidas todavía");
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "Orden incrementado");
 define("CONTENT_ADMIN_ORDER_LAN_1", "Orden decrementado");
@@ -220,30 +223,9 @@ define("CONTENT_ADMIN_MAIN_LAN_6", "");
 define("CONTENT_ADMIN_MAIN_LAN_7", "¡Bienvenido al CMS!");
 define("CONTENT_ADMIN_MAIN_LAN_8", "Lea con atención la siguiente información y escoja lo que quiera hacer");
 define("CONTENT_ADMIN_MAIN_LAN_9", "Esta información se muestra porque la tabla del plugin del CMS no contiene registros.");
-define("CONTENT_ADMIN_MAIN_LAN_10", "Puede organizar los elementos en esta página. Primero decida la categoría de contenido a configurar. Seleccione una categoría en la caja de selección para empezar a manejar contenidos para esa categoría.");
-define("CONTENT_ADMIN_MAIN_LAN_11", "
-<b>La vieja tabla de contenidos contiene registros</b><br />
-Debido a esta situación puede hacer dos cosas:<br />
-<br />
-<b>a) convertir registros</b><br />
- Lo primero que necesita hacer es crear una copia de seguridad de las tablas de contenido existentes así como los comentarios y la tabla de valoraciones.<br />
-  	 Use un programa para realizar una copia de sus tablas de contenido como phpmyadmin.<br />
-  	 Después de crear la copia de su vieja tabla de contenido, puede empezar convirtiendo los registros al nuevo plugin de Gestor de Contenidos.<br />
-  	 Después de convertir su viejo contenido, ya no debería ver esta información, y poder gestionar su contenido existente.<br />
-  	 Por favor, vaya a la página <a href='".e_PLUGIN."content/admin_content_convert.php'>Script de conversión de contenidos</a><br />
-  	 <br />
-  	 <b>b) no converir los registros y comenzar un nuevo contenido</b><br />
-  	 Si no va a necesitar los registros de su viejo contenido,<br />
-  	 y simplemente quiere empezar con una nueva tabla de Gestor de Contenidos,<br />
-  	 puede empezar creando una nueva categoría.<br />
-  	 Por favor, vaya a la página <a href='".e_SELF."?type.0.cat.create'>Crear nueva categoría</a>.<br />
-  	 ");
-define("CONTENT_ADMIN_MAIN_LAN_12", "
-  	 <b>Esta es una instalación limpia / La tabla de viejo contenido no contiene registros</b><br />
-  	 Con esta situación puede comenzar a crear nuevos contenidos.<br />
-  	 Lo primero que necesita es crear una nueva categoría.<br />
-  	 Por favor, vaya a la página <a href='".e_SELF."?type.0.cat.create'>Crear nueva categoría</a>.<br />
-  	 ");
+define("CONTENT_ADMIN_MAIN_LAN_10", "Puede gestionar los contenidos en esta página. Primero decida la categoría de contenido a configurar. Seleccione una categoría en la caja de selección para empezar a gestionar contenidos para esa categoría.");
+define("CONTENT_ADMIN_MAIN_LAN_11", "Desde que las viejas tablas de contenidos tengan registros, puede escoger una de las tres opciones:");
+define("CONTENT_ADMIN_MAIN_LAN_12", "");
 define("CONTENT_ADMIN_MAIN_LAN_13", "Puede crear nuevos contenidos en esta página. Primero decida la categoría a la que quiere manejar contenido. Click en el botón de las categorías principales listado abajo para crear nuevo contenido en la categoría principal.");
 define("CONTENT_ADMIN_MAIN_LAN_14", "Puede fijar el orden de los contenidos en esta página. Click en el botón de las categorías principales mostradas abajo para comenzar a ordenar contenidos de la categoría principal seleccionada.");
 define("CONTENT_ADMIN_MAIN_LAN_15", "Puede gestionar categorías en esta página. Escoja la categoría principal en los botones listados debajo para mostrar una vista de todas la categorías y subcategorías de esta categoría principal.");
@@ -505,7 +487,7 @@ define("CONTENT_ADMIN_OPT_LAN_9", "¿Permitir enviar elementos?");
 define("CONTENT_ADMIN_OPT_LAN_10", "¿Quien puede eviar elementos?");
 define("CONTENT_ADMIN_OPT_LAN_11", "Envío directo");
 define("CONTENT_ADMIN_OPT_LAN_12", "Activado, un elemento será enviado directamente sin necesidad de ser aprobado por el administrador.");
-define("CONTENT_ADMIN_OPT_LAN_13", "Aquí puede definir donde se almacenarás sus imágenes. Use corchetes ( { } ) para las variables generales de e107 (como ( {e_PLUGIN} o {e_IMAGE} ). para los iconos de las categorías de contenidos es necesario dos tipos, uno pequeño y otro grande.");
+define("CONTENT_ADMIN_OPT_LAN_13", "Aquí puede definir donde se almacenarás sus imágenes. Use corchetes ( { } ) para las variables generales de e107 (como ( {e_PLUGIN} o {e_IMAGE} ). para los iconos de las categorías de contenidos es necesario dos tipos, uno pequeño y otro grande. Las rutas TMP son necesarias para las transferencias, ¡debe crearlas!");
 define("CONTENT_ADMIN_OPT_LAN_15", "Ruta a los iconos de cat de contenidos (grande)");
 define("CONTENT_ADMIN_OPT_LAN_16", "Ruta a los iconos de cat de contenidos (pequeña)");
 define("CONTENT_ADMIN_OPT_LAN_17", "Ruta a los iconos de contenidos");
@@ -529,7 +511,7 @@ define("CONTENT_ADMIN_OPT_LAN_34", "Archivo");
 define("CONTENT_ADMIN_OPT_LAN_35", "Puntuación");
 define("CONTENT_ADMIN_OPT_LAN_36", "Caracter separador de señuelo");
 define("CONTENT_ADMIN_OPT_LAN_37", "Defina como renderizar la información del señuelo");
-define("CONTENT_ADMIN_OPT_LAN_38", "");
+define("CONTENT_ADMIN_OPT_LAN_38", "tmp");
 define("CONTENT_ADMIN_OPT_LAN_39", "Mostrar");
 define("CONTENT_ADMIN_OPT_LAN_40", "Use un menú separado");
 define("CONTENT_ADMIN_OPT_LAN_41", "Combinar en un menú");
