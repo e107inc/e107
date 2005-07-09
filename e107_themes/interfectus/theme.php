@@ -46,7 +46,7 @@ $HEADER = "
 <td id='collefttop'></td>
 <td id='infoleft'>
 <div class='padder'>
-{CUSTOM=search+".THEME."images/search.png+19+18}
+{CUSTOM=search+".THEME_ABS."images/search.png+19+18}
 </div>
 </td>
 <td id='inforight'>
@@ -105,9 +105,9 @@ $FOOTER = "
 </table>
 <table class='maintable' cellpadding='0' cellspacing='0'>
 <tr>
-<td id='colbotleft'><img src='".THEME."images/blank.gif' width='14' height='14' alt='' style='display: block;' /></td>
+<td id='colbotleft'><img src='".THEME_ABS."images/blank.gif' width='14' height='14' alt='' style='display: block;' /></td>
 <td id='colbot'></td>
-<td id='colbotright'><img src='".THEME."images/blank.gif' width='14' height='14' alt='' style='display: block;' /></td>
+<td id='colbotright'><img src='".THEME_ABS."images/blank.gif' width='14' height='14' alt='' style='display: block;' /></td>
 </tr>
 </table>
 
@@ -146,7 +146,7 @@ $CUSTOMHEADER = "
 <td id='collefttop'></td>
 <td id='infoleft'>
 <div class='padder'>
-{CUSTOM=search+25+".THEME."images/search.png+19+18}
+{CUSTOM=search+25+".THEME_ABS."images/search.png+19+18}
 </div>
 </td>
 <td id='inforight'>
@@ -187,9 +187,9 @@ $CUSTOMFOOTER = "
 </table>
 <table class='maintable' cellpadding='0' cellspacing='0'>
 <tr>
-<td id='colbotleft'><img src='".THEME."images/blank.gif' width='14' height='14' alt='' style='display: block;' /></td>
+<td id='colbotleft'><img src='".THEME_ABS."images/blank.gif' width='14' height='14' alt='' style='display: block;' /></td>
 <td id='colbot'></td>
-<td id='colbotright'><img src='".THEME."images/blank.gif' width='14' height='14' alt='' style='display: block;' /></td>
+<td id='colbotright'><img src='".THEME_ABS."images/blank.gif' width='14' height='14' alt='' style='display: block;' /></td>
 </tr>
 </table>
 
@@ -228,8 +228,8 @@ define("TRACKBACKBEFORESTRING", " | ");
 
 define('PRELINK', "");
 define('POSTLINK', "");
-define('LINKSTART', "<div class='link1' onmouseover=\"this.className='link2';\" onmouseout=\"this.className='link1';\"><div class='linktext'><img src='".THEME."images/bullet1.gif' alt='' />&nbsp;&nbsp;");
-define("LINKSTART_HILITE", "<div class='link2' onmouseover=\"this.className='link1';\" onmouseout=\"this.className='link2';\"><div class='linktext'><img src='".THEME."images/bullet1.gif' alt='' />&nbsp;&nbsp;");
+define('LINKSTART', "<div class='link1' onmouseover=\"this.className='link2';\" onmouseout=\"this.className='link1';\"><div class='linktext'><img src='".THEME_ABS."images/bullet1.gif' alt='' />&nbsp;&nbsp;");
+define("LINKSTART_HILITE", "<div class='link2' onmouseover=\"this.className='link1';\" onmouseout=\"this.className='link2';\"><div class='linktext'><img src='".THEME_ABS."images/bullet1.gif' alt='' />&nbsp;&nbsp;");
 define('LINKEND', "</div></div>");
 define('LINKDISPLAY', 1);
 define('LINKALIGN', "left");
@@ -262,7 +262,7 @@ function tablestyle($caption, $text)
 }
 
 $COMMENTSTYLE = "<br /><br />
-<div class='captiontext'><img src='".THEME."images/bullet1.gif' alt='' style='vertical-align: middle;' /> {USERNAME} | {TIMEDATE}</div>
+<div class='captiontext'><img src='".THEME_ABS."images/bullet1.gif' alt='' style='vertical-align: middle;' /> {USERNAME} | {TIMEDATE}</div>
 {COMMENT} {COMMENTEDIT}<br />
 <span class='smalltext'>{REPLY}{IPADDRESS}</span>
 ";
@@ -270,7 +270,7 @@ $COMMENTSTYLE = "<br /><br />
 
 
 $CHATBOXSTYLE = "
-<div class='link2'><div class='linktext'><img src='".THEME."images/bullet1.gif' alt='' style='vertical-align: middle;' /> {USERNAME} | <span class='cbdate'>{TIMEDATE}</span></div></div>
+<div class='link2'><div class='linktext'><img src='".THEME_ABS."images/bullet1.gif' alt='' style='vertical-align: middle;' /> {USERNAME} | <span class='cbdate'>{TIMEDATE}</span></div></div>
 <div class='smalltext'>
 {MESSAGE}
 </div>

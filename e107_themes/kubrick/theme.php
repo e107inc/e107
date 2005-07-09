@@ -44,8 +44,8 @@ $tp -> e_sc -> scList['ULINC'] = $ulinc;
 
 function theme_head() {
 	global $logo;
-	return "<link rel='stylesheet' type='text/css' href='".THEME."style.css' />
-	<script type='text/javascript' src='".THEME."nicetitle.js'></script>
+	return "<link rel='stylesheet' type='text/css' href='".THEME_ABS."style.css' />
+	<script type='text/javascript' src='".THEME_ABS."nicetitle.js'></script>
 	<style type='text/css'>
 	#header{
 		position: relative;

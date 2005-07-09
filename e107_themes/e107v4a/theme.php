@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-28 07:43:16 $
-|     $Author: stevedunstan $
+|     $Revision: 1.15 $
+|     $Date: 2005-07-09 14:01:21 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_THEME")){ exit; }
@@ -40,7 +40,7 @@ define("THEME_DISCLAIMER", "<br /><i>".LAN_THEME_6."</i>");
 // [layout]
 
 $layout = "_default";
-$logo = THEME."images/bullet3.gif";
+$logo = THEME_ABS."images/bullet3.gif";
 
 $HEADER .=
 "
@@ -50,14 +50,14 @@ $HEADER .=
 {CUSTOM=clock}
 </td>
 <td style='text-align:right'>
-{CUSTOM=search+".THEME."images/search.png+18+19}
+{CUSTOM=search+".THEME_ABS."images/search.png+18+19}
 </td>
 </tr>
 </table>
 <table style='width:100%;' cellspacing='3' id='header'>
 <tr>
 <td colspan='2' style='text-align:left; vertical-align: middle;'>
-<img src='".THEME."images/logo.png' alt='' /> [ {SITENAME} ]
+<img src='".THEME_ABS."images/logo.png' alt='' /> [ {SITENAME} ]
 </td>
 <td style='text-align:right'>
 {BANNER}
@@ -66,7 +66,7 @@ $HEADER .=
 </table>
 <table style='width:100%' cellspacing='3'>
 <td style='width:20%;'></td>
-<td style='width:60%;'><img src='".THEME."images/blank.gif' width='1' height='1' alt='' /></td>
+<td style='width:60%;'><img src='".THEME_ABS."images/blank.gif' width='1' height='1' alt='' /></td>
 <td style='width:20%;'></td>
 </tr>
 <tr>
@@ -119,25 +119,25 @@ $NEWSSTYLE = "
 <div class='spacer'>
 <table cellpadding='0' cellspacing='0'>
 <tr>
-<td class='captiontopleft'><img src='".THEME."images/blank.gif' width='24' height='3' alt='' style='display: block;' /></td>
-<td class='captiontopmiddle'><img src='".THEME."images/blank.gif' width='1' height='3' alt='' style='display: block;' /></td>
-<td class='captiontopright'><img src='".THEME."images/blank.gif' width='11' height='3' alt='' style='display: block;' /></td>
+<td class='captiontopleft'><img src='".THEME_ABS."images/blank.gif' width='24' height='3' alt='' style='display: block;' /></td>
+<td class='captiontopmiddle'><img src='".THEME_ABS."images/blank.gif' width='1' height='3' alt='' style='display: block;' /></td>
+<td class='captiontopright'><img src='".THEME_ABS."images/blank.gif' width='11' height='3' alt='' style='display: block;' /></td>
 </tr>
 </table>
 <table cellpadding='0' cellspacing='0'>
 <tr>
-<td class='captionleft'><img src='".THEME."images/blank.gif' width='24' height='18' alt='' style='display: block;' /></td>
+<td class='captionleft'><img src='".THEME_ABS."images/blank.gif' width='24' height='18' alt='' style='display: block;' /></td>
 <td class='captionbar' style='white-space:nowrap'>
 {STICKY_ICON}{NEWSTITLE}
 </td>
-<td class='captionend'><img src='".THEME."images/blank.gif' width='12' height='18' alt='' style='display: block;' /></td>
-<td class='captionmain'><img src='".THEME."images/blank.gif' width='1' height='18' alt='' style='display: block;' /></td>
-<td class='captionright'><img src='".THEME."images/blank.gif' width='11' height='18' alt='' style='display: block;' /></td>
+<td class='captionend'><img src='".THEME_ABS."images/blank.gif' width='12' height='18' alt='' style='display: block;' /></td>
+<td class='captionmain'><img src='".THEME_ABS."images/blank.gif' width='1' height='18' alt='' style='display: block;' /></td>
+<td class='captionright'><img src='".THEME_ABS."images/blank.gif' width='11' height='18' alt='' style='display: block;' /></td>
 </tr>
 </table>
 <table cellpadding='0' cellspacing='0'>
 <tr>
-<td class='bodyleft'><img src='".THEME."images/blank.gif' width='3' height='1' alt='' style='display: block;' /></td>
+<td class='bodyleft'><img src='".THEME_ABS."images/blank.gif' width='3' height='1' alt='' style='display: block;' /></td>
 <td class='bodymain'>
 {NEWSBODY}
 {EXTENDED}
@@ -150,14 +150,14 @@ $NEWSSTYLE = "
 {PRINTICON}
 </div>
 </td>
-<td class='bodyright'><img src='".THEME."images/blank.gif' width='3' height='1' alt='' style='display: block;' /></td>
+<td class='bodyright'><img src='".THEME_ABS."images/blank.gif' width='3' height='1' alt='' style='display: block;' /></td>
 </tr>
 </table>
 <table cellpadding='0' cellspacing='0'>
 <tr>
-<td class='bottomleft'><img src='".THEME."images/blank.gif' width='10' height='9' alt='' style='display: block;' /></td>
-<td class='bottommain'><img src='".THEME."images/blank.gif' width='1' height='9' alt='' style='display: block;' /></td>
-<td class='bottomright'><img src='".THEME."images/blank.gif' width='10' height='9' alt='' style='display: block;' /></td>
+<td class='bottomleft'><img src='".THEME_ABS."images/blank.gif' width='10' height='9' alt='' style='display: block;' /></td>
+<td class='bottommain'><img src='".THEME_ABS."images/blank.gif' width='1' height='9' alt='' style='display: block;' /></td>
+<td class='bottomright'><img src='".THEME_ABS."images/blank.gif' width='10' height='9' alt='' style='display: block;' /></td>
 </tr>
 </table>
 </div>";
@@ -177,8 +177,8 @@ define("POST_EXTENDEDSTRING", " ]<br />");
 
 define(PRELINK, "");
 define(POSTLINK, "");
-define(LINKSTART, "<span><img src='".THEME."images/bullet2.gif' alt='bullet' /> ");
-define(LINKSTART_HILITE, "<span style='font-weight:bold'><img src='".THEME."images/bullet3.png' alt='bullet' /> ");
+define(LINKSTART, "<span><img src='".THEME_ABS."images/bullet2.gif' alt='bullet' /> ");
+define(LINKSTART_HILITE, "<span style='font-weight:bold'><img src='".THEME_ABS."images/bullet3.png' alt='bullet' /> ");
 define(LINKEND, "</span><br />");
 define(LINKDISPLAY, 2);
 define(LINKALIGN, "left");
@@ -194,32 +194,32 @@ function tablestyle($caption, $text){
 <div class='spacer'>
 <table cellpadding='0' cellspacing='0'>
 <tr>
-<td class='captiontopleft'><img src='".THEME."images/blank.gif' width='24' height='3' alt='' style='display: block;' /></td>
-<td class='captiontopmiddle'><img src='".THEME."images/blank.gif' width='1' height='3' alt='' style='display: block;' /></td>
-<td class='captiontopright'><img src='".THEME."images/blank.gif' width='11' height='3' alt='' style='display: block;' /></td>
+<td class='captiontopleft'><img src='".THEME_ABS."images/blank.gif' width='24' height='3' alt='' style='display: block;' /></td>
+<td class='captiontopmiddle'><img src='".THEME_ABS."images/blank.gif' width='1' height='3' alt='' style='display: block;' /></td>
+<td class='captiontopright'><img src='".THEME_ABS."images/blank.gif' width='11' height='3' alt='' style='display: block;' /></td>
 </tr>
 </table>
 <table cellpadding='0' cellspacing='0'>
 <tr>
-<td class='captionleft'><img src='".THEME."images/blank.gif' width='24' height='18' alt='' style='display: block;' /></td>
+<td class='captionleft'><img src='".THEME_ABS."images/blank.gif' width='24' height='18' alt='' style='display: block;' /></td>
 <td class='captionbar' style='white-space:nowrap'>".$caption."</td>
-<td class='captionend'><img src='".THEME."images/blank.gif' width='12' height='18' alt='' style='display: block;' /></td>
-<td class='captionmain'><img src='".THEME."images/blank.gif' width='1' height='18' alt='' style='display: block;' /></td>
-<td class='captionright'><img src='".THEME."images/blank.gif' width='11' height='18' alt='' style='display: block;' /></td>
+<td class='captionend'><img src='".THEME_ABS."images/blank.gif' width='12' height='18' alt='' style='display: block;' /></td>
+<td class='captionmain'><img src='".THEME_ABS."images/blank.gif' width='1' height='18' alt='' style='display: block;' /></td>
+<td class='captionright'><img src='".THEME_ABS."images/blank.gif' width='11' height='18' alt='' style='display: block;' /></td>
 </tr>
 </table>
 <table cellpadding='0' cellspacing='0'>
 <tr>
-<td class='bodyleft'><img src='".THEME."images/blank.gif' width='3' height='1' alt='' style='display: block;' /></td>
+<td class='bodyleft'><img src='".THEME_ABS."images/blank.gif' width='3' height='1' alt='' style='display: block;' /></td>
 <td class='bodymain'>".$text."</td>
-<td class='bodyright'><img src='".THEME."images/blank.gif' width='3' height='1' alt='' style='display: block;' /></td>
+<td class='bodyright'><img src='".THEME_ABS."images/blank.gif' width='3' height='1' alt='' style='display: block;' /></td>
 </tr>
 </table>
 <table cellpadding='0' cellspacing='0'>
 <tr>
-<td class='bottomleft'><img src='".THEME."images/blank.gif' width='10' height='9' alt='' style='display: block;' /></td>
-<td class='bottommain'><img src='".THEME."images/blank.gif' width='1' height='9' alt='' style='display: block;' /></td>
-<td class='bottomright'><img src='".THEME."images/blank.gif' width='10' height='9' alt='' style='display: block;' /></td>
+<td class='bottomleft'><img src='".THEME_ABS."images/blank.gif' width='10' height='9' alt='' style='display: block;' /></td>
+<td class='bottommain'><img src='".THEME_ABS."images/blank.gif' width='1' height='9' alt='' style='display: block;' /></td>
+<td class='bottomright'><img src='".THEME_ABS."images/blank.gif' width='10' height='9' alt='' style='display: block;' /></td>
 </tr>
 </table>
 </div>
