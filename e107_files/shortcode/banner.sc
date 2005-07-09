@@ -16,7 +16,7 @@ if($sql -> db_Select("banner", "*", $query)){
 
 	if(!$row['banner_image'])
 	{
-		return "<a href='".e_BASE."banner.php?".$row['banner_id']."' rel='external'>no image assigned to this banner</a>";
+		return "<a href='".e_HTTP."banner.php?".$row['banner_id']."' rel='external'>no image assigned to this banner</a>";
 	}
 
 	$fileext1 = substr(strrchr($row['banner_image'], "."), 1);
@@ -25,10 +25,10 @@ if($sql -> db_Select("banner", "*", $query)){
 	{
 		return "
 		<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0\" width=\"468\" height=\"60\">\n
-			<param name=\"movie\" value=\"".e_IMAGE."banners/".$row['banner_image']."\">\n
+			<param name=\"movie\" value=\"".e_IMAGE_ABS."banners/".$row['banner_image']."\">\n
 			<param name=\"quality\" value=\"high\">\n
 			<param name=\"SCALE\" value=\"noborder\">\n
-			<embed src=\"".e_IMAGE."banners/".$row['banner_image']."\" width=\"468\" height=\"60\" scale=\"noborder\" quality=\"high\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\"></embed>
+			<embed src=\"".e_IMAGE_ABS."banners/".$row['banner_image']."\" width=\"468\" height=\"60\" scale=\"noborder\" quality=\"high\" pluginspage=\"http://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\"></embed>
 		</object>
 		";
 	}
@@ -39,7 +39,7 @@ if($sql -> db_Select("banner", "*", $query)){
 	}
 	else
 	{
-		return "<a href='".e_BASE."banner.php?".$row['banner_id']."' rel='external'><img src='".e_IMAGE."banners/".$row['banner_image']."' alt='".$row['banner_clickurl']."' style='border:0' /></a>";
+		return "<a href='".e_HTTP."banner.php?".$row['banner_id']."' rel='external'><img src='".e_IMAGE_ABS."banners/".$row['banner_image']."' alt='".$row['banner_clickurl']."' style='border:0' /></a>";
 	}
 } else {
 	return "&nbsp;";
