@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_installer.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-06 22:12:00 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-09 10:41:51 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -114,5 +114,4 @@ define("LANINS_081", "Skriv din email adresse");
 
 define("LANINS_082", "bruger@ditsite.dk");
 
-?>
 ?>
