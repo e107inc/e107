@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_signup.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:00 $
+|        $Revision: 1.3 $
+|        $Date: 2005-07-09 10:33:16 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -83,6 +83,7 @@ define("LAN_SIGNUP_32", "Hvad er en XUP fil?");
 define("LAN_SIGNUP_33", "Skriv sti eller vælg personifikation");
 define("LAN_SIGNUP_34", "Bemærk: Et hver billede uploadet til denne server der erklæres upassende af administratorerne vil blive slettet øjeblikkelig.");
 define("LAN_SIGNUP_35", "Klik her for at tilmelde med en XUP fil");
+define("LAN_SIGNUP_36", "Der opstod en fejl ved oprettelsen af dine brugeroplysninger, kontakt venligst site admin");
 
 define("LAN_LOGINNAME", "Login Navn");
 define("LAN_PASSWORD", "kodeord");
