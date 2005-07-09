@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_menu/online_menu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-11 17:07:04 $
+|     $Revision: 1.12 $
+|     $Date: 2005-07-09 13:51:35 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,7 @@ if(!defined("e_TRACKING_DISABLED") && (isset($pref['track_online']) && $pref['tr
 		$newest_member = $sql->db_Select("user", "user_id, user_name", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1");
 		$row = $sql->db_Fetch();
 		extract($row);
-		$members_totals = "<br />".ONLINE_L5.": ".$total_members.", ".ONLINE_L6.": <a href='".e_BASE."user.php?id.$user_id'>$user_name</a>";
+		$members_totals = "<br />".ONLINE_L5.": ".$total_members.", ".ONLINE_L6.": <a href='".e_HTTP."user.php?id.{$user_id}'>{$user_name}</a>";
 		$e107cache->set("online_menu_totals", $members_totals);
 	}
 	$text .= $members_totals;
