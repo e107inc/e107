@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_post_template.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-05-22 16:04:44 $
-|     $Author: stevedunstan $
+|     $Revision: 1.11 $
+|     $Date: 2005-07-10 14:20:01 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -34,10 +34,11 @@ $subjectbox = "<tr>
 </tr>";
 
 // the poll is optional, be careful when changing the values here, only change if you know what you're doing ...
-
-require_once(e_PLUGIN."poll/poll_class.php");
-$pollo = new poll;
-$poll = $pollo -> renderPollForm("forum");
+if(is_readable(e_PLUGIN."poll/poll_class.php")) {
+	require_once(e_PLUGIN."poll/poll_class.php");
+	$pollo = new poll;
+	$poll = $pollo -> renderPollForm("forum");
+}
 
 
 // finally, file attach is optional, again only change this if you know what you're doing ...
