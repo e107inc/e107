@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-07-06 06:46:22 $
+|     $Revision: 1.18 $
+|     $Date: 2005-07-10 08:29:17 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -543,3 +543,5 @@ function cpage_adminmenu() {
 	global $action;
 	$page -> show_options($action);
 }
+
+?>
