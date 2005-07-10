@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_install/installer_handling_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-07-05 15:18:39 $
-|     $Author: streaky $
+|     $Revision: 1.9 $
+|     $Date: 2005-07-10 16:16:49 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -332,10 +332,10 @@ class e_install {
 	function stage_6(){
 		global $e_forms;
 		$this->get_lan_file();
-
-		
-		
 		$this->stage = 6;
+
+		$_POST['u_name'] = str_replace(array("'", '"'), "", $_POST['u_name']);
+		$_POST['d_name'] = str_replace(array("'", '"'), "", $_POST['d_name']);
 
 		$this->previous_steps['admin']['user'] = $_POST['u_name'];
 		if ($_POST['d_name'] == "") {
