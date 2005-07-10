@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2005-07-10 15:40:53 $
+|     $Revision: 1.54 $
+|     $Date: 2005-07-10 15:44:24 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -175,7 +175,7 @@ if (isset($_POST['register']))
 	if($_POST['password1xup']) $_POST['password1'] = $_POST['password1xup'];
 	if($_POST['password2xup']) $_POST['password2'] = $_POST['password2xup'];
 
-	if (strstr($_POST['name'], "#") || strstr($_POST['name'], "=") || strstr($_POST['name'], "\\")) {
+	if (strstr($_POST['name'], "#") || strstr($_POST['name'], "=") || strstr($_POST['name'], "\\") || strstr($_POST['name'], "'") || strstr($_POST['name'], '"')) {
 		$error_message .= LAN_409."\\n";
 		$error = TRUE;
 	}
