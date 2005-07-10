@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-07-09 09:10:52 $
+|     $Revision: 1.6 $
+|     $Date: 2005-07-10 19:33:48 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -190,11 +190,11 @@ define("CONTENT_ADMIN_ITEM_LAN_102", "Escoja una imagen existente");
 define("CONTENT_ADMIN_ITEM_LAN_103", "Después que haya transferido la imagen, puede asignarlo en el área 'escoja una imagen existente'");
 define("CONTENT_ADMIN_ITEM_LAN_104", "Transferir");
 define("CONTENT_ADMIN_ITEM_LAN_105", "Ver");
-define("CONTENT_ADMIN_ITEM_LAN_106", "Icono transferido con éxito<br />Nota: Todavía necesita asignar el icono a este contenido en el área "escoja un icono existente'<br />y por supuesto enviarlo al formulario de crear/actualizar el contenido");
+define("CONTENT_ADMIN_ITEM_LAN_106", "Icono transferido con éxito<br />Nota: Todavía necesita asignar el icono a este contenido en el área 'escoja un icono existente'<br />y por supuesto enviarlo al formulario de crear/actualizar el contenido");
 define("CONTENT_ADMIN_ITEM_LAN_107", "Icono no transferido");
-define("CONTENT_ADMIN_ITEM_LAN_108", "Adjunto transferido con éxito<br />Nota: Todavía necesita asignar el adjunto a este contenido en el área "escoja un adjunton existente'<br />y por supuesto enviarlo al formulario de crear/actualizar el contenido");
+define("CONTENT_ADMIN_ITEM_LAN_108", "Adjunto transferido con éxito<br />Nota: Todavía necesita asignar el adjunto a este contenido en el área 'escoja un adjunton existente'<br />y por supuesto enviarlo al formulario de crear/actualizar el contenido");
 define("CONTENT_ADMIN_ITEM_LAN_109", "Adjunto no transferido");
-define("CONTENT_ADMIN_ITEM_LAN_110", "Imagen transferida con éxito<br />Nota: Todavía necesita asignar la imagen a este contenido en el área "escoja una imagen existente'<br />y por supuesto enviarlo al formulario de crear/actualizar el contenido");
+define("CONTENT_ADMIN_ITEM_LAN_110", "Imagen transferida con éxito<br />Nota: Todavía necesita asignar la imagen a este contenido en el área 'escoja una imagen existente'<br />y por supuesto enviarlo al formulario de crear/actualizar el contenido");
 define("CONTENT_ADMIN_ITEM_LAN_111", "Imagen no transferida");
 define("CONTENT_ADMIN_ITEM_LAN_112", "Transferir un icono, adjunto i imagen");
 define("CONTENT_ADMIN_ITEM_LAN_113", "Escoja el tipo de transferencia en la caja de selección antes de transferir el archivo");
@@ -443,7 +443,7 @@ define("CONTENT_PRESET_LAN_1", "Error : no se ha rellenado todos los campos corr
 define("CONTENT_PRESET_LAN_2", "");
 define("CONTENT_PRESET_LAN_3", "El tamaño y tamaño máximo deben ser valores numéricos");
 define("CONTENT_PRESET_LAN_4", "Columnas y filas tienen que tener valores numéricos");
-define("CONTENT_PRESET_LAN_5", Necesita proveer algunas opciones");
+define("CONTENT_PRESET_LAN_5", "Necesita proveer algunas opciones");
 define("CONTENT_PRESET_LAN_6", "Años desde y años a tiene que ser valores numéricos");
 define("CONTENT_PRESET_LAN_7", "Generador de campos preseleccionados de contenido");
 define("CONTENT_PRESET_LAN_8", "Crear una nueva preselección de tipo de tag de datos");
@@ -480,9 +480,7 @@ define("CONTENT_ADMIN_OPT_LAN_4", "Número de adjuntos que pueden ser transferid
 define("CONTENT_ADMIN_OPT_LAN_5", "Número de tags personalizados disponibles");
 define("CONTENT_ADMIN_OPT_LAN_6", "Tags de datos preseleccionados");
 define("CONTENT_ADMIN_OPT_LAN_7", "Defina los tags de datos preseleccionados");
-//define("CONTENT_ADMIN_OPT_LAN_8", "
-Here you can provide additional preset data tags. The fields you provide here are the keys of the key=>value data tags. They will have a input element for the value to be set in the admin creation form. You can choose from the pulldown menu which type of element you want the preset data tag to be. Note: these are not part of the amount of custom data tags you have specified above, and will be used additionally.
-These Preset Tags are very usefull if you want to have a certain custom tag available standard for each new item. for instance, if you always want to be able to define a value for 'photographer' you can create such a preset tag, which will always be displayed for each new item in this main parent.");
+//define("CONTENT_ADMIN_OPT_LAN_8", "Here you can provide additional preset data tags. The fields you provide here are the keys of the key=>value data tags. They will have a input element for the value to be set in the admin creation form. You can choose from the pulldown menu which type of element you want the preset data tag to be. Note: these are not part of the amount of custom data tags you have specified above, and will be used additionally.These Preset Tags are very usefull if you want to have a certain custom tag available standard for each new item. for instance, if you always want to be able to define a value for 'photographer' you can create such a preset tag, which will always be displayed for each new item in this main parent.");
 define("CONTENT_ADMIN_OPT_LAN_9", "¿Permitir enviar elementos?");
 define("CONTENT_ADMIN_OPT_LAN_10", "¿Quien puede eviar elementos?");
 define("CONTENT_ADMIN_OPT_LAN_11", "Envío directo");
