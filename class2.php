@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.190 $
-|     $Date: 2005-07-09 13:53:59 $
+|     $Revision: 1.191 $
+|     $Date: 2005-07-10 10:19:28 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -283,11 +283,8 @@ $e107cache = new ecache;
 
 if (isset($pref['del_unv']) && $pref['del_unv']) {
 	$threshold=(time() - ($pref['del_unv'] * 60));
-	$sql->db_Delete("user", "user_ban = 2 AND user_join<'$threshold' ");
+	$sql->db_Delete("user", "user_ban = 2 AND user_join < '{$threshold}' ");
 }
-
-
-
 
 e107_require_once(e_HANDLER."override_class.php");
 $override=new override;
@@ -310,13 +307,11 @@ if (isset($pref['modules']) && $pref['modules']) {
 	}
 }
 
-
 //###########  Module redefinable functions ###############
 if (!function_exists('checkvalidtheme')) {
 	function checkvalidtheme($theme_check) {
 		// arg1 = theme to check
 		global $ADMIN_DIRECTORY, $tp, $e107;
-
 
 		if(strstr(e_QUERY, "themepreview")) {
 			list($action, $id) = explode('.', e_QUERY);
@@ -413,8 +408,8 @@ if(isset($pref['track_online']) && $pref['track_online'])
 }
 $sql->db_Mark_Time('Start: Signup/splash/admin');
 
-define("e_SIGNUP", (file_exists($e107->relative_base_path."customsignup.php") ? $e107->relative_base_path."customsignup.php" : $e107->relative_base_path."signup.php"));
-define("e_LOGIN", (file_exists($e107->relative_base_path."customlogin.php") ? $e107->relative_base_path."customlogin.php" : $e107->relative_base_path."login.php"));
+define("e_SIGNUP", (file_exists(e_BASE."customsignup.php") ? e_HTTP."customsignup.php" : e_HTTP."signup.php"));
+define("e_LOGIN", (file_exists(e_BASE."customlogin.php") ? e_HTTP."customlogin.php" : e_HTTP."login.php"));
 
 if ($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php' && e_PAGE != 'sitedown.php') {
 	header("Location: ".SITEURL.e_HTTP."membersonly.php");
@@ -615,7 +610,7 @@ if (!class_exists('convert'))
 //@require_once(e_HANDLER."debug_handler.php");
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function js_location($qry){
-	echo "<script type='text/javascript'>document.location.href='".$qry."'</script>\n"; exit;
+	echo "<script type='text/javascript'>document.location.href='{$qry}'</script>\n"; exit;
 }
 
 function check_email($var) {
