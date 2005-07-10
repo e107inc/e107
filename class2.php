@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.191 $
-|     $Date: 2005-07-10 10:19:28 $
-|     $Author: streaky $
+|     $Revision: 1.192 $
+|     $Date: 2005-07-10 15:07:07 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -221,6 +221,7 @@ if ($pref['user_tracking'] == "session") {
 
 define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
 
+/* disabled ffor now, causing multiple problems .,.
 // if the option to force users to use a particular url for the site is enabled, redirect users there
 if($pref['redirectsiteurl'] && $pref['siteurl']) {
 	if(!strstr($pref['siteurl'], substr(SITEURL.e_HTTP, 0, -1))) {
@@ -229,6 +230,7 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 		exit();
 	}
 }
+*/
 
 // sort out the users language selection
 if (isset($_POST['setlanguage']) || isset($_GET['elan'])) {
