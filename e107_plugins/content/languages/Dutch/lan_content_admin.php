@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-07-06 22:11:11 $
+|     $Revision: 1.6 $
+|     $Date: 2005-07-10 05:55:46 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -207,6 +207,9 @@ define("CONTENT_ADMIN_ITEM_LAN_117", "aangemeld contentonderwerp geplaatst");
 define("CONTENT_ADMIN_ITEM_LAN_118", "geen");
 define("CONTENT_ADMIN_ITEM_LAN_119", "toegewezen");
 define("CONTENT_ADMIN_ITEM_LAN_120", "standaard layout");
+define("CONTENT_ADMIN_ITEM_LAN_121", "nog geen nieuw pictogram geupload");
+define("CONTENT_ADMIN_ITEM_LAN_122", "nog geen nieuwe bijlage geupload");
+define("CONTENT_ADMIN_ITEM_LAN_123", "nog geen nieuwe afbeelding geupload");
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "volgorde is verhoogd");
 define("CONTENT_ADMIN_ORDER_LAN_1", "volgorde is verlaagd");
