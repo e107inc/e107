@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-07-10 15:38:40 $
+|     $Revision: 1.53 $
+|     $Date: 2005-07-10 15:40:53 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -337,7 +337,7 @@ if (isset($_POST['register']))
 		if(!$nid)
 		{
 			require_once(HEADERF);
-			$ns->tablerender("", LAN_SIGNUP_36);
+			$ns->tablerender("", LAN_SIGNUP_36); 
 			require_once(FOOTERF);
 		}
 		if ($pref['user_reg_veri'])
