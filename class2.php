@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.192 $
-|     $Date: 2005-07-10 15:07:07 $
-|     $Author: stevedunstan $
+|     $Revision: 1.193 $
+|     $Date: 2005-07-11 14:58:02 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -414,7 +414,7 @@ define("e_SIGNUP", (file_exists(e_BASE."customsignup.php") ? e_HTTP."customsignu
 define("e_LOGIN", (file_exists(e_BASE."customlogin.php") ? e_HTTP."customlogin.php" : e_HTTP."login.php"));
 
 if ($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php' && e_PAGE != 'sitedown.php') {
-	header("Location: ".SITEURL.e_HTTP."membersonly.php");
+	header("Location: ".SITEURL."membersonly.php");
 	exit;
 }
 
@@ -440,7 +440,7 @@ $pref[$key] = $tp->toFORM($prefvalue);
 }*/
 
 define("SITENAME", trim($tp->toHTML($pref['sitename'], "", "emotes_off defs")));
-define("SITEURL", ($pref['ssl_enabled'] == '1' ? "https://" : "http://").$_SERVER['HTTP_HOST']);
+define("SITEURL", ($pref['ssl_enabled'] == '1' ? "https://" : "http://").$_SERVER['HTTP_HOST'].e_HTTP);
 define("SITEBUTTON", $pref['sitebutton']);
 define("SITETAG", $tp->toHTML($pref['sitetag'], FALSE, "emotes_off defs"));
 define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off defs"));
@@ -449,7 +449,7 @@ define("SITEADMINEMAIL", $pref['siteadminemail']);
 define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'], "", "emotes_off defs"));
 
 if ($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin.php", e_SELF) && !eregi("sitedown.php", e_SELF)) {
-	header("Location: ".SITEURL.e_HTTP."sitedown.php");
+	header("Location: ".SITEURL."sitedown.php");
 	exit;
 }
 
@@ -480,7 +480,7 @@ if (e_QUERY == 'logout') {
 
 	cookie($pref['cookie_name'], "", (time() - 2592000));
 	$e_event->trigger("logout");
-	echo "<script type='text/javascript'>document.location.href = '".SITEURL.e_HTTP."index.php'</script>\n";
+	echo "<script type='text/javascript'>document.location.href = '".SITEURL."index.php'</script>\n";
 	exit;
 }
 
