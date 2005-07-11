@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-06-27 02:48:19 $
+|     $Revision: 1.28 $
+|     $Date: 2005-07-11 16:49:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -55,7 +55,7 @@ class e107_user_extended
 			'textarea' => 5, 
 			'integer' => 6, 
 			'date' => 7, 
-			'language' => 7
+			'language' => 8
 		);
 		$this->user_extended_types = array(
 		1 => UE_LAN_1,
@@ -123,22 +123,22 @@ class e107_user_extended
 		switch ($type)
 		{
 
-			case 4:   // db table - supporting numeric and non-numeric ids.(eg country codes)
-				$db_type = 'VARCHAR(11)';
-				break;
-
 			case 6:
 				// integer,
 				$db_type = 'INT(11)';
+				break;
+
+			case 7:
+				// date,
+				$db_type = 'DATE NOT NULL';
 				break;
 
 			case 1:
 			case 2:
 			case 3:
 			case 4:
-			case 7:
 			case 8:
-				//text, dropdown, radio, date
+				//text, dropdown, radio, db_field, language
 				$db_type = 'VARCHAR(255)';
 				break;
 
@@ -252,7 +252,8 @@ class e107_user_extended
 	{
 		global $cal, $tp;
 		$choices = explode(",",$struct['user_extended_struct_values']);
-		foreach($choices as $k => $v){
+		foreach($choices as $k => $v)
+		{
 			$choices[$k] = str_replace("[E_COMMA]", ",", $choices[$k]);
 		}
 		$parms = explode("^,^",$struct['user_extended_struct_parms']);
@@ -264,9 +265,8 @@ class e107_user_extended
 			$include .= " class='tbox' ";
 		}
 
-
-
-		switch($struct['user_extended_struct_type']){
+		switch($struct['user_extended_struct_type'])
+		{
 			case 1:  //textbox
 			case 6:  //integer
 				$ret = "<input name='{$fname}' value='{$curval}' {$include} />";
@@ -286,7 +286,8 @@ class e107_user_extended
 			case 3: //dropdown
 				$ret = "<select {$include} name='{$fname}'>\n";
 				$ret .= "<option value=''></option>\n";  // ensures that the user chose it.
-				foreach($choices as $choice){
+				foreach($choices as $choice)
+				{
 					$choice = trim($choice);
 					$sel = ($curval == $choice) ? " selected='selected' " : "";
 					$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
@@ -303,7 +304,8 @@ class e107_user_extended
 					$choiceList = $sql->db_getList();
 					$ret = "<select {$include} class='tbox' name='{$fname}'  >\n";
 					$ret .= "<option value=''></option>\n";  // ensures that the user chose it.
-					foreach($choiceList as $cArray){
+					foreach($choiceList as $cArray)
+					{
 						$cID = trim($cArray[$choices[1]]);
 						$cText = trim($cArray[$choices[2]]);
 						$sel = ($curval == $cID) ? " selected='selected' " : "";
@@ -321,23 +323,33 @@ class e107_user_extended
 				break;
 
 			case 7: //date
-				return $cal->make_input_field(array(), array('class' => 'tbox', 'name' => $fname, 'value' => $curval));
+				return $cal->make_input_field( 
+				array(
+               'ifFormat' => '%Y-%m-%d'
+               ), 
+				array(
+					'class' => 'tbox', 
+					'name' => $fname, 
+					'value' => $curval
+					)
+				);
 				break;
 
-            case 8: // language
+			case 8: // language
 				require_once(e_HANDLER."file_class.php");
 				$fl = new e_file;
 				$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
 				sort($lanlist);
-            	$ret = "<select {$include} name='{$fname}'>\n";
+            $ret = "<select {$include} name='{$fname}'>\n";
 				$ret .= "<option value=''></option>\n";  // ensures that the user chose it.
-					foreach($lanlist as $choice){
-						$choice = trim($choice);
-						$sel = ($curval == $choice || (!USER && $choice == e_LANGUAGE))? " selected='selected' " : "";
-						$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
-					}
+				foreach($lanlist as $choice)
+				{
+					$choice = trim($choice);
+					$sel = ($curval == $choice || (!USER && $choice == e_LANGUAGE))? " selected='selected' " : "";
+					$ret .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
+				}
 				$ret .= "</select>\n";
-           		break;
+           	break;
 
 		}
 
