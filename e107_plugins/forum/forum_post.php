@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-07-11 11:41:38 $
+|     $Revision: 1.42 $
+|     $Date: 2005-07-11 15:42:25 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../../class2.php");
-$WYSIWYG = TRUE;
+$WYSIWYG = $pref['wysiwyg'];
+$e_wysiwyg = "post";
 $lan_file = e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_post.php';
 include(file_exists($lan_file) ? $lan_file : e_PLUGIN.'forum/languages/English/lan_forum_post.php');
 
@@ -418,7 +419,7 @@ $USERBOX = (ANON == TRUE && USER == FALSE ? $userbox : "");
 $SUBJECTBOX = ($action == "nt" ? $subjectbox : "");
 $POSTTYPE = ($action == "nt" ? LAN_63 : LAN_73);
 $POSTBOX = "<textarea class='tbox' name='post' cols='70' rows='10' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
-if(!$pref['wysiwyg'] || !check_class($pref['wysiwyg']))
+if(!$pref['wysiwyg'] || !check_class($pref['post_html']))
 {
 	$POSTBOX .= ren_help(2);
 	require_once(e_HANDLER."emote.php");
