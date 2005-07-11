@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-07-10 08:29:17 $
-|     $Author: stevedunstan $
+|     $Revision: 1.19 $
+|     $Date: 2005-07-11 12:03:53 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,7 +32,6 @@ require_once("auth.php");
 require_once(e_HANDLER."ren_help.php");
 require_once(e_HANDLER."userclass_class.php");
 $custpage_lang = ($sql->mySQLlanguage) ? $sql->mySQLlanguage : $pref['sitelanguage'];
-unset($message);
 
 
 if (e_QUERY)
@@ -45,45 +44,43 @@ if (e_QUERY)
 	unset($tmp);
 }
 
-if(IsSet($_POST['submitPage']))
+if(isset($_POST['submitPage']))
 {
 	$page -> submitPage();
 }
 
-if(IsSet($_POST['submitMenu']))
+if(isset($_POST['submitMenu']))
 {
 	$page -> submitPage("", TRUE);
 }
 
-if(IsSet($_POST['updateMenu']))
+if(isset($_POST['updateMenu']))
 {
 	$page -> submitPage($_POST['pe_id'], TRUE);
 }
 
 
-if(IsSet($_POST['updatePage']))
+if(isset($_POST['updatePage']))
 {
 	$page -> submitPage($_POST['pe_id']);
 }
 
-$delm = array_pop(array_flip($_POST));
-if (preg_match("#delete_(.*?)_#", $delm, $match))
+if(isset($_POST['delete']))
 {
-	$page -> delete_page($match[1]);
+	foreach(array_keys($_POST['delete']) as $pid)
+	{
+		$page -> delete_page($pid);
+	}
 }
-
+		
 if (isset($_POST['saveOptions'])) {
 	$page -> saveSettings();
 }
 
-
-if($page -> $message)
+if($page->message)
 {
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	$ns->tablerender("", "<div style='text-align:center'><b>".$page->message."</b></div>");
 }
-
-
-
 
 if(!e_QUERY)
 {
@@ -95,32 +92,18 @@ else
 	$page -> $function();
 }
 
-
-
-
-
-
 require_once(e_ADMIN."footer.php");
-
-
 
 class page
 {
 
 	var $message;
 
-	function page()
-	{
-		/* constructor - added to prevent 'Cannot access empty property' php bug (Bug #28444)... */
-		$this -> message = "";
-	}
-
 	function showExistingPages()
 	{
 		global $sql, $tp, $ns;
 
-		$text = "<div style='text-align: center;'>
-		";
+		$text = "<div style='text-align: center;'>";
 
 		if(!$sql -> db_Select("page", "*", "ORDER BY page_datestamp DESC", "nowhere"))
 		{
@@ -149,7 +132,7 @@ class page
 				<td style='width:15%; text-align: center;' class='forumheader3'>".($page_theme ? "menu" : "page")."</td>
 				<td style='width:20%; text-align: center;' class='forumheader3'>
 				<a href='".e_SELF."?".($page_theme ? "createm": "create").".edit.{$page_id}'>".ADMIN_EDIT_ICON."</a>
-				<input type='image' title='".LAN_DELETE."' name='delete_$page_id' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".CUSLAN_4." [ ID: $page_id ]')\"/>
+				<input type='image' title='".LAN_DELETE."' name='delete[{$page_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".CUSLAN_4." [ ID: $page_id ]')\"/>
 				</td>
 				</tr>
 				";
@@ -167,20 +150,10 @@ class page
 
 	}
 
-
-
 	function createmPage()
 	{
 		$this -> createPage(TRUE);
 	}
-
-
-
-
-
-
-
-
 
 	function createPage($mode=FALSE)
 	{
@@ -225,8 +198,6 @@ class page
 			</tr>
 			";
 		}
-
-			
 
 		$text .= "<tr>
 		<td style='width:30%' class='forumheader3'>".CUSLAN_8."</td>
@@ -341,9 +312,6 @@ class page
 
 			$menuname = ($type ? $tp -> toDB($_POST['menu_name']) : "");
 
-			
-			
-
 			$sql -> db_Insert("page", "0, '$page_title', '$page_text', '$pauthor', '".time()."', '".$_POST['page_rating_flag']."', '".$_POST['page_comment_flag']."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."' ");
 			$this -> message = CUSLAN_27;
 
@@ -351,9 +319,6 @@ class page
 			{
 				$sql -> db_Insert("menus", "0, '$menuname', '0', '0', '0', '', '".mysql_insert_id()."' ");
 			}
-
-
-
 
 			if($_POST['page_link'])
 			{
@@ -375,8 +340,6 @@ class page
 		$sql -> db_Delete("menus", "menu_path='$del_id' ");
 		$this -> message = CUSLAN_28;
 	}
-
-
 
 	function optionsPage()
 	{
@@ -525,17 +488,6 @@ class page
 		$text .= "<br />".CUSLAN_35." $count ".($count == 1 ? "file" : "files").".<br /> ".CUSLAN_36."";
 		$ns -> tablerender(CUSLAN_37, $text);
 	}
-
-
-
-
-
-
-
-
-	
-
-
 }
 
 function cpage_adminmenu() {
