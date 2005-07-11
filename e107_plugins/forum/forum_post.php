@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-06-25 03:50:23 $
+|     $Revision: 1.41 $
+|     $Date: 2005-07-11 11:41:38 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -249,7 +249,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 			$subject = "[".LAN_402."] ".$subject;
 		}
 
-		$threadtype = intval($_POST['threadtype']);
+		$threadtype = (MODERATOR ? intval($_POST['threadtype']) : 0);
 		if (isset($_POST['reply']))
 		{
 			$parent = $thread_info['head']['thread_id'];
@@ -326,7 +326,7 @@ if (isset($_POST['update_thread']))
 		$newvals['thread_thread'] = $tp->toDB($_POST['post']);
 		$newvals['thread_name'] = $tp->toDB($_POST['subject']);
 		$newvals['thread_active'] = ($_POST['email_notify']) ? '99' : '1';
-		if (isset($_POST['threadtype']))
+		if (isset($_POST['threadtype']) && MODERATOR)
 		{
 			$newvals['thread_s'] = $_POST['threadtype'];
 		}
@@ -440,7 +440,7 @@ if ($pref['email_notify'] && $action == "nt")
 $EMAILNOTIFY = $emailnotify;
 
 $postthreadas = "";
-if (ADMIN && getperms("5") && $action == "nt")
+if (MODERATOR && $action == "nt")
 {
 	$thread_s = (isset($_POST['threadtype']) ? $_POST['threadtype'] : $thread_info['head']['thread_s']);
 	$postthreadas = "<br /><span class='defaulttext'>".LAN_400."<input name='threadtype' type='radio' value='0' ".(!$thread_s ? "checked='checked' " : "").">".LAN_1."&nbsp;<input name='threadtype' type='radio' value='1' ".($thread_s == 1 ? "checked='checked' " : "").">".LAN_2."&nbsp;<input name='threadtype' type='radio' value='2' ".($thread_s == 2 ? "checked='checked' " : "").">".LAN_3."</span>";
