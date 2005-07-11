@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2005-07-09 14:13:14 $
-|     $Author: streaky $
+|     $Revision: 1.60 $
+|     $Date: 2005-07-11 15:42:25 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -88,7 +88,7 @@ if (isset($theme_js_php) && $theme_js_php) {
 	if (file_exists(THEME.'theme.js')) { echo "<script type='text/javascript' src='".THEME_ABS."theme.js'></script>\n"; }
 	if (filesize(e_FILE.'user.js')) { echo "<script type='text/javascript' src='".e_FILE_ABS."user.js'></script>\n"; }
 }
-if (isset($WYSIWYG) && $WYSIWYG == TRUE && check_class($pref['wysiwyg'])) { require_once(e_HANDLER."tiny_mce/wysiwyg.php"); }
+if (isset($WYSIWYG) && $WYSIWYG == TRUE && check_class($pref['post_html'] && isset($e_wysiwyg) && $e_wysiwyg != "")) { require_once(e_HANDLER."tiny_mce/wysiwyg.php"); echo wysiwyg($e_wysiwyg);}
 if (function_exists('headerjs')){echo headerjs();  }
 
 if (isset($pref['statActivate']) && $pref['statActivate']) {
