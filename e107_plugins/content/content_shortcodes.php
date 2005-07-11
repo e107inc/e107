@@ -230,15 +230,18 @@ return $CONTENT_CAT_TABLE_INFO_POST;
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_ICON
-global $CONTENT_CAT_TABLE_ICON, $aa, $row, $content_pref, $qs, $content_cat_icon_path_large, $mainparent;
+global $CONTENT_CAT_TABLE_ICON, $aa, $totalitems, $row, $content_pref, $qs, $content_cat_icon_path_large, $mainparent;
 if(isset($content_pref["content_catall_icon_{$mainparent}"]) && $content_pref["content_catall_icon_{$mainparent}"]){
-return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, "cat.".$row['content_id'], "", $content_pref["content_blank_caticon_{$mainparent}"]);
+	//$qry = ($totalitems > 0 ? "cat.".$row['content_id'] : "");
+	$qry = "cat.".$row['content_id'];
+	return $aa -> getIcon("catlarge", $row['content_icon'], $content_cat_icon_path_large, $qry, "", $content_pref["content_blank_caticon_{$mainparent}"]);
 }
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_HEADING
 global $CONTENT_CAT_TABLE_HEADING, $row, $totalitems, $tp;
-return ($totalitems > 0 ? "<a href='".e_SELF."?cat.".$row['content_id']."'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>" : $tp -> toHTML($row['content_heading'], TRUE, "") );
+//return ($totalitems > 0 ? "<a href='".e_SELF."?cat.".$row['content_id']."'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>" : $tp -> toHTML($row['content_heading'], TRUE, "") );
+return "<a href='".e_SELF."?cat.".$row['content_id']."'>".$tp -> toHTML($row['content_heading'], TRUE, "")."</a>";
 SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_AMOUNT

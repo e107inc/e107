@@ -11,13 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_search_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-08 09:19:53 $
+|     $Revision: 1.8 $
+|     $Date: 2005-07-11 07:47:22 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 global $sc_style, $content_shortcodes;
-global $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD;
 
 $sc_style['CONTENT_SEARCH_TABLE_SELECT']['pre'] = "<td style='width:10%; white-space:nowrap; padding-right:10px;'>";
 $sc_style['CONTENT_SEARCH_TABLE_SELECT']['post'] = "</td>";
@@ -28,18 +27,16 @@ $sc_style['CONTENT_SEARCH_TABLE_ORDER']['post'] = "</td>";
 $sc_style['CONTENT_SEARCH_TABLE_KEYWORD']['pre'] = "<td>";
 $sc_style['CONTENT_SEARCH_TABLE_KEYWORD']['post'] = "</td>";
 
-
 // ##### CONTENT SEARCH LIST --------------------------------------------------
-$CONTENT_SEARCH_TABLE = "";
-if(!$CONTENT_SEARCH_TABLE){
-				$CONTENT_SEARCH_TABLE .= "
-				<table style='width:98%; text-align:left;' border='0'>
-				<tr>
-				{CONTENT_SEARCH_TABLE_SELECT}
-				{CONTENT_SEARCH_TABLE_ORDER}
-				{CONTENT_SEARCH_TABLE_KEYWORD}
-				</tr>
-				</table><br />";
+if(!isset($CONTENT_SEARCH_TABLE)){
+	$CONTENT_SEARCH_TABLE = "
+	<table style='width:98%; text-align:left;' border='0'>
+	<tr>
+	{CONTENT_SEARCH_TABLE_SELECT}
+	{CONTENT_SEARCH_TABLE_ORDER}
+	{CONTENT_SEARCH_TABLE_KEYWORD}
+	</tr>
+	</table><br />";
 }
 // ##### ----------------------------------------------------------------------
 

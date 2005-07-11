@@ -11,16 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_archive_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-09 08:59:55 $
+|     $Revision: 1.6 $
+|     $Date: 2005-07-11 07:47:22 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
-$CONTENT_ARCHIVE_TABLE_START = "";
-$CONTENT_ARCHIVE_TABLE = "";
-$CONTENT_ARCHIVE_TABLE_END = "";
-global $sc_style, $content_shortcodes, $content_pref, $aa, $qs, $row, $CONTENT_ARCHIVE_TABLE_LETTERS;
+global $sc_style, $content_shortcodes;
 
 $sc_style['CONTENT_ARCHIVE_TABLE_AUTHOR']['pre'] = "<tr><td class='forumheader3' colspan='2' style='white-space:nowrap; text-align:left;'>".CONTENT_LAN_11." ";
 $sc_style['CONTENT_ARCHIVE_TABLE_AUTHOR']['post'] = "</td></tr>";
@@ -29,24 +26,24 @@ $sc_style['CONTENT_ARCHIVE_TABLE_LETTERS']['pre'] = "<tr><td class='forumheader3
 $sc_style['CONTENT_ARCHIVE_TABLE_LETTERS']['post'] = "</td></tr>";
 
 // ##### CONTENT ARCHIVE --------------------------------------------------
-if(!$CONTENT_ARCHIVE_TABLE_START){
-				$CONTENT_ARCHIVE_TABLE_START = "
-				<table class='fborder'>
-				{CONTENT_ARCHIVE_TABLE_LETTERS}
-				";
+if(!isset($CONTENT_ARCHIVE_TABLE_START)){
+	$CONTENT_ARCHIVE_TABLE_START = "
+	<table class='fborder'>
+	{CONTENT_ARCHIVE_TABLE_LETTERS}
+	";
 }
-if(!$CONTENT_ARCHIVE_TABLE){
-				$CONTENT_ARCHIVE_TABLE = "				
-				<tr>
-					<td class='fcaption'>{CONTENT_ARCHIVE_TABLE_HEADING}</td>
-					<td class='fcaption' style='width:5%; white-space:nowrap; text-align:right;'>{CONTENT_ARCHIVE_TABLE_DATE}</td>
-				</tr>
-				{CONTENT_ARCHIVE_TABLE_AUTHOR}
-				\n";
+if(!isset($CONTENT_ARCHIVE_TABLE)){
+	$CONTENT_ARCHIVE_TABLE = "				
+	<tr>
+		<td class='fcaption'>{CONTENT_ARCHIVE_TABLE_HEADING}</td>
+		<td class='fcaption' style='width:5%; white-space:nowrap; text-align:right;'>{CONTENT_ARCHIVE_TABLE_DATE}</td>
+	</tr>
+	{CONTENT_ARCHIVE_TABLE_AUTHOR}
+	\n";
 }
-if(!$CONTENT_ARCHIVE_TABLE_END){
-				$CONTENT_ARCHIVE_TABLE_END = "
-				</table>";
+if(!isset($CONTENT_ARCHIVE_TABLE_END)){
+	$CONTENT_ARCHIVE_TABLE_END = "
+	</table>";
 }
 // ##### ----------------------------------------------------------------------
 

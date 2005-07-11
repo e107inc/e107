@@ -11,16 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/content_submit_type_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-07 19:37:23 $
+|     $Revision: 1.5 $
+|     $Date: 2005-07-11 07:47:22 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 global $sc_style, $content_shortcodes;
-
-$CONTENT_SUBMIT_TYPE_TABLE_START = "";
-$CONTENT_SUBMIT_TYPE_TABLE = "";
-$CONTENT_SUBMIT_TYPE_TABLE_END = "";
 
 $sc_style['CONTENT_SUBMIT_TYPE_TABLE_ICON']['pre'] = "";
 $sc_style['CONTENT_SUBMIT_TYPE_TABLE_ICON']['post'] = "";
@@ -29,11 +25,11 @@ $sc_style['CONTENT_SUBMIT_TYPE_TABLE_SUBHEADING']['pre'] = "";
 $sc_style['CONTENT_SUBMIT_TYPE_TABLE_SUBHEADING']['post'] = "";
 
 // ##### CONTENT SUBMIT TYPE LIST --------------------------------------------------
-if(!$CONTENT_SUBMIT_TYPE_TABLE_START){
+if(!isset($CONTENT_SUBMIT_TYPE_TABLE_START)){
 				$CONTENT_SUBMIT_TYPE_TABLE_START = "
 				<table class='fborder' style='width:98%; text-align:left;'>\n";
 }
-if(!$CONTENT_SUBMIT_TYPE_TABLE){
+if(!isset($CONTENT_SUBMIT_TYPE_TABLE)){
 				$CONTENT_SUBMIT_TYPE_TABLE = "
 				<tr>
 					<td class='forumheader3' style='width:10%; white-space:nowrap;' rowspan='2'>{CONTENT_SUBMIT_TYPE_TABLE_ICON}</td>
@@ -41,7 +37,7 @@ if(!$CONTENT_SUBMIT_TYPE_TABLE){
 				</tr>
 				<tr><td class='forumheader3'>{CONTENT_SUBMIT_TYPE_TABLE_SUBHEADING}<br /></td></tr>\n";
 }
-if(!$CONTENT_SUBMIT_TYPE_TABLE_END){
+if(!isset($CONTENT_SUBMIT_TYPE_TABLE_END)){
 				$CONTENT_SUBMIT_TYPE_TABLE_END = "
 				</table>";
 }

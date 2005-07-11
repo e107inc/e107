@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.77 $
-|		$Date: 2005-07-06 13:48:39 $
+|		$Revision: 1.78 $
+|		$Date: 2005-07-11 07:47:14 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -231,7 +231,7 @@ function show_content_search_menu($mode, $mainparent){
 }
 
 function show_content_search_result($searchkeyword){
-		global $qs, $content_shortcodes, $ns, $rs, $tp, $plugindir, $plugintable, $gen, $aa, $content_pref, $datequery, $gen, $mainparent, $content_icon_path;
+		global $row, $qs, $content_shortcodes, $ns, $rs, $tp, $plugindir, $plugintable, $gen, $aa, $content_pref, $datequery, $gen, $mainparent, $content_icon_path;
 
 		$mainparent			= $aa -> getMainParent( (is_numeric($qs[1]) ? $qs[1] : $qs[2]) );
 		$content_pref		= $aa -> getContentPref($mainparent);
@@ -294,7 +294,7 @@ function parsesearch($text, $match, $amount){
 
 // ##### CONTENT TYPE LIST ------------------------------
 function show_content(){
-		global $qs, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $content_cat_icon_path_large, $content_cat_icon_path_small, $datequery, $content_icon_path, $eArrayStorage;
+		global $qs, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $content_cat_icon_path_large, $content_cat_icon_path_small, $datequery, $content_icon_path, $eArrayStorage, $contenttotal, $row;
 
 		if(!isset($CONTENT_TYPE_TABLE)){
 			require_once(e_PLUGIN."content/templates/content_type_template.php");
@@ -402,7 +402,7 @@ function show_content(){
 
 // ##### CONTENT ARCHIVE ------------------------------------------
 function show_content_archive(){
-		global $ns, $plugindir, $plugintable, $sql, $aa, $rs, $e107cache, $tp, $pref, $content_pref, $cobj;
+		global $row, $ns, $plugindir, $plugintable, $sql, $aa, $rs, $e107cache, $tp, $pref, $content_pref, $cobj;
 		global $qs, $searchkeyword, $nextprevquery, $from, $number, $mainparent, $content_shortcodes;
 		global $CONTENT_ARCHIVE_TABLE, $CONTENT_ARCHIVE_TABLE_START, $datequery, $CONTENT_ARCHIVE_TABLE_LETTERS;
 		global $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD, $CONTENT_ARCHIVE_TABLE_AUTHOR;
@@ -412,7 +412,6 @@ function show_content_archive(){
 
 		show_content_search_menu("archive", $mainparent);		//show navigator/search/order menu
 
-		$CONTENT_ARCHIVE_TABLE = "";
 		if(!isset($CONTENT_ARCHIVE_TABLE)){
 			if(!$content_pref["content_theme_{$mainparent}"]){
 				require_once($plugindir."templates/default/content_archive_template.php");
@@ -485,7 +484,8 @@ function show_content_archive(){
 //this function renders the preview of a content_item
 //used in recent list, view author list, category items list
 function displayPreview($qry){
-		global $sql, $sql2, $tp, $plugintable, $plugindir, $content_pref, $mainparent, $CONTENT_RECENT_TABLE, $CONTENT_RECENT_TABLE_AUTHORDETAILS;
+		global $qs, $array, $row, $gen, $rater, $aa, $sql2, $tp, $plugintable, $plugindir, $content_shortcodes, $content_pref, $mainparent, $CONTENT_RECENT_TABLE_AUTHORDETAILS;
+		global $CONTENT_RECENT_TABLE_START, $CONTENT_RECENT_TABLE_END, $CONTENT_RECENT_TABLE, $CONTENT_RECENT_TABLE_INFOPRE, $CONTENT_RECENT_TABLE_INFOPOST;
 
 		if(!isset($CONTENT_RECENT_TABLE)){
 			if(!$content_pref["content_theme_{$mainparent}"]){
@@ -566,6 +566,8 @@ function show_content_recent(){
 function show_content_cat_all(){
 		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $aa, $e107cache, $tp, $pref, $content_pref, $totalitems;
 		global $sql, $datequery, $amount, $from, $content_cat_icon_path_large, $content_icon_path, $n, $mainparent, $CONTENT_CAT_TABLE, $CONTENT_CAT_TABLE_AUTHORDETAILS;
+		global $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb;
+		global $CONTENT_CAT_TABLE_INFO_PRE, $CONTENT_CAT_TABLE_INFO_POST, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST;
 
 		unset($text);
 
@@ -642,8 +644,9 @@ function show_content_cat_all(){
 
 function show_content_cat($mode=""){
 		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj, $datequery, $from;
-		global $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END, $CONTENT_CAT_LIST_TABLE_AUTHORDETAILS;
+		global $CONTENT_RECENT_TABLE, $CONTENT_CAT_LIST_TABLE, $CONTENT_CAT_LISTSUB_TABLE_START, $CONTENT_CAT_LISTSUB_TABLE, $CONTENT_CAT_LISTSUB_TABLE_END, $CONTENT_CAT_LIST_TABLE_AUTHORDETAILS, $CONTENT_CAT_LIST_TABLE_INFO_PRE, $CONTENT_CAT_LIST_TABLE_INFO_POST;
 		global $content_cat_icon_path_small, $content_cat_icon_path_large, $content_icon_path, $mainparent, $totalparent, $totalsubcat;
+		global $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb, $amount;
 
 		$mainparent		= $aa -> getMainParent($qs[1]);
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -676,7 +679,7 @@ function show_content_cat($mode=""){
 
 		// parent article
 		if(isset($content_pref["content_cat_showparent_{$mainparent}"]) && $content_pref["content_cat_showparent_{$mainparent}"]){
-			if(!$resultitem = $sql -> db_Select($plugintable, "*", $qry )){
+			if(!$resultparent = $sql -> db_Select($plugintable, "*", $qry )){
 				header("location:".e_SELF."?cat.list.".$mainparent); exit;
 			}else{
 				$row = $sql -> db_Fetch();
@@ -720,7 +723,7 @@ function show_content_cat($mode=""){
 
 					$content_cat_listsub_table_string = "";
 					for($i=0;$i<count($subparent);$i++){
-						if($resultitem = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_icon, content_parent", " content_id = '".$subparent[$i]."' AND ".$subqry." " )){
+						if($resultsubparent = $sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_icon, content_parent", " content_id = '".$subparent[$i]."' AND ".$subqry." " )){
 							while($row = $sql -> db_Fetch()){
 								$totalsubcat = $aa -> countCatItems($row['content_id']);
 								$content_cat_listsub_table_string .= $tp -> parseTemplate($CONTENT_CAT_LISTSUB_TABLE, FALSE, $content_shortcodes);
@@ -755,7 +758,7 @@ function show_content_cat($mode=""){
 				if(isset($textparent)){ 
 					$textparent = $crumbpage.$textparent;
 				}else{
-					$textchild = $crumbpage.$textparent;
+					$textchild = $crumbpage.$textchild;
 				}
 				if(isset($content_pref["content_cat_menuorder_{$mainparent}"]) && $content_pref["content_cat_menuorder_{$mainparent}"] == "1"){
 					if(isset($content_pref["content_cat_rendertype_{$mainparent}"]) && $content_pref["content_cat_rendertype_{$mainparent}"] == "1"){
@@ -825,6 +828,8 @@ function show_content_cat($mode=""){
 // ##### AUTHOR LIST --------------------------------------
 function show_content_author_all(){
 		global $qs, $plugindir, $ix, $content_shortcodes, $ns, $plugintable, $from, $sql, $aa, $e107cache, $tp, $pref, $mainparent, $content_pref, $cobj, $datequery;
+		global $authordetails, $i, $gen, $totalcontent, $row, $CONTENT_AUTHOR_TABLE, $CONTENT_AUTHOR_TABLE_START, $CONTENT_AUTHOR_TABLE_END, $CONTENT_AUTHOR_TABLE_DATE, $CONTENT_AUTHOR_TABLE_HEADING;
+
 		$mainparent		= $aa -> getMainParent($qs[2]);
 		$content_pref	= $aa -> getContentPref($mainparent);
 		show_content_search_menu("authorall", $mainparent);		//show navigator/search/order menu
@@ -997,7 +1002,8 @@ function show_content_author(){
 function show_content_top(){
 		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $cobj, $content_icon_path;
 		global $from, $datequery, $content_pref, $mainparent;
-		global $CONTENT_TOP_TABLE_AUTHOR;
+		global $CONTENT_TOP_TABLE_AUTHOR, $authordetails, $row, $thisratearray;
+
 
 		$mainparent		= $aa -> getMainParent($qs[1]);
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -1097,7 +1103,7 @@ function show_content_top(){
 // ##### TOP SCORE LIST -----------------------------------
 function show_content_score(){
 		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $cobj, $content_icon_path;
-		global $from, $datequery, $content_pref, $mainparent, $eArrayStorage, $CONTENT_SCORE_TABLE_SCORE, $CONTENT_SCORE_TABLE_AUTHOR;
+		global $from, $datequery, $content_pref, $mainparent, $eArrayStorage, $CONTENT_SCORE_TABLE_SCORE, $CONTENT_SCORE_TABLE_AUTHOR, $authordetails, $row, $thisratearray;
 
 		$mainparent		= $aa -> getMainParent($qs[1]);
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -1152,11 +1158,8 @@ function show_content_score(){
 
 // ##### CONTENT ITEM ------------------------------------------
 function show_content_item(){
-		global $pref, $content_pref;
+		global $pref, $content_pref, $content_icon_path, $content_image_path, $content_file_path, $custom, $plugindir, $plugintable, $array, $content_shortcodes, $datequery, $order, $nextprevquery, $from, $number, $row, $qs, $gen, $sql, $aa, $tp, $rs, $cobj, $e107, $e107cache, $eArrayStorage, $ns, $rater, $ep, $row, $authordetails, $mainparent; 
 		global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS, $CONTENT_CONTENT_TABLE_PARENT, $CONTENT_CONTENT_TABLE_INFO_PRE, $CONTENT_CONTENT_TABLE_INFO_POST, $CONTENT_CONTENT_TABLE_AUTHORDETAILS;
-		global $content_icon_path, $content_image_path, $content_file_path, $custom;
-		global $plugindir, $plugintable, $array, $content_shortcodes, $datequery, $order, $nextprevquery, $from, $number;
-		global $qs, $gen, $sql, $aa, $tp, $rs, $cobj, $e107, $e107cache, $eArrayStorage, $ns, $rater, $ep, $row, $authordetails, $mainparent; 
 
 		$mainparent			= $aa -> getMainParent($qs[1]);
 		$content_pref		= $aa -> getContentPref($mainparent);
