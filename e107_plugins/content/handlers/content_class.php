@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.76 $
-|		$Date: 2005-07-08 10:02:22 $
+|		$Revision: 1.77 $
+|		$Date: 2005-07-11 07:47:14 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -528,7 +528,7 @@ class content{
 			return $row2['content_heading'];
 		}
 		function setPageTitle(){
-			global $plugintable, $sql;
+			global $plugintable, $sql, $qs;
 
 			//content page
 			if(e_PAGE == "content.php"){
@@ -536,7 +536,6 @@ class content{
 				if(!e_QUERY){
 					$page = CONTENT_PAGETITLE_LAN_0;
 				}else{
-					$qs = explode(".", e_QUERY);
 					$sql -> db_Select($plugintable, "content_heading", "content_id = '".$qs[1]."' ");
 					$row = $sql -> db_Fetch();
 
@@ -588,7 +587,6 @@ class content{
 				if(!e_QUERY){
 					$page = CONTENT_PAGETITLE_LAN_0." / ".CONTENT_PAGETITLE_LAN_7;
 				}else{
-					$qs = explode(".", e_QUERY);
 					$page = CONTENT_PAGETITLE_LAN_0;
 
 					//submit page : submit item
@@ -602,7 +600,6 @@ class content{
 				if(!e_QUERY){
 					$page = CONTENT_PAGETITLE_LAN_0." / ".CONTENT_PAGETITLE_LAN_9;
 				}else{
-					$qs = explode(".", e_QUERY);
 					$page = CONTENT_PAGETITLE_LAN_0." / ".CONTENT_PAGETITLE_LAN_9;
 
 					//manager page : view items
@@ -641,7 +638,7 @@ class content{
 				$tmp = explode("^", $content_author);
 				$author_id = "0";
 				$author_name = $tmp[0];
-				$author_email = $tmp[1];
+				$author_email = (isset($tmp[1]) ? $tmp[1] : "");
 				$getauthor = array($author_id, $author_name, $author_email, $content_author);
 			}
 			return $getauthor;

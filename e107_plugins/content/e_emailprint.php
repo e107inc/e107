@@ -39,8 +39,8 @@ function print_item($id)
 		";
 
 		require_once(e_HANDLER.'bbcode_handler.php');
-		$this->e_bb = new e_bbcode;
-		$text = $this->e_bb->parseBBCodes($text, '');
+		$e_bb = new e_bbcode;
+		$text = $e_bb->parseBBCodes($text, '');
 
 		return $text;
 }

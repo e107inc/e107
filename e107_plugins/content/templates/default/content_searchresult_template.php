@@ -11,17 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_searchresult_template.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-08 09:19:53 $
+|     $Revision: 1.9 $
+|     $Date: 2005-07-11 07:47:22 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
-$CONTENT_SEARCHRESULT_TABLE_START = "";
-$CONTENT_SEARCHRESULT_TABLE = "";
-$CONTENT_SEARCHRESULT_TABLE_END = "";
-
-global $sc_style, $content_shortcodes, $tp, $gen, $row, $qs, $aa, $content_icon_path, $content_pref, $contenttext;
+global $sc_style, $content_shortcodes;
 
 $sc_style['CONTENT_SEARCHRESULT_TABLE_ICON']['pre'] = "<td class='forumheader3'>";
 $sc_style['CONTENT_SEARCHRESULT_TABLE_ICON']['post'] = "</td>";
@@ -42,27 +38,27 @@ $sc_style['CONTENT_SEARCHRESULT_TABLE_TEXT']['pre'] = "<tr><td class='forumheade
 $sc_style['CONTENT_SEARCHRESULT_TABLE_TEXT']['post'] = "</td></tr>";
 
 // ##### CONTENT SEARCHRESULT LIST --------------------------------------------------
-if(!$CONTENT_SEARCHRESULT_TABLE_START){
-				$CONTENT_SEARCHRESULT_TABLE_START = "";
+if(!isset($CONTENT_SEARCHRESULT_TABLE_START)){
+	$CONTENT_SEARCHRESULT_TABLE_START = "";
 }
-if(!$CONTENT_SEARCHRESULT_TABLE){
-				$CONTENT_SEARCHRESULT_TABLE .= "
-				<table class='fborder' style='width:98%; text-align:left;margin-bottom:5px;'>
-					<tr>
-						{CONTENT_SEARCHRESULT_TABLE_ICON}
-						<td>
-							<table style='width:100%;' cellpadding='0' cellspacing='0'>
-								{CONTENT_SEARCHRESULT_TABLE_HEADING}
-								{CONTENT_SEARCHRESULT_TABLE_SUBHEADING}
-								<tr><td class='forumheader3'>{CONTENT_SEARCHRESULT_TABLE_AUTHORDETAILS} {CONTENT_SEARCHRESULT_TABLE_DATE}</td></tr>
-								{CONTENT_SEARCHRESULT_TABLE_TEXT}
-							</table>
-						</td>
-					</tr>
-				</table>\n";
+if(!isset($CONTENT_SEARCHRESULT_TABLE)){
+	$CONTENT_SEARCHRESULT_TABLE .= "
+	<table class='fborder' style='width:98%; text-align:left;margin-bottom:5px;'>
+		<tr>
+			{CONTENT_SEARCHRESULT_TABLE_ICON}
+			<td>
+				<table style='width:100%;' cellpadding='0' cellspacing='0'>
+					{CONTENT_SEARCHRESULT_TABLE_HEADING}
+					{CONTENT_SEARCHRESULT_TABLE_SUBHEADING}
+					<tr><td class='forumheader3'>{CONTENT_SEARCHRESULT_TABLE_AUTHORDETAILS} {CONTENT_SEARCHRESULT_TABLE_DATE}</td></tr>
+					{CONTENT_SEARCHRESULT_TABLE_TEXT}
+				</table>
+			</td>
+		</tr>
+	</table>\n";
 }
-if(!$CONTENT_SEARCHRESULT_TABLE_END){
-				$CONTENT_SEARCHRESULT_TABLE_END .= "";
+if(!isset($CONTENT_SEARCHRESULT_TABLE_END)){
+	$CONTENT_SEARCHRESULT_TABLE_END .= "";
 }
 // ##### ----------------------------------------------------------------------
 

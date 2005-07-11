@@ -11,15 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_score_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-20 13:27:24 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-11 07:47:22 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
-$CONTENT_SCORE_TABLE_START = "";
-$CONTENT_SCORE_TABLE_END = "";
-global $sc_style, $content_shortcodes, $qs, $authordetails, $row, $thisratearray;
+global $sc_style, $content_shortcodes;
 
 $sc_style['CONTENT_SCORE_TABLE_ICON']['pre'] = "<td class='forumheader3' rowspan='3' style='width:5%; white-space:nowrap;'>";
 $sc_style['CONTENT_SCORE_TABLE_ICON']['post'] = "</td>";
@@ -34,22 +32,22 @@ $sc_style['CONTENT_SCORE_TABLE_SCORE']['pre'] = "<td class='fcaption' style='wid
 $sc_style['CONTENT_SCORE_TABLE_SCORE']['post'] = "</td>";
 
 // ##### CONTENT TOP --------------------------------------------------
-if(!$CONTENT_SCORE_TABLE_START){
-				$CONTENT_SCORE_TABLE_START = "";
+if(!isset($CONTENT_SCORE_TABLE_START)){
+	$CONTENT_SCORE_TABLE_START = "";
 }
-if(!$CONTENT_SCORE_TABLE){
-				$CONTENT_SCORE_TABLE = "
-					<table class='fborder' style='width:98%; text-align:left; margin-bottom:5px;'>
-					<tr>
-						{CONTENT_SCORE_TABLE_ICON}
-						<td class='fcaption'>{CONTENT_SCORE_TABLE_HEADING}</td>
-						{CONTENT_SCORE_TABLE_SCORE}
-					</tr>
-					{CONTENT_SCORE_TABLE_AUTHOR}
-					</table>\n";
+if(!isset($CONTENT_SCORE_TABLE)){
+	$CONTENT_SCORE_TABLE = "
+	<table class='fborder' style='width:98%; text-align:left; margin-bottom:5px;'>
+	<tr>
+		{CONTENT_SCORE_TABLE_ICON}
+		<td class='fcaption'>{CONTENT_SCORE_TABLE_HEADING}</td>
+		{CONTENT_SCORE_TABLE_SCORE}
+	</tr>
+	{CONTENT_SCORE_TABLE_AUTHOR}
+	</table>\n";
 }
-if(!$CONTENT_SCORE_TABLE_END){
-				$CONTENT_SCORE_TABLE_END = "";
+if(!isset($CONTENT_SCORE_TABLE_END)){
+	$CONTENT_SCORE_TABLE_END = "";
 }
 // ##### ----------------------------------------------------------------------
 

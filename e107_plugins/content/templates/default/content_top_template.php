@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_top_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-07-06 13:48:39 $
+|     $Revision: 1.10 $
+|     $Date: 2005-07-11 07:47:22 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
-global $sc_style, $content_shortcodes, $qs, $authordetails, $row, $thisratearray;
+global $sc_style, $content_shortcodes;
 
 $sc_style['CONTENT_TOP_TABLE_ICON']['pre'] = "<td class='forumheader3' rowspan='3' style='width:5%; white-space:nowrap;'>";
 $sc_style['CONTENT_TOP_TABLE_ICON']['post'] = "</td>";
@@ -33,23 +33,21 @@ $sc_style['CONTENT_TOP_TABLE_RATING']['post'] = "</td>";
 
 // ##### CONTENT TOP --------------------------------------------------
 if(!isset($CONTENT_TOP_TABLE_START)){
-				$CONTENT_TOP_TABLE_START = "
-				";
+	$CONTENT_TOP_TABLE_START = "";
 }
 if(!isset($CONTENT_TOP_TABLE)){
-				$CONTENT_TOP_TABLE = "
-					<table class='fborder' style='width:98%; text-align:left; margin-bottom:5px;'>
-					<tr>
-						{CONTENT_TOP_TABLE_ICON}
-						<td class='fcaption'>{CONTENT_TOP_TABLE_HEADING}</td>
-						{CONTENT_TOP_TABLE_RATING}
-					</tr>
-					{CONTENT_TOP_TABLE_AUTHOR}
-					</table>\n";
+	$CONTENT_TOP_TABLE = "
+	<table class='fborder' style='width:98%; text-align:left; margin-bottom:5px;'>
+	<tr>
+		{CONTENT_TOP_TABLE_ICON}
+		<td class='fcaption'>{CONTENT_TOP_TABLE_HEADING}</td>
+		{CONTENT_TOP_TABLE_RATING}
+	</tr>
+	{CONTENT_TOP_TABLE_AUTHOR}
+	</table>\n";
 }
 if(!isset($CONTENT_TOP_TABLE_END)){
-				$CONTENT_TOP_TABLE_END = "
-				";
+	$CONTENT_TOP_TABLE_END = "";
 }
 // ##### ----------------------------------------------------------------------
 

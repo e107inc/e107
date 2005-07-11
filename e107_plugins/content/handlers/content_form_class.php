@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.83 $
-|		$Date: 2005-07-08 10:02:23 $
+|		$Revision: 1.84 $
+|		$Date: 2005-07-11 07:47:14 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1600,7 +1600,7 @@ class contentform{
 
 
 		function show_contentmanager($mode, $userid="", $username=""){
-			global $content_shortcodes, $tp, $sql, $ns, $rs, $plugintable, $plugindir, $aa, $eArrayStorage;
+			global $content_shortcodes, $row, $tp, $sql, $ns, $rs, $plugintable, $plugindir, $aa, $eArrayStorage;
 			global $CONTENT_CONTENTMANAGER_CATEGORY, $CONTENT_CONTENTMANAGER_TABLE, $CONTENT_CONTENTMANAGER_TABLE_START, $CONTENT_CONTENTMANAGER_TABLE_END;
 			$personalmanagercheck = FALSE;
 
