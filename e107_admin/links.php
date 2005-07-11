@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-06-28 20:17:46 $
-|     $Author: stevedunstan $
+|     $Revision: 1.43 $
+|     $Date: 2005-07-11 19:05:00 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -64,23 +64,23 @@ if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && isset(
 
 	$sql -> db_Select("links", "*", "link_id = '".$_POST['sublink_parent']."'");
 	$par = $sql-> db_Fetch();
-    extract($par);
+	extract($par);
 
 	$sql -> db_Select($sublink['table'], "*", $sublink['query']);
 	$count = 1;
-    while($row = $sql-> db_Fetch()){
-    	$subcat = $row[($sublink['fieldid'])];
+	while($row = $sql-> db_Fetch()){
+		$subcat = $row[($sublink['fieldid'])];
 		$name = $row[($sublink['fieldname'])];
 		$subname = "submenu.$link_name.$name";
 		$suburl = str_replace("#",$subcat,$sublink['url']);
 		$subicon = ($sublink['fieldicon']) ? $row[($sublink['fieldicon'])] : $link_button;
-        $subdiz = ($sublink['fielddiz']) ? $row[($sublink['fielddiz'])] : $link_description;
+		$subdiz = ($sublink['fielddiz']) ? $row[($sublink['fielddiz'])] : $link_description;
 		$subparent = $_POST['sublink_parent'];
 
-	   	if($sql2->db_Insert("links", "0, '$subname', '$suburl', '$subdiz', '$subicon', '$link_category', '$count', '$subparent', '$link_open', '$link_class' ")){
-        	$message .= LAN_CREATED. " ($name)<br />";
+		if($sql2->db_Insert("links", "0, '$subname', '$suburl', '$subdiz', '$subicon', '$link_category', '$count', '$subparent', '$link_open', '$link_class' ")){
+			$message .= LAN_CREATED. " ($name)<br />";
 		}else{
-        	$message .= LAN_CREATED_FAILED. " ($name)<br />";
+			$message .= LAN_CREATED_FAILED. " ($name)<br />";
 		}
 
 		$count++;
@@ -193,16 +193,14 @@ class links {
 				<td class='fcaption' style='width:5%'>".LAN_ORDER."</td>
 				</tr>";
 			while ($row = $sql->db_Fetch()) {
-                if($row['link_parent'] ==0){
-                  	$linklist['head_menu'][] = $row;
+				if($row['link_parent'] ==0){
+					$linklist['head_menu'][] = $row;
 					$parents[] = $row['link_id'];
 				}else{
 					$pid = $row['link_parent'];
-                	$linklist['sub_'.$pid][] = $row;
+					$linklist['sub_'.$pid][] = $row;
 				}
 			}
-
-
 
 			foreach ($linklist['head_menu'] as $lk) {
 				$lk['link_total'] = $link_total;
@@ -211,7 +209,12 @@ class links {
 				if($linklist['sub_'.$main_linkid]){
 					foreach ($linklist['sub_'.$main_linkid] as $sub) {
 						$sub['link_total'] = $link_total;
-						$text .= $this->display_row($sub);
+						$text .= $this->display_row($sub,25);
+						if($linklist['sub_'.$sub['link_id']]){
+							foreach($linklist['sub_'.$sub['link_id']] as $ssub){
+								$text .= $this->display_row($ssub,50);
+							}
+						}
 					}
 				}
 			}
@@ -227,24 +230,24 @@ class links {
 		$ns->tablerender(LCLAN_8, $text);
 	}
 
-	function display_row($row2,$link_total){
-		global $sql, $rs, $ns, $tp,$parents;
+	function display_row($row2,$indent='0px'){
+		global $sql, $rs, $ns, $tp,$parents,$link_total;
 		extract($row2);
 		if(eregi("submenu.",$link_name) || $link_parent !=0){
 			if(substr($link_name,0,8) == "submenu."){
 				$tmp = explode(".",$link_name);
 				$sublinkname = $tmp[2];
 			}else{
-            	$sublinkname = $link_name;
+			$sublinkname = $link_name;
 			}
-			$link_name = "<span style='padding-left:30px'>".$sublinkname."</span>";
+			$link_name = $sublinkname;
 		}
 
 
 				$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle' title='".$link_description."'>";
 				$text .= $link_button ? "<img src='".e_IMAGE."icons/".$link_button."' alt='' /> ":
 				"";
-				$text .= "</td><td style='width:60%' class='forumheader3' title='".$link_description."'>".$link_name."</td>";
+				$text .= "</td><td style='width:60%' class='forumheader3' title='".$link_description."'><span style='padding-left:".$indent."px'>".$link_name."</span></td>";
 				$text .= "<td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>";
 				$text .= $rs->form_button("button", "main_edit_{$link_id}", LAN_EDIT, "onclick=\"document.location='".e_SELF."?create.edit.$link_id'\"");
 				$text .= $rs->form_button("submit", "main_delete_".$link_id, LAN_DELETE, "onclick=\"return jsconfirm('".$tp->toJS(LCLAN_58." [ $link_name ]")."')\"");
@@ -308,10 +311,34 @@ class links {
 			<td style='width:70%' class='forumheader3'>
 			<select class='tbox' name='link_parent' >
 			<option value=''>".LINKLAN_3."</option>";
-			$sql -> db_Select("links", "*", "link_parent='0' ORDER BY link_name");
+			$sql -> db_Select("links", "*", "ORDER BY link_name","nowhere");
 			while($row = $sql-> db_Fetch()){
-				$sel = ($link_parent == $row['link_id']) ? "selected='selected'" : "";
-				$text .="<option value='".$row['link_id']."|".$row['link_name']."' $sel>".$row['link_name']."</option>";
+				if($row['link_parent'] ==0){
+					$linklist['head_menu'][] = $row;
+				}else{
+					$pid = $row['link_parent'];
+					$linklist['sub_'.$pid][] = $row;
+				}
+			}
+
+			foreach ($linklist['head_menu'] as $lk) {
+				$lk['link_total'] = $link_total;
+				$sel = ($link_parent == $lk['link_id']) ? "selected='selected'" : "";
+				$text .="<option value='".$lk['link_id']."|".$lk['link_name']."' $sel>".$lk['link_name']."</option>";
+
+				$main_linkid = $lk['link_id'];
+				if($linklist['sub_'.$main_linkid]){
+					foreach ($linklist['sub_'.$main_linkid] as $sub) {
+						$sel2 = ($link_parent == $sub['link_id']) ? "selected='selected'" : "";
+						if(substr($sub['link_name'],0,8) == "submenu."){
+							$tmp = explode(".",$sub['link_name']);
+							$sublinkname = $tmp[2];
+						}else{
+							$sublinkname = $sub['link_name'];
+						}
+						$text .="<option value='".$sub['link_id']."|".$sublinkname."' $sel2>&nbsp;&nbsp;&nbsp;&nbsp;".$sublinkname."</option>";
+					}
+				}
 			}
 
 		$text .= "</select></td>
