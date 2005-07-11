@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.84 $
-|		$Date: 2005-07-11 07:47:14 $
+|		$Revision: 1.85 $
+|		$Date: 2005-07-11 11:53:59 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -109,13 +109,16 @@ class contentform{
 					$row = $sql -> db_Fetch();
 					$PARENT = $row['content_heading'];
 				}
-				$content_text = $tp -> post_toHTML($_POST['content_text']);
+				$content_heading	= $tp -> post_toHTML($_POST['content_heading']);
+				$content_subheading	= $tp -> post_toHTML($_POST['content_subheading']);
+				$content_summary	= $tp -> post_toHTML($_POST['content_summary']);
+				$content_text		= $tp -> post_toHTML($_POST['content_text']);
 
 				$CONTENT_CONTENT_PREVIEW_CATEGORY = ($_POST['parent'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_57.$TDPOST.$TDPRE2.$PARENT.$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_HEADING = ($_POST['content_heading'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_11.$TDPOST.$TDPRE2.$_POST['content_heading'].$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_SUBHEADING = ($_POST['content_subheading'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_16.$TDPOST.$TDPRE2.$_POST['content_subheading'].$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_SUMMARY = ($_POST['content_summary'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_17.$TDPOST.$TDPRE2.$_POST['content_summary'].$TDPOST.$TRPOST : "");
-				$CONTENT_CONTENT_PREVIEW_TEXT = ($_POST['content_text'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_18.$TDPOST.$TDPRE2.$content_text.$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_HEADING = ($content_heading ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_11.$TDPOST.$TDPRE2.$content_heading.$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_SUBHEADING = ($content_subheading ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_16.$TDPOST.$TDPRE2.$content_subheading.$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_SUMMARY = ($content_summary ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_17.$TDPOST.$TDPRE2.$content_summary.$TDPOST.$TRPOST : "");
+				$CONTENT_CONTENT_PREVIEW_TEXT = ($content_text ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_18.$TDPOST.$TDPRE2.$content_text.$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_AUTHORNAME = ($_POST['content_author_name'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_10." ".CONTENT_ADMIN_ITEM_LAN_14.$TDPOST.$TDPRE2.$_POST['content_author_name'].$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_AUTHOREMAIL = ($_POST['content_author_email'] ? $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_10." ".CONTENT_ADMIN_ITEM_LAN_15.$TDPOST.$TDPRE2.$_POST['content_author_email'].$TDPOST.$TRPOST : "");
 				$CONTENT_CONTENT_PREVIEW_COMMENT = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_36.$TDPOST.$TDPRE2.($_POST['content_comment'] ? CONTENT_ADMIN_ITEM_LAN_85 : CONTENT_ADMIN_ITEM_LAN_86).$TDPOST.$TRPOST;

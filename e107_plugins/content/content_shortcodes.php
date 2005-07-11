@@ -546,12 +546,12 @@ return $aa -> getIcon("item", $row['content_icon'], $content_icon_path, "content
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_HEADING
-global $CONTENT_RECENT_TABLE_HEADING, $row;
-return ($row['content_heading'] ? "<a href='".e_SELF."?content.".$row['content_id']."'>".$row['content_heading']."</a>" : "");
+global $CONTENT_RECENT_TABLE_HEADING, $row, $tp;
+return ($row['content_heading'] ? "<a href='".e_SELF."?content.".$row['content_id']."'>".$tp->toHTML($row['content_heading'], TRUE, "")."</a>" : "");
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_SUBHEADING
-global $CONTENT_RECENT_TABLE_SUBHEADING, $content_pref, $qs, $row, $mainparent;
+global $CONTENT_RECENT_TABLE_SUBHEADING, $tp, $content_pref, $qs, $row, $mainparent;
 if (isset($content_pref["content_list_subheading_{$mainparent}"]) && $content_pref["content_list_subheading_{$mainparent}"] && $row['content_subheading'] && $content_pref["content_list_subheading_char_{$mainparent}"] && $content_pref["content_list_subheading_char_{$mainparent}"] != "" && $content_pref["content_list_subheading_char_{$mainparent}"] != "0"){
 	if(strlen($row['content_subheading']) > $content_pref["content_list_subheading_char_{$mainparent}"]) {
 		$row['content_subheading'] = substr($row['content_subheading'], 0, $content_pref["content_list_subheading_char_{$mainparent}"]).$content_pref["content_list_subheading_post_{$mainparent}"];
@@ -560,11 +560,11 @@ if (isset($content_pref["content_list_subheading_{$mainparent}"]) && $content_pr
 }else{
 	$CONTENT_RECENT_TABLE_SUBHEADING = ($row['content_subheading'] ? $row['content_subheading'] : "");
 }
-return $CONTENT_RECENT_TABLE_SUBHEADING;
+return $tp->toHTML($CONTENT_RECENT_TABLE_SUBHEADING, TRUE, "");
 SC_END
 
 SC_BEGIN CONTENT_RECENT_TABLE_SUMMARY
-global $CONTENT_RECENT_TABLE_SUMMARY, $content_pref, $qs, $row, $mainparent;
+global $CONTENT_RECENT_TABLE_SUMMARY, $content_pref, $tp, $qs, $row, $mainparent;
 if (isset($content_pref["content_list_summary_{$mainparent}"]) && $content_pref["content_list_summary_{$mainparent}"]){
 	if($row['content_summary'] && $content_pref["content_list_summary_char_{$mainparent}"] && $content_pref["content_list_summary_char_{$mainparent}"] != "" && $content_pref["content_list_summary_char_{$mainparent}"] != "0"){
 		if(strlen($row['content_summary']) > $content_pref["content_list_summary_char_{$mainparent}"]) {
@@ -574,7 +574,7 @@ if (isset($content_pref["content_list_summary_{$mainparent}"]) && $content_pref[
 	}else{
 		$CONTENT_RECENT_TABLE_SUMMARY = ($row['content_summary'] ? $row['content_summary'] : "");
 	}
-return $CONTENT_RECENT_TABLE_SUMMARY;
+return $tp->toHTML($CONTENT_RECENT_TABLE_SUMMARY, TRUE, "");
 }
 SC_END
 
