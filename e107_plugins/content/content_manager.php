@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_manager.php,v $
-|		$Revision: 1.15 $
-|		$Date: 2005-07-06 10:33:15 $
+|		$Revision: 1.16 $
+|		$Date: 2005-07-12 11:39:00 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -80,7 +80,7 @@ function headerjs(){
 
 if(isset($_POST['create_content'])){
 	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
-		$adb -> dbContentCreate("contentmanager");
+		$adb -> dbContent("create", "contentmanager");
 	}else{
 		$message = CONTENT_ADMIN_ITEM_LAN_0;
 	}
@@ -88,7 +88,7 @@ if(isset($_POST['create_content'])){
 
 if(isset($_POST['update_content'])){
 	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
-		$adb -> dbContentUpdate("contentmanager");
+		$adb -> dbContent("update", "contentmanager");
 	}else{
 		$message = CONTENT_ADMIN_ITEM_LAN_0;
 	}

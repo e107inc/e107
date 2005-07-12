@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.85 $
-|		$Date: 2005-07-11 11:53:59 $
+|		$Revision: 1.86 $
+|		$Date: 2005-07-12 11:39:01 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -228,6 +228,35 @@ class contentform{
 							return;
 						}
 
+						if($mode == 'submit'){
+							$border = "border:1px solid #5d6e75;";
+							$padding = "padding:6px;";
+							$tableprop = "border-collapse: collapse; border-spacing:0px;";
+							$TOPIC_ROW_NOEXPAND = "
+							<tr>
+								<td class='forumheader3' style='".$padding." ".$border." width:30%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
+								<td class='forumheader3' style='".$padding." ".$border."'>{TOPIC_FIELD}</td>
+							</tr>";
+
+							$TOPIC_ROW = "
+							<tr>
+								<td class='forumheader3' style='".$padding." ".$border." width:30%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
+								<td class='forumheader3' style='".$padding." ".$border." vertical-align:top;'>
+									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>{TOPIC_HEADING}</a>
+									<div style='display: none;'>
+										<div class='smalltext'>{TOPIC_HELP}</div><br />
+										{TOPIC_FIELD}
+									</div>
+								</td>
+							</tr>";
+
+							$TOPIC_TITLE_ROW = "<tr><td colspan='2' class='fcaption'>{TOPIC_CAPTION}</td></tr>";
+							$TOPIC_ROW_SPACER = "<tr><td style='height:20px;' colspan='2'></td></tr>";
+						}else{
+							$tableprop = "";
+							$TOPIC_ROW_SPACER = "";
+						}
+
 						if($mode == "submit"){
 							$mainparent					= $aa -> getMainParent( $qs[2] );
 							$array						= $aa -> getCategoryTree("", $mainparent, FALSE);
@@ -237,16 +266,15 @@ class contentform{
 						}
 						
 						$content_pref					= $aa -> getContentPref($mainparent);
+						
+						$content_pref["content_icon_path_tmp_{$mainparent}"] = ($content_pref["content_icon_path_tmp_{$mainparent}"] ? $content_pref["content_icon_path_tmp_{$mainparent}"] : $content_pref["content_icon_path_{$mainparent}"]."tmp/");
+						$content_pref["content_file_path_tmp_{$mainparent}"] = ($content_pref["content_file_path_tmp_{$mainparent}"] ? $content_pref["content_file_path_tmp_{$mainparent}"] : $content_pref["content_file_path_{$mainparent}"]."tmp/");
+						$content_pref["content_image_path_tmp_{$mainparent}"] = ($content_pref["content_image_path_tmp_{$mainparent}"] ? $content_pref["content_image_path_tmp_{$mainparent}"] : $content_pref["content_image_path_{$mainparent}"]."tmp/");
 						$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$mainparent}"]);
 						$content_cat_icon_path_small	= $tp -> replaceConstants($content_pref["content_cat_icon_path_small_{$mainparent}"]);
 						$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 						$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
 						$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path_{$mainparent}"]);
-						
-						$content_pref["content_icon_path_tmp_{$mainparent}"] = ($content_pref["content_icon_path_tmp_{$mainparent}"] ? $content_pref["content_icon_path_tmp_{$mainparent}"] : $content_pref["content_icon_path_{$mainparent}"]."tmp/");
-						$content_pref["content_file_path_tmp_{$mainparent}"] = ($content_pref["content_file_path_tmp_{$mainparent}"] ? $content_pref["content_file_path_tmp_{$mainparent}"] : $content_pref["content_file_path_{$mainparent}"]."tmp/");
-						$content_pref["content_image_path_tmp_{$mainparent}"] = ($content_pref["content_image_path_tmp_{$mainparent}"] ? $content_pref["content_image_path_tmp_{$mainparent}"] : $content_pref["content_image_path_{$mainparent}"]."tmp/");
-						
 						$content_tmppath_icon			= $tp -> replaceConstants($content_pref["content_icon_path_tmp_{$mainparent}"]);
 						$content_tmppath_file			= $tp -> replaceConstants($content_pref["content_file_path_tmp_{$mainparent}"]);
 						$content_tmppath_image			= $tp -> replaceConstants($content_pref["content_image_path_tmp_{$mainparent}"]);
@@ -445,7 +473,7 @@ class contentform{
 						$text = "
 						<div style='text-align:center;'>
 						".$rs -> form_open("post", $formurl, "dataform", "", "enctype='multipart/form-data'")."
-						<table style='".ADMIN_WIDTH."' class='fborder'>";
+						<table style='".$tableprop." ".ADMIN_WIDTH."' class='fborder'>";
 
 						$hidden = "";
 						if($mode == "contentmanager"){
@@ -464,7 +492,7 @@ class contentform{
 							$TOPIC_TOPIC = CONTENT_ADMIN_CAT_LAN_27;
 							$TOPIC_FIELD = $aa -> ShowOptionCat($parent).$rs->form_hidden("parent", "");
 							$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
-							$text .= $TOPIC_ROW_SPACER;
+							//$text .= $TOPIC_ROW_SPACER;
 						}
 
 						//heading
@@ -494,7 +522,7 @@ class contentform{
 						if (!$pref['wysiwyg']) { $TOPIC_FIELD .= $rs -> form_text("helpb", 90, '', '', "helpbox")."<br />".display_help("helpb"); }
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
-						$text .= $TOPIC_ROW_SPACER;
+						//$text .= $TOPIC_ROW_SPACER;
 
 						//author
 						$content_author_name_value = ($content_author_name ? $content_author_name : CONTENT_ADMIN_ITEM_LAN_14);
@@ -502,8 +530,8 @@ class contentform{
 						$content_author_email_value = ($content_author_email ? $content_author_email : CONTENT_ADMIN_ITEM_LAN_15);
 						$content_author_email_js = ($content_author_email ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_email.value=='".CONTENT_ADMIN_ITEM_LAN_15."'){document.getElementById('dataform').content_author_email.value='';}\"");
 
-						$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_51."<br />(".CONTENT_ADMIN_ITEM_LAN_71.")";
-						$TOPIC_FIELD = "
+						$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_51;
+						$TOPIC_FIELD = "(".CONTENT_ADMIN_ITEM_LAN_71.")<br />
 							<table style='width:100%; text-align:left;'>
 							<tr><td>".CONTENT_ADMIN_ITEM_LAN_14."</td><td>".$rs -> form_text("content_author_name", 70, $content_author_name_value, 100, "tbox", "", "", $content_author_name_js )."</td></tr>
 							<tr><td>".CONTENT_ADMIN_ITEM_LAN_15."</td><td>".$rs -> form_text("content_author_email", 70, $content_author_email_value, 100, "tbox", "", "", $content_author_email_js )."
@@ -591,7 +619,7 @@ class contentform{
 
 						//$text .= $TOPIC_ROW_SPACER;
 						if( $checkicon || $checkattach || $checkimages ){
-							$text .= $TOPIC_ROW_SPACER;
+							//$text .= $TOPIC_ROW_SPACER;
 
 							//upload icon
 							$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_104;
@@ -738,7 +766,7 @@ class contentform{
 						}
 
 						if($checkcomment || $checkrating || $checkpe || $checkvisibility || $checkscore || $checkmeta || $checklayout ){
-							$text .= $TOPIC_ROW_SPACER;
+							//$text .= $TOPIC_ROW_SPACER;
 						}
 						if($checkcomment){
 							//comment
@@ -842,7 +870,7 @@ class contentform{
 						}
 
 						if( $checkcustom && $checkcustomnumber ){
-							$text .= $TOPIC_ROW_SPACER;
+							//$text .= $TOPIC_ROW_SPACER;
 						}
 						
 						if(!(isset($_POST['preview_content']) || isset($message))){
@@ -895,7 +923,7 @@ class contentform{
 						
 						//preset custom data fields
 						if(count($content_pref["content_custom_preset_key"]) > 0){
-							$text .= $TOPIC_ROW_SPACER;
+							//$text .= $TOPIC_ROW_SPACER;
 						}
 						$hidden = "";
 						for($i=0;$i<count($content_pref["content_custom_preset_key"]);$i++){
@@ -1142,6 +1170,8 @@ class contentform{
 						$caticon		= $content_icon_path.$row['content_icon'];
 						$deleteicon		= CONTENT_ICON_DELETE;
 						$cid			= $row['content_id'];
+						$row['content_heading']		= $tp->toHTML($row['content_heading'], TRUE, "");
+						$row['content_subheading']	= $tp->toHTML($row['content_subheading'], TRUE, "");
 						$text .= "
 						<tr>
 						<td class='forumheader3' style='width:5%; text-align:center'>".$cid."</td>
@@ -1202,6 +1232,9 @@ class contentform{
 					$delete_heading			= str_replace("&#39;", "\'", $row['content_heading']);										
 					$authordetails			= $aa -> getAuthor($row['content_author']);
 					$delid					= $row['content_id'];
+
+					$row['content_heading']		= $tp->toHTML($row['content_heading'], TRUE, "");
+					$row['content_subheading']	= $tp->toHTML($row['content_subheading'], TRUE, "");
 						
 					$text .= "
 					<tr>
@@ -1294,6 +1327,8 @@ class contentform{
 								$options	.= " ".($pcmusers ? "(".$pcmusers." ".($pcmusers == 1 ? CONTENT_ADMIN_CAT_LAN_54 : CONTENT_ADMIN_CAT_LAN_55).")" : "");
 							}
 						}
+						$row['content_heading']		= $tp->toHTML($row['content_heading'], TRUE, "");
+						$row['content_subheading']	= $tp->toHTML($row['content_subheading'], TRUE, "");
 
 						$text .= "
 						".($row['content_parent'] == 0 ? "<tr><td colspan='5' $stylespacer></td></tr>" : "")."
@@ -1730,6 +1765,8 @@ class contentform{
 								$selectorder .= "</select>";
 							}
 						}
+						$row['content_heading']		= $tp->toHTML($row['content_heading'], TRUE, "");
+						$row['content_subheading']	= $tp->toHTML($row['content_subheading'], TRUE, "");
 
 						$text .= "
 						".($row['content_parent'] == 0 ? "<tr><td colspan='5' $stylespacer></td></tr>" : "")."
@@ -1845,6 +1882,7 @@ class contentform{
 						}else{
 							$down = "&nbsp;&nbsp;&nbsp;";
 						}
+						$row['content_heading']		= $tp->toHTML($row['content_heading'], TRUE, "");
 
 						$text .= "
 						<tr>
@@ -2191,10 +2229,9 @@ class contentform{
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_6;
 			$TOPIC_HEADING = CONTENT_ADMIN_OPT_LAN_7;
 			$TOPIC_HELP = "";
-			$TOPIC_FIELD = "";
 			$i=0;
 			$existing = 0;
-			$TOPIC_FIELD .= "
+			$TOPIC_FIELD = "
 			<div id='div_content_custom_preset' style='width:80%;'>";						
 			for($i=0;$i<count($content_pref["content_custom_preset_key"]);$i++){
 				if(!empty($content_pref["content_custom_preset_key"][$i])){
