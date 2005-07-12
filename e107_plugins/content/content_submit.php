@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.17 $
-|		$Date: 2005-07-06 10:33:15 $
+|		$Revision: 1.18 $
+|		$Date: 2005-07-12 11:39:01 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -67,7 +67,7 @@ function headerjs(){
 
 if(isset($_POST['create_content'])){
 	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none" && $_POST['content_author_name'] != "" && $_POST['content_author_email'] != ""){
-		$adb -> dbContentCreate("submit");
+		$adb -> dbContent("create", "submit");
 	}else{
 		$message = CONTENT_ADMIN_SUBMIT_LAN_4;
 	}

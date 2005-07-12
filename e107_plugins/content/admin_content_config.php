@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.53 $
-|		$Date: 2005-06-29 23:01:54 $
+|		$Revision: 1.54 $
+|		$Date: 2005-07-12 11:39:00 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -149,85 +149,9 @@ if(isset($_POST['uploadcaticon'])){
 	
 }
 
-
-
-//icon, file, image upload
-if(isset($_POST['uploadfile'])){
-	
-	if($_POST['uploadtype']){
-		$pref['upload_storagetype'] = "1";
-		require_once(e_HANDLER."upload_handler.php");
-		$mainparent		= $aa -> getMainParent($_POST['parent']);
-		$content_pref	= $aa -> getContentPref($mainparent);
-
-		if($_POST['content_id']){
-			$newpid = $_POST['content_id'];
-		}else{
-			$sql -> db_select("pcontent", "MAX(content_id) as aid", "content_id!='0' ");
-			list($aid) = $sql -> db_Fetch();
-			$newpid = $aid+1;
-		}
-	}
-
-	//icon
-	if($_POST['uploadtype'] == "1"){
-		$pref['upload_storagetype'] = "1";
-		$pathtmp		= $_POST['tmppathicon'];
-		$uploaded		= file_upload($pathtmp);
-		$new = "";
-		if($uploaded){
-			$uporg		= $uploaded[0]['name'];
-			$resize		= (isset($content_pref["content_upload_icon_size_{$mainparent}"]) && $content_pref["content_upload_icon_size_{$mainparent}"] ? $content_pref["content_upload_icon_size_{$mainparent}"] : "100");
-			if($uporg){
-				$new = $newpid."_".$uporg;
-				rename($pathtmp.$uporg, $pathtmp.$new);
-				require_once(e_HANDLER."resize_handler.php");
-				resize_image($pathtmp.$new, $pathtmp.$new, $resize, "nocopy");
-			}
-		}
-		$message = ($new ? CONTENT_ADMIN_ITEM_LAN_106 : CONTENT_ADMIN_ITEM_LAN_107);
-
-	//file
-	}elseif($_POST['uploadtype'] == "2"){
-		$pref['upload_storagetype'] = "1";
-		$pathtmp		= $_POST['tmppathfile'];
-		$uploaded		= file_upload($pathtmp);
-		$new = "";
-		if($uploaded){
-			$uporg		= $uploaded[0]['name'];
-			if($uporg){
-				$new = $newpid."_".$uporg;
-				rename($pathtmp.$uporg, $pathtmp.$new);
-			}
-		}
-		$message = ($new ? CONTENT_ADMIN_ITEM_LAN_108 : CONTENT_ADMIN_ITEM_LAN_109);
-
-	//image
-	}elseif($_POST['uploadtype'] == "3"){
-		$pref['upload_storagetype'] = "1";
-		$pathtmp		= $_POST['tmppathimage'];
-		$uploaded		= file_upload($pathtmp);
-		$new = "";
-		if($uploaded){
-			$uporg		= $uploaded[0]['name'];
-			$resize		= (isset($content_pref["content_upload_image_size_{$mainparent}"]) && $content_pref["content_upload_image_size_{$mainparent}"] ? $content_pref["content_upload_image_size_{$mainparent}"] : "500");
-			$resizethumb	= (isset($content_pref["content_upload_image_size_thumb_{$mainparent}"]) && $content_pref["content_upload_image_size_thumb_{$mainparent}"] ? $content_pref["content_upload_image_size_thumb_{$mainparent}"] : "100");
-			if($uporg){
-				$new = $newpid."_".$uporg;
-				rename($pathtmp.$uporg, $pathtmp.$new);
-				require_once(e_HANDLER."resize_handler.php");
-				resize_image($pathtmp.$new, $pathtmp.$new, $resizethumb, "copy");
-				resize_image($pathtmp.$new, $pathtmp.$new, $resize, "nocopy");
-			}
-		}
-		$message = ($new ? CONTENT_ADMIN_ITEM_LAN_110 : CONTENT_ADMIN_ITEM_LAN_111);
-	}
-
-}
-
 if(isset($_POST['create_category'])){
 	if($_POST['cat_heading'] && $_POST['parent'] != "none"){
-		$adb -> dbCategoryCreate("admin");
+		$adb -> dbCategory("create");
 	}else{
 		$message	= CONTENT_ADMIN_ITEM_LAN_0;
 	}
@@ -235,7 +159,7 @@ if(isset($_POST['create_category'])){
 
 if(isset($_POST['update_category'])){
 	if($_POST['cat_heading'] && $_POST['parent'] != "none"){
-		$adb -> dbCategoryUpdate("admin");
+		$adb -> dbCategory("update");
 	}else{
 		$message	= CONTENT_ADMIN_ITEM_LAN_0;
 	}
@@ -243,7 +167,8 @@ if(isset($_POST['update_category'])){
 
 if(isset($_POST['create_content'])){
 	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
-		$adb -> dbContentCreate("admin");
+		//$adb -> dbContentCreate("admin");
+		$adb -> dbContent("create", "");
 	}else{
 		$message	= CONTENT_ADMIN_ITEM_LAN_0;
 	}
@@ -251,7 +176,8 @@ if(isset($_POST['create_content'])){
 
 if(isset($_POST['update_content'])){
 	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
-		$adb -> dbContentUpdate("admin");
+		//$adb -> dbContentUpdate("admin");
+		$adb -> dbContent("update", "");
 	}else{
 		$message	= CONTENT_ADMIN_ITEM_LAN_0;
 	}

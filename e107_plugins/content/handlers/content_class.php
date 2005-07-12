@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.77 $
-|		$Date: 2005-07-11 07:47:14 $
+|		$Revision: 1.78 $
+|		$Date: 2005-07-12 11:39:01 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -636,9 +636,15 @@ class content{
 				$getauthor = array($author_id, $author_name, $author_email, $content_author);
 			}else{
 				$tmp = explode("^", $content_author);
-				$author_id = "0";
-				$author_name = $tmp[0];
-				$author_email = (isset($tmp[1]) ? $tmp[1] : "");
+				if(isset($tmp[0]) && is_numeric($tmp[0]) ){
+					$author_id		= $tmp[0];
+					$author_name	= (isset($tmp[1]) ? $tmp[1] : "");
+					$author_email	= (isset($tmp[2]) ? $tmp[2] : "");
+				}else{
+					$author_id		= "0";
+					$author_name	= $tmp[0];
+					$author_email	= (isset($tmp[1]) ? $tmp[1] : "");
+				}
 				$getauthor = array($author_id, $author_name, $author_email, $content_author);
 			}
 			return $getauthor;
