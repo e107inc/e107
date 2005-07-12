@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-07-06 11:28:28 $
+|     $Revision: 1.17 $
+|     $Date: 2005-07-12 11:39:55 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -443,7 +443,7 @@ if ($action == "ne" || $action == "ed")
 
             foreach($imagelist as $img){
                 if ($img['fname']){
-                    $text .= "<a href=\"javascript:insertext('".$img['fname']."', 'ne_new_category_icon', 'cat_icons')\"><img src='".e_PLUGIN."calendar_menu/images/".$img['fname']."' style='border:0px' alt='' /></a> ";
+                    $text .= "<a href=\"javascript:insertext('".$img['fname']."','ne_new_category_icon','cat_icons')\"><img src='".e_PLUGIN."calendar_menu/images/".$img['fname']."' style='border:0px' alt='' /></a> ";
                 } 
             } 
             $text .= "</div>";
