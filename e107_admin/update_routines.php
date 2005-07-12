@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.128 $
-|     $Date: 2005-07-12 16:06:53 $
-|     $Author: lisa_ $
+|     $Revision: 1.129 $
+|     $Date: 2005-07-12 16:59:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -882,44 +882,44 @@ function update_61x_to_700($type='') {
 			$row = mysql_fetch_row($res);
 			$lines = explode("\n", $row[1]);
 			if(strpos($lines[10],"tinyint")){
-		  		return FALSE;
+		  		return update_needed();
 			}
 		}
 
 		if($sql->db_Field("plugin",5) != "plugin_rss"){
-		 	return FALSE;
+		 	return update_needed();
 		}
 
 		if($sql->db_Field("links",7) != "link_parent"){
-			return FALSE;
+			return update_needed();
 		}
 
 		if($sql->db_Field("user", 8) == "user_icq")
 		{
-			return FALSE;
+			return update_needed();
 		}
 
 		if($sql->db_Field("user",36) != "user_xup" && $sql->db_Field("user", 30) != "user_xup"){
-		 	return FALSE;
+		 	return update_needed();
 		}
 
 		if($sql->db_Field("download",18) != "download_visible"){
-		 	return FALSE;
+		 	return update_needed();
 		}
 
 		if (!$sql -> db_Select("core", "e107_name", "e107_name = 'notify_prefs'")) {
-		 	return FALSE;
+		 	return update_needed();
 		}
 
 		// search content plugin comments id change
 		$search_prefs = $sysprefs -> getArray('search_prefs');
 		if ($search_prefs['comments_handlers']['content']['id'] == '1') {
-			return FALSE;
+		 	return update_needed();
 		}
 
 		// custom pages search added
 		if (!isset($search_prefs['core_handlers']['pages'])) {
-			return FALSE;
+		 	return update_needed();
 		}
 
 		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
@@ -928,25 +928,25 @@ function update_61x_to_700($type='') {
 		if ($res) {
 			$row = mysql_fetch_row($res);
 			if(!strstr($row[1], "KEY `user_ban_index` (`user_ban`)")) {
-				return false;
+			 	return update_needed();
 			}
 		}
 
 		global $pref;
 		if (!is_array($pref['frontpage'])) {
-			return FALSE;
+		 	return update_needed();
 		}
 
 		if ((!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) || !isset($pref['search_highlight'])) {
-			return FALSE;
+		 	return update_needed();
 		}
 
 		if($sql->db_Field("comments",11) != "comment_lock"){
-			return FALSE;
+		 	return update_needed();
 		}
 
 		if($sql->db_Select("links_page") && $sql->db_Field("links_page",11) != "link_author"){
-		 	return FALSE;
+		 	return update_needed();
 		}
 /*
 		if(!$sql -> db_Select("core", "*", "e107_name='emote_default' "))
@@ -1070,7 +1070,7 @@ function update_616_to_617($type='') {
 				return TRUE;
 			}
 
-		return FALSE;
+	 	return update_needed();
 	}
 }
 
@@ -1095,7 +1095,7 @@ function update_615_to_616($type='') {
 			return TRUE;
 		}
 
-		return FALSE;
+	 	return update_needed();
 	}
 }
 
@@ -1121,7 +1121,7 @@ function update_614_to_615($type='') {
         	return TRUE;
 		}
 
-		return FALSE;
+		 	return update_needed();
 	}
 }
 
@@ -1160,7 +1160,7 @@ function update_603_to_604($type='') {
 					return TRUE;
 				}
 			}
-			return FALSE;
+		 	return update_needed();
 			} else {
 			return TRUE;
 		}
@@ -1195,4 +1195,14 @@ function update_extended_616() {
 	$ns->tablerender("Extended Users", "Updated extended user field data");
 }
 
+function update_needed()
+{
+	global $ns;
+	if(E107_DEBUG_LEVEL > 0)
+	{
+		$tmp = debug_backtrace();
+		$ns->tablerender("", "<div style='text-align:center'>Update required in ".basename(__FILE__)." on line ".$tmp[0]['line']."</div>");
+	}
+	return FALSE;
+}
 ?>
