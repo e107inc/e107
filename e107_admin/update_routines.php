@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.127 $
-|     $Date: 2005-07-12 00:04:19 $
-|     $Author: e107coders $
+|     $Revision: 1.128 $
+|     $Date: 2005-07-12 16:06:53 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,15 +30,6 @@ if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
 }
 
 //content
-if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content' AND plugin_installflag='1' "))
-{
-	if(file_exists(e_PLUGIN.'content/content_update_check.php'))
-	{
-		include_once(e_PLUGIN.'content/content_update_check.php');
-	}
-}
-
-//links_page
 if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content' AND plugin_installflag='1' "))
 {
 	if(file_exists(e_PLUGIN.'content/content_update_check.php'))
