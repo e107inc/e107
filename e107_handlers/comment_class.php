@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-07-09 14:39:53 $
-|     $Author: streaky $
+|     $Revision: 1.45 $
+|     $Date: 2005-07-12 11:57:30 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -252,8 +252,8 @@ class comment {
 
 		$type = $this -> getCommentType($table);
 
-		$comment = $tp->toDB($comment, "public");
-		$subject = $tp->toDB($subject, "public");
+		$comment = $tp->toDB($comment);
+		$subject = $tp->toDB($subject);
 		if (!$sql->db_Select("comments", "*", "comment_comment='".$comment."' AND comment_item_id='$id' AND comment_type='$type' ")) {
 			if ($_POST['comment']) {
 				if (USER == TRUE) {
@@ -269,7 +269,7 @@ class comment {
 							define("emessage", LAN_310);
 						}
 					} else {
-						$nick = "0.".$tp->toDB($author_name, "public");
+						$nick = "0.".$tp->toDB($author_name);
 					}
 				}
 				
