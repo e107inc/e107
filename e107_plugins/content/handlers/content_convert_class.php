@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.11 $
-|		$Date: 2005-06-30 16:50:40 $
+|		$Revision: 1.12 $
+|		$Date: 2005-07-12 15:33:16 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -29,6 +29,24 @@ require_once($plugindir."handlers/content_class.php");
 $aa = new content;
 
 class content_convert{
+
+
+		//update content_author
+		function upgrade_1_2(){
+			global $sql;
+
+			$text = "";
+			$field1 = $sql->db_Field("pcontent",19);
+			$field2 = $sql->db_Field("pcontent",20);
+			$field3 = $sql->db_Field("pcontent",21);
+			if($field1 != "content_score" && $field2 != "content_meta" && $field3 != "content_layout"){
+				mysql_query("ALTER TABLE ".MPREFIX."pcontent ADD content_score TINYINT ( 3 ) UNSIGNED NOT NULL DEFAULT '0';");
+				mysql_query("ALTER TABLE ".MPREFIX."pcontent ADD content_meta TEXT NOT NULL;");
+				mysql_query("ALTER TABLE ".MPREFIX."pcontent ADD content_layout VARCHAR ( 255 ) NOT NULL DEFAULT '';");
+				$text = "Content Management Plugin table structure updated<br />";
+			}
+			return $text;
+		}
 
 		//update content_author
 		function upgrade_1_21(){
@@ -382,7 +400,8 @@ class content_convert{
 						//summary can contain link to image in e107_images/link_icons/".$summary." THIS STILL NEEDS TO BE CHECKED
 						$newcontent_summary		= ($row['content_summary'] ? $tp -> toDB($row['content_summary']) : "");
 						$newcontent_text		= $tp -> toDB($row['content_content']);
-						$newcontent_author		= (is_numeric($row['content_author']) ? $row['content_author'] : "0^".$row['content_author']);
+						//$newcontent_author	= (is_numeric($row['content_author']) ? $row['content_author'] : "0^".$row['content_author']);
+						$newcontent_author		= $row['content_author'];
 						$newcontent_icon		= "";
 						$newcontent_attach		= "";
 						$newcontent_images		= "";
