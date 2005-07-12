@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.126 $
-|     $Date: 2005-07-02 06:18:51 $
-|     $Author: sweetas $
+|     $Revision: 1.127 $
+|     $Date: 2005-07-12 00:04:19 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -433,7 +433,7 @@ function update_61x_to_700($type='') {
 						$sql2->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$row['user_id']}')");
 						$sql2->db_Update('user_extended', $new_values." WHERE user_extended_id = '{$row['user_id']}'");
 					}
-				}	
+				}
 			}
 		}
 		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
@@ -811,7 +811,7 @@ function update_61x_to_700($type='') {
 			$pref['search_highlight'] = TRUE;
 			$s_prefs = TRUE;
 		}
-		
+
 		// search sort method and search selector updates
 		if (!isset($search_prefs['selector'])) {
 			preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
@@ -829,15 +829,15 @@ function update_61x_to_700($type='') {
 		if ($search_prefs['comments_handlers']['content']['id'] == '1') {
 			$search_prefs['comments_handlers']['content']['id'] = 'pcontent';
 		}
-		
+
 		// custom pages search added
 		if (!isset($search_prefs['core_handlers']['pages'])) {
 			$search_prefs['core_handlers']['pages'] = array('class' => 0, 'chars' => 150, 'results' => 10, 'pre_title' => 1, 'pre_title_alt' => '', 'order' => 13);
 		}
-		
+
 		$serial_prefs = addslashes(serialize($search_prefs));
 		$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs'");
-		
+
 		// end search updates
 
 		// Save all prefs that were set in above update routines
@@ -891,7 +891,7 @@ function update_61x_to_700($type='') {
 			$row = mysql_fetch_row($res);
 			$lines = explode("\n", $row[1]);
 			if(strpos($lines[10],"tinyint")){
-				return FALSE;
+		  		return FALSE;
 			}
 		}
 
@@ -907,7 +907,7 @@ function update_61x_to_700($type='') {
 		{
 			return FALSE;
 		}
-		
+
 		if($sql->db_Field("user",36) != "user_xup" && $sql->db_Field("user", 30) != "user_xup"){
 		 	return FALSE;
 		}
@@ -925,7 +925,7 @@ function update_61x_to_700($type='') {
 		if ($search_prefs['comments_handlers']['content']['id'] == '1') {
 			return FALSE;
 		}
-		
+
 		// custom pages search added
 		if (!isset($search_prefs['core_handlers']['pages'])) {
 			return FALSE;
@@ -954,8 +954,8 @@ function update_61x_to_700($type='') {
 			return FALSE;
 		}
 
-		if($sql->db_Field("links_page",11) != "link_author"){
-			return FALSE;
+		if($sql->db_Select("links_page") && $sql->db_Field("links_page",11) != "link_author"){
+		 	return FALSE;
 		}
 /*
 		if(!$sql -> db_Select("core", "*", "e107_name='emote_default' "))
