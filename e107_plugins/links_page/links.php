@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-07-07 12:52:10 $
+|     $Revision: 1.24 $
+|     $Date: 2005-07-12 12:01:04 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -91,12 +91,20 @@ if (is_readable(THEME."links_template.php")) {
 }
 
 //submit / manage link
-if (isset($_POST['add_link']) && check_class($linkspage_pref['link_submit_class'])) {
+if (isset($_POST['add_link'])) {
 	if($qs[0] == "submit"){
-		$lc -> dbLinkCreate("submit");
+		if(check_class($linkspage_pref['link_submit_class'])){
+			$lc -> dbLinkCreate("submit");
+		}else{
+			js_location(e_SELF);
+		}
 	}
 	if($qs[0] == "manage"){
-		$lc -> dbLinkCreate();
+		if(check_class($linkspage_pref['link_manager_class'])){
+			$lc -> dbLinkCreate();
+		}else{
+			js_location(e_SELF);
+		}
 	}
 }
 //message submitted link
