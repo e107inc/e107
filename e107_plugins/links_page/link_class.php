@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.9 $
-|    $Date: 2005-07-07 12:52:10 $
+|    $Revision: 1.10 $
+|    $Date: 2005-07-12 12:00:07 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -410,7 +410,8 @@ class linkclass {
 			if (is_numeric($qs[2]) && $qs[1] != "sn") {
 				if($qs[1] == "manage"){
 					$link_author = USERID;
-					$link_class = ($linkspage_pref['link_directpost'] ? $_POST['link_class'] : "255");
+					//$link_class = ($linkspage_pref['link_directpost'] ? $_POST['link_class'] : "255");
+					$link_class = $_POST['link_class'];
 				}else{
 					$link_author = ($_POST['link_author'] ? $_POST['link_author'] : USERID);
 					$link_class = $_POST['link_class'];
