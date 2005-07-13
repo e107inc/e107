@@ -35,7 +35,7 @@ function print_item($id)
 		<br /><br /><hr />
 		".CONTENT_EMAILPRINT_LAN_1." ".SITENAME."
 		<br />
-		( ".SITEURL.e_PLUGIN_ABS."content/content.php?content.".$row['content_id']." )        
+		( ".SITEURLBASE.e_PLUGIN_ABS."content/content.php?content.".$row['content_id']." )        
 		";
 
 		require_once(e_HANDLER.'bbcode_handler.php');

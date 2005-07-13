@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-07-05 15:18:39 $
-|     $Author: streaky $
+|     $Revision: 1.25 $
+|     $Date: 2005-07-13 01:24:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -447,8 +447,8 @@ function headerjs() {
 global $e107;
 $text = "<script type='text/javascript'>
 <!--
-c = new Image(); c = '".SITEURL.e_IMAGE_ABS."fileinspector/contract.png';
-e = '".SITEURL.e_IMAGE_ABS."fileinspector/expand.png';
+c = new Image(); c = '".SITEURLBASE.e_IMAGE_ABS."fileinspector/contract.png';
+e = '".SITEURLBASE.e_IMAGE_ABS."fileinspector/expand.png';
 function ec(ecid) {
 	icon = document.getElementById('e_' + ecid).src;
 	if (icon == e) {

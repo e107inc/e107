@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2005-07-11 15:42:25 $
+|     $Revision: 1.61 $
+|     $Date: 2005-07-13 01:24:45 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -44,7 +44,7 @@ if(isset($pref['rss_feeds']) && $pref['rss_feeds'] && file_exists(e_PLUGIN."rss_
 }
 
 if(isset($pref['trackbackEnabled'])){
-echo "<link rel='pingback' href='".SITEURL.e_PLUGIN_ABS."trackback/xmlrpc.php' />\n";
+echo "<link rel='pingback' href='".SITEURLBASE.e_PLUGIN_ABS."trackback/xmlrpc.php' />\n";
 }
 if((isset($pref['enable_png_image_fix']) && $pref['enable_png_image_fix'] == true) || (isset($sleight) && $sleight == true)) {
 	echo "<script type='text/javascript' src='".e_FILE_ABS."sleight_js.php'></script>\n";
@@ -78,7 +78,7 @@ if(function_exists('theme_head')){
 	echo theme_head();
 }
 if(function_exists('core_head')){ echo core_head(); }
-if (file_exists(e_BASE."favicon.ico")) { echo "<link rel='icon' href='".SITEURL.e_HTTP."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL.e_HTTP."favicon.ico' type='image/xicon' />\n"; }
+if (file_exists(e_BASE."favicon.ico")) { echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n"; }
 
 echo $pref['meta_tag'] ? str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'], FALSE, "nobreak, no_hook, no_make_clickable"))."\n" : "";
 if (isset($theme_js_php) && $theme_js_php) {
