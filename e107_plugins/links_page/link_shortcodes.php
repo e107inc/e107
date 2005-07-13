@@ -52,7 +52,7 @@ if(isset($linkspage_pref['link_navigator_submit']) && $linkspage_pref['link_navi
 if(isset($linkspage_pref['link_navigator_manager']) && $linkspage_pref['link_navigator_manager'] && isset($linkspage_pref['link_manager']) && $linkspage_pref['link_manager'] && check_class($linkspage_pref['link_manager_class'])){
 	$mains .= $rs -> form_option(LCLAN_ITEM_35, "0", $baseurl."?manage", "");
 }
-if($linkspage_pref['link_navigator_allcat']){
+if(isset($linkspage_pref['link_navigator_allcat']) && $linkspage_pref['link_navigator_allcat']){
 	$sqlc = new db;
 	if ($sqlc->db_Select("links_page_cat", "link_category_id, link_category_name", "link_category_class REGEXP '".e_CLASS_REGEXP."' ORDER BY link_category_name")){
 		$mains .= $rs -> form_option("&nbsp;", "0", "", "");
@@ -278,7 +278,7 @@ SC_END
 
 SC_BEGIN LINK_COMMENT
 global $LINK_COMMENT, $linkspage_pref, $rowl;
-return (isset($linkspage_pref['link_comment']) && $linkspage_pref['link_comment'] ? "<a href='".e_SELF."?comment.".$rowl['link_id']."'>".LAN_LINKS_37." ".$rowl['link_comment']."</a>" : "");
+return (isset($linkspage_pref['link_comment']) && $linkspage_pref['link_comment'] ? "<a href='".e_SELF."?comment.".$rowl['link_id']."'>".LAN_LINKS_37." ".($rowl['link_comment'] ? $rowl['link_comment'] : "0")."</a>" : "");
 SC_END
 
 SC_BEGIN LINK_DESC

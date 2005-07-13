@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.10 $
-|    $Date: 2005-07-12 12:00:07 $
+|    $Revision: 1.11 $
+|    $Date: 2005-07-13 09:51:41 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -69,6 +69,26 @@ class linkclass {
 		$linkspage_pref['link_refer_minimum'] = "";
 
 		$linkspage_pref['link_rating_minimum'] = "";
+
+		$linkspage_pref['link_menu_caption'] = LCLAN_OPT_86;
+		$linkspage_pref['link_menu_navigator_frontpage'] = "1";
+		$linkspage_pref['link_menu_navigator_submit'] = "1";
+		$linkspage_pref['link_menu_navigator_manager'] = "1";
+		$linkspage_pref['link_menu_navigator_refer'] = "1";
+		$linkspage_pref['link_menu_navigator_rated'] = "1";
+		$linkspage_pref['link_menu_navigator_links'] = "1";
+		$linkspage_pref['link_menu_navigator_category'] = "1";
+		$linkspage_pref['link_menu_navigator_rendertype'] = "";
+		$linkspage_pref['link_menu_navigator_caption'] = LCLAN_OPT_82;
+		$linkspage_pref['link_menu_category'] = "1";
+		$linkspage_pref['link_menu_category_amount'] = "1";
+		$linkspage_pref['link_menu_category_rendertype'] = "";
+		$linkspage_pref['link_menu_category_caption'] = LCLAN_OPT_83;
+		$linkspage_pref['link_menu_recent'] = "1";
+		$linkspage_pref['link_menu_recent_category'] = "";
+		$linkspage_pref['link_menu_recent_description'] = "";
+		$linkspage_pref["link_menu_recent_number"] = "5";
+		$linkspage_pref['link_menu_recent_caption'] = LCLAN_OPT_84;
 
 		return $linkspage_pref;
 	}
@@ -157,7 +177,34 @@ class linkclass {
 		//define("e_PAGETITLE", strtolower($page));
 		define("e_PAGETITLE", $page);
 	}
-	
+
+	function parse_link_append($open, $id){
+		global $linkspage_pref;
+
+		if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
+			$link_open_type = $open;
+		}else{
+			$link_open_type = $linkspage_pref['link_open_all'];
+		}
+		switch ($link_open_type) {
+			case 1:
+			$link_append = "<a href='".e_SELF."?view.".$id."' rel='external'>";
+			break;
+			case 2:
+			$link_append = "<a href='".e_SELF."?view.".$id."'>";
+			break;
+			case 3:
+			$link_append = "<a href='".e_SELF."?view.".$id."'>";
+			break;
+			case 4:
+			$link_append = "<a href=\"javascript:open_window('".e_SELF."?view.".$id."')\">";
+			break;
+			default:
+			$link_append = "<a href='".e_SELF."?view.".$id."'>";
+		}
+		return $link_append;
+	}
+
 	function showLinkSort($mode=''){
 		global $rs, $ns, $qs, $linkspage_pref;
 
@@ -1199,6 +1246,102 @@ class linkclass {
 
 		$text .= $TOPIC_TABLE_END;
 
+
+
+
+
+
+		$text .= "
+		<div id='optmenu' style='display:none; text-align:center'>
+		<table style='".ADMIN_WIDTH."' class='fborder'>";
+
+		$TOPIC_CAPTION = LCLAN_OPT_MENU_7;
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_TITLE_ROW);
+
+		$TOPIC_TOPIC = LCLAN_OPT_85;
+		$TOPIC_FIELD = $rs -> form_text("link_menu_caption", "15", $linkspage_pref['link_menu_caption'], "100", "tbox", "", "", "");
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+
+		$TOPIC_TOPIC = LCLAN_OPT_62;
+		$TOPIC_FIELD = "<table style='width:100%;' cellpadding='0' cellspacing='0'><tr><td style='white-space:nowrap; width:20%;'>
+		".$rs -> form_checkbox("link_menu_navigator_frontpage", 1, ($linkspage_pref['link_menu_navigator_frontpage'] ? "1" : "0"))." ".LCLAN_OPT_60."<br />
+		".$rs -> form_checkbox("link_menu_navigator_submit", 1, ($linkspage_pref['link_menu_navigator_submit'] ? "1" : "0"))." ".LCLAN_OPT_58."<br />
+		".$rs -> form_checkbox("link_menu_navigator_manager", 1, ($linkspage_pref['link_menu_navigator_manager'] ? "1" : "0"))." ".LCLAN_OPT_59."<br />
+		".$rs -> form_checkbox("link_menu_navigator_refer", 1, ($linkspage_pref['link_menu_navigator_refer'] ? "1" : "0"))." ".LCLAN_OPT_20."<br />
+		</td><td style='white-space:nowrap;'>
+		".$rs -> form_checkbox("link_menu_navigator_rated", 1, ($linkspage_pref['link_menu_navigator_rated'] ? "1" : "0"))." ".LCLAN_OPT_21."<br />
+		".$rs -> form_checkbox("link_menu_navigator_links", 1, ($linkspage_pref['link_menu_navigator_links'] ? "1" : "0"))." ".LCLAN_OPT_67."<br />
+		".$rs -> form_checkbox("link_menu_navigator_category", 1, ($linkspage_pref['link_menu_navigator_category'] ? "1" : "0"))." ".LCLAN_OPT_61."<br />
+		</td></tr></table>";
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+		$TOPIC_TOPIC = LCLAN_OPT_79;
+		$TOPIC_FIELD = $rs -> form_text("link_menu_navigator_caption", "15", $linkspage_pref['link_menu_navigator_caption'], "100", "tbox", "", "", "");
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+		
+		$TOPIC_TOPIC = LCLAN_OPT_69;
+		$TOPIC_FIELD = "
+		".$rs -> form_radio("link_menu_navigator_rendertype", "1", ($linkspage_pref['link_menu_navigator_rendertype'] ? "1" : "0"), "", "").LCLAN_OPT_76."
+		".$rs -> form_radio("link_menu_navigator_rendertype", "0", ($linkspage_pref['link_menu_navigator_rendertype'] ? "0" : "1"), "", "").LCLAN_OPT_75;
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+
+
+		$TOPIC_TOPIC = LCLAN_OPT_70;
+		$TOPIC_FIELD = "
+		".$rs -> form_radio("link_menu_category", "1", ($linkspage_pref['link_menu_category'] ? "1" : "0"), "", "").LCLAN_OPT_3."
+		".$rs -> form_radio("link_menu_category", "0", ($linkspage_pref['link_menu_category'] ? "0" : "1"), "", "").LCLAN_OPT_4;
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+		$TOPIC_TOPIC = LCLAN_OPT_80;
+		$TOPIC_FIELD = $rs -> form_text("link_menu_category_caption", "15", $linkspage_pref['link_menu_category_caption'], "100", "tbox", "", "", "");
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+		$TOPIC_TOPIC = LCLAN_OPT_87;
+		$TOPIC_FIELD = "
+		".$rs -> form_radio("link_menu_category_amount", "1", ($linkspage_pref['link_menu_category_amount'] ? "1" : "0"), "", "").LCLAN_OPT_3."
+		".$rs -> form_radio("link_menu_category_amount", "0", ($linkspage_pref['link_menu_category_amount'] ? "0" : "1"), "", "").LCLAN_OPT_4;
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+		$TOPIC_TOPIC = LCLAN_OPT_71;
+		$TOPIC_FIELD = "
+		".$rs -> form_radio("link_menu_category_rendertype", "1", ($linkspage_pref['link_menu_category_rendertype'] ? "1" : "0"), "", "").LCLAN_OPT_76."
+		".$rs -> form_radio("link_menu_category_rendertype", "0", ($linkspage_pref['link_menu_category_rendertype'] ? "0" : "1"), "", "").LCLAN_OPT_75;
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+
+
+		$TOPIC_TOPIC = LCLAN_OPT_72;
+		$TOPIC_FIELD = "
+		".$rs -> form_radio("link_menu_recent", "1", ($linkspage_pref['link_menu_recent'] ? "1" : "0"), "", "").LCLAN_OPT_3."
+		".$rs -> form_radio("link_menu_recent", "0", ($linkspage_pref['link_menu_recent'] ? "0" : "1"), "", "").LCLAN_OPT_4;
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+		$TOPIC_TOPIC = LCLAN_OPT_73;
+		$TOPIC_FIELD = "<table style='width:100%;' cellpadding='0' cellspacing='0'><tr><td style='white-space:nowrap; width:20%;'>
+		".$rs -> form_checkbox("link_menu_recent_category", 1, ($linkspage_pref['link_menu_recent_category'] ? "1" : "0"))." ".LCLAN_OPT_77."<br />
+		".$rs -> form_checkbox("link_menu_recent_description", 1, ($linkspage_pref['link_menu_recent_description'] ? "1" : "0"))." ".LCLAN_OPT_78."<br />
+		</td></tr></table>";
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+		$TOPIC_TOPIC = LCLAN_OPT_81;
+		$TOPIC_FIELD = $rs -> form_text("link_menu_recent_caption", "15", $linkspage_pref['link_menu_recent_caption'], "100", "tbox", "", "", "");
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+		$TOPIC_TOPIC = LCLAN_OPT_74;
+		$TOPIC_FIELD = $rs -> form_select_open("link_menu_recent_number");
+		for($i=1;$i<15;$i++){
+			$TOPIC_FIELD .= $rs -> form_option($i, ($linkspage_pref["link_menu_recent_number"] == $i ? "1" : "0"), $i);
+		}
+		$TOPIC_FIELD .= $rs -> form_select_close();
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+
+
+		$text .= $TOPIC_TABLE_END;
+
+
 		$text .= "
 		".$rs->form_close()."
 		</div>";
@@ -1210,7 +1353,7 @@ class linkclass {
 		$text = "
 		<tr>
 		<td colspan='2' style='text-align:center' class='forumheader'>
-			".$rs->form_button("submit", "updateoptions", LCLAN_ADMIN_1)."
+		<input class='button' type='submit' name='updateoptions' value='".LCLAN_ADMIN_1."' />
 		</td>
 		</tr>";
 

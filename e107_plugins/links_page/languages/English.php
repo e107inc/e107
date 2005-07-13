@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/languages/English.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-07-07 12:52:10 $
+|     $Revision: 1.21 $
+|     $Date: 2005-07-13 09:51:41 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -24,6 +24,7 @@ define("LCLAN_OPT_MENU_3", "category page");
 define("LCLAN_OPT_MENU_4", "links display");
 define("LCLAN_OPT_MENU_5", "refer page");
 define("LCLAN_OPT_MENU_6", "rating page");
+define("LCLAN_OPT_MENU_7", "menu");
 
 define("LCLAN_OPT_1", "general options");
 define("LCLAN_OPT_2", "Link Page Options");
@@ -93,6 +94,26 @@ define("LCLAN_OPT_65", "show empty categories");
 define("LCLAN_OPT_66", "link to each category");
 define("LCLAN_OPT_67", "link to all links");
 define("LCLAN_OPT_68", "view all links");
+
+define("LCLAN_OPT_69", "rendertype navigator links");
+define("LCLAN_OPT_70", "show category links");
+define("LCLAN_OPT_71", "rendertype category links");
+define("LCLAN_OPT_72", "show recent links");
+define("LCLAN_OPT_73", "display which data");
+define("LCLAN_OPT_74", "how many recent links are displayed");
+define("LCLAN_OPT_75", "hyperlinks");
+define("LCLAN_OPT_76", "selectbox");
+define("LCLAN_OPT_77", "category");
+define("LCLAN_OPT_78", "description");
+define("LCLAN_OPT_79", "caption navigator");
+define("LCLAN_OPT_80", "caption categories");
+define("LCLAN_OPT_81", "caption recent list");
+define("LCLAN_OPT_82", "navigator");
+define("LCLAN_OPT_83", "categories");
+define("LCLAN_OPT_84", "recent list");
+define("LCLAN_OPT_85", "caption menu");
+define("LCLAN_OPT_86", "link menu");
+define("LCLAN_OPT_87", "show amount of links");
 
 define("LCLAN_ADMIN_1", "update");
 define("LCLAN_ADMIN_2", "Link saved to database.");
