@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-07-07 17:50:34 $
+|     $Revision: 1.16 $
+|     $Date: 2005-07-13 18:55:34 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -24,6 +24,7 @@ define("LCLAN_OPT_MENU_3", "Página de cateogías");
 define("LCLAN_OPT_MENU_4", "Muestra de enlaces");
 define("LCLAN_OPT_MENU_5", "Página de referidos");
 define("LCLAN_OPT_MENU_6", "Página de valoración");
+define("LCLAN_OPT_MENU_7", "Menú");
 
 define("LCLAN_OPT_1", "Opciones generales");
 define("LCLAN_OPT_2", "OPciones de la página de enlaces");
@@ -93,6 +94,25 @@ define("LCLAN_OPT_65", "Mostrar categorías vacías");
 define("LCLAN_OPT_66", "Enlace a cada categoría");
 define("LCLAN_OPT_67", "Enlace a todos los enlaces");
 define("LCLAN_OPT_68", "Ver todos los enlaces");
+define("LCLAN_OPT_69", "TipoRenderizado de enlaces del navegador");
+define("LCLAN_OPT_70", "Mostrar enlaces de categorías");
+define("LCLAN_OPT_71", "rTipoRenderizado de enlaces de categorías");
+define("LCLAN_OPT_72", "Mostrar enlaces recientes");
+define("LCLAN_OPT_73", "Mostrar datos");
+define("LCLAN_OPT_74", "¿Cuantos enlaces recientes se mostrarán?");
+define("LCLAN_OPT_75", "Hiperenlaces");
+define("LCLAN_OPT_76", "Caja selección");
+define("LCLAN_OPT_77", "Categoría");
+define("LCLAN_OPT_78", "Descripción");
+define("LCLAN_OPT_79", "Título navegador");
+define("LCLAN_OPT_80", "Título categorías");
+define("LCLAN_OPT_81", "Título lista reciente");
+define("LCLAN_OPT_82", "Navegador");
+define("LCLAN_OPT_83", "Categorías");
+define("LCLAN_OPT_84", "Lista reciente");
+define("LCLAN_OPT_85", "Título menú");
+define("LCLAN_OPT_86", "Menú de enlace");
+define("LCLAN_OPT_87", "Mostrar cantidad de enlaces");
 
 define("LCLAN_ADMIN_1", "Actualizar");
 define("LCLAN_ADMIN_2", "Enlace guardado en la base de datos.");
