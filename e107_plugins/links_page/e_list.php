@@ -20,7 +20,7 @@
 	SELECT l.*, c.link_category_id, c.link_category_name
 	FROM #links_page AS l
 	LEFT JOIN #links_page_cat AS c ON c.link_category_id = l.link_category
-	WHERE ".$qry." l.link_class REGEXP '".e_CLASS_REGEXP."'
+	WHERE ".$qry." l.link_class REGEXP '".e_CLASS_REGEXP."' AND c.link_category_class REGEXP '".e_CLASS_REGEXP."'
 	ORDER BY l.link_datestamp DESC LIMIT 0,".$arr[7]." 
 	";
 

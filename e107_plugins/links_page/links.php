@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-07-12 12:01:04 $
+|     $Revision: 1.25 $
+|     $Date: 2005-07-13 09:51:41 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -189,7 +189,7 @@ function displayTopRated(){
 		while ($rowl = $sql->db_Fetch()) {
 			if( ($rowl['rate_avg'] > $ratemin) ){
 			$cat = $rowl['link_category_name'];
-			$LINK_RATED_APPEND			= parse_link_append($rowl['link_open'], $rowl['link_id']);
+			$LINK_RATED_APPEND			= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
 			$LINK_RATED_RATING			= $tp -> parseTemplate('{LINK_RATED_RATING}', FALSE, $link_shortcodes);
 			$link_rated_table_string	.= $tp -> parseTemplate($LINK_RATED_TABLE, FALSE, $link_shortcodes);
 			}
@@ -240,7 +240,7 @@ function displayTopRefer(){
 		$link_top_table_string = "";
 		while ($rowl = $sql2 -> db_Fetch()) {
 			$category				= $rowl['link_category_id'];
-			$LINK_APPEND			= parse_link_append($rowl['link_open'], $rowl['link_id']);
+			$LINK_APPEND			= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
 			$link_top_table_string .= $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);
 		}
 		$link_top_table_start		= $tp -> parseTemplate($LINK_TABLE_START, FALSE, $link_shortcodes);
@@ -336,7 +336,7 @@ function displayLinkComment(){
 			js_location(e_SELF);
 		}else{
 			$rowl = $sql->db_Fetch();
-			$LINK_APPEND	= parse_link_append($rowl['link_open'], $rowl['link_id']);
+			$LINK_APPEND	= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
 			$subject		= $rowl['link_name'];
 			$text = $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);
 			$ns->tablerender(LAN_LINKS_36, $text);
@@ -451,7 +451,7 @@ function displayCategoryLinks($mode=''){
 			if($mode){
 				$cat_name			= $rowl['link_category_name'];
 				$cat_desc			= $rowl['link_category_description'];
-				$LINK_APPEND		= parse_link_append($rowl['link_open'], $rowl['link_id']);
+				$LINK_APPEND		= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
 				$link_table_string .= $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);			
 			}else{
 				$arr[$rowl['link_category_id']][] = $rowl;
@@ -479,7 +479,7 @@ function displayCategoryLinks($mode=''){
 					$rowl				= $value[$i];
 					$cat_name			= $rowl['link_category_name'];
 					$cat_desc			= $rowl['link_category_description'];
-					$LINK_APPEND		= parse_link_append($rowl['link_open'], $rowl['link_id']);
+					$LINK_APPEND		= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
 					$link_table_string .= $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);
 				}
 				$caption = LAN_LINKS_32." ".$cat_name." ".($cat_desc ? " <i>[".$cat_desc."]</i>" : "");
@@ -499,31 +499,6 @@ function displayCategoryLinks($mode=''){
 require_once(FOOTERF);
 
 
-function parse_link_append($open, $id){
-	global $linkspage_pref;
 
-	if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
-		$link_open_type = $open;
-	}else{
-		$link_open_type = $linkspage_pref['link_open_all'];
-	}
-	switch ($link_open_type) {
-		case 1:
-		$link_append = "<a href='".e_SELF."?view.".$id."' rel='external'>";
-		break;
-		case 2:
-		$link_append = "<a href='".e_SELF."?view.".$id."'>";
-		break;
-		case 3:
-		$link_append = "<a href='".e_SELF."?view.".$id."'>";
-		break;
-		case 4:
-		$link_append = "<a href=\"javascript:open_window('".e_SELF."?view.".$id."')\">";
-		break;
-		default:
-		$link_append = "<a href='".e_SELF."?view.".$id."'>";
-	}
-	return $link_append;
-}
 
 ?>

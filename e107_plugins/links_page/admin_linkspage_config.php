@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/admin_linkspage_config.php,v $
-|    $Revision: 1.4 $
-|    $Date: 2005-07-07 12:52:08 $
+|    $Revision: 1.5 $
+|    $Date: 2005-07-13 09:51:41 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -225,12 +225,13 @@ function admin_linkspage_config_adminmenu(){
 	if(isset($qs[0]) && $qs[0] == "opt"){
 		unset($var);
 		$var=array();
-		$var['optgeneral']['text']		= LCLAN_OPT_MENU_1;
-		$var['optmanager']['text']		= LCLAN_OPT_MENU_2;
+		$var['optgeneral']['text']	= LCLAN_OPT_MENU_1;
+		$var['optmanager']['text']	= LCLAN_OPT_MENU_2;
 		$var['optcategory']['text']	= LCLAN_OPT_MENU_3;
-		$var['optlinks']['text']		= LCLAN_OPT_MENU_4;
-		$var['optrefer']['text']		= LCLAN_OPT_MENU_5;
-		$var['optrating']['text']			= LCLAN_OPT_MENU_6;
+		$var['optlinks']['text']	= LCLAN_OPT_MENU_4;
+		$var['optrefer']['text']	= LCLAN_OPT_MENU_5;
+		$var['optrating']['text']	= LCLAN_OPT_MENU_6;
+		$var['optmenu']['text']		= LCLAN_OPT_MENU_7;
 		show_admin_menu(LCLAN_ADMINMENU_6, $qs[0], $var, TRUE);
 	}
 }
