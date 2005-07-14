@@ -229,28 +229,28 @@ $LINK_BUTTON = "";
 if(isset($linkspage_pref['link_icon']) && $linkspage_pref['link_icon']){
 	if ($rowl['link_button']) {
 		if (strpos($rowl['link_button'], "http://") !== FALSE) {
-			$LINK_BUTTON = $LINK_APPEND."\n<img style='border:0;' src='".$rowl['link_button']."' alt='' /></a>";
+			$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000;' src='".$rowl['link_button']."' alt='' /></a>";
 		} else {
 			if(strstr($rowl['link_button'], "/")){
 				if(file_exists(e_BASE.$rowl['link_button'])){
-					$LINK_BUTTON = $LINK_APPEND."\n<img style='border:0;' src='".e_BASE.$rowl['link_button']."' alt='' /></a>";
+					$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000;' src='".e_BASE.$rowl['link_button']."' alt='' /></a>";
 				} else {
 					if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
-						$LINK_BUTTON = $LINK_APPEND."\n<img style='border:0; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
+						$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
 					}
 				}
 			}else{
-				$LINK_BUTTON = $LINK_APPEND."\n<img style='border:0' src='".e_PLUGIN."links_page/link_images/".$rowl['link_button']."' alt='' /></a>";
+				$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000' src='".e_PLUGIN."links_page/link_images/".$rowl['link_button']."' alt='' /></a>";
 			}
 		}
 	} else {
 		if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
-			$LINK_BUTTON = $LINK_APPEND."\n<img style='border:0; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
+			$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
 		}
 	}
 }else{
 	if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
-		$LINK_BUTTON = $LINK_APPEND."\n<img style='border:0; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
+		$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
 	}
 }
 return $LINK_BUTTON;

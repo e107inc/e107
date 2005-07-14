@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-07-04 22:36:12 $
+|     $Revision: 1.12 $
+|     $Date: 2005-07-14 21:32:12 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -108,7 +108,7 @@ $LINK_MAIN_TABLE_END_ALL = "
 
 // LINKS ITEM ----------------------------------------------------------------------------
 
-$sc_style['LINK_BUTTON']['pre'] = "<td rowspan='4' class='forumheader3' style='width:10%; text-align:center; padding-right:5px;'>";
+$sc_style['LINK_BUTTON']['pre'] = "<td rowspan='4' class='forumheader3' style='width:10%; text-align:center; padding-right:10px;'>";
 $sc_style['LINK_BUTTON']['post'] = "</td>";
 
 $sc_style['LINK_NAME']['pre'] = "";
