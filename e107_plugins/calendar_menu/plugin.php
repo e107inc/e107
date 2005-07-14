@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-07-05 21:31:43 $
+|     $Revision: 1.8 $
+|     $Date: 2005-07-14 13:15:16 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -127,22 +127,23 @@ $upgrade_add_prefs = "";
 $upgrade_remove_prefs = "";
 	
 $upgrade_alter_tables = array(
-"alter table ".MPREFIX."event_cat add event_cat_subs tinyint(3) unsigned NOT NULL default '0'",
-"alter table ".MPREFIX."event_cat add event_cat_force tinyint(3) unsigned NOT NULL default '0'",
-"alter table ".MPREFIX."event_cat add event_cat_ahead tinyint(3) unsigned NOT NULL default '0'",
-"alter table ".MPREFIX."event_cat add event_cat_msg1 text",
-"alter table ".MPREFIX."event_cat add event_cat_msg2 text",
-"alter table ".MPREFIX."event_cat add event_cat_notify  tinyint(3) unsigned NOT NULL default '0'",
-"alter table ".MPREFIX."event_cat add event_cat_last int(10) unsigned NOT NULL default '0'",
-"alter table ".MPREFIX."event_cat add event_cat_today int(10) unsigned NOT NULL default '0'",
-"alter table ".MPREFIX."event_cat add event_cat_lastupdate int(10) unsigned NOT NULL default '0'",
-"alter table ".MPREFIX."event_cat add event_cat_addclass int(10) unsigned NOT NULL default '0'",
+"ALTER TABLE ".MPREFIX."event_cat ADD event_cat_subs tinyint(3) unsigned NOT NULL default '0'",
+"ALTER TABLE ".MPREFIX."event_cat ADD event_cat_force tinyint(3) unsigned NOT NULL default '0'",
+"ALTER TABLE ".MPREFIX."event_cat ADD event_cat_ahead tinyint(3) unsigned NOT NULL default '0'",
+"ALTER TABLE ".MPREFIX."event_cat ADD event_cat_msg1 text",
+"ALTER TABLE ".MPREFIX."event_cat ADD event_cat_msg2 text",
+"ALTER TABLE ".MPREFIX."event_cat ADD event_cat_notify  tinyint(3) unsigned NOT NULL default '0'",
+"ALTER TABLE ".MPREFIX."event_cat ADD event_cat_last int(10) unsigned NOT NULL default '0'",
+"ALTER TABLE ".MPREFIX."event_cat ADD event_cat_today int(10) unsigned NOT NULL default '0'",
+"ALTER TABLE ".MPREFIX."event_cat ADD event_cat_lastupdate int(10) unsigned NOT NULL default '0'",
+"ALTER TABLE ".MPREFIX."event_cat ADD event_cat_addclass int(10) unsigned NOT NULL default '0'",
 "CREATE TABLE ".MPREFIX."event_subs (
 	event_subid int(10) unsigned NOT NULL auto_increment,
 	event_userid  int(10) unsigned NOT NULL default '0',
 	event_cat  int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_subid)
-	) TYPE=MyISAM;");
+	) TYPE=MyISAM;"
+);
 	
 $eplug_upgrade_done = EC_LAN_108;
 	
