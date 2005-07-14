@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.78 $
-|		$Date: 2005-07-12 11:39:01 $
+|		$Revision: 1.79 $
+|		$Date: 2005-07-14 13:16:07 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1128,19 +1128,24 @@ class content{
 			$data .= "//show search box\n";
 			$data .= "if(".chr(36)."content_pref[\"content_menu_search_".chr(36)."menutypeid\"]){\n";
 			$data .= "	".chr(36)."text .= ".chr(36)."aa -> showOptionsSearch(\"menu\", ".chr(36)."menutypeid);\n";
+			$data .= "	".chr(36)."break = TRUE;\n";
 			$data .= "}\n";
 			$data .= "//show select box (with either links to other content pages, to categories, to both, or don't show at all)\n";
 			$data .= "if( (".chr(36)."content_pref[\"content_menu_links_".chr(36)."menutypeid\"] && ".chr(36)."content_pref[\"content_menu_links_dropdown_".chr(36)."menutypeid\"]) || (".chr(36)."content_pref[\"content_menu_cat_".chr(36)."menutypeid\"] && ".chr(36)."content_pref[\"content_menu_cat_dropdown_".chr(36)."menutypeid\"]) ){\n";
 			$data .= "	".chr(36)."text .= ".chr(36)."aa -> showOptionsSelect(\"menu\", ".chr(36)."menutypeid);\n";
+			$data .= "	".chr(36)."break = TRUE;\n";
 			$data .= "}\n";
 			$data .= "//show order box\n";
 			$data .= "if(".chr(36)."content_pref[\"content_menu_sort_".chr(36)."menutypeid\"]){\n";
 			$data .= "	".chr(36)."text .= ".chr(36)."aa -> showOptionsOrder(\"menu\", ".chr(36)."menutypeid);\n";
+			$data .= "	".chr(36)."break = TRUE;\n";
 			$data .= "}\n";
 			$data .= "\n";
 			$data .= "//show links list if chosen so\n";
 			$data .= "if(".chr(36)."content_pref[\"content_menu_links_".chr(36)."menutypeid\"] && !".chr(36)."content_pref[\"content_menu_links_dropdown_".chr(36)."menutypeid\"]){\n";
-			$data .= "	".chr(36)."text .= \"<br />\";\n";
+			$data .= "	if(".chr(36)."break === TRUE){\n";
+			$data .= "	   ".chr(36)."text .= \"<br />\";\n";
+			$data .= "	}\n";
 			$data .= "	".chr(36)."text .= (".chr(36)."content_pref[\"content_menu_links_caption_".chr(36)."menutypeid\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_links_caption_".chr(36)."menutypeid\"] : CONTENT_MENU_LAN_4).\"<br />\";\n";
 			$data .= "\n";
 			$data .= "	//define icon\n";
@@ -1222,9 +1227,9 @@ class content{
 			$data .= "					}\n";
 			$data .= "				}\n";
 			$data .= "				//display category list\n";
-			$data .= "				".chr(36)."text .= \"<table style='width:98%; text-align:left; border:0;' cellpadding='0' cellspacing='0'>\";\n";
+			$data .= "				".chr(36)."text .= \"<table style='width:100%; text-align:left; border:0;' cellpadding='0' cellspacing='0'>\";\n";
 			$data .= "				".chr(36)."text .= \"<tr>\";\n";
-			$data .= "				".chr(36)."text .= (".chr(36)."ICON ? \"<td style='width:2%; white-space:nowrap; padding-right:5px;'><a href='\".e_PLUGIN.\"content/content.php?cat.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."ICON.\"</a></td>\" : \"\");\n";
+			$data .= "				".chr(36)."text .= (".chr(36)."ICON ? \"<td style='width:1%; white-space:nowrap; text-align:left; padding-right:5px;'><a href='\".e_PLUGIN.\"content/content.php?cat.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."ICON.\"</a></td>\" : \"\");\n";
 			$data .= "				".chr(36)."text .= \"<td colspan='2'>\";\n";
 			$data .= "				".chr(36)."text .= \"<a href='\".e_PLUGIN.\"content/content.php?cat.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."row['content_heading'].\"</a>\";\n";
 			$data .= "				".chr(36)."text .= (".chr(36)."content_pref[\"content_menu_cat_number_".chr(36)."menutypeid\"] ? \" <span class='smalltext'>(\".".chr(36)."aa -> countCatItems(".chr(36)."row['content_id']).\")</span>\" : \"\");\n";
@@ -1297,9 +1302,9 @@ class content{
 			$data .= "		}\n";
 			$data .= "\n";
 			$data .= "		//display recent list\n";
-			$data .= "		".chr(36)."text .= \"<table style='width:98%; text-align:left; border:0; margin-bottom:10px;' cellpadding='0' cellspacing='0'>\";\n";
+			$data .= "		".chr(36)."text .= \"<table style='width:100%; text-align:left; border:0; margin-bottom:10px;' cellpadding='0' cellspacing='0'>\";\n";
 			$data .= "		".chr(36)."text .= \"<tr>\";\n";
-			$data .= "		".chr(36)."text .= (".chr(36)."ICON ? \"<td style='width:1%; white-space:nowrap; vertical-align:top; padding-right:10px;'><a href='\".e_PLUGIN.\"content/content.php?content.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."ICON.\"</a></td>\" : \"\");\n";
+			$data .= "		".chr(36)."text .= (".chr(36)."ICON ? \"<td style='width:1%; white-space:nowrap; vertical-align:top; padding-right:5px;'><a href='\".e_PLUGIN.\"content/content.php?content.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."ICON.\"</a></td>\" : \"\");\n";
 			$data .= "		".chr(36)."text .= \"<td style='width:99%; vertical-align:top;'>\";\n";
 			$data .= "		".chr(36)."text .= \"<a href='\".e_PLUGIN.\"content/content.php?content.\".".chr(36)."row['content_id'].\"'>\".".chr(36)."row['content_heading'].\"</a><br />\";\n";
 			$data .= "		".chr(36)."text .= (".chr(36)."DATE ? ".chr(36)."DATE.\"<br />\" : \"\" );\n";

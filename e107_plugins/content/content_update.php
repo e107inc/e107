@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-07-12 15:33:16 $
+|     $Revision: 1.9 $
+|     $Date: 2005-07-14 13:16:07 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -236,12 +236,16 @@ $text .= $ac -> upgrade_1_2();
 $text .= $ac -> upgrade_1_21();
 
 //render message
-$caption = CONTENT_ADMIN_CONVERSION_LAN_63;
-$ns -> tablerender($caption, $text);
+if(isset($text)){
+	$caption = CONTENT_ADMIN_CONVERSION_LAN_63;
+	$ns -> tablerender($caption, $text);
+}
 
 //render primary conversion results
 if(is_array($main_convert)){
-	$ns -> tablerender($main_convert[0], $main_convert[1]);
+	if(isset($main_convert[1])){
+		$ns -> tablerender($main_convert[0], $main_convert[1]);
+	}
 }
 
 //finally set the new content plugin version number

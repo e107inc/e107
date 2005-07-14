@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.54 $
-|		$Date: 2005-07-12 11:39:00 $
+|		$Revision: 1.55 $
+|		$Date: 2005-07-14 13:16:07 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -166,7 +166,7 @@ if(isset($_POST['update_category'])){
 }
 
 if(isset($_POST['create_content'])){
-	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
+	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['content_author_name'] && $_POST['parent'] != "none"){
 		//$adb -> dbContentCreate("admin");
 		$adb -> dbContent("create", "");
 	}else{
@@ -175,7 +175,7 @@ if(isset($_POST['create_content'])){
 }
 
 if(isset($_POST['update_content'])){
-	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
+	if($_POST['content_text'] && $_POST['content_heading'] && $_POST['content_author_name'] && $_POST['content_heading'] && $_POST['parent'] != "none"){
 		//$adb -> dbContentUpdate("admin");
 		$adb -> dbContent("update", "");
 	}else{

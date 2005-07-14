@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.86 $
-|		$Date: 2005-07-12 11:39:01 $
+|		$Revision: 1.87 $
+|		$Date: 2005-07-14 13:16:09 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -467,7 +467,7 @@ class contentform{
 
 						$content_author_id		= (isset($authordetails[0]) && $authordetails[0] != "" ? $authordetails[0] : USERID);
 						$content_author_name	= (isset($authordetails[1]) && $authordetails[1] != "" ? $authordetails[1] : USERNAME);
-						$content_author_email	= (isset($authordetails[2]) && $authordetails[2] != "" ? $authordetails[2] : USEREMAIL);
+						$content_author_email	= (isset($authordetails[2]) ? $authordetails[2] : USEREMAIL);
 
 						$formurl = e_SELF."?".e_QUERY;
 						$text = "
@@ -525,10 +525,10 @@ class contentform{
 						//$text .= $TOPIC_ROW_SPACER;
 
 						//author
-						$content_author_name_value = ($content_author_name ? $content_author_name : CONTENT_ADMIN_ITEM_LAN_14);
-						$content_author_name_js = ($content_author_name ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_name.value=='".CONTENT_ADMIN_ITEM_LAN_14."'){document.getElementById('dataform').content_author_name.value='';}\"");
-						$content_author_email_value = ($content_author_email ? $content_author_email : CONTENT_ADMIN_ITEM_LAN_15);
-						$content_author_email_js = ($content_author_email ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_email.value=='".CONTENT_ADMIN_ITEM_LAN_15."'){document.getElementById('dataform').content_author_email.value='';}\"");
+						$content_author_name_value	= ($content_author_name ? $content_author_name : CONTENT_ADMIN_ITEM_LAN_14);
+						$content_author_name_js		= ($content_author_name ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_name.value=='".CONTENT_ADMIN_ITEM_LAN_14."'){document.getElementById('dataform').content_author_name.value='';}\"");
+						$content_author_email_value	= ($content_author_email ? $content_author_email : CONTENT_ADMIN_ITEM_LAN_15);
+						$content_author_email_js	= ($content_author_email ? "" : "onfocus=\"if(document.getElementById('dataform').content_author_email.value=='".CONTENT_ADMIN_ITEM_LAN_15."'){document.getElementById('dataform').content_author_email.value='';}\"");
 
 						$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_51;
 						$TOPIC_FIELD = "(".CONTENT_ADMIN_ITEM_LAN_71.")<br />
@@ -748,7 +748,7 @@ class contentform{
 								".$num." ".$rs -> form_text("content_images".$i."", 60, $imagesarray[$i], 100)."
 								".$rs -> form_button("button", '', CONTENT_ADMIN_ITEM_LAN_105, "onclick=\"expandit('divimage".$i."')\"")."
 								<div id='divimage".$i."' style='{head}; display:none'>";
-								if(empty($iconlist)){
+								if(empty($imagelist)){
 									$TOPIC_FIELD .= CONTENT_ADMIN_ITEM_LAN_123;
 								}else{
 									foreach($imagelist as $image){
@@ -1085,7 +1085,7 @@ class contentform{
 					}else{
 						//use user restriction (personal admin)
 						if(isset($userid) && isset($username) ){
-							$qryuser = " AND (content_author = '".$userid."' OR SUBSTRING_INDEX(content_author, '^', 1) = '".$userid."' OR SUBSTRING_INDEX(content_author, '^', 2) = '".$userid."^".$username."')";
+							$qryuser = " AND (content_author = '".$userid."' OR SUBSTRING_INDEX(content_author, '^', 1) = '".$userid."' OR SUBSTRING_INDEX(content_author, '^', 2) = '".$userid."^".$username."' OR content_author REGEXP '".$username."' )";
 						}
 					}
 					$formtarget	= $plugindir."content_manager.php?content.".$qs[1];
@@ -3240,8 +3240,8 @@ class contentform{
 			//content_menu_links_dropdown_ (rendertype)
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_114;
 			$TOPIC_FIELD = "
-			".$rs -> form_radio("content_menu_links_dropdown_{$id}", "1", ($content_pref["content_menu_links_dropdown_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_75."
-			".$rs -> form_radio("content_menu_links_dropdown_{$id}", "0", ($content_pref["content_menu_links_dropdown_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_76."
+			".$rs -> form_radio("content_menu_links_dropdown_{$id}", "1", ($content_pref["content_menu_links_dropdown_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_76."
+			".$rs -> form_radio("content_menu_links_dropdown_{$id}", "0", ($content_pref["content_menu_links_dropdown_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_75."
 			";
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
@@ -3309,8 +3309,8 @@ class contentform{
 			//content_menu_cat_dropdown_ (rendertype)
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_123;
 			$TOPIC_FIELD = "
-			".$rs -> form_radio("content_menu_cat_dropdown_{$id}", "1", ($content_pref["content_menu_cat_dropdown_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_75."
-			".$rs -> form_radio("content_menu_cat_dropdown_{$id}", "0", ($content_pref["content_menu_cat_dropdown_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_76."
+			".$rs -> form_radio("content_menu_cat_dropdown_{$id}", "1", ($content_pref["content_menu_cat_dropdown_{$id}"] ? "1" : "0"), "", "").CONTENT_ADMIN_OPT_LAN_76."
+			".$rs -> form_radio("content_menu_cat_dropdown_{$id}", "0", ($content_pref["content_menu_cat_dropdown_{$id}"] ? "0" : "1"), "", "").CONTENT_ADMIN_OPT_LAN_75."
 			";
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
