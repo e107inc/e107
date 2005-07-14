@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-07-13 18:55:34 $
+|     $Revision: 1.17 $
+|     $Date: 2005-07-14 15:12:10 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -16,7 +16,7 @@ define("LCLAN_PLUGIN_LAN_2", "Página de enlaces para mostrar enlaces externos")
 define("LCLAN_PLUGIN_LAN_3", "Configurar la página de enlaces");
 define("LCLAN_PLUGIN_LAN_4", "Enlaces");
 define("LCLAN_PLUGIN_LAN_5", "La página de enlaces se instaló correctamente, configúrela desde la página de enlaces en el área del administrador.");
-define("LCLAN_PLUGIN_LAN_6", "La página de enlaces actualizada correctamente, ahora la versión es");
+define("LCLAN_PLUGIN_LAN_6", "Página de enlaces actualizada correctamente, ahora la versión es");
 
 define("LCLAN_OPT_MENU_1", "Opciones generales");
 define("LCLAN_OPT_MENU_2", "Gestor personal de enlaces");
@@ -26,8 +26,19 @@ define("LCLAN_OPT_MENU_5", "Página de referidos");
 define("LCLAN_OPT_MENU_6", "Página de valoración");
 define("LCLAN_OPT_MENU_7", "Menú");
 
+define("LCLAN_PAGETITLE_1", "Enlaces");
+define("LCLAN_PAGETITLE_2", "Todas las categorías");
+define("LCLAN_PAGETITLE_3", "Todos los enlaces");
+define("LCLAN_PAGETITLE_4", "Categoría");
+define("LCLAN_PAGETITLE_5", "Más valorado");
+define("LCLAN_PAGETITLE_6", "Más Activos");
+define("LCLAN_PAGETITLE_7", "Gestor personal de enlaces");
+define("LCLAN_PAGETITLE_8", "Comentarios de enlaces");
+define("LCLAN_PAGETITLE_9", "Enviar enlace");
+define("LCLAN_PAGETITLE_10", "");
+
 define("LCLAN_OPT_1", "Opciones generales");
-define("LCLAN_OPT_2", "OPciones de la página de enlaces");
+define("LCLAN_OPT_2", "Opciones de la página de enlaces");
 define("LCLAN_OPT_3", "Activado");
 define("LCLAN_OPT_4", "Desactivado");
 define("LCLAN_OPT_5", "px");
