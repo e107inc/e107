@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-07-13 09:51:41 $
+|     $Revision: 1.26 $
+|     $Date: 2005-07-14 21:32:12 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -366,10 +366,13 @@ function displayCategory(){
 	global $sql, $sql2, $ns, $lc, $tp, $qs, $rowl, $link_shortcodes, $linkspage_pref, $total_links, $category_total, $alllinks;
 	global $LINK_MAIN_TABLE_END_ALL, $LINK_MAIN_TABLE, $LINK_MAIN_TABLE_START;
 
+	$order = $lc -> getOrder('cat');
+
 	$qry = "
 	SELECT lc.*
 	FROM #links_page_cat AS lc
 	WHERE lc.link_category_class REGEXP '".e_CLASS_REGEXP."' 
+	".$order."
 	";
 
 	if(!is_object($sql)){ $sql = new db; }
