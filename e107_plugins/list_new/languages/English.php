@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-28 12:27:47 $
-|     $Author: lisa_ $
+|     $Revision: 1.9 $
+|     $Date: 2005-07-14 15:00:00 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -51,7 +51,7 @@ define("LIST_21", "Articles");
 define("LIST_22", "Ideas");
 //all above will be deprecated sometime
 
-
+define("LIST_23", "This plugin is not installed.");
 
 
 define("LIST_PLUGIN_1", "List");
