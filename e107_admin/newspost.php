@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.91 $
-|   $Date: 2005-07-05 16:03:24 $
+|   $Revision: 1.92 $
+|   $Date: 2005-07-14 17:40:44 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
@@ -113,7 +113,7 @@ if ($delete == "sn" && $del_id) {
 	}
 }
 
-if (IsSet($_POST['submitupload'])) {
+if (isset($_POST['submitupload'])) {
 	$pref['upload_storagetype'] = "1";
 	require_once(e_HANDLER."upload_handler.php");
 
@@ -142,13 +142,13 @@ if (isset($_POST['preview'])) {
 	$newspost->preview_item($id);
 }
 
-if (IsSet($_POST['submit'])) {
+if (isset($_POST['submit'])) {
 	$newspost->submit_item($sub_action, $id);
 	$action = "main";
 	unset($sub_action, $id);
 }
 
-if (IsSet($_POST['create_category'])) {
+if (isset($_POST['create_category'])) {
 	if ($_POST['category_name']) {
 		if (empty($_POST['category_button'])) {
 			$handle = opendir(e_IMAGE."icons");
@@ -166,7 +166,7 @@ if (IsSet($_POST['create_category'])) {
 	}
 }
 
-if (IsSet($_POST['update_category'])) {
+if (isset($_POST['update_category'])) {
 	if ($_POST['category_name']) {
 		$category_button = ($_POST['category_button'] ? $_POST['category_button'] : "");
 		$_POST['category_name'] = $tp->toDB($_POST['category_name'], TRUE);
@@ -175,7 +175,7 @@ if (IsSet($_POST['update_category'])) {
 	}
 }
 
-if (IsSet($_POST['save_prefs'])) {
+if (isset($_POST['save_prefs'])) {
 	$pref['newsposts'] = $_POST['newsposts'];
 
 	// ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
@@ -265,7 +265,7 @@ class newspost {
 		global $sql, $rs, $ns, $tp;
 		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 300px; overflow : auto; margin-left: auto; margin-right: auto;'>";
 
-		if (IsSet($_POST['searchquery'])) {
+		if (isset($_POST['searchquery'])) {
 			$query = "news_title REGEXP('".$_POST['searchquery']."') OR news_body REGEXP('".$_POST['searchquery']."') OR news_extended REGEXP('".$_POST['searchquery']."') ORDER BY news_datestamp DESC";
 			} else {
 			$query = "ORDER BY ".($sub_action ? $sub_action : "news_datestamp")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
@@ -891,8 +891,6 @@ class newspost {
 		$_POST['comment_total'] = $comment_total;
 		$_PR = $_POST;
 
-		$_PR['data'] = str_replace($IMAGES_DIRECTORY,"../".$IMAGES_DIRECTORY,$_PR['data']);
-		$_PR['news_extended'] = str_replace($IMAGES_DIRECTORY,"../".$IMAGES_DIRECTORY,$_PR['news_extended']);
 		$_PR['news_title'] = $tp->post_toHTML($tp->spell_check($_PR['news_title']));
 		$_PR['news_summary'] = $tp->post_toHTML($_PR['news_summary']);
 		$_PR['data'] = $tp->post_toHTML($_PR['data'], FALSE);
@@ -903,7 +901,6 @@ class newspost {
 		$_PR['news_image'] = $_POST['news_image'];
 
 		$ix -> render_newsitem($_PR);
-		// echo $ix -> news_info();
 		echo $tp -> parseTemplate('{NEWSINFO}', FALSE, $news_shortcodes);
 	}
 
