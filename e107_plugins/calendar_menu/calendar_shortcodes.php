@@ -147,8 +147,12 @@ SC_END
 
 // CALENDAR CALENDAR ------------------------------------------------------------
 SC_BEGIN CALENDAR_CALENDAR_HEADER_DAY
-global $CALENDAR_CALENDAR_HEADER_DAY, $day, $pref;
-return "<strong>".substr($day,0,$pref['eventpost_lenday'])."</strong><img src='".THEME."images/blank.gif' alt='' height='12%' width='14%' />";
+global $CALENDAR_CALENDAR_HEADER_DAY, $day, $pref, $week;
+if(isset($pref['eventpost_lenday']) && $pref['eventpost_lenday']){
+	return "<strong>".substr($day,0,$pref['eventpost_lenday'])."</strong><img src='".THEME."images/blank.gif' alt='' height='12%' width='14%' />";
+}else{
+	return "<strong>".$day."</strong><img src='".THEME."images/blank.gif' alt='' height='12%' width='14%' />";
+}
 SC_END
 
 SC_BEGIN CALENDAR_CALENDAR_DAY_TODAY_HEADING
