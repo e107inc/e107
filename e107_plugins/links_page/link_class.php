@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.11 $
-|    $Date: 2005-07-13 09:51:41 $
+|    $Revision: 1.12 $
+|    $Date: 2005-07-14 13:30:26 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -138,41 +138,41 @@ class linkclass {
 
 		//show all categories
 		if(!isset($qs[0]) && $linkspage_pref['link_page_categories']){
-			$page = "Links / All categories";
+			$page = LCLAN_PAGETITLE_1." / ".LCLAN_PAGETITLE_2;
 		}
 		//show all categories
 		if(isset($qs[0]) && $qs[0] == "cat" && !isset($qs[1]) ){
-			$page = "Links / All categories";
+			$page = LCLAN_PAGETITLE_1." / ".LCLAN_PAGETITLE_2;
 		}
 		//show all links in all categories
 		if( (!isset($qs[0]) && !$linkspage_pref['link_page_categories']) || (isset($qs[0]) && $qs[0] == "all") ){
-			$page = "Links / All Links";
+			$page = LCLAN_PAGETITLE_1." / ".LCLAN_PAGETITLE_3;
 		}
 		//show all links in one categories
 		if(isset($qs[0]) && $qs[0] == "cat" && isset($qs[1]) && is_numeric($qs[1])){
 			$sql -> db_Select("links_page_cat", "link_category_name", "link_category_id='".$qs[1]."' ");
 			$row2 = $sql -> db_Fetch();
-			$page = "Links / category / ".$row2['link_category_name'];
+			$page = LCLAN_PAGETITLE_1." / ".LCLAN_PAGETITLE_4." / ".$row2['link_category_name'];
 		}
 		//view top rated
 		if(isset($qs[0]) && $qs[0] == "rated"){
-			$page = "Links / Top Rated";
+			$page = LCLAN_PAGETITLE_1." / ".LCLAN_PAGETITLE_5;
 		}
 		//view top refer
 		if(isset($qs[0]) && $qs[0] == "top"){
-			$page = "Links / Top Referrals";
+			$page = LCLAN_PAGETITLE_1." / ".LCLAN_PAGETITLE_6;
 		}
 		//personal link managers
 		if (isset($qs[0]) && $qs[0] == "manage"){
-			$page = "Links / Personal Link Manager";
+			$page = LCLAN_PAGETITLE_1." / ".LCLAN_PAGETITLE_7;
 		}
 		//comments on links
 		if (isset($qs[0]) && $qs[0] == "comment" && isset($qs[1]) && is_numeric($qs[1]) ){
-			$page = "Links / Link Comments";
+			$page = LCLAN_PAGETITLE_1." / ".LCLAN_PAGETITLE_8;
 		}
 		//submit link
 		if (isset($qs[0]) && $qs[0] == "submit" && check_class($linkspage_pref['link_submit_class'])) {
-			$page = "Links / Submit Link";
+			$page = LCLAN_PAGETITLE_1." / ".LCLAN_PAGETITLE_9;
 		}
 		//define("e_PAGETITLE", strtolower($page));
 		define("e_PAGETITLE", $page);
