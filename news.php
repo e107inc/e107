@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.71 $
-|     $Date: 2005-06-09 12:52:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.72 $
+|     $Date: 2005-07-14 20:00:25 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -394,7 +394,7 @@ if ($action != "item") {
 	}
 	$parms = $news_total.",".ITEMVIEW.",".$from.",".e_SELF.'?'."[FROM].".$action.(isset($sub_action) ? ".".$sub_action : "");
 	$nextprev = ($news_total > ITEMVIEW) ? LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}") : "";
-	echo ($nextprev ? "<div class='nextprev' style='text-align:center'>".$nextprev."</div>" : "");
+	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 }
 
 setNewsCache($cacheString);
