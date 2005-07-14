@@ -4,53 +4,53 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_menus.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:32:34 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-14 22:19:39 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("MENLAN_1", "Visible to all");
-define("MENLAN_2", "Visible to members only");
-define("MENLAN_3", "Visible to administrators only");
-define("MENLAN_4", "Only visible to:");
+define("MENLAN_1", "Matoma visiems");
+define("MENLAN_2", "Matoma tik nariams");
+define("MENLAN_3", "Matoma tik administratoriams");
+define("MENLAN_4", "Šį meniu matys:");
 // define("MENLAN_5", "class");
-define("MENLAN_6", "Save visibility options");
-define("MENLAN_7", "Configure visibility options for");
-define("MENLAN_8", "Visibility options updated");
-define("MENLAN_9", "New custom menu installed");
-define("MENLAN_10", "New menu installed");
-define("MENLAN_11", "Menu removed");
-define("MENLAN_12", "Activate: choose area");
-define("MENLAN_13", "Activate in Area");
-define("MENLAN_14", "Area");
-define("MENLAN_15", "Deactivate");
-define("MENLAN_16", "Configure");
-define("MENLAN_17", "Move Up");
-define("MENLAN_18", "Move Down");
-define("MENLAN_19", "Move to Area");
-define("MENLAN_20", "Visibility");
+define("MENLAN_6", "Išsaugoti matomumo nuostatas");
+define("MENLAN_7", "Matomumo nuostatų tvarkymas");
+define("MENLAN_8", "Matomumo nuostatos išsaugotos");
+define("MENLAN_9", "Įdiegtas naujas individualus meniu");
+define("MENLAN_10", "Įdiegtas naujas meniu");
+define("MENLAN_11", "Meniu išjungtas");
+define("MENLAN_12", "Aktyvuoti: pasirinkite sritį");
+define("MENLAN_13", "Aktyvuoti srityje Nr.");
+define("MENLAN_14", "Sritis");
+define("MENLAN_15", "Išjungti");
+define("MENLAN_16", "Konfigūruoti");
+define("MENLAN_17", "Perkelti aukščiau");
+define("MENLAN_18", "Perkelti žemiau");
+define("MENLAN_19", "Perkelti į sritį Nr.");
+define("MENLAN_20", "Matomumas");
 
 // define("MENLAN_21", "Visible to Guests only");
-define("MENLAN_22", "Inactive Menus");
+define("MENLAN_22", "Neaktyvūs meniu");
 
-define("MENLAN_23", "Move to bottom");
-define("MENLAN_24", "Move to top");
-define("MENLAN_25", "Function ...");
+define("MENLAN_23", "Perkelti į apačią");
+define("MENLAN_24", "Perkelti į viršų");
+define("MENLAN_25", "Parinktys ...");
 
-define("MENLAN_26", "This menu will only be <strong>SHOWN</strong> on the following pages");
-define("MENLAN_27", "This menu will only be <strong>HIDDEN</strong> on the following pages");
-define("MENLAN_28", "Enter one page per line, enter enough of the url to distinguish it properly");
+define("MENLAN_26", "Šis meniu bus <strong>RODOMAS</strong> tik žemiau išvardintuose puslapiuose");
+define("MENLAN_27", "Šis meniu bus <strong>PASLĖPTAS</strong> tik žemiau išvardintuose puslapiuose");
+define("MENLAN_28", "Įveskite puslapių adresus. Po vieną adresą į kiekvieną eilutę.");
 
-define("MENLAN_29", "Select Layout");
-define("MENLAN_30", "To see the menu areas and their positions for custom layouts, select the custom layout here:");
-define("MENLAN_31", "Default Layout");
-define("MENLAN_32", "Newsheader Layout");
-define("MENLAN_33", "Custom Layout");
-define("MENLAN_34", "Embedded");
-define("MENLAN_35", "Configure Menus");
-define("MENLAN_36", "Choose the menu(s) to activate");
-define("MENLAN_37", "then choose where to active them.");
-define("MENLAN_38", "Hold down CTRL to select multiple menus.");
+define("MENLAN_29", "Pasirinkite šabloną");
+define("MENLAN_30", "Meniu sritys ir jų poszicijos pasirinktiniuose šablonuose bus parodytos, jei pasirinksite atitinkamą paasirinktinį šabloną:");
+define("MENLAN_31", "Nustatytas šablonas");
+define("MENLAN_32", "Naujienų šablonas");
+define("MENLAN_33", "Pasirinktinis šablonas");
+define("MENLAN_34", "Įdėtas");
+define("MENLAN_35", "Meniu išdėstymo tvarkymas");
+define("MENLAN_36", "Pasirinkite meniu ir");
+define("MENLAN_37", "tuomet, pasirinkite kurioje srityje jį aktyvuoti.");
+define("MENLAN_38", "Laikykite nuspaudę CTRL mygtuką, jei norite pasirinkti daugiau nei vieną meniu.");
 
 
 ?>

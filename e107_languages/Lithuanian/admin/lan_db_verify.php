@@ -1,33 +1,33 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_db_verify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:32:34 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-14 22:19:39 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("DBLAN_1", "Unable to read the sql datafile<br /><br />Please ensure the file <b>core_sql.php</b> exists in the <b>/admin/sql</b> directory.");
-define("DBLAN_2", "Verifying all");
+define("DBLAN_1", "Negalima perskaityti sgl duomenų bylos<br /><br />Prašome patikrinti ar <b>core_sql.php</b> byla yra kataloge <b>/admin/sql</b>.");
+define("DBLAN_2", "Tikrinti viską");
 
-define("DBLAN_4", "Table");
-define("DBLAN_5", "Field");
-define("DBLAN_6", "Status");
-define("DBLAN_7", "Notes");
-define("DBLAN_8", "Mismatch");
-define("DBLAN_9", "Currently");
-define("DBLAN_10", "should be");
-define("DBLAN_11", "Field missing");
-define("DBLAN_12", "Extra Field!");
-define("DBLAN_13", "Table missing!");
-define("DBLAN_14", "Choose table(s) to validate");
-define("DBLAN_15", "Start Verify");
-define("DBLAN_16", "SQL Verification");
-define("DBLAN_17", "Back");
-define("DBLAN_18", "tables");
-define("DBLAN_19", "Attempt to Fix");
-define("DBLAN_20", "Attempting to fix tables");
-define("DBLAN_21", "Fix Selected Items");
+define("DBLAN_4", "Lentelė");
+define("DBLAN_5", "Laukelis");
+define("DBLAN_6", "Būsena");
+define("DBLAN_7", "Pastabos");
+define("DBLAN_8", "Neatitikimas");
+define("DBLAN_9", "Yra");
+define("DBLAN_10", "turi būti");
+define("DBLAN_11", "Trūksta laukelio");
+define("DBLAN_12", "Nereikalingas laukelis!");
+define("DBLAN_13", "Trūksta lentelės!");
+define("DBLAN_14", "Pasirinkite lenteles vientisumo patikrinimui");
+define("DBLAN_15", "Pradėti tikrinimą");
+define("DBLAN_16", "SQL duomenų bazės vientisumo patikrinimas");
+define("DBLAN_17", "Atgal");
+define("DBLAN_18", "lentelės");
+define("DBLAN_19", "Pabandyti ištaisyti");
+define("DBLAN_20", "Bandoma ištaisyti lenteles");
+define("DBLAN_21", "Ištaisyti pasirinktas lenteles");
 ?>

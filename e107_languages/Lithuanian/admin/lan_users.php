@@ -1,30 +1,30 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_users.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:32:34 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-14 22:19:39 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("USRLAN_1", "Options Saved.");
+define("USRLAN_1", "Nuostatos išsaugotos.");
 define("USRLAN_3", "now listed an Administrator - to set permissions please go to the");
-define("USRLAN_4", "Administrator page");
-define("USRLAN_5", "You cannot remove admin status of main site admin");
-define("USRLAN_6", "has had Administrator status removed.");
-define("USRLAN_7", "You cannot ban the main site administrator");
-define("USRLAN_8", "User banned.");
-define("USRLAN_9", "User unbanned.");
-define("USRLAN_10", "User deleted.");
-define("USRLAN_11", "Delete cancelled.");
-define("USRLAN_12", "You cannot delete the main site administrator.");
-define("USRLAN_13", "Please confirm you wish to delete this member");
+define("USRLAN_4", "Administratoriaus sritis");
+define("USRLAN_5", "Jūs negalite atimti administravimo teisę iš pagrindinio svetainės administratoriaus");
+define("USRLAN_6", "buvo atimtos administravimo teisės.");
+define("USRLAN_7", "Jūs negalite uždrausti lankytis svetainėje pagrindiniam svetainės administratoriui");
+define("USRLAN_8", "Nariui uždrausta lankytis svetainėje.");
+define("USRLAN_9", "Nariui vėl leista lankytis svetainėje.");
+define("USRLAN_10", "Narys pašalintas.");
+define("USRLAN_11", "Atšauktas pašalinimas.");
+define("USRLAN_12", "Jūs negalite pašalinti pagrindinio svetainės administratoriaus.");
+define("USRLAN_13", "Prašome patvirtinti šio nario pašalinimą");
 // define("USRLAN_14", "once deleted the record cannot be retrieved");
 // define("USRLAN_15", "Cancel");
-define("USRLAN_16", "Confirm Delete");
-define("USRLAN_17", "Confirm Delete User");
+define("USRLAN_16", "Nario pašalinimo patvirtinimas");
+define("USRLAN_17", "Patvirtinti pašalinimą");
 // define("USRLAN_18", "User activated.");
 // define("USRLAN_19", "Search");
 // define("USRLAN_20", "Order by");
@@ -37,100 +37,140 @@ define("USRLAN_17", "Confirm Delete User");
 // define("USRLAN_27", "Ascending");
 // define("USRLAN_28", "Sort");
 
-define("USRLAN_30", "Ban");
+define("USRLAN_30", "Uždrausti lankytis svetainėje");
 // define("USRLAN_31", "Ban -unactivated-");
-define("USRLAN_32", "Activate");
-define("USRLAN_33", "Unban");
-define("USRLAN_34", "Remove admin status");
-define("USRLAN_35", "Make admin");
-define("USRLAN_36", "Set Class");
+define("USRLAN_32", "Aktyvuoti");
+define("USRLAN_33", "Leisti svetainės lankymą");
+define("USRLAN_34", "Atimti administratoriaus teises");
+define("USRLAN_35", "Suteikti administratoriaus teises");
+define("USRLAN_36", "Įrašyti į narių grupę");
 
 // define("USRLAN_37", "Members");
 // define("USRLAN_38", "Search returned");
 // define("USRLAN_39", "result(s)");
 // define("USRLAN_40", "None defined");
 
-define("USRLAN_44", "Allow members to upload an avatar?");
+define("USRLAN_44", "Leisti nariams atsiųsti savo avatar'ą?");
 
-define("USRLAN_47", "Maximum avatar width (in pixels)");
-define("USRLAN_48", "default is 120");
-define("USRLAN_49", "Maximum avatar height (in pixels)");
-define("USRLAN_50", "default is 100");
-define("USRLAN_51", "Update Options");
-define("USRLAN_52", "Member Options");
-define("USRLAN_53", "Allow members to upload a photograph?");
-define("USRLAN_54", "Click here to delete all un-activated users");
-define("USRLAN_55", "Prune");
-define("USRLAN_56", "Deleted");
-define("USRLAN_57", "Deleting un-activated members ...");
-define("USRLAN_58", "file uploads are disabled in php.ini");
-define("USRLAN_59", "Quick add user");
-define("USRLAN_60", "Add user");
-define("USRLAN_61", "Display name");
-define("USRLAN_62", "Password");
-define("USRLAN_63", "Re-type Password");
-define("USRLAN_64", "Email Address");
-define("USRLAN_65", "That user name cannot be accepted as valid, please choose a different user name");
-define("USRLAN_66", "That user name already exists in the database, please choose a different user name");
-define("USRLAN_67", "The two passwords do not match");
-define("USRLAN_68", "You left required field(s) blank");
-define("USRLAN_69", "That doesn't appear to be a valid email address");
-define("USRLAN_70", "User created");
-define("USRLAN_71", "Users Front Page");
-define("USRLAN_72", "Quick Add User");
-define("USRLAN_73", "Prune Users");
+define("USRLAN_47", "Maksimalus avatar'o plotis (pikseliais)");
+define("USRLAN_48", "nustatytas plotis - 120");
+define("USRLAN_49", "Maksimalus avatar'o aukštis (pikseliais)");
+define("USRLAN_50", "nustatytas aukštis - 100");
+define("USRLAN_51", "Atnaujinti nario nuostatas");
+define("USRLAN_52", "Nario nuostatos");
+define("USRLAN_53", "Leisti nariams atsiųsti savo nuotrauką?");
+define("USRLAN_54", "Pašalinti neaktyvuotus narius");
+define("USRLAN_55", "Prisiregistravusių, tačiau savo sąskaitų neaktyvavusių narių pašalinimas");
+define("USRLAN_56", "Pašalinta");
+define("USRLAN_57", "Pašalinami neaktyvuoti nariai ...");
+define("USRLAN_58", "bylų atsiuntimas uždraustas php.ini byloje");
+define("USRLAN_59", "Greita naujo nario registracija");
+define("USRLAN_60", "Registruoti");
+define("USRLAN_61", "Vardas");
+define("USRLAN_62", "Slaptažodis");
+define("USRLAN_63", "Pakartoti slaptažodį");
+define("USRLAN_64", "E-pašto adresas");
+define("USRLAN_65", "Šis prisijungimo vardas negali būti pasirinktas, prašome pabandyti registruotis kitu vardu");
+define("USRLAN_66", "Šis prisijungimo vardas jau yra naudojamas, prašome pabandyti registruotis kitu vardu");
+define("USRLAN_67", "Nevienodi slaptažodžiai");
+define("USRLAN_68", "Jūs palikote būtinus laukelius tuščiais");
+define("USRLAN_69", "Neteisinga e-pašto adreso sintaksė");
+define("USRLAN_70", "Priregistruotas naujas narys");
+define("USRLAN_71", "Narių sąrašas");
+define("USRLAN_72", "Naujo nario registracija");
+define("USRLAN_73", "Narių pašalinimas");
 // define("USRLAN_75", "Options");
-define("USRLAN_76", "User Options");
-define("USRLAN_77", "Existing Users");
-define("USRLAN_78", "User Name");
-define("USRLAN_79", "Status");
+define("USRLAN_76", "Nario nuostatos");
+define("USRLAN_77", "Registruotų svetainės narių sąrašas");
+define("USRLAN_78", "Prisijungimo vardas");
+define("USRLAN_79", "Būsena");
 define("USRLAN_80", "Info");
 
 // define("USRLAN_82", "Are you sure you want to delete this user?");
-define("USRLAN_84", "There are");
-define("USRLAN_85", "users who haven't activated their account - click below to delete.");
-define("USRLAN_86", "User verified");
-define("USRLAN_87", "User settings updated");
-define("USRLAN_88", "User classes updated");
-define("USRLAN_89", "Go to page:");
-define("USRLAN_90", "Search/Refresh");
-define("USRLAN_91", "Class");
-define("USRLAN_92", "Invalid characters in username");
+define("USRLAN_84", "Narių, neaktyvavusių savo sąskaitų svetainėje, skaičius yra");
+define("USRLAN_85", ". Paspauskite mygtuką, esantį žemiau, jei norite pašalinti šiuos narius.");
+define("USRLAN_86", "Nario sąskaita aktyvuota");
+define("USRLAN_87", "Nario nuostatos atnaujintos");
+define("USRLAN_88", "Narių grupė atnaujinta");
+define("USRLAN_89", "Puslapiai:");
+define("USRLAN_90", "Ieškoti/Atnaujinti");
+define("USRLAN_91", "Grupė");
+define("USRLAN_92", "Prisijungimo vardas susideda iš nevartotinų simbolių");
 
-define("USRLAN_93", "Delete unverified users");
-define("USRLAN_94", "Delete signups if unverified after this amount of time - leave blank to not use this option");
-define("USRLAN_95", "minutes");
+define("USRLAN_93", "Pašalinti neaktyvuotus narius");
+define("USRLAN_94", "Automatiškai bus pašalinti nariai, kurie nespės aktyvuoti savo sąskaitų per nustatytą laiko tarpą. Jei šis laikas neribotas, laukelį palikite tuščią");
+define("USRLAN_95", "minučių");
 
 
-define("USRLAN_112", "Resend Email");
-define("USRLAN_113", "Registration details for");
+define("USRLAN_112", "Dar kartą siųsti e-paštą");
+define("USRLAN_113", "Registracijos detalės svetainėje");
 define("USRLAN_114", "Dear");
 define("USRLAN_115", "Thanks for your registration.");
 define("USRLAN_116", "Please confirm that you wish to resend a confirmation email to:");
 define("USRLAN_117", "Click the button below to test the following email:");
-define("USRLAN_118", "Test Email");
+define("USRLAN_118", "E-pašto adreso tikrinimas");
 
 define("USRLAN_120", "Set Classes");
-define("USRLAN_121", "Mailing");
+define("USRLAN_121", "Siunčiamas paštas");
 define("USRLAN_122", "Welcome to");
 define("USRLAN_123", "Your registration has been received and created.");
 define("USRLAN_124", "Your account is currently marked as being inactive, to activate your account please go to the following link");
-define("USRLAN_125", "From");
+define("USRLAN_125", "Nuo");
 
-define("USRLAN_126", "Allow users to rate users");
-define("USRLAN_127", "Allow comments in user profile");
+define("USRLAN_126", "Leisti vertinti narius");
+define("USRLAN_127", "Leisti komentuoti narių anketas");
 
-define("USRLAN_128", "Login name");
-define("USRLAN_129", "Edit Display Options");
+define("USRLAN_128", "Prisijungimo vardas");
 
-define("LAN_MAINADMIN","Main Admin");
-define("LAN_ADMIN","Admin");
-define("LAN_NOTVERIFIED","Not Verified");
-define("LAN_BANNED","Banned");
+define("LAN_MAINADMIN","Administratorius");
+define("LAN_ADMIN","Administratorius");
+define("LAN_NOTVERIFIED","Neaktyvuotas");
+define("LAN_BANNED","Uždraustas");
 
 
-define("USRLAN_130", "Enable online user tracking");
-define("USRLAN_131", "You must enable this option to use online user tracking options, like online.php, forum online info and online menus");
-define("USRLAN_132", "Enable");
+define("USRLAN_130", "Nario registrcijos žurnalo pildymas");
+define("USRLAN_131", "Jeigu norite sekti narių apsilankymus svetainėje, turite žurnalo pildymą įjungti");
+define("USRLAN_132", "Įjungti");
+
+define("USRLAN_133", "Priversti narius papildyti savo anketą");
+define("USRLAN_134", "Nariui prisijungus, bus atidaroma nario anketa kol nebus užpildyti būtini laukeliai.");
+
+define("DUSRLAN_1", "ID");
+define("DUSRLAN_2", "Vardas");
+define("DUSRLAN_3", "Prisijungimo vardas");
+define("DUSRLAN_4", "Custom Title");
+define("DUSRLAN_5", "Slaptažodis");
+define("DUSRLAN_6", "Sesijos");
+define("DUSRLAN_7", "E-pašto adresas");
+define("DUSRLAN_8", "www adresas");
+define("DUSRLAN_9", "ICQ");
+define("DUSRLAN_10", "AIM");
+define("DUSRLAN_11", "MSN");
+define("DUSRLAN_12", "Vieta");
+define("DUSRLAN_13", "Gimimo diena");
+define("DUSRLAN_14", "Parašas");
+define("DUSRLAN_15", "Paveiksliukas");
+define("DUSRLAN_16", "Laiko juosta");
+define("DUSRLAN_17", "Paslėptas e-pašto adresas");
+define("DUSRLAN_18", "Prisijungimo data");
+define("DUSRLAN_19", "Priešpaskutinis apsilankymas");
+define("DUSRLAN_20", "Paskutinis apsilankymas");
+define("DUSRLAN_21", "Paskutinė žinutė");
+define("DUSRLAN_22", "Pokalbių žinutės");
+define("DUSRLAN_23", "Komentarai");
+define("DUSRLAN_24", "Diskusijų žinutės");
+define("DUSRLAN_25", "IP");
+define("DUSRLAN_26", "Draudimai");
+define("DUSRLAN_27", "Nuostatos");
+define("DUSRLAN_28", "Naujas");
+define("DUSRLAN_29", "Viewed");
+define("DUSRLAN_30", "Apsilankymai");
+define("DUSRLAN_31", "Administratorius");
+define("DUSRLAN_32", "Tikras vardas");
+define("DUSRLAN_33", "Narių grupė");
+define("DUSRLAN_34", "Perms");
+define("DUSRLAN_35", "Nuotrauka");
+define("DUSRLAN_36", "Password Change");
+define("DUSRLAN_37", "XUP");
 
 ?>
