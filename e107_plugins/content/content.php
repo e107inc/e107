@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.78 $
-|		$Date: 2005-07-11 07:47:14 $
+|		$Revision: 1.79 $
+|		$Date: 2005-07-14 13:16:07 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -866,24 +866,32 @@ function show_content_author_all(){
 			SELECT DISTINCT(p.content_author), p.content_heading, p.content_datestamp, p.content_id, u.user_id, u.user_name, u.user_email, SUBSTRING_INDEX(p.content_author, '^', 0) AS user_name2, COUNT(i.content_id) as amount 
 			FROM #$plugintable AS p
 			LEFT JOIN #$plugintable AS i ON i.content_author = p.content_author  
-			LEFT JOIN #user AS u ON (u.user_id = p.content_author || SUBSTRING_INDEX(p.content_author, '^', 1) REGEXP 'u.user_name') 
+			LEFT JOIN #user AS u ON (u.user_id = p.content_author || p.content_author = u.user_name || SUBSTRING_INDEX(p.content_author, '^', 1) REGEXP 'u.user_name') 
 			WHERE p.content_refer !='sa' AND ".$qry." ".$dateqry." AND p.content_class REGEXP '".e_CLASS_REGEXP."' AND i.content_class REGEXP '".e_CLASS_REGEXP."'
-			GROUP BY i.content_datestamp
-			ORDER BY p.content_datestamp ASC, SUBSTRING_INDEX(p.content_author, '^', 0)
+			GROUP BY i.content_id
+			ORDER BY p.content_datestamp ASC, p.content_author
 			";
 
 			$author = array();
 			$options = "";
 			if ($sql1->db_Select_gen($qry)){
-				while($row = $sql1 -> db_Fetch()){
-					if(strpos($row['content_author'], "^")){
-						$tmp = explode("^", $row['content_author']);
-						$row['content_author'] = $tmp[0];
-					}
+				while($row1 = $sql1 -> db_Fetch()){
+					$row = $row1;
+					
 					if(is_numeric($row['content_author'])){
 						$name = ($row['user_name'] ? $row['user_name'] : CONTENT_LAN_29);
 					}else{
-						$name = ($row['content_author'] ? $row['content_author'] : CONTENT_LAN_29);
+						if(strpos($row['content_author'], "^")){
+							$tmp = explode("^", $row['content_author']);
+							if(is_numeric($tmp[0])){
+								$name = $tmp[1];
+							}else{
+								$name = $tmp[0];
+							}
+						}else{
+							$name = $row['content_author'];
+						}
+						$name = ($name ? $name : CONTENT_LAN_29);
 					}
 					if(is_array($author)){
 						if(!in_array($name, $author)){
@@ -1410,6 +1418,7 @@ function show_content_item(){
 						}else{
 							$showrate = FALSE;
 						}
+						$width = 0;
 						$cobj->compose_comment($plugintable, "comment", $qs[1], $width, $row['content_heading'], $showrate);
 
 						if($pref['cachestatus']){

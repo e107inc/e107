@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.35 $
-|		$Date: 2005-07-12 11:39:01 $
+|		$Revision: 1.36 $
+|		$Date: 2005-07-14 13:16:08 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -114,13 +114,32 @@ class contentdb{
 			$_POST['content_meta']			= $tp -> toDB($_POST['content_meta']);
 
 			if(USER){
-				if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) ){
-					$author = USERID."^".$_POST['content_author_name']."^".$_POST['content_author_email'];
+				if($_POST['content_author_id']){
+					if(!($_POST['content_author_id'] == USERID && $_POST['content_author_name'] == USERNAME && $_POST['content_author_email'] == USEREMAIL) ){
+						
+						$author = $_POST['content_author_id'];
+						
+						if($_POST['content_author_name'] != CONTENT_ADMIN_ITEM_LAN_14){
+							$author .= "^".$_POST['content_author_name'];
+						}
+						if($_POST['content_author_email'] != CONTENT_ADMIN_ITEM_LAN_15){
+							$author .= "^".$_POST['content_author_email'];
+						}
+						
+					}else{
+						$author = $_POST['content_author_id'];
+					}
 				}else{
-					$author = USERID;
+					$author = $_POST['content_author_name'];
+					if($_POST['content_author_email'] != "" && $_POST['content_author_email'] != CONTENT_ADMIN_ITEM_LAN_15){
+						$author .= "^".$_POST['content_author_email'];
+					}
 				}
 			}else{
-				$author = $_POST['content_author_name']."^".$_POST['content_author_email'];
+				$author = $_POST['content_author_name'];
+				if($_POST['content_author_email'] != "" && $_POST['content_author_email'] != CONTENT_ADMIN_ITEM_LAN_15){
+					$author .= "^".$_POST['content_author_email'];
+				}
 			}
 
 			$mainparent						= $aa -> getMainParent($_POST['parent']);
@@ -142,7 +161,7 @@ class contentdb{
 			//move icon to correct folder
 			if($_POST['content_icon']){
 				$icon = $_POST['content_icon'];							
-				if(file_exists($content_tmppath_icon.$icon)){
+				if($icon && file_exists($content_tmppath_icon.$icon)){
 					rename($content_tmppath_icon.$icon, $content_icon_path.$icon);
 				}
 			}
