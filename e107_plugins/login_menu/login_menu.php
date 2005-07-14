@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-07-14 20:10:11 $
+|     $Revision: 1.36 $
+|     $Date: 2005-07-14 20:16:18 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -51,8 +51,6 @@ if (USER == TRUE || ADMIN == TRUE) {
 	$new_total = 0;
 	$time = USERLV;
 
-	//first check if the list plugin is installed
-	if($list_install = $sql -> db_Select("plugin", "*", "plugin_path = 'list_new' AND plugin_installflag = '1' ")){
 		// ------------ News Stats -----------
 
 		if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_news'] == true) {
@@ -169,7 +167,6 @@ if (USER == TRUE || ADMIN == TRUE) {
 			}
 		}
 
-	}
 	if (file_exists(THEME.'images/login_menu.png')) {
 		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5.' '.USERNAME;
 	} else {
