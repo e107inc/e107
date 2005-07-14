@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2005-06-26 21:58:18 $
-|     $Author: e107coders $
+|     $Revision: 1.60 $
+|     $Date: 2005-07-14 06:51:39 $
+|     $Author: streaky $
 +---------------------------------------------------------------+
 */
 
@@ -186,7 +186,7 @@ class sitelinks
 
 			// Only add the e_BASE if it actually has an URL.
 			if (!preg_match('#(http:|mailto:|ftp:)#', $linkInfo['link_url'])) {
-				$linkInfo['link_url'] = e_BASE.$linkInfo['link_url'];
+				$linkInfo['link_url'] = e_HTTP.$linkInfo['link_url'];
 			}
 
 			// Only check if its highlighted if it has an URL
@@ -211,7 +211,7 @@ class sitelinks
 		// Remove default images if its a button and add new image at the start.
 		if ($linkInfo['link_button']){
 			$linkstart = preg_replace('/\<img.*\>/si', '', $linkstart);
-			$linkstart .= "<img src='".e_IMAGE."icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />";
+			$linkstart .= "<img src='".e_IMAGE_ABS."icons/".$linkInfo['link_button']."' alt='' style='vertical-align:middle' />";
 		}
 
 		// If its a link.. make a link
