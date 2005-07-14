@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2005-07-10 15:44:24 $
+|     $Revision: 1.55 $
+|     $Date: 2005-07-14 15:11:02 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -399,11 +399,13 @@ if (isset($_POST['register']))
 		else
 		{
 			require_once(HEADERF);
-			$nid = $sql->db_Insert("user", "0, '$username', '$loginname', '', '".md5($_POST['password1'])."', '', '".$_POST['email']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '', '".$_POST['xupexist']."' ");
-			if(!$nid)
+			$sql->db_Insert("user", "0, '$username', '$loginname', '', '".md5($_POST['password1'])."', '', '".$_POST['email']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '', '".$_POST['xupexist']."' ");
+
+			if(!$sql -> db_Select("user", "user_id", "user_name='$username' AND user_password='".md5($_POST['password1'])."' "))
 			{
-				$ns->tablerender("", LAN_SIGNUP_26);
+				$ns->tablerender("", LAN_SIGNUP_36);
 				require_once(FOOTERF);
+				exit;
 			}
 
 // ==== Update Userclass =======
