@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-07-14 21:32:12 $
+|     $Revision: 1.27 $
+|     $Date: 2005-07-14 22:09:37 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -48,6 +48,11 @@ if(e_QUERY){
 		$from = "0";
 	}
 }
+if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php")) {
+	include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
+	} else {
+	include_once(e_PLUGIN."links_page/languages/English.php");
+}
 $lc -> setPageTitle();
 
 //submit comment
@@ -79,11 +84,7 @@ if (isset($qs[0]) && $qs[0] == "view" && isset($qs[1]) && is_numeric($qs[1]))
 
 require_once(HEADERF);
 
-if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php")) {
-	include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");
-	} else {
-	include_once(e_PLUGIN."links_page/languages/English.php");
-}
+
 if (is_readable(THEME."links_template.php")) {
 	require_once(THEME."links_template.php");
 	} else {
