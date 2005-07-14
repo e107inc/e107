@@ -11,17 +11,19 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2005-07-07 06:37:32 $
-|		$Author: lisa_ $
+|		$Revision: 1.7 $
+|		$Date: 2005-07-14 15:00:13 $
+|		$Author: stevedunstan $
 +---------------------------------------------------------------+
 */
 
 require_once("../../class2.php");
 
-//if(!getperms("P")){header("location:".e_BASE."index.php"); exit; }
 if(!$sql -> db_Select("plugin", "*", "plugin_path = 'list_new' AND plugin_installflag = '1' ")){
-	header("location:".e_BASE."index.php"); exit;
+	require_once(HEADERF);
+	$ns -> tablerender("", LIST_23);
+	require_once(FOOTERF);
+	exit;
 }
 $listplugindir = e_PLUGIN."list_new/";
 require_once($listplugindir."list_shortcodes.php");
