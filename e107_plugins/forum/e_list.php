@@ -42,20 +42,27 @@
 		foreach($forumArray as $forumInfo) {
 			extract($forumInfo);
 
-			/*
+			
+			//last user
 			$r_id = substr($thread_lastuser, 0, strpos($thread_lastuser, "."));
 			$r_name = substr($thread_lastuser, (strpos($thread_lastuser, ".")+1));
 			if (strstr($thread_lastuser, chr(1))) {
 				$tmp = explode(chr(1), $thread_lastuser);
 				$r_name = $tmp[0];
 			}
+			$thread_lastuser = $r_id;
+
+			//user
+			$u_id = substr($thread_user, 0, strpos($thread_user, "."));
+			$u_name = substr($thread_user, (strpos($thread_user, ".")+1));
+			$thread_user = $u_id;
 
 			if ($thread_anon) {
 				$tmp = explode(chr(1), $thread_anon);
 				$thread_user = $tmp[0];
 				$thread_user_ip = $tmp[1];
 			}
-			*/
+			
 			$gen = new convert;
 			$r_datestamp = $gen->convert_date($thread_lastpost, "forum");
 			if($thread_total_replies)
