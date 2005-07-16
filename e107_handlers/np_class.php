@@ -11,29 +11,34 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/np_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-07-06 13:48:39 $
-|     $Author: lisa_ $
+|     $Revision: 1.6 $
+|     $Date: 2005-07-16 10:47:37 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_np.php");
 @include_once(e_LANGUAGEDIR."English/lan_np.php");
 
+/**
+ * Next / Previous handling class
+ *
+ */
 class nextprev {
-	function nextprev($url, $from, $view, $total, $td, $qs = "") {
-		/*
-		# Next previous pages
-		# - parameter #1:                string $url, refer url
-		# - parameter #2:                int $from, start figure
-		# - parameter #3:                int $view, items per page
-		# - parameter #4:                int $total, total items
-		# - parameter #5:                string $td, comfort text
-		# - parameter #6:                string $qs, QUERY_STRIING, default null
-		# - return                                null
-		# - scope                                        public
-		*/
-
+	
+	/**
+	 * Generate next / previous pages and appropriate links (
+	 *
+	 * @param string $url, refer url
+	 * @param int $from, start figure
+	 * @param int $view, items per page
+	 * @param int $total, total items
+	 * @param string $td, comfort text
+	 * @param string $qs, QUERY_STRING, default null
+	 * @param bool $return, Output onto page or return the links
+	 * @return nextprev string
+	 */
+	function nextprev($url, $from, $view, $total, $td, $qs = "", $return = false) {
 		if ($total > $view) {
 			$a = $total / $view;
 			$r = explode(".", $a);
@@ -81,51 +86,14 @@ class nextprev {
 				}
 			}
 			$text = "<div style='text-align:right'><div class='nextprev'><span class='smalltext'>{$nppage}</span></div></div>\n<br /><br />\n";
-			echo $text;
+			if($return == true){
+				return $text;
+			} else {
+				echo $text;
+				return null;
+			}
 		}
-
 	}
 }
-
-
-
-/*		if ($total == 0){
-			return;
-		}
-		$ns = new e107table;
-		echo "<table style='width:100%'>\n<tr>\n";
-		if ($from > 1){
-			$s = $from-$view;
-			echo "<td style='width:33%' class='nextprev'>";
-			if ($qs){
-				$text = "<div style='text-align:left'><span class='smalltext'><a href='{$url}?{$s}.{$qs}'>".NP_1."</a></span></div>";
-			}else{
-				$text = "<div style='text-align:left'><span class='smalltext'><a href='{$url}?{$s}'>".NP_1."</a></span></div>";
-			}
-			echo $text;
-		} else {
-			echo "<td style='width:33%'>&nbsp;";
-		}
-
-		echo "</td>\n<td style='width:34%' class='nextprev'>\n";
-		$start = $from + 1;
-		$finish = $from + $view;
-		if ($finish>$total){ $finish = $total; }
-		$text = "<div style='text-align:center'><span class='smalltext'>{$td} {$start} - {$finish} of {$total}</span></div>";
-		echo $text;
-
-		$s = $from+$view;
-		if ($s < $total){
-			echo "</td><td style='width:33%' class='nextprev'>";
-			if ($qs != ""){
-				$text = "<div style='text-align:right'><span class='smalltext'><a href='{$url}?{$s}.{$qs}'>".NP_2."</a></span></div></td>";
-			}else{
-				$text = "<div style='text-align:right'><span class='smalltext'><a href='{$url}?{$s}'>".NP_2."</a></span></div></td>";
-			}
-			echo $text;
-		}else{
-			echo "</td><td style='width:33%'>&nbsp;</td>";
-		}
-		echo "</tr>\n</table>";*/
 
 ?>
