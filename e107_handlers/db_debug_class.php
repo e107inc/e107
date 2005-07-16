@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-04-11 22:59:10 $
+|     $Revision: 1.10 $
+|     $Date: 2005-07-16 10:32:46 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -267,7 +267,6 @@ class e107_db_debug {
 			$aThisT=$tMarker['Time'];
 
 			$thisDelta=$eTraffic->TimeDelta($aThisT, $aNextT);
-			$thisWhat=$tMarker['What'];
 			$aSum['Time'] += $thisDelta;
 			$aSum['DB Time'] += $tMarker['DB Time'];
 			$aSum['DB Count'] += $tMarker['DB Count'];
@@ -330,19 +329,19 @@ class e107_db_debug {
 
 		return $text;
 	}
-	
+
 	function aDeprecatiated(){
-		
+
 		$back_trace = debug_backtrace();
-		
+
 		print_r($back_trace);
-		
+
 		$this->depreciated_funcs[] =	array (
-													'func'	=> ($back_trace[1]['type'] == '::' || $back_trace[1]['type'] == '->' ? $back_trace[1]['class'].$back_trace[1]['type'].$back_trace[1]['function'] : $back_trace[1]['function']),
-													'file'	=> $back_trace[1]['file'],
-													'line'	=> $back_trace[1]['line']
-												);
-		
+		'func'	=> ($back_trace[1]['type'] == '::' || $back_trace[1]['type'] == '->' ? $back_trace[1]['class'].$back_trace[1]['type'].$back_trace[1]['function'] : $back_trace[1]['function']),
+		'file'	=> $back_trace[1]['file'],
+		'line'	=> $back_trace[1]['line']
+		);
+
 	}
 
 	function logCode($type, $code, $parm, $postID)
@@ -419,7 +418,7 @@ class e107_db_debug {
 		if (!E107_DBG_DEPRECIATED){
 			return FALSE;
 		} else {
-		$text .= "<table class='fborder' style='width: 100%'>
+			$text .= "<table class='fborder' style='width: 100%'>
 			<tr><td class='fcaption' colspan='4'><b>The following depreciated functions were used:</b></td></tr>
 			<tr>
 			<td class='fcaption' style='width: 10%;'>Function</td>
@@ -427,16 +426,15 @@ class e107_db_debug {
 			<td class='fcaption' style='width: 10%;'>Line</td>
 			</tr>\n";
 
-		foreach($this->depreciated_funcs as $funcs)
-		{
-			$text .= "<tr>
+			foreach($this->depreciated_funcs as $funcs)
+			{
+				$text .= "<tr>
 				<td class='forumheader3' style='width: 10%;'>{$funcs['func']}()</td>
 				<td class='forumheader3' style='width: 10%;'>{$funcs['file']}</td>
 				<td class='forumheader3' style='width: 10%;'>{$funcs['line']}</td>
 				</tr>\n";
-		}
-		$text .= "</table>";
-		return $text;
+			}
+			$text .= "</table>";
 			return $text;
 		}
 	}
