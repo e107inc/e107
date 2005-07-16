@@ -1,5 +1,23 @@
 <?php
 
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_handlers/arraystorage_class.php,v $
+|     $Revision: 1.11 $
+|     $Date: 2005-07-16 10:27:35 $
+|     $Author: streaky $
++----------------------------------------------------------------------------+
+*/
+
 /**
 * Allows Storage of arrays without use of serialize functions
 *
@@ -13,7 +31,7 @@ class ArrayData {
 	* @param bool $AddSlashes default true, add slashes for db storage, else false
 	* @return string
 	*/
-	function WriteArray(&$ArrayData, $AddSlashes = true) {
+	function WriteArray($ArrayData, $AddSlashes = true) {
 		if (!is_array($ArrayData)) {
 			return false;
 		}
@@ -30,10 +48,11 @@ class ArrayData {
 	* @param string $ArrayData
 	* @return array stored data
 	*/
-	function ReadArray(&$ArrayData) {
+	function ReadArray($ArrayData) {
 		if ($ArrayData == ""){
 			return false;
 		}
+		$data = "";
 		$ArrayData = '$data = '.trim($ArrayData).';';
 		@eval($ArrayData);
 		if (!isset($data) || !is_array($data)) {
