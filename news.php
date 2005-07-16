@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2005-07-14 20:00:25 $
-|     $Author: lisa_ $
+|     $Revision: 1.73 $
+|     $Date: 2005-07-16 10:28:02 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -262,7 +262,7 @@ else
 	// #### END ---------------------------------------------------------------------------------------------------
 }
 
-checkNewsCache($cacheString, TRUE, TRUE);
+checkNewsCache($cacheString, TRUE);
 if (!$sql->db_Select_gen($query))
 {
 	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
@@ -440,7 +440,7 @@ function setNewsCache($cacheString) {
 	ob_end_flush();
 }
 
-function checkNewsCache($cacheString, $np = FALSE, $nfp = FALSE) {
+function checkNewsCache($cacheString, $nfp = FALSE) {
 	global $pref, $e107cache, $tp;
 	$cache_data = $e107cache->retrieve($cacheString);
 	if ($cache_data) {
