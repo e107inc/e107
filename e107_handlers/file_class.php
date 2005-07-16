@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/file_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-04-28 22:48:13 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2005-07-16 10:36:10 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 class e_file {
-	function get_files($path, $fmask = '', $omit='standard', $recurse_level = 0, $current_level = 0, $dirs_only = FALSE) {
+	function get_files($path, $fmask = '', $omit='standard', $recurse_level = 0, $current_level = 0) {
 		$ret = array();
 		if($recurse_level != 0 && $current_level > $recurse_level) {
 			return $ret;
