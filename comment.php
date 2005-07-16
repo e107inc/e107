@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-07-01 13:48:37 $
+|     $Revision: 1.42 $
+|     $Date: 2005-07-16 09:49:23 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -221,7 +221,7 @@ if ($action == "reply") {
 			} else {
 				$news = $sql->db_Fetch();
 				$subject = $tp->toHTML($news['news_title']);
-				define(e_PAGETITLE, LAN_100." / ".LAN_99." / {$subject}");
+				define("e_PAGETITLE", LAN_100." / ".LAN_99." / {$subject}");
 				require_once(HEADERF);
 				ob_start();
 				$ix = new news;
