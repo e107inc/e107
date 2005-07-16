@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.195 $
-|     $Date: 2005-07-16 07:53:03 $
+|     $Revision: 1.196 $
+|     $Date: 2005-07-16 10:11:57 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -968,71 +968,66 @@ function init_session() {
 		if (empty($uid) || empty($upw)) // corrupt cookie?
 		{
 			cookie($pref['cookie_name'], "", (time() - 2592000));
-			$_SESSION[$pref['cookie_name']]="";
+			$_SESSION[$pref['cookie_name']] = "";
 			session_destroy();
 			define("ADMIN", FALSE);
 			define("USER", FALSE);
 			define("USERCLASS", "");
 			define("LOGINMESSAGE", "Corrupted cookie detected - logged out.<br /><br />");
 			return (FALSE);
-		}
-		if(array_key_exists('ue_upgrade', $pref))
-		{
+		} if(array_key_exists('ue_upgrade', $pref)) {
 			$qry = "
 			SELECT u.*, ue.* FROM #user AS u
 			LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
 			WHERE u.user_id='{$uid}' AND md5(u.user_password)='{$upw}'
 			";
-		}
-		else
-		{
+		} else {
 			$qry = "SELECT * FROM #user AS u WHERE u.user_id='{$uid}' AND md5(u.user_password)='{$upw}'";
 		}
-		if ($sql->db_Select_gen($qry))
-		{
+		if ($sql->db_Select_gen($qry)) {
 			$result=$sql->db_Fetch();
 			$currentUser = $result;
-			extract($result);
+			//extract($result); // removed in preference of the $result array
 
-			define("USERID", $user_id);
-			define("USERNAME", $user_name);
-			define("USERURL", $user_homepage);
-			define("USEREMAIL", $user_email);
+			define("USERID", $result['user_id']);
+			define("USERNAME", $result['user_name']);
+			define("USERURL", $result['user_homepage']);
+			define("USEREMAIL", $result['user_email']);
 			define("USER", TRUE);
-			define("USERCLASS", $user_class);
-			define("USERREALM", $user_realm);
-			define("USERVIEWED", $user_viewed);
-			define("USERIMAGE", $user_image);
-			define("USERSESS", $user_sess);
+			define("USERCLASS", $result['user_class']);
+			define("USERREALM", $result['user_realm']);
+			define("USERVIEWED", $result['user_viewed']);
+			define("USERIMAGE", $result['user_image']);
+			define("USERSESS", $result['user_sess']);
 
-			if ($user_currentvisit + 3600 < time()) {
-				$user_lastvisit=$user_currentvisit;
-				$user_currentvisit=time();
-				$sql->db_Update("user", "user_visits=user_visits+1, user_lastvisit='$user_lastvisit', user_currentvisit='$user_currentvisit', user_viewed='' WHERE user_name='".USERNAME."' ");
+			if ($result['user_currentvisit'] + 3600 < time()) {
+				$result['user_lastvisit'] = $result['user_currentvisit'];
+				$result['user_currentvisit'] = time();
+				$sql->db_Update("user", "user_visits = user_visits + 1, user_lastvisit = '{$result['user_lastvisit']}', user_currentvisit = '{$result['user_currentvisit']}', user_viewed = '' WHERE user_name='".USERNAME."' ");
 			}
 
-			define("USERLV", $user_lastvisit);
+			define("USERLV", $result['user_lastvisit']);
 
-			if ($user_ban == 1) {
+			if ($result['user_ban'] == 1) {
 				exit;
 			}
 
-			$user_pref=unserialize($user_prefs);
+			$user_pref = unserialize($result['user_prefs']);
 
 			if (isset($_POST['settheme'])) {
-				$user_pref['sitetheme']=($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
+				$user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
 				save_prefs($user);
 			}
 
 			define("USERTHEME", ($user_pref['sitetheme'] && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : FALSE));
 			global $ADMIN_DIRECTORY, $PLUGINS_DIRECTORY;
-			if ($user_admin) {
+			if ($result['user_admin']) {
 				define("ADMIN", TRUE);
-				define("ADMINID", $user_id);
-				define("ADMINNAME", $user_name);
-				define("ADMINPERMS", $user_perms);
-				define("ADMINEMAIL", $user_email);
-				define("ADMINPWCHANGE", $user_pwchange);
+				define("ADMINID", $result['user_id']);
+				define("ADMINNAME", $result['user_name']);
+				define("ADMINPERMS", $result['user_perms']);
+				define("ADMINEMAIL", $result['user_email']);
+				define("ADMINPWCHANGE", $result['user_pwchange']);
 			} else {
 				define("ADMIN", FALSE);
 			}
