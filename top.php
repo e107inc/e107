@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/top.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-14 16:58:12 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-07-16 09:58:27 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -45,10 +45,7 @@ if ($action == "active") {
 			LEFT JOIN #user AS u ON t.thread_user = u.user_id
 			WHERE  t.thread_parent = 0
 			ORDER BY t.thread_views DESC 
-			LIMIT $from, $view";
-
-		
-
+			LIMIT {$from}, {$view}";
 
 	if ($sql->db_Select_gen($query)) {
 		$text = "<div style='text-align:center'>\n<table style='width:auto' class='fborder'>\n";
@@ -71,29 +68,29 @@ if ($action == "active") {
 
 				if($user_name)
 				{
-					$POSTER = "<a href='".e_BASE."user.php?id.$thread_user'>$user_name</a>";
+					$POSTER = "<a href='".e_HTTP."user.php?id.{$thread_user}'>{$user_name}</a>";
 				} else {
 					list($anonposter, $ipaddress) = explode(chr(1), $thread_anon);
 					$POSTER = $anonposter;
 				}
 
-				$LINKTOTHREAD = e_PLUGIN."forum/forum_viewtopic.php?".$thread_id;
-				$LINKTOFORUM = e_PLUGIN."forum/forum_viewforum.php?".$thread_forum_id;
+				$LINKTOTHREAD = e_PLUGIN_ABS."forum/forum_viewtopic.php?".$thread_id;
+				$LINKTOFORUM = e_PLUGIN_ABS."forum/forum_viewforum.php?".$thread_forum_id;
 				$lastpost_datestamp = $gen->convert_date($thread_lastpost, "forum");
 				list($lastpost_id, $lastpost_name) = explode('.', $thread_lastuser, 2);
 				if (!$lastpost_id) {
 					$LASTPOST = $lastpost_name.'<br />'.$lastpost_datestamp;
 				} else {
-					$LASTPOST = "<a href='".e_BASE."user.php?id.".$lastpost_id."'>".$lastpost_name."</a><br />".$lastpost_datestamp;
+					$LASTPOST = "<a href='".e_HTTP."user.php?id.".$lastpost_id."'>".$lastpost_name."</a><br />".$lastpost_datestamp;
 				}
 
 				$text .= "<tr>
-					<td style='width:5%; text-align:center' class='forumheader3'><img src='".e_IMAGE."forum/new_small.png' alt='' /></td>
-					<td style='width:45%' class='forumheader3'><b><a href='$LINKTOTHREAD'>$thread_name</a></b> <span class='smalltext'>(<a href='$LINKTOFORUM'>$forum_name</a>)</span></td>
-					<td style='width:15%; text-align:center' class='forumheader3'>$POSTER</td>
-					<td style='width:5%; text-align:center' class='forumheader3'>$thread_views</td>
-					<td style='width:5%; text-align:center' class='forumheader3'>$thread_total_replies</td>
-					<td style='width:25%; text-align:center' class='forumheader3'>$LASTPOST</td>
+					<td style='width:5%; text-align:center' class='forumheader3'><img src='".e_IMAGE_ABS."forum/new_small.png' alt='' /></td>
+					<td style='width:45%' class='forumheader3'><b><a href='{$LINKTOTHREAD}'>{$thread_name}</a></b> <span class='smalltext'>(<a href='{$LINKTOFORUM}'>{$forum_name}</a>)</span></td>
+					<td style='width:15%; text-align:center' class='forumheader3'>{$POSTER}</td>
+					<td style='width:5%; text-align:center' class='forumheader3'>{$thread_views}</td>
+					<td style='width:5%; text-align:center' class='forumheader3'>{$thread_total_replies}</td>
+					<td style='width:25%; text-align:center' class='forumheader3'>{$LASTPOST}</td>
 					</tr>\n";
 			}
 		}
@@ -108,9 +105,9 @@ if ($action == "active") {
 }
 if ($action == "top") {
 	require_once(e_HANDLER."level_handler.php");
-	define("IMAGE_rank_main_admin_image", ($pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_PLUGIN."forum/images/".IMODE."/main_admin.png' alt='' />"));
-	define("IMAGE_rank_admin_image", ($pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_PLUGIN."forum/images/".IMODE."/admin.png' alt='' />"));
-	define("IMAGE_rank_moderator_image", ($pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_PLUGIN."forum/images/".IMODE."/moderator.png' alt='' />"));
+	define("IMAGE_rank_main_admin_image", ($pref['rank_main_admin_image'] && file_exists(THEME."forum/".$pref['rank_main_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_main_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/main_admin.png' alt='' />"));
+	define("IMAGE_rank_admin_image", ($pref['rank_admin_image'] && file_exists(THEME."forum/".$pref['rank_admin_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_admin_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/admin.png' alt='' />"));
+	define("IMAGE_rank_moderator_image", ($pref['rank_moderator_image'] && file_exists(THEME."forum/".$pref['rank_moderator_image']) ? "<img src='".THEME_ABS."forum/".$pref['rank_moderator_image']."' alt='' />" : "<img src='".e_PLUGIN_ABS."forum/images/".IMODE."/moderator.png' alt='' />"));
 	 
 	if ($subaction == "forum" || $subaction == "all") {
 		$top_forum_posters = $sql->db_Select("user", "*", "ORDER BY user_forums DESC LIMIT ".$from.", ".$view."", "no_where");
@@ -128,9 +125,9 @@ if ($action == "top") {
 			extract($row);
 			$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
 			$text .= "<tr>
-				<td style='width:10%; text-align:center' class='forumheader3'>$counter</td>
-				<td style='width:50%' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id'>$user_name</a></td>
-				<td style='width:10%; text-align:center' class='forumheader3'>$user_forums</td>
+				<td style='width:10%; text-align:center' class='forumheader3'>{$counter}</td>
+				<td style='width:50%' class='forumheader3'><a href='".e_HTTP."user.php?id.{$user_id}'>{$user_name}</a></td>
+				<td style='width:10%; text-align:center' class='forumheader3'>{$user_forums}</td>
 				<td style='width:30%; text-align:center' class='forumheader3'>".(strstr($ldata[0], "LAN") ? $ldata[1] : $ldata[0])."</td>
 				</tr>";
 			$counter++;
@@ -161,9 +158,9 @@ if ($action == "top") {
 			extract($row);
 			$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
 			$text .= "<tr>
-				<td style='width:10%; text-align:center' class='forumheader3'>$counter</td>
-				<td style='width:50%' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id'>$user_name</a></td>
-				<td style='width:10%; text-align:center' class='forumheader3'>$user_comments</td>
+				<td style='width:10%; text-align:center' class='forumheader3'>{$counter}</td>
+				<td style='width:50%' class='forumheader3'><a href='".e_HTTP."user.php?id.{$user_id}'>{$user_name}</a></td>
+				<td style='width:10%; text-align:center' class='forumheader3'>{$user_comments}</td>
 				<td style='width:30%; text-align:center' class='forumheader3'>".(strstr($ldata[0], "LAN") ? $ldata[1] : $ldata[0])."</td>
 				</tr>";
 			$counter++;
@@ -188,9 +185,9 @@ if ($action == "top") {
 			extract($row);
 			$ldata = get_level($user_id, $user_forums, $user_comments, $user_chats, $user_visits, $user_join, $user_admin, $user_perms, $pref);
 			$text .= "<tr>
-				<td style='width:10%; text-align:center' class='forumheader3'>$counter</td>
-				<td style='width:50%' class='forumheader3'><a href='".e_BASE."user.php?id.$user_id'>$user_name</a></td>
-				<td style='width:10%; text-align:center' class='forumheader3'>$user_chats</td>
+				<td style='width:10%; text-align:center' class='forumheader3'>{$counter}</td>
+				<td style='width:50%' class='forumheader3'><a href='".e_HTTP."user.php?id.{$user_id}'>{$user_name}</a></td>
+				<td style='width:10%; text-align:center' class='forumheader3'>{$user_chats}</td>
 				<td style='width:30%; text-align:center' class='forumheader3'>".(strstr($ldata[0], "LAN") ? $ldata[1] : $ldata[0])."</td>
 				</tr>";
 			$counter++;
