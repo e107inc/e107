@@ -12,11 +12,26 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.194 $
-|     $Date: 2005-07-13 01:24:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.195 $
+|     $Date: 2005-07-16 07:53:03 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
+
+// Find out if register globals is enabled and destroy them if so
+$register_globals = true;
+if(function_exists('ini_get')) {
+	$register_globals = ini_get('register_globals');
+}
+// Destroy! (if we need to)
+if($register_globals == true){
+	while (list($global) = each($GLOBALS)) {
+		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|retrieve_prefs)$/', $global)) {
+			unset($$global);
+		}
+	}
+	unset($global);
+}
 
 // setup error handling first of all.
 error_reporting(E_ERROR | E_PARSE);
@@ -29,20 +44,6 @@ $start_ob_level = ob_get_level();
 ini_set('magic_quotes_runtime', 0);
 ini_set('magic_quotes_sybase',  0);
 
-// Find out if register globals is enabled and destroy them if so
-$register_globals = true;
-if(function_exists('ini_get')) {
-	$register_globals = ini_get('register_globals');
-}
-// Destroy! (if we need to)
-if($register_globals == true){
-	while (list($global) = each($GLOBALS)) {
-		if (!preg_match('/^(_POST|_GET|_COOKIE|_SERVER|_FILES|GLOBALS|HTTP.*|_REQUEST|eTimingStart|start_ob_level|error_handler|retrieve_prefs)$/', $global)) {
-			unset($$global);
-		}
-	}
-	unset($global);
-}
 // Grab e107_config, get directory paths, and create the $e107 object
 @include_once(realpath(dirname(__FILE__).'/e107_config.php'));
 if(!isset($ADMIN_DIRECTORY)){
@@ -209,6 +210,9 @@ $menu_pref = unserialize(stripslashes($sysprefs->get('menu_pref')));
 
 $sql->db_Mark_Time('(Extracting Core Prefs Done)');
 
+define("SITEURLBASE", ($pref['ssl_enabled'] == '1' ? "https://" : "http://").$_SERVER['HTTP_HOST']);
+define("SITEURL", SITEURLBASE.e_HTTP);
+
 // if a cookie name pref isn't set, make one :)
 if (!$pref['cookie_name']) {
 	$pref['cookie_name'] = "e107cookie";
@@ -221,16 +225,17 @@ if ($pref['user_tracking'] == "session") {
 
 define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME']) : "http://".$_SERVER['HTTP_HOST'].($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENAME'])));
 
-/* disabled ffor now, causing multiple problems .,.
+
 // if the option to force users to use a particular url for the site is enabled, redirect users there
 if($pref['redirectsiteurl'] && $pref['siteurl']) {
-	if(!strstr($pref['siteurl'], substr(SITEURL.e_HTTP, 0, -1))) {
-		$location = str_replace(SITEURL.e_HTTP, $pref['siteurl'], e_SELF).(e_QUERY ? "?".e_QUERY : "");
+	$siteurl = SITEURLBASE."/";
+	if(!strstr($pref['siteurl'], $siteurl)) {
+		$location = str_replace($siteurl, $pref['siteurl'], e_SELF).(e_QUERY ? "?".e_QUERY : "");
 		header("Location: {$location}");
 		exit();
 	}
 }
-*/
+
 
 // sort out the users language selection
 if (isset($_POST['setlanguage']) || isset($_GET['elan'])) {
@@ -440,8 +445,6 @@ $pref[$key] = $tp->toFORM($prefvalue);
 }*/
 
 define("SITENAME", trim($tp->toHTML($pref['sitename'], "", "emotes_off defs")));
-define("SITEURLBASE", ($pref['ssl_enabled'] == '1' ? "https://" : "http://").$_SERVER['HTTP_HOST']);
-define("SITEURL", SITEURLBASE.e_HTTP);
 define("SITEBUTTON", $pref['sitebutton']);
 define("SITETAG", $tp->toHTML($pref['sitetag'], FALSE, "emotes_off defs"));
 define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off defs"));
