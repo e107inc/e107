@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Swedish.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-07-07 16:06:45 $
+|     $Revision: 1.9 $
+|     $Date: 2005-07-16 20:01:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -24,6 +24,18 @@ define("LCLAN_OPT_MENU_3", "Kategorisida");
 define("LCLAN_OPT_MENU_4", "Länkvisning");
 define("LCLAN_OPT_MENU_5", "Hänvisningar sida");
 define("LCLAN_OPT_MENU_6", "Betygssida");
+define("LCLAN_OPT_MENU_7", "Meny");
+
+define("LCLAN_PAGETITLE_1", "Länkar");
+define("LCLAN_PAGETITLE_2", "Alla kategorier");
+define("LCLAN_PAGETITLE_3", "Alla länkar");
+define("LCLAN_PAGETITLE_4", "kategori");
+define("LCLAN_PAGETITLE_5", "Toppbetyg");
+define("LCLAN_PAGETITLE_6", "Topp hänvisare");
+define("LCLAN_PAGETITLE_7", "Personlig länkhanterare");
+define("LCLAN_PAGETITLE_8", "Länk kommentarer");
+define("LCLAN_PAGETITLE_9", "Skicka in länk");
+define("LCLAN_PAGETITLE_10", "");
 
 define("LCLAN_OPT_1", "Allmänna alternativ");
 define("LCLAN_OPT_2", "Länksida alternativ");
@@ -93,6 +105,25 @@ define("LCLAN_OPT_65", "Visa tomma kategorier");
 define("LCLAN_OPT_66", "Länk till varje kategori");
 define("LCLAN_OPT_67", "Länk till alla länkar");
 define("LCLAN_OPT_68", "Visa alla länkar");
+define("LCLAN_OPT_69", "Visningstyp navigatorlänkar");
+define("LCLAN_OPT_70", "Visa kategorilänkar");
+define("LCLAN_OPT_71", "Visningstyp kategorilänkar");
+define("LCLAN_OPT_72", "Visa tidigare länkar");
+define("LCLAN_OPT_73", "Vilka data skall visas");
+define("LCLAN_OPT_74", "Hur många tidigare länkar skall visas");
+define("LCLAN_OPT_75", "Hyperlänkar");
+define("LCLAN_OPT_76", "Rullgardinsmeny");
+define("LCLAN_OPT_77", "Kategori");
+define("LCLAN_OPT_78", "Beskrivning");
+define("LCLAN_OPT_79", "Navigatorrubrik");
+define("LCLAN_OPT_80", "Rubrik kategorier");
+define("LCLAN_OPT_81", "Rubrik tidigare lista");
+define("LCLAN_OPT_82", "Navigator");
+define("LCLAN_OPT_83", "Kategories");
+define("LCLAN_OPT_84", "Lista, tidigare");
+define("LCLAN_OPT_85", "Meny rubrik");
+define("LCLAN_OPT_86", "Länk meny");
+define("LCLAN_OPT_87", "Antal länkar att visa");
 
 define("LCLAN_ADMIN_1", "Uppdatera");
 define("LCLAN_ADMIN_2", "Länk sparad till databasen.");

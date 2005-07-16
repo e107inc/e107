@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Swedish.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-28 16:28:12 $
+|     $Revision: 1.7 $
+|     $Date: 2005-07-16 20:01:36 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -43,6 +43,8 @@ define("LIST_20", "Buggspårare");
 define("LIST_21", "Artiklar");
 define("LIST_22", "Idéer");
 //allt ovan kommer att tas bort vid senare tillfälle
+
+define("LIST_23", "Denna plugin är inte installerad.");
 
 define("LIST_PLUGIN_1", "Lista nya tillägg");
 define("LIST_PLUGIN_2", "Denna plugin låter dig se en lista på nya tillägg i alla e107 kategorier. Du kan antingen visa listan med data sedan ditt senaste besök, eller visa en generell lista på senaste tillägg. Förutom sidan finns även en meny. Alla sektioner är konfigurerbara i adminsektionen.");
