@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.196 $
-|     $Date: 2005-07-16 10:11:57 $
+|     $Revision: 1.197 $
+|     $Date: 2005-07-16 10:16:04 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -1016,7 +1016,7 @@ function init_session() {
 
 			if (isset($_POST['settheme'])) {
 				$user_pref['sitetheme'] = ($pref['sitetheme'] == $_POST['sitetheme'] ? "" : $_POST['sitetheme']);
-				save_prefs($user);
+				save_prefs("user");
 			}
 
 			define("USERTHEME", ($user_pref['sitetheme'] && file_exists(e_THEME.$user_pref['sitetheme']."/theme.php") ? $user_pref['sitetheme'] : FALSE));
@@ -1162,8 +1162,9 @@ function force_userupdate(){
 	// extended user.
 	if($sql -> db_Select("user_extended_struct", "user_extended_struct_name", " user_extended_struct_required = '1' ")){
 		while($row = $sql -> db_Fetch()){
-			extract($row);
-			if(!$currentUser["user_".$user_extended_struct_name]){
+			//extract($row); //really neccessary?
+			$user_extended_struct_name = "user_{$row['user_extended_struct_name']}";
+			if(!$currentUser[$user_extended_struct_name]){
 				return TRUE;
 			}
 		}
