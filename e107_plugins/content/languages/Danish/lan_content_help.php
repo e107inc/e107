@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Danish/lan_content_help.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-07-16 12:58:09 $
+|     $Revision: 1.5 $
+|     $Date: 2005-07-17 13:38:23 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -47,5 +47,9 @@ define("CONTENT_ADMIN_HELP_MANAGER_1", "På denne side kan du se en liste over a
 define("CONTENT_ADMIN_HELP_MANAGER_2", "<i>på denne side kan du tildele brugere til den kategori du har klikket på</i><br /><br /><b>personlig håndtering</b><br />du kan tildele brugere til bestemte kategorier. Ved at gøre detteo, kan disse brugere håndtere deres personlige indholds emner inden for disse kategorier uden for admin siden (content_manager.php).<br /><br />Tildel brugere fra venstre kolonne ved at klikke på deres navn. du vil se nevnet flyttes til den højre kolonne. Efter du klikker på tildel knappen vil brugerne i den højre kolonne være tildelt til denne kategori.");
 
 define("CONTENT_ADMIN_HELP_SUBMIT_1", "<i>På denne side kan du se en liste over alle indholds emner der er tilføjet af brugere.</i><br /><br /><b>detaljeret liste</b><br />Du ser en liste over disse indholds emner med deres id, ikon, hoved forælder, overskrift [underoverskrift], forfatter og egenskaber.<br /><br /><b>egenskaber</b><br />du kan oprette eller slette et indholds emne ved hjælp af de viste knapper.");
+
+
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_1", "denne side lader dig indstille egenskaber for admin opret emne siden.<br /><br />Du kan definere hvilke sektioner der er tilgængelige når en admin (eller personlig indholds bestyrer) opretter et nyt indholds emne<br /><br /><b>specielle data tags</b><br />du kan tillade en bruger eller admin at tilføje yderligere felter til indholds emnet ved hjælp af disse specielle data tags. Disse ekstra felter er tomme nøgle=>værdi par. For eksempel: kan du tilføje en nøgle for 'fotograf' og her levere værdi felt med 'alle fotos af mig'. Både nøgle og værdi felterne er tomme tekst felter der vil være til stede i opret formularen.<br /><br /><b>forudindstilte data tags</b><br />bortset fra de specielle data tags, du kan bestemme forudindstillede data tags. Forskellen er i forudindstillede data tags, er nøglen allerede givet og brugeren skal kun levere værdi feltet for det forudindstillede. I samme eksempel som 'fotograf' ovenfor kan forud defineres, og brugeren skal levere 'alle fotos af mig'. Du kan vælge element typen ved at vælge egenskaben i valgboksen. I popup vinduet, kan du levere alle de informationer for det forudindstillede data tag.<br />");
 
 ?>
