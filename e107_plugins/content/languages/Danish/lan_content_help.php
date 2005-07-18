@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Danish/lan_content_help.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-07-17 13:38:23 $
+|     $Revision: 1.6 $
+|     $Date: 2005-07-18 14:47:18 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -51,5 +51,7 @@ define("CONTENT_ADMIN_HELP_SUBMIT_1", "<i>På denne side kan du se en liste over
 
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_1", "denne side lader dig indstille egenskaber for admin opret emne siden.<br /><br />Du kan definere hvilke sektioner der er tilgængelige når en admin (eller personlig indholds bestyrer) opretter et nyt indholds emne<br /><br /><b>specielle data tags</b><br />du kan tillade en bruger eller admin at tilføje yderligere felter til indholds emnet ved hjælp af disse specielle data tags. Disse ekstra felter er tomme nøgle=>værdi par. For eksempel: kan du tilføje en nøgle for 'fotograf' og her levere værdi felt med 'alle fotos af mig'. Både nøgle og værdi felterne er tomme tekst felter der vil være til stede i opret formularen.<br /><br /><b>forudindstilte data tags</b><br />bortset fra de specielle data tags, du kan bestemme forudindstillede data tags. Forskellen er i forudindstillede data tags, er nøglen allerede givet og brugeren skal kun levere værdi feltet for det forudindstillede. I samme eksempel som 'fotograf' ovenfor kan forud defineres, og brugeren skal levere 'alle fotos af mig'. Du kan vælge element typen ved at vælge egenskaben i valgboksen. I popup vinduet, kan du levere alle de informationer for det forudindstillede data tag.<br />");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_2", "Tilføj egenskaberne har effekt på bruger tilføj formularen for indholds emner.<br /><br />Du kan definere hvilke sektioner der er tilgængelige for en bruger ved tilføjelsen af et indholds emne.<br /><br />".CONTENT_ADMIN_OPT_LAN_11.":<br />".CONTENT_ADMIN_OPT_LAN_12."");
 
 ?>
