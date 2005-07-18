@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Danish/lan_forum_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-18 16:58:24 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-18 17:00:55 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -18,7 +18,7 @@ define("FORLAN_6", "Fortryd");
 define("FORLAN_7", "Forum indstillinger");
 define("FORLAN_8", "Forum beskåret.");
 define("FORLAN_9", "Beskæring er ikke nødvendig.");
-define("FORLAN_10", "&AElig;ndringer er gemt");
+define("FORLAN_10", "�ndringer er gemt");
 define("FORLAN_11", "Forum oprettet.");
 define("FORLAN_12", "Gruppen er opdateret.");
 define("FORLAN_13", "Gruppen er tilføjet til databasen.");
@@ -59,7 +59,7 @@ define("FORLAN_47", "Tilslut e-mail overvågning");
 define("FORLAN_48", "Marker denne boks som tillader dine brugere at modtage en e-mail, når der svares på deres indlæg");
 define("FORLAN_49", "Tillad afstemninger");
 define("FORLAN_50", "Marker denne boks som tillader dine brugere at oprette afstemninger på indlæg i forummet");
-define("FORLAN_51", "tillad overvågning");
+define("FORLAN_51", "Tillad overvågning");
 define("FORLAN_52", "Marker denne boks som tillader dine brugere at modtage en e-mail, hvis de ønsker at følge et bestemt forum emne");
 define("FORLAN_53", "E-mail prefix");
 define("FORLAN_54", "Teksten du skriver vil være i emnet på e-mails der kommer fra forum indlæg");
