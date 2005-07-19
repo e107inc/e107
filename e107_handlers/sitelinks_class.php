@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2005-07-16 10:23:06 $
-|     $Author: streaky $
+|     $Revision: 1.62 $
+|     $Date: 2005-07-19 21:08:53 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -230,18 +230,20 @@ class sitelinks
 		return $_link.$style['linkend'];
 	}
 
-	function hilite($link,$enabled=''){
 
+
+
+
+function hilite($link,$enabled=''){
 		global $PLUGINS_DIRECTORY,$tp;
 
 		if(!$enabled){ return FALSE; }
 
-		// --------------- highlighting for plugins. ----------------
+// --------------- highlighting for plugins. ----------------
 		if(eregi($PLUGINS_DIRECTORY, $link) && !eregi("custompages", $link)){
 
 			if(str_replace("?","",$link)){
-
-				if(strpos(e_SELF."?".e_QUERY, str_replace("../", "", "/".$link))){
+				if(strpos(e_SELF."?".e_QUERY, str_replace("../", "", $link))){
 					return TRUE;
 				}else{
 					return FALSE;
@@ -252,6 +254,7 @@ class sitelinks
 				return TRUE;
 			}
 		}
+
 		// --------------- highlight for news items.----------------
 		// eg. news.php?list.1 or news.php?cat.2 etc
 
@@ -276,12 +279,12 @@ class sitelinks
 
 		// --------------- highlight default ----------------
 		if(eregi("\?", $link)){
-			if(($enabled) && (strpos(e_SELF."?".e_QUERY, str_replace("../", "", "/".$link)) !== false))	{
+			if(($enabled) && (strpos(e_SELF."?".e_QUERY, str_replace("../", "", $link)) !== false))	{
 				return true;
 			}
 		}
 
-		if(!eregi("all", e_QUERY) && !eregi("item", e_QUERY) && !eregi("cat",e_QUERY) && !eregi("list", e_QUERY) && $enabled && (strpos(e_SELF, str_replace("../", "", "/".$link)) !== false)){
+		if(!eregi("all", e_QUERY) && !eregi("item", e_QUERY) && !eregi("cat",e_QUERY) && !eregi("list", e_QUERY) && $enabled && (strpos(e_SELF, str_replace("../", "",$link)) !== false)){
 			return true;
 		}
 
