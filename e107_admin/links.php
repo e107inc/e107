@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-07-11 19:05:00 $
+|     $Revision: 1.44 $
+|     $Date: 2005-07-19 21:23:26 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -54,7 +54,7 @@ if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LAN_DELETE)], $matches
 }
 
 
-if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && isset($_POST['sublink_parent']) ){
+if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST['sublink_parent'] !="" ){
 
 	$subtype = $_POST['sublink_type'];
 	$sublink = $linkpost->sublink_list($subtype);
