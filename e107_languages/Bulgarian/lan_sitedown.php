@@ -1,15 +1,19 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright © 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_sitedown.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-09 16:18:47 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Site temporarily closed");
-define("LAN_00", "is temporarily closed");
-define("LAN_01", "We have temporarily closed the site for some essential maintainance. This shouldn't take too long - please check back soon, apologies for the inconvenience.");
+define("PAGE_NAME", "Сайтът е временно неактивен");
+define("LAN_00", "е временно неактивен");
+define("LAN_01", "Сайтът е временно затворен за извършване на профилактика. Моля изчакайте и опитайте отново. Съжаляваме за създаденото неудобство.");
 ?>

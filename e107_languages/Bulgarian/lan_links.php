@@ -1,50 +1,54 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright © 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_links.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-09 16:18:47 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Links");
+define("PAGE_NAME", "Линкове");
 
-define("LAN_61", "Link Categories");
-define("LAN_62", "categories");
-define("LAN_63", "category");
-define("LAN_64", "in this category");
-define("LAN_65", "link");
-define("LAN_66", "links");
-define("LAN_67", "Show All Links");
-define("LAN_68", "edit");
-define("LAN_69", "delete");
-define("LAN_86", "Category:");
-define("LAN_88", "Referrals:");
-define("LAN_89", "Admin: ");
-define("LAN_90", "add new link in this category");
-define("LAN_91", "add new category");
+define("LAN_61", "Линк Категории");
+define("LAN_62", "категории");
+define("LAN_63", "категория");
+define("LAN_64", "в тази категория");
+define("LAN_65", "линк");
+define("LAN_66", "линка");
+define("LAN_67", "Покажи всички линкове");
+define("LAN_68", "редакция");
+define("LAN_69", "изтриване");
+define("LAN_86", "Категория:");
+define("LAN_88", "Препратки:");
+define("LAN_89", "Админ: ");
+define("LAN_90", "добави линк в тази категория");
+define("LAN_91", "добави нова категория");
 
-define("LAN_92", "Submit a link");
-define("LAN_93", "After submitting your link it will be reviewed by a site admin and if appropriate it will be added to the main links page.");
-define("LAN_94", "Link Name:");
-define("LAN_95", "Link URL:");
-define("LAN_96", "Link Description:");
-define("LAN_97", "URL to link button:");
-define("LAN_98", "Submit Link");
+define("LAN_92", "Предложи линк");
+define("LAN_93", "След добавянето на вашия линк, той ще бъде разгледан от сайт-администратор и ако бъде одобрен, ще бъде добавен на страницата с линкове.");
+define("LAN_94", "Име на линк:");
+define("LAN_95", "URL адрес:");
+define("LAN_96", "Описание на линка:");
+define("LAN_97", "URL към картинка за линка:");
+define("LAN_98", "Добавяне на линк");
 
-define("LAN_99", "Thankyou");
-define("LAN_100", "Your link has been saved and will be reviewed by a site administrator.");
-define("LAN_101", "Please click here to submit a link");
+define("LAN_99", "Благодарим");
+define("LAN_100", "Вашият линк беше записан и ще бъде разгледан от администратор на сайта.");
+define("LAN_101", "Моля натиснете тук за добавяне на линк");
 
-define("LAN_102", "There");
-define("LAN_103", "is");
-define("LAN_104", "are");
-define("LAN_105", "total in");
-define("LAN_106", "Underlined fields are required.");
+define("LAN_102", "");
+define("LAN_103", "Има");
+define("LAN_104", "Има");
+define("LAN_105", "общо в");
+define("LAN_106", "Подчертаниет полета са задължителни.");
 
-define("LAN_Links_1", "Total links");
-define("LAN_Links_2", "Total links activated");
-define("LAN_LINKS_3", "Anonymous");
+define("LAN_Links_1", "Общо линкове");
+define("LAN_Links_2", "Общо активни линка");
+define("LAN_LINKS_3", "Анонимен");
 ?>

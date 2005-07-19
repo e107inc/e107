@@ -1,39 +1,43 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright © 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_error.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-09 16:18:47 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Error");
+define("PAGE_NAME", "Грешка");
 
-define("LAN_1", "Error 401 - Permission Denied");
-define("LAN_2", "You do not have permission to retrieve the URL or link you requested.");
-define("LAN_3", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
-define("LAN_4", "Error 403 - Authentication Failed");
-define("LAN_5", "The URL you've requested requires a correct username and password. Either you entered an incorrect username/password, or your browser doesn't support this feature.");
-define("LAN_6", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
-define("LAN_7", "Error 404 - Document Not Found");
-define("LAN_9", "Please inform the administrator of the referring page if you think this error message has been shown by mistake.");
-define("LAN_10", "Error 500 - Malformed Header");
-define("LAN_11", "The server encountered an internal error or misconfiguration and was unable to complete your request");
-define("LAN_12", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
-define("LAN_13", "Error - Unknown");
-define("LAN_14", "The server encountered an error");
-define("LAN_15", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
-define("LAN_16", "Your unsuccessful attempt to access");
-define("LAN_17", "has been recorded.");
-define("LAN_18", "Apparently, you were referred here by");
-define("LAN_19", "Unfortunately, there's an obsolete link at that address.");
-define("LAN_20", "Please click here to go to this site's home page");
+define("LAN_1", "Грешка 401 - Достъпът е отказан");
+define("LAN_2", "Нямате права за преглед на заявения от вас линк или URL адрес.");
+define("LAN_3", "Моля уведомете администратора на сайта, ако смятате, че това е грешка на сайта.");
+define("LAN_4", "Грешка 403 - Неауторизиран достъп");
+define("LAN_5", "Заявения от вас URL адрес изисква коректно потребителско име и парола. Или сте задали неправилни потребителско име/парола, или вашия браузър не поддържа тази опция.");
+define("LAN_6", "Моля уведомете администратора на сайта, ако смятате, че това е грешка на сайта.");
+define("LAN_7", "Грешка 404 - Документът не е намерен");
+define("LAN_9", "Моля уведомете администратора на сайта, ако смятате, че това е грешка на сайта.");
+define("LAN_10", "Грешка 500 - Некоректен заглавен блок (header)");
+define("LAN_11", "Сървърът откри неочаквана грешка или неправилно конфигуриране. Изпълнението на вашата заявка беше невъзможно.");
+define("LAN_12", "Моля уведомете администратора на сайта, ако смятате, че това е грешка на сайта.");
+define("LAN_13", "Грешка - Неизвестна");
+define("LAN_14", "Сървърът откри грешка");
+define("LAN_15", "Моля уведомете администратора на сайта, ако смятате, че това е грешка на сайта.");
+define("LAN_16", "Несполучливият ви опит за достъп");
+define("LAN_17", "беше записан.");
+define("LAN_18", "Както изглежда, вие идвате от");
+define("LAN_19", "За съжаление този линк е вече извън употреба.");
+define("LAN_20", "Моля кликнете тук за заглавната страница на този сайт");
 
-define("LAN_ERROR_01", "The requested URL could not be found on this server. The link you followed is probably outdated.");
-define("LAN_ERROR_02", "Please click here to go to this site's search page");
-define("LAN_ERROR_03", "Your attempt to access ");
-define("LAN_ERROR_04", " was unsuccessful.");
+define("LAN_ERROR_01", "Заявеният URL адрес не може да бъде намерен на този сървър. Линкът, който ползвате е най-вероятно вече извън употреба.");
+define("LAN_ERROR_02", "Моля кликнете тук за страница за търсене на този сайт");
+define("LAN_ERROR_03", "Опитът ви за достъп до ");
+define("LAN_ERROR_04", " беше несполучлив.");
 
 ?>

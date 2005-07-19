@@ -1,40 +1,44 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright © 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_upload.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-09 16:18:47 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Upload");
+define("PAGE_NAME", "Качване на файл");
 
-define("LAN_20", "Error");
-define("LAN_61", "Your Name: ");
-define("LAN_112", "Email Address: ");
-define("LAN_144", "Website URL: ");
-define("LAN_402", "You must be a registered member to upload files to this server.");
-define("LAN_403", "You do not have the correct permissions to upload files to this server.");
-define("LAN_404", "Thank you. Your upload will be reviewed by an administrator and posted to the site if appropriate.");
-define("LAN_405", "File exceeds specified maximum size limit - deleted.");
-define("LAN_406", "Please note");
-define("LAN_407", "Any other filetypes uploaded will be instantly deleted.");
-define("LAN_408", "Underlined");
-define("LAN_409", "Name of file");
-define("LAN_410", "Version");
-define("LAN_411", "File");
-define("LAN_412", "Screenshot");
-define("LAN_413", "Description");
-define("LAN_414", "Working demo");
-define("LAN_415", "enter URL to site where demo can be viewed");
-define("LAN_416", "Submit and Upload");
-define("LAN_417", "Upload File");
-define("LAN_418", "Maximum file size: ");
-define("DOWLAN_11", "Category");
-define("LAN_419", "Allowed filetypes");
-define("LAN_420", "fields are required");
+define("LAN_20", "Грешка");
+define("LAN_61", "Вашето Име: ");
+define("LAN_112", "Имейл Адрес: ");
+define("LAN_144", "Уебсайт URL: ");
+define("LAN_402", "Трябва да се регистриран потребител за качване на файлове на този сървър.");
+define("LAN_403", "Нямате необходимите права за качване на файлове на този сървър.");
+define("LAN_404", "Благодарим ви. Файлът, който качихте ще бъде прегледан от администратор и ако бъде одобрен ще бъде добавен към списъка с файлове на този сайт.");
+define("LAN_405", "Файлът надминава максималната позволена големина - файлът е изтрит.");
+define("LAN_406", "Моля обърнете внимание");
+define("LAN_407", "Всякакви друг вид файлове ще бъдат незабавно изтрити.");
+define("LAN_408", "Подчертаните");
+define("LAN_409", "Име на файл");
+define("LAN_410", "Версия");
+define("LAN_411", "Файл");
+define("LAN_412", "Картинка");
+define("LAN_413", "Описание");
+define("LAN_414", "Работещо демо");
+define("LAN_415", "въведете URL към сайт, където може да бъде видяна демонстрация");
+define("LAN_416", "Потвърждение и Качване");
+define("LAN_417", "Качване на Файл");
+define("LAN_418", "Максимална големина на файла: ");
+define("DOWLAN_11", "Категория");
+define("LAN_419", "Позволени файлове");
+define("LAN_420", "полета са задължителни");
 
 
 

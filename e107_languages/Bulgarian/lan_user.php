@@ -1,65 +1,69 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright © 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_user.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-09 16:18:47 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Members");
+define("PAGE_NAME", "Потребители");
 
-define("LAN_20", "Error");
-define("LAN_112", "Email Address");
-define("LAN_115", "ICQ Number");
-define("LAN_116", "AIM Address");
+define("LAN_20", "Грешка");
+define("LAN_112", "Имейл Адрес");
+define("LAN_115", "ICQ Номер");
+define("LAN_116", "AIM Адрес");
 define("LAN_117", "MSN Messenger");
-define("LAN_118", "Birthday");
-define("LAN_119", "Location");
-define("LAN_120", "Signature");
-define("LAN_137", "There is no information for that user as they are not registered at");
-define("LAN_138", "Registered members: ");
-define("LAN_139", "Order: ");
-define("LAN_140", "Registered members");
-define("LAN_141", "No registered members yet.");
-define("LAN_142", "Member");
-define("LAN_143", "[hidden by request]");
-define("LAN_144", "Website URL");
-define("LAN_145", "Joined");
-define("LAN_146", "Visits to site since registration");
-define("LAN_147", "Chatbox posts");
-define("LAN_148", "Comments posted");
-define("LAN_149", "Forum posts");
-define("LAN_308", "Real Name");
-define("LAN_400", "That is not a valid user.");
-define("LAN_401", "no information");
-define("LAN_402", "Member Profile");
-define("LAN_403", "Site Stats");
-define("LAN_404", "Last visit");
-define("LAN_405", "days ago");
-define("LAN_406", "Rating");
-define("LAN_407", "none");
-define("LAN_408", "no photo");
-define("LAN_409", "points");
-define("LAN_410", "Miscellaneous");
-define("LAN_411", "Click here to update your information");
-define("LAN_412", "Click here to edit this user's information");
-define("LAN_413", "delete photo");
-define("LAN_414", "previous member");
-define("LAN_415", "next member");
-define("LAN_416", "You must be logged in to access this page");
-define("LAN_417", "Main site administrator");
-define("LAN_418", "Site administrator");
-define("LAN_419", "Show");
-define("LAN_420", "DESC");
-define("LAN_421", "ASC");
-define("LAN_422", "Go");
-define("LAN_423", "Click here to View User Comments");
-define("LAN_424", "Click here to View Forum Posts");
-define("LAN_425", "Send Private Message");
-define("LAN_426", "ago");
+define("LAN_118", "Рожденна дата");
+define("LAN_119", "Местоположение");
+define("LAN_120", "Подпис");
+define("LAN_137", "Няма информация за този потребител, понеже той не е регистриран на");
+define("LAN_138", "Регистрирани потребители: ");
+define("LAN_139", "Подреждане: ");
+define("LAN_140", "Регистрирани потребители");
+define("LAN_141", "Все още няма регистрирани потребители.");
+define("LAN_142", "Потребител");
+define("LAN_143", "[скрито по желание]");
+define("LAN_144", "Уебсайт URL");
+define("LAN_145", "Регистриран на");
+define("LAN_146", "Посещения след регистрацията");
+define("LAN_147", "Съобщения е чата");
+define("LAN_148", "Пуснати коментари");
+define("LAN_149", "Съобщения на форума");
+define("LAN_308", "Истинско име");
+define("LAN_400", "Това не е валиден потребител.");
+define("LAN_401", "няма информация");
+define("LAN_402", "Потребителски профил");
+define("LAN_403", "Статистики на сайта");
+define("LAN_404", "Последно посещение");
+define("LAN_405", "");
+define("LAN_406", "Рейтинг");
+define("LAN_407", "няма");
+define("LAN_408", "няма снимка");
+define("LAN_409", "точки");
+define("LAN_410", "Други");
+define("LAN_411", "Натисни тук за актуализиране на информацията");
+define("LAN_412", "Натисн тук за редакция на потребителските данни");
+define("LAN_413", "изтриване на снимката");
+define("LAN_414", "назад");
+define("LAN_415", "напред");
+define("LAN_416", "Трябва да сте логнат за достъп до тази страница");
+define("LAN_417", "Главен администратор");
+define("LAN_418", "Сайт администратор");
+define("LAN_419", "Покажи");
+define("LAN_420", "Низходящ");
+define("LAN_421", "Възходящ");
+define("LAN_422", "Изпълни");
+define("LAN_423", "Натисни тук за преглед на коментарите от потребителя");
+define("LAN_424", "Натисни тук за преглед на съобщенията на форума");
+define("LAN_425", "Изпрати лично съобщение");
+define("LAN_426", "по-рано");
 
 define("USERLAN_1", "Peer Rating");
 

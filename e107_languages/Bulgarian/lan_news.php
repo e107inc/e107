@@ -1,45 +1,49 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright © 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_news.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-09 16:18:47 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "News");
+define("PAGE_NAME", "Новини");
 
-define("LAN_82", "News - Category");
-define("LAN_83", "No news items yet - please check back soon.");
-define("LAN_84", "News Items");
-define("LAN_99", "Comments");
-define("LAN_100", "On");
-define("LAN_307", "Total posts in this category: ");
+define("LAN_82", "Новини - Категории");
+define("LAN_83", "Все още няма новини - моля проверете отново скоро.");
+define("LAN_84", "Новини");
+define("LAN_99", "Коментари");
+define("LAN_100", "на");
+define("LAN_307", "Общо публикации в тази категория: ");
 
-define("LAN_NEWS_1", "News for specific members only");
-define("LAN_NEWS_2", "You are not allowed to see this news");
-define("LAN_NEWS_3", "Please delete install.php from your server");
-define("LAN_NEWS_4", "if you do not there is a potential security risk to your website");
+define("LAN_NEWS_1", "Новини само за определени потребители");
+define("LAN_NEWS_2", "Нямате права за гледане на тези новини");
+define("LAN_NEWS_3", "Моля изтрийте install.php от вашия сървър");
+define("LAN_NEWS_4", "ако не го направите има потенциален риск за вашия уебсайт");
 
-define("LAN_NEWS_5", "<b>Error!</b> Was unable to update news item into database!</b>");
-define("LAN_NEWS_6", "News entered into database.");
-define("LAN_NEWS_7", "<b>Error!</b> Was unable to enter news item into database!</b>");
-define("LAN_NEWS_8", "News entered into database for all languages. ID: ");
-define("LAN_NEWS_9", "Title only is set - <b>only the news title will be shown</b><br />");
-define("LAN_NEWS_10", "This news post is <b>inactive</b> (It will be not shown on front page). ");
-define("LAN_NEWS_11", "This news post is <b>active</b> (it will be shown on front page). ");
-define("LAN_NEWS_12", "Comments are turned <b>on</b>. ");
-define("LAN_NEWS_13", "Comments are turned <b>off</b>. ");
-define("LAN_NEWS_14", "<br />Activation period: ");
-define("LAN_NEWS_15", "Body length: ");
-define("LAN_NEWS_16", "b. Extended length: ");
+define("LAN_NEWS_5", "<b>Грешка!</b> Беше невъзможно актуализирането на новината в базите данни!</b>");
+define("LAN_NEWS_6", "Новината е записана в базите данни.");
+define("LAN_NEWS_7", "<b>Грешка!</b> Беше невъзможно записването на новината в базите данни!</b>");
+define("LAN_NEWS_8", "Новината е записана в базите данни за всички езици. ID: ");
+define("LAN_NEWS_9", "Въведено е само заглавие - <b>ще бъде показано само заглавието на новината</b><br />");
+define("LAN_NEWS_10", "Тази новина е <b>неактивна</b> (Тя няма да бъде показана на заглавната страница). ");
+define("LAN_NEWS_11", "Тази новина е <b>активна</b> (Тя ще бъде показана на заглавната страница). ");
+define("LAN_NEWS_12", "Коментарите са <b>позволени</b>. ");
+define("LAN_NEWS_13", "Коментарите са <b>забранени</b>. ");
+define("LAN_NEWS_14", "<br />Период на активиране: ");
+define("LAN_NEWS_15", "Дължина на новината: ");
+define("LAN_NEWS_16", "b. Дължина на разширението: ");
 define("LAN_NEWS_17", "b.");
-define("LAN_NEWS_18", "Info:");
-define("LAN_NEWS_19", "Now");
-define("LAN_NEWS_20", "News updated in database for the following language: ");
-define("LAN_NEWS_21", "News updated in database.");
-define("LAN_NEWS_22", "Go to page: ");
-define("LAN_NEWS_23", "News Categories");
+define("LAN_NEWS_18", "Инфо:");
+define("LAN_NEWS_19", "Сега");
+define("LAN_NEWS_20", "Новините са актуализирани в базата за следния език: ");
+define("LAN_NEWS_21", "Новините са актуализирани в базата.");
+define("LAN_NEWS_22", "Отиди на страница: ");
+define("LAN_NEWS_23", "Категории новини");
 ?>

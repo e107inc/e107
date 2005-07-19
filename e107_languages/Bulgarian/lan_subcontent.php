@@ -1,62 +1,66 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright © 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_subcontent.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-09 16:18:47 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("ARLAN_0", "Thank you, your article has been saved and will be reviewed by a site administrator in due course.");
-define("ARLAN_1", "Fields left blank.");
-define("ARLAN_2", "Thankyou, your review has been saved and will be reviewed by a site administrator in due course.");
-define("ARLAN_15", "Submit Article");
-define("ARLAN_17", "Heading");
-define("ARLAN_18", "Sub-Heading");
-define("ARLAN_19", "Summary");
-define("ARLAN_20", "Article");
-define("ARLAN_21", "Allow comments?");
-define("ARLAN_22", "On");
-define("ARLAN_23", "Off");
-define("ARLAN_24", "Add email/print icons?");
-define("ARLAN_25", "Yes");
-define("ARLAN_26", "No");
-define("ARLAN_27", "Submit Article");
-define("ARLAN_28", "Preview");
-define("ARLAN_55", "Visible to");
-define("ARLAN_73", "Open HTML Editor");
-define("ARLAN_74", "Category");
-define("ARLAN_75", "None");
-define("ARLAN_82", "Author Details");
-define("ARLAN_84", "author name");
-define("ARLAN_85", "author email address");
-define("ARLAN_86", "Review");
-define("ARLAN_87", "Rating");
-define("ARLAN_88", "Please select rating");
-define("ARLAN_89", "Submit Review");
+define("ARLAN_0", "Благодарим ви, вашата статия е записана и ще бъде прегледана от администратор на сайта в най-скоро време.");
+define("ARLAN_1", "Оставени празни полета.");
+define("ARLAN_2", "Благодарим ви, вашата рецензия е записана и ще бъде прегледана от администратор на сайта в най-скоро време.");
+define("ARLAN_15", "Напиши статия");
+define("ARLAN_17", "Заглавие");
+define("ARLAN_18", "Подзаглавие");
+define("ARLAN_19", "Обобщение");
+define("ARLAN_20", "Статия");
+define("ARLAN_21", "Позволи коментари?");
+define("ARLAN_22", "Да");
+define("ARLAN_23", "Не");
+define("ARLAN_24", "Добави имейл/принт икони?");
+define("ARLAN_25", "Да");
+define("ARLAN_26", "Не");
+define("ARLAN_27", "Запиши Статията");
+define("ARLAN_28", "Преглед");
+define("ARLAN_55", "Видимо за");
+define("ARLAN_73", "Отвори HTML Редактор");
+define("ARLAN_74", "Категория");
+define("ARLAN_75", "Няма");
+define("ARLAN_82", "Инфо за автора");
+define("ARLAN_84", "име на автора");
+define("ARLAN_85", "имейл на автора");
+define("ARLAN_86", "Рецензия");
+define("ARLAN_87", "Рейтинг");
+define("ARLAN_88", "Моля изберете рейтинг");
+define("ARLAN_89", "Запиши Рецензия");
 
-define("ARLAN_90", "Fields left blank, please press the back button in your browser and confirm all fields are filled in.");
-define("ARLAN_91", "Preview again");
-define("ARLAN_92", "Please enter your name/email address");
-
-
-define("ARLAN_93", "article");
-define("ARLAN_94", "review");
-define("ARLAN_95", "User submission of Articles is currently disabled");
-define("ARLAN_96", "User submission of Reviews is currently disabled");
-define("ARLAN_97", "You do not have enough privileges to Submit Articles");
-define("ARLAN_98", "You do not have enough privileges to Submit Reviews");
+define("ARLAN_90", "Оставени са празни полета, моля натиснете бутона за връщане във вашия браузър и попълнете всички полета.");
+define("ARLAN_91", "Повторен преглед");
+define("ARLAN_92", "Моля въведете вашието име и имейл адрес");
 
 
-define("ARLAN_99", "What would you like to submit?");
-define("ARLAN_100", "News");
-define("ARLAN_101", " Event");
-define("ARLAN_102", "Article");
-define("ARLAN_103", "Review");
-define("ARLAN_104", "Link");
-define("ARLAN_105", "Download");
-define("ARLAN_106", "Submit Item");
+define("ARLAN_93", "статия");
+define("ARLAN_94", "рецензия");
+define("ARLAN_95", "Писането на статии от потребители към този момент е забранено");
+define("ARLAN_96", "Писането на рецензии от потребители към този момент е забранено");
+define("ARLAN_97", "Нямате необходимите права за Писане на Статия");
+define("ARLAN_98", "Нямате необходимите права за Писане на Рецензия");
+
+
+define("ARLAN_99", "Какво бихте искали да добавите?");
+define("ARLAN_100", "Новини");
+define("ARLAN_101", " Събитие");
+define("ARLAN_102", "Статия");
+define("ARLAN_103", "Рецензия");
+define("ARLAN_104", "Линк");
+define("ARLAN_105", "Файл");
+define("ARLAN_106", "Добави публикация");
 
 ?>

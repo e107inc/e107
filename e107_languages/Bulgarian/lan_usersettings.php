@@ -1,108 +1,112 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright © 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_usersettings.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-09 16:18:48 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "User Settings");
+define("PAGE_NAME", "Потребителски настройки");
 
-define("LAN_7", "Display Name: ");
-define("LAN_8", "the name displayed on site");
-define("LAN_9", "Login Name: ");
-define("LAN_10", "the name you use to login to the site");
-define("LAN_11", "the name you use to login to the site - this cannot be changed, please contact an administrator if it needs to be changed for security purposes");
+define("LAN_7", "Име за показване: ");
+define("LAN_8", "името, което ще се показва на сайта");
+define("LAN_9", "Потребителско Име: ");
+define("LAN_10", "името което ще ползвате за вход (логин) на сайта");
+define("LAN_11", "името което ще ползвате за вход на сайта - то не може да бъде променяно. Моля свържете се с администратора ако е необходимо то да бъде сменено от съображения за сигурност");
 
-define("LAN_20", "Error");
-define("LAN_105", "The two passwords do not match");
-define("LAN_106", "That doesn't appear to be a valid email address");
-define("LAN_112", "Email Address: ");
-define("LAN_113", "Hide email address?: ");
-define("LAN_114", "This will prevent your email address from being displayed on site");
-define("LAN_115", "ICQ Number: ");
-define("LAN_116", "AIM Address: ");
+define("LAN_20", "Грешка");
+define("LAN_105", "Двете пароли не съвпадат");
+define("LAN_106", "Това не изглежда да е валиден имейл адрес");
+define("LAN_112", "Имейл Адрес: ");
+define("LAN_113", "Скриване на имейл адреса?: ");
+define("LAN_114", "Това ще забрани показването на вашия имейл адрес на този сайт");
+define("LAN_115", "ICQ Номер: ");
+define("LAN_116", "AIM Адрес: ");
 define("LAN_117", "MSN Messenger: ");
-define("LAN_118", "Birthday: ");
-define("LAN_119", "Location: ");
-define("LAN_120", "Signature: ");
-define("LAN_121", "Avatar: ");
-define("LAN_122", "Timezone:");
-define("LAN_144", "Website URL: ");
-define("LAN_150", "Settings updated and saved into database.");
-define("LAN_151", "OK");
-define("LAN_152", "New Password: ");
-define("LAN_153", "Re-type New Password: ");
-define("LAN_154", "Save Settings");
-define("LAN_155", "Update User Settings");
-define("LAN_185", "You left the password field blank ");
-define("LAN_308", "Real Name: ");
-define("LAN_401", "Leave blank to keep existing password");
-define("LAN_402", "Type path or choose avatar");
-define("LAN_403", "Choose avatar");
-define("LAN_404", "Please note: Any image uploaded to this server that is deemed inappropriate by the administrators will be deleted immediately.");
+define("LAN_118", "Рожденна дата: ");
+define("LAN_119", "Местоположение: ");
+define("LAN_120", "Подпис: ");
+define("LAN_121", "Аватар: ");
+define("LAN_122", "Времева зона:");
+define("LAN_144", "Уебсайт URL: ");
+define("LAN_150", "Настройките са актуализирани и записани в базата данни.");
+define("LAN_151", "ОК");
+define("LAN_152", "Нова Парола: ");
+define("LAN_153", "Въведи отново новата парола: ");
+define("LAN_154", "Записване на настройките");
+define("LAN_155", "Актуализиране на потребителските настройки");
+define("LAN_185", "Полето за парола е празно ");
+define("LAN_308", "Истинско име: ");
+define("LAN_401", "Остави празно за запазване на настоящата парола");
+define("LAN_402", "Въведи път или избери аватар");
+define("LAN_403", "Избери аватар");
+define("LAN_404", "Обърнете внимание: Всички картинки качени на този сървър, които не се одобрят от администраторите ще бъдат незабавно изтрити.");
 
-define("LAN_410", "Settings for");
-define("LAN_411", "Update Your Settings");
-define("LAN_412", "Change Your Password");
-define("LAN_413", "Choose An Avatar");
-define("LAN_414", "Upload Your Photograph");
-define("LAN_415", "Upload your Avatar");
+define("LAN_410", "Настройки за");
+define("LAN_411", "Актуализиране");
+define("LAN_412", "Смяна на парола");
+define("LAN_413", "Избор на аватар");
+define("LAN_414", "Качване на лична снимка");
+define("LAN_415", "Качване на аватар");
 
-define("LAN_416", "Yes");
-define("LAN_417", "No");
+define("LAN_416", "Да");
+define("LAN_417", "Не");
 
-define("LAN_418", "Registration Information");
-define("LAN_419", "Personal / Contact Information");
-define("LAN_420", "Avatar");
-define("LAN_421", "Choose site-stored avatar");
-define("LAN_422", "Use remote avatar");
-define("LAN_423", "Please type full address to image");
-define("LAN_424", "Click button to see avatars stored on this site");
-define("LAN_425", "Photograph");
-define("LAN_426", "This will be shown on your profile page");
-define("LAN_427", "Submit ...");
-define("LAN_428", "News Item");
-define("LAN_429", "Link");
-define("LAN_430", "Download");
-define("LAN_431", "Article");
-define("LAN_432", "Review");
+define("LAN_418", "Регистрационни данни");
+define("LAN_419", "Лична информация / Контакт");
+define("LAN_420", "Аватар");
+define("LAN_421", "Избор от аватарите от сайта");
+define("LAN_422", "Използване на URL за аватар");
+define("LAN_423", "Моля въведете пълния URL адрес до картинката");
+define("LAN_424", "Натисни бутона за преглед на аватарите съхранени на този сайт");
+define("LAN_425", "Снимка");
+define("LAN_426", "Това ще бъде показано на страницата с вашия профил");
+define("LAN_427", "Потвърди ...");
+define("LAN_428", "Новини");
+define("LAN_429", "Линкове");
+define("LAN_430", "Файлове");
+define("LAN_431", "Статии");
+define("LAN_432", "Рецензии");
 
-define("LAN_433", "URL to your XUP file");
-define("LAN_434", "what's this?");
-define("LAN_435", "XML User Protocol file");
+define("LAN_433", "URL до вашия XUP файл");
+define("LAN_434", "какво е това?");
+define("LAN_435", "XML User Protocol файл");
 
-define("LAN_SIGNUP_1", "Min.");
-define("LAN_SIGNUP_2", "chars.");
-define("LAN_SIGNUP_4", "Your password must be at least ");
-define("LAN_SIGNUP_5", " characters long.");
-define("LAN_SIGNUP_6", "Your ");
-define("LAN_SIGNUP_7", " is required");
+define("LAN_SIGNUP_1", "Мин.");
+define("LAN_SIGNUP_2", "симв.");
+define("LAN_SIGNUP_4", "Паролата ви трябва да е дълга най-малко ");
+define("LAN_SIGNUP_5", " символа.");
+define("LAN_SIGNUP_6", "Необходим е вашия ");
+define("LAN_SIGNUP_7", "");
 
-define("LAN_USET_1", "Your avatar is too wide");
-define("LAN_USET_2", "Maximum allowable width is");
-define("LAN_USET_3", "Your avatar is too high");
-define("LAN_USET_4", "Maximum allowable height is");
+define("LAN_USET_1", "Аватарът ви е прекалено голям");
+define("LAN_USET_2", "Максималната позволена дължина е");
+define("LAN_USET_3", "Аватарът ви е прекалено голям");
+define("LAN_USET_4", "Максималната позволена височина е");
 
 // v.616
 define("LAN_CUSTOMTITLE", "Custom Title");
-define("LAN_ICQNUMBER", "ICQ number must contain only numbers");
+define("LAN_ICQNUMBER", "ICQ номера трябва да съдържа само цифри");
 
 //v.617
-define("LAN_408", "A user with that email address already exists. ");
-define("MAX_AVWIDTH", "Maximum avatar size (wxh) is ");
+define("LAN_408", "Вече съществува потребител с този имейл адрес. ");
+define("MAX_AVWIDTH", "Максималната позволена големина (д. x в.) на аватара е ");
 define("MAX_AVHEIGHT", " x ");
-define("GIF_RESIZE", "Please resize gif image or convert to different format");
-define("RESIZE_NOT_SUPPORTED", "Resize method not supported by this server. Please resize image or choose another. File has been deleted.");
+define("GIF_RESIZE", "Моля променете размерите на gif картинката или конвертирайте към друг формат");
+define("RESIZE_NOT_SUPPORTED", "Промяна размера на картинка не се поддържа от този сървър. Моля променете размерите на картинката или изберете друга. Файлът е изтрит.");
 
 // v0.7
-define("LAN_USET_5", "Subscribed to");
-define("LAN_USET_6", "Subscribe to our mailing-list(s) and/or sections of this site.");
-define("LAN_USET_7", "Miscellaneous");
-define("LAN_USET_8", "Signature / Timezone");
-define("LAN_USET_9", "Some of the required fields (marked with a *) are missing from your settings.");
-define("LAN_USET_10","Please update your settings now, in order to proceed.");
+define("LAN_USET_5", "Абониране за");
+define("LAN_USET_6", "Абонирайте се за нашите имейл списъци и/или секциите за този сайт.");
+define("LAN_USET_7", "Други");
+define("LAN_USET_8", "Подпис / Времева зона");
+define("LAN_USET_9", "Някои от задължителните полета (маркирани с *) липсват във вашите настройки.");
+define("LAN_USET_10","Моля актуализирайте вашите настройки, за да продължите.");
 ?>

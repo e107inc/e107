@@ -1,25 +1,29 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language File
+|     Bulgarian Language Pack for e107 Version 0.7
+|     Copyright © 2005 - Bulgarian e107
+|     http://www.e107bg.org
+|     Encoding: utf-8
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Bulgarian/lan_upload_handler.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-09 16:18:47 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-19 19:46:15 $
 |     $Author: secretr $
 +----------------------------------------------------------------------------+
 */
-define("LANUPLOAD_1", "The filetype");
-define("LANUPLOAD_2", "is not allowed and has been deleted.");
-define("LANUPLOAD_3", "Successfully uploaded");
-define("LANUPLOAD_4", "Either destination folder does not exist or is not writable. (chmod 777)");
-define("LANUPLOAD_5", "The uploaded file exceeds the upload_max_filesize directive in php.ini.");
-define("LANUPLOAD_6", "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the html form.");
-define("LANUPLOAD_7", "The uploaded file was only partially uploaded.");
-define("LANUPLOAD_8", "No file was uploaded.");
-define("LANUPLOAD_9", "Uploaded file size 0 bytes");
-define("LANUPLOAD_10", "Upload failed [Duplicate filename] - A file with the same name already exits.");
-define("LANUPLOAD_11", "The file did not upload. Filename: ");
-define("LANUPLOAD_12", "Error");
+define("LANUPLOAD_1", "Видът файл");
+define("LANUPLOAD_2", "не е позволен и беше изтрит.");
+define("LANUPLOAD_3", "Успешно качен");
+define("LANUPLOAD_4", "Директорията за качване не съществува или няма права за писане. (chmod 777)");
+define("LANUPLOAD_5", "Големината на файла надвишава директивата upload_max_filesize в php.ini.");
+define("LANUPLOAD_6", "Големината на файла надвишава директивата MAX_FILE_SIZE зададена в html формата.");
+define("LANUPLOAD_7", "Файлът не е изцяло качен.");
+define("LANUPLOAD_8", "Файл не е качен.");
+define("LANUPLOAD_9", "Големината на качения файл е 0 байта");
+define("LANUPLOAD_10", "Неуспешно качване [Дублиране на имена] - Вече съществува файл със същото име.");
+define("LANUPLOAD_11", "Файлът не беше качен. Име на файла: ");
+define("LANUPLOAD_12", "Грешка");
 
 ?>
