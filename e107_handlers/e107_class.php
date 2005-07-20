@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-07-05 15:18:39 $
-|     $Author: streaky $
+|     $Revision: 1.40 $
+|     $Date: 2005-07-20 00:40:49 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -57,7 +57,7 @@ class e107{
 		$http_path = array_reverse($http_path);
 		$this->server_path = implode("/", $http_path)."/";
 		$this->server_path = $this->fix_windows_paths($this->server_path);
-		
+
 		if ($this->server_path == "//") {
 			$this->server_path = "/";
 		}
@@ -75,7 +75,7 @@ class e107{
 		define("e_FILE", e_BASE.$FILES_DIRECTORY);
 		define("e_HANDLER", e_BASE.$HANDLERS_DIRECTORY);
 		define("e_LANGUAGEDIR", e_BASE.$LANGUAGES_DIRECTORY);
-		
+
 		define("e_ADMIN_ABS", e_HTTP.$ADMIN_DIRECTORY);
 		define("e_IMAGE_ABS", e_HTTP.$IMAGES_DIRECTORY);
 		define("e_THEME_ABS", e_HTTP.$THEMES_DIRECTORY);
@@ -86,9 +86,9 @@ class e107{
 
 		define("e_DOCS", e_BASE.$HELP_DIRECTORY);
 		define("e_DOCROOT", $_SERVER['DOCUMENT_ROOT']."/");
-		
+
 		define("e_DOCS_ABS", e_HTTP.$HELP_DIRECTORY);
-		
+
 		if ($DOWNLOADS_DIRECTORY{0} == "/") {
 			define("e_DOWNLOAD", $DOWNLOADS_DIRECTORY);
 		} else {
@@ -105,14 +105,16 @@ class e107{
 	function ban() {
 		global $sql;
 		$ip = $this->getip();
-		$wildcard = substr($ip, 0, strrpos($ip, ".")).".*";
+		$tmp = explode(".",$ip);
+        $wildcard =  $tmp[0].".".$tmp[1].".".$tmp[2].".*";
+		$wildcard2 = $tmp[0].".".$tmp[1].".*.*";
 
 		$tmp = gethostbyaddr(getenv('REMOTE_ADDR'));
 		preg_match("/[\w]+\.[\w]+$/si", $tmp, $match);
 		$bhost = (isset($match[0]) ? " OR banlist_ip='$match[0]' " : "");
 
 		if ($ip != '127.0.0.1') {
-			if ($sql->db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='$ip' OR banlist_ip='$wildcard' {$bhost}")) {
+			if ($sql->db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='$ip' OR banlist_ip='$wildcard' OR banlist_ip='$wildcard2' {$bhost}")) {
 				// enter a message here if you want some text displayed to banned users ...
 				exit;
 			}
