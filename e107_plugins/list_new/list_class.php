@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2005-06-27 14:05:38 $
+|		$Revision: 1.6 $
+|		$Date: 2005-07-20 15:06:56 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -282,6 +282,7 @@ class listclass {
 
 		$menu_installed = $sql -> db_Select("menus", "*", "(menu_name = 'list_new_menu' || menu_name = 'list_recent_menu') AND menu_location != '0' AND menu_class REGEXP '".e_CLASS_REGEXP."' ");
 		$LIST_DATA = "";
+		$LIST_CAPTION = "";
 
 		$this -> getContentSections("");
 
@@ -313,6 +314,9 @@ class listclass {
 		$LIST_AUTHOR = "";
 		$LIST_CATEGORY = "";
 		$LIST_INFO = "";
+		//$LIST_CAPTION = (isset($list_pref[$mode."_caption"]) && $list_pref[$mode."_caption"] ? $list_pref[$mode."_caption"] : "");
+		//$LIST_CAPTION = (isset($list_pref[$mode."_caption"]) && $list_pref[$mode."_caption"] ? $list_pref[$mode."_caption"] : "");
+		//echo $list_pref["$arr_{$mode}_caption"];
 
 		if(is_array($LIST_DATA)){			//if it is an array, data exists and data is not empty
 			for($i=0;$i<count($LIST_DATA[$mode]);$i++){				

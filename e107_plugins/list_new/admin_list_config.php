@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/admin_list_config.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2005-06-27 14:05:37 $
+|		$Revision: 1.4 $
+|		$Date: 2005-07-20 15:06:55 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -133,7 +133,7 @@ $ns -> tablerender(LIST_ADMIN_1, $text);
 
 
 function parse_global_options($type){
-	global $rc, $list_pref, $rs, $sections, $titles, $iconlist, $TOPIC_ROW, $TOPIC_ROW_SPACER, $TOPIC_TABLE_END;
+	global $rc, $list_pref, $rs, $tp, $sections, $titles, $iconlist, $TOPIC_ROW, $TOPIC_ROW_SPACER, $TOPIC_TABLE_END;
 
 	//show sections
 	$TOPIC_TOPIC = LIST_ADMIN_SECT_1;
@@ -262,7 +262,7 @@ function parse_global_options($type){
 		<tr>
 		<td class='forumheader3' style='width:10%; white-space:nowrap; vertical-align:top;'>".$titles[$i]."</td>
 		<td class='forumheader3'>
-			".$rs -> form_text($sections[$i]."_".$type."_caption", 30, $list_pref[$sections[$i]."_".$type."_caption"], "50", "tbox")."
+			".$rs -> form_text($sections[$i]."_".$type."_caption", 30, $tp->toHTML($list_pref[$sections[$i]."_".$type."_caption"],"","defs"), "50", "tbox")."
 		</td>
 		</tr>";
 	}
@@ -277,7 +277,7 @@ function parse_global_options($type){
 
 //---------------------------------------------------------------------------------------------------
 function parse_menu_options($type){
-	global $rc, $list_pref, $rs, $sections, $titles, $iconlist, $TOPIC_ROW, $TOPIC_ROW_SPACER, $TOPIC_TABLE_END;
+	global $rc, $list_pref, $rs, $tp, $sections, $titles, $iconlist, $TOPIC_ROW, $TOPIC_ROW_SPACER, $TOPIC_TABLE_END;
 
 	$text = "
 	<div id='".$type."' style='display:none; text-align:center'>
@@ -295,7 +295,7 @@ function parse_menu_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_2;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_3;
 	$TOPIC_HELP = LIST_ADMIN_LAN_4;
-	$TOPIC_FIELD = $rs -> form_text($type."_caption", "30", $list_pref[$type."_caption"], "50", "tbox");
+	$TOPIC_FIELD = $rs -> form_text($type."_caption", "30", $tp->toHTML($list_pref[$type."_caption"],"","defs"), "50", "tbox");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 	//menu preference : icon : use
@@ -366,7 +366,7 @@ function parse_menu_options($type){
 
 //---------------------------------------------------------------------------------------------------
 function parse_page_options($type){
-	global $rc, $list_pref, $rs, $sections, $TOPIC_ROW, $TOPIC_ROW_SPACER, $TOPIC_TABLE_END;
+	global $rc, $list_pref, $rs, $tp, $sections, $TOPIC_ROW, $TOPIC_ROW_SPACER, $TOPIC_TABLE_END;
 
 	if($type == "recent_page"){
 		$display = "display:;";
@@ -390,7 +390,7 @@ function parse_page_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_2;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_3;
 	$TOPIC_HELP = LIST_ADMIN_LAN_4;
-	$TOPIC_FIELD = $rs -> form_text($type."_caption", "30", $list_pref[$type."_caption"], "50", "tbox");
+	$TOPIC_FIELD = $rs -> form_text($type."_caption", "30", $tp->toHTML($list_pref[$type."_caption"],"","defs"), "50", "tbox");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 	//page preference : icon : use
@@ -466,7 +466,7 @@ function parse_page_options($type){
 	$TOPIC_TOPIC = LIST_ADMIN_LAN_23;
 	$TOPIC_HEADING = LIST_ADMIN_LAN_24;
 	$TOPIC_HELP = LIST_ADMIN_LAN_25;
-	$TOPIC_FIELD = $rs -> form_textarea($type."_welcometext", "50", "5", $list_pref[$type."_welcometext"], "", "tbox");
+	$TOPIC_FIELD = $rs -> form_textarea($type."_welcometext", "50", "5", $tp->toHTML($list_pref[$type."_welcometext"],"","defs"), "", "tbox");
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 	if($type == "new_page"){

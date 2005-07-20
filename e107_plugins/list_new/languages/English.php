@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-07-14 15:00:00 $
-|     $Author: stevedunstan $
+|     $Revision: 1.10 $
+|     $Date: 2005-07-20 15:06:57 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -219,7 +219,9 @@ define("LIST_MEMBER_1", "members");
 define("LIST_MEMBER_2", "no members");
 
 define("LIST_CONTENT_1", "content");
-define("LIST_CONTENT_2", "no content");
+define("LIST_CONTENT_2", "no content in");
+define("LIST_CONTENT_3", "no valid content category");
+
 
 define("LIST_CHATBOX_1", "chatbox");
 define("LIST_CHATBOX_2", "no chatbox posts");
