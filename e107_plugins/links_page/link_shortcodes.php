@@ -240,7 +240,13 @@ if(isset($linkspage_pref['link_icon']) && $linkspage_pref['link_icon']){
 					}
 				}
 			}else{
+				if(file_exists(e_PLUGIN."links_page/link_images/".$rowl['link_button'])){
 				$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000' src='".e_PLUGIN."links_page/link_images/".$rowl['link_button']."' alt='' /></a>";
+				}else{
+					if(isset($linkspage_pref['link_icon_empty']) && $linkspage_pref['link_icon_empty']){
+					$LINK_BUTTON = $LINK_APPEND."\n<img style='border:1px solid #000; width: 88px; height: 31px;' src='".e_PLUGIN."links_page/images/generic.png' alt='' /></a>";
+					}
+				}
 			}
 		}
 	} else {
