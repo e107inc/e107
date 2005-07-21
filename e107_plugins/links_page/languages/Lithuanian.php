@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Lithuanian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-02 22:17:37 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-21 15:50:16 $
 |     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
@@ -204,21 +204,21 @@ define("NT_LAN_LP_3", "Link Submitted");
 define("LNK_SCH_LAN_2", "All Links Categories");
 define("LNK_SCH_LAN_3", "All links details");
 
-define("LAN_LINKS_1", "Total links");
-define("LAN_LINKS_2", "Total links activated");
-define("LAN_LINKS_3", "Anonymous");
-define("LAN_LINKS_4", "heading");
-define("LAN_LINKS_5", "url");
-define("LAN_LINKS_6", "order");
+define("LAN_LINKS_1", "Iš viso nuorodų");
+define("LAN_LINKS_2", "Iš viso aktyvuotų nuorodų");
+define("LAN_LINKS_3", "Anoniminis");
+define("LAN_LINKS_4", "antraštė");
+define("LAN_LINKS_5", "URL");
+define("LAN_LINKS_6", "tvarka");
 define("LAN_LINKS_7", "refer");
-define("LAN_LINKS_8", "ascending");
-define("LAN_LINKS_9", "descending");
-define("LAN_LINKS_10", "Top Links : Refer");
-define("LAN_LINKS_11", "Top Links : Rating");
-define("LAN_LINKS_12", "view top links by refer");
-define("LAN_LINKS_13", "view top links by user rating");
-define("LAN_LINKS_14", "back to links frontpage");
-define("LAN_LINKS_15", "sort by");
+define("LAN_LINKS_8", "DID");
+define("LAN_LINKS_9", "MAŽ");
+define("LAN_LINKS_10", "Top nuorodos : Nukreipimas");
+define("LAN_LINKS_11", "Top nuorodos : Įvertinimas");
+define("LAN_LINKS_12", "žiūrėti top nuorodas pagal nukreipimą");
+define("LAN_LINKS_13", "žiūrėti top nuorodas pagal vartotojų įvertinimą");
+define("LAN_LINKS_14", "grįžti į nuorodų pagrindinį puslapį");
+define("LAN_LINKS_15", "rūšiuoti pagal");
 define("LAN_LINKS_16", "in this category");
 define("LAN_LINKS_17", "link");
 define("LAN_LINKS_18", "links");
