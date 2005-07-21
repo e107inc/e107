@@ -21,11 +21,11 @@ if(isset($_POST['reset'])){
 }
 
 $text .= "
-You can arrange where and in which order your menu items are from here. 
-Use the dropdown menu to move the menus up and down until you are satisfied with their positioning.
+Čia galite valdyti tinklapio meniu vietą ir tvarką. 
+Iš skleidžiamo sąrašo galite perkelti meniu žemyn ar aukštyn,kol būsite patenkintas jų išdėstymu.
 <br />
 <br />
-If you find the menus are not updating properly click on the refresh button.
+Jei pastebėjote,kad meniu neatsinaujina, paspauskite mygtuką  Refresh.
 <br />
 <form method='post' id='menurefresh' action='".$_SERVER['PHP_SELF']."'>
 <div><input type='submit' class='button' name='reset' value='Refresh' /></div>

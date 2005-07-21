@@ -1,5 +1,7 @@
 ﻿<?php
 $caption = "Use Class Help";
-$text = "You can create or edit/delete existing classes from this page.<br />This is useful for restricting users to certain parts of your site. For example, you could create a class called TEST, then create a forum which only allowed users in the TEST class to access it.";
+$text = "Čia galite kurti, redaguoti ar ištrinti klases.<br />
+Tai naudina, kai norite uždrausti lankytojams lankytis tam tikrose tinklapio puslapiuose. Pavyzdžiui, galite sukurti klasę TEST, 
+po to sukurti forumą, kurį tik šios klasės nariai galės pasiekti.";
 $ns -> tablerender($caption, $text);
 ?>

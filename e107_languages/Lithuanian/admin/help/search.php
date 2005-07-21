@@ -1,8 +1,8 @@
 ﻿<?php
-$text = "If your MySql server version supports it you can switch to the MySql sort method which is faster than the PHP sort method and 
-includes boolean search functionality.<br /><br />
+$text = "Jei tai palaiko jūsų MySql serverio versija, galite panaudoti šį MySql rūšiavimo metodą, kuris yra greitesnis nei PHP rūšivimas
+ir turi boolean paieškos funkcionalumą.<br /><br />
 
-<b>Chars</b> This is the number of text characters that will be displayed in the search result summary.<br /><br />
-<b>Results</b> This is the number of results that will show per page.";
+<b>Chars</b> Teksto ženklų kiekis, kuris bus parodytas paieškos rezultatų išklotinėje.<br /><br />
+<b>Results</b> Pateikiamų paieškos rezultatu skaičius puslapyje.";
 $ns -> tablerender("Search Help", $text);
 ?>

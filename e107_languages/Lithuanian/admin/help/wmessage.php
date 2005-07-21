@@ -1,4 +1,5 @@
 ﻿<?php
-$text = "This page allows you to set a message that will appear at the top of your front page all the time it's activated. You can set a different message for guests, registered/logged-in members and administrators.";
+$text = "Šis puslapis leidia sukurti žinutes, kurios pasirodo pagrindinio puslapio viršuje tol,kl jos yra aktyvios.
+Galite sukurti skirtingas žinutes, svečiams, registruotiems ir prisijungusiems nariamasir administratoriams.";
 $ns -> tablerender("WMessage Help", $text);
 ?>

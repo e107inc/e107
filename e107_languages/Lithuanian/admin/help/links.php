@@ -1,5 +1,6 @@
 ﻿<?php
-$text = "Enter all your site links here. Links added here will be shown in your main navigation menu, for other links please use the Links Page plugin.
+$text = "Čia galima suvesti savo tinklapio nuorodas, kurios bus rodomos Pagrindiniame meni.Kitas nuorodas patariame
+įašyti į Nuorodų puslapį.
 <br />
 ";
 $ns -> tablerender("Links Help", $text);

@@ -1,6 +1,6 @@
 ﻿<?php
 
-$text = "Set your chatbox preferences from here.<br />If the replace link box is ticked, any links entered will be replaced by the text you enter in the textbox, this stops long links causing display problems. Wordwrap will auto wrap text that is longer than the length specified here.";
+$text = "Čia keičiamos chatbox nuostatos.<br />Jei Pakeisti nuorod1 yra pažymėta, bet kokios įvestos nuorodos bus pakeistos tekstu, kurį įrašėte teksto laukelyje, tai leidžia įšvengti ilgų nuorodų rodymo problemų. Wordwrap will auto wrap text that is longer than the length specified here.";
 
 $ns -> tablerender("Chatbox", $text);
 ?>

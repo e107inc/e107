@@ -1,7 +1,7 @@
 ﻿<?php
 $caption = "Menu Help";
-$text .= "You can arrange where and in which order your menu items are displayed from here. Use the arrows to move the menus up and down until you are satisfied with their positioning.<br />
-The menu items in the middle of the screen are de-activated, you can activate these by choosing a location to put them in.
+$text .= "Čia galite nuspręsti, kokia tvarka bus išdėstytos meniu. Panaudokite rodykles, norėdami perkelti meniuaukštyn ar žemyn, kol rasite joms geriausią vietą.<br />
+Meniu, kurios yra puslapio viduryje, yra neaktyvios. Būtent jas ir galite perkelti ten, kur manote esant reiklainga.
 ";
 
 $ns -> tablerender("Menus Help", $text);

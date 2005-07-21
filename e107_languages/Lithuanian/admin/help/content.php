@@ -1,6 +1,6 @@
 ﻿<?php
 
-$text = "You can add a normal page to your site using this feature. A link to the new page will be created in your main site navigation box. For example if you create a new page with the Link Name 'Test', a link called 'Test' will appear in your links box after submitting the new page.<br />
-If you want your content page to have a caption, enter it in the Page Heading box.";
+$text = "Pasinaudoję šia galimybe, jūs galite įdėti normalų puslapį į savo tinklalapį. Nuoroda į šį puslapį bus įdėta į pagrindinį meniu. Pavyzdžiui, jei sukūrėte naują puslapį su Nuorodos pavadinimu 'Testas', tai nuuoroda šiuo pavadinimu atsiras nuorodų lauke po to, kai išsaugosite naująjį puslapį.<br />
+Jei norite, kad puslapis turėtų antraštę, įašykite ją Page Heading laukelyje.";
 $ns -> tablerender("Content Help", $text);
 ?>

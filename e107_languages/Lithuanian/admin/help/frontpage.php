@@ -1,5 +1,5 @@
 ﻿<?php
 $caption = "Front Page Help";
-$text = "From this screen you can choose what to display as the front page of your site, the default is news.";
+$text = "Šiame ekrane jūs galite pasirinkti, ką rpdyti tinklaapio pradiniame puslapyje, pagal numatymą tai yra naujienos.";
 $ns -> tablerender($caption, $text);
 ?>

@@ -9,8 +9,7 @@ $text = "<div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vert
 <img src='".e_IMAGE."fileinspector/file_unknown.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Non Core File</div>";
 $ns -> tablerender("File Key", $text);
 
-$text = "The file inspector scans and analyses the files on your sites server. When the inspector encounters 
-an e107 core file it checks it for file consistency to make sure it isnt corrupted.";
+$text = "Failų inspektorius skanuoja ir analizuoja jūsų tinklapio failus. Inspektorius, aptikęs e107 branduolio failą iš karto patikrina jo vientisumą tam, kad patikrintų, ar faillas nėra pažeistas.";
 
 $ns -> tablerender("File Inspector Help", $text);
 ?>

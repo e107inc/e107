@@ -1,6 +1,7 @@
 ﻿<?php
-$text = "You set polls/surveys from this page, just type in the poll title and options, preview it and if all looks ok tick the box to make it active.<br /><br />
-To see the poll, go to your menus page and make sure poll_menu is activated.";
+$text = "Čia galite sukurti apklauas/balsavimu įrašydami antraštę ir parinktis, peržvelgti, ir, ji viskas gerai, 
+pažymeti laukęlį - taipapklausa bus aktyvuota.<br /><br />
+Norėdami matyti Apklausų meniu, reikia šį meniu aktyvuot.";
 
 $ns -> tablerender("Polls", $text);
 ?>

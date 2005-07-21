@@ -1,5 +1,5 @@
 ﻿<?php
-$text = "Any meta tags you enter here will be sent to screen in the right place.";
+$text = "Meta žymos, kurias jūs įrašysie, paklius ten, kur ir reikia.";
 
 $ns -> tablerender("Meta Tags", $text);
 ?>

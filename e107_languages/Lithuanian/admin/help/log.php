@@ -1,4 +1,6 @@
 ﻿<?php
-$text = "Activate site stats logging from this page. If you are short of server space tick the domain only box as referer logging, this will only log the domain as opposed to the whole url, ie 'jalist.com' instead of 'http://jalist.com/links.php' ";
+$text = "Galima aktyvuoti statistiką - bus įrašomi visi prisijungimai prie tinklapio.
+Jei neturite serveryje vietos į valias, geriau pažymėkite the domain only box as referer logging,
+tai įrašys tik domeinus, bet ne visą url, pvz., 'jalist.com' vietoje 'http://jalist.com/links.php' ";
 $ns -> tablerender("Logging Help", $text);
 ?>

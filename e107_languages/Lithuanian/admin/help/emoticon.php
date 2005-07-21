@@ -1,6 +1,6 @@
 ﻿<?php
 
-$text = "You can create emote packs that will install seamlessly into e107. Go to <a href='".e_FILE."emote_create/emotecreate.php'>emote create</a> and follow the instructions.";
+$text = "Jūs galite sukurti jausmukų rinkinius, kuriuos lengvai įdiegsite į e107. Eikite ir <a href='".e_FILE."emote_create/emotecreate.php'>kurkite</a> sekdami instrukcijas.";
 
 $ns -> tablerender("Emoticon Help", $text);
 ?>
