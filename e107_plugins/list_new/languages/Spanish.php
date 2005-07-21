@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Spanish.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-07-14 20:01:29 $
+|     $Revision: 1.8 $
+|     $Date: 2005-07-21 04:46:56 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -185,6 +185,7 @@ define("LIST_MEMBER_2", "Sin miembros");
   	 
 define("LIST_CONTENT_1", "Contenido");
 define("LIST_CONTENT_2", "Sin contenido");
+define("LIST_CONTENT_3", "No es una categoría de contenido válida");
   	 
 define("LIST_CHATBOX_1", "ChatBox");
 define("LIST_CHATBOX_2", "No hay mensajes de ChatBox");
