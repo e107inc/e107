@@ -1,9 +1,9 @@
-<?php
+ï»¿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,42 +11,42 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/Lithuanian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-02 11:37:10 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-23 22:09:26 $
 |     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
 	
-define("ADSTAT_ON", "Ájungti");
-define("ADSTAT_OFF", "Iğjungti");
-define("ADSTAT_L1", "Ğis áskiepis árağys visà informacijà apie apsilankymus Jûsø svetainëje ir pateiks iğsamius statistinius duomenis.");
-define("ADSTAT_L2", "Statistikos áskiepis sëkmingai ádiegtas. Norëdami aktyvuoti prağome eiti á sàrankos meniu ir paspausti Aktyvuoti.<br /><b>Jûs turite nustatyti katalogo e107_plugins/log/logs prieinamumà á 777 (chmod 777)</b>");
+define("ADSTAT_ON", "Ä®jungti");
+define("ADSTAT_OFF", "IÅ¡jungti");
+define("ADSTAT_L1", "Å is Ä¯skiepis Ä¯raÅ¡ys visÄ… informacijÄ… apie apsilankymus JÅ«sÅ³ svetainÄ—je ir pateiks iÅ¡samius statistinius duomenis.");
+define("ADSTAT_L2", "Statistikos Ä¯skiepis sÄ—kmingai Ä¯diegtas. NorÄ—dami aktyvuoti praÅ¡ome eiti Ä¯ sÄ…rankos meniu ir paspausti Aktyvuoti.<br /><b>JÅ«s turite nustatyti katalogo e107_plugins/log/logs prieinamumÄ… Ä¯ 777 (chmod 777)</b>");
 define("ADSTAT_L3", "Statistikos rinkimas");
 define("ADSTAT_L4", "Aktyvuoti statistikos rinkimas");
 define("ADSTAT_L5", "Statistikos tipai");
-define("ADSTAT_L6", "Narğyklës");
-define("ADSTAT_L7", "Operacinës sistemos");
-define("ADSTAT_L8", "Ekrano raiğka / Screen resolutions / depths");
-define("ADSTAT_L9", "Ğalys/domenai, iğ kuriø aplankoma");
-define("ADSTAT_L10", "Iğ kur aplanko");
-define("ADSTAT_L11", "Paieğkos uşklausos");
-define("ADSTAT_L12", "Iğvalyti statistikos duomenis");
-define("ADSTAT_L13", "tai iğtrins statistikos duomenis - atsargiai!");
-define("ADSTAT_L14", "Puslapiø iğnarğyta");
+define("ADSTAT_L6", "NarÅ¡yklÄ—s");
+define("ADSTAT_L7", "OperacinÄ—s sistemos");
+define("ADSTAT_L8", "Ekrano raiÅ¡ka / Screen resolutions / depths");
+define("ADSTAT_L9", "Å alys/domenai, iÅ¡ kuriÅ³ aplankoma");
+define("ADSTAT_L10", "IÅ¡ kur aplanko");
+define("ADSTAT_L11", "PaieÅ¡kos uÅ¾klausos");
+define("ADSTAT_L12", "IÅ¡valyti statistikos duomenis");
+define("ADSTAT_L13", "tai iÅ¡trins statistikos duomenis - atsargiai!");
+define("ADSTAT_L14", "PuslapiÅ³ iÅ¡narÅ¡yta");
 define("ADSTAT_L15", "Atnaujinti statistikos nuostatas");
-define("ADSTAT_L16", "Svetainës statistikos nuostatos");
+define("ADSTAT_L16", "SvetainÄ—s statistikos nuostatos");
 define("ADSTAT_L17", "Ssstatistikos nuostato atnaujintoss");
-define("ADSTAT_L18", "Leisti priëjimà prie pagrindinio statistikos puslapio ...");
-define("ADSTAT_L19", "Vëliausi lankytojai");
-define("ADSTAT_L20", "Skaièiuoti administratoriaus apsilankymus");
-define("ADSTAT_L21", "Rodomø árağø statistikos puslapyje limitas");
-define("ADSTAT_L22", "Paleisti atnaujinimo paprogramæ");
-define("ADSTAT_L23", "árağus iğ ankstenës rastos e107 versijos atnaujinti èia");
-define("ADSTAT_L24", "Eiti á atnaujinimo programà");
-define("ADSTAT_L25", "Pasirinkti statistikos duomenys renkami iğ naujo");
+define("ADSTAT_L18", "Leisti priÄ—jimÄ… prie pagrindinio statistikos puslapio ...");
+define("ADSTAT_L19", "VÄ—liausi lankytojai");
+define("ADSTAT_L20", "SkaiÄiuoti administratoriaus apsilankymus");
+define("ADSTAT_L21", "RodomÅ³ Ä¯raÅ¡Å³ statistikos puslapyje limitas");
+define("ADSTAT_L22", "Paleisti atnaujinimo paprogramÄ™");
+define("ADSTAT_L23", "Ä¯raÅ¡us iÅ¡ ankstenÄ—s rastos e107 versijos atnaujinti Äia");
+define("ADSTAT_L24", "Eiti Ä¯ atnaujinimo programÄ…");
+define("ADSTAT_L25", "Pasirinkti statistikos duomenys renkami iÅ¡ naujo");
 
-define("ADSTAT_L26", "Pağalinti puslpaio árağus");
-define("ADSTAT_L27", "jei Jûsø statistika turi neteisingus puslapius, Jûs galite pağalinti juos èia");
-define("ADSTAT_L28", "Atverti puslapá");
+define("ADSTAT_L26", "PaÅ¡alinti puslpaio Ä¯raÅ¡us");
+define("ADSTAT_L27", "jei JÅ«sÅ³ statistika turi neteisingus puslapius, JÅ«s galite paÅ¡alinti juos Äia");
+define("ADSTAT_L28", "Atverti puslapÄ¯");
 
 ?>

@@ -1,9 +1,9 @@
-<?php
+ï»¿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,74 +11,74 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Lithuanian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-28 21:56:03 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-23 22:07:47 $
 |     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
 
 
-define("NFLAN_01", "Naujienø ğaltinis");
-define("NFLAN_02", "Ğis áskiepis iğgaus rss ğaltinius iğ kitø svetainiø ir vaizduos juos pagal Jûsø pasirinkimus");
-define("NFLAN_03", "Konfiguruoti naujienø ğaltiná");
-define("NFLAN_04", "Naujienø ğaltinio áskiepis sëkmingai ádiegtas. Norëdami ádëti ir konfiguruoti naujienø ğaltinius gráşkite á pagrindiná administravimo puslapá ir paspauskite ant naujienø ğaltinio piktogramos áskiepiø sekcijoje.");
+define("NFLAN_01", "NaujienÅ³ Å¡altinis");
+define("NFLAN_02", "Å is Ä¯skiepis iÅ¡gaus rss Å¡altinius iÅ¡ kitÅ³ svetainiÅ³ ir vaizduos juos pagal JÅ«sÅ³ pasirinkimus");
+define("NFLAN_03", "Konfiguruoti naujienÅ³ Å¡altinÄ¯");
+define("NFLAN_04", "NaujienÅ³ Å¡altinio Ä¯skiepis sÄ—kmingai Ä¯diegtas. NorÄ—dami Ä¯dÄ—ti ir konfiguruoti naujienÅ³ Å¡altinius grÄ¯Å¾kite Ä¯ pagrindinÄ¯ administravimo puslapÄ¯ ir paspauskite ant naujienÅ³ Å¡altinio piktogramos Ä¯skiepiÅ³ sekcijoje.");
 define("NFLAN_05", "Keisti");
 define("NFLAN_06", "Trinti");
-define("NFLAN_07", "Esami naujienø ğaltiniai");
-define("NFLAN_08", "Naujienø ğaltiniø pagrindinis psl.");
-define("NFLAN_09", "Sukurti naujienø ğaltiná");
-define("NFLAN_10", "URL á rss ğaltiná");
-define("NFLAN_11", "Paveikslëlio adresas");
+define("NFLAN_07", "Esami naujienÅ³ Å¡altiniai");
+define("NFLAN_08", "NaujienÅ³ Å¡altiniÅ³ pagrindinis psl.");
+define("NFLAN_09", "Sukurti naujienÅ³ Å¡altinÄ¯");
+define("NFLAN_10", "URL Ä¯ rss Å¡altinÄ¯");
+define("NFLAN_11", "PaveikslÄ—lio adresas");
 define("NFLAN_12", "Aktyvumas");
 define("NFLAN_13", "Niekur (neaktyvus)");
 define("NFLAN_14", "Tik meniu");
-define("NFLAN_15", "Sukurti naujienø ğaltiná");
-define("NFLAN_16", "Atnaujinti naujienø ğaltiná");
-define("NFLAN_17", "áveskite 'default' dëşutëje norëdami naudoti pasirnktà paveikslëlá ğaltiniuose, norëdami naudoti savo paveikslëlá áveskite visà adresà; palikite tuğèià, jei nenorite naudoti paveikslëlio.");
-define("NFLAN_18", "Atnaujinimo intervalas sekundëmis");
-define("NFLAN_19", "pvz, 3600: naujienø ğaltinis atsinaujins kas valandà");
-define("NFLAN_20", "Tik naujienø ğaltinio pagrindiniame puslapyje");
-define("NFLAN_21", "Meniu ir naujienø ğaltinio puslapyje");
-define("NFLAN_22", "pasirinkite, kur norite rodyti naujienø ğaltiná");
-define("NFLAN_23", "Naujienø ğaltinis pridëtas duomenø bazëje.");
-define("NFLAN_24", "Bûtini laukai palikti tuğti.");
-define("NFLAN_25", "Naujienø ğaltinis atnaujintas duomenø bazëje.");
+define("NFLAN_15", "Sukurti naujienÅ³ Å¡altinÄ¯");
+define("NFLAN_16", "Atnaujinti naujienÅ³ Å¡altinÄ¯");
+define("NFLAN_17", "Ä¯veskite 'default' dÄ—Å¾utÄ—je norÄ—dami naudoti pasirnktÄ… paveikslÄ—lÄ¯ Å¡altiniuose, norÄ—dami naudoti savo paveikslÄ—lÄ¯ Ä¯veskite visÄ… adresÄ…; palikite tuÅ¡ÄiÄ…, jei nenorite naudoti paveikslÄ—lio.");
+define("NFLAN_18", "Atnaujinimo intervalas sekundÄ—mis");
+define("NFLAN_19", "pvz, 3600: naujienÅ³ Å¡altinis atsinaujins kas valandÄ…");
+define("NFLAN_20", "Tik naujienÅ³ Å¡altinio pagrindiniame puslapyje");
+define("NFLAN_21", "Meniu ir naujienÅ³ Å¡altinio puslapyje");
+define("NFLAN_22", "pasirinkite, kur norite rodyti naujienÅ³ Å¡altinÄ¯");
+define("NFLAN_23", "NaujienÅ³ Å¡altinis pridÄ—tas duomenÅ³ bazÄ—je.");
+define("NFLAN_24", "BÅ«tini laukai palikti tuÅ¡ti.");
+define("NFLAN_25", "NaujienÅ³ Å¡altinis atnaujintas duomenÅ³ bazÄ—je.");
 define("NFLAN_26", "Atnaujinimo intervalas");
 define("NFLAN_27", "Nuostatos");
 define("NFLAN_28", "URL");
-define("NFLAN_29", "Galimi naujienø ğaltiniai");
-define("NFLAN_30", "Ğaltinio pavadinimas");
-define("NFLAN_31", "Gráşti á naujienø ğaltinio sàrağà");
-define("NFLAN_32", "Jokiø ğaltiniø su ğiuo identifikacijos numeriu nerasta.");
+define("NFLAN_29", "Galimi naujienÅ³ Å¡altiniai");
+define("NFLAN_30", "Å altinio pavadinimas");
+define("NFLAN_31", "GrÄ¯Å¾ti Ä¯ naujienÅ³ Å¡altinio sÄ…raÅ¡Ä…");
+define("NFLAN_32", "JokiÅ³ Å¡altiniÅ³ su Å¡iuo identifikacijos numeriu nerasta.");
 define("NFLAN_33", "Paskelbimo data: ");
-define("NFLAN_34", "neşinoma");
+define("NFLAN_34", "neÅ¾inoma");
 define("NFLAN_35", "paskelbta ");
-define("NFLAN_36", "Aprağymas");
-define("NFLAN_37", "trumpas ğaltinio aprağymas; áveskite 'default' norëdami naudoti nustatytà aprağymà ğaltinyje");
-define("NFLAN_38", "Antrağtës");
-define("NFLAN_39", "Iğsamiai");
-define("NFLAN_40", "Naujienø ğaltinis pağalintas");
-define("NFLAN_41", "Naujienø ğaltiniø nëra");
+define("NFLAN_36", "ApraÅ¡ymas");
+define("NFLAN_37", "trumpas Å¡altinio apraÅ¡ymas; Ä¯veskite 'default' norÄ—dami naudoti nustatytÄ… apraÅ¡ymÄ… Å¡altinyje");
+define("NFLAN_38", "AntraÅ¡tÄ—s");
+define("NFLAN_39", "IÅ¡samiai");
+define("NFLAN_40", "NaujienÅ³ Å¡altinis paÅ¡alintas");
+define("NFLAN_41", "NaujienÅ³ Å¡altiniÅ³ nÄ—ra");
 
-define("NFLAN_42", "<b>&raquo;</b> <u>Ğaltinio pavadinimas:</u>
-	Ğaltinio pavadinimas gali bûti bet koks.
+define("NFLAN_42", "<b>&raquo;</b> <u>Å altinio pavadinimas:</u>
+	Å altinio pavadinimas gali bÅ«ti bet koks.
 	<br /><br />
-	<b>&raquo;</b> <u>URL á rss ğaltiná:</u>
-	rss ğaltinio adresas
+	<b>&raquo;</b> <u>URL Ä¯ rss Å¡altinÄ¯:</u>
+	rss Å¡altinio adresas
 	<br /><br />
-	<b>&raquo;</b> <u>Paveikslëlio adresas:</u>
-	Jei ğaltinis turi nustatytà paveikslëlá, áveskite 'default' dëşutëje norëdami naudoti pasirnktà paveikslëlá. Norëdami naudoti savo paveikslëlá áveskite visà adresà. Palikite tuğèià, jei nenorite naudoti paveikslëlio.
+	<b>&raquo;</b> <u>PaveikslÄ—lio adresas:</u>
+	Jei Å¡altinis turi nustatytÄ… paveikslÄ—lÄ¯, Ä¯veskite 'default' dÄ—Å¾utÄ—je norÄ—dami naudoti pasirnktÄ… paveikslÄ—lÄ¯. NorÄ—dami naudoti savo paveikslÄ—lÄ¯ Ä¯veskite visÄ… adresÄ…. Palikite tuÅ¡ÄiÄ…, jei nenorite naudoti paveikslÄ—lio.
 	<br /><br />
-	<b>&raquo;</b> <u>Aprağymas:</u>
-	Áveskite trumpà ğaltinio aprağymà arba 'default' norëdami naudoti nustatytà aprağymà ğaltinyje (jei toks yra).
+	<b>&raquo;</b> <u>ApraÅ¡ymas:</u>
+	Ä®veskite trumpÄ… Å¡altinio apraÅ¡ymÄ… arba 'default' norÄ—dami naudoti nustatytÄ… apraÅ¡ymÄ… Å¡altinyje (jei toks yra).
 	<br /><br />
-	<b>&raquo;</b> <u>Atnaujinimo intervalas sekundëmis:</u>
-	Laiko tarpas sekundëmis tarp naujienø atsinaujinimo, pvz, 1800 - 30 minuèiø, 3600 - valanda.
+	<b>&raquo;</b> <u>Atnaujinimo intervalas sekundÄ—mis:</u>
+	Laiko tarpas sekundÄ—mis tarp naujienÅ³ atsinaujinimo, pvz, 1800 - 30 minuÄiÅ³, 3600 - valanda.
 	<br /><br />
 	<b>&raquo;</b> <u>Aktyvumas:</u>
-	Pasirinkite, kur norite matyti ğaltinius. Jums iğ pradşiø reikës aktyvuoti naujienø ğaltinio meniu <a href='".e_ADMIN."menus.php'>pagrindiniame meniu puslapyje</a>.
-	<br /><br />Norëdami gauti naujienø ğaltiniø aplankykite <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> arba <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a>");
-define("NFLAN_43", "Naujienø ğaltinio pagalba");
-define("NFLAN_44", "spauskite perşiûrëti");
+	Pasirinkite, kur norite matyti Å¡altinius. Jums iÅ¡ pradÅ¾iÅ³ reikÄ—s aktyvuoti naujienÅ³ Å¡altinio meniu <a href='".e_ADMIN."menus.php'>pagrindiniame meniu puslapyje</a>.
+	<br /><br />NorÄ—dami gauti naujienÅ³ Å¡altiniÅ³ aplankykite <a href='http://www.syndic8.com/' rel='external'>syndic8.com</a> arba <a href='http://feedfinder.feedster.com/index.php' rel='external'>feedster.com</a>");
+define("NFLAN_43", "NaujienÅ³ Å¡altinio pagalba");
+define("NFLAN_44", "spauskite perÅ¾iÅ«rÄ—ti");
 
 ?>

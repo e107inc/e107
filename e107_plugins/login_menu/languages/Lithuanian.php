@@ -1,9 +1,9 @@
-<?php
+ï»¿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,37 +11,37 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/Lithuanian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-28 22:09:10 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-23 22:08:35 $
 |     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
 	
 define("LOGIN_MENU_L1", "Vardas: ");
-define("LOGIN_MENU_L2", "Slaptaşodis: ");
+define("LOGIN_MENU_L2", "SlaptaÅ¾odis: ");
 define("LOGIN_MENU_L3", "Registruotis");
-define("LOGIN_MENU_L4", "Pamirğote slaptaşodá?");
+define("LOGIN_MENU_L4", "PamirÅ¡ote slaptaÅ¾odÄ¯?");
 define("LOGIN_MENU_L5", "Sveiki,");
 define("LOGIN_MENU_L6", "Prisiminti mane");
-define("LOGIN_MENU_L7", "Unikalus vartotojo id neatpaşintas (gali bûti paşeistas slapukas (cookie).<br />Norëdami iğtaisyti ğià klaidà, prağome <a href=\"".e_BASE."index.php?logout\">paspausti èia</a>.");
+define("LOGIN_MENU_L7", "Unikalus vartotojo id neatpaÅ¾intas (gali bÅ«ti paÅ¾eistas slapukas (cookie).<br />NorÄ—dami iÅ¡taisyti Å¡iÄ… klaidÄ…, praÅ¡ome <a href=\"".e_BASE."index.php?logout\">paspausti Äia</a>.");
 define("LOGIN_MENU_L8", "Atsijungti");
 define("LOGIN_MENU_L9", "Prisijungimo klaida");
-define("LOGIN_MENU_L10", "Vyksta prieşiûros darbai; tai reiğkia, kad eiliniai lankytojai nukreipiami á sitedown.php. Norëdami uşbaigti ğiuos darbus eikite á administravimo skyriø -> Prieşiûra.");
+define("LOGIN_MENU_L10", "Vyksta prieÅ¾iÅ«ros darbai; tai reiÅ¡kia, kad eiliniai lankytojai nukreipiami Ä¯ sitedown.php. NorÄ—dami uÅ¾baigti Å¡iuos darbus eikite Ä¯ administravimo skyriÅ³ -> PrieÅ¾iÅ«ra.");
 define("LOGIN_MENU_L11", "Administravimas");
 define("LOGIN_MENU_L12", "Nustatymai");
-define("LOGIN_MENU_L13", "Dosjë");
-define("LOGIN_MENU_L14", "naujienø praneğimas");
-define("LOGIN_MENU_L15", "naujienø praneğimai");
-define("LOGIN_MENU_L16", "pokalbiø praneğimas");
-define("LOGIN_MENU_L17", "pokalbiø praneğimai");
+define("LOGIN_MENU_L13", "DosjÄ—");
+define("LOGIN_MENU_L14", "naujienÅ³ praneÅ¡imas");
+define("LOGIN_MENU_L15", "naujienÅ³ praneÅ¡imai");
+define("LOGIN_MENU_L16", "pokalbiÅ³ praneÅ¡imas");
+define("LOGIN_MENU_L17", "pokalbiÅ³ praneÅ¡imai");
 define("LOGIN_MENU_L18", "komentaras");
 define("LOGIN_MENU_L19", "komentarai");
-define("LOGIN_MENU_L20", "praneğimas forume");
-define("LOGIN_MENU_L21", "praneğimai forume");
+define("LOGIN_MENU_L20", "praneÅ¡imas forume");
+define("LOGIN_MENU_L21", "praneÅ¡imai forume");
 define("LOGIN_MENU_L22", "naujas tinklalapio narys");
 define("LOGIN_MENU_L23", "nauji tinklalapio nariai");
-define("LOGIN_MENU_L24", "Spauskite èia, jei norite pamatyti kas naujo");
-define("LOGIN_MENU_L25", "Nuo paskutinio jûsø apsilankymo tinklalapyje atsirado");
+define("LOGIN_MENU_L24", "Spauskite Äia, jei norite pamatyti kas naujo");
+define("LOGIN_MENU_L25", "Nuo paskutinio jÅ«sÅ³ apsilankymo tinklalapyje atsirado");
 define("LOGIN_MENU_L26", "0");
 define("LOGIN_MENU_L27", "ir");
 define("LOGIN_MENU_L28", "Prisijungti");
@@ -50,11 +50,11 @@ define("LOGIN_MENU_L29", "naujas straipsnis");
 define("LOGIN_MENU_L30", "nauji straipsniai");
 	
 // New config options
-define('LOGIN_MENU_L31', 'Rodyti naujus naujienø praneğimus');
-define('LOGIN_MENU_L32', 'Rodyti naujus straipsniø praneğimus');
-define('LOGIN_MENU_L33', 'Rodyti naujus pokalbiø praneğimus');
-define('LOGIN_MENU_L34', 'Rodyti naujus komentarø praneğimus');
-define('LOGIN_MENU_L35', 'Rodyti naujus diskusijø praneğimus');
+define('LOGIN_MENU_L31', 'Rodyti naujus naujienÅ³ praneÅ¡imus');
+define('LOGIN_MENU_L32', 'Rodyti naujus straipsniÅ³ praneÅ¡imus');
+define('LOGIN_MENU_L33', 'Rodyti naujus pokalbiÅ³ praneÅ¡imus');
+define('LOGIN_MENU_L34', 'Rodyti naujus komentarÅ³ praneÅ¡imus');
+define('LOGIN_MENU_L35', 'Rodyti naujus diskusijÅ³ praneÅ¡imus');
 define('LOGIN_MENU_L36', 'Rodyti naujus narius');
 define('LOGIN_MENU_L37', 'Atnaujinti nuostatas');
 define('LOGIN_MENU_L38', 'Nuostatos atnaujintos');

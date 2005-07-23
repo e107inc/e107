@@ -1,31 +1,31 @@
-<?php
+ï»¿<?php
 	
-define("LWLAN_1", "Laukas(ai) palikti tuðti.");
-define("LWLAN_2", "Nuorodos þodis iðsaugotas.");
-define("LWLAN_3", "Nuorodos þodis atnaujintas.");
-define("LWLAN_4", "Neparinkti jokiø nuorodø þodþiai.");
-define("LWLAN_5", "Þodis");
+define("LWLAN_1", "Laukas(ai) palikti tuÅ¡ti.");
+define("LWLAN_2", "Nuorodos Å¾odis iÅ¡saugotas.");
+define("LWLAN_3", "Nuorodos Å¾odis atnaujintas.");
+define("LWLAN_4", "Neparinkti jokiÅ³ nuorodÅ³ Å¾odÅ¾iai.");
+define("LWLAN_5", "Å½odis");
 define("LWLAN_6", "Nuoroda");
 define("LWLAN_7", "Aktyvus?");
 define("LWLAN_8", "Parinktys");
 define("LWLAN_9", "taip");
 define("LWLAN_10", "ne");
-define("LWLAN_11", "Esami nuorodø þodþiai");
+define("LWLAN_11", "Esami nuorodÅ³ Å¾odÅ¾iai");
 define("LWLAN_12", "Taip");
 define("LWLAN_13", "Ne");
-define("LWLAN_14", "Pateikti nuorodos þodá");
-define("LWLAN_15", "Atnaujinti nuorodos þodá");
+define("LWLAN_14", "Pateikti nuorodos Å¾odÄ¯");
+define("LWLAN_15", "Atnaujinti nuorodos Å¾odÄ¯");
 define("LWLAN_16", "Keisti");
 define("LWLAN_17", "Trinti");
-define("LWLAN_18", "Ar Jûs tikrai norite iðtrinti ðá nuorodos þodá?");
-define("LWLAN_19", "Nuorodos þodis iðtrintas.");
-define("LWLAN_20", "Neámanoma surasti ðitoká nuorodos þodþio áraðà.");
-define("LWLAN_21", "Þodis á autonuorodà");
+define("LWLAN_18", "Ar JÅ«s tikrai norite iÅ¡trinti Å¡Ä¯ nuorodos Å¾odÄ¯?");
+define("LWLAN_19", "Nuorodos Å¾odis iÅ¡trintas.");
+define("LWLAN_20", "NeÄ¯manoma surasti Å¡itokÄ¯ nuorodos Å¾odÅ¾io Ä¯raÅ¡Ä….");
+define("LWLAN_21", "Å½odis Ä¯ autonuorodÄ…");
 define("LWLAN_22", "Aktyvuoti?");
 
-define("LWLANINS_1", "Nuorodø þodþiai");
-define("LWLANINS_2", "Ðis áskiepis susies norimus þodþius su pageidaujama nuoroda");
-define("LWLANINS_3", "Nuorodos þodþiø sàranka");
-define("LWLANINS_4", "Norëdami pasiekti sàrankos meniu paspauskite ant áskiepiø administravimo meniu esanèios nuorodos");
+define("LWLANINS_1", "NuorodÅ³ Å¾odÅ¾iai");
+define("LWLANINS_2", "Å is Ä¯skiepis susies norimus Å¾odÅ¾ius su pageidaujama nuoroda");
+define("LWLANINS_3", "Nuorodos Å¾odÅ¾iÅ³ sÄ…ranka");
+define("LWLANINS_4", "NorÄ—dami pasiekti sÄ…rankos meniu paspauskite ant Ä¯skiepiÅ³ administravimo meniu esanÄios nuorodos");
 
 ?>

@@ -1,6 +1,6 @@
-<?php
+ï»¿<?php
 	
-define("LAN_350", "Nustatyti temà");
-define("LAN_351", "Pasirinkti temà");
+define("LAN_350", "Nustatyti temÄ…");
+define("LAN_351", "Pasirinkti temÄ…");
 	
 ?>

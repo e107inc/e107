@@ -1,9 +1,9 @@
-<?php
+ï»¿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,28 +11,28 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Lithuanian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-21 15:41:01 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-23 22:13:40 $
 |     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
 	
-define("CHATBOX_L1", "Praneğimas nepriimtas, nes toks vartotojo vardas uşregistruotas. Jei tai jûsø vardas, prağome prisijungti.");
+define("CHATBOX_L1", "PraneÅ¡imas nepriimtas, nes toks vartotojo vardas uÅ¾registruotas. Jei tai jÅ«sÅ³ vardas, praÅ¡ome prisijungti.");
 define("CHATBOX_L2", "Pokalbiai");
-define("CHATBOX_L3", "Jûs turite prisijungti, jei norite skelbti şinutes. Uşsiregistruoti galite <a href='".e_BASE."signup.php'>èia</a>");
+define("CHATBOX_L3", "JÅ«s turite prisijungti, jei norite skelbti Å¾inutes. UÅ¾siregistruoti galite <a href='".e_BASE."signup.php'>Äia</a>");
 define("CHATBOX_L4", "Skelbti");
-define("CHATBOX_L5", "Iğtaisyti");
-define("CHATBOX_L6", "[uşblokavo administratorius]");
+define("CHATBOX_L5", "IÅ¡taisyti");
+define("CHATBOX_L6", "[uÅ¾blokavo administratorius]");
 define("CHATBOX_L7", "Atblokuoti");
 define("CHATBOX_L8", "Informacija");
 define("CHATBOX_L9", "Blokuoti");
 define("CHATBOX_L10", "Trinti");
-define("CHATBOX_L11", "Şinuèiø dar nëra.");
-define("CHATBOX_L12", "Perşiûrëti visas şinutes");
+define("CHATBOX_L11", "Å½inuÄiÅ³ dar nÄ—ra.");
+define("CHATBOX_L12", "PerÅ¾iÅ«rÄ—ti visas Å¾inutes");
 define("CHATBOX_L13", "moderuoti pokalbius");
 define("CHATBOX_L14", "Jausmukai");
-define("CHATBOX_L15", "Praneğimas per ilgas arba tuğèias");
-define("CHATBOX_L16", "Neatpaşintas");
-define("CHATBOX_L17", "Praneğimas kartojasi");
+define("CHATBOX_L15", "PraneÅ¡imas per ilgas arba tuÅ¡Äias");
+define("CHATBOX_L16", "NeatpaÅ¾intas");
+define("CHATBOX_L17", "PraneÅ¡imas kartojasi");
 	
 ?>

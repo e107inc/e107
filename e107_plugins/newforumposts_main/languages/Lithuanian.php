@@ -1,28 +1,28 @@
-<?php
+ï»¿<?php
 
 define("LAN_1", "Tema");
 define("LAN_2", "Autorius");
-define("LAN_3", "Perşiûrëta");
-define("LAN_4", "Atsakymø");
-define("LAN_5", "Paskutinis praneğimas");
+define("LAN_3", "PerÅ¾iÅ«rÄ—ta");
+define("LAN_4", "AtsakymÅ³");
+define("LAN_5", "Paskutinis praneÅ¡imas");
 define("LAN_6", "Temos");
 
-define("NFPM_L1", "Ğis áskiepis rodo naujus praneğimus tituliniame puslapyje");
-define("NFPM_L2", "Paskutiniai praneğimai forume"); 
-define("NFPM_L3", "Norëdami nustatyti, eikite á áskiepiø skyriø administratoriaus valdymo meniu");
+define("NFPM_L1", "Å is Ä¯skiepis rodo naujus praneÅ¡imus tituliniame puslapyje");
+define("NFPM_L2", "Paskutiniai praneÅ¡imai forume"); 
+define("NFPM_L3", "NorÄ—dami nustatyti, eikite Ä¯ Ä¯skiepiÅ³ skyriÅ³ administratoriaus valdymo meniu");
 define("NFPM_L4", "Kurioje srityje aktyvuoti?");
 define("NFPM_L5", "Neaktyvus");
-define("NFPM_L6", "Puslapio virğus");
-define("NFPM_L7", "Puslapio apaèia");
-define("NFPM_L8", "Antrağtë");
-define("NFPM_L9", "Kiek naujø praneğimø rodyti?");
-define("NFPM_L10", "Rodyti judanèioje slinktyje?");
-define("NFPM_L11", "Slinkties aukğtis");
-define("NFPM_L12", "Naujø forumo praneğimø konfigûracija");
-define("NFPM_L13", "Atnaujinti naujø forumo praneğimø nustatymus");
-define("NFPM_L14", "Naujø forumo praneğimø nustatymai atnaujinti.");
-define("NFPM_L15", "Paşymëkite, jei norite rodyti naujausius praneğimus.<br />Paprastai rodomos naujausios praneğimø temos.");
-define('NFPM_L16', '[vartotojas iğtrintas]');
+define("NFPM_L6", "Puslapio virÅ¡us");
+define("NFPM_L7", "Puslapio apaÄia");
+define("NFPM_L8", "AntraÅ¡tÄ—");
+define("NFPM_L9", "Kiek naujÅ³ praneÅ¡imÅ³ rodyti?");
+define("NFPM_L10", "Rodyti judanÄioje slinktyje?");
+define("NFPM_L11", "Slinkties aukÅ¡tis");
+define("NFPM_L12", "NaujÅ³ forumo praneÅ¡imÅ³ konfigÅ«racija");
+define("NFPM_L13", "Atnaujinti naujÅ³ forumo praneÅ¡imÅ³ nustatymus");
+define("NFPM_L14", "NaujÅ³ forumo praneÅ¡imÅ³ nustatymai atnaujinti.");
+define("NFPM_L15", "PaÅ¾ymÄ—kite, jei norite rodyti naujausius praneÅ¡imus.<br />Paprastai rodomos naujausios praneÅ¡imÅ³ temos.");
+define('NFPM_L16', '[vartotojas iÅ¡trintas]');
 
 
 ?>
