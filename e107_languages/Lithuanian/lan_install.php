@@ -1,12 +1,12 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_install.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-06 23:20:21 $
-|     $Author: alkas $
+|     $Revision: 1.4 $
+|     $Date: 2005-07-23 22:41:15 $
+|     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
 
@@ -75,8 +75,8 @@ define("INSLAN59", "Dėkojame už e107 sistemos pasirinkimą; tikimės, kad ji p
 define("INSLAN60", "sukurti DB");
 define("INSLAN61", "aplankalas");
 define("INSLAN62", "arba");
-define("INSLAN63", "Failo atributo klaida");
-define("INSLAN64", "Šį failą sugeneravo diegimo makrokomanda.");
+define("INSLAN63", "Bylos atributo klaida");
+define("INSLAN64", "Šią bylą sugeneravo diegimo makrokomanda.");
 
 define("INSLAN65", "e107 reikalauja bent 4.1.0 versijos");
 define("INSLAN66", "Jei naudojate savo kompiuterį kaip vietinį serverį, tai turėtumėte atnaujinti");

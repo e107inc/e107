@@ -9,7 +9,7 @@ $text = "<div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vert
 <img src='".e_IMAGE."fileinspector/file_unknown.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Non Core File</div>";
 $ns -> tablerender("File Key", $text);
 
-$text = "Failų inspektorius skanuoja ir analizuoja jūsų tinklapio failus. Inspektorius, aptikęs e107 branduolio failą iš karto patikrina jo vientisumą tam, kad patikrintų, ar faillas nėra pažeistas.";
+$text = "Bylų inspektorius skanuoja ir analizuoja jūsų tinklapio bylas. Inspektorius, aptikęs e107 branduolio bylą iš karto patikrina jos vientisumą tam, kad patikrintų, ar byla nėra pažeista.";
 
 $ns -> tablerender("File Inspector Help", $text);
 ?>

@@ -1,12 +1,12 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_search.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-07 21:01:03 $
-|     $Author: alkas $
+|     $Revision: 1.4 $
+|     $Date: 2005-07-23 22:41:16 $
+|     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Paieška");
@@ -22,7 +22,7 @@ define("LAN_194", "Visi skyriai");
 define("LAN_195", "Ieškoma");
 define("LAN_196", "rasta");
 
-define("LAN_197", "Failai");
+define("LAN_197", "Bylos");
 define("LAN_198", "Nerasta");
 define("LAN_199", "Ieškoti:");
 define("LAN_200", "Kategorijose:");

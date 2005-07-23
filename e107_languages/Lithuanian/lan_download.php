@@ -1,22 +1,22 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-07 21:01:03 $
-|     $Author: alkas $
+|     $Revision: 1.4 $
+|     $Date: 2005-07-23 22:41:15 $
+|     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Bylos");
 
 define("LAN_dl_1", "(Apribota)");
-define("LAN_dl_2", "Failų nėra, apsilankykite vėliau");
-define("LAN_dl_3", "Šioje kategorijoje failų dar nėra");
-define("LAN_dl_4", "Prienami failai: ");
-define("LAN_dl_5", "Bendra failų apimtis: ");
-define("LAN_dl_6", "Atsisiųsta failų: ");
+define("LAN_dl_2", "Bylų nėra, apsilankykite vėliau");
+define("LAN_dl_3", "Šioje kategorijoje bylų dar nėra");
+define("LAN_dl_4", "Prienamos bylos: ");
+define("LAN_dl_5", "Bendra bylų apimtis: ");
+define("LAN_dl_6", "Atsisiųsta bylų: ");
 define("LAN_dl_7", "Aprašymas");
 define("LAN_dl_8", "Gauti");
 define("LAN_dl_9", "Grįžti prie kategorijų sąrašo");
@@ -27,10 +27,10 @@ define("LAN_dl_13", "Neįvertinta");
 define("LAN_dl_14", "Įvertinti šį failą");
 define("LAN_dl_15", "Dėkojame už įvertinimą");
 define("LAN_dl_16", "atsisiųsta iš");
-define("LAN_dl_17", "failai");
-define("LAN_dl_18", "Failai");
+define("LAN_dl_17", "bylos");
+define("LAN_dl_18", "Bylos");
 define("LAN_dl_19", "Kategorija");
-define("LAN_dl_20", "Failai");
+define("LAN_dl_20", "Bylos");
 define("LAN_dl_21", "Dydis");
 define("LAN_dl_22", "Data");
 define("LAN_dl_23", "Failo pavadinimas");
@@ -46,14 +46,14 @@ define("LAN_dl_32", "Atsisiųsti");
 define("LAN_dl_33", "Atgal");
 define("LAN_dl_34", "Sekantis");
 define("LAN_dl_35", "Atgal prie sąrašo");
-define("LAN_dl_36", "Nauji failai");
+define("LAN_dl_36", "Naujos bylos");
 
 define("LAN_dl_37", "Peržiūrėti");
 define("LAN_dl_38", "Rūšiuoti pagal");
 define("LAN_dl_39", "Rūšiuoti");
 
 define("LAN_dl_40", "Paspauskite, jei norite pažiūrėti į nuotrauką");
-define("LAN_dl_41", "Ieškoti failų");
+define("LAN_dl_41", "Ieškoti bylų");
 
 define("LAN_dl_42", "Pakategoris");
 define("LAN_dl_43", "balsas");

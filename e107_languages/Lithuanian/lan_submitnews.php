@@ -1,12 +1,12 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_submitnews.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-07 21:01:03 $
-|     $Author: alkas $
+|     $Revision: 1.4 $
+|     $Date: 2005-07-23 22:41:16 $
+|     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Paskelbti naujienas");
@@ -24,9 +24,9 @@ define("NWSLAN_12", "Uždrausta.");
 
 define("SUBNEWSLAN_1", "Turite nurodyti pavadinimą.\\n");
 define("SUBNEWSLAN_2", "Naujienų pranešime jūs turite įrašyti bent kiek teksto.\\n");
-define("SUBNEWSLAN_3", "Pridėti galima tik failą, kurio priesaga turi būti jpg, gif, png");
-define("SUBNEWSLAN_4", "Failas per didelis");
-define("SUBNEWSLAN_5", "Paveikslo failas");
+define("SUBNEWSLAN_3", "Pridėti galima tik bylą, kurios plėtinys turi būti jpg, gif, png");
+define("SUBNEWSLAN_4", "Byla per didelis");
+define("SUBNEWSLAN_5", "Paveikslo byla");
 define("SUBNEWSLAN_6", "(jpg, gif arba png)");
 
 ?>

@@ -1,12 +1,12 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_online.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-07 21:01:03 $
-|     $Author: alkas $
+|     $Revision: 1.4 $
+|     $Date: 2005-07-23 22:41:15 $
+|     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,7 +30,7 @@ define("CLASSRESTRICTED", "Ribotai dalyvių grupei prieinamas puslapis");
 define("ARTICLEPAGE", "Straipsnis/apžvalga");
 define("CHAT", "Pokalbiai");
 define("COMMENT", "Komentarai");
-define("DOWNLOAD", "Failai");
+define("DOWNLOAD", "Bylos");
 define("EMAIL", "email.php");
 define("FORUM", "Pagrindinė forumo rodyklė");
 define("LINKS", "Nuorodos");
@@ -42,7 +42,7 @@ define("LOGIN", "Jungiamasi");
 define("SEARCH", "Ieškoma");
 define("STATS", "Tinklalapio statistika");
 define("SUBMITNEWS", "Paskelbti naujienas");
-define("UPLOAD", "Atsiųsti failai");
+define("UPLOAD", "Atsiųstos bylos");
 define("USERPAGE", "Vartotojo dosjė");
 define("USERSETTINGS", "Vartotojo parametrai");
 define("ONLINE", "Prisijungę dalyviai");
