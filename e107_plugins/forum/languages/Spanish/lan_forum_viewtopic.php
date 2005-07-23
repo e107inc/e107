@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_viewtopic.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-28 21:02:21 $
+|     $Revision: 1.6 $
+|     $Date: 2005-07-23 04:01:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -85,5 +85,6 @@ define("FORLAN_10", "Comenzar nuevo tema");
 define("FORLAN_101", "Enviar el tema por correo");
 define("FORLAN_102", "Imprimir vista");
 define('FORLAN_103', '[Usuario eliminado]');
+define('FORLAN_104', 'Tema no encontrado');
 
 ?>
