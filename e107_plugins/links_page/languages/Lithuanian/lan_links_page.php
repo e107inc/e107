@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Lithuanian/lan_links_page.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-07 18:14:17 $
+|     $Revision: 1.4 $
+|     $Date: 2005-07-23 22:46:21 $
 |     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
@@ -169,7 +169,7 @@ define("LCLAN_109", "atsiųsti naują piktogramą");
 define("LCLAN_110", "Auto-Thumbnail dydis");
 define("LCLAN_111", "atsiųsti piktogramą");
 define("LCLAN_112", "pasirinkite atsiųstą piktogramą");
-define("LCLAN_113", "Šis pasirinkimas neveiks, jei failų atiuntimas Jūsų serveryje nėra leidžiamas");
+define("LCLAN_113", "Šis pasirinkimas neveiks, jei bylų atsiuntimas Jūsų serveryje nėra leidžiamas");
 define("LCLAN_114", "");
 define("LCLAN_115", "į katalogą neina įrašyti. Prieš siuntimą Jūs turite pakeisti CHMOD nustatymus į 777");
 
