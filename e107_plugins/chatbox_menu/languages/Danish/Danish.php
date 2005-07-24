@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Danish/Danish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-06 22:12:02 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-24 12:10:48 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -17,7 +17,7 @@
 
 
 
-define("CHATBOX_L1", "Du kan ikke skrive under dette navn, da det er reserveret en bruger - hvis det er dit brugernavn skal du logge på først.");
+define("CHATBOX_L1", "Du kan ikke skrive under dette navn, da det er reserveret til en bruger - hvis det er dit brugernavn skal du logge på først.");
 define("CHATBOX_L2", "Chatboks");
 define("CHATBOX_L3", "Du skal være logget på for at skrive en kommentar på webstedet - enten log på eller hvis du ikke er medlem <a href='".e_BASE."signup.php'>klik her for medlemskab</a>");
 define("CHATBOX_L4", "Send");
