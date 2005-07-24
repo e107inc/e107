@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Lithuanian.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-24 15:13:28 $
+|     $Revision: 1.4 $
+|     $Date: 2005-07-24 18:55:10 $
 |     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
@@ -67,7 +67,7 @@ define("LCLAN_OPT_46", "Nuorodos prieinamumas");
 define("LCLAN_OPT_47", "šie vartotojai galės įdėti/keisti savo nuorodas");
 define("LCLAN_OPT_48", "leisti tiesioginį skelbimą");
 define("LCLAN_OPT_49", "jei įjungta, nuorodos yra skelbiamos tiesiogiai, kitu atveju jas turi patvitinti administratorius");
-define("LCLAN_OPT_50", "leisti tiesioginį trinimą");
+define("LCLAN_OPT_50", "leisti tiesioginį trynimą");
 define("LCLAN_OPT_51", "jei įjungta, vartotojai gali ištrinti savo nuorodas");
 define("LCLAN_OPT_52", "asmeninių nuorodų valdytojai");
 define("LCLAN_OPT_53", "data");

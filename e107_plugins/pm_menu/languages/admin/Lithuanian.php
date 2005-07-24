@@ -12,7 +12,7 @@ define(PM_ADLAN_7, "ištrinta");
 define(PM_ADLAN_8, "Žinutės senesnės nei ");
 define(PM_ADLAN_9, "dienos(ų)");
 define(PM_ADLAN_10, "Tai ištrins visas žinutes daugiau nei ");
-define(PM_ADLAN_11, "Patvirtinti trinimą");
+define(PM_ADLAN_11, "Patvirtinti trynimą");
 define(PM_ADLAN_12, "Nutraukti");
 define(PM_ADLAN_13, "Jūs privalote įvesti reikšmę.");
 define(PM_ADLAN_14, "Ištrinti žinutes");

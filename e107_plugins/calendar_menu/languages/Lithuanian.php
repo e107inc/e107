@@ -1,6 +1,6 @@
 ﻿<?php
 // e107 Language File.
-// $Id: Lithuanian.php,v 1.2 2005-07-16 07:39:43 g3d45 Exp $
+// $Id: Lithuanian.php,v 1.3 2005-07-24 18:54:46 g3d45 Exp $
 
 define('EC_ADLAN_1',"Įvykių kalendorius");
 define('EC_ADLAN_2',"Derinti įvykių kalendorių");
@@ -259,7 +259,7 @@ define('EC_ADLAN_A28', "Pakeitimai išsaugoti");
 define('EC_ADLAN_A29', "Neįmanoma išsaugoti pakeitimų");
 
 define('EC_ADLAN_A30', "Kategortija ištrinta");
-define('EC_ADLAN_A31', "Pažymėkite norėdami patvirtinti dėžutės ištrinimą");
+define('EC_ADLAN_A31', "Pažymėkite norėdami patvirtinti dėžutės ištrynimą");
 define('EC_ADLAN_A32', "Neįmanoma ištrinti šios kategorijos");
 define('EC_ADLAN_A33', "Neparinkta");
 define('EC_ADLAN_A34', "Kalendoriaus administratoriaus klasė");
