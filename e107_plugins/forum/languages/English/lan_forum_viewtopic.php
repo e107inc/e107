@@ -1,89 +1,86 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/English/lan_forum_viewtopic.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-24 17:41:01 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-24 19:21:49 $
 |     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Forum");
+define("PAGE_NAME", "Diskusijos");
 	
-define("LAN_01", "Forums");
-define("LAN_02", "Go to page");
-define("LAN_03", "Go");
-define("LAN_04", "Previous");
-define("LAN_05", "Next");
-define("LAN_06", "Joined");
-define("LAN_07", "Location");
-define("LAN_08", "Website");
-define("LAN_09", "Visits to site since registration");
-define("LAN_10", "Back to top");
-define("LAN_65", "Jump");
-define("LAN_66", "This thread is now closed");
-define("LAN_67", "posts");
-define("LAN_194", "Guest");
-define("LAN_195", "Registered Member");
-define("LAN_321", "Moderators: ");
-define("LAN_389", "Previous thread");
-define("LAN_390", "Next thread");
-define("LAN_391", "Track Thread");
-define("LAN_392", "Cancel Thread Tracking");
-define("LAN_393", "Quick Reply");
-define("LAN_394", "Preview");
-define("LAN_395", "Reply To Thread");
-define("LAN_396", "Website");
-define("LAN_397", "Email");
-define("LAN_398", "Profile");
-define("LAN_399", "Private Message");
-define("LAN_400", "Edit");
-define("LAN_401", "Quote");
-	
-define("LAN_402", "Author");
-define("LAN_403", "Post");
-define("LAN_404", "No previous thread");
-define("LAN_405", "No next thread");
-	
-define("LAN_406", "Moderator: Edit");
-define("LAN_435", "Moderator: Delete");
-define("LAN_408", "Moderator: Move");
-define("LAN_409", "Are you sure you want to delete this thread and any replies?");
-define("LAN_410", "Are you sure you want to delete this reply?");
-define("LAN_411", "posted by ");
-	
-//v.616
-define("LAN_412", "Title");
-define("LAN_413", "Report");
-define("LAN_414", "Report this thread to a moderator");
-define("LAN_415", "Thread title");
-define("LAN_416", "Enter your report");
-define("LAN_417", "The admin will be made aware of this thread. You may post a message explaining what you found to be objectionable.");
-define("LAN_418", "<b>Do not</b> use this form to contact the admin for any other reason.");
-define("LAN_419", "Send Report");
-define("LAN_420", "Click to view post");
-define("LAN_421", "Forum thread report from");
-define("LAN_422", "This post has been reported from site ");
-define("LAN_423", "Message could not be sent. ");
-define("LAN_424", "Post has been reported to moderator.<br />Thank You.");
-define("LAN_425", "Message from: ");
-define("LAN_426", "Reporting post in topic: ");
-define("LAN_427", "Error sending mail");
-define("LAN_428", "Post has been reported");
-define("LAN_429", "Click here to return to forum");
-define("LAN_430", "poll");
-define("FORLAN_26", "Reply deleted");
-define("FORLAN_10", "Begin New Thread");
-define("LAN_29", "Edited");
+define("LAN_01", "Diskusijos");
+define("LAN_02", "Eiti į puslapį");
+define("LAN_03", "Eiti");
+define("LAN_04", "Atgal");
+define("LAN_05", "Toliau");
+define("LAN_06", "Prisijungta");
+define("LAN_07", "Vietovė");
+define("LAN_08", "Tinklalapis");
+define("LAN_09", "Apsilankymų skaičius po registracijos");
+define("LAN_10", "Į viršų");
+define("LAN_65", "Persikelti");
+define("LAN_66", "Ši tema dabar uždaryta");
+define("LAN_67", "pranešimai(-ų)");
+define("LAN_194", "Svečias");
+define("LAN_195", "Užsiregistravęs dalyvis");
+define("LAN_321", "Moderatoriai: ");
+define("LAN_389", "Prieš tai buvusi tema");
+define("LAN_390", "Sekanti tema");
+define("LAN_391", "sekti šią temą");
+define("LAN_392", "nesekti šios temos");
+define("LAN_393", "Greitas atsakymas");
+define("LAN_394", "Peržiūrėti");
+define("LAN_395", "Atsakyti į temą");
+define("LAN_396", "Tinklalapis");
+define("LAN_397", "El. paštas");
+define("LAN_398", "Dosjė");
+define("LAN_399", "Privati žinutė");
+define("LAN_400", "Redaguoti");
+define("LAN_401", "Atsakyti cituojant");
+define("LAN_402", "Autorius");
+define("LAN_403", "Pranešimas");
+define("LAN_404", "Jokių temų prieš šią");
+define("LAN_405", "Temų toliau nėra");
+define("LAN_406", "Moderatorius: redaguoti");
+define("LAN_407", "Moderatorius: trinti");
+define("LAN_408", "Moderatorius: perkelti");
+define("LAN_409", "Ar tikrai norite pašalinti šią temą ir visus pranešimus?");
+define("LAN_410", "Ar tikrai norite pašalinti šį atsakymą?");
+define("LAN_411", "paskelbė ");
+define("LAN_412", "Pavadinimas");
+define("LAN_413", "Pranešti");
+define("LAN_414", "Pranešti apie šią temą moderatoriui");
+define("LAN_415", "Temos pavadinimas");
+define("LAN_416", "Įvesti pranešimą");
+define("LAN_417", "Administratorius bus informuotas apie šią temą. Jūs galite parašyti žinutę paaiškinančią dėl ko ši tema nepriimtina (užgauli).");
+define("LAN_418", "<b>Nenaudoti</b> šios formos susisiekimui su administratoriumi dėl kitų priežasčių.");
+define("LAN_419", "Išsiųsti pranešimą");
+define("LAN_420", "Paspauskite, jei pageidaujate peržiūrėti pranešimą");
+define("LAN_421", "Pranešimas apie diskusijų temą nuo");
+define("LAN_422", "Apie šį pranešimą buvo pranešta iš tinklalapio ");
+define("LAN_423", "Žinutė negali būti išsiųsta. ");
+define("LAN_424", "Moderatorius informuotas.<br />Dėkojame.");
+define("LAN_425", "Žinutė nuo: ");
+define("LAN_426", "Pranešimas apie: ");
+define("LAN_427", "Įvyko klaida siunčiant laišką");
+define("LAN_428", "Pranešimas perduotas");
+define("LAN_429", "Norėdami sugrįžti į diskusijas paspauskite čia");
+define("LAN_430", "balsavimas");
 
-define("LAN_431", "Syndicate this thread: rss 0.92");
-define("LAN_432", "Syndicate this thread: rss 2.0");
-define("LAN_433", "Syndicate this thread: RDF");
+define("FORLAN_26", "Atsakymas ištrintas");
+define("FORLAN_10", "Pradėti naują temą");
+
+define("LAN_29", "Redaguota");
+define("LAN_431", "Sindikuoti šią temą: rss 0.92");
+define("LAN_432", "Sindikuoti šią temą: rss 2.0");
+define("LAN_433", "Sindikuoti šią temą: RDF");
 	
-define("FORLAN_101", "Email Thread");
-define("FORLAN_102", "Print View");
-define('FORLAN_103', '[user deleted]');
-define('FORLAN_104', 'Thread not found');
+define("FORLAN_101", "Siųsti e-paštu temą");
+define("FORLAN_102", "Spausdinimo vaizdas");
+define('FORLAN_103', '[vartotojas ištrintas]');
+define('FORLAN_104', 'Tema nerasta');
 
 ?>

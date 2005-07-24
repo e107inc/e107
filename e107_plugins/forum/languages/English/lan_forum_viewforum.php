@@ -1,93 +1,85 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/English/lan_forum_viewforum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-24 17:41:01 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-24 19:21:49 $
 |     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");
 	
-define("LAN_01", "Forums");
-define("LAN_02", "Back to top");
-define("LAN_03", "Go");
-define("LAN_53", "Thread");
-define("LAN_54", "Starter");
-define("LAN_55", "Replies");
-define("LAN_56", "Views");
-define("LAN_57", "Latest Post");
-define("LAN_58", "There are no topics in this forum yet.");
-define("LAN_59", "You must be a registered member and logged in to post on this forum. Click on signup or login from the login menu.");
-define("LAN_79", "New posts");
-define("LAN_80", " No new posts");
-define("LAN_81", "Closed thread");
-define("LAN_180", "Search");
-define("LAN_202", "Sticky");
-define("LAN_203", "Sticky/Closed");
-define("LAN_204", "You <b>can</b> start new threads");
-define("LAN_205", "You <b>cannot</b> start new threads");
-define("LAN_206", "You <b>can</b> post replies");
-define("LAN_207", "You <b>cannot</b> post replies");
-define("LAN_208", "You <b>can</b> edit your posts");
-define("LAN_209", "You <b>cannot</b> edit your posts");
-define("LAN_316", "Goto page: ");
-define("LAN_317", "None");
-define("LAN_321", "Moderators: ");
-define("LAN_395", "[popular]");
-define("LAN_396", "Announcement");
-	
-define("LAN_397", "This forum is read only");
-	
-define("LAN_398", "Unstick thread");
-define("LAN_399", "Lock thread");
-define("LAN_400", "Unlock thread");
-define("LAN_401", "Stick thread");
-define("LAN_402", "Move thread");
-define("LAN_403", "Jump to forum");
-define("LAN_404", "This forum is moderated by");
-	
-define("LAN_405", "user is browsing this forum at the moment");
-define("LAN_406", "users are browsing this forum at the moment");
-define("LAN_407", "member");
-define("LAN_408", "guest");
-define("LAN_409", "members");
-define("LAN_410", "guests");
-	
-//v.616
-define("LAN_411", "Important Threads");
-define("LAN_412", "Forum Threads");
-define("LAN_431", "Syndicate this forum: rss 0.92");
-define("LAN_432", "Syndicate this forum: rss 2.0");
-define("LAN_433", "Syndicate this forum: RDF");
+define("LAN_01", "Forumai");
+define("LAN_02", "Į viršų");
+define("LAN_03", "Eiti");
+define("LAN_53", "Tema");
+define("LAN_54", "Pradėjo");
+define("LAN_55", "Atsakymai");
+define("LAN_56", "Peržiūrėta");
+define("LAN_57", "Paskutinis pranešimas");
+define("LAN_58", "Šiame forume pranešimų dar nėra.");
+define("LAN_59", "Jūs turite būti prisiregistravęs ir prisijungęs, jei norite rašyti pranešimus šiame forume. Spauskite <a href='".e_BASE."signup.php'>čia</a>, jei pageidaujate užsiregistruoti ar prisijungti.");
+define("LAN_79", "Nauji pranešimai");
+define("LAN_80", " Naujų pranešimų nėra");
+define("LAN_81", "Uždaryta tema");
+define("LAN_180", "Ieškoti");
+define("LAN_202", "Prioritetinė");
+define("LAN_203", "Prioritetinė/Uždaryta");
+define("LAN_204", "Jūs <b>turite teisę</b> pradėti naujas temas");
+define("LAN_205", "Jūs <b>neturite teisės</b> pradėti naujų temų");
+define("LAN_206", "Jūs <b>turite teisę</b> atsakyti į pranešimus");
+define("LAN_207", "Jūs <b>neturite teisės</b> atsakyti į pranešimus");
+define("LAN_208", "Jūs <b>turite teisę</b> keisti savo pranešimus");
+define("LAN_209", "Jūs <b>neturite teisės</b> keisti savo pranešimų");
+define("LAN_316", "Eiti");
+define("LAN_317", "Nėra");
+define("LAN_321", "Moderatoriai: ");
+define("LAN_395", "[populiarus]");
+define("LAN_396", "Skelbimas");
+define("LAN_397", "Šis forumas tik skaitymui");
+define("LAN_398", "Panaikinti temos prioritetiškumą");
+define("LAN_399", "Uždaryti temą");
+define("LAN_400", "Atverti temą");
+define("LAN_401", "Paversti temą prioritetine");
+define("LAN_402", "Perkelti temą");
+define("LAN_403", "Pereiti į forumą");
+define("LAN_404", "Šį forumą moderuoja");
+define("LAN_405", "vartotojas šiuo metu naršo forumuose");
+define("LAN_406", "vartotojai šiuo metu naršo forumuose");
+define("LAN_407", "narys");
+define("LAN_408", "svečias");
+define("LAN_409", "nariai");
+define("LAN_410", "svečiai");
+define("LAN_411", "Svarbios temos");
+define("LAN_412", "Forumo temos");
+define("LAN_431", "Sindikuoti šias diskusijas: rss 0.92");
+define("LAN_432", "Sindikuoti šias diskusijas: rss 2.0");
+define("LAN_433", "Sindikuoti šias diskusijas: RDF");
+define("LAN_434", "Ar Jūs tikrai norite ištrinti šią temą ir visus pranešimus?");
+define("LAN_435", "Ištrinti temą");
 
-define("LAN_434", "Are you sure you want to delete this thread and any replies?");
-define("LAN_435", "Delete thread");
-	
-//v.617
-define("FORLAN_CLOSE", "Thread closed.");
-define("FORLAN_OPEN", "Thread reopened.");
-define("FORLAN_STICK", "Thread made sticky.");
-define("FORLAN_UNSTICK", "Thread unstuck.");
-define("FORLAN_6", "Thread deleted");
-define("FORLAN_7", "replies deleted");
-define("FORLAN_8", "here");
-define("FORLAN_9", "to sign up or login from the login menu.");
-	
-define("FORLAN_10", "Begin New Thread");
-define("FORLAN_11", "New Posts");
-define("FORLAN_12", "No New Posts");
-define("FORLAN_13", "New Posts on Popular Thread");
-define("FORLAN_14", "No New Posts on Popular Thread");
-define("FORLAN_15", "Sticky Thread");
-define("FORLAN_16", "Closed Sticky Thread");
-define("FORLAN_17", "Announcement Thread");
-define("FORLAN_18", "Closed Thread");
-define('FORLAN_19', '[user deleted]');
-define('FORLAN_20', 'Sub-forum');
-define('FORLAN_21', 'Threads');
-define('FORLAN_22', 'Last Post');
+define("FORLAN_CLOSE", "Tema uždaryta.");
+define("FORLAN_OPEN", "Tema vėl atidaryta.");
+define("FORLAN_STICK", "Tema paversta prioritetine.");
+define("FORLAN_UNSTICK", "Tema paversta paprasta.");
+define("FORLAN_6", "Tema ištrinta");
+define("FORLAN_7", "atsakymai ištrinti");
+define("FORLAN_8", "čia");
+define("FORLAN_9", "užsiregistruoti arba prisijungti.");
+define("FORLAN_10","Pradėti naują temą");
+define("FORLAN_11","Nauji pranešimai");
+define("FORLAN_12","Naujų pranešimų nėra");
+define("FORLAN_13","Nauji populiarios temos pranešimai");
+define("FORLAN_14","Naujų pranešimų populiarioje temoje nėra");
+define("FORLAN_15","Prioritetinė tema");
+define("FORLAN_16","Uždaryta prioritetinė tema");
+define("FORLAN_17","Skelbimo tema");
+define("FORLAN_18","Uždaryta tema");
+define('FORLAN_19', '[vartotojas ištrintas]');
+define('FORLAN_20', 'Sub-diskusijos');
+define('FORLAN_21', 'Temos');
+define('FORLAN_22', 'Paskutinis pranešimas');
 	
 ?>

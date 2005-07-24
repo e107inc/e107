@@ -1,37 +1,36 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/English/lan_forum_conf.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-24 17:41:01 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-24 19:21:49 $
 |     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
-define("FORLAN_5", "Poll deleted.");
-define("FORLAN_6", "Thread deleted");
-define("FORLAN_7", "replies deleted");
-define("FORLAN_8", "Delete cancelled.");
-define("FORLAN_9", "Thread moved.");
-define("FORLAN_10", "Move cancelled.");
-define("FORLAN_11", "Back To Forums");
-define("FORLAN_12", "Forum Configuration");
-define("FORLAN_13", "Are you absolutely certain you want to delete this poll?<br />Once deleted it <b><u>cannot</u></b> be retreived.");
-define("FORLAN_14", "Cancel");
-define("FORLAN_15", "Confirm Delete Forum Post");
-define("FORLAN_16", "Confirm Delete Poll");
-define("FORLAN_17", "posted by");
-define("FORLAN_18", "Are you absolutely certain you want to delete this forum");
-define("FORLAN_19", "thread and it's related posts?");
-define("FORLAN_20", "the poll will also be deleted");
-define("FORLAN_21", "Once deleted they");
-define("FORLAN_22", "post?<br />Once deleted it");
-define("FORLAN_23", "cannot</u></b> be retreived");
-define("FORLAN_24", "Move thread  to forum");
-define("FORLAN_25", "Move Thread");
-define("FORLAN_26", "Reply deleted");
-	
-define("FORLAN_27", "moved");
+define("FORLAN_5", "Apklausa pašalinta.");
+define("FORLAN_6", "Tema ištrinta");
+define("FORLAN_7", "atsakymai ištrinti");
+define("FORLAN_8", "Trynimas atšauktas.");
+define("FORLAN_9", "Tema perkelta.");
+define("FORLAN_10", "Perkėlimas atšauktas.");
+define("FORLAN_11", "Grįžti į diskusijas");
+define("FORLAN_12", "Diskusijų konfigūracija");
+define("FORLAN_13", "Ar tikrai norite pašalinti šią apklausą?<br /> Jei pašalinsite, tai <b><u>negalėsite</u></b> atkurti.");
+define("FORLAN_14", "Atšaukti");
+define("FORLAN_15", "Patvirtinti pranešimo diskusijose trynimą");
+define("FORLAN_16", "Patvirtinti apklausos atšaukimą");
+define("FORLAN_17", "paskelbė");
+define("FORLAN_18", "Ar tikrai norite ištrinti šią diskusiją");
+define("FORLAN_19", "temą ir su ją susijusius pranešimus?");
+define("FORLAN_20", "apklausa taip pat bus ištrinta");
+define("FORLAN_21", "Jei ištrinsite, tai jie");
+define("FORLAN_22", "pranešimą?<br />Jei ištrinsite,");
+define("FORLAN_23", "negalėsite</u></b> atkurti");
+define("FORLAN_24", "Perkelti temą į diskusiją");
+define("FORLAN_25", "Perkelti temą");
+define("FORLAN_26", "Atsakymas ištrintas");
+define("FORLAN_27", "perkelta");
 	
 ?>
