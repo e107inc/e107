@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Danish/lan_content_help.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-07-18 14:47:18 $
+|     $Revision: 1.7 $
+|     $Date: 2005-07-24 11:39:08 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -53,5 +53,27 @@ define("CONTENT_ADMIN_HELP_SUBMIT_1", "<i>På denne side kan du se en liste over
 define("CONTENT_ADMIN_HELP_OPTION_DIV_1", "denne side lader dig indstille egenskaber for admin opret emne siden.<br /><br />Du kan definere hvilke sektioner der er tilgængelige når en admin (eller personlig indholds bestyrer) opretter et nyt indholds emne<br /><br /><b>specielle data tags</b><br />du kan tillade en bruger eller admin at tilføje yderligere felter til indholds emnet ved hjælp af disse specielle data tags. Disse ekstra felter er tomme nøgle=>værdi par. For eksempel: kan du tilføje en nøgle for 'fotograf' og her levere værdi felt med 'alle fotos af mig'. Både nøgle og værdi felterne er tomme tekst felter der vil være til stede i opret formularen.<br /><br /><b>forudindstilte data tags</b><br />bortset fra de specielle data tags, du kan bestemme forudindstillede data tags. Forskellen er i forudindstillede data tags, er nøglen allerede givet og brugeren skal kun levere værdi feltet for det forudindstillede. I samme eksempel som 'fotograf' ovenfor kan forud defineres, og brugeren skal levere 'alle fotos af mig'. Du kan vælge element typen ved at vælge egenskaben i valgboksen. I popup vinduet, kan du levere alle de informationer for det forudindstillede data tag.<br />");
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_2", "Tilføj egenskaberne har effekt på bruger tilføj formularen for indholds emner.<br /><br />Du kan definere hvilke sektioner der er tilgængelige for en bruger ved tilføjelsen af et indholds emne.<br /><br />".CONTENT_ADMIN_OPT_LAN_11.":<br />".CONTENT_ADMIN_OPT_LAN_12."");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_3", "I Sti og Tema Egenskaberne kan du definere hvor billeder og filer gemmes.<br /><br />du kan definere hvilket tema der skal bruges af denne hoved forælder. Du kan oprette yderligere temaer ved kopiere (og omdøbe) hele 'default' mappen i din templates mappe.<br /><br />Du kan definere et standard layout skema for nye indholds emner. Du kan oprette nye layout skemaer ved at oprette en content_content_template_XXX.php fil i din 'templates/default' mappe. Disse layouts kan bruges til at give hvert indholds emne i denne hoved forælder et anderledes layout.<br /><br />");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_4", "De Generelle Egenskaber er indstillinger der bruges gennem alle indholds siderne fra indholds håndterings plugin.");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_5", "Disse egenskaber har effekt på det Personlge Indholds Håndtering område på indholds håndtering admin området.<br /><br />".CONTENT_ADMIN_OPT_LAN_63."");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_6", "Disse egenskaber bruges i Menuen for denne hoved forælder hvis du har aktiveret menuen.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."<br /><br />".CONTENT_ADMIN_OPT_LAN_118.":<br />".CONTENT_ADMIN_OPT_LAN_119."<br /><br />");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_7", "Indholds Emne Fremvisning egenskaber har effekt på den lille fremvisning der gives for et indholds emne.<br /><br />Denne fremvisning gives på flere sider, lige som seneste nyt siden, visningen emner i kategori side og visninger af emner af forfatter side.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_8", "Kategori Sider viser informationer om indholds kategorier i denne hoved forælder.<br /><br />Der er to udprægede områder tilstede:<br /><br />alle kategorier side:<br />denne side viser alle kategorierne i denne hoved forælder<br /><br />vis kategori side:<br />denne side viser kategori emne, valgfrit underkategorierne i den kategori og indholds emner i den kategori eller disse kategorier<br />");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_9", "Indholds Siden viser Indholds Emne.<br /><br />du kan definere hvilke sektioner der skal vises ved at markere/afmarkere boksene.<br /><br />du kan vise emailadressen på en ikke-medlem forfatter.<br /><br />du kan tilsidesætte email/udskriv/pdf ikoner, bedømmelses systemet og kommentarerne.<br /><br />".CONTENT_ADMIN_OPT_LAN_74."");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_10", "Forfatter Siden viser en liste med alle unikke forfattere af indholds emnerne i denne hoved forælder.<br /><br />du kan definere hvilke sektioner der skal vises ved at markere/afmarkere boksene.<br /><br />Du kan begrænse antal emner pr. side.<br />");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_11", "Arkiv Siden viser alle indholds emner i hoved forælderen.<br /><br />du kan definere hvilke sektioner der skal vises ved at markere/afmarkere boksene.<br /><br />du kan vise emailadressen på en ikke-medlem forfatter.<br /><br />Du kan begrænse antal emner der skal vises pr. side.<br /><br />".CONTENT_ADMIN_OPT_LAN_66."<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "Top Bedømt Siden viser alle indholds emner der er blevet bedømt af  brugere.<br /><br />Du kan vælge de sektioner der skal vises ved at markere boksene.<br /><br />Du kan også definere om emailadressen til en ikke-medlem forfatter skal vises.");
+
+define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "Top Score Siden viser alle indholds emner der har fået en score af forfatteren til indholds emnet.<br /><br />You can choose the sections to display by checking the boxes.<br /><br />Also you can define if the emailaddress of a non-member author will be displayed.");
 
 ?>
