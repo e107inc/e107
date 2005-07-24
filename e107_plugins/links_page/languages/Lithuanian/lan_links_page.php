@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Lithuanian/lan_links_page.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-07-23 22:46:21 $
+|     $Revision: 1.5 $
+|     $Date: 2005-07-24 14:05:46 $
 |     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
@@ -62,9 +62,6 @@ define("LAN_LINKS_14", "grįžti į nuorodų pagrindinį puslapį");
 define("LAN_LINKS_15", "rūšiuoti pagal");
 
 define('LAN_107', "Šiuo metu nuorodų nėra");
-
-
-
 
 define("LCLAN_1", "Nustatymai įrašyti");
 define("LCLAN_2", "Nuoroda įrašyta į duomenų bazę.");
