@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Danish/lan_forum_viewtopic.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-18 16:58:24 $
+|     $Revision: 1.2 $
+|     $Date: 2005-07-24 11:47:26 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -84,5 +84,6 @@ define("LAN_433", "Syndiker this tråd: RDF");
 define("FORLAN_101", "Email Tråd");
 define("FORLAN_102", "Vis Udskrift");
 define('FORLAN_103', '[bruger slettet]');
+define('FORLAN_104', 'Tråd ikke fundet');
 
 ?>
