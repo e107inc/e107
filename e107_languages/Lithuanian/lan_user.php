@@ -1,12 +1,12 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_user.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-07 21:01:04 $
-|     $Author: alkas $
+|     $Revision: 1.4 $
+|     $Date: 2005-07-24 09:03:24 $
+|     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Nariai");
@@ -21,7 +21,7 @@ define("LAN_119", "Vieta");
 define("LAN_120", "Parašas");
 define("LAN_137", "Informacijos apie šį vartotoją nėra, nes jis neužsiregistravęs");
 define("LAN_138", "Registruoti nariai: ");
-define("LAN_139", "Order: ");
+define("LAN_139", "Tvarka: ");
 define("LAN_140", "Registruoti nariai");
 define("LAN_141", "Registruotų narių dar nėra.");
 define("LAN_142", "Dalyvis");
