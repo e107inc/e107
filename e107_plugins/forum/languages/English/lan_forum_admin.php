@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-24 19:21:49 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-25 18:29:22 $
 |     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
@@ -142,46 +142,46 @@ define("FORLAN_129", "Tai nustatys sibmbolių skaičių aiškinamojoje kortelėj
 define("FORLAN_130", "Spauskite čia,");
 define("FORLAN_131", "jei norite nustatyti maksimalų failo dydį, leidžiamus failų tipus ir kt.");
 define("FORLAN_132", "Pabrėžti lipnias temas");
-define("FORLAN_133", "Give extra emphasis to sticky threads (separate thread sections and headers)");
-define("FORLAN_134", "Maximum width of uploaded image");
-define("FORLAN_135", "Leave blank to disable auto resizing of images");
-define("FORLAN_136", "Create link to full size image");
-define("FORLAN_137", "Enabling this will resize larger images and also create a link to the original full size image.  If disabled, original image will be discarded");
-define("FORLAN_138", "Prune these forums");
-define("FORLAN_139", "To use this setting you also need to tick 'Enable image posting' on the <a href='".e_ADMIN."image.php'>images</a> page");
-define("FORLAN_140", "View");
-define("FORLAN_141", "Post");
-define("FORLAN_142", "Post permission");
-define("FORLAN_143", "Indicates who can can post to the forum");
-define("FORLAN_144", "Moderators set");
-define("FORLAN_145", "Configure sub-forums");
-define("FORLAN_146", "No sub-forums yet");
-define("FORLAN_147", "Update sub-forums");
-define("FORLAN_148", "Create sub-forums");
-define("FORLAN_149", "sub-forums");
-define("FORLAN_150", "sub-forum");
+define("FORLAN_133", "Labiau pabrėžti lipnias temas (atskirti temų sekcijas ir antraštes)");
+define("FORLAN_134", "Maksimalus leidžiamas atsiųstų paveikslėlių plotis");
+define("FORLAN_135", "Palikite tuščią, jei norite išjungti paveikslėlių auto-perdidinimą");
+define("FORLAN_136", "Sukurti nuorodą į viso dydžio paveikslėlį");
+define("FORLAN_137", "Įjungus didesni paveikslėliai bus sumažinti ir taip pat sukurta nuoroda į viso dydžio paveikslėlį. Išjungus - viso dydžio paveikslėliai bus nebenaudojami");
+define("FORLAN_138", "Sutrumpinti šias diskusijas");
+define("FORLAN_139", "Norėdami naudoti šias nuostatas Jūs turite pažymėti 'Enable image posting' <a href='".e_ADMIN."image.php'>paveikslėlių</a> puslapyje");
+define("FORLAN_140", "Žiūrėti");
+define("FORLAN_141", "Atsakyti");
+define("FORLAN_142", "Atsakymo leidimas");
+define("FORLAN_143", "Pažymi, kas gali skelbti pranešimus diskusijose");
+define("FORLAN_144", "Moderatoriai set");
+define("FORLAN_145", "Kofiguruoti sub-diskusijas");
+define("FORLAN_146", "Sub-diskusijų dar nėra");
+define("FORLAN_147", "Atnaujinti sub-diskusijas");
+define("FORLAN_148", "Skurti sub-diskusijas");
+define("FORLAN_149", "sub-diskusijos");
+define("FORLAN_150", "sub-diskusijos");
 define("FORLAN_151", "ID");
-define("FORLAN_152", "posts");
-define("FORLAN_153", "Tools");
-define("FORLAN_154", "Reply Deleted");
-define("FORLAN_155", "Forum Categories");
-define("FORLAN_156", "Select forum(s) to perform action on");
-define("FORLAN_157", "All Forums");
-define("FORLAN_158", "Recalculate forum lastpost info");
-define("FORLAN_159", "Select to recalculate lastpost info");
-define("FORLAN_160", "Select to perform this on forums only, not threads");
-define("FORLAN_161", "Recalculate post / reply counts");
-define("FORLAN_162", "Select to recalculate forum thread/reply counts");
-define("FORLAN_163", "Recalculate user forum posts counts");
-define("FORLAN_164", "Select to recalculate user forum counts");
-define("FORLAN_165", "Execute functions");
-define("FORLAN_166", "Forum Tools");
-define("FORLAN_167", "Counts updated for forum");
-define("FORLAN_168", "Lastpost info updated for forum");
-define("FORLAN_169", "User forum counts updated");
-define("FORLAN_166", "Forum Tools");
-define("FORLAN_166", "Forum Tools");
-define("FORLAN_166", "Forum Tools");
+define("FORLAN_152", "pranešimai");
+define("FORLAN_153", "Įrankiai");
+define("FORLAN_154", "Atsakymas ištrintas");
+define("FORLAN_155", "Diskusijų kategorijos");
+define("FORLAN_156", "Pasirinkite diskusijas(ą) veiksmo atlikimui");
+define("FORLAN_157", "Visos diskusijos");
+define("FORLAN_158", "Perskaičiuoti diskusijos paskutinio pranešimo info");
+define("FORLAN_159", "Pasirinkite perskaičiuoti paskutinio pranešimo info");
+define("FORLAN_160", "Pasirinkite atlikti tai tik diskusijose, ne temose");
+define("FORLAN_161", "Perskaičiuoti pramešimus / atsakymų skaičių");
+define("FORLAN_162", "Pasirinkite perskaičiuoti diskusijų temas / atsakymų skaičių");
+define("FORLAN_163", "Perskaičiuoti vartotojo diskusijų pranešimų skaičių");
+define("FORLAN_164", "Pasirinkite perskaičiuoti varototojo diskusijų skaičių");
+define("FORLAN_165", "Vykdyti funkcijas");
+define("FORLAN_166", "Diskusijų įrankiai");
+define("FORLAN_167", "Skaičiavimai diskusijoms atnaujinti");
+define("FORLAN_168", "Paskutinio pranešimo info diskusijoms atnaujinta");
+define("FORLAN_169", "Vartotojo diskusijų skaičiavimai atnaujinti");
+define("FORLAN_166", "Diskusijų įrankiai");
+define("FORLAN_166", "Diskusijų įrankiai");
+define("FORLAN_166", "Diskusijų įrankiai");
 
 
 

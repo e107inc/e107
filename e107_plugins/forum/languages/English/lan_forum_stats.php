@@ -4,36 +4,36 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/English/lan_forum_stats.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-24 19:21:49 $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-25 18:29:22 $
 |     $Author: g3d45 $
 +----------------------------------------------------------------------------+
 */
 define("e_PAGETITLE", "Diskusijų statistika");
 
-define("FSLAN_1", "General");
-define("FSLAN_2", "Forum opened");
-define("FSLAN_3", "Open for");
-define("FSLAN_4", "Total posts");
-define("FSLAN_5", "Forum topics");
-define("FSLAN_6", "Forum replies");
-define("FSLAN_7", "Forum thread views");
-define("FSLAN_8", "Database size (forum tables only)");
-define("FSLAN_9", "Average row length in forum table");
-define("FSLAN_10", "Most active topics");
-define("FSLAN_11", "Rank");
-define("FSLAN_12", "Topic");
-define("FSLAN_13", "Replies");
-define("FSLAN_14", "Started by");
-define("FSLAN_15", "Date");
-define("FSLAN_16", "Most viewed topics");
-define("FSLAN_17", "Views");
-define("FSLAN_18", "Top posters");
-define("FSLAN_19", "Name");
-define("FSLAN_20", "Posts");
-define("FSLAN_21", "Top topic starters");
-define("FSLAN_22", "Top repliers");
-define("FSLAN_23", "Forum Statistics");
-define("FSLAN_24", "Average posts per day");
+define("FSLAN_1", "Bendra");
+define("FSLAN_2", "Diskusijų atidaryta");
+define("FSLAN_3", "Atidaro");
+define("FSLAN_4", "Iš viso pranešimų");
+define("FSLAN_5", "Diskusijų temos");
+define("FSLAN_6", "Diskusijų pranešimai");
+define("FSLAN_7", "Diskusijų temų peržiūrėta");
+define("FSLAN_8", "Duombazės dydis (tik diskusijų lentelės)");
+define("FSLAN_9", "Vidutinis eilutės ilgis diskusijų lentelėje");
+define("FSLAN_10", "Aktyviausios temos");
+define("FSLAN_11", "Reitingas");
+define("FSLAN_12", "Tema");
+define("FSLAN_13", "Atsakymai");
+define("FSLAN_14", "Pradėjo");
+define("FSLAN_15", "Data");
+define("FSLAN_16", "Žiūrimiausios temos");
+define("FSLAN_17", "Peržiūrėta");
+define("FSLAN_18", "Top nariai");
+define("FSLAN_19", "Vardas");
+define("FSLAN_20", "Pranešimai");
+define("FSLAN_21", "Top temų pradėjėjai");
+define("FSLAN_22", "Top atsakytojai");
+define("FSLAN_23", "Diskusijų statistika");
+define("FSLAN_24", "Vidutiniškai pranešimų per dieną");
 
 ?>
