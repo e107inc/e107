@@ -1,11 +1,80 @@
-<?php
+﻿<?php
 // e107 Language File.
-// $Id: German.php,v 1.2 2005-06-22 20:02:34 e107coders Exp $
+// $Id: German.php,v 1.3 2005-07-26 14:58:46 gatowlion Exp $
 // $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
+
 define(EC_ADLAN_1,"Kalender");
 define(EC_ADLAN_2,"Kalender konfigurieren");
 define(EC_INSTALL,"Kalender installieren");
 define(EC_UNINSTALL,"Kalender deinstallieren");
+define('EC_LAN_TODAY', "today");
+
+define('EC_LAN_DAY_1', "1");
+define('EC_LAN_DAY_2', "2");
+define('EC_LAN_DAY_3', "3");
+define('EC_LAN_DAY_4', "4");
+define('EC_LAN_DAY_5', "5");
+define('EC_LAN_DAY_6', "6");
+define('EC_LAN_DAY_7', "7");
+define('EC_LAN_DAY_8', "8");
+define('EC_LAN_DAY_9', "9");
+define('EC_LAN_DAY_10', "10");
+define('EC_LAN_DAY_11', "11");
+define('EC_LAN_DAY_12', "12");
+define('EC_LAN_DAY_13', "13");
+define('EC_LAN_DAY_14', "14");
+define('EC_LAN_DAY_15', "15");
+define('EC_LAN_DAY_16', "16");
+define('EC_LAN_DAY_17', "17");
+define('EC_LAN_DAY_18', "18");
+define('EC_LAN_DAY_19', "19");
+define('EC_LAN_DAY_20', "20");
+define('EC_LAN_DAY_21', "21");
+define('EC_LAN_DAY_22', "22");
+define('EC_LAN_DAY_23', "23");
+define('EC_LAN_DAY_24', "24");
+define('EC_LAN_DAY_25', "25");
+define('EC_LAN_DAY_26', "26");
+define('EC_LAN_DAY_27', "27");
+define('EC_LAN_DAY_28', "28");
+define('EC_LAN_DAY_29', "29");
+define('EC_LAN_DAY_30', "30");
+define('EC_LAN_DAY_31', "31");
+/*
+define('EC_LAN_DAY_1', "1st");
+define('EC_LAN_DAY_2', "2nd");
+define('EC_LAN_DAY_3', "3rd");
+define('EC_LAN_DAY_4', "4th");
+define('EC_LAN_DAY_5', "5th");
+define('EC_LAN_DAY_6', "6th");
+define('EC_LAN_DAY_7', "7th");
+define('EC_LAN_DAY_8', "8th");
+define('EC_LAN_DAY_9', "9th");
+define('EC_LAN_DAY_10', "10th");
+define('EC_LAN_DAY_11', "11th");
+define('EC_LAN_DAY_12', "12th");
+define('EC_LAN_DAY_13', "13th");
+define('EC_LAN_DAY_14', "14th");
+define('EC_LAN_DAY_15', "15th");
+define('EC_LAN_DAY_16', "16th");
+define('EC_LAN_DAY_17', "17th");
+define('EC_LAN_DAY_18', "18th");
+define('EC_LAN_DAY_19', "19th");
+define('EC_LAN_DAY_20', "20th");
+define('EC_LAN_DAY_21', "21st");
+define('EC_LAN_DAY_22', "22nd");
+define('EC_LAN_DAY_23', "23rd");
+define('EC_LAN_DAY_24', "24th");
+define('EC_LAN_DAY_25', "25th");
+define('EC_LAN_DAY_26', "26th");
+define('EC_LAN_DAY_27', "27th");
+define('EC_LAN_DAY_28', "28th");
+define('EC_LAN_DAY_29', "29th");
+define('EC_LAN_DAY_30', "30th");
+define('EC_LAN_DAY_31', "31st");
+*/
+
+
 define(EC_LAN_0, "Januar");
 define(EC_LAN_1, "Februar");
 define(EC_LAN_2, "März");
@@ -170,6 +239,8 @@ define('EC_LAN_129', "Aktualisieren");
 define('EC_LAN_130', "Anmeldungen aktualisiert");
 define('EC_LAN_131', "Zurück");
 define('EC_LAN_132', "Details aufklappen/anzeigen");
+define('EC_LAN_133', "[mehr]");
+define('EC_LAN_134', "Sie müssen einen Kategorienamen angeben");
 
 define('EC_ADLAN_A10', "Konfiguration");
 define('EC_ADLAN_A11', "Kategorien");

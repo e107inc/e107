@@ -6,6 +6,7 @@ define("LAN_3", "Ansichten");
 define("LAN_4", "Antworten");
 define("LAN_5", "Letzter Eintrag");
 define("LAN_6", "Einträge");
+define("LAN_7", "von");
 
 define("NFPM_L1", "Dieses Plugin zeigt eine Liste von Neuen Forumseinträgen auf der Hauptseite");
 define("NFPM_L2", "Letzte Forumeinträge"); 

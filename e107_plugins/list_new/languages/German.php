@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/German.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:36 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 15:05:44 $
+|     $Author: gatowlion $
 +----------------------------------------------------------------------------+
 */
 
@@ -51,8 +51,16 @@ define("LIST_21", "Artikel");
 define("LIST_22", "Ideen");
 //all above will be deprecated sometime
 
+define("LIST_23", "Diese Plugin ist nicht installiert.");
+
+define("LIST_PLUGIN_1", "Neues auflisten");
+define("LIST_PLUGIN_2", "Diese Plugin gib Ihnen eine Übersicht neuer Einträge vieler e107- Kategorien. Sie können entweder eine Liste neuer Einträge seit Ihrem letzen Besuch, oder einer generelle Liste neuer Einträge aufrufen. Obendrein könne Sie sich dieses auch in einem Menü anzeigen lassen. Jeder Bereich ist via Admin-Screen konfigurierbar.");
+define("LIST_PLUGIN_3", "Hauptmenü konfigurieren");
+define("LIST_PLUGIN_4", "Das List-New Plugin ist nun einsatzbereit.");
+define("LIST_PLUGIN_5", "Auflisten");
+
 define("LIST_ADMIN_1", "Letzte");
-define("LIST_ADMIN_2", "Einsellungen aktualisieren");
+define("LIST_ADMIN_2", "Einstellungen aktualisieren");
 define("LIST_ADMIN_3", "Einstellungen aktualisiert");
 define("LIST_ADMIN_4", "Bereich");
 define("LIST_ADMIN_5", "Menü");
@@ -156,6 +164,15 @@ define("LIST_ADMIN_LAN_29", "Icon : Gesetztes");
 define("LIST_ADMIN_LAN_30", "Benutzen Sie das gesetzte Theme-Bullet falls kein Icon zur Verfügung steht oder falls die Benutzung von Icons nicht freigeschalten ist");
 define("LIST_ADMIN_LAN_31", "");
 
+define("LIST_ADMIN_LAN_32", "Zeitspanne:Tage");
+define("LIST_ADMIN_LAN_33", "Maximale Tagesanzeige, wie weit für den Benutzer zurückliegende Neuigkleiten aufgelistet werden");
+define("LIST_ADMIN_LAN_34", "");
+define("LIST_ADMIN_LAN_35", "Tage");
+
+define("LIST_ADMIN_LAN_36", "Zeitspanne");
+define("LIST_ADMIN_LAN_37", "Eine Auswahlbox anzeigen lassen, wieviele Tage rückliegend aufgelistet werden sollen?");
+define("LIST_ADMIN_LAN_38", "");
+
 
 
 
@@ -163,8 +180,8 @@ define("LIST_MENU_1", "Letzte Einträge");
 define("LIST_MENU_2", "von");
 define("LIST_MENU_3", "am");
 define("LIST_MENU_4", "in");
-define("LIST_MENU_5", "");
-define("LIST_MENU_6", "");
+define("LIST_MENU_5", "Tage");
+define("LIST_MENU_6", "Für wieviele Tage sollen Einträge angezeigt werden?");
 define("LIST_MENU_7", "");
 define("LIST_MENU_8", "");
 define("LIST_MENU_9", "");

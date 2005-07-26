@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/German.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:34 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 14:59:43 $
+|     $Author: gatowlion $
 |     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
 */
@@ -35,6 +35,7 @@ define("CHATBOX_L14", "Smilies");
 define("CHATBOX_L15", "Der Eintrag ist zu lang, oder es wurde ein leerer Eintrag getätigt.");
 define("CHATBOX_L16", "Unbekannt");
 define("CHATBOX_L17", "Doppelter Eintrag");
+define("CHATBOX_L18", "Chatbox Nachricht moderiert");
 
 define("LAN_11", "Chatbox (Alle Einträge)");
 define("LAN_12", "Chat Einträge");

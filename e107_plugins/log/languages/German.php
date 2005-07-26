@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/German.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:36 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 15:06:03 $
+|     $Author: gatowlion $
 |     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
 */
@@ -28,12 +28,12 @@ define("ADSTAT_L6", "Seiten Statistik");
 define("ADSTAT_L7", "Statistiken dieses Typs wurden nicht festgehalten.");
 define("ADSTAT_L8", "Heutige Statistik");
 define("ADSTAT_L9", "Allgemeine Statistik insgesamt");
-define("ADSTAT_L10", "Tgliche Statistik");
+define("ADSTAT_L10", "Tägliche Statistik");
 define("ADSTAT_L11", "Monatliche Statistik");
 define("ADSTAT_L12", "Browser Statistik");
 define("ADSTAT_L13", "Betriebsystem Statistik");
 define("ADSTAT_L14", "Domain Statistik");
-define("ADSTAT_L15", "Bildschirmauflsung / Farbtiefe Statistik");
+define("ADSTAT_L15", "Bildschirmauflösung / Farbtiefe Statistik");
 define("ADSTAT_L16", "Referral Statistik");
 define("ADSTAT_L17", "Suchwort Statistik");
 define("ADSTAT_L18", "Letzte Besucher");
@@ -46,8 +46,8 @@ define("ADSTAT_L24", "Insgesamt einzigartige Besuche");
 define("ADSTAT_L25", "Keine Statistik bis jetzt.");
 define("ADSTAT_L26", "Browser");
 define("ADSTAT_L27", "Betriebsystem");
-define("ADSTAT_L28", "Lnder / Domains");
-define("ADSTAT_L29", "Bildschirmauflsung");
+define("ADSTAT_L28", "Länder / Domains");
+define("ADSTAT_L29", "Bildschirmauflösung");
 define("ADSTAT_L30", "Seiten Referrals");
 define("ADSTAT_L31", "Suchmaschinen Wrter");
 define("ADSTAT_L32", "Referred von");

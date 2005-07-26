@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/German.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:36 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 15:06:03 $
+|     $Author: gatowlion $
 |     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
 */
@@ -29,7 +29,7 @@ define("ADSTAT_L5", "Statistik Typen");
 define("ADSTAT_L6", "Browsers");
 define("ADSTAT_L7", "Betriebssysteme");
 define("ADSTAT_L8", "Bildschirmauflsungen / Farbtiefen");
-define("ADSTAT_L9", "Lnder/Domains besucht von");
+define("ADSTAT_L9", "Länder/Domains besucht von");
 define("ADSTAT_L10", "Referrers");
 define("ADSTAT_L11", "Suchanfragen");
 
@@ -45,16 +45,23 @@ define("ADSTAT_L18", "Hauptstatistik Seitenzugriff erlauben ...");
 
 define("ADSTAT_L19", "Letzte Besucher");
 
-define("ADSTAT_L20", "Admin Besuche zhlen");
+define("ADSTAT_L20", "Admin Besuche zählen");
 define("ADSTAT_L21", "Maximale Records die auf der Statistikpage angezeigt werden sollen");
 
 define("ADSTAT_L22", "Update Routine laufen lassen");
-define("ADSTAT_L23", "Logs einer frheren Version des e107 wurden gefunden, Sie knnen sie hier aktualisieren");
+define("ADSTAT_L23", "Logs einer frheren Version des e107 wurden gefunden, Sie können sie hier aktualisieren");
 define("ADSTAT_L24", "Zum Updatescript");
-define("ADSTAT_L25", "Ausgewhlte Statistikzurcksetzungen");
+define("ADSTAT_L25", "Ausgewählte Statistikzurücksetzungen");
 
 define("ADSTAT_L26", "Seiteneintrge entfernen");
 define("ADSTAT_L27", "Falls Ihre Statistik fehlerhafte Seiten aufweisst, knnen Sie sie hier entfernen");
 define("ADSTAT_L28", "Seite ffnen");
+
+define("ADSTAT_L29", "Seiten Name");
+define("ADSTAT_L30", "Markieren um zu löschen");
+define("ADSTAT_L31", "Ausgewählte Seiten löschen");
+define("ADSTAT_L32", "Seiten Tidy");
+define("ADSTAT_L10", "Referrers");
+define("ADSTAT_L10", "Referrers");
 
 ?>

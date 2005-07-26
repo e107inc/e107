@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/German/lan_forum_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:36 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 15:04:46 $
+|     $Author: gatowlion $
 |     $translated by: admin@cms-myway.vom (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
 */
@@ -175,6 +175,24 @@ define("FORLAN_152", "Einträge");
 define("FORLAN_153", "Tools");
 define("FORLAN_154", "Antwort gelöscht");
 define("FORLAN_155", "Forum Kategorien");
+
+define("FORLAN_156", "Forum/Foren auswählen in denen gewünschtes ausgeführt werden soll");
+define("FORLAN_157", "Alle Foren");
+define("FORLAN_158", "Letzte Foreninfo neu kalkulieren");
+define("FORLAN_159", "Hier auswählen um letzte Foreninfo neu zu kalkulieren");
+define("FORLAN_160", "Hier auswählen, um es nur in Foren auszuführen und nicht in Threads");
+define("FORLAN_161", "Einträge / Antwortenzählung neu kalkulieren");
+define("FORLAN_162", "Hier auswählen um Einträge / Antwortenzählung neu kalkulieren");
+define("FORLAN_163", "Benutzereinträgezählung neu kalkulieren");
+define("FORLAN_164", "Hier auswählen um Benutzereinträgezählung neu kalkulieren");
+define("FORLAN_165", "Funktioonen ausführen");
+define("FORLAN_166", "Forum Tools");
+define("FORLAN_167", "Zählung für Forum aktulisiert");
+define("FORLAN_168", "Letzte Eintragsinfo für Forum aktualisiert");
+define("FORLAN_169", "Benutzer Forumzählungen aktualisiert");
+define("FORLAN_166", "Forum Tools");
+define("FORLAN_166", "Forum Tools");
+define("FORLAN_166", "Forum Tools");
 
 
 ?>
