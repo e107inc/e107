@@ -45,7 +45,7 @@
 
 			$rowheading	= $this -> parse_heading($row['event_title'], $mode);
 			$ICON		= $bullet;
-			$HEADING	= "<a href='".e_BASE."event.php?".$row['event_start']."' title='".$row['event_title']."'>".$rowheading."</a>";
+			$HEADING	= "<a href='".e_PLUGIN."calendar_menu/event.php?".$row['event_start'].".event.".$row['event_id']."' title='".$row['event_title']."'>".$rowheading."</a>";
 			$CATEGORY	= $row['event_cat_name'];
 			$DATE		= ($arr[5] ? ($row['event_start'] ? $this -> getListDate($row['event_start'], $mode) : "") : "");
 			$INFO		= "";
