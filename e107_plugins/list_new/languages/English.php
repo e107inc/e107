@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-07-20 15:06:57 $
-|     $Author: lisa_ $
+|     $Revision: 1.11 $
+|     $Date: 2005-07-26 14:26:34 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -150,9 +150,9 @@ define("LIST_ADMIN_LAN_17", "today date");
 define("LIST_ADMIN_LAN_18", "choose a date style if the date is today");
 define("LIST_ADMIN_LAN_19", "For more information on date formats see the <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime function page at php.net</a>");
 
-define("LIST_ADMIN_LAN_20", "colomns");
-define("LIST_ADMIN_LAN_21", "choose an amount of colomns");
-define("LIST_ADMIN_LAN_22", "define how many colomns you want to use. the number you specify will seperate the page into an equal amount of colomns");
+define("LIST_ADMIN_LAN_20", "columns");
+define("LIST_ADMIN_LAN_21", "choose an amount of columns");
+define("LIST_ADMIN_LAN_22", "define how many columns you want to use. the number you specify will seperate the page into an equal amount of columns");
 
 define("LIST_ADMIN_LAN_23", "welcome text");
 define("LIST_ADMIN_LAN_24", "define a welcome text that will be rendered at the top of the page");
