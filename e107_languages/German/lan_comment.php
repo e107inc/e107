@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/lan_comment.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:31 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 14:43:22 $
+|     $Author: gatowlion $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
@@ -46,6 +46,8 @@ define("COMLAN_3", "Fehler!");
 define("COMLAN_4", 'Betreff');
 define("COMLAN_5", 'Re:');
 define("COMLAN_6", 'Darauf antworten');
+define("COMLAN_7", 'Bewertung');
+define("COMLAN_8", 'Kommentare sind gelocked');
 
 define("LAN_315", "Trackbacks");
 define("LAN_316", "Keine Trackbacks für diesen Newseintrag definiert.");

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_banner.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:32 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 14:43:22 $
+|     $Author: gatowlion $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
@@ -65,6 +65,8 @@ define("BNRLAN_59", "Neuen Banner erstellen");
 define("BNRLAN_60", "Kampagnen");
 define("BNRLAN_61", "Banner Menü ");
 define("BNRLAN_62", "Banneroptionen");
+define("BNRLAN_63", "Banner erstellt");
+define("BNRLAN_64", "Banner aktualisiert");
 
 
 

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_mailout.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:33 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 14:43:22 $
+|     $Author: gatowlion $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
@@ -43,6 +43,11 @@ define("MAILAN_12","Alle Mitglieder");
 define("MAILAN_13","Alle nicht aktivierten Mitglieder ");
 define("MAILAN_14","Für das Versenden großer Anzahl an Mails wird dringend vorgeschlagen freizuschalten. -  in nachfolgenden Voreinstellungen einzustellen.");
 define("MAILAN_15","Mail-Out");
+define("MAILAN_16","Benutzername");
+define("MAILAN_17","Registrierungslink");
+define("MAILAN_18","Benutzer id");
+define("MAILAN_19","Es wurde keine E-mail Adresse für den Seitenadministrator gefunden. Überprüfen Sie Ihre Einstellungen und versuchen es erneut.");
+define("MAILAN_20","Sendmail-Pfad");
 
 
 

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/German.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:31 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 14:43:21 $
+|     $Author: gatowlion $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
@@ -16,9 +16,7 @@ define("CHARSET", "utf-8");
 define("CORE_LC", 'de');
 define("CORE_LC2", 'de');
 define("CORE_LAN1","Fehler : Theme Fehlt.\\n\\nÄnder die Theme unter Einstellungen oder Upload die Theme auf den Server.");
-
 //v.616
 define("CORE_LAN2"," \\1 schrieb:");// "\\1" zeigt den Usernamen noch einmal.
 define("CORE_LAN3","Dateianhang ausgeschaltet");
-
 ?>

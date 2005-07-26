@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_cpage.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:32 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 14:43:22 $
+|     $Author: gatowlion $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
@@ -52,5 +52,6 @@ define("CUSLAN_38", "an");
 define("CUSLAN_39", "aus");
 define("CUSLAN_40", "Optionen speichern");
 define("CUSLAN_41", "Autor, - und Datumsinformationen anzeigen");
+define("CUSLAN_42", "Keine Seiten definiert");
 
 ?>

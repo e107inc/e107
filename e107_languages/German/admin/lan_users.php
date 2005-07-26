@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_users.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:33 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 14:43:22 $
+|     $Author: gatowlion $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
@@ -137,6 +137,42 @@ define("USRLAN_132", "Freischalten");
 define("USRLAN_133", "Benutzer zum Aktualisieren ihrer Einstellungen zwingen");
 define("USRLAN_134", "Wenn diese Option freigeschalten ist, wird der Benutzer automatisch zur Benutzer-Einstellungsseite weitergeleitet falls ein erforderliches Feld nicht ausgefüllt wurde.");
 
-
+define("DUSRLAN_1", "ID");
+define("DUSRLAN_2", "Angezeigter Name");
+define("DUSRLAN_3", "Benutzer Name");
+define("DUSRLAN_4", "Eigener Titel");
+define("DUSRLAN_5", "Passwort");
+define("DUSRLAN_6", "Session");
+define("DUSRLAN_7", "Email");
+define("DUSRLAN_8", "Webseite");
+define("DUSRLAN_9", "ICQ");
+define("DUSRLAN_10", "AIM");
+define("DUSRLAN_11", "MSN");
+define("DUSRLAN_12", "Ort");
+define("DUSRLAN_13", "Geburtstag");
+define("DUSRLAN_14", "Signatur");
+define("DUSRLAN_15", "Bild");
+define("DUSRLAN_16", "Zeitzone");
+define("DUSRLAN_17", "Email verstecken");
+define("DUSRLAN_18", "Tag der Anmeldung");
+define("DUSRLAN_19", "Letzter Besuch");
+define("DUSRLAN_20", "Besuche bis jetzt");
+define("DUSRLAN_21", "Letzter Eintrag");
+define("DUSRLAN_22", "Chatbox Einträge");
+define("DUSRLAN_23", "Kommentare");
+define("DUSRLAN_24", "Forum Einträge");
+define("DUSRLAN_25", "IP");
+define("DUSRLAN_26", "Verbannung");
+define("DUSRLAN_27", "Voreinstellungen");
+define("DUSRLAN_28", "Neu");
+define("DUSRLAN_29", "Gesehen");
+define("DUSRLAN_30", "Besuche");
+define("DUSRLAN_31", "Admin");
+define("DUSRLAN_32", "Richtiger Name");
+define("DUSRLAN_33", "Benutzerklasse");
+define("DUSRLAN_34", "Rechte");
+define("DUSRLAN_35", "Bild");
+define("DUSRLAN_36", "Passwort Änderung");
+define("DUSRLAN_37", "XUP");
 
 ?>

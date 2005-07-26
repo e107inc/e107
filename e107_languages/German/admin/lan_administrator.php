@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_administrator.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:32 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 14:43:22 $
+|     $Author: gatowlion $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ define("ADMSLAN_19", "Ändern der Seitenvoreinstellungen");
 define("ADMSLAN_20", "Ändern der Menüs");
 define("ADMSLAN_21", "Seitenadministrator hinzufügen");
 define("ADMSLAN_22", "User/Verbannungen moderieren etc.");
-define("ADMSLAN_23", "Erstellen/Bearbeiten von Foren");
+//define("ADMSLAN_23", "Erstellen/Bearbeiten von Foren");
 define("ADMSLAN_24", "Download Kategories managen");
 define("ADMSLAN_25", "Upload /Dateien managen");
 define("ADMSLAN_26", "Übersicht News Kategorien");
@@ -40,9 +40,9 @@ define("ADMSLAN_32", "Konfiguriere den Inhalt der angezeigten ersten Seite");
 define("ADMSLAN_33", "Konfiguriere Log/Statistic");
 define("ADMSLAN_34", "Konfiguriere Meta Tags");
 define("ADMSLAN_35", "Konfiguriere öffentliche Datei Uploads");
-define("ADMSLAN_36", "Moderiere Foren");
+//define("ADMSLAN_36", "Moderiere Foren");
 define("ADMSLAN_37", "Moderiere Kommentare");
-define("ADMSLAN_38", "Moderiere/Konfiguriere die Chatbox");
+//define("ADMSLAN_38", "Moderiere/Konfiguriere die Chatbox");
 define("ADMSLAN_39", "Schreibe News");
 define("ADMSLAN_40", "Schreibe Links");
 define("ADMSLAN_41", "Schreibe Artikel");

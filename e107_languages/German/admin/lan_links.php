@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_links.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:33 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 14:43:22 $
+|     $Author: gatowlion $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
@@ -55,6 +55,8 @@ define("LCLAN_68", "Links Optionen");
 
 define("LCLAN_78", "Zeige Beschreibung bei Link<b>überfahren mit der Mouse");
 define("LCLAN_79", "Die Beschreibung wird angezeigt, wenn der Link mit der Mouse überfahren wird");
+define("LCLAN_80", "Aktiviere Expanding Sub-Menüs");
+define("LCLAN_81", "Sub-Menüs werden nur angezeigt wenn der Hauptlink geklickt wird. (Link Hauptkategorien sind abgestellt)");
 
 define("LCLAN_83", "Submenus Generator");
 
@@ -65,8 +67,8 @@ define("LCLAN_90", "Link Name");
 define("LCLAN_91", "Verschieben");
 
 define("LCLAN_95", "Klasse");
-define("LCLAN_80", "Aktiviere Expanding Sub-Menüs");
-define("LCLAN_81", "Sub-Menüs werden nur angezeigt wenn der Hauptlink geklickt wird. (Link Hauptkategorien sind abgestellt)");
+define("LCLAN_96", "In Ihrem Theme angezeigt als");
+
 
 define("LINKLAN_1", "Öffnet in einem 800x600 Fenster");
 define("LINKLAN_2", "Hauptkategorie");

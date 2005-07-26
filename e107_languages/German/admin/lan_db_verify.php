@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_db_verify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:32 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 14:43:22 $
+|     $Author: gatowlion $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
 */
 
-define("DBLAN_1", "Die SQL Datei kann nicht gelesen werden<br /><br />Bitte stellen Sie sicher da&szlig; die Datei <b>core_sql.php</b> in dem  <b>/admin/sql</b> Verzeichnis existiert.");
+define("DBLAN_1", "Die SQL Datei kann nicht gelesen werden<br /><br />Bitte stellen Sie sicher dass; die Datei <b>core_sql.php</b> in dem  <b>/admin/sql</b> Verzeichnis existiert.");
 define("DBLAN_2", "Alles überprüfen");
 
 define("DBLAN_4", "Tabelle");

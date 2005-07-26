@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/lan_error.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:31 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 14:43:22 $
+|     $Author: gatowlion $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 |     $ UTF-8 encoded $
 +----------------------------------------------------------------------------+
@@ -33,6 +33,11 @@ define("LAN_17", "wurde gelogged.");
 define("LAN_18", "Anscheinend, wurden Sie hierher verwiesen durch");
 define("LAN_19", "Unglücklicher Weise, ist der Link dieser Adresse falsch oder veraltet.");
 define("LAN_20", "Bitte klicken Sie hier um auf die erste Seite zu gelangen");
+
+define("LAN_ERROR_01", "Die angeforderte Url konnte auf diesem Server nicht gefunden werden. Der gewünschte Link ist möglicherweise veraltet.");
+define("LAN_ERROR_02", "Bitte klicken Sie hier um zur Sucheseite zu gelangen");
+define("LAN_ERROR_03", "Ihr Versuch ");
+define("LAN_ERROR_04", " war nicht erfolgreich.");
 
 
 ?>

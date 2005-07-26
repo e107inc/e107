@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/lan_signup.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 20:02:32 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-07-26 14:43:22 $
+|     $Author: gatowlion $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com)
 +----------------------------------------------------------------------------+
 */
@@ -85,6 +85,7 @@ define("LAN_SIGNUP_32", "Was ist eine XUP Datei?");
 define("LAN_SIGNUP_33", "Pfad angeben oder Avatar wählen");
 define("LAN_SIGNUP_34", "Merke: Jegliche Bilduploads zu diesem Server die vom Administrator für unpassend gehalten werden, werden sofort gelöscht.");
 define("LAN_SIGNUP_35", "Bitte hier klicken um sich zu registrieren wenn Sie eine XUP Datei haben");
+define("LAN_SIGNUP_36", "Es ist ein Fehler entstanden beim Erstellen Ihrer Benutzerinformationen, bitte kontaktieren Sie den Seitenadmin");
 
 define("LAN_LOGINNAME", "Login Name");
 define("LAN_PASSWORD", "Passwort");
