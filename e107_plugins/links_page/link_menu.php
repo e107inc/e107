@@ -1,5 +1,5 @@
 <?php
-
+unset($text);
 require_once(e_PLUGIN.'links_page/link_class.php');
 $lc = new linkclass();
 require_once(e_HANDLER."form_handler.php");
@@ -119,43 +119,47 @@ if(isset($linkspage_pref['link_menu_category']) && $linkspage_pref['link_menu_ca
 
 
 //recent ----------------------------
-$num = (isset($linkspage_pref["link_menu_recent_number"]) && $linkspage_pref["link_menu_recent_number"] ? $linkspage_pref["link_menu_recent_number"] : "5");
-$qry = "
-SELECT l.*, c.link_category_id, c.link_category_name
-FROM #links_page AS l
-LEFT JOIN #links_page_cat AS c ON c.link_category_id = l.link_category
-WHERE l.link_class REGEXP '".e_CLASS_REGEXP."' AND c.link_category_class REGEXP '".e_CLASS_REGEXP."'
-ORDER BY l.link_datestamp DESC LIMIT 0,".$num." 
-";
 
-$cap = (isset($linkspage_pref['link_menu_recent_caption']) && $linkspage_pref['link_menu_recent_caption'] ? $linkspage_pref['link_menu_recent_caption'] : LCLAN_OPT_84);
-if($sql -> db_Select_gen($qry)){
-	$text .= "<br />".$cap."<br />";
-	while($row = $sql -> db_Fetch()){
+if(isset($linkspage_pref["link_menu_recent"]) && $linkspage_pref["link_menu_recent"]){
+	$num = (isset($linkspage_pref["link_menu_recent_number"]) && $linkspage_pref["link_menu_recent_number"] ? $linkspage_pref["link_menu_recent_number"] : "5");
+	$qry = "
+	SELECT l.*, c.link_category_id, c.link_category_name
+	FROM #links_page AS l
+	LEFT JOIN #links_page_cat AS c ON c.link_category_id = l.link_category
+	WHERE l.link_class REGEXP '".e_CLASS_REGEXP."' AND c.link_category_class REGEXP '".e_CLASS_REGEXP."'
+	ORDER BY l.link_datestamp DESC LIMIT 0,".$num." 
+	";
 
-		$append = $lc -> parse_link_append($row['link_open'], $row['link_id']);
+	$cap = (isset($linkspage_pref['link_menu_recent_caption']) && $linkspage_pref['link_menu_recent_caption'] ? $linkspage_pref['link_menu_recent_caption'] : LCLAN_OPT_84);
+	if($sql -> db_Select_gen($qry)){
+		$text .= "<br />".$cap."<br />";
+		while($row = $sql -> db_Fetch()){
 
-		$heading = $append.$tp->toHTML($row['link_name'],TRUE,"")."</a>";
+			$append = $lc -> parse_link_append($row['link_open'], $row['link_id']);
 
-		$cat = (isset($linkspage_pref['link_menu_recent_category']) && $linkspage_pref['link_menu_recent_category'] ? "<br /><a href='".e_PLUGIN."links_page/links.php?cat.".$row['link_category_id']."'>".$row['link_category_name']."</a>" : "");
+			$heading = $append.$tp->toHTML($row['link_name'],TRUE,"")."</a>";
 
-		$desc = (isset($linkspage_pref['link_menu_recent_description']) && $linkspage_pref['link_menu_recent_description'] && $row['link_description'] ? "<br />".$tp->toHTML($row['link_description'],TRUE,"") : "");
+			$cat = (isset($linkspage_pref['link_menu_recent_category']) && $linkspage_pref['link_menu_recent_category'] ? "<br /><a href='".e_PLUGIN."links_page/links.php?cat.".$row['link_category_id']."'>".$row['link_category_name']."</a>" : "");
 
-		$text .= "
-		<table style='width:100%; text-align:left; border:0;' cellpadding='0' cellspacing='0'>
-			<tr>
-				<td style='width:1%; white-space:nowrap; vertical-align:top; padding-right:5px;'>".$bullet."</td>
-				<td>
-					".$heading."
-					".$cat."
-					".$desc."
-				</td>
-			</tr>
-		</table>";
+			$desc = (isset($linkspage_pref['link_menu_recent_description']) && $linkspage_pref['link_menu_recent_description'] && $row['link_description'] ? "<br />".$tp->toHTML($row['link_description'],TRUE,"") : "");
+
+			$text .= "
+			<table style='width:100%; text-align:left; border:0;' cellpadding='0' cellspacing='0'>
+				<tr>
+					<td style='width:1%; white-space:nowrap; vertical-align:top; padding-right:5px;'>".$bullet."</td>
+					<td>
+						".$heading."
+						".$cat."
+						".$desc."
+					</td>
+				</tr>
+			</table>";
+		}
 	}
 }
 
 $caption = (isset($linkspage_pref['link_menu_caption']) && $linkspage_pref['link_menu_caption'] ? $linkspage_pref['link_menu_caption'] : LCLAN_OPT_86);
 $ns -> tablerender($caption, $text);
+
 
 ?>
