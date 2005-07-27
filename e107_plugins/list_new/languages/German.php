@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/German.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 15:05:44 $
+|     $Revision: 1.4 $
+|     $Date: 2005-07-27 09:19:25 $
 |     $Author: gatowlion $
 +----------------------------------------------------------------------------+
 */
@@ -220,6 +220,7 @@ define("LIST_MEMBER_2", "Keine Mitglieder");
 
 define("LIST_CONTENT_1", "Inhalt");
 define("LIST_CONTENT_2", "Kein Inhalt");
+define("LIST_CONTENT_3", "Keine gültige Inhaltskategorie");
 
 define("LIST_CHATBOX_1", "Chatbox");
 define("LIST_CHATBOX_2", "Kein Chatboxeintrag");
