@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-07-22 02:12:57 $
+|     $Revision: 1.38 $
+|     $Date: 2005-07-27 12:53:13 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -151,7 +151,7 @@ if ($action == "report") {
 	} else {
 		$number = $thread_id;
 		$report_thread_id = $thread_id;
-		$thread_name = $thread_info['head']['thread_name'];
+		$thread_name = $tp->toHTML($thread_info['head']['thread_name'], TRUE);
 		define("e_PAGETITLE", LAN_01." / ".LAN_426." ".$thread_name);
 		require_once(HEADERF);
 		$user = (USER ? USERNAME : LAN_194);
@@ -212,7 +212,7 @@ if (!check_class($forum_info['forum_class']) || !check_class($forum_info['parent
 
 $forum->thread_incview($thread_id);
 
-define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']." / ".$thread_info['head']['thread_name']);
+define("e_PAGETITLE", LAN_01." / ".$tp->toHTML($forum_info['forum_name'], TRUE)." / ".$tp->toHTML($thread_info['head']['thread_name'], TRUE));
 //define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_info['forum_moderators']) && getperms('A') ? TRUE : FALSE));
 define("MODERATOR", $forum_info['forum_moderators'] != "" && check_class($forum_info['forum_moderators']));
 $modArray = $forum->forum_getmods($forum_info['forum_moderators']);
@@ -312,7 +312,7 @@ $forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
 $BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a> -> <a class='forumlink' href='forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a> -> ".$thread_info['head']['thread_name']."XXX";
 
 $BACKLINK = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a>";
-$THREADNAME = $thread_info['head']['thread_name'];
+$THREADNAME = $tp->toHTML($thread_info['head']['thread_name'], TRUE);
 $NEXTPREV = "&lt;&lt; <a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}.prev'>".LAN_389."</a>";
 $NEXTPREV .= " | ";
 $NEXTPREV .= "<a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}.next'>".LAN_390."</a> &gt;&gt;";
