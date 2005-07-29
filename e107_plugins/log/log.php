@@ -16,7 +16,7 @@
 $colour = strip_tags($_REQUEST['color']);
 $res = strip_tags($_REQUEST['res']);
 $self = strip_tags($_REQUEST['eself']);
-$ref = strip_tags($_REQUEST['referer']);
+$ref = addslashes(strip_tags($_REQUEST['referer']));
 $date = date("z.Y", time());
 
 if(strstr($ref, "admin")) {
