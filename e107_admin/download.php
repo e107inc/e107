@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2005-07-06 00:41:09 $
-|     $Author: e107coders $
+|     $Revision: 1.63 $
+|     $Date: 2005-08-01 16:54:23 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -702,7 +702,7 @@ class download {
 			<div id='use_ext' style='padding-top:6px;display:none'>
            URL:&nbsp;
 
-			<input class='tbox' type='text' name='download_url_external' size='40' value='$download_url_external' maxlength='100' />
+			<input class='tbox' type='text' name='download_url_external' size='40' value='$download_url_external' maxlength='150' />
 			&nbsp;&nbsp;&nbsp;".DOWLAN_66."
 			<input class='tbox' type='text' name='download_filesize_external' size='8' value='$download_filesize' maxlength='10' />
            </div>
