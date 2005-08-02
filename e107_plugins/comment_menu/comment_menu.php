@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/comment_menu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-15 17:52:53 $
-|     $Author: stevedunstan $
+|     $Revision: 1.12 $
+|     $Date: 2005-08-02 11:34:56 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -51,13 +51,13 @@ else
 		}
 
 		switch ($comment_type) {
-			case 0:
+			case "0":
 				$link = "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".$e107->http_path."comment.php?comment.news.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a><br />";
 				break;
-			case 2:
+			case "2":
 				$link = "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".$e107->http_path."content.php?article.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a><br />";
 				break;
-			case 4:
+			case "4":
 				$link = "<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='' /> <a href='".$e107->http_path."content.php?poll.$comment_item_id'><b>".$poster."</b> on ".$datestamp."</a><br />";
 				break;
 
