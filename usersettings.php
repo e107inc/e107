@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-07-05 15:07:10 $
+|     $Revision: 1.43 $
+|     $Date: 2005-08-02 12:46:26 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -687,6 +687,7 @@ if($ADMINAREA)
 }
 $text .= "
 	<input type='hidden' name='_uid' value='$_uid' />
+	</div>
 	</form>
 	";
 
