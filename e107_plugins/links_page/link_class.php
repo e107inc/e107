@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.12 $
-|    $Date: 2005-07-14 13:30:26 $
-|    $Author: lisa_ $
+|    $Revision: 1.13 $
+|    $Date: 2005-08-02 15:31:12 $
+|    $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -650,7 +650,7 @@ class linkclass {
 
 		if($qs[2] == "all"){
 			$caption = LCLAN_ITEM_38;
-			$qry = " link_id != '' ORDER BY link_name ASC";
+			$qry = " link_id != '' ORDER BY link_category ASC, link_order ASC";
 		}else{
 			if ($sql->db_Select("links_page_cat", "link_category_name", "link_category_id='".$qs[2]."' " )) {
 				$row = $sql->db_Fetch();
