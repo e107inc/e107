@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-06-22 14:15:03 $
+|     $Revision: 1.22 $
+|     $Date: 2005-08-02 12:25:38 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -109,57 +109,9 @@ if (isset($id)) {
 	$text = renderuser($user_data);
 	$ns->tablerender(LAN_402, $text);
 	unset($text);
-	if($pref['profile_comments'])
-	{
-		$cobj = new comment;
-
-		$query = ($pref['nested_comments']) ? 
-			"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
-			LEFT JOIN #user ON #comments.comment_author = #user.user_id 
-			WHERE comment_item_id='$id' 
-			AND comment_type='profile' 
-			AND comment_pid='0' 
-			ORDER BY comment_datestamp
-			"
-			:
-			"SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments, user_location FROM #comments
-			LEFT JOIN #user ON #comments.comment_author = #user.user_id 
-			WHERE comment_item_id='$id' 
-			AND comment_type='profile'  
-			ORDER BY comment_datestamp
-			";
-
-		$comment_total = $sql->db_Select_gen($query);
-		if ($comment_total)
-		{
-			$width = 0;
-			while ($row = $sql->db_Fetch())
-			{
-				if ($pref['nested_comments'])
-				{
-					$text = $cobj->render_comment($row, "profile", "comment", $id, $width, $subject);
-					$ns->tablerender(LAN_5, $text, TRUE);
-				}
-				else
-				{
-					$text .= $cobj->render_comment($row, "profile", "comment", $id, $width, $subject);
-				}
-			}
-			if (!$pref['nested_comments'])
-			{
-				$ns->tablerender(LAN_5, $text, TRUE);
-			}
-			if(ADMIN == TRUE && $comment_total)
-			{
-				echo "<a href='".e_BASE.e_ADMIN."modcomment.php?profile.{$id}'>".LAN_314."</a>";
-			}
-		}
-		$cobj->form_comment("comment", "profile", $id, $subject, $content_type, FALSE);
-	}
 	require_once(FOOTERF);
 	exit;
 }
-
 
 $users_total = $sql->db_Count("user");
 $text = "<div style='text-align:center'>
