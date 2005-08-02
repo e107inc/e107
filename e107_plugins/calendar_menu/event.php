@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-07-12 11:39:55 $
-|     $Author: lisa_ $
+|     $Revision: 1.18 $
+|     $Date: 2005-08-02 14:32:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -612,7 +612,7 @@ if ($ds == "event"){
     } 
     $extra = " OR e.event_rec_y = {$month} ";
 
-    if ($cal_super){
+    if ($cal_super) {
         $qry = "
 		SELECT e.*, ec.*
 		FROM #event as e
@@ -622,7 +622,7 @@ if ($ds == "event"){
 		OR (e.event_start <= {$start_time} AND e.event_end >= {$end_time})
 		{$extra}
 		ORDER BY e.event_start ASC";
-    }else{
+    } else {
         $qry = "
 		SELECT e.*, ec.*
 		FROM #event as e
@@ -632,7 +632,8 @@ if ($ds == "event"){
 		OR (e.event_end >= {$start_time} AND e.event_end <= {$end_time})
 		OR (e.event_start <= {$start_time} AND e.event_end >= {$end_time})
 		{$extra})
-		ORDER BY e.event_start ASC";
+		ORDER BY e.event_start ASC
+		";
     } 
     if ($sql->db_Select_gen($qry)){
         while ($row = $sql->db_Fetch()){
@@ -679,8 +680,15 @@ $nextmonth = mktime(0, 0, 0, $month + 1, 1, $year)-1;
 if (!isset($next10_start)){
     $next10_start = $nextmonth;
 } 
-$sql->db_Select("event", "*", "event_start > '{$next10_start}' ORDER BY event_start ASC LIMIT 0,10");
-$num = $sql->db_Rows();
+
+$qry = "
+SELECT e.* FROM #event AS e
+LEFT JOIN #event_cat AS ec ON e.event_category = ec.event_cat_id
+WHERE e.event_start > '{$next10_start}' AND ec.event_cat_class IN (".USERCLASS_LIST.")
+ORDER BY e.event_start ASC 
+LIMIT 0, 10
+";
+$num = $sql->db_Select_gen($qry);
 if ($num != 0){
 	$gen = new convert;
 	$archive_events = "";
