@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-07 17:10:34 $
+|     $Revision: 1.8 $
+|     $Date: 2005-08-02 12:25:38 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -160,7 +160,8 @@ $USER_FULL_TEMPLATE = "
 		</table>
 	</td>
 </tr>
-
 </table></div>
+{PROFILE_COMMENTS}
+{PROFILE_COMMENT_FORM}
 ";
 ?>

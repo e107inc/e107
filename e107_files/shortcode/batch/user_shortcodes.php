@@ -387,6 +387,47 @@ foreach($ueCatList as $catnum => $cat)
 return $ret;
 SC_END
 
+SC_BEGIN PROFILE_COMMENTS
+global $user, $pref, $sql, $ns;
+if($pref['profile_comments'])
+{
+	include_once(e_HANDLER."comment_class.php");
+	$cobj = new comment;
+	$qry = "
+	SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments FROM #comments
+	LEFT JOIN #user ON #comments.comment_author = #user.user_id 
+	WHERE comment_item_id='{$user['user_id']}' 
+	AND comment_type='profile' 
+	AND comment_pid='0' 
+	ORDER BY comment_datestamp
+	";
 
+	if($comment_total = $sql->db_Select_gen($qry))
+	{
+		while($row = $sql->db_Fetch())
+		{
+			$ret .= $cobj->render_comment($row);
+		}
+	}
+	return $ns->tablerender(LAN_5, $ret, 'profile_comments', TRUE);
+}
+return "";
+SC_END
+
+SC_BEGIN PROFILE_COMMENT_FORM
+global $pref, $user;
+if($pref['profile_comments'])
+{
+	include_once(e_HANDLER."comment_class.php");
+	$cobj = new comment;
+	$ret = "";
+	if(ADMIN === TRUE)
+	{
+		$ret .= "<a href='".e_BASE.e_ADMIN."modcomment.php?profile.{$user['user_id']}'>".LAN_314."</a><br /><br />";
+	}
+	$ret .= $cobj->form_comment("comment", "profile", $user['user_id'], "", "", TRUE);
+	return $ret;
+}
+SC_END	
 */
 ?>
