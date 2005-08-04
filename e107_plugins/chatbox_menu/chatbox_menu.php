@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-07-30 15:58:56 $
-|     $Author: qnome $
+|     $Revision: 1.46 $
+|     $Date: 2005-08-04 10:29:54 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -124,6 +124,7 @@ if($emessage != ""){
 if(!$text = $e107cache->retrieve("chatbox"))
 {
 	global $pref,$tp;
+	$pref['chatbox_posts'] = ($pref['chatbox_posts'] ? $pref['chatbox_posts'] : 10);
 	$chatbox_posts = $pref['chatbox_posts'];
 	if(!isset($pref['cb_mod']))
 	{
@@ -131,10 +132,13 @@ if(!$text = $e107cache->retrieve("chatbox"))
 	}
 	define("CB_MOD", check_class($pref['cb_mod']));
 	
-	if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$chatbox_posts, $mode="no_where"))
+	
+	
+	if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$chatbox_posts, "no_where"))
 	{
 		$obj2 = new convert;
 		$cbpost = $sql -> db_getList();
+		
 		foreach($cbpost as $cb)
 		{
 			extract($cb);
