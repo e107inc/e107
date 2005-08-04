@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-07-20 00:40:49 $
-|     $Author: e107coders $
+|     $Revision: 1.41 $
+|     $Date: 2005-08-04 09:31:55 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -26,6 +26,7 @@ class e107{
 	var $file_path;
 	var $relative_base_path;
 	var $_ip_cache;
+	var $_host_name_cache;
 
 	function e107($e107_paths, $e107_root_path){
 		if(defined("COMPRESS_OUTPUT") && COMPRESS_OUTPUT === true) {
@@ -146,6 +147,13 @@ class e107{
 			$this->_ip_cache = $ip;
 		}
 		return $this->_ip_cache;
+	}
+	
+	function get_host_name($ip_address) {
+		if(!$this->_host_name_cache[$ip_address]) {
+			$this->_host_name_cache[$ip_address] = gethostbyaddr($ip_address);
+		}
+		return $this->_host_name_cache[$ip_address];
 	}
 
 	function get_memory_usage(){
