@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/session_handler.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-04-25 20:08:08 $
+|     $Revision: 1.4 $
+|     $Date: 2005-08-04 09:56:39 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -87,7 +87,7 @@ function get_full_ip() {
 	global $e107;
 	$ip_addr = $e107->getip();
 	$tmp = $_SERVER['REMOTE_ADDR'];
-	$ip_resolved = gethostbyaddr($tmp);
+	$ip_resolved = $e107->get_host_name($tmp);
 	$tmp2 = ($tmp != $ip_resolved && $ip_resolved ? $tmp." - ". $ip_resolved : $tmp2 = $tmp);
 	$full_ip = ($ip_addr != $tmp ? "$ip_addr | $tmp2" : $tmp2);
 	return $full_ip;
