@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-08-04 09:31:55 $
+|     $Revision: 1.42 $
+|     $Date: 2005-08-04 09:56:38 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ class e107{
 
 	function set_paths(){
 		global $DOWNLOADS_DIRECTORY, $ADMIN_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY,
-				$FILES_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY;
+		$FILES_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY;
 		$path = ""; $i = 0;
 		while (!file_exists("{$path}class2.php")) {
 			$path .= "../";
@@ -104,20 +104,24 @@ class e107{
 	}
 
 	function ban() {
-		global $sql;
-		$ip = $this->getip();
-		$tmp = explode(".",$ip);
-        $wildcard =  $tmp[0].".".$tmp[1].".".$tmp[2].".*";
-		$wildcard2 = $tmp[0].".".$tmp[1].".*.*";
+		global $sql, $e107;
+		$ban_count = $sql->db_Count("banlist");
+		if($ban_count){
+			$ip = $this->getip();
+			$tmp = explode(".",$ip);
+			$wildcard =  $tmp[0].".".$tmp[1].".".$tmp[2].".*";
+			$wildcard2 = $tmp[0].".".$tmp[1].".*.*";
 
-		$tmp = gethostbyaddr(getenv('REMOTE_ADDR'));
-		preg_match("/[\w]+\.[\w]+$/si", $tmp, $match);
-		$bhost = (isset($match[0]) ? " OR banlist_ip='$match[0]' " : "");
+			$tmp = $e107->get_host_name(getenv('REMOTE_ADDR'));
 
-		if ($ip != '127.0.0.1') {
-			if ($sql->db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='$ip' OR banlist_ip='$wildcard' OR banlist_ip='$wildcard2' {$bhost}")) {
-				// enter a message here if you want some text displayed to banned users ...
-				exit;
+			preg_match("/[\w]+\.[\w]+$/si", $tmp, $match);
+			$bhost = (isset($match[0]) ? " OR banlist_ip='{$match[0]}'" : "");
+
+			if ($ip != '127.0.0.1') {
+				if ($sql->db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='{$ip}' OR banlist_ip='{$wildcard}' OR banlist_ip='{$wildcard2}' {$bhost}")) {
+					// enter a message here if you want some text displayed to banned users ...
+					exit();
+				}
 			}
 		}
 	}
@@ -136,7 +140,7 @@ class e107{
 					'/^224..*/',
 					'/^240..*/'
 					);
-					$ip=preg_replace($ip2, $ip, $ip3[1]);
+					$ip = preg_replace($ip2, $ip, $ip3[1]);
 				}
 			} else {
 				$ip = $_SERVER['REMOTE_ADDR'];
@@ -148,7 +152,7 @@ class e107{
 		}
 		return $this->_ip_cache;
 	}
-	
+
 	function get_host_name($ip_address) {
 		if(!$this->_host_name_cache[$ip_address]) {
 			$this->_host_name_cache[$ip_address] = gethostbyaddr($ip_address);

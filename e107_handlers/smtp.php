@@ -6,7 +6,7 @@
 *   copyright            : (C) 2001 The phpBB Group
 *   email                : support@phpbb.com
 *
-*   $Id: smtp.php,v 1.2 2005-01-27 19:52:29 streaky Exp $
+*   $Id: smtp.php,v 1.3 2005-08-04 09:56:39 streaky Exp $
 *
 ***************************************************************************/
 	
@@ -57,7 +57,7 @@ function smtpmail($mail_to, $subject, $message, $headers = "") {
 	// info, but it should probably change to $board_config...
 	// then the relevant info would be $board_config['smtp_host'] and
 	// $board_config['smtp_port'].
-	global $pref;
+	global $pref, $e107;
 	//
 	// Fix any bare linefeeds in the message to make it RFC821 Compliant.
 	//
@@ -112,7 +112,7 @@ function smtpmail($mail_to, $subject, $message, $headers = "") {
 	}
 	server_parse($socket, "220");
 	$myIP = gethostbyname ($_SERVER['SERVER_NAME']);
-	$myServer = gethostbyaddr($myIP);
+	$myServer = $e107->get_host_name($myIP);
 	 
 	if (!empty($pref['smtp_username']) && !empty($pref['smtp_password']) ) {
 		// Send the RFC2554 specified EHLO.

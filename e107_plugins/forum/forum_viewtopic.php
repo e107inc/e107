@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-07-27 12:53:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.39 $
+|     $Date: 2005-08-04 09:56:39 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -359,7 +359,7 @@ for($i = 0; $i < count($thread_info)-1; $i++) {
 		// guest
 		$tmp = explode(chr(1), $post_info['thread_anon']);
 		$ip = $tmp[1];
-		$host = gethostbyaddr($ip);
+		$host = $e107->get_host_name($ip);
 		$post_info['iphost'] = "<div class='smalltext' style='text-align:right'>IP: <a href='".e_ADMIN."userinfo.php?$ip'>$ip ( $host )</a></div>";
 		$post_info['anon'] = TRUE;
 	} else {
