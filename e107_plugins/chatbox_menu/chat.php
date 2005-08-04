@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-07-11 14:39:27 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2005-08-04 10:33:35 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -44,19 +44,19 @@ if($_POST['moderate'] && CB_MOD)
 	if(isset($_POST['block']))
 	{
 		$blocklist = implode(",", array_keys($_POST['block']));
-		$sql->db_Select_gen("UPDATE #chatbox SET cb_blocked=1 WHERE cb_id IN ({$blocklist})", true);
+		$sql->db_Select_gen("UPDATE #chatbox SET cb_blocked=1 WHERE cb_id IN ({$blocklist})");
 	}
 
 	if(isset($_POST['unblock']))
 	{
 		$unblocklist = implode(",", array_keys($_POST['unblock']));
-		$sql->db_Select_gen("UPDATE #chatbox SET cb_blocked=0 WHERE cb_id IN ({$unblocklist})", true);
+		$sql->db_Select_gen("UPDATE #chatbox SET cb_blocked=0 WHERE cb_id IN ({$unblocklist})");
 	}
 	
 	if(isset($_POST['delete']))
 	{
 		$deletelist = implode(",", array_keys($_POST['delete']));
-		$sql->db_Select_gen("DELETE FROM #chatbox WHERE cb_id IN ({$deletelist})", true);
+		$sql->db_Select_gen("DELETE FROM #chatbox WHERE cb_id IN ({$deletelist})");
 	}
 	$e107cache->clear("chatbox");
 	$message = CHATBOX_L18;
