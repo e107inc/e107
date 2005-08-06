@@ -42,6 +42,7 @@ define("LIST_19", "Docs");
 define("LIST_20", "Bugtracker");
 define("LIST_21", "Artikelen");
 define("LIST_22", "Ideeën");
+define("LIST_23", "Dezeplugin is niet geïnstalleerd.");
 
 define("LIST_ADMIN_1", "recent");
 define("LIST_ADMIN_2", "bijwerken instellingen");
@@ -86,6 +87,7 @@ define("LIST_ADMIN_SECT_24", "");
 define("LIST_ADMIN_SECT_25", "titel");
 define("LIST_ADMIN_SECT_26", "bepaal de titel voor elk onderdeel");
 define("LIST_ADMIN_SECT_27", "");
+
 define("LIST_ADMIN_OPT_1", "algemeen");
 define("LIST_ADMIN_OPT_2", "recent pagina");
 define("LIST_ADMIN_OPT_3", "recent menu");
@@ -160,6 +162,7 @@ define("LIST_MEMBER_1", "leden");
 define("LIST_MEMBER_2", "geen leden");
 define("LIST_CONTENT_1", "content");
 define("LIST_CONTENT_2", "geen content");
+define("LIST_CONTENT_3", "geen geldige content categorie");
 define("LIST_CHATBOX_1", "chatbox");
 define("LIST_CHATBOX_2", "geen chatbox berichten");
 define("LIST_CALENDAR_1", "kalender");

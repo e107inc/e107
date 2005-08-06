@@ -4,13 +4,23 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Dutch.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-07-10 05:55:47 $
+|     $Revision: 1.13 $
+|     $Date: 2005-08-06 06:39:16 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
 
 if(!defined("PAGE_NAME")){define("PAGE_NAME", "Links");}
+
+define("LCLAN_PAGETITLE_1", "Links");
+define("LCLAN_PAGETITLE_2", "Alle categorieën");
+define("LCLAN_PAGETITLE_3", "Alle links");
+define("LCLAN_PAGETITLE_4", "categorie");
+define("LCLAN_PAGETITLE_5", "Hoogste gewaardeerd");
+define("LCLAN_PAGETITLE_6", "Meest verwezen");
+define("LCLAN_PAGETITLE_7", "Persoonlijke link Manager");
+define("LCLAN_PAGETITLE_8", "Link reacties");
+define("LCLAN_PAGETITLE_9", "Aanmelden link");
 
 define("LCLAN_PLUGIN_LAN_1", "Linkspagina");
 define("LCLAN_PLUGIN_LAN_2", "Linkspagina waarop externe weblinks kunnen worden getoond");
@@ -25,6 +35,7 @@ define("LCLAN_OPT_MENU_3", "categoriepagina");
 define("LCLAN_OPT_MENU_4", "links weergave");
 define("LCLAN_OPT_MENU_5", "verwijzingenpagina");
 define("LCLAN_OPT_MENU_6", "beoordelingenpagina");
+define("LCLAN_OPT_MENU_7", "menu");
 
 define("LCLAN_OPT_1", "algemene opties");
 define("LCLAN_OPT_2", "Linkpagina opties");
@@ -94,6 +105,25 @@ define("LCLAN_OPT_65", "toon lege categorieën");
 define("LCLAN_OPT_66", "link naar elke categorie");
 define("LCLAN_OPT_67", "link naar alle links");
 define("LCLAN_OPT_68", "bekijk alle links");
+define("LCLAN_OPT_69", "Weergavemethode navigator links");
+define("LCLAN_OPT_70", "tonen categorie links");
+define("LCLAN_OPT_71", "Weergavemethode categorie links");
+define("LCLAN_OPT_72", "tonen recente links");
+define("LCLAN_OPT_73", "welke gegevnes tonen");
+define("LCLAN_OPT_74", "hoeveel recente links moeten worden getoond");
+define("LCLAN_OPT_75", "hyperlinks");
+define("LCLAN_OPT_76", "selectbox");
+define("LCLAN_OPT_77", "categorie");
+define("LCLAN_OPT_78", "beschrijving");
+define("LCLAN_OPT_79", "titelbalk navigator");
+define("LCLAN_OPT_80", "titelbalk categorieën");
+define("LCLAN_OPT_81", "titelbalk recent overzicht");
+define("LCLAN_OPT_82", "navigator");
+define("LCLAN_OPT_83", "categorieën");
+define("LCLAN_OPT_84", "recent overzicht");
+define("LCLAN_OPT_85", "titelbalk menu");
+define("LCLAN_OPT_86", "link menu");
+define("LCLAN_OPT_87", "tonen aantal links");
 
 define("LCLAN_ADMIN_1", "bijwerken");
 define("LCLAN_ADMIN_2", "Link opgeslagen in database.");
