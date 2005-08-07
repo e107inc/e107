@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-09 22:42:40 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2005-08-07 14:07:30 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_userclass.php");
@@ -128,37 +128,37 @@ function r_userclass_check($fieldname, $curval = '', $optlist = "")
 	if (!$optlist || preg_match("#public#", $optlist))
 	{
 		$c = (in_array(e_UC_PUBLIC, $curArray)) ? " checked='checked' " : "";
-		$ret .= "<input type='checkbox' name='{$fieldname}[".e_UC_PUBLIC."]' value='1' {$c} /> ".UC_LAN_0."<br />";
+		$ret .= "<label><input type='checkbox' name='{$fieldname}[".e_UC_PUBLIC."]' value='1' {$c} /> ".UC_LAN_0."</label><br />";
 	}
 
 	if (!$optlist || preg_match("#guest#", $optlist))
 	{
 		$c = (in_array(e_UC_GUEST, $curArray)) ? " checked='checked' " : "";
-		$ret .= "<input type='checkbox' name='{$fieldname}[".e_UC_GUEST."]' value='1' {$c} /> ".UC_LAN_1."<br />";
+		$ret .= "<label><input type='checkbox' name='{$fieldname}[".e_UC_GUEST."]' value='1' {$c} /> ".UC_LAN_1."</label><br />";
 	}
 
 	if (!$optlist || preg_match("#nobody#", $optlist))
 	{
 		$c = (in_array(e_UC_NOBODY, $curArray)) ? " checked='checked' " : "";
-		$ret .= "<input type='checkbox' name='{$fieldname}[".e_UC_NOBODY."]' value='1' {$c} /> ".UC_LAN_2."<br />";
+		$ret .= "<label><input type='checkbox' name='{$fieldname}[".e_UC_NOBODY."]' value='1' {$c} /> ".UC_LAN_2."</label><br />";
 	}
 
 	if (!$optlist || preg_match("#member#", $optlist))
 	{
 		$c = (in_array(e_UC_MEMBER, $curArray)) ? " checked='checked' " : "";
-		$ret .= "<input type='checkbox' name='{$fieldname}[".e_UC_MEMBER."]' value='1' {$c} /> ".UC_LAN_3."<br />";
+		$ret .= "<label><input type='checkbox' name='{$fieldname}[".e_UC_MEMBER."]' value='1' {$c} /> ".UC_LAN_3."</label><br />";
 	}
 
 	if (!$optlist || preg_match("#admin#", $optlist))
 	{
 		$c = (in_array(e_UC_ADMIN, $curArray)) ? " checked='checked' " : "";
-		$ret .= "<input type='checkbox' name='{$fieldname}[".e_UC_ADMIN."]' value='1' {$c} /> ".UC_LAN_5."<br />";
+		$ret .= "<label><input type='checkbox' name='{$fieldname}[".e_UC_ADMIN."]' value='1' {$c} /> ".UC_LAN_5."</label><br />";
 	}
 
 	if (!$optlist || preg_match("#readonly#", $optlist))
 	{
 		$c = (in_array(e_UC_READONLY, $curArray)) ? " checked='checked' " : "";
-		$ret .= "<input type='checkbox' name='{$fieldname}[".e_UC_READONLY."]' value='1' {$c} /> ".UC_LAN_4."<br />";
+		$ret .= "<label><input type='checkbox' name='{$fieldname}[".e_UC_READONLY."]' value='1' {$c} /> ".UC_LAN_4."</label><br />";
 	}
 
 	if (!$optlist || preg_match("#classes#", $optlist))
@@ -168,7 +168,7 @@ function r_userclass_check($fieldname, $curval = '', $optlist = "")
 		{
 			if (!preg_match("#matchclass#", $optlist) || getperms("0") || check_class($row['userclass_id'])) {
 				$c = (in_array($row['userclass_id'], $curArray)) ? " checked='checked' " : "";
-				$ret .= "<input type='checkbox' name='{$fieldname}[{$row['userclass_id']}]' value='1' {$c} /> {$row['userclass_name']}<br />";
+				$ret .= "<label><input type='checkbox' name='{$fieldname}[{$row['userclass_id']}]' value='1' {$c} /> {$row['userclass_name']}</label><br />";
 			}
 		}
 	}
@@ -178,7 +178,7 @@ function r_userclass_check($fieldname, $curval = '', $optlist = "")
 		$tmpl = explode(",",e_LANLIST);
         foreach($tmpl as $lang){
 				$c = (in_array($lang, $curArray)) ? " checked='checked' " : "";
-        		$ret .= "<input type='checkbox' name='{$fieldname}[{$lang}]'  value='1' {$c} /> {$lang}<br />";
+        		$ret .= "<label><input type='checkbox' name='{$fieldname}[{$lang}]'  value='1' {$c} /> {$lang}</label><br />";
 		}
 	}
 
