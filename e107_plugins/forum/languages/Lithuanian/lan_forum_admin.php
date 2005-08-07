@@ -3,10 +3,10 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-25 18:29:22 $
-|     $Author: g3d45 $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Lithuanian/lan_forum_admin.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2005-08-07 14:40:32 $
+|     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "Jūs turite įvesti dienų skaičių, kuriuo norite sumažinti pranešimų skaičių.");
