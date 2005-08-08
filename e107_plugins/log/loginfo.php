@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -61,6 +61,7 @@ if(preg_match("#q=(.*?)($|&)#is", $ref, $match)) {
 	}
 }
 
+global $e107;
 if ($tmp = $e107->get_host_name(getenv('REMOTE_ADDR'))) {
 	$host = trim(chop(strtolower(substr($tmp, strrpos($tmp, ".")+1))));
 	if(!is_numeric($host) && !strstr($host, "calhost")) {
