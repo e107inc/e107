@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2005-06-28 19:09:31 $
-|     $Author: sweetas $
+|     $Revision: 1.57 $
+|     $Date: 2005-08-08 20:10:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -160,10 +160,11 @@ if (isset($_POST['adduser'])) {
 		$username = strip_tags($_POST['name']);
 		$loginname = strip_tags($_POST['loginname']);
 		$ip = $e107->getip();
-		extract($_POST);
-		for($a = 0; $a <= (count($_POST['userclass'])-1); $a++) {
-			$svar .= $userclass[$a].".";
-		}
+//		extract($_POST);
+//		for($a = 0; $a <= (count($_POST['userclass'])-1); $a++) {
+//			$svar .= $userclass[$a].".";
+//		}
+		$svar = implode(",", $_POST['userclass']);
 		$sql->db_Insert("user", "0, '$username', '$loginname',  '', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '1', '".time()."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '".$svar."', '', '', '', '' ");
 		$user->show_message(USRLAN_70);
 	}
