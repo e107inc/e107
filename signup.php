@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2005-07-14 15:11:02 $
-|     $Author: stevedunstan $
+|     $Revision: 1.56 $
+|     $Date: 2005-08-08 18:22:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -125,11 +125,8 @@ $signup_name = array("realname", "signature", "image", "timezone", "usrclass");
 
 if (isset($_POST['register']))
 {
-//	print_a($_POST);
-//	exit;
 	$e107cache->clear("online_menu_totals");
 	$error_message = "";
-//	extract($_POST);
 	require_once(e_HANDLER."message_handler.php");
 
 	if ($use_imagecode) {
@@ -340,6 +337,8 @@ if (isset($_POST['register']))
 			$ns->tablerender("", LAN_SIGNUP_36); 
 			require_once(FOOTERF);
 		}
+		
+		
 		if ($pref['user_reg_veri'])
 		{
 
@@ -399,7 +398,6 @@ if (isset($_POST['register']))
 		else
 		{
 			require_once(HEADERF);
-			$sql->db_Insert("user", "0, '$username', '$loginname', '', '".md5($_POST['password1'])."', '', '".$_POST['email']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '', '".$_POST['xupexist']."' ");
 
 			if(!$sql -> db_Select("user", "user_id", "user_name='$username' AND user_password='".md5($_POST['password1'])."' "))
 			{
@@ -407,6 +405,7 @@ if (isset($_POST['register']))
 				require_once(FOOTERF);
 				exit;
 			}
+			$sql->db_Update("user", "user_ban = '0' WHERE user_id = '{$nid}'");
 
 // ==== Update Userclass =======
 			if ($_POST['usrclass'])
