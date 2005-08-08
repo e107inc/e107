@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-06-27 22:58:09 $
-|     $Author: sweetas $
+|     $Revision: 1.29 $
+|     $Date: 2005-08-08 12:19:29 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -89,7 +89,7 @@ if($rules_text != '')
 $total_topics = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent='0' ");
 $total_replies = $sql->db_Count("forum_t", "(*)", " WHERE thread_parent!='0' ");
 $total_members = $sql->db_Count("user");
-$newest_member = $sql->db_Select("user", "*", "ORDER BY user_join DESC LIMIT 0,1", $mode = "no_where");
+$newest_member = $sql->db_Select("user", "*", "user_ban='0' ORDER BY user_join DESC LIMIT 0,1");
 list($nuser_id, $nuser_name) = $sql->db_Fetch();
 if(!defined("e_TRACKING_DISABLED"))
 {
