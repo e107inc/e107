@@ -4,9 +4,9 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-06-27 15:21:59 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2005-08-08 12:54:04 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,6 +21,7 @@ $tinylang = array(
 "Spanish" => "es",
 "Greek" => "el",
 "Italian" => "it",
+"Dutch" => "nl",
 "Polish" => "pl",
 "Japanese" => "ja",
 "Korean" => "ko",
