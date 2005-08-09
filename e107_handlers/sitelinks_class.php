@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2005-07-19 21:08:53 $
+|     $Revision: 1.63 $
+|     $Date: 2005-08-09 14:57:11 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -54,7 +54,7 @@ class sitelinks
 	{
 		global $pref, $ns, $e107cache;
 
-		if ($data = $e107cache->retrieve('sitelinks_'.$cat)) {
+		if (($data = $e107cache->retrieve('sitelinks_'.$cat)) && !strpos(e_SELF,e_ADMIN) ) {
 			return $data;
 		}
 
