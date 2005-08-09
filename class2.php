@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.198 $
-|     $Date: 2005-08-08 11:58:45 $
-|     $Author: streaky $
+|     $Revision: 1.199 $
+|     $Date: 2005-08-09 14:55:47 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -269,7 +269,7 @@ if (isset($pref['multilanguage']) && $pref['multilanguage']) {
 	// Get Language List for rights checking.
 	$handle=opendir(e_LANGUAGEDIR);
 	while ($file = readdir($handle)) {
-		if (is_dir(e_LANGUAGEDIR.$file) && $file !="." && $file !="..") {
+		if (is_dir(e_LANGUAGEDIR.$file) && $file !="." && $file !=".." && $file !="CVS") {
 			$lanlist[] = $file;
 		}
 	}
@@ -543,7 +543,7 @@ if(!is_array($menu_data)) {
 
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 
-if(!defined("THEME")){ 
+if(!defined("THEME")){
 	if ((strstr(e_SELF, "usersettings.php") && is_numeric(e_QUERY) && getperms("4") && ADMIN) || (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
 
 		if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') !== FALSE) {
