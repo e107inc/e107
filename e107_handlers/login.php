@@ -12,16 +12,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-07-01 13:48:37 $
+|     $Revision: 1.22 $
+|     $Date: 2005-08-09 14:00:56 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 if(is_readable(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php")){
- @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php");
+	@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php");
 }else{
- @include_once(e_LANGUAGEDIR."English/lan_login.php");
+	@include_once(e_LANGUAGEDIR."English/lan_login.php");
 }
 
 class userlogin {
@@ -38,13 +38,12 @@ class userlogin {
 		$sql = new db;
 
 		$fip = $e107->getip();
-		if($sql -> db_Select("banlist", "*", "banlist_ip='{$fip}' "))
-		{
+		if($sql -> db_Select("banlist", "*", "banlist_ip='{$fip}' ")) {
 			exit;
 		}
 
 		$autologin = intval($autologin);
-		
+
 		if ($pref['auth_method'] && $pref['auth_method'] != "e107") {
 			$auth_file = e_PLUGIN."alt_auth/".$pref['auth_method']."_auth.php";
 			if (file_exists($auth_file)) {
@@ -66,15 +65,15 @@ class userlogin {
 			$ouserpass = $userpass;
 			$userpass = md5($ouserpass);
 
-	// This is only required for upgrades and only for those not using utf-8 to begin with..
-		if(isset($pref['utf-compatmode']) && (CHARSET == "utf-8" || CHARSET == "UTF-8")){
-			$username = utf8_decode($username);
-			$userpass = md5(utf8_decode($ouserpass));
-		}
+			// This is only required for upgrades and only for those not using utf-8 to begin with..
+			if(isset($pref['utf-compatmode']) && (CHARSET == "utf-8" || CHARSET == "UTF-8")){
+				$username = utf8_decode($username);
+				$userpass = md5(utf8_decode($ouserpass));
+			}
 
 			if (!$sql->db_Select("user", "*", "user_loginname = '{$username}'")) {
 				define("LOGINMESSAGE", LAN_300."<br /><br />");
-				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '$fip', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_17.": $ouserpass' ");
+				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": {$username}'");
 				$this -> checkibr($fip);
 				return FALSE;
 			}
@@ -84,22 +83,18 @@ class userlogin {
 			}
 			else if(!$sql->db_Select("user", "*", "user_loginname = '{$username}' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
 				define("LOGINMESSAGE", LAN_302."<br /><br />");
-				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '$fip', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": {$username}'");
 				$this -> checkibr($fip);
 				return FALSE;
 			} else {
-
-				
 				$lode = $sql -> db_Fetch();
 				$user_id = $lode['user_id'];
 				$user_name = $lode['user_name'];
 				$user_xup = $lode['user_xup'];
 
 				/* restrict more than one person logging in using same us/pw */
-				if($pref['disallowMultiLogin'])
-				{
-					if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'"))
-					{
+				if($pref['disallowMultiLogin']) {
+					if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'")) {
 						define("LOGINMESSAGE", LAN_304."<br /><br />");
 						$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
 						$this -> checkibr($fip);
@@ -108,9 +103,7 @@ class userlogin {
 				}
 
 				$cookieval = $user_id.".".md5($userpass);
-
-				if($user_xup)
-				{
+				if($user_xup) {
 					$this->update_xup($user_id, $user_xup);
 				}
 
@@ -139,34 +132,28 @@ class userlogin {
 		}
 	}
 
-	function checkibr($fip)
-	{
+	function checkibr($fip) {
 		global $sql;
 		$fails = $sql -> db_Count("generic", "(*)", "WHERE gen_ip='$fip' ");
-		if($fails > 10)
-		{
+		if($fails > 10) {
 			$sql -> db_Insert("banlist", "'$fip', '1', '".LAN_LOGIN_18."' ");
 			$sql -> db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_20.": $username, ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
 		}
 	}
 
-	function update_xup($user_id, $user_xup = "")
-	{
+	function update_xup($user_id, $user_xup = "") {
 		global $sql;
-		if($user_xup)
-		{
+		if($user_xup) {
 			require_once(e_HANDLER."xml_class.php");
 			$xml = new parseXml;
-			if($rawData = $xml -> getRemoteXmlFile($user_xup))
-			{
+			if($rawData = $xml -> getRemoteXmlFile($user_xup)) {
 				preg_match_all("#\<meta name=\"(.*?)\" content=\"(.*?)\" \/\>#si", $rawData, $match);
 				$count = 0;
-				foreach($match[1] as $value)
-				{
+				foreach($match[1] as $value) {
 					$$value = $match[2][$count];
 					$count++;
 				}
-				$sql -> db_Update("user", "user_login='$FN',  user_homepage='$URL',  user_icq='$ICQ',  user_aim='$AIM',  user_msn='$MSN',  user_location='$GEO',  user_birthday='$BDAY',  user_signature='$SIG',  user_sess='$PHOTO',  user_image='$AV',  user_timezone='$TZ' 	WHERE user_id='$user_id' ");
+				$sql -> db_Update("user", "user_login='{$FN}', user_homepage='{$URL}', user_icq='{$ICQ}', user_aim='{$AIM}', user_msn='{$MSN}', user_location='{$GEO}', user_birthday='{$BDAY}', user_signature='{$SIG}', user_sess='{$PHOTO}', user_image='{$AV}', user_timezone='{$TZ}' WHERE user_id='{$user_id}'");
 			}
 		}
 	}
