@@ -1,12 +1,12 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_meta.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-08 03:54:41 $
-|     $Author: alkas $
+|     $Revision: 1.4 $
+|     $Date: 2005-08-09 10:56:09 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("METLAN_1", "Meta-žymės atnaujintos duomenų bazėje");

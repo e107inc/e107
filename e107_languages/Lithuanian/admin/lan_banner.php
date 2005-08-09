@@ -1,12 +1,12 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_banner.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:32:34 $
-|     $Author: alkas $
+|     $Revision: 1.3 $
+|     $Date: 2005-08-09 10:56:09 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("BNRLAN_1", "Banner deleted.");
@@ -59,7 +59,7 @@ define("BANNER_MENU_L2", "Banner menu configuration saved");
 
 //v.617
 define("BANNER_MENU_L3", "Caption");
-define("BANNER_MENU_L5", "Banner Configuration"); 
+define("BANNER_MENU_L5", "Banner Configuration");
 define("BANNER_MENU_L6", "choose campaigns to show in menu");
 define("BANNER_MENU_L7", "available campaigns");
 define("BANNER_MENU_L8", "selected campaigns");

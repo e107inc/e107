@@ -1,12 +1,12 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 15:36:34 $
-|     $Author: alkas $
+|     $Revision: 1.4 $
+|     $Date: 2005-08-09 10:56:09 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("DOWLAN_1", "Download added to database.");

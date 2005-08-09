@@ -1,12 +1,12 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_fla.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 15:32:34 $
-|     $Author: alkas $
+|     $Revision: 1.3 $
+|     $Date: 2005-08-09 10:56:09 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("FLALAN_1", "Failed login attempts");

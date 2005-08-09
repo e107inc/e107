@@ -1,12 +1,12 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/lan_online.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-07-23 22:41:15 $
-|     $Author: g3d45 $
+|     $Revision: 1.5 $
+|     $Date: 2005-08-09 10:56:09 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
