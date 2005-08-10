@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-27 17:34:59 $
+|     $Revision: 1.11 $
+|     $Date: 2005-08-10 20:24:23 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -54,6 +54,7 @@ else
 //		extract($forumInfo);
 		$datestamp = $gen->convert_date($fi['thread_datestamp'], "short");
 		$topic = ($fi['parent_name'] ? "[re: <i>{$fi['parent_name']}</i>]" : "[thread: <i>{$fi['thread_name']}</i>]");
+		$topic = strip_tags(preg_replace("#\[\w]|\[\/\w\]#", "", $topic));
 		$id = $fi['thread_id'];
 
 		if($fi['user_name'])
@@ -74,8 +75,9 @@ else
 			}
 		}
 
-		$fi['thread_thread'] = strip_tags(preg_replace("#\[.*\]#", "", $fi['thread_thread']));
+		$fi['thread_thread'] = strip_tags(preg_replace("#\[\w]|\[\/\w\]#", "", $fi['thread_thread']));
 		$fi['thread_thread'] = $tp->toHTML($fi['thread_thread'], FALSE, "emotes_off, no_make_clickable", "", $pref['menu_wordwrap']);
+
 		if (strlen($fi['thread_thread']) > $menu_pref['newforumposts_characters'])
 		{
 			$fi['thread_thread'] = substr($fi['thread_thread'], 0, $menu_pref['newforumposts_characters']).$menu_pref['newforumposts_postfix'];
