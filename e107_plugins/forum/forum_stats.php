@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_stats.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-22 14:39:46 $
+|     $Revision: 1.8 $
+|     $Date: 2005-08-10 09:35:39 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -68,12 +68,14 @@ ORDER BY thread_total_replies DESC LIMIT 0,10";
 $sql -> db_Select_gen($query);
 $most_activeArray = $sql -> db_getList();
 
-
 $query = "
-SELECT ft.*, user_name FROM #forum_t as ft 
-LEFT JOIN #user AS u ON ft.thread_user = u.user_id 
+SELECT ft.*, f.forum_class, user_name FROM #forum_t as ft
+LEFT JOIN #user AS u ON ft.thread_user = u.user_id
+LEFT JOIN #forum AS f ON f.forum_id = ft.thread_forum_id
 WHERE ft.thread_parent=0
+AND f.forum_class IN (".USERCLASS_LIST.")
 ORDER BY thread_views DESC LIMIT 0,10";
+
 $sql -> db_Select_gen($query);
 $most_viewedArray = $sql -> db_getList();
 
