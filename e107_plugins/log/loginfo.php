@@ -61,8 +61,7 @@ if(preg_match("#q=(.*?)($|&)#is", $ref, $match)) {
 	}
 }
 
-global $e107;
-if ($tmp = $e107->get_host_name(getenv('REMOTE_ADDR'))) {
+if ($tmp = gethostbyaddr(getenv('REMOTE_ADDR'))) {
 	$host = trim(chop(strtolower(substr($tmp, strrpos($tmp, ".")+1))));
 	if(!is_numeric($host) && !strstr($host, "calhost")) {
 		if(array_key_exists($host, $domainInfo)) {
