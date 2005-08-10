@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-06-21 21:02:24 $
+|     $Revision: 1.25 $
+|     $Date: 2005-08-10 20:41:25 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ require_once(HEADERF);
 
 if(!check_class($pref['statUserclass'])) {
 	$text = "<div style='text-align: center;'>".ADSTAT_L4."</div>";
-	$ns->tablerender("Site Statistics", $text);
+	$ns->tablerender(ADSTAT_L6, $text);
 	require_once(FOOTERF);
 	exit;
 }
@@ -412,7 +412,7 @@ class siteStats {
 		}
 
 		if(!is_array($statOs)) {
-			return "<div style='text-align: center;'>No statistics yet.</div>";
+			return "<div style='text-align: center;'>".ADSTAT_L25.".</div>";
 		}
 
 		if($this -> order) {
@@ -463,7 +463,7 @@ class siteStats {
 		}
 
 		if(!count($statDom)) {
-			return "<div style='text-align: center;'>No statistics yet.</div>";
+			return "<div style='text-align: center;'>".ADSTAT_L25.".</div>";
 		}
 		
 		if($this -> order) {
@@ -563,7 +563,7 @@ class siteStats {
 		//echo "<pre>"; print_r($statRefer); echo "</pre>"; exit;
 
 		if(!is_array($statRefer) || !count($statRefer)) {
-			return "<div style='text-align: center;'>No statistics yet.</div>";
+			return "<div style='text-align: center;'>".ADSTAT_L25.".</div>";
 		}
 
 		$statArray = $this -> arraySort($statRefer, 'ttl');
@@ -636,7 +636,7 @@ class siteStats {
 
 	function recentVisitors() {
 		if(!is_array($this -> fileRecent) || !count($this -> fileRecent)) {
-			return "<div style='text-align: center;'>No statistics yet.</div>";
+			return "<div style='text-align: center;'>".ADSTAT_L25.".</div>";
 		}
 
 		$gen = new convert;
