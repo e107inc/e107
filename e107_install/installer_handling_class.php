@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_install/installer_handling_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-07-10 16:16:49 $
+|     $Revision: 1.10 $
+|     $Date: 2005-08-11 19:08:22 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -79,8 +79,9 @@ class e_install {
 		if(count($not_writable)) {
 			$perms_pass = false;
 			unset($perms_errors);
-			foreach ($not_writable as $file) {
-				$perms_errors .= LANINS_010."{$file}\n";
+			foreach ($not_writable as $file)
+			{
+				$perms_errors .= (substr($file, -1) == "/" ? LANINS_010a : LANINS_010)."...<br /><b>{$file}</b><br />\n";
 			}
 			$perms_notes = LANINS_018;
 		} else {
