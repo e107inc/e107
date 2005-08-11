@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-06-22 22:21:36 $
-|     $Author: sweetas $
+|     $Revision: 1.21 $
+|     $Date: 2005-08-11 19:19:19 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -369,9 +369,9 @@ if ($action == "create") {
 
 		if ($fileext1 == swf) {
 			$text .= " /> <br><object classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000' codebase='http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0' width='468' height='60'>
-				<param name='movie' value='".e_IMAGE."banners/".$images[$c]."'>
+				<param name='movie' value='".e_IMAGE."banners/".$images[$c]['fname']."'>
 				<param name='quality' value='high'><param name='SCALE' value='noborder'>
-				<embed src='".e_IMAGE."banners/".$images[$c]."' width='468' height='60' scale='noborder' quality='high' pluginspage='http://www.macromedia.com/go/getflashplayer' type='application/x-shockwave-flash'></embed></object>
+				<embed src='".e_IMAGE."banners/".$images[$c]['fname']."' width='468' height='60' scale='noborder' quality='high' pluginspage='http://www.macromedia.com/go/getflashplayer' type='application/x-shockwave-flash'></embed></object>
 				<br />";
 		}
 		else if($fileext1 == "php" || $fileext1 == "html" || $fileext1 == "js") {
