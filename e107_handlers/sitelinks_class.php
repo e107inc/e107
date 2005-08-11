@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2005-08-09 14:57:11 $
-|     $Author: e107coders $
+|     $Revision: 1.64 $
+|     $Date: 2005-08-11 22:12:20 $
+|     $Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -184,7 +184,7 @@ class sitelinks
 		} elseif ($linkInfo['link_url']){
 
 			// Only add the e_BASE if it actually has an URL.
-			if (!preg_match('#(http:|mailto:|ftp:)#', $linkInfo['link_url'])) {
+			if (!preg_match('#(http:|mailto:|ftp:|irc:)#', $linkInfo['link_url'])) {
 				$linkInfo['link_url'] = e_HTTP.$linkInfo['link_url'];
 			}
 
