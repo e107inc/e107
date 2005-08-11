@@ -3,9 +3,9 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-07-09 14:39:52 $
-|     $Author: streaky $
+|     $Revision: 1.22 $
+|     $Date: 2005-08-11 22:12:20 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -18,7 +18,10 @@
 
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
 		global $tp;
-		$text = "<a class='menuButton' href='".e_HTTP.$cat_link."' ";
+		
+		$link_server = (preg_match('#(http:|mailto:|ftp:|irc:)#', $cat_link)) ? '' : e_HTTP;
+
+		$text = "<a class='menuButton' href='".$link_server.$cat_link."' ";
 		if ($cat_img != 'no_icons') {
 			$text .= "style='background-image: url(".$cat_img."); background-repeat: no-repeat; background-position: 3px 1px; white-space: nowrap' ";
 		}
@@ -31,7 +34,10 @@
 
 	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
 		global $tp;
-		$text = "<a class='menuItem' href='".e_HTTP.$cat_link."' ";
+		
+		$link_server = (preg_match('#(http:|mailto:|ftp:|irc:)#', $cat_link)) ? '' : e_HTTP;
+		
+		$text = "<a class='menuItem' href='".$link_server.$cat_link."' ";
 		if ($cat_id) {
 			$text .= "onclick=\"return false;\" onmouseover=\"menuItemMouseover(event, '".$cat_id."');\"";
 		}
