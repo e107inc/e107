@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-07-16 09:49:23 $
-|     $Author: streaky $
+|     $Revision: 1.43 $
+|     $Date: 2005-08-11 19:35:18 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -71,7 +71,9 @@ if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit'])) {
 	}
 }
 
-if (isset($_POST['replysubmit'])) {
+if (isset($_POST['replysubmit']))
+{
+
 	if ($table == "news" && !$sql->db_Select("news", "news_allow_comments", "news_id='{$nid}' ")) {
 		header("location:".e_BASE."index.php");
 		exit;
@@ -104,23 +106,30 @@ if (isset($_POST['replysubmit'])) {
 				}
 			}
 		}
-		if ($plugin_redir) {
-			header("location: {$reply_location}");
+
+		if ($plugin_redir)
+		{
+			echo "<script type='text/javascript'>document.location.href='{$reply_location}'</script>\n";
 			exit;
-		} elseif ($table == "news" || $table == "poll") {
-			header("location: ".e_BASE."comment.php?comment.{$table}.{$nid}");
+		} elseif ($table == "news" || $table == "poll")
+		{
+			echo "<script type='text/javascript'>document.location.href='".e_BASE."comment.php?comment.{$table}.{$nid}'</script>\n";
 			exit;
-		} elseif($table == "bugtrack") {
-			header("location:".e_PLUGIN."bugtracker/bugtracker.php?show.{$nid}");
+		} elseif($table == "bugtrack")
+		{
+			echo "<script type='text/javascript'>document.location.href='".e_PLUGIN."bugtracker/bugtracker.php?show.{$nid}'</script>\n";
 			exit;
-		} elseif($table == "faq") {
-			header("location:".e_PLUGIN."faq/faq.php?cat.{$xid}.{$nid}");
+		} elseif($table == "faq")
+		{
+			echo "<script type='text/javascript'>document.location.href='".e_PLUGIN."faq/faq.php?cat.{$xid}.{$nid}'</script>\n";
 			exit;
-		} elseif ($table == "content") {
-			header("location:".e_BASE."content.php?{$_POST['content_type']}.{$nid}");
+		} elseif ($table == "content")
+		{
+			echo "<script type='text/javascript'>document.location.href='".e_BASE."content.php?{$_POST['content_type']}.{$nid}'</script>\n";
 			exit;
-		} elseif ($table == "download") {
-			header("location:".e_BASE."download.php?view.{$nid}");
+		} elseif ($table == "download")
+		{
+			echo "<script type='text/javascript'>document.location.href='".e_BASE."download.php?view.{$nid}'</script>\n";
 			exit;
 		}
 	}
