@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-05-05 21:14:05 $
-|     $Author: stevedunstan $
+|     $Revision: 1.13 $
+|     $Date: 2005-08-11 19:55:01 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -25,7 +25,6 @@ $e_sub_cat = 'userclass';
 require_once("auth.php");
 require_once(e_HANDLER."userclass_class.php");
 $uclass = new e_userclass;
-$sql2 = new db;
 
 function check_allowed($class_id) {
 	global $sql;
@@ -74,7 +73,6 @@ if (strstr(e_QUERY, 'clear')) {
 }
 
 if (isset($_POST['delete'])) {
-	$sql2 = new db;
 	$class_id = $_POST['existing'];
 	check_allowed($class_id);
 	if ($_POST['confirm']) {
@@ -84,6 +82,10 @@ if (isset($_POST['delete'])) {
 				$uidList[$row['user_id']] = $row['user_class'];
 			}
 			$uclass->class_remove($class_id, $uidList);
+		}
+		if (isset($pref['frontpage'][$class_id])) {
+			unset($pref['frontpage'][$class_id]);
+			save_prefs();
 		}
 		$message = UCSLAN_3;
 	} else {
@@ -121,6 +123,10 @@ if (isset($_POST['createclass']))
 			}
 			if ($i < 255) {
 				$sql->db_Insert("userclass_classes", $i.", '".strip_tags(strtoupper($_POST['userclass_name']))."', '".$_POST['userclass_description']."',{$editclass} ");
+			}
+			if (!isset($pref['frontpage'][$i])) {
+				$pref['frontpage'][$i] = $pref['frontpage'][e_UC_GUEST];
+				save_prefs();
 			}
 			$message = UCSLAN_6;
 		} else {
