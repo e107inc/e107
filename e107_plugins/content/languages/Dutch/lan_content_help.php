@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_help.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-07-02 20:08:31 $
+|     $Revision: 1.9 $
+|     $Date: 2005-08-11 19:36:40 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -95,12 +95,15 @@ Wijs de beheerders toe vanuit de linkerkolom door op de naam te klikken. de naam
 
 define("CONTENT_ADMIN_HELP_ITEM_LETTERS", "Hieronder zie je een lijst met de beginletters van de koppen van onderwerpen in deze categorie.<br />Door op een letter te klikken zie je een overzicht met allen onderwerpen die met die letter beginnen. Je kunt ook de ALLES knop indrukken om alle onderwerpen in deze categorie te laten tonen.");
 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_1", "Op deze pagina kun je de opties voor de Beheerderspagina voor het creëren van content onderwerpen instelken. .<br /><br />Je kunt bepalen welke secties beschikbaar zijn als een beheerder (of een persoonlijke contentbeheerder) een nieuw contentonderwerp aanmaakt.<br /><br /><b>Maatwerk data tags</b><br />Je kunt een gebruiker of beheerder toestaan om extra velden aan het content onderwerp toe te voegen door gebruik te maken van maatwerk data tags. Deze optionele velden zijn blanco Sleutel - > Waarde paren. Voorbeeld: je kunt een sleutelveld toevoegen voor 'fotograaf' en de waarde in het veld vullen met 'alle foto's door mij'. Zowel deze sleutel als waarde velden zijn blanco tekstvelden die in het Creëer Formulier beschikbaar zijn.<br /><br /><b>Vooringestelde data tags</b><br />naast de maatwerk data tags, kun je ook vooringestelde data tags aanbieden. Het verschil is dat in de vooringestelde data tags het sleutelveld al is ingevuld en dat de gebruiker dus alleen nog de waarde hoeft op te geven. In dit voorbeeld kan 'fotograaf' voorgedefinieerd zijn en moet de gebruiker zeld 'alle foto's door mij' invullen. Je kunt het element type kiezen door een optie uit het selectieveld te kiezen. In het popup venster kun je vervolgens alle informatie voor de vooringestelde data tag opgeven.<br />");
 
 
 
 
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_1", "this page allows you to set options for the admin create item page.<br /><br />You can define which sections are available when an admin (or personal content manager) creates a new content item<br /><br /><b>custom data tags</b><br />you can allow a user or admin to add optional fields to the content item by using these custom data tags. These optional fields are blank key = > value pairs. For instance: you could add a key field for 'photographer' and provide the value field with 'all photos by me'. Both these key and value fields are empty textfields which will be present in the create form.<br /><br /><b>preset data tags</b><br />apart from the custom data tags, you can provide preset data tags. The difference is that in preset data tags, the key field already is given and the user only needs to provide the value field for the preset. In the same example as above 'photographer' can be predefined, and the user needs to provide 'all photos by me'. You can choose the element type by selecting one option in the selectbox. In the popup window, you can provide all the information for the preset data tag.<br />");
+
+
+
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_2", "The Submit Options have affect on the user submit form for content items.<br /><br />You can define which sections are available for a user when submitting a content item.<br /><br />".CONTENT_ADMIN_OPT_LAN_11.":<br />".CONTENT_ADMIN_OPT_LAN_12."");
 

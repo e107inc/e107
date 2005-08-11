@@ -12,6 +12,7 @@ define("LANINS_007", "2");
 define("LANINS_008", "PHP &amp; MySQL Versie controle / Controle bestandspermissies");
 define("LANINS_009", "Opnieuw testen permissions");
 define("LANINS_010", "Bestand niet beschrijfbaar: ");
+define("LANINS_010a", "Map niet beschrijfbaar: ");
 define("LANINS_011", "Fout");
 define("LANINS_012", "MySQL functies lijken niet te bestaan. Dit betekent vermoedelijk dat de MySQL PHP extensies niet  zijn geïnstalleerd of dat ze niet goed zijn geconfigureerd."); // help for 012
 define("LANINS_013", "Het MySQL versienummer is niet vast te stellen. Dat kan betekenen dat je MySQL server down is of dat de server de verbindingen weigert.");
