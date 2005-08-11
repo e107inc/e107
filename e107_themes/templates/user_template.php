@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-08-02 12:25:38 $
+|     $Revision: 1.9 $
+|     $Date: 2005-08-11 19:12:38 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -53,6 +53,9 @@ $sc_style['USER_FORUM_LINK']['post'] = "</td></tr>";
 
 $sc_style['USER_UPDATE_LINK']['pre'] = "<tr><td colspan='2' class='forumheader3' style='text-align:center'>";
 $sc_style['USER_UPDATE_LINK']['post'] = "</td></tr>";
+
+$sc_style['USER_RATING']['pre'] = "<tr><td colspan='2' style='width:100%' class='forumheader3'><span style='float:left'>".LAN_406."</span></span><span style='float:right;'>";
+$sc_style['USER_RATING']['post'] = "</span></td></tr>";
 
 if(isset($pref['photo_upload']) && $pref['photo_upload'])
 {
@@ -118,6 +121,7 @@ $USER_FULL_TEMPLATE = "
 	</td>
 </tr>
 {$sendpm}
+{USER_RATING}
 {USER_SIGNATURE}
 {USER_EXTENDED_ALL}
 <tr>
