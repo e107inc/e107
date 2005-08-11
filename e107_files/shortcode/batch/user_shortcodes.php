@@ -265,7 +265,7 @@ if($pref['profile_rate'] && USER)
 			$ret .= "<img src='".e_IMAGE_ABS."user_icons/user_star_".IMODE.".png' style='border:0' alt='' />";
 		}
 	}
-	if($rater->checkrated('user', $user['user_id']))
+	if(!$rater->checkrated('user', $user['user_id']))
 	{
 		$ret .= " &nbsp; &nbsp;".$rater->rateselect('', 'user', $user['user_id']);
 	}
