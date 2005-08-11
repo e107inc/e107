@@ -12,6 +12,7 @@ define("LANINS_007", "2");
 define("LANINS_008", "PHP &amp; MySQL Versions Check / File Permissions Check");
 define("LANINS_009", "Retest File Permissions");
 define("LANINS_010", "File not writable: ");
+define("LANINS_010a", "Folder not writable: ");
 define("LANINS_011", "Error");
 define("LANINS_012", "MySQL Functions don't seem to exists. This probably means that either the MySQL PHP Extension isn't isntalled or isn't configured correctly."); // help for 012
 define("LANINS_013", "Couldn't detirmine your MySQL version number. This could mean that your MySQL server is down, or refusing connections.");
