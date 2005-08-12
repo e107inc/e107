@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-08 07:10:15 $
-|     $Author: stevedunstan $
+|     $Revision: 1.10 $
+|     $Date: 2005-08-12 13:17:31 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
 if (!is_object($tp)) $tp = new e_parse;
 if (!getperms("U")) {
 	header("location:".e_BASE."index.php");
-	 exit;
+	exit;
 }
 $e_sub_cat = 'poll';
 
@@ -28,6 +28,15 @@ require_once(e_ADMIN."auth.php");
 require_once(e_PLUGIN."poll/poll_class.php");
 require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
+
+if(isset($_POST)) {
+	function stripslashes_deep($value){
+		$value = is_array($value) ? array_map('stripslashes_deep', $value) : stripslashes($value);
+		return $value;
+	}
+	$_POST = stripslashes_deep($_POST);
+}
+
 
 $rs = new form;
 $poll = new poll;
