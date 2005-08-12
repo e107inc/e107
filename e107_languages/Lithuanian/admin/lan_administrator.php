@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_administrator.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-06 16:18:15 $
+|     $Revision: 1.5 $
+|     $Date: 2005-08-12 23:43:52 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,7 @@ define("ADMSLAN_30", "Tvarkyti naujienų šaltinius");
 define("ADMSLAN_31", "Tvarkyti jausmukų piktogramas");
 define("ADMSLAN_32", "Tvarkyti pirmojo puslapio turinį");
 define("ADMSLAN_33", "Tvarkyti seansų žurnalą");
-define("ADMSLAN_34", "Tvarkyti metagaires");
+define("ADMSLAN_34", "Tvarkyti meta žymes");
 define("ADMSLAN_35", "Tvarkyti viešai atsiunčiamas bylas");
 define("ADMSLAN_36", "Vadovauti diskusijoms");
 define("ADMSLAN_37", "Vadovauti komentarams");

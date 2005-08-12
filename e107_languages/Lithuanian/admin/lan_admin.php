@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-07-08 03:54:41 $
+|     $Revision: 1.6 $
+|     $Date: 2005-08-12 23:43:52 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
@@ -31,8 +31,8 @@ define("ADLAN_18", "Apžvalgos");
 define("ADLAN_19", "Pridėti naujas/redaguoti/trinti apžvalgas");
 define("ADLAN_22", "Nuorodų grupės");
 define("ADLAN_23", "Pridėti naujas/redaguoti/trinti nuorodų grupes");
-define("ADLAN_24", "Bylų parsisiuntimas");
-define("ADLAN_25", "Tvarkyti bylų parsisiuntimo nuostatas");
+define("ADLAN_24", "Siuntiniai");
+define("ADLAN_25", "Tvarkyti bylas, kurias galima parsisiųsti iš svetainės");
 define("ADLAN_26", "Bylų grupės");
 define("ADLAN_27", "Pridėti naujas/redaguoti/trinti bylų grupes");
 define("ADLAN_28", "Pasisveikinimas");
@@ -59,7 +59,7 @@ define("ADLAN_48", "Seansą pradėjo");
 define("ADLAN_49", "svetainės administratorius");
 define("ADLAN_50", "valdymo teisės");
 define("ADLAN_51", "Prašome pradėti naują seansą, jei norite patekti į svetainės administravimo sritį");
-define("ADLAN_52", "Admin Front Page");
+define("ADLAN_52", "Administravimo sritis");
 define("ADLAN_53", "Svetainė");
 define("ADLAN_54", "Reklaminiai skydeliai");
 define("ADLAN_55", "Tvarkyti reklaminius skydelius");
@@ -72,15 +72,15 @@ define("ADLAN_61", "Tvarkyti pirmojo puslapio turinį");
 define("ADLAN_62", "Naujienų šaltiniai");
 define("ADLAN_63", "Tvarkyti naujienų šaltinius");
 define("ADLAN_64", "Seansų žurnalas");
-define("ADLAN_65", "Log stats/counter etc");
-define("ADLAN_66", "Meta Tags");
-define("ADLAN_67", "Add/Edit site meta tags");
+define("ADLAN_65", "Prisijungimų statistika/skaitiklis etc");
+define("ADLAN_66", "Meta žymės");
+define("ADLAN_67", "Įrašyti/redaguoti svetainės meta žymes");
 define("ADLAN_68", "PHP informacija");
 define("ADLAN_69", "PHP informacijos puslapis");
 define("ADLAN_70", "Apklausos");
 define("ADLAN_71", "Pridėti/redaguoti apklausas");
-define("ADLAN_72", "Viešai atsiunčiamos bylos");
-define("ADLAN_73", "Tvarkyti viešąjį bylų atsiuntimą");
+define("ADLAN_72", "Bylų atsiuntimas");
+define("ADLAN_73", "Tvarkyti bylas, kurias atsiunčia svetainės lankytojai");
 define("ADLAN_74", "Podėlis");
 define("ADLAN_75", "Nustatyti podėlio būseną");
 define("ADLAN_77", "Yra pateiktų naujienų – prašome peržiūrėti jas.");
@@ -143,7 +143,7 @@ define("ADLAN_130", "Bylų tvarkymas");
 define("ADLAN_131", "Kiti įrankiai");
 
 define("ADLAN_132", "Kalba");
-define("ADLAN_133", "numatyta");
+define("ADLAN_133", "Svetainės kalbų pasirinkimas");
 
 define("ADLAN_134", "Būsena");
 define("ADLAN_135", "Administratoriaus žurnalas");
@@ -164,10 +164,10 @@ define("ADLAN_145", "išplėsti");
 
 define("ADLAN_146", "Nepavykę prisijungimo bandymai");
 define("ADLAN_147", "Bylų inspektorius");
-define("ADLAN_148", "Scan site files");
+define("ADLAN_148", "Turinio valdymo sistemos bylų tikrinimas");
 
-define("ADLAN_149", "Pranešti");
-define("ADLAN_150", "Admin Email Notifications");
+define("ADLAN_149", "Pranešimai e-paštu");
+define("ADLAN_150", "Pranešimai e-paštu apie įvykius svetainėje");
 
 define('ADLAN_CL_1', 'Nuostatos');
 define('ADLAN_CL_2', 'Nariai');

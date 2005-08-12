@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_image.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-08 03:54:41 $
+|     $Revision: 1.4 $
+|     $Date: 2005-08-12 23:43:52 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
@@ -24,13 +24,13 @@ define("IMALAN_12", "Iliustracijų pateikimo būdas");
 define("IMALAN_13", "Ką daryti su atsiųstomis iliustracijomis, jei jų rodymas yra uždraustas");
 define("IMALAN_14", "Rodyti paveiksliuko adresą");
 define("IMALAN_15", "Nieko nerodyti");
-define("IMALAN_16", "Rodyti atsiųstus avatar'us");
+define("IMALAN_16", "Rodyti atsiųstas kaukes");
 define("IMALAN_17", "Spauskite čia");
 define("IMALAN_18", "Atsiųstos iliustarcijos");
 
 define("IMALAN_21", "Naudoja");
 define("IMALAN_22", "Paveiksliukas nenaudojamas");
-define("IMALAN_23", "Avatar'as");
+define("IMALAN_23", "Kaukė");
 define("IMALAN_24", "Fotografija");
 define("IMALAN_25", "Ištrinti visus nenaudojamus paveiksliukus");
 define("IMALAN_26", "Paveiksliukai ištrinti");

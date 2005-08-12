@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_users.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-14 22:19:39 $
+|     $Revision: 1.4 $
+|     $Date: 2005-08-12 23:43:52 $
 |     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
@@ -50,11 +50,11 @@ define("USRLAN_36", "Įrašyti į narių grupę");
 // define("USRLAN_39", "result(s)");
 // define("USRLAN_40", "None defined");
 
-define("USRLAN_44", "Leisti nariams atsiųsti savo avatar'ą?");
+define("USRLAN_44", "Leisti nariams atsiųsti savo kaukę?");
 
-define("USRLAN_47", "Maksimalus avatar'o plotis (pikseliais)");
+define("USRLAN_47", "Maksimalus kaukės plotis (pikseliais)");
 define("USRLAN_48", "nustatytas plotis - 120");
-define("USRLAN_49", "Maksimalus avatar'o aukštis (pikseliais)");
+define("USRLAN_49", "Maksimalus kaukės aukštis (pikseliais)");
 define("USRLAN_50", "nustatytas aukštis - 100");
 define("USRLAN_51", "Atnaujinti nario nuostatas");
 define("USRLAN_52", "Nario nuostatos");

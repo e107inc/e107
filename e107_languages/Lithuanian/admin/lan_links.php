@@ -1,16 +1,16 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_links.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-08-09 10:56:09 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2005-08-12 23:43:52 $
+|     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("LCLAN_1", "Options Saved");
-define("LCLAN_2", "Link saved to database.");
+define("LCLAN_1", "Nuostatos išsaugotos");
+define("LCLAN_2", "Nuoroda išsaugota duomenų bazėje.");
 define("LCLAN_3", "Link updated in database.");
 // define("LCLAN_4", "Link deleted.");
 define("LCLAN_6", "Order updated.");

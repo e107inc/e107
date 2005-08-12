@@ -1,18 +1,18 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Lithuanian/admin/lan_filemanager.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-08-09 10:56:09 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2005-08-12 23:43:52 $
+|     $Author: alkas $
 +----------------------------------------------------------------------------+
 */
-define("FMLAN_1", "Uploaded");
-define("FMLAN_2", "to");
-define("FMLAN_3", "directory");
-define("FMLAN_4", "The uploaded file exceeds the upload_max_filesize directive in php.ini.");
+define("FMLAN_1", "Įkelta");
+define("FMLAN_2", "į");
+define("FMLAN_3", "katalogą");
+define("FMLAN_4", "Atsiųsta byla viršija dydžio limitą, nustatytą upload_max_filesize nuostatoje php.ini byloje.");
 // define("FMLAN_5", "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the html form.");
 // define("FMLAN_6", "The uploaded file was only partially uploaded.");
 // define("FMLAN_7", "No file was uploaded.");
@@ -20,43 +20,43 @@ define("FMLAN_4", "The uploaded file exceeds the upload_max_filesize directive i
 // define("FMLAN_9", "The file did not upload. Filename");
 // define("FMLAN_10", "Error");
 // define("FMLAN_11", "Probably incorrect permissions on upload directory.");
-define("FMLAN_12", "file");
-define("FMLAN_13", "files");
-define("FMLAN_14", "directory");
-define("FMLAN_15", "directories");
-define("FMLAN_16", "Root directory");
-define("FMLAN_17", "Name");
-define("FMLAN_18", "Size");
-define("FMLAN_19", "Last Modified");
+define("FMLAN_12", "byla");
+define("FMLAN_13", "bylos");
+define("FMLAN_14", "katalogas");
+define("FMLAN_15", "katalogai");
+define("FMLAN_16", "Šakninis katalogas");
+define("FMLAN_17", "Pavadinimas");
+define("FMLAN_18", "Dydis");
+define("FMLAN_19", "Paskutinis redagavimas");
 
-define("FMLAN_21", "Upload file to this dir");
-define("FMLAN_22", "Upload");
+define("FMLAN_21", "Siųsti bylą į šį katalogą");
+define("FMLAN_22", "Siųsti");
 
-define("FMLAN_26", "Deleted");
-define("FMLAN_27", "successfully");
-define("FMLAN_28", "Unable to delete");
-define("FMLAN_29", "Path");
-define("FMLAN_30", "Up level");
-define("FMLAN_31", "folder");
+define("FMLAN_26", "ištrinta");
+define("FMLAN_27", "sėkmingai");
+define("FMLAN_28", "Nepavyko ištrinti");
+define("FMLAN_29", "Kelias");
+define("FMLAN_30", "Aukštyn");
+define("FMLAN_31", "katalogą");
 
-define("FMLAN_32", "Select Directory");
-define("FMLAN_33", "Select");
-define("FMLAN_34", "Directory Choice");
-define("FMLAN_35", "Files Directory");
+define("FMLAN_32", "Pasirinkite katalogą");
+define("FMLAN_33", "Pasirinkti");
+define("FMLAN_34", "Katalogo pasirinkimas");
+define("FMLAN_35", "Bylų katalogas");
 
-define("FMLAN_36", "Custom Menus Directory");
-define("FMLAN_37", "Custom Pages Directory");
+define("FMLAN_36", "Individualių meniu katalogas");
+define("FMLAN_37", "Individualių puslapių katalogas");
 
-define("FMLAN_38", "Successfully moved file to");
-define("FMLAN_39", "Unable to move file to");
-define("FMLAN_40", "Newspost-Images Directory");
-define("FMLAN_41", "Move to Downloads dir.");
-define("FMLAN_42", "Move to Downloadimages dir.");
-define("FMLAN_43", "Delete selected files");
-define("FMLAN_44", "Please confirm that you wish to MOVE the selected files to the DOWNLOADS directory.");
-define("FMLAN_45", "Please confirm that you wish to MOVE the selected files to the DOWNLOADIMAGES directory.");
-define("FMLAN_46", "Please confirm that you wish to DELETE the selected files.");
-define("FMLAN_47", "User Uploads");
+define("FMLAN_38", "Byla sėkmingai perkelta į");
+define("FMLAN_39", "Nepavyksta perkelti bylos į");
+define("FMLAN_40", "Naujienų iliustracijų katalogas");
+define("FMLAN_41", "Perkelti į Downloads katalogą");
+define("FMLAN_42", "Perkelti į Downloadimages katalogą");
+define("FMLAN_43", "Ištrinti pasirinktas bylas");
+define("FMLAN_44", "Prašome patvirtinti jūsų norą perkelti pažymėtas bylas į katalogą DOWNLOADS.");
+define("FMLAN_45", "Prašome patvirtinti jūsų norą perkelti pažymėtas bylas į katalogą DOWNLOADIMAGES.");
+define("FMLAN_46", "Prašome patvirtinti norą IŠTRINTI pasirinktas bylas.");
+define("FMLAN_47", "Atsiųstos bylos");
 
 
 
