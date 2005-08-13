@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_administrator.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-28 21:02:21 $
+|     $Revision: 1.7 $
+|     $Date: 2005-08-13 16:38:49 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -77,4 +77,5 @@ define("ADMSLAN_65", "Configurar las opciones de Mail");
 define("ADMSLAN_66", "Configurar búsquedas");
 define("ADMSLAN_67", "Escanear con el inspector de archivos");
 define("ADMSLAN_68", "Configurar notificación email");
+define("ADMSLAN_69", "Es ya un Administrador y debe ser editado.");
 ?>

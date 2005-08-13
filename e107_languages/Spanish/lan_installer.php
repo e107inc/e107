@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_installer.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-28 21:02:21 $
+|     $Revision: 1.5 $
+|     $Date: 2005-08-13 16:38:49 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,7 @@ define("LANINS_007", "2");
 define("LANINS_008", "PHP &amp; MySQL Comprobación de versiones / Comprobación de permisos de archivos");
 define("LANINS_009", "Reinicie los permisos del archivo");
 define("LANINS_010", "Archivo no escribible: ");
+define("LANINS_010a", "Carpeta no escribible: ");
 define("LANINS_011", "Error");
 define("LANINS_012", "Las funciones MySQL no parecen existir. Esto probablemente significa que la extensión PHP MySQL no fué instalada o configurada correctamente."); // help for 012
 define("LANINS_013", "No se pudo determinar la versión de su MySQL. Esto podría significar que su servidor MySQL está caído o rechazando las conexiones.");
