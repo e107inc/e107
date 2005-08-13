@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-06-29 14:09:48 $
-|     $Author: streaky $
+|     $Revision: 1.28 $
+|     $Date: 2005-08-13 19:38:58 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -277,9 +277,12 @@ if (eregi("http", $image)) {
 }
 
 // File retrieval function. by Cam.
-function send_file($file) {
+function send_file($file)
+{
+
 	global $pref;
-	if (!$pref['download_php']) {
+	if (!$pref['download_php'])
+	{
 		header("Location: ".SITEURL.$file);
 		exit();
 	}
@@ -288,41 +291,49 @@ function send_file($file) {
 	while (@ob_end_clean()); // kill all output buffering else it eats server resources
 	$filename = $file;
 	$file = basename($file);
-	if (is_file($filename) && connection_status() == 0) {
-		if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE")) {
+	if (is_file($filename) && connection_status() == 0)
+	{
+		if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE"))
+		{
 			$file = preg_replace('/\./', '%2e', $file, substr_count($file, '.') - 1);
 		}
-		if (isset($_SERVER['HTTP_RANGE'])) {
+		if (isset($_SERVER['HTTP_RANGE']))
+		{
 			$seek = intval(substr($_SERVER['HTTP_RANGE'] , strlen('bytes=')));
 		}
 		$bufsize = 2048;
 		ignore_user_abort(true);
 		$data_len = filesize($filename);
-		if ($seek > ($data_len - 1)) $seek = 0;
-		if ($filename == null) $filename = basename($this->data);
+		if ($seek > ($data_len - 1)) { $seek = 0; }
+		if ($filename == null) { $filename = basename($this->data); }
 		$res =& fopen($filename, 'rb');
-		if ($seek){
+		if ($seek)
+		{
 			fseek($res , $seek);
 		}
 		$data_len -= $seek;
 		header("Expires: 0");
 		header("Cache-Control: max-age=30" );
 		header("Content-Type: application/force-download");
-		header("Content-Disposition: attachment; filename={$file}");
+		header("Content-Disposition: attachment; filename=\"{$file}\"");
 		header("Content-Length: {$data_len}");
 		header("Pragma: public");
-		if ($seek) {
+		if ($seek)
+		{
 			header("Accept-Ranges: bytes");
 			header("HTTP/1.0 206 Partial Content");
 			header("status: 206 Partial Content");
 			header("Content-Range: bytes {$seek}-".($data_len - 1)."/{$data_len}");
 		}
-		while (!connection_aborted() && $data_len > 0) {
+		while (!connection_aborted() && $data_len > 0)
+		{
 			echo fread($res , $bufsize);
 			$data_len -= $bufsize;
 		}
 		fclose($res);
-	} else {
+	}
+	else
+	{
 		header("location: ".e_BASE."index.php");
 		exit();
 	}
