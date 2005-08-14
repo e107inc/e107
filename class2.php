@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.199 $
-|     $Date: 2005-08-09 14:55:47 $
-|     $Author: e107coders $
+|     $Revision: 1.200 $
+|     $Date: 2005-08-14 00:07:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -303,7 +303,7 @@ if ($pref['notify']) {
 	e107_require_once(e_HANDLER.'notify_class.php');
 }
 
-$e_event -> trigger("testing");
+//$e_event -> trigger("testing");
 
 if (isset($pref['modules']) && $pref['modules']) {
 	$mods=explode(",", $pref['modules']);
@@ -401,12 +401,21 @@ $sql->db_Mark_Time('Start: Init session');
 $ns=new e107table;
 init_session();
 
+define("SITENAME", trim($tp->toHTML($pref['sitename'], "", "emotes_off defs")));
+define("SITEBUTTON", $pref['sitebutton']);
+define("SITETAG", $tp->toHTML($pref['sitetag'], FALSE, "emotes_off defs"));
+define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off defs"));
+define("SITEADMIN", $pref['siteadmin']);
+define("SITEADMINEMAIL", $pref['siteadminemail']);
+define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'], "", "emotes_off defs"));
+
+$e107->ban();
+
 if(USER && isset($pref['force_userupdate']) && $pref['force_userupdate'] && e_PAGE != "usersettings.php"){
 	if(force_userupdate()){
 		header("Location: ".e_BASE."usersettings.php?update");
 	};
 }
-
 
 $sql->db_Mark_Time('Start: Go online');
 if(isset($pref['track_online']) && $pref['track_online'])
@@ -417,8 +426,6 @@ $sql->db_Mark_Time('Start: Signup/splash/admin');
 
 define("e_SIGNUP", (file_exists(e_BASE."customsignup.php") ? "customsignup.php" : "signup.php"));
 define("e_LOGIN", (file_exists(e_BASE."customlogin.php") ? "customlogin.php" : "login.php"));
-
-
 
 if ($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php' && e_PAGE != 'sitedown.php') {
 	header("Location: ".e_HTTP."membersonly.php");
@@ -445,14 +452,6 @@ header("Content-type: text/html; charset=".CHARSET);
 /*foreach ($pref as $key => $prefvalue) {
 $pref[$key] = $tp->toFORM($prefvalue);
 }*/
-
-define("SITENAME", trim($tp->toHTML($pref['sitename'], "", "emotes_off defs")));
-define("SITEBUTTON", $pref['sitebutton']);
-define("SITETAG", $tp->toHTML($pref['sitetag'], FALSE, "emotes_off defs"));
-define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off defs"));
-define("SITEADMIN", $pref['siteadmin']);
-define("SITEADMINEMAIL", $pref['siteadminemail']);
-define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'], "", "emotes_off defs"));
 
 if ($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin.php", e_SELF) && !eregi("sitedown.php", e_SELF)) {
 	header("Location: ".SITEURL."sitedown.php");
@@ -490,7 +489,6 @@ if (e_QUERY == 'logout') {
 	exit;
 }
 
-$e107->ban();
 
 /*
 * Calculate time zone offset, based on session cookie set in e107.js.
@@ -631,7 +629,6 @@ function check_class($var, $userclass = USERCLASS, $debug = FALSE)
 	if($var == e_LANGUAGE){
 		return TRUE;
 	}
-
 
 	if (!$var || $var == "")
 	{
@@ -873,6 +870,7 @@ class e_online {
 				$row['online_pagecount'] = 1;
 			}
 			if ($row['online_pagecount'] > $online_bancount && $row['online_ip'] != "127.0.0.1") {
+				echo "HERE";
 				$sql->db_Insert("banlist", "'{$ip}', '0', 'Hit count exceeded ({$row['online_pagecount']} requests within allotted time)' ");
 				$e_event->trigger("flood", $ip);
 				exit;
