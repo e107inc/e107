@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-07-27 18:21:58 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.32 $
+|     $Date: 2005-08-15 18:44:51 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -143,6 +143,14 @@ class e_bbcode
 		$bbcode_return = eval($bbcode);
 		$bbcode_output = ob_get_contents();
 		ob_end_clean();
+
+		/* added to remove possibility of nested bbcode exploits ... */
+		if(strpos($bbcode_return, "[") !== FALSE)
+		{
+			$exp_search = array("eval", "expression");
+			$exp_replace = array("ev<b></b>al", "expres<b></b>sion");
+			$bbcode_return = str_replace($exp_search, $exp_replace, $bbcode_return);
+		}
 		return $bbcode_output.$bbcode_return;
 	}
 }
