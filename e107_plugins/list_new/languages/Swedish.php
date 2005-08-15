@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Swedish.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-07-16 20:01:36 $
+|     $Revision: 1.8 $
+|     $Date: 2005-08-15 06:38:54 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -209,7 +209,8 @@ define("LIST_MEMBER_1", "Medlemmar");
 define("LIST_MEMBER_2", "Inga medlemmar");
 
 define("LIST_CONTENT_1", "Innehåll");
-define("LIST_CONTENT_2", "Inget innehåll");
+define("LIST_CONTENT_2", "Inget innehåll i");
+define("LIST_CONTENT_3", "ingen giltig innehållskategori");
 
 define("LIST_CHATBOX_1", "Chattruta");
 define("LIST_CHATBOX_2", "Inga chattruteinlägg");
@@ -226,6 +227,5 @@ define("LIST_FORUM_3", "Visningar:");
 define("LIST_FORUM_4", "Svar:");
 define("LIST_FORUM_5", "Senaste inlägg:");
 define("LIST_FORUM_6", "Den:");
-
 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_installer.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-28 15:21:08 $
+|     $Revision: 1.5 $
+|     $Date: 2005-08-15 06:38:54 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -20,6 +20,7 @@ define("LANINS_007", "2");
 define("LANINS_008", "PHP & MySQL versionskontroll / Kontroll av filrättigheter");
 define("LANINS_009", "Testa filrättigheterna igen");
 define("LANINS_010", "Kan inte skriva till fil: ");
+define("LANINS_010a", "Katalog är skrivskyddad: ");
 define("LANINS_011", "Fel");
 define("LANINS_012", "MySQL funktioner verkar inte finnas. Detta betyder antagligen antingen på att MySQL PHP modulen inte är installerad eller inte är korrekt konfigurerad."); // help for 012
 define("LANINS_013", "Kunde inte utröna MySQL versionsnummer. Detta kan bero på att din MySQL server inte är igång, eller att den inte accepterar anslutningar.");

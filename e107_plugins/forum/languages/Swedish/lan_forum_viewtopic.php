@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Swedish/lan_forum_viewtopic.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-28 13:13:29 $
+|     $Revision: 1.3 $
+|     $Date: 2005-08-15 06:38:54 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -84,5 +84,6 @@ define("LAN_433", "Distribuera denna tråd: RDF");
 define("FORLAN_101", "E-posta tråd");
 define("FORLAN_102", "Skriv ut vy");
 define('FORLAN_103', '[användare raderad]');
+define('FORLAN_104', 'Tråd hittades inte');
 
 ?>
