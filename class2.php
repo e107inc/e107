@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.200 $
-|     $Date: 2005-08-14 00:07:50 $
+|     $Revision: 1.201 $
+|     $Date: 2005-08-15 20:08:00 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -424,8 +424,8 @@ if(isset($pref['track_online']) && $pref['track_online'])
 }
 $sql->db_Mark_Time('Start: Signup/splash/admin');
 
-define("e_SIGNUP", (file_exists(e_BASE."customsignup.php") ? "customsignup.php" : "signup.php"));
-define("e_LOGIN", (file_exists(e_BASE."customlogin.php") ? "customlogin.php" : "login.php"));
+define("e_SIGNUP", e_BASE.(file_exists(e_BASE."customsignup.php") ? "customsignup.php" : "signup.php"));
+define("e_LOGIN", e_BASE.(file_exists(e_BASE."customlogin.php") ? "customlogin.php" : "login.php"));
 
 if ($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php' && e_PAGE != 'sitedown.php') {
 	header("Location: ".e_HTTP."membersonly.php");
