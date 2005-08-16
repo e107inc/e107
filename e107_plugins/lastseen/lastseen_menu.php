@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/lastseen/lastseen_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-28 20:13:14 $
-|     $Author: stevedunstan $
+|     $Revision: 1.4 $
+|     $Date: 2005-08-16 17:05:35 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -39,5 +39,5 @@ foreach($userArray as $user)
 }
 $text .= "</ul>";
 
-$ns->tablerender(LSP_LAN_1, $text);
+$ns->tablerender(LSP_LAN_1, $text, 'lastseen');
 ?>
