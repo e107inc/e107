@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-08-16 16:58:38 $
+|     $Revision: 1.37 $
+|     $Date: 2005-08-16 17:25:27 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -103,7 +103,7 @@ require_once(HEADERF);
 $text='';
 if ($message)
 {
-	$ns->tablerender("", $message, 'forum_viewforum_msg');
+	$ns->tablerender("", $message, array('forum_viewforum', 'msg'));
 }
 	
 $topics = $forum->forum_get_topic_count($forum_id);
@@ -241,7 +241,7 @@ $forum_view_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_START);
 $forum_view_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_END);
 if ($pref['forum_enclose'])
 {
-	$ns->tablerender($pref['forum_title'], $forum_view_start.$forum_view_subs.$forum_view_forum.$forum_view_end, 'forum_viewforum');
+	$ns->tablerender($pref['forum_title'], $forum_view_start.$forum_view_subs.$forum_view_forum.$forum_view_end, array('forum_viewforum', 'main1'));
 }
 else
 {
