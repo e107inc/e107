@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-08-16 16:58:38 $
+|     $Revision: 1.31 $
+|     $Date: 2005-08-16 17:25:27 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -219,7 +219,7 @@ $newflag_list = $forum->forum_newflag_list();
 
 if (!$parent_list)
 {
-	$ns->tablerender(PAGE_NAME, "<div style='text-align:center'>".LAN_51."</div>", 'forum_viewtopic_51');
+	$ns->tablerender(PAGE_NAME, "<div style='text-align:center'>".LAN_51."</div>", array('forum', '51'));
 	require_once(FOOTERF);
 	exit;
 }
@@ -413,7 +413,7 @@ if (e_QUERY == "track")
 
 	if ($pref['forum_enclose'])
 	{
-		$ns->tablerender($pref['forum_title'], $forum_track_start.$forum_trackstring.$forum_track_end, 'forum');
+		$ns->tablerender($pref['forum_title'], $forum_track_start.$forum_trackstring.$forum_track_end, array('forum', 'main1'));
 	}
 	else
 	{
@@ -459,7 +459,7 @@ if (e_QUERY == "new")
 
 	if ($pref['forum_enclose'])
 	{
-		$ns->tablerender($pref['forum_title'], $forum_new_start.$forum_newstring.$forum_new_end, 'forum');
+		$ns->tablerender($pref['forum_title'], $forum_new_start.$forum_newstring.$forum_new_end, array('forum', 'main2'));
 	}
 	else
 	{
@@ -471,7 +471,7 @@ $forum_main_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_START);
 $forum_main_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_END);
 if ($pref['forum_enclose'])
 {
-	$ns->tablerender($pref['forum_title'], $forum_main_start.$forum_string.$forum_main_end, 'forum');
+	$ns->tablerender($pref['forum_title'], $forum_main_start.$forum_string.$forum_main_end, array('forum', 'main3'));
 }
 else
 {
@@ -515,6 +515,6 @@ function forum_rules($action = 'check')
 	{
 		$rules_text = FORLAN_441;
 	}
-	$ns->tablerender(LAN_433, "<div style='text-align:center'>{$rules_text}</div>", 'forum_rules');
+	$ns->tablerender(LAN_433, "<div style='text-align:center'>{$rules_text}</div>", array('forum', 'forum_rules'));
 }
 ?>
