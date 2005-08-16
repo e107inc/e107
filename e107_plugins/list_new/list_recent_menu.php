@@ -11,9 +11,9 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_recent_menu.php,v $
-|		$Revision: 1.4 $
-|		$Date: 2005-06-23 11:10:08 $
-|		$Author: lisa_ $
+|		$Revision: 1.5 $
+|		$Date: 2005-08-16 17:05:35 $
+|		$Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -53,7 +53,7 @@ for($i=0;$i<count($arr);$i++){
 }
 
 $caption = (isset($list_pref[$mode."_caption"]) && $list_pref[$mode."_caption"] ? $list_pref[$mode."_caption"] : LIST_MENU_1);
-$ns -> tablerender($caption, $text);
+$ns -> tablerender($caption, $text, 'list_recent');
 unset($text);
 
 ?>
