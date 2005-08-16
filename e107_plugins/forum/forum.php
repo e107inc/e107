@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-08-08 12:19:29 $
-|     $Author: streaky $
+|     $Revision: 1.30 $
+|     $Date: 2005-08-16 16:58:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -219,7 +219,7 @@ $newflag_list = $forum->forum_newflag_list();
 
 if (!$parent_list)
 {
-	$ns->tablerender(PAGE_NAME, "<div style='text-align:center'>".LAN_51."</div>");
+	$ns->tablerender(PAGE_NAME, "<div style='text-align:center'>".LAN_51."</div>", 'forum_viewtopic_51');
 	require_once(FOOTERF);
 	exit;
 }
@@ -413,7 +413,7 @@ if (e_QUERY == "track")
 
 	if ($pref['forum_enclose'])
 	{
-		$ns->tablerender($pref['forum_title'], $forum_track_start.$forum_trackstring.$forum_track_end);
+		$ns->tablerender($pref['forum_title'], $forum_track_start.$forum_trackstring.$forum_track_end, 'forum');
 	}
 	else
 	{
@@ -459,7 +459,7 @@ if (e_QUERY == "new")
 
 	if ($pref['forum_enclose'])
 	{
-		$ns->tablerender($pref['forum_title'], $forum_new_start.$forum_newstring.$forum_new_end);
+		$ns->tablerender($pref['forum_title'], $forum_new_start.$forum_newstring.$forum_new_end, 'forum');
 	}
 	else
 	{
@@ -471,7 +471,7 @@ $forum_main_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_START);
 $forum_main_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_MAIN_END);
 if ($pref['forum_enclose'])
 {
-	$ns->tablerender($pref['forum_title'], $forum_main_start.$forum_string.$forum_main_end);
+	$ns->tablerender($pref['forum_title'], $forum_main_start.$forum_string.$forum_main_end, 'forum');
 }
 else
 {

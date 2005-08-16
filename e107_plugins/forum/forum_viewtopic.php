@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-08-04 09:56:39 $
-|     $Author: streaky $
+|     $Revision: 1.40 $
+|     $Date: 2005-08-16 16:58:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -110,7 +110,7 @@ if ($action == "next")
 	else
 	{
 		require_once(HEADERF);
-		$ns->tablerender('', LAN_405);
+		$ns->tablerender('', LAN_405, 'forum_viewtopic_405');
 		require_once(FOOTERF);
 		exit;
 	}
@@ -123,7 +123,7 @@ if ($action == "prev") {
 		exit;
 	} else {
 		require_once(HEADERF);
-		$ns->tablerender('', LAN_404);
+		$ns->tablerender('', LAN_404, 'forum_viewtopic_404');
 		require_once(FOOTERF);
 		exit;
 	}
@@ -147,7 +147,7 @@ if ($action == "report") {
 		define("e_PAGETITLE", LAN_01." / ".LAN_428);
 		require_once(HEADERF);
 		$text = LAN_424."<br /><br /><a href='forum_viewtopic.php?".$report_thread_id.".post'>".LAN_429."</a";
-		$ns->tablerender(LAN_414, $text);
+		$ns->tablerender(LAN_414, $text, 'forum_viewtopic_report');
 	} else {
 		$number = $thread_id;
 		$report_thread_id = $thread_id;
@@ -180,7 +180,7 @@ if ($action == "report") {
 			</td>
 			</tr>
 			</table>";
-		$ns->tablerender(LAN_414, $text);
+		$ns->tablerender(LAN_414, $text, 'forum_viewtopic_report');
 	}
 	require_once(FOOTERF);
 	exit;
@@ -198,7 +198,7 @@ $thread_info = $forum->thread_get($thread_id, $from-1, $pref['forum_postspage'])
 if($thread_info['head']['thread_forum_id'] == "")
 {
 	require_once(HEADERF);
-	$ns->tablerender(LAN_01, FORLAN_104);
+	$ns->tablerender(LAN_01, FORLAN_104, 'forum_viewtopic_104');
 	require_once(FOOTERF);
 	exit;
 }
@@ -231,7 +231,7 @@ require_once(HEADERF);
 require_once(e_HANDLER."level_handler.php");
 if ($message)
 {
-	$ns->tablerender("", $message);
+	$ns->tablerender("", $message, 'forum_viewtopic_msg');
 }
 
 if (isset($_POST['pollvote']))
@@ -398,7 +398,7 @@ if ($thread_info['head']['thread_lastpost'] > USERLV && (!ereg("\.{$thread_info[
 }
 
 if ($pref['forum_enclose']) {
-	$ns->tablerender(LAN_01, $forumstring);
+	$ns->tablerender(LAN_01, $forumstring, 'forum_viewtopic');
 } else {
 	echo $forumstring;
 }
