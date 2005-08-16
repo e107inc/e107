@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-07-06 07:29:22 $
-|     $Author: stevedunstan $
+|     $Revision: 1.30 $
+|     $Date: 2005-08-16 17:14:03 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 @include_once(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
@@ -280,7 +280,7 @@ class poll
 		}
 		else
 		{
-			$ns->tablerender($caption, $text);
+			$ns->tablerender($caption, $text, 'poll');
 		}
 	}
 
