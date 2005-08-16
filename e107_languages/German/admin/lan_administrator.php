@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/German/admin/lan_administrator.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-26 14:43:22 $
+|     $Revision: 1.4 $
+|     $Date: 2005-08-16 16:03:17 $
 |     $Author: gatowlion $
 |     $translated by: admin@cms-myway.com (http://www.cms-myway.com) $
 +----------------------------------------------------------------------------+
@@ -72,6 +72,7 @@ define("ADMSLAN_65", "E-mail Einstellungen und Mailout konfigurieren");
 define("ADMSLAN_66", "Suche Konfigurieren");
 define("ADMSLAN_67", "Mit dem Fileinspektor scannen");
 define("ADMSLAN_68", "E-mail Benachrichtigung konfigurieren");
+define("ADMSLAN_69", "ist bereits ein Administrator und muss bearbeitet werden.");
 
 
 ?>
