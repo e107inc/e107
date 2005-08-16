@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.73 $
-|     $Date: 2005-07-16 10:28:02 $
-|     $Author: streaky $
+|     $Revision: 1.74 $
+|     $Date: 2005-08-16 17:14:03 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -384,7 +384,7 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 					</div>";
 				$i++;
 		}
-		$ns->tablerender($pref['newsposts_archive_title'], $textnewsarchive);
+		$ns->tablerender($pref['newsposts_archive_title'], $textnewsarchive, 'news_archive');
 	}
 // #### END -----------------------------------------------------------------------------------------------------------
 
@@ -424,7 +424,7 @@ if (isset($pref['nfp_display']) && $pref['nfp_display'] == 2) {
 // --  CNN Style Categories. ----
 if (isset($pref['news_cats']) && $pref['news_cats'] == '1') {
     $text3 = $tp->toHTML("{NEWS_CATEGORIES}", TRUE, 'parse_sc,nobreak');
- 	$ns->tablerender(LAN_NEWS_23, $text3);
+ 	$ns->tablerender(LAN_NEWS_23, $text3, 'news_cat');
 }
 
 // ---------------------------
