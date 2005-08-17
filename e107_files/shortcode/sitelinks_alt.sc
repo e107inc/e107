@@ -3,8 +3,8 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-08-17 14:08:27 $
+|     $Revision: 1.24 $
+|     $Date: 2005-08-17 14:12:30 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -19,7 +19,7 @@
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
 		global $tp;
 		
-		$link_server = (preg_match('#(http:|mailto:|ftp:|irc:|https:)#', $cat_link)) ? '' : e_HTTP;
+		$link_server = (preg_match('#(://)#', $cat_link)) ? '' : e_HTTP;
 
 		$text = "<a class='menuButton' href='".$link_server.$cat_link."' ";
 		if ($cat_img != 'no_icons') {
@@ -35,7 +35,7 @@
 	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
 		global $tp;
 		
-		$link_server = (preg_match('#(http:|mailto:|ftp:|irc:)#', $cat_link)) ? '' : e_HTTP;
+		$link_server = (preg_match('#(://)#', $cat_link)) ? '' : e_HTTP;
 		
 		$text = "<a class='menuItem' href='".$link_server.$cat_link."' ";
 		if ($cat_id) {
