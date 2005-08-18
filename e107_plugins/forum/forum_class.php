@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-07-06 01:29:49 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.39 $
+|     $Date: 2005-08-18 17:07:23 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 class e107forum
@@ -898,6 +898,10 @@ function eMLANG_path($file_name, $sub_folder)
 if (file_exists(THEME.'forum/forum_icons_template.php'))
 {
 	require_once(THEME.'forum/forum_icons_template.php');
+}
+else if (file_exists(THEME.'forum_icons_template.php'))
+{
+	require_once(THEME.'forum_icons_template.php');
 }
 else
 {
