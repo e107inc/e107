@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-06-27 14:46:12 $
-|     $Author: e107coders $
+|     $Revision: 1.33 $
+|     $Date: 2005-08-18 17:29:23 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -365,7 +365,7 @@ $text .= "
 if($pref['wysiwyg']) {
 	$text .="<input type='button' class='button' name='usrname' value='".MAILAN_16."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERNAME}')\" />
 	<input type='button' class='button' name='usrlink' value='".MAILAN_17."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{SIGNUP_LINK}')\" />
-	<input type='button' class='button' name='usrid' value='".MAILAN_17."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERID}')\" />";
+	<input type='button' class='button' name='usrid' value='".MAILAN_18."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERID}')\" />";
 } else {
     $text .="<input type='button' class='button' name='usrname' value='".MAILAN_16."' onclick=\"addtext('{USERNAME}')\" />
 	<input type='button' class='button' name='usrlink' value='".MAILAN_17."' onclick=\"addtext('{SIGNUP_LINK}')\" />
