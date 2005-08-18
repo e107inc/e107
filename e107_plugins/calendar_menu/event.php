@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-08-02 14:32:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2005-08-18 17:43:07 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -47,7 +47,7 @@ if (isset($_POST['ne_cat_create']))
 {
     if ($_POST['ne_new_category'] != "")
     {
-        $sql->db_Insert("event_cat", "  0, '".$tp->toDB($_POST['ne_new_category'])."', '".$tp->toDB($_POST['ne_new_category_icon'])."', 0, '', '', '', '', '', '', '0','0','".time()."', ''  ");
+        $sql->db_Insert("event_cat", "0, '".$tp->toDB($_POST['ne_new_category'])."', '".$tp->toDB($_POST['ne_new_category_icon'])."', '0', '0', '0', '0', '', '', '0', '0', '0', '".time()."', '0'  ");
         header("location:event.php?".$_POST['qs'].".m1");
     } 
     else
