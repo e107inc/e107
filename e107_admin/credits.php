@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/credits.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-19 09:04:28 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2005-08-19 03:08:51 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -80,7 +80,7 @@ $contentA = array(
 	"<h1>Thom Michelbrink</h1>[ McFly ]<br /><br /><br />\"message goes here\"", 
 	"<h1>William Moffett</h1>[ que ]<br /><br /><br />\"message goes here\"", 
 	"<h1>Martin Nicholls</h1>[ streaky ]<br /><br /><br />\"message goes here\"", 
-	"<h1>SweetAs</h1>[ SweetAs ]<br /><br /><br />\"message goes here\""
+	"<h1>James Currie</h1>[ SweetAs ]<br /><br /><br />\"Wot?? No tea?? 0_0\""
 );
 
 
