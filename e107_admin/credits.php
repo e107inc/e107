@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/credits.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-08-19 03:08:51 $
+|     $Revision: 1.8 $
+|     $Date: 2005-08-19 03:13:16 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -80,7 +80,7 @@ $contentA = array(
 	"<h1>Thom Michelbrink</h1>[ McFly ]<br /><br /><br />\"message goes here\"", 
 	"<h1>William Moffett</h1>[ que ]<br /><br /><br />\"message goes here\"", 
 	"<h1>Martin Nicholls</h1>[ streaky ]<br /><br /><br />\"message goes here\"", 
-	"<h1>James Currie</h1>[ SweetAs ]<br /><br /><br />\"Wot?? No tea?? 0_0\""
+	"<h1>James Currie</h1>[ SweetAs ]<br /><br /><br />\"Wot? No tea?? 0_0\""
 );
 
 
