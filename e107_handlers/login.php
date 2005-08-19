@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-08-09 14:00:56 $
-|     $Author: streaky $
+|     $Revision: 1.23 $
+|     $Date: 2005-08-19 07:48:41 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -61,7 +61,7 @@ class userlogin {
 			}
 		}
 		if ($username != "" && $userpass != "") {
-			$username = ereg_replace("\sOR\s|\=|\#", "", $username);
+			$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
 			$ouserpass = $userpass;
 			$userpass = md5($ouserpass);
 

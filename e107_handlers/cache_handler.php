@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-06-23 11:54:36 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.26 $
+|     $Date: 2005-08-19 07:48:41 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,8 +22,8 @@
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.25 $
-* @author      $Author: mcfly_e107 $
+* @version     $Revision: 1.26 $
+* @author      $Author: sweetas $
 */
 class ecache {
 
@@ -122,7 +122,7 @@ class ecache {
 		if (is_dir($dir)) {
 			$d = opendir($dir);
 			while ($file = readdir($d)) {
-				if (is_file($dir.$file) && ereg("^{$pattern}$", $file)) {
+				if (is_file($dir.$file) && preg_match("/^{$pattern}$/", $file)) {
 					if (unlink($dir.$file)) {
 						$deleted[] = $file;
 					}
