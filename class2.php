@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.201 $
-|     $Date: 2005-08-15 20:08:00 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.202 $
+|     $Date: 2005-08-19 05:44:14 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -60,7 +60,7 @@ $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 
 $e107 = new e107($e107_paths, realpath(dirname(__FILE__)));
 
 $inArray = array("'", ";", "/**/", "/UNION/", "/SELECT/", "AS ");
-if (!strstr($_SERVER['PHP_SELF'], "trackback"))
+if (strpos($_SERVER['PHP_SELF'], "trackback") === FALSE)
 {
 	foreach($inArray as $res)
 	{
@@ -229,7 +229,7 @@ define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SER
 // if the option to force users to use a particular url for the site is enabled, redirect users there
 if($pref['redirectsiteurl'] && $pref['siteurl']) {
 	$siteurl = SITEURLBASE."/";
-	if(!strstr($pref['siteurl'], $siteurl)) {
+	if (strpos($pref['siteurl'], $siteurl) === FALSE) {
 		$location = str_replace($siteurl, $pref['siteurl'], e_SELF).(e_QUERY ? "?".e_QUERY : "");
 		header("Location: {$location}");
 		exit();
@@ -320,7 +320,7 @@ if (!function_exists('checkvalidtheme')) {
 		// arg1 = theme to check
 		global $ADMIN_DIRECTORY, $tp, $e107;
 
-		if(strstr(e_QUERY, "themepreview")) {
+		if (strpos(e_QUERY, "themepreview") !== FALSE) {
 			list($action, $id) = explode('.', e_QUERY);
 			require_once(e_HANDLER."theme_handler.php");
 			$themeArray = themeHandler :: getThemes("id");
@@ -351,7 +351,7 @@ if (!function_exists('checkvalidtheme')) {
 			$e107tmp_theme = search_validtheme();
 			define("THEME", e_THEME.$e107tmp_theme."/");
 			define("THEME_ABS", e_THEME_ABS.$e107tmp_theme."/");
-			if (ADMIN && !strstr(e_SELF, $ADMIN_DIRECTORY)) {
+			if (ADMIN && strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE) {
 				echo '<script>alert("'.$tp->toJS(CORE_LAN1).'")</script>';
 			}
 		}
@@ -427,7 +427,7 @@ $sql->db_Mark_Time('Start: Signup/splash/admin');
 define("e_SIGNUP", e_BASE.(file_exists(e_BASE."customsignup.php") ? "customsignup.php" : "signup.php"));
 define("e_LOGIN", e_BASE.(file_exists(e_BASE."customlogin.php") ? "customlogin.php" : "login.php"));
 
-if ($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && !strstr(e_PAGE, "admin") && e_PAGE != 'membersonly.php' && e_PAGE != 'sitedown.php') {
+if ($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "index.php" && e_PAGE != "fpw.php" && e_PAGE != e_LOGIN && strpos(e_PAGE, "admin") === FALSE && e_PAGE != 'membersonly.php' && e_PAGE != 'sitedown.php') {
 	header("Location: ".e_HTTP."membersonly.php");
 	exit;
 }
@@ -458,10 +458,10 @@ if ($pref['maintainance_flag'] && ADMIN == FALSE && !eregi("admin.php", e_SELF) 
 	exit;
 }
 
-if (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin.php")) {
+if (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin.php") !== FALSE) {
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_".e_PAGE);
 	e107_include_once(e_LANGUAGEDIR."English/admin/lan_".e_PAGE);
-} else if (!strstr(e_SELF, $PLUGINS_DIRECTORY)) {
+} else if (strpos(e_SELF, $PLUGINS_DIRECTORY) === FALSE) {
 	e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_".e_PAGE);
 	e107_include_once(e_LANGUAGEDIR."English/lan_".e_PAGE);
 }
@@ -542,11 +542,11 @@ if(!is_array($menu_data)) {
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 
 if(!defined("THEME")){
-	if ((strstr(e_SELF, "usersettings.php") && is_numeric(e_QUERY) && getperms("4") && ADMIN) || (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
+	if ((strpos(e_SELF, "usersettings.php") !== FALSE && is_numeric(e_QUERY) && getperms("4") && ADMIN) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin") !== FALSE || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
 
 		if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') !== FALSE) {
 			checkvalidtheme($pref['sitetheme']);
-		} else if (strstr(e_SELF, "newspost.php")) {
+		} else if (strpos(e_SELF, "newspost.php") !== FALSE) {
 			define("MAINTHEME", e_THEME.$pref['sitetheme']."/");
 			checkvalidtheme($pref['admintheme']);
 		}
@@ -562,7 +562,7 @@ if(!defined("THEME")){
 	}
 }
 
-if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && (strstr(e_SELF, $ADMIN_DIRECTORY) || strstr(e_SELF, "admin") || (isset($eplug_admin) && $eplug_admin == TRUE))) {
+if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE && (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin") !== FALSE || (isset($eplug_admin) && $eplug_admin == TRUE))) {
 	if (file_exists(THEME.'admin_theme.php')) {
 		require_once(THEME.'admin_theme.php');
 	} else {
@@ -642,7 +642,7 @@ function check_class($var, $userclass = USERCLASS, $debug = FALSE)
 		rsort($varList); // check the language first.(ie. numbers come last)
 		foreach($varList as $v)
 		{
-			if (in_array($v,$lans) && !preg_match("#".e_LANGUAGE."#", $v)){
+			if (in_array($v,$lans) && strpos($v, e_LANGUAGE) === FALSE) {
 				return FALSE;
 			}
 
@@ -801,9 +801,9 @@ class e_online {
 				$online_bancount = 100;
 			}
 
-			$page = (strstr(e_SELF, "forum_")) ? e_SELF.".".e_QUERY : e_SELF;
-			$page = (strstr(e_SELF, "comment")) ? e_SELF.".".e_QUERY : $page;
-			$page = (strstr(e_SELF, "content")) ? e_SELF.".".e_QUERY : $page;
+			$page = (strpos(e_SELF, "forum_") !== FALSE) ? e_SELF.".".e_QUERY : e_SELF;
+			$page = (strpos(e_SELF, "comment") !== FALSE) ? e_SELF.".".e_QUERY : $page;
+			$page = (strpos(e_SELF, "content") !== FALSE) ? e_SELF.".".e_QUERY : $page;
 
 			global $sql, $pref, $e107, $listuserson, $e_event;
 			$ip = $e107->getip();
