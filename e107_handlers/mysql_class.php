@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-07-03 14:37:46 $
-|     $Author: e107coders $
+|     $Revision: 1.46 $
+|     $Date: 2005-08-19 07:48:41 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,8 +25,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.45 $
-* @author $Author: e107coders $
+* @version $Revision: 1.46 $
+* @author $Author: sweetas $
 */
 class db {
 
@@ -549,7 +549,7 @@ class db {
 
 		if($multiple == TRUE){ // return an array of all matching language tables.
 			foreach($mySQLtablelist as $tab){
-              	if(eregi(MPREFIX."lan_",$tab) && substr($tab,-strlen($table)) == $table){
+              	if(stristr($tab, MPREFIX."lan_") !== FALSE && substr($tab,-strlen($table)) == $table){
                 	$lanlist[] = $tab;
 			  	}
 			}

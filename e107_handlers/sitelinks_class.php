@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2005-08-19 03:40:26 $
+|     $Revision: 1.68 $
+|     $Date: 2005-08-19 07:48:41 $
 |     $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -109,7 +109,7 @@ class sitelinks
 
 				// if there's a submenu. :
 				if (isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])){
-					$substyle = (eregi($link['link_url'],e_SELF) || eregi($link['link_name'],e_SELF)  || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
+					$substyle = (strpos(e_SELF, $link['link_url']) !== FALSE || strpos(e_SELF, $link['link_name']) !== FALSE || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
 					$text .= "\n\n<div id='{$main_linkid}' style='display:$substyle'>\n";
 					foreach ($this->eLinkList[$main_linkid] as $sub){
 						$text .= $this->makeLink($sub, TRUE, $style);
@@ -238,8 +238,7 @@ function hilite($link,$enabled=''){
 		if(!$enabled){ return FALSE; }
 
 // --------------- highlighting for plugins. ----------------
-		if(eregi($PLUGINS_DIRECTORY, $link) && !eregi("custompages", $link)){
-
+		if(stristr($link, $PLUGINS_DIRECTORY) !== FALSE && stristr($link, "custompages") === FALSE){
 			if(str_replace("?","",$link)){
 				if(strpos(e_SELF."?".e_QUERY, str_replace("../", "", $link))){
 					return TRUE;
@@ -248,7 +247,7 @@ function hilite($link,$enabled=''){
 				}
 			}
 			$link = str_replace("../", "", $link);
-			if(eregi(dirname($link), dirname(e_SELF))){
+			if(stristr(dirname(e_SELF), dirname($link)) !== FALSE){
 				return TRUE;
 			}
 		}
@@ -256,8 +255,8 @@ function hilite($link,$enabled=''){
 		// --------------- highlight for news items.----------------
 		// eg. news.php?list.1 or news.php?cat.2 etc
 
-		if(eregi("news.php",$link)){
-			if(eregi("list", $link) && eregi("list", e_QUERY)){
+		if (strpos($link, "news.php") !== FALSE) {
+			if(strpos($link, "list") !== FALSE && strpos(e_QUERY, "list") !== FALSE){
 				$tmp = str_replace("php?", "", explode(".",$link));
 				$tmp2 = explode(".", e_QUERY);
 				if($tmp[1] == $tmp2[1] && $tmp[2] == $tmp2[2]){
@@ -265,7 +264,7 @@ function hilite($link,$enabled=''){
 				}
 			}
 
-			if((eregi("cat", $link) || eregi("list", $link)) && eregi("item", e_QUERY))	{
+			if((strpos($link, "cat") !== FALSE || strpos($link, "list") !== FALSE) && strpos(e_QUERY, "item") !== FALSE) {
 				$tmp = str_replace("php?", "", explode(".",$link));
 				$tmp2 = explode(".", e_QUERY);
 				if($tmp[2] == $tmp2[2])
@@ -276,13 +275,12 @@ function hilite($link,$enabled=''){
 		}
 
 		// --------------- highlight default ----------------
-		if(eregi("\?", $link)){
+		if(strpos($link, "?") !== FALSE){
 			if(($enabled) && (strpos(e_SELF."?".e_QUERY, str_replace("../", "", $link)) !== false))	{
 				return true;
 			}
 		}
-
-		if(!eregi("all", e_QUERY) && !eregi("item", e_QUERY) && !eregi("cat",e_QUERY) && !eregi("list", e_QUERY) && $enabled && (strpos(e_SELF, str_replace("../", "",$link)) !== false)){
+		if(!preg_match("/all|item|cat|list/i", e_QUERY) && $enabled && (strpos(e_SELF, str_replace("../", "",$link)) !== false)){
 			return true;
 		}
 
