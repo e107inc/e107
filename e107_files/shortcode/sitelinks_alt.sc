@@ -3,8 +3,8 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-08-17 14:12:30 $
+|     $Revision: 1.25 $
+|     $Date: 2005-08-19 03:40:26 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -19,9 +19,9 @@
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
 		global $tp;
 		
-		$link_server = (preg_match('#(://)#', $cat_link)) ? '' : e_HTTP;
-
-		$text = "<a class='menuButton' href='".$link_server.$cat_link."' ";
+		$cat_link = (strpos($cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
+	
+		$text = "<a class='menuButton' href='".$cat_link."' ";
 		if ($cat_img != 'no_icons') {
 			$text .= "style='background-image: url(".$cat_img."); background-repeat: no-repeat; background-position: 3px 1px; white-space: nowrap' ";
 		}
@@ -35,9 +35,9 @@
 	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
 		global $tp;
 		
-		$link_server = (preg_match('#(://)#', $cat_link)) ? '' : e_HTTP;
+		$cat_link = (strpos($cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
 		
-		$text = "<a class='menuItem' href='".$link_server.$cat_link."' ";
+		$text = "<a class='menuItem' href='".$cat_link."' ";
 		if ($cat_id) {
 			$text .= "onclick=\"return false;\" onmouseover=\"menuItemMouseover(event, '".$cat_id."');\"";
 		}
