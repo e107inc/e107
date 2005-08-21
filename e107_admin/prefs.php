@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2005-06-28 14:27:47 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.64 $
+|     $Date: 2005-08-21 08:22:27 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -57,6 +57,7 @@ if (isset($_POST['updateprefs']))
 		$signup_options .= $i < (count($signup_title)-1) ? "." : "";
 	}
 	$pref['signup_options'] = $signup_options;
+	$pref['cookie_name'] = str_replace(".", "", $pref['cookie_name']);
 	$e107cache->clear();
 	save_prefs();
 	$sql -> db_Select_gen("TRUNCATE ".MPREFIX."online");
