@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/admin_template.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-02-02 10:13:01 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2005-08-22 16:53:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -48,6 +48,8 @@ $ADMIN_FOOTER = "</td>
 {ADMIN_DOCS}
 </td>
 </tr>
-</table>";
+</table>
+{ADMIN_CREDITS}
+";
 
 ?>
