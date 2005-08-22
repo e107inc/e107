@@ -109,6 +109,8 @@ $ADMIN_FOOTER .= "</tr>
 <br />
 {SITEDISCLAIMER}
 <br /><br />
+{ADMIN_CREDITS}
+<br />
 </div>
 ";
 
