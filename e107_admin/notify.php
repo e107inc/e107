@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/notify.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-21 15:39:01 $
+|     $Revision: 1.8 $
+|     $Date: 2005-08-22 20:31:28 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -39,9 +39,36 @@ class notify_config {
 	var $notify_prefs;
 	
 	function notify_config() {
-		global $sysprefs, $eArrayStorage;
+		global $sysprefs, $eArrayStorage, $tp, $sql;
 		$this -> notify_prefs = $sysprefs -> get('notify_prefs');
 		$this -> notify_prefs = $eArrayStorage -> ReadArray($this -> notify_prefs);
+		
+		$handle = opendir(e_PLUGIN);
+		while (false !== ($file = readdir($handle))) {
+			if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
+				$plugin_handle = opendir(e_PLUGIN.$file."/");
+				while (false !== ($file2 = readdir($plugin_handle))) {
+					if ($file2 == "e_notify.php") {
+						if ($sql -> db_Select("plugin", "plugin_path", "plugin_path='".$file."' AND plugin_installflag='1'")) {
+							if (!isset($this -> notify_prefs['plugins'][$file])) {
+								$this -> notify_prefs['plugins'][$file] = TRUE;
+								require_once(e_PLUGIN.$file.'/e_notify.php');
+								foreach ($config_events as $event_id => $event_text) {
+									$this -> notify_prefs['event'][$event_id] = array('type' => 'off', 'class' => '254', 'email' => '');
+								}
+								$recalibrate = true;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		if ($recalibrate) {
+			$s_prefs = $tp -> recurse_toDB($this -> notify_prefs, true);
+			$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
+			$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
+		}
 	}
 	
 	function config() {
