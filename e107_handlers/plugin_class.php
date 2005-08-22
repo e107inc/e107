@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-06-25 23:03:16 $
-|     $Author: e107coders $
+|     $Revision: 1.30 $
+|     $Date: 2005-08-22 20:14:35 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -280,8 +280,9 @@ class e107plugin {
 	}
 
 	function manage_notify($action, $eplug_folder) {
-		global $sql, $sysprefs;
-		$notify_prefs = $sysprefs -> getArray('notify_prefs');
+		global $sql, $sysprefs, $eArrayStorage, $tp;
+		$notify_prefs = $sysprefs -> get('notify_prefs');
+		$notify_prefs = $eArrayStorage -> ReadArray($notify_prefs);
 		$e_notify = file_exists(e_PLUGIN.$eplug_folder.'/e_notify.php') ? TRUE : FALSE;
 		if ($action == 'add'){
 			$install_notify = $e_notify ? TRUE : FALSE;
@@ -307,8 +308,9 @@ class e107plugin {
 				unset($notify_prefs['event'][$event_id]);
 			}
 		}
-		$tmp = addslashes(serialize($notify_prefs));
-		$sql->db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = 'notify_prefs' ");
+		$s_prefs = $tp -> recurse_toDB($notify_prefs, true);
+		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
+		$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 	}
 
 	/**
