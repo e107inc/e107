@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.204 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.205 $
+|     $Date: 2005-08-23 04:17:57 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -90,7 +90,7 @@ define("e_UC_NOBODY", 255);
 define("ADMINDIR", $ADMIN_DIRECTORY);
 
 // All debug objects and constants are defined in the debug handler
-if (preg_match('/debug=(.*)/', e_MENU) || isset($_COOKIE['e107_debug_level'])) {
+if (strpos(e_MENU, 'debug=') !== FALSE || isset($_COOKIE['e107_debug_level'])) {
 	require_once(e_HANDLER.'debug_handler.php');
 	$db_debug = new e107_db_debug;
 } else {
@@ -748,8 +748,8 @@ function getperms($arg, $ap = ADMINPERMS) {
 			$arg='P'.$row[0];
 		}
 	}
-
-	if (preg_match("#\.".$arg."\.#", $ap)) {
+	
+	if (strpos($ap, ".".$arg.".") !== FALSE) {
 		return TRUE;
 	} else {
 		return FALSE;
@@ -1179,7 +1179,7 @@ class error_handler {
 	var $debug = false;
 
 	function error_handler() {
-		if ((isset($_SERVER['QUERY_STRING']) && preg_match('/debug=(.*)/', $_SERVER['QUERY_STRING'])) || isset($_COOKIE['e107_debug_level'])) {
+		if ((isset($_SERVER['QUERY_STRING']) && strpos($_SERVER['QUERY_STRING'], 'debug=') !== FALSE) || isset($_COOKIE['e107_debug_level'])) {
 			$this->debug = true;
 			error_reporting(E_ALL);
 		} else {

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/banner.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-07-01 13:48:37 $
-|     $Author: streaky $
+|     $Revision: 1.10 $
+|     $Date: 2005-08-23 04:17:57 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -25,7 +25,7 @@ if (e_QUERY) {
 	$sql->db_Select("banner", "*", "banner_id = '{$query_string}' ");
 	$row = $sql->db_Fetch();
 	$ip = $e107->getip();
-	$newip = (preg_match("/{$ip}\^/", $row['banner_ip']) ? $row['banner_ip'] : "{$row['banner_ip']}{$ip}^");
+	$newip = (strpos($row['banner_ip'], "{$ip}^") !== FALSE) ? $row['banner_ip'] : "{$row['banner_ip']}{$ip}^");
 	$sql->db_Update("banner", "banner_clicks = banner_clicks + 1, `banner_ip` = '{$newip}' WHERE `banner_id` = '{$query_string}'");
 	header("Location: {$row['banner_clickurl']}");
 	exit;
