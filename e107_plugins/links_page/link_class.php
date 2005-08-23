@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.13 $
-|    $Date: 2005-08-02 15:31:12 $
-|    $Author: mcfly_e107 $
+|    $Revision: 1.14 $
+|    $Date: 2005-08-23 03:54:05 $
+|    $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -120,7 +120,7 @@ class linkclass {
 
 			//assign new preferences
 			foreach($_POST as $k => $v){
-				if(preg_match("#^link_#",$k)){
+				if(strpos($k, "link_") === 0){
 					$linkspage_pref[$k] = $tp->toDB($v, true);
 				}
 			}

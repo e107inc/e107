@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.43 $
+|     $Date: 2005-08-23 03:54:05 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -265,7 +265,7 @@ if (isset($_POST['pollvote']))
 	}
 }
 
-if (preg_match("/\[".LAN_430."\]/i", $thread_info['head']['thread_name']))
+if (stristr($thread_info['head']['thread_name'], "[".LAN_430."]"))
 {
 	if ($sql->db_Select("polls", "*", "poll_datestamp='{$thread_info['head']['thread_id']}'"))
 	{
@@ -319,7 +319,7 @@ $NEXTPREV .= "<a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}.next'>"
 
 if ($pref['forum_track'] && USER)
 {
-	$TRACK = (preg_match("/-".$thread_id."-/", USERREALM) ? "<span class='smalltext'><a href='".e_SELF."?".$thread_id.".0."."untrack'>".LAN_392."</a></span>" : "<span class='smalltext'><a href='".e_SELF."?".$thread_id.".0."."track'>".LAN_391."</a></span>");
+	$TRACK = (strpos(USERREALM, "-".$thread_id."-") !== FALSE) ? "<span class='smalltext'><a href='".e_SELF."?".$thread_id.".0."."untrack'>".LAN_392."</a></span>" : "<span class='smalltext'><a href='".e_SELF."?".$thread_id.".0."."track'>".LAN_391."</a></span>");
 }
 
 $MODERATORS = LAN_321.implode(", ", $modArray);

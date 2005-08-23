@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm_inc.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-05-19 21:05:36 $
-|     $Author: stevedunstan $
+|     $Revision: 1.13 $
+|     $Date: 2005-08-23 03:54:05 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("e_PM", e_PLUGIN."pm_menu/");
@@ -72,7 +72,7 @@ function pm_show_stats($no_show_br = 0) {
 				$newpm_image = (file_exists(THEME."images/newpm.gif") ? THEME."images/newpm.gif" : e_PM."images/newpm.gif");
 				$text .= "<a href='".e_PM."pm.php?read'><img src='".$newpm_image."' style='border:0' alt='' /></a><br />";
 			}
-			if ($pref['pm_popup'] && !preg_match("/pm\.php/", e_SELF) && $_COOKIE["pm-alert"] != "ON") {
+			if ($pref['pm_popup'] && strpos(e_SELF, "pm.php") === FALSE && $_COOKIE["pm-alert"] != "ON") {
 				$alertdelay = $pref['pm_popdelay'];
 				setcookie("pm-alert", "ON", time()+$alertdelay);
 				$popuptext = "<html><head><title>".$pmstats['new']." ".PMLAN_0."</title><link rel=stylesheet href=" . THEME . "style.css></head><body style=padding-left:2px;padding-right:2px;padding:2px;padding-bottom:2px;margin:0px;align;center marginheight=0 marginleft=0 topmargin=0 leftmargin=0><table width=100% align=center style=width:100%;height:99%padding-bottom:2px class=bodytable height=99% ><tr><td width=100% ><center><b>--- ".PMLAN_PM." ---</b><br />".$pmstats['new']." ".PMLAN_0."<br />".$pmstats['unread_rcv_pm']." ".PMLAN_45."<br><br /><form><input class=button type=submit onclick=self.close() value = ok /></form></center></td></tr></table></body></html> ";

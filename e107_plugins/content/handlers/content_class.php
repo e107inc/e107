@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.80 $
-|		$Date: 2005-08-23 00:44:23 $
+|		$Revision: 1.81 $
+|		$Date: 2005-08-23 03:54:04 $
 |		$Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -371,7 +371,7 @@ class content{
 			$_POST['content_custom_preset_key'] = $string;
 
 			foreach($_POST as $k => $v){
-				if(preg_match("#^content_#",$k)){
+				if(strpos($k, "content_") === 0){
 					$content_pref[$k] = $tp->toDB($v, true);
 				}
 			}

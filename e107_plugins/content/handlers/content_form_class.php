@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.87 $
-|		$Date: 2005-07-14 13:16:09 $
-|		$Author: lisa_ $
+|		$Revision: 1.88 $
+|		$Date: 2005-08-23 03:54:04 $
+|		$Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -172,7 +172,7 @@ class contentform{
 				$ATTACH = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_24.$TDPOST.$TDPRE2;
 				$IMAGES = $TRPRE.$TDPRE1.CONTENT_ADMIN_ITEM_LAN_31.$TDPOST.$TDPRE2;
 				foreach($_POST as $k => $v){
-					if(preg_match("#^content_files#",$k)){
+					if(strpos($k, "content_files") === 0){
 						if($v && file_exists($content_tmppath_file.$v)){
 							$ATTACH .= CONTENT_ICON_FILE." ".$v."<br />";
 							$file = TRUE;
@@ -181,7 +181,7 @@ class contentform{
 							$file = TRUE;
 						}
 					}
-					if(preg_match("#^content_images#",$k)){
+					if(strpos($k, "content_images") === 0){
 						if($v && file_exists($content_tmppath_image.$v)){
 							$IMAGES .= "<img src='".$content_tmppath_image.$v."' alt='' style='width:100px; border:0;' /> ";
 							$image	= TRUE;
@@ -447,10 +447,10 @@ class contentform{
 
 								//images and attachments
 								foreach($_POST as $k => $v){
-									if(preg_match("#^content_files#",$k)){
+									if(strpos($k, "content_files") === 0){
 										$row['content_file'] .= "[file]".$v;
 									}
-									if(preg_match("#^content_images#",$k)){
+									if(strpos($k, "content_images") === 0){
 										$row['content_image'] .= "[img]".$v;
 									}
 								}
