@@ -207,7 +207,7 @@ SC_BEGIN CONTENT_AUTHOR_TABLE_LASTITEM
 global $CONTENT_AUTHOR_TABLE_LASTITEM, $gen, $row, $mainparent, $content_pref;
 if($content_pref["content_author_lastitem_{$mainparent}"]){
 if(!is_object($gen)){ $gen = new convert; }
-$CONTENT_AUTHOR_TABLE_LASTITEM = preg_replace("/ -.*/", "", $gen -> convert_date($row['content_datestamp'], "short"));
+$CONTENT_AUTHOR_TABLE_LASTITEM = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "short"));
 $CONTENT_AUTHOR_TABLE_LASTITEM .= " : <a href='".e_SELF."?content.".$row['content_id']."'>".$row['content_heading']."</a>";
 return $CONTENT_AUTHOR_TABLE_LASTITEM;
 }
@@ -264,7 +264,7 @@ SC_BEGIN CONTENT_CAT_TABLE_DATE
 global $CONTENT_CAT_TABLE_DATE, $gen, $row, $mainparent, $content_pref, $gen;
 if(isset($content_pref["content_catall_date_{$mainparent}"]) && $content_pref["content_catall_date_{$mainparent}"]){
 if(!is_object($gen)){ $gen = new convert; }
-$datestamp = preg_replace("/ -.*/", "", $gen -> convert_date($row['content_datestamp'], "long"));
+$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "long"));
 $DATE = ($datestamp != "" ? $datestamp : "");
 return $DATE;
 }
@@ -393,7 +393,7 @@ SC_BEGIN CONTENT_CAT_LIST_TABLE_DATE
 global $CONTENT_CAT_LIST_TABLE_DATE, $row, $gen, $mainparent, $content_pref, $gen;
 if(isset($content_pref["content_cat_date_{$mainparent}"]) && $content_pref["content_cat_date_{$mainparent}"]){
 if(!is_object($gen)){ $gen = new convert; }
-$datestamp = preg_replace("/ -.*/", "", $gen -> convert_date($row['content_datestamp'], "long"));
+$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "long"));
 return ($datestamp != "" ? $datestamp : "");
 }
 SC_END
@@ -512,7 +512,7 @@ SC_END
 
 SC_BEGIN CONTENT_SEARCHRESULT_TABLE_DATE
 global $CONTENT_SEARCHRESULT_TABLE_DATE, $gen, $row;
-$datestamp = preg_replace("/ -.*/", "", $gen -> convert_date($row['content_datestamp'], "short"));
+$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "short"));
 return $datestamp;
 SC_END
 
@@ -749,7 +749,7 @@ SC_BEGIN CONTENT_CONTENT_TABLE_DATE
 global $CONTENT_CONTENT_TABLE_DATE, $gen, $row, $qs, $content_pref, $mainparent;
 if(isset($content_pref["content_content_date_{$mainparent}"]) && $content_pref["content_content_date_{$mainparent}"]){
 	$gen = new convert;
-	$datestamp = preg_replace("/ -.*/", "", $gen -> convert_date($row['content_datestamp'], "long"));
+	$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "long"));
 	$CONTENT_CONTENT_TABLE_DATE = ($datestamp != "" ? $datestamp : "");
 return $CONTENT_CONTENT_TABLE_DATE;
 }
@@ -856,7 +856,7 @@ $CONTENT_CONTENT_TABLE_IMAGES = "";
 require_once(e_HANDLER."popup_handler.php");
 $pp = new popup;
 $gen = new convert;
-$datestamp = preg_replace("/ -.*/", "", $gen -> convert_date($row['content_datestamp'], "long"));
+$datestamp = preg_replace("# -.*#", "", $gen -> convert_date($row['content_datestamp'], "long"));
 for($i=0;$i<count($images);$i++){		
 	$oSrc = $content_image_path.$images[$i];
 	$oSrcThumb = $content_image_path."thumb_".$images[$i];
