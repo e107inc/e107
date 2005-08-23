@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-08-11 19:19:19 $
-|     $Author: stevedunstan $
+|     $Revision: 1.22 $
+|     $Date: 2005-08-23 09:36:30 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -43,7 +43,7 @@ $images = $fl->get_files(e_IMAGE."banners/","",$reject);
 
 if (isset($_POST['update_menu'])) {
 	foreach($_POST as $k => $v) {
-		if (preg_match("#^banner_#", $k)) {
+		if (strpos($k, "banner_") === 0) {
 			$menu_pref[$k] = $v;
 		}
 	}
@@ -130,7 +130,7 @@ if ($sql->db_Select("banner")) {
 	while ($row = $sql->db_Fetch()) {
 		extract($row);
 
-		if (preg_match("#\^#", $banner_campaign)) {
+		if (strpos($banner_campaign, "^") !== FALSE) {
 			$campaignsplit = explode("^", $banner_campaign);
 			$banner_campaign = $campaignsplit[0];
 		}
@@ -178,7 +178,7 @@ if (!$action) {
 			$start_date = ($banner_startdate ? strftime("%d %B %Y", $banner_startdate) : BNRLAN_17);
 			$end_date = ($banner_enddate ? strftime("%d %B %Y", $banner_enddate) : BNRLAN_17);
 
-			if (preg_match("#\^#", $banner_campaign)) {
+			if (strpos($banner_campaign, "^") !== FALSE) {
 				$campaignsplit = explode("^", $banner_campaign);
 				$banner_campaign = $campaignsplit[0];
 				$textvisivilitychanged = "(*)";
@@ -240,12 +240,11 @@ if ($action == "create") {
 					$_POST['endyear'] = $tmp['year'];
 				}
 
-				if (preg_match("#\^#", $_POST['banner_campaign'])) {
-
+				if (strpos($_POST['banner_campaign'], "^") !== FALSE) {
 					$campaignsplit = explode("^", $_POST['banner_campaign']);
 					$listtypearray = explode("-", $campaignsplit[1]);
 					$listtype = $listtypearray[0];
-					$campaign_pages = preg_replace("#\|#", "\n", $listtypearray[1]);
+					$campaign_pages = str_replace("|", "\n", $listtypearray[1]);
 					$_POST['banner_campaign'] = $campaignsplit[0];
 				} else {
 					$_POST['banner_campaign'] = $banner_campaign;

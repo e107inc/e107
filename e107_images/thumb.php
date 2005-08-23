@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_images/thumb.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-04-02 18:29:48 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-08-23 09:36:30 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -35,7 +35,7 @@ require_once(e_HANDLER."resize_handler.php");
 
 	if (e_QUERY){
 		$tmp = explode("+",rawurldecode(e_QUERY));
-		if(preg_match("#^/#",$tmp[0]) || preg_match("#.:#",$tmp[0])){
+		if(strpos($tmp[0], "/") === 0 || strpos($tmp[0], ":") >= 1){
 			$source = $tmp[0];
 		}else{
 			$source = "../".str_replace("../","",$tmp[0]);
