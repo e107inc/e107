@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-06-15 15:18:40 $
+|     $Revision: 1.30 $
+|     $Date: 2005-08-23 02:45:17 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -147,7 +147,7 @@ class e_search {
 					foreach ($crop_fields as $field_key => $field) {
 						$this -> text = $row[$field];
 						foreach ($this -> keywords['match'] as $k_key => $this -> query) {
-							if (stripos($this -> text, $this -> query) !== FALSE) {
+							if (stristr($this -> text, $this -> query) !== FALSE) {
 								if ($this -> keywords['exact'][$k_key] || $this -> keywords['boolean'][$k_key]) {
 									$weight += (($weights[$field_key] * 2) * ($keycount));
 									$endweight = TRUE;

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.15 $
+|     $Date: 2005-08-23 02:45:17 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ class rater {
 	function rateselect($text, $table, $id, $mode=FALSE) {
 		//$mode	: if mode is set, no urljump will be used (used in combined comments+rating system)
 
-		$table = preg_replace('/\\W/i', '', $table);
+		$table = preg_replace('/\W/', '', $table);
 		$id = intval($id);
 
 		$self = $_SERVER['PHP_SELF'];
@@ -56,7 +56,7 @@ class rater {
 
 	function rateradio($table, $id) {
 
-		$table = preg_replace('/\\W/i', '', $table);
+		$table = preg_replace('/\W/', '', $table);
 		$id = intval($id);
 
 		$str = "
@@ -75,7 +75,7 @@ class rater {
 
 	function checkrated($table, $id) {
 
-		$table = preg_replace('/\\W/i', '', $table);
+		$table = preg_replace('/\W/', '', $table);
 		$id = intval($id);
 
 		$sql = new db;
@@ -98,7 +98,7 @@ class rater {
 	function getrating($table, $id, $userid=FALSE) {
 		//userid	: boolean, get rating for a single user, or get general total rating of the item
 
-		$table = preg_replace('/\\W/i', '', $table);
+		$table = preg_replace('/\W/', '', $table);
 		$id = intval($id);
 
 		$sql = new db;

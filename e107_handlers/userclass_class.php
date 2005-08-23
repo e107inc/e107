@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-08-07 14:07:30 $
-|     $Author: streaky $
+|     $Revision: 1.14 $
+|     $Date: 2005-08-23 02:45:17 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_userclass.php");
@@ -40,35 +40,35 @@ function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "") {
 	global $pref;
 
 	$text = "<select class='tbox' name='{$fieldname}'>\n";
-	if (!$optlist || preg_match("#public#", $optlist)) {
+	if (!$optlist || strpos($optlist, "public") !== FALSE) {
 		($curval == e_UC_PUBLIC) ? $s = " selected='selected'" : $s = "";
 		$text .= "<option  value='".e_UC_PUBLIC."' ".$s.">".UC_LAN_0."</option>\n";
 	}
 
-	if (!$optlist || preg_match("#guest#", $optlist)) {
+	if (!$optlist || strpos($optlist, "guest") !== FALSE) {
 		($curval == e_UC_GUEST) ? $s = " selected='selected'" : $s = "";
 		$text .= "<option  value='".e_UC_GUEST."' ".$s.">".UC_LAN_1."</option>\n";
 	}
-	if (!$optlist || preg_match("#nobody#", $optlist)) {
+	if (!$optlist || strpos($optlist, "nobody") !== FALSE) {
 		($curval == e_UC_NOBODY) ? $s = " selected='selected'" : $s = "";
 		$text .= "<option value='".e_UC_NOBODY."' ".$s.">".UC_LAN_2."</option>\n";
 	}
-	if (!$optlist || preg_match("#member#", $optlist)) {
+	if (!$optlist || strpos($optlist, "member") !== FALSE) {
 		($curval == e_UC_MEMBER) ? $s = " selected='selected'" : $s = "";
 		$text .= "<option value='".e_UC_MEMBER."' ".$s.">".UC_LAN_3."</option>\n";
 	}
-	if ($mode != "off" || preg_match("#admin#", $optlist))
+	if ($mode != "off" || strpos($optlist, "admin") !== FALSE)
 	{
 		($curval == e_UC_ADMIN) ? $s = " selected='selected'" : $s = "";
 		$text .= "<option  value='".e_UC_ADMIN."' ".$s.">".UC_LAN_5."</option>\n";
 	}
-	if (!$optlist || preg_match("#classes#", $optlist))
+	if (!$optlist || strpos($optlist, "classes") !== FALSE)
 	{
 		$classList = get_userclass_list();
 		foreach($classList as $row)
 		{
 			extract($row);
-			if (!preg_match("#matchclass#", $optlist) || getperms("0") || check_class($userclass_id))
+			if (strpos($optlist, "matchclass") === FALSE || getperms("0") || check_class($userclass_id))
 			{
 				($userclass_id == $curval) ? $s = " selected='selected'" :
 				 $s = "";
@@ -76,14 +76,14 @@ function r_userclass($fieldname, $curval = 0, $mode = "off", $optlist = "") {
 			}
 		}
 	}
-	if (($mode != "off" && $mode != "admin") || preg_match("#readonly#", $optlist))
+	if (($mode != "off" && $mode != "admin") || strpos($optlist, "readonly") !== FALSE)
 	{
 		($curval == e_UC_READONLY) ? $s = " selected='selected'" :
 		 $s = "";
 		$text .= "<option  value='".e_UC_READONLY."' ".$s.">".UC_LAN_4."</option>\n";
 	}
 
-	if (preg_match("#language#", $optlist) && $pref['multilanguage']) {
+	if (strpos($optlist, "language") !== FALSE && $pref['multilanguage']) {
 			$text .= "<option value=''> ------ </option>\n";
 		$tmpl = explode(",",e_LANLIST);
         foreach($tmpl as $lang){
@@ -125,55 +125,55 @@ function r_userclass_check($fieldname, $curval = '', $optlist = "")
 	$curArray = explode(",", $curval);
 	$ret = "";
 	$ret .= "<div class='tbox' style='margin-left:0px;margin-right:auto;width:60%;height:58px;overflow:auto'>";
-	if (!$optlist || preg_match("#public#", $optlist))
+	if (!$optlist || strpos($optlist, "public") !== FALSE)
 	{
 		$c = (in_array(e_UC_PUBLIC, $curArray)) ? " checked='checked' " : "";
 		$ret .= "<label><input type='checkbox' name='{$fieldname}[".e_UC_PUBLIC."]' value='1' {$c} /> ".UC_LAN_0."</label><br />";
 	}
 
-	if (!$optlist || preg_match("#guest#", $optlist))
+	if (!$optlist || strpos($optlist, "guest") !== FALSE)
 	{
 		$c = (in_array(e_UC_GUEST, $curArray)) ? " checked='checked' " : "";
 		$ret .= "<label><input type='checkbox' name='{$fieldname}[".e_UC_GUEST."]' value='1' {$c} /> ".UC_LAN_1."</label><br />";
 	}
 
-	if (!$optlist || preg_match("#nobody#", $optlist))
+	if (!$optlist || strpos($optlist, "nobody") !== FALSE)
 	{
 		$c = (in_array(e_UC_NOBODY, $curArray)) ? " checked='checked' " : "";
 		$ret .= "<label><input type='checkbox' name='{$fieldname}[".e_UC_NOBODY."]' value='1' {$c} /> ".UC_LAN_2."</label><br />";
 	}
 
-	if (!$optlist || preg_match("#member#", $optlist))
+	if (!$optlist || strpos($optlist, "member") !== FALSE)
 	{
 		$c = (in_array(e_UC_MEMBER, $curArray)) ? " checked='checked' " : "";
 		$ret .= "<label><input type='checkbox' name='{$fieldname}[".e_UC_MEMBER."]' value='1' {$c} /> ".UC_LAN_3."</label><br />";
 	}
 
-	if (!$optlist || preg_match("#admin#", $optlist))
+	if (!$optlist || strpos($optlist, "admin") !== FALSE)
 	{
 		$c = (in_array(e_UC_ADMIN, $curArray)) ? " checked='checked' " : "";
 		$ret .= "<label><input type='checkbox' name='{$fieldname}[".e_UC_ADMIN."]' value='1' {$c} /> ".UC_LAN_5."</label><br />";
 	}
 
-	if (!$optlist || preg_match("#readonly#", $optlist))
+	if (!$optlist || strpos($optlist, "readonly") !== FALSE)
 	{
 		$c = (in_array(e_UC_READONLY, $curArray)) ? " checked='checked' " : "";
 		$ret .= "<label><input type='checkbox' name='{$fieldname}[".e_UC_READONLY."]' value='1' {$c} /> ".UC_LAN_4."</label><br />";
 	}
 
-	if (!$optlist || preg_match("#classes#", $optlist))
+	if (!$optlist || strpos($optlist, "classes") !== FALSE)
 	{
 		$classList = get_userclass_list();
 		foreach($classList as $row)
 		{
-			if (!preg_match("#matchclass#", $optlist) || getperms("0") || check_class($row['userclass_id'])) {
+			if (strpos($optlist, "matchclass") === FALSE || getperms("0") || check_class($row['userclass_id'])) {
 				$c = (in_array($row['userclass_id'], $curArray)) ? " checked='checked' " : "";
 				$ret .= "<label><input type='checkbox' name='{$fieldname}[{$row['userclass_id']}]' value='1' {$c} /> {$row['userclass_name']}</label><br />";
 			}
 		}
 	}
 
-	if (preg_match("#language#", $optlist) && $pref['multilanguage']) {
+	if (strpos($optlist, "language") !== FALSE && $pref['multilanguage']) {
 			$ret .= "<hr />\n";
 		$tmpl = explode(",",e_LANLIST);
         foreach($tmpl as $lang){
