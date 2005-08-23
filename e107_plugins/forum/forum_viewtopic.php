@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-08-23 03:54:05 $
-|     $Author: sweetas $
+|     $Revision: 1.44 $
+|     $Date: 2005-08-23 17:31:50 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -319,7 +319,7 @@ $NEXTPREV .= "<a href='".e_SELF."?{$thread_id}.{$forum_info['forum_id']}.next'>"
 
 if ($pref['forum_track'] && USER)
 {
-	$TRACK = (strpos(USERREALM, "-".$thread_id."-") !== FALSE) ? "<span class='smalltext'><a href='".e_SELF."?".$thread_id.".0."."untrack'>".LAN_392."</a></span>" : "<span class='smalltext'><a href='".e_SELF."?".$thread_id.".0."."track'>".LAN_391."</a></span>");
+	$TRACK = (strpos(USERREALM, "-".$thread_id."-") !== FALSE ? "<span class='smalltext'><a href='".e_SELF."?".$thread_id.".0."."untrack'>".LAN_392."</a></span>" : "<span class='smalltext'><a href='".e_SELF."?".$thread_id.".0."."track'>".LAN_391."</a></span>");
 }
 
 $MODERATORS = LAN_321.implode(", ", $modArray);
