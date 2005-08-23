@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/loginfo.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-08-10 14:55:48 $
-|     $Author: streaky $
+|     $Revision: 1.6 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -184,7 +184,7 @@ function getBrowser($agent) {
 	);
 	$browser = "";
 	foreach($browsers as $info) {
-		if (eregi($info['rule'], $agent, $results)) {
+		if (preg_match("#".$info['rule']."#i", $agent, $results)) {
 			return ($info['name']." v".$results[1]);
 		}
 	}
@@ -226,7 +226,7 @@ function getOs($agent) {
 		"palm2" => array('name' => 'PalmOS', 'rule' => 'Palm[ \-]?(Source|OS)')
 	);
 	foreach($os as $key => $info) {
-		if (eregi($info['rule'], $agent, $results)) {
+		if (preg_match("#".$info['rule']."#i", $agent, $results)) {
 			if(strstr($key, "win")) {
 				return ($info['name']);
 			} else {

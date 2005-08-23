@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-06-14 22:37:13 $
-|     $Author: e107coders $
+|     $Revision: 1.33 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -259,7 +259,7 @@ foreach ($menu_areas as $menu_act) {
 $sql->db_Select("menus", "*", "menu_path NOT REGEXP('[0-9]+') ");
 while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch())
 {
-	if (!eregi($menu_name, $menustr))
+	if (!preg_match("#".$menu_name."#i", $menustr))
 	{
 		$sql2->db_Delete("menus", "menu_name='$menu_name'");
 		$message .= "<b>".MENLAN_11." - ".$menu_name."</b><br />";
@@ -361,7 +361,7 @@ else
 		}
 		else
 		{
-			$menu_name = eregi_replace("_menu", "", $menu_name);
+			$menu_name = preg_replace("#_menu#i", "", $menu_name);
 		}
 		$text .= "<option value='$menu_id'>$menu_name</option>\n";
 
@@ -454,7 +454,7 @@ function checklayout($str) {
 			$sql9->db_Select("menus", "*", "menu_location='$menu' ORDER BY menu_order");
 			$menu_count = $sql9->db_Rows();
 			while (list($menu_id, $menu_name, $menu_location, $menu_order, $menu_class, $menu_pages, $menu_path) = $sql9->db_Fetch()) {
-				$menu_name = eregi_replace("_menu", "", $menu_name);
+				$menu_name = preg_replace("#_menu#i", "", $menu_name);
 				$vis = ($menu_class || strlen($menu_pages) > 1) ? " <span style='color:red'>*</span> " :
 				"";
 				$caption = "<div style='text-align:center'>{$menu_name}{$vis}</div>";

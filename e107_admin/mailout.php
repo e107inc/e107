@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-08-18 17:29:23 $
-|     $Author: stevedunstan $
+|     $Revision: 1.34 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -142,7 +142,7 @@ if (isset($_POST['submit'])) {
 	$message_subject = stripslashes($tp -> toHTML($_POST['email_subject']));
 	$message_body = stripslashes($tp -> toHTML($_POST['email_body']));
 	$message_body = str_replace("&quot;", '"', $message_body);
-	$message_body = eregi_replace('src="', 'src="'.SITEURL, $message_body);
+	$message_body = preg_replace('#src="#i', 'src="'.SITEURL, $message_body);
 
 	if (isset($_POST['use_theme'])) {
 		$theme = $THEMES_DIRECTORY.$pref['sitetheme']."/";

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-08-02 12:46:26 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.44 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -60,7 +60,7 @@ require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 $_uid = is_numeric(e_QUERY) ? intval(e_QUERY) : "";
 
-if(getperms("4") && eregi(str_replace("../","",e_ADMIN),$_SERVER['HTTP_REFERER']) || $_POST['adminmode'] == 1)
+if(getperms("4") && preg_match("#".str_replace("../","",e_ADMIN)."#i", $_SERVER['HTTP_REFERER']) || $_POST['adminmode'] == 1)
 {
 	require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 

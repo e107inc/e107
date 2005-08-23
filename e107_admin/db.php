@@ -171,7 +171,7 @@ function getsql($mySQLdefaultdb) {
 		$search = array("\x00", "\x0a", "\x0d", "\x1a"); //\x08\\x09, not required
 		$replace = array('\0', '\n', '\r', '\Z');
 
-		$maintable = ereg_replace(MPREFIX, '', $row[0]);
+		$maintable = preg_replace("#".MPREFIX."#", '', $row[0]);
 		$sql->db_Select($maintable);
 
 		$metainfo = array();

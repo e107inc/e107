@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-08-18 17:07:23 $
-|     $Author: stevedunstan $
+|     $Revision: 1.40 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 class e107forum
@@ -272,7 +272,7 @@ class e107forum
 	{
 		$thread_id = intval($thread_id);
 		global $sql;
-		$tmp = ereg_replace("-".$thread_id."-", "", USERREALM);
+		$tmp = str_replace("-".$thread_id."-", "", USERREALM);
 		return $sql->db_Update("user", "user_realm='$tmp' WHERE user_id='".USERID."' ");
 	}
 

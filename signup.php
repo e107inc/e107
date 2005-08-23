@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2005-08-08 18:22:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.57 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -177,7 +177,7 @@ if (isset($_POST['register']))
 		$error = TRUE;
 	}
 
-	$_POST['name'] = trim(chop(ereg_replace("&nbsp;|\#|\=", "", $_POST['name'])));
+	$_POST['name'] = trim(chop(preg_replace("/&nbsp;|\#|\=/", "", $_POST['name'])));
 	if ($_POST['name'] == "Anonymous") {
 		$error_message .= LAN_103."\\n";
 		$error = TRUE;
@@ -447,10 +447,10 @@ require_once(HEADERF);
 
 $qs = ($error ? "stage" : e_QUERY);
 
-if ($pref['use_coppa'] == 1 && !ereg("stage", $qs))
+if ($pref['use_coppa'] == 1 && strpos($qs, "stage") === FALSE)
 {
 	$cert_text = LAN_109 . " <a href='http://www.cdt.org/legislation/105th/privacy/coppa.html'>".LAN_SIGNUP_14."</a>. ".LAN_SIGNUP_15." <a href='mailto:".SITEADMINEMAIL."'>".LAN_SIGNUP_14."</a> ".LAN_SIGNUP_16."<br /><br /><div style='text-align:center'><b>".LAN_SIGNUP_17."\n";
-	if (eregi("stage", LAN_109))
+	if (strpos(LAN_109, "stage") !== FALSE)
 	{
 		$text .= $cert_text."</b></div>\n";
 	}
@@ -476,7 +476,7 @@ if (!$website)
 	$website = "http://";
 }
 
-if (!eregi("stage", LAN_109))
+if (strpos(LAN_109, "stage") === FALSE)
 {
 	if (isset($_POST['newver']))
 	{

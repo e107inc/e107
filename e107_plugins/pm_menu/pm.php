@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-05-06 01:41:15 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -88,7 +88,7 @@ if (preg_match("#read#", PM_QUERY) || PM_QUERY == "" && !$_POST['reply'] && !$_P
 	pm_parseformat($PMREAD);
 }
 	
-if (eregi(PMLAN_9, $_POST['postpm'])) {
+if (preg_match("#".PMLAN_9."#i", $_POST['postpm'])) {
 	list($success, $failed, $notfound) = explode(",", $pm->post_pm());
 	if ($_POST['sendtype'] == "userclass") {
 		list($cnum, $cname) = explode(":", $_POST['class']);

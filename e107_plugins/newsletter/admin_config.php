@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/admin_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-25 17:23:34 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -389,7 +389,7 @@ class newsletter
 		$message_subject = stripslashes($tp -> toHTML($mail->Subject));
 		$message_body = stripslashes($tp -> toHTML($mail->Subject, TRUE));
 		$message_body = str_replace("&quot;", '"', $tp -> toHTML($newsletterInfo['newsletter_text'], TRUE));
-		$message_body = eregi_replace('src="', 'src="'.SITEURL, $message_body);
+		$message_body = preg_replace('/src="/', 'src="'.SITEURL, $message_body);
 
 		$newsletter_header = $tp -> toHTML($newsletterParentInfo['newsletter_header'], TRUE);
 		$newsletter_footer = $tp -> toHTML($newsletterParentInfo['newsletter_footer'], TRUE);

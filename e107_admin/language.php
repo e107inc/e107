@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-07-07 14:59:56 $
-|     $Author: e107coders $
+|     $Revision: 1.25 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -155,7 +155,7 @@ if ($_POST['edit_existing']) {
 
 	foreach ($tabs as $table_name) {
 		$installed = strtolower($_POST['lang_choices'])."_".$table_name;
-		if (!eregi($installed, $_POST['lang_choices'])) {
+		if (!preg_match("#".$installed."#i", $_POST['lang_choices'])) {
 			$text .= "<tr>
 				<td style='width:30%' class='forumheader3'>".ucfirst(str_replace("_", " ", $table_name))."</td>\n
 				<td style='width:70%' class='forumheader3'>\n";
@@ -221,7 +221,7 @@ function multilang_prefs() {
 	$text .= "
 		<select name='sitelanguage' class='tbox'>\n";
 	$counter = 0;
-	$sellan = eregi_replace("lan_*.php", "", $pref['sitelanguage']);
+	$sellan = preg_replace("/lan_*.php/i", "", $pref['sitelanguage']);
 	while (isset($lanlist[$counter])) {
 		if ($lanlist[$counter] == $sellan) {
 			$text .= "<option selected='selected'>".$lanlist[$counter]."</option>\n";
@@ -336,7 +336,7 @@ function table_list() {
 		if(preg_match("#^".MPREFIX."#", $temp))
 		{
 			$e107tab = str_replace(MPREFIX, "", $temp);
-			if (!in_array($e107tab, $exclude) && !eregi("lan_",$e107tab))
+			if (!in_array($e107tab, $exclude) && !preg_match("/lan_/i",$e107tab))
 			{
 				$tabs[] = $e107tab;
 			}

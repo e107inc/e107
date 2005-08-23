@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-06-27 22:58:09 $
+|     $Revision: 1.46 $
+|     $Date: 2005-08-23 00:44:23 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -218,7 +218,7 @@ if (!$search_prefs['user_select'] && $_GET['r'] < 1) {
 		
 			foreach($search_info as $key => $value) {
 				if ($value['refpage']) {
-					if (eregi($value['refpage'], $refpage)) {
+					if (strpos($refpage, $value['refpage']) !== FALSE) {
 						$searchtype[$key] = true;
 						$_GET['t'] = $key;
 					}
@@ -464,7 +464,7 @@ function parsesearch($text, $match) {
 	} else {
 		$text = "...".substr($text, ($pos-50), $pos+30)."...";
 	}
-	$text = eregi_replace($match, "<span class='searchhighlight'>$matchedText</span>", $text);
+	$text = preg_replace("/".$match."/i", "<span class='searchhighlight'>".$matchedText."</span>", $text);
 	return($text);
 }
 

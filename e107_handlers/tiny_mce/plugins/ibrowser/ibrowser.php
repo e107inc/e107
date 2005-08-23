@@ -9,13 +9,13 @@
 // ------------------------------------------------
 //                                   www.j-cons.com
 // ================================================
-// $Revision: 1.2 $Date: 2004/10/04
+// $Revision: 1.3 $Date: 2004/10/04
 // ================================================
 //
 // $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/plugins/ibrowser/ibrowser.php,v $
-// $Revision: 1.2 $
-// $Date: 2005-05-02 05:27:57 $
-// $Author: e107coders $
+// $Revision: 1.3 $
+// $Date: 2005-08-23 00:44:23 $
+// $Author: sweetas $
 // +----------------------------------------------------------------------------+
 
 
@@ -269,7 +269,7 @@ if ($tinyMCE_img_delete_allowed && isset($HTTP_POST_VARS['lib_action'])
           </tr>
           <tr>
             <td><?php
-    if (!ereg('/$', $HTTP_SERVER_VARS['DOCUMENT_ROOT'])){
+    if (!preg_match('#/$#', $HTTP_SERVER_VARS['DOCUMENT_ROOT'])){
     //  $_root = $HTTP_SERVER_VARS['DOCUMENT_ROOT'].'/';
 		$_root = e_BASE;
    } else {
@@ -468,7 +468,7 @@ function uploadImg($img) {
 
   if (!$tinyMCE_upload_allowed) return false;
 
-  if (!ereg('/$', $HTTP_SERVER_VARS['DOCUMENT_ROOT'])){
+  if (!preg_match('#/$#', $HTTP_SERVER_VARS['DOCUMENT_ROOT'])){
 	$_root = e_BASE;
   } else {
   	$_root = e_BASE;
@@ -487,7 +487,7 @@ function uploadImg($img) {
       $img_name = $data['name'];
       $i = 1;
       while (file_exists($dir_name.$img_name)) {
-        $img_name = ereg_replace('(.*)(\.[a-zA-Z]+)$', '\1_'.$i.'\2', $data['name']);
+        $img_name = preg_replace('#(.*)(\.[a-zA-Z]+)$#', '\\1_'.$i.'\\2', $data['name']);
         $i++;
       }
       if (!move_uploaded_file($data['tmp_name'], $dir_name.$img_name)) {
@@ -516,7 +516,7 @@ function deleteImg()
 
   if (!$tinyMCE_img_delete_allowed) return false;
 
-  if (!ereg('/$', $HTTP_SERVER_VARS['DOCUMENT_ROOT']))
+  if (!preg_match('#/$#', $HTTP_SERVER_VARS['DOCUMENT_ROOT']))
     $_root = $HTTP_SERVER_VARS['DOCUMENT_ROOT'].'/';
   else
     $_root = $HTTP_SERVER_VARS['DOCUMENT_ROOT'];

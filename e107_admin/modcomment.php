@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/modcomment.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-30 14:18:21 $
-|     $Author: lisa_ $
+|     $Revision: 1.12 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -93,7 +93,7 @@ if (!$sql->db_Select("comments", "*", "(comment_type='".$type."' OR comment_type
 			$comment_str = MDCLAN_3." #".$rowu['user_id'];
 		} else {
 			$comment_str = MDCLAN_4;
-			$comment_nick = eregi_replace("[0-9]+\.", "", $row['comment_author']);
+			$comment_nick = preg_replace("#[0-9]+\.#", "", $row['comment_author']);
 		}
 		$row['comment_comment'] = $tp->toHTML($row['comment_comment'], TRUE, "");
 

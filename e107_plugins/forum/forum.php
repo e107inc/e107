@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-08-16 17:25:27 $
+|     $Revision: 1.32 $
+|     $Date: 2005-08-23 00:44:23 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -386,7 +386,7 @@ if (e_QUERY == "track")
 				$row = $sql->db_Fetch();
 				//extract($row);
 				$NEWIMAGE = IMAGE_nonew_small;
-				if ($row['thread_datestamp'] > USERLV && (!ereg("\.".$row['thread_id']."\.", USERVIEWED)))
+				if ($row['thread_datestamp'] > USERLV && (strpos(USERVIEWED, ".".$row['thread_id'].".") === FALSE))
 				{
 					$NEWIMAGE = IMAGE_new_small;
 				}
@@ -394,14 +394,14 @@ if (e_QUERY == "track")
 				{
 					while ($xrow = $sql2->db_Fetch())
 					{
-						if (!ereg("\.".$xrow['thread_id']."\.", USERVIEWED))
+						if (strpos(USERVIEWED, ".".$xrow['thread_id'].".") === FALSE)
 						{
 							$NEWIMAGE = IMAGE_new_small;
 						}
 					}
 				}
 				$result = preg_split("/\]/", $row['thread_name']);
-				$TRACKPOSTNAME = (($result[1] && $row['thread_name']{0} == "[") ? $result[0]."] <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$row['thread_id']}'>".ereg_replace("\[.*\]", "", $row['thread_name'])."</a>" : "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$row['thread_id']}'>".$row['thread_name']."</a>");
+				$TRACKPOSTNAME = (($result[1] && $row['thread_name']{0} == "[") ? $result[0]."] <a href='".e_PLUGIN."forum/forum_viewtopic.php?{$row['thread_id']}'>".preg_replace("/\[.*\]/", "", $row['thread_name'])."</a>" : "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$row['thread_id']}'>".$row['thread_name']."</a>");
 				$UNTRACK = "<a href='".e_SELF."?untrack.".$row['thread_id']."'>".LAN_392."</a>";
 				$forum_trackstring .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_TRACK_MAIN);
 			}

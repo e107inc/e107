@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.10 $
-|   $Date: 2005-07-02 13:20:43 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.11 $
+|   $Date: 2005-08-23 00:44:23 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 */
 	
@@ -53,7 +53,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 				set_magic_quotes_runtime(0);
 				$data = mysql_escape_string(fread(fopen($file_userfile['tmp_name'][$c], "rb"), filesize($file_userfile['tmp_name'][$c])));
 				set_magic_quotes_runtime(get_magic_quotes_gpc());
-				$file_name = ereg_replace("[^a-z0-9._]", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($file_userfile['name'][$c]))));
+				$file_name = preg_replace("/[^a-z0-9._]/", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($file_userfile['name'][$c]))));
 				$sql->db_Insert("rbinary", "0, '$file_name', '".$file_userfile['type'][$c]."', '$data' ");
 				$uploaded[$c]['name'] = "Binary ".mysql_insert_id()."/".$file_name;
 				$uploaded[$c]['type'] = $file_userfile['type'][$c];
@@ -84,7 +84,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 		 
 		if ($files['size'][$key]) {
 			$filesize[] = $files['size'][$key];
-			$name = ereg_replace("[^a-z0-9._]", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($name))));
+			$name = preg_replace("/[^a-z0-9._]/", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($name))));
 			if ($avatar == "attachment") {
 				$name = time()."_".USERID."_".$fileinfo.$name;
 			}

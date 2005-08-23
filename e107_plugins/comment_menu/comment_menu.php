@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/comment_menu.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-08-02 11:34:56 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -42,7 +42,7 @@ else
 		extract($commentInfo);
 		$datestamp = $gen->convert_date($comment_datestamp, "short");
 		$poster = substr($comment_author, (strpos($comment_author, ".")+1));
-		$comment_comment = strip_tags(eregi_replace("\[.*\]", "", $comment_comment)); // remove bbcode
+		$comment_comment = strip_tags(preg_replace("/\[.*\]/", "", $comment_comment)); // remove bbcode
 		$comment_comment = $tp->toHTML($comment_comment, FALSE, "", "", $pref['menu_wordwrap']);
 		
 		if (strlen($comment_comment) > $menu_pref['comment_characters'])

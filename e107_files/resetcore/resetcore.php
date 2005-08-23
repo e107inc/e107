@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore/resetcore.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-07-06 11:38:42 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -155,7 +155,7 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2)
 
 	define("e_ADMIN", e_HTTP.$admin_directory."/");
 	define("e_SELF", "http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
-	define("e_QUERY", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']));
+	define("e_QUERY", preg_replace("#&|/?PHPSESSID.*#i", "", $_SERVER['QUERY_STRING']));
 	define('e_BASE', $link_prefix);
 	$e_path = (!strpos($_SERVER['SCRIPT_FILENAME'], ".php") ? $_SERVER['PATH_TRANSLATED'] : $_SERVER['SCRIPT_FILENAME']);
 	define("e_PATH", $e_path);

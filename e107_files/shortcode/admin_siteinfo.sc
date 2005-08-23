@@ -36,7 +36,7 @@ if (ADMIN) {
 	<br /><br />
 	<b>".FOOTLAN_9."</b>
 	<br />".
-	 eregi_replace("PHP.*", "", $_SERVER['SERVER_SOFTWARE'])."<br />(".FOOTLAN_10.": ".$_SERVER['SERVER_NAME'].")
+	 preg_replace("/PHP.*/i", "", $_SERVER['SERVER_SOFTWARE'])."<br />(".FOOTLAN_10.": ".$_SERVER['SERVER_NAME'].")
 	<br /><br />
 	<b>".FOOTLAN_11."</b>
 	<br />

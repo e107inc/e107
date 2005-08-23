@@ -7,7 +7,7 @@ if (ADMIN) {
 	$text = "";
 	while(false !== ($file = readdir($handle))) {
 		if ($file != "." && $file != ".." && $file != "CVS") {
-			if (eregi($file, e_SELF)) {
+			if (strpos(e_SELF, $file) !== FALSE) {
 				if (file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file)) {
 					@require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file);
 				} else if (file_exists(e_LANGUAGEDIR."English/admin/help/".$file)) {

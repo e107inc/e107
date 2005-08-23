@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-08-18 17:43:07 $
-|     $Author: stevedunstan $
+|     $Revision: 1.20 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -78,7 +78,7 @@ if (isset($_POST['ne_insert']) && USER == true)
         } 
 
         $sql->db_Insert("event", " 0, '$ev_start', '$ev_end', '".$_POST['allday']."', '".$_POST['recurring']."', '".time()."', '$ev_title', '$ev_location', '$ev_event', '".USERID.".".USERNAME."', '".$_POST['ne_email']."', '".$_POST['ne_category']."', '".$_POST['ne_thread']."', '$rec_m', '$rec_y' ");
-        $qs = eregi_replace("ne.", "", $_POST['qs']);
+        $qs = preg_replace("/ne./i", "", $_POST['qs']);
         header("location:event.php?".$qs.".m4");
     }
 } 
@@ -106,7 +106,7 @@ if (isset($_POST['ne_update']) && USER == true)
         } 
 
         $sql->db_Update("event", "event_start='$ev_start', event_end='$ev_end', event_allday='".$_POST['allday']."', event_recurring='".$_POST['recurring']."', event_datestamp= '".time()."', event_title= '$ev_title', event_location='$ev_location', event_details='$ev_event', event_contact='".$_POST['ne_email']."', event_category='".$_POST['ne_category']."', event_thread='".$_POST['ne_thread']."', event_rec_m='$rec_m', event_rec_y='$rec_y' WHERE event_id='".$_POST['id']."' ");
-        $qs = eregi_replace("ed.", "", $_POST['qs']);
+        $qs = preg_replace("/ed./i", "", $_POST['qs']);
 
         header("location:event.php?".$ev_start.".".$qs.".m5");
     }
@@ -720,7 +720,7 @@ function show_event($day_events)
 			
 		//if (($_POST['do'] == null || $_POST['event_cat_ids'] == "all") || ($_POST['event_cat_ids'] == $thisevent['event_cat_id'])){
             $lp = explode(".", $thisevent['event_author']);
-            if (ereg("[0-9]+", $lp[0]))
+            if (preg_match("/[0-9]+/", $lp[0]))
             {
                 $event_author_id = $lp[0];
                 $event_author_name = $lp[1];

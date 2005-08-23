@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-08-16 17:25:27 $
+|     $Revision: 1.42 $
+|     $Date: 2005-08-23 00:44:23 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -265,7 +265,7 @@ if (isset($_POST['pollvote']))
 	}
 }
 
-if (eregi("\[".LAN_430."\]", $thread_info['head']['thread_name']))
+if (preg_match("/\[".LAN_430."\]/i", $thread_info['head']['thread_name']))
 {
 	if ($sql->db_Select("polls", "*", "poll_datestamp='{$thread_info['head']['thread_id']}'"))
 	{
@@ -393,7 +393,7 @@ $forend = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMEND);
 $forumstring = $forstr.$forthr.$forrep.$forend;
 
 
-if ($thread_info['head']['thread_lastpost'] > USERLV && (!ereg("\.{$thread_info['head']['thread_id']}\.", USERVIEWED))) {
+if ($thread_info['head']['thread_lastpost'] > USERLV && (strpos(USERVIEWED, ".{$thread_info['head']['thread_id']}.") === FALSE)) {
 	$tst = $forum->thread_markasread($thread_info['head']['thread_id']);
 }
 

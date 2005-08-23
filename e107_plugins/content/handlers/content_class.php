@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.79 $
-|		$Date: 2005-07-14 13:16:07 $
-|		$Author: lisa_ $
+|		$Revision: 1.80 $
+|		$Date: 2005-08-23 00:44:23 $
+|		$Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -1041,7 +1041,7 @@ class content{
 			}
 
 			$text = "";
-			if(eregi('content.php', e_SELF)){
+			if(strpos(e_SELF, 'content.php') !== FALSE){
 				if(e_QUERY){
 					$check = "";
 					for($i=0;$i<count($qs);$i++){

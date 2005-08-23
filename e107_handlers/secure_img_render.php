@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/secure_img_render.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-14 22:37:13 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 while (list($global) = each($GLOBALS)) {
@@ -24,7 +24,7 @@ while (list($global) = each($GLOBALS)) {
 unset($global);
 $imgtypes = array("jpeg", "png", "gif");
 
-define("e_QUERY", eregi_replace("&|/?PHPSESSID.*", "", $_SERVER['QUERY_STRING']));
+define("e_QUERY", preg_replace("#&|/?PHPSESSID.*#i", "", $_SERVER['QUERY_STRING']));
 $recnum = preg_replace("#\D#", "", e_QUERY);
 if (!$recnum) {
 	exit;

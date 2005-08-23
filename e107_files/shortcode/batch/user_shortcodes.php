@@ -220,7 +220,7 @@ SC_END
 
 SC_BEGIN USER_BIRTHDAY
 global $user;
-if ($user['user_birthday'] != "" && $user['user_birthday'] != "0000-00-00" && ereg ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $user['user_birthday'], $regs))
+if ($user['user_birthday'] != "" && $user['user_birthday'] != "0000-00-00" && preg_match("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})/", $user['user_birthday'], $regs))
 {
 	return "$regs[3].$regs[2].$regs[1]";
 }

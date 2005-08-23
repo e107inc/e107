@@ -19,7 +19,7 @@ if (isset($comrow['user_id']) && $comrow['user_id']) {
 	$USERNAME = "<a href='".e_BASE."user.php?id.".$comrow['user_id']."'>".$comrow['user_name']."</a>\n";
 }else{
 	$comrow['user_id'] = 0;
-	$USERNAME = eregi_replace("[0-9]+\.", '', $comrow['comment_author']);
+	$USERNAME = preg_replace("/[0-9]+\./", '', $comrow['comment_author']);
 }
 return $USERNAME;
 SC_END

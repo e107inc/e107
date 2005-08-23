@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2005-08-08 20:10:18 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.58 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -366,8 +366,8 @@ class users{
 		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "") {
 			$_POST['searchquery'] = trim($_POST['searchquery']);
             $query = "WHERE ".
-			$query .= (eregi("@", $_POST['searchquery']))?"user_email REGEXP('".$_POST['searchquery']."') OR ": "";
-			$query .= (eregi(".", $_POST['searchquery']))?"user_ip REGEXP('".$_POST['searchquery']."') OR ": "";
+			$query .= (strpos($_POST['searchquery'], "@") !== FALSE) ? "user_email REGEXP('".$_POST['searchquery']."') OR ": "";
+			$query .= (strpos($_POST['searchquery'], ".") !== FALSE) ? "user_ip REGEXP('".$_POST['searchquery']."') OR ": "";
             foreach($search_display as $disp){
             	$query .= "$disp REGEXP('".$_POST['searchquery']."') OR ";
 			}

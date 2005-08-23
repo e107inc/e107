@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-08-16 17:25:27 $
+|     $Revision: 1.38 $
+|     $Date: 2005-08-23 00:44:23 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -297,7 +297,7 @@ function parse_thread($thread_info)
 	$newflag = FALSE;
 	if (USER)
 	{
-		if ($thread_info['thread_lastpost'] > USERLV && (!ereg("\.".$thread_info['thread_id']."\.", USERVIEWED)))
+		if ($thread_info['thread_lastpost'] > USERLV && (strpos(USERVIEWED, ".".$thread_info['thread_id'].".") === FALSE))
 		{
 			$newflag = TRUE;
 		}

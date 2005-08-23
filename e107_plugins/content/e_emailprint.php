@@ -20,7 +20,7 @@ function print_item($id)
 		}
 		$row['content_heading']		= $tp -> toHTML($row['content_heading']);
 		$row['content_subheading']	= $tp -> toHTML($row['content_subheading']);
-		$row['content_text']		= ereg_replace("\{EMAILPRINT\}|\[newpage\]", "", $tp -> toHTML($row['content_text'], TRUE));
+		$row['content_text']		= preg_replace("/\{EMAILPRINT\}|\[newpage\]/", "", $tp -> toHTML($row['content_text'], TRUE));
 		$authordetails				= $aa -> getAuthor($row['content_author']);
 		$row['content_datestamp']	= $con -> convert_date($row['content_datestamp'], "long");
 
@@ -166,7 +166,7 @@ function print_item_pdf($id){
 						$tag=strtoupper(array_shift($a2));
 						$attr=array();
 						foreach($a2 as $v)
-							if(ereg('^([^=]*)=["\']?([^"\']*)["\']?$',$v,$a3))
+							if(preg_match('/^([^=]*)=["\']?([^"\']*)["\']?$/',$v,$a3))
 								$attr[strtoupper($a3[1])]=$a3[2];
 						$this->OpenTag($tag,$attr);
 					}
