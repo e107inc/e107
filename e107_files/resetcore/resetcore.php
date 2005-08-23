@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore/resetcore.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.6 $
+|     $Date: 2005-08-23 03:54:04 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -86,7 +86,7 @@ if(!$ACTIVE)
 
 if (isset($_POST['usubmit'])) {
 
-	$a_name = preg_replace("/\\W/i", '',  $_POST['a_name']);
+	$a_name = preg_replace("/\W/", '',  $_POST['a_name']);
 	$a_password = md5($_POST['a_password']);
 
 	if ($result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE  user_loginname = '$a_name' AND user_password = '$a_password' AND user_perms = '0'"))
@@ -133,8 +133,8 @@ if (isset($_POST['usubmit'])) {
 if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2)
 {
 	if(!$ACTIVE) exit;
-	$a_name = preg_replace("/\\W/i", '',  $_POST['a_name']);
-	$a_password = preg_replace("/\\W/i", '', $_POST['a_password']);
+	$a_name = preg_replace("/\W/", '',  $_POST['a_name']);
+	$a_password = preg_replace("/\W/", '', $_POST['a_password']);
 	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_loginname='$a_name' AND user_password = '$a_password' AND user_perms = '0' ")) {
 		exit;
 	}
@@ -190,8 +190,8 @@ function recurse_pref($ppost) {
 if (isset($_POST['coreedit_sub']))
 {
 	if(!$ACTIVE) exit;
-	$a_name = preg_replace("/\\W/i", '',  $_POST['a_name']);
-	$a_password = preg_replace("/\\W/i", '', $_POST['a_password']);
+	$a_name = preg_replace("/\W/", '',  $_POST['a_name']);
+	$a_password = preg_replace("/\W/", '', $_POST['a_password']);
 	
 	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_loginname='$a_name' AND user_password='$a_password' AND user_perms='0' "))
 	{
@@ -216,8 +216,8 @@ if (isset($_POST['coreedit_sub']))
 
 if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 3) {
 	if(!$ACTIVE) exit;
-	$a_name = preg_replace("/\\W/i", '',  $_POST['a_name']);
-	$a_password = preg_replace("/\\W/i", '', $_POST['a_password']);
+	$a_name = preg_replace("/\W/", '',  $_POST['a_name']);
+	$a_password = preg_replace("/\W/", '', $_POST['a_password']);
 	
 	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_loginname='$a_name' AND user_password='$a_password' AND user_perms='0' ")) {
 		exit;
@@ -246,8 +246,8 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 3) {
 if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 1)
 {
 	if(!$ACTIVE) exit;
-	$a_name = preg_replace("/\\W/i", '', $_POST['a_name']);
-	$a_password = preg_replace("/\\W/i", '', $_POST['a_password']);
+	$a_name = preg_replace("/\W/", '', $_POST['a_name']);
+	$a_password = preg_replace("/\W/", '', $_POST['a_password']);
 	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_loginname='$a_name' AND user_password='$a_password' AND user_perms='0' "))
 	{
 		exit;
@@ -287,7 +287,7 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 1)
 		</tr>
 		</table>
 		<input type='hidden' name='a_name' value='".$a_name."' />
-		<input type='hidden' name='a_password' value='".preg_replace("/\\W/i", '', $_POST['a_password'])."' />
+		<input type='hidden' name='a_password' value='".preg_replace("/\W/", '', $_POST['a_password'])."' />
 		</form>";
 	$END = TRUE;
 }

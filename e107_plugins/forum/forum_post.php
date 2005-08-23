@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.44 $
+|     $Date: 2005-08-23 03:54:05 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -521,7 +521,7 @@ function getuser($name)
 	global $tp, $sql, $e107;
 	$ret = array();
 	$ip = $e107->getip();
-	$name = preg_replace("#\'#", "", $name);
+	$name = str_replace("'", "", $name);
 	if (!$name)
 	{
 		// anonymous guest

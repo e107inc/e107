@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.36 $
-|		$Date: 2005-07-14 13:16:08 $
-|		$Author: lisa_ $
+|		$Revision: 1.37 $
+|		$Date: 2005-08-23 03:54:04 $
+|		$Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -169,10 +169,10 @@ class contentdb{
 			$sumf = 0;
 			$sumi = 0;
 			foreach($_POST as $k => $v){
-				if(preg_match("#^content_files#",$k)){
+				if(strpos($k, "content_files") === 0){
 					$sumf = $sumf+1;
 				}
-				if(preg_match("#^content_images#",$k)){
+				if(strpos($k, "content_images") === 0){
 					$sumi = $sumi+1;
 				}
 			}

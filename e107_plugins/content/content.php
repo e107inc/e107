@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.80 $
-|		$Date: 2005-08-23 00:44:23 $
+|		$Revision: 1.81 $
+|		$Date: 2005-08-23 03:54:04 $
 |		$Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -1186,7 +1186,7 @@ function show_content_item(){
 				$ip			= $e107->getip();
 				$self		= e_SELF;
 				$refertmp	= explode("^", $row['content_refer']);
-				if(!preg_match($ip, $refertmp[1]) && (!preg_match("admin", $self))){
+				if(strpos($refertmp[1], $ip) === FALSE && strpos($self, "admin") === FALSE)){
 					$referiplist		= ($refertmp[1] ? $refertmp[1]."-".$ip."-" : $ip."-" );
 					$contentrefernew	= ($refertmp[0]+1)."^".$referiplist;
 					$sql = new db;

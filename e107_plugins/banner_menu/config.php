@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/banner_menu/config.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-25 09:42:42 $
+|     $Revision: 1.7 $
+|     $Date: 2005-08-23 03:54:04 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ if (e_QUERY) {
 	
 if (isset($_POST['update_menu'])) {
 	foreach($_POST as $k => $v) {
-		if (preg_match("#^banner_#", $k)) {
+		if (strpos($k, "banner_") === 0) {
 			$menu_pref[$k] = $v;
 		}
 	}

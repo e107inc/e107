@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm_menu/pm.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.5 $
+|     $Date: 2005-08-23 03:54:05 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -75,8 +75,8 @@ if ($_POST['delsel']) {
 		$pm->delete_pm(intval($i));
 	}
 }
-	
-if (preg_match("#read#", PM_QUERY) || PM_QUERY == "" && !$_POST['reply'] && !$_POST['postpm']) {
+
+if (strpos(PM_QUERY, "read") !== FALSE || PM_QUERY == "" && !$_POST['reply'] && !$_POST['postpm']) {
 	$parms = explode(".", PM_QUERY);
 	$readstart = (is_numeric($parms[0])) ? $parms[0] : 0;
 	$np_query = "read";
@@ -87,15 +87,15 @@ if (preg_match("#read#", PM_QUERY) || PM_QUERY == "" && !$_POST['reply'] && !$_P
 	}
 	pm_parseformat($PMREAD);
 }
-	
-if (preg_match("#".PMLAN_9."#i", $_POST['postpm'])) {
+
+if (stristr($_POST['postpm'], PMLAN_9) !== FALSE) {
 	list($success, $failed, $notfound) = explode(",", $pm->post_pm());
 	if ($_POST['sendtype'] == "userclass") {
 		list($cnum, $cname) = explode(":", $_POST['class']);
 		if ($_POST['class'] == "ALL") {
 			$cname = PMLAN_48;
 		}
-		header("location:pm.php?,ms.".preg_replace("# #", "_", $cname));
+		header("location:pm.php?,ms.".str_replace(" ", "_", $cname));
 		 exit;
 	} else {
 		if ($notfound) {
@@ -111,8 +111,8 @@ if (preg_match("#".PMLAN_9."#i", $_POST['postpm'])) {
 		}
 	}
 }
-	
-if (preg_match("/^del\./", PM_QUERY)) {
+
+if (strpos(PM_QUERY, "del.") === 0) {
 	$tmp = explode(".", PM_QUERY);
 	if ($pm->delete_pm($tmp[1])) {
 		header("location:pm.php?read,md");
@@ -122,8 +122,8 @@ if (preg_match("/^del\./", PM_QUERY)) {
 		 exit;
 	}
 }
-	
-if (preg_match("/view\./", PM_QUERY)) {
+
+if (strpos(PM_QUERY, "view.") !== FALSE) {
 	$tmp = explode(".", PM_QUERY);
 	$msg_id = $tmp[1];
 	$readstart = 0;
@@ -162,8 +162,8 @@ if ($msg) {
 }
 	
 require_once(HEADERF);
-	
-if ($_POST['reply'] || preg_match("/reply\./", PM_QUERY)) {
+
+if ($_POST['reply'] || strpos(PM_QUERY, "reply.") !== FALSE) {
 	$tmp = explode(".", PM_QUERY);
 	$readstart = 0;
 	$np_query = "read";
@@ -176,8 +176,8 @@ if ($_POST['reply'] || preg_match("/reply\./", PM_QUERY)) {
 if (PM_QUERY == "sent") {
 	pm_parseformat($PMSENT);
 }
-	
-if (preg_match("/send/", PM_QUERY)) {
+
+if (strpos(PM_QUERY, "send") !== FALSE) {
 	pm_parseformat($PMSEND);
 }
 	
@@ -187,8 +187,7 @@ if (PM_QUERY == "vb") {
 	$ns->tablerender(PMLAN_25, $text);
 }
 	
-	
-if (preg_match("/^block\./", PM_QUERY)) {
+if (strpos(PM_QUERY, "block.") === 0) {
 	$tmp = explode(".", PM_QUERY);
 	if ($pm->block_user($tmp[1], USERNAME)) {
 		header("location:pm.php?read,b.".$tmp[1]);
@@ -198,8 +197,8 @@ if (preg_match("/^block\./", PM_QUERY)) {
 		 exit;
 	}
 }
-	
-if (preg_match("/^unblock\./", PM_QUERY)) {
+
+if (strpos(PM_QUERY, "unblock.") === 0) {
 	$tmp = explode(".", PM_QUERY);
 	if ($pm->is_blocked($tmp[1], USERNAME)) {
 		if ($pm->unblock_user($tmp[1], USERNAME)) {
@@ -261,7 +260,7 @@ function pm_show_message($message) {
 		break;
 		case "ms":
 		$mtext .= PMLAN_15.": ";
-		$mtext .= " ".preg_replace("#_#", " ", $m[1]);
+		$mtext .= " ".str_replace("_", " ", $m[1]);
 		break;
 		case "mb":
 		$mtext .= PMLAN_16.": ";
