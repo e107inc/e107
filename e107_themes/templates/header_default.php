@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2005-07-13 01:24:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.62 $
+|     $Date: 2005-08-23 11:55:42 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -33,7 +33,7 @@ if (!function_exists("parseheader")) {
 $sql->db_Mark_Time('(Header Top)');
 
 echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET."' "."?".">")."<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
-<html xmlns='http://www.w3.org/1999/xhtml' ".(defined("TEXTDIRECTION") ? "dir='".TEXTDIRECTION."'" : "").">
+<html xmlns='http://www.w3.org/1999/xhtml' ".(defined("TEXTDIRECTION") ? "dir='".TEXTDIRECTION."'" : "")." ".(defined("CORE_LC") ? "lang='".CORE_LC."'" : "").">
 <head>
 <title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
@@ -65,7 +65,7 @@ if(defined("PREVIEWTHEME")) {
 		}
 		else
 		{
-			
+
 			echo "<link rel='stylesheet' href='".THEME_ABS."style.css' type='text/css' />\n";
 		}
 		if (!isset($no_core_css) || !$no_core_css) {
