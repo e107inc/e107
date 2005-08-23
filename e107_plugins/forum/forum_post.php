@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-08-23 03:54:05 $
-|     $Author: sweetas $
+|     $Revision: 1.45 $
+|     $Date: 2005-08-23 17:43:55 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -82,18 +82,11 @@ if ($sql->db_Select("tmp", "*", "tmp_ip='$ip' ")) {
 	$sql->db_Delete("tmp", "tmp_ip='$ip' ");
 }
 
-//If anonymous posting is off and not logged it, show warning
-if (ANON == FALSE && USER == FALSE) {
+//Check to see if user had post rights
+if (!check_class($forum_info['forum_postclass']))
+{
 	require_once(HEADERF);
-	$text .= "<div style='text-align:center'>".LAN_45." <a href='".e_SIGNUP."'>".LAN_411."</a> ".LAN_412."</div>";
-	$ns->tablerender(LAN_20, $text);
-	require_once(FOOTERF);
-	exit;
-}
-
-//if readonly forum and not admin, show warning
-if ($forum_info['forum_class'] == e_UC_READONLY && !ADMIN) {
-	$text .= "<div style='text-align:center'>".LAN_398."</div>";
+	$text .= "<div style='text-align:center'>".LAN_399."</div>";
 	$ns->tablerender(LAN_20, $text);
 	require_once(FOOTERF);
 	exit;
@@ -415,7 +408,7 @@ $FORMSTART = "<form enctype='multipart/form-data' method='post' action='".e_SELF
 
 $BACKLINK = "<a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_405."</a>-><a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a>->".
 ($action == "nt" ? ($eaction ? LAN_77 : LAN_60) : ($eaction ? LAN_78 : LAN_406." ".$thread_info['head']['thread_name']));
-$USERBOX = (ANON == TRUE && USER == FALSE ? $userbox : "");
+$USERBOX = (USER == FALSE ? $userbox : "");
 $SUBJECTBOX = ($action == "nt" ? $subjectbox : "");
 $POSTTYPE = ($action == "nt" ? LAN_63 : LAN_73);
 $POSTBOX = "<textarea class='tbox' name='post' cols='70' rows='10' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
