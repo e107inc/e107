@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/forum.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.6 $
+|     $Date: 2005-08-23 02:45:17 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -361,7 +361,7 @@ $admin_no = $sql->db_Select("user", "*", "user_admin='1' AND user_perms REGEXP('
 while ($row = $sql->db_Fetch()) {
 	extract($row);
 	$text .= "<input type='checkbox' name='mod[]' value='{$user_name}'";
-	if (preg_match('/'.preg_quote($user_name).'/', $forum_moderators)) {
+	if (strpos($forum_moderators, $user_name) !== FALSE) {
 		$text .= " checked";
 	}
 	$text .= "> {$user_name}<br />";

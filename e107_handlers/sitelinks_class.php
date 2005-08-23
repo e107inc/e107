@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2005-08-19 07:48:41 $
+|     $Revision: 1.69 $
+|     $Date: 2005-08-23 02:45:17 $
 |     $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -280,7 +280,7 @@ function hilite($link,$enabled=''){
 				return true;
 			}
 		}
-		if(!preg_match("/all|item|cat|list/i", e_QUERY) && $enabled && (strpos(e_SELF, str_replace("../", "",$link)) !== false)){
+		if(!preg_match("/all|item|cat|list/", e_QUERY) && $enabled && (strpos(e_SELF, str_replace("../", "",$link)) !== false)){
 			return true;
 		}
 
