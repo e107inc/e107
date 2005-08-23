@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-08-23 00:44:23 $
-|     $Author: sweetas $
+|     $Revision: 1.39 $
+|     $Date: 2005-08-23 17:45:39 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -177,7 +177,7 @@ $SEARCH = "
 	</p>
 	</form>";
 	
-if (USER == TRUE || ANON == TRUE)
+if(check_class($forum_info['forum_postclass']))
 {
 	$PERMS = LAN_204." - ".LAN_206." - ".LAN_208;
 }
