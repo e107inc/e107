@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/online.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.12 $
+|     $Date: 2005-08-23 04:17:57 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 	$online_location = $pinfo;
 	$online_location_page = substr(strrchr($online_location, "/"), 1);
 	if (!strstr($online_location, "forum_") || !strstr($online_location, "content.php") || !strstr($online_location, "comment.php")) {
-		$online_location_page = preg_replace("/.php/", "", substr(strrchr($online_location, "/"), 1));
+		$online_location_page = str_replace(".php", "", substr(strrchr($online_location, "/"), 1));
 	}
 	if ($online_location_page == "log" || $online_location_page == "error") {
 		$online_location = "news.php";
