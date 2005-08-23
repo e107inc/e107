@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-08-23 17:43:55 $
+|     $Revision: 1.46 $
+|     $Date: 2005-08-23 18:25:31 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -601,59 +601,57 @@ function process_upload()
 		$tid = 0;
 	}
 	
-	if (isset($_FILES['file_userfile']['error']) && $_FILES['file_userfile']['error'] != 4) {
+	if (isset($_FILES['file_userfile']['error']) && $_FILES['file_userfile']['error'] != 4)
+	{
 		require_once(e_HANDLER."upload_handler.php");
-		if ($uploaded = file_upload('/'.e_FILE."public/", "attachment", "FT{$tid}_")) {
-			if(strstr($uploaded[0]['type'], "image"))
+		if ($uploaded = file_upload('/'.e_FILE."public/", "attachment", "FT{$tid}_"))
+		{
+			foreach($uploaded as $upload)
 			{
-				if(isset($pref['forum_maxwidth']) && $pref['forum_maxwidth'] > 0)
+				if(strstr($upload['type'], "image"))
 				{
-					require_once(e_HANDLER."resize_handler.php");
-					$orig_file = $uploaded[0]['name'];
-					$p = strrpos($orig_file,'.');
-					$new_file = substr($orig_file, 0 , $p)."_".substr($orig_file, $p);
-					$fpath = e_FILE."public/";
-					if(resize_image($fpath.$orig_file, $fpath.$new_file, $pref['forum_maxwidth']))
+					if(isset($pref['forum_maxwidth']) && $pref['forum_maxwidth'] > 0)
 					{
-						if($pref['forum_linkimg'])
+						require_once(e_HANDLER."resize_handler.php");
+						$orig_file = $upload['name'];
+						$p = strrpos($orig_file,'.');
+						$new_file = substr($orig_file, 0 , $p)."_".substr($orig_file, $p);
+						$fpath = e_FILE."public/";
+						if(resize_image($fpath.$orig_file, $fpath.$new_file, $pref['forum_maxwidth']))
 						{
-							$parms = image_getsize($fpath.$new_file);
-							$_POST['post'] .= "[link=".$fpath.$orig_file."][img{$parms}]".$fpath.$new_file."[/img][/link]";
-							//show resized, link to fullsize
+							if($pref['forum_linkimg'])
+							{
+								$parms = image_getsize($fpath.$new_file);
+								$_POST['post'] .= "<br />[link=".$fpath.$orig_file."][img{$parms}]".$fpath.$new_file."[/img][/link]<br />";
+								//show resized, link to fullsize
+							}
+							else
+							{
+								@unlink($fpath.$orig_file);
+								//show resized
+								$parms = image_getsize($fpath.$new_file);
+								$_POST['post'] .= "<br />[img{$parms}]".$fpath.$new_file."[/img] <br />";
+							}
 						}
 						else
 						{
-							@unlink($fpath.$orig_file);
-							//show resized
-							$parms = image_getsize($fpath.$new_file);
-							$_POST['post'] .= "[img{$parms}]".$fpath.$new_file."[/img] \n";
+							//resize failed, show original 
+							$parms = image_getsize(e_FILE."public/".$upload['name']);
+							$_POST['post'] .= "<br />[img{$parms}]".e_FILE."public/".$upload['name']."[/img]";
 						}
 					}
 					else
 					{
-						//resize failed, show original 
-						$parms = image_getsize(e_FILE."public/".$uploaded[0]['name']);
-						$_POST['post'] .= "[img{$parms}]".e_FILE."public/".$uploaded[0]['name']."[/img] \n";
+						$parms = image_getsize(e_FILE."public/".$upload['name']);
+						//resizing disabled, show original
+						$_POST['post'] .= "<br /><div class='spacer'>[img{$parms}]".e_FILE."public/".$upload['name']."[/img]</div>\n";
 					}
 				}
 				else
 				{
-					$parms = image_getsize(e_FILE."public/".$uploaded[0]['name']);
-					//resizing disabled, show original
-					foreach($uploaded as $upload)
-					{
-						$_POST['post'] .= "<div class='spacer'>[img{$parms}]".e_FILE."public/".$upload['name']."[/img]</div>\n";
-					}
-				}
-			}
-			else
-			{
-				//upload was not an image, link to file
-
-				foreach($uploaded as $upload)
-				{
-			//		echo "<pre>"; print_r($upload); echo "</pre>";
-					$_POST['post'] .= "[file=".e_FILE."public/".$upload['name']."]".$upload['name']."[/file]";
+					//upload was not an image, link to file
+					//echo "<pre>"; print_r($upload); echo "</pre>";
+					$_POST['post'] .= "<br />[file=".e_FILE."public/".$upload['name']."]".$upload['name']."[/file]";
 				}
 				
 			}
