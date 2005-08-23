@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.65 $
+|     $Date: 2005-08-23 09:36:30 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -673,7 +673,7 @@ class download {
 		$counter = 0;
 		while (isset($file_array[$counter])) {
 			$fpath = str_replace(e_DOWNLOAD,"",$file_array[$counter]['path']).$file_array[$counter]['fname'];
-			if (preg_match("#".$download_url."#i", $fpath)) {
+			if (stristr($fpath, $download_url) !== FALSE) {
 				$selected = " selected='selected'";
 				$found = 1;
 			} else {
@@ -948,7 +948,7 @@ class download {
 			}
 			else
 			{
-				if (preg_match("#^/#", $DOWNLOADS_DIRECTORY) || preg_match("#.:#", $DOWNLOADS_DIRECTORY)) {
+				if (strpos($DOWNLOADS_DIRECTORY, "/") === 0 || strpos($DOWNLOADS_DIRECTORY, ":") >= 1) {
 					$filesize = filesize($DOWNLOADS_DIRECTORY.$durl);
 				} else {
 					$filesize = filesize(e_BASE.$DOWNLOADS_DIRECTORY.$durl);

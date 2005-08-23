@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/lancheck.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-21 18:35:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-08-23 09:36:30 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -66,7 +66,7 @@ function get_lan_phrases($lang)
 		while ($file = readdir($r))
 		{
 			$fname = $base_dir."/".$file;
-			if (preg_match("#^lan_#", $file) && is_file($fname))
+			if (strpos($file, "lan_") === 0 && is_file($fname))
 			{
 				$data = file($fname);
 				foreach($data as $line)
@@ -86,7 +86,7 @@ function get_lan_phrases($lang)
 		while ($file = readdir($r))
 		{
 			$fname = $base_dir."/".$file;
-			if (preg_match("#^lan_#", $file) && is_file($fname))
+			if (strpos($file, "lan_") === 0 && is_file($fname))
 			{
 				$data = file($fname);
 				foreach($data as $line)

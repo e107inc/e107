@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.34 $
+|     $Date: 2005-08-23 09:36:30 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -139,7 +139,7 @@ if ($menu_act == "adv") {
 	extract($row);
 	$listtype = substr($menu_pages, 0, 1);
 	$menu_pages = substr($menu_pages, 2);
-	$menu_pages = preg_replace("#\|#", "\n", $menu_pages);
+	$menu_pages = str_replace("|", "\n", $menu_pages);
 	$text = "<div style='text-align:center;'>
 	<form  method='post' action='".e_SELF."?configure.".$menus_equery[1]."'>\n
 	<table style='width:40%'>
@@ -259,7 +259,7 @@ foreach ($menu_areas as $menu_act) {
 $sql->db_Select("menus", "*", "menu_path NOT REGEXP('[0-9]+') ");
 while (list($menu_id, $menu_name, $menu_location, $menu_order) = $sql->db_Fetch())
 {
-	if (!preg_match("#".$menu_name."#i", $menustr))
+	if (stristr($menustr, $menu_name) === FALSE)
 	{
 		$sql2->db_Delete("menus", "menu_name='$menu_name'");
 		$message .= "<b>".MENLAN_11." - ".$menu_name."</b><br />";

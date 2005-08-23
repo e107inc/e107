@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.18 $
+|     $Date: 2005-08-23 09:36:30 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -85,7 +85,7 @@ function read_tables($tab) {
 			}
 		}
 
-		if (preg_match("/TYPE=/", $line, $match)) {
+		if (strpos($line, "TYPE=") !== FALSE) {
 			$current_table = "";
 		}
 
@@ -166,7 +166,7 @@ function check_tables($what) {
 				$fparams = ltrim(rtrim($fparams));
 				$fparams = preg_replace("/\r?\n$|\r[^\n]$|,$/", "", $fparams);
 
-			if(preg_match("/lan_/i", $k) && $cur != 1){
+			if(stristr($k, "lan_") !== FALSE && $cur != 1){
 				$text .= "<tr><td colspan='6' class='fcaption'>".ADLAN_132."</td></tr>";
 				$cur = 1;
 			};
@@ -174,7 +174,7 @@ function check_tables($what) {
 
 
 				$text .= "<tr><td class='forumheader3'>$k</td><td class='forumheader3'>$fname";
-				if (preg_match("#KEY#", $fparams)) {
+				if (strpos($fparams, "KEY") !== FALSE) {
 					$text .= " $fparams";
 				}
 				$text .= "</td>";
@@ -345,7 +345,7 @@ if (!$_POST) {
 // --------------------------------------------------------------
 function fix_form($table,$field, $newvalue,$mode,$after =''){
 
-	if(preg_match("/KEY /i",$field)){
+	if(stristr($field, "KEY ") !== FALSE){
 		$field = chop(str_replace("KEY ","",$field));
 		$mode = "index";
 		$search = array("(",")");

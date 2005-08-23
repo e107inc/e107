@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.26 $
+|     $Date: 2005-08-23 09:36:30 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -155,7 +155,7 @@ if ($_POST['edit_existing']) {
 
 	foreach ($tabs as $table_name) {
 		$installed = strtolower($_POST['lang_choices'])."_".$table_name;
-		if (!preg_match("#".$installed."#i", $_POST['lang_choices'])) {
+		if (stristr($_POST['lang_choices'], $installed) === FALSE) {
 			$text .= "<tr>
 				<td style='width:30%' class='forumheader3'>".ucfirst(str_replace("_", " ", $table_name))."</td>\n
 				<td style='width:70%' class='forumheader3'>\n";
@@ -333,10 +333,10 @@ function table_list() {
 
 	while (list($temp) = mysql_fetch_array($tables))
 	{
-		if(preg_match("#^".MPREFIX."#", $temp))
+		if(strpos($temp, MPREFIX) === 0)
 		{
 			$e107tab = str_replace(MPREFIX, "", $temp);
-			if (!in_array($e107tab, $exclude) && !preg_match("/lan_/i",$e107tab))
+			if (!in_array($e107tab, $exclude) && stristr($e107tab, "lan_") === FALSE)
 			{
 				$tabs[] = $e107tab;
 			}

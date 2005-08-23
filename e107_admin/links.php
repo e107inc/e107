@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.46 $
+|     $Date: 2005-08-23 09:36:30 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -233,7 +233,7 @@ class links {
 	function display_row($row2,$indent='0px'){
 		global $sql, $rs, $ns, $tp,$parents,$link_total;
 		extract($row2);
-		if(preg_match("#submenu.#",$link_name) || $link_parent !=0){
+		if(strpos($link_name, "submenu.") !== FALSE || $link_parent !=0){
 			if(substr($link_name,0,8) == "submenu."){
 				$tmp = explode(".",$link_name);
 				$sublinkname = $tmp[2];
@@ -289,7 +289,7 @@ class links {
 			}
 		}
 
-		if(preg_match("#submenu.#",$link_name)){
+		if(strpos($link_name, "submenu.") !== FALSE){
 			$tmp = explode(".",$link_name);
 			$link_name = $tmp[2];
 		}
