@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/xml_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-12 03:34:59 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -183,7 +183,7 @@ class CXml
        $this->pointer[] = &$this->obj_data;
   
        //strip white space between tags
-       $this->xml_data = eregi_replace(">"."[[:space:]]+"."<","><",$xml_data);
+       $this->xml_data = preg_replace("/>[[:space:]]+</i", "><", $xml_data);
        $this->xml_parser = xml_parser_create( "UTF-8" );
   
        xml_parser_set_option( $this->xml_parser, XML_OPTION_CASE_FOLDING, false );

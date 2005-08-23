@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/db_verify.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-06-22 22:37:07 $
+|     $Revision: 1.17 $
+|     $Date: 2005-08-23 00:44:23 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -166,7 +166,7 @@ function check_tables($what) {
 				$fparams = ltrim(rtrim($fparams));
 				$fparams = preg_replace("/\r?\n$|\r[^\n]$|,$/", "", $fparams);
 
-			if(eregi("lan_",$k) && $cur != 1){
+			if(preg_match("/lan_/i", $k) && $cur != 1){
 				$text .= "<tr><td colspan='6' class='fcaption'>".ADLAN_132."</td></tr>";
 				$cur = 1;
 			};
@@ -345,7 +345,7 @@ if (!$_POST) {
 // --------------------------------------------------------------
 function fix_form($table,$field, $newvalue,$mode,$after =''){
 
-	if(eregi("KEY ",$field)){
+	if(preg_match("/KEY /i",$field)){
 		$field = chop(str_replace("KEY ","",$field));
 		$mode = "index";
 		$search = array("(",")");

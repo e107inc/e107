@@ -8,8 +8,8 @@ while($row = $sql -> db_Fetch()){
 		if($r <= "8"){
 			extract($row);
 			if(!preg_match("#(http:|mailto:|ftp:)#",$link_url)){ $link_url = e_BASE.$link_url; }
-			if(eregi("e107_plugins",$link_url)){ $link_url = e_BASE.$link_url; }
-			if(eregi(e_PAGE,$link_url)){ $ulclass = '_onpage'; } else { $ulclass = ''; }
+			if(strpos($link_url, "e107_plugins") !== FALSE){ $link_url = e_BASE.$link_url; }
+			if(strpos($link_url, e_PAGE) !== FALSE){ $ulclass = '_onpage'; } else { $ulclass = ''; }
 
 			switch ($link_open) { 
 				case 1:

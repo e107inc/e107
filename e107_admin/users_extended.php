@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-06-28 16:22:00 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.20 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -411,7 +411,7 @@ class users_ext
 			while ($row2 = mysql_fetch_row($result)){
 				$fld = str_replace(MPREFIX,"",$row2[0]);
 				$selected =  ($_POST['table_db'] == $fld || $curVals[0] == $fld) ? " selected='selected'" : "";
-         		$text .= (eregi(MPREFIX,$row2[0])) ? "<option value=\"".$fld."\" $selected>".$fld."</option>\n" : "";
+         		$text .= (preg_match("#".MPREFIX."#i",$row2[0])) ? "<option value=\"".$fld."\" $selected>".$fld."</option>\n" : "";
 			}
 			$text .= " </select></td></tr>";
      	if($_POST['table_db'] || $curVals[0]){

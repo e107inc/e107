@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-08-04 10:29:54 $
-|     $Author: streaky $
+|     $Revision: 1.47 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -144,7 +144,7 @@ if(!$text = $e107cache->retrieve("chatbox"))
 			extract($cb);
 			// get available vars
 			list($cb_uid,$cb_nick) = explode(".",$cb_nick,2);
-			//			$cb_nick = eregi_replace("[0-9]+\.", "", $cb_nick);
+			//			$cb_nick = preg_replace("/[0-9]+\./", "", $cb_nick);
 			if($cb_uid == 0)
 			{
 				$cb_nick = $tp -> toHTML($cb_nick);

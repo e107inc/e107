@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/content.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-06-07 23:17:54 $
-|     $Author: lisa_ $
+|     $Revision: 1.17 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -287,7 +287,7 @@ if ($action == "review") {
 				$gen = new convert;
 				$sql2->db_Select("content", "content_id, content_summary", "content_id=$content_parent");
 				list($content_id_, $content_summary_) = $sql2->db_Fetch();
-				$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+				$datestamp = preg_replace("/ -.*/", "", $gen->convert_date($content_datestamp, "long"));
 				$sql2->db_Select("user", "*", "user_id=$content_author");
 				$row = $sql2->db_Fetch();
 				 extract($row);
@@ -439,7 +439,7 @@ if ($action == "review") {
 								$user_name = $tmp[0];
 								$user_email = $tmp[1];
 							}
-							$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+							$datestamp = preg_replace("/ -.*/", "", $gen->convert_date($content_datestamp, "long"));
 							$text .= "<tr><td style='width:5%; text-align:center; vertical-align:top'>".($icon ? "<img src='".e_IMAGE."link_icons/".$icon."' alt='' />" : "&nbsp;")."</td>
 								<td style='width:95%'>
 								<b><span class='mediumtext'><a href='".e_SELF."?review.$content_id'>$content_heading</a></span></b>
@@ -475,7 +475,7 @@ if ($action == "review") {
 						if (!is_object($gen)) {
 							$gen = new convert;
 						}
-						$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+						$datestamp = preg_replace("/ -.*/", "", $gen->convert_date($content_datestamp, "long"));
 						$text .= "<img src='".e_IMAGE."generic/hme.png' alt='' style='vertical-align:middle' /> <a href='".e_SELF."?review.$content_id'>$content_heading</a> ($datestamp)<br />";
 					}
 					$ns->tablerender(LAN_46.": ".$category, $text);
@@ -488,7 +488,7 @@ if ($action == "review") {
 		if ($sql->db_Select("content", "content_id, content_heading, content_datestamp ", "content_subheading REGEXP('^-$id-') AND content_type=3 ORDER BY content_datestamp DESC LIMIT 10,200")) {
 			while ($row = $sql->db_Fetch()) {
 				extract($row);
-				$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+				$datestamp = preg_replace("/ -.*/", "", $gen->convert_date($content_datestamp, "long"));
 				$text .= "<img src='".e_IMAGE."generic/hme.png' alt='' style='vertical-align:middle' /> <a href='".e_SELF."?review.$content_id'>$content_heading</a> ($datestamp)<br />";
 			}
 			$ns->tablerender(LAN_62.": ".$category, $text);
@@ -527,7 +527,7 @@ if ($action == "review") {
 					$sql2->db_Select("content", "content_id, content_summary", "content_id=$category");
 					$row = $sql2->db_Fetch();
 					 extract($row);
-					$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+					$datestamp = preg_replace("/ -.*/", "", $gen->convert_date($content_datestamp, "long"));
 					 
 					$text .= (file_exists(e_IMAGE."link_icons/$content_summary") ? "<a href='".e_SELF."?review.cat.$content_id'><img src='".e_IMAGE."link_icons/".$content_summary."' alt='' style='float:left; border:0' /></a>" : "&nbsp;")."
 						<b><span class='mediumtext'><a href='".e_SELF."?review.$rev_id'>$content_heading</a></span></b>
@@ -917,7 +917,7 @@ function parse_content_article_table($row) {
 		$CONTENT_ARTICLE_AUTHOR = ($user_name != "" ? "<a href='mailto:$user_email'>$user_name</a>" : "");
 	}
 	 
-	$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+	$datestamp = preg_replace("/ -.*/", "", $gen->convert_date($content_datestamp, "long"));
 	$CONTENT_ARTICLE_DATESTAMP = ($datestamp != "" ? $datestamp : "");
 	 
 	$sql2->db_Select("content", "content_id, content_summary", "content_id=$category");
@@ -1044,7 +1044,7 @@ function parse_content_recent_table($row) {
 	$CONTENT_RECENT_SUBHEADING = ($content_subheading != "" ? $content_subheading."<br />" : "");
 	$CONTENT_RECENT_SUMMARY = ($summary != "" ? $summary."<br />" : "");
 	$CONTENT_RECENT_AUTHOR = ($user_name != "" ? $user_name : "");
-	$datestamp = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+	$datestamp = preg_replace("/ -.*/", "", $gen->convert_date($content_datestamp, "long"));
 	$CONTENT_RECENT_DATE = ($datestamp != "" ? $datestamp : "");
 	$CONTENT_RECENT_ICON = ($cat_icon && $content_parent ? "<a href='".e_SELF."?article.cat.$content_id'><img src='".e_IMAGE."link_icons/".$cat_icon."' alt='' style='border:0' /></a>" : "&nbsp;");
 	 
@@ -1110,7 +1110,7 @@ function parse_content_archive_table($row) {
 	global $gen, $CONTENT_ARCHIVE_TABLE;
 	extract($row);
 	 
-	$CONTENT_ARCHIVE_DATESTAMP = ereg_replace(" -.*", "", $gen->convert_date($content_datestamp, "long"));
+	$CONTENT_ARCHIVE_DATESTAMP = preg_replace("/ -.*/", "", $gen->convert_date($content_datestamp, "long"));
 	$CONTENT_ARCHIVE_ICON = "<img src='".e_IMAGE."generic/hme.png' alt='' style='vertical-align:middle' />";
 	$CONTENT_ARCHIVE_HEADING = "<a href='".e_SELF."?article.$content_id'>$content_heading</a>";
 	 

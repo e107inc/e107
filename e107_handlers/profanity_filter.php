@@ -26,7 +26,7 @@ class e_profanityFilter {
 			return $text;
 		}
 		if ($pref['profanity_replace']) {
-			return eregi_replace($this->profanityList, $pref['profanity_replace'], $text);
+			return preg_replace("/".$this->profanityList."/is", $pref['profanity_replace'], $text);
 		} else {
 			return preg_replace_callback("/".$this->profanityList."/is", array($this, 'replaceProfanities'), $text);
 		}
@@ -40,7 +40,7 @@ class e_profanityFilter {
 		@result filtered text
 		*/
 		 
-		return eregi_replace("a|e|i|o|u", "*" , $matches[0]);
+		return preg_replace("/a|e|i|o|u/i", "*" , $matches[0]);
 	}
 }
 	

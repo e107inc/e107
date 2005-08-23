@@ -4,7 +4,7 @@ if(ADMIN){
 		$thispage = urlencode(e_SELF."?".e_QUERY);
 		if(is_array($pst->page)){
 		for ($i=0; $i<count($pst->page); $i++) {
-			if(eregi(urlencode($pst->page[$i]),$thispage)){
+			if (strpos($thispage, urlencode($pst->page[$i])) !== FALSE){
 				$query = urlencode($pst->page[$i]);
 				$theform = $pst->form[$i];
 				$pid = $i;
@@ -20,7 +20,7 @@ if(ADMIN){
         $trigger = ($e_wysiwyg && $pref['wysiwyg']) ? "tinyMCE.triggerSave();" : "";
 
 
-		 if(eregi($query,$thispage)){
+		 if (strpos($thispage, $query) !== FALSE) {
 			$pst_text = "
 			<form method='post' action='".e_SELF."?clr_preset' id='e_preset' >
 			<div style='text-align:center'>";

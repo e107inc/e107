@@ -46,7 +46,7 @@ $pageName = substr($match[1], (strrpos($match[1], "/")+1));
 $PN = $pageName;
 $pageName = preg_replace("/".$tagRemove."/si", "", $pageName);
 if($pageName == "") $pageName = "index";
-if(eregi($pageDisallow, $pageName)) return;
+if(preg_match("/".$pageDisallow."/i", $pageName)) return;
 
 
 $logPfile = "logs/logp_".$date.".php";
@@ -60,7 +60,7 @@ if(array_key_exists($pageName, $pageInfo))
 else
 {
 	$url = preg_replace("/".$tagRemove2."/si", "", $self);
-	if(eregi($pageDisallow, $url)) return;
+	if(preg_match("/".$pageDisallow."/i", $url)) return;
 	$pageInfo[$pageName] = array('url' => $url, 'ttl' => 1, 'unq' => 1);
 	$flag = TRUE;
 }

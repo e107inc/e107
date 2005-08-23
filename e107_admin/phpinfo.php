@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/phpinfo.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -27,7 +27,7 @@ require_once("auth.php");
 ob_start();
 phpinfo();
 $phpinfo .= ob_get_contents();
-$phpinfo = eregi_replace("^.*\<body\>", "", $phpinfo);
+$phpinfo = preg_replace("#^.*\<body\>#i", "", $phpinfo);
 ob_end_clean();
 $ns->tablerender("PHPInfo", $phpinfo);
 require_once("footer.php");

@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.79 $
-|		$Date: 2005-07-14 13:16:07 $
-|		$Author: lisa_ $
+|		$Revision: 1.80 $
+|		$Date: 2005-08-23 00:44:23 $
+|		$Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -288,7 +288,7 @@ function parsesearch($text, $match, $amount){
 					$text = "...".substr($text, ($pos-140), 280)."...";
 			}
 		}
-		$text = eregi_replace($match, "<span class='searchhighlight' style='color:red;'>$match</span>", $text);
+		$text = preg_replace("/".$match."/i", "<span class='searchhighlight' style='color:red;'>$match</span>", $text);
 		return($text);
 }
 
@@ -1186,7 +1186,7 @@ function show_content_item(){
 				$ip			= $e107->getip();
 				$self		= e_SELF;
 				$refertmp	= explode("^", $row['content_refer']);
-				if(!ereg($ip, $refertmp[1]) && (!eregi("admin", $self))){
+				if(!preg_match($ip, $refertmp[1]) && (!preg_match("admin", $self))){
 					$referiplist		= ($refertmp[1] ? $refertmp[1]."-".$ip."-" : $ip."-" );
 					$contentrefernew	= ($refertmp[0]+1)."^".$referiplist;
 					$sql = new db;

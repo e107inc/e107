@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-08-13 19:38:58 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.29 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -243,7 +243,7 @@ if (preg_match("/Binary\s(.*?)\/.*/", $image, $result)) {
 
 $image = ($table == "upload" ? $upload_ss : $download_image);
 
-if (eregi("http", $image)) {
+if (preg_match("/http/i", $image)) {
 	header("Location: {$image}");
 	exit();
 } else {

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-07-11 15:42:25 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.43 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -382,7 +382,7 @@ if ($action == 'edit' || $action == 'quote')
 	$thread_info[0]['user_name'] = $forum->thread_user($thread_info[0]);
 	$subject = $thread_info['0']['thread_name'];
 	$post = $tp->toForm($thread_info[0]['thread_thread']);
-	$post = ereg_replace("&lt;span class=&#39;smallblacktext&#39;.*\span\>", "", $post);
+	$post = preg_replace("/&lt;span class=&#39;smallblacktext&#39;.*\span\>/", "", $post);
 	if ($action == 'quote') {
 		$timeStamp = time();
 		$post = "[quote{$timeStamp}={$thread_info[0]['user_name']}]\n".$post."\n[/quote{$timeStamp}]\n";
@@ -448,12 +448,12 @@ if (MODERATOR && $action == "nt")
 }
 $POSTTHREADAS = $postthreadas;
 
-if ($action == "nt" && $pref['forum_poll'] && !eregi("edit", e_QUERY))
+if ($action == "nt" && $pref['forum_poll'] && strpos(e_QUERY, "edit") === FALSE)
 {
 	$POLL = $poll;
 }
 
-if ($pref['forum_attach'] && !eregi("edit", e_QUERY) && (check_class($pref['upload_class']) || getperms('0')))
+if ($pref['forum_attach'] && strpos(e_QUERY, "edit") === FALSE && (check_class($pref['upload_class']) || getperms('0')))
 {
 	if (is_writable(e_FILE."public"))
 	{

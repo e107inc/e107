@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-07-15 17:10:12 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_rate.php");
@@ -84,10 +84,10 @@ class rater {
 		} else {
 			$row = $sql->db_Fetch();
 
-			if (ereg("\.".USERID."\.", $row['rate_voters'])) {
+			if (preg_match("/\.".USERID."\./", $row['rate_voters'])) {
 				return TRUE;
 			//added option to split an individual users rating
-			}elseif (ereg("\.".USERID.chr(1)."([0-9]{1,2})\.", $row['rate_voters'])) {
+			}else if (preg_match("/\.".USERID.chr(1)."([0-9]{1,2})\./", $row['rate_voters'])) {
 				return TRUE;
 			} else {
 				return FALSE;

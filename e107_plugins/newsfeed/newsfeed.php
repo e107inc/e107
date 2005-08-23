@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-21 20:28:46 $
-|     $Author: stevedunstan $
+|     $Revision: 1.10 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -117,7 +117,7 @@ if($action == "show")
 				$FEEDITEMLINK = "<a href='#' onclick='expandit(this)'>".$tp -> toHTML($item['title'], TRUE)."</a>
 				<div style='display:none' >
 				";
-				$FEEDITEMTEXT = ereg_replace("&#091;.*]", "", $tp -> toHTML($item['description'], TRUE))."
+				$FEEDITEMTEXT = preg_replace("/&#091;.*]/", "", $tp -> toHTML($item['description'], TRUE))."
 				<br /><br /><a href='".$item['link']."' rel='external'>".NFLAN_44."</a><br /><br />
 				</div>";
 			}

@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.203 $
-|     $Date: 2005-08-19 06:08:39 $
+|     $Revision: 1.204 $
+|     $Date: 2005-08-23 00:44:23 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -248,7 +248,7 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan'])) {
 	} else {
 		setcookie('e107language_'.$pref['cookie_name'], $_POST['sitelanguage'], time() + 86400, "/");
 		$_COOKIE['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
-		if (stristr(e_SELF, e_ADMIN) === FALSE) {
+		if (strpos(e_SELF, e_ADMIN) === FALSE) {
 			header("Location:".e_SELF);
 		}
 	}
@@ -453,7 +453,7 @@ header("Content-type: text/html; charset=".CHARSET);
 $pref[$key] = $tp->toFORM($prefvalue);
 }*/
 
-if ($pref['maintainance_flag'] && ADMIN == FALSE && stristr(e_SELF, "admin.php") === FALSE && stristr(e_SELF, "sitedown.php") === FALSE) {
+if ($pref['maintainance_flag'] && ADMIN == FALSE && strpos(e_SELF, "admin.php") === FALSE && strpos(e_SELF, "sitedown.php") === FALSE) {
 	header("Location: ".SITEURL."sitedown.php");
 	exit;
 }
@@ -1066,7 +1066,7 @@ function table_exists($check) {
 	$mltable=MPREFIX.strtolower($check);
 
 	foreach ($GLOBALS['mySQLtablelist'] as $lang) {
-		if (stristr($lang, $mltable) !== FALSE) {
+		if (strpos($lang, $mltable) !== FALSE) {
 			return TRUE;
 		}
 	}

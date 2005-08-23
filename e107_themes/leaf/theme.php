@@ -44,7 +44,7 @@ define("THEME_DISCLAIMER", "<br /><i>".$themeinfo."</i>");
 
 // [page defines used for css controll on per page basis]
 define("e_PAGE", substr(strrchr($_SERVER['PHP_SELF'], "/"), 1));
-define("e_PAGECLASS", ereg_replace(substr(strrchr(e_PAGE, "."), 0), "", e_PAGE));
+define("e_PAGECLASS", str_replace(substr(strrchr(e_PAGE, "."), 0), "", e_PAGE));
 defined("PAGE_NAME") ? PAGE_NAME : define("PAGE_NAME", e_PAGECLASS);
 
 // [navigation] 

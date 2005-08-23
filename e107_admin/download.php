@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2005-08-01 16:54:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.64 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -673,7 +673,7 @@ class download {
 		$counter = 0;
 		while (isset($file_array[$counter])) {
 			$fpath = str_replace(e_DOWNLOAD,"",$file_array[$counter]['path']).$file_array[$counter]['fname'];
-			if (eregi($download_url, $fpath)) {
+			if (preg_match("#".$download_url."#i", $fpath)) {
 				$selected = " selected='selected'";
 				$found = 1;
 			} else {
@@ -684,7 +684,7 @@ class download {
 			$counter++;
 		}
 
-		if (ereg("http:", $download_url) || ereg("ftp:", $download_url) ) {
+		if (preg_match("/http:|ftp:/", $download_url)) {
 			$download_url_external = $download_url;
 		}
 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/filemanager.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-06-14 23:35:14 $
-|     $Author: e107coders $
+|     $Revision: 1.18 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -260,7 +260,7 @@ while ($dirs[$c]) {
 $c = 0;
 while ($files[$c]) {
 	$img = substr(strrchr($files[$c], "."), 1, 3);
-	if (!$img || !eregi("css|exe|gif|htm|jpg|js|php|png|txt|xml|zip", $img)) {
+	if (!$img || !preg_match("/css|exe|gif|htm|jpg|js|php|png|txt|xml|zip/i", $img)) {
 		$img = "def";
 	}
 	$size = parsesize(filesize(e_BASE.$path."/".$files[$c]));

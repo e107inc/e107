@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-06-27 14:46:13 $
-|     $Author: e107coders $
+|     $Revision: 1.21 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -64,11 +64,11 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 	} else {
 		$Html = htmlspecialchars($message);
 		$Html = preg_replace('%(http|ftp|https)(://\S+)%', '<a href="\1\2">\1\2</a>', $Html);
-		$Html = eregi_replace('([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&//=]+)', '\\1<a href="http://\\2">\\2</a>', $Html);
-		$Html = eregi_replace('([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})', '<a href="mailto:\\1">\\1</a>', $Html);
+		$Html = preg_replace('/([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&\/\/=]+)/i', '\\1<a href="http://\\2">\\2</a>', $Html);
+		$Html = preg_replace('/([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})/i', '<a href="mailto:\\1">\\1</a>', $Html);
 		$Html = str_replace("\n", "<br>\n", $Html);
 	}
-	if(strstr($message,"</style>")){
+	if (strpos($message,"</style>") !== FALSE){
     	$text = strstr($message,"</style>");
 	}else{
     	$text = $message;
@@ -141,7 +141,7 @@ function validatemail($Email) {
 	$result = array();
 	 ;
 
-	if (!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $Email)) {
+	if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/i", $Email)) {
 		$result[0] = false;
 		$result[1] = "$Email is not properly formatted";
 		return $result;
@@ -158,9 +158,7 @@ function validatemail($Email) {
 	$Connect = fsockopen ($ConnectAddress, 25 );
 
 	if ($Connect) {
-
-		if (ereg("^220", $Out = fgets($Connect, 1024))) {
-
+		if (strpos("220", $Out = fgets($Connect, 1024)) === 0) {
 			fputs ($Connect, "HELO $HTTP_HOST\r\n");
 			$Out = fgets ($Connect, 1024 );
 			fputs ($Connect, "MAIL FROM: <{$Email}>\r\n");
@@ -169,7 +167,7 @@ function validatemail($Email) {
 			$To = fgets ($Connect, 1024);
 			fputs ($Connect, "QUIT\r\n");
 			fclose($Connect);
-			if (!ereg ("^250", $From) || !ereg ("^250", $To )) {
+			if (strpos("250", $From) !== 0 || strpos("250", $To) !== 0) {
 				$result[0] = false;
 				$result[1] = "Server rejected address";
 				$result[2] = $From;

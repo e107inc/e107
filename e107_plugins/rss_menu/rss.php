@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-06-25 05:26:48 $
-|     $Author: e107coders $
+|     $Revision: 1.23 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -260,7 +260,7 @@ class rssCreate {
 				$this -> rssItems = array();
 				$loop=0;
 				foreach($tmp as $value) {
-					$nick = eregi_replace("[0-9]+\.", "", $value['bugtrack2_bugs_poster']);
+					$nick = preg_replace("/[0-9]+\./", "", $value['bugtrack2_bugs_poster']);
 					$this -> rssItems[$loop]['author'] = $nick;
 					$this -> rssItems[$loop]['title'] = $value['bugtrack2_bugs_summary'];
 					$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."bugtracker2/bugtracker2.php?0.bug.".$value['bugtrack2_bugs_id'];
@@ -315,7 +315,7 @@ class rssCreate {
 				$this -> rssItems = array();
 				$loop=0;
 				foreach($tmp as $value) {
-					$nick = eregi_replace("[0-9]+\.", "", $value['download_author']);
+					$nick = preg_replace("/[0-9]+\./", "", $value['download_author']);
 					$this -> rssItems[$loop]['author'] = $nick;
 					$this -> rssItems[$loop]['title'] = $value['download_name'];
 					$this -> rssItems[$loop]['link'] = $e107->http_path."download.php?view.".$value['download_id'];
@@ -408,7 +408,7 @@ class rssCreate {
 				<link>".$pref['siteurl']."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>
 				<language>en-gb</language>
-				<copyright>".ereg_replace("<br />|\n", "", SITEDISCLAIMER)."</copyright>
+				<copyright>".preg_replace("/<br />|\n/", "", SITEDISCLAIMER)."</copyright>
 				<managingEditor>".$pref['siteadmin']." - ".$pref['siteadminemail']."</managingEditor>
 				<webMaster>".$pref['siteadminemail']."</webMaster>
 				<pubDate>".strftime("%a, %d %b %Y %I:%M:00 GMT", time())."</pubDate>

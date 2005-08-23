@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/forum.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-11 23:32:03 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-08-23 00:44:23 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -148,7 +148,7 @@ If(isset($_POST['submit'])) {
 		$mods .= $_POST['mod'][$c].", ";
 		$c++;
 	}
-	$mods = ereg_replace(", $", ".", $mods);
+	$mods = preg_replace("/, $/", ".", $mods);
 
 	$sql->db_Select("forum", "*", "forum_name='".$_POST['parentforum']."' ");
 	$row = $sql->db_Fetch();
@@ -168,7 +168,7 @@ If(isset($_POST['update'])) {
 		$mods .= $_POST['mod'][$c].", ";
 		$c++;
 	}
-	$mods = ereg_replace(", $", ".", $mods);
+	$mods = preg_replace("/, $/", ".", $mods);
 	$sql->db_Select("forum", "*", "forum_name='".$_POST['parentforum']."' ");
 	$row = $sql->db_Fetch();
 	$_POST['forum_name'] = $aj->formtpa($_POST['forum_name'], "admin");
