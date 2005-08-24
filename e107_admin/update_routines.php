@@ -11,14 +11,11 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.129 $
-|     $Date: 2005-07-12 16:59:07 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.130 $
+|     $Date: 2005-08-24 04:47:43 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-
-
-
 
 require_once("../class2.php");
 
@@ -70,6 +67,17 @@ function update_61x_to_700($type='') {
 	if ($type == "do") {
 		set_time_limit(180);
 		$s_prefs = FALSE;
+		
+		// Switch 0.6xx upgraders to iso ========================
+		
+		if ($sql -> db_Select("link_category", "link_category_id")){
+			if (is_dir(e_LANGUAGEDIR.e_LANGUAGE."-iso")) {
+				$pref['sitelanguage'] = $pref['sitelanguage']."-iso";
+				$s_prefs = TRUE;
+			}
+		}
+			
+		// ==============================================================
 
 		// add an index on user_ban - speeds up page render time massively on large user tables.
 		mysql_query("ALTER TABLE `".MPREFIX."user` ADD INDEX `user_ban_index`(`user_ban`);");
