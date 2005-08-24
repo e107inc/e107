@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore/resetcore.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-08-23 03:54:04 $
+|     $Revision: 1.7 $
+|     $Date: 2005-08-24 03:40:33 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -159,6 +159,9 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2)
 	define('e_BASE', $link_prefix);
 	$e_path = (!strpos($_SERVER['SCRIPT_FILENAME'], ".php") ? $_SERVER['PATH_TRANSLATED'] : $_SERVER['SCRIPT_FILENAME']);
 	define("e_PATH", $e_path);
+	
+	$pref_language = "English";
+	include_once(e_BASE.$LANGUAGES_DIRECTORY."English/lan_prefs.php");	
 	require_once(e_BASE.$FILES_DIRECTORY."def_e107_prefs.php");
 
 	$PrefOutput = $eArrayStorage->WriteArray($pref);

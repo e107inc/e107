@@ -1,10 +1,27 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     �Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
+|     $Revision: 1.34 $
+|     $Date: 2005-08-24 03:40:33 $
+|     $Author: sweetas $
++----------------------------------------------------------------------------+
+*/
 
 // default preferences for e107
-$pref['sitename'] = "e107 powered website";
+$pref['sitename'] = LAN_PREF_1;
 $pref['siteurl'] = $e_HTTP;
 $pref['sitebutton'] = "button.png";
-$pref['sitetag'] = "e107 website system";
+$pref['sitetag'] = LAN_PREF_2;
 $pref['sitedescription'] = "";
 $pref['siteadmin'] = $_POST['admin_name'];
 $pref['siteadminemail'] = $_POST['admin_email'];
@@ -12,7 +29,7 @@ $pref['sitetheme'] = "lamb";
 $pref['image_preload'] = "0";
 $pref['admintheme'] = "jayya";
 $pref['adminstyle'] = "compact";
-$pref['sitedisclaimer'] = 'All trademarks are © their respective owners, all other content is © e107 powered website.<br />e107 is © e107.org 2002-2005 and is released under the <a href="http://www.gnu.org/" rel="external">GNU GPL license</a>.';
+$pref['sitedisclaimer'] = LAN_PREF_3;
 $pref['newsposts'] = "10";
 $pref['flood_protect'] = "1";
 $pref['flood_timeout'] = "5";
@@ -22,14 +39,14 @@ $pref['anon_post'] = "1";
 $pref['user_reg'] = "1";
 $pref['use_coppa'] = "1";
 $pref['profanity_filter'] = "1";
-$pref['profanity_replace'] = "[censored]";
+$pref['profanity_replace'] = "[".LAN_PREF_4."]";
 $pref['smiley_activate'] = "";
 $pref['log_activate'] = "";
 $pref['log_refertype'] = "1";
 $pref['longdate'] = "%A %d %B %Y - %H:%M:%S";
 $pref['shortdate'] = "%d %b : %H:%M";
 $pref['forumdate'] = "%a %b %d %Y, %I:%M%p";
-$pref['sitelanguage'] = (isset($_POST['installlanguage']) ? $_POST['installlanguage'] :  "English");
+$pref['sitelanguage'] = $pref_language;
 $pref['maintainance_flag'] = "0";
 $pref['time_offset'] = "0";
 $pref['log_lvcount'] = "10";
@@ -41,7 +58,7 @@ $pref['forum_popular'] = "10";
 $pref['forum_track'] = "0";
 $pref['forum_eprefix'] = "[forum]";
 $pref['forum_enclose'] = "1";
-$pref['forum_title'] = "Forums";
+$pref['forum_title'] = LAN_PREF_5;
 $pref['forum_postspage'] = "10";
 $pref['forum_highlightsticky'] = "1";
 $pref['user_tracking'] = "cookie";
