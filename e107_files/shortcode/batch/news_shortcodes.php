@@ -122,7 +122,8 @@ SC_BEGIN ADMINOPTIONS
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 if (ADMIN && getperms("H")) {
-	return "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_item['news_id']."'><img src='".e_IMAGE."generic/".IMODE."/newsedit.png' alt='' style='border:0' /></a>\n";
+	$adop_icon = (file_exists(THEME."generic/newsedit.png") ? THEME."generic/newsedit.png" : e_IMAGE."generic/".IMODE."/newsedit.png");
+	return "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_item['news_id']."'><img src='".$adop_icon."' alt='' style='border:0' /></a>\n";
 } else {
 	return '';
 }
