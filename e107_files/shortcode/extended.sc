@@ -32,6 +32,13 @@ else
 	}
 }
 
+$udata['user_class'] .= ($udata['user_class'] == "" ? "" : ",");
+$udata['user_class'] .= e_UC_PUBLIC.",".e_UC_READONLY.",".e_UC_MEMBER;
+if($udata['user_admin'] == 1)
+{
+	$udata['user_class'].= ",".e_UC_ADMIN;
+}
+
 if (
 !check_class($ueStruct["user_".$parms[0]]['user_extended_struct_applicable'], $udata['user_class'])
 || !check_class($ueStruct["user_".$parms[0]]['user_extended_struct_read'])
