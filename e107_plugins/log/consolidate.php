@@ -48,7 +48,7 @@ if($sql -> db_Select("logstats", "*", "log_id='statBrowser' OR log_id='statOs' O
 	while($row = $sql -> db_Fetch())
 	{
 		$$row[1] = unserialize($row[2]);
-		if($row[1] = "statUnique") $statUnique = $row[2];
+		if($row[1] == "statUnique") $statUnique = $row[2];
 	}
 }else{
 	/* this must be the first time a consolidation has happened - this will only ever happen once ... */
