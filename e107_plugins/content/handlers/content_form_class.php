@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.88 $
-|		$Date: 2005-08-23 03:54:04 $
-|		$Author: sweetas $
+|		$Revision: 1.89 $
+|		$Date: 2005-08-26 09:08:17 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -1072,7 +1072,7 @@ class contentform{
 					$pcmcontent_pref = $eArrayStorage->ReadArray($rowpcm['content_pref']);
 
 					//assign new preferences
-					$pcm = explode(",", $pcmcontent_pref['content_manager_allowed']);
+					$pcm = explode(",", $pcmcontent_pref["content_manager_allowed_{$rowpcm['content_id']}"]);
 					if(in_array($userid, $pcm) || getperms("0")){
 						$personalmanagercheck = TRUE;
 					}
