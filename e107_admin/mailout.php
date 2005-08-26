@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-08-23 09:36:30 $
-|     $Author: sweetas $
+|     $Revision: 1.36 $
+|     $Date: 2005-08-26 19:57:37 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -125,8 +125,14 @@ if (isset($_POST['submit'])) {
 
 	$attach = chop($_POST['email_attachment']);
 
-	$attach_link = e_DOWNLOAD.$attach;
-//	echo $attach_link;
+	if(is_readable(e_DOWNLOAD.$attach))
+	{
+		$attach_link = e_DOWNLOAD.$attach;
+	}
+	else
+	{
+		$attach_link = e_FILE.'public/'.$attach;
+	}
 
 	if ($attach != "" && !$mail->AddAttachment($attach_link, $attach)){
 		$mss = "There is a problem with the attachment<br />$attach_link";
