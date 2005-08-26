@@ -49,6 +49,7 @@ if($sql -> db_Select("logstats", "*", "log_id='statBrowser' OR log_id='statOs' O
 	{
 		$$row[1] = unserialize($row[2]);
 		if($row[1] == "statUnique") $statUnique = $row[2];
+		if($row[1] == "statTotal") $statTotal = $row[2];
 	}
 }else{
 	/* this must be the first time a consolidation has happened - this will only ever happen once ... */
@@ -225,8 +226,8 @@ function createLog($mode="default") {
 	$varStart."refererData = ".$quote.$quote.";\n".
 	$varStart."ipAddresses = ".$quote.$quote.";\n".
 	$varStart."hosts = ".$quote.$quote.";\n".
-	$varStart."siteTotal = ".$quote.$statTotal.$quote.";\n".
-	$varStart."siteUnique = ".$quote.$statUnique.$quote.";\n".
+	$varStart."siteTotal = ".$quote."0".$quote.";\n".
+	$varStart."siteUnique = ".$quote."0".$quote.";\n".
 	$varStart."screenInfo = array();\n".
 	$varStart."browserInfo = array();\n".
 	$varStart."osInfo = array();\n".
