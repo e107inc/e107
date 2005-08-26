@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.89 $
-|		$Date: 2005-08-26 09:08:17 $
+|		$Revision: 1.90 $
+|		$Date: 2005-08-26 09:22:50 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -291,15 +291,16 @@ class contentform{
 									$sql2 -> db_Select($plugintable, "content_id, content_heading, content_parent, content_pref", " content_id='".$rowpcm['content_parent']."' ");
 									$rowpcm2 = $sql2 -> db_Fetch();
 									$pcmcheckpref = $rowpcm2['content_pref'];
-								
+									$p = $rowpcm['content_parent'];
 								}else{
 									$pcmcheckpref = $rowpcm['content_pref'];
+									$p = $qs[2];
 								}
 
 								$pcmcontent_pref = $eArrayStorage->ReadArray($pcmcheckpref);
 
 								//assign new preferences
-								$pcm = explode(",", $pcmcontent_pref['content_manager_allowed']);
+								$pcm = explode(",", $pcmcontent_pref["content_manager_allowed_{$p}"]);
 								if(in_array($userid, $pcm) || getperms("0")){
 									$personalmanagercheck = TRUE;
 								}
@@ -308,7 +309,7 @@ class contentform{
 								if($qs[1] == "edit"){
 									//use user restriction (personal admin)
 									if(isset($userid) && isset($username) ){
-										$userquery = " AND (SUBSTRING_INDEX(content_author, '^', 1) = '".$userid."' OR SUBSTRING_INDEX(content_author, '^', 2) = '".$userid."^".$username."')";
+										$userquery = " AND (content_author = '".$userid."' OR SUBSTRING_INDEX(content_author, '^', 1) = '".$userid."' OR SUBSTRING_INDEX(content_author, '^', 2) = '".$userid."^".$username."' OR content_author REGEXP '".$username."' )";
 									}else{
 										$userquery = "";
 									}
