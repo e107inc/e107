@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-07-07 15:16:57 $
-|     $Author: e107coders $
+|     $Revision: 1.46 $
+|     $Date: 2005-08-26 02:28:14 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -738,19 +738,21 @@ function parse_download_cat_child_table($row, $subList)
 		$new = "";
 	}
 
-	if(strstr($row['download_category_icon'], chr(1)))
+	list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $row['download_category_icon']);
+	if (!$download_category_icon_empty)
 	{
-		list($download_category_icon, $download_category_icon_empty) = explode(chr(1), $row['download_category_icon']);
+		$download_category_icon_empty = $download_category_icon;
+	}
+
+	if(!$row['d_count'] && !$row['d_subcount'])
+	{
+		$download_icon = "<img src='".e_IMAGE."icons/{$download_category_icon_empty}' alt='' style='float-left' />";
 	}
 	else
 	{
-		$download_category_icon = $row['download_category_icon'];
-		$download_category_icon_empty = $row['download_category_icon'];
+		$download_icon = "<img src='".e_IMAGE."icons/{$download_category_icon}' alt='' style='float-left' />";
 	}
-
-
-	$download_icon = ((!$row['d_count'] || !$row['d_subcount']) && $download_category_icon_empty) ? "<img src='".e_IMAGE."icons/{$download_category_icon_empty}' alt='' style='float-left' />" : "<img src='".e_IMAGE."icons/".$row['download_category_icon']."' alt='' style='float-left' />" ;
-
+	
 	$DOWNLOAD_CAT_SUB_ICON = ($row['download_category_icon'] ? $download_icon : "&nbsp;");
 	$DOWNLOAD_CAT_SUB_NEW_ICON = $new;
 	$DOWNLOAD_CAT_SUB_NAME = ($row['d_count'] ? "<a href='".e_SELF."?list.".$row['download_category_id']."'>".$tp->toHTML($row['download_category_name'])."</a>" : $tp->toHTML($row['download_category_name']));
