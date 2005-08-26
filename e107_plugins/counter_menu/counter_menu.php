@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/counter_menu/counter_menu.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-22 18:07:46 $
-|     $Author: stevedunstan $
+|     $Revision: 1.13 $
+|     $Date: 2005-08-26 10:53:28 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_PLUGIN")){ exit; }
@@ -36,7 +36,7 @@ if ($pref['statActivate'])
 		$uniqueever = 1;
 	} else {
 		$text = "";
-		require_once($logfile);
+		require($logfile);
 		if($sql -> db_Select("logstats", "*", "log_id='statTotal' OR log_id='statUnique' OR log_id='pageTotal'"))
 		{
 			while($row = $sql -> db_Fetch())
