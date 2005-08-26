@@ -82,38 +82,23 @@ return $CONTENT_TOP_TABLE_AUTHOR;
 SC_END
 
 SC_BEGIN CONTENT_TOP_TABLE_RATING
-global $CONTENT_TOP_TABLE_RATING, $thisratearray;
+global $CONTENT_TOP_TABLE_RATING, $row;
+$row['rate_avg'] = round($row['rate_avg'], 1);
+$row['rate_avg'] = (strlen($row['rate_avg'])>1 ? $row['rate_avg'] : $row['rate_avg'].".0");
+$tmp = explode(".", $row['rate_avg']);
 $rating = "";
-$rating .= $thisratearray[3]." ";
-for($c=1; $c<= $thisratearray[4]; $c++){
+$rating .= $row['rate_avg']." ";
+for($c=1; $c<= $tmp[0]; $c++){
 	$rating .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
 }
-if($thisratearray[4] < 10){
-	for($c=9; $c>=$thisratearray[4]; $c--){
+if($tmp[0] < 10){
+	for($c=9; $c>=$tmp[0]; $c--){
 		$rating .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
 	}
 }
 $rating .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
 return $rating;
 SC_END
-
-//SC_BEGIN CONTENT_TOP_TABLE_RATING
-//global $CONTENT_TOP_TABLE_RATING, $row;
-//$tmp = explode(".", $row['rate_avg']);
-//$one = $tmp[0];
-//$two = round($tmp[1],1);
-//$rating = $one.".".$two." ";
-//for($c=1; $c<= $one; $c++){
-//	$rating .= "<img src='".e_IMAGE."rate/box.png' alt='' style='height:8px; vertical-align:middle' />";
-//}
-//if($one < 10){
-//	for($c=9; $c>=$one; $c--){
-//		$rating .= "<img src='".e_IMAGE."rate/empty.png' alt='' style='height:8px; vertical-align:middle' />";
-//	}
-//}
-//$rating .= "<img src='".e_IMAGE."rate/boxend.png' alt='' style='height:8px; vertical-align:middle' />";
-//return $rating;
-//SC_END
 
 // CONTENT_SCORE_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_SCORE_TABLE_HEADING

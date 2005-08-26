@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.82 $
-|		$Date: 2005-08-23 18:29:00 $
-|		$Author: sweetas $
+|		$Revision: 1.83 $
+|		$Date: 2005-08-26 08:16:10 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -1010,8 +1010,7 @@ function show_content_author(){
 function show_content_top(){
 		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $cobj, $content_icon_path;
 		global $from, $datequery, $content_pref, $mainparent;
-		global $CONTENT_TOP_TABLE_AUTHOR, $authordetails, $row, $thisratearray;
-
+		global $CONTENT_TOP_TABLE_AUTHOR, $authordetails, $row;
 
 		$mainparent		= $aa -> getMainParent($qs[1]);
 		$content_pref	= $aa -> getContentPref($mainparent);
@@ -1028,85 +1027,49 @@ function show_content_top(){
 				}
 			}
 		}
-
 		$cachestr = "$plugintable.top.$qs[1]";
 		if($cache = $e107cache->retrieve($cachestr)){
 			echo $cache;
 		}else{
 			ob_start();
-
 			$content_icon_path	= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 			$array				= $aa -> getCategoryTree("", $qs[1], TRUE);
 			$validparent		= implode(",", array_keys($array));
-			$qry				= " c.content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
+			$datequery1			= " AND p.content_datestamp < ".time()." AND (p.content_enddate=0 || p.content_enddate>".time().") ";
+			$qry				= " p.content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 			$number				= (isset($content_pref["content_nextprev_number_{$mainparent}"]) && $content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "");
 			$np					= ($number ? " LIMIT ".$from.", ".$number : "");
 
 			$qry1 = "
-			SELECT c.content_id, c.content_heading, c.content_author, c.content_icon, r.*
+			SELECT p.*, r.*, (r.rate_rating / r.rate_votes) as rate_avg
 			FROM #rate AS r
-			LEFT JOIN #pcontent AS c ON c.content_id = r.rate_itemid  
-			WHERE ".$qry." ".$datequery." AND c.content_class REGEXP '".e_CLASS_REGEXP."' AND r.rate_table='".$plugintable."'
-			ORDER BY r.rate_id DESC
-			";
-			//, (r.rate_rating / r.rate_votes) as rate_avg 
-			//ORDER BY rate_avg DESC
+			LEFT JOIN #pcontent AS p ON p.content_id = r.rate_itemid 
+			WHERE p.content_refer !='sa' AND ".$qry." ".$datequery1." AND p.content_class REGEXP '".e_CLASS_REGEXP."' AND r.rate_table='pcontent'
+			ORDER BY rate_avg DESC ";
 			$qry2 = $qry1." ".$np;
 
 			if(!is_object($sql)){ $sql = new db; }
-			$contenttotal = $sql -> db_Select_gen($qry1);
-			//echo $qry1;
-			if (!$sql->db_Select_gen($qry2)){
-				$err		= CONTENT_LAN_37;
-			}else{
+			$total = $sql -> db_Select_gen($qry1);
+			if($sql->db_Select_gen($qry2)){
 				while($row = $sql -> db_Fetch()){
-					//echo $number." - ".$row['content_id']." - ".$row['rate_avg']."<br />";
-					
-					$tmp		= $row['rate_rating'] / $row['rate_votes'];
-					$tmp		= explode(".", $tmp);
-					$rating[1]	= $tmp[0];										// $ratomg[1] = main result
-					$rating[2]	= (!empty($tmp[1]) ? substr($tmp[1],0,1) : "");	// $rating[2] = remainder
-					$rate_avg	= $rating[1].".".($rating[2] ? $rating[2] : "0");	// rate average
-
-					$arrRate[] = array($row['rate_itemid'], $row['rate_rating'], $row['rate_votes'], $rate_avg, $rating[1], $rating[2], $row['content_id'], $row['content_heading'], $row['content_author'], $row['content_icon']);
+					$CONTENT_TOP_TABLE_AUTHOR	= $aa -> prepareAuthor("top", $row['content_author'], $row['content_id']);
+					$content_top_table_string	.= $tp -> parseTemplate($CONTENT_TOP_TABLE, FALSE, $content_shortcodes);
 				}
-				if(empty($arrRate)){
-					$err		= CONTENT_LAN_37;
-				}else{
-					usort($arrRate, create_function('$a,$b','return $a[3]==$b[3]?0:($a[3]>$b[3]?-1:1);'));
-					$contenttotal = count($arrRate);
-					$content_top_table_string = "";
-
-					for($i=$from;$i<$from+$number;$i++){
-						if(isset($arrRate[$i])){
-							
-							$thisratearray				= $arrRate[$i];
-							$row['content_id']			= $arrRate[$i][6];
-							$row['content_heading']		= $arrRate[$i][7];
-							$row['content_author']		= $arrRate[$i][8];
-							$row['content_icon']		= $arrRate[$i][9];
-							
-							$CONTENT_TOP_TABLE_AUTHOR	= $aa -> prepareAuthor("top", $row['content_author'], $row['content_id']);
-							$content_top_table_string	.= $tp -> parseTemplate($CONTENT_TOP_TABLE, FALSE, $content_shortcodes);
-						}
-					}
-				}
+				$content_top_table_string		= $aa -> getCrumbPage("top", $array, $mainparent).$content_top_table_string;
+				$text		= $CONTENT_TOP_TABLE_START.$content_top_table_string.$CONTENT_TOP_TABLE_END;
+				$caption	= CONTENT_LAN_38;
+				$ns -> tablerender($caption, $text);
+				$aa -> ShowNextPrev("", $from, $number, $total);
 			}
-			if(isset($err)){
-				$content_top_table_string = $err;
-			}
-			$content_top_table_string		= $aa -> getCrumbPage("top", $array, $mainparent).$content_top_table_string;
-			$text		= $CONTENT_TOP_TABLE_START.$content_top_table_string.$CONTENT_TOP_TABLE_END;
-			$caption	= CONTENT_LAN_38;
-			$ns -> tablerender($caption, $text);
-			$aa -> ShowNextPrev("", $from, $number, $contenttotal);
 			if($pref['cachestatus']){
 				$cache = ob_get_contents();
 				$e107cache->set($cachestr, $cache);
 			}
 			ob_end_flush(); // dump collected data
 		}
+		unset($qry, $qry1, $qry2, $array, $validparent, $datequery);
 }
+
 
 // ##### TOP SCORE LIST -----------------------------------
 function show_content_score(){
