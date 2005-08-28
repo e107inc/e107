@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/linkwords/linkwords.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-04-14 19:00:09 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2005-08-28 09:08:16 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -34,6 +34,10 @@ class e_linkwords
 				$word = $words['linkword_word'];
 				$this -> linkwords[] = $word;
 				$this -> linkurls[] = " <a href='".$words['linkword_link']."' rel='external'>$word</a>";
+				$word2 = substr_replace($word, strtoupper($word[0]), 0, 1);
+				$this -> linkwords[] = $word2;
+				$this -> linkurls[] = " <a href='".$words['linkword_link']."' rel='external'>$word2</a>";
+
 			}
 		}
 	}
