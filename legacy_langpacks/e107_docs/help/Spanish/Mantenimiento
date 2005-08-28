@@ -1,0 +1,6 @@
+
+P>	¿Para que sirve el mantenimiento?
+A>	Esta pantala puede configurarse para hacer el sito inaccesible a sus visitantes. Lo puede usar cuando actualice el sitio o tenga que desactivarlo por cualquier motivo. En modo mantenimiento solo el administrador puede acceder al sitio y se percatará de eso ya que verá un mensaje en cada página
+
+P>	¡Ayuda! Fije el sitio en modo mantenimiento y me desconecté. ¿Como puedo acceder a él para restaurarlo?
+R>	vaya a http://nombre_de_su_sitio/e107_admin.php/admin.php y conéctese desde allí.

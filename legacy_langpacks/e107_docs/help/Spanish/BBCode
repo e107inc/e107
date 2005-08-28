@@ -1,0 +1,7 @@
+
+P>	¿Que es BBCode?
+R>	Es una serie de tags cortos para embellecer el texto. por ejeplo para poner algo en negrita lo ponemos así '[b] texto en negrita[/b]'. Lógicamente, cuando el texto salgo por la pantalla, las etiquetas [b] no se ven , solo se vería el texto entre las etiquetas en negrita. Se pueden combinar varios tipos de etiquetas.
+
+P>	¿Pero para que sirve?
+R>	Básicamente ahorra tiempo ya que no debes incluir los tags de HTML por ejemplo pero ante todo garantizar un mayor grado de seguridad, ya que escribir código HTML en un texto puede ser peligroso. Sin embargo las etiquedtas de BBCode solo son usadas para cambiar el aspectos de textos.
+

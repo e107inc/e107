@@ -1,0 +1,9 @@
+
+P>	He realizado algunos cambios en mi sitio y ahora aparecen algunos errores MySql que no desaparecen.
+R>	Parece ser que el núcle se ha vuelto corrupto. EL núcleo incluye los ajustes y variables de e107. Para reiniciar su nucleo, vaya a http://nombre_de_su_sitio/e107_files/resetcore.php . Haga siempre una copia de seguridad (desde la pantalla de bases de datos) antes de realizar algún cambio. Así podrá restaurar su núcleo si alguna cosa saliera mal (nuevamente desde resetcore.php).
+
+P>	¿Olvidé mi contraseña de administrador y no puedo acceder?.
+R>	Por muchas razones es imposible recuperar su contraseña a no ser que esté conectado. Si no se apuntó y guardó su contraseña en el proceso de instalación solo podrá recuperarlo accediendo directamente a la base de datos utilizando, por ejemplo, PHPMySQL o algún programa similar. Vaya a la tabla de usuarios y su usuario debería ser el ID número 1. Edite la línea y en el campo password escriba '4cb9c8a8048fd02294477fcb1a41191a' (sin las comillas). esto hara que su nuevo password sea 'changeme' (sin las comillas). Conectese y cambie la contraseña inmediatamente.
+
+P>	He instalado un tema o plugin y ahora mi sitio no es accesible ¿Que puedo hacer?
+R>	Use resetcore.php (vea más arriba).
