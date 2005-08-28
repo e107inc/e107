@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-08-23 04:17:57 $
-|     $Author: sweetas $
+|     $Revision: 1.31 $
+|     $Date: 2005-08-28 16:05:31 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,10 +24,8 @@ if (!e_QUERY || isset($_POST['userlogin'])) {
 	header("location: {$e107->http_path}");
 	exit();
 }
-if (strstr(e_QUERY, "..")) {
-	header("location: {$e107->http_path}");
-	exit();
-}
+
+
 
 $id = FALSE;
 if (!is_numeric(e_QUERY)) {
@@ -185,19 +183,19 @@ if ($type == "file")
 			}
 		} else {
 			// Download Access Denied.
-		  	if((!strpos($pref['download_denied'],".php") &&
-				!strpos($pref['download_denied'],".htm") &&
-				!strpos($pref['download_denied'],".html") &&
-				!strpos($pref['download_denied'],".shtml") ||
-				(strpos($pref['download_denied'],"signup.php") && USER == TRUE)
-				)){
+			if((!strpos($pref['download_denied'],".php") &&
+			!strpos($pref['download_denied'],".htm") &&
+			!strpos($pref['download_denied'],".html") &&
+			!strpos($pref['download_denied'],".shtml") ||
+			(strpos($pref['download_denied'],"signup.php") && USER == TRUE)
+			)){
 				require_once(HEADERF);
 				$denied_message = ($pref['download_denied'] && !strpos($pref['download_denied'],"signup.php")) ? $tp->toHTML($pref['download_denied'],"","defs") : LAN_dl_63;
 				$ns -> tablerender(LAN_dl_61, $denied_message);
 				require_once(FOOTERF);
-		   		exit();
-            }else{
-            	header("Location: ".trim($pref['download_denied']));
+				exit();
+			}else{
+				header("Location: ".trim($pref['download_denied']));
 			}
 		}
 	}
@@ -277,10 +275,8 @@ if (strpos($image, "http") !== FALSE) {
 }
 
 // File retrieval function. by Cam.
-function send_file($file)
-{
-
-	global $pref;
+function send_file($file) {
+	global $pref, $DOWNLOADS_DIRECTORY, $e107;
 	if (!$pref['download_php'])
 	{
 		header("Location: ".SITEURL.$file);
@@ -291,51 +287,55 @@ function send_file($file)
 	while (@ob_end_clean()); // kill all output buffering else it eats server resources
 	$filename = $file;
 	$file = basename($file);
-	if (is_file($filename) && connection_status() == 0)
-	{
-		if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE"))
-		{
-			$file = preg_replace('/\./', '%2e', $file, substr_count($file, '.') - 1);
-		}
-		if (isset($_SERVER['HTTP_RANGE']))
-		{
-			$seek = intval(substr($_SERVER['HTTP_RANGE'] , strlen('bytes=')));
-		}
-		$bufsize = 2048;
-		ignore_user_abort(true);
-		$data_len = filesize($filename);
-		if ($seek > ($data_len - 1)) { $seek = 0; }
-		if ($filename == null) { $filename = basename($this->data); }
-		$res =& fopen($filename, 'rb');
-		if ($seek)
-		{
-			fseek($res , $seek);
-		}
-		$data_len -= $seek;
-		header("Expires: 0");
-		header("Cache-Control: max-age=30" );
-		header("Content-Type: application/force-download");
-		header("Content-Disposition: attachment; filename=\"{$file}\"");
-		header("Content-Length: {$data_len}");
-		header("Pragma: public");
-		if ($seek)
-		{
-			header("Accept-Ranges: bytes");
-			header("HTTP/1.0 206 Partial Content");
-			header("status: 206 Partial Content");
-			header("Content-Range: bytes {$seek}-".($data_len - 1)."/{$data_len}");
-		}
-		while (!connection_aborted() && $data_len > 0)
-		{
-			echo fread($res , $bufsize);
-			$data_len -= $bufsize;
-		}
-		fclose($res);
-	}
-	else
-	{
-		header("location: ".e_BASE."index.php");
+	$path = realpath($filename);
+	$path_downloads = realpath($DOWNLOADS_DIRECTORY);
+	if(!strstr($path, $path_downloads)) {
+		header("location: {$e107->http_path}");
 		exit();
+	} else {
+		if (is_file($filename) && is_readable($filename) && connection_status() == 0) {
+			if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE"))
+			{
+				$file = preg_replace('/\./', '%2e', $file, substr_count($file, '.') - 1);
+			}
+			if (isset($_SERVER['HTTP_RANGE']))
+			{
+				$seek = intval(substr($_SERVER['HTTP_RANGE'] , strlen('bytes=')));
+			}
+			$bufsize = 2048;
+			ignore_user_abort(true);
+			$data_len = filesize($filename);
+			if ($seek > ($data_len - 1)) { $seek = 0; }
+			if ($filename == null) { $filename = basename($this->data); }
+			$res =& fopen($filename, 'rb');
+			if ($seek)
+			{
+				fseek($res , $seek);
+			}
+			$data_len -= $seek;
+			header("Expires: 0");
+			header("Cache-Control: max-age=30" );
+			header("Content-Type: application/force-download");
+			header("Content-Disposition: attachment; filename=\"{$file}\"");
+			header("Content-Length: {$data_len}");
+			header("Pragma: public");
+			if ($seek)
+			{
+				header("Accept-Ranges: bytes");
+				header("HTTP/1.0 206 Partial Content");
+				header("status: 206 Partial Content");
+				header("Content-Range: bytes {$seek}-".($data_len - 1)."/{$data_len}");
+			}
+			while (!connection_aborted() && $data_len > 0)
+			{
+				echo fread($res , $bufsize);
+				$data_len -= $bufsize;
+			}
+			fclose($res);
+		} else {
+			header("location: ".e_BASE."index.php");
+			exit();
+		}
 	}
 }
 function check_download_limits() {
