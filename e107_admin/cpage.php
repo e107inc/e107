@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-07-11 12:03:53 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.20 $
+|     $Date: 2005-08-28 08:32:09 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../class2.php");
-if (!getperms("2")){
+if (!getperms("5")){
 	header("location:".e_BASE."index.php");
 	exit;
 }
