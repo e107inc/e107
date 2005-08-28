@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-08-28 16:05:31 $
+|     $Revision: 1.32 $
+|     $Date: 2005-08-28 16:59:53 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -25,19 +25,17 @@ if (!e_QUERY || isset($_POST['userlogin'])) {
 	exit();
 }
 
-
-
 $id = FALSE;
 if (!is_numeric(e_QUERY)) {
 	if ($sql->db_Select("download", "download_id", "download_url='".e_QUERY."'")) {
 		$row = $sql->db_Fetch();
 		$type = "file";
 		$id = $row['download_id'];
-	} else if(file_exists($DOWNLOADS_DIRECTORY.e_QUERY)) {
-		send_file($DOWNLOADS_DIRECTORY.e_QUERY);
-		exit();
 	} else if(strstr(e_QUERY, "http://") || strstr(e_QUERY, "ftp://" || strstr(e_QUERY, "https://"))) {
 		header("location: ".e_QUERY);
+		exit();
+	} else if(file_exists($DOWNLOADS_DIRECTORY.e_QUERY)) {
+		send_file($DOWNLOADS_DIRECTORY.e_QUERY);
 		exit();
 	}
 }
