@@ -171,7 +171,7 @@ define("LIST_LINKS_1", "links");
 define("LIST_LINKS_2", "geen links");
 define("LIST_FORUM_1", "forum");
 define("LIST_FORUM_2", "geen forumberichten");
-define("LIST_FORUM_3", "bekene:");
+define("LIST_FORUM_3", "bekeken:");
 define("LIST_FORUM_4", "reacties:");
 define("LIST_FORUM_5", "laatste:");
 define("LIST_FORUM_6", "op:");

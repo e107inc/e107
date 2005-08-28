@@ -27,7 +27,7 @@ define("ADMSLAN_19", "Wijzig site voorkeuren");
 define("ADMSLAN_20", "Wijzigen menu's");
 define("ADMSLAN_21", "Toevoegen site beheerder");
 define("ADMSLAN_22", "Modereren gebruikersbeperkingen etc");
-// define("ADMSLAN_23", "Beheren forums");
+define("ADMSLAN_23", "Beheren maatwerk pagina's/menu's");
 define("ADMSLAN_24", "Bewerk download categorieën");
 define("ADMSLAN_25", "Bestands-upload/beheer");
 define("ADMSLAN_26", "Nieuws categorieën");
@@ -69,6 +69,6 @@ define("ADMSLAN_65", "Configureren mail instellingen en uitgaande mail");
 define("ADMSLAN_66", "Configureren zoekfunctie");
 define("ADMSLAN_67", "Controleren met bestandeninspecteur");
 define("ADMSLAN_68", "Configureren e-mail waarschuwingen");
-
+define("ADMSLAN_69", "is al een beheerder en moet worden bijgewerkt.");
 
 ?>

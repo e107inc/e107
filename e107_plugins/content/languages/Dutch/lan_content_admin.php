@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-08-11 19:36:40 $
+|     $Revision: 1.8 $
+|     $Date: 2005-08-28 19:12:22 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -136,11 +136,11 @@ define("CONTENT_ADMIN_ITEM_LAN_47", "nogmaals bekijken");
 define("CONTENT_ADMIN_ITEM_LAN_48", "hoofdouder");
 define("CONTENT_ADMIN_ITEM_LAN_49", "aangemelde content onderwerpen");
 define("CONTENT_ADMIN_ITEM_LAN_50", "geen aangemelde content onderwerpen");
-define("CONTENT_ADMIN_ITEM_LAN_51", "auteursgegevens<br /> niet invullen als je zelf de schrijver bentyou");
+define("CONTENT_ADMIN_ITEM_LAN_51", "auteursgegevens");
 define("CONTENT_ADMIN_ITEM_LAN_52", "aanmelden content onderwerp");
-define("CONTENT_ADMIN_ITEM_LAN_53", "meta sleutelwoorden voor dit content onderwerp (scheiden met comma's, spaties niet toegestaan !)");
+define("CONTENT_ADMIN_ITEM_LAN_53", "meta sleutelwoorden voor dit content onderwerp <br />(scheiden met comma's, spaties niet toegestaan !)");
 define("CONTENT_ADMIN_ITEM_LAN_54", "aanvullende gegevens");
-define("CONTENT_ADMIN_ITEM_LAN_55", "Terug naar de  <a href='".e_SELF."'>hoofd contentmanager pagina</a> om meer van je persoonlijke content te beheren<br />or<br />Ga naar de <a href='".e_PLUGIN."content/content.php'>hoofd content pagina</a> om de onderwerpen te bekijken.");
+define("CONTENT_ADMIN_ITEM_LAN_55", "Terug naar de  <a href='".e_SELF."'>hoofd contentmanager pagina</a> om meer van je persoonlijke content te beheren<br />of<br />Ga naar de <a href='".e_PLUGIN."content/content.php'>hoofd content pagina</a> om de onderwerpen te bekijken.");
 define("CONTENT_ADMIN_ITEM_LAN_56", "persoonlijke content beheerder");
 define("CONTENT_ADMIN_ITEM_LAN_57", "categorie");
 define("CONTENT_ADMIN_ITEM_LAN_58", "onderwerpen");
