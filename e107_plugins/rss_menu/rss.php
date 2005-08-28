@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-08-23 00:44:23 $
-|     $Author: sweetas $
+|     $Revision: 1.24 $
+|     $Date: 2005-08-28 10:23:54 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -369,7 +369,7 @@ class rssCreate {
 	}
 
 	function buildRss() {
-		global $sql, $pref,$tp;
+		global $sql, $pref, $tp;
 		header('Content-type: text/xml', TRUE);
 		switch ($this -> rssType) {
 			case 1:		// Rss 1.0
@@ -402,13 +402,16 @@ class rssCreate {
 			echo "<?xml version=\"1.0\" encoding=\"".CHARSET."\"?>
 				<!-- generator=\"e107\" -->
 				<!-- content type=\"".$this -> contentType."\" -->
+
+				<!-- test=\"".SITEDISCLAIMER."\" -->
+
 				<rss version=\"2.0\">
 				<channel>
 				<title>".$pref['sitename']."</title>
 				<link>".$pref['siteurl']."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>
 				<language>en-gb</language>
-				<copyright>".preg_replace("/<br />|\n/", "", SITEDISCLAIMER)."</copyright>
+				<copyright>".preg_replace("#\<br \/\>|\n|\r#si", "", SITEDISCLAIMER)."</copyright>
 				<managingEditor>".$pref['siteadmin']." - ".$pref['siteadminemail']."</managingEditor>
 				<webMaster>".$pref['siteadminemail']."</webMaster>
 				<pubDate>".strftime("%a, %d %b %Y %I:%M:00 GMT", time())."</pubDate>
