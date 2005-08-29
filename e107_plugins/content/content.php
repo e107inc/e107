@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.83 $
-|		$Date: 2005-08-26 08:16:10 $
+|		$Revision: 1.84 $
+|		$Date: 2005-08-29 09:08:37 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1144,16 +1144,21 @@ function show_content_item(){
 		}else{
 			$row = $sql -> db_Fetch();
 
-			//update refer count outside of cache
+			//update refer count outside of cache (count visits ^ count unique ips)
 			if(isset($content_pref["content_log_{$mainparent}"]) && $content_pref["content_log_{$mainparent}"]){
 				$ip			= $e107->getip();
 				$self		= e_SELF;
 				$refertmp	= explode("^", $row['content_refer']);
-				if(strpos($refertmp[1], $ip) === FALSE && strpos($self, "admin") === FALSE){
-					$referiplist		= ($refertmp[1] ? $refertmp[1]."-".$ip."-" : $ip."-" );
-					$contentrefernew	= ($refertmp[0]+1)."^".$referiplist;
+				if(strpos($self, "admin") === FALSE){
+					if(strpos($refertmp[1], $ip) === FALSE){
+						$referiplist		= ($refertmp[1] ? $refertmp[1]."-".$ip : $ip );
+						$contentrefernew	= ($refertmp[0]+1)."^".$referiplist;
+					}else{
+						$contentrefernew	= ($refertmp[0]+1)."^".$refertmp[1];
+					}
 					$sql = new db;
 					$sql -> db_Update($plugintable, "content_refer='".$contentrefernew."' WHERE content_id='".$qs[1]."' ");
+					
 					$e107cache->clear("$plugintable.content.$qs[1]");
 					$e107cache->clear("$plugintable.recent.$mainparent");
 					$e107cache->clear("$plugintable.cat.list.$mainparent");
