@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_mailout.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-07-03 10:45:32 $
+|     $Revision: 1.6 $
+|     $Date: 2005-08-29 13:22:16 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -17,7 +17,7 @@ define("PRFLAN_66", "Test e-mailbericht van");
 define("PRFLAN_67", "Dit is een test e-mailbericht, het lijkt erop dat de e-mailinstellingen goed zijn!\n\nGroetjes\nvan het e107 website systeem.");
 define("PRFLAN_68", "Het mailtje kon niet worden verstuurd. Het lijkt erop dat de server niet goed is geconfigureerd om e-mail te versturen. Probeer het nogmaals via SMTP, of neem contact op met de provider en vraag om de sendmail / e-mail server instellingen te controleren.");
 define("PRFLAN_69", "Het e-mailtje is succesvol verstuurd, controleer je inbox.");
-define("PRFLAN_70", "e-mail mathode");
+define("PRFLAN_70", "e-mail methode");
 define("PRFLAN_71", "als je niet zeker bent, laat dan ingesteld als php");
 define("PRFLAN_72", "SMTP Server");
 define("PRFLAN_73", "SMTP Gebruiker");
