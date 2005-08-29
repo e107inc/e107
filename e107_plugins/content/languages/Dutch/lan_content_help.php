@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_help.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-08-11 19:36:40 $
+|     $Revision: 1.10 $
+|     $Date: 2005-08-29 13:52:44 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -17,7 +17,7 @@ define("CONTENT_ADMIN_HELP_ITEM_1", "<i>als je nog geen hoofdoudercategorieën h
 de hoofdouders zijn vet weergegeven en hebben de (ALLE) extensie. het kiezen hiervan toont alle onderwerpen bij deze hoofdouder.<br /><br />
 voor iedere hoofdouder worden alle subcategorieën getoond, inclusief de hoofdoudercategorie zelf (deze worden in normale tekstopmaak getoond). Het kiezen van een van deze categorieën toont alleen de onderwerpen uit de betreffende categorie.");
 
-define("CONTENT_ADMIN_HELP_ITEM_2", "<b>eerste letters</b><br />als er meerdere content onderwerpen beginnen met dezelfe letter in de kop, dan zie je de beginletters staan , waardoor je de onderwerpen kunt selecteren die met die letter beginnen. Het drukken op de 'alle' knop toont alle onderwerpen in deze categorie.<br /><br />
+define("CONTENT_ADMIN_HELP_ITEM_2", "<b>eerste letters</b><br />als er meerdere content onderwerpen beginnen met dezelfe letter in de kop, dan zie je de beginletters staan, waardoor je de onderwerpen kunt selecteren die met die letter beginnen. Het drukken op de 'alle' knop toont alle onderwerpen in deze categorie.<br /><br />
 <b>detail overzicht</b><br />Je ziet het overzicht van alle onderwerpen met hun id, pictogram, auteur, kop [onderkop] en opties.<br /><br /><b>uitleg van de gebruikte pictogrammen</b><br />".CONTENT_ICON_EDIT." : bewerk het contentonderwerp.<br />".CONTENT_ICON_DELETE." : verwijder het contentonderwerp.<br />");
 
 define("CONTENT_ADMIN_HELP_ITEMEDIT_1", "<b>bewerk formulier</b><br />je kunt nu alle informatie voor dit contentonderwerp invullen en je wijzigingen aanmelden.<br /><br />Als je de categorie van dit contentonderwerp verandert in een andere hoofdoudercategorie, zul je dit onderwerp waarschijnlijk willen bewerken na de categoriewijziging.<br />Als je een categorie wijzigt, kunnen er andere instellingen gelden waardoor je meer of minder velden in kunt vullen.");
@@ -97,15 +97,10 @@ define("CONTENT_ADMIN_HELP_ITEM_LETTERS", "Hieronder zie je een lijst met de beg
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_1", "Op deze pagina kun je de opties voor de Beheerderspagina voor het creëren van content onderwerpen instelken. .<br /><br />Je kunt bepalen welke secties beschikbaar zijn als een beheerder (of een persoonlijke contentbeheerder) een nieuw contentonderwerp aanmaakt.<br /><br /><b>Maatwerk data tags</b><br />Je kunt een gebruiker of beheerder toestaan om extra velden aan het content onderwerp toe te voegen door gebruik te maken van maatwerk data tags. Deze optionele velden zijn blanco Sleutel - > Waarde paren. Voorbeeld: je kunt een sleutelveld toevoegen voor 'fotograaf' en de waarde in het veld vullen met 'alle foto's door mij'. Zowel deze sleutel als waarde velden zijn blanco tekstvelden die in het Creëer Formulier beschikbaar zijn.<br /><br /><b>Vooringestelde data tags</b><br />naast de maatwerk data tags, kun je ook vooringestelde data tags aanbieden. Het verschil is dat in de vooringestelde data tags het sleutelveld al is ingevuld en dat de gebruiker dus alleen nog de waarde hoeft op te geven. In dit voorbeeld kan 'fotograaf' voorgedefinieerd zijn en moet de gebruiker zeld 'alle foto's door mij' invullen. Je kunt het element type kiezen door een optie uit het selectieveld te kiezen. In het popup venster kun je vervolgens alle informatie voor de vooringestelde data tag opgeven.<br />");
 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_2", "De Bijwerk opties werken op het Gebruikers aanmeldformulier voor content onderwerpen.<br /><br />Je kunt bepalen welke secties voor een gebruiker beschikbaar zijn bij het aanmelden van een content onderwerp.<br /><br />".CONTENT_ADMIN_OPT_LAN_11.":<br />".CONTENT_ADMIN_OPT_LAN_12."");
 
 
 
-
-
-
-
-
-define("CONTENT_ADMIN_HELP_OPTION_DIV_2", "The Submit Options have affect on the user submit form for content items.<br /><br />You can define which sections are available for a user when submitting a content item.<br /><br />".CONTENT_ADMIN_OPT_LAN_11.":<br />".CONTENT_ADMIN_OPT_LAN_12."");
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_3", "In the Path and Theme Options you can define where images and files are stored.<br /><br />you can define which theme will be used by this main parent. You can create additional themes by copying (and renaming) the whole 'default' directory in your templates directory.<br /><br />You can define a default layout scheme for new content items. You can create new layout schemes by creating a content_content_template_XXX.php file in your 'templates/default' folder. These layouts can be used to give each content item in this main parent a different layout.<br /><br />");
 

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_admin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-08-28 19:12:22 $
+|     $Revision: 1.9 $
+|     $Date: 2005-08-29 13:52:43 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -156,7 +156,7 @@ define("CONTENT_ADMIN_ITEM_LAN_67", "Hieronder zie je de lijst met contentonderw
 define("CONTENT_ADMIN_ITEM_LAN_68", "Hieronder kun je maatwerk informatie toevoegen bij dit contentonderwerp. Alle maatwerkgegevens moeten zowel een sleutel als een waarde hebben. Je kunt sleutel in het linker veld definiëren en de bijbehorende waarde in het rechterveld.<br />(bij voorbeeld: sleutel='fotografie' en waarde ='al mijn eigen foto's'.");
 define("CONTENT_ADMIN_ITEM_LAN_69", "Hier kun je picrogrammen, bijlagen en-of afbeeldingen uploaden die bij het onderwerp horen. De toegestane bestandsformaten zijn: ");
 define("CONTENT_ADMIN_ITEM_LAN_70", "De verschillende woorden moeten met comma's worden gescheiden, spaties zijn niet toegestaan!");
-define("CONTENT_ADMIN_ITEM_LAN_71", "laten staan al jij het onderwerp hebt geschreven");
+define("CONTENT_ADMIN_ITEM_LAN_71", "laten staan als jij het onderwerp zelf hebt geschreven");
 define("CONTENT_ADMIN_ITEM_LAN_72", "bepalen auteursgegevens");
 define("CONTENT_ADMIN_ITEM_LAN_73", "opgeven startdatum voor dit onderwerp (niet invullen als niet benodigd)");
 define("CONTENT_ADMIN_ITEM_LAN_74", "opgeven einddatum voor dit onderwerp (niet invullen als niet benodigd)");
