@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-08-23 00:44:23 $
-|     $Author: sweetas $
+|     $Revision: 1.33 $
+|     $Date: 2005-08-29 16:13:03 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-require_once("../../class2.php");
+if(!defined("E107_BOOTSTRAP_LOADED")) {
+	require_once("../../class2.php");
+}
 
 @include_once e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum.php';
 @include_once e_PLUGIN.'forum/languages/English/lan_forum.php';
