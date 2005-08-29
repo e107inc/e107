@@ -1,7 +1,8 @@
 <?php
+
 /*
 + ----------------------------------------------------------------------------+
-e107 website system
+|     e107 website system
 |
 |     ©Steve Dunstan 2001-2002
 |     http://e107.org
@@ -11,9 +12,9 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-07-01 12:26:13 $
-|     $Author: sweetas $
+|     $Revision: 1.15 $
+|     $Date: 2005-08-29 16:13:03 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -44,25 +45,40 @@ if ($pref['membersonly_enabled'] && !USER) {
 	header('location: '.e_LOGIN);
 	exit;
 } else if (isset($pref['frontpage']['all']) && $pref['frontpage']['all']) {
-	header('location: '.((strpos($pref['frontpage']['all'], 'http') === FALSE) ? e_BASE : '').$pref['frontpage']['all'].$query);
-	exit;
+	$location = ((strpos($pref['frontpage']['all'], 'http') === FALSE) ? e_BASE : '').$pref['frontpage']['all'].$query;
 } else if (ADMIN) {
-	header('location: '.((strpos($pref['frontpage']['254'], 'http') === FALSE) ? e_BASE : '').$pref['frontpage']['254'].$query);
-	exit;
+	$location =  ((strpos($pref['frontpage']['254'], 'http') === FALSE) ? e_BASE : '').$pref['frontpage']['254'].$query;
 } else if (USER) {
 	require_once(e_HANDLER.'userclass_class.php');
 	$class_list = get_userclass_list();
 	foreach ($class_list as $fp_class) {
-		if (check_class($fp_class['userclass_id'])) {
-			header('location: '.((strpos($pref['frontpage'][$fp_class['userclass_id']], 'http') === FALSE) ? e_BASE : '').$pref['frontpage'][$fp_class['userclass_id']].$query);
-			exit;
+		$inclass = false;
+		if (!$inclass && check_class($fp_class['userclass_id'])) {
+			$location = ((strpos($pref['frontpage'][$fp_class['userclass_id']], 'http') === FALSE) ? e_BASE : '').$pref['frontpage'][$fp_class['userclass_id']].$query;
+			$inclass = true;
 		}
 	}
-	header('location: '.((strpos($pref['frontpage']['253'], 'http') === FALSE) ? e_BASE : '').$pref['frontpage']['253'].$query);
-	exit;
+	$location = ((strpos($pref['frontpage']['253'], 'http') === FALSE) ? e_BASE : '').$pref['frontpage']['253'].$query;
 } else {
-	header('location: '.((strpos($pref['frontpage']['252'], 'http') === FALSE) ? e_BASE : '').$pref['frontpage']['252'].$query);
-	exit;
+	$location = ((strpos($pref['frontpage']['252'], 'http') === FALSE) ? e_BASE : '').$pref['frontpage']['252'].$query;
+}
+
+// handle redirect and include front page methods
+if(isset($pref['frontpage_method']) && $pref['frontpage_method'] == "include") {
+	if($location == "news.php") {
+		require_once("news.php");
+	} elseif ($location == PLUGINS_DIRECTORY."forum/forum.php") {
+		require_once($PLUGINS_DIRECTORY."forum/forum.php");
+	} elseif (preg_match('/^page\.php\?([0-9]?)$/', $location)) {
+		$e_QUERY = preg_match('/^page\.php\?([0-9]?)$/', $location);
+		require_once("page.php");
+	} else {
+		header("Location: {$location}");
+		exit();
+	}
+} else {
+	header("Location: {$location}");
+	exit();
 }
 
 ?>

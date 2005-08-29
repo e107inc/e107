@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.206 $
-|     $Date: 2005-08-29 00:30:56 $
+|     $Revision: 1.207 $
+|     $Date: 2005-08-29 16:13:03 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -40,6 +40,8 @@ set_error_handler(array(&$error_handler, "handle_error"));
 // Honest global beginning point for processing time
 $eTimingStart = microtime();
 $start_ob_level = ob_get_level();
+
+define("E107_BOOTSTRAP_LOADED", 1);
 
 ini_set('magic_quotes_runtime', 0);
 ini_set('magic_quotes_sybase',  0);
@@ -77,6 +79,7 @@ if (preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)) {
 } else {
 	define("e_QUERY", preg_replace("#&|/?".session_name().".*#i", "", $_SERVER['QUERY_STRING']));
 }
+$e_QUERY = e_QUERY;
 
 define("e_TBQS", $_SERVER['QUERY_STRING']);
 $_SERVER['QUERY_STRING'] = e_QUERY;
