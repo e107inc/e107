@@ -97,6 +97,20 @@ if ($news_item['news_comment_total']) {
 }
 return ($news_item['news_allow_comments'] ? $param['commentoffstring'] : "".($pref['comments_icon'] ? $NEWIMAGE : "")." <a href='".e_BASE."comment.php?comment.news.".$news_item['news_id']."'>".$param['commentlink'].$news_item['news_comment_total']."</a>");
 SC_END
+
+SC_BEGIN NEWSCOMMENTLINK
+global $pref, $sql;
+$news_item = getcachedvars('current_news_item');
+$param = getcachedvars('current_news_param');
+return ($news_item['news_allow_comments'] ? $param['commentoffstring'] : " <a href='".e_BASE."comment.php?comment.news.".$news_item['news_id']."'>".$param['commentlink']."</a>");
+SC_END
+
+SC_BEGIN NEWSCOMMENTCOUNT
+global $pref, $sql;
+$news_item = getcachedvars('current_news_item');
+return $news_item['news_comment_total'];
+SC_END
+
 	
 SC_BEGIN EMAILICON
 $news_item = getcachedvars('current_news_item');
