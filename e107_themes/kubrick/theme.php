@@ -20,7 +20,7 @@
 // [theme]
 $themename = "kubrick";
 $themeversion = "1.0";
-$themeauthor = "Steve Dunstan [jalist] & William Moffett [Que]";
+$themeauthor = "Steve Dunstan [jalist] &amp; William Moffett [Que]";
 $themeemail = "jalist@e107.org";
 $themewebsite = "http://e107.org";
 $themedate = "29/01/2005";
