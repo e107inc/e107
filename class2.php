@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.205 $
-|     $Date: 2005-08-23 04:17:57 $
-|     $Author: sweetas $
+|     $Revision: 1.206 $
+|     $Date: 2005-08-29 00:30:56 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -91,6 +91,7 @@ define("ADMINDIR", $ADMIN_DIRECTORY);
 
 // All debug objects and constants are defined in the debug handler
 if (strpos(e_MENU, 'debug=') !== FALSE || isset($_COOKIE['e107_debug_level'])) {
+
 	require_once(e_HANDLER.'debug_handler.php');
 	$db_debug = new e107_db_debug;
 } else {
@@ -330,7 +331,7 @@ if (!function_exists('checkvalidtheme')) {
 			define("THEME_ABS", e_THEME_ABS.$themeArray[$id]."/");
 			return;
 		}
-		if (@fopen(e_THEME.$theme_check."/theme.php", r)) {
+		if (@fopen(e_THEME.$theme_check."/theme.php", "r")) {
 			define("THEME", e_THEME.$theme_check."/");
 			define("THEME_ABS", e_THEME_ABS.$theme_check."/");
 			$e107->site_theme = $theme_check;
