@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-07-06 14:49:52 $
-|     $Author: e107coders $
+|     $Revision: 1.18 $
+|     $Date: 2005-08-29 01:04:44 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_PLUGIN")){ exit; }
@@ -82,14 +82,14 @@ foreach($mainLinkArray as $links) {
 		$url = "javascript:void(0);";
 		$spanName = str_replace(" ", "_", $name);
 		$image = ($image ? "<img src='".e_IMAGE."icons/".$image."' alt='' style='vertical-align:middle;' />" : "&raquo;");
-		$plink = "<div class='".$menu_pref['tm_class2']."' style='width:100%; cursor: pointer;' onclick='expandit(\"span_".$spanName."\");updatecook(\"".$name."\");'>".$image.setLink($name, $url, $openMethod, $description)."</div>\n";
+		$plink = "<div".($menu_pref['tm_class2'] ? " class='{$menu_pref['tm_class2']}'" : "")." style='width:100%; cursor: pointer;' onclick='expandit(\"span_".$spanName."\");updatecook(\"".$name."\");'>".$image.setLink($name, $url, $openMethod, $description)."</div>\n";
 		$text .= ($menu_pref['tm_spacer'] ? "<div class='spacer'>".$plink."</div>\n" : $plink);
 	} else {
 		// no sublinks found ...
 		$linkName = $url;
 		$spanName = "";
 		$image = ($image ? "<img src='".e_IMAGE."icons/".$image."' alt='' style='vertical-align:middle;' />" : "&middot;");
-		$plink = "<div class='".$menu_pref['tm_class1']."' style='width:100%; cursor: pointer;'>".$image.setLink($name, $url, $openMethod, $description)."</div>";
+		$plink = "<div".($menu_pref['tm_class1'] ? " class='{$menu_pref['tm_class1']}'" : "")." style='width:100%; cursor: pointer;'>".$image.setLink($name, $url, $openMethod, $description)."</div>";
 		$text .= ($menu_pref['tm_spacer'] ? "<div class='spacer'>".$plink."</div>\n" : $plink);
 
 
@@ -107,7 +107,7 @@ foreach($mainLinkArray as $links) {
 			$spanName = str_replace(" ", "_", $parent_name);
 			 
 			$plink = $image.setLink($name, $url, $openMethod, $description)."<br />\n";
-			$text .=($menu_pref['tm_class3'] ? "<span class='".$menu_pref['tm_class3']."'>".$plink."</span>" : $plink);
+			$text .=($menu_pref['tm_class3'] ? "<span".($menu_pref['tm_class3'] ? " class='{$menu_pref['tm_class3']}'" : "").">".$plink."</span>" : $plink);
 		}
 		$text .= "</span>\n";
 	}
