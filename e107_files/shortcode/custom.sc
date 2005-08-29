@@ -57,7 +57,8 @@ switch($custom_query[0])
 				$reject = array('.','..','/','CVS','thumbs.db','*._$');
 				$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
 				sort($lanlist);
-				$lantext = "<form method='post' action='".e_SELF."' id='langchange'>
+				$action = (e_QUERY && !$_GET['elan']) ? e_SELF."?".e_QUERY : e_SELF;
+				$lantext = "<form method='post' action='".$action."' id='langchange'>
 				<div><select name='sitelanguage' class='tbox' onchange=\"document.getElementById('langchange').submit()\">\n";
 
 				foreach($lanlist as $langval) {

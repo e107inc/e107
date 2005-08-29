@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/userlanguage_menu/userlanguage_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-02-28 20:04:11 $
-|     $Author: stevedunstan $
+|     $Revision: 1.10 $
+|     $Date: 2005-08-29 20:52:41 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -22,7 +22,8 @@ require_once(e_HANDLER."file_class.php");
 	$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
 	sort($lanlist);
 
-	$text = "<form method='post' action='".e_SELF."'>
+	$action = (e_QUERY && !$_GET['elan']) ? e_SELF."?".e_QUERY : e_SELF;
+	$text = "<form method='post' action='".$action."'>
 		<div style='text-align:center'>
 		<select name='sitelanguage' class='tbox' >";
 	foreach($lanlist as $langval)

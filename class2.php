@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.207 $
-|     $Date: 2005-08-29 16:13:03 $
-|     $Author: streaky $
+|     $Revision: 1.208 $
+|     $Date: 2005-08-29 20:52:41 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -253,7 +253,8 @@ if (isset($_POST['setlanguage']) || isset($_GET['elan'])) {
 		setcookie('e107language_'.$pref['cookie_name'], $_POST['sitelanguage'], time() + 86400, "/");
 		$_COOKIE['e107language_'.$pref['cookie_name']] = $_POST['sitelanguage'];
 		if (strpos(e_SELF, e_ADMIN) === FALSE) {
-			header("Location:".e_SELF);
+			$locat = (!$_GET['elan'] && e_QUERY) ? e_SELF."?".e_QUERY : e_SELF;
+			header("Location:".$locat);
 		}
 	}
 }
@@ -752,7 +753,7 @@ function getperms($arg, $ap = ADMINPERMS) {
 			$arg='P'.$row[0];
 		}
 	}
-	
+
 	if (strpos($ap, ".".$arg.".") !== FALSE) {
 		return TRUE;
 	} else {
