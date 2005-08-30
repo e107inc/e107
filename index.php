@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-08-29 16:13:03 $
+|     $Revision: 1.16 $
+|     $Date: 2005-08-30 17:30:30 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -69,8 +69,8 @@ if(isset($pref['frontpage_method']) && $pref['frontpage_method'] == "include") {
 		require_once("news.php");
 	} elseif ($location == PLUGINS_DIRECTORY."forum/forum.php") {
 		require_once($PLUGINS_DIRECTORY."forum/forum.php");
-	} elseif (preg_match('/^page\.php\?([0-9]?)$/', $location)) {
-		$e_QUERY = preg_match('/^page\.php\?([0-9]?)$/', $location);
+	} elseif (preg_match('/^page\.php\?([0-9]*)$/', $location)) {
+		$e_QUERY = preg_match('/^page\.php\?([0-9]*)$/', $location);
 		require_once("page.php");
 	} else {
 		header("Location: {$location}");
