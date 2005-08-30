@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/meta.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-27 18:06:50 $
-|     $Author: stevedunstan $
+|     $Revision: 1.10 $
+|     $Date: 2005-08-30 14:23:02 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -24,17 +24,27 @@ if (!getperms("C")) {
 $e_sub_cat = 'meta';
 require_once("auth.php");
 
+$current_lang = ($sql->mySQLlanguage != "") ? $sql->mySQLlanguage : $pref['sitelanguage'];
+
 if (isset($_POST['metasubmit'])) {
 
-	$pref['meta_tag'] = $tp->toForm($_POST['meta']);
+	$tmp = $pref['meta_tag'];
+	$langs = explode(",",e_LANLIST);
+	foreach($langs as $lan){
+		$meta_tag[$lan] = $tmp[$lan];
+	}
+
+	$meta_tag[$current_lang] = $_POST['meta'];
+	$pref['meta_tag'] = $meta_tag;
 	save_prefs();
 	$message = METLAN_1;
 }
 
 if ($message) {
-	$ns->tablerender(METLAN_4, "<div
-		style='text-align:center'>".METLAN_1.".</div>");
+	$ns->tablerender(METLAN_4, "<div style='text-align:center'>".METLAN_1." (".$current_lang.").</div>");
 }
+
+$meta = $pref['meta_tag'];
 
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."' id='dataform'>
@@ -44,7 +54,7 @@ $text = "<div style='text-align:center'>
 	<td style='width:20%' class='forumheader3'>".METLAN_2.": </td>
 	<td style='width:80%' class='forumheader3'>
 	<textarea class='tbox' id='meta' name='meta' cols='70'
-	rows='10' style='width:90%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$tp->toForm($pref['meta_tag'],TRUE)."</textarea>
+	rows='10' style='width:90%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("&#039;","'",$meta[$current_lang])."</textarea>
 	<br />";
 $text .= "
 	<input class='button' type='button' value='".METLAN_9."'
@@ -69,7 +79,7 @@ $text .= "
 
 
 
-$ns -> tablerender(METLAN_8, $text);
+$ns -> tablerender(METLAN_8." (".$current_lang.")", $text);
 
 require_once("footer.php");
 

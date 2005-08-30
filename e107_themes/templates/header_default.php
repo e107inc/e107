@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2005-08-29 00:47:49 $
-|     $Author: streaky $
+|     $Revision: 1.65 $
+|     $Date: 2005-08-30 14:23:03 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -80,7 +80,7 @@ if(function_exists('theme_head')){
 if(function_exists('core_head')){ echo core_head(); }
 if (file_exists(e_BASE."favicon.ico")) { echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n"; }
 
-echo $pref['meta_tag'] ? str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'], FALSE, "nobreak, no_hook, no_make_clickable"))."\n" : "";
+echo $pref['meta_tag'][e_LANGUAGE] ? str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'][e_LANGUAGE], FALSE, "nobreak, no_hook, no_make_clickable"))."\n" : "";
 if (isset($theme_js_php) && $theme_js_php) {
 	echo "<link rel='stylesheet' href='".THEME_ABS."theme-js.php' type='text/css />";
 } else {
