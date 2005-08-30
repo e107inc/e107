@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2005-08-23 02:45:17 $
-|     $Author: sweetas $
+|     $Revision: 1.70 $
+|     $Date: 2005-08-30 20:20:00 $
+|     $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
 
@@ -107,15 +107,18 @@ class sitelinks
 
 				$text .= $this->makeLink($link,'', $style);
 
-				// if there's a submenu. :
-				if (isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])){
-					$substyle = (strpos(e_SELF, $link['link_url']) !== FALSE || strpos(e_SELF, $link['link_name']) !== FALSE || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
-					$text .= "\n\n<div id='{$main_linkid}' style='display:$substyle'>\n";
-					foreach ($this->eLinkList[$main_linkid] as $sub){
-						$text .= $this->makeLink($sub, TRUE, $style);
-					}
-					$text .= "\n</div>\n\n";
+				if(!defined("LINKSRENDERONLYMAIN"))	/* if this is defined in theme.php only main links will be rendered */
+				{
 
+					// if there's a submenu. :
+					if (isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])){
+						$substyle = (strpos(e_SELF, $link['link_url']) !== FALSE || strpos(e_SELF, $link['link_name']) !== FALSE || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
+						$text .= "\n\n<div id='{$main_linkid}' style='display:$substyle'>\n";
+						foreach ($this->eLinkList[$main_linkid] as $sub){
+							$text .= $this->makeLink($sub, TRUE, $style);
+						}
+						$text .= "\n</div>\n\n";
+					}
 				}
 			}
 			$text .= $style['postlink'];
