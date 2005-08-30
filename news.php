@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2005-08-16 17:14:03 $
-|     $Author: sweetas $
+|     $Revision: 1.75 $
+|     $Date: 2005-08-30 20:22:18 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -282,13 +282,33 @@ if($pref['news_unstemplate'] && file_exists(THEME."news_template.php"))
 {
 	// theme specific template required ...
 	require_once(THEME."news_template.php");
+
+	if($ALTERNATECLASS1)
+	{
+		
+
+
+		return TRUE;
+	}
+
+
+
 	$newscolumns = (isset($NEWSCOLUMNS) ? $NEWSCOLUMNS : 1);
 	$newspercolumn = (isset($NEWSITEMSPERCOLUMN) ? $NEWSITEMSPERCOLUMN : 10);
 	$newsdata = array();
 	$loop = 1;
 	foreach($newsAr as $news)
 	{
-		$newsdata[$loop] .= $ix->render_newsitem($news, "return");
+
+		if(is_array($ALTERNATECLASSES))
+		{
+			$newsdata[$loop] .= "<div class='".$ALTERNATECLASSES[0]."'>".$ix->render_newsitem($news, "return")."</div>";
+			$ALTERNATECLASSES = array_reverse($ALTERNATECLASSES);
+		}
+		else
+		{
+			$newsdata[$loop] .= $ix->render_newsitem($news, "return");
+		}
 		$loop ++;
 		if($loop > $newscolumns)
 		{
