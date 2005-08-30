@@ -12,30 +12,28 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-08-22 20:14:35 $
-|     $Author: sweetas $
+|     $Revision: 1.31 $
+|     $Date: 2005-08-30 11:16:17 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
-class e107plugin {
+class e107plugin
+{
 
 	/**
 	 * Returns an array containing details of all plugins in the plugin table - should noramlly use e107plugin::update_plugins_table() first to make sure the table is up to date.
 	 *
 	 * @return array plugin details
 	 */
-	function getall($flag) {
+	function getall($flag)
+	{
 		global $sql;
-		if ($sql->db_Select("plugin","*","plugin_installflag = '$flag' ORDER BY plugin_name ASC")) {
-			while ($row = $sql->db_Fetch()) {
-				$name = ucfirst($row['plugin_name']);
-				$ret[$name] = $row;
-			}
+		if ($sql->db_Select("plugin","*","plugin_installflag = '$flag' ORDER BY plugin_name ASC"))
+		{
+			$ret = $sql->db_getList();
  		}
-
 		return ($ret) ? $ret : FALSE;
-
 	}
 
 	/**
