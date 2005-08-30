@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_select_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-09 14:40:02 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-08-30 18:08:59 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -79,13 +79,16 @@ class user_select {
 		//-->
 		</script>";
 
+		list($form_name, $form_id) = explode(",", $user_form);
+		if(!$form_id){ $form_id = $form_name; }
+
 		if ($type == 'list') {
 			$text .= $this -> user_list($class, 'user');
 		} else if ($type == 'popup') {
-			$text .= "<input class='tbox' type='text' name='".$user_form."' id='".$user_form."' size='25' maxlength='30' value='".$user_value."'>&nbsp;";
+			$text .= "<input class='tbox' type='text' name='".$form_name."' id='".$form_id."' size='25' maxlength='30' value='".$user_value."'>&nbsp;";
 			$text .= "<img src='".e_IMAGE_ABS."generic/".IMODE."/user_select.png' 
 			style='width: 16px; height: 16px; vertical-align: top' alt='Find username...' 
-			title='Find username...' onclick=\"window.open('".e_HANDLER_ABS."user_select_class.php?".$user_form."','user_search', 'toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes,width=300,height=200,left=100,top=100'); return false;\" />";
+			title='Find username...' onclick=\"window.open('".e_HANDLER_ABS."user_select_class.php?".$form_id."','user_search', 'toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes,width=300,height=200,left=100,top=100'); return false;\" />";
 		}
 		
 		if ($class !== false) {

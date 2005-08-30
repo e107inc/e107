@@ -5,9 +5,9 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.14 $
-|	$Date: 2005-06-11 20:58:13 $
-|	$Author: e107coders $
+|	$Revision: 1.15 $
+|	$Date: 2005-08-30 18:08:59 $
+|	$Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -166,6 +166,7 @@ var is_win = ((clientPC.indexOf("win")!=-1) || (clientPC.indexOf("16bit") != -1)
 var is_mac = (clientPC.indexOf("mac")!=-1);
 var e107_selectedInputArea;
 var e107_selectedRange;
+var e107_dupCounter = 1;
 
 // From http://www.massless.org/mozedit/
 function mozWrap(txtarea, open, close){
@@ -254,9 +255,10 @@ function eover(object, over) {
 	object.className = over;
 }
 
-function duplicateHTML(copy,paste){
+function duplicateHTML(copy,paste,baseid){
 		if(document.getElementById(copy)){
 
+			e107_dupCounter++;
 			var type = document.getElementById(copy).nodeName; // get the tag name of the source copy.
 
 			var but = document.createElement('input');
@@ -276,11 +278,15 @@ function duplicateHTML(copy,paste){
 			newentry.value='';
 			newentry.appendChild(but);
 			newentry.appendChild(br);
+			if(baseid)
+			{
+				newid = baseid+e107_dupCounter;
+				newentry.innerHTML = newentry.innerHTML.replace(new RegExp(baseid, 'g'), newid);
+				newentry.id=newid;
+			}
 
 			destination.appendChild(newentry);
 		}
 }
-
-
 
 //-->
