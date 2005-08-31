@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.208 $
-|     $Date: 2005-08-29 20:52:41 $
-|     $Author: e107coders $
+|     $Revision: 1.209 $
+|     $Date: 2005-08-31 19:41:50 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -52,9 +52,6 @@ if(!isset($ADMIN_DIRECTORY)){
 	// e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
 	header("Location: install.php");
 }
-
-// class to clean user input. yay! more memory usage, but it's important and fairly lightweight so we can't complain :)
-e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'/input_class.php');
 
 // clever stuff that figures out where the paths are on the fly.. no more need fo hard-coded e_HTTP :)
 e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'/e107_class.php');
@@ -132,6 +129,9 @@ $sql->db_SetErrorReporting(FALSE);
 $sql->db_Mark_Time('Start: SQL Connect');
 $merror=$sql->db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb);
 $sql->db_Mark_Time('Start: Prefs, misc tables');
+
+require_once(e_HANDLER.'admin_log_class.php');
+$admin_log = new e_admin_log();
 
 if ($merror == "e1") {
 	message_handler("CRITICAL_ERROR", 6, ": generic, ", "class2.php");
