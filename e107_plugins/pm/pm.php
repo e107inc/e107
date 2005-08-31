@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-08-31 18:57:59 $
+|     $Revision: 1.3 $
+|     $Date: 2005-08-31 19:38:28 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -138,12 +138,12 @@ if("send" == $action)
 
 if("inbox" == $action)
 {
-	$ns->tablerender(LAN_PM." - ".PM_LAN_25, show_inbox());
+	$ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox());
 }
 
 if("outbox" == $action)
 {
-	$ns->tablerender(LAN_PM." - ".PM_LAN_26, show_outbox());
+	$ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox());
 }
 
 if("show" == $action)
