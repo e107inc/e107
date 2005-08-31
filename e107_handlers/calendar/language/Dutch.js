@@ -66,7 +66,7 @@ Calendar._MN = new Array
 Calendar._SMN = new Array
 ("Jan",
  "Feb",
- "Maa",
+ "Mrt",
  "Apr",
  "Mei",
  "Jun",

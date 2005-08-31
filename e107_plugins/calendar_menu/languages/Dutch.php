@@ -184,7 +184,7 @@ define('EC_ADLAN_A97', "Wanneer forceer abonnementen is ingesteld, wordt deze ca
 
 define('EC_LAN_JAN', "Jan");
 define('EC_LAN_FEB', "Feb");
-define('EC_LAN_MAR', "Maa");
+define('EC_LAN_MAR', "Mrt");
 define('EC_LAN_APR', "Apr");
 define('EC_LAN_MAY', "Mei");
 define('EC_LAN_JUN', "Jun");
