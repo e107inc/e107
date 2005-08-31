@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/lan_content.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-31 10:45:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-08-31 13:04:46 $
 |     $Author: adriansilea $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Article/Review");
+define("PAGE_NAME", "Articol/Review");
 
 define("LAN_1", "Article");
 define("LAN_2", "Review");
