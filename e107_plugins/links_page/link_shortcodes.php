@@ -407,5 +407,16 @@ global $LINK_SUBMIT_CAT;
 return $LINK_SUBMIT_CAT;
 SC_END
 
+SC_BEGIN LINK_SUBMIT_PRETEXT
+global $LINK_SUBMIT_PRETEXT, $linkspage_pref;
+if(isset($linkspage_pref['link_submit_directpost']) && $linkspage_pref['link_submit_directpost']){
+return "";
+}else{
+return LCLAN_SL_9;
+}
+
+SC_END
+
+
 */
 ?>

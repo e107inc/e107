@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-07-14 21:32:12 $
+|     $Revision: 1.13 $
+|     $Date: 2005-08-31 16:32:34 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -196,13 +196,15 @@ $LINK_RATED_TABLE_END = "
 	</div>";
 
 
+$sc_style['LINK_SUBMIT_PRETEXT']['pre'] = "<tr><td colspan='2' style='text-align:center' class='forumheader2'>";
+$sc_style['LINK_SUBMIT_PRETEXT']['post'] = "</td></tr>";
 
 // SUBMIT -----------------------------------------------------------------------------------
 $LINK_SUBMIT_TABLE = "
 	<div style='text-align:center'>
 	<form method='post' action='".e_SELF.(e_QUERY ? "?".e_QUERY : "")."'>	
 	<table class='fborder' style='width:100%' cellspacing='0' cellpadding='0'>
-	<tr><td colspan='2' style='text-align:center' class='forumheader2'>".LCLAN_SL_9."</td></tr>
+	{LINK_SUBMIT_PRETEXT}
 	<tr>
 		<td class='forumheader3' style='width:30%'>".LCLAN_SL_10."</td>
 		<td class='forumheader3' style='width:70%'>{LINK_SUBMIT_CAT}</td>
