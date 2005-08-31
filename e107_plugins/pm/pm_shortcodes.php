@@ -1,0 +1,338 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2005-08-31 16:45:44 $
+|     $Author: mcfly_e107 $
++----------------------------------------------------------------------------+
+*/
+include_once(e_HANDLER.'shortcode_handler.php');
+include_once(e_PLUGIN.'pm/pm_func.php');
+$pm_shortcodes = e_shortcode::parse_scbatch(__FILE__);
+		
+/*
+SC_BEGIN FORM_TOUSER
+global $pm_prefs;
+require_once(e_HANDLER."user_select_class.php");
+$us = new user_select;
+$type = ($pm_prefs['dropdown'] == TRUE ? 'list' : 'popup');
+if(check_class($pm_prefs['multi_class']))
+{
+	$ret = $us->select_form($type, 'textarea.pm_to');
+}
+else
+{
+	$ret = $us->select_form($type, 'pm_to');
+}
+return $ret;
+SC_END
+
+SC_BEGIN FORM_TOCLASS
+global $pm_prefs;
+if($pm_prefs['allow_userclass'])
+{
+	$ret = "<input type='checkbox' name='to_userclass' value='1' />".LAN_PM_4." ";
+	require_once(e_HANDLER."userclass_class.php");
+	$args = (ADMIN ? "admin, classes" : "matchclass");
+	if(check_class($pm_prefs['sendall_class']))
+	{
+		$args = "member, ".$args;
+	}
+	$ret .= r_userclass("pm_userclass", "", "off", $args);
+}
+return $ret;
+SC_END
+
+SC_BEGIN FORM_SUBJECT
+return "<input class='tbox' type='text' name='pm_subject' value='' size='30' maxlength='255' />";
+SC_END
+
+SC_BEGIN FORM_MESSAGE
+return "<textarea class='tbox' name='pm_message' cols='60' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>";
+return "PM MESSAGE";
+SC_END
+
+SC_BEGIN EMOTES
+require_once(e_HANDLER."emote.php");
+return r_emote();
+SC_END
+
+SC_BEGIN PM_POST_BUTTON
+return "<input class='button' type='submit' name='postpm' value='".LAN_PM_1."' />";
+SC_END
+
+SC_BEGIN PM_PREVIEW_BUTTON
+return "<input class='button' type='submit' name='postpm' value='".LAN_PM_3."' />";
+SC_END
+
+SC_BEGIN ATTACHMENT
+global $pm_prefs;
+if (check_class($pm_prefs['attach_class']))
+{
+	$ret = "
+	<div id='up_container' >
+	<span id='upline' style='white-space:nowrap'>
+	<input class='tbox' type='file' name='file_userfile[]' size='40' />
+	</span>
+	</div>
+	<input type='button' class='button' value='".LAN_PM_11."' onclick=\"duplicateHTML('upline','up_container');\"  />
+	";
+	return $ret;
+}
+return "";
+SC_END
+
+SC_BEGIN PM_ATTACHMENT_ICON
+global $pm_info;
+if($pm_info['pm_attachments'] != "")
+{
+	return ATTACHMENT_ICON;
+}
+SC_END
+
+SC_BEGIN PM_ATTACHMENTS
+global $pm_info;
+if($pm_info['pm_attachments'] != "")
+{
+	$attachments = explode(chr(0), $pm_info['pm_attachments']);
+	$i = 0;
+	foreach($attachments as $a)
+	{
+		list($timestamp, $fromid, $rand, $filename) = explode("_", $a, 4);
+		$ret .= "<a href='".e_SELF."?get.{$pm_info['pm_id']}.{$i}'>{$filename}</a><br />";
+		$i++;
+	}
+	$ret = substr($ret, 0, -3);
+	return $ret;
+}
+SC_END
+
+SC_BEGIN RECEIPT
+global $pm_prefs;
+if (check_class($pm_prefs['receipt_class']))
+{
+	return "<input type='checkbox' name='receipt' value='1' />".LAN_PM_10;
+}
+return "";
+SC_END
+
+SC_BEGIN INBOX_TOTAL
+$pm_inbox = pm_getInfo('inbox');
+return $pm_inbox['inbox']['total'];
+SC_END
+
+SC_BEGIN INBOX_UNREAD
+$pm_inbox = pm_getInfo('inbox');
+return $pm_inbox['inbox']['unread'];
+SC_END
+
+SC_BEGIN INBOX_FILLED
+$pm_inbox = pm_getInfo('inbox');
+return $pm_inbox['inbox']['filled'];
+SC_END
+
+SC_BEGIN OUTBOX_TOTAL
+$pm_outbox = pm_getInfo('outbox');
+return $pm_outbox['outbox']['total'];
+SC_END
+
+SC_BEGIN OUTBOX_UNREAD
+$pm_outbox = pm_getInfo('outbox');
+return $pm_outbox['outbox']['unread'];
+SC_END
+
+SC_BEGIN OUTBOX_FILLED
+$pm_outbox = pm_getInfo('outbox');
+return $pm_outbox['outbox']['filled'];
+SC_END
+
+SC_BEGIN PM_DATE
+global $pm_info;
+require_once(e_HANDLER."date_handler.php");
+if("lapse" != $parm)
+{
+	return convert::convert_date($pm_info['pm_sent'], $parm);
+}
+else
+{
+	return convert::computeLapse($pm_info['pm_sent']);
+}
+SC_END
+
+SC_BEGIN PM_READ
+global $pm_info;
+if($pm_info['pm_read'] == 0)
+{
+	return "Unread";
+}
+if($pm_info['pm_read'] == 1)
+{
+	return "N/A";
+}
+require_once(e_HANDLER."date_handler.php");
+if("lapse" != $parm)
+{
+	return convert::convert_date($pm_info['pm_read'], $parm);
+}
+else
+{
+	return convert::computeLapse($pm_info['pm_read']);
+}
+SC_END
+
+
+SC_BEGIN PM_FROM_TO
+global $pm_info, $tp;
+if($pm_info['pm_from'] == USERID)
+{
+	$ret = "To: <br />";
+	$pm_info['user_name'] = $pm_info['sent_name'];
+	$ret .= $tp->parseTemplate("{PM_TO=link}");
+}
+else
+{
+	$ret = "From: <br />";
+	$pm_info['user_name'] = $pm_info['from_name'];
+	$ret .= $tp->parseTemplate("{PM_FROM=link}");
+}	
+return $ret;
+SC_END
+
+SC_BEGIN PM_SUBJECT
+global $pm_info, $tp;
+$ret = $tp->toHTML($pm_info['pm_subject'], true);
+if('link' == $parm)
+{
+	$ret = "<a href='".e_PLUGIN_ABS."pm/pm.php?show.{$pm_info['pm_id']}'>".$ret."</a>";
+}
+return $ret; 
+SC_END
+
+SC_BEGIN PM_FROM
+global $pm_info;
+if("link" == $parm)
+{
+	return "<a href='".e_BASE."user.php?id.{$pm_info['pm_from']}'>{$pm_info['user_name']}</a>";
+}
+else
+{
+	return $pm_info['user_name'];
+}
+SC_END
+
+SC_BEGIN PM_SELECT
+global $pm_info;
+return "<input type='checkbox' name='selected_pm[{$pm_info['pm_id']}]' value='1' />";
+SC_END
+
+SC_BEGIN PM_READ_ICON
+global $pm_info;
+if($pm_info['pm_read'] > 0 )
+{
+	return PM_READ_ICON;
+}
+else
+{
+	return PM_UNREAD_ICON;
+}
+SC_END
+
+SC_BEGIN PM_AVATAR
+global $pm_info, $tp;
+return $tp->parseTemplate("{USER_AVATAR={$pm_info['user_image']}}");
+SC_END
+
+SC_BEGIN PM_BLOCK_USER
+global $pm_info, $pm_blocks;
+if(in_array($pm_info['pm_from'], $pm_blocks))
+{
+	return "<a href='".e_PLUGIN_ABS."pm/pm.php?unblock.{$pm_info['pm_from']}'>UNBlock User</a>";
+}
+else
+{
+	return "<a href='".e_PLUGIN_ABS."pm/pm.php?block.{$pm_info['pm_from']}'>Block User</a>";
+}
+SC_END
+
+SC_BEGIN PM_DELETE
+global $pm_info;
+$extra = $parm != "" ? ".{$parm}" : "";
+return "<a href='".e_PLUGIN_ABS."pm/pm.php?del.{$pm_info['pm_id']}{$extra}'>Delete</a>";
+SC_END
+
+SC_BEGIN DELETE_SELECTED
+global $pm_info;
+return "<input type='submit' name='pm_delete_selected' class='tbox' value='Delete Selected' />";
+SC_END
+
+SC_BEGIN PM_TO
+global $pm_info;
+if(is_numeric($pm_info['pm_to']))
+{
+	if("link" == $parm)
+	{
+		return "<a href='".e_BASE."user.php?id.{$pm_info['pm_to']}'>{$pm_info['user_name']}</a>";
+	}
+	else
+	{
+		return $pm_info['user_name'];
+	}
+}
+else
+{
+	return "class: ".$pm_info['pm_to'];
+}
+SC_END
+
+SC_BEGIN PM_MESSAGE
+global $pm_info, $tp;
+return $tp->toHTML($pm_info['pm_text'], true);
+SC_END
+
+SC_BEGIN PM_SHOWBOX
+global $pm_info, $ns;
+if($pm_info['pm_from'] == USERID)
+{
+	
+	return $ns->tablerender(LAN_PM." - outbox", show_outbox(), "PM", TRUE);
+}
+else
+{
+	return $ns->tablerender(LAN_PM." - inbox", show_inbox(), "PM", TRUE);
+}
+SC_END
+
+SC_BEGIN SEND_PM_LINK
+$pm_outbox = pm_getInfo('outbox');
+if($pm_outbox['outbox']['filled'] < 100)
+{
+	return "<a href='".e_PLUGIN_ABS."pm/pm.php?send'>".PM_SEND_LINK."</a>";
+}
+return "";
+SC_END
+
+SC_BEGIN NEWPM_ANIMATE
+global $pm_prefs, $pm_inbox;
+if($pm_prefs['animate'])
+{
+	$pm_inbox = pm_getInfo('inbox');
+	if($pm_inbox['inbox']['new'] > 0)
+	{
+		return NEWPM_ANIMATION;
+	}
+}
+return "";
+SC_END
+
+*/
+?>
