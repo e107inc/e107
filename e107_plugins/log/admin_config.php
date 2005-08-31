@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-06-24 17:36:27 $
+|     $Revision: 1.14 $
+|     $Date: 2005-08-31 12:39:51 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -45,6 +45,7 @@ if(IsSet($_POST['remSelP']))
 	rempagego();
 }
 
+
 if(IsSet($_POST['wipeSubmit']))
 {
 	foreach($_POST['wipe'] as $key => $wipe)
@@ -53,6 +54,8 @@ if(IsSet($_POST['wipeSubmit']))
 		{
 			case "statWipePage":
 				$sql -> db_Update("logstats", "log_data='' WHERE log_id='pageTotal' ");
+				$sql -> db_Update("logstats", "log_data='' WHERE log_id='statTotal' ");
+				$sql -> db_Update("logstats", "log_data='' WHERE log_id='statUnique' ");
 			break;
 			case "statWipeBrowser":
 				$sql -> db_Update("logstats", "log_data='' WHERE log_id='statBrowser' ");
