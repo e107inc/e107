@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-31 16:45:44 $
+|     $Revision: 1.2 $
+|     $Date: 2005-08-31 18:57:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -173,11 +173,11 @@ SC_BEGIN PM_READ
 global $pm_info;
 if($pm_info['pm_read'] == 0)
 {
-	return "Unread";
+	return LAN_PM_27;
 }
 if($pm_info['pm_read'] == 1)
 {
-	return "N/A";
+	return LAN_PM_28;
 }
 require_once(e_HANDLER."date_handler.php");
 if("lapse" != $parm)
@@ -256,23 +256,23 @@ SC_BEGIN PM_BLOCK_USER
 global $pm_info, $pm_blocks;
 if(in_array($pm_info['pm_from'], $pm_blocks))
 {
-	return "<a href='".e_PLUGIN_ABS."pm/pm.php?unblock.{$pm_info['pm_from']}'>UNBlock User</a>";
+	return "<a href='".e_PLUGIN_ABS."pm/pm.php?unblock.{$pm_info['pm_from']}'>".LAN_PM_51."</a>";
 }
 else
 {
-	return "<a href='".e_PLUGIN_ABS."pm/pm.php?block.{$pm_info['pm_from']}'>Block User</a>";
+	return "<a href='".e_PLUGIN_ABS."pm/pm.php?block.{$pm_info['pm_from']}'>".LAN_PM_50."</a>";
 }
 SC_END
 
 SC_BEGIN PM_DELETE
 global $pm_info;
 $extra = $parm != "" ? ".{$parm}" : "";
-return "<a href='".e_PLUGIN_ABS."pm/pm.php?del.{$pm_info['pm_id']}{$extra}'>Delete</a>";
+return "<a href='".e_PLUGIN_ABS."pm/pm.php?del.{$pm_info['pm_id']}{$extra}'>".LAN_PM_52."</a>";
 SC_END
 
 SC_BEGIN DELETE_SELECTED
 global $pm_info;
-return "<input type='submit' name='pm_delete_selected' class='tbox' value='Delete Selected' />";
+return "<input type='submit' name='pm_delete_selected' class='tbox' value='".LAN_PM_53."' />";
 SC_END
 
 SC_BEGIN PM_TO
@@ -303,12 +303,11 @@ SC_BEGIN PM_SHOWBOX
 global $pm_info, $ns;
 if($pm_info['pm_from'] == USERID)
 {
-	
-	return $ns->tablerender(LAN_PM." - outbox", show_outbox(), "PM", TRUE);
+	return $ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox(), "PM", TRUE);
 }
 else
 {
-	return $ns->tablerender(LAN_PM." - inbox", show_inbox(), "PM", TRUE);
+	return $ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox(), "PM", TRUE);
 }
 SC_END
 

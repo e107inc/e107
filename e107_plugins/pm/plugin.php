@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-31 16:45:44 $
+|     $Revision: 1.2 $
+|     $Date: 2005-08-31 18:57:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@
 @include_once(e_PLUGIN."pm/languages/admin/English.php");
 	
 // Plugin info -------------------------------------------------------------------------------------------------------
-$eplug_name = PMLAN_PM;
+$eplug_name = ADLAN_PM;
 $eplug_version = "3.0";
 $eplug_author = "McFly";
 $eplug_url = "";
@@ -44,7 +44,7 @@ $eplug_sc = array('SENDPM');
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/pvt_message_32.png";
 $eplug_icon_small = $eplug_folder."/images/pvt_message_16.png";
-$eplug_caption = PM_ADLAN_43; //"Configure Private Messager";
+$eplug_caption = ADLAN_PM_2; //"Configure Private Messager";
 	
 // List of preferences -----------------------------------------------------------------------------------------------
 
@@ -87,6 +87,6 @@ $eplug_link_name = "";
 $eplug_link_url = "";
 	
 // Text to display after plugin successfully installed ------------------------------------------------------------------
-$eplug_done = PM_ADLAN_44; // "To activate please go to your menus screen and select the pm_menu into one of your menu areas.";
-	
+$eplug_done = ADLAN_PM_1;
+
 ?>

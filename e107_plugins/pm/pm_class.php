@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-31 16:45:44 $
+|     $Revision: 1.2 $
+|     $Date: 2005-08-31 18:57:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -82,7 +82,7 @@ class private_message
 				require_once(e_HANDLER."userclass_class.php");
 				$toclass = r_userclass_name($vars['pm_userclass']);
 				$tolist = $this->get_users_inclass($vars['pm_userclass']);
-				$ret .= "PM sent to userclass: {$vars['to_userclass']}<br />";
+				$ret .= LAN_PM_38.": {$vars['to_userclass']}<br />";
 				$class = TRUE;
 			}
 			else
@@ -106,12 +106,12 @@ class private_message
 				}
 				else
 				{
-					$ret .= "Failed to send pm to: {$u['user_name']} <br />";
+					$ret .= LAN_PM_39.": {$u['user_name']} <br />";
 				}
 			}
 			if(!$pmid = $sql->db_Insert("private_msg", "0, '{$vars['from_id']}', '{$toclass}', '{$sendtime}', '1', '{$pm_subject}', '{$pm_message}', '0', '0', '{$attachlist}', '{$pm_option}', '{$pmsize}'"))
 			{
-				$ret .= "Failed to post PM to your Outbox <br />";
+				$ret .= LAN_PM_41."<br />";
 			}
 			
 		}
@@ -124,7 +124,7 @@ class private_message
 					set_time_limit(30);
 					$this->pm_send_notify($vars['to_info']['user_id'], $vars, $pmid, count($a_list));
 				}
-				$ret .= "PM sent to user: {$vars['to_info']['user_name']}<br />";
+				$ret .= LAN_PM_40.": {$vars['to_info']['user_name']}<br />";
 			}
 		}
 		return $ret;
@@ -142,14 +142,14 @@ class private_message
 			if($row['pm_to'] == USERID)
 			{
 				$newvals = "pm_read_del = 1";
-				$ret .= "PM deleted from inbox <br />";
+				$ret .= LAN_PM_42."<br />";
 				if($row['pm_sent_del'] == 1) { $del_pm = TRUE; }
 			}
 			if($row['pm_from'] == USERID)
 			{
 				if($newvals != "") { $del_pm = TRUE; }
 				$newvals = "pm_sent_del = 1";
-				$ret .= "PM deleted from outbox <br />";
+				$ret .= LAN_PM_43."<br />";
 				if($row['pm_read_del'] == 1) { $del_pm = TRUE; }
 			}
 
@@ -201,21 +201,21 @@ class private_message
 			{
 				if($sql->db_Insert("private_msg_block", "0, '{$from}', '{$to}', '".time()."', '0'"))
 				{
-					return "Block added: {$uinfo['user_name']} is no longer allowed to send you PMs";
+					return str_replace('{UNAME}', $uinfo['user_name'], LAN_PM_47);
 				}
 				else
 				{
-					return "ERROR: Block not added, unknown error";
+					return LAN_PM_48;
 				}
 			}
 			else
 			{
-				return "ERROR: Block already in place for {$uinfo['user_name']}";
+				return str_replace('{UNAME}', $uinfo['user_name'], LAN_PM_49);
 			}
 		}
 		else
 		{
-			return "ERROR: User not found;";
+			return LAN_PM_17;
 		}
 	}
 
@@ -230,21 +230,21 @@ class private_message
 				$row = $sql->db_Fetch();
 				if($sql->db_Delete("private_msg_block", "pm_block_id = '{$row['pm_block_id']}'"))
 				{
-					return "Block removed: {$uinfo['user_name']} is now allowed to send you PMs";
+					return str_replace("{UNAME}", $uinfo['user_name'], LAN_PM_44);
 				}
 				else
 				{
-					return "ERROR: Block not removed, unknown error";
+					return LAN_PM_45;
 				}
 			}
 			else
 			{
-				return "ERROR: Block not in place for {$uinfo['user_name']}";
+				return str_replace("{UNAME}", $uinfo['user_name'], LAN_PM_46);
 			}
 		}
 		else
 		{
-			return "ERROR: User not found;";
+			return LAN_PM_17;
 		}
 	}
 

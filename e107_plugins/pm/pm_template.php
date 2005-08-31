@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-31 16:45:44 $
+|     $Revision: 1.2 $
+|     $Date: 2005-08-31 18:57:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -32,13 +32,13 @@ $PM_VIEW_PM =
 		</tr>
 		<tr>
 			<td style='width:20%; vertical-align:top;' class='forumheader3'>
-				<div class='mediumtext'>From: <b>{FROM}</b></div>
-				<div class='mediumtext'>To: <b>{TO}</b>
+				<div class='mediumtext'>".LAN_PM_31.": <b>{FROM}</b></div>
+				<div class='mediumtext'>".LAN_PM_2.": <b>{TO}</b>
 				<br />
 				<br />
 				</div>
-				<div class='smallblacktext'>Message sent:<br />{SENT_TIME}<br /><br /></div>				
-				<div class='smallblacktext'>Message sent:<br />{READ_TIME}<br /></div>
+				<div class='smallblacktext'>".LAN_PM_29.":<br />{SENT_TIME}<br /><br /></div>				
+				<div class='smallblacktext'>".LAN_PM_30.":<br />{READ_TIME}<br /></div>
 				{DELETE}
 			</td>
 			<td style='width:80%; vertical-align:top' class='forumtable2'>
@@ -110,9 +110,9 @@ $PM_INBOX_HEADER = "
 <tr>
 	<td class='fcaption'>&nbsp;</td>
 	<td class='fcaption'>&nbsp;</td>
-	<td class='fcaption'>Topic</td>
-	<td class='fcaption'>Received on</td>
-	<td class='fcaption'>From</td>
+	<td class='fcaption'>".LAN_PM_5."</td>
+	<td class='fcaption'>".LAN_PM_32."</td>
+	<td class='fcaption'>".LAN_PM_31."</td>
 	<td class='fcaption'>&nbsp;</td>
 </tr>
 ";
@@ -148,9 +148,9 @@ $PM_OUTBOX_HEADER = "
 <tr>
 	<td class='fcaption'>&nbsp;</td>
 	<td class='fcaption'>&nbsp;</td>
-	<td class='fcaption'>Topic</td>
-	<td class='fcaption'>Sent</td>
-	<td class='fcaption'>To</td>
+	<td class='fcaption'>".LAN_PM_5."</td>
+	<td class='fcaption'>".LAN_PM_33."</td>
+	<td class='fcaption'>".LAN_PM_2."</td>
 	<td class='fcaption'>&nbsp;</td>
 </tr>
 ";
@@ -168,7 +168,7 @@ $PM_OUTBOX_TABLE = "
 
 $PM_OUTBOX_EMPTY = "
 <tr>
-	<td colspan='6' class='forumheader2'>No messages</td>
+	<td colspan='6' class='forumheader2'>".LAN_PM_34."</td>
 </tr>
 ";
 
@@ -192,10 +192,10 @@ $PM_SHOW =
 		{PM_FROM_TO}
 		<br />
 		<br />
-		<span class='smalltext'>Message Sent:<br />{PM_DATE}</span>
+		<span class='smalltext'>".LAN_PM_29.":<br />{PM_DATE}</span>
 		<br />
 		<br />
-		<span class='smalltext'>Message Read:<br />{PM_READ}</span>
+		<span class='smalltext'>".LAN_PM_30.":<br />{PM_READ}</span>
 		<br />
 		<br />
 		{PM_DELETE}
