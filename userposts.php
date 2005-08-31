@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-05-23 02:44:00 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2005-08-31 09:20:55 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -88,7 +88,10 @@ if ($action == "comments") {
 		while ($row = $sql->db_Fetch())
 		{
 			extract($row);
-			$userposts_comments_table_string .= parse_userposts_comments_table($row);
+			if($comment_comment)
+			{
+				$userposts_comments_table_string .= parse_userposts_comments_table($row);
+			}
 		}
 	}
 	$userposts_comments_table_start = preg_replace("/\{(.*?)\}/e", '$\1', $USERPOSTS_COMMENTS_TABLE_START);
