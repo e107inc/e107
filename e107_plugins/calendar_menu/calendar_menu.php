@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar_menu.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-07-05 21:54:31 $
-|     $Author: lisa_ $
+|     $Revision: 1.18 $
+|     $Date: 2005-08-31 12:10:41 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -54,12 +54,13 @@ else
 	and find_in_set(event_cat_class,'" . $cal_class . "') order by e.event_start";
 } 
 
+$cal_events = array();
+
 $cal_totev = 0;
-if ($sql->db_Select_gen($cal_qry))
+if ($cal_totev = $sql->db_Select_gen($cal_qry))
 {
     while ($cal_row = $sql->db_Fetch())
     {
-        $cal_totev ++;
         if ($cal_row['event_rec_y'] == $cal_current_month)
         {
             $cal_events[$cal_row['event_rec_m']][] = $cal_row;
@@ -85,13 +86,11 @@ if ($sql->db_Select_gen($cal_qry))
                 $cal_end_day = 31;
             } 
             // Mark each day the event occurs
-            for ($i = $cal_start_day; $i <= $cal_end_day; $i++)
-            {
-                $cal_events[$i][] = $cal_row;
-            } 
-        } 
+			$cal_events[$cal_start_day] = $cal_row['event_cat_icon'];
+        }
     } 
 } 
+
 
 if ($pref['eventpost_weekstart'] == 'sun'){
     $cal_week	= Array(EC_LAN_25, EC_LAN_19, EC_LAN_20, EC_LAN_21, EC_LAN_22, EC_LAN_23, EC_LAN_24);
@@ -156,23 +155,16 @@ for($cal_c = 1; $cal_c <= 31; $cal_c++)
         } 
         else
         {
-            if (isset($cal_events) && array_key_exists($cal_c, $cal_events))
-            {
-                $cal_text .= "<td class='$cal_evtoday' style='".$padding." width: 14.28%; text-align:center; '>";
-            } 
-            else
-            {
-                $cal_text .= "<td class='$cal_daycss' style='".$padding." width: 14.28%; text-align:center; ;'>";
-            } 
+			$cal_text .= "<td class='".(array_key_exists($cal_c, $cal_events) ? $cal_evtoday : $cal_daycss)."' style='".$padding." width: 14.28%; text-align:center; '>";
         } 
 
-        if (isset($cal_events) && array_key_exists($cal_c, $cal_events))
+        if (array_key_exists($cal_c, $cal_events))
         {
-            $cal_event_icon = e_PLUGIN . "calendar_menu/images/" . $cal_events[$cal_c][0]['event_cat_icon'];
+            $cal_event_icon = e_PLUGIN . "calendar_menu/images/" . $cal_events[$cal_c];
             $cal_event_count = count($cal_events[$cal_c]); 
             // *BK* Check if empty because file_exist will return true if icon name is blank, because it finds that the directory exists
             // *BK* It then tries to put in the icon which doesn't exist
-            if (!empty($cal_events[$cal_c][0]['event_cat_icon']) && file_exists($cal_event_icon))
+            if (!empty($cal_events[$cal_c]) && file_exists($cal_event_icon))
             {
                 $cal_img = "<img style='border:0' src='{$cal_event_icon}' alt='' />";
 				//height='10' width='10'
