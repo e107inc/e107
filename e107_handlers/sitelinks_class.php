@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2005-08-30 20:20:00 $
-|     $Author: stevedunstan $
+|     $Revision: 1.71 $
+|     $Date: 2005-08-31 05:57:57 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -236,9 +236,15 @@ class sitelinks
 
 
 function hilite($link,$enabled=''){
-		global $PLUGINS_DIRECTORY,$tp;
+	global $PLUGINS_DIRECTORY,$tp,$pref;
 
 		if(!$enabled){ return FALSE; }
+
+// --------------- highlighting for 'HOME'. ----------------
+	global $pref;
+	if(strpos(e_SELF,$pref['frontpage']['all']) && $link == e_HTTP."index.php"){
+		return TRUE;
+	}
 
 // --------------- highlighting for plugins. ----------------
 		if(stristr($link, $PLUGINS_DIRECTORY) !== FALSE && stristr($link, "custompages") === FALSE){
@@ -279,7 +285,7 @@ function hilite($link,$enabled=''){
 
 		// --------------- highlight default ----------------
 		if(strpos($link, "?") !== FALSE){
-			if(($enabled) && (strpos(e_SELF."?".e_QUERY, str_replace("../", "", $link)) !== false))	{
+			if((strpos(e_SELF."?".e_QUERY, str_replace("../", "", $link)) !== false)){
 				return true;
 			}
 		}
