@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_select_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-08-30 18:08:59 $
+|     $Revision: 1.4 $
+|     $Date: 2005-08-31 16:40:21 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -79,16 +79,25 @@ class user_select {
 		//-->
 		</script>";
 
-		list($form_name, $form_id) = explode(",", $user_form);
-		if(!$form_id){ $form_id = $form_name; }
+		list($form_type, $form_id) = explode(".", $user_form);
+		if($form_id == "") { $form_id = $form_type; }
 
 		if ($type == 'list') {
 			$text .= $this -> user_list($class, 'user');
-		} else if ($type == 'popup') {
-			$text .= "<input class='tbox' type='text' name='".$form_name."' id='".$form_id."' size='25' maxlength='30' value='".$user_value."'>&nbsp;";
+		} 
+		else if ($type == 'popup')
+		{
+			if($form_type == 'textarea')
+			{
+				$text .= "<textarea class='tbox' name='".$form_id."' id='".$form_id."' cols='50' rows='4'>{$user_value}</textarea>&nbsp;";
+			}
+			else
+			{
+				$text .= "<input class='tbox' type='text' name='".$form_id."' id='".$form_id."' size='25' maxlength='30' value='".$user_value."'>&nbsp;";
+			}
 			$text .= "<img src='".e_IMAGE_ABS."generic/".IMODE."/user_select.png' 
 			style='width: 16px; height: 16px; vertical-align: top' alt='Find username...' 
-			title='Find username...' onclick=\"window.open('".e_HANDLER_ABS."user_select_class.php?".$form_id."','user_search', 'toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes,width=300,height=200,left=100,top=100'); return false;\" />";
+			title='Find username...' onclick=\"window.open('".e_HANDLER_ABS."user_select_class.php?".$user_form."','user_search', 'toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes,width=300,height=200,left=100,top=100'); return false;\" />";
 		}
 		
 		if ($class !== false) {
@@ -110,12 +119,32 @@ class user_select {
 	
 	function popup() {
 		global $ns;
+		list($elementType, $elementID) = explode(".", e_QUERY);
+		if($elementType == 'textarea')
+		{
+			$job = "
+			curval = parent.opener.document.getElementById('{$elementID}').value;
+			lastchr = curval.substring(curval.length-1, curval.length);
+			if(lastchr != '\\n' && curval.length > 0)
+			{
+				curval = curval+'\\n';
+			}
+			parent.opener.document.getElementById('{$elementID}').value = curval+d+'\\n';";
+		}
+		else
+		{
+			if($elementID == "")
+			{
+				$elementID = $elementType;
+			}
+			$job = "parent.opener.document.getElementById('{$elementID}').value = d;";
+		}
 		echo "<link rel=stylesheet href='".THEME_ABS."style.css'>
 		<script language='JavaScript' type='text/javascript'>
 		<!--
 		function SelectUser() {
 		var d = window.document.results.usersel.value;
-		parent.opener.document.getElementById('".e_QUERY."').value = d;
+		{$job}
 		this.close();
 		}
 		//-->
