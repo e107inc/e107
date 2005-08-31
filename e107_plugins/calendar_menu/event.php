@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-08-23 00:44:23 $
-|     $Author: sweetas $
+|     $Revision: 1.21 $
+|     $Date: 2005-08-31 12:10:41 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -613,6 +613,7 @@ if ($ds == "event"){
     $extra = " OR e.event_rec_y = {$month} ";
 
     if ($cal_super) {
+		echo "<br /><b>Debug1</b> ".$variable." <br />";
         $qry = "
 		SELECT e.*, ec.*
 		FROM #event as e
@@ -623,6 +624,7 @@ if ($ds == "event"){
 		{$extra}
 		ORDER BY e.event_start ASC";
     } else {
+		echo "<br /><b>Debug2</b> ".$variable." <br />";
         $qry = "
 		SELECT e.*, ec.*
 		FROM #event as e
@@ -634,7 +636,8 @@ if ($ds == "event"){
 		{$extra})
 		ORDER BY e.event_start ASC
 		";
-    } 
+    }
+
     if ($sql->db_Select_gen($qry)){
         while ($row = $sql->db_Fetch()){
             if ($row['event_rec_y'] == $month){
@@ -668,8 +671,12 @@ if ($ds == "event"){
 
 // event list
 if(isset($events) && is_array($events)){
+
+
+//echo "<pre>"; print_r($events); echo "</pre>";
+
 	$text2 .= $tp -> parseTemplate($EVENT_EVENTLIST_TABLE_START, FALSE, $calendar_shortcodes);
-	foreach ($events as $dom => $event){ 
+	foreach ($events as $dom => $event){
 		$text2 .= show_event($event);
 	} 
 	$text2 .= $tp -> parseTemplate($EVENT_EVENTLIST_TABLE_END, FALSE, $calendar_shortcodes);
@@ -709,11 +716,11 @@ require_once(FOOTERF);
 
 
 function show_event($day_events)
-{ 
-    $texxt2 = "";
+{
+	global $tp, $cal_super, $_POST, $ds, $thisevent, $EVENT_ID, $EVENT_EVENT_TABLE, $calendar_shortcodes, $event_author_id, $event_author_name;
+    $text2 = "";
 	foreach($day_events as $event)
     {
-        global $tp, $cal_super, $_POST, $ds, $thisevent, $EVENT_ID, $EVENT_EVENT_TABLE, $calendar_shortcodes, $event_author_id, $event_author_name;
 		$thisevent = $event;
         $gen = new convert;
         if ( ( !isset($_POST['do']) || (isset($_POST['do']) && $_POST['do'] == null)) || (isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] == "all") || (isset($_POST['event_cat_ids']) && $_POST['event_cat_ids'] == $thisevent['event_cat_id']) ){
@@ -725,9 +732,9 @@ function show_event($day_events)
                 $event_author_id = $lp[0];
                 $event_author_name = $lp[1];
             }
-			$text2 = $tp -> parseTemplate($EVENT_EVENT_TABLE, FALSE, $calendar_shortcodes);
+			$text2 .= $tp -> parseTemplate($EVENT_EVENT_TABLE, FALSE, $calendar_shortcodes);
         } 
-    } 
+    }
     return $text2;
 } 
 
