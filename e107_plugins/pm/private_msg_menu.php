@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/private_msg_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-31 16:45:44 $
+|     $Revision: 1.2 $
+|     $Date: 2005-08-31 18:57:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ pm_getInfo('clear');
 
 define("PM_INBOX_ICON", "<img src='".e_PLUGIN."pm/images/mail_get.png' style='height:16;width:16;border:0' alt='Inbox' title='Inbox' />");
 define("PM_OUTBOX_ICON", "<img src='".e_PLUGIN."pm/images/mail_send.png' style='height:16;width:16;border:0' alt='Outbox' title='Outbox' />");
-define("PM_SEND_LINK", "Send new Private Message");
+define("PM_SEND_LINK", LAN_PM_35);
 define("NEWPM_ANIMATION", "<img src='".e_PLUGIN."pm/images/newpm.gif' alt='' />");
 
 $sc_style['SEND_PM_LINK']['pre'] = "<br /><br />[ ";
@@ -41,11 +41,11 @@ if(!defined($pm_menu_template))
 {
 	$pm_menu_template = "
 	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".PM_INBOX_ICON."</a> 
-	{INBOX_TOTAL} total, {INBOX_UNREAD} unread {INBOX_FILLED}
+	{INBOX_TOTAL} ".LAN_PM_36.", {INBOX_UNREAD} ".LAN_PM_37." {INBOX_FILLED}
 	{NEWPM_ANIMATE}
 	<br />
 	<a href='".e_PLUGIN_ABS."pm/pm.php?outbox'>".PM_OUTBOX_ICON."</a> 
-	{OUTBOX_TOTAL} total, {OUTBOX_UNREAD} unread {OUTBOX_FILLED}
+	{OUTBOX_TOTAL} ".LAN_PM_36.", {OUTBOX_UNREAD} ".LAN_PM_37." {OUTBOX_FILLED}
 	{SEND_PM_LINK}
 	";
 }
@@ -60,7 +60,7 @@ if(check_class($pm_prefs['pm_class']))
 	{
 		$txt .= pm_show_popup();
 	}
-	$ns->tablerender("Private msg", $txt);
+	$ns->tablerender(LAN_PM, $txt);
 }
 
 function pm_show_popup()

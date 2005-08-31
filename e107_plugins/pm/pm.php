@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-31 16:45:44 $
+|     $Revision: 1.2 $
+|     $Date: 2005-08-31 18:57:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -28,12 +28,13 @@ define("ATTACHMENT_ICON", "<img src='".e_PLUGIN."pm/images/attach.png' alt='' />
 
 $qs = explode(".", e_QUERY);
 $action = $qs[0];
+if($action == "") { $action = 'inbox'; }
 $pm_prefs = $sysprefs->getArray("pm_prefs");
 
 if(!check_class($pm_prefs['pm_class']))
 {
 	require_once(HEADERF);
-	$ns->tablerender(LAN_PM, "You are not authorized to use the PM plugin");
+	$ns->tablerender(LAN_PM, LAN_PM_12);
 	require_once(FOOTERF);
 	exit;
 }
@@ -74,7 +75,7 @@ if("del" == $action || isset($_POST['pm_delete_selected']))
 	{
 		foreach(array_keys($_POST['selected_pm']) as $id)
 		{
-			$message .= "Deleting PM: $id <br />";
+			$message .= LAN_PM_24.": $id <br />";
 			$message .= $pm->del($id);
 		}
 	}
@@ -137,12 +138,12 @@ if("send" == $action)
 
 if("inbox" == $action)
 {
-	$ns->tablerender(LAN_PM." - inbox", show_inbox());
+	$ns->tablerender(LAN_PM." - ".PM_LAN_25, show_inbox());
 }
 
 if("outbox" == $action)
 {
-	$ns->tablerender(LAN_PM." - outbox", show_outbox());
+	$ns->tablerender(LAN_PM." - ".PM_LAN_26, show_outbox());
 }
 
 if("show" == $action)
@@ -159,7 +160,7 @@ function show_send()
 	$pm_outbox = pm_getInfo('outbox');
 	if($pm_outbox['outbox']['filled'] >= 100)
 	{
-		return "Your outbox is currently {$pm_outbox['outbox']['filled']}% full, you are unable to send PMs until you delete some";
+		return str_replace('{PERCENT}', $pm_outbox['outbox']['filled'], LAN_PM_13);
 	}
 	require_once(e_PLUGIN."pm/pm_shortcodes.php");
 	$tpl_file = THEME."pm_template.php";
@@ -247,13 +248,13 @@ function post_pm()
 	global $pm_prefs, $pm, $pref, $sql;
 	if(!check_class($pm_prefs['pm_class']))
 	{
-		return "You are not allowed to use PM";
+		return LAN_PM_12;
 	}
 
 	$pm_info = pm_getInfo('outbox');
 	if($pm_info['outbox']['total'] != $_POST['numsent'])
 	{
-		return "ERROR: Possible duplicate post, PM not sent";
+		return LAN_PM_14;
 	}
 
 	if(isset($_POST['pm_to']))
@@ -263,11 +264,11 @@ function post_pm()
 		{
 			if(!$pm_prefs['allow_userclass'])
 			{
-				return "not allowed to send to userclass";
+				return LAN_PM_15;
 			}
 			elseif(!check_class($_POST['pm_userclass']) && !ADMIN)
 			{
-				return "Must be member of class";
+				return LAN_PM_16;
 			}
 		}
 		else
@@ -294,12 +295,12 @@ function post_pm()
 				}
 				else
 				{
-					return "User not found!";
+					return LAN_PM_17;
 				}
 
 				if($sql->db_Update("private_msg_block","pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '{$to_info['user_id']}'"))
 				{
-					return "You are not allowed to send PMs to: ".$to_info['user_name'];
+					return LAN_PM_18.$to_info['user_name'];
 				}
 			}
 		}
@@ -329,14 +330,14 @@ function post_pm()
 			{
 				if($pm_info['outbox']['total'] == $pm_info['outbox']['limit'])
 				{
-					return "Your outbox is full, you are not allowed to send";
+					return LAN_PM_19;
 				}
 			}
 			else
 			{
 				if($pm_info['outbox']['size'] + $totalsize > $pm_info['outbox']['limit'])
 				{
-					return "Adding this PM will exceed your maximum outbox size, PM not posted";
+					return LAN_PM_21;
 				}
 			}
 		}
@@ -351,12 +352,12 @@ function post_pm()
 				if($_POST['uploaded'] == FALSE)
 				{
 					unset($_POST['uploaded']);
-					$msg .= "File upload failed<br />";
+					$msg .= LAN_PM_22."<br />";
 				}
 			}
 			else
 			{
-				$msg .= "You are not allowed to send attachments<br />";
+				$msg .= LAN_PM_23."<br />";
 				unset($_POST['uploaded']);
 			}
 		}
