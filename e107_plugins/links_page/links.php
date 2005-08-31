@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-07-14 22:09:37 $
+|     $Revision: 1.28 $
+|     $Date: 2005-08-31 16:32:34 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -95,7 +95,11 @@ if (is_readable(THEME."links_template.php")) {
 if (isset($_POST['add_link'])) {
 	if($qs[0] == "submit"){
 		if(check_class($linkspage_pref['link_submit_class'])){
-			$lc -> dbLinkCreate("submit");
+			if(isset($linkspage_pref['link_submit_directpost']) && $linkspage_pref['link_submit_directpost']){
+				$lc -> dbLinkCreate();
+			}else{
+				$lc -> dbLinkCreate("submit");
+			}
 		}else{
 			js_location(e_SELF);
 		}
@@ -351,7 +355,7 @@ function displayLinkComment(){
 function displayLinkSubmit(){
 	global $qs, $sql, $tp, $rs, $ns, $linkspage_pref, $link_shortcodes, $LINK_SUBMIT_TABLE, $LINK_SUBMIT_CAT;
 	if ($link_cats = $sql->db_Select("links_page_cat", "*", " link_category_class REGEXP '".e_CLASS_REGEXP."' ")) {
-		$LINK_SUBMIT_CAT = $rs -> form_select_open("cat_name");
+		$LINK_SUBMIT_CAT = $rs -> form_select_open("cat_id");
 		while (list($cat_id, $cat_name, $cat_description) = $sql->db_Fetch()) {
 			$LINK_SUBMIT_CAT .= $rs -> form_option($cat_name, "0", $cat_id);
 		}

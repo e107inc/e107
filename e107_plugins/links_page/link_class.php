@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.14 $
-|    $Date: 2005-08-23 03:54:05 $
-|    $Author: sweetas $
+|    $Revision: 1.15 $
+|    $Date: 2005-08-31 16:32:34 $
+|    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,6 +25,7 @@ class linkclass {
 		$linkspage_pref['link_page_categories'] = "0";
 		$linkspage_pref['link_submit'] = "0";
 		$linkspage_pref['link_submit_class'] = "0";
+		$linkspage_pref['link_submit_directpost'] = "0";
 		$linkspage_pref["link_nextprev"] = "1";
 		$linkspage_pref["link_nextprev_number"] = "20";
 		$linkspage_pref['link_comment'] = "";
@@ -441,13 +442,14 @@ class linkclass {
 			if ($_POST['link_name'] && $_POST['link_url'] && $_POST['link_description']) {
 				$username			= (defined('USERNAME')) ? USERNAME : LAN_LINKS_3;
 
-				$submitted_link		= $_POST['cat_name']."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".$username;
+				$submitted_link		= $_POST['cat_id']."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".$username;
 				$sql->db_Insert("tmp", "'submitted_link', '".time()."', '$submitted_link' ");
 				
-				$edata_ls = array("link_category" => $_POST['cat_name'], "link_name" => $link_name, "link_url" => $link_url, "link_description" => $link_description, "link_button" => $link_button, "username" => $username, "submitted_link" => $submitted_link);
+				$edata_ls = array("link_category" => $_POST['cat_id'], "link_name" => $link_name, "link_url" => $link_url, "link_description" => $link_description, "link_button" => $link_button, "username" => $username, "submitted_link" => $submitted_link);
 				$e_event->trigger("linksub", $edata_ls);
-				header("location:".e_SELF."?s");
-				} else {
+				//header("location:".e_SELF."?s");
+				js_location(e_SELF."?s");
+			} else {
 				message_handler("ALERT", 5);
 			}
 		}else{
@@ -464,7 +466,7 @@ class linkclass {
 					$link_class = $_POST['link_class'];
 				}
 
-				$sql->db_Update("links_page", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button',   link_category='".$_POST['cat_id']."', link_open='".$_POST['linkopentype']."', link_class='".$link_class."', link_datestamp='".$time."', link_author='".$link_author."' WHERE link_id='$qs[2]'");
+				$sql->db_Update("links_page", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".$_POST['cat_id']."', link_open='".$_POST['linkopentype']."', link_class='".$link_class."', link_datestamp='".$time."', link_author='".$link_author."' WHERE link_id='$qs[2]'");
 				$e107cache->clear("sitelinks");
 				$this->show_message(LCLAN_ADMIN_3);
 			} else {
@@ -1017,6 +1019,12 @@ class linkclass {
 
 		$TOPIC_TOPIC = LCLAN_OPT_9;
 		$TOPIC_FIELD = r_userclass("link_submit_class", $linkspage_pref['link_submit_class']);
+		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
+
+		$TOPIC_TOPIC = LCLAN_OPT_48;
+		$TOPIC_FIELD = "
+		".$rs -> form_radio("link_submit_directpost", "1", ($linkspage_pref['link_submit_directpost'] ? "1" : "0"), "", "").LCLAN_OPT_3."
+		".$rs -> form_radio("link_submit_directpost", "0", ($linkspage_pref['link_submit_directpost'] ? "0" : "1"), "", "").LCLAN_OPT_4."<br />".LCLAN_OPT_49;
 		$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 		//link_nextprev
