@@ -218,7 +218,7 @@ function news_style($news) {
 	$gen = new convert;
 	$mydate  = strftime("%d/%m:", $news['news_datestamp']);
 	$NEWSSTYLE = "<!-- end news item --><div class='contentbody'>
-	        <h3>$mydate {STICKY_ICON}{NEWSTITLE}</h3>
+	        <h3>$mydate {STICKY_ICON}{NEWSTITLE}</h3><br />
 	{NEWSBODY}
 	{EXTENDED}
 	        <br /><br />
