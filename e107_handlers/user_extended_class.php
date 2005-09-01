@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-07-11 16:49:05 $
+|     $Revision: 1.29 $
+|     $Date: 2005-09-01 19:01:41 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -413,6 +413,10 @@ class e107_user_extended
 								"parms"			=> $item->include_text[0],
 								"regex" 			=> $item->regex[0]
 							 );
+			if(is_array($item->default) && $item->default[0] == '')
+			{
+				$info['default'] = 0;
+			}
 			if($item->regex[0])
 			{
 				$info['parms'] .= $item->include_text[0]."^,^".$item->regex[0]."^,^LAN_UE_FAIL_".strtoupper($item->name);
