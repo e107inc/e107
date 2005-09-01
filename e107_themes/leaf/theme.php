@@ -211,7 +211,7 @@ $CUSTOMFOOTER = "<!--End Database Generated Content-->
 </div>
 <!--Close the tags like a good code monkey ;)-->";
 
-$CUSTOMPAGES = "content_manager.php signup.php fpw.php forum.php forum_viewforum.php forum_viewtopic.php theme.php usersettings.php";
+$CUSTOMPAGES = "content_manager.php signup.php fpw.php forum.php forum_viewforum.php forum_viewtopic.php theme.php usersettings.php submitnews.php";
 
 // [newsstyle]
 function news_style($news) {
