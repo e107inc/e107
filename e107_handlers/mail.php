@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-08-23 00:44:23 $
-|     $Author: sweetas $
+|     $Revision: 1.22 $
+|     $Date: 2005-09-01 18:13:21 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 /*
@@ -194,52 +194,6 @@ function validatemail($Email) {
 } // end of function
 
 
-if(!function_exists("mime_content_type")){
-function mime_content_type($filename){
 
-    $filename = basename($filename);
-
-    $mime[".zip"] = "application/x-zip-compressed";
-	$mime[".gif"] = "image/gif";
-	$mime[".png"] = "image/x-png";
-	$mime[".jpg"] = "image/jpeg";
-	$mime[".jpeg"] = "image/jpeg";
-	$mime[".tif"] = "image/tiff";
-	$mime[".tiff"] = "image/tiff";
-	$mime[".pdf"] = "application/pdf";
-	$mime[".hqx"] = "application/mac-binhex40";
-	$mime[".doc"] = "application/msword";
-	$mime[".dot"] = "application/msword";
-	$mime[".exe"] = "application/octet-stream";
-	$mime[".au"] = "audio/basic";
-	$mime[".snd"] = "audio/basic";
-	$mime[".mid"] = "audio/mid";
-	$mime[".mp3"] = "audio/mpeg";
-	$mime[".aif"] = "audio/x-aiff";
-	$mime[".ra"] = "audio/x-pn-realaudio";
-	$mime[".ram"] = "audio/x-pn-realaudio";
-	$mime[".wav"] = "audio/x-wav";
-	$mime[".bmp"] = "image/bmp";
-	$mime[".ra"] = "audio/x-pn-realaudio";
-	$mime[".htm"] = "text/html";
-	$mime[".html"] = "text/html";
-	$mime[".css"] = "text/css";
-	$mime[".txt"] = "text/plain";
-	$mime[".mov"] = "video/quicktime";
-	$mime[".mpg"] = "video/mpeg";
-	$mime[".asx"] = "video/x-ms-asf";
-	$mime[".avi"] = "video/x-msvideo";
-
-    $ext = strrchr($filename, '.');
-   return $mime[$ext];
-}
-
-
-
-
-
-
-
-}
 
 ?>
