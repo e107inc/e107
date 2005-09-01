@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.209 $
-|     $Date: 2005-08-31 19:41:50 $
+|     $Revision: 1.210 $
+|     $Date: 2005-09-01 17:09:27 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -31,6 +31,14 @@ if($register_globals == true){
 		}
 	}
 	unset($global);
+}
+
+if(isset($retrieve_prefs) && is_array($retrieve_prefs)) {
+	foreach ($retrieve_prefs as $key => $pref_name) {
+		 $retrieve_prefs[$key] = preg_replace("/\W/", '', $pref_name);
+	}
+} else {
+	unset($retrieve_prefs);
 }
 
 // setup error handling first of all.
