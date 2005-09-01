@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.210 $
-|     $Date: 2005-09-01 17:09:27 $
+|     $Revision: 1.211 $
+|     $Date: 2005-09-01 17:21:46 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -176,6 +176,7 @@ if(!$PrefCache){
 	if(!$pref){
 		// prefs aren't in the SitePrefs column, spit out an error
 		message_handler("CRITICAL_ERROR", 3, __LINE__, __FILE__);
+		$admin_log->log_event("Core Prefs Error", "Core is attemptinting to restore prefs from automatic backup.", E_LOG_WARNING);
 		// Try for the automatic backup..
 		$PrefData = $sysprefs->get('SitePrefs_Backup');
 		$pref = $eArrayStorage->ReadArray($PrefData);
@@ -186,6 +187,7 @@ if(!$PrefCache){
 			if(!is_array($pref)){
 				// No old system, so point in the direction of resetcore :(
 				message_handler("CRITICAL_ERROR", 4, __LINE__, __FILE__);
+				$admin_log->log_event("Core Prefs Error", "Core could not restore from automatic backup. Execution halted.", E_LOG_FATAL);
 				exit;
 			} else {
 				// old prefs found, remove old system, and update core with new system
