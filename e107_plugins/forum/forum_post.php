@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-08-30 20:18:29 $
+|     $Revision: 1.48 $
+|     $Date: 2005-09-01 12:10:33 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -403,7 +403,7 @@ if (!$FORUMPOST) {
 }
 
 /* check post access (bugtracker #1424) */
-if(!$sql -> db_Select("forum", "*", "forum_id='$id'"))
+if($action == "nt" && !$sql -> db_Select("forum", "*", "forum_id='$id'"))
 {
 	 $ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
 	 require_once(FOOTERF);
@@ -412,7 +412,7 @@ if(!$sql -> db_Select("forum", "*", "forum_id='$id'"))
 else
 {
 	$fpr = $sql -> db_Fetch();
-	if(!check_class($fpr['forum_class']))
+	if(!check_class($fpr['forum_postclass']))
 	{
 		$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
 		require_once(FOOTERF);
