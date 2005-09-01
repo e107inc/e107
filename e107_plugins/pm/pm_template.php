@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-08-31 18:57:59 $
+|     $Revision: 1.3 $
+|     $Date: 2005-09-01 20:33:16 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -188,7 +188,7 @@ $PM_SHOW =
 	<td class='fcaption' colspan='2'>{PM_SUBJECT}</td>
 </tr>
 <tr>
-	<td style='width:20%;vertical-align:top'>
+	<td rowspan='2' style='width:20%;vertical-align:top'>
 		{PM_FROM_TO}
 		<br />
 		<br />
@@ -201,6 +201,11 @@ $PM_SHOW =
 		{PM_DELETE}
 	</td>
 	<td style='width:80%;vertical-align:top'>{PM_MESSAGE}<br /><br />{PM_ATTACHMENTS}</td>
+</tr>
+<tr>
+	<td style='vertical-align:bottom;text-align:center'>
+	{PM_REPLY}
+	</td>
 </tr>
 </table>
 <br />
