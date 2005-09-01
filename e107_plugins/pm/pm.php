@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-08-31 19:38:28 $
+|     $Revision: 1.4 $
+|     $Date: 2005-09-01 20:33:16 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -135,6 +135,27 @@ if("send" == $action)
 {
 	$ns->tablerender(LAN_PM, show_send());
 }
+
+if("reply" == $action)
+{
+	$pmid = intval($qs[1]);
+	if($pm_info = $pm->pm_get($pmid))
+	{
+		if($pm_info['pm_to'] != USERID)
+		{
+			$ns->tablerender(LAN_PM, LAN_PM_56);
+		}
+		else
+		{
+			$ns->tablerender(LAN_PM, show_send($pm_info));
+		}
+	}
+	else
+	{
+		$ns->tablerender(LAN_PM, LAN_PM_57);
+	}
+}
+
 
 if("inbox" == $action)
 {

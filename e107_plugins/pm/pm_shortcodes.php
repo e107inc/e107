@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-08-31 18:57:59 $
+|     $Revision: 1.3 $
+|     $Date: 2005-09-01 20:33:16 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,11 @@ $pm_shortcodes = e_shortcode::parse_scbatch(__FILE__);
 		
 /*
 SC_BEGIN FORM_TOUSER
-global $pm_prefs;
+global $pm_prefs, $pm_info;
+if($pm_info['from_name'])
+{
+	return "<input type='hidden' name='pm_to' value='{$pm_info['from_name']}' />{$pm_info['from_name']}";
+}
 require_once(e_HANDLER."user_select_class.php");
 $us = new user_select;
 $type = ($pm_prefs['dropdown'] == TRUE ? 'list' : 'popup');
@@ -38,7 +42,11 @@ return $ret;
 SC_END
 
 SC_BEGIN FORM_TOCLASS
-global $pm_prefs;
+global $pm_prefs, $pm_info;
+if($pm_info['from_name'])
+{
+	return "";
+}
 if($pm_prefs['allow_userclass'])
 {
 	$ret = "<input type='checkbox' name='to_userclass' value='1' />".LAN_PM_4." ";
@@ -54,12 +62,31 @@ return $ret;
 SC_END
 
 SC_BEGIN FORM_SUBJECT
-return "<input class='tbox' type='text' name='pm_subject' value='' size='30' maxlength='255' />";
+global $pm_info;
+$value = "";
+if($pm_info['pm_subject'])
+{
+	$value = $pm_info['pm_subject'];
+	if(substr($value, 0, strlen(LAN_PM_58)) != LAN_PM_58)
+	{
+		$value = LAN_PM_58.$value;
+	}
+}
+return "<input class='tbox' type='text' name='pm_subject' value='{$value}' size='30' maxlength='255' />";
 SC_END
 
 SC_BEGIN FORM_MESSAGE
-return "<textarea class='tbox' name='pm_message' cols='60' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'></textarea>";
-return "PM MESSAGE";
+global $pm_info;
+$value = "";
+if($pm_info['pm_text'])
+{
+	if(isset($_POST['quote']))
+	{
+		$t = time();
+		$value = "[quote{$t}={$pm_info['from_name']}]\n{$pm_info['pm_text']}\n[/quote{$t}]\n\n";
+	}
+}
+return "<textarea class='tbox' name='pm_message' cols='60' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>{$value}</textarea>";
 SC_END
 
 SC_BEGIN EMOTES
@@ -297,6 +324,19 @@ SC_END
 SC_BEGIN PM_MESSAGE
 global $pm_info, $tp;
 return $tp->toHTML($pm_info['pm_text'], true);
+SC_END
+
+SC_BEGIN PM_REPLY
+global $pm_info;
+if($pm_info['pm_to'] == USERID)
+{
+	$ret = "
+	<form method='post' action='".e_SELF."?reply.{$pm_info['pm_id']}'>
+	<input type='checkbox' name='quote' /> ".LAN_PM_54." &nbsp;&nbsp;&nbsp<input class='button' type='submit' name='reply' value='".LAN_PM_55."' />
+	</form>
+	";
+	return $ret;
+}
 SC_END
 
 SC_BEGIN PM_SHOWBOX
