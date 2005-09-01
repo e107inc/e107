@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-09-01 12:10:33 $
+|     $Revision: 1.49 $
+|     $Date: 2005-09-01 12:33:37 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -372,6 +372,13 @@ if ($action == 'edit' || $action == 'quote')
 		}
 	}
 
+	if(!is_array($thread_info[0]))
+	{
+		 $ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_96."</div>");
+		 require_once(FOOTERF);
+		exit;
+	}
+
 	$thread_info[0]['user_name'] = $forum->thread_user($thread_info[0]);
 	$subject = $thread_info['0']['thread_name'];
 	$post = $tp->toForm($thread_info[0]['thread_thread']);
@@ -387,6 +394,7 @@ if ($action == 'edit' || $action == 'quote')
 			$action = "reply";
 		} else {
 			$action = "nt";
+			$sact = "canc";	// added to override the bugtracker query below
 		}
 	}
 }
@@ -403,7 +411,14 @@ if (!$FORUMPOST) {
 }
 
 /* check post access (bugtracker #1424) */
-if($action == "nt" && !$sql -> db_Select("forum", "*", "forum_id='$id'"))
+
+if($action == "rp" && !$sql -> db_Select("forum_t", "*", "thread_id='$id'"))
+{
+	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
+	 require_once(FOOTERF);
+	exit;
+}
+else if($action == "nt" && !$sact && !$sql -> db_Select("forum", "*", "forum_id='$id'"))
 {
 	 $ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
 	 require_once(FOOTERF);
