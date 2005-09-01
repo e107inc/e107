@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-06-09 17:51:33 $
-|     $Author: e107coders $
+|     $Revision: 1.25 $
+|     $Date: 2005-09-01 19:42:25 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -71,7 +71,7 @@ if ('0' == ADMINPERMS) {
 // end auto db update
 
 if (e_QUERY == 'purge') {
-	$sql->db_Delete("tmp", "tmp_ip='adminlog'");
+	$admin_log->purge_log_events(false);
 }
 
 $td = 1;

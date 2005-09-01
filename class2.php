@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.211 $
-|     $Date: 2005-09-01 17:21:46 $
+|     $Revision: 1.212 $
+|     $Date: 2005-09-01 19:42:25 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -176,7 +176,7 @@ if(!$PrefCache){
 	if(!$pref){
 		// prefs aren't in the SitePrefs column, spit out an error
 		message_handler("CRITICAL_ERROR", 3, __LINE__, __FILE__);
-		$admin_log->log_event("Core Prefs Error", "Core is attemptinting to restore prefs from automatic backup.", E_LOG_WARNING);
+		$admin_log->log_event("Core Prefs Error", "Core is attempting to restore prefs from automatic backup.", E_LOG_WARNING);
 		// Try for the automatic backup..
 		$PrefData = $sysprefs->get('SitePrefs_Backup');
 		$pref = $eArrayStorage->ReadArray($PrefData);

@@ -1,27 +1,29 @@
+//<?php
+
 if (ADMIN) {
 	if (!function_exists('admin_log')) {
-	function admin_log() {
-		global $sql, $ns;
-		$text = E_16_ADMINLOG." <a style='cursor: pointer; cursor: hand' onclick=\"expandit('adminlog')\">".ADLAN_116."</a>\n";
-		if (e_QUERY == "logall") {
-			$text .= "<div id='adminlog'>";
-			$cnt = $sql -> db_Select("tmp", "*", "tmp_ip='adminlog' ORDER BY tmp_time DESC");
-		} else {
-			$text .= "<div style='display: none;' id='adminlog'>";
-			$cnt = $sql -> db_Select("tmp", "*", "tmp_ip='adminlog' ORDER BY tmp_time DESC LIMIT 0,10");
-		}
-		$text .= ($cnt) ? "<ul>" : "";
-		$gen = new convert;
-		while ($row = $sql -> db_Fetch()) {
-			$datestamp = $gen->convert_date($row['tmp_time'], 'short');
-			$text .= "<li>".$datestamp.$row['tmp_info']."</li>";
-		}
-		$text .= ($cnt) ? "</ul>" : "";
+		function admin_log() {
+			global $sql, $ns;
+			$text = E_16_ADMINLOG." <a style='cursor: pointer; cursor: hand' onclick=\"expandit('adminlog')\">".ADLAN_116."</a>\n";
+			if (e_QUERY == "logall") {
+				$text .= "<div id='adminlog'>";
+				$cnt = $sql -> db_Select("dblog", "*", "ORDER BY `dblog_datestamp` DESC", "no_where");
+			} else {
+				$text .= "<div style='display: none;' id='adminlog'>";
+				$cnt = $sql -> db_Select("dblog", "*", "ORDER BY `dblog_datestamp` DESC LIMIT 0,10", "no_where");
+			}
+			$text .= ($cnt) ? "<ul>" : "";
+			$gen = new convert;
+			while ($row = $sql -> db_Fetch()) {
+				$datestamp = $gen->convert_date($row['dblog_datestamp'], 'short');
+				$text .= "<li>{$datestamp} - {$row['dblog_remarks']}</li>";
+			}
+			$text .= ($cnt ? "</ul>" : "");
 
-		$text .= "[ <a href='".e_SELF."?logall'>".ADLAN_117."</a> ][ <a href='".e_SELF."?purge'>".ADLAN_118."</a> ]\n</div>";
+			$text .= "[ <a href='".e_SELF."?logall'>".ADLAN_117."</a> ][ <a href='".e_SELF."?purge'>".ADLAN_118."</a> ]\n</div>";
 
-		return $ns -> tablerender(ADLAN_135, $text, '', TRUE);
-	}
+			return $ns -> tablerender(ADLAN_135, $text, '', TRUE);
+		}
 	}
 
 	if ($parm == 'request') {
