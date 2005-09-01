@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-08-29 01:04:44 $
-|     $Author: streaky $
+|     $Revision: 1.19 $
+|     $Date: 2005-09-01 12:17:12 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_PLUGIN")){ exit; }
@@ -82,14 +82,14 @@ foreach($mainLinkArray as $links) {
 		$url = "javascript:void(0);";
 		$spanName = str_replace(" ", "_", $name);
 		$image = ($image ? "<img src='".e_IMAGE."icons/".$image."' alt='' style='vertical-align:middle;' />" : "&raquo;");
-		$plink = "<div".($menu_pref['tm_class2'] ? " class='{$menu_pref['tm_class2']}'" : "")." style='width:100%; cursor: pointer;' onclick='expandit(\"span_".$spanName."\");updatecook(\"".$name."\");'>".$image.setLink($name, $url, $openMethod, $description)."</div>\n";
+		$plink = "<div".($menu_pref['tm_class2'] ? " class='{$menu_pref['tm_class2']}'" : "null")." style='width:100%; cursor: pointer;' onclick='expandit(\"span_".$spanName."\");updatecook(\"".$name."\");'>".$image.setLink($name, $url, $openMethod, $description)."</div>\n";
 		$text .= ($menu_pref['tm_spacer'] ? "<div class='spacer'>".$plink."</div>\n" : $plink);
 	} else {
 		// no sublinks found ...
 		$linkName = $url;
 		$spanName = "";
 		$image = ($image ? "<img src='".e_IMAGE."icons/".$image."' alt='' style='vertical-align:middle;' />" : "&middot;");
-		$plink = "<div".($menu_pref['tm_class1'] ? " class='{$menu_pref['tm_class1']}'" : "")." style='width:100%; cursor: pointer;'>".$image.setLink($name, $url, $openMethod, $description)."</div>";
+		$plink = "<div".($menu_pref['tm_class1'] ? " class='{$menu_pref['tm_class1']}'" : "null")." style='width:100%; cursor: pointer;'>".$image.setLink($name, $url, $openMethod, $description)."</div>";
 		$text .= ($menu_pref['tm_spacer'] ? "<div class='spacer'>".$plink."</div>\n" : $plink);
 
 
