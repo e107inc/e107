@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-01 18:52:34 $
+|     $Revision: 1.4 $
+|     $Date: 2005-09-01 19:42:25 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -105,7 +105,7 @@ class e_admin_log {
 		global $sql;
 		if($days == false) {
 			// $days is false, so truncate the log table
-			$sql->db_Select_gen("TRUNCATE #dblog");
+			$sql->db_Select_gen("TRUNCATE TABLE #dblog ");
 		} else {
 			// $days is set, so remove all entries older than that.
 			$days = intval($days);
