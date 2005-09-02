@@ -12,16 +12,34 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-07-12 11:57:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.46 $
+|     $Date: 2005-09-02 21:43:12 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_comment.php");
 @include_once(e_LANGUAGEDIR."English/lan_comment.php");
 require_once(e_FILE."shortcode/batch/comment_shortcodes.php");
+
+/**
+ * Enter description here...
+ *
+ */
 class comment {
+	
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $action
+	 * @param unknown_type $table
+	 * @param unknown_type $id
+	 * @param unknown_type $subject
+	 * @param unknown_type $content_type
+	 * @param unknown_type $return
+	 * @param unknown_type $rating
+	 * @return unknown
+	 */
 	function form_comment($action, $table, $id, $subject, $content_type, $return=FALSE, $rating=FALSE) {
 		//rating	: boolean, to show rating system in comment
 		global $pref, $sql, $tp;
@@ -108,8 +126,19 @@ class comment {
 			echo "<br /><div style='text-align:center'><b>".LAN_6." <a href='".e_SIGNUP."'>".COMLAN_1."</a> ".COMLAN_2."</b></div>";
 		}
 	}
-
-
+	
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $row
+	 * @param unknown_type $table
+	 * @param unknown_type $action
+	 * @param unknown_type $id
+	 * @param unknown_type $width
+	 * @param unknown_type $subject
+	 * @param unknown_type $addrating
+	 * @return unknown
+	 */
 	function render_comment($row, $table, $action, $id, $width, $subject, $addrating=FALSE) {
 		//addrating	: boolean, to show rating system in rendered comment
 		global $sql, $sc_style, $comment_shortcodes, $COMMENTSTYLE, $rater, $gen;
@@ -230,6 +259,17 @@ class comment {
 		return stripslashes($text);
 	}
 
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $author_name
+	 * @param unknown_type $comment
+	 * @param unknown_type $table
+	 * @param unknown_type $id
+	 * @param unknown_type $pid
+	 * @param unknown_type $subject
+	 * @param unknown_type $rateindex
+	 */
 	function enter_comment($author_name, $comment, $table, $id, $pid, $subject, $rateindex=FALSE) {
 		//rateindex	: the posted value from the rateselect box (without the urljump) (see function rateselect())
 		global $sql, $sql2, $tp, $e107cache, $e_event, $e107, $pref, $rater;
@@ -317,8 +357,13 @@ class comment {
 			$rater -> enterrating($rateindex);
 		}
 	}
-
-
+	
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $table
+	 * @return unknown
+	 */
 	function getCommentType($table){
 			switch($table) {
 				case "news"		: $type = 0; break;
@@ -338,7 +383,14 @@ class comment {
 			}
 			return $type;
 	}
-
+	
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $table
+	 * @param unknown_type $id
+	 * @return unknown
+	 */
 	function count_comments($table, $id){
 		global $sql;
 
@@ -352,9 +404,19 @@ class comment {
 	}
 
 
-	//compose comment	: single call function will render the existing comments and show the form_comment
+	/**
+	 * Enter description here...
+	 *
+	 * @param unknown_type $table
+	 * @param unknown_type $action
+	 * @param unknown_type $id
+	 * @param unknown_type $width
+	 * @param unknown_type $subject
+	 * @param unknown_type $rate
+	 */
+	function compose_comment($table, $action, $id, $width, $subject, $rate = false){
+			//compose comment	: single call function will render the existing comments and show the form_comment
 	//rate				: boolean, to show/hide rating system in comment, default FALSE
-	function compose_comment($table, $action, $id, $width, $subject, $rate=FALSE){
 		global $pref, $sql, $ns, $e107cache, $tp, $totcc;
 
 		$count_comments = $this -> count_comments($table, $id, $pid=FALSE);
@@ -396,7 +458,6 @@ class comment {
 		}
 		return;
 	}
-
 }
 
 ?>
