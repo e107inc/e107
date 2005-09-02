@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/banner_menu/banner_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-04-03 20:33:54 $
+|     $Revision: 1.10 $
+|     $Date: 2005-09-02 15:01:48 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -34,13 +34,20 @@ if(!isset($campaign))
 {
 	if (isset($menu_pref['banner_campaign']) && $menu_pref['banner_campaign'])
 	{
-		$campaignlist = explode("|", $menu_pref['banner_campaign']);
-		$campaignlist = array_slice($campaignlist, 0, -1);
+		if(strstr($menu_pref['banner_campaign'], "|"))
+		{
+			$campaignlist = explode("|", $menu_pref['banner_campaign']);
+			$campaignlist = array_slice($campaignlist, 0, -1);
+			$parm = $campaignlist[0];
+		}
+		else
+		{
+			$parm = $menu_pref['banner_campaign'];
+		}
 	}
 }
 
 $bannersccode = file_get_contents(e_FILE."shortcode/banner.sc");
-$parm = (isset($campaignlist[0]) ? $campaignlist[0] : "");
 $text = eval($bannersccode);
 
 if (isset($menu_pref['banner_rendertype']) && $menu_pref['banner_rendertype'] == 2)
