@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-08-16 17:14:03 $
-|     $Author: sweetas $
+|     $Revision: 1.31 $
+|     $Date: 2005-09-02 13:36:16 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 @include_once(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
@@ -302,7 +302,7 @@ class poll
 			<span class='smalltext'>".LAN_386."
 			</td>
 			</tr>
-			<tr><td style='width:20%' class='forumheader3'><div class='normaltext'>".LAN_5."</div></td><td style='width:80%'class='forumheader3'><input class='tbox' type='text' name='poll_title' size='70' value='".$tp->toDB($_POST['poll_title'])."' maxlength='200' /></td></tr>";
+			<tr><td style='width:20%' class='forumheader3'><div class='normaltext'>".LAN_5."</div></td><td style='width:80%'class='forumheader3'><input class='tbox' type='text' name='poll_title' size='70' value='".$tp->post_toForm($_POST['poll_title'])."' maxlength='200' /></td></tr>";
 
 			$option_count = (count($_POST['poll_option']) ? count($_POST['poll_option']) : 1);
 			$text .= "<tr>

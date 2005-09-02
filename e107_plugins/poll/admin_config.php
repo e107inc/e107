@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-08-12 13:17:31 $
-|     $Author: streaky $
+|     $Revision: 1.11 $
+|     $Date: 2005-09-02 13:36:16 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -120,7 +120,6 @@ if (POLLACTION == "edit" && !$_POST['preview'] && !$_POST['submit'])
 if (isset($_POST['preview']))
 {
 	$poll->render_poll($_POST, "preview");
-
 }
 
 if (isset($message))
