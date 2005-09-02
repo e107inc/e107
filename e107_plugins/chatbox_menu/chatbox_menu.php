@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-09-02 02:05:31 $
+|     $Revision: 1.49 $
+|     $Date: 2005-09-02 18:19:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -38,12 +38,7 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 		$cmessage = $_POST['cmessage'];
 		$nick = trim(chop(preg_replace("/\[.*\]/si", "", $_POST['nick'])));
 		$fp = new floodprotect;
-		if(!$fp -> flood("chatbox", "cb_datestamp"))
-		{
-			header("location:".e_BASE."index.php");
-			exit;
-		}
-		else
+		if($fp -> flood("chatbox", "cb_datestamp"))
 		{
 			if((strlen(trim(chop($cmessage))) < 1000) && trim(chop($cmessage)) != "")
 			{
@@ -88,6 +83,10 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 			{
 				$emessage = CHATBOX_L15;
 			}
+		}
+		else
+		{
+			$emessage = CHATBOX_L19;
 		}
 	}
 }
