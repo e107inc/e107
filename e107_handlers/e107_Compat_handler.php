@@ -1,8 +1,14 @@
 <?php
 
-// Commented out for beta testing reasons, should be
-// unccommented on release or use on production sites.
-
+/**
+ * A pointer for $cache->retrieve() to help keep old code compatable
+ *
+ * @see ecache::retrieve()
+ * @deprecated deprecated since v.700
+ *
+ * @param string $query
+ * @return string
+ */
 function retrieve_cache($query) {
 	if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
 		global $db_debug;
@@ -19,6 +25,16 @@ function retrieve_cache($query) {
 	return $ret;
 }
 
+/**
+ * A pointer for $cache->set() to help keep old code compatable
+ *
+ * @see ecache::set()
+ * @deprecated deprecated since v.700
+ *
+ * @param string $query
+ * @param string $text
+ * @return string
+ */
 function set_cache($query, $text) {
 	if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
 		global $db_debug;
@@ -34,6 +50,15 @@ function set_cache($query, $text) {
 	$e107cache->set($query, $text);
 }
 
+/**
+ * A pointer for $cache->clear() to help keep old code compatable
+ *
+ * @see ecache::clear()
+ * @deprecated deprecated since v.700
+ *
+ * @param string $query
+ * @return bool
+ */
 function clear_cache($query) {
 	if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
 		global $db_debug;
@@ -46,6 +71,12 @@ function clear_cache($query) {
 	return $e107cache->clear($query);
 }
 
+/**
+ * A pointer for $e107->ban() to help keep old code compatable
+ *
+ * @see e107::ban()
+ * @deprecated deprecated since v.700
+ */
 function ban() {
 	if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
 		global $db_debug;
@@ -55,6 +86,12 @@ function ban() {
 	$e107->ban();
 }
 
+/**
+ * A pointer for $e107->getip() to help keep old code compatable
+ *
+ * @see e107::getip()
+ * @deprecated deprecated since v.700
+ */
 function getip() {
 	if (defined('E107_DEBUG_LEVEL') && E107_DEBUG_LEVEL >= 32766) {
 		global $db_debug;
