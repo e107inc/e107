@@ -1,5 +1,5 @@
 global $eMenuActive,$linkstyle;
-if(!in_array('edynamic_menu',$eMenuActive) && !in_array('tree_menu',$eMenuActive)) {
+if(!in_array('edynamic_menu',$eMenuActive) && !in_array('tree_menu',$eMenuActive) && !in_array('q_tree_menu',$eMenuActive)) {
     $tmp = explode(":",$parm);
 	$linktype = $tmp[0];
 	$cat = ($tmp[1]) ? $tmp[1] : 1;
@@ -15,3 +15,5 @@ if(!in_array('edynamic_menu',$eMenuActive) && !in_array('tree_menu',$eMenuActive
 	}
 	return $sitelinks->get($cat,$style);
 }
+
+
