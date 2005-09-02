@@ -12,12 +12,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-08-04 09:56:38 $
+|     $Revision: 1.43 $
+|     $Date: 2005-09-02 21:46:53 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
+/**
+ * Core e107 class
+ *
+ */
 class e107{
 
 	var $server_path;
@@ -28,6 +32,13 @@ class e107{
 	var $_ip_cache;
 	var $_host_name_cache;
 
+	/**
+	 * e107 class constructor
+	 *
+	 * @param array $e107_paths
+	 * @param string $e107_root_path
+	 * @return e107
+	 */
 	function e107($e107_paths, $e107_root_path){
 		if(defined("COMPRESS_OUTPUT") && COMPRESS_OUTPUT === true) {
 			ob_start ("ob_gzhandler");
@@ -103,6 +114,10 @@ class e107{
 		return $fixed_path;
 	}
 
+	/**
+	 * Check if current user is banned
+	 *
+	 */
 	function ban() {
 		global $sql, $e107;
 		$ban_count = $sql->db_Count("banlist");
@@ -126,6 +141,11 @@ class e107{
 		}
 	}
 
+	/**
+	 * Get the current user's IP address
+	 *
+	 * @return string
+	 */
 	function getip() {
 		if(!$this->_ip_cache){
 			if (getenv('HTTP_X_FORWARDED_FOR')) {
@@ -160,6 +180,11 @@ class e107{
 		return $this->_host_name_cache[$ip_address];
 	}
 
+	/**
+	 * Get the current memory usage of the code
+	 *
+	 * @return string memory usage
+	 */
 	function get_memory_usage(){
 		if(function_exists("memory_get_usage")){
 			$memusage = memory_get_usage();
