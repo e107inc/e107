@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_news.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-03-10 10:57:57 $
+|     $Revision: 1.5 $
+|     $Date: 2005-09-02 13:13:33 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "News");
 
 define("LAN_82", "News - Category");
-define("LAN_83", "No news items yet - please check back soon.");
+define("LAN_83", "No news items at the moment - please check back soon.");
 define("LAN_84", "News Items");
 define("LAN_99", "Comments");
 define("LAN_100", "On");
