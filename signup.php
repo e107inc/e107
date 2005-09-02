@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2005-08-23 00:44:23 $
-|     $Author: sweetas $
+|     $Revision: 1.58 $
+|     $Date: 2005-09-02 01:37:36 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -129,8 +129,10 @@ if (isset($_POST['register']))
 	$error_message = "";
 	require_once(e_HANDLER."message_handler.php");
 
-	if ($use_imagecode) {
-		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify'])) {
+	if ($use_imagecode && !isset($_POST['xupexist']))
+	{
+		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
+		{
 			$error_message .= LAN_SIGNUP_3."\\n";
 			$error = TRUE;
 		}
