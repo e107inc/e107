@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-08-23 00:44:23 $
-|     $Author: sweetas $
+|     $Revision: 1.48 $
+|     $Date: 2005-09-02 02:05:31 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -27,7 +27,7 @@ if (file_exists(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".p
 }
 
 $emessage='';
-if(isset($_POST['chat_submit']))
+if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 {
 	if(!USER && !$pref['anon_post'])
 	{
