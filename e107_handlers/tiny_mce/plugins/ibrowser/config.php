@@ -30,23 +30,23 @@ $tinyMCE_img_delete_allowed = false;
 // image libraries
 $tinyMCE_imglibs = array(
   array(
-    'value'   => $IMAGES_DIRECTORY,
+    'value'   => e_IMAGE,
     'text'    => 'Images Root',
   ),
   array(
-    'value'   => $IMAGES_DIRECTORY."newspost_images/",
+    'value'   => e_IMAGE."newspost_images/",
     'text'    => 'Newspost Images',
   ),
   array(
-    'value'   => $IMAGES_DIRECTORY."icons/",
+    'value'   => e_IMAGE."icons/",
     'text'    => 'Icons',
   ),
   array(
-    'value'   => $IMAGES_DIRECTORY."banners/",
+    'value'   => e_IMAGE."banners/",
     'text'    => 'Banners',
   ),
   array(
-    'value'   => $IMAGES_DIRECTORY."generic/",
+    'value'   => e_IMAGE."generic/",
     'text'    => 'Generic',
   ),
 );
