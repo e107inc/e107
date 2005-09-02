@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2005-08-23 09:36:30 $
-|     $Author: sweetas $
+|     $Revision: 1.66 $
+|     $Date: 2005-09-02 02:39:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -935,12 +935,21 @@ class download {
 	function submit_download($sub_action, $id) {
 		global $tp, $sql, $DOWNLOADS_DIRECTORY, $e_event;
 
-		//echo print_a($_POST); exit;
+		if($sub_action == 'edit')
+		{
+			if($_POST['download_url_external'] == '')
+			{
+				$_POST['download_filesize_external'] = FALSE;
+			}
+		}
 
-		if ($_POST['download_url_external'] && $_POST['download_url'] == '') {
+		if ($_POST['download_url_external'] && $_POST['download_url'] == '')
+		{
 			$durl = $_POST['download_url_external'];
 			$filesize = $_POST['download_filesize_external'];
-		} else {
+		}
+		else
+		{
 			$durl = $_POST['download_url'];
 			if($_POST['download_filesize_external'])
 			{
@@ -948,19 +957,24 @@ class download {
 			}
 			else
 			{
-				if (strpos($DOWNLOADS_DIRECTORY, "/") === 0 || strpos($DOWNLOADS_DIRECTORY, ":") >= 1) {
+				if (strpos($DOWNLOADS_DIRECTORY, "/") === 0 || strpos($DOWNLOADS_DIRECTORY, ":") >= 1)
+				{
 					$filesize = filesize($DOWNLOADS_DIRECTORY.$durl);
-				} else {
+				}
+				else
+				{
 					$filesize = filesize(e_BASE.$DOWNLOADS_DIRECTORY.$durl);
 				}
 			}
 		}
 
-		if (!$filesize) {
-			$sql->db_Select("upload", "upload_filesize", "upload_file='$durl'");
-			$row = $sql->db_Fetch();
-			 extract($row);
-			$filesize = $upload_filesize;
+		if (!$filesize)
+		{
+			if($sql->db_Select("upload", "upload_filesize", "upload_file='$durl'"))
+			{
+				$row = $sql->db_Fetch();
+				$filesize = $row['upload_filesize'];
+			}
 		}
 
 		$_POST['download_description'] = $tp->toDB($_POST['download_description']);
