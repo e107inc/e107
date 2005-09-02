@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.99 $
-|     $Date: 2005-07-12 11:57:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.100 $
+|     $Date: 2005-09-02 13:36:16 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -123,7 +123,7 @@ class e_parse
 
 	function post_toForm($text) {
 		// ensure apostrophes are properly converted, or else the form item could break
-		return str_replace(array('"', "'"), array("&#039;", "&quot;"), $text);
+		return str_replace(array( "'", '"'), array("&#039;", "&quot;"), $text);
 	}
 
 	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "")
@@ -400,7 +400,7 @@ class e_parse
 		}
 		$text = str_replace('[E_NL]', $nl_replace, $text);
 		//		$text = str_replace("&amp;", "&", $text);
-		//		$text = str_replace(array("&", "&pound;"), array("&amp;", "£"), $text);
+		//		$text = str_replace(array("&", "&pound;"), array("&amp;", ""), $text);
 		return trim($text);
 	}
 
