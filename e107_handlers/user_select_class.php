@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_select_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-08-31 16:40:21 $
+|     $Revision: 1.5 $
+|     $Date: 2005-09-03 18:27:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -27,16 +27,26 @@ class user_select {
 
 	function user_list($class, $form_name) {
 		global $pref, $sql;
-		if ($class == e_UC_ADMIN) {
-			$where = "user_admin = 1";
-		} else if ($class == e_UC_MEMBER) {
-			$where = "1";
-		} else if ($class == e_UC_NOBODY) {
-			return "";
-		} else {
-			$where = "user_class REGEXP '(^|,)(".$class.")(,|$)'";
-		}
+		if($class === FALSE) { $class = e_UC_MEMBER;}
+		switch ($class)
+		{
+			case e_UC_ADMIN:
+				$where = "user_admin = 1";
+				break;
 
+			case e_UC_MEMBER:
+				$where = "1";
+				break;
+				
+			case e_UC_NOBODY:
+				return "";
+				break;
+				
+			default:
+				$where = "user_class REGEXP '(^|,)(".$class.")(,|$)'";
+				break;
+		}
+				
 		$text = "<select class='tbox' id='user' name='user' onchange=\"uc_switch('class')\">";
 		$text .= "<option value=''>Select user</option>";
 		$sql -> db_Select("user", "user_name", $where." ORDER BY user_name");
