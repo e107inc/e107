@@ -1,4 +1,4 @@
-Fne<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,9 +11,9 @@ Fne<?php
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-09-02 02:17:16 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.48 $
+|     $Date: 2005-09-03 01:35:36 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
