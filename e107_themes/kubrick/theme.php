@@ -9,6 +9,10 @@
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
+|
+|   $Revision: 1.17 $
+|   $Date: 2005-09-03 13:21:18 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 // [multilanguage]
@@ -35,11 +39,8 @@ if(!defined("e_THEME")){ exit; }
 $page=substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
 define("e_PAGE", $page);
 
- 
-require_once(e_HANDLER."shortcode_handler.php");
-$tp -> e_sc = new e_shortcode;
-$ulinc = file_get_contents(THEME."ul.sc");
-$tp -> e_sc -> scList['ULINC'] = $ulinc;
+$register_sc[]= "UL";  // register shortcode ul.sc for inclusion.
+
 
 
 function theme_head() {
@@ -64,7 +65,7 @@ $HEADER = "<div id='page'>
 <h1><a href='".SITEURL."' title='{SITENAME}'>{SITENAME}</a></h1>
 <div class='sitetag'>{SITETAG}</div>
 </div>
-{ULINC}
+{UL}
 </div>
 <div id='content' class='narrowcolumn'>";
 /*
@@ -73,17 +74,17 @@ $HEADER = "<div id='page'>
 <div class='sitelinks' style='display:none;'>{SITELINKS}</div>
 */
 $FOOTER = "
-</div> 
-<div id='sidebar'> 
+</div>
+<div id='sidebar'>
 {MENU=1}
-</div> 
-<hr /> 
+</div>
+<hr />
 <div id='footer'>
 <p>
 {SITEDISCLAIMER}<br />{THEMEDISCLAIMER}
-</p> 
-</div> 
-</div> 
+</p>
+</div>
+</div>
 ";
 
 $CUSTOMHEADER = "<div id='page2'>
@@ -92,21 +93,21 @@ $CUSTOMHEADER = "<div id='page2'>
 <h1><a href='".SITEURL."' title='{SITENAME}'>{SITENAME}</a></h1>
 <div class='sitetag'>{SITETAG}</div>
 </div>
-{ULINC}
+{UL}
 </div>
 <div id='content' class='widecolumn'>";
 // <div class='sitelinks'>{SITELINKS}</div>
 
 
 $CUSTOMFOOTER = "
-</div> 
-<hr /> 
+</div>
+<hr />
 <div id='footer'>
 <p>
 {SITEDISCLAIMER}<br />{THEMEDISCLAIMER}
-</p> 
-</div> 
-</div> 
+</p>
+</div>
+</div>
 ";
 
 $CUSTOMPAGES = "forum.php forum_post.php forum_viewforum.php forum_viewtopic.php user.php submitnews.php download.php links.php stats.php usersettings.php signup.php";
@@ -146,7 +147,7 @@ define('LINKCLASS', "");
 
 function tablestyle($caption, $text, $mode)
 {
-	echo "<h3>$caption</h3>\n<br />\n$text\n<br /><br />\n";	
+	echo "<h3>$caption</h3>\n<br />\n$text\n<br /><br />\n";
 }
 
 $COMMENTSTYLE = "
