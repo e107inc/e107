@@ -76,7 +76,7 @@ $FOOTER = "
 <a href='http://validator.w3.org/check?uri=referer' rel='external'><img src='".e_IMAGE_ABS."generic/valid-xhtml11.png' alt='' style='border: 0;' /></a> 
 <a href='http://jigsaw.w3.org/css-validator/check/referer' rel='external'><img src='".e_IMAGE_ABS."generic/vcss.png' alt='' style='border: 0;' /></a>
 <br />
-<a href='http://www.spreadfirefox.com/?q=affiliates&amp;id=0&amp;t=86'><img alt='e107 recommends Mozilla Firefox' title='e107 recommends Mozilla Firefox' src=' http://sfx-images.mozilla.org/affiliates/Buttons/125x50/takebacktheweb_125x50.png' style='border: 0;' /></a>
+<a href='http://www.spreadfirefox.com/?q=affiliates&amp;id=0&amp;t=86'><img alt='e107 recommends Mozilla Firefox' title='e107 recommends Mozilla Firefox' src='http://sfx-images.mozilla.org/affiliates/Buttons/125x50/takebacktheweb_125x50.png' style='border: 0;' /></a>
 </div>		
 </div>
 </div>
