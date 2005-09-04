@@ -11,127 +11,97 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_functions.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-23 15:45:57 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-09-04 12:21:01 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
-function checkUpdate($query = "newsfeed_active=2 OR newsfeed_active=3")
-{
-	global $sql, $tp;
-	require_once(e_HANDLER."xml_class.php");
-	$xml = new parseXml;
-	require_once(e_HANDLER."magpie_rss.php");
-	
-	if ($sql -> db_Select("newsfeed", "*", $query))
-	{
-		$feedArray = $sql -> db_getList();
-		foreach($feedArray as $feed)
-		{
-			extract ($feed);
-			if($newsfeed_timestamp + $newsfeed_updateint < time())
-			{
-				if($rawData = $xml -> getRemoteXmlFile($newsfeed_url))
-				{
-					$rss = new MagpieRSS( $rawData );
-					$serializedArray = addslashes(serialize($rss));
+if(!function_exists("checkUpdate")) {
+	function checkUpdate($query = "newsfeed_active=2 OR newsfeed_active=3") {
+		global $sql, $tp;
+		require_once(e_HANDLER."xml_class.php");
+		$xml = new parseXml;
+		require_once(e_HANDLER."magpie_rss.php");
 
-					$newsfeed_des = FALSE;
-					if($newsfeed_description == "default")
-					{
-						if($rss -> channel['description'])
-						{
-							$newsfeed_des = $tp -> toDB($rss -> channel['description']);
+		if ($sql -> db_Select("newsfeed", "*", $query)) {
+			$feedArray = $sql -> db_getList();
+			foreach($feedArray as $feed)
+			{
+				extract ($feed);
+				if($newsfeed_timestamp + $newsfeed_updateint < time()) {
+					if($rawData = $xml -> getRemoteXmlFile($newsfeed_url)) {
+						$rss = new MagpieRSS( $rawData );
+						$serializedArray = addslashes(serialize($rss));
+
+						$newsfeed_des = FALSE;
+						if($newsfeed_description == "default") {
+							if($rss -> channel['description']) {
+								$newsfeed_des = $tp -> toDB($rss -> channel['description']);
+							} else if($rss -> channel['tagline']) {
+								$newsfeed_des = $tp -> toDB($rss -> channel['tagline']);
+							}
 						}
-						else if($rss -> channel['tagline'])
+
+						if(!$sql->db_Update('newsfeed', "newsfeed_data='{$serializedArray}', newsfeed_timestamp=".time().($newsfeed_des ? ", newsfeed_description='{$newsfeed_des}'": "")." WHERE newsfeed_id={$newsfeed_id}"))
 						{
-							$newsfeed_des = $tp -> toDB($rss -> channel['tagline']);
+							echo "Unable to save raw data in database.<br /><br />".$serializedArray;
 						}
 					}
-	
-					if(!$sql->db_Update('newsfeed', "newsfeed_data='$serializedArray', newsfeed_timestamp=".time().($newsfeed_des ? ", newsfeed_description='$newsfeed_des'": "")." WHERE newsfeed_id=$newsfeed_id"))
+					else
 					{
-						echo "Unable to save raw data in database.<br /><br />".$serializedArray;
+						echo $xml -> error;
 					}
-				}
-				else
-				{
-					echo $xml -> error;
 				}
 			}
 		}
 	}
 }
 
-
-function newsfeed_info($which)
-{
+function newsfeed_info($which) {
 	global $tp, $sql;
-	if($which == 'all')
-	{
+	if($which == 'all') {
 		$qry = "newsfeed_active=1 OR newsfeed_active=3";
-	}
-	else
-	{
+	} else {
 		$qry = "newsfeed_id = {$which}";
 	}
-	
-	$text = "";
 
+	$text = "";
 	checkUpdate($qry);
 
 	/* get template */
-	if (file_exists(THEME."newsfeed_menu_template.php"))
-	{
+	if (file_exists(THEME."newsfeed_menu_template.php")) {
 		include(THEME."newsfeed_menu_template.php");
-	}
-	else
-	{
+	} else {
 		include(e_PLUGIN."newsfeed/templates/newsfeed_menu_template.php");
 	}
-	
-	if ($feeds = $sql -> db_Select("newsfeed", "*", $qry))
-	{
-		while($row = $sql->db_Fetch())
-		{
+
+	if ($feeds = $sql -> db_Select("newsfeed", "*", $qry)) {
+		while($row = $sql->db_Fetch()) {
 			extract ($row);
 			$rss = unserialize($newsfeed_data);
 			$FEEDNAME = "<a href='".e_SELF."?show.$newsfeed_id'>$newsfeed_name</a>";
 			$FEEDDESCRIPTION = $newsfeed_description;
-			if($newsfeed_image == "default")
-			{
-				if($file = fopen ($rss -> image['url'], "r"))
-				{
+			if($newsfeed_image == "default") {
+				if($file = fopen ($rss -> image['url'], "r")) {
 					/* remote image exists - use it! */
 					$FEEDIMAGE = "<a href='".$rss -> image['link']."' rel='external'><img src='".$rss -> image['url']."' alt='".$rss -> image['title']."' style='border: 0; vertical-align: middle;' /></a>";
-				}
-				else
-				{
+				} else {
 					/* remote image doesn't exist - ghah! */
 					$FEEDIMAGE = "";
 				}
-			}
-			else if ($newsfeed_image)
-			{
+			} else if ($newsfeed_image) {
 				$FEEDIMAGE = $newsfeed_image;
-			}
-			else
-			{
+			} else {
 				$FEEDIMAGE = "";
 			}
 			$FEEDLANGUAGE = $rss -> channel['language'];
-	
-			if($rss -> channel['lastbuilddate'])
-			{
+
+			if($rss -> channel['lastbuilddate']) {
 				$pubbed = $rss -> channel['lastbuilddate'];
-			}
-			else if($rss -> channel['dc']['date'])
-			{
+			} else if($rss -> channel['dc']['date']) {
 				$pubbed = $rss -> channel['dc']['date'];
-			}
-			else
-			{
+			} else {
 				$pubbed = NFLAN_34;
 			}
 
@@ -139,12 +109,9 @@ function newsfeed_info($which)
 			$FEEDCOPYRIGHT = $tp -> toHTML($rss -> channel['copyright'], TRUE);
 			$FEEDTITLE = "<a href='".$rss -> channel['link']."' rel='external'>".$rss -> channel['title']."</a>";
 			$FEEDLINK = $rss -> channel['link'];
-			if($newsfeed_active == 2 or $newsfeed_active == 3)
-			{
+			if($newsfeed_active == 2 or $newsfeed_active == 3) {
 				$LINKTOMAIN = "<a href='".e_PLUGIN."newsfeed/newsfeed.php?show.$newsfeed_id'>".NFLAN_39."</a>";
-			}
-			else
-			{
+			} else {
 				$LINKTOMAIN = "";
 			}
 
@@ -152,12 +119,11 @@ function newsfeed_info($which)
 
 			$items = array_slice($rss->items, 0, 10);
 
-			foreach ($items as $item)
-			{
+			foreach ($items as $item) {
 				$FEEDITEMLINK = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], TRUE)."</a>\n";
 				$feeditemtext = preg_replace("#\[[a-z0-9=]+\]|\[\/[a-z]+\]|\{[A-Z_]+\}#si", "", $item['description']);
 				$FEEDITEMTEXT = $tp->html_truncate($feeditemtext, $truncate, $truncate_string);
-				
+
 				$FEEDITEMCREATOR = $tp -> toHTML($item['author'], TRUE);
 				$data .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MENU);
 			}
@@ -166,18 +132,14 @@ function newsfeed_info($which)
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MENU_START) . $data . preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MENU_END);
 		}
 	}
-	
-	if($which == 'all')
-	{
+
+	if($which == 'all') {
 		$ret['title'] = NFLAN_38;
-	}
-	else
-	{
+	} else {
 		$ret['title'] = $newsfeed_name." ".NFLAN_38;
 	}
 	$ret['text'] = $text;
-	
-	
+
 	return $ret;
 }
 
