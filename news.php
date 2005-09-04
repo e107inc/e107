@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.75 $
-|     $Date: 2005-08-30 20:22:18 $
+|     $Revision: 1.76 $
+|     $Date: 2005-09-04 17:23:08 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -139,7 +139,7 @@ if ($action == "extend") {
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_id={$sub_action}";
 	$sql->db_Select_gen($query);
 	$news = $sql->db_Fetch();
-	$ix->render_newsitem($news);
+	$ix->render_newsitem($news, "extend");
 	setNewsCache($cacheString);
 	require_once(FOOTERF);
 	exit;

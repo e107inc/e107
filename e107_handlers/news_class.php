@@ -12,9 +12,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.64 $
-| $Date: 2005-07-09 14:40:02 $
-| $Author: streaky $
+| $Revision: 1.65 $
+| $Date: 2005-09-04 17:23:08 $
+| $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
 
@@ -150,7 +150,7 @@ class news {
 		cachevars('current_news_item', $news);
 		cachevars('current_news_param', $param);
 
-		if ($news['news_render_type'] == 1) {
+		if ($news['news_render_type'] == 1 && $mode != "extend") {
 			if (function_exists("news_list")) {
 				$NEWS_PARSE = news_list($news);
 			} else if ($NEWSLISTSTYLE) {
