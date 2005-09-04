@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-17 19:07:36 $
+|     $Revision: 1.12 $
+|     $Date: 2005-09-04 02:59:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ define("EXTLAN_18", "Required");
 define("EXTLAN_19", "Users will be required to enter a value in this field when updating their settings.");
 define("EXTLAN_20", "Determines which users this field will apply to.");
 define("EXTLAN_21", "This will determine who will see this field in their usersettings.");
-define("EXTLAN_22", "This will determine who can see the value in the user page.");
+define("EXTLAN_22", "This will determine who can see the value in the user page <br />NOTE: Setting this to 'Read Only' will make it visible to Admin and the member only.");
 define("EXTLAN_23", "Add Extended Field");
 define("EXTLAN_24", "Update Extended Field");
 define("EXTLAN_25", "move down");

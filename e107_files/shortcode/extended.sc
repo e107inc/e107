@@ -33,15 +33,18 @@ else
 }
 
 $udata['user_class'] .= ($udata['user_class'] == "" ? "" : ",");
-$udata['user_class'] .= e_UC_PUBLIC.",".e_UC_READONLY.",".e_UC_MEMBER;
+$udata['user_class'] .= e_UC_PUBLIC.",".e_UC_MEMBER;
 if($udata['user_admin'] == 1)
 {
 	$udata['user_class'].= ",".e_UC_ADMIN;
 }
 
+//echo "{$parms[0]} read class = {$ueStruct["user_".$parms[0]]['user_extended_struct_read']} <br />";
+//echo ($ueStruct["user_".$parms[0]]['user_extended_struct_read'] == e_UC_READONLY && (ADMIN || $udata['user_id'] == USERID));
 if (
 !check_class($ueStruct["user_".$parms[0]]['user_extended_struct_applicable'], $udata['user_class'])
 || !check_class($ueStruct["user_".$parms[0]]['user_extended_struct_read'])
+|| ($ueStruct["user_".$parms[0]]['user_extended_struct_read'] == e_UC_READONLY && (!ADMIN && $udata['user_id'] != USERID))
 || (!ADMIN && substr($ueStruct["user_".$parms[0]]['user_extended_struct_parms'], -1) == 1 
 && strpos($udata['user_hidden_fields'], "^user_".$parms[0]."^") !== FALSE && $parms[2] != USERID)
 )
