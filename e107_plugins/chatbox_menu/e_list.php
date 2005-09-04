@@ -24,7 +24,7 @@
 
 			$cb_id		= substr($row['cb_nick'] , 0, strpos($row['cb_nick'] , "."));
 			$cb_nick	= substr($row['cb_nick'] , (strpos($row['cb_nick'] , ".")+1));
-			$cb_message	= ($row['cb_blocked'] ? CHATBOX_L6 : str_replace("<br />", "", $tp -> toHTML($row['cb_message'])));
+			$cb_message	= ($row['cb_blocked'] ? CHATBOX_L6 : str_replace("<br />", " ", $tp -> toHTML($row['cb_message'])));
 			$rowheading	= $this -> parse_heading($cb_message, $mode);
 			$ICON		= $bullet;
 			$HEADING	= $rowheading;
