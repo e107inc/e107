@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.212 $
-|     $Date: 2005-09-01 19:42:25 $
+|     $Revision: 1.213 $
+|     $Date: 2005-09-04 01:27:10 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -51,8 +51,12 @@ $start_ob_level = ob_get_level();
 
 define("E107_BOOTSTRAP_LOADED", 1);
 
-ini_set('magic_quotes_runtime', 0);
-ini_set('magic_quotes_sybase',  0);
+// setup some php options
+ini_set('magic_quotes_runtime',     0);
+ini_set('magic_quotes_sybase',      0);
+ini_set('arg_separator.output',     '&amp;');
+ini_set('session.use_only_cookies', 1);
+ini_set('session.use_trans_sid',    0);
 
 // Grab e107_config, get directory paths, and create the $e107 object
 @include_once(realpath(dirname(__FILE__).'/e107_config.php'));
