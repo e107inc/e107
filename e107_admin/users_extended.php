@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-08-23 09:36:30 $
-|     $Author: sweetas $
+|     $Revision: 1.22 $
+|     $Date: 2005-09-04 02:59:01 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -539,7 +539,7 @@ class users_ext
 			<tr>
 			<td style='width:30%;vertical-align:top' class='forumheader3'>".EXTLAN_6."</td>
 			<td style='width:70%' class='forumheader3' colspan='3'>
-			".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'public, member, admin, classes')."<br /><span class='smalltext'>".EXTLAN_22."</span>
+			".r_userclass("user_read", $current['user_extended_struct_read'], 'off', 'public, member, admin, readonly, classes')."<br /><span class='smalltext'>".EXTLAN_22."</span>
 			</td>
 			</tr>
 
