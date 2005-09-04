@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.213 $
-|     $Date: 2005-09-04 01:27:10 $
+|     $Revision: 1.214 $
+|     $Date: 2005-09-04 01:33:56 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -84,9 +84,9 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === FALSE)
 
 if (preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)) {
 	define("e_MENU", $matches[1]);
-	define("e_QUERY", str_replace($matches[0], "", preg_replace("#&|/?".session_name().".*#i", "", $_SERVER['QUERY_STRING'])));
+	define("e_QUERY", $_SERVER['QUERY_STRING']);
 } else {
-	define("e_QUERY", preg_replace("#&|/?".session_name().".*#i", "", $_SERVER['QUERY_STRING']));
+	define("e_QUERY", $_SERVER['QUERY_STRING']);
 }
 $e_QUERY = e_QUERY;
 
