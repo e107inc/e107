@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-08-24 03:40:33 $
-|     $Author: sweetas $
+|     $Revision: 1.35 $
+|     $Date: 2005-09-04 18:59:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -130,5 +130,6 @@ $pref['emotepack'] = "default";
 $pref['rss_feeds'] = 1;
 $pref['xup_enabled'] = 1;
 $pref['mailer'] = "php";
+$pref['ue_upgrade'] = "1";
 
 ?>
