@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-09-01 20:33:16 $
+|     $Revision: 1.5 $
+|     $Date: 2005-09-04 18:29:43 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -133,7 +133,7 @@ if($message != "")
 
 if("send" == $action)
 {
-	$ns->tablerender(LAN_PM, show_send());
+	$ns->tablerender(LAN_PM, show_send(intval($qs[1])));
 }
 
 if("reply" == $action)
@@ -147,7 +147,7 @@ if("reply" == $action)
 		}
 		else
 		{
-			$ns->tablerender(LAN_PM, show_send($pm_info));
+			$ns->tablerender(LAN_PM, show_send());
 		}
 	}
 	else
@@ -175,10 +175,20 @@ if("show" == $action)
 require_once(FOOTERF);
 exit;
 
-function show_send()
+function show_send($to_uid)
 {
-	global $tp;
+	global $tp, $pm_info;
 	$pm_outbox = pm_getInfo('outbox');
+	if($to_uid)
+	{
+		$sql2 =& new db;
+		if($sql2->db_Select('user', 'user_name', "user_id = '{$to_uid}'"))
+		{
+			$row=$sql2->db_Fetch();
+			$pm_info['from_name'] = $row['user_name'];
+		}
+	}
+		
 	if($pm_outbox['outbox']['filled'] >= 100)
 	{
 		return str_replace('{PERCENT}', $pm_outbox['outbox']['filled'], LAN_PM_13);
