@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_functions.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-09-04 12:21:01 $
-|     $Author: streaky $
+|     $Revision: 1.8 $
+|     $Date: 2005-09-04 14:03:26 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -58,6 +58,7 @@ if(!function_exists("checkUpdate")) {
 	}
 }
 
+if(!function_exists("newsfeed_info")) {
 function newsfeed_info($which) {
 	global $tp, $sql;
 	if($which == 'all') {
@@ -142,7 +143,7 @@ function newsfeed_info($which) {
 
 	return $ret;
 }
-
+}
 
 
 ?>
