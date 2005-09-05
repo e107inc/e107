@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-09-04 18:29:43 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-09-05 17:00:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -169,7 +169,7 @@ if("outbox" == $action)
 
 if("show" == $action)
 {
-	$ns->tablerender(LAN_PM, show_pm(intval($qs[1])));
+	show_pm(intval($qs[1]));
 }
 
 require_once(FOOTERF);
@@ -259,7 +259,7 @@ function show_outbox()
 
 function show_pm($pmid)
 {
-	global $pm, $tp, $pm_shortcodes, $pm_info;
+	global $pm, $tp, $pm_shortcodes, $pm_info, $ns;
 	require_once(e_PLUGIN."pm/pm_shortcodes.php");
 	$tpl_file = THEME."pm_template.php";
 	include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN."pm/pm_template.php");
@@ -271,7 +271,14 @@ function show_pm($pmid)
 		$pm->pm_mark_read($pmid);
 	}
 	$txt .= $tp->parseTemplate($PM_SHOW, true, $pm_shortcodes);
-	return $txt;
+	$ns -> tablerender(LAN_PM, $txt);
+	if($pm_info['pm_from'] == USERID) {
+		$ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox(), "PM");
+	} 
+	else
+	{
+		$ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox(), "PM");
+	}
 }
 
 function post_pm()

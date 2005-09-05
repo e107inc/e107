@@ -34,7 +34,7 @@ define('LAN_PM_31', "From");
 define('LAN_PM_32', "Received");
 define('LAN_PM_33', "Sent");
 define('LAN_PM_34', "No Messages");
-define('LAN_PM_35', "Send new Private Message");
+define('LAN_PM_35', "Send new message");
 define('LAN_PM_36', "total");
 define('LAN_PM_37', "unread");
 define('LAN_PM_38', "PM Sent to userclass");
