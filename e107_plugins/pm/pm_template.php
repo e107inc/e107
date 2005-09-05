@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-09-05 17:00:44 $
+|     $Revision: 1.5 $
+|     $Date: 2005-09-05 17:09:32 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -107,13 +107,13 @@ $PM_INBOX_TABLE = "
 
 $PM_INBOX_EMPTY = "
 <tr>
-	<td colspan='6' class='forumheader2'>No messages</td>
+	<td colspan='6' class='forumheader'>No messages</td>
 </tr>
 ";
 
 $PM_INBOX_FOOTER = "
 <tr>
-	<td class='forumheader2' colspan='6' style='text-align:center'>
+	<td class='forumheader' colspan='6' style='text-align:center'>
 	{DELETE_SELECTED}
 	</td>
 </tr>
@@ -145,13 +145,13 @@ $PM_OUTBOX_TABLE = "
 
 $PM_OUTBOX_EMPTY = "
 <tr>
-	<td colspan='6' class='forumheader2'>".LAN_PM_34."</td>
+	<td colspan='6' class='forumheader'>".LAN_PM_34."</td>
 </tr>
 ";
 
 $PM_OUTBOX_FOOTER = "
 <tr>
-	<td class='forumheader2' colspan='6' style='text-align:center'>
+	<td class='forumheader' colspan='6' style='text-align:center'>
 	{DELETE_SELECTED}
 	</td>
 </tr>
