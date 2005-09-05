@@ -1,10 +1,9 @@
-﻿<?php
-
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|    	Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -12,12 +11,11 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.215 $
-|     $Date: 2005-09-05 00:04:02 $
+|     $Revision: 1.216 $
+|     $Date: 2005-09-05 00:21:49 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-
 // Find out if register globals is enabled and destroy them if so
 $register_globals = true;
 if(function_exists('ini_get')) {
@@ -40,7 +38,6 @@ if(isset($retrieve_prefs) && is_array($retrieve_prefs)) {
 } else {
 	unset($retrieve_prefs);
 }
-
 // setup error handling first of all.
 error_reporting(E_ERROR | E_PARSE);
 $error_handler = new error_handler();
