@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-09-05 17:00:44 $
+|     $Revision: 1.5 $
+|     $Date: 2005-09-05 17:03:31 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -336,18 +336,6 @@ if($pm_info['pm_to'] == USERID)
 	</form>
 	";
 	return $ret;
-}
-SC_END
-
-SC_BEGIN PM_SHOWBOX
-global $pm_info, $ns;
-if($pm_info['pm_from'] == USERID)
-{
-	return $ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox(), "PM", TRUE);
-}
-else
-{
-	return $ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox(), "PM", TRUE);
 }
 SC_END
 
