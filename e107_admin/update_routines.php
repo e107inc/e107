@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.130 $
-|     $Date: 2005-08-24 04:47:43 $
-|     $Author: sweetas $
+|     $Revision: 1.131 $
+|     $Date: 2005-09-05 00:04:02 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -892,6 +892,11 @@ function update_61x_to_700($type='') {
 			if(strpos($lines[10],"tinyint")){
 		  		return update_needed();
 			}
+		}
+
+		if(!array_key_exists('ue_upgrade', $pref))
+		{
+			return update_needed();
 		}
 
 		if($sql->db_Field("plugin",5) != "plugin_rss"){
