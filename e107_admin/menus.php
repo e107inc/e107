@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-08-23 09:36:30 $
-|     $Author: sweetas $
+|     $Revision: 1.35 $
+|     $Date: 2005-09-05 03:23:13 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -429,8 +429,8 @@ function checklayout($str) {
 	else if (strstr($str, "PLUGIN")){
 		$plug = preg_replace("/\{PLUGIN=(.*?)\}/si", "\\1", $str);
 		$plug = trim($plug);
-		if (file_exists((e_PLUGIN."{$plug}/{$plug}.config.php"))){
-			$link = e_PLUGIN."{$plug}/{$plug}.config.php";
+		if (file_exists((e_PLUGIN."{$plug}/{$plug}_config.php"))){
+			$link = e_PLUGIN."{$plug}/{$plug}_config.php";
 		}
 
 		if(file_exists((e_PLUGIN.$plug."/config.php"))){
@@ -462,14 +462,14 @@ function checklayout($str) {
 
 				$text = "";
 				$conf = '';
-				if (file_exists(e_PLUGIN."{$menu_path}/{$menu_name}_menu.config.php"))
+				if (file_exists(e_PLUGIN."{$menu_path}/{$menu_name}_menu_config.php"))
 				{
-					$conf = "config.{$menu_path}.{$menu_name}_menu.config";
+					$conf = "config.{$menu_path}.{$menu_name}_menu_config";
 				}
 
 				if($conf == '' && file_exists(e_PLUGIN."{$menu_path}/config.php"))
 				{
-					$conf = "config.{$menu_path}.config";
+					$conf = "config.{$menu_path}_config";
 				}
 
 				$text .= "<select id='menuAct_$menu_id' name='menuAct[$menu_id]' class='tbox' onchange='this.form.submit()' >";
