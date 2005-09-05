@@ -90,7 +90,7 @@ if ($parms[1] == 'value')
 	{
 		$ret_data = $uVal;
 	}
-	if($ret_data)
+	if($ret_data != "")
 	{
 		return $tp->toHTML($ret_data, TRUE, "no_make_clickable", "class:{$udata['user_class']}");
 	}
