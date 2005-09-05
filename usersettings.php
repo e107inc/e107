@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-08-23 04:17:57 $
-|     $Author: sweetas $
+|     $Revision: 1.46 $
+|     $Date: 2005-09-05 23:37:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -542,7 +542,7 @@ if ($sql->db_Select("userclass_classes", "*", "userclass_editclass =0"))
 					if($parms[3])
 					{
 						$chk = (strpos($curVal['user_hidden_fields'], "^".$fname."^") === FALSE) ? FALSE : TRUE;
-						if(isset($_POST))
+						if(isset($_POST['updatesettings']))
 						{
 							$chk = isset($_POST['hide'][$fname]);
 						}
