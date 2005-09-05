@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /*
 + ----------------------------------------------------------------------------+
@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.214 $
-|     $Date: 2005-09-04 01:33:56 $
-|     $Author: streaky $
+|     $Revision: 1.215 $
+|     $Date: 2005-09-05 00:04:02 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -994,7 +994,7 @@ function init_session() {
 			define("USERCLASS", "");
 			define("LOGINMESSAGE", "Corrupted cookie detected - logged out.<br /><br />");
 			return (FALSE);
-		} if(array_key_exists('ue_upgrade', $pref)) {
+		} if(array_key_exists('ue_upgrade', $pref) || array_key_exists('signup_maxip')) {
 			$qry = "
 			SELECT u.*, ue.* FROM #user AS u
 			LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
