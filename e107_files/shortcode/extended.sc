@@ -1,7 +1,8 @@
 //USAGE:  {EXTENDED=<field_name>.[text|value|icon].<user_id>}
 //EXAMPLE: {EXTENDED=user_gender.value.5}  will show the value of the extended field user_gender for user #5
+include(e_LANGUAGEDIR_ABS.e_LANGUAGE."/lan_user_extended.php");
 $parms = explode(".", $parm);
-global $currentUser, $sql, $tp;
+global $currentUser, $sql, $tp, $loop_uid;
 $ueStruct = getcachedvars("user_extended_struct");
 if(!$ueStruct)
 {
@@ -10,13 +11,26 @@ if(!$ueStruct)
 	cachevars("user_extended_struct", $ueStruct);
 }
 
-if($parms[2] == USERID)
+$uid = intval($parms[2]);
+if($uid == 0)
+{
+	if(isset($loop_uid) && intval($loop_uid) > 0)
+	{
+		$uid = $loop_uid;
+	}
+	else
+	{
+		$uid = USERID;
+	}
+}
+
+if($uid == USERID)
 {
 	$udata = $currentUser;
 }
 else
 {
-	$udata = getcachedvars('userinfo_'.$parms[2]);
+	$udata = getcachedvars('userinfo_'.$uid);
 	if(!$udata)
 	{
 		$qry = "
@@ -27,7 +41,7 @@ else
 		if($sql->db_Select_gen($qry))
 		{
 			$udata = $sql->db_Fetch();
-			cachevars('userinfo_'.$parms[2], $udata);
+			cachevars('userinfo_'.$uid, $udata);
 		}
 	}
 }
@@ -39,14 +53,12 @@ if($udata['user_admin'] == 1)
 	$udata['user_class'].= ",".e_UC_ADMIN;
 }
 
-//echo "{$parms[0]} read class = {$ueStruct["user_".$parms[0]]['user_extended_struct_read']} <br />";
-//echo ($ueStruct["user_".$parms[0]]['user_extended_struct_read'] == e_UC_READONLY && (ADMIN || $udata['user_id'] == USERID));
 if (
 !check_class($ueStruct["user_".$parms[0]]['user_extended_struct_applicable'], $udata['user_class'])
 || !check_class($ueStruct["user_".$parms[0]]['user_extended_struct_read'])
 || ($ueStruct["user_".$parms[0]]['user_extended_struct_read'] == e_UC_READONLY && (!ADMIN && $udata['user_id'] != USERID))
 || (!ADMIN && substr($ueStruct["user_".$parms[0]]['user_extended_struct_parms'], -1) == 1 
-&& strpos($udata['user_hidden_fields'], "^user_".$parms[0]."^") !== FALSE && $parms[2] != USERID)
+&& strpos($udata['user_hidden_fields'], "^user_".$parms[0]."^") !== FALSE && $uid != USERID)
 )
 {
 	return FALSE;
@@ -54,7 +66,15 @@ if (
 
 if ($parms[1] == 'text')
 {
-	return ($ueStruct["user_".$parms[0]]['user_extended_struct_text']) ? $ueStruct["user_".$parms[0]]['user_extended_struct_text'] : TRUE;
+	$text_val = $ueStruct["user_".$parms[0]]['user_extended_struct_text'];
+	if($text_val)
+	{
+		return (defined($text_val) ? constant($text_val) : $text_val);
+	}
+	else
+	{
+		return TRUE;
+	}
 }
 
 if ($parms[1] == 'icon')
