@@ -10,9 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-05-04 02:17:58 $
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu_config.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2005-09-05 03:23:13 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
