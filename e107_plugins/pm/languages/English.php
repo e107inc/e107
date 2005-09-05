@@ -51,7 +51,7 @@ define('LAN_PM_47', "Block added: {UNAME} is no longer allowed to send you PMs")
 define('LAN_PM_48', "ERROR: Block not added, unknown error");
 define('LAN_PM_49', "ERROR: Block already in place for {UNAME}");
 define('LAN_PM_50', "Block User");
-define('LAN_PM_51', "UNBlock User");
+define('LAN_PM_51', "Unblock User");
 define('LAN_PM_52', "Delete");
 define('LAN_PM_53', "Delete Selected");
 

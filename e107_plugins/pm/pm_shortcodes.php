@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-09-05 17:03:31 $
+|     $Revision: 1.6 $
+|     $Date: 2005-09-05 18:53:08 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -72,7 +72,7 @@ if($pm_info['pm_subject'])
 		$value = LAN_PM_58.$value;
 	}
 }
-return "<input class='tbox' type='text' name='pm_subject' value='{$value}' size='30' maxlength='255' />";
+return "<input class='tbox' type='text' name='pm_subject' value='{$value}' size='63' maxlength='255' />";
 SC_END
 
 SC_BEGIN FORM_MESSAGE
@@ -283,18 +283,18 @@ SC_BEGIN PM_BLOCK_USER
 global $pm_info, $pm_blocks;
 if(in_array($pm_info['pm_from'], $pm_blocks))
 {
-	return "<a href='".e_PLUGIN_ABS."pm/pm.php?unblock.{$pm_info['pm_from']}'>".LAN_PM_51."</a>";
+	return "<a href='".e_PLUGIN_ABS."pm/pm.php?unblock.{$pm_info['pm_from']}'><img src='".e_PLUGIN_ABS."pm/images/mail_unblock.png' title='".LAN_PM_51."' alt='".LAN_PM_51."' style='width: 16px; height: 16px; border: 0px' /></a>";
 }
 else
 {
-	return "<a href='".e_PLUGIN_ABS."pm/pm.php?block.{$pm_info['pm_from']}'>".LAN_PM_50."</a>";
+	return "<a href='".e_PLUGIN_ABS."pm/pm.php?block.{$pm_info['pm_from']}'><img src='".e_PLUGIN_ABS."pm/images/mail_block.png' title='".LAN_PM_50."' alt='".LAN_PM_50."' style='width: 16px; height: 16px; border: 0px' /></a>";
 }
 SC_END
 
 SC_BEGIN PM_DELETE
 global $pm_info;
 $extra = $parm != "" ? ".{$parm}" : "";
-return "<a href='".e_PLUGIN_ABS."pm/pm.php?del.{$pm_info['pm_id']}{$extra}'>".LAN_PM_52."</a>";
+return "<a href='".e_PLUGIN_ABS."pm/pm.php?del.{$pm_info['pm_id']}{$extra}'><img src='".e_PLUGIN_ABS."pm/images/mail_delete.png' title='".LAN_PM_52."' alt='".LAN_PM_52."' style='width: 16px; height: 16px; border: 0px' /></a>";
 SC_END
 
 SC_BEGIN DELETE_SELECTED

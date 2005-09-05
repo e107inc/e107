@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-09-05 17:09:32 $
+|     $Revision: 1.6 $
+|     $Date: 2005-09-05 18:53:08 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -28,21 +28,21 @@ $sc_style['PM_ATTACHMENTS']['post'] = "</div>";
 
 $sc_style['EMOTES']['pre'] = "
 <tr>
-	<td class='forumheader3' style='text-align:center'>".LAN_PM_7.": </td>
+	<td class='forumheader3'>".LAN_PM_7.": </td>
 	<td class='forumheader3'>
 ";
 $sc_style['EMOTES']['post'] = "</td></tr>";
 
 $sc_style['ATTACHMENT']['pre'] = "
 <tr>
-	<td class='forumheader3' style='text-align:center'>".LAN_PM_8."</td>
+	<td class='forumheader3'>".LAN_PM_8.": </td>
 	<td class='forumheader3'>
 ";
 $sc_style['ATTACHMENT']['post'] = "</td></tr>";
 
 $sc_style['RECEIPT']['pre'] = "
 <tr>
-	<td class='forumheader3' style='text-align:center'>".LAN_PM_9."</td>
+	<td class='forumheader3'>".LAN_PM_9.": </td>
 	<td class='forumheader3'>
 ";
 $sc_style['RECEIPT']['post'] = "</td></tr>";
@@ -58,11 +58,11 @@ $sc_style['PM_REPLY']['post'] = "</td>
 $PM_SEND_PM = "<div style='text-align: center'>
 <table style='width:95%' class='fborder'>
 <tr>
-	<td colspan='2' style='width:60%' class='fcaption'>".LAN_PM_1.": </td>
+	<td colspan='2' class='fcaption'>".LAN_PM_1.": </td>
 </tr>
 <tr>
-	<td class='forumheader3'>".LAN_PM_2.": </td>
-	<td class='forumheader3' style='text-align:left'>{FORM_TOUSER}<br />{FORM_TOCLASS}</td>
+	<td class='forumheader3' style='width: 40%'>".LAN_PM_2.": </td>
+	<td class='forumheader3' style='width: 60%; text-align:left'>{FORM_TOUSER}<br />{FORM_TOCLASS}</td>
 </tr>
 <tr>
 	<td class='forumheader3'>".LAN_PM_5.": </td>
@@ -87,10 +87,10 @@ $PM_INBOX_HEADER = "
 <tr>
 	<td class='fcaption' style='width:1%'>&nbsp;</td>
 	<td class='fcaption' style='width:1%'>&nbsp;</td>
-	<td class='fcaption'>".LAN_PM_5."</td>
-	<td class='fcaption'>".LAN_PM_32."</td>
-	<td class='fcaption'>".LAN_PM_31."</td>
-	<td class='fcaption'>&nbsp;</td>
+	<td class='fcaption' style='width:38%'>".LAN_PM_5."</td>
+	<td class='fcaption' style='width:22%'>".LAN_PM_31."</td>
+	<td class='fcaption' style='width:30%'>".LAN_PM_32."</td>
+	<td class='fcaption' style='width:8%'>&nbsp;</td>
 </tr>
 ";
 
@@ -99,9 +99,9 @@ $PM_INBOX_TABLE = "
 	<td class='forumheader3'>{PM_SELECT}</td>
 	<td class='forumheader3'>{PM_READ_ICON}</td>
 	<td class='forumheader3'>{PM_SUBJECT=link}{PM_ATTACHMENT_ICON}</td>
-	<td class='forumheader3'>{PM_DATE}</td>
 	<td class='forumheader3'>{PM_FROM=link}</td>
-	<td class='forumheader3'>{PM_BLOCK_USER}<br />{PM_DELETE=inbox}</td>
+	<td class='forumheader3'>{PM_DATE}</td>
+	<td class='forumheader3' style='text-align: center; white-space: nowrap'>{PM_DELETE=inbox}&nbsp;{PM_BLOCK_USER}</td>
 </tr>
 ";
 
@@ -125,10 +125,10 @@ $PM_OUTBOX_HEADER = "
 <tr>
 	<td class='fcaption' style='width:1%'>&nbsp;</td>
 	<td class='fcaption' style='width:1%'>&nbsp;</td>
-	<td class='fcaption'>".LAN_PM_5."</td>
-	<td class='fcaption'>".LAN_PM_33."</td>
-	<td class='fcaption'>".LAN_PM_2."</td>
-	<td class='fcaption'>&nbsp;</td>
+	<td class='fcaption' style='width:38%'>".LAN_PM_5."</td>
+	<td class='fcaption' style='width:22%'>".LAN_PM_2."</td>
+	<td class='fcaption' style='width:30%'>".LAN_PM_33."</td>
+	<td class='fcaption' style='width:8%'>&nbsp;</td>
 </tr>
 ";
 
@@ -137,9 +137,9 @@ $PM_OUTBOX_TABLE = "
 	<td class='forumheader3'>{PM_SELECT}</td>
 	<td class='forumheader3'>{PM_READ_ICON}</td>
 	<td class='forumheader3'>{PM_SUBJECT=link}{PM_ATTACHMENT_ICON}</td>
+		<td class='forumheader3'>{PM_TO=link}</td>
 	<td class='forumheader3'>{PM_DATE}</td>
-	<td class='forumheader3'>{PM_TO=link}</td>
-	<td class='forumheader3'>{PM_DELETE=outbox}</td>
+	<td class='forumheader3' style='text-align: center'>{PM_DELETE=outbox}</td>
 </tr>
 ";
 
