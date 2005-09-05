@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_users_extended.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-07-01 19:53:00 $
+|     $Revision: 1.5 $
+|     $Date: 2005-09-05 04:58:18 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ define("EXTLAN_18", "Verplicht");
 define("EXTLAN_19", "Gebruikers moeten een waarde voor dit veld opgeven als zij hun gegevens bijwerken.");
 define("EXTLAN_20", "Bepaalt voor welke gebruikers dit veld van toepassing is.");
 define("EXTLAN_21", "Bepaalt welke gebruikers dit veld in hun instellingen te zien krijgen.");
-define("EXTLAN_22", "Bepaalt welke gebruikers dit veld in hun gebruikerspagina te zien krijgen.");
+define("EXTLAN_22", "Bepaalt welke gebruikers dit veld in hun gebruikerspagina te zien krijgen<br />LET OP: het instellen op 'Alleen lezen' maakt het alleen zichtbaar voor de Beheerder en de betreffende gebruiker zelf.");
 define("EXTLAN_23", "Toevoegen uitgebreid veld");
 define("EXTLAN_24", "Bijwerken uitgebreid veld");
 define("EXTLAN_25", "omlaag");

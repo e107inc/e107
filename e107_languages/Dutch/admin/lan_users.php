@@ -95,6 +95,7 @@ define("USRLAN_125", "Van");
 define("USRLAN_126", "Toestaan om leden elkaar te laten beoordelen");
 define("USRLAN_127", "Toestaan reacties in ledenprofiel");
 define("USRLAN_128", "Inlognaam");
+define("USRLAN_129", "Geen IP adres gevonden in gebruikersinfo, IP niet geblokkeerd");
 define("USRLAN_130", "Activeren online gebruikersweergave");
 define("USRLAN_131", "Je moet deze optie activeren om online gebruikersweergave, zoals online.php, forum online info en online menu's te kunnen gebruiken");
 define("USRLAN_132", "Activeren");

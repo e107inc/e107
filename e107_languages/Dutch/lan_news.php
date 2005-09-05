@@ -17,7 +17,7 @@
 
 define("PAGE_NAME", "Nieuws");
 define("LAN_82", "Nieuws - categorie");
-define("LAN_83", "Nog geen nieuwsberichten - kom binnenkort terug.");
+define("LAN_83", "Geen nieuwe berichten op dit moment- kom binnenkort terug.");
 define("LAN_84", "Nieuwsberichten");
 define("LAN_99", "Reacties");
 define("LAN_100", "Op");
@@ -29,7 +29,7 @@ define("LAN_NEWS_4", "als je dat niet doet, bestaat er een beveiligingsrisico vo
 define("LAN_NEWS_5", "<b>Fout!</b> Het was niet mogelijk het nieuwsbericht in de database bij te werken!</b>");
 define("LAN_NEWS_6", "Nieuws ingevoerd in de database.");
 define("LAN_NEWS_7", "<b>Fout!</b> Het was niet mogelijk het nieuwsbericht in de database in te voeren!</b>");
-define("LAN_NEWS_8", "Nieuws in de database ingevoerd voor alle talen. ID: ");
+define("LAN_NEWS_8", "Nieuws voor alle talen ingevoerd in de database. ID: ");
 define("LAN_NEWS_9", "Uitsluitend titel ingevoerd - <b>uitsluitend de titel van het bericht wordt getoond</b><br />");
 define("LAN_NEWS_10", "Dit nieuwsbericht is <b>niet actief</b> (het wordt niet getoond op de voorpagina). ");
 define("LAN_NEWS_11", "Dit nieuwsbericht is <b>actief</b> (het wordt getoond op de voorpagina). ");
