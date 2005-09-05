@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/secure_img_render.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-08-23 00:44:23 $
-|     $Author: sweetas $
+|     $Revision: 1.10 $
+|     $Date: 2005-09-05 01:45:12 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-while (list($global) = each($GLOBALS)) {
+while (list($global) = each($GLOBALS))
+{
 	if (!preg_match('/^(_SERVER|GLOBALS)$/', $global)) {
 		unset($$global);
 	}
@@ -50,38 +51,44 @@ if (!$row = mysql_fetch_array($result)) {
 
 list($code, $url) = explode(",", $row['tmp_info']);
 $type = "none";
-foreach($imgtypes as $t) {
-	if (function_exists("imagecreatefrom".$t)) {
+foreach($imgtypes as $t)
+{
+	if (function_exists("imagecreatefrom".$t))
+	{
 		$type = $t;
 		break;
 	}
 }
 
-switch($type) {
+$path = realpath(dirname(__FILE__)."/../")."/".$IMAGES_DIRECTORY;
+
+switch($type)
+{
 	case "jpeg":
-	$image = ImageCreateFromJPEG("../".$url."generic/code_bg.jpg");
-	break;
+		$image = ImageCreateFromJPEG($path."generic/code_bg.jpg");
+		break;
 	case "png":
-	$image = ImageCreateFromPNG("../".$url."generic/code_bg.png");
-	break;
+		$image = ImageCreateFromPNG($path."generic/code_bg.png");
+		break;
 	case "gif":
-	$image = ImageCreateFromGIF("../".$url."generic/code_bg.gif");
-	break;
+		$image = ImageCreateFromGIF($path."generic/code_bg.gif");
+		break;
 }
 $text_color = ImageColorAllocate($image, 80, 80, 80);
 //ob_clean();
 // Header("Content-type: image/".$type);
 ImageString ($image, 5, 12, 2, $code, $text_color);
-switch($type) {
+switch($type)
+{
 	case "jpeg":
-	ImageJPEG($image, '', 75);
-	break;
+		ImageJPEG($image, '', 75);
+		break;
 	case "png":
-	ImagePNG($image, '', 75);
-	break;
+		ImagePNG($image, '', 75);
+		break;
 	case "gif":
-	ImageGIF($image, '', 75);
-	break;
+		ImageGIF($image, '', 75);
+		break;
 }
 ImageDestroy($image);
 die();
