@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.71 $
-|     $Date: 2005-08-31 05:57:57 $
+|     $Revision: 1.72 $
+|     $Date: 2005-09-05 17:58:03 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -248,17 +248,22 @@ function hilite($link,$enabled=''){
 
 // --------------- highlighting for plugins. ----------------
 		if(stristr($link, $PLUGINS_DIRECTORY) !== FALSE && stristr($link, "custompages") === FALSE){
-			if(str_replace("?","",$link)){
-				if(strpos(e_SELF."?".e_QUERY, str_replace("../", "", $link))){
-					return TRUE;
+			if(str_replace("?","",$link)){  // plugin links with queries
+                $subq = explode("?",$link);
+
+				if(strpos(e_SELF,$subq[0]) && e_QUERY == $subq[1]){
+			   		return TRUE;
 				}else{
 					return FALSE;
 				}
+			}else{  // plugin links without queries
+				$link = str_replace("../", "", $link);
+		   		if(stristr(dirname(e_SELF), dirname($link)) !== FALSE){
+ 			 		return TRUE;
+				}
+
 			}
-			$link = str_replace("../", "", $link);
-			if(stristr(dirname(e_SELF), dirname($link)) !== FALSE){
-				return TRUE;
-			}
+            return FALSE;
 		}
 
 		// --------------- highlight for news items.----------------
@@ -285,11 +290,14 @@ function hilite($link,$enabled=''){
 
 		// --------------- highlight default ----------------
 		if(strpos($link, "?") !== FALSE){
-			if((strpos(e_SELF."?".e_QUERY, str_replace("../", "", $link)) !== false)){
-				return true;
+			$subq = explode("?",$link);
+			$linkq = $subq[1];
+			$thelink = str_replace("../", "", $link);
+			if((strpos(e_SELF,$thelink) !== false) && (strpos(e_QUERY,$linkq) !== false)){
+		  		return true;
 			}
 		}
-		if(!preg_match("/all|item|cat|list/", e_QUERY) && $enabled && (strpos(e_SELF, str_replace("../", "",$link)) !== false)){
+		if(!preg_match("/all|item|cat|list/", e_QUERY) && (strpos(e_SELF, str_replace("../", "",$link)) !== false)){
 			return true;
 		}
 
