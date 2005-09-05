@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-09-05 18:53:08 $
+|     $Revision: 1.7 $
+|     $Date: 2005-09-05 19:51:12 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -61,8 +61,8 @@ $PM_SEND_PM = "<div style='text-align: center'>
 	<td colspan='2' class='fcaption'>".LAN_PM_1.": </td>
 </tr>
 <tr>
-	<td class='forumheader3' style='width: 40%'>".LAN_PM_2.": </td>
-	<td class='forumheader3' style='width: 60%; text-align:left'>{FORM_TOUSER}<br />{FORM_TOCLASS}</td>
+	<td class='forumheader3' style='width: 30%'>".LAN_PM_2.": </td>
+	<td class='forumheader3' style='width: 70%; text-align:left'>{FORM_TOUSER}<br />{FORM_TOCLASS}</td>
 </tr>
 <tr>
 	<td class='forumheader3'>".LAN_PM_5.": </td>
