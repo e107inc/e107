@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2005-08-23 00:44:23 $
-|     $Author: sweetas $
+|     $Revision: 1.59 $
+|     $Date: 2005-09-05 01:10:53 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -171,17 +171,38 @@ if (isset($_POST['adduser'])) {
 }
 
 // ------- Ban User. --------------
-if (isset($_POST['useraction']) && $_POST['useraction'] == "ban") {
+if (isset($_POST['useraction']) && $_POST['useraction'] == "ban")
+{
   //	$sub_action = $_POST['userid'];
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
 	$row = $sql->db_Fetch();
-	 extract($row);
-	if ($user_perms == "0") {
+//	 extract($row);
+	if ($row['user_perms'] == "0")
+	{
 		$user->show_message(USRLAN_7);
-	} else {
-		$sql->db_Update("user", "user_ban='1' WHERE user_id='".$_POST['userid']."' ");
-		$sql -> db_Insert("banlist", "'".$user_ip."', '".USERID."', '".$user_name."' ");
-		$user->show_message(USRLAN_8);
+	}
+	else
+	{
+		if($sql->db_Update("user", "user_ban='1' WHERE user_id='".$_POST['userid']."' "))
+		{
+			$user->show_message(USRLAN_8);
+		}
+		if(trim($row['user_ip']) == "")
+		{
+			$user->show_message(USRLAN_129);
+		}
+		else
+		{
+			if($sql->db_Count("user", "(*)", "WHERE user_ip = '{$row['user_ip']}'") > 1)
+			{
+				$user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_130));
+			}
+			else
+			{
+				$sql -> db_Insert("banlist", "'".$row['user_ip']."', '".USERID."', '".$row['user_name']."' ");
+				$user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_131));
+			}
+		}
 	}
 	$action = "main";
 	if(!$sub_action){$sub_action = "user_id"; }

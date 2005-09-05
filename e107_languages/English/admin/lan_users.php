@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-06-28 19:09:31 $
-|     $Author: sweetas $
+|     $Revision: 1.18 $
+|     $Date: 2005-09-05 01:10:53 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Options Saved.");
@@ -121,6 +121,10 @@ define("USRLAN_126", "Allow users to rate users");
 define("USRLAN_127", "Allow comments in user profile");
 
 define("USRLAN_128", "Login name");
+
+define("USRLAN_129", "No IP address found in user's info, IP not banned");
+define("USRLAN_130", "Multiple users found with IP address of {IP}, IP not banned.");
+define("USRLAN_131", "Users IP address of {IP} banned.");
 
 define("LAN_MAINADMIN","Main Admin");
 define("LAN_ADMIN","Admin");
