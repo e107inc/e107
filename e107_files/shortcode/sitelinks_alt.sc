@@ -3,9 +3,9 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-08-19 03:40:26 $
-|     $Author: sweetas $
+|     $Revision: 1.26 $
+|     $Date: 2005-09-05 15:49:17 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -32,7 +32,7 @@
 		return $text;
 	}
 
-	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
+	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $cat_open=FALSE) {
 		global $tp;
 		
 		$cat_link = (strpos($cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
@@ -40,6 +40,9 @@
 		$text = "<a class='menuItem' href='".$cat_link."' ";
 		if ($cat_id) {
 			$text .= "onclick=\"return false;\" onmouseover=\"menuItemMouseover(event, '".$cat_id."');\"";
+		}
+		 if ($cat_open == 1){
+			$text .= " rel='external' ";
 		}
 		$text .= ">";
 		if ($cat_img != 'no_icons') {
@@ -52,7 +55,6 @@
 		$text .= "</a>";
 		return $text;
 	}
-
 
 	if (file_exists(THEME.'nav_menu.js')) {
 		$text = "<script type='text/javascript' src='".THEME_ABS."nav_menu.js'></script>";
@@ -109,8 +111,8 @@
 					$sub_icon .= ($sub['link_button']) ? e_IMAGE.'icons/'.$sub['link_button'] : $icon;
 					$sub_icon .= "' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />";
 				}
+				$text .= adnav_main($subname, $sub['link_url'], $sub_icon, null, $sub['link_open']);
 
-				$text .= adnav_main($subname, $sub['link_url'], $sub_icon);
 			}
 			$text .= "</div>";
 
