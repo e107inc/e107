@@ -11,47 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_template.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-01 20:33:16 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.4 $
+|     $Date: 2005-09-05 17:00:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 global $sc_style;
 
-define("PM_READ_ICON", "<img src='".e_PLUGIN."/pm/images/read.png' style='height:32;width:32;border:0' />");
-define("PM_UNREAD_ICON", "<img src='".e_PLUGIN."/pm/images/unread.png' style='height:32;width:32;border:0' />");
-
-$PM_VIEW_PM =
-"
-<table style='width:97%; text-align:center' class='fborder'>
-<tr>
-	<td>
-		<table style='width:100%' class='fborder'>
-		<tr>
-			<td colspan='2' style='width:100%; text-align:center;' class='fcaption'>{SUBJECT}</td>
-		</tr>
-		<tr>
-			<td style='width:20%; vertical-align:top;' class='forumheader3'>
-				<div class='mediumtext'>".LAN_PM_31.": <b>{FROM}</b></div>
-				<div class='mediumtext'>".LAN_PM_2.": <b>{TO}</b>
-				<br />
-				<br />
-				</div>
-				<div class='smallblacktext'>".LAN_PM_29.":<br />{SENT_TIME}<br /><br /></div>				
-				<div class='smallblacktext'>".LAN_PM_30.":<br />{READ_TIME}<br /></div>
-				{DELETE}
-			</td>
-			<td style='width:80%; vertical-align:top' class='forumtable2'>
-				{MESSAGE}
-				{PM_ATTACHMENTS}
-			</td>
-		</tr>
-		</table>
-	</td>
-</tr>
-{REPLY}
-</table>
-";
+define("PM_READ_ICON", "<img src='".e_PLUGIN."/pm/images/read.png' style='height:16;width:16;border:0' />");
+define("PM_UNREAD_ICON", "<img src='".e_PLUGIN."/pm/images/unread.png' style='height:16;width:16;border:0' />");
 
 $sc_style['PM_ATTACHMENT_ICON']['pre'] = " ";
 
@@ -79,8 +47,16 @@ $sc_style['RECEIPT']['pre'] = "
 ";
 $sc_style['RECEIPT']['post'] = "</td></tr>";
 
-$PM_SEND_PM = "
-<table style'width:95%' class='fborder'>
+$sc_style['PM_REPLY']['pre'] = "<tr>
+	<td class='forumheader' style='text-align:center' colspan='2'>
+";
+	
+$sc_style['PM_REPLY']['post'] = "</td>
+	</tr>
+";
+
+$PM_SEND_PM = "<div style='text-align: center'>
+<table style='width:95%' class='fborder'>
 <tr>
 	<td colspan='2' style='width:60%' class='fcaption'>".LAN_PM_1.": </td>
 </tr>
@@ -103,13 +79,14 @@ $PM_SEND_PM = "
 	<td class='forumheader' colspan='2' style='text-align:center;'>{PM_POST_BUTTON}</td>
 </tr>
 </table>
+</div>
 ";
 
 $PM_INBOX_HEADER = "
-<table class='fborder' style='width:98%'>
+<table class='fborder' style='width:95%'>
 <tr>
-	<td class='fcaption'>&nbsp;</td>
-	<td class='fcaption'>&nbsp;</td>
+	<td class='fcaption' style='width:1%'>&nbsp;</td>
+	<td class='fcaption' style='width:1%'>&nbsp;</td>
 	<td class='fcaption'>".LAN_PM_5."</td>
 	<td class='fcaption'>".LAN_PM_32."</td>
 	<td class='fcaption'>".LAN_PM_31."</td>
@@ -136,7 +113,7 @@ $PM_INBOX_EMPTY = "
 
 $PM_INBOX_FOOTER = "
 <tr>
-	<td class='forumheader2' colspan='6' style='text-align:left'>
+	<td class='forumheader2' colspan='6' style='text-align:center'>
 	{DELETE_SELECTED}
 	</td>
 </tr>
@@ -144,10 +121,10 @@ $PM_INBOX_FOOTER = "
 ";
 
 $PM_OUTBOX_HEADER = "
-<table class='fborder' style='width:98%'>
+<table class='fborder' style='width:95%'>
 <tr>
-	<td class='fcaption'>&nbsp;</td>
-	<td class='fcaption'>&nbsp;</td>
+	<td class='fcaption' style='width:1%'>&nbsp;</td>
+	<td class='fcaption' style='width:1%'>&nbsp;</td>
 	<td class='fcaption'>".LAN_PM_5."</td>
 	<td class='fcaption'>".LAN_PM_33."</td>
 	<td class='fcaption'>".LAN_PM_2."</td>
@@ -174,7 +151,7 @@ $PM_OUTBOX_EMPTY = "
 
 $PM_OUTBOX_FOOTER = "
 <tr>
-	<td class='forumheader2' colspan='6' style='text-align:left'>
+	<td class='forumheader2' colspan='6' style='text-align:center'>
 	{DELETE_SELECTED}
 	</td>
 </tr>
@@ -182,13 +159,13 @@ $PM_OUTBOX_FOOTER = "
 ";
 
 $PM_SHOW =
-"
-<table class='fborder' style='width:98%'>
+"<div style='text-align: center'>
+<table class='fborder' style='width:95%'>
 <tr>
 	<td class='fcaption' colspan='2'>{PM_SUBJECT}</td>
 </tr>
 <tr>
-	<td rowspan='2' style='width:20%;vertical-align:top'>
+	<td class='forumheader3' style='width:20%;vertical-align:top'>
 		{PM_FROM_TO}
 		<br />
 		<br />
@@ -200,16 +177,11 @@ $PM_SHOW =
 		<br />
 		{PM_DELETE}
 	</td>
-	<td style='width:80%;vertical-align:top'>{PM_MESSAGE}<br /><br />{PM_ATTACHMENTS}</td>
+	<td class='forumheader3' style='width:80%;vertical-align:top'>{PM_MESSAGE}<br /><br />{PM_ATTACHMENTS}</td>
 </tr>
-<tr>
-	<td style='vertical-align:bottom;text-align:center'>
-	{PM_REPLY}
-	</td>
-</tr>
+{PM_REPLY}
 </table>
-<br />
-{PM_SHOWBOX}
+</div>
 ";
 
 ?>
