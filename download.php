@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-09-03 01:35:36 $
-|     $Author: streaky $
+|     $Revision: 1.49 $
+|     $Date: 2005-09-05 15:34:27 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -407,7 +407,7 @@ if ($action == "view") {
 	} else {
 		$dnld_link = "<a href='request.php?{$download_id}'>";
 	}
-
+    $DOWNLOAD_VIEW_ID = $download_id;
 	$DOWNLOAD_VIEW_FILESIZE_LAN = LAN_dl_10;
 	$DOWNLOAD_VIEW_FILESIZE = parsesize($download_filesize);
 	$DOWNLOAD_VIEW_REQUESTED_LAN = LAN_dl_18;
@@ -752,7 +752,7 @@ function parse_download_cat_child_table($row, $subList)
 	{
 		$download_icon = "<img src='".e_IMAGE."icons/{$download_category_icon}' alt='' style='float-left' />";
 	}
-	
+
 	$DOWNLOAD_CAT_SUB_ICON = ($row['download_category_icon'] ? $download_icon : "&nbsp;");
 	$DOWNLOAD_CAT_SUB_NEW_ICON = $new;
 	$DOWNLOAD_CAT_SUB_NAME = ($row['d_count'] ? "<a href='".e_SELF."?list.".$row['download_category_id']."'>".$tp->toHTML($row['download_category_name'])."</a>" : $tp->toHTML($row['download_category_name']));
