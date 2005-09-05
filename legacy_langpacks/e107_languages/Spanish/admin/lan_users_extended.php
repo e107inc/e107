@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_users_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-28 09:26:19 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-05 09:44:03 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ define("EXTLAN_18", "Obligatorio");
 define("EXTLAN_19", "Se obliga al usuario entrar un valor en este campo para guardar los datos.");
 define("EXTLAN_20", "Determina a que usuarios le afectará este campo.");
 define("EXTLAN_21", "Determina quien verá este campo en su configuración de usuarios.");
-define("EXTLAN_22", "Determina quien verá el campo en su página de usuarios.");
+define("EXTLAN_22", "Determina quien verá el campo en su página de usuarios <br />NOTA: Fijándolo en 'Solo lectura' hara que solo sea visible a miembros y Administradores.");
 define("EXTLAN_23", "Añadir campo extra");
 define("EXTLAN_24", "Actualizar campo extra");
 define("EXTLAN_25", "Mover arriba");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-28 09:26:19 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-05 09:43:36 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -119,7 +119,9 @@ define("USRLAN_124", "Su cuenta está actualmente marcada como inactiva, para act
 define("USRLAN_125", "Desde");
 define("USRLAN_126", "Permitir a usuarios valorar usuarios");
 define("USRLAN_127", "Permitir comentarios en perfil de usuario");
-define("USRLAN_128", "Nombre de conexión");
+define("USRLAN_128", "Nombre de conexión");define("USRLAN_129", "No se encontró la IP en la info del usuario, IP no expulsada"); 
+define("USRLAN_130", "Hay múltiples usuarios con la IP {IP}, IP no expulsada."); 
+define("USRLAN_131", "Usuarios con la IP {IP} expulsados.");
 
 define("USRLAN_130", "Activar tracking de usuario online");
 define("USRLAN_131", "Debe activar esta opción para usar las opciones de tracking de usuario online, como online.php, foro online info y menús online");
