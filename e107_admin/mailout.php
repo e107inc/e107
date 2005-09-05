@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-08-26 19:57:37 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.37 $
+|     $Date: 2005-09-05 13:48:52 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -181,10 +181,15 @@ if (isset($_POST['submit'])) {
 			$mes_body = str_replace("{SIGNUP_LINK}", "", $mes_body);
 		}
 
-		$mes_body = str_replace("\n", "<br>", $mes_body);
+	//	$mes_body = str_replace("\n", "<br />", $mes_body);
 
 		$mail->Body = $tp->toHTML($mes_body);
-		$mail->AltBody = strip_tags(str_replace("<br>", "\n", $mes_body));
+
+		if (isset($_POST['use_theme'])) {
+			$mail->Body = strip_tags(str_replace("<br />", "\n", $mes_body));
+		}
+
+		$mail->AltBody = strip_tags(str_replace("<br />", "\n", $mes_body));
 		$mail->AddAddress($recipient[$i], $recipient_name[$i]);
 
 
