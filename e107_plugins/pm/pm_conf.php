@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_conf.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-31 16:45:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-05 17:00:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 $retrieve_prefs[] = 'pm_prefs';
@@ -130,6 +130,7 @@ if('convert' == $action)
 if($action == "limits")
 {
 	$ns->tablerender("PM Limits", show_limits());
+	$ns->tablerender("Add PM Limit", add_limit());
 }
 
 require_once(e_ADMIN."footer.php");
@@ -220,7 +221,7 @@ function show_options()
 		<td class='forumheader3' style='width:25%'>".yes_no('allow_userclass')."</td>
 	</tr>
 	<tr>
-		<td class='forumheader2' colspan='2' style='text-align:center'><input type='submit' class='button' name='update_prefs' value='update settings' /></td>
+		<td class='forumheader' colspan='2' style='text-align:center'><input type='submit' class='button' name='update_prefs' value='update settings' /></td>
 	</tr>
 	</table>
 	</form>
@@ -244,9 +245,9 @@ function show_limits()
 	}
 	$txt = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<table style='width:100%'>
+		<table class='fborder' style='width:95%'>
 		<tr>
-			<td colspan='4' class='forumheader3' style='text-align:left'>Limit PM by: 
+			<td colspan='3' class='forumheader3' style='text-align:left'>Limit PM by: 
 			<select name='pm_limits' class='tbox'>
 		";
 		$sel = ($pref['pm_limits'] == 0 ? "selected='selected'" : "");
@@ -264,53 +265,87 @@ function show_limits()
 			</td>
 		</tr>
 		<tr>
-			<td class='fcaption'>ID</td>
 			<td class='fcaption'>Userclass</td>
 			<td class='fcaption'>Count limits</td>
 			<td class='fcaption'>Size limits (in KB)</td>
 		</tr>
 	";
 
-	foreach($limitList as $row)
-	{
-		$txt .= "
-		<tr>
-		<td class='forumheader3'>".$row['limit_id']."</td>
-		<td class='forumheader3'>".r_userclass_name($row['limit_classnum'])."</td>
-		<td class='forumheader'>
+	if (isset($limitList)) {
+		foreach($limitList as $row)
+		{
+			$txt .= "
+			<tr>
+			<td class='forumheader3'>".r_userclass_name($row['limit_classnum'])."</td>
+			<td class='forumheader3'>
 			Inbox: <input type='text' class='tbox' size='5' name='inbox_count[{$row['limit_id']}]' value='{$row['inbox_count']}' /> 
 			Outbox: <input type='text' class='tbox' size='5' name='outbox_count[{$row['limit_id']}]' value='{$row['outbox_count']}' /> 
-		</td>
-		<td class='forumheader'>
+			</td>
+			<td class='forumheader3'>
 			Inbox: <input type='text' class='tbox' size='5' name='inbox_size[{$row['limit_id']}]' value='{$row['inbox_size']}' /> 
 			Outbox: <input type='text' class='tbox' size='5' name='outbox_size[{$row['limit_id']}]' value='{$row['outbox_size']}' /> 
-		</td>
+			</td>
+			</tr>
+			";
+		}
+	} else {
+		$txt .= "
+		<tr>
+		<td class='forumheader3' colspan='3' style='text-align: center'>There are currently no limits set.</td>
 		</tr>
 		";
 	}
 
 	$txt .= "
 	<tr>
-	<td colspan='4' style='text-align:center'>
+	<td class='forumheader' colspan='3' style='text-align:center'>
 	<input type='submit' class='button' name='updatelimits' value='Update Limits' />
 	</td>
 	</tr>
+	";
+
+	$txt .= "</table></form>";
+	return $txt;
+}
+
+function add_limit()
+{
+	global $sql, $pref;
+	if($sql->db_Select('userclass_classes','userclass_id, userclass_name'))
+	{
+		$classList = $sql->db_getList();
+	}
+	if($sql->db_Select("generic", "gen_id as limit_id, gen_datestamp as limit_classnum, gen_user_id as inbox_count, gen_ip as outbox_count, gen_intdata as inbox_size, gen_chardata as outbox_size", "gen_type = 'pm_limit'"))
+	{
+		while($row = $sql->db_Fetch())
+		{
+			$limitList[$row['limit_classnum']] = $row;
+		}
+	}
+	$txt = "
+		<form method='post' action='".e_SELF."?".e_QUERY."'>
+		<table class='fborder' style='width:95%'>
+		<tr>
+			<td class='fcaption'>Userclass</td>
+			<td class='fcaption'>Count limits</td>
+			<td class='fcaption'>Size limits (in KB)</td>
+		</tr>
+	";
+
+	$txt .= "
 	<tr>
-	<td colspan='4'><br /><br /></td>
-	</tr>
-	<tr>
-	<td colspan='2' class='forumheader3'>".r_userclass("newlimit_class", 0, "off", "guest, member, admin, classes, language")."</td>
-	<td class='forumheader'>
+	<td class='forumheader3'>".r_userclass("newlimit_class", 0, "off", "guest, member, admin, classes, language")."</td>
+	<td class='forumheader3'>
 		Inbox: <input type='text' class='tbox' size='5' name='new_inbox_count' value='' /> 
 		Outbox: <input type='text' class='tbox' size='5' name='new_outbox_count' value='' /> 
 	</td>
-	<td class='forumheader'>
+	<td class='forumheader3'>
 		Inbox: <input type='text' class='tbox' size='5' name='new_inbox_size' value='' /> 
 		Outbox: <input type='text' class='tbox' size='5' name='new_outbox_size' value='' /> 
 	</td>
 	</tr>
 	<tr>
-	<td colspan='4' style='text-align:center'>
+	<td class='forumheader' colspan='3' style='text-align:center'>
 	<input type='submit' class='button' name='addlimit' value='Add New Limit' />
 	</td>
 	</tr>
