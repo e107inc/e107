@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-08-31 18:57:59 $
+|     $Revision: 1.3 $
+|     $Date: 2005-09-05 20:00:17 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -194,7 +194,7 @@ class private_message
 	function block_add($from, $to = USERID)
 	{
 		global $sql;
-		if($sql->db_Select("user", "user_name", "user_id = '{$to}'"))
+		if($sql->db_Select("user", "user_name", "user_id = '{$from}'"))
 		{
 			$uinfo = $sql->db_Fetch();
 			if(!$sql->db_Count("private_msg_block", "(*)", "WHERE pm_block_from = '{$from}' AND pm_block_to = '{$to}'"))
@@ -222,7 +222,7 @@ class private_message
 	function block_del($from, $to = USERID)
 	{
 		global $sql;
-		if($sql->db_Select("user", "user_name", "user_id = '{$to}'"))
+		if($sql->db_Select("user", "user_name", "user_id = '{$from}'"))
 		{
 			$uinfo = $sql->db_Fetch();
 			if($sql->db_Select("private_msg_block", "pm_block_id", "pm_block_from = '{$from}' AND pm_block_to = '{$to}'"))
