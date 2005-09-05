@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-09-05 03:23:13 $
+|     $Revision: 1.36 $
+|     $Date: 2005-09-05 23:14:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -469,7 +469,7 @@ function checklayout($str) {
 
 				if($conf == '' && file_exists(e_PLUGIN."{$menu_path}/config.php"))
 				{
-					$conf = "config.{$menu_path}_config";
+					$conf = "config.{$menu_path}.config";
 				}
 
 				$text .= "<select id='menuAct_$menu_id' name='menuAct[$menu_id]' class='tbox' onchange='this.form.submit()' >";
