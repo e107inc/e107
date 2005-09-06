@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/plugin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-04 12:41:24 $
-|     $Author: stevedunstan $
+|     $Revision: 1.4 $
+|     $Date: 2005-09-06 15:43:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 @include_once(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 @include_once(e_PLUGIN."poll/languages/English.php");
-	
+
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = POLL_ADLAN01;
 $eplug_version = "2.0";
@@ -29,29 +29,32 @@ $eplug_email = "jalist@e107.org";
 $eplug_description = POLL_ADLAN02;
 $eplug_compatible = "e107v0.7+";
 $eplug_readme = "";
-	
+
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "poll";
-	
+
 // Name of menu item for plugin ----------------------------------------------------------------------------------
 $eplug_menu_name = "poll_menu";
-	
+
 // Name of the admin configuration file --------------------------------------------------------------------------
 $eplug_conffile = "admin_config.php";
-	
+
 $eplug_sc = array("");
 
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/polls_32.png";
 $eplug_icon_small = $eplug_folder."/images/polls_16.png";
 $eplug_caption = POLL_ADLAN03;
-	
+
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array();
-	
+
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array("polls");
-	
+
+// List of comment_type ids used by this plugin. -----------------------------
+$eplug_comment_ids = array(4);
+
 // List of sql requests to create tables -----------------------------------------------------------------------------
 $eplug_tables = array(
 "CREATE TABLE ".MPREFIX."polls (
@@ -72,13 +75,13 @@ $eplug_tables = array(
   poll_storage_method tinyint(1) unsigned NOT NULL default '0',
   PRIMARY KEY  (poll_id)
 ) TYPE=MyISAM;");
-	
+
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = FALSE;
 $eplug_link_name = "";
 $eplug_link_url = "";
-	
+
 // Text to display after plugin successfully installed ------------------------------------------------------------------
 $eplug_done = POLL_ADLAN04;
-	
+
 ?>

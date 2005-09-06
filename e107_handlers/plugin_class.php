@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-08-30 11:16:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.32 $
+|     $Date: 2005-09-06 15:43:39 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -173,6 +173,20 @@ class e107plugin
 		}
 	}
 
+
+	function manage_comments($action,$comment_id){
+		global $sql;
+    	if($action == 'remove'){
+			foreach($comment_id as $com){
+            	$tmp[] = "comment_type='$com'";
+			}
+			$qry = implode(" OR ",$tmp);
+			echo "qry=".$qry;
+   			return $sql->db_Delete('comments',$qry);
+   		}
+	}
+
+
 	function manage_tables($action, $var) {
 		global $sql;
 		if ($action == 'add') {
@@ -238,6 +252,11 @@ class e107plugin
 		}
 		save_prefs();
 	}
+
+
+
+
+
 
 	function manage_search($action, $eplug_folder) {
 		global $sql, $sysprefs;

@@ -45,8 +45,10 @@ $eplug_icon_small = $eplug_folder."/images/content_16.png";
 $eplug_caption = CONTENT_PLUGIN_LAN_3;
 
 // List of preferences -----------------------------------------------------------------------------------------------
-$eplug_prefs = array(
-);
+$eplug_prefs = array();
+
+// List of comment_type ids used by this plugin. ----------------------------- 
+$eplug_comment_ids = array("pcontent");
 
 // List of bbcode -----------------------------------------------------------------------------------------------
 //$eplug_bb = array('pcontent');
@@ -77,7 +79,7 @@ $eplug_tables = array(
 	content_datestamp int(10) unsigned NOT NULL default '0',
 	content_enddate int(10) unsigned NOT NULL default '0',
 	content_class varchar(255) NOT NULL default '',
-	content_pref text NOT NULL, 
+	content_pref text NOT NULL,
 	content_order varchar(10) NOT NULL default '0',
 	content_score tinyint(3) unsigned NOT NULL default '0',
 	content_meta text NOT NULL,
@@ -100,9 +102,9 @@ $upgrade_add_prefs = "";
 $upgrade_remove_prefs = "";
 
 $upgrade_alter_tables = array(
-"ALTER TABLE ".MPREFIX."pcontent ADD content_score TINYINT ( 3 ) UNSIGNED NOT NULL DEFAULT '0';", 
-"ALTER TABLE ".MPREFIX."pcontent ADD content_meta TEXT NOT NULL;", 
-"ALTER TABLE ".MPREFIX."pcontent ADD content_layout VARCHAR ( 255 ) NOT NULL DEFAULT '';", 
+"ALTER TABLE ".MPREFIX."pcontent ADD content_score TINYINT ( 3 ) UNSIGNED NOT NULL DEFAULT '0';",
+"ALTER TABLE ".MPREFIX."pcontent ADD content_meta TEXT NOT NULL;",
+"ALTER TABLE ".MPREFIX."pcontent ADD content_layout VARCHAR ( 255 ) NOT NULL DEFAULT '';",
 );
 $eplug_upgrade_done = "Content Management Plugin table structure updated<br />";
 
