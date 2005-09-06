@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-09-06 14:00:41 $
+|     $Revision: 1.8 $
+|     $Date: 2005-09-06 17:12:11 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -315,7 +315,7 @@ function post_pm()
 		}
 		else
 		{
-			$to_array = array_unique(explode("\n", $_POST['pm_to']));
+			$to_array = array_unique(explode("\n", trim($_POST['pm_to'])));
 			if(check_class($pm_prefs['multi_class']) && count($to_array) > 1)
 			{
 				foreach($to_array as $to)
