@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-07-01 08:03:58 $
-|     $Author: lisa_ $
+|     $Revision: 1.12 $
+|     $Date: 2005-09-06 08:52:31 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ $eplug_tables = array(
 	
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;
-$eplug_link_name = LCLAN_PLUGIN_LAN_4;
+$eplug_link_name = LCLAN_PAGETITLE_1;
 $eplug_link_url = e_PLUGIN."links_page/links.php";
 	
 	
