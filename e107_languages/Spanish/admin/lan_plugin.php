@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_plugin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-25 08:35:06 $
+|     $Revision: 1.7 $
+|     $Date: 2005-09-06 21:28:16 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -59,6 +59,7 @@ define("EPL_ADLAN_46", "Parámetros RSS creados");
 define("EPL_ADLAN_47", "Parámetros RSS eliminados");
 define("EPL_ADLAN_48", "No se pueden crear los parámetros RSS");
 define("EPL_ADLAN_49", "No se pueden eliminar los parámetros RSS");
+define("EPL_ADLAN_50", "Comentarios eliminados con éxito");
 
 //define("EPL_CANCEL", "Cancelar");
 //define("EPL_EMAIL", "Email");
