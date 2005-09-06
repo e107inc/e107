@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.91 $
-|		$Date: 2005-09-06 13:22:34 $
+|		$Revision: 1.92 $
+|		$Date: 2005-09-06 14:33:56 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -420,12 +420,12 @@ class contentform{
 
 						//re-prepare the posted fields for the form (after preview)
 						if( isset($_POST['preview_content']) || isset($message) ){
-								//$tp -> post_toHTML()
+
 								$row['content_parent']				= $_POST['parent'];
-								$row['content_heading']				= $_POST['content_heading'];
-								$row['content_subheading']			= $_POST['content_subheading'];
-								$row['content_summary']				= $_POST['content_summary'];
-								$row['content_text']				= $_POST['content_text'];
+								$row['content_heading']				= $tp -> post_toForm($_POST['content_heading']);
+								$row['content_subheading']			= $tp -> post_toForm($_POST['content_subheading']);
+								$row['content_summary']				= $tp -> toForm($_POST['content_summary'], TRUE);
+								$row['content_text']				= $tp -> toForm($_POST['content_text'], TRUE);
 								$authordetails[0]					= $_POST['content_author_id'];
 								$authordetails[1]					= $_POST['content_author_name'];
 								$authordetails[2]					= $_POST['content_author_email'];
