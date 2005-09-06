@@ -34,14 +34,14 @@ Calendar._DN = new Array
 
 // short day names
 Calendar._SDN = new Array
-("Zon",
- "Maa",
- "Din",
- "Woe",
- "Don",
- "Vri",
- "Zat",
- "Zon");
+("zon",
+ "maa",
+ "din",
+ "woe",
+ "don",
+ "vri",
+ "zat",
+ "zon");
 
 // First day of the week. "0" means display Sunday first, "1" means display
 // Monday first, etc.
@@ -84,20 +84,20 @@ Calendar._TT["INFO"] = "Over de kalender";
 Calendar._TT["ABOUT"] =
 "DHTML Date/Time Selector\n" +
 "(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" + // don't translate this this ;-)
-"Voor de laatste versie bezoek: http://www.dynarch.com/projects/calendar/\n" +
-"Distributed under GNU LGPL.  See http://gnu.org/licenses/lgpl.html for details." +
+"Bezoek voor de laatste versie: http://www.dynarch.com/projects/calendar/\n" +
+"Gedistribueerd onder GNU LGPL. Zie http://gnu.org/licenses/lgpl.html voor de details." +
 "\n\n" +
 "Datum selectie:\n" +
-"- Gebruik de  \xab, \xbb knoppen om het jaar te kiezen\n" +
-"- Gebruik de " + String.fromCharCode(0x2039) + ", " + String.fromCharCode(0x203a) + " knoppen om maand te kiezen\n" +
-"- Houdt de muisknop ingedrukt boven een knop voor snellere keuze.";
+"- Gebruik de  \xab & \xbb knoppen om het jaar te kiezen\n" +
+"- Gebruik de " + String.fromCharCode(0x2039) + " & " + String.fromCharCode(0x203a) + " knoppen om maand te kiezen\n" +
+"- Houd de muisknop ingedrukt op een knop voor snellere keuze.";
 Calendar._TT["ABOUT_TIME"] = "\n\n" +
 "Tijdkeuze:\n" +
 "- Klik op een tijdindicatie om die te verhogen\n" +
 "- of Shift-klik om die te verlagen\n" +
 "- of klik en sleep voor snellere selectie.";
 
-Calendar._TT["PREV_YEAR"] = "vor. jaar (vasthouden voor menu)";
+Calendar._TT["PREV_YEAR"] = "Vor. jaar (vasthouden voor menu)";
 Calendar._TT["PREV_MONTH"] = "Vor. maand (vasthouden voor menu)";
 Calendar._TT["GO_TODAY"] = "Vandaag";
 Calendar._TT["NEXT_MONTH"] = "Volg. maand (vasthouden voor menu)";
@@ -121,7 +121,7 @@ Calendar._TT["TIME_PART"] = "(Shift-)Klik of sleep om waarde te wijzigen";
 
 // date formats
 Calendar._TT["DEF_DATE_FORMAT"] = "%Y-%m-%d";
-Calendar._TT["TT_DATE_FORMAT"] = "%a, %b %e";
+Calendar._TT["TT_DATE_FORMAT"] = "%a %e %b";
 
 Calendar._TT["WK"] = "wk";
 Calendar._TT["TIME"] = "Tijd:";

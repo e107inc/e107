@@ -16,7 +16,7 @@
 */
 
 define("PAGE_NAME", "Links");
-define("LAN_61", "Link categorieën");
+define("LAN_61", "Linkcategorieën");
 define("LAN_62", "Categorieën");
 define("LAN_63", "Categorie");
 define("LAN_64", "in deze categorie");
@@ -31,11 +31,11 @@ define("LAN_89", "Beheer: ");
 define("LAN_90", "voeg nieuwe link toe binnen deze categorie");
 define("LAN_91", "toevoegen nieuwe categorie");
 define("LAN_92", "Aanmelden link");
-define("LAN_93", "Na het aanmelden van de link, zal een beheerder de site beoordelen waarna, als het kan, de link wordt toegevoegd aan de links pagina.");
+define("LAN_93", "Na het aanmelden van de link zal een beheerder de site beoordelen. Bij goedkeuring zal de link worden toegevoegd aan de linkspagina.");
 define("LAN_94", "Naam link:");
-define("LAN_95", "URL link:");
+define("LAN_95", "Website-adres link:");
 define("LAN_96", "Beschrijving link:");
-define("LAN_97", "URL om aan knop te koppelen:");
+define("LAN_97", "Website-adres om aan knop te koppelen:");
 define("LAN_98", "Meld link");
 define("LAN_99", "Bedankt");
 define("LAN_100", "Je aanmelding is ontvangen en zal door een beheerder worden beoordeeld.");

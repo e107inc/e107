@@ -65,6 +65,7 @@ define("EPL_ADLAN_46", "RSS instellingen succesvol gecreëerd");
 define("EPL_ADLAN_47", "RSS instellingen succesvol verwijderd");
 define("EPL_ADLAN_48", "Kon de RSS instellingen niet aanmaken");
 define("EPL_ADLAN_49", "Kon de RSS instellingen niet verwijderen");
+define("EPL_ADLAN_50", "Reacties succesvol verwijderd");
 define("EPL_WEBSITE", "website");
 define("EPL_NOINSTALL", "Geen installatie nodig, activeer de plugin in het menubeheer scherm. Voor de-installatie, verwijder de ");
 define("EPL_DIRECTORY", "directorie.");

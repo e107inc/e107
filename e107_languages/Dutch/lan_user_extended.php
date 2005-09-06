@@ -1,6 +1,6 @@
 <?php
 define("UE_LAN_1", "Tekstveld");
-define("UE_LAN_2", "Radio knoppen");
+define("UE_LAN_2", "Radioknoppen");
 define("UE_LAN_3", "Uitklaplijst");
 define("UE_LAN_4", "Veld DB tabel");
 define("UE_LAN_5", "Tekstzone");
@@ -20,10 +20,10 @@ define("UE_LAN_MSN", "MSN");
 define("UE_LAN_HOMEPAGE", "Homepage");
 define("UE_LAN_BIRTHDAY", "Geboortedatum");
 define("UE_LAN_LOCATION_DESC", "Locatie");
-define("UE_LAN_AIM_DESC", "AIM adres");
-define("UE_LAN_ICQ_DESC", "ICQ nummer");
-define("UE_LAN_YAHOO_DESC", "Yahoo! adres");
-define("UE_LAN_MSN_DESC", "MSN adres");
-define("UE_LAN_HOMEPAGE_DESC", "Homepage gebruiker (url)");
+define("UE_LAN_AIM_DESC", "AIM-adres");
+define("UE_LAN_ICQ_DESC", "ICQ-nummer");
+define("UE_LAN_YAHOO_DESC", "Yahoo!-adres");
+define("UE_LAN_MSN_DESC", "MSN Messenger-adres");
+define("UE_LAN_HOMEPAGE_DESC", "Homepage-adres");
 define("UE_LAN_BIRTHDAY_DESC", "Geboortedatum");
 ?>
