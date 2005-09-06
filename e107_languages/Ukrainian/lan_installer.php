@@ -1,5 +1,14 @@
 <?php
-
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Ukrainian/lan_installer.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-06 16:22:24 $
+|     $Author: ukie $
++----------------------------------------------------------------------------+
+*/
 define("LANINS_001", "Інсталювання e107");
 
 
