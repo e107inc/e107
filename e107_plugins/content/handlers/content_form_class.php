@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.90 $
-|		$Date: 2005-08-26 09:22:50 $
+|		$Revision: 1.91 $
+|		$Date: 2005-09-06 13:22:34 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -713,7 +713,7 @@ class contentform{
 								".$num." ".$rs -> form_text("content_files".$i."", 60, $attachments[$i], 100)."
 								".$rs -> form_button("button", '', CONTENT_ADMIN_ITEM_LAN_105, "onclick=\"expandit('divfile".$i."')\"")."
 								<div id='divfile".$i."' style='{head}; display:none'>";
-								if(empty($iconlist)){
+								if(empty($filelist)){
 									$TOPIC_FIELD .= CONTENT_ADMIN_ITEM_LAN_122;
 								}else{
 									foreach($filelist as $file){
