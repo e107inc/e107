@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-09-05 17:00:44 $
-|     $Author: sweetas $
+|     $Revision: 1.7 $
+|     $Date: 2005-09-06 14:00:41 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -264,7 +264,7 @@ function show_pm($pmid)
 	$tpl_file = THEME."pm_template.php";
 	include_once(is_readable($tpl_file) ? $tpl_file : e_PLUGIN."pm/pm_template.php");
 	$pm_info = $pm->pm_get($pmid);
-	if($pm_info['pm_read'] == 0)
+	if($pm_info['pm_read'] == 0 && $pm_info['pm_to'] == USERID)
 	{
 		$now = time();
 		$pm_info['pm_read'] = $now;
@@ -295,6 +295,10 @@ function post_pm()
 		return LAN_PM_14;
 	}
 
+	if(isset($_POST['user']))
+	{
+		$_POST['pm_to'] = $_POST['user'];
+	}
 	if(isset($_POST['pm_to']))
 	{
 		$msg = "";
