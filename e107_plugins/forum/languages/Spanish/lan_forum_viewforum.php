@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_viewforum.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-10 19:22:08 $
+|     $Revision: 1.4 $
+|     $Date: 2005-09-06 16:02:56 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -26,6 +26,8 @@ define("LAN_80", "No hay nuevos mensajes");
 define("LAN_81", "Tema cerrado");
 
 define("LAN_180", "Buscar");
+
+define("LAN_199", "Existen mensajes sin leer");
 
 define("LAN_202", "Pegado");
 define("LAN_203", "Pegado/Cerrado");
