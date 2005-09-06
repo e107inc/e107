@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-08-31 12:10:41 $
+|     $Revision: 1.22 $
+|     $Date: 2005-09-06 20:37:14 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -613,7 +613,6 @@ if ($ds == "event"){
     $extra = " OR e.event_rec_y = {$month} ";
 
     if ($cal_super) {
-		echo "<br /><b>Debug1</b> ".$variable." <br />";
         $qry = "
 		SELECT e.*, ec.*
 		FROM #event as e
@@ -624,7 +623,6 @@ if ($ds == "event"){
 		{$extra}
 		ORDER BY e.event_start ASC";
     } else {
-		echo "<br /><b>Debug2</b> ".$variable." <br />";
         $qry = "
 		SELECT e.*, ec.*
 		FROM #event as e
