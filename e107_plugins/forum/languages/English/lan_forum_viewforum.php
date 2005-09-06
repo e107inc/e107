@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_viewforum.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-21 02:04:35 $
+|     $Revision: 1.8 $
+|     $Date: 2005-09-06 01:12:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,7 @@ define("LAN_79", "New posts");
 define("LAN_80", " No new posts");
 define("LAN_81", "Closed thread");
 define("LAN_180", "Search");
+define("LAN_199", "Unread post exists");
 define("LAN_202", "Sticky");
 define("LAN_203", "Sticky/Closed");
 define("LAN_204", "You <b>can</b> start new threads");
