@@ -47,7 +47,7 @@ if (isset($comrow['user_id']) && $comrow['user_id']) {
 	if (isset($comrow['user_image']) && $comrow['user_image']) {
 		require_once(e_HANDLER."avatar_handler.php");
 		$comrow['user_image'] = avatar($comrow['user_image']);
-		$comrow['user_image'] = "<div class='spacer'><img src='".$comrow['user_image']."' alt='' /></div><br />";
+		$comrow['user_image'] = "<div class='spacer'><img src='".$comrow['user_image']."' alt='' /></div>";
 	}else{
 		$comrow['user_image'] = '';
 	}
