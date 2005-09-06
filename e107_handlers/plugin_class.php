@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-09-06 15:43:39 $
+|     $Revision: 1.33 $
+|     $Date: 2005-09-06 16:14:50 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -181,7 +181,6 @@ class e107plugin
             	$tmp[] = "comment_type='$com'";
 			}
 			$qry = implode(" OR ",$tmp);
-			echo "qry=".$qry;
    			return $sql->db_Delete('comments',$qry);
    		}
 	}
