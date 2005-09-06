@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2005-09-06 16:31:33 $
+|     $Revision: 1.68 $
+|     $Date: 2005-09-06 19:34:04 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -37,19 +37,20 @@ echo (defined("STANDARDS_MODE") ? "" : "<?xml version='1.0' encoding='".CHARSET.
 <head>
 <title>".SITENAME.(defined("e_PAGETITLE") ? ": ".e_PAGETITLE : (defined("PAGE_NAME") ? ": ".PAGE_NAME : ""))."</title>\n";
 
-// Meta tags.
+// Multi-Language meta-tags with merge and override option.
 
 echo "<meta http-equiv='content-type' content='text/html; charset=".CHARSET."' />
 <meta http-equiv='content-style-type' content='text/css' />\n";
-
+$diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_description'][e_LANGUAGE]) ? $pref['meta_description'][e_LANGUAGE]." " : "";
+$key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywords'][e_LANGUAGE]) ? $pref['meta_keywords'][e_LANGUAGE]."," : "";
+echo (defined("META_DESCRIPTION")) ? "<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : "";
+echo (defined("META_KEYWORDS")) ? "<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : "";
+echo ($pref['meta_description'][e_LANGUAGE] && !defined("META_DESCRIPTION") ) ? "<meta name='description' content='".$pref['meta_description'][e_LANGUAGE]."' />\n" : "";
+echo ($pref['meta_keywords'][e_LANGUAGE] && !defined("META_KEYWORDS") ) ? "<meta name='keywords' content='".$pref['meta_keywords'][e_LANGUAGE]."' />\n" : "";
+echo ($pref['meta_copyright'][e_LANGUAGE]) ? "<meta name='copyright' content='".$pref['meta_copyright'][e_LANGUAGE]."' />\n" : "";
+echo ($pref['meta_tag'][e_LANGUAGE]) ? str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'][e_LANGUAGE], FALSE, "nobreak, no_hook, no_make_clickable"))."\n" : "";
 echo (defined("CORE_LC")) ? "<meta http-equiv='content-language' content='".CORE_LC."' />\n" : "";
-
-if(!defined("META_KEYWORDS") && !defined("META_DESCRIPTION")){
-	echo ($pref['meta_tag'][e_LANGUAGE]) ? str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'][e_LANGUAGE], FALSE, "nobreak, no_hook, no_make_clickable"))."\n" : "";
-}else{
-    echo (defined("META_KEYWORDS")) ? "<meta name=\"keywords\" content=\"".META_KEYWORDS."\" />\n" : "";
-	echo (defined("META_DESCRIPTION")) ? "<meta name=\"description\" content=\"".META_DESCRIPTION."\" />\n" : "";
-}
+unset($key_merge,$diz_merge);
 
 if(isset($pref['rss_feeds']) && $pref['rss_feeds'] && file_exists(e_PLUGIN."rss_menu/rss_meta.php")){
 	require_once(e_PLUGIN."rss_menu/rss_meta.php");
