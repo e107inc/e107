@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Ukrainian/lan_notify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-06 19:05:08 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-06 19:05:58 $
 |     $Author: ukie $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ define("NT_LAN_LO_1", "Користувач вийшов");
 define("NT_LAN_LO_2", " вийшов з сайту");
 
 define("NT_LAN_FL_1", "Заборона Критичного Відхилення Від Теми (Flood Ban)");
-define("NT_LAN_FL_2", "IP адреса заборонена за Критчне Віжхилення Від Теми (banned for flooding)");
+define("NT_LAN_FL_2", "IP адреса заборонена за Критчне Відхилення Від Теми (banned for flooding)");
 
 define("NT_LAN_SN_1", "Новину Прийнято");
 
