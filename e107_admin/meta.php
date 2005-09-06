@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/meta.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-08-30 14:23:02 $
+|     $Revision: 1.11 $
+|     $Date: 2005-09-06 19:34:04 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -32,10 +32,25 @@ if (isset($_POST['metasubmit'])) {
 	$langs = explode(",",e_LANLIST);
 	foreach($langs as $lan){
 		$meta_tag[$lan] = $tmp[$lan];
+		$meta_diz[$lan] = $pref['meta_description'][$lan];
+		$meta_keywords[$lan] = $pref['meta_keywords'][$lan];
+		$meta_copyright[$lan] = $pref['meta_copyright'][$lan];
 	}
 
-	$meta_tag[$current_lang] = $_POST['meta'];
+	$meta_tag[$current_lang] = chop($_POST['meta']);
+	$meta_diz[$current_lang] = chop($_POST['meta_description']);
+	$meta_keywords[$current_lang] = chop($_POST['meta_keywords']);
+	$meta_copyright[$current_lang] = chop($_POST['meta_copyright']);
+
 	$pref['meta_tag'] = $meta_tag;
+	$pref['meta_description'] = $meta_diz;
+	$pref['meta_keywords'] = $meta_keywords;
+	$pref['meta_copyright'] = $meta_copyright;
+   /*
+    if($pref['meta_tag'][$current_lang] == ""){
+        unset($meta_tag[$current_lang]);
+    }*/
+
 	save_prefs();
 	$message = METLAN_1;
 }
@@ -45,27 +60,42 @@ if ($message) {
 }
 
 $meta = $pref['meta_tag'];
+$meta_diz = $pref['meta_description'];
+$meta_keywords = $pref['meta_keywords'];
+$meta_copyright = $pref['meta_copyright'];
 
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."' id='dataform'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
-	<tr>
 
-	<td style='width:20%' class='forumheader3'>".METLAN_2.": </td>
-	<td style='width:80%' class='forumheader3'>
+	<tr>
+    <td style='width:25%' class='forumheader3'>".METLAN_9."</td>
+    <td style='width:75%' class='forumheader3'>
+	<input class='tbox style='width:90%' size='70' type='text' name='meta_description' value='".$meta_diz[$current_lang]."' />
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:25%' class='forumheader3'>".METLAN_10."</td>
+    <td style='width:75%' class='forumheader3'>
+	<input class='tbox style='width:90%' size='70' type='text' name='meta_keywords' value='".$meta_keywords[$current_lang]."' />
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:25%' class='forumheader3'>".METLAN_11."</td>
+    <td style='width:75%' class='forumheader3'>
+	<input class='tbox style='width:90%' size='70' type='text' name='meta_copyright' value='".$meta_copyright[$current_lang]."' />
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:25%' class='forumheader3'>".METLAN_2.": </td>
+	<td style='width:75%' class='forumheader3'>
 	<textarea class='tbox' id='meta' name='meta' cols='70'
 	rows='10' style='width:90%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("&#039;","'",$meta[$current_lang])."</textarea>
 	<br />";
-$text .= "
-	<input class='button' type='button' value='".METLAN_9."'
-	onclick=\"addtext('<meta name=\'description\' content=\'".METLAN_5."\' />\\n')\" />
-
-	<input class='button' type='button' value='".METLAN_10."'
-	onclick=\"addtext('<meta name=\'keywords\' content=\'".METLAN_6."\' />\\n')\" />
-
-	<input class='button' type='button' value='".METLAN_11."'
-	onclick=\"addtext('<meta name=\'copyright\' content=\'".METLAN_7."\' />\\n')\" />
-</td>
+$text .= "</td>
 </tr>
 
 <tr><td colspan='2' style='text-align:center' class='forumheader'>
