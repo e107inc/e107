@@ -26,7 +26,7 @@ $CALENDAR_TIME_TABLE = "
 <tr>
 	<td class='forumheader' style='width:18%; text-align:left'>{PREV_MONTH}</td>
 	<td class='fcaption' style='width:64%; text-align:center'>{CURRENT_MONTH}</td>
-	<td class='forumheader' style='width:185%; text-align:right'>{NEXT_MONTH}</td>
+	<td class='forumheader' style='width:18%; text-align:right'>{NEXT_MONTH}</td>
 </tr>
 <tr>
 	<td class='forumheader3' style='text-align:left'>{PREV_YEAR}</td>
