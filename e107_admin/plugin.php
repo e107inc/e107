@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2005-06-25 05:26:48 $
+|     $Revision: 1.51 $
+|     $Date: 2005-09-06 15:43:39 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -144,6 +144,10 @@ if ($action == 'uninstall') {
 		if (is_array($eplug_prefs)) {
 			$plugin->manage_prefs('remove', $eplug_prefs);
 			$text .= EPL_ADLAN_29."<br />";
+		}
+
+		if (is_array($eplug_comment_ids)) {
+			$text .= ($plugin->manage_comments('remove', $eplug_comment_ids)) ? EPL_ADLAN_50."<br />" : "";
 		}
 
 
