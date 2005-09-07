@@ -1,41 +1,42 @@
 // PT lang variables
 
-
-tinyMCELang['lang_bold_desc'] = 'Negrito';
-tinyMCELang['lang_italic_desc'] = 'Itálico';
-tinyMCELang['lang_underline_desc'] = 'Sublinhar';
-tinyMCELang['lang_striketrough_desc'] = 'Riscado';
-tinyMCELang['lang_justifyleft_desc'] = 'Alinhar á esquerda';
-tinyMCELang['lang_justifycenter_desc'] = 'Alinhar ao centro';
-tinyMCELang['lang_justifyright_desc'] = 'Alinhar á direita';
-tinyMCELang['lang_justifyfull_desc'] = 'Justificado';
-tinyMCELang['lang_bullist_desc'] = 'Lista não ordenada';
-tinyMCELang['lang_numlist_desc'] = 'Lista ordenada';
-tinyMCELang['lang_outdent_desc'] = 'Retirar indentação';
-tinyMCELang['lang_indent_desc'] = 'Indentar';
-tinyMCELang['lang_undo_desc'] = 'Desfazer';
-tinyMCELang['lang_redo_desc'] = 'Refazer';
-tinyMCELang['lang_link_desc'] = 'Inserir Hiperligação';
-tinyMCELang['lang_unlink_desc'] = 'Remover hiperligação';
-tinyMCELang['lang_image_desc'] = 'Inserir Referência a imagem externa';
-tinyMCELang['lang_object_desc'] = 'Inserir Objecto Multimédia da Galeria';
-tinyMCELang['lang_cleanup_desc'] = 'Limpeza de código';
-tinyMCELang['lang_focus_alert'] = 'Uma instância do editor deverá estar seleccionada antes de utilizar este comando.';
-tinyMCELang['lang_edit_confirm'] = 'Deseja utilizar o modo visual de edição para ezta área de texto?';
-tinyMCELang['lang_insert_link_title'] = 'Inserir/editar hiperligação';
-tinyMCELang['lang_insert'] = 'Inserir';
-tinyMCELang['lang_update'] = 'Actualizar';
-tinyMCELang['lang_cancel'] = 'Cancelar';
-tinyMCELang['lang_insert_link_url'] = 'URL de hiperligação';
-tinyMCELang['lang_insert_link_target'] = 'Destino';
-tinyMCELang['lang_insert_link_target_same'] = 'Abrir endereço na mesma janela';
-tinyMCELang['lang_insert_link_target_blank'] = 'Abrir endereço numa nova janela';
-tinyMCELang['lang_insert_image_title'] = 'Inserir/editar imagem';
-tinyMCELang['lang_insert_image_src'] = 'Endereço da imagem';
-tinyMCELang['lang_insert_image_alt'] = 'Descrição alt.';
-tinyMCELang['lang_help_desc'] = 'Ajuda';
-tinyMCELang['lang_bold_img'] = "bold.gif";
-tinyMCELang['lang_italic_img'] = "italic.gif";
-tinyMCELang['lang_underline_img'] = "underline.gif";
-tinyMCELang['lang_clipboard_msg'] = 'Copiar/Cortar/Colar não está disponível em Mozilla and Firefox.\nPretende obter mais informação acerca desta questão?';
-tinyMCELang['lang_popup_blocked'] = 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.';
+tinyMCE.addToLang('',{
+bold_desc : 'Negrito',
+italic_desc : 'Itálico',
+underline_desc : 'Sublinhar',
+striketrough_desc : 'Riscado',
+justifyleft_desc : 'Alinhar á esquerda',
+justifycenter_desc : 'Alinhar ao centro',
+justifyright_desc : 'Alinhar á direita',
+justifyfull_desc : 'Justificado',
+bullist_desc : 'Lista não ordenada',
+numlist_desc : 'Lista ordenada',
+outdent_desc : 'Retirar indentação',
+indent_desc : 'Indentar',
+undo_desc : 'Desfazer',
+redo_desc : 'Refazer',
+link_desc : 'Inserir Hiperligação',
+unlink_desc : 'Remover hiperligação',
+image_desc : 'Inserir Referência a imagem externa',
+object_desc : 'Inserir Objecto Multimédia da Galeria',
+cleanup_desc : 'Limpeza de código',
+focus_alert : 'Uma instância do editor deverá estar seleccionada antes de utilizar este comando.',
+edit_confirm : 'Deseja utilizar o modo visual de edição para ezta área de texto?',
+insert_link_title : 'Inserir/editar hiperligação',
+insert : 'Inserir',
+update : 'Actualizar',
+cancel : 'Cancelar',
+insert_link_url : 'URL de hiperligação',
+insert_link_target : 'Destino',
+insert_link_target_same : 'Abrir endereço na mesma janela',
+insert_link_target_blank : 'Abrir endereço numa nova janela',
+insert_image_title : 'Inserir/editar imagem',
+insert_image_src : 'Endereço da imagem',
+insert_image_alt : 'Descrição alt.',
+help_desc : 'Ajuda',
+bold_img : "bold.gif",
+italic_img : "italic.gif",
+underline_img : "underline.gif",
+clipboard_msg : 'Copiar/Cortar/Colar não está disponível em Mozilla and Firefox.\nPretende obter mais informação acerca desta questão?',
+popup_blocked : 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.'
+});

@@ -4,9 +4,9 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-08-08 12:54:04 $
-|     $Author: streaky $
+|     $Revision: 1.15 $
+|     $Date: 2005-09-07 13:32:50 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -45,9 +45,9 @@ $text .= (ADMIN) ? ",ibrowser" : ",image";
 $text .= ",iespell,zoom,flash,forecolor";
 $text .= "'\n"; // end of plugins list.
 
-$text .= ",theme_advanced_buttons1 : 'bold,italic,underline,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,outdent, indent,separator, forecolor,cut,copy,paste,separator,link,unlink'";
+$text .= ",theme_advanced_buttons1 : 'fontsizeselect,separator,bold,italic,underline,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,outdent, indent,separator, forecolor,cut,copy,paste'";
 
-$text .= ",theme_advanced_buttons2   : 'tablecontrols,separator,undo,redo,separator";
+$text .= ",theme_advanced_buttons2   : 'tablecontrols,separator,undo,redo,separator,link,unlink";
 $text .= ($pref['smiley_activate']) ? ",emoticons" : "";
 $text .= ",charmap,iespell,flash";
 $text .= (ADMIN) ? ",ibrowser," : ",image";
@@ -58,12 +58,13 @@ $text .= ",theme_advanced_buttons3 : ''";
 $text .= ",theme_advanced_toolbar_location : 'top'";
 $text .= ",extended_valid_elements : 'p[style],a[name|href|title|style],img[class|src|style|alt|title|name],hr[class],span[class|style],div[class|style],table[class|style|cellpadding|cellspacing]'";
 $text .= ",invalid_elements: 'p,font,align,script,applet,iframe'\n";
-$text .= ",auto_cleanup_word: true\n";
+// $text .= ",auto_cleanup_word: true\n";
 $text .= ",trim_span_elements: true\n";
 $text .= ",inline_styles: true\n";
 $text .= ",debug: false\n";
 $text .= ",force_br_newlines: true\n";
 $text .= ",force_p_newlines: false\n";
+$text .= ",convert_fonts_to_styles: true\n";
 $text .= ",relative_urls: true\n";
 $text .= ",document_base_url: '".SITEURL."'\n";
 $text .= ",theme_advanced_styles: 'border=border;fborder=fborder;tbox=tbox;caption=caption;fcaption=fcaption;forumheader=forumheader;forumheader3=forumheader3'\n";

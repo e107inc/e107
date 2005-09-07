@@ -1,38 +1,40 @@
 // NO lang variables made by Sten Aksel Heien
 
-tinyMCELang['lang_bold_desc'] = 'Uthevet';
-tinyMCELang['lang_italic_desc'] = 'Kursiv';
-tinyMCELang['lang_underline_desc'] = 'Understreket';
-tinyMCELang['lang_striketrough_desc'] = 'Gjennomstreket';
-tinyMCELang['lang_justifyleft_desc'] = 'Vensterestille';
-tinyMCELang['lang_justifycenter_desc'] = 'Sentrere';
-tinyMCELang['lang_justifyright_desc'] = 'Høyerestille';
-tinyMCELang['lang_justifyfull_desc'] = 'Fyll';
-tinyMCELang['lang_bullist_desc'] = 'Punktliste';
-tinyMCELang['lang_numlist_desc'] = 'Nummerliste';
-tinyMCELang['lang_outdent_desc'] = 'Undrag';
-tinyMCELang['lang_indent_desc'] = 'Indrag';
-tinyMCELang['lang_undo_desc'] = 'Angre';
-tinyMCELang['lang_redo_desc'] = 'Gjør om';
-tinyMCELang['lang_link_desc'] = 'Opprett/endre lenke';
-tinyMCELang['lang_unlink_desc'] = 'Fjern lenke';
-tinyMCELang['lang_image_desc'] = 'Sett inn/endre bilde';
-tinyMCELang['lang_cleanup_desc'] = 'Rens grisete kode';
-tinyMCELang['lang_focus_alert'] = 'Editoren må være i fokus før du benytter denne kommando.';
-tinyMCELang['lang_edit_confirm'] = 'Vil du benytte WYSIWYG editoren for dette tekstfelt?';
-tinyMCELang['lang_insert_link_title'] = 'Opprett/endre lenke';
-tinyMCELang['lang_insert'] = 'Opprett';
-tinyMCELang['lang_update'] = 'Opprett';
-tinyMCELang['lang_cancel'] = 'Avbryt';
-tinyMCELang['lang_insert_link_url'] = 'Lenkens URL';
-tinyMCELang['lang_insert_link_target'] = 'Vindu';
-tinyMCELang['lang_insert_link_target_same'] = 'Åpne i samme vindu';
-tinyMCELang['lang_insert_link_target_blank'] = 'Åpne i nytt vindu';
-tinyMCELang['lang_insert_image_title'] = 'Opprett/endre bilde';
-tinyMCELang['lang_insert_image_src'] = 'Bildets URL';
-tinyMCELang['lang_insert_image_alt'] = 'Bildets beskrivelse';
-tinyMCELang['lang_help_desc'] = 'Hjelp';
-tinyMCELang['lang_bold_img'] = 'bold_de_se.gif';
-tinyMCELang['lang_italic_img'] = 'italic_de_se.gif';
-tinyMCELang['lang_underline_img'] = 'underline.gif';
-tinyMCELang['lang_popup_blocked'] = 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.';
+tinyMCE.addToLang('',{
+bold_desc : 'Uthevet',
+italic_desc : 'Kursiv',
+underline_desc : 'Understreket',
+striketrough_desc : 'Gjennomstreket',
+justifyleft_desc : 'Vensterestille',
+justifycenter_desc : 'Sentrere',
+justifyright_desc : 'Høyerestille',
+justifyfull_desc : 'Fyll',
+bullist_desc : 'Punktliste',
+numlist_desc : 'Nummerliste',
+outdent_desc : 'Undrag',
+indent_desc : 'Indrag',
+undo_desc : 'Angre',
+redo_desc : 'Gjør om',
+link_desc : 'Opprett/endre lenke',
+unlink_desc : 'Fjern lenke',
+image_desc : 'Sett inn/endre bilde',
+cleanup_desc : 'Rens grisete kode',
+focus_alert : 'Editoren må være i fokus før du benytter denne kommando.',
+edit_confirm : 'Vil du benytte WYSIWYG editoren for dette tekstfelt?',
+insert_link_title : 'Opprett/endre lenke',
+insert : 'Opprett',
+update : 'Opprett',
+cancel : 'Avbryt',
+insert_link_url : 'Lenkens URL',
+insert_link_target : 'Vindu',
+insert_link_target_same : 'Åpne i samme vindu',
+insert_link_target_blank : 'Åpne i nytt vindu',
+insert_image_title : 'Opprett/endre bilde',
+insert_image_src : 'Bildets URL',
+insert_image_alt : 'Bildets beskrivelse',
+help_desc : 'Hjelp',
+bold_img : 'bold_de_se.gif',
+italic_img : 'italic_de_se.gif',
+underline_img : 'underline.gif',
+popup_blocked : 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.'
+});

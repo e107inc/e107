@@ -1,38 +1,40 @@
 // KO lang variables by Setzer Gabbiani
 
-tinyMCELang['lang_bold_desc'] = '진하게';
-tinyMCELang['lang_italic_desc'] = '기울임';
-tinyMCELang['lang_underline_desc'] = '밑줄';
-tinyMCELang['lang_striketrough_desc'] = '가로줄';
-tinyMCELang['lang_justifyleft_desc'] = '왼쪽 정렬';
-tinyMCELang['lang_justifycenter_desc'] = '가운데 정렬';
-tinyMCELang['lang_justifyright_desc'] = '오른쪽 정렬';
-tinyMCELang['lang_justifyfull_desc'] = '양쪽 정렬';
-tinyMCELang['lang_bullist_desc'] = '목차 매기기';
-tinyMCELang['lang_numlist_desc'] = '번호 매기기';
-tinyMCELang['lang_outdent_desc'] = '내어쓰기';
-tinyMCELang['lang_indent_desc'] = '들여쓰기';
-tinyMCELang['lang_undo_desc'] = '실행취소';
-tinyMCELang['lang_redo_desc'] = '재실행';
-tinyMCELang['lang_link_desc'] = '링크 넣기/고치기';
-tinyMCELang['lang_unlink_desc'] = '링크 해제';
-tinyMCELang['lang_image_desc'] = '그림 넣기/고치기';
-tinyMCELang['lang_cleanup_desc'] = '코드를 깔끔하게';
-tinyMCELang['lang_focus_alert'] = '이 명령을 실행하기 전에 반드시 에디터 내의 어딘가에 커서가 있어야 합니다.';
-tinyMCELang['lang_edit_confirm'] = '이 텍스트 박스에서 HTML 에디터를 사용하길 원하십니까?';
-tinyMCELang['lang_insert_link_title'] = '링크 넣기/고치기';
-tinyMCELang['lang_insert'] = '삽입';
-tinyMCELang['lang_update'] = '삽입';
-tinyMCELang['lang_cancel'] = '취소';
-tinyMCELang['lang_insert_link_url'] = 'URL 링크';
-tinyMCELang['lang_insert_link_target'] = '타겟';
-tinyMCELang['lang_insert_link_target_same'] = '같은 창에서 링크 열기';
-tinyMCELang['lang_insert_link_target_blank'] = '새 창에서 링크 열기';
-tinyMCELang['lang_insert_image_title'] = '그림 넣기/고치기';
-tinyMCELang['lang_insert_image_src'] = '그림 URL';
-tinyMCELang['lang_insert_image_alt'] = '그림 설명';
-tinyMCELang['lang_help_desc'] = '도움말';
-tinyMCELang['lang_bold_img'] = "bold.gif";
-tinyMCELang['lang_italic_img'] = "italic.gif";
-tinyMCELang['lang_underline_img'] = "underline.gif";
-tinyMCELang['lang_popup_blocked'] = 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.';
+tinyMCE.addToLang('',{
+bold_desc : '진하게',
+italic_desc : '기울임',
+underline_desc : '밑줄',
+striketrough_desc : '가로줄',
+justifyleft_desc : '왼쪽 정렬',
+justifycenter_desc : '가운데 정렬',
+justifyright_desc : '오른쪽 정렬',
+justifyfull_desc : '양쪽 정렬',
+bullist_desc : '목차 매기기',
+numlist_desc : '번호 매기기',
+outdent_desc : '내어쓰기',
+indent_desc : '들여쓰기',
+undo_desc : '실행취소',
+redo_desc : '재실행',
+link_desc : '링크 넣기/고치기',
+unlink_desc : '링크 해제',
+image_desc : '그림 넣기/고치기',
+cleanup_desc : '코드를 깔끔하게',
+focus_alert : '이 명령을 실행하기 전에 반드시 에디터 내의 어딘가에 커서가 있어야 합니다.',
+edit_confirm : '이 텍스트 박스에서 HTML 에디터를 사용하길 원하십니까?',
+insert_link_title : '링크 넣기/고치기',
+insert : '삽입',
+update : '삽입',
+cancel : '취소',
+insert_link_url : 'URL 링크',
+insert_link_target : '타겟',
+insert_link_target_same : '같은 창에서 링크 열기',
+insert_link_target_blank : '새 창에서 링크 열기',
+insert_image_title : '그림 넣기/고치기',
+insert_image_src : '그림 URL',
+insert_image_alt : '그림 설명',
+help_desc : '도움말',
+bold_img : "bold.gif",
+italic_img : "italic.gif",
+underline_img : "underline.gif",
+popup_blocked : 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.'
+});

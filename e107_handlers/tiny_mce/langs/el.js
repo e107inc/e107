@@ -1,39 +1,41 @@
 // Greek lang variables by Jacaranda Bill
 
-tinyMCELang['lang_bold_desc'] = 'Έντονη γραφή';
-tinyMCELang['lang_italic_desc'] = 'Πλάγια γραφή';
-tinyMCELang['lang_underline_desc'] = 'Υπογράμμιση';
-tinyMCELang['lang_striketrough_desc'] = 'Διακριτή διαγραφή';
-tinyMCELang['lang_justifyleft_desc'] = 'Στοίχιση αριστερά';
-tinyMCELang['lang_justifycenter_desc'] = 'Στοίχιση στο κέντρο';
-tinyMCELang['lang_justifyright_desc'] = 'Στοίχιση δεξιά';
-tinyMCELang['lang_justifyfull_desc'] = 'Πλήρης στοίχιση';
-tinyMCELang['lang_bullist_desc'] = 'Κουκκίδες';
-tinyMCELang['lang_numlist_desc'] = 'Αρίθμηση';
-tinyMCELang['lang_outdent_desc'] = 'Μείωση εσοχής';
-tinyMCELang['lang_indent_desc'] = 'Αύξηση εσοχής';
-tinyMCELang['lang_undo_desc'] = 'Αναίρεση';
-tinyMCELang['lang_redo_desc'] = 'Ακύρωση αναίρεσης';
-tinyMCELang['lang_link_desc'] = 'Δημιουργία/Διόρθωση υπερ-σύνδεσης';
-tinyMCELang['lang_unlink_desc'] = 'Διαγραφή υπερ-σύνδεσης';
-tinyMCELang['lang_image_desc'] = 'Εισαγωγή/Διόρθωση εικόνας';
-tinyMCELang['lang_cleanup_desc'] = 'Καθάρισμα κώδικα';
-tinyMCELang['lang_focus_alert'] = 'Πρέπει να υπάρχει ενεργός κάποιος επεξεργαστής κειμένου πριν να χρησιμοποιήσετε αυτή την εντολή.';
-tinyMCELang['lang_edit_confirm'] = 'Θέλετε να χρησιμοποιήσετε την κατάσταση WYSIWYG για το συγκεκριμένο πλαίσιο κειμένου;';
-tinyMCELang['lang_insert_link_title'] = 'Δημιουργία/Διόρθωση υπερ-σύνδεσης';
-tinyMCELang['lang_insert'] = 'Εισαγωγή';
-tinyMCELang['lang_update'] = 'Εισαγωγή';
-tinyMCELang['lang_cancel'] = 'Ακύρωση';
-tinyMCELang['lang_insert_link_url'] = 'Διεύθυνση';
-tinyMCELang['lang_insert_link_target'] = 'Στόχος';
-tinyMCELang['lang_insert_link_target_same'] = '’νοιγμα της διεύθυνσης στο ίδιο παράθυρο';
-tinyMCELang['lang_insert_link_target_blank'] = '’νοιγμα της διεύθυνσης σε νέο παράθυρο';
-tinyMCELang['lang_insert_image_title'] = 'Εισαγωγή/Διόρθωση εικόνας';
-tinyMCELang['lang_insert_image_src'] = 'Διεύθυνση';
-tinyMCELang['lang_insert_image_alt'] = 'Περιγραφή';
-tinyMCELang['lang_help_desc'] = 'Βοήθεια';
-tinyMCELang['lang_bold_img'] = "bold.gif";
-tinyMCELang['lang_italic_img'] = "italic.gif";
-tinyMCELang['lang_underline_img'] = "underline.gif";
-tinyMCELang['lang_clipboard_msg'] = 'Copy/Cut/Paste is not available in Mozilla and Firefox.\nDo you want more information about this issue?';
-tinyMCELang['lang_popup_blocked'] = 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.';
+tinyMCE.addToLang('',{
+bold_desc : 'Έντονη γραφή',
+italic_desc : 'Πλάγια γραφή',
+underline_desc : 'Υπογράμμιση',
+striketrough_desc : 'Διακριτή διαγραφή',
+justifyleft_desc : 'Στοίχιση αριστερά',
+justifycenter_desc : 'Στοίχιση στο κέντρο',
+justifyright_desc : 'Στοίχιση δεξιά',
+justifyfull_desc : 'Πλήρης στοίχιση',
+bullist_desc : 'Κουκκίδες',
+numlist_desc : 'Αρίθμηση',
+outdent_desc : 'Μείωση εσοχής',
+indent_desc : 'Αύξηση εσοχής',
+undo_desc : 'Αναίρεση',
+redo_desc : 'Ακύρωση αναίρεσης',
+link_desc : 'Δημιουργία/Διόρθωση υπερ-σύνδεσης',
+unlink_desc : 'Διαγραφή υπερ-σύνδεσης',
+image_desc : 'Εισαγωγή/Διόρθωση εικόνας',
+cleanup_desc : 'Καθάρισμα κώδικα',
+focus_alert : 'Πρέπει να υπάρχει ενεργός κάποιος επεξεργαστής κειμένου πριν να χρησιμοποιήσετε αυτή την εντολή.',
+edit_confirm : 'Θέλετε να χρησιμοποιήσετε την κατάσταση WYSIWYG για το συγκεκριμένο πλαίσιο κειμένου;',
+insert_link_title : 'Δημιουργία/Διόρθωση υπερ-σύνδεσης',
+insert : 'Εισαγωγή',
+update : 'Εισαγωγή',
+cancel : 'Ακύρωση',
+insert_link_url : 'Διεύθυνση',
+insert_link_target : 'Στόχος',
+insert_link_target_same : '’νοιγμα της διεύθυνσης στο ίδιο παράθυρο',
+insert_link_target_blank : '’νοιγμα της διεύθυνσης σε νέο παράθυρο',
+insert_image_title : 'Εισαγωγή/Διόρθωση εικόνας',
+insert_image_src : 'Διεύθυνση',
+insert_image_alt : 'Περιγραφή',
+help_desc : 'Βοήθεια',
+bold_img : "bold.gif",
+italic_img : "italic.gif",
+underline_img : "underline.gif",
+clipboard_msg : 'Copy/Cut/Paste is not available in Mozilla and Firefox.\nDo you want more information about this issue?',
+popup_blocked : 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.'
+});
