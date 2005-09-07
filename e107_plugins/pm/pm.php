@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-09-07 13:37:06 $
+|     $Revision: 1.11 $
+|     $Date: 2005-09-07 16:46:43 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -238,7 +238,7 @@ function show_inbox($start = 0)
 
 function show_outbox($start = 0)
 {
-	global $pm, $tp, $pm_shortcodes, $pm_info, $pm_start, $pm_prefs;
+	global $pm, $tp, $pm_shortcodes, $pm_info, $pm_start, $pm_prefs, $pmlist;
 	$pm_start = $start;
 	require_once(e_PLUGIN."pm/pm_shortcodes.php");
 	$tpl_file = THEME."pm_template.php";
