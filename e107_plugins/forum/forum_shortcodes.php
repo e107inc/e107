@@ -7,8 +7,7 @@ return "<a href='".e_SELF."?".e_QUERY."#top'>".LAN_10."</a>";
 SC_END
 	
 SC_BEGIN JOINED
-global $post_info;
-global $gen;
+global $post_info, $gen;
 if ($post_info['user_id']) {
 return LAN_06.': '.$gen->convert_date($post_info['user_join'], 'forum').'<br />';
 }
@@ -20,16 +19,12 @@ return ($post_info["user_location"] ? LAN_07.": ".$post_info["user_location"]."<
 SC_END
 	
 SC_BEGIN THREADDATESTAMP
-global $post_info;
-global $gen;
-global $thread_id;
+global $post_info, $gen, $thread_id;
 return "<a id='post_{$post_info['thread_id']}'>".IMAGE_post."</a> ".$gen->convert_date($post_info['thread_datestamp'], "forum");
 SC_END
 	
 SC_BEGIN POST
-global $post_info;
-global $tp;
-global $iphost;
+global $post_info, $tp, $iphost;
 $ret = "";
 $ret = $tp->toHTML($post_info["thread_thread"], TRUE, "", 'class:'.$post_info["user_class"]);
 if (ADMIN && $iphost) {
@@ -39,8 +34,7 @@ return $ret;
 SC_END
 	
 SC_BEGIN PRIVMESSAGE
-global $post_info;
-global $tp;
+global $post_info, $tp;
 return $tp->parseTemplate("{SENDPM={$post_info['user_id']}}");
 SC_END
 	
@@ -60,7 +54,6 @@ SC_END
 	
 SC_BEGIN POSTER
 global $post_info, $tp;
-//print_a($post_info);
 if($post_info['user_name'])
 {
 	return "<a href='".e_BASE."user.php?id.".$post_info['user_id']."'><b>".$post_info['user_name']."</b></a>";
@@ -81,14 +74,16 @@ else
 SC_END
 	
 SC_BEGIN EMAILIMG
-global $post_info;
-global $tp;
-return (!$post_info['user_hideemail'] ? $tp->parseTemplate("{EMAILTO={$post_info['user_email']}}") : "");
+global $post_info, $tp;
+if($post_info['user_id'])
+{
+	return (!$post_info['user_hideemail'] ? $tp->parseTemplate("{EMAILTO={$post_info['user_email']}}") : "");
+}
+return "";
 SC_END
 	
 SC_BEGIN EMAILITEM
-global $post_info;
-global $tp;
+global $post_info, $tp;
 if($post_info['thread_parent'] == 0)
 {
 	return $tp->parseTemplate("{EMAIL_ITEM=".FORLAN_101."^plugin:forum.{$post_info['thread_id']}}");
@@ -96,8 +91,7 @@ if($post_info['thread_parent'] == 0)
 SC_END
 
 SC_BEGIN PRINTITEM
-global $post_info;
-global $tp;
+global $post_info, $tp;
 if($post_info['thread_parent'] == 0)
 {
 	return $tp->parseTemplate("{PRINT_ITEM=".FORLAN_102."^plugin:forum.{$post_info['thread_id']}}");
@@ -105,15 +99,13 @@ if($post_info['thread_parent'] == 0)
 SC_END
 	
 SC_BEGIN SIGNATURE
-global $post_info;
-global $tp;
+global $post_info, $tp;
 return ($post_info['user_signature'] ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$tp->toHTML($post_info['user_signature'],TRUE) : "");
 SC_END
 	
 SC_BEGIN PROFILEIMG
-global $post_info;
-global $tp;
-if (USER) {
+global $post_info, $tp;
+if (USER && $post_info['user_id']) {
 return $tp->parseTemplate("{PROFILE={$post_info['user_id']}}");
 } else {
 return "";
@@ -135,9 +127,7 @@ return LAN_09.": ".$post_info['user_visits']."<br />";
 SC_END
 	
 SC_BEGIN EDITIMG
-global $post_info;
-global $thread_info;
-global $thread_id;
+global $post_info, $thread_info, $thread_id;
 if ($post_info['user_id'] != '0' && $post_info['user_name'] === USERNAME && $thread_info['head']['thread_active']) {
 return "<a href='forum_post.php?edit.".$post_info['thread_id']."'>".IMAGE_edit."</a> ";
 } else {
@@ -146,16 +136,14 @@ return "";
 SC_END
 	
 SC_BEGIN CUSTOMTITLE
-global $post_info;
-global $tp;
+global $post_info, $tp;
 if ($post_info['user_customtitle']) {
 return $tp->toHTML($post_info['user_customtitle'])."<br />";
 }
 SC_END
 	
 SC_BEGIN WEBSITE
-global $post_info;
-global $tp;
+global $post_info, $tp;
 if ($post_info['user_homepage']) {
 return LAN_08.": ".$post_info['user_homeapage']."<br />";
 }
@@ -169,17 +157,14 @@ return "<a href='{$post_info['user_homepage']}'>".IMAGE_website."</a>";
 SC_END
 	
 SC_BEGIN QUOTEIMG
-global $thread_info;
-global $post_info;
-global $forum_info;
+global $thread_info, $post_info, $forum_info;
 if (check_class($forum_info['forum_postclass']) && check_class($forum_info['parent_postclass']) && $thread_info["head"]["thread_active"]) {
 return "<a href='".e_PLUGIN."forum/forum_post.php?quote.{$post_info['thread_id']}'>".IMAGE_quote."</a>";
 }
 SC_END
 	
 SC_BEGIN REPORTIMG
-global $post_info;
-global $from;
+global $post_info, $from;
 if (USER) {
 return "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post_info['thread_id']}.{$from}.report'>".IMAGE_report."</a> ";
 }
@@ -237,8 +222,7 @@ return showmodoptions();
 SC_END
 	
 SC_BEGIN LASTEDIT
-global $post_info;
-global $gen;
+global $post_info, $gen;
 if ($post_info['thread_edit_datestamp']) {
 return $gen->convert_date($post_info['thread_edit_datestamp'],'forum');
 }
