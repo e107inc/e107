@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-09-06 17:12:11 $
+|     $Revision: 1.9 $
+|     $Date: 2005-09-07 02:51:18 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -42,6 +42,11 @@ if(!check_class($pm_prefs['pm_class']))
 $pm =& new private_message;
 $message = "";
 
+$pm_prefs['perpage'] = intval($pm_prefs['perpage']);
+if($pm_prefs['perpage'] == 0)
+{
+	$pm_prefs['perpage'] = 10;
+}
 //Auto-delete message, if timeout set in admin
 $del_qry = array();
 $read_timeout = intval($pm_prefs['read_timeout']);
@@ -156,15 +161,14 @@ if("reply" == $action)
 	}
 }
 
-
 if("inbox" == $action)
 {
-	$ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox());
+	$ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox(intval($qs[1])), "PM");
 }
 
 if("outbox" == $action)
 {
-	$ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox());
+	$ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox(intval($qs[1])), "PM");
 }
 
 if("show" == $action)
@@ -204,14 +208,15 @@ function show_send($to_uid)
 	return $text;
 }
 
-function show_inbox()
+function show_inbox($start = 0)
 {
-	global $pm, $tp, $pm_shortcodes, $pm_info, $pm_blocks;
+	global $pm, $tp, $pm_shortcodes, $pm_info, $pm_blocks, $pmlist, $pm_start, $pm_prefs;
+	$pm_start = $start;
 	require_once(e_PLUGIN."pm/pm_shortcodes.php");
 	$tpl_file = THEME."pm_template.php";
 	include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN."pm/pm_template.php");
 	$pm_blocks = $pm->block_get();
-	$pmlist = $pm->pm_get_inbox();
+	$pmlist = $pm->pm_get_inbox(USERID, $pm_start, $pm_prefs['perpage']);
 	$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
 	$txt .= $tp->parseTemplate($PM_INBOX_HEADER, true, $pm_shortcodes);
 	if($pmlist['total_messages'])
@@ -231,13 +236,14 @@ function show_inbox()
 	return $txt;
 }
 
-function show_outbox()
+function show_outbox($start = 0)
 {
-	global $pm, $tp, $pm_shortcodes, $pm_info;
+	global $pm, $tp, $pm_shortcodes, $pm_info, $pm_start, $pm_prefs;
+	$pm_start = $start;
 	require_once(e_PLUGIN."pm/pm_shortcodes.php");
 	$tpl_file = THEME."pm_template.php";
 	include(is_readable($tpl_file) ? $tpl_file : e_PLUGIN."pm/pm_template.php");
-	$pmlist = $pm->pm_get_outbox();
+	$pmlist = $pm->pm_get_outbox(USERID, $pm_start, $pm_prefs['perpage']);
 	$txt = "<form method='post' action='".e_SELF."?".e_QUERY."'>";
 	$txt .= $tp->parseTemplate($PM_OUTBOX_HEADER, true, $pm_shortcodes);
 	if($pmlist['total_messages'])
@@ -273,11 +279,11 @@ function show_pm($pmid)
 	$txt .= $tp->parseTemplate($PM_SHOW, true, $pm_shortcodes);
 	$ns -> tablerender(LAN_PM, $txt);
 	if($pm_info['pm_from'] == USERID) {
-		$ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox(), "PM");
+		$ns->tablerender(LAN_PM." - ".LAN_PM_26, show_outbox(intval($qs[1])), "PM");
 	} 
 	else
 	{
-		$ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox(), "PM");
+		$ns->tablerender(LAN_PM." - ".LAN_PM_25, show_inbox(intval($qs[1])), "PM");
 	}
 }
 
@@ -315,7 +321,16 @@ function post_pm()
 		}
 		else
 		{
-			$to_array = array_unique(explode("\n", trim($_POST['pm_to'])));
+			$to_array = explode("\n", trim($_POST['pm_to']));
+			foreach($to_array as $k => $v)
+			{
+				$to_array[$k] = trim($v);
+			}
+			$to_array = array_unique($to_array);
+			if(count($to_array) == 1)
+			{
+				$_POST['pm_to'] = $to_array[0];
+			}
 			if(check_class($pm_prefs['multi_class']) && count($to_array) > 1)
 			{
 				foreach($to_array as $to)
