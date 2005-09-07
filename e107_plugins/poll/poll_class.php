@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-09-02 13:36:16 $
+|     $Revision: 1.32 $
+|     $Date: 2005-09-07 09:02:25 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -90,14 +90,14 @@ class poll
 					$deacArray = $sql -> db_getList();
 					foreach($deacArray as $deacpoll)
 					{
-						$sql -> db_Update("polls", "poll_end_datestamp=".time().", poll_vote_userclass=255 WHERE poll_id=".$deacpoll['poll_id']);
+						$sql -> db_Update("polls", "poll_end_datestamp='".time()."', poll_vote_userclass='255' WHERE poll_id=".$deacpoll['poll_id']);
 					}
 				}
-				$sql -> db_Insert("polls", "'0', ".time().", $active_start, $active_end, ".ADMINID.", '$poll_title', '$poll_options', '$votes', '', 1, $poll_comment, $multipleChoice, $showResults, $pollUserclass, $storageMethod");
+				$sql -> db_Insert("polls", "'0', ".time().", $active_start, $active_end, ".ADMINID.", '$poll_title', '$poll_options', '$votes', '', '1', '$poll_comment', '$multipleChoice', '$showResults', '$pollUserclass', '$storageMethod'");
 			}
 			else
 			{
-				$sql -> db_Insert("polls", "'0', ".$_POST['iid'].", 0, 0, ".USERID.", '$poll_title', '$poll_options', '$votes', '', 2, 0, $multipleChoice, 0, 0, 0");
+				$sql -> db_Insert("polls", "'0', ".$_POST['iid'].", '0', '0', ".USERID.", '$poll_title', '$poll_options', '$votes', '', '2', '0', '$multipleChoice', '0', '0', '0'");
 			}
 		}
 		return $message;
