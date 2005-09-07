@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-09-05 15:34:27 $
+|     $Revision: 1.50 $
+|     $Date: 2005-09-07 20:55:27 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ define("IMAGE_NEW", (file_exists(THEME."generic/new.png") ? THEME."generic/new.p
 
 
 
-if (!e_QUERY) {
+if (!e_QUERY || $_GET) {
 	require_once(HEADERF);
 	// no qs - render categories ...
 
