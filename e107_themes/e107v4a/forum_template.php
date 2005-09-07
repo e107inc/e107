@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/forum_template.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-22 16:47:29 $
+|     $Revision: 1.7 $
+|     $Date: 2005-09-07 14:20:30 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,7 @@ $FORUMSTART = "
 
 <table style='width:100%'>
 <tr>
-<td style='width:60%'><div class='mediumtext'><img src='".e_PLUGIN."forum/images/e.png' alt='' style='vertical-align:middle' /> <b>{THREADNAME}</b></div><br />{GOTOPAGES}</td>
+<td style='width:60%'><div class='mediumtext'><img src='".e_PLUGIN."forum/images/lite/e.png' alt='' style='vertical-align:middle' /> <b>{THREADNAME}</b></div><br />{GOTOPAGES}</td>
 <td style='width:40%; text-align: right; vertical-align:bottom;'>{BUTTONS}</td>
 </tr>
 </table>
@@ -160,7 +160,7 @@ $FORUM_VIEW_START = "
 </table>
 
 <table style='width:100%'><tr>
-<td style='width:80%'><div class='mediumtext'><img src='".e_PLUGIN."forum/images/e.png' style='vertical-align:middle' alt='' /> <b>{FORUMTITLE} Forum</b></div>{THREADPAGES}</td>
+<td style='width:80%'><div class='mediumtext'><img src='".e_PLUGIN."forum/images/lite/e.png' style='vertical-align:middle' alt='' /> <b>{FORUMTITLE} Forum</b></div>{THREADPAGES}</td>
 <td style='width:20%; text-align:right; vertical-align:bottom;'>
 {NEWTHREADBUTTON}
 </td>
