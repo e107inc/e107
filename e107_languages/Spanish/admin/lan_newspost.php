@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_newspost.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-10 20:06:43 $
+|     $Revision: 1.6 $
+|     $Date: 2005-09-07 19:43:12 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -154,4 +154,5 @@ define("LAN_NEWS_42", "Archivos");
 define("LAN_NEWS_43", "(no hay imágenes en /e107_images/newspost_images)");
 define("LAN_NEWS_44", "Trackback no activo.");
 define("LAN_NEWS_45", "ID");
+define("LAN_NEWS_46", "Noticia no actualizada ya que no se han realizado cambios.");
 ?>
