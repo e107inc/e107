@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2005-09-05 17:58:03 $
+|     $Revision: 1.73 $
+|     $Date: 2005-09-07 22:40:53 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -237,8 +237,17 @@ class sitelinks
 
 function hilite($link,$enabled=''){
 	global $PLUGINS_DIRECTORY,$tp,$pref;
+    if(!$enabled){ return FALSE; }
 
-		if(!$enabled){ return FALSE; }
+
+// ----------- highlight overriding - set the link matching in the page itself.
+
+	if(defined("HILITE")){
+		if(strpos($link,HILITE)){
+        	return TRUE;
+		}
+	}
+
 
 // --------------- highlighting for 'HOME'. ----------------
 	global $pref;
