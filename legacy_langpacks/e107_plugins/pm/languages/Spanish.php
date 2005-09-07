@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/pm/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-09-03 08:03:40 $
+|     $Revision: 1.3 $
+|     $Date: 2005-09-07 10:13:30 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -67,5 +67,6 @@ define('LAN_PM_55', "Enviar respuesta");
 define('LAN_PM_56', "No está autorizado para responder este mensaje"); 
 define('LAN_PM_57', "Mensaje no encontrado"); 
 define('LAN_PM_58', "Re: ");
+define('LAN_PM_59', "Ir a la página: ");
 
 ?>
