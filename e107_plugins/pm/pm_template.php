@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-09-05 19:51:12 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2005-09-07 02:51:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 global $sc_style;
@@ -25,6 +25,9 @@ $sc_style['PM_ATTACHMENT_ICON']['pre'] = " ";
 
 $sc_style['PM_ATTACHMENTS']['pre'] = "<br /><div style='vertical-align:bottom; text-align:left;'>";
 $sc_style['PM_ATTACHMENTS']['post'] = "</div>";
+
+$sc_style['PM_NEXTPREV']['pre'] = "<tr><td class='forumheader' colspan='6' style='text-align:left'> ".LAN_PM_59;
+$sc_style['PM_NEXTPREV']['post'] = "</td></tr>";
 
 $sc_style['EMOTES']['pre'] = "
 <tr>
@@ -117,6 +120,7 @@ $PM_INBOX_FOOTER = "
 	{DELETE_SELECTED}
 	</td>
 </tr>
+{PM_NEXTPREV}
 </table>
 ";
 
@@ -155,6 +159,7 @@ $PM_OUTBOX_FOOTER = "
 	{DELETE_SELECTED}
 	</td>
 </tr>
+{PM_NEXTPREV}
 </table>
 ";
 

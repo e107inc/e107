@@ -60,5 +60,6 @@ define('LAN_PM_55', "Send Reply");
 define('LAN_PM_56', "You are not permitted to reply to this message");
 define('LAN_PM_57', "Message not found");
 define('LAN_PM_58', "Re: ");
+define('LAN_PM_59', "Go to page: ");
 
 ?>
