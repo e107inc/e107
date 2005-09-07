@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/plugin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-08-31 18:57:59 $
+|     $Revision: 1.3 $
+|     $Date: 2005-09-07 00:48:19 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -71,7 +71,7 @@ $eplug_tables = array(
   pm_size int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (pm_id)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;",
-"CREATE TABLE e107_private_msg_block (
+"CREATE TABLE ".MPREFIX."private_msg_block (
   pm_block_id int(10) unsigned NOT NULL auto_increment,
   pm_block_from int(10) unsigned NOT NULL default '0',
   pm_block_to int(10) unsigned NOT NULL default '0',
