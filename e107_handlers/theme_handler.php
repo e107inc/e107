@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-08-11 20:44:26 $
-|     $Author: sweetas $
+|     $Revision: 1.23 $
+|     $Date: 2005-09-07 08:06:17 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
@@ -130,6 +130,14 @@ class themeHandler{
 						preg_match('/csscompliant(\s=\s|=|\s=|=\s)(.*?);/', $themeContents, $match);
 						$css = strtolower($match[2]);
 						$themeArray[$file]['csscompliant'] = ($css == "true" ? true : false);
+
+						/* Bugtrack #1507, fix by drtester */
+						if (!$themeArray[$file]['name'])
+						{
+							array_pop($themeArray);
+							$tloop--;
+						}
+						/* end fix */
 
 					}
 					closedir($handle2);
