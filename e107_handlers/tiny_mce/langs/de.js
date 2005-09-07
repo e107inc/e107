@@ -1,39 +1,41 @@
 // DE lang variables
 
-tinyMCELang['lang_bold_desc'] = 'Fett';
-tinyMCELang['lang_italic_desc'] = 'Kursiv';
-tinyMCELang['lang_underline_desc'] = 'Unterstrichen';
-tinyMCELang['lang_striketrough_desc'] = 'Durchgestrichen';
-tinyMCELang['lang_justifyleft_desc'] = 'Linksb&uuml;ndig';
-tinyMCELang['lang_justifycenter_desc'] = 'Zentriert';
-tinyMCELang['lang_justifyright_desc'] = 'Rechtsb&uuml;ndig';
-tinyMCELang['lang_justifyfull_desc'] = 'Blocksatz';
-tinyMCELang['lang_bullist_desc'] = 'Aufz&auml;hlungszeichen';
-tinyMCELang['lang_numlist_desc'] = 'Nummerierung';
-tinyMCELang['lang_outdent_desc'] = 'Einzug verkleinern';
-tinyMCELang['lang_indent_desc'] = 'Einzug vergr&ouml;ssern';
-tinyMCELang['lang_undo_desc'] = 'R&uuml;ckg&auml;ngig';
-tinyMCELang['lang_redo_desc'] = 'Wiederholen';
-tinyMCELang['lang_link_desc'] = 'Link einf&uuml;gen/bearbeiten';
-tinyMCELang['lang_unlink_desc'] = 'Link entfernen';
-tinyMCELang['lang_image_desc'] = 'Bild einf&uuml;gen/bearbeiten';
-tinyMCELang['lang_cleanup_desc'] = 'unsauberen Code aufr&auml;umen';
-tinyMCELang['lang_focus_alert'] = 'Eine Bearbeitungsinstanz muss f&uuml;r diesen Befehl hervorgehoben.';
-tinyMCELang['lang_edit_confirm'] = 'Wollen Sie den WYSIWYG Modus f&uuml;r dieses Textfeld benutzen?';
-tinyMCELang['lang_insert_link_title'] = 'Link einf&uuml;gen/bearbeiten';
-tinyMCELang['lang_insert'] = 'Einf&uuml;gen';
-tinyMCELang['lang_update'] = 'Aktualisieren';
-tinyMCELang['lang_cancel'] = 'Abbrechen';
-tinyMCELang['lang_insert_link_url'] = 'Link URL';
-tinyMCELang['lang_insert_link_target'] = 'Ziel';
-tinyMCELang['lang_insert_link_target_same'] = 'Link in gleichen Fester &ouml;ffnen';
-tinyMCELang['lang_insert_link_target_blank'] = 'Link in neuen Fenster &ouml;ffnen';
-tinyMCELang['lang_insert_image_title'] = 'Bild einf&uuml;gen/bearbeiten';
-tinyMCELang['lang_insert_image_src'] = 'Bild URL';
-tinyMCELang['lang_insert_image_alt'] = 'Bild Beschreibung';
-tinyMCELang['lang_help_desc'] = 'Hilfe';
-tinyMCELang['lang_bold_img'] = "bold_de_se.gif";
-tinyMCELang['lang_italic_img'] = "italic_de_se.gif";
-tinyMCELang['lang_underline_img'] = "underline.gif";
-tinyMCELang['lang_clipboard_msg'] = 'Kopieren/Ausschneiten/Einf&uuml;gen ist mit Mozilla und Firefox nicht verf&uuml;gbar.\nWollen Sie mehr Informationen dar&uuml;ber erhalten?';
-tinyMCELang['lang_popup_blocked'] = 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.';
+tinyMCE.addToLang('',{
+bold_desc : 'Fett',
+italic_desc : 'Kursiv',
+underline_desc : 'Unterstrichen',
+striketrough_desc : 'Durchgestrichen',
+justifyleft_desc : 'Linksb&uuml;ndig',
+justifycenter_desc : 'Zentriert',
+justifyright_desc : 'Rechtsb&uuml;ndig',
+justifyfull_desc : 'Blocksatz',
+bullist_desc : 'Aufz&auml;hlungszeichen',
+numlist_desc : 'Nummerierung',
+outdent_desc : 'Einzug verkleinern',
+indent_desc : 'Einzug vergr&ouml;ssern',
+undo_desc : 'R&uuml;ckg&auml;ngig',
+redo_desc : 'Wiederholen',
+link_desc : 'Link einf&uuml;gen/bearbeiten',
+unlink_desc : 'Link entfernen',
+image_desc : 'Bild einf&uuml;gen/bearbeiten',
+cleanup_desc : 'unsauberen Code aufr&auml;umen',
+focus_alert : 'Eine Bearbeitungsinstanz muss f&uuml;r diesen Befehl hervorgehoben.',
+edit_confirm : 'Wollen Sie den WYSIWYG Modus f&uuml;r dieses Textfeld benutzen?',
+insert_link_title : 'Link einf&uuml;gen/bearbeiten',
+insert : 'Einf&uuml;gen',
+update : 'Aktualisieren',
+cancel : 'Abbrechen',
+insert_link_url : 'Link URL',
+insert_link_target : 'Ziel',
+insert_link_target_same : 'Link in gleichen Fester &ouml;ffnen',
+insert_link_target_blank : 'Link in neuen Fenster &ouml;ffnen',
+insert_image_title : 'Bild einf&uuml;gen/bearbeiten',
+insert_image_src : 'Bild URL',
+insert_image_alt : 'Bild Beschreibung',
+help_desc : 'Hilfe',
+bold_img : "bold_de_se.gif",
+italic_img : "italic_de_se.gif",
+underline_img : "underline.gif",
+clipboard_msg : 'Kopieren/Ausschneiten/Einf&uuml;gen ist mit Mozilla und Firefox nicht verf&uuml;gbar.\nWollen Sie mehr Informationen dar&uuml;ber erhalten?',
+popup_blocked : 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.'
+});
