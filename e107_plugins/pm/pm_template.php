@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_template.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-09-07 02:51:18 $
+|     $Revision: 1.9 $
+|     $Date: 2005-09-07 16:46:43 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -120,7 +120,7 @@ $PM_INBOX_FOOTER = "
 	{DELETE_SELECTED}
 	</td>
 </tr>
-{PM_NEXTPREV}
+{PM_NEXTPREV=inbox}
 </table>
 ";
 
@@ -159,7 +159,7 @@ $PM_OUTBOX_FOOTER = "
 	{DELETE_SELECTED}
 	</td>
 </tr>
-{PM_NEXTPREV}
+{PM_NEXTPREV=outbox}
 </table>
 ";
 
