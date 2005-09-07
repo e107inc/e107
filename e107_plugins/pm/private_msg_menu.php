@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/private_msg_menu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-09-07 00:45:45 $
+|     $Revision: 1.5 $
+|     $Date: 2005-09-07 11:41:11 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -21,8 +21,8 @@ $pm_prefs = $sysprefs->getArray("pm_prefs");
 require_once(e_PLUGIN."pm/pm_func.php");
 pm_getInfo('clear');
 
-define("PM_INBOX_ICON", "<img src='".e_PLUGIN."pm/images/mail_get.png' style='height:16;width:16;border:0' alt='Inbox' title='Inbox' />");
-define("PM_OUTBOX_ICON", "<img src='".e_PLUGIN."pm/images/mail_send.png' style='height:16;width:16;border:0' alt='Outbox' title='Outbox' />");
+define("PM_INBOX_ICON", "<img src='".e_PLUGIN."pm/images/mail_get.png' style='height:16;width:16;border:0' alt='".LAN_PM_25."' title='".LAN_PM_25."' />");
+define("PM_OUTBOX_ICON", "<img src='".e_PLUGIN."pm/images/mail_send.png' style='height:16;width:16;border:0' alt='".LAN_PM_26."' title='".LAN_PM_26."' />");
 define("PM_SEND_LINK", LAN_PM_35);
 define("NEWPM_ANIMATION", "<img src='".e_PLUGIN."pm/images/newpm.gif' alt='' style='border:0' />");
 
@@ -43,13 +43,13 @@ if(!defined($pm_menu_template))
 {
 	$pm_menu_template = "
 	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".PM_INBOX_ICON."</a>
-	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>Inbox</a>
+	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".LAN_PM_25."</a>
 	{NEWPM_ANIMATE}
 	<br />
 	{INBOX_TOTAL} ".LAN_PM_36.", {INBOX_UNREAD} ".LAN_PM_37." {INBOX_FILLED}
 	<br />
 	<a href='".e_PLUGIN_ABS."pm/pm.php?outbox'>".PM_OUTBOX_ICON."</a>
-	<a href='".e_PLUGIN_ABS."pm/pm.php?outbox'>Outbox</a><br />
+	<a href='".e_PLUGIN_ABS."pm/pm.php?outbox'>".LAN_PM_26."</a><br />
 	{OUTBOX_TOTAL} ".LAN_PM_36.", {OUTBOX_UNREAD} ".LAN_PM_37." {OUTBOX_FILLED}
 	{SEND_PM_LINK}
 	";
