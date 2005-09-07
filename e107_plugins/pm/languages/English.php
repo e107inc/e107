@@ -54,12 +54,21 @@ define('LAN_PM_50', "Block User");
 define('LAN_PM_51', "Unblock User");
 define('LAN_PM_52', "Delete");
 define('LAN_PM_53', "Delete Selected");
-
 define('LAN_PM_54', "Quote original");
 define('LAN_PM_55', "Send Reply");
 define('LAN_PM_56', "You are not permitted to reply to this message");
 define('LAN_PM_57', "Message not found");
 define('LAN_PM_58', "Re: ");
 define('LAN_PM_59', "Go to page: ");
+
+define("LAN_PM_100", "New PM from ");
+define("LAN_PM_101", "You have received a new Private Message from ");
+define("LAN_PM_102", "Message sent from: ");
+define("LAN_PM_103", "Message subject: ");
+define("LAN_PM_104", "Number of attachments: ");
+define("LAN_PM_105", "You can view the PM at: ");
+define("LAN_PM_106", "PM read by ");
+define("LAN_PM_107", "The Private Message you sent to {UNAME} was read on ");
+define("LAN_PM_108", "Message sent on: ");
 
 ?>
