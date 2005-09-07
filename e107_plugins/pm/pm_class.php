@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-05 20:00:17 $
+|     $Revision: 1.4 $
+|     $Date: 2005-09-07 13:37:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 class private_message
 {
-	function pm_mark_read($pm_id)
+	function pm_mark_read($pm_id, $pm_info)
 	{
 		$now = time();
 		global $pm_prefs, $sql;
@@ -30,6 +30,10 @@ class private_message
 		else
 		{
 			$sql->db_Select_gen("UPDATE #private_msg SET pm_read = {$now} WHERE pm_id={$pm_id}");
+			if(strpos($pm_info['pm_option'], "+rr") !== FALSE)
+			{
+				$this->pm_send_receipt($pm_info);
+			}
 		}
 	}
 
@@ -37,7 +41,7 @@ class private_message
 	{
 		global $sql;
 		$qry = "
-		SELECT pm.*, ut.user_image AS sent_image, ut.user_name AS sent_name, uf.user_image AS from_image, uf.user_name AS from_name  FROM #private_msg AS pm
+		SELECT pm.*, ut.user_image AS sent_image, ut.user_name AS sent_name, uf.user_image AS from_image, uf.user_name AS from_name, uf.user_email as from_email, ut.user_email as to_email  FROM #private_msg AS pm
 		LEFT JOIN #user AS ut ON ut.user_id = pm.pm_to
 		LEFT JOIN #user AS uf ON uf.user_id = pm.pm_from
 		WHERE pm.pm_id='{$pmid}'
@@ -57,7 +61,7 @@ class private_message
 		$pmsize = 0;
 		$attachlist = "";
 		$pm_options = "";
-		if(isset($vars['receipt']) && $var['receipt']) {$pm_options .= "+rr+";	}
+		if(isset($vars['receipt']) && $vars['receipt']) {$pm_options .= "+rr+";	}
 		if(isset($vars['uploaded']))
 		{
 			foreach($vars['uploaded'] as $u)
@@ -109,7 +113,7 @@ class private_message
 					$ret .= LAN_PM_39.": {$u['user_name']} <br />";
 				}
 			}
-			if(!$pmid = $sql->db_Insert("private_msg", "0, '{$vars['from_id']}', '{$toclass}', '{$sendtime}', '1', '{$pm_subject}', '{$pm_message}', '0', '0', '{$attachlist}', '{$pm_option}', '{$pmsize}'"))
+			if(!$pmid = $sql->db_Insert("private_msg", "0, '{$vars['from_id']}', '{$toclass}', '{$sendtime}', '1', '{$pm_subject}', '{$pm_message}', '0', '0', '{$attachlist}', '{$pm_options}', '{$pmsize}'"))
 			{
 				$ret .= LAN_PM_41."<br />";
 			}
@@ -117,7 +121,7 @@ class private_message
 		}
 		else
 		{
-			if($pmid = $sql->db_Insert("private_msg", "0, '{$vars['from_id']}', '{$vars['to_info']['user_id']}', '{$sendtime}', '0', '{$pm_subject}', '{$pm_message}', '0', '0', '{$attachlist}', '{$pm_option}', '{$pmsize}'"))
+			if($pmid = $sql->db_Insert("private_msg", "0, '{$vars['from_id']}', '{$vars['to_info']['user_id']}', '{$sendtime}', '0', '{$pm_subject}', '{$pm_message}', '0', '0', '{$attachlist}', '{$pm_options}', '{$pmsize}'"))
 			{
 				if(check_class($pm_prefs['notify_class'], $vars['to_info']['user_class']))
 				{
@@ -174,7 +178,32 @@ class private_message
 
 	function pm_send_notify($uid, $pminfo, $pmid, $attach_count = 0)
 	{
-		return TRUE;
+		require_once(e_HANDLER."mail.php");
+		global $PLUGINS_DIRECTORY;
+		$subject = LAN_PM_100.SITENAME;
+		$pmlink = SITEURL.$PLUGINS_DIRECTORY."pm/pm.php?show.{$pmid}";
+		$txt = LAN_PM_101.SITENAME."\n\n";
+		$txt .= LAN_PM_102.USERNAME."\n";
+		$txt .= LAN_PM_103.$pminfo['pm_subject']."\n";
+		if($attch_count > 0)
+		{
+			$txt .= LAN_PM_104.$attach_count."\n";
+		}
+		$txt .= LAN_PM_105."\n".$pmlink."\n";
+		sendemail($pminfo['to_info']['user_email'], $subject, $txt, $pminfo['to_info']['user_name']);
+	}
+
+	function pm_send_receipt($pminfo)
+	{
+		require_once(e_HANDLER."mail.php");
+		global $PLUGINS_DIRECTORY;
+		$subject = LAN_PM_106.$pminfo['sent_name'];
+		$pmlink = SITEURL.$PLUGINS_DIRECTORY."pm/pm.php?show.{$pminfo['pm_id']}";
+		$txt = str_replace("{UNAME}", $pminfo['sent_name'], LAN_PM_107).date('l F dS Y h:i:s A')."\n\n";
+		$txt .= LAN_PM_108.date('l F dS Y h:i:s A', $pminfo['pm_sent'])."\n";
+		$txt .= LAN_PM_103.$pminfo['pm_subject']."\n";
+		$txt .= LAN_PM_105."\n".$pmlink."\n";
+		sendemail($pminfo['from_email'], $subject, $txt, $pminfo['from_name']);
 	}
 
 	function block_get($to = USERID)
@@ -252,7 +281,7 @@ class private_message
 	{
 		global $sql;
 		$var = trim($var);
-		if($sql->db_Select("user", "user_id, user_name, user_class", "user_name LIKE '{$var}'"))
+		if($sql->db_Select("user", "user_id, user_name, user_class, user_email", "user_name LIKE '{$var}'"))
 		{
 			$row = $sql->db_Fetch();
 			return $row;

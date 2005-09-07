@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-09-07 02:51:18 $
+|     $Revision: 1.10 $
+|     $Date: 2005-09-07 13:37:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -274,7 +274,7 @@ function show_pm($pmid)
 	{
 		$now = time();
 		$pm_info['pm_read'] = $now;
-		$pm->pm_mark_read($pmid);
+		$pm->pm_mark_read($pmid, $pm_info);
 	}
 	$txt .= $tp->parseTemplate($PM_SHOW, true, $pm_shortcodes);
 	$ns -> tablerender(LAN_PM, $txt);
