@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.132 $
-|     $Date: 2005-09-07 14:08:28 $
-|     $Author: asperon $
+|     $Revision: 1.133 $
+|     $Date: 2005-09-07 17:22:50 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -68,26 +68,26 @@ function update_61x_to_700($type='') {
 
 		set_time_limit(180);
 		$s_prefs = FALSE;
-		
+
 		// Lets build an array with all the table names.
 		$result = mysql_query("SHOW tables");
 		while($row = mysql_fetch_row($result))
 		{
 			$tablenames[]=$row[0];
-		} 
+		}
 
 		// Error string, as long as this is empty everything is ok!
 		$error='';
 
 		// Switch 0.6xx upgraders to iso ========================
-		
+
 		if ($sql -> db_Select("link_category", "link_category_id")){
 			if (is_dir(e_LANGUAGEDIR.e_LANGUAGE."-iso")) {
 				$pref['sitelanguage'] = $pref['sitelanguage']."-iso";
 				$s_prefs = TRUE;
 			}
 		}
-			
+
 		// ==============================================================
 
 		// add an index on user_ban - speeds up page render time massively on large user tables.
@@ -212,7 +212,7 @@ function update_61x_to_700($type='') {
                 	        if (mysql_error()!='') {
                         	        $error.=mysql_error();
 	                        }
-	
+
 			}
 		}
 		/*	end 	*/
@@ -409,7 +409,7 @@ function update_61x_to_700($type='') {
                                 $error.=mysql_error();
                         }
 		}
-		
+
 		if ($error='') {
 			mysql_query("ALTER TABLE ".MPREFIX."menus ADD menu_path VARCHAR( 100 ) NOT NULL");
                         if (mysql_error()!='') {
@@ -464,7 +464,7 @@ function update_61x_to_700($type='') {
                                 $error.=mysql_error();
                         }
 		}
-		
+
 		if ($error=='') {
 			$sql->db_Select_gen(
 			"CREATE TABLE ".MPREFIX."user_extended (
@@ -605,8 +605,8 @@ function update_61x_to_700($type='') {
 					}
 					$sql2->db_Update('user', "user_class = '{$new_userclass}' WHERE user_id={$row['user_id']}");
 					if (mysql_error()!='') {
-		                                $error.=mysql_error();
-                		        }
+						$error.=mysql_error();
+					}
 				}
 			}
 		}
@@ -614,22 +614,23 @@ function update_61x_to_700($type='') {
 		if ($error='') {
 			mysql_query("ALTER TABLE ".MPREFIX."generic` CHANGE gen_chardata gen_chardata TEXT NOT NULL");
 			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+				$error.=mysql_error();
+			}
 		}
 
 		if ($error=='') {
 			mysql_query("ALTER TABLE ".MPREFIX."banner CHANGE banner_active banner_active TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'");
 			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+				$error.=mysql_error();
+			}
 		}
 
-		if ($error=='') {
+		if ($error=='' && $sql->db_Field("cache",0) == "cache_url") {
+
 			mysql_query('DROP TABLE `'.MPREFIX.'cache`'); // db cache is no longer an available option..
 			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+				$error.=mysql_error();
+			}
 		}
 	//	$sql->db_Update("banner", "banner_active='255' WHERE banner_active = '0' ");
 	//	$sql->db_Update("banner", "banner_active='0' WHERE banner_active = '1' ");
@@ -674,10 +675,10 @@ function update_61x_to_700($type='') {
 					}
 				}
 			}
-			mysql_query('DROP TABLE '.MPREFIX.'wmessage');  // table wmessage is no longer needed.
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+
+			if(mysql_query('DROP TABLE '.MPREFIX.'wmessage')){  // table wmessage is no longer needed.
+					$error.= (mysql_error()!='') ? mysql_error() : "";
+			}
 		}
 
 		// ############# END McFly's Updates  ##############
@@ -696,7 +697,7 @@ function update_61x_to_700($type='') {
 		// end chatbox update -------------------------------------------------------------------------------------------
 
 		// Cam's new PRESET Table. -------------------------------------------------------------------------------------------
-		if ($error=='') {
+		if ($error=='' && !$sql->db_Select("preset")) {
 			$sql->db_Select_gen(
 			"CREATE TABLE ".MPREFIX."preset (
 			preset_id int(10) unsigned NOT NULL auto_increment,
@@ -707,8 +708,8 @@ function update_61x_to_700($type='') {
 			) TYPE=MyISAM;
 			");
 			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+				$error.=mysql_error();
+			}
 		}
 
 		// News Updates -----------------
@@ -721,12 +722,12 @@ function update_61x_to_700($type='') {
 			if($field1 != "news_summary" && $field1 != "news_thumbnail" && $field3 != "news_sticky"){
 				mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_summary` TEXT DEFAULT NULL;");
 				if (mysql_error()!='') {
-                                	$error.=mysql_error();
-                        	}
+					$error.=mysql_error();
+				}
 				mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_thumbnail` TEXT DEFAULT NULL;");
 				if (mysql_error()!='') {
-                                	$error.=mysql_error();
-                        	}
+					$error.=mysql_error();
+				}
 				mysql_query("ALTER TABLE ".MPREFIX."news ADD news_sticky TINYINT ( 3 ) UNSIGNED NOT NULL");
 				if (mysql_error()!='') {
                                 	$error.=mysql_error();
@@ -735,8 +736,8 @@ function update_61x_to_700($type='') {
 		}
 
 		// Downloads updates - Added March 1, 2005 by McFly
-		
-		if ($error=='') {
+
+		if ($error=='' && !$sql->db_Select("download_requests")) {
 			$sql->db_Select_gen(
 			"CREATE TABLE ".MPREFIX."download_requests (
 			download_request_id int(10) unsigned NOT NULL auto_increment,
@@ -787,7 +788,7 @@ function update_61x_to_700($type='') {
 
 		// db verify fixes
 		if ($error=='') {
-			// Are these needed? To facilitate for users that upgraded to the cvs during development, or? 
+			// Are these needed? To facilitate for users that upgraded to the cvs during development, or?
 			mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_signup_show` , DROP `user_extended_struct_signup_required` ;");
 			if (mysql_error()!='') {
 //                                $error.=mysql_error();
@@ -885,7 +886,7 @@ function update_61x_to_700($type='') {
 			}
 			// end list_new update -------------------------------------------------------------------------------------------
 		}
-		
+
 		// Truncate logstats table if log_id = pageTotal not found
 		/* log update - previous log entries are not compatible with later versions, sorry but we have to clear the table :\ */
 		if ($error=='') {
@@ -1032,7 +1033,7 @@ function update_61x_to_700($type='') {
 			$field1 = $sql->db_Field("links_page_cat",4);
 			$field2 = $sql->db_Field("links_page_cat",5);
 			$field3 = $sql->db_Field("links_page_cat",6);
-	
+
 			if($field1 != "link_category_order" && $field2 != "link_category_class" && $field3 != "link_category_datestamp"){
 				mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_order VARCHAR ( 100 ) NOT NULL DEFAULT '0';");
 				if (mysql_error()!='') {
@@ -1122,6 +1123,10 @@ function update_61x_to_700($type='') {
 			if (!isset($search_prefs['core_handlers']['pages'])) {
 				$search_prefs['core_handlers']['pages'] = array('class' => 0, 'chars' => 150, 'results' => 10, 'pre_title' => 1, 'pre_title_alt' => '', 'order' => 13);
 			}
+
+        if(!is_array($pref['meta_tag'])){
+        	$pref['meta_tag'] = array($pref['sitelanguage']=>$pref['meta_tag']);
+		}
 
 			$serial_prefs = addslashes(serialize($search_prefs));
 			$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs'");
@@ -1221,6 +1226,10 @@ function update_61x_to_700($type='') {
 			if(strpos($lines[10],"tinyint")){
 		  		return update_needed();
 			}
+		}
+
+		if(!is_array($pref['meta_tag'])){
+        	return update_needed();
 		}
 
 		if(!array_key_exists('ue_upgrade', $pref))
