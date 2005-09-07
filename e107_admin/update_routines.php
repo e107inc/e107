@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.131 $
-|     $Date: 2005-09-05 00:04:02 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.132 $
+|     $Date: 2005-09-07 14:08:28 $
+|     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
 
@@ -65,9 +65,20 @@ function update_check() {
 function update_61x_to_700($type='') {
 	global $sql, $ns, $mySQLdefaultdb, $pref, $tp, $sysprefs, $eArrayStorage;
 	if ($type == "do") {
+
 		set_time_limit(180);
 		$s_prefs = FALSE;
 		
+		// Lets build an array with all the table names.
+		$result = mysql_query("SHOW tables");
+		while($row = mysql_fetch_row($result))
+		{
+			$tablenames[]=$row[0];
+		} 
+
+		// Error string, as long as this is empty everything is ok!
+		$error='';
+
 		// Switch 0.6xx upgraders to iso ========================
 		
 		if ($sql -> db_Select("link_category", "link_category_id")){
@@ -81,389 +92,545 @@ function update_61x_to_700($type='') {
 
 		// add an index on user_ban - speeds up page render time massively on large user tables.
 		mysql_query("ALTER TABLE `".MPREFIX."user` ADD INDEX `user_ban_index`(`user_ban`);");
+                if (mysql_error()!='') {
+                	$error.=mysql_error();
+                }
 
-		if(!$sql -> db_Select("userclass_classes", "*", "userclass_editclass='254' ")){
-			$sql->db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
+		if ($error=='') {
+			if(!$sql -> db_Select("userclass_classes", "*", "userclass_editclass='254' ")){
+				$sql->db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
+				if (mysql_error()!='') {
+                                	$error.=mysql_error();
+                        	}
+			}
 		}
+
 		/*
 		changes by jalist 19/01/05:
 		altered structure of news table
 		*/
-		mysql_query("ALTER TABLE ".MPREFIX."news ADD news_comment_total INT (10) UNSIGNED NOT NULL");
-		$sql->db_Select_gen("SELECT comment_item_id AS id, COUNT(*) AS amount FROM #comments GROUP BY comment_item_id");
-		$commentArray = $sql->db_getList();
-		foreach($commentArray as $comments) {
-			extract($comments);
-			$sql->db_Update("news", "news_comment_total=$amount WHERE news_id=$id");
+		if ($error=='') {
+			mysql_query("ALTER TABLE ".MPREFIX."news ADD news_comment_total INT (10) UNSIGNED NOT NULL");
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+			$sql->db_Select_gen("SELECT comment_item_id AS id, COUNT(*) AS amount FROM #comments GROUP BY comment_item_id");
+			$commentArray = $sql->db_getList();
+			foreach($commentArray as $comments) {
+				extract($comments);
+				$sql->db_Update("news", "news_comment_total=$amount WHERE news_id=$id");
+                        	if (mysql_error()!='') {
+                                	$error.=mysql_error();
+                        	}
+			}
+			mysql_query("ALTER TABLE `".MPREFIX."content` CHANGE `content_content` `content_content` LONGTEXT NOT NULL");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
 		}
-
-		mysql_query("ALTER TABLE `".MPREFIX.".content` CHANGE `content_content` `content_content` LONGTEXT NOT NULL");
 		/* end */
 
 		/* start poll update */
-		$sql -> db_Update("menus", "menu_path='poll' WHERE menu_name='poll_menu' ");
-		$query = "CREATE TABLE ".MPREFIX."polls (
-		poll_id int(10) unsigned NOT NULL auto_increment,
-		poll_datestamp int(10) unsigned NOT NULL default '0',
-		poll_start_datestamp int(10) unsigned NOT NULL default '0',
-		poll_end_datestamp int(10) unsigned NOT NULL default '0',
-		poll_admin_id int(10) unsigned NOT NULL default '0',
-		poll_title varchar(250) NOT NULL default '',
-		poll_options text NOT NULL,
-		poll_votes text NOT NULL,
-		poll_ip text NOT NULL,
-		poll_type tinyint(1) unsigned NOT NULL default '0',
-		poll_comment tinyint(1) unsigned NOT NULL default '1',
-		poll_allow_multiple tinyint(1) unsigned NOT NULL default '0',
-		poll_result_type tinyint(2) unsigned NOT NULL default '0',
-		poll_vote_userclass tinyint(3) unsigned NOT NULL default '0',
-		poll_storage_method tinyint(1) unsigned NOT NULL default '0',
-		PRIMARY KEY  (poll_id)
-		) TYPE=MyISAM;";
-		$sql->db_Select_gen($query);
-		if($sql -> db_Select("poll"))
-		{
-			$polls = $sql -> db_getList();
-			foreach($polls as $row)
+		if ($error=='') {
+			$sql -> db_Update("menus", "menu_path='poll' WHERE menu_name='poll_menu' ");
+			$query = "CREATE TABLE ".MPREFIX."polls (
+			poll_id int(10) unsigned NOT NULL auto_increment,
+			poll_datestamp int(10) unsigned NOT NULL default '0',
+			poll_start_datestamp int(10) unsigned NOT NULL default '0',
+			poll_end_datestamp int(10) unsigned NOT NULL default '0',
+			poll_admin_id int(10) unsigned NOT NULL default '0',
+			poll_title varchar(250) NOT NULL default '',
+			poll_options text NOT NULL,
+			poll_votes text NOT NULL,
+			poll_ip text NOT NULL,
+			poll_type tinyint(1) unsigned NOT NULL default '0',
+			poll_comment tinyint(1) unsigned NOT NULL default '1',
+			poll_allow_multiple tinyint(1) unsigned NOT NULL default '0',
+			poll_result_type tinyint(2) unsigned NOT NULL default '0',
+			poll_vote_userclass tinyint(3) unsigned NOT NULL default '0',
+			poll_storage_method tinyint(1) unsigned NOT NULL default '0',
+			PRIMARY KEY  (poll_id)
+			) TYPE=MyISAM;";
+			$sql->db_Select_gen($query);
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+			if($sql -> db_Select("poll"))
 			{
-				extract($row);
-				$poll_options = "";
-				$poll_votes = "";
-				for($count=1; $count <= 10; $count++)
+				$polls = $sql -> db_getList();
+				foreach($polls as $row)
 				{
-					$var = "poll_option_".$count;
-					$var2 = "poll_votes_".$count;
-					if($$var)
+					extract($row);
+					$poll_options = "";
+					$poll_votes = "";
+					for($count=1; $count <= 10; $count++)
 					{
-						$poll_options .= $$var.chr(1);
-						$poll_votes .= $$var2.chr(1);
+						$var = "poll_option_".$count;
+						$var2 = "poll_votes_".$count;
+						if($$var)
+						{
+							$poll_options .= $$var.chr(1);
+							$poll_votes .= $$var2.chr(1);
+						}
 					}
+					$poll_type = (strlen($poll_datestamp) > 9 ? 1 : 2);
+					echo "Inserting field #".$poll_id." into new table ...(type: $poll_type)<br />";
+					$sql->db_Insert("polls", "$poll_id, $poll_datestamp, 0, $poll_end_datestamp, $poll_admin_id, '$poll_title', '$poll_options', '$poll_votes', '$poll_ip', $poll_type, $poll_comment, 0, 0, 255, 1");
+                        		if (mysql_error()!='') {
+                                		$error.=mysql_error();
+		                        }
 				}
-				$poll_type = (strlen($poll_datestamp) > 9 ? 1 : 2);
-				echo "Inserting field #".$poll_id." into new table ...(type: $poll_type)<br />";
-				$sql->db_Insert("polls", "$poll_id, $poll_datestamp, 0, $poll_end_datestamp, $poll_admin_id, '$poll_title', '$poll_options', '$poll_votes', '$poll_ip', $poll_type, $poll_comment, 0, 0, 255, 1");
+				$sql -> db_Select("polls", "poll_id", "poll_type=1 ORDER BY poll_datestamp DESC LIMIT 0,1");
+				$row = $sql -> db_Fetch();
+				$sql -> db_Update("polls", "poll_vote_userclass=0 WHERE poll_id=".$row['poll_id']);
+				$sql->db_Select_gen("DROP TABLE ".MPREFIX."poll");
+                        	if (mysql_error()!='') {
+                                	$error.=mysql_error();
+                        	}
 			}
-			$sql -> db_Select("polls", "poll_id", "poll_type=1 ORDER BY poll_datestamp DESC LIMIT 0,1");
-			$row = $sql -> db_Fetch();
-			$sql -> db_Update("polls", "poll_vote_userclass=0 WHERE poll_id=".$row['poll_id']);
-			$sql->db_Select_gen("DROP TABLE ".MPREFIX."poll");
 		}
 		/* end poll update */
 
 		/* general table structure changes */
-		mysql_query("ALTER TABLE `".MPREFIX."user` CHANGE `user_sess` `user_sess` VARCHAR( 100 ) NOT NULL");
+		if ($error=='') {
+			mysql_query("ALTER TABLE `".MPREFIX."user` CHANGE `user_sess` `user_sess` VARCHAR( 100 ) NOT NULL");
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+		}
 		/*	end	*/
 
 		/* start newsfeed update */
-		mysql_query("ALTER TABLE `".MPREFIX."newsfeed` CHANGE `newsfeed_data` `newsfeed_data` LONGTEXT NOT NULL");
-		$sql -> db_Update("newsfeed", "newsfeed_timestamp='0' ");
+		if ($error=='') {
+			if (in_array(MPREFIX.'newsfeed',$tablenames)) {
+				mysql_query("ALTER TABLE `".MPREFIX."newsfeed` CHANGE `newsfeed_data` `newsfeed_data` LONGTEXT NOT NULL");
+				if (mysql_error()!='') {
+                	                $error.=mysql_error();
+	                        }
+
+				$sql -> db_Update("newsfeed", "newsfeed_timestamp='0' ");
+                	        if (mysql_error()!='') {
+                        	        $error.=mysql_error();
+	                        }
+	
+			}
+		}
+		/*	end 	*/
 
 		/* start emote update */
-		$tmp =
-		'a:28:{s:9:"alien!png";s:6:"!alien";s:10:"amazed!png";s:7:"!amazed";s:9:"angry!png";s:11:"!grr !angry";s:12:"biglaugh!png";s:4:"!lol";s:11:"cheesey!png";s:10:":D :oD :-D";s:12:"confused!png";s:10:":? :o? :-?";s:7:"cry!png";s:19:"&| &-| &o| :(( !cry";s:8:"dead!png";s:21:"x) xo) x-) x( xo( x-(";s:9:"dodge!png";s:6:"!dodge";s:9:"frown!png";s:10:":( :o( :-(";s:7:"gah!png";s:10:":@ :o@ :o@";s:8:"grin!png";s:10:":D :oD :-D";s:9:"heart!png";s:6:"!heart";s:8:"idea!png";s:10:":! :o! :-!";s:7:"ill!png";s:4:"!ill";s:7:"mad!png";s:13:"~:( ~:o( ~:-(";s:12:"mistrust!png";s:9:"!mistrust";s:11:"neutral!png";s:10:":| :o| :-|";s:12:"question!png";s:2:"?!";s:12:"rolleyes!png";s:10:"B) Bo) B-)";s:7:"sad!png";s:4:"!sad";s:10:"shades!png";s:10:"8) 8o) 8-)";s:7:"shy!png";s:4:"!shy";s:9:"smile!png";s:10:":) :o) :-)";s:11:"special!png";s:3:"%-6";s:12:"suprised!png";s:10:":O :oO :-O";s:10:"tongue!png";s:21:":p :op :-p :P :oP :-P";s:8:"wink!png";s:10:";) ;o) ;-)";}';
-		$sql->db_Insert("core", "'emote_default', '$tmp' ");
-		if(!$pref['emotepack']){
-          $pref['emotepack'] = "default";
+		if ($error=='') {
+			$tmp =
+			'a:28:{s:9:"alien!png";s:6:"!alien";s:10:"amazed!png";s:7:"!amazed";s:9:"angry!png";s:11:"!grr !angry";s:12:"biglaugh!png";s:4:"!lol";s:11:"cheesey!png";s:10:":D :oD :-D";s:12:"confused!png";s:10:":? :o? :-?";s:7:"cry!png";s:19:"&| &-| &o| :(( !cry";s:8:"dead!png";s:21:"x) xo) x-) x( xo( x-(";s:9:"dodge!png";s:6:"!dodge";s:9:"frown!png";s:10:":( :o( :-(";s:7:"gah!png";s:10:":@ :o@ :o@";s:8:"grin!png";s:10:":D :oD :-D";s:9:"heart!png";s:6:"!heart";s:8:"idea!png";s:10:":! :o! :-!";s:7:"ill!png";s:4:"!ill";s:7:"mad!png";s:13:"~:( ~:o( ~:-(";s:12:"mistrust!png";s:9:"!mistrust";s:11:"neutral!png";s:10:":| :o| :-|";s:12:"question!png";s:2:"?!";s:12:"rolleyes!png";s:10:"B) Bo) B-)";s:7:"sad!png";s:4:"!sad";s:10:"shades!png";s:10:"8) 8o) 8-)";s:7:"shy!png";s:4:"!shy";s:9:"smile!png";s:10:":) :o) :-)";s:11:"special!png";s:3:"%-6";s:12:"suprised!png";s:10:":O :oO :-O";s:10:"tongue!png";s:21:":p :op :-p :P :oP :-P";s:8:"wink!png";s:10:";) ;o) ;-)";}';
+			$sql->db_Insert("core", "'emote_default', '$tmp' ");
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+
+			if(!$pref['emotepack']){
+        			$pref['emotepack'] = "default";
+			}
+			mysql_query("ALTER TABLE ".MPREFIX."core CHANGE e107_name e107_name VARCHAR( 100 ) NOT NULL");
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+
 		}
-
-		mysql_query("ALTER TABLE".MPREFIX."core CHANGE e107_name e107_name VARCHAR( 100 ) NOT NULL");
-
+		/*	end 	*/
 
 		/* start download updates */
-		$query = "CREATE TABLE ".MPREFIX."download_mirror (
-		mirror_id int(10) unsigned NOT NULL auto_increment,
-		mirror_name varchar(200) NOT NULL default '',
-		mirror_url varchar(200) NOT NULL default '',
-		mirror_image varchar(200) NOT NULL default '',
-		mirror_location varchar(100) NOT NULL default '',
-		mirror_description text NOT NULL,
-		mirror_count int(10) unsigned NOT NULL default '0',
-		PRIMARY KEY  (mirror_id)
-		) TYPE=MyISAM;";
-		$sql->db_Select_gen($query);
-		mysql_query("ALTER TABLE ".MPREFIX."download ADD download_class TINYINT ( 3 ) UNSIGNED NOT NULL");
-		mysql_query("ALTER TABLE ".MPREFIX."download_category ADD download_category_order INT ( 10 ) UNSIGNED NOT NULL");
-		mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_mirror` TEXT NOT NULL , ADD `download_mirror_type` TINYINT( 1 ) UNSIGNED NOT NULL");
+		if ($error=='') {
+			$query = "CREATE TABLE ".MPREFIX."download_mirror (
+			mirror_id int(10) unsigned NOT NULL auto_increment,
+			mirror_name varchar(200) NOT NULL default '',
+			mirror_url varchar(200) NOT NULL default '',
+			mirror_image varchar(200) NOT NULL default '',
+			mirror_location varchar(100) NOT NULL default '',
+			mirror_description text NOT NULL,
+			mirror_count int(10) unsigned NOT NULL default '0',
+			PRIMARY KEY  (mirror_id)
+			) TYPE=MyISAM;";
+			$sql->db_Select_gen($query);
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+			mysql_query("ALTER TABLE ".MPREFIX."download ADD download_class TINYINT ( 3 ) UNSIGNED NOT NULL");
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+			mysql_query("ALTER TABLE ".MPREFIX."download_category ADD download_category_order INT ( 10 ) UNSIGNED NOT NULL");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+			mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_mirror` TEXT NOT NULL , ADD `download_mirror_type` TINYINT( 1 ) UNSIGNED NOT NULL");
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+		}
 		/*	end	*/
 
 
 		/* start user update */
-		mysql_query("ALTER TABLE ".MPREFIX."user ADD user_loginname VARCHAR( 100 ) NOT NULL AFTER user_name");
-		mysql_query("ALTER TABLE ".MPREFIX."user ADD user_xup VARCHAR( 100 ) NOT NULL");
-		$sql->db_Update("user", "user_loginname=user_name WHERE user_loginname=''");
+		if ($error=='') {
+			mysql_query("ALTER TABLE ".MPREFIX."user ADD user_loginname VARCHAR( 100 ) NOT NULL AFTER user_name");
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+			mysql_query("ALTER TABLE ".MPREFIX."user ADD user_xup VARCHAR( 100 ) NOT NULL");
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+			$sql->db_Update("user", "user_loginname=user_name WHERE user_loginname=''");
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+		}
 		/* end */
 
 		/* start page update */
-		$sql->db_Select_gen("
-		  CREATE TABLE ".MPREFIX."page (
-		  page_id int(10) unsigned NOT NULL auto_increment,
-		  page_title varchar(250) NOT NULL,
-		  page_text mediumtext NOT NULL,
-		  page_author int(10) unsigned NOT NULL,
-		  page_datestamp int(10) unsigned NOT NULL,
-		  page_rating_flag tinyint(1) unsigned NOT NULL,
-		  page_comment_flag tinyint(1) unsigned NOT NULL,
-		  page_password varchar(50) NOT NULL,
-		  page_class varchar(250) default NULL,
-		  page_ip_restrict text NOT NULL,
-		  page_theme varchar(50) NOT NULL,
-		  PRIMARY KEY  (page_id)
-		) TYPE=MyISAM;");
-		/* end */
-
-		mysql_query("ALTER TABLE ".MPREFIX."page CHANGE page_class page_class VARCHAR( 250 ) NOT NULL");
+		if ($error=='') {
+			$sql->db_Select_gen("
+		  	CREATE TABLE ".MPREFIX."page (
+		  	page_id int(10) unsigned NOT NULL auto_increment,
+		  	page_title varchar(250) NOT NULL,
+		  	page_text mediumtext NOT NULL,
+		  	page_author int(10) unsigned NOT NULL,
+		  	page_datestamp int(10) unsigned NOT NULL,
+		  	page_rating_flag tinyint(1) unsigned NOT NULL,
+		  	page_comment_flag tinyint(1) unsigned NOT NULL,
+		  	page_password varchar(50) NOT NULL,
+		  	page_class varchar(250) default NULL,
+		  	page_ip_restrict text NOT NULL,
+		  	page_theme varchar(50) NOT NULL,
+		  	PRIMARY KEY  (page_id)
+			) TYPE=MyISAM;");
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+			mysql_query("ALTER TABLE ".MPREFIX."page CHANGE page_class page_class VARCHAR( 250 ) NOT NULL");
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+		}
+		/*	end 	*/
 
 
 		// start links update -------------------------------------------------------------------------------------------
-		if ($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."link_category")) {
-			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY;
-			$sql->db_Select_gen("CREATE TABLE ".MPREFIX."links_page_cat (
-			link_category_id int(10) unsigned NOT NULL auto_increment,
-			link_category_name varchar(100) NOT NULL default '',
-			link_category_description varchar(250) NOT NULL default '',
-			link_category_icon varchar(100) NOT NULL default '',
-			PRIMARY KEY  (link_category_id)
-			) TYPE=MyISAM;");
-			$sql->db_Select_gen("CREATE TABLE ".MPREFIX."links_page (
-			link_id int(10) unsigned NOT NULL auto_increment,
-			link_name varchar(100) NOT NULL default '',
-			link_url varchar(200) NOT NULL default '',
-			link_description text NOT NULL,
-			link_button varchar(100) NOT NULL default '',
-			link_category tinyint(3) unsigned NOT NULL default '0',
-			link_order int(10) unsigned NOT NULL default '0',
-			link_refer int(10) unsigned NOT NULL default '0',
-			link_open tinyint(1) unsigned NOT NULL default '0',
-			link_class tinyint(3) unsigned NOT NULL default '0',
-			PRIMARY KEY  (link_id)
-			) TYPE=MyISAM;");
+		if ($error=='') {
+			if ($sql->db_Query("SHOW COLUMNS FROM ".MPREFIX."link_category")) {
+				global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY;
 
-			$new_cat_id = 1;
-			$sql->db_Select("link_category", "*", "link_category_id!=1 ORDER BY link_category_id");
-			while ($row = $sql->db_Fetch()) {
-				$link_cat_id[$row['link_category_id']] = $new_cat_id;
-				if ($row['link_category_icon']) {
-					$link_category_icon = strstr($row['link_category_icon'], "/") ? $row['link_category_icon'] : $IMAGES_DIRECTORY."link_icons/".$row['link_category_icon'];
+				$sql->db_Select_gen("CREATE TABLE ".MPREFIX."links_page_cat (
+				link_category_id int(10) unsigned NOT NULL auto_increment,
+				link_category_name varchar(100) NOT NULL default '',
+				link_category_description varchar(250) NOT NULL default '',
+				link_category_icon varchar(100) NOT NULL default '',
+				PRIMARY KEY  (link_category_id)
+				) TYPE=MyISAM;");
+				if (mysql_error()!='') {
+        	                        $error.=mysql_error();
+                	        }
+				$sql->db_Select_gen("CREATE TABLE ".MPREFIX."links_page (
+				link_id int(10) unsigned NOT NULL auto_increment,
+				link_name varchar(100) NOT NULL default '',
+				link_url varchar(200) NOT NULL default '',
+				link_description text NOT NULL,
+				link_button varchar(100) NOT NULL default '',
+				link_category tinyint(3) unsigned NOT NULL default '0',
+				link_order int(10) unsigned NOT NULL default '0',
+				link_refer int(10) unsigned NOT NULL default '0',
+				link_open tinyint(1) unsigned NOT NULL default '0',
+				link_class tinyint(3) unsigned NOT NULL default '0',
+				PRIMARY KEY  (link_id)
+				) TYPE=MyISAM;");
+	                        if (mysql_error()!='') {
+        	                        $error.=mysql_error();
+                	        }
+				$new_cat_id = 1;
+				$sql->db_Select("link_category", "*", "link_category_id!=1 ORDER BY link_category_id");
+				while ($row = $sql->db_Fetch()) {
+					$link_cat_id[$row['link_category_id']] = $new_cat_id;
+					if ($row['link_category_icon']) {
+						$link_category_icon = strstr($row['link_category_icon'], "/") ? $row['link_category_icon'] : $IMAGES_DIRECTORY."link_icons/".$row['link_category_icon'];
 					} else {
-					$link_category_icon = "";
+						$link_category_icon = "";
+					}
+					$link_cat_export[] = "'0', '".$row['link_category_name']."', '".$row['link_category_description']."', '".$link_category_icon."'";
+					$link_cat_del[] = $row['link_category_id'];
+					$new_cat_id++;
 				}
-				$link_cat_export[] = "'0', '".$row['link_category_name']."', '".$row['link_category_description']."', '".$link_category_icon."'";
-				$link_cat_del[] = $row['link_category_id'];
-				$new_cat_id++;
-			}
 
-			foreach ($link_cat_export as $link_cat_export_commit) {
-				if (!$sql->db_Insert("links_page_cat", $link_cat_export_commit)) {
-					$links_upd_failed = TRUE;
+				foreach ($link_cat_export as $link_cat_export_commit) {
+					if (!$sql->db_Insert("links_page_cat", $link_cat_export_commit)) {
+						$links_upd_failed = TRUE;
+					}
 				}
-			}
 
-			$sql->db_Select("links", "*", "link_category!=1 ORDER BY link_category");
-			while ($row = $sql->db_Fetch()) {
-				if ($row['link_button']) {
-					$link_button = strstr($row['link_button'], "/") ? $row['link_button'] : $IMAGES_DIRECTORY."link_icons/".$row['link_button'];
+				$sql->db_Select("links", "*", "link_category!=1 ORDER BY link_category");
+				while ($row = $sql->db_Fetch()) {
+					if ($row['link_button']) {
+						$link_button = strstr($row['link_button'], "/") ? $row['link_button'] : $IMAGES_DIRECTORY."link_icons/".$row['link_button'];
 					} else {
-					$link_button = "";
+						$link_button = "";
+					}
+					$link_export[] = "'0', '".$row['link_name']."', '".$row['link_url']."', '".$row['link_description']."', '".$link_button."', '".$link_cat_id[$row['link_category']]."', '".$row['link_order']."', '".$row['link_refer']."', '".$row['link_open']."', '".$row['link_class']."'";
+					$link_del[] = $row['link_id'];
 				}
-				$link_export[] = "'0', '".$row['link_name']."', '".$row['link_url']."', '".$row['link_description']."', '".$link_button."', '".$link_cat_id[$row['link_category']]."', '".$row['link_order']."', '".$row['link_refer']."', '".$row['link_open']."', '".$row['link_class']."'";
-				$link_del[] = $row['link_id'];
-			}
 
-			foreach ($link_export as $link_export_commit) {
-				if (!$sql->db_Insert("links_page", $link_export_commit)) {
-					$links_upd_failed = TRUE;
+				foreach ($link_export as $link_export_commit) {
+					if (!$sql->db_Insert("links_page", $link_export_commit)) {
+						$links_upd_failed = TRUE;
+					}
 				}
-			}
 
-			if (!$links_upd_failed) {
-				$sql->db_Select_gen("DROP TABLE ".MPREFIX."link_category");
+				if (!$links_upd_failed) {
+					$sql->db_Select_gen("DROP TABLE ".MPREFIX."link_category");
 
-				foreach ($link_del as $link_del_commit) {
-					$sql->db_Delete("links", "link_id='".$link_del_commit."'");
+					foreach ($link_del as $link_del_commit) {
+						$sql->db_Delete("links", "link_id='".$link_del_commit."'");
+					}
+				} else {
+					$error='Links update failed.';
 				}
-			}
-			$sql->db_Insert("plugin", "0, 'Links Page', '1.0', 'links_page', 1");
-			$sql->db_Update("links", "link_url = '".$PLUGINS_DIRECTORY."links_page/links.php' WHERE link_url = 'links.php'");
+				$sql->db_Insert("plugin", "0, 'Links Page', '1.0', 'links_page', 1");
+				$sql->db_Update("links", "link_url = '".$PLUGINS_DIRECTORY."links_page/links.php' WHERE link_url = 'links.php'");
 
-			$pref['plug_latest'] = $pref['plug_latest'].",links_page";
-			$s_prefs = TRUE;
+				$pref['plug_latest'] = $pref['plug_latest'].",links_page";
+				$s_prefs = TRUE;
+			}
 		}
 		// end links update -------------------------------------------------------------------------------------------
 
 		//  #########  McFly's 0.7 Updates ############
 
 		// parse table obsolete
-		mysql_query('DROP TABLE `'.MPREFIX.'parser`');
-		mysql_query("ALTER TABLE ".MPREFIX."menus ADD menu_path VARCHAR( 100 ) NOT NULL");
-		mysql_query("UPDATE ".MPREFIX."menus SET menu_path = 'custom', menu_name = substring(menu_name,8) WHERE substring(menu_name,1,6) = 'custom'");
-		mysql_query("UPDATE ".MPREFIX."menus SET menu_path = menu_name  WHERE menu_path = ''");
+		if ($error='') {
+			mysql_query('DROP TABLE `'.MPREFIX.'parser`');
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+		}
+		
+		if ($error='') {
+			mysql_query("ALTER TABLE ".MPREFIX."menus ADD menu_path VARCHAR( 100 ) NOT NULL");
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+
+			mysql_query("UPDATE ".MPREFIX."menus SET menu_path = 'custom', menu_name = substring(menu_name,8) WHERE substring(menu_name,1,6) = 'custom'");
+                        if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+
+			mysql_query("UPDATE ".MPREFIX."menus SET menu_path = menu_name  WHERE menu_path = ''");
+			if (mysql_error()!='') {
+				$error.=mysql_error();
+			}
+		}
 
 		// New dblog table for logging db calls (admin log)
-		$sql->db_Select_gen(
-		"CREATE TABLE ".MPREFIX."dblog (
-		dblog_id int(10) unsigned NOT NULL auto_increment,
-		dblog_type varchar(60) NOT NULL default '',
-		dblog_datestamp int(10) unsigned NOT NULL default '0',
-		dblog_user_id int(10) unsigned NOT NULL default '0',
-		dblog_ip varchar(80) NOT NULL default '',
-		dblog_query text NOT NULL,
-		dblog_remarks varchar(255) NOT NULL default '',
-		PRIMARY KEY  (dblog_id)
-		) TYPE=MyISAM;
-		");
+		if ($error=='') {
+			$sql->db_Select_gen(
+			"CREATE TABLE ".MPREFIX."dblog (
+			dblog_id int(10) unsigned NOT NULL auto_increment,
+			dblog_type varchar(60) NOT NULL default '',
+			dblog_datestamp int(10) unsigned NOT NULL default '0',
+			dblog_user_id int(10) unsigned NOT NULL default '0',
+			dblog_ip varchar(80) NOT NULL default '',
+			dblog_query text NOT NULL,
+			dblog_remarks varchar(255) NOT NULL default '',
+			PRIMARY KEY  (dblog_id)
+			) TYPE=MyISAM;
+			");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+		}
 
 		// New generic table for storing any miscellaneous data
-		$sql->db_Select_gen(
-		"CREATE TABLE ".MPREFIX."generic (
-		gen_id int(10) unsigned NOT NULL auto_increment,
-		gen_type varchar(80) NOT NULL default '',
-		gen_datestamp int(10) unsigned NOT NULL default '0',
-		gen_user_id int(10) unsigned NOT NULL default '0',
-		gen_ip varchar(80) NOT NULL default '',
-		gen_intdata int(10) unsigned NOT NULL default '0',
-		gen_chardata text NOT NULL,
-		PRIMARY KEY  (gen_id)
-		) TYPE=MyISAM;
-		");
+		if ($error=='') {
+			$sql->db_Select_gen(
+			"CREATE TABLE ".MPREFIX."generic (
+			gen_id int(10) unsigned NOT NULL auto_increment,
+			gen_type varchar(80) NOT NULL default '',
+			gen_datestamp int(10) unsigned NOT NULL default '0',
+			gen_user_id int(10) unsigned NOT NULL default '0',
+			gen_ip varchar(80) NOT NULL default '',
+			gen_intdata int(10) unsigned NOT NULL default '0',
+			gen_chardata text NOT NULL,
+			PRIMARY KEY  (gen_id)
+			) TYPE=MyISAM;
+			");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+		}
+		
+		if ($error=='') {
+			$sql->db_Select_gen(
+			"CREATE TABLE ".MPREFIX."user_extended (
+			user_extended_id int(10) unsigned NOT NULL default '0',
+			PRIMARY KEY  (user_extended_id)
+			) TYPE=MyISAM;
+			");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
 
-		$sql->db_Select_gen(
-		"CREATE TABLE ".MPREFIX."generic (
-		gen_id int(10) unsigned NOT NULL auto_increment,
-		gen_type varchar(80) NOT NULL default '',
-		gen_datestamp int(10) unsigned NOT NULL default '0',
-		gen_user_id int(10) unsigned NOT NULL default '0',
-		gen_ip varchar(80) NOT NULL default '',
-		gen_intdata int(10) unsigned NOT NULL default '0',
-		gen_chardata text NOT NULL,
-		PRIMARY KEY  (gen_id)
-		) TYPE=MyISAM;
-		");
+			$sql->db_Select_gen(
+			"CREATE TABLE ".MPREFIX."user_extended_struct (
+			user_extended_struct_id int(10) unsigned NOT NULL auto_increment,
+			user_extended_struct_name varchar(255) NOT NULL default '',
+			user_extended_struct_text varchar(255) NOT NULL default '',
+			user_extended_struct_type tinyint(3) unsigned NOT NULL default '0',
+			user_extended_struct_parms varchar(255) NOT NULL default '',
+			user_extended_struct_values text NOT NULL,
+			user_extended_struct_default varchar(255) NOT NULL default '',
+			user_extended_struct_read tinyint(3) unsigned NOT NULL default '0',
+			user_extended_struct_write tinyint(3) unsigned NOT NULL default '0',
+			user_extended_struct_required tinyint(3) unsigned NOT NULL default '0',
+			user_extended_struct_signup tinyint(3) unsigned NOT NULL default '0',
+			PRIMARY KEY  (user_extended_struct_id)
+			) TYPE=MyISAM;
+			");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
 
-		$sql->db_Select_gen(
-		"CREATE TABLE ".MPREFIX."user_extended (
-		user_extended_id int(10) unsigned NOT NULL default '0',
-		PRIMARY KEY  (user_extended_id)
-		) TYPE=MyISAM;
-		");
+			$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_applicable TINYINT( 3 ) UNSIGNED NOT NULL");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
 
-		$sql->db_Select_gen(
-		"CREATE TABLE ".MPREFIX."user_extended_struct (
-		user_extended_struct_id int(10) unsigned NOT NULL auto_increment,
-		user_extended_struct_name varchar(255) NOT NULL default '',
-		user_extended_struct_text varchar(255) NOT NULL default '',
-		user_extended_struct_type tinyint(3) unsigned NOT NULL default '0',
-		user_extended_struct_parms varchar(255) NOT NULL default '',
-		user_extended_struct_values text NOT NULL,
-		user_extended_struct_default varchar(255) NOT NULL default '',
-		user_extended_struct_read tinyint(3) unsigned NOT NULL default '0',
-		user_extended_struct_write tinyint(3) unsigned NOT NULL default '0',
-		user_extended_struct_required tinyint(3) unsigned NOT NULL default '0',
-		user_extended_struct_signup tinyint(3) unsigned NOT NULL default '0',
-		PRIMARY KEY  (user_extended_struct_id)
-		) TYPE=MyISAM;
-		");
+			$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_order INT( 10 ) UNSIGNED NOT NULL");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
 
-		$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_applicable TINYINT( 3 ) UNSIGNED NOT NULL");
-		$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_order INT( 10 ) UNSIGNED NOT NULL");
-		$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_icon VARCHAR( 255 ) NOT NULL");
+			$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_icon VARCHAR( 255 ) NOT NULL");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
 
-		//Begin Extended user field conversion
-		require_once(e_HANDLER."user_extended_class.php");
-		$ue = new e107_user_extended;
 
-		if($sql->db_Select("core", " e107_value", " e107_name='user_entended'", 'default'))
-		{
-			$row = $sql->db_Fetch();
+			//Begin Extended user field conversion
+			require_once(e_HANDLER."user_extended_class.php");
+			$ue = new e107_user_extended;
 
-			$user_extended = unserialize($row['e107_value']);
-			$new_types = array('text' => 1, 'radio' => 2, 'dropdown' => 3, 'table' => 4);
-
-			foreach($user_extended as $key => $val)
+			if($sql->db_Select("core", " e107_value", " e107_name='user_entended'", 'default'))
 			{
-				unset($new_field);
-				$parms = explode("|", $val);
-				$ext_name['ue_'.$key] = 'user_'.$parms[0];
-				$new_field['name'] = preg_replace("#\W#","",$parms[0]);
-				$new_field['text'] = $parms[0];
-				$new_field['type'] = $new_types[$parms[1]];
-				$new_field['values'] = $parms[2];
-				$new_field['default'] = $parms[3];
-				$new_field['applicable'] = $parms[4];
-				$new_field['read'] = $parms[5];
-				$new_field['write'] = e_UC_MEMBER;
-				$new_field['signup'] = $pref['signup_ext'.$key];
-				$new_field['parms'] = "";
-				$new_field['required'] = 0;
-				unset($pref['signup_ext'.$key]);
-				unset($pref['signup_ext_req'.$key]);
-				$ue->user_extended_add($new_field);
-			}
-			$s_prefs = TRUE;
-			if($sql->db_Select('user','user_id, user_prefs',"1 ORDER BY user_id"))
-			{
-				$sql2 = new db;
-				while($row = $sql->db_Fetch())
+				$row = $sql->db_Fetch();
+
+				$user_extended = unserialize($row['e107_value']);
+				$new_types = array('text' => 1, 'radio' => 2, 'dropdown' => 3, 'table' => 4);
+
+				foreach($user_extended as $key => $val)
 				{
-					set_time_limit(30);
-					$user_pref = unserialize($row['user_prefs']);
-					$new_values = "";
-					foreach($user_pref as $key => $val)
+					unset($new_field);
+					$parms = explode("|", $val);
+					$ext_name['ue_'.$key] = 'user_'.$parms[0];
+					$new_field['name'] = preg_replace("#\W#","",$parms[0]);
+					$new_field['text'] = $parms[0];
+					$new_field['type'] = $new_types[$parms[1]];
+					$new_field['values'] = $parms[2];
+					$new_field['default'] = $parms[3];
+					$new_field['applicable'] = $parms[4];
+					$new_field['read'] = $parms[5];
+					$new_field['write'] = e_UC_MEMBER;
+					$new_field['signup'] = $pref['signup_ext'.$key];
+					$new_field['parms'] = "";
+					$new_field['required'] = 0;
+					unset($pref['signup_ext'.$key]);
+					unset($pref['signup_ext_req'.$key]);
+					$ue->user_extended_add($new_field);
+				}
+				$s_prefs = TRUE;
+				if($sql->db_Select('user','user_id, user_prefs',"1 ORDER BY user_id"))
+				{
+					$sql2 = new db;
+					while($row = $sql->db_Fetch())
 					{
-						if(array_key_exists($key, $ext_name))
+						set_time_limit(30);
+						$user_pref = unserialize($row['user_prefs']);
+						$new_values = "";
+						foreach($user_pref as $key => $val)
 						{
-							unset($user_pref[$key]);
-							if($val)
+							if(array_key_exists($key, $ext_name))
 							{
-								if($new_values)
+								unset($user_pref[$key]);
+								if($val)
 								{
-									$new_values .= " ,";
+									if($new_values)
+									{
+										$new_values .= " ,";
+									}
+									$new_values .= $ext_name[$key]."='".$val."'";
 								}
-								$new_values .= $ext_name[$key]."='".$val."'";
 							}
 						}
-					}
-					foreach ($user_pref as $key => $prefvalue) {
-						$user_pref[$key] = $tp->toDB($prefvalue);
-					}
-					$tmp=addslashes(serialize($user_pref));
-					$sql2->db_Update("user", "user_prefs='$tmp' WHERE user_id='{$row['user_id']}'");
-					if($new_values)
-					{
-						$sql2->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$row['user_id']}')");
-						$sql2->db_Update('user_extended', $new_values." WHERE user_extended_id = '{$row['user_id']}'");
+						foreach ($user_pref as $key => $prefvalue) {
+							$user_pref[$key] = $tp->toDB($prefvalue);
+						}
+						$tmp=addslashes(serialize($user_pref));
+						$sql2->db_Update("user", "user_prefs='$tmp' WHERE user_id='{$row['user_id']}'");
+						if($new_values)
+						{
+							$sql2->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$row['user_id']}')");
+							$sql2->db_Update('user_extended', $new_values." WHERE user_extended_id = '{$row['user_id']}'");
+						}
 					}
 				}
 			}
-		}
-		$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
+			$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
 
-		if(!array_key_exists('ue_upgrade', $pref))
-		{
-			$pref['ue_upgrade'] = 1;
-			$s_prefs = TRUE;
+			if(!array_key_exists('ue_upgrade', $pref))
+			{
+				$pref['ue_upgrade'] = 1;
+				$s_prefs = TRUE;
+			}
 		}
 		//End Extended user field conversion
 
 
 		// Update user_class field to use #,#,# instead of #.#.#. notation
-		if ($sql->db_Select('user', 'user_id, user_class')) {
-			$sql2 = new db;
-			while ($row = $sql->db_Fetch()) {
-				$carray = explode('.', $row['user_class']);
-				$carray = array_unique(array_diff($carray, array('')));
-				if (count($carray) > 1) {
-					$new_userclass = implode(',', $carray);
-					} else {
-					$new_userclass = $carray[0];
+		if ($error='') {
+			if ($sql->db_Select('user', 'user_id, user_class')) {
+				$sql2 = new db;
+				while ($row = $sql->db_Fetch()) {
+					$carray = explode('.', $row['user_class']);
+					$carray = array_unique(array_diff($carray, array('')));
+					if (count($carray) > 1) {
+						$new_userclass = implode(',', $carray);
+						} else {
+						$new_userclass = $carray[0];
+					}
+					$sql2->db_Update('user', "user_class = '{$new_userclass}' WHERE user_id={$row['user_id']}");
+					if (mysql_error()!='') {
+		                                $error.=mysql_error();
+                		        }
 				}
-				$sql2->db_Update('user', "user_class = '{$new_userclass}' WHERE user_id={$row['user_id']}");
 			}
 		}
 
+		if ($error='') {
+			mysql_query("ALTER TABLE ".MPREFIX."generic` CHANGE gen_chardata gen_chardata TEXT NOT NULL");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+		}
 
-		mysql_query("ALTER TABLE ".MPREFIX."generic` CHANGE gen_chardata gen_chardata TEXT NOT NULL");
-		mysql_query("ALTER TABLE ".MPREFIX."banner CHANGE banner_active banner_active TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'");
-		mysql_query('DROP TABLE `'.MPREFIX.'cache`'); // db cache is no longer an available option..
+		if ($error=='') {
+			mysql_query("ALTER TABLE ".MPREFIX."banner CHANGE banner_active banner_active TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+		}
+
+		if ($error=='') {
+			mysql_query('DROP TABLE `'.MPREFIX.'cache`'); // db cache is no longer an available option..
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+		}
 	//	$sql->db_Update("banner", "banner_active='255' WHERE banner_active = '0' ");
 	//	$sql->db_Update("banner", "banner_active='0' WHERE banner_active = '1' ");
 		$pref['wm_enclose'] = 1;
@@ -472,101 +639,142 @@ function update_61x_to_700($type='') {
 		Changes by McFly 2/12/2005
 		Moving forum rules from wmessage table to generic table
 		*/
-
-		if($sql->db_Select("wmessage"))
-		{
-			while($row = $sql->db_Fetch())
+		if ($error=='') {
+			if($sql->db_Select("wmessage"))
 			{
-				$wmList[] = $row;
-			}
-			foreach($wmList as $wm)
-			{
-				$gen_type='wmessage';
-				if($wm['wm_id'] == '4') {$gen_type = 'forum_rules_guest'; $wm_class = $wm['wm_active'] ? e_UC_GUEST : '255'; }
-				if($wm['wm_id'] == '5') {$gen_type = 'forum_rules_member'; $wm_class = $wm['wm_active'] ? e_UC_MEMBER : '255'; }
-				if($wm['wm_id'] == '6') {$gen_type = 'forum_rules_admin'; $wm_class = $wm['wm_active'] ? e_UC_ADMIN : '255'; }
-				$fieldlist = "";
-				if($gen_type != "wmessage")
+				while($row = $sql->db_Fetch())
 				{
-					$exists = $sql->db_Count('generic','(*)',"WHERE gen_type = '{$gen_type}'");
-					if(!$exists)
+					$wmList[] = $row;
+				}
+				foreach($wmList as $wm)
+				{
+					$gen_type='wmessage';
+					if($wm['wm_id'] == '4') {$gen_type = 'forum_rules_guest'; $wm_class = $wm['wm_active'] ? e_UC_GUEST : '255'; }
+					if($wm['wm_id'] == '5') {$gen_type = 'forum_rules_member'; $wm_class = $wm['wm_active'] ? e_UC_MEMBER : '255'; }
+					if($wm['wm_id'] == '6') {$gen_type = 'forum_rules_admin'; $wm_class = $wm['wm_active'] ? e_UC_ADMIN : '255'; }
+					$fieldlist = "";
+					if($gen_type != "wmessage")
 					{
-						$fieldlist = "0,'$gen_type','".time()."','".USERID."','',{$wm_class},'{$wm['wm_text']}'";
+						$exists = $sql->db_Count('generic','(*)',"WHERE gen_type = '{$gen_type}'");
+						if(!$exists)
+						{
+							$fieldlist = "0,'$gen_type','".time()."','".USERID."','',{$wm_class},'{$wm['wm_text']}'";
+						}
+					}
+					else
+					{
+						if($wm['wm_id'] == '1') { $wm_class = $wm['wm_active'] ? e_UC_GUEST : '255'; }
+						if($wm['wm_id'] == '2') { $wm_class = $wm['wm_active'] ? e_UC_MEMBER : '255'; }
+						if($wm['wm_id'] == '3') { $wm_class = $wm['wm_active'] ? e_UC_ADMIN : '255'; }
+						$fieldlist = "0,'wmessage','".time()."','".USERID."','',{$wm_class},'{$wm['wm_text']}'";
+					}
+					if($fieldlist)
+					{
+						$sql->db_Insert('generic',$fieldlist);
 					}
 				}
-				else
-				{
-					if($wm['wm_id'] == '1') { $wm_class = $wm['wm_active'] ? e_UC_GUEST : '255'; }
-					if($wm['wm_id'] == '2') { $wm_class = $wm['wm_active'] ? e_UC_MEMBER : '255'; }
-					if($wm['wm_id'] == '3') { $wm_class = $wm['wm_active'] ? e_UC_ADMIN : '255'; }
-					$fieldlist = "0,'wmessage','".time()."','".USERID."','',{$wm_class},'{$wm['wm_text']}'";
-				}
-				if($fieldlist)
-				{
-					$sql->db_Insert('generic',$fieldlist);
-				}
 			}
+			mysql_query('DROP TABLE '.MPREFIX.'wmessage');  // table wmessage is no longer needed.
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
 		}
-		mysql_query('DROP TABLE '.MPREFIX.'wmessage');  // table wmessage is no longer needed.
 
 		// ############# END McFly's Updates  ##############
 
 		// start chatbox update -------------------------------------------------------------------------------------------
-		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
-			$sql->db_Insert("plugin", "0, 'Chatbox', '1.0', 'chatbox_menu', 1");
-			$pref['plug_status'] = $pref['plug_status'].",chatbox_menu";
-			$s_prefs = TRUE;
+		if ($error=='') {
+			if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
+				$sql->db_Insert("plugin", "0, 'Chatbox', '1.0', 'chatbox_menu', 1");
+				if (mysql_error()!='') {
+                                	$error.=mysql_error();
+		                }
+				$pref['plug_status'] = $pref['plug_status'].",chatbox_menu";
+				$s_prefs = TRUE;
+			}
 		}
 		// end chatbox update -------------------------------------------------------------------------------------------
 
 		// Cam's new PRESET Table. -------------------------------------------------------------------------------------------
-		$sql->db_Select_gen(
-		"CREATE TABLE ".MPREFIX."preset (
-		preset_id int(10) unsigned NOT NULL auto_increment,
-		preset_name varchar(80) NOT NULL default '',
-		preset_field varchar(80) NOT NULL default '',
-		preset_value varchar(255) NOT NULL default '',
-		PRIMARY KEY  (preset_id)
-		) TYPE=MyISAM;
-		");
+		if ($error=='') {
+			$sql->db_Select_gen(
+			"CREATE TABLE ".MPREFIX."preset (
+			preset_id int(10) unsigned NOT NULL auto_increment,
+			preset_name varchar(80) NOT NULL default '',
+			preset_field varchar(80) NOT NULL default '',
+			preset_value varchar(255) NOT NULL default '',
+			PRIMARY KEY  (preset_id)
+			) TYPE=MyISAM;
+			");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+		}
 
 		// News Updates -----------------
 
+		if ($error=='') {
+			$field1 = $sql->db_Field("news",13);
+			$field2 = $sql->db_Field("news",14);
+			$field3 = $sql->db_Field("news",15);
 
-		$field1 = $sql->db_Field("news",13);
-        $field2 = $sql->db_Field("news",14);
-		$field3 = $sql->db_Field("news",15);
-
-		if($field1 != "news_summary" && $field1 != "news_thumbnail" && $field3 != "news_sticky"){
-			mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_summary` TEXT DEFAULT NULL;");
-			mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_thumbnail` TEXT DEFAULT NULL;");
-			mysql_query("ALTER TABLE ".MPREFIX."news ADD news_sticky TINYINT ( 3 ) UNSIGNED NOT NULL");
+			if($field1 != "news_summary" && $field1 != "news_thumbnail" && $field3 != "news_sticky"){
+				mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_summary` TEXT DEFAULT NULL;");
+				if (mysql_error()!='') {
+                                	$error.=mysql_error();
+                        	}
+				mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_thumbnail` TEXT DEFAULT NULL;");
+				if (mysql_error()!='') {
+                                	$error.=mysql_error();
+                        	}
+				mysql_query("ALTER TABLE ".MPREFIX."news ADD news_sticky TINYINT ( 3 ) UNSIGNED NOT NULL");
+				if (mysql_error()!='') {
+                                	$error.=mysql_error();
+                        	}
+			}
 		}
 
 		// Downloads updates - Added March 1, 2005 by McFly
-
-		$sql->db_Select_gen(
-		"CREATE TABLE ".MPREFIX."download_requests (
-		download_request_id int(10) unsigned NOT NULL auto_increment,
-		download_request_userid int(10) unsigned NOT NULL default '0',
-		download_request_ip varchar(30) NOT NULL default '',
-		download_request_download_id int(10) unsigned NOT NULL default '0',
-		download_request_datestamp int(10) unsigned NOT NULL default '0',
-		PRIMARY KEY  (download_request_id)
-		) TYPE=MyISAM;
-		");
-
+		
+		if ($error=='') {
+			$sql->db_Select_gen(
+			"CREATE TABLE ".MPREFIX."download_requests (
+			download_request_id int(10) unsigned NOT NULL auto_increment,
+			download_request_userid int(10) unsigned NOT NULL default '0',
+			download_request_ip varchar(30) NOT NULL default '',
+			download_request_download_id int(10) unsigned NOT NULL default '0',
+			download_request_datestamp int(10) unsigned NOT NULL default '0',
+			PRIMARY KEY  (download_request_id)
+			) TYPE=MyISAM;
+			");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+		}
 
 
 		// Missing Forum upgrade stuff by Cam.
-		global $PLUGINS_DIRECTORY;
-		if($sql -> db_Select("links", "*", "link_url = 'forum.php'")){
-			$sql -> db_Insert("plugin", "0, 'Forum', '1.1', 'forum', '1' ");
-			$sql -> db_Update("links", "link_url='".$PLUGINS_DIRECTORY."forum/forum.php' WHERE link_url='forum.php' ");
+		if ($error=='') {
+			global $PLUGINS_DIRECTORY;
+			if($sql -> db_Select("links", "*", "link_url = 'forum.php'")){
+				$sql -> db_Insert("plugin", "0, 'Forum', '1.1', 'forum', '1' ");
+				if (mysql_error()!='') {
+                                	$error.=mysql_error();
+		                }
+				$sql -> db_Update("links", "link_url='".$PLUGINS_DIRECTORY."forum/forum.php' WHERE link_url='forum.php' ");
+				if (mysql_error()!='') {
+                                	$error.=mysql_error();
+                        	}
+			}
 		}
 
-		if($sql -> db_Select("menus", "*", "menu_name = 'newforumposts_menu' and menu_path='newforumposts_menu' ")){
-			$sql -> db_Update("menus", "menu_path='forum' WHERE menu_name = 'newforumposts_menu' ");
+		if ($error=='') {
+			if($sql -> db_Select("menus", "*", "menu_name = 'newforumposts_menu' and menu_path='newforumposts_menu' ")){
+				$sql -> db_Update("menus", "menu_path='forum' WHERE menu_name = 'newforumposts_menu' ");
+				if (mysql_error()!='') {
+                                	$error.=mysql_error();
+                        	}
+			}
 		}
 
 		if($pref['cb_linkreplace'] && !$pref['link_replace']){
@@ -578,68 +786,118 @@ function update_61x_to_700($type='') {
 		}
 
 		// db verify fixes
-		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_signup_show` , DROP `user_extended_struct_signup_required` ;");
-		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_signup` TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_extended_struct_required` ;");
-		mysql_query("ALTER TABLE `".MPREFIX."download_category` CHANGE `download_category_class` `download_category_class` TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL");
-		mysql_query("ALTER TABLE `".MPREFIX."generic` CHANGE `gen_chardata` `gen_chardata` TEXT NOT NULL");
+		if ($error=='') {
+			// Are these needed? To facilitate for users that upgraded to the cvs during development, or? 
+			mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_signup_show` , DROP `user_extended_struct_signup_required` ;");
+			if (mysql_error()!='') {
+//                                $error.=mysql_error();
+                        }
+			mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_signup` TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_extended_struct_required` ;");
+			if (mysql_error()!='') {
+//                                $error.=mysql_error();
+                        }
+			mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_icon` ;");
+			if (mysql_error()!='') {
+//                                $error.=mysql_error();
+                        }
+	                mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_parent` INT( 10 ) UNSIGNED NOT NULL ;");
+			if (mysql_error()!='') {
+//                                $error.=mysql_error();
+                        }
+        	        mysql_query("ALTER TABLE `".MPREFIX."user_extended` ADD `user_hidden_fields` TEXT NOT NULL AFTER `user_extended_id`");
+			if (mysql_error()!='') {
+//                                $error.=mysql_error();
+                        }
+		}
 
-		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_icon` ;");
-		mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_parent` INT( 10 ) UNSIGNED NOT NULL ;");
-		mysql_query("ALTER TABLE `".MPREFIX."user_extended` ADD `user_hidden_fields` TEXT NOT NULL AFTER `user_extended_id`");
+		if ($error=='') {
+			mysql_query("ALTER TABLE `".MPREFIX."download_category` CHANGE `download_category_class` `download_category_class` TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+		}
 
-		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_class` `news_class` VARCHAR( 255 ) DEFAULT '0' NOT NULL");
-		// news_attach removal / field structure changes / 'thumb:' prefix removal
-		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_attach` `news_thumbnail` TEXT NOT NULL;");
-		mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_summary` `news_summary` TEXT NOT NULL;");
-		if ($sql -> db_Select("news", "news_id, news_thumbnail", "news_thumbnail LIKE '%thumb:%'")) {
-			while ($row = $sql -> db_Fetch()) {
-				$thumbnail = trim(str_replace('thumb:', '', $row['news_thumbnail']));
-				$sql2 -> db_Update("news", "news_thumbnail='".$thumbnail."' WHERE news_id='".$row['news_id']."'");
+		if ($error=='') {
+			mysql_query("ALTER TABLE `".MPREFIX."generic` CHANGE `gen_chardata` `gen_chardata` TEXT NOT NULL");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+		}
+
+		if ($error=='') {
+			mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_class` `news_class` VARCHAR( 255 ) DEFAULT '0' NOT NULL");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+			// news_attach removal / field structure changes / 'thumb:' prefix removal
+			mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_attach` `news_thumbnail` TEXT NOT NULL;");
+			if (mysql_error()!='') {
+//                                $error.=mysql_error();
+                        }
+			mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_summary` `news_summary` TEXT NOT NULL;");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+			if ($sql -> db_Select("news", "news_id, news_thumbnail", "news_thumbnail LIKE '%thumb:%'")) {
+				while ($row = $sql -> db_Fetch()) {
+					$thumbnail = trim(str_replace('thumb:', '', $row['news_thumbnail']));
+					$sql2 -> db_Update("news", "news_thumbnail='".$thumbnail."' WHERE news_id='".$row['news_id']."'");
+					if (mysql_error()!='') {
+                                		$error.=mysql_error();
+                        		}
+				}
 			}
 		}
 
+		if ($error=='') {
+			// start poll update -------------------------------------------------------------------------------------------
+			if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='poll'")) {
+				$sql->db_Insert("plugin", "0, 'Poll', '2.0', 'poll', 1");
+				$s_prefs = TRUE;
+			}
+			// end poll update -------------------------------------------------------------------------------------------
 
-		// start poll update -------------------------------------------------------------------------------------------
-		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='poll'")) {
-			$sql->db_Insert("plugin", "0, 'Poll', '2.0', 'poll', 1");
-			$s_prefs = TRUE;
+			// start newsfeed update -------------------------------------------------------------------------------------------
+			if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='newsfeed'")) {
+				$sql->db_Insert("plugin", "0, 'Newsfeeds', '2.0', 'newsfeed', 1");
+				$s_prefs = TRUE;
+			}
+			// end newsfeed update -------------------------------------------------------------------------------------------
+
+			// start stats update -------------------------------------------------------------------------------------------
+			if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='log'")) {
+				$sql->db_Insert("plugin", "0, 'Statistic Logging', '2.0', 'log', 1");
+				$s_prefs = TRUE;
+			}
+			// end stats update -------------------------------------------------------------------------------------------
+
+			// start content update -------------------------------------------------------------------------------------------
+			if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='content'")) {
+				$sql->db_Insert("plugin", "0, 'Content Management', '1.0', 'content', 1");
+				$s_prefs = TRUE;
+			}
+			// end content update -------------------------------------------------------------------------------------------
+
+			// start list_new update -------------------------------------------------------------------------------------------
+			if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='list_new'")) {
+				$sql->db_Insert("plugin", "0, 'List', '1.0', 'list_new', 1");
+				$s_prefs = TRUE;
+			}
+			// end list_new update -------------------------------------------------------------------------------------------
 		}
-		// end poll update -------------------------------------------------------------------------------------------
-
-		// start newsfeed update -------------------------------------------------------------------------------------------
-		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='newsfeed'")) {
-			$sql->db_Insert("plugin", "0, 'Newsfeeds', '2.0', 'newsfeed', 1");
-			$s_prefs = TRUE;
-		}
-		// end newsfeed update -------------------------------------------------------------------------------------------
-
-		// start stats update -------------------------------------------------------------------------------------------
-		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='log'")) {
-			$sql->db_Insert("plugin", "0, 'Statistic Logging', '2.0', 'log', 1");
-			$s_prefs = TRUE;
-		}
-		// end stats update -------------------------------------------------------------------------------------------
-
-		// start content update -------------------------------------------------------------------------------------------
-		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='content'")) {
-			$sql->db_Insert("plugin", "0, 'Content Management', '1.0', 'content', 1");
-			$s_prefs = TRUE;
-		}
-		// end content update -------------------------------------------------------------------------------------------
-
-		// start list_new update -------------------------------------------------------------------------------------------
-		if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='list_new'")) {
-			$sql->db_Insert("plugin", "0, 'List', '1.0', 'list_new', 1");
-			$s_prefs = TRUE;
-		}
-		// end list_new update -------------------------------------------------------------------------------------------
-
-
+		
 		// Truncate logstats table if log_id = pageTotal not found
 		/* log update - previous log entries are not compatible with later versions, sorry but we have to clear the table :\ */
-		if(!$sql->db_Select("logstats","log_id","log_id = 'pageTotal'"))
-		{
-			mysql_query("TRUNCATE TABLE `".MPREFIX."logstats");
+		if ($error=='') {
+			if (in_array(MPREFIX.'logstats',$tablenames)) {
+				if(!$sql->db_Select("logstats","log_id","log_id = 'pageTotal'"))
+				{
+					mysql_query("TRUNCATE TABLE `".MPREFIX."logstats");
+					if (mysql_error()!='') {
+ 	                        	       $error.=mysql_error();
+	        	                }
+				}
+			}
 		}
 		// -----------------------------------------------------
 
@@ -720,123 +978,155 @@ function update_61x_to_700($type='') {
 		}
 
 		// New Downloads visibility field.
-
-		if($sql->db_Field("download",18) != "download_visible"){
-			mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_visible` varchar(255) NOT NULL default '0' ;");
-			mysql_query("UPDATE `".MPREFIX."download` SET download_visible = download_class");
-			mysql_query("ALTER TABLE `".MPREFIX."download` CHANGE `download_class` `download_class` varchar(255) NOT NULL default '0'");
-
-
+		if ($error=='') {
+			if($sql->db_Field("download",18) != "download_visible"){
+				mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_visible` varchar(255) NOT NULL default '0' ;");
+				if (mysql_error()!='') {
+                                	$error.=mysql_error();
+                        	}
+				mysql_query("UPDATE `".MPREFIX."download` SET download_visible = download_class");
+				if (mysql_error()!='') {
+					$error.=mysql_error();
+                        	}
+				mysql_query("ALTER TABLE `".MPREFIX."download` CHANGE `download_class` `download_class` varchar(255) NOT NULL default '0'");
+				if (mysql_error()!='') {
+ 	                               $error.=mysql_error();
+        	                }
+			}
+			mysql_query("ALTER TABLE `".MPREFIX."download_category` CHANGE `download_category_class` `download_category_class` varchar(255) NOT NULL default '0'");
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
 		}
-
-		mysql_query("ALTER TABLE `".MPREFIX."download_category` CHANGE `download_category_class` `download_category_class` varchar(255) NOT NULL default '0'");
-
 
 		// Links Update for using Link_Parent. .
-
-		if($sql->db_Field("links",7) != "link_parent"){
-			mysql_query("ALTER TABLE `".MPREFIX."links` CHANGE `link_refer` `link_parent` INT( 10 ) UNSIGNED DEFAULT '0' NOT NULL");
-			$sql -> db_Select("links", "link_id,link_name", "link_name NOT LIKE 'submenu.%' ORDER BY link_name");
-			while($row = $sql-> db_Fetch()){
-				$name = $row['link_name'];
-				$parent[$name] = $row['link_id'];
-			}
-        	if(!is_object($sql2)){
-        		$sql2 = new db;
-			}
-			$sql -> db_Select("links", "link_id,link_name", "link_name LIKE 'submenu.%' ORDER BY link_name");
-			while($row = $sql-> db_Fetch()){
-				$tmp = explode(".",$row['link_name']);
-            	$nm = $tmp[1];
-				$id = $row['link_id'];
-		   		$sql2 -> db_Update("links", "link_parent='".$parent[$nm]."' WHERE link_id ='$id' ");
-			}
-        }
+		if ($error=='') {
+			if($sql->db_Field("links",7) != "link_parent"){
+				mysql_query("ALTER TABLE `".MPREFIX."links` CHANGE `link_refer` `link_parent` INT( 10 ) UNSIGNED DEFAULT '0' NOT NULL");
+				if (mysql_error()!='') {
+	                                $error.=mysql_error();
+        	                }
+				$sql -> db_Select("links", "link_id,link_name", "link_name NOT LIKE 'submenu.%' ORDER BY link_name");
+				while($row = $sql-> db_Fetch()){
+					$name = $row['link_name'];
+					$parent[$name] = $row['link_id'];
+				}
+        			if(!is_object($sql2)){
+        				$sql2 = new db;
+				}
+				$sql -> db_Select("links", "link_id,link_name", "link_name LIKE 'submenu.%' ORDER BY link_name");
+				while($row = $sql-> db_Fetch()){
+					$tmp = explode(".",$row['link_name']);
+            				$nm = $tmp[1];
+					$id = $row['link_id'];
+			   		$sql2 -> db_Update("links", "link_parent='".$parent[$nm]."' WHERE link_id ='$id' ");
+					if (mysql_error()!='') {
+                                		$error.=mysql_error();
+                        		}
+				}
+        		}
+		}
 
 		//20050626 : update links_page_cat and links_page
-		$field1 = $sql->db_Field("links_page_cat",4);
-		$field2 = $sql->db_Field("links_page_cat",5);
-		$field3 = $sql->db_Field("links_page_cat",6);
-
-		if($field1 != "link_category_order" && $field2 != "link_category_class" && $field3 != "link_category_datestamp"){
-			mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_order VARCHAR ( 100 ) NOT NULL DEFAULT '0';");
-			mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_class VARCHAR ( 100 ) NOT NULL DEFAULT '0';");
-			mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_datestamp INT ( 10 ) UNSIGNED NOT NULL DEFAULT '0';");
-		}
-		if($sql->db_Field("links_page",10) != "link_datestamp"){
-			mysql_query("ALTER TABLE ".MPREFIX."links_page ADD link_datestamp INT ( 10 ) UNSIGNED NOT NULL DEFAULT '0';");
+		if ($error=='') {
+			$field1 = $sql->db_Field("links_page_cat",4);
+			$field2 = $sql->db_Field("links_page_cat",5);
+			$field3 = $sql->db_Field("links_page_cat",6);
+	
+			if($field1 != "link_category_order" && $field2 != "link_category_class" && $field3 != "link_category_datestamp"){
+				mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_order VARCHAR ( 100 ) NOT NULL DEFAULT '0';");
+				if (mysql_error()!='') {
+	                                $error.=mysql_error();
+        	                }
+				mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_class VARCHAR ( 100 ) NOT NULL DEFAULT '0';");
+				if (mysql_error()!='') {
+	                                $error.=mysql_error();
+        	                }
+				mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_datestamp INT ( 10 ) UNSIGNED NOT NULL DEFAULT '0';");
+				if (mysql_error()!='') {
+	                                $error.=mysql_error();
+        	                }
+			}
+			if($sql->db_Field("links_page",10) != "link_datestamp"){
+				mysql_query("ALTER TABLE ".MPREFIX."links_page ADD link_datestamp INT ( 10 ) UNSIGNED NOT NULL DEFAULT '0';");
+				if (mysql_error()!='') {
+                                	$error.=mysql_error();
+	                        }
+			}
 		}
 
 		// Search Update
-		$search_prefs = $sysprefs -> getArray('search_prefs');
-		if ((!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) || !isset($pref['search_highlight'])) {
-			$serial_prefs = "a:11:{s:11:\"user_select\";s:1:\"1\";s:9:\"time_secs\";s:2:\"60\";s:13:\"time_restrict\";s:1:\"0\";s:8:\"selector\";i:2;s:9:\"relevance\";i:0;s:13:\"plug_handlers\";N;s:10:\"mysql_sort\";i:0;s:11:\"multisearch\";s:1:\"1\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}}";
-			$search_prefs = unserialize(stripslashes($serial_prefs));
-			$handle = opendir(e_PLUGIN);
-			while (false !== ($file = readdir($handle))) {
-				if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
-					if ($sql -> db_Select("plugin", "plugin_path", "plugin_path='".$file."' AND plugin_installflag='1'") || $file == 'content' || $file == 'forum' || $file == 'links_page' || $file == 'chatbox_menu') {
-						$plugin_handle = opendir(e_PLUGIN.$file."/");
-						while (false !== ($file2 = readdir($plugin_handle))) {
-							if ($file2 == "e_search.php") {
-								$search_prefs['plug_handlers'][$file] = array('class' => 0, 'pre_title' => 1, 'pre_title_alt' => '', 'chars' => 150, 'results' => 10);
-							}
-							if ($file2 == "search" && is_readable(e_PLUGIN.$file.'/search/search_comments.php')) {
-								require_once(e_PLUGIN.$file.'/search/search_comments.php');
-								$search_prefs['comments_handlers'][$file] = array('id' => $comments_type_id, 'class' => '0', 'dir' => $file);
-								unset($comments_type_id);
+		if ($error=='') {
+			$search_prefs = $sysprefs -> getArray('search_prefs');
+			if ((!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) || !isset($pref['search_highlight'])) {
+				$serial_prefs = "a:11:{s:11:\"user_select\";s:1:\"1\";s:9:\"time_secs\";s:2:\"60\";s:13:\"time_restrict\";s:1:\"0\";s:8:\"selector\";i:2;s:9:\"relevance\";i:0;s:13:\"plug_handlers\";N;s:10:\"mysql_sort\";i:0;s:11:\"multisearch\";s:1:\"1\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}}";
+				$search_prefs = unserialize(stripslashes($serial_prefs));
+				$handle = opendir(e_PLUGIN);
+				while (false !== ($file = readdir($handle))) {
+					if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
+						if ($sql -> db_Select("plugin", "plugin_path", "plugin_path='".$file."' AND plugin_installflag='1'") || $file == 'content' || $file == 'forum' || $file == 'links_page' || $file == 'chatbox_menu') {
+							$plugin_handle = opendir(e_PLUGIN.$file."/");
+							while (false !== ($file2 = readdir($plugin_handle))) {
+								if ($file2 == "e_search.php") {
+									$search_prefs['plug_handlers'][$file] = array('class' => 0, 'pre_title' => 1, 'pre_title_alt' => '', 'chars' => 150, 'results' => 10);
+								}
+								if ($file2 == "search" && is_readable(e_PLUGIN.$file.'/search/search_comments.php')) {
+									require_once(e_PLUGIN.$file.'/search/search_comments.php');
+									$search_prefs['comments_handlers'][$file] = array('id' => $comments_type_id, 'class' => '0', 'dir' => $file);
+									unset($comments_type_id);
+								}
 							}
 						}
 					}
 				}
-			}
-			preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
-			if (version_compare($mysql_version[1], '4.0.1', '<')) {
-				$search_prefs['mysql_sort'] = FALSE;
-			} else {
-				$search_prefs['mysql_sort'] = TRUE;
-			}
-			$serial_prefs = addslashes(serialize($search_prefs));
-			if (!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) {
-				$sql -> db_Insert("core", "'search_prefs', '".$serial_prefs."'");
-			} else {
-				$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
-			}
-			if ($pref['search_restrict']) {
-				$pref['search_restrict'] = 253;
+				preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
+				if (version_compare($mysql_version[1], '4.0.1', '<')) {
+					$search_prefs['mysql_sort'] = FALSE;
 				} else {
-				$pref['search_restrict'] = 0;
+					$search_prefs['mysql_sort'] = TRUE;
+				}
+				$serial_prefs = addslashes(serialize($search_prefs));
+				if (!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) {
+					$sql -> db_Insert("core", "'search_prefs', '".$serial_prefs."'");
+				} else {
+					$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
+				}
+				if ($pref['search_restrict']) {
+					$pref['search_restrict'] = 253;
+					} else {
+					$pref['search_restrict'] = 0;
+				}
+				$pref['search_highlight'] = TRUE;
+				$s_prefs = TRUE;
 			}
-			$pref['search_highlight'] = TRUE;
-			$s_prefs = TRUE;
-		}
 
-		// search sort method and search selector updates
-		if (!isset($search_prefs['selector'])) {
-			preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
-			if (version_compare($mysql_version[1], '4.0.1', '<')) {
-				$search_prefs['mysql_sort'] = FALSE;
-			} else {
-				$search_prefs['mysql_sort'] = TRUE;
+			// search sort method and search selector updates
+			if (!isset($search_prefs['selector'])) {
+				preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
+				if (version_compare($mysql_version[1], '4.0.1', '<')) {
+					$search_prefs['mysql_sort'] = FALSE;
+				} else {
+					$search_prefs['mysql_sort'] = TRUE;
+				}
+				$search_prefs['selector'] = 2;
+				$search_prefs['multisearch'] = 1;
+				unset($search_prefs['search_sort']);
 			}
-			$search_prefs['selector'] = 2;
-			$search_prefs['multisearch'] = 1;
-			unset($search_prefs['search_sort']);
+
+			// search content plugin comments id change
+			if ($search_prefs['comments_handlers']['content']['id'] == '1') {
+				$search_prefs['comments_handlers']['content']['id'] = 'pcontent';
+			}
+
+			// custom pages search added
+			if (!isset($search_prefs['core_handlers']['pages'])) {
+				$search_prefs['core_handlers']['pages'] = array('class' => 0, 'chars' => 150, 'results' => 10, 'pre_title' => 1, 'pre_title_alt' => '', 'order' => 13);
+			}
+
+			$serial_prefs = addslashes(serialize($search_prefs));
+			$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs'");
+
 		}
-
-		// search content plugin comments id change
-		if ($search_prefs['comments_handlers']['content']['id'] == '1') {
-			$search_prefs['comments_handlers']['content']['id'] = 'pcontent';
-		}
-
-		// custom pages search added
-		if (!isset($search_prefs['core_handlers']['pages'])) {
-			$search_prefs['core_handlers']['pages'] = array('class' => 0, 'chars' => 150, 'results' => 10, 'pre_title' => 1, 'pre_title_alt' => '', 'order' => 13);
-		}
-
-		$serial_prefs = addslashes(serialize($search_prefs));
-		$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs'");
-
 		// end search updates
 
 		// Save all prefs that were set in above update routines
@@ -844,39 +1134,78 @@ function update_61x_to_700($type='') {
 			save_prefs();
 		}
 
-		$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
-		$qry = "SHOW CREATE TABLE `".MPREFIX."links`";
-		$res = mysql_query($qry);
-		if ($res) {
-			$row = mysql_fetch_row($res);
-			$lines = explode("\n", $row[1]);
-			if(strpos($lines[10],"tinyint")){
-				mysql_query("ALTER TABLE `".MPREFIX."links` CHANGE `link_class` `link_class` VARCHAR( 255 ) DEFAULT '0' NOT NULL ");
-				mysql_query("ALTER TABLE `".MPREFIX."menus` CHANGE `menu_class` `menu_class` VARCHAR( 255 ) DEFAULT '0' NOT NULL ");
+		if ($error=='') {
+			$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+
+			$qry = "SHOW CREATE TABLE `".MPREFIX."links`";
+			$res = mysql_query($qry);
+			if (mysql_error()!='') {
+                                $error.=mysql_error();
+                        }
+
+			if ($res) {
+				$row = mysql_fetch_row($res);
+				$lines = explode("\n", $row[1]);
+				if(strpos($lines[10],"tinyint")){
+					mysql_query("ALTER TABLE `".MPREFIX."links` CHANGE `link_class` `link_class` VARCHAR( 255 ) DEFAULT '0' NOT NULL ");
+					if (mysql_error()!='') {
+	        	                        $error.=mysql_error();
+        	        	        }
+					mysql_query("ALTER TABLE `".MPREFIX."menus` CHANGE `menu_class` `menu_class` VARCHAR( 255 ) DEFAULT '0' NOT NULL ");
+					if (mysql_error()!='') {
+		                                $error.=mysql_error();
+                		        }
+				}
 			}
 		}
 
-		if($sql->db_Field("plugin",5) != "plugin_rss"){
-			mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_rss` VARCHAR( 255 ) NOT NULL ;");
+		if ($error=='') {
+			if($sql->db_Field("plugin",5) != "plugin_rss"){
+				mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_rss` VARCHAR( 255 ) NOT NULL ;");
+				if (mysql_error()!='') {
+	                                $error.=mysql_error();
+        	                }
+			}
 		}
 
 		//20050630: added comment_lock to comments
-		if($sql->db_Field("comments",11) != "comment_lock"){
-			mysql_query("ALTER TABLE `".MPREFIX."comments` ADD `comment_lock` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '0';");
+		if ($error=='') {
+			if($sql->db_Field("comments",11) != "comment_lock"){
+				mysql_query("ALTER TABLE `".MPREFIX."comments` ADD `comment_lock` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '0';");
+				if (mysql_error()!='') {
+	                                $error.=mysql_error();
+        	                }
+			}
 		}
 
-		if($sql->db_Field("links_page",11) != "link_author"){
-			mysql_query("ALTER TABLE `".MPREFIX."links_page` ADD `link_author` VARCHAR( 255 ) NOT NULL DEFAULT '';");
+		if ($error=='') {
+			if($sql->db_Field("links_page",11) != "link_author"){
+				mysql_query("ALTER TABLE `".MPREFIX."links_page` ADD `link_author` VARCHAR( 255 ) NOT NULL DEFAULT '';");
+				if (mysql_error()!='') {
+	                                $error.=mysql_error();
+        	                }
+			}
 		}
 
-		if($sql->db_Field("user", 8) == "user_icq")
-		{
-			require_once(e_HANDLER."user_extended_class.php");
-			$ue = new e107_user_extended;
-			$ue->convert_old_fields();
+		if ($error=='') {
+			if($sql->db_Field("user", 8) == "user_icq")
+			{
+				require_once(e_HANDLER."user_extended_class.php");
+				$ue = new e107_user_extended;
+				$ue->convert_old_fields();
+			}
 		}
 
 		// -----------------------------------------------------
+
+		if ($error!='') {
+			return nl2br($error);
+		} else {
+			return '';
+		}
 
 	} else {
 		// check if update is needed.
