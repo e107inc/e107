@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/private_msg_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-05 17:00:44 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2005-09-07 00:45:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 global $sysprefs, $pref, $pm_prefs;
@@ -24,7 +24,7 @@ pm_getInfo('clear');
 define("PM_INBOX_ICON", "<img src='".e_PLUGIN."pm/images/mail_get.png' style='height:16;width:16;border:0' alt='Inbox' title='Inbox' />");
 define("PM_OUTBOX_ICON", "<img src='".e_PLUGIN."pm/images/mail_send.png' style='height:16;width:16;border:0' alt='Outbox' title='Outbox' />");
 define("PM_SEND_LINK", LAN_PM_35);
-define("NEWPM_ANIMATION", "<img src='".e_PLUGIN."pm/images/newpm.gif' alt='' />");
+define("NEWPM_ANIMATION", "<img src='".e_PLUGIN."pm/images/newpm.gif' alt='' style='border:0' />");
 
 $sc_style['SEND_PM_LINK']['pre'] = "<br /><br />[ ";
 $sc_style['SEND_PM_LINK']['post'] = " ]";
@@ -35,15 +35,16 @@ $sc_style['INBOX_FILLED']['post'] = "%]";
 $sc_style['OUTBOX_FILLED']['pre'] = "[";
 $sc_style['OUTBOX_FILLED']['post'] = "%]";
 
+$sc_style['NEWPM_ANIMATE']['pre'] = "<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>";
+$sc_style['NEWPM_ANIMATE']['post'] = "</a>";
+
 
 if(!defined($pm_menu_template))
 {
 	$pm_menu_template = "
 	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>".PM_INBOX_ICON."</a>
 	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>Inbox</a>
-	<a href='".e_PLUGIN_ABS."pm/pm.php?inbox'>
 	{NEWPM_ANIMATE}
-	</a>
 	<br />
 	{INBOX_TOTAL} ".LAN_PM_36.", {INBOX_UNREAD} ".LAN_PM_37." {INBOX_FILLED}
 	<br />
