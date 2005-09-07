@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/credits.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-08-19 03:13:16 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2005-09-07 17:51:02 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -75,7 +75,7 @@ $contentA = array(
 	"<h3>e107 v0.7 was brought to you by ...</h3>", 
 	"<h1>Carl Cedergren</h1>[ asperon ]<br /><br /><br />\"message goes here\"",
 	"<h1>Cameron Hanly</h1>[ cameron ]<br /><br /><br />\"message goes here\"", 
-	"<h1>Steve Dunstan</h1>[ jalist ]<br /><br /><br />\"message goes here\"", 
+	"<h1>Steve Dunstan</h1>[ jalist ]<br /><br /><br />\"MTVhNjMyZDgxN2QwM2Q3ZTI<br />5ODM2NDU3YWI0ZjM1NGILJT<br />yarrrrrr! wtf matey!\"", 
 	"<h1>Eric Vanderfeesten</h1> [ lisa ]<br /><br /><br />\"message goes here\"", 
 	"<h1>Thom Michelbrink</h1>[ McFly ]<br /><br /><br />\"message goes here\"", 
 	"<h1>William Moffett</h1>[ que ]<br /><br /><br />\"message goes here\"", 
@@ -102,7 +102,7 @@ echo "<?xml version='1.0' encoding='utf-8' ?><!DOCTYPE html PUBLIC \"-//W3C//DTD
 
 
 <img src='".e_IMAGE."generic/cred.png' alt='' />
-<div class='smalltext' style='position: absolute; top: 110px; left: 130px;'><b>version ".$e107v['e107_version'].", build ".($e107v['e107_build'] ? $e107v['e107_build'] : "zero")."</b><br />&copy; 2002-2005, all rights reserved</div>
+<div class='smalltext' style='position: absolute; top: 120px; left: 118px;'><b>version ".$e107v['e107_version'].", build ".($e107v['e107_build'] ? $e107v['e107_build'] : "zero")."</b><br />&copy; 2002-2005, all rights reserved</div>
 
 ";
 
