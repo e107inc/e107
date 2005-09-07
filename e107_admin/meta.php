@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/meta.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-09-06 19:34:04 $
+|     $Revision: 1.12 $
+|     $Date: 2005-09-07 17:27:14 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -71,21 +71,21 @@ $text = "<div style='text-align:center'>
 	<tr>
     <td style='width:25%' class='forumheader3'>".METLAN_9."</td>
     <td style='width:75%' class='forumheader3'>
-	<input class='tbox style='width:90%' size='70' type='text' name='meta_description' value='".$meta_diz[$current_lang]."' />
+	<input class='tbox' style='width:90%' size='70' type='text' name='meta_description' value='".$meta_diz[$current_lang]."' />
 	</td>
 	</tr>
 
 	<tr>
 	<td style='width:25%' class='forumheader3'>".METLAN_10."</td>
     <td style='width:75%' class='forumheader3'>
-	<input class='tbox style='width:90%' size='70' type='text' name='meta_keywords' value='".$meta_keywords[$current_lang]."' />
+	<input class='tbox' style='width:90%' size='70' type='text' name='meta_keywords' value='".$meta_keywords[$current_lang]."' />
 	</td>
 	</tr>
 
 	<tr>
 	<td style='width:25%' class='forumheader3'>".METLAN_11."</td>
     <td style='width:75%' class='forumheader3'>
-	<input class='tbox style='width:90%' size='70' type='text' name='meta_copyright' value='".$meta_copyright[$current_lang]."' />
+	<input class='tbox' style='width:90%' size='70' type='text' name='meta_copyright' value='".$meta_copyright[$current_lang]."' />
 	</td>
 	</tr>
 
