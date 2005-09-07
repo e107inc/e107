@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.84 $
-|		$Date: 2005-08-29 09:08:37 $
+|		$Revision: 1.85 $
+|		$Date: 2005-09-07 22:24:14 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -440,20 +440,32 @@ function show_content_archive(){
 			$sql1 = new db;
 			
 			if(isset($content_pref["content_archive_letterindex_{$mainparent}"]) && $content_pref["content_archive_letterindex_{$mainparent}"]){
-				$distinctfirstletter = $sql1 -> db_Select($plugintable, "DISTINCT(LEFT(content_heading,1)) as letter", "content_refer !='sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ORDER BY content_heading ASC ");
+				$distinctfirstletter = $sql -> db_Select($plugintable, " DISTINCT(content_heading) ", "content_refer != 'sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ORDER BY content_heading ASC ");
+				while($row = $sql -> db_Fetch()){
+					$head = $tp->toHTML($row['content_heading'], TRUE);
+					if(ord($head) < 128) {
+						$head_sub = strtoupper(substr($head,0,1));
+					}else{
+						$head_sub = substr($head,0,2);
+					}
+					$arrletters[] = $head_sub;
+				}
+				$arrletters = array_unique($arrletters);
+				$arrletters = array_values($arrletters);
+				sort($arrletters);
+
 				if ($distinctfirstletter > 1){
 					$CONTENT_ARCHIVE_TABLE_LETTERS = "<form method='post' action='".e_SELF."?list.".$mainparent."'>";
-					while($row = $sql1 -> db_Fetch()){
-						if($row['letter'] != ""){
-							$thisletter = $row['letter'];
-							$CONTENT_ARCHIVE_TABLE_LETTERS .= "<input class='button' style='width:20px' type='button' name='letter' value='".strtoupper($row['letter'])."' onclick=\"document.location='".e_SELF."?list.".$mainparent.".".strtoupper($thisletter)."'\" />";
+					for($i=0;$i<count($arrletters);$i++){
+						if($arrletters[$i]!= ""){
+							$CONTENT_ARCHIVE_TABLE_LETTERS .= "<input class='button' style='width:20px' type='submit' name='letter' value='".strtoupper($arrletters[$i])."' onclick=\"document.location='".e_SELF."?list.".$mainparent.".".strtoupper($arrletters[$i])."'\" />";
 						}
 					}
 					$CONTENT_ARCHIVE_TABLE_LETTERS .= "<input class='button' style='width:20' type='submit' name='letter' value='all' />";
 					$CONTENT_ARCHIVE_TABLE_LETTERS .= "</form>";
 				}
 				//check posted letter
-				$letter=(isset($qs[2]) && strlen($qs[2]) == "1" && substr($qs[2],0,5) != "order" ? $qs[2] : "");
+				$letter=(isset($_POST['letter']) ? $_POST['letter'] : "");
 				if ($letter != "" && $letter != "all" ) { $qry .= " AND content_heading LIKE '".$letter."%' "; }else{ $qry .= ""; }
 			}
 			$CONTENT_ARCHIVE_TABLE_START = $tp -> parseTemplate($CONTENT_ARCHIVE_TABLE_START, FALSE, $content_shortcodes);

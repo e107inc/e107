@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.92 $
-|		$Date: 2005-09-06 14:33:56 $
+|		$Revision: 1.93 $
+|		$Date: 2005-09-07 22:24:14 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -405,6 +405,7 @@ class contentform{
 								header("location:".e_SELF."?content"); exit;
 							}else{
 								$row = $sql -> db_Fetch();
+
 								$row['content_heading']		= $tp -> toForm($row['content_heading'], TRUE);
 								$row['content_subheading']	= $tp -> toForm($row['content_subheading'], TRUE);
 								$row['content_summary']		= $tp -> toForm($row['content_summary'], TRUE);
@@ -424,8 +425,8 @@ class contentform{
 								$row['content_parent']				= $_POST['parent'];
 								$row['content_heading']				= $tp -> post_toForm($_POST['content_heading']);
 								$row['content_subheading']			= $tp -> post_toForm($_POST['content_subheading']);
-								$row['content_summary']				= $tp -> toForm($_POST['content_summary'], TRUE);
-								$row['content_text']				= $tp -> toForm($_POST['content_text'], TRUE);
+								$row['content_summary']				= $tp -> post_toForm($_POST['content_summary'], TRUE);
+								$row['content_text']				= $tp -> post_toForm($_POST['content_text'], TRUE);
 								$authordetails[0]					= $_POST['content_author_id'];
 								$authordetails[1]					= $_POST['content_author_name'];
 								$authordetails[2]					= $_POST['content_author_email'];
@@ -515,11 +516,16 @@ class contentform{
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 						//text
+						
 						$row['content_text'] = (isset($row['content_text']) ? $row['content_text'] : "");
 						require_once(e_HANDLER."ren_help.php");
 						$TOPIC_TOPIC = CONTENT_ADMIN_ITEM_LAN_18;
 						$insertjs = (!$pref['wysiwyg'] ? "onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'" : "");
+						
+						//$row['content_text'] = str_replace("&#039;", "'", $row['content_text']);
 						$TOPIC_FIELD = $rs -> form_textarea("content_text", 74, 20, $row['content_text'], $insertjs)."<br />";
+						//$TOPIC_FIELD = "<textarea class='tbox' name='content_text' cols='70' rows='10' ".$insertjs." >".$row['content_text']."</textarea>";
+							
 						if (!$pref['wysiwyg']) { $TOPIC_FIELD .= $rs -> form_text("helpb", 90, '', '', "helpbox")."<br />".display_help("helpb"); }
 						$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
@@ -1112,7 +1118,19 @@ class contentform{
 			$text = "";
 			// -------- SHOW FIRST LETTERS FIRSTNAMES ------------------------------------
 			if(!is_object($sql)){ $sql = new db; }
-			$distinctfirstletter = $sql -> db_Select($plugintable, "DISTINCT(LEFT(content_heading,1)) as letter", "content_refer != 'sa' AND ".$qryfirst." ".$qryuser." ORDER BY content_heading ASC ");
+			$distinctfirstletter = $sql -> db_Select($plugintable, " DISTINCT(content_heading) ", "content_refer != 'sa' AND ".$qryfirst." ".$qryuser." ORDER BY content_heading ASC ");
+			while($row = $sql -> db_Fetch()){
+				$head = $tp->toHTML($row['content_heading'], TRUE);
+				if(ord($head) < 128) {
+					$head_sub = strtoupper(substr($head,0,1));
+				}else{
+					$head_sub = substr($head,0,2);
+				}
+				$arrletters[] = $head_sub;
+			}
+			$arrletters = array_unique($arrletters);
+			$arrletters = array_values($arrletters);
+			sort($arrletters);
 
 			if ($distinctfirstletter == 0){
 					$text .= "<div style='text-align:center'>".CONTENT_ADMIN_ITEM_LAN_4."</div>";
@@ -1127,9 +1145,9 @@ class contentform{
 					<table class='fborder' style='".ADMIN_WIDTH."'>
 					<tr><td colspan='2' class='fcaption'>".CONTENT_ADMIN_ITEM_LAN_6."</td></tr>
 					<tr><td colspan='2' class='forumheader3'>";
-					while($row = $sql -> db_Fetch()){
-						if($row['letter'] != ""){
-							$text .= "<input class='button' style='width:20' type='submit' name='letter' value='".strtoupper($row['letter'])."' />";
+					for($i=0;$i<count($arrletters);$i++){
+						if($arrletters[$i]!= ""){
+							$text .= "<input class='button' style='width:20' type='submit' name='letter' value='".strtoupper($arrletters[$i])."' />";
 						}
 					}
 					$text .= "
