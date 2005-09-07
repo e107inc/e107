@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.65 $
-| $Date: 2005-09-04 17:23:08 $
+| $Revision: 1.66 $
+| $Date: 2005-09-07 14:45:08 $
 | $Author: stevedunstan $
 +---------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ class news {
 				$message = LAN_NEWS_21;
 				$e107cache -> clear('news.php');
 			} else {
-				$message = "<strong>".LAN_NEWS_5."</strong>";
+				$message = "<strong>".(!mysql_errno() ? LAN_NEWS_46 : LAN_NEWS_5)."</strong>";
 			}
 		} else {
 			if ($sql ->db_Insert('news', "0, '".$news['news_title']."', '".$news['news_body']."', '".$news['news_extended']."', ".$news['news_datestamp'].", ".USERID.", '".$news['cat_id']."', '".$news['news_allow_comments']."', '".$news['news_start']."', '".$news['news_end']."', '".$news['news_class']."', '".$news['news_rendertype']."', '0' , '".$news['news_summary']."', '".$news['news_thumbnail']."', '".$news['news_sticky']."' ")) {
