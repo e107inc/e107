@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-04-30 15:12:12 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.23 $
+|     $Date: 2005-09-07 14:45:08 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -162,5 +162,7 @@ define("LAN_NEWS_43", "(no images in /e107_images/newspost_images)");
 define("LAN_NEWS_44", "Trackback not enabled.");
 
 define("LAN_NEWS_45", "ID");
+
+define("LAN_NEWS_46", "News item not updated as no changes were made.");
 
 ?>
