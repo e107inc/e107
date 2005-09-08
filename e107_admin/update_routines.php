@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.137 $
-|     $Date: 2005-09-08 17:08:25 $
+|     $Revision: 1.138 $
+|     $Date: 2005-09-08 17:43:01 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -183,14 +183,11 @@ function update_61x_to_700($type='') {
 		/*	end	*/
 
 		/* start newsfeed update */
-		if ($error=='') {
-			if (in_array(MPREFIX.'newsfeed',$tablenames)) {
-				mysql_query("ALTER TABLE `".MPREFIX."newsfeed` CHANGE `newsfeed_data` `newsfeed_data` LONGTEXT NOT NULL");
-				catch_error();
-
-				$sql -> db_Update("newsfeed", "newsfeed_timestamp='0' ");
-				catch_error();
-			}
+		if ($error=='' && mysql_table_exists('newsfeed')) {
+			mysql_query("ALTER TABLE `".MPREFIX."newsfeed` CHANGE `newsfeed_data` `newsfeed_data` LONGTEXT NOT NULL");
+			catch_error();
+			$sql -> db_Update("newsfeed", "newsfeed_timestamp='0' ");
+			catch_error();
 		}
 		/*	end 	*/
 
@@ -772,14 +769,11 @@ function update_61x_to_700($type='') {
 
 		// Truncate logstats table if log_id = pageTotal not found
 		/* log update - previous log entries are not compatible with later versions, sorry but we have to clear the table :\ */
-		if ($error=='') {
-			if (in_array(MPREFIX.'logstats',$tablenames)) {
-				if(!$sql->db_Select("logstats","log_id","log_id = 'pageTotal'"))
-				{
+		if ($error=='' && mysql_table_exists("logstats")) {
+				if(!$sql->db_Select("logstats","log_id","log_id = 'pageTotal'")){
 					mysql_query("TRUNCATE TABLE `".MPREFIX."logstats");
 					catch_error();
 				}
-			}
 		}
 		// -----------------------------------------------------
 
@@ -1420,7 +1414,6 @@ function catch_error(){
 		$error.= $tmp;
 		echo $tmp." [ ".basename(__FILE__)." on line ".$tmp2[0]['line']."] <br />";
 	}
-
 	return;
 }
 
