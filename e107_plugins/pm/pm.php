@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-09-08 17:23:24 $
+|     $Revision: 1.13 $
+|     $Date: 2005-09-08 17:38:34 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -223,6 +223,7 @@ function show_inbox($start = 0)
 	{
 		foreach($pmlist['messages'] as $rec)
 		{
+			if(trim($rec['pm_subject']) == '') { $rec['pm_subject'] = "[".LAN_PM_61."]"; }
 			$pm_info = $rec;
 			$txt .= $tp->parseTemplate($PM_INBOX_TABLE, true, $pm_shortcodes);
 		}
@@ -250,6 +251,7 @@ function show_outbox($start = 0)
 	{
 		foreach($pmlist['messages'] as $rec)
 		{
+			if(trim($rec['pm_subject']) == '') { $rec['pm_subject'] = "[".LAN_PM_61."]"; }
 			$pm_info = $rec;
 			$txt .= $tp->parseTemplate($PM_OUTBOX_TABLE, true, $pm_shortcodes);
 		}
