@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.134 $
-|     $Date: 2005-09-08 01:19:42 $
+|     $Revision: 1.135 $
+|     $Date: 2005-09-08 16:51:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -63,7 +63,7 @@ function update_check() {
 }
 
 function update_61x_to_700($type='') {
-	global $sql, $ns, $mySQLdefaultdb, $pref, $tp, $sysprefs, $eArrayStorage;
+	global $sql, $ns, $error,$mySQLdefaultdb, $pref, $tp, $sysprefs, $eArrayStorage;
 	if ($type == "do") {
 
 		set_time_limit(180);
@@ -92,16 +92,12 @@ function update_61x_to_700($type='') {
 
 		// add an index on user_ban - speeds up page render time massively on large user tables.
 		mysql_query("ALTER TABLE `".MPREFIX."user` ADD INDEX `user_ban_index`(`user_ban`);");
-                if (mysql_error()!='') {
-                	$error.=mysql_error();
-                }
+		catch_error();
 
 		if ($error=='') {
 			if(!$sql -> db_Select("userclass_classes", "*", "userclass_editclass='254' ")){
 				$sql->db_Update("userclass_classes", "userclass_editclass='254' WHERE userclass_editclass ='0' ");
-				if (mysql_error()!='') {
-                                	$error.=mysql_error();
-                        	}
+		catch_error();
 			}
 		}
 
@@ -111,22 +107,16 @@ function update_61x_to_700($type='') {
 		*/
 		if ($error=='') {
 			mysql_query("ALTER TABLE ".MPREFIX."news ADD news_comment_total INT (10) UNSIGNED NOT NULL");
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 			$sql->db_Select_gen("SELECT comment_item_id AS id, COUNT(*) AS amount FROM #comments GROUP BY comment_item_id");
 			$commentArray = $sql->db_getList();
 			foreach($commentArray as $comments) {
 				extract($comments);
 				$sql->db_Update("news", "news_comment_total=$amount WHERE news_id=$id");
-                        	if (mysql_error()!='') {
-                                	$error.=mysql_error();
-                        	}
+				catch_error();
 			}
 			mysql_query("ALTER TABLE `".MPREFIX."content` CHANGE `content_content` `content_content` LONGTEXT NOT NULL");
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 		}
 		/* end */
 
@@ -152,9 +142,7 @@ function update_61x_to_700($type='') {
 			PRIMARY KEY  (poll_id)
 			) TYPE=MyISAM;";
 			$sql->db_Select_gen($query);
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 			if($sql -> db_Select("poll"))
 			{
 				$polls = $sql -> db_getList();
@@ -176,17 +164,13 @@ function update_61x_to_700($type='') {
 					$poll_type = (strlen($poll_datestamp) > 9 ? 1 : 2);
 					echo "Inserting field #".$poll_id." into new table ...(type: $poll_type)<br />";
 					$sql->db_Insert("polls", "$poll_id, $poll_datestamp, 0, $poll_end_datestamp, $poll_admin_id, '$poll_title', '$poll_options', '$poll_votes', '$poll_ip', $poll_type, $poll_comment, 0, 0, 255, 1");
-                        		if (mysql_error()!='') {
-                                		$error.=mysql_error();
-		                        }
+					catch_error();
 				}
 				$sql -> db_Select("polls", "poll_id", "poll_type=1 ORDER BY poll_datestamp DESC LIMIT 0,1");
 				$row = $sql -> db_Fetch();
 				$sql -> db_Update("polls", "poll_vote_userclass=0 WHERE poll_id=".$row['poll_id']);
 				$sql->db_Select_gen("DROP TABLE ".MPREFIX."poll");
-                        	if (mysql_error()!='') {
-                                	$error.=mysql_error();
-                        	}
+				catch_error();
 			}
 		}
 		/* end poll update */
@@ -194,9 +178,7 @@ function update_61x_to_700($type='') {
 		/* general table structure changes */
 		if ($error=='') {
 			mysql_query("ALTER TABLE `".MPREFIX."user` CHANGE `user_sess` `user_sess` VARCHAR( 100 ) NOT NULL");
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 		}
 		/*	end	*/
 
@@ -204,15 +186,10 @@ function update_61x_to_700($type='') {
 		if ($error=='') {
 			if (in_array(MPREFIX.'newsfeed',$tablenames)) {
 				mysql_query("ALTER TABLE `".MPREFIX."newsfeed` CHANGE `newsfeed_data` `newsfeed_data` LONGTEXT NOT NULL");
-				if (mysql_error()!='') {
-                	                $error.=mysql_error();
-	                        }
+				catch_error();
 
 				$sql -> db_Update("newsfeed", "newsfeed_timestamp='0' ");
-                	        if (mysql_error()!='') {
-                        	        $error.=mysql_error();
-	                        }
-
+				catch_error();
 			}
 		}
 		/*	end 	*/
@@ -222,17 +199,13 @@ function update_61x_to_700($type='') {
 			$tmp =
 			'a:28:{s:9:"alien!png";s:6:"!alien";s:10:"amazed!png";s:7:"!amazed";s:9:"angry!png";s:11:"!grr !angry";s:12:"biglaugh!png";s:4:"!lol";s:11:"cheesey!png";s:10:":D :oD :-D";s:12:"confused!png";s:10:":? :o? :-?";s:7:"cry!png";s:19:"&| &-| &o| :(( !cry";s:8:"dead!png";s:21:"x) xo) x-) x( xo( x-(";s:9:"dodge!png";s:6:"!dodge";s:9:"frown!png";s:10:":( :o( :-(";s:7:"gah!png";s:10:":@ :o@ :o@";s:8:"grin!png";s:10:":D :oD :-D";s:9:"heart!png";s:6:"!heart";s:8:"idea!png";s:10:":! :o! :-!";s:7:"ill!png";s:4:"!ill";s:7:"mad!png";s:13:"~:( ~:o( ~:-(";s:12:"mistrust!png";s:9:"!mistrust";s:11:"neutral!png";s:10:":| :o| :-|";s:12:"question!png";s:2:"?!";s:12:"rolleyes!png";s:10:"B) Bo) B-)";s:7:"sad!png";s:4:"!sad";s:10:"shades!png";s:10:"8) 8o) 8-)";s:7:"shy!png";s:4:"!shy";s:9:"smile!png";s:10:":) :o) :-)";s:11:"special!png";s:3:"%-6";s:12:"suprised!png";s:10:":O :oO :-O";s:10:"tongue!png";s:21:":p :op :-p :P :oP :-P";s:8:"wink!png";s:10:";) ;o) ;-)";}';
 			$sql->db_Insert("core", "'emote_default', '$tmp' ");
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 
 			if(!$pref['emotepack']){
         			$pref['emotepack'] = "default";
 			}
 			mysql_query("ALTER TABLE ".MPREFIX."core CHANGE e107_name e107_name VARCHAR( 100 ) NOT NULL");
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 
 		}
 		/*	end 	*/
@@ -250,21 +223,13 @@ function update_61x_to_700($type='') {
 			PRIMARY KEY  (mirror_id)
 			) TYPE=MyISAM;";
 			$sql->db_Select_gen($query);
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 			mysql_query("ALTER TABLE ".MPREFIX."download ADD download_class TINYINT ( 3 ) UNSIGNED NOT NULL");
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 			mysql_query("ALTER TABLE ".MPREFIX."download_category ADD download_category_order INT ( 10 ) UNSIGNED NOT NULL");
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 			mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_mirror` TEXT NOT NULL , ADD `download_mirror_type` TINYINT( 1 ) UNSIGNED NOT NULL");
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 		}
 		/*	end	*/
 
@@ -272,17 +237,11 @@ function update_61x_to_700($type='') {
 		/* start user update */
 		if ($error=='') {
 			mysql_query("ALTER TABLE ".MPREFIX."user ADD user_loginname VARCHAR( 100 ) NOT NULL AFTER user_name");
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 			mysql_query("ALTER TABLE ".MPREFIX."user ADD user_xup VARCHAR( 100 ) NOT NULL");
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 			$sql->db_Update("user", "user_loginname=user_name WHERE user_loginname=''");
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 		}
 		/* end */
 
@@ -303,13 +262,9 @@ function update_61x_to_700($type='') {
 		  	page_theme varchar(50) NOT NULL,
 		  	PRIMARY KEY  (page_id)
 			) TYPE=MyISAM;");
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 			mysql_query("ALTER TABLE ".MPREFIX."page CHANGE page_class page_class VARCHAR( 250 ) NOT NULL");
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 		}
 		/*	end 	*/
 
@@ -326,9 +281,7 @@ function update_61x_to_700($type='') {
 				link_category_icon varchar(100) NOT NULL default '',
 				PRIMARY KEY  (link_category_id)
 				) TYPE=MyISAM;");
-				if (mysql_error()!='') {
-        	                        $error.=mysql_error();
-                	        }
+				catch_error();
 				$sql->db_Select_gen("CREATE TABLE ".MPREFIX."links_page (
 				link_id int(10) unsigned NOT NULL auto_increment,
 				link_name varchar(100) NOT NULL default '',
@@ -342,9 +295,7 @@ function update_61x_to_700($type='') {
 				link_class tinyint(3) unsigned NOT NULL default '0',
 				PRIMARY KEY  (link_id)
 				) TYPE=MyISAM;");
-	                        if (mysql_error()!='') {
-        	                        $error.=mysql_error();
-                	        }
+				catch_error();
 				$new_cat_id = 1;
 				$sql->db_Select("link_category", "*", "link_category_id!=1 ORDER BY link_category_id");
 				while ($row = $sql->db_Fetch()) {
@@ -405,26 +356,18 @@ function update_61x_to_700($type='') {
 		// parse table obsolete
 		if ($error='') {
 			mysql_query('DROP TABLE `'.MPREFIX.'parser`');
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 		}
 
 		if ($error='') {
 			mysql_query("ALTER TABLE ".MPREFIX."menus ADD menu_path VARCHAR( 100 ) NOT NULL");
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 
 			mysql_query("UPDATE ".MPREFIX."menus SET menu_path = 'custom', menu_name = substring(menu_name,8) WHERE substring(menu_name,1,6) = 'custom'");
-                        if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 
 			mysql_query("UPDATE ".MPREFIX."menus SET menu_path = menu_name  WHERE menu_path = ''");
-			if (mysql_error()!='') {
-				$error.=mysql_error();
-			}
+			catch_error();
 		}
 
 		// New dblog table for logging db calls (admin log)
@@ -441,9 +384,7 @@ function update_61x_to_700($type='') {
 			PRIMARY KEY  (dblog_id)
 			) TYPE=MyISAM;
 			");
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 		}
 
 		// New generic table for storing any miscellaneous data
@@ -460,9 +401,7 @@ function update_61x_to_700($type='') {
 			PRIMARY KEY  (gen_id)
 			) TYPE=MyISAM;
 			");
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 		}
 
 		if ($error=='') {
@@ -472,9 +411,7 @@ function update_61x_to_700($type='') {
 			PRIMARY KEY  (user_extended_id)
 			) TYPE=MyISAM;
 			");
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 
 			$sql->db_Select_gen(
 			"CREATE TABLE ".MPREFIX."user_extended_struct (
@@ -492,24 +429,16 @@ function update_61x_to_700($type='') {
 			PRIMARY KEY  (user_extended_struct_id)
 			) TYPE=MyISAM;
 			");
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 
 			$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_applicable TINYINT( 3 ) UNSIGNED NOT NULL");
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 
 			$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_order INT( 10 ) UNSIGNED NOT NULL");
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 
 			$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_icon VARCHAR( 255 ) NOT NULL");
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 
 
 			//Begin Extended user field conversion
@@ -606,33 +535,25 @@ function update_61x_to_700($type='') {
 						$new_userclass = $carray[0];
 					}
 					$sql2->db_Update('user', "user_class = '{$new_userclass}' WHERE user_id={$row['user_id']}");
-					if (mysql_error()!='') {
-						$error.=mysql_error();
-					}
+					catch_error();
 				}
 			}
 		}
 
 		if ($error='') {
 			mysql_query("ALTER TABLE ".MPREFIX."generic` CHANGE gen_chardata gen_chardata TEXT NOT NULL");
-			if (mysql_error()!='') {
-				$error.=mysql_error();
-			}
+			catch_error();
 		}
 
 		if ($error=='') {
 			mysql_query("ALTER TABLE ".MPREFIX."banner CHANGE banner_active banner_active TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'");
-			if (mysql_error()!='') {
-				$error.=mysql_error();
-			}
+			catch_error();
 		}
 
 		if ($error=='' && $sql->db_Field("cache",0) == "cache_url") {
 
 			mysql_query('DROP TABLE `'.MPREFIX.'cache`'); // db cache is no longer an available option..
-			if (mysql_error()!='') {
-				$error.=mysql_error();
-			}
+			catch_error();
 		}
 	//	$sql->db_Update("banner", "banner_active='255' WHERE banner_active = '0' ");
 	//	$sql->db_Update("banner", "banner_active='0' WHERE banner_active = '1' ");
@@ -689,9 +610,7 @@ function update_61x_to_700($type='') {
 		if ($error=='') {
 			if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='chatbox_menu'")) {
 				$sql->db_Insert("plugin", "0, 'Chatbox', '1.0', 'chatbox_menu', 1");
-				if (mysql_error()!='') {
-                                	$error.=mysql_error();
-		                }
+				catch_error();
 				$pref['plug_status'] = $pref['plug_status'].",chatbox_menu";
 				$s_prefs = TRUE;
 			}
@@ -709,9 +628,7 @@ function update_61x_to_700($type='') {
 			PRIMARY KEY  (preset_id)
 			) TYPE=MyISAM;
 			");
-			if (mysql_error()!='') {
-				$error.=mysql_error();
-			}
+			catch_error();
 		}
 
 		// News Updates -----------------
@@ -723,17 +640,11 @@ function update_61x_to_700($type='') {
 
 			if($field1 != "news_summary" && $field1 != "news_thumbnail" && $field3 != "news_sticky"){
 				mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_summary` TEXT DEFAULT NULL;");
-				if (mysql_error()!='') {
-					$error.=mysql_error();
-				}
+				catch_error();
 				mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_thumbnail` TEXT DEFAULT NULL;");
-				if (mysql_error()!='') {
-					$error.=mysql_error();
-				}
+				catch_error();
 				mysql_query("ALTER TABLE ".MPREFIX."news ADD news_sticky TINYINT ( 3 ) UNSIGNED NOT NULL");
-				if (mysql_error()!='') {
-                                	$error.=mysql_error();
-                        	}
+				catch_error();
 			}
 		}
 
@@ -750,9 +661,7 @@ function update_61x_to_700($type='') {
 			PRIMARY KEY  (download_request_id)
 			) TYPE=MyISAM;
 			");
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 		}
 
 
@@ -761,22 +670,16 @@ function update_61x_to_700($type='') {
 			global $PLUGINS_DIRECTORY;
 			if($sql -> db_Select("links", "*", "link_url = 'forum.php'")){
 				$sql -> db_Insert("plugin", "0, 'Forum', '1.1', 'forum', '1' ");
-				if (mysql_error()!='') {
-                                	$error.=mysql_error();
-		                }
+				catch_error();
 				$sql -> db_Update("links", "link_url='".$PLUGINS_DIRECTORY."forum/forum.php' WHERE link_url='forum.php' ");
-				if (mysql_error()!='') {
-                                	$error.=mysql_error();
-                        	}
+				catch_error();
 			}
 		}
 
 		if ($error=='') {
 			if($sql -> db_Select("menus", "*", "menu_name = 'newforumposts_menu' and menu_path='newforumposts_menu' ")){
 				$sql -> db_Update("menus", "menu_path='forum' WHERE menu_name = 'newforumposts_menu' ");
-				if (mysql_error()!='') {
-                                	$error.=mysql_error();
-                        	}
+				catch_error();
 			}
 		}
 
@@ -792,62 +695,40 @@ function update_61x_to_700($type='') {
 		if ($error=='') {
 			// Are these needed? To facilitate for users that upgraded to the cvs during development, or?
 			mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_signup_show` , DROP `user_extended_struct_signup_required` ;");
-			if (mysql_error()!='') {
-//                                $error.=mysql_error();
-                        }
+			catch_error();
 			mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_signup` TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_extended_struct_required` ;");
-			if (mysql_error()!='') {
-//                                $error.=mysql_error();
-                        }
+			catch_error();
 			mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_icon` ;");
-			if (mysql_error()!='') {
-//                                $error.=mysql_error();
-                        }
+			catch_error();
 	                mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_parent` INT( 10 ) UNSIGNED NOT NULL ;");
-			if (mysql_error()!='') {
-//                                $error.=mysql_error();
-                        }
+			catch_error();
         	        mysql_query("ALTER TABLE `".MPREFIX."user_extended` ADD `user_hidden_fields` TEXT NOT NULL AFTER `user_extended_id`");
-			if (mysql_error()!='') {
-//                                $error.=mysql_error();
-                        }
+			catch_error();
 		}
 
 		if ($error=='') {
 			mysql_query("ALTER TABLE `".MPREFIX."download_category` CHANGE `download_category_class` `download_category_class` TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL");
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 		}
 
 		if ($error=='') {
 			mysql_query("ALTER TABLE `".MPREFIX."generic` CHANGE `gen_chardata` `gen_chardata` TEXT NOT NULL");
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 		}
 
 		if ($error=='') {
 			mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_class` `news_class` VARCHAR( 255 ) DEFAULT '0' NOT NULL");
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 			// news_attach removal / field structure changes / 'thumb:' prefix removal
 			mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_attach` `news_thumbnail` TEXT NOT NULL;");
-			if (mysql_error()!='') {
-//                                $error.=mysql_error();
-                        }
+			catch_error();
 			mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_summary` `news_summary` TEXT NOT NULL;");
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 			if ($sql -> db_Select("news", "news_id, news_thumbnail", "news_thumbnail LIKE '%thumb:%'")) {
 				while ($row = $sql -> db_Fetch()) {
 					$thumbnail = trim(str_replace('thumb:', '', $row['news_thumbnail']));
 					$sql2 -> db_Update("news", "news_thumbnail='".$thumbnail."' WHERE news_id='".$row['news_id']."'");
-					if (mysql_error()!='') {
-                                		$error.=mysql_error();
-                        		}
+					catch_error();
 				}
 			}
 		}
@@ -896,9 +777,7 @@ function update_61x_to_700($type='') {
 				if(!$sql->db_Select("logstats","log_id","log_id = 'pageTotal'"))
 				{
 					mysql_query("TRUNCATE TABLE `".MPREFIX."logstats");
-					if (mysql_error()!='') {
- 	                        	       $error.=mysql_error();
-	        	                }
+					catch_error();
 				}
 			}
 		}
@@ -984,31 +863,21 @@ function update_61x_to_700($type='') {
 		if ($error=='') {
 			if($sql->db_Field("download",18) != "download_visible"){
 				mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_visible` varchar(255) NOT NULL default '0' ;");
-				if (mysql_error()!='') {
-                                	$error.=mysql_error();
-                        	}
+				catch_error();
 				mysql_query("UPDATE `".MPREFIX."download` SET download_visible = download_class");
-				if (mysql_error()!='') {
-					$error.=mysql_error();
-                        	}
+				catch_error();
 				mysql_query("ALTER TABLE `".MPREFIX."download` CHANGE `download_class` `download_class` varchar(255) NOT NULL default '0'");
-				if (mysql_error()!='') {
- 	                               $error.=mysql_error();
-        	                }
+				catch_error();
 			}
 			mysql_query("ALTER TABLE `".MPREFIX."download_category` CHANGE `download_category_class` `download_category_class` varchar(255) NOT NULL default '0'");
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 		}
 
 		// Links Update for using Link_Parent. .
 		if ($error=='') {
 			if($sql->db_Field("links",7) != "link_parent"){
 				mysql_query("ALTER TABLE `".MPREFIX."links` CHANGE `link_refer` `link_parent` INT( 10 ) UNSIGNED DEFAULT '0' NOT NULL");
-				if (mysql_error()!='') {
-	                                $error.=mysql_error();
-        	                }
+				catch_error();
 				$sql -> db_Select("links", "link_id,link_name", "link_name NOT LIKE 'submenu.%' ORDER BY link_name");
 				while($row = $sql-> db_Fetch()){
 					$name = $row['link_name'];
@@ -1023,9 +892,7 @@ function update_61x_to_700($type='') {
             				$nm = $tmp[1];
 					$id = $row['link_id'];
 			   		$sql2 -> db_Update("links", "link_parent='".$parent[$nm]."' WHERE link_id ='$id' ");
-					if (mysql_error()!='') {
-                                		$error.=mysql_error();
-                        		}
+					catch_error();
 				}
         		}
 		}
@@ -1038,23 +905,15 @@ function update_61x_to_700($type='') {
 
 			if($field1 != "link_category_order" && $field2 != "link_category_class" && $field3 != "link_category_datestamp"){
 				mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_order VARCHAR ( 100 ) NOT NULL DEFAULT '0';");
-				if (mysql_error()!='') {
-	                                $error.=mysql_error();
-        	                }
+				catch_error();
 				mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_class VARCHAR ( 100 ) NOT NULL DEFAULT '0';");
-				if (mysql_error()!='') {
-	                                $error.=mysql_error();
-        	                }
+				catch_error();
 				mysql_query("ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_datestamp INT ( 10 ) UNSIGNED NOT NULL DEFAULT '0';");
-				if (mysql_error()!='') {
-	                                $error.=mysql_error();
-        	                }
+				catch_error();
 			}
 			if($sql->db_Field("links_page",10) != "link_datestamp"){
 				mysql_query("ALTER TABLE ".MPREFIX."links_page ADD link_datestamp INT ( 10 ) UNSIGNED NOT NULL DEFAULT '0';");
-				if (mysql_error()!='') {
-                                	$error.=mysql_error();
-	                        }
+				catch_error();
 			}
 		}
 
@@ -1143,28 +1002,20 @@ function update_61x_to_700($type='') {
 
 		if ($error=='') {
 			$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 
 			$qry = "SHOW CREATE TABLE `".MPREFIX."links`";
 			$res = mysql_query($qry);
-			if (mysql_error()!='') {
-                                $error.=mysql_error();
-                        }
+			catch_error();
 
 			if ($res) {
 				$row = mysql_fetch_row($res);
 				$lines = explode("\n", $row[1]);
 				if(strpos($lines[10],"tinyint")){
 					mysql_query("ALTER TABLE `".MPREFIX."links` CHANGE `link_class` `link_class` VARCHAR( 255 ) DEFAULT '0' NOT NULL ");
-					if (mysql_error()!='') {
-	        	                        $error.=mysql_error();
-        	        	        }
+					catch_error();
 					mysql_query("ALTER TABLE `".MPREFIX."menus` CHANGE `menu_class` `menu_class` VARCHAR( 255 ) DEFAULT '0' NOT NULL ");
-					if (mysql_error()!='') {
-		                                $error.=mysql_error();
-                		        }
+					catch_error();
 				}
 			}
 		}
@@ -1172,9 +1023,7 @@ function update_61x_to_700($type='') {
 		if ($error=='') {
 			if($sql->db_Field("plugin",5) != "plugin_rss"){
 				mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_rss` VARCHAR( 255 ) NOT NULL ;");
-				if (mysql_error()!='') {
-	                                $error.=mysql_error();
-        	                }
+				catch_error();
 			}
 		}
 
@@ -1182,18 +1031,14 @@ function update_61x_to_700($type='') {
 		if ($error=='') {
 			if($sql->db_Field("comments",11) != "comment_lock"){
 				mysql_query("ALTER TABLE `".MPREFIX."comments` ADD `comment_lock` TINYINT( 1 ) UNSIGNED NOT NULL DEFAULT '0';");
-				if (mysql_error()!='') {
-	                                $error.=mysql_error();
-        	                }
+				catch_error();
 			}
 		}
 
 		if ($error=='') {
 			if($sql->db_Field("links_page",11) != "link_author"){
 				mysql_query("ALTER TABLE `".MPREFIX."links_page` ADD `link_author` VARCHAR( 255 ) NOT NULL DEFAULT '';");
-				if (mysql_error()!='') {
-	                                $error.=mysql_error();
-        	                }
+				catch_error();
 			}
 		}
 
@@ -1566,6 +1411,18 @@ function mysql_table_exists($table){
      return FALSE;
 }
 
+
+function catch_error(){
+	global $error;
+	if (mysql_error()!='') {
+		$tmp2 = debug_backtrace();
+		$tmp = mysql_error();
+	//	$error.= $tmp;
+	//	echo $tmp." [ ".basename(__FILE__)." on line ".$tmp2[0]['line']."] <br />";
+	}
+
+	return;
+}
 
 
 ?>
