@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.133 $
-|     $Date: 2005-09-07 17:22:50 $
+|     $Revision: 1.134 $
+|     $Date: 2005-09-08 01:19:42 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -582,12 +582,14 @@ function update_61x_to_700($type='') {
 			}
 			$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
 
-			if(!array_key_exists('ue_upgrade', $pref))
-			{
+
+		}
+
+        if(!array_key_exists('ue_upgrade', $pref)){
 				$pref['ue_upgrade'] = 1;
 				$s_prefs = TRUE;
-			}
 		}
+
 		//End Extended user field conversion
 
 
@@ -697,7 +699,7 @@ function update_61x_to_700($type='') {
 		// end chatbox update -------------------------------------------------------------------------------------------
 
 		// Cam's new PRESET Table. -------------------------------------------------------------------------------------------
-		if ($error=='' && !$sql->db_Select("preset")) {
+		if ($error=='' && !mysql_table_exists("preset")) {
 			$sql->db_Select_gen(
 			"CREATE TABLE ".MPREFIX."preset (
 			preset_id int(10) unsigned NOT NULL auto_increment,
@@ -737,7 +739,7 @@ function update_61x_to_700($type='') {
 
 		// Downloads updates - Added March 1, 2005 by McFly
 
-		if ($error=='' && !$sql->db_Select("download_requests")) {
+		if ($error=='' && !mysql_table_exists("download_requests")) {
 			$sql->db_Select_gen(
 			"CREATE TABLE ".MPREFIX."download_requests (
 			download_request_id int(10) unsigned NOT NULL auto_increment,
@@ -1213,8 +1215,10 @@ function update_61x_to_700($type='') {
 		}
 
 	} else {
-		// check if update is needed.
-		// FALSE = needed, TRUE = not needed.
+
+
+// Check if update is needed to 0.7. -----------------------------------------------
+
 		global $sysprefs;
 
       $result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
@@ -1232,8 +1236,7 @@ function update_61x_to_700($type='') {
         	return update_needed();
 		}
 
-		if(!array_key_exists('ue_upgrade', $pref))
-		{
+		if(!array_key_exists('ue_upgrade', $pref)){
 			return update_needed();
 		}
 
@@ -1297,7 +1300,7 @@ function update_61x_to_700($type='') {
 		}
 
 		if($sql->db_Select("links_page") && $sql->db_Field("links_page",11) != "link_author"){
-		 	return update_needed();
+		  	return update_needed();
 		}
 /*
 		if(!$sql -> db_Select("core", "*", "e107_name='emote_default' "))
@@ -1556,4 +1559,13 @@ function update_needed()
 	}
 	return FALSE;
 }
+
+function mysql_table_exists($table){
+     $exists = mysql_query("SELECT 1 FROM ".MPREFIX."$table LIMIT 0");
+     if ($exists) return TRUE;
+     return FALSE;
+}
+
+
+
 ?>
