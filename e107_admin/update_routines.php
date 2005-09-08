@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.136 $
-|     $Date: 2005-09-08 16:54:13 $
+|     $Revision: 1.137 $
+|     $Date: 2005-09-08 17:08:25 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -211,7 +211,7 @@ function update_61x_to_700($type='') {
 		/*	end 	*/
 
 		/* start download updates */
-		if ($error=='') {
+		if ($error=='' && !mysql_table_exists("download_mirror")) {
 			$query = "CREATE TABLE ".MPREFIX."download_mirror (
 			mirror_id int(10) unsigned NOT NULL auto_increment,
 			mirror_name varchar(200) NOT NULL default '',
@@ -246,7 +246,7 @@ function update_61x_to_700($type='') {
 		/* end */
 
 		/* start page update */
-		if ($error=='') {
+		if ($error=='' && !mysql_table_exists("page")) {
 			$sql->db_Select_gen("
 		  	CREATE TABLE ".MPREFIX."page (
 		  	page_id int(10) unsigned NOT NULL auto_increment,
@@ -371,7 +371,7 @@ function update_61x_to_700($type='') {
 		}
 
 		// New dblog table for logging db calls (admin log)
-		if ($error=='') {
+		if ($error=='' && !mysql_table_exists("dblog")) {
 			$sql->db_Select_gen(
 			"CREATE TABLE ".MPREFIX."dblog (
 			dblog_id int(10) unsigned NOT NULL auto_increment,
@@ -388,7 +388,7 @@ function update_61x_to_700($type='') {
 		}
 
 		// New generic table for storing any miscellaneous data
-		if ($error=='') {
+		if ($error=='' && !mysql_table_exists("generic")) {
 			$sql->db_Select_gen(
 			"CREATE TABLE ".MPREFIX."generic (
 			gen_id int(10) unsigned NOT NULL auto_increment,
@@ -404,7 +404,7 @@ function update_61x_to_700($type='') {
 			catch_error();
 		}
 
-		if ($error=='') {
+		if ($error=='' && !mysql_table_exists("user_extended")) {
 			$sql->db_Select_gen(
 			"CREATE TABLE ".MPREFIX."user_extended (
 			user_extended_id int(10) unsigned NOT NULL default '0',
@@ -1054,7 +1054,7 @@ function update_61x_to_700($type='') {
 		// -----------------------------------------------------
 
 		if ($error!='') {
-			return nl2br($error);
+		  	return nl2br($error);
 		} else {
 			return '';
 		}
