@@ -12,29 +12,31 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.11 $
-|   $Date: 2005-08-23 00:44:23 $
-|   $Author: sweetas $
+|   $Revision: 1.12 $
+|   $Date: 2005-09-08 18:58:17 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
-	
+
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_upload_handler.php");
 @include_once(e_LANGUAGEDIR."English/lan_upload_handler.php");
 function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
-	 
+
 	global $pref, $sql;
 
 	if (!$uploaddir) $uploaddir = e_FILE."public/";
 	if($uploaddir == e_THEME) $pref['upload_storagetype'] = 1;
-	 
+
 	$allowed_filetypes = ($pref['upload_allowedfiletype'] ? explode("\n", $pref['upload_allowedfiletype']) : array(".zip", ".gz", ".jpg", ".png", ".gif", ".txt"));
-	 
+
 	$a = 0;
 	foreach($allowed_filetypes as $v) {
 		$allowed_filetypes[$a] = trim(chop($v));
 		$a++;
 	}
-	 
+
+
+
 	if ($pref['upload_storagetype'] == "2" && $avatar == FALSE) {
 		extract($_FILES);
 		for($c = 0; $c <= 1; $c++) {
@@ -71,6 +73,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 	*/
 
 
+
 //	echo "<pre>"; print_r($_FILES); echo "</pre>"; exit;
 
 
@@ -81,7 +84,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 
 	$c = 0;
 	foreach($files['name'] as $key => $name) {
-		 
+
 		if ($files['size'][$key]) {
 			$filesize[] = $files['size'][$key];
 			$name = preg_replace("/[^a-z0-9._]/", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($name))));
@@ -92,8 +95,9 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 			if (file_exists($destination_file))
 			{
 				require_once(e_HANDLER."message_handler.php");
-				message_handler("MESSAGE", LANUPLOAD_10, __LINE__, __FILE__);
+				message_handler("MESSAGE", LANUPLOAD_10, __LINE__, __FILE__); // duplicate file
 				$f_message .= LANUPLOAD_10 . __LINE__ .  __FILE__;
+				$dupe_found = TRUE;
 			}
 			$uploadfile = $files['tmp_name'][$key];
 			$fileext1 = substr(strrchr($files['name'][$key], "."), 1);
@@ -109,9 +113,9 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 			$uploaded[$c]['name'] = $name;
 			$uploaded[$c]['type'] = $files['type'][$key];
 			$uploaded[$c]['size'] = 0;
-			 
+
 			$method = (OPEN_BASEDIR == FALSE ? "copy" : "move_uploaded_file");
-			 
+
 			if (@$method($uploadfile, $destination_file)) {
 				@chmod($destination_file, 0644);
 				$fext = array_pop(explode('.', $name));
@@ -121,16 +125,19 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 				if (@rename(e_FILE."public/avatars/".$name, e_FILE."public/avatars/".$rename)) {
 					$uploaded[$c]['name'] = $rename;
 				}
-				 
+
 				if ($method == "copy") {
 					@unlink($uploadfile);
 				}
-				 
-				require_once(e_HANDLER."message_handler.php");
-				message_handler("MESSAGE", "".LANUPLOAD_3." '".$files['name'][$key]."'", __LINE__, __FILE__);
-				$f_message .= "".LANUPLOAD_3." '".$files['name'][$key]."'.<br />";
+
+				if(!$dupe_found){   // don't display 'success message' when duplicate file found.
+					require_once(e_HANDLER."message_handler.php");
+					message_handler("MESSAGE", "".LANUPLOAD_3." '".$files['name'][$key]."'", __LINE__, __FILE__);
+					$f_message .= "".LANUPLOAD_3." '".$files['name'][$key]."'.<br />";
+                }
 				$uploaded[$c]['size'] = $files['size'][$key];
-			} else {
+
+		} else {
 				$uploaded[$c]['error'] = $files['error'][$key];
 				switch ($files['error'][$key]) {
 					case 0:
@@ -161,6 +168,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 		$c++;
 	}
 	define("F_MESSAGE", "<br />".$f_message);
+
 	return $uploaded;
 }
 ?>
