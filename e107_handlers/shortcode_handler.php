@@ -1,5 +1,5 @@
 <?php
-	
+
 /*
 + ----------------------------------------------------------------------------+
 | e107 website system
@@ -12,12 +12,12 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.20 $
-| $Date: 2005-06-23 17:23:27 $
-| $Author: mcfly_e107 $
+| $Revision: 1.21 $
+| $Date: 2005-09-08 18:39:42 $
+| $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 class e_shortcode {
 	var $scList;
 	var $parseSCFiles;
@@ -45,7 +45,7 @@ class e_shortcode {
 			}
 		}
 	}
-		 
+
 	function parseCodes($text, $useSCFiles = TRUE, $extraCodes = '') {
 		$this->parseSCFiles = $useSCFiles;
 		$ret = '';
@@ -64,7 +64,7 @@ class e_shortcode {
 		}
 		return $ret;
 	}
-	 
+
 	function doCode($matches)
 	{
 		global $pref, $e107cache, $menu_pref, $sc_style, $parm;
@@ -91,7 +91,7 @@ class e_shortcode {
 		}
 		else
 		{
-			if ($this->parseSCFiles == TRUE) 
+			if ($this->parseSCFiles == TRUE)
 			{
 				if (array_key_exists($code, $this->registered_codes))
 				{
@@ -114,7 +114,13 @@ class e_shortcode {
 				}
 			}
 		}
+
+        if(E107_DEBUG_LEVEL == 5){
+			echo " sc= ".str_replace(e_FILE."shortcode/","",$scFile)."<br />";
+		}
+
 		$ret = (isset($shortcode) ? eval($shortcode) : "");
+
 		if($ret != '')
 		{
 			if(isset($sc_style) && is_array($sc_style) && array_key_exists($code,$sc_style))
@@ -131,7 +137,7 @@ class e_shortcode {
 		}
 		return $ret;
 	}
-	 
+
 	function parse_scbatch($fname, $type = 'file') {
 		$ret = array();
 		if($type == 'file')
@@ -158,5 +164,5 @@ class e_shortcode {
 		return $ret;
 	}
 }
-	
+
 ?>

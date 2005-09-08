@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-07 23:11:55 $
-|     $Author: streaky $
+|     $Revision: 1.15 $
+|     $Date: 2005-09-08 18:39:42 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -38,7 +38,8 @@ class e107_debug {
 		'notice'		=> 32768,   // you REALLY don't want all this, do you?
 		'everything' 	=> 65535,
 		'bbsc' 			=> 65536,
-		'paths' 		=> 131072
+		'paths' 		=> 131072,
+		'sc'			=> 5		// Shortcode paths only.
 	);
 
 	function e107_debug() {
