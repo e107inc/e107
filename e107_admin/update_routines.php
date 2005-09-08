@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.135 $
-|     $Date: 2005-09-08 16:51:58 $
+|     $Revision: 1.136 $
+|     $Date: 2005-09-08 16:54:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -1414,11 +1414,11 @@ function mysql_table_exists($table){
 
 function catch_error(){
 	global $error;
-	if (mysql_error()!='') {
+	if (mysql_error()!='' && E107_DEBUG_LEVEL > 0) {
 		$tmp2 = debug_backtrace();
 		$tmp = mysql_error();
-	//	$error.= $tmp;
-	//	echo $tmp." [ ".basename(__FILE__)." on line ".$tmp2[0]['line']."] <br />";
+		$error.= $tmp;
+		echo $tmp." [ ".basename(__FILE__)." on line ".$tmp2[0]['line']."] <br />";
 	}
 
 	return;
