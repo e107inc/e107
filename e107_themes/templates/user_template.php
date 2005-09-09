@@ -11,13 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-08-11 19:12:38 $
+|     $Revision: 1.10 $
+|     $Date: 2005-09-09 18:51:14 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 global $user_shortcodes, $pref;
+//Set this to TRUE if you would like any extended user field that is empty to NOT be shown on the profile page
+define("HIDE_EMPTY_FIELDS", FALSE);
+
 $EXTENDED_CATEGORY_START = "<tr><td colspan='2' class='forumheader' style='text-align:left'>{EXTENDED_NAME}</td></tr>";
 
 $EXTENDED_CATEGORY_TABLE = "
