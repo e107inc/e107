@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/admin_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-09-09 15:16:03 $
-|     $Author: stevedunstan $
+|     $Revision: 1.3 $
+|     $Date: 2005-09-09 15:58:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -59,8 +59,8 @@ class gsitemap
 		{
 			$this -> importLink();
 		}
-		
-		
+
+
 		if($this -> message)
 		{
 			echo "<br /><div style='text-align:center'><b>".$this -> message."</b></div><br />";
@@ -90,11 +90,11 @@ class gsitemap
 	function showList()
 	{
 		global $sql,$ns,$tp;
-		$gen = new convert; 
+		$gen = new convert;
 		$count = $sql -> db_Select("gsitemap", "*", "gsitemap_id !=0 ORDER BY gsitemap_id ASC");
 
 		$text = "<div style='text-align:center'>
-		
+
 		";
 
 		if (!$count)
@@ -112,10 +112,10 @@ class gsitemap
 		{
 
 			$text .= "
-			
+
 			<form action='".e_SELF."' id='display' method='post'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
-			
+
 			<tr>
 			<td style='width:5%; text-align: center;' class='fcaption'>Id</td>
 			<td style='width:10%' class='fcaption'>Name</td>
@@ -292,7 +292,7 @@ class gsitemap
 		}
 		else
 		{
-			$this -> message = ($sql -> db_Insert("gsitemap", "0, '".$_POST['gsitemap_name']."', '".$_POST['gsitemap_url']."', '".$_POST['gsitemap_lastmod']."', '".$_POST['gsitemap_freq']."', '".$_POST['gsitemap_priority']."', '".$_POST['meet_country']."', '".$_POST['meet_img']."', '".$_POST['meet_language']."', '".$_POST['gsitemap_order']."' ")) ? LAN_CREATED : LAN_CREATED_FAILED;
+			$this -> message = ($sql -> db_Insert("gsitemap", "0, '".$_POST['gsitemap_name']."', '".$_POST['gsitemap_url']."', '".$_POST['gsitemap_lastmod']."', '".$_POST['gsitemap_freq']."', '".$_POST['gsitemap_priority']."', '".$_POST['gsitemap_cat']."', '".$_POST['gsitemap_order']."', '".$_POST['gsitemap_img']."', '".$_POST['gsitemap_active']."' ")) ? LAN_CREATED : LAN_CREATED_FAILED;
 		}
 	}
 
@@ -334,7 +334,7 @@ class gsitemap
 			}
 		}
 
-		
+
 
 		/* forums ... */
 		$sql -> db_Select("forum", "*", "forum_parent!='0' ORDER BY forum_order ASC");
@@ -357,7 +357,7 @@ class gsitemap
 		/* end */
 
 
-		
+
 		$text = "
 		<form action='".e_SELF."' id='form' method='post'>
 		<table style='".ADMIN_WIDTH."' class='fborder'>
