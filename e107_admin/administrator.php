@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-09-09 20:29:55 $
+|     $Revision: 1.25 $
+|     $Date: 2005-09-09 20:32:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -380,7 +380,7 @@ function renderperms($perm,$id){
 		$ret .= ",&nbsp;". $langperm;
 	}
 
-	$text = "<div onclick=\"expandit('id_$id')\" style='cursor:pointer' >$ret</div>
+	$text = "<div onclick=\"expandit('id_$id')\" style='cursor:pointer' title='".ADMSLAN_71."'>$ret</div>
 	<div id='id_$id' style='display:none'><br />".implode("<br />",$ptext)."</div>";
     return $text;
 
