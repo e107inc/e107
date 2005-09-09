@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/admin_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-09 14:46:53 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-09 15:16:03 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -378,7 +378,7 @@ class gsitemap
 		{
 			$text .= "
 			<tr>
-			<td style='width:5%; text-align: center;' class='forumheader3'><input type='checkbox' name='importid[]' value='".$ia['name']."^".$ia['url']."' /></td>
+			<td style='width:5%; text-align: center;' class='forumheader3'><input type='checkbox' name='importid[]' value='".$ia['name']."^".$ia['url']."^".$ia['type']."' /></td>
 			<td style='width:15%' class='forumheader3'>".$ia['type']."</td>
 			<td style='width:40%' class='forumheader3'>".$ia['name']."</td>
 			<td style='width:40%' class='forumheader3'><span class='smalltext'>".$ia['url']."</span></td>
@@ -405,10 +405,10 @@ class gsitemap
 		global $sql, $tp;
 		foreach($_POST['importid'] as $import)
 		{
-			list($name, $url) = explode("^", $import);
+			list($name, $url, $type) = explode("^", $import);
 			$name = $tp -> toDB($name);
 			$url = $tp -> toDB($url);
-			$sql -> db_Insert("gsitemap", "0, '$name', '$url', '".time()."', 'always', '0.5', '0', '0', '', '0' ");
+			$sql -> db_Insert("gsitemap", "0, '$name', '$url', '".time()."', 'always', '0.5', '$type', '0', '', '0' ");
 		}
 		$this -> message = count($_POST['importid'])." link(s) imported.";
 	}
