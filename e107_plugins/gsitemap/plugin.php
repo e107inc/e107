@@ -62,7 +62,7 @@ CREATE TABLE ".MPREFIX."gsitemap (
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;
 $eplug_link_name = "Sitemap";
-$eplug_link_url = "gsitemap.php";
+$eplug_link_url = "gsitemap.php?show";
 
 
 // Text to display after plugin successfully installed ------------------------------------------------------------------
