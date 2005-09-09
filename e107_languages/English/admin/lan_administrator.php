@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_administrator.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-08-28 08:32:09 $
-|     $Author: stevedunstan $
+|     $Revision: 1.11 $
+|     $Date: 2005-09-09 20:29:55 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("ADMSLAN_0", "New user/admin entry created for");
@@ -75,4 +75,7 @@ define("ADMSLAN_66", "Configure Search");
 define("ADMSLAN_67", "Scan with file inspector");
 define("ADMSLAN_68", "Configure email notification");
 define("ADMSLAN_69", "is already an administrator and must be edited.");
+
+define("ADMSLAN_70", "Return to Administrator Listing");
+
 ?>
