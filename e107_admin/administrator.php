@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-09-09 19:57:24 $
+|     $Revision: 1.23 $
+|     $Date: 2005-09-09 20:12:47 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -368,14 +368,14 @@ function renderperms($perm,$id){
 			if(in_array($pms, $lanlist)){
 				$langperm .= $pms."&nbsp;";
 			}else{
-				$permtxt .= $pms;
+				$permtxt[] = $pms;
                 if($pt[$pms]){
 		   			$ptext[] = $pt[$pms];
 				}
 			}
 		}
 
-	$ret = $permtxt;
+	$ret = implode(" ",$permtxt);
 	if($pref['multilanguage']){
 		$ret .= ",&nbsp;". $langperm;
 	}
