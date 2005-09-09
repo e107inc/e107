@@ -10,8 +10,8 @@
 |       Released under the terms and conditions of the
 |       GNU General Public License (http://gnu.org).
 |     	$Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/plugin.php,v $
-|     	$Revision: 1.4 $
-|     	$Date: 2005-09-09 16:16:54 $
+|     	$Revision: 1.5 $
+|     	$Date: 2005-09-09 16:49:32 $
 |     	$Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -19,7 +19,7 @@
 $eplug_name = "Google Sitemap";
 $eplug_version = "1.0";
 $eplug_author = "cameron / jalist";
-$eplug_logo = "button.png";
+
 $eplug_url = "http://e107coders.org";
 $eplug_email = "cameron@e107coders.org";
 $eplug_description = "Google Sitemap. For more information on the Google Sitemap protocol, go to <a href='http://www.google.com/webmasters/sitemaps/docs/en/protocol.html'>http://www.google.com/webmasters/sitemaps/docs/en/protocol.html</a>";
@@ -37,6 +37,7 @@ $eplug_conffile = "admin_config.php";
 
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/icon.png";
+$eplug_logo = $eplug_folder."/images/icon.png";
 $eplug_caption =  "Configure Sitemap";
 
 // List of preferences -----------------------------------------------------------------------------------------------
