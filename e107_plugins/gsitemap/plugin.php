@@ -1,14 +1,18 @@
 <?php
 /*
 +---------------------------------------------------------------+
-|        e107 website system
+|       e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|       ©Steve Dunstan 2001-2002
+|       http://e107.org
+|       jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
+|       Released under the terms and conditions of the
+|       GNU General Public License (http://gnu.org).
+|     	$Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/plugin.php,v $
+|     	$Revision: 1.4 $
+|     	$Date: 2005-09-09 16:16:54 $
+|     	$Author: e107coders $
 +---------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
@@ -26,7 +30,7 @@ $eplug_readme = "";        // leave blank if no readme file
 $eplug_folder = "gsitemap";
 
 // Mane of menu item for plugin ----------------------------------------------------------------------------------
-// $eplug_menu_name = "yourplugin_menu";
+ $eplug_menu_name = "";
 
 // Name of the admin configuration file --------------------------------------------------------------------------
 $eplug_conffile = "admin_config.php";
@@ -68,6 +72,7 @@ $eplug_link_url = "gsitemap.php?show";
 // Text to display after plugin successfully installed ------------------------------------------------------------------
 $eplug_done = "Installation Successful..";
 
+$eplug_uninstall_done = "You should delete gsitemap.php from your root directory.";
 
 // upgrading ... //
 
@@ -78,6 +83,7 @@ $upgrade_remove_prefs = "";
 $upgrade_alter_tables = "";
 
 $eplug_upgrade_done = "";
+
 
 
 
