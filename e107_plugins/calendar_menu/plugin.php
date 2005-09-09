@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-07-14 13:15:16 $
-|     $Author: lisa_ $
+|     $Revision: 1.9 $
+|     $Date: 2005-09-09 14:09:18 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
@@ -28,22 +28,22 @@ $eplug_description = EC_LAN_107;
 $eplug_compatible = "e107v7";
 $eplug_readme = "readme.rtf";
 // leave blank if no readme file
-$eplug_compliant = TRUE; 
-	
+$eplug_compliant = TRUE;
+
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "calendar_menu";
-	
+
 // Mane of menu item for plugin ----------------------------------------------------------------------------------
 $eplug_menu_name = "calendar_menu";
-	
+
 // Name of the admin configuration file --------------------------------------------------------------------------
 $eplug_conffile = "admin_config.php";
-	
+
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/calendar_32.png";
 $eplug_icon_small = $eplug_folder."/images/calendar_16.png";
 $eplug_caption = EC_LAN_81; // "Configure Event Calendar";
-	
+
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array(
 "eventpost_admin" => 0,
@@ -59,10 +59,10 @@ $eplug_prefs = array(
 "eventpost_lenday" => 1,
 "eventpost_asubs" => 1,
 "eventpost_weekstart" => "sun" );
-	
+
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array("event","event_cat","event_subs" );
-	
+
 // List of sql requests to create tables -----------------------------------------------------------------------------
 $eplug_tables = array(
 "CREATE TABLE ".MPREFIX."event (
@@ -107,26 +107,27 @@ $eplug_tables = array(
 	event_cat  int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (event_subid)
 	) TYPE=MyISAM;");
-	
-	
+
+
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;
 $eplug_link_name = EC_LAN_83; // "Calendar";
 $ec_dir = e_PLUGIN."calendar_menu/";
 $eplug_link_url = "".$ec_dir."calendar.php";
-	
-	
+
+
 // Text to display after plugin successfully installed ------------------------------------------------------------------
 $eplug_done = EC_LAN_82; // "To activate please go to your menus screen and select the calendar_menu into one of your menu areas.";
-	
-	
+
+
 // upgrading ... //
-	
+
 $upgrade_add_prefs = "";
-	
+
 $upgrade_remove_prefs = "";
-	
+
 $upgrade_alter_tables = array(
+"ALTER TABLE ".MPREFIX."event_cat ADD event_cat_class int(10) unsigned NOT NULL default '0'",
 "ALTER TABLE ".MPREFIX."event_cat ADD event_cat_subs tinyint(3) unsigned NOT NULL default '0'",
 "ALTER TABLE ".MPREFIX."event_cat ADD event_cat_force tinyint(3) unsigned NOT NULL default '0'",
 "ALTER TABLE ".MPREFIX."event_cat ADD event_cat_ahead tinyint(3) unsigned NOT NULL default '0'",
@@ -144,11 +145,11 @@ $upgrade_alter_tables = array(
 	PRIMARY KEY  (event_subid)
 	) TYPE=MyISAM;"
 );
-	
+
 $eplug_upgrade_done = EC_LAN_108;
-	
-	
-	
-	
-	
+
+
+
+
+
 ?>
