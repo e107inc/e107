@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-09-09 20:12:47 $
+|     $Revision: 1.24 $
+|     $Date: 2005-09-09 20:29:55 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -283,7 +283,7 @@ function edit_administrator($row){
 	</form>
 	</div>";
 
-
+    $text .= "<div style='text-align:center'><br /><a href='".e_SELF."'>".ADMSLAN_70."</a></div>";
 	$ns->tablerender(ADMSLAN_52, $text);
 }
 
