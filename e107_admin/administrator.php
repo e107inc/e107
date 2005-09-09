@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-08-28 08:32:09 $
-|     $Author: stevedunstan $
+|     $Revision: 1.21 $
+|     $Date: 2005-09-09 18:09:35 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -23,15 +23,10 @@ if (!getperms("3"))
 	exit;
 }
 $e_sub_cat = 'admin';
-if (!is_object($tp)) $tp = new e_parse;
-
 require_once("auth.php");
+$lanlist = explode(",",e_LANLIST);
 
-require_once(e_HANDLER."file_class.php");
-$fl = new e_file;
-$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
-require_once(e_HANDLER."form_handler.php");
-$rs = new form;
+
 
 if (e_QUERY)
 {
@@ -66,7 +61,7 @@ if (isset($_POST['add_admin']))
 			}
 			else
 			{
-				
+
 				$row = $sql->db_Fetch();
 				$message = $row['user_name']." ".ADMSLAN_69;
 //				$sql->db_Update("user", "user_admin='1', user_perms='$perm' WHERE user_name='".$_POST['ad_name']."' ");
@@ -96,14 +91,16 @@ if (isset($_POST['update_admin']))
 			$perm .= $_POST['perms'][$i].".";
 		}
 	}
-	$sql->db_Update("user", "user_password='$admin_password', user_perms='$perm' WHERE user_name='$a_name' ");
+	$message = ($sql->db_Update("user", "user_password='$admin_password', user_perms='$perm' WHERE user_name='$a_name' ")) ? ADMSLAN_56." ".$_POST['ad_name']." ".ADMSLAN_2."<br />" : LAN_UPDATED_FAILED;
 	unset($ad_name, $a_password, $a_perms);
-	$message = ADMSLAN_56." ".$_POST['ad_name']." ".ADMSLAN_2."<br />";
+
 }
 
-if ($action == "edit")
+if ($_POST['edit_admin'] || $action == "edit")
 {
-	$sql->db_Select("user", "*", "user_id=$sub_action");
+	$edid = array_keys($_POST['edit_admin']);
+    $theid = ($edid[0]) ? $edid[0] : $sub_action;
+	$sql->db_Select("user", "*", "user_id=".$theid);
 	$row = $sql->db_Fetch();
 	extract($row);
 	$a_id = $user_id;
@@ -120,22 +117,24 @@ if ($action == "edit")
 	}
 }
 
-if ($action == "delete" && $_POST['del_administrator_confirm'] == 1)
+if (isset($_POST['del_admin']))
 {
-	$sql->db_Select("user", "*", "user_id=$sub_action");
+	$delid = array_keys($_POST['del_admin']);
+	$sql->db_Select("user", "*", "user_id= ".$delid[0]);
 	$row = $sql->db_Fetch();
-	extract($row);
-	if ($user_perms == "0")
+
+	if ($row['user_perms'] == "0")
 	{
-		$text = "<div style='text-align:center'>$user_name ".ADMSLAN_6."
+		$text = "<div style='text-align:center'>".$row['user_name']." ".ADMSLAN_6."
 		<br /><br />
 		<a href='administrator.php'>".ADMSLAN_4."</a>";
 		$ns->tablerender(ADMSLAN_5, $text);
 		require_once("footer.php");
 		exit;
 	}
-	$sql->db_Update("user", "user_admin=0, user_perms='' WHERE user_id=$sub_action");
-	$message = ADMSLAN_61;
+
+	$message = ($sql->db_Update("user", "user_admin=0, user_perms='' WHERE user_id= ".$delid[0])) ? ADMSLAN_61 : LAN_DELETED_FAILED;
+
 }
 
 if (isset($message))
@@ -153,9 +152,9 @@ $text = "<div style='text-align:center'><div style='padding: 1px; ".ADMIN_WIDTH.
 <table class='fborder' style='width:99%'>
 <tr>
 <td style='width:5%' class='fcaption'>ID</td>
-<td style='width:30%' class='fcaption'>".ADMSLAN_56."</td>
-<td style='width:30%' class='fcaption'>".LAN_OPTIONS."</td>
-<td style='width:35%' class='fcaption'>".ADMSLAN_18."</td>
+<td style='width:20%' class='fcaption'>".ADMSLAN_56."</td>
+<td style='width:65%' class='fcaption'>".ADMSLAN_18."</td>
+<td style='width:10%' class='fcaption'>".LAN_OPTIONS."</td>
 </tr>";
 
 while ($row = $sql->db_Fetch())
@@ -163,9 +162,8 @@ while ($row = $sql->db_Fetch())
 	extract($row);
 	$text .= "<tr>
 	<td style='width:5%' class='forumheader3'>$user_id</td>
-	<td style='width:30%' class='forumheader3'>$user_name</td>
-	<td style='width:30%; text-align:center' class='forumheader3'>". ($user_perms == "0" ? "&nbsp;" : $rs->form_button("button", "", LAN_EDIT, "onclick=\"document.location='".e_SELF."?edit.$user_id'\""). $rs->form_button("button", "", ADMSLAN_59, "onclick=\"confirm_($user_id, '$user_name')\""))."</td>
-	<td style='width:35%' class='forumheader3'>";
+	<td style='width:20%' class='forumheader3'>$user_name</td>
+	<td style='width:65%' class='forumheader3'>";
 
 	$permtxt = "";
 	if($user_perms == "0")
@@ -200,7 +198,18 @@ while ($row = $sql->db_Fetch())
 			$text .= "&nbsp;";
 		}
 	}
-	$text .= "</td></tr>";
+	$text .= "</td>
+
+	<td style='width:10%; text-align:center' class='forumheader3'>";
+	if($user_perms != "0")
+	{
+    	$text .= "
+		<input type='image' name='edit_admin[$user_id]' value='edit' src='".e_IMAGE."admin_images/edit_16.png' title='".LAN_EDIT."' />
+		<input type='image' name='del_admin[$user_id]' value='del' src='".e_IMAGE."admin_images/delete_16.png' onclick=\"return jsconfirm('".$tp->toJS(ADMSLAN_59."? [".$user_name."]")."') \"  title='".ADMSLAN_59."' style='border:0px' />";
+    }
+	$text .= "&nbsp;</td>
+
+</tr>";
 }
 
 $text .= "</table></div>\n</form></div>\n</div>";
@@ -212,8 +221,8 @@ $text = "<div style='text-align:center'>
 <form method='post' action='".e_SELF."' id='myform' >
 <table style='".ADMIN_WIDTH."' class='fborder'>
 <tr>
-<td style='width:30%' class='forumheader3'>".ADMSLAN_16.": </td>
-<td style='width:70%' class='forumheader3'>
+<td style='width:25%' class='forumheader3'>".ADMSLAN_16.": </td>
+<td style='width:75%' class='forumheader3'>
 ";
 if($action == 'edit')
 {
@@ -229,15 +238,15 @@ $text .= "
 </tr>
 
 <tr>
-<td style='width:30%' class='forumheader3'>".ADMSLAN_17.": </td>
-<td style='width:70%' class='forumheader3'>
+<td style='width:25%' class='forumheader3'>".ADMSLAN_17.": </td>
+<td style='width:75%' class='forumheader3'>
 <input class='tbox' type='text' name='a_password' size='60' value='$a_password' maxlength='100' />
 </td>
 </tr>
 
 <tr>
-<td style='width:30%;vertical-align:top' class='forumheader3'>".ADMSLAN_18.": <br /></td>
-<td style='width:70%' class='forumheader3'>";
+<td style='width:25%;vertical-align:top' class='forumheader3'>".ADMSLAN_18.": <br /></td>
+<td style='width:75%' class='forumheader3'>";
 
 function checkb($arg, $perms)
 {
@@ -330,7 +339,7 @@ $text .= "
 $text .= "<tr style='vertical-align:top'>
 <td colspan='2' style='text-align:center' class='forumheader'>";
 
-if ($action == "edit")
+if ($action == "edit" || $_POST['edit_admin'])
 {
 	$text .= "<input class='button' type='submit' name='update_admin' value='".ADMSLAN_52."' />
 	<input type='hidden' name='a_id' value='$a_id' />";
