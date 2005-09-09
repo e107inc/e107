@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_conf.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-07 02:51:18 $
+|     $Revision: 1.4 $
+|     $Date: 2005-09-09 01:40:40 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -399,7 +399,15 @@ function pm_convert_uid($name)
 		}
 		else
 		{
-			return FALSE;
+			if($sqlu->db_Select("user", "user_id", "user_loginname LIKE '{$name}'"))
+			{
+				$row = $sqlu->db_Fetch();
+				$uinfo[$name] = $row['user_id'];
+			}
+			else
+			{
+				return FALSE;
+			}
 		}
 	}
 	return $uinfo[$name];
