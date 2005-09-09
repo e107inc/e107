@@ -17,7 +17,7 @@ define("BANLAN_1", "Blokkade verwijderd.");
 define("BANLAN_2", "Geen blokkades.");
 define("BANLAN_3", "Huidige blokkades");
 define("BANLAN_4", "Verwijder blokkade");
-define("BANLAN_5", "Blokkeer IP adres");
+define("BANLAN_5", "Blokkeer IP-adres");
 define("BANLAN_7", "Reden");
 define("BANLAN_8", "Blokkeer gebruiker");
 define("BANLAN_9", "Blokkeer deze site voor gebruikers");

@@ -1,4 +1,4 @@
 <?php
-$text = "Wijzig hier je naam, e-mail adres en wachtwoord.";
+$text = "Wijzig hier je naam, e-mailadres en wachtwoord.";
 $ns -> tablerender("Bijwerken instellingen Hulp", $text);
 ?>

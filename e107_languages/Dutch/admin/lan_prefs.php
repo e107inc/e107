@@ -22,7 +22,7 @@ define("PRFLAN_4", "Site Link Button");
 define("PRFLAN_5", "Site motto");
 define("PRFLAN_6", "Site beschrijving");
 define("PRFLAN_7", "Hoofdbeheerder");
-define("PRFLAN_8", "E-mail adres hoofdbeheerder");
+define("PRFLAN_8", "E-mailadres hoofdbeheerder");
 define("PRFLAN_9", "Site Disclaimer");
 define("PRFLAN_10", "Thema");
 define("PRFLAN_11", "Site thema");
@@ -119,7 +119,7 @@ define("PRFLAN_132", "Activeren van deze functie houdt in dat geautoriseerde geb
 define("PRFLAN_133", "GD extensie nodig, niet gevonden");
 define("PRFLAN_134", "Verwijs alle aanvragen naar site URL");
 define("PRFLAN_135", "als bijvoorbeeld de URL van je site staat ingesteld op http://foo.com, dan wordt iedereen die http://www.foo.com opvraagt doorverwezen naar http://foo.com");
-define("PRFLAN_136", "Maximaal toegestane aantal aanmeldingen van hetzelfde IP adres.");
+define("PRFLAN_136", "Maximaal toegestane aantal aanmeldingen van hetzelfde IP-adres.");
 define("PRFLAN_137", "Toon geheugengebruik");
 define("PRFLAN_138", "Activeren Afbeelding-code verificatie bij vergeten wachtwoord.");
 define("PRFLAN_139", "Tonen waarschuwing als het wachtwoord van de hoofdbeheerder de laatste 30 dagen niet is gewijzigd");

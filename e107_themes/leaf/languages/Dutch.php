@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/leaf/languages/Dutch.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-06 06:39:16 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-09 13:58:25 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
 
 define("LAN_THEME_1", "Reactie(s) ");
-define("LAN_THEME_2", "Reageren op die onderwerp niet mogelijk");
+define("LAN_THEME_2", "Reageren op dit onderwerp niet mogelijk");
 define("LAN_THEME_3", "reactie(s) ");
 define("LAN_THEME_4", "Lees verder ...");
 define("LAN_THEME_5", "Trackbacks: ");

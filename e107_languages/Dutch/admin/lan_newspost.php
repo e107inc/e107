@@ -148,4 +148,5 @@ define("LAN_NEWS_42", "Bestanden");
 define("LAN_NEWS_43", "(geen afbeeldingen in /e107_images/newspost_images)");
 define("LAN_NEWS_44", "Trackback niet geactiveerd.");
 define("LAN_NEWS_45", "ID");
+define("LAN_NEWS_46", "Nieuwsbericht niet bijgewerkt omdat er geen verandering was.");
 ?>
