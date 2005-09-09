@@ -11,7 +11,7 @@ if(e_QUERY == "show")
 
 	foreach($nfArray as $nfa)
 	{
-		$text .= "<li><a href='".$nfa['gsitemap_url']."'>".$nfa['gsitemap_name']."</a><br />\n";
+		$text .= "<li>".$nfa['gsitemap_cat'].": <a href='".$nfa['gsitemap_url']."'>".$nfa['gsitemap_name']."</a><br />\n";
 	}
 	$text .= "</ul>";
 
@@ -34,7 +34,7 @@ foreach($smArray as $sm)
 	$xml .= "
 	<url>
 		<loc>".$tp->toRSS($sm['gsitemap_url'])."</loc>
-		<lastmod>".$sm['gsitemap_lastmod']."</lastmod>
+		<lastmod>".get_iso_8601_date($sm['gsitemap_lastmod'])."</lastmod>
     		<changefreq>".$sm['gsitemap_freq']."</changefreq>
     		<priority>".$sm['gsitemap_priority']."</priority>
 	</url>";
@@ -44,6 +44,16 @@ $xml .= "
 </urlset>";
 
 echo $xml;
+
+/* ungu at terong dot com */
+function get_iso_8601_date($int_date)
+{
+   $date_mod = date('Y-m-d\TH:i:s', $int_date);
+   $pre_timezone = date('O', $int_date);
+   $time_zone = substr($pre_timezone, 0, 3).":".substr($pre_timezone, 3, 2);
+   $date_mod .= $time_zone;
+   return $date_mod;
+}
 
 
 ?>

@@ -50,7 +50,7 @@ CREATE TABLE ".MPREFIX."gsitemap (
 	gsitemap_lastmod varchar(15) NOT NULL default '',
 	gsitemap_freq varchar(10) NOT NULL default '',
 	gsitemap_priority varchar(3) NOT NULL default '',
-	gsitemap_cat int(50) NOT NULL default '',
+	gsitemap_cat varchar(100) NOT NULL default '',
 	gsitemap_order int(3) NOT NULL default '',
 	gsitemap_img varchar(50) NOT NULL default '',
 	gsitemap_active int(3) NOT NULL default '',
