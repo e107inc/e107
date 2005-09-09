@@ -4,7 +4,7 @@
 |        e107 website system
 |        lan_mail_handler.php Dutch-utf language file 
 |
-|        Â©Steve Dunstan 2001-2002
+|        �Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -15,7 +15,7 @@
 +---------------------------------------------------------------+
 */
 
-define("LANMAILH_1", "GecreÃ«erd door het e107 website systeem");
+define("LANMAILH_1", "Gecre�erd door het e107 website systeem");
 define("LANMAILH_2", "Dit is een multi-part bericht in MIME formaat.");
 define("LANMAILH_3", " is niet juist geformatteerd");
 define("LANMAILH_4", "Door server geweigerd adres");

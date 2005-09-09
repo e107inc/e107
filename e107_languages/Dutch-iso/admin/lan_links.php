@@ -4,7 +4,7 @@
 |        e107 website system
 |        admin/lan_links.php Dutch-utf language file 
 |
-|        Â©Steve Dunstan 2001-2002
+|        �Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -42,7 +42,7 @@ define("LCLAN_54", "verwijderd");
 define("LCLAN_58", "Weet je zeker dat je deze link wilt verwijderen?");
 define("LCLAN_61", "Geen links");
 define("LCLAN_62", "Links hoofdpagina");
-define("LCLAN_63", "CreÃ«er nieuwe link");
+define("LCLAN_63", "Cre�er nieuwe link");
 define("LCLAN_68", "Opties");
 define("LCLAN_68", "Links opties");
 define("LCLAN_78", "Toon beschrijving als scherm-tip");
@@ -62,8 +62,8 @@ define("LINKLAN_2", "Ouder");
 define("LINKLAN_3", "Geen ouder (normale link)");
 define("LINKLAN_4", "Sublink generator");
 define("LINKLAN_5", "Genereren sublinks");
-define("LINKLAN_6", "CreÃ«er sublinks van:");
-define("LINKLAN_7", "CreÃ«er sublinks onder welke link?");
-define("LINKLAN_8", "NieuwscategorieÃ«n");
-define("LINKLAN_9", "DownloadcategorieÃ«n");
+define("LINKLAN_6", "Cre�er sublinks van:");
+define("LINKLAN_7", "Cre�er sublinks onder welke link?");
+define("LINKLAN_8", "Nieuwscategorie�n");
+define("LINKLAN_9", "Downloadcategorie�n");
 ?>

@@ -4,7 +4,7 @@
 |        e107 website system
 |        admin/lan_article.php Dutch-utf language file
 |
-|        Â©Steve Dunstan 2001-2002
+|        �Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -54,8 +54,8 @@ define("ARLAN_59", "Categorie");
 define("ARLAN_60", "Opties");
 define("ARLAN_61", "Bewerken");
 define("ARLAN_62", "Verwijderen");
-define("ARLAN_63", "Geen artikelcategorieÃ«n");
-define("ARLAN_64", "Aanwezige artikelcategorieÃ«n");
+define("ARLAN_63", "Geen artikelcategorie�n");
+define("ARLAN_64", "Aanwezige artikelcategorie�n");
 define("ARLAN_65", "Naam categorie");
 define("ARLAN_66", "Pictogram categorie");
 define("ARLAN_67", "Bekijk afbeeldingen");
@@ -69,7 +69,7 @@ define("ARLAN_74", "Categorie");
 define("ARLAN_75", "Geen");
 define("ARLAN_76", "Artikel Hoofdpagina");
 define("ARLAN_77", "Opstellen nieuw artikel");
-define("ARLAN_78", "CategorieÃ«n");
+define("ARLAN_78", "Categorie�n");
 define("ARLAN_79", "Artikel opties");
 define("ARLAN_80", "Weet je zeker dat je deze categorie wilt verwijderen?");
 define("ARLAN_81", "Weet je zeker dat je dit artikel wilt verwijderen?");

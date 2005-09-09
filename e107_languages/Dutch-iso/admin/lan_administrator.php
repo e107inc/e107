@@ -4,7 +4,7 @@
 |        e107 website system
 |        admin/lan_administrator.php Dutch-utf language file
 |
-|        Â©Steve Dunstan 2001-2002
+|        �Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -28,10 +28,10 @@ define("ADMSLAN_20", "Wijzigen menu's");
 define("ADMSLAN_21", "Toevoegen site beheerder");
 define("ADMSLAN_22", "Modereren gebruikersbeperkingen etc");
 define("ADMSLAN_23", "Beheren maatwerk pagina's/menu's");
-define("ADMSLAN_24", "Bewerk download categorieÃ«n");
+define("ADMSLAN_24", "Bewerk download categorie�n");
 define("ADMSLAN_25", "Bestands-upload/beheer");
-define("ADMSLAN_26", "Nieuws categorieÃ«n");
-define("ADMSLAN_27", "Link categorieÃ«n");
+define("ADMSLAN_26", "Nieuws categorie�n");
+define("ADMSLAN_27", "Link categorie�n");
 define("ADMSLAN_28", "Sluit site voor tijdelijke onderhoud");
 define("ADMSLAN_29", "Configureer banners");
 define("ADMSLAN_30", "Configureren log/stats");

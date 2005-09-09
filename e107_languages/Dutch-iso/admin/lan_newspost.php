@@ -4,7 +4,7 @@
 |        e107 website system
 |        admin/lan_newspost.php Dutch-utf language file 
 |
-|        Â©Steve Dunstan 2001-2002
+|        �Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -22,8 +22,8 @@ define("NWSLAN_4", "Aanwezige berichten");
 define("NWSLAN_5", "Open HTML Editor");
 define("NWSLAN_6", "Categorie");
 define("NWSLAN_9", "aankruisen om te bevestigen");
-define("NWSLAN_10", "Nog geen categorieÃ«n ingesteld.");
-define("NWSLAN_11", "Toevoegen/bewerken categorieÃ«n");
+define("NWSLAN_10", "Nog geen categorie�n ingesteld.");
+define("NWSLAN_11", "Toevoegen/bewerken categorie�n");
 define("NWSLAN_12", "Titel");
 define("NWSLAN_13", "Tekst");
 define("NWSLAN_14", "Uitgebreid");
@@ -53,11 +53,11 @@ define("NWSLAN_42", "Ongetiteld");
 define("NWSLAN_43", "Geen nieuwsberichten");
 define("NWSLAN_44", "Nieuws hoofdpagina");
 define("NWSLAN_45", "Opstellen nieuwsbericht");
-define("NWSLAN_46", "CategorieÃ«n");
+define("NWSLAN_46", "Categorie�n");
 define("NWSLAN_47", "Aangemeld nieuws");
 define("NWSLAN_48", "Nieuws opties");
 define("NWSLAN_49", "Aangemeld door");
-define("NWSLAN_51", "Aanwezige nieuwscategorieÃ«n");
+define("NWSLAN_51", "Aanwezige nieuwscategorie�n");
 define("NWSLAN_52", "Naam categorie");
 define("NWSLAN_53", "Pictogram");
 define("NWSLAN_54", "Bekijk afbeeldingen");
@@ -139,7 +139,7 @@ define("LAN_NEWS_33", "Stel de datum in voor het huidige nieuwsbericht.");
 define("LAN_NEWS_34", "Trackback");
 define("LAN_NEWS_35", "Toevoegen trackback url's");
 define("LAN_NEWS_36", "<b>Pingback</b> (stuur een pingback aan alle url's in dit bericht)");
-define("LAN_NEWS_37", "<b>Trackback url's:</b> (Ã©Ã©n url per regel)");
+define("LAN_NEWS_37", "<b>Trackback url's:</b> (��n url per regel)");
 define("LAN_NEWS_38", "Invoegen afbeeldingen");
 define("LAN_NEWS_39", "klik op het bestand om een afbeelding op de cursorpositie in te voegen");
 define("LAN_NEWS_40", "Invoegen download links");

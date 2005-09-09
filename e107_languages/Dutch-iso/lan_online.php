@@ -4,7 +4,7 @@
 +---------------------------------------------------------------+
 |	e107 website system
 |
-|	Â©Steve Dunstan 2001-2002
+|	�Steve Dunstan 2001-2002
 |	http://e107.org
 |	jalist@e107.org
 |
@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 
-define("ONLINE_EL1", "GÃ¤sten: ");
+define("ONLINE_EL1", "G�sten: ");
 define("ONLINE_EL2", "Leden: ");
 define("ONLINE_EL3", "Op deze pagina: ");
 define("ONLINE_EL4", "Online");

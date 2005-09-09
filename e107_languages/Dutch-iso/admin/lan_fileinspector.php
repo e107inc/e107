@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch-iso/admin/lan_fileinspector.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-09 15:01:20 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-09 15:25:21 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -47,7 +47,7 @@ het bestand bewust hebt aangepast, dan hoef je je geen zorgen te maken en kun je
 het bestand zonder jouw goedkeuren is gewijzigd, dan kun je het beter maar opnieuw uploaden naar je server vanuit
 de e107 zip.");
 define("FR_LAN_17", "Als je een CVS gebruiker bent");
-define("FR_LAN_18", "Als je de checkouts van de e107 CVS op je site draait in plaats van de officiÃ«le e107 stabiele 
+define("FR_LAN_18", "Als je de checkouts van de e107 CVS op je site draait in plaats van de offici�le e107 stabiele 
 versie, dan zul je afwijkingen bij de integriteitscheck zien, omdat ze door een ontwikkelaar zijn gewijzigd
 nadat de laatste core image snapshot werd gemaakt.");
 define("FR_LAN_19", "bestanden onjuist");

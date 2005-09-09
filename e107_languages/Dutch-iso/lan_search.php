@@ -4,7 +4,7 @@
 |        e107 website system
 |        lan_search.php Dutch-utf language file 
 |
-|        Â©Steve Dunstan 2001-2002
+|        �Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -21,15 +21,15 @@ define("LAN_98", "Nieuwsberichten");
 define("LAN_99", "Reacties");
 define("LAN_140", "Geregistreerde deelnemers");
 define("LAN_180", "Zoeken");
-define("LAN_192", "Alle categorieÃ«n");
+define("LAN_192", "Alle categorie�n");
 define("LAN_193", "Kalender");
-define("LAN_194", "Alle categorieÃ«n");
+define("LAN_194", "Alle categorie�n");
 define("LAN_195", "Zoek naar");
 define("LAN_196", "Treffers");
 define("LAN_197", "Downloads");
 define("LAN_198", "Trefwoord niet gevonden");
 define("LAN_199", "Zoek naar");
-define("LAN_200", "CategorieÃ«n:");
+define("LAN_200", "Categorie�n:");
 define("LAN_201", "Definieer zoekopdracht anders");
 define("LAN_416", "Je moet zijn ingelogd om deze pagina te kunnen benaderen");
 define("LAN_417", "De zoekterm moet minimaal drie tekens bevatten.");
@@ -84,12 +84,12 @@ define("LAN_SEARCH_47", "Een jaar");
 define("LAN_SEARCH_48", "Twee jaar");
 define("LAN_SEARCH_49", "Drie jaar");
 define("LAN_SEARCH_50", "Plaatsingsdatum");
-define("LAN_SEARCH_51", "Alle categorieÃ«n");
+define("LAN_SEARCH_51", "Alle categorie�n");
 define("LAN_SEARCH_52", "Overeenstemmen in");
 define("LAN_SEARCH_53", "Hele onderwerp");
 define("LAN_SEARCH_54", "Alleen titel");
 define("LAN_SEARCH_55", "Zoeken in nieuwscategorie");
-define("LAN_SEARCH_56", "Alle nieuws categorieÃ«n");
+define("LAN_SEARCH_56", "Alle nieuws categorie�n");
 define("LAN_SEARCH_57", "Reacties op");
 define("LAN_SEARCH_58", "Alle onderdelen");
 define("LAN_SEARCH_59", "Alle reacties");
@@ -97,7 +97,7 @@ define("LAN_SEARCH_60", "Reacties op");
 define("LAN_SEARCH_61", "Door auteur");
 define("LAN_SEARCH_62", "Datum aangesloten");
 define("LAN_SEARCH_63", "Zoeken in categorie");
-define("LAN_SEARCH_64", "Alle downloadcategorieÃ«n");
+define("LAN_SEARCH_64", "Alle downloadcategorie�n");
 define("LAN_SEARCH_65", "Downloads");
 define("LAN_SEARCH_66", "Datum toegevoegd");
 define("LAN_SEARCH_67", "Alle downloaddetails");

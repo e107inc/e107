@@ -4,7 +4,7 @@
 |        e107 website system
 |        admin/lan_menus.php Dutch-utf language file 
 |
-|        Â©Steve Dunstan 2001-2002
+|        �Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -22,8 +22,8 @@ define("MENLAN_4", "Alleen zichtbaar voor leden in");
 define("MENLAN_6", "Aanpassen zichtbaarheid");
 define("MENLAN_7", "Stel de zichtbaarheid in voor");
 define("MENLAN_8", "Zichtbaarheid bijgewerkt");
-define("MENLAN_9", "Nieuw maatwerkmenu geÃ¯nstalleerd");
-define("MENLAN_10", "Nieuw menu geÃ¯nstalleerd");
+define("MENLAN_9", "Nieuw maatwerkmenu ge�nstalleerd");
+define("MENLAN_10", "Nieuw menu ge�nstalleerd");
 define("MENLAN_11", "Menu verwijderd");
 define("MENLAN_12", "Activeer dit menu - kies de zone");
 define("MENLAN_13", "Activeer in zone");
@@ -40,7 +40,7 @@ define("MENLAN_24", "Helemaal naar boven");
 define("MENLAN_25", "Functie...");
 define("MENLAN_26", "Dit menu wordt uitsluitend <strong>GETOOND</strong> op de volgende pagina's");
 define("MENLAN_27", "Dit menu wordt uitsluitend <strong>VERBORGEN</strong> op de volgende pagina's");
-define("MENLAN_28", "Voer Ã©Ã©n pagina per regel in, geef genoeg tekens op om de link te onderscheiden van andere");
+define("MENLAN_28", "Voer ��n pagina per regel in, geef genoeg tekens op om de link te onderscheiden van andere");
 define("MENLAN_29", "Selecteer layout");
 define("MENLAN_30", "Om de menuzones en hun locatie in een maatwerk layout te zien, kies hier de maatwerk layout:");
 define("MENLAN_31", "Standaard layout");

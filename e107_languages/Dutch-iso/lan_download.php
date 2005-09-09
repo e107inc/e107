@@ -4,7 +4,7 @@
 |        e107 website system
 |        lan_download.php Dutch-utf language file 
 |
-|        Â©Steve Dunstan 2001-2002
+|        �Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -57,7 +57,7 @@ define("LAN_dl_38", "Sorteren op");
 define("LAN_dl_39", "Volgorde");
 define("LAN_dl_40", "Klik hier voor een schermafbeelding");
 define("LAN_dl_41", "Zoeken in Downloads");
-define("LAN_dl_42", "SubcategorieÃ«n");
+define("LAN_dl_42", "Subcategorie�n");
 define("LAN_dl_43", "stem");
 define("LAN_dl_44", "stemmen");
 define("LAN_dl_45", "Meld ontbrekende download");

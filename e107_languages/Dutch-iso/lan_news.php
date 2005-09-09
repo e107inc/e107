@@ -4,7 +4,7 @@
 |        e107 website system
 |        lan_news.php Dutch-utf language file 
 |
-|        Â©Steve Dunstan 2001-2002
+|        �Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -44,5 +44,5 @@ define("LAN_NEWS_19", "Nu");
 define("LAN_NEWS_20", "Nieuws in de database bijgewerkt in de volgende taal: ");
 define("LAN_NEWS_21", "Nieuws bijgewerkt in de database.");
 define("LAN_NEWS_22", "Ga naar pagina: ");
-define("LAN_NEWS_23", "Nieuws categorieÃ«n");
+define("LAN_NEWS_23", "Nieuws categorie�n");
 ?>

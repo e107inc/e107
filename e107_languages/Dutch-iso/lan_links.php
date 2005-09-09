@@ -4,7 +4,7 @@
 |        e107 website system
 |        lan_links.php Dutch-utf language file 
 |
-|        Â©Steve Dunstan 2001-2002
+|        �Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -16,8 +16,8 @@
 */
 
 define("PAGE_NAME", "Links");
-define("LAN_61", "LinkcategorieÃ«n");
-define("LAN_62", "CategorieÃ«n");
+define("LAN_61", "Linkcategorie�n");
+define("LAN_62", "Categorie�n");
 define("LAN_63", "Categorie");
 define("LAN_64", "in deze categorie");
 define("LAN_65", "link");

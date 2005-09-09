@@ -5,7 +5,7 @@
 |        e107 website system
 |        admin/lan_admin.php Dutch-utf language file 
 |
-|        Â©Steve Dunstan 2001-2002
+|        �Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -18,8 +18,8 @@
 
 define("ADLAN_0", "Nieuws");
 define("ADLAN_1", "Beheren nieuws");
-define("ADLAN_2", "Nieuws CategorieÃ«n");
-define("ADLAN_3", "Beheren nieuws categorieÃ«n");
+define("ADLAN_2", "Nieuws Categorie�n");
+define("ADLAN_3", "Beheren nieuws categorie�n");
 define("ADLAN_4", "Voorkeuren");
 define("ADLAN_5", "Stel voorkeuren in");
 define("ADLAN_6", "Menu's");
@@ -36,12 +36,12 @@ define("ADLAN_16", "Eigen pagina's");
 define("ADLAN_17", "Beheren eigen pagina's");
 define("ADLAN_18", "Reviews");
 define("ADLAN_19", "Beheren reviews");
-define("ADLAN_22", "Link categorieÃ«n");
-define("ADLAN_23", "Beheren Link categorieÃ«n");
+define("ADLAN_22", "Link categorie�n");
+define("ADLAN_23", "Beheren Link categorie�n");
 define("ADLAN_24", "Downloads");
 define("ADLAN_25", "Beheer downloads");
-define("ADLAN_26", "Download categorieÃ«n");
-define("ADLAN_27", "Beheren download categorieÃ«n");
+define("ADLAN_26", "Download categorie�n");
+define("ADLAN_27", "Beheren download categorie�n");
 define("ADLAN_28", "Welkomstbericht");
 define("ADLAN_29", "Stel welkomstbericht in");
 define("ADLAN_30", "Bestandsbeheer");
@@ -101,7 +101,7 @@ define("ADLAN_90", "Beheerderswachtwoord");
 define("ADLAN_91", "Inloggen");
 define("ADLAN_92", "Log in om verder naar het beheerscherm te gaan");
 define("ADLAN_93", "Toon beheerfuncties");
-define("ADLAN_94", "GeÃ¯nstalleerde plugins");
+define("ADLAN_94", "Ge�nstalleerde plugins");
 define("ADLAN_95", "Pluginbeheer");
 define("ADLAN_96", "Geen");
 define("ADLAN_97", "Klik hier voor de FAQ");
@@ -164,7 +164,7 @@ define("LAN_ADMIN","Beheer");
 
 define("LAN_EDIT","Bewerken");
 define("LAN_DELETE","Verwijderen");
-define("LAN_CREATE","CreÃ«ren");
+define("LAN_CREATE","Cre�ren");
 define("LAN_UPDATE","Bijwerken");
 define("LAN_SAVE","Opslaan");
 define("LAN_SAVED","Opgeslagen");
@@ -175,7 +175,7 @@ define("LAN_OPTIONS","Opties");
 define("LAN_PREFS","Voorkeuren");
 define("LAN_DELETED","Succesvol verwijderd");
 define("LAN_UPDATED","Succesvol bijgewerkt");
-define("LAN_CREATED","Succesvol gecreÃ«erd");
+define("LAN_CREATED","Succesvol gecre�erd");
 define("LAN_CREATED_FAILED","Aanmaken mislukt");
 define("LAN_DELETED_FAILED","Verwijderen mislukt");
 define("LAN_UPDATED_FAILED","Bijwerken mislukt");

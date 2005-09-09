@@ -40,7 +40,7 @@ define("BNRLAN_43", "Kies banner afbeelding");
 define("BNRLAN_45", "Begindatum");
 define("BNRLAN_46", "Code");
 define("BNRLAN_58", "banner voorpagina");
-define("BNRLAN_59", "creÃ«er nieuwe banner");
+define("BNRLAN_59", "cre�er nieuwe banner");
 define("BNRLAN_60", "campagnes");
 define("BNRLAN_61", "banner menu ");
 define("BNRLAN_62", "banner opties");

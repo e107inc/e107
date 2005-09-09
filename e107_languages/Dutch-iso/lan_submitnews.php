@@ -4,7 +4,7 @@
 |        e107 website system
 |        lan_submitnews.php Dutch-utf language file 
 |
-|        Â©Steve Dunstan 2001-2002
+|        �Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -24,7 +24,7 @@ define("LAN_134", "Je nieuwsbericht is aangemeld en wordt zo spoedig mogelijk do
 define("LAN_135", "Nieuwsbericht: ");
 define("LAN_136", "Meld nieuwsbericht");
 define("NWSLAN_6", "Categorie");
-define("NWSLAN_10", "Geen niewscategorieÃ«n");
+define("NWSLAN_10", "Geen niewscategorie�n");
 define("NWSLAN_11", "Je mag dit onderdeel niet benaderen.");
 define("NWSLAN_12", "Verboden toegang.");
 define("SUBNEWSLAN_1", "Je moet een onderwerp opgeven.");

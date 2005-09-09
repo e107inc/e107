@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch-iso/admin/lan_users_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-09 15:01:20 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-09 15:25:21 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -43,9 +43,9 @@ define("EXTLAN_30", "Uitgebreide velden verwijderd");
 // define("EXTLAN_32", "Extended front page");
 define("EXTLAN_33", "Annuleren bewerken");
 define("EXTLAN_34", "Uitgebreide velden");
-define("EXTLAN_35", "CategorieÃ«n");
+define("EXTLAN_35", "Categorie�n");
 define("EXTLAN_36", "Geen categorie toegewezen");
-define("EXTLAN_37", "Geen categorieÃ«n gedefinieerd");
+define("EXTLAN_37", "Geen categorie�n gedefinieerd");
 define("EXTLAN_38", "Categorienaam");
 define("EXTLAN_39", "Toevoegen categorie");
 define("EXTLAN_40", "Categorie aangemaakt");

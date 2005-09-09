@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch-iso/lan_notify.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-09 15:01:20 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-09 15:25:21 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */

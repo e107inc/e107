@@ -4,7 +4,7 @@
 |        e107 website system
 |        admin/lan_upload.php Dutch-utf language file 
 |
-|        Â©Steve Dunstan 2001-2002
+|        �Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -46,7 +46,7 @@ define("UPLLAN_32", "Database binaire code");
 define("UPLLAN_33", "Maximale bestandsgrootte");
 define("UPLLAN_34", "maximale grootte te uploaden bestand in bytes - niets invullen om de instellingen van php.ini te gebruiken ( php.ini instellingen is");
 define("UPLLAN_35", "Toegestane bestandstypen");
-define("UPLLAN_36", "voer Ã©Ã©n type per regel in");
+define("UPLLAN_36", "voer ��n type per regel in");
 define("UPLLAN_37", "Rechten");
 define("UPLLAN_38", "selecteer welke gebruikers mogen uploaden");
 define("UPLLAN_39", "Plaats");
