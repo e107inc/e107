@@ -94,6 +94,7 @@ if ($parms[1] == 'icon')
 if ($parms[1] == 'value')
 {
 	$uVal = str_replace(chr(1), "", $udata['user_'.$parms[0]]);
+	// check for db_lookup type
 	if($ueStruct["user_".$parms[0]]['user_extended_struct_type'] == '4')
 	{
 		$tmp = explode(",",$ueStruct["user_".$parms[0]]['user_extended_struct_values']);
@@ -109,6 +110,11 @@ if ($parms[1] == 'value')
 	}
 	else
 	{
+		//check for 0000-00-00 in date field
+		if($ueStruct["user_".$parms[0]]['user_extended_struct_type'] == '7')
+		{
+			if($uVal == "0000-00-00") { $uVal = ""; }
+		}
 		$ret_data = $uVal;
 	}
 	if($ret_data != "")

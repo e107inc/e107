@@ -378,7 +378,18 @@ foreach($ueCatList as $catnum => $cat)
 				$extended_record = str_replace("EXTENDED_ICON","EXTENDED={$key}.icon", $EXTENDED_CATEGORY_TABLE);
 			 	$extended_record = str_replace("{EXTENDED_NAME}", $tp->toHTML($ue_name,"","defs"), $extended_record);
 				$extended_record = str_replace("EXTENDED_VALUE","EXTENDED={$key}.value.{$user['user_id']}", $extended_record);
-				$ret .= $tp->parseTemplate($extended_record, TRUE);
+				if(HIDE_EMPTY_FIELDS === TRUE)
+				{
+					$this_value = $tp->parseTemplate("{EXTENDED={$key}.value.{$user['user_id']}}", TRUE);
+					if($this_value != "")
+					{
+						$ret .= $tp->parseTemplate($extended_record, TRUE);
+					}
+				}
+				else
+				{
+					$ret .= $tp->parseTemplate($extended_record, TRUE);
+				}
 			}
 		}
 	}
