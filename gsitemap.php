@@ -11,7 +11,7 @@ if(e_QUERY == "show")
 
 	foreach($nfArray as $nfa)
 	{
-		$text .= "<li>".$nfa['gsitemap_cat'].": <a href='".$nfa['gsitemap_url']."'>".$nfa['gsitemap_name']."</a><br />\n";
+		$text .= "<li>".$tp->toHTML($nfa['gsitemap_cat'],"","defs").": <a href='".$nfa['gsitemap_url']."'>".$tp->toHTML($nfa['gsitemap_name'],"","defs")."</a><br />\n";
 	}
 	$text .= "</ul>";
 
