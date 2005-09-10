@@ -1,38 +1,41 @@
 // DA_DK utf-8 lang variables contributed by Jesper Olesen e107.dk
 
-tinyMCELang['lang_bold_desc'] = 'Fed';
-tinyMCELang['lang_italic_desc'] = 'Kursiv';
-tinyMCELang['lang_underline_desc'] = 'Understreget';
-tinyMCELang['lang_striketrough_desc'] = 'Gennemstreget';
-tinyMCELang['lang_justifyleft_desc'] = 'Venstrejusteret';
-tinyMCELang['lang_justifycenter_desc'] = 'Centreret';
-tinyMCELang['lang_justifyright_desc'] = 'Højrejusteret';
-tinyMCELang['lang_justifyfull_desc'] = 'Lige margin';
-tinyMCELang['lang_bullist_desc'] = 'Usorteret liste';
-tinyMCELang['lang_numlist_desc'] = 'Usorteret liste';
-tinyMCELang['lang_outdent_desc'] = 'Ryk til venstre';
-tinyMCELang['lang_indent_desc'] = 'Ryk til højre';
-tinyMCELang['lang_undo_desc'] = 'Fortryd';
-tinyMCELang['lang_redo_desc'] = 'Annuller Fortryd';
-tinyMCELang['lang_link_desc'] = 'Indsæt link';
-tinyMCELang['lang_unlink_desc'] = 'Fjern link';
-tinyMCELang['lang_image_desc'] = 'Indsæt/rediger billede';
-tinyMCELang['lang_cleanup_desc'] = 'Ryd op i koden';
-tinyMCELang['lang_focus_alert'] = 'Et eksempel skal sættes, før man kan bruge denne kommando';
-tinyMCELang['lang_edit_confirm'] = 'Vil du bruge WYSIWYG modus til dette tekstområde?';
-tinyMCELang['lang_insert_link_title'] = 'Indsæt/rediger link';
-tinyMCELang['lang_insert'] = 'Indsæt';
-tinyMCELang['lang_update'] = 'Opdater';
-tinyMCELang['lang_cancel'] = 'Annuller';
-tinyMCELang['lang_insert_link_url'] = 'Link adresse';
-tinyMCELang['lang_insert_link_target'] = 'Mål ramme';
-tinyMCELang['lang_insert_link_target_same'] = 'Åben link i samme vindue';
-tinyMCELang['lang_insert_link_target_blank'] = 'Åben link i nyt vindue';
-tinyMCELang['lang_insert_image_title'] = 'Indsæt/rediger billede';
-tinyMCELang['lang_insert_image_src'] = 'Billede URL';
-tinyMCELang['lang_insert_image_alt'] = 'Billede beskrivelse';
-tinyMCELang['lang_help_desc'] = 'Hjælp';
-tinyMCELang['lang_bold_img'] = "bold.gif";
-tinyMCELang['lang_italic_img'] = "italic.gif";
-tinyMCELang['lang_underline_img'] = "underline.gif";
-tinyMCELang['lang_clipboard_msg'] = 'Kopier/Klip/Sæt ind er ikke tilgængelige i Mozilla og Firefox.\nVil du have mere info om dette emne?';
+tinyMCE.addToLang('',{
+bold_desc : 'Fed',
+italic_desc : 'Kursiv',
+underline_desc : 'Understreg',
+striketrough_desc : 'Gennemstreg',
+justifyleft_desc : 'Venstrejuster',
+justifycenter_desc : 'Centrer',
+justifyright_desc : 'Højrejuster',
+justifyfull_desc : 'Lige margin',
+bullist_desc : 'Bulletliste',
+numlist_desc : 'Nummerliste',
+outdent_desc : 'Ryk til venstre',
+indent_desc : 'Ryk til højre',
+undo_desc : 'Fortryd',
+redo_desc : 'Gør igen',
+link_desc : 'Indsæt link',
+unlink_desc : 'Fjern link',
+image_desc : 'Indsæt billede',
+cleanup_desc : 'Ryd op i koden',
+focus_alert : 'Der skal fokuseres på sessionen, før man kan bruge denne kommando',
+edit_confirm : 'Vil du bruge WYSIWYG modus til dette textområde?',
+insert_link_title : 'Indsæt eller rediger link',
+insert : 'Indsæt',
+update : 'Opdater',
+cancel : 'Fortryd',
+insert_link_url : 'Linkadresse',
+insert_link_target : 'Mål',
+insert_link_target_same : 'Åben link i samme vindue',
+insert_link_target_blank : 'Åben link i et nyt vindue',
+insert_image_title : 'Indsæt / rediger billede',
+insert_image_src : 'Billedets adresse',
+insert_image_alt : 'Alternativ tekst',
+help_desc : 'Hjælp',
+bold_img : "bold.gif",
+italic_img : "italic.gif",
+underline_img : "underline.gif",
+clipboard_msg : 'Kopier/Klip/Sæt ind er ikke tilgængelig i Mozilla og Firefox.\nØnsker du mere info om dette emne?',
+popup_blocked : 'Desværre, men vi har bemærket at din popup-stopper har lukket et vindue der leverer program funktionalitet. Du skal slå popup blokering på denne side fra for at få fuld udnyttelse af dette værktøj.'
+});

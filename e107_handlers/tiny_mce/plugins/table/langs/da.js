@@ -1,40 +1,69 @@
-// DA_DK lang variables
+// UK lang variables
 
-tinyMCELang['lang_table_desc'] = 'Indsætter en ny tabel';
-tinyMCELang['lang_table_insert_row_before_desc'] = 'Indsæt række før';
-tinyMCELang['lang_table_insert_row_after_desc'] = 'Indsæt række efter';
-tinyMCELang['lang_table_delete_row_desc'] = 'Slet række';
-tinyMCELang['lang_table_insert_col_before_desc'] = 'Indsæt kolonne før';
-tinyMCELang['lang_table_insert_col_after_desc'] = 'Indsæt kolonne efter';
-tinyMCELang['lang_table_delete_col_desc'] = 'Fjern kol';
-tinyMCELang['lang_insert_table_title'] = 'Indsært/Rediger tabel';
-tinyMCELang['lang_insert_table_width'] = 'Bredde';
-tinyMCELang['lang_insert_table_height'] = 'Højde';
-tinyMCELang['lang_insert_table_cols'] = 'Kolonner';
-tinyMCELang['lang_insert_table_rows'] = 'Rækker';
-tinyMCELang['lang_insert_table_cellspacing'] = 'Celleafstand';
-tinyMCELang['lang_insert_table_cellpadding'] = 'Celleskygge';
-tinyMCELang['lang_insert_table_border'] = 'Kant';
-tinyMCELang['lang_insert_table_align'] = 'Justering';
-tinyMCELang['lang_insert_table_align_default'] = 'Standard';
-tinyMCELang['lang_insert_table_align_left'] = 'Venstre';
-tinyMCELang['lang_insert_table_align_right'] = 'Højre';
-tinyMCELang['lang_insert_table_align_middle'] = 'Centreret';
-tinyMCELang['lang_insert_table_class'] = 'Classe';
-tinyMCELang['lang_table_row_title'] = 'Tabel række egenskaber';
-tinyMCELang['lang_table_cell_title'] = 'Tabel celle egenskaber';
-tinyMCELang['lang_table_row_desc'] = 'Tabel række egenskaber';
-tinyMCELang['lang_table_cell_desc'] = 'Tabel celle egenskaber';
-tinyMCELang['lang_insert_table_valign'] = 'Vertikal justering';
-tinyMCELang['lang_insert_table_align_top'] = 'Top';
-tinyMCELang['lang_insert_table_align_bottom'] = 'Bund';
-tinyMCELang['lang_table_props_desc'] = 'Tabel egenskaber';
-tinyMCELang['lang_table_bordercolor'] = 'Kant farve';
-tinyMCELang['lang_table_bgcolor'] = 'Bg farve';
-tinyMCELang['lang_table_merge_cells_title'] = 'Sammenslut table cells';
-tinyMCELang['lang_table_split_cells_desc'] = 'Opdel tabel celler';
-tinyMCELang['lang_table_merge_cells_desc'] = 'Sammenslut tabel celler';
-tinyMCELang['lang_table_cut_row_desc'] = 'Klip tabel række';
-tinyMCELang['lang_table_copy_row_desc'] = 'Kopier tabel række';
-tinyMCELang['lang_table_paste_row_before_desc'] = 'Indsæt tabel række før';
-tinyMCELang['lang_table_paste_row_after_desc'] = 'Indsæt tabel række efter';
+tinyMCE.addToLang('tabel',{
+general_tab : 'Generelt',
+advanced_tab : 'Advanceret',
+general_props : 'Generelle egenskaber',
+advanced_props : 'Advancerede egenskaber',
+desc : 'Indsætter en ny tabel',
+row_before_desc : 'Indsæt række før',
+row_after_desc : 'Indsæt række efter',
+delete_row_desc : 'Slet række',
+col_before_desc : 'Indsæt kolonne før',
+col_after_desc : 'Indsæt kolonne efter',
+delete_col_desc : 'Fjern kol',
+rowtype : 'Række i tabel del',
+title : 'Indsæt/Rediger tabel',
+width : 'Bredde',
+height : 'Højde',
+cols : 'Kolonner',
+rows : 'Rækker',
+cellspacing : 'Celleramme',
+cellpadding : 'Celleskygge',
+border : 'Kant',
+align : 'Justering',
+align_default : 'Standard',
+align_left : 'Venstre',
+align_right : 'Højre',
+align_middle : 'Centreret',
+row_title : 'Tabel række egenskaber',
+cell_title : 'Tabel celle egenskaber',
+cell_type : 'Celle type',
+row_desc : 'Tabel række egenskaber',
+cell_desc : 'Tabel celle egenskaber',
+valign : 'Vertical justering',
+align_top : 'Top',
+align_bottom : 'Bund',
+props_desc : 'Tabel egenskaber',
+bordercolor : 'Kant farve',
+bgcolor : 'Baggrund farve',
+merge_cells_title : 'Flet tabel celler',
+split_cells_desc : 'Opdel tabel celler',
+merge_cells_desc : 'Flet tabel celler',
+cut_row_desc : 'Klip tabel række',
+copy_row_desc : 'Kopier tabel række',
+paste_row_before_desc : 'Indsæt tabel række før',
+paste_row_after_desc : 'Indsæt tabel række efter',
+id : 'Id',
+style: 'Stil',
+langdir : 'Sprog retning',
+langcode : 'Sporg kode',
+mime : 'Mål MIME type',
+ltr : 'Venstre til højre',
+rtl : 'Højre til venstre',
+bgimage : 'Baggrunds billede',
+summary : 'Opsummering',
+td : "Data",
+th : "Titel",
+cell_cell : 'Opdater nuværrende celle',
+cell_row : 'Opdater all cells in row',
+cell_all : 'Opdater alle celler i tabellen',
+row_row : 'Opdater nuværrende række',
+row_odd : 'Opdater ulige rækker i tabellen',
+row_even : 'Opdater lige rækker i tabellen',
+row_all : 'Opdater alle rækker i tabellen',
+thead : 'Tabel Hoved',
+tbody : 'Table Center',
+tfoot : 'Table Fod',
+del : 'Slet tabel'
+});
