@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_plugin.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:01 $
+|        $Revision: 1.3 $
+|        $Date: 2005-09-10 22:21:30 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -58,10 +58,10 @@ define("EPL_ADLAN_43", "Plugin er blevet uploadet og udpakket, rul ned for at se
 define("EPL_ADLAN_44", "Auto plugin upload og udpakning er slået fra da plugin mappen ikke har de rette tilladelser - CHMOD e107_plugins mappen til 777."); 
 define("EPL_ADLAN_45", "Din menu er blevet uploadet og udpakket, for at aktivere gå til <a href='".e_ADMIN."menu.php'>din menuer side</a>.");
 
-define("EPL_CANCEL", "Annuller");
-define("EPL_EMAIL", "e-mail");
+// define("EPL_CANCEL", "Annuller"); use LAN_CANCEL instead !!
+// define("EPL_EMAIL", "e-mail");
 define("EPL_WEBSITE", "Websted");
-define("EPL_OPTIONS", "Indstillinger");
+// define("EPL_OPTIONS", "Indstillinger");
 define("EPL_NOINSTALL", "Ingen installation krævet, bare aktiver fra menu siden. For at afinstallere, slet ");
 define("EPL_DIRECTORY", "mappen.");
 define("EPL_NOINSTALL_1", "Ingen installation krævet, for at fjerne slet");
@@ -72,4 +72,7 @@ define("EPL_ADLAN_46", "RSS indstillinger oprettet med succes");
 define("EPL_ADLAN_47", "RSS indstillinger slettet med succes");
 define("EPL_ADLAN_48", "Er ikke i stand til at oprette RSS indstillinger");
 define("EPL_ADLAN_49", "Er ikke i stand til at slette RSS indstillinger");
+
+define("EPL_ADLAN_50", "Kommentarer slettet med succes");
+
 ?>

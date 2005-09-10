@@ -1,14 +1,23 @@
 <?php
 /*
-+---------------------------------------------------------------+|        e107 website system  Language File|     
-|        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_news.php,v $|        $Revision: 1.2 $|        $Date: 2005-07-06 22:12:00 $|        $Author: e107dk $+---------------------------------------------------------------+*/
++---------------------------------------------------------------+
+|        e107 website system  Language File
+|     
+|        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_news.php,v $
+|        $Revision: 1.3 $
+|        $Date: 2005-09-10 22:20:28 $
+|        $Author: e107dk $
++---------------------------------------------------------------+
+*/
 define("PAGE_NAME", "Nyheder");
+
 define("LAN_82", "Nyhedskategori");
 define("LAN_83", "Pt. ingen nyheder - kom snart igen.");
 define("LAN_84", "Nyheder");
 define("LAN_99", "Kommentarer");
 define("LAN_100", "Den");
 define("LAN_307", "Indlæg i alt i kategori: ");
+
 define("LAN_NEWS_1", "Nyheder kun for bestemte medlemmer");
 define("LAN_NEWS_2", "Du har ikke tilladelse til at se denne nyhed");
 define("LAN_NEWS_3", "Slet install.php");
@@ -29,8 +38,8 @@ define("LAN_NEWS_16", "b. udvidet længde: ");
 define("LAN_NEWS_17", "b.");
 define("LAN_NEWS_18", "Info:");
 define("LAN_NEWS_19", "Nu");
-define("LAN_NEWS_20", "Nyheder opdateret for flg. sprog: ");
-define("LAN_NEWS_21", "Nyheder opdateret.");
+define("LAN_NEWS_20", "Nyheder opdateret i databasen for flg. sprog: ");
+define("LAN_NEWS_21", "Nyhed opdateret.");
 define("LAN_NEWS_22", "Gå til side: ");
 define("LAN_NEWS_23", "Nyhedskategorier");
 ?>

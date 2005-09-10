@@ -4,8 +4,8 @@
 |        e107 website system  Danish Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_users_extended.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:01 $
+|        $Revision: 1.3 $
+|        $Date: 2005-09-10 22:21:30 $
 |        $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ define("EXTLAN_18", "Krævet");
 define("EXTLAN_19", "Brugerene skal udfylde en værdi i dette felt når de opdaterer deres indstillinger.");
 define("EXTLAN_20", "Afgør hvilke brugere dette felt gælder for.");
 define("EXTLAN_21", "Dette afgør hvem der kan se dette felt i deres brugerindstillinger.");
-define("EXTLAN_22", "Dette afgør hvem der kan se denne værdi på profil siden.");
+define("EXTLAN_22", "Dette afgør hvem der kan se denne værdi på profil siden. <br />BEMÆRK: Ved at indstille denne til 'Skrivebeskyttet' vil gøre at den kun er synlig for Admin og medlemmet.");
 define("EXTLAN_23", "Tilføj udvidet felt");
 define("EXTLAN_24", "Opdater udvidet felt");
 define("EXTLAN_25", "flyt ned");
@@ -92,11 +92,5 @@ define("EXTLAN_HELP_5", "Tekstområde hjælpe teksten");
 define("EXTLAN_HELP_6", "Heltal hjælpe teksten");
 //date
 define("EXTLAN_HELP_7", "Dato hjælpe teksten");
-
-define("EXTLAN_PRE1", "Sted");
-define("EXTLAN_PRE2", "AIM");
-define("EXTLAN_PRE3", "ICQ");
-define("EXTLAN_PRE4", "Yahoo!");
-define("EXTLAN_PRE5", "Hjemmeside");
 
 ?>

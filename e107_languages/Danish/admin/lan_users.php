@@ -4,13 +4,12 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_users.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2005-07-09 11:01:26 $
+|        $Revision: 1.4 $
+|        $Date: 2005-09-10 22:21:30 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
 define("USRLAN_1", "Indstillinger er gemt.");
-
 define("USRLAN_3", "Nu oprettet som administrator - for at indstille tilladelser gå til ");
 define("USRLAN_4", "Administratorer side");
 define("USRLAN_5", "Du kan ikke fjerne admin status fra hovedadministrator ");
@@ -26,31 +25,30 @@ define("USRLAN_13", "Bekræft at du vil slette dette medlem");
 // define("USRLAN_15", "Annuller");
 define("USRLAN_16", "Bekræft slet");
 define("USRLAN_17", "Bekræft slet bruger");
-define("USRLAN_18", "Bruger aktiveret.");
-define("USRLAN_19", "Søg");
-define("USRLAN_20", "Sorter efter ");
-define("USRLAN_21", "Bruger ID");
-define("USRLAN_22", "Bruger navn");
-define("USRLAN_23", "Besøg");
-define("USRLAN_24", "Administrator status");
-define("USRLAN_25", "Status");
-define("USRLAN_26", "Faldende");
-define("USRLAN_27", "Stigende");
-define("USRLAN_28", "Type");
-
+//define("USRLAN_18", "Bruger aktiveret.");
+//define("USRLAN_19", "Søg");
+//define("USRLAN_20", "Sorter efter ");
+//define("USRLAN_21", "Bruger ID");
+//define("USRLAN_22", "Bruger navn");
+//define("USRLAN_23", "Besøg");
+//define("USRLAN_24", "Administrator status");
+//define("USRLAN_25", "Status");
+//define("USRLAN_26", "Faldende");
+//define("USRLAN_27", "Stigende");
+//define("USRLAN_28", "Type");
 
 define("USRLAN_30", "Banlysning");
-define("USRLAN_31", "Banlysning -ikke aktiveret-");
+//define("USRLAN_31", "Banlysning -ikke aktiveret-");
 define("USRLAN_32", "Aktiver");
 define("USRLAN_33", "Ophæv banlysning");
 define("USRLAN_34", "Fjern administrator status");
 define("USRLAN_35", "Opret administrator ");
 define("USRLAN_36", "Indstil gruppe");
 
-define("USRLAN_37", "Medlemmer");
-define("USRLAN_38", "Søgningen returnerede");
-define("USRLAN_39", "resultat(er)");
-define("USRLAN_40", "Ikke defineret");
+//define("USRLAN_37", "Medlemmer");
+//define("USRLAN_38", "Søgningen returnerede");
+//define("USRLAN_39", "resultat(er)");
+//define("USRLAN_40", "Ikke defineret");
 
 define("USRLAN_44", "Tillad medlemmer at uploade et profillogo?");
 
@@ -81,14 +79,14 @@ define("USRLAN_70", "Bruger tilføjet");
 define("USRLAN_71", "Brugeres forside");
 define("USRLAN_72", "Lyn tilføj bruger");
 define("USRLAN_73", "Beskær brugere");
-define("USRLAN_75", "Indstillinger");
+//define("USRLAN_75", "Indstillinger");
 define("USRLAN_76", "Brugerindstillinger");
 define("USRLAN_77", "Eksisterende brugere");
 define("USRLAN_78", "Brugernavn");
 define("USRLAN_79", "Status");
 define("USRLAN_80", "Info");
 
-define("USRLAN_82", "Er du sikker på du vil slette denne bruger?");
+//define("USRLAN_82", "Er du sikker på du vil slette denne bruger?");
 define("USRLAN_84", "Der er");
 define("USRLAN_85", "Brugere der ikke har aktiveret deres konto - klik herunder for at slette.");
 define("USRLAN_86", "Bruger verificeret");
@@ -124,15 +122,17 @@ define("USRLAN_127", "Tillad kommentarer i bruger profilen");
 
 define("USRLAN_128", "Felttype parametre");
 
+define("USRLAN_129", "Ingen IP adresse fundet i brugers info, IP ikke banlyst");
+define("USRLAN_130", "Feltnavnet skal være unikt");
+define("USRLAN_131", "Dette er det viste navn på feltet i genererede sider");
+
 define("LAN_MAINADMIN","Hovedadmin");
 define("LAN_ADMIN","Admin");
 define("LAN_NOTVERIFIED","Ikke verificeret");
 define("LAN_BANNED","Banlyst");
 
 
-define("USRLAN_130", "Feltnavnet skal være unikt");
-define("USRLAN_131", "Dette er det viste navn på feltet i genererede sider");
-define("USRLAN_132", "Krævet");
+define("USRLAN_132", "Slået til");
 
 define("USRLAN_133", "Brugere vil være påkrævet at skrive en værdi i feltet når de opdaterer deres indstillinger.");
 define("USRLAN_134", "Anvendelig");
