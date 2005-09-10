@@ -70,5 +70,7 @@ define("ADMSLAN_66", "Configureren zoekfunctie");
 define("ADMSLAN_67", "Controleren met bestandeninspecteur");
 define("ADMSLAN_68", "Configureren e-mail waarschuwingen");
 define("ADMSLAN_69", "is al een beheerder en moet worden bijgewerkt.");
+define("ADMSLAN_70", "Terug naar het beheerdersoverzicht");
+define("ADMSLAN_71", "Klik hier om de rechten te zien");  
 
 ?>
