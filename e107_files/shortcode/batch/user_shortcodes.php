@@ -158,8 +158,8 @@ return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_143."</i>" : $tp->parseTe
 SC_END
 
 SC_BEGIN USER_EMAIL
-global $user;
-return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_143."</i>" : "<a href='mailto:".$user['user_email']."'>".$user['user_email']."</a>";
+global $user,$tp;
+return ($user['user_hideemail'] && !ADMIN) ? "<i>".LAN_143."</i>" : $tp->toHTML($user['user_email'],"no_replace"); 
 SC_END
 
 SC_BEGIN USER_ICON
@@ -406,10 +406,10 @@ if($pref['profile_comments'])
 	$cobj = new comment;
 	$qry = "
 	SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments FROM #comments
-	LEFT JOIN #user ON #comments.comment_author = #user.user_id 
-	WHERE comment_item_id='{$user['user_id']}' 
-	AND comment_type='profile' 
-	AND comment_pid='0' 
+	LEFT JOIN #user ON #comments.comment_author = #user.user_id
+	WHERE comment_item_id='{$user['user_id']}'
+	AND comment_type='profile'
+	AND comment_pid='0'
 	ORDER BY comment_datestamp
 	";
 
@@ -439,6 +439,6 @@ if($pref['profile_comments'])
 	$ret .= $cobj->form_comment("comment", "profile", $user['user_id'], "", "", TRUE);
 	return $ret;
 }
-SC_END	
+SC_END
 */
 ?>
