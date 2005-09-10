@@ -1,59 +1,75 @@
 // DA_DK lang variables
 
-tinyMCELang['lang_theme_style_select'] = 'Stil';
-tinyMCELang['lang_theme_code_desc'] = 'Rediger HTML Kilde';
-tinyMCELang['lang_theme_code_title'] = 'HTML Kilde Redigering';
-tinyMCELang['lang_theme_code_wordwrap'] = 'Ord pakning';
-tinyMCELang['lang_theme_sub_desc'] = 'Subscript';
-tinyMCELang['lang_theme_sup_desc'] = 'Superscript';
-tinyMCELang['lang_theme_hr_desc'] = 'Indsæt horizontal linial';
-tinyMCELang['lang_theme_removeformat_desc'] = 'Fjern formatering';
-tinyMCELang['lang_theme_custom1_desc'] = 'Din egen beskrivelse her';
-tinyMCELang['lang_insert_image_border'] = 'Kant';
-tinyMCELang['lang_insert_image_dimensions'] = 'Dimensioner';
-tinyMCELang['lang_insert_image_vspace'] = 'VRum';
-tinyMCELang['lang_insert_image_hspace'] = 'HRum';
-tinyMCELang['lang_insert_image_align'] = 'Justering';
-tinyMCELang['lang_insert_image_align_default'] = 'Standard';
-tinyMCELang['lang_insert_image_align_baseline'] = 'Bundlinie';
-tinyMCELang['lang_insert_image_align_top'] = 'Top';
-tinyMCELang['lang_insert_image_align_middle'] = 'Midt';
-tinyMCELang['lang_insert_image_align_bottom'] = 'Bund';
-tinyMCELang['lang_insert_image_align_texttop'] = 'TekstTop';
-tinyMCELang['lang_insert_image_align_absmiddle'] = 'Absolut Midt';
-tinyMCELang['lang_insert_image_align_absbottom'] = 'Absolut Bund';
-tinyMCELang['lang_insert_image_align_left'] = 'Venstre';
-tinyMCELang['lang_insert_image_align_right'] = 'Højre';
-tinyMCELang['lang_theme_font_size'] = 'Font størrelse';
-tinyMCELang['lang_theme_fontdefault'] = 'Standard';
-tinyMCELang['lang_theme_paragraph'] = 'Paragraf';
-tinyMCELang['lang_theme_div'] = 'Div';
-tinyMCELang['lang_theme_address'] = 'Adresse';
-tinyMCELang['lang_theme_pre'] = 'Preformatteret';
-tinyMCELang['lang_theme_h1'] = 'Overskrift 1';
-tinyMCELang['lang_theme_h2'] = 'Overskrift 2';
-tinyMCELang['lang_theme_h3'] = 'Overskrift 3';
-tinyMCELang['lang_theme_h4'] = 'Overskrift 4';
-tinyMCELang['lang_theme_h5'] = 'Overskrift 5';
-tinyMCELang['lang_theme_h6'] = 'Overskrift 6';
-tinyMCELang['lang_theme_colorpicker_title'] = 'Vælg en farve';
-tinyMCELang['lang_theme_colorpicker_apply'] = 'Anvend';
-tinyMCELang['lang_theme_forecolor_desc'] = 'Vælg tekst farve';
-tinyMCELang['lang_theme_backcolor_desc'] = 'Vælg background farve';
-tinyMCELang['lang_theme_charmap_title'] = 'Vælg specielt tegn';
-tinyMCELang['lang_theme_charmap_desc'] = 'Indsæt specielt tegn';
-tinyMCELang['lang_theme_visualaid_desc'] = 'Skift guidelinier/usynlige elementer';
-tinyMCELang['lang_insert_anchor_title'] = 'Indsæt/rediger anker';
-tinyMCELang['lang_insert_anchor_name'] = 'Anker navn';
-tinyMCELang['lang_theme_anchor_desc'] = 'Indsæt/rediger anker';
-tinyMCELang['lang_theme_insert_link_titlefield'] = 'Titel';
-tinyMCELang['lang_theme_clipboard_msg'] = 'Kopier/Klip/Sæt ind er ikke tilgængelige i Mozilla og Firefox.\nVil du have mere info om dette emne?';
-tinyMCELang['lang_theme_path'] = 'Sti';
-tinyMCELang['lang_cut_desc'] = 'Klip';
-tinyMCELang['lang_copy_desc'] = 'Kopier';
-tinyMCELang['lang_paste_desc'] = 'Sæt ind';
-tinyMCELang['lang_link_list'] = 'Link liste';
-tinyMCELang['lang_image_list'] = 'Billede liste';
-tinyMCELang['lang_browse'] = 'Gennemse';
-tinyMCELang['lang_image_props_desc'] = 'Billede egenskaber';
-tinyMCELang['lang_newdocument_desc'] = 'Nyt dokument';
+tinyMCE.addToLang('',{
+theme_style_select : '-- Stil --',
+theme_code_desc : 'Rediger HTML Kilde',
+theme_code_title : 'HTML Kilde Redigering',
+theme_code_wordwrap : 'Ord pakning',
+theme_sub_desc : 'Underscript',
+theme_sup_desc : 'Superscript',
+theme_hr_desc : 'Indsæt horizontal linial',
+theme_removeformat_desc : 'Fjern formatering',
+theme_custom1_desc : 'Din egen beskrivelse her',
+insert_image_border : 'Kant',
+insert_image_dimensions : 'Dimensioner',
+insert_image_vspace : 'Vertikalt rum',
+insert_image_hspace : 'Horisontalt rum',
+insert_image_align : 'Justering',
+insert_image_align_default : '-- Standard --',
+insert_image_align_baseline : 'Bundlinie',
+insert_image_align_top : 'Top',
+insert_image_align_middle : 'Midt',
+insert_image_align_bottom : 'Bund',
+insert_image_align_texttop : 'TekstTop',
+insert_image_align_absmiddle : 'Absolut Midt',
+insert_image_align_absbottom : 'Absolut Bund',
+insert_image_align_left : 'Venstre',
+insert_image_align_right : 'Højre',
+theme_font_size : 'Font størrelse',
+theme_fontdefault : '-- Font familie --',
+theme_block : '-- Format --',
+theme_paragraph : 'Paragraf',
+theme_div : 'Div',
+theme_address : 'Adresse',
+theme_pre : 'Preformateret',
+theme_h1 : 'Overskrift 1',
+theme_h2 : 'Overskrift 2',
+theme_h3 : 'Overskrift 3',
+theme_h4 : 'Overskrift 4',
+theme_h5 : 'Overskrift 5',
+theme_h6 : 'Overskrift 6',
+theme_colorpicker_title : 'Vælg en farve',
+theme_colorpicker_apply : 'Anvend',
+theme_forecolor_desc : 'Vælg tekst farve',
+theme_backcolor_desc : 'Vælg baggrunds farve',
+theme_charmap_title : 'Vælg specielt tegn',
+theme_charmap_desc : 'Indsæt specielt tegn',
+theme_visualaid_desc : 'Skift guidelinier/usynlige elementer',
+insert_anchor_title : 'Indsæt/rediger anker',
+insert_anchor_name : 'Anker navn',
+theme_anchor_desc : 'Indsæt/rediger anker',
+theme_insert_link_titlefield : 'Titel',
+theme_clipboard_msg : 'Kopier/Klip/Sæt ind er ikke tilgængelige i Mozilla og Firefox.\nVil du have mere info om dette emne?',
+theme_path : 'Sti',
+cut_desc : 'Klip',
+copy_desc : 'Kopier',
+paste_desc : 'Sæt ind',
+link_list : 'Link liste',
+image_list : 'Billede liste',
+browse : 'Gennemse',
+image_props_desc : 'Billede egenskaber',
+newdocument_desc : 'Nyt dokument',
+class_name : 'Gruppe',
+newdocument : 'Er du sikker på du vil rydde alt indhold?',
+about_title : 'Om TinyMCE',
+about : 'Om',
+license : 'Licens',
+plugins : 'Plugins',
+plugin : 'Plugin',
+author : 'Forfatter',
+version : 'Version',
+loaded_plugins : 'Indlæste plugins',
+help : 'Hjælp',
+not_set : '-- Ikke indstilt --',
+close : 'Luk'
+});
