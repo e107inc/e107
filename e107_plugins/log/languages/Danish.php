@@ -4,16 +4,23 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/Danish.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-07-06 22:12:03 $
+|        $Revision: 1.2 $
+|        $Date: 2005-09-11 15:12:35 $
 |        $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
 
+
+
+
+
+
+
+
 define("PAGE_NAME", "Statistik");
 	
-define("ADSTAT_L1", "Statistik modul logger alle besøg på webstedet, og danner en detaljeret statistik på grundlag af de indsamlede informationer.");
-define("ADSTAT_L2", "Statistik modul er installeret. Konverter eksisterende statistik data til det nye system, klik på <a href='".e_PLUGIN."log/update_routine.php'>Opdater</a>.");
+define("ADSTAT_L1", "Statistik plugin logger alle besøg på webstedet, og danner en detaljeret statistik på grundlag af de indsamlede informationer.");
+define("ADSTAT_L2", "Statistik plugin er installeret. Konverter eksisterende statistik data til det nye system, klik på <a href='".e_PLUGIN."log/update_routine.php'>Opdater</a>.");
 define("ADSTAT_L3", "Statistik logning");
 define("ADSTAT_L4", "Ikke tilladelse til at se denne side.");
 define("ADSTAT_L5", "Mulighederne på denne side er slået fra.");
@@ -52,5 +59,6 @@ define("ADSTAT_L37", "Besøg pr måned");
 define("ADSTAT_L38", "Unikke besøg pr måned");
 define("ADSTAT_L39", "fjern post");
 define("ADSTAT_L40", "dage");
+define("ADSTAT_L41", "Fejl");
 
 ?>
