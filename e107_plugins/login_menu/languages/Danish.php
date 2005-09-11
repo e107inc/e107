@@ -4,11 +4,18 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/Danish.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-07-06 22:12:03 $
+|        $Revision: 1.2 $
+|        $Date: 2005-09-11 15:22:18 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
+
+
+
+
+
+
+
 
 define("LOGIN_MENU_L1", "Brugernavn: ");
 define("LOGIN_MENU_L2", "Kodeord: ");
@@ -19,11 +26,10 @@ define("LOGIN_MENU_L6", "Husk mig");
 define("LOGIN_MENU_L7", "Unik bruger ID er ikke genkendt (muligvis ødelagt cookie).<br />Prøv at <a href=\"index.php?logout\">klikke her</a> for at slette cookie.");
 define("LOGIN_MENU_L8", "Logud");
 define("LOGIN_MENU_L9", "Login Fejl");
-define("LOGIN_MENU_L10", "Siden vises som værende ude af drift - dette betyder at besøgende bliver henvist til sitedown.php. For at nulstille denne henvisning gå til admin/Nedlukning.");
+define("LOGIN_MENU_L10", "Siden vises som værende ude af drift - dette betyder at besøgende bliver henvist til sitedown.php. For at nulstille denne henvisning gå til admin/Vedligeholdelse.");
 define("LOGIN_MENU_L11", "Admin");
 define("LOGIN_MENU_L12", "Indstillinger");
 define("LOGIN_MENU_L13", "Profil");
-
 define("LOGIN_MENU_L14", "nyhed");
 define("LOGIN_MENU_L15", "nyheder");
 define("LOGIN_MENU_L16", "tagwall indlæg");
@@ -38,7 +44,6 @@ define("LOGIN_MENU_L24", "Klik her for se en liste over nyhederne");
 define("LOGIN_MENU_L25", "Siden dit sidste besøg har der været");
 define("LOGIN_MENU_L26", "nul");
 define("LOGIN_MENU_L27", "og");
-
 define("LOGIN_MENU_L28", "Login");
 
 define("LOGIN_MENU_L29", "ny artikel");
