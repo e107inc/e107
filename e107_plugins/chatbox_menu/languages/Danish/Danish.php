@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Danish/Danish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-24 12:10:48 $
+|     $Revision: 1.3 $
+|     $Date: 2005-09-11 17:45:39 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -35,6 +35,7 @@ define("CHATBOX_L15", "Indlæg for langt, eller tomt");
 define("CHATBOX_L16", "Anonym");
 define("CHATBOX_L17", "Klon indlæg");
 define("CHATBOX_L18", "Chatboks indlæg modereret");
+define("CHATBOX_L19", "Du kan kun skrive en gang hver ".FLOODTIMEOUT." sekund");
 
 define("LAN_11", "Chatboks (alle indlæg)");
 define("LAN_12", "Chat Indlæg");
