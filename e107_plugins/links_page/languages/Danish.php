@@ -4,231 +4,232 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Danish.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-07-06 22:12:03 $
+|        $Revision: 1.2 $
+|        $Date: 2005-09-11 15:07:48 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
-define("PAGE_NAME", "Links");
+if(!defined("PAGE_NAME")){define("PAGE_NAME", "Links");}
 
-define("LAN_61", "Link kategorier");
-define("LAN_62", "kategorier");
-define("LAN_63", "kategori");
-define("LAN_64", "i denne kategori");
-define("LAN_65", "link");
-define("LAN_66", "links");
-define("LAN_67", "Vis alle links");
-define("LAN_68", "rediger");
-define("LAN_69", "slet");
-define("LAN_86", "Kategori:");
-define("LAN_88", "Klik:");
-define("LAN_89", "Admin: ");
-define("LAN_90", "tilføj nyt link i denne kategori");
-define("LAN_91", "tilføj ny kategori");
+define("LCLAN_PLUGIN_LAN_1", "Links Side");
+define("LCLAN_PLUGIN_LAN_2", "Links Side Til Visning Af Eksterne Web Links");
+define("LCLAN_PLUGIN_LAN_3", "Konfigurer Links Side");
+define("LCLAN_PLUGIN_LAN_4", "links");
+define("LCLAN_PLUGIN_LAN_5", "Links side installeret med succes, konfigurer den venligst fra links Side linket på admin forsiden.");
+define("LCLAN_PLUGIN_LAN_6", "Links_page opgraderet med succes, benytter nu version");
 
-define("LAN_92", "Tilføj et link");
-define("LAN_93", "Efter dit link er tilføjet vil det blive bedømt af administrator og hvis det er passende vil det blive tilføjet links siden.");
-define("LAN_94", "Link navn:");
-define("LAN_95", "Link URL:");
-define("LAN_96", "Link beskrivelse:");
-define("LAN_97", "URL til evt. link knap:");
-define("LAN_98", "Tilføj link");
+define("LCLAN_OPT_MENU_1", "generelle egenskaber");
+define("LCLAN_OPT_MENU_2", "personlige link håndterer");
+define("LCLAN_OPT_MENU_3", "kategori side");
+define("LCLAN_OPT_MENU_4", "links fremvisning");
+define("LCLAN_OPT_MENU_5", "henviser side");
+define("LCLAN_OPT_MENU_6", "bedømmelse side");
+define("LCLAN_OPT_MENU_7", "menu");
 
-define("LAN_99", "Mange tak");
-define("LAN_100", "Dit link er gemt og vil blive gennemgået af administrator.");
-define("LAN_101", "Klik her for at tilføje et link");
-
-define("LAN_102", "Der");
-define("LAN_103", "er");
-define("LAN_104", "er");
-define("LAN_105", "i alt i");
-define("LAN_106", "Understregede felter skal udfyldes.");
-
-define("LAN_Links_1", "links i alt");
-define("LAN_Links_2", "aktiverede links i alt");
-define("LAN_LINKS_3", "Anonym");
-
-define("LAN_LINKS_4", "titel");
-define("LAN_LINKS_5", "url");
-define("LAN_LINKS_6", "orden");
-define("LAN_LINKS_7", "henviser");
-define("LAN_LINKS_8", "Stigende");
-define("LAN_LINKS_9", "Faldende");
-define("LAN_LINKS_10", "Top Links : Henviser");
-define("LAN_LINKS_11", "Top Links : Bedømmelse");
-define("LAN_LINKS_12", "vis top links efter henviser");
-define("LAN_LINKS_13", "vis top links efter bruger bedømmelse");
-define("LAN_LINKS_14", "tilbage til links forsiden");
-define("LAN_LINKS_15", "sorter efter");
-
-define('LAN_107', "Der er pt. ingen links");
+define("LCLAN_PAGETITLE_1", "Links");
+define("LCLAN_PAGETITLE_2", "Alle kategorier");
+define("LCLAN_PAGETITLE_3", "Alle Links");
+define("LCLAN_PAGETITLE_4", "kategori");
+define("LCLAN_PAGETITLE_5", "Top Bedømt");
+define("LCLAN_PAGETITLE_6", "Top Henvist");
+define("LCLAN_PAGETITLE_7", "Personlig Link Håndtering");
+define("LCLAN_PAGETITLE_8", "Link Kommentarer");
+define("LCLAN_PAGETITLE_9", "Tilføj Link");
+define("LCLAN_PAGETITLE_10", "");
 
 
+define("LCLAN_OPT_1", "generelle egenskaber");
+define("LCLAN_OPT_2", "Link Side egenskaber");
+define("LCLAN_OPT_3", "slået til");
+define("LCLAN_OPT_4", "slået fra");
+define("LCLAN_OPT_5", "px");
+define("LCLAN_OPT_6", "");
+define("LCLAN_OPT_7", "indel kategorier i individuelle sider");
+define("LCLAN_OPT_8", "tillad at links kan tilføjes");
+define("LCLAN_OPT_9", "hvem kan tilføje links");
+define("LCLAN_OPT_10", "brug flere sider til at vise linksne");
+define("LCLAN_OPT_11", "antal links pr. side");
+define("LCLAN_OPT_12", "kategori side");
+define("LCLAN_OPT_13", "vis hvilke sektioner");
+define("LCLAN_OPT_14", "ikon");
+define("LCLAN_OPT_15", "beskrivelse");
+define("LCLAN_OPT_16", "antal");
+define("LCLAN_OPT_17", "henviser");
+define("LCLAN_OPT_18", "url");
+define("LCLAN_OPT_19", "total kategori info linie");
+define("LCLAN_OPT_20", "link til top henviser");
+define("LCLAN_OPT_21", "link til top bedømt");
+define("LCLAN_OPT_22", "vis standard ikon hvis intet er tilstede");
+define("LCLAN_OPT_23", "standard sorterings metode");
+define("LCLAN_OPT_24", "standard ordens metode");
+define("LCLAN_OPT_25", "standard formindsk værdi");
+define("LCLAN_OPT_26", "links side");
+define("LCLAN_OPT_27", "tillad brugere at bedømme links");
+define("LCLAN_OPT_28", "vis standard ikon hvis intet er tilstede");
+define("LCLAN_OPT_29", "vis sorter og orden menu");
+define("LCLAN_OPT_30", "stigende");
+define("LCLAN_OPT_31", "faldende");
+define("LCLAN_OPT_32", "brug tilsidesættelse af link åben metode");
+define("LCLAN_OPT_33", "standard formindskelses værdi");
+define("LCLAN_OPT_34", "navn");
+define("LCLAN_OPT_35", "url");
+define("LCLAN_OPT_36", "orden");
+define("LCLAN_OPT_37", "henviser");
+define("LCLAN_OPT_38", "");
+define("LCLAN_OPT_39", "");
+define("LCLAN_OPT_40", "navn");
+define("LCLAN_OPT_41", "id");
+define("LCLAN_OPT_42", "brug individuel link indstilling");
+define("LCLAN_OPT_43", "Åbner i samme vindue");
+define("LCLAN_OPT_44", "Åbner i nyt vindue");
+define("LCLAN_OPT_45", "Åbner i et 600x400 minivindue");
+define("LCLAN_OPT_46", "hvem kan håndtere links");
+define("LCLAN_OPT_47", "disse brugere kan tilføje/redigere deres egne personlige links");
+define("LCLAN_OPT_48", "tillad direkte postering");
+define("LCLAN_OPT_49", "hvis anvendt bliver links tilføjet direkte, ellers skal en site admin godkende dem");
+define("LCLAN_OPT_50", "tillad direkte sletning");
+define("LCLAN_OPT_51", "hvis anvendt kan link håndtererne slette deres egne links");
+define("LCLAN_OPT_52", "personlige link håndterer");
+define("LCLAN_OPT_53", "dato");
+define("LCLAN_OPT_54", "tillad personlig håndtering på links");
+define("LCLAN_OPT_55", "tillad kommentarer på alle links");
+define("LCLAN_OPT_56", "minimum henviser værdi");
+define("LCLAN_OPT_57", "kun links med en henvisnings tal højere end den angivne værdi vises (0 eller empty = alle)");
+define("LCLAN_OPT_58", "link til tilføj link");
+define("LCLAN_OPT_59", "link til personlig håndtering (kun hvis tilladt)");
+define("LCLAN_OPT_60", "link til link forside");
+define("LCLAN_OPT_61", "link til alle kategorier");
+define("LCLAN_OPT_62", "vis disse navigator links");
+define("LCLAN_OPT_63", "minimum bedømmelse værdi");
+define("LCLAN_OPT_64", "kun links med en bedømmelse højere end den angivne værdi vises (0 eller empty = alle)");
+define("LCLAN_OPT_65", "vis tomme kategorier");
+define("LCLAN_OPT_66", "link til hver kategori");
+define("LCLAN_OPT_67", "link til alle links");
+define("LCLAN_OPT_68", "vis alle links");
 
+define("LCLAN_OPT_69", "afviklingstype navigator links");
+define("LCLAN_OPT_70", "vis kategori links");
+define("LCLAN_OPT_71", "afviklingstype kategori links");
+define("LCLAN_OPT_72", "vis seneste links");
+define("LCLAN_OPT_73", "vis hvilke data");
+define("LCLAN_OPT_74", "hvor mange af de seneste links vises");
+define("LCLAN_OPT_75", "hyperlinks");
+define("LCLAN_OPT_76", "valgboks");
+define("LCLAN_OPT_77", "kategori");
+define("LCLAN_OPT_78", "beskrivelse");
+define("LCLAN_OPT_79", "titel navigator");
+define("LCLAN_OPT_80", "titel kategorier");
+define("LCLAN_OPT_81", "titel seneste liste");
+define("LCLAN_OPT_82", "navigator");
+define("LCLAN_OPT_83", "kategorier");
+define("LCLAN_OPT_84", "seneste liste");
+define("LCLAN_OPT_85", "titel menu");
+define("LCLAN_OPT_86", "link menu");
+define("LCLAN_OPT_87", "vis antal links");
 
-define("LCLAN_1", "Indstillinger gemt");
-define("LCLAN_2", "Link oprettet.");
-define("LCLAN_3", "Link opdateret.");
-define("LCLAN_4", "Link slettet.");
-define("LCLAN_6", "Ordnen oprettet");
-define("LCLAN_8", "Eksisterende links");
-define("LCLAN_9", "Rediger");
-define("LCLAN_10", "Slet");
-define("LCLAN_12", "Link kategori");
-define("LCLAN_13", "Kan ikke redigere hovedkategorien");
-define("LCLAN_14", "Opret");
-define("LCLAN_15", "Link navn");
-define("LCLAN_16", "Link URL");
-define("LCLAN_17", "Link beskrivelse");
-define("LCLAN_18", "Link knap");
-define("LCLAN_19", "Link åbning");
-define("LCLAN_20", "åbner i samme vindue");
-define("LCLAN_23", "Åbner i et nyt vindue");
-define("LCLAN_24", "åbner i et 600x400 mini-vindue");
-define("LCLAN_25", "Link Gruppe");
-define("LCLAN_26", "Dette vil gøre at linket kun er syligt, for brugere i den gruppe.");
-define("LCLAN_27", "Opdater link");
-define("LCLAN_28", "Opret link");
-define("LCLAN_29", "Links");
-define("LCLAN_30", "ryk op");
-define("LCLAN_31", "ryk ned");
-define("LCLAN_32", "Opdater orden");
-define("LCLAN_33", "Link orden");
-define("LCLAN_34", "Klik her for kun at se link kategorierne. Dette kan være en god idé hvis man har mange links.");
-define("LCLAN_35", "Opdater indstillinger");
-define("LCLAN_36", "Link indstillinger");
-define("LCLAN_39", "Vis billeder");
-define("LCLAN_40", "Vis kun link kategorier");
-define("LCLAN_41", "Tillad at links kan tilføjes");
-define("LCLAN_42", "Tillad at besøgende kan tilføje links");
-define("LCLAN_43", "Tilføj links (klasse)");
-define("LCLAN_44", "Vælg hvilke brugere der kan tilføje links");
-define("LCLAN_45", "Tilføjet af");
-define("LCLAN_51", "Link kategori gemt");
-define("LCLAN_52", "Link kategori opdateret");
-define("LCLAN_53", "Link");
-define("LCLAN_54", "slettet");
-define("LCLAN_55", "Link kategori");
-define("LCLAN_56", "Er du sikker på du vil slette denne kategori?");
-define("LCLAN_57", "Er du sikker på du vil slette dette tilføjede link?");
-define("LCLAN_58", "Er du sikker på du vil slette dette link?");
-define("LCLAN_59", "Kategori");
-define("LCLAN_60", "Egenskaber");
-define("LCLAN_61", "Ingen links");
-define("LCLAN_62", "Links forside");
-define("LCLAN_63", "Opret nyt Link");
-define("LCLAN_64", "Sæt link orden");
-define("LCLAN_65", "Kategorier");
-define("LCLAN_66", "Tilføjede links");
-define("LCLAN_67", "Egenskaber");
-define("LCLAN_68", "Link egenskaber");
-define("LCLAN_69", "Ingen link kategorier");
-define("LCLAN_70", "Eksisterende link kategorier");
-define("LCLAN_71", "Kategori navn");
-define("LCLAN_72", "Kategori beskrivelse");
-define("LCLAN_73", "Kategori ikon");
-define("LCLAN_74", "Opdater link kategori");
-define("LCLAN_75", "Opret link kategori");
-define("LCLAN_76", "Ingen tilføjede links");
-define("LCLAN_77", "Tilføjet link slettet");
-define("LCLAN_78", "Vis beskrivelse som skærmtip");
-define("LCLAN_79", "Beskrivelse vil blive vist når musen peger på linket");
-define("LCLAN_80", "Vis billeder");
-define("LCLAN_81", "Nulstil formular");
-define("LCLAN_82", "Tilføjet af");
-define("LCLAN_83", "Undermenu generator");
-define("LCLAN_84", "Upload venligst link billeder til e107_plugins/links_page/link_images/");
-define("LCLAN_85", "Upload venligst link kategori billeder til e107_plugins/links_page/cat_images/");
-define("LCLAN_86", "Billede");
-define("LCLAN_87", "Vis links");
-define("LCLAN_88", "Site links egenskaber");
-define("LCLAN_89", "Billede");
-define("LCLAN_90", "Link navn");
-define("LCLAN_91", "Flyt");
-define("LCLAN_92", "Op");
-define("LCLAN_93", "Ned");
-define("LCLAN_94", "Gensorter");
-define("LCLAN_95", "Gruppe");
-define("LCLAN_96", "Opdater");
-define("LCLAN_97", "Sortering");
-define("LCLAN_98", "Opdater");
-define("LCLAN_99", "Kategorier");
-define("LCLAN_100", "Link kategori");
-define('LCLAN_101', "Konfigurer links side");
-define('LCLAN_102', "Link modul er installeret, konfigurer den fra links side linket på admin forsiden.");
-define('LCLAN_103', "Links");
-define('LCLAN_104', "Link Bedømmelse");
-define('LCLAN_105', "tillad brugere at bedømme links");
+define("LCLAN_ADMIN_1", "opdater");
+define("LCLAN_ADMIN_2", "Link gemt i databasen.");
+define("LCLAN_ADMIN_3", "Link opdateret i databasen");
+define("LCLAN_ADMIN_4", "Link Kategori Gemt");
+define("LCLAN_ADMIN_5", "Link Kategori Opdateret");
+define("LCLAN_ADMIN_6", "Egenskaber Gemt");
+define("LCLAN_ADMIN_7", "link ikon blev uploadet med succes !");
+define("LCLAN_ADMIN_8", "link ikon blev ikke uploadet !");
+define("LCLAN_ADMIN_9", "Orden opdateret");
+define("LCLAN_ADMIN_10", "Link");
+define("LCLAN_ADMIN_11", "slettet");
+define("LCLAN_ADMIN_12", "Link Kategori");
+define("LCLAN_ADMIN_13", "Tilføjet link slettet");
+define("LCLAN_ADMIN_14", "Links");
 
-define("LCLAN_106", "Link Ikon : Upload");
-define("LCLAN_107", "link ikon blev uploadet med succes !");
-define("LCLAN_108", "link ikon blev ikke uploadet !");
-define("LCLAN_109", "upload et nyt ikon");
-define("LCLAN_110", "Auto-Minature størrelse");
-define("LCLAN_111", "upload ikon");
-define("LCLAN_112", "vælg et uploaded ikon");
-define("LCLAN_113", "Denne egenskab er slået fra da fil upload ikke er slået til på din server");
-define("LCLAN_114", "");
-define("LCLAN_115", "mappe er skrivebeskyttet, du skal CHMOD 777 mappen før du uploader");
+define("LCLAN_SL_1", "Tilføjede Links");
+define("LCLAN_SL_2", "Ingen tilføjede links");
+define("LCLAN_SL_3", "Link");
+define("LCLAN_SL_4", "Tilføjet af");
+define("LCLAN_SL_5", "Egenskaber");
+define("LCLAN_SL_6", "Post");
+define("LCLAN_SL_7", "Slet");
+define("LCLAN_SL_8", "Er du sikker på du vil slette dette tiløjede link?");
+define("LCLAN_SL_9", "Efter tilføjelse af dit link vil det blive vuderet af en site admin og hvis det findes passende tilføjet til links siden.");
+define("LCLAN_SL_10", "Kategori:");
+define("LCLAN_SL_11", "navn");
+define("LCLAN_SL_12", "url");
+define("LCLAN_SL_13", "beskrivelse");
+define("LCLAN_SL_14", "URL til link knap:");
+define("LCLAN_SL_15", "Understregede felter er krævede.");
+define("LCLAN_SL_16", "Tilføj Link");
+define("LCLAN_SL_17", "");
+define("LCLAN_SL_18", "");
 
-define("LCLAN_116", "generelle egenskaber");
-define("LCLAN_117", "kategori side");
-define("LCLAN_118", "links side");
-define("LCLAN_119", "link kategorier");
+define("LCLAN_CAT_1", "Billede");
+define("LCLAN_CAT_2", "Kategori");
+define("LCLAN_CAT_3", "Egenskaber");
+define("LCLAN_CAT_4", "Flyt");
+define("LCLAN_CAT_5", "Orden");
+define("LCLAN_CAT_6", "Rediger");
+define("LCLAN_CAT_7", "Er");
+define("LCLAN_CAT_8", "Er du sikker på du at vil slette denne kategori?");
+define("LCLAN_CAT_9", "Vis Links");
+define("LCLAN_CAT_10", "Gensorter");
+define("LCLAN_CAT_11", "Ingen link kategorier");
+define("LCLAN_CAT_12", "Eksisterende Link Kategorier");
+define("LCLAN_CAT_13", "Navn:");
+define("LCLAN_CAT_14", "Beskrivelse:");
+define("LCLAN_CAT_15", "Upload et nyt ikon:");
+define("LCLAN_CAT_16", "Auto-Miniature størrelse:");
+define("LCLAN_CAT_17", "Denne egenskab er ikke slået til da fil upload er slået fra på din server");
+define("LCLAN_CAT_18", "Den");
+define("LCLAN_CAT_19", "mappe er skrivebeskyttet, du skal CHMOD 777 mappen før du uploader");
+define("LCLAN_CAT_20", "px");
+define("LCLAN_CAT_21", "upload");
+define("LCLAN_CAT_22", "Vælg et ikon:");
+define("LCLAN_CAT_23", "Vis Billeder");
+define("LCLAN_CAT_24", "Synlig for:");
+define("LCLAN_CAT_25", "marker for at opdatere tidsstempel til nuværrende tidspunkt");
+define("LCLAN_CAT_26", "Opdater Link Kategori");
+define("LCLAN_CAT_27", "Ryd Formular");
+define("LCLAN_CAT_28", "Opret Link Kategori");
+define("LCLAN_CAT_29", "Link Kategori");
 
-define("LCLAN_120", "sektioner");
-define("LCLAN_121", "vælg hvilke informationer der skal vises");
-define("LCLAN_122", "ikon");
-define("LCLAN_123", "beskrivelse");
-define("LCLAN_124", "mængde");
-define("LCLAN_125", "kategori info linie ialt (linien i bunden)");
-define("LCLAN_126", "standard kategori sortering");
-define("LCLAN_127", "definer standard sorterings metode");
-define("LCLAN_128", "standard kategori orden");
-define("LCLAN_129", "definer standard sorterings metode");
-
-define("LCLAN_130", "url");
-define("LCLAN_131", "henviser");
-define("LCLAN_132", "tomt link ikon");
-define("LCLAN_133", "skal denne generelle link knap vises hvis der ikke er nogen knap");
-define("LCLAN_134", "standard link sortering");
-define("LCLAN_135", "definer sorterings metode");
-define("LCLAN_136", "standard link orden");
-define("LCLAN_137", "definer standard sorterings metode");
-define("LCLAN_138", "anvendt");
-define("LCLAN_139", "slået fra");
-
-define("LCLAN_140", "tilsidesæt åben link type");
-define("LCLAN_141", "definer tilsidesæt åben link type metode");
-define("LCLAN_142", "valg af en af disse metoder vil åbne alle links med den metode, uanset deres individuelle indstilling");
-define("LCLAN_143", "brug individuel link indstilling");
-define("LCLAN_144", "sortering og orden");
-define("LCLAN_145", "definer hvis en sortering og orden menu vises på links siden");
-define("LCLAN_146", "tomt kategori ikon");
-define("LCLAN_147", "link til links top : henviser");
-define("LCLAN_148", "link til links top : bedømt");
-define("LCLAN_149", "top henviser og top bedømt sider");
-
-define("LCLAN_150", "antal links");
-define("LCLAN_151", "definer hvor mange links der bliver vist på en enkelt side");
-define("LCLAN_152", "Kategori Ikon : Upload");
-define("LCLAN_153", "standard opløsnings værdi");
-define("LCLAN_154", "definer standard opløsnings værdi for link ikon uploads");
-define("LCLAN_155", "definer standard opløsnings værdi for kategori ikon uploads");
-define("LCLAN_156", "Kategori Gruppe");
-define("LCLAN_157", "definer hvilke brugereder kan se denne kategori");
-define("LCLAN_158", "Markering vil gøre at link kategorien kun er synlig for brugere i den gruppe");
-define("LCLAN_159", "definer hvordan linket vil blive åbnet");
-define("LCLAN_160", "definer hvilke brugere der kan se dette link");
-define("LCLAN_161", "marker for at opdatere tidsstempel til nuværrende tidspunkt");
-define("LCLAN_162", "forrige næste");
-define("LCLAN_163", "vis forrige næste knapper");
-define("LCLAN_164", "hvis anvendt vil kun et begrænset antal links blive vist på en enkelt side, og du kan navigere gennem et antal sider for at vise andre links.");
-define("LCLAN_165", "links pr. side");
-define("LCLAN_166", "hvor mange links skal der vises på en enkelt side?");
-define("LCLAN_167", "dette vil kun blive brugt hvis næste forrige begrændsningerne er valgt");
-define("LCLAN_168", "");
-define("LCLAN_169", "");
+define("LCLAN_ITEM_1", "Tilføjet af");
+define("LCLAN_ITEM_2", "Kategori:");
+define("LCLAN_ITEM_3", "ingen kategorier endnu");
+define("LCLAN_ITEM_4", "Navn:");
+define("LCLAN_ITEM_5", "Url:");
+define("LCLAN_ITEM_6", "Beskrivelse:");
+define("LCLAN_ITEM_7", "Upload et ikon:");
+define("LCLAN_ITEM_8", "Auto-Miniature størrelse:");
+define("LCLAN_ITEM_9", "Denne egenskab er ikke slået til da fil upload er slået fra på din server");
+define("LCLAN_ITEM_10", "Den");
+define("LCLAN_ITEM_11", "mappe er skrivebeskyttet, du skal CHMOD 777 mappen før du uploader");
+define("LCLAN_ITEM_12", "px");
+define("LCLAN_ITEM_13", "upload");
+define("LCLAN_ITEM_14", "Vælg et ikon:");
+define("LCLAN_ITEM_15", "Vis Billeder");
+define("LCLAN_ITEM_16", "Åben Type:");
+define("LCLAN_ITEM_17", "Åbner i samme vindue");
+define("LCLAN_ITEM_18", "Åbner i nyt vindue");
+define("LCLAN_ITEM_19", "Åbner i et 600x400 minivindue");
+define("LCLAN_ITEM_20", "Synligt for:");
+define("LCLAN_ITEM_21", "marker for at opdatere tidsstempel til nuværrende tidspunkt");
+define("LCLAN_ITEM_22", "Opdater Link");
+define("LCLAN_ITEM_23", "Opret link");
+define("LCLAN_ITEM_24", "Links");
+define("LCLAN_ITEM_25", "Billede");
+define("LCLAN_ITEM_26", "Link Navn");
+define("LCLAN_ITEM_27", "Egenskaber");
+define("LCLAN_ITEM_28", "Flyt");
+define("LCLAN_ITEM_29", "Orden");
+define("LCLAN_ITEM_30", "Gensorter");
+define("LCLAN_ITEM_31", "rediger");
+define("LCLAN_ITEM_32", "slet");
+define("LCLAN_ITEM_33", "Er du sikker på du vil slette dette link?");
+define("LCLAN_ITEM_34", "intet ikon");
+define("LCLAN_ITEM_35", "håndter personlige links");
+define("LCLAN_ITEM_36", "go");
+define("LCLAN_ITEM_37", "vis alle links");
+define("LCLAN_ITEM_38", "Alle Links");
+define("LCLAN_ITEM_39", "");
 
 define("LCLAN_ADMINMENU_1", "Link Egenskaber");
 define("LCLAN_ADMINMENU_2", "Håndter Link Kategorier");
@@ -246,4 +247,111 @@ define("NT_LAN_LP_3", "Link Tilføjet");
 define("LNK_SCH_LAN_2", "Alle Links Kategorier");
 define("LNK_SCH_LAN_3", "Alle links detaljer");
 
+define("LAN_LINKS_MANAGER_0", "ikon");
+define("LAN_LINKS_MANAGER_1", "link");
+define("LAN_LINKS_MANAGER_2", "egenskaber");
+define("LAN_LINKS_MANAGER_3", "opret nyt link");
+define("LAN_LINKS_MANAGER_4", "du har ingen links tilstede");
+define("LAN_LINKS_MANAGER_5", "kategori");
+define("LAN_LINKS_MANAGER_6", "");
+define("LAN_LINKS_MANAGER_7", "");
+define("LAN_LINKS_MANAGER_8", "");
+define("LAN_LINKS_MANAGER_9", "");
+
+define("LAN_LINKS_1", "Links Ialt");
+define("LAN_LINKS_2", "Aktiverede links i alt");
+define("LAN_LINKS_3", "Anonym");
+define("LAN_LINKS_4", "titel");
+define("LAN_LINKS_5", "url");
+define("LAN_LINKS_6", "orden");
+define("LAN_LINKS_7", "henviser");
+define("LAN_LINKS_8", "Stigende");
+define("LAN_LINKS_9", "Faldende");
+define("LAN_LINKS_10", "Top Links : Henviser");
+define("LAN_LINKS_11", "Top Links : Bedømmelse");
+define("LAN_LINKS_12", "vis top links efter henviser");
+define("LAN_LINKS_13", "vis top links efter bruger bedømmelse");
+define("LAN_LINKS_14", "tilbage til links forsiden");
+define("LAN_LINKS_15", "sorter efter");
+define("LAN_LINKS_16", "i denne kategori");
+define("LAN_LINKS_17", "link");
+define("LAN_LINKS_18", "links");
+define("LAN_LINKS_19", "kategorier");
+define("LAN_LINKS_20", "kategori");
+define("LAN_LINKS_21", "Der");
+define("LAN_LINKS_22", "er");
+define("LAN_LINKS_23", "er");
+define("LAN_LINKS_24", "ialt i");
+define("LAN_LINKS_25", "vis alle links");
+define("LAN_LINKS_26", "Henvisninger:");
+define("LAN_LINKS_27", "tilføj et link");
+define("LAN_LINKS_28", "Mange Tak");
+define("LAN_LINKS_29", "Dit link er blevet gemt og vil blivet kontrolleret af en site administrator.");
+define("LAN_LINKS_30", "Link Kategorier");
+define("LAN_LINKS_31", "tilføj et link");
+define("LAN_LINKS_32", "Kategori:");
+define("LAN_LINKS_33", "Ingen Links er bedømt endnu.");
+define("LAN_LINKS_34", "Der er pt. ingen links");
+define("LAN_LINKS_35", "personlig link håndterer");
+define("LAN_LINKS_36", "link kommentarer");
+define("LAN_LINKS_37", "kommentarer:");
+define("LAN_LINKS_38", "dato");
+define("LAN_LINKS_39", "Links");
+define("LAN_LINKS_40", "Kategori");
+define("LAN_LINKS_41", "ingen kategorier endnu");
+define("LAN_LINKS_42", "ingen links er henvist endnu");
+define("LAN_LINKS_43", "vis alle kategorier");
+define("LAN_LINKS_44", "id");
+define("LAN_LINKS_45", "Link Kategori");
+define("LAN_LINKS_46", "Link Underkategorier");
+define("LAN_LINKS_47", "");
+define("LAN_LINKS_48", "");
+define("LAN_LINKS_49", "");
+
+define("LAN_ADMIN_HELP_0", "linksside hjælp område");
+
+define("LAN_ADMIN_HELP_1", "<i>håndter link kategorier siden viser alle kategorier der er tilstede.</i><br /><br /><b>detaljeret liste</b><br />Du ser en liste over alle kategorier med deres ikon, navn og beskrivelse, egenskaber, og sorterings egenskaber.<br /><br /><b>forklaring af ikoner</b><br />
+".LINK_ICON_LINK." : link til kategorien<br /><br />
+".LINK_ICON_EDIT." : rediger kategorien<br /><br />
+".LINK_ICON_DELETE." : slet kategorien<br /><br />
+".LINK_ICON_ORDER_UP." : op knappen lader dig flytte kategorien en plads op i rækken.<br /><br />
+".LINK_ICON_ORDER_DOWN." : ned knappen lader dig flytte kategorien en plads ned i rækken.<br />
+<br />
+<b>orden</b><br />her kan du manuelt indstille ordnen for alle kategorierne. Du skal ændre værdierne i valgboksne til den orden du ønsker og klikke genorden knappen nedenfor for at gemme den nye orden.<br />");
+
+define("LAN_ADMIN_HELP_2", "<i>opret link kategori siden lader dig oprette nye kategorier</i><br /><br />Du kan uploade et nyt ikon, og efter upload tildele ikonet til kategorien.");
+define("LAN_ADMIN_HELP_3", "<i>håndter links siden viser først alle kategorier.</i><br /><br />".LINK_ICON_LINK." : link til kategorien<br /><br />".LINK_ICON_EDIT." : klik ikonet for at vise alle links i denne kategori<br />");
+define("LAN_ADMIN_HELP_4", "<i>opret link siden lader dig oprette et nyt link</i><br /><br />Du kan uploade et nyt ikon, og efter upload tildele ikonet til linket.<br /><br />åben type lader dig definere hvordan linket bliver åbnet når en bruger klikker på det.");
+define("LAN_ADMIN_HELP_5", "<i>tilføjede links siden viser alle links der er tilføjet af brugerene</i><br /><br /><b>detaljeret liste</b><br />Du ser link url'en, navnet på den bruger der tilføjede linket og egenskaber.<br /><br /><b>forklaring af ikoner</b><br />
+".LINK_ICON_EDIT." : post det tilføjede link til opret link formularen<br /><br />
+".LINK_ICON_DELETE." : slet det tilføjede link<br />
+");
+define("LAN_ADMIN_HELP_6", "<i>egenskaber siden lader dig ændre opførslen for links_page plugin</i><br /><br />
+generelle egenskaber<br />
+disse egenskaber bruges generelt igennem alle links siderne.<br /><br />
+personlig link håndtering<br />
+den personlige link håndtering er priviligerede brugere der kan håndtere deres egne personligt tilføjede links.<br /><br />
+kategori side<br />
+her kan du ændre egenskaber for kategori siden.<br /><br />
+links side<br />
+Disse egenskaber bruges på links siderne.<br /><br />
+henviser side<br />
+Disse egenskaber bruges på top henviser links siden.<br /><br />
+bedømmelses siden<br />
+Disse egenskaber bruges på top bedømte links siden.<br />
+");
+
+define("LAN_ADMIN_HELP_7", "<i>rediger link kategori siden lader dig redigere en eksisterende kategori</i><br /><br />Du kan uploade et nyt ikon, og efter upload tildele ikonet til kategorien.<br />Du kan opdatere tidsstemplet på linket ved at markere boksen.");
+
+define("LAN_ADMIN_HELP_8", "<i>denne side viser dig alle links i den valgte kategori.</i><br /><br /><b>detaljeret liste</b><br />Du ser en liste over alle links med deres ikon, navn og beskrivelse, egenskaber, og sorterings egenskaber.<br /><br /><b>forklaring af ikoner</b><br />
+".LINK_ICON_LINK." : link til websitet<br /><br />
+".LINK_ICON_EDIT." : rediger linket<br /><br />
+".LINK_ICON_DELETE." : slet linket<br /><br />
+".LINK_ICON_ORDER_UP." : op knappen lader dig flytte linket en plads op i rækken.<br /><br />
+".LINK_ICON_ORDER_DOWN." : ned knappen lader dig flytte linket en plads ned i rækken.<br />
+<br />
+<b>orden</b><br />her kan du manuelt indstille ordnen for alle kategorierne. Du skal ændre værdierne i valgboksne til den orden du ønsker og klikke genorden knappen nedenfor for at gemme den nye orden.<br />");
+
+define("LAN_ADMIN_HELP_9", "<i>rediger link siden lader dig redigere et eksisterende link</i><br /><br />Du kan uploade et nyt ikon, og efter upload tildele ikonet til linket.<br /><br /åben type lader dig definere hvordan linket bliver åbnet når en bruger klikker på det.");
+define("LAN_ADMIN_HELP_10", "<i>post tilføjet link siden lader poste et tilføjet link til de eksisterende links</i><br /><br />En lille tilføjet tekst indsættes i beskrivelses feltet.<br /><br />Du kan uploade et nyt ikon, og efter upload tildele ikonet til linket.<br /><br />åben type lader dig definere hvordan linket bliver åbnet når en bruger klikker på det.");
 ?>
