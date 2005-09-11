@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Danish/lan_forum_viewforum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-18 16:58:24 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-11 17:47:05 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,7 @@ define("LAN_79", "Nye indlæg");
 define("LAN_80", "Ingen nye indlæg");
 define("LAN_81", "Lukket indlæg");
 define("LAN_180", "Søg");
+define("LAN_199", "Ulæste indlæg findes");
 define("LAN_202", "Prioriteret");
 define("LAN_203", "Prioriteret/Lukket");
 define("LAN_204", "Du <b>kan</b> starte nye indlæg");
