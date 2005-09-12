@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2005-09-12 00:51:54 $
+|     $Revision: 1.75 $
+|     $Date: 2005-09-12 19:26:44 $
 |     $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -278,23 +278,19 @@ function hilite($link,$enabled=''){
 		// --------------- highlight for news items.----------------
 		// eg. news.php?list.1 or news.php?cat.2 etc
 
-		if (strpos($link, "news.php") !== FALSE) {
-			if(strpos($link, "list") !== FALSE && strpos(e_QUERY, "list") !== FALSE){
-				$tmp = str_replace("php?", "", explode(".",$link));
-				$tmp2 = explode(".", e_QUERY);
-				if($tmp[1] == $tmp2[1] && $tmp[2] == $tmp2[2]){
-					return true;
-				}
+		if (strpos($link, "news.php?") !== FALSE && strpos(e_SELF,"/news.php")) {
+            $tmp = explode("?",$link);
+			$lnk = explode(".",$tmp[1]); // link queries.
+			$qry = explode(".",e_QUERY); // current page queries.
+
+			if($qry[0] == "item"){
+				return ($qry[2] == $lnk[1]) ? TRUE : FALSE;
+     		}
+
+			if($lnk[0] == $qry[0] && $lnk[1] == $qry[1]){
+            	return TRUE;
 			}
 
-			if((strpos($link, "cat") !== FALSE || strpos($link, "list") !== FALSE) && strpos(e_QUERY, "item") !== FALSE) {
-				$tmp = str_replace("php?", "", explode(".",$link));
-				$tmp2 = explode(".", e_QUERY);
-				if($tmp[2] == $tmp2[2])
-				{
-					return TRUE;
-				}
-			}
 		}
 
 		// --------------- highlight default ----------------
