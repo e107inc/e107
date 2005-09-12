@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-08-23 00:44:23 $
-|     $Author: sweetas $
+|     $Revision: 1.27 $
+|     $Date: 2005-09-12 19:02:53 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -700,7 +700,14 @@ class siteStats {
 					if($entry)
 					{
 						list($url, $total, $unique) = explode("|", $entry);
-						$urlname = preg_replace("/\.php|\?.*/", "", substr($url, (strrpos($url, "/")+1)));
+						if(strstr($url, "/"))
+						{
+							$urlname = preg_replace("/\.php|\?.*/", "", substr($url, (strrpos($url, "/")+1)));
+						}
+						else
+						{
+							$urlname = preg_replace("/\.php|\?.*/", "", $url);
+						}
 						$dayarray[$log_id][$urlname] = array('url' => $url, 'total' => $total, 'unique' => $unique);
 						$pagearray[$urlname]['total'] += $total;
 						$pagearray[$urlname]['unique'] += $unique;
