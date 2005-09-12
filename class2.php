@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.218 $
-|     $Date: 2005-09-08 14:20:14 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.219 $
+|     $Date: 2005-09-12 01:28:41 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -424,13 +424,7 @@ $sql->db_Mark_Time('Start: Init session');
 $ns=new e107table;
 init_session();
 
-define("SITENAME", trim($tp->toHTML($pref['sitename'], "", "emotes_off defs")));
-define("SITEBUTTON", $pref['sitebutton']);
-define("SITETAG", $tp->toHTML($pref['sitetag'], FALSE, "emotes_off defs"));
-define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off defs"));
-define("SITEADMIN", $pref['siteadmin']);
-define("SITEADMINEMAIL", $pref['siteadminemail']);
-define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'], "", "emotes_off defs"));
+
 
 $e107->ban();
 
@@ -466,6 +460,18 @@ define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
 
 e107_include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
+
+// for multi-language these definitions needs to come after the language loaded.
+define("SITENAME", trim($tp->toHTML($pref['sitename'], "", "emotes_off defs")));
+define("SITEBUTTON", $pref['sitebutton']);
+define("SITETAG", $tp->toHTML($pref['sitetag'], FALSE, "emotes_off defs"));
+define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off defs"));
+define("SITEADMIN", $pref['siteadmin']);
+define("SITEADMINEMAIL", $pref['siteadminemail']);
+define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'], "", "emotes_off defs"));
+
+
+
 
 // send the charset to the browser - overides spurious server settings with the lan pack settings.
 header("Content-type: text/html; charset=".CHARSET);
