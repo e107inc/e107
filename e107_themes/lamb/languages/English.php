@@ -11,17 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/languages/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-03-21 11:55:50 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-12 19:45:09 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 
-define("LAN_THEME_1", "'lamb' by <a href='http://e107.org' rel='external'>jalist</a>");
-define("LAN_THEME_2", "Comments are turned off for this item");
+define("LAN_THEME_1", "'khatru' by <a href='http://e107.org' rel='external'>jalist</a>");
+define("LAN_THEME_2", "comments are turned off for this item");
 define("LAN_THEME_3", "comment: ");
-define("LAN_THEME_4", "Read the rest ...");
-define("LAN_THEME_5", "Trackbacks: ");
+define("LAN_THEME_4", "read the rest ...");
+define("LAN_THEME_5", "trackback: ");
 
 
 ?>

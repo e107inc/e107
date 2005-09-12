@@ -1,0 +1,374 @@
+
+body {
+	background: url(images/background.png) no-repeat; text-align: left; margin: 12px;
+	font: 7pt Verdana, Tahoma, Arial, Helvetica, sans-serif;
+}
+
+#logo1{ width: 192px; background-image: url(images/logo1.png); }
+#logo2{ width: 100%; background-repeat: repeat-x; background-image: url(images/logo2.png); }
+#logo3{ width: 8px; background-image: url(images/logo3.png); }
+
+.caption1{ width: 9px; background-image: url(images/topleft.png); }
+.caption2{ width: 100%; background-repeat: repeat-x; background-image: url(images/top.png); font: 7pt Verdana, Tahoma, Arial, Helvetica, sans-serif; color: #222;}
+.caption3{ width: 9px; background-image: url(images/topright.png); }
+.bodyleft{ width: 5px; background-repeat: repeat-y; background-image: url(images/left.png); }
+.bodymain{ width: 100%; background: #fff; padding: 4px 5px 5px 4px; font-size: 7pt; color: #000; font-family: verdana, tahoma, arial, sans-serif; vertical-align:top; background-repeat: repeat-x repeat-y; background-image: url(images/menubg.png);}
+.bodyright{ width: 5px; background-repeat: repeat-y; background-image: url(images/right.png); }
+.bottomleft{ width: 9px; background-image: url(images/bottomleft.png); }
+.bottommain{ width: 100%; background-repeat: repeat-x; background-image: url(images/bottom.png);}
+.bottomright{ width: 9px; background-image: url(images/bottomright.png); }
+
+.topleft{ width: 9px; background-image: url(images/topleft2.png); }
+.top{ width: 100%; background-repeat: repeat-x; background-image: url(images/top2.png); font: 7pt Verdana, Tahoma, Arial, Helvetica, sans-serif; color: #222;}
+.topright{ width: 9px; background-image: url(images/topright2.png); }
+
+#leftcontent {
+	width:180px;
+	margin:0; padding:0;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	vertical-align: top;
+}
+#rightcontent {
+	width:180px;
+	margin:0; padding:0;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	vertical-align: top;
+}
+
+.centercontent {
+	vertical-align: top;
+	font: 7pt Verdana, Tahoma, Arial, Helvetica, sans-serif;
+}
+
+.columnwrap {
+	margin:0; padding:1px 1px;
+}
+
+#banner {
+	position: absolute;
+	right:26px;
+	top:40px;
+}
+
+a {
+	color: #00006e; 
+	font-family: verdana, arial, sans-serif; 
+	text-decoration: none;
+}
+a:hover {
+	color: #ec5800;
+	font-family: verdana, arial, sans-serif; 
+	text-decoration: underline;
+}
+
+
+.smalltext {
+	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
+	color:#5d6e75;
+}
+
+form {
+	display: inline;
+}
+.spacer {
+	padding: 2px 0 2px 0;
+}
+
+#wm {
+	voice-family: "\"}\"";
+	voice-family: inherit;
+	background: #f3eded url(images/wblogo.png) bottom right no-repeat;
+	border: 1px solid #ede3e3;
+	padding: 10px 150px 10px 10px;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.button {	
+	border: #b7b5b5 1px solid;
+	color: #000;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	text-align:center;
+	background-image : url(images/button.png);
+}
+
+h1 {
+  font-size: 1.4em;
+  font-weight: bold;
+  margin-top: 0em;
+  margin-bottom: 0em;
+  color: #ec5800;
+}
+
+h2 {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-top: 0em;
+  margin-bottom: 0em;
+  color: #ec5800;
+}
+
+.newstext {
+	font-size: 8pt;
+	line-height: 120%;
+	color: black;
+	text-align: left;
+	font: 7pt verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.newheadline {
+	font-size: 13px;
+	color: #ec5800;
+}
+
+.newsinfo {
+	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
+	color:#5d6e75;
+}
+
+.newsinfo a {
+	background: transparent;
+	color: #5d6e75; 
+}
+
+.newsinfo a:hover {
+	color: #ec5800;
+	text-decoration: underline;
+}
+
+
+
+
+
+#pollquestion {
+	font: 8pt Verdana, Tahoma, Arial, Helvetica, sans-serif;
+}
+
+.helpbox {
+	color:#000;
+	font: 9px tahoma, verdana, arial, helvetica, sans-serif;
+	border: 0px none red;
+	background-color: transparent;
+}
+
+.nforumholder {
+	border: 1px solid #345487;
+	padding: 0px;
+	background: transparent;
+}
+
+.nforumcaption {
+	background-image: url(images/nforumcaption.png);
+	padding: 8px 4px 8px 4px;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #fff;
+}
+
+.nforumcaption2 {
+	background-image: url(images/nforumcaption2.png);
+	padding: 8px 0px 8px 4px;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+}
+
+.nforumcaption3 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-repeat: repeat-x repeat-y; background-image: url(images/menubg.png);
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumthread {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-repeat: repeat-x repeat-y; background-image: url(images/menubg2.png);
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumthread2 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-color: #D1DCEB;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumreplycaption {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-repeat: repeat-x repeat-y; background-image: url(images/menubg2.png);
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumreply {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-repeat: repeat-x repeat-y; background-image: url(images/menubg2.png);
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumreply2 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-repeat: repeat-x repeat-y; background-image: url(images/menubg.png);
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+.nforumdisclaimer {
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#5d6e75;
+}
+
+.nforumview1 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-repeat: repeat-x repeat-y; background-image: url(images/menubg.png);
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumview2 {
+	border: 1px solid #fff;
+	padding: 4px;
+	background-repeat: repeat-x repeat-y; background-image: url(images/menubg.png);
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.nforumview3 {
+	padding: 4px;
+	background-color: #BCD0ED;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #263448;
+}
+
+.nforumview4 {
+	padding: 4px;
+	background-color: #E4EAF2;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #3A4F6C;
+}
+
+a.forumlink{
+	color: #4943c1;
+	text-decoration: none;
+}
+
+a.forumlink:hover {
+	color: #bbb;
+	text-decoration: underline;
+}
+
+td {
+	text-align: left;
+}
+
+.smallblacktext {
+	font: 10px tahoma, verdana, arial, helvetica, sans-serif;
+	color:#000;
+	line-height: 120%;
+}
+
+.tbox{
+	background-color: #fff;
+	border: #b7b5b5 1px solid;
+	color: #000000;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+}
+
+.forumheader{
+	background: transparent;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+	background-image: url(images/nforumcaption2.png);
+}
+
+.forumheader2{
+	background: transparent;
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+}
+
+.forumheader3{
+	background: transparent;
+	font: 11px verdana, tahoma, arial, helvetica, sans-serif;
+	color:#000;
+	padding: 4px;
+}
+
+.forumborder{
+	border: #000080 1px solid;
+}
+
+.chatb {
+	font-size: 12px;
+}
+
+.chatb a {
+	background: transparent;
+	color: #ec5800; 
+}
+
+.chatb a:hover {
+	color: #616060;
+	font-family: verdana, arial, sans-serif; 
+	text-decoration: underline;
+}
+
+p {
+	margin-top: 0px
+}
+
+.indent{
+	padding: 10px 10px 10px 10px;
+	margin: 5px;
+	font: 9px verdana, tahoma, arial, sans-serif;
+	color: #838387;
+	border: 1px solid #d6d6d6;
+}
+
+.nextprev{
+	color: #000000;
+	font: 9px verdana, tahoma, arial, helvetica, sans-serif;
+	padding : 2px;
+	text-align: right;
+}
+
+ul {
+	padding-left: 12px;
+}
+
+.commentinfo {
+	background-image: url(images/nforumcaption2.png);
+	padding: 8px 0px 8px 4px;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+}
+
+.commentinfo a {
+	background: transparent;
+	color: #ec5800; 
+}
+
+.commentinfo a:hover {
+	color: #616060;
+	font-family: verdana, arial, sans-serif; 
+	text-decoration: underline;
+}
+
+.mediumtext {
+	font: 12px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+}
+
+.fcaption {
+	background-image: url(images/nforumcaption2.png);
+	padding: 8px 0px 8px 4px;
+	font: 10px verdana, tahoma, arial, helvetica, sans-serif;
+	color: #000;
+}
+
+hr {
+	border-top: #666 1px solid;
+	border-bottom: #fff 1px solid;
+	height: 2px;
+	width: 99%;
+	text-align:center;
+}
