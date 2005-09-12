@@ -122,7 +122,14 @@ define('LINKDISPLAY', 2);
 define('LINKALIGN', "left");
 
 
+//	[tablestyle]
 
+function tablestyle($caption, $text, $mode)
+{
+	echo "<h4><img src='".THEME_ABS."images/bluearrow_greybg.png' alt='' width='6' height='9' /> {$caption}</h4>\n<br />
+	{$text}
+	<br /><br />\n";	
+}
 
 $COMMENTSTYLE = "
 <table style='width: 100%;'>
