@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/admin_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-09 15:58:17 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2005-09-12 06:48:44 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -22,10 +22,6 @@ require_once(e_ADMIN."auth.php");
 require_once(e_HANDLER."userclass_class.php");
 
 $gsm = new gsitemap;
-
-
-/* ERIC  - PLEASE SEE LINE 341! */
-
 
 
 
@@ -309,7 +305,7 @@ class gsitemap
 
 	function importSme()
 	{
-		global $sql, $PLUGINS_DIRECTORY, $ns;
+		global $sql, $sql2, $PLUGINS_DIRECTORY, $ns;
 		$importArray = array();
 
 		/* sitelinks ... */
@@ -349,10 +345,22 @@ class gsitemap
 
 
 		/* content pages ... */
-
-
-		/*	 Eric - see above examples for correct method - thankyou!	*/
-
+		$sql -> db_Select("pcontent", "content_id, content_heading", "LEFT(content_parent,1) = '0' ORDER BY content_heading");
+		$nfArray = $sql -> db_getList();
+		foreach($nfArray as $row)
+		{
+			$sql2 -> db_Select("pcontent", "content_id, content_heading", "content_parent = '".$row['content_id']."' AND content_refer != 'sa' ORDER BY content_heading");
+			$nfArray2 = $sql2 -> db_getList();
+			foreach($nfArray2 as $row2)
+			{
+				if(!$sql -> db_Select("gsitemap", "*", "gsitemap_name='".$row2['content_heading']."' "))
+				{
+					$importArray[] = array('name' => $row2['content_heading'], 'url' => SITEURL.$PLUGINS_DIRECTORY."content/content.php?content.".$row2['content_id'], 'type' => $row['content_heading']);
+				}
+			}
+			
+		}
+		
 
 		/* end */
 
