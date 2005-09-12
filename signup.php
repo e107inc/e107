@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2005-09-02 01:37:36 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.59 $
+|     $Date: 2005-09-12 19:21:09 $
+|     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -572,14 +572,14 @@ $text .="
 <tr>
 <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_7."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_8."</span></td>
 <td class='forumheader3' style='width:70%'>
-".$rs->form_text("name", 30, $name, 30)."
+".$rs->form_text("name", 30, ($_POST['name'] ? $_POST['name'] : $name), 30)."
 </td>
 </tr>
 
 <tr>
 <td class='forumheader3' style='width:30%;white-space:nowrap' >".LAN_9."<span style='font-size:15px; color:red'> *</span><br /><span class='smalltext'>".LAN_10."</span></td>
 <td class='forumheader3' style='width:70%'>
-".$rs->form_text("loginname", 30, $loginname, 30)."
+".$rs->form_text("loginname", 30,  ($_POST['loginname'] ? $_POST['loginname'] : $loginname), 30)."
 </td>
 </tr>
 ";
@@ -589,7 +589,7 @@ if ($signupval[0]) {
 		<tr>
 		<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_308."".req($signupval[0])."</td>
 		<td class='forumheader3' style='width:70%' >
-		".$rs->form_text("realname", 30, $realname, 100)."
+		".$rs->form_text("realname", 30, ($_POST['realname'] ? $_POST['realname'] : $realname), 100)."
 		</td>
 		</tr>";
 }
@@ -618,7 +618,7 @@ $text .= "
 	<tr>
 	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_112."<span style='font-size:15px; color:red'> *</span></td>
 	<td class='forumheader3' style='width:70%'>
-	".$rs->form_text("email", 30, $email, 100)."
+	".$rs->form_text("email", 30, ($_POST['email'] ? $_POST['email'] : $email), 100)."
 	</td>
 	</tr>
 	<tr>
@@ -671,7 +671,7 @@ if ($signupval[7])
 	$text .= "<tr>
 		<td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_120." ".req($signupval[7])."</td>
 		<td class='forumheader3' style='width:70%' >
-		<textarea class='tbox' style='width:99%' name='signature' cols='10' rows='4' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$signature</textarea><br />
+		<textarea class='tbox' style='width:99%' name='signature' cols='10' rows='4' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".($_POST['signature'] ? $_POST['signature'] : $signature)."</textarea><br />
 		<div style='width:99%'>".ren_help(2)."</div>
 		</td></tr>";
 }
