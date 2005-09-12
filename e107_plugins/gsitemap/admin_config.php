@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/admin_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-09-12 06:48:44 $
-|     $Author: lisa_ $
+|     $Revision: 1.5 $
+|     $Date: 2005-09-12 13:36:16 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -248,6 +248,17 @@ class gsitemap
 		</td>
 		</tr>
 
+		<tr>
+		<td class='forumheader3'>Visible to</td>
+		<td class='forumheader3'>";
+		$text .= r_userclass("gsitemap_active", $editArray['gsitemap_active'], "nobody,public,guest,member,admin,classes,language");
+		$text .="
+		</select>
+		</td>
+		</tr>
+
+
+
 		<tr style='vertical-align:top'>
 		<td colspan='2' style='text-align:center' class='forumheader'>";
 		if(is_array($editArray))
@@ -284,7 +295,7 @@ class gsitemap
 		}
 		if(isset($_POST['gsitemap_id']))
 		{
-			$this -> message = $sql -> db_Update("gsitemap", "gsitemap_name='$gsitemap_name', gsitemap_url='$gsitemap_url', gsitemap_priority='".$_POST['gsitemap_priority']."', gsitemap_lastmod='".$_POST['gsitemap_lastmod']."', gsitemap_freq= '".$_POST['gsitemap_freq']."', gsitemap_order='".$_POST['gsitemap_order']."' WHERE gsitemap_id='".$_POST['gsitemap_id']."' ") ? LAN_UPDATED : LAN_UPDATED_FAILED;
+			$this -> message = $sql -> db_Update("gsitemap", "gsitemap_name='$gsitemap_name', gsitemap_url='$gsitemap_url', gsitemap_priority='".$_POST['gsitemap_priority']."', gsitemap_lastmod='".$_POST['gsitemap_lastmod']."', gsitemap_freq= '".$_POST['gsitemap_freq']."', gsitemap_order='".$_POST['gsitemap_order']."', gsitemap_active='".$_POST['gsitemap_active']."' WHERE gsitemap_id='".$_POST['gsitemap_id']."' ") ? LAN_UPDATED : LAN_UPDATED_FAILED;
 		}
 		else
 		{
@@ -358,9 +369,9 @@ class gsitemap
 					$importArray[] = array('name' => $row2['content_heading'], 'url' => SITEURL.$PLUGINS_DIRECTORY."content/content.php?content.".$row2['content_id'], 'type' => $row['content_heading']);
 				}
 			}
-			
+
 		}
-		
+
 
 		/* end */
 
