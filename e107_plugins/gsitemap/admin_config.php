@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/admin_config.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-09-12 14:07:15 $
+|     $Revision: 1.7 $
+|     $Date: 2005-09-12 14:16:25 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -399,13 +399,42 @@ class gsitemap
 			<td style='width:5%; text-align: center;' class='forumheader3'><input type='checkbox' name='importid[]' value='".$ia['name']."^".$ia['url']."^".$ia['type']."' /></td>
 			<td style='width:15%' class='forumheader3'>".$ia['type']."</td>
 			<td style='width:40%' class='forumheader3'>".$ia['name']."</td>
-			<td style='width:40%' class='forumheader3'><span class='smalltext'>".$ia['url']."</span></td>
+			<td style='width:40%' class='forumheader3'><span class='smalltext'>".str_replace(SITEURL,"",$ia['url'])."</span></td>
 			</tr>
 			";
 		}
+
+
+
+
+
+
 		$text .= "
 		<tr>
 		<td colspan='4' style='text-align:center' class='forumheader'>
+		<div>Import with: &nbsp; Priority:&nbsp;<select class='tbox' name='import_priority' >\n";
+
+		for ($i=0.1; $i<1.0; $i=$i+0.1) {
+			$sel = ($editArray['gsitemap_priority'] == number_format($i,1))? "selected='selected'" : "";
+			$text .= "<option value='".number_format($i,1)."' $sel>".number_format($i,1)."</option>\n";
+		};
+
+		$text.="</select>&nbsp;&nbsp;&nbsp;Frequency
+
+
+		<select class='tbox' name='import_freq' >\n";
+
+		$freq_list = array("always","hourly","daily","weekly","monthly","yearly","never");
+
+		foreach($freq_list as $fq){
+			$sel = ($editArray['gsitemap_freq'] == $fq)? "selected='selected'" : "";
+			$text .= "<option value='$fq' $sel>$fq</option>\n";
+		}
+
+		$text.="</select> <br /><br />
+
+
+		</div>
 		<input class='button' type='submit' name='import_links' value='Import ticked links' />
 		</td>
 		</tr>
@@ -426,7 +455,7 @@ class gsitemap
 			list($name, $url, $type) = explode("^", $import);
 			$name = $tp -> toDB($name);
 			$url = $tp -> toDB($url);
-			$sql -> db_Insert("gsitemap", "0, '$name', '$url', '".time()."', 'always', '0.5', '$type', '0', '', '0' ");
+			$sql -> db_Insert("gsitemap", "0, '$name', '$url', '".time()."', '".$_POST['import_freq']."', '".$_POST['import_priority']."', '$type', '0', '', '0' ");
 		}
 		$this -> message = count($_POST['importid'])." link(s) imported.";
 	}
