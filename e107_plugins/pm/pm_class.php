@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-09-07 13:37:06 $
+|     $Revision: 1.5 $
+|     $Date: 2005-09-12 11:13:10 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -335,6 +335,7 @@ class private_message
 	function pm_get_outbox($uid = USERID, $from = 0, $limit = 10)
 	{
 		global $sql;
+		if(intval($limit < 1)) { $limit = 10; }
 		$qry = "
 		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM #private_msg AS pm
 		LEFT JOIN #user AS u ON u.user_id = pm.pm_to
