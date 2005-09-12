@@ -1,17 +1,14 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
-|        e107 website system
-|        admin/lan_plugin.php Hebrew-utf language file 
+|		e107 website system
+|		Hebrew-utf language file
 |
-|        Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|        Translation Updated by: eesh on the 3rd Oct 2004
+|		$Source: /cvs_backup/e107_langpacks/e107_languages/Hebrew/admin/lan_plugin.php,v $
+|		$Revision: 1.2 $
+|		$Date: 2005-09-12 21:20:27 $
+|		$Author: e107coders $
+|		Encoding: utf-8
 +---------------------------------------------------------------+
 */
 
@@ -72,7 +69,7 @@ define("EPL_DIRECTORY", ".");
 define("EPL_NOINSTALL_1", "לא נדרשת התקנה, כדי להסיר מחק את ספריית");
 define("EPL_UPGRADE", "שדרוג");
 define("EPL_CONFIGURE", "הגדרות");
-              
+
 define("EPL_ADLAN_46", "הגדרות RSS נוצרו בהצלחה");
 define("EPL_ADLAN_47", "הגדרות RSS נמחקו בהצלחה");
 define("EPL_ADLAN_48", "אין אפשרות ליצור הגדרות RSS");

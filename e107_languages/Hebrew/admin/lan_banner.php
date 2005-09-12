@@ -1,17 +1,14 @@
-﻿<?php
+<?php
 /*
 +---------------------------------------------------------------+
-|        e107 website system
-|        admin/lan_banner.php Hebrew-utf language file 
+|		e107 website system
+|		Hebrew-utf language file
 |
-|        Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
-|
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-|
-|        Translation Updated by: eesh on the 24th Sep 2004
+|		$Source: /cvs_backup/e107_langpacks/e107_languages/Hebrew/admin/lan_banner.php,v $
+|		$Revision: 1.2 $
+|		$Date: 2005-09-12 21:20:27 $
+|		$Author: e107coders $
+|		Encoding: utf-8
 +---------------------------------------------------------------+
 */
 
@@ -67,7 +64,7 @@ define("BANNER_MENU_L2", "הגדרות תפריט הכרזות נשמרו");
 
 //v.617
 define("BANNER_MENU_L3", "כותרת");
-define("BANNER_MENU_L5", "הגדרות כרזה"); 
+define("BANNER_MENU_L5", "הגדרות כרזה");
 define("BANNER_MENU_L6", "בחר מסעות פרסום שיוצגו בתפריט");
 define("BANNER_MENU_L7", "מסעות פרסום זמינים");
 define("BANNER_MENU_L8", "מסעות פרסום שנבחרו");
