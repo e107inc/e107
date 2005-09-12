@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/admin_config.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-09-12 13:36:16 $
+|     $Revision: 1.6 $
+|     $Date: 2005-09-12 14:07:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -181,7 +181,7 @@ class gsitemap
 
 		<tr>
 		<td style='width:25%' class='forumheader3'>Name
-		<span class='smalltext'></span></td>
+		<span class='smalltext'>&nbsp;</span></td>
 		<td class='forumheader3'>
 		<input class='tbox' type='text' style='width:90%' name='gsitemap_name' size='40' value='".$editArray['gsitemap_name']."' maxlength='100' />
 		</td>
@@ -189,7 +189,7 @@ class gsitemap
 
 		<tr>
 		<td style='width:25%' class='forumheader3'>URL
-		<span class='smalltext'></span></td>
+		<span class='smalltext'>&nbsp;</span></td>
 		<td class='forumheader3'>
 		<input class='tbox' type='text' style='width:90%' name='gsitemap_url' size='40' value='".$editArray['gsitemap_url']."' maxlength='100' />
 		</td>
@@ -197,7 +197,7 @@ class gsitemap
 
 		<tr>
 		<td style='width:25%' class='forumheader3'>LastMod
-		<span class='smalltext'></span></td>
+		<span class='smalltext'>&nbsp;</span></td>
 		<td class='forumheader3'>
 		<input class='tbox' type='text'  name='gsitemap_lastmod' size='40' value='".$editArray['gsitemap_lastmod']."' maxlength='100' />
 		</td>
@@ -205,7 +205,7 @@ class gsitemap
 
 		<tr>
 		<td style='width:25%' class='forumheader3'>Change Freq.
-		<span class='smalltext'></span></td>
+		<span class='smalltext'>&nbsp;</span></td>
 		<td class='forumheader3'>
 		<select class='tbox' name='gsitemap_freq' >\n";
 
@@ -223,7 +223,7 @@ class gsitemap
 
 		<tr>
 		<td class='forumheader3'>Priority<br />
-		<span class='smalltext'></span></td>
+		<span class='smalltext'>&nbsp;</span></td>
 		<td class='forumheader3'>
 		<select class='tbox' name='gsitemap_priority' >\n";
 
@@ -253,7 +253,6 @@ class gsitemap
 		<td class='forumheader3'>";
 		$text .= r_userclass("gsitemap_active", $editArray['gsitemap_active'], "nobody,public,guest,member,admin,classes,language");
 		$text .="
-		</select>
 		</td>
 		</tr>
 
