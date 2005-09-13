@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-09-13 15:04:04 $
+|     $Revision: 1.29 $
+|     $Date: 2005-09-13 15:07:13 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -1133,6 +1133,7 @@ class siteStats {
 		if($percen < 2)
 		{
 			return "
+<div style='float: right;'>&nbsp;$val</div>
 <div style='background-image: url(".$this -> barl."); float: left; width: 5px; height: 14px;'></div>
 <div style='background-image: url(".$this -> barr."); float: left; width: 5px; height: 14px;'></div>
 ";
