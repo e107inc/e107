@@ -4,8 +4,12 @@ $search = array('"', '{E_IMAGE}');
 $replace = array('&#039;', e_IMAGE);
 $code_text = str_replace($search, $replace, $code_text);
 unset($imgParms);
+$imgParms['class']="bbcode";  
 $imgParms['alt']='';
 $imgParms['style']="vertical-align:middle; border:0";
+
+
+
 if($parm) {
 	$parm = preg_replace('#onerror *=#i','',$parm);
 	parse_str($parm,$tmp);
@@ -17,6 +21,7 @@ $parmStr="";
 foreach($imgParms as $k => $v) {
 	$parmStr .= "$k='{$v}' ";
 }
+
 
 if(file_exists(e_IMAGE."newspost_images/".$code_text))
 {
