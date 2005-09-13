@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2005-09-07 19:50:51 $
+|     $Revision: 1.70 $
+|     $Date: 2005-09-13 16:20:08 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -203,7 +203,7 @@ if ($e107_popup != 1) {
 	} else {
 		foreach ($custompage as $key_extract => $cust_extract) {
 			foreach ($cust_extract as $key => $kpage) {
-				if ($kpage && strstr(e_SELF, $kpage)) {
+				if ($kpage && strstr(e_SELF, $kpage) || strstr(e_SELF."?".e_QUERY,$kpage)) {
 					$ph = TRUE;
 					if ($key_extract=='no_array') {
 						$cust_header = $CUSTOMHEADER ? $CUSTOMHEADER : $HEADER;
