@@ -10,8 +10,8 @@
 |       Released under the terms and conditions of the
 |       GNU General Public License (http://gnu.org).
 |     	$Source: /cvs_backup/e107_0.7/e107_plugins/gsitemap/plugin.php,v $
-|     	$Revision: 1.5 $
-|     	$Date: 2005-09-09 16:49:32 $
+|     	$Revision: 1.6 $
+|     	$Date: 2005-09-13 18:49:40 $
 |     	$Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -37,7 +37,9 @@ $eplug_conffile = "admin_config.php";
 
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/icon.png";
+$eplug_icon_small = $eplug_folder."/images/icon_16.png";   
 $eplug_logo = $eplug_folder."/images/icon.png";
+
 $eplug_caption =  "Configure Sitemap";
 
 // List of preferences -----------------------------------------------------------------------------------------------
