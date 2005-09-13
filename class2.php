@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.219 $
-|     $Date: 2005-09-12 01:28:41 $
-|     $Author: e107coders $
+|     $Revision: 1.220 $
+|     $Date: 2005-09-13 00:33:02 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -86,9 +86,9 @@ if (strpos($_SERVER['PHP_SELF'], "trackback") === FALSE)
 	}
 }
 
-if (preg_match("/\[(.*?)\].*?/i", $_SERVER['QUERY_STRING'], $matches)) {
+if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 	define("e_MENU", $matches[1]);
-	define("e_QUERY", $_SERVER['QUERY_STRING']);
+	define("e_QUERY", $matches[2]);
 } else {
 	define("e_QUERY", $_SERVER['QUERY_STRING']);
 }
