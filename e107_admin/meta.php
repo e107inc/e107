@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/meta.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-09-07 17:27:14 $
+|     $Revision: 1.13 $
+|     $Date: 2005-09-13 17:13:12 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -90,9 +90,12 @@ $text = "<div style='text-align:center'>
 	</tr>
 
 	<tr>
-	<td style='width:25%' class='forumheader3'>".METLAN_2.": </td>
+	<td style='width:25%' class='forumheader3'>".METLAN_2.":
+	<span class='smalltext'><br /><br />eg.
+	&lt;meta name='author' content='your name' /&gt; </span>
+	</td>
 	<td style='width:75%' class='forumheader3'>
-	<textarea class='tbox' id='meta' name='meta' cols='70'
+	<textarea class='tbox' title=\"eg. <meta name='author' content='your name' />\" id='meta' name='meta' cols='70'
 	rows='10' style='width:90%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".str_replace("&#039;","'",$meta[$current_lang])."</textarea>
 	<br />";
 $text .= "</td>
