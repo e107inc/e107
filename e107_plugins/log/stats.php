@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-09-12 19:02:53 $
+|     $Revision: 1.28 $
+|     $Date: 2005-09-13 15:04:04 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -1129,10 +1129,23 @@ class siteStats {
 	
 	function bar($percen, $val)
 	{
-		if($percen > 99) $percen = 98;
-		$ptext = "
-		<div style='background-image: url(".$this -> barl."); width: 5px; height: 14px; float: left;'></div><div style='background-image: url(".$this -> bar."); width: ".$percen."%; height: 14px; float: left;'></div><div style='background-image: url(".$this -> barr."); width: 5px; height: 14px; float: left;'></div>".($percen > 95 ? "<br />" : "")."&nbsp;".$val;
-		return ($ptext);
+
+		if($percen < 2)
+		{
+			return "
+<div style='background-image: url(".$this -> barl."); float: left; width: 5px; height: 14px;'></div>
+<div style='background-image: url(".$this -> barr."); float: left; width: 5px; height: 14px;'></div>
+";
+		}
+		return "
+<div style='float: right;'>&nbsp;$val</div>
+<div style='width:".$percen."%;'>
+<div style='background-image: url(".$this -> barl."); float: left; width: 5px; height: 14px; margin-right: -3px;'></div>
+<div style='background-image: url(".$this -> barr."); float: right; width: 5px; height: 14px; margin-left: -3px;'></div>
+<div style='background-image: url(".$this -> bar."); height: 14px; overflow: hidden;'></div>
+
+</div>
+";
 	}
 
 	function remove_entry($toremove)
