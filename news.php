@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.77 $
-|     $Date: 2005-09-12 22:03:26 $
+|     $Revision: 1.78 $
+|     $Date: 2005-09-13 01:27:31 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@ require_once("class2.php");
 require_once(e_HANDLER."news_class.php");
 
 if (isset($NEWSHEADER)) {
-	require_once(HEADERF);
+ 	require_once(HEADERF);
 	require_once(FOOTERF);
 	exit;
 }
@@ -161,34 +161,8 @@ if ($action == "extend") {
 }
 
 
-// --->wmessage
-if (!$pref['wmessage_sc']) {
-	if (!defined("WMFLAG")) {
-		$sql->db_Select("generic", "gen_chardata", "gen_type='wmessage' AND gen_intdata REGEXP '".e_CLASS_REGEXP."' ORDER BY gen_intdata ASC");
-		while ($row = $sql->db_Fetch()){
-			$wmessage .= $tp->toHTML($row['gen_chardata'], TRUE, 'parse_sc', 'admin')."<br />";
-		}
-	}
-	if (isset($wmessage)) {
-		if ($pref['wm_enclose']) {
-			$ns->tablerender("", $wmessage, "wm");
-		} else {
-			echo $wmessage;
-		}
-	}
-}
-// --->wmessage end
 
-// --->feature box
-if (isset($pref['fb_active']))
-{
-	require_once(e_PLUGIN."featurebox/featurebox.php");
-}
-// --->feature end
 
-if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
-	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
-}
 
 if (Empty($order)){
 	$order = "news_datestamp";
@@ -289,9 +263,53 @@ else
 	$newsAr = $sql -> db_getList();
 }
 
+
+
+    $p_title = ($action == "item") ? $newsAr[1]['news_title'] : $newsAr[1]['category_name'];
+ 	if($action != ""){
+		define("e_PAGETITLE",$p_title);
+	}
+
+ 	require_once(HEADERF);
+
+
+
+
+// -------> wmessage
+if (!$pref['wmessage_sc']) {
+	if (!defined("WMFLAG")) {
+		$sql->db_Select("generic", "gen_chardata", "gen_type='wmessage' AND gen_intdata REGEXP '".e_CLASS_REGEXP."' ORDER BY gen_intdata ASC");
+		while ($row = $sql->db_Fetch()){
+			$wmessage .= $tp->toHTML($row['gen_chardata'], TRUE, 'parse_sc', 'admin')."<br />";
+		}
+	}
+	if (isset($wmessage)) {
+		if ($pref['wm_enclose']) {
+			$ns->tablerender("", $wmessage, "wm");
+		} else {
+			echo $wmessage;
+		}
+	}
+}
+// --->wmessage end
+
+// --->feature box
+if (isset($pref['fb_active']))
+{
+	require_once(e_PLUGIN."featurebox/featurebox.php");
+}
+// --->feature end
+
+if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
+	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
+}
+// Inserts End.
+
+
 /*
 changes by jalist 03/02/2005:
 news page templating
+
 */
 if($pref['news_unstemplate'] && file_exists(THEME."news_template.php"))
 {
@@ -359,12 +377,7 @@ if($pref['news_unstemplate'] && file_exists(THEME."news_template.php"))
 	// #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
 
 
-    $p_title = ($action == "item") ? $newsAr[1]['news_title'] : $newsAr[1]['category_name'];
- 	if($action != ""){
-		define("e_PAGETITLE",$p_title);
-	}
 
-	require_once(HEADERF);
 
 	ob_start();
 
