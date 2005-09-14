@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.79 $
-|     $Date: 2005-09-14 14:41:41 $
+|     $Revision: 1.80 $
+|     $Date: 2005-09-14 15:40:18 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -283,6 +283,7 @@ if($tmp = checkCache($cacheString)){
 
 if (!$sql->db_Select_gen($query))
 {
+	require_once(HEADERF);
 	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
 	require_once(FOOTERF);
 	exit;
