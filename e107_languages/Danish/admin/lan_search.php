@@ -4,8 +4,8 @@
 |        e107 website system  Language File - Danish
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_search.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:01 $
+|        $Revision: 1.3 $
+|        $Date: 2005-09-14 21:32:16 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -46,5 +46,6 @@ define("SEALAN_39", "Egne Sider");
 
 define("LAN_98", "Nyheder");
 define("LAN_197", "Downloads");
+define("LAN_418", "Egne Sider");
 
 ?>

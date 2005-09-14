@@ -1,7 +1,16 @@
 <?php
-
-$text = "Marker boxen for at have tekst smileys erstattet af billede smileys.<br /><br />
-Skriv de opdateringer du har brug for i tekstboxene, og klik opdater for at gemme dine instillinger. Brug formularen i bunden af siden for at tilføje nye smileys.";
+/*
++---------------------------------------------------------------+
+|        e107 website system  Language File
+|
+|        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/help/emoticon.php,v $
+|        $Revision: 1.2 $
+|        $Date: 2005-09-14 21:30:19 $
+|        $Author: e107dk $
++---------------------------------------------------------------+
+*/
+$text = "Du kan oprette smiley pakker der vil installere perfekt i e107. Gå til <a href='".e_FILE."emote_create/emotecreate.php'>opret smiley</a> og følg instruktionerne.";
 
 $ns -> tablerender("Smiley Hjælp", $text);
 ?>
+

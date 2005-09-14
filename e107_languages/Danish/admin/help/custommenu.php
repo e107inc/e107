@@ -1,9 +1,16 @@
 <?php
-$text = "Fra denne side kan du lave egne menuer med dit eget indhold.<br /><br /><b>Vigtigt</b> - for at benytte denne funktion skal du CHMOD din /menus mappe til 777.
-<br /><br />
-<i>Menu Filnavn</i>: Navnet på din menu, menuen vil blive gemt som 'custom_det navn.php' i /menus mappen<br />
-<i>Menu Overskrift Titel</i>: Teksten der vises i titel feltet på menuen<br />
-<i>Menu Tekst</i>: De data der vises i selve menuen, kan være tekst, billeder osv.";
+/*
++---------------------------------------------------------------+
+|        e107 website system  Language File
+|
+|        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/help/custommenu.php,v $
+|        $Revision: 1.2 $
+|        $Date: 2005-09-14 21:30:19 $
+|        $Author: e107dk $
++---------------------------------------------------------------+
+*/
+$text = "Fra denne side kan du lave egne menuer med dit eget indhold.<br /><br />
+Se venligst <a href='http://docs.e107.org?Custom Pages'>http://docs.e107.org?Custom Pages</a>";
 
 $ns -> tablerender(CUSLAN_18, $text);
 ?>
