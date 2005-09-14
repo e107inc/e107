@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.78 $
-|     $Date: 2005-09-13 01:27:31 $
+|     $Revision: 1.79 $
+|     $Date: 2005-09-14 14:41:41 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -55,8 +55,15 @@ if ($action == 'all' || $action == 'cat') {
 
 $ix = new news;
 if ($action == 'cat' || $action == 'all'){
-	checkNewsCache($cacheString);
-	ob_start();
+
+// --> Cache
+	if($tmp = checkCache($cacheString)){
+		require_once(HEADERF);
+		renderCache($tmp, TRUE);
+	}
+// <-- Cache
+
+
 	$qs = explode(".", e_QUERY);
 
 	$category = $qs[1];
@@ -86,11 +93,13 @@ if ($action == 'cat' || $action == 'all'){
 		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_category={$sub_action} ORDER BY n.news_datestamp DESC LIMIT $from,".NEWSLIST_LIMIT;
 	}
 
-		if($category_name){
-        	define("e_PAGETITLE",$category_name);
-		}
+	if($category_name){
+		define("e_PAGETITLE",$category_name);
+	}
 
-       	require_once(HEADERF);
+	require_once(HEADERF);
+	ob_start();
+
 
 	if(!$NEWSLISTSTYLE){
 		$NEWSLISTSTYLE = "
@@ -140,8 +149,13 @@ if ($action == 'cat' || $action == 'all'){
 
 if ($action == "extend") {
 
-	checkNewsCache($cacheString);
-	ob_start();
+// --> Cache
+	if($tmp = checkCache($cacheString)){
+		require_once(HEADERF);
+		renderCache($tmp, TRUE);
+	}
+// <-- Cache
+
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
@@ -154,6 +168,7 @@ if ($action == "extend") {
 	}
 
 	require_once(HEADERF);
+	ob_start();
 	$ix->render_newsitem($news, "extend");
 	setNewsCache($cacheString);
 	require_once(FOOTERF);
@@ -251,7 +266,21 @@ else
 	// #### END ---------------------------------------------------------------------------------------------------
 }
 
-checkNewsCache($cacheString, TRUE);
+if($tmp = checkCache($cacheString)){
+	require_once(HEADERF);
+ 	if(!$action){
+		render_wmessage();
+   		if (isset($pref['fb_active'])){  // --->feature box
+			require_once(e_PLUGIN."featurebox/featurebox.php");
+   		}
+		if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
+			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
+		}
+	}
+	renderCache($tmp, TRUE);
+}
+
+
 if (!$sql->db_Select_gen($query))
 {
 	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
@@ -271,39 +300,16 @@ else
 	}
 
  	require_once(HEADERF);
-
-
-
-
-// -------> wmessage
-if (!$pref['wmessage_sc']) {
-	if (!defined("WMFLAG")) {
-		$sql->db_Select("generic", "gen_chardata", "gen_type='wmessage' AND gen_intdata REGEXP '".e_CLASS_REGEXP."' ORDER BY gen_intdata ASC");
-		while ($row = $sql->db_Fetch()){
-			$wmessage .= $tp->toHTML($row['gen_chardata'], TRUE, 'parse_sc', 'admin')."<br />";
+	if(!$action){
+  		render_wmessage();   // --> wmessage.
+		if (isset($pref['fb_active'])){   // --->feature box
+   	   		require_once(e_PLUGIN."featurebox/featurebox.php");
 		}
-	}
-	if (isset($wmessage)) {
-		if ($pref['wm_enclose']) {
-			$ns->tablerender("", $wmessage, "wm");
-		} else {
-			echo $wmessage;
+
+   		if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
+	   		require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 		}
-	}
-}
-// --->wmessage end
-
-// --->feature box
-if (isset($pref['fb_active']))
-{
-	require_once(e_PLUGIN."featurebox/featurebox.php");
-}
-// --->feature end
-
-if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
-	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
-}
-// Inserts End.
+    }
 
 
 /*
@@ -495,20 +501,55 @@ function setNewsCache($cacheString) {
 	if ($pref['cachestatus']) {
 		$cache = ob_get_contents();
 		$e107cache->set($cacheString, $cache);
+		$e107cache->set($cacheString."_title", e_PAGETITLE);
 	}
+
 	ob_end_flush();
 }
 
-function checkNewsCache($cacheString, $nfp = FALSE) {
-	global $pref, $e107cache, $tp;
+function checkCache($cacheString){
+    global $pref,$e107cache;
 	$cache_data = $e107cache->retrieve($cacheString);
+    $cache_title = $e107cache->retrieve($cacheString."_title");
+	$etitle = ($cache_title != "e_PAGETITLE") ? $cache_title : "";
+  	if($etitle){
+		define(e_PAGETITLE,$etitle);
+	}
+
 	if ($cache_data) {
-		echo $cache_data;
+		return $cache_data;
+	}
+}
+
+function renderCache($cache, $nfp = FALSE){
+        global $pref,$tp,$sql;
+		echo $cache;
 		if ($nfp && $pref['nfp_display'] == 2) {
 			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 		}
 		require_once(FOOTERF);
 		exit;
+}
+
+
+
+function render_wmessage(){
+
+	global $pref,$sql,$ns,$tp;
+	if (!$pref['wmessage_sc']) {
+		if (!defined("WMFLAG")) {
+			$sql->db_Select("generic", "gen_chardata", "gen_type='wmessage' AND gen_intdata REGEXP '".e_CLASS_REGEXP."' ORDER BY gen_intdata ASC");
+			while ($row = $sql->db_Fetch()){
+				$wmessage .= $tp->toHTML($row['gen_chardata'], TRUE, 'parse_sc', 'admin')."<br />";
+			}
+		}
+   		if (isset($wmessage)) {
+			if ($pref['wm_enclose']) {
+				$ns->tablerender("", $wmessage, "wm");
+			} else {
+	   			echo $wmessage;
+			}
+		}
 	}
 }
 
