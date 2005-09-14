@@ -4,13 +4,13 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_login.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:00 $
+|        $Revision: 1.3 $
+|        $Date: 2005-09-14 20:10:33 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
 define("LAN_27", "Nødvendige felter tomme");
-define("LAN_300", "Brugernavnet blev ikke fundet.");
+define("LAN_300", "Brugernavnet blev ikke fundet.Forkert login. De skrevne data passer ikke på en registreret bruger. Kontroller om du CAPS-LOCK tasten aktiveret eftersom logins på dette site er følsomme over for store og små bogstaver");
 define("LAN_302", "Du har ikke aktiveret dit medlemskab. Du burde have modtaget en e-mail med instruktioner i hvordan du aktiverer dit medlemskab. Hvis ikke kontakt administrator.");
 define("LAN_303", "Forkert adgangskode.");
 define("LAN_304", "Brugernavn/adgangskode kombination er allerede i brug.");

@@ -4,25 +4,18 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_search.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:00 $
+|        $Revision: 1.3 $
+|        $Date: 2005-09-14 20:10:33 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
 
 define("PAGE_NAME", "Søg");
 
-define("LAN_20", "Fejl");
 define("LAN_98", "Nyheder");
 define("LAN_99", "Kommentarer");
-define("LAN_100", "Artikler");
-define("LAN_101", "Chatboks");
-define("LAN_102", "Links");
-define("LAN_103", "Forum");
 define("LAN_140", "Registrerede medlemmer");
 define("LAN_180", "Søg");
-define("LAN_190", "Anmeldelser");
-define("LAN_191", "Indhold");
 define("LAN_192", "Alle kategorier");
 define("LAN_193", "Aktivitets kalender");
 define("LAN_194", "Alle kategorier");
@@ -55,10 +48,8 @@ define("LAN_SEARCH_12", " af ");
 define("LAN_SEARCH_13", " i ");
 define("LAN_SEARCH_14", "Kategori:");
 define("LAN_SEARCH_15", "Forfatter:");
-define("LAN_SEARCH_16", "Søge begrænset");
 define("LAN_SEARCH_17", "Desværre, søgning er begrænset til en søgning hver ");
 define("LAN_SEARCH_18", " sekunder.");
-
 define("LAN_SEARCH_19", "Søg i:");
 define("LAN_SEARCH_20", "Autorisation krævet");
 define("LAN_SEARCH_21", "Du har ikke tilladelse til at se denne side.");

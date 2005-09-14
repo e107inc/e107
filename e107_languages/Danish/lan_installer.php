@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_installer.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-09 10:41:51 $
+|     $Revision: 1.4 $
+|     $Date: 2005-09-14 20:10:33 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,8 @@ define("LANINS_006", "Benyt Sprog");
 define("LANINS_007", "2");
 define("LANINS_008", "PHP &amp; MySQL Versions Tjek / Fil Tilladelses Tjek");
 define("LANINS_009", "Gentest Fil Tilladelser");
-define("LANINS_010", "Fil skrivebeskyttet: ");
+define("LANINS_010", "Fil er skrivebeskyttet: ");
+define("LANINS_010a", "Mappe er skrivebeskyttet: ");
 define("LANINS_011", "Fejl");
 define("LANINS_012", "MySQL Funktioner lader ikke til at eksistere. Dette betyder formentlig at enten er MySQL PHP Udvidelsen ikke installeret eller den er ikke konfigureret korrekt."); // help for 012
 define("LANINS_013", "Kunne ikke bestemme dit MySQL versions nummer. Dette kan betyde at din MySQL server er nede, eller nægter forbindelser.");
