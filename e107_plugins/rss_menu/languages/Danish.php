@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/rss_menu/languages/Danish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-06 22:12:04 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-14 18:04:30 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -20,4 +20,8 @@ define("BACKEND_MENU_L6", "Forum poster");
 
 define("BACKEND_MENU_L7", "Chatboks indlæg");
 define("BACKEND_MENU_L8", "Fejlmeldinger");
+define("BACKEND_MENU_L9", "Vore downloads");
+
+define("RSS_LAN01", "Anvend seperate feeds for hver nyheds kategori?");
+define("RSS_LAN02", "Anvend seperate feeds for hver download kategori?");
 ?>
