@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-08-28 16:59:53 $
-|     $Author: streaky $
+|     $Revision: 1.33 $
+|     $Date: 2005-09-14 14:52:07 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -143,7 +143,9 @@ if ($type == "file")
 				$sql -> db_Update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '{$download_id}'");
 				$sql -> db_Update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '{$mirror_id}'");
 
-				header("Location: ".$gaddress);
+				if(!ADMIN){
+					header("Location: ".$gaddress);
+				}
 				exit();
 			}
 
@@ -274,7 +276,7 @@ if (strpos($image, "http") !== FALSE) {
 
 // File retrieval function. by Cam.
 function send_file($file) {
-	global $pref, $DOWNLOADS_DIRECTORY, $e107;
+	global $pref, $DOWNLOADS_DIRECTORY,$FILES_DIRECTORY, $e107;
 	if (!$pref['download_php'])
 	{
 		header("Location: ".SITEURL.$file);
@@ -287,9 +289,16 @@ function send_file($file) {
 	$file = basename($file);
 	$path = realpath($filename);
 	$path_downloads = realpath($DOWNLOADS_DIRECTORY);
-	if(!strstr($path, $path_downloads)) {
-		header("location: {$e107->http_path}");
-		exit();
+	$path_public = realpath($FILES_DIRECTORY."public/");
+	if(!strstr($path, $path_downloads) && !strstr($path,$path_public)) {
+        if(E107_DEBUG_LEVEL > 0 && ADMIN){
+			echo "Failed to Download <b>".$file."</b><br />";
+			echo "The file-path <b>".$path."<b> didn't match with either <b>$path_downloads</b> or <b>$path_public</b><br />";
+			exit();
+        }else{
+			header("location: {$e107->http_path}");
+			exit();
+		}
 	} else {
 		if (is_file($filename) && is_readable($filename) && connection_status() == 0) {
 			if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE"))
@@ -331,8 +340,15 @@ function send_file($file) {
 			}
 			fclose($res);
 		} else {
-			header("location: ".e_BASE."index.php");
-			exit();
+
+            if(E107_DEBUG_LEVEL > 0 && ADMIN){
+              	echo "file failed =".$file."<br />";
+				echo "path =".$path."<br />";
+                exit();
+			}else{
+			  	header("location: ".e_BASE."index.php");
+				exit();
+			}
 		}
 	}
 }
