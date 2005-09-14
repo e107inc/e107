@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_plugins/integrity_check/languages/Danish.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-07-06 22:12:03 $
+|        $Revision: 1.2 $
+|        $Date: 2005-09-14 21:34:58 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -38,7 +38,9 @@ define("Integ_25", "Forside");
 define("Integ_26", "Indlæs websted med normal header");
 
 //define("Integ_29", "<br /><br /><b>*<u>CRC-FEJL:</u></b><br />Disse er checksum fejl og der er to mulige grunde for dette:<br />-Du har ændret noget inden i den nævnte fil, så det er ikke længere den samme som originalen.<br />-Den nævnte fil er korrupt, Du bør genuploade den!");
-define("Integ_30", "For mindre cpu-brug, kan du lave kontrollen i 1 - 10 trin.");
+
+
+define("Integ_30", "For mindre processor-brug, kan du lave kontrollen i 1 - 10 trin.");
 define("Integ_31", "Trin: ");
 define("Integ_32", "Der er en fil kaldet <b>log_crc.txt</b> i din crc-mappe. Slet! (eller prøv at genopfriske)");
 define("Integ_33", "Der er en fil kaldet <b>log_miss.txt</b> i din crc-mappe. Slet! (eller prøv at genopfriske)");
