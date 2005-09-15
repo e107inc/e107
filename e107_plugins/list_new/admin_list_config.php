@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/admin_list_config.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2005-07-26 10:49:57 $
+|		$Revision: 1.6 $
+|		$Date: 2005-09-15 08:16:00 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -211,7 +211,7 @@ function parse_global_options($type){
 	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW);
 
 	//amount
-	$maxitems_amount = "15";
+	$maxitems_amount = "50";
 	$TOPIC_TOPIC = LIST_ADMIN_SECT_16;
 	$TOPIC_HEADING = LIST_ADMIN_SECT_17;
 	$TOPIC_HELP = LIST_ADMIN_SECT_18;
