@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.101 $
-|     $Date: 2005-09-02 16:00:14 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.102 $
+|     $Date: 2005-09-15 15:46:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -29,7 +29,7 @@ class e_parse
 	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
 	var $e_query;
 
-	function toDB($text, $no_encode = FALSE, $nostrip = false)
+	function parse_toDB($text, $no_encode = FALSE, $nostrip = false)
 	{
 		global $pref;
 		if (MAGIC_QUOTES_GPC == TRUE && $nostrip == false)
@@ -55,13 +55,13 @@ class e_parse
 	}
 
 	// recursively run toDB (for arrays)
-	function recurse_toDB($data, $no_encode = false, $nostrip = false){
-		foreach ($data as $key => $var) {
-			if(!is_array($var)){
-				$ret[$key] = $this->toDB($var, $no_encode, $nostrip);
-			} else {
-				$ret[$key] = $this->recurse_toDB($var, $no_encode, $nostrip);
+	function toDB($data, $no_encode = false, $nostrip = false){
+		if (is_array($data)) {
+			foreach ($data as $key => $var) {
+				$ret[$key] = $this -> toDB($var, $no_encode, $nostrip);
 			}
+		} else {
+			$ret = $this -> parse_toDB($data, $no_encode, $nostrip);
 		}
 		return $ret;
 	}

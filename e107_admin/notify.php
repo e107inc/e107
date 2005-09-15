@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/notify.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-08-22 20:31:28 $
+|     $Revision: 1.9 $
+|     $Date: 2005-09-15 15:46:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -65,7 +65,7 @@ class notify_config {
 		}
 		
 		if ($recalibrate) {
-			$s_prefs = $tp -> recurse_toDB($this -> notify_prefs, true);
+			$s_prefs = $tp -> toDB($this -> notify_prefs, true);
 			$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 			$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 		}
@@ -152,7 +152,7 @@ class notify_config {
 			}
 		}
 		
-		$s_prefs = $tp -> recurse_toDB($this -> notify_prefs, true);
+		$s_prefs = $tp -> toDB($this -> notify_prefs, true);
 		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 		$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 		if ($active) {
