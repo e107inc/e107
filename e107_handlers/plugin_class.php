@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-09-06 16:14:50 $
-|     $Author: e107coders $
+|     $Revision: 1.34 $
+|     $Date: 2005-09-15 15:46:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -324,7 +324,7 @@ class e107plugin
 				unset($notify_prefs['event'][$event_id]);
 			}
 		}
-		$s_prefs = $tp -> recurse_toDB($notify_prefs, true);
+		$s_prefs = $tp -> toDB($notify_prefs, true);
 		$s_prefs = $eArrayStorage -> WriteArray($s_prefs);
 		$sql -> db_Update("core", "e107_value='".$s_prefs."' WHERE e107_name='notify_prefs'");
 	}
