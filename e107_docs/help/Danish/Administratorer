@@ -1,0 +1,6 @@
+
+Q>	Hvad er rettigheder?
+A>	Dette lader dig give administratorer forskellige rettigheds niveauer i administrationen. For eksempel du vil måske kun give en bestemt admin rettigheder til at lave nyheder, ved brug af rettigheder kan du gøre dette. Der er nogle admin funktioner der kun er tilgængelige for Hovedadministrator, dette er af sikkerheds årsager.
+
+Q>	Jeg vil gøre et eksisterende medlem til administrator - hvordan?
+A>	Klik på Brugere i din admin sektion og søg efter det registrerede medlem, klik så på Opret administrator. Du bør herefter øjeblikkelig gå til Administratorer sektionen og indstille dennes rettigheder. Du kan også fjerne admin status på denne måde.

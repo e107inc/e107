@@ -1,0 +1,12 @@
+
+Q>	Hvad er BBCode?
+A>	BBCode er en genvej til et HTML tegn, for eksempel skrive [b] Jeg er fed tekst! [/b] i alle admin tekst boksene vil gøre teksten mellem [b] og [/b] til fed tekst, så [b]Jeg er fed tekst![/b] vil blive vist på skærmen.
+
+Q>	Men hvad er det til?
+A>	Det sparer dig tid ved at skrive HTML tegn. Du kan bruge normale HTML tegn i dine tekst bokse men brug af BBCode vil virkelig gøre det hurtigere at skrive din tekst.
+
+Q>	Når jeg klikker en af BBCode knapperne for at skrive koden, sætter den det ind til sidst i teksten, og ikke hvor markøren er - hvorfor?
+A>	Der er en fejl i Internet Explorer der kan få den til at bryde sammen hvis e107 prøver at skrive koden hvor markøren er, så i kompatibilitetens navn bliver koden sat ind efter din tekst.
+
+Q>	Hvilke BBCodes kan jeg bruge?
+A>	Peg med din mus på de forskellige bbcode bokse, og du vil se en lille forklaring lige over knapperne. Der er også koder for links [url] [/url] og email [email] [/email], selvom brug af normale HTML tegn er ok. Alle web adresser og e-mail adresser der skrives bliver automatisk lavet til klik-bare hyperlinks.

@@ -1,0 +1,18 @@
+
+Q>	Jeg har defineret et nyt banner fra admin området men det bliver ikke vist - hvorfor?
+A>	Det tema du bruger har brug for at vide at det skal vise et banner. åben theme.php og sikker dig du har {BANNER} eller {BANNER=dinkampagne} i $HEADER sektionen.
+
+Q>	Jeg vil bruge et sæt bannere i et område og et andet sæt i et andet område - hvordan?
+A>	Du kan gruppere dine bannere under 'Kampagner', og indstille dit tema  til at vise bannere fra bestemte kampagner. For eksempel, hvis du har to kampagner der hedder cam_1 and cam_2, indsæt {BANNER=cam1} i et område af din $HEADER sektion i theme.php vil kun vise cam_1 bannere, og indsæt {BANNER=cam_2} i et andet område vil kun vise cam_2 bannere. indsæt {BANNER} (intet Kampagne navn) i din theme.php vil vise tilfældige bannere fra alle kampagner.
+
+Q>	Hvad er klient login og klient password til?
+A>	Du kan definere login og password for dine banner klienter, de kan bruge disse til at få adgang til informationer om deres bannere ved at gå til http://ditsite.dk/banner.php og skrive brugernavnet og kodeordet.
+
+Q>	Hvordan kan jeg have et højt 'tower' type banner i en menu?
+A>	Først skal du definere en kampagne for tower type bannere (dette vil adskille dem fra almindelige bannere) ...
+	1. Gå til dit admin område og klik på banner reklame.
+	2. Skriv dine tower-type banner(e), vær sikker på du bruger et nyt kampagne navn, for eksempel 'towers'.
+	3. Gå nu til dit Menu område, og aktiver Banner_menu i en af dine menu områder.
+	4. Klik på 'Konfigurer' linket i menuen.
+	5. Skriv en top titel (som standart er det 'Advertisment'), og skriv det kampagne navn du definerede før.
+	6. Forlad dit admin område og du vil se dine tower-type banner(e) i det område du aktiverede dem i.

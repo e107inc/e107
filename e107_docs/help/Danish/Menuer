@@ -1,0 +1,12 @@
+
+Q>	Hvad er menuer?
+A>	De bokse/indslag der vises i menu områderne (el kolonnerne) på dit site. Disse kan indeholde tekst, links, hvad som helst.
+
+Q>	Hvodan aktiverer jeg en menu?
+A>	Gå til dit admin område og klik på Menuer. Du vil se det generelle layout på dit site med en liste af dine menuer i deres respektive områder. Menuerne midt på siden er inaktive, du kan flytte dem til et aktivt område ved at klikke på Aktiver denne menu. Du kan også flytte en menu til et andet område eller op og ned når den er aktiveret.
+
+Q>	Jeg har brug for at putte noget tekst i en menu, hvordan gør jeg det?
+A>	Gå til admin området og klik på Egne Menuer. Herfra kan du skrive al den tekst du vil i en menu, den vil blive gemt og være tilgængelig som alle andre menuer.
+
+Q>	Hvordan ændrer jeg egenskaberne for en menu?
+A>	Hvis et konfigurations panel er tilgængeligt vil du se et link (kaldet 'Konfigurer') i menu boksen når den er aktiveret.

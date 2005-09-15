@@ -1,0 +1,6 @@
+
+Q>	Hvad er en Download Gruppe?
+A>	Dette lader dig gruppere dine downloads i forskellige kategorier.
+
+Q>	Jeg vil tilføje et download men filen bliver ikke vist på listen - hvorfor?
+A>	Kun filer i e107_files/downloads mappen bliver vist på listen i rullegardinet. Kopier filen til denne mappe og og den vil blive vist. Det samme gælder billeder, de skal være i e107_files/downloadimages mappen.

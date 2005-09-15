@@ -1,0 +1,4 @@
+
+Q>	Hvad er de bruger-grupper jeg ser hele tiden? Hvad er de til?
+A>	Bruger-grupper begrænser adgangen til bestemte områder eller funktioner af dit site. Hvis du definerer en grupper, så tilføj brugere til den, du kan vælge at gøre ting synlige kun for brugere i den grupper.
+For eksempel, der er en gruppe skabt af e107 under installationen der hedder PRIVATEFORUM. Ved at tilføje brugere til denne gruppe og så oprette et forum under den, vil gære så kun brugere i den gruppe vil kunne få adgang til det forum. Du kan begrænse andre områder og funktioner ved brug af grupper, som nyheder, links, downloads osv.

@@ -1,0 +1,6 @@
+
+Q>	Hvad er denne sektion til?
+A>	Denne side lader dig gøre dit site utilgængeligt for besøgende, brug det når du opgradere dit site eller når du af en eller anden grund har brug for at lukke det en periode. Kun Hoved administratoren har adgang til sitet når det er sat til vedligeholdelse, dette vil du se da en besked vil blive vist på alle sider.
+
+Q>	Hjælp! Jeg har slået vedligeholdelses flaget til og er ved et uheld kommet til at logge ud, hvordan kommer jeg tilbage til min admin sektion og slår vedligeholdelse fra igen?
+A>	Gå til http://ditsite.dk/e107_admin.php/admin.php og log ind derfra.

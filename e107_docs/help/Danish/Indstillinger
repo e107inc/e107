@@ -1,0 +1,15 @@
+
+Q>	Hvordan ændrer jeg tema?
+A>	Der er en sektion på din Indstillinger side der lader dig ændre dit site tema. Fremvis temaet først da nogle ældre temaer ikke længere kompatible og kan gøre dit site ubrugeligt hvis aktiveret.
+
+Q>	Hvad er COPPA?
+A>	Det er Children's Online Privacy Protection Act of 1998. Det er en universalt brugt regel fra usa der beskytter mindreårige på 13 og derunder. Det sikrer at ingen informationer om miindreårige vil blive brugt af 'Operatøren' (ie, dig) til formål andre end at vedligeholde websitet. For flere informationer se venligst http://www.cdt.org/legislation/105th/privacy/coppa.html.
+
+Q>	Hvad er genskrivnings beskyttelse?
+A>	Det forhindrer dit site i at blive overdænget med HTTP kald, hvilket kan gøre dit site uopnåeligt.
+
+Q>	Bør jeg bruge Cookies eller Sessions til bruger overvågning?
+A>	Det er op til dig, hvis dit site virker ok med cookies (standart) så lad det blive ved det. Hvis du foretrækker og bruge PHP sessions, så brug det (en speciel session håndtering bliver brugt af e107 til at gemme og håndtere sessions).
+
+Q>	Hvorfor b�r jeg k�re mit site i standard modus?
+A>	Hvis du udvikler et tema og har problemer med at f� det vist korrekt i Firefox/Mozilla og IE, pr�v at markere denne boks. IE vil da blive k�rt i standards modus og bruge den korrekte boks model.

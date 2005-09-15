@@ -1,0 +1,6 @@
+
+Q>	Jeg vil gerne lade folk uploade filer til mit site men jeg er bekymret for sikkerheden ...
+A>	Der er et par ting og gøre for at forbedre sikkerheden. Først, brug Database binære, da vil de uploadede filer blive gemt i mySQL databasen og vil ikke være tilgængelig for nogen bortset fra download. Også, indstil listen af tilladte filtyper, hvis nogen prøver at uploade andre filer end de tilladte du har defineret vil de blive slettet øjeblikkeligt fra din server.
+
+Q>	Jeg har fået nogle filer uploadet, hvad gør jeg nu?
+A>	Du har mulighed for at kopiere filen til din Download h�ndtering, for at andre kan downloade den, og kopiere upload informationerne til din nyheds sektion, for at lave en nyhed om den.
