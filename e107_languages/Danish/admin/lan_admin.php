@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_admin.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:01 $
+|        $Revision: 1.3 $
+|        $Date: 2005-09-16 14:57:01 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -79,13 +79,13 @@ define("ADLAN_68", "PHP Info");
 define("ADLAN_69", "PHP info side");
 define("ADLAN_70", "Afstemninger");
 define("ADLAN_71", "Tilføj/rediger afstemninger");
-define("ADLAN_72", "Brugerupload");
+define("ADLAN_72", "Offentlige uploads");
 define("ADLAN_73", "Konfigurer offentligeuploads");
 define("ADLAN_74", "Cache");
 define("ADLAN_75", "Set cache status");
 define("ADLAN_77", "Der tilføjet en nyhed - Klik her for at kontrollere den.");
-define("ADLAN_78", "Rediger");
-define("ADLAN_79", "Slet");
+define("ADLAN_78", "Udvidede brugerfelter");
+define("ADLAN_79", "Forlad Udvidede brugerfelter");
 
 
 define("ADLAN_86", "Forkert adgangskode");
@@ -97,7 +97,7 @@ define("ADLAN_91", "Log på");
 define("ADLAN_92", "Log på, for at fortsætte til administratorsiderne...");
 define("ADLAN_93", "Administrator funktioner");
 define("ADLAN_94", "Installerede plugins");
-define("ADLAN_95", "Programnodul konfiguration");
+define("ADLAN_95", "Plugin konfiguration");
 define("ADLAN_96", "Ingen");
 define("ADLAN_97", "Klik her for FAQ/OSS");
 define("ADLAN_98", "Plugin konfiguration");

@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_links.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2005-07-09 10:55:38 $
+|        $Revision: 1.4 $
+|        $Date: 2005-09-16 14:57:01 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -42,6 +42,7 @@ define("LCLAN_68", "Indstillinger");
 define("LCLAN_78", "Vis beskrivelse som Skærmtip");
 define("LCLAN_79", "Beskrivelse vil blive vist når musen peger på linket");
 define("LCLAN_80", "Aktiver udvidene under-menuer");
+define("LCLAN_81", "Undermenuer vil kun blive vist ved klik på deres forælder. (Link forældre er slået fra)");
 define("LCLAN_83", "Undermenu generator");
 define("LCLAN_88", "Site Links Egenskaber");
 define("LCLAN_89", "Billede");
