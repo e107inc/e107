@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 
-define("ONLINE_EL1", "Gästen: ");
+define("ONLINE_EL1", "Gasten: ");
 define("ONLINE_EL2", "Leden: ");
 define("ONLINE_EL3", "Op deze pagina: ");
 define("ONLINE_EL4", "Online");

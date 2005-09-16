@@ -22,7 +22,7 @@ define("EQSEC_LAN3", "Geen verwijzer");
 define("EQSEC_LAN4", "Actie van:");
 define("EQSEC_LAN5", "Actie op:");
 define("EQSEC_LAN6", "Bevestig actie");
-define("EQSEC_LAN7", "Of annulleer");
+define("EQSEC_LAN7", "Of annuleer");
 
 
 ?>

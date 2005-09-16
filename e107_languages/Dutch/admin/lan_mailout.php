@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_mailout.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-08-29 13:22:16 $
+|     $Revision: 1.7 $
+|     $Date: 2005-09-16 15:18:42 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ define("PRFLAN_71", "als je niet zeker bent, laat dan ingesteld als php");
 define("PRFLAN_72", "SMTP Server");
 define("PRFLAN_73", "SMTP Gebruiker");
 define("PRFLAN_74", "SMTP Wachtwoord");
-define("PRFLAN_75", "Het e-mailtje kon niet worden verstuurd. Controleer de SMTP instellingen, of deactiveeer SMTP en probeer het nogmaals.");
+define("PRFLAN_75", "Het e-mailtje kon niet worden verstuurd. Controleer de SMTP instellingen, of deactiveer SMTP en probeer het nogmaals.");
 
 define("MAILAN_01","Van Naam");
 define("MAILAN_02","Van e-mailadres");

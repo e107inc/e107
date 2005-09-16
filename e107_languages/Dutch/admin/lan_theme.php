@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_theme.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-01 19:53:00 $
+|     $Revision: 1.3 $
+|     $Date: 2005-09-16 15:18:42 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -28,8 +28,8 @@ define("TPVLAN_15", "Het bestand kon niet worden geupload omdat de permissies op
 define("TPVLAN_16", "Beheerboodschap");
 define("TPVLAN_17", "Dit bestand lijkt geen geldig .zip of .tar archief te zijn.");
 define("TPVLAN_18", "Er is een fout opgetreden, kan het bestand niet uitpakken");
-define("TPVLAN_19", "Je theme is geupload en uitgepakted. Blader omlaag om het in de lijst te zien.");
-define("TPVLAN_20", "Auto theme upload en uipakken is gedeactiveerd omdat de permissies op je themes directory onjuist zijn. Wijzig de permissies van e107_themes directory in CHMOD 777.");
+define("TPVLAN_19", "Je theme is geupload en uitgepakt. Blader omlaag om het in de lijst te zien.");
+define("TPVLAN_20", "Auto theme upload en uitpakken is gedeactiveerd omdat de permissies op je themes directory onjuist zijn. Wijzig de permissies van e107_themes directory in CHMOD 777.");
 define("TPVLAN_21", "Dit is het huidige geselecteerde site theme");
 define("TPVLAN_22", "dit theme heeft meerdere stylesheets");
 define("TPVLAN_23", "standaard stylesheet");

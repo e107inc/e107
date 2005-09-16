@@ -17,7 +17,7 @@ Activeer deze optie om alleen de titel weer te geven. Klikken op de titel leidt 
 <br /><br />
 <b>Status</b>
 <br />
-Als de op de Deactiveren knop drukt, wordt het bericht niet getoond.
+Als je op de Deactiveren knop drukt, wordt het bericht niet getoond.
 <br /><br />
 <b>Activering</b>
 <br />

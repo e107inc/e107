@@ -9,7 +9,7 @@ $text = "<div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vert
 <img src='".e_IMAGE."fileinspector/file_unknown.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Geen Core bestand</div>";
 $ns -> tablerender("Legenda bestandeninspecteur", $text);
 
-$text = "De bestandinspecteur scant en analyseert de bestanden op je site server. Wanneer de inspecteuur een
+$text = "De bestandinspecteur scant en analyseert de bestanden op je site server. Wanneer de inspecteur een
 e107 core bestand vindt, dan wordt dat bestand gescand om te controleren of het niet corrupt is.";
 
 $ns -> tablerender("Bestandeninspecteur Help", $text);

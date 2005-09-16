@@ -14,7 +14,7 @@ define("LANINS_009", "Opnieuw testen permissions");
 define("LANINS_010", "Bestand niet beschrijfbaar: ");
 define("LANINS_010a", "Map niet beschrijfbaar: ");
 define("LANINS_011", "Fout");
-define("LANINS_012", "MySQL functies lijken niet te bestaan. Dit betekent vermoedelijk dat de MySQL PHP extensies niet  zijn geïnstalleerd of dat ze niet goed zijn geconfigureerd."); // help for 012
+define("LANINS_012", "MySQL functies lijken niet te bestaan. Dit betekent vermoedelijk dat de MySQL PHP extensies niet zijn geïnstalleerd of dat ze niet goed zijn geconfigureerd."); // help for 012
 define("LANINS_013", "Het MySQL versienummer is niet vast te stellen. Dat kan betekenen dat je MySQL server down is of dat de server de verbindingen weigert.");
 define("LANINS_014", "Bestandspermissies");
 define("LANINS_015", "PHP Versie");
@@ -51,7 +51,7 @@ define("LANINS_040", "Fouten");
 define("LANINS_041", "e107 kon met de informatie die je net opgaf geen verbinding maken met de MySQL server. Ga terug naar de vorige pagina en controleer de opgegeven informatie.");
 define("LANINS_042", "Verbinding met de MySQL server gemaakt en geverifieerd.");
 
-define("LANINS_043", "De database kan niet worden gecreëerd. Controleerd of je de juiste permissies hebt om databases op je server te creëren.");
+define("LANINS_043", "De database kan niet worden gecreëerd. Controleer of je de juiste permissies hebt om databases op je server te creëren.");
 define("LANINS_044", "Database succesvol aangemaakt.");
 define("LANINS_045", "Druk op de knop om verder te gaan met de volgende stap.");
 define("LANINS_046", "5");
@@ -81,7 +81,7 @@ define("LANINS_063", "e107 is succesvol geïnstalleerd en klaar voor gebruik.");
 define("LANINS_064", "Je beheerscherm");
 define("LANINS_065", "is hier");
 define("LANINS_066", "klik om er nu naartoe te gaan. Je moet inloggen met de gebruikersnaam en het wachtwoord die je beide eerder opgaf bij installatie.");
-define("LANINS_067", "je vindt de FAQ en documentatie hier.");
+define("LANINS_067", "Je vindt de FAQ en documentatie hier.");
 define("LANINS_068", "Hartelijk dank voor het installeren van e107. We hopen dat het voldoet aan al je website wensen.\n(Je kunt dit bericht verwijderen in je beheerscherm.)\n\n<b>Let op: deze versie van e107 is een beta versie en dus niet gegarandeerd voor gebruik op live websites.</b>");
 define("LANINS_069", "e107 is succesvol geïnstalleerd!
 

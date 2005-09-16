@@ -104,7 +104,7 @@ define("LAN_SEARCH_67", "Alle downloaddetails");
 define("LAN_SEARCH_68", "Datum");
 define("LAN_SEARCH_69", "Relevantie");
 define("LAN_SEARCH_70", "Geplaatst in downloadonderwerp");
-define("LAN_SEARCH_71", "Geplaats als reactie op nieuwsbericht");
+define("LAN_SEARCH_71", "Geplaatst als reactie op nieuwsbericht");
 define("LAN_SEARCH_72", "Ondertekening");
 define("LAN_SEARCH_73", "Geen ondertekening.");
 define("LAN_SEARCH_74", "Aangesloten op");

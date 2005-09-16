@@ -98,5 +98,5 @@ define("LAN_408", "Er is al een deelnemer met dat e-mailadres.");
 define("MAX_AVWIDTH", "Maximale avatar breedte is");
 define("MAX_AVHEIGHT", "Maximale avatar hoogte is");
 define("GIF_RESIZE", "Pas de afmetingen van de avatar aan, of converteer naar een ander bestandsformaat");
-define("RESIZE_NOT_SUPPORTED", "Verschalingsmethode wordt door de server niet ondersteund. Pas zelf de afmetingen aan of kies een andere. bestand is verwijderd.");
+define("RESIZE_NOT_SUPPORTED", "Verschalingsmethode wordt door de server niet ondersteund. Pas zelf de afmetingen aan of kies een andere. Het bestand is verwijderd.");
 ?>

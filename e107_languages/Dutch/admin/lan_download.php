@@ -112,7 +112,7 @@ define("DOWLAN_136", "Afbeelding");
 define("DOWLAN_137", "Weet je zeker dat je deze mirror wilt verwijderen?");
 define("DOWLAN_138", "Aanwezige mirrors");
 define("DOWLAN_139", "Adres");
-define("DOWLAN_140", "Upload lokale afbeeldingen naar e107_files/downloadimages om ze hier te tonen, of voor het volledige adres in als het een extern bestand is");
+define("DOWLAN_140", "Upload lokale afbeeldingen naar e107_files/downloadimages om ze hier te tonen, of voer het volledige adres in als het een extern bestand is");
 define("DOWLAN_141", "Lokatie");
 define("DOWLAN_142", "Bijwerken mirror");
 define("DOWLAN_143", "Opvoeren mirror");

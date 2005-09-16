@@ -16,7 +16,7 @@
 +---------------------------------------------------------------+
 */
 
-define("METLAN_1", "Meta tags bijgewerktin database");
+define("METLAN_1", "Meta tags bijgewerkt in database");
 define("METLAN_2", "Opvoeren meta tags");
 define("METLAN_3", "Invoeren nieuwe meta tag instellingen");
 define("METLAN_4", "Bijgewerkt");

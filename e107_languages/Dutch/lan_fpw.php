@@ -36,7 +36,7 @@ define("LAN_FPW2", "Voer de code in");
 define("LAN_FPW3", "Onjuiste code ingevoerd");
 define("LAN_FPW4", "Er is al een wijzigingsverzoek voor dit wachtwoord verstuurd. Als je het e-mailtje niet ontving, neem dan contact op met de beheerder.");
 define("LAN_FPW5", "Het verzoek om je wachtwoord te vervangen voor");
-define("LAN_FPW6", "Er is je een e-mail gestuurd met een linkje waarmee u de wachtwoordwijziging kunt accepteren.");
+define("LAN_FPW6", "Er is je een e-mail gestuurd met een linkje waarmee je de wachtwoordwijziging kunt accepteren.");
 define("LAN_FPW7", "Dit is geen geldige link om je wachtwoord te wijzigen.<br />Neem contact op met de beheerder voor meer informatie.");
 define("LAN_FPW8", "Het wachtwoord voor gebruiker");
 define("LAN_FPW9", "is succesvol gewijzigd.<br /><br />Het nieuwe wachtwoord is:");

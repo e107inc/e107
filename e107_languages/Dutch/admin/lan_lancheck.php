@@ -15,7 +15,7 @@
 +---------------------------------------------------------------+
 */
 
-define("LAN_CHECK_1", "Kies de te verifi&euml;ren taal");
+define("LAN_CHECK_1", "Kies de te verifiëren taal");
 define("LAN_CHECK_2", "Begin verificatie");
 define("LAN_CHECK_3", "Verificatie van");
 define("LAN_CHECK_4", "Bestand ontbreekt!");

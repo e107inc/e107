@@ -53,7 +53,7 @@ define("ARLAN_97", "Je hebt niet de juiste rechten om artikelen aan te melden");
 define("ARLAN_98", "Je hebt niet de juiste rechten om reviews aan te melden");
 define("ARLAN_99", "Wat wil je aanmelden?");
 define("ARLAN_100", "Nieuws");
-define("ARLAN_101", " Gebeurtenis");
+define("ARLAN_101", "Gebeurtenis");
 define("ARLAN_102", "Artikel");
 define("ARLAN_103", "Review");
 define("ARLAN_104", "Link");

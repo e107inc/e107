@@ -48,7 +48,7 @@ define("EPL_ADLAN_29", "Voorkeursinstellingen succesvol verwijderd.");
 define("EPL_ADLAN_30", "verwijder dit handmatig.");
 define("EPL_ADLAN_31", "Verwijder nu de map ");
 define("EPL_ADLAN_32", "en alle bestanden erin om de de-installatie af te ronden.");
-define("EPL_ADLAN_33", "Plugin succesvol geïinstalleerd.");
+define("EPL_ADLAN_33", "Plugin succesvol geïnstalleerd.");
 define("EPL_ADLAN_34", "Plugin succesvol bijgewerkt.");
 define("EPL_ADLAN_35", "Parser instellingen succesvol toegevoegd.");
 define("EPL_ADLAN_36", "Parser code invoegen mislukt, onjuist geformatteerd.");

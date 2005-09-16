@@ -44,7 +44,7 @@ define("UPLLAN_30", "bepaal op welke manier de geuploade bestanden worden opgesl
 define("UPLLAN_31", "Plat bestand");
 define("UPLLAN_32", "Database binaire code");
 define("UPLLAN_33", "Maximale bestandsgrootte");
-define("UPLLAN_34", "maximale grootte te uploaden bestand in bytes - niets invullen om de instellingen van php.ini te gebruiken ( php.ini instellingen is");
+define("UPLLAN_34", "maximale grootte te uploaden bestand in bytes - niets invullen om de instellingen van php.ini te gebruiken ( php.ini instelling is");
 define("UPLLAN_35", "Toegestane bestandstypen");
 define("UPLLAN_36", "voer één type per regel in");
 define("UPLLAN_37", "Rechten");
