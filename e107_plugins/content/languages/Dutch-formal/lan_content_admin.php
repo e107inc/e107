@@ -3,8 +3,8 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_admin.php,v $
-|     $Revision: 1.10 $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch-formal/lan_content_admin.php,v $
+|     $Revision: 1.1 $
 |     $Date: 2005-09-17 20:42:24 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
@@ -58,7 +58,7 @@ define("CONTENT_ADMIN_CAT_LAN_38", "onderwerp controle: niets gevonden");
 define("CONTENT_ADMIN_CAT_LAN_39", "categorie controle: geen subcategorieën gevonden");
 define("CONTENT_ADMIN_CAT_LAN_40", "Hieronder staat een overzicht van de hoofdcategorie en alle eventuele subcategorieën.<br />");
 
-define("CONTENT_ADMIN_CAT_LAN_41", "De persoonlijke beheerder van contentcategorieën staat je toe om bepaalde andere beheerders aan een categorie toe te voegen. Met dit recht kunnen deze beheerders hun eigen en onderwerpen in deze specifieke categorie beheren, zonder de volledige contentbeheer plugin te hoeven gebruiken. In de normale content pagina buiten de beheerfunctie zien ze alleen het personalmanager pictogram dat ze naar de personal manager pagina leidt.");
+define("CONTENT_ADMIN_CAT_LAN_41", "De persoonlijke beheerder van contentcategorieën staat u toe om bepaalde andere beheerders aan een categorie toe te voegen. Met dit recht kunnen deze beheerders hun eigen en onderwerpen in deze specifieke categorie beheren, zonder de volledige contentbeheer plugin te hoeven gebruiken. In de normale content pagina buiten de beheerfunctie zien ze alleen het personalmanager pictogram dat ze naar de personal manager pagina leidt.");
 define("CONTENT_ADMIN_CAT_LAN_42", "om dezelfde categorie te bewerken");
 define("CONTENT_ADMIN_CAT_LAN_43", "klik hier");
 define("CONTENT_ADMIN_CAT_LAN_44", "om een andere categorie in de eerder geselecteerde hoofdcategorie toe te voegen");
@@ -68,21 +68,21 @@ define("CONTENT_ADMIN_CAT_LAN_47", "bepalen of afdruk/e-mail pictogrammen worden
 define("CONTENT_ADMIN_CAT_LAN_48", "selecteer welke gebruikers dit onderwerp zien");
 define("CONTENT_ADMIN_CAT_LAN_49", "kies een pictogram voor deze categorie");
 //define("CONTENT_ADMIN_CAT_LAN_50", "content menu gecreëerd<br /><br />");
-define("CONTENT_ADMIN_CAT_LAN_50", "alleen als je een nieuwe Hoofd oudercategorie hebt aangemaakt is een menubestand aangemaakt.<br />
+define("CONTENT_ADMIN_CAT_LAN_50", "alleen als u een nieuwe Hoofd oudercategorie hebt aangemaakt is een menubestand aangemaakt.<br />
 Dit menubestand is opgeslagen in de /menus directory.<br />
-Om dit menu te gebruiken moet je het eerst activeren in het <a href='".e_ADMIN."menus.php'>menubeheerscherm</a>.<br /><br />");
+Om dit menu te gebruiken moet u het eerst activeren in het <a href='".e_ADMIN."menus.php'>menubeheerscherm</a>.<br /><br />");
 define("CONTENT_ADMIN_CAT_LAN_51", "fout; menubestand niet gecreëerd");
-define("CONTENT_ADMIN_CAT_LAN_52", "kies ALTIJD EERST een categorie voordat je de andere velden invult!");
+define("CONTENT_ADMIN_CAT_LAN_52", "kiest u ALTIJD EERST een categorie voordat u de andere velden invult!");
 define("CONTENT_ADMIN_CAT_LAN_53", "om een andere categorie te beheren");
 define("CONTENT_ADMIN_CAT_LAN_54", "gebruiker");
 define("CONTENT_ADMIN_CAT_LAN_55", "gebruikers");
 define("CONTENT_ADMIN_CAT_LAN_56", "onderwerp");
 define("CONTENT_ADMIN_CAT_LAN_57", "onderwerpen");
-define("CONTENT_ADMIN_CAT_LAN_58", "categorie pictogram succesvol geupload<br />let op: je moet nog steeds het pictogram koppelen aan deze categorie in de pictogram>kies huidige picrogran zone !<br />en natuurlijk moet je daarna het formulier om deze categorie te creëren of bij te werken verwerken");
+define("CONTENT_ADMIN_CAT_LAN_58", "categorie pictogram succesvol geupload<br />let op: u moet nog steeds het pictogram koppelen aan deze categorie in de pictogram>kies huidige picrogran zone !<br />en natuurlijk moet u daarna het formulier om deze categorie te creëren of bij te werken verwerken");
 define("CONTENT_ADMIN_CAT_LAN_59", "categorie pictogram niet geupload");
 define("CONTENT_ADMIN_CAT_LAN_60", "kies een aanwezig pictogram");
 define("CONTENT_ADMIN_CAT_LAN_61", "of upload een nieuw pictogram");
-define("CONTENT_ADMIN_CAT_LAN_62", "Nadat je een nieuw categoriepictogram hebt geupload, kun je dit toewijzen in het 'kies aanwezig pictogram' veld<br />Als je een nieuw pictogram uploadt, wordt dit verschaald naar 48 pixels en wordt gelijktijdig een verkleinde versie van 16 pixels aangemaakt<br /><br />");
+define("CONTENT_ADMIN_CAT_LAN_62", "Nadat u een nieuw categoriepictogram hebt geupload, kunt u dit toewijzen in het 'kies aanwezig pictogram' veld<br />Als u een nieuw pictogram uploadt, wordt dit verschaald naar 48 pixels en wordt gelijktijdig een verkleinde versie van 16 pixels aangemaakt<br /><br />");
 define("CONTENT_ADMIN_CAT_LAN_63", "upload pictogram");
 
 define("CONTENT_ADMIN_ITEM_LAN_0", "verplicht veld niet ingevuld");
@@ -106,7 +106,7 @@ define("CONTENT_ADMIN_ITEM_LAN_17", "samenvatting");
 define("CONTENT_ADMIN_ITEM_LAN_18", "tekst");
 define("CONTENT_ADMIN_ITEM_LAN_19", "upload pictogram");
 define("CONTENT_ADMIN_ITEM_LAN_20", "content pictogram");
-define("CONTENT_ADMIN_ITEM_LAN_21", "Deze optie is gedeactiveerd, omdat het niet is toegestaan bestanden naar je server te uploaden");
+define("CONTENT_ADMIN_ITEM_LAN_21", "Deze optie is gedeactiveerd, omdat het niet is toegestaan bestanden naar uw server te uploaden");
 define("CONTENT_ADMIN_ITEM_LAN_22", "De");
 define("CONTENT_ADMIN_ITEM_LAN_23", "map is niet beschijfbaar. Stel de permissies voor uploaden in op CHMOD 777");
 define("CONTENT_ADMIN_ITEM_LAN_24", "upload bijlagen");
@@ -140,7 +140,7 @@ define("CONTENT_ADMIN_ITEM_LAN_51", "auteursgegevens");
 define("CONTENT_ADMIN_ITEM_LAN_52", "aanmelden content onderwerp");
 define("CONTENT_ADMIN_ITEM_LAN_53", "meta sleutelwoorden voor dit content onderwerp <br />(scheiden met comma's, spaties niet toegestaan !)");
 define("CONTENT_ADMIN_ITEM_LAN_54", "aanvullende gegevens");
-define("CONTENT_ADMIN_ITEM_LAN_55", "Terug naar de  <a href='".e_SELF."'>hoofd contentmanager pagina</a> om meer van je persoonlijke content te beheren<br />of<br />Ga naar de <a href='".e_PLUGIN."content/content.php'>hoofd content pagina</a> om de onderwerpen te bekijken.");
+define("CONTENT_ADMIN_ITEM_LAN_55", "Terug naar de  <a href='".e_SELF."'>hoofd contentmanager pagina</a> om meer van uw persoonlijke content te beheren<br />of<br />Ga naar de <a href='".e_PLUGIN."content/content.php'>hoofd content pagina</a> om de onderwerpen te bekijken.");
 define("CONTENT_ADMIN_ITEM_LAN_56", "persoonlijke content beheerder");
 define("CONTENT_ADMIN_ITEM_LAN_57", "categorie");
 define("CONTENT_ADMIN_ITEM_LAN_58", "onderwerpen");
@@ -151,15 +151,15 @@ define("CONTENT_ADMIN_ITEM_LAN_62", "sorteren categorieën");
 define("CONTENT_ADMIN_ITEM_LAN_63", "meer");
 define("CONTENT_ADMIN_ITEM_LAN_64", "minder");
 define("CONTENT_ADMIN_ITEM_LAN_65", "sorteren onderwerpen");
-define("CONTENT_ADMIN_ITEM_LAN_66", "Hieronder zie je de startletters van de content kopteksten van alle onderwerpen in deze categorie.<br />Door het klikken op een letter zie je vervolgens een lijst met alle onderwerpen die beginnen met die letter. Je kunt ook de ALLE knop indrukken om alle onderwerpen in deze categorie te zien.");
-define("CONTENT_ADMIN_ITEM_LAN_67", "Hieronder zie je de lijst met contentonderwerpen in de geselecteerde categorie of die beginnen met de gekozen letter.<br />Je kunt onderwerpen bewerken of verwijderen door op de betreffende knop rechts te drukken.");
+define("CONTENT_ADMIN_ITEM_LAN_66", "Hieronder ziet u de startletters van de content kopteksten van alle onderwerpen in deze categorie.<br />Door het klikken op een letter ziet u vervolgens een lijst met alle onderwerpen die beginnen met die letter. U kunt ook de ALLE knop indrukken om alle onderwerpen in deze categorie te zien.");
+define("CONTENT_ADMIN_ITEM_LAN_67", "Hieronder ziet u de lijst met contentonderwerpen in de geselecteerde categorie of die beginnen met de gekozen letter.<br />U kunt onderwerpen bewerken of verwijderen door op de betreffende knop rechts te drukken.");
 define("CONTENT_ADMIN_ITEM_LAN_68", "Hieronder kun je maatwerk informatie toevoegen bij dit contentonderwerp. Alle maatwerkgegevens moeten zowel een sleutel als een waarde hebben. Je kunt sleutel in het linker veld definiëren en de bijbehorende waarde in het rechterveld.<br />(bij voorbeeld: sleutel='fotografie' en waarde ='al mijn eigen foto's'.");
-define("CONTENT_ADMIN_ITEM_LAN_69", "Hier kun je pictogrammen, bijlagen en/of afbeeldingen uploaden die bij het onderwerp horen. De toegestane bestandsformaten zijn: ");
+define("CONTENT_ADMIN_ITEM_LAN_69", "Hier kunt u pictogrammen, bijlagen en/of afbeeldingen uploaden die bij het onderwerp horen. De toegestane bestandsformaten zijn: ");
 define("CONTENT_ADMIN_ITEM_LAN_70", "De verschillende woorden moeten met comma's worden gescheiden, spaties zijn niet toegestaan!");
-define("CONTENT_ADMIN_ITEM_LAN_71", "laten staan als u het onderwerp zelf hebt geschreven");
+define("CONTENT_ADMIN_ITEM_LAN_71", "laten staan als jij het onderwerp zelf hebt geschreven");
 define("CONTENT_ADMIN_ITEM_LAN_72", "bepalen auteursgegevens");
-define("CONTENT_ADMIN_ITEM_LAN_73", "opgeven startdatum voor dit onderwerp (niet invullen als dat niet nodig is)");
-define("CONTENT_ADMIN_ITEM_LAN_74", "opgeven einddatum voor dit onderwerp (niet invullen als dat niet nodig is)");
+define("CONTENT_ADMIN_ITEM_LAN_73", "opgeven startdatum voor dit onderwerp (niet invullen als niet benodigd)");
+define("CONTENT_ADMIN_ITEM_LAN_74", "opgeven einddatum voor dit onderwerp (niet invullen als niet benodigd)");
 define("CONTENT_ADMIN_ITEM_LAN_75", "uploaden en toekennen onderwerppictogram");
 define("CONTENT_ADMIN_ITEM_LAN_76", "uploaden en koppelen bijlage bij dit onderwerp");
 define("CONTENT_ADMIN_ITEM_LAN_77", "uploaden en koppelen afbeeldingen bij dit onderwerp");
@@ -182,24 +182,24 @@ define("CONTENT_ADMIN_ITEM_LAN_93", "kies een layout schema");
 define("CONTENT_ADMIN_ITEM_LAN_94", "selecteer een layout schema");
 define("CONTENT_ADMIN_ITEM_LAN_95", "upload een nieuw pictogram");
 define("CONTENT_ADMIN_ITEM_LAN_96", "kies een aanwezig pictogram");
-define("CONTENT_ADMIN_ITEM_LAN_97", "Nadat u een nieuw pictogram hebt geupload, kunt u dat toewijzen in onderstaande 'kies een aanwezig pictogram' veld");
+define("CONTENT_ADMIN_ITEM_LAN_97", "Nadat je een nieuw pictogram hebt geupload, kun je dat toewijzen in onderstaande 'kies een aanwezig pictogram' veld");
 define("CONTENT_ADMIN_ITEM_LAN_98", "upload een nieuwe bijlage");
 define("CONTENT_ADMIN_ITEM_LAN_99", "kies een aanwezige bijlage");
-define("CONTENT_ADMIN_ITEM_LAN_100", "Nadat u een nieuwe bijlage hebt geupload, kunt u die toewijzen in onderstaande 'kies een aanwezige bijlage' veld");
+define("CONTENT_ADMIN_ITEM_LAN_100", "Nadat je een nieuwe bijlage hebt geupload, kun je die toewijzen in onderstaande 'kies een aanwezige bijlage' veld");
 define("CONTENT_ADMIN_ITEM_LAN_101", "upload een nieuwe afbeelding");
 define("CONTENT_ADMIN_ITEM_LAN_102", "kies een aanwezige afbeelding");
-define("CONTENT_ADMIN_ITEM_LAN_103", "Nadat u een nieuwe afbeelding hebt geupload, kunt u die toewijzen in onderstaande 'kies een aanwezige afbeelding' veld");
+define("CONTENT_ADMIN_ITEM_LAN_103", "Nadat je een nieuwe afbeelding hebt geupload, kun je die toewijzen in onderstaande 'kies een aanwezige afbeelding' veld");
 define("CONTENT_ADMIN_ITEM_LAN_104", "upload");
 
 define("CONTENT_ADMIN_ITEM_LAN_105", "bekijken");
-define("CONTENT_ADMIN_ITEM_LAN_106", "pictogram succesvol geupload<br />let op: u moet het pictogram nog wel toewijzen aan het contentonderwerp in het 'kies een aanwezig pictogram' veld !<br />en natuurlijk moet u daarna het formulier om het contentonderwerp te creëren/bijwerken nog wel aanmelden");
+define("CONTENT_ADMIN_ITEM_LAN_106", "pictogram succesvol geupload<br />let op: je moet het pictogram nog wel toewijzen aan het contentonderwerp in het 'kies een aanwezig pictogram' veld !<br />en natuurlijk moet je daarna het formulier om het contentonderwerp te creëren/bijwerken nog wel aanmelden");
 define("CONTENT_ADMIN_ITEM_LAN_107", "pictogram niet geupload");
-define("CONTENT_ADMIN_ITEM_LAN_108", "bijlage succesvol geupload<br />let op: u moet de bijlage nog wel toewijzen aan het contentonderwerp in het 'kies een aanwezige bijlage' veld !<br />en natuurlijk moet u daarna het formulier om het contentonderwerp te creëren/bijwerken nog wel aanmelden");
+define("CONTENT_ADMIN_ITEM_LAN_108", "bijlage succesvol geupload<br />let op: je moet de bijlage nog wel toewijzen aan het contentonderwerp in het 'kies een aanwezige bijlage' veld !<br />en natuurlijk moet je daarna het formulier om het contentonderwerp te creëren/bijwerken nog wel aanmelden");
 define("CONTENT_ADMIN_ITEM_LAN_109", "bijlage niet geupload");
-define("CONTENT_ADMIN_ITEM_LAN_110", "afbeelding succesvol geupload<br />let op: u moet de afbeelding nog wel toewijzen aan het contentonderwerp in het 'kies een aanwezige afbeelding' veld !<br />en natuurlijk moet u daarna het formulier om het contentonderwerp te creëren/bijwerken nog wel aanmelden");
+define("CONTENT_ADMIN_ITEM_LAN_110", "afbeelding succesvol geupload<br />let op: je moet de afbeelding nog wel toewijzen aan het contentonderwerp in het 'kies een aanwezige afbeelding' veld !<br />en natuurlijk moet je daarna het formulier om het contentonderwerp te creëren/bijwerken nog wel aanmelden");
 define("CONTENT_ADMIN_ITEM_LAN_111", "afbeelding niet geupload");
 define("CONTENT_ADMIN_ITEM_LAN_112", "upload een pictogram, bijlage of afbeelding");
-define("CONTENT_ADMIN_ITEM_LAN_113", "kies het soort upload in het selectieveld voordat u het bestand upload");
+define("CONTENT_ADMIN_ITEM_LAN_113", "kies het soort upload in het selectieveld voordat je het bestand upload");
 define("CONTENT_ADMIN_ITEM_LAN_114", "pictogram");
 define("CONTENT_ADMIN_ITEM_LAN_115", "bijlage");
 define("CONTENT_ADMIN_ITEM_LAN_116", "afbeelding");
@@ -222,50 +222,50 @@ define("CONTENT_ADMIN_MAIN_LAN_3", "content onderwerp verwijderd");
 define("CONTENT_ADMIN_MAIN_LAN_4", "tekst ouder");
 define("CONTENT_ADMIN_MAIN_LAN_5", "pictogram ouder");
 define("CONTENT_ADMIN_MAIN_LAN_7", "Welkom bij het Content Management System !");
-define("CONTENT_ADMIN_MAIN_LAN_8", "Leest u eerst nauwkeurig de onderstaande informatie en maak een keuze.");
+define("CONTENT_ADMIN_MAIN_LAN_8", "Lees eerst nauwkeurig de onderstaande informatie en maak een keuze.");
 define("CONTENT_ADMIN_MAIN_LAN_9", "Deze informatie wordt getoond, omdat de tabel van de Content Management Plugin geen records bevat.");
-define("CONTENT_ADMIN_MAIN_LAN_10", "U kunt de content beheren op deze pagina. Bepaalt u eerst in welke categorie u content wilt beheren. Klik op de knop van de hoofd ouders die hieronder staan om de content voor die categorie te beheren.");
+define("CONTENT_ADMIN_MAIN_LAN_10", "Je kunt de content beheren op deze pagina. Bepaal eerst in welke categorie je content wilt beheren. Klik op de knop van de hoofd ouders die hieronder staan om de content voor die categorie te beheren.");
 define("CONTENT_ADMIN_MAIN_LAN_11", "
 <b>De oude content tabel bevat records</b><br />
-Omdat de oude tabel al records bevat, kunt u nu kiezen uit twee mogelijkheden:<br />
+Omdat de oude tabel al records bevat, kun je nu kiezen uit twee mogelijkheden:<br />
 <br />
 <b>a) converteren oude records</b><br />
-Het eerste dat u moet doen is het maken van een backup van uw huidige content tabel alsmede van uw reacties en waarderingstabellen.<br />
+Het eerste dat je moet doen is het maken van een backup van je huidige content tabel alsmede van je reacties en waarderingstabellen.<br />
 Gebruik een apart programma voor het maken van de backup, bijvoorbeeld phpmyadmin.<br />
-Nadat u de backup van uw oude content tabel hebt gemaakt, kunt u de content converteren naar de nieuwe Content Management Plugin.<br />
-Na de conversie zult u deze informatie niet meer terugzien en kunt u met het beheer beginnen.<br />
+Nadat je de backup van je oude content tabel hebt gemaakt, kun je de content converteren naar de nieuwe Content Management Plugin.<br />
+Na de conversie zul je deze informatie niet meer terugzien en kun je met het beheer beginnen.<br />
 Ga naar de <a href='".e_PLUGIN."content/admin_content_convert.php'>Content conversie script</a> pagina.<br />
 <br />
 <b>b) niet converteren en alleen de nieuwe content beheren</b><br />
-Als u de bestaande content niet meer nodig hebt,<br />
+Als je de bestaande content niet meer nodig hebt, <br />
 en een nieuwe Content Management Plugin tabel wilt aanmaken,<br />
-dan kunt u gewoon beginnen door het creëren van een nieuwe categorie.<br />
+dan kun je gewoon beginnen door het creëren van een nieuwe categorie.<br />
 Ga naar de <a href='".e_SELF."?type.0.cat.create'>Creëren nieuwe categorie</a> pagina.<br />");
 define("CONTENT_ADMIN_MAIN_LAN_12", "<b>Dit is een nieuwe installatie / De oude content tabel bevat geen records</b><br />
-Omdat de oude tabel geen records bevat, kunt u nu meteen beginnen met het beheer van uw nieuwe content.<br />
-Het eerste wat u moet doen is het creëren van een nieuwe categorie.<br />
+Omdat de oude tabel geen records bevat, kun je nu meteen beginnen met het beheer van je nieuwe content.<br />
+Het eerste wat je moet doen is het creëren van een nieuwe categorie.<br />
 Ga naar de <a href='".e_SELF."?type.0.cat.create'>Creëren nieuwe categorie</a> pagina.<br />");
-define("CONTENT_ADMIN_MAIN_LAN_13", "U kunt nieuwe content beheren op deze pagina. Bepaal eerst de categorie waarvoor u content wilt beheren. Klik op de knop van de hoofd ouders die hieronder staan om de content voor die categorie te beheren.");
-define("CONTENT_ADMIN_MAIN_LAN_14", "U kunt op deze pagina de volgorde van de content vaststellen. Klik op de knop van de hoofd ouders die hieronder staan om de volgorde van content of categorieën binnen de geselecteerde hoofdcategorie te wijzigen.");
-define("CONTENT_ADMIN_MAIN_LAN_15", "Op deze pagina kunt u de categorieën beheren. Kies de hoofdcategorie hieronder om het overzicht van alle categorieën en subcategorieën binnen deze hoofdcategorie te zien.");
-define("CONTENT_ADMIN_MAIN_LAN_16", "Op deze pagina kunt u nieuwe categorieën aanmaken. Standaard wordt het invulformulier voor een nieuwe hoofdcategorie getoond. Als u een subcategorie voor een al aanwezige hoofdcategorie wilt maken, klikt u dan op een van de onderstaande knoppen om het formulier voor een subcategorie binnen die hoofdcategorie te zien.");
+define("CONTENT_ADMIN_MAIN_LAN_13", "Je kunt nieuwe content beheren op deze pagina. Bepaal eerst de categorie waarvoor je content wilt beheren. Klik op de knop van de hoofd ouders die hieronder staan om de content voor die categorie te beheren.");
+define("CONTENT_ADMIN_MAIN_LAN_14", "Je kunt op deze pagina de volgorde van de content vaststellen. Klik op de knop van de hoofd ouders die hieronder staan om de volgorde van content of categorieën binnen de geselecteerde hoofdcategorie te wijzigen.");
+define("CONTENT_ADMIN_MAIN_LAN_15", "Op deze pagina kun je de categorieën beheren. Kies de hoofdcategorie hieronder om het overzicht van alle categorieën en subcategorieën binnen deze hoofdcategorie te zien.");
+define("CONTENT_ADMIN_MAIN_LAN_16", "Op deze pagina kun je nieuwe categorieën aanmaken. Standaard wordt het invulformulier voor een nieuwe hoofdcategorie getoond. Als je een subcategorie voor een al aanwezige hoofdcategorie wilt maken, klik dan op een van de onderstaande knoppen om het formulier voor een subcategorie binnen die hoofdcategorie te zien.");
 define("CONTENT_ADMIN_MAIN_LAN_17", "maak een nieuwe categorie op de <a href='".e_SELF."?type.0.cat.create'>Creëren nieuwe categorie</a> pagina");
 define("CONTENT_ADMIN_MAIN_LAN_18", "Converteren records");
-define("CONTENT_ADMIN_MAIN_LAN_19", "Het eerste wat u moet doen, is het maken van een backup van de huidige content tabel en van uw reacties (comments) en waarderingstabellen (rate table).<br />
+define("CONTENT_ADMIN_MAIN_LAN_19", "Het eerste wat je moet doen, is het maken van een backup van de huidige content tabel en van je reacties (comments) en waarderingstabellen (rate table).<br />
 Gebruik een programma als phpmyadmin om backups van deze tabellen te maken.<br />
-Nadat u de backups hebt gemaakt, kunt u beginnen met het converteren van de tabellen naar de nieuwe Content Management Plugin.<br />
-Na conversie van de oude content zult u deze informatie niet meer zien en kunt u gewoon uw content beheren.<br />");
+Nadat je de backups hebt gemaakt, kun je beginnen met het converteren van de tabellen naar de nieuwe Content Management Plugin.<br />
+Na conversie van de oude content zul je deze informatie niet meer zien en kun je gewoon je content beheren.<br />");
 define("CONTENT_ADMIN_MAIN_LAN_20", "Starten met een lege content tabel");
-define("CONTENT_ADMIN_MAIN_LAN_21", "Als u de gegevens uit de huidige content tabel niet meer nodig hebt<br />
+define("CONTENT_ADMIN_MAIN_LAN_21", "Als je de gegevens uit de huidige content tabel niet meer nodig hebt<br />
 en gewoon met een nieuwe Content Management Plugin tabel wilt beginnen,<br />
 en ook geen set met standaard categorieën wilt starten,<br />
-dan kunt u beginnen met het aanmaken van een nieuwe contentcategorie.<br />");
+dan kun je beginnen met het aanmaken van een nieuwe contentcategorie.<br />");
 define("CONTENT_ADMIN_MAIN_LAN_22", "Aanmaken set standaardcategorieën");
-define("CONTENT_ADMIN_MAIN_LAN_23", "Als u met een nieuwe installatie wilt starten, kunt u eerst een set standaard contentcategorieën creëren.<br />
-In deze standaardset worden drie hoofd oudercategorieën aangemaakt, namelijk Content, Review en Artikel.<br />");
+define("CONTENT_ADMIN_MAIN_LAN_23", "Als je met een nieuwe installatie wilt starten, kun je eerst een set standaard contentcategorieën creëren.<br />
+In deze standaard set worden drie hoofd oudercategorieën aangemaakt, namelijk Content, Review en Artikel.<br />");
 define("CONTENT_ADMIN_MAIN_LAN_24", "Dit is een nieuwe installatie / De oude content tabel bevat geen record");
-define("CONTENT_ADMIN_MAIN_LAN_25", "Omdat de oude aanwezige content tabel nog geen records bevat, kunt u nu gewoon beginnen met het beheren van nieuwe content.<br />
-Door te klikken op de Volgende knop, maakt u automatisch een nieuwe standaardset categorieën aan, namelijk Content, Review en Artikel.<br />");
+define("CONTENT_ADMIN_MAIN_LAN_25", "Omdat de oude aanwezige content tabel nog geen records bevat, kun je nu gewoon beginnen met het beheren van nieuwe content.<br />
+Door te klikken op de Volgende knop, maak je automatisch een nieuwe standaardset categorieën aan, namelijk Content, Review en Artikel.<br />");
 define("CONTENT_ADMIN_MAIN_LAN_26", "bekijk");
 define("CONTENT_ADMIN_MAIN_LAN_27", "bekijk nogmaals");
 define("CONTENT_ADMIN_MAIN_LAN_28", "kies categorie ...");
@@ -295,22 +295,22 @@ define("CONTENT_ADMIN_MENU_LAN_20", "Hoogst gewaardeerde pagina");
 define("CONTENT_ADMIN_MENU_LAN_21", "Pagina's");
 define("CONTENT_ADMIN_MENU_LAN_22", "Hoogst scorende pagina");
 
-define("CONTENT_ADMIN_JS_LAN_0", "Weet u zeker dat u deze categorie wilt verwijderen?");
-define("CONTENT_ADMIN_JS_LAN_1", "Weet u zeker dat u dit onderwerp wilt verwijderen?");
-define("CONTENT_ADMIN_JS_LAN_2", "weet u zeker dat u de huidige afbeelding wilt verwijderen?");
-define("CONTENT_ADMIN_JS_LAN_3", "weet u zeker dat u het huidige bestand wilt verwijderen?");
+define("CONTENT_ADMIN_JS_LAN_0", "Weet je zeker dat je deze categorie wilt verwijderen?");
+define("CONTENT_ADMIN_JS_LAN_1", "Weet je zeker dat je dit onderwerp wilt verwijderen?");
+define("CONTENT_ADMIN_JS_LAN_2", "weet je zeker dat je de huidige afbeelding wilt verwijderen?");
+define("CONTENT_ADMIN_JS_LAN_3", "weet je zeker dat je het huidige bestand wilt verwijderen?");
 define("CONTENT_ADMIN_JS_LAN_4", "afbeelding");
 define("CONTENT_ADMIN_JS_LAN_5", "bestand");
 define("CONTENT_ADMIN_JS_LAN_6", "ID");
-define("CONTENT_ADMIN_JS_LAN_7", "weet u zeker dat u het huidige pictogram wilt verwijderen?");
+define("CONTENT_ADMIN_JS_LAN_7", "weet je zeker dat je het huidige pictogram wilt verwijderen?");
 define("CONTENT_ADMIN_JS_LAN_8", "pictogram");
 define("CONTENT_ADMIN_JS_LAN_9", "WAARSCHUWING :\\ndoor deze categorie te verwijderen, worden alle eventuele aanwezige subcategorieën,\\nook verwijderd!");
-define("CONTENT_ADMIN_JS_LAN_10", "Weet u zeker dat u dit aangemelde onderwerp, dat nog niet werd geplaatst, wilt verwijderen?");
+define("CONTENT_ADMIN_JS_LAN_10", "Weet je zeker dat je dit aangemelde onderwerp, dat nog niet werd geplaatst, wilt verwijderen?");
 
 define("CONTENT_ADMIN_SUBMIT_LAN_0", "geen van de inhoudscategorieën is beschikbaar voor aanmelding door gewone leden");
 define("CONTENT_ADMIN_SUBMIT_LAN_1", "inhoud aanmeldingstype");
-define("CONTENT_ADMIN_SUBMIT_LAN_2", "Bedankt, uw onderwerp is aangemeld.");
-define("CONTENT_ADMIN_SUBMIT_LAN_3", "Bedankt, uw onderwerp is aangemeld en wordt z.s.m. beoordeeld door een beheerder.");
+define("CONTENT_ADMIN_SUBMIT_LAN_2", "Bedankt, je onderwerp is aangemeld.");
+define("CONTENT_ADMIN_SUBMIT_LAN_3", "Bedankt, je onderwerp is aangemeld en wordt z.s.m. beoordeeld door een beheerder.");
 define("CONTENT_ADMIN_SUBMIT_LAN_4", "verplicht(e) veld(en) niet ingevuld");
 define("CONTENT_ADMIN_SUBMIT_LAN_5", "Ga terug naar de <a href='".e_SELF."'>hoofd aanmeldingspagina</a> om meer inhoud aan te melden<br />or<br />Ga naar de <a href='".e_PLUGIN."content/content.php'>inhoud hoofdpagina</a> om de inhoud te zien.");
 define("CONTENT_ADMIN_SUBMIT_LAN_6", "");
@@ -361,9 +361,9 @@ define("CONTENT_ADMIN_CONVERSION_LAN_40", "GEEN ARTIKELPAGINA'S EN/OF AANGEMELDE
 define("CONTENT_ADMIN_CONVERSION_LAN_41", "ARTIKELPAGINA'S EN/OF AANGEMELDE ARTIKELPAGINA'S AANWEZIG");
 define("CONTENT_ADMIN_CONVERSION_LAN_42", "conversie resultaten van de oude inhoudtabel naar de nieuwe inhoud plugin tabel");
 define("CONTENT_ADMIN_CONVERSION_LAN_43", "druk op de knop om de oude inhoud tabel te converteren");
-define("CONTENT_ADMIN_CONVERSION_LAN_44", "de nieuwe inhoud tabel bevat al gegevens !<br />weet u zeker dat u de oude inhoudtabel naar de nieuwe inhoudtabel wilt converteren ?<br /><br />als u inderdaad wilt, zal de oude inhoud aan de al aanwezige nieuwe inhoudtabel worden toegevoegd, maar er wordt niet gegarandeerd dat alle onderwerpen goed aan de nieuwe categorieën kunnen worden gekoppeld !");
+define("CONTENT_ADMIN_CONVERSION_LAN_44", "de nieuwe inhoud tabel bevat al gegevens !<br />weet je zeker dat je de oude inhoudtabel naar de nieuwe inhoudtabel wilt converteren ?<br /><br />als je dat nog steeds wilt, zal de oude inhoud aan de al aanwezige nieuwe inhoudtabel worden toegevoegd, maar er wordt niet gegarandeerd dat alle onderwerpen goed aan de nieuwe categorieën kunnen worden gekoppeld !");
 define("CONTENT_ADMIN_CONVERSION_LAN_45", "invoegen mislukt: hoofdpagina niet ingevoegd");
-define("CONTENT_ADMIN_CONVERSION_LAN_46", "Beheer uw content op de <a href='".e_PLUGIN."content/admin_content_config.php'>Content Manager Plugin hoofdpagina</a> !");
+define("CONTENT_ADMIN_CONVERSION_LAN_46", "Beheer je content op de <a href='".e_PLUGIN."content/admin_content_config.php'>Content Manager Plugin hoofdpagina</a> !");
 define("CONTENT_ADMIN_CONVERSION_LAN_47", "conversie gereed");
 define("CONTENT_ADMIN_CONVERSION_LAN_48", "klik hier voor details");
 define("CONTENT_ADMIN_CONVERSION_LAN_49", "conversie van pagina's");
@@ -375,7 +375,7 @@ define("CONTENT_ADMIN_CONVERSION_LAN_54", "aanmaken van een standaardset met hoo
 define("CONTENT_ADMIN_CONVERSION_LAN_55", "content management plugin: converteer opties");
 define("CONTENT_ADMIN_CONVERSION_LAN_56", "druk op de knop om naar de Content Creëren nieuwe categorie pagina te gaan.");
 define("CONTENT_ADMIN_CONVERSION_LAN_57", "kies ouder");
-define("CONTENT_ADMIN_CONVERSION_LAN_58", "upgrade sucesvol<br /><br /><b>Let op:<br />u moet deze opties voor elke hoofdouder opnieuw configureren<br />en u moet de menu's die u in uw content/menus folder hebt gemaakt verwijderen en opnieuw aanmaken door de opties bij te werken voor de specifieke hoofdouders waarvoor u menu's wilt maken.</b>");
+define("CONTENT_ADMIN_CONVERSION_LAN_58", "upgrade sucesvol<br /><br /><b>Let op:<br />je moet deze opties voor elke hoofdouder opnieuw configureren<br />en je moet de menu's die je in je content/menus folder hebt gemaakt verwijderen en opnieuw aanmaken door de opties bij te werken voor de specifieke hoofdouders waarvoor je menu's wilt maken.</b>");
 define("CONTENT_ADMIN_CONVERSION_LAN_59", "converteren tabel");
 define("CONTENT_ADMIN_CONVERSION_LAN_60", "standaard creëren");
 define("CONTENT_ADMIN_CONVERSION_LAN_61", "creëren nieuwe categorie");
@@ -456,8 +456,8 @@ define("CONTENT_PRESET_LAN_15", "jaar-tot");
 define("CONTENT_PRESET_LAN_16", "opties");
 define("CONTENT_PRESET_LAN_17", "meer toevoegen");
 define("CONTENT_PRESET_LAN_18", "voorkeuze toevoegen");
-define("CONTENT_PRESET_LAN_19", "u moet een gelijk aantal tekst en waarde velden opgeven");
-define("CONTENT_PRESET_LAN_20", "u moet een waarde voor het selectieveld opgeven");
+define("CONTENT_PRESET_LAN_19", "je moet een gelijk aantal tekst en waarde velden opgeven");
+define("CONTENT_PRESET_LAN_20", "je moet een waarde voor het selectieveld opgeven");
 define("CONTENT_PRESET_LAN_21", "tekst");
 define("CONTENT_PRESET_LAN_22", "waarde");
 define("CONTENT_PRESET_LAN_23", "kies tekst");
@@ -480,13 +480,13 @@ define("CONTENT_ADMIN_OPT_LAN_5", "aantal beschikbare maatwerk datatags");
 define("CONTENT_ADMIN_OPT_LAN_6", "vooringestelde datatags");
 define("CONTENT_ADMIN_OPT_LAN_7", "bepaal de standaard vooringestelde datatags");
 
-//define("CONTENT_ADMIN_OPT_LAN_8", "Hier kunt u extra vooringestelde data tags instellen. De velden die u hier opgeeft, zijn de sleutels van de sleutel <-> waarde data tags. Ze zijn voorzien van een tekstveld voor het creatieformulier voor beheer. Let op: ze horen niet bij het aantal maatwerk data tags dat u hierboven opgaf, maar ze worden aanvullend gebruikt.<br />Deze vooringestelde Tags zijn nuttig als u een bepaalde maatwerk tag beschikbaar wilt hebben voor elk nieuw onderwerk. Bijvoorbeeld als u altijd een waarde voor [fotograaf] wilt invullen, kunt u een dergelijke voorinstelling opgeven, die altijd wordt getoond bij ieder onderwerp bij deze hoofdouder.");
+//define("CONTENT_ADMIN_OPT_LAN_8", "Hier kun je extra vooringestelde data tags instellen. De velden die je hier opgeeft, zijn de sleutels van de sleutel <-> waarde data tags. Ze zijn voorzien van een tekstveld voor het creatieformulier voor beheer. Let op: ze horen niet bij het aantal maatwerk data tags dat je hierboven opgaf, maar ze worden aanvullend gebruikt.<br />Deze vooringestelde Tags zijn nuttig als je een bepaalde maatwerk tag beschikbaar wilt hebben voor elk nieuw onderwerk. Bijvoorbeeld als je altijd een waarde voor [fotograaf] wilt invullen, kun je een dergelijke voorinstelling opgeven, die altijd wordt getoond bij ieder onderwerp bij deze hoofdouder.");
 
 define("CONTENT_ADMIN_OPT_LAN_9", "toestaan aanmelden onderwerpen ?");
 define("CONTENT_ADMIN_OPT_LAN_10", "wie kan onderwerpen aanmelden ?");
 define("CONTENT_ADMIN_OPT_LAN_11", "direct plaatsen");
 define("CONTENT_ADMIN_OPT_LAN_12", "wanneer Direct plaatsen is aangekruist, wordt een aangemeld onderwerp direct toegevoegd aan de database en wordt het onmiddellijk op de site getoond. wanneer dit niet is aangekruist, zal een beheerder het aangemelde onderwerp ter beoordeling te zien krijgen in het beheerscherm.");
-define("CONTENT_ADMIN_OPT_LAN_13", "hier kunt u bepalen waar de afbeeldingen zijn of worden opgeslagen. gebruik accolades ( { } ) als aanduiding van de gebruikelijke e107 gerelateerde padnamen (zoals ( {e_PLUGIN} of {e_IMAGE} ). er zijn twee pictogrammen nodig voor onderwerpcategorieën: een kleine en een grote set pictogrammen.");
+define("CONTENT_ADMIN_OPT_LAN_13", "hier kun je bepalen waar de afbeeldingen zijn of worden opgeslagen. gebruik accolades ( { } ) als aanduiding van de gebruikelijke e107 gerelateerde padnamen (zoals ( {e_PLUGIN} of {e_IMAGE} ). er zijn twee pictogrammen nodig voor onderwerpcategorieën: een kleine en een grote set pictogrammen.");
 define("CONTENT_ADMIN_OPT_LAN_15", "pad naar content cat pictogram (groot)");
 define("CONTENT_ADMIN_OPT_LAN_16", "pad naar content cat pictogram (klein)");
 define("CONTENT_ADMIN_OPT_LAN_17", "pad naar contentonderwerp pictogram");
@@ -535,10 +535,10 @@ define("CONTENT_ADMIN_OPT_LAN_59", "bepaal de maximum breedte van een pictogram 
 define("CONTENT_ADMIN_OPT_LAN_60", "als een geuploade pictrogram groter is dan de opgegeven waarde, wordt het pictogram naar deze waarde verschaald.<br />het pictogram wordt ook met deze waarde getoond.");
 define("CONTENT_ADMIN_OPT_LAN_61", "px");
 define("CONTENT_ADMIN_OPT_LAN_62", "kies beheerders uit deze ledenklasse");
-define("CONTENT_ADMIN_OPT_LAN_63", "het gebruikersoverzicht in de beheer content manager functie bevat alleen de leden in de betreffende klasse. U moet nog steeds leden per categorie toewijzen! Deze klasse beperkt slechts het overzicht van gebruikers waaruit u kunt kiezen");
+define("CONTENT_ADMIN_OPT_LAN_63", "het gebruikersoverzicht in de beheer content manager functie bevat alleen de leden in de betreffende klasse. Je moet nog steeds leden per categorie toewijzen! Deze klasse beperkt slechts het overzicht van gebruikers waaruit je kunt kiezen");
 define("CONTENT_ADMIN_OPT_LAN_64", "tonen e-mailadres van een auteur - niet-lid");
 define("CONTENT_ADMIN_OPT_LAN_65", "toon de letterindex");
-define("CONTENT_ADMIN_OPT_LAN_66", "de letterindex is een lijst met knoppen met de eerste letters van de contentkoppen.  U kunt de selectie uit het archief beperken door op een letter te klikken, waardoor alleen de onderwerpen die met die letter beginnen, worden getoond.");
+define("CONTENT_ADMIN_OPT_LAN_66", "de letterindex is een lijst met knoppen met de eerste letters van de contentkoppen.  Je kunt de selectie uit het archief beperken door op een letter te klikken, waardoor alleen de onderwerpen die met die letter beginnen, worden getoond.");
 define("CONTENT_ADMIN_OPT_LAN_67", "bepaal de datumstijl voor het weergevan van de datum");
 define("CONTENT_ADMIN_OPT_LAN_68", "Voor meer informatie over datumformaten zie de <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime functie pagina van php.net</a>");
 define("CONTENT_ADMIN_OPT_LAN_69", "tonen pictogram bij alla onderwerpen<br />(print/email/pdf pictogram)");
@@ -546,7 +546,7 @@ define("CONTENT_ADMIN_OPT_LAN_70", "beoordelen toestaan voor alle onderwerpen");
 define("CONTENT_ADMIN_OPT_LAN_71", "reacties toestaan voor alle onderwerpen");
 define("CONTENT_ADMIN_OPT_LAN_72", "");
 define("CONTENT_ADMIN_OPT_LAN_73", "weergavemethode meerpagina index");
-define("CONTENT_ADMIN_OPT_LAN_74", "als u een meerpagina artikel hebt, kunt u de artikelindex ofwel als een lijst met reguliere hyperlinks tonen, ofwel weergeven in een selectievak");
+define("CONTENT_ADMIN_OPT_LAN_74", "als je een meerpagina artikel hebt, kun je de artikelindex ofwel als een lijst met reguliere hyperlinks tonen, ofwel weergeven in een selectievak");
 define("CONTENT_ADMIN_OPT_LAN_75", "hyperlinks");
 define("CONTENT_ADMIN_OPT_LAN_76", "selectieveld");
 define("CONTENT_ADMIN_OPT_LAN_77", "bepaal aantal tekens");

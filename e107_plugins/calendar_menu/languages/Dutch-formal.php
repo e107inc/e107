@@ -1,6 +1,6 @@
 <?php
 
-define('EC_LAN_TODAY', "today");
+define('EC_LAN_TODAY', "vandaag");
 
 define('EC_LAN_0', "Januari");
 define('EC_LAN_1', "Februari");
@@ -45,12 +45,12 @@ define('EC_LAN_39', "Klik hier om te bespreken in het forum");
 define('EC_LAN_40', "Ga naar de huidige maand");
 define('EC_LAN_41', "Nieuwe categorie aangemaakt.");
 define('EC_LAN_42', "Gebeurtenis kan niet eindigen voor het begin.");
-define('EC_LAN_43', "Je vulde een verplicht veld niet in.");
+define('EC_LAN_43', "U vulde een verplicht veld niet in.");
 define('EC_LAN_44', "Nieuwe gebeurtenis opgevoerd.");
 define('EC_LAN_45', "Gebeurtenis bijgewerkt.");
-define('EC_LAN_46', "Bevestig verwijderen gebeurtenis");
+define('EC_LAN_46', "Bevestigen verwijderen gebeurtenis");
 define('EC_LAN_47', "Verwijderen geannuleerd.");
-define('EC_LAN_48', "Bevestig het verwijderen van deze gebeurtenis - eenmaal verwijderd is herstel niet meer mogelijk");
+define('EC_LAN_48', "Bevestigt u het verwijderen van deze gebeurtenis - eenmaal verwijderd is herstel niet meer mogelijk");
 define('EC_LAN_49', "Annuleren");
 define('EC_LAN_50', "Bevestig verwijderen");
 define('EC_LAN_51', "Gebeurtenis verwijderd.");
@@ -85,7 +85,7 @@ define('EC_LAN_78', "Kalender configuratie");
 define('EC_LAN_79', "Kalender View");
 define('EC_LAN_80', "Gebeurtenissenoverzicht");
 define('EC_LAN_81', "Configureren Kalender");
-define('EC_LAN_82', "Om te activeren plaats je het calender_menu in een menuzone in het menu beheerscherm.");
+define('EC_LAN_82', "Om te activeren plaatst u het calender_menu in een menuzone in het menu beheerscherm.");
 define('EC_LAN_83', "Kalender");
 define('EC_LAN_84', "Voor dagtitel te gebruiken css element");
 define('EC_LAN_85', "Standaard is 'forumheader'");
@@ -102,7 +102,7 @@ define('EC_LAN_95', "Vandaag");
 define('EC_LAN_96', "Bekijk kalender");	
 define('EC_LAN_97', "Alle");		
 define('EC_LAN_98', "Verplicht veld niet ingevuld");		
-define('EC_LAN_99', "Een gebeurtenis moet een hele dag duren, of in ieder geval eindigen na de aanvang");			
+define('EC_LAN_99', "Een gebeurtenis moet een hele dag duren, of in ieder geval eindigen na de aanvang");		
 define('EC_LAN_100', "Categorieën kunnen worden toegevoegd door");			
 define('EC_LAN_101', "Instellen op inactief om uit te schakelen op het nieuwe gebeurtenissenformulier.");
 define('EC_LAN_102', "Toon link naar forumdiscussie");	
@@ -111,7 +111,7 @@ define('EC_LAN_104', "Kalender beheerdersklasse");
 define('EC_LAN_105', "* Verplicht veld");		
 define('EC_LAN_106', "Gebeurtenissen");		
 define('EC_LAN_107', "Deze plugin biedt een complete kalenderfunctie met een kalendermenu.");		
-define('EC_LAN_108', "Kalender geupgrade.  Bekijk nu eerst de nieuwe mogelijkheden.");	
+define('EC_LAN_108', "Kalender geupgrade.  Bekijkt u nu eerst de nieuwe mogelijkheden.");	
 define('EC_LAN_109', "Kan deze gebeurtenis niet verwijderen.");	
 define('EC_LAN_110', "Gebeurtenis nummer ");	
 define('EC_LAN_111', "Alle gebeurtenissen op ");	
@@ -277,5 +277,5 @@ define('EC_LAN_DAY_29', "29e");
 define('EC_LAN_DAY_30', "30e");
 define('EC_LAN_DAY_31', "31e");
 define('EC_LAN_133', "[lees verder]");
-define('EC_LAN_134', "Je moet een categorienaam opgeven");
+define('EC_LAN_134', "U moet een categorienaam opgeven");
 ?>
