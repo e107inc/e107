@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-09-07 16:46:43 $
+|     $Revision: 1.9 $
+|     $Date: 2005-09-17 03:33:46 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -160,7 +160,7 @@ SC_END
 
 SC_BEGIN INBOX_UNREAD
 $pm_inbox = pm_getInfo('inbox');
-return $pm_inbox['inbox']['unread'];
+return intval($pm_inbox['inbox']['unread']);
 SC_END
 
 SC_BEGIN INBOX_FILLED
@@ -175,7 +175,7 @@ SC_END
 
 SC_BEGIN OUTBOX_UNREAD
 $pm_outbox = pm_getInfo('outbox');
-return $pm_outbox['outbox']['unread'];
+return intval($pm_outbox['outbox']['unread']);
 SC_END
 
 SC_BEGIN OUTBOX_FILLED
