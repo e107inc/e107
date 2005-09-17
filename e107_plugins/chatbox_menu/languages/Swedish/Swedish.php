@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Swedish/Swedish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-26 11:12:23 $
+|     $Revision: 1.3 $
+|     $Date: 2005-09-17 11:39:41 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -27,6 +27,7 @@ define("CHATBOX_L15", "Inlägg för långt, eller tomt inlägg skickat");
 define("CHATBOX_L16", "Anonym");
 define("CHATBOX_L17", "Dublettinlägg");
 define("CHATBOX_L18", "Chattrutans meddelande modererade");
+define("CHATBOX_L19", "Du kan bara skriva ett inlägg per ".FLOODTIMEOUT." sekunder");
 
 define("LAN_11", "Chattruta (alla inlägg)");
 define("LAN_12", "Chattinlägg");

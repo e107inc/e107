@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Swedish/lan_forum_viewforum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-13 16:20:21 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-17 11:39:41 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,7 @@ define("LAN_79", "Nya inlägg");
 define("LAN_80", " Inga nya inlägg");
 define("LAN_81", "Stängd tråd");
 define("LAN_180", "Sök");
+define("LAN_199", "Oläst post finns");
 define("LAN_202", "Klistrad");
 define("LAN_203", "Klistrad/Stängd");
 define("LAN_204", "Du <b>kan</b> starta nya trådar");

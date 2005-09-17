@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_administrator.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-08-15 06:38:54 $
+|     $Revision: 1.5 $
+|     $Date: 2005-09-17 11:39:40 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@ define("ADMSLAN_19", "Ändra sajtpreferenser");
 define("ADMSLAN_20", "Ändra menyer");
 define("ADMSLAN_21", "Lägg till sajtadministratörer");
 define("ADMSLAN_22", "Moderera användare/spärrar etc");
-// define("ADMSLAN_23", "Skapa/redigera forum");
+define("ADMSLAN_23", "Skapa/redigera egna sidor/menyer");
 define("ADMSLAN_24", "Hantera filkategorier");
 define("ADMSLAN_25", "Ladda upp/hantera filer");
 define("ADMSLAN_26", "Se över nyhetskategorier");
@@ -75,5 +75,8 @@ define("ADMSLAN_66", "Konfigurera sökning");
 define("ADMSLAN_67", "Skanna med filinspektören");
 define("ADMSLAN_68", "Konfigurera e-postnotifiering");
 define("ADMSLAN_69", "är redan en administratör och måste redigeras.");
+
+define("ADMSLAN_70", "Tillbaka till administratörslistan");
+define("ADMSLAN_71", "Klicka här för att visa privilegier");
 
 ?>

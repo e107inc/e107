@@ -1,50 +1,78 @@
 /*
 + ----------------------------------------------------------------------------+
-|     Swedish lang variables.
+|     Swedish (SE) language variables
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_handlers/tiny_mce/plugins/table/langs/sv.js,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-27 16:09:21 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-17 11:39:40 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 
-tinyMCELang['lang_table_desc'] = 'Infogar ny tabell';
-tinyMCELang['lang_table_insert_row_before_desc'] = 'Infoga rad före';
-tinyMCELang['lang_table_insert_row_after_desc'] = 'Infoga rad efter';
-tinyMCELang['lang_table_delete_row_desc'] = 'Radera rad';
-tinyMCELang['lang_table_insert_col_before_desc'] = 'Infoga kolumn före';
-tinyMCELang['lang_table_insert_col_after_desc'] = 'Infoga kolumn efter';
-tinyMCELang['lang_table_delete_col_desc'] = 'Ta bort kol';
-tinyMCELang['lang_insert_table_title'] = 'Infoga/Ändra tabell';
-tinyMCELang['lang_insert_table_width'] = 'Bredd';
-tinyMCELang['lang_insert_table_height'] = 'Höjd';
-tinyMCELang['lang_insert_table_cols'] = 'Kolumner';
-tinyMCELang['lang_insert_table_rows'] = 'Rader';
-tinyMCELang['lang_insert_table_cellspacing'] = 'Cellavstånd';
-tinyMCELang['lang_insert_table_cellpadding'] = 'Cellpaddning';
-tinyMCELang['lang_insert_table_border'] = 'Ram';
-tinyMCELang['lang_insert_table_align'] = 'Justering';
-tinyMCELang['lang_insert_table_align_default'] = 'Standard';
-tinyMCELang['lang_insert_table_align_left'] = 'Vänster';
-tinyMCELang['lang_insert_table_align_right'] = 'Höger';
-tinyMCELang['lang_insert_table_align_middle'] = 'Centrera';
-tinyMCELang['lang_insert_table_class'] = 'Klass';
-tinyMCELang['lang_table_row_title'] = 'Tabell radattribut';
-tinyMCELang['lang_table_cell_title'] = 'Tabell cell attribut';
-tinyMCELang['lang_table_row_desc'] = 'Tabell radattribut';
-tinyMCELang['lang_table_cell_desc'] = 'Tabell cellattribut';
-tinyMCELang['lang_insert_table_valign'] = 'Vertikal justering';
-tinyMCELang['lang_insert_table_align_top'] = 'Topp';
-tinyMCELang['lang_insert_table_align_bottom'] = 'Botten';
-tinyMCELang['lang_table_props_desc'] = 'Tabellattribut';
-tinyMCELang['lang_table_bordercolor'] = 'Ramens färg';
-tinyMCELang['lang_table_bgcolor'] = 'Bakg färg';
-tinyMCELang['lang_table_merge_cells_title'] = 'Slå ihop tabellceller';
-tinyMCELang['lang_table_split_cells_desc'] = 'Dela tabellceller';
-tinyMCELang['lang_table_merge_cells_desc'] = 'Förena tabellceller';
-tinyMCELang['lang_table_cut_row_desc'] = 'Klipp ut tabellrad';
-tinyMCELang['lang_table_copy_row_desc'] = 'Kopiera tabellrad';
-tinyMCELang['lang_table_paste_row_before_desc'] = 'Klistra in tabellrad före';
-tinyMCELang['lang_table_paste_row_after_desc'] = 'Klistra in tabellrad efter';
-tinyMCELang['lang_table_insert_desc'] = 'Infoga en ny tabell';
+tinyMCE.addToLang('table',{
+general_tab : 'Generelllt',
+advanced_tab : 'Avancerat',
+general_props : 'Generella attribut',
+advanced_props : 'Avancerade attribut',
+desc : 'Infogar en ny tabell',
+row_before_desc : 'Infoga rad före',
+row_after_desc : 'Infoga rad efter',
+delete_row_desc : 'Radera rad',
+col_before_desc : 'Infoga kolumn före',
+col_after_desc : 'Infoga kolumn efter',
+delete_col_desc : 'Ta bort kol',
+rowtype : 'Rad i tabelldel ',
+title : 'Infoga/Ändra tabell',
+width : 'Bredd',
+height : 'Höjd',
+cols : 'Kolumner',
+rows : 'Rader',
+cellspacing : 'Cellavstånd',
+cellpadding : 'Cellpaddning',
+border : 'Ram',
+align : 'Justering',
+align_default : 'Standard',
+align_left : 'Vänster',
+align_right : 'Höger',
+align_middle : 'Centrerad',
+row_title : 'Tabell rad attribut',
+cell_title : 'Tabell cell attribut',
+cell_type : 'Cell typ',
+row_desc : 'Tabell rad attribut',
+cell_desc : 'Tabell cell attribut',
+valign : 'Vertikal justering',
+align_top : 'Topp',
+align_bottom : 'Botten',
+props_desc : 'Tabell attribut',
+bordercolor : 'Ramfärg',
+bgcolor : 'Bakgrundsfärg',
+merge_cells_title : 'Sammanfoga tabellceller',
+split_cells_desc : 'Dela tabellceller',
+merge_cells_desc : 'Sammanfoga tabellceller',
+cut_row_desc : 'Klipp ut tabellrad',
+copy_row_desc : 'Kopiera tabellrad',
+paste_row_before_desc : 'Klistra in tabellrad före',
+paste_row_after_desc : 'Klistra in tabellrad efter',
+id : 'Id',
+style: 'Stil',
+langdir : 'Språkriktning',
+langcode : 'Språk kod',
+mime : 'Målets MIME typ',
+ltr : 'Vänster till höger',
+rtl : 'Höger till vänster',
+bgimage : 'Bakgrundsbild',
+summary : 'Summering',
+td : "Data",
+th : "Rubrik",
+cell_cell : 'Uppdatera markerad cell',
+cell_row : 'Uppdatera alla celler i raden',
+cell_all : 'Uppdatera alla celler i tabell',
+row_row : 'Uppdatera markerad rad',
+row_odd : 'Uppdatera udda rader i tabell',
+row_even : 'Uppdatera jämna rader i tabell',
+row_all : 'Update alla rader i tabell',
+thead : 'Tabellhuvud',
+tbody : 'Tabellkropp',
+tfoot : 'Tabellfot',
+del : 'Radera tabell'
+});

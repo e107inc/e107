@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_news.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:34 $
+|     $Revision: 1.3 $
+|     $Date: 2005-09-17 11:39:40 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Nyheter");
 
 define("LAN_82", "Nyhetskategori");
-define("LAN_83", "Inga nyheter ännu - kom tillbaka senare.");
+define("LAN_83", "Inga nyheter för tillfället - kom tillbaka senare.");
 define("LAN_84", "Nyhetsämnen");
 define("LAN_99", "Kommentarer");
 define("LAN_100", "På");

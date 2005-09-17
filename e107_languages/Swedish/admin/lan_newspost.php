@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_newspost.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.3 $
+|     $Date: 2005-09-17 11:39:40 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -162,5 +162,7 @@ define("LAN_NEWS_43", "(inga bilder i /e107_images/newspost_images)");
 define("LAN_NEWS_44", "Källor ej aktiverade.");
 
 define("LAN_NEWS_45", "ID");
+
+define("LAN_NEWS_46", "Nyhetsämnen uppdaterades inte, så inga ändringar har gjorts.");
 
 ?>

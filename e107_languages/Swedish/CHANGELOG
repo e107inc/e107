@@ -1,5 +1,9 @@
 Changelog for the Swedish Language pack:
 
+Sat Sep 17 2005 - mrpiercer (at) users.sourceforge.net
+- Updated to today's CVS code status. I'm putting up
+  a test suite for the ISO encoded files in legacy_langpacks
+  for anyone to test with.
 Wed Jul 7 2005 - mrpiercer (at) users.sourceforge.net
 - Seems like things are looking okay now, so from now on
   I'll focus on keeping up with the developers changes.

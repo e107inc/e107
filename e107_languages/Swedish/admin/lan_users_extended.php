@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_users_extended.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.3 $
+|     $Date: 2005-09-17 11:39:40 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ define("EXTLAN_18", "Krävs");
 define("EXTLAN_19", "Användare kommer att tvingas ange värde i detta fält när de uppdaterar sina inställningar.");
 define("EXTLAN_20", "Avgör vilka användare detta fält är applicerbart på.");
 define("EXTLAN_21", "Detta avgör vilka användare som kommer att se detta fält i sina inställningar.");
-define("EXTLAN_22", "Detta avgör vem som kan se värdet på användarsidan.");
+define("EXTLAN_22", "Detta avgör vem som kan se värdet på användarsidan.<br />OBS: Att sätta detta till 'Endast läsning' gör att det enbart är synligt för admin och medlemmen.");
 define("EXTLAN_23", "Lägg till utökat fält");
 define("EXTLAN_24", "Uppdatera utökat fält");
 define("EXTLAN_25", "flytta ner");

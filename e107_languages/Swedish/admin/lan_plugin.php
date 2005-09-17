@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_plugin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-26 11:12:22 $
+|     $Revision: 1.4 $
+|     $Date: 2005-09-17 11:39:40 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -72,5 +72,7 @@ define("EPL_ADLAN_46", "RSS inställningar skapades");
 define("EPL_ADLAN_47", "RSS inställningar raderades");
 define("EPL_ADLAN_48", "Kan inte skapa RSS inställningar");
 define("EPL_ADLAN_49", "Kan inte radera RSS inställningar");
+
+define("EPL_ADLAN_50", "Kommentarer raderades.");
 
 ?>
