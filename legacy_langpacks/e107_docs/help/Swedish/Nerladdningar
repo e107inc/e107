@@ -1,0 +1,6 @@
+
+Q>	Vad &auml;r en nerladdningsv&auml;rd?
+A>	Den l&aring;ter dig gruppera nerladdningar i olika kategorier.
+
+Q>	Jag vill l&auml;gga till en fil f&ouml;r nerladdning, men den dyker inte upp i listan - varf&ouml;r inte?
+A>	Enbart filer i e107_files/downloads katalogen visas i rullgardinsmenyn. Kopiera filen till den katalogen s&aring; kommer den att dyka upp. Detsamma g&auml;ller bilder, de m&aring;sta finnas i e107_files/downloadimages foldern.

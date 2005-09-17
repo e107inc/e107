@@ -1,0 +1,78 @@
+/*
++ ----------------------------------------------------------------------------+
+|     Swedish (SE) language variables
+|
+|     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_handlers/tiny_mce/plugins/table/langs/sv.js,v $
+|     $Revision: 1.1 $
+|     $Date: 2005-09-17 14:44:06 $
+|     $Author: mrpiercer $
++----------------------------------------------------------------------------+
+*/
+
+tinyMCE.addToLang('table',{
+general_tab : 'Generelllt',
+advanced_tab : 'Avancerat',
+general_props : 'Generella attribut',
+advanced_props : 'Avancerade attribut',
+desc : 'Infogar en ny tabell',
+row_before_desc : 'Infoga rad f&ouml;re',
+row_after_desc : 'Infoga rad efter',
+delete_row_desc : 'Radera rad',
+col_before_desc : 'Infoga kolumn f&ouml;re',
+col_after_desc : 'Infoga kolumn efter',
+delete_col_desc : 'Ta bort kol',
+rowtype : 'Rad i tabelldel ',
+title : 'Infoga/&Auml;ndra tabell',
+width : 'Bredd',
+height : 'H&ouml;jd',
+cols : 'Kolumner',
+rows : 'Rader',
+cellspacing : 'Cellavst&aring;nd',
+cellpadding : 'Cellpaddning',
+border : 'Ram',
+align : 'Justering',
+align_default : 'Standard',
+align_left : 'V&auml;nster',
+align_right : 'H&ouml;ger',
+align_middle : 'Centrerad',
+row_title : 'Tabell rad attribut',
+cell_title : 'Tabell cell attribut',
+cell_type : 'Cell typ',
+row_desc : 'Tabell rad attribut',
+cell_desc : 'Tabell cell attribut',
+valign : 'Vertikal justering',
+align_top : 'Topp',
+align_bottom : 'Botten',
+props_desc : 'Tabell attribut',
+bordercolor : 'Ramf&auml;rg',
+bgcolor : 'Bakgrundsf&auml;rg',
+merge_cells_title : 'Sammanfoga tabellceller',
+split_cells_desc : 'Dela tabellceller',
+merge_cells_desc : 'Sammanfoga tabellceller',
+cut_row_desc : 'Klipp ut tabellrad',
+copy_row_desc : 'Kopiera tabellrad',
+paste_row_before_desc : 'Klistra in tabellrad f&ouml;re',
+paste_row_after_desc : 'Klistra in tabellrad efter',
+id : 'Id',
+style: 'Stil',
+langdir : 'Spr&aring;kriktning',
+langcode : 'Spr&aring;k kod',
+mime : 'M&aring;lets MIME typ',
+ltr : 'V&auml;nster till h&ouml;ger',
+rtl : 'H&ouml;ger till v&auml;nster',
+bgimage : 'Bakgrundsbild',
+summary : 'Summering',
+td : "Data",
+th : "Rubrik",
+cell_cell : 'Uppdatera markerad cell',
+cell_row : 'Uppdatera alla celler i raden',
+cell_all : 'Uppdatera alla celler i tabell',
+row_row : 'Uppdatera markerad rad',
+row_odd : 'Uppdatera udda rader i tabell',
+row_even : 'Uppdatera j&auml;mna rader i tabell',
+row_all : 'Update alla rader i tabell',
+thead : 'Tabellhuvud',
+tbody : 'Tabellkropp',
+tfoot : 'Tabellfot',
+del : 'Radera tabell'
+});

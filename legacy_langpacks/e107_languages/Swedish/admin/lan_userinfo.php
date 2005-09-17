@@ -1,0 +1,20 @@
+<?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_userinfo.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2005-09-17 14:44:06 $
+|     $Author: mrpiercer $
++----------------------------------------------------------------------------+
+*/
+define("USFLAN_1", "Kunde inte hitta postarens IP-adress - ingen information tillg&auml;nglig.");
+// define("USFLAN_2", "Fel");
+define("USFLAN_3", "Meddelanden postade fr&aring;n IP-adress");
+define("USFLAN_4", "V&auml;rd");
+define("USFLAN_5", "Klicka h&auml;r f&ouml;r att &ouml;verf&ouml;ra IP-adressen till admins sp&auml;rrsida");
+define("USFLAN_6", "Anv&auml;ndarID");
+define("USFLAN_7", "Anv&auml;ndarinformation");
+
+?>

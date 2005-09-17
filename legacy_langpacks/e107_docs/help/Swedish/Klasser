@@ -1,0 +1,4 @@
+
+Q>	Vad &auml;r dessa anv&auml;ndarklasser jag ser &ouml;verallt? Vad har jag dem till?
+A>	Anv&auml;ndarklasser begr&auml;nsar tillg&aring;ng till olika omr&aring;den eller funktioner p&aring; din sajt. Om du definierar en klass och l&auml;gger till anv&auml;ndare till den, s&aring; kan du v&auml;lja att g&ouml;ra delar synliga endast f&ouml;r anv&auml;ndare i denna klass.
+T.ex. finns det redan en klass skapad vid installationen av e107 kallad PRIVATEFORUM. L&auml;gger du till anv&auml;ndare till den klassen och sedan skapar ett forum under klassen s&aring; kommer endast anv&auml;ndare i den klassen att f&aring; tillg&aring;ng till det forumet. Du kan ocks&aring; ange restriktioner till andra omr&aring;dena och funktioner via klasser, som nyheter, l&auml;nkar, nerladdningar etc.

@@ -1,0 +1,24 @@
++ ----------------------------------------------------------------------------+
+|     e107 website system - Svensk översättning
+|
+|     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/SVENSKA.INFO,v $
+|     $Revision: 1.1 $
+|     $Author: mrpiercer $
++----------------------------------------------------------------------------+
+
+
+For Swedish users only.
+Author: mrpiercer (at) users.sourceforge.net
+
+Här kommer jag att informera om problem med översättningen.
+Bland annat grammatiska trassligheter, svårigheter att få
+översättningen språkligt korrekt och överensstämmande med
+det engelska originalet.
+Feedback, förslag och kommentarer emottas mycket tacksamt!
+-----
+
+Lör Sep 17 2005 - mrpiercer (at) users.sourceforge.net
+- Uppdaterat till dagens CVS status. Dessa filer kodade
+  i iso8859-1 är konverterade rakt av från den UTF-8
+  version som finns i e107_langpacks. Provkör den gärna,
+  och berätta för mig vad som eventuellt inte fungerar.

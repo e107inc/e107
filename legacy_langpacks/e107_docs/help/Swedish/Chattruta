@@ -1,0 +1,9 @@
+
+Q>	Vad &auml;r Byt ut l&auml;nkar till f&ouml;r?
+A>	Du kan byta ut alla l&auml;nkar som skrivs in i din chattruta till en annan text eller en bild. Detta hindrar att din chattruta &ouml;versv&auml;mmas av l&aring;nga webbadresser. F&ouml;r att anv&auml;nda en bild, markera Byt ut l&auml;nk, och i rutan under anger du &lt;img src='s&ouml;kv&auml;g_till_din_bild' alt='' /> s&aring; kommer alla l&auml;nkar att konverteras till den bild du valt.
+
+Q>	Vad &auml;r ordbrytning till f&ouml;r?
+A>	Om n&aring;gon skrivit ett v&auml;ldigt l&aring;ngt ord i din chattruta kan det st&ouml;ra layouten p&aring; din sajt. Om du anger t.ex. 40 i ordbrytningsrutan, kommer ord l&auml;ngre &auml;n 40 tecken att brytas s&aring; att kolumnen inte &ouml;kar i bredd. Detta v&auml;rdet f&aring;r du anpassa till det tema du anv&auml;nder och till bredden p&aring; kolumnen som chattrutan visas i.
+
+Q>	Min sajt &auml;r &ouml;ppen f&ouml;r alla &aring;ldrar och m&auml;nnsikor, &auml;nd&aring; sv&auml;r folk j&auml;mt i chattrutan - Hur kan jag stoppa detta?
+A>	G&aring; till preferenser i din adminsektion, leta upp alternativen f&ouml;r skyddande av under&aring;riga. D&auml;r kan du l&auml;gga till en lista p&aring; ord som skall bytas ut mot n&aring;got annat ord eller mening som du ocks&aring; anger, t.ex. ordet CENSURERAT. N&auml;r n&aring;got av orden i listan hittas p&aring; din sajt kommer det att bytas ut mot det du angett.
