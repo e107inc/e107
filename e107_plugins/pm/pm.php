@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-09-08 17:38:34 $
+|     $Revision: 1.14 $
+|     $Date: 2005-09-17 03:13:57 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -41,7 +41,7 @@ if(!check_class($pm_prefs['pm_class']))
 
 $pm =& new private_message;
 $message = "";
-
+unset($pm_prefs['perpage']);
 $pm_prefs['perpage'] = intval($pm_prefs['perpage']);
 if($pm_prefs['perpage'] == 0)
 {
@@ -378,12 +378,12 @@ function post_pm()
 			}
 		}
 		$totalsize = strlen($_POST['pm_message']);
-		$maxsize = intval($pm_prefs['attach_size']);
+		$maxsize = intval($pm_prefs['attach_size']) * 1024;
 		foreach(array_keys($_FILES['file_userfile']['size']) as $fid)
 		{
 			if($maxsize > 0 && $_FILES['file_userfile']['size'][$fid] > $maxsize)
 			{
-				$msg .= "File: {$_FILES['file_userfile']['name'][$fid]} exceeds size limit - not attached";
+				$msg .= str_replace("{FILENAME}", $_FILES['file_userfile']['name'][$fid], LAN_PM_62)."<br />";
 				$_FILES['file_userfile']['size'][$fid] = 0;
 			}
 			$totalsize += $_FILES['file_userfile']['size'][$fid];

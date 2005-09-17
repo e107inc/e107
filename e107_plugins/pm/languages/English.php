@@ -62,6 +62,7 @@ define('LAN_PM_58', "Re: ");
 define('LAN_PM_59', "Go to page: ");
 define('LAN_PM_60', "You are not permitted to view this message");
 define('LAN_PM_61', "No subject");
+define('LAN_PM_62', "File: [{FILENAME}] exceeds size limit - not attached");
 
 define("LAN_PM_100", "New PM from ");
 define("LAN_PM_101", "You have received a new Private Message from ");
