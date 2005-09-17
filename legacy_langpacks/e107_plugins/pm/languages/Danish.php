@@ -62,6 +62,7 @@ define('LAN_PM_58', "Sv: ");
 define('LAN_PM_59', "G&aring; til side: ");
 define('LAN_PM_60', "Du har ikke tilladelse til at se denne besked");
 define('LAN_PM_61', "Intet emne");
+define('LAN_PM_62', "Fil: [{FILENAME}] overskrider st&oslash;rrelses gr&aelig;nsen - ikke vedh&aelig;ftet");
 
 define("LAN_PM_100", "Ny PB fra ");
 define("LAN_PM_101", "Du har modtaget en ny Privat Besked fra ");
