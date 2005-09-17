@@ -1,0 +1,9 @@
+
+Q>	Hvad er denne sektion til?
+A>	At sl&aring; Cache Status til vil gemme bestemte omr&aring;der af dit site i din database. Dette vil reducere kald til mySQL, og markant forbedre farten p&aring; dit site.
+
+Q>	Jeg har lavet &aelig;ndringer i det tema jeg bruger men der er ikke sket nogle &aelig;ndringer - er det fordi cache er sl&aring;et til.
+A>	Sandsynligvis. n&aring;r du &aelig;ndrer temaer bliver chachen t&oslash;mt men &aelig;ndringer i koden i din theme.php t&oslash;mmer ikke cachen. Sl&aring; Cache Status fra indtil du er f&aelig;rdig.
+
+Q>	Kan jeg gemme cache til filer p&aring; hardisken?
+A>	Ja. S&oslash;rg blot for at din e107_files/cache mappe ikke er skrivebeskyttet (chmod 777). Og marker s&aring; egenskaben p&aring; cache siden.

@@ -1,0 +1,18 @@
+
+Q>	Jeg har defineret et nyt banner fra admin omr&aring;det men det bliver ikke vist - hvorfor?
+A>	Det tema du bruger har brug for at vide at det skal vise et banner. &aring;ben theme.php og sikker dig du har {BANNER} eller {BANNER=dinkampagne} i $HEADER sektionen.
+
+Q>	Jeg vil bruge et s&aelig;t bannere i et omr&aring;de og et andet s&aelig;t i et andet omr&aring;de - hvordan?
+A>	Du kan gruppere dine bannere under 'Kampagner', og indstille dit tema  til at vise bannere fra bestemte kampagner. For eksempel, hvis du har to kampagner der hedder cam_1 and cam_2, inds&aelig;t {BANNER=cam1} i et omr&aring;de af din $HEADER sektion i theme.php vil kun vise cam_1 bannere, og inds&aelig;t {BANNER=cam_2} i et andet omr&aring;de vil kun vise cam_2 bannere. inds&aelig;t {BANNER} (intet Kampagne navn) i din theme.php vil vise tilf&aelig;ldige bannere fra alle kampagner.
+
+Q>	Hvad er klient login og klient password til?
+A>	Du kan definere login og password for dine banner klienter, de kan bruge disse til at f&aring; adgang til informationer om deres bannere ved at g&aring; til http://ditsite.dk/banner.php og skrive brugernavnet og kodeordet.
+
+Q>	Hvordan kan jeg have et h&oslash;jt 'tower' type banner i en menu?
+A>	F&oslash;rst skal du definere en kampagne for tower type bannere (dette vil adskille dem fra almindelige bannere) ...
+	1. G&aring; til dit admin omr&aring;de og klik p&aring; banner reklame.
+	2. Skriv dine tower-type banner(e), v&aelig;r sikker p&aring; du bruger et nyt kampagne navn, for eksempel 'towers'.
+	3. G&aring; nu til dit Menu omr&aring;de, og aktiver Banner_menu i en af dine menu omr&aring;der.
+	4. Klik p&aring; 'Konfigurer' linket i menuen.
+	5. Skriv en top titel (som standart er det 'Advertisment'), og skriv det kampagne navn du definerede f&oslash;r.
+	6. Forlad dit admin omr&aring;de og du vil se dine tower-type banner(e) i det omr&aring;de du aktiverede dem i.

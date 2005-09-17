@@ -1,0 +1,9 @@
+
+Q>	Hvad er Erstat Links sektionen til?
+A>	Du kan konvertere alle links skrevet i din Chatboks til en anden tekst, eller et billede. Det forhindrer din chatboks i at blive overfyldt med lange hjemmeside adresser. For at bruge et billede, afkryds Erstat links, og i boksen under skriv <img src='stien til dit billede' alt='' />, nu vil alle links der skrives blive konverteret til det billede du skrev.
+
+Q>	Hvad er Maksimalt ord til?
+A>	Hvis nogen har skrevet et meget langet ord i p&aring; din Chatboks kan det forvr&aelig;nge layoutet p&aring; dit site. Hvis du eks. skriver 40 i Maksimalt ord boksen, vil alle ord l&aelig;ngere end 40 bogstaver vil pakket s&aring; kolonnen ikke udvides. Du kan blive n&oslash;d til at &aelig;ndre denne v&aelig;rdi s&aring; den passer til det tema du bruger, og bredden p&aring; kolonnen Chatboksen er i.
+
+Q>	Mit site er for alle aldre men nogen bliver med at bande i min bande - hvordan kan jeg stoppe det?
+A>	G&aring; til Indstillinger siden under din admin sektion, og find Beskyttelse af mindre&aring;riges muligheder. Du kan tilf&oslash;je en liste af ord her der vil blive erstattet af et ord eller s&aelig;tning efter dit valg, for eksempel CENSURERET! Nu hvergang de ord bliver m&oslash;dt p&aring; dit site vil de blive erstattet med den tekst du skrev.

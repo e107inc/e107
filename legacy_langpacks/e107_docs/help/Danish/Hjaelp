@@ -1,0 +1,9 @@
+
+Q>	Jeg har lavet nogle &aelig;ndringer p&aring; mit site og nu f&aring;r jeg mySQL fejl og mit site bliver ikke vist.
+A>	Det kan v&aelig;re fordi din kerne/core er blevet korrupt(i stykker). Core er grund indstillingerne og variablerne i e107. For at nulstille din core, g&aring; til http://ditsite.dk/e107_files/resetcore.php. Lav altid backup af din core (fra Database siden) f&oslash;r du tilf&oslash;jer &aelig;ndringer, du kan s&aring; genoprette den core backup hvis noget g&aring;r galt (igen fra resetcore.php).
+
+Q>	Jeg har glemt mit hoved admin kodeord og nu kan jeg ikke komme ind i admin omr&aring;det.
+A>	Af rigtig gode sikkerheds &aring;rsager er det umuligt at nulstille dit kodeord med mindre du er logget ind. Hvis du ikke har skrevet di kodeord ned p&aring; et sikkert sted s&aring; g&oslash;r det venligst nu, s&aring; vil dette aldrig ske. Hvis det g&oslash;r, er du n&oslash;d til at nulstille dit kodeord manuelt ved hj&aelig;lp af PHPMyAdmin eller en anden lignende mySQL manager. G&aring; til users tabellen, Hoved admin b&oslash;r v&aelig;re user numver 1. Klik p&aring; rediger knappen og &aelig;ndrer  password til 4cb9c8a8048fd02294477fcb1a41191a, dette vil &aelig;ndre dit kodeord til changeme. Dern&aelig;st log ind og [b]opdater dit kodeord &oslash;jeblikkelig[/b].
+
+Q>	Jeg har installeret et tema/plugin osv. og nu kan jeg ikke &aring;bne mit site, hvad kan jeg g&oslash;re?
+A>	Brug resetcore.php (se ovenover).
