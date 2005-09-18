@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/Swedish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-09-18 08:57:55 $
+|     $Revision: 1.3 $
+|     $Date: 2005-09-18 09:24:00 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
-setlocale(LC_ALL, 'sv_SE', 'swedish', 'sve_swe');
+setlocale(LC_ALL, 'sv_SE.ISO_8859-1', 'swedish', 'sve_swe');
 define("CORE_LC", 'sv');
 define("CORE_LC2", 'se');
 define("CHARSET", "ISO8859-1");
