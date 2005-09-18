@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_userclass2.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-18 11:07:48 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@ define("UCSLAN_8", "Befintliga klasser");
 
 // define("UCSLAN_9", "Redigera");
 // define("UCSLAN_10", "Radera");
-define("UCSLAN_11", "makera f&ouml;r att bekr&auml;fta");
+define("UCSLAN_11", "markera f&ouml;r att bekr&auml;fta");
 define("UCSLAN_12", "Klassnamn");
 define("UCSLAN_13", "Klassbeskrivning");
 define("UCSLAN_14", "Uppdatera anv&auml;ndarklass");
