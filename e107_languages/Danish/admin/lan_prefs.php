@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_prefs.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:01 $
+|        $Revision: 1.3 $
+|        $Date: 2005-09-18 16:08:57 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -168,7 +168,7 @@ define("PRFLAN_119", "Geshi er en open source multi-sprog syntax fremhæver, se 
 define("PRFLAN_120", "Standard Geshi syntax sprog");
 define("PRFLAN_121", "hvis intet sprog angives i kode bbtag, dette sprog vil blive brugt for fremhævning");
 define("PRFLAN_122", "Anvend WYSIWYG tekstområder");
-define("PRFLAN_123", "Vil vise et hvad-du-ser-er-hvad-du-får editor i tekstområder når tilgængeligt.");
+define("PRFLAN_123", "Vil vise et hvad-du-ser-er-hvad-du-får editor i tekstområder når tilgængeligt. Gælder kun Admins og Brugere der har tilladelse til at poste HTML.");
 define("PRFLAN_124", "Brug 'klassisk' næsteforrige look");
 define("PRFLAN_125", "Ved at slå dette til vil næsteforrige side blive vist som 1 2 3 ... 21 22 23, istedet for det nye look med rullegardinet.");
 define("PRFLAN_126", "Tekst til at vise på tilmeld siden");
