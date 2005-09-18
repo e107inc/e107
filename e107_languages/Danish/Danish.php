@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/Danish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-06 22:11:59 $
+|     $Revision: 1.3 $
+|     $Date: 2005-09-18 17:46:05 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
-setlocale(LC_ALL, 'da_DK');
+setlocale(LC_ALL, 'da_DK.UTF-8', 'danish', 'da_dk');
 //setlocale(LC_TIME, 'da_DK');
 define("CORE_LC", 'da');
 define("CORE_LC2", 'DK');
