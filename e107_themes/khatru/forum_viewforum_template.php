@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/khatru/forum_viewforum_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-12 19:45:09 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-18 19:42:02 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -26,6 +26,7 @@ $icon = (file_exists(THEME."forum/e.png") ? THEME."forum/e.png" : e_PLUGIN."foru
 BOXOPEN."{BREADCRUMB}".BOXMAIN."
 
 <table style='width:100%'>
+<tr>
 <td style='width:80%'><div class='newheadline'><img src='".$icon."' style='vertical-align:middle' /> <b>{FORUMTITLE} Forum</b></div>{THREADPAGES}</td>
 <td style='width:20%; text-align:right; vertical-align:bottom;'>
 {NEWTHREADBUTTON}
@@ -93,14 +94,14 @@ BOXCLOSE.BOXOPEN2."
 </td>
 </tr>
 </table>
-</div>
-</div>
+
+
 <div style='text-align:center;'>
 <a href='".e_PLUGIN."rss_menu/rss.php?11.1.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='".LAN_431."' style='vertical-align: middle; border: 0;' /></a> 
 <a href='".e_PLUGIN."rss_menu/rss.php?11.2.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='".LAN_432."' style='vertical-align: middle; border: 0;' /></a> 
 <a href='".e_PLUGIN."rss_menu/rss.php?11.3.".e_QUERY."'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='".LAN_433."' style='vertical-align: middle; border: 0;' /></a>
 </div>
-<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b>".BOXCLOSE2;
+<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b>".BOXCLOSE2."</div>";
 
 
 $FORUM_VIEW_SUB_START = "
