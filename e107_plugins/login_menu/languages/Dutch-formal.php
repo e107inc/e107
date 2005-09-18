@@ -18,7 +18,7 @@ define("LOGIN_MENU_L3", "Aanmelden");
 define("LOGIN_MENU_L4", "Wachtwoord vergeten?");
 define("LOGIN_MENU_L5", "Welkom");
 define("LOGIN_MENU_L6", "Vergeet me niet");
-define("LOGIN_MENU_L7", "Je unieke gebruikersidentificatie is niet herkend (wellicht cookie verminkt).<br /> <a href=\"index.php?logout\">Klik hier</a> om het cookie te verwijderen.");
+define("LOGIN_MENU_L7", "Uw unieke gebruikersidentificatie is niet herkend (wellicht cookie verminkt).<br /> <a href=\"index.php?logout\">Klik hier</a> om het cookie te verwijderen.");
 define("LOGIN_MENU_L8", "Uitloggen");
 define("LOGIN_MENU_L9", "Inlogfout");
 define("LOGIN_MENU_L10", "De onderhoudsvlag is gezet - dit betekent dat gewone gebruikers naar sitedown.php worden geleid. Om de vlag terug te zetten ga naar beheer/onderhoud.");
@@ -38,7 +38,7 @@ define("LOGIN_MENU_L22", "nieuw lid");
 define("LOGIN_MENU_L23", "nieuwe leden");
 define("LOGIN_MENU_L24", "Klik hier om alle nieuwe onderwerpen te zien");
 
-define("LOGIN_MENU_L25", "Sinds je laatste bezoek waren er");
+define("LOGIN_MENU_L25", "Sinds uw laatste bezoek waren er");
 define("LOGIN_MENU_L26", "geen");
 define("LOGIN_MENU_L27", "en");
 define("LOGIN_MENU_L28", "Inloggen");
