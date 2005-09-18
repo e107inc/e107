@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/lan_usersettings.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:29:27 $
+|        $Revision: 1.2 $
+|        $Date: 2005-09-18 14:25:02 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -13,7 +13,7 @@
 define("PAGE_NAME", "Brugerindstillinger");
 
 define("LAN_7", "Brugernavn: ");
-define("LAN_8", "navnet vist p&Atilde;&yen; site");
+define("LAN_8", "navnet vist p&aring; sitet");
 define("LAN_9", "Brugernavn: ");
 define("LAN_10", "navnet du bruger til at logge p&aring; med");
 define("LAN_11", "navnet du bruger til at logge p&aring; med - dette kan ikke &aelig;ndres, kontakt venligst administrator hvis der er behov for at &aelig;ndre det af sikkerhedsm&aelig;ssige &aring;rsager");
@@ -59,10 +59,10 @@ define("LAN_417", "Nej");
 define("LAN_418", "Registreringsinformationer");
 define("LAN_419", "Personlige-/kontaktinformationer");
 define("LAN_420", "Profillogo");
-define("LAN_421", "V&Atilde;&brvbar;lg gemt  logo");
+define("LAN_421", "V&aelig;lg gemt  logo");
 define("LAN_422", "Brug profillogo udefra");
 define("LAN_423", "Skriv hele adressen til billedet");
-define("LAN_424", "Klik p&Atilde;&yen; knappen for at se billeder her p&aring; webstedet");
+define("LAN_424", "Klik p&aring; knappen for at se billeder her p&aring; webstedet");
 define("LAN_425", "Fotografi");
 define("LAN_426", "Dette vil blive vist p&aring; din profilside");
 define("LAN_427", "Tilf&oslash;j ...");
