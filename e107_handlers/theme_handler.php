@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-09-07 08:06:17 $
-|     $Author: stevedunstan $
+|     $Revision: 1.24 $
+|     $Date: 2005-09-18 03:56:04 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -66,12 +66,13 @@ class themeHandler{
 
 	}
 
-	function getThemes($mode=FALSE) {
+	function getThemes($mode=FALSE)
+	{
 		$themeArray = array();
 		$tloop = 1;
 		$handle = opendir(e_THEME);
 		while (false !== ($file = readdir($handle))) {
-			if ($file != "." && $file != ".." && $file != "CVS" && $file != "templates" && is_dir(e_THEME.$file)) {
+			if ($file != "." && $file != ".." && $file != "CVS" && $file != "templates" && is_dir(e_THEME.$file) && file_exists(e_THEME.$file."/theme.php")) {
 				if($mode == "id") {
 					$themeArray[$tloop] = $file;
 				} else {
@@ -131,14 +132,10 @@ class themeHandler{
 						$css = strtolower($match[2]);
 						$themeArray[$file]['csscompliant'] = ($css == "true" ? true : false);
 
-						/* Bugtrack #1507, fix by drtester */
 						if (!$themeArray[$file]['name'])
 						{
-							array_pop($themeArray);
-							$tloop--;
+							unset($themeArray[$file]);
 						}
-						/* end fix */
-
 					}
 					closedir($handle2);
 				}
@@ -147,8 +144,6 @@ class themeHandler{
 		closedir($handle);
 		return $themeArray;
 	}
-
-
 
 	function themeUpload()
 	{
