@@ -13,7 +13,7 @@
 +---------------------------------------------------------------+
 */
 
-define("FORLAN_1", "Geef op over hoeveel dagen je berichten wilt schonen.");
+define("FORLAN_1", "Geef op over hoeveel dagen u berichten wilt schonen.");
 define("FORLAN_2", "Kies of de te schonen berichten worden verwijderd, of dat ze inactief worden (niet verwijderd, maar onzichtbaar in de forums)");
 define("FORLAN_3", "Verwijderen");
 define("FORLAN_4", "Inactief maken");
@@ -39,7 +39,7 @@ define("FORLAN_23", "Toegankelijk voor?");
 define("FORLAN_24", "aankruisen om toegankelijk te maken voor de gebruikers in de geselecteerde klasse");
 define("FORLAN_25", "Bijwerken hoofdonderwerp");
 define("FORLAN_26", "Aanmaken hoofdonderwerp");
-define("FORLAN_27", "Je moet minimaal 1 hoofdonderwerp aanmaken voordat je forums kunt opvoeren.");
+define("FORLAN_27", "U moet minimaal 1 hoofdonderwerp aanmaken voordat u forums kunt opvoeren.");
 define("FORLAN_28", "Forums");
 define("FORLAN_29", "Nog geen forums.");
 define("FORLAN_30", "Beschikbare forums");
@@ -72,7 +72,7 @@ define("FORLAN_56", "aantal berichten in een discussie voordat deze als populair
 define("FORLAN_57", "Berichten per pagina");
 define("FORLAN_58", "aantal berichten dat per pagina wordt weergegeven");
 define("FORLAN_59", "Opschonen");
-define("FORLAN_60", "Hiermee schoon je alle alle discussies waarin gedurende het opgegeven aantal dagen geen reactie is geweest. <b>Let goed op bij het gebruik van deze functie!</b>");
+define("FORLAN_60", "Hiermee schoont u alle alle discussies waarin gedurende het opgegeven aantal dagen geen reactie is geweest. <b>Let u dus goed op bij het gebruik van deze functie!</b>");
 define("FORLAN_61", "Bijwerken opties");
 define("FORLAN_62", "Forum opties");
 define("FORLAN_63", "Niveau's");
@@ -90,8 +90,8 @@ define("FORLAN_77", "Aanmaken forums");
 define("FORLAN_78", "Forumvolgorde");
 define("FORLAN_79", "Voorkeuren");
 define("FORLAN_80", "Opties");
-define("FORLAN_81", "Weet je zeker dat je dit hoofdonderwerp wilt verwijderen? - forums hierbinnen worden dan ook verwijderd");
-define("FORLAN_82", "Weet je zeker dat je dit forum wilt verwijderen?");
+define("FORLAN_81", "Weet u zeker dat u dit hoofdonderwerp wilt verwijderen? - forums hierbinnen worden dan ook verwijderd");
+define("FORLAN_82", "Weet u zeker dat u dit forum wilt verwijderen?");
 define("FORLAN_83", "Aanmaken hoofdonderwerpen");
 define("FORLAN_84", "Alleen leden");
 define("FORLAN_85", "Alleen lezen");

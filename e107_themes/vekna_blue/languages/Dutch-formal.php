@@ -10,8 +10,8 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_themes/vekna_blue/languages/Dutch.php,v $
-|     $Revision: 1.2 $
+|     $Source: /cvs_backup/e107_langpacks/e107_themes/vekna_blue/languages/Dutch-formal.php,v $
+|     $Revision: 1.1 $
 |     $Date: 2005-09-18 16:57:43 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
