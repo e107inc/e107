@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/khatru/forum_viewtopic_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-12 19:45:09 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-18 19:42:02 $
 |     $Author: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -71,7 +71,7 @@ $FORUMEND = "
 </div>
 
 <div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>
-</div>".BOXCLOSE;
+".BOXCLOSE;
 
 
 
