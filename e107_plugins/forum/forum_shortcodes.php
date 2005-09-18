@@ -100,7 +100,7 @@ SC_END
 	
 SC_BEGIN SIGNATURE
 global $post_info, $tp;
-return ($post_info['user_signature'] ? "<br /><hr style='width:15%; text-align:left'><span class='smalltext'>".$tp->toHTML($post_info['user_signature'],TRUE) : "");
+return ($post_info['user_signature'] ? "<br /><hr style='width:15%; text-align:left' /><span class='smalltext'>".$tp->toHTML($post_info['user_signature'],TRUE) : "");
 SC_END
 	
 SC_BEGIN PROFILEIMG
