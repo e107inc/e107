@@ -1,5 +1,8 @@
 Changelog for the Swedish Language pack:
 
+Sun Sep 18 2005 - mrpiercer (at) users.sourceforge.net
+- Bugfix, the character set was defined as UTF-8 in
+  Swedish.php. Corrected to ISO8859-1.
 Sat Sep 17 2005 - mrpiercer (at) users.sourceforge.net
 - Updated to today's CVS code status. This is just a
   a test suite for the iso8859-1 encoded files.
