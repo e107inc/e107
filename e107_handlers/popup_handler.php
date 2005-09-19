@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_handlers/popup_handler.php,v $
-|		$Revision: 1.1 $
-|		$Date: 2005-06-27 00:17:14 $
+|		$Revision: 1.2 $
+|		$Date: 2005-09-19 08:40:15 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -36,7 +36,7 @@ class popup{
 	// clicking the popup will use the js functions in the included js file to popup the image
 	// $pp -> popup($oSrc, $oSrcThumb, $oIconWidth, $oMaxWidth, $oTitle, $oText)
 
-	function popup($image, $thumb, $iconwidth='100', $maxwidth, $title, $text){
+	function popup($image, $thumb, $iconwidth='100', $maxwidth='', $title, $text){
 			//$image	:	full path to the large image you want to popup
 			//$thumb	:	full path to the small image to show on screen
 			//$maxwidth	:	the maximum size (width or height) an image may be popup'ed
@@ -54,7 +54,7 @@ class popup{
 				//$imagearray[0] is width - $imagearray[1] is height
 
 				if($imagearray[1] > $imagearray[0]){
-					if($imagearray[1] > $maxwidth){
+					if(isset($maxwidth) && $maxwidth!='' && $imagearray[1] > $maxwidth){
 						$width		= round(($maxwidth*$imagearray[0])/$imagearray[1],0);
 						$height		= $maxwidth;
 					}else{
@@ -62,7 +62,7 @@ class popup{
 						$height		= $imagearray[1];
 					}
 				}else{
-					if($imagearray[0] > $maxwidth){
+					if(isset($maxwidth) && $maxwidth!='' && $imagearray[0] > $maxwidth){
 						$width		= $maxwidth;
 						$height		= round(($maxwidth*$imagearray[1])/$imagearray[0],0);
 					}else{
