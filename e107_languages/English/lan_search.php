@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_search.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-16 05:25:35 $
+|     $Revision: 1.11 $
+|     $Date: 2005-09-19 18:47:29 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -113,5 +113,6 @@ define("LAN_SEARCH_73", "No Signature.");
 define("LAN_SEARCH_74", "Joined on");
 
 define("LAN_SEARCH_75", "Search type");
+define("LAN_SEARCH_76", "Posted on page");
 
 ?>
