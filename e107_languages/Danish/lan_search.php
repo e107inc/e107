@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_search.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2005-09-14 20:10:33 $
+|        $Revision: 1.4 $
+|        $Date: 2005-09-19 21:15:59 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -113,4 +113,5 @@ define("LAN_SEARCH_73", "Ingen Signatur.");
 define("LAN_SEARCH_74", "Tilmeldt den");
 
 define("LAN_SEARCH_75", "Søge type");
+define("LAN_SEARCH_76", "Skrevet på side");
 ?>
