@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_search.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-09-19 18:47:29 $
+|     $Revision: 1.12 $
+|     $Date: 2005-09-19 22:09:06 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -114,5 +114,6 @@ define("LAN_SEARCH_74", "Joined on");
 
 define("LAN_SEARCH_75", "Search type");
 define("LAN_SEARCH_76", "Posted on page");
+define("LAN_SEARCH_77", "Posted on profile page of");
 
 ?>
