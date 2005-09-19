@@ -12,7 +12,7 @@ class e_profanityFilter {
 			$word = trim($word);
 			if($word != "")
 			{
-				$this->profanityList .= $word."|";
+				$this->profanityList .= $word."\b|\b";
 			}
 		}
 		$this->profanityList = substr($this->profanityList, 0, -1);
@@ -26,9 +26,9 @@ class e_profanityFilter {
 			return $text;
 		}
 		if ($pref['profanity_replace']) {
-			return preg_replace("/".$this->profanityList."/is", $pref['profanity_replace'], $text);
+			return preg_replace("/\b".$this->profanityList."\b/is", $pref['profanity_replace'], $text);
 		} else {
-			return preg_replace_callback("/".$this->profanityList."/is", array($this, 'replaceProfanities'), $text);
+			return preg_replace_callback("/\b".$this->profanityList."\b/is", array($this, 'replaceProfanities'), $text);
 		}
 	}
 	 
