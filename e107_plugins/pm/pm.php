@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-09-17 03:13:57 $
+|     $Revision: 1.15 $
+|     $Date: 2005-09-19 11:26:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -41,7 +41,6 @@ if(!check_class($pm_prefs['pm_class']))
 
 $pm =& new private_message;
 $message = "";
-unset($pm_prefs['perpage']);
 $pm_prefs['perpage'] = intval($pm_prefs['perpage']);
 if($pm_prefs['perpage'] == 0)
 {
