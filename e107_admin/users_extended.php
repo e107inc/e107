@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-09-04 02:59:01 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.23 $
+|     $Date: 2005-09-19 17:45:40 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -251,7 +251,7 @@ class users_ext
 			{
 				$text .= "
 				<tr>
-				<td class='fcaption' colspan='9' style='text-align:center'>{$catList[$cn][0]['user_extended_struct_name']}</td>
+				<td class='forumheader' colspan='9' style='text-align:center'>{$catList[$cn][0]['user_extended_struct_name']}</td>
 				</tr>
 				";
 
