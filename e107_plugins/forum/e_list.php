@@ -9,19 +9,22 @@
 
 	$bullet = $this -> getBullet($arr[6], $mode);
 
-	if($mode == "new_page" || $mode == "new_menu" ){
+	if($mode == "new_page" || $mode == "new_menu" )
+	{
 		$lvisit = $this -> getlvisit();
 		$qry = "
-		SELECT tp.thread_name AS parent_name, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name, t.thread_thread, t.thread_id, t.thread_name, tp.thread_parent, tp.thread_datestamp, tp.thread_user, tp.thread_views, tp.thread_lastpost, tp.thread_lastuser, tp.thread_total_replies 
+		SELECT tp.thread_name AS parent_name, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name, t.thread_thread, t.thread_id, t.thread_views as tviews, t.thread_name, tp.thread_parent, tp.thread_datestamp, t.thread_user, tp.thread_views, tp.thread_lastpost, tp.thread_lastuser, tp.thread_total_replies 
 		FROM #forum_t AS t 
 		LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id 
 		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id 
-		LEFT JOIN #user AS u ON tp.thread_user = u.user_id 
+		LEFT JOIN #user AS u ON t.thread_user = u.user_id 
 		LEFT JOIN #user AS lp ON tp.thread_lastuser = lp.user_id 
 		WHERE f.forum_class REGEXP '".e_CLASS_REGEXP."' 
 		AND t.thread_datestamp > $lvisit 
 		ORDER BY t.thread_datestamp DESC LIMIT 0,".$arr[7];
-	}else{
+	}
+	else
+	{
 		$qry = "
 		SELECT t.thread_id, t.thread_name AS parent_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name 
 		FROM #forum_t AS t 
@@ -32,16 +35,18 @@
 		ORDER BY t.thread_lastpost DESC LIMIT 0,".$arr[7];
 	}
 
-	if(!$results = $sql->db_Select_gen($qry)){
+	if(!$results = $sql->db_Select_gen($qry))
+	{
 		$LIST_DATA = LIST_FORUM_2;
-	}else{
+	}
+	else
+	{
 		$forumArray = $sql->db_getList();
-
 		$path = e_PLUGIN."forum/";
+
 
 		foreach($forumArray as $forumInfo) {
 			extract($forumInfo);
-
 			
 			//last user
 			$r_id = substr($thread_lastuser, 0, strpos($thread_lastuser, "."));
@@ -64,7 +69,7 @@
 			}
 			
 			$gen = new convert;
-			$r_datestamp = $gen->convert_date($thread_lastpost, "forum");
+			$r_datestamp = $gen->convert_date($thread_lastpost, "short");
 			if($thread_total_replies)
 			{
 				$LASTPOST = "";
@@ -91,6 +96,10 @@
 				$LASTPOSTDATE	= "";
 			}
 
+			if($parent_name == "")
+			{
+				$parent_name = $thread_name;
+			}
 			$rowheading	= $this -> parse_heading($parent_name, $mode);
 			$HEADING	= "<a href='".$path."forum_viewtopic.php?$thread_id' title='".$parent_name."'>".$rowheading."</a>";
 			$AUTHOR		= ($arr[3] ? ($thread_anon ? $thread_user : "<a href='".e_BASE."user.php?id.$thread_user'>$user_name</a>") : "");
@@ -99,7 +108,14 @@
 			$ICON		= $bullet;
 			$VIEWS		= $thread_views;
 			$REPLIES	= $thread_total_replies;
-			$INFO		= "[ ".LIST_FORUM_3." ".$VIEWS.", ".LIST_FORUM_4." ".$REPLIES.", ".LIST_FORUM_5." ".$LASTPOST." ]";
+			if($thread_total_replies)
+			{
+				$INFO		= "[ ".LIST_FORUM_3." ".$VIEWS.", ".LIST_FORUM_4." ".$REPLIES.", ".LIST_FORUM_5." ".$LASTPOST." ]";
+			}
+			else
+			{
+				$INFO		= "[ ".LIST_FORUM_3." ".$tviews." ]";
+			}
 
 			$LIST_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );
 
