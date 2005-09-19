@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banlist.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-07-06 02:01:06 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2005-09-19 17:41:29 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -59,30 +59,6 @@ if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-if ($action != "edit") {
-	$text = $rs->form_open("post", e_SELF, "ban_form")."<div style='text-align:center'>".$rs->form_hidden("ban_secure", "1")."<div style='padding : 1px; ".ADMIN_WIDTH."; height : 170px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
-	if (!$ban_total = $sql->db_Select("banlist","*","ORDER BY banlist_ip","nowhere")) {
-		$text .= "<div style='text-align:center'>".BANLAN_2."</div>";
-	} else {
-		$text .= "<table class='fborder' style='width:99%;'>
-			<tr>
-			<td style='width:70%' class='fcaption'>".BANLAN_10."</td>
-			<td style='width:30%' class='fcaption'>".LAN_OPTIONS."</td>
-			</tr>";
-		$count = 0;
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
-			$banlist_reason = str_replace("LAN_LOGIN_18", BANLAN_11, $banlist_reason);
-			$text .= "<tr><td style='width:70%' class='forumheader3'>$banlist_ip<br />".BANLAN_7.": $banlist_reason</td>
-				<td style='width:30%; text-align:center' class='forumheader3'>".$rs->form_button("submit", "main_edit_$count", LAN_EDIT, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?edit-$banlist_ip'\"").$rs->form_button("submit", "main_delete_$count", BANLAN_4, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?remove-$banlist_ip'\"")."</td>\n</tr>";
-			$count++;
-		}
-		$text .= "</table>\n";
-	}
-	$text .= "</div></div>".$rs->form_close();
-	$ns->tablerender(BANLAN_3, $text);
-}
-
 if ($action == "edit") {
 	$sql->db_Select("banlist", "*", "banlist_ip='$sub_action'");
 	$row = $sql->db_Fetch();
@@ -124,6 +100,30 @@ $text = "<div style='text-align:center'>
 	</div>";
 
 $ns->tablerender(BANLAN_9, $text);
+
+if ($action != "edit") {
+	$text = $rs->form_open("post", e_SELF, "ban_form")."<div style='text-align:center'>".$rs->form_hidden("ban_secure", "1");
+	if (!$ban_total = $sql->db_Select("banlist","*","ORDER BY banlist_ip","nowhere")) {
+		$text .= "<div style='text-align:center'>".BANLAN_2."</div>";
+	} else {
+		$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
+			<tr>
+			<td style='width:70%' class='fcaption'>".BANLAN_10."</td>
+			<td style='width:30%' class='fcaption'>".LAN_OPTIONS."</td>
+			</tr>";
+		$count = 0;
+		while ($row = $sql->db_Fetch()) {
+			extract($row);
+			$banlist_reason = str_replace("LAN_LOGIN_18", BANLAN_11, $banlist_reason);
+			$text .= "<tr><td style='width:70%' class='forumheader3'>$banlist_ip<br />".BANLAN_7.": $banlist_reason</td>
+				<td style='width:30%; text-align:center' class='forumheader3'>".$rs->form_button("submit", "main_edit_$count", LAN_EDIT, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?edit-$banlist_ip'\"").$rs->form_button("submit", "main_delete_$count", BANLAN_4, "onclick=\"document.getElementById('ban_form').action='".e_SELF."?remove-$banlist_ip'\"")."</td>\n</tr>";
+			$count++;
+		}
+		$text .= "</table>\n";
+	}
+	$text .= "</div>".$rs->form_close();
+	$ns->tablerender(BANLAN_3, $text);
+}
 
 require_once("footer.php");
 ?>
