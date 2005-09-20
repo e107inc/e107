@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_admin.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2005-09-16 14:57:01 $
+|        $Revision: 1.4 $
+|        $Date: 2005-09-20 21:40:28 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -95,15 +95,15 @@ define("ADLAN_89", "Administratornavn ");
 define("ADLAN_90", "Admin adgangskodekode ");
 define("ADLAN_91", "Log på");
 define("ADLAN_92", "Log på, for at fortsætte til administratorsiderne...");
-define("ADLAN_93", "Administrator funktioner");
-define("ADLAN_94", "Installerede plugins");
-define("ADLAN_95", "Plugin konfiguration");
+define("ADLAN_93", "Vis Administrator funktioner");
+define("ADLAN_94", "Vis Installerede plugins");
+define("ADLAN_95", "Plugin Håndtering");
 define("ADLAN_96", "Ingen");
 define("ADLAN_97", "Klik her for FAQ/OSS");
 define("ADLAN_98", "Plugin konfiguration");
 define("ADLAN_99", "Installer/opgrader plugins m.m.");
 define("ADLAN_100", "Tema udseende");
-define("ADLAN_101", "Skabelon opretter");
+define("ADLAN_101", "Skabelon Opretning");
 define("ADLAN_102", "Det er mere end 30 dage siden, du skiftede administrator adgangskode - ");
 define("ADLAN_103", "Skift nu");
 define("ADLAN_104", "Sikkerhed");
@@ -119,7 +119,7 @@ define("ADLAN_111", "Ubekræftede medlemmer");
 define("ADLAN_112", "Bortviste brugere");
 define("ADLAN_113", "Forumindlæg");
 define("ADLAN_114", "Kommentarer");
-define("ADLAN_115", "Chatboksindlæg");
+define("ADLAN_115", "Chatboks indlæg");
 define("ADLAN_116", "Administrator log ...");
 define("ADLAN_117", "Vis alle indlæg");
 define("ADLAN_118", "Ryd log");
@@ -208,12 +208,14 @@ define("LAN_CREATED","Oprettet");
 define("LAN_CREATED_FAILED","Oprettelse mislykkedes");
 define("LAN_DELETED_FAILED","Sletning mislykkedes");
 define("LAN_UPDATED_FAILED","Opdatering mislykkedes");
+define("LAN_NO_CHANGE","Opdatering mislykkedes da ingen ændringer blev lavet.");
+define("LAN_TRY_AGAIN","Prøv venligst igen.");
 
 define("LAN_RESET","Nulstil");
 define("LAN_CLEAR","Ryd");
 define("LAN_OK","OK");
 
-define("LAN_PRESET","Preset");
+define("LAN_PRESET","Forudindstilt");
 define("LAN_PRESET_SAVED","Indstilling gemt");
 define("LAN_PRESET_DELETED","Indstilling slettet");
 define("LAN_PRESET_CONFIRMDEL","Er du sikker på du vil slette denne indstilling?");
