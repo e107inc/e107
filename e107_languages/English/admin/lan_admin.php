@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_admin.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-06-27 21:35:15 $
-|     $Author: e107coders $
+|     $Revision: 1.38 $
+|     $Date: 2005-09-20 10:31:25 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("ADLAN_0", "News");
@@ -208,6 +208,8 @@ define("LAN_CREATED","Successfully created");
 define("LAN_CREATED_FAILED","Creation Unsuccessful");
 define("LAN_DELETED_FAILED","Deletion Unsuccessful");
 define("LAN_UPDATED_FAILED","Update Unsuccessful");
+define("LAN_NO_CHANGE","Update unsuccessful as no changes were made.");
+define("LAN_TRY_AGAIN","Please try again.");
 
 define("LAN_RESET","Reset");
 define("LAN_CLEAR","Clear");
