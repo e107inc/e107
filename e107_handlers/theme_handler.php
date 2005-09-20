@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/theme_handler.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-09-18 03:56:04 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.25 $
+|     $Date: 2005-09-20 10:19:17 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -109,26 +109,26 @@ class themeHandler{
 						$fp=fopen(e_THEME.$file."/theme.php", "r");
 						$themeContents = fread ($fp, filesize(e_THEME.$file."/theme.php"));
 						fclose($fp);
-						preg_match('/themename(\s=\s|=|\s=|=\s)"(.*?)";/', $themeContents, $match);
-						$themeArray[$file]['name'] = $match[2];
-						preg_match('/themeversion(\s=\s|=|\s=|=\s)"(.*?)";/', $themeContents, $match);
-						$themeArray[$file]['version'] = $match[2];
-						preg_match('/themeauthor(\s=\s|=|\s=|=\s)"(.*?)";/', $themeContents, $match);
-						$themeArray[$file]['author'] = $match[2];
-						preg_match('/themeemail(\s=\s|=|\s=|=\s)"(.*?)";/', $themeContents, $match);
-						$themeArray[$file]['email'] = $match[2];
-						preg_match('/themewebsite(\s=\s|=|\s=|=\s)"(.*?)";/', $themeContents, $match);
-						$themeArray[$file]['website'] = $match[2];
-						preg_match('/themedate(\s=\s|=|\s=|=\s)"(.*?)";/', $themeContents, $match);
-						$themeArray[$file]['date'] = $match[2];
-						preg_match('/themeinfo(\s=\s|=|\s=|=\s)"(.*?)";/', $themeContents, $match);
-						$themeArray[$file]['info'] = $match[2];
+						preg_match('/themename(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+						$themeArray[$file]['name'] = $match[3];
+						preg_match('/themeversion(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+						$themeArray[$file]['version'] = $match[3];
+						preg_match('/themeauthor(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+						$themeArray[$file]['author'] = $match[3];
+						preg_match('/themeemail(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+						$themeArray[$file]['email'] = $match[3];
+						preg_match('/themewebsite(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+						$themeArray[$file]['website'] = $match[3];
+						preg_match('/themedate(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+						$themeArray[$file]['date'] = $match[3];
+						preg_match('/themeinfo(\s*?=\s*?)("|\')(.*?)("|\');/si', $themeContents, $match);
+						$themeArray[$file]['info'] = $match[3];
 
-						preg_match('/xhtmlcompliant(\s=\s|=|\s=|=\s)(.*?);/', $themeContents, $match);
+						preg_match('/xhtmlcompliant(\s*?=\s*?)(\S*?);/si', $themeContents, $match);
 						$xhtml = strtolower($match[2]);
 						$themeArray[$file]['xhtmlcompliant'] = ($xhtml == "true" ? true : false);
 
-						preg_match('/csscompliant(\s=\s|=|\s=|=\s)(.*?);/', $themeContents, $match);
+						preg_match('/csscompliant(\s*?=\s*?)(\S*?);/si', $themeContents, $match);
 						$css = strtolower($match[2]);
 						$themeArray[$file]['csscompliant'] = ($css == "true" ? true : false);
 
@@ -300,23 +300,19 @@ class themeHandler{
 		<b><span class='mediumtext'>".$theme['name']."</span></b><br />".TPVLAN_11." ".$theme['version']."
 		<br />
 		</td>
-		<td class='forumheader3' style='vertical-align:top'>
-		<table cellspacing='3' style='width:97%'>
-		<tr><td style='vertical-align:top;width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'> $author</td></tr>
-		<tr><td style='vertical-align:top'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'> $website</td></tr>
-		<tr><td style='vertical-align:top'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>
-		<tr><td style='vertical-align:top'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>
-		<tr><td style='vertical-align:top'><b>".TPVLAN_8."</b>:</td><td style='vertical-align:top'>
-		$previewbutton $selectmainbutton $selectadminbutton
-		</td>
-		</tr>
-		</table>";
-
-
+		<td class='forumheader3' style='vertical-align:top'>";
+		
+		$itext .= $author ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_4."</b>:</td><td style='vertical-align:top'>".$author."</td></tr>" : "";
+		$itext .= $website ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_5."</b>:</td><td style='vertical-align:top'>".$website."</td></tr>" : "";
+		$itext .= $theme['date'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_6."</b>:</td><td style='vertical-align:top'>".$theme['date']."</td></tr>" : "";
+		$itext .= $theme['info'] ? "<tr><td style='vertical-align:top; width:24%'><b>".TPVLAN_7."</b>:</td><td style='vertical-align:top'>".$theme['info']."</td></tr>" : "";
+		$itext .= !$mode ? "<tr><td style='vertical-align:top'><b>".TPVLAN_8."</b>:</td><td style='vertical-align:top'>".$previewbutton.$selectmainbutton.$selectadminbutton."</td></tr>" : "";
+		if ($itext) {
+			$text .= "<table cellspacing='3' style='width:97%'>".$itext."</table>";
+		}
 
 		if(array_key_exists("multipleStylesheets", $theme))
 		{
-			$text .= "<br /><br />";
 			if($mode)
 			{
 				$text .= "<table cellspacing='3' style='width:97%'>
@@ -361,14 +357,9 @@ class themeHandler{
 				</tr>
 				<tr>
 				<td colspan='2' class='center'>
-				<input class='button' type='submit' name='submit_style' value='".TPVLAN_35."' />
+				<input class='button' type='submit' name='submit_style' value='".TPVLAN_35."' /> ".$selectadminbutton."
 				</td></tr></table>";
 			}
-
-
-
-
-
 
 		if($mode == 2)
 		{
@@ -391,7 +382,7 @@ class themeHandler{
 			$text .= "<br /><br /><table cellspacing='3' style='width:97%'>
 			<tr><td style='vertical-align:top; width:50%;'><b>".TPVLAN_41.":</b></td><td style='vertical-align:top width:50%;'>$astext</td></tr>
 			<td colspan='2' class='center'>
-			<input class='button' type='submit' name='submit_adminstyle' value='".TPVLAN_42."' />
+			<input class='button' type='submit' name='submit_adminstyle' value='".TPVLAN_42."' /> ".$selectmainbutton."
 			</td>
 			</table>\n";
 		}
