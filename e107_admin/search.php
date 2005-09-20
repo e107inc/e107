@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-09-20 10:33:04 $
+|     $Revision: 1.26 $
+|     $Date: 2005-09-20 14:07:54 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -158,7 +158,7 @@ if (isset($_POST['updatesettings'])) {
 		if (!mysql_errno()) {
 			$message = $message ? $message : LAN_NO_CHANGE."<br />".LAN_TRY_AGAIN;
 		} else {
-			$message = $message ? $message : LAN_UPDATED_FAILED."<br />".LAN_TRY_AGAIN;
+			$message = $message ? $message : LAN_UPDATED_FAILED." - ".LAN_TRY_AGAIN."<br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
 		}
 	}
 	
