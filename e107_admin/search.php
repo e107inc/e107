@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-07-01 02:04:40 $
+|     $Revision: 1.25 $
+|     $Date: 2005-09-20 10:33:04 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -118,6 +118,7 @@ if (isset($_POST['updatesettings'])) {
 			$search_prefs['mysql_sort'] = TRUE;
 		} else {
 			$search_prefs['mysql_sort'] = FALSE;
+			$messcap = LAN_ERROR;
 			$message = SEALAN_33."<br />".SEALAN_34." ".$mysql_version[1];
 		}
 	} else {
@@ -150,9 +151,15 @@ if (isset($_POST['updatesettings'])) {
 
 	$tmp = addslashes(serialize($search_prefs));
 	if ($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'")) {
+		$messcap = $messcap ? $messcap : LAN_UPDATE;
 		$message = $message ? $message : LAN_UPDATED;
 	} else {
-		$message = $message ? $message : 'failed';
+		$messcap = $messcap ? $messcap : LAN_UPDATED_FAILED;
+		if (!mysql_errno()) {
+			$message = $message ? $message : LAN_NO_CHANGE."<br />".LAN_TRY_AGAIN;
+		} else {
+			$message = $message ? $message : LAN_UPDATED_FAILED."<br />".LAN_TRY_AGAIN;
+		}
 	}
 	
 	$pref['search_restrict'] = $_POST['search_restrict'];
@@ -166,7 +173,7 @@ $rs = new form;
 $handlers_total = count($search_prefs['core_handlers']) + count($search_prefs['plug_handlers']);
 
 if (isset($message)) {
-		$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	$ns->tablerender($messcap, "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
 $text = "<form method='post' action='".e_SELF."'><div style='text-align:center'>
