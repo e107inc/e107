@@ -20,7 +20,8 @@ if(isset($_POST['reset'])){
 	unset($text);
 }
 
-$text .= "Du kan arrangere hvor og i hvilken orden dine menuer er herfra. 
+$text .= "
+Du kan arrangere hvor og i hvilken orden dine menuer er herfra. 
 Brug pilene til at flytte menuerne op og ned indtil du er tilfreds med deres position.
 <br />
 <br />
@@ -28,7 +29,9 @@ Hvis menuerne ikke opdaterer korrekt klik da p&aring; Opdater knappen.
 <br />
 <form method='post' id='menurefresh' action='".$_SERVER['PHP_SELF']."'>
 <div><input type='submit' class='button' name='reset' value='Opdater' /></div>
-</form>";
+</form><br />
+<div class='indent'><span style='color:red'>*</span> indikerer at menu synlighed er blevet &aelig;ndret</div>
+";
 
 $ns -> tablerender("Menuer Hj&aelig;lp", $text);
 ?>
