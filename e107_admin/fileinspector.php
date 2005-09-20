@@ -1,6 +1,6 @@
 <?php
 /*
-+ ----------------------------------------------------------------------------+
++----------------------------------------------------------------------------+
 |     e107 website system
 |
 |     ©Steve Dunstan 2001-2002
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-07-13 01:24:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.26 $
+|     $Date: 2005-09-20 13:53:27 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
@@ -137,15 +137,20 @@ class file_inspector {
 		}
 		closedir($handle);
 		
-		ksort ($dirs);
-		ksort ($files);
+		if (isset($dirs)) {
+			ksort ($dirs);
+			foreach ($dirs as $dir_path => $dir_list) {
+				$list[$dir_list] = $this -> scan($dir_path) ? $this -> scan($dir_path) : array();
+			}
+		}
 		
-		foreach ($dirs as $dir_path => $dir_list) {
-			$list[$dir_list] = $this -> scan($dir_path) ? $this -> scan($dir_path) : array();
+		if (isset($files)) {
+			ksort ($files);
+			foreach ($files as $file_name => $file_list) {
+				$list[$file_name] = $file_list;
+			}
 		}
-		foreach ($files as $file_name => $file_list) {
-			$list[$file_name] = $file_list;
-		}
+		
 		return $list;
 	}
 	
@@ -416,7 +421,7 @@ class file_inspector {
 
 	}
 	
-	function checksum($filename, $create = FALSE) {
+	function checksum($filename) {
 		$checksum = md5(str_replace(chr(13).chr(10), chr(10), file_get_contents($filename)));
 		return $checksum;
 	}
