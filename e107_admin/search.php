@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-09-20 14:07:54 $
+|     $Revision: 1.27 $
+|     $Date: 2005-09-20 14:30:40 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -118,8 +118,7 @@ if (isset($_POST['updatesettings'])) {
 			$search_prefs['mysql_sort'] = TRUE;
 		} else {
 			$search_prefs['mysql_sort'] = FALSE;
-			$messcap = LAN_ERROR;
-			$message = SEALAN_33."<br />".SEALAN_34." ".$mysql_version[1];
+			$ns -> tablerender(LAN_ERROR, "<div style='text-align:center'><b>".SEALAN_33."<br />".SEALAN_34." ".$mysql_version[1]."</b></div>");
 		}
 	} else {
 		$search_prefs['mysql_sort'] = FALSE;
@@ -150,18 +149,8 @@ if (isset($_POST['updatesettings'])) {
 	}
 
 	$tmp = addslashes(serialize($search_prefs));
-	if ($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'")) {
-		$messcap = $messcap ? $messcap : LAN_UPDATE;
-		$message = $message ? $message : LAN_UPDATED;
-	} else {
-		$messcap = $messcap ? $messcap : LAN_UPDATED_FAILED;
-		if (!mysql_errno()) {
-			$message = $message ? $message : LAN_NO_CHANGE."<br />".LAN_TRY_AGAIN;
-		} else {
-			$message = $message ? $message : LAN_UPDATED_FAILED." - ".LAN_TRY_AGAIN."<br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
-		}
-	}
-	
+	e_update($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'"));
+
 	$pref['search_restrict'] = $_POST['search_restrict'];
 	$pref['search_highlight'] = $_POST['search_highlight'];
 	save_prefs();
@@ -171,10 +160,6 @@ require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
 $handlers_total = count($search_prefs['core_handlers']) + count($search_prefs['plug_handlers']);
-
-if (isset($message)) {
-	$ns->tablerender($messcap, "<div style='text-align:center'><b>".$message."</b></div>");
-}
 
 $text = "<form method='post' action='".e_SELF."'><div style='text-align:center'>
 <table style='".ADMIN_WIDTH."' class='fborder'>";

@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.34 $
-|   $Date: 2005-07-09 14:39:51 $
-|   $Author: streaky $
+|   $Revision: 1.35 $
+|   $Date: 2005-09-20 14:30:39 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 */
 if (!defined('e_HTTP')) {
@@ -213,6 +213,22 @@ if (!function_exists("parse_admin")) {
 			}
 		}
 	}
+}
+
+function e_update($update) {
+	global $ns;
+	if ($update) {
+		$caption = LAN_UPDATE;
+		$text = "<b>".LAN_UPDATED."</b>";
+	} else {
+		$caption = LAN_UPDATED_FAILED;
+		if (!mysql_errno()) {
+			$text = "<b>".LAN_NO_CHANGE."<br />".LAN_TRY_AGAIN."</b>";
+		} else {
+			$text = "<b>".LAN_UPDATED_FAILED." - ".LAN_TRY_AGAIN."</b><br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
+		}
+	}
+	$ns -> tablerender($caption, "<div style='text-align:center'>".$text."</div>");
 }
 
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
