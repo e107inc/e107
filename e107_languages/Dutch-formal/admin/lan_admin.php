@@ -202,6 +202,8 @@ define("LAN_GOPAGE", "Ga naar pagina:");
 define("LAN_DATESTAMP","Datum");
 define("LAN_OPTIONAL", "optioneel");
 define("LAN_INACTIVE","Inactief");
+define("LAN_NO_CHANGE","Update mislukt omdat er geen wijzigingen zijn aangebracht.");
+define("LAN_TRY_AGAIN","Probeert u het nogmaals.");
 
 define('ADLAN_CL_1', "Instellingen");
 define('ADLAN_CL_2', "Leden");

@@ -109,5 +109,6 @@ define("LAN_SEARCH_72", "Ondertekening");
 define("LAN_SEARCH_73", "Geen ondertekening.");
 define("LAN_SEARCH_74", "Aangesloten op");
 define("LAN_SEARCH_75", "Zoek type");
-
+define("LAN_SEARCH_76", "Geplaatst op pagina");
+define("LAN_SEARCH_77", "Geplaatst op profielpagina van");
 ?>
