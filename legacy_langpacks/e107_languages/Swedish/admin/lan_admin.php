@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/admin/lan_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-21 18:20:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -208,6 +208,8 @@ define("LAN_CREATED", "Skapades korrekt");
 define("LAN_CREATED_FAILED", "Misslyckades att skapa");
 define("LAN_DELETED_FAILED", "Misslyckades att radera");
 define("LAN_UPDATED_FAILED", "Uppdatering misslyckades");
+define("LAN_NO_CHANGE", "Ingen uppdatering gjordes eftersom inget &auml;ndrats.");
+define("LAN_TRY_AGAIN", "F&ouml;rs&ouml;k igen.");
 
 define("LAN_RESET", "&Aring;terst&auml;ll");
 define("LAN_CLEAR", "Rensa");

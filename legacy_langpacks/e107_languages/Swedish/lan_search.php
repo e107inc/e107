@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Swedish/lan_search.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 14:44:06 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-21 18:20:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -113,5 +113,7 @@ define("LAN_SEARCH_73", "Ingen signatur.");
 define("LAN_SEARCH_74", "Gick med den");
 
 define("LAN_SEARCH_75", "S&ouml;kningstyp");
+define("LAN_SEARCH_76", "Postad p&aring; sidan");
+define("LAN_SEARCH_77", "Postad p&aring; profilsidan f&ouml;r");
 
 ?>
