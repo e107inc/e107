@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.140 $
-|     $Date: 2005-09-15 17:46:50 $
-|     $Author: sweetas $
+|     $Revision: 1.141 $
+|     $Date: 2005-09-21 20:52:43 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -1071,7 +1071,7 @@ function update_61x_to_700($type='') {
 			}
 		}
 
-		if(!is_array($pref['meta_tag'])){
+		if($pref['meta_tag']!="" && !is_array($pref['meta_tag'])){
 			return update_needed();
 		}
 
