@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/plugin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-07 00:48:19 $
+|     $Revision: 1.4 $
+|     $Date: 2005-09-22 16:10:05 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
+
 @include_once(e_PLUGIN."pm/languages/admin/".e_LANGUAGE.".php");
 @include_once(e_PLUGIN."pm/languages/admin/English.php");
 	
@@ -88,5 +89,16 @@ $eplug_link_url = "";
 	
 // Text to display after plugin successfully installed ------------------------------------------------------------------
 $eplug_done = ADLAN_PM_1;
+
+if(!function_exists("pm_uninstall"))
+{
+	//Remove prefs and menu entry during uninstall
+	function pm_uninstall()
+	{
+		global $sql;
+		$sql->db_Delete("core", "e107_name = 'pm_prefs'");
+		$sql->db_Delete("menus", "menu_name = 'private_msg_menu'");
+	}
+}
 
 ?>
