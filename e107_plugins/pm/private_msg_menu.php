@@ -11,13 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/private_msg_menu.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-09-07 11:41:11 $
+|     $Revision: 1.6 $
+|     $Date: 2005-09-22 02:08:25 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 global $sysprefs, $pref, $pm_prefs;
-$pm_prefs = $sysprefs->getArray("pm_prefs");
+if(!isset($pm_prefs['perpage']))
+{
+	$pm_prefs = $sysprefs->getArray("pm_prefs");
+}
 require_once(e_PLUGIN."pm/pm_func.php");
 pm_getInfo('clear');
 
