@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Dansih.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-09-14 18:03:24 $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Danish.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2005-09-22 17:16:35 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
