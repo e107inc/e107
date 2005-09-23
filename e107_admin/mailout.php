@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-09-05 13:48:52 $
-|     $Author: stevedunstan $
+|     $Revision: 1.38 $
+|     $Date: 2005-09-23 19:32:32 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -21,8 +21,9 @@ require_once("../class2.php");
 $e_sub_cat = 'mail';
 $e_wysiwyg = "email_body";
 set_time_limit(180);
-
+session_write_close();
 require_once(e_ADMIN."auth.php");
+require_once(e_HANDLER."ren_help.php");
 if (!getperms("W")) {
 	header("location:".e_BASE."index.php");
 	 exit;
@@ -36,6 +37,12 @@ $row = $sql -> db_Fetch();
 $language_field = $row['user_extended_struct_name'];
 }
 
+
+
+
+
+
+
 if (isset($_POST['testemail'])) {
     if(SITEADMINEMAIL == ""){
 		$message = MAILAN_19;
@@ -47,6 +54,34 @@ if (isset($_POST['testemail'])) {
 		} else {
 			$message = PRFLAN_69;
 		}
+	}
+}
+
+
+
+
+
+
+if (isset($_POST['save_email'])){
+	$qry = "0,'massmail', '".time()."', '".USERID."', '".$tp->toDB($_POST['email_subject'])."',  '', \"".$tp->toDB($_POST['email_body'])."\"  ";
+	$message = $sql -> db_Insert("generic", $qry) ? LAN_SAVED : LAN_SAVED_FAILED;
+}
+
+if (isset($_POST['update_email'])){
+	$qry = "gen_user_id = '".USERID."', gen_datestamp = '".time()."', gen_ip = '".$tp->toDB($_POST['email_subject'])."', gen_chardata= \"".$tp->toDB($_POST['email_body'])."\" WHERE gen_id = '".$_POST['update_id']."' ";
+	$message = $sql -> db_Update("generic", $qry) ? LAN_UPDATED : LAN_UPDATED_FAILED;
+}
+
+if (isset($_POST['delete'])){
+	$d_idt = array_keys($_POST['delete']);
+	$this -> message = ($sql -> db_Delete("generic", "gen_id='".$d_idt[0]."'")) ? LAN_DELETED : LAN_DELETED_FAILED;
+}
+
+if (isset($_POST['edit'])){
+	$e_idt = array_keys($_POST['edit']);
+	if($sql -> db_Select("generic", "*", "gen_id='".$e_idt[0]."' ")){
+		$foo = $sql -> db_Fetch();
+
 	}
 }
 
@@ -74,162 +109,91 @@ if (isset($_POST['submit'])) {
        $qry = "SELECT u.* FROM #user AS u WHERE u.user_id='".USERID."'";
 	} else {
         $insert = "u.user_class IN (".$_POST['email_to'].")";
-		$insert2 = ($_POST['language']) ? " AND ue.user_{$language_field} = '".$_POST['language']."' " : "";
+		$insert2 = (isset($_POST['language'])) ? " AND ue.user_{$language_field} = '".$_POST['language']."' " : "";
 		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id WHERE $insert $insert2 ORDER BY u.user_name";
 	}
-
-		$sql->db_Select_gen($qry);
-		$c = 0;
+   //	echo "qy=".$qry;
+        $sql2 = new db;
+		$c = $sql->db_Select_gen($qry);
+        if (ob_get_level() == 0) {
+	   		ob_start();
+	 	}
 			while ($row = $sql->db_Fetch()) {
-				extract($row);
-				$recipient_name[$c] = $user_name;
-				$recipient[$c] = $user_email;
-				$recipient_key[$c] = $user_sess;
-				$recipient_id[$c] = $user_id;
-				$c++;
+				$qry = "0,'sendmail', '', '".$row['user_id']."', '', '', \"".$_POST['email_subject']."\" ";
+	           	$message = $sql2 -> db_Insert("generic", $qry) ? ". " : "";
+                echo $message;
+				ob_flush();
+				flush();
 			}
+        ob_end_flush();
+
+	$text = "<div style='text-align:center'>
+		<form method='post' action='".e_HANDLER."phpmailer/mailout_process.php' name='mailform' onsubmit=\"open('', 'popup','width=230,height=150,resizable=1,scrollbars=0');this.target = 'popup';return true;\" >
+		<div>";
+
+    foreach($_POST as $key=>$val){
+		$text .= "<input type='hidden' name='$key' value='".stripslashes($tp->post_toForm($val))."' />\n";
+    }
+
+    $text .= "</div>";
+
+	$text .= "<div>$c email(s) are ready to be sent</div>";
+
+	$text .= "<div><br /><input class='button' type='submit' name='send_mails' value='Proceed' /></div>";
+	$text .= "</form><br /><br /></div>";
+
+// --------------- Preview Email -------------------------->
+
+	$text .= "
+	<div>
+	<table class='fborder'>
+
+		<tr>
+			<td class='forumheader3' style='width:20%'>".MAILAN_03."</td>
+			<td class='forumheader3'>".$_POST['email_to']."&nbsp;";
+            if($_POST['email_to'] == "self"){
+            	$text .= "&lt;".USEREMAIL."&gt;";
+			}
+	$text .="</td>
+		</tr>
+
+		<tr>
+			<td class='forumheader3' style='width:20%'>".MAILAN_01." / ".MAILAN_02."</td>
+			<td class='forumheader3'>".$_POST['email_from_name']." &lt;".$_POST['email_from_email']."&gt;</td>
+		</tr>
+
+		<tr>
+			<td class='forumheader3' style='width:20%'>".MAILAN_06."</td>
+			<td class='forumheader3'>".$_POST['email_subject']."&nbsp;</td>
+		</tr>
 
 
+		<tr>
+			<td class='forumheader3' style='width:20%'>".MAILAN_04."</td>
+			<td class='forumheader3'>".$_POST['email_cc']."&nbsp;</td>
+		</tr>
 
-	// ===== phpmailer version.
+		<tr>
+			<td class='forumheader3' style='width:20%'>".MAILAN_05."</td>
+			<td class='forumheader3'>".$_POST['email_bcc']."&nbsp;</td>
+		</tr>
 
-	require(e_HANDLER."phpmailer/class.phpmailer.php");
+		<tr>
+			<td class='forumheader3' colspan='2'>".stripslashes($tp->toHTML($_POST['email_body'],TRUE))."</td>
+		</tr>
 
-	$mail = new PHPMailer();
-
-	$mail->From = ($_POST['email_from_email'])? $_POST['email_from_email']:	$pref['siteadminemail'];
-	$mail->FromName = ($_POST['email_from_name'])? $_POST['email_from_name']: $pref['siteadmin'];
-	//  $mail->Host     = "smtp1.site.com;smtp2.site.com";
-	if ($pref['mailer']== 'smtp' || $pref['smtp_enable']==1) {
-		$mail->Mailer = "smtp";
-		$mail->SMTPKeepAlive = TRUE;
-		$mail->Host = $pref['smtp_server'];
-		if($pref['smtp_username'] && $pref['smtp_password']){
-			$mail->SMTPAuth = TRUE;
-			$mail->Username = $pref['smtp_username'];
-			$mail->Password = $pref['smtp_password'];
-			$mail->$PluginDir = e_HANDLER."phpmailer/";
-        }
-    } elseif ($pref['mailer']== 'sendmail'){
-		$mail->Mailer = "sendmail";
-		$mail->Sendmail = ($pref['sendmail']) ? $pref['sendmail'] : "/usr/sbin/sendmail -t -i -r ".$pref['siteadminemail'];
-	} else {
-        $mail->Mailer = "mail";
-	}
-
-	$mail->AddCC = ($_POST['email_cc']);
-	$mail->WordWrap = 50;
-	$mail->Charset = CHARSET;
-	$mail->Subject = $_POST['email_subject'];
-	$mail->IsHTML(true);
-
-	$attach = chop($_POST['email_attachment']);
-
-	if(is_readable(e_DOWNLOAD.$attach))
-	{
-		$attach_link = e_DOWNLOAD.$attach;
-	}
-	else
-	{
-		$attach_link = e_FILE.'public/'.$attach;
-	}
-
-	if ($attach != "" && !$mail->AddAttachment($attach_link, $attach)){
-		$mss = "There is a problem with the attachment<br />$attach_link";
-		$ns->tablerender("Error", $mss);
-		require_once(e_ADMIN."footer.php");
-		exit;
-	}
-	// ============================  Render Results and Mailit =========
-
-	$text = "<div style='overflow:auto;height:300px; ".ADMIN_WIDTH."'>";
-	$text .= "<table class='fborder' style='width:100%'>";
-	$text .= "<tr><td class='fcaption'>Username</td><td class='fcaption'>Email</td><td class='fcaption'>Status</td></tr>";
-	$message_subject = stripslashes($tp -> toHTML($_POST['email_subject']));
-	$message_body = stripslashes($tp -> toHTML($_POST['email_body']));
-	$message_body = str_replace("&quot;", '"', $message_body);
-	$message_body = str_replace('src="', 'src="'.SITEURL, $message_body);
-
-	if (isset($_POST['use_theme'])) {
-		$theme = $THEMES_DIRECTORY.$pref['sitetheme']."/";
-		$mail_style = "<link rel=\"stylesheet\" href=\"".SITEURL.$theme."style.css\" type=\"text/css\" />";
-		$mail_style .= "<div style='text-align:center; width:100%'>";
-		$mail_style .= "<div style='width:90%;text-align:center;padding-top:10px'>";
-		$mail_style .= "<div class='fcaption' style='text-align:center'><b>$message_subject</b></div>";
-		$mail_style .= "<div class='forumheader3' style='text-align:left;'>";
-		$message_body = $mail_style.$message_body."<br><br><br></div></div>";
-	}
+	</table>
+	</div>";
 
 
-	$sent_no = 0;
-
-	for ($i = 0; $i < count($recipient); $i++) {
-
-		// --- start loop ----
-
-		$text .= "<tr>";
-		$text .= "<td class='forumheader3' style='width:40%'>".$recipient_name[$i]."</td>";
-		$text .= "<td class='forumheader3' style='width:40%'>".$recipient[$i]."</td>";
-
-		$mes_body = str_replace("{USERNAME}", $recipient_name[$i], $message_body);
-		$mes_body = str_replace("{USERID}", $recipient_id[$i], $mes_body);
-
-		$activator = (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$recipient_id[$i].".".$recipient_key[$i] : SITEURL."/signup.php?activate.".$recipient_id[$i].".".$recipient_key[$i]);
-		if($recipient_key[$i]){
-			$mes_body = str_replace("{SIGNUP_LINK}", "<a href='$activator'>$activator</a>", $mes_body);
-		}else{
-			$mes_body = str_replace("{SIGNUP_LINK}", "", $mes_body);
-		}
-
-	//	$mes_body = str_replace("\n", "<br />", $mes_body);
-
-		$mail->Body = $tp->toHTML($mes_body);
-
-		if (isset($_POST['use_theme'])) {
-			$mail->Body = strip_tags(str_replace("<br />", "\n", $mes_body));
-		}
-
-		$mail->AltBody = strip_tags(str_replace("<br />", "\n", $mes_body));
-		$mail->AddAddress($recipient[$i], $recipient_name[$i]);
-
-
-
-        if ($mail->Send()) {
-            $stat = "<span style='color:green'>Sent</span>";
-            $sent_no ++;
-        } else {
-            $stat = "<span style='color:red'>Error</span>";
-        }
-
-		$text .= "<td class='forumheader3'>&nbsp;&nbsp; $stat </td></tr>";
-
-
-
-		$mail->ClearAddresses();
-		if ($pref['smtp_enable']) {
-			$mail->SmtpClose();
-		}
-
-
-		// ---- end loop. ---
-
-	};
-
-	$mail->ClearAttachments();
-
-
-	$text .= "</table></div>";
-	$rec_text = $c > 1 ? "recipients":
-	"recipient";
-
-	if ($c == 0 ) {
-		$text = "<div style='text-align:center'>No Recipients Found</div>";
-	}
-
-	$ns->tablerender("Emailing $c $rec_text", $text);
+ 	$ns->tablerender("Emailing ($c) ", $text);
 	require_once(e_ADMIN."footer.php");
 	exit;
 }
+
+
+
+
 //. Update Preferences.
 
 if (isset($_POST['updateprefs'])) {
@@ -239,7 +203,8 @@ if (isset($_POST['updateprefs'])) {
 	$pref['smtp_server'] = $tp->toDB($_POST['smtp_server']);
 	$pref['smtp_username'] = $tp->toDB($_POST['smtp_username']);
 	$pref['smtp_password'] = $tp->toDB($_POST['smtp_password']);
-
+    $pref['mail_pause'] = $_POST['mail_pause'];
+    $pref['mail_pausetime'] = $_POST['mail_pausetime'];
 	save_prefs();
 	$message = LAN_SETSAVED;
 }
@@ -249,14 +214,45 @@ if (isset($message)) {
 	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 }
 
-// Display Mailout Form.
+
+
+// ----------------- Actions ----------------------------------------------->
+
+if(e_QUERY == "prefs"){
+	show_prefs();
+}
+
+if((!e_QUERY && !$_POST['delete']) || $_POST['edit']){
+	show_mailform($foo);
+}
+
+
+if(e_QUERY == "list" || $_POST['delete'] ){
+   showList();
+}
+
+
+require_once(e_ADMIN."footer.php");
 
 
 
-$text = "";
-$text .= ($pref['smtp_enable'] == 0)? "<div style='text-align:center'>".MAILAN_14."<br /><br /></div>":
-"";
-$text .= "<div style='text-align:center'>
+// ------------------- Display Mailout Form.--------------------------------->
+
+function show_mailform($foo=""){
+	global $ns,$sql,$tp,$pref,$language_field,$HANDLERS_DIRECTORY;
+
+	$email_subject = $foo['gen_ip'];
+	$email_body = $tp->toForm($foo['gen_chardata']);
+	$email_id = $foo['gen_id'];
+    $text = "";
+
+    if(strpos($_SERVER['SERVER_SOFTWARE'],"mod_gzip")){
+    	$warning = "You need to rename <b>e107.htaccess</b> to <b>.htaccess</b> in ".$HANDLERS_DIRECTORY."phpmailer/ before sending mail from this page.";
+    	$ns -> tablerender("Warning", $warning);
+	}
+
+
+	$text .= "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."' id='linkform'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
@@ -279,30 +275,28 @@ $text .= "<div style='text-align:center'>
 	".userclasses("email_to", $email_to)."</td>
 	</tr>";
 
-// Language Option for those using it in their extended user area.
-if(isset($language_field)){
-$text .= "<tr>
-	<td style='width:30%' class='forumheader3'>".ADLAN_132.": </td>
-	<td style='width:70%' class='forumheader3'>";
+	// Language Option for those using it in their extended user area.
+	if(isset($language_field)){
+	$text .= "<tr>
+		<td style='width:30%' class='forumheader3'>".ADLAN_132.": </td>
+   		<td style='width:70%' class='forumheader3'>";
 
-    require_once(e_HANDLER."file_class.php");
-	$fl = new e_file;
-	$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
-	sort($lanlist);
-	$text .= "<select class='tbox' name='language'>\n";
-	$text .= "<option value=''></option>\n";  // ensures that the user chose it.
-		foreach($lanlist as $choice){
-			$choice = trim($choice);
-			$sel = (e_LANGUAGE == $choice)? " selected='selected' " : "";
-			$text .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
-		}
-	$text .= "</select>\n";
-	$text .= "</td>
-	</tr>";
+   		$lanlist = explode(",",e_LANLIST);
+   		sort($lanlist);
+		$text .= "<select class='tbox' name='language'>\n";
+		$text .= "<option value=''></option>\n";  // ensures that the user chose it.
+			foreach($lanlist as $choice){
+				$choice = trim($choice);
+				$sel = (e_LANGUAGE == $choice)? " selected='selected' " : "";
+				$text .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
+			}
+		$text .= "</select>\n";
+		$text .= "</td>
+		</tr>";
 
-}
+	}
 
-$text .= "
+	$text .= "
 
 	<tr>
 	<td style='width:30%' class='forumheader3'>".MAILAN_04.": </td>
@@ -330,27 +324,27 @@ $text .= "
 	</tr>";
 
 
-// Attachment.
+	// Attachment.
 
-$text .= "<tr>
+	$text .= "<tr>
 	<td style='width:30%' class='forumheader3'>".MAILAN_07.": </td>
 	<td style='width:70%' class='forumheader3'>";
-$text .= "<select class='tbox' name='email_attachment' >
-	<option></option>";
-$sql->db_Select("download", "download_url,download_name", "download_id !='' ORDER BY download_name");
-while ($row = $sql->db_Fetch()) {
-	extract($row);
-	$selected = ($_POST['email_attachment'] == $download_url) ? "selected='selected'" :
-	 "";
-	$text .= "<option value=\"$download_url \" $selected>$download_name</option>";
-}
-$text .= " </select>";
+	$text .= "<select class='tbox' name='email_attachment' >
+	<option value=''>&nbsp;</option>\n";
+	$sql->db_Select("download", "download_url,download_name", "download_id !='' ORDER BY download_name");
+	while ($row = $sql->db_Fetch()) {
+		extract($row);
+		$selected = ($_POST['email_attachment'] == $download_url) ? "selected='selected'" :
+		 "";
+		$text .= "<option value=\"$download_url \" $selected>".htmlspecialchars($download_name)."</option>\n";
+	}
+	$text .= " </select>";
 
-$text .= "</td>
+	$text .= "</td>
 	</tr>";
 
 
-$text .= "
+	$text .= "
 	<tr>
 	<td style='width:30%' class='forumheader3'>".MAILAN_09.": </td>
 	<td style='width:70%' class='forumheader3'>
@@ -369,46 +363,56 @@ $text .= "
 	</td>
 	</tr>
 
-	<tr>
-	<td style='width:30%' class='forumheader3'>".MAILAN_11.": </td>
-	<td style='width:70%' class='forumheader3'>";
+	<tr><td class='forumheader3' colspan='2'>".display_help("helpb").
+	"<span style='width:100%;vertical-align:middle' >";
 
-if($pref['wysiwyg']) {
+	if($pref['wysiwyg']) {
 	$text .="<input type='button' class='button' name='usrname' value='".MAILAN_16."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERNAME}')\" />
-	<input type='button' class='button' name='usrlink' value='".MAILAN_17."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{SIGNUP_LINK}')\" />
-	<input type='button' class='button' name='usrid' value='".MAILAN_18."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERID}')\" />";
-} else {
-    $text .="<input type='button' class='button' name='usrname' value='".MAILAN_16."' onclick=\"addtext('{USERNAME}')\" />
-	<input type='button' class='button' name='usrlink' value='".MAILAN_17."' onclick=\"addtext('{SIGNUP_LINK}')\" />
-	<input type='button' class='button' name='usrid' value='".MAILAN_18."' onclick=\"addtext('{USERID}')\" />";
-}
+		<input type='button' class='button' name='usrlink' value='".MAILAN_17."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{SIGNUP_LINK}')\" />
+		<input type='button' class='button' name='usrid' value='".MAILAN_18."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERID}')\" />";
+	} else {
+    	$text .="<input type='button' class='button' name='usrname' value='".MAILAN_16."' onclick=\"addtext('{USERNAME}')\" />
+		<input type='button' class='button' name='usrlink' value='".MAILAN_17."' onclick=\"addtext('{SIGNUP_LINK}')\" />
+		<input type='button' class='button' name='usrid' value='".MAILAN_18."' onclick=\"addtext('{USERID}')\" />";
+	}
 
 
-	$text .="</td>
+	$text .="</span></td>
 	</tr>";
 
 
 
-$text .= "<tr style='vertical-align:top'>
+	$text .= "<tr style='vertical-align:top'>
 	<td colspan='2' style='text-align:center' class='forumheader'>";
-$text .= "<input class='button' type='submit' name='submit' value='".MAILAN_08."' />";
-$text .= "</td>
+	if(isset($_POST['edit'])){
+        $text .= "<input type='hidden' name='update_id' value='".$email_id."' />";
+		$text .= "<input class='button' type='submit' name='update_email' value='".LAN_UPDATE."' />";
+	}else{
+		$text .= "<input class='button' type='submit' name='save_email' value='".LAN_SAVE."' />";
+	}
+
+	$text .="&nbsp;<input class='button' type='submit' name='submit' value='".MAILAN_08."' />
+
+	</td>
 	</tr>
 	</table>
 	</form>
 	</div>";
 
-$ns->tablerender(MAILAN_15, $text);
+	$ns->tablerender(MAILAN_15, $text);
 
+}
 
+// ------------------ Preferences -------------------------------------------->
 
-
+function show_prefs(){
+	global $pref,$ns;
 $text = "
 	<form method='post' action='".e_SELF."' id='mailsettingsform'>
 	<div id='mail' style='text-align:center;'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
-	<td style='width:40%' class='forumheader3'><span title='".PRFLAN_64."' style='cursor:help'>".PRFLAN_63."<span><br /></td>
+	<td style='width:40%' class='forumheader3'><span title='".PRFLAN_64."' style='cursor:help'>".PRFLAN_63."</span><br /></td>
 	<td style='width:60%; text-align:right' class='forumheader3'><input class='button' type='submit' name='testemail' value='".PRFLAN_65." ".SITEADMINEMAIL."' />
 	</td>
 	</tr>
@@ -456,7 +460,7 @@ $text = "
 
 	<tr>
 	<td >".MAILAN_20.":&nbsp;&nbsp;</td>
-	<td text-align:right' >
+	<td style='text-align:right' >
 	<input class='tbox' type='text' name='sendmail' size='60' value=\"".(!$pref['sendmail'] ? "/usr/sbin/sendmail -t -i -r ".$pref['siteadminemail'] : $pref['sendmail'])."\" maxlength='80' />
 	</td>
 	</tr>
@@ -465,7 +469,20 @@ $text = "
 	$text .="</td>
 	</tr>
 
+	<tr>
+		<td class='forumheader3'>Pause</td>
+		<td class='forumheader3' style='text-align: right;'> Pause mass-mailing every
+		<input class='tbox' size='3' type='text' name='mail_pause' value='".$pref['mail_pause']."' /> emails.
+		</td>
+	</tr>\n
 
+	<tr>
+		<td class='forumheader3'>Pause Length</td>
+		<td class='forumheader3' style='text-align: right;'>
+		<input class='tbox' size='3' type='text' name='mail_pausetime' value='".$pref['mail_pausetime']."' /> seconds.<br />
+		<span class='smalltext'>More than 30 seconds may cause the browser to time-out</span>
+		</td>
+	</tr>\n
 
 
 	<tr>
@@ -480,15 +497,81 @@ $text = "
 
 	</table></div></form>";
 
-$text .= "";
-$caption = LAN_PREFS;
-$ns->tablerender($caption, $text);
+	$text .= "";
+	$caption = LAN_PREFS;
+	$ns->tablerender($caption, $text);
+}
 
 
 
-require_once(e_ADMIN."footer.php");
 
+function showList()
+	{
+		global $sql,$ns,$tp;
+		$gen = new convert;
+		$qry ="SELECT g.*,u.* FROM #generic AS g LEFT JOIN #user AS u ON g.gen_user_id = u.user_id WHERE g.gen_type = 'massmail' ORDER BY g.gen_datestamp DESC";
+	 //	$count = $sql -> db_Select("generic", "*", "gen_type ='massmail' ORDER BY gen_datestamp DESC");
+		$count = $sql -> db_Select_gen($qry);
 
+		$text = "<div style='text-align:center'>
+
+		";
+
+		if (!$count)
+		{
+			$text .= "
+			<form action='".e_SELF."?import' id='import' method='post'>
+			No links in sitemap - import sitelinks?
+			<input class='button' type='submit' name='import' value='".LAN_YES."' />
+			</form>";
+			$ns -> tablerender("<div style='text-align:center'>Google Sitemap Entries</div>", $text);
+			require_once(e_ADMIN."footer.php");
+			exit;
+		}
+		else
+		{
+
+			$text .= "
+
+			<form action='".e_SELF."' id='display' method='post'>
+			<table style='".ADMIN_WIDTH."' class='fborder'>
+
+			<tr>
+			<td style='width:5%; text-align: center;' class='fcaption'>Id</td>
+			<td style='width:10%' class='fcaption'>Author</td>
+			<td style='width:40%' class='fcaption'>Subject</td>
+			<td style='width:20%; text-align: center;' class='fcaption'>Lastmod</td>
+			<td style='width:5%; text-align: center;' class='fcaption'>".LAN_OPTIONS."</td>
+			</tr>
+			";
+
+			$glArray = $sql -> db_getList();
+			foreach($glArray as $row2)
+			{
+
+				$datestamp = $gen->convert_date($row2['gen_datestamp'], "short");
+
+				$text .= "<tr>
+				<td class='forumheader3' style='; text-align: center;'>".$row2['gen_id'] ."</td>
+				<td class='forumheader3'>".$row2['user_name']."</td>
+				<td class='forumheader3'>".$row2['gen_ip']."</td>
+
+				<td class='forumheader3' style='; text-align: center;'>".$datestamp."</td>
+
+				<td style='width:50px;white-space:nowrap' class='forumheader3'>
+				<div>
+				<input type='image' name='edit[{$row2['gen_id']}]' value='edit' src='".e_IMAGE."admin_images/edit_16.png' alt='".LAN_EDIT."' title='".LAN_EDIT."' style='border:0px' />
+				<input type='image' name='delete[{$row2['gen_id']}]' value='del' onclick=\"return jsconfirm('".$tp->toJS(LAN_CONFIRMDEL." [".$row2['gen_ip']."]")."') \" src='".e_IMAGE."admin_images/delete_16.png' alt='".LAN_DELETE."' title='".LAN_DELETE."' style='border:0px' />
+				</div>
+				</td>
+				</tr>
+				";
+			}
+		}
+
+		$text .= "</table>\n</form><br /><br /><br /></div>";
+		$ns -> tablerender("<div style='text-align:center'>Mass-Mail Entries</div>", $text);
+	}
 
 
 
@@ -513,36 +596,41 @@ function userclasses($name) {
 }
 
 
-function show_options($action) {
-	// ##### Display options ---------------------------------------------------------------------------------------------------------
-	/*   if($action==""){$action="main";}
-	// ##### Display options ---------------------------------------------------------------------------------------------------------
-	$var['main']['text']= "Mails Prefs";//USRLAN_71;
-	$var['main']['link']= "mailout.php";
+function mailout_adminmenu() {
+	$action = (e_QUERY) ? e_QUERY : "post";
+	if($action == "edit"){
+    	$action = "post";
+	}
+    $var['post']['text'] = "Send Mail";
+	$var['post']['link'] = e_SELF;
+	$var['post']['perm'] = "W";
+    $var['list']['text'] = LAN_SAVED;
+	$var['list']['link'] = e_SELF."?list";
+	$var['list']['perm'] = "W";
+	$var['prefs']['text'] = LAN_OPTIONS;
+	$var['prefs']['link'] = e_SELF."?prefs";
+	$var['prefs']['perm'] = "W";
 
-	$var['create']['text']="Mail-Out";USRLAN_72;
-	$var['create']['link']="mailout.php?mailout";
-
-	$var['prune']['text']=USRLAN_73;
-	$var['prune']['link']="users.php?prune";
-
-	$var['extended']['text']=USRLAN_74;
-	$var['extended']['link']="users.php?extended";
-
-	$var['options']['text']=USRLAN_75;
-	$var['options']['link']="users.php?options";
-
-	$var['mailing']['text']= USRLAN_121;
-	$var['mailing']['link']="mailout.php";*/
-	//   show_admin_menu(USRLAN_76,$action,$var);
+	show_admin_menu(MAILAN_15, $action, $var);
 }
 
-/*function mailout_adminmenu(){
-global $user;
-global $action;
-$action = "mailing";
-show_options($action);
-}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function headerjs()
 {
 	$text = "
@@ -569,4 +657,7 @@ function headerjs()
 	</script>";
 	return $text;
 }
+
+
+
 ?>
