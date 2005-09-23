@@ -5,9 +5,9 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.15 $
-|	$Date: 2005-08-30 18:08:59 $
-|	$Author: mcfly_e107 $
+|	$Revision: 1.16 $
+|	$Date: 2005-09-23 02:24:23 $
+|	$Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -71,7 +71,7 @@ if(ns6==1||operaaa==true){
    }
 if (folder.display=="none"){folder.display="";}else{folder.display="none";}
 if(document.getElementById(hide)){
-	hidden=document.getElementById(hide).style;   
+	hidden=document.getElementById(hide).style;
 	if (hidden.display=="none"){hidden.display="";}else{hidden.display="none";}
 }
 }
@@ -236,8 +236,8 @@ function addtext(text, emote){
 function help(help,tagid){
 	if(tagid){
 		document.getElementById(tagid).value = help;
-	} else {
-	document.getElementById('dataform').helpb.value = help;
+	} else if(document.getElementById('dataform')) {
+		document.getElementById('dataform').helpb.value = help;
 	}
 }
 function externalLinks() {
