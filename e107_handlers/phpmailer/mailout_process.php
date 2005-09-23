@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-23 19:32:34 $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-23 20:52:18 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -132,7 +132,7 @@ session_write_close();
 // ----------------  Display Progress and Send Emails. ----------------------->
 
 
-    echo "<div class='fcaption'> Mailing Progress</div>";
+    echo "<div class='fcaption'>&nbsp;Mailing Progress</div>";
     $qry = "SELECT g.*,u.* FROM #generic AS g LEFT JOIN #user AS u ON g.gen_user_id = u.user_id WHERE g.gen_type='sendmail' and g.gen_chardata = \"".$_POST['email_subject']."\" ";
     $count = $sql -> db_Select_gen($qry);
 

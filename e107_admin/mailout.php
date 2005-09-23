@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-09-23 19:32:32 $
+|     $Revision: 1.39 $
+|     $Date: 2005-09-23 20:52:18 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -30,15 +30,6 @@ if (!getperms("W")) {
 }
 require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 require_once(e_HANDLER."userclass_class.php");
-
-// Get name of extended language field.
-if($sql -> db_Select("user_extended_struct", "user_extended_struct_name", "user_extended_struct_type='8'")){
-$row = $sql -> db_Fetch();
-$language_field = $row['user_extended_struct_name'];
-}
-
-
-
 
 
 
@@ -100,28 +91,46 @@ if (isset($_POST['submit'])) {
 				$insert = "u.user_ban='0' ";
 			break;
 		}
-		$insert2 = ($_POST['language']) ? " AND ue.user_{$language_field} = '".$_POST['language']."' " : "";
-		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id WHERE $insert $insert2 ORDER BY u.user_name";
+
+		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id WHERE $insert ";
 
 	} elseif($_POST['email_to'] == "unverified"){
         $qry = "SELECT u.* FROM #user AS u WHERE u.user_ban='2'";
+
 	} elseif($_POST['email_to'] == "self"){
        $qry = "SELECT u.* FROM #user AS u WHERE u.user_id='".USERID."'";
+
 	} else {
         $insert = "u.user_class IN (".$_POST['email_to'].")";
-		$insert2 = (isset($_POST['language'])) ? " AND ue.user_{$language_field} = '".$_POST['language']."' " : "";
-		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id WHERE $insert $insert2 ORDER BY u.user_name";
+
+		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id WHERE $insert ";
 	}
-   //	echo "qy=".$qry;
+
         $sql2 = new db;
-		$c = $sql->db_Select_gen($qry);
+		$c = 0;
+
+		if($_POST['extended_1_name'] && $_POST['extended_1_value']){
+        	$qry .= " AND ".$_POST['extended_1_name']." = '".$_POST['extended_1_value']."' ";
+		}
+
+        if($_POST['extended_2_name'] && $_POST['extended_2_value']){
+        	$qry .= " AND ".$_POST['extended_2_name']." = '".$_POST['extended_2_value']."' ";
+		}
+
+        $qry .= " ORDER BY u.user_name";
+
+   //		echo $qry;
+ //		exit;
+
+		$sql->db_Select_gen($qry);
         if (ob_get_level() == 0) {
 	   		ob_start();
 	 	}
 			while ($row = $sql->db_Fetch()) {
 				$qry = "0,'sendmail', '', '".$row['user_id']."', '', '', \"".$_POST['email_subject']."\" ";
-	           	$message = $sql2 -> db_Insert("generic", $qry) ? ". " : "";
-                echo $message;
+	           	if($sql2 -> db_Insert("generic", $qry)){
+                	$c++;
+				}
 				ob_flush();
 				flush();
 			}
@@ -149,7 +158,7 @@ if (isset($_POST['submit'])) {
 	<table class='fborder'>
 
 		<tr>
-			<td class='forumheader3' style='width:20%'>".MAILAN_03."</td>
+			<td class='forumheader3' style='width:30%'>".MAILAN_03."</td>
 			<td class='forumheader3'>".$_POST['email_to']."&nbsp;";
             if($_POST['email_to'] == "self"){
             	$text .= "&lt;".USEREMAIL."&gt;";
@@ -158,27 +167,29 @@ if (isset($_POST['submit'])) {
 		</tr>
 
 		<tr>
-			<td class='forumheader3' style='width:20%'>".MAILAN_01." / ".MAILAN_02."</td>
+			<td class='forumheader3' style='width:30%'>".MAILAN_01." / ".MAILAN_02."</td>
 			<td class='forumheader3'>".$_POST['email_from_name']." &lt;".$_POST['email_from_email']."&gt;</td>
 		</tr>
 
 		<tr>
 			<td class='forumheader3' style='width:20%'>".MAILAN_06."</td>
 			<td class='forumheader3'>".$_POST['email_subject']."&nbsp;</td>
-		</tr>
+		</tr>";
 
-
+		$text .= ($_POST['email_cc']) ? "
 		<tr>
-			<td class='forumheader3' style='width:20%'>".MAILAN_04."</td>
+			<td class='forumheader3' style='width:30%'>".MAILAN_04."</td>
 			<td class='forumheader3'>".$_POST['email_cc']."&nbsp;</td>
-		</tr>
+		</tr>": "";
 
+		$text .= ($_POST['email_bcc']) ? "
 		<tr>
-			<td class='forumheader3' style='width:20%'>".MAILAN_05."</td>
+			<td class='forumheader3' style='width:30%'>".MAILAN_05."</td>
 			<td class='forumheader3'>".$_POST['email_bcc']."&nbsp;</td>
-		</tr>
+		</tr>": "";
 
-		<tr>
+		$text .="
+ 		<tr>
 			<td class='forumheader3' colspan='2'>".stripslashes($tp->toHTML($_POST['email_body'],TRUE))."</td>
 		</tr>
 
@@ -239,14 +250,14 @@ require_once(e_ADMIN."footer.php");
 // ------------------- Display Mailout Form.--------------------------------->
 
 function show_mailform($foo=""){
-	global $ns,$sql,$tp,$pref,$language_field,$HANDLERS_DIRECTORY;
+	global $ns,$sql,$tp,$pref,$HANDLERS_DIRECTORY;
 
 	$email_subject = $foo['gen_ip'];
 	$email_body = $tp->toForm($foo['gen_chardata']);
 	$email_id = $foo['gen_id'];
     $text = "";
 
-    if(strpos($_SERVER['SERVER_SOFTWARE'],"mod_gzip")){
+    if(strpos($_SERVER['SERVER_SOFTWARE'],"mod_gzip") && !is_readable(e_HANDLER."phpmailer/.htaccess")){
     	$warning = "You need to rename <b>e107.htaccess</b> to <b>.htaccess</b> in ".$HANDLERS_DIRECTORY."phpmailer/ before sending mail from this page.";
     	$ns -> tablerender("Warning", $warning);
 	}
@@ -275,26 +286,51 @@ function show_mailform($foo=""){
 	".userclasses("email_to", $email_to)."</td>
 	</tr>";
 
-	// Language Option for those using it in their extended user area.
-	if(isset($language_field)){
-	$text .= "<tr>
-		<td style='width:30%' class='forumheader3'>".ADLAN_132.": </td>
-   		<td style='width:70%' class='forumheader3'>";
 
-   		$lanlist = explode(",",e_LANLIST);
-   		sort($lanlist);
-		$text .= "<select class='tbox' name='language'>\n";
-		$text .= "<option value=''></option>\n";  // ensures that the user chose it.
-			foreach($lanlist as $choice){
-				$choice = trim($choice);
-				$sel = (e_LANGUAGE == $choice)? " selected='selected' " : "";
-				$text .= "<option value='{$choice}' {$sel}>{$choice}</option>\n";
+
+     // Extended Field #1.
+
+		$text .= "
+		<tr>
+			<td style='width:30%' class='forumheader3'>User-Match
+			<select name='extended_1_name' class='tbox'>
+			<option value=''>&nbsp;</option>";
+			$sql -> db_Select("user_extended_struct");
+            while($row = $sql-> db_Fetch()){
+            $text .= "<option value='ue.user_".$row['user_extended_struct_name']."' >".ucfirst($row['user_extended_struct_name'])."</option>\n";
 			}
-		$text .= "</select>\n";
-		$text .= "</td>
-		</tr>";
 
-	}
+        $text .= "
+		</select> = </td>
+		<td style='width:70%' class='forumheader3'>
+		<input type='text' name='extended_1_value' class='tbox' style='width:80%' value='' />
+		</td></tr>
+		";
+
+       // Extended Field #2.
+
+		$text .= "
+		<tr>
+			<td style='width:30%' class='forumheader3'>User-Match
+			<select name='extended_2_name' class='tbox'>
+			<option value=''>&nbsp;</option>";
+			$sql -> db_Select("user_extended_struct");
+            while($row = $sql-> db_Fetch()){
+            $text .= "<option value='ue.user_".$row['user_extended_struct_name']."' >".ucfirst($row['user_extended_struct_name'])."</option>\n";
+			}
+
+        $text .= "
+		</select> = </td>
+		<td style='width:70%' class='forumheader3'>
+		<input type='text' name='extended_2_value' class='tbox' style='width:80%' value='' />
+		</td></tr>
+		";
+
+
+
+
+
+
 
 	$text .= "
 
@@ -633,6 +669,7 @@ function mailout_adminmenu() {
 
 function headerjs()
 {
+
 	$text = "
 	<script type='text/javascript'>
 	function disp(type) {
@@ -655,6 +692,7 @@ function headerjs()
 
 	}
 	</script>";
+
 	return $text;
 }
 
