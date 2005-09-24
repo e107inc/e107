@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-09-23 20:52:18 $
+|     $Revision: 1.40 $
+|     $Date: 2005-09-24 17:45:52 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -122,12 +122,14 @@ if (isset($_POST['submit'])) {
    //		echo $qry;
  //		exit;
 
+        $_POST['mail_id']  = time();
+
 		$sql->db_Select_gen($qry);
         if (ob_get_level() == 0) {
 	   		ob_start();
 	 	}
 			while ($row = $sql->db_Fetch()) {
-				$qry = "0,'sendmail', '', '".$row['user_id']."', '', '', \"".$_POST['email_subject']."\" ";
+				$qry = "0,'sendmail', '".$_POST['mail_id']."', '".$row['user_id']."', '', '', \"".$tp->toDB($_POST['email_subject'])."\" ";
 	           	if($sql2 -> db_Insert("generic", $qry)){
                 	$c++;
 				}
@@ -643,10 +645,11 @@ function mailout_adminmenu() {
     $var['list']['text'] = LAN_SAVED;
 	$var['list']['link'] = e_SELF."?list";
 	$var['list']['perm'] = "W";
-	$var['prefs']['text'] = LAN_OPTIONS;
-	$var['prefs']['link'] = e_SELF."?prefs";
-	$var['prefs']['perm'] = "W";
-
+	if(getperms("0")){
+		$var['prefs']['text'] = LAN_OPTIONS;
+		$var['prefs']['link'] = e_SELF."?prefs";
+   		$var['prefs']['perm'] = "0";
+    }
 	show_admin_menu(MAILAN_15, $action, $var);
 }
 
