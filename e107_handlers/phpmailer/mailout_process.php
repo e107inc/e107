@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-09-23 20:52:18 $
+|     $Revision: 1.3 $
+|     $Date: 2005-09-24 17:45:52 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -107,33 +107,31 @@ session_write_close();
 
 	if (isset($_POST['use_theme'])) {
 		$theme = $THEMES_DIRECTORY.$pref['sitetheme']."/";
-   		$mail_head .= "<link rel=\"stylesheet\" href=\"".SITEURL.$theme."style.css\" type=\"text/css\" />\n";
+   	//	$mail_head .= "<link rel=\"stylesheet\" href=\"".SITEURL.$theme."style.css\" type=\"text/css\" />\n";
+        $style_css = file_get_contents(e_THEME.$pref['sitetheme']."/style.css");
+      	$mail_head .= "<style>\n".$style_css."\n</style>";
+
 		$message_body = $mail_head;
+		$message_body .= "</head>\n<body>\n";
 		$message_body .= "<div style='padding:10px;width:97%'><div class='forumheader3'>\n";
 		$message_body .= $tp -> toHTML($_POST['email_body'],TRUE)."</div></div></body></html>";
 	}else{
-		$message_body = $mail_head.$tp -> toHTML($_POST['email_body'],TRUE)."</body></html>";
+		$message_body = $mail_head;
+		$message_body .= "</head>\n<body>\n";
+		$message_body .= $tp -> toHTML($_POST['email_body'],TRUE)."</body></html>";
 		$message_body = str_replace("&quot;", '"', $message_body);
 		$message_body = str_replace('src="', 'src="'.SITEURL, $message_body);
     }
 
 	$message_body = stripslashes($message_body);
-    /*
 
-		$mail_style .= "<link rel=\"stylesheet\" href=\"".SITEURL.$theme."style.css\" type=\"text/css\" />";
-        $mail_style .= "</head>";
-		$mail_style .= "<div style='text-align:center; width:100%'>";
-		$mail_style .= "<div style='width:90%;text-align:center;padding-top:10px'>";
-		$mail_style .= "<div class='fcaption' style='text-align:center'><b>$message_subject</b></div>";
-		$mail_style .= "<div class='forumheader3' style='text-align:left;'>";
-	 	$message_body = $mail_style.$message_body."<br><br><br></div></div>";
-     */
+
 
 // ----------------  Display Progress and Send Emails. ----------------------->
 
 
     echo "<div class='fcaption'>&nbsp;Mailing Progress</div>";
-    $qry = "SELECT g.*,u.* FROM #generic AS g LEFT JOIN #user AS u ON g.gen_user_id = u.user_id WHERE g.gen_type='sendmail' and g.gen_chardata = \"".$_POST['email_subject']."\" ";
+    $qry = "SELECT g.*,u.* FROM #generic AS g LEFT JOIN #user AS u ON g.gen_user_id = u.user_id WHERE g.gen_type='sendmail' and g.gen_datestamp = \"".($_POST['mail_id'])."\" ";
     $count = $sql -> db_Select_gen($qry);
 
 	if(!$count){
@@ -159,33 +157,18 @@ session_write_close();
 
 
 // ---------------------- Mailing Part. -------------------------------------->
-
-		$mes_body = str_replace("{USERNAME}", $row['user_name'], $message_body);
-		$mes_body = str_replace("{USERID}", $row['user_id'], $mes_body);
-
 		$activator = (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$row['user_id'].".".$row['user_sess'] : SITEURL."/signup.php?activate.".$row['user_id'].".".$row['user_sess']);
-		if($row['user_sess']){
-			$mes_body = str_replace("{SIGNUP_LINK}", "<a href='$activator'>$activator</a>", $mes_body);
-		}else{
-			$mes_body = str_replace("{SIGNUP_LINK}", "", $mes_body);
-		}
+        $signup_link = ($row['user_sess']) ? "<a href='$activator'>$activator</a>" : "";
 
-	//	$mes_body = str_replace("\n", "<br />", $mes_body);
-     /*
-        if (preg_match('/<(font|br|a|img|b)/i', $message)) {
-			$Html = $mes_body; // Assume html if it begins with one of these tags
-		} else {
-			$Html = htmlspecialchars($message);
-			$Html = preg_replace('%(http|ftp|https)(://\S+)%', '<a href="\1\2">\1\2</a>', $Html);
-			$Html = preg_replace('/([[:space:]()[{}])(www.[-a-zA-Z0-9@:%_\+.~#?&\/\/=]+)/i', '\\1<a href="http://\\2">\\2</a>', $Html);
-			$Html = preg_replace('/([_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,3})/i', '<a href="mailto:\\1">\\1</a>', $Html);
-			$Html = str_replace("\n", "<br>\n", $Html);
-		}
-     */
+		$search = array("{USERNAME}","{USERID}","{SIGNUP_LINK}");
+		$replace = array($row['user_name'],$row['user_id'],$signup_link);
 
-		$mail->Body = $tp->toHTML($mes_body);
+        $mes_body = str_replace($search,$replace,$message_body);
+		$alt_body = str_replace($search,$replace,stripslashes($tp->toText($_POST['email_body'])));
 
-		$mail->AltBody = strip_tags(str_replace("<br />", "\n", $mes_body));
+		$mail->Body = $mes_body;
+		$mail->AltBody = $alt_body;
+
 		$mail->AddAddress($row['user_email'], $row['user_name']);
 
 		if ($mail->Send()) {
@@ -205,7 +188,7 @@ session_write_close();
 		$d = ($c==0) ? 10 : round($width + $d);
 
 		echo "<div class='percents'>".($c+1)." / ".$count." (" . $cur . "%) &nbsp;complete</div>";
-	//	echo "<div class='blocks' style='width:".$width."px;left: ".$d."px'></div>";
+
 		if($cur != $prev){
 			echo "<script type='text/javascript'>inc('".$cur."%');</script>\n";
 		}
@@ -217,6 +200,10 @@ session_write_close();
 			sleep($pause_time);
             $pause_count = 1;
         }
+
+		// Default sleep to reduce server-load: 1/2 a second.
+		usleep(500000);
+
 		$c++;
 		$pause_count++;
 	}
@@ -227,7 +214,7 @@ session_write_close();
 	echo count($failed)." emails failed.<br />";
 	echo "</div>";
 
-	$message = $sql -> db_Delete("generic", "gen_chardata='".$_POST['email_subject']."' ") ? "deleted" : "deleted_failed";
+	$message = $sql -> db_Delete("generic", "gen_datestamp='".$_POST['mail_id']."' ") ? "deleted" : "deleted_failed";
 
 	$mail->ClearAttachments();
     if ($pref['smtp_enable'] || $pref['mailer']== 'smtp') {
