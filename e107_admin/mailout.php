@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-09-24 17:45:52 $
+|     $Revision: 1.41 $
+|     $Date: 2005-09-25 02:41:53 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -109,6 +109,8 @@ if (isset($_POST['submit'])) {
         $sql2 = new db;
 		$c = 0;
 
+
+
 		if($_POST['extended_1_name'] && $_POST['extended_1_value']){
         	$qry .= " AND ".$_POST['extended_1_name']." = '".$_POST['extended_1_value']."' ";
 		}
@@ -117,10 +119,16 @@ if (isset($_POST['submit'])) {
         	$qry .= " AND ".$_POST['extended_2_name']." = '".$_POST['extended_2_value']."' ";
 		}
 
+		if($_POST['user_search_name'] && $_POST['user_search_value']){
+        	$qry .= " AND u.".$_POST['user_search_name']." LIKE '%".$_POST['user_search_value']."%' ";
+		}
+
+
+
         $qry .= " ORDER BY u.user_name";
 
-   //		echo $qry;
- //		exit;
+  // 		echo $qry;
+  //		exit;
 
         $_POST['mail_id']  = time();
 
@@ -276,17 +284,42 @@ function show_mailform($foo=""){
 	</tr>
 
 	<tr>
-	<td style='width:30%' class='forumheader3'>".MAILAN_02.": </td>
-	<td style='width:70%' class='forumheader3'>
+	<td  class='forumheader3'>".MAILAN_02.": </td>
+	<td  class='forumheader3'>
 	<input type='text' name='email_from_email' class='tbox' style='width:80%' value='$email_from_email' />
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:30%' class='forumheader3'>".MAILAN_03.": </td>
-	<td style='width:70%' class='forumheader3'>
+	<td class='forumheader3'>".MAILAN_03.": </td>
+	<td class='forumheader3'>
 	".userclasses("email_to", $email_to)."</td>
 	</tr>";
+
+
+       // User Search Field.
+
+
+		$u_array = array("user_name"=>"Username","user_login"=>"User Login","user_email"=>"User Email");
+
+		$text .= "
+		<tr>
+			<td style='width:35%' class='forumheader3'>User-Match
+			<select name='user_search_name' class='tbox'>
+			<option value=''>&nbsp;</option>";
+
+            foreach($u_array as $key=>$val){
+            $text .= "<option value='$key' >".$val."</option>\n";
+			}
+
+        $text .= "
+		</select> contains </td>
+		<td style='width:65%' class='forumheader3'>
+		<input type='text' name='user_search_value' class='tbox' style='width:80%' value='' />
+		</td></tr>
+		";
+
+
 
 
 
@@ -294,7 +327,7 @@ function show_mailform($foo=""){
 
 		$text .= "
 		<tr>
-			<td style='width:30%' class='forumheader3'>User-Match
+			<td  class='forumheader3'>User-Match
 			<select name='extended_1_name' class='tbox'>
 			<option value=''>&nbsp;</option>";
 			$sql -> db_Select("user_extended_struct");
@@ -303,8 +336,8 @@ function show_mailform($foo=""){
 			}
 
         $text .= "
-		</select> = </td>
-		<td style='width:70%' class='forumheader3'>
+		</select> equals </td>
+		<td  class='forumheader3'>
 		<input type='text' name='extended_1_value' class='tbox' style='width:80%' value='' />
 		</td></tr>
 		";
@@ -313,7 +346,7 @@ function show_mailform($foo=""){
 
 		$text .= "
 		<tr>
-			<td style='width:30%' class='forumheader3'>User-Match
+			<td  class='forumheader3'>User-Match
 			<select name='extended_2_name' class='tbox'>
 			<option value=''>&nbsp;</option>";
 			$sql -> db_Select("user_extended_struct");
@@ -322,8 +355,8 @@ function show_mailform($foo=""){
 			}
 
         $text .= "
-		</select> = </td>
-		<td style='width:70%' class='forumheader3'>
+		</select> equals </td>
+		<td  class='forumheader3'>
 		<input type='text' name='extended_2_value' class='tbox' style='width:80%' value='' />
 		</td></tr>
 		";
@@ -334,11 +367,16 @@ function show_mailform($foo=""){
 
 
 
+
+
+
+
+
 	$text .= "
 
 	<tr>
-	<td style='width:30%' class='forumheader3'>".MAILAN_04.": </td>
-	<td style='width:70%' class='forumheader3'>
+	<td  class='forumheader3'>".MAILAN_04.": </td>
+	<td  class='forumheader3'>
 	<input type='text' name='email_cc' class='tbox' style='width:80%' value='$email_cc' />
 
 	</td>
@@ -346,16 +384,16 @@ function show_mailform($foo=""){
 
 
 	<tr>
-	<td style='width:30%' class='forumheader3'>".MAILAN_05.": </td>
-	<td style='width:70%' class='forumheader3'>
+	<td  class='forumheader3'>".MAILAN_05.": </td>
+	<td  class='forumheader3'>
 	<input type='text' name='email_bcc' class='tbox' style='width:80%' value='$email_bcc' />
 
 	</td>
 	</tr>
 
 	<tr>
-	<td style='width:30%' class='forumheader3'>".MAILAN_06.": </td>
-	<td style='width:70%' class='forumheader3'>
+	<td  class='forumheader3'>".MAILAN_06.": </td>
+	<td  class='forumheader3'>
 	<input type='text' name='email_subject' class='tbox' style='width:80%' value='$email_subject' />
 
 	</td>
@@ -365,8 +403,8 @@ function show_mailform($foo=""){
 	// Attachment.
 
 	$text .= "<tr>
-	<td style='width:30%' class='forumheader3'>".MAILAN_07.": </td>
-	<td style='width:70%' class='forumheader3'>";
+	<td  class='forumheader3'>".MAILAN_07.": </td>
+	<td  class='forumheader3'>";
 	$text .= "<select class='tbox' name='email_attachment' >
 	<option value=''>&nbsp;</option>\n";
 	$sql->db_Select("download", "download_url,download_name", "download_id !='' ORDER BY download_name");
@@ -384,8 +422,8 @@ function show_mailform($foo=""){
 
 	$text .= "
 	<tr>
-	<td style='width:30%' class='forumheader3'>".MAILAN_09.": </td>
-	<td style='width:70%' class='forumheader3'>
+	<td  class='forumheader3'>".MAILAN_09.": </td>
+	<td  class='forumheader3'>
 	<input type='checkbox' name='use_theme' value='1' />
 	</td>
 	</tr>
@@ -393,7 +431,7 @@ function show_mailform($foo=""){
 
 
 	<tr>
-	<td colspan='2' style='width:30%' class='forumheader3'>
+	<td colspan='2'  class='forumheader3'>
 
 	<textarea rows='10' cols='20' id='email_body' name='email_body'  class='tbox' style='width:100%;height:200px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>
 	$email_body
@@ -401,8 +439,8 @@ function show_mailform($foo=""){
 	</td>
 	</tr>
 
-	<tr><td class='forumheader3' colspan='2'>".display_help("helpb").
-	"<span style='width:100%;vertical-align:middle' >";
+	<tr><td class='forumheader3' colspan='2'><div style='width:100%;text-align:center;vertical-align:middle' >".display_help("helpb").
+	"<span style='margin-left:5%;height:100%;vertical-align: super;margin-top:auto;margin-bottom:auto'>";
 
 	if($pref['wysiwyg']) {
 	$text .="<input type='button' class='button' name='usrname' value='".MAILAN_16."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERNAME}')\" />
@@ -415,7 +453,7 @@ function show_mailform($foo=""){
 	}
 
 
-	$text .="</span></td>
+	$text .="</span></div></td>
 	</tr>";
 
 
