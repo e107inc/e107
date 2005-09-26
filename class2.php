@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.221 $
-|     $Date: 2005-09-15 15:46:36 $
-|     $Author: sweetas $
+|     $Revision: 1.222 $
+|     $Date: 2005-09-26 18:25:13 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -48,12 +48,7 @@ $start_ob_level = ob_get_level();
 
 define("E107_BOOTSTRAP_LOADED", 1);
 
-// Prevent caching. Should solve issues some people have with logins - the xhtml e107 outputs is dynamic, so it should never be cached.
-header("Expires: Mon, 26 Jul 1995 01:00:00 GMT");
-header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-header("Cache-Control: no-store, no-cache, must-revalidate");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
+
 
 // setup some php options
 ini_set('magic_quotes_runtime',     0);
