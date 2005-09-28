@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-08-19 07:48:41 $
-|     $Author: sweetas $
+|     $Revision: 1.24 $
+|     $Date: 2005-09-28 13:17:53 $
+|     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
 
@@ -87,43 +87,49 @@ class userlogin {
 				$this -> checkibr($fip);
 				return FALSE;
 			} else {
-				$lode = $sql -> db_Fetch();
-				$user_id = $lode['user_id'];
-				$user_name = $lode['user_name'];
-				$user_xup = $lode['user_xup'];
-
-				/* restrict more than one person logging in using same us/pw */
-				if($pref['disallowMultiLogin']) {
-					if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'")) {
-						define("LOGINMESSAGE", LAN_304."<br /><br />");
-						$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
-						$this -> checkibr($fip);
-						return FALSE;
-					}
-				}
-
-				$cookieval = $user_id.".".md5($userpass);
-				if($user_xup) {
-					$this->update_xup($user_id, $user_xup);
-				}
-
-				if ($pref['user_tracking'] == "session") {
-					$_SESSION[$pref['cookie_name']] = $cookieval;
+				$ret = $e_event->trigger("preuserlogin", $username);
+				if ($ret!='') {
+					define("LOGINMESSAGE", $ret."<br /><br />");
+					return FALSE;
 				} else {
-					if ($autologin == 1) {
-						cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 24 * 30));
+					$lode = $sql -> db_Fetch();
+					$user_id = $lode['user_id'];
+					$user_name = $lode['user_name'];
+					$user_xup = $lode['user_xup'];
+	
+					/* restrict more than one person logging in using same us/pw */
+					if($pref['disallowMultiLogin']) {
+						if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'")) {
+							define("LOGINMESSAGE", LAN_304."<br /><br />");
+							$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+							$this -> checkibr($fip);
+							return FALSE;
+						}
+					}
+	
+					$cookieval = $user_id.".".md5($userpass);
+					if($user_xup) {
+						$this->update_xup($user_id, $user_xup);
+					}
+	
+					if ($pref['user_tracking'] == "session") {
+						$_SESSION[$pref['cookie_name']] = $cookieval;
 					} else {
-						cookie($pref['cookie_name'], $cookieval);
+						if ($autologin == 1) {
+							cookie($pref['cookie_name'], $cookieval, (time() + 3600 * 24 * 30));
+						} else {
+							cookie($pref['cookie_name'], $cookieval);
+						}
 					}
-				}
-				$edata_li = array("user_id" => $user_id, "user_name" => $username);
-				$e_event->trigger("login", $edata_li);
-				$redir = (e_QUERY ? e_SELF."?".e_QUERY : e_SELF);
-				if (strstr($_SERVER['SERVER_SOFTWARE'], "Apache")) {
-					header("Location: ".$redir);
-					exit;
-				} else {
-					echo "<script type='text/javascript'>document.location.href='{$redir}'</script>\n";
+					$edata_li = array("user_id" => $user_id, "user_name" => $username);
+					$e_event->trigger("login", $edata_li);
+					$redir = (e_QUERY ? e_SELF."?".e_QUERY : e_SELF);
+					if (strstr($_SERVER['SERVER_SOFTWARE'], "Apache")) {
+						header("Location: ".$redir);
+						exit;
+					} else {
+						echo "<script type='text/javascript'>document.location.href='{$redir}'</script>\n";
+					}
 				}
 			}
 		} else {
