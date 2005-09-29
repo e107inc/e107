@@ -1,19 +1,18 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/Romanian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-31 11:07:52 $
-|     $Author: adriansilea $
+|     $Revision: 1.2 $
+|     $Date: 2005-09-29 00:36:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 setlocale(LC_ALL, 'ro');
 define("CORE_LC", 'ro');
 define("CORE_LC2", 'ro');
-define("CHARSET", "iso-8859-1");
-// define("CHARSET", "utf-8");
+define("CHARSET", "utf-8"); // Do NOT use iso-8859-1.
 define("CORE_LAN1","Eroare: tema aleasa lipseste.\\n\\nVa rugam, schimbati tema folosita din preferintele dvs. (Zona Admin) ori faceti upload fisierelor temei cu pricina, pe server.");
 
 //v.616
