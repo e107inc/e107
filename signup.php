@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2005-09-12 19:21:09 $
-|     $Author: stevedunstan $
+|     $Revision: 1.60 $
+|     $Date: 2005-09-29 02:46:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -263,12 +263,13 @@ if (isset($_POST['register']))
 
 	foreach($extList as $ext)
 	{
-		if(isset($_POST['ue'][$ext['user_extended_struct_name']]))
+		if(isset($_POST['ue']['user_'.$ext['user_extended_struct_name']]))
 		{
-			$newval = $_POST['ue'][$ext['user_extended_struct_name']];
-			if($ext['user_extended_struct_required'] == 3 && trim($newval) == "" )
+			$newval = $_POST['ue']['user_'.$ext['user_extended_struct_name']];
+			if($ext['user_extended_struct_required'] == 1 && trim($newval) == "" )
 			{
-				$error_message .= LAN_SIGNUP_6." ".$ext['user_extended_struct_text']." ".LAN_SIGNUP_7."\\n";
+				$_ftext = (defined($ext['user_extended_struct_text']) ? constant($ext['user_extended_struct_text']) : $ext['user_extended_struct_text']);
+				$error_message .= LAN_SIGNUP_6.$_ftext.LAN_SIGNUP_7."\\n";
 				$error = TRUE;
 			}
 		}
@@ -657,7 +658,7 @@ foreach($extList as $ext) {
 	if($ext['user_extended_struct_required'] == 1 || $ext['user_extended_struct_required'] == 3) {
 		$text .= "
 		<tr>
-			<td style='width:40%' class='forumheader3'>".$tp->toHTML($ext['user_extended_struct_text'],"","emotes_off defs")." ".req($ext['user_extended_struct_signup'])."</td>
+			<td style='width:40%' class='forumheader3'>".$tp->toHTML($ext['user_extended_struct_text'],"","emotes_off defs")." ".req($ext['user_extended_struct_signup'])."<span style='text-align:right;font-size:15px; color:red'> *</span></td>
 			<td style='width:60%' class='forumheader3'>".$usere->user_extended_edit($ext, $_POST['ue']['user_'.$ext['user_extended_struct_name']])."
 		</td>
 		</tr>
