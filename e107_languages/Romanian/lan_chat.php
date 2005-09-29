@@ -1,6 +1,6 @@
-﻿<?php
+<?php
 
-define("PAGE_NAME", "Chatbox"); 
+define("PAGE_NAME", "Chatbox");
 
 define("LAN_11", "Chatbox (toate replicile)");
 define("LAN_12", "Replici chat");

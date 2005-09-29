@@ -1,12 +1,12 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/lan_content.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-27 19:08:29 $
-|     $Author: adriansilea $
+|     $Revision: 1.4 $
+|     $Date: 2005-09-29 00:38:46 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Articol/Review");
