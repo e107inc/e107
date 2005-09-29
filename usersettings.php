@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-09-05 23:37:18 $
+|     $Revision: 1.47 $
+|     $Date: 2005-09-29 02:00:25 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -213,6 +213,7 @@ if (isset($_POST['updatesettings']))
 		$row = $sql -> db_Fetch();
 		$loginname = $row['user_name'];
 	}
+
 	
 	$user_sess = "";
 	if ($file_userfile['error'] != 4)
@@ -273,6 +274,11 @@ if (isset($_POST['updatesettings']))
 		if ($ret == '')
 		{
 			$sql->db_Update("user", "user_name='$username' {$pwreset} {$sesschange}, user_email='".$_POST['email']."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$_POST['user_xup']."' WHERE user_id='".$inp."' ");
+			// If user has changed display name, update the record in the online table
+			if($username != USERNAME)
+			{
+				$sql->db_Update("online", "online_user_id = '".USERID.".{$username}' WHERE online_user_id = '".USERID.".".USERNAME."'");
+			}
 
 			if(ADMIN && getperms("4"))
 			{
