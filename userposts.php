@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-08-31 09:20:55 $
-|     $Author: stevedunstan $
+|     $Revision: 1.15 $
+|     $Date: 2005-09-29 00:52:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -195,7 +195,7 @@ require_once(FOOTERF);
 	
 	
 function parse_userposts_comments_table($row) {
-	global $USERPOSTS_COMMENTS_TABLE, $pref, $gen, $tp, $menu_pref;
+	global $USERPOSTS_COMMENTS_TABLE, $pref, $gen, $tp, $menu_pref, $id;
 	extract($row);
 	 
 	$poster = substr($comment_author, (strpos($comment_author, ".")+1));
@@ -203,7 +203,7 @@ function parse_userposts_comments_table($row) {
 	$datestamp = $gen->convert_date($comment_datestamp, "short");
 	$DATESTAMP = $datestamp;
 	 
-	$comment_comment = $tp->toHTML($comment_comment);
+	$comment_comment = $tp->toHTML($comment_comment, TRUE, "", $id);
 	
 	$sql2 = new db;
 	if ($comment_type == "0") {
@@ -324,7 +324,7 @@ function parse_userposts_comments_table($row) {
 	
 	
 function parse_userposts_forum_table($row) {
-	global $USERPOSTS_FORUM_TABLE, $gen, $tp;
+	global $USERPOSTS_FORUM_TABLE, $gen, $tp, $id;
 	extract($row);
 	 
 	$gen = new convert;
@@ -350,7 +350,7 @@ function parse_userposts_forum_table($row) {
 		$USERPOSTS_FORUM_TOPIC_PRE = UP_LAN_2.": ";
 	}
 	 
-	$thread_thread = $tp->toHTML($thread_thread);
+	$thread_thread = $tp->toHTML($thread_thread, TRUE, "", $id);
 	 
 	$USERPOSTS_FORUM_ICON = "<img src='".e_PLUGIN."forum/images/".IMODE."/new_small.png' alt='' />";
 	$USERPOSTS_FORUM_TOPIC_HREF_PRE = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$tmp."'>";
