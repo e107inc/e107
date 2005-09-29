@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2005-09-08 21:43:12 $
-|     $Author: e107coders $
+|     $Revision: 1.52 $
+|     $Date: 2005-09-29 01:26:47 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -241,8 +241,7 @@ if ($action == "list") {
 	$core_total = $sql->db_Count("download WHERE download_category='{$id}' AND download_active > 0 AND download_visible IN (".USERCLASS_LIST.")");
 	$type = $download_category_name;
 
-	$type .= ($download_category_description) ? " [ ".$download_category_description." ]" :
-	 "";
+	$type .= ($download_category_description) ? " [ ".$download_category_description." ]" : "";
 	define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name);
 
 	require_once(HEADERF);
@@ -337,17 +336,16 @@ if ($action == "view") {
 	}
     if(!defined("DL_IMAGESTYLE")){ define("DL_IMAGESTYLE","border:0px");}
 
-
-
 	$gen = new convert;
 	$row = $sql->db_Fetch();
-	 extract($row);
+	extract($row);
 	$comments_enabled = $row['download_comment'];
 	$subject = $download_name;
 	$sql2->db_Select("download_category", "*", "download_category_id='".$download_category."' ");
 	$row = $sql2->db_Fetch();
 	extract($row);
-	$type = $download_category_name." [ ".$download_category_description." ]";
+	$type = $download_category_name;
+	$type .= ($download_category_description) ? " [ ".$download_category_description." ]" : "";
 	define("e_PAGETITLE", PAGE_NAME." / ".$download_category_name." / ".$download_name);
 
 	require_once(HEADERF);
