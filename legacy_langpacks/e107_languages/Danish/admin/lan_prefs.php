@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_prefs.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:29:27 $
+|        $Revision: 1.2 $
+|        $Date: 2005-09-29 11:25:46 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -140,10 +140,10 @@ define("PRFLAN_91", "Hvis nogen angriber webstedet med adskillige forsp&oslash;r
 define("PRFLAN_92", "Sikker tilmeldings bekr&aelig;ftelse -- gem adgangskode i e-mail?");
 define("PRFLAN_93", "strftime funktions siden hos php.net (Engelsk)");
 define("PRFLAN_94", "her");
-define("PRFLAN_95", "Vis modul info:");
-define("PRFLAN_96", "Vil vise info p&aring; alle admin sider for hver modul der underst&oslash;tter denne type egenskab");
-define("PRFLAN_97", "Unik 'Modul info' menu:");
-define("PRFLAN_98", "Hvis ikke markeret, vil hver modul vise sine egne oplysninger p&aring; en individuel menu. Hvis valgt vil alle oplysninger blive vist i en menu.");
+define("PRFLAN_95", "Vis plugin info:");
+define("PRFLAN_96", "Vil vise info p&aring; alle admin sider for hver plugin der underst&oslash;tter denne type egenskab");
+define("PRFLAN_97", "Unik 'Plugin info' menu:");
+define("PRFLAN_98", "Hvis ikke markeret, vil hver plugin vise sine egne oplysninger p&aring; en individuel menu. Hvis valgt vil alle oplysninger blive vist i en menu.");
 
 
 // define("PRFLAN_100", "Forindl&aelig;s tema billeder:");
@@ -168,7 +168,7 @@ define("PRFLAN_119", "Geshi er en open source multi-sprog syntax fremh&aelig;ver
 define("PRFLAN_120", "Standard Geshi syntax sprog");
 define("PRFLAN_121", "hvis intet sprog angives i kode bbtag, dette sprog vil blive brugt for fremh&aelig;vning");
 define("PRFLAN_122", "Anvend WYSIWYG tekstomr&aring;der");
-define("PRFLAN_123", "Vil vise et hvad-du-ser-er-hvad-du-f&aring;r editor i tekstomr&aring;der n&aring;r tilg&aelig;ngeligt.");
+define("PRFLAN_123", "Vil vise et hvad-du-ser-er-hvad-du-f&aring;r editor i tekstomr&aring;der n&aring;r tilg&aelig;ngeligt. G&aelig;lder kun Admins og Brugere der har tilladelse til at poste HTML.");
 define("PRFLAN_124", "Brug 'klassisk' n&aelig;steforrige look");
 define("PRFLAN_125", "Ved at sl&aring; dette til vil n&aelig;steforrige side blive vist som 1 2 3 ... 21 22 23, istedet for det nye look med rullegardinet.");
 define("PRFLAN_126", "Tekst til at vise p&aring; tilmeld siden");

@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_prefs.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2005-09-18 16:08:57 $
+|        $Revision: 1.4 $
+|        $Date: 2005-09-29 11:25:46 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -140,10 +140,10 @@ define("PRFLAN_91", "Hvis nogen angriber webstedet med adskillige forspørgsler 
 define("PRFLAN_92", "Sikker tilmeldings bekræftelse -- gem adgangskode i e-mail?");
 define("PRFLAN_93", "strftime funktions siden hos php.net (Engelsk)");
 define("PRFLAN_94", "her");
-define("PRFLAN_95", "Vis modul info:");
-define("PRFLAN_96", "Vil vise info på alle admin sider for hver modul der understøtter denne type egenskab");
-define("PRFLAN_97", "Unik 'Modul info' menu:");
-define("PRFLAN_98", "Hvis ikke markeret, vil hver modul vise sine egne oplysninger på en individuel menu. Hvis valgt vil alle oplysninger blive vist i en menu.");
+define("PRFLAN_95", "Vis plugin info:");
+define("PRFLAN_96", "Vil vise info på alle admin sider for hver plugin der understøtter denne type egenskab");
+define("PRFLAN_97", "Unik 'Plugin info' menu:");
+define("PRFLAN_98", "Hvis ikke markeret, vil hver plugin vise sine egne oplysninger på en individuel menu. Hvis valgt vil alle oplysninger blive vist i en menu.");
 
 
 // define("PRFLAN_100", "Forindlæs tema billeder:");
