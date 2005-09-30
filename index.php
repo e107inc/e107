@@ -12,15 +12,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-08-30 17:30:30 $
-|     $Author: streaky $
+|     $Revision: 1.17 $
+|     $Date: 2005-09-30 18:33:55 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
 require_once('class2.php');
 
-if (!is_array($pref['frontpage'])) {
+if (!is_array($pref['frontpage']) && $pref['frontpage'] != 'Array') {
 	if (!$pref['frontpage']) {
 		$up_pref = 'news.php';
 	} else if ($pref['frontpage'] == 'links') {
