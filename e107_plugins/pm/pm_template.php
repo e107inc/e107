@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-09-07 16:46:43 $
+|     $Revision: 1.10 $
+|     $Date: 2005-09-30 02:27:04 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -110,7 +110,7 @@ $PM_INBOX_TABLE = "
 
 $PM_INBOX_EMPTY = "
 <tr>
-	<td colspan='6' class='forumheader'>No messages</td>
+	<td colspan='6' class='forumheader'>".LAN_PM_34."</td>
 </tr>
 ";
 
