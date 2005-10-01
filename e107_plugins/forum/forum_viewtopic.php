@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-09-05 02:51:59 $
+|     $Revision: 1.46 $
+|     $Date: 2005-10-01 12:55:19 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -224,6 +224,7 @@ if (MODERATOR)
 	{
 		require_once(e_PLUGIN.'forum/forum_mod.php');
 		$message = forum_thread_moderate($_POST);
+		$thread_info = $forum->thread_get($thread_id, $from-1, $pref['forum_postspage']);
 	}
 }
 
