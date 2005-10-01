@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_mod.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-25 18:57:10 $
+|     $Revision: 1.8 $
+|     $Date: 2005-10-01 13:13:34 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -62,6 +62,8 @@ function forum_thread_moderate($p)
 function forum_delete_thread($thread_id)
 {
 	global $sql;
+	@require_once(e_PLUGIN.'forum/forum_class.php');
+	$f =& new e107forum;
 	$sql->db_Select("forum_t", "*", "thread_id='".$thread_id."' ");
 	$row = $sql->db_Fetch();
 	 
@@ -80,6 +82,9 @@ function forum_delete_thread($thread_id)
 		{
 			$sql->db_Update("user", "user_forums=user_forums-1 WHERE user_id='".$uid."'");
 		}
+		// update lastpost info
+		$f->update_lastpost('thread', $row['thread_parent']);
+		$f->update_lastpost('forum', $row['thread_forum_id']);
 		return FORLAN_154;
 	}
 	else
@@ -95,6 +100,8 @@ function forum_delete_thread($thread_id)
 		$sql->db_Delete("forum_t", "thread_id='$thread_id'");
 		// update thread/reply counts
 		$sql->db_Update("forum", "forum_threads=forum_threads-1, forum_replies=forum_replies-$count WHERE forum_id='".$row['thread_forum_id']."'");
+		// update lastpost info
+		$f->update_lastpost('forum', $row['thread_forum_id']);
 		return FORLAN_6.($count ? ", ".$count." ".FORLAN_7."." : ".");
 	}
 }
