@@ -4,14 +4,14 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/pm/languages/admin/Danish.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:52:22 $
+|        $Revision: 1.2 $
+|        $Date: 2005-10-02 10:08:30 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
 
 define('ADLAN_PM', "Private Beskeder");
-define('ADLAN_PM_1', "To activate please go to your menus screen and select the private_msg into one of your menu areas. <br /><br />If you need to convert messages from a previous version, please go to the main config page for this plugin and select the 'convert' link.");
+define('ADLAN_PM_1', "For at aktivere g&aring; venligst til din menuer side og v&aelig;lg private_msg over i et af dine menuomr&aring;der. <br /><br />Hvis du har behov for at konvertere beskeder fra en tidligere version, g&aring; venligst til hoved konfigurations siden og v&aelig;lg 'konverter' linket.");
 define('ADLAN_PM_2', "Konfigurer Private Beskeder");
 define('ADLAN_PM_3', "PB indstillinger ikke fundet, standard v&aelig;rdier sat");
 define('ADLAN_PM_4', "Egenskaber Opdateret");
