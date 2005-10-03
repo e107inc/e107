@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_conf.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-09-09 01:40:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-10-03 00:47:36 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -455,7 +455,7 @@ function show_menu($action)
 	$var['main']['link'] = e_SELF;
 	$var['limits']['text'] = ADLAN_PM_55;
 	$var['limits']['link'] = e_SELF."?limits";
-	if($sql->db_Count("plugin","(*)", "WHERE plugin_path = 'pm_menu'"))
+	if($sql->db_Count("plugin","(*)", "WHERE plugin_path = 'pm_menu' AND plugin_installflag = '1'"))
 	{
 		$var['convert']['text'] = ADLAN_PM_56;
 		$var['convert']['link'] = e_SELF."?convert";
