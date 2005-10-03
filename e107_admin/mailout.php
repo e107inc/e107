@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-09-25 02:41:53 $
+|     $Revision: 1.42 $
+|     $Date: 2005-10-03 22:08:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -101,8 +101,7 @@ if (isset($_POST['submit'])) {
        $qry = "SELECT u.* FROM #user AS u WHERE u.user_id='".USERID."'";
 
 	} else {
-        $insert = "u.user_class IN (".$_POST['email_to'].")";
-
+        $insert = "u.user_class IN (".$_POST['email_to'].") AND u.user_ban='0' ";
 		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id WHERE $insert ";
 	}
 
@@ -111,54 +110,54 @@ if (isset($_POST['submit'])) {
 
 
 
-		if($_POST['extended_1_name'] && $_POST['extended_1_value']){
-        	$qry .= " AND ".$_POST['extended_1_name']." = '".$_POST['extended_1_value']."' ";
-		}
+	if($_POST['extended_1_name'] && $_POST['extended_1_value']){
+		$qry .= " AND ".$_POST['extended_1_name']." = '".$_POST['extended_1_value']."' ";
+	}
 
-        if($_POST['extended_2_name'] && $_POST['extended_2_value']){
-        	$qry .= " AND ".$_POST['extended_2_name']." = '".$_POST['extended_2_value']."' ";
-		}
+	if($_POST['extended_2_name'] && $_POST['extended_2_value']){
+		$qry .= " AND ".$_POST['extended_2_name']." = '".$_POST['extended_2_value']."' ";
+	}
 
-		if($_POST['user_search_name'] && $_POST['user_search_value']){
-        	$qry .= " AND u.".$_POST['user_search_name']." LIKE '%".$_POST['user_search_value']."%' ";
-		}
+	if($_POST['user_search_name'] && $_POST['user_search_value']){
+		$qry .= " AND u.".$_POST['user_search_name']." LIKE '%".$_POST['user_search_value']."%' ";
+	}
 
-
-
-        $qry .= " ORDER BY u.user_name";
+	$qry .= " ORDER BY u.user_name";
 
   // 		echo $qry;
   //		exit;
 
-        $_POST['mail_id']  = time();
+	$_POST['mail_id']  = time();
 
-		$sql->db_Select_gen($qry);
-        if (ob_get_level() == 0) {
-	   		ob_start();
-	 	}
-			while ($row = $sql->db_Fetch()) {
-				$qry = "0,'sendmail', '".$_POST['mail_id']."', '".$row['user_id']."', '', '', \"".$tp->toDB($_POST['email_subject'])."\" ";
-	           	if($sql2 -> db_Insert("generic", $qry)){
-                	$c++;
-				}
-				ob_flush();
-				flush();
-			}
-        ob_end_flush();
+	$sql->db_Select_gen($qry);
+	if (ob_get_level() == 0) {
+		ob_start();
+	}
+	while ($row = $sql->db_Fetch()) {
+		$qry = "0,'sendmail', '".$_POST['mail_id']."', '".$row['user_id']."', '', '', \"".$tp->toDB($_POST['email_subject'])."\" ";
+		if($sql2 -> db_Insert("generic", $qry)){
+			$c++;
+		}
+		ob_flush();
+		flush();
+	}
+	ob_end_flush();
 
 	$text = "<div style='text-align:center'>
-		<form method='post' action='".e_HANDLER."phpmailer/mailout_process.php' name='mailform' onsubmit=\"open('', 'popup','width=230,height=150,resizable=1,scrollbars=0');this.target = 'popup';return true;\" >
+		<form method='post' action='".e_HANDLER."phpmailer/mailout_process.php' name='mailform' onsubmit=\"open('', 'popup','width=230,height=170,resizable=1,scrollbars=0');this.target = 'popup';return true;\" >
 		<div>";
 
     foreach($_POST as $key=>$val){
 		$text .= "<input type='hidden' name='$key' value='".stripslashes($tp->post_toForm($val))."' />\n";
     }
 
-    $text .= "</div>";
+	$text .= "</div>";
 
 	$text .= "<div>$c email(s) are ready to be sent</div>";
 
-	$text .= "<div><br /><input class='button' type='submit' name='send_mails' value='Proceed' /></div>";
+	$text .= "<div><br /><input class='button' type='submit' name='send_mails' value='Proceed' />
+	<input class='button' type='submit' name='cancel_emails' value='Cancel' />
+	</div>";
 	$text .= "</form><br /><br /></div>";
 
 // --------------- Preview Email -------------------------->
@@ -170,8 +169,8 @@ if (isset($_POST['submit'])) {
 		<tr>
 			<td class='forumheader3' style='width:30%'>".MAILAN_03."</td>
 			<td class='forumheader3'>".$_POST['email_to']."&nbsp;";
-            if($_POST['email_to'] == "self"){
-            	$text .= "&lt;".USEREMAIL."&gt;";
+			if($_POST['email_to'] == "self"){
+				$text .= "&lt;".USEREMAIL."&gt;";
 			}
 	$text .="</td>
 		</tr>
@@ -197,6 +196,31 @@ if (isset($_POST['submit'])) {
 			<td class='forumheader3' style='width:30%'>".MAILAN_05."</td>
 			<td class='forumheader3'>".$_POST['email_bcc']."&nbsp;</td>
 		</tr>": "";
+
+
+		$text .= ($_POST['user_search_name'] && $_POST['user_search_value']) ? "
+		<tr>
+			<td class='forumheader3' style='width:30%'>".$_POST['user_search_name']."</td>
+			<td class='forumheader3'>".$_POST['user_search_value']."&nbsp;</td>
+		</tr>": "";
+
+
+
+		$text .= ($_POST['extended_1_name'] && $_POST['extended_1_value']) ? "
+		<tr>
+			<td class='forumheader3' style='width:30%'>".$_POST['extended_1_name']."</td>
+			<td class='forumheader3'>".$_POST['extended_1_value']."&nbsp;</td>
+		</tr>": "";
+
+
+
+		$text .= ($_POST['extended_2_name'] && $_POST['extended_2_value']) ? "
+		<tr>
+			<td class='forumheader3' style='width:30%'>".$_POST['extended_2_name']."</td>
+			<td class='forumheader3'>".$_POST['extended_2_value']."&nbsp;</td>
+		</tr>": "";
+
+
 
 		$text .="
  		<tr>
@@ -224,8 +248,8 @@ if (isset($_POST['updateprefs'])) {
 	$pref['smtp_server'] = $tp->toDB($_POST['smtp_server']);
 	$pref['smtp_username'] = $tp->toDB($_POST['smtp_username']);
 	$pref['smtp_password'] = $tp->toDB($_POST['smtp_password']);
-    $pref['mail_pause'] = $_POST['mail_pause'];
-    $pref['mail_pausetime'] = $_POST['mail_pausetime'];
+	$pref['mail_pause'] = $_POST['mail_pause'];
+	$pref['mail_pausetime'] = $_POST['mail_pausetime'];
 	save_prefs();
 	$message = LAN_SETSAVED;
 }
@@ -265,39 +289,43 @@ function show_mailform($foo=""){
 	$email_subject = $foo['gen_ip'];
 	$email_body = $tp->toForm($foo['gen_chardata']);
 	$email_id = $foo['gen_id'];
-    $text = "";
+	$text = "";
 
-    if(strpos($_SERVER['SERVER_SOFTWARE'],"mod_gzip") && !is_readable(e_HANDLER."phpmailer/.htaccess")){
-    	$warning = "You need to rename <b>e107.htaccess</b> to <b>.htaccess</b> in ".$HANDLERS_DIRECTORY."phpmailer/ before sending mail from this page.";
-    	$ns -> tablerender("Warning", $warning);
+	if(strpos($_SERVER['SERVER_SOFTWARE'],"mod_gzip") && !is_readable(e_HANDLER."phpmailer/.htaccess")){
+		$warning = "You need to rename <b>e107.htaccess</b> to <b>.htaccess</b> in ".$HANDLERS_DIRECTORY."phpmailer/ before sending mail from this page.";
+		$ns -> tablerender("Warning", $warning);
 	}
 
 
-	$text .= "<div style='text-align:center'>
-	<form method='post' action='".e_SELF."' id='linkform'>
-	<table style='".ADMIN_WIDTH."' class='fborder'>
+	$text .= "<div style='".ADMIN_WIDTH." text-align:center'>
+	<form method='post' action='".e_SELF."' id='mailout_form'>
+	<table class='fborder' style='".ADMIN_WIDTH."'  cellpadding='0' cellspacing='0'>
 	<tr>
 	<td style='width:30%' class='forumheader3'>".MAILAN_01.": </td>
 	<td style='width:70%' class='forumheader3'>
-	<input type='text' name='email_from_name' class='tbox' style='width:80%' value='$email_from_name' />
+	<input type='text' name='email_from_name' class='tbox' style='width:80%' size='10' value='".$_POST['email_from_name']."' />
 	</td>
-	</tr>
+	</tr>";
+
+
+
+	$text .="
 
 	<tr>
-	<td  class='forumheader3'>".MAILAN_02.": </td>
+	<td class='forumheader3'>".MAILAN_02.": </td>
 	<td  class='forumheader3'>
-	<input type='text' name='email_from_email' class='tbox' style='width:80%' value='$email_from_email' />
+	<input type='text' name='email_from_email' class='tbox' style='width:80%' value='".$_POST['email_from_email']."' />
 	</td>
 	</tr>
 
 	<tr>
 	<td class='forumheader3'>".MAILAN_03.": </td>
 	<td class='forumheader3'>
-	".userclasses("email_to", $email_to)."</td>
+	".userclasses("email_to", $_POST['email_to'])."</td>
 	</tr>";
 
 
-       // User Search Field.
+	// User Search Field.
 
 
 		$u_array = array("user_name"=>"Username","user_login"=>"User Login","user_email"=>"User Email");
@@ -308,11 +336,11 @@ function show_mailform($foo=""){
 			<select name='user_search_name' class='tbox'>
 			<option value=''>&nbsp;</option>";
 
-            foreach($u_array as $key=>$val){
-            $text .= "<option value='$key' >".$val."</option>\n";
+			foreach($u_array as $key=>$val){
+				$text .= "<option value='$key' >".$val."</option>\n";
 			}
 
-        $text .= "
+	$text .= "
 		</select> contains </td>
 		<td style='width:65%' class='forumheader3'>
 		<input type='text' name='user_search_value' class='tbox' style='width:80%' value='' />
@@ -323,38 +351,40 @@ function show_mailform($foo=""){
 
 
 
-     // Extended Field #1.
+	// Extended Field #1.
 
 		$text .= "
 		<tr>
-			<td  class='forumheader3'>User-Match
+			<td class='forumheader3'>User-Match
 			<select name='extended_1_name' class='tbox'>
 			<option value=''>&nbsp;</option>";
 			$sql -> db_Select("user_extended_struct");
-            while($row = $sql-> db_Fetch()){
-            $text .= "<option value='ue.user_".$row['user_extended_struct_name']."' >".ucfirst($row['user_extended_struct_name'])."</option>\n";
+			while($row = $sql-> db_Fetch()){
+				$text .= "<option value='ue.user_".$row['user_extended_struct_name']."' >".ucfirst($row['user_extended_struct_name'])."</option>\n";
 			}
 
-        $text .= "
+		$text .= "
 		</select> equals </td>
 		<td  class='forumheader3'>
 		<input type='text' name='extended_1_value' class='tbox' style='width:80%' value='' />
 		</td></tr>
 		";
 
-       // Extended Field #2.
+
+
+	// Extended Field #2.
 
 		$text .= "
 		<tr>
-			<td  class='forumheader3'>User-Match
+			<td class='forumheader3'>User-Match
 			<select name='extended_2_name' class='tbox'>
 			<option value=''>&nbsp;</option>";
 			$sql -> db_Select("user_extended_struct");
-            while($row = $sql-> db_Fetch()){
-            $text .= "<option value='ue.user_".$row['user_extended_struct_name']."' >".ucfirst($row['user_extended_struct_name'])."</option>\n";
+			while($row = $sql-> db_Fetch()){
+				$text .= "<option value='ue.user_".$row['user_extended_struct_name']."' >".ucfirst($row['user_extended_struct_name'])."</option>\n";
 			}
 
-        $text .= "
+		$text .= "
 		</select> equals </td>
 		<td  class='forumheader3'>
 		<input type='text' name='extended_2_value' class='tbox' style='width:80%' value='' />
@@ -364,27 +394,19 @@ function show_mailform($foo=""){
 
 
 
-
-
-
-
-
-
-
-
 	$text .= "
 
 	<tr>
-	<td  class='forumheader3'>".MAILAN_04.": </td>
+	<td class='forumheader3'>".MAILAN_04.": </td>
 	<td  class='forumheader3'>
-	<input type='text' name='email_cc' class='tbox' style='width:80%' value='$email_cc' />
+	<input type='text' name='email_cc' class='tbox' style='width:80%' value='".$_POST['email_cc']."' />
 
 	</td>
 	</tr>
 
 
 	<tr>
-	<td  class='forumheader3'>".MAILAN_05.": </td>
+	<td class='forumheader3'>".MAILAN_05.": </td>
 	<td  class='forumheader3'>
 	<input type='text' name='email_bcc' class='tbox' style='width:80%' value='$email_bcc' />
 
@@ -392,18 +414,20 @@ function show_mailform($foo=""){
 	</tr>
 
 	<tr>
-	<td  class='forumheader3'>".MAILAN_06.": </td>
-	<td  class='forumheader3'>
+	<td class='forumheader3'>".MAILAN_06.": </td>
+	<td class='forumheader3'>
 	<input type='text' name='email_subject' class='tbox' style='width:80%' value='$email_subject' />
 
 	</td>
 	</tr>";
 
 
+
+
 	// Attachment.
 
 	$text .= "<tr>
-	<td  class='forumheader3'>".MAILAN_07.": </td>
+	<td class='forumheader3'>".MAILAN_07.": </td>
 	<td  class='forumheader3'>";
 	$text .= "<select class='tbox' name='email_attachment' >
 	<option value=''>&nbsp;</option>\n";
@@ -420,48 +444,50 @@ function show_mailform($foo=""){
 	</tr>";
 
 
+
+
+
 	$text .= "
 	<tr>
-	<td  class='forumheader3'>".MAILAN_09.": </td>
+	<td class='forumheader3'>".MAILAN_09.": </td>
 	<td  class='forumheader3'>
 	<input type='checkbox' name='use_theme' value='1' />
 	</td>
 	</tr>
 
-
-
 	<tr>
 	<td colspan='2'  class='forumheader3'>
-
 	<textarea rows='10' cols='20' id='email_body' name='email_body'  class='tbox' style='width:100%;height:200px' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>
 	$email_body
 	</textarea>
 	</td>
-	</tr>
+	</tr>";
 
-	<tr><td class='forumheader3' colspan='2'><div style='width:100%;text-align:center;vertical-align:middle' >".display_help("helpb").
-	"<span style='margin-left:5%;height:100%;vertical-align: super;margin-top:auto;margin-bottom:auto'>";
-
+	$text .="
+	<tr>
+	<td style='width:100%' class='forumheader3' colspan='2'>
+	<div style='width:100%;text-align:center;vertical-align: middle;' >".display_help("helpb")
+	."<span style='vertical-align: super;margin-left:5%;margin-bottom:auto;margin-top:auto'>";
 	if($pref['wysiwyg']) {
-	$text .="<input type='button' class='button' name='usrname' value='".MAILAN_16."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERNAME}')\" />
+		$text .="<input type='button' class='button' name='usrname' value='".MAILAN_16."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERNAME}')\" />
 		<input type='button' class='button' name='usrlink' value='".MAILAN_17."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{SIGNUP_LINK}')\" />
 		<input type='button' class='button' name='usrid' value='".MAILAN_18."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERID}')\" />";
 	} else {
-    	$text .="<input type='button' class='button' name='usrname' value='".MAILAN_16."' onclick=\"addtext('{USERNAME}')\" />
-		<input type='button' class='button' name='usrlink' value='".MAILAN_17."' onclick=\"addtext('{SIGNUP_LINK}')\" />
-		<input type='button' class='button' name='usrid' value='".MAILAN_18."' onclick=\"addtext('{USERID}')\" />";
+ 		$text .="<input type='button' class='button' name='usrname' value='".MAILAN_16."' onclick=\"addtext('{USERNAME}')\" />
+ 		<input type='button' class='button' name='usrlink' value='".MAILAN_17."' onclick=\"addtext('{SIGNUP_LINK}')\" />
+ 		<input type='button' class='button' name='usrid' value='".MAILAN_18."' onclick=\"addtext('{USERID}')\" />";
 	}
 
 
-	$text .="</span></div></td>
+ 	$text .="</span>
+	</div></td>
 	</tr>";
-
 
 
 	$text .= "<tr style='vertical-align:top'>
 	<td colspan='2' style='text-align:center' class='forumheader'>";
 	if(isset($_POST['edit'])){
-        $text .= "<input type='hidden' name='update_id' value='".$email_id."' />";
+		$text .= "<input type='hidden' name='update_id' value='".$email_id."' />";
 		$text .= "<input class='button' type='submit' name='update_email' value='".LAN_UPDATE."' />";
 	}else{
 		$text .= "<input class='button' type='submit' name='save_email' value='".LAN_SAVE."' />";
@@ -498,12 +524,12 @@ $text = "
 	<td style='text-align:right' class='forumheader3'>
 	<select class='tbox' name='mailer' onchange='disp(this.value)'>\n";
 	$mailers = array("php","smtp","sendmail");
-    foreach($mailers as $opt){
+	foreach($mailers as $opt){
 		$sel = ($pref['mailer'] == $opt) ? "selected='selected'" : "";
-    	$text .= "<option value='$opt' $sel>$opt</option>\n";
+		$text .= "<option value='$opt' $sel>$opt</option>\n";
 	}
 	$text .="</select><br />";
-  // SMTP. -------------->
+// SMTP. -------------->
 	$smtpdisp = ($pref['mailer'] != "smtp") ? "display:none;" : "";
 	$text .= "<div id='smtp' style='$smtpdisp text-align:right'><table style='margin-right:0px;margin-left:auto;border:0px'>";
 	$text .= "	<tr>
@@ -529,8 +555,8 @@ $text = "
 
 	</table></div>";
 
-  // Sendmail. -------------->
-    $senddisp = ($pref['mailer'] != "sendmail") ? "display:none;" : "";
+// Sendmail. -------------->
+	$senddisp = ($pref['mailer'] != "sendmail") ? "display:none;" : "";
 	$text .= "<div id='sendmail' style='$senddisp text-align:right'><table style='margin-right:0px;margin-left:auto;border:0px'>";
 	$text .= "
 
