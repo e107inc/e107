@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-10-03 22:08:15 $
+|     $Revision: 1.43 $
+|     $Date: 2005-10-03 22:18:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -303,7 +303,7 @@ function show_mailform($foo=""){
 	<tr>
 	<td style='width:30%' class='forumheader3'>".MAILAN_01.": </td>
 	<td style='width:70%' class='forumheader3'>
-	<input type='text' name='email_from_name' class='tbox' style='width:80%' size='10' value='".$_POST['email_from_name']."' />
+	<input type='text' name='email_from_name' class='tbox' style='width:80%' size='10' value=\"".$_POST['email_from_name']."\" />
 	</td>
 	</tr>";
 
@@ -314,7 +314,7 @@ function show_mailform($foo=""){
 	<tr>
 	<td class='forumheader3'>".MAILAN_02.": </td>
 	<td  class='forumheader3'>
-	<input type='text' name='email_from_email' class='tbox' style='width:80%' value='".$_POST['email_from_email']."' />
+	<input type='text' name='email_from_email' class='tbox' style='width:80%' value=\"".$_POST['email_from_email']."\" />
 	</td>
 	</tr>
 
@@ -399,7 +399,7 @@ function show_mailform($foo=""){
 	<tr>
 	<td class='forumheader3'>".MAILAN_04.": </td>
 	<td  class='forumheader3'>
-	<input type='text' name='email_cc' class='tbox' style='width:80%' value='".$_POST['email_cc']."' />
+	<input type='text' name='email_cc' class='tbox' style='width:80%' value=\"".$_POST['email_cc']."\" />
 
 	</td>
 	</tr>
@@ -469,13 +469,13 @@ function show_mailform($foo=""){
 	<div style='width:100%;text-align:center;vertical-align: middle;' >".display_help("helpb")
 	."<span style='vertical-align: super;margin-left:5%;margin-bottom:auto;margin-top:auto'>";
 	if($pref['wysiwyg']) {
-		$text .="<input type='button' class='button' name='usrname' value='".MAILAN_16."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERNAME}')\" />
-		<input type='button' class='button' name='usrlink' value='".MAILAN_17."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{SIGNUP_LINK}')\" />
-		<input type='button' class='button' name='usrid' value='".MAILAN_18."' onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERID}')\" />";
+		$text .="<input type='button' class='button' name='usrname' value=\"".MAILAN_16."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERNAME}')\" />
+		<input type='button' class='button' name='usrlink' value=\"".MAILAN_17."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{SIGNUP_LINK}')\" />
+		<input type='button' class='button' name='usrid' value=\"".MAILAN_18."\" onclick=\"tinyMCE.selectedInstance.execCommand('mceInsertContent',0,'{USERID}')\" />";
 	} else {
- 		$text .="<input type='button' class='button' name='usrname' value='".MAILAN_16."' onclick=\"addtext('{USERNAME}')\" />
- 		<input type='button' class='button' name='usrlink' value='".MAILAN_17."' onclick=\"addtext('{SIGNUP_LINK}')\" />
- 		<input type='button' class='button' name='usrid' value='".MAILAN_18."' onclick=\"addtext('{USERID}')\" />";
+ 		$text .="<input type='button' class='button' name='usrname' value=\"".MAILAN_16."\" onclick=\"addtext('{USERNAME}')\" />
+ 		<input type='button' class='button' name='usrlink' value=\"".MAILAN_17."\" onclick=\"addtext('{SIGNUP_LINK}')\" />
+ 		<input type='button' class='button' name='usrid' value=\"".MAILAN_18."\" onclick=\"addtext('{USERID}')\" />";
 	}
 
 
@@ -488,12 +488,12 @@ function show_mailform($foo=""){
 	<td colspan='2' style='text-align:center' class='forumheader'>";
 	if(isset($_POST['edit'])){
 		$text .= "<input type='hidden' name='update_id' value='".$email_id."' />";
-		$text .= "<input class='button' type='submit' name='update_email' value='".LAN_UPDATE."' />";
+		$text .= "<input class='button' type='submit' name='update_email' value=\"".LAN_UPDATE."\" />";
 	}else{
-		$text .= "<input class='button' type='submit' name='save_email' value='".LAN_SAVE."' />";
+		$text .= "<input class='button' type='submit' name='save_email' value=\"".LAN_SAVE."\" />";
 	}
 
-	$text .="&nbsp;<input class='button' type='submit' name='submit' value='".MAILAN_08."' />
+	$text .="&nbsp;<input class='button' type='submit' name='submit' value=\"".MAILAN_08."\" />
 
 	</td>
 	</tr>
@@ -515,7 +515,7 @@ $text = "
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
 	<td style='width:40%' class='forumheader3'><span title='".PRFLAN_64."' style='cursor:help'>".PRFLAN_63."</span><br /></td>
-	<td style='width:60%; text-align:right' class='forumheader3'><input class='button' type='submit' name='testemail' value='".PRFLAN_65." ".SITEADMINEMAIL."' />
+	<td style='width:60%; text-align:right' class='forumheader3'><input class='button' type='submit' name='testemail' value=\"".PRFLAN_65." ".SITEADMINEMAIL."\" />
 	</td>
 	</tr>
 
@@ -542,7 +542,7 @@ $text = "
 	<tr>
 	<td style='text-align:right' >".PRFLAN_73.":&nbsp;(".LAN_OPTIONAL.")&nbsp;&nbsp;</td>
 	<td style='width:50%; text-align:right' >
-	<input class='tbox' type='text' name='smtp_username' size='40' value='".$pref['smtp_username']."' maxlength='50' />
+	<input class='tbox' type='text' name='smtp_username' size='40' value=\"".$pref['smtp_username']."\" maxlength='50' />
 	</td>
 	</tr>
 
@@ -589,7 +589,7 @@ $text = "
 
 	<tr>
 	<td style='text-align:center' colspan='2' class='forumheader'>
-	<input class='button' type='submit' name='updateprefs' value='".PRFLAN_52."' />
+	<input class='button' type='submit' name='updateprefs' value=\"".PRFLAN_52."\" />
 	</td>
 	</tr>
 
