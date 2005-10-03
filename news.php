@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.80 $
-|     $Date: 2005-09-14 15:40:18 $
+|     $Revision: 1.81 $
+|     $Date: 2005-10-03 22:48:37 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -60,6 +60,7 @@ if ($action == 'cat' || $action == 'all'){
 	if($tmp = checkCache($cacheString)){
 		require_once(HEADERF);
 		renderCache($tmp, TRUE);
+
 	}
 // <-- Cache
 
@@ -270,14 +271,16 @@ if($tmp = checkCache($cacheString)){
 	require_once(HEADERF);
  	if(!$action){
 		render_wmessage();
-   		if (isset($pref['fb_active'])){  // --->feature box
+		if (isset($pref['fb_active'])){  // --->feature box
 			require_once(e_PLUGIN."featurebox/featurebox.php");
-   		}
+		}
 		if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
 			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 		}
+
 	}
 	renderCache($tmp, TRUE);
+
 }
 
 
@@ -295,22 +298,22 @@ else
 
 
 
-    $p_title = ($action == "item") ? $newsAr[1]['news_title'] : $newsAr[1]['category_name'];
+	$p_title = ($action == "item") ? $newsAr[1]['news_title'] : $newsAr[1]['category_name'];
  	if($action != ""){
 		define("e_PAGETITLE",$p_title);
 	}
 
  	require_once(HEADERF);
 	if(!$action){
-  		render_wmessage();   // --> wmessage.
+		render_wmessage();   // --> wmessage.
 		if (isset($pref['fb_active'])){   // --->feature box
-   	   		require_once(e_PLUGIN."featurebox/featurebox.php");
+			require_once(e_PLUGIN."featurebox/featurebox.php");
 		}
 
-   		if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
-	   		require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
+		if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
+			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 		}
-    }
+	}
 
 
 /*
@@ -323,11 +326,7 @@ if($pref['news_unstemplate'] && file_exists(THEME."news_template.php"))
 	// theme specific template required ...
 	require_once(THEME."news_template.php");
 
-	if($ALTERNATECLASS1)
-	{
-
-
-
+	if($ALTERNATECLASS1){
 		return TRUE;
 	}
 
@@ -487,15 +486,11 @@ if (isset($pref['nfp_display']) && $pref['nfp_display'] == 2) {
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
 
-// --  CNN Style Categories. ----
-if (isset($pref['news_cats']) && $pref['news_cats'] == '1') {
-    $text3 = $tp->toHTML("{NEWS_CATEGORIES}", TRUE, 'parse_sc,nobreak');
- 	$ns->tablerender(LAN_NEWS_23, $text3, 'news_cat');
-}
-
-// ---------------------------
+	render_newscats();
 
 require_once(FOOTERF);
+
+
 // =========================================================================
 function setNewsCache($cacheString) {
 	global $pref, $e107cache;
@@ -523,11 +518,12 @@ function checkCache($cacheString){
 }
 
 function renderCache($cache, $nfp = FALSE){
-        global $pref,$tp,$sql;
+		global $pref,$tp,$sql;
 		echo $cache;
 		if ($nfp && $pref['nfp_display'] == 2) {
 			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 		}
+		render_newscats();
 		require_once(FOOTERF);
 		exit;
 }
@@ -551,6 +547,15 @@ function render_wmessage(){
 	   			echo $wmessage;
 			}
 		}
+	}
+}
+
+
+function render_newscats(){  // --  CNN Style Categories. ----
+	global $pref,$ns,$tp;
+	if (isset($pref['news_cats']) && $pref['news_cats'] == '1') {
+		$text3 = $tp->toHTML("{NEWS_CATEGORIES}", TRUE, 'parse_sc,nobreak');
+		$ns->tablerender(LAN_NEWS_23, $text3, 'news_cat');
 	}
 }
 
