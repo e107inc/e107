@@ -5,12 +5,21 @@ define("ADLAN_1", "Adauga/Modifica/Sterge stiri");
 define("ADLAN_2", "Categorii de stiri");
 define("ADLAN_3", "Adauga/Modifica/Sterge categorii de stiri");
 define("ADLAN_4", "Preferinte");
+<<<<<<< lan_admin.php
 define("ADLAN_5", "Modifica preferintele site-ului");
+=======
+define("ADLAN_5", "Modifica preferintele site-ului");
+>>>>>>> 1.3
 define("ADLAN_6", "Meniuri"); 
 define("ADLAN_7", "Altereaza ordinea meniurilor");
 define("ADLAN_8", "Administratori");
+<<<<<<< lan_admin.php
+define("ADLAN_9", "Adauga/Sterge administratori site");
+define("ADLAN_10", "Parola Admin");
+=======
 define("ADLAN_9", "Adauga/Sterge administratori Site");
 define("ADLAN_10", "Parola admin");
+>>>>>>> 1.3
 define("ADLAN_11", "Modifica parola");
 define("ADLAN_12", "Forumuri");
 define("ADLAN_13", "Adauga/Modifica forumuri");
@@ -24,15 +33,15 @@ define("ADLAN_20", "Link-uri");
 define("ADLAN_21", "Adauga/Modifica/Sterge link-uri");
 define("ADLAN_22", "Categorii link-uri");
 define("ADLAN_23", "Adauga/Modifica/Sterge categorii link-uri");
-define("ADLAN_24", "Download-uri");
-define("ADLAN_25", "Manage Downloads");
-define("ADLAN_26", "Download Categories");
+define("ADLAN_24", "???Downloads");
+define("ADLAN_25", "???Manage Downloads");
+define("ADLAN_26", "???Download Categories");
 define("ADLAN_27", "Adauga Noi/Modifica/Sterge download categories");
-define("ADLAN_28", "Welcome Message");
-define("ADLAN_29", "Set static welcome message");
-define("ADLAN_30", "File Manager");
-define("ADLAN_31", "Manage/upload files");
-define("ADLAN_32", "Submitted stiri");
+define("ADLAN_28", "Mesaj de bun venit");
+define("ADLAN_29", "Seteaza mesajul de bun venit static");
+define("ADLAN_30", "Manager de fisiere");
+define("ADLAN_31", "Manage/upload fisiere");
+define("ADLAN_32", "Submitted news");
 define("ADLAN_33", "Review user submitted stiri items");
 define("ADLAN_34", "Banlist");
 define("ADLAN_35", "Ban visitors");
