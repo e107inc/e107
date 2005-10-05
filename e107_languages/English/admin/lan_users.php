@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-09-05 01:10:53 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2005-10-05 22:39:08 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Options Saved.");
@@ -122,22 +122,21 @@ define("USRLAN_127", "Allow comments in user profile");
 
 define("USRLAN_128", "Login name");
 
-define("USRLAN_129", "No IP address found in user's info, IP not banned");
-define("USRLAN_130", "Multiple users found with IP address of {IP}, IP not banned.");
-define("USRLAN_131", "Users IP address of {IP} banned.");
-
-define("LAN_MAINADMIN","Main Admin");
-define("LAN_ADMIN","Admin");
-define("LAN_NOTVERIFIED","Not Verified");
-define("LAN_BANNED","Banned");
-
-
 define("USRLAN_130", "Enable online user tracking");
 define("USRLAN_131", "You must enable this option to use online user tracking options, like online.php, forum online info and online menus");
 define("USRLAN_132", "Enable");
 
 define("USRLAN_133", "Force user to update settings");
 define("USRLAN_134", "Enabling this option will automatically send the user to their user-settings if a required user field is not filled.");
+
+define("USRLAN_135", "No IP address found in user's info, IP not banned");
+define("USRLAN_136", "Multiple users found with IP address of {IP}, IP not banned.");
+define("USRLAN_137", "Users IP address of {IP} banned.");
+
+define("LAN_MAINADMIN","Main Admin");
+define("LAN_ADMIN","Admin");
+define("LAN_NOTVERIFIED","Not Verified");
+define("LAN_BANNED","Banned");
 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Display Name");

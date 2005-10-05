@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2005-09-05 01:10:53 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.60 $
+|     $Date: 2005-10-05 22:39:06 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -189,18 +189,18 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "ban")
 		}
 		if(trim($row['user_ip']) == "")
 		{
-			$user->show_message(USRLAN_129);
+			$user->show_message(USRLAN_135);
 		}
 		else
 		{
 			if($sql->db_Count("user", "(*)", "WHERE user_ip = '{$row['user_ip']}'") > 1)
 			{
-				$user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_130));
+				$user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_136));
 			}
 			else
 			{
 				$sql -> db_Insert("banlist", "'".$row['user_ip']."', '".USERID."', '".$row['user_name']."' ");
-				$user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_131));
+				$user->show_message(str_replace("{IP}", $row['user_ip'], USRLAN_137));
 			}
 		}
 	}
@@ -712,7 +712,7 @@ class users{
 
 			<tr>
 			<td style='width:50%' class='forumheader3'>".USRLAN_130."<br /><span class='smalltext'>".USRLAN_131."</span></td>
-			<td style='width:50%; class='forumheader3'>&nbsp;
+			<td style='width:50%' class='forumheader3'>&nbsp;
 			<input type='checkbox' name='track_online' value='1'".($pref['track_online'] ? " checked='checked'" : "")." /> ".USRLAN_132."&nbsp;&nbsp;
 			</td>
 			</tr>
