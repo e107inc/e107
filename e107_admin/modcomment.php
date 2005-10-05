@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/modcomment.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.13 $
+|     $Date: 2005-10-05 11:05:07 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -72,7 +72,7 @@ $text = "
 <table class='fborder' style='".ADMIN_WIDTH."'>";
 
 if (!$sql->db_Select("comments", "*", "(comment_type='".$type."' OR comment_type='".$table."') AND comment_item_id=$id")) {
-	$text .= "<tr><td class='forumheader3' style='text-align:center'>".MDCLAN_2.".</td></tr></table></form></div>";
+	$text .= "<tr><td class='forumheader3' style='text-align:center'>".MDCLAN_2.".</td></tr>";
 } else {
 	$con = new convert;
 
