@@ -4,12 +4,15 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Danish.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-09-11 15:07:48 $
+|        $Revision: 1.3 $
+|        $Date: 2005-10-05 15:53:30 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
-if(!defined("PAGE_NAME")){define("PAGE_NAME", "Links");}
+// if(!defined("PAGE_NAME")){define("PAGE_NAME", "Links");}
+
+
+
 
 define("LCLAN_PLUGIN_LAN_1", "Links Side");
 define("LCLAN_PLUGIN_LAN_2", "Links Side Til Visning Af Eksterne Web Links");
