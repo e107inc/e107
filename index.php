@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-09-30 18:50:27 $
+|     $Revision: 1.19 $
+|     $Date: 2005-10-05 08:07:48 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ if ($pref['membersonly_enabled'] && !USER) {
 			$inclass = true;
 		}
 	}
-	$location = ((strpos($pref['frontpage']['253'], 'http') === FALSE) ? e_BASE : '').$pref['frontpage']['253'].$query;
+	$location = $location ? $location : ((strpos($pref['frontpage']['253'], 'http') === FALSE) ? e_BASE : '').$pref['frontpage']['253'].$query;
 } else {
 	$location = ((strpos($pref['frontpage']['252'], 'http') === FALSE) ? e_BASE : '').$pref['frontpage']['252'].$query;
 }
