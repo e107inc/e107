@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-09-07 09:02:25 $
-|     $Author: stevedunstan $
+|     $Revision: 1.33 $
+|     $Date: 2005-10-05 09:51:26 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 @include_once(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
@@ -73,7 +73,7 @@ class poll
 			}
 			
 	
-			$message = POLLAN_27;
+			$message = POLLAN_45;
 		} else {
 
 			$votes = "";
@@ -335,7 +335,7 @@ class poll
 			return $text;
 		}
 
-		$formgo = e_SELF.(e_QUERY && !defined("RESET") ? "?".e_QUERY : "");
+		$formgo = e_SELF.(e_QUERY && !defined("RESET") && strpos(e_QUERY, 'delete') === FALSE ? "?".e_QUERY : "");
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='$formgo'>
