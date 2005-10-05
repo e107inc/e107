@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.222 $
-|     $Date: 2005-09-26 18:25:13 $
-|     $Author: e107coders $
+|     $Revision: 1.223 $
+|     $Date: 2005-10-05 08:45:59 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -321,7 +321,8 @@ if ($pref['notify']) {
 	e107_require_once(e_HANDLER.'notify_class.php');
 }
 
-//$e_event -> trigger("testing");
+$sql -> db_Mark_Time('Start: Init session');
+init_session();
 
 if (isset($pref['modules']) && $pref['modules']) {
 	$mods=explode(",", $pref['modules']);
@@ -414,12 +415,7 @@ if (!class_exists('e107_table')) {
 }
 //#############################################################
 
-
-$sql->db_Mark_Time('Start: Init session');
 $ns=new e107table;
-init_session();
-
-
 
 $e107->ban();
 
