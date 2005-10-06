@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_users.php,v $
-|        $Revision: 1.5 $
-|        $Date: 2005-10-06 14:05:05 $
+|        $Revision: 1.6 $
+|        $Date: 2005-10-06 14:26:55 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -120,14 +120,14 @@ define("USRLAN_125", "Fra");
 define("USRLAN_126", "Tillad brugere at bedømme brugere");
 define("USRLAN_127", "Tillad kommentarer i bruger profilen");
 
-define("USRLAN_128", "Felttype parametre");
+define("USRLAN_128", "Login navn");
 
-define("USRLAN_130", "Feltnavnet skal være unikt");
-define("USRLAN_131", "Dette er det viste navn på feltet i genererede sider");
-define("USRLAN_132", "Slået til");
+define("USRLAN_130", "Benyt online bruger sporing");
+define("USRLAN_131", "Du skal anvende dette for at benytte online bruger sporing, som online.php, forum online info og online menuer");
+define("USRLAN_132", "Anvend");
 
-define("USRLAN_133", "Brugere vil være påkrævet at skrive en værdi i feltet når de opdaterer deres indstillinger.");
-define("USRLAN_134", "Anvendelig");
+define("USRLAN_133", "Tving bruger til at opdatere indstillinger");
+define("USRLAN_134", "Anvendelse af denne egenskab vil automatisk sende brugerene til deres bruger-indstillinger hvis et krævet bruger felt ikke er udfyldt.");
 
 define("USRLAN_135", "Ingen IP adresse fundet i brugers info, IP ikke banlyst");
 define("USRLAN_136", "Der er fundet flere brugere med IP adressen {IP}, IP ikke banlyst.");
