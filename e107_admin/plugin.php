@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2005-09-06 15:43:39 $
-|     $Author: e107coders $
+|     $Revision: 1.52 $
+|     $Date: 2005-10-06 23:25:43 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -243,7 +243,24 @@ if ($action == 'upgrade') {
 			$text .= EPL_ADLAN_7."<br />";
 		}
 	}
+	
+	if ($eplug_module) {
+		$plugin->manage_plugin_prefs('add', 'modules', $eplug_folder);
+	} else {
+		$plugin->manage_plugin_prefs('remove', 'modules', $eplug_folder);
+	}
 
+	if ($eplug_status) {
+		$plugin->manage_plugin_prefs('add', 'plug_status', $eplug_folder);
+	} else {
+		$plugin->manage_plugin_prefs('remove', 'plug_status', $eplug_folder);
+	}
+
+	if ($eplug_latest) {
+		$plugin->manage_plugin_prefs('add', 'plug_latest', $eplug_folder);
+	} else {
+		$plugin->manage_plugin_prefs('remove', 'plug_latest', $eplug_folder);
+	}
 
 	if (is_array($upgrade_add_eplug_sc))
 	{
