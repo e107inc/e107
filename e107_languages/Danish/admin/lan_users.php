@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_users.php,v $
-|        $Revision: 1.4 $
-|        $Date: 2005-09-10 22:21:30 $
+|        $Revision: 1.5 $
+|        $Date: 2005-10-06 14:05:05 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -122,20 +122,21 @@ define("USRLAN_127", "Tillad kommentarer i bruger profilen");
 
 define("USRLAN_128", "Felttype parametre");
 
-define("USRLAN_129", "Ingen IP adresse fundet i brugers info, IP ikke banlyst");
 define("USRLAN_130", "Feltnavnet skal være unikt");
 define("USRLAN_131", "Dette er det viste navn på feltet i genererede sider");
+define("USRLAN_132", "Slået til");
+
+define("USRLAN_133", "Brugere vil være påkrævet at skrive en værdi i feltet når de opdaterer deres indstillinger.");
+define("USRLAN_134", "Anvendelig");
+
+define("USRLAN_135", "Ingen IP adresse fundet i brugers info, IP ikke banlyst");
+define("USRLAN_136", "Der er fundet flere brugere med IP adressen {IP}, IP ikke banlyst.");
+define("USRLAN_137", "Brugers IP adresse {IP} banlyst.");
 
 define("LAN_MAINADMIN","Hovedadmin");
 define("LAN_ADMIN","Admin");
 define("LAN_NOTVERIFIED","Ikke verificeret");
 define("LAN_BANNED","Banlyst");
-
-
-define("USRLAN_132", "Slået til");
-
-define("USRLAN_133", "Brugere vil være påkrævet at skrive en værdi i feltet når de opdaterer deres indstillinger.");
-define("USRLAN_134", "Anvendelig");
 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Vist Navn");
