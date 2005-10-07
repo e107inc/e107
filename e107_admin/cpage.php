@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-08-28 08:32:09 $
-|     $Author: stevedunstan $
+|     $Revision: 1.21 $
+|     $Date: 2005-10-07 13:50:11 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -115,10 +115,10 @@ class page
 			$text .= "<form action='".e_SELF."' id='newsform' method='post'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
-			<td style='width:5%; text-align: center;' class='forumheader'>ID</td>
-			<td style='width:60%' class='forumheader3'>".CUSLAN_1."</td>
-			<td style='width:15%; text-align: center;' class='forumheader3'>".CUSLAN_2."</td>
-			<td style='width:20%; text-align: center;' class='forumheader3'>".CUSLAN_3."</td>
+			<td style='width:5%; text-align: center;' class='fcaption'>ID</td>
+			<td style='width:60%' class='fcaption'>".CUSLAN_1."</td>
+			<td style='width:15%; text-align: center;' class='fcaption'>".CUSLAN_2."</td>
+			<td style='width:20%; text-align: center;' class='fcaption'>".CUSLAN_3."</td>
 			</tr>
 			";
 
@@ -127,7 +127,7 @@ class page
 				extract($pge);
 				$text .= "
 				<tr>
-				<td style='width:5%; text-align: center;' class='forumheader'>$page_id</td>
+				<td style='width:5%; text-align: center;' class='forumheader3'>$page_id</td>
 				<td style='width:60%' class='forumheader3'><a href='".e_BASE."page.php?$page_id'>$page_title</a></td>
 				<td style='width:15%; text-align: center;' class='forumheader3'>".($page_theme ? "menu" : "page")."</td>
 				<td style='width:20%; text-align: center;' class='forumheader3'>
