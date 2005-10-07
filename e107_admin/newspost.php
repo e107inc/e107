@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.93 $
-|   $Date: 2005-09-05 09:00:18 $
-|   $Author: stevedunstan $
+|   $Revision: 1.94 $
+|   $Date: 2005-10-07 13:49:41 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 
 */
@@ -64,7 +64,7 @@ if (e_QUERY) {
 }
 
 $from = ($from ? $from : 0);
-$amount = 50;
+$amount = 10;
 
 // ##### Main loop -----------------------------------------------------------------------------------------------------------------------
 
@@ -268,7 +268,7 @@ class newspost {
 	function show_existing_items($action, $sub_action, $id, $from, $amount) {
 		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 		global $sql, $rs, $ns, $tp;
-		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; height : 300px; overflow : auto; margin-left: auto; margin-right: auto;'>";
+		$text = "<div style='text-align:center'>";
 
 		if (isset($_POST['searchquery'])) {
 			$query = "news_title REGEXP('".$_POST['searchquery']."') OR news_body REGEXP('".$_POST['searchquery']."') OR news_extended REGEXP('".$_POST['searchquery']."') ORDER BY news_datestamp DESC";
@@ -282,7 +282,7 @@ class newspost {
 			$newsarray = $sql -> db_getList();
 			$text .= "
 			<form action='".e_SELF."' id='newsform' method='post'>
-			<table class='fborder' style='width:96%'>
+			<table class='fborder' style='".ADMIN_WIDTH."'>
 			<tr>
 			<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.news_id.".($id == "desc" ? "asc" : "desc").".$from'>".LAN_NEWS_45."</a></td>
 			<td style='width:55%' class='fcaption'><a href='".e_SELF."?main.news_title.".($id == "desc" ? "asc" : "desc").".$from'>".NWSLAN_40."</a></td>
@@ -320,10 +320,10 @@ class newspost {
 			} else {
 			$text .= "<div style='text-align:center'>".NWSLAN_43."</div>";
 		}
-		$text .= "</div>";
 
 		$newsposts = $sql->db_Count("news");
 
+		$text .= "<div style='text-align:center; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto'>";
 		if ($newsposts > $amount && !$_POST['searchquery']) {
 			$a = $newsposts/$amount;
 			$r = explode(".", $a);
@@ -338,7 +338,7 @@ class newspost {
 			}
 		}
 
-		$text .= "<br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".NWSLAN_63."' />\n</p>\n</form>\n</div>";
+		$text .= "</div><br /><form method='post' action='".e_SELF."'>\n<p>\n<input class='tbox' type='text' name='searchquery' size='20' value='' maxlength='50' />\n<input class='button' type='submit' name='searchsubmit' value='".NWSLAN_63."' />\n</p>\n</form>\n</div>";
 
 
 
@@ -972,43 +972,7 @@ class newspost {
 	}
 
 	function show_categories($sub_action, $id) {
-		// ##### Display scrolling list of existing news items ---------------------------------------------------------------------------------------------------------
 		global $sql, $rs, $ns, $tp;
-		$text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 200px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
-		if ($category_total = $sql->db_Select("news_category")) {
-			$text .= "
-			<form action='".e_SELF."?cat' id='newscatform' method='post'>
-			<table class='fborder' style='width:99%'>
-			<tr>
-			<td style='width:5%' class='fcaption'>".LAN_NEWS_45."</td>
-			<td style='width:5%' class='fcaption'>&nbsp;</td>
-			<td style='width:70%' class='fcaption'>".NWSLAN_6."</td>
-			<td style='width:20%; text-align:center' class='fcaption'>".LAN_OPTIONS."</td>
-			</tr>";
-			while ($row = $sql->db_Fetch()) {
-				extract($row);
-
-				if ($category_icon) {
-					$icon = (strstr($category_icon, "images/") ? THEME."$category_icon" : e_IMAGE."icons/$category_icon");
-				}
-
-				$text .= "<tr>
-				<td style='width:5%; text-align:center' class='forumheader3'>{$category_id}</td>
-				<td style='width:5%; text-align:center' class='forumheader3'><img src='$icon' alt='' style='vertical-align:middle' /></td>
-				<td style='width:70%' class='forumheader3'>$category_name</td>
-				<td style='width:20%; text-align:center' class='forumheader3'>
-				<a href='".e_SELF."?cat.edit.{$category_id}'>".ADMIN_EDIT_ICON."</a>
-				<input type='image' title='".LAN_DELETE."' name='delete[category_{$category_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(NWSLAN_37." [ID: $category_id ]")."') \"/>
-				</td>
-				</tr>\n";
-			}
-			$text .= "</table></form>";
-			} else {
-			$text .= "<div style='text-align:center'><div style='vertical-align:center'>".NWSLAN_10."</div>";
-		}
-		$text .= "</div>";
-		$ns->tablerender(NWSLAN_51, $text);
-
 		$handle = opendir(e_IMAGE."icons");
 		while ($file = readdir($handle)) {
 			if ($file != "." && $file != ".." && $file != "/" && $file != "null.txt" && $file != "CVS") {
@@ -1016,8 +980,6 @@ class newspost {
 			}
 		}
 		closedir($handle);
-
-		unset($category_name, $category_icon);
 
 		if ($sub_action == "edit") {
 			if ($sql->db_Select("news_category", "*", "category_id='$id' ")) {
@@ -1059,6 +1021,43 @@ class newspost {
 		</div>";
 
 		$ns->tablerender(NWSLAN_56, $text);
+		
+		unset($category_name, $category_icon);
+		
+		$text = "<div style='text-align: center'>";
+		if ($category_total = $sql->db_Select("news_category")) {
+			$text .= "
+			<form action='".e_SELF."?cat' id='newscatform' method='post'>
+			<table class='fborder' style='".ADMIN_WIDTH."'>
+			<tr>
+			<td style='width:5%' class='fcaption'>".LAN_NEWS_45."</td>
+			<td style='width:5%' class='fcaption'>&nbsp;</td>
+			<td style='width:70%' class='fcaption'>".NWSLAN_6."</td>
+			<td style='width:20%; text-align:center' class='fcaption'>".LAN_OPTIONS."</td>
+			</tr>";
+			while ($row = $sql->db_Fetch()) {
+				extract($row);
+
+				if ($category_icon) {
+					$icon = (strstr($category_icon, "images/") ? THEME."$category_icon" : e_IMAGE."icons/$category_icon");
+				}
+
+				$text .= "<tr>
+				<td style='width:5%; text-align:center' class='forumheader3'>{$category_id}</td>
+				<td style='width:5%; text-align:center' class='forumheader3'><img src='$icon' alt='' style='vertical-align:middle' /></td>
+				<td style='width:70%' class='forumheader3'>$category_name</td>
+				<td style='width:20%; text-align:center' class='forumheader3'>
+				<a href='".e_SELF."?cat.edit.{$category_id}'>".ADMIN_EDIT_ICON."</a>
+				<input type='image' title='".LAN_DELETE."' name='delete[category_{$category_id}]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(NWSLAN_37." [ID: $category_id ]")."') \"/>
+				</td>
+				</tr>\n";
+			}
+			$text .= "</table></form>";
+			} else {
+			$text .= "<div style='text-align:center'><div style='vertical-align:center'>".NWSLAN_10."</div>";
+		}
+		$text .= "</div>";
+		$ns->tablerender(NWSLAN_51, $text);
 	}
 
 	function show_news_prefs() {
@@ -1195,9 +1194,9 @@ class newspost {
 	function submitted_news($sub_action, $id) {
 		global $rs, $ns, $tp;
 		$sql2 = new db;
-		$text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 300px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
+		$text = "<div style='text-align: center'>";
 		if ($category_total = $sql2->db_Select("submitnews", "*", "submitnews_id !='' ORDER BY submitnews_id DESC")) {
-			$text .= "<table class='fborder' style='width:99%'>
+			$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
 			<tr>
 			<td style='width:5%' class='fcaption'>ID</td>
 			<td style='width:70%' class='fcaption'>".NWSLAN_57."</td>
