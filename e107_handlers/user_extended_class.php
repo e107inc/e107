@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-09-01 19:01:41 $
+|     $Revision: 1.30 $
+|     $Date: 2005-10-07 12:19:24 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -252,6 +252,10 @@ class e107_user_extended
 	{
 		global $cal, $tp;
 		$choices = explode(",",$struct['user_extended_struct_values']);
+		if(trim($curval) == "" && $struct['user_extended_struct_default'] != "")
+		{
+			$curval = $struct['user_extended_struct_default'];
+		}
 		foreach($choices as $k => $v)
 		{
 			$choices[$k] = str_replace("[E_COMMA]", ",", $choices[$k]);
