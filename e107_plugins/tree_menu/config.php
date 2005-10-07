@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/config.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-10-07 02:54:20 $
+|     $Revision: 1.7 $
+|     $Date: 2005-10-07 03:29:47 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -28,9 +28,6 @@ if (!getperms("4")) {
 require_once(e_ADMIN."auth.php");
 	
 if (isset($_POST['update_menu'])) {
-	$_POST['tm_class1'] = ($_POST['tm_class1'] ? $_POST['tm_class1'] : "button treemenu");
-	$_POST['tm_class2'] = ($_POST['tm_class2'] ? $_POST['tm_class2'] : "button treemenu");
-
 	foreach($_POST as $key => $value) {
 		if ($value != TREE_L2) {
 			$menu_pref[$key] = $value;
