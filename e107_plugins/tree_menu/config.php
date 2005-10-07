@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/config.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-07-06 14:49:51 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2005-10-07 02:54:20 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 $eplug_admin = TRUE;
@@ -28,7 +28,6 @@ if (!getperms("4")) {
 require_once(e_ADMIN."auth.php");
 	
 if (isset($_POST['update_menu'])) {
-//	global $menu_pref;
 	$_POST['tm_class1'] = ($_POST['tm_class1'] ? $_POST['tm_class1'] : "button treemenu");
 	$_POST['tm_class2'] = ($_POST['tm_class2'] ? $_POST['tm_class2'] : "button treemenu");
 
@@ -48,22 +47,22 @@ $text = "
 	<table style='".ADMIN_WIDTH."' class='fborder' >
 	 
 	<tr>
-	<td style='width: 50%;' class='forumheader3'>CSS class to use for non-openable links</td>
+	<td style='width: 50%;' class='forumheader3'>".TREE_L6."</td>
 	<td style='width: 50%;' class='forumheader3'><input class='tbox' type='text' name='tm_class1' size='40' value='".$menu_pref['tm_class1']."' maxlength='20' /></td>
 	</tr>
 
 	<tr>
-	<td style='width: 50%;' class='forumheader3'>CSS class to use for openable links</td>
+	<td style='width: 50%;' class='forumheader3'>".TREE_L7."</td>
 	<td style='width: 50%;' class='forumheader3'><input class='tbox' type='text' name='tm_class2' size='40' value='".$menu_pref['tm_class2']."' maxlength='20' /></td>
 	</tr>
 
 	<tr>
-	<td style='width: 50%;' class='forumheader3'>CSS class to use for opened links</td>
+	<td style='width: 50%;' class='forumheader3'>".TREE_L8."</td>
 	<td style='width: 50%;' class='forumheader3'><input class='tbox' type='text' name='tm_class3' size='40' value='".$menu_pref['tm_class3']."' maxlength='20' /></td>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>Use spacer class between main links</td>
+	<td style='width:50%' class='forumheader3'>".TREE_L9."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input type='radio' name='tm_spacer' value='1'".($menu_pref['tm_spacer'] ? " checked='checked'" : "")." /> ".TREE_L4."&nbsp;&nbsp;
 	<input type='radio' name='tm_spacer' value='0'".(!$menu_pref['tm_spacer'] ? " checked='checked'" : "")." /> ".TREE_L5."
@@ -80,7 +79,5 @@ $text = "
 $ns->tablerender(TREE_L1, $text);
 	
 require_once(e_ADMIN."footer.php");
-	
-//        <input class='tbox' type='text' name='$var' size='80' value='".$menu_pref[$var]."' maxlength='300' />
-	
+
 ?>
