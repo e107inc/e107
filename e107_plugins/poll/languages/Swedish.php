@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Swedish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:53 $
+|     $Revision: 1.3 $
+|     $Date: 2005-10-08 06:34:30 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -62,5 +62,6 @@ define("POLLAN_42", "Denna omröstning är begränsad till endast administratör
 define("POLLAN_43", "Du har inte tillåtelse att rösta i denna omröstning");
 
 define("POLLAN_44", "Radera denna omröstning?");
+define("POLLAN_45", "Omröstningen uppdaterades");
 
 ?>
