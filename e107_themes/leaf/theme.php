@@ -275,7 +275,8 @@ function tablestyle($caption, $text, $mode=""){
 		        }
 		}
 	}else{ // default content styles. Only renders content (text), no caption. Page captions are handled in the layout above.
-		echo "<div class='contentbody'>".$text."</div>";
+		$cat = ($caption && $caption != PAGE_NAME) ? $caption."<br /><br />" : "";
+		echo "<div class='contentbody'>".$cat.$text."</div>";
  	}
 }
 
