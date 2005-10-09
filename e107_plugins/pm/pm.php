@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-09-19 11:26:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.16 $
+|     $Date: 2005-10-09 22:32:35 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -102,6 +102,7 @@ if("del" == $action || isset($_POST['pm_delete_selected']))
 			$action = "outbox";
 		}
 	}
+	unset($qs);
 }
 
 if('block' == $action)
