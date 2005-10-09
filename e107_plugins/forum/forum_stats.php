@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_stats.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-08-10 09:35:39 $
-|     $Author: stevedunstan $
+|     $Revision: 1.9 $
+|     $Date: 2005-10-09 23:04:24 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -247,7 +247,7 @@ foreach($top_posters as $ma)
 	<td style='width: 50%;' class='forumheader3'>
 
 	<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div>
-	<div style='background-image: url($bar); width: ".$percentage."%; height: 14px; float: left;'></div>
+	<div style='background-image: url($bar); width: ".intval($percentage)."%; height: 14px; float: left;'></div>
 	<div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>
 
 	</td>
@@ -285,7 +285,7 @@ foreach($top_topic_starters as $ma)
 	<td style='width: 50%; text-align: center;' class='forumheader3'>
 
 	<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div>
-	<div style='background-image: url($bar); width: ".$percentage."%; height: 14px; float: left;'></div>
+	<div style='background-image: url($bar); width: ".intval($percentage)."%; height: 14px; float: left;'></div>
 	<div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>
 	
 	</td>
@@ -323,7 +323,7 @@ foreach($top_repliers as $ma)
 	<td style='width: 50%; text-align: center;' class='forumheader3'>
 	
 	<div style='background-image: url($barl); width: 5px; height: 14px; float: left;'></div>
-	<div style='background-image: url($bar); width: ".$percentage."%; height: 14px; float: left;'></div>
+	<div style='background-image: url($bar); width: ".intval($percentage)."%; height: 14px; float: left;'></div>
 	<div style='background-image: url($barr); width: 5px; height: 14px; float: left;'></div>
 	
 	</td>
