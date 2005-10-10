@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/oldpolls.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-25 09:37:12 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2005-10-10 01:40:08 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -119,11 +119,11 @@ if(!count($oldpollArray))
 	exit;
 }
 
-$text = "<table style='width: 100%;'>
+$text = "<table class='fborder' style='width: 95%;'>
 <tr>
-<td class='forumheader3' style='width: 50%;'>".POLLAN_34."</td>
-<td class='forumheader3' style='width: 20%;'>".POLLAN_35."</td>
-<td class='forumheader3' style='width: 30%;'>".POLLAN_36."</td>
+<td class='fcaption' style='width: 55%;'>".POLLAN_34."</td>
+<td class='fcaption' style='width: 15%;'>".POLLAN_35."</td>
+<td class='fcaption' style='width: 30%;'>".POLLAN_36."</td>
 </tr>\n";
 
 foreach($oldpollArray as $oldpoll)
@@ -133,8 +133,8 @@ foreach($oldpollArray as $oldpoll)
 	$to = $gen->convert_date($poll_end_datestamp, "short");
 
 	$text .= "<tr>
-	<td class='forumheader3' style='width: 50%;'><a href='".e_SELF."?$poll_id'>$poll_title</a></td>
-	<td class='forumheader3' style='width: 20%;'><a href='".e_BASE."user.php?id.$poll_admin_id'>$user_name</a></td>
+	<td class='forumheader3' style='width: 55%;'><a href='".e_SELF."?$poll_id'>$poll_title</a></td>
+	<td class='forumheader3' style='width: 15%;'><a href='".e_BASE."user.php?id.$poll_admin_id'>$user_name</a></td>
 	<td class='forumheader3' style='width: 30%;'>$from to $to</td>
 	</tr>\n";
 }
