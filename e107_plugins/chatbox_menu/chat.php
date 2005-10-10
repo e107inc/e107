@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.10 $
+|     $Date: 2005-10-10 22:33:08 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -62,11 +62,37 @@ if($_POST['moderate'] && CB_MOD)
 	$message = CHATBOX_L18;
 }
 
+// when coming from search.php
+if (strstr(e_QUERY, "fs")) {
+	$cgtm = str_replace(".fs", "", e_QUERY);
+	$fs = TRUE;
+}
+// end search
+
 if (e_QUERY ? $from = e_QUERY : $from = 0);
 
 $chat_total = $sql->db_Count("chatbox");
 
 $qry_where = (CB_MOD ? "1" : "cb_blocked=0");
+
+// when coming from search.php calculate page number
+if ($fs) {
+	$page_count = 0;
+	$row_count = 0;
+	$sql->db_Select("chatbox", "*", "{$qry_where} ORDER BY cb_datestamp DESC");
+	while ($row = $sql -> db_Fetch()) {
+		if ($row['cb_id'] == $cgtm) {
+			$from = $page_count;
+			break;
+		}
+		$row_count++;
+		if ($row_count == 30) {
+			$row_count = 0;
+			$page_count += 30;
+		}
+	}
+}
+// end search
 
 $sql->db_Select("chatbox", "*", "{$qry_where} ORDER BY cb_datestamp DESC LIMIT $from, 30");
 $obj2 = new convert;
