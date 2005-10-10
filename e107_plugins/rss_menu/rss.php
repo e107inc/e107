@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-08-28 10:23:54 $
-|     $Author: stevedunstan $
+|     $Revision: 1.25 $
+|     $Date: 2005-10-10 01:08:18 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -56,14 +56,16 @@ class rssCreate {
 	var $rssItems;
 	var $rssQuery;
 	var $topicid;
+	var $offset;
 
 	function rssCreate($content_type, $rss_type, $topic_id) {
 		// constructor
 		$sql_rs = new db;
-		global $tp, $sql, $e107, $PLUGINS_DIRECTORY;
+		global $tp, $sql, $e107, $PLUGINS_DIRECTORY, $pref;
 		$this -> path = e_PLUGIN."rss_menu/";
 		$this -> rssType = $rss_type;
 		$this -> topicid = $topic_id;
+		$this -> offset = $pref['time_offset'] * 3600;
 
 		switch ($content_type) {
 			case 1:
@@ -91,7 +93,7 @@ class rssCreate {
 
 					$this -> rssItems[$loop]['comment'] = ( $value['news_allow_comments'] ? "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id : "Comments are turned off for this item");
 
-					$this -> rssItems[$loop]['pubdate'] = strftime("%a, %d %b %Y %I:%M:00 GMT", $value['news_datestamp']);
+					$this -> rssItems[$loop]['pubdate'] = strftime("%a, %d %b %Y %H:%M:00", ($value['news_datestamp'] + $this -> offset));
 
 					$loop++;
 				}
@@ -354,7 +356,7 @@ class rssCreate {
                         $catid = ($categoryid) ? $row[$categoryid] : "";
 						$catlink = ($categorylink) ? str_replace("#",$catid,$categorylink) : "";
 						if($categoryname){ $this -> rssItems[$loop]['category'] = "<category domain='".$e107->http_path.$catlink."'>".$tp -> toRss($row[$categoryname])."</category>"; }
-						if($datestamp){	$this -> rssItems[$loop]['pubdate'] = strftime("%a, %d %b %Y %I:%M:00 GMT", $row[$datestamp]);  }
+						if($datestamp){	$this -> rssItems[$loop]['pubdate'] = strftime("%a, %d %b %Y %H:%M:00", ($row[$datestamp] + $this -> offset));  }
                         $loop++;
 					}
 				}
@@ -371,6 +373,7 @@ class rssCreate {
 	function buildRss() {
 		global $sql, $pref, $tp;
 		header('Content-type: text/xml', TRUE);
+		$time = time();
 		switch ($this -> rssType) {
 			case 1:		// Rss 1.0
 				echo "<?xml version=\"1.0\" encoding=\"".CHARSET."\" ?>
@@ -381,7 +384,7 @@ class rssCreate {
 						<title>".$tp->toRss($pref['sitename'])."</title>
 						<link>".$pref['siteurl']."</link>
 						<description>".$tp->toRss($pref['sitedescription'])."</description>
-						<lastBuildDate>".$itemdate = strftime("%a, %d %b %Y %I:%M:00 GMT", time())."</lastBuildDate>
+						<lastBuildDate>".$itemdate = strftime("%a, %d %b %Y %H:%M:00", ($time + $this -> offset))."</lastBuildDate>
 						<docs>http://backend.userland.com/rss092</docs>";
 					foreach($this -> rssItems as $value) {
 						echo "
@@ -414,8 +417,8 @@ class rssCreate {
 				<copyright>".preg_replace("#\<br \/\>|\n|\r#si", "", SITEDISCLAIMER)."</copyright>
 				<managingEditor>".$pref['siteadmin']." - ".$pref['siteadminemail']."</managingEditor>
 				<webMaster>".$pref['siteadminemail']."</webMaster>
-				<pubDate>".strftime("%a, %d %b %Y %I:%M:00 GMT", time())."</pubDate>
-				<lastBuildDate>".strftime("%a, %d %b %Y %I:%M:00 GMT", time())."</lastBuildDate>
+				<pubDate>".strftime("%a, %d %b %Y %H:%M:00", ($time + $this -> offset))."</pubDate>
+				<lastBuildDate>".strftime("%a, %d %b %Y %H:%M:00", ($time + $this -> offset))."</lastBuildDate>
 				<docs>http://backend.userland.com/rss</docs>
 				<generator>e107 (http://e107.org)</generator>
 				<ttl>60</ttl>
@@ -467,7 +470,7 @@ class rssCreate {
 				<link>".$pref['siteurl']."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>
 				<dc:language>en</dc:language>
-				<dc:date>".strftime("%a, %d %b %Y %I:%M:00 GMT", time())."</dc:date>
+				<dc:date>".strftime("%a, %d %b %Y %H:%M:00", ($time + $this -> offset))."</dc:date>
 				<dc:creator>".$pref['siteadminemail']."</dc:creator>
 				<admin:generatorAgent rdf:resource=\"http://e107.org\" />
 				<admin:errorReportsTo rdf:resource=\"mailto:".$pref['siteadminemail']."\" />
@@ -493,7 +496,7 @@ class rssCreate {
 					<item rdf:about=\"".$value['link']."\">
 					<title>".$value['title']."</title>
 					<link>".$value['link']."</link>
-					<dc:date>".strftime("%a, %d %b %Y %I:%M:00 GMT", time())."</dc:date>
+					<dc:date>".strftime("%a, %d %b %Y %H:%M:00", ($time + $this -> offset))."</dc:date>
 					<dc:creator>".$value['author']."</dc:creator>
 					<dc:subject>".$value['category_name']."</dc:subject>
 					<description>".$value['description']."</description>
