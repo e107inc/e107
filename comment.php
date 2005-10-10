@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-08-11 19:35:18 $
-|     $Author: stevedunstan $
+|     $Revision: 1.44 $
+|     $Date: 2005-10-10 01:52:12 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -245,6 +245,7 @@ if ($action == "reply") {
 				exit;
 			} else {
 				$row = $sql->db_Fetch();
+				$comments_poll = $row['poll_comment'];
 				$subject = $row['poll_title'];
 				define("e_PAGETITLE", LAN_101." / ".LAN_99." / ".$subject."");
 				require_once(HEADERF);
@@ -252,7 +253,7 @@ if ($action == "reply") {
 				$field = $row['poll_id'];
 				$comtype = 4;
 
-				if(!$row['poll_comment'])
+				if(!$comments_poll)
 				{
 					require_once(FOOTERF);
 					exit;
