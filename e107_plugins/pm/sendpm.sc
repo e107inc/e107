@@ -2,8 +2,6 @@
 @include_once(e_PLUGIN."pm/languages/English.php");
 global $sysprefs, $pm_prefs;
 $pm_prefs = $sysprefs->getArray("pm_prefs");
-
-if(!$parm) { return ""; }
 if(check_class($pm_prefs['pm_class']))
 {
 	if(file_exists(THEME."forum/pm.png"))
