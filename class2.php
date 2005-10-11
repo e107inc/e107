@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.223 $
-|     $Date: 2005-10-05 08:45:59 $
-|     $Author: sweetas $
+|     $Revision: 1.224 $
+|     $Date: 2005-10-11 19:59:29 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -1006,6 +1006,8 @@ function init_session() {
 		}
 		if ($sql->db_Select_gen($qry)) {
 			$result=$sql->db_Fetch();
+			set_extended_defaults($result);
+
 			$currentUser = $result;
 			//extract($result); // removed in preference of the $result array
 
@@ -1062,6 +1064,22 @@ function init_session() {
 
 	define('USERCLASS_LIST', class_list());
 	define('e_CLASS_REGEXP', "(^|,)(".str_replace(",", "|", USERCLASS_LIST).")(,|$)");
+}
+
+function set_extended_defaults(&$var)
+{
+	global $sql;
+	$qry = "SHOW COLUMNS FROM #user_extended ";
+	if($sql->db_Select_gen($qry))
+	{
+		while($row = $sql->db_Fetch())
+		{
+			if($row['Default'] != "" && ($var[$row['Field']] == NULL || $var[$row['Field']] == "" ))
+			{
+				$var[$row['Field']] = $row['Default'];
+			}
+		}
+	}
 }
 
 function cookie($name, $value, $expire, $path = "/", $domain = "", $secure = 0) {
