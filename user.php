@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-08-02 12:25:38 $
+|     $Revision: 1.23 $
+|     $Date: 2005-10-11 19:59:29 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -105,6 +105,8 @@ if (isset($id)) {
 		include_once(e_HANDLER."comment_class.php");
 	}
 	$user_data = $sql->db_Fetch();
+	set_extended_defaults($user_data);
+	
 	cachevars('userinfo_{$id}',$user_data);
 	$text = renderuser($user_data);
 	$ns->tablerender(LAN_402, $text);
