@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.225 $
-|     $Date: 2005-10-12 03:29:34 $
+|     $Revision: 1.226 $
+|     $Date: 2005-10-12 20:59:10 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -777,6 +777,66 @@ function getperms($arg, $ap = ADMINPERMS) {
 }
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
+/**
+ * Get the user data from user and user_extended tables
+ *
+ * @return array
+ */
+function get_user_data($uid, $extra = "", $force_join = TRUE)
+{
+	global $pref, $sql;
+	if($ret = getcachedvars("userdata_{$uid}"))
+	{
+		return $ret;
+	}
+	if($force_join == TRUE || array_key_exists('ue_upgrade', $pref) || array_key_exists('signup_maxip'))
+	{
+		$qry = "
+		SELECT u.*, ue.* FROM #user AS u
+		LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
+		WHERE u.user_id='{$uid}' {$extra}
+		";
+	}
+	else
+	{
+		$qry = "SELECT * FROM #user AS u WHERE u.user_id='{$uid}' {$extra}";
+	}
+	if ($sql->db_Select_gen($qry))
+	{
+		$var = $sql->db_Fetch();
+		$extended_struct = getcachedvars("extended_struct");
+		if(!$extended_struct)
+		{
+			unset($extended_struct);
+			$qry = "SHOW COLUMNS FROM #user_extended ";
+			if($sql->db_Select_gen($qry))
+			{
+				while($row = $sql->db_Fetch())
+				{
+					if($row['Default'] != "")
+					{
+						$extended_struct[] = $row;
+					}
+				}
+				cachevars("extended_struct", $extended_struct);
+			}
+		}
+		
+		foreach($extended_struct as $row)
+		{
+			if($row['Default'] != "" && ($var[$row['Field']] == NULL || $var[$row['Field']] == "" ))
+			{
+				$var[$row['Field']] = $row['Default'];
+			}
+		}
+		cachevars("userdata_{$uid}", $var);
+		return $var;
+	}
+	return FALSE;
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
 function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 	global $pref, $user_pref, $tp, $PrefCache, $sql, $eArrayStorage;
 	if ($table == 'core') {
@@ -973,7 +1033,7 @@ function init_session() {
 	# - return boolean
 	# - scope public
 	*/
-	global $sql, $pref, $user_pref, $tp, $currentUser, $e107;
+	global $sql, $pref, $user_pref, $tp, $currentUser;
 
 	if (!isset($_COOKIE[$pref['cookie_name']]) && !isset($_SESSION[$pref['cookie_name']])) {
 		define("USER", FALSE);
@@ -997,7 +1057,7 @@ function init_session() {
 			return (FALSE);
 		}
 		
-		if($result = $e107->get_user_data($uid, "AND md5(u.user_password)='{$upw}'", FALSE))
+		if($result = get_user_data($uid, "AND md5(u.user_password)='{$upw}'", FALSE))
 		{
 			$currentUser = $result;
 			//extract($result); // removed in preference of the $result array

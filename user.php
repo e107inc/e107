@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-10-12 03:29:34 $
+|     $Revision: 1.25 $
+|     $Date: 2005-10-12 20:59:09 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -87,23 +87,39 @@ if (isset($id))
 		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], 'profile', $id, $pid, $_POST['subject']);
 	}
 
-	$user_data = $e107->get_user_data(intval($id));
-	if (!$user_data)
-	{
-		$text = "<div style='text-align:center'>".LAN_400."</div>";
-		$ns->tablerender(LAN_20, $text);
-		require_once(FOOTERF);
-		exit;
-	}
-
 	if($pref['profile_comments'])
 	{
 		include_once(e_HANDLER."comment_class.php");
 	}
-	
-	cachevars("userinfo_{$id}",$user_data);
-	$text = renderuser($user_data);
-	$ns->tablerender(LAN_402, $text);
+
+//	$user_data = $e107->get_user_data(intval($id));
+
+
+//	if (!$user_data)
+//	{
+//		$text = "<div style='text-align:center'>".LAN_400."</div>";
+//		$ns->tablerender(LAN_20, $text);
+//		require_once(FOOTERF);
+//		exit;
+//	}
+
+//	cachevars("userinfo_{$id}",$user_data);
+//	$text = renderuser($user_data);
+//	$ns->tablerender(LAN_402, $text);
+//	unset($text);
+//	require_once(FOOTERF);
+//	exit;
+
+
+	if($text = renderuser($id))
+	{
+		$ns->tablerender(LAN_402, $text);
+	}
+	else
+	{
+		$text = "<div style='text-align:center'>".LAN_400."</div>";
+		$ns->tablerender(LAN_20, $text);
+	}
 	unset($text);
 	require_once(FOOTERF);
 	exit;
@@ -181,13 +197,18 @@ $ns->tablerender(LAN_140, $text);
 require_once(e_HANDLER."np_class.php");
 $ix = new nextprev("user.php", $from, $records, $users_total, LAN_138, $records.".".$order);
 
-function renderuser($user_array, $mode = "verbose")
+function renderuser($uid, $mode = "verbose")
 {
 	global $sql, $pref, $tp, $sc_style, $user_shortcodes;
 	global $EXTENDED_START, $EXTENDED_TABLE, $EXTENDED_END, $USER_SHORT_TEMPLATE, $USER_FULL_TEMPLATE;
 	global $user;
 	$user = $user_array;
 	
+	if(!$user = get_user_data($uid))
+	{
+		return FALSE;
+	}
+
 	if($mode == 'verbose')
 	{
 		return $tp->parseTemplate($USER_FULL_TEMPLATE, FALSE, $user_shortcodes);
