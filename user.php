@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-10-11 19:59:29 $
+|     $Revision: 1.24 $
+|     $Date: 2005-10-12 03:29:34 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -71,8 +71,8 @@ if ($records > 30) {
 	$records = 30;
 }
 
-if (isset($id)) {
-
+if (isset($id))
+{
 	if ($id == 0) {
 		$text = "<div style='text-align:center'>".LAN_137." ".SITENAME."</div>";
 		$ns->tablerender(LAN_20, $text);
@@ -87,12 +87,8 @@ if (isset($id)) {
 		$cobj->enter_comment($_POST['author_name'], $_POST['comment'], 'profile', $id, $pid, $_POST['subject']);
 	}
 
-	$qry = "
-	SELECT u.*, ue.* FROM #user AS u
-	LEFT JOIN #user_extended AS ue ON u.user_id = ue.user_extended_id
-	WHERE u.user_id = {$id}
-	";
-	if (!$sql->db_Select_gen($qry))
+	$user_data = $e107->get_user_data(intval($id));
+	if (!$user_data)
 	{
 		$text = "<div style='text-align:center'>".LAN_400."</div>";
 		$ns->tablerender(LAN_20, $text);
@@ -104,10 +100,8 @@ if (isset($id)) {
 	{
 		include_once(e_HANDLER."comment_class.php");
 	}
-	$user_data = $sql->db_Fetch();
-	set_extended_defaults($user_data);
 	
-	cachevars('userinfo_{$id}',$user_data);
+	cachevars("userinfo_{$id}",$user_data);
 	$text = renderuser($user_data);
 	$ns->tablerender(LAN_402, $text);
 	unset($text);
@@ -179,9 +173,7 @@ if (!$sql->db_Select("user", "*", "ORDER BY user_id $order LIMIT $from,$records"
 	foreach ($userList as $row) {
 		$text .= renderuser($row, "short");
 	}
-
 	$text .= "</table>\n</div>";
-
 }
 
 $ns->tablerender(LAN_140, $text);
@@ -189,12 +181,13 @@ $ns->tablerender(LAN_140, $text);
 require_once(e_HANDLER."np_class.php");
 $ix = new nextprev("user.php", $from, $records, $users_total, LAN_138, $records.".".$order);
 
-function renderuser($user_array, $mode = "verbose") {
+function renderuser($user_array, $mode = "verbose")
+{
 	global $sql, $pref, $tp, $sc_style, $user_shortcodes;
 	global $EXTENDED_START, $EXTENDED_TABLE, $EXTENDED_END, $USER_SHORT_TEMPLATE, $USER_FULL_TEMPLATE;
 	global $user;
 	$user = $user_array;
-
+	
 	if($mode == 'verbose')
 	{
 		return $tp->parseTemplate($USER_FULL_TEMPLATE, FALSE, $user_shortcodes);
@@ -206,6 +199,5 @@ function renderuser($user_array, $mode = "verbose") {
 }
 
 require_once(FOOTERF);
-
 
 ?>
