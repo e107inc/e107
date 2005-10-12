@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.224 $
-|     $Date: 2005-10-11 19:59:29 $
+|     $Revision: 1.225 $
+|     $Date: 2005-10-12 03:29:34 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -973,7 +973,7 @@ function init_session() {
 	# - return boolean
 	# - scope public
 	*/
-	global $sql, $pref, $user_pref, $tp, $currentUser;
+	global $sql, $pref, $user_pref, $tp, $currentUser, $e107;
 
 	if (!isset($_COOKIE[$pref['cookie_name']]) && !isset($_SESSION[$pref['cookie_name']])) {
 		define("USER", FALSE);
@@ -995,19 +995,10 @@ function init_session() {
 			define("USERCLASS", "");
 			define("LOGINMESSAGE", "Corrupted cookie detected - logged out.<br /><br />");
 			return (FALSE);
-		} if(array_key_exists('ue_upgrade', $pref) || array_key_exists('signup_maxip')) {
-			$qry = "
-			SELECT u.*, ue.* FROM #user AS u
-			LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
-			WHERE u.user_id='{$uid}' AND md5(u.user_password)='{$upw}'
-			";
-		} else {
-			$qry = "SELECT * FROM #user AS u WHERE u.user_id='{$uid}' AND md5(u.user_password)='{$upw}'";
 		}
-		if ($sql->db_Select_gen($qry)) {
-			$result=$sql->db_Fetch();
-			set_extended_defaults($result);
-
+		
+		if($result = $e107->get_user_data($uid, "AND md5(u.user_password)='{$upw}'", FALSE))
+		{
 			$currentUser = $result;
 			//extract($result); // removed in preference of the $result array
 
@@ -1066,21 +1057,6 @@ function init_session() {
 	define('e_CLASS_REGEXP', "(^|,)(".str_replace(",", "|", USERCLASS_LIST).")(,|$)");
 }
 
-function set_extended_defaults(&$var)
-{
-	global $sql;
-	$qry = "SHOW COLUMNS FROM #user_extended ";
-	if($sql->db_Select_gen($qry))
-	{
-		while($row = $sql->db_Fetch())
-		{
-			if($row['Default'] != "" && ($var[$row['Field']] == NULL || $var[$row['Field']] == "" ))
-			{
-				$var[$row['Field']] = $row['Default'];
-			}
-		}
-	}
-}
 
 function cookie($name, $value, $expire, $path = "/", $domain = "", $secure = 0) {
 	setcookie($name, $value, $expire, $path, $domain, $secure);

@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-09-02 21:46:53 $
-|     $Author: streaky $
+|     $Revision: 1.44 $
+|     $Date: 2005-10-12 03:29:34 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -206,6 +206,58 @@ class e107{
 			return ('Unknown');
 		}
 	}
+	
+	/**
+	 * Get the user data from user and user_extended tables
+	 *
+	 * @return array
+	 */
+	function get_user_data($uid, $extra = "", $force_join = TRUE)
+	{
+		global $pref, $sql, $e107cache;
+		if($force_join == TRUE || array_key_exists('ue_upgrade', $pref) || array_key_exists('signup_maxip'))
+		{
+			$qry = "
+			SELECT u.*, ue.* FROM #user AS u
+			LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
+			WHERE u.user_id='{$uid}' {$extra}
+			";
+		}
+		else
+		{
+			$qry = "SELECT * FROM #user AS u WHERE u.user_id='{$uid}' {$extra}";
+		}
+		if ($sql->db_Select_gen($qry))
+		{
+			$var = $sql->db_Fetch();
+			$extended_struct = getcachedvars("extended_struct");
+			if(!$extended_struct)
+			{
+				unset($extended_struct);
+				$qry = "SHOW COLUMNS FROM #user_extended ";
+				if($sql->db_Select_gen($qry))
+				{
+					while($row = $sql->db_Fetch())
+					{
+						if($row['Default'] != "")
+						{
+							$extended_struct[] = $row;
+						}
+					}
+					cachevars("extended_struct", $extended_struct);
+				}
+			}
+			
+			foreach($extended_struct as $row)
+			{
+				if($row['Default'] != "" && ($var[$row['Field']] == NULL || $var[$row['Field']] == "" ))
+				{
+					$var[$row['Field']] = $row['Default'];
+				}
+			}
+			return $var;
+		}
+		return FALSE;
+	}
 }
-
 ?>
