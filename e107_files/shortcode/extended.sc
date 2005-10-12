@@ -25,19 +25,7 @@ if($uid == 0)
 	}
 }
 
-if($uid == USERID)
-{
-	$udata = $currentUser;
-}
-else
-{
-	$udata = getcachedvars('userinfo_'.$uid);
-	if(!$udata)
-	{
-		$udata = $e107->get_user_data($uid);
-		cachevars('userinfo_'.$uid, $udata);
-	}
-}
+$udata = get_user_data($uid);
 
 $udata['user_class'] .= ($udata['user_class'] == "" ? "" : ",");
 $udata['user_class'] .= e_UC_PUBLIC.",".e_UC_MEMBER;
