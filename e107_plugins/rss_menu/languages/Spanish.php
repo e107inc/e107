@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/rss_menu/languages/Spanish.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-25 23:14:45 $
+|     $Revision: 1.5 $
+|     $Date: 2005-10-13 22:41:23 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -22,4 +22,16 @@ define("BACKEND_MENU_L9", "Nuestras descargas");
 
 define("RSS_LAN01", "¿Activar Feeds separados para cada categoría de noticias?");
 define("RSS_LAN02", "¿Activar Feeds separados para cada categoría de descargas?");
+
+define("RSS_NEWS","Noticias"); 
+define("RSS_COM","Comentarios"); 
+define("RSS_ART","Artículos"); 
+define("RSS_REV", "Anñalisis"); 
+define("RSS_FT","Temas del foro"); 
+define("RSS_FP","Envíos del foro"); 
+define("RSS_FSP","Envío fijo del foro"); 
+define("RSS_BUG","Bugtracker"); 
+define("RSS_FOR","Foro"); 
+define("RSS_DL","Descargas"); 
+
 ?>

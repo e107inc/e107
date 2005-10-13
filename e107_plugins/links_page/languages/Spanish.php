@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-07-14 15:12:10 $
+|     $Revision: 1.18 $
+|     $Date: 2005-10-13 22:41:23 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-if(!defined("PAGE_NAME")){define("PAGE_NAME", "Enlaces");}
+//if(!defined("PAGE_NAME")){define("PAGE_NAME", "Enlaces");}
 
 define("LCLAN_PLUGIN_LAN_1", "Página de enlaces");
 define("LCLAN_PLUGIN_LAN_2", "Página de enlaces para mostrar enlaces externos");
