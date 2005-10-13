@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mail.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-09-01 18:13:21 $
+|     $Revision: 1.23 $
+|     $Date: 2005-10-13 18:18:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -137,7 +137,7 @@ function sendemail($send_to, $subject, $message, $to_name, $send_from, $from_nam
 
 
 function validatemail($Email) {
-	global $HTTP_HOST;
+	$HTTP_HOST = $_SERVER['HTTP_HOST'];
 	$result = array();
 	 ;
 
@@ -149,7 +149,7 @@ function validatemail($Email) {
 
 	list ($Username, $Domain ) = split ("@", $Email);
 
-	if (getmxrr($Domain, $MXHost)) {
+	if (function_exists("getmxrr") && getmxrr($Domain, $MXHost)) {
 		$ConnectAddress = $MXHost[0];
 	} else {
 		$ConnectAddress = $Domain;

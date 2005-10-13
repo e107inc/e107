@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-24 17:45:52 $
+|     $Revision: 1.4 $
+|     $Date: 2005-10-13 18:18:00 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -23,8 +23,23 @@ $HEADER = "";
 $FOOTER = "";
 define("e_PAGETITLE","Mailing...");
 require_once(HEADERF);
-set_time_limit(180);
+set_time_limit(18000);
 session_write_close();
+
+
+if($_POST['cancel_emails']){
+	$sql -> db_Delete("generic", "gen_datestamp='".$_POST['mail_id']."' ");
+
+    $text = "<div style='text-align:center;width:220px'><br />Cancelled Successfully";
+    $text .= "<div style='text-align:center;margin-left:auto;margin-right:auto;position:absolute;left:10px;top:110px'>
+	<br /><input type='button' class='button' name='close' value='Close' onclick=\"window.close()\" />
+     </div></div>";
+
+    $ns -> tablerender("Mailing Progress", $text);
+	echo "</body></html>";
+
+	exit;
+}
 
     ob_implicit_flush();
 /*
@@ -153,10 +168,13 @@ session_write_close();
 	$unit = (1/$count)* 100;
 	echo "<div class='blocks' style='text-align:left;width:199px'><div id='bar' class='bar' style='border:0px;;width:".$cur."%' >&nbsp;</div></div>";
 
+	stopwatch();
+
     while($row = $sql-> db_Fetch()){
 
 
 // ---------------------- Mailing Part. -------------------------------------->
+
 		$activator = (substr(SITEURL, -1) == "/" ? SITEURL."signup.php?activate.".$row['user_id'].".".$row['user_sess'] : SITEURL."/signup.php?activate.".$row['user_id'].".".$row['user_sess']);
         $signup_link = ($row['user_sess']) ? "<a href='$activator'>$activator</a>" : "";
 
@@ -201,17 +219,18 @@ session_write_close();
             $pause_count = 1;
         }
 
-		// Default sleep to reduce server-load: 1/2 a second.
-		usleep(500000);
+		// Default sleep to reduce server-load: 1 second.
+		sleep(1);
 
 		$c++;
 		$pause_count++;
 	}
 	ob_end_flush();
 
-	echo "<div style='position:absolute;left:10px;top:60px'><br />";
+	echo "<div style='position:absolute;left:10px;top:50px'><br />";
 	echo count($sent)." emails were sent.<br />";
 	echo count($failed)." emails failed.<br />";
+	echo "Total time elapsed: ".stopwatch()." seconds<br />";
 	echo "</div>";
 
 	$message = $sql -> db_Delete("generic", "gen_datestamp='".$_POST['mail_id']."' ") ? "deleted" : "deleted_failed";
@@ -221,7 +240,7 @@ session_write_close();
 			$mail->SmtpClose();
 	}
 
-echo "<div style='text-align:center;margin-left:auto;margin-right:auto;position:absolute;left:10px;top:100px'>
+echo "<div style='text-align:center;margin-left:auto;margin-right:auto;position:absolute;left:10px;top:110px'>
 	<br /><input type='button' class='button' name='close' value='Close' onclick=\"window.close()\" />
      </div>";
 echo "</body></html>";
@@ -292,5 +311,20 @@ $text .= "
 </script>";
 
 	return $text;
+}
+
+
+function stopwatch(){
+  static $mt_previous = 0;
+  list($usec, $sec) = explode(" ",microtime());
+  $mt_current = (float)$usec + (float)$sec;
+  if (!$mt_previous) {
+     $mt_previous = $mt_current;
+     return "";
+  } else {
+     $mt_diff = ($mt_current - $mt_previous);
+     $mt_previous = $mt_current;
+     return round(sprintf('%.16f',$mt_diff),2);
+  }
 }
 ?>
