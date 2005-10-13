@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-09-07 13:32:50 $
+|     $Revision: 1.16 $
+|     $Date: 2005-10-13 19:02:57 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -15,20 +15,25 @@ define("ADMIN","");
 global $pref,$HANDLERS_DIRECTORY;
 $lang = e_LANGUAGE;
 $tinylang = array(
-"English" => "en",
-"Swedish" => "sv",
-"French" => "fr",
-"Spanish" => "es",
-"Greek" => "el",
-"Italian" => "it",
+"Danish" => "da",
 "Dutch" => "nl",
-"Polish" => "pl",
+"English" => "en",
+"Farsi" => "fa",
+"French" => "fr",
+"Greek" => "el",
+"Hungarian" => "hu",
+"Italian" => "it",
 "Japanese" => "ja",
 "Korean" => "ko",
-"Danish" => "da",
+"Polish" => "pl",
 "Russian" => "ru",
-"Hungarian" => "hu");
+"Spanish" => "es",
+"Swedish" => "sv"
+);
 
+if(!$tinylang[$lang]){
+ $tinylang[$lang] = "en";
+}
 
 $text = "
 	<script type='text/javascript' src='".e_HANDLER."tiny_mce/tiny_mce.js'></script>
