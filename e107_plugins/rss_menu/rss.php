@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-10-10 01:08:18 $
-|     $Author: sweetas $
+|     $Revision: 1.26 $
+|     $Date: 2005-10-13 18:55:26 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -36,6 +36,19 @@ The following should be using $eplug_rss in their plugin.php file (see chatbox)
 */
 
 require_once("../../class2.php");
+if(!require_once("languages/".e_LANGUAGE.".php")){
+	require_once("languages/English.php");
+}
+$namearray[1] = RSS_NEWS;
+$namearray[2] = RSS_ART;
+$namearray[3] = RSS_REV;
+$namearray[5] = RSS_COM;
+$namearray[6] = RSS_FT;
+$namearray[7] = RSS_FP;
+$namearray[8] = RSS_FSP;
+$namearray[10] = RSS_BUG;
+$namearray[11] = RSS_FOR;
+$namearray[12] = RSS_DL;
 
 list($content_type, $rss_type, $topic_id) = explode(".", e_QUERY);
 if (intval($rss_type) == false) {
@@ -45,7 +58,8 @@ if (intval($rss_type) == false) {
 
 if($rss = new rssCreate($content_type, $rss_type, $topic_id))
 {
-	$rss->buildRss ();
+	$rss_title = (is_numeric($content_type) && $namearray[$content_type]) ? $namearray[$content_type] : ucfirst($content_type);
+	$rss->buildRss ($rss_title);
 }
 
 class rssCreate {
@@ -330,38 +344,38 @@ class rssCreate {
 			break;
 		}
 
-        // Get Plugin RSS feeds.
+	// Get Plugin RSS feeds.
 	if($sql_rs->db_Select("plugin","*","plugin_rss REGEXP('$content_type')")){
 		$row2 = $sql_rs -> db_Fetch();
 		require_once(e_PLUGIN.$row2['plugin_path']."/plugin.php");
-        foreach($eplug_rss as $key=>$rs){
+		foreach($eplug_rss as $key=>$rs){
 			extract($rs);  // id, author, link, linkid, title, description, query, category, datestamp, enc_url, enc_length, enc_type
-    // dear McFly, I remember why I used extract() now..  to avoid this: $row[($something['whatever'])]
+	// dear McFly, I remember why I used extract() now..  to avoid this: $row[($something['whatever'])]
 				if($sql -> db_Select_gen($query)){
-   					$this -> contentType = $content_type;
-                    $this -> rssItems = array();
+					$this -> contentType = $content_type;
+					$this -> rssItems = array();
 					$tmp = $sql->db_getList();
 					$loop=0;
 					foreach($tmp as $row) {
 
 						$this -> rssItems[$loop]['author'] = $tp -> toRss($row[$author]);
 						$this -> rssItems[$loop]['title'] = $tp -> toRss($row[$title]);
-                        $item = ($itemid) ? $row[$itemid] : "";
+						$item = ($itemid) ? $row[$itemid] : "";
 						$link = str_replace("#",$item,$link);
 						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY.$link;
 						$this -> rssItems[$loop]['description'] = ($rss_type == 3) ? $tp -> toRss($row[$description]) : $tp -> toRss(substr($row[$description], 0, 100));
-                       	if(enc_url){ $this -> rssItems[$loop]['enc_url'] = $e107->http_path.$PLUGINS_DIRECTORY.$enc_url.$row[$item_id]; }
+						if(enc_url){ $this -> rssItems[$loop]['enc_url'] = $e107->http_path.$PLUGINS_DIRECTORY.$enc_url.$row[$item_id]; }
 						if($enc_leng){ $this -> rssItems[$loop]['enc_leng'] = $row[$enc_leng]; }
 						if($enc_type){ $this -> rssItems[$loop]['enc_type'] = $this->getmime($row[$enc_type]); }
-                        $catid = ($categoryid) ? $row[$categoryid] : "";
+						$catid = ($categoryid) ? $row[$categoryid] : "";
 						$catlink = ($categorylink) ? str_replace("#",$catid,$categorylink) : "";
 						if($categoryname){ $this -> rssItems[$loop]['category'] = "<category domain='".$e107->http_path.$catlink."'>".$tp -> toRss($row[$categoryname])."</category>"; }
 						if($datestamp){	$this -> rssItems[$loop]['pubdate'] = strftime("%a, %d %b %Y %H:%M:00", ($row[$datestamp] + $this -> offset));  }
-                        $loop++;
+						$loop++;
 					}
 				}
-          	}
-      }
+			}
+		}
 }
 
 	function striptags($text)
@@ -370,9 +384,12 @@ class rssCreate {
 		return $text;
 	}
 
-	function buildRss() {
+	function buildRss($rss_title) {
 		global $sql, $pref, $tp;
 		header('Content-type: text/xml', TRUE);
+
+		$rss_title = $tp->toRss($pref['sitename']." : ".$rss_title);
+
 		$time = time();
 		switch ($this -> rssType) {
 			case 1:		// Rss 1.0
@@ -381,7 +398,7 @@ class rssCreate {
 						<!-- content type=\"".$this -> contentType."\" -->
 						<rss version=\"0.92\">
 						<channel>
-						<title>".$tp->toRss($pref['sitename'])."</title>
+						<title>".$rss_title."</title>
 						<link>".$pref['siteurl']."</link>
 						<description>".$tp->toRss($pref['sitedescription'])."</description>
 						<lastBuildDate>".$itemdate = strftime("%a, %d %b %Y %H:%M:00", ($time + $this -> offset))."</lastBuildDate>
@@ -410,7 +427,7 @@ class rssCreate {
 
 				<rss version=\"2.0\">
 				<channel>
-				<title>".$pref['sitename']."</title>
+				<title>".$rss_title."</title>
 				<link>".$pref['siteurl']."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>
 				<language>en-gb</language>
@@ -423,7 +440,7 @@ class rssCreate {
 				<generator>e107 (http://e107.org)</generator>
 				<ttl>60</ttl>
 				<image>
-				<title>".$tp->toRss($pref['sitename'])."</title>
+				<title>".$rss_title."</title>
 				<url>".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON)."</url>
 				<link>".$pref['siteurl']."</link>
 				<width>88</width>
@@ -466,7 +483,7 @@ class rssCreate {
 				<!-- content type=\"".$this -> contentType."\" -->
 				<rdf:RDF xmlns=\"http://purl.org/rss/1.0/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:sy=\"http://purl.org/rss/1.0/modules/syndication/\" xmlns:admin=\"http://webns.net/mvcb/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\">
 				<channel rdf:about=\"".$pref['siteurl']."\">
-				<title>".$tp->toRss($pref['sitename'])."</title>
+				<title>".$rss_title."</title>
 				<link>".$pref['siteurl']."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>
 				<dc:language>en</dc:language>
