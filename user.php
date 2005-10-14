@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-10-12 20:59:09 $
+|     $Revision: 1.26 $
+|     $Date: 2005-10-14 01:01:59 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -92,25 +92,6 @@ if (isset($id))
 		include_once(e_HANDLER."comment_class.php");
 	}
 
-//	$user_data = $e107->get_user_data(intval($id));
-
-
-//	if (!$user_data)
-//	{
-//		$text = "<div style='text-align:center'>".LAN_400."</div>";
-//		$ns->tablerender(LAN_20, $text);
-//		require_once(FOOTERF);
-//		exit;
-//	}
-
-//	cachevars("userinfo_{$id}",$user_data);
-//	$text = renderuser($user_data);
-//	$ns->tablerender(LAN_402, $text);
-//	unset($text);
-//	require_once(FOOTERF);
-//	exit;
-
-
 	if($text = renderuser($id))
 	{
 		$ns->tablerender(LAN_402, $text);
@@ -186,7 +167,8 @@ if (!$sql->db_Select("user", "*", "ORDER BY user_id $order LIMIT $from,$records"
 	<td class='fcaption' style='width:20%'>".LAN_145."</td>
 	</tr>";
 
-	foreach ($userList as $row) {
+	foreach ($userList as $row) 
+	{
 		$text .= renderuser($row, "short");
 	}
 	$text .= "</table>\n</div>";
@@ -202,11 +184,17 @@ function renderuser($uid, $mode = "verbose")
 	global $sql, $pref, $tp, $sc_style, $user_shortcodes;
 	global $EXTENDED_START, $EXTENDED_TABLE, $EXTENDED_END, $USER_SHORT_TEMPLATE, $USER_FULL_TEMPLATE;
 	global $user;
-	$user = $user_array;
 	
-	if(!$user = get_user_data($uid))
+	if(is_array($uid))
 	{
-		return FALSE;
+		$user = $uid;
+	}
+	else
+	{
+		if(!$user = get_user_data($uid))
+		{
+			return FALSE;
+		}
 	}
 
 	if($mode == 'verbose')
