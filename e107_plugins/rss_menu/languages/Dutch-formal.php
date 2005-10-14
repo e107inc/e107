@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/rss_menu/languages/Dutch-formal.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-18 16:57:43 $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-14 20:52:00 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -21,4 +21,14 @@ define("BACKEND_MENU_L8", "Onze bugtracker meldingen");
 define("BACKEND_MENU_L9", "Onze downloads"); 
 define("RSS_LAN01", "Activeren afzonderlijke feeds voor elke nieuwscategorie?");
 define("RSS_LAN02", "Activeren afzonderlijke feeds voor elke downloadcategorie?");
+define("RSS_NEWS","Nieuws");
+define("RSS_COM","Reacties"); 
+define("RSS_ART","Artikelen");
+define("RSS_REV", "Reviews");
+define("RSS_FT","Forumdiscussies");
+define("RSS_FP","Forumberichten");
+define("RSS_FSP","Forumspecifiek bericht");
+define("RSS_BUG","Bugtracker");
+define("RSS_FOR","Forum");
+define("RSS_DL","Downloads");
 ?>

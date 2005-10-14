@@ -12,6 +12,7 @@
 +---------------------------------------------------------------+
 */
 
+define("TRACKING_MESSAGE", "Het volgen van gebruikers is niet geactiveerd. Doet u dat <a href='".e_ADMIN."users.php?options'>hier</a> .</span><br />");
 define("ONLINE_EL1", "Gasten: ");
 define("ONLINE_EL2", "Leden: ");
 define("ONLINE_EL3", "Op deze pagina: ");
