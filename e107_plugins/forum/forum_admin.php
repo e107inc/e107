@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-06-24 15:55:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.29 $
+|     $Date: 2005-10-14 08:29:57 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -356,15 +356,14 @@ if($action == 'subs')
 
 if ($delete == 'reported')
 {
-	$sql->db_Delete("tmp", "tmp_time='$del_id' ");
+	$sql->db_Delete("generic", "gen_id='$del_id' ");
 	$forum->show_message(FORLAN_118);
-	$forum->show_reported();
 }
 
 
 if ($action == "sr")
 {
-	$forum->show_reported();
+	$forum->show_reported($sub_action);
 }
 
 if (!e_QUERY || $action == "main")
@@ -1104,37 +1103,93 @@ class forum
 
 	function show_reported ($sub_action, $id)
 	{
-		global $sql, $rs, $ns;
-		$text = "<div style='padding : 1px; ".ADMIN_WIDTH."; height : 400px; overflow : auto; margin-left: auto; margin-right: auto;'>\n";
-		if ($reported_total = $sql->db_Select("tmp", "*", "tmp_ip='reported_post' "))
-		{
-			$text .= "<table class='fborder' style='width:99%'>
-				<tr>
-				<td style='width:80%' class='fcaption'>".FORLAN_119."</td>
-				<td style='width:20%; text-align:center' class='fcaption'>".FORLAN_80."</td>
-				</tr>";
-			while ($row = $sql->db_Fetch())
-			{
-				extract($row);
-				$reported = explode("^", $tmp_info);
-				$text .= "<tr>
-					<td style='width:80%' class='forumheader3'><a href='".e_BASE."forum_viewtopic.php?".$reported[0].".".$reported[1]."#".$reported[2]."' rel='external'>".$reported[3]."</a></td>
-					<td style='width:20%; text-align:center; vertical-align:top' class='forumheader3'>
-					".$rs->form_open("post", e_SELF, "", "", "", " onsubmit=\"return confirm_('sr',$tmp_time)\"")."
-					".$rs->form_button("submit", "reported_delete_{$tmp_time}", FORLAN_20)."
-					".$rs->form_close()."
-					</td>
-					</tr>\n";
-			}
-			//                                     ".$rs->form_button("submit", "reported_delete", FORLAN_20, "onclick=\"confirm_('sr', $tmp_time);\"")."
+		global $sql, $rs, $ns, $tp;
+		if ($sub_action) {
+			$sql -> db_Select("generic", "*", "gen_id='".$sub_action."'");
+			$row = $sql -> db_Fetch();
+			$sql -> db_Select("user", "*", "user_id='". $row['gen_user_id']."'");
+			$user = $sql -> db_Fetch();
+			$con = new convert;
+			$text = "<div style='text-align: center'>
+			<table class='fborder' style='".ADMIN_WIDTH."'><tr>
+			<td style='width:40%' class='forumheader3'>
+			".FORLAN_171.":
+			</td>
+			<td style='width:60%' class='forumheader3'>
+			<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$row['gen_intdata'].".post' rel='external'>#".$row['gen_intdata']."</a>
+			</td>
+			</tr>
+			<tr>
+			<td style='width:40%' class='forumheader3'>
+			".FORLAN_173.":
+			</td>
+			<td style='width:60%' class='forumheader3'>
+			".$row['gen_ip']."
+			</td>
+			</tr>
+			<tr>
+			<td style='width:40%' class='forumheader3'>
+			".FORLAN_174.":
+			</td>
+			<td style='width:60%' class='forumheader3'>
+			<a href='".e_BASE."user.php?id.".$user['user_id']."'>".$user['user_name']."</a>
+			</td>
+			</tr>
+			<tr>
+			<td style='width:40%' class='forumheader3'>
+			".FORLAN_175.":
+			</td>
+			<td style='width:60%' class='forumheader3'>
+			".$con -> convert_date($row['gen_datestamp'], "long")."
+			</td>
+			</tr>
+			<tr>
+			<td style='width:40%' class='forumheader3'>
+			".FORLAN_176.":
+			</td>
+			<td style='width:60%' class='forumheader3'>
+			".$row['gen_chardata']."
+			</td>
+			</tr>
+			<tr>
+			<td style='text-align:center' class='forumheader' colspan='2'>
+			".$rs->form_open("post", e_SELF."?sr", "", "", "", " onsubmit=\"return confirm_('sr',".$row['gen_datestamp'].")\"")."
+			".$rs->form_button("submit", "delete[reported_{$row['gen_id']}]", FORLAN_172)."
+			".$rs->form_close()."
+			</td>
+			</tr>\n";
 			$text .= "</table>";
+			$text .= "</div>";
+			$ns -> tablerender(FORLAN_116, $text);
+		} else {
+			$text = "<div style='text-align: center'>";
+			if ($reported_total = $sql->db_Select("generic", "*", "gen_type='reported_post' OR gen_type='Reported Forum Post'"))
+			{
+				$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
+					<tr>
+					<td style='width:80%' class='fcaption'>".FORLAN_170."</td>
+					<td style='width:20%; text-align:center' class='fcaption'>".FORLAN_80."</td>
+					</tr>";
+				while ($row = $sql->db_Fetch())
+				{
+					$text .= "<tr>
+						<td style='width:80%' class='forumheader3'><a href='".e_SELF."?sr.".$row['gen_id']."'>".FORLAN_171." #".$row['gen_intdata']."</a></td>
+						<td style='width:20%; text-align:center; vertical-align:top; white-space: nowrap' class='forumheader3'>
+						".$rs->form_open("post", e_SELF."?sr", "", "", "", " onsubmit=\"return confirm_('sr',".$row['gen_datestamp'].")\"")."
+						".$rs->form_button("submit", "delete[reported_{$row['gen_id']}]", FORLAN_172)."
+						".$rs->form_close()."
+						</td>
+						</tr>\n";
+				}
+				$text .= "</table>";
+			}
+			else
+			{
+				$text .= "<div style='text-align:center'>".FORLAN_121."</div>";
+			}
+			$text .= "</div>";
+			$ns->tablerender(FORLAN_116, $text);
 		}
-		else
-		{
-			$text .= "<div style='text-align:center'>".FORLAN_121."</div>";
-		}
-		$text .= "</div>";
-		$ns->tablerender(FORLAN_116, $text);
 	}
 
 	function show_prune()
