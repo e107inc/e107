@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-10-14 08:29:57 $
+|     $Revision: 1.30 $
+|     $Date: 2005-10-14 08:40:24 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -421,11 +421,8 @@ class forum
 		$var['rank']['link'] = e_SELF."?rank";
 		$var['rules']['text'] = FORLAN_123;
 		$var['rules']['link'] = e_SELF."?rules";
-		if ($sql->db_Select("tmp", "*", "tmp_ip='reported_post' "))
-		{
-			$var['sr']['text'] = FORLAN_116;
-			$var['sr']['link'] = e_SELF."?sr";
-		}
+		$var['sr']['text'] = FORLAN_116;
+		$var['sr']['link'] = e_SELF."?sr";
 		$var['mods']['text'] = FORLAN_33;
 		$var['mods']['link'] = e_SELF."?mods";
 		$var['tools']['text'] = FORLAN_153;
