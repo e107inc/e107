@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-09-30 02:23:27 $
+|     $Revision: 1.25 $
+|     $Date: 2005-10-14 01:52:22 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -264,7 +264,7 @@ class users_ext
 					$uVal = str_replace(chr(1), "", $curVal[$fname]);
 						$text .= "
 						<tr>
-						<td class='forumheader3'>{$ext['user_extended_struct_name']}<br />[{$ext['user_extended_struct_text']}]</td>
+						<td class='forumheader3'>{$ext['user_extended_struct_name']}<br />[".$tp->toHTML($ext['user_extended_struct_text'], FALSE, "defs")."]</td>
 						<td class='forumheader3'>".$ue->user_extended_edit($ext,$uVal)."</td>
 						<td class='forumheader3'>".($ext['user_extended_struct_required'] ? LAN_YES : LAN_NO)."</td>
 						<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
