@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-06-24 15:55:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.15 $
+|     $Date: 2005-10-14 08:29:57 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -132,7 +132,7 @@ define("FORLAN_115", "Tick this to allow users to change their Custom Title");
 define("FORLAN_116", "Reported Posts");
 define("FORLAN_117", "This will delete the record of the reported post. Not the post itself.");
 define("FORLAN_118", "Reported post deleted");
-define("FORLAN_119", "Clicking links will open forum in a new window.");
+// define("FORLAN_119", "Clicking links will open forum in a new window.");
 define("FORLAN_120", "Tick this to allow users to change their Custom Title");
 define("FORLAN_121", "No reported posts");
 define("FORLAN_122", "Click here to email admin when someone reports a forum post");
@@ -190,10 +190,12 @@ define("FORLAN_166", "Forum Tools");
 define("FORLAN_167", "Counts updated for forum");
 define("FORLAN_168", "Lastpost info updated for forum");
 define("FORLAN_169", "User forum counts updated");
-define("FORLAN_166", "Forum Tools");
-define("FORLAN_166", "Forum Tools");
-define("FORLAN_166", "Forum Tools");
-
-
+define("FORLAN_170", "Reports");
+define("FORLAN_171", "Report on forum post");
+define("FORLAN_172", "Delete This Report");
+define("FORLAN_173", "Thread title");
+define("FORLAN_174", "Reported by user");
+define("FORLAN_175", "Report submitted");
+define("FORLAN_176", "Report");
 
 ?>

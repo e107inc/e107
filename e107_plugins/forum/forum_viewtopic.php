@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-10-01 12:55:19 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.47 $
+|     $Date: 2005-10-14 08:29:57 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -132,33 +132,28 @@ if ($action == "prev") {
 
 if ($action == "report") {
 	$thread_info = $forum->thread_get_postinfo($thread_id, TRUE);
-	if (IsSet($_POST['report_thread'])) {
-		$user = $_POST['user'];
-		$report_thread_id = $_POST['report_thread_id'];
-		$report_thread_name = $_POST['report_thread_name'];
+
+	if (isset($_POST['report_thread'])) {
+		$report_add = $tp -> toDB($_POST['report_add']);
 		if ($pref['reported_post_email']) {
 			require_once(e_HANDLER."mail.php");
-			$report_add = $tp->toDB($_POST['report_add']);
-			$report = LAN_422.SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/")."forum_viewtopic.php?".$report_thread_id.".post\n".LAN_425.$user."\n".$report_add;
+			$report = LAN_422.SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/").$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$thread_id.".post\n".LAN_425.USERNAME."\n".$report_add;
 			$subject = LAN_421." ".SITENAME;
 			sendemail(SITEADMINEMAIL, $subject, $report);
 		}
-		$sql->db_Insert('generic',"0,'Reported Forum Post',".time().",'".USERID."','{$_POST['report_thread_name']}',{$_POST['report_thread_id']},'{$_POST['report_add']}'");
+		$sql->db_Insert('generic', "0, 'reported_post', ".time().", '".USERID."', '{$thread_info['head']['thread_name']}', {$thread_id}, '{$report_add}'");
 		define("e_PAGETITLE", LAN_01." / ".LAN_428);
 		require_once(HEADERF);
-		$text = LAN_424."<br /><br /><a href='forum_viewtopic.php?".$report_thread_id.".post'>".LAN_429."</a";
+		$text = LAN_424."<br /><br /><a href='forum_viewtopic.php?".$thread_id.".post'>".LAN_429."</a";
 		$ns->tablerender(LAN_414, $text, array('forum_viewtopic', 'report'));
 	} else {
-		$number = $thread_id;
-		$report_thread_id = $thread_id;
-		$thread_name = $tp->toHTML($thread_info['head']['thread_name'], TRUE);
+		$thread_name = $tp -> toHTML($thread_info['head']['thread_name'], TRUE);
 		define("e_PAGETITLE", LAN_01." / ".LAN_426." ".$thread_name);
 		require_once(HEADERF);
-		$user = (USER ? USERNAME : LAN_194);
 		$text = "<form action='".e_PLUGIN."forum/forum_viewtopic.php?".e_QUERY."' method='post'> <table style='width:100%'>
 			<tr>
 			<td  style='width:50%' >
-			".LAN_415.": ".$thread_name." <a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_info['head']['thread_id'].".post'><span class='smalltext'>".LAN_420." </span>
+			".LAN_415.": ".$thread_name." <a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread_id.".post'><span class='smalltext'>".LAN_420." </span>
 			</a>
 			</td>
 			<td style='text-align:center;width:50%'>
@@ -173,9 +168,6 @@ if ($action == "report") {
 			</tr>
 			<tr>
 			<td colspan='2' style='text-align:center;'><br />
-			<input type ='hidden' name='user' value='$user' />
-			<input type ='hidden' name='report_thread_id' value='$report_thread_id' />
-			<input type ='hidden' name='report_thread_name' value='$thread_name' />
 			<input class='button' type='submit' name='report_thread' value='".LAN_419."' />
 			</td>
 			</tr>
