@@ -10,9 +10,9 @@
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
 |
-|   $Revision: 1.17 $
-|   $Date: 2005-09-03 13:21:18 $
-|   $Author: e107coders $
+|   $Revision: 1.18 $
+|   $Date: 2005-10-15 02:25:02 $
+|   $Author: qnome $
 +---------------------------------------------------------------+
 */
 // [multilanguage]
@@ -28,7 +28,7 @@ $themeauthor = "Steve Dunstan [jalist] &amp; William Moffett [Que]";
 $themeemail = "jalist@e107.org";
 $themewebsite = "http://e107.org";
 $themedate = "29/01/2005";
-$themeinfo = "Based on 'kubrick' by Michael Heilemann (http://binarybonsai.com/kubrick/).<br />This theme is intended for minimilist blog sites, as such the forum etc isn't skinned.";
+$themeinfo = "Based on 'kubrick' by Michael Heilemann (http://binarybonsai.com/kubrick/).<br />This theme is intended for minimilist blog sites.";
 define("STANDARDS_MODE", TRUE);
 $xhtmlcompliant = TRUE;
 $csscompliant = TRUE;
@@ -68,11 +68,7 @@ $HEADER = "<div id='page'>
 {UL}
 </div>
 <div id='content' class='narrowcolumn'>";
-/*
 
-<div id='navigation'></div>
-<div class='sitelinks' style='display:none;'>{SITELINKS}</div>
-*/
 $FOOTER = "
 </div>
 <div id='sidebar'>
@@ -96,7 +92,6 @@ $CUSTOMHEADER = "<div id='page2'>
 {UL}
 </div>
 <div id='content' class='widecolumn'>";
-// <div class='sitelinks'>{SITELINKS}</div>
 
 
 $CUSTOMFOOTER = "
@@ -147,7 +142,7 @@ define('LINKCLASS', "");
 
 function tablestyle($caption, $text, $mode)
 {
-	echo "<h3>$caption</h3>\n<br />\n$text\n<br /><br />\n";
+	echo "<h3>$caption</h3>\n<div>$text</div><br />\n";
 }
 
 $COMMENTSTYLE = "
@@ -156,10 +151,7 @@ $COMMENTSTYLE = "
 <td style='width: 30%; vertical-align: top;'><span class='mediumtext'>{USERNAME}</span><br /><span class='smalltext'>{TIMEDATE}</span><br />{AVATAR}{REPLY}</td>
 <td style='width: 70%; vertical-align: top;'><span class='mediumtext'>{COMMENT} {COMMENTEDIT}</span></td>
 </tr>
-</table>
-<br /><br />
-<br /><br />
-";
+</table>";
 
 
 $CHATBOXSTYLE = "
