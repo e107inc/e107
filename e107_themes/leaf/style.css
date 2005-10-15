@@ -184,30 +184,7 @@ h4{
 .sidebardiv{
 	margin: 0 22px 0 15px;
 }
-/*The image styling of your blog
-.contentbody img{
-	border: 1px solid black;
-}
-*/
-/* COMMENTS STYLING
-.c_commentbody{
-	padding: 0 0 5px 0;
-	background: url(images/01_hdot.gif) bottom repeat-x;
-}
-*/
-/*User links on comments made (eg. Ivan wrote:)
-.c_userlink{
-	margin: 0 0 5px 0;
-}
-*/
-/*Time stamp info in comments made
-.c_commentinfo{
-	font-size: 10px;
-	margin: 3px 0 0 0;
-	padding: 0 0 0 13px;
-	background: url(images/01_item1.gif) 0 1px no-repeat;
-}
-*/
+
 
 /* THE STYLING OF THE BODY OF CONTENTS AND SIDEBAR */
 .contentbody{
@@ -348,17 +325,6 @@ h2.comment{
 	background: url(images/01_quote.gif) 0 3px no-repeat;
 }
 
-/* A different background for comments made 
-.divcommentsmade .contentbody{
-	background: url(images/01_quote1.gif) 0 3px no-repeat;
-}
-*/
-
-/* A different background for the admin (in the comments made area) 
-.divcommentsmade .id1{
-	background: url(images/01_quote4.gif) 0 3px no-repeat;
-}
-*/
 
 
 /*Add comment form's background*/
@@ -410,17 +376,7 @@ form p{
 	text-align: left;
 }
 /*Styling for all form fields*/
-.formfield{
-	/* width: 130px;
-	font-size: 11px;
-	font-family: Trebuchet MS, "Lucida Sans Unicode", Arial, Lucida Sans, Tahoma, Sans-Serif;
-	margin: 0 0 2px 0;
-	color: #494949;
-	border-top: 1px solid #868686;
-	border-left: 1px solid #868686;
-	border-bottom: 1px solid #D4D2CF;
-	border-right: 1px solid #D4D2CF; */
-}
+
 /*Form fields on focus effect (when user click on that input field)*/
 .formfield:focus{
 	border: 1px solid black;
@@ -438,35 +394,11 @@ form p{
 	border-bottom: 1px solid #868686;
 	border-right: 1px solid #868686;
 }
-/*Don't show textarea scrollbar on IE*/
+/* Don't show textarea scrollbar on IE */
 textarea{
 	overflow: hidden;
 }
-/*Wider formfields for comment and mailform*/
-/*
-.commentform .formfield, .mailform .formfield{
-	width: 340px;
-}
-*/
-/*Add background to comment textarea*/
-/*
-.commentform textarea{
-	background: white url(images/01_txbg.gif) center center no-repeat;
-}
-*/
-/*STYLING OF THE FORMS BACKGROUND, AND THE LITTLE ROUNDED TOPS*/
-/*Add comment form and mailform (same size)*/
-/*
-.divaddcomment form, .divsendmessage form{
-	width: 390px;
-	background: #E2EDF0 url(images/01_mountaintop.gif) top no-repeat;
-}
-*/
-/*
-.commentform, .mailform{
-	padding: 10px 20px;
-}
-*/
+
 
 /* STYLING OF SIDE TITLES */
 /* You can remove all parts here if you do not wish to use images as your side titles */
@@ -526,6 +458,7 @@ h3{ /* default do not remove */
 	background: #E2EDF0 url(images/01_mountaintop2.gif) top no-repeat; 
 	padding:4px;
 }
+
 .defaultform{
 	width: 174px;
 	background: #E2EDF0 url(images/01_mountaintop2.gif) top no-repeat; 
@@ -548,11 +481,6 @@ li{
 .highlight{
 	font-weight: bold;
 	text-decoration: underline;
-}
-/*Comment error - For Nucleus v3.2*/
-div.error{
-	color: red;
-	font-weight: bold;
 }
 
 /* NAVIGATION LINKS */
@@ -756,13 +684,6 @@ div.nicetitle p span.accesskey {
 	/* width: 400px; 
 	background-color:#000; */
 }
-
-
-
-
-
-
-
 
 
 .fborder, .border{
