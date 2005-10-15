@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Danish/lan_forum_admin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-18 17:00:55 $
+|     $Revision: 1.3 $
+|     $Date: 2005-10-15 11:46:12 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -18,7 +18,7 @@ define("FORLAN_6", "Fortryd");
 define("FORLAN_7", "Forum indstillinger");
 define("FORLAN_8", "Forum beskåret.");
 define("FORLAN_9", "Beskæring er ikke nødvendig.");
-define("FORLAN_10", "�ndringer er gemt");
+define("FORLAN_10", "Ændringer er gemt");
 define("FORLAN_11", "Forum oprettet.");
 define("FORLAN_12", "Gruppen er opdateret.");
 define("FORLAN_13", "Gruppen er tilføjet til databasen.");
@@ -132,7 +132,7 @@ define("FORLAN_115", "Marker denne for at tillade brugere at ændre deres egen t
 define("FORLAN_116", "Raporterede Indlæg");
 define("FORLAN_117", "Dette vil slette indholdet af den raporterede tråd. Ikke selve tråden.");
 define("FORLAN_118", "Raporteret indæg slettet");
-define("FORLAN_119", "Klik på links vil åbne forum i et nyt vindue.");
+// define("FORLAN_119", "Klik på links vil åbne forum i et nyt vindue.");
 define("FORLAN_120", "Marker denne for at tillade brugere at ændre deres egen titel");
 define("FORLAN_121", "Ingen raporterede indlæg");
 define("FORLAN_122", "Klik her for at emaile admin når nogen raporterer et forum indlæg");
@@ -151,7 +151,6 @@ define("FORLAN_128", "Længde på værktøjstip");
 define("FORLAN_129", "Dette vil bestemme antallet af tegn der vises i værktøjstippet.");
 define("FORLAN_130", "klik her");
 define("FORLAN_131", "til at indstille maks fil størrelse, tilladte typer osv. ");
-
 define("FORLAN_132", "Fremhæv Prioriterede Tråde");
 define("FORLAN_133", "Fremhæv prioriterede tråde ekstra (separer tråd sektioner og overskrifter)");
 define("FORLAN_134", "Maks bredde på uploadet billede");
@@ -191,10 +190,12 @@ define("FORLAN_166", "Forum Værktøjer");
 define("FORLAN_167", "Optællinger opdateret for forum");
 define("FORLAN_168", "Sidsteindlæg info opdateret for forum");
 define("FORLAN_169", "Bruger forum tælling opdateret");
-define("FORLAN_166", "Forum Værktøjer");
-define("FORLAN_166", "Forum Værktøjer");
-define("FORLAN_166", "Forum Værktøjer");
-
-
+define("FORLAN_170", "Raporter");
+define("FORLAN_171", "Raporter på forum post");
+define("FORLAN_172", "Slet Denne Raport");
+define("FORLAN_173", "Tråd titel");
+define("FORLAN_174", "Raporteret af bruger");
+define("FORLAN_175", "Raport tilføjet");
+define("FORLAN_176", "Raport");
 
 ?>

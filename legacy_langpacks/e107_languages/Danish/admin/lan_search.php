@@ -4,8 +4,8 @@
 |        e107 website system  Language File - Danish
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_search.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:29:27 $
+|        $Revision: 1.2 $
+|        $Date: 2005-10-15 11:46:12 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -31,8 +31,6 @@ define("SEALAN_23", "Alternativ:");
 define("SEALAN_24", "Type");
 define("SEALAN_25", "Gruppe");
 define("SEALAN_26", "For-Titel tekst");
-define("SEALAN_27", "Tegn");
-define("SEALAN_28", "Resultater");
 define("SEALAN_30", "Fremh&aelig;v n&oslash;gleord p&aring; henviste side:");
 define("SEALAN_31", "PHP begr&aelig;nset til");
 define("SEALAN_32", "resultater (blank = ingen begr&aelig;nsning)");
@@ -47,5 +45,14 @@ define("SEALAN_39", "Egne Sider");
 define("LAN_98", "Nyheder");
 define("LAN_197", "Downloads");
 define("LAN_418", "Egne Sider");
+
+define("SEALAN_40", "S&oslash;ge Egenskaber");
+define("SEALAN_41", "Hovedside");
+define("SEALAN_42", "Indstillinger");
+
+define("SEALAN_43", "Rediger s&oslash;ge indstillinger for");
+define("SEALAN_44", "Bruger gruppe tilladt at s&oslash;ge i dette omr&aring;de");
+define("SEALAN_45", "Antal resultater pr. side");
+define("SEALAN_46", "Antal tegn i s&oslash;ge resultat opsummering");
 
 ?>

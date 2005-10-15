@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Danish/lan_forum_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 09:52:21 $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-15 11:46:12 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -18,7 +18,7 @@ define("FORLAN_6", "Fortryd");
 define("FORLAN_7", "Forum indstillinger");
 define("FORLAN_8", "Forum besk&aring;ret.");
 define("FORLAN_9", "Besk&aelig;ring er ikke n&oslash;dvendig.");
-define("FORLAN_10", "Ændringer er gemt");
+define("FORLAN_10", "&AELIG;ndringer er gemt");
 define("FORLAN_11", "Forum oprettet.");
 define("FORLAN_12", "Gruppen er opdateret.");
 define("FORLAN_13", "Gruppen er tilf&oslash;jet til databasen.");
@@ -132,7 +132,7 @@ define("FORLAN_115", "Marker denne for at tillade brugere at &aelig;ndre deres e
 define("FORLAN_116", "Raporterede Indl&aelig;g");
 define("FORLAN_117", "Dette vil slette indholdet af den raporterede tr&aring;d. Ikke selve tr&aring;den.");
 define("FORLAN_118", "Raporteret ind&aelig;g slettet");
-define("FORLAN_119", "Klik p&aring; links vil &aring;bne forum i et nyt vindue.");
+// define("FORLAN_119", "Klik p&aring; links vil &aring;bne forum i et nyt vindue.");
 define("FORLAN_120", "Marker denne for at tillade brugere at &aelig;ndre deres egen titel");
 define("FORLAN_121", "Ingen raporterede indl&aelig;g");
 define("FORLAN_122", "Klik her for at emaile admin n&aring;r nogen raporterer et forum indl&aelig;g");
@@ -151,7 +151,6 @@ define("FORLAN_128", "L&aelig;ngde p&aring; v&aelig;rkt&oslash;jstip");
 define("FORLAN_129", "Dette vil bestemme antallet af tegn der vises i v&aelig;rkt&oslash;jstippet.");
 define("FORLAN_130", "klik her");
 define("FORLAN_131", "til at indstille maks fil st&oslash;rrelse, tilladte typer osv. ");
-
 define("FORLAN_132", "Fremh&aelig;v Prioriterede Tr&aring;de");
 define("FORLAN_133", "Fremh&aelig;v prioriterede tr&aring;de ekstra (separer tr&aring;d sektioner og overskrifter)");
 define("FORLAN_134", "Maks bredde p&aring; uploadet billede");
@@ -191,10 +190,12 @@ define("FORLAN_166", "Forum V&aelig;rkt&oslash;jer");
 define("FORLAN_167", "Opt&aelig;llinger opdateret for forum");
 define("FORLAN_168", "Sidsteindl&aelig;g info opdateret for forum");
 define("FORLAN_169", "Bruger forum t&aelig;lling opdateret");
-define("FORLAN_166", "Forum V&aelig;rkt&oslash;jer");
-define("FORLAN_166", "Forum V&aelig;rkt&oslash;jer");
-define("FORLAN_166", "Forum V&aelig;rkt&oslash;jer");
-
-
+define("FORLAN_170", "Raporter");
+define("FORLAN_171", "Raporter p&aring; forum post");
+define("FORLAN_172", "Slet Denne Raport");
+define("FORLAN_173", "Tr&aring;d titel");
+define("FORLAN_174", "Raporteret af bruger");
+define("FORLAN_175", "Raport tilf&oslash;jet");
+define("FORLAN_176", "Raport");
 
 ?>
