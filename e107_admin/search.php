@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-10-15 03:08:52 $
+|     $Revision: 1.29 $
+|     $Date: 2005-10-15 03:25:14 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -256,18 +256,18 @@ if ($query[0] == 'settings') {
 	
 	foreach($search_handlers as $key => $value) {
 		$text .= "<tr>
-		<td style='width:40%; white-space:nowrap' class='forumheader3'>".$value."</td>
-		<td style='width:10%' class='forumheader3'>";
+		<td style='width:55%; white-space:nowrap' class='forumheader3'>".$value."</td>
+		<td style='width:25%' class='forumheader3'>";
 		$text .= r_userclass("core_handlers[".$key."][class]", $search_prefs['core_handlers'][$key]['class'], "off", "public,guest,nobody,member,admin,classes");
 		$text .= "</td>";
-		$text .= "<td style='width:5%; text-align:center' class='forumheader3'>";
+		$text .= "<td style='width:10%; text-align:center' class='forumheader3'>";
 		$text .= "<select name='core_handlers[".$key."][order]' class='tbox'>";
 		for($a = 1; $a <= $handlers_total; $a++) {
 			$text .= ($search_prefs['core_handlers'][$key]['order'] == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
 		}
 		$text .= "</select>
 		</td>
-		<td style='width:5%; text-align:center' class='forumheader3'>
+		<td style='width:10%; text-align:center' class='forumheader3'>
 		<a href='".e_SELF."?edit.c.".$key."'>".ADMIN_EDIT_ICON."</a>
 		</td>
 		</tr>";
@@ -276,27 +276,27 @@ if ($query[0] == 'settings') {
 	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
 		require_once(e_PLUGIN.$plug_dir."/e_search.php");
 		$text .= "<tr>
-		<td style='width:40%; white-space:nowrap' class='forumheader3'>".$search_info[0]['qtype']."</td>
-		<td style='width:10%' class='forumheader3'>";
+		<td style='width:55%; white-space:nowrap' class='forumheader3'>".$search_info[0]['qtype']."</td>
+		<td style='width:25%' class='forumheader3'>";
 		$text .= r_userclass("plug_handlers[".$plug_dir."][class]", $search_prefs['plug_handlers'][$plug_dir]['class'], "off", "public,guest,nobody,member,admin,classes");
 		unset($search_info);
 		$text .= "</td>";
-		$text .= "<td style='width:5%; text-align:center' class='forumheader3'>";
+		$text .= "<td style='width:10%; text-align:center' class='forumheader3'>";
 		$text .= "<select name='plug_handlers[".$plug_dir."][order]' class='tbox'>";
 		for($a = 1; $a <= $handlers_total; $a++) {
 			$text .= ($search_prefs['plug_handlers'][$plug_dir]['order'] == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
 		}
 		$text .= "</select>
 		</td>
-		<td style='width:5%; text-align:center' class='forumheader3'>
+		<td style='width:10%; text-align:center' class='forumheader3'>
 		<a href='".e_SELF."?edit.p.".$plug_dir."'>".ADMIN_EDIT_ICON."</a>
 		</td>
 		</tr>";
 	}
 	
 	$text .= "<tr>
-	<td style='width:40%; white-space:nowrap' class='forumheader3'>Google</td>
-	<td style='width:55%' colspan='3' class='forumheader3'>";
+	<td style='white-space:nowrap' class='forumheader3'>Google</td>
+	<td colspan='3' class='forumheader3'>";
 	$sel = (isset($search_prefs['google']) && $search_prefs['google']) ? " checked='checked'" : "";
 	$text .= r_userclass("google", $search_prefs['google'], "off", "public,guest,nobody,member,admin,classes");
 	$text .= "</td>
@@ -313,20 +313,20 @@ if ($query[0] == 'settings') {
 	<table style='".ADMIN_WIDTH."' class='fborder'>";
 	
 	$text .= "<tr>
-	<td class='fcaption' colspan='6'>".SEALAN_18."</td>
+	<td class='fcaption' colspan='2'>".SEALAN_18."</td>
 	</tr>";
 	
 	$text .= "<tr>
 	<td class='forumheader'>".SEALAN_24."</td>
-	<td class='forumheader' colspan='5'>".SEALAN_25."</td>
+	<td class='forumheader'>".SEALAN_25."</td>
 	</tr>";
 	
 	foreach ($search_prefs['comments_handlers'] as $key => $value) {
 		$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$key.'.php' : e_PLUGIN.$value['dir'].'/search/search_comments.php';
 		require_once($path);
 		$text .= "<tr>
-		<td style='width:40%; white-space:nowrap' class='forumheader3'>".$comments_title."</td>
-		<td style='width:60%;' colspan='4' class='forumheader3'>";
+		<td style='width:55%; white-space:nowrap' class='forumheader3'>".$comments_title."</td>
+		<td style='width:45%' class='forumheader3'>";
 		$text .= r_userclass("comments_handlers[".$key."][class]", $search_prefs['comments_handlers'][$key]['class'], "off", "public,guest,nobody,member,admin,classes");
 		$text .= "</td>
 		</tr>";
@@ -334,7 +334,7 @@ if ($query[0] == 'settings') {
 	}
 	
 	$text .= "<tr>
-	<td colspan='5' style='text-align:center' class='forumheader'>".$rs -> form_button("submit", "update_main", LAN_UPDATE)."</td>
+	<td colspan='2' style='text-align:center' class='forumheader'>".$rs -> form_button("submit", "update_main", LAN_UPDATE)."</td>
 	</tr>";
 	
 	$text .= "</table>
