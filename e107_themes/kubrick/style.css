@@ -11,7 +11,7 @@
 	Have fun, and don't be afraid to contact me if you have questions.
 
 	Maintainer: William Moffett [Que~]
-	Lastupdate 05-12-05
+
 */
 
 
@@ -90,14 +90,6 @@ body>#page>#header>#navigation{
 .narrowcolumn .postmetadata {
 	text-align: center;
 	}
-
-/* NOT IN USE
-.graybox {
-	background-color: #f8f8f8;
-	border-top: 1px solid #ddd;
-	border-bottom: 1px solid #ddd;
-	}
-*/
 
 
 #footer {
@@ -704,18 +696,3 @@ div.nicetitle p span.accesskey {
 }
 
 /* END NICETITLE */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
