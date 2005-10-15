@@ -179,9 +179,13 @@ define("FORLAN_166", "Forum hulpmiddelen");
 define("FORLAN_167", "Tellingen voor forum bijgewerkt");
 define("FORLAN_168", "Laatste bericht info voor forum bijgewerkt");
 define("FORLAN_169", "Gebruikersberichten voor forum bijgewerkt");
-define("FORLAN_166", "Forum hulpmiddelen");
-define("FORLAN_166", "Forum hulpmiddelen");
-define("FORLAN_166", "Forum hulpmiddelen");
+define("FORLAN_170", "Meldingen");
+define("FORLAN_171", "Melding over forumbericht");
+define("FORLAN_172", "Verwijder deze melding");
+define("FORLAN_173", "Discussietitel");
+define("FORLAN_174", "Gemeld door gebruiker");
+define("FORLAN_175", "Melding gedaan");
+define("FORLAN_176", "Melding");
 
 define("WMGLAN_1", "Regels voor gasten");
 define("WMGLAN_2", "Regels voor leden");

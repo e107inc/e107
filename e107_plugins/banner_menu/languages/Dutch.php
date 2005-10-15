@@ -16,7 +16,7 @@ define("BANNER_MENU_L1", "Banner");
 define("BANNER_MENU_L2", "Banner menu configuratie opgeslagen");
 define("BANNER_MENU_L3", "Titelbalk");
 define("BANNER_MENU_L4", "Campagne");
-define("BANNER_MENU_L5", "Banner meu configuratie");
+define("BANNER_MENU_L5", "Banner menu configuratie");
 define("BANNER_MENU_L6", "kies de in het menu te tonen campagnes");
 define("BANNER_MENU_L7", "beschikbare campagnes");
 define("BANNER_MENU_L8", "geselecteerde campagnes");

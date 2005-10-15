@@ -3,7 +3,7 @@
 +---------------------------------------------------------------+
 |	e107 website system
 |
-|	Â©Steve Dunstan 2001-2002
+|	©Steve Dunstan 2001-2002
 |	http://e107.org
 |	jalist@e107.org
 |
