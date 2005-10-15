@@ -102,7 +102,6 @@ $HEADER = "
 <div id='container'><!--Start Container-->
   <div id='content'><!--Start Content-->
     <div class='contentdiv'><!--Start Contentdiv-->
-    <h2 class='".e_PAGECLASS."'>".PAGE_NAME."</h2>
       <div class='div".e_PAGECLASS."'><!--Start Divarchives-->
       <!--Database Generated Content-->";
 
@@ -167,7 +166,6 @@ $CUSTOMHEADER = "
 <div id='container_full'><!--Start Container-->
   <div id='content_full'><!--Start Content-->
     <div class='contentdiv'><!--Start Contentdiv-->
-    <h2 class='".e_PAGECLASS."'>".PAGE_NAME."</h2>
       <div class='div".e_PAGECLASS."'><!--Start Div pageclass-->
       <!--Database Generated Content-->";
 
@@ -216,7 +214,7 @@ $CUSTOMPAGES = "content_manager.php signup.php fpw.php forum.php forum_viewforum
 // [newsstyle]
 function news_style($news) {
 	$gen = new convert;
-	$mydate  = strftime("%d/%m:", $news['news_datestamp']);
+	$mydate  = strftime("%d/%m :", $news['news_datestamp']);
 	$NEWSSTYLE = "<!-- end news item --><div class='contentbody'>
 	        <h3>$mydate {STICKY_ICON}{NEWSTITLE}</h3><br />
 	{NEWSBODY}
@@ -274,9 +272,8 @@ function tablestyle($caption, $text, $mode=""){
 		                echo "<div class='sidebarbody'><div class='sidebarin'><div class='defaultform'>".$text." </div></div></div>\n";
 		        }
 		}
-	}else{ // default content styles. Only renders content (text), no caption. Page captions are handled in the layout above.
-		$cat = ($caption && $caption != PAGE_NAME) ? $caption."<br /><br />" : "";
-		echo "<div class='contentbody'>".$cat.$text."</div>";
+	}else{ 
+		echo "<div class='contentbody'>".$text."</div>";
  	}
 }
 
