@@ -11,20 +11,23 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-09-20 14:30:40 $
+|     $Revision: 1.28 $
+|     $Date: 2005-10-15 03:08:52 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
-require_once("../class2.php");
-if (!getperms("X")) {
-	header("location:".e_BASE."index.php");
+require_once('../class2.php');
+if (!getperms('X')) {
+	header('location:'.e_BASE.'index.php');
 	exit;
 }
 $e_sub_cat = 'search';
-require_once("auth.php");
+require_once('auth.php');
 require_once(e_HANDLER.'userclass_class.php');
+
+$query = explode('.', e_QUERY);
+
 $search_prefs = $sysprefs -> getArray('search_prefs');
 
 $search_handlers['news'] = ADLAN_0;
@@ -40,73 +43,44 @@ if (version_compare($mysql_version[1], '4.0.1', '<')) {
 	$mysql_supported = true;
 }
 
-// temporary repair code
-if (!is_array($search_prefs['core_handlers']['news'])) {
-			$serial_prefs = "a:11:{s:11:\"user_select\";s:1:\"1\";s:9:\"time_secs\";s:2:\"60\";s:13:\"time_restrict\";s:1:\"0\";s:8:\"selector\";i:2;s:9:\"relevance\";i:0;s:13:\"plug_handlers\";N;s:10:\"mysql_sort\";i:0;s:11:\"multisearch\";s:1:\"1\";s:6:\"google\";s:1:\"0\";s:13:\"core_handlers\";a:4:{s:4:\"news\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"0\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:8:\"comments\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:5:\"users\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}s:9:\"downloads\";a:5:{s:5:\"class\";s:1:\"0\";s:9:\"pre_title\";s:1:\"1\";s:13:\"pre_title_alt\";s:0:\"\";s:5:\"chars\";s:3:\"150\";s:7:\"results\";s:2:\"10\";}}s:17:\"comments_handlers\";a:2:{s:4:\"news\";a:3:{s:2:\"id\";i:0;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}s:8:\"download\";a:3:{s:2:\"id\";i:2;s:3:\"dir\";s:4:\"core\";s:5:\"class\";s:1:\"0\";}}}";
-			$search_prefs = unserialize(stripslashes($serial_prefs));
-			$handle = opendir(e_PLUGIN);
-			while (false !== ($file = readdir($handle))) {
-				if ($file != "." && $file != ".." && is_dir(e_PLUGIN.$file)) {
-					$plugin_handle = opendir(e_PLUGIN.$file."/");
-					while (false !== ($file2 = readdir($plugin_handle))) {
-						if ($file2 == "e_search.php" || $file2 == "comments_search.php") {
-							if ($sql -> db_Select("plugin", "plugin_path", "plugin_path='".$file."' AND plugin_installflag='1'")) {
-								if ($file2 == "e_search.php") {
-									$search_prefs['plug_handlers'][$file] = array('class' => 0, 'pre_title' => 1, 'pre_title_alt' => '', 'chars' => 150, 'results' => 10);
-								}
-								if ($file2 == "comments_search.php") {
-									require_once(e_PLUGIN.$file.'/comments_search.php');
-									$search_prefs['comments_handlers'][$file] = array('id' => $comments_type_id, 'class' => '0', 'dir' => $file);
-									unset($comments_type_id);
-								}
-							}
-						}
-					}
-				}
-			}
-			preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
-			if (version_compare($mysql_version[1], '4.0.1', '<')) {
-				$search_prefs['mysql_sort'] = FALSE;
-			} else {
-				$search_prefs['mysql_sort'] = TRUE;
-			}
-			$serial_prefs = addslashes(serialize($search_prefs));
-			if (!$sql -> db_Select("core", "e107_name", "e107_name='search_prefs'")) {
-				$sql -> db_Insert("core", "'search_prefs', '".$serial_prefs."'");
-			} else {
-				$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
-			}
-			if ($pref['search_restrict']) {
-				$pref['search_restrict'] = 253;
-				} else {
-				$pref['search_restrict'] = 0;
-			}
-			$pref['search_highlight'] = TRUE;
-			save_prefs();
-			
-		if (!isset($search_prefs['selector'])) {
-			preg_match("/^(.*?)($|-)/", mysql_get_server_info(), $mysql_version);
-			if (version_compare($mysql_version[1], '4.0.1', '<')) {
-				$search_prefs['mysql_sort'] = FALSE;
-			} else {
-				$search_prefs['mysql_sort'] = TRUE;
-			}
-			$search_prefs['selector'] = 2;
-			$search_prefs['multisearch'] = 1;
-			unset($search_prefs['search_sort']);
-		}
+if (isset($_POST['update_main'])) {
+	foreach($search_handlers as $s_key => $s_value) {
+		$search_prefs['core_handlers'][$s_key]['class'] = $_POST['core_handlers'][$s_key]['class'];
+		$search_prefs['core_handlers'][$s_key]['order'] = $_POST['core_handlers'][$s_key]['order'];
+	}
 
-		// search content plugin comments id change
-		if ($search_prefs['comments_handlers']['content']['id'] == '1') {
-			$search_prefs['comments_handlers']['content']['id'] = 'pcontent';
-		}
+	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
+		$search_prefs['plug_handlers'][$plug_dir]['class'] = $_POST['plug_handlers'][$plug_dir]['class'];
+		$search_prefs['plug_handlers'][$plug_dir]['order'] = $_POST['plug_handlers'][$plug_dir]['order'];
+	}
 
-		$search_prefs['core_handlers']['pages'] = array('class' => 0, 'chars' => 150, 'results' => 10, 'pre_title' => 1, 'pre_title_alt' => '', 'order' => 13);
-		$serial_prefs = addslashes(serialize($search_prefs));
-		$sql -> db_Update("core", "e107_value='".$serial_prefs."' WHERE e107_name='search_prefs' ");
+	foreach ($search_prefs['comments_handlers'] as $key => $value) {
+		$search_prefs['comments_handlers'][$key]['class'] = $_POST['comments_handlers'][$key]['class'];
+	}
+	
+	$search_prefs['google'] = $_POST['google'];
+
+	$tmp = addslashes(serialize($search_prefs));
+	e_update($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'"));
 }
 
-if (isset($_POST['updatesettings'])) {
+if (isset($_POST['update_handler'])) {
+	if ($query[1] == 'c') {
+		$handler_type = 'core_handlers';
+	} else if ($query[1] == 'p') {
+		$handler_type = 'plug_handlers';
+	}
+	$search_prefs[$handler_type][$query[2]]['class'] = $_POST['class'];
+	$search_prefs[$handler_type][$query[2]]['chars'] = $tp -> toDB($_POST['chars']);
+	$search_prefs[$handler_type][$query[2]]['results'] = $tp -> toDB($_POST['results']);
+	$search_prefs[$handler_type][$query[2]]['pre_title'] = $_POST['pre_title'];
+	$search_prefs[$handler_type][$query[2]]['pre_title_alt'] = $tp -> toDB($_POST['pre_title_alt']);
+
+	$tmp = addslashes(serialize($search_prefs));
+	e_update($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'"));
+}
+
+if (isset($_POST['update_prefs'])) {
 	$search_prefs['relevance'] = $_POST['relevance'];
 	$search_prefs['user_select'] = $_POST['user_select'];
 	$search_prefs['multisearch'] = $_POST['multisearch'];
@@ -124,29 +98,6 @@ if (isset($_POST['updatesettings'])) {
 		$search_prefs['mysql_sort'] = FALSE;
 	}
 	$search_prefs['php_limit'] = $tp -> toDB($_POST['php_limit']);
-	$search_prefs['google'] = $_POST['google'];
-
-	foreach($search_handlers as $s_key => $s_value) {
-		$search_prefs['core_handlers'][$s_key]['class'] = $_POST['core_handlers'][$s_key]['class'];
-		$search_prefs['core_handlers'][$s_key]['chars'] = $tp -> toDB($_POST['core_handlers'][$s_key]['chars']);
-		$search_prefs['core_handlers'][$s_key]['results'] = $tp -> toDB($_POST['core_handlers'][$s_key]['results']);
-		$search_prefs['core_handlers'][$s_key]['pre_title'] = $_POST['core_handlers'][$s_key]['pre_title'];
-		$search_prefs['core_handlers'][$s_key]['pre_title_alt'] = $tp -> toDB($_POST['core_handlers'][$s_key]['pre_title_alt']);
-		$search_prefs['core_handlers'][$s_key]['order'] = $_POST['core_handlers'][$s_key]['order'];
-	}
-
-	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
-		$search_prefs['plug_handlers'][$plug_dir]['class'] = $_POST['plug_handlers'][$plug_dir]['class'];
-		$search_prefs['plug_handlers'][$plug_dir]['chars'] = $tp -> toDB($_POST['plug_handlers'][$plug_dir]['chars']);
-		$search_prefs['plug_handlers'][$plug_dir]['results'] = $tp -> toDB($_POST['plug_handlers'][$plug_dir]['results']);
-		$search_prefs['plug_handlers'][$plug_dir]['pre_title'] = $_POST['plug_handlers'][$plug_dir]['pre_title'];
-		$search_prefs['plug_handlers'][$plug_dir]['pre_title_alt'] = $tp -> toDB($_POST['plug_handlers'][$plug_dir]['pre_title_alt']);
-		$search_prefs['plug_handlers'][$plug_dir]['order'] = $_POST['plug_handlers'][$plug_dir]['order'];
-	}
-
-	foreach ($search_prefs['comments_handlers'] as $key => $value) {
-		$search_prefs['comments_handlers'][$key]['class'] = $_POST['comments_handlers'][$key]['class'];
-	}
 
 	$tmp = addslashes(serialize($search_prefs));
 	e_update($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'"));
@@ -161,200 +112,256 @@ $rs = new form;
 
 $handlers_total = count($search_prefs['core_handlers']) + count($search_prefs['plug_handlers']);
 
-$text = "<form method='post' action='".e_SELF."'><div style='text-align:center'>
-<table style='".ADMIN_WIDTH."' class='fborder'>";
-
-$text .= "<tr>
-<td class='fcaption' colspan='2'>".SEALAN_20."</td>
-</tr>";
-
-$text .= "<tr>
-<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_15.": </td>
-<td style='width:50%' class='forumheader3'>
-".r_userclass("search_restrict", $pref['search_restrict'], "off", "public,guest,nobody,member,admin,classes")."
-</td>
-</tr>";
-
-$text .= "<tr>
-<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_30."</td>
-<td style='width:50%;' colspan='2' class='forumheader3'>
-<input type='radio' name='search_highlight' value='1'".($pref['search_highlight'] ? " checked='checked'" : "")." /> ".SEALAN_16."&nbsp;&nbsp;
-<input type='radio' name='search_highlight' value='0'".(!$pref['search_highlight'] ? " checked='checked'" : "")." /> ".SEALAN_17."
-</td>
-</tr>";
-
-$text .= "<tr>
-<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_10."</td>
-<td style='width:50%;' colspan='2' class='forumheader3'>
-<input type='radio' name='relevance' value='1'".($search_prefs['relevance'] ? " checked='checked'" : "")." /> ".SEALAN_16."&nbsp;&nbsp;
-<input type='radio' name='relevance' value='0'".(!$search_prefs['relevance'] ? " checked='checked'" : "")." /> ".SEALAN_17."
-</td>
-</tr>";
-
-$text .= "<tr>
-<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_11."</td>
-<td style='width:50%;' colspan='2' class='forumheader3'>
-<input type='radio' name='user_select' value='1'".($search_prefs['user_select'] ? " checked='checked'" : "")." /> ".SEALAN_16."&nbsp;&nbsp;
-<input type='radio' name='user_select' value='0'".(!$search_prefs['user_select'] ? " checked='checked'" : "")." /> ".SEALAN_17."
-</td>
-</tr>";
-
-$text .= "<tr>
-<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_19."</td>
-<td style='width:50%;' colspan='2' class='forumheader3'>
-<input type='radio' name='multisearch' value='1'".($search_prefs['multisearch'] ? " checked='checked'" : "")." /> ".SEALAN_16."&nbsp;&nbsp;
-<input type='radio' name='multisearch' value='0'".(!$search_prefs['multisearch'] ? " checked='checked'" : "")." /> ".SEALAN_17."
-</td>
-</tr>";
-
-$text .= "<tr>
-<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_35."</td>
-<td style='width:50%;' colspan='2' class='forumheader3'>
-<input type='radio' name='selector' value='2'".($search_prefs['selector'] == '2' ? " checked='checked'" : "")." /> ".SEALAN_36."&nbsp;&nbsp;
-<input type='radio' name='selector' value='1'".($search_prefs['selector'] == '1' ? " checked='checked'" : "")." /> ".SEALAN_37."&nbsp;&nbsp;
-<input type='radio' name='selector' value='0'".($search_prefs['selector'] == '0' ? " checked='checked'" : "")." /> ".SEALAN_38."
-</td>
-</tr>";
-
-$text .= "<tr>
-<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_12."</td>
-<td style='width:50%;' colspan='2' class='forumheader3'>
-<input type='radio' name='time_restrict' value='0'".(!$search_prefs['time_restrict'] ? " checked='checked'" : "")." /> ".SEALAN_17."&nbsp;&nbsp;
-<input type='radio' name='time_restrict' value='1'".($search_prefs['time_restrict'] ? " checked='checked'" : "")." />
-".SEALAN_13." ".$rs -> form_text("time_secs", 3, $tp -> toForm($search_prefs['time_secs']), 3)." ".SEALAN_14."</td>
-</tr>";
-
-$text .= "<tr>
-<td style='width:50%; white-space:nowrap' class='forumheader3'>".SEALAN_3."</td>
-<td style='width:50%;' colspan='2' class='forumheader3'>
-".$rs -> form_radio('search_sort', 'mysql', ($search_prefs['mysql_sort'] == TRUE ? 1 : 0), 'MySql', ($mysql_supported ? "" : "disabled='true'"))."MySql
-".$rs -> form_radio('search_sort', 'php', ($search_prefs['mysql_sort'] == TRUE ? 0 : 1)).SEALAN_31." 
-".$rs -> form_text("php_limit", 5, $tp -> toForm($search_prefs['php_limit']), 5)." ".SEALAN_32." 
-</td>
-</tr>";
-
-$text .= "<tr>
-<td colspan='2' style='text-align:center' class='forumheader'>".$rs -> form_button("submit", "updatesettings", LAN_UPDATE)."</td>
-</tr>";
-
-$text .= "</table>
-</div><br />";
-
-$text .= "<div style='text-align:center'>
-<table style='".ADMIN_WIDTH."' class='fborder'>";
-
-$text .= "<tr>
-<td class='fcaption' colspan='6'>".SEALAN_21."</td>
-</tr>";
-
-$text .= "<tr>
-<td class='forumheader'>".SEALAN_24."</td>
-<td class='forumheader'>".SEALAN_25."</td>
-<td class='forumheader'>".SEALAN_27."</td>
-<td class='forumheader'>".SEALAN_28."</td>
-<td class='forumheader'>".SEALAN_26."</td>
-<td class='forumheader'>".LAN_ORDER."</td>
-</tr>";
-
-foreach($search_handlers as $key => $value) {
+if ($query[0] == 'settings') {
+	$text = "<form method='post' action='".e_SELF."?settings'><div style='text-align:center'>
+	<table style='".ADMIN_WIDTH."' class='fborder'>";
+	
 	$text .= "<tr>
-	<td style='width:40%; white-space:nowrap' class='forumheader3'>".$value."</td>
-	<td style='width:10%' class='forumheader3'>";
-	$text .= r_userclass("core_handlers[".$key."][class]", $search_prefs['core_handlers'][$key]['class'], "off", "public,guest,nobody,member,admin,classes");
-	$text .= "</td>
-	<td style='width:5%; text-align: center' class='forumheader3'>".$rs -> form_text("core_handlers[".$key."][chars]", 4, $tp -> toForm($search_prefs['core_handlers'][$key]['chars']), 4)."</td>
-	<td style='width:5%; text-align: center' class='forumheader3'>".$rs -> form_text("core_handlers[".$key."][results]", 4, $tp -> toForm($search_prefs['core_handlers'][$key]['results']), 4)."</td>
-	<td style='width:35%; text-align: center; white-space:nowrap' class='forumheader3'>
-	<input type='radio' name='core_handlers[".$key."][pre_title]' value='1'".(($search_prefs['core_handlers'][$key]['pre_title'] == 1) ? " checked='checked'" : "")." /> ".SEALAN_22."&nbsp;&nbsp;
-	<input type='radio' name='core_handlers[".$key."][pre_title]' value='0'".(($search_prefs['core_handlers'][$key]['pre_title'] == 0) ? " checked='checked'" : "")." /> ".SEALAN_17."&nbsp;&nbsp;
-	<input type='radio' name='core_handlers[".$key."][pre_title]' value='2'".(($search_prefs['core_handlers'][$key]['pre_title'] == 2) ? " checked='checked'" : "")." /> ".SEALAN_23."&nbsp;&nbsp;
-	".$rs -> form_text("core_handlers[".$key."][pre_title_alt]", 20, $tp -> toForm($search_prefs['core_handlers'][$key]['pre_title_alt']))."
-	</td>";
-	$text .= "<td style='width:5%; text-align:center' class='forumheader3'>";
-	$text .= "<select name='core_handlers[".$key."][order]' class='tbox'>";
-	for($a = 1; $a <= $handlers_total; $a++) {
-		$text .= ($search_prefs['core_handlers'][$key]['order'] == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
+	<td class='fcaption' colspan='2'>".SEALAN_20."</td>
+	</tr>";
+	
+	$text .= "<tr>
+	<td style='width:50%' class='forumheader3'>".SEALAN_15.": </td>
+	<td style='width:50%' class='forumheader3'>
+	".r_userclass("search_restrict", $pref['search_restrict'], "off", "public,guest,nobody,member,admin,classes")."
+	</td>
+	</tr>";
+	
+	$text .= "<tr>
+	<td style='width:50%' class='forumheader3'>".SEALAN_30."</td>
+	<td style='width:50%;' colspan='2' class='forumheader3'>
+	<input type='radio' name='search_highlight' value='1'".($pref['search_highlight'] ? " checked='checked'" : "")." /> ".SEALAN_16."&nbsp;&nbsp;
+	<input type='radio' name='search_highlight' value='0'".(!$pref['search_highlight'] ? " checked='checked'" : "")." /> ".SEALAN_17."
+	</td>
+	</tr>";
+	
+	$text .= "<tr>
+	<td style='width:50%' class='forumheader3'>".SEALAN_10."</td>
+	<td style='width:50%;' colspan='2' class='forumheader3'>
+	<input type='radio' name='relevance' value='1'".($search_prefs['relevance'] ? " checked='checked'" : "")." /> ".SEALAN_16."&nbsp;&nbsp;
+	<input type='radio' name='relevance' value='0'".(!$search_prefs['relevance'] ? " checked='checked'" : "")." /> ".SEALAN_17."
+	</td>
+	</tr>";
+	
+	$text .= "<tr>
+	<td style='width:50%' class='forumheader3'>".SEALAN_11."</td>
+	<td style='width:50%;' colspan='2' class='forumheader3'>
+	<input type='radio' name='user_select' value='1'".($search_prefs['user_select'] ? " checked='checked'" : "")." /> ".SEALAN_16."&nbsp;&nbsp;
+	<input type='radio' name='user_select' value='0'".(!$search_prefs['user_select'] ? " checked='checked'" : "")." /> ".SEALAN_17."
+	</td>
+	</tr>";
+	
+	$text .= "<tr>
+	<td style='width:50%' class='forumheader3'>".SEALAN_19."</td>
+	<td style='width:50%;' colspan='2' class='forumheader3'>
+	<input type='radio' name='multisearch' value='1'".($search_prefs['multisearch'] ? " checked='checked'" : "")." /> ".SEALAN_16."&nbsp;&nbsp;
+	<input type='radio' name='multisearch' value='0'".(!$search_prefs['multisearch'] ? " checked='checked'" : "")." /> ".SEALAN_17."
+	</td>
+	</tr>";
+	
+	$text .= "<tr>
+	<td style='width:50%' class='forumheader3'>".SEALAN_35."</td>
+	<td style='width:50%;' colspan='2' class='forumheader3'>
+	<input type='radio' name='selector' value='2'".($search_prefs['selector'] == '2' ? " checked='checked'" : "")." /> ".SEALAN_36."&nbsp;&nbsp;
+	<input type='radio' name='selector' value='1'".($search_prefs['selector'] == '1' ? " checked='checked'" : "")." /> ".SEALAN_37."&nbsp;&nbsp;
+	<input type='radio' name='selector' value='0'".($search_prefs['selector'] == '0' ? " checked='checked'" : "")." /> ".SEALAN_38."
+	</td>
+	</tr>";
+	
+	$text .= "<tr>
+	<td style='width:50%' class='forumheader3'>".SEALAN_12."</td>
+	<td style='width:50%' colspan='2' class='forumheader3'>
+	<input type='radio' name='time_restrict' value='0'".(!$search_prefs['time_restrict'] ? " checked='checked'" : "")." /> ".SEALAN_17."&nbsp;&nbsp;
+	<input type='radio' name='time_restrict' value='1'".($search_prefs['time_restrict'] ? " checked='checked'" : "")." />
+	".SEALAN_13." ".$rs -> form_text("time_secs", 3, $tp -> toForm($search_prefs['time_secs']), 3)." ".SEALAN_14."</td>
+	</tr>";
+	
+	$text .= "<tr>
+	<td class='forumheader3' style='width:50%'>".SEALAN_3."</td>
+	<td colspan='2' class='forumheader3' style='width:50%'>
+	".$rs -> form_radio('search_sort', 'mysql', ($search_prefs['mysql_sort'] == TRUE ? 1 : 0), 'MySql', ($mysql_supported ? "" : "disabled='true'"))."MySql<br />
+	".$rs -> form_radio('search_sort', 'php', ($search_prefs['mysql_sort'] == TRUE ? 0 : 1)).SEALAN_31." 
+	".$rs -> form_text("php_limit", 5, $tp -> toForm($search_prefs['php_limit']), 5)." ".SEALAN_32." 
+	</td>
+	</tr>";
+	
+	$text .= "<tr>
+	<td colspan='2' style='text-align:center' class='forumheader'>".$rs -> form_button("submit", "update_prefs", LAN_UPDATE)."</td>
+	</tr>";
+	
+	$text .= "</table>
+	</div></form>";
+
+} else if ($query[0] == 'edit') {
+	if ($query[1] == 'c') {
+		$handlers = $search_handlers;
+		$handler_type = 'core_handlers';
+	} else if ($query[1] == 'p') {
+		$handlers = $search_prefs['plug_handlers'];
+		$handler_type = 'plug_handlers';
 	}
-	$text .= "</select>";
-	$text .= "</td>";
-	$text .= "</tr>";
-}
-
-foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
-	require_once(e_PLUGIN.$plug_dir."/e_search.php");
+	
+	$text = "<form method='post' action='".e_SELF."?main.".$query[1].".".$query[2]."'>
+	<div style='text-align:center'>
+	<table style='".ADMIN_WIDTH."' class='fborder'>";
+	
 	$text .= "<tr>
-	<td style='width:40%; white-space:nowrap' class='forumheader3'>".$search_info[0]['qtype']."</td>
-	<td style='width:10%' class='forumheader3'>";
-	$text .= r_userclass("plug_handlers[".$plug_dir."][class]", $search_prefs['plug_handlers'][$plug_dir]['class'], "off", "public,guest,nobody,member,admin,classes");
-	unset($search_info);
+	<td class='fcaption' colspan='2'>".SEALAN_43.": ".$handlers[$query[2]]."</td>
+	</tr>";
+	
+	$text .= "<tr>
+	<td style='width:50%' class='forumheader3'>".SEALAN_44.":</td>
+	<td style='width:50%' class='forumheader3'>";
+	$text .= r_userclass("class", $search_prefs[$handler_type][$query[2]]['class'], "off", "public,guest,nobody,member,admin,classes");
 	$text .= "</td>
-	<td style='width:5%; text-align: center' class='forumheader3'>".$rs -> form_text("plug_handlers[".$plug_dir."][chars]", 4, $tp -> toForm($search_prefs['plug_handlers'][$plug_dir]['chars']), 4)."</td>
-	<td style='width:5%; text-align: center' class='forumheader3'>".$rs -> form_text("plug_handlers[".$plug_dir."][results]", 4, $tp -> toForm($search_prefs['plug_handlers'][$plug_dir]['results']), 4)."</td>
-	<td style='width:35%; text-align: center' class='forumheader3'>
-	<input type='radio' name='plug_handlers[".$plug_dir."][pre_title]' value='1'".(($search_prefs['plug_handlers'][$plug_dir]['pre_title'] == 1) ? " checked='checked'" : "")." /> ".SEALAN_22."&nbsp;&nbsp;
-	<input type='radio' name='plug_handlers[".$plug_dir."][pre_title]' value='0'".(($search_prefs['plug_handlers'][$plug_dir]['pre_title'] == 0) ? " checked='checked'" : "")." /> ".SEALAN_17."&nbsp;&nbsp;
-	<input type='radio' name='plug_handlers[".$plug_dir."][pre_title]' value='2'".(($search_prefs['plug_handlers'][$plug_dir]['pre_title'] == 2) ? " checked='checked'" : "")." /> ".SEALAN_23."&nbsp;&nbsp;
-	".$rs -> form_text("plug_handlers[".$plug_dir."][pre_title_alt]", 20, $tp -> toForm($search_prefs['plug_handlers'][$plug_dir]['pre_title_alt']))."
-	</td>";
-	$text .= "<td style='width:5%; text-align:center' class='forumheader3'>";
-	$text .= "<select name='plug_handlers[".$plug_dir."][order]' class='tbox'>";
-	for($a = 1; $a <= $handlers_total; $a++) {
-		$text .= ($search_prefs['plug_handlers'][$plug_dir]['order'] == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
-	}
-	$text .= "</select>";
-	$text .= "</td>";
-	$text .= "</tr>";
-}
+	</tr><tr>
+	<td style='width:50%' class='forumheader3'>".SEALAN_45.":</td>
+	<td style='width:5%' class='forumheader3'>".$rs -> form_text("results", 4, $tp -> toForm($search_prefs[$handler_type][$query[2]]['results']), 4)."</td>
+	</tr><tr>
+	<td style='width:50%' class='forumheader3'>".SEALAN_46.":</td>
+	<td style='width:5' class='forumheader3'>".$rs -> form_text("chars", 4, $tp -> toForm($search_prefs[$handler_type][$query[2]]['chars']), 4)."</td>
+	</tr><tr>
+	<td style='width:50%' class='forumheader3'>".SEALAN_26.":</td>
+	<td style='width:35%' class='forumheader3'>
+	<input type='radio' name='pre_title' value='1'".(($search_prefs[$handler_type][$query[2]]['pre_title'] == 1) ? " checked='checked'" : "")." /> ".SEALAN_22."<br />
+	<input type='radio' name='pre_title' value='0'".(($search_prefs[$handler_type][$query[2]]['pre_title'] == 0) ? " checked='checked'" : "")." /> ".SEALAN_17."<br />
+	<input type='radio' name='pre_title' value='2'".(($search_prefs[$handler_type][$query[2]]['pre_title'] == 2) ? " checked='checked'" : "")." /> ".SEALAN_23."&nbsp;&nbsp;
+	".$rs -> form_text("pre_title_alt", 20, $tp -> toForm($search_prefs[$handler_type][$query[2]]['pre_title_alt']))."
+	</td>
+	</tr>";
 
-$text .= "<tr>
-<td style='width:40%; white-space:nowrap' class='forumheader3'>Google</td>
-<td style='width:55%' colspan='5' class='forumheader3'>";
-$sel = (isset($search_prefs['google']) && $search_prefs['google']) ? " checked='checked'" : "";
-$text .= r_userclass("google", $search_prefs['google'], "off", "public,guest,nobody,member,admin,classes");
-$text .= "</td>
-</tr>";
-
-$text .= "<tr>
-<td colspan='6' style='text-align:center' class='forumheader'>".$rs -> form_button("submit", "updatesettings", LAN_UPDATE)."</td>
-</tr>";
-
-$text .= "</table>
-</div><br />";
-
-$text .= "<div style='text-align:center'>
-<table style='".ADMIN_WIDTH."' class='fborder'>";
-
-$text .= "<tr>
-<td class='fcaption' colspan='6'>".SEALAN_18."</td>
-</tr>";
-
-$text .= "<tr>
-<td class='forumheader'>".SEALAN_24."</td>
-<td class='forumheader' colspan='5'>".SEALAN_25."</td>
-</tr>";
-
-foreach ($search_prefs['comments_handlers'] as $key => $value) {
-	$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$key.'.php' : e_PLUGIN.$value['dir'].'/search/search_comments.php';
-	require_once($path);
 	$text .= "<tr>
-	<td style='width:40%; white-space:nowrap' class='forumheader3'>".$comments_title."</td>
-	<td style='width:60%;' colspan='4' class='forumheader3'>";
-	$text .= r_userclass("comments_handlers[".$key."][class]", $search_prefs['comments_handlers'][$key]['class'], "off", "public,guest,nobody,member,admin,classes");
+	<td colspan='2' style='text-align:center' class='forumheader'>".$rs -> form_button("submit", "update_handler", LAN_UPDATE)."</td>
+	</tr>";
+	
+	$text .= "</table>
+	</div>
+	</form>";
+
+} else {
+
+	$text = "<form method='post' action='".e_SELF."'><div style='text-align:center'>
+	<table style='".ADMIN_WIDTH."' class='fborder'>";
+	
+	$text .= "<tr>
+	<td class='fcaption' colspan='4'>".SEALAN_21."</td>
+	</tr>";
+	
+	$text .= "<tr>
+	<td class='forumheader'>".SEALAN_24."</td>
+	<td class='forumheader'>".SEALAN_25."</td>
+	<td class='forumheader'>".LAN_ORDER."</td>
+	<td class='forumheader'>".LAN_EDIT."</td>
+	</tr>";
+	
+	foreach($search_handlers as $key => $value) {
+		$text .= "<tr>
+		<td style='width:40%; white-space:nowrap' class='forumheader3'>".$value."</td>
+		<td style='width:10%' class='forumheader3'>";
+		$text .= r_userclass("core_handlers[".$key."][class]", $search_prefs['core_handlers'][$key]['class'], "off", "public,guest,nobody,member,admin,classes");
+		$text .= "</td>";
+		$text .= "<td style='width:5%; text-align:center' class='forumheader3'>";
+		$text .= "<select name='core_handlers[".$key."][order]' class='tbox'>";
+		for($a = 1; $a <= $handlers_total; $a++) {
+			$text .= ($search_prefs['core_handlers'][$key]['order'] == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
+		}
+		$text .= "</select>
+		</td>
+		<td style='width:5%; text-align:center' class='forumheader3'>
+		<a href='".e_SELF."?edit.c.".$key."'>".ADMIN_EDIT_ICON."</a>
+		</td>
+		</tr>";
+	}
+	
+	foreach ($search_prefs['plug_handlers'] as $plug_dir => $active) {
+		require_once(e_PLUGIN.$plug_dir."/e_search.php");
+		$text .= "<tr>
+		<td style='width:40%; white-space:nowrap' class='forumheader3'>".$search_info[0]['qtype']."</td>
+		<td style='width:10%' class='forumheader3'>";
+		$text .= r_userclass("plug_handlers[".$plug_dir."][class]", $search_prefs['plug_handlers'][$plug_dir]['class'], "off", "public,guest,nobody,member,admin,classes");
+		unset($search_info);
+		$text .= "</td>";
+		$text .= "<td style='width:5%; text-align:center' class='forumheader3'>";
+		$text .= "<select name='plug_handlers[".$plug_dir."][order]' class='tbox'>";
+		for($a = 1; $a <= $handlers_total; $a++) {
+			$text .= ($search_prefs['plug_handlers'][$plug_dir]['order'] == $a) ? "<option value='".$a."' selected='selected'>".$a."</option>" : "<option value='".$a."'>".$a."</option>";
+		}
+		$text .= "</select>
+		</td>
+		<td style='width:5%; text-align:center' class='forumheader3'>
+		<a href='".e_SELF."?edit.p.".$plug_dir."'>".ADMIN_EDIT_ICON."</a>
+		</td>
+		</tr>";
+	}
+	
+	$text .= "<tr>
+	<td style='width:40%; white-space:nowrap' class='forumheader3'>Google</td>
+	<td style='width:55%' colspan='3' class='forumheader3'>";
+	$sel = (isset($search_prefs['google']) && $search_prefs['google']) ? " checked='checked'" : "";
+	$text .= r_userclass("google", $search_prefs['google'], "off", "public,guest,nobody,member,admin,classes");
 	$text .= "</td>
 	</tr>";
-	unset($comments_title);
+	
+	$text .= "<tr>
+	<td colspan='4' style='text-align:center' class='forumheader'>".$rs -> form_button("submit", "update_main", LAN_UPDATE)."</td>
+	</tr>";
+	
+	$text .= "</table>
+	</div><br />";
+	
+	$text .= "<div style='text-align:center'>
+	<table style='".ADMIN_WIDTH."' class='fborder'>";
+	
+	$text .= "<tr>
+	<td class='fcaption' colspan='6'>".SEALAN_18."</td>
+	</tr>";
+	
+	$text .= "<tr>
+	<td class='forumheader'>".SEALAN_24."</td>
+	<td class='forumheader' colspan='5'>".SEALAN_25."</td>
+	</tr>";
+	
+	foreach ($search_prefs['comments_handlers'] as $key => $value) {
+		$path = ($value['dir'] == 'core') ? e_HANDLER.'search/comments_'.$key.'.php' : e_PLUGIN.$value['dir'].'/search/search_comments.php';
+		require_once($path);
+		$text .= "<tr>
+		<td style='width:40%; white-space:nowrap' class='forumheader3'>".$comments_title."</td>
+		<td style='width:60%;' colspan='4' class='forumheader3'>";
+		$text .= r_userclass("comments_handlers[".$key."][class]", $search_prefs['comments_handlers'][$key]['class'], "off", "public,guest,nobody,member,admin,classes");
+		$text .= "</td>
+		</tr>";
+		unset($comments_title);
+	}
+	
+	$text .= "<tr>
+	<td colspan='5' style='text-align:center' class='forumheader'>".$rs -> form_button("submit", "update_main", LAN_UPDATE)."</td>
+	</tr>";
+	
+	$text .= "</table>
+	</div>
+	</form>";
+
 }
-
-$text .= "<tr>
-<td colspan='5' style='text-align:center' class='forumheader'>".$rs -> form_button("submit", "updatesettings", LAN_UPDATE)."</td>
-</tr>";
-
-$text .= "</table>
-</div>
-</form>";
 
 $ns -> tablerender(SEALAN_1, $text);
 
 require_once("footer.php");
+
+function search_adminmenu() {
+	global $query;
+	if ($query[0] == '' || $query[0] == 'main') {
+		$action = "main";
+	} else if ($query[0] == 'settings') {
+		$action = "settings";
+	}
+	
+	$var['main']['text'] = SEALAN_41;
+	$var['main']['link'] = e_SELF;
+
+	$var['settings']['text'] = SEALAN_42;
+	$var['settings']['link'] = e_SELF."?settings";
+
+	show_admin_menu(SEALAN_40, $action, $var);
+}
 
 ?>
