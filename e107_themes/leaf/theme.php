@@ -27,7 +27,7 @@ $themeauthor = "William Moffett [que]";
 $themeemail = "que@e107.net";
 $themewebsite = "http://e107themes.com";
 $themedate = "04/23/05";
-$themeinfo = "'Leaf' by <a href='http://e107themes.com' rel='external'>Que</a>, based on the nucleuscms theme by Ivan Fong aka <a href='http://www.stanch.net/'>Stanch</a>.";
+$themeinfo = "'Leaf' by <a href='http://e107themes.com' rel='external'>Que</a>, based on the nucleus cms theme by Ivan Fong aka <a href='http://www.stanch.net/'>Stanch</a>.";
 $xhtmlcompliant = TRUE;
 $csscompliant = TRUE;
 $no_core_css = TRUE;
@@ -213,9 +213,9 @@ $CUSTOMPAGES = "content_manager.php signup.php fpw.php forum.php forum_viewforum
 
 // [newsstyle]
 function news_style($news) {
-	$gen = new convert;
+
 	$mydate  = strftime("%d/%m :", $news['news_datestamp']);
-	$NEWSSTYLE = "<!-- end news item --><div class='contentbody'>
+	$NEWSSTYLE = "<!-- news item --><div class='contentbody'>
 	        <h3>$mydate {STICKY_ICON}{NEWSTITLE}</h3><br />
 	{NEWSBODY}
 	{EXTENDED}
