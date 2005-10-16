@@ -234,39 +234,42 @@ h2.comment{
 /* comments page is special */
 .divcomment{ 
 	margin: 0;
-	padding: 0 0 30px 43px;
+	/* padding: 0 0 30px 43px;
 	text-align: justify;
-	background: url(images/01_quote.gif) 0 3px no-repeat;
+	background: url(images/01_quote.gif) 0 3px no-repeat; */
 }
 
 /* content pages */
 .divcontent .contentbody{
 	margin: 0;
-	padding: 0 0 30px 43px;
+	/* padding: 0 0 30px 43px;
 	text-align: justify;
-	background: url(images/01_quote.gif) 0 3px no-repeat;
+	background: url(images/01_quote.gif) 0 3px no-repeat; */
 }
 .divcontent_manager .contentbody{
 	margin: 0;
-	padding: 0 0 30px 43px;
 	text-align: justify;
-	background: url(images/01_quote.gif) 0 3px no-repeat;
+	/* padding: 0 0 30px 43px;
+	text-align: justify;
+	background: url(images/01_quote.gif) 0 3px no-repeat; */
 }
 
 /* special e107 page */
 .divcvs .contentbody{
 	margin: 0;
-	padding: 0 0 30px 43px;
 	text-align: justify;
-	/* background: url(images/01_cvs.gif) 0 3px no-repeat; */
+	/* padding: 0 0 30px 43px;
+	text-align: justify;
+	 background: url(images/01_cvs.gif) 0 3px no-repeat; */
 }
 
 /* downloads */
 .divdownload .contentbody{
 	margin: 0;
-	padding: 0 0 30px 43px;
 	text-align: justify;
-	/* background: url(images/01_download.gif) 0 3px no-repeat; */
+	/* padding: 0 0 30px 43px;
+	text-align: justify;
+	 background: url(images/01_download.gif) 0 3px no-repeat; */
 }
 
 /* forums */
@@ -293,9 +296,10 @@ h2.comment{
 /* links */
 .divlinks .contentbody{
 	margin: 0;
-	padding: 0 0 30px 43px;
 	text-align: justify;
-	background: url(images/01_quote.gif) 0 3px no-repeat;
+	/* padding: 0 0 30px 43px;
+	text-align: justify;
+	background: url(images/01_quote.gif) 0 3px no-repeat; */
 }
 
 .divnews .contentbody{
@@ -307,32 +311,36 @@ h2.comment{
 
 .divsubmitnews .contentbody{
 	margin: 0;
-	padding: 0 0 30px 43px;
 	text-align: justify;
-	background: url(images/01_quote.gif) 0 3px no-repeat;
+	/* padding: 0 0 30px 43px;
+	text-align: justify;
+	background: url(images/01_quote.gif) 0 3px no-repeat; */
 }
 /* user pages */
 .divuser .contentbody{
 	margin: 0;
-	padding: 0 0 30px 43px;
+	padding: 0;
 	text-align: justify;
-	background: url(images/01_quote.gif) 0 3px no-repeat;
+	/* padding: 0 0 30px 43px;
+	text-align: justify;
+	background: url(images/01_quote.gif) 0 3px no-repeat; */
 }
 .divusersettings .contentbody{
 	margin: 0;
-	padding: 0 0 30px 43px;
 	text-align: justify;
-	background: url(images/01_quote.gif) 0 3px no-repeat;
+	/* padding: 0 0 30px 43px;
+	text-align: justify;
+	background: url(images/01_quote.gif) 0 3px no-repeat; */
 }
 
 
 
-/*Add comment form's background*/
+/* Add comment form's background */
 .divaddcomment .contentbody{
-	background: url(images/01_quote3.gif) 0 3px no-repeat;
+	/* background: url(images/01_quote3.gif) 0 3px no-repeat; */
 }
 
-/*MORE DETAILED STUFF - Item details of your blog items*/
+/*MORE DETAILED STUFF - Item details of your blog items */
 .itemdetails{
 	text-align: right;
 	padding: 5px 0 0 0;
