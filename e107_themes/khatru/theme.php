@@ -95,8 +95,11 @@ $HEADER = "
 <div id='header'>
 <div id='logo1'>&nbsp;</div>
 <div id='headerr'>&nbsp;</div>
+<div id='banner'>
+{BANNER}
 </div>
-<div id='banner'>{BANNER}</div>
+</div>
+
 
 <div id='mainbox'>
 	<div class='clear'>
