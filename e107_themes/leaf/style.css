@@ -400,64 +400,78 @@ textarea{
 }
 
 
-/* STYLING OF SIDE TITLES */
-/* You can remove all parts here if you do not wish to use images as your side titles */
-h3{ /* default do not remove */
+/* STYLING OF MENU TITLES */
+
+h3{   /* default styleing for menu items, do not remove */
 	height: 23px;
 	text-indent: 17px;
 	margin: 0 0 2px 0;
-	background: url(images/01_m_default.gif) no-repeat;
+	background: url(images/01_m_default.gif) no-repeat; 
 }
-.about h3{
+
+h3.news{ /* remove background image from h3 in news posts */
+	background: none;
+}
+
+
+/* You can remove all parts here if you do not wish to use images as your side titles */
+
+h3.about {
 	height: 23px;
 	text-indent: -9999px;
 	margin: 0 0 2px 0;
 	background: url(images/01_s_about.gif) no-repeat;
 }
-.login h3{
+
+h3.login{
 	height: 23px;
 	text-indent: -9999px;
 	margin: 0 0 2px 0;
 	background: url(images/01_s_login.gif) no-repeat;
 }
-.categories h3{
+
+h3.categories {
 	height: 23px;
 	text-indent: -9999px;
 	margin: 0 0 2px 0;
 	background: url(images/01_s_categories.gif) no-repeat;
 }
-.search h3{
+h3.search{
 	height: 23px;
 	text-indent: -9999px;
 	margin: 0 0 2px 0;
 	background: url(images/01_s_search.gif) no-repeat;
 }
-.links h3{
+
+h3.links{
 	height: 23px;
 	text-indent: -9999px;
 	margin: 0 0 2px 0;
 	background: url(images/01_s_links.gif) no-repeat;
 }
 
-.online h3{
+h3.online {
 	height: 23px;
 	text-indent: -9999px;
 	margin: 0 0 2px 0;
 	background: url(images/01_s_online.gif) no-repeat;
 }
-.chatbox h3{
+
+h3.chatbox {
 	height: 23px;
 	text-indent: -9999px;
 	margin: 0 0 2px 0;
 	background: url(images/01_s_chatbox.gif) no-repeat;
 }
 
-/* Sidbar menu content styles */
-.loginform, .searchform, .chatboxform, .onlineform{
-	width: 174px;
-	background: #E2EDF0 url(images/01_mountaintop2.gif) top no-repeat; 
-	padding:4px;
+.compliance{
+
 }
+
+
+
+
+/* Sidbar menu content styles */
 
 .defaultform{
 	width: 174px;
