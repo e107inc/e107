@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-09-14 14:52:07 $
-|     $Author: e107coders $
+|     $Revision: 1.34 $
+|     $Date: 2005-10-16 09:07:03 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -143,9 +143,7 @@ if ($type == "file")
 				$sql -> db_Update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '{$download_id}'");
 				$sql -> db_Update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '{$mirror_id}'");
 
-				if(!ADMIN){
-					header("Location: ".$gaddress);
-				}
+				header("Location: ".$gaddress);
 				exit();
 			}
 
