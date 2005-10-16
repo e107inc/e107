@@ -49,6 +49,9 @@ define("e_PAGECLASS", str_replace(substr(strrchr(e_PAGE, "."), 0), "", e_PAGE));
 // [navigation] 
 $register_sc[] = 'UL';
 
+// [credit links]
+$register_sc[] = 'LINKS';
+
 // [colorstyle] Used for sidbar menus and forum header background color custimization.
 $colorstyle ="E2EDF0";
 
@@ -122,23 +125,9 @@ $FOOTER = "<!--End Database Generated Content-->
 {MENU=2}
 <!-- End Menu2 -->
 {SETSTYLE}
-<!--Links-->
-    <div class='sidebarbody links'>
-    <h3>Links</h3>
-      <div class='sidebarin'>
-      <ul>
-        <li><a href='http://www.e107.org' title='e107 CMS official website'>e107 CMS official site</a></li>
-        <li><a href='http://e107coders.org' title='e107 CMS coders site'>e107 CMS coders site</a></li>
-        <li><a href='http://e107styles.org' title='e107 CMS styles site'>Get more e107 styles!</a></li>
-        <li><a href='http://e107themes.com' title='e107 Style Enlightenment'>e107 Style Enlightenment</a></li>
-        <li><a href='http://www.stanch.net' title='The orig designer of this skin'>Orig Designer of this skin</a></li>
-        <li><a href='http://e107.net' title='William Moffett aka Que~'>Current Designer's site</a></li>
-
-      </ul>
-      </div>
-    </div>
-  </div>
-</div>
+{LINKS}
+  </div><!-- Close sidebardiv -->
+</div><!-- Close sidebar_full -->
 <div class='clearing'>&nbsp;</div>
 </div><!--Close Wrapper-->
 <div id='footer'>
@@ -176,33 +165,6 @@ $CUSTOMFOOTER = "<!--End Database Generated Content-->
     </div><!--Close Contentdiv-->
   </div><!--Close Content-->
 </div><!--Close Container-->
-<div id='sidebar_full'>
-  <div class='sidebardiv'>
-{SETSTYLE=sidebar}
-<!-- Menu1 -->
-{MENU=1}
-<!-- End Menu1 -->
-<!-- Menu2 -->
-{MENU=2}
-<!-- End Menu2 -->
-{SETSTYLE}
-<!--Links-->
-    <div class='sidebarbody links'>
-    <h3>Links</h3>
-      <div class='sidebarin'>
-      <ul>
-        <li><a href='http://www.e107.org' title='e107 CMS official website'>e107 CMS official site</a></li>
-        <li><a href='http://e107coders.org' title='e107 CMS coders site'>e107 CMS coders site</a></li>
-        <li><a href='http://e107styles.org' title='e107 CMS styles site'>Get more e107 styles!</a></li>
-        <li><a href='http://e107themes.com' title='e107 Style Enlightenment'>e107 Style Enlightenment</a></li>
-        <li><a href='http://www.stanch.net' title='The orig designer of this skin'>Orig Designer of this skin</a></li>
-        <li><a href='http://e107.net' title='William Moffett aka Que~'>Current Designer's site</a></li>
-
-      </ul>
-      </div>
-    </div>
-  </div>
-</div>
 <div class='clearing'>&nbsp;</div>
 </div><!--Close Wrapper-->
 <div id='footer'>
@@ -218,7 +180,7 @@ function news_style($news) {
 
 	$mydate  = strftime("%d/%m :", $news['news_datestamp']);
 	$NEWSSTYLE = "<!-- news item --><div class='contentbody'>
-	        <h3>$mydate {STICKY_ICON}{NEWSTITLE}</h3><br />
+	        <h3 class='news'>{NEWSICON}&nbsp;$mydate&nbsp;{STICKY_ICON}&nbsp;{NEWSTITLE}</h3>
 	{NEWSBODY}
 	{EXTENDED}
 	        <br /><br />
@@ -236,7 +198,7 @@ function news_style($news) {
 // [newsliststyle]
 $NEWSLISTSTYLE = "";
 
-define("ICONSTYLE", "float: left; border:0");
+define("ICONSTYLE", "border:0");
 define("COMMENTLINK", LAN_THEME_1);
 define("COMMENTOFFSTRING", LAN_THEME_2);
 define("EXTENDEDSTRING", LAN_THEME_3);
@@ -257,12 +219,12 @@ function tablestyle($caption, $text, $mode=""){
 	if($style == "sidebar"){  // sidebar styles
 		if($mode){
 		        if($caption != ""){
-		                echo "<div class='sidebarbody ".$mode."'><h3>".$caption."</h3>";
+		                echo "<div class='sidebarbody'><h3 class='".$mode."'>".$caption."</h3>";
 		                if($text != ""){
-		                        echo "<div class='sidebarin'><div class='".$mode."form'>".$text."</div></div></div>\n";
+		                        echo "<div class='sidebarin'><div class='defaultform'>".$text."</div></div></div>\n";
 		                }
 		        }else{
-		                echo "<div class='sidebarbody'><div class='sidebarin'><div class='".$mode."form'>".$text."</div></div></div></div>\n";
+		                echo "<div class='sidebarbody'><div class='sidebarin'><div class='defaultform'>".$text."</div></div></div></div>\n";
 		        }
 		}else{
 			if($caption != ""){
