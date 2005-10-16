@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/message.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-03-21 14:11:15 $
-|     $Author: stevedunstan $
+|     $Revision: 1.4 $
+|     $Date: 2005-10-16 08:46:01 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 
-$messageTypes = array("Reported Forum Post", "Broken Download", "Dev Team Message");
+$messageTypes = array("Broken Download", "Dev Team Message");
 $queryString = "";
 foreach($messageTypes as $types) {
 	$queryString .= " gen_type='$types' OR";
@@ -70,11 +70,6 @@ if($amount = $sql -> db_Select("generic", "*", $queryString))
 		{
 			case "Broken Download":
 				$link = "<a href='".e_BASE."download.php?view.$gen_intdata' rel='external' title='".MESSLAN_11."'>$gen_ip</a>";
-			break;
-			case "Reported Forum Post":
-				$sql -> db_Select("forum_t", "thread_parent", "thread_id=$gen_intdata");
-				$thread = $sql -> db_Fetch();
-				$link = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?".$thread['thread_parent']."#$gen_intdata'>$gen_ip</a>";
 			break;
 			case "Dev Team Message":
 				$link = "";
