@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_users_extended.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-09-05 09:44:08 $
+|     $Revision: 1.9 $
+|     $Date: 2005-10-17 19:40:45 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ define("EXTLAN_46", "Ayuda");
 define("EXTLAN_47", "Añadir nuevo parámetro");
 define("EXTLAN_48", "Añadir nuevo valor");
 define("EXTLAN_49", "Permitir ocultar al usuario");
-define("EXTLAN_50", "Fijando a 'Si' permitirá al usuario ocultar el valor excepto a los Admins");
+define("EXTLAN_50", "Fijando a 'Si' permitirá al usuario ocultar el valor excepto a los Administradores");
 define("EXTLAN_51", "Aquí puede entrar cualquier parámetro válido w3c<br />ie <i><b>class='tbox' size='40' maxlength='80'</i></b>.");
 define("EXTLAN_52", "Validación de código regex");
 define("EXTLAN_53", "Escriba el código regex que necesitará para compararlo con una entrada válida <br />**Los delimitadores regex son obligatorios**");

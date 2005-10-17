@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_top.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-09 20:03:44 $
+|     $Revision: 1.6 $
+|     $Date: 2005-10-17 19:40:45 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -20,12 +20,12 @@ define("TOP_LAN_5", "Top chatbox");
 define("TOP_LAN_6", "Puntuación del sitio");
 
 //v.616
-define("LAN_1", "Hilo");
+define("LAN_1", "Tema");
 define("LAN_2", "Autor");
 define("LAN_3", "Vistas");
 define("LAN_4", "Respuestas");
 define("LAN_5", "Último");
-define("LAN_6", "Hilos");
-define("LAN_7", "Hilos más activos");
+define("LAN_6", "Temas");
+define("LAN_7", "Temas más activos");
 define("LAN_8", "Top Autores");
 ?>

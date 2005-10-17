@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-07-10 19:33:48 $
+|     $Revision: 1.7 $
+|     $Date: 2005-10-17 19:40:45 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -406,7 +406,7 @@ define("CONTENT_ADMIN_OPT_LAN_MENU_19", "Elementos recientes");
 define("CONTENT_ADMIN_OPT_LAN_MENU_20", "Enlaces a páginas");
 
 define("CONTENT_ADMIN_OPT_LAN_SECTION_0", "Secciones");
-define("CONTENT_ADMIN_OPT_LAN_SECTION_1", "Escoja que s emostrará");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_1", "Escoja que se mostrará");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_2", "Adjuntos");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_3", "Imágenes");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_4", "Comentario");

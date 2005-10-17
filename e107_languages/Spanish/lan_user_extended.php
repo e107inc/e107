@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_user_extended.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-28 21:02:21 $
+|     $Revision: 1.7 $
+|     $Date: 2005-10-17 19:40:45 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -19,6 +19,7 @@ define("UE_LAN_7", "Fecha");
 define("UE_LAN_8", "Idioma");
 define("UE_LAN_9", "Nombre");
 define("UE_LAN_10", "Tipo");
+define("UE_LAN_11", "Descripci髇");
 
 define("UE_LAN_LOCATION", "Zona");
 define("UE_LAN_LOCATION_DESC", "Zona del usuario");
@@ -27,7 +28,7 @@ define("UE_LAN_AIM_DESC", "Direcci贸n AIM");
 define("UE_LAN_ICQ", "ICQ");
 define("UE_LAN_ICQ_DESC", "N煤mero ICQ");
 define("UE_LAN_YAHOO", "Yahoo!");
-define("UE_LAN_YAHOO_DESC", "Direcci贸n Yahoo!");
+define("UE_LAN_YAHOO_DESC", "Direcci贸n Yahoo");
 define("UE_LAN_MSN", "MSN");
 define("UE_LAN_MSN_DESC", "Direcci贸n MSN");
 define("UE_LAN_HOMEPAGE", "P谩gina Web");

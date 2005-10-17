@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Spanish.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-10-13 22:41:23 $
+|     $Revision: 1.19 $
+|     $Date: 2005-10-17 19:40:45 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ define("LCLAN_PAGETITLE_1", "Enlaces");
 define("LCLAN_PAGETITLE_2", "Todas las categorías");
 define("LCLAN_PAGETITLE_3", "Todos los enlaces");
 define("LCLAN_PAGETITLE_4", "Categoría");
-define("LCLAN_PAGETITLE_5", "Más valorado");
+define("LCLAN_PAGETITLE_5", "Más Valorado");
 define("LCLAN_PAGETITLE_6", "Más Activos");
 define("LCLAN_PAGETITLE_7", "Gestor personal de enlaces");
 define("LCLAN_PAGETITLE_8", "Comentarios de enlaces");
@@ -94,7 +94,7 @@ define("LCLAN_OPT_54", "Permitir gestión personal en los enlaces");
 define("LCLAN_OPT_55", "Permitir comentarios en todos los enlaces");
 define("LCLAN_OPT_56", "Valor mínimo de referencia");
 define("LCLAN_OPT_57", "Solo se mostrán los valores dados con cuentas de referidos grandes (0 o vacío = todo)");
-define("LCLAN_OPT_58", "lEnlace para enviar enlace");
+define("LCLAN_OPT_58", "Enlace para enviar enlace");
 define("LCLAN_OPT_59", "Enlace al gestor personal de enlaces (solo si está permitido)");
 define("LCLAN_OPT_60", "Enlace a la página de enlaces");
 define("LCLAN_OPT_61", "Enlace a todas las categorías");
@@ -107,7 +107,7 @@ define("LCLAN_OPT_67", "Enlace a todos los enlaces");
 define("LCLAN_OPT_68", "Ver todos los enlaces");
 define("LCLAN_OPT_69", "TipoRenderizado de enlaces del navegador");
 define("LCLAN_OPT_70", "Mostrar enlaces de categorías");
-define("LCLAN_OPT_71", "rTipoRenderizado de enlaces de categorías");
+define("LCLAN_OPT_71", "TipoRenderizado de enlaces de categorías");
 define("LCLAN_OPT_72", "Mostrar enlaces recientes");
 define("LCLAN_OPT_73", "Mostrar datos");
 define("LCLAN_OPT_74", "¿Cuantos enlaces recientes se mostrarán?");
@@ -131,8 +131,8 @@ define("LCLAN_ADMIN_3", "Enlace actualziado en la base de datos.");
 define("LCLAN_ADMIN_4", "Categoría de enlace guardada");
 define("LCLAN_ADMIN_5", "Categoría de enlace actualizada");
 define("LCLAN_ADMIN_6", "Opciones guardadas");
-define("LCLAN_ADMIN_7", "¡ El icono del enlace se transfirió con éxito!");
-define("LCLAN_ADMIN_8", "¡ El icono del enlace no se transfirió!");
+define("LCLAN_ADMIN_7", "¡El icono del enlace se transfirió con éxito!");
+define("LCLAN_ADMIN_8", "¡El icono del enlace no se transfirió!");
 define("LCLAN_ADMIN_9", "Orden actualizado");
 define("LCLAN_ADMIN_10", "Enlace");
 define("LCLAN_ADMIN_11", "Eliminado");

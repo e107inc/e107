@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_online.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-09 20:03:44 $
+|     $Revision: 1.6 $
+|     $Date: 2005-10-17 19:40:45 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ define("ONLINE_EL10", "Nombre");
 define("ONLINE_EL11", "Viendo página");
 define("ONLINE_EL12", "Respondiendo a");
 define("ONLINE_EL13", "Foro");
-define("ONLINE_EL14", "Hilo");
+define("ONLINE_EL14", "Tema");
 define("ONLINE_EL15", "Página");
 define("CLASSRESTRICTED", "Página restringida");
 define("ARTICLEPAGE", "Artículo/Revisión");
@@ -48,7 +48,7 @@ define("ONLINE", "Usuarios en linea");
 define("LISTNEW", "Lista de novedades");
 define("USERPOSTS", "Mensajes de usuario");
 define("SUBCONTENT", "Enviar Artículo/Revisión");
-define("TOP", "Top Usuarios/Hilos más activos");
+define("TOP", "Top Usuarios/Temas más activos");
 define("ADMINAREA", "Área de Admin.");
 define("BUGTRACKER", "Bugtracker");
 define("EVENT", "Lista de eventos");

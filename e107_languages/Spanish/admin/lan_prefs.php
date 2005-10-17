@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-12 09:28:01 $
+|     $Revision: 1.8 $
+|     $Date: 2005-10-17 19:40:45 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -112,7 +112,7 @@ define("PRFLAN_98", "<b>Off:</b> Cada plugin mostrará su propia información en
 //define("PRFLAN_100", "Carga de imágenes del theme:");
 define("PRFLAN_101", "Renderizado texto");
 define("PRFLAN_102", "Reemplazar enlaces");
-define("PRFLAN_103", "On: los enlaces serán substituídos por el texto escrito, para los enlaces largos que rompen la distribución");
+define("PRFLAN_103", "<b>On:</b> los enlaces serán substituídos por el texto escrito, para los enlaces largos que rompen la distribución");
 define("PRFLAN_104", "Texto de enlace a reemplazar");
 define("PRFLAN_105", "Se puede usar con: imagen usando el tag <img , con la ruta completa a la imagen");
 define("PRFLAN_106", "Preferencias guardadas en la BD.");

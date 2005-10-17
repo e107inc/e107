@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_emoticon.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-10 18:12:33 $
+|     $Revision: 1.6 $
+|     $Date: 2005-10-17 19:40:45 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -19,7 +19,7 @@ define("EMOLAN_7", "Separar múltiples entradas con espacios");
 define("EMOLAN_8", "Estado");
 define("EMOLAN_9", "Opciones");
 define("EMOLAN_10", "Activo");
-define("EMOLAN_11", "Activar Pack");
+define("EMOLAN_11", "Activarlo");
 define("EMOLAN_12", "Editar / configurar este pack");
 define("EMOLAN_13", "Packs instalados");
 define("EMOLAN_14", "Guardar configuración");

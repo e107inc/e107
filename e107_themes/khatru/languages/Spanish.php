@@ -4,8 +4,8 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/khatru/languages/Spanish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-10-14 19:44:05 $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-17 19:40:45 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */

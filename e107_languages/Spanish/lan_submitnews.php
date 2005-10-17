@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_submitnews.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-10-17 19:40:45 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ define("LAN_136", "Enviar Noticia");
 
 define("NWSLAN_6", "Categoría");
 define("NWSLAN_10", "No hay categorias");
-define("NWSLAN_11", "Usted no tiene acceso a este área.");
+define("NWSLAN_11", "No tiene acceso a este área.");
 define("NWSLAN_12", "Acceso denegado.");
 
 define("SUBNEWSLAN_1", "Debe incluir un título.\\n");

@@ -1,4 +1,4 @@
-// ES lang variables by Alvaro Velasco
+// ES lang variables by Natxo CC
 
 tinyMCELang['lang_bold_desc'] = 'Negrita';
 tinyMCELang['lang_italic_desc'] = 'Cursiva';
@@ -10,8 +10,8 @@ tinyMCELang['lang_justifyright_desc'] = 'Alinear a la derecha';
 tinyMCELang['lang_justifyfull_desc'] = 'Alinear justificado';
 tinyMCELang['lang_bullist_desc'] = 'Lista sin ordenar';
 tinyMCELang['lang_numlist_desc'] = 'Lista ordenada';
-tinyMCELang['lang_outdent_desc'] = 'Disminuye sangria';
-tinyMCELang['lang_indent_desc'] = 'Aumentar sangria';
+tinyMCELang['lang_outdent_desc'] = 'Disminuye sangría';
+tinyMCELang['lang_indent_desc'] = 'Aumentar sangría';
 tinyMCELang['lang_undo_desc'] = 'Deshacer';
 tinyMCELang['lang_redo_desc'] = 'Rehacer';
 tinyMCELang['lang_link_desc'] = 'Insertar enlace';
@@ -24,16 +24,16 @@ tinyMCELang['lang_insert_link_title'] = 'Insertar/editar enlace';
 tinyMCELang['lang_insert'] = 'Insertar';
 tinyMCELang['lang_update'] = 'Insertar';
 tinyMCELang['lang_cancel'] = 'Cancelar';
-tinyMCELang['lang_insert_link_url'] = 'Direccion del enlace';
+tinyMCELang['lang_insert_link_url'] = 'Dirección del enlace';
 tinyMCELang['lang_insert_link_target'] = 'Destino';
 tinyMCELang['lang_insert_link_target_same'] = 'Abrir enlace en la misma ventana';
-tinyMCELang['lang_insert_link_target_blank'] = 'Abrir enlace en una ventana nueva';
+tinyMCELang['lang_insert_link_target_blank'] = 'Abrir enlace en una nueva ventana';
 tinyMCELang['lang_insert_image_title'] = 'Insertar/editar imagen';
 tinyMCELang['lang_insert_image_src'] = 'URL de la imagen';
-tinyMCELang['lang_insert_image_alt'] = 'Descripcion de la imagen';
+tinyMCELang['lang_insert_image_alt'] = 'Descripción de la imagen';
 tinyMCELang['lang_help_desc'] = 'Ayuda';
 tinyMCELang['lang_bold_img'] = "bold.gif";
 tinyMCELang['lang_italic_img'] = "italic.gif";
 tinyMCELang['lang_underline_img'] = "underline.gif";
-tinyMCELang['lang_clipboard_msg'] = 'Copy/Cut/Paste is not available in Mozilla and Firefox.\nDo you want more information about this issue?';
-tinyMCELang['lang_popup_blocked'] = 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.';
+tinyMCELang['lang_clipboard_msg'] = 'Copiar/Cortar/Pegar no está disponible en Mozilla y Firefox.\n¿Desea más información al respecto?';
+tinyMCELang['lang_popup_blocked'] = 'Lo siento, pero se ha detectado que su sistema antipublicidad a bloqueado una ventana que es necesaria para la aplicación. Necesitará desactivar sus sistema de antipublicidad en este sitio para el correcto funcionamiento de esta herramienta.';

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_userclass2.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-10 20:56:25 $
+|     $Revision: 1.6 $
+|     $Date: 2005-10-17 19:40:45 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -32,6 +32,6 @@ define("UCSLAN_20", "Clases");
 define("UCSLAN_21", "Configuraciones para clase de usuario");
 define("UCSLAN_22", "Usuarios - pulse para mover ...");
 define("UCSLAN_23", "Usuarios en esta clase ...");
-define("UCSLAN_24", "Quien puede gestionar las clases");
+define("UCSLAN_24", "¿Quién puede gestionar las clases?");
 
 ?>
