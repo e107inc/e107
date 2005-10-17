@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_search.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-09-17 11:39:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-10-17 10:58:03 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -31,8 +31,7 @@ define("SEALAN_23", "Alternativ:");
 define("SEALAN_24", "Typ");
 define("SEALAN_25", "Användarklass");
 define("SEALAN_26", "Titel prefix");
-define("SEALAN_27", "Tecken");
-define("SEALAN_28", "Resultat");
+
 define("SEALAN_30", "Framhäv nyckelord på refererar till sida:");
 define("SEALAN_31", "PHP begränsad till");
 define("SEALAN_32", "resultat (lämna tomt för obegränsat)");
@@ -43,6 +42,14 @@ define("SEALAN_36", "Rullgardinsmeny");
 define("SEALAN_37", "Kryssrutor");
 define("SEALAN_38", "Radioknappar");
 define("SEALAN_39", "Egna sidor");
+define("SEALAN_40", "Sökalternativ");
+define("SEALAN_41", "Huvudsida");
+define("SEALAN_42", "Preferenser");
+
+define("SEALAN_43", "Redigera sökinställningarna för");
+define("SEALAN_44", "Användarklass som tillåts söka i denna area");
+define("SEALAN_45", "Antal resultat att visa per sida");
+define("SEALAN_46", "Antal tecken att visa i sökningens resultatsummering");
 
 define("LAN_98", "Nyheter");
 define("LAN_197", "Nerladdningar");

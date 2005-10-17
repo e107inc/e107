@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Swedish/lan_forum_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-26 11:12:24 $
+|     $Revision: 1.4 $
+|     $Date: 2005-10-17 10:58:03 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -132,7 +132,7 @@ define("FORLAN_115", "Markera för att låta användare att själva ändra egen 
 define("FORLAN_116", "Rapporterade inlägg");
 define("FORLAN_117", "Detta kommer att radera posten för det rapporterade inlägget, inte inlägget i sig självt.");
 define("FORLAN_118", "Rapporterat inlägg raderat");
-define("FORLAN_119", "Klickning på länkar kommer att öppna forum i nytt fönster.");
+// define("FORLAN_119", "Klickning på länkar kommer att öppna forum i nytt fönster.");
 define("FORLAN_120", "Markera för att låta användare att själva ändra egen titel");
 define("FORLAN_121", "Inga rapporterade inlägg");
 define("FORLAN_122", "Klicka här för att e-posta admin när någon rapporterar ett foruminlägg");
@@ -190,8 +190,12 @@ define("FORLAN_166", "Forumverktyg");
 define("FORLAN_167", "Räknare för forum uppdaterade");
 define("FORLAN_168", "Info om senaste inlägg uppdaterade för forum");
 define("FORLAN_169", "Räknare för användares inlägg uppdaterade");
-define("FORLAN_166", "Forumverktyg");
-define("FORLAN_166", "Forumverktyg");
-define("FORLAN_166", "Forumverktyg");
+define("FORLAN_170", "Rapporter");
+define("FORLAN_171", "Rapport om foruminlägg");
+define("FORLAN_172", "Radera denna rapport");
+define("FORLAN_173", "Trådrubrik");
+define("FORLAN_174", "Rapporterad av användare");
+define("FORLAN_175", "Rapport insänd");
+define("FORLAN_176", "Rapport");
 
 ?>

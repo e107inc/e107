@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Swedish/Swedish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-17 11:39:41 $
+|     $Revision: 1.4 $
+|     $Date: 2005-10-17 10:58:03 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -29,12 +29,12 @@ define("CHATBOX_L17", "Dublettinlägg");
 define("CHATBOX_L18", "Chattrutans meddelande modererade");
 define("CHATBOX_L19", "Du kan bara skriva ett inlägg per ".FLOODTIMEOUT." sekunder");
 
-define("LAN_11", "Chattruta (alla inlägg)");
-define("LAN_12", "Chattinlägg");
-define("LAN_13", "den");
-define("LAN_14", "Fel!");
-define("LAN_15", "Du har inte rättigheter att se denna sida.");
-define("LAN_16", "[ detta inlägg har blockerats av admin ]");
+define("CHATBOX_L20", "Chattruta (alla inlägg)");
+define("CHATBOX_L20", "Chattinlägg");
+define("CHATBOX_L21", "den");
+define("CHATBOX_L22", "Fel!");
+define("CHATBOX_L22", "Du har inte rättigheter att se denna sida.");
+define("CHATBOX_L23", "[ detta inlägg har blockerats av admin ]");
 // Notify
 define("NT_LAN_CB_1", "Chattrutehändelser");
 define("NT_LAN_CB_2", "Meddelande postat");
