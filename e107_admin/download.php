@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2005-09-02 02:39:50 $
+|     $Revision: 1.67 $
+|     $Date: 2005-10-17 23:18:13 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -67,9 +67,10 @@ if (e_QUERY) {
 	unset($tmp);
 }
 
-if(isset($_POST['delete'])){
-	$tmp = array_pop(array_flip($_POST['delete']));
-	list($delete, $del_id) = explode("_", $tmp);
+if(isset($_POST['delete']))
+{
+	$tmp = array_keys($_POST['delete']);
+	list($delete, $del_id) = explode("_", $tmp[0]);
 	unset($_POST['searchquery']);
 }
 

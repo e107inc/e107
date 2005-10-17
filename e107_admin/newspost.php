@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.94 $
-|   $Date: 2005-10-07 13:49:41 $
-|   $Author: sweetas $
+|   $Revision: 1.95 $
+|   $Date: 2005-10-17 23:18:13 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
@@ -73,15 +73,16 @@ if(isset($_POST['news_userclass']))
 	$_POST['news_class'] = implode(",", array_keys($_POST['news_userclass']));
 }
 
-if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LAN_DELETE)], $matches)) {
+if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LAN_DELETE)], $matches))
+{
 	$delete = $matches[1];
 	$del_id = $matches[2];
 }
 
 if(isset($_POST['delete']))
 {
-	$tmp = array_pop(array_flip($_POST['delete']));
-	list($delete, $del_id) = explode("_", $tmp);
+	$tmp = array_keys($_POST['delete']);
+	list($delete, $del_id) = explode("_", $tmp[0]);
 }
 
 if ($delete == "main" && $del_id)
