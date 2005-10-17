@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-09-05 23:14:01 $
+|     $Revision: 1.37 $
+|     $Date: 2005-10-17 17:28:12 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -99,20 +99,24 @@ foreach ($menu_array as $menu_value) {
 }
 
 // Cams Bit ----------- Activate Multiple Menus ---
-if($_POST['menuActivate']){
-	foreach ($_POST['menuActivate'] as $k => $v) {
-		if (trim($v)) {
+if($_POST['menuActivate'])
+{
+	foreach ($_POST['menuActivate'] as $k => $v)
+	{
+		if (trim($v))
+		{
 			$location = $k;
 		}
 	}
 
-	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='$position' ");
-	foreach($_POST['menuselect'] as $sel_mens){
+	$menu_count = 100;
+	foreach($_POST['menuselect'] as $sel_mens)
+	{
 		$sql->db_Update("menus", "menu_location='$location', menu_order='".($menu_count+1)."' WHERE menu_id='$sel_mens' ");
 		$menu_count++;
 	}
 }
-// =-============
+// =============
 
 foreach ($_POST['menuAct'] as $k => $v) {
 	if (trim($v)) {
