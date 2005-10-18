@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.104 $
-|     $Date: 2005-10-18 05:45:28 $
+|     $Revision: 1.105 $
+|     $Date: 2005-10-18 06:57:42 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -303,7 +303,6 @@ class e_parse
 
 		if (strpos($modifiers, 'nobreak') === FALSE) {
 			$text = preg_replace("#>\s*[\r]*\n[\r]*#", ">", $text);
-			$text = preg_replace("#(<[^>]+)[\r]*\n[\r]*([^>]+>)#", "\\1\\2", $text);
 		}
 
 		if($pref['make_clickable'] && strpos($modifiers, 'no_make_clickable') === FALSE) {
@@ -330,6 +329,7 @@ class e_parse
 		}
 		$text = str_replace($this -> search, $this -> replace, $text);
 		if (strpos($modifiers, 'nobreak') === FALSE) {
+			$text = preg_replace("#(<[^>]+)[\r]*\n[\r]*([^>]+>)#is", "\\1 \\2", $text);
 			$text = preg_replace("#[\r]*\n[\r]*#", "[E_NL]", $text);
 		}
 
