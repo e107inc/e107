@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/languages/English/English.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-10-15 21:48:46 $
+|     $Revision: 1.6 $
+|     $Date: 2005-10-18 04:42:12 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -38,11 +38,11 @@ define("CHATBOX_L18", "Chatbox messages moderated");
 define("CHATBOX_L19", "You may only post once every ".FLOODTIMEOUT." seconds");
 
 define("CHATBOX_L20", "Chatbox (all posts)");
-define("CHATBOX_L20", "Chat Posts");
-define("CHATBOX_L21", "on");
-define("CHATBOX_L22", "Error!");
-define("CHATBOX_L22", "You do not have the correct permissions to view this page.");
-define("CHATBOX_L23", "[ this post has been blocked by admin ]");
+define("CHATBOX_L21", "Chat Posts");
+define("CHATBOX_L22", "on");
+define("CHATBOX_L23", "Error!");
+define("CHATBOX_L24", "You do not have the correct permissions to view this page.");
+define("CHATBOX_L25", "[ this post has been blocked by admin ]");
 
 // Notify
 define("NT_LAN_CB_1", "Chatbox Events");

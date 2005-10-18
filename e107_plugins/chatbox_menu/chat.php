@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-10-15 21:48:46 $
+|     $Revision: 1.12 $
+|     $Date: 2005-10-18 04:42:12 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ $sql->db_Select("menus", "*", "menu_name='chatbox_menu'");
 $row = $sql->db_Fetch();
 
 if (!check_class($row['menu_class'])) {
-	$ns->tablerender(CHATBOX_L22, "<div style='text-align:center'>".CHATBOX_L23."</div>");
+	$ns->tablerender(CHATBOX_L23, "<div style='text-align:center'>".CHATBOX_L24."</div>");
 	require_once(FOOTERF);
 	exit;
 }
@@ -105,7 +105,7 @@ foreach ($chatList as $row)
 	$cb_message = $tp->toHTML($row['cb_message']);
 	if($row['cb_blocked'])
 	{
-		$cb_message .= "<br />".CHATBOX_L23;
+		$cb_message .= "<br />".CHATBOX_L25;
 	}
 	if(CB_MOD)
 	{
@@ -153,7 +153,7 @@ $ns->tablerender(CHATBOX_L20, $text);
 
 
 require_once(e_HANDLER."np_class.php");
-$ix = new nextprev("chat.php", $from, 30, $chat_total, CHATBOX_L20);
+$ix = new nextprev("chat.php", $from, 30, $chat_total, CHATBOX_L21);
 
 require_once(FOOTERF);
 ?>
