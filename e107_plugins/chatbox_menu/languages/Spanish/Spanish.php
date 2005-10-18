@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Spanish/Spanish.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-09-03 08:03:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-10-18 05:17:02 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -29,15 +29,12 @@ define("CHATBOX_L16", "Anónimo");
 define("CHATBOX_L17", "Mensaje duplicado");
 define("CHATBOX_L18", "Mensajes de ChatBox moderados");
 define("CHATBOX_L19", "Solo puedes enviar un mensaje cada ".FLOODTIMEOUT." segundos");
-
-define("CB_SCH_LAN_1", "Chatbox");
-
-define("LAN_11", "Chatbox (todos los envíos)");
-define("LAN_12", "Envíos Chat");
-define("LAN_13", "On");
-define("LAN_14", "¡Error!");
-define("LAN_15", "No tiene permisos para ver esta página.");
-define("LAN_16", "[ Este envío ha sido bloqueado por el administrador ]");
+define("CHATBOX_L20", "Chatbox (todos los envíos)");
+define("CHATBOX_L21", "Envíos Chat");
+define("CHATBOX_L22", "on");
+define("CHATBOX_L23", "¡Error!");
+define("CHATBOX_L24", "No tiene autorización suficiente para ver esta página.");
+define("CHATBOX_L25", "[ este envío ha sido bloqueado por el Admin ]");
 
 define("NT_LAN_CB_1", "Eventos Chatbox");
 define("NT_LAN_CB_2", "Mensaje enviado");
