@@ -1,0 +1,6 @@
+
+Q>	Wat is een download hoofdcategorie?
+A>	Hiermee kun je de downloads in verschillende categorieën onderverdelen.
+
+Q>	Ik wil een download toevoegen, maar het bestand staat niet in het overzicht - waarom?
+A>	Alleen de bestanden in de directory e107_files/downloads worden getoond. Kopieer de bestanden naar deze directory en ze zijn beschikbaar. Hetzelfde geldt voor plaatjes, die moeten staan in e107_files/downloadimages.

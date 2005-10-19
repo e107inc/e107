@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_search.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-10-15 06:02:23 $
+|     $Revision: 1.6 $
+|     $Date: 2005-10-19 20:19:10 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -31,8 +31,6 @@ define("SEALAN_23", "Alternatief:");
 define("SEALAN_24", "Type");
 define("SEALAN_25", "Klasse");
 define("SEALAN_26", "Tekst vóór de titel");
-define("SEALAN_27", "Tekens");
-define("SEALAN_28", "Resultaten");
 define("SEALAN_30", "Markeren zoektermen op de verwijzigingspagina:");
 define("SEALAN_31", "PHP gelimiteerd op");
 define("SEALAN_32", "resultaten (niets invullen voor onbeperkt)");

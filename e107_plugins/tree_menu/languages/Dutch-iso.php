@@ -10,9 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/tree_menu/languages/Dutch-iso.php.txt,v $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/tree_menu/languages/Dutch-iso.php,v $
 |     $Revision: 1.1 $
-|     $Date: 2005-10-15 06:50:21 $
+|     $Date: 2005-10-19 20:19:10 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */

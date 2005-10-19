@@ -125,6 +125,9 @@ define("PRFLAN_138", "Activeren Afbeelding-code verificatie bij vergeten wachtwo
 define("PRFLAN_139", "Tonen waarschuwing als het wachtwoord van de hoofdbeheerder de laatste 30 dagen niet is gewijzigd");
 define("PRFLAN_140", "Te tonen tekst na het insturen van het aanmeldingsformulier.");  
 define("PRFLAN_141", "Gebruik van XMP User Profiles bij registratie toestaan");
+define("PRFLAN_142", "Alleen Flood");
+define("PRFLAN_143", "Alleen mislukte aanlogpogingen");
+define("PRFLAN_144", "Flood & mislukte aanlogpogingen");
 
 define("CUSTSIG_1", "Instellingen opgeslagen!");
 define("CUSTSIG_2", "Echte naam:");
