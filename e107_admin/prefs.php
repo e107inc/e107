@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2005-08-21 08:22:27 $
-|     $Author: stevedunstan $
+|     $Revision: 1.65 $
+|     $Date: 2005-10-19 17:01:27 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -729,9 +729,18 @@ $text .= "<div id='security' style='display:none; text-align:center'>
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_37."<br /><span class='smalltext'>".PRFLAN_91."</span></td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='autoban' value='1'".($pref['autoban'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='autoban' value='0'".(!$pref['autoban'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
-	</td>
+	<select name='autoban' class='tbox'>";
+    $autoban_list[0] = PRFLAN_113;
+    $autoban_list[1] = PRFLAN_144;
+    $autoban_list[2] = PRFLAN_142;
+    $autoban_list[3] = PRFLAN_143;
+
+	foreach($autoban_list as $ab=>$ab_title){
+		$sel = ($pref['autoban'] == $ab) ? "selected='selected'" : "";
+    	$text .= "<option value='$ab' $sel>".$ab_title."</option>\n";
+	}
+
+	$text .="</select></td>
 	</tr>
 
 

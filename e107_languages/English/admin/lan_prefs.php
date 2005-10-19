@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-06-11 20:58:13 $
+|     $Revision: 1.38 $
+|     $Date: 2005-10-19 17:01:27 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -190,4 +190,10 @@ define("PRFLAN_139", "Display warning when main administrator password hasnt cha
 
 define("PRFLAN_140", "Text to display after signup form has been submitted.");
 define("PRFLAN_141", "Allow registration using XML User Profiles");
+
+define("PRFLAN_142", "Flood Only");
+define("PRFLAN_143", "Failed Login Only");
+define("PRFLAN_144", "Flood & Failed Login");
+
+
 ?>
