@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-09-28 13:17:53 $
-|     $Author: asperon $
+|     $Revision: 1.25 $
+|     $Date: 2005-10-19 17:01:27 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -83,8 +83,10 @@ class userlogin {
 			}
 			else if(!$sql->db_Select("user", "*", "user_loginname = '{$username}' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
 				define("LOGINMESSAGE", LAN_302."<br /><br />");
-				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": {$username}'");
-				$this -> checkibr($fip);
+				if($pref['autoban'] == 1 || $pref['autoban'] == 3){ // Flood + Login or Login Only.
+					$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": {$username}'");
+					$this -> checkibr($fip);
+				}
 				return FALSE;
 			} else {
 				$ret = $e_event->trigger("preuserlogin", $username);
@@ -96,7 +98,7 @@ class userlogin {
 					$user_id = $lode['user_id'];
 					$user_name = $lode['user_name'];
 					$user_xup = $lode['user_xup'];
-	
+
 					/* restrict more than one person logging in using same us/pw */
 					if($pref['disallowMultiLogin']) {
 						if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'")) {
@@ -106,12 +108,12 @@ class userlogin {
 							return FALSE;
 						}
 					}
-	
+
 					$cookieval = $user_id.".".md5($userpass);
 					if($user_xup) {
 						$this->update_xup($user_id, $user_xup);
 					}
-	
+
 					if ($pref['user_tracking'] == "session") {
 						$_SESSION[$pref['cookie_name']] = $cookieval;
 					} else {
