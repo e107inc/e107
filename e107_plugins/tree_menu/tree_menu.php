@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-09-02 17:41:25 $
+|     $Revision: 1.21 $
+|     $Date: 2005-10-19 19:33:36 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -82,7 +82,7 @@ foreach($mainLinkArray as $links) {
 		$url = "javascript:void(0);";
 		$spanName = str_replace(" ", "_", $name);
 		$image = ($image ? "<img src='".e_IMAGE."icons/".$image."' alt='' style='vertical-align:middle;' />" : "&raquo;");
-		$plink = "<div".($menu_pref['tm_class2'] ? " class='{$menu_pref['tm_class2']}'" : "")." style='width:100%; cursor: pointer;' onclick='expandit(\"span_".$spanName."\");updatecook(\"".$name."\");'>".$image.setLink($name, $url, $openMethod, $description)."</div>\n";
+		$plink = "<div".($menu_pref['tm_class2'] ? " class='{$menu_pref['tm_class2']}'" : "")." style='width:100%; cursor: pointer;' onclick='expandit(\"span_".$spanName."\");updatecook(\"".$spanName."\");'>".$image.setLink($name, $url, $openMethod, $description)."</div>\n";
 		$text .= ($menu_pref['tm_spacer'] ? "<div class='spacer'>".$plink."</div>\n" : $plink);
 	} else {
 		// no sublinks found ...
@@ -138,7 +138,6 @@ function setlink($link_name, $link_url, $link_open, $link_description) {
 }
 	
 (isset($_COOKIE["treemenustatus"]) && $_COOKIE["treemenustatus"]) ? $treemenustatus = $_COOKIE["treemenustatus"] : $treemenustatus = "0";
-	
 $text .= "
 	<script type='text/javascript'>
 	<!--
@@ -147,7 +146,7 @@ $text .= "
 	if (document.getElementById(cookitem).style.display!='none'){
 	var expireDate = new Date;
 	expireDate.setMinutes(expireDate.getMinutes()+10);
-	document.cookie = \"treemenustatus=\" + itemmenu + \"; expires=\" + expireDate.toGMTString();
+	document.cookie = \"treemenustatus=\" + itemmenu + \"; expires=\" + expireDate.toGMTString()+\";path=/\";
 	}
 	else{
 	clearcook();
