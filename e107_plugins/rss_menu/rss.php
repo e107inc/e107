@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-10-13 18:55:26 $
+|     $Revision: 1.27 $
+|     $Date: 2005-10-20 11:12:26 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -100,8 +100,11 @@ class rssCreate {
 
 					$this -> rssItems[$loop]['title'] = $tp -> toRss($value['news_title']);
 					$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."news.php?item.".$value['news_id'].".".$value['news_category'];
-					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['news_body']) : $tp -> toRss(substr($value['news_body'], 0, 100)));
-
+                    if($value['news_summary']){
+                        	$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['news_summary']) : $tp -> toRss(substr($value['news_summary'], 0, 100)));   
+					}else{
+						$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['news_body']) : $tp -> toRss(substr($value['news_body'], 0, 100)));
+                    }
 					$this -> rssItems[$loop]['author'] = $value['user_name'] . "( http://".$_SERVER['HTTP_HOST'].e_HTTP."user.php?id.".$value['news_author']." )";
 					$this -> rssItems[$loop]['category'] = "<category domain='".SITEURL."news.php?cat.".$value['news_category']."'>".$value['category_name']."</category>";
 
