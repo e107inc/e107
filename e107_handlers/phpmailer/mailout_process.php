@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-10-13 18:18:00 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-10-20 01:33:51 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -65,7 +65,7 @@ if($_POST['cancel_emails']){
 			$mail->SMTPAuth = TRUE;
 			$mail->Username = $pref['smtp_username'];
 			$mail->Password = $pref['smtp_password'];
-			$mail->$PluginDir = e_HANDLER."phpmailer/";
+			$mail->PluginDir = e_HANDLER."phpmailer/";
         }
     } elseif ($pref['mailer']== 'sendmail'){
 		$mail->Mailer = "sendmail";
