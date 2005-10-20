@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-10-03 22:18:06 $
-|     $Author: e107coders $
+|     $Revision: 1.44 $
+|     $Date: 2005-10-20 01:18:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -31,9 +31,6 @@ if (!getperms("W")) {
 require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 require_once(e_HANDLER."userclass_class.php");
 
-
-
-
 if (isset($_POST['testemail'])) {
     if(SITEADMINEMAIL == ""){
 		$message = MAILAN_19;
@@ -50,9 +47,6 @@ if (isset($_POST['testemail'])) {
 
 
 
-
-
-
 if (isset($_POST['save_email'])){
 	$qry = "0,'massmail', '".time()."', '".USERID."', '".$tp->toDB($_POST['email_subject'])."',  '', \"".$tp->toDB($_POST['email_body'])."\"  ";
 	$message = $sql -> db_Insert("generic", $qry) ? LAN_SAVED : LAN_SAVED_FAILED;
@@ -65,7 +59,7 @@ if (isset($_POST['update_email'])){
 
 if (isset($_POST['delete'])){
 	$d_idt = array_keys($_POST['delete']);
-	$this -> message = ($sql -> db_Delete("generic", "gen_id='".$d_idt[0]."'")) ? LAN_DELETED : LAN_DELETED_FAILED;
+	$message = ($sql -> db_Delete("generic", "gen_id='".$d_idt[0]."'")) ? LAN_DELETED : LAN_DELETED_FAILED;
 }
 
 if (isset($_POST['edit'])){
@@ -615,18 +609,13 @@ function showList()
 	 //	$count = $sql -> db_Select("generic", "*", "gen_type ='massmail' ORDER BY gen_datestamp DESC");
 		$count = $sql -> db_Select_gen($qry);
 
-		$text = "<div style='text-align:center'>
-
-		";
+		$text = "<div style='text-align:center'>";
 
 		if (!$count)
 		{
-			$text .= "
-			<form action='".e_SELF."?import' id='import' method='post'>
-			No links in sitemap - import sitelinks?
-			<input class='button' type='submit' name='import' value='".LAN_YES."' />
-			</form>";
-			$ns -> tablerender("<div style='text-align:center'>Google Sitemap Entries</div>", $text);
+			$text = "
+			<div class='forumheader2' style='text-align:center'>".MAILAN_22."</div>";
+			$ns -> tablerender("<div style='text-align:center'>".MAILAN_21."</div>", $text);
 			require_once(e_ADMIN."footer.php");
 			exit;
 		}
@@ -672,7 +661,7 @@ function showList()
 		}
 
 		$text .= "</table>\n</form><br /><br /><br /></div>";
-		$ns -> tablerender("<div style='text-align:center'>Mass-Mail Entries</div>", $text);
+		$ns -> tablerender("<div style='text-align:center'>".MAILAN_21."</div>", $text);
 	}
 
 
