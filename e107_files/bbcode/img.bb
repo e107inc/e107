@@ -1,7 +1,7 @@
 global $pref;
 if (preg_match("#\.php\?.*#",$code_text)){return "";}
-$search = array('"', '{E_IMAGE}');
-$replace = array('&#039;', e_IMAGE);
+$search = array('"', '{E_IMAGE}', '{E_FILE}');
+$replace = array('&#039;', e_IMAGE, e_FILE);
 $code_text = str_replace($search, $replace, $code_text);
 unset($imgParms);
 $imgParms['class']="bbcode";  
