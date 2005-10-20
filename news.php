@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.81 $
-|     $Date: 2005-10-03 22:48:37 $
+|     $Revision: 1.82 $
+|     $Date: 2005-10-20 15:53:22 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -267,8 +267,9 @@ else
 	// #### END ---------------------------------------------------------------------------------------------------
 }
 
-if($tmp = checkCache($cacheString)){
+if($tmp_cache = checkCache($cacheString)){
 	require_once(HEADERF);
+
  	if(!$action){
 		render_wmessage();
 		if (isset($pref['fb_active'])){  // --->feature box
@@ -279,8 +280,7 @@ if($tmp = checkCache($cacheString)){
 		}
 
 	}
-	renderCache($tmp, TRUE);
-
+	renderCache($tmp_cache, TRUE);
 }
 
 
