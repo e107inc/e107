@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/language.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-08-23 09:36:30 $
-|     $Author: sweetas $
+|     $Revision: 1.27 $
+|     $Date: 2005-10-20 16:40:48 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -28,12 +28,9 @@ require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
 $tabs = table_list(); // array("news","content","links");
+$lanlist = explode(",",e_LANLIST);
+$message = "";
 
-// list of languages.
-require_once(e_HANDLER."file_class.php");
-$fl = new e_file;
-$omit = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$',$pref['sitelanguage']);
-$lanlist = $fl->get_dirs(e_LANGUAGEDIR,'',$omit);
 
 if (isset($_POST['submit_prefs']) ) {
 
@@ -44,19 +41,23 @@ if (isset($_POST['submit_prefs']) ) {
 	$ns->tablerender("Saved", "<div style='text-align:center'>".LAN_SAVED."</div>");
 
 }
+
+
 // ----------------- delete tables ---------------------------------------------
 if (isset($_POST['del_existing']) && $_POST['lang_choices']) {
 
 	$lang = strtolower($_POST['lang_choices']);
 	foreach ($tabs as $del_table) {
 		if (db_Table_exists($lang."_".$del_table)) {
-			$message .= (mysql_query("DROP TABLE ".$mySQLprefix."lan_".$lang."_".$del_table)) ? $_POST['lang_choices']." ".$del_table." deleted<br />" :
+			$qry = "DROP TABLE ".$mySQLprefix."lan_".$lang."_".$del_table;
+		echo $qry;
+			$message .= (mysql_query($qry)) ? $_POST['lang_choices']." ".$del_table." deleted<br />" :
 			 $_POST['lang_choices']." $del_table couldn't be deleted<br />";
 		}
 	}
 	global $cachevar;
 	unset($cachevar['table_list']);
-	$ns->tablerender("Result", $message);
+
 }
 
 // ----------create tables -----------------------------------------------------
@@ -65,13 +66,12 @@ if (isset($_POST['create_tables']) && $_POST['language']) {
 
 	$table_to_copy = array();
 	$lang_to_create = array();
-	$message = "";
+
 
 	foreach ($tabs as $value) {
-		if ($_POST[$value]) {
-			$lang = strtolower($_POST['language']);
+		$lang = strtolower($_POST['language']);
+		if (isset($_POST[$value])) {
             $copdata = ($_POST['copydata_'.$value]) ? 1 : 0;
-
 			if (copy_table($value, "lan_".$lang."_".$value, $_POST['drop'],$copdata)) {
 				$message .= " ".$_POST['language']." ".$value." created<br />";
 			} else {
@@ -89,8 +89,14 @@ if (isset($_POST['create_tables']) && $_POST['language']) {
 	}
     global $cachevar;
 	unset($cachevar['table_list']);
-	$ns->tablerender("Result", $message);
 }
+
+
+
+	if(isset($message)){
+		$ns->tablerender("Result", $message);
+	}
+
 
 // ------------- render form ---------------------------------------------------
 
@@ -175,18 +181,24 @@ if ($_POST['edit_existing']) {
 	// Drop tables ?
 	$text .= "<tr><td class='forumheader3'><b>".LANG_LAN_07."</b></td>
 		<td class='forumheader3'>".$rs->form_checkbox("drop", 1)."\n
-		<span class=\"smalltext\" >".LANG_LAN_08."</span></td></tr>\n";
+		<span class=\"smalltext\" >".LANG_LAN_08."</span></td></tr>\n
 
-	$text .= "<tr><td class='forumheader3'><b>".LANG_LAN_10."</b></td>
-		<td class='forumheader3'>".$rs->form_checkbox("remove", 1)."\n
-		<span class=\"smalltext\" >".LANG_LAN_11."</span></td></tr>\n";
+		<tr>
+			<td class='forumheader3'><b>".LANG_LAN_10."</b></td>
+			<td class='forumheader3'>".$rs->form_checkbox("remove", 1)."\n
+	   		<span class=\"smalltext\" >".LANG_LAN_11."</span></td>
+		</tr>
 
-	$text .= "<tr>\n
-		<td colspan='2' style='width:100%; text-align: center;' class='forumheader' >\n
-		".$rs->form_button("submit", "create_tables", LANG_LAN_06, "", LANG_LAN_06, "disabled");
-	$text .= "</td>\n
-		</tr>\n";
-	$text .= "</table></div>\n";
+		<tr>
+			<td colspan='2' style='width:100%; text-align: center;' class='forumheader' >";
+
+			$button_capt = LANG_LAN_06. " / ". LAN_UPDATE;
+			$text .="<input type='submit' class='button' name='create_tables' value=\"".$button_capt."\" />";
+
+	   $text .="</td>
+		</tr>
+
+	</table></div>\n";
 
 	$text .= $rs->form_close();
 	$ns->tablerender($_POST['lang_choices'], $text);
