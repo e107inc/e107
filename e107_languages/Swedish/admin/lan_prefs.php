@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_prefs.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.4 $
+|     $Date: 2005-10-20 08:55:34 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -190,5 +190,9 @@ define("PRFLAN_139", "Visa en varning när huvudadministratörens lösenord inte
 
 define("PRFLAN_140", "Text att visa efter att registreringsforuläret har sänts in.");
 define("PRFLAN_141", "Tillåt registrering genom att använda XML användarprofiler");
+
+define("PRFLAN_142", "Enbart flödning");
+define("PRFLAN_143", "Enbart misslyckad inloggning");
+define("PRFLAN_144", "Flödning & Misslyckade inloggningar");
 
 ?>
