@@ -11,10 +11,8 @@ if (ADMIN) {
 		{
 			require_once(e_PLUGIN."userlanguage_menu/languages/English.php");
 		}
-		require_once(e_HANDLER."file_class.php");
-		$fl = new e_file;
-		$lanlist = $fl->get_dirs(e_LANGUAGEDIR);
-
+		$lanlist = explode(",",e_LANLIST);
+        sort($lanlist);
 		foreach($lanlist as $langval)
 		{
 			if (getperms($langval))
