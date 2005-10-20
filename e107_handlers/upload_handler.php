@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.12 $
-|   $Date: 2005-09-08 18:58:17 $
-|   $Author: e107coders $
+|   $Revision: 1.13 $
+|   $Date: 2005-10-20 01:45:05 $
+|   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -118,7 +118,8 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 
 			if (@$method($uploadfile, $destination_file)) {
 				@chmod($destination_file, 0644);
-				$fext = array_pop(explode('.', $name));
+				$_tmp = explode('.', $name);
+				$fext = array_pop($_tmp);
 				$fname = basename($name, '.'.$fext);
 				$tmp = pathinfo($name);
 				$rename = substr($fname, 0, 15).".".time().".".$fext;
