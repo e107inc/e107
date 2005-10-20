@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.105 $
-|     $Date: 2005-10-18 06:57:42 $
-|     $Author: sweetas $
+|     $Revision: 1.106 $
+|     $Date: 2005-10-20 02:00:05 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -156,7 +156,7 @@ class e_parse
 		$innbk = array();
 		$innbr = array();
 		$drain = "";
-		$utf = ($utf) ? "u" : "";
+		$utf = ($utf || CHARSET == 'utf-8') ? "u" : "";
 		$lbrks = "/?!%)-}]\\\"':;";
 		if ($break == "\r")
 		{
