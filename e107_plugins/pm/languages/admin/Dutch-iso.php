@@ -1,6 +1,6 @@
 <?php
 define('ADLAN_PM', "Prive Messenger");
-define('ADLAN_PM_1', "Om te activeren gaat u naar uw menuscherm en, kiest u het 'private_msg' menu in een van uw menu arena's. <br /><br />Als u oude berichten moet converteren ga dan naar de config pagina en kies de 'convert' link.");
+define('ADLAN_PM_1', "Om te activeren ga naar je menu scherm en, kies het 'private_msg' menu in een van je menu arena's. <br /><br />Als je oude berichten moet converteren ga dan naar de config pagina en kies de 'convert' link.");
 define('ADLAN_PM_2', "Configureer Prive messenger");
 define('ADLAN_PM_3', "PM instellingen niet gevonden standaard waarden gebruikt");
 define('ADLAN_PM_4', "Instellingen bewaard");
@@ -46,8 +46,8 @@ define('ADLAN_PM_43', "Toevoegen nieuw limiet");
 define('ADLAN_PM_44', "seconden");
 define('ADLAN_PM_45', "Limit PM By: ");
 define('ADLAN_PM_46', "PM Conversie");
-define('ADLAN_PM_47', "U hebt geen oude PM's in uw systeem, u kunt de oude versie verwijderen.");
-define('ADLAN_PM_48', "U hebt {OLDCOUNT} berichten van de oude versie. Beslist  u aub wat u met deze berichten wilt doen.<br /><br />Als u ze converteerd zullen de met succes geconverteerde berichten uit het oude systeem verwijderd worden.");
+define('ADLAN_PM_47', "Je hebt geen oude PM's in je systeem, je kan de oude versie verwijderen.");
+define('ADLAN_PM_48', "Je hebt {OLDCOUNT} berichten van de oude versie beslis aub wat je met deze berichten wil doen.<br /><br />Als je ze converteerd zullen de met succes geconverteerde berichten uit het oude systeem verwijderd worden.");
 define('ADLAN_PM_49', "Converteer naar nieuwe PM versie");
 define('ADLAN_PM_50', "Discard old messages");
 define('ADLAN_PM_51', "PM #{PMNUM} niet geconverteerd");
