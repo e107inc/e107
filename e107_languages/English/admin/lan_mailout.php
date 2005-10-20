@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_mailout.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-26 19:11:56 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2005-10-20 01:18:22 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_52", "Save Changes");
@@ -45,4 +45,7 @@ define("MAILAN_17","signup link");
 define("MAILAN_18","user id");
 define("MAILAN_19","There is no email address for site-admin. Please check your preferences and try again.");
 define("MAILAN_20","Sendmail-path");
+define("MAILAN_21","Mass-Mail Entries");
+define("MAILAN_22","There are currently no saved entries");
+
 ?>
