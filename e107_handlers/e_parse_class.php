@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.106 $
-|     $Date: 2005-10-20 02:00:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.107 $
+|     $Date: 2005-10-20 15:34:57 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -309,7 +309,11 @@ class e_parse
 			if($pref['link_replace'] && strpos($modifiers, 'no_replace') === FALSE) {
 				$text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<,]*)#is", "\\1<a href=\"\\2\" rel=\"external\">".$pref['link_text']."</a>", $text);
 				$text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<,]*)#is", "\\1<a href=\"http://\\2\" rel=\"external\">".$pref['link_text']."</a>", $text);
-				$email_text = ($pref['email_text']) ? $pref['email_text'] : "\\1\\2©\\3";
+				if(CHARSET != "utf-8" && CHARSET != "UTF-8"){
+					$email_text = ($pref['email_text']) ? $pref['email_text'] : "\\1\\2&copy;\\3";
+				}else{
+                    $email_text = ($pref['email_text']) ? $pref['email_text'] : "\\1\\2©\\3";
+				}
 				$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>", $text);
 			} else {
 				$text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<,]*)#is", "\\1<a href=\"\\2\" rel=\"external\">\\2</a>", $text);
