@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_help.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-10-21 15:16:54 $
+|     $Revision: 1.13 $
+|     $Date: 2005-10-21 15:39:39 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@ define("CONTENT_ADMIN_HELP_ITEMCREATE_1", "<b>categorie</b><br />selecteer de ca
 
 define("CONTENT_ADMIN_HELP_ITEMCREATE_2", "selecteer altijd eerst de categorie voordat je andere velden invult !<br />dat is nodig omdat iedere hoofdoudercategorie (en subcategorieën daarin) andere voorkeuren kunnen hebben.<br /><br /><b>aanmaakformulier</b><br />je kunt nu alle informatie voor dit contentonderwerp invullen en het aanmelden.<br /><br />Let erop dat iedere hoofdoudercategorie andere voorkeuren kan hebben en dat er dus meer of minder velden in te vullen zijn.");
 
-define("CONTENT_ADMIN_HELP_CAT_1", "<i>deze pagina toont alle aanwezige categorieën en subcategorieën.</i><br /><br /><b>detail overzicht</b><br />Je ziet een overzicht met alle subcategorieën met hun id, pictogram, auteur, categorie [onderkop] en opties.<br ><br /><b>uitleg over de gebruikte pictogrammen</b><br />".CONTENT_ICON_EDIT." : voor alle categorieën kun je deze knop gebruiken om de categorie te bewerken.<br />".CONTENT_ICON_DELETE." : voor alle categorieën kun je deze knop gebruiken om de categorie te verwijderen.<br />".CONTENT_ICON_OPTIONS." : alleen voor de hoofdcategorie (bovenaan de lijst) kun je de knop gebruiken om alle opties in te stellen en beheren.<br />");
+define("CONTENT_ADMIN_HELP_CAT_1", "<i>deze pagina toont alle aanwezige categorieën en subcategorieën.</i><br /><br /><b>detail overzicht</b><br />Je ziet een overzicht met alle subcategorieën met hun id, pictogram, auteur, categorie [onderkop] en opties.<br /><br /><b>Legenda</b><br />".CONTENT_ICON_USER." : link naar auteursprofiel<br />".CONTENT_ICON_LINK." : link naar de categorie<br />".CONTENT_ICON_EDIT." : bewerk categorie<br />".CONTENT_ICON_DELETE." : verwijder categor<br />");
 
 define("CONTENT_ADMIN_HELP_CAT_2", "".CONTENT_ICON_CONTENTMANAGER_SMALL." : (alleen hoofdbeheerder) voor elke subcategorie kun je via de knop het Persoonlijke Beheer voor andere beheerders regelen.<br />
 <br /><b>persoonlijke beheerder</b><br />je kunt beheerders toewijzen aan bepaalde categorieën. Hierdoor kunnen deze beheerders hun persoonlijke content voor deze categorieën beheren zonder het beheerscherm te moeten gebruiken (content_manager.php).");
@@ -37,31 +37,12 @@ Dit moet je doen omdat sommige unieke categorieinformatie eerst in het formulier
 define("CONTENT_ADMIN_HELP_CAT_4", "<i>deze pagina toont het formulier om categorieën te bewerken.</i><br /><br />
 <b>bewerk categorie formulier</b><br />je kunt nu alle gegevens voor deze (sub)categorie bewerken en de wijzigingen aanmelden.");
 
-define("CONTENT_ADMIN_HELP_ORDER_1", "
-<i>deze pagina toont alle aanwezige categorieën en subcategorieën.</i><br /><br />
-<b>detail overzicht</b><br />hier zie je de categorie id en de categorienaam. ook tref je verschillende opties aan om de volgorde van de categorieën te wijzigen.<br /><br />
-<b>uitleg van de gebruikte pictogrammen</b><br />
-".CONTENT_ICON_ORDERALL." beheer de algemene volgorde van de contentonderwerpen, ongeacht hun categorie.<br />
-".CONTENT_ICON_ORDERCAT." beheer de volgorde van de content onderwerpen in de betreffende categorie.<br />
-<img src='".e_IMAGE."admin_images/up.png' alt='' /> de omhoog knop laat je een content onderwerp één positie omhoog verplaatsen.<br />
-<img src='".e_IMAGE."admin_images/down.png' alt='' /> de omlaag knop laat je een content onderwerp één positie omlaag plaatsen.<br />
-<br />
-<b>volgorde</b><br />hier kun je handmatig de volgorde van alle categorieën in elke ouder bepalen. Je moet de waarde in de selectievelden wijzigen in de gewenste waarde en daarna druk je op de Bijwerken knop hieronder om de nieuwe volgorde vast te leggen.<br />");
+define("CONTENT_ADMIN_HELP_ORDER_1", "<i>deze pagina toont alle aanwezige categorieën en subcategorieën.</i><br /><br /><b>detail overzicht</b><br />hier zie je de categorie id en de categorienaam. ook tref je verschillende opties aan om de volgorde van de categorieën te wijzigen.<br /><br /><b>Legenda</b><br />".CONTENT_ICON_USER." : link naar auteursprofiel<br />".CONTENT_ICON_LINK." : link naar de categorie<br />".CONTENT_ICON_ORDERALL." : beheer algemene volgorde van onderwerpen, ongeacht de categorie.<br />".CONTENT_ICON_ORDERCAT." : beheer algemene volgorde van onderwerpen, binnen deze categorie.<br />".CONTENT_ICON_ORDER_UP." : de omhoogknop verplaatst een onderwerp omhoog.<br />".CONTENT_ICON_ORDER_DOWN." : de omlaagknop verplaatst een onderwerp omlaag.<br /><br /><b>volgorde</b><br />hier kun je handmatig de volgorde van alle categorieën in elke ouder bepalen. Je moet de waarde in de selectievelden wijzigen in de gewenste waarde en daarna druk je op de Bijwerken knop hieronder om de nieuwe volgorde vast te leggen.<br />");
 
-define("CONTENT_ADMIN_HELP_ORDER_2", "<i>deze pagina toont alle content onderwerpen in de geselecteerde categorie.</i><br /><br />
-<b>detail overzicht</b><br />je ziet het content id, de content auteur en de content kop. ook staan hier verschillende opties om de volgorde van de content onderwerpen te wijzigen.<br />
-<br /><b>uitleg over de gebruikte pictogrammen</b><br />
-<img src='".e_IMAGE."admin_images/up.png' alt='' /> de omhoog knop laat je een content onderwerp één positie omhoog verplaatsen.<br />
-<img src='".e_IMAGE."admin_images/down.png' alt='' /> de omlaag knop laat je een content onderwerp één positie omlaag plaatsen.<br />
-<br /><b>volgorde</b><br />hier kun je handmatig de volgorde van alle categorieën in elke ouder bepalen. Je moet de waarde in de selectievelden wijzigen in de gewenste waarde en daarna druk je op de Bijwerken knop hieronder om de nieuwe volgorde vast te leggen.<br />");
+define("CONTENT_ADMIN_HELP_ORDER_2", "<i>deze pagina toont alle content onderwerpen in de geselecteerde categorie.</i><br /><br /><b>detail overzicht</b><br />je ziet het content id, de content auteur en de content kop. ook staan hier verschillende opties om de volgorde van de content onderwerpen te wijzigen.<br /><br /><b>Legenda</b><br />".CONTENT_ICON_USER." : link naar auteursprofiel<br />".CONTENT_ICON_LINK." : link naar onderwerp<br />".CONTENT_ICON_ORDER_UP." : de omhoogknop verplaatst een onderwerp omhoog.<br />".CONTENT_ICON_ORDER_DOWN." : de omlaagknop verplaatst een onderwerp omlaag.<br /><br /><b>volgorde</b><br />hier kun je handmatig de volgorde van alle categorieën in elke ouder bepalen. Je moet de waarde in de selectievelden wijzigen in de gewenste waarde en daarna druk je op de Bijwerken knop hieronder om de nieuwe volgorde vast te leggen.<br />");
 
-define("CONTENT_ADMIN_HELP_ORDER_3", "
-<i>deze pagina toont alle content onderwerpen in de geselecteerde oudercategorie.</i><br /><br />
-<b>detail overzicht</b><br />je ziet het content id, de content auteur en de content kop. ook staan hier verschillende opties om de volgorde van de content onderwerpen te wijzigen.<br />
-<br /><b>uitleg over de gebruikte pictogrammen</b><br />
-<img src='".e_IMAGE."admin_images/up.png' alt='' /> de omhoog knop laat je een content onderwerp één positie omhoog verplaatsen.<br />
-<img src='".e_IMAGE."admin_images/down.png' alt='' /> de omlaag knop laat je een content onderwerp één positie omlaag verplaatsen.<br />
-<br /><b>volgorde</b><br />hier kun je handmatig de volgorde van alle categorieën in elke ouder bepalen. Je moet de waarde in de selectievelden wijzigen in de gewenste waarde en daarna druk je op de Bijwerken knop hieronder om de nieuwe volgorde vast te leggen.<br />");
+define("CONTENT_ADMIN_HELP_ORDER_3", "<i>deze pagina toont alle content onderwerpen in de geselecteerde oudercategorie.</i><br /><br /><b>detail overzicht</b><br />je ziet het content id, de content auteur en de content kop. ook staan hier verschillende opties om de volgorde van de content onderwerpen te wijzigen.<br /><br /><b>Legenda</b><br />".CONTENT_ICON_USER." : link naar auteursprofiel<br />".CONTENT_ICON_LINK." : link to the content item<br />".CONTENT_ICON_ORDER_UP." : de omhoogknop verplaatst een onderwerp omhoog.<br />".CONTENT_ICON_ORDER_DOWN." : de omlaagknop verplaatst een onderwerp omlaag.<br /><br /><b>volgorde</b><br />hier kun je handmatig de volgorde van alle categorieën in elke ouder bepalen. Je moet de waarde in de selectievelden wijzigen in de gewenste waarde en daarna druk je op de Bijwerken knop hieronder om de nieuwe volgorde vast te leggen.<br />");
+
 
 define("CONTENT_ADMIN_HELP_OPTION_1", "Op deze pagina kun je de opties voor hoofdoudercategorie instellen, of je kunt de standaardvoorkeuren wijzigen.<br /><br /><b>uitleg van de gebruikte pictogrammen</b><br />".CONTENT_ICON_USER." : link naar het auteursprofiel<br />".CONTENT_ICON_LINK." : link naar de categorie<br />".CONTENT_ICON_OPTIONS." : bewerk de opties<br />");
 
