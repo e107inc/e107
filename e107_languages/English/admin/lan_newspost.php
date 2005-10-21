@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_newspost.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-09-07 14:45:08 $
-|     $Author: stevedunstan $
+|     $Revision: 1.24 $
+|     $Date: 2005-10-21 01:32:16 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("NWSLAN_1", "News story deleted.");
@@ -116,6 +116,7 @@ define("NWSLAN_116", "First update the preferences with the changed display per 
 define("NWSLAN_117", "set the title for the newsarchive");
 define("NWSLAN_118", "View Images");
 define("NWSLAN_119", "Settings Saved");
+define("NWSLAN_120", "Text to show at the top of Submit News");
 
 define("LAN_NEWS_5", "Error! - Was unable to update news item into database!");
 define("LAN_NEWS_6", "News entered into database.");
