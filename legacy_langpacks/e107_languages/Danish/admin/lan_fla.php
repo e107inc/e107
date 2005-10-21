@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_fla.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 09:29:27 $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-21 12:58:12 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
-define("FLALAN_1", "Fejlede login fors&oslash;g");
-define("FLALAN_2", "Ingen fejlede login fors&oslash;g er blevet logget");
+define("FLALAN_1", "Mislykkede login fors&oslash;g");
+define("FLALAN_2", "Ingen mislykkede login fors&oslash;g er blevet logget");
 define("FLALAN_3", "Fors&oslash;g slettet");
 define("FLALAN_4", "Bruger fors&oslash;gte at logge p&aring; med et forkert brugernavn/adgangskodeord");
 define("FLALAN_5", "IP(er) banlyst");

@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_filemanager.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:01 $
+|        $Revision: 1.3 $
+|        $Date: 2005-10-21 12:58:11 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -44,8 +44,8 @@ define("FMLAN_33", "Vælg");
 define("FMLAN_34", "Mappe valg");
 define("FMLAN_35", "Fil mappe");
 
-define("FMLAN_36", "Egnemenuer mappe");
-define("FMLAN_37", "Egnesider mappe");
+define("FMLAN_36", "Egne menuer mappe");
+define("FMLAN_37", "Egne sider mappe");
 
 define("FMLAN_38", "Fil flyttet til");
 define("FMLAN_39", "Kan ikke flytte fil til");

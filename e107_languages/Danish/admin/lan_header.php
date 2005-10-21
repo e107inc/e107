@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_header.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-06 22:12:01 $
+|        $Revision: 1.3 $
+|        $Date: 2005-10-21 12:58:11 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -14,6 +14,6 @@ define("LAN_head_2", "Din server tillader ikke HTTP fil uploads så det vil ikke
 define("LAN_head_3", "Din server kører med basedir restriction slået til. Dette forhindrer brug af hvilken som helst fil uden for din rodmappe og kan have effekt på visse scripts så som filemanager.");
 define("LAN_head_4", "Administration");
 define("LAN_head_5", "sprog vist i admin område: ");
-define("LAN_head_6", "Modul information");
+define("LAN_head_6", "Plugin information");
 
 ?>

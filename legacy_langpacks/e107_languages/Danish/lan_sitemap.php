@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/lan_sitemap.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:29:27 $
+|        $Revision: 1.2 $
+|        $Date: 2005-10-21 12:58:12 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ define("LANSM_21", "Brugerindstillinger");
 define("LANSM_22", "Profil");
 define("LANSM_23", "Kategorier:");
 define("LANSM_24", "Generelle indstillinger");
-define("LANSM_25", "Modul");
+define("LANSM_25", "Plugin");
 define("LANSM_26", "Chatboksbeskeder");
 define("LANSM_27", "Overskrifter");
 define("LANSM_28", "Gamle afstemninger");
