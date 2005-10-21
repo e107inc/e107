@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch-iso/lan_content_help.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-10-18 19:20:24 $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-21 14:18:39 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -99,29 +99,27 @@ define("CONTENT_ADMIN_HELP_OPTION_DIV_1", "Op deze pagina kun je de opties voor 
 
 define("CONTENT_ADMIN_HELP_OPTION_DIV_2", "De Bijwerk opties werken op het Gebruikers aanmeldformulier voor content onderwerpen.<br /><br />Je kunt bepalen welke secties voor een gebruiker beschikbaar zijn bij het aanmelden van een content onderwerp.<br /><br />".CONTENT_ADMIN_OPT_LAN_11.":<br />".CONTENT_ADMIN_OPT_LAN_12."");
 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_3", "In de Pad en thema Opties kun je opgeven waar de afbeeldingen en bestanden worden opgeslagen.<br /><br />Je kunt opgeven welk thema wordt gebruikt door deze hoofdouder. Je kunt extra thema's maken door het kopiëren (en hernoemen) van de hele 'default' map in je 'templates' map.<br /><br />Je kunt een standaard layout schema voor nieuwe onderwerpen instellen. Je kunt ook nieuwe layout schema's maken door een content_content_template_XXX.php bestand in je 'templates/default' map op te nemen. Deze layouts kunnen worden gebruikt om elk contentonderwerp een andere layout te geven in dit hoofdouderscherm.<br /><br />");
 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_4", "Algemene opties zijn opties die op alle contentpagina's in de content manager plugin worden toegepast.");
 
+define("CONTENT_ADMIN_HELP_OPTION_DIV_5", "Deze opties werken binnen de Persoonlijke Content Manager in de content management beheerpagina.<br /><br />".CONTENT_ADMIN_OPT_LAN_63."");
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_3", "In the Path and Theme Options you can define where images and files are stored.<br /><br />you can define which theme will be used by this main parent. You can create additional themes by copying (and renaming) the whole 'default' directory in your templates directory.<br /><br />You can define a default layout scheme for new content items. You can create new layout schemes by creating a content_content_template_XXX.php file in your 'templates/default' folder. These layouts can be used to give each content item in this main parent a different layout.<br /><br />");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_6", "'Deze opties gelden in het menu voor deze hoofdouder als je het menu hebt geactiveerd.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."<br /><br />".CONTENT_ADMIN_OPT_LAN_118.":<br />".CONTENT_ADMIN_OPT_LAN_119."<br /><br />");
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_4", "The General Options are options that are used throughout the content pages of the content management plugin.");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_7", "De Contentonderwerp Bekijk opties werken op het kleine voorbeschouwingsscherm voor het betreffende onderwerp.<br /><br />Deze preview zie je op verschillende pagina's, zoals het Recent overzicht, de Onderwerpen per categorie pagina en de Onderwerpen per auteur pagina.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_5", "These options have affect on the Personal Content Manager area on the content management admin area.<br /><br />".CONTENT_ADMIN_OPT_LAN_63."");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_8", "De categoriepagina's tonen infomratie over de contentcategorieën in deze hoofdouder.<br /><br />Er zijn twee specifieke onderdelen zichtbaar:<br /><br />alle categorieën pagina:<br />deze pagina toont alle categorieën in deze hoofdouder<br /><br />bekijk categorie pagina:<br />deze pagina toont alle categorieonderwerpen en, optioneel, de subcategorieën binnen die categorie en de contentonderwerpen in die categorie of in die subcategorieën<br />");
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_6", "These Options are used in the Menu for this main parent if you have activated the menu.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."<br /><br />".CONTENT_ADMIN_OPT_LAN_118.":<br />".CONTENT_ADMIN_OPT_LAN_119."<br /><br />");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_9", "De Content Pagina toont het contentonderwerp.<br /><br />Je kunt instellen welke secties getoond moeten worden door het aan- en uitkruisen van de vakjes.<br /><br />Je kunt het e-mailadres van een auteur/niet-lid laten zien.<br /><br />Je kunt de e-mail/print/pdf pictogrammen negeren, evenals het waarderingssysteem en de reactiefunctie.<br /><br />".CONTENT_ADMIN_OPT_LAN_74."");
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_7", "The Content Item Preview options have affect on the small preview that is given for a content item.<br /><br />This preview is given on several pages, like the recent page, the view items in category page and the view items of author page.<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_10", "De auteurspagina toont een overzicht met alle unieke auteurs van onderwerpen in deze hoofdouder.<br /><br />Je kunt instellen welke secties getoond moeten worden door het aan/uitkruisen van de vakjes.<br /><br />Je kunt het aantal per pagina te tonen onderwerpen beperken.<br />");
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_8", "The Category Pages show information on the content categories in this main parent.<br /><br />There are two distinct areas present:<br /><br />all categories page:<br />this page shows all the categories in this main parent<br /><br />view category page:<br />this page shows the category item, optionally the subcategories in that category and the content items in that category or those categories<br />");
-define("CONTENT_ADMIN_HELP_OPTION_DIV_9", "The Content Page shows the Content Item.<br /><br />you can define which sections to show by checking/unchecking the boxes.<br /><br />you can show the emailaddress of a non-member author.<br /><br />you can override the email/print/pdf icons, the rating system and the comments.<br /><br />".CONTENT_ADMIN_OPT_LAN_74."");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_11", "De Archiefpagina toont alle contentonderwerpen in de hoofdouder.<br /><br />Je kunt instellen welke secties getoond moeten worden door het aan- en uitkruisen van de vakjes.<br /><br />Je kunt het e-mailadres van een auteur/niet-lid laten zien.<br /><br />Je kunt het aantal per pagina te tonen onderwerpen beperken.<br /><br />".CONTENT_ADMIN_OPT_LAN_66."<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_10", "The Author Page shows a list of all unique authors of the content items in this main parent.<br /><br />you can define which sections to show by checking/unchecking the boxes.<br /><br />You can limit the number of items to show per page.<br />");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "De pagina Hoogstgewaardeerd toont alle contentonderwerpen die door gebruikers zijn beoordeeld.<br /><br />Je kunt instellen welke secties getoond moeten worden door het aan- en uitkruisen van de vakjes.<br /><br />Je kunt het e-mailadres van een auteur/niet-lid laten zien.");
 
-define("CONTENT_ADMIN_HELP_OPTION_DIV_11", "The Archive Page shows all content items in the main parent.<br /><br />you can define which sections to show by checking/unchecking the boxes.<br /><br />you can show the emailaddress of a non-member author.<br /><br />You can limit the number of items to show per page.<br /><br />".CONTENT_ADMIN_OPT_LAN_66."<br /><br />".CONTENT_ADMIN_OPT_LAN_68."");
-
-define("CONTENT_ADMIN_HELP_OPTION_DIV_12", "The Top Rated Page shows all content items that have been rated by users.<br /><br />You can choose the sections to display by checking the boxes.<br /><br />Also you can define if the emailaddress of a non-member author will be displayed.");
-
-define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "The Top Score Page shows all content items that have been given a score by the author of the content item.<br /><br />You can choose the sections to display by checking the boxes.<br /><br />Also you can define if the emailaddress of a non-member author will be displayed.");
+define("CONTENT_ADMIN_HELP_OPTION_DIV_13", "De Topscore pagina toont alle contentonderwerpen die door de auteur zijn beoordeeld.<br /><br />Je kunt instellen welke secties getoond moeten worden door het aan- en uitkruisen van de vakjes.<br /><br />Je kunt het e-mailadres van een auteur/niet-lid laten zien.");
 
 
 ?>
