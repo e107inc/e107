@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_usersettings.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2005-09-18 14:24:07 $
+|        $Revision: 1.4 $
+|        $Date: 2005-10-21 12:39:29 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -13,9 +13,9 @@
 define("PAGE_NAME", "Brugerindstillinger");
 
 define("LAN_7", "Brugernavn: ");
-define("LAN_8", "navnet vist på sitet");
+define("LAN_8", "navn vist på sitet");
 define("LAN_9", "Brugernavn: ");
-define("LAN_10", "navnet du bruger til at logge på med");
+define("LAN_10", "navn du bruger til at logge på med");
 define("LAN_11", "navnet du bruger til at logge på med - dette kan ikke ændres, kontakt venligst administrator hvis der er behov for at ændre det af sikkerhedsmæssige årsager");
 
 define("LAN_20", "Fejl");
@@ -59,7 +59,7 @@ define("LAN_417", "Nej");
 define("LAN_418", "Registreringsinformationer");
 define("LAN_419", "Personlige-/kontaktinformationer");
 define("LAN_420", "Profillogo");
-define("LAN_421", "Vælg gemt  logo");
+define("LAN_421", "Vælg gemt logo");
 define("LAN_422", "Brug profillogo udefra");
 define("LAN_423", "Skriv hele adressen til billedet");
 define("LAN_424", "Klik på knappen for at se billeder her på webstedet");
@@ -94,7 +94,7 @@ define("LAN_ICQNUMBER", "ICQ nummer må kun indeholde tal");
 
 // v.617
 define("LAN_408", "En bruger med denne e-mail-adresse eksisterer allerede.");
-define("MAX_AVWIDTH", "Maksimum profil logo st&Atilde;&cedil;rrelse (bxh) er ");
+define("MAX_AVWIDTH", "Maksimum profil logo størrelse (bxh) er ");
 define("MAX_AVHEIGHT", "x");
 define("GIF_RESIZE", "ændrer gif billede størrelsen eller konverter til et andet format");
 define("RESIZE_NOT_SUPPORTED", "ændrer størrelse metode er ikke understøttet af denne server. ændrer billede størrelsen eller vælg et andet, filen er blevet slettet.");

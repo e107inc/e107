@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/lan_usersettings.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-09-18 14:25:02 $
+|        $Revision: 1.3 $
+|        $Date: 2005-10-21 12:39:29 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -13,9 +13,9 @@
 define("PAGE_NAME", "Brugerindstillinger");
 
 define("LAN_7", "Brugernavn: ");
-define("LAN_8", "navnet vist p&aring; sitet");
+define("LAN_8", "navn vist p&aring; sitet");
 define("LAN_9", "Brugernavn: ");
-define("LAN_10", "navnet du bruger til at logge p&aring; med");
+define("LAN_10", "navn du bruger til at logge p&aring; med");
 define("LAN_11", "navnet du bruger til at logge p&aring; med - dette kan ikke &aelig;ndres, kontakt venligst administrator hvis der er behov for at &aelig;ndre det af sikkerhedsm&aelig;ssige &aring;rsager");
 
 define("LAN_20", "Fejl");
@@ -59,7 +59,7 @@ define("LAN_417", "Nej");
 define("LAN_418", "Registreringsinformationer");
 define("LAN_419", "Personlige-/kontaktinformationer");
 define("LAN_420", "Profillogo");
-define("LAN_421", "V&aelig;lg gemt  logo");
+define("LAN_421", "V&aelig;lg gemt logo");
 define("LAN_422", "Brug profillogo udefra");
 define("LAN_423", "Skriv hele adressen til billedet");
 define("LAN_424", "Klik p&aring; knappen for at se billeder her p&aring; webstedet");
@@ -94,7 +94,7 @@ define("LAN_ICQNUMBER", "ICQ nummer m&aring; kun indeholde tal");
 
 // v.617
 define("LAN_408", "En bruger med denne e-mail-adresse eksisterer allerede.");
-define("MAX_AVWIDTH", "Maksimum profil logo st&Atilde;&cedil;rrelse (bxh) er ");
+define("MAX_AVWIDTH", "Maksimum profil logo st&oslash;rrelse (bxh) er ");
 define("MAX_AVHEIGHT", "x");
 define("GIF_RESIZE", "&aelig;ndrer gif billede st&oslash;rrelsen eller konverter til et andet format");
 define("RESIZE_NOT_SUPPORTED", "&aelig;ndrer st&oslash;rrelse metode er ikke underst&oslash;ttet af denne server. &aelig;ndrer billede st&oslash;rrelsen eller v&aelig;lg et andet, filen er blevet slettet.");
