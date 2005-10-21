@@ -1,22 +1,4 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107/e107_admin/mailout.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2004-12-23 16:47:27 $
-|     $Author: pholzmann $
-+----------------------------------------------------------------------------+
-*/
-
 /*  User-Mailout for the e107 core release. .
  This code is experimental
  Still to be added:
@@ -24,11 +6,11 @@
   - the {USERNAME} stuff.
   - bulk mailing with BCC option.. ?
   - confirm number of recipients, before sending.
+
 */
 
 require_once("../class2.php");
 require_once(e_ADMIN."auth.php");
-if(!getperms("4")){ header("location:".e_BASE."index.php"); exit;}
 require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 
 require_once(e_HANDLER."userclass_class.php");
@@ -98,17 +80,16 @@ if(IsSet($_POST['submit'])){
     $text = "<div style='overflow:auto;height:300px'>";
     $text .= "<table class='fborder' style='width:100%'>";
     $text .= "<tr><td class='fcaption'>Username</td><td class='fcaption'>Email</td><td class='fcaption'>Status</td></tr>";
-    $message_subject = stripslashes($_POST['email_subject']);
-    $message_body = stripslashes($_POST['email_body']);
-    $message_body = eregi_replace('src="','src="'.SITEURL,$message_body);
-
+    $message_body = eregi_replace('src="','src="'.SITEURL,$_POST['email_body']);
+    $message_body .="<br />";
+    $
   //  echo $message_body;
      $sent_no = 0;
     for ($i=0; $i<count($recipient); $i++) {
     $text .="<tr>";
     $text .="<td class='forumheader3' style='width:40%'>".$recipient_name[$i]."</td>";
     $text .="<td class='forumheader3' style='width:40%'>".$recipient[$i]."</td>";
-        if(sendemail($recipient[$i],$message_subject,$message_body,$recipient_name[$i],$_POST['email_from_email'],$_POST['email_from_name'],$attach,$_POST['email_cc'],$_POST['email_bcc'],"","")){
+        if(sendemail($recipient[$i],$_POST['email_subject'],$message_body,$recipient_name[$i],$_POST['email_from_email'],$_POST['email_from_name'],$attach,$_POST['email_cc'],$_POST['email_bcc'],"","")){
         $stat = "<span style='color:green'>Sent</span>";
         $sent_no ++;
         }else{

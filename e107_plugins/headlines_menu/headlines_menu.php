@@ -13,13 +13,13 @@ if(strstr(($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENA
 	if($feeds = $sql -> db_Select("headlines", "*", "headline_active='1' ")){
 		$column = ($feeds/2);
 		$rss = new parse_xml;
-		$text = "<div id='headlinehead' style='text-align:center'>\n<table style='width:95%'>\n<tr>\n";
+		$text = "<div style='text-align:center'>\n<table style='width:95%'>\n<tr>\n";
 		$text .= "<td style='width:50%; vertical-align:top'>";
 		while($row = $sql -> db_Fetch()){
 			extract($row);
 			
 			$rss = new parse_xml;
-			$text .= $headline_description;
+			$text .= str_replace("e107_themes/", e_THEME, $headline_description);
 
 			$c++;
 
@@ -39,12 +39,12 @@ if(strstr(($_SERVER['PHP_SELF'] ? $_SERVER['PHP_SELF'] : $_SERVER['SCRIPT_FILENA
 	
 }
 
-$text = "";
+$text = "<br />";
 if($sql -> db_Select("headlines", "*", "headline_active='1' ")){
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if(!$headline_url){ break; }
-		if($headline_timestamp+$headline_update < time()){
+		if($headline_timestamp+$headline_update < time() && !strstr(THEME, "../")){
 			$tmp = parse_url($headline_url);
 			$dead = FALSE;
 			if(ini_get("allow_url_fopen")){
@@ -77,12 +77,12 @@ if($sql -> db_Select("headlines", "*", "headline_active='1' ")){
 				$text .= $rss -> cache_results($headline_id);
 			}
 		} else {
-			$text .= $headline_data;
+			$text .= str_replace(ereg_replace("\.\.\/", "", THEME), THEME, $headline_data);
 		}
 	}
 
 	$gen = new convert; $datestamp = $gen->convert_date(($headline_timestamp ? $headline_timestamp : time()), "short");
-	$text .= "<div id='headlinefoot' class='smalltext' style='text-align:right'>".NFMENU_162.": ".$datestamp."</div><a href='".e_PLUGIN."headlines_menu/headlines_menu.php'>".NFMENU_166."</a>";
+	$text .= "<div class='smalltext' style='text-align:right'>".NFMENU_162.": ".$datestamp."</div><a href='".e_PLUGIN."headlines_menu/headlines_menu.php'>".NFMENU_166."</a>";
 	$ns -> tablerender(NFMENU_161, stripslashes($text));
 }
 
@@ -168,9 +168,9 @@ class parse_xml {
 
 		for($a=0; $a<=9; $a++){
 			if($this->rssdata['link'][$a]){
-				$text2 .= "<tr><td><img src='".ABSTHEMEURL."images/bullet2.gif' alt='' style='vertical-align:middle' /> <b><a href='".$this->rssdata['link'][$a]."' rel='external'>".$this->rssdata['title'][$a]."</a></b><br />".($this->rssdata['description'][$a] && !strstr($this->rssdata['description'][$a], "Search") ? "<span class='smalltext'>" .wordwrap(substr($this->rssdata['description'][$a], 0, 300), 30, "\n", 1)." ...</span>" : "")."</td></tr>";
+				$text2 .= "<tr><td><img src='".THEME."images/bullet2.gif' alt='' style='vertical-align:middle' /> <b><a href='".$this->rssdata['link'][$a]."' rel='external'>".$this->rssdata['title'][$a]."</a></b><br />".($this->rssdata['description'][$a] && !strstr($this->rssdata['description'][$a], "Search") ? "<span class='smalltext'>" .wordwrap(substr($this->rssdata['description'][$a], 0, 300), 30, "\n", 1)." ...</span>" : "")."</td></tr>";
 				
-				$text .= "<tr><td  class='smalltext'><img src='".ABSTHEMEURL."images/bullet2.gif' alt='' style='vertical-align:middle' /> <a href='".$this->rssdata['link'][$a]."' rel='external'>".$this->rssdata['title'][$a]."</a></td></tr>";
+				$text .= "<tr><td  class='smalltext'><img src='".THEME."images/bullet2.gif' alt='' style='vertical-align:middle' /> <a href='".$this->rssdata['link'][$a]."' rel='external'>".$this->rssdata['title'][$a]."</a></td></tr>";
 			}
 		}
 		$text .= "</table></div><br />\n";

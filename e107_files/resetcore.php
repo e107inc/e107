@@ -2,6 +2,7 @@
 /*
 +---------------------------------------------------------------+
 |	e107 website system
+|	/template.php
 |
 |	©Steve Dunstan 2001-2002
 |	http://e107.org
@@ -9,16 +10,12 @@
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107/e107_files/resetcore.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-01-12 05:09:18 $
-|     $Author: pholzmann $
-+----------------------------------------------------------------------------+
++---------------------------------------------------------------+
 */
 require_once("../e107_config.php");
 mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
 mysql_select_db($mySQLdefaultdb);
+define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 
 echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
 ?>
@@ -41,13 +38,14 @@ echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
 
 <?php
 
-if(IsSet($_POST['usubmit'])){
+if(($_POST['a_name'] && !trim($_POST['a_password'])) || ($_POST['a_password'] && !trim($_POST['a_name'])) )
+{
+	$message = "Field(s) left blank";
+	unset($_POST);
+}
 
-	$a_name = $_POST['a_name'];
-	$a_password = md5($_POST['a_password']);
-
-	if($result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='$a_name' AND user_password='$a_password' AND user_perms=0")){
-		if($row = mysql_fetch_array($result)){
+if(isset($_POST['usubmit'])){
+	if (($row = e_verify()) !== FALSE) {
 			extract($row);
 
 			$result = mysql_query("SELECT * FROM ".$mySQLprefix."core WHERE e107_name='pref_backup' ");
@@ -62,16 +60,12 @@ if(IsSet($_POST['usubmit'])){
 			<input type='radio' name='mode' value='2'> <span class='headertext'>Reset core to default values</span><br />".
 			($bu_exist ? "<input type='radio' name='mode' value='3'> <span class='headertext'>Restore core backup</span>" : " <span class='headertext'>[ No core backup found - unable to restore core ]</span>")."<br /><br /><input class='button' type='submit' name='reset_core_sub' value='Select method then click here to continue' />
 
-			<input type='hidden' name='a_name' value='$a_name' />
-			<input type='hidden' name='a_password' value='$a_password' />
+			<input type='hidden' name='a_name' value='{$_POST['a_name']}' />
+			<input type='hidden' name='a_password' value='{$_POST['a_password']}' />
 
 			</form>
 			</div>";
 			$END = TRUE;
-		}else{
-			$message = "<b>Administrator not found in database / incorrect password / insufficient permissions - aborting.</b><br />";
-			$END = TRUE;
-		}
 	}else{
 		$message = "<b>Administrator not found in database / incorrect password / insufficient permissions - aborting.</b><br />";
 		$END = TRUE;
@@ -79,14 +73,10 @@ if(IsSet($_POST['usubmit'])){
 }
 
 
-if(IsSet($_POST['reset_core_sub']) && $_POST['mode'] == 2){
-	$a_name = $_POST['a_name'];
-	$a_password = $_POST['a_password'];
-	if(!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='$a_name' AND user_password='$a_password' AND user_perms='0' ")){
+if(isset($_POST['reset_core_sub']) && $_POST['mode'] == 2){
+	if (($at = e_verify()) === FALSE) {		
 		exit;
 	}
-	$at = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
-	if(!$at){ exit; }
 
 	$tmpr = substr(str_replace($_SERVER['DOCUMENT_ROOT'], "", $_SERVER['SCRIPT_FILENAME']), 1);
 	$root = "/".substr($tmpr, 0, strpos($tmpr, "/"))."/";
@@ -119,16 +109,10 @@ if(IsSet($_POST['reset_core_sub']) && $_POST['mode'] == 2){
 }
 
 
-if(IsSet($_POST['coreedit_sub'])){
-	$a_name = $_POST['a_name'];
-	$a_password = $_POST['a_password'];
-	if(!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='$a_name' AND user_password='$a_password' AND user_perms='0' ")){
+if(isset($_POST['coreedit_sub'])){
+	if (($at = e_verify()) === FALSE) {		
 		exit;
 	}
-	$at = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
-	if(!$at){ exit; }
-
-
 
 	while(list($key, $prefvalue) = each($_POST)){
 		$pref[$key] = formtpa($prefvalue);
@@ -139,19 +123,12 @@ if(IsSet($_POST['coreedit_sub'])){
 	@mysql_query("UPDATE ".$mySQLprefix."core set e107_value='$tmp' WHERE e107_name='pref' ");
 	$message = "Core settings successfully updated. <br /><br /><a href='../index.php'>Click here to continue</a>";
 	$END = TRUE;
-	
-
-
-}
+	}
 
 if(IsSet($_POST['reset_core_sub']) && $_POST['mode'] == 3){
-	$a_name = $_POST['a_name'];
-	$a_password = $_POST['a_password'];
-	if(!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='$a_name' AND user_password='$a_password' AND user_perms='0' ")){
+	if (($at = e_verify()) === FALSE) {		
 		exit;
 	}
-	$at = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
-	if(!$at){ exit; }
 	
 	$result = @mysql_query("SELECT * FROM ".$mySQLprefix."core WHERE e107_name='pref_backup' ");
 	$row = @mysql_fetch_array($result);
@@ -166,11 +143,8 @@ if(IsSet($_POST['reset_core_sub']) && $_POST['mode'] == 3){
 }
 
 
-if(IsSet($_POST['reset_core_sub']) && $_POST['mode'] == 1){
-
-	$a_name = $_POST['a_name'];
-	$a_password = $_POST['a_password'];
-	if(!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='$a_name' AND user_password='$a_password' AND user_perms=0")){
+if(isset($_POST['reset_core_sub']) && $_POST['mode'] == 1){
+	if (($at = e_verify()) === FALSE) {		
 		exit;
 	}
 
@@ -211,7 +185,6 @@ if($END){
 echo "<span class='headertext2'>
 This is the e107 resetcore utility. It allows you to completely rebuild your core if it becomes corrupt, or to restore a backup, or to change core settings manually. It won't affect your actual content (news posts, forum posts, articles etc).<br />
 <b>Only run this utility if your site is failing to load due to a critical core error, or if you need to change a setting and can't log into your admin area.</b></span><br /><br /><br /><br />
-
 <span class='headertext'>Please enter your main administrator username and password to continue ...</span><br /><br />
 <form method='post' action='".$_SERVER['PHP_SELF']."'>
 <table style='width:95%'>
@@ -244,6 +217,28 @@ function formtpa($text){
 	$replace = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&#036;");
 	$text = str_replace($search, $replace, $text);
 	return $text;
+}
+
+function e_verify() {
+	global $mySQLprefix;
+	if (MAGIC_QUOTES_GPC == FALSE) {
+		$a_name = addslashes($_POST['a_name']);
+	}
+	else
+	{
+		$a_name = $_POST['a_name'];
+	}
+	
+	$a_name = str_replace('/*', '', $a_name);
+	
+	$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='".$a_name."'");
+	$row = mysql_fetch_array($result);
+	
+	if (($row['user_password'] === md5($_POST['a_password'])) && ($row['user_perms'] === '0')) {
+		return $row;
+	} else {
+		return FALSE;
+	}
 }
 
 ?>

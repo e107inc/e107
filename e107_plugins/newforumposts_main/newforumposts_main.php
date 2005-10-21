@@ -21,7 +21,7 @@ if(file_exists($lan_file)){
 } else {
 	require_once(e_PLUGIN."newforumposts_main/languages/English.php");
 }
-$results = $sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_parent=0 ORDER BY ".MPREFIX."forum_t.$query DESC LIMIT 0, 20");
+$results = $sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."forum WHERE ".MPREFIX."forum.forum_id=".MPREFIX."forum_t.thread_forum_id AND ".MPREFIX."forum_t.thread_parent=0 ORDER BY ".MPREFIX."forum_t.$query DESC LIMIT 0, ".$pref['nfp_amount']);
 	$text = "<div style='text-align:center'>\n<table style='width:auto' class='fborder'>\n";
 	if(!is_object($sql2)){
 		$sql2 = new db;
@@ -39,13 +39,9 @@ $results = $sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."f
 		<td style='width:25%; text-align:center' class='forumheader'>".LAN_5."</td>
 		</tr>\n";
 
-	$nfp_max = $pref['nfp_amount'];
-	$n_displayed = 0;
 	while($row = $sql -> db_Fetch()){
 		extract($row);
 		if(check_class($forum_class)){
-			if (! $nfp_max-- ) break;	// we're done
-			$n_displayed++;
 			$sql2 -> db_Select("forum_t", "*", "thread_parent='$thread_id' ORDER BY $query DESC");
 			list($null, $null, $null, $null, $r_datestamp, $null, $r_user) = $sql2 -> db_Fetch();
 			$r_id = substr($r_user, 0, strpos($r_user, "."));
@@ -57,7 +53,7 @@ $results = $sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."f
 			}
 
 			$r_datestamp = $gen->convert_date($r_datestamp, "forum");
-			$thread_name = strip_tags($aj -> tpa($thread_name));
+
 			$post_author_id = substr($thread_user, 0, strpos($thread_user, "."));
 			$post_author_name = substr($thread_user, (strpos($thread_user, ".")+1));
 			if(strstr($post_author_name, chr(1))){ 
@@ -73,8 +69,10 @@ $results = $sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."f
 			<td style='width:15%; text-align:center' class='forumheader3'>".(USER ? "<a href='".e_BASE."user.php?id.$post_author_id'>" : "")."$post_author_name".(USER ? "</a>" :"")."</td>
 			<td style='width:5%; text-align:center' class='forumheader3'>$thread_views</td>
 			<td style='width:5%; text-align:center' class='forumheader3'>$replies</td>
-			<td style='width:25%; text-align:center' class='forumheader3'>".($replies ? "<b>".(USER && $r_id > 0 ? "<a href='".e_BASE."user.php?id.$r_id'>" : "")."$r_name".(USER && $r_id > 0 ? "</a>" : "")."</b><br /><span class='smalltext'>$r_datestamp</span>" : "-")."</td>
+			<td style='width:25%; text-align:center' class='forumheader3'>".($replies ? "<b>".(USER ? "<a href='".e_BASE."user.php?id.$r_id'>" : "")."$r_name".(USER ? "</a>" : "")."</b><br /><span class='smalltext'>$r_datestamp</span>" : "-")."</td>
 			</tr>\n";
+		}else{
+			$results --;
 		}
 	}
 
@@ -90,7 +88,7 @@ $results = $sql -> db_Select_gen("SELECT * FROM ".MPREFIX."forum_t, ".MPREFIX."f
 
 
 	$text = ($pref['nfp_layer'] ? "<div style='border : 0; padding : 4px; width : auto; height : ".$pref['nfp_layer_height']."px; overflow : auto; '>".$text."</div>" : $text);
-if($n_displayed){
+if($results){
 	$ns -> tablerender($pref['nfp_caption'], $text, "nfp");
 }
 ?>

@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107/user.php,v $
-|   $Revision: 1.15 $
-|   $Date: 2004-09-07 12:30:55 $
+|   $Revision: 1.16 $
+|   $Date: 2005-10-21 00:29:32 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */

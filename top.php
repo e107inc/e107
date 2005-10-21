@@ -20,17 +20,16 @@ if(!e_QUERY){
 	$view = 10;
 }else{
 	$tmp = explode(".", e_QUERY);
-	$from = $tmp[0];
+	$from = intval($tmp[0]);
 	$action = $tmp[1];
 	$subaction = $tmp[2];
-	$view = ($tmp[3] ? $tmp[3] : 10);
+	$view = ($tmp[3] ? intval($tmp[3]) : 10);
 }
 if($action == "top"){
 	define("e_PAGETITLE", ": ".LAN_8);
 }elseif($action == "active"){
 	define("e_PAGETITLE", ": ".LAN_7);
 }
-
 
 require_once(HEADERF);
 if($action == "active"){

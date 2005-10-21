@@ -55,7 +55,6 @@ require_once(HEADERF);
 
 if(IsSet($_POST['updatesettings'])){
 	
-	$_POST['image'] = str_replace(array('\'', '"', '(', ')'), '', $_POST['image']); // these are invalid anyways, so why allow them? (XSS Fix)
         // check prefs for required fields =================================.
     $signupval = explode(".",$pref['signup_options']);
     $signup_title = array(LAN_308,LAN_144,LAN_115,LAN_116,LAN_117,LAN_118,LAN_119,LAN_120,LAN_121,LAN_122);
@@ -178,8 +177,7 @@ if(IsSet($_POST['updatesettings'])){
 									$error = RESIZE_NOT_SUPPORTED;
 									@unlink(e_FILE."public/avatars/".$uploaded[0]['name']);
 								}
-                        }
-                        if($uploaded[1]['name'] || (!$pref['avatar_upload'] && $uploaded[0]['name'])) {
+                        }else{
                                 // photograph uploaded
                                 $user_sess = ($pref['avatar_upload'] ? $uploaded[1]['name'] : $uploaded[0]['name']);
                                 resize_image(e_FILE."public/avatars/".$user_sess, e_FILE."public/avatars/".$user_sess, 180);

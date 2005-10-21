@@ -11,7 +11,7 @@
 |        Released under the terms and conditions of the
 |        GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
-$Id: review.php,v 1.22 2004-08-31 16:02:51 loloirie Exp $  
+$Id: review.php,v 1.23 2005-10-21 00:29:32 mcfly_e107 Exp $  
 */
 require_once("../class2.php");
     if($pref['htmlarea']){

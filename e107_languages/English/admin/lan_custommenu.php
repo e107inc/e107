@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107/e107_languages/English/admin/lan_custommenu.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2004-09-06 09:55:17 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-10-21 00:29:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("CUSLAN_1", "Fields left blank.");

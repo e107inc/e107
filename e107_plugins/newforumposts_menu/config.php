@@ -11,7 +11,7 @@
 |        GNU General Public License (http://gnu.org).
 |
 |        Based on code by Edwin van der Wal (evdwal@xs4all.nl)
-|        $Id: config.php,v 1.2 2004-09-03 18:32:11 e107coders Exp $
+|        $Id: config.php,v 1.3 2005-10-21 00:29:34 mcfly_e107 Exp $
 +---------------------------------------------------------------+
 */
 require_once("../../class2.php");

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/e107_admin/users.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2004-09-09 09:31:15 $
-|     $Author: e107coders $
+|     $Revision: 1.30 $
+|     $Date: 2005-10-21 00:29:32 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");

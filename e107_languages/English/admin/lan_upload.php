@@ -1,14 +1,5 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107/e107_languages/English/admin/lan_upload.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-05 10:18:06 $
-|     $Author: pholzmann $
-+----------------------------------------------------------------------------+
-*/
+
 define("UPLLAN_1", "Upload removed from list.");
 define("UPLLAN_2", "Settings saved in database");
 define("UPLLAN_3", "Upload ID");
@@ -57,13 +48,23 @@ define("UPLLAN_42", "Actions");
 define("UPLLAN_43", "Uploads");
 define("UPLLAN_44", "Upload");
 
-define("UPLLAN_45", "Are you sure you want to delete the following file...");
-define("UPLLAN_46", "Delete");
-define("UPLLAN_47", "Cancel");
-
 define("UPLAN_COPYTODLM", "copy to download manager");
 define("UPLAN_IS", "is ");
 define("UPLAN_ARE", "are ");
 define("UPLAN_COPYTODLS", "Copy to Downloads");
 
+
+define("ADLAN_52", "Admin Front Page");
+define("ADLAN_53", "Leave Admin Area");
+define("ADLAN_93", "Show Admin Functions");
+define("ADLAN_95", "Plugin Management");
+define("ADLAN_45", "Database utilities");
+define("ADLAN_46", "Logout");
+define("ADLAN_47", "Welcome");
+define("ADLAN_102", "It has been more than 30 days since you changed the main administrator password - ");
+define("ADLAN_103", "Click here to change it now");
+define("ADLAN_104", "Security");
+define("UPLLAN_45", "Remove upload");
+define("UPLLAN_46", "Confirm");
+define("UPLLAN_47", "Cancel");  
 ?>

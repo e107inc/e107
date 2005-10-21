@@ -1,14 +1,5 @@
 <?php
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
-|
-|     $Source: /cvs_backup/e107/e107_languages/English/admin/lan_article.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-05 10:18:06 $
-|     $Author: pholzmann $
-+----------------------------------------------------------------------------+
-*/
+
 define("ARLAN_0", "Article saved in database.");
 define("ARLAN_1", "Fields left blank.");
 define("ARLAN_2", "Article updated in database.");
@@ -42,8 +33,6 @@ define("ARLAN_29", "Please tick the confirm box to delete the article");
 define("ARLAN_30", "Article deleted.");
 define("ARLAN_31", "First letters.");
 define("ARLAN_32", "Please select a letter above.");
-
-define("ARLAN_33", "Submitted article deleted.");
 
 
 define("ARLAN_55", "Visible to");

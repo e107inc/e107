@@ -27,10 +27,9 @@ if($cache = retrieve_cache("article_menu")){
 	if($menu_pref['articles_parents']){
 		$text.="<br />";
 		if($i = $sql -> db_Select("content", "*", "content_type='0' AND content_parent='0' ")){
-			$catText = "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."content.php?article.cat.0'>".ARTICLE_MENU_L2."</a> (".$i.")<br />";
+			$text .= "<img src='".THEME."images/bullet2.gif' alt='' /> <a href='".e_BASE."content.php?article.cat.0'>".ARTICLE_MENU_L2."</a> (".$i.")<br />";
 		}
 
-		$artText="";
 		if($sql -> db_Select("content", "*", "content_type='6' ORDER BY content_heading ASC")){
 			while($row = $sql -> db_Fetch()){
 				extract($row);
@@ -43,15 +42,12 @@ if($cache = retrieve_cache("article_menu")){
 								$i = $i - 1;
 							}
 						}
-						$artText .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."content.php?article.cat.".$content_id."'>".$content_heading."</a> (".$i.")<br />";
+						$text .= "<img src='".THEME."images/bullet2.gif' alt='bullet' /> <a href='".e_BASE."content.php?article.cat.".$content_id."'>".$content_heading."</a> (".$i.")<br />";
 					}
 				}
 			}
 		}
-		if($i > 0)
-		{
-			$text .= $catText.$artText.'<br />';
-		}
+		$text.="<br />";
 	}
 		
 	if($sql -> db_Select("content", "*", "content_type='0' ORDER BY content_datestamp DESC limit 0, ".$menu_pref['articles_display'])){
@@ -85,10 +81,9 @@ if($cache = retrieve_cache("article_menu")){
 
 	if($pref['cachestatus']){
 		$aj = new textparse;
-		$cache = $aj -> formtpa(ob_get_flush(), "admin");
+		$cache = $aj -> formtpa(ob_get_contents(), "admin");
 		set_cache("article_menu", $cache);
 	}
-ob_end_flush(); /* dump collected data */	
 }
 
 ?>

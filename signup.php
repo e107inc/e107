@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/signup.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-01-07 10:40:42 $
-|     $Author: pholzmann $
+|     $Revision: 1.32 $
+|     $Date: 2005-10-21 00:29:32 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -243,7 +243,7 @@ if(IsSet($_POST['register'])){
                                                 $sql -> db_Update("user", "user_prefs='$tmp' WHERE user_id='".$nid."' ");
                                         }
                                         // ==========================================================
-                $ns -> tablerender("<div style='text-align:center'>".LAN_SIGNUP_8."</div>", LAN_107."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />".LAN_SIGNUP_13."<a href='index.php'>".LAN_SIGNUP_22."</a> ".LAN_SIGNUP_23);
+                $ns -> tablerender("<div style='text-align:center'>".LAN_SIGNUP_8."</div>", LAN_107."&nbsp;".SITENAME.", ".LAN_SIGNUP_12."<br /><br />".LAN_SIGNUP_13);
                 require_once(FOOTERF);
                 exit;
         }
@@ -321,7 +321,7 @@ $text .="
 ".$rs -> form_password("password1", 40, $password1, 20)."
 ";
 if($pref['signup_pass_len']){
-$text .= "<span class='smalltext'> (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
+$text .= "<br /><span class='smalltext'>  (".LAN_SIGNUP_1." {$pref['signup_pass_len']} ".LAN_SIGNUP_2.")</span>";
 }
 $text .="
 </td>
@@ -455,7 +455,7 @@ if($signupval[7]){
         $text .= "<tr>
         <td class='forumheader3' style='width:30%;white-space:nowrap;vertical-align:top' >".LAN_120." ".req($signupval[7])."</td>
         <td class='forumheader3' style='width:70%' >
-        <textarea class='tbox' name='signature' cols='70' rows='4'>$signature</textarea>
+        <textarea class='tbox' name='signature' cols='70' rows='4' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$signature</textarea>
         <input class='helpbox' type='text' name='helpb' size='90' />
         ".ren_help("addtext");
 }
@@ -469,7 +469,7 @@ if($signupval[8]){
         <td class='forumheader3' style='width:70%' >
         <input class='tbox' type='text' name='image' size='60' value='$image' maxlength='100' />
 
-        <input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='".LAN_SIGNUP_27."' onClick='expandit(this)'>
+        <input class='button' type ='button' style=''width: 35px'; cursor:hand' size='30' value='Show' onClick='expandit(this)'>
         <div style='display:none' style=&{head};>";
         $avatarlist[0] = "";
         $handle=opendir(e_IMAGE."avatars/");
@@ -488,12 +488,12 @@ $text .= "<br />
 </div>";
 
 if($pref['avatar_upload'] && FILE_UPLOADS){
-        $text .= "<br /><span class='smalltext'>".LAN_SIGNUP_25."</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
+        $text .= "<br /><span class='smalltext'>Upload your avatar</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
         <br /><div class='smalltext'>".LAN_404."</div>";
 }
 
 if($pref['photo_upload'] && FILE_UPLOADS){
-        $text .= "<br /><span class='smalltext'>".LAN_SIGNUP_26."</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
+        $text .= "<br /><span class='smalltext'>Upload your photograph</span> <input class='tbox' name='file_userfile[]' type='file' size='47'>
         <br /><div class='smalltext'>".LAN_404."</div>";
 }
 
@@ -527,7 +527,7 @@ $text .= "</select>
 
 if($use_imagecode){
         $text .= " <tr>
-        <td class='forumheader3' style='width:30%'>".LAN_410.req(2)."</td>
+        <td class='forumheader3' style='width:30%'>".LAN_410."</td>
         <td class='forumheader3' style='width:70%'>".
         $rs ->form_hidden("rand_num", $sec_img -> random_number).
         $sec_img -> r_image()."<br />".$rs -> form_text("code_verify", 20, "", 20)."

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107/e107_languages/English/admin/lan_submenusgen.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2004-09-06 09:55:17 $
-|     $Author: e107coders $
+|     $Revision: 1.3 $
+|     $Date: 2005-10-21 00:29:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("LAN_MENGEN_1","Manage links for your main menu");

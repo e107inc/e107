@@ -12,15 +12,17 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.5 $
-|   $Date: 2004-08-20 01:00:57 $
+|   $Revision: 1.6 $
+|   $Date: 2005-10-21 00:29:32 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
 @include(e_LANGUAGEDIR.e_LANGUAGE."/lan_upload_handler.php");
 @include(e_LANGUAGEDIR."English/lan_upload_handler.php");
-function file_upload($uploaddir, $avatar = FALSE){
+
+function file_upload($uploaddir, $avatar = FALSE)
+{
 
 	if(!$uploaddir) $uploaddir=e_FILE."public/";
 	global $pref, $sql;
@@ -34,28 +36,27 @@ function file_upload($uploaddir, $avatar = FALSE){
 	}
 
 	if($pref['upload_storagetype'] == "2" && $avatar == FALSE){
-		extract($_FILES);
 		for($c=0; $c<=1; $c++){
-			if($file_userfile['tmp_name'][$c]){
-				$fileext1 = substr(strrchr($file_userfile['name'][$c], "."), 1);
-				$fileext2 = substr(strrchr($file_userfile['name'][$c], "."), 0); // in case user has left off the . in allowed_filetypes
-				if(!in_array($fileext1, $allowed_filetypes) && !in_array(strtolower($fileext1), $allowed_filetypes) && !in_array(strtolower($file_userfile['type'][$c]), $allowed_filetypes)){
-					if(!in_array($fileext2, $allowed_filetypes) && !in_array(strtolower($fileext2), $allowed_filetypes) && !in_array(strtolower($file_userfile['type'][$c]), $allowed_filetypes)){
+			if($_FILES['file_userfile']['tmp_name'][$c]){
+				$fileext1 = substr(strrchr($_FILES['file_userfile']['name'][$c], "."), 1);
+				$fileext2 = substr(strrchr($_FILES['file_userfile']['name'][$c], "."), 0); // in case user has left off the . in allowed_filetypes
+				if(!in_array($fileext1, $allowed_filetypes) && !in_array(strtolower($fileext1), $allowed_filetypes) && !in_array(strtolower($_FILES['file_userfile']['type'][$c]), $allowed_filetypes)){
+					if(!in_array($fileext2, $allowed_filetypes) && !in_array(strtolower($fileext2), $allowed_filetypes) && !in_array(strtolower($_FILES['file_userfile']['type'][$c]), $allowed_filetypes)){
 						require_once(e_HANDLER."message_handler.php");
-						message_handler("MESSAGE", "".LANUPLOAD_1." '".$file_userfile['type'][$c]."' ".LANUPLOAD_2."");
+						message_handler("MESSAGE", "".LANUPLOAD_1." '".$_FILES['file_userfile']['type'][$c]."' ".LANUPLOAD_2."");
 						return FALSE;
 						require_once(FOOTERF);
 						exit;
 					}
 				}
 				set_magic_quotes_runtime(0);
-				$data = mysql_escape_string(fread(fopen($file_userfile['tmp_name'][$c], "rb"), filesize($file_userfile['tmp_name'][$c])));
+				$data = mysql_escape_string(fread(fopen($_FILES['file_userfile']['tmp_name'][$c], "rb"), filesize($_FILES['file_userfile']['tmp_name'][$c])));
 				set_magic_quotes_runtime(get_magic_quotes_gpc());
-				$file_name = ereg_replace("[^a-z0-9._]", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($file_userfile['name'][$c]))));
-				$sql -> db_Insert("rbinary", "0, '$file_name', '".$file_userfile['type'][$c]."', '$data' ");
+				$file_name = ereg_replace("[^a-z0-9._]", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($_FILES['file_userfile']['name'][$c]))));
+				$sql -> db_Insert("rbinary", "0, '$file_name', '".$_FILES['file_userfile']['type'][$c]."', '$data' ");
 				$uploaded[$c]['name'] = "Binary ".mysql_insert_id()."/".$file_name;
-				$uploaded[$c]['type'] = $file_userfile['type'][$c];
-				$uploaded[$c]['size'] = $file_userfile['size'][$c];
+				$uploaded[$c]['type'] = $_FILES['file_userfile']['type'][$c];
+				$uploaded[$c]['size'] = $_FILES['file_userfile']['size'][$c];
 			}
 		}
 		return $uploaded;

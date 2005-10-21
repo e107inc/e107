@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107/forum_post.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2004-11-04 14:47:57 $
-|     $Author: loloirie $
+|     $Revision: 1.29 $
+|     $Date: 2005-10-21 00:29:31 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -38,16 +38,13 @@ if(!e_QUERY){
 
 // check if user can post to this forum ...
 
-if($sql -> db_Select("forum", "*", "forum_id=$forum_id"))
-{
-	$row = $sql -> db_Fetch(); extract($row);
-	if(!check_class($forum_class))
-	{
-		require_once(HEADERF);
-		$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
-		require_once(FOOTERF);
-		exit;
-	}
+if($sql -> db_Select("forum", "*", "forum_id=$forum_id")){
+        $row = $sql -> db_Fetch(); extract($row);
+        if(!check_class($forum_class)){
+                $ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_399."</div>");
+                require_once(FOOTERF);
+                exit;
+        }
 }
 
 //        end
@@ -64,7 +61,6 @@ if($sql -> db_Select("tmp", "*",  "tmp_ip='$ip' ")){
 }
 
 if(ANON == FALSE && USER == FALSE){
-        require_once(HEADERF);
         $text .= "<div style='text-align:center'>".LAN_45." <a href='".e_SIGNUP."'>".LAN_411."</a> ".LAN_412."</div>";
         $ns -> tablerender(LAN_20, $text);
         require_once(FOOTERF);
@@ -87,12 +83,10 @@ if($thread_id){
         $row = $sql-> db_Fetch(); extract($row);
 }
 
-if($action != "nt" && !$thread_active)
-{
-	require_once(HEADERF);
-	$ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_397."</div>");
-	require_once(FOOTERF);
-	exit;
+if($action != "nt" && !$thread_active){
+        $ns -> tablerender(LAN_20, "<div style='text-align:center'>".LAN_397."</div>");
+        require_once(FOOTERF);
+        exit;
 }
 if($action == "cp"){
         define("e_PAGETITLE", LAN_01." / ".$fname." / ".$row['thread_name']);
@@ -473,175 +467,165 @@ if($action == "edit" || $action == "quote"){
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-if($action != "cp")
-{
-	$text = "<div style='text-align:center'>
-	<form enctype='multipart/form-data' method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>
-	<table style='width:95%' class='fborder'>
-	<tr><td colspan='2' class='fcaption'><a class='forumlink' href='".e_BASE."forum.php'>".LAN_405."</a> -> <a class='forumlink' href='".e_HTTP."forum_viewforum.php?".$forum_id."'>".$forum_name."</a> -> ";
+if($action != "cp"){
+$text = "<div style='text-align:center'>
+<form enctype='multipart/form-data' method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>
+<table style='width:95%' class='fborder'>
+<tr><td colspan='2' class='fcaption'><a class='forumlink' href='".e_BASE."forum.php'>".LAN_405."</a> -> <a class='forumlink' href='".e_HTTP."forum_viewforum.php?".$forum_id."'>".$forum_name."</a> -> ";
 
-	if($action == "nt")
-	{
-		$text .= ($eaction ? LAN_77 : LAN_60);
-	}
-	else
-	{
-		$text .= ($eaction ? LAN_78 : LAN_406." ".$thread_name);
-	}
+if($action == "nt"){
+        $text .= ($eaction ? LAN_77 : LAN_60);
+}else{
+        $text .= ($eaction ? LAN_78 : LAN_406." ".$thread_name);
+}
 
-	$text .= "</td></tr>";
+$text .= "</td></tr>";
 
-	if(ANON == TRUE  && USER == FALSE)
-	{
-		$text .= "<tr>
-		<td class='forumheader2' style='width:20%'>".LAN_61."</td>
-		<td class='forumheader2' style='width:80%'>
-		<input class='tbox' type='text' name='anonname' size='71' value='".$anonname."' maxlength='20' />
-		</td>
-		</tr>";
-	}
+if(ANON == TRUE  && USER == FALSE){
+        $text .= "<tr>
+<td class='forumheader2' style='width:20%'>".LAN_61."</td>
+<td class='forumheader2' style='width:80%'>
+<input class='tbox' type='text' name='anonname' size='71' value='".$anonname."' maxlength='20' />
+</td>
+</tr>";
+}
 
-	if($action == "nt")
-	{
-		$text .= "<tr>
-		<td class='forumheader2' style='width:20%'>".LAN_62."</td>
-		<td class='forumheader2' style='width:80%'>
-		<input class='tbox' type='text' name='subject' size='71' value='".$subject."' maxlength='100' />
-		</td>
-		</tr>";
-	}
+if($action == "nt"){
+        $text .= "<tr>
+<td class='forumheader2' style='width:20%'>".LAN_62."</td>
+<td class='forumheader2' style='width:80%'>
+<input class='tbox' type='text' name='subject' size='71' value='".$subject."' maxlength='100' />
+</td>
+</tr>";
+}
 
-	$text .= "
-	<tr>
-	<td class='forumheader2' style='width:20%'>
-	";
-	$text .= ($action == "nt" ? LAN_63 : LAN_73);
+$text .= "<tr>
+<td class='forumheader2' style='width:20%'>";
+$text .= ($action == "nt" ? LAN_63 : LAN_73);
 
-	$text .= "</td>
-	<td class='forumheader2' style='width:80%'>
-	<textarea class='tbox' name='post' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$aj -> formtparev($post)."</textarea>
-	<br />\n".ren_help(2);
+$text .= "</td>
+<td class='forumheader2' style='width:80%'>
+<textarea class='tbox' name='post' cols='70' rows='10' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$aj -> formtparev($post)."</textarea>
+<br />\n".ren_help(2);
 
-	$text .= "<br />";
-	require_once(e_HANDLER."emote.php");
-	$text .= r_emote();
+$text .= "<br />";
+require_once(e_HANDLER."emote.php");
+$text .= r_emote();
 
-	if($pref['email_notify'] && $action == "nt")
-	{
-		$text .= "
-		<span class='defaulttext'>".LAN_380."</span>".
-		($_POST['email_notify'] ? "<input type='checkbox' name='email_notify' value='1' checked>" : "<input type='checkbox' name='email_notify' value='1'>");
+if($pref['email_notify'] && $action == "nt"){
+        $text .= "
+        <span class='defaulttext'>".LAN_380."</span>".
+        ($_POST['email_notify'] ? "<input type='checkbox' name='email_notify' value='1' checked>" : "<input type='checkbox' name='email_notify' value='1'>");
 
-	}
+}
 
-	if(ADMIN && getperms("5") && $action == "nt")
-	{
-		if(defined($_POST['threadtype']))
-		{
-			$thread_s = $_POST['threadtype'];
-		}
-		$text .= "<br />
-		<span class='defaulttext'>
-		".LAN_400."
-		<input name='threadtype' type='radio' value='0'".(!$thread_s ? "checked" : "").">".LAN_1."
-		&nbsp;
-		<input name='threadtype' type='radio' value='1'".($thread_s == 1 ? "checked" : "").">".LAN_2."
-		&nbsp;
-		<input name='threadtype' type='radio' value='2'".($thread_s == 2 ? "checked" : "").">".LAN_3."
-		</span>";
-	}
+if(ADMIN && getperms("5") && $action == "nt"){
 
-	if($action == "nt" && $pref['forum_poll'] && !eregi("edit", e_QUERY))
-	{
-		$text .= "</td>
-		</tr>
-		<tr>
-		<td colspan='2' class='fcaption'>".LAN_4."</td>
-
-		</tr>
-		<tr>
-
-		<td colspan='2' class='forumheader3'>
-		<span class='smalltext'>".LAN_386."
-		</td>
-		</tr>
-
-		<tr>
-		<td style='width:20%' class='forumheader3'><div class='normaltext'>".LAN_5."</div></td>
-		<td style='width:80%'class='forumheader3'>
-		<input class='tbox' type='text' name='poll_title' size='70' value=\"".$aj -> tpa($_POST['poll_title'])."\" maxlength='200' />";
-
-		$option_count = ($_POST['option_count'] ? $_POST['option_count'] : 1);
-		$text .= "<input type='hidden' name='option_count' value='$option_count'>";
-
-		for($count=1; $count<=$option_count; $count++)
-		{
-			$var = "poll_option_".$count;
-			$option = stripslashes($$var);
-			$text .= "<tr>
-			<td style='width:20%' class='forumheader3'>".LAN_391." ".$count.":</td>
-			<td style='width:80%' class='forumheader3'>
-			<input class='tbox' type='text' name='poll_option[]' size='60' value=\"".$aj -> tpa($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
-			if($option_count == $count)
-			{
-				$text .= " <input class='button' type='submit' name='addoption' value='".LAN_6."' /> ";
-			}
-			$text .= "</td></tr>";
-		}
+        $text .= "<br />
+        <span class='defaulttext'>
+        ".LAN_400."
+        <input name='threadtype' type='radio' value='0'".(!$_POST['threadtype'] ? "checked" : "").">".LAN_1."
+        &nbsp;
+        <input name='threadtype' type='radio' value='1'".($_POST['threadtype'] == 1 ? "checked" : "").">".LAN_2."
+        &nbsp;
+        <input name='threadtype' type='radio' value='2'".($_POST['threadtype'] == 2 ? "checked" : "").">".LAN_3."
+        </span>";
+}
 
 
-		$text .= "<tr>
-		<td style='width:20%' class='forumheader3'>".LAN_7."</td>
-		<td class='forumheader3'>";
-		$text .= ($_POST['activate'] == 9 ? "<input name='activate' type='radio' value='9' checked>".LAN_8."<br />" : "<input name='activate' type='radio' value='9'>".LAN_8."<br />");
-		$text .= ($_POST['activate'] == 10 ? "<input name='activate' type='radio' value='10' checked>".LAN_9."<br />" : "<input name='activate' type='radio' value='10'>".LAN_9."<br />");
 
-		$text .= "</td>
-		</tr>";
-	}
+if($action == "nt" && $pref['forum_poll'] && !eregi("edit", e_QUERY)){
+        $text .= "</td>
+        </tr>
+        <tr>
+        <td colspan='2' class='fcaption'>".LAN_4."</td>
 
-	if($pref['forum_attach'] && !eregi("edit", e_QUERY) && FILE_UPLOADS && check_class($pref['upload_class']))
-	{
-		$text .= "
-		<tr>
-		<td colspan='2' class='fcaption'>".LAN_390."</td>
-		</tr>
-		<tr>
-		<td style='width:20%' class='forumheader3'>".LAN_392."</td>
-		<td style='width:80%' class='forumheader3'>
-		".LAN_393." | ".str_replace("\n", " | ", $pref['upload_allowedfiletype'])." |<br />".LAN_394."<br />".LAN_395.": ".($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'].LAN_396 : ini_get('upload_max_filesize'))."<br />
-		<input class='tbox' name='file_userfile[]' type='file' size='47'>
-		</td>
-		</tr>
-		";
-	}
+        </tr>
+        <tr>
 
-	$text .= "<tr style='vertical-align:top'>
+        <td colspan='2' class='forumheader3'>
+        <span class='smalltext'>".LAN_386."
+        </td>
+        </tr>
 
-	<td colspan='2' class='forumheader' style='text-align:center'>
-	<input class='button' type='submit' name='fpreview' value='".LAN_323."' /> ";
+        <tr>
+        <td style='width:20%' class='forumheader3'><div class='normaltext'>".LAN_5."</div></td>
+        <td style='width:80%'class='forumheader3'>
+        <input class='tbox' type='text' name='poll_title' size='70' value=\"".$aj -> tpa($_POST['poll_title'])."\" maxlength='200' />";
 
-	if($action != "nt")
-	{
-		$text .= ($eaction ? "<input class='button' type='submit' name='update_reply' value='".LAN_78."' />" : "<input class='button' type='submit' name='reply' value='".LAN_74."' />");
-	}
-	else
-	{
-		$text .= ($eaction ? "<input class='button' type='submit' name='update_thread' value='".LAN_77."' />" : "<input class='button' type='submit' name='newthread' value='".LAN_64."' />");
-	}
-	$text .= "</td>
-	</tr>
-	<input type='hidden' name='thread_id' value='$thread_parent'>
-	</table>
-	</form>
-	</div>";
+        $option_count = ($_POST['option_count'] ? $_POST['option_count'] : 1);
+        $text .= "<input type='hidden' name='option_count' value='$option_count'>";
+
+        for($count=1; $count<=$option_count; $count++){
+                $var = "poll_option_".$count;
+                $option = stripslashes($$var);
+                $text .= "<tr>
+        <td style='width:20%' class='forumheader3'>".LAN_391." ".$count.":</td>
+        <td style='width:80%' class='forumheader3'>
+        <input class='tbox' type='text' name='poll_option[]' size='60' value=\"".$aj -> tpa($_POST['poll_option'][($count-1)])."\" maxlength='200' />";
+                if($option_count == $count){
+                        $text .= " <input class='button' type='submit' name='addoption' value='".LAN_6."' /> ";
+                }
+                $text .= "</td></tr>";
+        }
 
 
-	$text .= "<table style='width:95%'>
-	<tr>
-	<td style='width:50%'>";
-	$text .= forumjump();
-	$text .= "</td></tr></table><br />";
+        $text .= "<tr>
+        <td style='width:20%' class='forumheader3'>".LAN_7."</td>
+        <td class='forumheader3'>";
+        $text .= ($_POST['activate'] == 9 ? "<input name='activate' type='radio' value='9' checked>".LAN_8."<br />" : "<input name='activate' type='radio' value='9'>".LAN_8."<br />");
+        $text .= ($_POST['activate'] == 10 ? "<input name='activate' type='radio' value='10' checked>".LAN_9."<br />" : "<input name='activate' type='radio' value='10'>".LAN_9."<br />");
+
+        $text .= "</td>
+        </tr>";
+}
+
+
+if($pref['forum_attach'] && !eregi("edit", e_QUERY) && FILE_UPLOADS && check_class($pref['upload_class'])){
+        $text .= "<tr>
+        <td colspan='2' class='fcaption'>".LAN_390."</td>
+        </tr>
+        <tr>
+        <td style='width:20%' class='forumheader3'>".LAN_392."</td>
+        <td style='width:80%' class='forumheader3'>
+
+        ".LAN_393." | ".str_replace("\n", " | ", $pref['upload_allowedfiletype'])." |<br />".LAN_394."<br />".LAN_395.": ".($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'].LAN_396 : ini_get('upload_max_filesize'))."<br />
+
+
+        <input class='tbox' name='file_userfile[]' type='file' size='47'>
+        </td>
+        </tr>
+
+        ";
+}
+
+
+
+
+
+$text .= "<tr style='vertical-align:top'>
+
+<td colspan='2' class='forumheader' style='text-align:center'>
+<input class='button' type='submit' name='fpreview' value='".LAN_323."' /> ";
+
+if($action != "nt"){
+                $text .= ($eaction ? "<input class='button' type='submit' name='update_reply' value='".LAN_78."' />" : "<input class='button' type='submit' name='reply' value='".LAN_74."' />");
+}else{
+        $text .= ($eaction ? "<input class='button' type='submit' name='update_thread' value='".LAN_77."' />" : "<input class='button' type='submit' name='newthread' value='".LAN_64."' />");
+}
+$text .= "</td>
+</tr>
+<input type='hidden' name='thread_id' value='$thread_parent'>
+</table>
+</form>
+</div>";
+
+
+$text .= "<table style='width:95%'>
+<tr>
+<td style='width:50%'>";
+$text .= forumjump();
+$text .= "</td></tr></table><br />";
 
 }
 
@@ -758,8 +742,7 @@ function forumjump(){
         $text .= "<form method='post' action='".e_SELF."'><p>".LAN_401.": <select name='forumjump' class='tbox'>";
         while($row = $sql -> db_Fetch()){
                 extract($row);
-                // if(($forum_class && check_class($forum_class)) || ($forum_class == 254 && USER) || !$forum_class){
-                if(check_class($forum_class)){
+                if(($forum_class && check_class($forum_class)) || ($forum_class == 254 && USER) || !$forum_class){
                         $text .= "\n<option value='".$forum_id."'>".$forum_name."</option>";
                 }
         }

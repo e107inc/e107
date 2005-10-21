@@ -32,8 +32,7 @@ foreach($_POST['menuAct'] as $k => $v){
 
 if($menu_act == 'config')
 {
-	@include(e_PLUGIN.$location.'_menu/plugin.php');
-	header("location:".SITEURL.$PLUGINS_DIRECTORY.$location.'_menu/'.$eplug_conffile);
+	header("location:".SITEURL.$PLUGINS_DIRECTORY.$location."_menu/config.php");
 	exit;
 }
 
@@ -222,7 +221,7 @@ echo "<div style='font-size:14px' class='fborder'><div class='forumheader'><b>".
 echo $frm -> form_open("post",e_SELF,"menuActivation");
 echo "<table style='width:96%' class='fborder'>";
 
-$sql -> db_Select("menus", "*", "menu_location='0' ORDER BY menu_name ");
+$sql -> db_Select("menus", "*", "menu_location='0' ");
 while(list($menu_id, $menu_name, $menu_location, $menu_order) = $sql-> db_Fetch())
 {
 	$text="";
@@ -306,8 +305,7 @@ function checklayout($str){
                         $menu_info = "{$menu_location}.{$menu_order}";
 
 								$text = "";
-			@include(e_PLUGIN.$menu_name.'_menu/plugin.php');
-                        $config_path = e_PLUGIN.$menu_name.'_menu/'.$eplug_conffile;
+                        $config_path = e_PLUGIN.$menu_name."_menu/config.php";
                         $conf = FALSE;
                         if(file_exists($config_path)){
                         	$conf = TRUE;

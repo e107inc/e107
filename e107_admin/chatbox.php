@@ -17,9 +17,8 @@ if(!getperms("C")){ header("location:".e_BASE."index.php"); exit ;}
 
 require_once("auth.php");
 
-if(e_QUERY == "u")
-{
-	$message = CHBLAN_1;
+if($action == "u"){
+        $message = CHBLAN_1;
 }
 
 if(IsSet($_POST['moderate'])){
@@ -102,7 +101,6 @@ if(!$sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, 50", 
                         $cb_nick = eregi_replace("[0-9]+\.", "", $cb_nick);
                 }
 
-					$cb_message = str_replace('&amp;#','&#',$cb_message);
                 $cb_message = $aj -> tpa($cb_message, "on");
 
                 $text .= "<tr>

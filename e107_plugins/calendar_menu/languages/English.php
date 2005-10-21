@@ -1,6 +1,6 @@
 <?php
 // e107 Language File.
-// $Id: English.php,v 1.2 2004-09-03 18:32:11 e107coders Exp $
+// $Id: English.php,v 1.3 2005-10-21 00:29:33 mcfly_e107 Exp $
 
 
 define(EC_ADLAN_1,"Event Calendar");

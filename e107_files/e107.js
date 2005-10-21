@@ -4,52 +4,12 @@ if(parent.frames[0])
 {
 parent.location.href = self.location.href;
 }
-/*
- * NOTE: KEEP THIS AT THE TOP OF E107.JS!
- * localTime is recorded ASAP after page load; SyncWithServerTime is called at the END
- * of page processing. We want localTime and serverTime set in close chronological order.
- * Page Processing order is as follows:
- * A) All PHP code encountered sequentially in page
- * B) All Javascript code encountered sequentially in page NOT including function internals
- * So best proximity is achieved by setting 
- * serverTime at END of php code, and localTime at START of js code.
- * NOTE: this method means reported times include transfer delay. It's slightly MORE accurate this way!
- * Final product: tdOffset cookie contains server-browser time difference in seconds,
- * independent of time zone. tzOffset contains browser time zone in minutes.
- */
-					 
-var nowLocal = new Date();		/* time at very beginning of js execution */
-var localTime = Math.floor(nowLocal.getTime()/1000);	/* time, in ms -- recorded at top of jscript */
-/* NOTE: if serverDelta is needed for js functions, you must pull it from
- * the cookie (as calculated during a previous page load!)
- * The value calculated in SyncWithServerTime is not known until after the
- * entire page has been processed.
- */
-function SyncWithServerTime(serverTime)
-{
-	if (serverTime) {
-	  	/* update time difference cookie */
-		tdCookie='e107_tdOffset=';
-		tdSetTimeCookie='e107_tdSetTime=';
-		serverDelta=Math.floor(localTime-serverTime);
-	  	document.cookie = tdCookie+serverDelta;
-	  	document.cookie = tdSetTimeCookie+(localTime-serverDelta); /* server time when set */
-	}
-
-	tzCookie = 'e107_tzOffset=';
-	if (document.cookie.indexOf(tzCookie) < 0) {
-		/* set if not already set */
-		timezoneOffset = nowLocal.getTimezoneOffset(); /* client-to-GMT in minutes */
-		document.cookie = tzCookie + timezoneOffset;
-	}
-}
 
 if(document.getElementById&&!document.all){ns6=1;}else{ns6=0;}
 var agtbrw=navigator.userAgent.toLowerCase();
 var operaaa=(agtbrw.indexOf('opera')!=-1);
 var head="display:''";
 var folder='';
-
 function expandit(curobj){
 if(document.getElementById(curobj)){
   folder=document.getElementById(curobj).style;
@@ -73,14 +33,8 @@ function open_window(url,type) {
 	if('full' == type){
 		pwindow = window.open(url);
 	} else {
-		if (type > 0 ) {
-			mywidth=type;
-		} else { 
-			mywidth=600;
+		pwindow = window.open(url,'Name', 'top=100,left=100,resizable=yes,width=600,height=400,scrollbars=yes,menubar=yes')
 	}
-		pwindow = window.open(url,'Name', 'top=100,left=100,resizable=yes,width='+mywidth+',height=400,scrollbars=yes,menubar=yes')
-	}
-	pwindow.focus();
 }
 
 function ejs_preload(ejs_path, ejs_imageString){
@@ -97,7 +51,6 @@ function textCounter(field,cntfield) {
 
 function openwindow() {
 	opener = window.open("htmlarea/index.php", "popup","top=50,left=100,resizable=no,width=670,height=520,scrollbars=no,menubar=no");            
-	opener.focus();
 }
 function setCheckboxes(the_form, do_check){
 	var elts = (typeof(document.forms[the_form].elements['perms[]']) != 'undefined') ? document.forms[the_form].elements['perms[]'] : document.forms[the_form].elements['perms[]'];
@@ -125,8 +78,8 @@ var is_nav = ((clientPC.indexOf('mozilla')!=-1) && (clientPC.indexOf('spoofer')=
 var is_moz = 0;
 var is_win = ((clientPC.indexOf("win")!=-1) || (clientPC.indexOf("16bit") != -1));
 var is_mac = (clientPC.indexOf("mac")!=-1);
-var e107_selectedInputArea;
-var e107_selectedRange;
+var selectedInputArea;
+
 
 // From http://www.massless.org/mozedit/
 function mozWrap(txtarea, open, close){
@@ -142,43 +95,37 @@ function mozWrap(txtarea, open, close){
 }
 
 function storeCaret (textAr){
-	e107_selectedInputArea = textAr;
+	selectedInputArea = textAr;
 	if (textAr.createTextRange){
-		e107_selectedRange = document.selection.createRange().duplicate();
+		selectedRange = document.selection.createRange().duplicate();
 	}
 }
 
 function addtext(text){
-	if (window.e107_selectedInputArea){
-		var ta = e107_selectedInputArea;
+	if (window.selectedInputArea){
+		var ta = selectedInputArea;
 		val = text.split('][');
-				
 		if ((clientVer >= 4) && is_ie && is_win){
-			theSelection = document.selection.createRange().text; /* wrap selected text */
+			theSelection = document.selection.createRange().text;
 			if (theSelection) {
 				document.selection.createRange().text = val[0] +']' +  theSelection + '[' + val[1];
 				ta.focus();
 				theSelection = '';
 				return;
 			}
-			
 		}else if (ta.selectionEnd && (ta.selectionEnd - ta.selectionStart > 0)){
-			mozWrap(ta, val[0] +']', '[' + val[1]); /* wrap selected text */
+			mozWrap(ta, val[0] +']', '[' + val[1]);
 			return;
 		}
 		text = ' ' + text + ' ';
-		if (ta.createTextRange && e107_selectedRange) {
-			var caretPos = e107_selectedRange; /* IE */
+		if (ta.createTextRange && selectedRange) {
+			var caretPos = selectedRange;
 			caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? caretPos.text + text + ' ' : caretPos.text + text;
-		} else if (ta.selectionStart || ta.selectionStart == '0') { /* Moz */
-		   	var startPos = ta.selectionStart;
-			var endPos = ta.selectionEnd;
-			var charb4 = ta.value.charAt(endPos-1);
-			ta.value = ta.value.substring(0, endPos)+ text + ta.value.substring(endPos);
+			ta.focus();
 		} else {
 			ta.value  += text;
+			ta.focus();
 		}
-		ta.focus();
 	}
 }
 
@@ -196,8 +143,6 @@ function externalLinks() {
  } 
 } 
 
-function eover(object, over) {
-	object.className = over;
-}
+
 
 //-->

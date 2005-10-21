@@ -12,9 +12,9 @@
 |	GNU General Public License (http://gnu.org).	
 |
 | $Source: /cvs_backup/e107/e107_handlers/news_class.php,v $
-| $Revision: 1.21 $
-| $Date: 2005-01-24 14:25:02 $
-| $Author: mrpete $ 
+| $Revision: 1.22 $
+| $Date: 2005-10-21 00:29:32 $
+| $Author: mcfly_e107 $ 
 +---------------------------------------------------------------+
 */
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -34,20 +34,20 @@ class news{
 			$vals = $update_datestamp ? "news_datestamp = ".time().", " : "";
 			$vals .= " news_title='$news_title', news_body='$news_body', news_extended='$news_extended', news_category='$cat_id', news_allow_comments='$news_allow_comments', news_start='$active_start', news_end='$active_end', news_class='$news_class', news_render_type='$news_rendertype' WHERE news_id='$news_id' ";
 			if($sql -> db_Update("news",$vals)){
-				$message = LAN_NEWS_21;
+				$message = "News updated in database.";
              clear_cache("news.php");
 			}else{
-				$message = "<strong>".LAN_NEWS_5."</strong>";
+				$message = "<strong>Error! - Was unable to update news item into database!</strong>";
 			}
 		}else{
 			$news_title = $aj -> formtpa($news_title);
 			$news_body = $aj -> formtpa($data);
 			$news_extended = $aj -> formtpa($news_extended);
 			if($sql -> db_Insert("news", "0, '$news_title', '$news_body', '$news_extended', ".time().", ".USERID.", $cat_id, $news_allow_comments, $active_start, $active_end, '$news_class', '$news_rendertype' ")){
-				$message = LAN_NEWS_6;
+				$message = "News entered into database.";
              clear_cache("news.php");
 			}else{
-				$message = "<strong>".LAN_NEWS_7."</strong>";
+				$message = "<strong>Error! - Was unable to enter news item into database!</strong>";
 			}
 		}
 		$this -> create_rss();
@@ -116,21 +116,21 @@ on
 			$category_icon = (strstr(SITEBUTTON, "http") ? SITEBUTTON : e_IMAGE.SITEBUTTON);
 		}else{
 			$category_icon = str_replace("../", "", $category_icon);
-			if($category_icon && strstr("images", $category_icon)){
+			if(strstr("images", $category_icon)){
 				$category_icon = THEME.$category_icon;
 			}else{
 				$category_icon = e_IMAGE."newsicons/".$category_icon;
 			}
 		}
 
-		$active_start = ($active_start ? str_replace(" - 00:00:00", "", $con -> convert_date($active_start, "long")) : LAN_NEWS_19);
+		$active_start = ($active_start ? str_replace(" - 00:00:00", "", $con -> convert_date($active_start, "long")) : "Now");
 		$active_end = ($active_end ?  " to ".str_replace(" - 00:00:00", "", $con -> convert_date($active_end, "long")) : "");
-		$info = "<div class='smalltext'><br /><br /><b>".LAN_NEWS_18."</b><br />";
-		$info .= ($titleonly ? LAN_NEWS_9."<br />" : "");
-		$info .= ($news_class==255 ? LAN_NEWS_10 : LAN_NEWS_11);
-		$info .= ($news_allow_comments ? LAN_NEWS_13 : LAN_NEWS_12);
-		$info .= LAN_NEWS_14.$active_start.$active_end."<br />";
-		$info .= LAN_NEWS_15.strlen($news_body).LAN_NEWS_16.strlen($news_extended).LAN_NEWS_17."<br /><br /></div>";
+		$info = "<div class='smalltext'><br /><br /><b>Info:</b><br />";
+		$info .= ($titleonly ? "Title only is set - <b>only the news title will be shown</b><br />" : "");
+		$info .= ($news_class==255 ? "This news post is <b>inactive</b> (It will be not shown on front page). " : "This news post is <b>active</b> (it will be shown on front page). ");
+		$info .= ($news_allow_comments ? "Comments are turned <b>off</b>. " : "Comments are turned <b>on</b>. ");
+		$info .= "<br />Activation period: ".$active_start.$active_end."<br />";
+		$info .= "Body length: ".strlen($news_body)."b. Extended length: ".strlen($news_extended)."b.<br /><br /></div>";
 
 		$sql -> db_Select("comments", "comment_datestamp", "comment_item_id='".$news['news_id']."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
 		list($comments['comment_datestamp']) = $sql -> db_Fetch();
@@ -154,7 +154,7 @@ on
 		$ptext = " <a href='".e_BASE."print.php?news.".$news_id."'><img src='".e_IMAGE."generic/printer.gif' style='border:0' alt='printer friendly' title='printer friendly'/></a>";
 		*/
 		if(ADMIN && getperms("H")){
-			$adminoptions .= "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_id."'><img src='".e_IMAGE."generic/newsedit.png' alt='admin edit' title='admin edit' style='border:0' /></a>\n";
+			$adminoptions .= "<a href='".e_BASE.e_ADMIN."newspost.php?create.edit.".$news_id."'><img src='".e_IMAGE."generic/newsedit.png' alt='' style='border:0' /></a>\n";
 		}
 
 		$search[0] = "/\{NEWSTITLE\}(.*?)/si";
@@ -300,25 +300,18 @@ function create_rss(){
                 //$replace[3] = '\\2';
                 //$news_title = preg_replace($search, $replace, $news_title);
                 // End of code from Lisa
- 			if (!$news_allow_comments) {
-				$rsslink = "comment.php?comment.news.";
-			} else {
-				$rsslink = $news_extended ? "news.php?extend." : "news.php?item.";
-			}
-                $wlog .= strip_tags($aj -> tpa($news_title))."\n".SITEURL.$rsslink.$news_id."\n\n";
+                $wlog .= strip_tags($aj -> tpa($news_title))."\n".SITEURL."comment.php?comment.news.".$news_id."\n\n";
                 $itemdate = strftime("%a, %d %b %Y %I:%M:00 GMT", $news_datestamp);
 
   $rss .= "<item>
     <title>".$this->make_xml_compatible(strip_tags($aj -> tpa($news_title)))."</title>
-    <link>http://".$_SERVER['HTTP_HOST'].e_HTTP.$rsslink.$news_id."</link>
+    <link>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</link>
     <description>".$this->make_xml_compatible($nb)."</description>
-    <category domain=\"".SITEURL."\">$category_name</category>";
-    	if (!$news_allow_comments) {
-		$rss .= "<comments>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</comments>";
-	}
-    $rss .= "<author>".$this->make_xml_compatible($user_name)." - $user_email</author>
+    <category domain=\"".SITEURL."\">$category_name</category>
+    <comments>http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</comments>
+    <author>".$this->make_xml_compatible($user_name)." - $user_email</author>
     <pubDate>$itemdate</pubDate>
-    <guid isPermaLink=\"true\">http://".$_SERVER['HTTP_HOST'].e_HTTP.$rsslink.$news_id."</guid>
+    <guid isPermaLink=\"true\">http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id."</guid>
   </item>
   ";
 

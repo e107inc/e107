@@ -38,9 +38,8 @@ if(IsSet($_POST['update_ban'])){
         $aj = new textparse;
         $bd = $_POST['ban_ip'];
         $_POST['ban_reason'] = $aj -> formtpa($_POST['ban_reason'], "admin");
-        echo $bd." - ".ADMINID." - ".$_POST['ban_reason'];
-        $sql -> db_Delete("banlist", "banlist_ip='".$_POST['old_ip']."'");
-		    $sql -> db_Insert("banlist", "'".$bd."', '".ADMINID."', '".$_POST['ban_reason']."' ");
+        $sql -> db_Insert("banlist", "'$bd', '".ADMINID."', '".$_POST['ban_reason']."' ");
+		$sql -> db_Delete("banlist", "banlist_ip='".$_POST['old_ip']."'");
         $message = BANLAN_14;
         unset($ban_ip);
 }

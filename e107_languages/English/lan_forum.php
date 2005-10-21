@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107/e107_languages/English/lan_forum.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2004-09-06 09:55:17 $
-|     $Author: e107coders $
+|     $Revision: 1.8 $
+|     $Date: 2005-10-21 00:29:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Forum");

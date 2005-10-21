@@ -22,7 +22,7 @@
 - Add a PHP function to read cookie (if existing) when page is loaded and restore menu status (writing or not window.onload js function)
 */
 
-include(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitelinks.php");
+include(e_LANGUAGEDIR.e_LAN."/lan_sitelinks.php");
 
 // Many thanks to Lolo Irie for fixing the javascript that drives this menu item
 unset($text);
@@ -34,8 +34,8 @@ while($row = $sql -> db_Fetch()){
         $link_name=strip_tags($link_name);
         $textadd1 = ""; $textadd2 = "";
 		if($sql2 -> db_Select("links", "*", "link_name REGEXP('submenu.".$link_name."') ORDER BY link_order")){
-				// if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
-         if(check_class($link_class)){
+				if(check_class($link_class))
+				{
                         $mlink_name = $link_name;
                         $textadd1 .= "
                         <div class='spacer'>
@@ -46,8 +46,8 @@ while($row = $sql -> db_Fetch()){
                         $sublink_exist = 0;
 						while($row = $sql2 -> db_Fetch()){
                                 extract($row);
-                                // if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
-                                if(check_class($link_class)){
+                                if(check_class($link_class))
+                                {
                                         $link_name2 = str_replace("submenu.".$mlink_name.".", "", $link_name);
                                         $textadd2 .= ($link_button!="" ? "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' style='vertical-align:middle' />  " : "&middot; " ).setlink($link_name2, $link_url, $link_open)."\n<br />";
                                 	$sublink_exist = 1;
@@ -58,8 +58,8 @@ while($row = $sql -> db_Fetch()){
 						$text .= $textadd1.$textadd1b.$textadd2."</span></div>\n";
                 }
           }else{
-                // if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
-                if(check_class($link_class)){
+                if(check_class($link_class))
+                {
                         $text .= "<div class='spacer'><div class='button' style='width:100%; cursor: pointer; cursor: hand' onclick=\"clearcook();\">".($link_button!="" ? "<img src='".e_IMAGE."link_icons/".$link_button."' alt='' style='vertical-align:middle' />  " : "&middot; " ).
                         setlink($link_name, $link_url, $link_open)."
                         </div></div>";
@@ -97,19 +97,31 @@ $text .= "</script>
 $ns -> tablerender(LAN_183, $text);
 
 
-function setlink($link_name, $link_url, $link_open) {
-	if ($link_open == 1) {
-		$link_append = "rel='external'";
-	} else {
-		$link_append='';
-	}
-	if(!strstr($link_url, "http:")){ $link_url = e_BASE.$link_url; }
-	if($link_open == 4) {
-		$link =  "<a style='text-decoration:none' href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>\n";
-	} else {
-		$link =  "<a style='text-decoration:none' href=\"".$link_url."\" ".$link_append.">".$link_name."</a>\n";
-	}
-	return $link;
+function setlink($link_name, $link_url, $link_open){
+                switch ($link_open){
+                        case 1:
+                                $link_append = "rel='external'";
+                        break;
+                        case 2:
+                                $link_append = "";
+                        break;
+                        case 3:
+                                $link_append = "";
+                        break;
+                        default:
+                                unset($link_append);
+                }
+                if(!strstr($link_url, "http:")){ $link_url = e_BASE.$link_url; }
+                if($link_open == 4){
+                        $link =  "<a style='text-decoration:none' href=\"javascript:open_window('".$link_url."')\">".$link_name."</a>\n";
+                }else{
+                        $link =  "<a style='text-decoration:none' href=\"".$link_url."\" ".$link_append.">".$link_name."</a>\n";
+                }
+        return $link;
 }
+
+
+
+
 
 ?>

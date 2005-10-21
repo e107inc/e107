@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107/e107_languages/English/lan_news.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2004-09-09 10:02:33 $
-|     $Author: e107coders $
+|     $Revision: 1.4 $
+|     $Date: 2005-10-21 00:29:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "News");

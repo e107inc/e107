@@ -9,7 +9,7 @@
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
-| $Id: theme.php,v 1.3 2004-08-17 08:41:05 loloirie Exp $
+| $Id: theme.php,v 1.4 2005-10-21 00:29:34 mcfly_e107 Exp $
 +---------------------------------------------------------------+
 */
 

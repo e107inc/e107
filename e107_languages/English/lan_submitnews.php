@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107/e107_languages/English/lan_submitnews.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2004-09-07 10:11:07 $
-|     $Author: e107coders $
+|     $Revision: 1.7 $
+|     $Date: 2005-10-21 00:29:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Submit News");

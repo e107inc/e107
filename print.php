@@ -18,8 +18,6 @@ $qs = explode(".", e_QUERY);
 if($qs[0] == ""){ header("location:".e_BASE."index.php"); exit;}
 $table = $qs[0];
 $id = $qs[1];
-$type = $qs[2];
-
 $con = new convert;
 $aj = new textparse;
 
@@ -88,7 +86,7 @@ $print_info[] = array( 'table' => 'content', 'handler' => '
 	<br /><br /><hr />
 	".LAN_306.SITENAME."
 	<br />
-	( http://".$_SERVER[HTTP_HOST].e_HTTP."content.php?{$type}.".$content_id." )
+	( http://".$_SERVER[HTTP_HOST].e_HTTP."article.php?article.".$content_id." )
 	</font>";
 ');
 
