@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/links_page/languages/Dutch-iso.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-10-18 19:20:24 $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-21 14:35:52 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -301,24 +301,24 @@ define("LAN_LINKS_46", "Link subcategorieën");
 
 define("LAN_ADMIN_HELP_0", "linkspage helpfunctie");
 
-define("LAN_ADMIN_HELP_1", "<i>the manage link categories page shows all categories present.</i><br /><br /><b>detailed list</b><br />You see a list of all categories with their icon, name and description, options, and sorting options.<br /><br /><b>explanation of icons</b><br />");
+define("LAN_ADMIN_HELP_1", "<i>De pagina Beheren linkcategorieën toont alle aanwezige categorieën.</i><br /><br /><b>detailoverzicht</b><br />Je ziet een overzicht van alle categorieën met hun pictogram, naam, bescrhijving, opties en sorteerinstelling.<br /><br /><b>uitleg van de pictogrammen</b><br />");
 
-define("LAN_ADMIN_HELP_2", "<i>the create link category page allows you to add new categories</i><br /><br />You can upload a new icon, and after uploading assign the icon to the category.");
+define("LAN_ADMIN_HELP_2", "<i>de maak link categorie pagina laat je nieuwe categorieën aanmaken</i><br /><br />Je kunt een nieuw pictogram uploaden en het na de upload toewijzen aan de categorie.");
 
-define("LAN_ADMIN_HELP_3", "<i>the manage links page first show all categories.</i><br /><br />".LINK_ICON_LINK." : link to the category<br /><br />".LINK_ICON_EDIT." : click the icon to view all links in this category<br />");
+define("LAN_ADMIN_HELP_3", "<i>de pagina Beheren links toont eerst alle categorieën.</i><br /><br />".LINK_ICON_LINK." : link naar de categorie<br /><br />".LINK_ICON_EDIT." : klik op het pictogram om alle links in deze categorie te bekijken<br />");
 
-define("LAN_ADMIN_HELP_4", "<i>the create link page allows you to add a new link</i><br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
+define("LAN_ADMIN_HELP_4", "<i>de creëer link pagina staat je toe een nieuwe link op te voeren</i><br /><br />Je kunt een nieuw pictogram uploaden en het na de upload toewijzen aan de link.<br /><br />Open Type laat je instellen hoe de link wordt geopend als iemand erop klikt.");
 
-define("LAN_ADMIN_HELP_5", "<i>the submitted links page shows all links that are submitted by users</i><br /><br /><b>detailed list</b><br />You see the link url, the name of the user who submitted the link and options.<br /><br /><b>explanation of icons</b><br />");
+define("LAN_ADMIN_HELP_5", "<i>de pagina met aangemelde links toont alle links die door gebruikers zijn aangemeld</i><br /><br /><b>detailoverzicht</b><br />Je ziet de link url, de naam van de gebruiker die de link heeft aangemeld en opties.<br /><br /><b>uitleg van de pictogrammen</b><br />");
 
-define("LAN_ADMIN_HELP_6", "<i>the options page allows you to change the behaviour of the links_page plugin</i><br /><br />");
+define("LAN_ADMIN_HELP_6", "<i>via de Opties pagina kun je het gedrag van de links_page plugin wijzigen</i><br /><br />");
 
-define("LAN_ADMIN_HELP_7", "<i>the edit link category page allows you to edit an existing category</i><br /><br />You can upload a new icon, and after uploading assign the icon to the category.<br />You can update the timestamp of the link by checking the box.");
+define("LAN_ADMIN_HELP_7", "<i>op de Bewerken link categorie pagina kun je een bestaande categorie wijzigen</i><br /><br />Je kunt een nieuw pictogram uploaden en het na de upload toewijzen aan de categorie.<br />Je kunt datum/tijd van de link aanpassen door het vakje aan te kruisen.");
 
-define("LAN_ADMIN_HELP_8", "<i>this page shows all existing links in the selected category.</i><br /><br /><b>detailed list</b><br />You see a list of the links with their image, name, options, and sorting options.<br /><br /><b>explanation of icons</b><br />");
+define("LAN_ADMIN_HELP_8", "<i>deze pagina toont alle aanwezige links in de geselecteerde categorie.</i><br /><br /><b>detailoverzicht</b><br />Je ziet een lijst met links met hun afbeelding, naam, opties en sorteeropties.<br /><br /><b>uitleg van de pictogrammen</b><br />");
 
-define("LAN_ADMIN_HELP_9", "<i>the edit link page allows you to edit an existing link</i><br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
+define("LAN_ADMIN_HELP_9", "<i>je kunt een link wijzigen op de Bewerk link pagina</i><br /><br />Je kunt een nieuw pictogram uploaden en het na de upload toewijzen aan de link.<br /><br />Open Type laat je instellen hoe de link wordt geopend als iemand erop klikt.");
 
-define("LAN_ADMIN_HELP_10", "<i>the post submitted link page allows you to add a submitted link to the existing links</i><br /><br />A small submitted text is added into the description field.<br /><br />You can upload a new icon, and after uploading assign the icon to the link.<br /><br />the open type allows you to define how the link will be opened when a user clicks on it.");
+define("LAN_ADMIN_HELP_10", "<i>de post aangemelde link pagina laat je een aangemelde link toevoegen aan de aanwezige links</i><br /><br />Een kleine tekst met Aangemeld wordt toegevoegd aan de beschrijving.<br /><br />Je kunt een nieuw pictogram uploaden en het na de upload toewijzen aan de link.<br /><br />Open Type laat je instellen hoe de link wordt geopend als iemand erop klikt.");
 
 ?>
