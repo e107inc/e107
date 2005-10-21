@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_administrator.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:29:27 $
+|        $Revision: 1.2 $
+|        $Date: 2005-10-21 11:04:26 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -67,7 +67,7 @@ define("ADMSLAN_59", "Fjern administrator status");
 define("ADMSLAN_60", "Er du sikker p&aring; du vil fjerne administrator status fra");
 define("ADMSLAN_61", "Administrator slettet");
 
-define("ADMSLAN_62", "Modul h&aring;ndtering");
+define("ADMSLAN_62", "Plugin h&aring;ndtering");
 
 define("ADMSLAN_64", "Slet system cachen");
 define("ADMSLAN_65", "Konfigurer mail indstillinger og sendmail");
