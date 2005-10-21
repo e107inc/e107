@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_mailout.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-06 22:12:01 $
+|     $Revision: 1.3 $
+|     $Date: 2005-10-21 10:56:28 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -45,7 +45,8 @@ define("MAILAN_17","tilmeldings link");
 define("MAILAN_18","bruger id");
 define("MAILAN_19","Der er ingen email adresse for site-admin. Tjek venligst dine indstillinger og prøv igen.");
 define("MAILAN_20","Sendmail-sti");
-
+define("MAILAN_21","Masse-Mail Poster");
+define("MAILAN_22","Der er pt. ingen gemte poster");
 
 
 

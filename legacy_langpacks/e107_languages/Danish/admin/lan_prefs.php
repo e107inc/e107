@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_prefs.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-09-29 11:25:46 $
+|        $Revision: 1.3 $
+|        $Date: 2005-10-21 10:56:28 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -79,7 +79,7 @@ define("PRFLAN_56", "Tidszone");
 
 define("PRFLAN_58", "Begr&aelig;ns websted til kun medlemmer");
 define("PRFLAN_59", "Markering vil begr&aelig;nse alle sider undtaget forsiden og tilmelding til kun at kunne ses af medlemmer");
-define("PRFLAN_60", "Benyt SSL");
+define("PRFLAN_60", "Anvend SSL");
 define("PRFLAN_61", "Brug kun SSL <b>hvis du er sikker p&aring; du ved hvad du foretager dig!</b>");
 
 // define("PRFLAN_62", "E-mail Indstillinger");
@@ -98,7 +98,7 @@ define("PRFLAN_61", "Brug kun SSL <b>hvis du er sikker p&aring; du ved hvad du f
 // define("PRFLAN_75", "E-mailen kunne ikke sendes. Kontroller dine SMTP indstillinger, eller sl&aring; SMTP fra og pr&oslash;v igen.");
 
 define("PRFLAN_76", "Sl&aring; billedekode verification til under tilmelding.");
-define("PRFLAN_77", "Admin fremvisning");
+define("PRFLAN_77", "Admin Fremvisnings Egenskaber");
 define("PRFLAN_78", "Lad v&aelig;re tomt for at sl&aring; fra");
 define("PRFLAN_80", "Klik her for at se");
 define("PRFLAN_81", "Sl&aring; billedekode verification til under log p&aring;.");
@@ -181,13 +181,19 @@ define("PRFLAN_132", "Aktivering af dette vil tillade autoriserede brugere at sk
 define("PRFLAN_133", "GD udvidelsen kr&aelig;vet, ikke fundet");
 
 define("PRFLAN_134", "Omdiriger alle forsp&oslash;rgsler til site URL");
-define("PRFLAN_135", "foreksempel, hvis din site URL ovenfor er sat http://foo.com, vil alle alle der forsp&oslash;rger http://www.foo.com blive vidrestillet til http://foo.com");
-define("PRFLAN_136", "Maksimale Antal Tilmeldinger tilladt fra samme IP adresse.");
+define("PRFLAN_135", "f.eks. hvis din site URL ovenfor er sat http://foo.com, vil alle alle der forsp&oslash;rger http://www.foo.com blive vidrestillet til http://foo.com");
+define("PRFLAN_136", "Maksimalt Antal Tilmeldinger tilladt fra samme IP adresse.");
 define("PRFLAN_137", "Vis hukommelsesforbrug");
 
-define("PRFLAN_138", "Aktivere billedkode verificering til glemt adgangskode.");
+define("PRFLAN_138", "Aktiver billedkode verificering ved glemt adgangskode.");
 define("PRFLAN_139", "Vis advarsel n&aring;r det er mere end 30 siden administrator har skiftet adgangskode");
 
 define("PRFLAN_140", "Tekst der vises efter tilmeldings formularen er udf&oslash;rt.");
 define("PRFLAN_141", "Tillad registrering med XML Bruger Profiler");
+
+define("PRFLAN_142", "Kun Flood");
+define("PRFLAN_143", "Kun Fejlede Logins");
+define("PRFLAN_144", "Flood & Fejlede Logins");
+
+
 ?>

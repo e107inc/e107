@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/chatbox_menu/languages/Danish/Danish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 09:52:21 $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-21 10:56:28 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -37,12 +37,13 @@ define("CHATBOX_L17", "Klon indl&aelig;g");
 define("CHATBOX_L18", "Chatboks indl&aelig;g modereret");
 define("CHATBOX_L19", "Du kan kun skrive en gang hver ".FLOODTIMEOUT." sekund");
 
-define("LAN_11", "Chatboks (alle indl&aelig;g)");
-define("LAN_12", "Chat Indl&aelig;g");
-define("LAN_13", " ");
-define("LAN_14", "Fejl!");
-define("LAN_15", "Du har ikke de rette rettigheder til at se denne side.");
-define("LAN_16", "[ dette indl&aelig;g er blevet blokeret af admin ]");
+define("CHATBOX_L20", "Chatboks (alle indl&aelig;g)");
+define("CHATBOX_L21", "Chat Indl&aelig;g");
+define("CHATBOX_L22", " ");
+define("CHATBOX_L23", "Fejl!");
+define("CHATBOX_L24", "Du har ikke de rette rettigheder til at se denne side.");
+define("CHATBOX_L25", "[ dette indl&aelig;g er blevet blokeret af admin ]");
+
 // Notify
 define("NT_LAN_CB_1", "Chatboks Begivenheder");
 define("NT_LAN_CB_2", "Besked skrevet");
