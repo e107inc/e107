@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.95 $
-|   $Date: 2005-10-17 23:18:13 $
+|   $Revision: 1.96 $
+|   $Date: 2005-10-21 01:32:16 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
@@ -196,7 +196,7 @@ if (isset($_POST['save_prefs'])) {
 	$pref['subnews_class'] = $_POST['subnews_class'];
 	$pref['subnews_htmlarea'] = $_POST['subnews_htmlarea'];
 	$pref['subnews_hide_news'] = $_POST['subnews_hide_news'];
-
+	$pref['news_subheader'] = $_POST['news_subheader'];
 	/*
 	changes by jalist 22/01/2005:
 	added pref to render new date header
@@ -1175,6 +1175,13 @@ class newspost {
 		<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_113."</span><br /><i>".NWSLAN_114."</i></td>
 		<td class='forumheader3' style='width:40%'>
 		<input type='checkbox' name='news_unstemplate' value='1' ".($pref['news_unstemplate'] == 1 ? " checked='checked'" : "")." />
+		</td>
+		</tr>
+		
+		<tr>
+		<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_120."</span><br /></td>
+		<td class='forumheader3' style='width:40%'>
+		<textarea name='news_subheader' style='width:95%;' rows='6' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);' class='tbox'>".stripcslashes($pref['news_subheader'])." </textarea><br />" . ren_help(2) . "
 		</td>
 		</tr>
 
