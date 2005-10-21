@@ -36,7 +36,7 @@ define("LANHELP_30", "Rechts uitgelijnd: [right]Deze tekst wordt rechts uitgelij
 define("LANHELP_31", "Blokquote tekst: [blockquote]Deze tekst springt in (blokquote)[/blockquote]");
 define("LANHELP_32", "Code - voorgeformatteerde tekst: [code]\$foo = bah;[/code]");
 define("LANHELP_33", "HTML - verwijdert regeleinden uit de tekst: [html]<table><tr><td> etc[/html]");
-define("LANHELP_34", "Invoegen pagina einde, splitst een artikel op in meerdere pagina's");
+define("LANHELP_34", "Invoegen pagina einde, splitst een artikel op in meerdere pagina &rsquo; s");
 define("LANHELP_35", "hyperlink url");
 define("LANHELP_36", "Ongesorteerd: [list]line1*line2*line3[/list] Gesorteerd: [list=type]line1*line2*line3[/list]");
 ?>
