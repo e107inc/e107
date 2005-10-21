@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch-iso/lan_content_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-10-18 19:20:24 $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-21 13:55:35 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -138,7 +138,7 @@ define("CONTENT_ADMIN_ITEM_LAN_49", "aangemelde content onderwerpen");
 define("CONTENT_ADMIN_ITEM_LAN_50", "geen aangemelde content onderwerpen");
 define("CONTENT_ADMIN_ITEM_LAN_51", "auteursgegevens");
 define("CONTENT_ADMIN_ITEM_LAN_52", "aanmelden content onderwerp");
-define("CONTENT_ADMIN_ITEM_LAN_53", "meta sleutelwoorden voor dit content onderwerp <br />(scheiden met comma's, spaties niet toegestaan !)");
+define("CONTENT_ADMIN_ITEM_LAN_53", "meta sleutelwoorden voor dit onderwerp  (scheiden met comma's)");
 define("CONTENT_ADMIN_ITEM_LAN_54", "aanvullende gegevens");
 define("CONTENT_ADMIN_ITEM_LAN_55", "Terug naar de  <a href='".e_SELF."'>hoofd contentmanager pagina</a> om meer van je persoonlijke content te beheren<br />of<br />Ga naar de <a href='".e_PLUGIN."content/content.php'>hoofd content pagina</a> om de onderwerpen te bekijken.");
 define("CONTENT_ADMIN_ITEM_LAN_56", "persoonlijke content beheerder");
@@ -155,7 +155,7 @@ define("CONTENT_ADMIN_ITEM_LAN_66", "Hieronder zie je de startletters van de con
 define("CONTENT_ADMIN_ITEM_LAN_67", "Hieronder zie je de lijst met contentonderwerpen in de geselecteerde categorie of die beginnen met de gekozen letter.<br />Je kunt onderwerpen bewerken of verwijderen door op de betreffende knop rechts te drukken.");
 define("CONTENT_ADMIN_ITEM_LAN_68", "Hieronder kun je maatwerk informatie toevoegen bij dit contentonderwerp. Alle maatwerkgegevens moeten zowel een sleutel als een waarde hebben. Je kunt sleutel in het linker veld definiëren en de bijbehorende waarde in het rechterveld.<br />(bij voorbeeld: sleutel='fotografie' en waarde ='al mijn eigen foto's'.");
 define("CONTENT_ADMIN_ITEM_LAN_69", "Hier kun je pictogrammen, bijlagen en/of afbeeldingen uploaden die bij het onderwerp horen. De toegestane bestandsformaten zijn: ");
-define("CONTENT_ADMIN_ITEM_LAN_70", "De verschillende woorden moeten met comma's worden gescheiden, spaties zijn niet toegestaan!");
+define("CONTENT_ADMIN_ITEM_LAN_70", "Woorden met comma's scheiden, geen spaties!");
 define("CONTENT_ADMIN_ITEM_LAN_71", "laten staan als u het onderwerp zelf hebt geschreven");
 define("CONTENT_ADMIN_ITEM_LAN_72", "bepalen auteursgegevens");
 define("CONTENT_ADMIN_ITEM_LAN_73", "opgeven startdatum voor dit onderwerp (niet invullen als dat niet nodig is)");
