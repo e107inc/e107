@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/lastseen/lastseen_menu.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-10-21 17:27:48 $
+|     $Revision: 1.6 $
+|     $Date: 2005-10-22 01:45:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -36,7 +36,7 @@ foreach($userArray as $user)
 //	extract($user);
 	$seen_ago = $gen -> computeLapse($user['user_currentvisit'], false, false, true, 'short');
 	$lastseen = ($seen_ago ? $seen_ago : "1 ".LANDT_09)." ".LANDT_AGO; 
-$text .= "<li style='list-style-type: square;'><a href='".e_BASE."user.php?id.".$user_id['user_id']."'>".$user['user_name']."</a><br /> [ ".$lastseen." ]</li>";
+$text .= "<li style='list-style-type: square;'><a href='".e_BASE."user.php?id.".$user['user_id']."'>".$user['user_name']."</a><br /> [ ".$lastseen." ]</li>";
 }
 $text .= "</ul>";
 
