@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-06-29 19:56:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2005-10-22 07:33:20 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Register");
@@ -31,7 +31,7 @@ define("LAN_123", "Register");
 define("LAN_185", "You left required field(s) blank");
 define("LAN_201", "Yes");
 define("LAN_200", "No");
-define("LAN_202", "Registration failed");
+define("LAN_202", "You already have an account. If you have forgotten your password, please click the \'forgot password\' link.");
 define("LAN_309", "Please enter your details below.");
 define("LAN_399", "Continue");
 define("LAN_400", "Usernames and passwords are <b>case-sensitive</b>");
