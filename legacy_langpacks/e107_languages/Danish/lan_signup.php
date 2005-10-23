@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/lan_signup.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:29:27 $
+|        $Revision: 1.2 $
+|        $Date: 2005-10-23 16:09:57 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -24,25 +24,25 @@ define("LAN_108", "Tilmelding fuldf&oslash;rt ");
 define("LAN_109", "Dette websted overholder b&oslash;rns online privatlivs beskyttelse projekt fra 1998 (COPPA) og kan som s&aring;dan ikke acceptere registreringer fra  brugere under 13 &aring;r - Uden en skriftlig samtykke fra dennes v&aelig;rge. Indhent mere information p&aring; den officielle side som er engelsksproget ");
 define("LAN_110", "Tilmelding ");
 define("LAN_111", "Gentag adgangskode: ");
-define("LAN_112", "E-mail-adresse: ");
-define("LAN_113", "Skjul e-mail-adresse?: ");
-define("LAN_114", "Forhindrer at din e-mail-adresse bliver vist p&aring; webstedet");
+define("LAN_112", "Email-adresse: ");
+define("LAN_113", "Skjul email-adresse?: ");
+define("LAN_114", "Forhindrer at din email-adresse bliver vist p&aring; webstedet");
 define("LAN_123", "Tilmeld");
 define("LAN_185", "P&aring;kr&aelig;vede felter er tomme");
 define("LAN_201", "Ja");
 define("LAN_200", "Nej");
-define("LAN_202", "Tilmelding mislykkedes");
-define("LAN_309", "Oplys detaljerne herunder - <b>en godkendelses e-mail vil blive sendt til den e-mail-adresse som du angiver, s&oslash;rg derfor for at det er en adresse som du bruger, </b>hvis du ikke &oslash;nsker at din e-mail-adresse skal vises,husk da at markere skjul e-mail boksen.");
+define("LAN_202", "Du har allerede en konto. Hvis du har glemt dit kodeord, klik venligst p&aring; \'glemt kodeord\' linket.");
+define("LAN_309", "Skriv venligst dine detaljer herunder.");
 define("LAN_399", "Forts&aelig;t");
 define("LAN_400", "Brugernavn og adgangskode skelner mellem <b>store og sm&aring; bogstaver</b>");
 define("LAN_401", "Din konto er nu aktiveret, log ");
 define("LAN_402", "Tilmelding aktiveret");
 define("LAN_403", "Velkommen til ");
 define("LAN_404", "Tilmeldings detaljer");
-define("LAN_405", "Tilmeldingen er nu gennemf&oslash;rt, du vil modtage en godkendelses e-mail som indeholder dine oplysninger. For at fuldf&oslash;re og aktivere, f&oslash;lg linket i e-mailen.");
+define("LAN_405", "Dette trin i tilmeldingen er nu gennemf&oslash;rt, du vil modtage en godkendelses e-mail som indeholder dine oplysninger. For at fuldf&oslash;re og aktivere din tilmelding, f&oslash;lg linket i e-mailen.");
 define("LAN_406", "Mange tak!");
-define("LAN_407", " Gem denne e-mail, det er dine personlige informationer til at kunne logge p&aring;, adgangskode er blevet krypteret og dermed gjort ul&aelig;seligt. derfor kan det ikke genskabes. Du kan dog altid f&aring; tildelt en ny adgangskode hvis den bliver v&aelig;k. Tak for din tilmelding. Fra");
-define("LAN_408", "En bruger med denne e-mail-adresse eksisterer allerede. Brug <a href='fpw.php'>Glemt adgangskode siden</a> til at gen-erhverve din adgangskode.");
+define("LAN_407", " Gem denne e-mail, det er dine personlige informationer til at kunne logge p&aring;, adgangskode er blevet krypteret og dermed gjort ul&aelig;seligt. derfor kan det ikke genskabes. Du kan dog f&aring; tildelt en ny adgangskode hvis den bliver v&aelig;k. Tak for din tilmelding. Fra");
+define("LAN_408", "En bruger med denne e-mail-adresse eksisterer allerede. Brug venligst 'glemt kodeord' siden til at gen-erhverve din adgangskode.");
 define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "tegn.");
 define("LAN_SIGNUP_3", "Kode bekr&aelig;ftelse slog fejl.");
@@ -72,11 +72,11 @@ define("LAN_SIGNUP_22", "klik her");
 define("LAN_SIGNUP_23", "for at logge p&aring;.");
 define("LAN_SIGNUP_24", "Mange tak for din tilmelding hos");
 define("LAN_SIGNUP_25", "Overf&oslash;r dit profillogo");
-define("LAN_SIGNUP_26", "Overf&oslash;r dit billed");
+define("LAN_SIGNUP_26", "Overf&oslash;r dit billede");
 define("LAN_SIGNUP_27", "Vis");
 define("LAN_SIGNUP_28", "valg af Indhold/Nyheds-breve");
-define("LAN_SIGNUP_29", "Verification e-mail bliver sendt til den indtastede e-mail adresse s&aring; den skal v&aelig;re gyldig.");
-define("LAN_SIGNUP_30", "Hvis du ikke &oslash;nsker at vise din e-mail, marker 'gem e-mail adresse' boksen.");
+define("LAN_SIGNUP_29", "En bekr&aelig;ftelses e-mail bliver sendt til den indtastede e-mail adresse s&aring; den skal v&aelig;re gyldig.");
+define("LAN_SIGNUP_30", "Hvis du ikke &oslash;nsker at din e-mail adresse vises, marker 'skjul e-mail adresse' boksen.");
 
 define("LAN_SIGNUP_31", "URL til din XUP fil");
 define("LAN_SIGNUP_32", "Hvad er en XUP fil?");
