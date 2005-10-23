@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-10-17 19:40:45 $
+|     $Revision: 1.8 $
+|     $Date: 2005-10-23 09:29:41 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -474,7 +474,7 @@ define("CONTENT_PRESET_LAN_32", "Ejemplo:");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "Opciones");
 define("CONTENT_ADMIN_OPT_LAN_1", "Preferencias por defecto");
-define("CONTENT_ADMIN_OPT_LAN_2", "Actualziar opciones");
+define("CONTENT_ADMIN_OPT_LAN_2", "Actualizar opciones");
 define("CONTENT_ADMIN_OPT_LAN_3", "Número de imágenes que pueden ser transferidas");
 define("CONTENT_ADMIN_OPT_LAN_4", "Número de adjuntos que pueden ser transferidos");
 define("CONTENT_ADMIN_OPT_LAN_5", "Número de tags personalizados disponibles");
@@ -561,8 +561,8 @@ define("CONTENT_ADMIN_OPT_LAN_86", "Mostrar elementos de las subcategorías prin
 define("CONTENT_ADMIN_OPT_LAN_87", "Si está activado , todos los elementos de la categoría seleccionada y los elementos de todas las categorías subrayadas se mostrarán.");
 define("CONTENT_ADMIN_OPT_LAN_88", "Defina orden a mostrar de los elementos");
 define("CONTENT_ADMIN_OPT_LAN_89", "Categorías primero, luego elementos");
+define("CONTENT_ADMIN_OPT_LAN_91", "Tipo de renderizado para categorías, sub y elementos");
 define("CONTENT_ADMIN_OPT_LAN_90", "Primero elementos, luego categorías");
-define("CONTENT_ADMIN_OPT_LAN_91", "ipo de renderizado para categorías, sub y elementos");
 define("CONTENT_ADMIN_OPT_LAN_92", "Cada uno en un menú independiente");
 define("CONTENT_ADMIN_OPT_LAN_93", "Título");
 define("CONTENT_ADMIN_OPT_LAN_94", "Añadir caja de búsqueda");

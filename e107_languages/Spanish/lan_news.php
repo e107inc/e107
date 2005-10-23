@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_news.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-09 20:03:44 $
+|     $Revision: 1.6 $
+|     $Date: 2005-10-23 09:29:41 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -20,6 +20,8 @@ define("LAN_99", "Comentarios");
 define("LAN_100", "En");
 
 define("LAN_307", "Añadidos en total en esta categoría: ");
+
+define("LAN_462", "No hay noticias del mes seleccionado");
 
 define("LAN_NEWS_1", "Noticias para usuarios específicos");
 define("LAN_NEWS_2", "No tiene permisos para ver estas noticias");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_newspost.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-09-07 19:43:12 $
+|     $Revision: 1.7 $
+|     $Date: 2005-10-23 09:29:41 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -113,6 +113,7 @@ define("NWSLAN_116", "Primero ajuste las preferencias con los cambios mostrados 
 define("NWSLAN_117", "Fije el título para el archivo de noticias");
 define("NWSLAN_118", "Ver imágenes");
 define("NWSLAN_119", "Configuración guardada");
+define("NWSLAN_120", "Texto a mostrar encima de las noticias");
 
 define("LAN_NEWS_5", "¡Error! - ¡Imposible actualizar la noticia en la base de datos!");
 define("LAN_NEWS_6", "Noticias en la base de datos.");

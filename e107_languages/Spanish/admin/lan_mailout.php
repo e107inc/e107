@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_mailout.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-06-28 20:23:08 $
+|     $Revision: 1.8 $
+|     $Date: 2005-10-23 09:29:41 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -43,6 +43,9 @@ define("MAILAN_15","Salidas correo");
 define("MAILAN_16","Usuario");
 define("MAILAN_17","Enlace de registro");
 define("MAILAN_18","ID Usuario");
-define("MAILAN_19","No hay una dirección email para el admin del sitio. Compruebe sus perfil y pruebe de nuevo.");
+define("MAILAN_19","No hay una dirección email para el admin del sitio. Compruebe su perfil y pruebe de nuevo.");
 define("MAILAN_20","Ruta Sendmail");
+define("MAILAN_21","Entradas de mail masivo"); 
+define("MAILAN_22","Actualmente no hay entradas guardadas"); 
+
 ?>
