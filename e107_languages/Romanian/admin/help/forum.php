@@ -1,23 +1,22 @@
 <?php
-$caption = "Forum Help";
+$caption = "Asistenţă forum";
 $text = "<b>General</b><br />
-Use this screen to create or edit your forums<br />
+Folosiţi acest ecran pentru a vă crea sau edita forumurile<br />
 <br />
-<b>Parents/Forums</b><br />
-A parent is a heading that other forums are displayed under, this makes layout simpler and makes navigating around your forums much simpler for visitors.
+<b>Părinţi/Forumuri</b><br />
+Un părinte este titlul sub care sunt afişate celelalte forumuri, acest lucru făcând afişarea mai simplă şi facilitând navigaţia.
 <br /><br />
-<b>Accessability</b>
+<b>Accesibilitate</b>
 <br />
-You can set your forums to only be accessable to certain visitors. Once you have set the 'class' of the visitors you can tick the 
-class to only allow those visitors access to the forum. You can set parents or individual forums up in this way.
+Puteţi să setaţi forumurile pentru a fi accesibile anumitor vizitatori. Din momentul în care aţi setat o clasă de vizitatori, puteţi bifa clasa pentru a permite doar acelor vizitatori să acceseze forumul. Astfel puteţi seta părinţi sau forumuri individuale.
 <br /><br />
-<b>Moderators</b>
+<b>Moderatori</b>
 <br />
-Tick the names of the listed administrators to give them moderator status on the forum. The administrator must have forum moderation permissions to be listed here.
+Bifaţi numele administratorilor listaţi pentru a le oferi privilegii de moderator pe forum. Administratorul trebuie să aibă permisiuni de moderare a forumurilor pentru a fi listat aici.
 <br /><br />
-<b>Ranks</b>
+<b>Ranguri</b>
 <br />
-Set your user ranks from here. If the image fields are filled in, images will be used, to use rank names enter the names and make sure the corrosponding rank image field is blank.<br />The threshold is the number of points the user needs to gain before his level changes.";
+Selectaţi rangurile utilizatorilor de aici. Dacă sunt completate câmpurile de imagini, vor fi folosite imagini, pentru a folosi numele rangurilor, introduceţi numele şi asiguraţi-vă că aţi şters câmpul de imagine corespunzător rangului.<br />Bariera e numărul de puncte pe care un utilizator le acumulează înainte de schimbarea nivelului.";
 $ns -> tablerender($caption, $text);
 unset($text);
 ?>

@@ -1,70 +1,77 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/admin/lan_administrator.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-23 17:16:21 $
+|     $Author: Bogdan M. Botezatu (Sphynx)
++----------------------------------------------------------------------------+
+*/
+define("ADMSLAN_0", "Intrare nouă utilizator/admin creată pentru");
+define("ADMSLAN_1", "acum are statut de administrator.");
+define("ADMSLAN_2", "actualizat în baza de date.");
+define("ADMSLAN_3", "e administratorul principal al site-ului şi nu poate fi editat.");
+define("ADMSLAN_4", "Continuare");
+define("ADMSLAN_6", "e administratorul principal al site-ului şi nu poate fi şters.");
 
-define("ADMSLAN_0", "New user/admin entry created for");
-define("ADMSLAN_1", "now has admin status.");
-define("ADMSLAN_2", "updated in database.");
-define("ADMSLAN_3", "is the main site administrator and cannot be edited.");
-define("ADMSLAN_4", "Continue");
-define("ADMSLAN_5", "Error!");
-define("ADMSLAN_6", "is the main site administrator and cannot be deleted."); 
-define("ADMSLAN_7", "Please confirm you wish to delete");
-define("ADMSLAN_8", "from the admin database");
-define("ADMSLAN_9", "Cancel");
-define("ADMSLAN_10", "Confirm Delete");
-define("ADMSLAN_11", "Confirm Delete Administrator");
-define("ADMSLAN_12", "Delete cancelled.");
-define("ADMSLAN_13", "Existing Administrators");
-define("ADMSLAN_14", "Delete");
-define("ADMSLAN_15", "Edit");
-define("ADMSLAN_16", "Admin Name");
-define("ADMSLAN_17", "Admin Password");
-define("ADMSLAN_18", "Permissions");
-define("ADMSLAN_19", "Alter site preferences"); 
-define("ADMSLAN_20", "Alter Menus");
-define("ADMSLAN_21", "Add site administrators");
-define("ADMSLAN_22", "Moderate users/bans etc");
-define("ADMSLAN_23", "Create/edit forums");
-define("ADMSLAN_24", "Manage download categories");
-define("ADMSLAN_25", "Upload /manage files");
-define("ADMSLAN_26", "Oversee news categories");
-define("ADMSLAN_27", "Oversee link categories");
-define("ADMSLAN_28", "Take site down for maintenance");
-define("ADMSLAN_29", "Manage banners");
-define("ADMSLAN_30", "Configure news feed headlines");
-define("ADMSLAN_31", "Configure emoticons");
-define("ADMSLAN_32", "Configure front page content");
-define("ADMSLAN_33", "Configure log/stats");
-define("ADMSLAN_34", "Configure meta tags");
-define("ADMSLAN_35", "Configure public file uploads");
-define("ADMSLAN_36", "Moderate forums");
-define("ADMSLAN_37", "Moderate comments");
-define("ADMSLAN_38", "Moderate/configure chatbox");
-define("ADMSLAN_39", "Post news");
-define("ADMSLAN_40", "Post links");
-define("ADMSLAN_41", "Post articles");
-define("ADMSLAN_42", "Post reviews");
-define("ADMSLAN_43", "Post content pages");
-define("ADMSLAN_44", "Post downloads");
-define("ADMSLAN_45", "Post polls");
-define("ADMSLAN_46", "Welcome message");
-define("ADMSLAN_47", "Moderate submitted news");
-define("ADMSLAN_48", "Configure plugins");
-define("ADMSLAN_49", "Check All");
-define("ADMSLAN_51", "Uncheck All");
-define("ADMSLAN_52", "Update administrator");
-define("ADMSLAN_53", "Add administrator");
-define("ADMSLAN_54", "Site Administrators");
+define("ADMSLAN_13", "Administratori existenţi");
 
-define("ADMSLAN_55", "Field(s) left blank");
 
-define("ADMSLAN_56", "Site Administrator");
-define("ADMSLAN_57", "Options");
-define("ADMSLAN_58", "Main Site Administrator");
-define("ADMSLAN_59", "Remove Admin Status");
-define("ADMSLAN_60", "Are you sure you want to remove admin status from");
-define("ADMSLAN_61", "Administrator deleted");
+define("ADMSLAN_16", "Nume admin");
+define("ADMSLAN_17", "Parolă admin");
+define("ADMSLAN_18", "Permisiuni");
+define("ADMSLAN_19", "Modificare preferinţe site");
+define("ADMSLAN_20", "Modificare meniuri");
+define("ADMSLAN_21", "Adăugare administratori site");
+define("ADMSLAN_22", "Moderare utilizatori/restricţii etc");
+define("ADMSLAN_23", "Creare/editare forumuri");
+define("ADMSLAN_24", "Administrare categorii download");
+define("ADMSLAN_25", "Upload/administrare fişiere");
+define("ADMSLAN_26", "Supraveghere categorii de ştiri");
+define("ADMSLAN_27", "Supraveghere categorii linkuri");
+define("ADMSLAN_28", "Închideţi site-ul pentru actualizare");
+define("ADMSLAN_29", "Administrare bannere");
+define("ADMSLAN_30", "Configurare titluri ştiri trimise");
+define("ADMSLAN_31", "Configurare emoticons");
+define("ADMSLAN_32", "Configurare conţinut pagină principală");
+define("ADMSLAN_33", "Configurare jurnal/statistici");
+define("ADMSLAN_34", "Configurare taguri meta");
+define("ADMSLAN_35", "Configurare uploaduri publice");
+define("ADMSLAN_36", "Moderare forumuri");
+define("ADMSLAN_37", "Moderare comentarii");
+define("ADMSLAN_38", "Moderare/configurare chatbox");
+define("ADMSLAN_39", "Trimiteţi ştiri");
+define("ADMSLAN_40", "Trimiteţi linkuri");
+define("ADMSLAN_41", "Trimiteţi  articole");
+define("ADMSLAN_42", "Trimiteţi recenzii");
+define("ADMSLAN_43", "Trimiteţi pagini de conţinut");
+define("ADMSLAN_44", "Trimiteţi  downloaduri");
+define("ADMSLAN_45", "Trimiteţi sondaje");
+define("ADMSLAN_46", "Mesaj de Bun-Venit");
+define("ADMSLAN_47", "Moderare ştiri trimise");
 
-define("ADMSLAN_62", "Plugin Manager");
-define("ADMSLAN_63", "Plugin");
-define("ADMSLAN_64", "Clear the system cache");
+define("ADMSLAN_49", "Selectaţi tot");
+define("ADMSLAN_51", "Deselectaţi tot");
+define("ADMSLAN_52", "Actualizare administrator");
+define("ADMSLAN_53", "Adăugare administrator");
+define("ADMSLAN_54", "Administratori site");
+
+define("ADMSLAN_55", "Câmp(uri) rămas(e) necompletat(e)");
+
+define("ADMSLAN_56", "Administrator site");
+
+define("ADMSLAN_58", "Administrator principal site");
+define("ADMSLAN_59", "Eliminare statut de administrator");
+define("ADMSLAN_60", "Sunteţi sigur că vreţi să eliminaţi statutul de administrator pentru");
+define("ADMSLAN_61", "Administrator şters");
+
+define("ADMSLAN_62", "Manager de pluginuri");
+
+define("ADMSLAN_64", "Curăţare cache sistem");
+define("ADMSLAN_65", "Configurare setări de e-mail şi expedieri");
+define("ADMSLAN_66", "Configurare căutări");
+define("ADMSLAN_67", "Scanare cu inspectorul de fişiere");
+define("ADMSLAN_68", "Configurare notificări prin e-mail");
 ?>

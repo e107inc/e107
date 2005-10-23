@@ -1,7 +1,6 @@
 <?php
 
-$text = "Tick the box to have text emoticons replaced by image emoticons.<br /><br />
-Type any updates you require in the textboxes, and click update to save your settings. Use the form at the foot of the page to add new emotes.";
+$text = "Puteţi crea pachete de emoticonuri care se vor integra nemaipomenit în e107. Mergeţi la <a href='".e_FILE."emote_create/emotecreate.php'>creare emoticonuri</a> şi urmaţi instrucţiunile.";
 
-$ns -> tablerender("Emoticon Help", $text);
+$ns -> tablerender("Asistenţă emoticon", $text);
 ?>

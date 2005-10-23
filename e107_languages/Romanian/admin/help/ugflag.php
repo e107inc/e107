@@ -1,5 +1,5 @@
 <?php
-$text = "If you are upgrading e107 or just need your site to be offline for a while just tick the maintainance box and your visitors will be redirected to a page explaining the site is down for repair. After you've finished untick the box to return site to normal.";
+$text = "Dacă actualizaţi e107 sau doar vreţi să închideţi site-ul pentru o perioadă, doar bifaţi caseta de întreţinere şi vizitatorii vor fi redirecţionaţi spre o pagină care le va spune că site-ul e în reparaţii. După ce aţi terminat, debifaţi caseta pentru a repune site-ul în funcţiune.";
 
-$ns -> tablerender("Maintainance", $text);
+$ns -> tablerender("Întreţinere", $text);
 ?>

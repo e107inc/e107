@@ -1,4 +1,4 @@
 <?php
-$text = "Update your password here.";
-$ns -> tablerender("Update Settings Help", $text);
+$text = "Actualizaţi-vă parola aici.";
+$ns -> tablerender("Asistenţă actualizare setări", $text);
 ?>

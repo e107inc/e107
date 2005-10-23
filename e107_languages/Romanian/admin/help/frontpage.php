@@ -1,5 +1,5 @@
 <?php
-$caption = "Front Page Help";
-$text = "From this screen you can choose what to display on the front page of your site, the default is news. You can also use this page to set up a 'splashscreen', a page that will only display when a visitor first enters your site.";
+$caption = "Asistenţă pagină principală");
+$text = "Din acest ecran puteţi alege ce să fie afişat pe pagina principală a site-ului, ştirile sunt afişate implicit.";
 $ns -> tablerender($caption, $text);
 ?>

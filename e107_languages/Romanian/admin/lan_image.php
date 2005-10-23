@@ -1,47 +1,47 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/admin/lan_image.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-23 17:16:21 $
+|     $Author: Bogdan M. Botezatu (Sphynx)
++----------------------------------------------------------------------------+
+*/
+define("IMALAN_1", "Activare afişare imagini");
+define("IMALAN_2", "Afişare imagini, aceasta se va aplica peste tot pe site (comentarii, chatbox etc)");
+define("IMALAN_3", "Metodă de redimensionare");
+define("IMALAN_4", "Metoda folosită pentru a redimensiona imagini, biblioteca GD1/2, sau ImageMagick");
+define("IMALAN_5", "Calea catre ImageMagick (dacă e selectat)");
+define("IMALAN_6", "Calea completă către Utilitarul de Conversie ImageMagick");
+define("IMALAN_7", "Setări imagine");
+define("IMALAN_8", "Actualizare setări imagine");
+define("IMALAN_9", "Setări imagine actualizate");
+define("IMALAN_10", "Clasa de afişare imagini");
+define("IMALAN_11", "Restricţionare utilizatori care pot afişa imagini (dacă e activat mai sus)");
+define("IMALAN_12", "Metoda de dezactivare imagini");
+define("IMALAN_13", "Ce se întîmplă cu imaginile afişate, dacă afişarea imaginilor e dezactivată");
+define("IMALAN_14", "Arată URL imagine");
+define("IMALAN_15", "Nu arăta nimic");
+define("IMALAN_16", "Afişare avataruri uploadate");
+define("IMALAN_17", "Click aici");
+define("IMALAN_18", "Imagini uploadate");
 
-define("IMALAN_1", "Enable image posting");
-define("IMALAN_2", "Display images, this will apply sitewide (comments, chatbox etc)");
-define("IMALAN_3", "Resize method");
-define("IMALAN_4", "Method used to resize images, either GD1/2 library, or ImageMagick");
-define("IMALAN_5", "Path to ImageMagick (if selected)");
-define("IMALAN_6", "Full path to ImageMagick Convert utility");
-
-define("IMALAN_7", "Image Settings");
-define("IMALAN_8", "Update Image Settings");
-define("IMALAN_9", "Image settings updated");
-
-define("IMALAN_10", "Image posting class");
-define("IMALAN_11", "Restrict users who can post images (if enabled above)");
-
-
-define("IMALAN_12", "Disabled image method");
-define("IMALAN_13", "What to do with posted images if image posting is disabled");
-
-define("IMALAN_14", "Show image URL");
-define("IMALAN_15", "Show nothing");
-
-define("IMALAN_16", "Show uploaded avatars");
-define("IMALAN_17", "Click here");
-
-define("IMALAN_18", "Uploaded images");
-define("IMALAN_19", "Image name");
-define("IMALAN_20", "Image");
-define("IMALAN_21", "Used by");
-define("IMALAN_22", "Image not in use");
-
+define("IMALAN_21", "Folosit de");
+define("IMALAN_22", "Imagine nefolosită");
 define("IMALAN_23", "Avatar");
-define("IMALAN_24", "Photograph");
-define("IMALAN_25", "Click here to delete all unused images");
-define("IMALAN_26", "image(s) deleted");
-define("IMALAN_27", "delete");
-define("IMALAN_28", "deleted");
-define("IMALAN_29", "No images");
+define("IMALAN_24", "Fotografie");
+define("IMALAN_25", "Click aici pentru a şterge toate imaginile nefolosite");
+define("IMALAN_26", "Imagini şterse");
 
-define("IMALAN_30", "Everyone (public)");
-define("IMALAN_31", "Guests only");
-define("IMALAN_32", "Members only");
-define("IMALAN_33", "Admin only");
-
+define("IMALAN_28", "şterse");
+define("IMALAN_29", "Nu există imagini");
+define("IMALAN_30", "Toţi (public)");
+define("IMALAN_31", "Doar vizitatorii");
+define("IMALAN_32", "Doar membrii");
+define("IMALAN_33", "Doar admin");
+define("IMALAN_34", "Activare Sleight");
+define("IMALAN_35", "Repară problemele de transparenţă alfa ale PNG-24 în IE 5 / 6 (aplicabil peste tot)");
 
 ?>

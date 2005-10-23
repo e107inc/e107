@@ -1,4 +1,4 @@
 <?php
-$text = "Activate site stats logging from this page. If you are short of server space tick the domain only box as referer logging, this will only log the domain as opposed to the whole url, ie 'jalist.com' instead of 'http://jalist.com/links.php' ";
-$ns -> tablerender("Logging Help", $text);
+$text = "Activare înregistrare statistici site. Dacă nu aveţi spaţiu suficient pe server, bifaţi doar caseta de domeniu ca înregistrare referenţi, aceasta va inregistra doar domeniul şi nu întreg URL-ul, ex. 'jalist.com' în loc de 'http://jalist.com/links.php' ";
+$ns -> tablerender("Asistenţă înregistrări", $text);
 ?>

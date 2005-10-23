@@ -1,43 +1,63 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/admin/lan_filemanager.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-23 17:16:21 $
+|     $Author: Bogdan M. Botezatu (Sphynx)
++----------------------------------------------------------------------------+
+*/
+define("FMLAN_1", "Uploadat");
+define("FMLAN_2", "în");
+define("FMLAN_3", "director");
+define("FMLAN_4", "Fişierul uploadat depăşeşte directiva upload_max_filesize în php.ini.");
+// define("FMLAN_5", "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the html form.");
+// define("FMLAN_6", "The uploaded file was only partially uploaded.");
+// define("FMLAN_7", "No file was uploaded.");
+// define("FMLAN_8", "Uploaded file size 0 bytes");
+// define("FMLAN_9", "The file did not upload. Filename");
+// define("FMLAN_10", "Error");
+// define("FMLAN_11", "Probably incorrect permissions on upload directory.");
+define("FMLAN_12", "fişier");
+define("FMLAN_13", "fişiere");
+define("FMLAN_14", "director");
+define("FMLAN_15", "directoare");
+define("FMLAN_16", "Director rădăcină");
+define("FMLAN_17", "Nume");
+define("FMLAN_18", "Dimensiune");
+define("FMLAN_19", "Ultima modificare");
 
-define("FMLAN_1", "Uploaded");
-define("FMLAN_2", "to");
-define("FMLAN_3", "directory");
-define("FMLAN_4", "The uploaded file exceeds the upload_max_filesize directive in php.ini.");
-define("FMLAN_5", "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the html form.");
-define("FMLAN_6", "The uploaded file was only partially uploaded.");
-define("FMLAN_7", "No file was uploaded.");
-define("FMLAN_8", "Uploaded file size 0 bytes");
-define("FMLAN_9", "The file did not upload. Filename");
-define("FMLAN_10", "Error");
-define("FMLAN_11", "Probably incorrect permissions on upload directory.");
-define("FMLAN_12", "file");
-define("FMLAN_13", "files");
-define("FMLAN_14", "directory");
-define("FMLAN_15", "directories");
-define("FMLAN_16", "Root directory");
-define("FMLAN_17", "Name");
-define("FMLAN_18", "Size");
-define("FMLAN_19", "Last Modified");
-define("FMLAN_20", "Options");
-define("FMLAN_21", "Upload file to this dir");
+define("FMLAN_21", "Uploadaţi fişierele în acest director");
 define("FMLAN_22", "Upload");
-define("FMLAN_23", "Delete");
-define("FMLAN_24", "tick to confirm");
-define("FMLAN_25", "e107 Filemanager");
 
-define("FMLAN_26", "Deleted");
-define("FMLAN_27", "successfully");
-define("FMLAN_28", "Unable to delete");
-define("FMLAN_29", "Path");
-define("FMLAN_30", "Up level");
+define("FMLAN_26", "Şters");
+define("FMLAN_27", "cu succes");
+define("FMLAN_28", "Imposibil de şters");
+define("FMLAN_29", "Cale");
+define("FMLAN_30", "Nivel în sus");
 define("FMLAN_31", "folder");
 
-define("FMLAN_32", "Select Directory");
-define("FMLAN_33", "Select");
-define("FMLAN_34", "Directory Choice");
-define("FMLAN_35", "Files Directory");
+define("FMLAN_32", "Selectare director");
+define("FMLAN_33", "Selectare");
+define("FMLAN_34", "Alegere director");
+define("FMLAN_35", "Director fişiere");
 
-define("FMLAN_36", "Custom Menus Directory");
-define("FMLAN_37", "Custom Pages Directory");
+define("FMLAN_36", "Director de meniuri personalizate");
+define("FMLAN_37", "Director de pagini personalizate");
+
+define("FMLAN_38", "Fişier mutat cu succes la");
+define("FMLAN_39", "Imposibil de mutat fişierul la");
+define("FMLAN_40", "Director imagini articole");
+define("FMLAN_41", "Mutare la directorul Downloaduri.");
+define("FMLAN_42", "Mutare la directorul Downloadimages.");
+define("FMLAN_43", "Ştergeţi fişierele selectate");
+define("FMLAN_44", "Vă rugăm să confirmaţi mutarea fişierelor selectate în directorul Downloads.");
+define("FMLAN_45", "Vă rugăm să confirmaţi mutarea fişierelor selectate în directorul Downloadimages.");
+define("FMLAN_46", "Vă rugăm să confirmaţi ştergerea fişierelor selectate.");
+define("FMLAN_47", "Uploaduri utilizator");
+
+
+
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-$text = "Set your chatbox preferences from here.<br />If the replace link box is ticked, any links entered will be replaced by the text you enter in the textbox, this stops long links causing display problems. Wordwrap will auto wrap text that is longer than the length specified here.";
+$text = "Setaţi preferinţele pentru chatbox aici.<br />Dacă e bifată caseta de înlocuire a linkurilor, orice link introdus va fi înlocuit de textul pe care l-aţi introdus în caseta text, oprind problemele de afişare cauzate de linkuri prea lungi. Încadrarea cuvintelor va segmenta textul care e mai lung decât valoarea specificată aici.";
 
 $ns -> tablerender("Chatbox", $text);
 ?>

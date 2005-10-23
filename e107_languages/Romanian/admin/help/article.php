@@ -1,7 +1,7 @@
 <?php
-$text = "From this page you can add single or multi-page articles.<br />
- For a multi-page article seperate each page with the text [newpage], ie <br /><code>Test1 [newpage] Test2</code><br /> would create a two page article with 'Test1' on page 1 and 'Test2' on page 2.
+$text = "De pe această pagină puteţi adăuga articole pe o singură pagină sau pe mai multe.<br />
+ Pentru articole multi-pagină, separaţi fiecare pagină cu textul [newpage], exemplu <br /><code>Test1 [newpage] Test2</code><br /> va crea un articol pe 2 pagini cu  'Test1' pe pagina 1 şi 'Test2' pe pagina 2.
 <br /><br />
-If your article contains HTML tags that you wish to preserve, enclose the code with [html] [/html]. For example, if you entered the text '&lt;table>&lt;tr>&lt;td>Hello &lt;/td>&lt;/tr>&lt;/table>' in your article, a table would be shown containing the word hello. If you entered '[html]&lt;table>&lt;tr>&lt;td>Hello &lt;/td>&lt;/tr>&lt;/table>[/html]' the code as you entered it would be shown and not the table that the code generates.";
-$ns -> tablerender("Article Help", $text);
+dacă articolul dumneavoastră conţine taguri HTML pe care doriţi să le păstraţi , închideţi codul între [html] [/html]. De exemplu, dacă aţi introdus textul '&lt;table>&lt;tr>&lt;td>Hello &lt;/td>&lt;/tr>&lt;/table>' în articolul dumneavoastră, va fi afişat un tabel conţinând cuvântul hello. Dacă aţi introdus '[html]&lt;table>&lt;tr>&lt;td>Hello &lt;/td>&lt;/tr>&lt;/table>[/html]' codul pe care l-aţi introdus va fi afişat şi nu tabelul pe care îl generează codul.";
+$ns -> tablerender("Asistenţă articole", $text);
 ?>

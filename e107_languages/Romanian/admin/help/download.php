@@ -1,6 +1,6 @@
 <?php
-$text = "Please upload your files into the ".e_FILE."downloads folder, your images into the ".e_FILE."downloadimages folder and thumbnail images into the ".e_FILE."downloadthumbs folder.
+$text = "Vă rugăm să vă uploadaţi fişierele în directorul de download ".e_FILE.", imaginile în folderul de imagini ".e_FILE." şi miniaturile în folderul de miniaturi  ".e_FILE.".
 <br /><br />
-To submit a download, first create a parent, then create a category under that parent, you will then be able to make the download available.";
-$ns -> tablerender("Download Help", $text);
+Pentru a trimite un download, creaţi mai întâi un părinte, apoi creaţi o categorie sub acel părinte, apoi veţi putea să faceţi downloadul disponibil.";
+$ns -> tablerender("Asistenţă download", $text);
 ?>

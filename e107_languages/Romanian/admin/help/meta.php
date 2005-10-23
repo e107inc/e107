@@ -1,5 +1,5 @@
 <?php
-$text = "Any meta tags you enter here will be sent to screen in the right place.";
+$text = "Toate tagurile meta introduse aici vor fi trimise pe ecran în locul potrivit.";
 
-$ns -> tablerender("Meta Tags", $text);
+$ns -> tablerender("Taguri meta", $text);
 ?>

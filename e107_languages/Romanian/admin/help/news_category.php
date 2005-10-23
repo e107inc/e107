@@ -1,4 +1,4 @@
 <?php
-$text = "You can seperate your news items into different categories, and allow visitors to display only the news items in those categories. <br /><br />Upload your news icon images either ".e_THEME."-yourtheme-/images/ or themes/shared/newsicons/.";
-$ns -> tablerender("News Category Help", $text);
+$text = "Puteţi separa ştirile în categorii diferite şi permite vizitatorilor să afişeze doar ştirile din respectivele categorii. <br /><br />Uploadaţi imaginile ştirilor în ".e_THEME."-yourtheme-/images/ sau in themes/shared/newsicons/.";
+$ns -> tablerender("Asistenţă categorii ştiri", $text);
 ?>

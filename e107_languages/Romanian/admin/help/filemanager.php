@@ -1,4 +1,4 @@
 <?php
-$text = "You are able to manage the files in your /files directory from this page. If you are getting error message about permissions when uploading please CHMOD the directory you are atempting to upload into to 777.";
-$ns -> tablerender("File Manager Help", $text);
+$text = "Puteţi administra fişierele din directorul /files de pe această pagină. Dacă primiţi mesaje de eroare legate de permisiuni la upload, vă rugăm să setaţi CHMOD 777 pentru directorul unde încercaţi să uploadaţi.";
+$ns -> tablerender("Asistenţă manager fişiere", $text);
 ?>

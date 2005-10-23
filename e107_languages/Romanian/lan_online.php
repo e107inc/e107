@@ -1,66 +1,63 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|	e107 website system
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
 |
-|	�Steve Dunstan 2001-2002
-|	http://e107.org
-|	jalist@e107.org
-|
-|	Released under the terms and conditions of the
-|	GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/lan_online.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-23 17:16:21 $
+|     $Author: Bogdan M. Botezatu (Sphynx)
++----------------------------------------------------------------------------+
 */
 
 //v.616
-define("ONLINE_EL1", "Guests: ");
-define("ONLINE_EL2", "Members: ");
-define("ONLINE_EL3", "On this page: ");
+define("ONLINE_EL1", "Vizitatori: ");
+define("ONLINE_EL2", "Membri: ");
+define("ONLINE_EL3", "Pe această pagină: ");
 define("ONLINE_EL4", "Online");
-define("ONLINE_EL5", "Members");
-define("ONLINE_EL6", "Newest member");
-define("ONLINE_EL7", "viewing");
-define("ONLINE_EL8", "most ever online: ");
-define("ONLINE_EL9", "on");
-define("ONLINE_EL10", "Member Name");
-define("ONLINE_EL11", "Viewing Page");
-define("ONLINE_EL12", "Replying to");
+define("ONLINE_EL5", "Membri");
+define("ONLINE_EL6", "Cel mai nou membru");
+define("ONLINE_EL7", "vizualizează");
+define("ONLINE_EL8", "cei mai mulţi online: ");
+define("ONLINE_EL9", "la data de");
+define("ONLINE_EL10", "Nume membru");
+define("ONLINE_EL11", "Vizualizează pagina");
+define("ONLINE_EL12", "Răspuns la");
 define("ONLINE_EL13", "Forum");
-define("ONLINE_EL14", "Thread");
-define("ONLINE_EL15", "Page");
-define("CLASSRESTRICTED", "Class Restricted Page");
-define("ARTICLEPAGE", "Article/Review");
+define("ONLINE_EL14", "Fir");
+define("ONLINE_EL15", "Pagina");
+define("CLASSRESTRICTED", "Pagină restricţionată pe clasă");
+define("ARTICLEPAGE", "Articol/Recenzie");
 define("CHAT", "Chat");
-define("COMMENT", "Comments");
-define("DOWNLOAD", "Downloads");
+define("COMMENT", "Comentarii");
+define("DOWNLOAD", "Downloaduri");
 define("EMAIL", "email.php");
-define("FORUM", "Main Forum Index");
-define("LINKS", "Links");
-define("NEWS", "News");
-define("OLDPOLLS", "Old Polls");
-define("POLLCOMMENT", "Poll");
-define("PRINTPAGE", "Print");
-define("LOGIN", "Logging In");
-define("SEARCH", "Searching");
-define("STATS", "Site Stats");
-define("SUBMITNEWS", "Submit News");
-define("UPLOAD", "Uploads");
-define("USERPAGE", "User Profiles");
-define("USERSETTINGS", "User Settings");
-define("ONLINE", "Online Users");
-define("LISTNEW", "List New Items");
-define("USERPOSTS", "User Posts");
-define("SUBCONTENT", "Submit Article/Review");
-define("TOP", "Top Posters/Most Active Threads");
-define("ADMINAREA", "Admin Area");
+define("FORUM", "Index forum principal");
+define("LINKS", "Linkuri");
+define("NEWS", "Ştiri");
+define("OLDPOLLS", "Sondaje vechi");
+define("POLLCOMMENT", "Sondaj");
+define("PRINTPAGE", "Tipărire");
+define("LOGIN", "În curs de autentificare");
+define("SEARCH", "În curs de căutare");
+define("STATS", "Statistici site");
+define("SUBMITNEWS", "Trimiteţi ştire");
+define("UPLOAD", "Uploaduri");
+define("USERPAGE", "Profiluri utilizatori");
+define("USERSETTINGS", "Setări utilizatori");
+define("ONLINE", "Utilizatori online");
+define("LISTNEW", "Listare ştiri");
+define("USERPOSTS", "Trimiteri utilizatori");
+define("SUBCONTENT", "Trimiteţi articlol/recenzie");
+define("ADMINAREA", "Zona de administrare");
 define("BUGTRACKER", "Bugtracker");
-define("EVENT", "Events List");
-define("CALENDAR", "Events Calendar");
-define("FAQ", "Faq");
-define("PM", "Private Messaging");
-define("SURVEY", "Survey");
-define("ARTICLE", "Article");
-define("CONTENT", "Content Page");
-define("REVIEW", "Review");
+define("EVENT", "Listă de evenimente");
+define("CALENDAR", "Calendar de evenimente");
+define("FAQ", "Întrebări");
+define("PM", "Mesaje private");
+define("SURVEY", "Chestionar");
+define("ARTICLE", "Articol");
+define("CONTENT", "Pagină de conţinut");
+define("REVIEW", "Recenzie");
 
 ?>

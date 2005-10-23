@@ -1,41 +1,50 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/lan_links.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-23 17:16:21 $
+|     $Author: Bogdan M. Botezatu (Sphynx)
++----------------------------------------------------------------------------+
+*/
+define("PAGE_NAME", "Linkuri");
 
-define("PAGE_NAME", "Links");
-
-define("LAN_61", "Link Categories");
-define("LAN_62", "categories");
-define("LAN_63", "category");
-define("LAN_64", "in this category");
+define("LAN_61", "Categorii de linkuri");
+define("LAN_62", "categorii");
+define("LAN_63", "categorie");
+define("LAN_64", "în aceasta categorie");
 define("LAN_65", "link");
-define("LAN_66", "links");
-define("LAN_67", "Show All Links");
-define("LAN_68", "edit");
-define("LAN_69", "delete");
-define("LAN_86", "Category:");
-define("LAN_88", "Referrals:");
+define("LAN_66", "linkuri");
+define("LAN_67", "Arată toate linkurile");
+define("LAN_68", "editare");
+define("LAN_69", "ştergere");
+define("LAN_86", "Categorie:");
+define("LAN_88", "Referenţi:");
 define("LAN_89", "Admin: ");
-define("LAN_90", "add new link in this category");
-define("LAN_91", "add new category");
+define("LAN_90", "adaugă link nou în această categorie");
+define("LAN_91", "adăugare categorie nouă");
 
-define("LAN_92", "Submit a link");
-define("LAN_93", "After submitting your link it will be reviewed by a site admin and if appropriate it will be added to the main links page.");
-define("LAN_94", "Link Name:");
-define("LAN_95", "Link URL:");
-define("LAN_96", "Link Description:");
-define("LAN_97", "URL to link button:");
-define("LAN_98", "Submit Link");
+define("LAN_92", "Trimiteţi un link");
+define("LAN_93", "După ce ati trimis linkul dumneavoastră, acesta va fi recenzat de un administrator; dacă este potrivit, va fi adaugat paginii principale de linkuri.");
+define("LAN_94", "Nume link:");
+define("LAN_95", "URL link:");
+define("LAN_96", "Descriere link:");
+define("LAN_97", "URL către butonul link-ului:");
+define("LAN_98", "Trimiteţi link-ul");
 
-define("LAN_99", "Thankyou");
-define("LAN_100", "Your link has been saved and will be reviewed by a site administrator.");
-define("LAN_101", "Please click here to submit a link");
+define("LAN_99", "Mulţumim!");
+define("LAN_100", "Linkul dumneavoastră a fost salvat şi va fi recenzat de un administrator.");
+define("LAN_101", "Vă rugăm să daţi click aici pentru a trimite un link");
 
-define("LAN_102", "There");
-define("LAN_103", "is");
-define("LAN_104", "are");
-define("LAN_105", "total in");
-define("LAN_106", "Underlined fields are required.");
+define("LAN_102", ""); // Romanian compatibility issue fix
+define("LAN_103", "Există");
+define("LAN_104", "Sunt");
+define("LAN_105", "total în");
+define("LAN_106", "Câmpurile subliniate sunt necesare.");
 
-define("LAN_Links_1", "Total links");
-define("LAN_Links_2", "Total links activated");
-define("LAN_LINKS_3", "Anonymous");
+define("LAN_Links_1", "Total linkuri");
+define("LAN_Links_2", "Total linkuri activate");
+define("LAN_LINKS_3", "Anonim");
 ?>

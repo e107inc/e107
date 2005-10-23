@@ -4,17 +4,17 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/lan_membersonly.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-31 10:45:04 $
-|     $Author: adriansilea $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-23 17:16:21 $
+|     $Author: Bogdan M. Botezatu (Sphynx)
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Members Only");
+define("PAGE_NAME", "Doar pentru membri");
 
-define("LAN_MEMBERS_0", "restricted area");
-define("LAN_MEMBERS_1", "This is a restricted area");
-define("LAN_MEMBERS_2","to access it either log in or");
-define("LAN_MEMBERS_3","register as a member");
-define("LAN_MEMBERS_4","Click here to return to front page");
+define("LAN_MEMBERS_0", "zonă restricţionată");
+define("LAN_MEMBERS_1", "Această este o zonă restricţionată");
+define("LAN_MEMBERS_2","pentru a o accesa  <a href='login.php'>autentificaţi-vă</a> sau");
+define("LAN_MEMBERS_3","înregistraţi-va ca membru");
+define("LAN_MEMBERS_4","Click aici pentu a va întoarce la pagina principală");
 
 ?>

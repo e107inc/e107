@@ -1,11 +1,20 @@
 <?php
-
-define("USFLAN_1", "Unable to find poster's IP address - no information is available.");
-define("USFLAN_2", "Error");
-define("USFLAN_3", "Messages posted from IP address");
-define("USFLAN_4", "Host");
-define("USFLAN_5", "Click here to transfer IP address to admin ban page");
-define("USFLAN_6", "UserID");
-define("USFLAN_7", "User Information");
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/admin/lan_userinfo.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-23 17:16:21 $
+|     $Author: Bogdan M. Botezatu (Sphynx)
++----------------------------------------------------------------------------+
+*/
+define("USFLAN_1", "Imposibil de găsit adresa IP a celui care a postat - nu există nici o informaţie disponibilă.");
+// define("USFLAN_2", "Error");
+define("USFLAN_3", "Mesaje postate de pe adresa de IP");
+define("USFLAN_4", "Gazdă");
+define("USFLAN_5", "Click aici pentru a transfera adresele de IP pe pagina de restricţionare");
+define("USFLAN_6", "ID utilizator");
+define("USFLAN_7", "Informaţii utilizator");
 
 ?>

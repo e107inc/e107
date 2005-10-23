@@ -4,18 +4,18 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/lan_mail_handler.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-31 10:45:04 $
-|     $Author: adriansilea $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-23 17:16:21 $
+|     $Author: Bogdan M. Botezatu (Sphynx)
 +----------------------------------------------------------------------------+
 */
-define("LANMAILH_1", "Produced By e107 website system");
-define("LANMAILH_2", "This is a multi-part message in MIME format.");
-define("LANMAILH_3", " is not properly formatted");
-define("LANMAILH_4", "Server rejected address");
-define("LANMAILH_5", "No response from server");
-define("LANMAILH_6", "Cannot find E-Mail server.");
-define("LANMAILH_7", " appears to be valid.");
+define("LANMAILH_1", "Produs de e107 website system");
+define("LANMAILH_2", "Acesta este un mesaj multi-part în format MIME.");
+define("LANMAILH_3", " nu este formatat corespunzător");
+define("LANMAILH_4", "Serverul a respins adresa");
+define("LANMAILH_5", "Serverul nu răspunde");
+define("LANMAILH_6", "Imposibil de găsit serverul de e-mail.");
+define("LANMAILH_7", " pare să fie validă.");
 
 
 ?>

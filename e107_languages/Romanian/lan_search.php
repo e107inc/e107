@@ -1,47 +1,56 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/lan_search.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-23 17:16:21 $
+|     $Author: Bogdan M. Botezatu (Sphynx)
++----------------------------------------------------------------------------+
+*/
+define("PAGE_NAME", "Căutare");
 
-define("PAGE_NAME", "Search");
+define("LAN_20", "Eroare");
+define("LAN_98", "Ştiri");
+define("LAN_99", "Comentarii");
+define("LAN_140", "Membri înregistraţi");
+define("LAN_180", "Căutare");
+define("LAN_192", "Toate categoriile");
+define("LAN_193", "Calendar de evenimente");
+define("LAN_194", "Toate categoriile");
+define("LAN_195", "În curs de căutare");
+define("LAN_196", "potriviri");
 
-define("LAN_20", "Error");
-define("LAN_98", "News Items");
-define("LAN_99", "Comments");
-define("LAN_100", "Articles");
-define("LAN_101", "Chatbox");
-define("LAN_102", "Links");
-define("LAN_103", "Forum");
-define("LAN_140", "Registered members");
-define("LAN_180", "Search");
-define("LAN_190", "Reviews");
-define("LAN_191", "Content");
-define("LAN_192", "All categories");
-define("LAN_193", "Event Calendar");
-define("LAN_194", "All Categories");
-define("LAN_195", "Searching");
-define("LAN_196", "matches");
+define("LAN_197", "Downloaduri");
+define("LAN_198", "Nu au fost găsite potriviri");
+define("LAN_199", "Caută:");
+define("LAN_200", "Categorii:");
 
-define("LAN_197", "Downloads");
-define("LAN_198", "No matches found");
-define("LAN_199", "Search for:");
-define("LAN_200", "Categories:");
+define("LAN_201", "Vă rugăm să redefiniţi căutarea");
+define("LAN_416", "Trebuie să fiţi autentificat pentru a accesa această pagină");
+define("LAN_417", "Termenul de căutare trebuie să aibă cel puţin 3 caractere.");
 
-define("LAN_201", "Please redefine your search query");
-define("LAN_416", "You must be logged in to access this page");
-define("LAN_417", "Search terms must be at least 3 characters.");
-
-define("LAN_SEARCH_1", "Check All");
-define("LAN_SEARCH_2", "Uncheck All");
-define("LAN_SEARCH_3", "item posted on ");
-define("LAN_SEARCH_4", "Match found in news title");
-define("LAN_SEARCH_5", "Match found in news text");
-define("LAN_SEARCH_6", "Match found in extended news text");
-define("LAN_SEARCH_7", "posted by ");
-define("LAN_SEARCH_8", " on ");
-define("LAN_SEARCH_9", "Untitled");
-
-
-
-
-
-
+define("LAN_SEARCH_1", "Bifează tot");
+define("LAN_SEARCH_2", "Debifează tot");
+define("LAN_SEARCH_3", "Trimis pe ");
+define("LAN_SEARCH_4", "Potrivire găsită în titlurile ştirilor");
+define("LAN_SEARCH_5", "Potriviri găsite în textul ştirilor");
+define("LAN_SEARCH_6", "Potriviri găsite în textul extins al ştirilor");
+define("LAN_SEARCH_7", "Trimis de ");
+define("LAN_SEARCH_8", " pe ");
+define("LAN_SEARCH_9", "Fără titlu");
+define("LAN_SEARCH_10", "Salt la pagina:");
+define("LAN_SEARCH_11", "Rezultate");
+define("LAN_SEARCH_12", " din ");
+define("LAN_SEARCH_13", " în ");
+define("LAN_SEARCH_14", "Categorie:");
+define("LAN_SEARCH_15", "Autor:");
+define("LAN_SEARCH_16", "Căutare restricţionată");
+define("LAN_SEARCH_17", "Ne pare rău, dar căutarea e restricţionată la o căutare la ");
+define("LAN_SEARCH_18", " secunde.");
+define("LAN_SEARCH_19", "Caută în:");
+define("LAN_SEARCH_20", "Este necesară autorizare");
+define("LAN_SEARCH_21", "Nu aveţi permisiunea de a vizualiza această pagină.");
 
 ?>

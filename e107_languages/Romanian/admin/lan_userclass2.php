@@ -1,32 +1,39 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/admin/lan_userclass2.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-23 17:16:21 $
+|     $Author: Bogdan M. Botezatu (Sphynx)
++----------------------------------------------------------------------------+
+*/
+define("UCSLAN_1", "Şters toţi utilizatorii din clasă.");
+define("UCSLAN_2", "Actualizat utilizatori din clasă.");
+define("UCSLAN_3", "Clasă ştearsă.");
+define("UCSLAN_4", "Vă rugăm să bifaţi pentru a confirma ştergerea acestei clase de utilizatori");
+define("UCSLAN_5", "Clasă actualizată.");
+define("UCSLAN_6", "Clasă salvată în baza de date.");
+define("UCSLAN_7", "Încă nu există clase de utilizatori.");
+define("UCSLAN_8", "Clase existente");
 
-define("UCSLAN_1", "Cleared all users from class.");
-define("UCSLAN_2", "Class users updated.");
-define("UCSLAN_3", "Class deleted.");
-define("UCSLAN_4", "Please tick the confirm box to delete this user class");
-define("UCSLAN_5", "Class updated.");
-define("UCSLAN_6", "Class saved to database.");
-define("UCSLAN_7", "No user classes yet.");
-define("UCSLAN_8", "Existing Classes");
+define("UCSLAN_11", "bifaţi pentru a confirma");
+define("UCSLAN_12", "Nume clasă");
+define("UCSLAN_13", "Descriere clasă");
+define("UCSLAN_14", "Actualizare clasă utilizatori");
+define("UCSLAN_15", "Creare clasă nouă");
+define("UCSLAN_16", "Atribuiţi utilizator la clasă");
+define("UCSLAN_17", "Eliminare");
+define("UCSLAN_18", "Curaţare clasă");
+define("UCSLAN_19", "Atribuiţi utilizatori la");
+define("UCSLAN_20", "clasă");
+define("UCSLAN_21", "Setări clasă utilizatori");
 
-define("UCSLAN_9", "Edit");
-define("UCSLAN_10", "Delete");
-define("UCSLAN_11", "tick to confirm");
-define("UCSLAN_12", "Class Name");
-define("UCSLAN_13", "Class Description");
-define("UCSLAN_14", "Update User Class");
-define("UCSLAN_15", "Create New Class");
-define("UCSLAN_16", "Assign users to class");
-define("UCSLAN_17", "Remove");
-define("UCSLAN_18", "Clear Class");
-define("UCSLAN_19", "Assign users to");
-define("UCSLAN_20", "class");
-define("UCSLAN_21", "User Class Settings");
+define("UCSLAN_22", "Utilizatori - click pentru a muta ...");
+define("UCSLAN_23", "Utilizatori în această clasă ...");
 
-define("UCSLAN_22", "Users - click to move ...");
-define("UCSLAN_23", "Users in this class ...");
-
-define("UCSLAN_24", "Who can manage class");
+define("UCSLAN_24", "Cine poate administra clasa");
 
 
 ?>

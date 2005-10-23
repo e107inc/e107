@@ -1,6 +1,6 @@
 <?php
 
-$text = "You can add a normal page to your site using this feature. A link to the new page will be created in your main site navigation box. For example if you create a new page with the Link Name 'Test', a link called 'Test' will appear in your links box after submitting the new page.<br />
-If you want your content page to have a caption, enter it in the Page Heading box.";
-$ns -> tablerender("Content Help", $text);
+$text = "Puteţi adăuga o pagină normală site-ului dumneavoastră folosind această caracteristică. Un link către noua pagină va fi creat în caseta principală de navigaţie. De exemplu, dacă aţi creat o nouă pagină cu numele linkului 'Test', un link numit 'Test' va apărea în caseta de linkuri după ce aţi trimis noua pagină.<br />
+Dacă doriţi să puneţi un titlu paginii, introduceţi-l în caseta Titlu pagină.";
+$ns -> tablerender("Asistenţă conţinut", $text);
 ?>

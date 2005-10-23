@@ -1,20 +1,29 @@
 <?php
-
-define("DBLAN_1", "Core settings backed up in database.");
-define("DBLAN_2", "Click button to save a backup of your e107 database");
-define("DBLAN_3", "Backup SQL database");
-define("DBLAN_4", "Click button to check validity of e107 database");
-define("DBLAN_5", "Check database validity");
-define("DBLAN_6", "Click button to optimize your e107 database");
-define("DBLAN_7", "Optimize SQL database");
-define("DBLAN_8", "Click button to backup your core settings");
-define("DBLAN_9", "Backup core");
-define("DBLAN_10", "Database Utilities");
-define("DBLAN_11", "mySQL database");
-define("DBLAN_12", "optimized");
-define("DBLAN_13", "Back");
-define("DBLAN_14", "Done");
-define("DBLAN_15", "Click button to check for any available db updates");
-define("DBLAN_16", "Check for Updates");
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/admin/lan_db.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-23 17:16:21 $
+|     $Author: Bogdan M. Botezatu (Sphynx)
++----------------------------------------------------------------------------+
+*/
+define("DBLAN_1", "Setările nucleului copiate în baza de date.");
+define("DBLAN_2", "Click pe buton pentru a salva o copie de siguranţă a bazei de date e107");
+define("DBLAN_3", "Copie de siguranţă SQL");
+define("DBLAN_4", "Click pe buton pentru a verifica validitatea bazei de date");
+define("DBLAN_5", "Verificare validitate ");
+define("DBLAN_6", "Click pe buton pentru a optimiza baza de date");
+define("DBLAN_7", "Optimizare baza  de date");
+define("DBLAN_8", "Click pe buton pentru a salva setările nucleului");
+define("DBLAN_9", "Copie de siguranţă nucleu");
+define("DBLAN_10", "Utilitare bază de date");
+define("DBLAN_11", "Baza de date MySQL");
+define("DBLAN_12", "optimizata");
+define("DBLAN_13", "Înapoi");
+define("DBLAN_14", "Gata");
+define("DBLAN_15", "Click pe buton pentru a verifica orice actualizare disponibilă");
+define("DBLAN_16", "Verificare actualizări");
 
 ?>

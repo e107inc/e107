@@ -1,8 +1,8 @@
 <?php
-$caption = "Menu Help";
-$text .= "You can arrange where and in which order your menu items are displayed from here. Use the arrows to move the menus up and down until you are satisfied with their positioning.<br />
-The menu items in the middle of the screen are de-activated, you can activate these by choosing a location to put them in.
+$caption = "Asistenţă meniuri";
+$text .= "Puteţi aranja de aici unde şi în ce ordine sunt afişate elementele meniurilor. Folosiţi săgetile pentru a mişca meniurile în sus şi în jos, până când sunteţi mulţumit de poziţionarea lor. .<br />
+Elementele meniului din mijlocul ecranului sunt dezactivate, le puteţi activa prin alegerea unei locaţii unde să le afişaţi.
 ";
 
-$ns -> tablerender("Menus Help", $text);
+$ns -> tablerender("Asistenţă meniuri", $text);
 ?>

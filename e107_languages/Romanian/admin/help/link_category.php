@@ -1,4 +1,4 @@
 <?php
-$text = "You can seperate your links into different categories, this makes navigating the main Links page much easier and improves layout.<br /><br />Any link entered under the Main category will be displayed in your main navigation menu.";
-$ns -> tablerender("Link Category Help", $text);
+$text = "Puteţi să vă separaţi linkurile în diferite categorii, aceasta face navigaţia mai uşoară şi îmbunătaţeşte afişarea.<br /><br />Orice link introdus în categoria principală va fi afişat în meniul principal.";
+$ns -> tablerender("Asistenţă categorii linkuri", $text);
 ?>

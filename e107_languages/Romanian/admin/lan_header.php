@@ -1,10 +1,21 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/admin/lan_header.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-23 17:16:21 $
+|     $Author: Bogdan M. Botezatu (Sphynx)
++----------------------------------------------------------------------------+
+*/
+define("LAN_head_1", "Navigare administrator");
+define("LAN_head_2", "Serverul dumneavoastră nu permite uploaduri HTTP, aşadar utilizatorii dumneavoastră nu vor putea să uploadeze avataruri/fişiere etc. Pentru a corecta aceasta, setaţi On pentru file_uploads în fişierul php.ini şi restartaţi serverul. Dacă nu aveţi acces la php.ini, contactaţi-vă gazda.");
+define("LAN_head_3", "Serverul dumneavoastră funcţionează cu o restricţie basedir. Aceasta interzice folosirea oricărui fişier  din afara directorului dumneavoastră principal şi poate afecta anumite scripturi, precum managerul de fişiere.");
 
-define("LAN_head_1", "Admin Navigation");
-define("LAN_head_2", "Your server does not allow HTTP file uploads so it will not be possible for your users to uploads avatars/files etc. To rectify this set file_uploads to On in your php.ini and restart your server. If you dont have access to your php.ini contact your hosts.");
-define("LAN_head_3", "Your server is running with a basedir restriction in effect. This disallows usage of any file outside of your home directory and as such could affect certain scripts such as the filemanager.");
+define("LAN_head_4", "Zona de administrare");
 
-
-define("LAN_head_4", "Admin Area");
+define("LAN_head_5", "limba afişată în zona de administare: ");
+define("LAN_head_6", "Informaţii module:");
 
 ?>

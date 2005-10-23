@@ -1,5 +1,5 @@
 <?php
-$caption = "Caching";
-$text = "If you have caching turned on it will vastly improve speed on your site and minimize the amount of calls to the sql database.<br /><br /><b>IMPORTANT! If you are making your own theme turn caching off as any changes you make will not be reflected.</b>";
+$caption = "Cache";
+$text = "Dacă aveţi cache activat, vă va îmbunătăţi viteza pe site şi va micşora numărul de interogări al bazei de date SQL.<br /><br /><b>IMPORTANT! Dacă vă construiti o temă personală, dezactivaţi cache, deoarece orice schimbare pe care o faceţi nu va fi reflectată.</b>";
 $ns -> tablerender($caption, $text);
 ?>

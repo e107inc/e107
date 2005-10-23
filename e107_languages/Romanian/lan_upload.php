@@ -4,37 +4,37 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/lan_upload.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-31 10:45:04 $
-|     $Author: adriansilea $
+|     $Revision: 1.2 $
+|     $Date: 2005-10-23 17:16:21 $
+|     $Author: Bogdan M. Botezayu (Sphynx)
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Upload");
 
-define("LAN_20", "Error");
-define("LAN_61", "Your Name: ");
-define("LAN_112", "Email Address: ");
-define("LAN_144", "Website URL: ");
-define("LAN_402", "You must be a registered member to upload files to this server.");
-define("LAN_403", "You do not have the correct permissions to upload files to this server.");
-define("LAN_404", "Thank you. Your upload will be reviewed by an administrator and posted to the site if appropriate.");
-define("LAN_405", "File exceeds specified maximum size limit - deleted.");
-define("LAN_406", "Please note");
-define("LAN_407", "Any other filetypes uploaded will be instantly deleted.");
-define("LAN_408", "Underlined");
-define("LAN_409", "Name of file");
-define("LAN_410", "Version");
-define("LAN_411", "File");
-define("LAN_412", "Screenshot");
-define("LAN_413", "Description");
-define("LAN_414", "Working demo");
-define("LAN_415", "enter URL to site where demo can be viewed");
-define("LAN_416", "Submit and Upload");
-define("LAN_417", "Upload File");
-define("LAN_418", "Maximum file size: ");
-define("DOWLAN_11", "Category");
-define("LAN_419", "Allowed filetypes");
-define("LAN_420", "fields are required");
+define("LAN_20", "Eroare");
+define("LAN_61", "Numele dumneavostră: ");
+define("LAN_112", "Adresa de e-mail: ");
+define("LAN_144", "URL: ");
+define("LAN_402", "Trebuie să fiţi membru înregistrat pentru a uploada fişiere pe acest server.");
+define("LAN_403", "Nu aveţi permisiunile necesare pentru a uploada fişiere pe server.");
+define("LAN_404", "Mulţumim. Uploadul dumneavoastră va fi analizat de un administrator şi afişat pe site, dacă e interesant.");
+define("LAN_405", "Fişierul depăşeşte dimensiunea maximă - şters.");
+define("LAN_406", "Atenţie");
+define("LAN_407", "Orice alt tip de fişier uploadat va fi şters imediat.");
+define("LAN_408", "Subliniat");
+define("LAN_409", "Numele fişierului");
+define("LAN_410", "Versiune");
+define("LAN_411", "Fila");
+define("LAN_412", "Imagine");
+define("LAN_413", "Descriere");
+define("LAN_414", "Demo funcţional");
+define("LAN_415", "Introduceţi URL către un site care prezintă un demo");
+define("LAN_416", "Trimiteţi un upload");
+define("LAN_417", "Upload fişier");
+define("LAN_418", "Dimensiune maximă: ");
+define("DOWLAN_11", "Categorie");
+define("LAN_419", "Tipuri de fişier permise");
+define("LAN_420", "câmpurile sunt obligatorii");
 
 
 

@@ -1,16 +1,16 @@
 <?php
-$caption = "Newspost Help";
+$caption = "Asistenţă afişare ştiri";
 $text = "<b>General</b><br />
-Body will be displayed on the main page, extended will be readable by clicking a 'Read More' link.
+Corpul va fi afişat pe pagina principală, textul extins va putea fi citit dând click pe linkul 'Citeşte mai mult'.
 <br />
 <br />
-<b>Show title only</b>
+<b>Afişare doar titlul</b>
 <br />
-Enable this to show the news title only on front page, with clickable link to full story.
+Activaţi această opţiune pentru a arăta doar titlul ştirilor pe pagină principală, cu link către ştirea completă.
 <br /><br />
-<b>Activation</b>
+<b>Activare</b>
 <br />
-If you set a start and/or end date your news item will only be displayed between these dates.
+Dacă setaţi o dată de start şi/sau sfârşit, ştirea dumneavoastră va fi afişata doar între aceste date.
 ";
 $ns -> tablerender($caption, $text);
 ?>

@@ -1,5 +1,5 @@
 <?php
-$caption = "Site Admin Help";
-$text = "Use this page to enter new, or delete site administrators. The administrator will only have permission to access the features that are ticked.";
+$caption = "Ajutor administrator server";
+$text = "Folosiţi această pagină pentru a introduce/şterge administratori. Administratorii vor avea permisiunea de a accesa doar funcţiile bifate.";
 $ns -> tablerender($caption, $text);
 ?>
