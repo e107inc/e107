@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-10-14 08:29:57 $
+|     $Revision: 1.48 $
+|     $Date: 2005-10-26 08:30:18 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ if (isset($_POST['highlight_search']))
 if (!e_QUERY)
 {
 	//No paramters given, redirect to forum home
-	header("Location:".e_PLUGIN."/forum/forum.php");
+	header("Location:".e_PLUGIN."forum/forum.php");
 	exit;
 }
 else
@@ -77,7 +77,7 @@ if($from === 'post')
 	}
 	else
 	{
-		header("Location:".e_PLUGIN."/forum/forum.php");
+		header("Location:".e_PLUGIN."forum/forum.php");
 		exit;
 	}
 }
