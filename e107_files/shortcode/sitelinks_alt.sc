@@ -3,9 +3,9 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-09-05 15:49:17 $
-|     $Author: stevedunstan $
+|     $Revision: 1.27 $
+|     $Date: 2005-10-26 15:30:11 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -16,17 +16,26 @@
 		$icon = e_IMAGE."generic/".IMODE."/arrow.png";
 	}
 
-	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE) {
+	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $cat_open=FALSE) {
 		global $tp;
-		
 		$cat_link = (strpos($cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
-	
-		$text = "<a class='menuButton' href='".$cat_link."' ";
+		
+		if ($cat_open == 4 || $cat_open == 5){
+			$dimen = ($cat_open == 4) ? "600,400" : "800,600";
+			$href = " href=\"javascript:open_window('".$cat_link."',".$dimen.")\"";
+		} else {
+			$href = "href='".$cat_link."'";
+		}
+		
+		$text = "<a class='menuButton' ".$href." ";
 		if ($cat_img != 'no_icons') {
 			$text .= "style='background-image: url(".$cat_img."); background-repeat: no-repeat; background-position: 3px 1px; white-space: nowrap' ";
 		}
 		if ($cat_id) {
 			$text .= "onclick=\"return buttonClick(event, '".$cat_id."');\" onmouseover=\"buttonMouseover(event, '".$cat_id."');\"";
+		}
+		if ($cat_open == 1){
+			$text .= " rel='external' ";
 		}
 		$text .= ">".$tp->toHTML($cat_title,"","defs")."</a>";
 		return $text;
@@ -34,14 +43,20 @@
 
 	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $cat_open=FALSE) {
 		global $tp;
-		
 		$cat_link = (strpos($cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
 		
-		$text = "<a class='menuItem' href='".$cat_link."' ";
+		if ($cat_open == 4 || $cat_open == 5){
+			$dimen = ($cat_open == 4) ? "600,400" : "800,600";
+			$href = " href=\"javascript:open_window('".$cat_link."',".$dimen.")\"";
+		} else {
+			$href = "href='".$cat_link."'";
+		}
+		
+		$text = "<a class='menuItem' ".$href." ";
 		if ($cat_id) {
 			$text .= "onclick=\"return false;\" onmouseover=\"menuItemMouseover(event, '".$cat_id."');\"";
 		}
-		 if ($cat_open == 1){
+		if ($cat_open == 1){
 			$text .= " rel='external' ";
 		}
 		$text .= ">";
@@ -75,6 +90,7 @@
 			$linklist['sub_'.$pid][] = $row;
 		}
 	}
+
 
 // Loops thru parents.--------->
 
@@ -120,7 +136,7 @@
 
 	  // Display Parent only.
 
-        	$text .= adnav_cat($lk['link_name'], $lk['link_url'], $link_icon);
+        	$text .= adnav_cat($lk['link_name'], $lk['link_url'], $link_icon, FALSE, $lk['link_open']);
 
 		}
 	}
