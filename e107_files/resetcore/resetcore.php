@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore/resetcore.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-08-24 03:40:33 $
+|     $Revision: 1.8 $
+|     $Date: 2005-10-26 12:42:32 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ If you don't, the script will not be usable.
 */
 
 
-$ACTIVE = FALSE;
+$ACTIVE = TRUE;
 
 
 /* #################################################### */
@@ -55,6 +55,7 @@ if($register_globals == true)
 require_once("../../e107_config.php");
 mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
 mysql_select_db($mySQLdefaultdb);
+define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 
 require_once('../../'.$HANDLERS_DIRECTORY.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
@@ -85,15 +86,7 @@ if(!$ACTIVE)
 }
 
 if (isset($_POST['usubmit'])) {
-
-	$a_name = preg_replace("/\W/", '',  $_POST['a_name']);
-	$a_password = md5($_POST['a_password']);
-
-	if ($result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE  user_loginname = '$a_name' AND user_password = '$a_password' AND user_perms = '0'"))
-	{
-
-		if ($row = mysql_fetch_array($result))
-		{
+	if (($row = e_verify()) !== FALSE) {
 			extract($row);
 
 			$result = mysql_query("SELECT * FROM ".$mySQLprefix."core WHERE e107_name='pref_backup' ");
@@ -109,8 +102,8 @@ if (isset($_POST['usubmit'])) {
 			<input type='radio' name='mode' value='1'> <span class='headertext2'>Manually edit core values</span><br />
 			<input type='radio' name='mode' value='2'> <span class='headertext2'>Reset core to default values</span><br />". ($bu_exist ? "<input type='radio' name='mode' value='3'> <span class='headertext2'>Restore core backup</span>" : "<br />( There is no backed-up core - unable to offer option to restore backup )")."<br /><br /><input class='button' type='submit' name='reset_core_sub' value='Select method then click here to continue' />
 				 
-			<input type='hidden' name='a_name' value='$a_name' />
-			<input type='hidden' name='a_password' value='$a_password' />
+			<input type='hidden' name='a_name' value='".$_POST['a_name']."' />
+			<input type='hidden' name='a_password' value='".$_POST['a_password']."' />
 				 
 			</form>
 			</td>
@@ -119,10 +112,6 @@ if (isset($_POST['usubmit'])) {
 			";
 
 			$END = TRUE;
-		} else {
-			$message = "<b>Administrator not found in database / incorrect password / insufficient permissions - aborting.</b><br />";
-			$END = TRUE;
-		}
 	} else {
 		$message = "<b>Administrator not found in database / incorrect password / insufficient permissions - aborting.</b><br />";
 		$END = TRUE;
@@ -132,28 +121,22 @@ if (isset($_POST['usubmit'])) {
 
 if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2)
 {
-	if(!$ACTIVE) exit;
-	$a_name = preg_replace("/\W/", '',  $_POST['a_name']);
-	$a_password = preg_replace("/\W/", '', $_POST['a_password']);
-	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_loginname='$a_name' AND user_password = '$a_password' AND user_perms = '0' ")) {
-		exit;
-	}
-	$at = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
-	if (!$at) {
+	if (($at = e_verify()) === FALSE) {		
 		exit;
 	}
 
 	$tmpr = substr(str_replace($_SERVER['DOCUMENT_ROOT'], "", $_SERVER['SCRIPT_FILENAME']), 1);
 	$root = "/".substr($tmpr, 0, strpos($tmpr, "/"))."/";
-	define("e_HTTP", $root);
+	$e_HTTP = $root;
 	$admin_directory = "e107_admin";
-	$url_prefix = substr($_SERVER['PHP_SELF'], strlen(e_HTTP), strrpos($_SERVER['PHP_SELF'], "/")+1-strlen(e_HTTP));
+	$url_prefix = substr($_SERVER['PHP_SELF'], strlen($e_HTTP), strrpos($_SERVER['PHP_SELF'], "/")+1-strlen($e_HTTP));
 	$num_levels = substr_count($url_prefix, "/");
+	$link_prefix = '';
 	for($i = 1; $i <= $num_levels; $i++) {
 		$link_prefix .= "../";
 	}
 
-	define("e_ADMIN", e_HTTP.$admin_directory."/");
+	define("e_ADMIN", $e_HTTP.$admin_directory."/");
 	define("e_SELF", "http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
 	define("e_QUERY", preg_replace("#&|/?PHPSESSID.*#i", "", $_SERVER['QUERY_STRING']));
 	define('e_BASE', $link_prefix);
@@ -192,16 +175,7 @@ function recurse_pref($ppost) {
 
 if (isset($_POST['coreedit_sub']))
 {
-	if(!$ACTIVE) exit;
-	$a_name = preg_replace("/\W/", '',  $_POST['a_name']);
-	$a_password = preg_replace("/\W/", '', $_POST['a_password']);
-	
-	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_loginname='$a_name' AND user_password='$a_password' AND user_perms='0' "))
-	{
-		exit;
-	}
-	$at = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
-	if (!$at) {
+	if (($at = e_verify()) === FALSE) {		
 		exit;
 	}
 
@@ -218,15 +192,7 @@ if (isset($_POST['coreedit_sub']))
 }
 
 if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 3) {
-	if(!$ACTIVE) exit;
-	$a_name = preg_replace("/\W/", '',  $_POST['a_name']);
-	$a_password = preg_replace("/\W/", '', $_POST['a_password']);
-	
-	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_loginname='$a_name' AND user_password='$a_password' AND user_perms='0' ")) {
-		exit;
-	}
-	$at = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
-	if (!$at) {
+	if (($at = e_verify()) === FALSE) {		
 		exit;
 	}
 
@@ -248,17 +214,7 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 3) {
 
 if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 1)
 {
-	if(!$ACTIVE) exit;
-	$a_name = preg_replace("/\W/", '', $_POST['a_name']);
-	$a_password = preg_replace("/\W/", '', $_POST['a_password']);
-	if (!$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_loginname='$a_name' AND user_password='$a_password' AND user_perms='0' "))
-	{
-		exit;
-	}
-
-	$at = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
-	if(!$at)
-	{
+	if (($at = e_verify()) === FALSE) {		
 		exit;
 	}
 
@@ -289,7 +245,7 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 1)
 		<td colspan='2' style='text-align:center'><br /><input class='button' type='submit' name='coreedit_sub' value='Save Core Settings' /></td>
 		</tr>
 		</table>
-		<input type='hidden' name='a_name' value='".$a_name."' />
+		<input type='hidden' name='a_name' value='".$_POST['a_name']."' />
 		<input type='hidden' name='a_password' value='".preg_replace("/\W/", '', $_POST['a_password'])."' />
 		</form>";
 	$END = TRUE;
@@ -334,5 +290,30 @@ echo "<span class='headertext2'>
 	</div>
 	</body>
 	</html>";
+	
+function e_verify() {
+	global $mySQLprefix, $ACTIVE;
+	if ($ACTIVE !== TRUE) {
+		exit;
+	}
+	if (MAGIC_QUOTES_GPC == FALSE) {
+		$a_name = addslashes($_POST['a_name']);
+	}
+	else
+	{
+		$a_name = $_POST['a_name'];
+	}
+	
+	$a_name = str_replace('/*', '', $a_name);
+	
+	$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='".$a_name."'");
+	$row = mysql_fetch_array($result);
+	
+	if (($row['user_password'] === md5($_POST['a_password'])) && ($row['user_perms'] === '0') && ($ACTIVE === TRUE)) {
+		return $row;
+	} else {
+		return FALSE;
+	}
+}
 
 ?>
