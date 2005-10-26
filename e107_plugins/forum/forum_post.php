@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-09-01 12:33:37 $
-|     $Author: stevedunstan $
+|     $Revision: 1.50 $
+|     $Date: 2005-10-26 08:23:30 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -197,7 +197,7 @@ if (isset($_POST['fpreview']))
 if (isset($_POST['newthread']) || isset($_POST['reply']))
 {
 	$poster = array();
-	if ((isset($_POST['newthread']) && trim(chop($_POST['subject'])) == "") || trim(chop($_POST['post'])) == "")
+	if ((isset($_POST['newthread']) && trim($_POST['subject']) == "") || trim($_POST['post']) == "")
 	{
 		message_handler("ALERT", 5);
 	}

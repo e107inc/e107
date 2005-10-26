@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/new.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-06-07 13:37:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.17 $
+|     $Date: 2005-10-26 08:23:30 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -316,7 +316,7 @@ if($ITEMS = $sql->db_Select("user", "user_id, user_name", "user_join>$lvisit AND
 
 
 
-if(trim(chop($mainStr)) == "")
+if(trim($mainStr) == "")
 {
 	$mainStr = LIST_4;
 }

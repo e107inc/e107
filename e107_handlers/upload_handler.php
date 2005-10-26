@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.13 $
-|   $Date: 2005-10-20 01:45:05 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.14 $
+|   $Date: 2005-10-26 08:23:30 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -31,7 +31,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "") {
 
 	$a = 0;
 	foreach($allowed_filetypes as $v) {
-		$allowed_filetypes[$a] = trim(chop($v));
+		$allowed_filetypes[$a] = trim($v);
 		$a++;
 	}
 

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-08-29 16:13:03 $
-|     $Author: streaky $
+|     $Revision: 1.14 $
+|     $Date: 2005-10-26 08:23:30 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -189,7 +189,7 @@ class pageClass
 		}
 
 
-		if(!trim(chop($pages[0])))
+		if(!trim($pages[0]))
 		{
 			$count = 0;
 			foreach($pages as $page)

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2005-10-05 22:39:06 $
+|     $Revision: 1.61 $
+|     $Date: 2005-10-26 08:23:30 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -127,7 +127,7 @@ if (isset($_POST['adduser'])) {
 		message_handler("P_ALERT", USRLAN_92);
 		$error = TRUE;
 	}
-	$_POST['name'] = trim(chop(str_replace("&nbsp;", "", $_POST['name'])));
+	$_POST['name'] = trim(str_replace("&nbsp;", "", $_POST['name']));
 	if ($_POST['name'] == "Anonymous") {
 		message_handler("P_ALERT", USRLAN_65);
 		$error = TRUE;

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-10-07 13:50:11 $
+|     $Revision: 1.22 $
+|     $Date: 2005-10-26 08:23:30 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -456,14 +456,14 @@ class page
 			{
 				preg_match('#<CAPTION(.*?)CAPTION#si', $contents, $match);
 			}
-			$page_title = $tp -> toDB(trim(chop($match[1])));
+			$page_title = $tp -> toDB(trim($match[1]));
 			
 			if(!preg_match('#\$text = "(.*?)";#si', $contents, $match))
 			{
 				preg_match('#TEXT(.*?)TEXT#si', $contents, $match);
 			}
 
-			$page_text = $tp -> toDB(trim(chop($match[1])));
+			$page_text = $tp -> toDB(trim($match[1]));
 			$filetime = filemtime($filename);
 
 			if(!$sql -> db_Select("page", "*", "page_title='$page_title' "))
