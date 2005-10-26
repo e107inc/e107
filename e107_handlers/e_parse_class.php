@@ -11,18 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.108 $
-|     $Date: 2005-10-26 08:42:08 $
-|     $Author: sweetas $
+|     $Revision: 1.109 $
+|     $Date: 2005-10-26 23:46:39 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
-
+define ("E_NL", chr(2));
 class e_parse
 {
 	var $e_sc;
 	var $e_bb;
 	var $e_pf;
-	//	var $e_lw;
 	var $e_emote;
 	var $e_hook;
 	var $search = array('&#39;', '&#039;', '&quot;', 'onerror', '&gt;', '&amp;#039;', '&amp;quot;');
@@ -197,7 +196,7 @@ class e_parse
 						}
 						while ($store != $value);
 					}
-					if (!count($innbr)) $value = str_replace("\r", "[E_NL]", $value);
+					if (!count($innbr)) $value = str_replace("\r", E_NL, $value);
 				}
 			}
 			$drain .= $value;
@@ -333,7 +332,7 @@ class e_parse
 		}
 		$text = str_replace($this -> search, $this -> replace, $text);
 		if (strpos($modifiers, 'nobreak') === FALSE) {
-			$text = preg_replace("#[\r]*\n[\r]*#", "[E_NL]", $text);
+			$text = preg_replace("#[\r]*\n[\r]*#", E_NL, $text);
 		}
 
 		// Start parse [bb][/bb] codes
@@ -402,7 +401,8 @@ class e_parse
 		{
 			$nl_replace = "\n";
 		}
-		$text = preg_replace("#\[\s*?E_NL\s*?\]#s", $nl_replace, $text);
+//		$text = preg_replace("#\[\s*?E_NL\s*?\]#s", $nl_replace, $text);
+		$text = str_replace(E_NL, $nl_replace, $text);
 		//		$text = str_replace("&amp;", "&", $text);
 		//		$text = str_replace(array("&", "&pound;"), array("&amp;", ""), $text);
 		return trim($text);

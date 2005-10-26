@@ -22,7 +22,7 @@ if(preg_match("#\[list\](.*?)\[/list\]#si", $full_text, $match))
 	$listtext = "\n<ul>\n";
 	foreach($listitems as $item)
 	{
-		if($item && $item != "[E_NL]")
+		if($item && $item != E_NL)
 		{
 			$listtext .= "<li>$item</li>\n";
 		}
@@ -38,7 +38,7 @@ else if(preg_match("#\[list=(.*?)\](.*?)\[/list\]#si", $full_text, $match))
 	$listtext = "\n<ol style='list-style-type: $type'>\n";
 	foreach($listitems as $item)
 	{
-		if($item && $item != "[E_NL]")
+		if($item && $item != E_NL)
 		{
 			$listtext .= "<li>$item</li>\n";
 		}
