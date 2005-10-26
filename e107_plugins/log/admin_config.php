@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-08-31 12:39:51 $
-|     $Author: stevedunstan $
+|     $Revision: 1.15 $
+|     $Date: 2005-10-26 08:23:30 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -326,7 +326,7 @@ function rempagego()
 		$page = str_replace("\\", "", $page);
 		$info['url'] = preg_replace("/(\s)|(\')|(\")|(eself)|(&nbsp;)/", "", $info['url']);
 		$info['url'] = str_replace("\\", "", $info['url']);
-		$page = trim(chop($page));
+		$page = trim($page);
 		if($page && !strstr($page, "cache") && !strstr($page, "file:"))
 		{
 			if($loop){ $data .= ",\n"; }

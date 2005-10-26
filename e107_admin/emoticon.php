@@ -255,7 +255,7 @@ class emotec
 					$contentArray = array();
 					foreach($pakconf as $line)
 					{
-						if(trim(chop($line)) && strstr($line, "=+") && !strstr($line, ".txt") && !strstr($line, ".html") && !strstr($line, "cvs")) $contentArray[] = $line;
+						if(trim($line) && strstr($line, "=+") && !strstr($line, ".txt") && !strstr($line, ".html") && !strstr($line, "cvs")) $contentArray[] = $line;
 					}
 					$emotecount = count($contentArray);
 					$confArray = array();
@@ -263,7 +263,7 @@ class emotec
 					{
 						$tmp = explode("=+:", $pakline);
 						$confIC = str_replace(".", "!", $tmp[0]);
-						$confArray[$confIC] = trim(chop($tmp[2]));
+						$confArray[$confIC] = trim(tmp[2]);
 					}
 					$tmp = addslashes(serialize($confArray));
 					$sql->db_Insert("core", "'emote_".$value."', '$tmp' ");

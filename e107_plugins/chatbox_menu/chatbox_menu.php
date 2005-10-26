@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-09-02 18:19:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.50 $
+|     $Date: 2005-10-26 08:23:30 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -36,11 +36,11 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 	else
 	{
 		$cmessage = $_POST['cmessage'];
-		$nick = trim(chop(preg_replace("/\[.*\]/si", "", $_POST['nick'])));
+		$nick = trim(preg_replace("/\[.*\]/si", "", $_POST['nick']));
 		$fp = new floodprotect;
 		if($fp -> flood("chatbox", "cb_datestamp"))
 		{
-			if((strlen(trim(chop($cmessage))) < 1000) && trim(chop($cmessage)) != "")
+			if((strlen(trim($cmessage)) < 1000) && trim($cmessage) != "")
 			{
 				$cmessage = $tp -> toDB($cmessage);
 				if($sql -> db_Select("chatbox", "*", "cb_message='$cmessage' AND cb_datestamp+84600>".time()))

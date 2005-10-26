@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-09-29 00:52:18 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.16 $
+|     $Date: 2005-10-26 08:23:30 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -24,7 +24,7 @@ if (!USER) {
 	exit;
 }
 	
-$_POST['f_query'] = trim(chop($_POST['f_query']));
+$_POST['f_query'] = trim($_POST['f_query']);
 
 if (e_QUERY)
 {

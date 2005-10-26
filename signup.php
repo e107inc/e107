@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2005-10-07 13:50:32 $
+|     $Revision: 1.63 $
+|     $Date: 2005-10-26 08:23:30 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -179,7 +179,7 @@ if (isset($_POST['register']))
 		$error = TRUE;
 	}
 
-	$_POST['name'] = trim(chop(preg_replace("/&nbsp;|\#|\=/", "", $_POST['name'])));
+	$_POST['name'] = trim(preg_replace("/&nbsp;|\#|\=/", "", $_POST['name']));
 	if ($_POST['name'] == "Anonymous") {
 		$error_message .= LAN_103."\\n";
 		$error = TRUE;
