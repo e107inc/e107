@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore/resetcore.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-10-26 12:42:32 $
+|     $Revision: 1.9 $
+|     $Date: 2005-10-26 12:43:21 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ If you don't, the script will not be usable.
 */
 
 
-$ACTIVE = TRUE;
+$ACTIVE = FALSE;
 
 
 /* #################################################### */
