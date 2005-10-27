@@ -263,7 +263,7 @@ class emotec
 					{
 						$tmp = explode("=+:", $pakline);
 						$confIC = str_replace(".", "!", $tmp[0]);
-						$confArray[$confIC] = trim(tmp[2]);
+						$confArray[$confIC] = trim($tmp[2]);
 					}
 					$tmp = addslashes(serialize($confArray));
 					$sql->db_Insert("core", "'emote_".$value."', '$tmp' ");
