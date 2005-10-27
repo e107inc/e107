@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.15 $
-|    $Date: 2005-08-31 16:32:34 $
-|    $Author: lisa_ $
+|    $Revision: 1.16 $
+|    $Date: 2005-10-27 08:52:55 $
+|    $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -189,19 +189,19 @@ class linkclass {
 		}
 		switch ($link_open_type) {
 			case 1:
-			$link_append = "<a href='".e_SELF."?view.".$id."' rel='external'>";
+			$link_append = "<a href='".e_PLUGIN."links_page/links.php?view.".$id."' rel='external'>";
 			break;
 			case 2:
-			$link_append = "<a href='".e_SELF."?view.".$id."'>";
+			$link_append = "<a href='".e_PLUGIN."links_page/links.php?view.".$id."'>";
 			break;
 			case 3:
-			$link_append = "<a href='".e_SELF."?view.".$id."'>";
+			$link_append = "<a href='".e_PLUGIN."links_page/links.php?view.".$id."'>";
 			break;
 			case 4:
-			$link_append = "<a href=\"javascript:open_window('".e_SELF."?view.".$id."')\">";
+			$link_append = "<a href=\"javascript:open_window('".e_PLUGIN."links_page/links.php?view.".$id."')\">";
 			break;
 			default:
-			$link_append = "<a href='".e_SELF."?view.".$id."'>";
+			$link_append = "<a href='".e_PLUGIN."links_page/links.php?view.".$id."'>";
 		}
 		return $link_append;
 	}
