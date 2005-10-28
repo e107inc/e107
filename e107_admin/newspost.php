@@ -11,13 +11,14 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.96 $
-|   $Date: 2005-10-21 01:32:16 $
+|   $Revision: 1.97 $
+|   $Date: 2005-10-28 00:23:39 $
 |   $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 
 */
 require_once("../class2.php");
+
 
 if (!getperms("H")) {
 	header("location:".e_BASE."index.php");
@@ -948,8 +949,11 @@ class newspost {
 		{
 			$_POST['news_datestamp'] = time();
 		}
-		$_POST['admin_id'] = USERID;
-		$_POST['admin_name'] = USERNAME;
+		
+		if($sub_action == 'edit')
+		{
+			$_POST['news_author'] = -1;
+		}
 
 		if ($id && $sub_action != "sn" && $sub_action != "upload")
 		{
