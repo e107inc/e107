@@ -11,15 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-10-20 01:18:21 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.45 $
+|     $Date: 2005-10-28 13:06:17 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
 require_once("../class2.php");
 $e_sub_cat = 'mail';
-$e_wysiwyg = "email_body";
+if (!isset($_POST['submit'])) {
+	$e_wysiwyg = "email_body";
+}
 set_time_limit(180);
 session_write_close();
 require_once(e_ADMIN."auth.php");
@@ -142,7 +144,7 @@ if (isset($_POST['submit'])) {
 		<div>";
 
     foreach($_POST as $key=>$val){
-		$text .= "<input type='hidden' name='$key' value='".stripslashes($tp->post_toForm($val))."' />\n";
+		$text .= "<input type='hidden' name='".$key."' value='".stripslashes($tp->post_toForm($val))."' />\n";
     }
 
 	$text .= "</div>";
