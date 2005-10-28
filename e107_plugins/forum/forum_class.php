@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.41 $
+|     $Date: 2005-10-28 11:11:11 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -678,7 +678,7 @@ class e107forum
 			$thread_name = $tp->toText($parent_thread[0]['thread_name']);
 			$datestamp = $gen->convert_date($post_time, "long");
 			$email_post = $tp->toHTML($thread_thread, TRUE);
-			$mail_link = SITEURL.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$thread_parent.".last";
+			$mail_link = "<a href='".SITEURL.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$thread_parent.".last'>".SITEURL.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$thread_parent.".last</a>";
 			if(!isset($pref['forum_eprefix']))
 			{
 				$pref['forum_eprefix'] = "[forum]";
