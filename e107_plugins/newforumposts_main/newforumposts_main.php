@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-06-28 18:37:04 $
+|     $Revision: 1.19 $
+|     $Date: 2005-10-28 23:50:51 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -60,8 +60,8 @@ else if(!$NEWFORUMPOSTSTYLE_HEADER) {
 $results = $sql->db_Select_gen("
 SELECT t.thread_id, t.thread_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class, lp.user_name AS lp_name
 FROM #forum_t AS t
-LEFT JOIN #user AS u ON t.thread_user = u.user_id
-LEFT JOIN #user AS lp ON t.thread_lastuser = lp.user_id  
+LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
+LEFT JOIN #user AS lp ON FLOOR(t.thread_lastuser) = lp.user_id  
 LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id 
 WHERE f.forum_id = t.thread_forum_id AND t.thread_parent=0 AND f.forum_class IN (".USERCLASS_LIST.") 
