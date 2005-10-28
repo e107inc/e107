@@ -13,7 +13,7 @@
 	{
 		$lvisit = $this -> getlvisit();
 		$qry = "
-		SELECT tp.thread_name AS parent_name, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name, t.thread_thread, t.thread_id, t.thread_views as tviews, t.thread_name, tp.thread_parent, tp.thread_datestamp, t.thread_user, tp.thread_views, tp.thread_lastpost, tp.thread_lastuser, tp.thread_total_replies 
+		SELECT tp.thread_name AS parent_name, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name, t.thread_thread, t.thread_id, t.thread_views as tviews, t.thread_name, tp.thread_parent, t.thread_datestamp, t.thread_user, tp.thread_views, tp.thread_lastpost, tp.thread_lastuser, tp.thread_total_replies 
 		FROM #forum_t AS t 
 		LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id 
 		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id 
@@ -25,6 +25,7 @@
 	}
 	else
 	{
+		
 		$qry = "
 		SELECT t.thread_id, t.thread_name AS parent_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name 
 		FROM #forum_t AS t 
@@ -33,6 +34,7 @@
 		LEFT JOIN #user AS lp ON t.thread_lastuser = lp.user_id 
 		WHERE t.thread_parent=0 AND f.forum_class REGEXP '".e_CLASS_REGEXP."' 
 		ORDER BY t.thread_lastpost DESC LIMIT 0,".$arr[7];
+		
 	}
 
 	if(!$results = $sql->db_Select_gen($qry))
@@ -69,7 +71,7 @@
 			}
 			
 			$gen = new convert;
-			$r_datestamp = $gen->convert_date($thread_lastpost, "short");
+			$r_datestamp = $gen->convert_date($thread_datestamp, "short");
 			if($thread_total_replies)
 			{
 				$LASTPOST = "";
@@ -104,7 +106,7 @@
 			$HEADING	= "<a href='".$path."forum_viewtopic.php?$thread_id' title='".$parent_name."'>".$rowheading."</a>";
 			$AUTHOR		= ($arr[3] ? ($thread_anon ? $thread_user : "<a href='".e_BASE."user.php?id.$thread_user'>$user_name</a>") : "");
 			$CATEGORY	= ($arr[4] ? "<a href='".$path."forum_viewforum.php?$forum_id'>$forum_name</a>" : "");
-			$DATE		= ($arr[5] ? $this -> getListDate($thread_lastpost, $mode) : "");
+			$DATE		= ($arr[5] ? $this -> getListDate($thread_datestamp, $mode) : "");
 			$ICON		= $bullet;
 			$VIEWS		= $thread_views;
 			$REPLIES	= $thread_total_replies;
