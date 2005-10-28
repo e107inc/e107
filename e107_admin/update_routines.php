@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.141 $
-|     $Date: 2005-09-21 20:52:43 $
-|     $Author: e107coders $
+|     $Revision: 1.142 $
+|     $Date: 2005-10-28 18:05:04 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -351,12 +351,12 @@ function update_61x_to_700($type='') {
 		//  #########  McFly's 0.7 Updates ############
 
 		// parse table obsolete
-		if ($error='') {
+		if ($error=='') {
 			mysql_query('DROP TABLE `'.MPREFIX.'parser`');
 			catch_error();
 		}
 
-		if ($error='') {
+		if ($error=='') {
 			mysql_query("ALTER TABLE ".MPREFIX."menus ADD menu_path VARCHAR( 100 ) NOT NULL");
 			catch_error();
 
@@ -520,7 +520,7 @@ function update_61x_to_700($type='') {
 
 
 		// Update user_class field to use #,#,# instead of #.#.#. notation
-		if ($error='') {
+		if ($error=='') {
 			if ($sql->db_Select('user', 'user_id, user_class')) {
 				$sql2 = new db;
 				while ($row = $sql->db_Fetch()) {
@@ -537,7 +537,7 @@ function update_61x_to_700($type='') {
 			}
 		}
 
-		if ($error='') {
+		if ($error=='') {
 			mysql_query("ALTER TABLE ".MPREFIX."generic` CHANGE gen_chardata gen_chardata TEXT NOT NULL");
 			catch_error();
 		}
