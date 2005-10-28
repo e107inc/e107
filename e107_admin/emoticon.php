@@ -1,17 +1,22 @@
 <?php
 /*
-+---------------------------------------------------------------+
-|        e107 website system
-|        /admin/emoticon_conf.php
++ ----------------------------------------------------------------------------+
+|     e107 website system
 |
-|        ©Steve Dunstan 2001-2002
-|        http://e107.org
-|        jalist@e107.org
+|     ï¿½Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
 |
-|        Released under the terms and conditions of the
-|        GNU General Public License (http://gnu.org).
-+---------------------------------------------------------------+
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_admin/emoticon.php,v $
+|     $Revision: 1.27 $
+|     $Date: 2005-10-28 06:54:27 $
+|     $Author: streaky $
++----------------------------------------------------------------------------+
 */
+
 require_once("../class2.php");
 if (!getperms("F")) {
 	header("location:".e_BASE."index.php");
@@ -80,7 +85,7 @@ class emotec
 	function listPacks()
 	{
 
-		global $ns, $fl, $pref, $sql;
+		global $ns, $fl, $pref;
 
 		$text = "<div style='text-align:center'>
 		<form method='post' action='".e_SELF."'>
@@ -146,7 +151,7 @@ class emotec
 	function emoteConf($packID)
 	{
 
-		global $ns, $fl, $sql, $pref, $sysprefs;
+		global $ns, $fl, $pref, $sysprefs;
 		$corea = "emote_".$packID;
 
 		$emotecode = $sysprefs -> getArray($corea);
@@ -155,7 +160,7 @@ class emotec
 		$emoteArray = $fl -> get_files(e_IMAGE."emotes/".$packID, "", $reject);
 
 		$eArray = array();
-		foreach($emoteArray as $key => $value)
+		foreach($emoteArray as $value)
 		{
 			if(!strstr($value['fname'], ".php") && !strstr($value['fname'], ".txt") && !strstr($value['fname'], ".pak") && !strstr($value['fname'], ".xml") && !strstr($value['fname'], "phpBB") && !strstr($value['fname'], ".html"))
 			{
@@ -226,7 +231,7 @@ class emotec
 	function installCheck()
 	{
 		global $sql, $fl;
-		foreach($this -> packArray as $key => $value)
+		foreach($this -> packArray as $value)
 		{
 			if(!$sql -> db_Select("core", "*", "e107_name='emote_".$value."' "))
 			{
@@ -257,7 +262,6 @@ class emotec
 					{
 						if(trim($line) && strstr($line, "=+") && !strstr($line, ".txt") && !strstr($line, ".html") && !strstr($line, "cvs")) $contentArray[] = $line;
 					}
-					$emotecount = count($contentArray);
 					$confArray = array();
 					foreach($contentArray as $pakline)
 					{
@@ -323,4 +327,5 @@ class emotec
 }
 
 require_once("footer.php");
+
 ?>
