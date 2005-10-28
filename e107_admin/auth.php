@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/auth.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-08-23 00:44:23 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2005-10-28 18:02:50 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
@@ -93,7 +93,8 @@ class auth {
 		$au->tablerender(ADLAN_92, $text);
 	}
 	 
-	function authcheck($authname, $authpass) {
+	function authcheck($authname, $authpass)
+	{
 		/*
 		# Admin auth check
 		# - parameter #1:                string $authname, entered name
@@ -103,18 +104,25 @@ class auth {
 		*/
 		$sql_auth = new db;
 		$authname = preg_replace("/\sOR\s|\=|\#/", "", $authname);
-		if ($sql_auth->db_Select("user", "*", "user_loginname='$authname' AND user_admin='1' ")) {
-			if ($sql_auth->db_Select("user", "*", "user_loginname='$authname' AND user_password='".md5($authpass)."' AND user_admin='1' ")) {
+		if ($sql_auth->db_Select("user", "*", "user_loginname='$authname' AND user_admin='1' "))
+		{
+			$row = $sql_auth->db_Fetch();
+		}
+		else
+		{
+			if ($sql_auth->db_Select("user", "*", "user_name='$authname' AND user_admin='1' "))
+			{
 				$row = $sql_auth->db_Fetch();
-				return $row;
-			} else {
-				$row = array("authfail");
+			}
+		}
+		if($row['user_id'])
+		{
+			if($row['user_password'] == md5($authpass))
+			{
 				return $row;
 			}
-		} else {
-			$row = array("authfail");
-			return $row;
 		}
+		return array("authfail");
 	}
 }
 	
