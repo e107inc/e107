@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-10-20 11:12:26 $
-|     $Author: e107coders $
+|     $Revision: 1.28 $
+|     $Date: 2005-10-28 16:02:28 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -36,9 +36,12 @@ The following should be using $eplug_rss in their plugin.php file (see chatbox)
 */
 
 require_once("../../class2.php");
-if(!require_once("languages/".e_LANGUAGE.".php")){
-	require_once("languages/English.php");
+if (is_readable(e_PLUGIN."rss_menu/languages/".e_LANGUAGE.".php")) {
+	include_once(e_PLUGIN."rss_menu/languages/".e_LANGUAGE.".php");
+} else {
+	include_once(e_PLUGIN."rss_menu/languages/English.php");
 }
+
 $namearray[1] = RSS_NEWS;
 $namearray[2] = RSS_ART;
 $namearray[3] = RSS_REV;
