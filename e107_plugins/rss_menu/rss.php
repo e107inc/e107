@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-10-29 01:38:29 $
+|     $Revision: 1.30 $
+|     $Date: 2005-10-29 02:23:46 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -418,7 +418,7 @@ class rssCreate {
 						echo "
 							<item>
 							<title>".$value['title']."</title>
-							<description>".$tp->e_bb->parseBBCodes($value['description'], 'strip')."</description>
+							<description>".$tp->toHTML($value['description'], TRUE)."</description>
 							<author>".$value['author']."</author>
 							<link>".$value['link']."</link>
 							</item>";
@@ -469,7 +469,7 @@ class rssCreate {
 					<item>
 					<title>".$value['title']."</title>
 					<link>".$value['link']."</link>
-					<description>".$tp->e_bb->parseBBCodes($value['description'], 'strip')."</description>
+					<description>".$tp->toHTML($value['description'], TRUE)."</description>
 					".$value['category']."
 					<comments>".$value['comment']."</comments>
 					<author>".$value['author']."</author>\n";
@@ -527,7 +527,7 @@ class rssCreate {
 					<dc:date>".strftime("%a, %d %b %Y %H:%M:00", ($time + $this -> offset))."</dc:date>
 					<dc:creator>".$value['author']."</dc:creator>
 					<dc:subject>".$value['category_name']."</dc:subject>
-					<description>".$tp->e_bb->parseBBCodes($value['description'], 'strip')."</description>
+					<description>".$tp->toHTML($value['description'], TRUE)."</description>
 					</item>";
 			}
 			echo "
