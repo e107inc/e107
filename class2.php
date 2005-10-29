@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.226 $
-|     $Date: 2005-10-12 20:59:10 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.227 $
+|     $Date: 2005-10-29 13:24:22 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -1073,7 +1073,7 @@ function init_session() {
 			define("USERIMAGE", $result['user_image']);
 			define("USERSESS", $result['user_sess']);
 
-			if ($result['user_currentvisit'] + 3600 < time()) {
+			if ($result['user_currentvisit'] + 3600 < time() || !$result['user_lastvisit']) {
 				$result['user_lastvisit'] = $result['user_currentvisit'];
 				$result['user_currentvisit'] = time();
 				$sql->db_Update("user", "user_visits = user_visits + 1, user_lastvisit = '{$result['user_lastvisit']}', user_currentvisit = '{$result['user_currentvisit']}', user_viewed = '' WHERE user_name='".USERNAME."' ");
