@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2005-10-26 08:23:30 $
-|     $Author: sweetas $
+|     $Revision: 1.51 $
+|     $Date: 2005-10-29 00:14:20 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -215,7 +215,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		else
 		{
 			$poster = getuser($_POST['anonname']);
-			if (intval($poster['post_userid']))
+			if ($poster == -1)
 			{
 				require_once(HEADERF);
 				$ns->tablerender(LAN_20, LAN_310);
@@ -568,7 +568,7 @@ function getuser($name)
 			}
 			else
 			{
-				return FALSE;
+				return -1;
 			}
 		}
 		else
