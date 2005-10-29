@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-10-28 16:02:28 $
-|     $Author: sweetas $
+|     $Revision: 1.29 $
+|     $Date: 2005-10-29 01:38:29 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -36,6 +36,11 @@ The following should be using $eplug_rss in their plugin.php file (see chatbox)
 */
 
 require_once("../../class2.php");
+if (!is_object($tp->e_bb)) {
+	require_once(e_HANDLER.'bbcode_handler.php');
+	$tp->e_bb = new e_bbcode;
+}
+
 if (is_readable(e_PLUGIN."rss_menu/languages/".e_LANGUAGE.".php")) {
 	include_once(e_PLUGIN."rss_menu/languages/".e_LANGUAGE.".php");
 } else {
@@ -413,7 +418,7 @@ class rssCreate {
 						echo "
 							<item>
 							<title>".$value['title']."</title>
-							<description>".$value['description']."</description>
+							<description>".$tp->e_bb->parseBBCodes($value['description'], 'strip')."</description>
 							<author>".$value['author']."</author>
 							<link>".$value['link']."</link>
 							</item>";
@@ -464,7 +469,7 @@ class rssCreate {
 					<item>
 					<title>".$value['title']."</title>
 					<link>".$value['link']."</link>
-					<description>".$value['description']."</description>
+					<description>".$tp->e_bb->parseBBCodes($value['description'], 'strip')."</description>
 					".$value['category']."
 					<comments>".$value['comment']."</comments>
 					<author>".$value['author']."</author>\n";
@@ -522,7 +527,7 @@ class rssCreate {
 					<dc:date>".strftime("%a, %d %b %Y %H:%M:00", ($time + $this -> offset))."</dc:date>
 					<dc:creator>".$value['author']."</dc:creator>
 					<dc:subject>".$value['category_name']."</dc:subject>
-					<description>".$value['description']."</description>
+					<description>".$tp->e_bb->parseBBCodes($value['description'], 'strip')."</description>
 					</item>";
 			}
 			echo "
