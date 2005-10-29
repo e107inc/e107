@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2005-10-26 08:23:30 $
-|     $Author: sweetas $
+|     $Revision: 1.51 $
+|     $Date: 2005-10-29 19:35:41 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -133,34 +133,39 @@ if(!$text = $e107cache->retrieve("chatbox"))
 	
 	
 	
-	if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$chatbox_posts, "no_where"))
+	$qry = "
+	SELECT c.*, u.user_name FROM #chatbox AS c
+	LEFT JOIN #user AS u ON FLOOR(c.cb_nick) = u.user_id
+	ORDER BY c.cb_datestamp DESC LIMIT 0, {$chatbox_posts}
+	";
+	
+//	if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$chatbox_posts, "no_where"))
+	if($sql -> db_Select_gen($qry))
 	{
 		$obj2 = new convert;
 		$cbpost = $sql -> db_getList();
 		
 		foreach($cbpost as $cb)
 		{
-			extract($cb);
 			// get available vars
-			list($cb_uid,$cb_nick) = explode(".",$cb_nick,2);
-			//			$cb_nick = preg_replace("/[0-9]+\./", "", $cb_nick);
-			if($cb_uid == 0)
+			list($cb_uid, $cb_nick) = explode(".", $cb['cb_nick'], 2);
+			if($cb['user_name'])
 			{
-				$cb_nick = $tp -> toHTML($cb_nick);
+				$cb_nick = "<a href='".e_BASE."user.php?id.{$cb_uid}'>{$cb['user_name']}</a>";
 			}
 			else
 			{
-				$cb_nick = "<a href='".e_BASE."user.php?id.{$cb_uid}'>{$cb_nick}</a>";
+				$cb_nick = $tp -> toHTML($cb_nick);
 			}
 
-			$datestamp = $obj2->convert_date($cb_datestamp, "short");
+			$datestamp = $obj2->convert_date($cb['cb_datestamp'], "short");
 			if(!$pref['cb_wordwrap']) { $pref['cb_wordwrap'] = 30; }
 			$emotes_active = $pref['cb_emote'] ? 'emotes_on' : 'emotes_off';
-			$cb_message = $tp -> toHTML($cb_message, TRUE, $emotes_active, $cb_uid, $pref['menu_wordwrap']);
+			$cb_message = $tp -> toHTML($cb['$cb_message'], TRUE, $emotes_active, $cb['cb_uid'], $pref['menu_wordwrap']);
 
 			$replace[0] = "["; $replace[1] = "]";
 			$search[0] = "&lsqb;"; $search[1] =  "&rsqb;";
-			$cb_message = str_replace($search, $replace, $cb_message);
+			$cb_message = str_replace($search, $replace, $cb['cb_message']);
 
 			global $CHATBOXSTYLE;
 			if(!$CHATBOXSTYLE)
@@ -176,7 +181,7 @@ if(!$text = $e107cache->retrieve("chatbox"))
 			$search[1] = "/\{TIMEDATE\}(.*?)/si";
 			$replace[1] = $datestamp;
 			$search[2] = "/\{MESSAGE\}(.*?)/si";
-			$replace[2] = ($cb_blocked ? CHATBOX_L6 : $cb_message);
+			$replace[2] = ($cb['cb_blocked'] ? CHATBOX_L6 : $cb_message);
 
 			$text .= preg_replace($search, $replace, $CHATBOXSTYLE);
 
