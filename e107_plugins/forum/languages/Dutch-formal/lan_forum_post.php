@@ -81,7 +81,7 @@ define("LAN_392", "Bij te voegen bestand");
 define("LAN_393", "<b>Let op</b><br />Toegestane bestandstypen:");
 define("LAN_394", "Andere bestandstypen worden direct verwijderd.");
 define("LAN_395", "Maximum grootte");
-define("LAN_396", "bytes");
+define("LAN_396", " bytes");
 define("LAN_397", "Deze discussie is gesloten.");
 define("LAN_398", "In dit forum kan alleen worden gelezen");
 define("LAN_399", "U mag geen berichten plaatsen in dit forum.");

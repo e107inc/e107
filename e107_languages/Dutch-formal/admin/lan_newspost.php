@@ -108,6 +108,7 @@ define("NWSLAN_116", "werkt u eerst de voorkeuren met de gewijzigde paginaweerga
 define("NWSLAN_117", "Instellen titel voor het nieuwsarchief");
 define("NWSLAN_118", "Bekijk afbeeldingen");
 define("NWSLAN_119", "Instellingen opgeslagen");
+define("NWSLAN_120", "Tekst die wordt getoond bovenaan Aanmelden nieuws");
 
 define("LAN_NEWS_5", "Fout! - nieuwsbericht kon niet worden bijgewerkt in de database!");
 define("LAN_NEWS_6", "Nieuws opgevoerd in de database.");
