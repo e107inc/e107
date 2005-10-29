@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/form_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-08-11 18:03:19 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2005-10-29 12:51:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -93,9 +93,9 @@ class form {
 	}
 	 
 	function form_option($form_option, $form_selected = "", $form_value = "", $form_js = "") {
-		$value = ($form_value ? " value='".$form_value."'" : "");
+		$value = ($form_value !== FALSE ? " value='".$form_value."'" : "");
 		$selected = ($form_selected ? " selected='selected'" : "");
-		return "\n<option".$value.$selected." ".$form_js." >".$form_option."</option>";
+		return "\n<option".$value.$selected." ".$form_js.">".$form_option."</option>";
 	}
 	 
 	function form_hidden($form_name, $form_value) {

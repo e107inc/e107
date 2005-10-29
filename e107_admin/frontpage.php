@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/frontpage.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-06-04 20:16:39 $
+|     $Revision: 1.21 $
+|     $Date: 2005-10-29 12:51:52 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ require_once(e_HANDLER.'userclass_class.php');
 $front_page['news'] = array('page' => 'news.php', 'title' => ADLAN_0);
 $front_page['download'] = array('page' => 'download.php', 'title' => ADLAN_24);
 
-if ($sql -> db_Select('page', '*')) {
+if ($sql -> db_Select("page", "*", "page_theme=''")) {
 	$front_page['custom']['title'] = 'Custom Page';
 	while ($row = $sql -> db_Fetch()) {
 		$front_page['custom']['page'][] = array('page' => 'page.php?'.$row['page_id'], 'title' => $row['page_title']);
@@ -225,8 +225,9 @@ class frontpage {
 				$text .= "<td style='width: 50%' class='forumheader3'>".$front_value['title']."</td>";
 				$text .= "<td style='width: 50%' class='forumheader3'>";
 				$text .= $rs -> form_select_open('multipage['.$front_key.']');
+				$type = isset($pref['frontpage']['all']) ? 'all' : $_POST['class'];
 				foreach ($front_value['page'] as $multipage_key => $multipage_value) {
-					$sub_selected = ($pref['frontpage'][$_POST['class']] == $multipage_value['page']) ? TRUE : FALSE;
+					$sub_selected = ($pref['frontpage'][$type] == $multipage_value['page']) ? TRUE : FALSE;
 					$text .= $rs -> form_option($multipage_value['title'], $sub_selected, $multipage_key);
 				}
 				$text .= $rs -> form_select_close();
@@ -261,12 +262,5 @@ class frontpage {
 }
 
 require_once('footer.php');
-
-//$front_page['your_plugin'] = array('page' => $PLUGINS_DIRECTORY.'your_plugin/page.php', 'title' => 'Your Plugin');
-//$front_page['your_plugin']['title'] = 'Your Plugin';
-//$front_page['your_plugin']['page'][] = array('page' => $PLUGINS_DIRECTORY.'your_plugin/page.php?1', 'title' => 'Page 1');
-//$front_page['your_plugin']['page'][] = array('page' => $PLUGINS_DIRECTORY.'your_plugin/page.php?2', 'title' => 'Page 2');
-//$front_page['your_plugin']['page'][] = array('page' => $PLUGINS_DIRECTORY.'your_plugin/page.php?3', 'title' => 'Page 3');
-
 
 ?>
