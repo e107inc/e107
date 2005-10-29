@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-09-29 02:00:25 $
+|     $Revision: 1.48 $
+|     $Date: 2005-10-29 20:30:44 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -291,7 +291,7 @@ if (isset($_POST['updatesettings']))
 			}
 
 			// Update Userclass =======
-			if ($sql->db_Select("userclass_classes", "*", "userclass_editclass = 0"))
+			if ($sql->db_Select("userclass_classes", "*", "userclass_editclass IN (".USERCLASS_LIST.")"))
 			{
 				$ucList = $sql->db_getList();
 				if ($sql->db_Select("user", "user_class", "user_id = '{$inp}'"))
@@ -488,7 +488,8 @@ if ($sql->db_Select("userclass_classes", "*", "userclass_editclass =0"))
 		</td>
 		<td style='width:60%' class='forumheader2'>";
 	$text .= "<table style='width:95%'>";
-	$sql->db_Select("userclass_classes", "*", "userclass_editclass = 0 ORDER BY userclass_name");
+	
+	$sql->db_Select("userclass_classes", "*", "userclass_editclass IN(".USERCLASS_LIST.") ORDER BY userclass_name");
 	while ($row3 = $sql->db_Fetch())
 	{
 		$inclass = check_class($row3['userclass_id'], $curVal['user_class']) ? TRUE : FALSE;
