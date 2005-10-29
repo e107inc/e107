@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-07-14 20:16:18 $
-|     $Author: lisa_ $
+|     $Revision: 1.37 $
+|     $Date: 2005-10-29 13:46:45 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -69,20 +69,6 @@ if (USER == TRUE || ADMIN == TRUE) {
 
 		// ------------ Article Stats -----------
 
-		if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_articles'] == true) {
-			$new_articles = 0;
-			$new_articles = $sql->db_Select('content', '(content_class)', 'content_type = 0 AND `content_datestamp` > '.$time);
-			while ($row = $sql->db_Fetch()) {
-				if (!check_class($row['content_class'])) {
-					$new_articles--;
-				}
-			}
-			$new_total += $new_articles;
-			if (!$new_articles) {
-				$new_articles = LOGIN_MENU_L26;
-			}
-			$NewItems[] = $new_articles.' '.($new_articles == 1 ? LOGIN_MENU_L29 : LOGIN_MENU_L30);
-		}
 		if (isset($menu_pref['login_menu']) && $menu_pref['login_menu']['new_comments'] == true) {
 			$new_comments = 0;
 			$new_comments = $sql->db_Select('comments', '*', '`comment_datestamp` > '.$time);
@@ -163,7 +149,9 @@ if (USER == TRUE || ADMIN == TRUE) {
 		if (isset($NewItems) && $NewItems) {
 			$text .= '<br /><br /><span class="smalltext">'.LOGIN_MENU_L25.'<br />'.implode(',<br />', $NewItems).'</span>';
 			if ($new_total) {
+				if ($sql -> db_Select("plugin", "plugin_installflag", "plugin_path='list_new' AND plugin_installflag='1'")) {
 					$text .= '<br /><a href="'.e_PLUGIN.'list_new/list.php?new">'.LOGIN_MENU_L24.'</a>';
+				}
 			}
 		}
 
