@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-08-31 16:32:34 $
-|     $Author: lisa_ $
+|     $Revision: 1.14 $
+|     $Date: 2005-10-30 13:50:11 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -108,39 +108,35 @@ $LINK_MAIN_TABLE_END_ALL = "
 
 // LINKS ITEM ----------------------------------------------------------------------------
 
-$sc_style['LINK_BUTTON']['pre'] = "<td rowspan='4' class='forumheader3' style='width:10%; text-align:center; padding-right:10px;'>";
+$sc_style['LINK_BUTTON']['pre'] = "<td rowspan='2' class='forumheader3' style='width:10%; text-align:center'>";
 $sc_style['LINK_BUTTON']['post'] = "</td>";
 
 $sc_style['LINK_NAME']['pre'] = "";
 $sc_style['LINK_NAME']['post'] = "";
 
-$sc_style['LINK_URL']['pre'] = "<tr><td colspan='2' class='forumheader2' style='line-height:130%;'><i>";
+$sc_style['LINK_URL']['pre'] = "<tr><td colspan='3' class='forumheader2'><i>";
 $sc_style['LINK_URL']['post'] = "</i></td></tr>";
 
-$sc_style['LINK_REFER']['pre'] = "<td class='forumheader' style='white-space:nowrap;'>";
-$sc_style['LINK_REFER']['post'] = "</td>";
-
-$sc_style['LINK_DESC']['pre'] = "<tr><td colspan='2' class='forumheader3' style='line-height:130%;'>";
+$sc_style['LINK_DESC']['pre'] = "<tr><td colspan='3' class='forumheader3'>";
 $sc_style['LINK_DESC']['post'] = "</td></tr>";
 
-$sc_style['LINK_RATING']['pre'] = "<tr><td colspan='2' class='forumheader' style='line-height:130%;'>";
+$sc_style['LINK_RATING']['pre'] = "<tr><td colspan='3' class='forumheader'>";
 $sc_style['LINK_RATING']['post'] = "</td></tr>";
-
-$sc_style['LINK_COMMENT']['pre'] = "<span class='forumheader' style='vertical-align:middle;'>";
-$sc_style['LINK_COMMENT']['post'] = "</span>";
 
 $LINK_TABLE_START = "
 	<div style='text-align:center'>";
 
 $LINK_TABLE = "
-	<table class='fborder' style='width:100%; margin-bottom:20px;' cellspacing='0' cellpadding='0'>
+	<table class='fborder' style='width:95%; margin-bottom:20px;' cellspacing='0' cellpadding='0'>
 	<tr>
 		{LINK_BUTTON}
 		<td class='fcaption' style='width:90%'>
 			{LINK_NEW} {LINK_APPEND} {LINK_NAME} </a>
-			{LINK_COMMENT}
 		</td>
+		<td class='fcaption' style='white-space:nowrap;'>
+		{LINK_COMMENT}
 		{LINK_REFER}
+		</td>
 	</tr>
 	{LINK_URL}
 	{LINK_DESC}
