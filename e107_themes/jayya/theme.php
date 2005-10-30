@@ -198,9 +198,16 @@ $sc_style['REPLY']['post'] = "";
 $sc_style['SUBJECT']['pre'] = "<td class='forumheader'>";
 $sc_style['SUBJECT']['post'] = "</td></tr>";
 
-$sc_style['COMMENTEDIT']['pre'] = "<tr>
-<td class='forumheader' colspan='2' style='text-align: right'>";
+$sc_style['COMMENTEDIT']['pre'] = "<tr><td class='forumheader' colspan='2' style='text-align: right'>";
 $sc_style['COMMENTEDIT']['post'] = "</td></tr>";
+
+$sc_style['JOINED']['post'] = "<br />";
+
+$sc_style['LOCATION']['post'] = "<br />";
+
+$sc_style['RATING']['post'] = "<br /><br />";
+
+$sc_style['RATING']['post'] = "<br />";
 
 $COMMENTSTYLE = "<div class='spacer' style='text-align:center'><table class='fborder' style='width: 95%'>
 <tr>
@@ -210,15 +217,14 @@ $COMMENTSTYLE = "<div class='spacer' style='text-align:center'><table class='fbo
 {REPLY}{SUBJECT}
 <tr>
 <td style='width: 20%; vertical-align: top' class='forumheader3'>
-{LEVEL}<span class='smalltext'>{COMMENTS}{JOINED}</span><br />
 <div style='text-align: center'>
 {AVATAR}
 </div>
-<span class='smallext'>{LOCATION}<br />{IPADDRESS}</span><br />
+{LEVEL}<span class='smalltext'>{JOINED}{COMMENTS}{LOCATION}{IPADDRESS}</span>
 </td>
 <td style='width: 80%; vertical-align: top' class='forumheader3'>
-{COMMENT}<br />
-{RATING}<br /><br />
+{COMMENT}
+{RATING}
 {SIGNATURE} 
 </td>
 </tr>
