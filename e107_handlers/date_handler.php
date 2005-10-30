@@ -11,12 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/date_handler.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-24 11:23:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-10-30 20:51:30 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
+if (is_readable(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php")) {
+	@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_date.php");
+} else {
+	@include_once(e_LANGUAGEDIR."English/lan_date.php");
+}
 
 class convert
 {
