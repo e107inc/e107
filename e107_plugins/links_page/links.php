@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-10-30 14:37:17 $
+|     $Revision: 1.30 $
+|     $Date: 2005-10-30 18:11:57 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -386,7 +386,8 @@ function displayCategory(){
 		$lc -> show_message(LAN_LINKS_41, LAN_LINKS_30);
 	}else{
 		$link_main_table_string = "";
-		while ($rowl = $sql->db_Fetch())
+		$list = $sql->db_getList();
+		foreach($list as $rowl)
 		{
 			$rowl['total_links'] = $sql2 -> db_Count("links_page", "(*)", "WHERE link_category = '".$rowl['link_category_id']."' AND link_class REGEXP '".e_CLASS_REGEXP."' ");
 			if((!isset($linkspage_pref['link_cat_empty']) || $linkspage_pref['link_cat_empty'] == 0 && $rowl['total_links'] > "0") || (isset($linkspage_pref['link_cat_empty']) && $linkspage_pref['link_cat_empty'])){
