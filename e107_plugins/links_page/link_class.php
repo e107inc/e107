@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.16 $
-|    $Date: 2005-10-27 08:52:55 $
+|    $Revision: 1.17 $
+|    $Date: 2005-10-30 18:41:12 $
 |    $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -835,7 +835,7 @@ class linkclass {
 	function show_categories($mode) {
 		global $sql, $rs, $ns, $tp, $fl;
 
-		if ($category_total = $sql->db_Select("links_page_cat", "*", "ORDER BY link_category_order", "mode=no_where")) {
+		if ($category_total = $sql->db_Select("links_page_cat", "*", "ORDER BY link_category_order ASC", "mode=no_where")) {
 			$text = "
 			<div style='text-align: center'>
 			".$rs->form_open("post", e_SELF.(e_QUERY ? "?".e_QUERY : ""), "", "", "")."

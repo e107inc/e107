@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-09-06 16:14:50 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2005-10-30 18:41:12 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 // Plugin info -------------------------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ $eplug_tables = array(
 	link_category_name varchar(100) NOT NULL default '',
 	link_category_description varchar(250) NOT NULL default '',
 	link_category_icon varchar(100) NOT NULL default '',
-	link_category_order varchar(100) NOT NULL default '0',
+	link_category_order int(10) unsigned NOT NULL default '0',
 	link_category_class varchar(100) NOT NULL default '0',
 	link_category_datestamp int(10) unsigned NOT NULL default '0',
 	PRIMARY KEY  (link_category_id)

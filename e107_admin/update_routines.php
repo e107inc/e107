@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.142 $
-|     $Date: 2005-10-28 18:05:04 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.143 $
+|     $Date: 2005-10-30 18:41:12 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -1044,6 +1044,17 @@ function update_61x_to_700($type='') {
 				$ue->convert_old_fields();
 			}
 		}
+		
+		if ($error=='') {
+			if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."links_page_cat")) {
+				while ($row = $sql -> db_Fetch()) {
+					if ($row['Field'] == 'link_category_order' && strpos($row['Type'], 'int') === FALSE) {
+						mysql_query("ALTER TABLE `".MPREFIX."links_page_cat` CHANGE `link_category_order` `link_category_order` INT( 10 ) UNSIGNED DEFAULT '0' NOT NULL;");
+						catch_error();
+					}
+				}
+			}
+		}
 
 		// -----------------------------------------------------
 
@@ -1059,6 +1070,14 @@ function update_61x_to_700($type='') {
 // Check if update is needed to 0.7. -----------------------------------------------
 
 		global $sysprefs;
+		
+		if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."links_page_cat")) {
+			while ($row = $sql -> db_Fetch()) {
+				if ($row['Field'] == 'link_category_order' && strpos($row['Type'], 'int') === FALSE) {
+					return update_needed();
+				}
+			}
+		}
 
       $result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 		$qry = "SHOW CREATE TABLE `".MPREFIX."links`";
