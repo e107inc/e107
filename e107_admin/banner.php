@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-08-23 09:36:30 $
-|     $Author: sweetas $
+|     $Revision: 1.23 $
+|     $Date: 2005-10-30 13:58:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -48,7 +48,7 @@ if (isset($_POST['update_menu'])) {
 		}
 	}
 
-	if ($_POST['catid']) {
+	if (isset($_POST['catid'])) {
 		$array_cat = explode("-", $_POST['catid']);
 		for($i = 0; $i < count($array_cat); $i++) {
 			$cat .= $array_cat[$i]."|";
