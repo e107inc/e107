@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-10-07 12:19:24 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.31 $
+|     $Date: 2005-10-30 20:51:30 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -28,7 +28,11 @@ to store its data and structural information.
 
 */
 
-include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
+if (is_readable(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php")) {
+	@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
+} else {
+	@include_once(e_LANGUAGEDIR."English/lan_user_extended.php");
+}
 
 class e107_user_extended
 {
