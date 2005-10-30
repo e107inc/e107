@@ -158,6 +158,7 @@ define("ADLAN_148", "Controleer sitebestanden");
 define("ADLAN_149", "Waarschuwen");
 define("ADLAN_150", "Beheerderswaarschuwingen per e-mail");
 define("ADLAN_151", "Beheerscherm");
+define("ADLAN_152", "Invoeren code");
 
 define("LAN_SELECT","Selecteer ...");
 define("LAN_ADMIN","Beheer");
