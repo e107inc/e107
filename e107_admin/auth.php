@@ -11,19 +11,40 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/auth.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-10-28 18:02:50 $
+|     $Revision: 1.9 $
+|     $Date: 2005-10-30 03:32:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
 @include_once(e_LANGUAGEDIR."English/admin/lan_admin.php");
-if (ADMIN) {
+if (ADMIN)
+{
 	require_once(e_ADMIN."header.php");
-} else {
-	if ($_POST['authsubmit']) {
+}
+else
+{
+	$use_imagecode = ($pref['logcode'] && extension_loaded("gd"));
+	if ($use_imagecode)
+	{
+		require_once(e_HANDLER."secure_img_handler.php");
+		$sec_img = new secure_image;
+	}
+
+	if ($_POST['authsubmit'])
+	{
 		$obj = new auth;
-		 
+
+		if($use_imagecode)
+		{
+			if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
+			{
+				echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
+				header("location: ../index.php");
+				exit;
+			}
+		}
+
 		$row = $authresult = $obj->authcheck($_POST['authname'], $_POST['authpass']);
 		if ($row[0] == "authfail") {
 			echo "<script type='text/javascript'>document.location.href='../index.php'</script>\n";
@@ -57,9 +78,11 @@ if (ADMIN) {
 }
 	
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-class auth {
+class auth
+{
 	 
-	function authform() {
+	function authform()
+	{
 		/*
 		# Admin auth login
 		#
@@ -68,6 +91,8 @@ class auth {
 		# - scope		public
 		*/
 		 
+		global $use_imagecode, $sec_img;
+		
 		$text = "<div style='text-align:center'>
 			<form method='post' action='".e_SELF."'>\n
 			<table style='width:50%' class='fborder'>
@@ -79,6 +104,21 @@ class auth {
 			<td style='width:35%' class='forumheader3'>".ADLAN_90."</td>
 			<td class='forumheader3' style='text-align:center'><input class='tbox' type='password' name='authpass' size='30' value='' maxlength='20' />\n</td>
 			</tr>
+			";
+
+		if ($use_imagecode) {
+			$text .= "
+			<tr>
+			<td style='width:35%' class='forumheader3'>".ADLAN_152."</td>
+			<td style='text-align:center'>
+			<input type='hidden' name='rand_num' value='".$sec_img->random_number."'>".
+			$sec_img->r_image().
+			"<br /><input class='tbox' type='text' name='code_verify' size='15' maxlength='20'></td>
+			</tr>
+			";
+		}
+
+		$text .= "
 			<tr>
 			<td colspan='2' style='text-align:center' class='forumheader'>
 			 
