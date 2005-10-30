@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.85 $
-|		$Date: 2005-09-07 22:24:14 $
-|		$Author: lisa_ $
+|		$Revision: 1.86 $
+|		$Date: 2005-10-30 13:12:07 $
+|		$Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -312,7 +312,9 @@ function show_content(){
 
 				$sql2 = "";
 				$content_type_table_string = "";
-				while($row = $sql -> db_Fetch()){
+				$plist = $sql->db_getList();
+				foreach($plist as $row)
+				{
 					if(!is_object($sql2)){ $sql2 = new db; }
 
 					//$content_pref = unserialize(stripslashes($row['content_pref']));
