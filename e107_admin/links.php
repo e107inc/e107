@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-08-23 09:36:30 $
-|     $Author: sweetas $
+|     $Revision: 1.47 $
+|     $Date: 2005-10-30 04:18:13 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -451,6 +451,18 @@ class links {
 		$link_t = $sql->db_Count("links", "(*)");
 		if ($id) {
 			$sql->db_Update("links", "link_parent='$parent_id', link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".$_POST['linkrender']."', link_open='".$_POST['linkopentype']."', link_class='".$_POST['link_class']."' WHERE link_id='$id'");
+			//rename all sublinks
+			if($sql->db_Select("links", "*", "link_parent='{$id}'"))
+			{
+				$childList = $sql->db_getList();
+				foreach($childList as $c)
+				{
+					$old = explode(".", $c['link_name'], 3);
+					$newname = "submenu.".$link_name.".".$old[2];
+					$sql->db_Update("links", "link_name = '{$newname}' WHERE link_id = '{$c['link_id']}'");
+				}
+			}
+
 			$e107cache->clear("sitelinks");
 			$this->show_message(LCLAN_3);
 		} else {
