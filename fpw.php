@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/fpw.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-07-01 13:48:37 $
-|     $Author: streaky $
+|     $Revision: 1.11 $
+|     $Date: 2005-10-30 03:32:05 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -83,7 +83,7 @@ if (isset($_POST['pwsubmit'])) {
 	require_once(e_HANDLER."mail.php");
 	$email = $_POST['email'];
 
-	if ($pref['logcode'] && extension_loaded("gd")) {
+	if ($pref['fpwcode'] && extension_loaded("gd")) {
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify'])) {
 			fpw_error(LAN_FPW3);
 		}
