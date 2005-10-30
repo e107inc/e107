@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-09-02 21:43:12 $
-|     $Author: streaky $
+|     $Revision: 1.47 $
+|     $Date: 2005-10-30 19:11:49 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -232,11 +232,11 @@ class comment {
 		if ($action == "comment" && $pref['nested_comments']) {
 
 			$type = $this -> getCommentType($thistable);
-
 			$sub_query = "
-			SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_forums, user_chats, user_visits, user_perms
-			FROM #comments 
-			LEFT JOIN #user ON #comments.comment_author = #user.user_id 
+			SELECT c.*, u.*, ue.*
+			FROM #comments AS c
+			LEFT JOIN #user AS u ON c.comment_author = u.user_id 
+			LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id 
 			WHERE comment_item_id='".$thisid."' AND comment_type='".$type."' AND comment_pid='".$comrow['comment_id']."' 
 			ORDER BY comment_datestamp
 			";
@@ -425,11 +425,15 @@ class comment {
 
 		$text = "";
 		$query = ($pref['nested_comments'] ?
-		"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_forums, user_chats, user_visits, user_perms FROM #comments
-		LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$id."' AND comment_type='".$type."' AND comment_pid='0' ORDER BY comment_datestamp"
+		"SELECT c.*, u.*, ue.* FROM #comments AS c
+		LEFT JOIN #user AS u ON c.comment_author = u.user_id 
+		LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id 
+		WHERE c.comment_item_id='".$id."' AND c.comment_type='".$type."' AND c.comment_pid='0' ORDER BY c.comment_datestamp"
 		:
-		"SELECT #comments.*, user_id, user_name, user_admin, user_image, user_signature, user_join, user_comments, user_forums, user_chats, user_visits, user_perms FROM #comments
-		LEFT JOIN #user ON #comments.comment_author = #user.user_id WHERE comment_item_id='".$id."' AND comment_type='".$type."' ORDER BY comment_datestamp"
+		"SELECT c.*, u.*, ue.* FROM #comments AS c
+		LEFT JOIN #user AS u ON c.comment_author = u.user_id 
+		LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id 
+		WHERE c.comment_item_id='".$id."' AND c.comment_type='".$type."' ORDER BY c.comment_datestamp"
 		);
 
 		$text = "";
