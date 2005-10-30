@@ -405,12 +405,13 @@ if($pref['profile_comments'])
 	include_once(e_HANDLER."comment_class.php");
 	$cobj = new comment;
 	$qry = "
-	SELECT #comments.*, user_id, user_name, user_image, user_signature, user_join, user_comments FROM #comments
-	LEFT JOIN #user ON #comments.comment_author = #user.user_id
-	WHERE comment_item_id='{$user['user_id']}'
-	AND comment_type='profile'
-	AND comment_pid='0'
-	ORDER BY comment_datestamp
+	SELECT c.*, u.*, ue.* FROM #comments AS c
+	LEFT JOIN #user AS u ON c.comment_author = u.user_id
+	LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
+	WHERE c.comment_item_id='{$user['user_id']}'
+	AND c.comment_type='profile'
+	AND c.comment_pid='0'
+	ORDER BY c.comment_datestamp
 	";
 
 	if($comment_total = $sql->db_Select_gen($qry))
