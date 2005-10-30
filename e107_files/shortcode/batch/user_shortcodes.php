@@ -78,9 +78,9 @@ return round(($user['user_forums']/$forumposts) * 100, 2);
 SC_END
 
 SC_BEGIN USER_LEVEL
-global $user;
+global $user, $pref;
 require_once(e_HANDLER."level_handler.php");
-$ldata = get_level($user['user_id'], $user['user_forums'], $user['user_comments'], $user['user_chats'], $user['user_visits'], $user['user_join'], $user['user_admin'], $user['user_perms'], $user['pref']);
+$ldata = get_level($user['user_id'], $user['user_forums'], $user['user_comments'], $user['user_chats'], $user['user_visits'], $user['user_join'], $user['user_admin'], $user['user_perms'], $pref);
 
 if (strstr($ldata[0], "IMAGE_rank_main_admin_image")) {
 	return LAN_417;
