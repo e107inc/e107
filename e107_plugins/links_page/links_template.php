@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-10-30 13:50:11 $
+|     $Revision: 1.15 $
+|     $Date: 2005-10-30 14:37:17 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -111,37 +111,32 @@ $LINK_MAIN_TABLE_END_ALL = "
 $sc_style['LINK_BUTTON']['pre'] = "<td rowspan='2' class='forumheader3' style='width:10%; text-align:center'>";
 $sc_style['LINK_BUTTON']['post'] = "</td>";
 
-$sc_style['LINK_NAME']['pre'] = "";
-$sc_style['LINK_NAME']['post'] = "";
+$sc_style['LINK_URL']['pre'] = "<i>";
+$sc_style['LINK_URL']['post'] = "</i><br />";
 
-$sc_style['LINK_URL']['pre'] = "<tr><td colspan='3' class='forumheader2'><i>";
-$sc_style['LINK_URL']['post'] = "</i></td></tr>";
-
-$sc_style['LINK_DESC']['pre'] = "<tr><td colspan='3' class='forumheader3'>";
-$sc_style['LINK_DESC']['post'] = "</td></tr>";
-
-$sc_style['LINK_RATING']['pre'] = "<tr><td colspan='3' class='forumheader'>";
-$sc_style['LINK_RATING']['post'] = "</td></tr>";
+$sc_style['LINK_DESC']['post'] = "<br />";
 
 $LINK_TABLE_START = "
 	<div style='text-align:center'>";
 
-$LINK_TABLE = "
-	<table class='fborder' style='width:95%; margin-bottom:20px;' cellspacing='0' cellpadding='0'>
+$LINK_TABLE = "<div style='text-align:center'>
+	<table class='fborder' style='width:95%; margin-bottom:20px;'>
 	<tr>
 		{LINK_BUTTON}
 		<td class='fcaption' style='width:90%'>
 			{LINK_NEW} {LINK_APPEND} {LINK_NAME} </a>
 		</td>
-		<td class='fcaption' style='white-space:nowrap;'>
+		<td class='fcaption' style='white-space:nowrap'>
 		{LINK_COMMENT}
 		{LINK_REFER}
 		</td>
 	</tr>
+	<tr><td colspan='2' class='forumheader3'>
 	{LINK_URL}
 	{LINK_DESC}
 	{LINK_RATING}
-	</table>";
+	</td></tr>
+	</table></div>";
 
 $LINK_TABLE_END = "
 	</div>";
