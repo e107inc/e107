@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-08-31 16:32:34 $
-|     $Author: lisa_ $
+|     $Revision: 1.29 $
+|     $Date: 2005-10-30 14:37:17 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -431,7 +431,7 @@ function displayNavigator($mode=''){
 
 function displayCategoryLinks($mode=''){
 	global $sql2, $ns, $lc, $tp, $cobj, $rowl, $qs, $linkspage_pref, $from, $link_shortcodes;
-	global $LINK_TABLE_START, $LINK_TABLE, $LINK_TABLE_END, $LINK_APPEND, $LINK_TABLE_START_ALL, $LINK_TABLE_END_ALL;
+	global $LINK_TABLE_START, $LINK_TABLE, $LINK_TABLE_END, $LINK_APPEND;
 
 	$order			= $lc -> getOrder();
 	$number			= ($linkspage_pref["link_nextprev_number"] ? $linkspage_pref["link_nextprev_number"] : "20");
@@ -494,8 +494,8 @@ function displayCategoryLinks($mode=''){
 				//number of links
 				$caption .= " (<b title='".(ADMIN ? LAN_LINKS_2 : LAN_LINKS_1)."' >".count($value)."</b>".(ADMIN ? "/<b title='".(ADMIN ? LAN_LINKS_1 : "" )."' >".count($value)."</b>" : "").") ";
 
-				$link_table_start		= $tp -> parseTemplate($LINK_TABLE_START_ALL, FALSE, $link_shortcodes);
-				$link_table_end			= $tp -> parseTemplate($LINK_TABLE_END_ALL, FALSE, $link_shortcodes);
+				$link_table_start		= $tp -> parseTemplate($LINK_TABLE_START, FALSE, $link_shortcodes);
+				$link_table_end			= $tp -> parseTemplate($LINK_TABLE_END, FALSE, $link_shortcodes);
 				$text = $link_table_start.$link_table_string.$link_table_end;
 				$ns->tablerender($caption, $text);
 			}
