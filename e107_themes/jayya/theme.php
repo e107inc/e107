@@ -210,7 +210,7 @@ $COMMENTSTYLE = "<div class='spacer' style='text-align:center'><table class='fbo
 {REPLY}{SUBJECT}
 <tr>
 <td style='width: 20%; vertical-align: top' class='forumheader3'>
-<span class='smalltext'>{COMMENTS}</span><br />
+{LEVEL}<span class='smalltext'>{COMMENTS}{JOINED}</span><br />
 <div style='text-align: center'>
 {AVATAR}
 </div>
