@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.143 $
-|     $Date: 2005-10-30 18:41:12 $
+|     $Revision: 1.144 $
+|     $Date: 2005-10-30 21:16:28 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -989,11 +989,6 @@ function update_61x_to_700($type='') {
 		}
 		// end search updates
 
-		// Save all prefs that were set in above update routines
-		if ($s_prefs == TRUE) {
-			save_prefs();
-		}
-
 		if ($error=='') {
 			$result = mysql_query('SET SQL_QUOTE_SHOW_CREATE = 1');
 			catch_error();
@@ -1055,9 +1050,19 @@ function update_61x_to_700($type='') {
 				}
 			}
 		}
+		
+		if (!isset($pref['track_online'])) {
+			$pref['track_online'] = 1;
+			$s_prefs = TRUE;
+		}
 
 		// -----------------------------------------------------
 
+		// Save all prefs that were set in above update routines
+		if ($s_prefs == TRUE) {
+			save_prefs();
+		}
+		
 		if ($error!='') {
 		  	return nl2br($error);
 		} else {
