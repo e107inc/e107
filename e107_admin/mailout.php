@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-10-31 18:12:11 $
+|     $Revision: 1.47 $
+|     $Date: 2005-10-31 18:51:44 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -47,7 +47,7 @@ if (isset($_POST['testemail'])) {
 	}
 }
 
-
+$sql->db_Delete("generic", "gen_type='sendmail' AND gen_datestamp < ".(time()-86400));
 
 if (isset($_POST['save_email'])){
 	$qry = "0,'massmail', '".time()."', '".USERID."', '".$tp->toDB($_POST['email_subject'])."',  '', \"".$tp->toDB($_POST['email_body'])."\"  ";
