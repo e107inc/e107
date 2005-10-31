@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2005-10-29 19:35:41 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.52 $
+|     $Date: 2005-10-31 12:10:54 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -144,7 +144,6 @@ if(!$text = $e107cache->retrieve("chatbox"))
 	{
 		$obj2 = new convert;
 		$cbpost = $sql -> db_getList();
-		
 		foreach($cbpost as $cb)
 		{
 			// get available vars
@@ -161,11 +160,12 @@ if(!$text = $e107cache->retrieve("chatbox"))
 			$datestamp = $obj2->convert_date($cb['cb_datestamp'], "short");
 			if(!$pref['cb_wordwrap']) { $pref['cb_wordwrap'] = 30; }
 			$emotes_active = $pref['cb_emote'] ? 'emotes_on' : 'emotes_off';
-			$cb_message = $tp -> toHTML($cb['$cb_message'], TRUE, $emotes_active, $cb['cb_uid'], $pref['menu_wordwrap']);
+			
+			$cb_message = $tp -> toHTML($cb['cb_message'], TRUE, $emotes_active, $cb['cb_uid'], $pref['menu_wordwrap']);
 
 			$replace[0] = "["; $replace[1] = "]";
 			$search[0] = "&lsqb;"; $search[1] =  "&rsqb;";
-			$cb_message = str_replace($search, $replace, $cb['cb_message']);
+			$cb_message = str_replace($search, $replace, $cb_message);
 
 			global $CHATBOXSTYLE;
 			if(!$CHATBOXSTYLE)
