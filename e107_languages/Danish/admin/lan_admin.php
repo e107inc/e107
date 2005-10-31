@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_admin.php,v $
-|        $Revision: 1.4 $
-|        $Date: 2005-09-20 21:40:28 $
+|        $Revision: 1.5 $
+|        $Date: 2005-10-31 16:23:23 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -30,11 +30,11 @@ define("ADLAN_17", "Tilføj/ret/slet indholdssider");
 define("ADLAN_18", "Anmeldelse");
 define("ADLAN_19", "Tilføj/ret/slet anmeldelse");
 define("ADLAN_22", "Links kategorier");
-define("ADLAN_23", "Tilføj nye/ret/slet kategorier");
+define("ADLAN_23", "Tilføj nye/ret/slet link kategorier");
 define("ADLAN_24", "Downloads");
 define("ADLAN_25", "Håndter downloads");
 define("ADLAN_26", "Download kategorier");
-define("ADLAN_27", "Tilføj/ret/slet downloadkategorier");
+define("ADLAN_27", "Tilføj/ret/slet download kategorier");
 define("ADLAN_28", "Velkomstbesked");
 define("ADLAN_29", "Tilføj statisk velkomstbesked");
 define("ADLAN_30", "Filhåndtering");
@@ -70,19 +70,19 @@ define("ADLAN_59", "Konfigurer smileys");
 define("ADLAN_60", "Forside");
 define("ADLAN_61", "Konfigurer forsideindhold");
 define("ADLAN_62", "Nyhedsavis");
-define("ADLAN_63", "Konfigurer nyhedsavis");
+define("ADLAN_63", "Konfigurer nyhedsfeeds");
 define("ADLAN_64", "Log statistik");
 define("ADLAN_65", "Log statistik/tæller osv.");
 define("ADLAN_66", "Meta tags");
 define("ADLAN_67", "Tilføj/rediger meta tags");
 define("ADLAN_68", "PHP Info");
-define("ADLAN_69", "PHP info side");
+define("ADLAN_69", "PHPinfo side");
 define("ADLAN_70", "Afstemninger");
 define("ADLAN_71", "Tilføj/rediger afstemninger");
 define("ADLAN_72", "Offentlige uploads");
 define("ADLAN_73", "Konfigurer offentligeuploads");
 define("ADLAN_74", "Cache");
-define("ADLAN_75", "Set cache status");
+define("ADLAN_75", "Indstil cache status");
 define("ADLAN_77", "Der tilføjet en nyhed - Klik her for at kontrollere den.");
 define("ADLAN_78", "Udvidede brugerfelter");
 define("ADLAN_79", "Forlad Udvidede brugerfelter");
@@ -92,7 +92,7 @@ define("ADLAN_86", "Forkert adgangskode");
 define("ADLAN_87", "Administrator navn, blev ikke fundet i databasen");
 define("ADLAN_88", "Det var ikke muligt at logge på.");
 define("ADLAN_89", "Administratornavn ");
-define("ADLAN_90", "Admin adgangskodekode ");
+define("ADLAN_90", "Admin adgangskode ");
 define("ADLAN_91", "Log på");
 define("ADLAN_92", "Log på, for at fortsætte til administratorsiderne...");
 define("ADLAN_93", "Vis Administrator funktioner");
@@ -100,10 +100,10 @@ define("ADLAN_94", "Vis Installerede plugins");
 define("ADLAN_95", "Plugin Håndtering");
 define("ADLAN_96", "Ingen");
 define("ADLAN_97", "Klik her for FAQ/OSS");
-define("ADLAN_98", "Plugin konfiguration");
+define("ADLAN_98", "Plugin Håndtering");
 define("ADLAN_99", "Installer/opgrader plugins m.m.");
 define("ADLAN_100", "Tema udseende");
-define("ADLAN_101", "Skabelon Opretning");
+define("ADLAN_101", "Skabelon Oprettelse");
 define("ADLAN_102", "Det er mere end 30 dage siden, du skiftede administrator adgangskode - ");
 define("ADLAN_103", "Skift nu");
 define("ADLAN_104", "Sikkerhed");
@@ -170,6 +170,7 @@ define("ADLAN_149", "Underretning");
 define("ADLAN_150", "Admin e-mail underretning");
 
 define("ADLAN_151", "Hoved");
+define("ADLAN_152", "Skriv Kode");
 
 define('ADLAN_CL_1', 'Indstillinger');
 define('ADLAN_CL_2', 'Brugere');
