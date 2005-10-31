@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/e107_update.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-09-07 14:00:37 $
-|     $Author: asperon $
+|     $Revision: 1.10 $
+|     $Date: 2005-10-31 20:44:02 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -22,13 +22,9 @@ require_once("auth.php");
 require_once("update_routines.php");
 
 if ($_POST) {
-	if(isset($_POST['updateall']))
-	{
-		$dbupdate = array_reverse($dbupdate);
-	}
 	foreach($dbupdate as $func => $rmks) {
 		$installed = call_user_func("update_".$func);
-		if ((LAN_UPDATE == $_POST[$func] || $_POST['updateall']) && !$installed) {
+		if ((LAN_UPDATE == $_POST[$func]) && !$installed) {
 			if (function_exists("update_".$func)) {
 				$message .= LAN_UPDATE_7." {$rmks}<br />";
 				$error=call_user_func("update_".$func, "do");
@@ -67,11 +63,6 @@ foreach($dbupdate as $func => $rmks) {
 		}
 		$text .= "</tr>";
 	}
-}
-if ($updates > 1) {
-	$text .= "
-		<tr><td class='forumheader3'></td><td class='forumheader3'></td></tr>
-		<tr><td class='forumheader3'>{$updates} ".LAN_UPDATE_5."</td><td class='forumheader3'><input class='button' type='submit' name='updateall' value='".LAN_UPDATE_6."' /></td></tr>";
 }
 
 $text .= "</table></div></form>";
