@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update_check.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-12 15:33:16 $
+|     $Revision: 1.4 $
+|     $Date: 2005-10-31 20:14:20 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -44,7 +44,7 @@ function update_content_07($type='')
 
 			$newcontent = $sql -> db_Count("pcontent", "(*)", "");
 			
-			//ifno rows in new table, return FALSE = needed
+			//if no rows in new table, return FALSE = needed
 			if($newcontent == 0){
 				return FALSE; //needed
 			}

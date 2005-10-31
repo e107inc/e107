@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-07-14 13:16:07 $
+|     $Revision: 1.10 $
+|     $Date: 2005-10-31 20:14:20 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -54,6 +54,7 @@ if($newcontent == 0){
 	unset($text);
 
 	//possible database values
+	//content page:		$content_parent == "1" && $content_type == "1"	//added at 20051031
 	//content page:		$content_parent == "0" && $content_type == "1"
 	//review category:	$content_parent == "0" && $content_type == "10"
 	//article category:	$content_parent == "0" && $content_type == "6"
@@ -65,7 +66,7 @@ if($newcontent == 0){
 	$totaloldcontentrows		= $sql -> db_Count("content");
 	$totaloldrowscat_article	= $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '6'");
 	$totaloldrowscat_review		= $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '10'");
-	$totaloldrowsitem_content	= $sql -> db_Count("content", "(*)", "WHERE content_parent = '0' AND content_type = '1'");
+	$totaloldrowsitem_content	= $sql -> db_Count("content", "(*)", "WHERE (content_parent = '0' || content_parent = '1') AND content_type = '1'");
 	$totaloldrowsitem_review	= $sql -> db_Count("content", "(*)", "WHERE content_type = '3' || content_type = '16'");
 	$totaloldrowsitem_article	= $sql -> db_Count("content", "(*)", "WHERE content_type = '0' || content_type = '15'");
 
@@ -81,6 +82,12 @@ if($newcontent == 0){
 		//analyse unknown rows
 		$unknown_array				= $ac -> analyse_unknown();
 
+		if($totaloldcontentrows == 0){
+			$totaloldrowsitem_content	= "1";
+			$totaloldrowsitem_article	= "1";
+			$totaloldrowsitem_review	= "1";
+		}
+
 		//create mainparent
 		$content_mainarray			= $ac -> create_mainparent("content", $totaloldrowsitem_content, "1");
 		$article_mainarray			= $ac -> create_mainparent("article", $totaloldrowsitem_article, "2");
@@ -91,7 +98,7 @@ if($newcontent == 0){
 		$review_cat_array			= $ac -> convert_category("review", "content_parent = '0' AND content_type = '10'", "3");
 
 		//convert rows
-		$content_array				= $ac -> convert_row("content", "content_parent = '0' AND content_type = '1'", "1");
+		$content_array				= $ac -> convert_row("content", "(content_parent = '0' || content_parent = '1') AND content_type = '1'", "1");
 		$article_array				= $ac -> convert_row("article", "content_type = '0' || content_type = '15'", "2");
 		$review_array				= $ac -> convert_row("review", "content_type = '3' || content_type = '16'", "3");
 
