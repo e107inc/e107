@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.110 $
-|     $Date: 2005-10-29 02:58:55 $
-|     $Author: streaky $
+|     $Revision: 1.111 $
+|     $Date: 2005-10-31 14:33:53 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define ("E_NL", chr(2));
@@ -302,6 +302,8 @@ class e_parse
 
 		if (strpos($modifiers, 'nobreak') === FALSE) {
 			$text = preg_replace("#>\s*[\r]*\n[\r]*#", ">", $text);
+			preg_match_all("#<(script|style)[^>]+>.*?</(script|style)>#is", $text, $embeds);
+			$text = preg_replace("#<(script|style)[^>]+>.*?</(script|style)>#is", "<|>", $text);
 		}
 
 		if($pref['make_clickable'] && strpos($modifiers, 'no_make_clickable') === FALSE) {
@@ -330,10 +332,15 @@ class e_parse
 				$text = $this->e_emote->filterEmotes($text);
 			}
 		}
-		$text = str_replace($this -> search, $this -> replace, $text);
+		
 		if (strpos($modifiers, 'nobreak') === FALSE) {
 			$text = preg_replace("#[\r]*\n[\r]*#", E_NL, $text);
+			foreach ($embeds[0] as $embed) {
+				$text = preg_replace("#<\|>#", $embed, $text, 1);
+			}
 		}
+		
+		$text = str_replace($this -> search, $this -> replace, $text);
 
 		// Start parse [bb][/bb] codes
 		if ($parseBB === TRUE) {
