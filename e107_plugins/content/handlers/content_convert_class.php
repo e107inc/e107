@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.12 $
-|		$Date: 2005-07-12 15:33:16 $
+|		$Revision: 1.13 $
+|		$Date: 2005-10-31 20:14:20 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -275,7 +275,7 @@ class content_convert{
 				global $sql;
 
 				if(!is_object($sql)){ $sql = new db; }
-				$totaloldrowsunknown = $sql -> db_Select("content", "*", " NOT ( (content_parent = '0' AND content_type = '1') || (content_parent = '0' AND content_type = '6') || (content_parent = '0' AND content_type = '10') || (content_type = '3' || content_type = '16') || (content_type = '0' || content_type = '15') ) ");
+				$totaloldrowsunknown = $sql -> db_Select("content", "*", " NOT ( (content_parent = '1' AND content_type = '1') || (content_parent = '0' AND content_type = '1') || (content_parent = '0' AND content_type = '6') || (content_parent = '0' AND content_type = '10') || (content_type = '3' || content_type = '16') || (content_type = '0' || content_type = '15') ) ");
 
 				while($row = $sql -> db_Fetch()){
 					$unknown_bug[]		= $row['content_id']." ".$row['content_heading'];
