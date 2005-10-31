@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.144 $
-|     $Date: 2005-10-30 21:16:28 $
+|     $Revision: 1.145 $
+|     $Date: 2005-10-31 21:15:54 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -162,7 +162,6 @@ function update_61x_to_700($type='') {
 						}
 					}
 					$poll_type = (strlen($poll_datestamp) > 9 ? 1 : 2);
-					echo "Inserting field #".$poll_id." into new table ...(type: $poll_type)<br />";
 					$sql->db_Insert("polls", "$poll_id, $poll_datestamp, 0, $poll_end_datestamp, $poll_admin_id, '$poll_title', '$poll_options', '$poll_votes', '$poll_ip', $poll_type, $poll_comment, 0, 0, 255, 1");
 					catch_error();
 				}
