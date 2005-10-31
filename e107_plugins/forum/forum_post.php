@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2005-10-29 00:14:20 $
+|     $Revision: 1.52 $
+|     $Date: 2005-10-31 03:02:02 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -246,7 +246,7 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 		$threadtype = (MODERATOR ? intval($_POST['threadtype']) : 0);
 		if (isset($_POST['reply']))
 		{
-			$parent = $thread_info['head']['thread_id'];
+			$parent = $id;
 			$forum_id = $thread_info['head']['thread_forum_id'];
 		}
 		else
