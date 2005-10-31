@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.227 $
-|     $Date: 2005-10-29 13:24:22 $
+|     $Revision: 1.228 $
+|     $Date: 2005-10-31 16:45:39 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -644,7 +644,7 @@ function check_email($var) {
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-function check_class($var, $userclass = USERCLASS, $debug = FALSE)
+function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE)
 {
 	if($var == e_LANGUAGE){
 		return TRUE;
@@ -675,7 +675,7 @@ function check_class($var, $userclass = USERCLASS, $debug = FALSE)
 		return FALSE;
 	}
 
-	if (preg_match("/^([0-9]+)$/", $var))
+	if (preg_match("/^([0-9]+)$/", $var) && !$peer)
 	{
 		if ($var == e_UC_MEMBER && USER == TRUE)
 		{

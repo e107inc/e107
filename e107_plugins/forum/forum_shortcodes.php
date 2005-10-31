@@ -180,7 +180,8 @@ global $post_info, $ldata, $pref, $forum_info;
 if ($post_info['anon']) {
 return "";
 }
-$fmod = ($post_info['user_class'] != "" && check_class($forum_info['forum_moderators'], $post_info['user_class']));
+
+$fmod = ($post_info['user_class'] != "" && check_class($forum_info['forum_moderators'], $post_info['user_class'], TRUE));
 if(!$fmod && $forum_info['forum_moderators'] == e_UC_ADMIN)
 {
 	$fmod = $post_info['user_admin'];
@@ -196,7 +197,7 @@ global $post_info, $ldata, $pref, $forum_info;
 if ($post_info['anon']) {
 return "";
 }
-$fmod = ($post_info['user_class'] != "" && check_class($forum_info['forum_moderators'], $post_info['user_class']));
+$fmod = ($post_info['user_class'] != "" && check_class($forum_info['forum_moderators'], $post_info['user_class'], TRUE));
 if(!$fmod && $forum_info['forum_moderators'] == e_UC_ADMIN)
 {
 	$fmod = $post_info['user_admin'];
