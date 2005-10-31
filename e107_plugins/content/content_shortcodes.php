@@ -282,17 +282,21 @@ SC_END
 
 SC_BEGIN CONTENT_CAT_TABLE_TEXT
 global $CONTENT_CAT_TABLE_TEXT, $row, $tp, $mainparent, $content_pref;
-if($row['content_text'] && isset($content_pref["content_catall_text_{$mainparent}"]) && $content_pref["content_catall_text_{$mainparent}"] && $content_pref["content_catall_text_char_{$mainparent}"] > 0){
-	$rowtext = preg_replace("/\[newpage.*?]/si", " ", $row['content_text']);
-	$rowtext = $tp->toHTML($rowtext, TRUE, "nobreak");
-	
-	$rowtext = strip_tags($rowtext);
-	$words = explode(" ", $rowtext);
-	$CONTENT_CAT_TABLE_TEXT = implode(" ", array_slice($words, 0, $content_pref["content_catall_text_char_{$mainparent}"]));
-	if($content_pref["content_catall_text_link_{$mainparent}"]){
-		$CONTENT_CAT_TABLE_TEXT .= " <a href='".e_SELF."?cat.".$row['content_id']."'>".$content_pref["content_catall_text_post_{$mainparent}"]."</a>";
+if($row['content_text'] && isset($content_pref["content_catall_text_{$mainparent}"]) && $content_pref["content_catall_text_{$mainparent}"] && ($content_pref["content_catall_text_char_{$mainparent}"] > 0 || $content_pref["content_catall_text_char_{$mainparent}"] == 'all')){
+	if$content_pref["content_catall_text_char_{$mainparent}"] == 'all'){
+		$CONTENT_CAT_TABLE_TEXT = $row['content_text'];
 	}else{
-		$CONTENT_CAT_TABLE_TEXT .= " ".$content_pref["content_catall_text_post_{$mainparent}"];
+		$rowtext = preg_replace("/\[newpage.*?]/si", " ", $row['content_text']);
+		$rowtext = $tp->toHTML($rowtext, TRUE, "nobreak");
+		
+		$rowtext = strip_tags($rowtext);
+		$words = explode(" ", $rowtext);
+		$CONTENT_CAT_TABLE_TEXT = implode(" ", array_slice($words, 0, $content_pref["content_catall_text_char_{$mainparent}"]));
+		if($content_pref["content_catall_text_link_{$mainparent}"]){
+			$CONTENT_CAT_TABLE_TEXT .= " <a href='".e_SELF."?cat.".$row['content_id']."'>".$content_pref["content_catall_text_post_{$mainparent}"]."</a>";
+		}else{
+			$CONTENT_CAT_TABLE_TEXT .= " ".$content_pref["content_catall_text_post_{$mainparent}"];
+		}
 	}
 return $CONTENT_CAT_TABLE_TEXT;
 }
@@ -342,17 +346,21 @@ SC_END
 
 SC_BEGIN CONTENT_CAT_LIST_TABLE_TEXT
 global $CONTENT_CAT_LIST_TABLE_TEXT, $tp, $row, $mainparent, $content_pref;
-if($row['content_text'] && isset($content_pref["content_cat_text_{$mainparent}"]) && $content_pref["content_cat_text_{$mainparent}"] && $content_pref["content_cat_text_char_{$mainparent}"] > 0){
-	$rowtext = preg_replace("/\[newpage.*?]/si", " ", $row['content_text']);
-	$rowtext = $tp->toHTML($rowtext, TRUE, "nobreak");
-	
-	$rowtext = strip_tags($rowtext);
-	$words = explode(" ", $rowtext);
-	$CONTENT_CAT_LIST_TABLE_TEXT = implode(" ", array_slice($words, 0, $content_pref["content_cat_text_char_{$mainparent}"]));
-	if($content_pref["content_cat_text_link_{$mainparent}"]){
-		$CONTENT_CAT_LIST_TABLE_TEXT .= " <a href='".e_SELF."?cat.".$row['content_id']."'>".$content_pref["content_cat_text_post_{$mainparent}"]."</a>";
+if($row['content_text'] && isset($content_pref["content_cat_text_{$mainparent}"]) && $content_pref["content_cat_text_{$mainparent}"] && ($content_pref["content_cat_text_char_{$mainparent}"] > 0 || $content_pref["content_cat_text_char_{$mainparent}"] == 'all')){
+	if($content_pref["content_cat_text_char_{$mainparent}"] == 'all'){
+		$CONTENT_CAT_LIST_TABLE_TEXT = $row['content_text'];
 	}else{
-		$CONTENT_CAT_LIST_TABLE_TEXT .= " ".$content_pref["content_cat_text_post_{$mainparent}"];
+		$rowtext = preg_replace("/\[newpage.*?]/si", " ", $row['content_text']);
+		$rowtext = $tp->toHTML($rowtext, TRUE, "nobreak");
+		
+		$rowtext = strip_tags($rowtext);
+		$words = explode(" ", $rowtext);
+		$CONTENT_CAT_LIST_TABLE_TEXT = implode(" ", array_slice($words, 0, $content_pref["content_cat_text_char_{$mainparent}"]));
+		if($content_pref["content_cat_text_link_{$mainparent}"]){
+			$CONTENT_CAT_LIST_TABLE_TEXT .= " <a href='".e_SELF."?cat.".$row['content_id']."'>".$content_pref["content_cat_text_post_{$mainparent}"]."</a>";
+		}else{
+			$CONTENT_CAT_LIST_TABLE_TEXT .= " ".$content_pref["content_cat_text_post_{$mainparent}"];
+		}
 	}
 return $CONTENT_CAT_LIST_TABLE_TEXT;
 }
