@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-10-28 13:06:17 $
-|     $Author: sweetas $
+|     $Revision: 1.46 $
+|     $Date: 2005-10-31 18:12:11 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -72,8 +72,6 @@ if (isset($_POST['edit'])){
 	}
 }
 
-
-
 if (isset($_POST['submit'])) {
 
 	if ($_POST['email_to'] == "all" || $_POST['email_to'] == "admin") {
@@ -97,14 +95,13 @@ if (isset($_POST['submit'])) {
        $qry = "SELECT u.* FROM #user AS u WHERE u.user_id='".USERID."'";
 
 	} else {
-        $insert = "u.user_class IN (".$_POST['email_to'].") AND u.user_ban='0' ";
+	
+    $insert = "u.user_class REGEXP concat('(^|,)',{$_POST['email_to']},'(,|$)') AND u.user_ban='0' ";
 		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id WHERE $insert ";
 	}
 
-        $sql2 = new db;
-		$c = 0;
-
-
+  $sql2 = new db;
+	$c = 0;
 
 	if($_POST['extended_1_name'] && $_POST['extended_1_value']){
 		$qry .= " AND ".$_POST['extended_1_name']." = '".$_POST['extended_1_value']."' ";
@@ -119,9 +116,6 @@ if (isset($_POST['submit'])) {
 	}
 
 	$qry .= " ORDER BY u.user_name";
-
-  // 		echo $qry;
-  //		exit;
 
 	$_POST['mail_id']  = time();
 
@@ -149,7 +143,7 @@ if (isset($_POST['submit'])) {
 
 	$text .= "</div>";
 
-	$text .= "<div>$c email(s) are ready to be sent</div>";
+	$text .= "<div>$c ".MAILAN_24."</div>";
 
 	$text .= "<div><br /><input class='button' type='submit' name='send_mails' value='Proceed' />
 	<input class='button' type='submit' name='cancel_emails' value='Cancel' />
@@ -158,13 +152,23 @@ if (isset($_POST['submit'])) {
 
 // --------------- Preview Email -------------------------->
 
+	if(is_numeric($_POST['email_to']))
+	{
+		$sql->db_Select("userclass_classes", "userclass_name", "userclass_id = '{$_POST['email_to']}'");
+		$row = $sql->db_Fetch();
+		$_to = MAILAN_23.$row['userclass_name'];
+	}
+	else
+	{
+		$_to = $_POST['email_to'];
+	}
 	$text .= "
 	<div>
 	<table class='fborder'>
 
 		<tr>
 			<td class='forumheader3' style='width:30%'>".MAILAN_03."</td>
-			<td class='forumheader3'>".$_POST['email_to']."&nbsp;";
+			<td class='forumheader3'>".$_to."&nbsp;";
 			if($_POST['email_to'] == "self"){
 				$text .= "&lt;".USEREMAIL."&gt;";
 			}
@@ -304,7 +308,6 @@ function show_mailform($foo=""){
 	</tr>";
 
 
-
 	$text .="
 
 	<tr>
@@ -342,10 +345,6 @@ function show_mailform($foo=""){
 		<input type='text' name='user_search_value' class='tbox' style='width:80%' value='' />
 		</td></tr>
 		";
-
-
-
-
 
 	// Extended Field #1.
 
@@ -676,12 +675,19 @@ function userclasses($name) {
 		<option value='unverified'>".MAILAN_13."</option>
 		<option value='admin'>Admins</option>
 		<option value='self'>Self</option>";
-	$sql->db_Select("userclass_classes");
+	$query = "
+						SELECT uc.*, count(u.user_id) AS members
+						FROM `e107_userclass_classes` AS uc
+						LEFT JOIN e107_user AS u ON u.user_class REGEXP concat('(^|,)',uc.userclass_id,'(,|$)')
+						GROUP BY uc.userclass_id	
+					";
+
+	$sql->db_Select_gen($query);
+//	$sql->db_Select("userclass_classes");
 	while ($row = $sql->db_Fetch()) {
-		extract($row);
-		$public = ($userclass_editclass == 0)? "(".MAILAN_10.")" :
-		 "";
-		$text .= "<option value=\"$userclass_id\" $selected>Userclass - $userclass_name  $public</option>";
+//		extract($row);
+		$public = ($row['userclass_editclass'] == 0)? "(".MAILAN_10.")" : "";
+		$text .= "<option value='{$row['userclass_id']}' >Userclass - {$row['userclass_name']}  $public [{$row['members']}]</option>";
 	}
 	$text .= " </select>";
 
