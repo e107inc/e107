@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.17 $
-|    $Date: 2005-10-30 18:41:12 $
+|    $Revision: 1.18 $
+|    $Date: 2005-11-01 19:12:42 $
 |    $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -181,7 +181,6 @@ class linkclass {
 
 	function parse_link_append($open, $id){
 		global $linkspage_pref;
-
 		if($linkspage_pref['link_open_all'] && $linkspage_pref['link_open_all'] == "5"){
 			$link_open_type = $open;
 		}else{

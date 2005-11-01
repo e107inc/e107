@@ -10,7 +10,7 @@ $lan_file = e_PLUGIN."links_page/languages/".e_LANGUAGE.".php";
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."links_page/languages/English.php");
 
 $bullet = "<img src='".THEME."images/bullet2.gif' alt='' style='border:0;' />";
-
+global $linkspage_pref;
 $linkspage_pref = $lc -> getLinksPagePref();
 
 //navigator -------------------------
@@ -134,7 +134,7 @@ if(isset($linkspage_pref["link_menu_recent"]) && $linkspage_pref["link_menu_rece
 	if($sql -> db_Select_gen($qry)){
 		$text .= "<br />".$cap."<br />";
 		while($row = $sql -> db_Fetch()){
-
+			
 			$append = $lc -> parse_link_append($row['link_open'], $row['link_id']);
 
 			$heading = $append.$tp->toHTML($row['link_name'],TRUE,"")."</a>";
