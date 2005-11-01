@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_page_sql.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-30 22:12:19 $
-|     $Author: lisa_ $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-01 19:38:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -26,7 +26,7 @@ CREATE TABLE links_page_cat (
   link_category_name varchar(100) NOT NULL default '',
   link_category_description varchar(250) NOT NULL default '',
   link_category_icon varchar(100) NOT NULL default '',
-  link_category_order varchar(100) NOT NULL default '0',
+  link_category_order int(10) unsigned NOT NULL default '0',
   link_category_class varchar(100) NOT NULL default '0',
   link_category_datestamp int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (link_category_id)
