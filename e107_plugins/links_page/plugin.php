@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-10-30 18:41:12 $
+|     $Revision: 1.15 $
+|     $Date: 2005-11-01 19:21:51 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -101,7 +101,7 @@ $upgrade_remove_prefs = "";
 $upgrade_alter_tables = array(
 "ALTER TABLE ".MPREFIX."links_page ADD link_datestamp int(10) unsigned NOT NULL default '0'",
 "ALTER TABLE ".MPREFIX."links_page ADD link_author varchar(255) NOT NULL default ''",
-"ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_order varchar(100) NOT NULL default '0'",
+"ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_order int(10) unsigned NOT NULL default '0'",
 "ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_class varchar(100) NOT NULL default '0'",
 "ALTER TABLE ".MPREFIX."links_page_cat ADD link_category_datestamp int(10) unsigned NOT NULL default '0'"
 );
