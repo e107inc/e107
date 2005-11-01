@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2005-10-26 08:23:30 $
+|     $Revision: 1.62 $
+|     $Date: 2005-11-01 00:53:00 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -382,7 +382,7 @@ class users{
 			}
 		}
 
-		$text = "<div style='text-align:center'><div style='padding : 1px; ".ADMIN_WIDTH."; margin-left: auto; margin-right: auto;'>";
+		$text = "<div style='text-align:center'>";
 
 		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "") {
 			$_POST['searchquery'] = trim($_POST['searchquery']);
@@ -402,7 +402,7 @@ class users{
         $qry_insert = "SELECT u.*, ue.* FROM #user AS u	LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id ";
 
 		if ($user_total = $sql->db_Select_gen($qry_insert. $query)) {
-			$text .= "<table class='fborder' style='width: 99%'>
+			$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
 				<tr>
 				<td style='width:5%' class='fcaption'><a href='".e_SELF."?main.user_id.".($id == "desc" ? "asc" : "desc").".$from'>ID</a></td>
 				<td style='width:10%' class='fcaption'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc").".$from'>".USRLAN_79."</a></td>";
@@ -579,7 +579,7 @@ class users{
 			}
 			$text .= "</table>";
 		}
-		$text .= "</div>";
+
 		$users = $sql->db_Count("user");
 
 		if ($users > $amount && !$_POST['searchquery']) {

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/upload.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-06-16 16:35:18 $
-|     $Author: e107coders $
+|     $Revision: 1.14 $
+|     $Date: 2005-11-01 00:53:00 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -194,7 +194,16 @@ if ($action == "view") {
 $imgd = e_BASE.$IMAGES_DIRECTORY;
 $text = "<div style='text-align:center'>
 <table style='".ADMIN_WIDTH."' class='fborder'>
-<tr><td class='forumheader3' style='text-align:center' colspan='6'>";
+<tr>
+<td style='width:5%' class='fcaption'>".UPLLAN_22."</td>
+<td style='width:10%' class='fcaption'>".LAN_DATE."</td>
+<td style='width:20%' class='fcaption'>".UPLLAN_5."</td>
+<td style='width:20%' class='fcaption'>".UPLLAN_23."</td>
+<td style='width:30%' class='fcaption'>".UPLLAN_24."</td>
+<td style='width:18px' class='fcaption'>".UPLLAN_42."</td>
+</tr>";
+
+$text .= "<tr><td class='forumheader3' style='text-align:center' colspan='6'>";
 
 if (!$active_uploads = $sql->db_Select("upload", "*", "upload_active=0 ORDER BY upload_id ASC")) {
 	$text .= UPLLAN_19.".\n</td>\n</tr>";
@@ -205,14 +214,7 @@ if (!$active_uploads = $sql->db_Select("upload", "*", "upload_active=0 ORDER BY 
 	$text .= UPLLAN_20." ".($active_uploads == 1 ? UPLAN_IS : UPLAN_ARE).$active_uploads." ".UPLLAN_21.($active_uploads == 1 ? "" : "s")." ...";
 
 	$text .= "</td></tr>";
-	$text .= "<tr>
-		<td style='width:5%' class='forumheader3'>".UPLLAN_22."</td>
-		<td style='width:10%' class='forumheader3'>".LAN_DATE."</td>
-		<td style='width:20%' class='forumheader3'>".UPLLAN_5."</td>
-		<td style='width:20%' class='forumheader3'>".UPLLAN_23."</td>
-		<td style='width:30%' class='forumheader3'>".UPLLAN_24."</td>
-		<td style='width:18px' class='forumheader3'>".UPLLAN_42."</td>
-		</tr>";
+
 	foreach($activeUploads as $row)
 	{
 		extract($row);

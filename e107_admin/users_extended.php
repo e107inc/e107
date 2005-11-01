@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-10-14 01:52:22 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.26 $
+|     $Date: 2005-11-01 00:53:00 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -232,8 +232,7 @@ class users_ext
 
 		if(!$current){
 			$text = "<div style='text-align:center'>";
-			$text .= "
-			<table style='".ADMIN_WIDTH."' class='fborder'>
+			$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>
 			<tr>
 			<td class='fcaption'>".EXTLAN_1."</td>
 			<td class='fcaption'>".EXTLAN_2."</td>";
@@ -322,7 +321,7 @@ class users_ext
 			$text .= "
 			<form method='post' action='".e_SELF."?".e_QUERY."'>
 			";
-			$text .= "<div><br /></div><table style='".ADMIN_WIDTH."' class='fborder'>  ";
+			$text .= "<table style='".ADMIN_WIDTH."' class='fborder'>  ";
 			$text .= "
 
 			<tr>
@@ -812,9 +811,8 @@ function show_predefined()
 	}
 
 	$txt = "
-	<br />
 	<form method='post'>
-	<table class='width:".ADMIN_WIDTH."'>
+	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
 	<td class='fcaption' colspan='4'>".EXTLAN_57."</td>
 	</tr>
@@ -828,7 +826,7 @@ function show_predefined()
 	}
 	else
 	{
-		$txt .= "<tr><td colspan='4'>".EXTLAN_61."</td></tr>";
+		$txt .= "<tr><td class='forumheader3' colspan='4'>".EXTLAN_61."</td></tr>";
 	}
 
 	$txt .= "
@@ -857,19 +855,19 @@ function show_field($var, $type='activate')
 	
 		$txt .= "
 		<tr>
-		<td class='fcaption'>".UE_LAN_9."</td>
-		<td class='fcaption'>".UE_LAN_10."</td>
-		<td class='fcaption'>".UE_LAN_11."</td>
-		<td class='fcaption'>&nbsp;</td>
+		<td class='forumheader'>".UE_LAN_9."</td>
+		<td class='forumheader'>".UE_LAN_10."</td>
+		<td class='forumheader'>".UE_LAN_11."</td>
+		<td class='forumheader' style='width: 5%'>&nbsp;</td>
 		</tr>
 		";
 		$head_shown = 1;
 	}
 	$txt .= "
 	<tr>
-	<td class='forumheader2'>{$var['name']}</td>
-	<td class='forumheader2'>".$tp->toHTML($var['type'], false, 'defs')."</td>
-	<td class='forumheader2'>".constant(strtoupper($var['text'])."_DESC")."</td>
+	<td class='forumheader3'>{$var['name']}</td>
+	<td class='forumheader3'>".$tp->toHTML($var['type'], false, 'defs')."</td>
+	<td class='forumheader3'>".constant(strtoupper($var['text'])."_DESC")."</td>
 	";
 //	$txt .= constant("UE_LAN_".strtoupper($var['text'])."DESC")."<br />";
 //	foreach($showlist as $f)
@@ -882,7 +880,7 @@ function show_field($var, $type='activate')
 	$val = ('activate' == $type) ? EXTLAN_59 : EXTLAN_60;
 	$txt .= "
 	</td>
-	<td class='forumheader2'><input class='button' type='submit' name='{$type}[{$var['name']}]' value='{$val}' /></td>
+	<td class='forumheader3' style='text-align: center'><input class='button' type='submit' name='{$type}[{$var['name']}]' value='{$val}' /></td>
 	</tr>";
 	return $txt;
 }

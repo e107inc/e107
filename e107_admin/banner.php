@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-10-30 13:58:48 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.24 $
+|     $Date: 2005-11-01 00:53:00 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -166,7 +166,7 @@ if (!$action) {
 		</tr>";
 
 	if (!$banner_total = $sql->db_Select("banner")) {
-		$text .= "<tr><td colspan='7' class='forumheader' style='text-align:center'>".BNRLAN_15."</td></tr>";
+		$text .= "<tr><td colspan='7' class='forumheader3' style='text-align:center'>".BNRLAN_15."</td></tr>";
 	} else {
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
