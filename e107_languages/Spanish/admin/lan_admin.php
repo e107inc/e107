@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_admin.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-10-30 11:36:56 $
+|     $Revision: 1.14 $
+|     $Date: 2005-11-01 18:51:15 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
