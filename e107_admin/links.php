@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-10-30 04:18:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.48 $
+|     $Date: 2005-11-01 00:25:25 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -209,10 +209,10 @@ class links {
 				if($linklist['sub_'.$main_linkid]){
 					foreach ($linklist['sub_'.$main_linkid] as $sub) {
 						$sub['link_total'] = $link_total;
-						$text .= $this->display_row($sub,25);
+						$text .= $this->display_row($sub,1);
 						if($linklist['sub_'.$sub['link_id']]){
 							foreach($linklist['sub_'.$sub['link_id']] as $ssub){
-								$text .= $this->display_row($ssub,50);
+								$text .= $this->display_row($ssub,2);
 							}
 						}
 					}
@@ -230,7 +230,7 @@ class links {
 		$ns->tablerender(LCLAN_8, $text);
 	}
 
-	function display_row($row2,$indent='0px'){
+	function display_row($row2, $indent = FALSE) {
 		global $sql, $rs, $ns, $tp,$parents,$link_total;
 		extract($row2);
 		if(strpos($link_name, "submenu.") !== FALSE || $link_parent !=0){
@@ -243,11 +243,23 @@ class links {
 			$link_name = $sublinkname;
 		}
 
+		if ($indent) {
+			$subimage = "<img src='".e_IMAGE."admin_images/sublink.png' alt='' />";
+			$subspacer = ($indent > 1) ? " style='padding-left: ".(($indent - 1) * 16)."px'" : "";
+			$subindent = "<td".$subspacer.">".$subimage."</td>";
+		}
 
 				$text .= "<tr><td class='forumheader3' style='width:5%; text-align: center; vertical-align: middle' title='".$link_description."'>";
 				$text .= $link_button ? "<img src='".e_IMAGE."icons/".$link_button."' alt='' /> ":
 				"";
-				$text .= "</td><td style='width:60%' class='forumheader3' title='".$link_description."'><span style='padding-left:".$indent."px'>".$link_name."</span></td>";
+				$text .= "</td><td style='width:60%' class='forumheader3' title='".$link_description."'>
+				<table cellspacing='0' cellpadding='0' border='0' style='width: 100%'>
+				<tr>
+				".$subindent."
+				<td style='width: 100%'>".$link_name."</td>
+				</tr>
+				</table>
+				</td>";
 				$text .= "<td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>";
 				$text .= $rs->form_button("button", "main_edit_{$link_id}", LAN_EDIT, "onclick=\"document.location='".e_SELF."?create.edit.$link_id'\"");
 				$text .= $rs->form_button("submit", "main_delete_".$link_id, LAN_DELETE, "onclick=\"return jsconfirm('".$tp->toJS(LCLAN_58." [ $link_name ]")."')\"");
