@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-06-27 20:17:54 $
-|     $Author: e107coders $
+|     $Revision: 1.9 $
+|     $Date: 2005-11-01 01:21:51 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 /* set style of download image and thumbnail */
@@ -36,7 +36,7 @@ if(!$DOWNLOAD_CAT_PARENT_TABLE){
 
                 $DOWNLOAD_CAT_PARENT_TABLE .= "
                 <tr>
-                <td colspan='5' class='forumheader3' style='text-align:left; font-weight:bold;'>
+                <td colspan='5' class='forumheader' style='text-align:left; font-weight:bold;'>
                         {DOWNLOAD_CAT_MAIN_ICON} {DOWNLOAD_CAT_MAIN_NAME}
                 </td>
                 </tr>";
