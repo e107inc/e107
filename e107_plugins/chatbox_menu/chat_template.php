@@ -9,7 +9,7 @@ if(!$CHAT_TABLE){
 		$CHAT_TABLE = "\n
 		<div class='spacer'>
 			<div class='{CHAT_TABLE_FLAG}'>
-				<img src='".THEME."images/bullet2.gif' alt='bullet' /> \n<b>{CHAT_TABLE_NICK}</b> ".LAN_13." {CHAT_TABLE_DATESTAMP}<br />
+				<img src='".THEME."images/bullet2.gif' alt='bullet' /> \n<b>{CHAT_TABLE_NICK}</b> ".CHATBOX_L22." {CHAT_TABLE_DATESTAMP}<br />
 				<div class='defaulttext'><i>{CHAT_TABLE_MESSAGE}</i></div>\n
 			</div>
 		</div>\n";

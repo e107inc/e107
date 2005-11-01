@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-10-18 04:42:12 $
+|     $Revision: 1.13 $
+|     $Date: 2005-11-01 19:47:59 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -130,7 +130,7 @@ foreach ($chatList as $row)
 		}
 		else
 		{
-			require_once(e_BASE.$THEMES_DIRECTORY."templates/chat_template.php");
+			require_once(e_PLUGIN."chatbox_menu/chat_template.php");
 		}
 	}
 	$textstring .= preg_replace("/\{(.*?)\}/e", '$\1', $CHAT_TABLE);
