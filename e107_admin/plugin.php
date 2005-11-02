@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-10-06 23:25:43 $
+|     $Revision: 1.53 $
+|     $Date: 2005-11-02 16:14:43 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -288,7 +288,7 @@ if ($action == 'upgrade') {
 	}
 
 	if (is_array($upgrade_remove_prefs)) {
-		$plugin->manage_prefs('remove', $upgrade_add_prefs);
+		$plugin->manage_prefs('remove', $upgrade_remove_prefs);
 	}
 
 	if (is_array($upgrade_add_user_prefs)) {
