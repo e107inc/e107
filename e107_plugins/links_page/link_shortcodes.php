@@ -66,7 +66,7 @@ if(isset($linkspage_pref['link_navigator_allcat']) && $linkspage_pref['link_navi
 if($mains){
 	$main = "";
 
-	$selectjs = " onchange=\"if(this.options[this.selectedIndex].value.indexOf('-') && this.options[this.selectedIndex].value != '&nbsp;'){ return document.location=this.options[this.selectedIndex].value; }\" ";
+	$selectjs = " onchange=\"if(this.options[this.selectedIndex].value.indexOf('-') && this.options[this.selectedIndex].value != '' && this.options[this.selectedIndex].value != '&nbsp;'){ return document.location=this.options[this.selectedIndex].value; }\" ";
 
 //	$selectjs = " onchange=\"if(this.options[this.selectedIndex].value != '-- view category --' || this.options[this.selectedIndex].value != '&nbsp;'){ return document.location=this.options[this.selectedIndex].value; }\" ";
 	$main .= $rs -> form_select_open("navigator", $selectjs);
