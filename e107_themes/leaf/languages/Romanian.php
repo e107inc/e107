@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/leaf/languages/Romanian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-10-30 15:37:08 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-02 17:21:53 $
 |     $Author: i2gh0st $
 +----------------------------------------------------------------------------+
 */
