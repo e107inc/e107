@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-11-01 00:53:00 $
-|     $Author: sweetas $
+|     $Revision: 1.27 $
+|     $Date: 2005-11-02 04:28:54 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -49,13 +49,15 @@ if (e_QUERY)
 	unset($tmp);
 }
 
+
+
 if (isset($_POST['up_x']))
 {
 	$qs = explode(".", $_POST['id']);
 	$_id = $qs[0];
 	$_order = $qs[1];
 	$_parent = $qs[2];
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order<='".($_order)."'");
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order ='".($_order-1)."'");
 	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
 }
 
@@ -65,7 +67,7 @@ if (isset($_POST['down_x']))
 	$_id = $qs[0];
 	$_order = $qs[1];
 	$_parent = $qs[2];
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order='".($_order)."'");
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_order='".($_order+1)."'");
 	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type > 0 AND user_extended_struct_parent = {$_parent} AND user_extended_struct_id='".$_id."'");
 }
 
@@ -165,6 +167,26 @@ if(isset($_POST['activate']))
 if(isset($_POST['deactivate']))
 {
 	$message .= field_deactivate();
+}
+
+//set order of all fields
+if($sql->db_Select("user_extended_struct", "user_extended_struct_id", "user_extended_struct_parent = 0"))
+{
+	$plist = $sql->db_getList();
+	foreach($plist as $_p)
+	{
+		$_parent = $_p['user_extended_struct_id'];
+		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_parent = {$_parent} ORDER BY user_extended_struct_order ASC"))
+		{
+			$_list = $sql->db_getList();
+			$o = 0;
+			foreach($_list as $r)
+			{
+				$sql->db_Update("user_extended_struct", "user_extended_struct_order = '{$o}' WHERE user_extended_struct_id = {$r['user_extended_struct_id']}");
+				$o++;
+			}
+		}
+	}
 }
 
 if($message)
