@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/upload.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-11-01 00:53:00 $
+|     $Revision: 1.15 $
+|     $Date: 2005-11-02 03:02:28 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -28,10 +28,20 @@ if (e_QUERY) {
 	$id = $tmp[1];
 }
 
-
-
 if ($action == "dis" && isset($_POST['updelete']['upload_'.$id]) ) {
-	$message = ($sql->db_Update("upload", "upload_active='1' WHERE upload_id='$id' ")) ? UPLLAN_1 : LAN_DELETED_FAILED;
+	$res = $sql -> db_Select("upload", "*", "upload_id='".$id."'");
+	$row = $sql -> db_Fetch();
+	if (preg_match("#Binary (.*?)/#", $row['upload_file'], $match)) {
+		$sql -> db_Delete("rbinary", "binary_id='".$match[1]."'");
+	} else if ($row['upload_file'] && file_exists(e_FILE."public/".$row['upload_file'])) {
+		unlink(e_FILE."public/".$row['upload_file']);
+	}
+	if (preg_match("#Binary (.*?)/#", $row['upload_ss'], $match)) {
+		$sql -> db_Delete("rbinary", "binary_id='".$match[1]."'");
+	} else if ($row['upload_ss'] && file_exists(e_FILE."public/".$row['upload_ss'])) {
+		unlink(e_FILE."public/".$row['upload_ss']);
+	}
+	$message = ($sql->db_Delete("upload", "upload_id='".$id."'")) ? UPLLAN_1 : LAN_DELETED_FAILED;
 }
 
 if ($action == "dlm") {
