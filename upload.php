@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/upload.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-02-09 16:42:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2005-11-02 17:49:48 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -36,7 +36,7 @@ if (isset($_POST['upload'])) {
 	if (($_POST['file_email'] || USER == TRUE) && $_POST['file_name'] && $_POST['file_description']) {
 		 
 		require_once(e_HANDLER."upload_handler.php");
-		$uploaded = file_upload(e_FILE."public/");
+		$uploaded = file_upload(e_FILE."public/", "unique");
 		 
 		$file = $uploaded[0]['name'];
 		$filetype = $uploaded[0]['type'];
