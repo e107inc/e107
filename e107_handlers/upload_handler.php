@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.15 $
-|   $Date: 2005-10-27 01:24:15 $
-|   $Author: mcfly_e107 $
+|   $Revision: 1.16 $
+|   $Date: 2005-11-02 17:49:48 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -93,11 +93,16 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "")
 		{
 			$filesize[] = $files['size'][$key];
 			$name = preg_replace("/[^a-z0-9._]/", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($name))));
-			if ($avatar == "attachment")
-			{
+			if ($avatar == "attachment") {
 				$name = time()."_".USERID."_".$fileinfo.$name;
 			}
+			
 			$destination_file = getcwd()."/".$uploaddir."/".$name;
+			if ($avatar == "unique" && file_exists($destination_file))
+			{
+				$name = time()."_".$name;
+				$destination_file = getcwd()."/".$uploaddir."/".$name;
+			}
 			if (file_exists($destination_file))
 			{
 				require_once(e_HANDLER."message_handler.php");
