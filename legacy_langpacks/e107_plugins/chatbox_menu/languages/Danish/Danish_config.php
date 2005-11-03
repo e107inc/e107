@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/chatbox_menu/languages/Danish/Danish_config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 09:52:21 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-03 18:12:35 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -44,4 +44,9 @@ define("CHBLAN_29", "Vis chatboks med rullegardin");
 define("CHBLAN_30", "Chatboks h&oslash;jde");
 define("CHBLAN_31", "Vis smileys");
 define("CHBLAN_32", "Bestyrer brugergruppe");
+
+define("CHBLAN_33", "Bruger t&aelig;lling rekalkuleret");
+define("CHBLAN_34", "Rekalkuler bruger post t&aelig;lling");
+define("CHBLAN_35", "Rekalkuler");
+
 ?>
