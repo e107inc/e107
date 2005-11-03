@@ -93,22 +93,22 @@ function print_item_pdf($id){
 			";
 
 			//the following defines are processed in the document properties of the pdf file
-			$creator	= SITENAME;								//define creator
-			$author		= $authordetails[1];						//define author
-			$keywords	= "";										//define keywords
-			$subject	= $row['content_subheading'];				//define subject
-			$title		= $row['content_heading'];					//define title
+			$creator	= SITENAME;											//define creator
+			$author		= $authordetails[1];								//define author
+			$keywords	= "";												//define keywords
+			$subject	= $tp->toHTML($row['content_subheading'], TRUE);	//define subject
+			$title		= $tp->toHTML($row['content_heading'], TRUE);		//define title
 
 			//define url and logo to use in the header of the pdf file
 			$url		= SITEURL.$PLUGINS_DIRECTORY."content/content.php?content.".$row['content_id'];
-			define('CONTENTPDFPAGEURL', $url);					//define page url to add in header
+			define('CONTENTPDFPAGEURL', $url);								//define page url to add in header
 
 			if(file_exists(THEME."images/logopdf.png")){
 				$logo = THEME."images/logopdf.png";
 			}else{
 				$logo = e_IMAGE."logo.png";
 			}
-			define('CONTENTPDFLOGO', $logo);		//define logo to add in header
+			define('CONTENTPDFLOGO', $logo);								//define logo to add in header
 	
 			//always return an array with the following data:
 			return array($text, $creator, $author, $title, $subject, $keywords, $url);
@@ -234,16 +234,8 @@ function print_item_pdf($id){
 	$replace2 = array('-', '-', '-', '-', '-', '-', '-');
 	$text[3] = str_replace($search2, $replace2, $text[3]);		//replace non-allowed characters
 
-	//$text[0] = strip_tags($text[0], '<b></b><i></i><u></u>[b][/b][i][/i][u][/u]');
-
-
-	$search[0] = "#\[b\](.*?)\[/b\]#si";
-	$replace[0] = '<b>\1</b>';
-	$search[1] = "#\[i\](.*?)\[/i\]#si";
-	$replace[1] = '<i>\1</i>';
-	$search[2] = "#\[u\](.*?)\[/u\]#si";
-	$replace[2] = '<u>\1</u>';
-	$text[0] = preg_replace($search, $replace, $text[0]);
+	global $tp;
+	$text[0] = $tp->toHTML($text[0], TRUE);
 
 	$pdf->AliasNbPages();						//calculate current page + number of pages
 	$pdf->AddPage();							//start page
