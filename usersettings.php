@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-11-03 20:16:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.50 $
+|     $Date: 2005-11-03 22:34:05 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -72,7 +72,11 @@ $cal = new DHTML_Calendar(true);
 $_uid = is_numeric(e_QUERY) ? intval(e_QUERY) : "";
 if(getperms("4") && strpos($_SERVER['HTTP_REFERER'], str_replace("../","",e_ADMIN)) !== FALSE || $_POST['adminmode'] == 1)
 {
-	require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
+	if (file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php")) {
+		include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
+	} else {
+		include_once(e_LANGUAGEDIR."English/admin/lan_users.php");
+	}
 
 	function usersettings_adminmenu()
 	{
