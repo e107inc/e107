@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.146 $
-|     $Date: 2005-11-03 15:49:23 $
+|     $Revision: 1.147 $
+|     $Date: 2005-11-03 17:33:47 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -1189,7 +1189,7 @@ function update_61x_to_700($type='') {
 		}
 
 		// custom pages search added
-		if (!isset($search_prefs['core_handlers']['pages'])) {
+		if (is_array($search_prefs) && !isset($search_prefs['core_handlers']['pages'])) {
 		 	return update_needed();
 		}
 
@@ -1219,6 +1219,7 @@ function update_61x_to_700($type='') {
 		if($sql->db_Select("links_page") && $sql->db_Field("links_page",11) != "link_author"){
 		  	return update_needed();
 		}
+
 /*
 		if(!$sql -> db_Select("core", "*", "e107_name='emote_default' "))
 		{
