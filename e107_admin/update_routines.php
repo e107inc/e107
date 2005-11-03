@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.145 $
-|     $Date: 2005-10-31 21:15:54 $
+|     $Revision: 1.146 $
+|     $Date: 2005-11-03 15:49:23 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -1053,6 +1053,61 @@ function update_61x_to_700($type='') {
 		if (!isset($pref['track_online'])) {
 			$pref['track_online'] = 1;
 			$s_prefs = TRUE;
+		}
+		
+		// custom menus / pages update
+		
+		if ($error=='') {	
+			unset($type);
+			global $tp, $ns, $sql;
+			require_once(e_HANDLER."file_class.php");
+			$file = new e_file;
+			$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*', 'Readme.txt');
+			$cpages = $file -> get_files(e_PLUGIN."custompages", "", $reject);
+			$cmenus = $file -> get_files(e_PLUGIN."custom", "", $reject);
+
+			$customs = array_merge($cpages, $cmenus);
+
+			$count = 0;
+			foreach($customs as $p)
+			{
+				$type = (strstr($p['path'], "custompages") ? "" : str_replace(".php", "", $p['fname']));
+				$filename = $p['path'].$p['fname'];
+				$handle = fopen ($filename, "r");
+				$contents = fread ($handle, filesize ($filename));
+				fclose ($handle);
+				$contents = str_replace("'", "&#039;", $contents);
+				if(!preg_match('#\$caption = "(.*?)";#si', $contents, $match))
+				{
+					preg_match('#<CAPTION(.*?)CAPTION#si', $contents, $match);
+				}
+				$page_title = $tp -> toDB(trim($match[1]));
+			
+				if(!preg_match('#\$text = "(.*?)";#si', $contents, $match))
+				{
+					preg_match('#TEXT(.*?)TEXT#si', $contents, $match);
+				}
+
+				$page_text = $tp -> toDB(trim($match[1]));
+				$filetime = filemtime($filename);
+
+				if(!$sql -> db_Select("page", "*", "page_title='$page_title' "))
+				{
+					$sql -> db_Insert("page", "0, '$page_title', '$page_text', '".USERID."', '".$filetime."', '0', '0', '', '', '', '$type' ");
+					$text .= "<b>Inserting: </b> '".$page_title."' <br />";
+					$count ++;
+				}
+
+				if($type)
+				{
+					$iid = mysql_insert_id();
+					if(!$sql -> db_Select("menus", "*", "menu_path='$iid' "))
+					{
+						mysql_query("UPDATE ".MPREFIX."menus SET menu_pages = 'dbcustom', menu_path='".$iid."' WHERE menu_name = '".$type."'");
+					}
+				}
+			}
+			catch_error();
 		}
 
 		// -----------------------------------------------------
