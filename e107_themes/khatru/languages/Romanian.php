@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/khatru/languages/Romanian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-02 17:21:53 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-03 18:40:54 $
 |     $Author: i2gh0st $
 +----------------------------------------------------------------------------+
 */
 
-define("LAN_THEME_1", "'khatru' de <a href='http://e107.org' rel='external'>jalist</a>");
+define("LAN_THEME_1", "'khatru' by <a href='http://e107.org' rel='external'>jalist</a>");
 define("LAN_THEME_2", "Comentariile sunt oprite");
 define("LAN_THEME_3", "Comentariu: ");
 define("LAN_THEME_4", "Restul aici ...");
