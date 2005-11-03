@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/languages/English/English_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-24 03:50:47 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-03 06:22:31 $
+|     $Author: sweetas $
 |     Encoding:
 +----------------------------------------------------------------------------+
 */
@@ -44,5 +44,9 @@ define("CHBLAN_29", "Display chatbox inside scrolling layer");
 define("CHBLAN_30", "Layer height");
 define("CHBLAN_31", "Show emoticons");
 define("CHBLAN_32", "Moderator userclass");
+
+define("CHBLAN_33", "User counts recalculated");
+define("CHBLAN_34", "Recalculate user post counts");
+define("CHBLAN_35", "Recalculate");
 
 ?>

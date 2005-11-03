@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-11-01 19:47:59 $
+|     $Revision: 1.14 $
+|     $Date: 2005-11-03 06:22:31 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,14 @@ if($_POST['moderate'] && CB_MOD)
 	if(isset($_POST['delete']))
 	{
 		$deletelist = implode(",", array_keys($_POST['delete']));
-		$sql->db_Select_gen("DELETE FROM #chatbox WHERE cb_id IN ({$deletelist})");
+		$sql -> db_Select_gen("SELECT c.cb_id, u.user_id FROM #chatbox AS c 
+		LEFT JOIN #user AS u ON FLOOR(c.cb_nick) = u.user_id 
+		WHERE c.cb_id IN (".$deletelist.")", TRUE);
+		$rowlist = $sql -> db_getList();
+		foreach ($rowlist as $row) {
+			$sql -> db_Select_gen("UPDATE #user SET user_chats=user_chats-1 where user_id = ".$row['user_id']);
+		}
+		$sql -> db_Select_gen("DELETE FROM #chatbox WHERE cb_id IN ({$deletelist})");
 	}
 	$e107cache->clear("chatbox");
 	$message = CHATBOX_L18;

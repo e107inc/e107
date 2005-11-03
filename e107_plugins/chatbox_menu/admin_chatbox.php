@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-24 03:50:47 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.12 $
+|     $Date: 2005-11-03 06:22:31 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -51,6 +51,27 @@ if (isset($_POST['prune'])) {
 	$sql->db_Delete("chatbox", "cb_datestamp < '$prunetime' ");
 	$e107cache->clear("chatbox");
 	$message = CHBLAN_28;
+}
+
+if (isset($_POST['recalculate'])) {
+	$qry = "SELECT u.user_id AS uid, count(c.cb_nick) AS count FROM #chatbox AS c
+		LEFT JOIN #user AS u on FLOOR(c.cb_nick) = u.user_id
+		WHERE u.user_id > 0
+		GROUP BY uid";
+
+		if ($sql -> db_Select_gen($qry)) {
+			$ret = array();
+			while($row = $sql -> db_Fetch())
+			{
+				$list[$row['uid']] = $row['count'];	
+			}
+		}
+
+		foreach($list as $uid => $cnt)
+		{
+			$sql->db_Update("user", "user_chats = '{$cnt}' WHERE user_id = '{$uid}'");
+		}
+	$message = CHBLAN_33;
 }
 
 if (isset($message)) {
@@ -135,9 +156,17 @@ $text .= "</select>
 	</select>
 	<input class='button' type='submit' name='prune' value='".CHBLAN_21."' />
 	</td>
-	</tr>
+	</tr>";
+	
+	
+	$text .= "<tr>
+	<td class='forumheader3' style='width:40%'>".CHBLAN_34.":</td>
+	<td class='forumheader3' style='width:60%'>
+	<input class='button' type='submit' name='recalculate' value='".CHBLAN_35."' />
+	</td>
+	</tr>";
 
-	<tr>
+	$text .= "<tr>
 	<td  class='forumheader' colspan='3' style='text-align:center'>
 	<input class='button' type='submit' name='updatesettings' value='".CHBLAN_19."' />
 	</td>
