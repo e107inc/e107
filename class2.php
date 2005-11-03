@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.228 $
-|     $Date: 2005-10-31 16:45:39 $
+|     $Revision: 1.229 $
+|     $Date: 2005-11-03 15:22:45 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -177,8 +177,6 @@ if(!$PrefCache){
 	$PrefData = $sysprefs->get('SitePrefs');
 	$pref = $eArrayStorage->ReadArray($PrefData);
 	if(!$pref){
-		// prefs aren't in the SitePrefs column, spit out an error
-		message_handler("CRITICAL_ERROR", 3, __LINE__, __FILE__);
 		$admin_log->log_event("Core Prefs Error", "Core is attempting to restore prefs from automatic backup.", E_LOG_WARNING);
 		// Try for the automatic backup..
 		$PrefData = $sysprefs->get('SitePrefs_Backup');
@@ -188,6 +186,7 @@ if(!$PrefCache){
 			$PrefData = $sysprefs->get('pref');
 			$pref = unserialize($PrefData);
 			if(!is_array($pref)){
+				message_handler("CRITICAL_ERROR", 3, __LINE__, __FILE__);
 				// No old system, so point in the direction of resetcore :(
 				message_handler("CRITICAL_ERROR", 4, __LINE__, __FILE__);
 				$admin_log->log_event("Core Prefs Error", "Core could not restore from automatic backup. Execution halted.", E_LOG_FATAL);
@@ -204,6 +203,7 @@ if(!$PrefCache){
 				$sql->db_Delete('core', "`e107_name` = 'pref'");
 			}
 		} else {
+			message_handler("CRITICAL_ERROR", 3, __LINE__, __FILE__);
 			// auto backup found, use backup to restore the core
 			if(!$sql->db_Update('core', "`e107_value` = '".addslashes($PrefStored)."' WHERE `e107_name` = 'SitePrefs'")){
 				$sql->db_Insert('core', "'SitePrefs', '".addslashes($PrefStored)."'");
