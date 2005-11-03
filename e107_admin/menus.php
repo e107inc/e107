@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-11-03 14:47:08 $
+|     $Revision: 1.40 $
+|     $Date: 2005-11-03 14:52:42 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -242,7 +242,7 @@ if (strpos(e_QUERY, 'configure') === FALSE)
 					$message .= "<b>".MENLAN_10." - ".$file['fname']."</b><br />";
 				}
 			} else {
-				$sql->db_Insert("menus", " 0, '{$file['fname']}', 0, 0, 0, '' ,'{$file['path']}'", true);
+				$sql->db_Insert("menus", " 0, '{$file['fname']}', 0, 0, 0, '' ,'{$file['path']}'");
 				$message .= "<b>".MENLAN_10." - ".$file['fname']."</b><br />";
 			}
 		}
