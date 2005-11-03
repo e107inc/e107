@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_newspost.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-17 11:39:40 $
+|     $Revision: 1.4 $
+|     $Date: 2005-11-03 18:25:11 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -116,6 +116,7 @@ define("NWSLAN_116", "Uppdatera först preferenserna med det ändrade antalet pe
 define("NWSLAN_117", "Sätt rubriken för nyhetsarkivet");
 define("NWSLAN_118", "Visa bilder");
 define("NWSLAN_119", "Inställningar sparade");
+define("NWSLAN_120", "Text att visa högst upp på Skicka in Nyhet");
 
 define("LAN_NEWS_5", "Fel! - Kunde inte uppdatera nyhetsämnet till databasen!");
 define("LAN_NEWS_6", "Nyhet inlagd i databasen.");

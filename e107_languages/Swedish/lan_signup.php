@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_signup.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-25 11:07:34 $
+|     $Revision: 1.4 $
+|     $Date: 2005-11-03 18:25:11 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ define("LAN_123", "Registrera");
 define("LAN_185", "Du har lämnat nödvändigt fält tomt");
 define("LAN_201", "Ja");
 define("LAN_200", "Nej");
-define("LAN_202", "Registrering misslyckades");
+define("LAN_202", "Du har redan ett konto. Om du har glömt ditt lösenord, klicka på \'Glömt lösenord\' länken.");
 define("LAN_309", "Ange dina uppgifter nedan.");
 define("LAN_399", "Fortsätt");
 define("LAN_400", "Användarnamn och lösenord är <b>skiftlägeskänsliga</b>");
