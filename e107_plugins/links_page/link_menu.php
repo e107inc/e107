@@ -78,7 +78,7 @@ if($mains){
 		$text .= "<br />";
 	}else{
 		$text .= $cap."<br />";
-		$text .= $mains;
+		$text .= $mains."<br />";
 	}
 	
 }
@@ -104,14 +104,13 @@ if(isset($linkspage_pref['link_menu_category']) && $linkspage_pref['link_menu_ca
 		}
 		if(isset($linkspage_pref['link_menu_category_rendertype']) && $linkspage_pref['link_menu_category_rendertype'] == "1"){
 			$selectjs = "style='width:100%;' onchange=\"if(this.options[this.selectedIndex].value != ''){ return document.location=this.options[this.selectedIndex].value; }\" ";
-			$text .= "<br />";
 			$text .= $rs -> form_select_open("category", $selectjs);
 			$text .= $rs -> form_option($cap, "0", "", "");
 			$text .= $mains;
 			$text .= $rs -> form_select_close();
 			$text .= "<br />";
 		}else{
-			$text .= "<br />".$cap."<br />";
+			$text .= $cap."<br />";
 			$text .= $mains;
 		}
 	}
