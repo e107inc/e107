@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/plugin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-01 03:16:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.11 $
+|     $Date: 2005-11-03 06:30:12 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -110,5 +110,19 @@ $eplug_upgrade_done = 'Forum successfully upgraded, now using version: '.$eplug_
 $upgrade_alter_tables = array(
 "ALTER TABLE ".MPREFIX."forum ADD forum_postclass TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL ;"
 );
+
+if (!function_exists('forum_uninstall')) {
+	function forum_uninstall() {
+		global $sql;
+		$sql -> db_Update("user", "user_forums=''");
+	}
+}
+
+if (!function_exists('forum_install')) {
+	function forum_install() {
+		global $sql;
+		$sql -> db_Update("user", "user_forums=''");
+	}
+}
 	
 ?>
