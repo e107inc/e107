@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/credits.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-09-07 17:51:02 $
-|     $Author: stevedunstan $
+|     $Revision: 1.10 $
+|     $Date: 2005-11-04 18:35:45 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -73,13 +73,13 @@ $creditsArray = array(
 
 $contentA = array(
 	"<h3>e107 v0.7 was brought to you by ...</h3>", 
-	"<h1>Carl Cedergren</h1>[ asperon ]<br /><br /><br />\"message goes here\"",
-	"<h1>Cameron Hanly</h1>[ cameron ]<br /><br /><br />\"message goes here\"", 
+	"<h1>Carl Cedergren</h1>[ asperon ]<br /><br /><br />",
+	"<h1>Cameron Hanly</h1>[ cameron ]<br /><br /><br />", 
 	"<h1>Steve Dunstan</h1>[ jalist ]<br /><br /><br />\"MTVhNjMyZDgxN2QwM2Q3ZTI<br />5ODM2NDU3YWI0ZjM1NGILJT<br />yarrrrrr! wtf matey!\"", 
-	"<h1>Eric Vanderfeesten</h1> [ lisa ]<br /><br /><br />\"message goes here\"", 
-	"<h1>Thom Michelbrink</h1>[ McFly ]<br /><br /><br />\"message goes here\"", 
-	"<h1>William Moffett</h1>[ que ]<br /><br /><br />\"message goes here\"", 
-	"<h1>Martin Nicholls</h1>[ streaky ]<br /><br /><br />\"message goes here\"", 
+	"<h1>Eric Vanderfeesten</h1> [ lisa ]<br /><br /><br />", 
+	"<h1>Thom Michelbrink</h1>[ McFly ]<br /><br /><br />", 
+	"<h1>William Moffett</h1>[ que ]<br /><br /><br />", 
+	"<h1>Martin Nicholls</h1>[ streaky ]<br /><br /><br />", 
 	"<h1>James Currie</h1>[ SweetAs ]<br /><br /><br />\"Wot? No tea?? 0_0\""
 );
 
