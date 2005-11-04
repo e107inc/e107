@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.229 $
-|     $Date: 2005-11-03 15:22:45 $
+|     $Revision: 1.230 $
+|     $Date: 2005-11-04 18:44:03 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -453,7 +453,7 @@ e107_include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
 e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
 
 // for multi-language these definitions needs to come after the language loaded.
-define("SITENAME", trim($tp->toHTML($pref['sitename'], "", "emotes_off defs")));
+define("SITENAME", trim($tp->toHTML($pref['sitename'], "", "emotes_off defs no_make_clickable")));
 define("SITEBUTTON", $pref['sitebutton']);
 define("SITETAG", $tp->toHTML($pref['sitetag'], FALSE, "emotes_off defs"));
 define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off defs"));
