@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links_template.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-10-30 14:37:17 $
+|     $Revision: 1.16 $
+|     $Date: 2005-11-04 00:27:44 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -127,8 +127,7 @@ $LINK_TABLE = "<div style='text-align:center'>
 			{LINK_NEW} {LINK_APPEND} {LINK_NAME} </a>
 		</td>
 		<td class='fcaption' style='white-space:nowrap'>
-		{LINK_COMMENT}
-		{LINK_REFER}
+		{LINK_COMMENT}&nbsp;{LINK_REFER}
 		</td>
 	</tr>
 	<tr><td colspan='2' class='forumheader3'>
