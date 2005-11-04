@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2005-10-17 23:18:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.68 $
+|     $Date: 2005-11-04 00:49:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -799,9 +799,18 @@ class download {
 
 			foreach($image_array as $img){
 				$fpath = str_replace(e_FILE."downloadimages/","",$img['path'].$img['fname']);
-            	$sel = ($download_image == $fpath) ? " selected='selected'" : "";
+            	if (stristr($fpath, $download_image) !== FALSE) {
+					$selected = " selected='selected'";
+					$ssfound = 1;
+				} else {
+					$selected = "";
+				}
             	$text .= "<option value='".$fpath."' $sel>".$fpath."</option>\n";
 			}
+			
+			if (!$ssfound && $download_image) {
+			$text .= "<option value='".$download_image."' selected='selected'>".$download_image."</option>\n";
+		}
 
 		$text .= "
 			</select>
