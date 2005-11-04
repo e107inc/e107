@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-09-25 02:01:32 $
-|     $Author: e107coders $
+|     $Revision: 1.38 $
+|     $Date: 2005-11-04 22:50:19 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -41,7 +41,6 @@ $pref['use_coppa'] = "1";
 $pref['profanity_filter'] = "1";
 $pref['profanity_replace'] = "[".LAN_PREF_4."]";
 $pref['smiley_activate'] = "";
-$pref['log_activate'] = "";
 $pref['log_refertype'] = "1";
 $pref['longdate'] = "%A %d %B %Y - %H:%M:%S";
 $pref['shortdate'] = "%d %b : %H:%M";

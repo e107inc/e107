@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.147 $
-|     $Date: 2005-11-03 17:33:47 $
+|     $Revision: 1.148 $
+|     $Date: 2005-11-04 22:50:19 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -728,6 +728,37 @@ function update_61x_to_700($type='') {
 				}
 			}
 		}
+		
+		if ($error=='') {
+			if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='log'") && !mysql_table_exists("logstats")) {
+				$sql->db_Select_gen("CREATE TABLE ".MPREFIX."logstats (
+				log_uniqueid int(11) NOT NULL auto_increment,
+				log_id varchar(50) NOT NULL default '',
+				log_data longtext NOT NULL,
+				PRIMARY KEY  (log_uniqueid),
+				UNIQUE KEY log_id (log_id)
+				) TYPE=MyISAM;");
+				catch_error();
+			}
+		}
+		
+		if (isset($pref['log_activate'])) {
+			if ($pref['log_activate']) {
+				$pref['statActivate'] = 1;
+				$pref['statCountAdmin'] = 0;
+				$pref['statBrowser'] = 1;
+				$pref['statOs'] = 1;
+				$pref['statScreen'] = 1;
+				$pref['statDomain'] = 1;
+				$pref['statRefer'] = 1;
+				$pref['statQuery'] = 1;
+				$pref['statRecent'] = 1;
+			} else {
+				$pref['statActivate'] = 0;
+			}
+			unset($pref['log_activate']);
+			$s_prefs = TRUE;
+		}
 
 		if ($error=='') {
 			// start poll update -------------------------------------------------------------------------------------------
@@ -1110,6 +1141,14 @@ function update_61x_to_700($type='') {
 			catch_error();
 		}
 
+		if ($error=='') {
+			mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_thumbnail` `news_thumbnail` TEXT NOT NULL;");
+			mysql_query("ALTER TABLE `".MPREFIX."forum_t` ADD INDEX ( `thread_parent` );");
+			mysql_query("ALTER TABLE `".MPREFIX."forum_t` ADD INDEX ( `thread_datestamp` );");
+			mysql_query("ALTER TABLE `".MPREFIX."forum_t` ADD INDEX ( `thread_forum_id` );");
+			catch_error();
+		}
+
 		// -----------------------------------------------------
 
 		// Save all prefs that were set in above update routines
@@ -1128,7 +1167,21 @@ function update_61x_to_700($type='') {
 
 // Check if update is needed to 0.7. -----------------------------------------------
 
-		global $sysprefs;
+		if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."forum_t")) {
+			while ($row = $sql -> db_Fetch()) {
+				if (($row['Field'] == 'thread_parent' || $row['Field'] == 'thread_datestamp' || $row['Field'] == 'thread_forum_id') && strpos($row['Key'], 'MUL') === FALSE) {
+					return update_needed();
+				}
+			}
+		}
+		
+		if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."news")) {
+			while ($row = $sql -> db_Fetch()) {
+				if ($row['Field'] == 'news_thumbnail' && strpos($row['Null'], 'YES') !== FALSE) {
+					return update_needed();
+				}
+			}
+		}
 		
 		if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."links_page_cat")) {
 			while ($row = $sql -> db_Fetch()) {
