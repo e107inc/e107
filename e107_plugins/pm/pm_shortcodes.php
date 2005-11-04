@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-09-17 03:33:46 $
+|     $Revision: 1.10 $
+|     $Date: 2005-11-04 20:45:29 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -237,7 +237,7 @@ SC_END
 
 SC_BEGIN PM_SUBJECT
 global $pm_info, $tp;
-$ret = $tp->toHTML($pm_info['pm_subject'], true);
+$ret = $tp->toHTML($pm_info['pm_subject'], true, 'no_make_clickable');
 if('link' == $parm)
 {
 	$ret = "<a href='".e_PLUGIN_ABS."pm/pm.php?show.{$pm_info['pm_id']}'>".$ret."</a>";
