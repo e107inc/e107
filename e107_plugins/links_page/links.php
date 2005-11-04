@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-10-30 18:11:57 $
+|     $Revision: 1.31 $
+|     $Date: 2005-11-04 00:49:44 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -191,7 +191,8 @@ function displayTopRated(){
 		$lc -> show_message(LAN_LINKS_33, LAN_LINKS_11);
 	}else{
 		$link_rated_table_string = "";
-		while ($rowl = $sql->db_Fetch()) {
+		$list = $sql -> db_getList();
+  	    foreach($list as $rowl) {
 			if( ($rowl['rate_avg'] > $ratemin) ){
 			$cat = $rowl['link_category_name'];
 			$LINK_RATED_APPEND			= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
@@ -243,7 +244,8 @@ function displayTopRefer(){
 		$lc -> show_message(LAN_LINKS_42, LAN_LINKS_10);
 	}else{
 		$link_top_table_string = "";
-		while ($rowl = $sql2 -> db_Fetch()) {
+		$list = $sql -> db_getList();
+  	    foreach($list as $rowl) {
 			$category				= $rowl['link_category_id'];
 			$LINK_APPEND			= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
 			$link_top_table_string .= $tp -> parseTemplate($LINK_TABLE, FALSE, $link_shortcodes);
@@ -387,8 +389,7 @@ function displayCategory(){
 	}else{
 		$link_main_table_string = "";
 		$list = $sql->db_getList();
-		foreach($list as $rowl)
-		{
+		foreach($list as $rowl) {
 			$rowl['total_links'] = $sql2 -> db_Count("links_page", "(*)", "WHERE link_category = '".$rowl['link_category_id']."' AND link_class REGEXP '".e_CLASS_REGEXP."' ");
 			if((!isset($linkspage_pref['link_cat_empty']) || $linkspage_pref['link_cat_empty'] == 0 && $rowl['total_links'] > "0") || (isset($linkspage_pref['link_cat_empty']) && $linkspage_pref['link_cat_empty'])){
 				$alllinks = $alllinks + $rowl['total_links'];
@@ -455,8 +456,8 @@ function displayCategoryLinks($mode=''){
 	if (!$sql2->db_Select_gen($qry)){
 		$lc -> show_message(LAN_LINKS_34, LAN_LINKS_39);
 	}else{
-		while ($rowl = $sql2->db_Fetch())
-		{
+		$list = $sql -> db_getList();
+  	    foreach($list as $rowl) {
 			if($mode){
 				$cat_name			= $rowl['link_category_name'];
 				$cat_desc			= $rowl['link_category_description'];
