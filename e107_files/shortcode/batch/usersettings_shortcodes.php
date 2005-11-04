@@ -177,6 +177,7 @@ $ret="";
 if($sql->db_Select_gen($qry))
 {
 	$catList = $sql->db_getList();
+	$catList[] = array("user_extended_struct_id" => 0, "user_extended_struct_name" => LAN_USET_7);
 	foreach($catList as $cat)
 	{
 		cachevars("extendedcat_{$cat['user_extended_struct_id']}", $cat);
@@ -193,7 +194,7 @@ if(isset($extended_showed['cat'][$parm]))
 	return "";
 }
 $ret = "";
-$catInfo = getcachedvars("extendeddata_{$parm}");
+$catInfo = getcachedvars("extendedcat_{$parm}");
 if(!$catInfo)
 {
 	$qry = "
@@ -215,6 +216,8 @@ if($catInfo)
 	WHERE user_extended_struct_applicable IN (".$curVal['userclass_list'].")
 	AND user_extended_struct_write IN (".$curVal['userclass_list'].")
 	AND user_extended_struct_parent = {$parm}
+	AND user_extended_struct_type != 0
+	ORDER BY user_extended_struct_order ASC
 	";
 	if($sql->db_Select_gen($qry))
 	{
@@ -268,8 +271,6 @@ if($fInfo)
 	}
 	
 	$parms = explode("^,^",$fInfo['user_extended_struct_parms']);
-
-//	print_a($curVal);
 
 	$fhide="";
 	if($parms[3])
