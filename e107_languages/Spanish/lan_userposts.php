@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_userposts.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-11-01 18:51:15 $
+|     $Revision: 1.9 $
+|     $Date: 2005-11-04 19:08:20 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
