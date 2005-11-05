@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.148 $
-|     $Date: 2005-11-04 22:50:19 $
-|     $Author: sweetas $
+|     $Revision: 1.149 $
+|     $Date: 2005-11-05 02:23:34 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -551,8 +551,8 @@ function update_61x_to_700($type='') {
 			mysql_query('DROP TABLE `'.MPREFIX.'cache`'); // db cache is no longer an available option..
 			catch_error();
 		}
-	//	$sql->db_Update("banner", "banner_active='255' WHERE banner_active = '0' ");
-	//	$sql->db_Update("banner", "banner_active='0' WHERE banner_active = '1' ");
+		$sql->db_Update("banner", "banner_active='255' WHERE banner_active = '0' ");
+		$sql->db_Update("banner", "banner_active='0' WHERE banner_active = '1' ");
 		$pref['wm_enclose'] = 1;
 		$s_prefs = TRUE;
 		/*
