@@ -283,7 +283,7 @@ SC_END
 SC_BEGIN CONTENT_CAT_TABLE_TEXT
 global $CONTENT_CAT_TABLE_TEXT, $row, $tp, $mainparent, $content_pref;
 if($row['content_text'] && isset($content_pref["content_catall_text_{$mainparent}"]) && $content_pref["content_catall_text_{$mainparent}"] && ($content_pref["content_catall_text_char_{$mainparent}"] > 0 || $content_pref["content_catall_text_char_{$mainparent}"] == 'all')){
-	if$content_pref["content_catall_text_char_{$mainparent}"] == 'all'){
+	if($content_pref["content_catall_text_char_{$mainparent}"] == 'all'){
 		$CONTENT_CAT_TABLE_TEXT = $row['content_text'];
 	}else{
 		$rowtext = preg_replace("/\[newpage.*?]/si", " ", $row['content_text']);
