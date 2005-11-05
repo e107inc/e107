@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-08-11 19:55:01 $
-|     $Author: sweetas $
+|     $Revision: 1.14 $
+|     $Date: 2005-11-05 02:15:54 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -177,6 +177,11 @@ $text .= "
 	<td class='forumheader3' style='width:70%'><input class='tbox' type='text' size='60' maxlength='85' name='userclass_description' value='$userclass_description' /></td>
 	</tr>
 	";
+
+	if(!isset($userclass_editclass))
+	{
+		$userclass_editclass = e_UC_ADMIN;
+	}
 
 $text .= "
 	<tr>
