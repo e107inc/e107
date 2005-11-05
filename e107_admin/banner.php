@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.24 $
-|     $Date: 2005-11-01 00:53:00 $
-|     $Author: sweetas $
+|     $Revision: 1.25 $
+|     $Date: 2005-11-05 02:07:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -193,7 +193,7 @@ if (!$action) {
 				<td class='forumheader3' style='text-align:center'>".$clickpercentage."</td>
 				<td class='forumheader3' style='text-align:center'>".$impressions_purchased."</td>
 				<td class='forumheader3' style='text-align:center'>".$impressions_left."</td>
-				<td class='forumheader3' style='text-align:center'><a href='".e_SELF."?create.edit.".$banner_id."'>".LAN_EDIT."</a> - <a href='".e_SELF."?delete.".$banner_id."'>".LAN_DELETE."</a></td>
+				<td class='forumheader3' style='text-align:center'><a href='".e_SELF."?create.edit.".$banner_id."'>".ADMIN_EDIT_ICON."</a> <a href='".e_SELF."?delete.".$banner_id."'>".ADMIN_DELETE_ICON."</a></td>
 				</tr>
 				<tr>
 				<td class='forumheader3' style='text-align:center'>&nbsp;</td>
@@ -362,7 +362,7 @@ if ($action == "create") {
 
 		$text .= "<input type='radio' name='banner_image' value='".$images[$c]['fname']."'";
 
-		if ($image == $_POST['banner_image']) {
+		if (basename($image) == $_POST['banner_image']) {
 			$text .= "checked='checked'";
 		}
 
