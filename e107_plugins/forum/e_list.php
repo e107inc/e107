@@ -1,6 +1,23 @@
 <?php
-
-	if(!$forum_install = $sql -> db_Select("plugin", "*", "plugin_path = 'forum' AND plugin_installflag = '1' ")){
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|    	Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/e_list.php,v $
+|     $Revision: 1.5 $
+|     $Date: 2005-11-05 18:28:20 $
+|     $Author: mcfly_e107 $
++----------------------------------------------------------------------------+
+*/
+	if(!$forum_install = $sql -> db_Select("plugin", "*", "plugin_path = 'forum' AND plugin_installflag = '1' "))
+	{
 		return;
 	}
 
@@ -13,7 +30,7 @@
 	{
 		$lvisit = $this -> getlvisit();
 		$qry = "
-		SELECT tp.thread_name AS parent_name, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name, t.thread_thread, t.thread_id, t.thread_views as tviews, t.thread_name, tp.thread_parent, t.thread_datestamp, t.thread_user, tp.thread_views, tp.thread_lastpost, tp.thread_lastuser, tp.thread_total_replies 
+		SELECT tp.thread_name AS parent_name, tp.thread_id as parent_id, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name, t.thread_thread, t.thread_id, t.thread_views as tviews, t.thread_name, tp.thread_parent, t.thread_datestamp, t.thread_user, tp.thread_views, tp.thread_lastpost, tp.thread_lastuser, tp.thread_total_replies 
 		FROM #forum_t AS t 
 		LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id 
 		LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id 
@@ -25,7 +42,6 @@
 	}
 	else
 	{
-		
 		$qry = "
 		SELECT t.thread_id, t.thread_name AS parent_name, t.thread_datestamp, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, lp.user_name AS lp_name 
 		FROM #forum_t AS t 
@@ -46,8 +62,8 @@
 		$forumArray = $sql->db_getList();
 		$path = e_PLUGIN."forum/";
 
-
-		foreach($forumArray as $forumInfo) {
+		foreach($forumArray as $forumInfo)
+		{
 			extract($forumInfo);
 			
 			//last user
@@ -103,7 +119,15 @@
 				$parent_name = $thread_name;
 			}
 			$rowheading	= $this -> parse_heading($parent_name, $mode);
-			$HEADING	= "<a href='".$path."forum_viewtopic.php?$thread_id' title='".$parent_name."'>".$rowheading."</a>";
+			if($parent_id)
+			{
+				$lnk = $thread_id.".post";
+			}
+			else
+			{
+				$lnk = $thread_id;
+			}
+			$HEADING	= "<a href='".$path."forum_viewtopic.php?$lnk' title='".$parent_name."'>".$rowheading."</a>";
 			$AUTHOR		= ($arr[3] ? ($thread_anon ? $thread_user : "<a href='".e_BASE."user.php?id.$thread_user'>$user_name</a>") : "");
 			$CATEGORY	= ($arr[4] ? "<a href='".$path."forum_viewforum.php?$forum_id'>$forum_name</a>" : "");
 			$DATE		= ($arr[5] ? $this -> getListDate($thread_datestamp, $mode) : "");
@@ -118,9 +142,7 @@
 			{
 				$INFO		= "[ ".LIST_FORUM_3." ".$tviews." ]";
 			}
-
 			$LIST_DATA[$mode][] = array( $ICON, $HEADING, $AUTHOR, $CATEGORY, $DATE, $INFO );
-
 		}
 	}
 
