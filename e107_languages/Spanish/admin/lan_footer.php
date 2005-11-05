@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_footer.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-10 18:12:33 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-05 10:05:55 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -25,5 +25,6 @@ define("FOOTLAN_13", "Info. Sitio");
 define("FOOTLAN_14", "Ver Documentos");
 define("FOOTLAN_15", "Documentación");
 define("FOOTLAN_16", "Base de datos");
+define("FOOTLAN_17", "Juego de carácteres");
 
 ?>
