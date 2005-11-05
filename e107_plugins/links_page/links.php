@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-11-04 00:49:44 $
-|     $Author: sweetas $
+|     $Revision: 1.32 $
+|     $Date: 2005-11-05 01:38:36 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -244,7 +244,7 @@ function displayTopRefer(){
 		$lc -> show_message(LAN_LINKS_42, LAN_LINKS_10);
 	}else{
 		$link_top_table_string = "";
-		$list = $sql -> db_getList();
+		$list = $sql2 -> db_getList();
   	    foreach($list as $rowl) {
 			$category				= $rowl['link_category_id'];
 			$LINK_APPEND			= $lc -> parse_link_append($rowl['link_open'], $rowl['link_id']);
@@ -456,7 +456,7 @@ function displayCategoryLinks($mode=''){
 	if (!$sql2->db_Select_gen($qry)){
 		$lc -> show_message(LAN_LINKS_34, LAN_LINKS_39);
 	}else{
-		$list = $sql -> db_getList();
+		$list = $sql2 -> db_getList();
   	    foreach($list as $rowl) {
 			if($mode){
 				$cat_name			= $rowl['link_category_name'];
