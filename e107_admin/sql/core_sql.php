@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ?Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-06-30 15:08:58 $
-|     $Author: lisa_ $
+|     $Revision: 1.42 $
+|     $Date: 2005-11-06 00:46:22 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
@@ -24,7 +24,7 @@ exit;
 # |        e107 website system
 # |        /files/sql.php
 # |
-# |        ©Steve Dunstan 2001-2002
+# |        ?Steve Dunstan 2001-2002
 # |        http://e107.org
 # |        jalist@e107.org
 # |
@@ -93,11 +93,25 @@ CREATE TABLE comments (
 #
 # Table structure for table `core`
 #
-
 CREATE TABLE core (
   e107_name varchar(100) NOT NULL default '',
   e107_value text NOT NULL,
   PRIMARY KEY  (e107_name)
+) TYPE=MyISAM;
+# --------------------------------------------------------
+
+#
+# Table structure for table `dblog`
+#
+CREATE TABLE dblog (
+  dblog_id int(10) unsigned NOT NULL auto_increment,
+  dblog_type varchar(60) NOT NULL default '',
+  dblog_datestamp int(10) unsigned NOT NULL default '0',
+  dblog_user_id int(10) unsigned NOT NULL default '0',
+  dblog_ip varchar(80) NOT NULL default '',
+  dblog_query text NOT NULL,
+  dblog_remarks varchar(255) NOT NULL default '',
+  PRIMARY KEY  (dblog_id)
 ) TYPE=MyISAM;
 # --------------------------------------------------------
 
