@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/file_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-07-16 10:36:10 $
-|     $Author: streaky $
+|     $Revision: 1.10 $
+|     $Date: 2005-11-06 18:18:59 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -28,7 +28,6 @@ class e_file {
 		}
 
 		if(!$handle = opendir($path)) {
-			echo "Unable to open: $path <br />";
 			return $ret;
 		}
 		if($omit == 'standard') {
@@ -82,7 +81,6 @@ class e_file {
 
 		if(!$handle = opendir($path))
 		{
-			echo "Unable to open: $path <br />";
 			return $ret;
 		}
 		if($omit == 'standard')
