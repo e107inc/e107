@@ -1,13 +1,82 @@
 ﻿<?php
 // e107 Language File.
-// $Id: Romanian.php,v 1.1 2005-10-23 17:27:47 e107coders Exp $
+// $Id: Romanian.php,v 1.2 2005-11-06 20:48:14 i2gh0st Exp $
 //Author: Bogdan M. Botezatu (Sphynx)
+//Updated by i2gh0st
 	
 	
 define('EC_ADLAN_1', "Calendar de evenimente");
 define('EC_ADLAN_2', "Configurare calendar de evenimente");
 define('EC_INSTALL', "Instalare calendar de evenimente");
 define('EC_UNINSTALL', "Dezinstalare calendar de evenimente");
+define('EC_LAN_TODAY', "Azi");
+
+
+define('EC_LAN_DAY_1', "1");
+define('EC_LAN_DAY_2', "2");
+define('EC_LAN_DAY_3', "3");
+define('EC_LAN_DAY_4', "4");
+define('EC_LAN_DAY_5', "5");
+define('EC_LAN_DAY_6', "6");
+define('EC_LAN_DAY_7', "7");
+define('EC_LAN_DAY_8', "8");
+define('EC_LAN_DAY_9', "9");
+define('EC_LAN_DAY_10', "10");
+define('EC_LAN_DAY_11', "11");
+define('EC_LAN_DAY_12', "12");
+define('EC_LAN_DAY_13', "13");
+define('EC_LAN_DAY_14', "14");
+define('EC_LAN_DAY_15', "15");
+define('EC_LAN_DAY_16', "16");
+define('EC_LAN_DAY_17', "17");
+define('EC_LAN_DAY_18', "18");
+define('EC_LAN_DAY_19', "19");
+define('EC_LAN_DAY_20', "20");
+define('EC_LAN_DAY_21', "21");
+define('EC_LAN_DAY_22', "22");
+define('EC_LAN_DAY_23', "23");
+define('EC_LAN_DAY_24', "24");
+define('EC_LAN_DAY_25', "25");
+define('EC_LAN_DAY_26', "26");
+define('EC_LAN_DAY_27', "27");
+define('EC_LAN_DAY_28', "28");
+define('EC_LAN_DAY_29', "29");
+define('EC_LAN_DAY_30', "30");
+define('EC_LAN_DAY_31', "31");
+/*
+define('EC_LAN_DAY_1', "1st");
+define('EC_LAN_DAY_2', "2nd");
+define('EC_LAN_DAY_3', "3rd");
+define('EC_LAN_DAY_4', "4th");
+define('EC_LAN_DAY_5', "5th");
+define('EC_LAN_DAY_6', "6th");
+define('EC_LAN_DAY_7', "7th");
+define('EC_LAN_DAY_8', "8th");
+define('EC_LAN_DAY_9', "9th");
+define('EC_LAN_DAY_10', "10th");
+define('EC_LAN_DAY_11', "11th");
+define('EC_LAN_DAY_12', "12th");
+define('EC_LAN_DAY_13', "13th");
+define('EC_LAN_DAY_14', "14th");
+define('EC_LAN_DAY_15', "15th");
+define('EC_LAN_DAY_16', "16th");
+define('EC_LAN_DAY_17', "17th");
+define('EC_LAN_DAY_18', "18th");
+define('EC_LAN_DAY_19', "19th");
+define('EC_LAN_DAY_20', "20th");
+define('EC_LAN_DAY_21', "21st");
+define('EC_LAN_DAY_22', "22nd");
+define('EC_LAN_DAY_23', "23rd");
+define('EC_LAN_DAY_24', "24th");
+define('EC_LAN_DAY_25', "25th");
+define('EC_LAN_DAY_26', "26th");
+define('EC_LAN_DAY_27', "27th");
+define('EC_LAN_DAY_28', "28th");
+define('EC_LAN_DAY_29', "29th");
+define('EC_LAN_DAY_30', "30th");
+define('EC_LAN_DAY_31', "31st");
+*/
+
 define('EC_LAN_0', "Ianuarie");
 define('EC_LAN_1', "Februarie");
 define('EC_LAN_2', "Martie");
