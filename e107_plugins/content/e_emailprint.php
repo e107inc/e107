@@ -3,16 +3,19 @@
 function print_item($id)
 {
 		global $tp;
+		global $content_pref, $mainparent, $aa, $row, $content_image_path;
 		$con = new convert;
 
 		require_once(e_PLUGIN."content/handlers/content_class.php");
 		$aa = new content;
 
+		require_once(e_PLUGIN."content/content_shortcodes.php");
+
 		$lan_file = e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content.php";
 		include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content.php");
 
 		if(!is_object($sql)){ $sql = new db; }
-		$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_parent, content_datestamp, content_class", "content_id='$id' ");
+		$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_image, content_parent, content_datestamp, content_class", "content_id='$id' ");
 		$row = $sql -> db_Fetch();
 
 		if(!check_class($row['content_class'])){
@@ -20,9 +23,16 @@ function print_item($id)
 		}
 		$row['content_heading']		= $tp -> toHTML($row['content_heading']);
 		$row['content_subheading']	= $tp -> toHTML($row['content_subheading']);
+		$row['content_text']		= $tp -> replaceConstants($row['content_text']);
 		$row['content_text']		= preg_replace("/\{EMAILPRINT\}|\[newpage\]/", "", $tp -> toHTML($row['content_text'], TRUE));
 		$authordetails				= $aa -> getAuthor($row['content_author']);
 		$row['content_datestamp']	= $con -> convert_date($row['content_datestamp'], "long");
+
+		$mainparent					= $aa -> getMainParent($id);
+		$content_pref				= $aa -> getContentPref($mainparent);
+		$content_icon_path			= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
+		$content_image_path			= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
+		$img						= $tp -> parseTemplate('{CONTENT_PRINT_IMAGES}', FALSE, $content_shortcodes);
 
 		$text = "
 		<b>".$row['content_heading']."</b>
@@ -31,6 +41,7 @@ function print_item($id)
 		<br />
 		".$authordetails[1].", ".$row['content_datestamp']."
 		<br /><br />
+		<div style='float:left; padding-right:10px;'>".$img."</div>
 		".$row['content_text']."
 		<br /><br /><hr />
 		".CONTENT_EMAILPRINT_LAN_1." ".SITENAME."
