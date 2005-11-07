@@ -1,6 +1,6 @@
 ﻿<?php
 // e107 Language File.
-// $Id: Romanian.php,v 1.2 2005-11-06 20:48:14 i2gh0st Exp $
+// $Id: Romanian.php,v 1.3 2005-11-07 13:39:48 i2gh0st Exp $
 //Author: Bogdan M. Botezatu (Sphynx)
 //Updated by i2gh0st
 	
@@ -201,8 +201,8 @@ define('EC_LAN_89', "'indent'este valoarea implicită");
 define('EC_LAN_90', "Alegeţi");	
 define('EC_LAN_91', "Nimic definit");	
 define('EC_LAN_92', "Vizualizare categorie");		
-define('EC_LAN_93', "Vizualizare listă de evenimente");		
-define('EC_LAN_94', "Introduceţi noul eveniment");			
+define('EC_LAN_93', "Listă de evenimente");		
+define('EC_LAN_94', "Eveniment nou");			
 define('EC_LAN_95', "Azi");	
 define('EC_LAN_96', "Vizualizare calendar");	
 define('EC_LAN_97', "Toate");		
