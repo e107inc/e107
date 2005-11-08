@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-10-26 08:30:18 $
-|     $Author: sweetas $
+|     $Revision: 1.49 $
+|     $Date: 2005-11-08 18:00:14 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -302,7 +302,7 @@ $forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
 
 // get info for main thread -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a> -> <a class='forumlink' href='forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a> -> ".$thread_info['head']['thread_name']."XXX";
+$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a> -> <a class='forumlink' href='forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a> -> ".$thread_info['head']['thread_name'];
 
 $BACKLINK = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a>";
 $THREADNAME = $tp->toHTML($thread_info['head']['thread_name'], TRUE);
@@ -344,7 +344,7 @@ $forstr = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMSTART);
 
 unset($forrep);
 if (!$FORUMREPLYSTYLE) $FORUMREPLYSTYLE = $FORUMTHREADSTYLE;
-
+$alt = FALSE;
 for($i = 0; $i < count($thread_info)-1; $i++) {
 	unset($post_info);
 	$post_info = $thread_info[$i];
@@ -362,7 +362,15 @@ for($i = 0; $i < count($thread_info)-1; $i++) {
 
 	if($post_info['thread_parent'])
 	{
-		$forrep .= $tp->parseTemplate($FORUMREPLYSTYLE, TRUE, $forum_shortcodes)."\n";
+		$alt = !$alt;
+		if(isset($FORUMREPLYSTYLE_ALT) && $alt)
+		{
+			$forrep .= $tp->parseTemplate($FORUMREPLYSTYLE_ALT, TRUE, $forum_shortcodes)."\n";
+		}
+		else
+		{
+			$forrep .= $tp->parseTemplate($FORUMREPLYSTYLE, TRUE, $forum_shortcodes)."\n";
+		}
 	}
 	else
 	{
