@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-10-31 03:02:02 $
+|     $Revision: 1.53 $
+|     $Date: 2005-11-08 12:29:11 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -56,6 +56,7 @@ elseif ($action == 'quote' || $action == 'edit')
 {
 	$thread_info = $forum->thread_get_postinfo($id, TRUE);
 	$forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
+	$id = $thread_info['head']['thread_id'];
 }
 
 if (!check_class($forum_info['forum_postclass']) || !check_class($forum_info['parent_postclass'])) {
@@ -384,8 +385,9 @@ if ($action == 'edit' || $action == 'quote')
 	$post = $tp->toForm($thread_info[0]['thread_thread']);
 	$post = preg_replace("/&lt;span class=&#39;smallblacktext&#39;.*\span\>/", "", $post);
 	if ($action == 'quote') {
+		$tmp = explode(chr(1), $thread_info[0]['user_name']);
 		$timeStamp = time();
-		$post = "[quote{$timeStamp}={$thread_info[0]['user_name']}]\n".$post."\n[/quote{$timeStamp}]\n";
+		$post = "[quote{$timeStamp}={$tmp[0]}]\n".$post."\n[/quote{$timeStamp}]\n";
 		$eaction = FALSE;
 		$action = 'reply';
 	} else {
