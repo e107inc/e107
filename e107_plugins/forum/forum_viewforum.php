@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-10-31 15:05:21 $
-|     $Author: sweetas $
+|     $Revision: 1.41 $
+|     $Date: 2005-11-08 12:29:11 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -56,6 +56,14 @@ $REPLYTITLE = LAN_55;
 $LASTPOSTITLE = LAN_57;
 $VIEWTITLE = LAN_56;
 	
+$forum_info = $forum->forum_get($forum_id);
+
+if (!check_class($forum_info['forum_class']) || !check_class($forum_info['parent_class']) || !$forum_info['forum_parent'])
+{
+	header("Location:".e_PLUGIN."forum/forum.php");
+	exit;
+}
+
 if (!$FORUM_VIEW_START) {
 	if (file_exists(THEME."forum_viewforum_template.php"))
 	{
@@ -71,13 +79,6 @@ if (!$FORUM_VIEW_START) {
 	}
 }
 	
-$forum_info = $forum->forum_get($forum_id);
-
-if (!check_class($forum_info['forum_class']) || !check_class($forum_info['parent_class']) || !$forum_info['forum_parent'])
-{
-	header("Location:".e_PLUGIN."forum/forum.php");
-	exit;
-}
 
 $forum_info['forum_name'] = $tp->toHTML($forum_info['forum_name'], TRUE);
 $forum_info['forum_description'] = $tp->toHTML($forum_info['forum_description'], TRUE);
