@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-11-08 12:29:11 $
+|     $Revision: 1.42 $
+|     $Date: 2005-11-08 13:54:15 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -56,6 +56,7 @@ $REPLYTITLE = LAN_55;
 $LASTPOSTITLE = LAN_57;
 $VIEWTITLE = LAN_56;
 	
+global $forum_info;
 $forum_info = $forum->forum_get($forum_id);
 
 if (!check_class($forum_info['forum_class']) || !check_class($forum_info['parent_class']) || !$forum_info['forum_parent'])
@@ -231,7 +232,7 @@ if ($thread_list) {
 		$forum_view_forum .= parse_thread($thread_info);
 	}
 } else {
-	$forum_view_forum = "<tr><td colspan='6' style='text-align:center' class='forumheader2'><br /><span class='mediumtext'><b>".LAN_58."</b></span><br /><br /></td></tr>";
+	$forum_view_forum .= parse_thread($thread_info);
 }
 	
 $sql->db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
