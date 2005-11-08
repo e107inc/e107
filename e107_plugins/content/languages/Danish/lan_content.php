@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Danish/lan_content.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-24 16:37:16 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-08 15:27:07 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -92,7 +92,7 @@ define("CONTENT_LAN_6", "alle kategorier");
 define("CONTENT_LAN_7", "alle forfattere");
 define("CONTENT_LAN_8", "bedst bedømte emner");
 define("CONTENT_LAN_9", "i");
-define("CONTENT_LAN_10", "den");
+define("CONTENT_LAN_10", " ");
 define("CONTENT_LAN_11", "af");
 define("CONTENT_LAN_12", "bedst scorende emner");
 define("CONTENT_LAN_13", "");
