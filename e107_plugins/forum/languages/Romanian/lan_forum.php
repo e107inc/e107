@@ -4,9 +4,10 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Romanian/lan_forum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-10-23 17:27:47 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-09 19:29:49 $
 |     $Author: Bogdan M. Botezatu (Sphynx)
+|      updated by i2gh0st
 +----------------------------------------------------------------------------+
 */
 define("e_PAGETITLE", "Forum");
@@ -25,14 +26,14 @@ define("LAN_42", "Membri înregistraţi: ");
 define("LAN_44", "Aceste forumuri pot fi folosite de către membrii neînregistraţi, dar fiţi atent: adresa dumneavoastră IP va fi înregistrată dacă faceţi un comentariu.<br />Pentru a accesa toate funcţiile forumului va trebui să");
 define("LAN_45", "Pe aceste forumuri pot posta doar membrii înregistraţi şi autentificaţi, vă rugăm să daţi click");
 define("LAN_46", "Forum");
-define("LAN_47", "Fire de discuţie");
+define("LAN_47", "Subiecte");
 define("LAN_48", "Replici");
 define("LAN_49", "Ultimul mesaj");
 define("LAN_51", "Încă nu există forumuri, vă rugăm reveniţi.");
 define("LAN_52", "Încă nu există forumuri în această secţiune, vă rugăm reveniţi.");
 define("LAN_79", "Mesaje noi");
 define("LAN_80", " Nici un mesaj nou");
-define("LAN_81", "Fir închis");
+define("LAN_81", "Subiect închis");
 define("LAN_100", "articole");
 define("LAN_180", "Căutare");
 define("LAN_191", "Informaţii");
@@ -41,16 +42,16 @@ define("LAN_196", "aţi citit ");
 define("LAN_197", " din aceste mesaje.");
 define("LAN_198", " Toate mesajele noi au fost cititie.");
 define("LAN_199", "Marcaţi toate mesajele ca citite");
-define("LAN_204", "<b>Puteţi</b> iniţia noi fire de discuţie");
-define("LAN_205", "<b>Nu puteţi</b> iniţia noi fire de discuţie");
+define("LAN_204", "<b>Puteţi</b> iniţia noi iubiecte");
+define("LAN_205", "<b>Nu puteţi</b> iniţia noi subiecte");
 define("LAN_206", "<b>Puteţi</b> trimite răspunsuri");
 define("LAN_207", "<b>Nu puteţi</b> trimite răspunsuri");
 define("LAN_208", "<b>Vă puteţi</b> edita propriile mesaje");
 define("LAN_209", "<b>Nu vă puteţi</b> edita propriile mesaje");
 define("LAN_392", "opriţi urmărirea acestui fir");
-define("LAN_393", "Listare fire urmărite");
+define("LAN_393", "Listare subiecte urmărite");
 define("LAN_394", "Forum închis");
-define("LAN_397", "Fire urmărite");
+define("LAN_397", "Subiecte urmărite");
 define("LAN_398", "Închis");
 define("LAN_399", "Restricţionat");
 define("LAN_400", "Acest forum poate fi vizualizat doar de membrii înregistraţi");
@@ -70,7 +71,7 @@ define("LAN_410", "Bine aţi venit, vizitatorule");
 	
 define("LAN_411", "fir");
 define("LAN_412", "răspuns");
-define("LAN_413", "fire");
+define("LAN_413", "subiecte");
 define("LAN_414", "răspunsuri");
 define("LAN_415", "utilizator răsfoieşte forumul acum");
 define("LAN_416", "utilizatori răsfoiesc forumul acum");
@@ -83,7 +84,7 @@ define("LAN_420", "vizitatori");
 define("LAN_421", "Afişare mesaje noi");
 define("LAN_422", "Mesaje noi de la ultima vizită");
 define("LAN_423", "Trimis de");
-define("LAN_424", "Fire noi");
+define("LAN_424", "Subiecte noi");
 define("LAN_425", "Re:");
 	
 //v.616
@@ -91,7 +92,7 @@ define("LAN_426", "Cine e conectat: ");
 define("LAN_427", "Vizualizare lista detaliată.");
 define("LAN_428", "Re:");
 define("LAN_429", "Top utilizatori");
-define("LAN_430", "Cele mai active fire");
+define("LAN_430", "Cele mai active subiecte");
 define("LAN_431", "Mesajele mele");
 define("LAN_432", "Setările mele");
 define("LAN_433", "Reguli forum");
