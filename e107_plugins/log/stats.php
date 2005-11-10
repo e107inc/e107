@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-11-10 18:23:32 $
+|     $Revision: 1.32 $
+|     $Date: 2005-11-10 18:35:57 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -141,7 +141,7 @@ switch($action) {
 $path = e_PLUGIN."log/stats.php";
 $links = "<style type='text/css'>
 <!--
-.b { background-image: url(".$stat -> bar."); border: 1px solid #999; height: 14px; font: 0px }
+.b { background-image: url(".$stat -> bar."); border: 1px solid #999; height: 10px; font: 0px }
 -->
 </style>
 
@@ -178,9 +178,7 @@ class siteStats {
 	var $error;
 	var $barImage;
 	var $order;
-	var $barl;
 	var $bar;
-	var $barr;
 
 	var $filesiteTotal;
 	var $filesiteUnique;
@@ -247,9 +245,7 @@ class siteStats {
 			}
 		}
 
-		$this -> barl = (file_exists(THEME."images/barl.png") ? THEME."images/barl.png" : e_PLUGIN."poll/images/barl.png");
-		$this -> barr = (file_exists(THEME."images/barr.png") ? THEME."images/barr.png" : e_PLUGIN."poll/images/barr.png");
-		$this -> bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_PLUGIN."poll/images/bar.png");
+		$this -> bar = (file_exists(THEME."images/bar.png") ? THEME."images/bar.png" : e_IMAGE."generic/bar.png");
 
 
 		/* end constructor */
@@ -1140,24 +1136,6 @@ class siteStats {
 		return "<div class='b' style='width: ".intval($percen)."%'></div>
 		</td>
 		<td style='width:10%; text-align:center' class='forumheader3'>".$val;
-
-		if($percen < 2)
-		{
-			return "
-<div style='float: right;'>&nbsp;$val</div>
-<div style='background-image: url(".$this -> barl."); float: left; width: 5px; height: 14px;'></div>
-<div style='background-image: url(".$this -> barr."); float: left; width: 5px; height: 14px;'></div>
-";
-		}
-		return "
-<div style='float: right;'>&nbsp;$val</div>
-<div style='width:".intval($percen)."%;'>
-<div style='background-image: url(".$this -> barl."); float: left; width: 5px; height: 14px; margin-right: -3px;'></div>
-<div style='background-image: url(".$this -> barr."); float: right; width: 5px; height: 14px; margin-left: -3px;'></div>
-<div style='background-image: url(".$this -> bar."); height: 14px; overflow: hidden;'></div>
-
-</div>
-";
 	}
 
 	function remove_entry($toremove)
