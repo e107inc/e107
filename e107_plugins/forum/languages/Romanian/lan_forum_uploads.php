@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Romanian/lan_forum_uploads.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-10-23 17:27:48 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-10 06:03:14 $
 |     $Author: Bogdan M. Botezatu (Sphynx)
 +----------------------------------------------------------------------------+
 */
@@ -17,7 +17,7 @@ define('FRMUP_3','Eroare: Imposibil de şters fişierul');
 define('FRMUP_4','Ştergere fişier');
 define('FRMUP_5','Nume fişier');
 define('FRMUP_6','Rezultat');
-define('FRMUP_7','Găsit în firul');
+define('FRMUP_7','Găsit în subiectul');
 define('FRMUP_8','NU A FOST GĂSIT');
 define('FRMUP_9','Nu a fost găsit nici un fişier uploadat');
 define('FRMUP_10','Ştergere');

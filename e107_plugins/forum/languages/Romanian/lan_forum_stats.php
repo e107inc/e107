@@ -4,9 +4,10 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Romanian/lan_forum_stats.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-10-23 17:27:47 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-10 06:03:14 $
 |     $Author: Bogdan M. Botezatu (Sphynx)
+|       Updated by i2gh0st
 +----------------------------------------------------------------------------+
 */
 define("e_PAGETITLE", "Statistici forum");
@@ -17,7 +18,7 @@ define("FSLAN_3", "Deschis pentru");
 define("FSLAN_4", "Total mesaje");
 define("FSLAN_5", "Subiecte forum");
 define("FSLAN_6", "Răspunsuri forum");
-define("FSLAN_7", "Vizualizări fir");
+define("FSLAN_7", "Vizualizări subiect");
 define("FSLAN_8", "Dimensiune bază de date (doar tabelele forumului)");
 define("FSLAN_9", "Lungimea medie a rândului în tabelul forumului");
 define("FSLAN_10", "Cele mai active subiecte");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Romanian/lan_forum_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-10-23 17:27:47 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-10 06:03:14 $
 |     $Author: Bogdan M. Botezatu (Sphynx)
 +----------------------------------------------------------------------------+
 */
@@ -60,15 +60,15 @@ define("FORLAN_48", "Bifaţi pentru a permite utilizatorilor să poată primi un
 define("FORLAN_49", "Activaţi sondaje");
 define("FORLAN_50", "Bifaţi pentru a permite utilizatorilor să creeze sondaje în forumuri - modulul Sondaje trebuie să fie instalat");
 define("FORLAN_51", "Activare urmărire");
-define("FORLAN_52", "Bifaţi aici pentru a permite utilizatorilor să urmăreasca fire şi să primeasca e-mail-uri când se răspunde la fir");
+define("FORLAN_52", "Bifaţi aici pentru a permite utilizatorilor să urmăreasca subiectele şi să primeasca e-mail-uri când se răspunde la ele");
 define("FORLAN_53", "Prefix e-mail");
 define("FORLAN_54", "Textul pe care îl introduceţi va prefixa subiectul în toate e-mail-urile trimise prin forum");
-define("FORLAN_55", "Cantitate fir popular");
-define("FORLAN_56", "Numărul de mesaje postate pentru ca un fir să fie marcat ca popular");
+define("FORLAN_55", "Cantitate subiect popular");
+define("FORLAN_56", "Numărul de mesaje postate pentru ca un subiect să fie marcat ca popular");
 define("FORLAN_57", "Mesaje pe paginÄƒ");
 define("FORLAN_58", "Numărul de mesaje afişate pe pagină");
 define("FORLAN_59", "Golire");
-define("FORLAN_60", "Aceasta va şterge toate firele care nu au primit un răspuns în numărul de zile pe care le-aţi introdus. <br /><b>Utilizaţi această funcţie cu atenţie!</b>");
+define("FORLAN_60", "Aceasta va şterge toate subiectele care nu au primit un răspuns în numărul de zile pe care le-aţi introdus. <br /><b>Utilizaţi această funcţie cu atenţie!</b>");
 define("FORLAN_61", "Actualizare opţiuni");
 define("FORLAN_62", "Opţiuni forum");
 define("FORLAN_63", "Ranguri");
@@ -100,7 +100,7 @@ define("FORLAN_89", "Ştergeţi mesajele complet");
 define("FORLAN_90", "Dezactivaţi mesajele");
 	
 define("FORLAN_91", "mesajele au fost dezactivate");
-define("FORLAN_92", "fire şterse");
+define("FORLAN_92", "subiecte şterse");
 define("FORLAN_93", "replici şterse");
 	
 define("FORLAN_94", "Setare ranguri");
@@ -148,13 +148,13 @@ define("FORLAN_125", "Bifaţi pentru a face toate linkurile să se deschidă în
 	
 //v.617
 define("FORLAN_126", "Afişare indicii");
-define("FORLAN_127", "Bifaţi aici pentru a afişa un indiciu constând în primul mesaj al firului cînd mouse-ul se aşază peste numele firului. ");
+define("FORLAN_127", "Bifaţi aici pentru a afişa un indiciu constând în primul mesaj al subiectului cînd mouse-ul se aşază peste numele subiectului. ");
 define("FORLAN_128", "Lungimea indiciului");
 define("FORLAN_129", "Aceasta va determina numărul de caractere de afişat în indiciu.");
 define("FORLAN_130", "click aici");
 define("FORLAN_131", "pentru a seta dimensiunea maximă a fişierulu, tipuri de fişier etc");
-define("FORLAN_132", "Accentuaţi firele sticky");
-define("FORLAN_133", "Diferenţiaţi firele sticky (separaţi secţiunile şi titlurile firului)");
+define("FORLAN_132", "Accentuaţi subiectele sticky");
+define("FORLAN_133", "Diferenţiaţi subiectele sticky (separaţi secţiunile şi titlurile subiectului)");
 	
 define("FORLAN_134", "Lăţimea maximă a imaginii uploadate");
 define("FORLAN_135", "Lăsaţi necompletat pentru a dezactiva autodimensionarea imaginii");
