@@ -78,10 +78,11 @@ return $ret;
 SC_END
 
 SC_BEGIN SIGNATURE
+global $curVal;
 parse_str($parm);
 $cols = (isset($cols) ? $cols : 58);
 $rows = (isset($rows) ? $rows : 4);
-return "<textarea class='tbox' name='signature' cols='{$cols}' rows='{$rows}' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$signature</textarea>";
+return "<textarea class='tbox' name='signature' cols='{$cols}' rows='{$rows}' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>".$curVal['user_signature']."</textarea>";
 SC_END
 
 SC_BEGIN TIMEZONE
