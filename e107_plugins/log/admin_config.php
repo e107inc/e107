@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/admin_config.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-10-26 08:23:30 $
+|     $Revision: 1.16 $
+|     $Date: 2005-11-10 20:35:17 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -195,17 +195,6 @@ $text = "<div style='text-align:center'>
 	</tr>
 	
 	";
-
-	if($sql -> db_Select("stat_counter "))
-	{
-
-		$text .= "<tr>
-		<td style='width:50%' class='forumheader3'>".ADSTAT_L22."<br /><span class='smalltext'>".ADSTAT_L23."</td>
-		<td style='width:50%; text-align: right;' class='forumheader3'><input class='button' type='submit' name='updateStats' value='".ADSTAT_L24."' />
-		</td>
-		</tr>
-		";
-	}
 
 	$text .= "
 	

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.149 $
-|     $Date: 2005-11-05 02:23:34 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.150 $
+|     $Date: 2005-11-10 20:35:17 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,6 +24,11 @@ if (!defined("LAN_UPDATE_9")) { define("LAN_UPDATE_9", ""); }
 if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
 {
 	include_once(e_PLUGIN.'forum/forum_update_check.php');
+}
+
+if(file_exists(e_PLUGIN.'log/log_update_check.php'))
+{
+	include_once(e_PLUGIN.'log/log_update_check.php');
 }
 
 //content
