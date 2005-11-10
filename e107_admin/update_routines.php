@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.150 $
-|     $Date: 2005-11-10 20:35:17 $
+|     $Revision: 1.151 $
+|     $Date: 2005-11-10 20:56:43 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -26,9 +26,11 @@ if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
 	include_once(e_PLUGIN.'forum/forum_update_check.php');
 }
 
-if(file_exists(e_PLUGIN.'log/log_update_check.php'))
-{
-	include_once(e_PLUGIN.'log/log_update_check.php');
+if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."stat_info") && $sql -> db_Select("plugin", "*", "plugin_path = 'log' AND plugin_installflag='1'")) {
+	if(file_exists(e_PLUGIN.'log/log_update_check.php'))
+	{
+		include_once(e_PLUGIN.'log/log_update_check.php');
+	}
 }
 
 //content
