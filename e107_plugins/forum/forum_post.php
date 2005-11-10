@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2005-11-08 12:29:11 $
+|     $Revision: 1.54 $
+|     $Date: 2005-11-10 19:12:20 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,10 @@ elseif ($action == 'quote' || $action == 'edit')
 {
 	$thread_info = $forum->thread_get_postinfo($id, TRUE);
 	$forum_info = $forum->forum_get($thread_info['head']['thread_forum_id']);
-	$id = $thread_info['head']['thread_id'];
+	if($action == 'quote')
+	{
+		$id = $thread_info['head']['thread_id'];
+	}
 }
 
 if (!check_class($forum_info['forum_postclass']) || !check_class($forum_info['parent_postclass'])) {
