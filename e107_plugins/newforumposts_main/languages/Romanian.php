@@ -1,11 +1,11 @@
 ﻿<?php
 	
-define("LAN_1", "Fir de discuţii");
+define("LAN_1", "Subiect");
 define("LAN_2", "Postat de");
 define("LAN_3", "Vizualizări");
 define("LAN_4", "Răspunsuri");
 define("LAN_5", "Ultimul mesaj");
-define("LAN_6", "Fire de discuţii");
+define("LAN_6", "Subiecte");
 	
 define("NFPM_L1", "Acest plugin afişează o listă cu mesaje noi de pe forum pe pagina principală");
 define("NFPM_L2", "Ultimul mesaj");

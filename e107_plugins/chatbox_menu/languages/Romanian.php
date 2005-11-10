@@ -11,9 +11,10 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Romanian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-10-23 17:27:47 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-10 07:24:16 $
 |     $Author: Bogdan M. Botezatu (Sphynx)
+|      updated by i2gh0st
 +----------------------------------------------------------------------------+
 */
 	
@@ -30,7 +31,7 @@ define("CHATBOX_L10", "Ştergere");
 define("CHATBOX_L11", "Încă nu există mesaje.");
 define("CHATBOX_L12", "Vizualizare toate mesajele");
 define("CHATBOX_L13", "Moderare chatbox");
-define("CHATBOX_L14", "Emotes");
+define("CHATBOX_L14", "Emotees");
 define("CHATBOX_L15", "Mesaj prea lung sau text lipsă");
 define("CHATBOX_L16", "Anonim");
 define("CHATBOX_L17", "Mesaj dublu");

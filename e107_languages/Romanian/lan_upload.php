@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/lan_upload.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-10-23 17:16:21 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-10 07:24:16 $
 |     $Author: Bogdan M. Botezayu (Sphynx)
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ define("LAN_404", "Mulţumim. Uploadul dumneavoastră va fi analizat de un admin
 define("LAN_405", "Fişierul depăşeşte dimensiunea maximă - şters.");
 define("LAN_406", "Atenţie");
 define("LAN_407", "Orice alt tip de fişier uploadat va fi şters imediat.");
-define("LAN_408", "Subliniat");
+define("LAN_408", "");
 define("LAN_409", "Numele fişierului");
 define("LAN_410", "Versiune");
 define("LAN_411", "Fila");
@@ -34,7 +34,7 @@ define("LAN_417", "Upload fişier");
 define("LAN_418", "Dimensiune maximă: ");
 define("DOWLAN_11", "Categorie");
 define("LAN_419", "Tipuri de fişier permise");
-define("LAN_420", "câmpurile sunt obligatorii");
+define("LAN_420", "Câmpurile sublinaiate sunt obligatorii");
 
 
 
