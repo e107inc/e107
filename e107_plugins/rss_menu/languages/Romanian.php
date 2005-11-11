@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/rss_menu/languages/Romanian.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-10 21:42:47 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-11 07:07:23 $
 |     $Author: i2gh0st $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ define("BACKEND_MENU_L8", "Rapoartelle noastre backtrack");
 define("BACKEND_MENU_L9", "Downloadurile noastre");
 
 define("RSS_LAN01", "Activeaza feeduri separate pentru fiecare categorie de stiri");
-define("RSS_LAN02", "Activeaza feeduri separate pentru fiecare categorie de downloaduri?");
+define("RSS_LAN02", "Activeaza feeduri separate pentru fiecare categorie de downloaduri");
 
 define("RSS_NEWS","Stiri");
 define("RSS_COM","Comentarii"); 
