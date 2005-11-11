@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/pm/languages/admin/Spanish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-07 10:13:30 $
+|     $Revision: 1.4 $
+|     $Date: 2005-11-11 23:57:58 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -66,4 +66,6 @@ define('ADLAN_PM_53', "No se encontraron registros a convertir.");
 define('ADLAN_PM_54', "Ajustes principales"); 
 define('ADLAN_PM_55', "Límites"); 
 define('ADLAN_PM_56', "Conversión"); 
+
+
 ?>

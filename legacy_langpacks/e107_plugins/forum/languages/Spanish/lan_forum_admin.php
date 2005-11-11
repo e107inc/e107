@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-31 20:10:08 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-11 23:57:58 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -125,7 +125,7 @@ define("FORLAN_115", "Marque para permitir al usuario cambiar el título de su me
 define("FORLAN_116", "Mensajes informes");
 define("FORLAN_117", "Esto borrará los mensajes de informes.");
 define("FORLAN_118", "Mensajes de informes borrados");
-define("FORLAN_119", "Abrirá los enlaces en una nueva ventana.");
+//define("FORLAN_119", "Abrirá los enlaces en una nueva ventana.");
 define("FORLAN_120", "Marque para permitir a los usuario cambiar el título de sus mensajes");
 define("FORLAN_121", "No hay mensajes de informes");
 define("FORLAN_122", "Pulse aquí para enviar un mensaje al administrador cuando alguien informe un mensaje en el foro");
@@ -184,6 +184,14 @@ define("FORLAN_166", "Herramientas del foro");
 define("FORLAN_167", "Contadores actualziados en el foro");
 define("FORLAN_168", "Información último envío actualizada para el foro");
 define("FORLAN_169", "Contador de foro de usuario actualizado");
+define("FORLAN_170", "Informes"); 
+define("FORLAN_171", "Informar de un envío");
+define("FORLAN_172", "Eliminar este informe");
+define("FORLAN_173", "Título tema");
+define("FORLAN_174", "Informe por usuario");
+define("FORLAN_175", "Informe enviado");
+define("FORLAN_176", "Informe");
+
 
 
 define("LAN_46", "Foros");

@@ -4,20 +4,20 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_meta.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.9 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("METLAN_1", "Meta-tags actualizados en la base de datos");
-define("METLAN_2", "Añadir Meta-tags adicionales");
-define("METLAN_3", "Nueva configuración de Meta-tags");
+define("METLAN_2", "AÃ±adir Meta-tags adicionales");
+define("METLAN_3", "Nueva configuraciÃ³n de Meta-tags");
 define("METLAN_4", "Actualizado");
-define("METLAN_5", "Escriba aquí su descripción");
-define("METLAN_6", "Escriba, una, lista, de, sus, palabras, clave, aquí");
-define("METLAN_7", "Escriba la información de Copyright aquí");
+define("METLAN_5", "Escriba aquÃ­ su descripciÃ³n");
+define("METLAN_6", "Escriba, una, lista, de, sus, palabras, clave, aquÃ­");
+define("METLAN_7", "Escriba la informaciÃ³n de Copyright aquÃ­");
 define("METLAN_8", "Meta-Tags");
-define("METLAN_9", "Descripción");
+define("METLAN_9", "DescripciÃ³n");
 define("METLAN_10", "Palabras Clave");
 define("METLAN_11", "Copyright");
 ?>

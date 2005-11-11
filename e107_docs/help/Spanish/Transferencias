@@ -1,6 +1,6 @@
-
+Ôªø
 P> Quiero dar permisos para transferir archivos a mi sitio pero  me preocupa la seguridad...
-R> Para mejorar este aspecto puede hacer un par de cosas. Primero, use el almacenaje Binario, los archivos tranferidos ser·n almacenados en la base de datos mySQL y no ser·n accesibles a nadie aparte de descargar. TambiÈn, ponga la lista de tipos de archivo permitidos, si alguien intenta transferir una extensiÛn diferente a las que ha definido ser· suprimido inmediatamente de su servidor.
+R> Para mejorar este aspecto puede hacer un par de cosas. Primero, use el almacenaje Binario, los archivos tranferidos ser√°n almacenados en la base de datos mySQL y no ser√°n accesibles a nadie aparte de descargar. Tambi√©n, ponga la lista de tipos de archivo permitidos, si alguien intenta transferir una extensi√≥n diferente a las que ha definido ser√° suprimido inmediatamente de su servidor.
 
-P> Tengo algunos archivos transferidos,øQuÈ hago ahora?
-R> Usted tiene la opciÛn para copiar el archivo a su manejador de descargas, permitir a otros que lo descarguen, y copiar la informaciÛn transferida a su secciÛn newspost y hacer un anuncio de noticia sobre ella.
+P> Tengo algunos archivos transferidos,¬øQu√© hago ahora?
+R> Usted tiene la opci√≥n para copiar el archivo a su manejador de descargas, permitir a otros que lo descarguen, y copiar la informaci√≥n transferida a su secci√≥n newspost y hacer un anuncio de noticia sobre ella.

@@ -4,18 +4,18 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_updateadmin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("UDALAN_1", "Error - por favor re-envia");
-define("UDALAN_2", "Configuración actualizada");
-define("UDALAN_3", "Configuración actualizada para");
+define("UDALAN_2", "ConfiguraciÃ³n actualizada");
+define("UDALAN_3", "ConfiguraciÃ³n actualizada para");
 define("UDALAN_4", "Nombre");
-define("UDALAN_5", "Contraseña");
-define("UDALAN_6", "Re-escriba contraseña");
-define("UDALAN_7", "Cambiar contraseña");
-define("UDALAN_8", "Actualizar contraseña de");
+define("UDALAN_5", "ContraseÃ±a");
+define("UDALAN_6", "Re-escriba contraseÃ±a");
+define("UDALAN_7", "Cambiar contraseÃ±a");
+define("UDALAN_8", "Actualizar contraseÃ±a de");
 
 ?>

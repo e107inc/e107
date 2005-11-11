@@ -4,30 +4,30 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/banner_menu/languages/Spanish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.4 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 
 define("BANNER_MENU_L1", "Publicidad");
-define("BANNER_MENU_L2", "Configuración del menú anuncio guardada");
+define("BANNER_MENU_L2", "ConfiguraciÃ³n del menÃº anuncio guardada");
 //v.617
-define("BANNER_MENU_L3", "Título");
-define("BANNER_MENU_L4", "Campaña");
-define("BANNER_MENU_L5", "Configuración del menú del Anuncio");
-define("BANNER_MENU_L6", "Seleccionar campañas para mostrar en el menú");
-define("BANNER_MENU_L7", "Campañas disponibles");
-define("BANNER_MENU_L8", "Campañas seleccionadas");
-define("BANNER_MENU_L9", "Eliminar selección");
-define("BANNER_MENU_L10", "¿Como deben ser mostradas las campañas seleccionadas?");
+define("BANNER_MENU_L3", "TÃ­tulo");
+define("BANNER_MENU_L4", "CampaÃ±a");
+define("BANNER_MENU_L5", "ConfiguraciÃ³n del menÃº del Anuncio");
+define("BANNER_MENU_L6", "Seleccionar campaÃ±as para mostrar en el menÃº");
+define("BANNER_MENU_L7", "CampaÃ±as disponibles");
+define("BANNER_MENU_L8", "CampaÃ±as seleccionadas");
+define("BANNER_MENU_L9", "Eliminar selecciÃ³n");
+define("BANNER_MENU_L10", "Â¿Como deben ser mostradas las campaÃ±as seleccionadas?");
 define("BANNER_MENU_L11", "Escoja tipo de renderizado ...");
-define("BANNER_MENU_L12", "Una campaña en un solo menú");
-define("BANNER_MENU_L13", "Todas las campañas en un solo menú");
-define("BANNER_MENU_L14", "Todas las campañas en menús separados");
-define("BANNER_MENU_L15", "¿Cuantos anuncios deben mostrarse?");
-define("BANNER_MENU_L16", "Este parámetro solo debe ser usado con las opciones 2 y 3.<br />Si hay menos anuncios se usará la mayor cantidad disponible.");
+define("BANNER_MENU_L12", "Una campaÃ±a en un solo menÃº");
+define("BANNER_MENU_L13", "Todas las campaÃ±as en un solo menÃº");
+define("BANNER_MENU_L14", "Todas las campaÃ±as en menÃºs separados");
+define("BANNER_MENU_L15", "Â¿Cuantos anuncios deben mostrarse?");
+define("BANNER_MENU_L16", "Este parÃ¡metro solo debe ser usado con las opciones 2 y 3.<br />Si hay menos anuncios se usarÃ¡ la mayor cantidad disponible.");
 define("BANNER_MENU_L17", "Ponga cantidad ...");
-define("BANNER_MENU_L18", "Actualizar parámetros de menú");
+define("BANNER_MENU_L18", "Actualizar parÃ¡metros de menÃº");
 
 ?>

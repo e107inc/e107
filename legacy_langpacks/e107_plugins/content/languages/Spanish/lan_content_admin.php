@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-31 20:10:07 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-11 23:57:58 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -406,7 +406,7 @@ define("CONTENT_ADMIN_OPT_LAN_MENU_19", "Elementos recientes");
 define("CONTENT_ADMIN_OPT_LAN_MENU_20", "Enlaces a páginas");
 
 define("CONTENT_ADMIN_OPT_LAN_SECTION_0", "Secciones");
-define("CONTENT_ADMIN_OPT_LAN_SECTION_1", "Escoja que s emostrará");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_1", "Escoja que se mostrará");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_2", "Adjuntos");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_3", "Imágenes");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_4", "Comentario");
@@ -474,7 +474,7 @@ define("CONTENT_PRESET_LAN_32", "Ejemplo:");
 
 define("CONTENT_ADMIN_OPT_LAN_0", "Opciones");
 define("CONTENT_ADMIN_OPT_LAN_1", "Preferencias por defecto");
-define("CONTENT_ADMIN_OPT_LAN_2", "Actualziar opciones");
+define("CONTENT_ADMIN_OPT_LAN_2", "Actualizar opciones");
 define("CONTENT_ADMIN_OPT_LAN_3", "Número de imágenes que pueden ser transferidas");
 define("CONTENT_ADMIN_OPT_LAN_4", "Número de adjuntos que pueden ser transferidos");
 define("CONTENT_ADMIN_OPT_LAN_5", "Número de tags personalizados disponibles");
@@ -561,8 +561,8 @@ define("CONTENT_ADMIN_OPT_LAN_86", "Mostrar elementos de las subcategorías princ
 define("CONTENT_ADMIN_OPT_LAN_87", "Si está activado , todos los elementos de la categoría seleccionada y los elementos de todas las categorías subrayadas se mostrarán.");
 define("CONTENT_ADMIN_OPT_LAN_88", "Defina orden a mostrar de los elementos");
 define("CONTENT_ADMIN_OPT_LAN_89", "Categorías primero, luego elementos");
+define("CONTENT_ADMIN_OPT_LAN_91", "Tipo de renderizado para categorías, sub y elementos");
 define("CONTENT_ADMIN_OPT_LAN_90", "Primero elementos, luego categorías");
-define("CONTENT_ADMIN_OPT_LAN_91", "ipo de renderizado para categorías, sub y elementos");
 define("CONTENT_ADMIN_OPT_LAN_92", "Cada uno en un menú independiente");
 define("CONTENT_ADMIN_OPT_LAN_93", "Título");
 define("CONTENT_ADMIN_OPT_LAN_94", "Añadir caja de búsqueda");

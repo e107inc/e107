@@ -1,10 +1,10 @@
+Ôªø
+P>	¬øQu√© es la cach√©?
+R>	Activandola acelerar√° la navegaci√≥n en su sitio y disminuir√° la llamada de sentencias sql.
 
-P>	øQuÈ es la cachÈ?
-R>	Activandola acelerar· la navegaciÛn en su sitio y disminuir· la llamada de sentencias sql.
+P>	He cambiado algunas cosas en el tema que estoy utilizando pero no veo los cambios. ¬øPuede ser debido a la cach√©?
+R>	Lo m√°s probable. Cuando cambia de temas la cach√© se limpia, pero si cambia c√≥digo dentro de un tema no. Mantenga el estado de la cach√© en Off hasta finalizar sus cambios.
 
-P>	He cambiado algunas cosas en el tema que estoy utilizando pero no veo los cambios. øPuede ser debido a la cachÈ?
-R>	Lo m·s probable. Cuando cambia de temas la cachÈ se limpia, pero si cambia cÛdigo dentro de un tema no. Mantenga el estado de la cachÈ en Off hasta finalizar sus cambios.
-
-P>	øPuedo guardar los archivos de cachÈ en el disco?
-R>	Si. De hecho es asÌ como se almacenan los datos. Pero para eso es muy importante que la carpeta e107_files/cache tenga permisos de escritura.
+P>	¬øPuedo guardar los archivos de cach√© en el disco?
+R>	Si. De hecho es as√≠ como se almacenan los datos. Pero para eso es muy importante que la carpeta e107_files/cache tenga permisos de escritura.
 

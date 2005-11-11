@@ -4,20 +4,20 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Spanish.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-11-11 23:49:28 $
+|     $Revision: 1.15 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Listar nuevos datos");
 //all benaeth will be deprecated sometime
 define("LIST_1", "Noticias");
-define("LIST_2", "Sin título");
-define("LIST_3", "Novedades desde su última visita ...");
+define("LIST_2", "Sin tÃ­tulo");
+define("LIST_3", "Novedades desde su Ãºltima visita ...");
 define("LIST_4", "No se encontraron nuevos elementos");
 define("LIST_5", "Mensajes en Chatbox");
 define("LIST_6", "Bloqueado por Admin");
-define("LIST_7", "Envíos de foros");
+define("LIST_7", "EnvÃ­os de foros");
 define("LIST_8", "Nuevos miembros");
 define("LIST_9", "Comentarios");
 define("LIST_10", "Ideas");
@@ -30,125 +30,125 @@ define("LIST_16", "Errores");
 define("LIST_17", "Ideas");
 
 define("LIST_13", "Perfil");
-define("LIST_14", "Artículo");
+define("LIST_14", "ArtÃ­culo");
 define("LIST_15", "Contenido");
 
 define("LIST_18", "FAQ");
 define("LIST_18", "Encuesta");
 define("LIST_19", "Documentos");
 define("LIST_20", "Bugtracker");
-define("LIST_21", "Artículos");
+define("LIST_21", "ArtÃ­culos");
 define("LIST_22", "Ideas");
-define("LIST_23", "Este plugin no está instalado.");
+define("LIST_23", "Este plugin no estÃ¡ instalado.");
 
 define("LIST_PLUGIN_1", "Lista");
-define("LIST_PLUGIN_2", "Este plugin le permite ver las últimas entradas añadidas en las categorías de e107. Puede ver la lista de datos desde su última visita o ver las últimas entradas generales. Cada sección es configurable desde el área del administrador.");
-define("LIST_PLUGIN_3", "Configurar el menú principal");
+define("LIST_PLUGIN_2", "Este plugin le permite ver las Ãºltimas entradas aÃ±adidas en las categorÃ­as de e107. Puede ver la lista de datos desde su Ãºltima visita o ver las Ãºltimas entradas generales. Cada secciÃ³n es configurable desde el Ã¡rea del administrador.");
+define("LIST_PLUGIN_3", "Configurar el menÃº principal");
 define("LIST_PLUGIN_4", "El plugin list_new esta instalado y listo para usar.");
 define("LIST_PLUGIN_5", "Lista");
 
 //all above will be deprecated sometime
   	 
 define("LIST_ADMIN_1", "Reciente");
-define("LIST_ADMIN_2", "Actualizar parámetros");
-define("LIST_ADMIN_3", "Parámetros actualizados");
-define("LIST_ADMIN_4", "Sección");
-define("LIST_ADMIN_5", "Menú");
-define("LIST_ADMIN_6", "Página");
+define("LIST_ADMIN_2", "Actualizar parÃ¡metros");
+define("LIST_ADMIN_3", "ParÃ¡metros actualizados");
+define("LIST_ADMIN_4", "SecciÃ³n");
+define("LIST_ADMIN_5", "MenÃº");
+define("LIST_ADMIN_6", "PÃ¡gina");
 define("LIST_ADMIN_7", "Activada");
 define("LIST_ADMIN_8", "Desactivada");
 define("LIST_ADMIN_9", "Abrir");
 define("LIST_ADMIN_10", "Cerrada");
 define("LIST_ADMIN_11", "Actualizar");
 define("LIST_ADMIN_12", "Escojer");
-define("LIST_ADMIN_13", "¡Bienvenido a la página de recientes de ".SITENAME." ! Esta página muestra las secciones más comunes con las últimas incorporaciones de esas secciones.");
-define("LIST_ADMIN_14", "Añadidos recientes");
-define("LIST_ADMIN_15", "Nuevo desde su última visita");
-define("LIST_ADMIN_16", "¡Bienvenido a la nueva página de ".SITENAME." ! Esta página muestra las secciones más recientes de este sitio, con las últimas incorporaciones a esas secciones desde su última visita.");
+define("LIST_ADMIN_13", "Â¡Bienvenido a la pÃ¡gina de recientes de ".SITENAME." ! Esta pÃ¡gina muestra las secciones mÃ¡s comunes con las Ãºltimas incorporaciones de esas secciones.");
+define("LIST_ADMIN_14", "AÃ±adidos recientes");
+define("LIST_ADMIN_15", "Nuevo desde su Ãºltima visita");
+define("LIST_ADMIN_16", "Â¡Bienvenido a la nueva pÃ¡gina de ".SITENAME." ! Esta pÃ¡gina muestra las secciones mÃ¡s recientes de este sitio, con las Ãºltimas incorporaciones a esas secciones desde su Ãºltima visita.");
   	 
 define("LIST_ADMIN_SECT_1", "Secciones");
 define("LIST_ADMIN_SECT_2", "Escoja que secciones mostrar");
 define("LIST_ADMIN_SECT_3", "");
 define("LIST_ADMIN_SECT_4", "Mostrar estilo");
-define("LIST_ADMIN_SECT_5", "Escoja que secciones se abrirán por defecto");
+define("LIST_ADMIN_SECT_5", "Escoja que secciones se abrirÃ¡n por defecto");
 define("LIST_ADMIN_SECT_6", "");
 define("LIST_ADMIN_SECT_7", "Autor");
-define("LIST_ADMIN_SECT_8", "Escoja si se mostrará el autor");
+define("LIST_ADMIN_SECT_8", "Escoja si se mostrarÃ¡ el autor");
 define("LIST_ADMIN_SECT_9", "");
-define("LIST_ADMIN_SECT_10", "Categoría");
-define("LIST_ADMIN_SECT_11", "Escoja si se mostrará la categoría");
+define("LIST_ADMIN_SECT_10", "CategorÃ­a");
+define("LIST_ADMIN_SECT_11", "Escoja si se mostrarÃ¡ la categorÃ­a");
 define("LIST_ADMIN_SECT_12", "");
 define("LIST_ADMIN_SECT_13", "Fecha");
-define("LIST_ADMIN_SECT_14", "Escoja si se mostrará la fecha");
+define("LIST_ADMIN_SECT_14", "Escoja si se mostrarÃ¡ la fecha");
 define("LIST_ADMIN_SECT_15", "");
 define("LIST_ADMIN_SECT_16", "Cantidad de elementos");
-define("LIST_ADMIN_SECT_17", "Escoja cuantos elementos se mostrarán en cada sección");
+define("LIST_ADMIN_SECT_17", "Escoja cuantos elementos se mostrarÃ¡n en cada secciÃ³n");
 define("LIST_ADMIN_SECT_18", "");
 define("LIST_ADMIN_SECT_19", "Ordenar elementos");
-define("LIST_ADMIN_SECT_20", "Escoja el orden de como se mostrarán las secciones");
+define("LIST_ADMIN_SECT_20", "Escoja el orden de como se mostrarÃ¡n las secciones");
 define("LIST_ADMIN_SECT_21", "");
 define("LIST_ADMIN_SECT_22", "Icono");
-define("LIST_ADMIN_SECT_23", "Escoja un icono para cada sección");
+define("LIST_ADMIN_SECT_23", "Escoja un icono para cada secciÃ³n");
 define("LIST_ADMIN_SECT_24", "");
-define("LIST_ADMIN_SECT_25", "Título");
-define("LIST_ADMIN_SECT_26", "Defina un título para cada sección");
+define("LIST_ADMIN_SECT_25", "TÃ­tulo");
+define("LIST_ADMIN_SECT_26", "Defina un tÃ­tulo para cada secciÃ³n");
 define("LIST_ADMIN_SECT_27", "");
  	 
 define("LIST_ADMIN_OPT_1", "General");
-define("LIST_ADMIN_OPT_2", "Página reciente");
-define("LIST_ADMIN_OPT_3", "Menú reciente");
-define("LIST_ADMIN_OPT_4", "Nueva página");
-define("LIST_ADMIN_OPT_5", "Nuevo menú");
+define("LIST_ADMIN_OPT_2", "PÃ¡gina reciente");
+define("LIST_ADMIN_OPT_3", "MenÃº reciente");
+define("LIST_ADMIN_OPT_4", "Nueva pÃ¡gina");
+define("LIST_ADMIN_OPT_5", "Nuevo menÃº");
 define("LIST_ADMIN_OPT_6", "Opciones");
   	 
 define("LIST_ADMIN_MENU_2", "Icono : Por defecto");
-define("LIST_ADMIN_MENU_3", "Use un tema por defecto cuando no exista un icono o esté desactivado");
+define("LIST_ADMIN_MENU_3", "Use un tema por defecto cuando no exista un icono o estÃ© desactivado");
 define("LIST_ADMIN_MENU_4", "");
   	 
-define("LIST_ADMIN_LAN_2", "Título");
-define("LIST_ADMIN_LAN_3", "Defina un título");
+define("LIST_ADMIN_LAN_2", "TÃ­tulo");
+define("LIST_ADMIN_LAN_3", "Defina un tÃ­tulo");
 define("LIST_ADMIN_LAN_4", "");
 define("LIST_ADMIN_LAN_5", "Icono : Uso");
-define("LIST_ADMIN_LAN_6", "Use un icono para cada sección");
+define("LIST_ADMIN_LAN_6", "Use un icono para cada secciÃ³n");
 define("LIST_ADMIN_LAN_7", "");
-define("LIST_ADMIN_LAN_8", "Carácteres");
-define("LIST_ADMIN_LAN_9", "Escoja cuantos carácteres se mostrarán en la cabecera");
+define("LIST_ADMIN_LAN_8", "CarÃ¡cteres");
+define("LIST_ADMIN_LAN_9", "Escoja cuantos carÃ¡cteres se mostrarÃ¡n en la cabecera");
 define("LIST_ADMIN_LAN_10", "Dejar en blanco para una cabecera completa");
 define("LIST_ADMIN_LAN_11", "Sufijo");
-define("LIST_ADMIN_LAN_12", "Escoja un sifujo si la cabecera es más larga que la cantidad de carácteres");
+define("LIST_ADMIN_LAN_12", "Escoja un sifujo si la cabecera es mÃ¡s larga que la cantidad de carÃ¡cteres");
 define("LIST_ADMIN_LAN_13", "Dejar en blanco para no mostrar sufijo");
 define("LIST_ADMIN_LAN_14", "Fecha");
 define("LIST_ADMIN_LAN_15", "Escoja un estilo de fecha");
-define("LIST_ADMIN_LAN_16", "Para más información sobre formatos de fecha mire en <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>función strftime en php.net</a>");
+define("LIST_ADMIN_LAN_16", "Para mÃ¡s informaciÃ³n sobre formatos de fecha mire en <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>funciÃ³n strftime en php.net</a>");
 define("LIST_ADMIN_LAN_17", "Fecha de hoy");
 define("LIST_ADMIN_LAN_18", "Escoja un estilo de fecha cuando sea para hoy");
-define("LIST_ADMIN_LAN_19", "Para más información sobre formatos de fecha mire en <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>función strftime en php.net</a>");
+define("LIST_ADMIN_LAN_19", "Para mÃ¡s informaciÃ³n sobre formatos de fecha mire en <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>funciÃ³n strftime en php.net</a>");
 define("LIST_ADMIN_LAN_20", "Columnas");
 define("LIST_ADMIN_LAN_21", "Escoja la cantidad de columnas");
-define("LIST_ADMIN_LAN_22", "Defina cuantas columnas desea utilizar. El número que especifique separará la página en partes iguales en columnas");
+define("LIST_ADMIN_LAN_22", "Defina cuantas columnas desea utilizar. El nÃºmero que especifique separarÃ¡ la pÃ¡gina en partes iguales en columnas");
 define("LIST_ADMIN_LAN_23", "Texto de bienvenida");
-define("LIST_ADMIN_LAN_24", "Defina un texto de bienvenida que se renderizará arriba en la página");
+define("LIST_ADMIN_LAN_24", "Defina un texto de bienvenida que se renderizarÃ¡ arriba en la pÃ¡gina");
 define("LIST_ADMIN_LAN_25", "");
-define("LIST_ADMIN_LAN_26", "Mostrar vacío");
+define("LIST_ADMIN_LAN_26", "Mostrar vacÃ­o");
 define("LIST_ADMIN_LAN_27", "Defina si un mensaje necesita mostrarse cuando no se obtienen resultados de las secciones");
 define("LIST_ADMIN_LAN_28", "");
 define("LIST_ADMIN_LAN_29", "Icono : por defecto");
-define("LIST_ADMIN_LAN_30", "Use un tema por defecto cuando no exista un icono o esté desactivado");
+define("LIST_ADMIN_LAN_30", "Use un tema por defecto cuando no exista un icono o estÃ© desactivado");
 define("LIST_ADMIN_LAN_31", "");
-define("LIST_ADMIN_LAN_32", "Lapsodetiempo:días");
-define("LIST_ADMIN_LAN_33", "Máximo de días en que el usuario volverá a mirar");
+define("LIST_ADMIN_LAN_32", "Lapsodetiempo:dÃ­as");
+define("LIST_ADMIN_LAN_33", "MÃ¡ximo de dÃ­as en que el usuario volverÃ¡ a mirar");
 define("LIST_ADMIN_LAN_34", "");
-define("LIST_ADMIN_LAN_35", "Días");
+define("LIST_ADMIN_LAN_35", "DÃ­as");
 define("LIST_ADMIN_LAN_36", "Laspsodetiempo");
-define("LIST_ADMIN_LAN_37", "¿Mostrar una caja de selección con el número de diías a volver a mirar?");
+define("LIST_ADMIN_LAN_37", "Â¿Mostrar una caja de selecciÃ³n con el nÃºmero de diÃ­as a volver a mirar?");
 define("LIST_ADMIN_LAN_38", "");
  	 
-define("LIST_MENU_1", "Añadidos recientes");
+define("LIST_MENU_1", "AÃ±adidos recientes");
 define("LIST_MENU_2", "por");
 define("LIST_MENU_3", "en");
 define("LIST_MENU_4", "en");
-define("LIST_MENU_5", "Días");
-define("LIST_MENU_6", "¿Ver contenido de cuantos días?");
+define("LIST_MENU_5", "DÃ­as");
+define("LIST_MENU_6", "Â¿Ver contenido de cuantos dÃ­as?");
 define("LIST_MENU_7", "");
 define("LIST_MENU_8", "");
 define("LIST_MENU_9", "");
@@ -185,7 +185,7 @@ define("LIST_MEMBER_2", "Sin miembros");
   	 
 define("LIST_CONTENT_1", "Contenido");
 define("LIST_CONTENT_2", "Sin contenido");
-define("LIST_CONTENT_3", "No es una categoría de contenido válida");
+define("LIST_CONTENT_3", "No es una categorÃ­a de contenido vÃ¡lida");
   	 
 define("LIST_CHATBOX_1", "ChatBox");
 define("LIST_CHATBOX_2", "No hay mensajes de ChatBox");
@@ -200,6 +200,6 @@ define("LIST_FORUM_1", "Foro");
 define("LIST_FORUM_2", "Sin mensajes del foro");
 define("LIST_FORUM_3", "Vistas:");
 define("LIST_FORUM_4", "Respuestas:");
-define("LIST_FORUM_5", "Último mensaje:");
+define("LIST_FORUM_5", "Ãšltimo mensaje:");
 define("LIST_FORUM_6", "En:");
 ?>

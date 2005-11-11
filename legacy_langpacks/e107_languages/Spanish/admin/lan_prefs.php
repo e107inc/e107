@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-28 09:26:19 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-11 23:57:49 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -112,7 +112,7 @@ define("PRFLAN_98", "<b>Off:</b> Cada plugin mostrará su propia información en u
 //define("PRFLAN_100", "Carga de imágenes del theme:");
 define("PRFLAN_101", "Renderizado texto");
 define("PRFLAN_102", "Reemplazar enlaces");
-define("PRFLAN_103", "On: los enlaces serán substituídos por el texto escrito, para los enlaces largos que rompen la distribución");
+define("PRFLAN_103", "<b>On:</b> los enlaces serán substituídos por el texto escrito, para los enlaces largos que rompen la distribución");
 define("PRFLAN_104", "Texto de enlace a reemplazar");
 define("PRFLAN_105", "Se puede usar con: imagen usando el tag <img , con la ruta completa a la imagen");
 define("PRFLAN_106", "Preferencias guardadas en la BD.");
@@ -151,6 +151,10 @@ define("PRFLAN_138", "Activar codigo-Imagen de verificación durante el proceso d
 define("PRFLAN_139", "Mostrar una alerta cuando la contraseña del admin principal no ha cambiado en los últimos 30 días");
 define("PRFLAN_140", "Texto a mostrar después de que se haya enviado el formulario de conexión.");
 define("PRFLAN_141", "Permitir el registro utilizando perfiles de usuario XML");
+define("PRFLAN_142", "Solo Flood"); 
+define("PRFLAN_143", "Solo fallos de conexión"); 
+define("PRFLAN_144", "Fallos de conexión y Flood"); 
+
 
 define("CUSTSIG_1", "¡Configuración Guardada!");
 define("CUSTSIG_2", "Nombre Real:");

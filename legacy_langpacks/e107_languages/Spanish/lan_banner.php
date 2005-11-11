@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_banner.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-28 09:26:19 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -19,7 +19,7 @@ define("LAN_21", "Estadísticas de la publicidad");
 define("LAN_22", "Cliente");
 define("LAN_23", "ID anuncio");
 define("LAN_24", "Visitas");
-define("LAN_25", "Visitas %");
+define("LAN_25", "% Visitas");
 define("LAN_26", "Impresiones");
 define("LAN_27", "Impresiones Contratadas");
 define("LAN_28", "Impresiones realizadas");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-09-05 09:43:36 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-11 23:57:49 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -119,15 +119,24 @@ define("USRLAN_124", "Su cuenta está actualmente marcada como inactiva, para act
 define("USRLAN_125", "Desde");
 define("USRLAN_126", "Permitir a usuarios valorar usuarios");
 define("USRLAN_127", "Permitir comentarios en perfil de usuario");
-define("USRLAN_128", "Nombre de conexión");define("USRLAN_129", "No se encontró la IP en la info del usuario, IP no expulsada"); 
-define("USRLAN_130", "Hay múltiples usuarios con la IP {IP}, IP no expulsada."); 
-define("USRLAN_131", "Usuarios con la IP {IP} expulsados.");
+define("USRLAN_128", "Nombre de conexión");
+
+
 
 define("USRLAN_130", "Activar tracking de usuario online");
 define("USRLAN_131", "Debe activar esta opción para usar las opciones de tracking de usuario online, como online.php, foro online info y menús online");
 define("USRLAN_132", "Activar");
 define("USRLAN_133", "Forzar al usuario que actualice sus ajustes");
 define("USRLAN_134", "Activando esta opción se enviará al usuario a sus ajustes automáticamente, si algún campo requerido no se ha rellenado.");
+define("USRLAN_135", "No se encontró la IP en la info de usuario, IP no expulsada"); 
+define("USRLAN_136", "Varios usuarios tienen la ip {IP}, IP no expulsada."); 
+define("USRLAN_137", "Usuarios con la IP {IP} expulsados."); 
+    
+define("LAN_MAINADMIN","Admin principal"); 
+define("LAN_ADMIN","Admin"); 
+define("LAN_NOTVERIFIED","Sin verificar"); 
+define("LAN_BANNED","Expuldado"); 
+
 
 define("DUSRLAN_1", "ID");
 define("DUSRLAN_2", "Nombre a mostrar");
@@ -167,10 +176,7 @@ define("DUSRLAN_35", "Foto");
 define("DUSRLAN_36", "Cambiar contraseña");
 define("DUSRLAN_37", "XUP");
 
-define("LAN_MAINADMIN","Admin Jefe");
-define("LAN_ADMIN","Admin");
-define("LAN_NOTVERIFIED","No comprobado");
-define("LAN_BANNED","Expulsado");
+
 
 
 

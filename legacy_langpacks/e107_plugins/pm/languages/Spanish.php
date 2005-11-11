@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/pm/languages/Spanish.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-09-18 09:22:26 $
+|     $Revision: 1.7 $
+|     $Date: 2005-11-11 23:57:58 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -66,10 +66,10 @@ define('LAN_PM_54', "Texto original");
 define('LAN_PM_55', "Enviar respuesta"); 
 define('LAN_PM_56', "No está autorizado para responder este mensaje"); 
 define('LAN_PM_57', "Mensaje no encontrado"); 
-define('LAN_PM_58', "Re: ");
+define('LAN_PM_58', "Re: "); 
 define('LAN_PM_59', "Ir a la página: ");
 define('LAN_PM_60', "No está autorizado para ver este mensaje"); 
-define('LAN_PM_61', "Sin asunto");
+define('LAN_PM_61', "Sin asunto"); 
 define('LAN_PM_62', "Archivo: [{FILENAME}] excede el límite de tamaño - No se ha adjuntado");
 
 define("LAN_PM_100", "Nuevo MP de "); 
@@ -80,6 +80,7 @@ define("LAN_PM_104", "Archivos adjuntos: ");
 define("LAN_PM_105", "Puede ver el MP en: "); 
 define("LAN_PM_106", "MP listo por "); 
 define("LAN_PM_107", "El mensaje privado enviado a {UNAME} fué leído "); 
-define("LAN_PM_108", "Mensaje enviado el: ");
+define("LAN_PM_108", "Mensaje enviado el: "); 
+
 
 ?>

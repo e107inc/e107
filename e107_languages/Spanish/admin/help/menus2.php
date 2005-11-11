@@ -4,17 +4,17 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/menus2.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-$caption = "Ayuda de Menú";
-$text .= "Puede indicar donde y en que orden se mostrarán los menús.
-Use las flechas para mover los menús arriba y abajo hasta que esté conforme con el aspecto.<br />
-Los menú que están en la mitad de la pantalla están desactivados,
-puede activarlos eligiendo una locación para colocarlos.
+$caption = "Ayuda de MenÃº";
+$text .= "Puede indicar donde y en que orden se mostrarÃ¡n los menÃºs.
+Use las flechas para mover los menÃºs arriba y abajo hasta que estÃ© conforme con el aspecto.<br />
+Los menÃº que estÃ¡n en la mitad de la pantalla estÃ¡n desactivados,
+puede activarlos eligiendo una locaciÃ³n para colocarlos.
 ";
 
-$ns -> tablerender("Ayuda de Menús", $text);
+$ns -> tablerender("Ayuda de MenÃºs", $text);
 ?>

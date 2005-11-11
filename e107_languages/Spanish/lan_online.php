@@ -4,29 +4,29 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_online.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.11 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 //v.616
 define("ONLINE_EL1", "Visitas: ");
 define("ONLINE_EL2", "Miembros: ");
-define("ONLINE_EL3", "En esta página: ");
+define("ONLINE_EL3", "En esta pÃ¡gina: ");
 define("ONLINE_EL4", "En linea");
 define("ONLINE_EL5", "Miembros");
 define("ONLINE_EL6", "Nuevo miembro");
 define("ONLINE_EL7", "viendo");
-define("ONLINE_EL8", "Máximo en linea: ");
+define("ONLINE_EL8", "MÃ¡ximo en linea: ");
 define("ONLINE_EL9", "el");
 define("ONLINE_EL10", "Nombre");
-define("ONLINE_EL11", "Viendo página");
+define("ONLINE_EL11", "Viendo pÃ¡gina");
 define("ONLINE_EL12", "Respondiendo a");
 define("ONLINE_EL13", "Foro");
 define("ONLINE_EL14", "Tema");
-define("ONLINE_EL15", "Página");
-define("CLASSRESTRICTED", "Página restringida");
-define("ARTICLEPAGE", "Artículo/Revisión");
+define("ONLINE_EL15", "PÃ¡gina");
+define("CLASSRESTRICTED", "PÃ¡gina restringida");
+define("ARTICLEPAGE", "ArtÃ­culo/RevisiÃ³n");
 define("CHAT", "Chat");
 define("COMMENT", "Comentarios");
 define("DOWNLOAD", "Descargas");
@@ -39,7 +39,7 @@ define("POLLCOMMENT", "Encuesta");
 define("PRINTPAGE", "Imprimir");
 define("LOGIN", "Entrando en");
 define("SEARCH", "Buscando");
-define("STATS", "Estadísticas");
+define("STATS", "EstadÃ­sticas");
 define("SUBMITNEWS", "Enviar Noticia");
 define("UPLOAD", "Transferencias");
 define("USERPAGE", "Perfiles de usuario");
@@ -47,17 +47,17 @@ define("USERSETTINGS", "Configuraciones de usuario");
 define("ONLINE", "Usuarios en linea");
 define("LISTNEW", "Lista de novedades");
 define("USERPOSTS", "Mensajes de usuario");
-define("SUBCONTENT", "Enviar Artículo/Revisión");
-define("TOP", "Top Usuarios/Temas más activos");
-define("ADMINAREA", "Área de Admin.");
+define("SUBCONTENT", "Enviar ArtÃ­culo/RevisiÃ³n");
+define("TOP", "Top Usuarios/Temas mÃ¡s activos");
+define("ADMINAREA", "Ãrea de Admin.");
 define("BUGTRACKER", "Bugtracker");
 define("EVENT", "Lista de eventos");
 define("CALENDAR", "Calendario de eventos");
 define("FAQ", "Faq");
-define("PM", "Mensajería privada");
+define("PM", "MensajerÃ­a privada");
 define("SURVEY", "Survey");
-define("ARTICLE", "Artículo");
-define("CONTENT", "Página de contenido");
-define("REVIEW", "Revisión");
+define("ARTICLE", "ArtÃ­culo");
+define("CONTENT", "PÃ¡gina de contenido");
+define("REVIEW", "RevisiÃ³n");
 
 ?>

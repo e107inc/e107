@@ -4,11 +4,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/search.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.11 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-$text = "Si su versión de servidor MySQL lo soporta usted puede cambiar método corto de MySql  que es más rápido que el método corto de PHP.<br />Ver Preferencias<br />.";
-$ns -> tablerender("Ayuda búsquedas", $text);
+$text = "Si su versiÃ³n de servidor MySQL lo soporta usted puede cambiar mÃ©todo corto de MySql  que es mÃ¡s rÃ¡pido que el mÃ©todo corto de PHP.<br />Ver Preferencias<br />.";
+$ns -> tablerender("Ayuda bÃºsquedas", $text);
 ?>

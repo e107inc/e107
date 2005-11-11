@@ -4,11 +4,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/mailout.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-$text = "Use esta página para configurar sus ajustes de email de sus funciones de envíos del sitio. El formulario de envío de correos también le permite enviar un mensaje instantáneo a todos sus usuarios.";
+$text = "Use esta pÃ¡gina para configurar sus ajustes de email de sus funciones de envÃ­os del sitio. El formulario de envÃ­o de correos tambiÃ©n le permite enviar un mensaje instantÃ¡neo a todos sus usuarios.";
 $ns -> tablerender("Ayuda Mail", $text);
 ?>

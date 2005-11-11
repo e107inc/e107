@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/news_category.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-$text = "Puede separar sus ítems nuevos en diferentes categorías,
-y permitir a los visitantes desplegar los nuevos ítems en esas categorías. <br /><br />
-Suba los íconos de sus noticias a ".e_THEME."-tutema-/images/ o images/newsicons/.";
-$ns -> tablerender("Ayuda Categoría de noticias", $text);
+$text = "Puede separar sus Ã­tems nuevos en diferentes categorÃ­as,
+y permitir a los visitantes desplegar los nuevos Ã­tems en esas categorÃ­as. <br /><br />
+Suba los Ã­conos de sus noticias a ".e_THEME."-tutema-/images/ o images/newsicons/.";
+$ns -> tablerender("Ayuda CategorÃ­a de noticias", $text);
 ?>

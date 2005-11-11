@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_user.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.11 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -13,16 +13,16 @@ define("PAGE_NAME", "Miembros");
 
 define("LAN_20", "Error");
 
-define("LAN_112", "Dirección email: ");
+define("LAN_112", "DirecciÃ³n email: ");
 
-define("LAN_115", "Número ICQ: ");
-define("LAN_116", "Dirección AIM: ");
+define("LAN_115", "NÃºmero ICQ: ");
+define("LAN_116", "DirecciÃ³n AIM: ");
 define("LAN_117", "MSN Messenger: ");
-define("LAN_118", "Cumpleaños: ");
-define("LAN_119", "Localización: ");
+define("LAN_118", "CumpleaÃ±os: ");
+define("LAN_119", "LocalizaciÃ³n: ");
 define("LAN_120", "Firma: ");
 
-define("LAN_137", "No hay información para este usuario, no está registrado en");
+define("LAN_137", "No hay informaciÃ³n para este usuario, no estÃ¡ registrado en");
 define("LAN_138", "Miembros: ");
 define("LAN_139", "Ordenar: ");
 define("LAN_140", "Miembros");
@@ -38,23 +38,23 @@ define("LAN_149", "Mensajes en el foro: ");
 
 define("LAN_308", "Nombre Real: ");
 
-define("LAN_400", "Este no es un usuario válido.");
-define("LAN_401", "No hay información");
+define("LAN_400", "Este no es un usuario vÃ¡lido.");
+define("LAN_401", "No hay informaciÃ³n");
 define("LAN_402", "Perfil del miembro");
-define("LAN_403", "Estadísticas del sitio");
-define("LAN_404", "Última visita al sitio");
-define("LAN_405", "días");
-define("LAN_406", "Puntuación");
+define("LAN_403", "EstadÃ­sticas del sitio");
+define("LAN_404", "Ãšltima visita al sitio");
+define("LAN_405", "dÃ­as");
+define("LAN_406", "PuntuaciÃ³n");
 define("LAN_407", "nada");
 define("LAN_408", "Sin Foto");
 define("LAN_409", "puntos");
-define("LAN_410", "Miscelánea");
-define("LAN_411", "Pulse aquí para actualizar su información");
-define("LAN_412", "Pulse aquí para editar la información de este usuario");
+define("LAN_410", "MiscelÃ¡nea");
+define("LAN_411", "Pulse aquÃ­ para actualizar su informaciÃ³n");
+define("LAN_412", "Pulse aquÃ­ para editar la informaciÃ³n de este usuario");
 define("LAN_413", "Borrar foto");
 define("LAN_414", "Miembro anterior");
 define("LAN_415", "Miembro siguiente");
-define("LAN_416", "Debe iniciar sesión para acceder a esta página");
+define("LAN_416", "Debe iniciar sesiÃ³n para acceder a esta pÃ¡gina");
 define("LAN_417", "Administrador principal");
 define("LAN_418", "Administrador");
 define("LAN_419", "Ver");
@@ -66,6 +66,6 @@ define("LAN_424", "Ver los mensajes en los foros de este usuario");
 define("LAN_425", "Enviar Mensaje Privado a");
 define("LAN_426", "");
 
-define("USERLAN_1", "Valoración del Peer");
+define("USERLAN_1", "ValoraciÃ³n del Peer");
 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_uploads.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-11-11 23:49:28 $
+|     $Revision: 1.5 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -14,7 +14,7 @@ define("PAGE_NAME", "Transferencias del foro");
 define("FRMUP_1","Archivos transferidos al foro");
 define("FRMUP_2","Archivo eliminado");
 define("FRMUP_3","Error: Imposible eliminar archivo");
-define("FRMUP_4","Eliminación del archivo");
+define("FRMUP_4","EliminaciÃ³n del archivo");
 define("FRMUP_5","Nombre del archivo");
 define("FRMUP_6","Resultado");
 define("FRMUP_7","Encontrado en el tema");

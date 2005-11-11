@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Spanish/Spanish_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.5 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("CHBLAN_1", "Par·metros de chatbox actualizados.");
+define("CHBLAN_1", "Par√°metros de chatbox actualizados.");
 define("CHBLAN_2", "Moderado.");
 define("CHBLAN_3", "Sin mensajes de chatbox.");
 define("CHBLAN_4", "Miembro");
@@ -22,17 +22,17 @@ define("CHBLAN_10", "Moderar mensajes");
 define("CHBLAN_11", "Mensajes de chatbox a mostrar");
 define("CHBLAN_12", "cantidad de mensajes mostrados en chatbox");
 define("CHBLAN_13", "Reemplazar enlaces");
-define("CHBLAN_14", "Si activa, los enlaces de los mensajes ser·n cambiados por lo que ponga en el texto");
-define("CHBLAN_15", "Reemplazar cadena si est· activado");
-define("CHBLAN_16", "Los enlaces ser·n reemplazados por esta cadena");
+define("CHBLAN_14", "Si activa, los enlaces de los mensajes ser√°n cambiados por lo que ponga en el texto");
+define("CHBLAN_15", "Reemplazar cadena si est√° activado");
+define("CHBLAN_16", "Los enlaces ser√°n reemplazados por esta cadena");
 define("CHBLAN_17", "Contador de palabras ocultas");
-define("CHBLAN_18", "Palabras mas largas del numero definido ser·n ocultadas");
-define("CHBLAN_19", "Actualizar par·metros del chatbox");
-define("CHBLAN_20", "Par·metros chatbox");
+define("CHBLAN_18", "Palabras mas largas del numero definido ser√°n ocultadas");
+define("CHBLAN_19", "Actualizar par√°metros del chatbox");
+define("CHBLAN_20", "Par√°metros chatbox");
 define("CHBLAN_21", "Purga");
-define("CHBLAN_22", "Borrar mensajes m·s viejos de cierta fecha");
-define("CHBLAN_23", "Borra mensajes m·s antiguos de ");
-define("CHBLAN_24", "Un dÌa");
+define("CHBLAN_22", "Borrar mensajes m√°s viejos de cierta fecha");
+define("CHBLAN_23", "Borra mensajes m√°s antiguos de ");
+define("CHBLAN_24", "Un d√≠a");
 define("CHBLAN_25", "Una semana");
 define("CHBLAN_26", "Un mes");
 define("CHBLAN_27", "- borrar todos los mensajes -");

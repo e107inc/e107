@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_user.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-28 09:26:19 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ define("LAN_149", "Mensajes en el foro: ");
 define("LAN_308", "Nombre Real: ");
 
 define("LAN_400", "Este no es un usuario válido.");
-define("LAN_401", "no hay información");
+define("LAN_401", "No hay información");
 define("LAN_402", "Perfil del miembro");
 define("LAN_403", "Estadísticas del sitio");
 define("LAN_404", "Última visita al sitio");
@@ -58,8 +58,8 @@ define("LAN_416", "Debe iniciar sesión para acceder a esta página");
 define("LAN_417", "Administrador principal");
 define("LAN_418", "Administrador");
 define("LAN_419", "Ver");
-define("LAN_420", "DESC");
-define("LAN_421", "ASC");
+define("LAN_420", "Descendente");
+define("LAN_421", "Ascendente");
 define("LAN_422", "Ir");
 define("LAN_423", "Ver los comentarios de este usuario");
 define("LAN_424", "Ver los mensajes en los foros de este usuario");

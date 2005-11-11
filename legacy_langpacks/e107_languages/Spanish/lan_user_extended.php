@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_user_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-28 09:26:19 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -13,25 +13,26 @@ define("UE_LAN_1", "Caja de texto");
 define("UE_LAN_2", "Botones seleccionables");
 define("UE_LAN_3", "Lista desplegable");
 define("UE_LAN_4", "Campo de tabla de BD");
-define("UE_LAN_5", "Área de texto");
+define("UE_LAN_5", "Ãrea de texto");
 define("UE_LAN_6", "Entero");
 define("UE_LAN_7", "Fecha");
 define("UE_LAN_8", "Idioma");
 define("UE_LAN_9", "Nombre");
 define("UE_LAN_10", "Tipo");
+define("UE_LAN_11", "Descripción");
 
 define("UE_LAN_LOCATION", "Zona");
 define("UE_LAN_LOCATION_DESC", "Zona del usuario");
 define("UE_LAN_AIM", "AIM");
-define("UE_LAN_AIM_DESC", "Dirección AIM");
+define("UE_LAN_AIM_DESC", "DirecciÃ³n AIM");
 define("UE_LAN_ICQ", "ICQ");
-define("UE_LAN_ICQ_DESC", "Número ICQ");
+define("UE_LAN_ICQ_DESC", "NÃºmero ICQ");
 define("UE_LAN_YAHOO", "Yahoo!");
-define("UE_LAN_YAHOO_DESC", "Dirección Yahoo!");
+define("UE_LAN_YAHOO_DESC", "DirecciÃ³n Yahoo");
 define("UE_LAN_MSN", "MSN");
-define("UE_LAN_MSN_DESC", "Dirección MSN");
-define("UE_LAN_HOMEPAGE", "Página Web");
-define("UE_LAN_HOMEPAGE_DESC", "Página web del usuario (url)");
-define("UE_LAN_BIRTHDAY", "Cumpleaños");
-define("UE_LAN_BIRTHDAY_DESC", "Fecha de cumpleaños");
+define("UE_LAN_MSN_DESC", "DirecciÃ³n MSN");
+define("UE_LAN_HOMEPAGE", "PÃ¡gina Web");
+define("UE_LAN_HOMEPAGE_DESC", "PÃ¡gina web del usuario (url)");
+define("UE_LAN_BIRTHDAY", "CumpleaÃ±os");
+define("UE_LAN_BIRTHDAY_DESC", "Fecha de cumpleaÃ±os");
 ?>

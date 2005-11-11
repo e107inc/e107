@@ -4,16 +4,16 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_chat.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-11 23:49:24 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Chatbox");
 define("LAN_11", "Chatbox (Todos)");
-define("LAN_12", "Envíos al Chat");
+define("LAN_12", "EnvÃ­os al Chat");
 define("LAN_13", "el");
 define("LAN_14", "Error!");
-define("LAN_15", "Lo sentimos, no tiene permisos para ver esta página.");
+define("LAN_15", "Lo sentimos, no tiene permisos para ver esta pÃ¡gina.");
 define("LAN_16", "[ este mensaje ha sido bloqueado por el administrador ]");
 ?>

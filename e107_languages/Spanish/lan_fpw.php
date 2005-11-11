@@ -4,49 +4,49 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_fpw.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.7 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Cambiar Contraseña");
-define("LAN_01", "La nueva contraseña ha sido enviada a ".$_POST['email'].", por favor siga las instrucciones en el email para validar su contraseña.");
-define("LAN_02", "Lo sentimos, no se puede enviar el email - por favor póngase en contacto con el administrador del sitio.");
-define("LAN_03", "Cambiar Contraseña");
-define("LAN_04", "Por favor escriba su dirección email");
-define("LAN_05", "Por favor escriba su dirección email ...");
-define("LAN_06", "Intento de Cambio de contraseña");
-define("LAN_07", "Alguien con la dirección IP ");
-define("LAN_08", "intentó cambiar la contraseña del administrador principal.");
-define("LAN_09", "Contraseña cambiada desde ");
+define("PAGE_NAME", "Cambiar ContraseÃ±a");
+define("LAN_01", "La nueva contraseÃ±a ha sido enviada a ".$_POST['email'].", por favor siga las instrucciones en el email para validar su contraseÃ±a.");
+define("LAN_02", "Lo sentimos, no se puede enviar el email - por favor pÃ³ngase en contacto con el administrador del sitio.");
+define("LAN_03", "Cambiar ContraseÃ±a");
+define("LAN_04", "Por favor escriba su direcciÃ³n email");
+define("LAN_05", "Por favor escriba su direcciÃ³n email ...");
+define("LAN_06", "Intento de Cambio de contraseÃ±a");
+define("LAN_07", "Alguien con la direcciÃ³n IP ");
+define("LAN_08", "intentÃ³ cambiar la contraseÃ±a del administrador principal.");
+define("LAN_09", "ContraseÃ±a cambiada desde ");
 
 define("LAN_112", "Email: ");
 
 define("LAN_156", "Enviar");
 
-define("LAN_213", "La dirección email no se encuentra en la base de datos.");
-define("LAN_214", "No se puede cambiar la contraseña");
-define("LAN_215", "Su contraseña para ".SITENAME." ha sido cambiada. Su nueva contraseña es\n\n");
-define("LAN_216", "Para validar su nueva contraseña por favor vaya a la siguiente dirección web ...");
-define("LAN_217", "Su nueva contraseña ha sido validada, ahora solo tiene que iniciar sesión en el portal con su nueva contraseña.");
+define("LAN_213", "La direcciÃ³n email no se encuentra en la base de datos.");
+define("LAN_214", "No se puede cambiar la contraseÃ±a");
+define("LAN_215", "Su contraseÃ±a para ".SITENAME." ha sido cambiada. Su nueva contraseÃ±a es\n\n");
+define("LAN_216", "Para validar su nueva contraseÃ±a por favor vaya a la siguiente direcciÃ³n web ...");
+define("LAN_217", "Su nueva contraseÃ±a ha sido validada, ahora solo tiene que iniciar sesiÃ³n en el portal con su nueva contraseÃ±a.");
 define("LAN_218", "Su nombre de usuario es:");
-define("LAN_219", "La contraseña asociada a esta cuenta de email fué cambiada y no se puede volver a cambiar. Por favor póngase en contacto con el administrador del sitio.");
+define("LAN_219", "La contraseÃ±a asociada a esta cuenta de email fuÃ© cambiada y no se puede volver a cambiar. Por favor pÃ³ngase en contacto con el administrador del sitio.");
 
 define("LAN_FPW1","Usuario");
-define("LAN_FPW2","Código");
-define("LAN_FPW3","Código Incorrecto");
-define("LAN_FPW4","Se envió una solicitud para cambiar esta contraseña, si no ha recibido el email, por favor póngase en contacto con el administrador del sitio.");
-define("LAN_FPW5","Se ha solicitado el cambio de su contraseña en");
-define("LAN_FPW6","Se ha enviado un email a su cuenta de correo con un enlace que le permitirá cambiar su contraseña.");
-define("LAN_FPW7","Este no es un enlace válido para cambiar su contraseña.<br />Por favor póngase en contacto con el administrador del sitio.");
-define("LAN_FPW8","La contraseña del usuario");
-define("LAN_FPW9","ha sido cambiada.<br /><br />La nueva contraseña es:");
-define("LAN_FPW10","Por favor inicie sesión y cambie su contraseña inmediatamente por seguridad.");
-define("LAN_FPW11","Inicie sesión");
-define("LAN_FPW12","e inmediatamente cambie su contraseña, por motivos de seguridad.");
-define("LAN_FPW13", "por favor siga las instrucciones del email para validar su contraseña.");
-define("LAN_FPW14", "Fué enviado por alguien con la IP");
-define("LAN_FPW15", "Esto no quiere decir que su contraseña haya sido cambiada.  Debe acceder al enlace proporcionado al final de este mensaje para completar el cambio de contraseña.");
-define("LAN_FPW16", "Si usted no ha solicitado o no desea cambiar su contraseña, simplemente ignore este email");
-define("LAN_FPW17", "El siguiente enlace será válido durante 48 horas.");
+define("LAN_FPW2","CÃ³digo");
+define("LAN_FPW3","CÃ³digo Incorrecto");
+define("LAN_FPW4","Se enviÃ³ una solicitud para cambiar esta contraseÃ±a, si no ha recibido el email, por favor pÃ³ngase en contacto con el administrador del sitio.");
+define("LAN_FPW5","Se ha solicitado el cambio de su contraseÃ±a en");
+define("LAN_FPW6","Se ha enviado un email a su cuenta de correo con un enlace que le permitirÃ¡ cambiar su contraseÃ±a.");
+define("LAN_FPW7","Este no es un enlace vÃ¡lido para cambiar su contraseÃ±a.<br />Por favor pÃ³ngase en contacto con el administrador del sitio.");
+define("LAN_FPW8","La contraseÃ±a del usuario");
+define("LAN_FPW9","ha sido cambiada.<br /><br />La nueva contraseÃ±a es:");
+define("LAN_FPW10","Por favor inicie sesiÃ³n y cambie su contraseÃ±a inmediatamente por seguridad.");
+define("LAN_FPW11","Inicie sesiÃ³n");
+define("LAN_FPW12","e inmediatamente cambie su contraseÃ±a, por motivos de seguridad.");
+define("LAN_FPW13", "por favor siga las instrucciones del email para validar su contraseÃ±a.");
+define("LAN_FPW14", "FuÃ© enviado por alguien con la IP");
+define("LAN_FPW15", "Esto no quiere decir que su contraseÃ±a haya sido cambiada.  Debe acceder al enlace proporcionado al final de este mensaje para completar el cambio de contraseÃ±a.");
+define("LAN_FPW16", "Si usted no ha solicitado o no desea cambiar su contraseÃ±a, simplemente ignore este email");
+define("LAN_FPW17", "El siguiente enlace serÃ¡ vÃ¡lido durante 48 horas.");
 ?>

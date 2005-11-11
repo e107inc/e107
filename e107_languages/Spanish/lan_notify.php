@@ -4,22 +4,22 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_notify.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.7 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("NT_LAN_US_1", "Conexi髇 de usuario");
+define("NT_LAN_US_1", "Conexi贸n de usuario");
 
-define("NT_LAN_UV_1", "Verificaci髇 de la conexi髇 de usuario");
-define("NT_LAN_UV_2", "Cadena de la sesi髇 de usuarios");
+define("NT_LAN_UV_1", "Verificaci贸n de la conexi贸n de usuario");
+define("NT_LAN_UV_2", "Cadena de la sesi贸n de usuarios");
 
 define("NT_LAN_LI_1", "Usuario conectado");
 
 define("NT_LAN_LO_1", "Usuario desconectado");
 define("NT_LAN_LO_2", " desconectado del sitio");
 
-define("NT_LAN_FL_1", "Expulsi髇 flood");
+define("NT_LAN_FL_1", "Expulsi贸n flood");
 define("NT_LAN_FL_2", "Expulsiones IP por flooding");
 
 define("NT_LAN_SN_1", "Elementos de noticias enviados");

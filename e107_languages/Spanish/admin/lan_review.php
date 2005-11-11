@@ -4,17 +4,17 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_review.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.7 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("REVLAN_1", "Revisión añadida a la base de datos.");
+define("REVLAN_1", "RevisiÃ³n aÃ±adida a la base de datos.");
 define("REVLAN_2", "Campos en blanco.");
-define("REVLAN_3", "Revisión actualizada en base de datos.");
-define("REVLAN_4", "Revisión borrada.");
-define("REVLAN_5", "Por favor, marca la casilla de confirmación para borrar esta revisión");
-define("REVLAN_6", "No hay revisiones aún.");
+define("REVLAN_3", "RevisiÃ³n actualizada en base de datos.");
+define("REVLAN_4", "RevisiÃ³n borrada.");
+define("REVLAN_5", "Por favor, marca la casilla de confirmaciÃ³n para borrar esta revisiÃ³n");
+define("REVLAN_6", "No hay revisiones aÃºn.");
 define("REVLAN_7", "Revisiones existentes");
 define("REVLAN_8", "Editar");
 define("REVLAN_9", "Borrar");
@@ -23,50 +23,50 @@ define("REVLAN_11", "Abrir editor HTML");
 define("REVLAN_12", "Encabezado");
 define("REVLAN_13", "Sub-Encabezado");
 define("REVLAN_14", "Resumen");
-define("REVLAN_15", "Revisión");
-define("REVLAN_16", "Puntuación");
-define("REVLAN_17", "Selecciona puntuación");
-define("REVLAN_18", "¿Permitir comentarios?");
+define("REVLAN_15", "RevisiÃ³n");
+define("REVLAN_16", "PuntuaciÃ³n");
+define("REVLAN_17", "Selecciona puntuaciÃ³n");
+define("REVLAN_18", "Â¿Permitir comentarios?");
 define("REVLAN_19", "Si");
 define("REVLAN_20", "No");
 define("REVLAN_21", "Visible a");
-define("REVLAN_22", "Actualizar revisión");
-define("REVLAN_23", "Enviar revisión");
+define("REVLAN_22", "Actualizar revisiÃ³n");
+define("REVLAN_23", "Enviar revisiÃ³n");
 define("REVLAN_24", "Revisiones");
-define("REVLAN_25", "Categoría de revisiones guardada");
-define("REVLAN_26", "Categoría de revisiones actualizada");
-define("REVLAN_27", "Categoría borrada");
-define("REVLAN_28", "Categoría");
+define("REVLAN_25", "CategorÃ­a de revisiones guardada");
+define("REVLAN_26", "CategorÃ­a de revisiones actualizada");
+define("REVLAN_27", "CategorÃ­a borrada");
+define("REVLAN_28", "CategorÃ­a");
 define("REVLAN_29", "Opciones");
 define("REVLAN_30", "Editar");
 define("REVLAN_31", "Borrar");
-define("REVLAN_32", "No hay categorías de revisiones");
-define("REVLAN_33", "Categorías de revisiones");
-define("REVLAN_34", "Nombre de la Categoría");
-define("REVLAN_35", "Icono de la Categoría");
-define("REVLAN_36", "Ver imágenes");
-define("REVLAN_37", "Resumen de la Categoría");
-define("REVLAN_38", "Actualizar categoría de revisiones");
-define("REVLAN_39", "Crear categoría de revisiones");
+define("REVLAN_32", "No hay categorÃ­as de revisiones");
+define("REVLAN_33", "CategorÃ­as de revisiones");
+define("REVLAN_34", "Nombre de la CategorÃ­a");
+define("REVLAN_35", "Icono de la CategorÃ­a");
+define("REVLAN_36", "Ver imÃ¡genes");
+define("REVLAN_37", "Resumen de la CategorÃ­a");
+define("REVLAN_38", "Actualizar categorÃ­a de revisiones");
+define("REVLAN_39", "Crear categorÃ­a de revisiones");
 define("REVLAN_40", "No hay revisiones");
 define("REVLAN_41", "Revisiones");
 define("REVLAN_42", "Abrir editor HTML");
-define("REVLAN_43", "Categoría");
+define("REVLAN_43", "CategorÃ­a");
 define("REVLAN_44", "Nada");
-define("REVLAN_45", "Página principal de revisiones");
-define("REVLAN_46", "Crear nueva revisión");
-define("REVLAN_47", "Categorías");
-define("REVLAN_48", "Opciones de revisión");
-define("REVLAN_49", "¿Está seguro de querer borrar esta categoría?");
-define("REVLAN_50", "¿Está seguro de querer borrar esta revisión?");
+define("REVLAN_45", "PÃ¡gina principal de revisiones");
+define("REVLAN_46", "Crear nueva revisiÃ³n");
+define("REVLAN_47", "CategorÃ­as");
+define("REVLAN_48", "Opciones de revisiÃ³n");
+define("REVLAN_49", "Â¿EstÃ¡ seguro de querer borrar esta categorÃ­a?");
+define("REVLAN_50", "Â¿EstÃ¡ seguro de querer borrar esta revisiÃ³n?");
 define("REVLAN_51", "Detalles del autor");
-define("REVLAN_52", "Deje en blanco si la revisión la ha escrito usted");
+define("REVLAN_52", "Deje en blanco si la revisiÃ³n la ha escrito usted");
 define("REVLAN_53", "Nombre del autor");
 define("REVLAN_54", "Email del autor");
 define("REVLAN_55", "Permitir enviar revisiones");
 define("REVLAN_56", "Permitir a los invitados enviar revisiones");
 define("REVLAN_57", "Clase de envio de revisiones");
-define("REVLAN_58", "Seleccione que usuarios podrán enviar revisiones");
+define("REVLAN_58", "Seleccione que usuarios podrÃ¡n enviar revisiones");
 define("REVLAN_59", "Actualizar opciones");
 define("REVLAN_60", "Opciones de revisiones");
 define("REVLAN_61", "Opciones de revisiones actualizadas");
@@ -75,11 +75,11 @@ define("REVLAN_63", "No hay revisiones enviadas");
 define("REVLAN_64", "No se ha proporcionado email");
 define("REVLAN_65", "Titular");
 define("REVLAN_66", "Enviado");
-define("REVLAN_67", "Revisión enviada por usuario");
-define("REVLAN_68", "Revisión enviada por usuario guardada en la base de datos");
+define("REVLAN_67", "RevisiÃ³n enviada por usuario");
+define("REVLAN_68", "RevisiÃ³n enviada por usuario guardada en la base de datos");
 define("REVLAN_69", "Limpiar");
 define("REVLAN_70", "Rellenar campos de autor");
-define("REVLAN_71", "¿Añadir iconos email/impresora?");
+define("REVLAN_71", "Â¿AÃ±adir iconos email/impresora?");
 define("REVLAN_72", "Si");
 define("REVLAN_73", "No");
 ?>

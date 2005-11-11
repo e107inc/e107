@@ -4,11 +4,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/upload.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-$text = "Desde aquí puede permitir / denegar la transferencia y gestión de los archivos de los usuarios.";
-$ns -> tablerender("Ayuda transferencias públicas", $text);
+$text = "Desde aquÃ­ puede permitir / denegar la transferencia y gestiÃ³n de los archivos de los usuarios.";
+$ns -> tablerender("Ayuda transferencias pÃºblicas", $text);
 ?>

@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/link_category.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-$text = "Puede separar sus enlaces en diferentes categorÌas,
-esto hace la navegaciÛn por la p·gina de enlaces mucho m·s f·cil y mejora la exposiciÛn.<br /><br />
-Cualquier enlace introducido bajo la categorÌa Principal ser· mostrado en su men˙ de navegaciÛn.";
-$ns -> tablerender("Ayuda CategorÌa enlace", $text);
+$text = "Puede separar sus enlaces en diferentes categor√≠as,
+esto hace la navegaci√≥n por la p√°gina de enlaces mucho m√°s f√°cil y mejora la exposici√≥n.<br /><br />
+Cualquier enlace introducido bajo la categor√≠a Principal ser√° mostrado en su men√∫ de navegaci√≥n.";
+$ns -> tablerender("Ayuda Categor√≠a enlace", $text);
 ?>

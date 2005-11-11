@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/Spanish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-28 09:26:19 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-setlocale(LC_ALL, 'es_ES');
+setlocale(LC_ALL, 'SP');
 define("CORE_LC", 'es');
 define("CORE_LC2", 'es');
 define("CHARSET", "iso-8859-1");

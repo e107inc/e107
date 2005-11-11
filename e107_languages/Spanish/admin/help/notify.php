@@ -4,18 +4,18 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/notify.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.5 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-$text = "Notificaciones envía notificaciones de correo cuando ocurren eventos en el sitio.<br /><br />
-Por ejemplo, fijar 'IP expulsada por flooding' a la clase 'Admin' y a todos los Admins se les enviará una notificación
-cuando el lugar esté siendo floodeado.<br /><br />
-También puede, como otro ejemplo, fijar 'Nuevos elementos enviados por admin' a la clase de usuario 'Miembros' y a todos los usuarios se les mandará
-nuevos elementos que envíe en un correo.<br /><br />
-Si desea que las notificaciones se envíen en una dirección alternativa - seleccione la opción 'Email' y
-escriba la dirección en el campo proporcionado.";
+$text = "Notificaciones envÃ­a notificaciones de correo cuando ocurren eventos en el sitio.<br /><br />
+Por ejemplo, fijar 'IP expulsada por flooding' a la clase 'Admin' y a todos los Admins se les enviarÃ¡ una notificaciÃ³n
+cuando el lugar estÃ© siendo floodeado.<br /><br />
+TambiÃ©n puede, como otro ejemplo, fijar 'Nuevos elementos enviados por admin' a la clase de usuario 'Miembros' y a todos los usuarios se les mandarÃ¡
+nuevos elementos que envÃ­e en un correo.<br /><br />
+Si desea que las notificaciones se envÃ­en en una direcciÃ³n alternativa - seleccione la opciÃ³n 'Email' y
+escriba la direcciÃ³n en el campo proporcionado.";
 
 $ns -> tablerender("Ayufa Notificaciones", $text);
 ?>

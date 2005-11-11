@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/wmessage.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-$text = "Esta página le permite configurar un mensaje que aparecerá al principio de su página inicial todo el tiempo que esté activada.
-Puede configurar un mensaje diferente para invitados, miembros registrados/con sesión iniciada o administradores.";
+$text = "Esta pÃ¡gina le permite configurar un mensaje que aparecerÃ¡ al principio de su pÃ¡gina inicial todo el tiempo que estÃ© activada.
+Puede configurar un mensaje diferente para invitados, miembros registrados/con sesiÃ³n iniciada o administradores.";
 $ns -> tablerender("Ayuda Mensaje de bienvenida", $text);
 ?>

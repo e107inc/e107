@@ -4,15 +4,15 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/content.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-$text = "Puede añadir una página normal a su sitio usando esta característica.
-Se creará un link a la nueva página en el menú de navegación de su sitio.
-Por ejemplo si crea una página nueva con el Nombre del Enlace 'Prueba', un enlace llamado 'Prueba'
-aparecerá en su menú de navegación luego de enviar la página nueva.<br />
-Si desea que su página de contenidos tenga un título, introdúzcalo en la caja de Encabezado de Página.";
+$text = "Puede aÃ±adir una pÃ¡gina normal a su sitio usando esta caracterÃ­stica.
+Se crearÃ¡ un link a la nueva pÃ¡gina en el menÃº de navegaciÃ³n de su sitio.
+Por ejemplo si crea una pÃ¡gina nueva con el Nombre del Enlace 'Prueba', un enlace llamado 'Prueba'
+aparecerÃ¡ en su menÃº de navegaciÃ³n luego de enviar la pÃ¡gina nueva.<br />
+Si desea que su pÃ¡gina de contenidos tenga un tÃ­tulo, introdÃºzcalo en la caja de Encabezado de PÃ¡gina.";
 $ns -> tablerender("Ayuda Contenidos", $text);
 ?>

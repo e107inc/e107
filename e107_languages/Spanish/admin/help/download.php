@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/download.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-$text = "Por favor, copie sus archivos en la carpeta ".e_FILE."downloads, sus im·genes en la carpeta ".e_FILE."downloadimages y la im·genes de muestra en la carpeta ".e_FILE."downloadthumbs.
+$text = "Por favor, copie sus archivos en la carpeta ".e_FILE."downloads, sus im√°genes en la carpeta ".e_FILE."downloadimages y la im√°genes de muestra en la carpeta ".e_FILE."downloadthumbs.
 <br /><br />
-Para enviar una descarga, primero cree un padre, despuÈs las categorÌas dentro del padre, podr· activar las descargas dentro de cada categorÌa.";
+Para enviar una descarga, primero cree un padre, despu√©s las categor√≠as dentro del padre, podr√° activar las descargas dentro de cada categor√≠a.";
 $ns -> tablerender("Ayuda Descargas", $text);
 ?>

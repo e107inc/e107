@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_usersettings.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-28 09:26:19 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -107,6 +107,6 @@ define("LAN_USET_6", "Suscrito a la lista de correo o a las secciones de la pági
 define("LAN_USET_7", "Variado");
 define("LAN_USET_8", "Firma /Zona horaria");
 define("LAN_USET_9", "Algunos de los campos requeridos (marcados con un  *) están en blanco en sus ajustes.");
-define("LAN_USET_10","Por favor, actualice sus ajustes ahora, para poder proceder.");
+define("LAN_USET_10","Por favor, actualice sus ajustes ahora para poder proceder.");
 
 ?>

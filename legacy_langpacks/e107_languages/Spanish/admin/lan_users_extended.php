@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_users_extended.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-09-05 09:44:03 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-11 23:57:49 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ define("EXTLAN_18", "Obligatorio");
 define("EXTLAN_19", "Se obliga al usuario entrar un valor en este campo para guardar los datos.");
 define("EXTLAN_20", "Determina a que usuarios le afectará este campo.");
 define("EXTLAN_21", "Determina quien verá este campo en su configuración de usuarios.");
-define("EXTLAN_22", "Determina quien verá el campo en su página de usuarios <br />NOTA: Fijándolo en 'Solo lectura' hara que solo sea visible a miembros y Administradores.");
+define("EXTLAN_22", "Determina quien verá el campo en su página de usuarios  <br />NOTA: Fijándolo en 'Solo lectura' hara que solo sea visible a miembros y Administradores.");
 define("EXTLAN_23", "Añadir campo extra");
 define("EXTLAN_24", "Actualizar campo extra");
 define("EXTLAN_25", "Mover arriba");
@@ -58,7 +58,7 @@ define("EXTLAN_46", "Ayuda");
 define("EXTLAN_47", "Añadir nuevo parámetro");
 define("EXTLAN_48", "Añadir nuevo valor");
 define("EXTLAN_49", "Permitir ocultar al usuario");
-define("EXTLAN_50", "Fijando a 'Si' permitirá al usuario ocultar el valor excepto a los Admins");
+define("EXTLAN_50", "Fijando a 'Si' permitirá al usuario ocultar el valor excepto a los Administradores");
 define("EXTLAN_51", "Aquí puede entrar cualquier parámetro válido w3c<br />ie <i><b>class='tbox' size='40' maxlength='80'</i></b>.");
 define("EXTLAN_52", "Validación de código regex");
 define("EXTLAN_53", "Escriba el código regex que necesitará para compararlo con una entrada válida <br />**Los delimitadores regex son obligatorios**");

@@ -1,19 +1,19 @@
+Ôªø
 
+P>	I definido un nuevo anuncio (banner) desde el √°rea de administraci√≥n pero no se muestra ¬øPorque?
+R>	El tema que estes utilizando debe estar preparado para mostrar anuncios. Aseg√∫rese de que tiene la etiqueta {BANNER] o {BANNER=su_nombre_de_campa√±a} en la secci√≥n $HEADER del aricho theme.php
 
-P>	I definido un nuevo anuncio (banner) desde el ·rea de administraciÛn pero no se muestra øPorque?
-R>	El tema que estes utilizando debe estar preparado para mostrar anuncios. Aseg˙rese de que tiene la etiqueta {BANNER] o {BANNER=su_nombre_de_campaÒa} en la secciÛn $HEADER del aricho theme.php
+P>	Quisiera definir dos √°reas diferentes de anuncios ¬øC√≥mo?
+R>	Puede agrupar sus anuncios en campa√±as. Luego debe editar su tema para mostrar anuncios de ciertas campa√±as. POr ejemplo, si tiene dos campa√±as llamadas cam_1 y cam_2, escribiendo {BANNER=cam1] en una √°rea de su secci√≥n $HEADER del archivo theme.php mostrar√° solo los anuncions de cam_1, y escribiendo {BANNER=cam2} en otro √°rea solo loas anuncions de la campa√±a 2. Escribiendo {BANNER} (sin nombre de campa√±a) mostrar√° aleatoriamente loas anuncios de todas las campa√±as.
 
-P>	Quisiera definir dos ·reas diferentes de anuncios øCÛmo?
-R>	Puede agrupar sus anuncios en campaÒas. Luego debe editar su tema para mostrar anuncios de ciertas campaÒas. POr ejemplo, si tiene dos campaÒas llamadas cam_1 y cam_2, escribiendo {BANNER=cam1] en una ·rea de su secciÛn $HEADER del archivo theme.php mostrar· solo los anuncions de cam_1, y escribiendo {BANNER=cam2} en otro ·rea solo loas anuncions de la campaÒa 2. Escribiendo {BANNER} (sin nombre de campaÒa) mostrar· aleatoriamente loas anuncios de todas las campaÒas.
+P>	¬øPara que sirve el nombre de cliente y su contrase√±a?
+R>	Si su cliente quiere acceder a ver que tal est√°n funcionando sus anuncios en su sitio, accediendo desde http://nombre_de_su_sitio/banner.php y entrando con su nombre y contrase√±a podr√°n realizar un seguimiento.
 
-P>	øPara que sirve el nombre de cliente y su contraseÒa?
-R>	Si su cliente quiere acceder a ver que tal est·n funcionando sus anuncios en su sitio, accediendo desde http://nombre_de_su_sitio/banner.php y entrando con su nombre y contraseÒa podr·n realizar un seguimiento.
-
-P>	øComo puedo tener un anuncio tipo torre dentro de un men˙?
-R>	Primero es necesario definir una campaÒa para los anuncios tipo torre (manteniendolo separado de los banner de tipo de barra)
-	1. Vaya al ·rea del admin y haga click en Publicidad
-	2. Entre los anuncios tipo torre. Asegurese de haber creado una nueva campaÒa, por ejemplo 'torres'.
-	3. Vaya al ·rea de 'Menus'. Active 'Banner_menu' en una de sus ·reas.
-	4. Haga click en el enlace Configurar del men˙.
-	5. Escriba un tÌtulo (por defecto 'Anuncio'), y escriba un nombre de campaÒa que definiÛ anteriormente.
-	6. Abandone el ·rea del admin y ver· su anuncio tipo torre en el ·rea que asignÛ.
+P>	¬øComo puedo tener un anuncio tipo torre dentro de un men√∫?
+R>	Primero es necesario definir una campa√±a para los anuncios tipo torre (manteniendolo separado de los banner de tipo de barra)
+	1. Vaya al √°rea del admin y haga click en Publicidad
+	2. Entre los anuncios tipo torre. Asegurese de haber creado una nueva campa√±a, por ejemplo 'torres'.
+	3. Vaya al √°rea de 'Menus'. Active 'Banner_menu' en una de sus √°reas.
+	4. Haga click en el enlace Configurar del men√∫.
+	5. Escriba un t√≠tulo (por defecto 'Anuncio'), y escriba un nombre de campa√±a que defini√≥ anteriormente.
+	6. Abandone el √°rea del admin y ver√° su anuncio tipo torre en el √°rea que asign√≥.

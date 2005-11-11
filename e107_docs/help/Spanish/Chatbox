@@ -1,10 +1,10 @@
+Ôªø
+P>	¬øQue es la secci√≥n 'reemplazar enlaces'?
+R>	Puede convertir cualquier enlace entrado en el chatbox en otro texto. De esta manera evitar√° tener l√≠neas o direcciones a otros enlaces excesivamente largos creando distorsi√≥n de datos y lectura menos accesible. Para usar una imagen, Active 'Reemplazar enlaces' y en la caja de texto escriba <img src='ruta_a_su_imagen' alt='' />. Ahora todos los enlaces de texto se convertiran en la imagen definida.
 
-P>	øQue es la secciÛn 'reemplazar enlaces'?
-R>	Puede convertir cualquier enlace entrado en el chatbox en otro texto. De esta manera evitar· tener lÌneas o direcciones a otros enlaces excesivamente largos creando distorsiÛn de datos y lectura menos accesible. Para usar una imagen, Active 'Reemplazar enlaces' y en la caja de texto escriba <img src='ruta_a_su_imagen' alt='' />. Ahora todos los enlaces de texto se convertiran en la imagen definida.
+P>	¬øPara que sirven las palabras ocultas (ocultaci√≥n de palabras)?
+R>	Si escribe palabras excesivamente largas, puede tambi√©n distorsionar la zona donde se est√© escribiendo. Si escribe una cantidad (por ejemplo 40) de caracteres permisibles por palabra, las palabras mayores en caracteres se cortaran en 40 letras. Esto puede ajustarlo dependiendo del tema que este usando.
 
-P>	øPara que sirven las palabras ocultas (ocultaciÛn de palabras)?
-R>	Si escribe palabras excesivamente largas, puede tambiÈn distorsionar la zona donde se estÈ escribiendo. Si escribe una cantidad (por ejemplo 40) de caracteres permisibles por palabra, las palabras mayores en caracteres se cortaran en 40 letras. Esto puede ajustarlo dependiendo del tema que este usando.
-
-P>	øComo puedo evitar palabras que no me gusten aunque estÈ en un sitio apto para todas las edades?
-R>	Vaya a la pantalla de preferencias y busque las opciones de protecciÛn al menor. Puede aÒadir una lista de palabras en las que el sistema substituir· por algo que puede definir, por ejemplo [censurado].
+P>	¬øComo puedo evitar palabras que no me gusten aunque est√© en un sitio apto para todas las edades?
+R>	Vaya a la pantalla de preferencias y busque las opciones de protecci√≥n al menor. Puede a√±adir una lista de palabras en las que el sistema substituir√° por algo que puede definir, por ejemplo [censurado].
 

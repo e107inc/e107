@@ -4,39 +4,39 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_links.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-11-11 23:49:25 $
+|     $Revision: 1.7 $
+|     $Date: 2005-11-11 23:57:40 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Enlaces");
 
-define("LAN_61", "Categorías de enlace");
-define("LAN_62", "Categorías");
-define("LAN_63", "Categoría");
-define("LAN_64", "En esta categoría");
+define("LAN_61", "CategorÃ­as de enlace");
+define("LAN_62", "CategorÃ­as");
+define("LAN_63", "CategorÃ­a");
+define("LAN_64", "En esta categorÃ­a");
 define("LAN_65", "Enlace");
 define("LAN_66", "Enlaces");
 define("LAN_67", "Ver todos los enlaces");
 define("LAN_68", "Editar");
 define("LAN_69", "Borrar");
 
-define("LAN_86", "Categoría:");
+define("LAN_86", "CategorÃ­a:");
 
 define("LAN_88", "Referidos:");
 define("LAN_89", "Administrador: ");
-define("LAN_90", "Añadir un enlace a esta categoría");
-define("LAN_91", "Añadir nueva categoría");
+define("LAN_90", "AÃ±adir un enlace a esta categorÃ­a");
+define("LAN_91", "AÃ±adir nueva categorÃ­a");
 define("LAN_92", "Enviar un enlace");
-define("LAN_93", "Su enlace será revisado antes de ser admitido.");
+define("LAN_93", "Su enlace serÃ¡ revisado antes de ser admitido.");
 define("LAN_94", "Nombre:");
 define("LAN_95", "URL:");
-define("LAN_96", "Descripción:");
-define("LAN_97", "URL al botón del enlace:");
+define("LAN_96", "DescripciÃ³n:");
+define("LAN_97", "URL al botÃ³n del enlace:");
 define("LAN_98", "Enviar enlace");
 define("LAN_99", "Gracias");
-define("LAN_100", "Su enlace ha sido guardado y será revisado por un administrador.");
-define("LAN_101", "Pulse aquí si desea enviar un enlace.");
+define("LAN_100", "Su enlace ha sido guardado y serÃ¡ revisado por un administrador.");
+define("LAN_101", "Pulse aquÃ­ si desea enviar un enlace.");
 define("LAN_102", "Hay");
 define("LAN_103", "");
 define("LAN_104", "");
@@ -45,5 +45,5 @@ define("LAN_106", "Los campos subrayados son obligatorios.");
 
 define("LAN_Links_1", "Total enlaces");
 define("LAN_Links_2", "Total enlaces activos");
-define("LAN_LINKS_3", "Anónimo");
+define("LAN_LINKS_3", "AnÃ³nimo");
 ?>
