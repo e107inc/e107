@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.16 $
-|   $Date: 2005-11-02 17:49:48 $
+|   $Revision: 1.17 $
+|   $Date: 2005-11-11 07:52:36 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -122,6 +122,9 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "")
 						require_once(e_HANDLER."message_handler.php");
 						message_handler("MESSAGE", LANUPLOAD_1." ".$files['type'][$key]." ".LANUPLOAD_2.".", __LINE__, __FILE__);
 						$f_message .= LANUPLOAD_1." ".$files['type'][$key]." ".LANUPLOAD_2."." . __LINE__ .  __FILE__;
+						return FALSE;
+						require_once(FOOTERF);
+						exit;
 					}
 				}
 
