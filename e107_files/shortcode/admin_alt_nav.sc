@@ -97,9 +97,8 @@ if (ADMIN) {
 	}
 	$i=1;
 	while ($file = readdir($handle)) {
-		if ($file != "." && $file != "..") {
-			$text .= adnav_main($file, e_ADMIN."docs.php?".$i, E_16_DOCS);
-			$helplist[$i] = $file;
+		if ($file != "." && $file != ".." && $file != "CVS") {
+			$text .= adnav_main(str_replace("_", " ", $file), e_ADMIN."docs.php?".$i, E_16_DOCS);
 			$i++;
 		}
 	}

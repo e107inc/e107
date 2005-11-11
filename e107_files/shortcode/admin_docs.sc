@@ -5,7 +5,7 @@ if(ADMIN){
 	 $handle=opendir(e_DOCS."English/");
 	}
 	while ($file = readdir($handle)){
-	        if($file != "." && $file != ".."){
+	        if($file != "." && $file != ".." && $file != "CVS"){
 	                $helplist[$i] = $file;
 	                $i++;
 	        }
@@ -14,7 +14,7 @@ if(ADMIN){
 
 	unset($e107_var);
 	foreach ($helplist as $key => $value) {
-	        $e107_var['x'.$key]['text'] = $value;
+	        $e107_var['x'.$key]['text'] = str_replace("_", " ", $value);
 	        $e107_var['x'.$key]['link'] = e_ADMIN."docs.php?".$key;
 	}
 
