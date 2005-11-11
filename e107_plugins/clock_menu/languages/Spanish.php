@@ -4,21 +4,21 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/clock_menu/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 22:34:18 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define('CLOCK_MENU_L1','ConfiguraciÃ³n guardada');
-define('CLOCK_MENU_L2','TÃ­tulo');
-define('CLOCK_MENU_L3','Actualizar configuraciÃ³n');
-define('CLOCK_MENU_L4','ConfiguraciÃ³n');
+define('CLOCK_MENU_L1','Configuración guardada');
+define('CLOCK_MENU_L2','Título');
+define('CLOCK_MENU_L3','Actualizar configuración');
+define('CLOCK_MENU_L4','Configuración');
 define('CLOCK_MENU_L5', 'Lunes,');
 define('CLOCK_MENU_L6', 'Martes,');
-define('CLOCK_MENU_L7', 'MiÃ©rcoles,');
+define('CLOCK_MENU_L7', 'Miércoles,');
 define('CLOCK_MENU_L8', 'Jueves,');
 define('CLOCK_MENU_L9', 'Viernes,');
-define('CLOCK_MENU_L10', 'SÃ¡bado,');
+define('CLOCK_MENU_L10', 'Sábado,');
 define('CLOCK_MENU_L11', 'Domingo,');
 define('CLOCK_MENU_L12', 'Enero');
 define('CLOCK_MENU_L13', 'Febrero');

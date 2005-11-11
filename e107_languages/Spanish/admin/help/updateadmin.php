@@ -4,11 +4,11 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/updateadmin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-$text = "Actualice su contraseÃ±a aquÃ­.";
-$ns -> tablerender("Ayuda ConfiguraciÃ³n", $text);
+$text = "Actualice su contraseña aquí.";
+$ns -> tablerender("Ayuda Configuración", $text);
 ?>

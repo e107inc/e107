@@ -4,16 +4,16 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_equery_secure.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("EQSEC_LAN1", "Esta siendo redirigido a una funci贸n de Administraci贸n, posiblemente hay modificaciones de la base de datos");
-define("EQSEC_LAN2", "Por favor, confirme esta acci贸n:");
+define("EQSEC_LAN1", "Esta siendo redirigido a una funci髇 de Administraci髇, posiblemente hay modificaciones de la base de datos");
+define("EQSEC_LAN2", "Por favor, confirme esta acci髇:");
 define("EQSEC_LAN3", "Sin referir");
-define("EQSEC_LAN4", "Acci贸n desde:");
-define("EQSEC_LAN5", "Acci贸n para:");
-define("EQSEC_LAN6", "Confirmar acci贸n");
+define("EQSEC_LAN4", "Acci髇 desde:");
+define("EQSEC_LAN5", "Acci髇 para:");
+define("EQSEC_LAN6", "Confirmar acci髇");
 define("EQSEC_LAN7", "O cancelar");
 ?>

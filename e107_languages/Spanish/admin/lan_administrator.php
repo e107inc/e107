@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_administrator.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-09-10 10:03:11 $
+|     $Revision: 1.10 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -14,65 +14,65 @@ define("ADMSLAN_1", "Ahora como administrador.");
 define("ADMSLAN_2", "Actualizado en la base de datos.");
 define("ADMSLAN_3", "Es el administrador del sitio y no puede ser editado.");
 define("ADMSLAN_4", "Continuar");
-define("ADMSLAN_5", "Â¡Error!");
+define("ADMSLAN_5", "¡Error!");
 define("ADMSLAN_6", "Es el administrador del sitio y no puede ser borrado.");
 
 define("ADMSLAN_13", "Administradores existentes");
 
 define("ADMSLAN_16", "Nombre Admin");
-define("ADMSLAN_17", "ContraseÃ±a Admin");
+define("ADMSLAN_17", "Contraseña Admin");
 define("ADMSLAN_18", "Permisos");
 define("ADMSLAN_19", "Cambiar preferencias del sitio");
-define("ADMSLAN_20", "Cambiar menÃºs y pÃ¡ginas personales");
-define("ADMSLAN_21", "AÃ±adir administradores");
+define("ADMSLAN_20", "Cambiar menús y páginas personales");
+define("ADMSLAN_21", "Añadir administradores");
 define("ADMSLAN_22", "Moderar usuarios/expulsiones etc");
 define("ADMSLAN_23", "Crear/editar foros");
-define("ADMSLAN_24", "Gestionar categorÃ­as de descargas");
+define("ADMSLAN_24", "Gestionar categorías de descargas");
 define("ADMSLAN_25", "Transferir/gestionar archivos");
-define("ADMSLAN_26", "Supervisar categorÃ­as de noticias");
-define("ADMSLAN_27", "Supervisar categorÃ­as de enlaces");
+define("ADMSLAN_26", "Supervisar categorías de noticias");
+define("ADMSLAN_27", "Supervisar categorías de enlaces");
 define("ADMSLAN_28", "Apagar sitio por mantenimiento");
 define("ADMSLAN_29", "Gestionar anuncios/publicidad");
 define("ADMSLAN_30", "Configurar noticias");
 define("ADMSLAN_31", "Configurar emoticonos");
-define("ADMSLAN_32", "Configurar pÃ¡gina de inicio");
-define("ADMSLAN_33", "Configurar estadÃ­sticas");
+define("ADMSLAN_32", "Configurar página de inicio");
+define("ADMSLAN_33", "Configurar estadísticas");
 define("ADMSLAN_34", "Configurar meta tags");
 define("ADMSLAN_35", "Configurar transferencia de archivos");
 //define("ADMSLAN_36", "Moderar foros");
 define("ADMSLAN_37", "Moderar comentarios");
 //define("ADMSLAN_38", "Moderar/configurar chatbox");
-define("ADMSLAN_39", "AÃ±adir Noticias");
-define("ADMSLAN_40", "AÃ±adir Enlaces");
-define("ADMSLAN_41", "AÃ±adir ArtÃ­culos");
-define("ADMSLAN_42", "AÃ±adir ReseÃ±as");
-define("ADMSLAN_43", "AÃ±adir Contenidos");
-define("ADMSLAN_44", "AÃ±adir Descargas");
-define("ADMSLAN_45", "AÃ±adir Encuestas");
+define("ADMSLAN_39", "Añadir Noticias");
+define("ADMSLAN_40", "Añadir Enlaces");
+define("ADMSLAN_41", "Añadir Artículos");
+define("ADMSLAN_42", "Añadir Reseñas");
+define("ADMSLAN_43", "Añadir Contenidos");
+define("ADMSLAN_44", "Añadir Descargas");
+define("ADMSLAN_45", "Añadir Encuestas");
 define("ADMSLAN_46", "Mensaje de Bienvenida");
 define("ADMSLAN_47", "Moderar noticias enviadas");
 
 define("ADMSLAN_49", "Seleccionar todo");
 define("ADMSLAN_51", "Quitar seleccion a todo");
 define("ADMSLAN_52", "Actualizar administrador");
-define("ADMSLAN_53", "AÃ±adir administradores");
+define("ADMSLAN_53", "Añadir administradores");
 define("ADMSLAN_54", "Administradores");
 define("ADMSLAN_55", "Ha dejado campos en blanco");
 define("ADMSLAN_56", "Administrador");
 
 define("ADMSLAN_58", "Administrador principal");
 define("ADMSLAN_59", "Quitar estado de administrador");
-define("ADMSLAN_60", "Â¿EstÃ¡ seguro de querer quitar el estado de administrador?");
+define("ADMSLAN_60", "¿Está seguro de querer quitar el estado de administrador?");
 define("ADMSLAN_61", "Administrador borrado");
 define("ADMSLAN_62", "Gestor de Plugins");
 
-define("ADMSLAN_64", "Limpiar la cachÃ© del sistema");
+define("ADMSLAN_64", "Limpiar la caché del sistema");
 define("ADMSLAN_65", "Configurar las opciones de Mail");
-define("ADMSLAN_66", "Configurar bÃºsquedas");
+define("ADMSLAN_66", "Configurar búsquedas");
 define("ADMSLAN_67", "Escanear con el inspector de archivos");
-define("ADMSLAN_68", "Configurar notificaciÃ³n email");
+define("ADMSLAN_68", "Configurar notificación email");
 define("ADMSLAN_69", "Es ya un Administrador y debe ser editado.");
 define("ADMSLAN_70", "Volver a la lista de Administradores"); 
-define("ADMSLAN_71", "Click aquÃ­ para ver los privilegios"); 
+define("ADMSLAN_71", "Click aquí para ver los privilegios"); 
 
 ?>

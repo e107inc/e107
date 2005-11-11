@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newforumposts_main/languages/Spanish.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-28 21:02:21 $
+|     $Revision: 1.5 $
+|     $Date: 2005-11-11 23:49:28 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -13,24 +13,24 @@ define("LAN_1", "Tema");
 define("LAN_2", "Usuario");
 define("LAN_3", "Vistas");
 define("LAN_4", "Respuestas");
-define("LAN_5", "Ãšltimo");
+define("LAN_5", "Último");
 define("LAN_6", "Temas");
 define("LAN_7", "por");
 
-define("NFPM_L1", "Este Plugin muestra una lista de nuevos mensajes en los foros en la pÃ¡gina principal");
-define("NFPM_L2", "Ãšltimos mensajes en los foros");
+define("NFPM_L1", "Este Plugin muestra una lista de nuevos mensajes en los foros en la página principal");
+define("NFPM_L2", "Últimos mensajes en los foros");
 define("NFPM_L3", "");
-define("NFPM_L4", "Â¿Activar en el Ã¡rea?");
+define("NFPM_L4", "¿Activar en el área?");
 define("NFPM_L5", "Inactivo");
 define("NFPM_L6", "Superior");
 define("NFPM_L7", "Inferior");
-define("NFPM_L8", "TÃ­tulo");
-define("NFPM_L9", "NÃºmero de mensajes nuevos a mostrar");
-define("NFPM_L10", "Â¿Mostrar en una caja con scroll?");
+define("NFPM_L8", "Título");
+define("NFPM_L9", "Número de mensajes nuevos a mostrar");
+define("NFPM_L10", "¿Mostrar en una caja con scroll?");
 define("NFPM_L11", "Alto");
-define("NFPM_L12", "ConfiguraciÃ³n");
-define("NFPM_L13", "Actualizar configuraciÃ³n");
-define("NFPM_L14", "ConfiguraciÃ³n actualizada.");
-define("NFPM_L15", "Marque para ver los Ãºltimos mensajes en los foros.<br />Por defecto son los Ãºltimos temas.");
+define("NFPM_L12", "Configuración");
+define("NFPM_L13", "Actualizar configuración");
+define("NFPM_L14", "Configuración actualizada.");
+define("NFPM_L15", "Marque para ver los últimos mensajes en los foros.<br />Por defecto son los últimos temas.");
 define('NFPM_L16', '[Usuario eliminado]');
 ?>

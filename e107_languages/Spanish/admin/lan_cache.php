@@ -4,19 +4,19 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_cache.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-10 17:49:36 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("CACLAN_1", "Â¿Activar CachÃ©");
-define("CACLAN_2", "Cambiar estado de la cachÃ©");
-define("CACLAN_3", "Sistema de CachÃ©");
-define("CACLAN_4", "Estado de CachÃ© cambiado");
-define("CACLAN_5", "Vaciar CachÃ©");
-define("CACLAN_6", "CachÃ© vaciada");
-define("CACLAN_7", "CachÃ© desactivada");
-//define("CACLAN_8", "Guardar CachÃ© en MySQL");
-define("CACLAN_9", "Guardar CachÃ© en archivo");
-define("CACLAN_10", "La carpeta cachÃ© [e107_files\cache] no tiene permisos de escritura. AsegÃºrese de cambiar el directorio con CHMOD 777");
+define("CACLAN_1", "¿Activar Caché");
+define("CACLAN_2", "Cambiar estado de la caché");
+define("CACLAN_3", "Sistema de Caché");
+define("CACLAN_4", "Estado de Caché cambiado");
+define("CACLAN_5", "Vaciar Caché");
+define("CACLAN_6", "Caché vaciada");
+define("CACLAN_7", "Caché desactivada");
+//define("CACLAN_8", "Guardar Caché en MySQL");
+define("CACLAN_9", "Guardar Caché en archivo");
+define("CACLAN_10", "La carpeta caché [e107_files\cache] no tiene permisos de escritura. Asegúrese de cambiar el directorio con CHMOD 777");
 ?>

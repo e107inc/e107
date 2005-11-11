@@ -1,4 +1,13 @@
-// ES lang variables by Natxo CC
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_handlers/tiny_mce/langs/es.js,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-11 23:49:24 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 
 tinyMCELang['lang_bold_desc'] = 'Negrita';
 tinyMCELang['lang_italic_desc'] = 'Cursiva';
@@ -10,8 +19,8 @@ tinyMCELang['lang_justifyright_desc'] = 'Alinear a la derecha';
 tinyMCELang['lang_justifyfull_desc'] = 'Alinear justificado';
 tinyMCELang['lang_bullist_desc'] = 'Lista sin ordenar';
 tinyMCELang['lang_numlist_desc'] = 'Lista ordenada';
-tinyMCELang['lang_outdent_desc'] = 'Disminuye sangrÃ­a';
-tinyMCELang['lang_indent_desc'] = 'Aumentar sangrÃ­a';
+tinyMCELang['lang_outdent_desc'] = 'Disminuye sangría';
+tinyMCELang['lang_indent_desc'] = 'Aumentar sangría';
 tinyMCELang['lang_undo_desc'] = 'Deshacer';
 tinyMCELang['lang_redo_desc'] = 'Rehacer';
 tinyMCELang['lang_link_desc'] = 'Insertar enlace';
@@ -24,16 +33,16 @@ tinyMCELang['lang_insert_link_title'] = 'Insertar/editar enlace';
 tinyMCELang['lang_insert'] = 'Insertar';
 tinyMCELang['lang_update'] = 'Insertar';
 tinyMCELang['lang_cancel'] = 'Cancelar';
-tinyMCELang['lang_insert_link_url'] = 'DirecciÃ³n del enlace';
+tinyMCELang['lang_insert_link_url'] = 'Dirección del enlace';
 tinyMCELang['lang_insert_link_target'] = 'Destino';
 tinyMCELang['lang_insert_link_target_same'] = 'Abrir enlace en la misma ventana';
 tinyMCELang['lang_insert_link_target_blank'] = 'Abrir enlace en una nueva ventana';
 tinyMCELang['lang_insert_image_title'] = 'Insertar/editar imagen';
 tinyMCELang['lang_insert_image_src'] = 'URL de la imagen';
-tinyMCELang['lang_insert_image_alt'] = 'DescripciÃ³n de la imagen';
+tinyMCELang['lang_insert_image_alt'] = 'Descripción de la imagen';
 tinyMCELang['lang_help_desc'] = 'Ayuda';
 tinyMCELang['lang_bold_img'] = "bold.gif";
 tinyMCELang['lang_italic_img'] = "italic.gif";
 tinyMCELang['lang_underline_img'] = "underline.gif";
-tinyMCELang['lang_clipboard_msg'] = 'Copiar/Cortar/Pegar no estÃ¡ disponible en Mozilla y Firefox.\nÂ¿Desea mÃ¡s informaciÃ³n al respecto?';
-tinyMCELang['lang_popup_blocked'] = 'Lo siento, pero se ha detectado que su sistema antipublicidad a bloqueado una ventana que es necesaria para la aplicaciÃ³n. NecesitarÃ¡ desactivar sus sistema de antipublicidad en este sitio para el correcto funcionamiento de esta herramienta.';
+tinyMCELang['lang_clipboard_msg'] = 'Copiar/Cortar/Pegar no está disponible en Mozilla y Firefox.\n¿Desea más información al respecto?';
+tinyMCELang['lang_popup_blocked'] = 'Lo siento, pero se ha detectado que su sistema antipublicidad a bloqueado una ventana que es necesaria para la aplicación. Necesitará desactivar sus sistema de antipublicidad en este sitio para el correcto funcionamiento de esta herramienta.';

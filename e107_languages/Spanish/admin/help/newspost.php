@@ -4,37 +4,37 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/newspost.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 $caption = "Ayuda de mensaje Noticias";
 $text = "<b>General</b><br />
-El cuerpo ser√° desplegado en la p√°gina principal,
-el texto completo ser√° le√≠do pulsando en 'Leer m√°s'.
-Recurso y URL es donde est√° publicada la noticia.
+El cuerpo ser· desplegado en la p·gina principal,
+el texto completo ser· leÌdo pulsando en 'Leer m·s'.
+Recurso y URL es donde est· publicada la noticia.
 <br />
 <br />
 <b>Atajos</b><br />
 Puede usar estos atajos en vez de escribir toda la etiqueta ,
-al enviar la noticia el atajo ser√° convertido en c√≥digo xhtml.
+al enviar la noticia el atajo ser· convertido en cÛdigo xhtml.
 <br /><br />
 <b>Enlaces</b>
 <br />
-Por favor use direcciones completas a cualquier enlace a√∫n si es local.
+Por favor use direcciones completas a cualquier enlace a˙n si es local.
 <br /><br />
-<b>Mostrar solo T√≠tulo</b>
+<b>Mostrar solo TÌtulo</b>
 <br />
-Permite mostrar solamente el t√≠tulo de la noticia con un enlace para leer la noticia completa.
+Permite mostrar solamente el tÌtulo de la noticia con un enlace para leer la noticia completa.
 <br /><br />
 <b>Estado</b>
 <br />
-Si pulsa el bot√≥n para deshabilitar la noticia no ser√° mostrada en tu p√°gina principal.
+Si pulsa el botÛn para deshabilitar la noticia no ser· mostrada en tu p·gina principal.
 <br /><br />
-<b>Activaci√≥n</b>
+<b>ActivaciÛn</b>
 <br />
-Si configura una fecha de inicio/fin tu noticia solo ser√° mostrada entre estas fechas.
+Si configura una fecha de inicio/fin tu noticia solo ser· mostrada entre estas fechas.
 ";
 $ns -> tablerender($caption, $text);
 ?>

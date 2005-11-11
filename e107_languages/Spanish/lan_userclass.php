@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_userclass.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("UC_LAN_0", "Todos (pÃºblico)");
+define("UC_LAN_0", "Todos (público)");
 define("UC_LAN_1", "Invitados");
 define("UC_LAN_2", "Nadie (inactivo)");
 define("UC_LAN_3", "Miembros");

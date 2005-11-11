@@ -1,15 +1,24 @@
-// ES lang variables by Natxo CC
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_handlers/tiny_mce/themes/advanced/langs/es.js,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-11 23:49:24 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 
 tinyMCE.addToLang('',{
 theme_style_select : 'Estilos',
-theme_code_desc : 'Editar cÃ³digo HTML',
-theme_code_title : 'Editor cÃ³digo HTML',
+theme_code_desc : 'Editar código HTML',
+theme_code_title : 'Editor código HTML',
 theme_code_wordwrap : 'Word wrap',
-theme_sub_desc : 'SubÃ­ndice',
-theme_sup_desc : 'SuperÃ­ndice',
+theme_sub_desc : 'Subíndice',
+theme_sup_desc : 'Superíndice',
 theme_hr_desc : 'Insertar un separador horizontal',
 theme_removeformat_desc : 'Quitar formato',
-theme_custom1_desc : 'Tu descripciÃ³n',
+theme_custom1_desc : 'Tu descripción',
 insert_image_border : 'Borde',
 insert_image_dimensions : 'Dimensiones',
 insert_image_vspace : 'Espacio vertical',
@@ -25,12 +34,12 @@ insert_image_align_absmiddle : 'Centrado horizontal',
 insert_image_align_absbottom : 'Centrado abajo',
 insert_image_align_left : 'Izquierda',
 insert_image_align_right : 'Derecha',
-theme_font_size : '-- TamaÃ±o --',
+theme_font_size : '-- Tamaño --',
 theme_fontdefault : '-- Tipo --',
 theme_block : '-- Formato --',
-theme_paragraph : 'ParÃ¡grafo',
+theme_paragraph : 'Parágrafo',
 theme_div : 'Div',
-theme_address : 'DirecciÃ³n',
+theme_address : 'Dirección',
 theme_pre : 'Preformateo',
 theme_h1 : 'Cabecera 1',
 theme_h2 : 'Cabecera 2',
@@ -42,14 +51,14 @@ theme_colorpicker_title : 'Seleccione un color',
 theme_colorpicker_apply : 'Aplicar',
 theme_forecolor_desc : 'Seleccione color',
 theme_backcolor_desc : 'Seleccione color de fondo',
-theme_charmap_title : 'Seleccione carÃ¡cter personalizado',
-theme_charmap_desc : 'Inserte carÃ¡cter personalizado',
-theme_visualaid_desc : 'Cambiar entre guÃ­s/invisible',
+theme_charmap_title : 'Seleccione carácter personalizado',
+theme_charmap_desc : 'Inserte carácter personalizado',
+theme_visualaid_desc : 'Cambiar entre guís/invisible',
 insert_anchor_title : 'Insertar/editar enlace',
 insert_anchor_name : 'Nombre enlace',
 theme_anchor_desc : 'Insertar/editar enlace',
-theme_insert_link_titlefield : 'TÃ­tulo',
-theme_clipboard_msg : 'Copiar/Cortar/Pegar no estÃ¡ disponible en Mozilla y Firefox.\nÂ¿Quiere mÃ¡s informaciÃ³n sobre Ã©sto?',
+theme_insert_link_titlefield : 'Título',
+theme_clipboard_msg : 'Copiar/Cortar/Pegar no está disponible en Mozilla y Firefox.\n¿Quiere más información sobre ésto?',
 theme_path : 'Ruta',
 cut_desc : 'Cortar',
 copy_desc : 'Copiar',
@@ -59,5 +68,5 @@ image_list : 'Lista imagen',
 browse : 'Navegar',
 image_props_desc : 'Propiedades imagen',
 newdocument_desc : 'Nuevo documento',
-newdocument : 'Â¿EstÃ¡ seguro de eliminar todos los contenidos?'
+newdocument : '¿Está seguro de eliminar todos los contenidos?'
 });

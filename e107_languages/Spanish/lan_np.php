@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_np.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("NP_1", "PÃ¡gina anterior");
-define("NP_2", "PÃ¡gina siguiente");
-define("NP_3", "Ir a la pÃ¡gina");
+define("NP_1", "Página anterior");
+define("NP_2", "Página siguiente");
+define("NP_3", "Ir a la página");
 
 ?>

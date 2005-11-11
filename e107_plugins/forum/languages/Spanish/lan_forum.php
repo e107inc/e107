@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-10 19:22:08 $
+|     $Revision: 1.4 $
+|     $Date: 2005-11-11 23:49:28 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -16,26 +16,26 @@ define("LAN_31", "No hay nuevos mensajes ");
 define("LAN_32", "Hay 1 nuevo mensaje ");
 define("LAN_33", "Hay");
 define("LAN_34", "Nuevos mensajes");
-define("LAN_35", "desde su Ãºltima visita.");
-define("LAN_36", "Su Ãºltima visita fuÃ© el ");
+define("LAN_35", "desde su última visita.");
+define("LAN_36", "Su última visita fué el ");
 define("LAN_37", "Estamos a ");
 define("LAN_38", ", todas las horas son GMT");
 define("LAN_41", "Nuevo miembro: ");
 define("LAN_42", "Miembros registrados: ");
-define("LAN_44", "Este foro puede ser visitado y usado por usuarios no registrados del sitio, las direcciones ip y localizaciÃ³n son guardados.");
-define("LAN_45", "Este foro solo puede ser usado por usuarios registrados, por favor pulse <a href='".e_BASE."signup.php'>aquÃ­</a> para ir a la pÃ¡gina de registro.");
+define("LAN_44", "Este foro puede ser visitado y usado por usuarios no registrados del sitio, las direcciones ip y localización son guardados.");
+define("LAN_45", "Este foro solo puede ser usado por usuarios registrados, por favor pulse <a href='".e_BASE."signup.php'>aquí</a> para ir a la página de registro.");
 define("LAN_46", "Foros");
 define("LAN_47", "Temas");
 define("LAN_48", "Respuestas");
-define("LAN_49", "Ãšltimo");
-define("LAN_51", "No hay foros en este momento, por favor vuelva mÃ¡s tarde.");
-define("LAN_52", "No hay foros en esta secciÃ³n ahora, por favor vuelva mÃ¡s tarde.");
+define("LAN_49", "Último");
+define("LAN_51", "No hay foros en este momento, por favor vuelva más tarde.");
+define("LAN_52", "No hay foros en esta sección ahora, por favor vuelva más tarde.");
 define("LAN_79", "Nuevos envios");
 define("LAN_80", " No hay nuevos envios");
 define("LAN_81", "Tema cerrado");
-define("LAN_100", "artÃ­culos");
+define("LAN_100", "artículos");
 define("LAN_180", "Buscar");
-define("LAN_191", "InformaciÃ³n");
+define("LAN_191", "Información");
 define("LAN_192", "Mensajes enviados por los usuarios de este foro ");
 define("LAN_196", "Has leido ");
 define("LAN_197", " de estos mensajes.");
@@ -59,8 +59,8 @@ define("LAN_402", "Este foro es solo de lectura");
 define("LAN_403", "No hay mensajes");
 define("LAN_404", "mensajes");
 define("LAN_405", "Solo lectura");
-define("LAN_406", "Este foro estÃ¡ restringido solo para administradores");
-define("LAN_407", "Este foro estÃ¡ restringido solo para miembros");
+define("LAN_406", "Este foro está restringido solo para administradores");
+define("LAN_407", "Este foro está restringido solo para miembros");
 define("LAN_408", "Este foro es de solo lectura");
 define("LAN_409", "Este es un foro de acceso restringido.");
 define("LAN_410", "Bienvenido");
@@ -75,7 +75,7 @@ define("LAN_418", "visita");
 define("LAN_419", "miembros");
 define("LAN_420", "visitas");
 define("LAN_421", "Mostrar nuevos mensajes");
-define("LAN_422", "Nuevos mensajes desde su Ãºltima visita");
+define("LAN_422", "Nuevos mensajes desde su última visita");
 define("LAN_423", "Enviado por");
 define("LAN_424", "Nuevos temas");
 define("LAN_425", "Re:");
@@ -84,17 +84,17 @@ define("LAN_426", "En linea: ");
 define("LAN_427", "Ver lista detallada.");
 define("LAN_428", "Re:");
 define("LAN_429", "Top Autores");
-define("LAN_430", "Temas mÃ¡s activos");
+define("LAN_430", "Temas más activos");
 define("LAN_431", "Mis mensajes");
-define("LAN_432", "Mi configuraciÃ³n");
+define("LAN_432", "Mi configuración");
 define("LAN_433", "Normas del foro");
 define("LAN_434", "Volver a foros");
 define("LAN_435", "Mi perfil");
-define("LAN_436", " (se abrirÃ¡ en una nueva ventana.)");
+define("LAN_436", " (se abrirá en una nueva ventana.)");
 define("LAN_437", "registrar");
-define("LAN_438", "e iniciar sesiÃ³n.");
-define("LAN_439", "aquÃ­");
-define("LAN_440", "para ir a la pÃ¡gina de registro.");
+define("LAN_438", "e iniciar sesión.");
+define("LAN_439", "aquí");
+define("LAN_440", "para ir a la página de registro.");
 define('FORLAN_441', 'No hay reglas definidas.');
 define('FORLAN_442', 'Mis subidas');
 define('FORLAN_443', '[Usuario eliminado]');

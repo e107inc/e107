@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/blogcalendar_menu/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 22:34:18 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -37,9 +37,9 @@ define("BLOGCAL_1", "Noticia");
 
 define("BLOGCAL_CONF1", "Meses/columna");
 define("BLOGCAL_CONF2", "Cellpadding");
-define("BLOGCAL_CONF3", "Actualizar parÃ¡metros de menÃº");
-define("BLOGCAL_CONF4", "BlogCal ConfiguraciÃ³n del menÃº");
-define("BLOGCAL_CONF5", "BlogCal configuraciÃ³n del menÃº guardada");
+define("BLOGCAL_CONF3", "Actualizar parámetros de menú");
+define("BLOGCAL_CONF4", "BlogCal Configuración del menú");
+define("BLOGCAL_CONF5", "BlogCal configuración del menú guardada");
 
 define("BLOGCAL_ARCHIV1", "Seleccione archivo");
 

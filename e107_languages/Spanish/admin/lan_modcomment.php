@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_modcomment.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-07-02 11:03:20 $
+|     $Revision: 1.7 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -17,7 +17,7 @@ define("MDCLAN_5", "Desbloquear");
 define("MDCLAN_6", "Bloquear");
 
 define("MDCLAN_8", "Moderar comentarios");
-define("MDCLAN_9", "Â¡Cuidado! Borrando el comentario raÃ­z borrarÃ¡ todas sus respuestas!");
+define("MDCLAN_9", "¡Cuidado! Borrando el comentario raíz borrará todas sus respuestas!");
 define("MDCLAN_10", "Opciones");
 define("MDCLAN_11", "Comentario");
 define("MDCLAN_12", "Comentarios");

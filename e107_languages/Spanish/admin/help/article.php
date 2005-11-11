@@ -4,19 +4,19 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/article.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-11 12:22:25 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-$text = "Desde esta p√°gina puede a√±adir art√≠culos simples o multi-p√°gina.<br />
- Para un art√≠culo multi-p√°gina debe separar cada p√°gina con el texto [newpage], ej <br /><code>Test1 [newpage] Test2</code><br />
- Crear√° un art√≠clo de dos p√°ginas con 'Test1' en la p√°gina 1 y 'Test2' en la p√°gina 2.
+$text = "Desde esta p·gina puede aÒadir artÌculos simples o multi-p·gina.<br />
+ Para un artÌculo multi-p·gina debe separar cada p·gina con el texto [newpage], ej <br /><code>Test1 [newpage] Test2</code><br />
+ Crear· un artÌclo de dos p·ginas con 'Test1' en la p·gina 1 y 'Test2' en la p·gina 2.
 <br /><br />
-Si su art√≠culo contiene etiquetas HTML que desea preservar, encierre el c√≥digo con [preserve] [/preserve].
+Si su artÌculo contiene etiquetas HTML que desea preservar, encierre el cÛdigo con [preserve] [/preserve].
 Por ejemplo, si ha introducido el texto '<table><tr><td>Hola </td></tr></table>'
-en su art√≠culo, debe aparecer una tabla conteniendo la palabra Hola.
+en su artÌculo, debe aparecer una tabla conteniendo la palabra Hola.
 Si ha introducido '[preserve]<table><tr><td>Hola </td></tr></table>[/preserve]'
-el debe aparecer el c√≥digo tal como lo introdujo y no la tabla que genera el c√≥digo.";
-$ns -> tablerender("Ayuda Art√≠culo", $text);
+el debe aparecer el cÛdigo tal como lo introdujo y no la tabla que genera el cÛdigo.";
+$ns -> tablerender("Ayuda ArtÌculo", $text);
 ?>

@@ -1,21 +1,21 @@
-ï»¿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/online_menu/languages/Spanish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-10-13 22:41:23 $
+|     $Revision: 1.4 $
+|     $Date: 2005-11-11 23:49:28 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("ONLINE_L1", "Invitados: ");
 define("ONLINE_L2", "Miembros: ");
-define("ONLINE_L3", "En esta pÃ¡gina: ");
+define("ONLINE_L3", "En esta página: ");
 define("ONLINE_L4", "En linea");
 define("ONLINE_L5", "Miembros");
-define("ONLINE_L6", "Ãšltimo");
+define("ONLINE_L6", "Último");
 
-define("TRACKING_MESSAGE", "Tracking de usuario online estÃ¡ actualmente desactivado, por favor actÃ­velo <a href='".e_ADMIN."users.php?options'>aquÃ­</a></span><br />");
+define("TRACKING_MESSAGE", "Tracking de usuario online está actualmente desactivado, por favor actívelo <a href='".e_ADMIN."users.php?options'>aquí</a></span><br />");
 
 ?>

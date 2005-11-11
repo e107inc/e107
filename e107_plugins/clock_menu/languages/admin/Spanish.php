@@ -4,24 +4,24 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/clock_menu/languages/admin/Spanish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-11 19:01:05 $
+|     $Revision: 1.4 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("CLOCK_AD_L1", "Configuraci√≥n del men√∫ del reloj guardada");
-define("CLOCK_AD_L2", "T√≠tulo");
-define("CLOCK_AD_L3", "Actualizar ajustes de men√∫");
-define("CLOCK_AD_L4", "Config del men√∫ del reloj");
+define("CLOCK_AD_L1", "ConfiguraciÛn del men˙ del reloj guardada");
+define("CLOCK_AD_L2", "TÌtulo");
+define("CLOCK_AD_L3", "Actualizar ajustes de men˙");
+define("CLOCK_AD_L4", "Config del men˙ del reloj");
 define("CLOCK_AD_L5", "AM/PM");
-define("CLOCK_AD_L6", "Activado, mostrar√° la hora en formato (0-12 AM/PM). Desactivado, mostrar√° la hora en formato de 0-24");
+define("CLOCK_AD_L6", "Activado, mostrar· la hora en formato (0-12 AM/PM). Desactivado, mostrar· la hora en formato de 0-24");
 define("CLOCK_AD_L7", "Prefijo de fecha");
-define("CLOCK_AD_L8", "Si su idioma requiere una palabra corta antes de la fecha (Ejemplo 'le' for Franc√©s o 'den' para Alem√°n...), use este campo. En blanco si no se requiere.");
+define("CLOCK_AD_L8", "Si su idioma requiere una palabra corta antes de la fecha (Ejemplo 'le' for FrancÈs o 'den' para Alem·n...), use este campo. En blanco si no se requiere.");
 define("CLOCK_AD_L9", "Sufijo 1");
 define("CLOCK_AD_L10", "Sufijo 2");
 define("CLOCK_AD_L11", "Sufijo 3");
-define("CLOCK_AD_L12", "Sufijo 4 y m√°s");
-define("CLOCK_AD_L13", "Si su idioma requiere mostrar el sufijo antes de los n√∫meros de fecha, complete estos campos solo con el sufijo (Ejemplo: 'st' para 1, 'nd' para 2, 'rd' para 3 y 'th' para 4 y m√°s para usuarios Ingleses). En blanco si no se requiere.");
+define("CLOCK_AD_L12", "Sufijo 4 y m·s");
+define("CLOCK_AD_L13", "Si su idioma requiere mostrar el sufijo antes de los n˙meros de fecha, complete estos campos solo con el sufijo (Ejemplo: 'st' para 1, 'nd' para 2, 'rd' para 3 y 'th' para 4 y m·s para usuarios Ingleses). En blanco si no se requiere.");
 define("CLOCK_AD_L14", "");
 define("CLOCK_AD_L15", "");
 define("CLOCK_AD_L16", "");

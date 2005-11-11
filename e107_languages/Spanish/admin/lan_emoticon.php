@@ -4,27 +4,27 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_emoticon.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-11-04 19:08:20 $
+|     $Revision: 1.10 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("EMOLAN_1", "Activaci贸n de Emoticono.");
+define("EMOLAN_1", "Activaci髇 de Emoticono.");
 define("EMOLAN_2", "Nombre");
 define("EMOLAN_3", "Emoticonos");
-define("EMOLAN_4", "驴Activar emoticonos?");
+define("EMOLAN_4", "緼ctivar emoticonos?");
 define("EMOLAN_5", "Imagen");
-define("EMOLAN_6", "C贸digo emoticono");
-define("EMOLAN_7", "Separar m煤ltiples entradas con espacios");
+define("EMOLAN_6", "C骴igo emoticono");
+define("EMOLAN_7", "Separar m鷏tiples entradas con espacios");
 define("EMOLAN_8", "Estado");
 define("EMOLAN_9", "Opciones");
 define("EMOLAN_10", "Activo");
 define("EMOLAN_11", "Activarlo");
 define("EMOLAN_12", "Editar / configurar este pack");
 define("EMOLAN_13", "Packs instalados");
-define("EMOLAN_14", "Guardar configuraci贸n");
+define("EMOLAN_14", "Guardar configuraci髇");
 define("EMOLAN_15", "Editar / configurar Emoticonos");
-define("EMOLAN_16", "Configuraci贸n de emoticono guardada");
+define("EMOLAN_16", "Configuraci髇 de emoticono guardada");
 define("EMOLAN_2", "Nombre");
 define("EMOLAN_2", "Nombre");
 define("EMOLAN_2", "Nombre");

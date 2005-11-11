@@ -1,7 +1,7 @@
-ï»¿
-P>	Â¿Que es una descarga padre?
-R>	Le ayudarÃ¡ a poder agrupar y ordenar descargas en diferentes categorÃ­as. Una especie de cabecera para las descargas.
 
-P>	Quiero aÃ±adir una descarga pero el archivo no aparece en la lista
-R>	Solo aparecerÃ¡n en la lista aquellos que estÃ©n en la carpeta e107_files/downloads. Si copia un archivo a esa carpeta aparecerÃ¡. Lo mismo ocurre con las imÃ¡genes, que deben estar en la carpeta e107_files/downloadimages
+P>	¿Que es una descarga padre?
+R>	Le ayudará a poder agrupar y ordenar descargas en diferentes categorías. Una especie de cabecera para las descargas.
+
+P>	Quiero añadir una descarga pero el archivo no aparece en la lista
+R>	Solo aparecerán en la lista aquellos que estén en la carpeta e107_files/downloads. Si copia un archivo a esa carpeta aparecerá. Lo mismo ocurre con las imágenes, que deben estar en la carpeta e107_files/downloadimages
 

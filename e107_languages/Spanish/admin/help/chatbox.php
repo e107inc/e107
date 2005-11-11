@@ -4,16 +4,16 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/chatbox.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-03 22:17:40 $
+|     $Revision: 1.5 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-$text = "Configura las preferencias de tu Chatbox desde aqu√≠.<br />
-Si la casilla de reemplazo est√° marcada, cualquier enlace que hayan introducido ser√° reemplazado
+$text = "Configura las preferencias de tu Chatbox desde aquÌ.<br />
+Si la casilla de reemplazo est· marcada, cualquier enlace que hayan introducido ser· reemplazado
 con el texto que escribiste en la caja de texto,
-esto detendr√° enlaces largos que causan problemas al mostrar.
-Cortar palabras autocortar√° los textos que sean m√°s largos que el n√∫mero especificado aqu√≠.";
+esto detendr· enlaces largos que causan problemas al mostrar.
+Cortar palabras autocortar· los textos que sean m·s largos que el n˙mero especificado aquÌ.";
 
 $ns -> tablerender("Chatbox", $text);
 ?>

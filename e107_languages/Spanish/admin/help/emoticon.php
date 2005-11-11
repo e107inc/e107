@@ -4,12 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/emoticon.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-09-20 21:12:36 $
+|     $Revision: 1.7 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-$text = "";
+$text = "Con los emoticonos activados, los símbolos de texto se reemplazarán por emoticonos a través de su sitio de contenidos.";
 
 $ns -> tablerender("Ayuda Emoticon", $text);
 ?>

@@ -4,20 +4,20 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_db.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-06-10 18:12:33 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("DBLAN_1", "ConfiguraciÃ³n del nucleo guardada con backup en la base de datos.");
+define("DBLAN_1", "Configuración del nucleo guardada con backup en la base de datos.");
 define("DBLAN_2", "Backup BD");
 define("DBLAN_3", "Hacer Backup de base de datos SQL");
-define("DBLAN_4", "Chequear validaciÃ³n");
-define("DBLAN_5", "Chequear validaciÃ³n de la base de datos");
+define("DBLAN_4", "Chequear validación");
+define("DBLAN_5", "Chequear validación de la base de datos");
 define("DBLAN_6", "Optimizar BD");
 define("DBLAN_7", "Optimizar base de datos SQL");
-define("DBLAN_8", "Backup del NÃºcleo");
-define("DBLAN_9", "Hacer Backup de nÃºcleo");
+define("DBLAN_8", "Backup del Núcleo");
+define("DBLAN_9", "Hacer Backup de núcleo");
 define("DBLAN_10", "Utilidades de la base de datos");
 define("DBLAN_11", "Base de datos MySQL");
 define("DBLAN_12", "Optimizada");

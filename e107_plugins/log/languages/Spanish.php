@@ -4,50 +4,50 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/Spanish.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-11-04 19:08:20 $
+|     $Revision: 1.8 $
+|     $Date: 2005-11-11 23:49:28 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("ADSTAT_L1", "Este plugin registrarÃ¡ todas las visitas de su pÃ¡gina, y crearÃ¡ varias pantallas con la informaciÃ³n obtenida.");
-define("ADSTAT_L2", "El registro de estadÃ­sticas se instalÃ³ exitosamente.");
-define("ADSTAT_L3", "Registro estadÃ­stico");
-define("ADSTAT_L4", "No tiene permisos para ver esta pÃ¡gina.");
-define("ADSTAT_L5", "Las caracterÃ­sticas de esta pÃ¡gina han sido desactivadas.");
-define("ADSTAT_L6", "EstadÃ­sticas del sitio");
-define("ADSTAT_L7", "No se han recogido estadÃ­sticas de este tipo.");
-define("ADSTAT_L8", "EstadÃ­sticas de hoy");
-define("ADSTAT_L9", "EstadÃ­sticas de todo el tiempo");
+define("ADSTAT_L1", "Este plugin registrará todas las visitas de su página, y creará varias pantallas con la información obtenida.");
+define("ADSTAT_L2", "El registro de estadísticas se instaló exitosamente.");
+define("ADSTAT_L3", "Registro estadístico");
+define("ADSTAT_L4", "No tiene permisos para ver esta página.");
+define("ADSTAT_L5", "Las características de esta página han sido desactivadas.");
+define("ADSTAT_L6", "Estadísticas del sitio");
+define("ADSTAT_L7", "No se han recogido estadísticas de este tipo.");
+define("ADSTAT_L8", "Estadísticas de hoy");
+define("ADSTAT_L9", "Estadísticas de todo el tiempo");
 define("ADSTAT_L10", "Diarias");
 define("ADSTAT_L11", "Mensuales");
 define("ADSTAT_L12", "Navegadores");
 define("ADSTAT_L13", "Sistemas operativos");
 define("ADSTAT_L14", "Dominios");
-define("ADSTAT_L15", "ResoluciÃ³n pantalla / profundidad de color");
-define("ADSTAT_L16", "EstadÃ­sticas de referencia");
-define("ADSTAT_L17", "Buscar cadenas de estadÃ­sticas");
+define("ADSTAT_L15", "Resolución pantalla / profundidad de color");
+define("ADSTAT_L16", "Estadísticas de referencia");
+define("ADSTAT_L17", "Buscar cadenas de estadísticas");
 define("ADSTAT_L18", "Visitas recientes");
-define("ADSTAT_L19", "PÃ¡gina");
+define("ADSTAT_L19", "Página");
 define("ADSTAT_L20", "Visitas hoy");
 define("ADSTAT_L21", "Total");
-define("ADSTAT_L22", "Ãšnicas");
+define("ADSTAT_L22", "Únicas");
 define("ADSTAT_L23", "Visitas totales");
-define("ADSTAT_L24", "Visitas Ãºnicas totales");
-define("ADSTAT_L25", "Sin estadÃ­sticas.");
+define("ADSTAT_L24", "Visitas únicas totales");
+define("ADSTAT_L25", "Sin estadísticas.");
 define("ADSTAT_L26", "Navegador");
 define("ADSTAT_L27", "Sistema operativo");
-define("ADSTAT_L28", "PaÃ­ses / Dominios");
-define("ADSTAT_L29", "ResoluciÃ³n de pantalla");
+define("ADSTAT_L28", "Países / Dominios");
+define("ADSTAT_L29", "Resolución de pantalla");
 define("ADSTAT_L30", "Referencias del sitio");
-define("ADSTAT_L31", "Motor de bÃºsqueda de cadenas");
+define("ADSTAT_L31", "Motor de búsqueda de cadenas");
 define("ADSTAT_L32", "Procedente de");
-define("ADSTAT_L33", "Ãšltimas visitas");
+define("ADSTAT_L33", "Últimas visitas");
 define("ADSTAT_L34", "Visitas");
-define("ADSTAT_L35", "Ãšltimas visitas Ãºnicas");
-define("ADSTAT_L36", "DÃ­as por pÃ¡gina");
+define("ADSTAT_L35", "Últimas visitas únicas");
+define("ADSTAT_L36", "Días por página");
 define("ADSTAT_L37", "Visitas por mes");
-define("ADSTAT_L38", "Visitas Ãºnicas por mes");
+define("ADSTAT_L38", "Visitas únicas por mes");
 define("ADSTAT_L39", "Eliminar esta entrada");
-define("ADSTAT_L40", "DÃ­as");
+define("ADSTAT_L40", "Días");
 define("ADSTAT_L41", "Error");
 ?>

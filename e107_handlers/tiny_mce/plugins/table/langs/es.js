@@ -1,11 +1,20 @@
-// ES lang variables by Natxo CC
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system - Language File.
+|
+|     $Source: /cvs_backup/e107_langpacks/e107_handlers/tiny_mce/plugins/table/langs/es.js,v $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-11 23:49:24 $
+|     $Author: natxocc $
++----------------------------------------------------------------------------+
+*/
 
 tinyMCELang['lang_table_desc'] = 'Insertar una nueva tabla';
 tinyMCELang['lang_table_insert_row_before_desc'] = 'Insertar una fila antes';
-tinyMCELang['lang_table_insert_row_after_desc'] = 'Insertar una fila despuÃ©s';
+tinyMCELang['lang_table_insert_row_after_desc'] = 'Insertar una fila después';
 tinyMCELang['lang_table_delete_row_desc'] = 'Eliminar una fila';
 tinyMCELang['lang_table_insert_col_before_desc'] = 'Insertar una columna antes';
-tinyMCELang['lang_table_insert_col_after_desc'] = 'Insertar columna despuÃ©s';
+tinyMCELang['lang_table_insert_col_after_desc'] = 'Insertar columna después';
 tinyMCELang['lang_table_delete_col_desc'] = 'Eliminar una columna';
 tinyMCELang['lang_insert_table_title'] = 'Insertar/Modificar tabla';
 tinyMCELang['lang_insert_table_width'] = 'Anchura';
@@ -37,5 +46,5 @@ tinyMCELang['lang_table_merge_cells_desc'] = 'Unir celdas';
 tinyMCELang['lang_table_cut_row_desc'] = 'Cortar fila';
 tinyMCELang['lang_table_copy_row_desc'] = 'Copiar fila';
 tinyMCELang['lang_table_paste_row_before_desc'] = 'Pegar fila antes';
-tinyMCELang['lang_table_paste_row_after_desc'] = 'Pegar fila despuÃ©s';
+tinyMCELang['lang_table_paste_row_after_desc'] = 'Pegar fila después';
 tinyMCELang['lang_table_insert_desc'] = 'Insertar nueva tabla';

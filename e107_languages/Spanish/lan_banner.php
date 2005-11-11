@@ -4,18 +4,18 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_banner.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-11-04 19:08:20 $
+|     $Revision: 1.8 $
+|     $Date: 2005-11-11 23:49:24 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Anuncio");
 define("LAN_16", "Usuario: ");
-define("LAN_17", "ContraseÃ±a: ");
+define("LAN_17", "Contraseña: ");
 define("LAN_18", "Continuar");
-define("LAN_19", "Por favor identifÃ­quese con su nombre de usuario y contraseÃ±a para continuar");
-define("LAN_20", "Lo sentimos, No se pueden encontrar esos detalles en nuestra base de datos. Por favor pÃ³ngase en contacto con el administrador del sitio.");
-define("LAN_21", "EstadÃ­sticas de la publicidad");
+define("LAN_19", "Por favor identifíquese con su nombre de usuario y contraseña para continuar");
+define("LAN_20", "Lo sentimos, No se pueden encontrar esos detalles en nuestra base de datos. Por favor póngase en contacto con el administrador del sitio.");
+define("LAN_21", "Estadísticas de la publicidad");
 define("LAN_22", "Cliente");
 define("LAN_23", "ID anuncio");
 define("LAN_24", "Visitas");

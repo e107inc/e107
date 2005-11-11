@@ -4,13 +4,13 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_notify.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-03 22:17:41 $
+|     $Revision: 1.4 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("NT_LAN_1", "Notificaciones");
-define("NT_LAN_2", "Recibir notificaci贸n email ON");
+define("NT_LAN_2", "Recibir notificaci髇 email ON");
 define("NT_LAN_3", "OFF");
 define("NT_LAN_4", "Admin Jefe");
 define("NT_LAN_5", "Clase");
@@ -18,9 +18,9 @@ define("NT_LAN_6", "Email");
 
 define("NU_LAN_1", "Eventos de usuario");
 define("NU_LAN_2", "Altas de usuario");
-define("NU_LAN_3", "Verificaci贸n de cuenta de usuario");
-define("NU_LAN_4", "Conexi贸n de usuario");
-define("NU_LAN_5", "Desconexi贸n de usuario");
+define("NU_LAN_3", "Verificaci髇 de cuenta de usuario");
+define("NU_LAN_4", "Conexi髇 de usuario");
+define("NU_LAN_5", "Desconexi髇 de usuario");
 
 define("NS_LAN_1", "Eventos de seguridad");
 define("NS_LAN_2", "IP expulsada por flooding");

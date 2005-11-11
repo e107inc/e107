@@ -4,26 +4,26 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_mailout.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-11-04 19:08:20 $
+|     $Revision: 1.11 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_52", "Guardar cambios");
 
 define("PRFLAN_63", "Enviar correo de prueba");
-define("PRFLAN_64", "Pulsando el botÃ³n enviarÃ¡ un correo de prueba al administrador principal");
+define("PRFLAN_64", "Pulsando el botón enviará un correo de prueba al administrador principal");
 define("PRFLAN_65", "Click para enviar correo a");
 define("PRFLAN_66", "Correo de prueba de");
-define("PRFLAN_67", "Â¡Este es un correo de prueba, parece que su configuraciÃ³n de correo funciona bien!\n\nSaludos\ndesde e107.");
-define("PRFLAN_68", "El correo no pudo enviarse. Parece que tu servidor no esta correctamente configurado y no puede enviar correos, pruebe otra vez usando SMTP, o contacte a su Host para comprobar la configuraciÃ³n del envio de correo.");
-define("PRFLAN_69", "El correo se enviÃ³ correctamente, compruebe su bandeja de entrada.");
-define("PRFLAN_70", "MÃ©todo de envÃ­os");
-define("PRFLAN_71", "Si no estÃ¡ seguro, dÃ©jelo en php");
+define("PRFLAN_67", "¡Este es un correo de prueba, parece que su configuración de correo funciona bien!\n\nSaludos\ndesde e107.");
+define("PRFLAN_68", "El correo no pudo enviarse. Parece que tu servidor no esta correctamente configurado y no puede enviar correos, pruebe otra vez usando SMTP, o contacte a su Host para comprobar la configuración del envio de correo.");
+define("PRFLAN_69", "El correo se envió correctamente, compruebe su bandeja de entrada.");
+define("PRFLAN_70", "Método de envíos");
+define("PRFLAN_71", "Si no está seguro, déjelo en php");
 define("PRFLAN_72", "SMTP Servidor");
 define("PRFLAN_73", "SMTP Usuario");
-define("PRFLAN_74", "SMTP ContraseÃ±a");
-define("PRFLAN_75", "El correo no se pudo enviar. Compruebe su configuraciÃ³n SMTP, o desactive SMTP y pruebe de nuevo.");
+define("PRFLAN_74", "SMTP Contraseña");
+define("PRFLAN_75", "El correo no se pudo enviar. Compruebe su configuración SMTP, o desactive SMTP y pruebe de nuevo.");
 
 define("MAILAN_01","De (Nombre)");
 define("MAILAN_02","De (email)");
@@ -38,12 +38,12 @@ define("MAILAN_10","Usuario suscrito");
 define("MAILAN_11","Insertar variables");
 define("MAILAN_12","Todos los miembros");
 define("MAILAN_13","Todos los miembros sin verificar ");
-define("MAILAN_14","Es recomendable que active SMTP para enviar un gran nÃºmero de correos. AjÃºstelo en las preferencias de debajo");
+define("MAILAN_14","Es recomendable que active SMTP para enviar un gran número de correos. Ajústelo en las preferencias de debajo");
 define("MAILAN_15","Salidas correo");
 define("MAILAN_16","Usuario");
 define("MAILAN_17","Enlace de registro");
 define("MAILAN_18","ID Usuario");
-define("MAILAN_19","No hay una direcciÃ³n email para el admin del sitio. Compruebe su perfil y pruebe de nuevo.");
+define("MAILAN_19","No hay una dirección email para el admin del sitio. Compruebe su perfil y pruebe de nuevo.");
 define("MAILAN_20","Ruta Sendmail");
 define("MAILAN_21","Entradas de mail masivo"); 
 define("MAILAN_22","Actualmente no hay entradas guardadas");

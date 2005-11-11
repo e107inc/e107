@@ -4,57 +4,57 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_search.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-11-04 19:08:20 $
+|     $Revision: 1.13 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("SEALAN_1", "ConfiguraciÃ³n de bÃºsquedas");
-define("SEALAN_2", "NÃºmero de carÃ¡cteres a mostrar en el resumen de bÃºsquedas:");
-define("SEALAN_3", "MÃ©todo corto de bÃºsqueda:");
+define("SEALAN_1", "Configuración de búsquedas");
+define("SEALAN_2", "Número de carácteres a mostrar en el resumen de búsquedas:");
+define("SEALAN_3", "Método corto de búsqueda:");
 
 define("SEALAN_6", "Comentarios");
 define("SEALAN_7", "Miembros reg.");
 
 define("SEALAN_10", "Mostrar valor de importancia:");
-define("SEALAN_11", "Permitir al usuario seleccionar Ã¡reas de bÃºsqueda:");
-define("SEALAN_12", "Restringir el tiempo entre bÃºsquedas (max 5 mins):");
-define("SEALAN_13", "Una bÃºsqueda cada");
+define("SEALAN_11", "Permitir al usuario seleccionar áreas de búsqueda:");
+define("SEALAN_12", "Restringir el tiempo entre búsquedas (max 5 mins):");
+define("SEALAN_13", "Una búsqueda cada");
 define("SEALAN_14", "segundos");
-define("SEALAN_15", "PÃ¡gina de la bÃºsqueda accesible a la clase del usuario");
+define("SEALAN_15", "Página de la búsqueda accesible a la clase del usuario");
 define("SEALAN_16", "On");
 define("SEALAN_17", "Off");
-define("SEALAN_18", "Ãreas de comentarios de bÃºsqueda (Si activa bÃºsqueda de comentarios)");
-define("SEALAN_19", "Permitir a los usuarios buscar en mÃ¡s de un Ã¡rea a la vez:");
+define("SEALAN_18", "Áreas de comentarios de búsqueda (Si activa búsqueda de comentarios)");
+define("SEALAN_19", "Permitir a los usuarios buscar en más de un área a la vez:");
 define("SEALAN_20", "Ajustes generales");
-define("SEALAN_21", "Ãreas de bÃºsqueda");
+define("SEALAN_21", "Áreas de búsqueda");
 define("SEALAN_22", "P.def.");
 define("SEALAN_23", "Otro:");
 define("SEALAN_24", "Tipo");
 define("SEALAN_25", "Clase de Usuario");
-define("SEALAN_26", "Texto pre-tÃ­tulo");
+define("SEALAN_26", "Texto pre-título");
 
-define("SEALAN_30", "Resaltar palabras referidas en la pÃ¡gina:");
+define("SEALAN_30", "Resaltar palabras referidas en la página:");
 define("SEALAN_31", "PHP limitado a");
 define("SEALAN_32", "resultados (dejar en blanco para no limitar)");
-define("SEALAN_33", "No puedo conectar con el mÃ©todo corto en MySql ya que requiere una versiÃ³n superior a 4.0.1 de MySql.");
-define("SEALAN_34", "Su versiÃ³n actual es");
-define("SEALAN_35", "MÃ©todo de selecciÃ³n de Ã¡reas de bÃºsqueda:");
+define("SEALAN_33", "No puedo conectar con el método corto en MySql ya que requiere una versión superior a 4.0.1 de MySql.");
+define("SEALAN_34", "Su versión actual es");
+define("SEALAN_35", "Método de selección de áreas de búsqueda:");
 define("SEALAN_36", "Lista desplegable");
 define("SEALAN_37", "Caja de texto");
 define("SEALAN_38", "Radio");
-define("SEALAN_39", "PÃ¡ginas personalizadas");
+define("SEALAN_39", "Páginas personalizadas");
 define("SEALAN_40", "Opciones"); 
-define("SEALAN_41", "PÃ¡gina principal"); 
+define("SEALAN_41", "Página principal"); 
 define("SEALAN_42", "Preferencias"); 
-define("SEALAN_43", "Para editar los ajustes de bÃºsqueda"); 
-define("SEALAN_44", "Clase de usuario permitido para buscar en esta pÃ¡gina"); 
-define("SEALAN_45", "NÃºmero de resultados a mostrar por pÃ¡gina"); 
-define("SEALAN_46", "NÃºmero de carÃ¡cteres en el resultado de sumario"); 
+define("SEALAN_43", "Para editar los ajustes de búsqueda"); 
+define("SEALAN_44", "Clase de usuario permitido para buscar en esta página"); 
+define("SEALAN_45", "Número de resultados a mostrar por página"); 
+define("SEALAN_46", "Número de carácteres en el resultado de sumario"); 
 
 
 define("LAN_98", "Noticias");
 define("LAN_197", "Descargas");
-define("LAN_418", "PÃ¡ginas personalizadas");
+define("LAN_418", "Páginas personalizadas");
 
 ?>

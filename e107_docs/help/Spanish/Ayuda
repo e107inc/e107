@@ -1,9 +1,9 @@
-ï»¿
+
 P>	He realizado algunos cambios en mi sitio y ahora aparecen algunos errores MySql que no desaparecen.
-R>	Parece ser que el nÃºcle se ha vuelto corrupto. EL nÃºcleo incluye los ajustes y variables de e107. Para reiniciar su nucleo, vaya a http://nombre_de_su_sitio/e107_files/resetcore.php . Haga siempre una copia de seguridad (desde la pantalla de bases de datos) antes de realizar algÃºn cambio. AsÃ­ podrÃ¡ restaurar su nÃºcleo si alguna cosa saliera mal (nuevamente desde resetcore.php).
+R>	Parece ser que el núcle se ha vuelto corrupto. EL núcleo incluye los ajustes y variables de e107. Para reiniciar su nucleo, vaya a http://nombre_de_su_sitio/e107_files/resetcore.php . Haga siempre una copia de seguridad (desde la pantalla de bases de datos) antes de realizar algún cambio. Así podrá restaurar su núcleo si alguna cosa saliera mal (nuevamente desde resetcore.php).
 
-P>	Â¿OlvidÃ© mi contraseÃ±a de administrador y no puedo acceder?.
-R>	Por muchas razones es imposible recuperar su contraseÃ±a a no ser que estÃ© conectado. Si no se apuntÃ³ y guardÃ³ su contraseÃ±a en el proceso de instalaciÃ³n solo podrÃ¡ recuperarlo accediendo directamente a la base de datos utilizando, por ejemplo, PHPMySQL o algÃºn programa similar. Vaya a la tabla de usuarios y su usuario deberÃ­a ser el ID nÃºmero 1. Edite la lÃ­nea y en el campo password escriba '4cb9c8a8048fd02294477fcb1a41191a' (sin las comillas). esto hara que su nuevo password sea 'changeme' (sin las comillas). Conectese y cambie la contraseÃ±a inmediatamente.
+P>	¿Olvidé mi contraseña de administrador y no puedo acceder?.
+R>	Por muchas razones es imposible recuperar su contraseña a no ser que esté conectado. Si no se apuntó y guardó su contraseña en el proceso de instalación solo podrá recuperarlo accediendo directamente a la base de datos utilizando, por ejemplo, PHPMySQL o algún programa similar. Vaya a la tabla de usuarios y su usuario debería ser el ID número 1. Edite la línea y en el campo password escriba '4cb9c8a8048fd02294477fcb1a41191a' (sin las comillas). esto hara que su nuevo password sea 'changeme' (sin las comillas). Conectese y cambie la contraseña inmediatamente.
 
-P>	He instalado un tema o plugin y ahora mi sitio no es accesible Â¿Que puedo hacer?
-R>	Use resetcore.php (vea mÃ¡s arriba).
+P>	He instalado un tema o plugin y ahora mi sitio no es accesible ¿Que puedo hacer?
+R>	Use resetcore.php (vea más arriba).

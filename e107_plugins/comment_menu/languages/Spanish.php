@@ -4,19 +4,19 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/comment_menu/languages/Spanish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-03 22:34:18 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-11 23:49:25 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("CM_L1", "No hay comentarios aÃºn.");
+define("CM_L1", "No hay comentarios aún.");
 define("CM_L2", "");
-define("CM_L3", "TÃ­tulo");
-define("CM_L4", "Â¿NÃºmero de comentarios a mostrar?");
-define("CM_L5", "Â¿NÃºmero de caracteres a mostrar?");
-define("CM_L6", "Â¿Cortar comentarios demasiado largos?");
-define("CM_L7", "Â¿Mostrar tÃ­tulo original?");
-define("CM_L8", "ConfiguraciÃ³n");
-define("CM_L9", "Actualizar configuraciÃ³n");
-define("CM_L10", "ConfiguraciÃ³n guardada");
+define("CM_L3", "Título");
+define("CM_L4", "¿Número de comentarios a mostrar?");
+define("CM_L5", "¿Número de caracteres a mostrar?");
+define("CM_L6", "¿Cortar comentarios demasiado largos?");
+define("CM_L7", "¿Mostrar título original?");
+define("CM_L8", "Configuración");
+define("CM_L9", "Actualizar configuración");
+define("CM_L10", "Configuración guardada");
 ?>
