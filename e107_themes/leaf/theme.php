@@ -180,7 +180,8 @@ function news_style($news) {
 
 	$mydate  = strftime("%d/%m :", $news['news_datestamp']);
 	$NEWSSTYLE = "<!-- news item --><div class='contentbody'>
-	        <h3 class='news'>{NEWSICON}&nbsp;$mydate&nbsp;{STICKY_ICON}&nbsp;{NEWSTITLE}</h3>
+	        <h3 class='news'>$mydate&nbsp; {NEWSTITLE}</h3>
+	{NEWSICON}&nbsp;{STICKY_ICON}&nbsp;
 	{NEWSBODY}
 	{EXTENDED}
 	        <br /><br />
@@ -217,29 +218,32 @@ function tablestyle($caption, $text, $mode=""){
         	// echo "Style: ".$style.", Mode: ".$mode;
 	}
 	if($style == "sidebar"){  // sidebar styles
+ 		
+		echo "<div class='sidebarbody'>";
+
 		if($mode){
 		        if($caption != ""){
-		                echo "<div class='sidebarbody'><h3 class='".$mode."'>".$caption."</h3>";
+		                echo "<h3 class='".$mode."'>".$caption."</h3>";
 		                if($text != ""){
-		                        echo "<div class='sidebarin'><div class='defaultform'>".$text."</div></div></div>\n";
+		                        echo "<div class='sidebarin'><div class='defaultform'>".$text."</div></div>\n";
 		                }
 		        }else{
-		                echo "<div class='sidebarbody'><div class='sidebarin'><div class='defaultform'>".$text."</div></div></div></div>\n";
+		                echo "<div class='sidebarin'><div class='defaultform'>".$text."</div></div>\n";
 		        }
 		}else{
 			if($caption != ""){
-		                echo "<div class='sidebarbody default'><h3>".$caption."</h3>";
+		                echo "<h3>".$caption."</h3>";
 		                if($text != ""){
-		                	echo "<div class='sidebarin'><div class='defaultform'>".$text."</div></div></div>\n";
+		                	echo "<div class='sidebarin'><div class='defaultform'>".$text."</div></div>\n";
 		                }
 		        }else{
-		                echo "<div class='sidebarbody'><div class='sidebarin'><div class='defaultform'>".$text." </div></div></div>\n";
+		                echo "<div class='sidebarin'><div class='defaultform'>".$text." </div></div>\n";
 		        }
-		}
+		} 
+		echo "</div>\n";
 	}else{ 
-		
 		echo "<h2>".$caption."</h2>
-			<div class='contentbody'>".$text."</div>";
+		<div class='contentbody'>".$text."</div>";
  	}
 }
 
