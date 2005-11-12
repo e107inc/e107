@@ -9,6 +9,11 @@
 |
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_themes/leaf/theme.php,v $
+|     $Revision: 1.11 $
+|     $Date: 2005-11-12 17:57:36 $
+|     $Author: qnome $
 +---------------------------------------------------------------+
 */
 // [multilanguage]
