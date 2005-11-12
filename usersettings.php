@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2005-11-03 22:34:05 $
-|     $Author: sweetas $
+|     $Revision: 1.51 $
+|     $Date: 2005-11-12 00:30:59 $
+|     $Author: qnome $
 +----------------------------------------------------------------------------+
 */
 
@@ -57,7 +57,7 @@ if (e_QUERY && !ADMIN) {
     exit;
 }
 
-if(is_readable(e_THEME.THEME."usersettings_template.php"))
+if(is_readable(THEME."usersettings_template.php"))
 {
 	include_once(e_THEME."templates/usersettings_template.php");
 }
