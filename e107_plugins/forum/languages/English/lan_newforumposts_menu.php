@@ -11,9 +11,9 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_newforumposts_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-04 15:49:47 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-14 20:43:58 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
@@ -27,5 +27,6 @@ define("NFP_7", "Postfix for too long posts?");
 define("NFP_8", "Show original topics in menu?");
 define("NFP_9", "Update menu Settings");
 define("NFP_10", "New Forum Posts Menu Configuration");
+define("NFP_11", "Posted by");
 	
 ?>
