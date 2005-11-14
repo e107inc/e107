@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.35 $
-|   $Date: 2005-09-20 14:30:39 $
+|   $Revision: 1.36 $
+|   $Date: 2005-11-14 05:05:28 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -132,7 +132,7 @@ if (!function_exists('show_admin_menu')) {
 			$SUB_BUTTON_OVER = "<b> &laquo; <a style='text-decoration:none;' href='{LINK_URL}'>{LINK_TEXT}</a> &raquo; </b><br />";
 		}
 		if (!isset($SUB_BUTTONS_START)) {
-			$SUB_BUTTONS_START = "<div style='text-align:center; width:100%'><table class='fborder' style='width:100%;'>
+			$SUB_BUTTONS_START = "<div style='text-align:center; width:100%'><table class='fborder' style='width:98%;'>
 			<tr><td class='button'><a style='text-align:center; cursor:hand; cursor:pointer; text-decoration:none;' 
 			onclick=\"expandit('{SUB_HEAD_ID}');\" >{SUB_HEAD}</a></td></tr>
 			<tr id='{SUB_HEAD_ID}' style='display: none' ><td class='forumheader3' style='text-align:left;'>";
