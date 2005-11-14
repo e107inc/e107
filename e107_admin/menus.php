@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-11-03 14:52:42 $
+|     $Revision: 1.41 $
+|     $Date: 2005-11-14 06:51:09 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -109,7 +109,8 @@ if($_POST['menuActivate'])
 		}
 	}
 
-	$menu_count = 100;
+	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='$location' ");
+
 	foreach($_POST['menuselect'] as $sel_mens)
 	{
 		$sql->db_Update("menus", "menu_location='$location', menu_order='".($menu_count+1)."' WHERE menu_id='$sel_mens' ");
