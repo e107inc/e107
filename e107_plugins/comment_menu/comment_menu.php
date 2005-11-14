@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/comment_menu.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-11-05 01:43:33 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.15 $
+|     $Date: 2005-11-14 20:05:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -55,11 +55,8 @@ else
 			case "0":
 				$link = "<img src='{$bullet_img}' alt='' /> <a href='".$e107->http_path."comment.php?comment.news.{$c['comment_item_id']}'><b>".$poster."</b> on ".$datestamp."</a><br />";
 				break;
-			case "2":
-				$link = "<img src='{$bullet_img}' alt='' /> <a href='".$e107->http_path."content.php?article.{$c['comment_item_id']}'><b>".$poster."</b> on ".$datestamp."</a><br />";
-				break;
 			case "4":
-				$link = "<img src='{$bullet_img}' alt='' /> <a href='".$e107->http_path."content.php?poll.{$c['comment_item_id']}'><b>".$poster."</b> on ".$datestamp."</a><br />";
+				$link = "<img src='{$bullet_img}' alt='' /> <a href='".$e107->http_path."comment.php?comment.poll.{$c['comment_item_id']}'><b>".$poster."</b> on ".$datestamp."</a><br />";
 				break;
 			case "profile":
 				if(USER)
