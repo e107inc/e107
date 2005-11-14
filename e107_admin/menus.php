@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-11-14 06:51:09 $
+|     $Revision: 1.42 $
+|     $Date: 2005-11-14 07:24:25 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -193,17 +193,14 @@ if ($menu_act == "sv") {
 }
 
 if ($menu_act == "move") {
-	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='$position' ");
+	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='$newloc' ");
 	$sql->db_Update("menus", "menu_location='$newloc', menu_order='".($menu_count+1)."' WHERE menu_id='$id' ");
-}
-
-if ($menu_act == 'activate') {
-	$menu_count = $sql->db_Count("menus", "(*)", " WHERE menu_location='$position' ");
-	$sql->db_Update("menus", "menu_location='$location', menu_order='".($menu_count+1)."' WHERE menu_id='$id' ");
+	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='$location' AND menu_order > $position");
 }
 
 if ($menu_act == "deac") {
 	$sql->db_Update("menus", "menu_location='0', menu_order='0' WHERE menu_id='$id' ");
+	$sql->db_Update("menus", "menu_order=menu_order-1 WHERE menu_location='$location' AND menu_order > $position");
 }
 
 if ($menu_act == "bot") {
@@ -214,7 +211,7 @@ if ($menu_act == "bot") {
 
 if ($menu_act == "top") {
 	$sql->db_Update("menus", "menu_order=menu_order+1 WHERE menu_location='$location' AND menu_order < $position");
-	$sql->db_Update("menus", "menu_order=0 WHERE menu_id='$id' ");
+	$sql->db_Update("menus", "menu_order=1 WHERE menu_id='$id' ");
 }
 
 if ($menu_act == "dec") {
