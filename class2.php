@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.230 $
-|     $Date: 2005-11-04 18:44:03 $
+|     $Revision: 1.231 $
+|     $Date: 2005-11-14 02:40:16 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -1195,6 +1195,14 @@ function e107_require($fname) {
 	global $e107_debug;
 	$ret = ($e107_debug ? require($fname) : @require($fname));
 	return $ret;
+}
+
+function include_lan($path, $force = false) {
+	if (!is_readable($path)) {
+		$path = str_replace(e_LANGUAGE, 'English', $path);
+	}
+	$ret = ($force) ? include($path) : include_once($path);
+	return (isset($ret)) ? $ret : "";
 }
 
 function utf8_html_entity_decode($string) {

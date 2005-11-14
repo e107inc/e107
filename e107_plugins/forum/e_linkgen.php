@@ -11,18 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/e_linkgen.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-21 22:46:38 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-14 02:40:17 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
 // Usage: sublink_type[x]['title'].
 //  x should be the same as the plugin folder.
 
-if(is_readable(e_PLUGIN."forum/languages/".e_LANGUAGE."/lan_forum_admin.php")){
-	require_once(e_PLUGIN."forum/languages/".e_LANGUAGE."/lan_forum_admin.php");
-}
+include_lan(e_PLUGIN."forum/languages/".e_LANGUAGE."/lan_forum_admin.php");
+
 	$sublink_type['forum']['title'] = FORLAN_155; // "News Categories";
 	$sublink_type['forum']['table'] = "forum";
 	$sublink_type['forum']['query'] = "forum_parent !='0' ORDER BY forum_order ASC";
