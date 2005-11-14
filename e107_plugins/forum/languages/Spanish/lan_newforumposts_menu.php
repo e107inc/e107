@@ -4,20 +4,20 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_newforumposts_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-11-14 22:22:55 $
+|     $Revision: 1.7 $
+|     $Date: 2005-11-14 22:24:52 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
-define("NFP_1", "Todos los últimos envíos estan fuera de su clase de usuario. Imposible mostrar.");
-define("NFP_2", "Sin envíos todavía");
-define("NFP_3", "Configuración de nuevos envíos del foro guardada");
-define("NFP_4", "Título");
-define("NFP_5", "¿Número de mensajes a mostrar?");
-define("NFP_6", "¿Número de carácteres a mostrar?");
-define("NFP_7", "¿Fijar envíos muy largos?");
-define("NFP_8", "¿Mostrar temas originales en el menú?");
-define("NFP_9", "Actualizar parámetros del menú");
-define("NFP_10", "Configuración del menú de nuevos envíos del foro");
+define("NFP_1", "Todos los Ãºltimos envÃ­os estan fuera de su clase de usuario. Imposible mostrar.");
+define("NFP_2", "Sin envÃ­os todavÃ­a");
+define("NFP_3", "ConfiguraciÃ³n de nuevos envÃ­os del foro guardada");
+define("NFP_4", "TÃ­tulo");
+define("NFP_5", "Â¿NÃºmero de mensajes a mostrar?");
+define("NFP_6", "Â¿NÃºmero de carÃ¡cteres a mostrar?");
+define("NFP_7", "Â¿Fijar envÃ­os muy largos?");
+define("NFP_8", "Â¿Mostrar temas originales en el menÃº?");
+define("NFP_9", "Actualizar parÃ¡metros del menÃº");
+define("NFP_10", "ConfiguraciÃ³n del menÃº de nuevos envÃ­os del foro");
 define("NFP_11", "Enviado por");
 ?>
