@@ -19,12 +19,12 @@ if(preg_match("#\[list\](.*?)\[/list\]#si", $full_text, $match))
 {
 	/* unordered list */
 	$listitems = explode("*", $match[1]);
-	$listtext = "\n<ul>\n";
+	$listtext = "<ul>";
 	foreach($listitems as $item)
 	{
 		if($item && $item != E_NL)
 		{
-			$listtext .= "<li>$item</li>\n";
+			$listtext .= "<li>$item</li>";
 		}
 	}
 	$listtext .= "</ul>";
@@ -35,12 +35,12 @@ else if(preg_match("#\[list=(.*?)\](.*?)\[/list\]#si", $full_text, $match))
 	$type = $match[1];
 	$listitems = $match[2];
 	$listitems = explode("*", $match[2]);
-	$listtext = "\n<ol style='list-style-type: $type'>\n";
+	$listtext = "\n<ol style='list-style-type: $type'>";
 	foreach($listitems as $item)
 	{
 		if($item && $item != E_NL)
 		{
-			$listtext .= "<li>$item</li>\n";
+			$listtext .= "<li>$item</li>";
 		}
 	}
 	$listtext .= "</ol>";
