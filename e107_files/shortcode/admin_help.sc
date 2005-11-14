@@ -8,10 +8,10 @@ if (ADMIN) {
 	while(false !== ($file = readdir($handle))) {
 		if ($file != "." && $file != ".." && $file != "CVS") {
 			if (strpos(e_SELF, $file) !== FALSE) {
-				if (file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file)) {
-					@require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file);
-				} else if (file_exists(e_LANGUAGEDIR."English/admin/help/".$file)) {
-					@require_once(e_LANGUAGEDIR."English/admin/help/".$file);
+				if (is_readable(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file)) {
+					include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/help/".$file);
+				} else if (is_readable(e_LANGUAGEDIR."English/admin/help/".$file)) {
+					include_once(e_LANGUAGEDIR."English/admin/help/".$file);
 				}
 			}
 		}

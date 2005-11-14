@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-10-31 18:51:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.48 $
+|     $Date: 2005-11-14 02:40:16 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,7 +30,7 @@ if (!getperms("W")) {
 	header("location:".e_BASE."index.php");
 	 exit;
 }
-require_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
 require_once(e_HANDLER."userclass_class.php");
 
 if (isset($_POST['testemail'])) {
