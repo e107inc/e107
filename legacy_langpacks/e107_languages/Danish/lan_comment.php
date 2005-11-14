@@ -4,8 +4,8 @@
 |        e107 website system  Language File - Danish
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/lan_comment.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:29:27 $
+|        $Revision: 1.2 $
+|        $Date: 2005-11-14 22:11:13 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -50,7 +50,7 @@ define("COMLAN_8", 'Kommentarer er l&aring;st');
 
 define("LAN_315", "Trackbacks");
 define("LAN_316", "Ingen trackbacks for denne nyhed.");
-define("LAN_317", "H&Atilde;&yen;ndter trackbacks");
+define("LAN_317", "H&aring;ndter trackbacks");
 
 define("LAN_318", "Rediger kommentar");
 define("LAN_319", "redigeret");
