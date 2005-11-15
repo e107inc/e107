@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-11-15 22:06:59 $
+|     $Revision: 1.31 $
+|     $Date: 2005-11-15 22:10:51 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -49,16 +49,23 @@ while (false !== ($file = readdir($handle))) {
 		if ($sql -> db_Select("plugin", "plugin_path", "plugin_path='".$file."' AND plugin_installflag='1'")) {
 			if (is_readable(e_PLUGIN.$file."/e_search.php") && !isset($search_prefs['plug_handlers'][$file])) {
 				$search_prefs['plug_handlers'][$file] = array('class' => 0, 'pre_title' => 1, 'pre_title_alt' => '', 'chars' => 150, 'results' => 10);
+				$save_search = TRUE;
 			}
 			if (is_readable(e_PLUGIN.$file.'/search/search_comments.php') && !isset($search_prefs['comments_handlers'][$file])) {
 				include_once(e_PLUGIN.$file.'/search/search_comments.php');
 				$search_prefs['comments_handlers'][$file] = array('id' => $comments_type_id, 'class' => '0', 'dir' => $file);
 				unset($comments_type_id);
+				$save_search = TRUE;
 			}
 		}
 	}
 }
 closedir($handle);
+
+if ($save_search) {
+	$serialpref = addslashes(serialize($search_prefs));
+	$sql -> db_Update("core", "e107_value='".$serialpref."' WHERE e107_name='search_prefs'");
+}
 
 
 if (isset($_POST['update_main'])) {
