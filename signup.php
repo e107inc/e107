@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2005-10-26 08:23:30 $
+|     $Revision: 1.64 $
+|     $Date: 2005-11-15 21:44:00 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -203,6 +203,13 @@ if (isset($_POST['register']))
 	}
 
 	if ($sql->db_Select("user", "*", "user_name='".$_POST['name']."' "))
+	{
+		$error_message .= LAN_411."\\n";
+		$error = TRUE;
+		$name = "";
+	}
+	
+	if ($sql->db_Select("user", "*", "user_loginname='".$_POST['loginname']."' "))
 	{
 		$error_message .= LAN_104."\\n";
 		$error = TRUE;
@@ -485,7 +492,7 @@ if (strpos(LAN_109, "stage") === FALSE)
 	{
 		if (!$_POST['coppa'])
 		{
-			$ns->tablerender(LAN_202, "<div style='text-align:center'>".LAN_SIGNUP_9."</div>");
+			$ns->tablerender(LAN_110, "<div style='text-align:center'>".LAN_SIGNUP_9."</div>");
 			require_once(FOOTERF);
 			exit;
 		}
