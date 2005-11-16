@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-10-26 08:23:30 $
+|     $Revision: 1.23 $
+|     $Date: 2005-11-16 00:22:11 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -407,86 +407,7 @@ class page
 		$var['options']['text'] = LAN_OPTIONS;
 		$var['options']['link'] = e_SELF."?options";
 
-		
-		require_once(e_HANDLER."file_class.php");
-		$file = new e_file;
-		$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*', 'Readme.txt');
-		if(is_dir(e_PLUGIN."custompages"))
-		{
-			$cpages = $file -> get_files(e_PLUGIN."custompages", "", $reject);
-		}
-		if(is_dir(e_PLUGIN."custom"))
-		{
-			$cmenus = $file -> get_files(e_PLUGIN."custom", "", $reject);
-		}
-
-		if(count($cpages) || count($cmenus))
-		{
-			$var['convert']['text'] = CUSLAN_32;
-			$var['convert']['link'] = e_SELF."?convert";
-		}
-
 		show_admin_menu(CUSLAN_33, $action, $var);
-	}
-
-
-	function convertPage()
-	{
-		global $tp, $ns, $sql;
-		require_once(e_HANDLER."file_class.php");
-		$file = new e_file;
-		$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*', 'Readme.txt');
-		$cpages = $file -> get_files(e_PLUGIN."custompages", "", $reject);
-		$cmenus = $file -> get_files(e_PLUGIN."custom", "", $reject);
-
-		$customs = array_merge($cpages, $cmenus);
-
-		$text = "<b>".CUSLAN_34." ...</b><br /><br />";
-
-		$count = 0;
-		foreach($customs as $p)
-		{
-			$type = (strstr($p['path'], "custompages") ? "" : str_replace(".php", "", $p['fname']));
-			$filename = $p['path'].$p['fname'];
-			$handle = fopen ($filename, "r");
-			$contents = fread ($handle, filesize ($filename));
-			fclose ($handle);
-			$contents = str_replace("'", "&#039;", $contents);
-			if(!preg_match('#\$caption = "(.*?)";#si', $contents, $match))
-			{
-				preg_match('#<CAPTION(.*?)CAPTION#si', $contents, $match);
-			}
-			$page_title = $tp -> toDB(trim($match[1]));
-			
-			if(!preg_match('#\$text = "(.*?)";#si', $contents, $match))
-			{
-				preg_match('#TEXT(.*?)TEXT#si', $contents, $match);
-			}
-
-			$page_text = $tp -> toDB(trim($match[1]));
-			$filetime = filemtime($filename);
-
-			if(!$sql -> db_Select("page", "*", "page_title='$page_title' "))
-			{
-				$sql -> db_Insert("page", "0, '$page_title', '$page_text', '".USERID."', '".$filetime."', '0', '0', '', '', '', '$type' ");
-				$text .= "<b>Inserting: </b> '".$page_title."' <br />";
-				$count ++;
-			}
-
-			if($type)
-			{
-				$iid = mysql_insert_id();
-				if(!$sql -> db_Select("menus", "*", "menu_path='$iid' "))
-				{
-					$sql -> db_Insert("menus", "0, '$type', '0', '0', '0', 'dbcustom', '$iid' ");
-					$type2 = "custom_".$type;
-					$sql -> db_Delete("menus", "menu_name='$type2' ");
-				}
-			}
-
-		}
-		$text .= "<br />".CUSLAN_35." $count ".($count == 1 ? "file" : "files").".<br /> ".CUSLAN_36."";
-		$ns -> tablerender(CUSLAN_37, $text);
 	}
 }
 
