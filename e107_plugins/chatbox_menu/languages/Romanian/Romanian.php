@@ -10,9 +10,9 @@
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Romanian.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-11-16 06:32:47 $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Romanian/Romanian.php,v $
+|     $Revision: 1.1 $
+|     $Date: 2005-11-16 06:34:35 $
 |     $Author: Bogdan M. Botezatu (Sphynx)
 |      updated by i2gh0st
 +----------------------------------------------------------------------------+
