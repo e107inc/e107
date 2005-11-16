@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.152 $
-|     $Date: 2005-11-16 00:00:30 $
+|     $Revision: 1.153 $
+|     $Date: 2005-11-16 00:40:48 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -1142,7 +1142,7 @@ function update_61x_to_700($type='') {
 				{
 					if(!$sql -> db_Select("menus", "*", "menu_path='$iid' "))
 					{
-						mysql_query("UPDATE ".MPREFIX."menus SET menu_pages = 'dbcustom', menu_path='".$iid."' WHERE menu_name = '".$type."'");
+						mysql_query("UPDATE ".MPREFIX."menus SET menu_pages = '', menu_path='".$iid."' WHERE menu_name = '".$type."'");
 					}
 				}
 				if (strstr($p['path'], "custompages")) {
@@ -1152,6 +1152,12 @@ function update_61x_to_700($type='') {
 				}
 			}
 			catch_error();
+		}
+		
+		if ($error=='') {
+			if($sql -> db_Select("menus", "*", "menu_pages='dbcustom'")) {
+				mysql_query("UPDATE ".MPREFIX."menus SET menu_pages = '' WHERE menu_pages='dbcustom'");
+			}
 		}
 
 		if ($error=='') {
@@ -1180,6 +1186,10 @@ function update_61x_to_700($type='') {
 
 // Check if update is needed to 0.7. -----------------------------------------------
 
+		if($sql -> db_Select("menus", "*", "menu_pages='dbcustom'")) {
+			return update_needed();
+		}
+		
 		if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."forum_t")) {
 			while ($row = $sql -> db_Fetch()) {
 				if (($row['Field'] == 'thread_parent' || $row['Field'] == 'thread_datestamp' || $row['Field'] == 'thread_forum_id') && strpos($row['Key'], 'MUL') === FALSE) {
