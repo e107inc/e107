@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.151 $
-|     $Date: 2005-11-10 20:56:43 $
+|     $Revision: 1.152 $
+|     $Date: 2005-11-16 00:00:30 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -1136,12 +1136,18 @@ function update_61x_to_700($type='') {
 					$count ++;
 				}
 
+				$iid = mysql_insert_id();
+				
 				if($type)
 				{
-					$iid = mysql_insert_id();
 					if(!$sql -> db_Select("menus", "*", "menu_path='$iid' "))
 					{
 						mysql_query("UPDATE ".MPREFIX."menus SET menu_pages = 'dbcustom', menu_path='".$iid."' WHERE menu_name = '".$type."'");
+					}
+				}
+				if (strstr($p['path'], "custompages")) {
+					if ($sql -> db_Select("links", "*", "link_url LIKE '%custompages/".$p['fname']."%'")) {
+						$sql -> db_Update("links", "link_url='page.php?".$iid."' WHERE link_url LIKE '%custompages/".$p['fname']."%'");
 					}
 				}
 			}
