@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_signup.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.13 $
+|     $Date: 2005-11-16 21:28:52 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -19,7 +19,7 @@ define("LAN_10", "Este es el nombre que se usará para conectarse al sitio");
 define("LAN_17", "Contraseña: ");
 
 define("LAN_103", "Este nombre de usuario no puede ser aceptado como válido, por favor elija otro nombre de usuario");
-define("LAN_104", "Este nombre de usuario ya existe en nuestra base de datos, por favor elija otro nombre de usuario");
+define("LAN_104", "Este nombre de conexión ya existe en nuestra base de datos, por favor elija otro nombre de usuario");
 define("LAN_105", "Las dos contraseñas no coinciden");
 define("LAN_106", "Esta no parece una dirección email válida");
 define("LAN_107", "¡Gracias! Ahora es uted miembro registrado de ".SITENAME.", por favor guarde su nombre de usuario y contraseña en un lugar seguro.<br /><br />Ahora puede iniciar sesión en el portal.");
@@ -52,6 +52,7 @@ define("LAN_407", "Por favor guarde este email, sus datos están encriptados y e
 define("LAN_408", "Ya existe un usuario con esta dirección email. por favor use '¿Olvidó su contraseña?' para recuperar su contraseña.");
 define("LAN_409", "Caracteres no válidos en el nombre de usuario");
 define("LAN_410", "Código");
+define("LAN_411", "Ese nombre a mostrar ya existe en la base de datos, por favor, elija otro nombre a mostrar");
 
 define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "carac.");
