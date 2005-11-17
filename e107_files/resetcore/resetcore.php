@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ?Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,23 +11,26 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore/resetcore.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-10-26 12:43:21 $
-|     $Author: sweetas $
+|     $Revision: 1.10 $
+|     $Date: 2005-11-17 03:34:41 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 
-/* #################################################### 
+/* ####################################################
 
 
-To use this file, you must edit the following line, and change it to TRUE.
+To use this file, you must edit the following line, removing the // so it reads:
+define("ACTIVE", true);
 If you don't, the script will not be usable.
+
+When you have finished with resetcore you should swap true for false so it can't be used by
+people it shouldn't be used by.
 
 */
 
-
-$ACTIVE = FALSE;
+define("ACTIVE", true);
 
 
 /* #################################################### */
@@ -79,22 +82,21 @@ echo "<?xml version='1.0' encoding='iso-8859-1' ?>\n";
 <br />
 <?php
 
-if(!$ACTIVE)
-{
+if(ACTIVE !== true) {
 	echo "<span class='headertext2'>Currently disabled. To enable please open this file in a text editor and follow the instructions to activate.</span>";
 	exit;
 }
 
 if (isset($_POST['usubmit'])) {
 	if (($row = e_verify()) !== FALSE) {
-			extract($row);
+		extract($row);
 
-			$result = mysql_query("SELECT * FROM ".$mySQLprefix."core WHERE e107_name='pref_backup' ");
-			$bu_exist = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
+		$result = mysql_query("SELECT * FROM ".$mySQLprefix."core WHERE e107_name='pref_backup' ");
+		$bu_exist = ($row = mysql_fetch_array($result) ? TRUE : FALSE);
 
-			$admin_directory = "e107_admin";
+		$admin_directory = "e107_admin";
 
-			echo "<span class='headertext2'><b>Please select which method you want to use, then click the button to proceed ...</b></span><br /><br /><br /><br />
+		echo "<span class='headertext2'><b>Please select which method you want to use, then click the button to proceed ...</b></span><br /><br /><br /><br />
 			<table style='width: auto; margin-left:auto; margin-right: auto;'>
 			<tr>
 			<td>
@@ -111,7 +113,7 @@ if (isset($_POST['usubmit'])) {
 			</table>
 			";
 
-			$END = TRUE;
+		$END = TRUE;
 	} else {
 		$message = "<b>Administrator not found in database / incorrect password / insufficient permissions - aborting.</b><br />";
 		$END = TRUE;
@@ -121,7 +123,7 @@ if (isset($_POST['usubmit'])) {
 
 if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2)
 {
-	if (($at = e_verify()) === FALSE) {		
+	if (($at = e_verify()) === FALSE) {
 		exit;
 	}
 
@@ -142,13 +144,13 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2)
 	define('e_BASE', $link_prefix);
 	$e_path = (!strpos($_SERVER['SCRIPT_FILENAME'], ".php") ? $_SERVER['PATH_TRANSLATED'] : $_SERVER['SCRIPT_FILENAME']);
 	define("e_PATH", $e_path);
-	
+
 	$pref_language = "English";
-	include_once(e_BASE.$LANGUAGES_DIRECTORY."English/lan_prefs.php");	
+	include_once(e_BASE.$LANGUAGES_DIRECTORY."English/lan_prefs.php");
 	require_once(e_BASE.$FILES_DIRECTORY."def_e107_prefs.php");
 
 	$PrefOutput = $eArrayStorage->WriteArray($pref);
-	
+
 	mysql_query("DELETE FROM ".$mySQLprefix."core WHERE e107_name='SitePrefs' OR e107_name='SitePrefs_Backup'");
 	if (!mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs', '{$PrefOutput}')")) {
 		$message = "Rebuild failed ...";
@@ -161,7 +163,7 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 2)
 }
 
 function recurse_pref($ppost) {
-	$search = array("\"", "'", "\\", '\"', "\'", "$", "©");
+	$search = array("\"", "'", "\\", '\"', "\'", "$", "?");
 	$replace = array("&quot;", "&#39;", "&#92;", "&quot;", "&#39;", "&#036;", "&copy;");
 	foreach ($ppost as $key => $value) {
 		if(!is_array($value)){
@@ -175,14 +177,14 @@ function recurse_pref($ppost) {
 
 if (isset($_POST['coreedit_sub']))
 {
-	if (($at = e_verify()) === FALSE) {		
+	if (($at = e_verify()) === FALSE) {
 		exit;
 	}
 
 	$pref = recurse_pref($_POST);
 
 	$PrefOutput = $eArrayStorage->WriteArray($pref);
-	
+
 	mysql_query("DELETE FROM ".$mySQLprefix."core WHERE e107_name='SitePrefs' OR e107_name='SitePrefs_Backup'");
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs', '{$PrefOutput}')");
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs_Backup', '{$PrefOutput}')");
@@ -192,21 +194,21 @@ if (isset($_POST['coreedit_sub']))
 }
 
 if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 3) {
-	if (($at = e_verify()) === FALSE) {		
+	if (($at = e_verify()) === FALSE) {
 		exit;
 	}
 
 	$result = mysql_query("SELECT * FROM ".$mySQLprefix."core WHERE e107_name='pref_backup'");
 	$row = mysql_fetch_array($result);
-	
+
 	$pref = unserialize(base64_decode($row['e107_value']));
-	
+
 	$PrefOutput = $eArrayStorage->WriteArray($pref);
-	
+
 	mysql_query("DELETE FROM ".$mySQLprefix."core WHERE `e107_name` = 'SitePrefs' OR `e107_name` = 'SitePrefs_Backup'");
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs', '{$PrefOutput}')");
 	mysql_query("INSERT INTO ".$mySQLprefix."core VALUES ('SitePrefs_Backup', '{$PrefOutput}')");
-	
+
 	$message = "Core backup successfully restored. <br /><br /><a href='../../index.php'>Click here to continue</a>";
 	$END = TRUE;
 }
@@ -214,7 +216,7 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 3) {
 
 if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 1)
 {
-	if (($at = e_verify()) === FALSE) {		
+	if (($at = e_verify()) === FALSE) {
 		exit;
 	}
 
@@ -233,10 +235,10 @@ if (isset($_POST['reset_core_sub']) && $_POST['mode'] == 1)
 			foreach ($prefr as $akey => $apref) {
 				echo "<tr><td class='headertext2' style='width:50%; text-align:right;'>{$key}[{$akey}]&nbsp;&nbsp;</td>
 				<td style='width:50%'><input type='text' name='{$key}[{$akey}]' value='{$apref}' size='50' maxlength='100' /></td></tr>\n";
-		
+
 			}
 		} else {
-		echo "<tr><td class='headertext2' style='width:50%; text-align:right;'>{$key}&nbsp;&nbsp;</td>
+			echo "<tr><td class='headertext2' style='width:50%; text-align:right;'>{$key}&nbsp;&nbsp;</td>
 			<td style='width:50%'><input type='text' name='{$key}' value='{$prefr}' size='50' maxlength='100' /></td></tr>\n";
 		}
 	}
@@ -290,10 +292,10 @@ echo "<span class='headertext2'>
 	</div>
 	</body>
 	</html>";
-	
+
 function e_verify() {
-	global $mySQLprefix, $ACTIVE;
-	if ($ACTIVE !== TRUE) {
+	global $mySQLprefix;
+	if (ACTIVE !== TRUE) {
 		exit;
 	}
 	if (MAGIC_QUOTES_GPC == FALSE) {
@@ -303,16 +305,41 @@ function e_verify() {
 	{
 		$a_name = $_POST['a_name'];
 	}
-	
+
 	$a_name = str_replace('/*', '', $a_name);
-	
+
 	$result = mysql_query("SELECT * FROM ".$mySQLprefix."user WHERE user_name='".$a_name."'");
 	$row = mysql_fetch_array($result);
-	
-	if (($row['user_password'] === md5($_POST['a_password'])) && ($row['user_perms'] === '0') && ($ACTIVE === TRUE)) {
+
+	if (($row['user_password'] === md5($_POST['a_password'])) && ($row['user_perms'] === '0') && (ACTIVE === TRUE)) {
+		clear_cache();
 		return $row;
 	} else {
 		return FALSE;
+	}
+}
+
+function clear_cache() {
+	$dir = "../cache/";
+	$pattern = "*.cache.php";
+	$deleted = false;
+	$pattern = str_replace(array("\*", "\?"), array(".*", "."), preg_quote($pattern));
+	if (substr($dir, -1) != "/") {
+		$dir .= "/";
+	}
+	if (is_dir($dir)) {
+		$d = opendir($dir);
+		while ($file = readdir($d)) {
+			if (is_file($dir.$file) && preg_match("/^{$pattern}$/", $file)) {
+				if (unlink($dir.$file)) {
+					$deleted[] = $file;
+				}
+			}
+		}
+		closedir($d);
+		return true;
+	} else {
+		return false;
 	}
 }
 
