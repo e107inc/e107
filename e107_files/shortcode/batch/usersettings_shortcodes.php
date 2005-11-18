@@ -19,6 +19,14 @@ else
 }
 SC_END
 
+SC_BEGIN CUSTOMTITLE
+global $rs, $curVal, $pref;
+if ($pref['forum_user_customtitle'] || ADMIN)
+{
+	return $rs->form_text("customtitle", 40, $curVal['user_customtitle'], 100, "tbox");
+}
+SC_END
+
 SC_BEGIN REALNAME
 global $rs, $curVal;
 return $rs->form_text("realname", 20, $curVal['user_login'], 100, "tbox");
