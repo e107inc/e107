@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-11-08 13:54:15 $
+|     $Revision: 1.43 $
+|     $Date: 2005-11-18 19:01:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -390,7 +390,8 @@ function parse_thread($thread_info)
 	{
 		if($tmp[1])
 		{
-			$POSTER = $tp->toHTML($tmp[1]);
+			$x = explode(chr(1), $tmp[1]);
+			$POSTER = $tp->toHTML($x[0]);
 		}
 		else
 		{

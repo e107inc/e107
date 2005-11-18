@@ -11,11 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/forum_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-09-07 14:20:30 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-11-18 19:01:27 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
+
+$sc_style['ANON_IP']['pre'] = "<br /><span class='smalltext'>";
+$sc_style['ANON_IP']['post'] = "</span>";
 
 $FORUMSTART = "
 <table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
@@ -53,7 +56,7 @@ $FORUMTHREADSTYLE = "
 <div class='spacer'>
 <table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
 <tr>
-<td class='nforumcaption3' style='vertical-align:middle; width:20%;'>\n{NEWFLAG}\n{POSTER}\n</td>
+<td class='nforumcaption3' style='vertical-align:middle; width:20%;'>\n{NEWFLAG}\n{POSTER}\n{ANON_IP}</td>
 <td class='nforumcaption3' style='vertical-align:middle; width:80%;'>
 <table cellspacing='0' cellpadding='0' style='width:100%'>
 <tr>
@@ -85,7 +88,7 @@ $FORUMREPLYSTYLE = "
 <div class='spacer'>
 <table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
 <tr>
-<td class='nforumcaption3' style='vertical-align:middle; width:20%;'>\n{NEWFLAG}\n{POSTER}\n</td>
+<td class='nforumcaption3' style='vertical-align:middle; width:20%;'>\n{NEWFLAG}\n{POSTER}\n{ANON_IP}</td>
 <td class='nforumcaption3' style='vertical-align:middle; width:80%;'>
 <table cellspacing='0' cellpadding='0' style='width:100%'>
 <tr>

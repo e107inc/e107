@@ -52,6 +52,16 @@ return "<span class='smallblacktext'>".LAN_194."</span>";
 }
 SC_END
 	
+SC_BEGIN ANON_IP
+global $post_info;
+//die($post_info['thread_user']);
+$x = explode(chr(1), $post_info['thread_user']);
+if($x[1] && ADMIN)
+{
+	return $x[1];
+}
+SC_END
+
 SC_BEGIN POSTER
 global $post_info, $tp;
 if($post_info['user_name'])
