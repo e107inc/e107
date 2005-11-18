@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/usersettings_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-11-03 20:16:08 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-18 01:12:32 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ global $usersettings_shortcodes, $pref;
 
 $sc_style['CUSTOMTITLE']['pre'] = "
 <tr>
-<td style='width:40%' class='forumheader3'>".LAN_CUSTOMTITLE."</td>
+<td style='width:40%' class='forumheader3'>".LAN_CUSTOMTITLE.":</td>
 <td style='width:60%' class='forumheader2'>
 ";
 $sc_style['CUSTOMTITLE']['post'] = "</td></tr>";
