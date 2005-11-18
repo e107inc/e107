@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-11-02 04:28:54 $
+|     $Revision: 1.28 $
+|     $Date: 2005-11-18 22:02:13 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -287,7 +287,7 @@ class users_ext
 						<tr>
 						<td class='forumheader3'>{$ext['user_extended_struct_name']}<br />[".$tp->toHTML($ext['user_extended_struct_text'], FALSE, "defs")."]</td>
 						<td class='forumheader3'>".$ue->user_extended_edit($ext,$uVal)."</td>
-						<td class='forumheader3'>".($ext['user_extended_struct_required'] ? LAN_YES : LAN_NO)."</td>
+						<td class='forumheader3'>".($ext['user_extended_struct_required'] == 1 ? LAN_YES : LAN_NO)."</td>
 						<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_applicable'])."</td>
 						<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_read'])."</td>
 						<td class='forumheader3'>".r_userclass_name($ext['user_extended_struct_write'])."</td>
@@ -531,18 +531,13 @@ class users_ext
 			<td style='width:70%' class='forumheader3' colspan='3'>
 			<select class='tbox' name='user_required'>
 			";
-			if($current['user_extended_struct_required'])
+			$_r = array('0' => EXTLAN_65, '1' => EXTLAN_66, '2' => EXTLAN_67);
+			foreach($_r as $k => $v)
 			{
-				$text .= "
-				<option value='1' selected='selected'>".LAN_YES."</option>
-				<option value='0'>".LAN_NO."</option>";
+				$sel = ($current['user_extended_struct_required'] == $k ? " selected='selected' " : "");
+				$text .= "<option value='{$k}' {$sel}>{$v}</option>\n";
 			}
-			else
-			{
-				$text .= "
-				<option value='1'>".LAN_YES."</option>
-				<option value='0' selected='selected'>".LAN_NO."</option>";
-			}
+		
 			$text .= "
 			</select>
 			<br />

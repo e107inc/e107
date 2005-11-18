@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users_extended.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-09-04 02:59:01 $
+|     $Revision: 1.13 $
+|     $Date: 2005-11-18 22:02:13 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -76,6 +76,9 @@ define("EXTLAN_62", "Table");
 define("EXTLAN_63", "Field Id");
 define("EXTLAN_64", "Display Value");
 
+define("EXTLAN_65", "No - Will not show on signup page");
+define("EXTLAN_66", "Yes - Will show on signup page");
+define("EXTLAN_67", "No - Show on signup page");
 
 
 //textbox
