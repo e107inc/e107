@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.64 $
-|     $Date: 2005-11-15 21:44:00 $
-|     $Author: sweetas $
+|     $Revision: 1.65 $
+|     $Date: 2005-11-18 22:02:13 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -662,10 +662,10 @@ if ($signupval[10] && ($sql->db_Select("userclass_classes", "*", "userclass_edit
 $extList = $usere->user_extended_get_fieldList();
 
 foreach($extList as $ext) {
-	if($ext['user_extended_struct_required'] == 1 || $ext['user_extended_struct_required'] == 3) {
+	if($ext['user_extended_struct_required'] == 1 || $ext['user_extended_struct_required'] == 2) {
 		$text .= "
 		<tr>
-			<td style='width:40%' class='forumheader3'>".$tp->toHTML($ext['user_extended_struct_text'],"","emotes_off defs")." ".req($ext['user_extended_struct_signup'])."<span style='text-align:right;font-size:15px; color:red'> *</span></td>
+			<td style='width:40%' class='forumheader3'>".$tp->toHTML($ext['user_extended_struct_text'],"","emotes_off defs")." ".($ext['user_extended_struct_required'] == 1 ? "<span style='text-align:right;font-size:15px; color:red'> *</span>" : "")."</td>
 			<td style='width:60%' class='forumheader3'>".$usere->user_extended_edit($ext, $_POST['ue']['user_'.$ext['user_extended_struct_name']])."
 		</td>
 		</tr>
@@ -796,7 +796,7 @@ function timezone() {
 
 function req($field) {
 	global $pref;
-	if ($field == 2) {
+	if ($field === 1) {
 		$ret = "<span style='text-align:right;font-size:15px; color:red'> *</span>";
 	} else {
 		$ret = "";

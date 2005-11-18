@@ -274,7 +274,7 @@ if(!$fInfo)
 if($fInfo)
 {
 	$fname = $tp->toHTML($fInfo['user_extended_struct_text'], "", "emotes_off defs");
-	if($fInfo['user_extended_struct_required'])
+	if($fInfo['user_extended_struct_required'] == 1)
 	{
 		$fname = str_replace("{FIELDNAME}", $fname, $REQUIRED_FIELD);
 	}
