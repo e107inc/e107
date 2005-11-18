@@ -51,6 +51,7 @@ define("LAN_407", " Bewaar deze email voor je eigen administratie, aangezien je 
 define("LAN_408", "Er is al een gebruiker met dat e-mailadres aanwezig. Gebruik de 'Wachtwoord vergeten' functie om een nieuw wachtwoord op te halen.");
 define("LAN_409", "Ongeldige tekens in de opgegeven gebruikersnaam");
 define("LAN_410", "Voer de in de afbeelding getoonde code in");
+define("LAN_411", "Deze weergavenaam bestaat al in de database, kies een andere weergavenaam");
 
 define("LAN_SIGNUP_1", "Min.");
 define("LAN_SIGNUP_2", "tekens");

@@ -4,14 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch-formal/admin/lan_theme.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-16 15:18:02 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-18 15:59:23 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
 define("TPVLAN_1", "U bekijkt de preview van het <b>'".PREVIEWTHEMENAME."'</b> theme. Het is niet ingesteld als het standaardtheme voor uw site, het is nu alleen geactiveerd om te tonen hoe uw site eruit kan komen te zien.<br />Om het als standaard site theme in te stellen, gaat u <a href='".e_ADMIN."theme.php'>terug naar uw theme manager</a> en selecteert u 'Instellen als site theme'.<br />Om meer themes te beoordelen <a href='".e_ADMIN."theme.php'>klik hier</a>");
 define("TPVLAN_2", "Theme demo");
-define("TPVLAN_3", "Site them ingesteld op");
+define("TPVLAN_3", "Site theme ingesteld op");
 define("TPVLAN_4", "Auteur");
 define("TPVLAN_5", "Website");
 define("TPVLAN_6", "Release datum");

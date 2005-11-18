@@ -20,8 +20,9 @@ define("NFP_4", "Titelbalk");
 define("NFP_5", "Aantal te tonen berichten?");
 define("NFP_6", "Aantal te tonen tekens?");
 define("NFP_7", "Aanduiding bij te lang bericht?");
-define("NFP_8", "Tonen originele discussies in menu?");
+define("NFP_8", "Originele discussies tonen in menu?");
 define("NFP_9", "Bijwerken menuconfiguratie");
 define("NFP_10", "New Forum Posts menuconfiguratie");
+define("NFP_11", "Geplaatst door");
 
 ?>

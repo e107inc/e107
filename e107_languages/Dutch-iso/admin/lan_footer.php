@@ -16,5 +16,5 @@ define("FOOTLAN_13", "Site Info");
 define("FOOTLAN_14", "Toon Docs");
 define("FOOTLAN_15", "Documentatie");
 define("FOOTLAN_16", "Database");
-
+define("FOOTLAN_17", "Charset");
 ?>
