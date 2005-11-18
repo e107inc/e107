@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewtopic_template.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-06-22 17:36:40 $
+|     $Revision: 1.14 $
+|     $Date: 2005-11-18 19:01:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -22,6 +22,9 @@ $sc_style['LASTEDIT']['post'] = " ]</span>";
 	
 $sc_style['LEVEL']['pre'] = "<div class='spacer'>";
 $sc_style['LEVEL']['post'] = "</div>";
+
+$sc_style['ANON_IP']['pre'] = "<br /><span class='smalltext'>";
+$sc_style['ANON_IP']['post'] = "</span>";
 
 $FORUMSTART = "<a id='top'></a><div style='text-align:center'>
 	<div class='spacer'>
@@ -85,6 +88,7 @@ $FORUMTHREADSTYLE = "<tr>
 	<td class='forumheader' style='vertical-align:middle'>
 	{NEWFLAG}
 	{POSTER}
+	{ANON_IP}
 	</td>
 	<td class='forumheader' style='vertical-align:middle'>
 	<table cellspacing='0' cellpadding='0' style='width:100%'>
@@ -169,6 +173,7 @@ $FORUMREPLYSTYLE = "<tr>
 	<td class='forumheader' style='vertical-align:middle'>
 	{NEWFLAG}
 	{POSTER}
+	{ANON_IP}
 	</td>
 	<td class='forumheader' style='vertical-align:middle'>
 	<table cellspacing='0' cellpadding='0' style='width:100%'>
