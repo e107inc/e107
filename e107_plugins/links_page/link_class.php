@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.18 $
-|    $Date: 2005-11-01 19:12:42 $
+|    $Revision: 1.19 $
+|    $Date: 2005-11-18 08:00:40 $
 |    $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -431,7 +431,7 @@ class linkclass {
 		$link_name			= $tp->toDB($_POST['link_name'], TRUE);
 		$link_url			= $tp->toDB($_POST['link_url'], TRUE);
 		$link_description	= $tp->toDB($_POST['link_description'], TRUE);
-		$link_button		= $tp->toDB($_POST['link_button'], TRUE);
+		$link_button		= $tp->toDB($_POST['link_but'], TRUE);
 		
 		if (!strstr($link_url, "http")) {
 			$link_url = "http://".$link_url;
@@ -516,7 +516,7 @@ class linkclass {
 			$row['link_name']			= $_POST['link_name'];
 			$row['link_url']			= $_POST['link_url'];
 			$row['link_description']	= $_POST['link_description'];
-			$row['link_button']			= $_POST['link_button'];
+			$row['link_button']			= $_POST['link_but'];
 			$row['link_open']			= $_POST['linkopentype'];
 			$row['link_class']			= $_POST['link_class'];
 			$link_resize_value			= (isset($_POST['link_resize_value']) && $_POST['link_resize_value'] ? $_POST['link_resize_value'] : $link_resize_value);
@@ -590,13 +590,14 @@ class linkclass {
 		<tr>
 		<td style='width:30%; vertical-align:top;' class='forumheader3'>".LCLAN_ITEM_14."</td>
 		<td style='width:70%; vertical-align:top;' class='forumheader3'>
+		<input class='tbox' type='text' name='link_but' id='link_but' size='60' value='".$row['link_button']."' maxlength='100' />
 			<div id='linkbut' style='display:; vertical-align:top;'><table style='text-align:left; width:100%;'><tr><td style='width:20%; padding-right:10px;'>";
-			$selectjs	= "size='9'";
+			$selectjs	= "size='5'";
 			$text		.= $rs -> form_select_open("link_button", $selectjs);
-			$js			= " onclick = \"insertext('','link_button',''); document.getElementById('iconview').src='".$iconpath."blank.gif';\" ";
+			$js			= " onclick = \"insertext('','link_but',''); document.getElementById('iconview').src='".$iconpath."blank.gif';\" ";
 			$text		.= $rs -> form_option(LCLAN_ITEM_34, "1", "", $js );
 			foreach($iconlist as $icon){
-				$js		= " onclick = \"insertext('".$icon['fname']."','link_button',''); document.getElementById('iconview').src='".$icon['path'].$icon['fname']."';\" ";
+				$js		= " onclick = \"insertext('".$icon['fname']."','link_but',''); document.getElementById('iconview').src='".$icon['path'].$icon['fname']."';\" ";
 				$text	.= $rs -> form_option($icon['fname'], ($icon['fname'] == $row['link_button'] ? "1" : "0"), $icon['fname'], $js );
 			}
 			$text .= $rs -> form_select_close();
