@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/email_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-19 15:53:21 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-19 16:01:27 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
+global $pref;
 $SIGNUPEMAIL_SUBJECT = LAN_404." {SITENAME}";
 $SIGNUPEMAIL_USETHEME = 1; // Use CSS STYLE from THEME: 0 = Off, 1 = external, 2 = embedded
 $SIGNUPEMAIL_LINKSTYLE = ""; // css to use on links eg. color:red;
