@@ -1,6 +1,6 @@
 <?php
 include_once(e_HANDLER.'shortcode_handler.php');
-$list_shortcodes = e_shortcode::parse_scbatch(__FILE__);
+$list_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 SC_BEGIN LIST_DATE
 global $LIST_DATE;

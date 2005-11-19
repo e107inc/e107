@@ -1,6 +1,6 @@
 <?php
 include_once(e_HANDLER.'shortcode_handler.php');
-$forum_shortcodes = e_shortcode::parse_scbatch(__FILE__);
+$forum_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 SC_BEGIN TOP
 return "<a href='".e_SELF."?".e_QUERY."#top'>".LAN_10."</a>";

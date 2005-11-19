@@ -1,6 +1,6 @@
 <?php
 include_once(e_HANDLER.'shortcode_handler.php');
-$comment_shortcodes = e_shortcode::parse_scbatch(__FILE__);
+$comment_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 
 SC_BEGIN SUBJECT

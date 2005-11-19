@@ -1,6 +1,6 @@
 <?php
 include_once(e_HANDLER.'shortcode_handler.php');
-$usersettings_shortcodes = e_shortcode::parse_scbatch(__FILE__);
+$usersettings_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 SC_BEGIN USERNAME
 global $rs, $curVal;

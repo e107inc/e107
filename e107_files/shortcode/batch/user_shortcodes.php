@@ -1,6 +1,7 @@
 <?php
 include_once(e_HANDLER.'shortcode_handler.php');
-$user_shortcodes = e_shortcode::parse_scbatch(__FILE__);
+$user_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
+
 /*
 SC_BEGIN TOTAL_CHATPOSTS
 global $sql;
