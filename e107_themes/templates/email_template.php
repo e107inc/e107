@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/email_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-12 21:39:44 $
-|     $Author: e107coders $
+|     $Revision: 1.5 $
+|     $Date: 2005-11-19 15:53:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 $SIGNUPEMAIL_SUBJECT = LAN_404." {SITENAME}";
 $SIGNUPEMAIL_USETHEME = 1; // Use CSS STYLE from THEME: 0 = Off, 1 = external, 2 = embedded
 $SIGNUPEMAIL_LINKSTYLE = ""; // css to use on links eg. color:red;
-$SIGNUPEMAIL_IMAGES =  e_IMAGE."button.png"; // comma separated paths to image to embed. referenced below with {IMAGE1} (IMAGE2} etc.
+$SIGNUPEMAIL_IMAGES =  e_IMAGE.$pref['sitebutton']; // comma separated paths to image to embed. referenced below with {IMAGE1} (IMAGE2} etc.
 $SIGNUPEMAIL_CC = "";  // comma separated email addresses to put in CC of the signup email.
 $SIGNUPEMAIL_BCC = "";   // comma separated email addresses to put in BCC of the signup email.
 $SIGNUPEMAIL_ATTACHMENTS = ""; // files-path array of attachments. eg. array(e_FILE."myfile.zip",e_FILE."myotherfile.zip"); 
