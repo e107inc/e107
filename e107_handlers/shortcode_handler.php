@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.22 $
-| $Date: 2005-11-19 08:20:35 $
+| $Revision: 1.23 $
+| $Date: 2005-11-19 08:35:40 $
 | $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -157,23 +157,24 @@ class e_shortcode {
 			if (trim($line) == 'SC_END') {
 				$cur_sc = '';
 			}
-			if ($cur_sc) {
+			if ($cur_sc && !$override) {
 				$ret[$cur_sc] .= $line;
 			}
 			if (preg_match("#^SC_BEGIN (\w*).*#", $line, $matches)) {
 				$cur_sc = $matches[1];
 				$ret[$cur_sc]='';
-			}
-		}
-		foreach ($ret as $sc_key => $sc_content) {
-			if (array_key_exists($sc_key, $this -> registered_codes)) {
-				if ($this -> registered_codes[$sc_key]['type'] == 'plugin') {
-					$scFile = e_PLUGIN.strtolower($this -> registered_codes[$sc_key]['path']).'/'.strtolower($sc_key).'.sc';
+				if (array_key_exists($cur_sc, $this -> registered_codes)) {
+					if ($this -> registered_codes[$cur_sc]['type'] == 'plugin') {
+						$scFile = e_PLUGIN.strtolower($this -> registered_codes[$cur_sc]['path']).'/'.strtolower($cur_sc).'.sc';
+					} else {
+						$scFile = THEME.strtolower($cur_sc).'.sc';
+					}
+					if (is_readable($scFile)) {
+						$ret[$cur_sc] = file_get_contents($scFile);
+					}
+					$override = TRUE;
 				} else {
-					$scFile = THEME.strtolower($sc_key).'.sc';
-				}
-				if (is_readable($scFile)) {
-					$ret[$sc_key] = file_get_contents($scFile);
+					$override = FALSE;
 				}
 			}
 		}
