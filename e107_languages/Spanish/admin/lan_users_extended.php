@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_users_extended.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.15 $
+|     $Date: 2005-11-19 08:48:14 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -73,6 +73,9 @@ define("EXTLAN_61", "Nada");
 define("EXTLAN_62", "Tabla");
 define("EXTLAN_63", "Campo ID");
 define("EXTLAN_64", "Mostrar valor");
+define("EXTLAN_65", "No - No se mostrará en la página de registro"); 
+define("EXTLAN_66", "Yes - Se mostrará en la página de registro"); 
+define("EXTLAN_67", "No - Mostrar en la página de registro"); 
 
 //textbox
 define("EXTLAN_HELP_1", "<b><i>Parámetros:</i></b><br />size - tamaño del campo<br />maxlength - longitud máx del campo<br />class - css clase del campo<br />");
