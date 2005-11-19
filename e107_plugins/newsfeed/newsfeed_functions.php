@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_functions.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-10-26 14:50:10 $
-|     $Author: e107coders $
+|     $Revision: 1.10 $
+|     $Date: 2005-11-19 08:58:20 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -92,7 +92,7 @@ function newsfeed_info($which) {
 					$FEEDIMAGE = "";
 				}
 			} else if ($newsfeed_image) {
-				$FEEDIMAGE = $newsfeed_image;
+				$FEEDIMAGE = "<img src='".$newsfeed_image."' alt='' />";
 			} else {
 				$FEEDIMAGE = "";
 			}
