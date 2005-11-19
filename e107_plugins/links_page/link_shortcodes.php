@@ -1,6 +1,6 @@
 <?php
 include_once(e_HANDLER.'shortcode_handler.php');
-$link_shortcodes = e_shortcode::parse_scbatch(__FILE__);
+$link_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 
 //SC_BEGIN LINK_NAVIGATOR

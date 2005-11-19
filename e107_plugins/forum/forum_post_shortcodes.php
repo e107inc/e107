@@ -1,6 +1,6 @@
 <?php
 include_once(e_HANDLER.'shortcode_handler.php');
-$forum_post_shortcodes = e_shortcode::parse_scbatch(__FILE__);
+$forum_post_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 	
 /*
 SC_BEGIN LATESTPOSTS

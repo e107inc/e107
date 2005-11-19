@@ -1,6 +1,6 @@
 <?php
 include_once(e_HANDLER.'shortcode_handler.php');
-$calendar_shortcodes = e_shortcode::parse_scbatch(__FILE__);
+$calendar_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 // TIME SWITCH BUTTONS ------------------------------------------------
 SC_BEGIN PREV_MONTH

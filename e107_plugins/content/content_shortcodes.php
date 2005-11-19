@@ -1,6 +1,6 @@
 <?php
 include_once(e_HANDLER.'shortcode_handler.php');
-$content_shortcodes = e_shortcode::parse_scbatch(__FILE__);
+$content_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 // CONTENT_TYPE_TABLE ------------------------------------------------
 SC_BEGIN CONTENT_TYPE_TABLE_TOTAL

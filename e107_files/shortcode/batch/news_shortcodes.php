@@ -1,6 +1,6 @@
 <?php
 include_once(e_HANDLER.'shortcode_handler.php');
-$news_shortcodes = e_shortcode::parse_scbatch(__FILE__);
+$news_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 SC_BEGIN NEWSTITLE
 global $tp;

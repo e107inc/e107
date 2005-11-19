@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-07-08 21:08:10 $
-|     $Author: e107coders $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-19 08:20:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 include_once(e_HANDLER.'shortcode_handler.php');
-$download_shortcodes = e_shortcode::parse_scbatch(__FILE__);
+$download_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);
 /*
 SC_BEGIN DOWNLOAD_LIST_NAME
 global $row,$tp;
