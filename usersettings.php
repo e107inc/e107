@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-11-12 00:32:11 $
-|     $Author: qnome $
+|     $Revision: 1.53 $
+|     $Date: 2005-11-20 00:48:58 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -391,7 +391,7 @@ WHERE u.user_id='{$uuid}'
 
 $sql->db_Select_gen($qry);
 $curVal=$sql->db_Fetch();
-$tmp = explode(",", $curVal['user_class']);
+$tmp = ($curVal['user_class'] != "" ? explode(",", $curVal['user_class']) : "");
 $tmp[] = e_UC_MEMBER;
 $tmp[] = e_UC_READONLY;
 $tmp[] = e_UC_PUBLIC;
