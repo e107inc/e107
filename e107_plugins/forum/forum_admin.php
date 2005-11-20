@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-10-14 08:40:24 $
-|     $Author: sweetas $
+|     $Revision: 1.31 $
+|     $Date: 2005-11-20 22:47:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -218,7 +218,6 @@ if (isset($_POST['updateoptions']))
 	$pref['forum_redirect'] = $_POST['forum_redirect'];
 	$pref['forum_user_customtitle'] = $_POST['forum_user_customtitle'];
 	$pref['reported_post_email'] = $_POST['reported_post_email'];
-	$pref['links_new_window'] = $_POST['links_new_window'];
 	$pref['forum_tooltip'] = $_POST['forum_tooltip'];
 	$pref['forum_tiplength'] = $_POST['forum_tiplength'];
 	$pref['forum_hilightsticky'] = $_POST['forum_hilightsticky'];
@@ -1001,11 +1000,6 @@ class forum
 			<tr>
 			<td style='width:75%' class='forumheader3'>".FORLAN_47."<br /><span class='smalltext'>".FORLAN_48."</span></td>
 			<td style='width:25%;text-align:center' class='forumheader3' >".($pref['email_notify'] ? "<input type='checkbox' name='email_notify' value='1' checked='checked' />" : "<input type='checkbox' name='email_notify' value='1' />")."</td>
-			</tr>
-
-			<tr>
-			<td style='width:75%' class='forumheader3'>".FORLAN_124."<br /><span class='smalltext'>".FORLAN_125."</span></td>
-			<td style='width:25%;text-align:center' class='forumheader3' >".($pref['links_new_window'] ? "<input type='checkbox' name='links_new_window' value='1' checked='checked' />" : "<input type='checkbox' name='links_new_window' value='1' />")."</td>
 			</tr>
 
 			<tr>
