@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-10-14 08:29:57 $
-|     $Author: sweetas $
+|     $Revision: 1.16 $
+|     $Date: 2005-11-20 22:47:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_1", "You must enter the number of days you wish to prune.");
@@ -143,8 +143,6 @@ define("WMGLAN_3", "Rules for Administrators");
 define("WMGLAN_4", "Submit");
 define("WMGLAN_5", "Set Forum Rules");
 define("WMGLAN_6", "Activate?");
-define("FORLAN_124", "Links in new window");
-define("FORLAN_125", "Tick here to make all links open in a new window (<i>this will apply sitewide</i>). ");
 define("FORLAN_126", "Show Tooltips");
 define("FORLAN_127", "Tick here to show a tooltip containing the first post of the thread when mouse hovers over thread name. ");
 define("FORLAN_128", "Length of tooltip");

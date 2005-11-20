@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-10-19 17:01:27 $
-|     $Author: e107coders $
+|     $Revision: 1.39 $
+|     $Date: 2005-11-20 22:47:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -194,6 +194,10 @@ define("PRFLAN_141", "Allow registration using XML User Profiles");
 define("PRFLAN_142", "Flood Only");
 define("PRFLAN_143", "Failed Login Only");
 define("PRFLAN_144", "Flood & Failed Login");
+
+define("PRFLAN_145", "Links in new window");
+define("PRFLAN_146", "Tick here to make all links open in a new window (<i>this will apply sitewide</i>). ");
+
 
 
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.111 $
-|     $Date: 2005-10-31 14:33:53 $
-|     $Author: sweetas $
+|     $Revision: 1.112 $
+|     $Date: 2005-11-20 22:47:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define ("E_NL", chr(2));
@@ -308,8 +308,9 @@ class e_parse
 
 		if($pref['make_clickable'] && strpos($modifiers, 'no_make_clickable') === FALSE) {
 			if($pref['link_replace'] && strpos($modifiers, 'no_replace') === FALSE) {
-				$text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<,]*)#is", "\\1<a href=\"\\2\" rel=\"external\">".$pref['link_text']."</a>", $text);
-				$text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<,]*)#is", "\\1<a href=\"http://\\2\" rel=\"external\">".$pref['link_text']."</a>", $text);
+				$_ext = ($pref['links_new_window'] ? " rel=\"external\"" : "");
+				$text = preg_replace("#(^|[\n ])([\w]+?://[^ \"\n\r\t<,]*)#is", "\\1<a href=\"\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
+				$text = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<,]*)#is", "\\1<a href=\"http://\\2\" {$_ext}>".$pref['link_text']."</a>", $text);
 				if(CHARSET != "utf-8" && CHARSET != "UTF-8"){
 					$email_text = ($pref['email_text']) ? $pref['email_text'] : "\\1\\2&copy;\\3";
 				}else{
