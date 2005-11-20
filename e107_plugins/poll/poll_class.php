@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-10-05 09:51:26 $
-|     $Author: sweetas $
+|     $Revision: 1.34 $
+|     $Date: 2005-11-20 18:40:28 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 @include_once(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
@@ -202,6 +202,10 @@ class poll
 					$count ++;
 				}
 				$SUBMITBUTTON = "<input class='button' type='submit' name='pollvote' value='".POLLAN_30."' onclick='setcook(\"".$pollArray['poll_id']."\");' />";
+				if('preview' == $type || $preview == TRUE)
+				{
+					$SUBMITBUTTON = "[".POLLAN_30."]";
+				}
 
 				$text .= "\n".preg_replace("/\{(.*?)\}/e", '$\1', ($type == "forum" ? $POLL_FORUM_NOTVOTED_END : $POLL_NOTVOTED_END))."\n</form>";
 			break;
