@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/log_update_check.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-11-10 20:35:17 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-21 16:15:29 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-$dbupdate['log_07'] =  LAN_UPDATE_8." .61x statistics ".LAN_UPDATE_9." .7 statistics";
+$dbupdatep['log_07'] =  LAN_UPDATE_8." .617 statistics ".LAN_UPDATE_9." .7 statistics";
 function update_log_07($type) {
 	global $sql, $mySQLdefaultdb;
 	if ($type == 'do') {

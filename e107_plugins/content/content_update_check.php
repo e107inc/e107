@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update_check.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-10-31 20:14:20 $
-|     $Author: lisa_ $
+|     $Revision: 1.5 $
+|     $Date: 2005-11-21 16:15:28 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-$dbupdate['content_07'] =  LAN_UPDATE_8." .61x content ".LAN_UPDATE_9." .7 content";
+$dbupdatep['content_07'] =  LAN_UPDATE_8." .617 content ".LAN_UPDATE_9." .7 content";
 function update_content_07($type='') 
 {
 	global $sql, $mySQLdefaultdb;

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.153 $
-|     $Date: 2005-11-16 00:40:48 $
+|     $Revision: 1.154 $
+|     $Date: 2005-11-21 16:15:28 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -21,11 +21,12 @@ require_once("../class2.php");
 
 if (!defined("LAN_UPDATE_8")) { define("LAN_UPDATE_8", ""); }
 if (!defined("LAN_UPDATE_9")) { define("LAN_UPDATE_9", ""); }
-if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
-{
-	include_once(e_PLUGIN.'forum/forum_update_check.php');
+if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'forum' AND plugin_installflag='1' ")) {
+	if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
+	{
+		include_once(e_PLUGIN.'forum/forum_update_check.php');
+	}
 }
-
 if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."stat_info") && $sql -> db_Select("plugin", "*", "plugin_path = 'log' AND plugin_installflag='1'")) {
 	if(file_exists(e_PLUGIN.'log/log_update_check.php'))
 	{
@@ -42,7 +43,7 @@ if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content' AND plug
 	}
 }
 
-$dbupdate["61x_to_700"] = LAN_UPDATE_8." .61x ".LAN_UPDATE_9." .7";
+$dbupdate["617_to_700"] = LAN_UPDATE_8." .617 ".LAN_UPDATE_9." .7";
 $dbupdate["616_to_617"] = LAN_UPDATE_8." .616 ".LAN_UPDATE_9." .617";
 $dbupdate["615_to_616"] = LAN_UPDATE_8." .615 ".LAN_UPDATE_9." .616";
 $dbupdate["614_to_615"] = LAN_UPDATE_8." .614 ".LAN_UPDATE_9." .615";
@@ -50,8 +51,17 @@ $dbupdate["611_to_612"] = LAN_UPDATE_8." .611 ".LAN_UPDATE_9." .612";
 $dbupdate["603_to_604"] = LAN_UPDATE_8." .603 ".LAN_UPDATE_9." .604";
 
 function update_check() {
-	global $ns, $dbupdate;
+	global $ns, $dbupdate, $dbupdatep;
 	foreach($dbupdate as $func => $rmks) {
+		if (function_exists("update_".$func)) {
+			if (!call_user_func("update_".$func, FALSE)) {
+				$update_needed = TRUE;
+				continue;
+			}
+		}
+	}
+	
+	foreach($dbupdatep as $func => $rmks) {
 		if (function_exists("update_".$func)) {
 			if (!call_user_func("update_".$func, FALSE)) {
 				$update_needed = TRUE;
@@ -69,7 +79,7 @@ function update_check() {
 	}
 }
 
-function update_61x_to_700($type='') {
+function update_617_to_700($type='') {
 	global $sql, $ns, $error,$mySQLdefaultdb, $pref, $tp, $sysprefs, $eArrayStorage;
 	if ($type == "do") {
 
