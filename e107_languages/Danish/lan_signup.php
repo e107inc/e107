@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_signup.php,v $
-|        $Revision: 1.4 $
-|        $Date: 2005-10-23 16:09:56 $
+|        $Revision: 1.5 $
+|        $Date: 2005-11-21 13:41:17 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -57,11 +57,13 @@ define("LAN_SIGNUP_11", ".");
 
 define("LAN_409", "Ugyldige tegn i brugernavn");
 define("LAN_410", "Skriv kode vist i billedet");
+define("LAN_411", "Det brugernavn eksisterer allerede i databasen, vælg venligst et andet brugernavn");
+
 
 define("LAN_SIGNUP_12", "gem dit brugernavn og adgangskode på et sikkert sted hvis de mistes kan de ikke genskabes.");
 define("LAN_SIGNUP_13", "Du kan nu logge på fra log på boksen.");
 define("LAN_SIGNUP_14", "her");
-define("LAN_SIGNUP_15", "Kontakt administrator");
+define("LAN_SIGNUP_15", "Kontakt venligst administrator");
 define("LAN_SIGNUP_16", "hvis du har brug for hjælp.");
 define("LAN_SIGNUP_17", "Bekræft at du 13 år gammel eller ældre.");
 define("LAN_SIGNUP_18", "Din tilmelding er blevet modtaget og oprettet med flg. informationer ...");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Danish/lan_newforumposts_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-07-18 15:17:11 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-21 13:41:17 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -27,5 +27,6 @@ define("NFP_7", "Erstatnings tekst til at afslutte for lange poster?");
 define("NFP_8", "Vis orginale emner i menu?");
 define("NFP_9", "Opdater menu indstillinger");
 define("NFP_10", "Nye forum indlæg menu konfiguration");
-	
+define("NFP_11", "Skrevet af");
+
 ?>
