@@ -223,6 +223,14 @@ if($parm == 'name')
 {
 return $ldata[$post_info['user_id']]['name'];
 }
+if($parm == 'special')
+{
+return $ldata[$post_info['user_id']]['special'];
+}
+if($parm == 'userid')
+{
+return $ldata[$post_info['user_id']]['userid'];
+}
 return $ldata[$post_info['user_id']][1];
 SC_END
 	
