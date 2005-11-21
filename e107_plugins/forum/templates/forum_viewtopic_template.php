@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewtopic_template.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-11-18 19:01:27 $
+|     $Revision: 1.15 $
+|     $Date: 2005-11-21 19:44:29 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -108,8 +108,9 @@ $FORUMTHREADSTYLE = "<tr>
 	{CUSTOMTITLE}
 	{AVATAR}
 	<span class='smalltext'>
+	{LEVEL=special}
 	{LEVEL=pic}
-	{MEMBERID}
+	{LEVEL=userid}
 	{JOINED}
 	{LOCATION}
 	{POSTS}
@@ -193,8 +194,9 @@ $FORUMREPLYSTYLE = "<tr>
 	{CUSTOMTITLE}
 	{AVATAR}
 	<span class='smalltext'>
+	{LEVEL=special}
 	{LEVEL=pic}
-	{MEMBERID}
+	{LEVEL=userid}
 	{JOINED}
 	{LOCATION}
 	{POSTS}

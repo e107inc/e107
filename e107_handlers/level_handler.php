@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/level_handler.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-06-28 21:31:30 $
-|     $Author: lisa_ $
+|     $Revision: 1.11 $
+|     $Date: 2005-11-21 19:44:29 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -28,19 +28,19 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 	if ($user_admin) {
 		if ($user_perms == "0")
 		{
+			$data['special'] = IMAGE_rank_main_admin_image."<br />";
 			$data[0] = IMAGE_rank_main_admin_image."<br />";
-			return($data);
 		}
 	}
 	if($fmod === TRUE)
 	{
+		$data['special'] = "<div class='spacer'>".IMAGE_rank_moderator_image."</div>";
 		$data[0] = "<div class='spacer'>".IMAGE_rank_moderator_image."</div>";
-		return($data);
 	}
 	if ($user_admin)
 	{
-			$data[0] = IMAGE_rank_admin_image."<br />";
-			return($data);
+		$data['special'] = IMAGE_rank_admin_image."<br />";
+		$data[0] = IMAGE_rank_admin_image."<br />";
 	}
 	$data[0] = "<span class='smalltext'>".LAN_195." #".$user_id."<br />";
 	$data['userid'] = "<span class='smalltext'>".LAN_195." #".$user_id."<br />";
@@ -106,6 +106,8 @@ function get_level($user_id, $user_forums, $user_comments, $user_chats, $user_vi
 		$data['pic'] = "<img src='".$data['pic']."' alt='' />";
 		$data[1] = "<div class='spacer'>{$data['pic']}</div>";
 	}
+
+	if($data['special']) { $data[0] = $data['special'];}
 	return ($data);
 }
 	
