@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/e107_update.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-10-31 20:44:02 $
+|     $Revision: 1.11 $
+|     $Date: 2005-11-21 16:15:28 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,8 @@ $e_sub_cat = 'database';
 require_once("auth.php");
 require_once("update_routines.php");
 
-if ($_POST) {
+function run_updates($dbupdate) {
+	global $ns;
 	foreach($dbupdate as $func => $rmks) {
 		$installed = call_user_func("update_".$func);
 		if ((LAN_UPDATE == $_POST[$func]) && !$installed) {
@@ -34,14 +35,14 @@ if ($_POST) {
 			}
 		}
 	}
+	if ($message) {
+		$ns->tablerender(LAN_UPDATE, $message);
+	}
 }
 
-if ($message) {
-	$ns->tablerender("&nbsp;", $message);
-}
-
-$text = "
-	<form method='POST' action='".e_SELF."'>
+function show_updates($dbupdate, $additional = false) {
+	global $ns;
+	$text = "<form method='POST' action='".e_SELF."'>
 	<div style='width:100%'>
 	<table class='fborder' style='".ADMIN_WIDTH."'>
 	<tr>
@@ -50,22 +51,59 @@ $text = "
 	</tr>
 	";
 
-$updates = 0;
+	$updates = 0;
 
-foreach($dbupdate as $func => $rmks) {
-	if (function_exists("update_".$func)) {
-		$text .= "<tr><td class='forumheader3'>{$rmks}</td>";
-		if (call_user_func("update_".$func)) {
-			$text .= "<td class='forumheader3' style='text-align:center'>".LAN_UPDATE_3."</td>";
-		} else {
-			$updates++;
-			$text .= "<td class='forumheader3' style='text-align:center'><input class='button' type='submit' name='{$func}' value='".LAN_UPDATE."' /></td>";
+	foreach($dbupdate as $func => $rmks) {
+		if (function_exists("update_".$func)) {
+			$text .= "<tr><td class='forumheader3' style='width: 60%'>{$rmks}</td>";
+			if (call_user_func("update_".$func)) {
+				$text .= "<td class='forumheader3' style='text-align:center; width: 40%'>".LAN_UPDATE_3."</td>";
+			} else {
+				$updates++;
+				$text .= "<td class='forumheader3' style='text-align:center; width: 40%'><input class='button' type='submit' name='{$func}' value='".LAN_UPDATE."' /></td>";
+			}
+			$text .= "</tr>";
 		}
-		$text .= "</tr>";
+	}
+
+	$text .= "</table></div></form>";
+	$ns->tablerender(($additional ? (defined("LAN_UPDATE_11") ? LAN_UPDATE_11 : '.617 to .7 Update Continued') : LAN_UPDATE_10), $text);
+}
+
+if ($_POST) {
+	$message = run_updates($dbupdate);
+}
+
+if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'forum' AND plugin_installflag='1' ")) {
+	if(file_exists(e_PLUGIN.'forum/forum_update_check.php'))
+	{
+		include_once(e_PLUGIN.'forum/forum_update_check.php');
+	}
+}
+if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."stat_info") && $sql -> db_Select("plugin", "*", "plugin_path = 'log' AND plugin_installflag='1'")) {
+	if(file_exists(e_PLUGIN.'log/log_update_check.php'))
+	{
+		include_once(e_PLUGIN.'log/log_update_check.php');
 	}
 }
 
-$text .= "</table></div></form>";
-$ns->tablerender(LAN_UPDATE_10, $text);
+if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content' AND plugin_installflag='1' "))
+{
+	if(file_exists(e_PLUGIN.'content/content_update_check.php'))
+	{
+		include_once(e_PLUGIN.'content/content_update_check.php');
+	}
+}
+
+if ($_POST) {
+	$message = run_updates($dbupdatep);
+}
+
+if (isset($dbupdatep)) {
+	show_updates($dbupdatep, true);
+}
+show_updates($dbupdate);
+
 require_once("footer.php");
+
 ?>

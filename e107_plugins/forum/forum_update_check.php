@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_update_check.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-01 03:16:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-11-21 16:15:28 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-$dbupdate['forum_07'] =  LAN_UPDATE_8." .61x forums ".LAN_UPDATE_9." .7 forums";
+$dbupdatep['forum_07'] =  LAN_UPDATE_8." .617 forums ".LAN_UPDATE_9." .7 forums";
 function update_forum_07($type) 
 {
 	global $sql, $mySQLdefaultdb;
