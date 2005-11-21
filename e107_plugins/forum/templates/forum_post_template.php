@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_post_template.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-07-10 14:20:01 $
-|     $Author: streaky $
+|     $Revision: 1.12 $
+|     $Date: 2005-11-21 12:11:55 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -64,10 +64,11 @@ $fileattach_alert = "<tr><td colspan='2' class='nforumcaption2'>".($pref['image_
 
 $FORUMPOST = "
 <div style='text-align:center'>
+<div class='spacer'>
 {FORMSTART}
-<table style='width:100%' class='fborder'>
+<table style='width:95%' class='fborder'>
 <tr>
-<td colspan='2' class='nforumcaption'>{BACKLINK}
+<td colspan='2' class='fcaption'>{BACKLINK}
 </td>
 </tr>
 {USERBOX}
@@ -88,8 +89,15 @@ $FORUMPOST = "
 {BUTTONS}
 </table>
 {FORMEND}
-</div>
+
+<table style='width:95%'>
+<tr>
+<td>
 {FORUMJUMP}
+</td>
+</tr>
+</table>
+</div></div>
 ";
 
 ?>

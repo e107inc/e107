@@ -14,7 +14,7 @@
 */
 
 $FORUMPOLLPOSTED =
-"<table style='width:100%' class='fborder'>
+"<table style='width:95%' class='fborder'>
 <tr>
 <td class='fcaption' colspan='2'>".LAN_133."</td>
 </tr><tr>
@@ -26,7 +26,7 @@ $FORUMPOLLPOSTED =
 </td></tr></table>";
 
 $FORUMTHREADPOSTED = "
-<table style='width:100%' class='fborder'>
+<table style='width:95%' class='fborder'>
 <tr>
 <td class='fcaption' colspan='2'>".LAN_133."</td>
 </tr><tr>
@@ -40,7 +40,7 @@ $FORUMTHREADPOSTED = "
 
 
 $FORUMREPLYPOSTED = "
-<table style='width:100%' class='fborder'>
+<table style='width:95%' class='fborder'>
 <tr>
 <td class='fcaption' colspan='2'>".LAN_133."</td>
 </tr><tr>
