@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Danish/lan_forum_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-10-15 11:46:12 $
+|     $Revision: 1.4 $
+|     $Date: 2005-11-21 15:11:11 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -143,8 +143,6 @@ define("WMGLAN_3", "Regler for Administratorer");
 define("WMGLAN_4", "Tilføj");
 define("WMGLAN_5", "Indstil Forum Regler");
 define("WMGLAN_6", "Aktiver?");
-define("FORLAN_124", "Links i nyt vindue");
-define("FORLAN_125", "Marker her for at alle links åbner i et nyt vindue (<i>dette vil gælde hele sitet</i>). ");
 define("FORLAN_126", "Vis Værktøjstip");
 define("FORLAN_127", "Marker her for at vise et værktøjstip indeholdende det første indlæg i en tråd når musen peger på tråd navnet.");
 define("FORLAN_128", "Længde på værktøjstip");

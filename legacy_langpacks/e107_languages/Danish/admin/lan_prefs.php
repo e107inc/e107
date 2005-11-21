@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_prefs.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2005-10-21 10:56:28 $
+|        $Revision: 1.4 $
+|        $Date: 2005-11-21 15:11:11 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -194,6 +194,10 @@ define("PRFLAN_141", "Tillad registrering med XML Bruger Profiler");
 define("PRFLAN_142", "Kun Flood");
 define("PRFLAN_143", "Kun Fejlede Logins");
 define("PRFLAN_144", "Flood & Fejlede Logins");
+
+define("PRFLAN_145", "Links i nyt vindue");
+define("PRFLAN_146", "Marker her for at f&aring; alle vinduer til at &aring;bne i et nyt vindue (<i>dette vil g&aelig;lde hele sitet</i>). ");
+
 
 
 ?>

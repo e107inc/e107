@@ -4,8 +4,8 @@
 |        e107 website system  Danish Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_users_extended.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:29:27 $
+|        $Revision: 1.2 $
+|        $Date: 2005-11-21 15:11:11 $
 |        $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -76,6 +76,9 @@ define("EXTLAN_62", "V&aelig;lg tabel");
 define("EXTLAN_63", "V&aelig;lg felt Id");
 define("EXTLAN_64", "V&aelig;lg vis v&aelig;rdi");
 
+define("EXTLAN_65", "Nej - Vil ikke blive vist p&aring; tilmeldings siden");
+define("EXTLAN_66", "Ja - Vil blive vist p&aring; tilmeldings siden");
+define("EXTLAN_67", "Nej - Vis p&aring; tilmeldings siden");
 
 
 //textbox
