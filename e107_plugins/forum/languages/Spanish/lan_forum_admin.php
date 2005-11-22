@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_admin.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.9 $
+|     $Date: 2005-11-22 22:51:14 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -138,8 +138,6 @@ define("WMGLAN_4", "Enviar");
 define("WMGLAN_5", "Cambiar normas del foro");
 define("WMGLAN_6", "¿Activar?");
 
-define("FORLAN_124", "Enlaces en nueva ventana");
-define("FORLAN_125", "Marque para que los enlaces se abran en una nueva ventana. ");
 define("FORLAN_126", "Mostrar Tooltips");
 define("FORLAN_127", "Marque aquí para mostrar un tooltip conteniendo el primer mensaje del tema cuando el puntero del ratón pase por encima del nombre del tema. ");
 define("FORLAN_128", "Longitud de tooltip");
