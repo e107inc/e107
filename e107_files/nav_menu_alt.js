@@ -494,9 +494,9 @@ function menuInit(menu) {
   // overlaying the menu) by adding an IFRAME under the menu.
 
   if (browser.isIE) {
-    var iframeEl = document.createElement("IFRAME");
+    var iframeEl = document.createElement("iframe");
     iframeEl.frameBorder = 0;
-    iframeEl.src = "javascript:;";
+    iframeEl.src = "#";
     iframeEl.style.display = "none";
     iframeEl.style.position = "absolute";
     iframeEl.style.filter = "progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=0)";
