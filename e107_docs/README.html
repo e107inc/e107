@@ -4,12 +4,12 @@
 <!-- Version Info:
 
 $Source: /cvs_backup/e107_0.7/e107_docs/README.html,v $
-$Revision: 1.5 $
-$Date: 2005-07-19 14:53:06 $
-$Author: stevedunstan $
+$Revision: 1.6 $
+$Date: 2005-11-23 16:29:16 $
+$Author: streaky $
 
 -->
-<title>e107 Readme [$Revision: 1.5 $]</title>
+<title>e107 Readme [$Revision: 1.6 $]</title>
 <link rel="stylesheet" href="style.css" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="content-style-type" content="text/css" />
@@ -25,10 +25,10 @@ $Author: stevedunstan $
   <br />
   <a id='requirements' name='requirements'></a><span class="headertext">Requirements</span>
   <ul>
-    <li>e107 requires a webserver that has PHP 4.1.0 (or newer) and MySQL 3.22 (or newer), contact your host if you're not sure if you have these installed.</li>
-    <li>If you host your own site you can download <a href="http://www.php.net">PHP</a> and <a href="http://www.mysql.com">MySQL</a> and install them yourself, both are free.</li>
+    <li>e107 requires a webserver that has PHP 4.3 (or newer) and MySQL 3.22 (or newer), contact your host if you're not sure if you have these installed.</li>
+    <li>If you host your own site you can download <a href="http://php.net">PHP</a> and <a href="http://mysql.com">MySQL</a> and install them yourself, both are free.</li>
     <li>You will need your MySQL username and password, and a database for content storage. Don't worry if you only have one database, e107 is happy to share it's database with other applications.</li>
-    <li>e107 requires approximately 2mb of disk space on your server, although this can be reduced down to 0.5mb by removing unused themes etc if you are short of space.</li>
+    <li>A complete e107 install requires approximately 8MB of disk space on your server, although this should be reduced dramatically for most users by removing the plugins and themes they won't be using, simply by removing the relevent folder.</li>
   </ul>
   <br />
   <a id='installing' name='installing'></a><span class="headertext">Installing</span>
@@ -51,17 +51,19 @@ $Author: stevedunstan $
     </li>
   </ul>
   <ul>
-    <li>You now need to set the file permissions of some files for e107 to access them correctly. Set the file permissions to 0777 (readable writable by the server), if a series of checkboxes appear tick every box. Here is a list of the files you need to ensure the server can read / write to...<br />
+    <li>You now need to set the file permissions of some files for e107 to access them correctly. Set the file permissions to 0777 (readable writable by the server), if a series of checkboxes appear tick every box. Here is a list of the files you need to ensure the server can read / write to...<br /><br />
       <ul>
-        <li>/e107_config.php</li>
-        <li>/e107_files/public/</li>
-        <li>/e107_files/cache/</li>
-        <li>/e107_files/public/avatars/</li>
+        <li>e107_config.php</li>
+        <li>e107_files/public/</li>
+        <li>e107_files/cache/</li>
+        <li>e107_files/public/avatars/</li>
+        <li>e107_plugins/</li>
+        <li>e107_themes/</li>
       </ul>
     </li>
   </ul>
   <ul>
-    <li>Now open your web browser and navigate to install.php, for example http://<i>yourwebspace.com/install.php</i> or http://<i>yourwebspace.com/e107/install.php<br />
+    <li>Now open your web browser and navigate to install.php, for example <i>http://yourwebspace.com/install.php</i> or <i>http://yourwebspace.com/e107/install.php</i><br />
       </i></li>
     <ul>
       <li>If all the files have been uploaded successfully, you will see the first page of the install script. Choose the language you wish to use during the procedure and click the button to continue</li>
@@ -83,7 +85,7 @@ $Author: stevedunstan $
       <li>Set its file permission (using the method explained above) to 0644</li>
     </ul>
     </li>
-    <li><b>Now delete the install.php file, and the e107_install folder from your server, if you do not there is a potential security risk to your site</b></li>
+    <li><b>Now delete the install.php file, and the e107_install folder from your server, if you do not they could pose a potential security risk to your site</b></li>
   </ul>
   <br />
   <br />
