@@ -3,8 +3,8 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-10-26 15:30:11 $
+|     $Revision: 1.28 $
+|     $Date: 2005-11-23 16:17:03 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -78,11 +78,11 @@
 	}
 	$text .= "<div class='menuBar' style='width:100%; white-space: nowrap'>";
 
-// Setup Parent/Child Arrays ---->
+	// Setup Parent/Child Arrays ---->
 
  	$link_total = $sql->db_Select("links", "*", "link_class IN (".USERCLASS_LIST.") AND link_category=1 ORDER BY link_order ASC");
 	while ($row = $sql->db_Fetch()) {
-		if($row['link_parent'] ==0){
+		if($row['link_parent'] == 0){
 			$linklist['head_menu'][] = $row;
 			$parents[] = $row['link_id'];
 		}else{
@@ -92,7 +92,7 @@
 	}
 
 
-// Loops thru parents.--------->
+	// Loops thru parents.--------->
 
     foreach ($linklist['head_menu'] as $lk) {
 
@@ -103,38 +103,14 @@
 		}
 
 		$main_linkid = $lk['link_id'];
-		if($linklist['sub_'.$main_linkid]){  // Has Children.
+		if ($linklist['sub_'.$main_linkid]) {  // Has Children.
 
 			$text .= adnav_cat($lk['link_name'], '', $link_icon, 'l_'.$main_linkid);
-			$text .= "<div id='l_".$main_linkid."' class='menu' onmouseover=\"menuMouseover(event)\">";
-			foreach ($linklist['sub_'.$main_linkid] as $sub) {
+			$text .= render_sub($linklist, $main_linkid);
 
-	// Filter title for backwards compatibility ---->
+		} else {
 
-                if(substr($sub['link_name'],0,8) == "submenu."){
-					$tmp = explode(".",$sub['link_name']);
-					$subname = $tmp[2];
-				}else{
-            		$subname = $sub['link_name'];
-				}
-
-	// Setup Child Icon --------->
-
-                if (!$sub['link_button'] && $parm == 'no_icons') {
-					$sub_icon = 'no_icons';
-				} else {
-					$sub_icon = "<img src='";
-					$sub_icon .= ($sub['link_button']) ? e_IMAGE.'icons/'.$sub['link_button'] : $icon;
-					$sub_icon .= "' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />";
-				}
-				$text .= adnav_main($subname, $sub['link_url'], $sub_icon, null, $sub['link_open']);
-
-			}
-			$text .= "</div>";
-
-		}else{
-
-	  // Display Parent only.
+	  		// Display Parent only.
 
         	$text .= adnav_cat($lk['link_name'], $lk['link_url'], $link_icon, FALSE, $lk['link_open']);
 
@@ -144,3 +120,42 @@
 	$text .= "</div>";
 
 	return $text;
+	
+	function render_sub($linklist, $id) {
+		global $parm, $icon;
+		$text = "<div id='l_".$id."' class='menu' onmouseover=\"menuMouseover(event)\">";
+			foreach ($linklist['sub_'.$id] as $sub) {
+				// Filter title for backwards compatibility ---->
+
+                if(substr($sub['link_name'],0,8) == "submenu."){
+					$tmp = explode(".",$sub['link_name']);
+					$subname = $tmp[2];
+				}else{
+            		$subname = $sub['link_name'];
+				}
+
+				// Setup Child Icon --------->
+
+                if (!$sub['link_button'] && $parm == 'no_icons') {
+					$sub_icon = 'no_icons';
+				} else {
+					$sub_icon = "<img src='";
+					$sub_icon .= ($sub['link_button']) ? e_IMAGE.'icons/'.$sub['link_button'] : $icon;
+					$sub_icon .= "' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />";
+				}
+				if ($linklist['sub_'.$sub['link_id']]) {  // Has Children.
+					$sub_ids[] = $sub['link_id'];
+					$text .= adnav_main($subname, $sub['link_url'], $sub_icon, 'l_'.$sub['link_id'], $sub['link_open']);
+				} else {
+					$text .= adnav_main($subname, $sub['link_url'], $sub_icon, null, $sub['link_open']);
+				}
+
+			}
+			$text .= "</div>";
+			
+			foreach ($sub_ids as $sub_id) {
+				$text .= render_sub($linklist, $sub_id);
+			}
+			
+			return $text;
+	}
