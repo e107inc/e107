@@ -65,8 +65,9 @@ global $sql, $pref, $tp, $curVal;
 $ret = "";
 if($sql->db_Select("userclass_classes", "*", "userclass_editclass IN(".$curVal['userclass_list'].") ORDER BY userclass_name"))
 {
+	$ucList = $sql->db_getList();
 	$ret = "<table style='width:95%'>";
-	while ($row = $sql->db_Fetch())
+	foreach($ucList as $row)
 	{
 		$inclass = check_class($row['userclass_id'], $curVal['user_class']) ? TRUE : FALSE;
 		if(isset($_POST['usrclass']))
