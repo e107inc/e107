@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-11-23 18:08:28 $
+|     $Revision: 1.50 $
+|     $Date: 2005-11-23 18:10:04 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -240,7 +240,6 @@ class links
 		global $sql, $rs, $ns, $tp, $linkArray;
 		if (count($linkArray))
 		{
-//			ink_total = $sql->db_Select("links", "*", "ORDER BY link_order, link_id ASC", "nowhere")) {
 			$text = $rs->form_open("post", e_SELF, "myform_{$link_id}", "", "");
 			$text .= "<div style='text-align:center'>
 				<table class='fborder' style='".ADMIN_WIDTH."'>
@@ -254,34 +253,6 @@ class links
 				</tr>";
 				$text .= $this->existing(0);
 				
-/*
-			while ($row = $sql->db_Fetch()) {
-				if($row['link_parent'] ==0){
-					$linklist['head_menu'][] = $row;
-					$parents[] = $row['link_id'];
-				}else{
-					$pid = $row['link_parent'];
-					$linklist['sub_'.$pid][] = $row;
-				}
-			}
-
-			foreach ($linklist['head_menu'] as $lk) {
-				$lk['link_total'] = $link_total;
-				$text .= $this->display_row($lk);
-				$main_linkid = $lk['link_id'];
-				if($linklist['sub_'.$main_linkid]){
-					foreach ($linklist['sub_'.$main_linkid] as $sub) {
-						$sub['link_total'] = $link_total;
-						$text .= $this->display_row($sub,1);
-						if($linklist['sub_'.$sub['link_id']]){
-							foreach($linklist['sub_'.$sub['link_id']] as $ssub){
-								$text .= $this->display_row($ssub,2);
-							}
-						}
-					}
-				}
-			}
-*/
 			$text .= "<tr>
 				<td class='forumheader' colspan='6' style='text-align:center'><input class='button' type='submit' name='update' value='".LAN_UPDATE."' /></td>
 				</tr>";
@@ -394,38 +365,6 @@ class links
 			<select class='tbox' name='link_parent' >";
 			$text .= $this->dropdown($link_parent);
 
-/*
-			$sql -> db_Select("links", "*", "ORDER BY link_name","nowhere");
-			while($row = $sql-> db_Fetch()){
-				if($row['link_parent'] ==0){
-					$linklist['head_menu'][] = $row;
-				}else{
-					$pid = $row['link_parent'];
-					$linklist['sub_'.$pid][] = $row;
-				}
-			}
-
-			foreach ($linklist['head_menu'] as $lk) {
-				$lk['link_total'] = $link_total;
-				$sel = ($link_parent == $lk['link_id']) ? "selected='selected'" : "";
-				$text .="<option value='".$lk['link_id']."|".$lk['link_name']."' $sel>".$lk['link_name']."</option>";
-
-				$main_linkid = $lk['link_id'];
-				if($linklist['sub_'.$main_linkid]){
-					foreach ($linklist['sub_'.$main_linkid] as $sub) {
-						$sel2 = ($link_parent == $sub['link_id']) ? "selected='selected'" : "";
-						if(substr($sub['link_name'],0,8) == "submenu."){
-							$tmp = explode(".",$sub['link_name']);
-							$sublinkname = $tmp[2];
-						}else{
-							$sublinkname = $sub['link_name'];
-						}
-						$text .="<option value='".$sub['link_id']."|".$sublinkname."' $sel2>&nbsp;&nbsp;&nbsp;&nbsp;".$sublinkname."</option>";
-					}
-				}
-			}
-
-*/
 		$text .= "</select></td>
 			</tr>
 			<tr>
