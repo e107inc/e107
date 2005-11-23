@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-11-01 00:25:25 $
-|     $Author: sweetas $
+|     $Revision: 1.49 $
+|     $Date: 2005-11-23 18:08:28 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -22,6 +22,7 @@ if (!is_object($tp)) $tp = new e_parse;
 if (!getperms('I')) {
 	header('location:'.e_BASE.'index.php');
 }
+
 $e_sub_cat = 'links';
 // ----- Presets.----------
 require_once(e_HANDLER."preset_class.php");
@@ -39,8 +40,6 @@ require_once(e_HANDLER.'form_handler.php');
 $rs = new form;
 $linkpost = new links;
 
-$deltest = array_flip($_POST);
-
 if (e_QUERY) {
 	$tmp = explode('.', e_QUERY);
 	$action = $tmp[0];
@@ -48,11 +47,15 @@ if (e_QUERY) {
 	$id = $tmp[2];
 	unset($tmp);
 }
-if (preg_match("#(.*?)_delete_(\d+)#", $deltest[$tp->toJS(LAN_DELETE)], $matches)) {
-	$delete = $matches[1];
-	$del_id = $matches[2];
-}
 
+foreach(array_keys($_POST) as $k)
+{
+	if (preg_match("#(.*?)_delete_(\d+)(.*)#", $k, $matches))
+	{
+		$delete = $matches[1];
+		$del_id = $matches[2];
+	}
+}
 
 if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST['sublink_parent'] !="" ){
 
@@ -82,25 +85,13 @@ if(isset($_POST['generate_sublinks']) && isset($_POST['sublink_type']) && $_POST
 		}else{
 			$message .= LAN_CREATED_FAILED. " ($name)<br />";
 		}
-
 		$count++;
 	}
 
     if($message){
 		$ns -> tablerender(LAN_CREATED, $message);
 	}
-
-
-
 }
-
-
-
-
-
-
-
-
 
 if (isset($_POST['inc'])) {
 	$qs = explode(".", $_POST['inc']);
@@ -156,9 +147,12 @@ if (isset($_POST['add_link'])) {
 	unset($id);
 }
 
+$linkArray = $linkpost->getLinks();
+
  if ($action == 'create' || isset($_POST['create'])) {
 	$linkpost->create_link($sub_action, $id);
 }
+
 
 if (!e_QUERY && !isset($_POST['create']) || $action == 'main') {
 	$linkpost->show_existing_items();
@@ -177,10 +171,76 @@ exit;
 
 // End ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-class links {
-	function show_existing_items() {
-		global $sql, $rs, $ns, $tp;
-		if ($link_total = $sql->db_Select("links", "*", "ORDER BY link_order, link_id ASC", "nowhere")) {
+class links
+{
+	var $link_total;
+	
+	function getLinks()
+	{
+		global $sql;
+		if($this->link_total = $sql->db_Select("links", "*", "ORDER BY link_order, link_id ASC", "nowhere"))
+		{
+			while($row = $sql->db_Fetch())
+			{
+				$ret[$row['link_parent']][] = $row;
+			}
+		}
+		return $ret;
+	}
+
+
+	function linkName($text)
+	{
+		if(substr($text, 0, 8) == "submenu.")
+		{
+			$tmp = explode(".",$text);
+			return $tmp[2];
+		}
+		else
+		{
+			return $text;
+		}
+	}
+
+	function dropdown($curval="", $id=0, $indent=0)
+	{
+		global $linkArray;
+		if(0 == $indent) {$ret = "<option value=''>".LINKLAN_3."</option>\n";}
+		foreach($linkArray[$id] as $l)
+		{
+			$s = ($l['link_id'] == $curval ? " selected='selected' " : "" );
+			$ret .= "<option value='{$l['link_id']}|".$this->linkName($l['link_name'])."' {$s}>".str_pad("", $indent*36, "&nbsp;").$this->linkName($l['link_name'])."</option>\n";
+			if(array_key_exists($l['link_id'], $linkArray))
+			{
+				$ret .= $this->dropdown($curval, $l['link_id'], $indent+1);
+			}
+		}
+		return $ret;
+	}
+			
+
+	function existing($id=0, $level=0)
+	{
+		global $linkArray;
+		$ret = "";
+		foreach($linkArray[$id] as $l)
+		{
+			$s = ($l['link_parent'] == $curval ? " selected='selected' " : "" );
+			$ret .= $this->display_row($l, $level);
+			if(array_key_exists($l['link_id'], $linkArray))
+			{
+				$ret .= $this->existing($l['link_id'], $level+1);
+			}
+		}
+		return $ret;
+	}
+
+	function show_existing_items()
+	{
+		global $sql, $rs, $ns, $tp, $linkArray;
+		if (count($linkArray))
+		{
+//			ink_total = $sql->db_Select("links", "*", "ORDER BY link_order, link_id ASC", "nowhere")) {
 			$text = $rs->form_open("post", e_SELF, "myform_{$link_id}", "", "");
 			$text .= "<div style='text-align:center'>
 				<table class='fborder' style='".ADMIN_WIDTH."'>
@@ -192,6 +252,9 @@ class links {
 				<td class='fcaption' style='width:5%'>".LCLAN_91."</td>
 				<td class='fcaption' style='width:5%'>".LAN_ORDER."</td>
 				</tr>";
+				$text .= $this->existing(0);
+				
+/*
 			while ($row = $sql->db_Fetch()) {
 				if($row['link_parent'] ==0){
 					$linklist['head_menu'][] = $row;
@@ -218,7 +281,7 @@ class links {
 					}
 				}
 			}
-
+*/
 			$text .= "<tr>
 				<td class='forumheader' colspan='6' style='text-align:center'><input class='button' type='submit' name='update' value='".LAN_UPDATE."' /></td>
 				</tr>";
@@ -231,7 +294,7 @@ class links {
 	}
 
 	function display_row($row2, $indent = FALSE) {
-		global $sql, $rs, $ns, $tp,$parents,$link_total;
+		global $sql, $rs, $ns, $tp, $linkArray;
 		extract($row2);
 		if(strpos($link_name, "submenu.") !== FALSE || $link_parent !=0){
 			if(substr($link_name,0,8) == "submenu."){
@@ -261,8 +324,9 @@ class links {
 				</table>
 				</td>";
 				$text .= "<td style='width:15%; text-align:center; white-space: nowrap' class='forumheader3'>";
-				$text .= $rs->form_button("button", "main_edit_{$link_id}", LAN_EDIT, "onclick=\"document.location='".e_SELF."?create.edit.$link_id'\"");
-				$text .= $rs->form_button("submit", "main_delete_".$link_id, LAN_DELETE, "onclick=\"return jsconfirm('".$tp->toJS(LCLAN_58." [ $link_name ]")."')\"");
+				$text .= "<a href='".e_SELF."?create.sub.{$link_id}'><img src='".e_IMAGE."admin_images/downloads_16.png' title='".LINKLAN_10."' alt='".LINKLAN_10."' /></a>&nbsp;";
+				$text .= "<a href='".e_SELF."?create.edit.{$link_id}'>".ADMIN_EDIT_ICON."</a>&nbsp;";
+				$text .= "<input type='image' title='".LAN_DELETE."' name='main_delete_{$link_id}' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(LCLAN_58." [ $link_name ]")."') \" />";
 				$text .= "</td>";
 				$text .= "<td style='width:10%; text-align:center' class='forumheader3'>".r_userclass("link_class[".$link_id."]", $link_class, "off", "public,guest,nobody,member,admin,classes")."</td>";
 				$text .= "<td style='width:5%; text-align:center; white-space: nowrap' class='forumheader3'>";
@@ -271,7 +335,7 @@ class links {
 				$text .= "</td>";
 				$text .= "<td style='width:5%; text-align:center' class='forumheader3'>";
 				$text .= "<select name='link_order[]' class='tbox'>\n";
-				for($a = 1; $a <= $link_total; $a++) {
+				for($a = 1; $a <= $this->link_total; $a++) {
 					$selected = ($link_order == $a) ? "selected='selected'" : "";
 					$text .= "<option value='".$link_id.".".$a."' $selected>".$a."</option>\n";
 				}
@@ -290,15 +354,21 @@ class links {
 
 	function create_link($sub_action, $id) {
 		global $sql, $rs, $ns, $pst;
-
 		$preset = $pst->read_preset("admin_links");
 		extract($preset);
 
-		if ($sub_action == "edit" && !$_POST['submit']) {
-			if ($sql->db_Select("links", "*", "link_id='$id' ")) {
+		if ($sub_action == "edit" && !$_POST['submit'])
+		{
+			if ($sql->db_Select("links", "*", "link_id='$id' "))
+			{
 				$row = $sql->db_Fetch();
 				extract($row);
 			}
+		}
+
+		if("sub" == $sub_action)
+		{
+			$link_parent = $id;
 		}
 
 		if(strpos($link_name, "submenu.") !== FALSE){
@@ -321,8 +391,10 @@ class links {
 		$text .= "<tr>
 			<td style='width:30%' class='forumheader3'>".LINKLAN_2.": </td>
 			<td style='width:70%' class='forumheader3'>
-			<select class='tbox' name='link_parent' >
-			<option value=''>".LINKLAN_3."</option>";
+			<select class='tbox' name='link_parent' >";
+			$text .= $this->dropdown($link_parent);
+
+/*
 			$sql -> db_Select("links", "*", "ORDER BY link_name","nowhere");
 			while($row = $sql-> db_Fetch()){
 				if($row['link_parent'] ==0){
@@ -353,6 +425,7 @@ class links {
 				}
 			}
 
+*/
 		$text .= "</select></td>
 			</tr>
 			<tr>
@@ -603,12 +676,12 @@ function sublink_list($name=""){
 	$sublink_type['news']['title'] = LINKLAN_8; // "News Categories";
 	$sublink_type['news']['table'] = "news_category";
 	$sublink_type['news']['query'] = "category_id !='-2' ORDER BY category_name ASC";
-    $sublink_type['news']['url'] = "news.php?cat.#";
+	$sublink_type['news']['url'] = "news.php?cat.#";
 	$sublink_type['news']['fieldid'] = "category_id";
 	$sublink_type['news']['fieldname'] = "category_name";
 	$sublink_type['news']['fieldicon'] = "category_icon";
 
-    $sublink_type['downloads']['title'] = LINKLAN_9; //"Download Categories";
+	$sublink_type['downloads']['title'] = LINKLAN_9; //"Download Categories";
 	$sublink_type['downloads']['table'] = "download_category";
 	$sublink_type['downloads']['query'] = "download_category_parent ='0' ORDER BY download_category_name ASC";
 	$sublink_type['downloads']['url'] =   "download.php?list.#";

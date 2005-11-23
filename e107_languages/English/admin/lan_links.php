@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_links.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-28 20:17:46 $
-|     $Author: stevedunstan $
+|     $Revision: 1.13 $
+|     $Date: 2005-11-23 18:08:28 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("LCLAN_1", "Options Saved");
@@ -62,5 +62,6 @@ define("LINKLAN_6", "Create sublinks from:");
 define("LINKLAN_7", "Create sublinks under which link?");
 define("LINKLAN_8", "News Categories");
 define("LINKLAN_9", "Download Categories");
+define("LINKLAN_10", "Create Sublink");
 
 ?>
