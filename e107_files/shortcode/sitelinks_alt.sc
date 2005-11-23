@@ -3,15 +3,16 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-11-23 16:17:03 $
+|     $Revision: 1.29 $
+|     $Date: 2005-11-23 17:04:59 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
 	global $sql, $pref;
-	if (isset($parm) && $parm && $parm != 'no_icons') {
-		$icon = $parm;
+	$params = explode('+', $parm);
+	if (isset($params[0]) && $params[0] && $params[0] != 'no_icons' && $params[0] != 'default') {
+		$icon = $params[0];
 	} else {
 		$icon = e_IMAGE."generic/".IMODE."/arrow.png";
 	}
@@ -41,7 +42,7 @@
 		return $text;
 	}
 
-	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $cat_open=FALSE) {
+	function adnav_main($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $params, $cat_open=FALSE) {
 		global $tp;
 		$cat_link = (strpos($cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
 		
@@ -54,7 +55,11 @@
 		
 		$text = "<a class='menuItem' ".$href." ";
 		if ($cat_id) {
-			$text .= "onclick=\"return false;\" onmouseover=\"menuItemMouseover(event, '".$cat_id."');\"";
+			if ($params[2] == 'link') {
+				$text .= "onmouseover=\"menuItemMouseover(event, '".$cat_id."');\"";
+			} else {
+				$text .= "onclick=\"return false;\" onmouseover=\"menuItemMouseover(event, '".$cat_id."');\"";
+			}
 		}
 		if ($cat_open == 1){
 			$text .= " rel='external' ";
@@ -71,10 +76,11 @@
 		return $text;
 	}
 
-	if (file_exists(THEME.'nav_menu.js')) {
-		$text = "<script type='text/javascript' src='".THEME_ABS."nav_menu.js'></script>";
+	$js_file = ($params[1] == 'noclick') ? 'nav_menu_alt.js' : 'nav_menu.js';
+	if (file_exists(THEME.$js_file)) {
+		$text = "<script type='text/javascript' src='".THEME_ABS.$js_file."'></script>";
 	} else {
-		$text = "<script type='text/javascript' src='".e_FILE_ABS."nav_menu.js'></script>";
+		$text = "<script type='text/javascript' src='".e_FILE_ABS.$js_file."'></script>";
 	}
 	$text .= "<div class='menuBar' style='width:100%; white-space: nowrap'>";
 
@@ -96,7 +102,7 @@
 
     foreach ($linklist['head_menu'] as $lk) {
 
-		if ($parm == 'no_icons') {
+		if ($params[0] == 'no_icons') {
 			$link_icon = 'no_icons';
 		} else {
 			$link_icon = $lk['link_button'] ? e_IMAGE.'icons/'.$lk['link_button'] : $icon;
@@ -106,7 +112,7 @@
 		if ($linklist['sub_'.$main_linkid]) {  // Has Children.
 
 			$text .= adnav_cat($lk['link_name'], '', $link_icon, 'l_'.$main_linkid);
-			$text .= render_sub($linklist, $main_linkid);
+			$text .= render_sub($linklist, $main_linkid, $params, $icon);
 
 		} else {
 
@@ -121,8 +127,7 @@
 
 	return $text;
 	
-	function render_sub($linklist, $id) {
-		global $parm, $icon;
+	function render_sub($linklist, $id, $params, $icon) {
 		$text = "<div id='l_".$id."' class='menu' onmouseover=\"menuMouseover(event)\">";
 			foreach ($linklist['sub_'.$id] as $sub) {
 				// Filter title for backwards compatibility ---->
@@ -136,7 +141,7 @@
 
 				// Setup Child Icon --------->
 
-                if (!$sub['link_button'] && $parm == 'no_icons') {
+                if (!$sub['link_button'] && $params[0] == 'no_icons') {
 					$sub_icon = 'no_icons';
 				} else {
 					$sub_icon = "<img src='";
@@ -145,16 +150,16 @@
 				}
 				if ($linklist['sub_'.$sub['link_id']]) {  // Has Children.
 					$sub_ids[] = $sub['link_id'];
-					$text .= adnav_main($subname, $sub['link_url'], $sub_icon, 'l_'.$sub['link_id'], $sub['link_open']);
+					$text .= adnav_main($subname, $sub['link_url'], $sub_icon, 'l_'.$sub['link_id'], $params, $sub['link_open']);
 				} else {
-					$text .= adnav_main($subname, $sub['link_url'], $sub_icon, null, $sub['link_open']);
+					$text .= adnav_main($subname, $sub['link_url'], $sub_icon, null, $params, $sub['link_open']);
 				}
 
 			}
 			$text .= "</div>";
 			
 			foreach ($sub_ids as $sub_id) {
-				$text .= render_sub($linklist, $sub_id);
+				$text .= render_sub($linklist, $sub_id, $params, $icon);
 			}
 			
 			return $text;
