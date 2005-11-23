@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-11-05 02:15:54 $
+|     $Revision: 1.15 $
+|     $Date: 2005-11-23 21:11:31 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -186,7 +186,7 @@ $text .= "
 $text .= "
 	<tr>
 	<td class='forumheader3'>".UCSLAN_24."</td>
-	<td class='forumheader3'>".r_userclass("userclass_editclass", $userclass_editclass, "off", "admin,classes,matchclass,public")."</td>
+	<td class='forumheader3'>".r_userclass("userclass_editclass", $userclass_editclass, "off", "admin,classes,matchclass,public,nobody")."</td>
 	</tr>
 	";
 
