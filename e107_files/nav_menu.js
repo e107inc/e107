@@ -176,7 +176,7 @@ function depressButton(button) {
 
   if (browser.isIE) {
     x += button.offsetParent.clientLeft;
-    y += button.offsetParent.clientTop;
+    y += button.offsetParent.clientTop - 1;
   }
 
   button.menu.style.left = x + "px";
