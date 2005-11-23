@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.231 $
-|     $Date: 2005-11-14 02:40:16 $
-|     $Author: sweetas $
+|     $Revision: 1.232 $
+|     $Date: 2005-11-23 14:36:35 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -68,6 +68,7 @@ if(!isset($ADMIN_DIRECTORY)){
 e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'/e107_class.php');
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
 $e107 = new e107($e107_paths, realpath(dirname(__FILE__)));
+
 
 $inArray = array("'", ";", "/**/", "/UNION/", "/SELECT/", "AS ");
 if (strpos($_SERVER['PHP_SELF'], "trackback") === FALSE)
@@ -205,8 +206,8 @@ if(!$PrefCache){
 		} else {
 			message_handler("CRITICAL_ERROR", 3, __LINE__, __FILE__);
 			// auto backup found, use backup to restore the core
-			if(!$sql->db_Update('core', "`e107_value` = '".addslashes($PrefStored)."' WHERE `e107_name` = 'SitePrefs'")){
-				$sql->db_Insert('core', "'SitePrefs', '".addslashes($PrefStored)."'");
+			if(!$sql->db_Update('core', "`e107_value` = '".addslashes($PrefData)."' WHERE `e107_name` = 'SitePrefs'")){
+				$sql->db_Insert('core', "'SitePrefs', '".addslashes($PrefData)."'");
 			}
 		}
 	}
@@ -821,7 +822,7 @@ function get_user_data($uid, $extra = "", $force_join = TRUE)
 				cachevars("extended_struct", $extended_struct);
 			}
 		}
-		
+
 		foreach($extended_struct as $row)
 		{
 			if($row['Default'] != "" && ($var[$row['Field']] == NULL || $var[$row['Field']] == "" ))
@@ -1056,7 +1057,7 @@ function init_session() {
 			define("LOGINMESSAGE", "Corrupted cookie detected - logged out.<br /><br />");
 			return (FALSE);
 		}
-		
+
 		if($result = get_user_data($uid, "AND md5(u.user_password)='{$upw}'", FALSE))
 		{
 			$currentUser = $result;
