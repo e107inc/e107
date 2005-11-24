@@ -8,14 +8,14 @@ define("LANINS_003", "1");
 define("LANINS_004", "Language Selection");
 define("LANINS_005", "Please choose language to use during installation procedure");
 define("LANINS_006", "Set Language");
-define("LANINS_007", "2");
+define("LANINS_007", "4");
 define("LANINS_008", "PHP &amp; MySQL Versions Check / File Permissions Check");
 define("LANINS_009", "Retest File Permissions");
 define("LANINS_010", "File not writable: ");
 define("LANINS_010a", "Folder not writable: ");
 define("LANINS_011", "Error");
-define("LANINS_012", "MySQL Functions don't seem to exists. This probably means that either the MySQL PHP Extension isn't isntalled or isn't configured correctly."); // help for 012
-define("LANINS_013", "Couldn't determine your MySQL version number. This could mean that your MySQL server is down, or refusing connections.");
+define("LANINS_012", "MySQL Functions don't seem to exists. This probably means that either the MySQL PHP Extension isn't isntalled or you PHP installation wasn't compiled with MySQL support."); // help for 012
+define("LANINS_013", "Couldn't determine your MySQL version number. Please continue installation, but be aware .");
 define("LANINS_014", "File Permissions");
 define("LANINS_015", "PHP Version");
 define("LANINS_016", "MySQL");
@@ -23,10 +23,10 @@ define("LANINS_017", "PASS");
 define("LANINS_018", "Make ensure all the listed files exist and are writable by the server. This normally involves CHMODing them 777, but environments vary - contact your host if you have any problems.");
 define("LANINS_019", "The version of PHP installed on your server isn't capable of running e107. e107 requires a PHP version of at least 4.3.0 to run correctly. Either upgrade your PHP version, or contact your host for an upgrade.");
 define("LANINS_020", "Continue Installation");
-define("LANINS_021", "3");
+define("LANINS_021", "2");
 define("LANINS_022", "MySQL Server Details");
 define("LANINS_023", "Please enter your MySQL settings here.
-			  
+
 If you have root permissions you can create a new database by ticking the box, if not you must create a database or use a pre-existing one.
 
 If you have only one database use a prefix so that other scripts can share the same database.
@@ -43,7 +43,7 @@ define("LANINS_032", "The Password for the user you just entered");
 define("LANINS_033", "The MySQL database you wish e107 to reside in, sometimes refered to as a schema. If the user has database create permissions you can opt to create the database automatically if it doesn't already exsist.");
 define("LANINS_034", "The prefix you wish for e107 to use when creating the e107 tables. Useful for multiple installs of e107 in one database schema.");
 define("LANINS_035", "Continue");
-define("LANINS_036", "4");
+define("LANINS_036", "3");
 define("LANINS_037", "MySQL Connection Verification");
 define("LANINS_038", " and Database Creation");
 define("LANINS_039", "Please make sure you fill in all fields, most importantly, MySQL Server, MySQL Username and MySQL Database (These are always required by the MySQL Server)");
