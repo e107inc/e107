@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.155 $
-|     $Date: 2005-11-24 12:10:04 $
+|     $Revision: 1.156 $
+|     $Date: 2005-11-24 13:55:00 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -577,7 +577,7 @@ function update_617_to_700($type='') {
 		Moving forum rules from wmessage table to generic table
 		*/
 		if ($error=='') {
-			if($sql->db_Select("wmessage"))
+			if($sql -> db_Select("wmessage"))
 			{
 				while($row = $sql->db_Fetch())
 				{
@@ -610,10 +610,8 @@ function update_617_to_700($type='') {
 						$sql->db_Insert('generic',$fieldlist);
 					}
 				}
-			}
-
-			if(mysql_query('DROP TABLE '.MPREFIX.'wmessage')){  // table wmessage is no longer needed.
-					$error.= (mysql_error()!='') ? mysql_error() : "";
+				$sql -> db_Select_gen("DROP TABLE ".MPREFIX."wmessage");
+				catch_error();
 			}
 		}
 
