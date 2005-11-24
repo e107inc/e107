@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_download.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-06-10 19:47:19 $
-|     $Author: e107coders $
+|     $Revision: 1.12 $
+|     $Date: 2005-11-24 12:10:04 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("DOWLAN_1", "Download added to database.");
@@ -130,5 +130,7 @@ define("DOWLAN_146", "Custom Download-denial message or URL");
 define("DOWLAN_147", "Icon for empty category");
 define("DOWLAN_148", "Check to update datestamp to current time");
 define("DOWLAN_149", "Or click here to use an external file");
+
+define("DOWLAN_150", "Email admin when broken download reported");
 
 ?>

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2005-11-24 11:53:41 $
+|     $Revision: 1.56 $
+|     $Date: 2005-11-24 12:10:03 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -527,7 +527,7 @@ if ($action == "report") {
 		$download_name = $tp -> toDB($download_name);
 		$user = USER ? USERNAME : LAN_dl_52;
 		
-		if ($pref['reported_post_email']) {
+		if ($pref['download_email']) {
 			require_once(e_HANDLER."mail.php");
 			$subject = LAN_dl_60." ".SITENAME;
 			$report = LAN_dl_58." ".SITENAME.":\n".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/")."download.php?view.".$download_id."\n

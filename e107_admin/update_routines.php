@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.154 $
-|     $Date: 2005-11-21 16:15:28 $
+|     $Revision: 1.155 $
+|     $Date: 2005-11-24 12:10:04 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -1177,6 +1177,13 @@ function update_617_to_700($type='') {
 			mysql_query("ALTER TABLE `".MPREFIX."forum_t` ADD INDEX ( `thread_forum_id` );");
 			catch_error();
 		}
+		
+		if ($error=='') {
+			if (!isset($pref['download_email'])) {
+				$pref['download_email'] = $pref['reported_post_email'];
+				$s_prefs = TRUE;
+			}
+		}
 
 		// -----------------------------------------------------
 
@@ -1195,7 +1202,11 @@ function update_617_to_700($type='') {
 
 
 // Check if update is needed to 0.7. -----------------------------------------------
-
+		global $pref;
+		if (!isset($pref['download_email'])) {
+			return update_needed();
+		}
+		
 		if($sql -> db_Select("menus", "*", "menu_pages='dbcustom'")) {
 			return update_needed();
 		}
