@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Romanian/lan_forum.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-09 19:29:49 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-24 07:54:55 $
 |     $Author: Bogdan M. Botezatu (Sphynx)
 |      updated by i2gh0st
 +----------------------------------------------------------------------------+
@@ -42,7 +42,7 @@ define("LAN_196", "aţi citit ");
 define("LAN_197", " din aceste mesaje.");
 define("LAN_198", " Toate mesajele noi au fost cititie.");
 define("LAN_199", "Marcaţi toate mesajele ca citite");
-define("LAN_204", "<b>Puteţi</b> iniţia noi iubiecte");
+define("LAN_204", "<b>Puteţi</b> iniţia noi subiecte");
 define("LAN_205", "<b>Nu puteţi</b> iniţia noi subiecte");
 define("LAN_206", "<b>Puteţi</b> trimite răspunsuri");
 define("LAN_207", "<b>Nu puteţi</b> trimite răspunsuri");

@@ -11,20 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/online_extended_menu/languages/Romanian.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-10-23 17:27:48 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-24 07:54:55 $
 |     $Author: Bogdan M. Botezatu (Sphynx)
 +----------------------------------------------------------------------------+
 */
 	
 define("ONLINE_EL1", "Vizitatori: ");
-define("ONLINE_EL2", "Membri: ");
-define("ONLINE_EL3", "Pe această pagină: ");
+define("ONLINE_EL2", "Membrii: ");
+define("ONLINE_EL3", "Pe această pagina: ");
 define("ONLINE_EL4", "Online");
-define("ONLINE_EL5", "membri");
+define("ONLINE_EL5", "membrii");
 define("ONLINE_EL6", "Cel mai nou membru");
-define("ONLINE_EL7", "vizualizează");
+define("ONLINE_EL7", "vizualizeaza");
 	
-define("ONLINE_EL8", "cei mai mulţi online: ");
+define("ONLINE_EL8", "Cei mai multi online: ");
 define("ONLINE_EL9", "pe");
 ?>
