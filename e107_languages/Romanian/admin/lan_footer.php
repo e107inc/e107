@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/admin/lan_footer.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-10-23 17:16:21 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-24 06:21:12 $
 |     $Author: Bogdan M. Botezatu (Sphynx)
 +----------------------------------------------------------------------------+
 */
@@ -16,14 +16,15 @@ define("FOOTLAN_4", "compilat");
 define("FOOTLAN_5", "Tema");
 define("FOOTLAN_6", "de");
 define("FOOTLAN_7", "Informaţii");
-define("FOOTLAN_8", "Dată instalare");
+define("FOOTLAN_8", "Data instalare");
 define("FOOTLAN_9", "Server");
-define("FOOTLAN_10", "Gazdă");
+define("FOOTLAN_10", "Gazda");
 define("FOOTLAN_11", "Versiune PHP");
 define("FOOTLAN_12", "MySQL");
-define("FOOTLAN_13", "Informaţii site");
-define("FOOTLAN_14", "Afişare documente");
-define("FOOTLAN_15", "Documentaţie");
-define("FOOTLAN_16", "Bază de date");
+define("FOOTLAN_13", "Informatii site");
+define("FOOTLAN_14", "Afisare documente");
+define("FOOTLAN_15", "Documentatie");
+define("FOOTLAN_16", "Baza de date");
+define("FOOTLAN_17", "Format");
 
 ?>
