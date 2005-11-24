@@ -128,6 +128,8 @@ define("PRFLAN_141", "Gebruik van XMP User Profiles bij registratie toestaan");
 define("PRFLAN_142", "Alleen Flood");
 define("PRFLAN_143", "Alleen mislukte aanlogpogingen");
 define("PRFLAN_144", "Flood & mislukte aanlogpogingen");
+define("PRFLAN_145", "Links in nieuw venster");
+define("PRFLAN_146", "Deze optie aankruisen om alle links in een nieuw venster te openen(<i>geldt voor de hele site</i>). ");
 
 define("CUSTSIG_1", "Instellingen opgeslagen!");
 define("CUSTSIG_2", "Echte naam:");

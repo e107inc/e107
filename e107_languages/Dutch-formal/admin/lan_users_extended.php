@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch-formal/admin/lan_users_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-16 15:18:02 $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-24 06:00:27 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -73,6 +73,9 @@ define("EXTLAN_61", "Geen");
 define("EXTLAN_62", "Tabel");
 define("EXTLAN_63", "Veld id");
 define("EXTLAN_64", "Toon waarde");
+define("EXTLAN_65", "Nee - wordt niet getoond op aanmeldpagina");
+define("EXTLAN_66", "Ja - wordt getoond op aanmeldpagina");
+define("EXTLAN_67", "Nee - tonen op aanmeldpagina");
 
 define("EXTLAN_HELP_1", "<b><i>Parameters:</i></b><br />size - lengte van het veld<br />maxlength - max lengte van veld<br /><br />class - css klasse van veld<br />style - css style tekst<br /><br />regex - regex validatie code<br />regexfail - validatie foutboodschap ");
 define("EXTLAN_HELP_2", "Dit wordt de radioknop hulptekst");

@@ -7,5 +7,5 @@ define("LAN_UPDATE_7", "Uitvoeren");
 define("LAN_UPDATE_8", "Update van");
 define("LAN_UPDATE_9", "naar");
 define("LAN_UPDATE_10", "Beschikbare updates");
-
+define("LAN_UPDATE_11", ".617 naar .7 update voortgezet");
 ?>
