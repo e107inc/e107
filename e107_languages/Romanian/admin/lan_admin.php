@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Romanian/admin/lan_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-10-23 17:16:21 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-24 06:15:39 $
 |     $Author: Bogdan M. Botezatu (Sphynx)
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ define("ADLAN_48", "Autentificat");
 define("ADLAN_49", "administrator principal site");
 define("ADLAN_50", "permisiuni");
 define("ADLAN_51", "Vă rugăm să vă autentificaţi pentru a putea accesa zona de administrare");
-define("ADLAN_52", "Index administrare");
+define("ADLAN_52", "Index admin");
 define("ADLAN_53", "Ieşire admin");
 define("ADLAN_54", "Bannere");
 define("ADLAN_55", "Configurare bannere");
