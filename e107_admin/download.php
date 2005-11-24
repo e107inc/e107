@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2005-11-04 01:01:29 $
+|     $Revision: 1.70 $
+|     $Date: 2005-11-24 12:10:04 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -127,6 +127,7 @@ if (isset($_POST['updateoptions']))
 	$pref['download_sort'] = $_POST['download_sort'];
 	$pref['download_order'] = $_POST['download_order'];
 	$pref['agree_flag'] = $_POST['agree_flag'];
+	$pref['download_email'] = $_POST['download_email'];
 	$pref['agree_text'] = $tp->toDB($_POST['agree_text']);
 	$pref['download_denied'] = $tp->toDB($_POST['download_denied']);
 	save_prefs();
@@ -278,6 +279,11 @@ if ($action == "opt") {
 		<select name='download_sort' class='tbox'>". ($pref['download_sort'] == "ASC" ? "<option value='ASC' selected='selected'>".DOWLAN_62."</option>" : "<option value='ASC'>".DOWLAN_62."</option>"). ($pref['download_sort'] == "DESC" ? "<option value='DESC' selected='selected'>".DOWLAN_63."</option>" : "<option value='DESC'>".DOWLAN_63."</option>")."
 		</select>
 		</td>
+		</tr>
+		
+		<tr>
+		<td style='width:70%' class='forumheader3'>".DOWLAN_150."</td>
+		<td class='forumheader3' style='width:30%;text-align:left'>". ($pref['download_email'] ? "<input type='checkbox' name='download_email' value='1' checked='checked' />" : "<input type='checkbox' name='download_email' value='1' />")."</td>
 		</tr>
 
 		<tr>

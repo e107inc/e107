@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-11-04 22:50:19 $
+|     $Revision: 1.39 $
+|     $Date: 2005-11-24 12:10:04 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -134,5 +134,7 @@ $pref['search_highlight'] = 1;
 
 $pref['mail_pause'] = 3;
 $pref['mail_pausetime'] = 4;
+
+$pref['download_email'] = 0;
 
 ?>
