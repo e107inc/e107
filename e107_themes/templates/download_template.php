@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-11-01 01:21:51 $
+|     $Revision: 1.10 $
+|     $Date: 2005-11-24 11:20:09 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -268,13 +268,17 @@ if(!$DOWNLOAD_VIEW_TABLE){
 		<tr>
 		<td style='width:20%' class='forumheader3'>{DOWNLOAD_VIEW_RATING_LAN}</td>
 		<td style='width:80%' class='forumheader3'>{DOWNLOAD_VIEW_RATING}</td>
+		</tr>
+		
+		<tr>
+		<td style='width:20%' class='forumheader3' colspan='2'>{DOWNLOAD_REPORT_LINK}</td>
 		</tr>";
 }
 
 if(!$DOWNLOAD_VIEW_TABLE_END){
 		$DOWNLOAD_VIEW_TABLE_END = "
 		</table>
-		<div style='text-align:right'>{DOWNLOAD_ADMIN_EDIT}&nbsp;&nbsp;</div> 
+		<div style='text-align:right; width: 95%; margin-left: auto; margin-right: auto'>{DOWNLOAD_ADMIN_EDIT}</div> 
 		</div>\n";
 }
 // ##### ------------------------------------------------------------------------------------------

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-09-29 01:26:47 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.53 $
+|     $Date: 2005-11-24 11:20:09 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -487,13 +487,15 @@ if ($action == "view") {
 
 	if ($prev || $next) {
 		$text .= "
-			<table style='width:100%'>
+		<div style='text-align:center'>
+			<table style='width:95%'>
 			<tr>
 			<td style='width:40%;'>{$prev}</td>
 			<td style='width:20%; text-align: center;'><a href='".e_SELF."?list.{$download_category}'>".LAN_dl_35."</a></td>
 			<td style='width:40%; text-align: right;'>{$next}</td>
 			</tr>
 			</table>
+			</div>
 			";
 	}
 
