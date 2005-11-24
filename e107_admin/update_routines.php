@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.156 $
-|     $Date: 2005-11-24 13:55:00 $
+|     $Revision: 1.157 $
+|     $Date: 2005-11-24 21:22:18 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -585,11 +585,16 @@ function update_617_to_700($type='') {
 				}
 				foreach($wmList as $wm)
 				{
-					$gen_type='wmessage';
-					if($wm['wm_id'] == '4') {$gen_type = 'forum_rules_guest'; $wm_class = $wm['wm_active'] ? e_UC_GUEST : '255'; }
-					if($wm['wm_id'] == '5') {$gen_type = 'forum_rules_member'; $wm_class = $wm['wm_active'] ? e_UC_MEMBER : '255'; }
-					if($wm['wm_id'] == '6') {$gen_type = 'forum_rules_admin'; $wm_class = $wm['wm_active'] ? e_UC_ADMIN : '255'; }
 					$fieldlist = "";
+					$gen_type='wmessage';
+					
+					if($wm['wm_id'] == '1') { $wm_class = $wm['wm_active'] ? e_UC_GUEST : '255'; }
+					if($wm['wm_id'] == '2') { $wm_class = $wm['wm_active'] ? e_UC_MEMBER : '255'; }
+					if($wm['wm_id'] == '3') { $wm_class = $wm['wm_active'] ? e_UC_ADMIN : '255'; }
+					if($wm['wm_id'] == '4') { $gen_type = 'forum_rules_guest'; $wm_class = $wm['wm_active'] ? e_UC_GUEST : '255'; }
+					if($wm['wm_id'] == '5') { $gen_type = 'forum_rules_member'; $wm_class = $wm['wm_active'] ? e_UC_MEMBER : '255'; }
+					if($wm['wm_id'] == '6') { $gen_type = 'forum_rules_admin'; $wm_class = $wm['wm_active'] ? e_UC_ADMIN : '255'; }
+					
 					if($gen_type != "wmessage")
 					{
 						$exists = $sql->db_Count('generic','(*)',"WHERE gen_type = '{$gen_type}'");
@@ -600,10 +605,11 @@ function update_617_to_700($type='') {
 					}
 					else
 					{
-						if($wm['wm_id'] == '1') { $wm_class = $wm['wm_active'] ? e_UC_GUEST : '255'; }
-						if($wm['wm_id'] == '2') { $wm_class = $wm['wm_active'] ? e_UC_MEMBER : '255'; }
-						if($wm['wm_id'] == '3') { $wm_class = $wm['wm_active'] ? e_UC_ADMIN : '255'; }
-						$fieldlist = "0,'wmessage','".time()."','".USERID."','',{$wm_class},'{$wm['wm_text']}'";
+						$exists = $sql->db_Count('generic','(*)',"WHERE gen_type = 'wmessage' AND gen_user_id = '".$wm['wm_id']."'");
+						if(!$exists)
+						{
+							$fieldlist = "0,'wmessage','".time()."','".$wm['wm_id']."','',{$wm_class},'{$wm['wm_text']}'";
+						}
 					}
 					if($fieldlist)
 					{
