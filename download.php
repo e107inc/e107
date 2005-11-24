@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2005-11-24 11:26:27 $
+|     $Revision: 1.55 $
+|     $Date: 2005-11-24 11:53:41 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -513,33 +513,29 @@ if ($action == "view") {
 }
 
 if ($action == "report") {
-
 	if (!$sql->db_Select("download", "*", "download_id = {$id} AND download_active > 0")) {
 		require_once(HEADERF);
 		require_once(FOOTERF);
 		exit;
 	}
 
-	$row = $sql->db_Fetch();
-		extract($row);
+	$row = $sql -> db_Fetch();
+	extract($row);
 
-	if (IsSet($_POST['report_thread'])) {
-
+	if (isset($_POST['report_download'])) {
 		$report_add = $tp -> toDB($_POST['report_add']);
-
+		$download_name = $tp -> toDB($download_name);
+		$user = USER ? USERNAME : LAN_dl_52;
+		
 		if ($pref['reported_post_email']) {
 			require_once(e_HANDLER."mail.php");
-			$report = LAN_dl_58.SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/")."download.php?view.{$download_id}\n".LAN_dl_59."{$user}\n{$report_add}";
 			$subject = LAN_dl_60." ".SITENAME;
+			$report = LAN_dl_58." ".SITENAME.":\n".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/")."download.php?view.".$download_id."\n
+			".LAN_dl_59." ".$user."\n".$report_add;
 			sendemail(SITEADMINEMAIL, $subject, $report);
 		}
 
-		$download_name = $tp -> toDB($_POST['report_download_name']);
-		$user = $tp -> toDB($_POST['user']);
-
-		$clean_report_id = intval($_POST['report_download_id']);
-
-		$sql->db_Insert('generic', "0, 'Broken Download', ".time().",'".USERID."', '{$download_name}', {$clean_report_id}, '{$report_add}'");
+		$sql->db_Insert('generic', "0, 'Broken Download', ".time().",'".USERID."', '{$download_name}', {$id}, '{$report_add}'");
 
 		define("e_PAGETITLE", PAGE_NAME." / ".LAN_dl_47);
 		require_once(HEADERF);
@@ -548,17 +544,16 @@ if ($action == "report") {
 		$ns->tablerender(LAN_dl_50, $text);
 
 	} else {
-		$number = $download_id;
-		$thread_name = $thread_info['head']['thread_name'];
 		define("e_PAGETITLE", PAGE_NAME." / ".LAN_dl_51." ".$download_name);
 		require_once(HEADERF);
-
 
 		$text = "<form action='".e_SELF."?report.{$download_id}' method='post'>
 		<table style='width:100%'>
 			<tr>
 			<td  style='width:50%' >
-			".LAN_dl_32.": ".$download_name." <a href='".e_SELF."?view.{$download_id}'><span class='smalltext'>".LAN_dl_53." </span>
+			".LAN_dl_32.": ".$download_name."<br />
+			<a href='".e_SELF."?view.{$download_id}'>
+			<span class='smalltext'>".LAN_dl_53."</span>
 			</a>
 			</td>
 			<td style='text-align:center;width:50%'>
@@ -573,10 +568,7 @@ if ($action == "report") {
 			</tr>
 			<tr>
 			<td colspan='2' style='text-align:center;'><br />
-			<input type ='hidden' name='user' value='".(USER ? USERNAME : LAN_dl_52)."' />
-			<input type ='hidden' name='report_download_id' value='{$download_id}' />
-			<input type ='hidden' name='report_download_name' value='{$download_name}' />
-			<input class='button' type='submit' name='report_thread' value='".LAN_dl_56."' />
+			<input class='button' type='submit' name='report_download' value='".LAN_dl_56."' />
 			</td>
 			</tr>
 			</table>";
