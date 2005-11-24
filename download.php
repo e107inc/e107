@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2005-11-24 11:20:09 $
+|     $Revision: 1.54 $
+|     $Date: 2005-11-24 11:26:27 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -525,18 +525,15 @@ if ($action == "report") {
 
 	if (IsSet($_POST['report_thread'])) {
 
-
+		$report_add = $tp -> toDB($_POST['report_add']);
 
 		if ($pref['reported_post_email']) {
 			require_once(e_HANDLER."mail.php");
-			$report_add = $tp->toDB($_POST['report_add']);
-			$report = LAN_dl_58.SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/")."download.php?{$download_id}\n".LAN_dl_59."{$user}\n{$report_add}";
+			$report = LAN_dl_58.SITENAME." : ".(substr(SITEURL, -1) == "/" ? SITEURL : SITEURL."/")."download.php?view.{$download_id}\n".LAN_dl_59."{$user}\n{$report_add}";
 			$subject = LAN_dl_60." ".SITENAME;
 			sendemail(SITEADMINEMAIL, $subject, $report);
 		}
 
-
-		$report_add = $tp -> toDB($_POST['report_add']);
 		$download_name = $tp -> toDB($_POST['report_download_name']);
 		$user = $tp -> toDB($_POST['user']);
 
