@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_install/installer_handling_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-09-15 17:46:50 $
-|     $Author: sweetas $
+|     $Revision: 1.17 $
+|     $Date: 2005-11-24 14:52:12 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -68,88 +68,7 @@ class e_install {
 
 	function stage_2(){
 		global $e_forms;
-		$this->previous_steps['language'] = $_POST['language'];
 		$this->stage = 2;
-		$this->get_lan_file();
-		$this->template->SetTag("installation_heading", LANINS_001);
-		$this->template->SetTag("stage_pre", LANINS_002);
-		$this->template->SetTag("stage_num", LANINS_007);
-		$this->template->SetTag("stage_title", LANINS_008);
-		$not_writable = $this->check_writable_perms();
-		if(count($not_writable)) {
-			$perms_pass = false;
-			unset($perms_errors);
-			foreach ($not_writable as $file)
-			{
-				$perms_errors .= (substr($file, -1) == "/" ? LANINS_010a : LANINS_010)."...<br /><b>{$file}</b><br />\n";
-			}
-			$perms_notes = LANINS_018;
-		} else {
-			$perms_pass = true;
-			$perms_errors = "&nbsp;";
-			$perms_notes = LANINS_017;
-		}
-		if(!function_exists("mysql_connect")) {
-			$version_fail = true;
-			$mysql_note = LANINS_011;
-			$mysql_help = LANINS_012;
-		} elseif (!mysql_get_server_info()) {
-			$mysql_note = LANINS_011;
-			$mysql_help = LANINS_013;
-		} else {
-			$mysql_note = mysql_get_server_info();
-			$mysql_help = LANINS_017;
-		}
-		if(!function_exists("utf8_encode")) {
-			$xml_installed = false;
-		} else {
-			$xml_installed = true;
-		}
-
-		$php_version = phpversion();
-		if(version_compare($php_version, $this->required_php, ">=")) {
-			$php_help = LANINS_017;
-		} else {
-			$php_help = LANINS_019;
-		}
-		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
-		if(!$perms_pass) {
-			$e_forms->add_hidden_data("language", $this->post_data['language']);
-			$e_forms->add_button("retest_perms", LANINS_009);
-			$this->stage = 1; // make the installer jump back a step
-		} elseif ($perms_pass && !$version_fail && $xml_installed) {
-			$e_forms->add_button("continue_install", LANINS_020);
-		}
-		$output = "
-			<table style='width: 100%; margin-left: auto; margin-right: auto;'>
-			  <tr>
-			    <td style='width: 20%;'>".LANINS_014."</td>
-			    <td style='width: 40%;'>{$perms_errors}</td>
-			    <td style='width: 40%;'>{$perms_notes}</td>
-			  </tr>
-			  <tr>
-			    <td>".LANINS_015."</td>
-			    <td>{$php_version}</td>
-			    <td>{$php_help}</td>
-			  </tr>
-			  <tr>
-			    <td>".LANINS_016."</td>
-			    <td>{$mysql_note}</td>
-			    <td>{$mysql_help}</td>
-			  </tr>
-			  <tr>
-			    <td>".LANINS_050."</td>
-			    <td>".($xml_installed ? LANINS_051 : LANINS_052)."</td>
-			    <td>".($xml_installed ? LANINS_017 : LANINS_053."<a href='http://php.net/manual/en/ref.xml.php' target='_blank'>php.net</a>".LANINS_054)."</td>
-			  </tr>
-			</table>\n<br /><br />\n\n";
-		$this->finish_form();
-		$this->template->SetTag("stage_content", $output.$e_forms->return_form());
-	}
-
-	function stage_3(){
-		global $e_forms;
-		$this->stage = 3;
 		$this->get_lan_file();
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
@@ -196,9 +115,9 @@ class e_install {
 		$this->template->SetTag("stage_content", $page_info.$e_forms->return_form());
 	}
 
-	function stage_4(){
+	function stage_3(){
 		global $e_forms;
-		$this->stage = 4;
+		$this->stage = 3;
 		$this->get_lan_file();
 		$this->template->SetTag("installation_heading", LANINS_001);
 		$this->template->SetTag("stage_pre", LANINS_002);
@@ -283,6 +202,89 @@ class e_install {
 		$this->finish_form();
 		$this->template->SetTag("stage_content", $head.$e_forms->return_form());
 	}
+
+	function stage_4(){
+		global $e_forms;
+		$this->previous_steps['language'] = $_POST['language'];
+		$this->stage = 4;
+		$this->get_lan_file();
+		$this->template->SetTag("installation_heading", LANINS_001);
+		$this->template->SetTag("stage_pre", LANINS_002);
+		$this->template->SetTag("stage_num", LANINS_007);
+		$this->template->SetTag("stage_title", LANINS_008);
+		$not_writable = $this->check_writable_perms();
+		if(count($not_writable)) {
+			$perms_pass = false;
+			unset($perms_errors);
+			foreach ($not_writable as $file)
+			{
+				$perms_errors .= (substr($file, -1) == "/" ? LANINS_010a : LANINS_010)."...<br /><b>{$file}</b><br />\n";
+			}
+			$perms_notes = LANINS_018;
+		} else {
+			$perms_pass = true;
+			$perms_errors = "&nbsp;";
+			$perms_notes = LANINS_017;
+		}
+		if(!function_exists("mysql_connect")) {
+			$version_fail = true;
+			$mysql_note = LANINS_011;
+			$mysql_help = LANINS_012;
+		} elseif (!@mysql_connect($this->previous_steps['mysql']['server'], $this->previous_steps['mysql']['user'], $this->previous_steps['mysql']['password'])) {
+			$mysql_note = LANINS_011;
+			$mysql_help = LANINS_013;
+		} else {
+			$mysql_note = mysql_get_server_info();
+			$mysql_help = LANINS_017;
+		}
+		if(!function_exists("utf8_encode")) {
+			$xml_installed = false;
+		} else {
+			$xml_installed = true;
+		}
+
+		$php_version = phpversion();
+		if(version_compare($php_version, $this->required_php, ">=")) {
+			$php_help = LANINS_017;
+		} else {
+			$php_help = LANINS_019;
+		}
+		$e_forms->start_form("versions", $_SERVER['PHP_SELF'].($_SERVER['QUERY_STRING'] == "debug" ? "?debug" : ""));
+		if(!$perms_pass) {
+			$e_forms->add_hidden_data("language", $this->post_data['language']);
+			$e_forms->add_button("retest_perms", LANINS_009);
+			$this->stage = 1; // make the installer jump back a step
+		} elseif ($perms_pass && !$version_fail && $xml_installed) {
+			$e_forms->add_button("continue_install", LANINS_020);
+		}
+		$output = "
+			<table style='width: 100%; margin-left: auto; margin-right: auto;'>
+			  <tr>
+			    <td style='width: 20%;'>".LANINS_014."</td>
+			    <td style='width: 40%;'>{$perms_errors}</td>
+			    <td style='width: 40%;'>{$perms_notes}</td>
+			  </tr>
+			  <tr>
+			    <td>".LANINS_015."</td>
+			    <td>{$php_version}</td>
+			    <td>{$php_help}</td>
+			  </tr>
+			  <tr>
+			    <td>".LANINS_016."</td>
+			    <td>{$mysql_note}</td>
+			    <td>{$mysql_help}</td>
+			  </tr>
+			  <tr>
+			    <td>".LANINS_050."</td>
+			    <td>".($xml_installed ? LANINS_051 : LANINS_052)."</td>
+			    <td>".($xml_installed ? LANINS_017 : LANINS_053."<a href='http://php.net/manual/en/ref.xml.php' target='_blank'>php.net</a>".LANINS_054)."</td>
+			  </tr>
+			</table>\n<br /><br />\n\n";
+		$this->finish_form();
+		$this->template->SetTag("stage_content", $output.$e_forms->return_form());
+	}
+
+
 
 	function stage_5(){
 		global $e_forms;
@@ -543,7 +545,7 @@ This file has been generated by the installation script.
 		$udirs = "admin/|plugins/|temp";
 		$e_SELF = "http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
 		$e_HTTP = preg_replace("#".$udirs."#i", "", substr($e_SELF, 0, strrpos($e_SELF, "/"))."/");
-		
+
 		$pref_language = isset($_POST['installlanguage']) ? $_POST['installlanguage'] : "English";
 
 		if (file_exists($this->e107->e107_dirs['LANGUAGES_DIRECTORY'].$pref_language."/lan_prefs.php")) {
@@ -551,7 +553,7 @@ This file has been generated by the installation script.
 		} else {
 			include_once($this->e107->e107_dirs['LANGUAGES_DIRECTORY']."English/lan_prefs.php");
 		}
-		
+
 		require_once("{$this->e107->e107_dirs['FILES_DIRECTORY']}def_e107_prefs.php");
 
 		include_once("{$this->e107->e107_dirs['HANDLERS_DIRECTORY']}arraystorage_class.php");
