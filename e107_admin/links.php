@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2005-11-23 18:43:31 $
+|     $Revision: 1.52 $
+|     $Date: 2005-11-24 21:20:27 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -149,12 +149,12 @@ if (isset($_POST['add_link'])) {
 
 $linkArray = $linkpost->getLinks();
 
- if ($action == 'create' || isset($_POST['create'])) {
+if ($action == 'create') {
 	$linkpost->create_link($sub_action, $id);
 }
 
 
-if (!e_QUERY && !isset($_POST['create']) || $action == 'main') {
+if (!e_QUERY || $action == 'main') {
 	$linkpost->show_existing_items();
 }
 
@@ -320,7 +320,7 @@ class links
 
 	function show_message($message) {
 		global $ns;
-		$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+		$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".$message."</b></div>");
 	}
 
 	function create_link($sub_action, $id) {
@@ -445,7 +445,7 @@ class links
 		if ($id && $sub_action == "edit") {
 			$text .= "<input class='button' type='submit' name='add_link' value='".LCLAN_27."' />\n<input type='hidden' name='link_id' value='$link_id'>";
 		} else {
-			$text .= "<input class='button' type='submit' name='add_link' value='".LCLAN_28."' />\n<input type='hidden' name='create' value='1'>";
+			$text .= "<input class='button' type='submit' name='add_link' value='".LCLAN_28."' />";
 		}
 		$text .= "</td>
 			</tr>
@@ -460,13 +460,13 @@ class links
 		if(!is_object($tp)) {
 			$tp=new e_parse;
 		}
-
 		if($_POST['link_parent']){
 			$tmp = explode("|",$_POST['link_parent']);
 			$link_name = $tp->toDB(("submenu.".$tmp[1].".".$_POST['link_name']));
-			$parent_id = $tmp[0];
+			$parent_id = intval($tmp[0]);
 		}else{
 			$link_name = $tp->toDB($_POST['link_name']);
+			$parent_id = 0;
 		}
 		$link_url = $tp->toDB($_POST['link_url']);
 		$link_description = $tp->toDB($_POST['link_description']);
@@ -490,7 +490,7 @@ class links
 			$e107cache->clear("sitelinks");
 			$this->show_message(LCLAN_3);
 		} else {
-			$sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', '".$_POST['linkrender']."', '".($link_t+1)."', '$parent_id', '".$_POST['linkopentype']."', '".$_POST['link_class']."'");
+			$sql->db_Insert("links", "0, '$link_name', '$link_url', '$link_description', '$link_button', ".$_POST['linkrender'].", ".($link_t+1).", ".$parent_id.", ".$_POST['linkopentype'].", ".$_POST['link_class']);
 			$e107cache->clear("sitelinks");
 			$this->show_message(LCLAN_2);
 		}
