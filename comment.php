@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-10-10 01:52:12 $
-|     $Author: sweetas $
+|     $Revision: 1.45 $
+|     $Date: 2005-11-24 01:59:16 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -36,6 +36,12 @@ $xid = (isset($temp_query[4]) ? intval($temp_query[4]) : "");
 unset($temp_query);
 
 if (isset($_POST['commentsubmit']) || isset($_POST['editsubmit'])) {
+	if(!ANON && !USER)
+	{
+		header("location: ".e_BASE."index.php");
+		exit;
+	}
+	
 	if($table == "poll") {
 		if (!$sql->db_Select("polls", "poll_title", "`poll_id` = {$id} AND `poll_comment` = 1")) {
 			header("location: ".e_BASE."index.php");
