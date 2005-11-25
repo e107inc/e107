@@ -63,6 +63,10 @@ SC_END
 SC_BEGIN USERCLASSES
 global $sql, $pref, $tp, $curVal;
 $ret = "";
+if(ADMIN && $curVal['user_id'] != USERID)
+{
+	return "";
+}
 if($sql->db_Select("userclass_classes", "*", "userclass_editclass IN(".$curVal['userclass_list'].") ORDER BY userclass_name"))
 {
 	$ucList = $sql->db_getList();
