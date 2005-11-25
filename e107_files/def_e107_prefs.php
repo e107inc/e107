@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-11-24 12:10:04 $
+|     $Revision: 1.40 $
+|     $Date: 2005-11-25 00:30:08 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -77,7 +77,7 @@ $pref['displayrendertime'] = "1";
 $pref['displaysql'] = "";
 $pref['displaythemeinfo'] = "1";
 $pref['timezone'] = "GMT";
-$pref['search_restrict'] = "1";
+$pref['search_restrict'] = "0";
 $pref['antiflood1'] = "1";
 $pref['antiflood_timeout'] = "10";
 $pref['autoban'] = "1";
