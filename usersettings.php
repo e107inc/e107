@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2005-11-20 00:48:58 $
+|     $Revision: 1.54 $
+|     $Date: 2005-11-25 18:04:11 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -306,7 +306,7 @@ if (isset($_POST['updatesettings']))
 			}
 
 			// Update Userclass =======
-			if ($sql->db_Select("userclass_classes", "*", "userclass_editclass IN (".USERCLASS_LIST.")"))
+			if (!$_uid && $sql->db_Select("userclass_classes", "*", "userclass_editclass IN (".USERCLASS_LIST.")"))
 			{
 				$ucList = $sql->db_getList();
 				if ($sql->db_Select("user", "user_class", "user_id = '{$inp}'"))
