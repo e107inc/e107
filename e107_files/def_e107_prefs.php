@@ -11,130 +11,158 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-11-25 00:30:08 $
-|     $Author: sweetas $
+|     $Revision: 1.41 $
+|     $Date: 2005-11-25 12:11:23 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
-// default preferences for e107
-$pref['sitename'] = LAN_PREF_1;
-$pref['siteurl'] = $e_HTTP;
-$pref['sitebutton'] = "button.png";
-$pref['sitetag'] = LAN_PREF_2;
-$pref['sitedescription'] = "";
-$pref['siteadmin'] = $_POST['admin_name'];
-$pref['siteadminemail'] = $_POST['admin_email'];
-$pref['sitetheme'] = "lamb";
-$pref['image_preload'] = "0";
-$pref['admintheme'] = "jayya";
-$pref['adminstyle'] = "compact";
-$pref['sitedisclaimer'] = LAN_PREF_3;
-$pref['newsposts'] = "10";
-$pref['flood_protect'] = "1";
-$pref['flood_timeout'] = "5";
-$pref['flood_time'] = "30";
-$pref['flood_hits'] = "100";
-$pref['anon_post'] = "1";
-$pref['user_reg'] = "1";
-$pref['use_coppa'] = "1";
-$pref['profanity_filter'] = "1";
-$pref['profanity_replace'] = "[".LAN_PREF_4."]";
-$pref['smiley_activate'] = "";
-$pref['log_refertype'] = "1";
-$pref['longdate'] = "%A %d %B %Y - %H:%M:%S";
-$pref['shortdate'] = "%d %b : %H:%M";
-$pref['forumdate'] = "%a %b %d %Y, %I:%M%p";
-$pref['sitelanguage'] = $pref_language;
-$pref['maintainance_flag'] = "0";
-$pref['time_offset'] = "0";
-$pref['log_lvcount'] = "10";
-$pref['meta_tag'] = "";
-$pref['user_reg_veri'] = "1";
-$pref['email_notify'] = "0";
-$pref['forum_poll'] = "0";
-$pref['forum_popular'] = "10";
-$pref['forum_track'] = "0";
-$pref['forum_eprefix'] = "[forum]";
-$pref['forum_enclose'] = "1";
-$pref['forum_title'] = LAN_PREF_5;
-$pref['forum_postspage'] = "10";
-$pref['forum_highlightsticky'] = "1";
-$pref['user_tracking'] = "cookie";
-$pref['cookie_name'] = "e107cookie";
-$pref['resize_method'] = "gd2";
-$pref['im_path'] = "/usr/X11R6/bin/convert";
-$pref['im_quality'] = "80";
-$pref['im_width'] = "120";
-$pref['im_height'] = "100";
-$pref['upload_enabled'] = "0";
-$pref['upload_allowedfiletype'] = ".zip\n.gz\n.jpg\n.png\n.gif\n.txt";
-$pref['upload_storagetype'] = "2";
-$pref['upload_maxfilesize'] = "";
-$pref['upload_class'] = "999";
-$pref['cachestatus'] = "";
-$pref['displayrendertime'] = "1";
-$pref['displaysql'] = "";
-$pref['displaythemeinfo'] = "1";
-$pref['timezone'] = "GMT";
-$pref['search_restrict'] = "0";
-$pref['antiflood1'] = "1";
-$pref['antiflood_timeout'] = "10";
-$pref['autoban'] = "1";
-$pref['sitelang_init'] = (isset($_POST['installlanguage']) ? $_POST['installlanguage'] :  "English");
-$pref['linkpage_screentip'] = "0";
-$pref['plug_status'] = "";
-$pref['plug_latest'] = "";
-$pref['wmessage_sc'] = "0";
-$pref['frontpage']['all'] = "news.php";
-
-// Added
-$pref['signup_text'] = "";
-$pref['admin_alerts_ok'] = 1;
-$pref['real'] = 1;
-$pref['url'] = 1;
-$pref['icq'] = 1;
-$pref['aim'] = 1;
-$pref['msn'] = 1;
-$pref['dob'] = 1;
-$pref['loc'] = 1;
-$pref['sig'] = 1;
-$pref['avt'] = 1;
-$pref['zone'] = 1;
-$pref['usrclass'] = 1;
-$pref['link_replace'] = 1;
-$pref['link_text'] = "";
-$pref['signcode'] = 0;
-$pref['logcode'] = 0;
-$pref['signup_options'] = "1.1.1.1.1.1.1.1.1.1.1";
-$pref['newsposts_archive'] = 0;
-$pref['newsposts_archive_title'] = "";
-$pref['news_cats'] = "";
-$pref['nbr_cols'] = 1;
-$pref['subnews_attach'] = "";
-$pref['subnews_resize'] = "";
-$pref['subnews_class'] = 0;
-$pref['subnews_htmlarea'] = 0;
-$pref['subnews_hide_news'] = "";
-$pref['news_newdateheader'] = 0;
-$pref['email_text'] = "";
-$pref['useGeshi'] = 0;
-$pref['wysiwyg'] = 0;
-$pref['old_np'] = 0;
-$pref['make_clickable'] = 0;
-$pref['signup_maxip'] = 3;
-$pref['track_online'] = 1;
-
-$pref['emotepack'] = "default";
-$pref['rss_feeds'] = 1;
-$pref['xup_enabled'] = 1;
-$pref['mailer'] = "php";
-$pref['ue_upgrade'] = "1";
-$pref['search_highlight'] = 1;
-
-$pref['mail_pause'] = 3;
-$pref['mail_pausetime'] = 4;
-
-$pref['download_email'] = 0;
+$pref = array (
+  'sitename' => LAN_PREF_1,
+  'siteurl' => $e_HTTP,
+  'sitebutton' => 'button.png',
+  'sitetag' => LAN_PREF_2,
+  'sitedescription' => '',
+  'siteadmin' => '',
+  'siteadminemail' => '',
+  'sitetheme' => 'jayya',
+  'image_preload' => '0',
+  'admintheme' => 'jayya',
+  'adminstyle' => 'classis',
+  'sitedisclaimer' => LAN_PREF_3,
+  'newsposts' => '10',
+  'flood_protect' => '1',
+  'flood_timeout' => '5',
+  'flood_time' => '30',
+  'flood_hits' => '100',
+  'anon_post' => '0',
+  'user_reg' => '1',
+  'use_coppa' => '1',
+  'profanity_filter' => '0',
+  'profanity_replace' => '[censored]',
+  'smiley_activate' => '',
+  'log_refertype' => '1',
+  'longdate' => '%A %d %B %Y - %H:%M:%S',
+  'shortdate' => '%d %b : %H:%M',
+  'forumdate' => '%a %b %d %Y, %I:%M%p',
+  'sitelanguage' => 'English',
+  'maintainance_flag' => '0',
+  'time_offset' => '0',
+  'log_lvcount' => '10',
+  'meta_tag' => '',
+  'user_reg_veri' => '1',
+  'email_notify' => '0',
+  'forum_poll' => '0',
+  'forum_popular' => '10',
+  'forum_track' => '0',
+  'forum_eprefix' => '[forum]',
+  'forum_enclose' => '1',
+  'forum_title' => LAN_PREF_5,
+  'forum_postspage' => '10',
+  'forum_highlightsticky' => '1',
+  'user_tracking' => 'cookie',
+  'cookie_name' => 'e107cookie',
+  'resize_method' => 'gd2',
+  'im_path' => '/usr/X11R6/bin/convert',
+  'im_quality' => '80',
+  'im_width' => '120',
+  'im_height' => '100',
+  'upload_enabled' => '0',
+  'upload_allowedfiletype' => '.zip
+.gz
+.jpg
+.png
+.gif
+.txt',
+  'upload_storagetype' => '2',
+  'upload_maxfilesize' => '',
+  'upload_class' => '999',
+  'cachestatus' => '',
+  'displayrendertime' => '0',
+  'displaysql' => '0',
+  'displaythemeinfo' => '0',
+  'timezone' => 'GMT',
+  'search_restrict' => '1',
+  'antiflood1' => '1',
+  'antiflood_timeout' => '10',
+  'autoban' => '1',
+  'sitelang_init' => (isset($_POST['installlanguage']) ? $_POST['installlanguage'] :  "English"),
+  'linkpage_screentip' => '0',
+  'plug_status' => 'rss_menu',
+  'plug_latest' => '',
+  'wmessage_sc' => '0',
+  'frontpage' => 
+  array (
+    'all' => 'news.php',
+  ),
+  'signup_text' => '',
+  'admin_alerts_ok' => '1',
+  'real' => '1',
+  'url' => '1',
+  'icq' => '1',
+  'aim' => '1',
+  'msn' => '1',
+  'dob' => '1',
+  'loc' => '1',
+  'sig' => '1',
+  'avt' => '1',
+  'zone' => '1',
+  'usrclass' => '1',
+  'link_replace' => '0',
+  'link_text' => '',
+  'signcode' => '0',
+  'logcode' => '0',
+  'signup_options' => '1.......1.1.1.1',
+  'newsposts_archive' => '0',
+  'newsposts_archive_title' => '',
+  'news_cats' => '',
+  'nbr_cols' => '1',
+  'subnews_attach' => '',
+  'subnews_resize' => '',
+  'subnews_class' => '0',
+  'subnews_htmlarea' => '0',
+  'subnews_hide_news' => '',
+  'news_newdateheader' => '0',
+  'email_text' => '',
+  'useGeshi' => '0',
+  'wysiwyg' => '0',
+  'old_np' => '0',
+  'make_clickable' => '0',
+  'signup_maxip' => '3',
+  'track_online' => '1',
+  'emotepack' => 'default',
+  'xup_enabled' => '1',
+  'mailer' => 'php',
+  'ue_upgrade' => '1',
+  'search_highlight' => '1',
+  'mail_pause' => '3',
+  'mail_pausetime' => '4',
+  'themecss' => 'canvas.css',
+  'plug_sc' => ':featurebox',
+  'auth_method' => '',
+  'post_html' => '254',
+  'redirectsiteurl' => '0',
+  'admin_alerts_uniquemenu' => '0',
+  'membersonly_enabled' => '0',
+  'signup_pass_len' => '',
+  'signup_disallow_text' => '',
+  'signup_text_after' => '',
+  'null' => '',
+  'links_new_window' => '1',
+  'main_wordwrap' => '',
+  'menu_wordwrap' => '',
+  'php_bbcode' => '255',
+  'ssl_enabled' => '0',
+  'fpwcode' => '0',
+  'user_reg_secureveri' => '1',
+  'disallowMultiLogin' => '0',
+  'profanity_words' => '',
+  'adminpwordchange' => '0',
+  'comments_icon' => '0',
+  'nested_comments' => '1',
+  'allowCommentEdit' => '0',
+  'rss_feeds' => '1',
+  'admincss' => 'style.css',
+);
 
 ?>
