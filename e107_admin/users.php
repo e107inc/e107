@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.62 $
-|     $Date: 2005-11-01 00:53:00 $
-|     $Author: sweetas $
+|     $Revision: 1.63 $
+|     $Date: 2005-11-25 08:15:16 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -409,42 +409,42 @@ class users{
 
 
 // Search Display Column header.
-	$display_lan = array('user_id' => DUSRLAN_1, 
-	'user_id' => DUSRLAN_1, 
-	'user_name' => DUSRLAN_2, 
-	'user_loginname' => DUSRLAN_3, 
-	'user_customtitle' => DUSRLAN_4, 
-	'user_password' => DUSRLAN_5, 
-	'user_sess' => DUSRLAN_6, 
-	'user_email' => DUSRLAN_7, 
-	'user_homepage' => DUSRLAN_8, 
-	'user_icq' => DUSRLAN_9, 
-	'user_aim' => DUSRLAN_10, 
-	'user_msn' => DUSRLAN_11, 
-	'user_location' => DUSRLAN_12, 
-	'user_birthday' => DUSRLAN_13, 
-	'user_signature' => DUSRLAN_14, 
-	'user_image' => DUSRLAN_15, 
-	'user_timezone' => DUSRLAN_16, 
-	'user_hideemail' => DUSRLAN_17, 
-	'user_join' => DUSRLAN_18, 
-	'user_lastvisit' => DUSRLAN_19, 
-	'user_currentvisit' => DUSRLAN_20, 
-	'user_lastpost' => DUSRLAN_21, 
-	'user_chats' => DUSRLAN_22, 
-	'user_comments' => DUSRLAN_23, 
-	'user_forums' => DUSRLAN_24, 
-	'user_ip' => DUSRLAN_25, 
-	'user_ban' => DUSRLAN_26, 
-	'user_prefs' => DUSRLAN_27, 
-	'user_new' => DUSRLAN_28, 
-	'user_viewed' => DUSRLAN_29, 
-	'user_visits' => DUSRLAN_30, 
-	'user_admin' => DUSRLAN_31, 
-	'user_login' => DUSRLAN_32, 
-	'user_class' => DUSRLAN_33, 
-	'user_perms' => DUSRLAN_34, 
-	'user_realm' => DUSRLAN_35, 
+	$display_lan = array('user_id' => DUSRLAN_1,
+	'user_id' => DUSRLAN_1,
+	'user_name' => DUSRLAN_2,
+	'user_loginname' => DUSRLAN_3,
+	'user_customtitle' => DUSRLAN_4,
+	'user_password' => DUSRLAN_5,
+	'user_sess' => DUSRLAN_6,
+	'user_email' => DUSRLAN_7,
+	'user_homepage' => DUSRLAN_8,
+	'user_icq' => DUSRLAN_9,
+	'user_aim' => DUSRLAN_10,
+	'user_msn' => DUSRLAN_11,
+	'user_location' => DUSRLAN_12,
+	'user_birthday' => DUSRLAN_13,
+	'user_signature' => DUSRLAN_14,
+	'user_image' => DUSRLAN_15,
+	'user_timezone' => DUSRLAN_16,
+	'user_hideemail' => DUSRLAN_17,
+	'user_join' => DUSRLAN_18,
+	'user_lastvisit' => DUSRLAN_19,
+	'user_currentvisit' => DUSRLAN_20,
+	'user_lastpost' => DUSRLAN_21,
+	'user_chats' => DUSRLAN_22,
+	'user_comments' => DUSRLAN_23,
+	'user_forums' => DUSRLAN_24,
+	'user_ip' => DUSRLAN_25,
+	'user_ban' => DUSRLAN_26,
+	'user_prefs' => DUSRLAN_27,
+	'user_new' => DUSRLAN_28,
+	'user_viewed' => DUSRLAN_29,
+	'user_visits' => DUSRLAN_30,
+	'user_admin' => DUSRLAN_31,
+	'user_login' => DUSRLAN_32,
+	'user_class' => DUSRLAN_33,
+	'user_perms' => DUSRLAN_34,
+	'user_realm' => DUSRLAN_35,
 	'user_pwchange' => DUSRLAN_36,
 	'user_xup' => DUSRLAN_37
 	);
@@ -472,10 +472,10 @@ class users{
 					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'>".LAN_MAINADMIN."</div>";
 				}
 				else if($user_admin) {
-					$text .= "<a href='".e_SELF."?main.user_admin.".($id == "desc" ? "asc" : "desc")."'><div class='fcaption' style='padding-left:3px;padding-right:3px;;text-align:center'>".LAN_ADMIN."</div></a>";
+					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;;text-align:center'><a href='".e_SELF."?main.user_admin.".($id == "desc" ? "asc" : "desc")."'>".LAN_ADMIN."</a></div>";
 				}
 				else if($user_ban == 1) {
-					$text .= "<a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc")."'><div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'>".LAN_BANNED."</div></a>";
+					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap'><a href='".e_SELF."?main.user_ban.".($id == "desc" ? "asc" : "desc")."'>".LAN_BANNED."</a></div>";
 				}
 				else if($user_ban == 2) {
 					$text .= "<div class='fcaption' style='padding-left:3px;padding-right:3px;text-align:center;white-space:nowrap' >".LAN_NOTVERIFIED."</div>";
@@ -539,14 +539,14 @@ class users{
 					<input type='hidden' name='userid' value='{$user_id}' />
 					<input type='hidden' name='userip' value='{$user_ip}' />
 					<select name='useraction' onchange='this.form.submit()' class='tbox' style='width:75%'>
-					<option selected='selected' value=''></option>";
+					<option selected='selected' value=''>&nbsp;</option>";
 
 				if ($user_perms != "0") {
 					$text .= "<option value='userinfo'>".USRLAN_80."</option>
 						<option value='usersettings'>".LAN_EDIT."</option>";
 
 					if ($user_ban == 1) {
-						$text .= "<option value='unban'>".USRLAN_33."</option>";
+						$text .= "<option value='unban'>".USRLAN_33."</option>\n";
 					}
 					else if($user_ban == 2) {
 						$text .= "<option value='ban'>".USRLAN_30."</option>
@@ -554,25 +554,25 @@ class users{
 							<option value='resend'>".USRLAN_112."</option>
 							<option value='test'>".USRLAN_118."</option>";
 					} else {
-						$text .= "<option value='ban'>".USRLAN_30."</option>";
+						$text .= "<option value='ban'>".USRLAN_30."</option>\n";
 					}
 
 					if (!$user_admin && !$user_ban && $user_ban != 2) {
-						$text .= "<option value='admin'>".USRLAN_35."</option>";
+						$text .= "<option value='admin'>".USRLAN_35."</option>\n";
 					}
 					else if ($user_admin && $user_perms != "0") {
-						$text .= "<option value='unadmin'>".USRLAN_34."</option>";
+						$text .= "<option value='unadmin'>".USRLAN_34."</option>\n";
 					}
 
 				}
 				if ($user_perms == "0" && !getperms("0")) {
 					$text .= "";
 				} elseif($user_id != USERID || getperms("0") ) {
-					$text .= "<option value='userclass'>".USRLAN_36."</option>";
+					$text .= "<option value='userclass'>".USRLAN_36."</option>\n";
 				}
 
 				if ($user_perms != "0") {
-					$text .= "<option value='deluser'>".LAN_DELETE."</option>";
+					$text .= "<option value='deluser'>".LAN_DELETE."</option>\n";
 				}
 				$text .= "</select></div>";
 				$text .= "</form></td></tr>";
