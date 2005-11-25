@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_menus.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:49 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-25 19:38:49 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -45,7 +45,6 @@ define("MENLAN_33", "Plantilla personalizada");
 define("MENLAN_34", "Integrado");
 define("MENLAN_35", "Configurar Menús");
 define("MENLAN_36", "Escoja el/los menú/s a activar");
-define("MENLAN_37", "y luego escoja donde lo quiere activar.");
+define("MENLAN_37", "y donde activarlos.");
 define("MENLAN_38", "Mantenga la tecla CRTL para seleccionar múltiples menús.");
-
 ?>

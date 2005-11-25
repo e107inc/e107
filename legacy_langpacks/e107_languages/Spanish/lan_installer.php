@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_installer.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.3 $
+|     $Date: 2005-11-25 19:38:49 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -18,13 +18,13 @@ define("LANINS_003", "1");
 define("LANINS_004", "Selección del idioma");
 define("LANINS_005", "Por favor, escoja el idioma a usar durante la instalación");
 define("LANINS_006", "Fijar idioma");
-define("LANINS_007", "2");
+define("LANINS_007", "4");
 define("LANINS_008", "PHP &amp; MySQL Comprobación de versiones / Comprobación de permisos de archivos");
 define("LANINS_009", "Reinicie los permisos del archivo");
 define("LANINS_010", "Archivo no escribible: ");
 define("LANINS_010a", "Carpeta no escribible: ");
 define("LANINS_011", "Error");
-define("LANINS_012", "Las funciones MySQL no parecen existir. Esto probablemente significa que la extensión PHP MySQL no fué instalada o configurada correctamente."); // help for 012
+define("LANINS_012", "Las funciones de MySQL no parecen existir. Esto puede significar que la extensión MySQL de PHP no esté instalada o su versión de PHO no fué compilada para funcionar con MySQL."); // help for 012
 define("LANINS_013", "No se pudo determinar la versión de su MySQL. Esto podría significar que su servidor MySQL está caído o rechazando las conexiones.");
 define("LANINS_014", "Permisos de archivo");
 define("LANINS_015", "Versión PHP");
@@ -33,7 +33,7 @@ define("LANINS_017", "OK");
 define("LANINS_018", "Asegúrese de que estos archivos listados tienen permisos de escritura. Si tiene algún problema a la hora de configurarlos, contacte con su servidor.");
 define("LANINS_019", "La versión de PHP instalada en su servidor no es operativa para funcionar con e107. e107 requiere una versión mayor de 4.3.0 para funcionar correctamente. Actualice su versión PHP o contacte con su servidor para actualizar.");
 define("LANINS_020", "Continúe la instalación");
-define("LANINS_021", "3");
+define("LANINS_021", "2");
 define("LANINS_022", "Detalles del servidor MySQL");
 define("LANINS_023", "Por favor, escriba los ajustes de MySQL aquí.
 			  
@@ -53,7 +53,7 @@ define("LANINS_032", "La contraseña del usuario");
 define("LANINS_033", "La base de datos MySQL que desea utilizar en e107, algunas veces referenciada como una estructura. Si el usuario tiene permiso para crear bases de datos, tiene la opción de hacerlo si actualmente no existe.");
 define("LANINS_034", "El prefijo que desea utilizar en e107 para encabezar las tablas. Útil para instalaciones múltiples de e107 en una misma base de datos.");
 define("LANINS_035", "Continuar");
-define("LANINS_036", "4");
+define("LANINS_036", "3");
 define("LANINS_037", "Verificación de conexión MySQL");
 define("LANINS_038", " y creación de la base de datos");
 define("LANINS_039", "Asegúrese que ha rellenado todos los campos más importantes, Servidor, Usuario y Base de datos MySQL.(Son necesarios para el servidor MySQL)");
@@ -86,7 +86,20 @@ Por favor, asegúrese que <b>core_sql.php</b> existe en el directorio <b>/e107_ad
 define("LANINS_061", "e107 no pudo crear las tablas necesarias.
 Por favor, limpie la base de datos y rectifique cualquier problema antes de probar de nuevo.");
 define("LANINS_062", "¡Bienvenido a su nuevo sitio!");
-define("LANINS_063", "e107 se ha instalado con éxito y ahora está preparado para ejecutarse.");
+define("LANINS_062", "[b]¡Bienvenido a su nuevo sitio![/b]
+e107 se instaló correctamente y está preparado para aceptar contenidos.<br />
+Su sección de administración está [link=e107_admin/admin.php]aquí[/link], haga click para ir ahora. Necesitará conectarse con el usuario y contraseña utilizada en la instalación.
+[b]Soporte[/b]
+Página e107: [link=http://e107.org]http://e107.org[/link], entrará respuesta y documentación aquí.
+Foros: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_plugins/forum/forum.php[/link]
+  	 
+[b]Descargas[/b]
+Plugins: [link=http://e107coders.org]http://e107coders.org[/link]
+Temas: [link=http://e107styles.org]http://e107styles.org[/link] | [link=http://e107themes.org]http://e107themes.org[/link]
+  	 
+Gracias por probar e107, esperamos que cubra sus necesidades.
+(Puede eliminar este mensaje desde la sección de administración.)");
+define("LANINS_063", "Bienvenido a e107.");
 define("LANINS_064", "Su sección de administración se encuentra");
 define("LANINS_065", "localizada aquí");
 define("LANINS_066", "Click para ir ahora. Necesitará conectarse utilizando el nombre y contraseña facilitados durante el proceso de instalación.");

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_download.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.11 $
+|     $Date: 2005-11-25 19:38:49 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -126,5 +126,5 @@ define("DOWLAN_146", "Mensaje de negación de descarga o URL");
 define("DOWLAN_147", "Icono para categoría vacía");
 define("DOWLAN_148", "Comprobar para actualizar el sello de fecha a la hora actual");
 define("DOWLAN_149", "O click aquí para usar un archivo externo");
-
+define("DOWLAN_150", "Enviar email al Admin cuando se informe de una descarga rota");
 ?>
