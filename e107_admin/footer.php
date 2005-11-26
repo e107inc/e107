@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-08-22 16:53:23 $
-|     $Author: sweetas $
+|     $Revision: 1.18 $
+|     $Date: 2005-11-26 14:09:09 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,7 +25,7 @@ if (ADMIN == TRUE) {
 	if ($pref['cachestatus']) {
 		if (!$sql->db_Select('generic', '*', "gen_type='empty_cache'"))
 		{
-			$sql->db_Insert('generic', "0,'empty_cache',".time().",'','','',''");
+			$sql->db_Insert('generic', "0,'empty_cache','".time()."','0','','0',''");
 		} else {
 			$row = $sql->db_Fetch();
 			if (($row['gen_datestamp']+604800) < time()) // If cache not cleared in last 7 days, clear it.

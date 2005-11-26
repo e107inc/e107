@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-11-18 22:02:13 $
+|     $Revision: 1.29 $
+|     $Date: 2005-11-26 14:09:09 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -131,7 +131,7 @@ if (isset($_POST['update_category']))
 if (isset($_POST['add_category']))
 {
 	$name = $tp->toHTML($_POST['user_field']);
-	if($sql->db_Insert("user_extended_struct","'0', '$name', '', 0, '', '', '', '{$_POST['user_read']}', '{$_POST['user_write']}', '', '', '{$_POST['user_applicable']}', '0', '0'"))
+	if($sql->db_Insert("user_extended_struct","'0', '$name', '', 0, '', '', '', '{$_POST['user_read']}', '{$_POST['user_write']}', '0', '0', '{$_POST['user_applicable']}', '0', '0'"))
 	{
 		$message = EXTLAN_40;
 	}
