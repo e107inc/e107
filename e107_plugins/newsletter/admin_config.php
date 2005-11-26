@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/admin_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-08-23 03:54:05 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2005-11-26 14:25:41 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -463,7 +463,7 @@ class newsletter
 	{
 		global $sql;
 		$tmp = each($_POST['delete']);
-		if(strstr("newsletter", $tmp['key']))
+		if(strstr($tmp['key'], "newsletter"))
 		{
 			$id = str_replace("newsletter_", "", $tmp['key']);
 			$sql -> db_Delete("newsletter", "newsletter_id='$id' ");
