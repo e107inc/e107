@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-09-12 11:13:10 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-26 21:08:34 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -316,38 +316,43 @@ class private_message
 	function pm_get_inbox($uid = USERID, $from = 0, $limit = 10)
 	{
 		global $sql;
-		$qry = "
-		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM #private_msg AS pm
-		LEFT JOIN #user AS u ON u.user_id = pm.pm_from
-		WHERE pm.pm_to='{$uid}' AND pm.pm_read_del=0
-		ORDER BY pm.pm_sent DESC
-		LIMIT {$from}, {$limit}
-		";
-		if($sql->db_Select_gen($qry))
+		$ret = "";
+		if($total_messages = $sql->db_Count("private_msg", "(*)", "WHERE pm_to='{$uid}' AND pm_read_del=0"))
 		{
-			$ret['messages'] = $sql->db_getList();
-			$sql->db_Query("SELECT FOUND_ROWS() AS total");
-			$ret['total_messages'] = $sql -> db_Fetch();
+			$qry = "
+			SELECT pm.*, u.user_image, u.user_name FROM #private_msg AS pm
+			LEFT JOIN #user AS u ON u.user_id = pm.pm_from
+			WHERE pm.pm_to='{$uid}' AND pm.pm_read_del=0
+			ORDER BY pm.pm_sent DESC
+			LIMIT {$from}, {$limit}
+			";
+			if($sql->db_Select_gen($qry))
+			{
+				$ret['messages'] = $sql->db_getList();
+				$ret['total_messages'] = $total_messages;
+			}
+			return $ret;
 		}
-		return $ret;
 	}
 
 	function pm_get_outbox($uid = USERID, $from = 0, $limit = 10)
 	{
 		global $sql;
 		if(intval($limit < 1)) { $limit = 10; }
-		$qry = "
-		SELECT SQL_CALC_FOUND_ROWS pm.*, u.user_image, u.user_name FROM #private_msg AS pm
-		LEFT JOIN #user AS u ON u.user_id = pm.pm_to
-		WHERE pm.pm_from='{$uid}' AND pm.pm_sent_del=0
-		ORDER BY pm.pm_sent DESC
-		LIMIT {$from}, {$limit}
-		";
-		if($sql->db_Select_gen($qry))
+		if($total_messages = $sql->db_Count("private_msg", "(*)", "WHERE pm_from='{$uid}' AND pm_sent_del=0"))
 		{
-			$ret['messages'] = $sql->db_getList();
-			$sql->db_Query("SELECT FOUND_ROWS() AS total");
-			$ret['total_messages'] = $sql -> db_Fetch();
+			$qry = "
+			SELECT pm.*, u.user_image, u.user_name FROM #private_msg AS pm
+			LEFT JOIN #user AS u ON u.user_id = pm.pm_to
+			WHERE pm.pm_from='{$uid}' AND pm.pm_sent_del=0
+			ORDER BY pm.pm_sent DESC
+			LIMIT {$from}, {$limit}
+			";
+			if($sql->db_Select_gen($qry))
+			{
+				$ret['messages'] = $sql->db_getList();
+				$ret['total_messages'] = $total_messages;
+			}
 		}
 		return $ret;
 	}
