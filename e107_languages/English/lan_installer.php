@@ -14,13 +14,13 @@ define("LANINS_009", "Retest File Permissions");
 define("LANINS_010", "File not writable: ");
 define("LANINS_010a", "Folder not writable: ");
 define("LANINS_011", "Error");
-define("LANINS_012", "MySQL Functions don't seem to exists. This probably means that either the MySQL PHP Extension isn't isntalled or you PHP installation wasn't compiled with MySQL support."); // help for 012
-define("LANINS_013", "Couldn't determine your MySQL version number. Please continue installation, but be aware .");
+define("LANINS_012", "MySQL Functions don't seem to exist. This probably means that either the MySQL PHP Extension isn't installed or your PHP installation wasn't compiled with MySQL support."); // help for 012
+define("LANINS_013", "Couldn't determine your MySQL version number. This is a non fatal error, so please continue installing, but be aware that e107 requires MySQL >= 3.23 to function correctly.");
 define("LANINS_014", "File Permissions");
 define("LANINS_015", "PHP Version");
 define("LANINS_016", "MySQL");
 define("LANINS_017", "PASS");
-define("LANINS_018", "Make ensure all the listed files exist and are writable by the server. This normally involves CHMODing them 777, but environments vary - contact your host if you have any problems.");
+define("LANINS_018", "Ensure all the listed files exist and are writable by the server. This normally involves CHMODing them 777, but environments vary - contact your host if you have any problems.");
 define("LANINS_019", "The version of PHP installed on your server isn't capable of running e107. e107 requires a PHP version of at least 4.3.0 to run correctly. Either upgrade your PHP version, or contact your host for an upgrade.");
 define("LANINS_020", "Continue Installation");
 define("LANINS_021", "2");
@@ -41,7 +41,7 @@ define("LANINS_030", "The MySQL server you would like e107 to use. It can also i
 define("LANINS_031", "The username you wish e107 to use for connecting to your MySQL server");
 define("LANINS_032", "The Password for the user you just entered");
 define("LANINS_033", "The MySQL database you wish e107 to reside in, sometimes refered to as a schema. If the user has database create permissions you can opt to create the database automatically if it doesn't already exsist.");
-define("LANINS_034", "The prefix you wish for e107 to use when creating the e107 tables. Useful for multiple installs of e107 in one database schema.");
+define("LANINS_034", "The prefix you wish e107 to use when creating the e107 tables. Useful for multiple installs of e107 in one database schema.");
 define("LANINS_035", "Continue");
 define("LANINS_036", "3");
 define("LANINS_037", "MySQL Connection Verification");
