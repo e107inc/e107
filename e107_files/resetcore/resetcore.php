@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore/resetcore.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-11-17 03:34:41 $
+|     $Revision: 1.11 $
+|     $Date: 2005-11-27 00:17:16 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ people it shouldn't be used by.
 
 */
 
-define("ACTIVE", true);
+//define("ACTIVE", true);
 
 
 /* #################################################### */
