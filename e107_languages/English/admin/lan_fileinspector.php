@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_fileinspector.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-28 20:03:37 $
+|     $Revision: 1.6 $
+|     $Date: 2005-11-28 21:13:04 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -61,5 +61,6 @@ define("FR_LAN_19", "files failed");
 define("FR_LAN_20", "All files passed");
 define("FR_LAN_21", "none");
 define("FR_LAN_22", "Missing core files");
+define("FR_LAN_23", "No matches found.");
 
 ?>

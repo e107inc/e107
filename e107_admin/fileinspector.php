@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-11-28 19:01:57 $
+|     $Revision: 1.28 $
+|     $Date: 2005-11-28 21:13:04 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -50,6 +50,7 @@ class file_inspector {
 	var $image = array();
 	var $parent;
 	var $count = array();
+	var $results = 0;
 	
 	function file_inspector() {
 		global $e107;
@@ -249,6 +250,7 @@ class file_inspector {
 										$this -> files[$dir_id][$fid]['icon'] = 'file_core.png';
 										$dir_icon = 'fileinspector.png';
 										$parent_expand = TRUE;
+										$this -> results++;
 									} else {
 										unset($this -> files[$dir_id][$fid]);
 										$known[$dir_id][$fid] = true;
@@ -310,6 +312,7 @@ class file_inspector {
 								if ($this -> files[$dir_id][$aid]['lines'] = preg_grep("#".$_POST['regex']."#".$_POST['mod'], $file_content)) {
 									$dir_icon = 'fileinspector.png';
 									$parent_expand = TRUE;
+									$this -> results++;
 								} else {
 									unset($this -> files[$dir_id][$aid]);
 									$dir_icon = ($dir_icon == 'fileinspector.png') ? $dir_icon : 'folder.png';
@@ -436,6 +439,10 @@ class file_inspector {
 			<table class='t'>";
 		}
 		
+		if (!$this -> results && $_POST['regex']) {
+			$text .= "<tr><td class='f' style='padding-left: 4px; text-align: center' colspan='2'>".FR_LAN_23."</td></tr>";
+		}
+
 		foreach ($this -> files as $dir_id => $fid) {
 			ksort($fid);
 			$text .= ($_POST['type'] == 'tree') ? "<table class='t' style='display: none' id='f_".$dir_id."'>" : "";
