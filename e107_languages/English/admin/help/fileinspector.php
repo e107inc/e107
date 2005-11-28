@@ -1,4 +1,4 @@
-<?php
+ <?php
 $text = "<div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vertical-align: top; white-space: nowrap'>
 <img src='".e_IMAGE."fileinspector/file_core.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Core File</div>
 <div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vertical-align: top; white-space: nowrap'>
@@ -12,7 +12,10 @@ $text = "<div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vert
 $ns -> tablerender("File Key", $text);
 
 $text = "The file inspector scans and analyses the files on your sites server. When the inspector encounters 
-an e107 core file it checks it for file consistency to make sure it isnt corrupted.";
+an e107 core file it checks it for file consistency to make sure it isnt corrupted.<br /><br />
+The additional string matching tool enables you to scan the files on your server for text strings 
+using regular expressions. The regex engine in use is PHP's <a href='http://php.net/pcre'>PCRE</a> 
+(the preg_* functions), so enter your query as #pattern#modifiers in the fields provided.";
 
 $ns -> tablerender("File Inspector Help", $text);
 ?>
