@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-11-28 21:13:04 $
+|     $Revision: 1.29 $
+|     $Date: 2005-11-28 21:39:23 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -430,6 +430,11 @@ class file_inspector {
 			</li></ul>
 			</td></tr>";
 		}
+		
+		if ($_POST['type'] == 'tree' && !$this -> results && $_POST['regex']) {
+			$text .= "</td></tr>
+			<tr><td style='padding-right: 4px; text-align: center' colspan='2'><br />".FR_LAN_23."</td></tr>";
+		}
 
 		$text .= "</table>";
 		
@@ -437,10 +442,9 @@ class file_inspector {
 			$text .= "<br /></td></tr><tr>
 			<td class='forumheader3' colspan='2'>
 			<table class='t'>";
-		}
-		
-		if (!$this -> results && $_POST['regex']) {
-			$text .= "<tr><td class='f' style='padding-left: 4px; text-align: center' colspan='2'>".FR_LAN_23."</td></tr>";
+			if (!$this -> results && $_POST['regex']) {
+				$text .= "<tr><td class='f' style='padding-left: 4px; text-align: center' colspan='2'>".FR_LAN_23."</td></tr>";
+			}
 		}
 
 		foreach ($this -> files as $dir_id => $fid) {
