@@ -122,4 +122,5 @@ define("DOWLAN_146", "Maatwerk Download-weiger melding of URL");
 define("DOWLAN_147", "Pictogram voor lege categorie");
 define("DOWLAN_148", "Aankruisen om datum en tijd in huidige te veranderen");
 define("DOWLAN_149", "Of klik hier om een extern bestand te gebruiken");
+define("DOWLAN_150", "Verstuur een e-mail aan de beheerder als een verkeerde downloadlink wordt gemeld");
 ?>

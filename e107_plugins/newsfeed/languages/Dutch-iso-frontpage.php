@@ -3,9 +3,9 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Dutch-iso-frontpage.php.txt,v $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Dutch-iso-frontpage.php,v $
 |     $Revision: 1.1 $
-|     $Date: 2005-10-18 19:20:24 $
+|     $Date: 2005-11-28 21:26:34 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */

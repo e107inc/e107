@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_fileinspector.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-16 15:18:42 $
+|     $Revision: 1.4 $
+|     $Date: 2005-11-28 21:26:34 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -23,6 +23,13 @@ define("FC_LAN_10", "Uit");
 define("FC_LAN_11", "Nu scannen");
 define("FC_LAN_12", "Geen");
 define("FC_LAN_13", "Ontbrekende Core bestanden");
+define("FC_LAN_14", "Toon resultaat als");
+define("FC_LAN_15", "Boomoverzicht");
+define("FC_LAN_16", "Lijst");
+define("FC_LAN_17", "String Matching");
+define("FC_LAN_18", "Reguliere expressie");
+define("FC_LAN_19", "Toon regelnummers");
+define("FC_LAN_20", "Toon overeenkomende regels");
 
 define("FR_LAN_1", "Scannen");
 define("FR_LAN_2", "Scan resultaten");
@@ -49,4 +56,6 @@ define("FR_LAN_19", "bestanden onjuist");
 define("FR_LAN_20", "Alle bestanden in orde");
 define("FR_LAN_21", "geen");
 define("FR_LAN_22", "Ontbrekende Core bestanden");
+
+
 ?>
