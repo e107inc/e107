@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.157 $
-|     $Date: 2005-11-24 21:22:18 $
-|     $Author: sweetas $
+|     $Revision: 1.158 $
+|     $Date: 2005-11-29 14:39:20 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -1176,10 +1176,30 @@ function update_617_to_700($type='') {
 
 		if ($error=='') {
 			mysql_query("ALTER TABLE `".MPREFIX."news` CHANGE `news_thumbnail` `news_thumbnail` TEXT NOT NULL;");
-			mysql_query("ALTER TABLE `".MPREFIX."forum_t` ADD INDEX ( `thread_parent` );");
-			mysql_query("ALTER TABLE `".MPREFIX."forum_t` ADD INDEX ( `thread_datestamp` );");
-			mysql_query("ALTER TABLE `".MPREFIX."forum_t` ADD INDEX ( `thread_forum_id` );");
-			catch_error();
+
+			// Add forum indexes, remove any extras
+			if ($sql -> db_Query("SHOW INDEX FROM ".MPREFIX."forum_t"))
+			{
+				$a = array("PRIMARY", "thread_id", "thread_parent", "thread_datestamp", "thread_forum_id");
+				while ($row = $sql -> db_Fetch())
+				{
+					if(!in_array($row['Key_name'], $a))
+					{
+						mysql_query("ALTER TABLE `".MPREFIX."forum_t` DROP INDEX `".$row['Key_name']."`");
+						catch_error();
+					}
+					$index_list[] = $row['Key_name'];
+				}
+				$a = array("thread_parent", "thread_datestamp", "thread_forum_id");
+				foreach($a as $f)
+				{
+					if(!in_array($f, $index_list))
+					{
+						mysql_query("ALTER TABLE `".MPREFIX."forum_t` ADD INDEX ( `{$f}` );");
+						catch_error();
+					}
+				}
+			}
 		}
 		
 		if ($error=='') {
@@ -1215,14 +1235,23 @@ function update_617_to_700($type='') {
 			return update_needed();
 		}
 		
-		if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."forum_t")) {
-			while ($row = $sql -> db_Fetch()) {
-				if (($row['Field'] == 'thread_parent' || $row['Field'] == 'thread_datestamp' || $row['Field'] == 'thread_forum_id') && strpos($row['Key'], 'MUL') === FALSE) {
+		if ($sql->db_Query("SHOW INDEX FROM ".MPREFIX."forum_t"))
+		{
+			$a = array("PRIMARY", "thread_parent", "thread_datestamp", "thread_forum_id");
+			while ($row = $sql->db_Fetch())
+			{
+				if(!in_array($row['Key_name'], $a))
+				{
 					return update_needed();
 				}
+				$index_list[] = $row['Key_name'];
+			}
+			if(!in_array("thread_parent", $index_list) || !in_array("thread_datestamp", $index_list) || !in_array("thread_forum_id", $index_list))
+			{
+				return update_needed();
 			}
 		}
-		
+
 		if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."news")) {
 			while ($row = $sql -> db_Fetch()) {
 				if ($row['Field'] == 'news_thumbnail' && strpos($row['Null'], 'YES') !== FALSE) {
