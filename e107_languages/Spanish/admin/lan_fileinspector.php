@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_fileinspector.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.8 $
+|     $Date: 2005-11-29 20:10:58 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -23,6 +23,13 @@ define("FC_LAN_10", "Off");
 define("FC_LAN_11", "Escanear ahora");
 define("FC_LAN_12", "Nada");
 define("FC_LAN_13", "Faltan archivos del núcleo");
+define("FC_LAN_14", "Mostrar resultados como");
+define("FC_LAN_15", "Árbol");
+define("FC_LAN_16", "Lista");
+define("FC_LAN_17", "Coincidencia de texto");
+define("FC_LAN_18", "Expresión regular");
+define("FC_LAN_19", "Mostrar numeros de línea");
+define("FC_LAN_20", "Mostrar líneas coincidentes");
 
 define("FR_LAN_1", "Escaneando");
 define("FR_LAN_2", "Resultados del scan");
@@ -51,6 +58,5 @@ define("FR_LAN_19", "Archivos fallados");
 define("FR_LAN_20", "Todos los archivos correctos");
 define("FR_LAN_21", "Nada");
 define("FR_LAN_22", "Faltan archivos del núcleo");
-
-
+define("FR_LAN_23", "No hay coincidencias.");
 ?>
