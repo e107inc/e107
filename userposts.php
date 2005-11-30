@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-11-30 19:36:50 $
+|     $Revision: 1.18 $
+|     $Date: 2005-11-30 19:37:29 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -86,8 +86,7 @@ if ($action == "comments") {
 		$ctext = "<span class='mediumtext'>".UP_LAN_7."</span>";
 	} else {
 		$render = $sql -> db_getList(); 
-foreach ($render as $row)
-		//while ($row = $sql->db_Fetch())
+		foreach ($render as $row)
 		{
 			extract($row);
 			if($comment_comment)
