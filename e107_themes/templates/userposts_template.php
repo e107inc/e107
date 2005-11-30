@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/userposts_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-11-30 19:36:50 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 // ##### USERPOSTS_COMMENTS TABLE -----------------------------------------------------------------
@@ -23,27 +23,19 @@ if(!$USERPOSTS_COMMENTS_TABLE_START){
                 <table class='fborder' style='width:95%'>\n";
 }
 if(!$USERPOSTS_COMMENTS_TABLE){
-                $USERPOSTS_COMMENTS_TABLE = "
-                <tr>
-                        <td class='forumheader3' style='vertical-align:middle; background-color:transparent; border:#517DB1 1px solid; width:10%; text-align:center'>
-                                {USERPOSTS_COMMENTS_ICON}
-                        </td>
-                        <td class='forumheader3' style='padding:0; line-height:130%; vertical-align:top;'>
-                                <table class='fborder' style='vertical-align:top; height:98%; width:100%; line-height:130%;' cellspacing='0' cellpadding='0'>
-                                        <tr>
-                                                <td class='forumheader' style='line-height:130%; font-size:12px;'>
-                                                        {USERPOSTS_COMMENTS_HREF_PRE}<b>{USERPOSTS_COMMENTS_HEADING}</b></a> <span class='smalltext'>({USERPOSTS_COMMENTS_DATESTAMP}) ({USERPOSTS_COMMENTS_TYPE})</span>
-                                                </td>
-                                        </tr>
-                                        <tr>
-                                                <td class='forumheader3' style='line-height:130%;'>
-                                                        {USERPOSTS_COMMENTS_COMMENT}&nbsp;
-                                                </td>
-                                        </tr>
-                        </table>
-                        </td>
-                </tr>
-                ";
+	$USERPOSTS_COMMENTS_TABLE = "
+	<tr>
+	<td class='fcaption'>
+	{USERPOSTS_COMMENTS_HREF_PRE}<b>{USERPOSTS_COMMENTS_HEADING}</b></a> 
+	<span class='smalltext'>{USERPOSTS_COMMENTS_DATESTAMP} ({USERPOSTS_COMMENTS_TYPE})</span>
+	</td>
+	</tr>
+	<tr>
+	<td class='forumheader3' style='line-height:130%;'>
+	{USERPOSTS_COMMENTS_COMMENT}&nbsp;
+	</td>
+	</tr>
+	";
 }
 if(!$USERPOSTS_COMMENTS_TABLE_END){
                 $USERPOSTS_COMMENTS_TABLE_END = "

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-10-26 08:23:30 $
+|     $Revision: 1.17 $
+|     $Date: 2005-11-30 19:36:50 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -46,7 +46,7 @@ if(!defined("BULLET"))
 if ($action == "comments") {
 	if(is_numeric($id))
 	{
-		$sql->db_Select("user", "user_name", "user_id=".$id."");
+		$sql->db_Select("user", "user_name", "user_id=".$id);
 		$row = $sql->db_Fetch();
 		extract($row);
 		$user_id = $id.".".$user_name."";
@@ -85,7 +85,9 @@ if ($action == "comments") {
 	if (!$blah) {
 		$ctext = "<span class='mediumtext'>".UP_LAN_7."</span>";
 	} else {
-		while ($row = $sql->db_Fetch())
+		$render = $sql -> db_getList(); 
+foreach ($render as $row)
+		//while ($row = $sql->db_Fetch())
 		{
 			extract($row);
 			if($comment_comment)
@@ -213,7 +215,7 @@ function parse_userposts_comments_table($row) {
 		if (!$news_class) {
 			 
 			$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-			$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_9." ".$datestamp;
+			$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
 			$USERPOSTS_COMMENTS_HEADING = $news_title;
 			$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
 			$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."comment.php?comment.news.$comment_item_id'>";
@@ -228,21 +230,21 @@ function parse_userposts_comments_table($row) {
 		if (check_class($content_class)) {
 			if ($content_type == 0) {
 				$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-				$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_9." ".$datestamp;
+				$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
 				$USERPOSTS_COMMENTS_HEADING = $content_heading;
 				$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."content.php?article.$comment_item_id'>";
 				$USERPOSTS_COMMENTS_TYPE = "article";
 			}
 			else if($content_type == 3) {
 				$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-				$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_9." ".$datestamp;
+				$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
 				$USERPOSTS_COMMENTS_HEADING = $content_heading;
 				$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."content.php?review.$comment_item_id'>";
 				$USERPOSTS_COMMENTS_TYPE = "review";
 			}
 			else if($content_type == 1) {
 				$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-				$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_9." ".$datestamp;
+				$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
 				$USERPOSTS_COMMENTS_HEADING = $content_heading;
 				$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."content.php?content.$comment_item_id'>";
 				$USERPOSTS_COMMENTS_TYPE = "content";
@@ -256,7 +258,7 @@ function parse_userposts_comments_table($row) {
 		 extract($row);
 		 
 		$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_9." ".$datestamp;
+		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
 		$USERPOSTS_COMMENTS_HEADING = $download_name;
 		$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
 		$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."download.php?view.".$comment_item_id."'>";
@@ -268,7 +270,7 @@ function parse_userposts_comments_table($row) {
 		 extract($row);
 		 
 		$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_9." ".$datestamp;
+		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
 		$USERPOSTS_COMMENTS_HEADING = $poll_title;
 		$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
 		$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_BASE."comment.php?comment.poll.".$comment_item_id."'>";
@@ -281,7 +283,7 @@ function parse_userposts_comments_table($row) {
 		 extract($row);
 		 
 		$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_9." ".$datestamp;
+		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
 		$USERPOSTS_COMMENTS_HEADING = $doc_title;
 		$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
 		$USERPOSTS_COMMENTS_HREF_PRE = "<a href='".e_PLUGIN."documentation/documentation.php?".$comment_item_id."'>";
@@ -313,7 +315,7 @@ function parse_userposts_comments_table($row) {
 		}
 		 
 		$USERPOSTS_COMMENTS_ICON = "<img src='".THEME."images/".BULLET."' alt='' />";
-		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_9." ".$datestamp;
+		$USERPOSTS_COMMENTS_DATESTAMP = UP_LAN_11." ".$datestamp;
 		$USERPOSTS_COMMENTS_COMMENT = $comment_comment;
 		$USERPOSTS_COMMENTS_TYPE = $comment_type;
 	}
