@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-11-30 19:37:29 $
+|     $Revision: 1.19 $
+|     $Date: 2005-11-30 19:39:16 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -175,7 +175,8 @@ if ($action == "forums" || isset($_POST['fsearch'])) {
 		{
 			$gen = new convert;
 		}
-		while ($row = $sql->db_Fetch())
+		$render = $sql -> db_getList(); 
+		foreach ($render as $row)
 		{
 			$userposts_forum_table_string .= parse_userposts_forum_table($row);
 		}
