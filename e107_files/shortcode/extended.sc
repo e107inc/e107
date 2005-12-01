@@ -78,7 +78,7 @@ if ($parms[1] == 'value')
 	if($ueStruct["user_".$parms[0]]['user_extended_struct_type'] == '4')
 	{
 		$tmp = explode(",",$ueStruct["user_".$parms[0]]['user_extended_struct_values']);
-		if($sql->db_Select($tmp[0],"{$tmp[1]}, {$tmp[2]}","{$tmp[1]} = {$uVal}"))
+		if($sql->db_Select($tmp[0],"{$tmp[1]}, {$tmp[2]}","{$tmp[1]} = '{$uVal}'"))
 		{
 			$row = $sql->db_Fetch();
 			$ret_data = $row[$tmp[2]];
