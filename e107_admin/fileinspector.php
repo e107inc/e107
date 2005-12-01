@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-12-01 07:19:45 $
+|     $Revision: 1.31 $
+|     $Date: 2005-12-01 07:55:28 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -36,8 +36,7 @@ foreach ($maindirs as $maindirs_key => $maindirs_value) {
 }
 
 require_once('core_image.php');
-//print_a($core_image);
-//print_a($deprecated_image);
+
 if (e_QUERY) {
 	$fi -> snapshot_interface();
 } else if (isset($_POST['scan'])) {
@@ -192,14 +191,10 @@ class file_inspector {
 	}
 	
 	function scan($dir, $image) {
-		// print_a($image);
-		// $dir_key = basename($dir);
-		// echo $dir_key.'<br />';
 		$handle = opendir($dir.'/');
 		while (false !== ($readdir = readdir($handle))) {
 			if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
 				$path = $dir.'/'.$readdir;
-				//echo $image[$readdir];
 				if (is_dir($path)) {
 					$dirs[$path] = $readdir;
 				} else if (!isset($image[$readdir])) {
@@ -363,12 +358,12 @@ class file_inspector {
 							} else {
 								if (isset($deprecated[$readdir])) {
 									if ($_POST['oldcore']) {
-										$dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png') ? $dir_icon : 'folder_old.png';
+										$dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png' || $dir_icon == 'folder_old_dir.png') ? $dir_icon : 'folder_old.png';
 										$parent_expand = TRUE;
 									}
 								} else {
 									if ($_POST['noncore']) {
-										$dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png' || $dir_icon == 'folder_old.png') ? $dir_icon : 'folder_unknown.png';
+										$dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png' || $dir_icon == 'folder_old.png' || $dir_icon == 'folder_old_dir.png') ? $dir_icon : 'folder_unknown.png';
 										$parent_expand = TRUE;
 									}
 								}
@@ -399,7 +394,7 @@ class file_inspector {
 	function scan_results() {
 		global $ns, $rs, $core_image, $deprecated_image;
 		$scan_text = $this -> inspect($core_image, $deprecated_image, 0, $this -> root_dir);
-		//print_a($core_image);
+
 		if ($_POST['type'] == 'tree') {
 			$text = "<div style='text-align:center'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -557,18 +552,12 @@ class file_inspector {
 	}
 	
 	function create_image($dir) {
-		//global $ADMIN_DIRECTORY, $FILES_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $DOWNLOADS_DIRECTORY, $DOCS_DIRECTORY;
 		global $core_image, $deprecated_image, $coredir;
 		
-		//$base_dirs = array($ADMIN_DIRECTORY, $FILES_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $DOWNLOADS_DIRECTORY, $DOCS_DIRECTORY);
-		//foreach ($base_dirs as $trim_key => $trim_dirs) {
-		//	$search[$trim_key] = "'".substr($trim_dirs, 0, -1)."'";
-		//}
 		foreach ($coredir as $trim_key => $trim_dirs) {
 			$search[$trim_key] = "'".$trim_dirs."'";
 			$replace[$trim_key] = "\$coredir['".$trim_key."']";
 		}
-		//$replace = array("\$ADMIN_DIRECTORY", "\$FILES_DIRECTORY", "\$IMAGES_DIRECTORY", "\$THEMES_DIRECTORY", "\$PLUGINS_DIRECTORY", "\$HANDLERS_DIRECTORY", "\$LANGUAGES_DIRECTORY", "\$HELP_DIRECTORY", "\$DOWNLOADS_DIRECTORY", "\$DOCS_DIRECTORY");
 		
 		$data = "<?php\n";
 		
