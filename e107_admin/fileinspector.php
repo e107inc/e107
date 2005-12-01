@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-12-01 09:09:18 $
+|     $Revision: 1.33 $
+|     $Date: 2005-12-01 19:09:14 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -271,38 +271,46 @@ class file_inspector {
 									}
 								}
 							} else {
-								if ($_POST['integrity']) {
-									if ($dir.'/'.$key != $this -> root_dir.'/'.$coredir['admin'].'/core_image.php' && $dir.'/'.$key != $this -> root_dir.'/e107_config.php') {
-										if ($this -> checksum($path) != $value) {
-											$this -> count['fail']['num']++;
-											$this -> count['fail']['size'] += $this -> files[$dir_id][$fid]['size'];
-											$this -> files[$dir_id][$fid]['icon'] = 'file_fail.png';
-											$dir_icon = 'folder_fail.png';
-											$parent_expand = TRUE;
+								//if (strpos($dir.'/'.$key, 'htmlarea') === false) {
+									if ($_POST['integrity']) {
+										if ($dir.'/'.$key != $this -> root_dir.'/'.$coredir['admin'].'/core_image.php' && $dir.'/'.$key != $this -> root_dir.'/e107_config.php') {
+											if ($this -> checksum($path) != $value) {
+												$this -> count['fail']['num']++;
+												$this -> count['fail']['size'] += $this -> files[$dir_id][$fid]['size'];
+												$this -> files[$dir_id][$fid]['icon'] = 'file_fail.png';
+												$dir_icon = 'folder_fail.png';
+												$parent_expand = TRUE;
+											} else {
+												$this -> count['pass']['num']++;
+												$this -> count['pass']['size'] += $this -> files[$dir_id][$fid]['size'];
+												if ($_POST['core'] != 'fail') {
+													$this -> files[$dir_id][$fid]['icon'] = 'file_check.png';
+													$dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png') ? $dir_icon : 'folder_check.png';
+												} else {
+													unset($this -> files[$dir_id][$fid]);
+													$known[$dir_id][$fid] = true;
+												}
+											}
 										} else {
-											$this -> count['pass']['num']++;
-											$this -> count['pass']['size'] += $this -> files[$dir_id][$fid]['size'];
+											$this -> count['uncalculable']['num']++;
+											$this -> count['uncalculable']['size'] += $this -> files[$dir_id][$fid]['size'];
 											if ($_POST['core'] != 'fail') {
-												$this -> files[$dir_id][$fid]['icon'] = 'file_check.png';
-												$dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png') ? $dir_icon : 'folder_check.png';
+												$this -> files[$dir_id][$fid]['icon'] = 'file_uncalc.png';
 											} else {
 												unset($this -> files[$dir_id][$fid]);
 												$known[$dir_id][$fid] = true;
 											}
 										}
 									} else {
-										$this -> count['uncalculable']['num']++;
-										$this -> count['uncalculable']['size'] += $this -> files[$dir_id][$fid]['size'];
-										if ($_POST['core'] != 'fail') {
-											$this -> files[$dir_id][$fid]['icon'] = 'file_uncalc.png';
-										} else {
-											unset($this -> files[$dir_id][$fid]);
-											$known[$dir_id][$fid] = true;
-										}
+										$this -> files[$dir_id][$fid]['icon'] = 'file_core.png';
 									}
-								} else {
-									$this -> files[$dir_id][$fid]['icon'] = 'file_core.png';
-								}
+								//} else {
+								//	$this -> count['warning']['num']++;
+								//	$this -> count['warning']['size'] += $this -> files[$dir_id][$fid]['size'];
+								//	$this -> files[$dir_id][$fid]['icon'] = 'file_warning.png';
+								//	$dir_icon = 'folder_warning.png';
+								//	$parent_expand = TRUE;
+								//}
 							}
 						} else {
 							unset ($this -> files[$dir_id][$fid]);
@@ -337,22 +345,34 @@ class file_inspector {
 					} else {
 						$aid = strtolower($readdir);
 						if (!isset($this -> files[$dir_id][$aid]['file']) && !$known[$dir_id][$aid]) {
-							if (isset($deprecated[$readdir])) {
-								if ($_POST['oldcore']) {
-									$this -> files[$dir_id][$aid]['file'] = ($_POST['type'] == 'tree') ? $readdir : $dir.'/'.$readdir;
-									$this -> files[$dir_id][$aid]['size'] = filesize($dir.'/'.$readdir);
-									$this -> files[$dir_id][$aid]['icon'] = 'file_old.png';
-									$this -> count['deprecated']['num']++;
-									$this -> count['deprecated']['size'] += $this -> files[$dir_id][$aid]['size'];
+							if (strpos($dir.'/'.$readdir, 'htmlarea') === false) {
+								if (isset($deprecated[$readdir])) {
+									if ($_POST['oldcore']) {
+										$this -> files[$dir_id][$aid]['file'] = ($_POST['type'] == 'tree') ? $readdir : $dir.'/'.$readdir;
+										$this -> files[$dir_id][$aid]['size'] = filesize($dir.'/'.$readdir);
+										$this -> files[$dir_id][$aid]['icon'] = 'file_old.png';
+										$this -> count['deprecated']['num']++;
+										$this -> count['deprecated']['size'] += $this -> files[$dir_id][$aid]['size'];
+									}
+								} else {
+									if ($_POST['noncore']) {
+										$this -> files[$dir_id][$aid]['file'] = ($_POST['type'] == 'tree') ? $readdir : $dir.'/'.$readdir;
+										$this -> files[$dir_id][$aid]['size'] = filesize($dir.'/'.$readdir);
+										$this -> files[$dir_id][$aid]['icon'] = 'file_unknown.png';
+										$this -> count['unknown']['num']++;
+										$this -> count['unknown']['size'] += $this -> files[$dir_id][$aid]['size'];
+									}
 								}
 							} else {
-								if ($_POST['noncore']) {
-									$this -> files[$dir_id][$aid]['file'] = ($_POST['type'] == 'tree') ? $readdir : $dir.'/'.$readdir;
-									$this -> files[$dir_id][$aid]['size'] = filesize($dir.'/'.$readdir);
-									$this -> files[$dir_id][$aid]['icon'] = 'file_unknown.png';
-									$this -> count['unknown']['num']++;
-									$this -> count['unknown']['size'] += $this -> files[$dir_id][$aid]['size'];
-								}
+								$this -> files[$dir_id][$aid]['file'] = ($_POST['type'] == 'tree') ? $readdir : $dir.'/'.$readdir;
+								$this -> files[$dir_id][$aid]['size'] = filesize($dir.'/'.$readdir);
+								$this -> files[$dir_id][$aid]['icon'] = 'file_warning.png';
+								$this -> count['warning']['num']++;
+								$this -> count['warning']['size'] += $this -> files[$dir_id][$aid]['size'];
+								$this -> count['deprecated']['num']++;
+								$this -> count['deprecated']['size'] += $this -> files[$dir_id][$aid]['size'];
+								$dir_icon = 'folder_warning.png';
+								$parent_expand = TRUE;
 							}
 							if ($_POST['regex']) {
 								$file_content = file($dir.'/'.$readdir);
@@ -367,12 +387,12 @@ class file_inspector {
 							} else {
 								if (isset($deprecated[$readdir])) {
 									if ($_POST['oldcore']) {
-										$dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png' || $dir_icon == 'folder_old_dir.png') ? $dir_icon : 'folder_old.png';
+										$dir_icon = ($dir_icon == 'folder_warning.png' || $dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png' || $dir_icon == 'folder_old_dir.png') ? $dir_icon : 'folder_old.png';
 										$parent_expand = TRUE;
 									}
 								} else {
 									if ($_POST['noncore']) {
-										$dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png' || $dir_icon == 'folder_old.png' || $dir_icon == 'folder_old_dir.png') ? $dir_icon : 'folder_unknown.png';
+										$dir_icon = ($dir_icon == 'folder_warning.png' || $dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png' || $dir_icon == 'folder_old.png' || $dir_icon == 'folder_old_dir.png') ? $dir_icon : 'folder_unknown.png';
 										$parent_expand = TRUE;
 									}
 								}
@@ -415,11 +435,11 @@ class file_inspector {
 		
 			$text .= "<tr>
 			<td class='forumheader3' style='width:50%'>
-			<div style='height: 300px; overflow: auto'>
+			<div style='height: 400px; overflow: auto'>
 			".$scan_text."
 			</div>
 			</td>
-			<td class='forumheader3' style='width:50%; vertical-align: top'><div style='height: 300px; overflow: auto'>";	
+			<td class='forumheader3' style='width:50%; vertical-align: top'><div style='height: 400px; overflow: auto'>";	
 		} else {
 			$text = "<div style='text-align:center'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -458,6 +478,17 @@ class file_inspector {
 		}
 		if ($_POST['core'] == 'all') {
 			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_6.":&nbsp;".($this -> count['core']['num'] + $this -> count['unknown']['num'] + $this -> count['deprecated']['num'])."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['core']['size'] + $this -> count['unknown']['size'] + $this -> count['deprecated']['size'], 2)."</td></tr>";
+		}
+		
+		if ($this -> count['warning']['num']) {
+			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
+			$text .= "<tr><td style='padding-left: 4px' colspan='2'>
+			<img src='".e_IMAGE."fileinspector/warning.png' class='i' alt='' />&nbsp;<b>".FR_LAN_26."</b></td></tr>";
+		
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_warning.png' class='i' alt='' />&nbsp;".FR_LAN_28.":&nbsp;".($this -> count['warning']['num'] ? $this -> count['warning']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['warning']['size'], 2)."</td></tr>";
+			
+			$text .= "<tr><td class='w' colspan='2'><img src='".e_IMAGE."fileinspector/info.png' class='i' alt='' />&nbsp;".FR_LAN_27."</td></tr>";
+
 		}
 		if ($_POST['integrity'] && $_POST['core'] != 'none') {
 			$integrity_icon = $this -> count['fail']['num'] ? 'integrity_fail.png' : 'integrity_pass.png';
@@ -724,6 +755,7 @@ if ($_POST['regex']) {
 $text .= ".d { margin: 2px 0px 1px 8px; cursor: default; white-space: nowrap }
 .s { padding: 1px 8px 1px 0px; vertical-align: bottom; width: 10%; white-space: nowrap }
 .t { margin-top: 1px; width: 100%; border-collapse: collapse; border-spacing: 0px }
+.w { padding: 1px 0px 1px 8px; vertical-align: bottom; width: 90% }
 .i { width: 16px; height: 16px }
 .e { width: 9px; height: 9px }
 -->
