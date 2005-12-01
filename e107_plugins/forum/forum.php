@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-08-29 16:13:03 $
-|     $Author: streaky $
+|     $Revision: 1.34 $
+|     $Date: 2005-12-01 03:28:27 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!defined("E107_BOOTSTRAP_LOADED")) {
@@ -441,11 +441,11 @@ if (e_QUERY == "new")
 		}
 		if($post['post_subject'])
 		{
-			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}.post'>".LAN_425.$tp->toHTML($post['post_subject'], TRUE)."</a>";
+			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}.post'>".LAN_425.$tp->toHTML($post['post_subject'], TRUE, 'no_make_clickable')."</a>";
 		}
 		else
 		{
-			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}'>".$tp->toHTML($post['thread_name'], TRUE)."</a>";
+			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}'>".$tp->toHTML($post['thread_name'], TRUE, 'no_make_clickable')."</a>";
 		}
 	
 		$forum_newstring .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_MAIN);
