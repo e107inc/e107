@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2005-11-25 18:04:11 $
+|     $Revision: 1.55 $
+|     $Date: 2005-12-01 02:36:40 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -163,7 +163,7 @@ if (isset($_POST['updatesettings']))
 		$regex = $tp->toText($parms[1]);
 		$regexfail = $tp->toText($parms[2]);
 		if(defined($regexfail)) {$regexfail = constant($regexfail);}
-		if($val == '' && $extList[$key]['user_extended_struct_required'] == TRUE && !$_uid)
+		if($val == '' && $extList[$key]['user_extended_struct_required'] == 1 && !$_uid)
 		{
 			$error .= LAN_SIGNUP_6.substr($key,5)." ".LAN_SIGNUP_7."\\n";
 			$err = TRUE;
