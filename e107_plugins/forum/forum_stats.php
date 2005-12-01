@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_stats.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-10-09 23:04:24 $
-|     $Author: sweetas $
+|     $Revision: 1.10 $
+|     $Date: 2005-12-01 03:18:30 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -89,10 +89,10 @@ foreach($posters as $poster)
 }
 
 $query = "
-SELECT thread_user, COUNT(thread_user) AS ucount, user_name FROM #forum_t as ft 
-LEFT JOIN #user AS u ON ft.thread_user = u.user_id 
+SELECT FLOOR(thread_user) as t_user, COUNT(FLOOR(ft.thread_user)) AS ucount, u.user_name, u.user_id FROM #forum_t as ft 
+LEFT JOIN #user AS u ON FLOOR(ft.thread_user) = u.user_id 
 WHERE ft.thread_parent=0
-GROUP BY thread_user 
+GROUP BY t_user 
 ORDER BY ucount DESC
 LIMIT 0,10";
 $sql -> db_Select_gen($query);
@@ -101,14 +101,14 @@ $top_topic_starters = array();
 foreach($posters as $poster)
 {
 	$percen = round(($poster['ucount'] / $total_topics) * 100, 2);
-	$top_topic_starters[] = array("user_id" => $poster['thread_user'], "user_name" => $poster['user_name'], "user_forums" => $poster['ucount'], "percentage" => $percen);
+	$top_topic_starters[] = array("user_id" => $poster['user_id'], "user_name" => $poster['user_name'], "user_forums" => $poster['ucount'], "percentage" => $percen);
 }
 
 $query = "
-SELECT thread_user, COUNT(thread_user) AS ucount, user_name FROM #forum_t as ft 
-LEFT JOIN #user AS u ON ft.thread_user = u.user_id 
+SELECT FLOOR(thread_user) as t_user, COUNT(FLOOR(ft.thread_user)) AS ucount, u.user_name, u.user_id FROM #forum_t as ft 
+LEFT JOIN #user AS u ON FLOOR(ft.thread_user) = u.user_id 
 WHERE ft.thread_parent!=0
-GROUP BY thread_user
+GROUP BY t_user
 ORDER BY ucount DESC
 LIMIT 0,10";
 $sql -> db_Select_gen($query);
@@ -118,7 +118,7 @@ $top_repliers = array();
 foreach($posters as $poster)
 {
 	$percen = round(($poster['ucount'] / $total_replies) * 100, 2);
-	$top_repliers[] = array("user_id" => $poster['thread_user'], "user_name" => $poster['user_name'], "user_forums" => $poster['ucount'], "percentage" => $percen);
+	$top_repliers[] = array("user_id" => $poster['user_id'], "user_name" => $poster['user_name'], "user_forums" => $poster['ucount'], "percentage" => $percen);
 }
 
 
