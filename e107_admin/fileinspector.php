@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-12-01 07:55:28 $
+|     $Revision: 1.32 $
+|     $Date: 2005-12-01 09:09:18 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -222,7 +222,7 @@ class file_inspector {
 	}
 	
 	function inspect($list, $deprecated, $level, $dir, &$tree_end, &$parent_expand) {
-		global $core_image;
+		global $coredir;
 		unset ($childOut);
 		$parent_expand = false;
 		if (substr($dir, -1) == '/') {
@@ -248,7 +248,6 @@ class file_inspector {
 					$last_expand = true;
 				}
 			} else {
-				if ($key != 'core_image.php') {
 					$path = $dir.'/'.$key;
 					$fid = strtolower($key);
 					$this -> files[$dir_id][$fid]['file'] = ($_POST['type'] == 'tree') ? $key : $path;
@@ -273,18 +272,29 @@ class file_inspector {
 								}
 							} else {
 								if ($_POST['integrity']) {
-									if ($this -> checksum($path) != $value) {
-										$this -> count['fail']['num']++;
-										$this -> count['fail']['size'] += $this -> files[$dir_id][$fid]['size'];
-										$this -> files[$dir_id][$fid]['icon'] = 'file_fail.png';
-										$dir_icon = 'folder_fail.png';
-										$parent_expand = TRUE;
+									if ($dir.'/'.$key != $this -> root_dir.'/'.$coredir['admin'].'/core_image.php' && $dir.'/'.$key != $this -> root_dir.'/e107_config.php') {
+										if ($this -> checksum($path) != $value) {
+											$this -> count['fail']['num']++;
+											$this -> count['fail']['size'] += $this -> files[$dir_id][$fid]['size'];
+											$this -> files[$dir_id][$fid]['icon'] = 'file_fail.png';
+											$dir_icon = 'folder_fail.png';
+											$parent_expand = TRUE;
+										} else {
+											$this -> count['pass']['num']++;
+											$this -> count['pass']['size'] += $this -> files[$dir_id][$fid]['size'];
+											if ($_POST['core'] != 'fail') {
+												$this -> files[$dir_id][$fid]['icon'] = 'file_check.png';
+												$dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png') ? $dir_icon : 'folder_check.png';
+											} else {
+												unset($this -> files[$dir_id][$fid]);
+												$known[$dir_id][$fid] = true;
+											}
+										}
 									} else {
-										$this -> count['pass']['num']++;
-										$this -> count['pass']['size'] += $this -> files[$dir_id][$fid]['size'];
+										$this -> count['uncalculable']['num']++;
+										$this -> count['uncalculable']['size'] += $this -> files[$dir_id][$fid]['size'];
 										if ($_POST['core'] != 'fail') {
-											$this -> files[$dir_id][$fid]['icon'] = 'file_check.png';
-											$dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png') ? $dir_icon : 'folder_check.png';
+											$this -> files[$dir_id][$fid]['icon'] = 'file_uncalc.png';
 										} else {
 											unset($this -> files[$dir_id][$fid]);
 											$known[$dir_id][$fid] = true;
@@ -306,7 +316,6 @@ class file_inspector {
 					} else {
 						unset ($this -> files[$dir_id][$fid]);
 					}
-				}
 			}
 		}
 		
@@ -325,7 +334,7 @@ class file_inspector {
 								$last_expand = true;
 							}
 						}
-					} else if ($readdir != 'core_image.php') {
+					} else {
 						$aid = strtolower($readdir);
 						if (!isset($this -> files[$dir_id][$aid]['file']) && !$known[$dir_id][$aid]) {
 							if (isset($deprecated[$readdir])) {
@@ -459,6 +468,7 @@ class file_inspector {
 		
 			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_check.png' class='i' alt='' />&nbsp;".FR_LAN_8.":&nbsp;".($this -> count['pass']['num'] ? $this -> count['pass']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['pass']['size'], 2)."</td></tr>";
 			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_fail.png' class='i' alt='' />&nbsp;".FR_LAN_9.":&nbsp;".($this -> count['fail']['num'] ? $this -> count['fail']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['fail']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_uncalc.png' class='i' alt='' />&nbsp;".FR_LAN_25.":&nbsp;".($this -> count['uncalculable']['num'] ? $this -> count['uncalculable']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['uncalculable']['size'], 2)."</td></tr>";
 		
 			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
 

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_fileinspector.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-01 07:19:45 $
+|     $Revision: 1.8 $
+|     $Date: 2005-12-01 09:09:19 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -64,5 +64,6 @@ define("FR_LAN_21", "none");
 define("FR_LAN_22", "Missing core files");
 define("FR_LAN_23", "No matches found.");
 define("FR_LAN_24", "Old core files");
+define("FR_LAN_25", "Integrity cannot be calculated");
 
 ?>
