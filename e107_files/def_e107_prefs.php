@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2005-11-25 12:11:23 $
-|     $Author: streaky $
+|     $Revision: 1.42 $
+|     $Date: 2005-12-01 01:34:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -82,7 +82,7 @@ $pref = array (
   'displaysql' => '0',
   'displaythemeinfo' => '0',
   'timezone' => 'GMT',
-  'search_restrict' => '1',
+  'search_restrict' => '0',
   'antiflood1' => '1',
   'antiflood_timeout' => '10',
   'autoban' => '1',
@@ -163,6 +163,7 @@ $pref = array (
   'allowCommentEdit' => '0',
   'rss_feeds' => '1',
   'admincss' => 'style.css',
+  'developer' => '0'
 );
 
 ?>

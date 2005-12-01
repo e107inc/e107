@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2005-11-20 22:47:48 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.68 $
+|     $Date: 2005-12-01 01:34:33 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -269,11 +269,19 @@ $text .= "<div id='admindisp' style='display:none; text-align:center'>
 	</td>
 	</tr>";
 
-$text .= "<tr>
+	$text .= "<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_97."<br /><span class='smalltext'>".PRFLAN_98."</span></td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<input type='radio' name='admin_alerts_uniquemenu' value='1'".($pref['admin_alerts_uniquemenu'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
 	<input type='radio' name='admin_alerts_uniquemenu' value='0'".(!$pref['admin_alerts_uniquemenu'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
+	</tr>";
+	
+	$text .= "<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_147.":<br /><span class='smalltext'>".PRFLAN_148."</span></td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	<input type='radio' name='developer' value='1'".($pref['developer'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='developer' value='0'".(!$pref['developer'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>";
 

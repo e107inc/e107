@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-11-20 22:47:48 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.40 $
+|     $Date: 2005-12-01 01:34:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -198,6 +198,7 @@ define("PRFLAN_144", "Flood & Failed Login");
 define("PRFLAN_145", "Links in new window");
 define("PRFLAN_146", "Tick here to make all links open in a new window (<i>this will apply sitewide</i>). ");
 
-
+define("PRFLAN_147", "Developer Mode");
+define("PRFLAN_148", "Activate developer functions. This is for developers only. Do not use on production sites for security reasons.");
 
 ?>
