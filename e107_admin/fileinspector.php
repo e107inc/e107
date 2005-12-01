@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-11-28 21:39:23 $
+|     $Revision: 1.30 $
+|     $Date: 2005-12-01 07:19:45 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -30,10 +30,14 @@ $rs = new form;
 $fi = new file_inspector;
 
 $DOCS_DIRECTORY = str_replace('help/', '', $HELP_DIRECTORY);
-if (!e_QUERY) {
-	require_once('core_image.php');
+$maindirs = array('admin' => $ADMIN_DIRECTORY, 'files' => $FILES_DIRECTORY, 'images' => $IMAGES_DIRECTORY, 'themes' => $THEMES_DIRECTORY, 'plugins' => $PLUGINS_DIRECTORY, 'handlers' => $HANDLERS_DIRECTORY, 'languages' => $LANGUAGES_DIRECTORY, 'downloads' => $DOWNLOADS_DIRECTORY, 'docs' => $DOCS_DIRECTORY);
+foreach ($maindirs as $maindirs_key => $maindirs_value) {
+	$coredir[$maindirs_key] = substr($maindirs_value, 0, -1);
 }
 
+require_once('core_image.php');
+//print_a($core_image);
+//print_a($deprecated_image);
 if (e_QUERY) {
 	$fi -> snapshot_interface();
 } else if (isset($_POST['scan'])) {
@@ -47,7 +51,6 @@ class file_inspector {
 	
 	var $root_dir;
 	var $files = array();
-	var $image = array();
 	var $parent;
 	var $count = array();
 	var $results = 0;
@@ -75,7 +78,7 @@ class file_inspector {
 	}
 	
 	function scan_config() {
-		global $ns, $rs;
+		global $ns, $rs, $pref;
 
 		$text = "<div style='text-align: center'>
 		<form action='".e_SELF."' method='post' id='scanform'>
@@ -117,6 +120,16 @@ class file_inspector {
 		
 		$text .= "<tr>
 		<td class='forumheader3' style='width: 35%'>
+		".FC_LAN_3." ".FC_LAN_21.":
+		</td>
+		<td colspan='2' class='forumheader3' style='width: 65%'>
+		<input type='radio' name='oldcore' value='1'".(($_POST['oldcore'] == '1' || !isset($_POST['oldcore'])) ? " checked='checked'" : "")." /> ".FC_LAN_9."&nbsp;&nbsp;
+		<input type='radio' name='oldcore' value='0'".($_POST['oldcore'] == '0' ? " checked='checked'" : "")." /> ".FC_LAN_10."&nbsp;&nbsp;
+		</td>
+		</tr>";
+		
+		$text .= "<tr>
+		<td class='forumheader3' style='width: 35%'>
 		".FC_LAN_8.":
 		</td>
 		<td class='forumheader3' style='width: 65%; vertical-align: top'>
@@ -134,36 +147,38 @@ class file_inspector {
 		</td>
 		</tr>";
 		
-		$text .= "<tr>
-		<td class='fcaption' colspan='2'>".FC_LAN_17."</td>
-		</tr>";
-		
-		$text .= "<tr>
-		<td class='forumheader3' style='width: 35%'>
-		".FC_LAN_18.":
-		</td>
-		<td colspan='2' class='forumheader3' style='width: 65%'>
-		#<input class='tbox' type='text' name='regex' size='40' value='".htmlentities($_POST['regex'], ENT_QUOTES)."' />#<input class='tbox' type='text' name='mod' size='5' value='".$_POST['mod']."' />
-		</td>
-		</tr>";
-		
-		$text .= "<tr>
-		<td class='forumheader3' style='width: 35%'>
-		".FC_LAN_19.":
-		</td>
-		<td colspan='2' class='forumheader3' style='width: 65%'>
-		<input type='checkbox' name='num' value='1'".(($_POST['num'] || !isset($_POST['num'])) ? " checked='checked'" : "")." />
-		</td>
-		</tr>";
-		
-		$text .= "<tr>
-		<td class='forumheader3' style='width: 35%'>
-		".FC_LAN_20.":
-		</td>
-		<td colspan='2' class='forumheader3' style='width: 65%'>
-		<input type='checkbox' name='line' value='1'".(($_POST['line'] || !isset($_POST['line'])) ? " checked='checked'" : "")." />
-		</td>
-		</tr>";
+		if ($pref['developer']) {
+			$text .= "<tr>
+			<td class='fcaption' colspan='2'>".FC_LAN_17."</td>
+			</tr>";
+			
+			$text .= "<tr>
+			<td class='forumheader3' style='width: 35%'>
+			".FC_LAN_18.":
+			</td>
+			<td colspan='2' class='forumheader3' style='width: 65%'>
+			#<input class='tbox' type='text' name='regex' size='40' value='".htmlentities($_POST['regex'], ENT_QUOTES)."' />#<input class='tbox' type='text' name='mod' size='5' value='".$_POST['mod']."' />
+			</td>
+			</tr>";
+			
+			$text .= "<tr>
+			<td class='forumheader3' style='width: 35%'>
+			".FC_LAN_19.":
+			</td>
+			<td colspan='2' class='forumheader3' style='width: 65%'>
+			<input type='checkbox' name='num' value='1'".(($_POST['num'] || !isset($_POST['num'])) ? " checked='checked'" : "")." />
+			</td>
+			</tr>";
+			
+			$text .= "<tr>
+			<td class='forumheader3' style='width: 35%'>
+			".FC_LAN_20.":
+			</td>
+			<td colspan='2' class='forumheader3' style='width: 65%'>
+			<input type='checkbox' name='line' value='1'".(($_POST['line'] || !isset($_POST['line'])) ? " checked='checked'" : "")." />
+			</td>
+			</tr>";
+		}
 		
 		$text .= "<tr>
 		<td colspan='2' style='text-align:center' class='forumheader'>".$rs -> form_button('submit', 'scan', FC_LAN_11)."</td>
@@ -176,14 +191,18 @@ class file_inspector {
 		
 	}
 	
-	function scan($dir) {
+	function scan($dir, $image) {
+		// print_a($image);
+		// $dir_key = basename($dir);
+		// echo $dir_key.'<br />';
 		$handle = opendir($dir.'/');
 		while (false !== ($readdir = readdir($handle))) {
 			if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
 				$path = $dir.'/'.$readdir;
+				//echo $image[$readdir];
 				if (is_dir($path)) {
 					$dirs[$path] = $readdir;
-				} else {
+				} else if (!isset($image[$readdir])) {
 					$files[$readdir] = $this -> checksum($path, TRUE);
 				}
 			}
@@ -193,7 +212,7 @@ class file_inspector {
 		if (isset($dirs)) {
 			ksort ($dirs);
 			foreach ($dirs as $dir_path => $dir_list) {
-				$list[$dir_list] = $this -> scan($dir_path) ? $this -> scan($dir_path) : array();
+				$list[$dir_list] = ($set = $this -> scan($dir_path, $image[$dir_list])) ? $set : array();
 			}
 		}
 		
@@ -207,7 +226,7 @@ class file_inspector {
 		return $list;
 	}
 	
-	function inspect($list, $level, $dir, &$tree_end, &$parent_expand) {
+	function inspect($list, $deprecated, $level, $dir, &$tree_end, &$parent_expand) {
 		global $core_image;
 		unset ($childOut);
 		$parent_expand = false;
@@ -227,7 +246,7 @@ class file_inspector {
 				$path = $dir.'/'.$key;
 				$child_open = false;
 				$child_end = true;
-				$sub_text .= $this -> inspect($value, $level, $path, $child_end, $child_expand);
+				$sub_text .= $this -> inspect($value, $deprecated[$key], $level, $path, $child_end, $child_expand);
 				$tree_end = false;
 				if ($child_expand) {
 					$parent_expand = true;
@@ -262,15 +281,15 @@ class file_inspector {
 									if ($this -> checksum($path) != $value) {
 										$this -> count['fail']['num']++;
 										$this -> count['fail']['size'] += $this -> files[$dir_id][$fid]['size'];
-										$this -> files[$dir_id][$fid]['icon'] = 'file_warning.png';
-										$dir_icon = 'folder_warning.png';
+										$this -> files[$dir_id][$fid]['icon'] = 'file_fail.png';
+										$dir_icon = 'folder_fail.png';
 										$parent_expand = TRUE;
 									} else {
 										$this -> count['pass']['num']++;
 										$this -> count['pass']['size'] += $this -> files[$dir_id][$fid]['size'];
 										if ($_POST['core'] != 'fail') {
 											$this -> files[$dir_id][$fid]['icon'] = 'file_check.png';
-											$dir_icon = ($dir_icon == 'folder_warning.png' || $dir_icon == 'folder_missing.png') ? $dir_icon : 'folder_check.png';
+											$dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png') ? $dir_icon : 'folder_check.png';
 										} else {
 											unset($this -> files[$dir_id][$fid]);
 											$known[$dir_id][$fid] = true;
@@ -280,13 +299,14 @@ class file_inspector {
 									$this -> files[$dir_id][$fid]['icon'] = 'file_core.png';
 								}
 							}
-						} else if (!$_POST['noncore']){
+						} else {
 							unset ($this -> files[$dir_id][$fid]);
+							$known[$dir_id][$fid] = true;
 						}
 					} else if ($_POST['missing']) {
 						$this -> count['missing']['num']++;
 						$this -> files[$dir_id][$fid]['icon'] = 'file_missing.png';
-						$dir_icon = ($dir_icon == 'folder_warning.png') ? $dir_icon : 'folder_missing.png';
+						$dir_icon = ($dir_icon == 'folder_fail.png') ? $dir_icon : 'folder_missing.png';
 						$parent_expand = TRUE;
 					} else {
 						unset ($this -> files[$dir_id][$fid]);
@@ -295,18 +315,41 @@ class file_inspector {
 			}
 		}
 		
-		if ($_POST['noncore']) {
+		if ($_POST['noncore'] || $_POST['oldcore']) {
 			$handle = opendir($dir.'/');
 			while (false !== ($readdir = readdir($handle))) {
 				if ($readdir != '.' && $readdir != '..' && $readdir != '/' && $readdir != 'CVS' && $readdir != 'Thumbs.db' && (strpos('._', $readdir) === FALSE)) {
-					if (!is_dir($dir.'/'.$readdir) && $readdir != 'core_image.php') {
+					if (is_dir($dir.'/'.$readdir)) {
+						if (!isset($list[$readdir]) && ($level > 1 || $readdir == 'e107_install')) {
+							$child_open = false;
+							$child_end = true;
+							$sub_text .= $this -> inspect(array(), $deprecated[$readdir], $level, $dir.'/'.$readdir, $child_end, $child_expand);
+							$tree_end = false;
+							if ($child_expand) {
+								$parent_expand = true;
+								$last_expand = true;
+							}
+						}
+					} else if ($readdir != 'core_image.php') {
 						$aid = strtolower($readdir);
 						if (!isset($this -> files[$dir_id][$aid]['file']) && !$known[$dir_id][$aid]) {
-							$this -> files[$dir_id][$aid]['file'] = ($_POST['type'] == 'tree') ? $readdir : $dir.'/'.$readdir;
-							$this -> files[$dir_id][$aid]['size'] = filesize($dir.'/'.$readdir);
-							$this -> files[$dir_id][$aid]['icon'] = 'file_unknown.png';
-							$this -> count['unknown']['num']++;
-							$this -> count['unknown']['size'] += $this -> files[$dir_id][$aid]['size'];
+							if (isset($deprecated[$readdir])) {
+								if ($_POST['oldcore']) {
+									$this -> files[$dir_id][$aid]['file'] = ($_POST['type'] == 'tree') ? $readdir : $dir.'/'.$readdir;
+									$this -> files[$dir_id][$aid]['size'] = filesize($dir.'/'.$readdir);
+									$this -> files[$dir_id][$aid]['icon'] = 'file_old.png';
+									$this -> count['deprecated']['num']++;
+									$this -> count['deprecated']['size'] += $this -> files[$dir_id][$aid]['size'];
+								}
+							} else {
+								if ($_POST['noncore']) {
+									$this -> files[$dir_id][$aid]['file'] = ($_POST['type'] == 'tree') ? $readdir : $dir.'/'.$readdir;
+									$this -> files[$dir_id][$aid]['size'] = filesize($dir.'/'.$readdir);
+									$this -> files[$dir_id][$aid]['icon'] = 'file_unknown.png';
+									$this -> count['unknown']['num']++;
+									$this -> count['unknown']['size'] += $this -> files[$dir_id][$aid]['size'];
+								}
+							}
 							if ($_POST['regex']) {
 								$file_content = file($dir.'/'.$readdir);
 								if ($this -> files[$dir_id][$aid]['lines'] = preg_grep("#".$_POST['regex']."#".$_POST['mod'], $file_content)) {
@@ -318,8 +361,17 @@ class file_inspector {
 									$dir_icon = ($dir_icon == 'fileinspector.png') ? $dir_icon : 'folder.png';
 								}
 							} else {
-								$parent_expand = TRUE;
-								$dir_icon = ($dir_icon == 'folder_warning.png' || $dir_icon == 'folder_missing.png') ? $dir_icon : 'folder_unknown.png';
+								if (isset($deprecated[$readdir])) {
+									if ($_POST['oldcore']) {
+										$dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png') ? $dir_icon : 'folder_old.png';
+										$parent_expand = TRUE;
+									}
+								} else {
+									if ($_POST['noncore']) {
+										$dir_icon = ($dir_icon == 'folder_fail.png' || $dir_icon == 'folder_missing.png' || $dir_icon == 'folder_old.png') ? $dir_icon : 'folder_unknown.png';
+										$parent_expand = TRUE;
+									}
+								}
 							}
 						} else if ($_POST['core'] == 'none') {
 							unset($this -> files[$dir_id][$aid]);
@@ -345,9 +397,9 @@ class file_inspector {
 	}
 
 	function scan_results() {
-		global $ns, $rs, $core_image;
-		$scan_text = $this -> inspect($core_image, 0, $this -> root_dir);
-		
+		global $ns, $rs, $core_image, $deprecated_image;
+		$scan_text = $this -> inspect($core_image, $deprecated_image, 0, $this -> root_dir);
+		//print_a($core_image);
 		if ($_POST['type'] == 'tree') {
 			$text = "<div style='text-align:center'>
 			<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -397,8 +449,11 @@ class file_inspector {
 		if ($_POST['noncore']) {
 			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_unknown.png' class='i' alt='' />&nbsp;".FR_LAN_5.":&nbsp;".($this -> count['unknown']['num'] ? $this -> count['unknown']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['unknown']['size'], 2)."</td></tr>";
 		}
+		if ($_POST['oldcore']) {
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_old.png' class='i' alt='' />&nbsp;".FR_LAN_24.":&nbsp;".($this -> count['deprecated']['num'] ? $this -> count['deprecated']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['deprecated']['size'], 2)."</td></tr>";
+		}
 		if ($_POST['core'] == 'all') {
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_6.":&nbsp;".($this -> count['core']['num'] + $this -> count['unknown']['num'])."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['core']['size'] + $this -> count['unknown']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file.png' class='i' alt='' />&nbsp;".FR_LAN_6.":&nbsp;".($this -> count['core']['num'] + $this -> count['unknown']['num'] + $this -> count['deprecated']['num'])."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['core']['size'] + $this -> count['unknown']['size'] + $this -> count['deprecated']['size'], 2)."</td></tr>";
 		}
 		if ($_POST['integrity'] && $_POST['core'] != 'none') {
 			$integrity_icon = $this -> count['fail']['num'] ? 'integrity_fail.png' : 'integrity_pass.png';
@@ -408,7 +463,7 @@ class file_inspector {
 			<img src='".e_IMAGE."fileinspector/".$integrity_icon."' class='i' alt='' />&nbsp;<b>".FR_LAN_7."</b> ".$integrity_text."</td></tr>";
 		
 			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_check.png' class='i' alt='' />&nbsp;".FR_LAN_8.":&nbsp;".($this -> count['pass']['num'] ? $this -> count['pass']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['pass']['size'], 2)."</td></tr>";
-			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_warning.png' class='i' alt='' />&nbsp;".FR_LAN_9.":&nbsp;".($this -> count['fail']['num'] ? $this -> count['fail']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['fail']['size'], 2)."</td></tr>";
+			$text .= "<tr><td class='f'><img src='".e_IMAGE."fileinspector/file_fail.png' class='i' alt='' />&nbsp;".FR_LAN_9.":&nbsp;".($this -> count['fail']['num'] ? $this -> count['fail']['num'] : FR_LAN_21)."&nbsp;</td><td class='s'>".$this -> parsesize($this -> count['fail']['size'], 2)."</td></tr>";
 		
 			$text .= "<tr><td colspan='2'>&nbsp;</td></tr>";
 
@@ -496,23 +551,37 @@ class file_inspector {
 		$text .= "</td></tr>";
 		
 		$text .= "</table>
-		</div><br />";
+		</dit><br />";
 
 		$ns -> tablerender(FR_LAN_1.'...', $text);
 	}
 	
 	function create_image($dir) {
-		global $ADMIN_DIRECTORY, $FILES_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $DOWNLOADS_DIRECTORY, $DOCS_DIRECTORY;
-		$base_dirs = array($ADMIN_DIRECTORY, $FILES_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $DOWNLOADS_DIRECTORY, $DOCS_DIRECTORY);
-		foreach ($base_dirs as $trim_key => $trim_dirs) {
-			$search_dirs[$trim_key] = "'".substr($trim_dirs, 0, -1)."'";
+		//global $ADMIN_DIRECTORY, $FILES_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $DOWNLOADS_DIRECTORY, $DOCS_DIRECTORY;
+		global $core_image, $deprecated_image, $coredir;
+		
+		//$base_dirs = array($ADMIN_DIRECTORY, $FILES_DIRECTORY, $IMAGES_DIRECTORY, $THEMES_DIRECTORY, $PLUGINS_DIRECTORY, $HANDLERS_DIRECTORY, $LANGUAGES_DIRECTORY, $HELP_DIRECTORY, $DOWNLOADS_DIRECTORY, $DOCS_DIRECTORY);
+		//foreach ($base_dirs as $trim_key => $trim_dirs) {
+		//	$search[$trim_key] = "'".substr($trim_dirs, 0, -1)."'";
+		//}
+		foreach ($coredir as $trim_key => $trim_dirs) {
+			$search[$trim_key] = "'".$trim_dirs."'";
+			$replace[$trim_key] = "\$coredir['".$trim_key."']";
 		}
-		$this -> image = $this -> scan($dir);
-		$image_array = var_export($this -> image, true);
-		$replace = array("\$ADMIN_DIRECTORY", "\$FILES_DIRECTORY", "\$IMAGES_DIRECTORY", "\$THEMES_DIRECTORY", "\$PLUGINS_DIRECTORY", "\$HANDLERS_DIRECTORY", "\$LANGUAGES_DIRECTORY", "\$HELP_DIRECTORY", "\$DOWNLOADS_DIRECTORY", "\$DOCS_DIRECTORY");
-		$image_array = str_replace($search_dirs, $replace, $image_array);
+		//$replace = array("\$ADMIN_DIRECTORY", "\$FILES_DIRECTORY", "\$IMAGES_DIRECTORY", "\$THEMES_DIRECTORY", "\$PLUGINS_DIRECTORY", "\$HANDLERS_DIRECTORY", "\$LANGUAGES_DIRECTORY", "\$HELP_DIRECTORY", "\$DOWNLOADS_DIRECTORY", "\$DOCS_DIRECTORY");
+		
 		$data = "<?php\n";
-		$data .= "\$core_image = ".$image_array."\n\n";
+		
+		$scan_current = ($_POST['snaptype'] == 'current') ? $this -> scan($dir) : $core_image;
+		$image_array = var_export($scan_current, true);
+		$image_array = str_replace($search, $replace, $image_array);
+		$data .= "\$core_image = ".$image_array.";\n\n";
+		
+		$scan_deprecated = ($_POST['snaptype'] == 'deprecated') ? $this -> scan($dir, $core_image) : $deprecated_image;
+		$image_array = var_export($scan_deprecated, true);
+		$image_array = str_replace($search, $replace, $image_array);
+		$data .= "\$deprecated_image = ".$image_array.";\n\n";
+
 		$data .= "?>";
 		$fp = fopen(e_ADMIN.'core_image.php', 'w');
 		fwrite($fp, $data);
@@ -557,6 +626,17 @@ class file_inspector {
 		<td class='forumheader3' style='width:50%'>
 		<input class='tbox' type='text' name='snapshot_path' size='60' value='".(isset($_POST['snapshot_path']) ? $_POST['snapshot_path'] : $this -> root_dir)."' />
 		</td></tr>
+		
+		<tr>
+		<td class='forumheader3' style='width: 35%'>
+		Create snapshot of current or deprecated core files:
+		</td>
+		<td colspan='2' class='forumheader3' style='width: 65%'>
+		<input type='radio' name='snaptype' value='current'".($_POST['snaptype'] == 'current' || !isset($_POST['snaptype']) ? " checked='checked'" : "")." /> Current&nbsp;&nbsp;
+		<input type='radio' name='snaptype' value='deprecated'".($_POST['snaptype'] == 'deprecated' ? " checked='checked'" : "")." /> Deprecated&nbsp;&nbsp;
+		</td>
+		</tr>
+		
 		<tr>
 		<td class='forumheader' style='text-align:center' colspan='2'>".$rs -> form_button('submit', 'create_snapshot', 'Create Snapshot')."</td>
 		</tr>

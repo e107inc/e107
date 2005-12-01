@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_fileinspector.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-11-28 21:13:04 $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-01 07:19:45 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -24,12 +24,13 @@ define("FC_LAN_11", "Scan Now");
 define("FC_LAN_12", "None");
 define("FC_LAN_13", "Missing Core Files");
 define("FC_LAN_14", "Display results as");
-define("FC_LAN_15", "Tree");
+define("FC_LAN_15", "Directory Tree");
 define("FC_LAN_16", "List");
 define("FC_LAN_17", "String Matching");
 define("FC_LAN_18", "Regular expression");
 define("FC_LAN_19", "Show line numbers");
 define("FC_LAN_20", "Show matched lines");
+define("FC_LAN_21", "Old Core Files");
 
 define("FR_LAN_1", "Scanning");
 define("FR_LAN_2", "Scan Results");
@@ -62,5 +63,6 @@ define("FR_LAN_20", "All files passed");
 define("FR_LAN_21", "none");
 define("FR_LAN_22", "Missing core files");
 define("FR_LAN_23", "No matches found.");
+define("FR_LAN_24", "Old core files");
 
 ?>
