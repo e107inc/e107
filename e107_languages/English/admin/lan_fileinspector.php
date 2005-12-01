@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_fileinspector.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-12-01 09:09:19 $
+|     $Revision: 1.9 $
+|     $Date: 2005-12-01 19:09:15 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -64,6 +64,10 @@ define("FR_LAN_21", "none");
 define("FR_LAN_22", "Missing core files");
 define("FR_LAN_23", "No matches found.");
 define("FR_LAN_24", "Old core files");
-define("FR_LAN_25", "Integrity cannot be calculated");
+define("FR_LAN_25", "Integrity uncalculable");
+
+define("FR_LAN_26", "Warning! Known Insecurity Detected!");
+define("FR_LAN_27", "There are files on your server that are known to be exploitable and must be removed immediately.");
+define("FR_LAN_28", "Insecure files");
 
 ?>
