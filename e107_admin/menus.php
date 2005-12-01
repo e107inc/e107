@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-11-14 07:24:25 $
+|     $Revision: 1.43 $
+|     $Date: 2005-12-01 17:48:01 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -349,10 +349,10 @@ else
 	parseheader($menus_header);
 	echo "<div style='text-align:center'>";
 	echo $frm->form_open("post", e_SELF."?configure.".$menus_equery[1], "menuActivation");
-	$text = "<table style='width:100%;margin-left:auto;margin-right:auto'>";
+	$text = "<table style='margin-left:auto;margin-right:auto'>";
 
 	$sql->db_Select("menus", "*", "menu_location='0' ORDER BY menu_name ");
-	$text .= "<tr><td style='text-align:center;padding-bottom:4px'>".MENLAN_36."...</td><td style='padding-bottom:4px;text-align:center'>...".MENLAN_37."</td></tr>";
+	$text .= "<tr><td style='width:50%;text-align:center;padding-bottom:4px'>".MENLAN_36."...</td><td style='width:50%;padding-bottom:4px;text-align:center'>...".MENLAN_37."</td></tr>";
 	$text .= "<tr><td style='width:50%;vertical-align:top;text-align:center'>";
 
 	$text .= "<select name='menuselect[]' class='tbox' multiple='multiple' style='height:200px;width:95%'>";
