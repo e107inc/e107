@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/admin_config.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-11-26 14:25:41 $
+|     $Revision: 1.5 $
+|     $Date: 2005-12-01 13:32:09 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -158,7 +158,7 @@ class newsletter
 				<td style='width:5%; text-align: center;' class='forumheader3'>".$data['newsletter_id']."</td>
 				<td style='width:10%; text-align: center;' class='forumheader3'>".$data['newsletter_issue']."</td>
 				<td style='width:65%' class='forumheader3'>[ ".$data['newsletter_parent']." ] ".$data['newsletter_title']."</td>
-				<td style='width:10%; text-align: center;' class='forumheader3'>".($data['newsletter_flag'] ? NLLAN_16 : "<input class='button' type='submit' name='nlmailnow_".$data['newsletter_id']."' value='".NLLAN_17."' onclick=\"return jsconfirm('".$tp->toJS(".NLLAN_18.")."') \" />")."</td>
+				<td style='width:10%; text-align: center;' class='forumheader3'>".($data['newsletter_flag'] ? NLLAN_16 : "<input class='button' type='submit' name='nlmailnow_".$data['newsletter_id']."' value='".NLLAN_17."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_18)."') \" />")."</td>
 				<td style='width:10%; text-align: center;' class='forumheader3'>
 				<a href='".e_SELF."?edit.".$data['newsletter_id']."'>".ADMIN_EDIT_ICON."</a>
 				<input type='image' title='".LAN_DELETE."' name='delete[issue_".$data['newsletter_id']."]' src='".ADMIN_DELETE_ICON_PATH."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_19." [ID: ".$data['newsletter_id']." ]")."') \"/>
