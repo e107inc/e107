@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-10-29 13:46:45 $
-|     $Author: sweetas $
+|     $Revision: 1.38 $
+|     $Date: 2005-12-02 07:23:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e_HANDLER")){ exit; }
@@ -162,33 +162,50 @@ if (USER == TRUE || ADMIN == TRUE) {
 	}
 	$ns->tablerender($caption, $text, 'login');
 } else {
+
+	if (!$LOGIN_MENU_FORM) {
+		if (file_exists(THEME."login_menu_template.php")){
+	   		require_once(THEME."login_menu_template.php");
+		}else{
+			require_once(e_PLUGIN."login_menu/login_menu_template.php");
+		}
+	}
+
+
 	if (LOGINMESSAGE != '') {
 		$text = '<div style="text-align: center;">'.LOGINMESSAGE.'</div>';
 	}
-	$text .= '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'"><div style="text-align: center;">';
-	$text .= "\n".LOGIN_MENU_L1."<br />\n
-	<input class='tbox login user' type='text' name='username' size='15' value='' maxlength='30' />\n
-	<br />\n".LOGIN_MENU_L2."\n<br />\n
-	<input class='tbox login pass' type='password' name='userpass' size='15' value='' maxlength='20' />\n\n<br />\n
-	";
+	$text .= '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'">';
+
+	$LM_USERNAME_TXT  = LOGIN_MENU_L1;
+	$LM_USERNAME_INPUT = "<input class='tbox login user' type='text' name='username' size='15' value='' maxlength='30' />\n";
+	$LM_PASSWORD_TXT = LOGIN_MENU_L2;
+	$LM_PASSWORD_INPUT = "<input class='tbox login pass' type='password' name='userpass' size='15' value='' maxlength='20' />\n\n";
+
 	if ($use_imagecode) {
-		$text .= '<input type="hidden" name="rand_num" value="'.$sec_img->random_number.'" />
+		$LM_IMAGECODE = '<input type="hidden" name="rand_num" value="'.$sec_img->random_number.'" />
 		'.$sec_img->r_image().'
 		<br /><input class="tbox login verify" type="text" name="code_verify" size="15" maxlength="20" /><br />';
 	}
-	$text .= '<input class="button" type="submit" name="userlogin" value="'.LOGIN_MENU_L28.'" />';
+	$LM_LOGINBUTTON = '<input class="button" type="submit" name="userlogin" value="'.LOGIN_MENU_L28.'" />';
+
 	if($pref['user_tracking'] != "session")
 	{
-		$text .= '<br /><input type="checkbox" name="autologin" value="1" />'.LOGIN_MENU_L6;
+		$LM_REMEMBERME = '<br /><input type="checkbox" name="autologin" value="1" />'.LOGIN_MENU_L6;
 	}
 
 	if ($pref['user_reg']) {
-		$text .= '<br /><br />';
 		if (!$pref['auth_method'] || $pref['auth_method'] == 'e107') {
-			$text .= '[ <a href="'.e_SIGNUP.'">'.LOGIN_MENU_L3.'</a> ]<br />[ <a href="'.e_BASE.'fpw.php">'.LOGIN_MENU_L4.'</a> ]';
+ 			$LM_SIGNUP_LINK = '<a href="'.e_SIGNUP.'">'.LOGIN_MENU_L3.'</a>';
+			$LM_FPW_LINK  = '<a href="'.e_BASE.'fpw.php">'.LOGIN_MENU_L4.'</a>';
 		}
 	}
-	$text .= '</div></form>';
+
+	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $LOGIN_MENU_FORM);
+
+	$text .= '</form>';
+
+
 	if (file_exists(THEME.'images/login_menu.png')) {
 		$caption = '<img src="'.THEME_ABS.'images/login_menu.png" alt="" />'.LOGIN_MENU_L5;
 	} else {
