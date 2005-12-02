@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-10-29 02:23:46 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.31 $
+|     $Date: 2005-12-02 07:19:42 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -94,7 +94,7 @@ class rssCreate {
 				$topic = (is_numeric($topic_id))? " AND news_category = ".$topic_id : "";
 				$this -> contentType = "news";
 				$this -> rssQuery = "
-				SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
+				SELECT n.*, u.user_id, u.user_name, u.user_email, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 				LEFT JOIN #user AS u ON n.news_author = u.user_id
 				LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
 				WHERE n.news_class IN (".USERCLASS_LIST.") AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type!=2 $topic ORDER BY news_datestamp DESC LIMIT 0,9";
@@ -109,16 +109,16 @@ class rssCreate {
 					$this -> rssItems[$loop]['title'] = $tp -> toRss($value['news_title']);
 					$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."news.php?item.".$value['news_id'].".".$value['news_category'];
                     if($value['news_summary']){
-                        	$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['news_summary']) : $tp -> toRss(substr($value['news_summary'], 0, 100)));   
+                        	$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['news_summary']) : $tp -> toRss(substr($value['news_summary'], 0, 100)));
 					}else{
 						$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['news_body']) : $tp -> toRss(substr($value['news_body'], 0, 100)));
                     }
-					$this -> rssItems[$loop]['author'] = $value['user_name'] . "( http://".$_SERVER['HTTP_HOST'].e_HTTP."user.php?id.".$value['news_author']." )";
+					$this -> rssItems[$loop]['author'] = $value['user_name'] . "&lt;".str_replace("@",".nospamplease@nospam.",$value['user_email'])."&gt;";
 					$this -> rssItems[$loop]['category'] = "<category domain='".SITEURL."news.php?cat.".$value['news_category']."'>".$value['category_name']."</category>";
 
 					$this -> rssItems[$loop]['comment'] = ( $value['news_allow_comments'] ? "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id : "Comments are turned off for this item");
 
-					$this -> rssItems[$loop]['pubdate'] = strftime("%a, %d %b %Y %H:%M:00", ($value['news_datestamp'] + $this -> offset));
+					$this -> rssItems[$loop]['pubdate'] = date("r", ($value['news_datestamp'] + $this -> offset));
 
 					$loop++;
 				}
@@ -412,7 +412,7 @@ class rssCreate {
 						<title>".$rss_title."</title>
 						<link>".$pref['siteurl']."</link>
 						<description>".$tp->toRss($pref['sitedescription'])."</description>
-						<lastBuildDate>".$itemdate = strftime("%a, %d %b %Y %H:%M:00", ($time + $this -> offset))."</lastBuildDate>
+						<lastBuildDate>".$itemdate = date("r", ($time + $this -> offset))."</lastBuildDate>
 						<docs>http://backend.userland.com/rss092</docs>";
 					foreach($this -> rssItems as $value) {
 						echo "
@@ -445,8 +445,8 @@ class rssCreate {
 				<copyright>".preg_replace("#\<br \/\>|\n|\r#si", "", SITEDISCLAIMER)."</copyright>
 				<managingEditor>".$pref['siteadmin']." - ".$pref['siteadminemail']."</managingEditor>
 				<webMaster>".$pref['siteadminemail']."</webMaster>
-				<pubDate>".strftime("%a, %d %b %Y %H:%M:00", ($time + $this -> offset))."</pubDate>
-				<lastBuildDate>".strftime("%a, %d %b %Y %H:%M:00", ($time + $this -> offset))."</lastBuildDate>
+				<pubDate>".date("r",($time + $this -> offset))."</pubDate>
+				<lastBuildDate>".date("r",($time + $this -> offset))."</lastBuildDate>
 				<docs>http://backend.userland.com/rss</docs>
 				<generator>e107 (http://e107.org)</generator>
 				<ttl>60</ttl>
@@ -498,11 +498,11 @@ class rssCreate {
 				<link>".$pref['siteurl']."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>
 				<dc:language>en</dc:language>
-				<dc:date>".strftime("%a, %d %b %Y %H:%M:00", ($time + $this -> offset))."</dc:date>
+				<dc:date>".$this->get_iso_8601_date($time + $this -> offset). "</dc:date>
 				<dc:creator>".$pref['siteadminemail']."</dc:creator>
 				<admin:generatorAgent rdf:resource=\"http://e107.org\" />
 				<admin:errorReportsTo rdf:resource=\"mailto:".$pref['siteadminemail']."\" />
-				<sy:updatePeriod>dynamic</sy:updatePeriod>
+				<sy:updatePeriod>hourly</sy:updatePeriod>
 				<sy:updateFrequency>1</sy:updateFrequency>
 				<sy:updateBase>2000-01-01T12:00+00:00</sy:updateBase>
 				<items>
@@ -524,7 +524,7 @@ class rssCreate {
 					<item rdf:about=\"".$value['link']."\">
 					<title>".$value['title']."</title>
 					<link>".$value['link']."</link>
-					<dc:date>".strftime("%a, %d %b %Y %H:%M:00", ($time + $this -> offset))."</dc:date>
+					<dc:date>".$this->get_iso_8601_date($time + $this -> offset)."</dc:date>
 					<dc:creator>".$value['author']."</dc:creator>
 					<dc:subject>".$value['category_name']."</dc:subject>
 					<description>".$tp->toHTML($value['description'], TRUE)."</description>
@@ -544,6 +544,16 @@ class rssCreate {
 
 
 	}
+
+
+    function get_iso_8601_date($int_date) {
+   //$int_date: current date in UNIX timestamp
+   $date_mod = date('Y-m-d\TH:i:s', $int_date);
+   $pre_timezone = date('O', $int_date);
+   $time_zone = substr($pre_timezone, 0, 3).":".substr($pre_timezone, 3, 2);
+   $date_mod .= $time_zone;
+   return $date_mod;
+}
 
 
 }
