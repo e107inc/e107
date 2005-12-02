@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-11-22 22:51:14 $
+|     $Revision: 1.4 $
+|     $Date: 2005-12-02 21:01:29 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -155,7 +155,9 @@ define("PRFLAN_142", "Solo Flood");
 define("PRFLAN_143", "Solo fallos de conexión"); 
 define("PRFLAN_144", "Fallos de conexión y Flood");
 define("PRFLAN_145", "Enlaces en una nueva ventana");
-define("PRFLAN_146", "Actívalo para hacer que todos los enlaces se abran en una nueva ventana(<i>Se aplicará en todo el sitio</i>). "); 
+define("PRFLAN_146", "Actívalo para hacer que todos los enlaces se abran en una nueva ventana(<i>Se aplicará en todo el sitio</i>). ");
+define("PRFLAN_147", "Modo de desarrollo");
+define("PRFLAN_148", "Activar funciones de depurador. Esto es solo para programadores. No usar en sitios de producciÃ³n por razones de seguridad.");
 
 
 define("CUSTSIG_1", "¡Configuración Guardada!");

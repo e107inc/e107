@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_fileinspector.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-11-29 20:10:58 $
+|     $Revision: 1.9 $
+|     $Date: 2005-12-02 21:01:29 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -24,12 +24,13 @@ define("FC_LAN_11", "Escanear ahora");
 define("FC_LAN_12", "Nada");
 define("FC_LAN_13", "Faltan archivos del núcleo");
 define("FC_LAN_14", "Mostrar resultados como");
-define("FC_LAN_15", "Árbol");
+define("FC_LAN_15", "Árbol de directorio");
 define("FC_LAN_16", "Lista");
 define("FC_LAN_17", "Coincidencia de texto");
 define("FC_LAN_18", "Expresión regular");
 define("FC_LAN_19", "Mostrar numeros de línea");
 define("FC_LAN_20", "Mostrar líneas coincidentes");
+define("FC_LAN_21", "Archivos de núcleo antiguos");
 
 define("FR_LAN_1", "Escaneando");
 define("FR_LAN_2", "Resultados del scan");
@@ -59,4 +60,9 @@ define("FR_LAN_20", "Todos los archivos correctos");
 define("FR_LAN_21", "Nada");
 define("FR_LAN_22", "Faltan archivos del núcleo");
 define("FR_LAN_23", "No hay coincidencias.");
+define("FR_LAN_24", "Archivos de núcleo antiguos");
+define("FR_LAN_25", "Integridad incalculable");
+define("FR_LAN_26", "¡Atención! ¡Detectada Inseguridad!");
+define("FR_LAN_27", "Hay archivos en su servidor que pueden ser atacados y deben ser eliminados inmediatamente.");
+define("FR_LAN_28", "Archivos inseguros");
 ?>
