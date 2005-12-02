@@ -87,7 +87,6 @@ TR.newsroomRow TD {
 	vertical-align: middle;
 	border: 1px solid;
 	border-color: #666666 #003 #003;
-	border-left: none;
 }
 
 TR.newsroomRow TD.dent {
@@ -101,7 +100,6 @@ TR.newsroomHiliteRow TD {
 	vertical-align: middle;
 	border: 1px solid;
 	border-color: #f66 #600 #600;
-	border-left: none;
 }
 
 TR.newsroomHiliteRow TD.dent {
@@ -309,7 +307,6 @@ hr {
 	padding-top: 2px;
 	background-color: #C9C7C7;
 	font-family: verdana, tahoma, arial, helvetica, sans-serif;
-	background-color : #333333;
 	font-size: 12px;
 	color:#fff;
 }
