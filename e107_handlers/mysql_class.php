@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-08-19 07:48:41 $
-|     $Author: sweetas $
+|     $Revision: 1.47 $
+|     $Date: 2005-12-03 16:16:15 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,8 +25,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.46 $
-* @author $Author: sweetas $
+* @version $Revision: 1.47 $
+* @author $Author: mcfly_e107 $
 */
 class db {
 
@@ -265,7 +265,20 @@ class db {
 	function db_Insert($table, $arg, $debug = FALSE, $log_type = '', $log_remark = '') {
 		$table = $this->db_IsLang($table);
 		$this->mySQLcurTable = $table;
-		$query = 'INSERT INTO '.MPREFIX."{$table} VALUES ({$arg})";
+		if(is_array($arg))
+		{
+			foreach($arg as $k => $v)
+			{
+				$keyList .= ($keyList ? ",`{$k}`" : "`{$k}`");
+				$valList .= ($valList ? ",'{$v}'" : "'{$v}'");
+			}
+			$query = "INSERT INTO `".MPREFIX."{$table}` ({$keyList}) VALUES ({$valList})";
+		}
+		else
+		{
+			$query = 'INSERT INTO '.MPREFIX."{$table} VALUES ({$arg})";
+		}
+			
 		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark )) {
 			$tmp = mysql_insert_id();
 			return $tmp;
