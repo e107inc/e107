@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/userclass2.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-11-23 21:11:31 $
+|     $Revision: 1.16 $
+|     $Date: 2005-12-03 18:49:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -122,7 +122,7 @@ if (isset($_POST['createclass']))
 				$i++;
 			}
 			if ($i < 255) {
-				$sql->db_Insert("userclass_classes", $i.", '".strip_tags(strtoupper($_POST['userclass_name']))."', '".$_POST['userclass_description']."',{$editclass} ");
+				$sql->db_Insert("userclass_classes", $i.", '".strip_tags($_POST['userclass_name'])."', '".$_POST['userclass_description']."',{$editclass} ");
 			}
 			if (!isset($pref['frontpage'][$i])) {
 				$pref['frontpage'][$i] = $pref['frontpage'][e_UC_GUEST];
