@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_fileinspector.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-12-01 19:09:15 $
+|     $Revision: 1.10 $
+|     $Date: 2005-12-04 23:23:41 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -68,6 +68,6 @@ define("FR_LAN_25", "Integrity uncalculable");
 
 define("FR_LAN_26", "Warning! Known Insecurity Detected!");
 define("FR_LAN_27", "There are files on your server that are known to be exploitable and must be removed immediately.");
-define("FR_LAN_28", "Insecure files");
+define("FR_LAN_28", "Known insecure files");
 
 ?>
