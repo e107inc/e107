@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_links.php,v $
-|        $Revision: 1.4 $
-|        $Date: 2005-09-16 14:57:01 $
+|        $Revision: 1.5 $
+|        $Date: 2005-12-04 16:20:39 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -62,5 +62,6 @@ define("LINKLAN_6", "Opret underlinks fra:");
 define("LINKLAN_7", "Opret underlinks under hvilket link?");
 define("LINKLAN_8", "Nyheds Kategorier");
 define("LINKLAN_9", "Download Kategorier");
+define("LINKLAN_10", "Opret Underlink");
 
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_installer.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-09-14 20:10:33 $
+|     $Revision: 1.5 $
+|     $Date: 2005-12-04 16:20:39 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -18,7 +18,7 @@ define("LANINS_004", "Sprog Valg");
 define("LANINS_005", "Vælg venligst sprog der skal bruges under installations proceduren");
 define("LANINS_006", "Benyt Sprog");
 define("LANINS_007", "2");
-define("LANINS_008", "PHP &amp; MySQL Versions Tjek / Fil Tilladelses Tjek");
+define("LANINS_008", "PHP og MySQL Versioner Kontrol / Fil Tilladelses Kontrol");
 define("LANINS_009", "Gentest Fil Tilladelser");
 define("LANINS_010", "Fil er skrivebeskyttet: ");
 define("LANINS_010a", "Mappe er skrivebeskyttet: ");
@@ -32,7 +32,7 @@ define("LANINS_017", "OK");
 define("LANINS_018", "Sikrer dig at alle de viste filer eksisterer og ikke er skrivebeskyttede for serveren. Dette indebærer normalt CHMODe dem til 777, men miljøer varierer - kontakt din host hvis du har problemer.");
 define("LANINS_019", "Den version PHP der er installeret på din server er ikke i stand til at køre e107. e107 kræver en PHP version på mindst 4.3.0 for at køre korrekt. Opgrader enten din PHP version, eller kontakt din host for en opgradering.");
 define("LANINS_020", "Fortsæt Installation");
-define("LANINS_021", "3");
+define("LANINS_021", "2");
 define("LANINS_022", "MySQL Server Detaljer");
 define("LANINS_023", "Skriv venligst dine MySQL indstillinger her.
 			  
@@ -84,18 +84,28 @@ define("LANINS_060", "Kan ikke læse sql datafilen
 Sikrer dig venligst at filen <b>core_sql.php</b> eksisterer i <b>/e107_admin/sql</b> mappen.");
 define("LANINS_061", "e107 kunne ikke oprette alle de krævede database tabeller.
 Ryd venligst databasen og ret eventuelle problemer før du prøver igen.");
-define("LANINS_062", "Velkommen til din nye hjemmeside!");
-define("LANINS_063", "e107 blev installeret med succes og er nu klar til at modtage indhold.");
-define("LANINS_064", "Dit administrationt område er");
-define("LANINS_065", "beliggende her");
-define("LANINS_066", "klik for at gå det til nu. Du skal logge ind ved hjælp af de brugernavn og kodeord du skrev under installations processen.");
-define("LANINS_067", "du finder FAQen og dokumentationen her.");
-define("LANINS_068", "Tak fordi du prøver e107, vi håber det opfylder dine hjemmeside behov.\n(Du kan slette denne besked fra din admin sektion.)\n\n<b>Vær opmærksom på at denne version af e107 er en beta version og er derfor ikke beregnet til brug på et aktivt websites.</b>");
+
+define("LANINS_062", "[b]Velkommen til din nye hjemmeside![/b]
+e107 blev installeret med succes og er nu klar til at modtage indhold.<br />Dit administrationt område er [link=e107_admin/admin.php]beliggende her[/link], klik for at gå det til nu. Du skal logge ind ved hjælp af det brugernavn og kodeord du skrev under installations processen.
+
+[b]Support[/b]
+e107 Hjemmeside: [link=http://e107.org]http://e107.org[/link], du vil finde FAQ og dokumentation her.
+Forums: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_plugins/forum/forum.php[/link]
+
+[b]Downloads[/b]
+Plugins: [link=http://e107coders.org]http://e107coders.org[/link]
+Temaer: [link=http://e107styles.org]http://e107styles.org[/link] | [link=http://e107themes.org]http://e107themes.org[/link]
+
+Tak fordi du prøver e107, vi håber det opfylder dine hjemmeside behov.
+(Du kan slette denne besked fra din admin sektion.)");
+
+define("LANINS_063", "Velkommen til e107");
+
 define("LANINS_069", "e107 er blevet installeret med succes!
 
-Af sikkerhedsmessige årsager bør du nu sætte filtilladelserne på <b>e107_config.php</b> filen tilbage til 644.
+Af sikkerheds messige årsager bør du nu indstille fil rettighederne på <b>e107_config.php</b> filen tilbage til 644.
 
-Også slet install.php og e107_install mappen fra din server efter du har kilkket på knappen herunder
+Slet også install.php og e107_install mappen fra din server efter du har klikket på knappen herunder
 ");
 define("LANINS_070", "e107 var ikke i stand til at gemme hoved konfigurations filen til din server.
 

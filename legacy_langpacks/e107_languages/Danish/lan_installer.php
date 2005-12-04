@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/lan_installer.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 09:29:27 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-04 16:20:39 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -18,7 +18,7 @@ define("LANINS_004", "Sprog Valg");
 define("LANINS_005", "V&aelig;lg venligst sprog der skal bruges under installations proceduren");
 define("LANINS_006", "Benyt Sprog");
 define("LANINS_007", "2");
-define("LANINS_008", "PHP &amp; MySQL Versions Tjek / Fil Tilladelses Tjek");
+define("LANINS_008", "PHP og MySQL Versioner Kontrol / Fil Tilladelses Kontrol");
 define("LANINS_009", "Gentest Fil Tilladelser");
 define("LANINS_010", "Fil er skrivebeskyttet: ");
 define("LANINS_010a", "Mappe er skrivebeskyttet: ");
@@ -32,7 +32,7 @@ define("LANINS_017", "OK");
 define("LANINS_018", "Sikrer dig at alle de viste filer eksisterer og ikke er skrivebeskyttede for serveren. Dette indeb&aelig;rer normalt CHMODe dem til 777, men milj&oslash;er varierer - kontakt din host hvis du har problemer.");
 define("LANINS_019", "Den version PHP der er installeret p&aring; din server er ikke i stand til at k&oslash;re e107. e107 kr&aelig;ver en PHP version p&aring; mindst 4.3.0 for at k&oslash;re korrekt. Opgrader enten din PHP version, eller kontakt din host for en opgradering.");
 define("LANINS_020", "Forts&aelig;t Installation");
-define("LANINS_021", "3");
+define("LANINS_021", "2");
 define("LANINS_022", "MySQL Server Detaljer");
 define("LANINS_023", "Skriv venligst dine MySQL indstillinger her.
 			  
@@ -84,18 +84,28 @@ define("LANINS_060", "Kan ikke l&aelig;se sql datafilen
 Sikrer dig venligst at filen <b>core_sql.php</b> eksisterer i <b>/e107_admin/sql</b> mappen.");
 define("LANINS_061", "e107 kunne ikke oprette alle de kr&aelig;vede database tabeller.
 Ryd venligst databasen og ret eventuelle problemer f&oslash;r du pr&oslash;ver igen.");
-define("LANINS_062", "Velkommen til din nye hjemmeside!");
-define("LANINS_063", "e107 blev installeret med succes og er nu klar til at modtage indhold.");
-define("LANINS_064", "Dit administrationt omr&aring;de er");
-define("LANINS_065", "beliggende her");
-define("LANINS_066", "klik for at g&aring; det til nu. Du skal logge ind ved hj&aelig;lp af de brugernavn og kodeord du skrev under installations processen.");
-define("LANINS_067", "du finder FAQen og dokumentationen her.");
-define("LANINS_068", "Tak fordi du pr&oslash;ver e107, vi h&aring;ber det opfylder dine hjemmeside behov.\n(Du kan slette denne besked fra din admin sektion.)\n\n<b>V&aelig;r opm&aelig;rksom p&aring; at denne version af e107 er en beta version og er derfor ikke beregnet til brug p&aring; et aktivt websites.</b>");
+
+define("LANINS_062", "[b]Velkommen til din nye hjemmeside![/b]
+e107 blev installeret med succes og er nu klar til at modtage indhold.<br />Dit administrationt omr&aring;de er [link=e107_admin/admin.php]beliggende her[/link], klik for at g&aring; det til nu. Du skal logge ind ved hj&aelig;lp af det brugernavn og kodeord du skrev under installations processen.
+
+[b]Support[/b]
+e107 Hjemmeside: [link=http://e107.org]http://e107.org[/link], du vil finde FAQ og dokumentation her.
+Forums: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_plugins/forum/forum.php[/link]
+
+[b]Downloads[/b]
+Plugins: [link=http://e107coders.org]http://e107coders.org[/link]
+Temaer: [link=http://e107styles.org]http://e107styles.org[/link] | [link=http://e107themes.org]http://e107themes.org[/link]
+
+Tak fordi du pr&oslash;ver e107, vi h&aring;ber det opfylder dine hjemmeside behov.
+(Du kan slette denne besked fra din admin sektion.)");
+
+define("LANINS_063", "Velkommen til e107");
+
 define("LANINS_069", "e107 er blevet installeret med succes!
 
-Af sikkerhedsmessige &aring;rsager b&oslash;r du nu s&aelig;tte filtilladelserne p&aring; <b>e107_config.php</b> filen tilbage til 644.
+Af sikkerheds messige &aring;rsager b&oslash;r du nu indstille fil rettighederne p&aring; <b>e107_config.php</b> filen tilbage til 644.
 
-Ogs&aring; slet install.php og e107_install mappen fra din server efter du har kilkket p&aring; knappen herunder
+Slet ogs&aring; install.php og e107_install mappen fra din server efter du har klikket p&aring; knappen herunder
 ");
 define("LANINS_070", "e107 var ikke i stand til at gemme hoved konfigurations filen til din server.
 
