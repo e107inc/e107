@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.37 $
-|   $Date: 2005-11-23 19:16:13 $
+|   $Revision: 1.38 $
+|   $Date: 2005-12-04 04:09:06 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -218,17 +218,17 @@ if (!function_exists("parse_admin")) {
 	}
 }
 
-function e_update($update) {
+function admin_update($update, $success = false, $failed = false) {
 	global $ns;
 	if ($update) {
 		$caption = LAN_UPDATE;
-		$text = "<b>".LAN_UPDATED."</b>";
+		$text = $success ? "<b>".$success."</b>" : "<b>".LAN_UPDATED."</b>";
 	} else {
 		$caption = LAN_UPDATED_FAILED;
 		if (!mysql_errno()) {
 			$text = "<b>".LAN_NO_CHANGE."<br />".LAN_TRY_AGAIN."</b>";
 		} else {
-			$text = "<b>".LAN_UPDATED_FAILED." - ".LAN_TRY_AGAIN."</b><br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
+			$text = "<b>".($failed ? $failed : LAN_UPDATED_FAILED." - ".LAN_TRY_AGAIN)."</b><br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
 		}
 	}
 	$ns -> tablerender($caption, "<div style='text-align:center'>".$text."</div>");

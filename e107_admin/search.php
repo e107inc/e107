@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-11-15 22:10:51 $
+|     $Revision: 1.32 $
+|     $Date: 2005-12-04 04:09:06 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -86,7 +86,7 @@ if (isset($_POST['update_main'])) {
 	$search_prefs['google'] = $_POST['google'];
 
 	$tmp = addslashes(serialize($search_prefs));
-	e_update($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'"));
+	admin_update($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'"));
 }
 
 if (isset($_POST['update_handler'])) {
@@ -102,7 +102,7 @@ if (isset($_POST['update_handler'])) {
 	$search_prefs[$handler_type][$query[2]]['pre_title_alt'] = $tp -> toDB($_POST['pre_title_alt']);
 
 	$tmp = addslashes(serialize($search_prefs));
-	e_update($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'"));
+	admin_update($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'"));
 }
 
 if (isset($_POST['update_prefs'])) {
@@ -125,7 +125,7 @@ if (isset($_POST['update_prefs'])) {
 	$search_prefs['php_limit'] = $tp -> toDB($_POST['php_limit']);
 
 	$tmp = addslashes(serialize($search_prefs));
-	e_update($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'"));
+	admin_update($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'"));
 
 	$pref['search_restrict'] = $_POST['search_restrict'];
 	$pref['search_highlight'] = $_POST['search_highlight'];

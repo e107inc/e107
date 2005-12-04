@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2005-11-25 08:15:16 $
-|     $Author: e107coders $
+|     $Revision: 1.64 $
+|     $Date: 2005-12-04 04:09:06 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -165,8 +165,7 @@ if (isset($_POST['adduser'])) {
 //			$svar .= $userclass[$a].".";
 //		}
 		$svar = implode(",", $_POST['userclass']);
-		$sql->db_Insert("user", "0, '$username', '$loginname',  '', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '1', '".time()."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '".$svar."', '', '', '', '' ");
-		$user->show_message(USRLAN_70);
+		admin_update($sql -> db_Insert("user", "0, '$username', '$loginname',  '', '".md5($_POST['password1'])."', '$key', '".$_POST['email']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '1', '".time()."', '0', '0', '0', '0', '0', '0', '".$ip."', '0', '0', '', '', '', '0', '".$_POST['realname']."', '".$svar."', '', '', '', ''"), USRLAN_70);
 	}
 }
 
