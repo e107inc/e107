@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/updateadmin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-05 01:14:11 $
+|     $Revision: 1.8 $
+|     $Date: 2005-12-05 19:28:57 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ require_once('auth.php');
 if (isset($_POST['update_settings'])) {
 	if ($_POST['ac'] == md5(ADMINPWCHANGE)) {
 		if ($_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])) {
-			if (admin_update($sql -> db_Update("user", "user_password='".md5($_POST['a_password'])."', user_pwchange='".time()."' WHERE user_name='".ADMINNAME."'"), UDALAN_3." ".ADMINNAME)) {
+			if (admin_update($sql -> db_Update("user", "user_password='".md5($_POST['a_password'])."', user_pwchange='".time()."' WHERE user_name='".ADMINNAME."'"), 'update', UDALAN_3." ".ADMINNAME)) {
 				$e_event -> trigger('adpword');
 			}
 		} else {

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banlist.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-09-19 17:41:29 $
+|     $Revision: 1.16 $
+|     $Date: 2005-12-05 19:28:57 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -34,29 +34,22 @@ if (e_QUERY) {
 	unset($tmp);
 }
 
-if (isset($_POST['add_ban']) && $_POST['ban_ip'] != "") {
-	$bd = $_POST['ban_ip'];
+$_POST['ban_ip'] = trim($_POST['ban_ip']);
+
+if (isset($_POST['add_ban']) && $_POST['ban_ip'] != "" && strpos($_POST['ban_ip'], ' ') === false) {
 	$_POST['ban_reason'] = $tp->toDB($_POST['ban_reason']);
-	$sql->db_Insert("banlist", "'$bd', '".ADMINID."', '".$_POST['ban_reason']."' ");
+	admin_update($sql -> db_Insert("banlist", "'".$_POST['ban_ip']."', '".ADMINID."', '".$_POST['ban_reason']."'"), 'insert');
 	unset($ban_ip);
 }
 
-if (isset($_POST['update_ban'])) {
-	$bd = $_POST['ban_ip'];
+if (isset($_POST['update_ban']) && $_POST['ban_ip'] != "" && strpos($_POST['ban_ip'], ' ') === false) {
 	$_POST['ban_reason'] = $tp->toDB($_POST['ban_reason']);
-	$sql->db_Delete("banlist", "banlist_ip='".$_POST['old_ip']."'");
-	$sql->db_Insert("banlist", "'".$bd."', '".ADMINID."', '".$_POST['ban_reason']."' ");
-	$message = LAN_UPDATED;
+	admin_update($sql -> db_Update("banlist", "banlist_ip='".$_POST['ban_ip']."', banlist_admin=".ADMINID.", banlist_reason='".$_POST['ban_reason']."' WHERE banlist_ip='".$_POST['old_ip']."'"));
 	unset($ban_ip);
 }
 
 if ($action == "remove" && isset($_POST['ban_secure'])) {
-	$sql->db_Delete("banlist", "banlist_ip='$sub_action'");
-	$message = BANLAN_1;
-}
-
-if (isset($message)) {
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	admin_update($sql -> db_Delete("banlist", "banlist_ip='$sub_action'"), 'delete');
 }
 
 if ($action == "edit") {
