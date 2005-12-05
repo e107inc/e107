@@ -11,39 +11,27 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/updateadmin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-05 01:14:11 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-require_once("../class2.php");
+require_once('../class2.php');
 $e_sub_cat = 'admin_pass';
-require_once("auth.php");
+require_once('auth.php');
 	
 if (isset($_POST['update_settings'])) {
 	if ($_POST['ac'] == md5(ADMINPWCHANGE)) {
 		if ($_POST['a_password'] != "" && $_POST['a_password2'] != "" && ($_POST['a_password'] == $_POST['a_password2'])) {
-			$sql->db_Update("user", "user_password='".md5($_POST['a_password'])."', user_pwchange='".time()."' WHERE user_name='".ADMINNAME."' ");
-			$se = TRUE;
-			$e_event->trigger("adpword");
+			if (admin_update($sql -> db_Update("user", "user_password='".md5($_POST['a_password'])."', user_pwchange='".time()."' WHERE user_name='".ADMINNAME."'"), UDALAN_3." ".ADMINNAME)) {
+				$e_event -> trigger('adpword');
+			}
 		} else {
-			$message = UDALAN_1;
+			$ns->tablerender(LAN_UPDATED_FAILED, "<div style='text-align:center'><b>".UDALAN_1."</b></div>");
 		}
 	}
-}
-	
-if ($se == TRUE) {
-	$text = "<div style='text-align:center'>".UDALAN_2.".</div>";
-	$ns->tablerender("<div style='text-align:center'>".UDALAN_3." ".($a_name ? $a_name : ADMINNAME)."</div>", $text);
-	require_once("footer.php");
-	exit;
-}
-	
-if (isset($message)) {
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-}
-	
-$text = "<div style='text-align:center'>
+} else {
+	$text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>\n
 	<table style='".ADMIN_WIDTH."' class='fborder'>
 	<tr>
@@ -77,7 +65,9 @@ $text = "<div style='text-align:center'>
 	</form>
 	</div>";
 	
-$ns->tablerender(UDALAN_8." ".ADMINNAME, $text);
-	
-require_once("footer.php");
+	$ns->tablerender(UDALAN_8." ".ADMINNAME, $text);
+}
+
+require_once('footer.php');
+
 ?>
