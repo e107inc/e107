@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.38 $
-|   $Date: 2005-12-04 04:09:06 $
+|   $Revision: 1.39 $
+|   $Date: 2005-12-05 01:13:34 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -232,6 +232,7 @@ function admin_update($update, $success = false, $failed = false) {
 		}
 	}
 	$ns -> tablerender($caption, "<div style='text-align:center'>".$text."</div>");
+	return $update;
 }
 
 if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') === FALSE) {
