@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.39 $
-|   $Date: 2005-12-05 01:13:34 $
+|   $Revision: 1.40 $
+|   $Date: 2005-12-05 09:46:06 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -218,18 +218,25 @@ if (!function_exists("parse_admin")) {
 	}
 }
 
-function admin_update($update, $success = false, $failed = false) {
+function admin_update($update, $type = 'update', $success = false, $failed = false) {
 	global $ns;
-	if ($update) {
+	if (($type == 'update' && $update) || ($type == 'insert' && $update !== false)) {
 		$caption = LAN_UPDATE;
-		$text = $success ? "<b>".$success."</b>" : "<b>".LAN_UPDATED."</b>";
+		$text = "<b>".($success ? $success : LAN_UPDATED)."</b>";
+	} else if ($type == 'delete' && $update) {
+		$caption = LAN_DELETE;
+		$text = "<b>".($success ? $success : LAN_DELETED)."</b>";
+	} else if (!mysql_errno()) {
+		if ($type == 'update') {
+			$caption = LAN_UPDATED_FAILED;
+			$text = "<b>".LAN_NO_CHANGE."<br />".LAN_TRY_AGAIN."</b>";
+		} else if ($type == 'delete') {
+			$caption = LAN_DELETE;
+			$text = "<b>".LAN_DELETED_FAILED.".<br />".LAN_TRY_AGAIN."</b>";
+		}
 	} else {
 		$caption = LAN_UPDATED_FAILED;
-		if (!mysql_errno()) {
-			$text = "<b>".LAN_NO_CHANGE."<br />".LAN_TRY_AGAIN."</b>";
-		} else {
-			$text = "<b>".($failed ? $failed : LAN_UPDATED_FAILED." - ".LAN_TRY_AGAIN)."</b><br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
-		}
+		$text = "<b>".($failed ? $failed : LAN_UPDATED_FAILED." - ".LAN_TRY_AGAIN)."</b><br />".LAN_ERROR." ".mysql_errno().": ".mysql_error();
 	}
 	$ns -> tablerender($caption, "<div style='text-align:center'>".$text."</div>");
 	return $update;
