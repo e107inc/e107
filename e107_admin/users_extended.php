@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-11-26 14:09:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.30 $
+|     $Date: 2005-12-05 19:28:57 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -77,8 +77,8 @@ if (isset($_POST['catup_x']))
 	$qs = explode(".", $_POST['id']);
 	$_id = $qs[0];
 	$_order = $qs[1];
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_parent = 0 AND user_extended_struct_order='".($_order)."'");
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_parent = 0 AND user_extended_struct_id='".$_id."'");
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order-1)."'");
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
 }
 
 if (isset($_POST['catdown_x']))
@@ -86,7 +86,7 @@ if (isset($_POST['catdown_x']))
 	$qs = explode(".", $_POST['id']);
 	$_id = $qs[0];
 	$_order = $qs[1];
-	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order)."'");
+	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order-1 WHERE user_extended_struct_type = 0 AND user_extended_struct_order='".($_order+1)."'");
 	$sql->db_Update("user_extended_struct", "user_extended_struct_order=user_extended_struct_order+1 WHERE user_extended_struct_type = 0 AND user_extended_struct_id='".$_id."'");
 }
 
@@ -118,14 +118,7 @@ if (isset($_POST['update_field'])) {
 if (isset($_POST['update_category']))
 {
 	$name = trim($tp->toHTML($_POST['user_field']));
-	if($sql->db_Update("user_extended_struct","user_extended_struct_name = '{$name}', user_extended_struct_read = '{$_POST['user_read']}', user_extended_struct_write = '{$_POST['user_write']}', user_extended_struct_applicable = '{$_POST['user_applicable']}' WHERE user_extended_struct_id = '{$sub_action}'"))
-	{
-		$message = EXTLAN_43;
-	}
-	else
-	{
-		$message = LAN_UPDATED_FAILED;
-	}
+	admin_update($sql->db_Update("user_extended_struct","user_extended_struct_name = '{$name}', user_extended_struct_read = '{$_POST['user_read']}', user_extended_struct_write = '{$_POST['user_write']}', user_extended_struct_applicable = '{$_POST['user_applicable']}' WHERE user_extended_struct_id = '{$sub_action}'"), 'update', EXTLAN_43);
 }
 
 if (isset($_POST['add_category']))
@@ -664,12 +657,11 @@ class users_ext
 				$text .= "
 				</form>
 				</td>
-				<td class='forumheader3' style='text-align:center;'>
-				<a style='text-decoration:none' href='".e_SELF."?cat.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
-				&nbsp;
+				<td class='forumheader3' style='text-align:center; white-space: nowrap'>
 				<form method='post' action='".e_SELF."?cat' onsubmit='return confirm(\"".EXTLAN_27."\")'>
 				<input type='hidden' name='eu_action' value='delcat' />
 				<input type='hidden' name='key' value='{$ext['user_extended_struct_id']},{$ext['user_extended_struct_name']}' />
+				<a style='text-decoration:none' href='".e_SELF."?cat.{$ext['user_extended_struct_id']}'>".ADMIN_EDIT_ICON."</a>
 				<input type='image' title='".LAN_DELETE."' name='eudel' src='".ADMIN_DELETE_ICON_PATH."' />
 				</form>
 				</td>

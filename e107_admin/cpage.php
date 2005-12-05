@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cpage.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-11-16 00:22:11 $
+|     $Revision: 1.24 $
+|     $Date: 2005-12-05 19:28:57 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -304,16 +304,14 @@ class page
 
 		if($mode)
 		{
-			$sql -> db_Update("page", "page_title='$page_title', page_text='$page_text', page_author='$pauthor', page_rating_flag='".$_POST['page_rating_flag']."', page_comment_flag='".$_POST['page_comment_flag']."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".$_POST['page_ip_restrict']."' WHERE page_id='$mode' ");
-			$this -> message = "Page updated in database.";
+			admin_update($sql -> db_Update("page", "page_title='$page_title', page_text='$page_text', page_author='$pauthor', page_rating_flag='".intval($_POST['page_rating_flag'])."', page_comment_flag='".intval($_POST['page_comment_flag'])."', page_password='".$_POST['page_password']."', page_class='".$_POST['page_class']."', page_ip_restrict='".$_POST['page_ip_restrict']."' WHERE page_id='$mode'"), 'update', "Page updated in database.");
 		}
 		else
 		{
 
 			$menuname = ($type ? $tp -> toDB($_POST['menu_name']) : "");
 
-			$sql -> db_Insert("page", "0, '$page_title', '$page_text', '$pauthor', '".time()."', '".$_POST['page_rating_flag']."', '".$_POST['page_comment_flag']."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."' ");
-			$this -> message = CUSLAN_27;
+			admin_update($sql -> db_Insert("page", "0, '$page_title', '$page_text', '$pauthor', '".time()."', '".intval($_POST['page_rating_flag'])."', '".intval($_POST['page_comment_flag'])."', '".$_POST['page_password']."', '".$_POST['page_class']."', '', '".$menuname."'"), 'insert', CUSLAN_27);
 
 			if($type)
 			{
@@ -336,9 +334,8 @@ class page
 	function delete_page($del_id)
 	{
 		global $sql;
-		$sql -> db_Delete("page", "page_id='$del_id' ");
+		admin_update($sql -> db_Delete("page", "page_id='$del_id' "), 'delete', CUSLAN_28);
 		$sql -> db_Delete("menus", "menu_path='$del_id' ");
-		$this -> message = CUSLAN_28;
 	}
 
 	function optionsPage()

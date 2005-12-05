@@ -11,19 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/administrator.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-09-09 20:32:06 $
-|     $Author: e107coders $
+|     $Revision: 1.26 $
+|     $Date: 2005-12-05 19:28:57 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-require_once("../class2.php");
-if (!getperms("3"))
+require_once('../class2.php');
+if (!getperms('3'))
 {
-	header("location:".e_BASE."index.php");
+	header('location:'.e_BASE.'index.php');
 	exit;
 }
 $e_sub_cat = 'admin';
-require_once("auth.php");
+require_once('auth.php');
 
 if (e_QUERY)
 {
@@ -33,22 +33,11 @@ if (e_QUERY)
 	unset($tmp);
 }
 
-
-
-
 if (isset($_POST['update_admin']))
 {
 	$sql->db_Select("user", "*", "user_id='".$_POST['a_id']."' ");
 	$row = $sql->db_Fetch();
 	$a_name = $row['user_name'];
-	if ($_POST['a_password'] == "")
-	{
-		$admin_password = $row['user_password'];
-	}
-	else
-	{
-		$admin_password = md5($_POST['a_password']);
-	}
 
 	for ($i = 0; $i <= count($_POST['perms']); $i++)
 	{
@@ -57,9 +46,8 @@ if (isset($_POST['update_admin']))
 			$perm .= $_POST['perms'][$i].".";
 		}
 	}
-	$message = ($sql->db_Update("user", "user_password='$admin_password', user_perms='$perm' WHERE user_name='$a_name' ")) ? ADMSLAN_56." ".$_POST['ad_name']." ".ADMSLAN_2."<br />" : LAN_UPDATED_FAILED;
-	unset($ad_name, $a_password, $a_perms);
-
+	admin_update($sql -> db_Update("user", "user_perms='$perm' WHERE user_name='$a_name' "), 'update', ADMSLAN_56." ".$_POST['ad_name']." ".ADMSLAN_2."<br />");
+	unset($ad_name, $a_perms);
 }
 
 if ($_POST['edit_admin'] || $action == "edit")
@@ -96,25 +84,14 @@ if (isset($_POST['del_admin']))
 		exit;
 	}
 
-	$message = ($sql->db_Update("user", "user_admin=0, user_perms='' WHERE user_id= ".$delid[0])) ? ADMSLAN_61 : LAN_DELETED_FAILED;
-
+	admin_update($sql -> db_Update("user", "user_admin=0, user_perms='' WHERE user_id= ".$delid[0]), 'update', ADMSLAN_61, LAN_DELETED_FAILED);
 }
-
-if (isset($message))
-{
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
-}
-
-
 
 if($_POST['edit_admin'] || $action == "edit"){
 	edit_administrator($row);
 }else{
    show_admins();
 }
-
-
-
 
 function show_admins(){
     global $sql,$tp,$ns,$pref;
@@ -271,15 +248,12 @@ function edit_administrator($row){
 	$text .= "<tr style='vertical-align:top'>
 	<td colspan='2' style='text-align:center' class='forumheader'>";
 
-
 	$text .= "<input class='button' type='submit' name='update_admin' value='".ADMSLAN_52."' />
 	<input type='hidden' name='a_id' value='$a_id' />";
-
 
 	$text .= "</td>
 	</tr>
 	</table>
-	<div><input type='hidden' name='ac' value='".md5(ADMINPWCHANGE)."' /></div>
 	</form>
 	</div>";
 

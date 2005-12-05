@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/emoticon.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-10-28 18:35:56 $
-|     $Author: streaky $
+|     $Revision: 1.29 $
+|     $Date: 2005-12-05 19:28:57 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -26,19 +26,21 @@ $e_sub_cat = 'emoticon';
 
 if(!$sql->db_Count("core", "(*)", "e107_name = 'emote_default'"))
 {
-	$tmp = 
-	'a:28:{s:9:"alien!png";s:6:"!alien";s:10:"amazed!png";s:7:"!amazed";s:9:"angry!png";s:11:"!grr !angry";s:12:"biglaugh!png";s:4:"!lol";s:11:"cheesey!png";s:10:":D :oD :-D";s:12:"confused!png";s:10:":? :o? :-?";s:7:"cry!png";s:19:"&| &-| &o| :(( !cry";s:8:"dead!png";s:21:"x) xo) x-) x( xo( x-(";s:9:"dodge!png";s:6:"!dodge";s:9:"frown!png";s:10:":( :o( :-(";s:7:"gah!png";s:10:":@ :o@ :o@";s:8:"grin!png";s:10:":D :oD :-D";s:9:"heart!png";s:6:"!heart";s:8:"idea!png";s:10:":! :o! :-!";s:7:"ill!png";s:4:"!ill";s:7:"mad!png";s:13:"~:( ~:o( ~:-(";s:12:"mistrust!png";s:9:"!mistrust";s:11:"neutral!png";s:10:":| :o| :-|";s:12:"question!png";s:2:"?!";s:12:"rolleyes!png";s:10:"B) Bo) B-)";s:7:"sad!png";s:4:"!sad";s:10:"shades!png";s:10:"8) 8o) 8-)";s:7:"shy!png";s:4:"!shy";s:9:"smile!png";s:10:":) :o) :-)";s:11:"special!png";s:3:"%-6";s:12:"suprised!png";s:10:":O :oO :-O";s:10:"tongue!png";s:21:":p :op :-p :P :oP :-P";s:8:"wink!png";s:10:";) ;o) ;-)";}';
+	$tmp = 'a:28:{s:9:"alien!png";s:6:"!alien";s:10:"amazed!png";s:7:"!amazed";s:9:"angry!png";s:11:"!grr !angry";s:12:"biglaugh!png";s:4:"!lol";s:11:"cheesey!png";s:10:":D :oD :-D";s:12:"confused!png";s:10:":? :o? :-?";s:7:"cry!png";s:19:"&| &-| &o| :(( !cry";s:8:"dead!png";s:21:"x) xo) x-) x( xo( x-(";s:9:"dodge!png";s:6:"!dodge";s:9:"frown!png";s:10:":( :o( :-(";s:7:"gah!png";s:10:":@ :o@ :o@";s:8:"grin!png";s:10:":D :oD :-D";s:9:"heart!png";s:6:"!heart";s:8:"idea!png";s:10:":! :o! :-!";s:7:"ill!png";s:4:"!ill";s:7:"mad!png";s:13:"~:( ~:o( ~:-(";s:12:"mistrust!png";s:9:"!mistrust";s:11:"neutral!png";s:10:":| :o| :-|";s:12:"question!png";s:2:"?!";s:12:"rolleyes!png";s:10:"B) Bo) B-)";s:7:"sad!png";s:4:"!sad";s:10:"shades!png";s:10:"8) 8o) 8-)";s:7:"shy!png";s:4:"!shy";s:9:"smile!png";s:10:":) :o) :-)";s:11:"special!png";s:3:"%-6";s:12:"suprised!png";s:10:":O :oO :-O";s:10:"tongue!png";s:21:":p :op :-p :P :oP :-P";s:8:"wink!png";s:10:";) ;o) ;-)";}';
 	$sql->db_Insert("core", "'emote_default', '$tmp' ");
-}
-
-if (isset($_POST['active']))
-{
-	$pref['smiley_activate'] = $_POST['smiley_activate'];
-	save_prefs();
 }
 
 require_once("auth.php");
 
+if (isset($_POST['active']))
+{
+	if ($pref['smiley_activate'] != $_POST['smiley_activate']) {
+		$pref['smiley_activate'] = $_POST['smiley_activate'];
+		save_prefs();
+		$update = true;
+	}
+	admin_update($update);
+}
 
 /* get packs */
 
@@ -220,12 +222,10 @@ class emotec
 
 		$tmp = addslashes(serialize($_POST));
 
-		if(!$sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='emote_".$packID."' "))
+		if(!admin_update($sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='emote_".$packID."' "), 'update', EMOLAN_16))
 		{
 			$sql->db_Insert("core", "'emote_".$packID."', '$tmp' ");
 		}
-		$ns -> tablerender("", EMOLAN_16);
-
 	}
 
 	function installCheck()

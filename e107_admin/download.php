@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2005-11-24 12:10:04 $
+|     $Revision: 1.71 $
+|     $Date: 2005-12-05 19:28:57 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -114,7 +114,7 @@ if (isset($_POST['submit_download'])) {
 if(isset($_POST['update_catorder'])){
  	foreach($_POST['catorder'] as $key=>$order){
 		if($_POST['catorder'][$key]){
-			$sql -> db_Update("download_category", "download_category_order='$order' WHERE download_category_id='$key' ");
+			$sql -> db_Update("download_category", "download_category_order='".intval($order)."' WHERE download_category_id='".intval($key)."'");
 	  	}
 	}
    	$ns->tablerender("", "<div style='text-align:center'><b>".LAN_UPDATED."</b></div>");
@@ -142,7 +142,7 @@ if(isset($_POST['addlimit']))
 	}
 	else
 	{
-		if($sql->db_Insert('generic',"0, 'download_limit', '{$_POST['newlimit_class']}', '{$_POST['new_bw_num']}', '{$_POST['new_bw_days']}', '{$_POST['new_count_num']}', '{$_POST['new_count_days']}'"))
+		if($sql->db_Insert('generic',"0, 'download_limit', '".intval($_POST['newlimit_class'])."', '".intval($_POST['new_bw_num'])."', '".intval($_POST['new_bw_days'])."', '".intval($_POST['new_count_num'])."', '".intval($_POST['new_count_days'])."'"))
 		{
 			$message = DOWLAN_117;
 		}
@@ -164,7 +164,7 @@ if(isset($_POST['updatelimits']))
 	}
 	foreach(array_keys($_POST['count_num']) as $id)
 	{
-		if($_POST['count_num'][$id] == "" && $_POST['count_days'][$id] == "" && $_POST['bw_num'][$id] == "" && $_POST['bw_days'][$id] == "")
+		if(!$_POST['count_num'][$id] && !$_POST['count_days'][$id] && !$_POST['bw_num'][$id] && !$_POST['bw_days'][$id])
 		{
 			//All entries empty - Remove record
 			if($sql->db_Delete('generic',"gen_id = {$id}"))
@@ -178,7 +178,7 @@ if(isset($_POST['updatelimits']))
 		}
 		else
 		{
-			$sql->db_Update('generic',"gen_user_id = '{$_POST['bw_num'][$id]}', gen_ip = '{$_POST['bw_days'][$id]}', gen_intdata = '{$_POST['count_num'][$id]}', gen_chardata = '{$_POST['count_days'][$id]}' WHERE gen_id = {$id}");
+			$sql->db_Update('generic',"gen_user_id = '".intval($_POST['bw_num'][$id])."', gen_ip = '".intval($_POST['bw_days'][$id])."', gen_intdata = '".intval($_POST['count_num'][$id])."', gen_chardata = '".intval($_POST['count_days'][$id])."' WHERE gen_id = {$id}");
 			$message .= $id." - ".DOWLAN_121."<br />";
 		}
 	}
@@ -207,9 +207,8 @@ if ($action == "create") {
 }
 
 if ($delete == 'category') {
-	if ($sql->db_Delete("download_category", "download_category_id='$del_id' ")) {
+	if (admin_update($sql->db_Delete("download_category", "download_category_id='$del_id' "), 'delete', DOWLAN_49." #".$del_id." ".DOWLAN_36)) {
 		$sql->db_Delete("download_category", "download_category_parent='{$del_id}' ");
-		$download->show_message(DOWLAN_49." #".$del_id." ".DOWLAN_36);
 	}
 }
 
@@ -218,9 +217,7 @@ if ($action == "cat") {
 }
 
 if ($delete == 'main') {
-	if ($sql->db_Delete("download", "download_id='$del_id' ")) {
-		$download->show_message(DOWLAN_35." #".$del_id." ".DOWLAN_36);
-	}
+	admin_update($sql->db_Delete("download", "download_id='$del_id' "), 'delete', DOWLAN_35." #".$del_id." ".DOWLAN_36);
 	unset($sub_action, $id);
 }
 
@@ -334,7 +331,7 @@ if($action == 'limits')
 	}
 	$txt = "
 		<form method='post' action='".e_SELF."?".e_QUERY."'>
-		<table style='width:100%'>
+		<table class='fborder' style='width:100%'>
 		<tr>
 			<td colspan='4' class='forumheader3' style='text-align:left'>
 		";
@@ -365,13 +362,13 @@ if($action == 'limits')
 		<tr>
 		<td class='forumheader3'>".$row['limit_id']."</td>
 		<td class='forumheader3'>".r_userclass_name($row['limit_classnum'])."</td>
-		<td class='forumheader'>
-			<input type='text' class='tbox' size='5' name='count_num[{$row['limit_id']}]' value='{$row['limit_count_num']}' /> ".DOWLAN_109."
-			<input type='text' class='tbox' size='5' name='count_days[{$row['limit_id']}]' value='{$row['limit_count_days']}' /> ".DOWLAN_110."
+		<td class='forumheader3'>
+			<input type='text' class='tbox' size='5' name='count_num[{$row['limit_id']}]' value='".($row['limit_count_num'] ? $row['limit_count_num'] : "")."' /> ".DOWLAN_109."
+			<input type='text' class='tbox' size='5' name='count_days[{$row['limit_id']}]' value='".($row['limit_count_days'] ? $row['limit_count_days'] : "")."' /> ".DOWLAN_110."
 		</td>
-		<td class='forumheader'>
-			<input type='text' class='tbox' size='5' name='bw_num[{$row['limit_id']}]' value='{$row['limit_bw_num']}' /> ".DOWLAN_111." ".DOWLAN_109."
-			<input type='text' class='tbox' size='5' name='bw_days[{$row['limit_id']}]' value='{$row['limit_bw_days']}' /> ".DOWLAN_110."
+		<td class='forumheader3'>
+			<input type='text' class='tbox' size='5' name='bw_num[{$row['limit_id']}]' value='".($row['limit_bw_num'] ? $row['limit_bw_num'] : "")."' /> ".DOWLAN_111." ".DOWLAN_109."
+			<input type='text' class='tbox' size='5' name='bw_days[{$row['limit_id']}]' value='".($row['limit_bw_days'] ? $row['limit_bw_days'] : "")."' /> ".DOWLAN_110."
 		</td>
 		</tr>
 		";
@@ -379,7 +376,7 @@ if($action == 'limits')
 
 	$txt .= "
 	<tr>
-	<td colspan='4' style='text-align:center'>
+	<td class='forumheader' colspan='4' style='text-align:center'>
 	<input type='submit' class='button' name='updatelimits' value='".DOWLAN_115."' />
 	</td>
 	</tr>
@@ -388,17 +385,17 @@ if($action == 'limits')
 	</tr>
 	<tr>
 	<td colspan='2' class='forumheader3'>".r_userclass("newlimit_class", 0, "off", "guest, member, admin, classes, language")."</td>
-	<td class='forumheader'>
+	<td class='forumheader3'>
 		<input type='text' class='tbox' size='5' name='new_count_num' value='' /> ".DOWLAN_109."
 		<input type='text' class='tbox' size='5' name='new_count_days' value='' /> ".DOWLAN_110."
 	</td>
-	<td class='forumheader'>
+	<td class='forumheader3'>
 		<input type='text' class='tbox' size='5' name='new_bw_num' value='' /> ".DOWLAN_111." ".DOWLAN_109."
 		<input type='text' class='tbox' size='5' name='new_bw_days' value='' /> ".DOWLAN_110."
 	</td>
 	</tr>
 	<tr>
-	<td colspan='4' style='text-align:center'>
+	<td class='forumheader' colspan='4' style='text-align:center'>
 	<input type='submit' class='button' name='addlimit' value='".DOWLAN_114."' />
 	</td>
 	</tr>
@@ -1015,16 +1012,9 @@ class download {
 
 		if ($id)
 		{
-
-			if($sql->db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".$_POST['download_datestamp']."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."', download_comment='".$_POST['download_comment']."', download_class = '{$_POST['download_class']}', download_mirror='$mirrorStr', download_mirror_type='".$_POST['download_mirror_type']."' , download_visible='".$_POST['download_visible']."' WHERE download_id=$id")){
-				$this->show_message(DOWLAN_2);
-			}else{
-                $this->show_message(LAN_UPDATED_FAILED);
-			}
+			admin_update($sql->db_Update("download", "download_name='".$_POST['download_name']."', download_url='".$durl."', download_author='".$_POST['download_author']."', download_author_email='".$_POST['download_author_email']."', download_author_website='".$_POST['download_author_website']."', download_description='".$_POST['download_description']."', download_filesize='".$filesize."', download_category='".$_POST['download_category']."', download_active='".$_POST['download_active']."', download_datestamp='".$_POST['download_datestamp']."', download_thumb='".$_POST['download_thumb']."', download_image='".$_POST['download_image']."', download_comment='".$_POST['download_comment']."', download_class = '{$_POST['download_class']}', download_mirror='$mirrorStr', download_mirror_type='".$_POST['download_mirror_type']."' , download_visible='".$_POST['download_visible']."' WHERE download_id=$id"), 'update', DOWLAN_2);
 		} else {
-
-			if ($download_id = $sql->db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".$_POST['download_datestamp']."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".$_POST['download_comment']."', '{$_POST['download_class']}', '$mirrorStr', '".$_POST['download_mirror_type']."', '".$_POST['download_visible']."' ")) {
-
+			if (admin_update($download_id = $sql->db_Insert("download", "0, '".$_POST['download_name']."', '".$durl."', '".$_POST['download_author']."', '".$_POST['download_author_email']."', '".$_POST['download_author_website']."', '".$_POST['download_description']."', '".$filesize."', '0', '".$_POST['download_category']."', '".$_POST['download_active']."', '".$_POST['download_datestamp']."', '".$_POST['download_thumb']."', '".$_POST['download_image']."', '".$_POST['download_comment']."', '{$_POST['download_class']}', '$mirrorStr', '".$_POST['download_mirror_type']."', '".$_POST['download_visible']."' "), 'insert', DOWLAN_1)) {
 				$dlinfo = array("download_id" => $download_id, "download_name" => $_POST['download_name'], "download_url" => $durl, "download_author" => $_POST['download_author'], "download_author_email" => $_POST['download_author_email'], "download_author_website" => $_POST['download_author_website'], "download_description" => $_POST['download_description'], "download_filesize" => $filesize, "download_category" => $_POST['download_category'], "download_active" => $_POST['download_active'], "download_datestamp" => $time, "download_thumb" => $_POST['download_thumb'], "download_image" => $_POST['download_image'], "download_comment" => $_POST['download_comment'] );
 				$e_event->trigger("dlpost", $dlinfo);
 
@@ -1032,8 +1022,8 @@ class download {
 					$sql->db_Update("upload", "upload_active='1' WHERE upload_id='".$_POST['remove_id']."'");
 					$mes = "<br />".$_POST['download_name']." ".DOWLAN_104;
 					$mes .= "<br /><br /><a href='".e_ADMIN."upload.php'>".DOWLAN_105."</a>";
+					$this->show_message($mes);
 				}
-				$this->show_message(DOWLAN_1.$mes);
 			}
 		}
 	}
@@ -1285,11 +1275,9 @@ class download {
 		}
 
 		if ($id) {
-			$sql->db_Update("download_category", "download_category_name='$download_category_name', download_category_description='$download_category_description', download_category_icon ='$download_category_icon', download_category_parent= '".$_POST['download_category_parent']."', download_category_class='".$_POST['download_category_class']."' WHERE download_category_id='$id'");
-			$this->show_message(DOWLAN_48);
+			admin_update($sql->db_Update("download_category", "download_category_name='$download_category_name', download_category_description='$download_category_description', download_category_icon ='$download_category_icon', download_category_parent= '".intval($_POST['download_category_parent'])."', download_category_class='".$_POST['download_category_class']."' WHERE download_category_id='$id'"), 'update', DOWLAN_48);
 		} else {
-			$sql->db_Insert("download_category", "0, '$download_category_name', '$download_category_description', '$download_category_icon', '".$_POST['download_category_parent']."', '".$_POST['download_category_class']."', 0 ");
-			$this->show_message(DOWLAN_47);
+			admin_update($sql->db_Insert("download_category", "0, '$download_category_name', '$download_category_description', '$download_category_icon', '".intval($_POST['download_category_parent'])."', '".$_POST['download_category_class']."', 0 "), 'insert', DOWLAN_47);
 		}
 		if ($sub_action == "sn") {
 			$sql->db_Delete("tmp", "tmp_time='$id' ");
@@ -1305,8 +1293,7 @@ class download {
 
 		if($delete == "mirror")
 		{
-			$sql -> db_Delete("download_mirror", "mirror_id=".$del_id);
-			$this->show_message(DOWLAN_135);
+			admin_update($sql -> db_Delete("download_mirror", "mirror_id=".$del_id), delete, DOWLAN_135);
 		}
 
 
@@ -1451,11 +1438,9 @@ class download {
 			$description = $tp -> toDB($_POST['mirror_description']);
 
 			if (isset($_POST['id'])){
-				$message = ($sql -> db_Update("download_mirror", "mirror_name='$name', mirror_url='$url', mirror_image='".$_POST['mirror_image']."', mirror_location='$location', mirror_description='$description' WHERE mirror_id=".$_POST['id'])) ? DOWLAN_133 : LAN_UPDATED_FAILED;
-				$this->show_message($message);
+				admin_update($sql -> db_Update("download_mirror", "mirror_name='$name', mirror_url='$url', mirror_image='".$_POST['mirror_image']."', mirror_location='$location', mirror_description='$description' WHERE mirror_id=".$_POST['id']), 'update', DOWLAN_133);
 			} else {
-				$message = ($sql -> db_Insert("download_mirror", "0, '$name', '$url', '".$_POST['mirror_image']."', '$location', '$description', 0")) ? DOWLAN_134 : LAN_CREATED_FAILED;
-				$this->show_message($message);
+				admin_update($sql -> db_Insert("download_mirror", "0, '$name', '$url', '".$_POST['mirror_image']."', '$location', '$description', 0"), 'insert', DOWLAN_134);
 			}
 		}
 	}

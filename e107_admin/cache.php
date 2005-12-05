@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/cache.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.8 $
+|     $Date: 2005-12-05 19:28:57 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -29,19 +29,18 @@ if ($pref['cachestatus'] == '2') {
 	$pref['cachestatus'] = '1';
 }
 if (isset($_POST['submit_cache'])) {
-	$pref['cachestatus'] = $_POST['cachestatus'];
-	save_prefs();
-	$ec->clear();
-	$message = CACLAN_4;
+	if ($pref['cachestatus'] != $_POST['cachestatus']) {
+		$pref['cachestatus'] = $_POST['cachestatus'];
+		save_prefs();
+		$ec->clear();
+		$update = true;
+	}
+	admin_update($update, 'update', CACLAN_4);
 }
 	
 if (isset($_POST['empty_cache'])) {
 	$ec->clear();
-	$message = CACLAN_6;
-}
-	
-if (isset($message)) {
-	$ns->tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
+	$ns->tablerender(LAN_UPDATE, "<div style='text-align:center'><b>".CACLAN_6."</b></div>");
 }
 	
 $text = "<div style='text-align:center'>

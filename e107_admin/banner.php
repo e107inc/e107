@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/banner.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-11-05 02:07:00 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.26 $
+|     $Date: 2005-12-05 19:28:57 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -89,18 +89,15 @@ if ($_POST['createbanner'] || $_POST['updatebanner'])
 	}
 
 	if ($_POST['createbanner']) {
-		$sql->db_Insert("banner", "0, '".$cli."', '".$_POST['client_login']."', '".$_POST['client_password']."', '".$_POST['banner_image']."', '".$_POST['click_url']."', '".$_POST['impressions_purchased']."', '$start_date', '$end_date', '".$_POST['banner_class']."', 0, 0, '', '".$cam."' ");
-		$message = BNRLAN_63;
+		admin_update($sql->db_Insert("banner", "0, '".$cli."', '".$_POST['client_login']."', '".$_POST['client_password']."', '".$_POST['banner_image']."', '".$_POST['click_url']."', '".intval($_POST['impressions_purchased'])."', '$start_date', '$end_date', '".$_POST['banner_class']."', 0, 0, '', '".$cam."'"), 'insert', BNRLAN_63);
 	} else {
-		$sql->db_Update("banner", "banner_clientname='".$cli."', banner_clientlogin='".$_POST['client_login']."', banner_clientpassword='".$_POST['client_password']."', banner_image='".$_POST['banner_image']."', banner_clickurl='".$_POST['click_url']."', banner_impurchased='".$_POST['impressions_purchased']."', banner_startdate='$start_date', banner_enddate='$end_date', banner_active='".$_POST['banner_class']."', banner_campaign='".$cam."' WHERE banner_id='".$_POST['eid']."' ");
-		$message = BNRLAN_64;
+		admin_update($sql->db_Update("banner", "banner_clientname='".$cli."', banner_clientlogin='".$_POST['client_login']."', banner_clientpassword='".$_POST['client_password']."', banner_image='".$_POST['banner_image']."', banner_clickurl='".$_POST['click_url']."', banner_impurchased='".intval($_POST['impressions_purchased'])."', banner_startdate='$start_date', banner_enddate='$end_date', banner_active='".$_POST['banner_class']."', banner_campaign='".$cam."' WHERE banner_id='".$_POST['eid']."'"), 'update', BNRLAN_64);
 	}
 	unset($_POST['client_name'], $_POST['client_login'], $_POST['client_password'], $_POST['banner_image'], $_POST['click_url'], $_POST['impressions_purchased'], $start_date, $end_date, $_POST['banner_enabled'], $_POST['startday'], $_POST['startmonth'], $_POST['startyear'], $_POST['endday'], $_POST['endmonth'], $_POST['endyear'], $_POST['banner_class'], $_POST['banner_pages'], $_POST['banner_listtype']);
 }
 
 if (isset($_POST['confirm'])) {
-	$sql->db_Delete("banner", "banner_id='".$_POST['id']."' ");
-	$message = BNRLAN_1;
+	admin_update($sql->db_Delete("banner", "banner_id='".$_POST['id']."' "), 'delete', BNRLAN_1);
 }
 
 if ($action == "delete" && $sub_action) {
