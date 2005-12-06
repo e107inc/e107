@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-10-30 20:51:30 $
+|     $Revision: 1.32 $
+|     $Date: 2005-12-06 07:21:05 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -194,7 +194,7 @@ class e107_user_extended
 				}
 			}
 			$sql->db_Select_gen("ALTER TABLE #user_extended ADD user_".$name.' '.$field_info);
-			$sql->db_Insert("user_extended_struct","0,'{$name}','{$text}','{$type}','{$parms}','{$values}','{$default}','{$read}','{$write}','{$required}','0','{$applicable}', '{$order}', '{$parent}'");
+			$sql->db_Insert("user_extended_struct","0,'{$name}','{$text}','{$type}','{$parms}','{$values}', '{$default}', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
 			if ($this->user_extended_field_exist($name))
 			{
 				return TRUE;

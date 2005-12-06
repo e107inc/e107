@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users_extended.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-12-05 19:28:57 $
+|     $Revision: 1.31 $
+|     $Date: 2005-12-06 07:21:05 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -97,10 +97,7 @@ if (isset($_POST['add_field']))
 	}
 	$new_values = make_delimited($_POST['user_values']);
 	$new_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
-	if($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $new_parms, $new_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], 0, $_POST['user_parent']))
-	{
-		$message = EXTLAN_29;
-	}
+	admin_update($ue->user_extended_add($_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $new_parms, $new_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], 0, $_POST['user_parent']), 'insert', EXTLAN_29);
 }
 
 if (isset($_POST['update_field'])) {
@@ -109,10 +106,7 @@ if (isset($_POST['update_field'])) {
 	}
 	$upd_values = make_delimited($_POST['user_values']);
 	$upd_parms = $tp->toDB($_POST['user_include']."^,^".$_POST['user_regex']."^,^".$_POST['user_regexfail']."^,^".$_POST['user_hide']);
-	if($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $upd_parms, $upd_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], $_POST['user_parent']))
-	{
-		$message = EXTLAN_29;
-	}
+	admin_update($ue->user_extended_modify($sub_action, $_POST['user_field'], $_POST['user_text'], $_POST['user_type'], $upd_parms, $upd_values, $_POST['user_default'], $_POST['user_required'], $_POST['user_read'], $_POST['user_write'], $_POST['user_applicable'], $_POST['user_parent']), 'update', EXTLAN_29);
 }
 
 if (isset($_POST['update_category']))
@@ -124,14 +118,7 @@ if (isset($_POST['update_category']))
 if (isset($_POST['add_category']))
 {
 	$name = $tp->toHTML($_POST['user_field']);
-	if($sql->db_Insert("user_extended_struct","'0', '$name', '', 0, '', '', '', '{$_POST['user_read']}', '{$_POST['user_write']}', '0', '0', '{$_POST['user_applicable']}', '0', '0'"))
-	{
-		$message = EXTLAN_40;
-	}
-	else
-	{
-		$message = LAN_CREATED_FAILED;
-	}
+	admin_update($sql->db_Insert("user_extended_struct","'0', '$name', '', 0, '', '', '', '{$_POST['user_read']}', '{$_POST['user_write']}', '0', '0', '{$_POST['user_applicable']}', '0', '0'"), 'insert', EXTLAN_40);
 }
 
 if ($_POST['eu_action'] == "delext")
