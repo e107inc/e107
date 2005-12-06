@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_install/installer_handling_class.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-11-25 21:46:37 $
+|     $Revision: 1.21 $
+|     $Date: 2005-12-06 14:06:01 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -253,7 +253,7 @@ class e_install {
 		if(!$perms_pass) {
 			$e_forms->add_hidden_data("language", $this->post_data['language']);
 			$e_forms->add_button("retest_perms", LANINS_009);
-			$this->stage = 1; // make the installer jump back a step
+			$this->stage = 3; // make the installer jump back a step
 		} elseif ($perms_pass && !$version_fail && $xml_installed) {
 			$e_forms->add_button("continue_install", LANINS_020);
 		}
