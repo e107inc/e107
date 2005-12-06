@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_fileinspector.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-12-02 21:01:29 $
+|     $Revision: 1.5 $
+|     $Date: 2005-12-06 17:28:50 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -64,5 +64,5 @@ define("FR_LAN_24", "Archivos de núcleo antiguos");
 define("FR_LAN_25", "Integridad incalculable");
 define("FR_LAN_26", "¡Atención! ¡Detectada Inseguridad!");
 define("FR_LAN_27", "Hay archivos en su servidor que pueden ser atacados y deben ser eliminados inmediatamente.");
-define("FR_LAN_28", "Archivos inseguros");
+define("FR_LAN_28", "Archivos inseguros conocidos");
 ?>
