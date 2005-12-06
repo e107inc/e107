@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-11-14 02:40:16 $
+|     $Revision: 1.49 $
+|     $Date: 2005-12-06 07:21:05 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -50,8 +50,8 @@ if (isset($_POST['testemail'])) {
 $sql->db_Delete("generic", "gen_type='sendmail' AND gen_datestamp < ".(time()-86400));
 
 if (isset($_POST['save_email'])){
-	$qry = "0,'massmail', '".time()."', '".USERID."', '".$tp->toDB($_POST['email_subject'])."',  '', \"".$tp->toDB($_POST['email_body'])."\"  ";
-	$message = $sql -> db_Insert("generic", $qry) ? LAN_SAVED : LAN_SAVED_FAILED;
+	$qry = "0,'massmail', '".time()."', '".USERID."', '".$tp->toDB($_POST['email_subject'])."',  '0', \"".$tp->toDB($_POST['email_body'])."\"  ";
+	$message = $sql -> db_Insert("generic", $qry) ? LAN_SAVED : LAN_ERROR;
 }
 
 if (isset($_POST['update_email'])){
@@ -124,7 +124,7 @@ if (isset($_POST['submit'])) {
 		ob_start();
 	}
 	while ($row = $sql->db_Fetch()) {
-		$qry = "0,'sendmail', '".$_POST['mail_id']."', '".$row['user_id']."', '', '', \"".$tp->toDB($_POST['email_subject'])."\" ";
+		$qry = "0,'sendmail', '".$_POST['mail_id']."', '".$row['user_id']."', '', '0', \"".$tp->toDB($_POST['email_subject'])."\" ";
 		if($sql2 -> db_Insert("generic", $qry)){
 			$c++;
 		}
