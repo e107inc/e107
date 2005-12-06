@@ -240,6 +240,10 @@ td.link_button {
 	border-bottom: 1px solid #000;
 }
 
+b {
+	color: #232930;
+}
+
 /* Nav Menu Classes */
 
 div.menuBar, div.menuBar a.menuButton, div.menuButton, div.menuButton_over, div.menu, div.menu a.menuItem {
