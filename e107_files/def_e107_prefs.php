@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-12-01 01:34:34 $
-|     $Author: sweetas $
+|     $Revision: 1.43 $
+|     $Date: 2005-12-07 12:55:17 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -76,7 +76,7 @@ $pref = array (
 .txt',
   'upload_storagetype' => '2',
   'upload_maxfilesize' => '',
-  'upload_class' => '999',
+  'upload_class' => '255',
   'cachestatus' => '',
   'displayrendertime' => '0',
   'displaysql' => '0',
