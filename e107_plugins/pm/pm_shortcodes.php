@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-11-19 08:20:35 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2005-12-07 15:12:37 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 include_once(e_HANDLER.'shortcode_handler.php');
@@ -362,10 +362,8 @@ return "";
 SC_END
 
 SC_BEGIN PM_NEXTPREV
-global $pmlist, $tp, $pm_start, $pm_prefs;
-//$sc = "{NEXTPREV={$pmlist['total_messages'][0]}.10.{$pm_start}.".e_SELF."?{$parm}}";
-//return $sc;
-return $tp->parseTemplate("{NEXTPREV={$pmlist['total_messages'][0]},{$pm_prefs['perpage']},{$pm_start},".e_SELF."?{$parm}.[FROM]}");
+global $pmlist, $tp, $pm_start, $pm_prefs, $pmlist;
+return $tp->parseTemplate("{NEXTPREV={$pmlist['total_messages']},{$pm_prefs['perpage']},{$pm_start},".e_SELF."?{$parm}.[FROM]}");
 SC_END
 
 */
