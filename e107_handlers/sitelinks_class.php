@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.75 $
-|     $Date: 2005-09-12 19:26:44 $
-|     $Author: e107coders $
+|     $Revision: 1.76 $
+|     $Date: 2005-12-07 17:30:57 $
+|     $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 
@@ -187,7 +187,7 @@ class sitelinks
 		} elseif ($linkInfo['link_url']){
 
 			// Only add the e_BASE if it actually has an URL.
-			$linkInfo['link_url'] = (strpos($linkInfo['link_url'], '://') === FALSE) ? e_HTTP.$linkInfo['link_url'] : $linkInfo['link_url'];
+			$linkInfo['link_url'] = (strpos($linkInfo['link_url'], '://') === FALSE && strpos($linkInfo['link_url'], 'mailto:') != 0 ? e_HTTP.$linkInfo['link_url'] : $linkInfo['link_url']);
 
 			// Only check if its highlighted if it has an URL
 			if ($this->hilite($linkInfo['link_url'], $style['linkstart_hilite'])== TRUE) {
