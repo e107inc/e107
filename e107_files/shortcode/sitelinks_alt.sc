@@ -3,9 +3,9 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-11-23 17:04:59 $
-|     $Author: sweetas $
+|     $Revision: 1.30 $
+|     $Date: 2005-12-07 04:03:15 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -55,7 +55,7 @@
 		
 		$text = "<a class='menuItem' ".$href." ";
 		if ($cat_id) {
-			if ($params[2] == 'link') {
+			if (isset($params[2]) && $params[2] == 'link') {
 				$text .= "onmouseover=\"menuItemMouseover(event, '".$cat_id."');\"";
 			} else {
 				$text .= "onclick=\"return false;\" onmouseover=\"menuItemMouseover(event, '".$cat_id."');\"";
@@ -109,7 +109,7 @@
 		}
 
 		$main_linkid = $lk['link_id'];
-		if ($linklist['sub_'.$main_linkid]) {  // Has Children.
+		if (isset($linklist['sub_'.$main_linkid])) {  // Has Children.
 
 			$text .= adnav_cat($lk['link_name'], '', $link_icon, 'l_'.$main_linkid);
 			$text .= render_sub($linklist, $main_linkid, $params, $icon);
@@ -148,7 +148,7 @@
 					$sub_icon .= ($sub['link_button']) ? e_IMAGE.'icons/'.$sub['link_button'] : $icon;
 					$sub_icon .= "' alt='' style='border:0px; vertical-align:bottom; width: 16px; height: 16px' />";
 				}
-				if ($linklist['sub_'.$sub['link_id']]) {  // Has Children.
+				if (isset($linklist['sub_'.$sub['link_id']])) {  // Has Children.
 					$sub_ids[] = $sub['link_id'];
 					$text .= adnav_main($subname, $sub['link_url'], $sub_icon, 'l_'.$sub['link_id'], $params, $sub['link_open']);
 				} else {
@@ -158,8 +158,11 @@
 			}
 			$text .= "</div>";
 			
-			foreach ($sub_ids as $sub_id) {
-				$text .= render_sub($linklist, $sub_id, $params, $icon);
+			if(isset($sub_ids) && is_array($sub_ids))
+			{
+				foreach ($sub_ids as $sub_id) {
+					$text .= render_sub($linklist, $sub_id, $params, $icon);
+				}
 			}
 			
 			return $text;
