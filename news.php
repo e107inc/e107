@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.82 $
-|     $Date: 2005-10-20 15:53:22 $
-|     $Author: e107coders $
+|     $Revision: 1.83 $
+|     $Date: 2005-12-07 00:49:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -60,10 +60,8 @@ if ($action == 'cat' || $action == 'all'){
 	if($tmp = checkCache($cacheString)){
 		require_once(HEADERF);
 		renderCache($tmp, TRUE);
-
 	}
 // <-- Cache
-
 
 	$qs = explode(".", e_QUERY);
 
@@ -85,7 +83,7 @@ if ($action == 'cat' || $action == 'all'){
 		$category_name = "All";
 	}
 	elseif ($action == 'cat'){
-		// show archive of all news items in a particular category using list-style template.   .
+		// show archive of all news items in a particular category using list-style template.
 		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_category={$sub_action} ");
 		if(!defined("NEWSLIST_LIMIT")){ define("NEWSLIST_LIMIT",10); }
 		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
@@ -100,7 +98,6 @@ if ($action == 'cat' || $action == 'all'){
 
 	require_once(HEADERF);
 	ob_start();
-
 
 	if(!$NEWSLISTSTYLE){
 		$NEWSLISTSTYLE = "
@@ -127,9 +124,10 @@ if ($action == 'cat' || $action == 'all'){
 	$param['thumbnail'] =(defined("NEWSLIST_THUMB")) ? NEWSLIST_THUMB : "border:0px";
 	$param['catlink']  = (defined("NEWSLIST_CATLINK")) ? NEWSLIST_CATLINK : "";
 	$param['caticon'] =  (defined("NEWSLIST_CATICON")) ? NEWSLIST_CATICON : ICONSTYLE;
-
 	$sql->db_Select_gen($query);
-	while ($row = $sql->db_Fetch()) {
+	$newsList = $sql->db_getList();
+	foreach($newsList as $row)
+	{
 		$text .= $ix->render_newsitem($row, 'return', '', $NEWSLISTSTYLE, $param);
 	}
 
@@ -139,13 +137,10 @@ if ($action == 'cat' || $action == 'all'){
 	$parms = $news_total.",".$amount.",".$from.",".e_SELF.'?'.$action.".".$sub_action.".[FROM]";
 	$text .= ($news_total > $amount) ? LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}") : "";
 
-
-
 	$ns->tablerender(LAN_82." '".$category_name."'", $text);
 	setNewsCache($cacheString);
 	require_once(FOOTERF);
 	exit;
-
 }
 
 if ($action == "extend") {
