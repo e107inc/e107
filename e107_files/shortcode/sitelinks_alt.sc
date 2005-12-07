@@ -3,8 +3,8 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-12-07 04:03:15 $
+|     $Revision: 1.31 $
+|     $Date: 2005-12-07 17:30:57 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -19,7 +19,7 @@
 
 	function adnav_cat($cat_title, $cat_link, $cat_img, $cat_id=FALSE, $cat_open=FALSE) {
 		global $tp;
-		$cat_link = (strpos($cat_link, '://') === FALSE) ? e_HTTP.$cat_link : $cat_link;
+		$cat_link = (strpos($cat_link, '://') === FALSE && strpos($linkInfo['link_url'], 'mailto:') != 0 ? e_HTTP.$cat_link : $cat_link);
 		
 		if ($cat_open == 4 || $cat_open == 5){
 			$dimen = ($cat_open == 4) ? "600,400" : "800,600";
