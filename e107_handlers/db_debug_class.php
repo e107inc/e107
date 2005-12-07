@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-07-16 10:32:46 $
-|     $Author: streaky $
+|     $Revision: 1.11 $
+|     $Date: 2005-12-07 03:44:42 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -104,7 +104,7 @@ class e107_db_debug {
 		$t['nFields']=$nFields;
 		$t['time']=$mytime;
 
-		if ($sQryRes) {
+		if ($sQryRes != 1) {
 			$bRowHeaders=FALSE;
 			while ($row = @mysql_fetch_assoc($sQryRes)) {
 				if (!$bRowHeaders) {
