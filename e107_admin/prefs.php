@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2005-12-01 01:34:33 $
-|     $Author: sweetas $
+|     $Revision: 1.69 $
+|     $Date: 2005-12-08 15:25:54 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -68,10 +68,9 @@ if (isset($_POST['updateprefs']))
 	exit;
 }
 
-$sql->db_Select("plugin", "*", "plugin_installflag='1' ");
+$sql->db_Select("plugin", "plugin_path", "plugin_installflag='1' ");
 while ($row = $sql->db_Fetch()) {
-	extract($row);
-	if (preg_match("/^auth_(.*)/", $plugin_path, $match)) {
+	if (preg_match("/^auth_(.*)/", $row['plugin_path'], $match)) {
 		$authlist[] = $match[1];
 	}
 }
@@ -82,8 +81,7 @@ if ($authlist) {
 		<td style='width:50%; text-align:right;' class='forumheader3'>";
 	$auth_dropdown .= "<select class='tbox' name='auth_method'>\n";
 	foreach($authlist as $a) {
-		$s = ($pref['auth_method'] == $a) ? " selected='selected'>" :
-		 "";
+		$s = ($pref['auth_method'] == $a ? " selected='selected'>" : "");
 		$auth_dropdown .= "<option {$s}>".$a."</option>\n";
 	}
 	$auth_dropdown .= "</select>\n";
