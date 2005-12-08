@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_select_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-09-03 18:27:20 $
+|     $Revision: 1.6 $
+|     $Date: 2005-12-08 15:00:37 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");
 
 if (!defined("e_THEME")) {
 	require_once('../class2.php');
@@ -48,7 +50,7 @@ class user_select {
 		}
 				
 		$text = "<select class='tbox' id='user' name='user' onchange=\"uc_switch('class')\">";
-		$text .= "<option value=''>Select user</option>";
+		$text .= "<option value=''>".US_LAN_1."</option>";
 		$sql -> db_Select("user", "user_name", $where." ORDER BY user_name");
 		while ($row = $sql -> db_Fetch()) {
 			$text .= "<option value='".$row['user_name']."'>".$row['user_name']."</option>";
