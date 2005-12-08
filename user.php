@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-10-14 01:01:59 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.27 $
+|     $Date: 2005-12-08 15:37:15 $
+|     $Author: asperon $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -75,6 +75,14 @@ if (isset($id))
 {
 	if ($id == 0) {
 		$text = "<div style='text-align:center'>".LAN_137." ".SITENAME."</div>";
+		$ns->tablerender(LAN_20, $text);
+		require_once(FOOTERF);
+		exit;
+	}
+
+	$ret = $e_event->trigger("showuser", $id);
+	if ($ret!='') {
+		$text = "<div style='text-align:center'>".$ret."</div>";
 		$ns->tablerender(LAN_20, $text);
 		require_once(FOOTERF);
 		exit;
