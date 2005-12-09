@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-12-02 07:19:42 $
+|     $Revision: 1.32 $
+|     $Date: 2005-12-09 09:21:50 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -373,11 +373,17 @@ class rssCreate {
 						$this -> rssItems[$loop]['title'] = $tp -> toRss($row[$title]);
 						$item = ($itemid) ? $row[$itemid] : "";
 						$link = str_replace("#",$item,$link);
-						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY.$link;
+						if($link){ $this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY.$link; }
 						$this -> rssItems[$loop]['description'] = ($rss_type == 3) ? $tp -> toRss($row[$description]) : $tp -> toRss(substr($row[$description], 0, 100));
-						if(enc_url){ $this -> rssItems[$loop]['enc_url'] = $e107->http_path.$PLUGINS_DIRECTORY.$enc_url.$row[$item_id]; }
-						if($enc_leng){ $this -> rssItems[$loop]['enc_leng'] = $row[$enc_leng]; }
-						if($enc_type){ $this -> rssItems[$loop]['enc_type'] = $this->getmime($row[$enc_type]); }
+
+						if($enc_url){ $this -> rssItems[$loop]['enc_url'] = $e107->http_path.$PLUGINS_DIRECTORY.$enc_url.$row[$item_id]; }
+               			if($enc_leng){ $this -> rssItems[$loop]['enc_leng'] = $row[$enc_leng]; }
+						if($row[$enc_type]){
+							$this -> rssItems[$loop]['enc_type'] = $this->getmime($row[$enc_type]);
+						}elseif($enc_type){
+							$this -> rssItems[$loop]['enc_type'] = $enc_type;
+						}
+
 						$catid = ($categoryid) ? $row[$categoryid] : "";
 						$catlink = ($categorylink) ? str_replace("#",$catid,$categorylink) : "";
 						if($categoryname){ $this -> rssItems[$loop]['category'] = "<category domain='".$e107->http_path.$catlink."'>".$tp -> toRss($row[$categoryname])."</category>"; }
@@ -474,12 +480,12 @@ class rssCreate {
 					<comments>".$value['comment']."</comments>
 					<author>".$value['author']."</author>\n";
 
-			// enclosure support for podcasting etc.
-			if($value['enc_url'] && $value['enc_leng'] && $value['enc_type']){
-				echo "<enclosure url=\"".$value['enc_url']."\" length=\"".$value['enc_leng']."\" type=\"".$value['enc_type']."\"   />\n";
-			}
+				// enclosure support for podcasting etc.
+		   		if($value['enc_url'] && $value['enc_leng'] && $value['enc_type']){
+					echo "<enclosure url=\"".$value['enc_url']."\" length=\"".$value['enc_leng']."\" type=\"".$value['enc_type']."\"   />\n";
+		   	 	}
 
-			echo "<pubDate>".$value['pubdate']."</pubDate>
+				echo "<pubDate>".$value['pubdate']."</pubDate>
 					<guid isPermaLink=\"true\">".$value['link']."</guid>
 					</item>";
 			}
