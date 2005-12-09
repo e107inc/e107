@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-12-09 09:21:50 $
+|     $Revision: 1.33 $
+|     $Date: 2005-12-09 13:27:07 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -387,7 +387,9 @@ class rssCreate {
 						$catid = ($categoryid) ? $row[$categoryid] : "";
 						$catlink = ($categorylink) ? str_replace("#",$catid,$categorylink) : "";
 						if($categoryname){ $this -> rssItems[$loop]['category'] = "<category domain='".$e107->http_path.$catlink."'>".$tp -> toRss($row[$categoryname])."</category>"; }
-						if($datestamp){	$this -> rssItems[$loop]['pubdate'] = strftime("%a, %d %b %Y %H:%M:00", ($row[$datestamp] + $this -> offset));  }
+						if($datestamp){
+							$this -> rssItems[$loop]['pubdate'] = date("r", ($row[$datestamp] + $this -> offset));
+						}
 						$loop++;
 					}
 				}
@@ -473,21 +475,34 @@ class rssCreate {
 			foreach($this -> rssItems as $value) {
 				echo "
 					<item>
-					<title>".$value['title']."</title>
-					<link>".$value['link']."</link>
-					<description>".$tp->toHTML($value['description'], TRUE)."</description>
-					".$value['category']."
-					<comments>".$value['comment']."</comments>
-					<author>".$value['author']."</author>\n";
+					<title>".$value['title']."</title>\n";
+
+				if($value['link']){
+                	echo "<link>".$value['link']."</link>\n";
+				}
+
+				echo "<description>".$tp->toHTML($value['description'], TRUE)."</description>
+					".$value['category']."\n";
+
+				if($value['comment']){
+					echo "<comments>".$value['comment']."</comments>\n";
+				 }
+				if($value['author']){
+					echo "<author>".$value['author']."</author>\n";
+				}
 
 				// enclosure support for podcasting etc.
 		   		if($value['enc_url'] && $value['enc_leng'] && $value['enc_type']){
 					echo "<enclosure url=\"".$value['enc_url']."\" length=\"".$value['enc_leng']."\" type=\"".$value['enc_type']."\"   />\n";
 		   	 	}
 
-				echo "<pubDate>".$value['pubdate']."</pubDate>
-					<guid isPermaLink=\"true\">".$value['link']."</guid>
-					</item>";
+				echo "<pubDate>".$value['pubdate']."</pubDate>\n";
+
+				if($value['link']){
+					echo "<guid isPermaLink=\"true\">".$value['link']."</guid>\n";
+				}
+
+				echo "</item>";
 			}
 			echo "
 				</channel>
