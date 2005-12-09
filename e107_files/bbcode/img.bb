@@ -13,6 +13,7 @@ $imgParms['style']="vertical-align:middle; border:0";
 
 if($parm) {
 	$parm = preg_replace('#onerror *=#i','',$parm);
+	$parm = str_replace("amp;", "&", $parm);
 	parse_str($parm,$tmp);
 	foreach($tmp as $p => $v) {
 		$imgParms[$p]=$v;
