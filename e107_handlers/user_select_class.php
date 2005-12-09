@@ -11,19 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_select_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-12-08 15:00:37 $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-09 20:59:02 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
-include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");
-
 if (!defined("e_THEME")) {
 	require_once('../class2.php');
+	include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");
 	$us = new user_select;
 	$us -> popup();
 }
+
+include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");
 
 class user_select {
 
@@ -62,9 +63,9 @@ class user_select {
 	function class_list($class, $form_name) {
 		global $pref, $sql;
 		$text = "<select class='tbox' id='class' name='class' onchange=\"uc_switch('user')\">";
-		$text .= "<option value=''>Select user class</option>";
+		$text .= "<option value=''>".US_LAN_2."</option>";
 		if (ADMINPERMS == '0' && $class == e_UC_MEMBER) {
-			$text .= "<option value='all'>All users</option>";
+			$text .= "<option value='all'>".US_LAN_3."</option>";
 		}
 		if ($class == e_UC_MEMBER) {
 			$sql -> db_Select("userclass_classes", "userclass_id, userclass_name", "ORDER BY userclass_name", "nowhere");
@@ -108,8 +109,8 @@ class user_select {
 				$text .= "<input class='tbox' type='text' name='".$form_id."' id='".$form_id."' size='25' maxlength='30' value='".$user_value."'>&nbsp;";
 			}
 			$text .= "<img src='".e_IMAGE_ABS."generic/".IMODE."/user_select.png' 
-			style='width: 16px; height: 16px; vertical-align: top' alt='Find username...' 
-			title='Find username...' onclick=\"window.open('".e_HANDLER_ABS."user_select_class.php?".$user_form."','user_search', 'toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes,width=300,height=200,left=100,top=100'); return false;\" />";
+			style='width: 16px; height: 16px; vertical-align: top' alt='".US_LAN_4."...' 
+			title='".US_LAN_4."...' onclick=\"window.open('".e_HANDLER_ABS."user_select_class.php?".$user_form."','user_search', 'toolbar=no,location=no,status=yes,scrollbars=yes,resizable=yes,width=300,height=200,left=100,top=100'); return false;\" />";
 		}
 		
 		if ($class !== false) {
@@ -167,7 +168,7 @@ class user_select {
 			<table style='width:100%' class='fborder'>
 			<tr>
 			<td class='forumheader3' style='text-align: center'><input type='text' name='srch' class='tbox' value='".$_POST['srch']."' size='40'>
-			<input class='button' type='submit' name='dosrch' class='tbox' value='Search'></td>
+			<input class='button' type='submit' name='dosrch' class='tbox' value='".US_LAN_6."'></td>
 			</tr>
 			</table>
 			</form>
@@ -185,7 +186,7 @@ class user_select {
 			}
 			$text .= "<br /><form name='results' action='".e_SELF."?".e_QUERY."' method='POST'>
 			<table style='width:100%' class='fborder'>
-			<tr><td class='fcaption'>{$fcount} User(s) found</td></tr>
+			<tr><td class='fcaption'>{$fcount} ".US_LAN_5."</td></tr>
 			<tr>
 			<td class='forumheader3'>
 			<select class='tbox' name='usersel' width='60' ondblclick='SelectUser()'>
@@ -195,7 +196,7 @@ class user_select {
 			}
 			$text .= "
 			</select>
-			<input type='button' class='button' value='Select User' onClick='SelectUser()'>
+			<input type='button' class='button' value='".US_LAN_1."' onClick='SelectUser()'>
 			</td>
 		 
 			</tr>
@@ -204,7 +205,7 @@ class user_select {
 			";
 		}
 	
-		$ns -> tablerender('Find username', $text);
+		$ns -> tablerender(US_LAN_4, $text);
 	}
 	
 	function findusers($s) {
