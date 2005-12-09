@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2005-11-10 19:12:20 $
+|     $Revision: 1.55 $
+|     $Date: 2005-12-09 13:57:31 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -660,7 +660,7 @@ function process_upload()
 							if($pref['forum_linkimg'])
 							{
 								$parms = image_getsize($fpath.$new_file);
-								$_POST['post'] .= "<br />[link=".$fpath.$orig_file."][img{$parms}]".$fpath.$new_file."[/img][/link]<br />";
+								$_POST['post'] .= E_NL."[link=".$fpath.$orig_file."][img{$parms}]".$fpath.$new_file."[/img][/link]".E_NL;
 								//show resized, link to fullsize
 							}
 							else
