@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_links.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:49 $
+|     $Revision: 1.3 $
+|     $Date: 2005-12-10 10:16:39 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -75,4 +75,5 @@ define("LINKLAN_6", "Crear subenlaces de:");
 define("LINKLAN_7", "¿Bajo que enlace creará subenlaces?");
 define("LINKLAN_8", "Categorías de noticias");
 define("LINKLAN_9", "Categorías de descargas");
+define("LINKLAN_10", "Crear Subenlace");
 ?>
