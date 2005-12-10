@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/private_msg_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-09-22 02:08:25 $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-10 00:43:26 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -80,16 +80,16 @@ function pm_show_popup()
 	$popuptext = "
 	<html>
 		<head>
-			<title>".$pm_inbox['inbox']['new']." New Message(s)</title>
+			<title>".$pm_inbox['inbox']['new']." ".LAN_PM_109."</title>
 			<link rel=stylesheet href=" . THEME . "style.css>
 		</head>
 		<body style=\'padding-left:2px;padding-right:2px;padding:2px;padding-bottom:2px;margin:0px;text-align:center\' marginheight=0 marginleft=0 topmargin=0 leftmargin=0>
 		<table style=\'width:100%;text-align:center;height:99%;padding-bottom:2px\' class=\'bodytable\'>
 			<tr>
 				<td width=100% >
-					<center><b>--- Private Message ---</b><br />".$pm_inbox['inbox']['new']." New Private Messages<br />".$pm_inbox['inbox']['unread']." Unread messages<br /><br />
+					<center><b>--- ".LAN_PM." ---</b><br />".$pm_inbox['inbox']['new']." ".LAN_PM_109."<br />".$pm_inbox['inbox']['unread']." ".LAN_PM_37."<br /><br />
 					<form>
-						<input class=\'button\' type=\'submit\' onclick=\'self.close();\' value = \'ok\' />
+						<input class=\'button\' type=\'submit\' onclick=\'self.close();\' value = \'".LAN_PM_110."\' />
 					</form>
 					</center>
 				</td>
