@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.232 $
-|     $Date: 2005-11-23 14:36:35 $
-|     $Author: streaky $
+|     $Revision: 1.233 $
+|     $Date: 2005-12-11 14:56:37 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -420,7 +420,7 @@ $ns=new e107table;
 
 $e107->ban();
 
-if(USER && isset($pref['force_userupdate']) && $pref['force_userupdate'] && e_PAGE != "usersettings.php"){
+if(isset($pref['force_userupdate']) && $pref['force_userupdate'] && USER && e_PAGE != "usersettings.php"){
 	if(force_userupdate()){
 		header("Location: ".e_BASE."usersettings.php?update");
 	};
@@ -461,9 +461,6 @@ define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off 
 define("SITEADMIN", $pref['siteadmin']);
 define("SITEADMINEMAIL", $pref['siteadminemail']);
 define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'], "", "emotes_off defs"));
-
-
-
 
 // send the charset to the browser - overides spurious server settings with the lan pack settings.
 header("Content-type: text/html; charset=".CHARSET);
@@ -563,7 +560,7 @@ if(!is_array($menu_data)) {
 $sql->db_Mark_Time('(Start: Find/Load Theme)');
 
 if(!defined("THEME")){
-	if ((strpos(e_SELF, "usersettings.php") !== FALSE && is_numeric(e_QUERY) && getperms("4") && ADMIN) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin") !== FALSE || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
+	if ((strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE || strpos(e_SELF, "admin") !== FALSE || (isset($eplug_admin) && $eplug_admin == TRUE)) && $pref['admintheme']) {
 
 		if (strpos(e_SELF.'?'.e_QUERY, 'menus.php?configure') !== FALSE) {
 			checkvalidtheme($pref['sitetheme']);
@@ -632,7 +629,6 @@ if (!class_exists('convert'))
 	require_once(e_HANDLER."date_handler.php");
 }
 
-
 //@require_once(e_HANDLER."IPB_int.php");
 //@require_once(e_HANDLER."debug_handler.php");
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -670,8 +666,6 @@ function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE
 			if(check_class($v, $userclass, $debug))	{
 				return TRUE;
 			}
-
-
 		}
 		return FALSE;
 	}
@@ -724,9 +718,6 @@ function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE
 			return TRUE;
 		}
 	} else {
-
-
-
 		// var is name of class ...
 		$sql=new db;
 		if ($sql->db_Select("userclass_classes", "*", "userclass_name='$var' ")) {
