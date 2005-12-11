@@ -4,7 +4,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ?Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-10-19 17:01:27 $
-|     $Author: e107coders $
+|     $Revision: 1.26 $
+|     $Date: 2005-12-11 22:42:06 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -64,7 +64,9 @@ class userlogin {
 			$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
 			$ouserpass = $userpass;
 			$userpass = md5($ouserpass);
-
+			
+			$username = substr($username, 0, 30);
+			
 			// This is only required for upgrades and only for those not using utf-8 to begin with..
 			if(isset($pref['utf-compatmode']) && (CHARSET == "utf-8" || CHARSET == "UTF-8")){
 				$username = utf8_decode($username);
