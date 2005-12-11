@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.93 $
-|		$Date: 2005-09-07 22:24:14 $
+|		$Revision: 1.94 $
+|		$Date: 2005-12-11 15:51:31 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1405,6 +1405,7 @@ class contentform{
 					if(substr($row['content_parent'],0,1) != "0"){
 						header("location:".e_SELF."?cat"); exit;
 					}
+					$menuheading = $row['content_heading'];
 				}
 				$formurl = e_SELF."?".e_QUERY;
 			}
@@ -1636,7 +1637,8 @@ class contentform{
 				if($qs[1] == "edit" && is_numeric($qs[2]) ){
 					$js = "onclick=\"document.getElementById('parent').value = document.getElementById('parent1').options[document.getElementById('parent1').selectedIndex].label;\" ";
 					$text .= $rs -> form_button("submit", "preview_category", (isset($_POST['preview_category']) ? CONTENT_ADMIN_MAIN_LAN_27 : CONTENT_ADMIN_MAIN_LAN_26), $js);
-					$text .= $rs -> form_button("submit", "update_category", CONTENT_ADMIN_CAT_LAN_7, $js).$rs -> form_button("submit", "category_clear", CONTENT_ADMIN_CAT_LAN_21).$rs -> form_hidden("cat_id", $qs[2]).$rs -> form_hidden("id", $qs[2]);
+					$text .= $rs -> form_button("submit", "update_category", CONTENT_ADMIN_CAT_LAN_7, $js).$rs -> form_button("submit", "category_clear", CONTENT_ADMIN_CAT_LAN_21).$rs -> form_hidden("cat_id", $qs[2]).$rs -> form_hidden("id", $qs[2]).$rs -> form_hidden("menuheading", $menuheading);
+					
 					$caption = CONTENT_ADMIN_CAT_LAN_1;
 				}else{
 					$js = "onclick=\"document.getElementById('parent').value = document.getElementById('parent1').options[document.getElementById('parent1').selectedIndex].label;\" ";

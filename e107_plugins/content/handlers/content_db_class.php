@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.37 $
-|		$Date: 2005-08-23 03:54:04 $
-|		$Author: sweetas $
+|		$Revision: 1.38 $
+|		$Date: 2005-12-11 15:51:31 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -336,6 +336,7 @@ class contentdb{
 
 				// check and insert default pref values if new main parent + create menu file
 				if($_POST['parent'] == "0"){
+					@unlink(e_PLUGIN."content/menus/content_".$_POST['menuheading']."_menu.php");
 					$content_pref = $aa -> getContentPref($_POST['cat_id']);
 					$aa -> CreateParentMenu($_POST['cat_id']);
 				}
