@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.94 $
-|		$Date: 2005-12-11 15:51:31 $
+|		$Revision: 1.95 $
+|		$Date: 2005-12-11 16:27:05 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1972,11 +1972,12 @@ class contentform{
 			}
 
 			$sql2 = new db;
-			$sql2->db_Select("user", "user_id, user_name, user_class, user_login", " user_perms != '0'");
+			$sql2->db_Select("user", "user_id, user_name, user_class, user_login", " user_perms != '0' ORDER BY user_name");
 			$c = 0;
 			$d = 0;
 			while ($row2 = $sql2->db_Fetch()) {
-				if(check_class($content_pref["content_manager_class_{$mainparent}"])){
+				$arr = explode(",", $row2['user_class']);
+				if(in_array($content_pref["content_manager_class_{$mainparent}"], $arr)){
 					if(in_array($row2['user_id'], $pcm)){
 						$in_userid[$c]		= $row2['user_id'];
 						$in_username[$c]	= $row2['user_name'];
