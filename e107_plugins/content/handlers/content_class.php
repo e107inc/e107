@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.81 $
-|		$Date: 2005-08-23 03:54:04 $
-|		$Author: sweetas $
+|		$Revision: 1.82 $
+|		$Date: 2005-12-11 16:51:48 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -1152,7 +1152,7 @@ class content{
 			$data .= "	if(".chr(36)."content_pref[\"content_menu_links_icon_".chr(36)."menutypeid\"] == \"0\"){ ".chr(36)."linksicon = \"\";\n";
 			$data .= "	}elseif(".chr(36)."content_pref[\"content_menu_links_icon_".chr(36)."menutypeid\"] == \"1\"){ ".chr(36)."linksicon = \"<img src='\".THEME.\"images/bullet2.gif' alt='' />\";\n";
 			$data .= "	}elseif(".chr(36)."content_pref[\"content_menu_links_icon_".chr(36)."menutypeid\"] == \"2\"){ ".chr(36)."linksicon = \"&middot\";\n";
-			$data .= "	}elseif(".chr(36)."content_pref[\"content_menu_links_icon_".chr(36)."menutypeid\"] == \"3\"){ ".chr(36)."linksicon = \"º\";\n";
+			$data .= "	}elseif(".chr(36)."content_pref[\"content_menu_links_icon_".chr(36)."menutypeid\"] == \"3\"){ ".chr(36)."linksicon = \"&ordm;\";\n";
 			$data .= "	}elseif(".chr(36)."content_pref[\"content_menu_links_icon_".chr(36)."menutypeid\"] == \"4\"){ ".chr(36)."linksicon = \"&raquo;\";\n";
 			$data .= "	}\n";
 			$data .= "\n";
@@ -1211,7 +1211,7 @@ class content{
 			$data .= "				if(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"0\"){ ".chr(36)."ICON = \"\";\n";
 			$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"1\"){ ".chr(36)."ICON = \"<img src='\".THEME.\"images/bullet2.gif' alt='' style='border:0;' />\";\n";
 			$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"2\"){ ".chr(36)."ICON = \"&middot\";\n";
-			$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"3\"){ ".chr(36)."ICON = \"º\";\n";
+			$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"3\"){ ".chr(36)."ICON = \"&ordm;\";\n";
 			$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"4\"){ ".chr(36)."ICON = \"&raquo;\";\n";
 			$data .= "				}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_".chr(36)."menutypeid\"] == \"5\"){\n";
 			$data .= "					if(".chr(36)."row['content_icon'] != \"\" && file_exists(".chr(36)."content_cat_icon_path_small.".chr(36)."row['content_icon']) ){\n";
@@ -1221,7 +1221,7 @@ class content{
 			$data .= "						if(".chr(36)."content_pref[\"content_menu_cat_icon_default_".chr(36)."menutypeid\"] == \"0\"){ ".chr(36)."ICON = \"\";\n";
 			$data .= "						}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_default_".chr(36)."menutypeid\"] == \"1\"){ ".chr(36)."ICON = \"<img src='\".THEME.\"images/bullet2.gif' alt='' style='border:0;' />\";\n";
 			$data .= "						}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_default_".chr(36)."menutypeid\"] == \"2\"){ ".chr(36)."ICON = \"&middot\";\n";
-			$data .= "						}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_default_".chr(36)."menutypeid\"] == \"3\"){ ".chr(36)."ICON = \"º\";\n";
+			$data .= "						}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_default_".chr(36)."menutypeid\"] == \"3\"){ ".chr(36)."ICON = \"&ordm;\";\n";
 			$data .= "						}elseif(".chr(36)."content_pref[\"content_menu_cat_icon_default_".chr(36)."menutypeid\"] == \"4\"){ ".chr(36)."ICON = \"&raquo;\";\n";
 			$data .= "						}\n";
 			$data .= "					}\n";
@@ -1286,7 +1286,7 @@ class content{
 			$data .= "		if(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"0\"){ ".chr(36)."ICON = \"\";\n";
 			$data .= "		}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"1\"){ ".chr(36)."ICON = \"<img src='\".THEME.\"images/bullet2.gif' alt='' style='border:0;' />\";\n";
 			$data .= "		}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"2\"){ ".chr(36)."ICON = \"&middot\";\n";
-			$data .= "		}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"3\"){ ".chr(36)."ICON = \"º\";\n";
+			$data .= "		}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"3\"){ ".chr(36)."ICON = \"&ordm;\";\n";
 			$data .= "		}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"4\"){ ".chr(36)."ICON = \"&raquo;\";\n";
 			$data .= "		}elseif(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"5\"){\n";
 			$data .= "			if(".chr(36)."content_pref[\"content_menu_recent_icon_".chr(36)."menutypeid\"] == \"5\"){\n";
