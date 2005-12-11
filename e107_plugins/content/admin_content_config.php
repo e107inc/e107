@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.55 $
-|		$Date: 2005-07-14 13:16:07 $
+|		$Revision: 1.56 $
+|		$Date: 2005-12-11 15:51:31 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -67,8 +67,8 @@ if(isset($_POST['delete']))
 
 if(isset($delete) && $delete == 'cat'){
 
-	$sql -> db_Select($plugintable, "content_id,content_parent", "content_id = '$del_id' ");
-	list($content_id, $content_parent) = $sql -> db_Fetch();
+	$sql -> db_Select($plugintable, "content_id,content_heading,content_parent", "content_id = '$del_id' ");
+	list($content_id, $content_heading, $content_parent) = $sql -> db_Fetch();
 
 	$checkarray = $aa -> getCategoryTree("", $content_id, TRUE);
 	unset($agc);	//unset the globalised getCategoryTree array
@@ -97,6 +97,7 @@ if(isset($delete) && $delete == 'cat'){
 
 	if($checksubcat == FALSE && $checkitems == FALSE){
 		if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+			@unlink(e_PLUGIN."content/menus/content_".$content_heading."_menu.php");
 			$message = CONTENT_ADMIN_CAT_LAN_23."<br />";
 		}
 	}else{
