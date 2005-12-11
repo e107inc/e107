@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2005-12-01 02:36:40 $
+|     $Revision: 1.56 $
+|     $Date: 2005-12-11 04:38:53 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -70,34 +70,6 @@ include_once(e_FILE."shortcode/batch/usersettings_shortcodes.php");
 require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 $_uid = is_numeric(e_QUERY) ? intval(e_QUERY) : "";
-if(getperms("4") && strpos($_SERVER['HTTP_REFERER'], str_replace("../","",e_ADMIN)) !== FALSE || $_POST['adminmode'] == 1)
-{
-	if (file_exists(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php")) {
-		include_once(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_users.php");
-	} else {
-		include_once(e_LANGUAGEDIR."English/admin/lan_users.php");
-	}
-
-	function usersettings_adminmenu()
-	{
-        $action = "main";
-    	// ##### Display options ---------------------------------------------------------------------------------------------------------
-		$var['main']['text'] = USRLAN_71;
-		$var['main']['link'] = e_ADMIN."users.php";
-
-		$var['create']['text'] = USRLAN_72;
-		$var['create']['link'] = e_ADMIN."users.php?create";
-
-		$var['prune']['text'] = USRLAN_73;
-		$var['prune']['link'] = e_ADMIN."users.php?prune";
-
-		$var['options']['text'] = LAN_OPTIONS;
-		$var['options']['link'] = e_ADMIN."users.php?options";
-
-	  	show_admin_menu(USRLAN_76, $action, $var);
-	}
-	$ADMINAREA = TRUE;
-}
 
 $signupval = explode(".", $pref['signup_options']);
 
@@ -228,7 +200,6 @@ if (isset($_POST['updatesettings']))
 		$row = $sql -> db_Fetch();
 		$loginname = $row['user_name'];
 	}
-
 	
 	$user_sess = "";
 	if ($file_userfile['error'] != 4)
@@ -300,7 +271,8 @@ if (isset($_POST['updatesettings']))
 				$sql -> db_Update("user", "user_loginname='$loginname' WHERE user_id='$inp' ");
 			}
 
-			if($ue_fields) {
+			if($ue_fields)
+			{
 				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$inp}')");
 				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$inp}'");
 			}
@@ -345,9 +317,6 @@ if (isset($_POST['updatesettings']))
 			if(e_QUERY == "update") {
             	header("Location: index.php");
 			}
-			if($ADMINAREA && !$error) {
-            	header("Location: ".$_POST['adminreturn']);
-			}
 			$message = "<div style='text-align:center'>".LAN_150."</div>";
 			$caption = LAN_151;
 		} else {
@@ -359,14 +328,7 @@ if (isset($_POST['updatesettings']))
 }
 // -------------------
 
-if($ADMINAREA)
-{
-  	require_once(e_ADMIN."auth.php");
-}
-else
-{
-	require_once(HEADERF);
-}
+require_once(HEADERF);
 
 if(isset($message))
 {
@@ -426,12 +388,6 @@ if(e_QUERY == "update")
 $text .= $tp->parseTemplate($USERSETTINGS_EDIT, FALSE, $usersettings_shortcodes);
 $text .= "<div>";
 
-if($ADMINAREA)
-{
-	$text .= "<input type='hidden' name='adminmode' value='1' />\n";
-	$ref = ($adref) ? $adref : str_replace("main", "uset", $_SERVER['HTTP_REFERER']);
-	$text .= "<input type='hidden' name='adminreturn' value='".$ref."' />";
-}
 $text .= "
 	<input type='hidden' name='_uid' value='$_uid' />
 	</div>
@@ -439,14 +395,8 @@ $text .= "
 	";
 
 $ns->tablerender(LAN_155, $text);
-if($ADMINAREA)
-{
-	require_once(e_ADMIN."footer.php");
-}
-else
-{
-	require_once(FOOTERF);
-}
+require_once(FOOTERF);
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 function req($field)
