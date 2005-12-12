@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-12-09 13:37:06 $
+|     $Revision: 1.35 $
+|     $Date: 2005-12-12 15:32:17 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -372,12 +372,12 @@ class rssCreate {
 						$this -> rssItems[$loop]['author'] = $tp -> toRss($row[$author]);
 						$this -> rssItems[$loop]['title'] = $tp -> toRss($row[$title]);
 						$item = ($itemid) ? $row[$itemid] : "";
-						$link = str_replace("#",$item,$link);
-						if($link){
-							if(eregi("http",$link)){
-                                $this -> rssItems[$loop]['link'] = $link;
+						$link2 = str_replace("#",$item,$link);
+						if($link2){
+							if(eregi("http",$link2)){
+                                $this -> rssItems[$loop]['link'] = $link2;
 							}else{
-                            	$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY.$link;
+                            	$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY.$link2;
 							}
                                             }
 						$this -> rssItems[$loop]['description'] = ($rss_type == 3) ? $tp -> toRss($row[$description]) : $tp -> toRss(substr($row[$description], 0, 100));
