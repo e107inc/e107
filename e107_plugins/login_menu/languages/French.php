@@ -4,8 +4,8 @@
 |     e107 website system - French Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/French.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-07 18:31:32 $
+|     $Revision: 1.4 $
+|     $Date: 2005-12-12 11:24:37 $
 |     $Author: tpruvot $
 |     Encoding: UTF-8
 +----------------------------------------------------------------------------+
@@ -14,7 +14,7 @@
 
 define("LOGIN_MENU_L1", "Nom d'utilisateur: ");
 define("LOGIN_MENU_L2", "Mot de passe: ");
-define("LOGIN_MENU_L3", "Connexion");
+define("LOGIN_MENU_L3", "Enregistrement");
 define("LOGIN_MENU_L4", "Mot de passe oublié?");
 define("LOGIN_MENU_L5", "Bienvenue");
 define("LOGIN_MENU_L6", "Se souvenir de moi");
