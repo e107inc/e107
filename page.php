@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-10-26 08:23:30 $
-|     $Author: sweetas $
+|     $Revision: 1.15 $
+|     $Date: 2005-12-12 11:16:18 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -22,14 +22,21 @@ if(IsSet($_POST['enterpw']))
 {
 	$page -> setPageCookie();
 }
-require_once(HEADERF);
+
 if(!$e_QUERY)
 {
+	require_once(HEADERF);
 	$page -> listPages();
 }
 else
 {
-	$page -> showPage();
+	$tmp = $page -> showPage();
+	define("e_PAGETITLE", $tmp['title']);
+	require_once(HEADERF);
+	$ns -> tablerender($tmp['title'], $tmp['text']);
+	if($tmp['comment_caption']){
+		$ns -> tablerender($tmp['comment_caption'], $tmp['comment']);
+    }
 }
 require_once(FOOTERF);
 
@@ -122,7 +129,7 @@ class pageClass
 	{
 		global $sql, $ns;
 		$query = "SELECT p.*, u.user_id, u.user_name FROM #page AS p
-		LEFT JOIN #user AS u ON p.page_author = u.user_id 
+		LEFT JOIN #user AS u ON p.page_author = u.user_id
 		WHERE p.page_id='".$this -> pageID."' AND p.page_class IN (".USERCLASS_LIST.") ";
 
 		if(!$sql -> db_Select_gen($query))
@@ -163,9 +170,16 @@ class pageClass
 		$text .= $this -> pageRating($page_rating_flag);
 		$text .= $this -> pageIndex();
 
-		$ns -> tablerender($page_title, $text);
+		$ret['title'] = $page_title;
+		$ret['text'] = $text;
+		$comment = $this -> pageComment($page_comment_flag);
+		$ret['comment'] = $comment['comment'].$comment['comment_form'];
+		$ret['comment_caption'] = $comment['caption'];
 
-		$this -> pageComment($page_comment_flag);
+	 	return $ret;
+	 //	$ns -> tablerender($page_title, $text);
+
+	 //	$this -> pageComment($page_comment_flag);
 
 	}
 
@@ -310,12 +324,15 @@ class pageClass
 						$clean_comment = $_POST['comment'];
 						$clean_subject = $_POST['subject'];
 
-						$cobj->enter_comment($clean_authorname, $clean_comment, "page", $this -> pageID, $pid, $clean_subject);
+					 	$cobj->enter_comment($clean_authorname, $clean_comment, "page", $this -> pageID, $pid, $clean_subject);
 						$e107cache->clear("comment.page.".$this -> pageID);
 					}
 				}
 			}
-			$cobj->compose_comment("page", "comment", $this -> pageID, $width, $subject, $showrate=FALSE);
+        //    $tmp = $cobj->compose_comment("page", "comment", $this -> pageID, $width, $subject, $showrate=FALSE,TRUE);
+
+
+			return $cobj->compose_comment("page", "comment", $this -> pageID, $width, $subject, $showrate=FALSE,$return=TRUE);
 		}
 	}
 
