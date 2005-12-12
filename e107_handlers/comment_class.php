@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-10-30 19:11:49 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.48 $
+|     $Date: 2005-12-12 11:16:18 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,7 +27,7 @@ require_once(e_FILE."shortcode/batch/comment_shortcodes.php");
  *
  */
 class comment {
-	
+
 	/**
 	 * Enter description here...
 	 *
@@ -126,7 +126,7 @@ class comment {
 			echo "<br /><div style='text-align:center'><b>".LAN_6." <a href='".e_SIGNUP."'>".COMLAN_1."</a> ".COMLAN_2."</b></div>";
 		}
 	}
-	
+
 	/**
 	 * Enter description here...
 	 *
@@ -149,7 +149,7 @@ class comment {
 		$thistable			= $table;
 		$thisid				= $id;
 		$thisaction			= $action;
-		
+
 		if($addrating===TRUE){
 			require_once(e_HANDLER."rate_class.php");
 			if(!$rater || !is_object($rater)){ $rater = new rater; }
@@ -172,7 +172,7 @@ class comment {
 		$block		= "[<a href='".e_ADMIN_ABS."comment.php?block-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_2."</a>] ";
 		$delete		= "[<a href='".e_ADMIN_ABS."comment.php?delete-".$comrow['comment_id']."-$url-".$comrow['comment_item_id']."'>".LAN_3."</a>] ";
 		$userinfo	= "[<a href='".e_ADMIN_ABS."userinfo.php?".$comrow['comment_ip']."'>".LAN_4."</a>]";
-		
+
 		if (!$COMMENTSTYLE) {
 			global $THEMES_DIRECTORY;
 			$COMMENTSTYLE = "";
@@ -235,9 +235,9 @@ class comment {
 			$sub_query = "
 			SELECT c.*, u.*, ue.*
 			FROM #comments AS c
-			LEFT JOIN #user AS u ON c.comment_author = u.user_id 
-			LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id 
-			WHERE comment_item_id='".$thisid."' AND comment_type='".$type."' AND comment_pid='".$comrow['comment_id']."' 
+			LEFT JOIN #user AS u ON c.comment_author = u.user_id
+			LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
+			WHERE comment_item_id='".$thisid."' AND comment_type='".$type."' AND comment_pid='".$comrow['comment_id']."'
 			ORDER BY comment_datestamp
 			";
 
@@ -312,7 +312,7 @@ class comment {
 						$nick = "0.".$tp->toDB($author_name);
 					}
 				}
-				
+
 				if (!defined("emessage"))
 				{
 					$ip = $e107->getip();
@@ -357,7 +357,7 @@ class comment {
 			$rater -> enterrating($rateindex);
 		}
 	}
-	
+
 	/**
 	 * Enter description here...
 	 *
@@ -383,7 +383,7 @@ class comment {
 			}
 			return $type;
 	}
-	
+
 	/**
 	 * Enter description here...
 	 *
@@ -414,7 +414,7 @@ class comment {
 	 * @param unknown_type $subject
 	 * @param unknown_type $rate
 	 */
-	function compose_comment($table, $action, $id, $width, $subject, $rate = false){
+	function compose_comment($table, $action, $id, $width, $subject, $rate = false,$return = false){
 			//compose comment	: single call function will render the existing comments and show the form_comment
 	//rate				: boolean, to show/hide rating system in comment, default FALSE
 		global $pref, $sql, $ns, $e107cache, $tp, $totcc;
@@ -426,18 +426,19 @@ class comment {
 		$text = "";
 		$query = ($pref['nested_comments'] ?
 		"SELECT c.*, u.*, ue.* FROM #comments AS c
-		LEFT JOIN #user AS u ON c.comment_author = u.user_id 
-		LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id 
+		LEFT JOIN #user AS u ON c.comment_author = u.user_id
+		LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
 		WHERE c.comment_item_id='".$id."' AND c.comment_type='".$type."' AND c.comment_pid='0' ORDER BY c.comment_datestamp"
 		:
 		"SELECT c.*, u.*, ue.* FROM #comments AS c
-		LEFT JOIN #user AS u ON c.comment_author = u.user_id 
-		LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id 
+		LEFT JOIN #user AS u ON c.comment_author = u.user_id
+		LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
 		WHERE c.comment_item_id='".$id."' AND c.comment_type='".$type."' ORDER BY c.comment_datestamp"
 		);
 
 		$text = "";
 		$comment_total = $sql->db_Select_gen($query);
+
 		if ($comment_total) {
 			$width = 0;
 			while ($row = $sql->db_Fetch()) {
@@ -449,18 +450,29 @@ class comment {
 					$text .= $this->render_comment($row, $table , $action, $id, $width, $subject, $rate);
 				}
 			}
-			$ns->tablerender(LAN_99, $text);
 
-			if(ADMIN==TRUE && getperms("B")){
-				echo "<div style='text-align:right'><a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".LAN_314."</a></div><br />";
+			if ($return == FALSE){
+			 	$ns->tablerender(LAN_99, $text);
+            } else {
+                $ret['comment'] = $text;
+			}
+			if (ADMIN==TRUE && getperms("B")){
+				$modcomment =  "<div style='text-align:right'><a href='".e_ADMIN_ABS."modcomment.php?$table.$id'>".LAN_314."</a></div><br />";
 			}
 		}
-		if($lock != "1"){
-			$this->form_comment($action, $table, $id, $subject, "", "", $rate);
-		}else{
-			echo "<br /><div style='text-align:center'><b>".COMLAN_8."</b></div>";
+		if ($lock != "1"){
+		   	$comment =	$this->form_comment($action, $table, $id, $subject, "", TRUE, $rate);
+		} else {
+			$comment = "<br /><div style='text-align:center'><b>".COMLAN_8."</b></div>";
 		}
-		return;
+		if (!$return){
+          	echo $modcomment.$comment;
+		}
+		$ret['comment'] .= $modcomment;
+		$ret['comment_form'] = $comment;
+		$ret['caption'] = LAN_99;
+
+		return (!$return) ? "" : $ret;
 	}
 }
 
