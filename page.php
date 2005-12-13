@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-12-12 11:16:18 $
+|     $Revision: 1.16 $
+|     $Date: 2005-12-13 09:15:15 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -34,7 +34,7 @@ else
 	define("e_PAGETITLE", $tmp['title']);
 	require_once(HEADERF);
 	$ns -> tablerender($tmp['title'], $tmp['text']);
-	if($tmp['comment_caption']){
+	if($tmp['comment']){
 		$ns -> tablerender($tmp['comment_caption'], $tmp['comment']);
     }
 }
