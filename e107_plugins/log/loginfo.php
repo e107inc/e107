@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/loginfo.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-12-13 12:26:55 $
+|     $Revision: 1.9 $
+|     $Date: 2005-12-13 13:44:42 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -57,8 +57,9 @@ if($ref && !strstr($ref, $_SERVER['HTTP_HOST'])) {
 }
 
 /* is the referal from Google? If so get search string ... */
-if(preg_match("#q=(.*?)($|&)#is", $ref, $match)) {
+if(preg_match("#q=(.*?)($|&)#is", $oldref, $match)) {
 	$schstr = trim($match[1]);
+	$schstr = htmlentities(urldecode($schstr));
 	if(array_key_exists($schstr, $searchInfo) && $schstr) {
 		$searchInfo[$schstr] ++;
 	} else {
