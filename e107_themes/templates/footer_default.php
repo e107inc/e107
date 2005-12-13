@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-12-05 03:05:36 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.30 $
+|     $Date: 2005-12-13 07:30:25 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 global $eTraffic, $error_handler, $db_time, $sql, $sql2, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER, $e107;
@@ -126,17 +126,10 @@ if (abs($_serverTime - $lastSet) > 120) {
        </script>\n";
 }
 
-if(defined("COMPRESS_OUTPUT") && COMPRESS_OUTPUT == true) {
-	ob_end_flush(); // flush primary output -- buffer was opened in class2.php
-}
-
 global $start_ob_level;
-if (ob_get_level() != $start_ob_level ) {
+if (ob_get_level() != $start_ob_level) {
 	$oblev = ob_get_level();
 	$obdbg = "<div style='text-align:center' class='smalltext'>Software defect detected; ob_*() level {$oblev} at end.</div>";
-	if ($oblev > $start_ob_level) {
-		while (@ob_end_flush()); // kill all output buffering
-	}
 	echo $obdbg;
 }
 
@@ -164,4 +157,8 @@ if(isset($footer_js) && is_array($footer_js))
 	}
 }
 echo "</body></html>";
+
+$page = ob_get_clean();
+echo $page;
+
 ?>
