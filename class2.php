@@ -11,12 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.233 $
-|     $Date: 2005-12-11 14:56:37 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.234 $
+|     $Date: 2005-12-13 07:30:25 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
+
+while (@ob_end_clean());  // destroy all ouput buffering
+ob_start();               // start our own.
+
 $register_globals = true;
 if(function_exists('ini_get')) {
 	$register_globals = ini_get('register_globals');

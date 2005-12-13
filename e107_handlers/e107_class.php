@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-10-12 20:59:08 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.46 $
+|     $Date: 2005-12-13 07:30:25 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -40,9 +40,6 @@ class e107{
 	 * @return e107
 	 */
 	function e107($e107_paths, $e107_root_path){
-		if(defined("COMPRESS_OUTPUT") && COMPRESS_OUTPUT === true) {
-			ob_start ("ob_gzhandler");
-		}
 		$this->e107_dirs = $e107_paths;
 		$this->set_paths();
 		$this->file_path = $this->fix_windows_paths($e107_root_path)."/";
@@ -206,6 +203,6 @@ class e107{
 			return ('Unknown');
 		}
 	}
-	
+
 }
 ?>
