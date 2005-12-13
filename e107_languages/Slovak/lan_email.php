@@ -4,8 +4,8 @@
 |     e107 website system - Slovak Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Slovak/lan_email.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-15 20:53:50 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-13 15:03:34 $
 |     $Author: manro $
 |     Encoding: UTF-8
 +----------------------------------------------------------------------------+
@@ -32,7 +32,7 @@ define("LAN_email_2", "IP adresa odosielateľa:");
 define("LAN_email_3", "Odoslané z ");
 define("LAN_email_4", "Odoslať email");
 define("LAN_email_5", "Email pre priateľov");
-define("LAN_email_6", "Myslím, že by ťa zaujímala táto novinka z");
+define("LAN_email_6", "Myslím, že by ťa zaujímala tento článok zo servera");
 
 
 ?>

@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,21 +11,21 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Slovak/lan_newforumposts_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-15 20:58:14 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-13 15:03:35 $
 |     $Author: manro $
 +----------------------------------------------------------------------------+
 */
 	
-define("NFP_1", "All latest posts are outside of your user class, unable to display.");
-define("NFP_2", "No posts yet");
-define("NFP_3", "New Forum Posts menu configuration saved");
-define("NFP_4", "Caption");
-define("NFP_5", "Number of posts to display?");
-define("NFP_6", "Number of characters to display?");
-define("NFP_7", "Postfix for too long posts?");
-define("NFP_8", "Show original topics in menu?");
-define("NFP_9", "Update menu Settings");
-define("NFP_10", "New Forum Posts Menu Configuration");
+define("NFP_1", "Všetky posledné príspevky sú zaslané mimo vašej triedy užívateľov, zobrazenie nie je možné.");
+define("NFP_2", "Žiadne príspevky");
+define("NFP_3", "Konfigurácia menu nového príspevku fóra");
+define("NFP_4", "Nadpis");
+define("NFP_5", "Počet zobrazených príspevkov");
+define("NFP_6", "Počet zobrazených znakov");
+define("NFP_7", "Nahrádzací reťazec (postfix) pre dlhé príspevky");
+define("NFP_8", "Zobraziť tému vlákna v menu");
+define("NFP_9", "Aktualizovať nastavenia menu");
+define("NFP_10", "Konfigurácia menu nového príspevku fóra");
 	
 ?>

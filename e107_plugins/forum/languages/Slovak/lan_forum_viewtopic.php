@@ -4,85 +4,85 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Slovak/lan_forum_viewtopic.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-15 20:58:14 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-13 15:03:35 $
 |     $Author: manro $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Forum");
+define("PAGE_NAME", "Fórum");
 	
-define("LAN_01", "Forums");
-define("LAN_02", "Go to page");
-define("LAN_03", "Go");
-define("LAN_04", "Previous");
-define("LAN_05", "Next");
-define("LAN_06", "Joined");
-define("LAN_07", "Location");
-define("LAN_08", "Website");
-define("LAN_09", "Visits to site since registration");
-define("LAN_10", "Back to top");
-define("LAN_65", "Jump");
-define("LAN_66", "This thread is now closed");
-define("LAN_67", "posts");
-define("LAN_194", "Guest");
-define("LAN_195", "Registered Member");
-define("LAN_321", "Moderators: ");
-define("LAN_389", "Previous thread");
-define("LAN_390", "Next thread");
-define("LAN_391", "Track Thread");
-define("LAN_392", "Cancel Thread Tracking");
-define("LAN_393", "Quick Reply");
-define("LAN_394", "Preview");
-define("LAN_395", "Reply To Thread");
-define("LAN_396", "Website");
+define("LAN_01", "Fóra");
+define("LAN_02", "Choď na stránku");
+define("LAN_03", "Choď");
+define("LAN_04", "Späť");
+define("LAN_05", "Ďalej");
+define("LAN_06", "Poslané:");
+define("LAN_07", "Bydlisko");
+define("LAN_08", "Webstránka");
+define("LAN_09", "Počet návštev od registrácie");
+define("LAN_10", "Späť navrch");
+define("LAN_65", "Skok");
+define("LAN_66", "Toto vlákno je teraz zamknuté");
+define("LAN_67", "príspevkov");
+define("LAN_194", "Hosť");
+define("LAN_195", "Registrovaný člen");
+define("LAN_321", "Moderátori: ");
+define("LAN_389", "Predchádzajúce vlákno");
+define("LAN_390", "Ďalšie vlákno");
+define("LAN_391", "Sledovať vlákno");
+define("LAN_392", "Zrušiť sledovanie vlákna");
+define("LAN_393", "Rýchla odpoveď");
+define("LAN_394", "Ukázať");
+define("LAN_395", "Odpovedať na fórum");
+define("LAN_396", "Webstránka");
 define("LAN_397", "Email");
-define("LAN_398", "Profile");
-define("LAN_399", "Private Message");
-define("LAN_400", "Edit");
-define("LAN_401", "Quote");
+define("LAN_398", "Profil");
+define("LAN_399", "Osobná správa");
+define("LAN_400", "Editovať");
+define("LAN_401", "Citovať");
 	
-define("LAN_402", "Author");
-define("LAN_403", "Post");
-define("LAN_404", "No previous thread");
-define("LAN_405", "No next thread");
+define("LAN_402", "Autor");
+define("LAN_403", "Príspevok");
+define("LAN_404", "Žiadne predchádzajúce vlákno");
+define("LAN_405", "Žiadne ďalšie vlákno");
 	
-define("LAN_406", "Moderator: Edit");
-define("LAN_435", "Moderator: Delete");
-define("LAN_408", "Moderator: Move");
-define("LAN_409", "Are you sure you want to delete this thread and any replies?");
-define("LAN_410", "Are you sure you want to delete this reply?");
-define("LAN_411", "posted by ");
+define("LAN_406", "Moderátor: Editovať");
+define("LAN_435", "Moderátor: Zmazať");
+define("LAN_408", "Moderátor: Presunúť");
+define("LAN_409", "Ste si istý, že chcete zmazať toto vlákno a všetky odpovede?");
+define("LAN_410", "Ste si istý, že chcete zmazať túto odpoveď?");
+define("LAN_411", "zaslal: ");
 	
 //v.616
-define("LAN_412", "Title");
+define("LAN_412", "Titulok");
 define("LAN_413", "Report");
-define("LAN_414", "Report this thread to a moderator");
-define("LAN_415", "Thread title");
-define("LAN_416", "Enter your report");
-define("LAN_417", "The admin will be made aware of this thread. You may post a message explaining what you found to be objectionable.");
-define("LAN_418", "<b>Do not</b> use this form to contact the admin for any other reason.");
-define("LAN_419", "Send Report");
-define("LAN_420", "Click to view post");
-define("LAN_421", "Forum thread report from");
-define("LAN_422", "This post has been reported from site ");
-define("LAN_423", "Message could not be sent. ");
-define("LAN_424", "Post has been reported to moderator.<br />Thank You.");
-define("LAN_425", "Message from: ");
-define("LAN_426", "Reporting post in topic: ");
-define("LAN_427", "Error sending mail");
-define("LAN_428", "Post has been reported");
-define("LAN_429", "Click here to return to forum");
-define("LAN_430", "poll");
-define("FORLAN_26", "Reply deleted");
-define("FORLAN_10", "Begin New Thread");
-define("LAN_29", "Edited");
+define("LAN_414", "Reportovať toto vlákno moderátorovi");
+define("LAN_415", "Titulok vlákna");
+define("LAN_416", "Zadajte váš report");
+define("LAN_417", "Administrátor bude upovedomený na toto vlákno. Môžete zaslať správu obsahujúcu podľa vás dôležité fakty.");
+define("LAN_418", "<b>Nepoužívajte</b> tieto správy na kontaktovanie administrátora z iného dôvodu.");
+define("LAN_419", "Odoslať report");
+define("LAN_420", "Kliknite pre zobrazenie vašeho príspevku");
+define("LAN_421", "Report vlákna fóra od");
+define("LAN_422", "Táto správa je reportovaná zo stránky ");
+define("LAN_423", "Správa nemohla byť odoslaná. ");
+define("LAN_424", "Správa bola reportovaná moderátorovi.<br />Ďakujeme Vám.");
+define("LAN_425", "Správa od: ");
+define("LAN_426", "Reportovaná správa vo vlákne: ");
+define("LAN_427", "Chyba pri odosielaní emailu");
+define("LAN_428", "Správa bola reportovaná");
+define("LAN_429", "Kliknite sem pre návrat na fórum");
+define("LAN_430", "anketa");
+define("FORLAN_26", "Odpoveď zmazaná");
+define("FORLAN_10", "Založiť nové vlákno");
+define("LAN_29", "Editovaný");
 
-define("LAN_431", "Syndicate this thread: rss 0.92");
-define("LAN_432", "Syndicate this thread: rss 2.0");
-define("LAN_433", "Syndicate this thread: RDF");
+define("LAN_431", "Odoberajte toto vlákno: rss 0.92");
+define("LAN_432", "Odoberajte toto vlákno: rss 2.0");
+define("LAN_433", "Odoberajte toto vlákno: RDF");
 	
-define("FORLAN_101", "Email Thread");
-define("FORLAN_102", "Print View");
-define('FORLAN_103', '[user deleted]');
+define("FORLAN_101", "Emailovať vlákno");
+define("FORLAN_102", "Tlačiť zobrazenie");
+define('FORLAN_103', '[užívateľ zmazaný]');
 
 ?>

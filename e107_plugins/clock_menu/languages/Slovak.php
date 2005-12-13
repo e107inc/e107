@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,33 +11,33 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/clock_menu/languages/Slovak.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-15 20:58:14 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-13 15:03:34 $
 |     $Author: manro $
 +----------------------------------------------------------------------------+
 */
 	
-define('CLOCK_MENU_L1', 'Clock menu configuration saved');
-define('CLOCK_MENU_L2', 'Caption');
-define('CLOCK_MENU_L3', 'Update Menu Settings');
-define('CLOCK_MENU_L4', 'Clock Menu Config');
-define('CLOCK_MENU_L5', 'Monday,');
-define('CLOCK_MENU_L6', 'Tuesday,');
-define('CLOCK_MENU_L7', 'Wednesday,');
-define('CLOCK_MENU_L8', 'Thursday,');
-define('CLOCK_MENU_L9', 'Friday,');
-define('CLOCK_MENU_L10', 'Saturday,');
-define('CLOCK_MENU_L11', 'Sunday,');
-define('CLOCK_MENU_L12', 'January');
-define('CLOCK_MENU_L13', 'February');
-define('CLOCK_MENU_L14', 'March');
-define('CLOCK_MENU_L15', 'April');
-define('CLOCK_MENU_L16', 'May');
-define('CLOCK_MENU_L17', 'June');
-define('CLOCK_MENU_L18', 'July');
+define('CLOCK_MENU_L1', 'Nastavenia menu hodín uložené');
+define('CLOCK_MENU_L2', 'Nadpis');
+define('CLOCK_MENU_L3', 'Aktualizovať nastavenia menu');
+define('CLOCK_MENU_L4', 'Konfigurácia menu hodín');
+define('CLOCK_MENU_L5', 'Pondelok,');
+define('CLOCK_MENU_L6', 'Utorok,');
+define('CLOCK_MENU_L7', 'Streda,');
+define('CLOCK_MENU_L8', 'Štvrtok,');
+define('CLOCK_MENU_L9', 'Piatok,');
+define('CLOCK_MENU_L10', 'Sobota,');
+define('CLOCK_MENU_L11', 'Nedeľa,');
+define('CLOCK_MENU_L12', 'Január');
+define('CLOCK_MENU_L13', 'Február');
+define('CLOCK_MENU_L14', 'Marec');
+define('CLOCK_MENU_L15', 'Apríl');
+define('CLOCK_MENU_L16', 'Máj');
+define('CLOCK_MENU_L17', 'Jún');
+define('CLOCK_MENU_L18', 'Júl');
 define('CLOCK_MENU_L19', 'August');
 define('CLOCK_MENU_L20', 'September');
-define('CLOCK_MENU_L21', 'October');
+define('CLOCK_MENU_L21', 'Október');
 define('CLOCK_MENU_L22', 'November');
 define('CLOCK_MENU_L23', 'December');
 define('CLOCK_MENU_L24', '');

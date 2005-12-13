@@ -4,8 +4,8 @@
 |     e107 website system - Slovak Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Slovak/admin/lan_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-15 20:53:50 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-13 15:03:34 $
 |     $Author: manro $
 |     Encoding: UTF-8
 +----------------------------------------------------------------------------+
@@ -26,8 +26,8 @@ define("ADLAN_12", "Fóra");
 define("ADLAN_13", "Správa fór");
 define("ADLAN_14", "Články");
 define("ADLAN_15", "+/e/- článkov");
-define("ADLAN_16", "Stránky obsahu");
-define("ADLAN_17", "+/e/- stránok obsahu");
+define("ADLAN_16", "Obsah stránok");
+define("ADLAN_17", "+/e/- obsahu stránok");
 define("ADLAN_18", "Recenzie");
 define("ADLAN_19", "+/e/- recenzií");
 define("ADLAN_22", "Kategórie odkazov");
@@ -138,7 +138,7 @@ define("ADLAN_125", "Neskontrolované odpovede vo fóre");
 
 define("ADLAN_126", "Hlavné nastavenia");
 define("ADLAN_127", "Užívatelia");
-define("ADLAN_128", "Stránky obsahu");
+define("ADLAN_128", "Obsah stránok");
 define("ADLAN_129", "Komunikácia");
 define("ADLAN_130", "Manažér súborov");
 define("ADLAN_131", "Ostatné nástroje");
@@ -172,7 +172,7 @@ define("ADLAN_150", "Oznamovanie udalostí emailom");
 
 define('ADLAN_CL_1', 'Nastavenia');
 define('ADLAN_CL_2', 'Užívatelia');
-define('ADLAN_CL_3', 'Stránky obsahu');
+define('ADLAN_CL_3', 'Obsah stránok');
 define('ADLAN_CL_4', 'Komentáre');
 define('ADLAN_CL_5', 'Súbory');
 define('ADLAN_CL_6', 'Nástroje');

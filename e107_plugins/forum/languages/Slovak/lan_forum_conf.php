@@ -4,34 +4,34 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Slovak/lan_forum_conf.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-15 20:58:14 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-13 15:03:35 $
 |     $Author: manro $
 +----------------------------------------------------------------------------+
 */
-define("FORLAN_5", "Poll deleted.");
-define("FORLAN_6", "Thread deleted");
-define("FORLAN_7", "replies deleted");
-define("FORLAN_8", "Delete cancelled.");
-define("FORLAN_9", "Thread moved.");
-define("FORLAN_10", "Move cancelled.");
-define("FORLAN_11", "Back To Forums");
-define("FORLAN_12", "Forum Configuration");
-define("FORLAN_13", "Are you absolutely certain you want to delete this poll?<br />Once deleted it <b><u>cannot</u></b> be retreived.");
-define("FORLAN_14", "Cancel");
-define("FORLAN_15", "Confirm Delete Forum Post");
-define("FORLAN_16", "Confirm Delete Poll");
-define("FORLAN_17", "posted by");
-define("FORLAN_18", "Are you absolutely certain you want to delete this forum");
-define("FORLAN_19", "thread and it's related posts?");
-define("FORLAN_20", "the poll will also be deleted");
-define("FORLAN_21", "Once deleted they");
-define("FORLAN_22", "post?<br />Once deleted it");
-define("FORLAN_23", "cannot</u></b> be retreived");
-define("FORLAN_24", "Move thread  to forum");
-define("FORLAN_25", "Move Thread");
-define("FORLAN_26", "Reply deleted");
+define("FORLAN_5", "Anketa zmazaná.");
+define("FORLAN_6", "Vlákno zmazané");
+define("FORLAN_7", "odpovede zmazané");
+define("FORLAN_8", "Zmazanie zrušené.");
+define("FORLAN_9", "Vlákno presunuté.");
+define("FORLAN_10", "Presunutie zrušené.");
+define("FORLAN_11", "Späť do fór");
+define("FORLAN_12", "Konfigurácia fór");
+define("FORLAN_13", "Ste si istý, že chcete zmazať túto anketu?<br />Raz zmazané už <b><u>nemôže</u></b> byť obnovené.");
+define("FORLAN_14", "Späť");
+define("FORLAN_15", "Potvrdenie zmazania príspevku fóra");
+define("FORLAN_16", "Potvrdenie zmazania ankety");
+define("FORLAN_17", "zaslal:");
+define("FORLAN_18", "Ste si istý, že chcete zmazať toto fórum");
+define("FORLAN_19", "vlákno a súvisiace príspevky?");
+define("FORLAN_20", "anketa bude taktiež zmazaná");
+define("FORLAN_21", "Raz zmazané");
+define("FORLAN_22", "príspevok?<br />Raz zmazané");
+define("FORLAN_23", "nemôže</u></b> byť obnovené");
+define("FORLAN_24", "Presunúť vlákno do fóra");
+define("FORLAN_25", "Presunúť vlákno");
+define("FORLAN_26", "Odpoveď zmazaná");
 	
-define("FORLAN_27", "moved");
+define("FORLAN_27", "presunuté");
 	
 ?>

@@ -4,112 +4,112 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Slovak/lan_forum_post.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-15 20:58:14 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-13 15:03:35 $
 |     $Author: manro $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Forum");
+define("PAGE_NAME", "Fórum");
 	
-define("LAN_01", "Forums");
-define("LAN_02", "Replying to: ");
-define("LAN_03", "New Thread");
-define("LAN_1", "Normal");
-define("LAN_2", "Sticky");
-define("LAN_3", "Announcement");
-define("LAN_4", "Post Poll");
-define("LAN_5", "Poll Question:");
-define("LAN_6", "Add another option");
-define("LAN_7", "Vote option:");
-define("LAN_8", "Allow votes from all");
-define("LAN_9", "Allow votes from members only");
-define("LAN_10", "Login");
-define("LAN_11", "Remember me");
-define("LAN_16", "Username: ");
-define("LAN_17", "Password: ");
-define("LAN_20", "Error");
-define("LAN_27", "You left required field(s) blank");
-define("LAN_28", "You didn't post anything ..");
-define("LAN_29", "Edited");
-define("LAN_45", "These forums can only be posted to by registered and logged in members, please click");
-define("LAN_60", "Start New Thread");
-define("LAN_61", "Your Name: ");
-define("LAN_62", "Subject: ");
-define("LAN_63", "Post: ");
-define("LAN_64", "Submit new thread");
-define("LAN_73", "Reply: ");
-define("LAN_74", "Reply to  thread");
-define("LAN_77", "Update Thread");
-define("LAN_78", "Update Reply");
-define("LAN_94", "Posted by");
-define("LAN_95", "Unauthorised");
-define("LAN_96", "You are not authorised to edit this forum post.");
-define("LAN_100", "Thread Topic");
-define("LAN_101", "Latest ");
-define("LAN_102", " replies");
-define("LAN_103", "Review complete thread. (Will open a new window.)");
-define("LAN_133", "Thankyou");
-define("LAN_174", "Signup");
-define("LAN_175", "Login");
-define("LAN_212", "Forgot password?");
-define("LAN_310", "Unable to accept post as that username is registered - if it is your username please login to post.");
-define("LAN_311", "Anonymous");
-define("LAN_322", "Posted: ");
-define("LAN_323", "Preview");
-define("LAN_324", "Your message has been successfully posted.");
-define("LAN_325", "Click Here to view your message");
-define("LAN_326", "Click here to return to the forum");
-define("LAN_327", "Review");
-define("LAN_380", "If you wish to be notified by email when a reply is posted to your thread please tick the box ");
-define("LAN_381", "Forum reply from ");
-define("LAN_382", "Post made: ");
-define("LAN_383", "Please click the following link to view the full thread ...");
-define("LAN_384", "Forum reply at ");
-define("LAN_385", "Post: ");
-define("LAN_386", "If you do not wish to add a poll to your thread leave the fields blank ");
-define("LAN_387", "Go");
-define("LAN_388", "Back to top");
-define("LAN_389", "Duplicate post, redirecting ...");
-define("LAN_390", "Attach file / image");
-define("LAN_391", "Options");
-define("LAN_392", "File to attach");
-define("LAN_393", "<b>Please note</b><br />Allowed filetypes:");
-define("LAN_394", "Any other filetypes uploaded will be instantly deleted.");
-define("LAN_395", "Maximum file size");
-define("LAN_396", "bytes");
-define("LAN_397", "This thread is locked.");
-define("LAN_398", "This forum is read only");
-define("LAN_399", "You are not authorized to post to this forum.");
-define("LAN_400", "post thread as");
-define("LAN_401", "Jump");
+define("LAN_01", "Fóra");
+define("LAN_02", "Odpoveď na: ");
+define("LAN_03", "Nové vlákno");
+define("LAN_1", "Normálne");
+define("LAN_2", "Prilepené");
+define("LAN_3", "Oznam");
+define("LAN_4", "Zaslať anketu");
+define("LAN_5", "Otázka ankety:");
+define("LAN_6", "Ďalšia odpoveď");
+define("LAN_7", "Nastavenie hlasovania:");
+define("LAN_8", "Povoliť hlasovanie pre všetkých");
+define("LAN_9", "Povoliť hlasovanie len pre členov");
+define("LAN_10", "Prihlásiť");
+define("LAN_11", "Zapamätať si ma");
+define("LAN_16", "Užívateľské meno: ");
+define("LAN_17", "Heslo: ");
+define("LAN_20", "Chyba");
+define("LAN_27", "Prázdne povinné polia");
+define("LAN_28", "Nemôžete odoslať hocičo ..");
+define("LAN_29", "Editovať");
+define("LAN_45", "Do tohto fóra môžu prispievať len registrovaní a prihlásení užívatelia, prosím, kliknite na");
+define("LAN_60", "Založiť nové vlákno");
+define("LAN_61", "Vaše meno: ");
+define("LAN_62", "Predmet: ");
+define("LAN_63", "Príspevok: ");
+define("LAN_64", "Uložiť nové vlákno");
+define("LAN_73", "Odpoveď: ");
+define("LAN_74", "Odpovedať na vlákno");
+define("LAN_77", "Aktualizovať vlákno");
+define("LAN_78", "Aktualizovať odpoveď");
+define("LAN_94", "Zaslal:");
+define("LAN_95", "Neautorizovaný");
+define("LAN_96", "Nieste autorizovaný pre editovanie tohto príspevku.");
+define("LAN_100", "Téma vlákna");
+define("LAN_101", "Posledné ");
+define("LAN_102", " odpovede");
+define("LAN_103", "Ukázať celé vlákno. (Otvorí sa v novom okne.)");
+define("LAN_133", "Ďakujeme Vám");
+define("LAN_174", "Registrovať");
+define("LAN_175", "Prihlásiť");
+define("LAN_212", "Zabudli ste heslo?");
+define("LAN_310", "Nie je môžené odoslať tento príspevok pod týmto registrovaným menom - ak je to vaše užívateľské meno, prosím, prihláste sa.");
+define("LAN_311", "Anonym");
+define("LAN_322", "Zaslané dňa: ");
+define("LAN_323", "Ukázať");
+define("LAN_324", "Vaša správa bola úspešne zaslaná.");
+define("LAN_325", "Kliknite sme pre zobrazenie vášho príspevku");
+define("LAN_326", "Kliknite sem pre návrat do fóra");
+define("LAN_327", "Ukázať");
+define("LAN_380", "Ak si želáte byť informovaný emailom ak niekto odpovie na vaše vlákno, označte prosím políčko ");
+define("LAN_381", "Odpoveď od ");
+define("LAN_382", "Príspevok od: ");
+define("LAN_383", "Prosím, kliknite na nasledujúci odkaz ak chcete prehliadať celé vlákno ...");
+define("LAN_384", "Odpoveď na ");
+define("LAN_385", "Príspevok: ");
+define("LAN_386", "Ak si neželáte pridať anketu do vašeho príspevku, nechajte tieto polia prázdne ");
+define("LAN_387", "Choď");
+define("LAN_388", "Späť navrch");
+define("LAN_389", "Duplicitný príspevok, presmerovanie ...");
+define("LAN_390", "Pripojiť súbor / obrázok");
+define("LAN_391", "Nastavenia");
+define("LAN_392", "Súbor do prílohy");
+define("LAN_393", "<b>Poznámka</b><br />Povolené typy súborov:");
+define("LAN_394", "Všetky iné typy súborov budú okamžite zmazané.");
+define("LAN_395", "Maximálna veľkosť súboru");
+define("LAN_396", "bytov");
+define("LAN_397", "Toto vlákno je zamknuté.");
+define("LAN_398", "Toto fórum je určené len na čítanie");
+define("LAN_399", "Nieste autorizovaný pre prispievanie do tohto fóra.");
+define("LAN_400", "zaslať vlákno ako");
+define("LAN_401", "Skok");
 	
-define("LAN_402", "poll");
-define("LAN_403", "announcement");
-define("LAN_404", "sticky");
-define("LAN_405", "Forums");
+define("LAN_402", "anketa");
+define("LAN_403", "oznam");
+define("LAN_404", "prilepené");
+define("LAN_405", "Fóra");
 define("LAN_406", "Re:");
 	
 //v.616
-define("LAN_407", "Redirect");
-define("LAN_408", "If your browser does not support meta redirection please click");
-define("LAN_409", "HERE");
-define("LAN_410", "to be redirected");
-define("LAN_411", "here");
-define("LAN_412", "to go to the registration page.");
+define("LAN_407", "Presmerovanie");
+define("LAN_408", "Ak váš prehliadač nepodoporuje meta presmerovanie, prosím, kliknite ");
+define("LAN_409", "SEM");
+define("LAN_410", "pre presmerovanie");
+define("LAN_411", "tu");
+define("LAN_412", "pre prechod na stránku registrácie.");
 	
-define("LAN_413", "Your poll has been successfully posted.");
-define("LAN_414", "Click Here to view your poll");
-define("LAN_415", "Your reply has been successfully posted.");
+define("LAN_413", "Vaša anketa bola úspešne odoslaná do fóra.");
+define("LAN_414", "Kliknite sem pre zobrazenie vašej ankety");
+define("LAN_415", "Vaša odpoveď bola úspešne odoslaná do fóra.");
 
-define("LAN_416", "Attach file");
-define("LAN_417", "Add another attachment");
+define("LAN_416", "Pripojiť súbor");
+define("LAN_417", "Pridať ďaľšiu prílohu");
 
-define("POLL_506", "Allow multiple choices?");
-define("POLL_507", "yes");
-define("POLL_508", "no");
+define("POLL_506", "Povoliť viacnásobné odpovede?");
+define("POLL_507", "áno");
+define("POLL_508", "nie");
 
-define("LAN_FORUM_1", "Uploads disabled: ".e_FILE."public directory is not writable");
-define("LAN_FORUM_2", "Duplicate post");
+define("LAN_FORUM_1", "Uploady vypnuté: ".e_FILE."verejný adresár nemá práva zápisu");
+define("LAN_FORUM_2", "Duplicitný príspevok");
 
 
 ?>

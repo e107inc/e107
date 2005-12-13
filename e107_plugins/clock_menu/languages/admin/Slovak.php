@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,25 +11,25 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/clock_menu/languages/admin/Slovak.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-15 20:58:14 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-13 15:03:34 $
 |     $Author: manro $
 +----------------------------------------------------------------------------+
 */
 	
-define("CLOCK_AD_L1", "Clock menu configuration saved");
-define("CLOCK_AD_L2", "Caption");
-define("CLOCK_AD_L3", "Update Menu Settings");
-define("CLOCK_AD_L4", "Clock Menu Config");
+define("CLOCK_AD_L1", "Nastavenia menu hodín uložneé");
+define("CLOCK_AD_L2", "Nadpis menu");
+define("CLOCK_AD_L3", "Aktualizovať nastavenia");
+define("CLOCK_AD_L4", "Konfigurácia menu hodín");
 define("CLOCK_AD_L5", "AM/PM");
-define("CLOCK_AD_L6", "If checked, you will display time with US format (0-12 AM/PM format). Unchecked you will display a 'military' format 0-24 format");
-define("CLOCK_AD_L7", "Date Prefix");
-define("CLOCK_AD_L8", "If your language requires a short word before the date (Example 'le' for french or 'den' for german...), use this field. If not required, let empty.");
-define("CLOCK_AD_L9", "Suffix 1");
-define("CLOCK_AD_L10", "Suffix 2");
-define("CLOCK_AD_L11", "Suffix 3");
-define("CLOCK_AD_L12", "Suffix 4 and more");
-define("CLOCK_AD_L13", "If your language requires to display a suffix just after numbers for date, fill these fields with suffix only (Example: 'st' for 1, 'nd' for 2, 'rd' for 3 and 'th' for 4 and more for english users). If not required let empty.");
+define("CLOCK_AD_L6", "Ak je označené, čas sa bude zobrazovať v US formáte (0-12 AM/PM formát). Odznačte ak chcete používať fotmát hodín 0-24");
+define("CLOCK_AD_L7", "Predpona času");
+define("CLOCK_AD_L8", "Ak váš jazyk vyžaduje pred dátumom isté ktátke slovo (Napríklad 'le' vo francúžtine alebo 'den' v nemčine...), použite túto voľbu. Ak voľba nie je potrebné, ponechajte polia prázdne.");
+define("CLOCK_AD_L9", "Predpona 1");
+define("CLOCK_AD_L10", "Predpona 2");
+define("CLOCK_AD_L11", "Predpona 3");
+define("CLOCK_AD_L12", "Predpona 4 a viac");
+define("CLOCK_AD_L13", "Ak váš jazyk vyžaduje pred číslo času vložiť istú predložku, vyplňte tieto polia práve touto predložkou (Napríklad v angličtine: 'st' pre 1, 'nd' pre 2, 'rd' pre 3 and 'th' pre 4 a ďalej). Ak táto voľba nie je potrebná, ponehajte polia prázdne.");
 define("CLOCK_AD_L14", "");
 define("CLOCK_AD_L15", "");
 define("CLOCK_AD_L16", "");

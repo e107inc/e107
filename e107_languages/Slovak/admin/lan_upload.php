@@ -4,8 +4,8 @@
 |     e107 website system - Slovak Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Slovak/admin/lan_upload.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-15 20:53:50 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-13 15:03:34 $
 |     $Author: manro $
 |     Encoding: UTF-8
 +----------------------------------------------------------------------------+
@@ -41,7 +41,7 @@ define("UPLLAN_26", "Verejné uploady nie sú možné, pokiaľ je táto položka
 // define("UPLLAN_28", "No");
 
 define("UPLLAN_29", "Typ uloženia");
-define("UPLLAN_30", "Zvoľte ako budú uploadované súbory ukladané, buď ako normálne súbory na server alebo ako binárne súbory do databázy<br /><b>Poznámka</b> binárna metóda je bhodná len pre súbory do 500kb");
+define("UPLLAN_30", "Zvoľte ako budú uploadované súbory ukladané, buď ako normálne súbory na server alebo ako binárne súbory do databázy<br /><b>Poznámka</b> binárna metóda je vhodná len pre súbory do 500kb");
 define("UPLLAN_31", "Normálny súbor");
 define("UPLLAN_32", "Binárny zápis v databáze");
 define("UPLLAN_33", "Maximálna veľkosť súboru");

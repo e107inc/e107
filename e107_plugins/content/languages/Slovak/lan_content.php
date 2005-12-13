@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Slovak/lan_content.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-15 20:58:14 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-13 15:03:35 $
 |     $Author: manro $
 +----------------------------------------------------------------------------+
 */
@@ -92,9 +92,9 @@ define("CONTENT_LAN_5", "Autor");
 define("CONTENT_LAN_6", "všetky kategórie");
 define("CONTENT_LAN_7", "všetci autori");
 define("CONTENT_LAN_8", "najlepšie hodnotené");
-define("CONTENT_LAN_9", "v");
-define("CONTENT_LAN_10", "-");
-define("CONTENT_LAN_11", "od");
+define("CONTENT_LAN_9", "v kategórií:");
+define("CONTENT_LAN_10", "dátum:");
+define("CONTENT_LAN_11", "autor:");
 define("CONTENT_LAN_12", "články s najlepším skóre");
 define("CONTENT_LAN_13", "");
 define("CONTENT_LAN_14", "");
@@ -105,9 +105,9 @@ define("CONTENT_LAN_18", "hľadať v článkoch");
 define("CONTENT_LAN_19", "hľadať");
 define("CONTENT_LAN_20", "výsledky hľadania v článkoch");
 define("CONTENT_LAN_21", "žiadne články.");
-define("CONTENT_LAN_22", "typy článkov");
+define("CONTENT_LAN_22", "kategórie článkov");
 define("CONTENT_LAN_23", "Zoznam posledných článkov");
-define("CONTENT_LAN_24", "breadcrumb");
+define("CONTENT_LAN_24", "Cesta k článku");
 define("CONTENT_LAN_25", "Kategórie článkov");
 define("CONTENT_LAN_26", "Kategória článkov");
 define("CONTENT_LAN_27", "podkategórie");
@@ -127,8 +127,8 @@ define("CONTENT_LAN_40", "detaily autora");
 define("CONTENT_LAN_41", "príloha");
 define("CONTENT_LAN_42", "súbor");
 define("CONTENT_LAN_43", "súbory");
-define("CONTENT_LAN_44", "stiahnutí:");
-define("CONTENT_LAN_45", "skóre autora:");
+define("CONTENT_LAN_44", "prečítaní:");
+define("CONTENT_LAN_45", "autorovo hodnotenie:");
 define("CONTENT_LAN_46", "index článkov");
 define("CONTENT_LAN_47", "autor");
 define("CONTENT_LAN_48", "články");
@@ -141,9 +141,9 @@ define("CONTENT_LAN_54", "články");
 define("CONTENT_LAN_55", "posledný článok -");
 define("CONTENT_LAN_56", "ukázať prehľad v");
 define("CONTENT_LAN_57", "komentáre:");
-define("CONTENT_LAN_58", "domov");
-define("CONTENT_LAN_59", "článok");
-define("CONTENT_LAN_60", "posledný");
+define("CONTENT_LAN_58", "hlavná");
+define("CONTENT_LAN_59", "články");
+define("CONTENT_LAN_60", "posledné");
 define("CONTENT_LAN_61", "ukázať posledné články");
 define("CONTENT_LAN_62", "ukázať všetky kategórie");
 define("CONTENT_LAN_63", "ukázať všetkých autorov");

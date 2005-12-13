@@ -4,8 +4,8 @@
 |     e107 website system - Slovak Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Slovak/lan_user.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-15 20:53:50 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-13 15:03:34 $
 |     $Author: manro $
 |     Encoding: UTF-8
 +----------------------------------------------------------------------------+
@@ -38,7 +38,7 @@ define("LAN_400", "Toto nieje platný užívateľ.");
 define("LAN_401", "žiadne informácie");
 define("LAN_402", "Profil užívateľa");
 define("LAN_403", "Štatistiky");
-define("LAN_404", "Posledná návšteva pred");
+define("LAN_404", "Posledná návšteva");
 define("LAN_405", "dňami");
 define("LAN_406", "Hodnotenie");
 define("LAN_407", "žiadne");
@@ -60,7 +60,7 @@ define("LAN_422", "Vykonať");
 define("LAN_423", "Kliknite sem pre zobrazenie užívateľových komentárov");
 define("LAN_424", "Kliknite sem pre zobrazenie užívateľových príspevkov fóra");
 define("LAN_425", "Poslať osobnú správu");
-define("LAN_426", "pred");
+define("LAN_426", "od poslednej návštevy");
 
 define("USERLAN_1", "Hodnotenie");
 

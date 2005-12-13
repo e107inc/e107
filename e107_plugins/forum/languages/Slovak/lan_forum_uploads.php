@@ -4,22 +4,22 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Slovak/lan_forum_uploads.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-15 20:58:14 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-13 15:03:35 $
 |     $Author: manro $
 +----------------------------------------------------------------------------+
 */
-define("PAGE_NAME", "Forum Uploads");
+define("PAGE_NAME", "Uploady fóra");
 
-define('FRMUP_1','Uploaded Files in forum');
-define('FRMUP_2','File deleted');
-define('FRMUP_3','Error: Unable to delete file');
-define('FRMUP_4','File deletion');
-define('FRMUP_5','Filename');
-define('FRMUP_6','Result');
-define('FRMUP_7','Found in thread');
-define('FRMUP_8','NOT FOUND');
-define('FRMUP_9','No uploaded files found');
-define('FRMUP_10','Delete');
+define('FRMUP_1','Uploadované súbory vo fóre');
+define('FRMUP_2','Súbor zmazaný');
+define('FRMUP_3','Chyba: Nie je možné zmazať súbor');
+define('FRMUP_4','Mazanie súboru');
+define('FRMUP_5','Meno súboru');
+define('FRMUP_6','Výsledok');
+define('FRMUP_7','Nájdené vo vlákne');
+define('FRMUP_8','NENÁJDENÉ');
+define('FRMUP_9','Nenájdené žiadne uploadované súbory');
+define('FRMUP_10','Zmazať');
 	
 ?>

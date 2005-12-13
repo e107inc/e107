@@ -4,111 +4,111 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Slovak/lan_forum.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-15 20:58:14 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-13 15:03:35 $
 |     $Author: manro $
 +----------------------------------------------------------------------------+
 */
-define("e_PAGETITLE", "Forum");
+define("e_PAGETITLE", "Fórum");
 	
-define("LAN_30", "Welcome");
-define("LAN_31", "There are no new posts ");
-define("LAN_32", "There is 1 new post ");
-define("LAN_33", "There are");
-define("LAN_34", "new posts");
-define("LAN_35", "since your last visit.");
-define("LAN_36", "You last visited at ");
-define("LAN_37", "It is now ");
-define("LAN_38", ", all times are ");
-define("LAN_41", "Newest member: ");
-define("LAN_42", "Registered members: ");
-define("LAN_44", "These forums can be used by non-registered users, but please be aware that your IP Address will be logged if you make a post.<br />To access the full features of this forum  you will need to");
-define("LAN_45", "These forums can only be posted to by registered and logged in members, please click");
-define("LAN_46", "Forum");
-define("LAN_47", "Threads");
-define("LAN_48", "Replies");
-define("LAN_49", "Last Post");
-define("LAN_51", "No forums yet, please check back soon.");
-define("LAN_52", "No forums in this section yet, please check back soon.");
-define("LAN_79", "New posts");
-define("LAN_80", " No new posts");
-define("LAN_81", "Closed thread");
-define("LAN_100", "articles");
-define("LAN_180", "Search");
-define("LAN_191", "Information");
-define("LAN_192", "The users of this forum have made a total of ");
-define("LAN_196", "You have read ");
-define("LAN_197", " of these posts.");
-define("LAN_198", " All new posts have been read.");
-define("LAN_199", "Mark all posts as read");
-define("LAN_204", "You <b>can</b> start new threads");
-define("LAN_205", "You <b>cannot</b> start new threads");
-define("LAN_206", "You <b>can</b> post replies");
-define("LAN_207", "You <b>cannot</b> post replies");
-define("LAN_208", "You <b>can</b> edit your posts");
-define("LAN_209", "You <b>cannot</b> edit your posts");
-define("LAN_392", "stop tracking this thread");
-define("LAN_393", "List tracked threads");
-define("LAN_394", "Closed forum");
-define("LAN_397", "Tracked threads");
-define("LAN_398", "Closed");
-define("LAN_399", "Restricted");
-define("LAN_400", "This forum can only be browsed by registered members");
-define("LAN_401", "Members only");
+define("LAN_30", "Vitajte");
+define("LAN_31", "Nie sú žiadne nové príspevky ");
+define("LAN_32", "Je tu jeden nový príspevok ");
+define("LAN_33", "Je tu");
+define("LAN_34", "nových príspevkov");
+define("LAN_35", "od vašej poslednej návštevy.");
+define("LAN_36", "Vaša posledná návšteva bola v ");
+define("LAN_37", "Teraz je ");
+define("LAN_38", ", všetky časy sú ");
+define("LAN_41", "Najnovší člen: ");
+define("LAN_42", "Registrovaný členovia: ");
+define("LAN_44", "Na tieto fóra môžu prispievať aj neregistrovaný hostia, ale vaša IP adresa bude zaznamenaná vo fóre.<br />Pre prístup k všetkým funkciám fóra sa prosím");
+define("LAN_45", "Na tieto fóra môžu prispievať len registrovaný užívatelia, prosím kliknite");
+define("LAN_46", "Fórum");
+define("LAN_47", "Vlákna");
+define("LAN_48", "Odpovede");
+define("LAN_49", "Posledný príspevok");
+define("LAN_51", "Žiadne fóra, skúste prosím neskôr.");
+define("LAN_52", "Žiadne fóra v tejto sekcií, skúste prosím neskôr.");
+define("LAN_79", "Nové príspevky");
+define("LAN_80", " Žiadne nové príspevky");
+define("LAN_81", "Zamknuté vlákno");
+define("LAN_100", "články");
+define("LAN_180", "Hľadať");
+define("LAN_191", "Informácie");
+define("LAN_192", "Užívatelia tohto fóra odoslali celkovo ");
+define("LAN_196", "Prečítali ste ");
+define("LAN_197", " príspevkov.");
+define("LAN_198", " Všetky nové príspevky sú prečítané.");
+define("LAN_199", "Označiť všetky príspevky ako prečítané");
+define("LAN_204", "<b>Môžete</b> založiť nové vlákna");
+define("LAN_205", "<b>Nemôžete</b> založiť nové vlákna");
+define("LAN_206", "<b>Môžete</b> posielať odpovede");
+define("LAN_207", "<b>Nemôžete</b> posielať odpovede");
+define("LAN_208", "<b>Môžete</b> editovať vaše príspevky");
+define("LAN_209", "<b>Nemôžete</b> editovať vaše príspevky");
+define("LAN_392", "zrušiť sledovanie tohto vlákna");
+define("LAN_393", "Zoznam sledovaných vlákien");
+define("LAN_394", "Zamknuté fórum");
+define("LAN_397", "Sledované vlákna");
+define("LAN_398", "Zatvorené");
+define("LAN_399", "Obmedzené");
+define("LAN_400", "Toto fórum môžu prehliadať len registrovaný užívatelia");
+define("LAN_401", "Len pre členov");
 	
-define("LAN_402", "This forum is read only");
+define("LAN_402", "Toto fórum je prístupné len na čítanie");
 	
-define("LAN_403", "No posts yet");
-define("LAN_404", "posts");
-define("LAN_405", "Read Only");
+define("LAN_403", "Žiadne príspevky");
+define("LAN_404", "príspevkov");
+define("LAN_405", "Len na čítanie");
 	
-define("LAN_406", "This forum is restricted to administrators only");
-define("LAN_407", "This forum is restricted to members only");
-define("LAN_408", "This is a read-only forum");
-define("LAN_409", "This is a class restricted forum");
-define("LAN_410", "Welcome guest");
+define("LAN_406", "Toto fórum je prístupné len pre administrátorov");
+define("LAN_407", "Toto fórum je prístupné len pre členov");
+define("LAN_408", "Toto fórum je prístupné len na čítanie");
+define("LAN_409", "Toto fórum je obmedzené triedov užívateľa");
+define("LAN_410", "Vitajte hosť");
 	
-define("LAN_411", "thread");
-define("LAN_412", "reply");
-define("LAN_413", "threads");
-define("LAN_414", "replies");
-define("LAN_415", "user is browsing the forums at the moment");
-define("LAN_416", "users are browsing the forums at the moment");
+define("LAN_411", "vlákno");
+define("LAN_412", "odpoveď");
+define("LAN_413", "vlákien");
+define("LAN_414", "odpovedí");
+define("LAN_415", "užívateľ v tomto momente prehliada fórum");
+define("LAN_416", "užívateľov v tomto momente prehliada fórum");
 	
-define("LAN_417", "member");
-define("LAN_418", "guest");
-define("LAN_419", "members");
-define("LAN_420", "guests");
+define("LAN_417", "člen");
+define("LAN_418", "hosť");
+define("LAN_419", "členov");
+define("LAN_420", "hostí");
 	
-define("LAN_421", "Show new posts");
-define("LAN_422", "New posts since your last visit");
-define("LAN_423", "Posted by");
-define("LAN_424", "New threads");
+define("LAN_421", "Ukáž nové príspevky");
+define("LAN_422", "Nové príspevky od vašej poslednej návštevy");
+define("LAN_423", "Zaslal");
+define("LAN_424", "Nové vlákna");
 define("LAN_425", "Re:");
 	
 //v.616
-define("LAN_426", "Who's Online: ");
-define("LAN_427", "View detailed list.");
+define("LAN_426", "Kto je online: ");
+define("LAN_427", "Ukázať detailný zoznam.");
 define("LAN_428", "Re:");
-define("LAN_429", "Top Posters");
-define("LAN_430", "Most Active Threads");
-define("LAN_431", "My Posts");
-define("LAN_432", "My Settings");
-define("LAN_433", "Forum Rules");
-define("LAN_434", "Return to forums");
-define("LAN_435", "My Profile");
-define("LAN_436", " (Will open a new window.)");
+define("LAN_429", "Top prispievači");
+define("LAN_430", "Najviac aktívne vlákna");
+define("LAN_431", "Moje príspevky");
+define("LAN_432", "Moje nastavenia");
+define("LAN_433", "Pravidlá fóra");
+define("LAN_434", "Návrat do fóra");
+define("LAN_435", "Môj profil");
+define("LAN_436", " (Otvorí sa v novom okne.)");
 	
-define("LAN_437", "register");
-define("LAN_438", "and login.");
-define("LAN_439", "here");
-define("LAN_440", "to go to the registration page.");
+define("LAN_437", "zaregistrujte");
+define("LAN_438", "a prihláste.");
+define("LAN_439", "tu");
+define("LAN_440", "pre prechod na stránku registrácie.");
 
-define("LAN_441", "View forum statistics");
+define("LAN_441", "Štatistiky fóra");
 	
-define('FORLAN_441', 'No rules defined.');
-define('FORLAN_442', 'My Uploads');
-define('FORLAN_443', '[user deleted]');
-define('FORLAN_444', 'sub-forums');
+define('FORLAN_441', 'Žiadne pravidla nedefinované.');
+define('FORLAN_442', 'Moje uploady');
+define('FORLAN_443', '[užívateľ zmazaný]');
+define('FORLAN_444', 'pod-fóra');
 
 ?>

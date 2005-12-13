@@ -4,8 +4,8 @@
 |     e107 website system - Slovak Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Slovak/lan_usersettings.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-15 20:53:50 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-13 15:03:34 $
 |     $Author: manro $
 |     Encoding: UTF-8
 +----------------------------------------------------------------------------+
@@ -89,7 +89,7 @@ define("LAN_USET_3", "Váš avatar je príliš vysoký");
 define("LAN_USET_4", "Maximálna povolená výška je");
 
 // v.616
-define("LAN_CUSTOMTITLE", "Vlastný titulok");
+define("LAN_CUSTOMTITLE", "Titul");
 define("LAN_ICQNUMBER", "ICQ číslo musí obsahovať iba čísla");
 
 //v.617

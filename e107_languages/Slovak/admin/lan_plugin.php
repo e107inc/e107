@@ -4,8 +4,8 @@
 |     e107 website system - Slovak Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Slovak/admin/lan_plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-07-15 20:53:50 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-13 15:03:34 $
 |     $Author: manro $
 |     Encoding: UTF-8
 +----------------------------------------------------------------------------+
@@ -33,8 +33,8 @@ define("EPL_ADLAN_19", "Tabuľky databázy úspešne vytvorené.");
 define("EPL_ADLAN_20", "Nastavenia konfigurácie úspešne uložené.");
 
 define("EPL_ADLAN_21", "Plugin je vporiadku nainštalovaný.");
-define("EPL_ADLAN_22", "Inštalovaný");
-define("EPL_ADLAN_23", "Neinštalovaný");
+define("EPL_ADLAN_22", "Inštalované");
+define("EPL_ADLAN_23", "Neinštalované");
 define("EPL_ADLAN_24", "Dostupný upgrade");
 define("EPL_ADLAN_25", "Nie je potrebná inštalácia");
 define("EPL_ADLAN_26", "... kliknite sem pre pokračovanie v inštalácií");
