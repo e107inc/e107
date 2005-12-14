@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.49 $
+|     $Date: 2005-12-14 23:26:41 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.48 $
-* @author $Author: sweetas $
+* @version $Revision: 1.49 $
+* @author $Author: streaky $
 */
 class db {
 
@@ -280,7 +280,7 @@ class db {
 		{
 			$query = 'INSERT INTO '.MPREFIX."{$table} VALUES ({$arg})";
 		}
-			
+
 		if ($result = $this->mySQLresult = $this->db_Query($query, NULL, 'db_Insert', $debug, $log_type, $log_remark )) {
 			$tmp = mysql_insert_id();
 			return $tmp;
@@ -650,7 +650,15 @@ class db {
 
 	}
 
-
+	/**
+	 * A pointer to mysql_real_escape_string() - see http://www.php.net/mysql_real_escape_string
+	 *
+	 * @param string $data
+	 * @return string
+	 */
+	function escape($data) {
+		return mysql_real_escape_string($data);
+	}
 }
 
 ?>
