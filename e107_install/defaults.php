@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 // This file allows changes to be made - including the
 // default folder path names
 

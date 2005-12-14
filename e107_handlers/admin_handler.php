@@ -1,4 +1,6 @@
 <?php
+if (!defined('e107_INIT')) { exit; }
+
 // Multi indice array sort by sweetland@whoadammit.com
 if (!function_exists('asortbyindex')) {
 	function asortbyindex($sortarray, $index) {

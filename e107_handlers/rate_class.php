@@ -11,11 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-08-23 02:45:17 $
+|     $Revision: 1.16 $
+|     $Date: 2005-12-14 17:37:34 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
+
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_rate.php");
 @include_once(e_LANGUAGEDIR."English/lan_rate.php");
 class rater {

@@ -11,11 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/ren_help.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-06-16 09:41:59 $
-|     $Author: lisa_ $
+|     $Revision: 1.30 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
+
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_ren_help.php");
 @include_once(e_LANGUAGEDIR."English/lan_ren_help.php");
 function ren_help($mode = 1, $addtextfunc = "addtext", $helpfunc = "help") {

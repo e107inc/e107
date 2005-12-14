@@ -1,5 +1,4 @@
 <?php
-
 /**
 *  File: calendar.php | (c) dynarch.com 2004
 *  Distributed as part of "The Coolest DHTML Calendar"

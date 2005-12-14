@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.234 $
-|     $Date: 2005-12-13 07:30:25 $
-|     $Author: streaky $
+|     $Revision: 1.235 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -51,7 +51,7 @@ $eTimingStart = microtime();
 $start_ob_level = ob_get_level();
 
 define("E107_BOOTSTRAP_LOADED", 1);
-
+define("e107_INIT", TRUE);
 
 
 // setup some php options

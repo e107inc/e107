@@ -12,14 +12,14 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.40 $
-|   $Date: 2005-12-05 09:46:06 $
+|   $Revision: 1.41 $
+|   $Date: 2005-12-14 17:37:34 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
-if (!defined('e_HTTP')) {
-	exit;
-}
+
+if (!defined('e107_INIT')) { exit; }
+
 require_once(e_ADMIN.'ad_links.php');
 echo defined('STANDARDS_MODE') ? "" :
  "<?xml version='1.0' encoding='".CHARSET."' ?>";

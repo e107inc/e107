@@ -12,17 +12,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/cache_handler.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-08-19 07:48:41 $
+|     $Revision: 1.27 $
+|     $Date: 2005-12-14 17:37:34 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 /**
 * Class to cache data as files, improving site speed and throughput.
 *
 * @package     e107
-* @version     $Revision: 1.26 $
+* @version     $Revision: 1.27 $
 * @author      $Author: sweetas $
 */
 class ecache {

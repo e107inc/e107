@@ -1,5 +1,4 @@
 <?php
-
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -12,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-12-13 07:30:25 $
-|     $Author: streaky $
+|     $Revision: 1.47 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 /**
  * Core e107 class

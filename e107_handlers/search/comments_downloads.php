@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 $comments_title = 'Downloads';
 $comments_type_id = '2';
 $comments_return['download'] = "d.download_id, d.download_name";

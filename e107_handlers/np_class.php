@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/np_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-07-16 10:47:37 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_np.php");
 @include_once(e_LANGUAGEDIR."English/lan_np.php");

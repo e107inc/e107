@@ -12,11 +12,13 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.17 $
-|   $Date: 2005-11-11 07:52:36 $
+|   $Revision: 1.18 $
+|   $Date: 2005-12-14 17:37:34 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_upload_handler.php");
 @include_once(e_LANGUAGEDIR."English/lan_upload_handler.php");

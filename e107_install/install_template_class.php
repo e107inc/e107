@@ -12,11 +12,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_install/install_template_class.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-16 16:55:07 $
-|     $Author: streaky $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-14 17:37:43 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 // A streaky original work of genius, used correctly probably the fastest and lightest PHP Template engine there is.. KISS
 

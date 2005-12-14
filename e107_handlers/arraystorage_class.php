@@ -12,11 +12,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/arraystorage_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-07-16 10:27:35 $
-|     $Author: streaky $
+|     $Revision: 1.12 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 /**
 * Allows Storage of arrays without use of serialize functions

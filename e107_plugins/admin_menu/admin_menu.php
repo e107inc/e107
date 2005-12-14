@@ -11,13 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/admin_menu/admin_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-04-10 02:10:28 $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-14 17:37:43 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
-if(!defined("e_HANDLER")){ exit; }
+if (!defined('e107_INIT')) { exit; }
+
 if (ADMIN == TRUE) {
 	@include(e_LANGUAGEDIR.e_LANGUAGE."/admin/lan_admin.php");
 	@include(e_LANGUAGEDIR."English/admin/lan_admin.php");

@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_user.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-09-19 18:27:42 $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-14 17:37:34 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 // advanced 
 $advanced_where = "";

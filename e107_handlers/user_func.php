@@ -11,29 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_func.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-09 01:57:21 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.5 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-	
-/*
-+ ----------------------------------------------------------------------------+
-|     e107 website system
-|
-|     ©Steve Dunstan 2001-2002
-|     http://e107.org
-|     jalist@e107.org
-|
-|     Released under the terms and conditions of the
-|     GNU General Public License (http://gnu.org).
-|
-|     $Source: /cvs_backup/e107_0.7/e107_handlers/user_func.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-09 01:57:21 $
-|     $Author: mcfly_e107 $
-+----------------------------------------------------------------------------+
-*/
+
+if (!defined('e107_INIT')) { exit; }
+
 function e107_userGetuserclass($user_id)
 {
 	global $cachevar;

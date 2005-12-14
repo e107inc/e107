@@ -12,11 +12,13 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.66 $
-| $Date: 2005-09-07 14:45:08 $
-| $Author: stevedunstan $
+| $Revision: 1.67 $
+| $Date: 2005-12-14 17:37:34 $
+| $Author: sweetas $
 +---------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 class news {
 	

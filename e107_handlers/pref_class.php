@@ -13,6 +13,8 @@
 +---------------------------------------------------------------+
 */
 
+if (!defined('e107_INIT')) { exit; }
+
 //
 // Simple functionality:
 // Grab all prefs once, in one DB query. Reuse them throughout the session.

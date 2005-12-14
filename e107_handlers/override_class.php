@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/override_class.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-04-12 23:13:01 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
+if (!defined('e107_INIT')) { exit; }
+
 class override {
 	var $functions = array();
 	var $includes = array();

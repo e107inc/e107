@@ -12,11 +12,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.77 $
-|     $Date: 2005-12-09 18:45:36 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.78 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +---------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 @include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_sitelinks.php");
 @include_once(e_LANGUAGEDIR."English/lan_sitelinks.php");

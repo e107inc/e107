@@ -12,11 +12,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2005-12-11 22:42:06 $
-|     $Author: streaky $
+|     $Revision: 1.27 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 if(is_readable(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php")){
 	@include_once(e_LANGUAGEDIR.e_LANGUAGE."/lan_login.php");
