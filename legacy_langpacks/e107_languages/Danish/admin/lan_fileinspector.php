@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_fileinspector.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 09:29:27 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-14 16:16:10 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -20,9 +20,17 @@ define("FC_LAN_7", "Ikke kerne filer");
 define("FC_LAN_8", "Kontroller integriteten af kerne filer");
 define("FC_LAN_9", "Til");
 define("FC_LAN_10", "Fra");
-define("FC_LAN_11", "Scan nu");
+define("FC_LAN_11", "Scan Nu");
 define("FC_LAN_12", "Ingen");
 define("FC_LAN_13", "Manglende Kerne Filer");
+define("FC_LAN_14", "Vis resultater som");
+define("FC_LAN_15", "Mappe Tr&aelig;");
+define("FC_LAN_16", "Liste");
+define("FC_LAN_17", "Streng Match");
+define("FC_LAN_18", "Almindelig udtryk");
+define("FC_LAN_19", "Vis linje tal");
+define("FC_LAN_20", "Vis matchene linjer");
+define("FC_LAN_21", "Gamle Kerne Filer");
 
 define("FR_LAN_1", "Scanner");
 define("FR_LAN_2", "Scan resultater");
@@ -46,5 +54,12 @@ define("FR_LAN_19", "filer fejlede");
 define("FR_LAN_20", "Alle filer godkendt");
 define("FR_LAN_21", "ingen");
 define("FR_LAN_22", "Manglende kerne filer");
+define("FR_LAN_23", "Ingen resultater fundet.");
+define("FR_LAN_24", "Gamle kerne filer");
+define("FR_LAN_25", "Integritet uberegnelig");
+
+define("FR_LAN_26", "Advarsel! Kendt Sikkerhedsbrist Fundet!");
+define("FR_LAN_27", "Der er filer p&aring; dig server der kendt som kan misbruges og skal fjernes med det samme.");
+define("FR_LAN_28", "Kendte usikre filer");
 
 ?>

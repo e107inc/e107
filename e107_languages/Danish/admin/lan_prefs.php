@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/lan_prefs.php,v $
-|        $Revision: 1.6 $
-|        $Date: 2005-11-21 15:11:11 $
+|        $Revision: 1.7 $
+|        $Date: 2005-12-14 16:16:10 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -198,6 +198,7 @@ define("PRFLAN_144", "Flood & Fejlede Logins");
 define("PRFLAN_145", "Links i nyt vindue");
 define("PRFLAN_146", "Marker her for at få alle vinduer til at åbne i et nyt vindue (<i>dette vil gælde hele sitet</i>). ");
 
-
+define("PRFLAN_147", "Udvikler Mode");
+define("PRFLAN_148", "Aktiver udvikler funktioner. Dette er kun for udviklere. Benyt ikke på live sites af sikkerheds grunde.");
 
 ?>

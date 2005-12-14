@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/lan_news.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:29:27 $
+|        $Revision: 1.2 $
+|        $Date: 2005-12-14 16:16:10 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -42,4 +42,5 @@ define("LAN_NEWS_20", "Nyheder opdateret i databasen for flg. sprog: ");
 define("LAN_NEWS_21", "Nyhed opdateret.");
 define("LAN_NEWS_22", "G&aring; til side: ");
 define("LAN_NEWS_23", "Nyhedskategorier");
+define("LAN_462", "Ingen nyheder for den angivne m&aring;ned");
 ?>

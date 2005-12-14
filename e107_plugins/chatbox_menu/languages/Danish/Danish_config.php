@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Danish/Danish_config.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-03 18:12:35 $
+|     $Revision: 1.3 $
+|     $Date: 2005-12-14 16:16:10 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -48,5 +48,9 @@ define("CHBLAN_32", "Bestyrer brugergruppe");
 define("CHBLAN_33", "Bruger tælling rekalkuleret");
 define("CHBLAN_34", "Rekalkuler bruger post tælling");
 define("CHBLAN_35", "Rekalkuler");
+
+define("CHBLAN_36", "Chatboks Fremvisnings egenskaber");
+define("CHBLAN_37", "Normal chatboks");
+define("CHBLAN_38", "Brug javascript kode til at opdatere poster dynamisk (AJAX)");
 
 ?>
