@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-11-10 18:35:57 $
+|     $Revision: 1.33 $
+|     $Date: 2005-12-14 14:51:01 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -437,6 +437,9 @@ class siteStats {
 			if(strstr($key, "FreeBSD")) {	$image = "freebsd.png"; }
 			if(strstr($key, "NetBSD")) {	$image = "netbsd.png"; }
 			if(strstr($key, "Unspecified")) {	$image = "unspecified.png"; }
+			if(strstr($key, "OpenBSD")) {	$image = "openbsd.png"; }
+			if(strstr($key, "Unix")) {	$image = "unix.png"; }
+			if(strstr($key, "Spiders")) {	$image = "spiders.png"; }
 
 			$percentage = round(($info/$total) * 100, 2);
 			$text .= "<tr>
