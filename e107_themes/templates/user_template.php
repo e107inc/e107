@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/user_template.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-09-09 18:51:14 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.11 $
+|     $Date: 2005-12-14 19:28:53 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 global $user_shortcodes, $pref;
 //Set this to TRUE if you would like any extended user field that is empty to NOT be shown on the profile page

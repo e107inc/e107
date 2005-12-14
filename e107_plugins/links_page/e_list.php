@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 	if(!$links_install = $sql -> db_Select("plugin", "*", "plugin_path = 'links_page' AND plugin_installflag = '1' ")){
 		return;
 	}

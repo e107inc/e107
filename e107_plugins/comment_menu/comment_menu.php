@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/comment_menu/comment_menu.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-11-14 20:05:44 $
+|     $Revision: 1.16 $
+|     $Date: 2005-12-14 19:28:43 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 global $tp, $e107;
 $gen = new convert;

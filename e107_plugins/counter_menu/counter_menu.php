@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/counter_menu/counter_menu.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-08-26 10:53:28 $
+|     $Revision: 1.14 $
+|     $Date: 2005-12-14 19:28:44 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-if(!defined("e_PLUGIN")){ exit; }
+if (!defined('e107_INIT')) { exit; }
+
 $text = "";
 if ($pref['statActivate'])
 {

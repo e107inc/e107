@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 @include_once(e_PLUGIN.'newsfeed/languages/'.e_LANGUAGE.'_frontpage.php');
 @include_once(e_PLUGIN.'newsfeed/languages/English_frontpage.php');
 

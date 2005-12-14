@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-07-01 09:31:08 $
-|     $Author: lisa_ $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-14 19:28:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
-global $e107;
+if (!defined('e107_INIT')) { exit; }
 
-if(!defined("e_HANDLER")){ exit; }
+global $e107;
 
 if(defined("POLLRENDERED"))
 {

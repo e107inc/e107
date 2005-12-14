@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/comment_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-23 16:51:44 $
+|     $Revision: 1.5 $
+|     $Date: 2005-12-14 19:28:53 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 global $sc_style, $comment_shortcodes;
 global $pref, $comrow, $row2, $tp, $NEWIMAGE, $USERNAME, $RATING;

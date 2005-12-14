@@ -2,6 +2,8 @@
 
 
 
+if (!defined('e107_INIT')) { exit; }
+
 $themename = "newsroom";
 $themeversion = "1.0";
 $themeauthor = "CaMer0n";

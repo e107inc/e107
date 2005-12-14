@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewforum_template.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-15 13:51:54 $
+|     $Revision: 1.10 $
+|     $Date: 2005-12-14 19:28:44 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
+
 if (!$FORUM_VIEW_START)
 {
 $FORUM_VIEW_START = "

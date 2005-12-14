@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/e_linkgen.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-14 02:40:17 $
+|     $Revision: 1.3 $
+|     $Date: 2005-12-14 19:28:44 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 // Usage: sublink_type[x]['title'].
 //  x should be the same as the plugin folder.

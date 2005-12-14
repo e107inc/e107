@@ -11,15 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_menu/online_menu.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-07-09 13:51:35 $
-|     $Author: streaky $
+|     $Revision: 1.13 $
+|     $Date: 2005-12-14 19:28:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
-if(!defined("e_PLUGIN")){
-	exit;
-}
+if (!defined('e107_INIT')) { exit; }
 
 $caption = (file_exists(THEME."images/online_menu.png") ? "<img src='".THEME."images/online_menu.png' alt='' /> ".ONLINE_L4 : ONLINE_L4);
 

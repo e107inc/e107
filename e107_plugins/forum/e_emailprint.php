@@ -1,4 +1,6 @@
 <?php
+if (!defined('e107_INIT')) { exit; }
+
 function print_item($thread_id)
 {
 	global $tp;

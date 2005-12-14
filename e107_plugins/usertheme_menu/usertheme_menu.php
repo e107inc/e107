@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/usertheme_menu/usertheme_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-04-06 21:48:16 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-12-14 19:28:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-if(!defined("e_HANDLER")){ exit; }
+
+if (!defined('e107_INIT')) { exit; }
+
 if (USER == TRUE) {
 	 
 	$handle = opendir(e_THEME);

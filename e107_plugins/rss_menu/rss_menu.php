@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss_menu.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-07-09 13:56:34 $
-|     $Author: streaky $
+|     $Revision: 1.12 $
+|     $Date: 2005-12-14 19:28:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-if(!defined("e_PLUGIN")){ exit; }
+if (!defined('e107_INIT')) { exit; }
+
 global $FILES_DIRECTORY,$pref;
 $path = e_PLUGIN."rss_menu/";
 

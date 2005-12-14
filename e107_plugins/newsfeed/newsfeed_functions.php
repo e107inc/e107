@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_functions.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-11-19 08:58:20 $
+|     $Revision: 1.11 $
+|     $Date: 2005-12-14 19:28:44 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 if(!function_exists("checkUpdate")) {
 	function checkUpdate($query = "newsfeed_active=2 OR newsfeed_active=3") {

@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/lastseen/lastseen_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-10-22 01:45:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-14 19:28:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 if (file_exists(e_PLUGIN."lastseen/languages/".e_LANGUAGE.".php"))
 {

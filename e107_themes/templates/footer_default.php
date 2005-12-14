@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-12-13 08:26:59 $
-|     $Author: streaky $
+|     $Revision: 1.32 $
+|     $Date: 2005-12-14 19:28:53 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
+
 global $eTraffic, $error_handler, $db_time, $sql, $sql2, $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $CUSTOMFOOTER, $FOOTER, $e107;
 
 if(!is_object($sql)){

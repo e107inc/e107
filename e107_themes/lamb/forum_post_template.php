@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/forum_post_template.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-24 13:48:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2005-12-14 19:28:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 // the user box and subject box are not always displayed, therefore we need to define them /in case/ they are, if not they'll be ignored.
 

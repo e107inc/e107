@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/linkwords/plugin.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-03-16 03:38:49 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2005-12-14 19:28:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 @include_once(e_PLUGIN."linkwords/languages/".e_LANGUAGE.".php");
 @include_once(e_PLUGIN."linkwords/languages/English.php");

@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 $NEWFORUMPOSTSTYLE_HEADER = "
 <!-- newforumposts -->\n<ul>\n";
 

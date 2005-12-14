@@ -11,7 +11,8 @@
 |	GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
-if(!defined("e_THEME")){ exit; }
+if (!defined('e107_INIT')) { exit; }
+
 // [multilanguage]
 @include_once(e_THEME."khatru/languages/".e_LANGUAGE.".php");
 @include_once(e_THEME."khatru/languages/English.php");

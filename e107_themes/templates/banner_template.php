@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 // ##### LOGIN TABLE -------------------------------------------------------------------------------
 if(!$BANNER_LOGIN_TABLE){
 		$BANNER_LOGIN_TABLE = "

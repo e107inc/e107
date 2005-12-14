@@ -11,15 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/log_update.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-11-10 20:35:17 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-14 19:28:44 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
-if (!defined('e_HTTP')){
-	exit;
-}
+if (!defined('e107_INIT')) { exit; }
 
 set_time_limit(300);
 

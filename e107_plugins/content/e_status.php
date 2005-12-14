@@ -1,4 +1,6 @@
 <?php
+if (!defined('e107_INIT')) { exit; }
+
 $sql2 = new db;
 $total = $sql -> db_Count("pcontent", "(*)", "WHERE LEFT(content_parent,1) != '0' AND content_refer != 'sa'");
 if($total == 0){

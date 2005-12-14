@@ -13,6 +13,8 @@
 +----------------------------------------------------------------------------+
 */
 
+if (!defined('e107_INIT')) { exit; }
+
 $FORUMPOLLPOSTED =
 "<table style='width:95%' class='fborder'>
 <tr>

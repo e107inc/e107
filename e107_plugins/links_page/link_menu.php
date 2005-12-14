@@ -1,4 +1,6 @@
 <?php
+if (!defined('e107_INIT')) { exit; }
+
 unset($text);
 require_once(e_PLUGIN.'links_page/link_class.php');
 $lc = new linkclass();

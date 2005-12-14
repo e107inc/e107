@@ -11,11 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update_check.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-21 16:15:28 $
+|     $Revision: 1.6 $
+|     $Date: 2005-12-14 19:28:43 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
+
 $dbupdatep['content_07'] =  LAN_UPDATE_8." .617 content ".LAN_UPDATE_9." .7 content";
 function update_content_07($type='') 
 {

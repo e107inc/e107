@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_func.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-08-31 16:45:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-14 19:28:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
+
 function pm_getInfo($which = "inbox")
 {
 	static $pm_info;

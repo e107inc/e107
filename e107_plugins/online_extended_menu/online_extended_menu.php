@@ -11,14 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/online_extended_menu/online_extended_menu.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-10-05 22:44:37 $
+|     $Revision: 1.13 $
+|     $Date: 2005-12-14 19:28:52 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-if(!defined("e_PLUGIN")){
-	exit;
-}
+if (!defined('e107_INIT')) { exit; }
 
 if(!defined("e_TRACKING_DISABLED") && (isset($pref['track_online']) && $pref['track_online'])) {
 	$text = ONLINE_EL1.GUESTS_ONLINE.", ";

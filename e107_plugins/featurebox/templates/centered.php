@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/featurebox/templates/centered.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-04-01 11:03:59 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-14 19:28:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 $FB_TEMPLATE = "
 <div class='defaulttext' style='text-align: center;'><b>$fb_title</b>

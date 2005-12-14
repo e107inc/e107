@@ -11,11 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_shortcodes.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-12-07 15:12:37 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2005-12-14 19:28:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
 include_once(e_HANDLER.'shortcode_handler.php');
 include_once(e_PLUGIN.'pm/pm_func.php');
 $pm_shortcodes = $tp -> e_sc -> parse_scbatch(__FILE__);

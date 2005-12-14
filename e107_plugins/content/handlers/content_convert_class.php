@@ -12,11 +12,13 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.13 $
-|		$Date: 2005-10-31 20:14:20 $
-|		$Author: lisa_ $
+|		$Revision: 1.14 $
+|		$Date: 2005-12-14 19:28:43 $
+|		$Author: sweetas $
 +---------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 $plugindir		= e_PLUGIN."content/";
 $plugintable	= "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)

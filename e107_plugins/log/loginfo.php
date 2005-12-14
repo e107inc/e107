@@ -12,11 +12,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/loginfo.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-12-13 13:44:42 $
-|     $Author: streaky $
+|     $Revision: 1.10 $
+|     $Date: 2005-12-14 19:28:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('log_INIT')) { exit; }
 
 $logIfile = "logs/logi_{$date}.php";
 require_once($logIfile);

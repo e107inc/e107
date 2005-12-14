@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/newsletter_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-25 17:23:34 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-14 19:28:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 if(!$sql -> db_Select("newsletter", "*", "newsletter_parent='0' "))
 {

@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 if (!isset($SEARCH_TOP_TABLE)) {
 	$SEARCH_TOP_TABLE = "<div style='text-align: center'>
 	<form id='searchform' name='searchform' method='get' action='".e_SELF."'>

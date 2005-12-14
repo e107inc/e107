@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/plugin.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-11-03 06:30:12 $
+|     $Revision: 1.12 $
+|     $Date: 2005-12-14 19:28:44 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
+if (!defined('e107_INIT')) { exit; }
+
 @include_once(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_conf.php');
 @include_once(e_PLUGIN.'forum/languages/English/lan_forum_conf.php');
 	

@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/download_template.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-11-24 11:20:09 $
+|     $Revision: 1.11 $
+|     $Date: 2005-12-14 19:28:53 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
+
 /* set style of download image and thumbnail */
 define("DL_IMAGESTYLE","border:0px");
 

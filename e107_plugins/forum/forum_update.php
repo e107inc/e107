@@ -11,15 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_update.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-06-01 03:16:32 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.13 $
+|     $Date: 2005-12-14 19:28:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-if(!defined('e_HTTP'))
-{
-	exit;
-}
+if (!defined('e107_INIT')) { exit; }
+
 require_once(e_PLUGIN.'forum/forum_class.php');
 global $ns;
 $forum = new e107forum;

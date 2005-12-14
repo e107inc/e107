@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 // TIME SWITCH BUTTONS ------------------------------------------------------------
 $sc_style['PREV_MONTH']['pre'] = "<span class='defaulttext'>";
 $sc_style['PREV_MONTH']['post'] = "</span>";

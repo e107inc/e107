@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 $comments_title = 'Poll';
 $comments_type_id = 4;
 $comments_return['poll'] = "po.poll_id, po.poll_title";

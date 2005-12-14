@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/links_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2004-09-21 19:12:45 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-14 19:28:53 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
+
 // ##### MAIN TABLE -------------------------------------------------------------------------------
 if(!$LINK_MAIN_TABLE_START){
                 $LINK_MAIN_TABLE_START = "

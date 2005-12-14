@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/forum_template.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-11-18 19:01:27 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.9 $
+|     $Date: 2005-12-14 19:28:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 $sc_style['ANON_IP']['pre'] = "<br /><span class='smalltext'>";
 $sc_style['ANON_IP']['post'] = "</span>";

@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 	$LIST_CAPTION = $arr[0];
 	$LIST_DISPLAYSTYLE = ($arr[2] ? "" : "none");
 

@@ -1,4 +1,6 @@
 <?php
+if (!defined('e107_INIT')) { exit; }
+
 function pm_set_default_prefs()
 {
 	$ret = array(

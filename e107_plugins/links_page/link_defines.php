@@ -11,11 +11,13 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_defines.php,v $
-|    $Revision: 1.1 $
-|    $Date: 2005-07-01 08:22:10 $
-|    $Author: lisa_ $
+|    $Revision: 1.2 $
+|    $Date: 2005-12-14 19:28:44 $
+|    $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 $imagedir = e_IMAGE."/admin_images/";
 if (!defined("IMAGE_NEW")){ define("IMAGE_NEW", (file_exists(THEME."generic/new.png") ? THEME."generic/new.png" : e_IMAGE."generic/".IMODE."/new.png")); }

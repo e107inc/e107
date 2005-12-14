@@ -11,15 +11,16 @@
 |	GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/leaf/theme.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-11-14 02:40:17 $
+|     $Revision: 1.13 $
+|     $Date: 2005-12-14 19:28:52 $
 |     $Author: sweetas $
 +---------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
+
 // [multilanguage]
 include_lan(e_THEME."leaf/languages/".e_LANGUAGE.".php");
-
-if(!defined("e_THEME")){ exit; }
 
 // [theme]
 $themename = "Leaf";

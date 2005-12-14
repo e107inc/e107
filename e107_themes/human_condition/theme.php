@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/human_condition/theme.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-07-09 14:02:26 $
-|     $Author: streaky $
+|     $Revision: 1.12 $
+|     $Date: 2005-12-14 19:28:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-if(!defined("e_THEME")){ exit; }
+
+if (!defined('e107_INIT')) { exit; }
 
 // [multilanguage]
 @include_once(e_THEME."human_condition/languages/".e_LANGUAGE.".php");

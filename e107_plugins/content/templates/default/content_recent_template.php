@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/templates/default/content_recent_template.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-07-11 07:47:22 $
-|     $Author: lisa_ $
+|     $Revision: 1.19 $
+|     $Date: 2005-12-14 19:28:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 // ##### CONTENT RECENT LIST --------------------------------------------------
 

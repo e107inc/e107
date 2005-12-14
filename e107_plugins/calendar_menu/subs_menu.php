@@ -11,11 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/subs_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-01 04:37:02 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-14 19:28:43 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
+
 // This menu can be called from a cron job - see readme.rtf
 $ec_dir = e_PLUGIN . "calendar_menu/";
 $caldb = new DB;
