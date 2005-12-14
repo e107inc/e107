@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/tree_menu/tree_menu.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-10-19 19:33:36 $
+|     $Revision: 1.22 $
+|     $Date: 2005-12-14 18:09:30 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -126,7 +126,7 @@ function setlink($link_name, $link_url, $link_open, $link_description) {
 		default:
 		$link_append = '';
 	}
-	if (!strstr($link_url, "http:") && !strstr($link_url, "void")) {
+	if (!strstr($link_url, "http:") && !strstr($link_url, "void") && strpos($link_url, "mailto:") !== 0) {
 		$link_url = e_BASE.$link_url;
 	}
 	if ($link_open == 4) {
