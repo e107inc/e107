@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/powered_by_menu/powered_by_menu.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-11-24 16:27:19 $
-|     $Author: streaky $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-14 19:28:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
+
 $text = "
 <div style='text-align: center'>
 <div class='spacer'>

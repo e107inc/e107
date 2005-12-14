@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/e_notify.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-06-26 20:16:56 $
-|     $Author: lisa_ $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-14 19:28:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 if (file_exists(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php")) {
 	include_once(e_PLUGIN."links_page/languages/".e_LANGUAGE.".php");

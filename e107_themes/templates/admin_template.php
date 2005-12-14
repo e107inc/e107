@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/admin_template.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-08-22 16:53:23 $
+|     $Revision: 1.14 $
+|     $Date: 2005-12-14 19:28:53 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 $ADMIN_HEADER = "<div style='text-align:center'>
 {ADMIN_LOGO}

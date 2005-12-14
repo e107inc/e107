@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/e_list.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-05 18:28:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-12-14 19:28:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
+
 	if(!$forum_install = $sql -> db_Select("plugin", "*", "plugin_path = 'forum' AND plugin_installflag = '1' "))
 	{
 		return;

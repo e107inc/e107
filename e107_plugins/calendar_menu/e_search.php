@@ -1,4 +1,6 @@
 <?php
+if (!defined('e107_INIT')) { exit; }
+
 if (file_exists(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE."_search.php")) {
 	include_once(e_PLUGIN."calendar_menu/languages/".e_LANGUAGE."_search.php");
 } else {

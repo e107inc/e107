@@ -1,4 +1,6 @@
 <?php
+if (!defined('e107_INIT')) { exit; }
+
 $plugintable = "pcontent";
 $reported_content = $sql -> db_Count($plugintable, '(*)', "WHERE content_refer='sa' ");
 $text .= "

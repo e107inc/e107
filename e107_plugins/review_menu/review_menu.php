@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/review_menu/review_menu.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-07-09 14:40:02 $
-|     $Author: streaky $
+|     $Revision: 1.10 $
+|     $Date: 2005-12-14 19:28:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
+
 if ($cache = $e107cache->retrieve("review_menu")) {
 	echo $cache;
 } else {

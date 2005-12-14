@@ -11,11 +11,13 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.6 $
-|		$Date: 2005-07-20 15:06:56 $
-|		$Author: lisa_ $
+|		$Revision: 1.7 $
+|		$Date: 2005-12-14 19:28:44 $
+|		$Author: sweetas $
 +---------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
+
 global $sql, $rc, $list_pref, $sc_style, $tp, $list_shortcodes, $defaultarray;
 
 global $LIST_PAGE_NEW, $LIST_PAGE_RECENT, $LIST_MENU_NEW, $LIST_MENU_RECENT, $LIST_PAGE_NEW_START, $LIST_PAGE_RECENT_START, $LIST_MENU_NEW_START, $LIST_MENU_RECENT_START, $LIST_PAGE_NEW_END, $LIST_PAGE_RECENT_END, $LIST_MENU_NEW_END, $LIST_MENU_RECENT_END;

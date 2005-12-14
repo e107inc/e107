@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-12-02 01:39:04 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.36 $
+|     $Date: 2005-12-14 19:28:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
+
 @include_once(e_PLUGIN."poll/languages/".e_LANGUAGE.".php");
 @include_once(e_PLUGIN."poll/languages/English.php");
 define("POLLCLASS", TRUE);

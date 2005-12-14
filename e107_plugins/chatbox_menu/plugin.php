@@ -11,11 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/plugin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-11-03 06:22:31 $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-14 19:28:43 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
+
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "Chatbox";
 $eplug_version = "1.0";

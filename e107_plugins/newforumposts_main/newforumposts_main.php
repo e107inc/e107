@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-10-28 23:50:51 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.20 $
+|     $Date: 2005-12-14 19:28:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-if(!defined("e_HANDLER")){ exit; }
+if (!defined('e107_INIT')) { exit; }
+
 require_once(e_HANDLER."userclass_class.php");
 $query = ($pref['nfp_posts'] ? "thread_lastpost" : "thread_datestamp");
 $lan_file = e_PLUGIN."newforumposts_main/languages/".e_LANGUAGE.".php";

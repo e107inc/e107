@@ -1,4 +1,6 @@
 <?php
+if (!defined('e107_INIT')) { exit; }
+
 $lan_file = $plugindir."languages/".e_LANGUAGE.".php";
 include_once(file_exists($lan_file) ? $lan_file : $plugindir."languages/English.php");
 

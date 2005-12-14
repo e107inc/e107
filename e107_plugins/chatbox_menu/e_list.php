@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 	if(!$chatbox_install = $sql -> db_Select("plugin", "*", "plugin_path = 'chatbox_menu' AND plugin_installflag = '1' ")){
 		return;
 	}

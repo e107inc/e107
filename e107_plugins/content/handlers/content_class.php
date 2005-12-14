@@ -12,11 +12,13 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.82 $
-|		$Date: 2005-12-11 16:51:48 $
-|		$Author: lisa_ $
+|		$Revision: 1.83 $
+|		$Date: 2005-12-14 19:28:43 $
+|		$Author: sweetas $
 +---------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 global $plugindir, $plugintable, $datequery;
 $plugindir		= e_PLUGIN."content/";

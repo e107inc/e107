@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 // ##### LOGIN HEADER TABLE -----------------------------------------------------------------------
 if(!$LOGIN_TABLE_HEADER){
 	$LOGIN_TABLE_HEADER .= "

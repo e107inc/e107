@@ -1,6 +1,6 @@
 <?php
 
-if(!e_PLUGIN){ exit; }
+if (!defined('e107_INIT')) { exit; }
 
 	$rss = explode(",",$pref['rss_feeds']);
 	$feedlist[1] = "News";

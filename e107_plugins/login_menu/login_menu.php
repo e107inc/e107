@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-12-02 07:23:06 $
-|     $Author: e107coders $
+|     $Revision: 1.39 $
+|     $Date: 2005-12-14 19:28:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-if(!defined("e_HANDLER")){ exit; }
+
+if (!defined('e107_INIT')) { exit; }
+
 global $eMenuActive, $e107;
 $ip = $e107->getip();
 

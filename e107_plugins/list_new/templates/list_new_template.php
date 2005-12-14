@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/templates/list_new_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-18 11:16:11 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-14 19:28:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
+if (!defined('e107_INIT')) { exit; }
 
 $LISTNEW_ENCLOSE = TRUE;
 $LISTNEW_HEADING = LIST_3;

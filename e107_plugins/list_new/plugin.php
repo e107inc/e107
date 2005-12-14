@@ -13,6 +13,8 @@
 +---------------------------------------------------------------+
 */
 
+if (!defined('e107_INIT')) { exit; }
+
 global $PLUGINS_DIRECTORY;
 $lan_file = e_PLUGIN."list_new/languages/".e_LANGUAGE.".php";
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."list_new/languages/English.php");

@@ -12,6 +12,8 @@
 +---------------------------------------------------------------+
 */
 
+if (!defined('e107_INIT')) { exit; }
+
 // [multilanguage]
 @include_once(e_THEME."vekna_blue/languages/".e_LANGUAGE.".php");
 @include_once(e_THEME."vekna_blue/languages/English.php");

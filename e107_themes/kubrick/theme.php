@@ -10,13 +10,15 @@
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
 |
-|   $Revision: 1.18 $
-|   $Date: 2005-10-15 02:25:02 $
-|   $Author: qnome $
+|   $Revision: 1.19 $
+|   $Date: 2005-12-14 19:28:52 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 */
-// [multilanguage]
 
+if (!defined('e107_INIT')) { exit; }
+
+// [multilanguage]
 
 @include_once(e_THEME."kubrick/languages/".e_LANGUAGE.".php");
 @include_once(e_THEME."kubrick/languages/English.php");

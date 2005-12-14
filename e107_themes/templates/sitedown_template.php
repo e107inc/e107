@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/sitedown_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-01-17 12:53:59 $
-|     $Author: lisa_ $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-14 19:28:53 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 // ##### SITEDOWN TABLE -----------------------------------------------------------------
 if(!$SITEDOWN_TABLE){

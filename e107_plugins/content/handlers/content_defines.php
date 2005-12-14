@@ -1,4 +1,6 @@
 <?php
+if (!defined('e107_INIT')) { exit; }
+
 global $plugindir;
 $plugindir = e_PLUGIN."content/";
 $imagedir = e_IMAGE."admin_images/";

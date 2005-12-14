@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/forum/forum_icons_template.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-08-27 06:46:25 $
+|     $Revision: 1.3 $
+|     $Date: 2005-12-14 19:28:52 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
+if (!defined('e107_INIT')) { exit; }
+
 @include_once(e_PLUGIN.'forum/languages/'.e_LANGUAGE.'/lan_forum_viewforum.php');
 @include_once(e_PLUGIN.'forum/languages/English/lan_forum_viewforum.php');
 

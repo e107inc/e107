@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/templates/newsfeed_template.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-21 20:28:46 $
-|     $Author: stevedunstan $
+|     $Revision: 1.5 $
+|     $Date: 2005-12-14 19:28:51 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 $NEWSFEED_LIST_START = "
 <table style='width: 100%;' class='fborder'>\n";

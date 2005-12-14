@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/plugin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-10 00:40:48 $
-|     $Author: e107coders $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-14 19:28:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
+
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = "RSS";
 $eplug_version = "1.0";

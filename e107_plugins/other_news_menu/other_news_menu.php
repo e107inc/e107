@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/other_news_menu/other_news_menu.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-04-07 21:47:00 $
+|     $Revision: 1.16 $
+|     $Date: 2005-12-14 19:28:52 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-if(!defined("e_HANDLER")){ exit; }
+if (!defined('e107_INIT')) { exit; }
+
 // require_once("othernews_parser.php");
 require_once(e_HANDLER."news_class.php");
 unset($text);

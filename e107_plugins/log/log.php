@@ -1,6 +1,4 @@
 <?php
-
-
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -13,16 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/log.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2005-12-13 13:44:42 $
-|     $Author: streaky $
+|     $Revision: 1.24 $
+|     $Date: 2005-12-14 19:28:44 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
-$colour = strip_tags($_REQUEST['color']);
-$res = strip_tags($_REQUEST['res']);
-$self = strip_tags($_REQUEST['eself']);
-$ref = addslashes(strip_tags($_REQUEST['referer']));
+define("log_INIT", TRUE);
+$colour = strip_tags((isset($_REQUEST['color']) ? $_REQUEST['color'] : ''));
+$res = strip_tags((isset($_REQUEST['res']) ? $_REQUEST['res'] : ''));
+$self = strip_tags((isset($_REQUEST['eself']) ? $_REQUEST['eself'] : ''));
+$ref = addslashes(strip_tags((isset($_REQUEST['referer']) ? $_REQUEST['referer'] : '')));
 $date = date("z.Y", time());
 
 if(strstr($ref, "admin")) {
@@ -47,6 +46,7 @@ $tagRemove = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)|(\.php)|(\.html)";
 $tagRemove2 = "(\\\)|(\s)|(\')|(\")|(eself)|(&nbsp;)";
 
 preg_match("#/(.*?)(\?|$)#si", $self, $match);
+$match[1] = isset($match[1]) ? $match[1] : '';
 $pageName = substr($match[1], (strrpos($match[1], "/")+1));
 $PN = $pageName;
 $pageName = preg_replace("/".$tagRemove."/si", "", $pageName);

@@ -1,4 +1,6 @@
 <?php
+if (!defined('e107_INIT')) { exit; }
+
 if (file_exists(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/lan_chatbox_search.php")) {
 	include_once(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/lan_chatbox_search.php");
 } else {

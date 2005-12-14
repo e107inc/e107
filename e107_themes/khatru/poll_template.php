@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 $POLL_NOTVOTED_START = "
 <div style='text-align:center'>
 <p>

@@ -1,4 +1,6 @@
 <?php
+if (!defined('e107_INIT')) { exit; }
+
 if (file_exists(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content_search.php")) {
 	include_once(e_PLUGIN."content/languages/".e_LANGUAGE."/lan_content_search.php");
 } else {

@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2005-09-13 16:20:08 $
-|     $Author: e107coders $
+|     $Revision: 1.71 $
+|     $Date: 2005-12-14 19:28:53 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 if (!function_exists("parseheader")) {
 	function parseheader($LAYOUT){

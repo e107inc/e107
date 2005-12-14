@@ -17,12 +17,14 @@
 | GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/clock_menu/clock_menu.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-06-01 06:40:08 $
-|     $Author: e107coders $
+|     $Revision: 1.16 $
+|     $Date: 2005-12-14 19:28:43 $
+|     $Author: sweetas $
 +---------------------------------------------------------------+
 */
-if(!defined("e_PLUGIN")){ exit; }
+
+if (!defined('e107_INIT')) { exit; }
+
 global $menu_pref;
 $indexArray = array('clock_dateprefix','clock_format','clock_datesuffix1','clock_datesuffix2','clock_datesuffix3','clock_datesuffix4');
 foreach($indexArray as $ind)

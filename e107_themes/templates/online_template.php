@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 // ##### ONLINE TABLE -----------------------------------------------------------------------------
 if(!$ONLINE_TABLE_START){
 		$ONLINE_TABLE_START = "

@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/khatru/forum_posted_template.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-12 19:45:09 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-14 19:28:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 $FORUMPOLLPOSTED =
 BOXOPEN.LAN_133.BOXMAIN."

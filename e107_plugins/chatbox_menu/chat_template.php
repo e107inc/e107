@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 // ##### CHAT TABLE -----------------------------------------------------------------------------
 if(!$CHAT_TABLE_START){
 		$CHAT_TABLE_START = "

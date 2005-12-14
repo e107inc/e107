@@ -12,11 +12,13 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.38 $
-|		$Date: 2005-12-11 15:51:31 $
-|		$Author: lisa_ $
+|		$Revision: 1.39 $
+|		$Date: 2005-12-14 19:28:43 $
+|		$Author: sweetas $
 +---------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 $plugindir		= e_PLUGIN."content/";
 $plugintable	= "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)

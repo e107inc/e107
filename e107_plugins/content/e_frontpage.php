@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 @include_once(e_PLUGIN.'content/languages/'.e_LANGUAGE.'/lan_content_frontpage.php');
 @include_once(e_PLUGIN.'content/languages/English/lan_content_frontpage.php');
 

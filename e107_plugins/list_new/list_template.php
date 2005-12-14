@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 global $sc_style, $list_shortcodes;
 $sc_style['LIST_DATE']['pre'] = "";
 $sc_style['LIST_DATE']['post'] = " ";

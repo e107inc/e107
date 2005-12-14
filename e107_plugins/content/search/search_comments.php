@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 $comments_title = 'Content';
 $comments_type_id = 'pcontent';
 $comments_return['content'] = "p.content_id, p.content_heading, p.content_parent";

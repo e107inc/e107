@@ -11,15 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-10-31 20:51:26 $
-|     $Author: lisa_ $
+|     $Revision: 1.12 $
+|     $Date: 2005-12-14 19:28:43 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-if(!defined('e_HTTP'))
-{
-	exit;
-}
+if (!defined('e107_INIT')) { exit; }
 
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;

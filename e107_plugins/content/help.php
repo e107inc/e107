@@ -1,4 +1,6 @@
 <?php
+if (!defined('e107_INIT')) { exit; }
+
 global $plugindir;
 require_once($plugindir."handlers/content_defines.php");
 $lan_file = $plugindir.'languages/'.e_LANGUAGE.'/lan_content_help.php';

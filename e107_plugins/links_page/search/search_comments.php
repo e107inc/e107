@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 $comments_title = 'Links';
 $comments_type_id = 'links_page';
 $comments_return['links_page'] = "l.link_id, l.link_name";

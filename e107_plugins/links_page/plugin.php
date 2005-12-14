@@ -11,11 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/plugin.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-11-01 19:21:51 $
+|     $Revision: 1.16 $
+|     $Date: 2005-12-14 19:28:44 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
+
 // Plugin info -------------------------------------------------------------------------------------------------------
 $lan_file = e_PLUGIN."links_page/languages/".e_LANGUAGE.".php";
 include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."links_page/languages/English.php");

@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 	if($mode == "new_page" || $mode == "new_menu" ){
 		$lvisit = $this -> getlvisit();
 		$qry = " news_datestamp>".$lvisit;

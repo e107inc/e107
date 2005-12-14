@@ -12,7 +12,7 @@
 +---------------------------------------------------------------+
 */
 
-if(!defined("e_THEME")){ exit; }
+if (!defined('e107_INIT')) { exit; }
 
 // [theme]
 $themename = "lamb";
