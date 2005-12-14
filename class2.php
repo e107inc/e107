@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.235 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.236 $
+|     $Date: 2005-12-14 23:17:25 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -104,6 +104,10 @@ define("e_UC_MEMBER", 253);
 define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 define("ADMINDIR", $ADMIN_DIRECTORY);
+
+define("GET",    "GET");
+define("POST",   "POST");
+define("COOKIE", "COOKIE");
 
 // All debug objects and constants are defined in the debug handler
 if (strpos(e_MENU, 'debug=') !== FALSE || isset($_COOKIE['e107_debug_level'])) {
@@ -1317,6 +1321,44 @@ class error_handler {
 	function trigger_error($information, $level) {
 		trigger_error($information);
 	}
+}
+
+/**
+ * Get data from the GPC arrays, slashes stripped if magic_quotes_gpc is enabled.
+ *
+ * @param string $var
+ * @param string $type
+ * @return mixed
+ */
+function gpc($var, $type = GET) {
+	if(!isset($_{$type}[$var])) {
+		return false;
+	}
+	return strip_if_magic($_{$type}[$var]);
+}
+
+/**
+ * Strips slashes from a var if magic_quotes_gqc is enabled
+ *
+ * @param mixed $data
+ * @return mixed
+ */
+function strip_if_magic($data) {
+	if(ini_get("magic_quotes_gpc") == true) {
+		return stripslashes_deep($data);
+	} else {
+		return $data;
+	}
+}
+
+/**
+ * Strips slashes from a string or an array
+ *
+ * @param mixed $value
+ * @return mixed
+ */
+function stripslashes_deep($data) {
+	return is_array($data) ? array_map('stripslashes_deep', $data) : stripslashes($data);
 }
 
 $sql->db_Mark_Time('(After class2)');
