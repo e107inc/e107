@@ -73,5 +73,7 @@ define("LAN_PM_105", "Du kan se PBen p&aring;: ");
 define("LAN_PM_106", "PB l&aelig;st af ");
 define("LAN_PM_107", "Den Private Besked du sendte til {UNAME} blev l&aelig;st ");
 define("LAN_PM_108", "Besked sendt: ");
+define("LAN_PM_109", "Ny(e) Besked(er)");
+define("LAN_PM_110", "ok");
 
 ?>
