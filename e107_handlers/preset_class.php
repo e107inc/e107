@@ -11,11 +11,13 @@
 |		GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_handlers/preset_class.php,v $
-|		$Revision: 1.5 $
-|		$Date: 2005-03-03 22:05:12 $
-|		$Author: stevedunstan $
+|		$Revision: 1.6 $
+|		$Date: 2005-12-14 17:37:34 $
+|		$Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 class e_preset {
 

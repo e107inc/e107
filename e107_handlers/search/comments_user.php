@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 $comments_title = LAN_98;
 $comments_type_id = 'profile';
 $comments_return['user'] = "u.user_name";

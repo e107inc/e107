@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.112 $
-|     $Date: 2005-11-20 22:47:48 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.113 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
+
 define ("E_NL", chr(2));
 class e_parse
 {

@@ -1,5 +1,7 @@
 <?php
 
+define("e107_INIT", TRUE);
+
 error_reporting(E_ERROR | E_PARSE);
 
 if(!function_exists("print_a")) {

@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 // e107 requires PHP > 4.3.0, all functions that are used in e107, introduced in newer
 // versions than that should be recreated in here for compatabilty reasons..
 

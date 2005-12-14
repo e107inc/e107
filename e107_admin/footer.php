@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/footer.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-11-26 14:09:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
+if (!defined('e107_INIT')) { exit; }
+
 global $ADMIN_FOOTER;
-if (!defined("e_HTTP")) {
-	exit;
-}
+
 if (ADMIN == TRUE) {
 	if ($pref['cachestatus']) {
 		if (!$sql->db_Select('generic', '*', "gen_type='empty_cache'"))

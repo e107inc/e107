@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/session_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-08-04 09:56:39 $
-|     $Author: streaky $
+|     $Revision: 1.5 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
+if (!defined('e107_INIT')) { exit; }
+
 function sess_open($save_path, $session_name) {
 	global $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $mySQLprefix, $session_connection;
 	$session_connection = mysql_pconnect($mySQLserver, $mySQLuser, $mySQLpassword);

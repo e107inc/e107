@@ -11,12 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/banner_menu/banner_menu.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-09-02 15:01:48 $
-|     $Author: stevedunstan $
+|     $Revision: 1.11 $
+|     $Date: 2005-12-14 17:37:43 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-if(!defined("e_HANDLER")){ exit; }
+
+if (!defined('e107_INIT')) { exit; }
 
 /*
 To define your own banner to use here ...

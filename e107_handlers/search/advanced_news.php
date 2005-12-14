@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/advanced_news.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-15 15:18:40 $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-14 17:37:34 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 $advanced['cat']['type'] = 'dropdown';
 $advanced['cat']['text'] = LAN_SEARCH_55.':';

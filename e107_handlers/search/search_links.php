@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_links.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-07-09 14:40:02 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
+if (!defined('e107_INIT')) { exit; }
+
 if ($results = $sql->db_Select("links", "*", "link_name REGEXP('".$query."') OR link_description REGEXP('".$query."') ")) {
 	while (list($link_id, $link_name, $link_url, $link_desciption, $link_button, $link_category, $link_refer) = $sql->db_Fetch()) {
 		$link_name_ = parsesearch($link_name, $query);

@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/db_debug_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-12-07 03:44:42 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.12 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 class e107_db_debug {
 	var $aSQLdetails = array();     // DB query analysis (in pieces for further analysis)

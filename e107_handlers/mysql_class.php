@@ -12,11 +12,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-12-03 16:16:15 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.48 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 $db_time = 0.0;				// Global total time spent in all db object queries
 $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
@@ -25,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.47 $
-* @author $Author: mcfly_e107 $
+* @version $Revision: 1.48 $
+* @author $Author: sweetas $
 */
 class db {
 

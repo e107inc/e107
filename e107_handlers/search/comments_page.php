@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 $comments_title = LAN_418;
 $comments_type_id = 'page';
 $comments_return['page'] = "cp.page_id, cp.page_title";

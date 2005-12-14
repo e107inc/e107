@@ -1,4 +1,24 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/help/list_menu_conf.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-14 17:37:43 $
+|     $Author: sweetas $
++----------------------------------------------------------------------------+
+*/
+
+if (!defined('e107_INIT')) { exit; }
+
 $text = "In this section you can configure 3 menus<br>
 <b> New Articles Menu</b> <br>
 Enter a number for example '5' in the first field to show the first 5 articles, leave empty to see all, You configure what the title of the link should be to the rest of the articles in the second field, when you leave this last option empty it won't create a link, for example: 'All articles'<br>

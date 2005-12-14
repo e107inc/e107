@@ -1,4 +1,24 @@
  <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/help/fileinspector.php,v $
+|     $Revision: 1.8 $
+|     $Date: 2005-12-14 17:37:43 $
+|     $Author: sweetas $
++----------------------------------------------------------------------------+
+*/
+
+if (!defined('e107_INIT')) { exit; }
+
 $text = "<div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vertical-align: top; white-space: nowrap'>
 <img src='".e_IMAGE."fileinspector/file_core.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Core File</div>
 <div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vertical-align: top; white-space: nowrap'>

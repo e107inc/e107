@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('e107_INIT')) { exit; }
+
 /**
 * Project:     MagpieRSS: a simple RSS integration tool
 * File:        rss_parse.inc  - parse an RSS or Atom feed

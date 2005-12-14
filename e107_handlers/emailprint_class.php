@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/emailprint_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-03-30 15:11:13 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-14 17:37:34 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
+if (!defined('e107_INIT')) { exit; }
+
 class emailprint {
 	function render_emailprint($mode, $id, $look = 0) {
 		// $look = 0  --->display all icons

@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_news/alt_news.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-03-20 19:47:51 $
-|     $Author: stevedunstan $
+|     $Revision: 1.8 $
+|     $Date: 2005-12-14 17:37:43 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
-if(!defined("e_HANDLER")){ exit; }
+
+if (!defined('e107_INIT')) { exit; }
+
 require_once(e_HANDLER."news_class.php");
 
 function alt_news($news_category) {

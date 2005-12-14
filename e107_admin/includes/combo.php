@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/includes/combo.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-05-30 18:30:15 $
+|     $Revision: 1.8 $
+|     $Date: 2005-12-14 17:37:34 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
+if (!defined('e107_INIT')) { exit; }
+
 $text = "<div style='text-align:center'>
 	<table style='".ADMIN_WIDTH."'>";
 	

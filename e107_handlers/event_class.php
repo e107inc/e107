@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/event_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-06-15 15:47:20 $
+|     $Revision: 1.10 $
+|     $Date: 2005-12-14 17:37:34 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
+if (!defined('e107_INIT')) { exit; }
+
 class e107_event {
 	var $functions = array();
 	var $includes = array();

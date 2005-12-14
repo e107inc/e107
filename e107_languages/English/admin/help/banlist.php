@@ -1,4 +1,24 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/help/banlist.php,v $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-14 17:37:43 $
+|     $Author: sweetas $
++----------------------------------------------------------------------------+
+*/
+
+if (!defined('e107_INIT')) { exit; }
+
 $caption = "Banning users from your site";
 $text = "You can ban users from your site at this screen.<br />
 Either enter their full IP address or use a wildcard to ban a range of IP addresses. You can also enter an email address to stop a user registering as a member on your site.<br /><br />

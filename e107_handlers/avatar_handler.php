@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/avatar_handler.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-08-19 07:48:40 $
+|     $Revision: 1.4 $
+|     $Date: 2005-12-14 17:37:34 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
+
 function avatar($avatar) {
 	if (stristr($avatar, "-upload-") !== FALSE) {
 		return e_FILE."public/avatars/".str_replace("-upload-", "", $avatar);
