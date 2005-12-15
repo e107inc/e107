@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-12-14 14:51:01 $
-|     $Author: sweetas $
+|     $Revision: 1.34 $
+|     $Date: 2005-12-15 02:25:22 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -56,6 +56,321 @@ if($stat -> error) {
 	exit;
 }
 
+$browser_map = array (
+'Netcaptor'         => "netcaptor",
+'Internet Explorer' => "explorer",
+'Firefox'           => "firefox",
+'Opera'             => "opera",
+'AOL'               => "aol",
+'Netscape'          => "netscape",
+'Mozilla'           => "mozilla",
+'Mosaic'            => "mosaic",
+'K-Meleon'          => "k-meleon",
+'Konqueror'         => "konqueror",
+'Avant Browser'     => "avantbrowser",
+'AvantGo'           => "avantgo",
+'Proxomitron'       => "proxomitron",
+'Safari'            => "safari",
+'Lynx'              => "lynx",
+'Links'             => "links",
+'Galeon'            => "galeon",
+'ABrowse'           => "abrowse",
+'Amaya'             => "amaya",
+'ANTFresco'         => "ant",
+'Aweb'              => "aweb",
+'Beonex'            => "beonex",
+'Blazer'            => "blazer",
+'Camino'            => "camino",
+'Chimera'           => "chimera",
+'Columbus'          => "columbus",
+'Crazy Browser'     => "crazybrowser",
+'Curl'              => "curl",
+'Deepnet Explorer'  => "deepnet",
+'Dillo'             => "dillo",
+'Doris'             => "doris",
+'ELinks'            => "elinks",
+'Epiphany'          => "epiphany",
+'Firebird'          => "firebird",
+'IBrowse'           => "ibrowse",
+'iCab'              => "icab",
+'ICEbrowser'        => "ice",
+'iSiloX'            => "isilox",
+'Lotus Notes'       => "lotus",
+'Lunascape'         => "lunascape",
+'Maxthon'           => "maxthon",
+'mBrowser'          => "mbrowser",
+'Multi-Browser'     => "multibrowser",
+'Nautilus'          => "nautilus",
+'NetFront'          => "netfront",
+'NetPositive'       => "netpositive",
+'OmniWeb'           => "omniweb",
+'Oregano'           => "oregano",
+'PhaseOut'          => "phaseout",
+'PLink'             => "plink",
+'Phoenix'           => "phoenix",
+'Proxomitron'       => "proxomitron",
+'Shiira'            => "shiira",
+'Sleipnir'          => "sleipnir",
+'SlimBrowser'       => "slimbrowser",
+'StarOffice'        => "staroffice",
+'Sunrise'           => "sunrise",
+'Voyager'           => "voyager",
+'w3m'               => "w3m",
+'Webtv'             => "webtv",
+'Xiino'             => "xiino",
+);
+
+$country["arpa"] = "ARPANet";
+$country["com"] = "Commercial Users";
+$country["edu"] = "Education";
+$country["gov"] = "Government";
+$country["int"] = "Oganization established by an International Treaty";
+$country["mil"] = "Military";
+$country["net"] = "Network";
+$country["org"] = "Organization";
+$country["ad"] = "Andorra";
+$country["ae"] = "United Arab Emirates";
+$country["af"] = "Afghanistan";
+$country["ag"] = "Antigua & Barbuda";
+$country["ai"] = "Anguilla";
+$country["al"] = "Albania";
+$country["am"] = "Armenia";
+$country["an"] = "Netherland Antilles";
+$country["ao"] = "Angola";
+$country["aq"] = "Antarctica";
+$country["ar"] = "Argentina";
+$country["as"] = "American Samoa";
+$country["at"] = "Austria";
+$country["au"] = "Australia";
+$country["aw"] = "Aruba";
+$country["az"] = "Azerbaijan";
+$country["ba"] = "Bosnia-Herzegovina";
+$country["bb"] = "Barbados";
+$country["bd"] = "Bangladesh";
+$country["be"] = "Belgium";
+$country["bf"] = "Burkina Faso";
+$country["bg"] = "Bulgaria";
+$country["bh"] = "Bahrain";
+$country["bi"] = "Burundi";
+$country["bj"] = "Benin";
+$country["bm"] = "Bermuda";
+$country["bn"] = "Brunei Darussalam";
+$country["bo"] = "Bolivia";
+$country["br"] = "Brasil";
+$country["bs"] = "Bahamas";
+$country["bt"] = "Bhutan";
+$country["bv"] = "Bouvet Island";
+$country["bw"] = "Botswana";
+$country["by"] = "Belarus";
+$country["bz"] = "Belize";
+$country["ca"] = "Canada";
+$country["cc"] = "Cocos (Keeling) Islands";
+$country["cf"] = "Central African Republic";
+$country["cg"] = "Congo";
+$country["ch"] = "Switzerland";
+$country["ci"] = "Ivory Coast";
+$country["ck"] = "Cook Islands";
+$country["cl"] = "Chile";
+$country["cm"] = "Cameroon";
+$country["cn"] = "China";
+$country["co"] = "Colombia";
+$country["cr"] = "Costa Rica";
+$country["cs"] = "Czechoslovakia";
+$country["cu"] = "Cuba";
+$country["cv"] = "Cape Verde";
+$country["cx"] = "Christmas Island";
+$country["cy"] = "Cyprus";
+$country["cz"] = "Czech Republic";
+$country["de"] = "Germany";
+$country["dj"] = "Djibouti";
+$country["dk"] = "Denmark";
+$country["dm"] = "Dominica";
+$country["do"] = "Dominican Republic";
+$country["dz"] = "Algeria";
+$country["ec"] = "Ecuador";
+$country["ee"] = "Estonia";
+$country["eg"] = "Egypt";
+$country["eh"] = "Western Sahara";
+$country["er"] = "Eritrea";
+$country["es"] = "Spain";
+$country["et"] = "Ethiopia";
+$country["fi"] = "Finland";
+$country["fj"] = "Fiji";
+$country["fk"] = "Falkland Islands (Malvibas)";
+$country["fm"] = "Micronesia";
+$country["fo"] = "Faroe Islands";
+$country["fr"] = "France";
+$country["fx"] = "France (European Territory)";
+$country["ga"] = "Gabon";
+$country["gb"] = "Great Britain";
+$country["gd"] = "Grenada";
+$country["ge"] = "Georgia";
+$country["gf"] = "Guyana (French)";
+$country["gh"] = "Ghana";
+$country["gi"] = "Gibralta";
+$country["gl"] = "Greenland";
+$country["gm"] = "Gambia";
+$country["gn"] = "Guinea";
+$country["gp"] = "Guadeloupe (French)";
+$country["gq"] = "Equatorial Guinea";
+$country["gr"] = "Greece";
+$country["gs"] = "South Georgia & South Sandwich Islands";
+$country["gt"] = "Guatemala";
+$country["gu"] = "Guam (US)";
+$country["gw"] = "Guinea Bissau";
+$country["gy"] = "Guyana";
+$country["hk"] = "Hong Kong";
+$country["hm"] = "Heard & McDonald Islands";
+$country["hn"] = "Honduras";
+$country["hr"] = "Croatia";
+$country["ht"] = "Haiti";
+$country["hu"] = "Hungary";
+$country["id"] = "Indonesia";
+$country["ie"] = "Ireland";
+$country["il"] = "Israel";
+$country["in"] = "India";
+$country["io"] = "British Indian Ocean Territories";
+$country["iq"] = "Iraq";
+$country["ir"] = "Iran";
+$country["is"] = "Iceland";
+$country["it"] = "Italy";
+$country["jm"] = "Jamaica";
+$country["jo"] = "Jordan";
+$country["jp"] = "Japan";
+$country["ke"] = "Kenya";
+$country["kg"] = "Kyrgyz Republic";
+$country["kh"] = "Cambodia";
+$country["ki"] = "Kiribati";
+$country["km"] = "Comoros";
+$country["kn"] = "Saint Kitts Nevis Anguilla";
+$country["kp"] = "Korea (North)";
+$country["kr"] = "Korea (South)";
+$country["kw"] = "Kuwait";
+$country["ky"] = "Cayman Islands";
+$country["kz"] = "Kazachstan";
+$country["la"] = "Laos";
+$country["lb"] = "Lebanon";
+$country["lc"] = "Saint Lucia";
+$country["li"] = "Liechtenstein";
+$country["lk"] = "Sri Lanka";
+$country["lr"] = "Liberia";
+$country["ls"] = "Lesotho";
+$country["lt"] = "Lithuania";
+$country["lu"] = "Luxembourg";
+$country["lv"] = "Latvia";
+$country["ly"] = "Libya";
+$country["ma"] = "Morocco";
+$country["mc"] = "Monaco";
+$country["md"] = "Moldova";
+$country["mg"] = "Madagascar";
+$country["mh"] = "Marshall Islands";
+$country["mk"] = "Macedonia";
+$country["ml"] = "Mali";
+$country["mm"] = "Myanmar";
+$country["mn"] = "Mongolia";
+$country["mo"] = "Macau";
+$country["mp"] = "Northern Mariana Islands";
+$country["mq"] = "Martinique (French)";
+$country["mr"] = "Mauretania";
+$country["ms"] = "Montserrat";
+$country["mt"] = "Malta";
+$country["mu"] = "Mauritius";
+$country["mv"] = "Maldives";
+$country["mw"] = "Malawi";
+$country["mx"] = "Mexico";
+$country["my"] = "Malaysia";
+$country["mz"] = "Mozambique";
+$country["na"] = "Namibia";
+$country["nc"] = "New Caledonia (French)";
+$country["ne"] = "Niger";
+$country["nf"] = "Norfolk Island";
+$country["ng"] = "Nigeria";
+$country["ni"] = "Nicaragua";
+$country["nl"] = "Netherlands";
+$country["no"] = "Norway";
+$country["np"] = "Nepal";
+$country["nr"] = "Nauru";
+$country["nt"] = "Saudiarab. Irak)";
+$country["nu"] = "Niue";
+$country["nz"] = "New Zealand";
+$country["om"] = "Oman";
+$country["pa"] = "Panama";
+$country["pe"] = "Peru";
+$country["pf"] = "Polynesia (French)";
+$country["pg"] = "Papua New Guinea";
+$country["ph"] = "Philippines";
+$country["pk"] = "Pakistan";
+$country["pl"] = "Poland";
+$country["pm"] = "Saint Pierre & Miquelon";
+$country["pn"] = "Pitcairn";
+$country["pr"] = "Puerto Rico (US)";
+$country["pt"] = "Portugal";
+$country["pw"] = "Palau";
+$country["py"] = "Paraguay";
+$country["qa"] = "Qatar";
+$country["re"] = "Reunion (French)";
+$country["ro"] = "Romania";
+$country["ru"] = "Russian Federation";
+$country["rw"] = "Rwanda";
+$country["sa"] = "Saudi Arabia";
+$country["sb"] = "Salomon Islands";
+$country["sc"] = "Seychelles";
+$country["sd"] = "Sudan";
+$country["se"] = "Sweden";
+$country["sg"] = "Singapore";
+$country["sh"] = "Saint Helena";
+$country["si"] = "Slovenia";
+$country["sj"] = "Svalbard & Jan Mayen";
+$country["sk"] = "Slovakia";
+$country["sl"] = "Sierra Leone";
+$country["sm"] = "San Marino";
+$country["sn"] = "Senegal";
+$country["so"] = "Somalia";
+$country["sr"] = "Suriname";
+$country["st"] = "Sao Tome & Principe";
+$country["su"] = "Soviet Union";
+$country["sv"] = "El Salvador";
+$country["sy"] = "Syria";
+$country["sz"] = "Swaziland";
+$country["tc"] = "Turks & Caicos Islands";
+$country["td"] = "Chad";
+$country["tf"] = "French Southern Territories";
+$country["tg"] = "Togo";
+$country["th"] = "Thailand";
+$country["tj"] = "Tadjikistan";
+$country["tk"] = "Tokelau";
+$country["tm"] = "Turkmenistan";
+$country["tn"] = "Tunisia";
+$country["to"] = "Tonga";
+$country["tp"] = "East Timor";
+$country["tr"] = "Turkey";
+$country["tt"] = "Trinidad & Tobago";
+$country["tv"] = "Tuvalu";
+$country["tw"] = "Taiwan";
+$country["tz"] = "Tanzania";
+$country["ua"] = "Ukraine";
+$country["ug"] = "Uganda";
+$country["uk"] = "United Kingdom";
+$country["um"] = "US Minor outlying Islands";
+$country["us"] = "United States";
+$country["uy"] = "Uruguay";
+$country["uz"] = "Uzbekistan";
+$country["va"] = "Vatican City State";
+$country["vc"] = "St Vincent & Grenadines";
+$country["ve"] = "Venezuela";
+$country["vg"] = "Virgin Islands (British)";
+$country["vi"] = "Virgin Islands (US)";
+$country["vn"] = "Vietnam";
+$country["vu"] = "Vanuatu";
+$country["wf"] = "Wallis & Futuna Islands";
+$country["ws"] = "Samoa";
+$country["ye"] = "Yemen";
+$country["yt"] = "Mayotte";
+$country["yu"] = "Yugoslavia";
+$country["za"] = "South Africa";
+$country["zm"] = "Zambia";
+$country["zr"] = "Zaire";
+$country["zw"] = "Zimbabwe";
 
 /* stats displayed will depend on the query string. For example, ?1.2.4 will render today's stats, all time stats and browser stats */
 /*
@@ -71,69 +386,69 @@ if($stat -> error) {
 
 switch($action) {
 	case 1:
-		$text = $stat -> renderTodaysVisits();
-		break;
+	$text = $stat -> renderTodaysVisits();
+	break;
 	case 2:
-			$text = $stat -> renderAlltimeVisits();
-		break;
+	$text = $stat -> renderAlltimeVisits();
+	break;
 	case 3:
-		if($pref['statBrowser']) {
-			$text = $stat -> renderBrowsers();
-		} else {
-			$text = ADSTAT_L7;
-		}
-		break;
+	if($pref['statBrowser']) {
+		$text = $stat -> renderBrowsers();
+	} else {
+		$text = ADSTAT_L7;
+	}
+	break;
 	case 4:
-		if($pref['statOs']) {
-			$text = $stat -> renderOses();
-		} else {
-			$text = ADSTAT_L7;
-		}
-		break;
+	if($pref['statOs']) {
+		$text = $stat -> renderOses();
+	} else {
+		$text = ADSTAT_L7;
+	}
+	break;
 	case 5:
-		if($pref['statDomain']) {
-			$text = $stat -> renderDomains();
-		} else {
-			$text = ADSTAT_L7;
-		}
-		break;
+	if($pref['statDomain']) {
+		$text = $stat -> renderDomains();
+	} else {
+		$text = ADSTAT_L7;
+	}
+	break;
 	case 6:
-		if($pref['statScreen']) {
-			$text = $stat -> renderScreens();
-		} else {
-			$text = ADSTAT_L7;
-		}
-		break;
+	if($pref['statScreen']) {
+		$text = $stat -> renderScreens();
+	} else {
+		$text = ADSTAT_L7;
+	}
+	break;
 	case 7:
-		if($pref['statRefer']) {
-			$text = $stat -> renderRefers();
-		} else {
-			$text = ADSTAT_L7;
-		}
-		break;
+	if($pref['statRefer']) {
+		$text = $stat -> renderRefers();
+	} else {
+		$text = ADSTAT_L7;
+	}
+	break;
 	case 8:
-		if($pref['statQuery']) {
-			$text = $stat -> renderQueries();
-		} else {
-			$text = ADSTAT_L7;
-		}
-		break;
+	if($pref['statQuery']) {
+		$text = $stat -> renderQueries();
+	} else {
+		$text = ADSTAT_L7;
+	}
+	break;
 	case 9:
-		if($pref['statRecent']) {
-			$text = $stat -> recentVisitors();
-		} else {
-			$text = ADSTAT_L7;
-		}
-		break;
+	if($pref['statRecent']) {
+		$text = $stat -> recentVisitors();
+	} else {
+		$text = ADSTAT_L7;
+	}
+	break;
 	case 10:
-			$text = $stat -> renderDaily();
-		break;
+	$text = $stat -> renderDaily();
+	break;
 	case 11:
-			$text = $stat -> renderMonthly();
-		break;
+	$text = $stat -> renderMonthly();
+	break;
 	case "rem":
-		$stat -> remove_entry($toremove);
-		break;
+	$stat -> remove_entry($toremove);
+	break;
 }
 
 
@@ -198,15 +513,15 @@ class siteStats {
 		$logfile = e_PLUGIN."log/logs/logi_".date("z.Y", time()).".php";
 		if(is_readable($logfile)) {
 			require($logfile);
-		} 
+		}
 
 		$this -> filesiteTotal = $siteTotal;
 		$this -> filesiteUnique = $siteUnique;
 
 
 		/* else {
-			$this -> error = "Unable to read logfile ".$logfile.".";
-			return;
+		$this -> error = "Unable to read logfile ".$logfile.".";
+		return;
 		}*/
 
 		/* set order var */
@@ -262,7 +577,7 @@ class siteStats {
 		return($array);
 		/* end method */
 	}
-/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	function renderTodaysVisits() {
 		/* renders information for today only */
@@ -285,7 +600,7 @@ class siteStats {
 		return $text;
 	}
 
-/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	function renderAlltimeVisits() {
 		/* renders information for alltime, total and unique */
@@ -343,10 +658,12 @@ class siteStats {
 		return $text;
 	}
 
-/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
 
 	function renderBrowsers() {
-		global $sql;
+		global $sql, $browser_map;
 
 		if($entries = $sql -> db_Select("logstats", "*", "log_id='statBrowser'")) {
 			$row = $sql -> db_Fetch();
@@ -372,20 +689,18 @@ class siteStats {
 			}
 			$total = array_sum($browserArray);
 			$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'><a title='".($this -> order ? "sort by total" : "sort alphabetically")."'href='".e_SELF."?3".($this -> order ? "" : ".1" )."'>".ADSTAT_L26."</a></td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
+
 			foreach($browserArray as $key => $info) {
-
 				$image = "";
-				if(strstr($key, "Netscape")) {	$image = "netscape.png"; }
-				if(strstr($key, "Konqueror")) {	$image = "konqueror.png"; }
-				if(strstr($key, "Opera")) {	$image = "opera.png"; }
-				if(strstr($key, "Explorer")) {	$image = "explorer.png"; }
-				if(strstr($key, "Firebird")) {	$image = "firebird.png"; }
-				if(strstr($key, "Firefox")) {	$image = "firefox.png"; }
-				if(strstr($key, "Links") || strstr($key, "Lynx")) {	$image = "lynx.png"; }
-				if(strstr($key, "Netcaptor")) {	$image = "netcaptor.png"; }
-				if(strstr($key, "Mozilla")) {	$image = "mozilla.png"; }
-				if(strstr($key, "Unknown")) {	$image = "unknown.png"; }
-
+				foreach ($browser_map as $name => $file) {
+					if(strstr($key, $name)) {
+						$image = "{$file}.png";
+						break;
+					}
+				}
+				if($image == "") {
+					$image = "unknown.png";
+				}
 				$percentage = round(($info/$total) * 100, 2);
 				$text .= "<tr>
 				<td class='forumheader3' style='width: 20%;'>".($image ? "<img src='".e_PLUGIN."log/images/$image' alt='' style='vertical-align: middle;' /> " : "").$key."</td>".
@@ -398,7 +713,7 @@ class siteStats {
 		return $text;
 	}
 
-/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	function renderOses() {
 		global $sql;
@@ -452,7 +767,7 @@ class siteStats {
 		return $text;
 	}
 
-/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	function renderDomains() {
 		global $sql;
@@ -461,7 +776,7 @@ class siteStats {
 			$row = $sql -> db_Fetch();
 			$statDom = unserialize($row['log_data']);
 		}
-		
+
 		/* temp consolidate today's data ... */
 		foreach($this -> fileDomainInfo as $name => $count) {
 			$statDom[$name] += $count;
@@ -470,7 +785,7 @@ class siteStats {
 		if(!count($statDom)) {
 			return "<div style='text-align: center;'>".ADSTAT_L25.".</div>";
 		}
-		
+
 		if($this -> order) {
 			ksort($statDom);
 			reset ($statDom);
@@ -495,7 +810,7 @@ class siteStats {
 		return $text;
 	}
 
-/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	function renderScreens() {
 		global $sql;
@@ -527,11 +842,11 @@ class siteStats {
 			foreach($nsarray as $key => $info) {
 				$screenArray[$key] = $info['info'];
 			}
-			
+
 		} else {
 			$screenArray = $this -> arraySort($statScreen, 0);
 		}
-		
+
 		$total = array_sum($screenArray);
 		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 20%;'><a title='".($this -> order ? "sort by total" : "sort alphabetically")."'href='".e_SELF."?6".($this -> order ? "" : ".1" )."'>".ADSTAT_L29."</a></td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L21."</td>\n<td class='fcaption' style='width: 10%; text-align: center;'>%</td>\n</tr>\n";
 		foreach($screenArray as $key => $info) {
@@ -548,7 +863,7 @@ class siteStats {
 		return $text;
 	}
 
-/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	function renderRefers() {
 		global $sql, $pref;
@@ -598,7 +913,7 @@ class siteStats {
 		return $text;
 	}
 
-/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	function renderQueries() {
 		global $sql;
@@ -639,7 +954,7 @@ class siteStats {
 		return $text;
 	}
 
-/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	function recentVisitors() {
 		if(!is_array($this -> fileRecent) || !count($this -> fileRecent)) {
@@ -648,8 +963,8 @@ class siteStats {
 
 		$gen = new convert;
 
-		$recentArray = array_reverse($this -> fileRecent, TRUE); 
-		
+		$recentArray = array_reverse($this -> fileRecent, TRUE);
+
 		$text = "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L18."</td>\n<td class='fcaption' style='width: 70%;'>Information</td>\n</tr>\n";
 
 		foreach($recentArray as $key => $info) {
@@ -667,7 +982,7 @@ class siteStats {
 
 	}
 
-/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	function renderDaily() {
 		global $sql, $siteTotal, $siteUnique;
@@ -677,8 +992,8 @@ class siteStats {
 		$pagearray = array();
 
 		$qry = "
-		SELECT * from #logstats WHERE log_id REGEXP('[[:digit:]]+\-[[:digit:]]+\-[[:digit:]]+') 
-		ORDER BY CONCAT(LEFT(log_id,4), SUBSTRING(log_id, 6, 2), LPAD(SUBSTRING(log_id, 9), 2, '0')) 
+		SELECT * from #logstats WHERE log_id REGEXP('[[:digit:]]+\-[[:digit:]]+\-[[:digit:]]+')
+		ORDER BY CONCAT(LEFT(log_id,4), SUBSTRING(log_id, 6, 2), LPAD(SUBSTRING(log_id, 9), 2, '0'))
 		DESC LIMIT 0,14
 		";
 
@@ -700,8 +1015,8 @@ class siteStats {
 				unset($entries[0]);
 				unset($entries[1]);
 
-				
-				
+
+
 				foreach($entries as $entry)
 				{
 					if($entry)
@@ -752,7 +1067,7 @@ class siteStats {
 
 		$text .= "</table>";
 
-		
+
 		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L35." ".($amount+1)." ".ADSTAT_L40."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
 
 
@@ -768,7 +1083,7 @@ class siteStats {
 		$text .= "</table>";
 
 		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L33." ".($amount+1)." ".ADSTAT_L36."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
-		
+
 		$newArray = $this -> arraySort($pagearray, "total");
 		foreach($newArray as $key => $total) {
 			$barWidth = round(($total['total']/$ttotal) * 100, 2);
@@ -781,7 +1096,7 @@ class siteStats {
 		$text .= "</table>";
 
 		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L35." ".($amount+1)." ".ADSTAT_L36."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
-		
+
 		$newArray = $this -> arraySort($pagearray, "unique");
 
 		foreach($newArray as $key => $total) {
@@ -795,11 +1110,11 @@ class siteStats {
 		return $text;
 	}
 
-/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	function renderMonthly() {
 		global $sql;
-		
+
 		if(!$entries = $sql -> db_Select("logstats", "*", "log_id REGEXP('^[[:digit:]]+\-[[:digit:]]+$') ORDER BY CONCAT(LEFT(log_id,4), RIGHT(log_id,2)) DESC")) {
 			return "No monthly stats yet.";
 		}
@@ -824,7 +1139,7 @@ class siteStats {
 		$tmpArray = $this -> arraySort($monthTotal, "totalv");
 
 		$text .= "<table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L37."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
-		
+
 		foreach($monthTotal as $date => $total) {
 
 			list($year, $month) = explode("-", $date);
@@ -838,7 +1153,7 @@ class siteStats {
 		$text .= "</table>";
 
 		$text .= "<br /><table class='fborder' style='width: 100%;'>\n<tr>\n<td class='fcaption' style='width: 30%;'>".ADSTAT_L38."</td>\n<td class='fcaption' style='width: 70%;' colspan='2'>".ADSTAT_L34."</td>\n</tr>\n";
-		
+
 		foreach($monthTotal as $date => $total) {
 			$barWidth = round(($total['uniquev']/$utotal) * 100, 2);
 			list($year, $month) = explode("-", $date);
@@ -854,17 +1169,13 @@ class siteStats {
 		return $text;
 	}
 
-/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+	/* -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 	function getWidthRatio ($array, $column) {
 		$tmpArray = $this -> arraySort($array, $column);
 		$data = each($tmpArray);
 		$maxValue = $data[1]['totalv'];
-
-		
-
 		echo "<b>maxValue</b> ".$maxValue." <br />";
-
 		$ratio = 0;
 		while($maxValue > 100) {
 			$maxValue = ($maxValue / 2);
@@ -879,261 +1190,10 @@ class siteStats {
 	}
 
 	function getcountry($dom) {
-		$country["arpa"] = "ARPANet";
-		$country["com"] = "Commercial Users";
-		$country["edu"] = "Education";
-		$country["gov"] = "Government";
-		$country["int"] = "Oganization established by an International Treaty";
-		$country["mil"] = "Military";
-		$country["net"] = "Network";
-		$country["org"] = "Organization";
-		$country["ad"] = "Andorra";
-		$country["ae"] = "United Arab Emirates";
-		$country["af"] = "Afghanistan";
-		$country["ag"] = "Antigua & Barbuda";
-		$country["ai"] = "Anguilla";
-		$country["al"] = "Albania";
-		$country["am"] = "Armenia";
-		$country["an"] = "Netherland Antilles";
-		$country["ao"] = "Angola";
-		$country["aq"] = "Antarctica";
-		$country["ar"] = "Argentina";
-		$country["as"] = "American Samoa";
-		$country["at"] = "Austria";
-		$country["au"] = "Australia";
-		$country["aw"] = "Aruba";
-		$country["az"] = "Azerbaijan";
-		$country["ba"] = "Bosnia-Herzegovina";
-		$country["bb"] = "Barbados";
-		$country["bd"] = "Bangladesh";
-		$country["be"] = "Belgium";
-		$country["bf"] = "Burkina Faso";
-		$country["bg"] = "Bulgaria";
-		$country["bh"] = "Bahrain";
-		$country["bi"] = "Burundi";
-		$country["bj"] = "Benin";
-		$country["bm"] = "Bermuda";
-		$country["bn"] = "Brunei Darussalam";
-		$country["bo"] = "Bolivia";
-		$country["br"] = "Brasil";
-		$country["bs"] = "Bahamas";
-		$country["bt"] = "Bhutan";
-		$country["bv"] = "Bouvet Island";
-		$country["bw"] = "Botswana";
-		$country["by"] = "Belarus";
-		$country["bz"] = "Belize";
-		$country["ca"] = "Canada";
-		$country["cc"] = "Cocos (Keeling) Islands";
-		$country["cf"] = "Central African Republic";
-		$country["cg"] = "Congo";
-		$country["ch"] = "Switzerland";
-		$country["ci"] = "Ivory Coast";
-		$country["ck"] = "Cook Islands";
-		$country["cl"] = "Chile";
-		$country["cm"] = "Cameroon";
-		$country["cn"] = "China";
-		$country["co"] = "Colombia";
-		$country["cr"] = "Costa Rica";
-		$country["cs"] = "Czechoslovakia";
-		$country["cu"] = "Cuba";
-		$country["cv"] = "Cape Verde";
-		$country["cx"] = "Christmas Island";
-		$country["cy"] = "Cyprus";
-		$country["cz"] = "Czech Republic";
-		$country["de"] = "Germany";
-		$country["dj"] = "Djibouti";
-		$country["dk"] = "Denmark";
-		$country["dm"] = "Dominica";
-		$country["do"] = "Dominican Republic";
-		$country["dz"] = "Algeria";
-		$country["ec"] = "Ecuador";
-		$country["ee"] = "Estonia";
-		$country["eg"] = "Egypt";
-		$country["eh"] = "Western Sahara";
-		$country["er"] = "Eritrea";
-		$country["es"] = "Spain";
-		$country["et"] = "Ethiopia";
-		$country["fi"] = "Finland";
-		$country["fj"] = "Fiji";
-		$country["fk"] = "Falkland Islands (Malvibas)";
-		$country["fm"] = "Micronesia";
-		$country["fo"] = "Faroe Islands";
-		$country["fr"] = "France";
-		$country["fx"] = "France (European Territory)";
-		$country["ga"] = "Gabon";
-		$country["gb"] = "Great Britain";
-		$country["gd"] = "Grenada";
-		$country["ge"] = "Georgia";
-		$country["gf"] = "Guyana (French)";
-		$country["gh"] = "Ghana";
-		$country["gi"] = "Gibralta";
-		$country["gl"] = "Greenland";
-		$country["gm"] = "Gambia";
-		$country["gn"] = "Guinea";
-		$country["gp"] = "Guadeloupe (French)";
-		$country["gq"] = "Equatorial Guinea";
-		$country["gr"] = "Greece";
-		$country["gs"] = "South Georgia & South Sandwich Islands";
-		$country["gt"] = "Guatemala";
-		$country["gu"] = "Guam (US)";
-		$country["gw"] = "Guinea Bissau";
-		$country["gy"] = "Guyana";
-		$country["hk"] = "Hong Kong";
-		$country["hm"] = "Heard & McDonald Islands";
-		$country["hn"] = "Honduras";
-		$country["hr"] = "Croatia";
-		$country["ht"] = "Haiti";
-		$country["hu"] = "Hungary";
-		$country["id"] = "Indonesia";
-		$country["ie"] = "Ireland";
-		$country["il"] = "Israel";
-		$country["in"] = "India";
-		$country["io"] = "British Indian Ocean Territories";
-		$country["iq"] = "Iraq";
-		$country["ir"] = "Iran";
-		$country["is"] = "Iceland";
-		$country["it"] = "Italy";
-		$country["jm"] = "Jamaica";
-		$country["jo"] = "Jordan";
-		$country["jp"] = "Japan";
-		$country["ke"] = "Kenya";
-		$country["kg"] = "Kyrgyz Republic";
-		$country["kh"] = "Cambodia";
-		$country["ki"] = "Kiribati";
-		$country["km"] = "Comoros";
-		$country["kn"] = "Saint Kitts Nevis Anguilla";
-		$country["kp"] = "Korea (North)";
-		$country["kr"] = "Korea (South)";
-		$country["kw"] = "Kuwait";
-		$country["ky"] = "Cayman Islands";
-		$country["kz"] = "Kazachstan";
-		$country["la"] = "Laos";
-		$country["lb"] = "Lebanon";
-		$country["lc"] = "Saint Lucia";
-		$country["li"] = "Liechtenstein";
-		$country["lk"] = "Sri Lanka";
-		$country["lr"] = "Liberia";
-		$country["ls"] = "Lesotho";
-		$country["lt"] = "Lithuania";
-		$country["lu"] = "Luxembourg";
-		$country["lv"] = "Latvia";
-		$country["ly"] = "Libya";
-		$country["ma"] = "Morocco";
-		$country["mc"] = "Monaco";
-		$country["md"] = "Moldova";
-		$country["mg"] = "Madagascar";
-		$country["mh"] = "Marshall Islands";
-		$country["mk"] = "Macedonia";
-		$country["ml"] = "Mali";
-		$country["mm"] = "Myanmar";
-		$country["mn"] = "Mongolia";
-		$country["mo"] = "Macau";
-		$country["mp"] = "Northern Mariana Islands";
-		$country["mq"] = "Martinique (French)";
-		$country["mr"] = "Mauretania";
-		$country["ms"] = "Montserrat";
-		$country["mt"] = "Malta";
-		$country["mu"] = "Mauritius";
-		$country["mv"] = "Maldives";
-		$country["mw"] = "Malawi";
-		$country["mx"] = "Mexico";
-		$country["my"] = "Malaysia";
-		$country["mz"] = "Mozambique";
-		$country["na"] = "Namibia";
-		$country["nc"] = "New Caledonia (French)";
-		$country["ne"] = "Niger";
-		$country["nf"] = "Norfolk Island";
-		$country["ng"] = "Nigeria";
-		$country["ni"] = "Nicaragua";
-		$country["nl"] = "Netherlands";
-		$country["no"] = "Norway";
-		$country["np"] = "Nepal";
-		$country["nr"] = "Nauru";
-		$country["nt"] = "Saudiarab. Irak)";
-		$country["nu"] = "Niue";
-		$country["nz"] = "New Zealand";
-		$country["om"] = "Oman";
-		$country["pa"] = "Panama";
-		$country["pe"] = "Peru";
-		$country["pf"] = "Polynesia (French)";
-		$country["pg"] = "Papua New Guinea";
-		$country["ph"] = "Philippines";
-		$country["pk"] = "Pakistan";
-		$country["pl"] = "Poland";
-		$country["pm"] = "Saint Pierre & Miquelon";
-		$country["pn"] = "Pitcairn";
-		$country["pr"] = "Puerto Rico (US)";
-		$country["pt"] = "Portugal";
-		$country["pw"] = "Palau";
-		$country["py"] = "Paraguay";
-		$country["qa"] = "Qatar";
-		$country["re"] = "Reunion (French)";
-		$country["ro"] = "Romania";
-		$country["ru"] = "Russian Federation";
-		$country["rw"] = "Rwanda";
-		$country["sa"] = "Saudi Arabia";
-		$country["sb"] = "Salomon Islands";
-		$country["sc"] = "Seychelles";
-		$country["sd"] = "Sudan";
-		$country["se"] = "Sweden";
-		$country["sg"] = "Singapore";
-		$country["sh"] = "Saint Helena";
-		$country["si"] = "Slovenia";
-		$country["sj"] = "Svalbard & Jan Mayen";
-		$country["sk"] = "Slovakia";
-		$country["sl"] = "Sierra Leone";
-		$country["sm"] = "San Marino";
-		$country["sn"] = "Senegal";
-		$country["so"] = "Somalia";
-		$country["sr"] = "Suriname";
-		$country["st"] = "Sao Tome & Principe";
-		$country["su"] = "Soviet Union";
-		$country["sv"] = "El Salvador";
-		$country["sy"] = "Syria";
-		$country["sz"] = "Swaziland";
-		$country["tc"] = "Turks & Caicos Islands";
-		$country["td"] = "Chad";
-		$country["tf"] = "French Southern Territories";
-		$country["tg"] = "Togo";
-		$country["th"] = "Thailand";
-		$country["tj"] = "Tadjikistan";
-		$country["tk"] = "Tokelau";
-		$country["tm"] = "Turkmenistan";
-		$country["tn"] = "Tunisia";
-		$country["to"] = "Tonga";
-		$country["tp"] = "East Timor";
-		$country["tr"] = "Turkey";
-		$country["tt"] = "Trinidad & Tobago";
-		$country["tv"] = "Tuvalu";
-		$country["tw"] = "Taiwan";
-		$country["tz"] = "Tanzania";
-		$country["ua"] = "Ukraine";
-		$country["ug"] = "Uganda";
-		$country["uk"] = "United Kingdom";
-		$country["um"] = "US Minor outlying Islands";
-		$country["us"] = "United States";
-		$country["uy"] = "Uruguay";
-		$country["uz"] = "Uzbekistan";
-		$country["va"] = "Vatican City State";
-		$country["vc"] = "St Vincent & Grenadines";
-		$country["ve"] = "Venezuela";
-		$country["vg"] = "Virgin Islands (British)";
-		$country["vi"] = "Virgin Islands (US)";
-		$country["vn"] = "Vietnam";
-		$country["vu"] = "Vanuatu";
-		$country["wf"] = "Wallis & Futuna Islands";
-		$country["ws"] = "Samoa";
-		$country["ye"] = "Yemen";
-		$country["yt"] = "Mayotte";
-		$country["yu"] = "Yugoslavia";
-		$country["za"] = "South Africa";
-		$country["zm"] = "Zambia";
-		$country["zr"] = "Zaire";
-		$country["zw"] = "Zimbabwe";
-		$scountry = $country[$dom];
-		return $scountry;
+		global $country;
+		return $country[$dom];
 	}
-	
+
 	function bar($percen, $val)
 	{
 		return "<div class='b' style='width: ".intval($percen)."%'></div>
@@ -1141,8 +1201,7 @@ class siteStats {
 		<td style='width:10%; text-align:center' class='forumheader3'>".$val;
 	}
 
-	function remove_entry($toremove)
-	{
+	function remove_entry($toremove) {
 		global $sql;
 		$sql -> db_Select("logstats", "*", "log_id='pageTotal'");
 		$row = $sql -> db_Fetch();
@@ -1152,7 +1211,8 @@ class siteStats {
 		$sql -> db_Update("logstats", "log_data='$dbPageDone' WHERE log_id='pageTotal' ");
 		$this -> renderAlltimeVisits();
 	}
-
 }
+
+
 
 ?>
