@@ -4,11 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/help/article.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.8 $
+|     $Date: 2005-12-15 23:43:32 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
 $text = "Desde esta página puede añadir artículos simples o multi-página.<br />
  Para un artículo multi-página debe separar cada página con el texto [newpage], ej <br /><code>Test1 [newpage] Test2</code><br />
  Creará un artíclo de dos páginas con 'Test1' en la página 1 y 'Test2' en la página 2.

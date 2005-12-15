@@ -4,11 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/help/fileinspector.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-12-02 21:01:29 $
+|     $Revision: 1.5 $
+|     $Date: 2005-12-15 23:43:32 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
 $text = "<div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vertical-align: top; white-space: nowrap'>
 <img src='".e_IMAGE."fileinspector/file_core.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Archivo núcleo</div>
 <div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vertical-align: top; white-space: nowrap'>
