@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/rate.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-10-29 01:02:20 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-12-15 10:37:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,7 +23,7 @@ require_once("class2.php");
 
 $qs = explode("^", e_QUERY);
 
-if (!$qs[0] || USER == FALSE || $qs[3] > 10 || $qs[3] < 1)
+if (!$qs[0] || USER == FALSE || $qs[3] > 10 || $qs[3] < 1 || strpos($qs[2], '://') !== false)
 {
 	header("location:".e_BASE."index.php");
 	exit;
