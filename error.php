@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/error.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-12-15 12:23:27 $
+|     $Revision: 1.11 $
+|     $Date: 2005-12-15 12:28:54 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -32,10 +32,12 @@ $errTo = $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 
 switch(e_QUERY) {
 	case 401:
+	header("HTTP/1.1 401 Unauthorized");
 	$text = "<div class='installe'><img src='".e_IMAGE_ABS."icons/icon3.png' alt='Error Icon'> ".LAN_1."</div><br /><div class='installh'>".LAN_2."</div><br /><div class='smalltext'>".LAN_3."</div>
 		<br /><div class='installh'>".LAN_2."<a href='index.php'>".LAN_20."</a></div>";
 	break;
 	case 403:
+	header("HTTP/1.1 403 Forbidden");
 	$text = "<div class='installe'><img src='".e_IMAGE_ABS."icons/icon3.png' alt='Error Icon'> ".LAN_4."</div><br /><div class='installh'>".LAN_5."</div><br /><div class='smalltext'>".LAN_6."</div>
 		<br /><div class='installh'>".LAN_2."<a href='index.php'>".LAN_20."</a></div>";
 	break;
@@ -57,6 +59,7 @@ switch(e_QUERY) {
 
 
 	case 500:
+	header("HTTP/1.1 500 Internal Server Error");
 	$text = "<div class='installe'><img src='".e_IMAGE_ABS."icons/icon3.png' alt='Error Icon'> ".LAN_10."</div><br /><div class='installh'>".LAN_11."</div><br /><div class='smalltext'>".LAN_12."</div>
 		<br /><div class='installh'>".LAN_2."<a href='index.php'>".LAN_20."</a></div>";
 	break;
