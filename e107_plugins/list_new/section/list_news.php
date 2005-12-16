@@ -43,12 +43,14 @@ if (!defined('e107_INIT')) { exit; }
 			$replace[3] = '\\2';
 			$search[4] = "/\<a href=&#39;(.*?)&#39;>(.*?)<\/a>/si";
 			$replace[4] = '\\2';
+			$search[5] = "/\<a href=&#039;(.*?)&#039;>(.*?)<\/a>/si";
+			$replace[5] = '\\2';
 			$news_title = preg_replace($search, $replace, $row['news_title']);
 			// End of code from Lisa
 
 			$rowheading	= $this -> parse_heading($news_title, $mode);
 			$ICON		= $bullet;
-			$HEADING	= "<a href='".e_BASE."comment.php?comment.news.".$row['news_id']."' title='".$news_title."'>".$rowheading."</a>";
+			$HEADING	= "<a href='".e_BASE."comment.php?comment.news.".$row['news_id']."' title='".$rowheading."'>".$rowheading."</a>";
 			$AUTHOR		= ($arr[3] ? ($row['news_author'] == 0 ? $row['news_author'] : ($row['news_author_name'] ? "<a href='".e_BASE."user.php?id.".$row['news_author_id']."'>".$row['news_author_name']."</a>" : "") ) : "");
 			$CATEGORY	= ($arr[4] ? "<a href='".e_BASE."news.php?cat.".$row['news_category_id']."'>".$row['news_category_name']."</a>" : "");
 			$DATE		= ($arr[5] ? $this -> getListDate($row['news_datestamp'], $mode) : "");
