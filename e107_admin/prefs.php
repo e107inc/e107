@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2005-12-08 15:25:54 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.70 $
+|     $Date: 2005-12-16 20:06:08 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -197,7 +197,16 @@ $text = "<script type=\"text/javascript\">
 	<td style='width:50%; text-align:right' class='forumheader3'>
 	<textarea class='tbox' name='sitedisclaimer' cols='59' rows='6'>".$pref['sitedisclaimer']."</textarea>
 	</td>
-	</tr>";
+	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_17."<br /><span class='smalltext'>&nbsp</span></td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	<input type='radio' name='compress_output' value='1'".($pref['compress_output'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='compress_output' value='0'".(!$pref['compress_output'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
+	</tr>
+	";
 
 $text .= pref_submit();
 
@@ -274,7 +283,7 @@ $text .= "<div id='admindisp' style='display:none; text-align:center'>
 	<input type='radio' name='admin_alerts_uniquemenu' value='0'".(!$pref['admin_alerts_uniquemenu'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
 	</td>
 	</tr>";
-	
+
 	$text .= "<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_147.":<br /><span class='smalltext'>".PRFLAN_148."</span></td>
 	<td style='width:50%; text-align:right' class='forumheader3'>

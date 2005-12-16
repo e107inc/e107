@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-12-14 19:28:53 $
-|     $Author: sweetas $
+|     $Revision: 1.33 $
+|     $Date: 2005-12-16 20:06:08 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -161,7 +161,7 @@ if(isset($footer_js) && is_array($footer_js))
 echo "</body></html>";
 
 $page = ob_get_clean();
-
+$pref['compression_level'] == 6;
 if(strstr($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip") || strstr($_SERVER['HTTP_USER_AGENT'], "Mozilla")) {
 	$browser_support = true;
 }
