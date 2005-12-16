@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-12-01 01:34:34 $
-|     $Author: sweetas $
+|     $Revision: 1.41 $
+|     $Date: 2005-12-16 20:06:08 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 define("PRFLAN_1", "Site Information");
@@ -26,7 +26,8 @@ define("PRFLAN_14", "Display theme information?");
 define("PRFLAN_15", "Display render time?");
 define("PRFLAN_16", "Display sql queries?");
 
-// define("PRFLAN_17", "Language");
+define("PRFLAN_17", "Compress Site Output Using gzip");
+
 // define("PRFLAN_18", "Site Language");
 
 define("PRFLAN_19", "Signup Page Options");
