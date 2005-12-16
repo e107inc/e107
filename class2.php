@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.236 $
-|     $Date: 2005-12-14 23:17:25 $
+|     $Revision: 1.237 $
+|     $Date: 2005-12-16 18:53:53 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -1331,10 +1331,26 @@ class error_handler {
  * @return mixed
  */
 function gpc($var, $type = GET) {
-	if(!isset($_{$type}[$var])) {
-		return false;
+	switch ($type) {
+		case GET:
+			if(!isset($_GET[$var])) {
+				return false;
+			}
+			return strip_if_magic($_GET[$var]);
+		break;
+		case POST:
+			if(!isset($_POST[$var])) {
+				return false;
+			}
+			return strip_if_magic($_POST[$var]);
+		break;
+		case COOKIE:
+			if(!isset($_POST[$var])) {
+				return false;
+			}
+			return strip_if_magic($_POST[$var]);
+		break;
 	}
-	return strip_if_magic($_{$type}[$var]);
 }
 
 /**
