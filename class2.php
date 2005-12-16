@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.237 $
-|     $Date: 2005-12-16 18:53:53 $
+|     $Revision: 1.238 $
+|     $Date: 2005-12-16 22:55:47 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -1345,10 +1345,10 @@ function gpc($var, $type = GET) {
 			return strip_if_magic($_POST[$var]);
 		break;
 		case COOKIE:
-			if(!isset($_POST[$var])) {
+			if(!isset($_COOKIE[$var])) {
 				return false;
 			}
-			return strip_if_magic($_POST[$var]);
+			return strip_if_magic($_COOKIE[$var]);
 		break;
 	}
 }
