@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Dutch/admin/lan_fileinspector.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-11-28 21:26:34 $
+|     $Revision: 1.5 $
+|     $Date: 2005-12-17 07:43:21 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -56,6 +56,12 @@ define("FR_LAN_19", "bestanden onjuist");
 define("FR_LAN_20", "Alle bestanden in orde");
 define("FR_LAN_21", "geen");
 define("FR_LAN_22", "Ontbrekende Core bestanden");
-
+define("FC_LAN_21", "Oude Core bestanden");
+define("FR_LAN_23", "Niets gevonden.");
+define("FR_LAN_24", "Oude core bestanden");
+define("FR_LAN_25", "Integriteit niet te bepalen");
+define("FR_LAN_26", "Waarschuwing! Bekend beveiligingsrisico gevonden!");
+define("FR_LAN_27", "Er staan bestanden op je server waarvan te misbruiken kwetsbaarheden bekend zijn. Die moeten zo snel mogelijk worden verwijderd.");
+define("FR_LAN_28", "Bekende onveilige bestanden");
 
 ?>

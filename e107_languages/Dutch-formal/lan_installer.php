@@ -78,11 +78,6 @@ define("LANINS_061", "e107 kon niet alle vereiste databasetabellen aanmaken.
 Maakt u de database leeg en herstel de problemen en probeer het daarna nog eens.");
 define("LANINS_062", "Welkom bij uw nieuwe website!");
 define("LANINS_063", "e107 is succesvol geïnstalleerd en klaar voor gebruik.");
-define("LANINS_064", "Uw beheerscherm");
-define("LANINS_065", "is hier");
-define("LANINS_066", "klik om er nu naartoe te gaan. U moet inloggen met de gebruikersnaam en het wachtwoord die u beide eerder opgaf bij installatie.");
-define("LANINS_067", "U vindt de FAQ en documentatie hier.");
-define("LANINS_068", "Hartelijk dank voor het installeren van e107. We hopen dat het voldoet aan al uw website wensen.\n(U kunt dit bericht verwijderen in uw beheerscherm.)\n\n<b>Let op: deze versie van e107 is een beta versie en dus niet gegarandeerd voor gebruik op live websites.</b>");
 define("LANINS_069", "e107 is succesvol geïnstalleerd!
 
 Omwille van beveiliging moet u nu de bestandpermissies op het <b>e107_config.php</b> bestand terugzetten naar 644.

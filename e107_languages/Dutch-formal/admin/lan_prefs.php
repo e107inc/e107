@@ -31,6 +31,7 @@ define("PRFLAN_13", "Toon informatie");
 define("PRFLAN_14", "Toon thema informatie?");
 define("PRFLAN_15", "Toon pagina opbouwtijd?");
 define("PRFLAN_16", "Toon sql queries?");
+define("PRFLAN_17", "Comprimeer de output van de site met gzip");
 define("PRFLAN_19", "Aanmeldpagina instellingen");
 define("PRFLAN_21", "Datumweergave opties");
 define("PRFLAN_22", "Kort datum formaat");
@@ -130,6 +131,8 @@ define("PRFLAN_143", "Alleen mislukte aanlogpogingen");
 define("PRFLAN_144", "Flood & mislukte aanlogpogingen");
 define("PRFLAN_145", "Links in nieuw venster");
 define("PRFLAN_146", "Deze optie aankruisen om alle links in een nieuw venster te openen(<i>geldt voor de hele site</i>). ");
+define("PRFLAN_147", "Ontwikkelmode");
+define("PRFLAN_148", "Activeren ontwikkelfuncties. Alleen voor ontwikkelaars ! Gebruik dit niet op een reguliere website vanwege de beveiligingsrisico's.");
 
 define("CUSTSIG_1", "Instellingen opgeslagen!");
 define("CUSTSIG_2", "Echte naam:");

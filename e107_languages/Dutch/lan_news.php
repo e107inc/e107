@@ -22,6 +22,7 @@ define("LAN_84", "Nieuwsberichten");
 define("LAN_99", "Reacties");
 define("LAN_100", "Op");
 define("LAN_307", "Aantal berichten in deze categorie: ");
+define("LAN_462", "Geen nieuwsberichtenin de opgegeven maand");
 define("LAN_NEWS_1", "Nieuws uitsluitend voor bepaalde leden");
 define("LAN_NEWS_2", "Je mag dit bericht niet lezen");
 define("LAN_NEWS_3", "Verwijder install.php van je server");
@@ -45,4 +46,5 @@ define("LAN_NEWS_20", "Nieuws in de database bijgewerkt in de volgende taal: ");
 define("LAN_NEWS_21", "Nieuws bijgewerkt in de database.");
 define("LAN_NEWS_22", "Ga naar pagina: ");
 define("LAN_NEWS_23", "Nieuws categorieën");
+
 ?>
