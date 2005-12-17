@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-12-02 21:01:29 $
+|     $Revision: 1.16 $
+|     $Date: 2005-12-17 01:20:37 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ define("PRFLAN_13", "Mostrar información");
 define("PRFLAN_14", "¿Mostrar información del tema?");
 define("PRFLAN_15", "¿Mostrar tiempo de generación?");
 define("PRFLAN_16", "¿Mostrar secuencias SQL?");
-//define("PRFLAN_17", "Idioma");
+define("PRFLAN_17", "Comprimir Salida del sitio usando gzip");
 //define("PRFLAN_18", "Idioma del sitio");
 define("PRFLAN_19", "Campos en registro");
 //define("PRFLAN_20", "Noticias a visualizar por página?");
