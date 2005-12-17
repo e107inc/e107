@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2005-11-18 22:02:13 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.66 $
+|     $Date: 2005-12-17 20:58:22 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -83,12 +83,12 @@ if ($use_imagecode) {
 }
 
 if ($pref['user_reg'] == 0) {
-	header("location:".e_BASE."index.php");
+	header("location: ".e_HTTP."index.php");
 	exit;
 }
 
 if (USER) {
-	header("location:".e_BASE."index.php");
+	header("location: ".e_HTTP."index.php");
 	exit;
 }
 
@@ -98,11 +98,11 @@ if (e_QUERY)
 	if ($qs[0] == "activate")
 	{
 		$e107cache->clear("online_menu_totals");
-		if ($sql->db_Select("user", "*", "user_sess='".$qs[2]."' "))
+		if ($sql->db_Select("user", "*", "user_sess='".$sql->escape($qs[2])."' "))
 		{
 			if ($row = $sql->db_Fetch())
 			{
-				$sql->db_Update("user", "user_ban='0', user_sess='' WHERE user_sess='".$qs[2]."' ");
+				$sql->db_Update("user", "user_ban='0', user_sess='' WHERE user_sess='".$sql->escape($qs[2])."' ");
 				$e_event->trigger("userveri", $qs[2]);
 				require_once(HEADERF);
 				$text = LAN_401." <a href='index.php'>".LAN_SIGNUP_22."</a> ".LAN_SIGNUP_23."<br />".LAN_SIGNUP_24." ".SITENAME;
@@ -202,14 +202,14 @@ if (isset($_POST['register']))
 		exit;
 	}
 
-	if ($sql->db_Select("user", "*", "user_name='".$_POST['name']."' "))
+	if ($sql->db_Select("user", "*", "user_name='".$sql->escape(gpc("name", POST))."'"))
 	{
 		$error_message .= LAN_411."\\n";
 		$error = TRUE;
 		$name = "";
 	}
-	
-	if ($sql->db_Select("user", "*", "user_loginname='".$_POST['loginname']."' "))
+
+	if ($sql->db_Select("user", "*", "user_loginname='".$sql->escape(gpc("loginname", POST))."' "))
 	{
 		$error_message .= LAN_104."\\n";
 		$error = TRUE;
@@ -260,7 +260,7 @@ if (isset($_POST['register']))
 		}
 	}
 
-	if ($sql->db_Select("user", "user_email", "user_email='".$_POST['email']."' "))
+	if ($sql->db_Select("user", "user_email", "user_email='".$sql->escape(gpc("email", POST))."' "))
 	{
 		$error_message .= LAN_408."\\n";
 		$error = TRUE;
@@ -288,8 +288,8 @@ if (isset($_POST['register']))
      	$error = TRUE;
 	}
 
-	$wc = "*".trim(substr($_POST['email'], strpos($_POST['email'], "@")));
-	if ($sql->db_Select("banlist", "*", "banlist_ip='".$_POST['email']."' OR banlist_ip='$wc'"))
+	$wc = $sql->escape("*".trim(substr(gpc("email", POST), strpos(gpc("email", POST), "@"))));
+	if ($sql->db_Select("banlist", "*", "banlist_ip='".$sql->escape(gpc("email", POST))."' OR banlist_ip='{$wc}'"))
 	{
 		$brow = $sql -> db_Fetch();
 	 	$error = TRUE;
@@ -322,12 +322,12 @@ if (isset($_POST['register']))
 			exit;
 		}
 
-		if ($sql->db_Select("user", "*", "user_email='".$_POST['email']."' AND user_ban='1' ")) {
+		if ($sql->db_Select("user", "*", "user_email='".$sql->escape(gpc("email", POST))."' AND user_ban='1'")) {
 			exit;
 		}
 
-		$username = strip_tags($_POST['name']);
-		$loginname = strip_tags($_POST['loginname']);
+		$username = $sql->escape(strip_tags(gpc("name", POST)));
+		$loginname = $sql->escape(strip_tags(gpc("loginname", POST)));
 		$time = time();
 		$ip = $e107->getip();
 
@@ -340,15 +340,15 @@ if (isset($_POST['register']))
 		}
 
 		$u_key = md5(uniqid(rand(), 1));
-		$nid = $sql->db_Insert("user", "0, '".$username."', '$loginname', '', '".md5($_POST['password1'])."', '$u_key', '".$_POST['email']."', '".$_POST['signature']."', '".$_POST['image']."', '".$_POST['timezone']."', '".$_POST['hideemail']."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', '".$_POST['realname']."', '', '', '', '', '".$_POST['xupexist']."' ");
+		$nid = $sql->db_Insert("user", "0, '{$username}', '{$loginname}', '', '".md5(gpc("password1", POST))."', '{$u_key}', '".$sql->escape(gpc("email", POST))."', '".$sql->escape(gpc("signature", POST))."', '".$sql->escape(gpc("image", POST))."', '".$sql->escape(gpc("timezone", POST))."', '".$sql->escape(gpc("hideemail", POST))."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', '".$sql->escape(gpc("realname", POST))."', '', '', '', '', '".$sql->escape(gpc("xupexist", POST))."' ");
 		if(!$nid)
 		{
 			require_once(HEADERF);
-			$ns->tablerender("", LAN_SIGNUP_36); 
+			$ns->tablerender("", LAN_SIGNUP_36);
 			require_once(FOOTERF);
 		}
-		
-		
+
+
 		if ($pref['user_reg_veri'])
 		{
 
@@ -409,7 +409,7 @@ if (isset($_POST['register']))
 		{
 			require_once(HEADERF);
 
-			if(!$sql -> db_Select("user", "user_id", "user_name='$username' AND user_password='".md5($_POST['password1'])."' "))
+			if(!$sql -> db_Select("user", "user_id", "user_name='{$username}' AND user_password='".md5(gpc("password1", POST))."'"))
 			{
 				$ns->tablerender("", LAN_SIGNUP_36);
 				require_once(FOOTERF);
