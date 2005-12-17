@@ -11,13 +11,11 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/secure_img_render.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2005-12-17 16:04:20 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-
-if (!defined('e107_INIT')) { exit; }
 
 while (list($global) = each($GLOBALS))
 {
@@ -79,7 +77,8 @@ switch($type)
 }
 $text_color = ImageColorAllocate($image, 80, 80, 80);
 //ob_clean();
-// Header("Content-type: image/".$type);
+
+header("Content-type: image/".$type);
 ImageString ($image, 5, 12, 2, $code, $text_color);
 switch($type)
 {
@@ -95,4 +94,5 @@ switch($type)
 }
 ImageDestroy($image);
 die();
+
 ?>
