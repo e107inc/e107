@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/admin_config.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-09-02 13:36:16 $
-|     $Author: stevedunstan $
+|     $Revision: 1.12 $
+|     $Date: 2005-12-18 18:12:46 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -30,13 +30,8 @@ require_once(e_HANDLER."form_handler.php");
 require_once(e_HANDLER."userclass_class.php");
 
 if(isset($_POST)) {
-	function stripslashes_deep($value){
-		$value = is_array($value) ? array_map('stripslashes_deep', $value) : stripslashes($value);
-		return $value;
-	}
-	$_POST = stripslashes_deep($_POST);
+	$_POST = strip_if_magic($_POST);
 }
-
 
 $rs = new form;
 $poll = new poll;

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-12-14 19:28:52 $
-|     $Author: sweetas $
+|     $Revision: 1.37 $
+|     $Date: 2005-12-18 18:12:46 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -44,14 +44,14 @@ class poll
 		global $tp, $sql;
 		extract($_POST);
 
-		$poll_title = $tp -> toDB($poll_title);
+		$poll_title = $tp->toDB($poll_title);
 		$active_start = (!$_POST['startmonth'] || !$_POST['startday'] || !$_POST['startyear'] ? 0 : mktime (0, 0, 0, $_POST['startmonth'], $_POST['startday'], $_POST['startyear']));
 		$active_end = (!$_POST['endmonth'] || !$_POST['endday'] || !$_POST['endyear'] ? 0 : mktime (0, 0, 0, $_POST['endmonth'], $_POST['endday'], $_POST['endyear']));
 		$poll_options = "";
 
 		foreach($poll_option as $key => $value)
 		{
-			$poll_options .= $tp -> toDB($poll_option[$key]).chr(1);
+			$poll_options .= $tp->toDB($poll_option[$key]).chr(1);
 		}
 
 		if(POLLACTION == "edit")
@@ -73,7 +73,6 @@ class poll
 				}
 				$sql -> db_Update("polls", "poll_votes='".$foo['poll_votes']."' WHERE poll_id='".POLLID."' ");
 			}
-			
 	
 			$message = POLLAN_45;
 		} else {
