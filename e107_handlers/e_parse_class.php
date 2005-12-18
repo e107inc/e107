@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.113 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.114 $
+|     $Date: 2005-12-18 18:11:52 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -285,7 +285,7 @@ class e_parse
 		global $pref;
 
 
-		$text = str_replace(array("&#092;&quot;", "&#092;&#039;", "&#092;&#092;"), array("&quot;", "&#039;", "&#092;"), $text);
+		//$text = str_replace(array("&#092;&quot;", "&#092;&#039;", "&#092;&#092;"), array("&quot;", "&#039;", "&#092;"), $text);
 
 
 		// support for converting defines(constants) within text. eg. Lan_XXXX
