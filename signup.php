@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2005-12-21 21:27:32 $
+|     $Revision: 1.68 $
+|     $Date: 2005-12-21 21:33:19 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -98,11 +98,11 @@ if (e_QUERY)
 	if ($qs[0] == "activate")
 	{
 		$e107cache->clear("online_menu_totals");
-		if ($sql->db_Select("user", "*", "user_sess='".$sql->escape($qs[2])."' "))
+		if ($sql->db_Select("user", "*", "user_sess='".$sql->escape($qs[2], false)."' "))
 		{
 			if ($row = $sql->db_Fetch())
 			{
-				$sql->db_Update("user", "user_ban='0', user_sess='' WHERE user_sess='".$sql->escape($qs[2])."' ");
+				$sql->db_Update("user", "user_ban='0', user_sess='' WHERE user_sess='".$sql->escape($qs[2], false)."' ");
 				$e_event->trigger("userveri", $qs[2]);
 				require_once(HEADERF);
 				$text = LAN_401." <a href='index.php'>".LAN_SIGNUP_22."</a> ".LAN_SIGNUP_23."<br />".LAN_SIGNUP_24." ".SITENAME;
