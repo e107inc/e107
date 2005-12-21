@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/upload.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-11-02 17:49:48 $
+|     $Revision: 1.9 $
+|     $Date: 2005-12-21 17:03:51 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -98,8 +98,17 @@ $text .= "</select>
 	<td style='text-align:center' colspan='2' class='forumheader3'>";
 	
 $text .= "<b>".LAN_406."</b><br />".LAN_419.":";
-	
-$text .= " ".str_replace("\n", " | ", $pref['upload_allowedfiletype'])."<br />".LAN_407."<br />
+
+if (is_readable(e_ADMIN.'filetypes.php')) {
+	$a_filetypes = trim(file_get_contents(e_ADMIN.'filetypes.php'));
+	$a_filetypes = explode(',', $a_filetypes);
+	foreach ($a_filetypes as $ftype) {
+		$sa_filetypes[] = '.'.trim(str_replace('.', '', $ftype));
+	}
+	$allowed_filetypes = implode(' | ', $sa_filetypes);
+}
+
+$text .= " ".$allowed_filetypes."<br />".LAN_407."<br />
 	".LAN_418.($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'] : ini_get('upload_max_filesize'))."<br />";
 	
 $text .= "<span style='text-decoration:underline'>".LAN_408."</span> ".LAN_420."</td>

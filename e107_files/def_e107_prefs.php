@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/def_e107_prefs.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.46 $
+|     $Date: 2005-12-21 17:03:51 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -70,11 +70,6 @@ $pref = array (
   'im_width' => '120',
   'im_height' => '100',
   'upload_enabled' => '0',
-  'upload_allowedfiletype' => '.zip
-.gz
-.jpg
-.png
-.gif',
   'upload_storagetype' => '2',
   'upload_maxfilesize' => '',
   'upload_class' => '255',

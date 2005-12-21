@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.18 $
-|   $Date: 2005-12-14 17:37:34 $
+|   $Revision: 1.19 $
+|   $Date: 2005-12-21 17:03:51 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -29,14 +29,13 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "")
 
 	if (!$uploaddir) {$uploaddir = e_FILE."public/";}
 	if($uploaddir == e_THEME) {$pref['upload_storagetype'] = 1;}
-
-	$allowed_filetypes = ($pref['upload_allowedfiletype'] ? explode("\n", $pref['upload_allowedfiletype']) : array(".zip", ".gz", ".jpg", ".png", ".gif", ".txt"));
-
-	$a = 0;
-	foreach($allowed_filetypes as $v)
-	{
-		$allowed_filetypes[$a] = trim($v);
-		$a++;
+	
+	if (is_readable(e_ADMIN.'filetypes.php')) {
+		$a_filetypes = trim(file_get_contents(e_ADMIN.'filetypes.php'));
+		$a_filetypes = explode(',', $a_filetypes);
+		foreach ($a_filetypes as $ftype) {
+			$allowed_filetypes[] = '.'.trim(str_replace('.', '', $ftype));
+		}
 	}
 
 	if ($pref['upload_storagetype'] == "2" && $avatar == FALSE)
