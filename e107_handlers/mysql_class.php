@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-12-14 23:26:41 $
-|     $Author: streaky $
+|     $Revision: 1.50 $
+|     $Date: 2005-12-21 21:27:32 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.49 $
-* @author $Author: streaky $
+* @version $Revision: 1.50 $
+* @author $Author: sweetas $
 */
 class db {
 
@@ -656,7 +656,10 @@ class db {
 	 * @param string $data
 	 * @return string
 	 */
-	function escape($data) {
+	function escape($data, $gpc = true) {
+		if ($gpc) {
+			$data = strip_if_magic($data);
+		}
 		return mysql_real_escape_string($data);
 	}
 }
