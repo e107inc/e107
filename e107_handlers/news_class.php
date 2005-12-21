@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.67 $
-| $Date: 2005-12-14 17:37:34 $
+| $Revision: 1.68 $
+| $Date: 2005-12-21 20:48:43 $
 | $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -27,10 +27,10 @@ class news {
 		if (!is_object($tp)) $tp = new e_parse;
 		if (!is_object($sql)) $sql = new db;
 
-		$news['news_title'] = $tp->toDB($news['news_title'], TRUE);
-		$news['news_body'] = $tp->toDB($news['data'], TRUE);
-		$news['news_extended'] = $tp->toDB($news['news_extended'], TRUE);
-		$news['news_summary'] = $tp->toDB($news['news_summary'], TRUE);
+		$news['news_title'] = $tp->toDB($news['news_title']);
+		$news['news_body'] = $tp->toDB($news['data']);
+		$news['news_extended'] = $tp->toDB($news['news_extended']);
+		$news['news_summary'] = $tp->toDB($news['news_summary']);
 		if(!isset($news['news_sticky'])) {$news['news_sticky'] = 0;}
 		$author_insert = ($news['news_author'] == 0) ? "news_author = '".USERID."'," : "";
 
