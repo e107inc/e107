@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.98 $
-|   $Date: 2005-12-06 07:21:05 $
+|   $Revision: 1.99 $
+|   $Date: 2005-12-21 17:28:34 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 
@@ -167,7 +167,7 @@ if (isset($_POST['create_category'])) {
 			closedir($handle);
 			$_POST['category_button'] = $iconlist[0];
 		}
-		$_POST['category_name'] = $tp->toDB($_POST['category_name'], TRUE);
+		$_POST['category_name'] = $tp->toDB($_POST['category_name']);
 		$sql->db_Insert("news_category", "'0', '".$_POST['category_name']."', '".$_POST['category_button']."'");
 		$newspost->show_message(NWSLAN_35);
 	}
@@ -176,7 +176,7 @@ if (isset($_POST['create_category'])) {
 if (isset($_POST['update_category'])) {
 	if ($_POST['category_name']) {
 		$category_button = ($_POST['category_button'] ? $_POST['category_button'] : "");
-		$_POST['category_name'] = $tp->toDB($_POST['category_name'], TRUE);
+		$_POST['category_name'] = $tp->toDB($_POST['category_name']);
 		$sql->db_Update("news_category", "category_name='".$_POST['category_name']."', category_icon='".$category_button."' WHERE category_id='".$_POST['category_id']."'");
 		$newspost->show_message(NWSLAN_36);
 	}
