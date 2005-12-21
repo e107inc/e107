@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.83 $
-|		$Date: 2005-12-14 19:28:43 $
-|		$Author: sweetas $
+|		$Revision: 1.84 $
+|		$Date: 2005-12-21 20:49:26 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -374,7 +374,7 @@ class content{
 
 			foreach($_POST as $k => $v){
 				if(strpos($k, "content_") === 0){
-					$content_pref[$k] = $tp->toDB($v, true);
+					$content_pref[$k] = $tp->toDB($v);
 				}
 			}
 
