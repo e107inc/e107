@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2005-11-20 22:47:48 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.32 $
+|     $Date: 2005-12-21 21:00:18 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -175,7 +175,7 @@ if(isset($_POST['submit_forum']))
 {
 	$mods = $_POST['forum_moderators'];
 	$_POST['forum_name'] = $tp->toDB($_POST['forum_name']);
-	$_POST['forum_description'] = $tp->toDB($_POST['forum_description'], "admin");
+	$_POST['forum_description'] = $tp->toDB($_POST['forum_description']);
 	$sql->db_Insert("forum", "0, '".$_POST['forum_name']."', '".$_POST['forum_description']."', '".$_POST['forum_parent']."', '0', '".time()."', '".$mods."', 0, 0, '', '', '".$_POST['forum_class']."', 0, '{$_POST['forum_postclass']}'");
 	$forum->show_message(FORLAN_11);
 }

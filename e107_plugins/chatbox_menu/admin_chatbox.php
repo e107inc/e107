@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/admin_chatbox.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-12-06 01:06:09 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2005-12-21 21:00:17 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -33,7 +33,7 @@ require_once(e_HANDLER."userclass_class.php");
 if (isset($_POST['updatesettings'])) {
 
 	$pref['chatbox_posts'] = $_POST['chatbox_posts'];
-	$pref['cb_linkc'] = $tp->toDB($_POST['cb_linkc'], "admin");
+	$pref['cb_linkc'] = $tp->toDB($_POST['cb_linkc']);
 	$pref['cb_linkreplace'] = $_POST['cb_linkreplace'];
 	$pref['cb_layer'] = $_POST['cb_layer'];
 	$pref['cb_layer_height'] = ($_POST['cb_layer_height'] ? $_POST['cb_layer_height'] : 200);
