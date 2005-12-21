@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.116 $
-|     $Date: 2005-12-21 18:02:31 $
+|     $Revision: 1.117 $
+|     $Date: 2005-12-21 18:03:42 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,8 @@ class e_parse
 	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
 	var $e_query;
 
-	function toDB($data, $no_encode = false, $nostrip = false){
+	function toDB($data, $no_encode = false, $nostrip = false)
+	{
 		global $pref;
 		if (is_array($data)) {
 			// recursively run toDB (for arrays)
