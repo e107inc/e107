@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_Compat_handler.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.13 $
+|     $Date: 2005-12-21 20:48:43 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -154,9 +154,7 @@ class textparse {
 			$db_debug->aDeprecatiated();
 		}
 		global $tp;
-		$no_encode = ($mode == 'admin') ? TRUE :
-		FALSE;
-		return $tp->toDB($text, $no_encode);
+		return $tp->toDB($text);
 	}
 
 	function formtparev($text) {
