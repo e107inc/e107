@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.240 $
-|     $Date: 2005-12-16 23:48:40 $
-|     $Author: lisa_ $
+|     $Revision: 1.241 $
+|     $Date: 2005-12-21 21:27:32 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -1324,44 +1324,14 @@ class error_handler {
 }
 
 /**
- * Get data from the GPC arrays, slashes stripped if magic_quotes_gpc is enabled.
- *
- * @param string $var
- * @param string $type
- * @return mixed
- */
-function gpc($var, $type = GET) {
-	switch ($type) {
-		case GET:
-			if(!isset($_GET[$var])) {
-				return false;
-			}
-			return strip_if_magic($_GET[$var]);
-		break;
-		case POST:
-			if(!isset($_POST[$var])) {
-				return false;
-			}
-			return strip_if_magic($_POST[$var]);
-		break;
-		case COOKIE:
-			if(!isset($_COOKIE[$var])) {
-				return false;
-			}
-			return strip_if_magic($_COOKIE[$var]);
-		break;
-	}
-}
-
-/**
  * Strips slashes from a var if magic_quotes_gqc is enabled
  *
  * @param mixed $data
  * @return mixed
  */
 function strip_if_magic($data) {
-	if(ini_get("magic_quotes_gpc") == true) {
-		return stripslashes_deep($data);
+	if (ini_get("magic_quotes_gpc") == true) {
+		return array_stripslashes($data);
 	} else {
 		return $data;
 	}
@@ -1373,8 +1343,8 @@ function strip_if_magic($data) {
  * @param mixed $value
  * @return mixed
  */
-function stripslashes_deep($data) {
-	return is_array($data) ? array_map('stripslashes_deep', $data) : stripslashes($data);
+function array_stripslashes($data) {
+	return is_array($data) ? array_map('array_stripslashes', $data) : stripslashes($data);
 }
 
 $sql->db_Mark_Time('(After class2)');
