@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/upload.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-12-21 17:03:51 $
+|     $Revision: 1.10 $
+|     $Date: 2005-12-21 22:32:00 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ if (isset($_POST['upload'])) {
 				$poster = (USER ? USERID.".".USERNAME : "0".$_POST['file_poster']);
 				$_POST['file_email'] = ($_POST['file_email'] ? $_POST['file_email'] : USEREMAIL);
 				$_POST['file_description'] = $tp->toDB($_POST['file_description']);
-				$sql->db_Insert("upload", "0, '$poster', '".$_POST['file_email']."', '".$_POST['file_website']."', '".time()."', '".$_POST['file_name']."', '".$_POST['file_version']."', '".$file."', '".$image."', '".$_POST['file_description']."', '".$_POST['file_demo']."', '".$filesize."', 0, '".$_POST['download_category']."'");
+				$sql->db_Insert("upload", "0, '".$tp -> toDB($poster)."', '".check_email($_POST['file_email'])."', '".$tp -> toDB($_POST['file_website'])."', '".time()."', '".$tp -> toDB($_POST['file_name'])."', '".$tp -> toDB($_POST['file_version'])."', '".$file."', '".$image."', '".$tp -> toDB($_POST['file_description'])."', '".$tp -> toDB($_POST['file_demo'])."', '".$filesize."', 0, '".$tp -> toDB($_POST['download_category'])."'");
 				$message .= "<br />".LAN_404;
 			}
 		}

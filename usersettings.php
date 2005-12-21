@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2005-12-11 04:38:53 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.57 $
+|     $Date: 2005-12-21 22:32:00 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -189,7 +189,7 @@ if (isset($_POST['updatesettings']))
 	  	$error .= LAN_106."\\n";
 	}
 
-	if ($sql->db_Select("user", "user_name, user_email", "user_email='".$_POST['email']."' AND user_id !=".USERID."' ")) {
+	if ($sql->db_Select("user", "user_name, user_email", "user_email='".check_email($_POST['email'])."' AND user_id !=".USERID."' ")) {
 	  	$error .= LAN_408."\\n";
 	}
 
@@ -250,7 +250,7 @@ if (isset($_POST['updatesettings']))
 		$ret = $e_event->trigger("preuserset", $_POST);
 		if(trim($_POST['user_xup']) != "")
 		{
-			if($sql->db_Select('user', 'user_xup', "user_id = '{$inp}'"))
+			if($sql->db_Select('user', 'user_xup', "user_id = '".$sql->escape($inp, false)."'"))
 			{
 				$row = $sql->db_Fetch();
 				$update_xup = ($row['user_xup'] != $_POST['user_xup']) ? TRUE : FALSE;
@@ -259,29 +259,29 @@ if (isset($_POST['updatesettings']))
 
 		if ($ret == '')
 		{
-			$sql->db_Update("user", "user_name='$username' {$pwreset} {$sesschange}, user_email='".$_POST['email']."', user_signature='".$_POST['signature']."', user_image='".$_POST['image']."', user_timezone='".$_POST['user_timezone']."', user_hideemail='".$_POST['hideemail']."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$_POST['user_xup']."' WHERE user_id='".$inp."' ");
+			$sql->db_Update("user", "user_name='".$sql->escape($username)."' {$pwreset} ".$sql->escape($sesschange).", user_email='".check_email($_POST['email'])."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['user_timezone'])."', user_hideemail='".$tp -> toDB($_POST['hideemail'])."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".$sql->escape($inp, false)."' ");
 			// If user has changed display name, update the record in the online table
 			if($username != USERNAME)
 			{
-				$sql->db_Update("online", "online_user_id = '".USERID.".{$username}' WHERE online_user_id = '".USERID.".".USERNAME."'");
+				$sql->db_Update("online", "online_user_id = '".USERID.".".$sql->escape($username)."' WHERE online_user_id = '".USERID.".".USERNAME."'");
 			}
 
 			if(ADMIN && getperms("4"))
 			{
-				$sql -> db_Update("user", "user_loginname='$loginname' WHERE user_id='$inp' ");
+				$sql -> db_Update("user", "user_loginname='".$sql->escape($loginname)."' WHERE user_id='".$sql->escape($inp, false)."' ");
 			}
 
 			if($ue_fields)
 			{
-				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('{$inp}')");
-				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '{$inp}'");
+				$sql->db_Select_gen("INSERT INTO #user_extended (user_extended_id) values ('".$sql->escape($inp, false)."')");
+				$sql->db_Update("user_extended", $ue_fields." WHERE user_extended_id = '".$sql->escape($inp, false)."'");
 			}
 
 			// Update Userclass =======
 			if (!$_uid && $sql->db_Select("userclass_classes", "*", "userclass_editclass IN (".USERCLASS_LIST.")"))
 			{
 				$ucList = $sql->db_getList();
-				if ($sql->db_Select("user", "user_class", "user_id = '{$inp}'"))
+				if ($sql->db_Select("user", "user_class", "user_id = '".$sql->escape($inp, false)."'"))
 				{
 					$row = $sql->db_Fetch();
 					$cur_classes = explode(",", $row['user_class']);
@@ -300,7 +300,7 @@ if (isset($_POST['updatesettings']))
 					}
 					$newclist = array_keys($newclist);
 					$nid = implode(',', array_diff($newclist, array('')));
-					$sql->db_Update("user", "user_class='$nid' WHERE user_id='{$inp}'");
+					$sql->db_Update("user", "user_class='".$sql->escape($nid, false)."' WHERE user_id='".$sql->escape($inp, false)."'");
 				}
 			}
 			
@@ -348,7 +348,7 @@ $uuid = ($_uid) ? $_uid : USERID;
 $qry = "
 SELECT u.*, ue.* FROM #user AS u
 LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id
-WHERE u.user_id='{$uuid}'
+WHERE u.user_id='".$sql->escape($uuid, false)."'
 ";
 
 $sql->db_Select_gen($qry);
