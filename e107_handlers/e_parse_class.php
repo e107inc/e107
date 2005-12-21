@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.115 $
-|     $Date: 2005-12-21 17:57:40 $
+|     $Revision: 1.116 $
+|     $Date: 2005-12-21 18:02:31 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -40,7 +40,7 @@ class e_parse
 		} else {
 			if (MAGIC_QUOTES_GPC == TRUE && $nostrip == false)
 			{
-				$text = stripslashes($text);
+				$data = stripslashes($data);
 			}
 			if(isset($pref['post_html']) && check_class($pref['post_html']))
 			{
@@ -50,12 +50,12 @@ class e_parse
 			{
 				$search = array('$', '"', "'", '\\', '<?');
 				$replace = array('&#036;','&quot;','&#039;', '&#092;', '&lt?');
-				$ret = str_replace($search, $replace, $text);
+				$ret = str_replace($search, $replace, $data);
 			}
 			else
 			{
-				$text = htmlentities($text, ENT_QUOTES, CHARSET);
-				$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $text);
+				$data = htmlentities($data, ENT_QUOTES, CHARSET);
+				$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 			}
 		}
 		return $ret;
