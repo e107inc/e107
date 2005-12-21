@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.20 $
-|    $Date: 2005-12-14 19:28:44 $
-|    $Author: sweetas $
+|    $Revision: 1.21 $
+|    $Date: 2005-12-21 20:49:26 $
+|    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -123,7 +123,7 @@ class linkclass {
 			//assign new preferences
 			foreach($_POST as $k => $v){
 				if(strpos($k, "link_") === 0){
-					$linkspage_pref[$k] = $tp->toDB($v, true);
+					$linkspage_pref[$k] = $tp->toDB($v);
 				}
 			}
 
@@ -363,16 +363,16 @@ class linkclass {
 
 	function dbCategoryCreate($_POST) {
 		global $sql, $tp;
-		$_POST['link_category_name']		= $tp->toDB($_POST['link_category_name'], "admin");
-		$_POST['link_category_description']	= $tp->toDB($_POST['link_category_description'], TRUE);
+		$_POST['link_category_name']		= $tp->toDB($_POST['link_category_name']);
+		$_POST['link_category_description']	= $tp->toDB($_POST['link_category_description']);
 		$link_t								= $sql->db_Count("links_page_cat", "(*)");
 		$sql->db_Insert("links_page_cat", " '0', '".$_POST['link_category_name']."', '".$_POST['link_category_description']."', '".$_POST['link_category_icon']."', '".($link_t+1)."', '".$_POST['link_category_class']."', '".time()."' ");
 		$this->show_message(LCLAN_ADMIN_4);
 	}
 	function dbCategoryUpdate($_POST) {
 		global $sql, $tp;
-		$_POST['link_category_name']		= $tp->toDB($_POST['link_category_name'], TRUE);
-		$_POST['link_category_description']	= $tp->toDB($_POST['link_category_description'], TRUE);
+		$_POST['link_category_name']		= $tp->toDB($_POST['link_category_name']);
+		$_POST['link_category_description']	= $tp->toDB($_POST['link_category_description']);
 		$time = ($_POST['update_datestamp'] ? time() : ($_POST['link_category_datestamp'] != "0" ? $_POST['link_category_datestamp'] : time()) );
 		$sql->db_Update("links_page_cat", "link_category_name ='".$_POST['link_category_name']."', link_category_description='".$_POST['link_category_description']."', link_category_icon='".$_POST['link_category_icon']."', link_category_order='".$_POST['link_category_order']."', link_category_class='".$_POST['link_category_class']."', link_category_datestamp='".$time."'	WHERE link_category_id='".$_POST['link_category_id']."'");
 		$this->show_message(LCLAN_ADMIN_5);
@@ -429,10 +429,10 @@ class linkclass {
 	function dbLinkCreate($mode='') {
 		global $ns, $tp, $qs, $sql, $e107cache, $e_event, $linkspage_pref;
 
-		$link_name			= $tp->toDB($_POST['link_name'], TRUE);
-		$link_url			= $tp->toDB($_POST['link_url'], TRUE);
-		$link_description	= $tp->toDB($_POST['link_description'], TRUE);
-		$link_button		= $tp->toDB($_POST['link_but'], TRUE);
+		$link_name			= $tp->toDB($_POST['link_name']);
+		$link_url			= $tp->toDB($_POST['link_url']);
+		$link_description	= $tp->toDB($_POST['link_description']);
+		$link_button		= $tp->toDB($_POST['link_but']);
 		
 		if (!strstr($link_url, "http")) {
 			$link_url = "http://".$link_url;
