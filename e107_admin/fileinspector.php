@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-12-01 19:09:14 $
+|     $Revision: 1.34 $
+|     $Date: 2005-12-21 20:57:33 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -561,7 +561,7 @@ class file_inspector {
 						}
 						foreach ($stext['lines'] as $rkey => $rvalue) {
 							if ($_POST['num']) {
-								$text .= "[".$rkey."] ";
+								$text .= "[".($rkey + 1)."] ";
 							}
 							if ($_POST['line']) {
 								$text .= htmlspecialchars($rvalue)."<br />";
