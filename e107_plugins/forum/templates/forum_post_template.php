@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_post_template.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-12-14 19:28:44 $
+|     $Revision: 1.14 $
+|     $Date: 2005-12-21 17:03:51 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -46,7 +46,7 @@ if(is_readable(e_PLUGIN."poll/poll_class.php")) {
 // finally, file attach is optional, again only change this if you know what you're doing ...
 $fileattach = "<tr><td colspan='2' class='nforumcaption2'>".($pref['image_post'] ? LAN_390 : LAN_416)."</td></tr>
 <tr><td style='width:20%' class='forumheader3'>".LAN_392."</td>
-<td style='width:80%' class='forumheader3'>".LAN_393." | ".str_replace("\n", " | ", $pref['upload_allowedfiletype'])." |<br />".LAN_394."<br />".LAN_395.": ".($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'].LAN_396 : ini_get('upload_max_filesize'))."
+<td style='width:80%' class='forumheader3'>".LAN_393." | ".$allowed_filetypes." |<br />".LAN_394."<br />".LAN_395.": ".($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'].LAN_396 : ini_get('upload_max_filesize'))."
 <br />
 
 <div id='fiupsection'>

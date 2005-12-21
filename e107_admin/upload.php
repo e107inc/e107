@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/upload.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-11-02 03:02:28 $
+|     $Revision: 1.16 $
+|     $Date: 2005-12-21 17:03:51 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -87,7 +87,6 @@ if (isset($_POST['optionsubmit'])) {
 
 	$pref['upload_storagetype'] = $_POST['upload_storagetype'];
 	$pref['upload_maxfilesize'] = $_POST['upload_maxfilesize'];
-	$pref['upload_allowedfiletype'] = $_POST['upload_allowedfiletype'];
 	$pref['upload_class'] = $_POST['upload_class'];
 	$pref['upload_enabled'] = (FILE_UPLOADS ? $_POST['upload_enabled'] : 0);
 	if ($pref['upload_enabled'] && !$sql->db_Select("links", "*", "link_url='upload.php' ")) {
@@ -254,6 +253,10 @@ $ns->tablerender(UPLLAN_43, $text);
 
 // options -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+if (is_readable(e_ADMIN.'filetypes.php')) {
+	$allowed_filetypes = trim(file_get_contents(e_ADMIN.'filetypes.php'));
+}
+
 $text = "<div style='text-align:center'>
 	<form method='post' action='".e_SELF."'>
 	<table style='".ADMIN_WIDTH."' class='fborder'>
@@ -280,8 +283,8 @@ $text = "<div style='text-align:center'>
 
 	<tr>
 	<td style='width:70%' class='forumheader3'>".UPLLAN_35."<br />
-	<span class='smalltext'>".UPLLAN_36."</span></td>
-	<td style='width:30%' class='forumheader3'>". $rs->form_textarea("upload_allowedfiletype", 20, 5, $pref['upload_allowedfiletype'])."
+	<span class='smalltext'>".UPLLAN_48."</span></td>
+	<td style='width:30%' class='forumheader3'>".$allowed_filetypes."
 	</td>
 	</tr>
 

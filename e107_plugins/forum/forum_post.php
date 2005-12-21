@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2005-12-09 14:41:59 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.57 $
+|     $Date: 2005-12-21 17:03:51 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -110,6 +110,15 @@ $forum_info['forum_name'] = $tp -> toHTML($forum_info['forum_name'], TRUE);
 define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']." / ".($action == "rp" ? LAN_02.$forum_info['thread_name'] : LAN_03));
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+if (is_readable(e_ADMIN.'filetypes.php')) {
+	$a_filetypes = trim(file_get_contents(e_ADMIN.'filetypes.php'));
+	$a_filetypes = explode(',', $a_filetypes);
+	foreach ($a_filetypes as $ftype) {
+		$sa_filetypes[] = '.'.trim(str_replace('.', '', $ftype));
+	}
+	$allowed_filetypes = implode(' | ', $sa_filetypes);
+}
 
 if (isset($_POST['submitpoll']))
 {
