@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.114 $
-|     $Date: 2005-12-18 18:11:52 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.115 $
+|     $Date: 2005-12-21 17:57:40 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -30,39 +30,33 @@ class e_parse
 	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
 	var $e_query;
 
-	function parse_toDB($text, $no_encode = FALSE, $nostrip = false)
-	{
-		global $pref;
-		if (MAGIC_QUOTES_GPC == TRUE && $nostrip == false)
-		{
-			$text = stripslashes($text);
-		}
-		if(isset($pref['post_html']) && check_class($pref['post_html']))
-		{
-			$no_encode = TRUE;
-		}
-		if (getperms("0") || $no_encode === TRUE)
-		{
-			$search = array('$', '"', "'", '\\', '<?');
-			$replace = array('&#036;','&quot;','&#039;', '&#092;', '&lt?');
-			$text = str_replace($search, $replace, $text);
-		}
-		else
-		{
-			$text = htmlentities($text, ENT_QUOTES, CHARSET);
-			$text = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $text);
-		}
-		return $text;
-	}
-
-	// recursively run toDB (for arrays)
 	function toDB($data, $no_encode = false, $nostrip = false){
+		global $pref;
 		if (is_array($data)) {
+			// recursively run toDB (for arrays)
 			foreach ($data as $key => $var) {
 				$ret[$key] = $this -> toDB($var, $no_encode, $nostrip);
 			}
 		} else {
-			$ret = $this -> parse_toDB($data, $no_encode, $nostrip);
+			if (MAGIC_QUOTES_GPC == TRUE && $nostrip == false)
+			{
+				$text = stripslashes($text);
+			}
+			if(isset($pref['post_html']) && check_class($pref['post_html']))
+			{
+				$no_encode = TRUE;
+			}
+			if (getperms("0") || $no_encode === TRUE)
+			{
+				$search = array('$', '"', "'", '\\', '<?');
+				$replace = array('&#036;','&quot;','&#039;', '&#092;', '&lt?');
+				$ret = str_replace($search, $replace, $text);
+			}
+			else
+			{
+				$text = htmlentities($text, ENT_QUOTES, CHARSET);
+				$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $text);
+			}
 		}
 		return $ret;
 	}
