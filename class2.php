@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.241 $
-|     $Date: 2005-12-21 21:27:32 $
-|     $Author: sweetas $
+|     $Revision: 1.242 $
+|     $Date: 2005-12-22 11:49:52 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -950,7 +950,6 @@ class e_online {
 				$row['online_pagecount'] = 1;
 			}
 			if ($row['online_pagecount'] > $online_bancount && $row['online_ip'] != "127.0.0.1") {
-				echo "HERE";
 				$sql->db_Insert("banlist", "'{$ip}', '0', 'Hit count exceeded ({$row['online_pagecount']} requests within allotted time)' ");
 				$e_event->trigger("flood", $ip);
 				exit;
