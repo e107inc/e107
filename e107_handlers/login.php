@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.28 $
+|     $Date: 2005-12-22 09:54:32 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -66,9 +66,9 @@ class userlogin {
 			$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
 			$ouserpass = $userpass;
 			$userpass = md5($ouserpass);
-			
+
 			$username = substr($username, 0, 30);
-			
+
 			// This is only required for upgrades and only for those not using utf-8 to begin with..
 			if(isset($pref['utf-compatmode']) && (CHARSET == "utf-8" || CHARSET == "UTF-8")){
 				$username = utf8_decode($username);
@@ -87,10 +87,8 @@ class userlogin {
 			}
 			else if(!$sql->db_Select("user", "*", "user_loginname = '{$username}' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
 				define("LOGINMESSAGE", LAN_302."<br /><br />");
-				if($pref['autoban'] == 1 || $pref['autoban'] == 3){ // Flood + Login or Login Only.
-					$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": {$username}'");
+                	$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": {$username}'");
 					$this -> checkibr($fip);
-				}
 				return FALSE;
 			} else {
 				$ret = $e_event->trigger("preuserlogin", $username);
@@ -145,11 +143,13 @@ class userlogin {
 	}
 
 	function checkibr($fip) {
-		global $sql;
-		$fails = $sql -> db_Count("generic", "(*)", "WHERE gen_ip='$fip' ");
-		if($fails > 10) {
-			$sql -> db_Insert("banlist", "'$fip', '1', '".LAN_LOGIN_18."' ");
-			$sql -> db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_20.": $username, ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+		global $sql,$pref;
+		if($pref['autoban'] == 1 || $pref['autoban'] == 3){ // Flood + Login or Login Only.
+	   		$fails = $sql -> db_Count("generic", "(*)", "WHERE gen_ip='$fip' AND gen_type='failed_login' ");
+			if($fails > 10) {
+				$sql -> db_Insert("banlist", "'$fip', '1', '".LAN_LOGIN_18."' ");
+		   		$sql -> db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_20.": $username, ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+			}
 		}
 	}
 
