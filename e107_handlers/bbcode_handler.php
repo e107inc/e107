@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.34 $
+|     $Date: 2005-12-23 21:56:55 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -58,6 +58,11 @@ class e_bbcode
 		while($this->List[count($this->List)-1]{0} == "*")
 		{
 			array_unshift($this->List, array_pop($this->List));
+		}
+		if($_c = array_search('code', $this->List))
+		{
+			unset($this->List[$c]);
+			array_unshift($this->List, "code");
 		}
 	}
 
