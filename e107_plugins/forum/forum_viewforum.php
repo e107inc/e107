@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-11-18 19:01:27 $
+|     $Revision: 1.44 $
+|     $Date: 2005-12-23 22:17:53 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -209,7 +209,8 @@ if(is_array($sub_list))
 	$SUBFORUMS = $FORUM_VIEW_SUB_START.$sub_info.$FORUM_VIEW_SUB_END;
 }
 
-if ($thread_list) {
+if (count($thread_list))
+{
 	foreach($thread_list as $thread_info) {
 		$idArray[] = $thread_info['thread_id'];
 	}
@@ -231,8 +232,10 @@ if ($thread_list) {
 		}
 		$forum_view_forum .= parse_thread($thread_info);
 	}
-} else {
-	$forum_view_forum .= parse_thread($thread_info);
+}
+else
+{
+	$forum_view_forum .= "<tr><td class='forumheader' colspan='6'>".LAN_58."</td></tr>";
 }
 	
 $sql->db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
@@ -267,8 +270,7 @@ function parse_thread($thread_info)
 	$VIEWS = $thread_info['thread_views'];
 	$REPLIES = $thread_info['thread_total_replies'];
 
-//	print_a($thread_info);
-	 
+ 
 	if ($REPLIES)
 	{
 		$lastpost_datestamp = $gen->convert_date($thread_info['thread_lastpost'], 'forum');
