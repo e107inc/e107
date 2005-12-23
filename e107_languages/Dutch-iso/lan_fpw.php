@@ -18,7 +18,7 @@
 define("PAGE_NAME", "Wachtwoord vernieuwen");
 define("LAN_02", "Sorry, kon geen mailtje versturen - neem contact op met de beheerder.");
 define("LAN_03", "Wachtwoord vernieuwen");
-define("LAN_05", "Om je wachtword te vernieuwen moet je de volgende informatie verschaffen");
+define("LAN_05", "Om je wachtwoord te vernieuwen moet je de volgende informatie verschaffen");
 define("LAN_06", "Wachtwoord wijzigingspoging");
 define("LAN_07", "Iemand met ip-adres ");
 define("LAN_08", "probeerde het wachtwoord van de hoofdbeheerder te laten wijzigen.");

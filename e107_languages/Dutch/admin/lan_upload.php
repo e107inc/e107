@@ -55,6 +55,10 @@ define("UPLLAN_42", "Acties");
 define("UPLLAN_43", "Uploads");
 define("UPLLAN_44", "Upload");
 define("UPLLAN_45", "Weet je zeker dat je het volgende bestand wilt verwijderen...");
+
+define("UPLLAN_48", "Als beveiligingsmaatregel zijn de toegestane bestandsformaten vanuit de database verplaatst naar een plat bestand in je admin directory. Om die te gebruiken moet je het bestand e107_admin/filetypes_.php hernoemen als e107_admin/filetypes.php 
+en een comma-gelimiteerde lijst met bestandsextensies daarin opnemen. Het uploaden van .html,  .txt, enz. moet je zien te voorkomen omdat een aanvaller een bestand van zo'n soort, waarin kwaadaardige code is verstopt, kan uploaden . Je moet natuurlijk ook het uploaden van  .php bestanden en andere uitvoerbare scripts onmogelijk maken.");
+
 define("UPLAN_COPYTODLM", "kopieer naar de download manager");
 define("UPLAN_IS", "is ");
 define("UPLAN_ARE", "zijn ");

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/Dutch.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-22 19:32:12 $
+|     $Revision: 1.3 $
+|     $Date: 2005-12-23 19:42:16 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ define("ADSTAT_L16", "Verwijzingsstats");
 define("ADSTAT_L17", "Stats zoektermen");
 define("ADSTAT_L18", "Recente bezoekers");
 define("ADSTAT_L19", "Pagina");
-define("ADSTAT_L20", "Bezoeken vanaadg");
+define("ADSTAT_L20", "Bezoeken vandaag");
 define("ADSTAT_L21", "Totaal");
 define("ADSTAT_L22", "Uniek");
 define("ADSTAT_L23", "Totaal aantal bezoeken");
