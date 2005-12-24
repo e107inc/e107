@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.242 $
-|     $Date: 2005-12-22 11:49:52 $
-|     $Author: e107coders $
+|     $Revision: 1.243 $
+|     $Date: 2005-12-24 16:44:07 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -847,7 +847,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 			}
 
 			// traverse the pref array, with toDB on everything
-			$_pref = $tp -> toDB($pref, true);
+			$_pref = $tp -> toDB($pref, true, true);
 			// Create the data to be stored
 			$PrefCache1 = $eArrayStorage->WriteArray($_pref);
 			if(!$sql->db_Update('core', "e107_value='{$PrefCache1}' WHERE e107_name = 'SitePrefs'")){
