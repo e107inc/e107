@@ -60,5 +60,17 @@ browse : 'סייר',
 image_props_desc : 'מאפייני תמונה',
 newdocument_desc : 'מסמך חדש',
 class_name : 'מחלקה',
-newdocument : 'האם אתה בטוח שברצונך לנקות את כל התוכן?'
+newdocument : 'האם אתה בטוח שברצונך לנקות את כל התוכן?',
+about_title : 'אודות TinyMCE',
+about : 'אודות',
+license : 'רישיון',
+plugins : 'תוספים',
+plugin : 'תוסף',
+author : 'מחבר',
+version : 'גרסה',
+loaded_plugins : 'תוספים פעילים',
+help : 'עזרה',
+not_set : '-- לא מוגדר --',
+close : 'סגירה',
+toolbar_focus : 'עבור אל כפתורי הכלים - Alt+Q, עבור אל העורך - Alt-Z, עבור אל נתיב עיצוב - Alt-X'
 });

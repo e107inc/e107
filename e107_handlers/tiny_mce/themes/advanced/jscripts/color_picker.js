@@ -1,3 +1,8 @@
+function init() {
+	if (tinyMCE.isMSIE)
+		tinyMCEPopup.resizeToInnerSize();
+}
+
 function selectColor() {
 	var color = document.getElementById("selectedColorBox").value;
 
@@ -41,7 +46,7 @@ var colors = new Array(
 );
 
 function convertRGBToHex(col) {
-	var re = new RegExp("rgb\\W*\\(\\W*([0-9]+).*,\\W*([0-9]+).*,\\W*([0-9]+).*\\)", "gi");
+	var re = new RegExp("rgb\\s*\\(\\s*([0-9]+).*,\\s*([0-9]+).*,\\s*([0-9]+).*\\)", "gi");
 
 	var rgb = col.replace(re, "$1,$2,$3").split(',');
 	if (rgb.length == 3) {
@@ -81,8 +86,8 @@ function renderColorMap() {
 		+ '<tr>';
 	for (var i=0; i<colors.length; i++) {
 		html += '<td bgcolor="' + colors[i] + '">'
-			+ '<a href="#top" onclick="selectColor();return false;" onmouseover="showColor(\'' + colors[i] +  '\');">'
-			+ '<img border="0" src="images/spacer.gif" width="10" height="10" /></a></td>';
+			+ '<a href="javascript:selectColor();" onfocus="showColor(\'' + colors[i] +  '\');" onmouseover="showColor(\'' + colors[i] +  '\');">'
+			+ '<img border="0" src="images/spacer.gif" width="10" height="10" title="' + colors[i] +  '" alt="' + colors[i] +  '" /></a></td>';
 		if ((i+1) % 18 == 0)
 			html += '</tr><tr>';
 	}

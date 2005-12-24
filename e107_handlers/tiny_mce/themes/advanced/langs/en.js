@@ -25,7 +25,7 @@ insert_image_align_absmiddle : 'Absolute Middle',
 insert_image_align_absbottom : 'Absolute Bottom',
 insert_image_align_left : 'Left',
 insert_image_align_right : 'Right',
-theme_font_size : 'Font size',
+theme_font_size : '-- Font size --',
 theme_fontdefault : '-- Font family --',
 theme_block : '-- Format --',
 theme_paragraph : 'Paragraph',
@@ -71,5 +71,6 @@ version : 'Version',
 loaded_plugins : 'Loaded plugins',
 help : 'Help',
 not_set : '-- Not set --',
-close : 'Close'
+close : 'Close',
+toolbar_focus : 'Jump to tool buttons - Alt+Q, Jump to editor - Alt-Z, Jump to element path - Alt-X'
 });

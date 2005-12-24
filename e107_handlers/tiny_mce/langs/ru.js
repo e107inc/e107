@@ -1,16 +1,16 @@
-// Russian translation by Roman Filippov
-// romanf@terrahost.ca
-// www.hunox.ca
+// Russian windows-1251 translation by Vladimir Vitkovsky
+// admin@transport.su
+// www.webgui.uanet.biz
 
 tinyMCE.addToLang('',{
 bold_desc : 'Полужирный',
 italic_desc : 'Курсив',
-underline_desc : 'Подчеркивание',
-striketrough_desc : 'Перечеркивание',
-justifyleft_desc : 'Вырвнивание влево',
-justifycenter_desc : 'Вырвнивание по центру',
-justifyright_desc : 'Вырвнивание вправо',
-justifyfull_desc : 'Вырвнивание равномерно',
+underline_desc : 'Подчеркнутый',
+striketrough_desc : 'Перечеркнутый',
+justifyleft_desc : 'Выравнивание влево',
+justifycenter_desc : 'Выравнивание по центру',
+justifyright_desc : 'Выравнивание вправо',
+justifyfull_desc : 'Равномерное заполнение',
 bullist_desc : 'Маркированный список',
 numlist_desc : 'Нумерованный список',
 outdent_desc : 'Уменьшить отступ',
@@ -20,24 +20,24 @@ redo_desc : 'Вернуть',
 link_desc : 'Вставить/изменить ссылку',
 unlink_desc : 'Убрать ссылку',
 image_desc : 'Вставить/изменить изображение',
-cleanup_desc : 'Вычистить грязный код',
-focus_alert : 'Вы должны находится в поле редактора перед использованием данной команды.',
-edit_confirm : 'Хотите ли Вы воспользоваться WYSIWYG редактором для этого поля ввода?',
+cleanup_desc : 'Подчистить избыточный код',
+focus_alert : 'Для использования данной команды Вы должны находится в поле редактора.',
+edit_confirm : 'Хотите ли Вы редактировать в визуальном (WYSIWYG) режиме?',
 insert_link_title : 'Вставить/изменить ссылку',
 insert : 'Вставить',
-update : 'Вставить',
+update : 'Применить',
 cancel : 'Отменить',
-insert_link_url : 'Адрес',
+insert_link_url : 'Адрес ссылки',
 insert_link_target : 'Открыть в...:',
 insert_link_target_same : 'том же окне',
 insert_link_target_blank : 'новом окне',
 insert_image_title : 'Вставить/изменить изображение',
-insert_image_src : 'Адрес',
-insert_image_alt : 'Описание',
+insert_image_src : 'Адрес картинки',
+insert_image_alt : 'Описание картинки',
 help_desc : 'Помощь',
 bold_img : "bold_ru.gif",
 italic_img : "italic_ru.gif",
 underline_img : "underline_ru.gif",
-clipboard_msg : 'Copy/Cut/Paste is not available in Mozilla and Firefox.\nDo you want more information about this issue?',
-popup_blocked : 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.'
+clipboard_msg : 'Копировать/Вырезать/Вставить недоступны для Mozilla и Firefox.\nХотите узнать об этом подробнее?',
+popup_blocked : 'Извините, но в Вашем браузере заблокированы всплывающие окна. Для того, чтобы иметь возможность воспользоваться всеми возможностями редактора, необходимо отключить блокировку всплывающих окон для этого сайта.'
 });

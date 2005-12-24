@@ -1,5 +1,5 @@
 /* Import plugin specific language pack */
-tinyMCE.importPluginLanguagePack('table', 'en,ar,cs,da,de,el,es,fi,fr_ca,hu,it,ja,ko,nl,no,pl,pt,sv,tw,zh_cn,fr,de');
+tinyMCE.importPluginLanguagePack('table', 'en,ar,cs,da,de,el,es,fi,fr_ca,hu,it,ja,ko,nl,nb,pl,pt,pt_br,sv,tw,zh_cn,fr,de,he,nb,ru,ru_KOI8-R,ru_UTF-8,nn,cy,is,zh_tw,zh_tw_utf8,sk');
 
 function TinyMCE_table_getInfo() {
 	return {
@@ -7,22 +7,14 @@ function TinyMCE_table_getInfo() {
 		author : 'Moxiecode Systems',
 		authorurl : 'http://tinymce.moxiecode.com',
 		infourl : 'http://tinymce.moxiecode.com/tinymce/docs/plugin_table.html',
-		version : '2.0RC1'
+		version : tinyMCE.majorVersion + "." + tinyMCE.minorVersion
 	};
 };
 
 function TinyMCE_table_initInstance(inst) {
 	if (tinyMCE.isGecko) {
 		var doc = inst.getDoc();
-
 		tinyMCE.addEvent(doc, "mouseup", TinyMCE_table_mouseDownHandler);
-
-		try {
-			// For future FF versions
-			doc.execCommand('enableInlineTableEditing', false, false);
-		} catch (e) {
-			// Ignore
-		}
 	}
 
 	inst.tableRowClipboard = null;
@@ -61,15 +53,12 @@ function TinyMCE_table_getControlHTML(control_name) {
 	// Render table control
 	for (var i=0; i<controls.length; i++) {
 		var but = controls[i];
-		var safariPatch = '" onclick="';
-
-		if (tinyMCE.isSafari)
-			safariPatch = "";
+		var cmd = 'tinyMCE.execInstanceCommand(\'{$editor_id}\',\'' + but[3] + '\', ' + (but.length > 4 ? but[4] : false) + (but.length > 5 ? ', \'' + but[5] + '\'' : '') + ');return false;';
 
 		if (but[0] == control_name && (tinyMCE.isMSIE || !tinyMCE.settings['button_tile_map']))
-			return '<img id="{$editor_id}_' + but[0] + '" src="{$pluginurl}/images/' + but[1] + '" title="' + but[2] + '" width="20" height="20" class="mceButtonDisabled" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');' + safariPatch + 'tinyMCE.execInstanceCommand(\'{$editor_id}\',\'' + but[3] + '\', ' + (but.length > 4 ? but[4] : false) + (but.length > 5 ? ', \'' + but[5] + '\'' : '') + ')">';
+			return '<a href="javascript:' + cmd + '" onclick="' + cmd + '" onmousedown="return false;" target="_self"><img id="{$editor_id}_' + but[0] + '" src="{$pluginurl}/images/' + but[1] + '" title="' + but[2] + '" width="20" height="20" class="mceButtonDisabled" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');" /></a>';
 		else if (but[0] == control_name)
-			return '<img id="{$editor_id}_' + but[0] + '" src="{$themeurl}/images/spacer.gif" style="background-image:url({$pluginurl}/images/buttons.gif); background-position: ' + (0-(i*20)) + 'px 0px" title="' + but[2] + '" width="20" height="20" class="mceButtonDisabled" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');' + safariPatch + 'tinyMCE.execInstanceCommand(\'{$editor_id}\',\'' + but[3] + '\', ' + (but.length > 4 ? but[4] : false) + (but.length > 5 ? ', \'' + but[5] + '\'' : '') + ')">';
+			return '<a href="javascript:' + cmd + '" onclick="' + cmd + '" onmousedown="return false;" target="_self"><img id="{$editor_id}_' + but[0] + '" src="{$themeurl}/images/spacer.gif" style="background-image:url({$pluginurl}/images/buttons.gif); background-position: ' + (0-(i*20)) + 'px 0px" title="' + but[2] + '" width="20" height="20" class="mceButtonDisabled" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');" /></a>';
 	}
 
 	// Special tablecontrols
@@ -265,7 +254,6 @@ function TinyMCE_table_doExecCommand(editor_id, element, command, user_interface
 	}
 
 	function nextElm(node, names) {
-
         var namesAr = names.split(',');
 
 		while ((node = node.nextSibling) != null) {
@@ -373,11 +361,11 @@ function TinyMCE_table_doExecCommand(editor_id, element, command, user_interface
 
 				template['file'] = '../../plugins/table/row.htm';
 				template['width'] = 380;
-				template['height'] = 310;
+				template['height'] = 295;
 
 				// Language specific width and height addons
 				template['width'] += tinyMCE.getLang('lang_table_rowprops_delta_width', 0);
-				template['height'] += tinyMCE.getLang('lang_table_rowprops_delta_width', 0);
+				template['height'] += tinyMCE.getLang('lang_table_rowprops_delta_height', 0);
 
 				// Open window
 				tinyMCE.openWindow(template, {editor_id : inst.editorId, inline : "yes"});
@@ -395,11 +383,11 @@ function TinyMCE_table_doExecCommand(editor_id, element, command, user_interface
 
 				template['file'] = '../../plugins/table/cell.htm';
 				template['width'] = 380;
-				template['height'] = 310;
+				template['height'] = 295;
 
 				// Language specific width and height addons
 				template['width'] += tinyMCE.getLang('lang_table_cellprops_delta_width', 0);
-				template['height'] += tinyMCE.getLang('lang_table_cellprops_delta_width', 0);
+				template['height'] += tinyMCE.getLang('lang_table_cellprops_delta_height', 0);
 
 				// Open window
 				tinyMCE.openWindow(template, {editor_id : inst.editorId, inline : "yes"});
@@ -414,11 +402,11 @@ function TinyMCE_table_doExecCommand(editor_id, element, command, user_interface
 
 				template['file'] = '../../plugins/table/table.htm';
 				template['width'] = 380;
-				template['height'] = 310;
+				template['height'] = 295;
 
 				// Language specific width and height addons
-				template['width'] += tinyMCE.getLang('lang_insert_table_delta_width', 0);
-				template['height'] += tinyMCE.getLang('lang_insert_table_delta_height', 0);
+				template['width'] += tinyMCE.getLang('lang_table_table_delta_width', 0);
+				template['height'] += tinyMCE.getLang('lang_table_table_delta_height', 0);
 
 				// Open window
 				tinyMCE.openWindow(template, {editor_id : inst.editorId, inline : "yes", action : value});
@@ -647,7 +635,7 @@ function TinyMCE_table_doExecCommand(editor_id, element, command, user_interface
 								var sd = getColRowSpan(tdElm);
 
 								if (sd['colspan'] == 1) {
-									var newTD = doc.createElement("td");
+									var newTD = doc.createElement(tdElm.nodeName);
 
 									newTD.innerHTML = "&nbsp;";
 									newTD.rowSpan = tdElm.rowSpan;
@@ -674,12 +662,12 @@ function TinyMCE_table_doExecCommand(editor_id, element, command, user_interface
 								var sd = getColRowSpan(tdElm);
 
 								if (sd['colspan'] == 1) {
-									var newTD = doc.createElement("td");
+									var newTD = doc.createElement(tdElm.nodeName);
 
 									newTD.innerHTML = "&nbsp;";
 									newTD.rowSpan = tdElm.rowSpan;
 
-									var nextTD = nextElm(tdElm, "TD");
+									var nextTD = nextElm(tdElm, "TD,TH");
 									if (nextTD == null)
 										tdElm.parentNode.appendChild(newTD);
 									else
@@ -747,7 +735,7 @@ function TinyMCE_table_doExecCommand(editor_id, element, command, user_interface
 
 							newTD.innerHTML = "&nbsp;";
 
-							trElm.insertBefore(newTD, nextElm(tdElm, "TD"));
+							trElm.insertBefore(newTD, nextElm(tdElm, "TD,TH"));
 
 							if (rowspan > 1)
 								addRows(newTD, trElm, rowspan);
@@ -773,7 +761,11 @@ function TinyMCE_table_doExecCommand(editor_id, element, command, user_interface
 
 							template['file'] = '../../plugins/table/merge_cells.htm';
 							template['width'] = 250;
-							template['height'] = 120;
+							template['height'] = 105 + (tinyMCE.isNS7 ? 25 : 0);
+
+							// Language specific width and height addons
+							template['width'] += tinyMCE.getLang('lang_table_merge_cells_delta_width', 0);
+							template['height'] += tinyMCE.getLang('lang_table_merge_cells_delta_height', 0);
 
 							// Open window
 							tinyMCE.openWindow(template, {editor_id : inst.editorId, inline : "yes", action : "update", numcols : sp.colspan, numrows : sp.rowspan});

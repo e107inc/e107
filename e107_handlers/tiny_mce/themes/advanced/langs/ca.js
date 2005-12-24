@@ -25,7 +25,7 @@ insert_image_align_absmiddle : 'Centrat horitzontal',
 insert_image_align_absbottom : 'Centrat a baix',
 insert_image_align_left : 'Esquerra',
 insert_image_align_right : 'Dreta',
-insert_image_delta_height'] = 10;
+insert_image_delta_height : 10,
 theme_font_size : '-- Mida font --',
 theme_fontdefault : '-- Font family --',
 theme_block : '-- Format --',

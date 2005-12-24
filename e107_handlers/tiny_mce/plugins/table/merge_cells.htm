@@ -4,8 +4,9 @@
 	<script language="javascript" type="text/javascript" src="../../tiny_mce_popup.js"></script>
 	<script language="javascript" type="text/javascript" src="../../utils/mctabs.js"></script>
 	<script language="javascript" type="text/javascript" src="jscripts/merge_cells.js"></script>
+	<base target="_self" />
 </head>
-<body onload="init();" style="margin: 8px">
+<body onload="tinyMCEPopup.executeOnLoad('init();');" style="margin: 8px" style="display: none">
 <form onsubmit="insertTable();return false;" action="#">
 	<fieldset>
 		<legend>{$lang_table_merge_cells_title}</legend>

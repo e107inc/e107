@@ -38,6 +38,6 @@ bold_img : 'bold_de_se.gif',
 italic_img : 'italic_de_se.gif',
 underline_img : "underline.gif",
 clipboard_msg : 'Klipput/Kopiera/Klistra fungerar inte Mozilla och Firefox. Vill du veta mer om detta?',
-help_desc : "Hjälp",
+help_desc : "Hj&auml;lp",
 popup_blocked : 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.'
 });

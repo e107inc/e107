@@ -1,29 +1,32 @@
 var url = tinyMCE.getParam("external_image_list_url");
 if (url != null) {
 	// Fix relative
-	if (url.charAt(0) != '/')
+	if (url.charAt(0) != '/' && url.indexOf('://') == -1)
 		url = tinyMCE.documentBasePath + "/" + url;
 
 	document.write('<sc'+'ript language="javascript" type="text/javascript" src="' + url + '"></sc'+'ript>');
 }
 
 function insertImage() {
-	if (window.opener) {
-		var src = document.forms[0].src.value;
-		var alt = document.forms[0].alt.value;
-		var border = document.forms[0].border.value;
-		var vspace = document.forms[0].vspace.value;
-		var hspace = document.forms[0].hspace.value;
-		var width = document.forms[0].width.value;
-		var height = document.forms[0].height.value;
-		var align = document.forms[0].align.options[document.forms[0].align.selectedIndex].value;
+	var src = document.forms[0].src.value;
+	var alt = document.forms[0].alt.value;
+	var border = document.forms[0].border.value;
+	var vspace = document.forms[0].vspace.value;
+	var hspace = document.forms[0].hspace.value;
+	var width = document.forms[0].width.value;
+	var height = document.forms[0].height.value;
+	var align = document.forms[0].align.options[document.forms[0].align.selectedIndex].value;
 
-		window.opener.tinyMCE.insertImage(src, alt, border, hspace, vspace, width, height, align);
-		top.close();
-	}
+	tinyMCEPopup.restoreSelection();
+	tinyMCE.insertImage(src, alt, border, hspace, vspace, width, height, align);
+	tinyMCEPopup.close();
 }
 
 function init() {
+	tinyMCEPopup.resizeToInnerSize();
+
+	document.getElementById('srcbrowsercontainer').innerHTML = getBrowserHTML('srcbrowser','src','image','theme_advanced_image');
+
 	var formObj = document.forms[0];
 
 	for (var i=0; i<document.forms[0].align.options.length; i++) {
@@ -41,21 +44,8 @@ function init() {
 	formObj.insert.value = tinyMCE.getLang('lang_' + tinyMCE.getWindowArg('action'), 'Insert', true); 
 
 	// Handle file browser
-	if (tinyMCE.getParam("file_browser_callback") != null) {
+	if (isVisible('srcbrowser'))
 		document.getElementById('src').style.width = '180px';
-
-		var html = '';
-
-		html += '<img id="browserBtn" src="images/browse.gif"';
-		html += ' onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');"';
-		html += ' onmouseout="tinyMCE.restoreClass(this);"';
-		html += ' onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');"';
-		html += ' onclick="javascript:tinyMCE.openFileBrowser(\'src\',document.forms[0].src.value,\'image\',window);"';
-		html += ' width="20" height="18" border="0" title="' + tinyMCE.getLang('lang_browse') + '"';
-		html += ' class="mceButtonNormal" alt="' + tinyMCE.getLang('lang_browse') + '" />';
-
-		document.getElementById('browser').innerHTML = html;
-	}
 
 	// Auto select image in list
 	if (typeof(tinyMCEImageList) != "undefined" && tinyMCEImageList.length > 0) {

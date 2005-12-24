@@ -6,9 +6,10 @@
 	<script language="javascript" type="text/javascript" src="../../utils/form_utils.js"></script>
 	<script language="javascript" type="text/javascript" src="jscripts/cell.js"></script>
 	<link href="css/cell.css" rel="stylesheet" type="text/css" />
+	<base target="_self" />
 </head>
-<body id="tablecell" onload="init();">
-	<form onsubmit="updateAction();return false;">
+<body id="tablecell" onload="tinyMCEPopup.executeOnLoad('init();');" style="display: none">
+	<form onsubmit="updateAction();return false;" action="#">
 		<div class="tabs">
 			<ul>
 				<li id="general_tab" class="current"><span><a href="javascript:mcTabs.displayTab('general_tab','general_panel');" onmousedown="return false;">{$lang_table_general_tab}</a></span></li>
@@ -44,7 +45,7 @@
 
 						<tr>
 							<td><label for="valign">{$lang_table_valign}</label></td>
-							<td colspan="2">
+							<td>
 								<select id="valign" name="valign">
 									<option value="">{$lang_not_set}</option>
 									<option value="top">{$lang_table_align_top}</option>
@@ -52,19 +53,31 @@
 									<option value="bottom">{$lang_table_align_bottom}</option>
 								</select>
 							</td>
+
+							<td><label for="scope">{$lang_table_scope}</label></td>
+							<td>
+								<select id="scope" name="scope">
+									<option value="">{$lang_not_set}</option>
+									<option value="col">{$lang_table_col}</option>
+									<option value="row">{$lang_table_row}</option>
+									<option value="rowgroup">{$lang_table_rowgroup}</option>
+									<option value="colgroup">{$lang_table_colgroup}</option>
+								</select>
+							</td>
+
 						</tr>
 
 						<tr>
 							<td><label for="width">{$lang_table_width}</label></td>
-							<td><input id="width" name="width" type="text" value="" size="4" maxlength="4" /></td>
+							<td><input id="width" name="width" type="text" value="" size="4" maxlength="4" onchange="changedSize();" /></td>
 
 							<td><label for="height">{$lang_table_height}</label></td>
-							<td><input id="height" name="height" type="text" value="" size="4" maxlength="4" /></td>
+							<td><input id="height" name="height" type="text" value="" size="4" maxlength="4" onchange="changedSize();" /></td>
 						</tr>
 
 						<tr>
 							<td><label for="class">{$lang_class_name}</label></td>
-							<td colspan="2">
+							<td colspan="3">
 								<select id="class" name="class">
 									<option value="" selected="selected">{$lang_not_set}</option>
 								</select>
@@ -113,7 +126,7 @@
 								<table border="0" cellpadding="0" cellspacing="0">
 									<tr>
 										<td><input id="backgroundimage" name="backgroundimage" type="text" value="" style="width: 200px" onchange="changedBackgroundImage();" /></td>
-										<td><script language="javascript" type="text/javascript">renderBrowser('backgroundimagebrowser','backgroundimage','image','table');</script></td>
+										<td id="backgroundimagebrowsercontainer">&nbsp;</td>
 									</tr>
 								</table>
 							</td> 
@@ -124,8 +137,8 @@
 							<td>
 								<table border="0" cellpadding="0" cellspacing="0">
 									<tr>
-										<td><input id="bordercolor" name="bordercolor" type="text" value="" size="9" onchange="updateColor('bordercolor_pick','bordercolor');" /></td>
-										<td><script language="javascript" type="text/javascript">renderColorPicker('bordercolor_pick','bordercolor');</script></td>
+										<td><input id="bordercolor" name="bordercolor" type="text" value="" size="9" onchange="updateColor('bordercolor_pick','bordercolor');changedColor();" /></td>
+										<td id="bordercolor_pickcontainer">&nbsp;</td>
 									</tr>
 								</table>
 							</td> 
@@ -136,8 +149,8 @@
 							<td>
 								<table border="0" cellpadding="0" cellspacing="0">
 									<tr>
-										<td><input id="bgcolor" name="bgcolor" type="text" value="" size="9" onchange="updateColor('bgcolor_pick','bgcolor');" /></td>
-										<td><script language="javascript" type="text/javascript">renderColorPicker('bgcolor_pick','bgcolor');</script></td>
+										<td><input id="bgcolor" name="bgcolor" type="text" value="" size="9" onchange="updateColor('bgcolor_pick','bgcolor');changedColor();" /></td>
+										<td id="bgcolor_pickcontainer">&nbsp;</td>
 									</tr>
 								</table>
 							</td> 
