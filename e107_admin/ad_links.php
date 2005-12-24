@@ -11,11 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/ad_links.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-08-28 08:32:09 $
-|     $Author: stevedunstan $
+|     $Revision: 1.35 $
+|     $Date: 2005-12-24 23:36:12 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
 
 if (file_exists(THEME.'admin_images/admin_images.php')) {
 	e107_require_once(THEME.'admin_images/admin_images.php');
