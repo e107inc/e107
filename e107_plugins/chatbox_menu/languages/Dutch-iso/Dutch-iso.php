@@ -33,12 +33,12 @@ define("CHATBOX_L17", "Dubbelpost");
 define("CHATBOX_L18", "Chatbox berichten gemodereerd");
 define("CHATBOX_L19", "Je kunt slechts één keer in de ".FLOODTIMEOUT." seconden een bericht plaatsen");
 
-define("LAN_11", "Chatbox (alle berichten)");
-define("LAN_12", "Chat berichten");
-define("LAN_13", "aan");
-define("LAN_14", "Fout!");
-define("LAN_15", "Je bezit niet de juiste rechten om deze pagina te bekijken.");
-define("LAN_16", "[ dit bericht is door een beheerder geblokkeerd ]");
+define("CHATBOX_L20", "Chatbox (alle berichten)");
+define("CHATBOX_L21", "Chat berichten");
+define("CHATBOX_L22", "aan");
+define("CHATBOX_L23", "Fout!");
+define("CHATBOX_L24", "Je bezit niet de juiste rechten om deze pagina te bekijken.");
+define("CHATBOX_L25", "[ dit bericht is door een beheerder geblokkeerd ]");
 
 define("NT_LAN_CB_1", "Chatbox gebeurtenissen");
 define("NT_LAN_CB_2", "Bericht geplaatst");
