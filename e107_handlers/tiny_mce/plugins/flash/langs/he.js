@@ -1,9 +1,11 @@
-// HE lang variables by Liron Newman, http://eesh.net
+// HE lang variables
 
-tinyMCE.addToLang('',{
-insert_flash : 'הכנס/ערוך סרטון Flash',
-insert_flash_file : 'קובץ Flash (.swf)',
-insert_flash_size : 'גודל',
-insert_flash_list : 'קבצי פלאש Flash',
-flash_props : 'מאפייני Flash'
+tinyMCE.addToLang('flash',{
+title : 'הכנס/ערוך סרטון Flash',
+desc : 'הכנס/ערוך סרטון Flash',
+file : 'קובץ Flash (.swf)',
+size : 'גודל',
+list : 'קבצי Flash',
+props : 'מאפייני Flash',
+general : 'כללי'
 });

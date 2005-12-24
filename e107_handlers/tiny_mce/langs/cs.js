@@ -1,41 +1,52 @@
-// CZ lang variables thanks to "Pavel Novák" - repaired by Josef Klimosz
+/**
+ * Czech lang variables 
+ * encoding: utf-8
+ * 
+ * @author Michi   
+ * @author Pavel NovÃ¡k
+ * @author Josef Klimosz
+ *    
+ * $Id: cs.js,v 1.4 2005-12-24 00:09:57 e107coders Exp $ 
+ */  
+
 
 tinyMCE.addToLang('',{
-bold_desc : 'Tuènì',
-italic_desc : 'Kurzíva',
-underline_desc : 'Podtrení',
-striketrough_desc : 'Pøeškrtnutí',
-justifyleft_desc : 'Zarovnání vlevo',
-justifycenter_desc : 'Zarovnání na støed',
-justifyright_desc : 'Zarovnání vpravo',
-justifyfull_desc : 'Zarovnání do bloku',
-bullist_desc : 'Seznam s odrákami',
-numlist_desc : 'Èíslovanı seznam',
-outdent_desc : 'Sníit odsazení',
-indent_desc : 'Zvıšit odsazení',
-undo_desc : 'Zpìt',
+bold_desc : 'TuÄnÄ›',
+italic_desc : 'KurzÃ­va',
+underline_desc : 'PodtrÅ¾enÃ­',
+striketrough_desc : 'PÅ™eÅ¡krtnutÃ­',
+justifyleft_desc : 'ZarovnÃ¡nÃ­ vlevo',
+justifycenter_desc : 'ZarovnÃ¡nÃ­ na stÅ™ed',
+justifyright_desc : 'ZarovnÃ¡nÃ­ vpravo',
+justifyfull_desc : 'ZarovnÃ¡nÃ­ do bloku',
+bullist_desc : 'Seznam s odrÃ¡Å¾kami',
+numlist_desc : 'ÄŒÃ­slovanÃ½ seznam',
+outdent_desc : 'SnÃ­Å¾it odsazenÃ­',
+indent_desc : 'ZvÃ½Å¡it odsazenÃ­',
+undo_desc : 'ZpÄ›t',
 redo_desc : 'Znovu',
-link_desc : 'Vloit odkaz',
-unlink_desc : 'Zrušit odkaz',
-image_desc : 'Vloit obrázek',
-cleanup_desc : 'Vyèistit kód',
-focus_alert : 'Pøed pouitím tohoto pøíkazu musí bıt kurzor v oknì editoru.',
-edit_confirm : 'Chcete pouít WYSIWYG editaci pro tento text?',
-insert_link_title : 'Vloit/upravit odkaz',
-insert : 'Vloit',
-update : 'Zmìnit',
-cancel : 'Zrušit',
+link_desc : 'VloÅ¾it odkaz',
+unlink_desc : 'ZruÅ¡it odkaz',
+image_desc : 'VloÅ¾it obrÃ¡zek',
+cleanup_desc : 'VyÄistit kÃ³d',
+focus_alert : 'PÅ™ed pouÅ¾itÃ­m tohoto pÅ™Ã­kazu musÃ­ bÃ½t kurzor v oknÄ› editoru.',
+edit_confirm : 'Chcete pouÅ¾Ã­t WYSIWYG editaci pro tento text?',
+insert_link_title : 'VloÅ¾it/upravit odkaz',
+insert : 'VloÅ¾it',
+update : 'ZmÄ›nit',
+cancel : 'ZruÅ¡it',
 insert_link_url : 'URL odkazu',
-insert_link_target : 'Cíl',
-insert_link_target_same : 'Otevøít odkaz ve stejném oknì',
-insert_link_target_blank : 'Otevøít odkaz v novém oknì',
-insert_image_title : 'Vloit/upravit obrázek',
-insert_image_src : 'URL obrázku',
-insert_image_alt : 'Popis obrázku',
-help_desc : 'Nápovìda',
+insert_link_target : 'CÃ­l',
+insert_link_target_same : 'OtevÅ™Ã­t odkaz ve stejnÃ©m oknÄ›',
+insert_link_target_blank : 'OtevÅ™Ã­t odkaz v novÃ©m oknÄ›',
+insert_image_title : 'VloÅ¾it/upravit obrÃ¡zek',
+insert_image_src : 'URL obrÃ¡zku',
+insert_image_alt : 'Popis obrÃ¡zku',
+help_desc : 'NÃ¡povÄ›da',
 bold_img : 'bold.gif',
 italic_img : 'italic.gif',
 underline_img : "underline.gif",
-clipboard_msg : 'Copy/Cut/Paste není pouitelné v Mozille a Firefoxu.\nChcete více informací o tomto problému?',
-popup_blocked : 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.'
+clipboard_msg : 'Funkce KopÃ­rovat/vyjmout/vloÅ¾it nejsou pouÅ¾itelnÃ© v Mozille a Firefoxu.\nChcete vÃ­ce informacÃ­ o tomto problÃ©mu?',
+popup_blocked : 'OmlouvÃ¡me se, ale blokovaÄ vyskakovacÃ­ch oken neumoÅ¾nil otevÅ™Ã­t okno, kterÃ© zprostÅ™edkovÃ¡vÃ¡ funkÄnost aplikace. MusÃ­te vypnout blokovÃ¡nÃ­ vyskakovacÃ­ch oken na tomto webu, abyste vyuÅ¾ili plnÃ© funkÄnosti.'
 });
+

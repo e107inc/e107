@@ -1,6 +1,12 @@
-// UK lang variables
+/**
+ * Czech lang variables 
+ * encoding: utf-8
+ *  
+ * $Id: cs.js,v 1.2 2005-12-24 00:09:57 e107coders Exp $ 
+ */  
 
 tinyMCE.addToLang('',{
 iespell_desc : 'Spustit kontrolu pravopisu',
-iespell_download : "ieSpell nedetekován. Kliknìte na OK a otevøete stahovací stránku."
+iespell_download : "ieSpell nedetekovÃ¡n. KliknÄ›te na OK a otevÅ™ete stahovacÃ­ strÃ¡nku."
 });
+

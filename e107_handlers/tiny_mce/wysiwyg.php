@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-10-13 19:02:57 $
+|     $Revision: 1.17 $
+|     $Date: 2005-12-24 00:09:57 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -15,29 +15,34 @@ define("ADMIN","");
 global $pref,$HANDLERS_DIRECTORY;
 $lang = e_LANGUAGE;
 $tinylang = array(
-"Danish" => "da",
-"Dutch" => "nl",
-"English" => "en",
-"Farsi" => "fa",
-"French" => "fr",
-"Greek" => "el",
-"Hungarian" => "hu",
-"Italian" => "it",
-"Japanese" => "ja",
-"Korean" => "ko",
-"Polish" => "pl",
-"Russian" => "ru",
-"Spanish" => "es",
-"Swedish" => "sv"
+	"Arabic" => "ar",
+	"Danish" => "da",
+	"Dutch" => "nl",
+	"English" => "en",
+	"Farsi" => "fa",
+	"French" => "fr",
+	"Greek" => "el",
+	"Hebrew" => " ",
+	"Hungarian" => "hu",
+	"Italian" => "it",
+	"Japanese" => "ja",
+	"Korean" => "ko",
+	"Norwegian" => "nb",
+	"Polish" => "pl",
+	"Russian" => "ru",
+	"Slovak" => "sk",
+	"Spanish" => "es",
+	"Swedish" => "sv"
 );
 
 if(!$tinylang[$lang]){
  $tinylang[$lang] = "en";
 }
+// $thescript = (strpos($_SERVER['SERVER_SOFTWARE'],"mod_gzip")) ? "tiny_mce_gzip.php" : "tiny_mce.js";
+$thescript = "tiny_mce.js";
+$text = "<script type='text/javascript' src='".e_HANDLER."tiny_mce/".$thescript."'></script>\n";
 
-$text = "
-	<script type='text/javascript' src='".e_HANDLER."tiny_mce/tiny_mce.js'></script>
-	<script type='text/javascript'>\n
+$text .= "<script type='text/javascript'>\n
 	tinyMCE.init({\n";
 $text .= "language : '".$tinylang[$lang]."',\n";
 $text .= "mode : 'exact',\n";
@@ -64,6 +69,7 @@ $text .= ",theme_advanced_toolbar_location : 'top'";
 $text .= ",extended_valid_elements : 'p[style],a[name|href|title|style],img[class|src|style|alt|title|name],hr[class],span[class|style],div[class|style],table[class|style|cellpadding|cellspacing]'";
 $text .= ",invalid_elements: 'p,font,align,script,applet,iframe'\n";
 // $text .= ",auto_cleanup_word: true\n";
+$text .= ",convert_fonts_to_spans : true\n";
 $text .= ",trim_span_elements: true\n";
 $text .= ",inline_styles: true\n";
 $text .= ",debug: false\n";

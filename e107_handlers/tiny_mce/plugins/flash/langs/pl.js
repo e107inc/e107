@@ -1,9 +1,14 @@
 // PL lang variables
+// fixed by Wooya
+// http://www.mfusion.prv.pl
+// fixed by lemiel 14.11.2005
 
-tinyMCE.addToLang('',{
-insert_flash : 'Wstaw/Edytuj animacje Flash',
-insert_flash_file : 'Plik Flash (.swf)',
-insert_flash_size : 'Rozmiar',
-insert_flash_list : 'Pliki Flash',
-flash_props : 'Wlasciwosci animacji Flash'
+tinyMCE.addToLang('flash',{
+title : 'Wstaw/edytuj film flash',
+desc : 'Wstaw/edytuj film flash',
+file : 'Plik flash (.swf)',
+size : 'Rozmiar',
+list : 'Pliki flash',
+props : 'W³a¶ciwo¶ci flash',
+general : 'G³ówne'
 });

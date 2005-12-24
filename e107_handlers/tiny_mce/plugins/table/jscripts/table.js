@@ -1,6 +1,8 @@
-var action;
+var action, orgTableWidth, orgTableHeight;
 
 function insertTable() {
+	tinyMCEPopup.restoreSelection();
+
 	var formObj = document.forms[0];
 	var inst = tinyMCE.selectedInstance;
 	var cols = 2, rows = 2, border = 0, cellpadding = -1, cellspacing = -1, align, width, height, className;
@@ -33,10 +35,6 @@ function insertTable() {
 		tinyMCE.setAttrib(elm, 'cellPadding', cellpadding, true);
 		tinyMCE.setAttrib(elm, 'cellSpacing', cellspacing, true);
 		tinyMCE.setAttrib(elm, 'border', border, true);
-		tinyMCE.setAttrib(elm, 'width', width, true);
-		tinyMCE.setAttrib(elm, 'height', height, true);
-		tinyMCE.setAttrib(elm, 'borderColor', bordercolor);
-		tinyMCE.setAttrib(elm, 'bgColor', bgcolor);
 		tinyMCE.setAttrib(elm, 'align', align);
 		tinyMCE.setAttrib(elm, 'class', className);
 		tinyMCE.setAttrib(elm, 'style', style);
@@ -45,8 +43,38 @@ function insertTable() {
 		tinyMCE.setAttrib(elm, 'dir', dir);
 		tinyMCE.setAttrib(elm, 'lang', lang);
 
+		// Not inline styles
+		if (!tinyMCE.getParam("inline_styles"))
+			tinyMCE.setAttrib(elm, 'width', width, true);
+
+		// Remove these since they are not valid XHTML
+		tinyMCE.setAttrib(elm, 'borderColor', '');
+		tinyMCE.setAttrib(elm, 'bgColor', '');
+		tinyMCE.setAttrib(elm, 'background', '');
+		tinyMCE.setAttrib(elm, 'height', '');
+
 		if (background != '')
 			elm.style.backgroundImage = "url('" + background + "')";
+		else
+			elm.style.backgroundImage = '';
+
+		if (tinyMCE.getParam("inline_styles"))
+			elm.style.borderWidth = border + "px";
+
+		if (tinyMCE.getParam("inline_styles")) {
+			if (width != '')
+				elm.style.width = getCSSSize(width);
+		}
+
+		if (bordercolor != "") {
+			elm.style.borderColor = bordercolor;
+			elm.style.borderStyle = elm.style.borderStyle == "" ? "solid" : elm.style.borderStyle;
+			elm.style.borderWidth = border == "" ? "1px" : border;
+		} else
+			elm.style.borderColor = '';
+
+		elm.style.backgroundColor = bgcolor;
+		elm.style.height = getCSSSize(height);
 
 		tinyMCE.handleVisualAid(tinyMCE.tableElm, false, inst.visualAid, inst);
 
@@ -56,6 +84,11 @@ function insertTable() {
 		tinyMCE.handleVisualAid(inst.getBody(), true, inst.visualAid, inst);
 		tinyMCE.triggerNodeChange();
 		inst.execCommand('mceEndUndoLevel');
+
+		// Repaint if dimensions changed
+		if (formObj.width.value != orgTableWidth || formObj.height.value != orgTableHeight)
+			inst.repaint();
+
 		tinyMCEPopup.close();
 		return true;
 	}
@@ -68,9 +101,9 @@ function insertTable() {
 	html += makeAttrib('cellpadding', cellpadding);
 	html += makeAttrib('cellspacing', cellspacing);
 	html += makeAttrib('width', width);
-	html += makeAttrib('height', height);
-	html += makeAttrib('bordercolor', bordercolor);
-	html += makeAttrib('bgcolor', bgcolor);
+	//html += makeAttrib('height', height);
+	//html += makeAttrib('bordercolor', bordercolor);
+	//html += makeAttrib('bgcolor', bgcolor);
 	html += makeAttrib('align', align);
 	html += makeAttrib('class', tinyMCE.getVisualAidClass(className, border == 0));
 	html += makeAttrib('style', style);
@@ -99,7 +132,6 @@ function insertTable() {
 	tinyMCEPopup.close();
 }
 
-
 function makeAttrib(attrib, value) {
 	var formObj = document.forms[0];
 	var valueElm = formObj.elements[attrib];
@@ -123,16 +155,14 @@ function makeAttrib(attrib, value) {
 	return ' ' + attrib + '="' + value + '"';
 }
 
-function getStyle(elm, st, attrib, style) {
-	var val = tinyMCE.getAttrib(elm, attrib);
-
-	if (typeof(style) == 'undefined')
-		style = attrib;
-
-	return val == '' ? (st[style] ? st[style].replace('px', '') : '') : val;
-}
-
 function init() {
+	tinyMCEPopup.resizeToInnerSize();
+
+	document.getElementById('backgroundimagebrowsercontainer').innerHTML = getBrowserHTML('backgroundimagebrowser','backgroundimage','image','table');
+	document.getElementById('backgroundimagebrowsercontainer').innerHTML = getBrowserHTML('backgroundimagebrowser','backgroundimage','image','table');
+	document.getElementById('bordercolor_pickcontainer').innerHTML = getColorPickerHTML('bordercolor_pick','bordercolor');
+	document.getElementById('bgcolor_pickcontainer').innerHTML = getColorPickerHTML('bgcolor_pick','bgcolor');
+
 	var cols = 2, rows = 2, border = 0, cellpadding = "", cellspacing = "";
 	var align = "", width = "", height = "", bordercolor = "", bgcolor = "", className = "";
 	var id = "", summary = "", style = "", dir = "", lang = "", background = "", bgcolor = "", bordercolor = "";
@@ -142,6 +172,8 @@ function init() {
 
 	tinyMCE.tableElm = elm;
 	action = tinyMCE.getWindowArg('action');
+	if (action == null)
+		action = tinyMCE.tableElm ? "update" : "insert";
 
 	if (tinyMCE.tableElm && action != "insert") {
 		var rowsAr = tinyMCE.tableElm.rows;
@@ -153,14 +185,14 @@ function init() {
 		cols = cols;
 		rows = rowsAr.length;
 
-		st = tinyMCE.parseStyle(tinyMCE.tableElm.style.cssText);
-		border = getStyle(elm, st, 'border', 'border-width');
+		st = tinyMCE.parseStyle(tinyMCE.getAttrib(tinyMCE.tableElm, "style"));
+		border = trimSize(getStyle(elm, 'border', 'borderWidth'));
 		cellpadding = tinyMCE.getAttrib(tinyMCE.tableElm, 'cellpadding', "");
 		cellspacing = tinyMCE.getAttrib(tinyMCE.tableElm, 'cellspacing', "");
-		width = getStyle(elm, st, 'width');
-		height = getStyle(elm, st, 'height');
-		bordercolor = getStyle(elm, st, 'bordercolor', 'border-color');
-		bgcolor = getStyle(elm, st, 'bgcolor', 'background-color');
+		width = trimSize(getStyle(elm, 'width', 'width'));
+		height = trimSize(getStyle(elm, 'height', 'height'));
+		bordercolor = convertRGBToHex(getStyle(elm, 'bordercolor', 'borderLeftColor'));
+		bgcolor = convertRGBToHex(getStyle(elm, 'bgcolor', 'backgroundColor'));
 		align = tinyMCE.getAttrib(tinyMCE.tableElm, 'align', align);
 		className = tinyMCE.getVisualAidClass(tinyMCE.getAttrib(tinyMCE.tableElm, 'class'), false);
 		id = tinyMCE.getAttrib(tinyMCE.tableElm, 'id');
@@ -168,7 +200,10 @@ function init() {
 		style = tinyMCE.serializeStyle(st);
 		dir = tinyMCE.getAttrib(tinyMCE.tableElm, 'dir');
 		lang = tinyMCE.getAttrib(tinyMCE.tableElm, 'lang');
-		background = getStyle(elm, st, 'background', 'background-image').replace(new RegExp("url\\('?([^']*)'?\\)", 'gi'), "$1");
+		background = getStyle(elm, 'background', 'backgroundImage').replace(new RegExp("url\\('?([^']*)'?\\)", 'gi'), "$1");
+
+		orgTableWidth = width;
+		orgTableHeight = height;
 
 		action = "update";
 	}
@@ -209,11 +244,58 @@ function init() {
 	}
 }
 
+function changedSize() {
+	var formObj = document.forms[0];
+	var st = tinyMCE.parseStyle(formObj.style.value);
+
+	var width = formObj.width.value;
+	if (width != "")
+		st['width'] = tinyMCE.getParam("inline_styles") ? getCSSSize(width) : "";
+	else
+		st['width'] = "";
+
+	var height = formObj.height.value;
+	if (height != "")
+		st['height'] = getCSSSize(height);
+	else
+		st['height'] = "";
+
+	formObj.style.value = tinyMCE.serializeStyle(st);
+}
+
 function changedBackgroundImage() {
 	var formObj = document.forms[0];
 	var st = tinyMCE.parseStyle(formObj.style.value);
 
 	st['background-image'] = "url('" + formObj.backgroundimage.value + "')";
+
+	formObj.style.value = tinyMCE.serializeStyle(st);
+}
+
+function changedBorder() {
+	var formObj = document.forms[0];
+	var st = tinyMCE.parseStyle(formObj.style.value);
+
+	// Update border width if the element has a color
+	if (formObj.border.value != "" && formObj.bordercolor.value != "")
+		st['border-width'] = formObj.border.value + "px";
+
+	formObj.style.value = tinyMCE.serializeStyle(st);
+}
+
+function changedColor() {
+	var formObj = document.forms[0];
+	var st = tinyMCE.parseStyle(formObj.style.value);
+
+	st['background-color'] = formObj.bgcolor.value;
+
+	if (formObj.bordercolor.value != "") {
+		st['border-color'] = formObj.bordercolor.value;
+
+		// Add border-width if it's missing
+		if (!st['border-width'])
+			st['border-width'] = formObj.border.value == "" ? "1px" : formObj.border.value + "px";
+	}
 
 	formObj.style.value = tinyMCE.serializeStyle(st);
 }
@@ -226,4 +308,20 @@ function changedStyle() {
 		formObj.backgroundimage.value = st['background-image'].replace(new RegExp("url\\('?([^']*)'?\\)", 'gi'), "$1");
 	else
 		formObj.backgroundimage.value = '';
+
+	if (st['width'])
+		formObj.width.value = trimSize(st['width']);
+
+	if (st['height'])
+		formObj.height.value = trimSize(st['height']);
+
+	if (st['background-color']) {
+		formObj.bgcolor.value = st['background-color'];
+		updateColor('bgcolor_pick','bgcolor');
+	}
+
+	if (st['border-color']) {
+		formObj.bordercolor.value = st['border-color'];
+		updateColor('bordercolor_pick','bordercolor');
+	}
 }

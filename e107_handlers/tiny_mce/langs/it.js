@@ -36,6 +36,6 @@ help_desc : 'Guida',
 bold_img : "bold.gif",
 italic_img : "italic.gif",
 underline_img : "underline.gif",
-clipboard_msg : 'Copy/Cut/Paste is not available in Mozilla and Firefox.\nDo you want more information about this issue?',
-popup_blocked : 'Sorry, but we have noticed that your popup-blocker has disabled a window that provides application functionality. You will need to disable popup blocking on this site in order to fully utilize this tool.'
+clipboard_msg : 'Copia, Taglia e Incolla non sono disponibili in Mozilla e Firefox.\nVuoi maggiori dettegli su questo problema?',
+popup_blocked : 'Spiacenti, un sistema di blocco popup ha impedito l\'apertura di una finestra necessaria per il funzionamento dell\'editor. Disabilita il blocco popup per questo sito se vuoi utilizzare tutte le funzionalità.'
 });

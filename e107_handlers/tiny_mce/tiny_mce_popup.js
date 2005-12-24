@@ -1,7 +1,7 @@
 /**
  * $RCSfile: tiny_mce_popup.js,v $
- * $Revision: 1.5 $
- * $Date: 2005-09-07 13:32:50 $
+ * $Revision: 1.6 $
+ * $Date: 2005-12-24 00:09:57 $
  *
  * @author Moxiecode
  * @copyright Copyright © 2004, Moxiecode Systems AB, All rights reserved.
@@ -15,11 +15,18 @@ function TinyMCEPopup() {
 TinyMCEPopup.prototype.init = function() {
 	var win = window.opener ? window.opener : window.dialogArguments;
 
-	if (!win)
-		win = top;
+	if (!win) {
+		// Try parent
+		win = parent.parent;
+
+		// Try top
+		if (typeof(win.tinyMCE) == "undefined")
+			win = top;
+	}
 
 	window.opener = win;
 	this.windowOpener = win;
+	this.onLoadEval = "";
 
 	// Setup parent references
 	tinyMCE = win.tinyMCE;
@@ -31,7 +38,10 @@ TinyMCEPopup.prototype.init = function() {
 	}
 
 	this.isWindow = tinyMCE.getWindowArg('mce_inside_iframe', false) == false;
-	this.storeSelection = tinyMCE.isMSIE && !this.isWindow && tinyMCE.getWindowArg('mce_store_selection', true);
+	this.storeSelection = (tinyMCE.isMSIE && !tinyMCE.isOpera) && !this.isWindow && tinyMCE.getWindowArg('mce_store_selection', true);
+
+	if (this.isWindow)
+		window.focus();
 
 	// Store selection
 	if (this.storeSelection)
@@ -60,8 +70,10 @@ TinyMCEPopup.prototype.init = function() {
 };
 
 TinyMCEPopup.prototype.onLoad = function() {
+	var body = document.body;
+
 	if (tinyMCE.getWindowArg('mce_replacevariables', true))
-		document.body.innerHTML = tinyMCE.applyTemplate(document.body.innerHTML, tinyMCE.windowArgs);
+		body.innerHTML = tinyMCE.applyTemplate(body.innerHTML, tinyMCE.windowArgs);
 
 	var dir = tinyMCE.selectedInstance.settings['directionality'];
 	if (dir == "rtl") {
@@ -70,6 +82,87 @@ TinyMCEPopup.prototype.onLoad = function() {
 			if ((elms[i].type == "text" || elms[i].type == "textarea") && elms[i].getAttribute("dir") != "ltr")
 				elms[i].dir = dir;
 		}
+	}
+
+	if (body.style.display == 'none')
+		body.style.display = 'block';
+
+	// Execute real onload (Opera fix)
+	if (tinyMCEPopup.onLoadEval != "") {
+		eval(tinyMCEPopup.onLoadEval);
+	}
+};
+
+TinyMCEPopup.prototype.executeOnLoad = function(str) {
+	if (tinyMCE.isOpera)
+		this.onLoadEval = str;
+	else
+		eval(str);
+};
+
+TinyMCEPopup.prototype.resizeToInnerSize = function() {
+	// Netscape 7.1 workaround
+	if (this.isWindow && tinyMCE.isNS71) {
+		window.resizeBy(0, 10);
+		return;
+	}
+
+	if (this.isWindow) {
+		var doc = document;
+		var body = doc.body;
+		var oldMargin, wrapper, iframe, nodes, dx, dy;
+
+		if (body.style.display == 'none')
+			body.style.display = 'block';
+
+		// Remove margin
+		oldMargin = body.style.margin;
+		body.style.margin = '0px';
+
+		// Create wrapper
+		wrapper = doc.createElement("div");
+		wrapper.id = 'mcBodyWrapper';
+		wrapper.style.display = 'none';
+		wrapper.style.margin = '0px';
+
+		// Wrap body elements
+		nodes = doc.body.childNodes;
+		for (var i=nodes.length-1; i>=0; i--) {
+			if (wrapper.hasChildNodes())
+				wrapper.insertBefore(nodes[i].cloneNode(true), wrapper.firstChild);
+			else
+				wrapper.appendChild(nodes[i].cloneNode(true));
+
+			nodes[i].parentNode.removeChild(nodes[i]);
+		}
+
+		// Add wrapper
+		doc.body.appendChild(wrapper);
+
+		// Create iframe
+		iframe = document.createElement("iframe");
+		iframe.id = "mcWinIframe";
+		iframe.src = document.location.href.toLowerCase().indexOf('https') == -1 ? "about:blank" : tinyMCE.settings['default_document'];
+		iframe.width = "100%";
+		iframe.height = "100%";
+		iframe.style.margin = '0px';
+
+		// Add iframe
+		doc.body.appendChild(iframe);
+
+		// Measure iframe
+		iframe = document.getElementById('mcWinIframe');
+		dx = tinyMCE.getWindowArg('mce_width') - iframe.clientWidth;
+		dy = tinyMCE.getWindowArg('mce_height') - iframe.clientHeight;
+
+		// Resize window
+		// tinyMCE.debug(tinyMCE.getWindowArg('mce_width') + "," + tinyMCE.getWindowArg('mce_height') + " - " + dx + "," + dy);
+		window.resizeBy(dx, dy);
+
+		// Hide iframe and show wrapper
+		body.style.margin = oldMargin;
+		iframe.style.display = 'none';
+		wrapper.style.display = 'block';
 	}
 };
 
@@ -107,15 +200,19 @@ TinyMCEPopup.prototype.getWindowArg = function(name, default_value) {
 	return tinyMCE.getWindowArg(name, default_value);
 };
 
-TinyMCEPopup.prototype.execCommand = function(command, user_interface, value) {
-	var inst = tinyMCE.selectedInstance;
-
-	// Restore selection
+TinyMCEPopup.prototype.restoreSelection = function() {
 	if (this.storeSelection) {
+		var inst = tinyMCE.selectedInstance;
+
 		inst.getWin().focus();
 		inst.execCommand('mceRestoreSelection');
 	}
+};
 
+TinyMCEPopup.prototype.execCommand = function(command, user_interface, value) {
+	var inst = tinyMCE.selectedInstance;
+
+	this.restoreSelection();
 	inst.execCommand(command, user_interface, value);
 
 	// Store selection

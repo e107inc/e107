@@ -1,6 +1,8 @@
 var action, element;
 
 function init() {
+	tinyMCEPopup.resizeToInnerSize();
+
 	var inst = tinyMCE.getInstanceById(tinyMCE.getWindowArg('editor_id'));
 	var anchor = tinyMCE.getParentElement(inst.getFocusElement(), "a", "name");
 	var img = inst.getFocusElement();
