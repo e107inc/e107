@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2005-12-23 22:25:44 $
+|     $Revision: 1.70 $
+|     $Date: 2005-12-24 00:53:26 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -150,24 +150,27 @@ if (isset($_POST['register']))
 		$count = 0;
 		foreach($match[1] as $value)
 		{
-			$$value = $match[2][$count];
+			$xup[$value] = $match[2][$count];
 			$count++;
 		}
 
-		$_POST['name'] = $NICKNAME;
-		$_POST['email'] = $EMAIL;
-		$_POST['signature'] = $SIG;
-		$_POST['hideemail'] = $EMAILHIDE;
-		$_POST['timezone'] = $TZ;
-		$_POST['realname'] = $FN;
-		$_POST['image'] = $AV;
-		$_POST['ue']['user_homepage'] = $URL;
-		$_POST['ue']['user_icq'] = $ICQ;
-		$_POST['ue']['user_aim'] = $AIM;
-		$_POST['ue']['user_msn'] = $MSN;
-		$_POST['ue']['user_yahoo'] = $YAHOO;
-		$_POST['ue']['user_location'] = $GEO;
-		$_POST['ue']['user_birthday'] = $BDAY;
+		$_POST['name'] = $xup['NICKNAME'];
+		$_POST['email'] = $xup['EMAIL'];
+		$_POST['signature'] = $xup['SIG'];
+		$_POST['hideemail'] = $xup['EMAILHIDE'];
+		$_POST['timezone'] = $xup['TZ'];
+		$_POST['realname'] = $xup['FN'];
+		$_POST['image'] = $xup['AV'];
+
+		$_POST['ue']['user_homepage'] = $xup['URL'];
+		$_POST['ue']['user_icq'] = $xup['ICQ'];
+		$_POST['ue']['user_aim'] = $xup['AIM'];
+		$_POST['ue']['user_msn'] = $xup['MSN'];
+		$_POST['ue']['user_yahoo'] = $xup['YAHOO'];
+		$_POST['ue']['user_location'] = $xup['GEO'];
+		$_POST['ue']['user_birthday'] = $xup['BDAY'];
+		
+		unset($xup);
 	}
 
 	if($_POST['loginnamexup']) $_POST['loginname'] = $_POST['loginnamexup'];
@@ -305,7 +308,6 @@ if (isset($_POST['register']))
 		}
 	}
 
-
 	if($error_message)
 	{
 		message_handler("P_ALERT", $error_message);
@@ -347,7 +349,6 @@ if (isset($_POST['register']))
 			$ns->tablerender("", LAN_SIGNUP_36);
 			require_once(FOOTERF);
 		}
-
 
 		if ($pref['user_reg_veri'])
 		{
