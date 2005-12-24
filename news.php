@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.83 $
-|     $Date: 2005-12-07 00:49:19 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.84 $
+|     $Date: 2005-12-24 22:53:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -65,7 +65,7 @@ if ($action == 'cat' || $action == 'all'){
 
 	$qs = explode(".", e_QUERY);
 
-	$category = $qs[1];
+	$category = intval($qs[1]);
 	if ($action == 'cat' && $category != 0)	{
 		$gen = new convert;
 		$sql->db_Select("news_category", "*", "category_id='$category'");
@@ -79,17 +79,17 @@ if ($action == 'cat' || $action == 'all'){
 		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")  ORDER BY n.news_datestamp DESC LIMIT $from,".NEWSALL_LIMIT;
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().")  ORDER BY n.news_datestamp DESC LIMIT ".intval($from).",".NEWSALL_LIMIT;
 		$category_name = "All";
 	}
 	elseif ($action == 'cat'){
 		// show archive of all news items in a particular category using list-style template.
-		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_category={$sub_action} ");
+		$news_total = $sql->db_Count("news", "(*)", "WHERE news_class REGEXP '".e_CLASS_REGEXP."' AND news_start < ".time()." AND (news_end=0 || news_end>".time().") AND news_category=".intval($sub_action));
 		if(!defined("NEWSLIST_LIMIT")){ define("NEWSLIST_LIMIT",10); }
 		$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_category={$sub_action} ORDER BY n.news_datestamp DESC LIMIT $from,".NEWSLIST_LIMIT;
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_category=".intval($sub_action)." ORDER BY n.news_datestamp DESC LIMIT ".intval($from).",".NEWSLIST_LIMIT;
 	}
 
 	if($category_name){
@@ -155,7 +155,7 @@ if ($action == "extend") {
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_id={$sub_action}";
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_id=".intval($sub_action);
 	$sql->db_Select_gen($query);
 	$news = $sql->db_Fetch();
 
@@ -175,9 +175,10 @@ if ($action == "extend") {
 
 
 
-if (Empty($order)){
+if (empty($order)){
 	$order = "news_datestamp";
 }
+$order = $tp -> toDB($order, true);
 
 $interval = 10;
 if ($action == "list"){
@@ -186,7 +187,7 @@ if ($action == "list"){
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type!=2 AND n.news_category={$sub_action} ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type!=2 AND n.news_category={$sub_action} ORDER BY ".$order." DESC LIMIT ".intval($from).",".ITEMVIEW;
 }
 elseif($action == "item")
 {
@@ -199,7 +200,7 @@ elseif($action == "item")
 elseif(strstr(e_QUERY, "month"))
 {
 	$tmp = explode(".", e_QUERY);
-	$item = $tmp[1];
+	$item = $tp -> toDB($tmp[1]);
 	$year = substr($item, 0, 4);
 	$month = substr($item, 4);
 	$startdate = mktime(0, 0, 0, $month, 1, $year);
@@ -208,12 +209,12 @@ elseif(strstr(e_QUERY, "month"))
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2 AND n.news_datestamp > $startdate AND n.news_datestamp < $enddate ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2 AND n.news_datestamp > $startdate AND n.news_datestamp < $enddate ORDER BY ".$order." DESC LIMIT ".intval($from).",".ITEMVIEW;
 }
 elseif(strstr(e_QUERY, "day"))
 {
 	$tmp = explode(".", e_QUERY);
-	$item = $tmp[1];
+	$item = $tp -> toDB($tmp[1]);
 	$year = substr($item, 0, 4);
 	$month = substr($item, 4, 2);
 	$day = substr($item, 6, 2);
@@ -223,7 +224,7 @@ elseif(strstr(e_QUERY, "day"))
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
 		LEFT JOIN #news_category AS nc ON n.news_category = nc.category_id
-		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2 AND n.news_datestamp > $startdate AND n.news_datestamp < $enddate ORDER BY ".$order." DESC LIMIT $from,".ITEMVIEW;
+		WHERE n.news_class REGEXP '".e_CLASS_REGEXP."' AND n.news_start < ".time()." AND (n.news_end=0 || n.news_end>".time().") AND n.news_render_type<2 AND n.news_datestamp > $startdate AND n.news_datestamp < $enddate ORDER BY ".$order." DESC LIMIT ".intval($from).",".ITEMVIEW;
 }
 else
 {
@@ -246,7 +247,7 @@ else
 		AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_render_type<2
 		GROUP by n.news_id
-		ORDER BY news_sticky DESC, ".$order." DESC LIMIT $from,".$pref['newsposts'];
+		ORDER BY news_sticky DESC, ".$order." DESC LIMIT ".intval($from).",".$pref['newsposts'];
 	}
 	else
 	{
@@ -257,7 +258,7 @@ else
 		AND n.news_start < ".time()."
 		AND (n.news_end=0 || n.news_end>".time().")
 		AND n.news_render_type<2
-		ORDER BY n.news_sticky DESC, ".$order." DESC LIMIT $from,".$pref['newsposts'];
+		ORDER BY n.news_sticky DESC, ".$order." DESC LIMIT ".intval($from).",".$pref['newsposts'];
 	}
 	// #### END ---------------------------------------------------------------------------------------------------
 }

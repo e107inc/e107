@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/request.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-10-16 09:07:03 $
+|     $Revision: 1.35 $
+|     $Date: 2005-12-24 22:53:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ if (!e_QUERY || isset($_POST['userlogin'])) {
 
 $id = FALSE;
 if (!is_numeric(e_QUERY)) {
-	if ($sql->db_Select("download", "download_id", "download_url='".e_QUERY."'")) {
+	if ($sql->db_Select("download", "download_id", "download_url='".$tp -> toDB(e_QUERY)."'")) {
 		$row = $sql->db_Fetch();
 		$type = "file";
 		$id = $row['download_id'];
@@ -67,8 +67,8 @@ if(strstr(e_QUERY, "mirror")) {
 					$mstr .= $mid.",".$address.",".$requests.chr(1);
 				}
 			}
-			$sql->db_Update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '{$download_id}'");
-			$sql->db_Update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '{$mirror_id}'");
+			$sql->db_Update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '".intval($download_id)."'");
+			$sql->db_Update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '".intval($mirror_id)."'");
 			header("Location: {$gaddress}");
 			exit();
 		}
@@ -80,7 +80,7 @@ if (!$tmp[1] || strstr(e_QUERY, "pub_")) {
 	$id = intval($tmp[0]);
 	$type = "file";
 } else {
-	$table = preg_replace("#\W#", "", $tmp[0]);
+	$table = preg_replace("#\W#", "", $tp -> toDB($tmp[0], true));
 	$id = intval($tmp[1]);
 	$type = "image";
 }
@@ -140,8 +140,8 @@ if ($type == "file")
 						$mstr .= "{$mid}, {$address}, {$requests}".chr(1);
 					}
 				}
-				$sql -> db_Update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '{$download_id}'");
-				$sql -> db_Update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '{$mirror_id}'");
+				$sql -> db_Update("download", "download_requested = download_requested + 1, download_mirror = '{$mstr}' WHERE download_id = '".intval($download_id)."'");
+				$sql -> db_Update("download_mirror", "mirror_count = mirror_count + 1 WHERE mirror_id = '".intval($mirror_id)."'");
 
 				header("Location: ".$gaddress);
 				exit();

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/online.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-08-23 04:17:57 $
+|     $Revision: 1.13 $
+|     $Date: 2005-12-24 22:53:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -128,7 +128,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 	if (strstr($online_location, "content.php")) {
 		$tmp = explode(".", substr(strrchr($online_location, "php."), 2));
 		if ($tmp[0] == "article") {
-			$sql->db_Select("content", "content_heading, content_class", "content_id='".$tmp[1]."'");
+			$sql->db_Select("content", "content_heading, content_class", "content_id='".intval($tmp[1])."'");
 			list($content['content_heading'], $content['content_class']) = $sql->db_Fetch();
 			$online_location_page = ARTICLE.": ".$content['content_heading'];
 			$online_location = str_replace("php.", "php?", $online_location);
@@ -137,7 +137,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 				$online_location_page = ARTICLE.": \"".CLASSRESTRICTED."\"";
 			}
 		} elseif($tmp[0] == "review") {
-			$sql->db_Select("content", "content_heading, content_class", "content_id='".$tmp[1]."'");
+			$sql->db_Select("content", "content_heading, content_class", "content_id='".intval($tmp[1])."'");
 			list($content['content_heading'], $content['content_class']) = $sql->db_Fetch();
 			$online_location_page = REVIEW.": ".$content['content_heading'];
 			$online_location = str_replace("php.", "php?", $online_location);
@@ -146,7 +146,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 				$online_location_page = REVIEW.": \"".CLASSRESTRICTED."\"";
 			}
 		} elseif($tmp[0] == "content") {
-			$sql->db_Select("content", "content_heading, content_class", "content_id='".$tmp[1]."'");
+			$sql->db_Select("content", "content_heading, content_class", "content_id='".intval($tmp[1])."'");
 			list($content['content_heading'], $content['content_class']) = $sql->db_Fetch();
 			$online_location_page = CONTENT.": ".$content['content_heading'];
 			$online_location = str_replace("php.", "php?", $online_location);
@@ -161,7 +161,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 		$tmp = explode(".", $tmp[1]);
 		if ($tmp[1] == "news") {
 			$id = ($tmp[0] == "reply" ? $tmp[3] : $tmp[2]);
-			$sql->db_Select("news", "news_title, news_class", "news_id='".$id."'");
+			$sql->db_Select("news", "news_title, news_class", "news_id='".intval($id)."'");
 			list($news['news_title'], $news['news_class']) = $sql->db_Fetch();
 			$online_location_page = ($tmp[0] == "reply" ? COMMENT.": ".ONLINE_EL12." > ".$news['news_title'] : COMMENT.": ".$news['news_title']);
 			$online_location = "comment.php?comment.news.$id";
@@ -171,7 +171,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 			}
 		} elseif($tmp[1] == "poll") {
 			$id = ($tmp[0] == "reply" ? $tmp[3] : $tmp[2]);
-			$sql->db_Select("poll", "poll_title", "poll_id='".$id."'");
+			$sql->db_Select("poll", "poll_title", "poll_id='".intval($id)."'");
 			list($poll['poll_title']) = $sql->db_Fetch();
 			$online_location_page = POLLCOMMENT.": ".$poll['poll_title'];
 			$online_location = "comment.php?comment.poll.$id";
@@ -192,7 +192,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 			$qry = "
 			SELECT t.thread_name, f.forum_name, f.forum_class from #forum_t AS t
 			LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-			WHERE t.thread_id = '{$tmp[0]}'
+			WHERE t.thread_id = '".intval($tmp[0])."'
 			";
 			$sql->db_Select_gen($qry);
 			$forum = $sql->db_Fetch();
@@ -203,7 +203,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 				$online_location_page = ONLINE_EL13.": \"".CLASSRESTRICTED."\"";
 			}
 		} elseif(strstr($online_location, "_viewforum")) {
-			$sql->db_Select("forum", "forum_name, forum_class", "forum_id='".$tmp[0]."' ");
+			$sql->db_Select("forum", "forum_name, forum_class", "forum_id='".intval($tmp[0])."' ");
 			list($forum['forum_name'], $forum['forum_class']) = $sql->db_Fetch();
 			$online_location_page = ONLINE_EL13." .:. ".$forum['forum_name'];
 			$online_location = str_replace("php.", "php?", $online_location);
@@ -212,7 +212,7 @@ foreach($listuserson as $uinfo => $pinfo) {
 				$online_location_page = ONLINE_EL13.": \"".CLASSRESTRICTED."\"";
 			}
 		} elseif(strstr($online_location, "_post")) {
-			$sql->db_Select("forum_t", "thread_name, thread_forum_id", "thread_forum_id='$tmp[0]' AND thread_parent='0'");
+			$sql->db_Select("forum_t", "thread_name, thread_forum_id", "thread_forum_id='".intval($tmp[0])."' AND thread_parent='0'");
 			list($forum_t['thread_name'], $forum_t['thread_forum_id']) = $sql->db_Fetch();
 			$sql->db_Select("forum", "forum_name", "forum_id='".$forum_t['thread_forum_id']."'");
 			list($forum['forum_name']) = $sql->db_Fetch();

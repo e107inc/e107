@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/rate.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-15 10:56:49 $
+|     $Revision: 1.8 $
+|     $Date: 2005-12-24 22:53:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -29,10 +29,10 @@ if (!$qs[0] || USER == FALSE || $qs[3] > 10 || $qs[3] < 1 || strpos($qs[2], '://
 	exit;
 }
 	
-$table = $qs[0];
-$itemid = $qs[1];
-$returnurl = $qs[2];
-$rate = $qs[3];
+$table = $tp -> toDB($qs[0]);
+$itemid = intval($qs[1]);
+$returnurl = $tp -> toDB($qs[2]);
+$rate = intval($qs[3]);
 	
 if ($sql -> db_Select("rate", "*", "rate_table='{$table}' AND rate_itemid='{$itemid}'"))
 {

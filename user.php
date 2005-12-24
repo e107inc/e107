@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.27 $
-|     $Date: 2005-12-08 15:37:15 $
-|     $Author: asperon $
+|     $Revision: 1.28 $
+|     $Date: 2005-12-24 22:53:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -24,7 +24,7 @@ if (isset($_POST['delp'])) {
 	if (USERID == $tmp[1] || (ADMIN && getperms("4"))) {
 		$sql->db_Select("user", "user_sess", "user_id='". USERID."'");
 		@unlink(e_FILE."public/avatars/".$row['user_sess']);
-		$sql->db_Update("user", "user_sess='' WHERE user_id=".$tmp[1]);
+		$sql->db_Update("user", "user_sess='' WHERE user_id=".intval($tmp[1]));
 		header("location:".e_SELF."?id.".$tmp[1]);
 		exit;
 	}
@@ -48,8 +48,8 @@ if (!USER) {
 }
 
 if (isset($_POST['records'])) {
-	$records = $_POST['records'];
-	$order = $_POST['order'];
+	$records = intval($_POST['records']);
+	$order = $tp -> toDB($_POST['order']);
 	$from = 0;
 }
 else if(!e_QUERY) {
@@ -62,9 +62,9 @@ else if(!e_QUERY) {
 		$id = $qs[1];
 	} else {
 		$qs = explode(".", e_QUERY);
-		$from = $qs[0];
-		$records = $qs[1];
-		$order = $qs[2];
+		$from = intval($qs[0]);
+		$records = intval($qs[1]);
+		$order = $tp -> toDB($qs[2], true);
 	}
 }
 if ($records > 30) {

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2005-11-24 12:10:03 $
+|     $Revision: 1.57 $
+|     $Date: 2005-12-24 22:53:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -117,13 +117,13 @@ if (!e_QUERY || $_GET['elan']) {
 $tmp = explode(".", e_QUERY);
 if (is_numeric($tmp[0])) {
 	$from = intval($tmp[0]);
-	$action = preg_replace("#\W#", "", $tmp[1]);
+	$action = preg_replace("#\W#", "", $tp -> toDB($tmp[1]));
 	$id = intval($tmp[2]);
 	$view = intval($tmp[3]);
-	$order = preg_replace("#\W#","",$tmp[4]);
-	$sort = preg_replace("#\W#", "", $tmp[5]);
+	$order = preg_replace("#\W#", "", $tp -> toDB($tmp[4]));
+	$sort = preg_replace("#\W#", "", $tp -> toDB($tmp[5]));
 } else {
-	$action = preg_replace("#\W#", "", $tmp[0]);
+	$action = preg_replace("#\W#", "", $tp -> toDB($tmp[0]));
 	$id = intval($tmp[1]);
 }
 
@@ -341,7 +341,7 @@ if ($action == "view") {
 	extract($row);
 	$comments_enabled = $row['download_comment'];
 	$subject = $download_name;
-	$sql2->db_Select("download_category", "*", "download_category_id='".$download_category."' ");
+	$sql2->db_Select("download_category", "*", "download_category_id='".intval($download_category)."' ");
 	$row = $sql2->db_Fetch();
 	extract($row);
 	$type = $download_category_name;
@@ -469,15 +469,15 @@ if ($action == "view") {
 	$download_view_table_end = preg_replace("/\{(.*?)\}/e", '$\1', $DOWNLOAD_VIEW_TABLE_END);
 	$text .= $download_view_table_start.$download_view_table_string.$download_view_table_end;
 
-	$dl_id = $download_id;
-	if ($sql->db_Select("download", "*", "download_category='{$download_category_id}' AND download_id < {$dl_id} AND download_active > 0 && download_visible IN (".USERCLASS_LIST.") ORDER BY download_datestamp DESC")) {
+	$dl_id = intval($download_id);
+	if ($sql->db_Select("download", "*", "download_category='".intval($download_category_id)."' AND download_id < {$dl_id} AND download_active > 0 && download_visible IN (".USERCLASS_LIST.") ORDER BY download_datestamp DESC")) {
 		$row = $sql->db_Fetch();
 		 extract($row);
 		$prev = "<a href='".e_SELF."?view.{$download_id}'>&lt;&lt; ".LAN_dl_33." [{$download_name}]</a>\n";
 	} else {
 		$prev = "&nbsp;";
 	}
-	if ($sql->db_Select("download", "*", "download_category='{$download_category_id}' AND download_id > {$dl_id} AND download_active > 0 && download_visible IN (".USERCLASS_LIST.") ORDER BY download_datestamp ASC")) {
+	if ($sql->db_Select("download", "*", "download_category='".intval($download_category_id)."' AND download_id > {$dl_id} AND download_active > 0 && download_visible IN (".USERCLASS_LIST.") ORDER BY download_datestamp ASC")) {
 		$row = $sql->db_Fetch();
 		 extract($row);
 		$next = "<a href='".e_SELF."?view.{$download_id}'>[{$download_name}] ".LAN_dl_34." &gt;&gt;</a>\n";

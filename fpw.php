@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/fpw.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-10-30 03:32:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.12 $
+|     $Date: 2005-12-24 22:53:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -54,7 +54,7 @@ function fpw_error($txt) {
 
 if (e_QUERY) {
 	$tmp = explode(".", e_QUERY);
-	$tmpinfo = preg_replace("#[\W_]#", "", $tmp[0]);
+	$tmpinfo = preg_replace("#[\W_]#", "", $tp -> toDB($tmp[0], true));
 	if ($sql->db_Select("tmp", "*", "tmp_info LIKE '%.{$tmpinfo}' ")) {
 		$row = $sql->db_Fetch();
 		extract($row);
@@ -67,7 +67,7 @@ if (e_QUERY) {
 		$mdnewpw = md5($newpw);
 
 		list($username, $md5) = explode(".", $tmp_info);
-		$sql->db_Update("user", "user_password='$mdnewpw', user_viewed='' WHERE user_name='$username' ");
+		$sql->db_Update("user", "user_password='$mdnewpw', user_viewed='' WHERE user_name='".$tp -> toDB($username, true)."' ");
 		cookie($pref['cookie_name'], "", (time()-2592000));
 		$_SESSION[$pref['cookie_name']] = "";
 
@@ -89,8 +89,8 @@ if (isset($_POST['pwsubmit'])) {
 		}
 	}
 	
-	$clean_email = $_POST['email'];
-	$clean_username = $_POST['username'];
+	$clean_email = check_email($tp -> toDB($_POST['email']));
+	$clean_username = $tp -> toDB($_POST['username']);
 	if ($sql->db_Select("user", "*", "user_email='{$clean_email}' AND user_name='{$clean_username}' ")) {
 		$row = $sql->db_Fetch();
 		 extract($row);

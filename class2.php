@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.243 $
-|     $Date: 2005-12-24 16:44:07 $
+|     $Revision: 1.244 $
+|     $Date: 2005-12-24 22:53:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -651,6 +651,7 @@ function check_email($var) {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE)
 {
+	global $tp;
 	if($var == e_LANGUAGE){
 		return TRUE;
 	}
@@ -728,7 +729,7 @@ function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE
 	} else {
 		// var is name of class ...
 		$sql=new db;
-		if ($sql->db_Select("userclass_classes", "*", "userclass_name='$var' ")) {
+		if ($sql->db_Select("userclass_classes", "*", "userclass_name='".$tp -> toDB($var)."' ")) {
 			$row=$sql->db_Fetch();
 			$tmp=explode(',', $userclass);
 			if (is_numeric(array_search($row['userclass_id'], $tmp))) {
@@ -785,6 +786,7 @@ function getperms($arg, $ap = ADMINPERMS) {
 function get_user_data($uid, $extra = "", $force_join = TRUE)
 {
 	global $pref, $sql;
+	$uid = intval($uid);
 	if($ret = getcachedvars("userdata_{$uid}"))
 	{
 		return $ret;
@@ -860,7 +862,7 @@ function save_prefs($table = 'core', $uid = USERID, $row_val = '') {
 		$_user_pref = $tp -> toDB($user_pref);
 
 		$tmp=addslashes(serialize($_user_pref));
-		$sql->db_Update("user", "user_prefs='$tmp' WHERE user_id=$uid");
+		$sql->db_Update("user", "user_prefs='$tmp' WHERE user_id=".intval($uid));
 		return $tmp;
 	}
 }
@@ -871,6 +873,7 @@ class e_online {
 	function online($online_tracking = false, $flood_control = false) {
 		if($online_tracking == true || $flood_control == true) {
 			global $online_timeout, $online_warncount, $online_bancount;
+			$online_timeout = intval($online_timeout);
 			if(!isset($online_timeout)) {
 				$online_timeout = 300;
 			}
@@ -880,12 +883,12 @@ class e_online {
 			if(!isset($online_bancount)) {
 				$online_bancount = 100;
 			}
-
+			global $sql, $pref, $e107, $listuserson, $e_event, $tp;
 			$page = (strpos(e_SELF, "forum_") !== FALSE) ? e_SELF.".".e_QUERY : e_SELF;
 			$page = (strpos(e_SELF, "comment") !== FALSE) ? e_SELF.".".e_QUERY : $page;
 			$page = (strpos(e_SELF, "content") !== FALSE) ? e_SELF.".".e_QUERY : $page;
+			$page = $tp -> toDB($page, true);
 
-			global $sql, $pref, $e107, $listuserson, $e_event;
 			$ip = $e107->getip();
 			$udata = (USER === true ? USERID.".".USERNAME : "0");
 

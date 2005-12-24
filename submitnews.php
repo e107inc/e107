@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/submitnews.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-10-21 01:32:16 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.14 $
+|     $Date: 2005-12-24 22:53:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -31,7 +31,7 @@ if (!check_class($pref['subnews_class']))
 } 
 
 $author_name = $tp->toDB($_POST['author_name']);
-$author_email = check_email($_POST['author_email']);
+$author_email = $tp->toDB(check_email($_POST['author_email']));
 
 if (isset($_POST['submit']))
 {
@@ -81,7 +81,7 @@ if (isset($_POST['submit']))
             { 
                 // $numberoffiles = count($uploaded);
                 $today = getdate();
-                $newname = USERID . "_" . $today[0] . "_" . str_replace(" ", "_", substr($_POST['itemtitle'], 0, 6)) . "." . $fileext;
+                $newname = USERID . "_" . $today[0] . "_" . str_replace(" ", "_", substr($itemtitle, 0, 6)) . "." . $fileext;
                 if ($file && $pref['subnews_resize'])
                 {
                     require_once(e_HANDLER . "resize_handler.php");
@@ -103,7 +103,7 @@ if (isset($_POST['submit']))
             {
                 $newname = "";
             } 
-            $sql->db_Insert("submitnews", "0, '$user', '$email', '$itemtitle', '" . intval($_POST['cat_id']) . "','$item', '" . time() . "', '$ip', '0', '$newname' ");
+            $sql->db_Insert("submitnews", "0, '$user', '$email', '$itemtitle', '".intval($_POST['cat_id'])."','$item', '" . time() . "', '$ip', '0', '$newname' ");
             $edata_sn = array("user" => $user, "email" => $email, "itemtitle" => $itemtitle, "catid" => intval($_POST['cat_id']), "item" => $item, "ip" => $ip, "newname" => $newname);
             $e_event->trigger("subnews", $edata_sn);
             $ns->tablerender(LAN_133, "<div style='text-align:center'>" . LAN_134 . "</div>");
