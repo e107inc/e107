@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/auth.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.11 $
+|     $Date: 2005-12-24 23:30:50 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -58,7 +58,7 @@ else
 			$userpass = md5($_POST['authpass']);
 			$cookieval = $row['user_id'].".".md5($userpass);
 			 
-			$sql->db_Select("user", "*", "user_name='".$_POST['authname']."'");
+			$sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['authname'])."'");
 			list($user_id, $user_name, $userpass) = $sql->db_Fetch();
 			if ($pref['tracktype'] == "session") {
 				$_SESSION[$pref['cookie_name']] = $cookieval;
@@ -145,8 +145,9 @@ class auth
 		# - return                                boolean if fail, else result array
 		# - scope                                        public
 		*/
+		global $tp;
 		$sql_auth = new db;
-		$authname = preg_replace("/\sOR\s|\=|\#/", "", $authname);
+		$authname = $tp -> toDB(preg_replace("/\sOR\s|\=|\#/", "", $authname));
 		if ($sql_auth->db_Select("user", "*", "user_loginname='$authname' AND user_admin='1' "))
 		{
 			$row = $sql_auth->db_Fetch();
