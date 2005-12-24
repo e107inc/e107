@@ -11,15 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.40 $
+|     $Date: 2005-12-24 14:20:30 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-global $eMenuActive, $e107;
+global $eMenuActive, $e107, $tp;
+require_once(e_PLUGIN."login_menu/login_menu_shortcodes.php");
 $ip = $e107->getip();
 
 $bullet = (defined("BULLET") ? "<img src='".THEME_ABS."images/".BULLET."' alt='' style='vertical-align: middle;' />" : "<img src='".THEME_ABS."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />");
@@ -173,38 +174,12 @@ if (USER == TRUE || ADMIN == TRUE) {
 		}
 	}
 
-
 	if (LOGINMESSAGE != '') {
 		$text = '<div style="text-align: center;">'.LOGINMESSAGE.'</div>';
 	}
+
 	$text .= '<form method="post" action="'.e_SELF.(e_QUERY ? '?'.e_QUERY : '').'">';
-
-	$LM_USERNAME_TXT  = LOGIN_MENU_L1;
-	$LM_USERNAME_INPUT = "<input class='tbox login user' type='text' name='username' size='15' value='' maxlength='30' />\n";
-	$LM_PASSWORD_TXT = LOGIN_MENU_L2;
-	$LM_PASSWORD_INPUT = "<input class='tbox login pass' type='password' name='userpass' size='15' value='' maxlength='20' />\n\n";
-
-	if ($use_imagecode) {
-		$LM_IMAGECODE = '<input type="hidden" name="rand_num" value="'.$sec_img->random_number.'" />
-		'.$sec_img->r_image().'
-		<br /><input class="tbox login verify" type="text" name="code_verify" size="15" maxlength="20" /><br />';
-	}
-	$LM_LOGINBUTTON = '<input class="button" type="submit" name="userlogin" value="'.LOGIN_MENU_L28.'" />';
-
-	if($pref['user_tracking'] != "session")
-	{
-		$LM_REMEMBERME = '<br /><input type="checkbox" name="autologin" value="1" />'.LOGIN_MENU_L6;
-	}
-
-	if ($pref['user_reg']) {
-		if (!$pref['auth_method'] || $pref['auth_method'] == 'e107') {
- 			$LM_SIGNUP_LINK = '<a href="'.e_SIGNUP.'">'.LOGIN_MENU_L3.'</a>';
-			$LM_FPW_LINK  = '<a href="'.e_BASE.'fpw.php">'.LOGIN_MENU_L4.'</a>';
-		}
-	}
-
-	$text .= preg_replace("/\{(.*?)\}/e", '$\1', $LOGIN_MENU_FORM);
-
+	$text .= $tp->parseTemplate($LOGIN_MENU_FORM, true, $login_menu_shortcodes);
 	$text .= '</form>';
 
 
