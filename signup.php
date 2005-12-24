@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2005-12-24 00:53:26 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.71 $
+|     $Date: 2005-12-24 22:53:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -98,11 +98,11 @@ if (e_QUERY)
 	if ($qs[0] == "activate")
 	{
 		$e107cache->clear("online_menu_totals");
-		if ($sql->db_Select("user", "*", "user_sess='".$sql->escape($qs[2], false)."' "))
+		if ($sql->db_Select("user", "*", "user_sess='".$tp -> toDB($qs[2], true)."' "))
 		{
 			if ($row = $sql->db_Fetch())
 			{
-				$sql->db_Update("user", "user_ban='0', user_sess='' WHERE user_sess='".$sql->escape($qs[2], false)."' ");
+				$sql->db_Update("user", "user_ban='0', user_sess='' WHERE user_sess='".$tp -> toDB($qs[2], true)."' ");
 				$e_event->trigger("userveri", $row);
 				require_once(HEADERF);
 				$text = LAN_401." <a href='index.php'>".LAN_SIGNUP_22."</a> ".LAN_SIGNUP_23."<br />".LAN_SIGNUP_24." ".SITENAME;
@@ -205,14 +205,14 @@ if (isset($_POST['register']))
 		exit;
 	}
 
-	if ($sql->db_Select("user", "*", "user_name='".$sql->escape($_POST['name'])."'"))
+	if ($sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['name'])."'"))
 	{
 		$error_message .= LAN_411."\\n";
 		$error = TRUE;
 		$name = "";
 	}
 
-	if ($sql->db_Select("user", "*", "user_loginname='".$sql->escape($_POST['loginname'])."' "))
+	if ($sql->db_Select("user", "*", "user_loginname='".$tp -> toDB($_POST['loginname'])."' "))
 	{
 		$error_message .= LAN_104."\\n";
 		$error = TRUE;
@@ -263,7 +263,7 @@ if (isset($_POST['register']))
 		}
 	}
 
-	if ($sql->db_Select("user", "user_email", "user_email='".$sql->escape($_POST['email'])."' "))
+	if ($sql->db_Select("user", "user_email", "user_email='".$tp -> toDB($_POST['email'])."' "))
 	{
 		$error_message .= LAN_408."\\n";
 		$error = TRUE;
@@ -291,8 +291,8 @@ if (isset($_POST['register']))
      	$error = TRUE;
 	}
 
-	$wc = $sql->escape("*".trim(substr($_POST['email'], strpos($_POST['email'], "@"))));
-	if ($sql->db_Select("banlist", "*", "banlist_ip='".$sql->escape($_POST['email'])."' OR banlist_ip='{$wc}'"))
+	$wc = $tp -> toDB("*".trim(substr($_POST['email'], strpos($_POST['email'], "@"))));
+	if ($sql->db_Select("banlist", "*", "banlist_ip='".$tp -> toDB($_POST['email'])."' OR banlist_ip='{$wc}'"))
 	{
 		$brow = $sql -> db_Fetch();
 	 	$error = TRUE;
@@ -324,25 +324,26 @@ if (isset($_POST['register']))
 			exit;
 		}
 
-		if ($sql->db_Select("user", "*", "user_email='".$sql->escape($_POST['email'])."' AND user_ban='1'")) {
+		if ($sql->db_Select("user", "*", "user_email='".$tp -> toDB($_POST['email'])."' AND user_ban='1'")) {
 			exit;
 		}
 
-		$username = $sql->escape(strip_tags($_POST['name']));
-		$loginname = $sql->escape(strip_tags($_POST['loginname']));
+		$username = $tp -> toDB(strip_tags($_POST['name']));
+		$loginname = $tp -> toDB(strip_tags($_POST['loginname']));
 		$time = time();
 		$ip = $e107->getip();
 
 		$ue_fields = "";
 		foreach($_POST['ue'] as $key => $val)
 		{
+			$key = $tp->toDB($key);
 			$val = $tp->toDB($val);
 			$ue_fields .= ($ue_fields) ? ", " : "";
 			$ue_fields .= $key."='".$val."'";
 		}
 
 		$u_key = md5(uniqid(rand(), 1));
-		$nid = $sql->db_Insert("user", "0, '{$username}', '{$loginname}', '', '".md5($_POST['password1'])."', '{$u_key}', '".$sql->escape($_POST['email'])."', '".$sql->escape($_POST['signature'])."', '".$sql->escape($_POST['image'])."', '".$sql->escape($_POST['timezone'])."', '".$sql->escape($_POST['hideemail'])."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', '".$sql->escape($_POST['realname'])."', '', '', '', '', '".$sql->escape($_POST['xupexist'])."' ");
+		$nid = $sql->db_Insert("user", "0, '{$username}', '{$loginname}', '', '".md5($_POST['password1'])."', '{$u_key}', '".$tp -> toDB($_POST['email'])."', '".$tp -> toDB($_POST['signature'])."', '".$tp -> toDB($_POST['image'])."', '".$tp -> toDB($_POST['timezone'])."', '".$tp -> toDB($_POST['hideemail'])."', '".$time."', '0', '".$time."', '0', '0', '0', '0', '".$ip."', '2', '0', '', '', '', '0', '".$tp -> toDB($_POST['realname'])."', '', '', '', '', '".$tp -> toDB($_POST['xupexist'])."' ");
 		if(!$nid)
 		{
 			require_once(HEADERF);
@@ -360,7 +361,7 @@ if (isset($_POST['register']))
 				unset($insert_class);
 				sort($_POST['usrclass']);
 				$insert_class = implode(",",$_POST['usrclass']);
-				$sql->db_Update("user", "user_class='$insert_class' WHERE user_id='".$nid."' ");
+				$sql->db_Update("user", "user_class='".$tp -> toDB($insert_class)."' WHERE user_id='".$nid."' ");
 			}
 
 // ========= save extended fields into db table. =====
@@ -424,7 +425,7 @@ if (isset($_POST['register']))
 				unset($insert_class);
 				sort($_POST['usrclass']);
 				$insert_class = implode(",",$_POST['usrclass']);
-				$sql->db_Update("user", "user_class='$insert_class' WHERE user_id='".$nid."' ");
+				$sql->db_Update("user", "user_class='".$tp -> toDB($insert_class)."' WHERE user_id='".$nid."' ");
 			}
 // ======== save extended fields to DB table.
 

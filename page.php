@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-12-13 09:15:15 $
-|     $Author: e107coders $
+|     $Revision: 1.17 $
+|     $Date: 2005-12-24 22:53:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -130,7 +130,7 @@ class pageClass
 		global $sql, $ns;
 		$query = "SELECT p.*, u.user_id, u.user_name FROM #page AS p
 		LEFT JOIN #user AS u ON p.page_author = u.user_id
-		WHERE p.page_id='".$this -> pageID."' AND p.page_class IN (".USERCLASS_LIST.") ";
+		WHERE p.page_id='".intval($this -> pageID)."' AND p.page_class IN (".USERCLASS_LIST.") ";
 
 		if(!$sql -> db_Select_gen($query))
 		{
@@ -315,7 +315,7 @@ class pageClass
 
 			if (isset($_POST['commentsubmit']))
 			{
-				if ($sql->db_Select("page", "page_comment_flag", "page_id='".$this -> pageID."' "))
+				if ($sql->db_Select("page", "page_comment_flag", "page_id='".intval($this -> pageID)."' "))
 				{
 					$row = $sql->db_Fetch();
 					if ($row[0] && (ANON === TRUE || USER === TRUE)) {

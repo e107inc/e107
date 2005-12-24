@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/userposts.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-11-30 19:39:16 $
+|     $Revision: 1.20 $
+|     $Date: 2005-12-24 22:53:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -133,7 +133,7 @@ if ($action == "forums" || isset($_POST['fsearch'])) {
 	$s_info = "";
 	if (isset($_POST['f_query']) && $_POST['f_query'] != "")
 	{
-		$f_query = $_POST['f_query'];
+		$f_query = $tp -> toDB($_POST['f_query']);
 		$s_info = "AND (ft.thread_name REGEXP('".$f_query."') OR ft.thread_thread REGEXP('".$f_query."'))";
 		$fcaption = UP_LAN_12." ".$row['user_name'];
 	}
@@ -209,7 +209,7 @@ function parse_userposts_comments_table($row) {
 	
 	$sql2 = new db;
 	if ($comment_type == "0") {
-		$sql2->db_Select("news", "news_title, news_class", "news_id = '".$comment_item_id."' ");
+		$sql2->db_Select("news", "news_title, news_class", "news_id = '".intval($comment_item_id)."' ");
 		$row = $sql2->db_Fetch();
 		 extract($row);
 		if (!$news_class) {
@@ -223,7 +223,7 @@ function parse_userposts_comments_table($row) {
 		}
 	}
 	if ($comment_type == "1") {
-		$sql2->db_Select("content", "*", "content_id=$comment_item_id");
+		$sql2->db_Select("content", "*", "content_id=".intval($comment_item_id));
 		$row = $sql2->db_Fetch();
 		 extract($row);
 		 
@@ -253,7 +253,7 @@ function parse_userposts_comments_table($row) {
 		}
 	}
 	if ($comment_type == "2") {
-		$sql2->db_Select("download", "*", "download_id=$comment_item_id");
+		$sql2->db_Select("download", "*", "download_id=".intval($comment_item_id));
 		$row = $sql2->db_Fetch();
 		 extract($row);
 		 
@@ -265,7 +265,7 @@ function parse_userposts_comments_table($row) {
 		$USERPOSTS_COMMENTS_TYPE = "download";
 	}
 	if ($comment_type == "4") {
-		$sql2->db_Select("poll", "*", "poll_id=$comment_item_id");
+		$sql2->db_Select("poll", "*", "poll_id=".intval($comment_item_id));
 		$row = $sql2->db_Fetch();
 		 extract($row);
 		 
@@ -278,7 +278,7 @@ function parse_userposts_comments_table($row) {
 	}
 
 	if ($comment_type == "5") {
-		$sql2->db_Select("documentation", "*", "doc_id=$comment_item_id");
+		$sql2->db_Select("documentation", "*", "doc_id=".intval($comment_item_id));
 		$row = $sql2->db_Fetch();
 		 extract($row);
 		 
@@ -342,7 +342,7 @@ function parse_userposts_forum_table($row) {
 			$thread_name = $cachevar[$thread_parent];
 		} else {
 			$tmp = $thread_parent;
-			$sql2->db_Select("forum_t", "thread_name", "thread_id = '".$thread_parent."' ");
+			$sql2->db_Select("forum_t", "thread_name", "thread_id = '".intval($thread_parent)."' ");
 			list($thread_name) = $sql2->db_Fetch();
 			$cachevar[$thread_parent] = $thread_name;
 		}

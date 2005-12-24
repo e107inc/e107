@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/content.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-12-21 21:55:20 $
+|     $Revision: 1.19 $
+|     $Date: 2005-12-24 22:53:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ if($content_install = $sql -> db_Select("plugin", "*", "plugin_path = 'content' 
 	if($tmp[0]){
 		//get type_id from the row with heading content, article or review
 		//this will only work if the three main parents are not renamed !
-		if(!$sql -> db_Select("pcontent", "content_id", "content_heading='".$tmp[0]."'")){
+		if(!$sql -> db_Select("pcontent", "content_id", "content_heading='".$tp -> toDB($tmp[0])."'")){
 			header("location:".e_PLUGIN."content/content.php");
 		}else{
 			$row = $sql -> db_Fetch();

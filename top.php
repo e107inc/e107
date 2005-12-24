@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/top.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-07-16 09:58:27 $
-|     $Author: streaky $
+|     $Revision: 1.8 $
+|     $Date: 2005-12-24 22:53:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -24,10 +24,10 @@ if (!e_QUERY) {
 	$view = 10;
 } else {
 	$tmp = explode(".", e_QUERY);
-	$from = $tmp[0];
+	$from = intval($tmp[0]);
 	$action = $tmp[1];
 	$subaction = $tmp[2];
-	$view = ($tmp[3] ? $tmp[3] : 10);
+	$view = ($tmp[3] ? intval($tmp[3]) : 10);
 }
 if ($action == "top") {
 	define("e_PAGETITLE", ": ".LAN_8);
