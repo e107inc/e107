@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.70 $
-|     $Date: 2005-12-16 20:06:08 $
-|     $Author: streaky $
+|     $Revision: 1.71 $
+|     $Date: 2005-12-25 02:06:33 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -87,7 +87,7 @@ if ($authlist) {
 	$auth_dropdown .= "</select>\n";
 	$auth_dropdown .= "</td></tr>";
 } else {
-	$auth_dropdown = "<input type='hidden' name='auth_method' value='' />";
+	$auth_dropdown = "<input type='hidden' name='auth_method' value='' />".PRFLAN_93;
 	$pref['auth_method'] = "";
 }
 
@@ -199,13 +199,6 @@ $text = "<script type=\"text/javascript\">
 	</td>
 	</tr>
 
-	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_17."<br /><span class='smalltext'>&nbsp</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='compress_output' value='1'".($pref['compress_output'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='compress_output' value='0'".(!$pref['compress_output'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
-	</td>
-	</tr>
 	";
 
 $text .= pref_submit();
@@ -284,13 +277,6 @@ $text .= "<div id='admindisp' style='display:none; text-align:center'>
 	</td>
 	</tr>";
 
-	$text .= "<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_147.":<br /><span class='smalltext'>".PRFLAN_148."</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='developer' value='1'".($pref['developer'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='developer' value='0'".(!$pref['developer'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
-	</td>
-	</tr>";
 
 $text .= pref_submit();
 
@@ -817,6 +803,45 @@ $text .= pref_submit();
 
 $text .= "</table></div>";
 
+
+//Advanced Features
+$text .= "<div id='advanced' style='display:none; text-align:center'>
+	<table style='width:100%' class='fborder'>
+	<tr>
+	<td class='fcaption' title='".PRFLAN_80."' style='text-align:left;' colspan='2'>".PRFLAN_87."</td>
+	</tr>";
+
+	$text .= "<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_147.":<br /><span class='smalltext'>".PRFLAN_148."</span></td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	<input type='radio' name='developer' value='1'".($pref['developer'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='developer' value='0'".(!$pref['developer'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_17."<br /><span class='smalltext'>&nbsp</span></td>
+	<td style='width:50%; text-align:right' class='forumheader3'>
+	<input type='radio' name='compress_output' value='1'".($pref['compress_output'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
+	<input type='radio' name='compress_output' value='0'".(!$pref['compress_output'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
+	</td>
+	</tr>
+
+	<tr>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_92."<br /><span class='smalltext'>&nbsp</span></td>
+	<td style='width:50%; text-align:right' class='forumheader3'>{$auth_dropdown}
+	</td>
+	</tr>
+	
+	";
+
+$text .= pref_submit();
+
+$text .= "</table></div>";
+// END Advanced Features
+
+
+
 $text .= "</form></div></div>";
 
 $ns->tablerender(PRFLAN_53, $text);
@@ -857,6 +882,7 @@ function prefs_adminmenu() {
 	$var['textpost']['text'] = PRFLAN_101;
 	$var['security']['text'] = PRFLAN_47;
 	$var['comments']['text'] = PRFLAN_87;
+	$var['advanced']['text'] = PRFLAN_91;
 	show_admin_menu(LAN_OPTIONS, $action, $var, TRUE);
 }
 ?>
