@@ -11,12 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/message.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-10-16 08:46:01 $
+|     $Revision: 1.5 $
+|     $Date: 2005-12-25 01:26:59 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
+
+$e_sub_cat = 'message';
+require_once("auth.php");
+$gen = new convert;
 
 $messageTypes = array("Broken Download", "Dev Team Message");
 $queryString = "";
@@ -24,10 +28,6 @@ foreach($messageTypes as $types) {
 	$queryString .= " gen_type='$types' OR";
 }
 $queryString = substr($queryString, 0, -3);
-
-$e_sub_cat = 'message';
-require_once("auth.php");
-$gen = new convert;
 
 if(isset($_POST['delete_message']))
 {

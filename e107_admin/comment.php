@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/comment.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-01-27 19:52:24 $
-|     $Author: streaky $
+|     $Revision: 1.4 $
+|     $Date: 2005-12-25 01:26:59 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -25,7 +25,7 @@ if (!getperms("B")) {
 if (e_QUERY) {
 	$temp = explode("-", e_QUERY);
 	$action = $temp[0];
-	$id = $temp[1];
+	$id = intval($temp[1]);
 	$item = $temp[2];
 	$c_item = $temp[3];
 	if ($action == "block") {
