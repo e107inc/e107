@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-12-21 20:57:33 $
+|     $Revision: 1.35 $
+|     $Date: 2005-12-25 00:01:31 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -601,6 +601,24 @@ class file_inspector {
 		}
 		
 		$data = "<?php\n";
+		$data .= "/*\n";
+		$data .= "+ ----------------------------------------------------------------------------+\n";
+		$data .= "|     e107 website system\n";
+		$data .= "|\n";
+		$data .= "|     ©Steve Dunstan 2001-2002\n";
+		$data .= "|     http://e107.org\n";
+		$data .= "|     jalist@e107.org\n";
+		$data .= "|\n";
+		$data .= "|     Released under the terms and conditions of the\n";
+		$data .= "|     GNU General Public License (http://gnu.org).\n";
+		$data .= "|\n";
+		$data .= "|     \$Source: /cvs_backup/e107_0.7/e107_admin/fileinspector.php,v $\n";
+		$data .= "|     \$Revision: 1.35 $\n";
+		$data .= "|     \$Date: 2005-12-25 00:01:31 $\n";
+		$data .= "|     \$Author: sweetas $\n";
+		$data .= "+----------------------------------------------------------------------------+\n";
+		$data .= "*/\n\n";
+		$data .= "if (!defined('e107_INIT')) { exit; }\n\n";
 		
 		$scan_current = ($_POST['snaptype'] == 'current') ? $this -> scan($dir) : $core_image;
 		$image_array = var_export($scan_current, true);
