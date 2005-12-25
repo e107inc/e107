@@ -11,19 +11,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/links.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-11-24 21:20:27 $
+|     $Revision: 1.53 $
+|     $Date: 2005-12-25 01:26:59 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
 require_once('../class2.php');
-if (!is_object($tp)) $tp = new e_parse;
 if (!getperms('I')) {
 	header('location:'.e_BASE.'index.php');
 }
 
 $e_sub_cat = 'links';
+
+if (!is_object($tp)) $tp = new e_parse;
+
 // ----- Presets.----------
 require_once(e_HANDLER."preset_class.php");
 $pst = new e_preset;

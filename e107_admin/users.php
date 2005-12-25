@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.65 $
-|     $Date: 2005-12-05 19:28:57 $
+|     $Revision: 1.66 $
+|     $Date: 2005-12-25 01:26:59 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -24,17 +24,17 @@ if (!getperms("4")) {
 }
 
 if (isset($_POST['useraction']) && $_POST['useraction'] == 'userinfo') {
-	header('location:'.e_ADMIN."userinfo.php?{$_POST['userip']}");
+	header('location:'.e_ADMIN."userinfo.php?".$tp -> toDB($_POST['userip']));
 	exit;
 }
 
 if (isset($_POST['useraction']) && $_POST['useraction'] == 'usersettings') {
-	header('location:'.e_BASE."usersettings.php?{$_POST['userid']}");
+	header('location:'.e_BASE."usersettings.php?".$tp -> toDB($_POST['userid']));
 	exit;
 }
 
 if (isset($_POST['useraction']) && $_POST['useraction'] == 'userclass') {
-	header('location:'.e_ADMIN."userclass.php?{$_POST['userid']}");
+	header('location:'.e_ADMIN."userclass.php?".$tp -> toDB($_POST['userid']));
 	exit;
 }
 

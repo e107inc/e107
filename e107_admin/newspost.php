@@ -11,14 +11,13 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.99 $
-|   $Date: 2005-12-21 17:28:34 $
+|   $Revision: 1.100 $
+|   $Date: 2005-12-25 01:26:59 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 
 */
 require_once("../class2.php");
-
 
 if (!getperms("H")) {
 	header("location:".e_BASE."index.php");
