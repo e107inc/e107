@@ -22,7 +22,7 @@ define("LAN_84", "Nieuwsberichten");
 define("LAN_99", "Reacties");
 define("LAN_100", "Op");
 define("LAN_307", "Aantal berichten in deze categorie: ");
-define("LAN_462", "Geen nieuwsberichtenin de opgegeven maand");
+define("LAN_462", "Geen nieuwsberichten in de opgegeven maand");
 define("LAN_NEWS_1", "Nieuws uitsluitend voor bepaalde leden");
 define("LAN_NEWS_2", "U mag dit bericht niet lezen");
 define("LAN_NEWS_3", "Verwijder install.php van je server");

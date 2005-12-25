@@ -49,7 +49,7 @@ define("LAN_317", "Modereer trackbacks");
 define("LAN_318", "Bewerk reactie");
 define("LAN_319", "Bijgewerkt");
 define("LAN_320", "Bijwerken reactie");
-define("COMLAN_1", "hier");
+define("COMLAN_1", "Klik hier");
 define("COMLAN_2", "om aan te melden");
 define("COMLAN_3", "Fout!");
 define("COMLAN_4", "Onderwerp reactie");

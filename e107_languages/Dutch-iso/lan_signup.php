@@ -81,7 +81,7 @@ define("LAN_SIGNUP_25", "Upload je avatar");
 define("LAN_SIGNUP_26", "Upload je foto");
 define("LAN_SIGNUP_27", "Toon");
 define("LAN_SIGNUP_28", "keuze uit Inhoud/Mail-lijsten");
-define("LAN_SIGNUP_29", "Een bevestigingse-mail wordt je toegezonden aan het opgegeven e-mailadres. Dit adres moet dus geldig zijn.");
+define("LAN_SIGNUP_29", "Er wordt ter bevestiging een e-mailtje gestuurd aan het door jou opgegeven e-mailadres. Dit adres moet dus geldig zijn.");
 define("LAN_SIGNUP_30", "Als je niet wilt dat je e-mailadres wordt weergegeven, kruis dan de optie 'Verbergen e-mailadres' aan.");
 define("LAN_SIGNUP_31", "Locatie van je XUP-bestand");
 define("LAN_SIGNUP_32", "Wat is een XUP-bestand?");
