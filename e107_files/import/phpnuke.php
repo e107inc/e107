@@ -11,20 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/import/phpnuke.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-08 21:01:03 $
-|     $Author: stevedunstan $
+|     $Revision: 1.2 $
+|     $Date: 2005-12-25 02:02:41 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
+require_once("../../class2.php");
+require_once(e_ADMIN."auth.php");
 
 define("ASYSTEM", "php-nuke");
 define("DEFAULTPREFIX", "nuke_");
-
-
-require_once("../../class2.php");
-require_once(HEADERF);
-
 
 if(!isset($_POST['do_conversion']))
 {
@@ -70,14 +67,14 @@ if(!isset($_POST['do_conversion']))
 	</table>";
 	
 	$ns -> tablerender(ASYSTEM." to e107 Conversion Script", $text);
-	require_once(FOOTERF);
+	require_once(e_ADMIN."footer.php");
 	exit;
 }
 
 if(!isset($_POST['dbHost']) || !isset($_POST['dbUsername']) || !isset($_POST['dbPassword']) || !isset($_POST['dbDatabase']))
 {
 	echo "Field(s) left blank, please go back and re-enter values.";
-	require_once(FOOTERF);
+	require_once(e_ADMIN."footer.php");
 	exit;
 }
 
@@ -240,13 +237,13 @@ echo "Inserted $pass forum posts into database ($fail fails).<br />";
 
 echo "</td></tr></table>";
 
-require_once(FOOTERF);
+require_once(e_ADMIN."footer.php");
 
 
 function goError($error)
 {
 	echo "<b>{$error}</b></td></tr></table>";
-	require_once(FOOTERF);
+	require_once(e_ADMIN."footer.php");
 	exit;
 }
 
