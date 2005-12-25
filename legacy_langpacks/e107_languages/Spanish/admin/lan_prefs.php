@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-12-17 01:20:37 $
+|     $Revision: 1.6 $
+|     $Date: 2005-12-25 10:08:10 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -100,6 +100,10 @@ define("PRFLAN_88", "Ver comentarios anindados (jerarquía)");
 define("PRFLAN_89", "Mostrar icono en nuevo comentario");
 define("PRFLAN_89", "Sitio:");
 define("PRFLAN_90", "Permitir editar sus propios comentarios");
+define("PRFLAN_91", "Opciones Avanzadas");
+define("PRFLAN_92", "Selecciona método de autentificación");
+define("PRFLAN_93", "e107 - No hay métodos de autententificación instalados");
+
 define("PRFLAN_91", "Si alguien ataca su sitio mediante múltiples comandos a su servidor, ¡su IP será automáticamente baneada!");
 define("PRFLAN_92", "¿Ocultar contraseña en el email de confirmación?");
 define("PRFLAN_93", "Página de la función strftime en php.net");
