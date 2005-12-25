@@ -1,5 +1,3 @@
-//<?php
-
 global $pref, $e107cache;
 
 if($pref['smiley_activate']) {
