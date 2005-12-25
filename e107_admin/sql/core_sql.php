@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ?Steve Dunstan 2001-2002
+|     ©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-11-06 00:46:22 $
-|     $Author: streaky $
+|     $Revision: 1.43 $
+|     $Date: 2005-12-25 01:33:05 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 header("location:../index.php");
