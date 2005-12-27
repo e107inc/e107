@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.6 $
+|     $Date: 2005-12-27 20:17:17 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -81,8 +81,11 @@ class e_admin_log {
 	 * @param int $event_type Log level
 	 */
 	function log_event ($event_title, $event_detail, $event_type = E_LOG_INFORMATIVE) {
-		global $e107, $sql;
+		global $e107, $sql, $tp;
 		if($event_type >= $this->_options['log_level']) {
+			$event_title = $tp -> toDB($event_title, true);
+			$event_detail = $tp -> toDB($event_detail, true);
+			$event_type = $tp -> toDB($event_type, true);
 			$time_stamp = time();
 			$uid = (USER === FALSE) ? USERID : '0';
 			$ip = $e107->getip();
