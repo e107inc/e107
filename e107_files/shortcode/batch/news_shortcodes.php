@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.14 $
+|     $Date: 2005-12-27 19:19:39 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -102,7 +102,7 @@ global $pref, $sql;
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 if ($news_item['news_comment_total']) {
-	$sql->db_Select("comments", "comment_datestamp", "comment_item_id='".$news_item['news_id']."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
+	$sql->db_Select("comments", "comment_datestamp", "comment_item_id='".intval($news_item['news_id'])."' AND comment_type='0' ORDER BY comment_datestamp DESC LIMIT 0,1");
 	list($comments['comment_datestamp']) = $sql->db_Fetch();
 	$latest_comment = $comments['comment_datestamp'];
 	if ($latest_comment > USERLV ) {
