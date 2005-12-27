@@ -11,20 +11,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/avatar_handler.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.5 $
+|     $Date: 2005-12-27 20:17:17 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
 function avatar($avatar) {
+	global $tp;
 	if (stristr($avatar, "-upload-") !== FALSE) {
 		return e_FILE."public/avatars/".str_replace("-upload-", "", $avatar);
 	} else if (stristr($avatar, "Binary") !== FALSE) {
 		$sqla = new db;
 		preg_match("/Binary\s(.*?)\//", $avatar, $result);
-		$sqla->db_Select("rbinary", "*", "binary_id='".$result[1]."' ");
+		$sqla->db_Select("rbinary", "*", "binary_id='".$tp -> toDB($result[1])."' ");
 		$row = $sqla->db_Fetch();
 		 extract($row);
 		return $binary_data;
