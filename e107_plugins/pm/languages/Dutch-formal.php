@@ -70,7 +70,7 @@ define("LAN_PM_103", "Bericht onderwerp: ");
 define("LAN_PM_104", "Aantal bijlagen: ");
 define("LAN_PM_105", "U kunt het bericht bekijken op: ");
 define("LAN_PM_106", "PM gelezen door ");
-define("LAN_PM_107", "De PM die u veronden had naar {UNAME} is gelezen op ");
+define("LAN_PM_107", "De PM die u verzonden had naar {UNAME} is gelezen op ");
 define("LAN_PM_108", "Bericht veronden op: ");
 
 ?>
