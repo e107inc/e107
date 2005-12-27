@@ -1,9 +1,8 @@
-global $sql;
-global $ns;
+global $sql, $tp, $ns;
 $menu = $parm;
 
-$path = dirname($menu);
-$name = basename($menu);
+$path = $tp -> toDB(dirname($menu));
+$name = $tp -> toDB(basename($menu));
 if($path == '.')
 {
 	$path = $menu;

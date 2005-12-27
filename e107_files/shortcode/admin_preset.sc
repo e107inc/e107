@@ -24,7 +24,7 @@ if(ADMIN){
 			$pst_text = "
 			<form method='post' action='".e_SELF."?clr_preset' id='e_preset' >
 			<div style='text-align:center'>";
-			if(!$sql->db_Count("preset", "(*)", " WHERE preset_name='".$existing."'  ")){
+			if(!$sql->db_Count("preset", "(*)", " WHERE preset_name='".$tp -> toDB($existing, true)."'  ")){
 				$pst_text .= "<input type='button' class='button' name='save_preset' value='".LAN_SAVE."' onclick=\"$trigger savepreset('".$theform."',$pid)\" />";
 			}else{
 				$pst_text .= "<input type='button' class='button' name='save_preset' value='".LAN_UPDATE."' onclick=\"$trigger savepreset('".$theform."',$pid)\" />";

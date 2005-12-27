@@ -9,7 +9,7 @@ if(is_numeric($parm))
 		if(!is_object($sql2)){
 			$sql2 = new db;
 		}
-		$sql2 -> db_Select("user","user_sess","user_id = '{$parm}'");
+		$sql2 -> db_Select("user","user_sess","user_id = '".intval($parm)."'");
 		$row = $sql2 -> db_Fetch();
 		$image=$row['user_sess'];
 	}

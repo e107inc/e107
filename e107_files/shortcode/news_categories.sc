@@ -88,7 +88,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 
 // Grab each news item.--------------
 
-		$count = $sql->db_Select("news", "*", "news_category='$category_id' AND news_class IN (".USERCLASS_LIST.") AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,".NEWSCAT_AMOUNT);
+		$count = $sql->db_Select("news", "*", "news_category='".intval($category_id)."' AND news_class IN (".USERCLASS_LIST.") AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().")  ORDER BY news_datestamp DESC LIMIT 0,".NEWSCAT_AMOUNT);
 		while ($row = $sql->db_Fetch()) {
 
 			$row['category_name'] = $category_name;

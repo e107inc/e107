@@ -1,13 +1,11 @@
-global $sql;
-global $ns;
-global $menu_pref;
+global $sql, $tp, $ns, $menu_pref;
 $ret = "";
 
 unset($text);
 mt_srand ((double) microtime() * 1000000);
 $seed = mt_rand(1,2000000000);
 
-$query = " (banner_startdate=0 OR banner_startdate<=".time().") AND (banner_enddate=0 OR banner_enddate>".time().") AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)".($parm ? " AND banner_campaign='$parm'" : "")." 
+$query = " (banner_startdate=0 OR banner_startdate<=".time().") AND (banner_enddate=0 OR banner_enddate>".time().") AND (banner_impurchased=0 OR banner_impressions<=banner_impurchased)".($parm ? " AND banner_campaign='".$tp -> toDB($parm)."'" : "")." 
 AND banner_active IN (".USERCLASS_LIST.")
 ORDER BY RAND($seed)";
 

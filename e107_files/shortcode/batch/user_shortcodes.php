@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/user_shortcodes.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.14 $
+|     $Date: 2005-12-27 19:19:39 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -427,7 +427,7 @@ if($pref['profile_comments'])
 	SELECT c.*, u.*, ue.* FROM #comments AS c
 	LEFT JOIN #user AS u ON c.comment_author = u.user_id
 	LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
-	WHERE c.comment_item_id='{$user['user_id']}'
+	WHERE c.comment_item_id='".intval($user['user_id'])."'
 	AND c.comment_type='profile'
 	AND c.comment_pid='0'
 	ORDER BY c.comment_datestamp
