@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.120 $
-|     $Date: 2005-12-24 16:44:07 $
-|     $Author: sweetas $
+|     $Revision: 1.121 $
+|     $Date: 2005-12-28 20:44:18 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -52,9 +52,7 @@ class e_parse
 				$search = array('$', '"', "'", '\\', '<?');
 				$replace = array('&#036;','&quot;','&#039;', '&#092;', '&lt?');
 				$ret = str_replace($search, $replace, $data);
-			}
-			else
-			{
+			} else {
 				$data = htmlspecialchars($data, ENT_QUOTES, CHARSET);
 				$data = str_replace('\\', '&#092;', $data);
 				$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
@@ -331,14 +329,14 @@ class e_parse
 				$text = $this->e_emote->filterEmotes($text);
 			}
 		}
-		
+
 		if (strpos($modifiers, 'nobreak') === FALSE) {
 			$text = preg_replace("#[\r]*\n[\r]*#", E_NL, $text);
 			foreach ($embeds[0] as $embed) {
 				$text = preg_replace("#<\|>#", $embed, $text, 1);
 			}
 		}
-		
+
 		$text = str_replace($this -> search, $this -> replace, $text);
 
 		// Start parse [bb][/bb] codes

@@ -12,16 +12,16 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/shortcode_handler.php,v $
-| $Revision: 1.24 $
-| $Date: 2005-12-14 17:37:34 $
-| $Author: sweetas $
+| $Revision: 1.25 $
+| $Date: 2005-12-28 20:44:18 $
+| $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-if (!is_object($tp -> e_sc)) {
-	$tp -> e_sc = new e_shortcode;
+if (!isset($tp) || !is_object($tp -> e_sc)) {
+	$tp->e_sc = new e_shortcode;
 }
 
 class e_shortcode {

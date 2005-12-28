@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.52 $
-|     $Date: 2005-12-28 12:57:00 $
-|     $Author: sweetas $
+|     $Revision: 1.53 $
+|     $Date: 2005-12-28 20:44:18 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.52 $
-* @author $Author: sweetas $
+* @version $Revision: 1.53 $
+* @author $Author: streaky $
 */
 class db {
 
@@ -83,10 +83,10 @@ class db {
 	*/
 	function db_Connect($mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb) {
 
-			$this->mySQLserver = $mySQLserver;
-			$this->mySQLuser = $mySQLuser;
-			$this->mySQLpassword = $mySQLpassword;
-			$this->mySQLdefaultdb = $mySQLdefaultdb;
+		$this->mySQLserver = $mySQLserver;
+		$this->mySQLuser = $mySQLuser;
+		$this->mySQLpassword = $mySQLpassword;
+		$this->mySQLdefaultdb = $mySQLdefaultdb;
 
 		$temp = $this->mySQLerror;
 		$this->mySQLerror = FALSE;

@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/admin_log_class.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-12-27 20:17:17 $
-|     $Author: sweetas $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-28 20:44:18 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -25,11 +25,11 @@ if (!defined('e107_INIT')) { exit; }
  *
  */
 class e_admin_log {
-	
+
 	/**
 	 * Contains default class options, plus any that are overidden by the constructor
 	 *
-	 * @var array 
+	 * @var array
 	 */
 	var $_options = array(
 		'log_level' => 2,
@@ -42,37 +42,37 @@ class e_admin_log {
 	 * @param array $options
 	 * @return e_admin_log
 	 */
-	function e_admin_log ($options){
+	function e_admin_log ($options = array()){
 		foreach ($options as $key => $val) {
 			$this->_options[$key] = $val;
 		}
-		
+
 		/**
 		 * Minmal Log Level, including really minor stuff
 		 *
 		 */
-		
+
 		define("E_LOG_INFORMATIVE", 0);
-		
+
 		/**
 		 * More important than informative, but less important than notice
 		 *
 		 */
 		define("E_LOG_NOTICE", 1);
-		
+
 		/**
 		 * Not anything serious, but important information
 		 *
 		 */
 		define("E_LOG_WARNING", 2);
-		
+
 		/**
 		 * An event so bad your site ceased execution.
 		 *
 		 */
 		define("E_LOG_FATAL", 3);
 	}
-	
+
 	/**
 	 * Log an event to the core table
 	 *
@@ -95,12 +95,12 @@ class e_admin_log {
 			$sql->db_Insert('dblog', "'', '{$event_type}', {$time_stamp}, {$uid}, '{$ip}', '{$event_title}', '{$event_detail}'");
 		}
 	}
-	
+
 	function get_log_events($count = 15, $offset) {
 		global $sql;
 		$count = intval($count);
 	}
-	
+
 	/**
 	 * Removes all events older than $days, or truncates the table if $days == false
 	 *

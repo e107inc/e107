@@ -11,20 +11,21 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.244 $
-|     $Date: 2005-12-24 22:53:38 $
-|     $Author: sweetas $
+|     $Revision: 1.245 $
+|     $Date: 2005-12-28 20:44:18 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
 
 while (@ob_end_clean());  // destroy all ouput buffering
-ob_start();               // start our own.
+ob_start();             // start our own.
 
 $register_globals = true;
 if(function_exists('ini_get')) {
 	$register_globals = ini_get('register_globals');
 }
+
 // Destroy! (if we need to)
 if($register_globals == true){
 	while (list($global) = each($GLOBALS)) {
@@ -42,17 +43,16 @@ if(isset($retrieve_prefs) && is_array($retrieve_prefs)) {
 } else {
 	unset($retrieve_prefs);
 }
+
 // setup error handling first of all.
-error_reporting(E_ERROR | E_PARSE);
 $error_handler = new error_handler();
 set_error_handler(array(&$error_handler, "handle_error"));
+
 // Honest global beginning point for processing time
 $eTimingStart = microtime();
 $start_ob_level = ob_get_level();
 
-define("E107_BOOTSTRAP_LOADED", 1);
 define("e107_INIT", TRUE);
-
 
 // setup some php options
 ini_set('magic_quotes_runtime',     0);
@@ -65,7 +65,7 @@ ini_set('session.use_trans_sid',    0);
 @include_once(realpath(dirname(__FILE__).'/e107_config.php'));
 if(!isset($ADMIN_DIRECTORY)){
 	// e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
-	header("Location: install.php");
+	header("Location: install_.php"); // Cleanup path when released
 }
 
 // clever stuff that figures out where the paths are on the fly.. no more need fo hard-coded e_HTTP :)
@@ -73,14 +73,10 @@ e107_require_once(realpath(dirname(__FILE__).'/'.$HANDLERS_DIRECTORY).'/e107_cla
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
 $e107 = new e107($e107_paths, realpath(dirname(__FILE__)));
 
-
 $inArray = array("'", ";", "/**/", "/UNION/", "/SELECT/", "AS ");
-if (strpos($_SERVER['PHP_SELF'], "trackback") === FALSE)
-{
-	foreach($inArray as $res)
-	{
-		if(stristr($_SERVER['QUERY_STRING'], $res))
-		{
+if (strpos($_SERVER['PHP_SELF'], "trackback") === false) {
+	foreach($inArray as $res) {
+		if(stristr($_SERVER['QUERY_STRING'], $res)) {
 			die("Access denied.");
 		}
 	}
@@ -90,6 +86,7 @@ if (preg_match("#\[(.*?)](.*)#", $_SERVER['QUERY_STRING'], $matches)) {
 	define("e_MENU", $matches[1]);
 	define("e_QUERY", $matches[2]);
 } else {
+	define("e_MENU", "");
 	define("e_QUERY", $_SERVER['QUERY_STRING']);
 }
 $e_QUERY = e_QUERY;
@@ -105,20 +102,19 @@ define("e_UC_ADMIN", 254);
 define("e_UC_NOBODY", 255);
 define("ADMINDIR", $ADMIN_DIRECTORY);
 
-define("GET",    "GET");
-define("POST",   "POST");
-define("COOKIE", "COOKIE");
-
 // All debug objects and constants are defined in the debug handler
 if (strpos(e_MENU, 'debug=') !== FALSE || isset($_COOKIE['e107_debug_level'])) {
 
-	require_once(e_HANDLER.'debug_handler.php');
-	$db_debug = new e107_db_debug;
+	//require_once(e_HANDLER.'debug_handler.php');
+	//$db_debug = new e107_db_debug;
+	define('E107_DEBUG_LEVEL',0);
 } else {
 	define('E107_DEBUG_LEVEL',0);
 }
 
-if(is_object($db_debug)) { $db_debug->Mark_Time('Start: Init ErrHandler');  }
+if(isset($db_debug) && is_object($db_debug)) {
+	$db_debug->Mark_Time('Start: Init ErrHandler');
+}
 
 // e107_config.php upgrade check
 if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY) {
@@ -130,10 +126,6 @@ if (!$ADMIN_DIRECTORY && !$DOWNLOADS_DIRECTORY) {
 $eTraffic=new e107_traffic; // We start traffic counting ASAP
 $eTraffic->Calibrate($eTraffic);
 
-if (!$mySQLuser) {
-	header("location:install.php");
-	exit;
-}
 define("MPREFIX", $mySQLprefix);
 
 e107_require_once(e_HANDLER."mysql_class.php");
@@ -326,7 +318,7 @@ $override=new override;
 e107_require_once(e_HANDLER."event_class.php");
 $e_event=new e107_event;
 
-if ($pref['notify']) {
+if (isset($pref['notify']) && $pref['notify'] == true) {
 	e107_require_once(e_HANDLER.'notify_class.php');
 }
 
@@ -434,11 +426,6 @@ if(isset($pref['force_userupdate']) && $pref['force_userupdate'] && USER && e_PA
 	};
 }
 
-$sql->db_Mark_Time('Start: Go online');
-if(isset($pref['track_online']) && $pref['track_online'])
-{
-	$e_online->online($pref['track_online'], $pref['flood_protect']);
-}
 $sql->db_Mark_Time('Start: Signup/splash/admin');
 
 define("e_SIGNUP", e_BASE.(file_exists(e_BASE."customsignup.php") ? "customsignup.php" : "signup.php"));
@@ -471,13 +458,7 @@ define("SITEADMINEMAIL", $pref['siteadminemail']);
 define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'], "", "emotes_off defs"));
 
 // send the charset to the browser - overides spurious server settings with the lan pack settings.
-header("Content-type: text/html; charset=".CHARSET);
-
-// following lines commented - because they bog down the core and don't *actually* [seem] to do much...
-// it might be the case that these are needed for admin, but they certainly aren't needed for anywhere else.
-/*foreach ($pref as $key => $prefvalue) {
-$pref[$key] = $tp->toFORM($prefvalue);
-}*/
+header("Content-type: text/html; charset=".CHARSET, true);
 
 if ($pref['maintainance_flag'] && ADMIN == FALSE && strpos(e_SELF, "admin.php") === FALSE && strpos(e_SELF, "sitedown.php") === FALSE) {
 	header("Location: ".SITEURL."sitedown.php");
@@ -748,20 +729,15 @@ function check_class($var, $userclass = USERCLASS, $peer = FALSE, $debug = FALSE
 	return FALSE;
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 function getperms($arg, $ap = ADMINPERMS) {
 	global $PLUGINS_DIRECTORY;
-
 	if ($ap == "0") {
 		return TRUE;
 	}
-
 	if ($ap == "") {
 		return FALSE;
 	}
-
 	$ap='.'.$ap;
-
 	if ($arg == 'P' && preg_match("#(.*?)/".$PLUGINS_DIRECTORY."(.*?)/(.*?)#", e_SELF, $matches)) {
 		$psql=new db;
 		if ($psql->db_Select('plugin', 'plugin_id', "plugin_path = '".$matches[2]."' ")) {
@@ -769,14 +745,12 @@ function getperms($arg, $ap = ADMINPERMS) {
 			$arg='P'.$row[0];
 		}
 	}
-
 	if (strpos($ap, ".".$arg.".") !== FALSE) {
 		return TRUE;
 	} else {
 		return FALSE;
 	}
 }
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 /**
  * Get the user data from user and user_extended tables
@@ -1047,8 +1021,7 @@ function init_session() {
 	} else {
 		list($uid, $upw)=($_COOKIE[$pref['cookie_name']] ? explode(".", $_COOKIE[$pref['cookie_name']]) : explode(".", $_SESSION[$pref['cookie_name']]));
 
-		if (empty($uid) || empty($upw)) // corrupt cookie?
-		{
+		if (empty($uid) || empty($upw)) {
 			cookie($pref['cookie_name'], "", (time() - 2592000));
 			$_SESSION[$pref['cookie_name']] = "";
 			session_destroy();
@@ -1059,14 +1032,11 @@ function init_session() {
 			return (FALSE);
 		}
 
-		if($result = get_user_data($uid, "AND md5(u.user_password)='{$upw}'", FALSE))
-		{
+		if($result = get_user_data($uid, "AND md5(u.user_password)='{$upw}'", FALSE)) {
 			$currentUser = $result;
-			//extract($result); // removed in preference of the $result array
-
 			define("USERID", $result['user_id']);
 			define("USERNAME", $result['user_name']);
-			define("USERURL", $result['user_homepage']);
+			define("USERURL", (isset($result['user_homepage']) ? $result['user_homepage'] : false));
 			define("USEREMAIL", $result['user_email']);
 			define("USER", TRUE);
 			define("USERCLASS", $result['user_class']);
@@ -1119,6 +1089,10 @@ function init_session() {
 	define('e_CLASS_REGEXP', "(^|,)(".str_replace(",", "|", USERCLASS_LIST).")(,|$)");
 }
 
+$sql->db_Mark_Time('Start: Go online');
+if(isset($pref['track_online']) && $pref['track_online']) {
+	$e_online->online($pref['track_online'], $pref['flood_protect']);
+}
 
 function cookie($name, $value, $expire, $path = "/", $domain = "", $secure = 0) {
 	setcookie($name, $value, $expire, $path, $domain, $secure);
