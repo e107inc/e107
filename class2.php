@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.247 $
-|     $Date: 2005-12-28 21:03:04 $
-|     $Author: streaky $
+|     $Revision: 1.248 $
+|     $Date: 2005-12-28 21:17:10 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -879,7 +879,7 @@ class e_online {
 								$row['online_pagecount'] ++;
 							}
 							// Update user record with current IP, current page and increment pagecount
-							$query = "online_ip='{$ip}', `online_location` = '{$page}', `online_pagecount` = '{$row['online_pagecount']}' WHERE `online_user_id` = '{$row['online_user_id']}' LIMIT 1";
+							$query = "online_ip='{$ip}', `online_location` = '{$page}', `online_pagecount` = '".intval($row['online_pagecount'])."' WHERE `online_user_id` = '{$row['online_user_id']}' LIMIT 1";
 						}
 					} else {
 						//Found matching visitor record (ip only) for this user
@@ -892,12 +892,12 @@ class e_online {
 								$row['online_pagecount'] ++;
 							}
 							//Update record with current IP, current page and increment pagecount
-							$query = "`online_user_id` = '{$udata}', `online_location` = '{$page}', `online_pagecount` = {$row['online_pagecount']} WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
+							$query = "`online_user_id` = '{$udata}', `online_location` = '{$page}', `online_pagecount` = ".intval($row['online_pagecount'])." WHERE `online_ip` = '{$ip}' AND `online_user_id` = '0' LIMIT 1";
 						}
 					}
 					$sql->db_Update("online", $query);
 				} else {
-					$sql->db_Insert("online", " '".time()."', 'null', '{$udata}', '{$ip}', '{$page}', 1");
+					$sql->db_Insert("online", " '".time()."', '0', '{$udata}', '{$ip}', '{$page}', 1");
 				}
 			} else {
 				//Current page request is from a visitor
