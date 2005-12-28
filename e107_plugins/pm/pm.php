@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-10-09 22:32:35 $
+|     $Revision: 1.17 $
+|     $Date: 2005-12-28 16:12:59 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -186,7 +186,7 @@ function show_send($to_uid)
 	if($to_uid)
 	{
 		$sql2 =& new db;
-		if($sql2->db_Select('user', 'user_name', "user_id = '{$to_uid}'"))
+		if($sql2->db_Select('user', 'user_name', "user_id = '".intval($to_uid)."'"))
 		{
 			$row=$sql2->db_Fetch();
 			$pm_info['from_name'] = $row['user_name'];
@@ -345,7 +345,7 @@ function post_pm()
 				{
 					if($to_info = $pm->pm_getuid($to))
 					{
- 						if(!$sql->db_Update("private_msg_block","pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '{$to}}'"))
+ 						if(!$sql->db_Update("private_msg_block","pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '".$tp -> toDB($to)."'"))
  						{
  							$_POST['to_array'][] = $to_info;
  						}
@@ -363,7 +363,7 @@ function post_pm()
 					return LAN_PM_17;
 				}
 
-				if($sql->db_Update("private_msg_block","pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '{$to_info['user_id']}'"))
+				if($sql->db_Update("private_msg_block","pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '".$tp -> toDB($to_info['user_id'])."'"))
 				{
 					return LAN_PM_18.$to_info['user_name'];
 				}

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/alt_news/alt_news.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-12-14 17:37:43 $
+|     $Revision: 1.9 $
+|     $Date: 2005-12-28 16:12:59 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -29,7 +29,7 @@ function alt_news($news_category) {
 		if ($category != 0) {
 			$gen = new convert;
 			$sql2 = new db;
-			$sql->db_Select("news_category", "*", "category_id='$category'");
+			$sql->db_Select("news_category", "*", "category_id='".intval($category)."'");
 			list($category_id, $category_name, $category_icon) = $sql->db_Fetch();
 			$category_name = $aj->tpa($category_name);
 			if (strstr($category_icon, "../")) {
@@ -38,7 +38,7 @@ function alt_news($news_category) {
 				$category_icon = THEME.$category_icon;
 			}
 
-			if ($count = $sql->db_Select("news", "*", "news_category='$category' ORDER BY news_datestamp DESC")) {
+			if ($count = $sql->db_Select("news", "*", "news_category='".intval($category)."' ORDER BY news_datestamp DESC")) {
 				while ($row = $sql->db_Fetch()) {
 					extract($row);
 					if ($news_title == "") {
@@ -46,7 +46,7 @@ function alt_news($news_category) {
 					}
 					$datestamp = $gen->convert_date($news_datestamp, "short");
 					$news_body = strip_tags(substr($news_body, 0, 100))." ...";
-					$comment_total = $sql2->db_Count("comments", "(*)", "WHERE comment_item_id='$news_id' AND comment_type='0' ");
+					$comment_total = $sql2->db_Count("comments", "(*)", "WHERE comment_item_id='".intval($news_id)."' AND comment_type='0' ");
 					$text .= "<div class='mediumtext'>
 						<img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' alt='bullet' /> ";
 
@@ -74,7 +74,7 @@ function alt_news($news_category) {
 		return TRUE;
 	}
 
-	if ($sql->db_Select("news", "*", "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_category='$news_category' ORDER BY news_datestamp DESC LIMIT 0,".ITEMVIEW)) {
+	if ($sql->db_Select("news", "*", "news_class<255 AND (news_start=0 || news_start < ".time().") AND (news_end=0 || news_end>".time().") AND news_category='".intval($news_category)."' ORDER BY news_datestamp DESC LIMIT 0,".ITEMVIEW)) {
 		$sql2 = new db;
 		while (list($news['news_id'], $news['news_title'], $news['data'], $news['news_extended'], $news['news_datestamp'], $news['admin_id'], $news_category, $news['news_allow_comments'], $news['news_start'], $news['news_end'], $news['news_class']) = $sql->db_Fetch()) {
 
@@ -84,15 +84,15 @@ function alt_news($news_category) {
 					$news['admin_name'] = $pref['siteadmin'];
 				}
 				else if(!$news['admin_name'] = getcachedvars($news['admin_id'])) {
-					$sql2->db_Select("user", "user_name", "user_id='".$news['admin_id']."' ");
+					$sql2->db_Select("user", "user_name", "user_id='".intval($news['admin_id'])."' ");
 					list($news['admin_name']) = $sql2->db_Fetch();
 					cachevars($news['admin_id'], $news['admin_name']);
 				}
 
-					$sql2->db_Select("news_category", "*", "category_id='$news_category' ");
+					$sql2->db_Select("news_category", "*", "category_id='".intval($news_category)."' ");
 
 				list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql2->db_Fetch();
-				$news['comment_total'] = $sql2->db_Count("comments", "(*)", "WHERE comment_item_id='".$news['news_id']."' AND comment_type='0' ");
+				$news['comment_total'] = $sql2->db_Count("comments", "(*)", "WHERE comment_item_id='".intval($news['news_id'])."' AND comment_type='0' ");
 				$ix->render_newsitem($news);
 			} else {
 				if ($pref['subnews_hide_news'] == 1) {
@@ -100,12 +100,12 @@ function alt_news($news_category) {
 						$news['admin_name'] = $pref['siteadmin'];
 					}
 					else if(!$news['admin_name'] = getcachedvars($news['admin_id'])) {
-						$sql2->db_Select("user", "user_name", "user_id='".$news['admin_id']."' ");
+						$sql2->db_Select("user", "user_name", "user_id='".intval($news['admin_id'])."' ");
 						list($news['admin_name']) = $sql2->db_Fetch();
 						cachevars($news['admin_id'], $news['admin_name']);
 					}
 
-					$sql2->db_Select("news_category", "*", "category_id='$news_category' ");
+					$sql2->db_Select("news_category", "*", "category_id='".intval($news_category)."' ");
 
 					list($news['category_id'], $news['category_name'], $news['category_icon']) = $sql2->db_Fetch();
 					$ix->render_newsitem($news, "", "userclass");

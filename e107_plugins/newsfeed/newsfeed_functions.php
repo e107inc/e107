@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_functions.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-12-14 19:28:44 $
+|     $Revision: 1.12 $
+|     $Date: 2005-12-28 16:12:59 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -26,7 +26,7 @@ if(!function_exists("checkUpdate")) {
 		$xml = new parseXml;
 		require_once(e_HANDLER."magpie_rss.php");
 
-		if ($sql -> db_Select("newsfeed", "*", $query)) {
+		if ($sql -> db_Select("newsfeed", "*", $tp -> toDB($query, true))) {
 			$feedArray = $sql -> db_getList();
 			foreach($feedArray as $feed)
 			{
@@ -45,7 +45,7 @@ if(!function_exists("checkUpdate")) {
 							}
 						}
 
-						if(!$sql->db_Update('newsfeed', "newsfeed_data='{$serializedArray}', newsfeed_timestamp=".time().($newsfeed_des ? ", newsfeed_description='{$newsfeed_des}'": "")." WHERE newsfeed_id={$newsfeed_id}"))
+						if(!$sql->db_Update('newsfeed', "newsfeed_data='{$serializedArray}', newsfeed_timestamp=".time().($newsfeed_des ? ", newsfeed_description='{$newsfeed_des}'": "")." WHERE newsfeed_id=".intval($newsfeed_id)))
 						{
 							echo "Unable to save raw data in database.<br /><br />".$serializedArray;
 						}
@@ -66,7 +66,7 @@ function newsfeed_info($which) {
 	if($which == 'all') {
 		$qry = "newsfeed_active=1 OR newsfeed_active=3";
 	} else {
-		$qry = "newsfeed_id = {$which}";
+		$qry = "newsfeed_id = ".intval($which);
 	}
 
 	$text = "";
