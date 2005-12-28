@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/archive.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:52:36 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2005-12-28 16:12:59 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net)
 */
@@ -74,8 +74,8 @@ $year_selector = "<div class='forumheader' style='text-align: center; margin-bot
 $year_selector .= "".BLOGCAL_ARCHIV1.": <select name='activate' onChange='urljump(this.options[selectedIndex].value)' class='tbox'>";
 	
 for($i = $start_year; $i <= $end_year; $i++) {
-	$start = mktime(0, 0, 0, 1, 1, $req_year);
-	$end = mktime(23, 59, 59, 12, 31, $req_year);
+	$start = mktime(0, 0, 0, 1, 1, intval($req_year));
+	$end = mktime(23, 59, 59, 12, 31, intval($req_year));
 	if ($sql->db_Select("news", "news_id, news_datestamp, news_class", "news_datestamp > $start AND news_datestamp < $end")) {
 		// create the option entry
 		$year_link = $prefix."/archive.php?year.".$i;

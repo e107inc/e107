@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/blogcalendar_menu/blogcalendar_menu.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-12-14 19:28:43 $
+|     $Revision: 1.9 $
+|     $Date: 2005-12-28 16:12:59 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 | Based on code by: Thomas Bouve (crahan@gmx.net)
@@ -84,7 +84,7 @@ $lastday = date("t", $month_start);
 $month_end = mktime(23, 59, 59, $req_month, $lastday, $req_year);
 $start = mktime(0, 0, 0, 1, 1, $req_year);
 $end = time();
-$sql->db_Select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND news_datestamp > $start AND news_datestamp < $end");
+$sql->db_Select("news", "news_id, news_datestamp", "news_class IN (".USERCLASS_LIST.") AND news_datestamp > ".intval($start)." AND news_datestamp < ".intval($end));
 while ($news = $sql->db_Fetch())
 {
 	$xmonth = date("n", $news['news_datestamp']);

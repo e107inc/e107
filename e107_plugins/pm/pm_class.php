@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-14 19:28:52 $
+|     $Revision: 1.8 $
+|     $Date: 2005-12-28 16:12:59 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ class private_message
 		}
 		else
 		{
-			$sql->db_Select_gen("UPDATE #private_msg SET pm_read = {$now} WHERE pm_id={$pm_id}");
+			$sql->db_Select_gen("UPDATE #private_msg SET pm_read = {$now} WHERE pm_id=".intval($pm_id));
 			if(strpos($pm_info['pm_option'], "+rr") !== FALSE)
 			{
 				$this->pm_send_receipt($pm_info);
@@ -46,7 +46,7 @@ class private_message
 		SELECT pm.*, ut.user_image AS sent_image, ut.user_name AS sent_name, uf.user_image AS from_image, uf.user_name AS from_name, uf.user_email as from_email, ut.user_email as to_email  FROM #private_msg AS pm
 		LEFT JOIN #user AS ut ON ut.user_id = pm.pm_to
 		LEFT JOIN #user AS uf ON uf.user_id = pm.pm_from
-		WHERE pm.pm_id='{$pmid}'
+		WHERE pm.pm_id='".intval($pmid)."'
 		";
 		if ($sql->db_Select_gen($qry))
 		{
@@ -99,7 +99,7 @@ class private_message
 			foreach($tolist as $u)
 			{
 				set_time_limit(30);
-				if($pmid = $sql->db_Insert("private_msg", "0, '{$vars['from_id']}', '{$u['user_id']}', '{$sendtime}', '0', '{$pm_subject}', '{$pm_message}', '1', '0', '{$attachlist}', '{$pm_option}', '{$pmsize}'"))
+				if($pmid = $sql->db_Insert("private_msg", "0, '".intval($vars['from_id'])."', '".$tp -> toDB($u['user_id'])."', '".intval($sendtime)."', '0', '{$pm_subject}', '{$pm_message}', '1', '0', '".$tp -> toDB($attachlist)."', '".$tp -> toDB($pm_options)."', '".intval($pmsize)."'"))
 				{
 					if($class == FALSE)
 					{
@@ -115,7 +115,7 @@ class private_message
 					$ret .= LAN_PM_39.": {$u['user_name']} <br />";
 				}
 			}
-			if(!$pmid = $sql->db_Insert("private_msg", "0, '{$vars['from_id']}', '{$toclass}', '{$sendtime}', '1', '{$pm_subject}', '{$pm_message}', '0', '0', '{$attachlist}', '{$pm_options}', '{$pmsize}'"))
+			if(!$pmid = $sql->db_Insert("private_msg", "0, '".intval($vars['from_id'])."', '".$tp -> toDB($toclass)."', '".intval($sendtime)."', '1', '{$pm_subject}', '{$pm_message}', '0', '0', '".$tp -> toDB($attachlist)."', '".$tp -> toDB($pm_options)."', '".intval($pmsize)."'"))
 			{
 				$ret .= LAN_PM_41."<br />";
 			}
@@ -123,7 +123,7 @@ class private_message
 		}
 		else
 		{
-			if($pmid = $sql->db_Insert("private_msg", "0, '{$vars['from_id']}', '{$vars['to_info']['user_id']}', '{$sendtime}', '0', '{$pm_subject}', '{$pm_message}', '0', '0', '{$attachlist}', '{$pm_options}', '{$pmsize}'"))
+			if($pmid = $sql->db_Insert("private_msg", "0, '".intval($vars['from_id'])."', '".$tp -> toDB($vars['to_info']['user_id'])."', '".intval($sendtime)."', '0', '{$pm_subject}', '{$pm_message}', '0', '0', '".$tp -> toDB($attachlist)."', '".$tp -> toDB($pm_options)."', '".intval($pmsize)."'"))
 			{
 				if(check_class($pm_prefs['notify_class'], $vars['to_info']['user_class']))
 				{
@@ -142,7 +142,7 @@ class private_message
 		$ret = "";
 		$del_pm = FALSE;
 		$newvals = "";
-		if($sql->db_Select("private_msg", "*", "pm_id = {$pmid} AND (pm_from = ".USERID." OR pm_to = ".USERID.")"))
+		if($sql->db_Select("private_msg", "*", "pm_id = ".intval($pmid)." AND (pm_from = ".USERID." OR pm_to = ".USERID.")"))
 		{
 			$row = $sql->db_Fetch();
 			if($row['pm_to'] == USERID)
@@ -168,11 +168,11 @@ class private_message
 					$filename = getcwd()."/attachments/{$a}";
 					unlink($filename);
 				}
-				$sql->db_Delete("private_msg", "pm_id = {$pmid}");
+				$sql->db_Delete("private_msg", "pm_id = ".intval($pmid));
 			}
 			else
 			{
-				$sql->db_Update("private_msg", $newvals." WHERE pm_id = {$pmid}");
+				$sql->db_Update("private_msg", $tp -> toDB($newvals)." WHERE pm_id = ".intval($pmid));
 			}
 			return $ret;
 		}
@@ -210,9 +210,9 @@ class private_message
 
 	function block_get($to = USERID)
 	{
-		global $sql;
+		global $sql, $tp;
 		$ret = array();
-		if($sql->db_Select("private_msg_block", "pm_block_from", "pm_block_to = '{$to}'"))
+		if($sql->db_Select("private_msg_block", "pm_block_from", "pm_block_to = '".$tp -> toDB($to)."'"))
 		{
 			while($row = $sql->db_Fetch())
 			{
@@ -224,13 +224,13 @@ class private_message
 
 	function block_add($from, $to = USERID)
 	{
-		global $sql;
-		if($sql->db_Select("user", "user_name", "user_id = '{$from}'"))
+		global $sql, $tp;
+		if($sql->db_Select("user", "user_name", "user_id = '".intval($from)."'"))
 		{
 			$uinfo = $sql->db_Fetch();
-			if(!$sql->db_Count("private_msg_block", "(*)", "WHERE pm_block_from = '{$from}' AND pm_block_to = '{$to}'"))
+			if(!$sql->db_Count("private_msg_block", "(*)", "WHERE pm_block_from = '".intval($from)."' AND pm_block_to = '".$tp -> toDB($to)."'"))
 			{
-				if($sql->db_Insert("private_msg_block", "0, '{$from}', '{$to}', '".time()."', '0'"))
+				if($sql->db_Insert("private_msg_block", "0, '".intval($from)."', '".$tp -> toDB($to)."', '".time()."', '0'"))
 				{
 					return str_replace('{UNAME}', $uinfo['user_name'], LAN_PM_47);
 				}
@@ -253,13 +253,13 @@ class private_message
 	function block_del($from, $to = USERID)
 	{
 		global $sql;
-		if($sql->db_Select("user", "user_name", "user_id = '{$from}'"))
+		if($sql->db_Select("user", "user_name", "user_id = '".intval($from)."'"))
 		{
 			$uinfo = $sql->db_Fetch();
-			if($sql->db_Select("private_msg_block", "pm_block_id", "pm_block_from = '{$from}' AND pm_block_to = '{$to}'"))
+			if($sql->db_Select("private_msg_block", "pm_block_id", "pm_block_from = '".intval($from)."' AND pm_block_to = '".intval($to)."'"))
 			{
 				$row = $sql->db_Fetch();
-				if($sql->db_Delete("private_msg_block", "pm_block_id = '{$row['pm_block_id']}'"))
+				if($sql->db_Delete("private_msg_block", "pm_block_id = '".intval($row['pm_block_id'])."'"))
 				{
 					return str_replace("{UNAME}", $uinfo['user_name'], LAN_PM_44);
 				}
@@ -281,9 +281,9 @@ class private_message
 
 	function pm_getuid($var)
 	{
-		global $sql;
+		global $sql, $tp;
 		$var = trim($var);
-		if($sql->db_Select("user", "user_id, user_name, user_class, user_email", "user_name LIKE '{$var}'"))
+		if($sql->db_Select("user", "user_id, user_name, user_class, user_email", "user_name LIKE '".$tp -> toDB($var)."'"))
 		{
 			$row = $sql->db_Fetch();
 			return $row;

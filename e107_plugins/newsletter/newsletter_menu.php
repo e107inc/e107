@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/newsletter_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-14 19:28:52 $
+|     $Revision: 1.3 $
+|     $Date: 2005-12-28 16:12:59 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -33,13 +33,13 @@ foreach($_POST as $key => $value)
 	{
 		$subid = str_replace("nlUnsubscribe_", "", $key);
 		$newsletterArray[$subid]['newsletter_subscribers'] = str_replace(chr(1).USERID, "", $newsletterArray[$subid]['newsletter_subscribers']);
-		$sql -> db_Update("newsletter", "newsletter_subscribers='".$newsletterArray[$subid]['newsletter_subscribers']."' WHERE newsletter_id='$subid' ");
+		$sql -> db_Update("newsletter", "newsletter_subscribers='".$newsletterArray[$subid]['newsletter_subscribers']."' WHERE newsletter_id='".intval($subid)."' ");
 	}
 	else if(strstr($key, "nlSubscribe_"))
 	{
 		$subid = str_replace("nlSubscribe_", "", $key);
 		$newsletterArray[$subid]['newsletter_subscribers'] .= chr(1).USERID;
-		$sql -> db_Update("newsletter", "newsletter_subscribers='".$newsletterArray[$subid]['newsletter_subscribers']."' WHERE newsletter_id='$subid' ");
+		$sql -> db_Update("newsletter", "newsletter_subscribers='".$newsletterArray[$subid]['newsletter_subscribers']."' WHERE newsletter_id='".intval($subid)."' ");
 	}
 }
 
