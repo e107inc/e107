@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_func.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.6 $
+|     $Date: 2005-12-28 14:03:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -31,7 +31,7 @@ function e107_userGetuserclass($user_id)
 	else
 	{
 		$uc_sql = new db;
-		if ($uc_sql->db_Select("user", "user_class, user_admin", "user_id={$user_id}"))
+		if ($uc_sql->db_Select("user", "user_class, user_admin", "user_id=".intval($user_id)))
 		{
 			$row = $uc_sql->db_Fetch();
 			$uc = $row['user_class'];

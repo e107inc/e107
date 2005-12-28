@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/rate_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.17 $
+|     $Date: 2005-12-28 14:03:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -144,7 +144,7 @@ class rater {
 	}
 
 	function enterrating($rateindex){
-		global $sql;
+		global $sql, $tp;
 
 		$qs = explode("^", $rateindex);
 			
@@ -153,15 +153,14 @@ class rater {
 			exit;
 		}
 			
-		$table = $qs[0];
-		$itemid = $qs[1];
-		$returnurl = $qs[2];
-		$rate = $qs[3];
+		$table = $tp -> toDB($qs[0], true);
+		$itemid = intval($qs[1]);
+		$rate = intval($qs[3]);
 
 		//rating is now stored as userid-rating (to retain individual users rating)
 		//$sep = "^";
 		$sep = chr(1);
-		$voter = USERID.$sep.$qs[3];
+		$voter = USERID.$sep.intval($qs[3]);
 
 		if ($sql->db_Select("rate", "*", "rate_table='$table' AND rate_itemid='$itemid' ")) {
 			$row = $sql->db_Fetch();

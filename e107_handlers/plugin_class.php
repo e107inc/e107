@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-12-21 17:17:23 $
+|     $Revision: 1.37 $
+|     $Date: 2005-12-28 14:03:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -30,7 +30,7 @@ class e107plugin
 	function getall($flag)
 	{
 		global $sql;
-		if ($sql->db_Select("plugin","*","plugin_installflag = '$flag' ORDER BY plugin_name ASC"))
+		if ($sql->db_Select("plugin","*","plugin_installflag = '".intval($flag)."' ORDER BY plugin_name ASC"))
 		{
 			$ret = $sql->db_getList();
  		}
@@ -42,7 +42,7 @@ class e107plugin
 	 *
 	 */
 	function update_plugins_table() {
-		global $sql, $mySQLprefix, $menu_pref;
+		global $sql, $mySQLprefix, $menu_pref, $tp;
 
 		require_once(e_HANDLER.'file_class.php');
 
@@ -59,7 +59,7 @@ class e107plugin
 
 		 	include_once("{$p['path']}{$p['fname']}");
 			$plugin_path = substr(str_replace(e_PLUGIN,"",$p['path']),0,-1);
-			if ((!$sql->db_Select("plugin", "plugin_id", "plugin_path = '{$plugin_path}'")) && $eplug_name){
+			if ((!$sql->db_Select("plugin", "plugin_id", "plugin_path = '".$tp -> toDB($plugin_path, true)."'")) && $eplug_name){
 				if (!$eplug_link_url && !$eplug_link && !$eplug_prefs && !$eplug_table_names && !$eplug_user_prefs && !$eplug_sc && !$eplug_userclass && !$eplug_module && !$eplug_bb && !$eplug_latest && !$eplug_status){
 					if(is_array($eplug_rss)){
                     	foreach($eplug_rss as $key=>$val){
@@ -68,12 +68,12 @@ class e107plugin
 						$plugin_rss = implode(",",$feeds);
 					}
 					// new plugin, assign entry in plugin table, install is not necessary so mark it as intalled
-					$sql->db_Insert("plugin", "0, '{$eplug_name}', '{$eplug_version}', '{$eplug_folder}', 1, '{$plugin_rss}' ");
+					$sql->db_Insert("plugin", "0, '".$tp -> toDB($eplug_name, true)."', '".$tp -> toDB($eplug_version, true)."', '".$tp -> toDB($eplug_folder, true)."', 1, '".$tp -> toDB($plugin_rss, true)."' ");
 				}
 				else
 				{
 					// new plugin, assign entry in plugin table, install is necessary
-					$sql->db_Insert("plugin", "0, '{$eplug_name}', '{$eplug_version}', '{$eplug_folder}', 0, '' ");
+					$sql->db_Insert("plugin", "0, '".$tp -> toDB($eplug_name, true)."', '".$tp -> toDB($eplug_version, true)."', '".$tp -> toDB($eplug_folder, true)."', 0, '' ");
 				}
 			}
 		}
@@ -101,7 +101,9 @@ class e107plugin
 	}
 
 	function manage_userclass($action, $class_name, $class_description) {
-		global $sql;
+		global $sql, $tp;
+		$class_name = $tp -> toDB($class_name, true);
+		$class_description = $tp -> toDB($class_description, true);
 		if ($action == 'add') {
 			$i = 1;
 			while ($sql->db_Select('userclass_classes', '*', "userclass_id='{$i}' ") && $i < e_UC_READONLY) {
@@ -138,7 +140,9 @@ class e107plugin
 	}
 
 	function manage_link($action, $link_url, $link_name) {
-		global $sql;
+		global $sql, $tp;
+		$link_url = $tp -> toDB($link_url, true);
+		$link_name = $tp -> toDB($link_name, true);
 		if ($action == 'add') {
 			$path = str_replace("../", "", $link_url);
 			$link_t = $sql->db_Count('links');
@@ -176,10 +180,10 @@ class e107plugin
 
 
 	function manage_comments($action,$comment_id){
-		global $sql;
+		global $sql, $tp;
     	if($action == 'remove'){
 			foreach($comment_id as $com){
-            	$tmp[] = "comment_type='$com'";
+            	$tmp[] = "comment_type='".$tp -> toDB($com, true)."'";
 			}
 			$qry = implode(" OR ",$tmp);
    			return $sql->db_Delete('comments',$qry);
@@ -425,14 +429,14 @@ class e107plugin
 
 			if(is_array($eplug_rss)){
 				foreach($eplug_rss as $key=>$values){
-					$rssfeeds[] = $key;
+					$rssfeeds[] = $tp -> toDB($key);
                 	$tmp = serialize($values);
 					$rssmess .= EPL_ADLAN_46 . ". ($key)<br />";
                 }
 				$feeds = implode(",",$rssfeeds);
 			}
             $plugin_rss = ($feeds) ? $feeds : "";
-			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_rss = '$plugin_rss' WHERE plugin_id = '{$id}'");
+			$sql->db_Update('plugin', "plugin_installflag = 1, plugin_rss = '$plugin_rss' WHERE plugin_id = '".intval($id)."'");
             if($rssmess){ $text .= $rssmess; }
 			$text .= ($eplug_done ? "<br />{$eplug_done}" : "");
 		} else {

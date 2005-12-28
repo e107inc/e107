@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/usersession_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.8 $
+|     $Date: 2005-12-28 14:03:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -104,11 +104,10 @@ class eUserSession {
 	}
 
 	function LoginUser($LoginType = false, $UserName = false, $UserPassword = false, $UserID = false, $AutoLogin = false) {
-		global $sql;
-		$RetrieveFields = '*';
+		global $sql, $tp;
 		switch ($LoginType) {
 			case USERLOGIN_TYPE_COOKIE:
-			if (!$sql->db_Select('user', $RetrieveFields, '`user_id` = \''.$UserID.'\' AND md5(`user_password`) = \''.$UserPassword.'\''/*, 'default', true*/)){
+			if (!$sql->db_Select('user', '*', "user_id = '".intval($UserID)."' AND md5(`user_password`) = '".$tp -> toDB($UserPassword)."'")){
 				$this->_LoginResult = LOGINRESULT_INVALIDCOOKIE;
 			} else {
 				$row = $sql->db_Fetch();
@@ -122,7 +121,7 @@ class eUserSession {
 			break;
 			case USERLOGIN_TYPE_POST:
 			$UserPassword = md5($UserPassword);
-			if (!$sql->db_Select('user', $RetrieveFields, '`user_name` = \''.$UserName.'\' AND `user_password` = \''.$UserPassword.'\'', 'default', true)) {
+			if (!$sql->db_Select('user', '*', "user_name = '".$tp -> toDB($UserName)."' AND user_password = '".$tp -> toDB($UserPassword)."'", 'default', true)) {
 				$this->_LoginResult = LOGINRESULT_BADUSERPASS;
 			} else {
 				$row = $sql->db_Fetch();

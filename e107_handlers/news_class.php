@@ -12,8 +12,8 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_handlers/news_class.php,v $
-| $Revision: 1.68 $
-| $Date: 2005-12-21 20:48:43 $
+| $Revision: 1.69 $
+| $Date: 2005-12-28 14:03:36 $
 | $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -35,7 +35,7 @@ class news {
 		$author_insert = ($news['news_author'] == 0) ? "news_author = '".USERID."'," : "";
 
 		if ($news['news_id']) {
-			$vals = "news_datestamp = '".$news['news_datestamp']."', ".$author_insert." news_title='".$news['news_title']."', news_body='".$news['news_body']."', news_extended='".$news['news_extended']."', news_category='".$news['cat_id']."', news_allow_comments='".$news['news_allow_comments']."', news_start='".$news['news_start']."', news_end='".$news['news_end']."', news_class='".$news['news_class']."', news_render_type='".$news['news_rendertype']."' , news_summary='".$news['news_summary']."', news_thumbnail='".$news['news_thumbnail']."', news_sticky='".$news['news_sticky']."' WHERE news_id='".$news['news_id']."' ";
+			$vals = "news_datestamp = '".intval($news['news_datestamp'])."', ".$author_insert." news_title='".$news['news_title']."', news_body='".$news['news_body']."', news_extended='".$news['news_extended']."', news_category='".intval($news['cat_id'])."', news_allow_comments='".intval($news['news_allow_comments'])."', news_start='".intval($news['news_start'])."', news_end='".intval($news['news_end'])."', news_class='".$tp->toDB($news['news_class'])."', news_render_type='".intval($news['news_rendertype'])."' , news_summary='".$news['news_summary']."', news_thumbnail='".$tp->toDB($news['news_thumbnail'])."', news_sticky='".intval($news['news_sticky'])."' WHERE news_id='".intval($news['news_id'])."' ";
 			if ($sql -> db_Update('news', $vals)) {
 				$e_event -> trigger('newsupd', $news);
 				$message = LAN_NEWS_21;
@@ -44,7 +44,7 @@ class news {
 				$message = "<strong>".(!mysql_errno() ? LAN_NEWS_46 : LAN_NEWS_5)."</strong>";
 			}
 		} else {
-			if ($sql ->db_Insert('news', "0, '".$news['news_title']."', '".$news['news_body']."', '".$news['news_extended']."', ".$news['news_datestamp'].", ".USERID.", '".$news['cat_id']."', '".$news['news_allow_comments']."', '".$news['news_start']."', '".$news['news_end']."', '".$news['news_class']."', '".$news['news_rendertype']."', '0' , '".$news['news_summary']."', '".$news['news_thumbnail']."', '".$news['news_sticky']."' ")) {
+			if ($sql ->db_Insert('news', "0, '".$news['news_title']."', '".$news['news_body']."', '".$news['news_extended']."', ".intval($news['news_datestamp']).", ".USERID.", '".intval($news['cat_id'])."', '".intval($news['news_allow_comments'])."', '".intval($news['news_start'])."', '".intval($news['news_end'])."', '".$tp->toDB($news['news_class'])."', '".intval($news['news_rendertype'])."', '0' , '".$news['news_summary']."', '".$tp->toDB($news['news_thumbnail'])."', '".intval($news['news_sticky'])."' ")) {
 				$e_event -> trigger('newspost', $news);
 				$message = LAN_NEWS_6;
 				$e107cache -> clear('news.php');

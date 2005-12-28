@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.78 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.79 $
+|     $Date: 2005-12-28 14:03:36 $
 |     $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -36,7 +36,7 @@ class sitelinks
 	function getlinks($cat=1)
 	{
 		global $sql;
-		if ($sql->db_Select('links', '*', "link_category = $cat and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC")){
+		if ($sql->db_Select('links', '*', "link_category = ".intval($cat)." and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC")){
 			while ($row = $sql->db_Fetch())
 			{
 			//	if (substr($row['link_name'], 0, 8) == 'submenu.'){

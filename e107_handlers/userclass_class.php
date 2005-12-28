@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.16 $
+|     $Date: 2005-12-28 14:03:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -233,6 +233,7 @@ function r_userclass_name($id) {
 class e_userclass {
 	function class_add($cid, $uinfoArray)
 	{
+		global $tp;
 		$sql2 = new db;
 		foreach($uinfoArray as $uid => $curclass)
 		{
@@ -245,7 +246,7 @@ class e_userclass {
 			{
 				$new_userclass = $cid;
 			}
-			$sql2->db_Update('user', "user_class='{$new_userclass}' WHERE user_id={$uid}");
+			$sql2->db_Update('user', "user_class='".$tp -> toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
 		}
 	}
 
@@ -263,7 +264,7 @@ class e_userclass {
 			{
 				$new_userclass = $newarray[0];
 			}
-			$sql2->db_Update('user', "user_class='{$new_userclass}' WHERE user_id={$uid}");
+			$sql2->db_Update('user', "user_class='".$tp -> toDB($new_userclass, true)."' WHERE user_id=".intval($uid));
 		}
 	}
 
@@ -293,7 +294,7 @@ class e_userclass {
 			}
 			$newname = strtoupper($class_prefix.$num);
 			$i = 1;
-			while ($sql->db_Select('userclass_classes', '*', "userclass_id='".$i."' ") && $i < 255)
+			while ($sql->db_Select('userclass_classes', '*', "userclass_id='".intval($i)."' ") && $i < 255)
 			{
 				$i++;
 			}

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-08-23 00:44:23 $
+|     $Revision: 1.47 $
+|     $Date: 2005-12-28 14:03:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -276,7 +276,7 @@ if ($search_prefs['selector'] == 2) {
 	$SEARCH_DROPDOWN .= "</select>";
 }
 
-$value = isset($_GET['q']) ? $_GET['q'] : "";
+$value = isset($_GET['q']) ? $tp -> post_toForm($_GET['q']) : "";
 $SEARCH_MAIN_SEARCHFIELD = "<input class='tbox m_search' type='text' id='q' name='q' size='35' value='".$value."' maxlength='50' />";
 if ($search_prefs['selector'] == 1) {
 	$SEARCH_MAIN_CHECKALL = "<input class='button' type='button' name='CheckAll' value='".LAN_SEARCH_1."' onclick='checkAll(this);' />";
