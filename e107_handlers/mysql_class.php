@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2005-12-21 21:33:19 $
+|     $Revision: 1.52 $
+|     $Date: 2005-12-28 12:57:00 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -27,7 +27,7 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.51 $
+* @version $Revision: 1.52 $
 * @author $Author: sweetas $
 */
 class db {
@@ -491,7 +491,7 @@ class db {
 
 		$this->tabset = FALSE;
 		if(strpos($query,'#') !== FALSE) {
-			$query = preg_replace_callback("/#([\w]*?)\W/", array($this, 'ml_check'), $query);
+			$query = preg_replace_callback("/\s#([\w]*?)\W/", array($this, 'ml_check'), $query);
 		}
 		if ($this->mySQLresult = $this->db_Query($query, NULL, 'db_Select_gen', $debug, $log_type, $log_remark)) {
 			$this->dbError('db_Select_gen');
@@ -508,7 +508,7 @@ class db {
 			$this->mySQLcurTable = $table;
 			$this->tabset = true;
 		}
-		return MPREFIX.$table.substr($matches[0],-1);
+		return " ".MPREFIX.$table.substr($matches[0],-1);
 	}
 
 	/**
@@ -629,7 +629,7 @@ class db {
 
        if(strpos($query,'#') !== FALSE) {
 			$table = explode(" ",str_replace("#","",strrchr($query, "#"))); // get the name of the table.
-			$query = preg_replace_callback("/#([\w]*?)\W/", array($this, 'ml_check'), $query);
+			$query = preg_replace_callback("/\s#([\w]*?)\W/", array($this, 'ml_check'), $query);
 		}
         $this->db_Query($query);
         if($tablist = $this->db_IsLang($table[0],TRUE)){
