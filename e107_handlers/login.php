@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.29 $
-|     $Date: 2005-12-28 14:03:36 $
+|     $Revision: 1.30 $
+|     $Date: 2005-12-28 20:01:21 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -36,7 +36,7 @@ class userlogin {
 		# - return                                boolean
 		# - scope                                        public
 		*/
-		global $pref, $e_event, $sql, $e107;
+		global $pref, $e_event, $sql, $e107, $tp;
 		$sql = new db;
 
 		$fip = $e107->getip();
