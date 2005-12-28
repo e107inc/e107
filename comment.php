@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-11-24 01:59:16 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.46 $
+|     $Date: 2005-12-28 09:55:38 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -235,7 +235,7 @@ if ($action == "reply") {
 				exit;
 			} else {
 				$news = $sql->db_Fetch();
-				$subject = $tp->toHTML($news['news_title']);
+				$subject = $tp->toForm($news['news_title']);
 				define("e_PAGETITLE", LAN_100." / ".LAN_99." / {$subject}");
 				require_once(HEADERF);
 				ob_start();
