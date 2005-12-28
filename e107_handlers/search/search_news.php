@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_news.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.14 $
+|     $Date: 2005-12-28 14:50:24 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -22,7 +22,7 @@ if (!defined('e107_INIT')) { exit; }
 // advanced 
 $advanced_where = "";
 if (isset($_GET['cat']) && $_GET['cat'] != 'all') {
-	$advanced_where .= " c.category_id='".$_GET['cat']."' AND";
+	$advanced_where .= " c.category_id='".intval($_GET['cat'])."' AND";
 }
 
 if (isset($_GET['time']) && is_numeric($_GET['time'])) {

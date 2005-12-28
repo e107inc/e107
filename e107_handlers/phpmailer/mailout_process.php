@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     Â©Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/phpmailer/mailout_process.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-10-20 01:33:51 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2005-12-28 14:50:24 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -28,7 +28,7 @@ session_write_close();
 
 
 if($_POST['cancel_emails']){
-	$sql -> db_Delete("generic", "gen_datestamp='".$_POST['mail_id']."' ");
+	$sql -> db_Delete("generic", "gen_datestamp='".intval($_POST['mail_id'])."' ");
 
     $text = "<div style='text-align:center;width:220px'><br />Cancelled Successfully";
     $text .= "<div style='text-align:center;margin-left:auto;margin-right:auto;position:absolute;left:10px;top:110px'>
@@ -146,7 +146,7 @@ if($_POST['cancel_emails']){
 
 
     echo "<div class='fcaption'>&nbsp;Mailing Progress</div>";
-    $qry = "SELECT g.*,u.* FROM #generic AS g LEFT JOIN #user AS u ON g.gen_user_id = u.user_id WHERE g.gen_type='sendmail' and g.gen_datestamp = \"".($_POST['mail_id'])."\" ";
+    $qry = "SELECT g.*,u.* FROM #generic AS g LEFT JOIN #user AS u ON g.gen_user_id = u.user_id WHERE g.gen_type='sendmail' and g.gen_datestamp = '".intval($_POST['mail_id'])."' ";
     $count = $sql -> db_Select_gen($qry);
 
 	if(!$count){
@@ -233,7 +233,7 @@ if($_POST['cancel_emails']){
 	echo "Total time elapsed: ".stopwatch()." seconds<br />";
 	echo "</div>";
 
-	$message = $sql -> db_Delete("generic", "gen_datestamp='".$_POST['mail_id']."' ") ? "deleted" : "deleted_failed";
+	$message = $sql -> db_Delete("generic", "gen_datestamp='".intval($_POST['mail_id'])."' ") ? "deleted" : "deleted_failed";
 
 	$mail->ClearAttachments();
     if ($pref['smtp_enable'] || $pref['mailer']== 'smtp') {
