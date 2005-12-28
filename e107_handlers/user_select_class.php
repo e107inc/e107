@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_select_class.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-09 20:59:02 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.8 $
+|     $Date: 2005-12-28 14:03:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -29,7 +29,7 @@ include_lan(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_select.php");
 class user_select {
 
 	function user_list($class, $form_name) {
-		global $pref, $sql;
+		global $pref, $sql, $tp;
 		if($class === FALSE) { $class = e_UC_MEMBER;}
 		switch ($class)
 		{
@@ -46,7 +46,7 @@ class user_select {
 				break;
 				
 			default:
-				$where = "user_class REGEXP '(^|,)(".$class.")(,|$)'";
+				$where = "user_class REGEXP '(^|,)(".$tp -> toDB($class, true).")(,|$)'";
 				break;
 		}
 				
@@ -75,7 +75,7 @@ class user_select {
 				}
 			}
 		} else {
-			$sql -> db_Select("userclass_classes", "userclass_id, userclass_name", "userclass_id='".$class."' ORDER BY userclass_name");
+			$sql -> db_Select("userclass_classes", "userclass_id, userclass_name", "userclass_id='".intval($class)."' ORDER BY userclass_name");
 			while ($row = $sql -> db_Fetch()) {
 				$text .= "<option value='".$row['userclass_id'].":".$row['userclass_name']."'>".$row['userclass_name']."</option>";
 			}
@@ -124,7 +124,7 @@ class user_select {
 	
 	function real_name($_id) {
 		global $sql;
-		$sql -> db_Select("user", "user_name", "user_id='".$_id."' ");
+		$sql -> db_Select("user", "user_name", "user_id='".intval($_id)."' ");
 		if ($row = $sql -> db_Fetch()) {
 			return $row['user_name'];
 		}
@@ -209,8 +209,8 @@ class user_select {
 	}
 	
 	function findusers($s) {
-		global $sql;
-		if ($sql->db_Select("user", "*", "user_name LIKE '%{$s}%' ")) {
+		global $sql, $tp;
+		if ($sql->db_Select("user", "*", "user_name LIKE '%".$tp -> toDB($s)."%' ")) {
 			while ($row = $sql -> db_Fetch()) {
 				$ret[strtolower($row['user_name'])] = $row['user_name'];
 			}

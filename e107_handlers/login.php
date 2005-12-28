@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-12-22 09:54:32 $
-|     $Author: e107coders $
+|     $Revision: 1.29 $
+|     $Date: 2005-12-28 14:03:36 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -75,19 +75,19 @@ class userlogin {
 				$userpass = md5(utf8_decode($ouserpass));
 			}
 
-			if (!$sql->db_Select("user", "*", "user_loginname = '{$username}'")) {
+			if (!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."'")) {
 				define("LOGINMESSAGE", LAN_300."<br /><br />");
-				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": {$username}'");
+				$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_14." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
 				$this -> checkibr($fip);
 				return FALSE;
 			}
-			else if(!$sql->db_Select("user", "*", "user_loginname = '{$username}' AND user_password = '{$userpass}'")) {
+			else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}'")) {
 				define("LOGINMESSAGE", LAN_300."<br /><br />");
 				return FALSE;
 			}
-			else if(!$sql->db_Select("user", "*", "user_loginname = '{$username}' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
+			else if(!$sql->db_Select("user", "*", "user_loginname = '".$tp -> toDB($username)."' AND user_password = '{$userpass}' AND user_ban!=2 ")) {
 				define("LOGINMESSAGE", LAN_302."<br /><br />");
-                	$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": {$username}'");
+                	$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '{$fip}', 0, '".LAN_LOGIN_15." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username)."'");
 					$this -> checkibr($fip);
 				return FALSE;
 			} else {
@@ -105,7 +105,7 @@ class userlogin {
 					if($pref['disallowMultiLogin']) {
 						if($sql -> db_Select("online", "online_ip", "online_user_id='".$user_id.".".$user_name."'")) {
 							define("LOGINMESSAGE", LAN_304."<br /><br />");
-							$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": $username, ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+							$sql -> db_Insert("generic", "0, 'failed_login', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_16." ::: ".LAN_LOGIN_1.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
 							$this -> checkibr($fip);
 							return FALSE;
 						}
@@ -148,13 +148,13 @@ class userlogin {
 	   		$fails = $sql -> db_Count("generic", "(*)", "WHERE gen_ip='$fip' AND gen_type='failed_login' ");
 			if($fails > 10) {
 				$sql -> db_Insert("banlist", "'$fip', '1', '".LAN_LOGIN_18."' ");
-		   		$sql -> db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_20.": $username, ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
+		   		$sql -> db_Insert("generic", "0, 'auto_banned', '".time()."', 0, '$fip', '$user_id', '".LAN_LOGIN_20.": ".$tp -> toDB($username).", ".LAN_LOGIN_17.": ".md5($ouserpass)."' ");
 			}
 		}
 	}
 
 	function update_xup($user_id, $user_xup = "") {
-		global $sql;
+		global $sql, $tp;
 		if($user_xup) {
 			require_once(e_HANDLER."xml_class.php");
 			$xml = new parseXml;
@@ -162,10 +162,10 @@ class userlogin {
 				preg_match_all("#\<meta name=\"(.*?)\" content=\"(.*?)\" \/\>#si", $rawData, $match);
 				$count = 0;
 				foreach($match[1] as $value) {
-					$$value = $match[2][$count];
+					$$value = $tp -> toDB($match[2][$count]);
 					$count++;
 				}
-				$sql -> db_Update("user", "user_login='{$FN}', user_homepage='{$URL}', user_icq='{$ICQ}', user_aim='{$AIM}', user_msn='{$MSN}', user_location='{$GEO}', user_birthday='{$BDAY}', user_signature='{$SIG}', user_sess='{$PHOTO}', user_image='{$AV}', user_timezone='{$TZ}' WHERE user_id='{$user_id}'");
+				$sql -> db_Update("user", "user_login='{$FN}', user_homepage='{$URL}', user_icq='{$ICQ}', user_aim='{$AIM}', user_msn='{$MSN}', user_location='{$GEO}', user_birthday='{$BDAY}', user_signature='{$SIG}', user_sess='{$PHOTO}', user_image='{$AV}', user_timezone='{$TZ}' WHERE user_id='".intval($user_id)."'");
 			}
 		}
 	}

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.34 $
+|     $Date: 2005-12-28 14:03:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -99,7 +99,7 @@ class e107_user_extended
 	function user_extended_get_fields($cat = "")
 	{
 		global $sql;
-		$more = ($cat) ? " AND user_extended_struct_parent = $cat " : "";
+		$more = ($cat) ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
 		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type > 0 {$more} ORDER BY user_extended_struct_order ASC"))
 		{
 			while($row = $sql->db_Fetch())
@@ -113,7 +113,7 @@ class e107_user_extended
 	function user_extended_get_fieldList()
 	{
 		global $sql;
-		$more = ($cat) ? " AND user_extended_struct_parent = $cat " : "";
+		$more = ($cat) ? " AND user_extended_struct_parent = ".intval($cat)." " : "";
 		if($sql->db_Select("user_extended_struct", "*", "user_extended_struct_type > 0 {$more} ORDER BY user_extended_struct_order ASC"))
 		{
 			while($row = $sql->db_Fetch())
@@ -126,6 +126,7 @@ class e107_user_extended
 
 	function user_extended_type_text($type, $default)
 	{
+		global $tp;
 		switch ($type)
 		{
 
@@ -155,7 +156,7 @@ class e107_user_extended
 		}
 		if($type != 4 && $default != '')
 		{
-			$default_text = " DEFAULT '{$default}'";
+			$default_text = " DEFAULT '".$tp -> toDB($default, true)."'";
 		}
 		else
 		{
@@ -166,13 +167,13 @@ class e107_user_extended
 
 	function user_extended_field_exist($name)
 	{
-		global $sql;
-		return $sql->db_Count('user_extended_struct','(*)', "WHERE user_extended_struct_name = '{$name}'");
+		global $sql, $tp;
+		return $sql->db_Count('user_extended_struct','(*)', "WHERE user_extended_struct_name = '".$tp -> toDB($name, true)."'");
 	}
 
 	function user_extended_add($name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $order='', $parent)
 	{
-		global $sql;
+		global $sql, $tp;
 		if(is_array($name))
 		{
 			extract($name);
@@ -195,8 +196,8 @@ class e107_user_extended
 					}
 				}
 			}
-			$sql->db_Select_gen("ALTER TABLE #user_extended ADD user_".$name.' '.$field_info);
-			$sql->db_Insert("user_extended_struct","0,'{$name}','{$text}','{$type}','{$parms}','{$values}', '{$default}', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
+			$sql->db_Select_gen("ALTER TABLE #user_extended ADD user_".$tp -> toDB($name, true)." ".$field_info);
+			$sql->db_Insert("user_extended_struct","0,'".$tp -> toDB($name, true)."','".$tp -> toDB($text, true)."','".intval($type)."','".$tp -> toDB($parms, true)."','".$tp -> toDB($values, true)."', '".$tp -> toDB($default, true)."', '".intval($read)."', '".intval($write)."', '".intval($required)."', '0', '".intval($applicable)."', '".intval($order)."', '".intval($parent)."'");
 			if ($this->user_extended_field_exist($name))
 			{
 				return TRUE;
@@ -207,23 +208,23 @@ class e107_user_extended
 
 	function user_extended_modify($id, $name, $text, $type, $parms, $values, $default, $required, $read, $write, $applicable, $parent)
 	{
-		global $sql;
+		global $sql, $tp;
 		if ($this->user_extended_field_exist($name))
 		{
 			$field_info = $this->user_extended_type_text($type, $default);
-			$sql->db_Select_gen("ALTER TABLE #user_extended MODIFY user_".$name.' '.$field_info);
+			$sql->db_Select_gen("ALTER TABLE #user_extended MODIFY user_".$tp -> toDB($name, true)." ".$field_info);
 			$newfield_info = "
-			user_extended_struct_text = '{$text}',
-			user_extended_struct_type = '{$type}',
-			user_extended_struct_parms = '{$parms}',
-			user_extended_struct_values = '{$values}',
-			user_extended_struct_default = '{$default}',
-			user_extended_struct_required = '{$required}',
-			user_extended_struct_read = '{$read}',
-			user_extended_struct_write = '{$write}',
-			user_extended_struct_applicable = '{$applicable}',
-			user_extended_struct_parent = '{$parent}'
-			WHERE user_extended_struct_id = '{$id}'
+			user_extended_struct_text = '".$tp -> toDB($text, true)."',
+			user_extended_struct_type = '".intval($type)."',
+			user_extended_struct_parms = '".$tp -> toDB($parms, true)."',
+			user_extended_struct_values = '".$tp -> toDB($values, true)."',
+			user_extended_struct_default = '".$tp -> toDB($default, true)."',
+			user_extended_struct_required = '".intval($required)."',
+			user_extended_struct_read = '".intval($read)."',
+			user_extended_struct_write = '".intval($write)."',
+			user_extended_struct_applicable = '".intval($applicable)."',
+			user_extended_struct_parent = '".intval($parent)."'
+			WHERE user_extended_struct_id = '".intval($id)."'
 			";
 			return $sql->db_Update("user_extended_struct", $newfield_info);
 		}
@@ -234,14 +235,14 @@ class e107_user_extended
 		global $sql;
 		if ($this->user_extended_field_exist($name))
 		{
-			$sql->db_Select_gen("ALTER TABLE #user_extended DROP user_".$name);
+			$sql->db_Select_gen("ALTER TABLE #user_extended DROP user_".$tp -> toDB($name, true));
 			if(is_numeric($id))
 			{
-				$sql->db_Delete("user_extended_struct", "user_extended_struct_id = '$id' ");
+				$sql->db_Delete("user_extended_struct", "user_extended_struct_id = '".intval($id)."' ");
 			}
 			else
 			{
-				$sql->db_Delete("user_extended_struct", "user_extended_struct_name = '$id' ");
+				$sql->db_Delete("user_extended_struct", "user_extended_struct_name = '".$tp -> toDB($id, true)."' ");
 			}
 			return !($this->user_extended_field_exist($name));
 		}
@@ -308,9 +309,9 @@ class e107_user_extended
 
 			case 4: //db_field
 				global $sql;
-				$order = ($choices[3]) ? "ORDER BY {$choices[3]}" : "";
+				$order = ($choices[3]) ? "ORDER BY ".$tp -> toDB($choices[3], true) : "";
 
-				if($sql->db_Select($choices[0],"{$choices[1]},{$choices[2]}","1 $order")){
+				if($sql->db_Select($tp -> toDB($choices[0], true), $tp -> toDB($choices[1], true).",".$tp -> toDB($choices[2], true), "1 $order")){
 					$choiceList = $sql->db_getList();
 					$ret = "<select {$include} class='tbox' name='{$fname}'  >\n";
 					$ret .= "<option value=''></option>\n";  // ensures that the user chose it.
@@ -372,12 +373,12 @@ class e107_user_extended
 		{
 			return $ueStruct;
 		}
-		global $sql;
+		global $sql, $tp;
 		$ret = array();
 		$parms = "";
 		if($orderby != "")
 		{
-			$parms = "1 ORDER BY {$orderby}";
+			$parms = "1 ORDER BY ".$tp -> toDB($orderby, true);
 		}
 		if($sql->db_Select('user_extended_struct','*',$parms))
 		{

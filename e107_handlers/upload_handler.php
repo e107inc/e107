@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_handlers/upload_handler.php,v $
-|   $Revision: 1.19 $
-|   $Date: 2005-12-21 17:03:51 $
+|   $Revision: 1.20 $
+|   $Date: 2005-12-28 14:03:36 $
 |   $Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -25,7 +25,7 @@ if (!defined('e107_INIT')) { exit; }
 function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "")
 {
 
-	global $pref, $sql;
+	global $pref, $sql, $tp;
 
 	if (!$uploaddir) {$uploaddir = e_FILE."public/";}
 	if($uploaddir == e_THEME) {$pref['upload_storagetype'] = 1;}
@@ -62,7 +62,7 @@ function file_upload($uploaddir, $avatar = FALSE, $fileinfo = "")
 				$data = mysql_escape_string(fread(fopen($file_userfile['tmp_name'][$c], "rb"), filesize($file_userfile['tmp_name'][$c])));
 				set_magic_quotes_runtime(get_magic_quotes_gpc());
 				$file_name = preg_replace("/[^a-z0-9._]/", "", str_replace(" ", "_", str_replace("%20", "_", strtolower($file_userfile['name'][$c]))));
-				$sql->db_Insert("rbinary", "0, '$file_name', '".$file_userfile['type'][$c]."', '$data' ");
+				$sql->db_Insert("rbinary", "0, '".$tp -> toDB($file_name, true)."', '".$tp -> toDB($file_userfile['type'][$c], true)."', '$data' ");
 				$uploaded[$c]['name'] = "Binary ".mysql_insert_id()."/".$file_name;
 				$uploaded[$c]['type'] = $file_userfile['type'][$c];
 				$uploaded[$c]['size'] = $file_userfile['size'][$c];

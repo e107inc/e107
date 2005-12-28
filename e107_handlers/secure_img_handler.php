@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/secure_img_handler.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-28 14:03:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -51,9 +51,9 @@ class secure_image {
 	 
 	function verify_code($rec_num, $checkstr) {
 		global $sql;
-		if ($sql->db_Select("tmp", "tmp_info", "tmp_ip = '{$rec_num}'")) {
+		if ($sql->db_Select("tmp", "tmp_info", "tmp_ip = '".intval($rec_num)."'")) {
 			$row = $sql->db_Fetch();
-			$sql->db_Delete("tmp", "tmp_ip = '{$rec_num}'");
+			$sql->db_Delete("tmp", "tmp_ip = '".intval($rec_num)."'");
 			list($code, $path) = explode(",", $row[0]);
 			return ($checkstr == $code);
 		}

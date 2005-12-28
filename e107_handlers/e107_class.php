@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.48 $
+|     $Date: 2005-12-28 14:03:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -117,7 +117,7 @@ class e107{
 	 *
 	 */
 	function ban() {
-		global $sql, $e107;
+		global $sql, $e107, $tp;
 		$ban_count = $sql->db_Count("banlist");
 		if($ban_count){
 			$ip = $this->getip();
@@ -128,10 +128,10 @@ class e107{
 			$tmp = $e107->get_host_name(getenv('REMOTE_ADDR'));
 
 			preg_match("/[\w]+\.[\w]+$/si", $tmp, $match);
-			$bhost = (isset($match[0]) ? " OR banlist_ip='{$match[0]}'" : "");
+			$bhost = (isset($match[0]) ? " OR banlist_ip='".$tp -> toDB($match[0], true)."'" : "");
 
 			if ($ip != '127.0.0.1') {
-				if ($sql->db_Select("banlist", "*", "banlist_ip='".$_SERVER['REMOTE_ADDR']."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='{$ip}' OR banlist_ip='{$wildcard}' OR banlist_ip='{$wildcard2}' {$bhost}")) {
+				if ($sql->db_Select("banlist", "*", "banlist_ip='".$tp -> toDB($_SERVER['REMOTE_ADDR'], true)."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='{$ip}' OR banlist_ip='{$wildcard}' OR banlist_ip='{$wildcard2}' {$bhost}")) {
 					// enter a message here if you want some text displayed to banned users ...
 					exit();
 				}
