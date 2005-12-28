@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_comment.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.9 $
+|     $Date: 2005-12-28 14:50:24 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -21,16 +21,16 @@ if (!defined('e107_INIT')) { exit; }
 
 // advanced 
 $advanced_where = "";
-if (isset($_GET['type']) && (strpos(' ', $_GET['type']) === false) && $_GET['type'] != 'all') {
-	$advanced_where .= " c.comment_type='".(str_replace('s_', '', $_GET['type']))."' AND";
+if (isset($_GET['type']) && $_GET['type'] != 'all') {
+	$advanced_where .= " c.comment_type='".(str_replace('s_', '', $tp -> toDB($_GET['type'])))."' AND";
 }
 
 if (isset($_GET['time']) && is_numeric($_GET['time'])) {
 	$advanced_where .= " c.comment_datestamp ".($_GET['on'] == 'new' ? '>=' : '<=')." '".(time() - $_GET['time'])."' AND";
 }
 
-if (isset($_GET['author']) && (strpos(' ', $_GET['author']) === false) && $_GET['author'] != '') {
-	$advanced_where .= " c.comment_author LIKE '%".$_GET['author']."%' AND";
+if (isset($_GET['author']) && $_GET['author'] != '') {
+	$advanced_where .= " c.comment_author LIKE '%".$tp -> toDB($_GET['author'])."%' AND";
 }
 
 //basic

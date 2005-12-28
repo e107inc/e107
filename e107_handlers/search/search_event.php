@@ -11,14 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_event.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.5 $
+|     $Date: 2005-12-28 14:50:24 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 	
 if (!defined('e107_INIT')) { exit; }
 
+$query = $tp -> toDB($query);
 $results = $sql->db_Select("event", "*", "event_stake REGEXP('".$query."') OR event_ward REGEXP('".$query."') OR event_organisation REGEXP('".$query."') OR event_title REGEXP('".$query."')
 	OR event_location REGEXP('".$query."') OR event_details REGEXP('".$query."') OR event_thread REGEXP('".$query."') ");
 while (list($event_id, $event_stake, $event_ward, $event_organisation, $event_start, $event_end, $event_allday, , , $event_title, $event_location, $event_details, $event_author, $event_contact, $event_category, $event_url ) = $sql->db_Fetch()) {

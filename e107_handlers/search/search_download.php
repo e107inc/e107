@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search/search_download.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.10 $
+|     $Date: 2005-12-28 14:50:24 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -29,8 +29,8 @@ if (isset($_GET['time']) && is_numeric($_GET['time'])) {
 	$advanced_where .= " d.download_datestamp ".($_GET['on'] == 'new' ? '>=' : '<=')." '".(time() - $_GET['time'])."' AND";
 }
 
-if (isset($_GET['author']) && (strpos(' ', $_GET['author']) === false) && $_GET['author'] != '') {
-	$advanced_where .= " (d.download_author = '".$_GET['author']."') AND";
+if (isset($_GET['author']) && $_GET['author'] != '') {
+	$advanced_where .= " (d.download_author = '".$tp -> toDB($_GET['author'])."') AND";
 }
 
 if (isset($_GET['match']) && $_GET['match']) {
