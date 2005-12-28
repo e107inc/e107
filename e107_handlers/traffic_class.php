@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/traffic_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2005-12-28 20:44:18 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -72,7 +72,9 @@ class e107_traffic {
 		// ~15 usec err: $eTraffic->Bump('foo',$b,microtime());
 		// ~25 usec err: $eTraffic->Bump('foo',$b);
 
-		if (!E107_DBG_TRAFFIC) return;
+		if (!defined("E107_DBG_TRAFFIC")) {
+			return;
+		}
 
 		if ($tStart) {
 			$vName = 'aTrafficTimed';
@@ -121,7 +123,9 @@ class e107_traffic {
 	*/
 	function BumpWho($sWhat, $level = 0, $tStart = 0, $tFinish = 0) {
 		$x = microtime();
-		if (!E107_DBG_TRAFFIC) return;
+		if (!defined("E107_DBG_TRAFFIC")) {
+			return;
+		}
 
 		$this->Bump($sWhat, $tStart, ($tFinish? $tFinish : $x));
 
@@ -139,7 +143,9 @@ class e107_traffic {
 	}
 
 	function Calibrate($tObject, $count = 10 ) {
-		if (!E107_DBG_TRAFFIC) return;
+		if (!defined("E107_DBG_TRAFFIC")) {
+			return;
+		}
 		if ($tObject != $this) {
 			message_handler("CRITICAL_ERROR", "Bad traffic object", __LINE__-2, __FILE__);
 		}

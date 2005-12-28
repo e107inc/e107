@@ -11,16 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/counter_menu/counter_menu.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.15 $
+|     $Date: 2005-12-28 20:44:18 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
 
 $text = "";
-if ($pref['statActivate'])
-{
+if (isset($pref['statActivate']) && $pref['statActivate'] == true) {
 	$pageName = preg_replace("/(\?.*)|(\_.*)|(\.php)/", "", basename (e_SELF));
 	$logfile = e_PLUGIN."log/logs/logp_".date("z.Y", time()).".php";
 	if(!is_readable($logfile))
@@ -78,5 +77,5 @@ else
 		$ns->tablerender(COUNTER_L7, $text, 'counter');
 	}
 }
-	
+
 ?>

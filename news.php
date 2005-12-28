@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.84 $
-|     $Date: 2005-12-24 22:53:38 $
-|     $Author: sweetas $
+|     $Revision: 1.85 $
+|     $Date: 2005-12-28 20:44:18 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -170,10 +170,6 @@ if ($action == "extend") {
 	require_once(FOOTERF);
 	exit;
 }
-
-
-
-
 
 if (empty($order)){
 	$order = "news_datestamp";

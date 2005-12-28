@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2005-12-15 11:26:01 $
+|     $Revision: 1.73 $
+|     $Date: 2005-12-28 20:44:18 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -48,8 +48,13 @@ $diz_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_descri
 $key_merge = (defined("META_MERGE") && META_MERGE != FALSE && $pref['meta_keywords'][e_LANGUAGE]) ? $pref['meta_keywords'][e_LANGUAGE]."," : "";
 echo (defined("META_DESCRIPTION")) ? "<meta name=\"description\" content=\"".$diz_merge.META_DESCRIPTION."\" />\n" : "";
 echo (defined("META_KEYWORDS")) ? "<meta name=\"keywords\" content=\"".$key_merge.META_KEYWORDS."\" />\n" : "";
-echo ($pref['meta_description'][e_LANGUAGE] && !defined("META_DESCRIPTION") ) ? "<meta name=\"description\" content=\"".$pref['meta_description'][e_LANGUAGE]."\" />\n" : "";
-echo ($pref['meta_keywords'][e_LANGUAGE] && !defined("META_KEYWORDS") ) ? "<meta name=\"keywords\" content=\"".$pref['meta_keywords'][e_LANGUAGE]."\" />\n" : "";
+
+if (isset($pref['meta_description'][e_LANGUAGE])) {
+	echo ($pref['meta_description'][e_LANGUAGE] && !defined("META_DESCRIPTION") ) ? "<meta name=\"description\" content=\"".$pref['meta_description'][e_LANGUAGE]."\" />\n" : "";
+}
+if (isset($pref['meta_keywords'][e_LANGUAGE])) {
+	echo ($pref['meta_keywords'][e_LANGUAGE] && !defined("META_KEYWORDS") ) ? "<meta name=\"keywords\" content=\"".$pref['meta_keywords'][e_LANGUAGE]."\" />\n" : "";
+}
 echo ($pref['meta_copyright'][e_LANGUAGE]) ? "<meta name=\"copyright\" content=\"".$pref['meta_copyright'][e_LANGUAGE]."\" />\n" : "";
 echo ($pref['meta_tag'][e_LANGUAGE]) ? str_replace("&lt;", "<", $tp -> toHTML($pref['meta_tag'][e_LANGUAGE], FALSE, "nobreak, no_hook, no_make_clickable"))."\n" : "";
 unset($key_merge,$diz_merge);

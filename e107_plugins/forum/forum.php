@@ -11,12 +11,12 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-12-01 03:28:27 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.35 $
+|     $Date: 2005-12-28 20:44:18 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-if(!defined("E107_BOOTSTRAP_LOADED")) {
+if(!defined("e107_INIT")) {
 	require_once("../../class2.php");
 }
 
@@ -447,7 +447,7 @@ if (e_QUERY == "new")
 		{
 			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}'>".$tp->toHTML($post['thread_name'], TRUE, 'no_make_clickable')."</a>";
 		}
-	
+
 		$forum_newstring .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_MAIN);
 	}
 
