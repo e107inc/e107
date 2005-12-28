@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.246 $
-|     $Date: 2005-12-28 20:52:43 $
+|     $Revision: 1.247 $
+|     $Date: 2005-12-28 21:03:04 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -845,7 +845,6 @@ class e_online {
 	function online($online_tracking = false, $flood_control = false) {
 		if($online_tracking == true || $flood_control == true) {
 			global $online_timeout, $online_warncount, $online_bancount;
-			$online_timeout = intval($online_timeout);
 			if(!isset($online_timeout)) {
 				$online_timeout = 300;
 			}
