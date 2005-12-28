@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-12-23 22:17:53 $
+|     $Revision: 1.45 $
+|     $Date: 2005-12-28 22:53:26 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -219,15 +219,32 @@ if (count($thread_list))
 		if ($thread_info['thread_s']) {
 			$sticky_threads ++;
 		}
-		if ($sticky_threads > 0 && !$stuck && $pref['forum_hilightsticky']) {
-			$forum_view_forum .= "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_411."</b></span></td></tr>";
+		if ($sticky_threads > 0 && !$stuck && $pref['forum_hilightsticky'])
+		{
+			if($FORUM_IMPORTANT_ROW)
+			{
+				$forum_view_forum .= $FORUM_IMPORTANT_ROW;
+			}
+			else
+			{
+				$forum_view_forum .= "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_411."</b></span></td></tr>";
+			}
 			$stuck = TRUE;
 		}
-		if (!$thread_info['thread_s']) {
+		if (!$thread_info['thread_s'])
+		{
 			$reg_threads ++;
 		}
-		if ($reg_threads == "1" && !$unstuck && $stuck) {
-			$forum_view_forum .= "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_412."</b></span></td></tr>";
+		if ($reg_threads == "1" && !$unstuck && $stuck)
+		{
+			if($FORUM_NORMAL_ROW)
+			{
+				$forum_view_forum .= $FORUM_NORMAL_ROW;
+			}
+			else
+			{
+				$forum_view_forum .= "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_412."</b></span></td></tr>";
+			}
 			$unstuck = TRUE;
 		}
 		$forum_view_forum .= parse_thread($thread_info);
@@ -401,6 +418,16 @@ function parse_thread($thread_info)
 		}
 	}
 	
+	if ($thread_info['thread_s'] == 1 && $FORUM_VIEW_FORUM_STICKY)
+	{
+		return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM_STICKY));
+	}
+	
+	if ($thread_info['thread_s'] == 2 && $FORUM_VIEW_FORUM_ANNOUNCE)
+	{
+		return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM_ANNOUNCE));
+	}
+
 	return(preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_FORUM));
 }
 
