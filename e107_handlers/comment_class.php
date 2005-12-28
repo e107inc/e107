@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.50 $
+|     $Date: 2005-12-28 10:58:46 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -54,10 +54,10 @@ class comment {
 			}
 			$text = "\n<div style='text-align:center'><form method='post' action='".e_SELF."?".e_QUERY."' id='dataform' >\n<table style='width:100%'>";
 			if ($pref['nested_comments']) {
-				$text .= "<tr>\n<td style='width:20%'>".COMLAN_4."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='subject' size='66' value='$subject' maxlength='100' />\n</td>\n</tr>";
+				$text .= "<tr>\n<td style='width:20%'>".COMLAN_4."</td>\n<td style='width:80%'>\n<input class='tbox' type='text' name='subject' size='66' value='".$tp -> toForm($subject)."' maxlength='100' />\n</td>\n</tr>";
 				$text2 = "";
 			} else {
-				$text2 = "<input type='hidden' name='subject' value='$subject'  />\n";
+				$text2 = "<input type='hidden' name='subject' value='".$tp -> toForm($subject)."'  />\n";
 			}
 
 			if(strstr(e_QUERY, "edit"))
@@ -239,7 +239,7 @@ class comment {
 			FROM #comments AS c
 			LEFT JOIN #user AS u ON c.comment_author = u.user_id
 			LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
-			WHERE comment_item_id='".$thisid."' AND comment_type='".$type."' AND comment_pid='".$comrow['comment_id']."'
+			WHERE comment_item_id='".intval($thisid)."' AND comment_type='".$tp -> toDB($type, true)."' AND comment_pid='".intval($comrow['comment_id'])."'
 			ORDER BY comment_datestamp
 			";
 
@@ -296,15 +296,15 @@ class comment {
 
 		$comment = $tp->toDB($comment);
 		$subject = $tp->toDB($subject);
-		if (!$sql->db_Select("comments", "*", "comment_comment='".$comment."' AND comment_item_id='$id' AND comment_type='$type' ")) {
+		if (!$sql->db_Select("comments", "*", "comment_comment='".$comment."' AND comment_item_id='".intval($id)."' AND comment_type='".$tp -> toDB($type, true)."' ")) {
 			if ($_POST['comment']) {
 				if (USER == TRUE) {
 					$nick = USERID.".".USERNAME;
 				} else if($_POST['author_name'] == '') {
 					$nick = "0.Anonymous";
 				} else {
-					if ($sql2->db_Select("user", "*", "user_name='".$_POST['author_name']."' ")) {
-						if ($sql2->db_Select("user", "*", "user_name='".$_POST['author_name']."' AND user_ip='$ip' ")) {
+					if ($sql2->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['author_name'])."' ")) {
+						if ($sql2->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['author_name'])."' AND user_ip='".$tp -> toDB($ip, true)."' ")) {
 							list($cuser_id, $cuser_name) = $sql2->db_Fetch();
 							$nick = $cuser_id.".".$cuser_name;
 						} else {
@@ -325,12 +325,12 @@ class comment {
 					if($editpid)
 					{
 						$comment .= "\n[ ".LAN_319." [time=short]".time()."[/time] ]";
-						$sql -> db_Update("comments", "comment_comment='$comment' WHERE comment_id='$editpid' ");
+						$sql -> db_Update("comments", "comment_comment='$comment' WHERE comment_id='".intval($editpid)."' ");
 						$e107cache->clear("comment");
 						return;
 					}
 
-					if (!$sql->db_Insert("comments", "0, '$pid', '$id', '$subject', '$nick', '', '".$_t."', '$comment', '0', '$ip', '$type', '0' "))
+					if (!$sql->db_Insert("comments", "0, '".intval($pid)."', '".intval($id)."', '$subject', '$nick', '', '".$_t."', '$comment', '0', '$ip', '".$tp -> toDB($type, true)."', '0' "))
 					{
 						echo "<b>".COMLAN_3."</b> ".LAN_11;
 					}
@@ -344,7 +344,7 @@ class comment {
 						$e107cache->clear("comment");
 						if(!$type || $type == "news")
 						{
-							$sql->db_Update("news", "news_comment_total=news_comment_total+1 WHERE news_id=$id");
+							$sql->db_Update("news", "news_comment_total=news_comment_total+1 WHERE news_id=".intval($id));
 						}
 					}
 				}
@@ -394,14 +394,14 @@ class comment {
 	 * @return unknown
 	 */
 	function count_comments($table, $id){
-		global $sql;
+		global $sql, $tp;
 
 		if(is_numeric($table)){
 			$type = $table;
 		}else{
 			$type = $this -> getCommentType($table);
 		}
-		$count_comments = $sql -> db_Count("comments", "(*)", "WHERE comment_item_id='".$id."' AND comment_type='".$type."' ORDER BY comment_item_id");
+		$count_comments = $sql -> db_Count("comments", "(*)", "WHERE comment_item_id='".intval($id)."' AND comment_type='".$tp -> toDB($type, true)."' ORDER BY comment_item_id");
 		return $count_comments;
 	}
 
@@ -430,12 +430,12 @@ class comment {
 		"SELECT c.*, u.*, ue.* FROM #comments AS c
 		LEFT JOIN #user AS u ON c.comment_author = u.user_id
 		LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
-		WHERE c.comment_item_id='".$id."' AND c.comment_type='".$type."' AND c.comment_pid='0' ORDER BY c.comment_datestamp"
+		WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp -> toDB($type, true)."' AND c.comment_pid='0' ORDER BY c.comment_datestamp"
 		:
 		"SELECT c.*, u.*, ue.* FROM #comments AS c
 		LEFT JOIN #user AS u ON c.comment_author = u.user_id
 		LEFT JOIN #user_extended AS ue ON c.comment_author = ue.user_extended_id
-		WHERE c.comment_item_id='".$id."' AND c.comment_type='".$type."' ORDER BY c.comment_datestamp"
+		WHERE c.comment_item_id='".intval($id)."' AND c.comment_type='".$tp -> toDB($type, true)."' ORDER BY c.comment_datestamp"
 		);
 
 		$text = "";
@@ -445,11 +445,11 @@ class comment {
 			$width = 0;
 			while ($row = $sql->db_Fetch()) {
 				$lock = $row['comment_lock'];
-				$subject = $tp->toHTML($subject);
+				// $subject = $tp->toHTML($subject);
 				if ($pref['nested_comments']) {
-					$text .= $this->render_comment($row, $table , $action, $id, $width, $subject, $rate);
+					$text .= $this->render_comment($row, $table , $action, $id, $width, $tp->toHTML($subject), $rate);
 				} else {
-					$text .= $this->render_comment($row, $table , $action, $id, $width, $subject, $rate);
+					$text .= $this->render_comment($row, $table , $action, $id, $width, $tp->toHTML($subject), $rate);
 				}
 			}
 
