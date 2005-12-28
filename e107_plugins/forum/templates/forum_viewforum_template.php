@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewforum_template.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2005-12-28 22:53:26 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -61,6 +61,50 @@ $FORUM_VIEW_START = "
 
 if (!$FORUM_VIEW_FORUM) {
 	$FORUM_VIEW_FORUM = "
+		<tr>
+		<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>{ICON}</td>
+		<td style='vertical-align:middle; text-align:left; width:47%' class='forumheader3'>
+
+		<table style='width:100%'>
+		<tr>
+		<td style='width:90%'><span class='mediumtext'><b>{THREADTYPE}{THREADNAME}</b></span> <span class='smalltext'>{PAGES}</span></td>
+		<td style='width:10%; white-space:nowrap;'>{ADMIN_ICONS}</td>
+		</tr>
+		</table>
+
+		</td>
+
+		<td style='vertical-align:center; text-align:center; width:20%' class='forumheader3'>{POSTER}<br />{THREADDATE}</td>
+		<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{REPLIES}</td>
+		<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{VIEWS}</td>
+		<td style='vertical-align:center; text-align:center; width:20%' class='forumheader3'>{LASTPOST}</td>
+		</tr>";
+}
+
+if (!$FORUM_VIEW_FORUM_STICKY) {
+	$FORUM_VIEW_FORUM_STICKY = "
+		<tr>
+		<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>{ICON}</td>
+		<td style='vertical-align:middle; text-align:left; width:47%' class='forumheader3'>
+
+		<table style='width:100%'>
+		<tr>
+		<td style='width:90%'><span class='mediumtext'><b>{THREADTYPE}{THREADNAME}</b></span> <span class='smalltext'>{PAGES}</span></td>
+		<td style='width:10%; white-space:nowrap;'>{ADMIN_ICONS}</td>
+		</tr>
+		</table>
+
+		</td>
+
+		<td style='vertical-align:center; text-align:center; width:20%' class='forumheader3'>{POSTER}<br />{THREADDATE}</td>
+		<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{REPLIES}</td>
+		<td style='vertical-align:center; text-align:center; width:5%' class='forumheader3'>{VIEWS}</td>
+		<td style='vertical-align:center; text-align:center; width:20%' class='forumheader3'>{LASTPOST}</td>
+		</tr>";
+}
+
+if (!$FORUM_VIEW_FORUM_ANNOUNCE) {
+	$FORUM_VIEW_FORUM_ANNOUNCE = "
 		<tr>
 		<td style='vertical-align:middle; text-align:center; width:3%' class='forumheader3'>{ICON}</td>
 		<td style='vertical-align:middle; text-align:left; width:47%' class='forumheader3'>
@@ -165,6 +209,14 @@ if (!$FORUM_VIEW_SUB_END) {
 	</td>
 	</tr>
 	";
+}
+
+if (!$FORUM_IMPORTANT_ROW) {
+	$FORUM_IMPORTANT_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_411."</b></span></td></tr>";
+}
+
+if (!$FORUM_NORMAL_ROW) {
+	$FORUM_NORMAL_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_412."</b></span></td></tr>";
 }
 
 ?>
