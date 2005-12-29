@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewforum_template.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-12-28 22:53:26 $
+|     $Revision: 1.12 $
+|     $Date: 2005-12-29 02:13:23 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -218,5 +218,16 @@ if (!$FORUM_IMPORTANT_ROW) {
 if (!$FORUM_NORMAL_ROW) {
 	$FORUM_NORMAL_ROW = "<tr><td class='forumheader'>&nbsp;</td><td colspan='5'  class='forumheader'><span class='mediumtext'><b>".LAN_412."</b></span></td></tr>";
 }
+
+$FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' {SITENAME_HREF}>{SITENAME}</a>";
+$FORUM_CRUMB['sitename']['sep'] = " :: ";
+
+$FORUM_CRUMB['forums']['value'] = "<a class='forumlink' {FORUMS_HREF}>{FORUMS_TITLE}</a>";
+$FORUM_CRUMB['forums']['sep'] = " :: ";
+
+$FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' {SUBPARENT_HREF}>{SUBPARENT_TITLE}</a>";
+$FORUM_CRUMB['subparent']['sep'] = " :: ";
+
+$FORUM_CRUMB['forum']['value'] = "{FORUM_TITLE}";
 
 ?>

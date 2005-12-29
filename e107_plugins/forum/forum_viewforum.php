@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2005-12-28 22:53:26 $
+|     $Revision: 1.46 $
+|     $Date: 2005-12-29 02:13:23 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -56,7 +56,7 @@ $REPLYTITLE = LAN_55;
 $LASTPOSTITLE = LAN_57;
 $VIEWTITLE = LAN_56;
 	
-global $forum_info;
+global $forum_info, $FORUM_CRUMB;
 $forum_info = $forum->forum_get($forum_id);
 
 if (!check_class($forum_info['forum_class']) || !check_class($forum_info['parent_class']) || !$forum_info['forum_parent'])
@@ -133,12 +133,47 @@ if (check_class($forum_info['forum_postclass']) && check_class($forum_info['pare
 	$NEWTHREADBUTTON = "<a href='".e_PLUGIN."forum/forum_post.php?nt.".$forum_id."'>".IMAGE_newthread."</a>";
 }
 	
-$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a> -> ";
-if($forum_info['sub_parent'])
+
+if(is_array($FORUM_CRUMB))
 {
-	$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'>{$forum_info['sub_parent']}</a> -> ";
+	$search 	= array("{SITENAME}", "{SITENAME_HREF}");
+	$replace 	= array(SITENAME, "href='".e_BASE."index.php'");
+	$FORUM_CRUMB['sitename']['value'] = str_replace($search, $replace, $FORUM_CRUMB['sitename']['value']);
+
+	$search 	= array("{FORUMS_TITLE}", "{FORUMS_HREF}");
+	$replace 	= array(LAN_01, "href='".e_PLUGIN."forum/forum.php'");
+	$FORUM_CRUMB['forums']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forums']['value']);
+
+	if($forum_info['sub_parent'])
+	{
+		$search 	= array("{SUBPARENT_TITLE}", "{SUBPARENT_HREF}");
+		$replace 	= array($forum_info['sub_parent'], "href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'");
+		$FORUM_CRUMB['subparent']['value'] = str_replace($search, $replace, $FORUM_CRUMB['subparent']['value']);
+	}
+	else
+	{
+		$FORUM_CRUMB['subparent']['value'] = "";
+	}
+
+	$search 	= array("{FORUM_TITLE}");
+	$replace 	= array($forum_info['forum_name']);
+	$FORUM_CRUMB['forum']['value'] = str_replace($search, $replace, $FORUM_CRUMB['forum']['value']);
+	$FORUM_CRUMB['fieldlist'] = "sitename,forums,subparent,forum";
+	
+	$BREADCRUMB = $tp->parseTemplate("{BREADCRUMB=FORUM_CRUMB}", true);
+
 }
-$BREADCRUMB .= $forum_info['forum_name']."</b>";
+else
+{
+	$BREADCRUMB = "<a class='forumlink' href='".e_BASE."index.php'>".SITENAME."</a> -> <a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_01."</a> -> ";
+	if($forum_info['sub_parent'])
+	{
+		$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'>{$forum_info['sub_parent']}</a> -> ";
+	}
+	$BREADCRUMB .= $forum_info['forum_name']."</b>";
+}
+
+
 
 $FORUMTITLE = $forum_info['forum_name'];
 //$MODERATORS = LAN_404.": ".$forum_info['forum_moderators'];
