@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-12-28 14:03:36 $
+|     $Revision: 1.38 $
+|     $Date: 2005-12-29 20:41:49 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -340,7 +340,7 @@ class e107plugin
 	 * @param int $id
 	 */
 	function install_plugin($id) {
-		global $sql, $ns, $sysprefs,$mySQLprefix;
+		global $sql, $ns, $sysprefs,$mySQLprefix, $tp;
 
 		// install plugin ...
 		$plug = $this->getinfo($id);
