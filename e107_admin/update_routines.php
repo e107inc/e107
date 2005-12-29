@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.159 $
-|     $Date: 2005-12-21 17:17:22 $
+|     $Revision: 1.160 $
+|     $Date: 2005-12-29 20:39:59 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -352,8 +352,6 @@ function update_617_to_700($type='') {
 					foreach ($link_del as $link_del_commit) {
 						$sql->db_Delete("links", "link_id='".$link_del_commit."'");
 					}
-				} else {
-					$error='Links update failed.';
 				}
 				$sql->db_Insert("plugin", "0, 'Links Page', '1.0', 'links_page', 1");
 				$sql->db_Update("links", "link_url = '".$PLUGINS_DIRECTORY."links_page/links.php' WHERE link_url = 'links.php'");
