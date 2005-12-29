@@ -110,7 +110,62 @@ $upgrade_alter_tables = array(
 );
 $eplug_upgrade_done = "Content Management Plugin table structure updated<br />";
 
+if (!function_exists('content_install')) {
+	function content_install(){
+		
+		//check if old content table exists
+		$exists = mysql_query("SELECT 1 FROM ".MPREFIX."content LIMIT 0");
+		
+		//if it doesn't this is a fresh install, so continue to insert the default main parents
+		if(!$exists){
+			
+			//need to create the pcontent table first
+			$eplug_tables = array(
+				"CREATE TABLE ".MPREFIX."pcontent (
+				content_id int(10) unsigned NOT NULL auto_increment,
+				content_heading varchar(255) NOT NULL default '',
+				content_subheading varchar(255) NOT NULL default '',
+				content_summary text NOT NULL,
+				content_text longtext NOT NULL,
+				content_author varchar(255) NOT NULL default '',
+				content_icon varchar(255) NOT NULL default '',
+				content_file text NOT NULL,
+				content_image text NOT NULL,
+				content_parent varchar(50) NOT NULL default '',
+				content_comment tinyint(1) unsigned NOT NULL default '0',
+				content_rate tinyint(1) unsigned NOT NULL default '0',
+				content_pe tinyint(1) unsigned NOT NULL default '0',
+				content_refer text NOT NULL,
+				content_datestamp int(10) unsigned NOT NULL default '0',
+				content_enddate int(10) unsigned NOT NULL default '0',
+				content_class varchar(255) NOT NULL default '',
+				content_pref text NOT NULL,
+				content_order varchar(10) NOT NULL default '0',
+				content_score tinyint(3) unsigned NOT NULL default '0',
+				content_meta text NOT NULL,
+				content_layout varchar(255) NOT NULL default '',
+				PRIMARY KEY  (content_id)
+				) TYPE=MyISAM;"
+			);
+			
+			//execute the eplug_tables
+			$sql = new db;
+			foreach($eplug_tables as $qry){
+				$sql -> db_Select_gen($qry);
+			}
 
-
+			//include class and set up a few variables
+			$plugindir = e_PLUGIN."content/";
+			$plugintable = 'pcontent';
+			require_once($plugindir."handlers/content_convert_class.php");
+			$ac = new content_convert;
+			
+			//insert these threee main parents
+			$content_mainarray = $ac -> create_mainparent("content", '1', "1");
+			$article_mainarray = $ac -> create_mainparent("article", '1', "2");
+			$review_mainarray = $ac -> create_mainparent("review", '1', "3");
+		}
+	}
+}
 
 ?>
