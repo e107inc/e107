@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-12-25 02:06:33 $
+|     $Revision: 1.43 $
+|     $Date: 2005-12-29 19:49:19 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -113,10 +113,6 @@ define("PRFLAN_88", "Turn on nested comments");
 define("PRFLAN_89", "Display new comment icon");
 define("PRFLAN_90", "Allow posters to edit their comments");
 
-define("PRFLAN_91", "Advanced Features");
-define("PRFLAN_92", "Select e107 authentication method");
-define("PRFLAN_93", "e107 - No alternate authentication methods installed");
-
 
 define("CUSTSIG_1", "Settings Saved!");
 define("CUSTSIG_2", "Real Name:");
@@ -206,5 +202,12 @@ define("PRFLAN_146", "Tick here to make all links open in a new window (<i>this 
 
 define("PRFLAN_147", "Developer Mode");
 define("PRFLAN_148", "Activate developer functions. This is for developers only. Do not use on production sites for security reasons.");
+
+
+define("PRFLAN_149", "Advanced Features");
+define("PRFLAN_150", "Select e107 authentication method");
+define("PRFLAN_151", "e107 - No alternate authentication methods installed");
+
+
 
 ?>
