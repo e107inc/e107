@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update_check.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-12-14 19:28:43 $
-|     $Author: sweetas $
+|     $Revision: 1.7 $
+|     $Date: 2005-12-29 22:19:37 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -47,8 +47,9 @@ function update_content_07($type='')
 
 			$newcontent = $sql -> db_Count("pcontent", "(*)", "");
 			
-			//if no rows in new table, return FALSE = needed
-			if($newcontent == 0){
+			//if no rows in new table && no old content table exists, return FALSE = needed
+			$exists = mysql_query("SELECT 1 FROM ".MPREFIX."content LIMIT 0");
+			if($newcontent == 0 && !$exists){
 				return FALSE; //needed
 			}
 			
