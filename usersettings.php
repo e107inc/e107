@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2005-12-24 22:53:38 $
-|     $Author: sweetas $
+|     $Revision: 1.59 $
+|     $Date: 2005-12-29 20:00:54 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -176,6 +176,16 @@ if (isset($_POST['updatesettings']))
 		if($_POST['password1'] != "")
 		{
 			$pwreset = ", user_password = '".md5($_POST['password1'])."' ";
+		}
+	}
+
+	if(isset($pref['signup_disallow_text']))
+	{
+		$tmp = explode(",", $pref['signup_disallow_text']);
+		foreach($tmp as $disallow){
+			if(strstr($_POST['username'], $disallow)){
+				$error .= LAN_USET_11."\\n";
+			}
 		}
 	}
 
