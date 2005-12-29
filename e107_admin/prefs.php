@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.71 $
-|     $Date: 2005-12-25 02:06:33 $
+|     $Revision: 1.72 $
+|     $Date: 2005-12-29 19:49:19 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -87,7 +87,7 @@ if ($authlist) {
 	$auth_dropdown .= "</select>\n";
 	$auth_dropdown .= "</td></tr>";
 } else {
-	$auth_dropdown = "<input type='hidden' name='auth_method' value='' />".PRFLAN_93;
+	$auth_dropdown = "<input type='hidden' name='auth_method' value='' />".PRFLAN_151;
 	$pref['auth_method'] = "";
 }
 
@@ -808,7 +808,7 @@ $text .= "</table></div>";
 $text .= "<div id='advanced' style='display:none; text-align:center'>
 	<table style='width:100%' class='fborder'>
 	<tr>
-	<td class='fcaption' title='".PRFLAN_80."' style='text-align:left;' colspan='2'>".PRFLAN_87."</td>
+	<td class='fcaption' title='".PRFLAN_80."' style='text-align:left;' colspan='2'>".PRFLAN_149."</td>
 	</tr>";
 
 	$text .= "<tr>
@@ -828,7 +828,7 @@ $text .= "<div id='advanced' style='display:none; text-align:center'>
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_92."<br /><span class='smalltext'>&nbsp</span></td>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_150."<br /><span class='smalltext'>&nbsp</span></td>
 	<td style='width:50%; text-align:right' class='forumheader3'>{$auth_dropdown}
 	</td>
 	</tr>
@@ -882,7 +882,7 @@ function prefs_adminmenu() {
 	$var['textpost']['text'] = PRFLAN_101;
 	$var['security']['text'] = PRFLAN_47;
 	$var['comments']['text'] = PRFLAN_87;
-	$var['advanced']['text'] = PRFLAN_91;
+	$var['advanced']['text'] = PRFLAN_149;
 	show_admin_menu(LAN_OPTIONS, $action, $var, TRUE);
 }
 ?>
