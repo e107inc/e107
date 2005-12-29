@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/resetcore/resetcore.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-11-27 00:17:16 $
-|     $Author: streaky $
+|     $Revision: 1.12 $
+|     $Date: 2005-12-29 20:41:10 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -60,6 +60,7 @@ mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
 mysql_select_db($mySQLdefaultdb);
 define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 
+define("e107_INIT", TRUE);
 require_once('../../'.$HANDLERS_DIRECTORY.'arraystorage_class.php');
 $eArrayStorage = new ArrayData();
 
