@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_convert_class.php,v $
-|		$Revision: 1.14 $
-|		$Date: 2005-12-14 19:28:43 $
-|		$Author: sweetas $
+|		$Revision: 1.15 $
+|		$Date: 2005-12-29 21:30:42 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -236,7 +236,7 @@ class content_convert{
 					//if(!is_object($sql)){ $sql = new db; }
 					if(!$sql -> db_Select($plugintable, "content_heading", "content_heading = '".$name."' AND content_parent = '0' ")){
 						$name = $tp -> toDB($name);
-						$sql -> db_Insert($plugintable, "'".$newid."', '".$name."', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '".$order."', '', '', '' ");
+						$sql -> db_Insert($plugintable, "'".$newid."', '".$name."', '', '', '', '1', '', '', '', '0', '0', '0', '0', '', '".time()."', '0', '0', '', '".$order."', '0', '', '' ");
 
 						//check if row is present in the db (is it a valid insert)
 						//if(!is_object($sql2)){ $sql2 = new db; }
@@ -326,7 +326,7 @@ class content_convert{
 						$newcontent_endtime		= "0";
 						$newcontent_class		= $row['content_class'];
 						$newcontent_pref		= "";
-						$newcontent_score		= "";
+						$newcontent_score		= "0";
 						$newcontent_meta		= "";
 						$newcontent_layout		= "";
 
@@ -415,7 +415,7 @@ class content_convert{
 						$newcontent_endtime		= "0";
 						$newcontent_class		= $row['content_class'];
 						$newcontent_pref		= "";
-						$newcontent_score		= ($row['content_review_score'] && $row['content_review_score'] != "none" ? $row['content_review_score'] : "");
+						$newcontent_score		= ($row['content_review_score'] && $row['content_review_score'] != "none" ? $row['content_review_score'] : "0");
 						$newcontent_meta		= "";
 						$newcontent_layout		= "";
 
