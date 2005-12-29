@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewtopic_template.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.17 $
+|     $Date: 2005-12-29 02:13:23 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 	
@@ -235,5 +235,16 @@ $FORUMREPLYSTYLE = "<tr>
 	<td colspan='2'>
 	</td>
 	</tr>";
+
+$FORUM_CRUMB['sitename']['value'] = "<a class='forumlink' {SITENAME_HREF}>{SITENAME}</a>";
+$FORUM_CRUMB['sitename']['sep'] = " :: ";
+
+$FORUM_CRUMB['forums']['value'] = "<a class='forumlink' {FORUMS_HREF}>{FORUMS_TITLE}</a>";
+$FORUM_CRUMB['forums']['sep'] = " :: ";
+
+$FORUM_CRUMB['subparent']['value'] = "<a class='forumlink' {SUBPARENT_HREF}>{SUBPARENT_TITLE}</a>";
+$FORUM_CRUMB['subparent']['sep'] = " :: ";
+
+$FORUM_CRUMB['forum']['value'] = "<a class='forumlink' {FORUM_HREF}>{FORUM_TITLE}</a>";
 	
 ?>
