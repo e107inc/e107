@@ -62,6 +62,7 @@ define('LAN_PM_58', "Re: ");
 define('LAN_PM_59', "Ga naar pagina: ");
 define('LAN_PM_60', "U hebt niet de permissies om dit bericht te bekijken");
 define('LAN_PM_61', "Geen onderwerp");
+define('LAN_PM_62', "Bestand: [{FILENAME}] overschrijdt bestandslimiet - niet toegevoegd");
 
 define("LAN_PM_100", "Nieuwe PM van ");
 define("LAN_PM_101", "U hebt een nieuwe PM ontvangen van ");
@@ -73,4 +74,6 @@ define("LAN_PM_106", "PM gelezen door ");
 define("LAN_PM_107", "De PM die u verzonden had naar {UNAME} is gelezen op ");
 define("LAN_PM_108", "Bericht veronden op: ");
 
+define("LAN_PM_109", "Nieuw(e) Bericht(en)");
+define("LAN_PM_110", "Ok");
 ?>

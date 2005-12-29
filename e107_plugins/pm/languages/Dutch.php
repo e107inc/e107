@@ -1,7 +1,7 @@
 <?php
 
-define('LAN_PM', "Prive Bericht");
-define('LAN_PM_1', "verzend Prive Bericht");
+define('LAN_PM', "Privé Bericht");
+define('LAN_PM_1', "verzend Privé Bericht");
 define('LAN_PM_2', "aan");
 define('LAN_PM_3', "Voorproef");
 define('LAN_PM_4', "Userclass");
@@ -34,7 +34,7 @@ define('LAN_PM_31', "van");
 define('LAN_PM_32', "Ontvangen");
 define('LAN_PM_33', "verzonden");
 define('LAN_PM_34', "Geen Berichten");
-define('LAN_PM_35', "verzend nieuw Prive  Bericht");
+define('LAN_PM_35', "verzend nieuw Privé Bericht");
 define('LAN_PM_36', "totaal");
 define('LAN_PM_37', "ongelezen");
 define('LAN_PM_38', "PM wordt naar userclass gestuurd");
@@ -46,7 +46,7 @@ define('LAN_PM_42', "PM verwijderd uit inbox");
 define('LAN_PM_43', "PM verwijderd uit outbox");
 define('LAN_PM_44', "Blokkering verwijderd: {UNAME} kan je nu PM's zenden");
 define('LAN_PM_45', "FOUT: Blokkering niet verwijderd. Onbekende error.");
-define('LAN_PM_46', "blokkeer niet op zijn plaats voor {UNAME}");
+define('LAN_PM_46', "blokkade niet ingesteld voor {UNAME}");
 define('LAN_PM_47', "Geblokkeerd: {UNAME} wordt niet meer toegestaan om jou PM's te verzenden");
 define('LAN_PM_48', "FOUT: blokkering niet uitgevoerd, onbekende error.");
 define('LAN_PM_49', "FOUT: blokkering niet uitgevoerd {UNAME} wordt reeds geblokkeerd.");
@@ -62,6 +62,7 @@ define('LAN_PM_58', "Re: ");
 define('LAN_PM_59', "Ga naar pagina: ");
 define('LAN_PM_60', "Je hebt niet de permissies om dit bericht te bekijken");
 define('LAN_PM_61', "Geen onderwerp");
+define('LAN_PM_62', "Bestand: [{FILENAME}] overschrijdt bestandslimiet - niet toegevoegd");
 
 define("LAN_PM_100", "Nieuwe PM van ");
 define("LAN_PM_101", "Je hebt een nieuwe PM ontvangen van ");
@@ -70,7 +71,9 @@ define("LAN_PM_103", "Bericht onderwerp: ");
 define("LAN_PM_104", "Aantal bijlagen: ");
 define("LAN_PM_105", "Je kan het bericht bekijken op: ");
 define("LAN_PM_106", "PM gelezen door ");
-define("LAN_PM_107", "De PM die je verzonden had naar {UNAME} is gelezen op ");
+define("LAN_PM_107", "De PM die je veronden had naar {UNAME} is gelezen op ");
 define("LAN_PM_108", "Bericht veronden op: ");
+define("LAN_PM_109", "Nieuw(e) Bericht(en)");
+define("LAN_PM_110", "Ok");
 
 ?>
