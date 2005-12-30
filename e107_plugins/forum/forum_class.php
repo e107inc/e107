@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.43 $
+|     $Date: 2005-12-30 18:27:08 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -686,7 +686,7 @@ class e107forum
 				$pref['forum_eprefix'] = "[forum]";
 			}
 			//   Send email to orinator of flagged
-			if ($parent_thread[0]['thread_active'] == 99)
+			if ($parent_thread[0]['thread_active'] == 99 && $parent_thread[0]['user_id'] != USERID)
 			{
 				$gen = new convert;
 				$email_name = $parent_thread[0]['user_name'];

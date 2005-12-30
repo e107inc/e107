@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2005-12-21 17:03:51 $
-|     $Author: sweetas $
+|     $Revision: 1.58 $
+|     $Date: 2005-12-30 18:27:10 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -476,7 +476,15 @@ if(!$pref['wysiwyg'] || !check_class($pref['post_html']))
 $emailnotify = "";
 if ($pref['email_notify'] && $action == "nt")
 {
-	$emailnotify = "<span class='defaulttext'>".LAN_380."</span><input type='checkbox' name='email_notify' value='1' ".($_POST['email_notify'] || $thread_info['head']['thread_active'] == 99 ? "checked = 'checked'" : "").">";
+	if(isset($_POST['fpreview']))
+	{
+		$chk = ($_POST['email_notify'] ? "checked = 'checked'" : "");
+	}
+	else
+	{ 
+		$chk = ($pref['email_notify_on'] ? "checked='checked'" : "");
+	}
+	$emailnotify = "<span class='defaulttext'>".LAN_380."</span><input type='checkbox' name='email_notify' value='1' {$chk} />";
 }
 $EMAILNOTIFY = $emailnotify;
 

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-11-20 22:47:48 $
+|     $Revision: 1.17 $
+|     $Date: 2005-12-30 18:27:11 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -195,5 +195,9 @@ define("FORLAN_173", "Thread title");
 define("FORLAN_174", "Reported by user");
 define("FORLAN_175", "Report submitted");
 define("FORLAN_176", "Report");
+
+define("FORLAN_177", "email nofication ON by default");
+define("FORLAN_178", "Tick this to allow make the email notification checkbox be on by default");
+
 
 ?>

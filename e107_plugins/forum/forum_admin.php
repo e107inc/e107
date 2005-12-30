@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-12-21 21:00:18 $
-|     $Author: sweetas $
+|     $Revision: 1.33 $
+|     $Date: 2005-12-30 18:27:08 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -206,6 +206,7 @@ if (isset($_POST['update_order']))
 if (isset($_POST['updateoptions']))
 {
 	$pref['email_notify'] = $_POST['email_notify'];
+	$pref['email_notify_on'] = $_POST['email_notify_on'];
 	$pref['forum_poll'] = $_POST['forum_poll'];
 	$pref['forum_popular'] = $_POST['forum_popular'];
 	$pref['forum_track'] = $_POST['forum_track'];
@@ -1000,6 +1001,11 @@ class forum
 			<tr>
 			<td style='width:75%' class='forumheader3'>".FORLAN_47."<br /><span class='smalltext'>".FORLAN_48."</span></td>
 			<td style='width:25%;text-align:center' class='forumheader3' >".($pref['email_notify'] ? "<input type='checkbox' name='email_notify' value='1' checked='checked' />" : "<input type='checkbox' name='email_notify' value='1' />")."</td>
+			</tr>
+
+			<tr>
+			<td style='width:75%' class='forumheader3'>".FORLAN_177."<br /><span class='smalltext'>".FORLAN_178."</span></td>
+			<td style='width:25%;text-align:center' class='forumheader3' >".($pref['email_notify_on'] ? "<input type='checkbox' name='email_notify_on' value='1' checked='checked' />" : "<input type='checkbox' name='email_notify_on' value='1' />")."</td>
 			</tr>
 
 			<tr>
