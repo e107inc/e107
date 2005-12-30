@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-12-28 20:44:18 $
-|     $Author: streaky $
+|     $Revision: 1.36 $
+|     $Date: 2005-12-30 03:20:44 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e107_INIT")) {
@@ -302,8 +302,8 @@ function parse_forum($f, $restricted_string = "")
 		$NEWFLAG = IMAGE_nonew;
 	}
 
-	$f['forum_name'] = $tp -> toHTML($f['forum_name'], TRUE);
-	$f['forum_description'] = $tp -> toHTML($f['forum_description'], TRUE);
+	$f['forum_name'] = $tp -> toHTML($f['forum_name'], TRUE, "no_hook");
+	$f['forum_description'] = $tp -> toHTML($f['forum_description'], TRUE, "no_hook");
 
 	$FORUMNAME = "<a href='".e_PLUGIN."forum/forum_viewforum.php?{$f['forum_id']}'>{$f['forum_name']}</a>";
 	$FORUMDESCRIPTION = $f['forum_description'].($restricted_string ? "<br /><span class='smalltext'><i>$restricted_string</i></span>" : "");
@@ -441,11 +441,11 @@ if (e_QUERY == "new")
 		}
 		if($post['post_subject'])
 		{
-			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}.post'>".LAN_425.$tp->toHTML($post['post_subject'], TRUE, 'no_make_clickable')."</a>";
+			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}.post'>".LAN_425.$tp->toHTML($post['post_subject'], TRUE, 'no_make_clickable, no_hook')."</a>";
 		}
 		else
 		{
-			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}'>".$tp->toHTML($post['thread_name'], TRUE, 'no_make_clickable')."</a>";
+			$NEWSPOSTNAME = "<a href='".e_PLUGIN."forum/forum_viewtopic.php?{$post['thread_id']}'>".$tp->toHTML($post['thread_name'], TRUE, 'no_make_clickable, no_hook')."</a>";
 		}
 
 		$forum_newstring .= preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_NEWPOSTS_MAIN);

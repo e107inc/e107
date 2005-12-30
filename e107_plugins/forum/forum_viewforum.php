@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-12-29 02:13:23 $
+|     $Revision: 1.47 $
+|     $Date: 2005-12-30 03:20:44 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -81,8 +81,8 @@ if (!$FORUM_VIEW_START) {
 }
 	
 
-$forum_info['forum_name'] = $tp->toHTML($forum_info['forum_name'], TRUE);
-$forum_info['forum_description'] = $tp->toHTML($forum_info['forum_description'], TRUE);
+$forum_info['forum_name'] = $tp->toHTML($forum_info['forum_name'], TRUE, 'no_hook');
+$forum_info['forum_description'] = $tp->toHTML($forum_info['forum_description'], TRUE, 'no_hook');
 
 define("e_PAGETITLE", LAN_01." / ".$forum_info['forum_name']);
 define("MODERATOR", $forum_info['forum_moderators'] != "" && check_class($forum_info['forum_moderators']));
@@ -381,12 +381,12 @@ function parse_thread($thread_info)
 		$ICON = IMAGE_closed;
 	}
 	 
-	$thread_name = strip_tags($tp->toHTML($thread_info['thread_name']));
+	$thread_name = strip_tags($tp->toHTML($thread_info['thread_name'], false, 'no_hook'));
 	if (strtoupper($THREADTYPE) == strtoupper(substr($thread_name, 0, strlen($THREADTYPE)))) {
 		$thread_name = substr($thread_name, strlen($THREADTYPE));
 	}
 	if ($pref['forum_tooltip']) {
-		$thread_thread = strip_tags($tp->toHTML($thread_info['thread_thread']));
+		$thread_thread = strip_tags($tp->toHTML($thread_info['thread_thread'], false, 'no_hook'));
 		$tip_length = ($pref['forum_tiplength'] ? $pref['forum_tiplength'] : 400);
 		if (strlen($thread_thread) > $tip_length) {
 			$thread_thread = substr($thread_thread, 0, $tip_length)." ".$menu_pref['newforumposts_postfix'];
@@ -470,7 +470,7 @@ function parse_sub($subInfo)
 {
 	global $FORUM_VIEW_SUB, $gen, $tp;
 	$SUB_FORUMTITLE = "<a href='".e_PLUGIN."forum/forum_viewforum.php?{$subInfo['forum_id']}'>{$subInfo['forum_name']}</a>";
-	$SUB_DESCRIPTION = $tp->toHTML($subInfo['forum_description']);
+	$SUB_DESCRIPTION = $tp->toHTML($subInfo['forum_description'], false, 'no_hook');
 	$SUB_THREADS = $subInfo['forum_threads'];
 	$SUB_REPLIES = $subInfo['forum_replies'];
 	if($subInfo['forum_lastpost_info'])
