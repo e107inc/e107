@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-07-26 14:26:34 $
+|     $Revision: 1.12 $
+|     $Date: 2005-12-30 01:23:52 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -38,15 +38,11 @@ define("LIST_15", "FAQ");
 define("LIST_16", "Bugs");
 define("LIST_17", "Ideas");
 
-define("LIST_13", "Profile");
-define("LIST_14", "Article");
-define("LIST_15", "Content");
-
 define("LIST_18", "FAQ");
 define("LIST_18", "Poll");
 define("LIST_19", "Docs");
 define("LIST_20", "Bugtracker");
-	
+
 define("LIST_21", "Articles");
 define("LIST_22", "Ideas");
 //all above will be deprecated sometime
@@ -238,6 +234,5 @@ define("LIST_FORUM_3", "views:");
 define("LIST_FORUM_4", "replies:");
 define("LIST_FORUM_5", "lastpost:");
 define("LIST_FORUM_6", "on:");
-
 
 ?>
