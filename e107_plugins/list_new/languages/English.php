@@ -11,51 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/list_new/languages/English.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-12-30 01:23:52 $
-|     $Author: streaky $
+|     $Revision: 1.13 $
+|     $Date: 2005-12-30 15:26:25 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
 define("PAGE_NAME", "List New Items");
-
-//all benaeth will be deprecated sometime
-define("LIST_1", "News Items");
-define("LIST_2", "untitled");
-define("LIST_3", "New since your last visit ...");
-define("LIST_4", "No new items found.");
-define("LIST_5", "Chatbox posts");
-define("LIST_6", "blocked by admin");
-define("LIST_7", "Forum Posts");
-define("LIST_8", "New members");
-define("LIST_9", "Comments");
-define("LIST_10", "Ideas");
-define("LIST_11", "Download");
-define("LIST_12", "News");
-define("LIST_13", "Bugtracker");
-define("LIST_14", "Poll");
-define("LIST_15", "FAQ");
-define("LIST_16", "Bugs");
-define("LIST_17", "Ideas");
-
-define("LIST_18", "FAQ");
-define("LIST_18", "Poll");
-define("LIST_19", "Docs");
-define("LIST_20", "Bugtracker");
-
-define("LIST_21", "Articles");
-define("LIST_22", "Ideas");
-//all above will be deprecated sometime
-
-define("LIST_23", "This plugin is not installed.");
-
 
 define("LIST_PLUGIN_1", "List");
 define("LIST_PLUGIN_2", "This plugin allows you to view a list of recent additions in all e107 categories. You can either view the list with data since your last visit, or view a general latest additions list. Besides the page a menu is also present. Every section is configurable in the admin area.");
 define("LIST_PLUGIN_3", "Configure Main Menu");
 define("LIST_PLUGIN_4", "The List_new plugin is now ready to be used.");
 define("LIST_PLUGIN_5", "list");
-
+define("LIST_PLUGIN_6", "This plugin is not installed.");
 
 define("LIST_ADMIN_1", "recent");
 define("LIST_ADMIN_2", "update settings");
@@ -109,7 +78,6 @@ define("LIST_ADMIN_SECT_24", "");
 define("LIST_ADMIN_SECT_25", "caption");
 define("LIST_ADMIN_SECT_26", "define a caption for each section");
 define("LIST_ADMIN_SECT_27", "");
-
 
 define("LIST_ADMIN_OPT_1", "general");
 define("LIST_ADMIN_OPT_2", "recent page");
@@ -171,7 +139,6 @@ define("LIST_ADMIN_LAN_36", "timelapse");
 define("LIST_ADMIN_LAN_37", "display a select box with number of days to look back?");
 define("LIST_ADMIN_LAN_38", "");
 
-
 define("LIST_MENU_1", "recent additions");
 define("LIST_MENU_2", "by");
 define("LIST_MENU_3", "on");
@@ -206,8 +173,6 @@ define("LIST_COMMENT_8", "content");
 define("LIST_COMMENT_9", "download");
 define("LIST_COMMENT_10", "ideas");
 
-
-
 define("LIST_DOWNLOAD_1", "downloads");
 define("LIST_DOWNLOAD_2", "no downloads");
 
@@ -217,7 +182,6 @@ define("LIST_MEMBER_2", "no members");
 define("LIST_CONTENT_1", "content");
 define("LIST_CONTENT_2", "no content in");
 define("LIST_CONTENT_3", "no valid content category");
-
 
 define("LIST_CHATBOX_1", "chatbox");
 define("LIST_CHATBOX_2", "no chatbox posts");
