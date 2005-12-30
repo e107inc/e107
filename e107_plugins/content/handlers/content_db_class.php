@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.39 $
-|		$Date: 2005-12-14 19:28:43 $
-|		$Author: sweetas $
+|		$Revision: 1.40 $
+|		$Date: 2005-12-30 14:52:34 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -258,7 +258,7 @@ class contentdb{
 				}
 				$sql -> db_Insert($plugintable, "'0', '".$_POST['content_heading']."', '".$_POST['content_subheading']."', '".$_POST['content_summary']."', '".$_POST['content_text']."', '".$author."', '".$icon."', '".$totalattach."', '".$totalimages."', '".$_POST['parent']."', '".$_POST['content_comment']."', '".$_POST['content_rate']."', '".$_POST['content_pe']."', '".$refer."', '".$starttime."', '".$endtime."', '".$_POST['content_class']."', '".$contentprefvalue."', '0', '".$_POST['content_score']."', '".$_POST['content_meta']."', '".$_POST['content_layout']."' ");
 
-				$e107cache->clear($plugintable);
+				$e107cache->clear("$plugintable");
 				if(!$type || $type == "admin"){
 					js_location(e_SELF."?".e_QUERY.".cc");
 				}elseif($type == "contentmanager"){
@@ -288,8 +288,8 @@ class contentdb{
 				}
 				$sql -> db_Update($plugintable, "content_heading = '".$_POST['content_heading']."', content_subheading = '".$_POST['content_subheading']."', content_summary = '".$_POST['content_summary']."', content_text = '".$_POST['content_text']."', content_author = '".$author."', content_icon = '".$icon."', content_file = '".$totalattach."', content_image = '".$totalimages."', content_parent = '".$_POST['parent']."', content_comment = '".$_POST['content_comment']."', content_rate = '".$_POST['content_rate']."', content_pe = '".$_POST['content_pe']."' ".$refer.", content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['content_class']."', content_pref = '".$contentprefvalue."', content_score='".$_POST['content_score']."', content_meta='".$_POST['content_meta']."', content_layout='".$_POST['content_layout']."' WHERE content_id = '".$_POST['content_id']."' ");
 
+				$e107cache->clear("$plugintable");
 				$e107cache->clear("comment.$plugintable.{$_POST['content_id']}");
-				$e107cache->clear("$plugintable.content.{$_POST['content_id']}");
 				if(!$type || $type == "admin"){
 					js_location(e_SELF."?".e_QUERY.".cu");
 				}elseif($type == "contentmanager"){
@@ -330,7 +330,7 @@ class contentdb{
 					$content_pref = $aa -> getContentPref($parent_id);
 					$aa -> CreateParentMenu($parent_id);
 				}
-				$e107cache->clear($plugintable);
+				$e107cache->clear("$plugintable");
 				js_location(e_SELF."?".e_QUERY.".pc");
 
 			}elseif($mode == "update"){
@@ -342,7 +342,7 @@ class contentdb{
 					$content_pref = $aa -> getContentPref($_POST['cat_id']);
 					$aa -> CreateParentMenu($_POST['cat_id']);
 				}
-				$e107cache->clear($plugintable);
+				$e107cache->clear("$plugintable");
 				js_location(e_SELF."?".e_QUERY.".pu");
 			}
 		}
@@ -384,13 +384,13 @@ class contentdb{
 			if($mode == "admin"){
 				if($cat == "cat"){
 					if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-						$e107cache->clear($plugintable);
+						$e107cache->clear("$plugintable");
 						$message = CONTENT_ADMIN_CAT_LAN_23;
 						return $message;
 					}
 				}elseif($cat == "content"){
 					if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
-						$e107cache->clear($plugintable);
+						$e107cache->clear("$plugintable");
 						$message = CONTENT_ADMIN_ITEM_LAN_3;
 						return $message;
 					}
@@ -481,7 +481,7 @@ class contentdb{
 				}
 				$message = CONTENT_ADMIN_ORDER_LAN_1;
 			}
-			$e107cache->clear($plugintable);
+			$e107cache->clear("$plugintable");
 			return $message;
 		}
 }
