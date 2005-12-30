@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.85 $
-|     $Date: 2005-12-28 20:44:18 $
+|     $Revision: 1.86 $
+|     $Date: 2005-12-30 00:51:14 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -20,7 +20,7 @@ require_once("class2.php");
 require_once(e_HANDLER."news_class.php");
 
 if (isset($NEWSHEADER)) {
- 	require_once(HEADERF);
+	require_once(HEADERF);
 	require_once(FOOTERF);
 	exit;
 }
@@ -56,12 +56,12 @@ if ($action == 'all' || $action == 'cat') {
 $ix = new news;
 if ($action == 'cat' || $action == 'all'){
 
-// --> Cache
+	// --> Cache
 	if($tmp = checkCache($cacheString)){
 		require_once(HEADERF);
 		renderCache($tmp, TRUE);
 	}
-// <-- Cache
+	// <-- Cache
 
 	$qs = explode(".", e_QUERY);
 
@@ -93,11 +93,10 @@ if ($action == 'cat' || $action == 'all'){
 	}
 
 	if($category_name){
-		define("e_PAGETITLE",$category_name);
+		define("e_PAGETITLE", $category_name);
 	}
 
 	require_once(HEADERF);
-	ob_start();
 
 	if(!$NEWSLISTSTYLE){
 		$NEWSLISTSTYLE = "
@@ -137,20 +136,23 @@ if ($action == 'cat' || $action == 'all'){
 	$parms = $news_total.",".$amount.",".$from.",".e_SELF.'?'.$action.".".$sub_action.".[FROM]";
 	$text .= ($news_total > $amount) ? LAN_NEWS_22."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}") : "";
 
-	$ns->tablerender(LAN_82." '".$category_name."'", $text);
-	setNewsCache($cacheString);
+	ob_start();
+	$ns->tablerender(LAN_82." '{$category_name}'", $text);
+	$cache_data = ob_get_contents();
+	ob_flush();
+	setNewsCache($cacheString, $cache_data);
 	require_once(FOOTERF);
 	exit;
 }
 
 if ($action == "extend") {
 
-// --> Cache
+	// --> Cache
 	if($tmp = checkCache($cacheString)){
 		require_once(HEADERF);
 		renderCache($tmp, TRUE);
 	}
-// <-- Cache
+	// <-- Cache
 
 	$query = "SELECT n.*, u.user_id, u.user_name, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
 		LEFT JOIN #user AS u ON n.news_author = u.user_id
@@ -166,7 +168,9 @@ if ($action == "extend") {
 	require_once(HEADERF);
 	ob_start();
 	$ix->render_newsitem($news, "extend");
-	setNewsCache($cacheString);
+	$cache_data = ob_get_contents();
+	ob_flush();
+	setNewsCache($cacheString, $cache_data);
 	require_once(FOOTERF);
 	exit;
 }
@@ -262,7 +266,7 @@ else
 if($tmp_cache = checkCache($cacheString)){
 	require_once(HEADERF);
 
- 	if(!$action){
+	if(!$action){
 		render_wmessage();
 		if (isset($pref['fb_active'])){  // --->feature box
 			require_once(e_PLUGIN."featurebox/featurebox.php");
@@ -276,36 +280,33 @@ if($tmp_cache = checkCache($cacheString)){
 }
 
 
-if (!$sql->db_Select_gen($query))
-{
+if (!$sql->db_Select_gen($query)) {
 	require_once(HEADERF);
 	echo "<br /><br /><div style='text-align:center'><b>".(strstr(e_QUERY, "month") ? LAN_462 : LAN_83)."</b></div><br /><br />";
 	require_once(FOOTERF);
 	exit;
-}
-else
-{
+} else {
 	$newsAr = $sql -> db_getList();
 }
 
 
 
-	$p_title = ($action == "item") ? $newsAr[1]['news_title'] : $newsAr[1]['category_name'];
- 	if($action != ""){
-		define("e_PAGETITLE",$p_title);
+$p_title = ($action == "item") ? $newsAr[1]['news_title'] : $newsAr[1]['category_name'];
+if($action != ""){
+	define("e_PAGETITLE", $p_title);
+}
+
+require_once(HEADERF);
+if(!$action){
+	render_wmessage();   // --> wmessage.
+	if (isset($pref['fb_active'])){   // --->feature box
+		require_once(e_PLUGIN."featurebox/featurebox.php");
 	}
 
- 	require_once(HEADERF);
-	if(!$action){
-		render_wmessage();   // --> wmessage.
-		if (isset($pref['fb_active'])){   // --->feature box
-			require_once(e_PLUGIN."featurebox/featurebox.php");
-		}
-
-		if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
-			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
-		}
+	if (isset($pref['nfp_display']) && $pref['nfp_display'] == 1){
+		require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 	}
+}
 
 
 /*
@@ -313,8 +314,7 @@ changes by jalist 03/02/2005:
 news page templating
 
 */
-if($pref['news_unstemplate'] && file_exists(THEME."news_template.php"))
-{
+if($pref['news_unstemplate'] && file_exists(THEME."news_template.php")) {
 	// theme specific template required ...
 	require_once(THEME."news_template.php");
 
@@ -322,46 +322,43 @@ if($pref['news_unstemplate'] && file_exists(THEME."news_template.php"))
 		return TRUE;
 	}
 
-
-
 	$newscolumns = (isset($NEWSCOLUMNS) ? $NEWSCOLUMNS : 1);
 	$newspercolumn = (isset($NEWSITEMSPERCOLUMN) ? $NEWSITEMSPERCOLUMN : 10);
 	$newsdata = array();
 	$loop = 1;
-	foreach($newsAr as $news)
-	{
+	foreach($newsAr as $news) {
 
-		if(is_array($ALTERNATECLASSES))
-		{
-			$newsdata[$loop] .= "<div class='".$ALTERNATECLASSES[0]."'>".$ix->render_newsitem($news, "return")."</div>";
+		if(is_array($ALTERNATECLASSES)) {
+			$newsdata[$loop] .= "<div class='{$ALTERNATECLASSES[0]}'>".$ix->render_newsitem($news, "return")."</div>";
 			$ALTERNATECLASSES = array_reverse($ALTERNATECLASSES);
-		}
-		else
-		{
+		} else {
 			$newsdata[$loop] .= $ix->render_newsitem($news, "return");
 		}
 		$loop ++;
-		if($loop > $newscolumns)
-		{
+		if($loop > $newscolumns) {
 			$loop = 1;
 		}
 	}
 	$loop = 1;
-	foreach($newsdata as $data)
-	{
-		$var = "ITEMS$loop";
+	foreach($newsdata as $data) {
+		$var = "ITEMS{$loop}";
 		$$var = $data;
-		$loop++;
+		$loop ++;
 	}
 	$text = preg_replace("/\{(.*?)\}/e", '$\1', $NEWSCLAYOUT);
+
 	require_once(HEADERF);
 	echo $text;
+	setNewsCache($cacheString, $text);
 
 } else {
 	/*
 	changes by jalist 22/01/2005:
 	added ability to add a new date header to news posts, turn on and off from news->prefs
 	*/
+
+	ob_start();
+
 	$newpostday = 0;
 	$thispostday = 0;
 	$pref['newsHeaderDate'] = 1;
@@ -374,14 +371,8 @@ if($pref['news_unstemplate'] && file_exists(THEME."news_template.php"))
 
 	// #### normal newsitems, rendered via render_newsitem(), the $query is changed above (no other changes made) ---------
 
-
-
-
-	ob_start();
-
 	$i= 1;
-	while(isset($newsAr[$i]) && $i <= $interval)
-	{
+	while(isset($newsAr[$i]) && $i <= $interval) {
 		$news = $newsAr[$i];
 		//        render new date header if pref selected ...
 		$thispostday = strftime("%j", $news['news_datestamp']);
@@ -397,6 +388,11 @@ if($pref['news_unstemplate'] && file_exists(THEME."news_template.php"))
 		$ix->render_newsitem($news);
 		$i++;
 	}
+
+	$cache_data = ob_get_clean();
+	require_once(HEADERF);
+	echo $cache_data;
+	setNewsCache($cacheString, $text);
 }
 
 // ##### --------------------------------------------------------------------------------------------------------------
@@ -408,28 +404,28 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 	while(isset($newsAr[$i]))
 	{
 		$news2 = $newsAr[$i];
-				// Code from Lisa
-				// copied from the rss creation, but added here to make sure the url for the newsitem is to the news.php?item.X
-				// instead of the actual hyperlink that may have been added to a newstitle on creation
-				$search = array();
-				$replace = array();
-				$search[0] = "/\<a href=\"(.*?)\">(.*?)<\/a>/si";
-				$replace[0] = '\\2';
-				$search[1] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
-				$replace[1] = '\\2';
-				$search[2] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
-				$replace[2] = '\\2';
-				$search[3] = "/\<a href=&quot;(.*?)&quot;>(.*?)<\/a>/si";
-				$replace[3] = '\\2';
-				$search[4] = "/\<a href=&#39;(.*?)&#39;>(.*?)<\/a>/si";
-				$replace[4] = '\\2';
-				$news2['news_title'] = preg_replace($search, $replace, $news2['news_title']);
-				// End of code from Lisa
+		// Code from Lisa
+		// copied from the rss creation, but added here to make sure the url for the newsitem is to the news.php?item.X
+		// instead of the actual hyperlink that may have been added to a newstitle on creation
+		$search = array();
+		$replace = array();
+		$search[0] = "/\<a href=\"(.*?)\">(.*?)<\/a>/si";
+		$replace[0] = '\\2';
+		$search[1] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
+		$replace[1] = '\\2';
+		$search[2] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
+		$replace[2] = '\\2';
+		$search[3] = "/\<a href=&quot;(.*?)&quot;>(.*?)<\/a>/si";
+		$replace[3] = '\\2';
+		$search[4] = "/\<a href=&#39;(.*?)&#39;>(.*?)<\/a>/si";
+		$replace[4] = '\\2';
+		$news2['news_title'] = preg_replace($search, $replace, $news2['news_title']);
+		// End of code from Lisa
 
-				$gen = new convert;
-				$news2['news_datestamp'] = $gen->convert_date($news2['news_datestamp'], "short");
+		$gen = new convert;
+		$news2['news_datestamp'] = $gen->convert_date($news2['news_datestamp'], "short");
 
-				$textnewsarchive .= "
+		$textnewsarchive .= "
 					<div>
 					<table style='width:98%;'>
 					<tr>
@@ -439,10 +435,10 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 					</tr>
 					</table>
 					</div>";
-				$i++;
-		}
-		$ns->tablerender($pref['newsposts_archive_title'], $textnewsarchive, 'news_archive');
+		$i++;
 	}
+	$ns->tablerender($pref['newsposts_archive_title'], $textnewsarchive, 'news_archive');
+}
 // #### END -----------------------------------------------------------------------------------------------------------
 
 if ($action != "item") {
@@ -454,20 +450,14 @@ if ($action != "item") {
 	echo ($nextprev ? "<div class='nextprev'>".$nextprev."</div>" : "");
 }
 
-setNewsCache($cacheString);
-
-if(is_dir("remotefile"))
-{
+if(is_dir("remotefile")) {
 	require_once(e_HANDLER."file_class.php");
 	$file = new e_file;
 	$reject = array('$.','$..','/','CVS','thumbs.db','*._$', 'index', 'null*', 'Readme.txt');
 	$crem = $file -> get_files(e_BASE."remotefile", "", $reject);
-	if(count($crem))
-	{
-		foreach($crem as $loadrem)
-		{
-			if(strstr($loadrem['fname'], "load_"))
-			{
+	if(count($crem)) {
+		foreach($crem as $loadrem) {
+			if(strstr($loadrem['fname'], "load_")) {
 				require_once(e_BASE."remotefile/".$loadrem['fname']);
 			}
 		}
@@ -478,46 +468,42 @@ if (isset($pref['nfp_display']) && $pref['nfp_display'] == 2) {
 	require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
 }
 
-	render_newscats();
+render_newscats();
 
 require_once(FOOTERF);
 
 
 // =========================================================================
-function setNewsCache($cacheString) {
-	global $pref, $e107cache;
-	if ($pref['cachestatus']) {
-		$cache = ob_get_contents();
-		$e107cache->set($cacheString, $cache);
-		$e107cache->set($cacheString."_title", e_PAGETITLE);
-	}
-
-	ob_end_flush();
+function setNewsCache($cache_tag, $cache_data) {
+	global $e107cache;
+	$e107cache->set($cache_tag, $cache_data);
+	$e107cache->set($cache_tag."_title", e_PAGETITLE);
 }
 
 function checkCache($cacheString){
-    global $pref,$e107cache;
+	global $pref,$e107cache;
 	$cache_data = $e107cache->retrieve($cacheString);
-    $cache_title = $e107cache->retrieve($cacheString."_title");
+	$cache_title = $e107cache->retrieve($cacheString."_title");
 	$etitle = ($cache_title != "e_PAGETITLE") ? $cache_title : "";
-  	if($etitle){
+	if($etitle){
 		define(e_PAGETITLE,$etitle);
 	}
-
 	if ($cache_data) {
 		return $cache_data;
+	} else {
+		return false;
 	}
 }
 
 function renderCache($cache, $nfp = FALSE){
-		global $pref,$tp,$sql;
-		echo $cache;
-		if ($nfp && $pref['nfp_display'] == 2) {
-			require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
-		}
-		render_newscats();
-		require_once(FOOTERF);
-		exit;
+	global $pref,$tp,$sql;
+	echo $cache;
+	if ($nfp && $pref['nfp_display'] == 2) {
+		require_once(e_PLUGIN."newforumposts_main/newforumposts_main.php");
+	}
+	render_newscats();
+	require_once(FOOTERF);
+	exit;
 }
 
 
@@ -532,11 +518,11 @@ function render_wmessage(){
 				$wmessage .= $tp->toHTML($row['gen_chardata'], TRUE, 'parse_sc', 'admin')."<br />";
 			}
 		}
-   		if (isset($wmessage)) {
+		if (isset($wmessage)) {
 			if ($pref['wm_enclose']) {
 				$ns->tablerender("", $wmessage, "wm");
 			} else {
-	   			echo $wmessage;
+				echo $wmessage;
 			}
 		}
 	}
