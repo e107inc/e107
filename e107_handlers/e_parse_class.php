@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.121 $
-|     $Date: 2005-12-28 20:44:18 $
+|     $Revision: 1.122 $
+|     $Date: 2005-12-30 00:58:42 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -39,8 +39,7 @@ class e_parse
 				$ret[$key] = $this -> toDB($var, $nostrip, $no_encode);
 			}
 		} else {
-			if (MAGIC_QUOTES_GPC == TRUE && $nostrip == false)
-			{
+			if (MAGIC_QUOTES_GPC == TRUE && $nostrip == false) {
 				$data = stripslashes($data);
 			}
 			if(isset($pref['post_html']) && check_class($pref['post_html']))
@@ -65,19 +64,15 @@ class e_parse
 	{
 		if($text == "") { return ""; }
 		$mode = ($single_quotes ? ENT_QUOTES :ENT_COMPAT);
-		if (MAGIC_QUOTES_GPC == TRUE)
-		{
+		if (MAGIC_QUOTES_GPC == TRUE) {
 			$text = stripslashes($text);
 		}
 		$search = array('&#036;', '&quot;');
 		$replace = array('$', '"');
 		$text = str_replace($search, $replace, $text);
-		if(CHARSET == 'utf-8' && function_exists("utf8_encode"))
-		{
+		if(CHARSET == 'utf-8' && function_exists("utf8_encode")) {
 			return utf8_html_entity_decode($text);
-		}
-		else
-		{
+		} else {
 			return html_entity_decode($text, $mode, CHARSET);
 		}
 	}
@@ -121,8 +116,7 @@ class e_parse
 		return str_replace(array( "'", '"'), array("&#039;", "&quot;"), $text);
 	}
 
-	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "")
-	{
+	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "") {
 		// Start parse {XXX} codes
 		if (!is_object($this->e_sc))
 		{
