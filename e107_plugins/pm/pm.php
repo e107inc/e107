@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-12-28 16:12:59 $
-|     $Author: sweetas $
+|     $Revision: 1.18 $
+|     $Date: 2005-12-30 14:22:29 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -363,7 +363,7 @@ function post_pm()
 					return LAN_PM_17;
 				}
 
-				if($sql->db_Update("private_msg_block","pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '".$tp -> toDB($to_info['user_id'])."'"))
+				if($sql->db_Update("private_msg_block","pm_block_count=pm_block_count+1 WHERE pm_block_from = '".USERID."' AND pm_block_to = '{$to_info['user_id']}'"))
 				{
 					return LAN_PM_18.$to_info['user_name'];
 				}
