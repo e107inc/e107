@@ -45,7 +45,8 @@ define("LAN_401", "Je aanmelding is geldig, ");
 define("LAN_402", "Aanmelding geactiveerd");
 define("LAN_403", "Welkom bij ");
 define("LAN_404", "Registratiegegevens voor");
-define("LAN_405", "Deze fase van de aanmelding is afgerond. Je ontvangt nu een bevestigingse-mail met je inloggegevens. Volg de link in deze e-mail om je aanmelding af te ronden.");
+define("LAN_405", "Deze fase van de aanmelding is afgerond.
+Je ontvangt nu een e-mail ter bevestiging met daarin je inloggegevens. Volg de link in deze e-mail om je aanmelding af te ronden.");
 define("LAN_406", "Hartelijk dank!");
 define("LAN_407", " Bewaar deze email voor je eigen administratie, aangezien je wachtwoord versleuteld is en niet opgevraagd kan worden als je een typefout maakt of het vergeten bent. Je kunt wel een nieuw wachtwoord aanvragen, mocht dit toch het geval zijn. Hartelijk bedankt voor je aanmelding. Van");
 define("LAN_408", "Er is al een gebruiker met dat e-mailadres aanwezig. Gebruik de 'Wachtwoord vergeten' functie om een nieuw wachtwoord op te halen.");

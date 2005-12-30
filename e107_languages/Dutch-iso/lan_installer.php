@@ -43,7 +43,7 @@ define("LANINS_032", "Het wachtwoord voor de gebruikersnaam die je net opgaf");
 define("LANINS_033", "De MySQL database waar e107 gebruik van maakt heet ook wel een schema. Als de gebruiker de rechten heeft om een database te creëren, kun je ervoor kiezen om de database automatisch te laten aanmaken als die tenminste nog niet bestaat.");
 define("LANINS_034", "De prefix die je voor e107 wilt gebruiken bij het aanmaken van de tabellen. Zinvol als meerdere installaties van een applicatie (bijv. e107) gebruik moeten maken van één database schema.");
 define("LANINS_035", "Verder");
-define("LANINS_036", "4");
+define("LANINS_036", "3");
 define("LANINS_037", "MySQL connectie verificatie");
 define("LANINS_038", " en database creatie");
 define("LANINS_039", "Let er goed op alle velden in te vullen, vooral MySQL Server, MySQL gebruikersnaam en MySQL Database (die zijn altijd nodig voor de MySQL Server)");
@@ -76,8 +76,24 @@ define("LANINS_060", "Het sql gegevensbestand kon niet worden gelezen.
 Controleer of het bestand <b>core_sql.php</b> bestaat in de <b>/e107_admin/sql</b> directory.");
 define("LANINS_061", "e107 kon niet alle vereiste databasetabellen aanmaken.
 Maak de database leeg en herstel de problemen en probeer het daarna nog eens.");
-define("LANINS_062", "Welkom bij je nieuwe website!");
-define("LANINS_063", "e107 is succesvol geïnstalleerd en klaar voor gebruik.");
+
+define("LANINS_062", "[b]Welkom bij je nieuwe website!![/b]
+e107 is succesvol geïnstalleerd en klaar voor gebruik.<br />Je beheerscherm is [link=e107_admin/admin.php]hier te vinden[/link], klik om daar nu naartoe te gaan. Je moet inloggen met de gebruikersnaam en het wachtwoord dat je eerder opgaf tijdens de installatie.
+
+[b]Ondersteuning[/b]
+e107 Homepage: [link=http://e107.org]http://e107.org[/link], hier vind je de FAQ en documentatie.
+Forums: [link=http://e107.org/e107_plugins/forum/forum.php]De officiële e107.org forums[/link]
+[link=http://e107.nl/e107_plugins/forum/forum.php]De Nederlandstalige e107 ondersteuningssite[/link]
+
+[b]Downloads[/b]
+Plugins: [link=http://e107coders.org]http://e107coders.org[/link]
+Themes: [link=http://e107styles.org]http://e107styles.org[/link] | [link=http://e107themes.org]http://e107themes.org[/link]
+
+Bedankt voor het uitproberen van e107, we hopen dat het aan je verwachtingen voldoet.
+
+(Je kunt dit bericht vanuit je beheerscherm verwijderen.)");
+
+define("LANINS_063", "Welkom bij e107");
 define("LANINS_069", "e107 is succesvol geïnstalleerd!
 
 Omwille van beveiliging moet je nu de bestandpermissies op het <b>e107_config.php</b> bestand terugzetten naar 644.

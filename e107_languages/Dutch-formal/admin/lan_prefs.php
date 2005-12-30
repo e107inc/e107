@@ -45,7 +45,7 @@ define("PRFLAN_29", "Activeren ledenregistratie systeem?");
 define("PRFLAN_30", "sta gebruikers toe zich als lid aan te melden op de site");
 define("PRFLAN_31", "Gebruik e-mail verificatie bij aanmelding?");
 define("PRFLAN_32", "Toestaan anonieme deelname?");
-define("PRFLAN_33", "als deze optie aan staat, kunnen alleen geregistreerde leden berichten plaatsen etc.");
+define("PRFLAN_33", "als deze optie niet is ingeschakeld, kunnen alleen geregistreerde leden berichten plaatsen etc.");
 define("PRFLAN_35", "Activeren flood bescherming?");
 define("PRFLAN_36", "Flood hits");
 define("PRFLAN_37", "Automatische blokkade");
@@ -133,6 +133,9 @@ define("PRFLAN_145", "Links in nieuw venster");
 define("PRFLAN_146", "Deze optie aankruisen om alle links in een nieuw venster te openen(<i>geldt voor de hele site</i>). ");
 define("PRFLAN_147", "Ontwikkelmode");
 define("PRFLAN_148", "Activeren ontwikkelfuncties. Alleen voor ontwikkelaars ! Gebruik dit niet op een reguliere website vanwege de beveiligingsrisico's.");
+define("PRFLAN_149", "Geavanceerde functies");
+define("PRFLAN_150", "Selecteer de e107 authenticatiemethode");
+define("PRFLAN_151", "e107 - er wordt geen alternatieve authenticatiemethode gebruikt");
 
 define("CUSTSIG_1", "Instellingen opgeslagen!");
 define("CUSTSIG_2", "Echte naam:");

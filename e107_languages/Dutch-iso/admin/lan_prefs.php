@@ -4,7 +4,7 @@
 |        e107 website system
 |        admin/lan_prefs.php Dutch-utf language file 
 |
-|        ©Steve Dunstan 2001-2002
+|        Â©Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -45,7 +45,7 @@ define("PRFLAN_29", "Activeren ledenregistratie systeem?");
 define("PRFLAN_30", "sta gebruikers toe zich als lid aan te melden op de site");
 define("PRFLAN_31", "Gebruik e-mail verificatie bij aanmelding?");
 define("PRFLAN_32", "Toestaan anonieme deelname?");
-define("PRFLAN_33", "als deze optie aan staat, kunnen alleen geregistreerde leden berichten plaatsen etc.");
+define("PRFLAN_33", "als deze optie niet is ingeschakeld, kunnen alleen geregistreerde leden berichten plaatsen etc.");
 define("PRFLAN_35", "Activeren flood bescherming?");
 define("PRFLAN_36", "Flood hits");
 define("PRFLAN_37", "Automatische blokkade");
@@ -86,7 +86,7 @@ define("PRFLAN_94", "hier");
 define("PRFLAN_95", "Toon plugin info:");
 define("PRFLAN_96", "toont op alle beheerpagina's info voor elke plugin die deze mogelijkheid kent");
 define("PRFLAN_97", "Unieke 'Plugin info' menu:");
-define("PRFLAN_98", "als deze optie niet aan staan, toont elke plugin de eigen info in een individueel menu. Indien aangekruist wordt alle info in één menu getoond.");
+define("PRFLAN_98", "als deze optie niet aan staan, toont elke plugin de eigen info in een individueel menu. Indien aangekruist wordt alle info in Ã©Ã©n menu getoond.");
 define("PRFLAN_101", "Tekst opmaken");
 define("PRFLAN_102", "Vervang links");
 define("PRFLAN_103", "als deze optie aan staat, worden geplaatste links vervangen door de opgegeven onderstaande tekst. Dit verhindert dat lange links de layout verstoren");
@@ -114,7 +114,7 @@ define("PRFLAN_126", "Op de aanmeldpagina te tonen tekst");
 define("PRFLAN_127", "Maak aangemelde links aanklikbaar");
 define("PRFLAN_128", "hierdoor worden aangemelde links omgezet in hyperlinks");
 define("PRFLAN_129", "Niet toestaan meervoudige inlogs");
-define("PRFLAN_130", "door deze optie aan te zetten, wordt voorkomen dat meer dan één persoon met dezelfde gebruikersnaam/wachtwoord tegelijk kan inloggen (delen van logins)");
+define("PRFLAN_130", "door deze optie aan te zetten, wordt voorkomen dat meer dan Ã©Ã©n persoon met dezelfde gebruikersnaam/wachtwoord tegelijk kan inloggen (delen van logins)");
 define("PRFLAN_131", "Activeren gebruik van [php] bbcode");
 define("PRFLAN_132", "Activeren van deze functie houdt in dat geautoriseerde gebruikers om [php] code in bepaalde gebieden mogen gebruiken");
 define("PRFLAN_133", "GD extensie nodig, niet gevonden");
@@ -133,6 +133,9 @@ define("PRFLAN_145", "Links in nieuw venster");
 define("PRFLAN_146", "Deze optie aankruisen om alle links in een nieuw venster te openen(<i>geldt voor de hele site</i>). ");
 define("PRFLAN_147", "Ontwikkelmode");
 define("PRFLAN_148", "Activeren ontwikkelfuncties. Alleen voor ontwikkelaars ! Gebruik dit niet op een reguliere website vanwege de beveiligingsrisico's.");
+define("PRFLAN_149", "Geavanceerde functies");
+define("PRFLAN_150", "Selecteer de e107 authenticatiemethode");
+define("PRFLAN_151", "e107 - er wordt geen alternatieve authenticatiemethode gebruikt");
 
 define("CUSTSIG_1", "Instellingen opgeslagen!");
 define("CUSTSIG_2", "Echte naam:");
