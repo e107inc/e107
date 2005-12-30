@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.21 $
-|    $Date: 2005-12-21 20:49:26 $
+|    $Revision: 1.22 $
+|    $Date: 2005-12-30 14:20:18 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -258,6 +258,7 @@ class linkclass {
 
 		return $sotext;
 	}
+
 	function getOrder($mode=''){
 		global $qs, $linkspage_pref;
 
@@ -273,11 +274,13 @@ class linkclass {
 			if($mode == "cat"){
 				$orderstring	= "order".($linkspage_pref["link_cat_order"] == "ASC" ? "a" : "d" ).($linkspage_pref["link_cat_sort"] ? $linkspage_pref["link_cat_sort"] : "date" );
 			}else{
+				$orderstringcat	= "order".($linkspage_pref["link_cat_order"] == "ASC" ? "a" : "d" ).($linkspage_pref["link_cat_sort"] ? $linkspage_pref["link_cat_sort"] : "date" );
+				
 				$orderstring	= "order".($linkspage_pref["link_order"] == "ASC" ? "a" : "d" ).($linkspage_pref["link_sort"] ? $linkspage_pref["link_sort"] : "date" );
 			}
 		}
 
-		if($mode == "cat"){
+		function parseOrderCat($orderstring){
 			if(substr($orderstring,6) == "heading"){
 				$orderby		= "link_category_name";
 				$orderby2		= "";
@@ -292,7 +295,10 @@ class linkclass {
 				$orderby		= "link_category_name";
 				$orderby2		= ", link_category_name ASC";
 			}
-		}else{
+			return $orderby." ".(substr($orderstring,5,1) == "a" ? "ASC" : "DESC")." ".$orderby2;
+		}
+
+		function parseOrderLink($orderstring){
 			if(substr($orderstring,6) == "heading"){
 				$orderby		= "link_name";
 				$orderby2		= "";
@@ -313,8 +319,21 @@ class linkclass {
 				$orderby		= "link_datestamp";
 				$orderby2		= ", link_name ASC";
 			}
+			return $orderby." ".(substr($orderstring,5,1) == "a" ? "ASC" : "DESC")." ".$orderby2;
 		}
-		$order = " ORDER BY ".$orderby." ".(substr($orderstring,5,1) == "a" ? "ASC" : "DESC")." ".$orderby2." ";
+
+		if($mode == "cat"){
+			$str = parseOrderCat($orderstring);
+		}else{
+			if(isset($orderstringcat)){
+				$str = parseOrderCat($orderstringcat);
+				$str .= ", ".parseOrderLink($orderstring);
+			}else{
+				$str = parseOrderLink($orderstring);
+			}
+		}
+
+		$order = " ORDER BY ".$str;
 		return $order;
 	}
 
