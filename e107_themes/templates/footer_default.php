@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-12-16 20:06:08 $
+|     $Revision: 1.34 $
+|     $Date: 2005-12-30 01:14:37 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -171,12 +171,11 @@ if(ini_get("zlib.output_compression") == false && function_exists("gzencode")) {
 if($pref['compress_output'] == true && $server_support == true && $browser_support == true) {
 	$level = intval($pref['compression_level']);
 	$page = gzencode($page, $level);
-	header("Content-Encoding: gzip");
-	header("Vary: Accept-Encoding");
-	header("Content-Length: ".strlen($page));
+	header("Content-Encoding: gzip", true);
+	header("Content-Length: ".strlen($page), true);
 	echo $page;
 } else {
-	header("Content-Length: ".strlen($page));
+	header("Content-Length: ".strlen($page), true);
 	echo $page;
 }
 
