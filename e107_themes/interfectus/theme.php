@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/interfectus/theme.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-12-14 19:28:52 $
-|     $Author: sweetas $
+|     $Revision: 1.10 $
+|     $Date: 2005-12-30 02:18:44 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -45,7 +45,7 @@ $layout = "_default";
 $HEADER = "
 <table class='maintable' cellpadding='0' cellspacing='0'>
 <tr>
-<td id='logo'><div id='sitename'>[ <a href='".e_BASE."index.php'>{SITENAME}</a> ]</div></td>
+<td id='logo'><div id='sitename'>[ <a href='".e_HTTP."index.php'>{SITENAME}</a> ]</div></td>
 </tr>
 </table>
 <table class='maintable' cellpadding='0' cellspacing='0'>
@@ -53,7 +53,7 @@ $HEADER = "
 <td id='collefttop'></td>
 <td id='infoleft'>
 <div class='padder'>
-{CUSTOM=search+".THEME_ABS."images/search.png+19+18}
+{CUSTOM=search+".THEME_ABS."images/search.png}
 </div>
 </td>
 <td id='inforight'>
@@ -145,7 +145,7 @@ $FOOTER = "
 $CUSTOMHEADER = "
 <table class='maintable' cellpadding='0' cellspacing='0'>
 <tr>
-<td id='logo'><div id='sitename'>[ <a href='".e_BASE."index.php'>{SITENAME}</a> ]</div></td>
+<td id='logo'><div id='sitename'>[ <a href='".e_HTTP."index.php'>{SITENAME}</a> ]</div></td>
 </tr>
 </table>
 <table class='maintable' cellpadding='0' cellspacing='0'>
@@ -153,7 +153,7 @@ $CUSTOMHEADER = "
 <td id='collefttop'></td>
 <td id='infoleft'>
 <div class='padder'>
-{CUSTOM=search+25+".THEME_ABS."images/search.png+19+18}
+{CUSTOM=search+".THEME_ABS."images/search.png}
 </div>
 </td>
 <td id='inforight'>
