@@ -11,9 +11,9 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list.php,v $
-|		$Revision: 1.8 $
-|		$Date: 2005-10-29 13:46:45 $
-|		$Author: sweetas $
+|		$Revision: 1.9 $
+|		$Date: 2005-12-30 15:26:25 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -24,7 +24,7 @@ include_once(file_exists($lan_file) ? $lan_file : $listplugindir."languages/Engl
 
 if(!$sql -> db_Select("plugin", "*", "plugin_path = 'list_new' AND plugin_installflag = '1' ")){
 	require_once(HEADERF);
-	$ns -> tablerender("", LIST_23);
+	$ns -> tablerender("", LIST_PLUGIN_6);
 	require_once(FOOTERF);
 	exit;
 }
