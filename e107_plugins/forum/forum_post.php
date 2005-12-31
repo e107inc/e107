@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2005-12-30 18:27:10 $
+|     $Revision: 1.59 $
+|     $Date: 2005-12-31 15:55:34 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -482,7 +482,14 @@ if ($pref['email_notify'] && $action == "nt")
 	}
 	else
 	{ 
-		$chk = ($pref['email_notify_on'] ? "checked='checked'" : "");
+		if(isset($thread_info))
+		{
+			$chk = ($thread_info['head']['thread_active'] == 99 ? "checked='checked'" : "");
+		}
+		else
+		{
+			$chk = ($pref['email_notify_on'] ? "checked='checked'" : "");
+		}
 	}
 	$emailnotify = "<span class='defaulttext'>".LAN_380."</span><input type='checkbox' name='email_notify' value='1' {$chk} />";
 }
