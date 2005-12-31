@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-12-28 16:12:59 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2005-12-31 16:04:53 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -172,7 +172,7 @@ class private_message
 			}
 			else
 			{
-				$sql->db_Update("private_msg", $tp -> toDB($newvals)." WHERE pm_id = ".intval($pmid));
+				$sql->db_Update("private_msg", $newvals." WHERE pm_id = ".intval($pmid));
 			}
 			return $ret;
 		}
