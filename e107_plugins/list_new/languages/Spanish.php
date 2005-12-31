@@ -4,51 +4,20 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Spanish.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.16 $
+|     $Date: 2005-12-31 11:12:38 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Listar nuevos datos");
-//all benaeth will be deprecated sometime
-define("LIST_1", "Noticias");
-define("LIST_2", "Sin título");
-define("LIST_3", "Novedades desde su última visita ...");
-define("LIST_4", "No se encontraron nuevos elementos");
-define("LIST_5", "Mensajes en Chatbox");
-define("LIST_6", "Bloqueado por Admin");
-define("LIST_7", "Envíos de foros");
-define("LIST_8", "Nuevos miembros");
-define("LIST_9", "Comentarios");
-define("LIST_10", "Ideas");
-define("LIST_11", "Descarga");
-define("LIST_12", "Noticias");
-define("LIST_13", "Control de errores");
-define("LIST_14", "Escuesta");
-define("LIST_15", "FAQ");
-define("LIST_16", "Errores");
-define("LIST_17", "Ideas");
-
-define("LIST_13", "Perfil");
-define("LIST_14", "Artículo");
-define("LIST_15", "Contenido");
-
-define("LIST_18", "FAQ");
-define("LIST_18", "Encuesta");
-define("LIST_19", "Documentos");
-define("LIST_20", "Bugtracker");
-define("LIST_21", "Artículos");
-define("LIST_22", "Ideas");
-define("LIST_23", "Este plugin no está instalado.");
 
 define("LIST_PLUGIN_1", "Lista");
 define("LIST_PLUGIN_2", "Este plugin le permite ver las últimas entradas añadidas en las categorías de e107. Puede ver la lista de datos desde su última visita o ver las últimas entradas generales. Cada sección es configurable desde el área del administrador.");
 define("LIST_PLUGIN_3", "Configurar el menú principal");
 define("LIST_PLUGIN_4", "El plugin list_new esta instalado y listo para usar.");
 define("LIST_PLUGIN_5", "Lista");
+define("LIST_PLUGIN_6", "Este plugin no está instalado.");
 
-//all above will be deprecated sometime
-  	 
 define("LIST_ADMIN_1", "Reciente");
 define("LIST_ADMIN_2", "Actualizar parámetros");
 define("LIST_ADMIN_3", "Parámetros actualizados");

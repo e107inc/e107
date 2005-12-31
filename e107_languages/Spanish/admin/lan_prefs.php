@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-12-25 10:08:10 $
+|     $Revision: 1.18 $
+|     $Date: 2005-12-31 11:12:37 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -26,9 +26,9 @@ define("PRFLAN_14", "¿Mostrar información del tema?");
 define("PRFLAN_15", "¿Mostrar tiempo de generación?");
 define("PRFLAN_16", "¿Mostrar secuencias SQL?");
 define("PRFLAN_17", "Comprimir Salida del sitio usando gzip");
-//define("PRFLAN_18", "Idioma del sitio");
+
 define("PRFLAN_19", "Campos en registro");
-//define("PRFLAN_20", "Noticias a visualizar por página?");
+
 define("PRFLAN_21", "Opciones de Fecha");
 define("PRFLAN_22", "Formato corto de fecha");
 define("PRFLAN_23", "Formato largo de fecha");
@@ -42,12 +42,12 @@ define("PRFLAN_30", "Permite a los visitantes registrarse en su sitio");
 define("PRFLAN_31", "¿Usar verificación de email?");
 define("PRFLAN_32", "¿Permitir mensajes de anónimos?");
 define("PRFLAN_33", "<b>Off:</b> Desactívalo para permitir que solo los miembros registrados puedan enviar comentarios, etc");
-//define("PRFLAN_34", "Seguridad");
+
 define("PRFLAN_35", "¿Activar protección contra Flood?");
 define("PRFLAN_36", "Tiempo Flood");
 define("PRFLAN_37", "Auto Baneo (expulsión)");
 define("PRFLAN_38", "Tiempo requerido entre dos acciones en áreas donde los usuarios actuan (chatbox, foros...). si un usuario envía demasiado rápido dos acciones, será redirigido a la página principal");
-//define("PRFLAN_39", "Protección de menores");
+
 define("PRFLAN_40", "¿Filtrar palabras?");
 define("PRFLAN_41", "Las palabras censuradas serán reemplazadas");
 define("PRFLAN_42", "Reemplazar por");
@@ -62,28 +62,15 @@ define("PRFLAN_50", "Sesiones");
 define("PRFLAN_51", "Pulse aquí para visitar el sitio de e107");
 define("PRFLAN_52", "Guardar cambios");
 define("PRFLAN_53", "Preferencias del sitio");
-//define("PRFLAN_54", "Tema de Administración");
+
 define("PRFLAN_55", "Nombre de la Cookie (si está seleccionado cookies)");
 define("PRFLAN_56", "Zona Horaria");
-//define("PRFLAN_57", "Estilo del área de administración");
+
 define("PRFLAN_58", "Restringir el sitio solo para miembros");
 define("PRFLAN_59", "Esto restringirá el acceso a todas las areas menos la página principal y el registro a los usuarios no registrados");
 define("PRFLAN_60", "Permitir SSL");
 define("PRFLAN_61", "<b>¡Asegúrese de disponer de SSL!</b>");
-//define("PRFLAN_62", "Email");
-//define("PRFLAN_63", "Enviar email de prueba");
-//define("PRFLAN_64", "Pulsando se enviará un email de prueba al administrador principal del sitio");
-//define("PRFLAN_65", "Pulse para enviar email a");
-//define("PRFLAN_66", "Email de prueba desde");
-//define("PRFLAN_67", "Este es un email de prueba, ¡este email confirma que su configuración funciona correctamente!\n\n.");
-//define("PRFLAN_68", "El email no pudo ser enviado. Su servidor no está configurado correctamente para enviar emails, por favor vuélvalo a intentar usando SMTP, o contacte con su proovedor de hosting para verificar el servidor email.");
-//define("PRFLAN_69", "El email se ha enviado correctamente, por favor compruebe su bandeja de entrada.");
-//define("PRFLAN_70", "Activar SMTP");
-//define("PRFLAN_71", "Usará su configuración SMTP para enviar emails");
-//define("PRFLAN_72", "Servidor SMTP");
-//define("PRFLAN_73", "Usuario SMTP");
-//define("PRFLAN_74", "Contraseña SMTP");
-//define("PRFLAN_75", "No se pudo enviar el email. Por favor revise su configuración SMTP o desactive SMTP y vuelva a intentarlo.");
+
 define("PRFLAN_76", "Activar Código de verificación durante el registro.");
 define("PRFLAN_77", "Opciones de Administrador ");
 define("PRFLAN_78", "Deje en blanco para desactivar");
@@ -93,18 +80,11 @@ define("PRFLAN_81", "Activar Código de verificación durante la conexión.");
 
 define("PRFLAN_83", "Ejemplo");
 
-//define("PRFLAN_85", "Si un tema no se muestra asegúrese de que lo copió ocrrectamente en el servidor.");
-//define("PRFLAN_86", "Verificar archivos de Idioma");
 define("PRFLAN_87", "Comentarios");
 define("PRFLAN_88", "Ver comentarios anindados (jerarquía)");
 define("PRFLAN_89", "Mostrar icono en nuevo comentario");
 define("PRFLAN_89", "Sitio:");
 define("PRFLAN_90", "Permitir editar sus propios comentarios");
-define("PRFLAN_91", "Opciones Avanzadas");
-define("PRFLAN_92", "Selecciona método de autentificación");
-define("PRFLAN_93", "e107 - No hay métodos de autententificación instalados");
-
-
 define("PRFLAN_91", "Si alguien ataca su sitio mediante múltiples comandos a su servidor, ¡su IP será automáticamente baneada!");
 define("PRFLAN_92", "¿Ocultar contraseña en el email de confirmación?");
 define("PRFLAN_93", "Página de la función strftime en php.net");
@@ -114,7 +94,6 @@ define("PRFLAN_96", "Mostrará info en cada página del Admin para los plugins q
 define("PRFLAN_97", "Menú único 'Menú Plugins':");
 define("PRFLAN_98", "<b>Off:</b> Cada plugin mostrará su propia información en un menú individual. <b>On:</b> Toda la información se mostrará en un menú");
 
-//define("PRFLAN_100", "Carga de imágenes del theme:");
 define("PRFLAN_101", "Renderizado texto");
 define("PRFLAN_102", "Reemplazar enlaces");
 define("PRFLAN_103", "<b>On:</b> los enlaces serán substituídos por el texto escrito, para los enlaces largos que rompen la distribución");
@@ -163,6 +142,9 @@ define("PRFLAN_145", "Enlaces en una nueva ventana");
 define("PRFLAN_146", "Actívalo para hacer que todos los enlaces se abran en una nueva ventana(<i>Se aplicará en todo el sitio</i>). ");
 define("PRFLAN_147", "Modo de desarrollo");
 define("PRFLAN_148", "Activar funciones de depurador. Esto es solo para programadores. No usar en sitios de producción por razones de seguridad.");
+define("PRFLAN_149", "Opciones Avanzadas");
+define("PRFLAN_150", "Selecciona método de autentificación");
+define("PRFLAN_151", "e107 - No hay métodos de autententificación instalados");
 
 define("CUSTSIG_1", "¡Configuración Guardada!");
 define("CUSTSIG_2", "Nombre Real:");
@@ -172,9 +154,7 @@ define("CUSTSIG_5", "Localización:");
 define("CUSTSIG_6", "Firma:");
 define("CUSTSIG_7", "Avatar");
 define("CUSTSIG_8", "Zona Horaria:");
-//define("CUSTSIG_9", "Actualizar Configuración");
-//define("CUSTSIG_10", "Opciones de la página Custom-Signup");
-//define("CUSTSIG_11", "Marcar todo");
+
 define("CUSTSIG_12", "Ocultar");
 define("CUSTSIG_13", "Campos");
 define("CUSTSIG_14", "Mostrar");
