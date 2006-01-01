@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-12-30 01:14:37 $
-|     $Author: streaky $
+|     $Revision: 1.35 $
+|     $Date: 2006-01-01 02:05:26 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -129,7 +129,7 @@ if (abs($_serverTime - $lastSet) > 120) {
 }
 
 global $start_ob_level;
-if (ob_get_level() != $start_ob_level) {
+if (ob_get_level() != $start_ob_level && $pref['developer']) {
 	$oblev = ob_get_level();
 	$obdbg = "<div style='text-align:center' class='smalltext'>Software defect detected; ob_*() level {$oblev} at end.</div>";
 	echo $obdbg;
