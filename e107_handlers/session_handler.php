@@ -11,26 +11,30 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/session_handler.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2006-01-03 15:53:12 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
-	
+
 if (!defined('e107_INIT')) { exit; }
 
 function sess_open($save_path, $session_name) {
 	global $mySQLserver, $mySQLuser, $mySQLpassword, $mySQLdefaultdb, $mySQLprefix, $session_connection;
-	$session_connection = mysql_pconnect($mySQLserver, $mySQLuser, $mySQLpassword);
+	if(defined("USE_PERSISTANT_DB") && USE_PERSISTANT_DB == true){
+		$session_connection = mysql_pconnect($mySQLserver, $mySQLuser, $mySQLpassword);
+	} else {
+		$session_connection = mysql_connect($mySQLserver, $mySQLuser, $mySQLpassword);
+	}
 	mysql_select_db($mySQLdefaultdb, $session_connection);
 	return true;
 }
-	
+
 function sess_close() {
 	return true;
 }
-	
-	
+
+
 function sess_read($session_id) {
 	global $session_connection, $session_lifetime, $mySQLprefix, $session_read;
 	if ($result = mysql_query("SELECT * FROM ".$mySQLprefix."session WHERE session_id = '$session_id' AND session_expire > " . time(), $session_connection)) {
@@ -40,7 +44,7 @@ function sess_read($session_id) {
 		return FALSE;
 	}
 }
-	
+
 function sess_write($session_id, $session_data) {
 	if (!$session_data) {
 		return FALSE;
@@ -51,12 +55,7 @@ function sess_write($session_id, $session_data) {
 		session_destroy();
 		die("Invalid session ID");
 	}
-	if (version_compare(phpversion(), "4.3.0", "<")) {
-		$_session_data = mysql_escape_string($session_data);
-	} else {
-		$_session_data = mysql_real_escape_string($session_data);
-	}
-	 
+	$_session_data = mysql_real_escape_string($session_data);
 	if ($session_read) {
 		$query = "UPDATE ".$mySQLprefix."session SET session_expire = $expiry, session_data = '$_session_data' WHERE session_id = '$session_id' AND session_expire > " . time();
 		$result = mysql_query($query, $session_connection);
@@ -66,25 +65,21 @@ function sess_write($session_id, $session_data) {
 	}
 	return TRUE;
 }
-	
+
 function sess_destroy($session_id) {
 	global $session_connection, $mySQLprefix;
 	$query = "DELETE FROM ".$mySQLprefix."session WHERE session_id = '$session_id'";
 	$result = mysql_query($query, $session_connection);
 	return TRUE;
 }
-	
+
 function sess_gc($session_lifetime) {
 	global $session_connection, $mySQLprefix;
 	$query = "DELETE FROM ".$mySQLprefix."session WHERE session_expire < " . time();
 	$result = mysql_query($query, $session_connection);
-	//        Uncomment the foolowing lines if you want garbage collection logged ...
-	//        $fp =fopen('gc.txt',ab);
-	//        fwrite ($fp,"DELETE FROM ".$mySQLprefix."session WHERE session_expire < " .time()."\n");
-	//        fclose($fp);
 	return mysql_affected_rows($session_connection);
 }
-	
+
 function get_full_ip() {
 	global $e107;
 	$ip_addr = $e107->getip();
@@ -94,9 +89,9 @@ function get_full_ip() {
 	$full_ip = ($ip_addr != $tmp ? "$ip_addr | $tmp2" : $tmp2);
 	return $full_ip;
 }
-	
+
 session_set_save_handler("sess_open", "sess_close", "sess_read", "sess_write", "sess_destroy", "sess_gc");
-	
+
 ini_set ("session.save_handler", "user" );
 $session_cookie_lifetime = 0;
 $session_cookie_path = '/';
@@ -112,11 +107,12 @@ session_set_cookie_params($session_cookie_lifetime, $session_cookie_path, $sessi
 if (version_compare(phpversion(), "4.3.0", ">=")) ini_set ("session.use_only_cookies", $session_use_only_cookies );
 if (version_compare(phpversion(), "4.2.0", ">=")) session_cache_expire ($session_cache_expire);
 ini_set ("session.url_rewriter.tags", 'a=href,area=href,frame=src,input=src,form=fakeentry');
-	
+
 if ($sql->db_Select("session", "session_id", "session_ip='".get_full_ip()."' ")) {
 	$row = $sql->db_Fetch();
 	session_id($row['session_id']);
 }
-	
+
 session_start();
+
 ?>
