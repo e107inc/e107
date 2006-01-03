@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-12-28 14:03:36 $
-|     $Author: sweetas $
+|     $Revision: 1.35 $
+|     $Date: 2006-01-03 13:10:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -232,7 +232,7 @@ class e107_user_extended
 
 	function user_extended_remove($id, $name)
 	{
-		global $sql;
+		global $sql, $tp;
 		if ($this->user_extended_field_exist($name))
 		{
 			$sql->db_Select_gen("ALTER TABLE #user_extended DROP user_".$tp -> toDB($name, true));
