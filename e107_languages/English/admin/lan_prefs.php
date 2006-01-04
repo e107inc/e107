@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2005-12-30 01:28:36 $
-|     $Author: streaky $
+|     $Revision: 1.45 $
+|     $Date: 2006-01-04 20:46:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -46,7 +46,7 @@ define("PRFLAN_27", "Example, if you set this to +2, all times on your site will
 define("PRFLAN_28", "User registration/posting");
 define("PRFLAN_29", "Activate user registration system?");
 define("PRFLAN_30", "allow users to register as members on your site");
-define("PRFLAN_31", "Use email verification for signups?");
+//define("PRFLAN_31", "Use email verification for signups?");
 define("PRFLAN_32", "Allow anonymous posting?");
 define("PRFLAN_33", "switch this off to allow only registered members to post comments etc");
 define("PRFLAN_35", "Enable flood protection?");
@@ -157,5 +157,10 @@ define("PRFLAN_148", "Activate developer functions. This is for developers only.
 define("PRFLAN_149", "Advanced Features");
 define("PRFLAN_150", "Select e107 authentication method");
 define("PRFLAN_151", "e107 - No alternate authentication methods installed");
+
+define("PRFLAN_31", "Email Verification");
+define("PRFLAN_152", "No Verification");
+define("PRFLAN_153", "Admin Approval");
+define("PRFLAN_154", "New user verification method <br />If 'Admin Approval' is selected, it is recommended that you enable email notification on user signup <a href='".e_ADMIN."notify.php'>here</a>.");
 
 ?>

@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-10-05 22:39:08 $
-|     $Author: sweetas $
+|     $Revision: 1.20 $
+|     $Date: 2006-01-04 20:46:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("USRLAN_1", "Options Saved.");
@@ -98,7 +98,7 @@ define("USRLAN_91", "Class");
 define("USRLAN_92", "Invalid characters in username");
 
 define("USRLAN_93", "Delete unverified users");
-define("USRLAN_94", "Delete signups if unverified after this amount of time - leave blank to not use this option");
+define("USRLAN_94", "Delete signups if unverified after this amount of time - leave blank to not use this option <br />This option is ignored if user signups are admin moderated");
 define("USRLAN_95", "minutes");
 
 
@@ -175,5 +175,7 @@ define("DUSRLAN_34", "Perms");
 define("DUSRLAN_35", "Picture");
 define("DUSRLAN_36", "Password Change");
 define("DUSRLAN_37", "XUP");
+
+define("USRLAN_138", "Unverified users");
 
 ?>

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.248 $
-|     $Date: 2005-12-28 21:17:10 $
-|     $Author: sweetas $
+|     $Revision: 1.249 $
+|     $Date: 2006-01-04 20:46:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -305,7 +305,7 @@ $e_online = new e_online();
 // cache class
 $e107cache = new ecache;
 
-if (isset($pref['del_unv']) && $pref['del_unv']) {
+if (isset($pref['del_unv']) && $pref['del_unv'] && $pref['user_reg_veri'] != 2) {
 	$threshold=(time() - ($pref['del_unv'] * 60));
 	$sql->db_Delete("user", "user_ban = 2 AND user_join < '{$threshold}' ");
 }

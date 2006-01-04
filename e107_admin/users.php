@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.66 $
-|     $Date: 2005-12-25 01:26:59 $
-|     $Author: sweetas $
+|     $Revision: 1.67 $
+|     $Date: 2006-01-04 20:46:45 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -338,7 +338,14 @@ echo "from= ".$from."<br />";
 echo "amount= ".$amount."<br />";
 */
 
+
+$unverified = $sql -> db_Count("user", "(*)", "WHERE user_ban = 2");
+
 if (!e_QUERY || ($action == "main")) {
+	$user->show_existing_users($action, $sub_action, $id, $from, $amount);
+}
+
+if (isset($action) && $action == "unverified") {
 	$user->show_existing_users($action, $sub_action, $id, $from, $amount);
 }
 
@@ -375,30 +382,43 @@ class users{
 		}
 
 		if ($sql->db_Select("userclass_classes")) {
-			while ($row = $sql->db_Fetch()) {
-				extract($row);
-				$class[$userclass_id] = $userclass_name;
+			while ($row = $sql->db_Fetch())
+			{
+				//extract($row);
+				$class[$row['userclass_id']] = $row['userclass_name'];
 			}
 		}
 
 		$text = "<div style='text-align:center'>";
 
-		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "") {
+		if (isset($_POST['searchquery']) && $_POST['searchquery'] != "")
+		{
 			$_POST['searchquery'] = trim($_POST['searchquery']);
-            $query = "WHERE ".
+      $query = "WHERE ".
 			$query .= (strpos($_POST['searchquery'], "@") !== FALSE) ? "user_email REGEXP('".$_POST['searchquery']."') OR ": "";
 			$query .= (strpos($_POST['searchquery'], ".") !== FALSE) ? "user_ip REGEXP('".$_POST['searchquery']."') OR ": "";
-            foreach($search_display as $disp){
-            	$query .= "$disp REGEXP('".$_POST['searchquery']."') OR ";
+			foreach($search_display as $disp)
+			{
+				$query .= "$disp REGEXP('".$_POST['searchquery']."') OR ";
 			}
 			$query .= "user_login REGEXP('".$_POST['searchquery']."') OR ";
-			$query .= "user_name REGEXP('".$_POST['searchquery']."') ORDER BY user_id";
+			$query .= "user_name REGEXP('".$_POST['searchquery']."') ";
+			if($action == 'unverified')
+			{
+				$query .= " AND user_ban = 2 ";
+			}
+			$query .= " ORDER BY user_id";
 		} else {
-			$query = "ORDER BY ".($sub_action ? $sub_action : "user_id")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
+			$query = "";
+			if($action == 'unverified')
+			{
+				$query = "WHERE user_ban = 2 ";
+			}
+			$query .= "ORDER BY ".($sub_action ? $sub_action : "user_id")." ".($id ? $id : "DESC")."  LIMIT $from, $amount";
 		}
 
-        //  $user_total = db_Count($table, $fields = '(*)',
-        $qry_insert = "SELECT u.*, ue.* FROM #user AS u	LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id ";
+// $user_total = db_Count($table, $fields = '(*)',
+	$qry_insert = "SELECT u.*, ue.* FROM #user AS u	LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id ";
 
 		if ($user_total = $sql->db_Select_gen($qry_insert. $query)) {
 			$text .= "<table class='fborder' style='".ADMIN_WIDTH."'>
@@ -632,6 +652,8 @@ class users{
 	}
 
 	function show_options($action) {
+		
+		global $unverified;
 		// ##### Display options ---------------------------------------------------------------------------------------------------------
 		if ($action == "") {
 			$action = "main";
@@ -648,6 +670,12 @@ class users{
 
 		$var['options']['text'] = LAN_OPTIONS;
 		$var['options']['link'] = e_SELF."?options";
+
+		if($unverified)
+		{
+			$var['unveri']['text'] = USRLAN_138." ($unverified)";
+			$var['unveri']['link'] = e_SELF."?unverified";
+		}
 
 		//  $var['mailing']['text']= USRLAN_121;
 		//   $var['mailing']['link']="mailout.php";
