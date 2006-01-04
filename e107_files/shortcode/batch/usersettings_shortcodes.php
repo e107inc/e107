@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/usersettings_shortcodes.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-12-27 19:19:39 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2006-01-04 14:51:00 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -33,7 +33,7 @@ if (ADMIN && getperms("4"))
 }
 else
 {
-	$curVal['user_loginname'];
+	return $curVal['user_loginname'];
 }
 SC_END
 
