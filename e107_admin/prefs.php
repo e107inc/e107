@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2005-12-29 19:49:19 $
+|     $Revision: 1.73 $
+|     $Date: 2006-01-04 20:46:45 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -377,11 +377,20 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	</tr>
 
 	<tr>
-	<td style='width:50%' class='forumheader3'>".PRFLAN_31."</td>
+	<td style='width:50%' class='forumheader3'>".PRFLAN_154."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-	<input type='radio' name='user_reg_veri' value='1'".($pref['user_reg_veri'] ? " checked='checked'" : "")." /> ".PRFLAN_112."&nbsp;&nbsp;
-	<input type='radio' name='user_reg_veri' value='0'".(!$pref['user_reg_veri'] ? " checked='checked'" : "")." /> ".PRFLAN_113."
-	</td>
+		
+	<select name='user_reg_veri' class='tbox'>";
+	$veri_list[0] = PRFLAN_152;
+  $veri_list[1] = PRFLAN_31;
+  $veri_list[2] = PRFLAN_153;
+
+	foreach($veri_list as $v => $v_title){
+		$sel = ($pref['user_reg_veri'] == $v) ? "selected='selected'" : "";
+    	$text .= "<option value='$v' $sel>".$v_title."</option>\n";
+	}
+
+	$text .="</select></td>
 	</tr>
 
 	<tr>
