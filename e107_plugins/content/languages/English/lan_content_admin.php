@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/languages/English/lan_content_admin.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-08-11 18:17:37 $
-|     $Author: stevedunstan $
+|     $Revision: 1.6 $
+|     $Date: 2006-01-04 19:53:42 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -224,6 +224,8 @@ define("CONTENT_ADMIN_ITEM_LAN_120", "default layout");
 define("CONTENT_ADMIN_ITEM_LAN_121", "no new icon uploaded yet");
 define("CONTENT_ADMIN_ITEM_LAN_122", "no new attachment uploaded yet");
 define("CONTENT_ADMIN_ITEM_LAN_123", "no new image uploaded yet");
+
+define("CONTENT_ADMIN_ITEM_LAN_124", "to view the item");
 
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "order is increased");

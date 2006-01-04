@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.56 $
-|		$Date: 2005-12-11 15:51:31 $
+|		$Revision: 1.57 $
+|		$Date: 2006-01-04 19:53:42 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -221,7 +221,9 @@ if(!e_QUERY){																//show main categories
 			$message = CONTENT_ADMIN_ITEM_LAN_2."<br /><br />";
 			$message .= CONTENT_ADMIN_ITEM_LAN_88." <a href='".e_SELF."?content.create.".$mainparent."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
 			$message .= CONTENT_ADMIN_ITEM_LAN_89." <a href='".e_SELF."?content.".$mainparent."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
-			$message .= CONTENT_ADMIN_ITEM_LAN_91." <a href='".e_SELF."?content.edit.".$qs[2]."'>".CONTENT_ADMIN_ITEM_LAN_90."</a>";
+			$message .= CONTENT_ADMIN_ITEM_LAN_91." <a href='".e_SELF."?content.edit.".$qs[2]."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+			$message .= CONTENT_ADMIN_ITEM_LAN_124." <a href='".e_PLUGIN."content/content.php?content.".$qs[2]."'>".CONTENT_ADMIN_ITEM_LAN_90."</a>";
+			
 			$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 			require_once(e_ADMIN."footer.php");
 			exit;
@@ -236,7 +238,8 @@ if(!e_QUERY){																//show main categories
 			$message = CONTENT_ADMIN_ITEM_LAN_117."<br /><br />";
 			$message .= CONTENT_ADMIN_ITEM_LAN_88." <a href='".e_SELF."?content.create.".$mainparent."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
 			$message .= CONTENT_ADMIN_ITEM_LAN_89." <a href='".e_SELF."?content.".$mainparent."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
-			$message .= CONTENT_ADMIN_ITEM_LAN_91." <a href='".e_SELF."?content.edit.".$qs[2]."'>".CONTENT_ADMIN_ITEM_LAN_90."</a>";
+			$message .= CONTENT_ADMIN_ITEM_LAN_91." <a href='".e_SELF."?content.edit.".$qs[2]."'>".CONTENT_ADMIN_ITEM_LAN_90."</a><br />";
+			$message .= CONTENT_ADMIN_ITEM_LAN_124." <a href='".e_PLUGIN."content/content.php?content.".$qs[2]."'>".CONTENT_ADMIN_ITEM_LAN_90."</a>";
 			$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 			require_once(e_ADMIN."footer.php");
 			exit;
