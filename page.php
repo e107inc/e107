@@ -11,19 +11,19 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-12-24 22:53:38 $
-|     $Author: sweetas $
+|     $Revision: 1.18 $
+|     $Date: 2006-01-05 19:02:46 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 $page = new pageClass();
-if(IsSet($_POST['enterpw']))
+if(isset($_POST['enterpw']))
 {
 	$page -> setPageCookie();
 }
 
-if(!$e_QUERY)
+if(!e_QUERY)
 {
 	require_once(HEADERF);
 	$page -> listPages();
@@ -62,7 +62,7 @@ class pageClass
 		global $e_QUERY;
 		/* constructor */
 		$this -> bullet = (defined("BULLET") ? "<img src='".THEME."images/".BULLET."' alt='' style='vertical-align: middle;' />" : "<img src='".THEME."images/bullet2.gif' alt='bullet' style='vertical-align: middle;' />");
-		$tmp = explode(".", $e_QUERY);
+		$tmp = explode(".", e_QUERY);
 		$this -> pageID = intval($tmp[0]);
 		$this -> pageSelected = (isset($tmp[1]) ? intval($tmp[1]) : 0);
 		$this -> debug = $debug;
@@ -338,7 +338,7 @@ class pageClass
 
 	function pageCheckPerms($page_password)
 	{
-		global $ns, $e_QUERY;
+		global $ns, $HEADER, $FOOTER, $sql;
 		$cookiename = "e107page_".$this -> pageID;
 		if(isset($_COOKIE[$cookiename]))
 		{
@@ -353,10 +353,12 @@ class pageClass
 				return TRUE;
 			}
 		} else {
+			$HEADER = ""; $FOOTER = "";
+			require_once(HEADERF);
 			$text = "
 			<div style='text-align:center; margin-left:auto; margin-right: auto;'>
-			<form method='post' action='".e_SELF."?{$e_QUERY}' id='pwform'>
-			<table style='width:90%;' class='fborder'>
+			<form method='post' action='".e_SELF."?".e_QUERY."' id='pwform'>
+			<table style='width:50%;' class='fborder'>
 			<tr>
 			<td class='forumheader' style='text-align:center;' colspan='3'>This page is password protected - please enter password to continue</td>
 			</tr>
@@ -382,9 +384,10 @@ class pageClass
 	function setPageCookie()
 	{
 		global $pref;
+		$pref['pageCookieExpire'] = max($pref['pageCookieExpire'], 120);
 		$hash = md5($_POST['page_pw'].USERID);
-		cookie("e107page_{$e_QUERY}", $hash, (time() + $pref['pageCookieExpire']));
-		header("location:".e_SELF."?{$e_QUERY}");
+		cookie("e107page_".e_QUERY, $hash, (time() + $pref['pageCookieExpire']));
+		header("location:".e_SELF."?".e_QUERY);
 		exit;
 	}
 
