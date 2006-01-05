@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2006-01-05 04:10:59 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.73 $
+|     $Date: 2006-01-05 16:21:07 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -169,7 +169,7 @@ if (isset($_POST['register']))
 		$_POST['ue']['user_yahoo'] = $xup['YAHOO'];
 		$_POST['ue']['user_location'] = $xup['GEO'];
 		$_POST['ue']['user_birthday'] = $xup['BDAY'];
-		
+
 		unset($xup);
 	}
 
@@ -204,14 +204,14 @@ if (isset($_POST['register']))
 	if (strlen($_POST['name']) > 30) {
 		exit;
 	}
-
+// username exists.
 	if ($sql->db_Select("user", "*", "user_name='".$tp -> toDB($_POST['name'])."'"))
 	{
 		$error_message .= LAN_411."\\n";
 		$error = TRUE;
 		$name = "";
 	}
-
+// Login name exists
 	if ($sql->db_Select("user", "*", "user_loginname='".$tp -> toDB($_POST['loginname'])."' "))
 	{
 		$error_message .= LAN_104."\\n";
@@ -237,6 +237,16 @@ if (isset($_POST['register']))
 		$password2 = "";
 	}
 
+// Email address confirmation.
+	if ($_POST['email'] != $_POST['email_confirm'])
+	{
+		$error_message .= LAN_SIGNUP_38."\\n";
+		$error = TRUE;
+		$email = "";
+		$email_confirm = "";
+	}
+
+// Password length check.
 	if (strlen($_POST['password1']) < $pref['signup_pass_len'])
 	{
 		$error_message .= LAN_SIGNUP_4.$pref['signup_pass_len'].LAN_SIGNUP_5."\\n";
@@ -376,7 +386,7 @@ if (isset($_POST['register']))
 
 			if ($pref['user_reg_veri'] != 2)
 			{
-		
+
 				require_once(e_HANDLER."mail.php");
 				$eml = render_email();
 				$message = $eml['message'];
@@ -637,12 +647,23 @@ $text .= "
 	".$rs->form_password("password2", 30, $password2, 20)."
 	</td>
 	</tr>
+
 	<tr>
-	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_112."<span style='font-size:15px; color:red'> *</span></td>
-	<td class='forumheader3' style='width:70%'>
-	".$rs->form_text("email", 30, ($_POST['email'] ? $_POST['email'] : $email), 100)."
-	</td>
+		<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_112."<span style='font-size:15px; color:red'> *</span></td>
+		<td class='forumheader3' style='width:70%'>
+		".$rs->form_text("email", 30, ($_POST['email'] ? $_POST['email'] : $email), 100)."
+		</td>
 	</tr>
+
+	<tr>
+		<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_SIGNUP_39."<span style='font-size:15px; color:red'> *</span></td>
+		<td class='forumheader3' style='width:70%'>
+		".$rs->form_text("email_confirm", 30, ($_POST['email_confirm'] ? $_POST['email_confirm'] : $email_confirm), 100)."
+		</td>
+	</tr>
+
+
+
 	<tr>
 	<td class='forumheader3' style='width:30%;white-space:nowrap'>".LAN_113."</td>
 	<td class='forumheader3' style='width:70%'>". $rs->form_radio("hideemail", 1)." ".LAN_SIGNUP_10."&nbsp;&nbsp;".$rs->form_radio("hideemail", 0, 1)." ".LAN_200."
