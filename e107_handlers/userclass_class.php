@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/userclass_class.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-12-28 14:03:36 $
-|     $Author: sweetas $
+|     $Revision: 1.17 $
+|     $Date: 2006-01-05 19:38:57 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -252,6 +252,7 @@ class e_userclass {
 
 	function class_remove($cid, $uinfoArray)
 	{
+		global $tp;
 		$sql2 = new db;
 		foreach($uinfoArray as $uid => $curclass)
 		{
