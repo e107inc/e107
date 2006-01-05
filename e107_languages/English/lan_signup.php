@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_signup.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-01-05 04:11:01 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.17 $
+|     $Date: 2006-01-05 16:21:07 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Register");
@@ -96,5 +96,6 @@ define("LAN_EMAIL_05", "Your password has been encrypted and cannot be retrieved
 define("LAN_EMAIL_06", "Thanks for your registration.");
 
 define("LAN_SIGNUP_37", "This stage of registation is complete. The site admin will need to approve your membership.  Once this has been done you will receive a confirmation email alerting you that your membership has been approved.");
-
+define("LAN_SIGNUP_38", "You entered two different email addresses. Please enter a valid email address in the two fields provided");
+define("LAN_SIGNUP_39", "Re-type Email Address:");
 ?>
