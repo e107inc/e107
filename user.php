@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/user.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2005-12-24 22:53:38 $
-|     $Author: sweetas $
+|     $Revision: 1.29 $
+|     $Date: 2006-01-05 12:39:58 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -114,7 +114,7 @@ if (isset($id))
 	exit;
 }
 
-$users_total = $sql->db_Count("user");
+$users_total = $sql->db_Count("user","(*)", "WHERE user_ban = 0");
 $text = "<div style='text-align:center'>
 ".LAN_138." ".$users_total."<br /><br />
 <form method='post' action='".e_SELF."'>
@@ -162,7 +162,7 @@ $text .= " <input class='button' type='submit' name='submit' value='".LAN_422."'
 
 
 
-if (!$sql->db_Select("user", "*", "ORDER BY user_id $order LIMIT $from,$records", $mode = "no_where")) {
+if (!$sql->db_Select("user", "*", "user_ban = 0 ORDER BY user_id $order LIMIT $from,$records")) {
 	echo "<div style='text-align:center'><b>".LAN_141."</b></div>";
 } else {
 	$userList = $sql->db_getList();
