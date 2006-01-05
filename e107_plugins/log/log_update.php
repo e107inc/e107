@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/log_update.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-14 19:28:44 $
+|     $Revision: 1.3 $
+|     $Date: 2006-01-05 13:10:47 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -307,7 +307,7 @@ function stage6()
 		$row = $sql -> db_Fetch();
 		$refTotal = unserialize($row['log_data']);
 
-		foreach ($refTotal as $key -> $ref) {
+		foreach ($refTotal as $key => $ref) {
 			if (!is_array($ref)){
 				unset($refTotal['key']);
 				$refTotal[$key]['url'] = $key;
