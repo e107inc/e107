@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.86 $
-|     $Date: 2005-12-30 00:51:14 $
+|     $Revision: 1.87 $
+|     $Date: 2006-01-05 22:52:53 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -138,8 +138,7 @@ if ($action == 'cat' || $action == 'all'){
 
 	ob_start();
 	$ns->tablerender(LAN_82." '{$category_name}'", $text);
-	$cache_data = ob_get_contents();
-	ob_flush();
+	$cache_data = ob_get_flush();
 	setNewsCache($cacheString, $cache_data);
 	require_once(FOOTERF);
 	exit;
