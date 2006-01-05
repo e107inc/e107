@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/sql/core_sql.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2005-12-25 01:33:05 $
+|     $Revision: 1.44 $
+|     $Date: 2006-01-05 06:40:17 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -342,6 +342,21 @@ CREATE TABLE plugin (
   plugin_rss varchar(255) NOT NULL default '',
   PRIMARY KEY  (plugin_id)
 ) TYPE=MyISAM;
+
+# --------------------------------------------------------
+
+#
+# Table structure for table `rate`
+#
+
+CREATE TABLE preset (
+  preset_id int(10) unsigned NOT NULL auto_increment,
+  preset_name varchar(80) NOT NULL default '',
+  preset_field varchar(80) NOT NULL default '',
+  preset_value varchar(255) NOT NULL default '',
+  PRIMARY KEY  (preset_id)
+) TYPE=MyISAM;
+			
 # --------------------------------------------------------
 
 #
