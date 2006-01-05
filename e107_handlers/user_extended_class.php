@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/user_extended_class.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-01-03 13:10:19 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.36 $
+|     $Date: 2006-01-05 16:25:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -41,7 +41,7 @@ class e107_user_extended
 	var $user_extended_types;
 	var $extended_xml;
 	var $typeArray;
-	
+
 	function e107_user_extended()
 	{
 		//		1 = text
@@ -54,13 +54,13 @@ class e107_user_extended
 		//		8 = language
 
 		$this->typeArray = array(
-			'text' => 1, 
-			'radio' => 2, 
-			'dropdown' => 3, 
-			'db field' => 4, 
-			'textarea' => 5, 
-			'integer' => 6, 
-			'date' => 7, 
+			'text' => 1,
+			'radio' => 2,
+			'dropdown' => 3,
+			'db field' => 4,
+			'textarea' => 5,
+			'integer' => 6,
+			'date' => 7,
 			'language' => 8
 		);
 		$this->user_extended_types = array(
@@ -296,7 +296,7 @@ class e107_user_extended
 
 			case 3: //dropdown
 				$ret = "<select {$include} name='{$fname}'>\n";
-				$ret .= "<option value=''></option>\n";  // ensures that the user chose it.
+				$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
 				foreach($choices as $choice)
 				{
 					$choice = trim($choice);
@@ -313,8 +313,8 @@ class e107_user_extended
 
 				if($sql->db_Select($tp -> toDB($choices[0], true), $tp -> toDB($choices[1], true).",".$tp -> toDB($choices[2], true), "1 $order")){
 					$choiceList = $sql->db_getList();
-					$ret = "<select {$include} class='tbox' name='{$fname}'  >\n";
-					$ret .= "<option value=''></option>\n";  // ensures that the user chose it.
+					$ret = "<select {$include} name='{$fname}'  >\n";
+					$ret .= "<option value=''>&nbsp;</option>\n";  // ensures that the user chose it.
 					foreach($choiceList as $cArray)
 					{
 						$cID = trim($cArray[$choices[1]]);
@@ -334,13 +334,13 @@ class e107_user_extended
 				break;
 
 			case 7: //date
-				return $cal->make_input_field( 
+				return $cal->make_input_field(
 				array(
                'ifFormat' => '%Y-%m-%d'
-               ), 
+               ),
 				array(
-					'class' => 'tbox', 
-					'name' => $fname, 
+					'class' => 'tbox',
+					'name' => $fname,
 					'value' => $curval
 					)
 				);
@@ -390,7 +390,7 @@ class e107_user_extended
 		cachevars('ue_struct',$ret);
 		return $ret;
 	}
-	
+
 	function parse_extended_xml($contents, $no_cache = FALSE)
 	{
 		if($no_cache == FALSE && $this->extended_xml)
@@ -451,12 +451,12 @@ class e107_user_extended
 		}
 		$sql->db_Select_gen("INSERT IGNORE INTO #user_extended (user_extended_id) SELECT user_id FROM #user ");
 		$qry = "
-		UPDATE #user_extended AS ue , #user as u SET 
-		ue.user_aim = u.user_aim, 
-		ue.user_birthday = u.user_birthday, 
-		ue.user_homepage = u.user_homepage, 
-		ue.user_icq = u.user_icq, 
-		ue.user_msn = u.user_msn, 
+		UPDATE #user_extended AS ue , #user as u SET
+		ue.user_aim = u.user_aim,
+		ue.user_birthday = u.user_birthday,
+		ue.user_homepage = u.user_homepage,
+		ue.user_icq = u.user_icq,
+		ue.user_msn = u.user_msn,
 		ue.user_location = u.user_location
 		WHERE ue.user_extended_id = u.user_id
 		";
