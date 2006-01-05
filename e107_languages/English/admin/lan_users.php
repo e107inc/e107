@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_users.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-01-04 20:46:45 $
+|     $Revision: 1.21 $
+|     $Date: 2006-01-05 04:11:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -177,5 +177,6 @@ define("DUSRLAN_36", "Password Change");
 define("DUSRLAN_37", "XUP");
 
 define("USRLAN_138", "Unverified users");
+define("USRLAN_139", "Your account has been activated.\n\nYou can visit {SITEURL} and log into the site using the login information you provided.");
 
 ?>
