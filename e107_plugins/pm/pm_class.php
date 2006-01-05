@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_class.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-12-31 16:04:53 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.10 $
+|     $Date: 2006-01-05 09:06:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -293,7 +293,7 @@ class private_message
 
 	function get_users_inclass($class)
 	{
-		global $sql;
+		global $sql, $tp;
 		if($class == e_UC_MEMBER)
 		{
 			$qry = "SELECT user_id, user_name, user_email, user_class FROM #user WHERE 1";
@@ -304,7 +304,7 @@ class private_message
 		}
 		elseif($class)
 		{
-			$regex = "(^|,)(".$class.")(,|$)";
+			$regex = "(^|,)(".$tp -> toDB($class).")(,|$)";
 			$qry = "SELECT user_id, user_name, user_email, user_class FROM #user WHERE user_class REGEXP {$regex}";
 		}
 		if($sql->db_Select_gen($qry))
@@ -326,7 +326,7 @@ class private_message
 			LEFT JOIN #user AS u ON u.user_id = pm.pm_from
 			WHERE pm.pm_to='{$uid}' AND pm.pm_read_del=0
 			ORDER BY pm.pm_sent DESC
-			LIMIT {$from}, {$limit}
+			LIMIT ".intval($from).", ".intval($limit)."
 			";
 			if($sql->db_Select_gen($qry))
 			{
@@ -348,7 +348,7 @@ class private_message
 			LEFT JOIN #user AS u ON u.user_id = pm.pm_to
 			WHERE pm.pm_from='{$uid}' AND pm.pm_sent_del=0
 			ORDER BY pm.pm_sent DESC
-			LIMIT {$from}, {$limit}
+			LIMIT ".intval($from).", ".intval($limit)."
 			";
 			if($sql->db_Select_gen($qry))
 			{

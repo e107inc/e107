@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_menu.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-14 19:28:52 $
+|     $Revision: 1.8 $
+|     $Date: 2006-01-05 09:06:46 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -121,6 +121,7 @@ if ($sql->db_Select_gen($query))
 					/* multiple choice vote */
 					foreach($_POST['votea'] as $vote)
 					{
+						$vote = intval($vote);
 						$votes[($vote-1)] ++;
 					}
 				}

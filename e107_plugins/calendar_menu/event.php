@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2005-09-06 20:37:14 $
-|     $Author: stevedunstan $
+|     $Revision: 1.23 $
+|     $Date: 2006-01-05 09:06:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -77,7 +77,7 @@ if (isset($_POST['ne_insert']) && USER == true)
             $rec_y = "";
         } 
 
-        $sql->db_Insert("event", " 0, '$ev_start', '$ev_end', '".$_POST['allday']."', '".$_POST['recurring']."', '".time()."', '$ev_title', '$ev_location', '$ev_event', '".USERID.".".USERNAME."', '".$_POST['ne_email']."', '".$_POST['ne_category']."', '".$_POST['ne_thread']."', '$rec_m', '$rec_y' ");
+        $sql->db_Insert("event", " 0, '".intval($ev_start)."', '".intval($ev_end)."', '".intval($_POST['allday'])."', '".intval($_POST['recurring'])."', '".time()."', '$ev_title', '$ev_location', '$ev_event', '".USERID.".".USERNAME."', '".$tp -> toDB($_POST['ne_email'])."', '".intval($_POST['ne_category'])."', '".$tp -> toDB($_POST['ne_thread'])."', '".intval($rec_m)."', '".intval($rec_y)."' ");
         $qs = preg_replace("/ne./i", "", $_POST['qs']);
         header("location:event.php?".$qs.".m4");
     }
@@ -105,7 +105,7 @@ if (isset($_POST['ne_update']) && USER == true)
             $rec_y = "";
         } 
 
-        $sql->db_Update("event", "event_start='$ev_start', event_end='$ev_end', event_allday='".$_POST['allday']."', event_recurring='".$_POST['recurring']."', event_datestamp= '".time()."', event_title= '$ev_title', event_location='$ev_location', event_details='$ev_event', event_contact='".$_POST['ne_email']."', event_category='".$_POST['ne_category']."', event_thread='".$_POST['ne_thread']."', event_rec_m='$rec_m', event_rec_y='$rec_y' WHERE event_id='".$_POST['id']."' ");
+        $sql->db_Update("event", "event_start='".intval($ev_start)."', event_end='".intval($ev_end)."', event_allday='".intval($_POST['allday'])."', event_recurring='".intval($_POST['recurring'])."', event_datestamp= '".time()."', event_title= '$ev_title', event_location='$ev_location', event_details='$ev_event', event_contact='".$tp -> toDB($_POST['ne_email'])."', event_category='".intval($_POST['ne_category'])."', event_thread='".$tp -> toDB($_POST['ne_thread'])."', event_rec_m='".intval($rec_m)."', event_rec_y='".intval($rec_y)."' WHERE event_id='".intval($_POST['id'])."' ");
         $qs = preg_replace("/ed./i", "", $_POST['qs']);
 
         header("location:event.php?".$ev_start.".".$qs.".m5");
@@ -145,7 +145,7 @@ else
 
 if (isset($_POST['confirm']))
 {
-    if ($sql->db_Delete("event", "event_id='".$_POST['existing']."' "))
+    if ($sql->db_Delete("event", "event_id='".intval($_POST['existing'])."' "))
     {
         $message = EC_LAN_51; //Event Deleted
     } 
@@ -223,7 +223,7 @@ if ($action == "ne" || $action == "ed")
     {
         if ($action == "ed")
         {
-            $sql->db_Select("event", "*", "event_id='".$qs[1]."' ");
+            $sql->db_Select("event", "*", "event_id='".intval($qs[1])."' ");
             list($null, $ne_start, $ne_end, $allday, $recurring, $ne_datestamp, $ne_title, $ne_location, $ne_event, $ne_author, $ne_email, $ne_category, $ne_thread) = $sql->db_Fetch();
 
             $smarray = getdate($ne_start);
@@ -583,7 +583,7 @@ if ($ds == "event"){
 	SELECT e.*, ec.*
 	FROM #event as e
 	LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
-	WHERE e.event_id='".$eveid."' 
+	WHERE e.event_id='".intval($eveid)."' 
 	";
 	$sql2->db_Select_gen($qry);
     $row = $sql2->db_Fetch();
@@ -594,7 +594,7 @@ if ($ds == "event"){
 	$text2 .= $tp -> parseTemplate($EVENT_EVENT_TABLE_END, FALSE, $calendar_shortcodes);
 
 }else{
-    //$sql2->db_Select("event_cat", "*", "event_cat_id='".$event_true[($c)]."' ");
+    //$sql2->db_Select("event_cat", "*", "event_cat_id='".intval($event_true[($c)])."' ");
     //$event_cat = $sql2->db_Fetch();
     //extract($event_cat);
 
@@ -610,16 +610,16 @@ if ($ds == "event"){
         $end_time		= $monthend;
         $cap_title		= '';
     } 
-    $extra = " OR e.event_rec_y = {$month} ";
+    $extra = " OR e.event_rec_y = ".intval($month)." ";
 
     if ($cal_super) {
         $qry = "
 		SELECT e.*, ec.*
 		FROM #event as e
 		LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
-		WHERE (e.event_start >= {$start_time} AND e.event_start <= {$end_time})
-		OR (e.event_end >= {$start_time} AND e.event_end <= {$end_time})
-		OR (e.event_start <= {$start_time} AND e.event_end >= {$end_time})
+		WHERE (e.event_start >= ".intval($start_time)." AND e.event_start <= ".intval($end_time).")
+		OR (e.event_end >= ".intval($start_time)." AND e.event_end <= ".intval($end_time).")
+		OR (e.event_start <= ".intval($start_time)." AND e.event_end >= ".intval($end_time).")
 		{$extra}
 		ORDER BY e.event_start ASC";
     } else {
@@ -628,9 +628,9 @@ if ($ds == "event"){
 		FROM #event as e
 		LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
 		WHERE find_in_set(event_cat_class,'".USERCLASS_LIST."') AND
-		((e.event_start >= {$start_time} AND e.event_start <= {$end_time})
-		OR (e.event_end >= {$start_time} AND e.event_end <= {$end_time})
-		OR (e.event_start <= {$start_time} AND e.event_end >= {$end_time})
+		((e.event_start >= ".intval($start_time)." AND e.event_start <= ".intval($end_time).")
+		OR (e.event_end >= ".intval($start_time)." AND e.event_end <= ".intval($end_time).")
+		OR (e.event_start <= ".intval($start_time)." AND e.event_end >= ".intval($end_time).")
 		{$extra})
 		ORDER BY e.event_start ASC
 		";
@@ -689,7 +689,7 @@ if (!isset($next10_start)){
 $qry = "
 SELECT e.* FROM #event AS e
 LEFT JOIN #event_cat AS ec ON e.event_category = ec.event_cat_id
-WHERE e.event_start > '{$next10_start}' AND ec.event_cat_class IN (".USERCLASS_LIST.")
+WHERE e.event_start > '".intval($next10_start)."' AND ec.event_cat_class IN (".USERCLASS_LIST.")
 ORDER BY e.event_start ASC 
 LIMIT 0, 10
 ";

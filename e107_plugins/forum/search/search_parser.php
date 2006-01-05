@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/search/search_parser.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-14 19:28:44 $
+|     $Revision: 1.3 $
+|     $Date: 2006-01-05 09:06:46 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -29,8 +29,8 @@ if (isset($_GET['time']) && is_numeric($_GET['time'])) {
 	$advanced_where .= " t.thread_datestamp ".($_GET['on'] == 'new' ? '>=' : '<=')." '".(time() - $_GET['time'])."' AND";
 }
 
-if (isset($_GET['author']) && (strpos(' ', $_GET['author']) === false) && $_GET['author'] != '') {
-	$advanced_where .= " (u.user_id = '".$_GET['author']."' OR u.user_name = '".$_GET['author']."') AND";
+if (isset($_GET['author']) && $_GET['author'] != '') {
+	$advanced_where .= " (u.user_id = '".$tp -> toDB($_GET['author'])."' OR u.user_name = '".$tp -> toDB($_GET['author'])."') AND";
 }
 
 if (isset($_GET['match']) && $_GET['match']) {

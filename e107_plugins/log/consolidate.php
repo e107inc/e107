@@ -117,8 +117,8 @@ $sql -> db_Update("logstats", "log_data='$screen' WHERE log_id='statScreen'");
 $sql -> db_Update("logstats", "log_data='$domain' WHERE log_id='statDomain'");
 $sql -> db_Update("logstats", "log_data='$refer' WHERE log_id='statReferer'");
 $sql -> db_Update("logstats", "log_data='$squery' WHERE log_id='statQuery'");
-$sql -> db_Update("logstats", "log_data='$statTotal' WHERE log_id='statTotal'");
-$sql -> db_Update("logstats", "log_data='$statUnique' WHERE log_id='statUnique'");
+$sql -> db_Update("logstats", "log_data='".intval($statTotal)."' WHERE log_id='statTotal'");
+$sql -> db_Update("logstats", "log_data='".intval($statUnique)."' WHERE log_id='statUnique'");
 
 
 /* get monthly info from db */
@@ -186,7 +186,7 @@ foreach($pageInfo as $key => $value)
 }
 
 $data = $dailytotal.chr(1).$uniquetotal.chr(1) . $data;
-$sql -> db_Insert("logstats", "0, '$date2', '$data'");
+$sql -> db_Insert("logstats", "0, '$date2', '".$tp -> toDB($data, true)."'");
 
 	
 /* ok, we're finished with the log file now, we can empty it ... */

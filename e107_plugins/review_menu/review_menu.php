@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/review_menu/review_menu.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-12-14 19:28:52 $
+|     $Revision: 1.11 $
+|     $Date: 2006-01-05 09:06:46 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -54,7 +54,7 @@ if ($cache = $e107cache->retrieve("review_menu")) {
 		$text .= "<br />";
 	}
 	 
-	if ($sql->db_Select("content", "*", "content_type='3' ORDER BY content_datestamp DESC limit 0, ".$menu_pref['reviews_display'])) {
+	if ($sql->db_Select("content", "*", "content_type='3' ORDER BY content_datestamp DESC limit 0, ".intval($menu_pref['reviews_display']))) {
 		while ($row = $sql->db_Fetch()) {
 			extract($row);
 			if (check_class($content_class)) {
@@ -62,7 +62,7 @@ if ($cache = $e107cache->retrieve("review_menu")) {
 				if ($content_parent == 0) {
 					$ok = 1;
 				} else {
-					if ($sql2->db_Select("content", "content_class", "content_id = '{$content_parent}'")) {
+					if ($sql2->db_Select("content", "content_class", "content_id = '".intval($content_parent)."'")) {
 						$row2 = $sql2->db_Fetch();
 						if (check_class($row2['content_class'])) {
 							$ok = 1;

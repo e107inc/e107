@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/plugin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-14 19:28:43 $
+|     $Revision: 1.8 $
+|     $Date: 2006-01-05 09:06:46 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -114,14 +114,14 @@ $eplug_upgrade_done = "";
 if (!function_exists('chatbox_menu_uninstall')) {
 	function chatbox_menu_uninstall() {
 		global $sql;
-		$sql -> db_Update("user", "user_chats=''");
+		$sql -> db_Update("user", "user_chats='0'");
 	}
 }
 
 if (!function_exists('chatbox_menu_install')) {
 	function chatbox_menu_install() {
 		global $sql;
-		$sql -> db_Update("user", "user_chats=''");
+		$sql -> db_Update("user", "user_chats='0'");
 	}
 }
 

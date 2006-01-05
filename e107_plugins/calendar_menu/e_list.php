@@ -17,7 +17,7 @@ if (!defined('e107_INIT')) { exit; }
 
 	if($mode == "new_page" || $mode == "new_menu" ){
 		$lvisit = $this -> getlvisit();
-		$qry = " event_datestamp>".$lvisit." AND ";
+		$qry = " event_datestamp>".intval($lvisit)." AND ";
 	}else{
 		$qry = "";
 	}
@@ -29,7 +29,7 @@ if (!defined('e107_INIT')) { exit; }
 	FROM #event AS e 
 	LEFT JOIN #event_cat AS c ON c.event_cat_id = e.event_category 
 	WHERE ".$qry." e.event_start>='$current' AND c.event_cat_class REGEXP '".e_CLASS_REGEXP."' 
-	ORDER BY e.event_start ASC LIMIT 0,".$arr[7];
+	ORDER BY e.event_start ASC LIMIT 0,".intval($arr[7]);
 
 	if(!$event_items = $sql->db_Select_gen($qry)){
 		$LIST_DATA = LIST_CALENDAR_2;

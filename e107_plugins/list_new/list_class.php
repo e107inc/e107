@@ -11,8 +11,8 @@
 |       GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/list_new/list_class.php,v $
-|		$Revision: 1.7 $
-|		$Date: 2005-12-14 19:28:44 $
+|		$Revision: 1.8 $
+|		$Date: 2006-01-05 09:06:46 $
 |		$Author: sweetas $
 +---------------------------------------------------------------+
 */
@@ -165,13 +165,13 @@ class listclass {
 	}
 
 	function getDefaultPrefs(){
-		global $sql, $sections, $titles, $defaultarray, $content_types;
+		global $sql, $sections, $titles, $defaultarray, $content_types, $tp;
 
 		//section preferences
 		for($i=0;$i<count($sections);$i++){
 			if(!in_array($sections[$i], $defaultarray)){
 				if(!in_array($sections[$i], $content_types)){
-					if($plugin_installed = $sql -> db_Select("plugin", "*", "plugin_path = '".$sections[$i]."' AND plugin_installflag = '1' ")){
+					if($plugin_installed = $sql -> db_Select("plugin", "*", "plugin_path = '".$tp -> toDB($sections[$i], true)."' AND plugin_installflag = '1' ")){
 						$list_pref["$sections[$i]_recent_menu_caption"]	= $sections[$i];
 						$list_pref["$sections[$i]_recent_page_caption"]	= $sections[$i];
 						$list_pref["$sections[$i]_new_menu_caption"]	= $sections[$i];

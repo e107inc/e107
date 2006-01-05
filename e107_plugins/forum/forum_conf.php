@@ -11,9 +11,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_conf.php,v $
-| $Revision: 1.5 $
-| $Date: 2005-06-01 03:16:32 $
-| $Author: mcfly_e107 $
+| $Revision: 1.6 $
+| $Date: 2006-01-05 09:06:46 $
+| $Author: sweetas $
 +---------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -51,7 +51,7 @@ else
 require_once(HEADERF);
 
 if (isset($_POST['deletepollconfirm'])) {
-	$sql->db_Delete("poll", "poll_id='$thread_parent' ");
+	$sql->db_Delete("poll", "poll_id='".intval($thread_parent)."' ");
 	$sql->db_Select("forum_t", "*", "thread_id='".$thread_id."' ");
 	$row = $sql->db_Fetch();
 	 extract($row);
@@ -141,7 +141,7 @@ if ($action == "move")
 	SELECT f.forum_id, f.forum_name FROM #forum AS f
 	LEFT JOIN #forum AS fp ON f.forum_parent = fp.forum_id
 	WHERE f.forum_parent != 0
-	AND f.forum_id != {$info['forum_id']}	
+	AND f.forum_id != ".intval($info['forum_id'])."	
 	AND f.forum_class IN (".USERCLASS_LIST.")
 	AND fp.forum_class IN (".USERCLASS_LIST.")
 	ORDER BY f.forum_order

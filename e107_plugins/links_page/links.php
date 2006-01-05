@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/links.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-11-05 01:38:36 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.33 $
+|     $Date: 2006-01-05 09:06:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once('../../class2.php');
@@ -57,7 +57,7 @@ $lc -> setPageTitle();
 
 //submit comment
 if (isset($_POST['commentsubmit'])) {
-	if (!$sql->db_Select("links_page", "link_id", "link_id = '{$qs[1]}' ")) {
+	if (!$sql->db_Select("links_page", "link_id", "link_id = '".intval($qs[1])."' ")) {
 		header("location:".e_BASE."index.php");
 		exit;
 	} else {
@@ -73,10 +73,10 @@ if (isset($_POST['commentsubmit'])) {
 //update refer
 if (isset($qs[0]) && $qs[0] == "view" && isset($qs[1]) && is_numeric($qs[1]))
 {
-	if($sql->db_Select("links_page", "*", "link_id='$qs[1]' AND link_class REGEXP '".e_CLASS_REGEXP."' "))
+	if($sql->db_Select("links_page", "*", "link_id='".intval($qs[1])."' AND link_class REGEXP '".e_CLASS_REGEXP."' "))
 	{
 		$row = $sql->db_Fetch();
-		$sql->db_Update("links_page", "link_refer=link_refer+1 WHERE link_id='$qs[1]' ");
+		$sql->db_Update("links_page", "link_refer=link_refer+1 WHERE link_id='".intval($qs[1])."' ");
 		//header("location:".$row['link_url']); exit;
 		js_location($row['link_url']);
 	}
@@ -172,7 +172,7 @@ function displayTopRated(){
 	global $LINK_RATED_TABLE_START, $LINK_RATED_TABLE, $LINK_RATED_TABLE_END, $LINK_RATED_RATING, $LINK_RATED_APPEND;
 	
 	$number		= (isset($linkspage_pref["link_nextprev_number"]) && $linkspage_pref["link_nextprev_number"] ? $linkspage_pref["link_nextprev_number"] : "20");
-	$np			= ($linkspage_pref["link_nextprev"] ? "LIMIT ".$from.",".$number : "");
+	$np			= ($linkspage_pref["link_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
 	$catrate	= (isset($qs[1]) && is_numeric($qs[1]) ? " AND l.link_category='".$qs[1]."' " : "");
 	$ratemin	= (isset($linkspage_pref['link_rating_minimum']) && $linkspage_pref['link_rating_minimum'] ? $linkspage_pref['link_rating_minimum'] : "0");
 	$qry = "
@@ -224,7 +224,7 @@ function displayTopRefer(){
 	global $LINK_TABLE_START, $LINK_TABLE, $LINK_TABLE_END, $LINK_APPEND;
 
 	$number	= ($linkspage_pref["link_nextprev_number"] ? $linkspage_pref["link_nextprev_number"] : "20");
-	$np		= ($linkspage_pref["link_nextprev"] ? "LIMIT ".$from.",".$number : "");
+	$np		= ($linkspage_pref["link_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
 	$min	= (isset($linkspage_pref['link_refer_minimum']) && $linkspage_pref['link_refer_minimum'] ? " AND l.link_refer > ".$linkspage_pref['link_refer_minimum'] : "");
 
 	$qry = "
@@ -279,14 +279,14 @@ function displayPersonalManager(){
 			list($delete, $del_id) = explode("_", $tmp);
 		}
 		if (isset($delete) && $delete == 'main') {
-			$sql->db_Select("links_page", "link_order", "link_id='".$del_id."'");
+			$sql->db_Select("links_page", "link_order", "link_id='".intval($del_id)."'");
 			$row = $sql->db_Fetch();
 			$sql2 = new db;
-			$sql->db_Select("links_page", "link_id", "link_order>'".$row['link_order']."' && link_category='".$id."'");
+			$sql->db_Select("links_page", "link_id", "link_order>'".$row['link_order']."' && link_category='".intval($id)."'");
 			while ($row = $sql->db_Fetch()) {
 				$sql2->db_Update("links_page", "link_order=link_order-1 WHERE link_id='".$row['link_id']."'");
 			}
-			if ($sql->db_Delete("links_page", "link_id='".$del_id."'")) {
+			if ($sql->db_Delete("links_page", "link_id='".intval($del_id)."'")) {
 				$lc->show_message(LCLAN_ADMIN_10." #".$del_id." ".LCLAN_ADMIN_11);
 			}
 		}
@@ -336,7 +336,7 @@ function displayLinkComment(){
 		SELECT l.*, lc.*
 		FROM #links_page AS l
 		LEFT JOIN #links_page_cat AS lc ON lc.link_category_id = l.link_category
-		WHERE l.link_id = '".$qs[1]."' AND lc.link_category_class REGEXP '".e_CLASS_REGEXP."' AND l.link_class REGEXP '".e_CLASS_REGEXP."' 
+		WHERE l.link_id = '".intval($qs[1])."' AND lc.link_category_class REGEXP '".e_CLASS_REGEXP."' AND l.link_class REGEXP '".e_CLASS_REGEXP."' 
 		";
 		$link_comment_table_string = "";
 		if(!$linkcomment = $sql -> db_Select_gen($qry)){
@@ -437,8 +437,8 @@ function displayCategoryLinks($mode=''){
 
 	$order			= $lc -> getOrder();
 	$number			= ($linkspage_pref["link_nextprev_number"] ? $linkspage_pref["link_nextprev_number"] : "20");
-	$nextprevquery	= ($mode && $linkspage_pref["link_nextprev"] ? "LIMIT ".$from.",".$number : "");
-	$cat			= ($mode ? " AND l.link_category='".$mode."' " : "");
+	$nextprevquery	= ($mode && $linkspage_pref["link_nextprev"] ? "LIMIT ".intval($from).",".intval($number) : "");
+	$cat			= ($mode ? " AND l.link_category='".intval($mode)."' " : "");
 	$qry			= "
 	SELECT l.*, lc.*, COUNT(c.comment_id) AS link_comment
 	FROM #links_page AS l

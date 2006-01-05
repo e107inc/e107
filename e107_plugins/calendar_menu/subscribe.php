@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/subscribe.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-05-01 04:37:02 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-05 09:06:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -26,8 +26,8 @@ $cal_db = new DB;
 
 if (isset($_POST['upsubs']))
 {
-    $cal_cats = $_POST['event_list'];
-    $cal_subs = $_POST['event_subd'];
+    $cal_cats = $tp -> toDB($_POST['event_list']);
+    $cal_subs =  $tp -> toDB($_POST['event_subd']);
     $cal_db->db_Delete("event_subs", "event_userid='" . USERID . "'");
     foreach($cal_cats as $cal_row)
     {

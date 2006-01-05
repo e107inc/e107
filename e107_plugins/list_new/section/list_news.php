@@ -20,7 +20,7 @@ if (!defined('e107_INIT')) { exit; }
 	LEFT JOIN #news_category AS c ON c.category_id = n.news_category
 	LEFT JOIN #user AS u ON n.news_author = u.user_id
 	WHERE ".$qry." AND n.news_class REGEXP '".e_CLASS_REGEXP."'
-	ORDER BY n.news_datestamp DESC LIMIT 0,".$arr[7]." 
+	ORDER BY n.news_datestamp DESC LIMIT 0,".intval($arr[7])." 
 	";
 
 	if(!$sql -> db_Select_gen($qry)){

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_mod.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-12-14 19:28:44 $
+|     $Revision: 1.10 $
+|     $Date: 2006-01-05 09:06:46 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ function forum_thread_moderate($p)
 		if (preg_match("#(.*?)_(\d+)_x#", $key, $matches))
 		{
 			$act = $matches[1];
-			$id = $matches[2];
+			$id = intval($matches[2]);
 			 
 			switch($act)
 			{
@@ -66,13 +66,13 @@ function forum_delete_thread($thread_id)
 	global $sql;
 	@require_once(e_PLUGIN.'forum/forum_class.php');
 	$f =& new e107forum;
-	$sql->db_Select("forum_t", "*", "thread_id='".$thread_id."' ");
+	$sql->db_Select("forum_t", "*", "thread_id='".intval($thread_id)."' ");
 	$row = $sql->db_Fetch();
 	 
 	if ($row['thread_parent'])
 	{
 		// post is a reply?
-		$sql->db_Delete("forum_t", "thread_id='$thread_id' ");
+		$sql->db_Delete("forum_t", "thread_id='".intval($thread_id)."' ");
 		// dec forum reply count by 1
 		$sql->db_Update("forum", "forum_replies=forum_replies-1 WHERE forum_id='".$row['thread_forum_id']."'");
 		// dec thread reply count by 1
@@ -93,13 +93,13 @@ function forum_delete_thread($thread_id)
 	{
 		// post is thread
 		// delete poll if there is one
-		$sql->db_Delete("poll", "poll_datestamp='$thread_id'");
+		$sql->db_Delete("poll", "poll_datestamp='".intval($thread_id)."'");
 		//decrement user post counts
-		forum_userpost_count("WHERE thread_id = '{$thread_id}' OR thread_parent = '{$thread_id}'", "dec");
+		forum_userpost_count("WHERE thread_id = '".intval($thread_id)."' OR thread_parent = '".intval($thread_id)."'", "dec");
 		// delete replies and grab how many there were
-		$count = $sql->db_Delete("forum_t", "thread_parent='$thread_id'");
+		$count = $sql->db_Delete("forum_t", "thread_parent='".intval($thread_id)."'");
 		// delete the post itself
-		$sql->db_Delete("forum_t", "thread_id='$thread_id'");
+		$sql->db_Delete("forum_t", "thread_id='".intval($thread_id)."'");
 		// update thread/reply counts
 		$sql->db_Update("forum", "forum_threads=forum_threads-1, forum_replies=forum_replies-$count WHERE forum_id='".$row['thread_forum_id']."'");
 		// update lastpost info

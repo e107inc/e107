@@ -13,7 +13,7 @@ if (!defined('e107_INIT')) { exit; }
 	}else{
 		$qry = "comment_id != '0' ";
 	}
-	$qry .= " ORDER BY comment_datestamp DESC LIMIT 0,".$arr[7];
+	$qry .= " ORDER BY comment_datestamp DESC LIMIT 0,".intval($arr[7]);
 
 	$sql2 = new db;
 	if(!$sql -> db_Select("comments", "*", $qry )){
