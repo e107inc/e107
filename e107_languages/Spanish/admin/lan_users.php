@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_users.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.14 $
+|     $Date: 2006-01-05 11:03:51 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -100,7 +100,7 @@ define("USRLAN_90", "Buscar/refrescar");
 define("USRLAN_91", "Clase");
 define("USRLAN_92", "Caracteres no válidos en el nombre de usuario");
 define("USRLAN_93", "Borrar usuarios sin verificar");
-define("USRLAN_94", "Borrar usuarios sin confirmar registro después de (tiempo especificado en minutos) - dejar en blanco para no usar esta opción");
+define("USRLAN_94", "Borrar usuarios sin confirmar registro después de (tiempo especificado en minutos) - dejar en blanco para no usar esta opción<br />Esta opción será ignorada si los registros los modera el administrador");
 define("USRLAN_95", "minutos");
 
 define("USRLAN_112", "Re-enviar Email");
@@ -131,7 +131,9 @@ define("USRLAN_134", "Activando esta opción se enviará al usuario a sus ajuste
 define("USRLAN_135", "No se encontró la IP en la info de usuario, IP no expulsada"); 
 define("USRLAN_136", "Varios usuarios tienen la ip {IP}, IP no expulsada."); 
 define("USRLAN_137", "Usuarios con la IP {IP} expulsados."); 
-    
+define("USRLAN_138", "Usuarios sin verificar"); 
+define("USRLAN_139", "Su cuenta ha sido activada.\n\nAhora puede visitar {SITEURL} y conectarse usando la información que escribió en su registro."); 
+   
 define("LAN_MAINADMIN","Admin principal"); 
 define("LAN_ADMIN","Admin"); 
 define("LAN_NOTVERIFIED","Sin verificar"); 

@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-11-22 22:51:14 $
+|     $Revision: 1.4 $
+|     $Date: 2006-01-05 11:03:52 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -189,6 +189,8 @@ define("FORLAN_173", "Título tema");
 define("FORLAN_174", "Informe por usuario");
 define("FORLAN_175", "Informe enviado");
 define("FORLAN_176", "Informe");
+define("FORLAN_177", "Notificación correo ACTIVADA por defecto");
+define("FORLAN_178", "Actívalo para permitir que la notificación de email esté activa por defecto");
 
 
 

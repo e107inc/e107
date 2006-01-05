@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Spanish/lan_content_admin.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.13 $
+|     $Date: 2006-01-05 11:03:51 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -208,6 +208,7 @@ define("CONTENT_ADMIN_ITEM_LAN_120", "Plantilla por defecto");
 define("CONTENT_ADMIN_ITEM_LAN_121", "No hay nuevos iconos transferidos todavía");
 define("CONTENT_ADMIN_ITEM_LAN_122", "No hay nuevos adjuntos transferidos todavía");
 define("CONTENT_ADMIN_ITEM_LAN_123", "No hay nuevas imágenes transferidas todavía");
+define("CONTENT_ADMIN_ITEM_LAN_124", "para ver el elemento");
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "Orden incrementado");
 define("CONTENT_ADMIN_ORDER_LAN_1", "Orden decrementado");

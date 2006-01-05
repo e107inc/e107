@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-12-31 11:12:37 $
+|     $Revision: 1.19 $
+|     $Date: 2006-01-05 11:03:51 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -39,7 +39,7 @@ define("PRFLAN_27", "Ejemplo, si usted ajusta esto a +2, todas las horas en su s
 define("PRFLAN_28", "Registro de usuarios");
 define("PRFLAN_29", "¿Permitir registro de usuarios?");
 define("PRFLAN_30", "Permite a los visitantes registrarse en su sitio");
-define("PRFLAN_31", "¿Usar verificación de email?");
+define("PRFLAN_31", "Verificación correo");
 define("PRFLAN_32", "¿Permitir mensajes de anónimos?");
 define("PRFLAN_33", "<b>Off:</b> Desactívalo para permitir que solo los miembros registrados puedan enviar comentarios, etc");
 
@@ -145,6 +145,9 @@ define("PRFLAN_148", "Activar funciones de depurador. Esto es solo para programa
 define("PRFLAN_149", "Opciones Avanzadas");
 define("PRFLAN_150", "Selecciona método de autentificación");
 define("PRFLAN_151", "e107 - No hay métodos de autententificación instalados");
+define("PRFLAN_152", "Sin verificación");
+define("PRFLAN_153", "Aprobación Admin");
+define("PRFLAN_154", "Nuevo método de verificación de usuraio <br />Si selecciona 'Aprobación Admin', se recomienda que active la verificación por email en el registro <a href='".e_ADMIN."notify.php'>aquí</a>.");
 
 define("CUSTSIG_1", "¡Configuración Guardada!");
 define("CUSTSIG_2", "Nombre Real:");
