@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2005-12-18 18:12:46 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.38 $
+|     $Date: 2006-01-05 09:06:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -27,7 +27,7 @@ class poll
 	function delete_poll($existing)
 	{
 		global $sql;
-		if ($sql -> db_Delete("polls", " poll_id='".$existing."' "))
+		if ($sql -> db_Delete("polls", " poll_id='".intval($existing)."' "))
 		{
 			return "Poll deleted.";
 		}
@@ -56,10 +56,10 @@ class poll
 
 		if(POLLACTION == "edit")
 		{
-			$sql -> db_Update("polls", "poll_title='$poll_title', poll_options='$poll_options', poll_type=$mode, poll_comment='$poll_comment', poll_allow_multiple=$multipleChoice, poll_result_type=$showResults, poll_vote_userclass=$pollUserclass, poll_storage_method=$storageMethod WHERE poll_id=".POLLID);
+			$sql -> db_Update("polls", "poll_title='$poll_title', poll_options='$poll_options', poll_type=$mode, poll_comment='".$tp -> toDB($poll_comment)."', poll_allow_multiple=".intval($multipleChoice).", poll_result_type=".intval($showResults).", poll_vote_userclass=".intval($pollUserclass).", poll_storage_method=".intval($storageMethod)." WHERE poll_id=".intval(POLLID));
 
 			/* update poll results - bugtracker #1124 .... */
-			$sql -> db_Select("polls", "poll_votes", "poll_id='".POLLID."' ");
+			$sql -> db_Select("polls", "poll_votes", "poll_id='".intval(POLLID)."' ");
 			$foo = $sql -> db_Fetch();
 			$voteA = explode(chr(1), $foo['poll_votes']);
 
@@ -71,7 +71,7 @@ class poll
 				{
 					$foo['poll_votes'] .= "0".chr(1);
 				}
-				$sql -> db_Update("polls", "poll_votes='".$foo['poll_votes']."' WHERE poll_id='".POLLID."' ");
+				$sql -> db_Update("polls", "poll_votes='".$foo['poll_votes']."' WHERE poll_id='".intval(POLLID)."' ");
 			}
 	
 			$message = POLLAN_45;
@@ -94,11 +94,11 @@ class poll
 						$sql -> db_Update("polls", "poll_end_datestamp='".time()."', poll_vote_userclass='255' WHERE poll_id=".$deacpoll['poll_id']);
 					}
 				}
-				$sql -> db_Insert("polls", "'0', ".time().", $active_start, $active_end, ".ADMINID.", '$poll_title', '$poll_options', '$votes', '', '1', '$poll_comment', '$multipleChoice', '$showResults', '$pollUserclass', '$storageMethod'");
+				$sql -> db_Insert("polls", "'0', ".time().", ".intval($active_start).", ".intval($active_end).", ".ADMINID.", '$poll_title', '$poll_options', '$votes', '', '1', '".$tp -> toDB($poll_comment)."', '".intval($multipleChoice)."', '".intval($showResults)."', '".intval($pollUserclass)."', '".intval($storageMethod)."'");
 			}
 			else
 			{
-				$sql -> db_Insert("polls", "'0', ".$_POST['iid'].", '0', '0', ".USERID.", '$poll_title', '$poll_options', '$votes', '', '2', '0', '$multipleChoice', '0', '0', '0'");
+				$sql -> db_Insert("polls", "'0', ".intval($_POST['iid']).", '0', '0', ".USERID.", '$poll_title', '$poll_options', '$votes', '', '2', '0', '".intval($multipleChoice)."', '0', '0', '0'");
 			}
 		}
 		return $message;
@@ -176,7 +176,7 @@ class poll
 			$preview = TRUE;
 		}
 
-		$comment_total = $sql->db_Select("comments", "*", "comment_item_id='".$pollArray['poll_id']."' AND comment_type=4");
+		$comment_total = $sql->db_Select("comments", "*", "comment_item_id='".intval($pollArray['poll_id'])."' AND comment_type=4");
 
 		$QUESTION = $tp -> toHTML($pollArray['poll_title'], TRUE,"emotes_off defs");
 		$VOTE_TOTAL = POLLAN_26.": ".$voteTotal;

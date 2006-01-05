@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2005-12-12 15:32:17 $
-|     $Author: e107coders $
+|     $Revision: 1.36 $
+|     $Date: 2006-01-05 09:06:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -91,7 +91,7 @@ class rssCreate {
 
 		switch ($content_type) {
 			case 1:
-				$topic = (is_numeric($topic_id))? " AND news_category = ".$topic_id : "";
+				$topic = (is_numeric($topic_id))? " AND news_category = ".intval($topic_id) : "";
 				$this -> contentType = "news";
 				$this -> rssQuery = "
 				SELECT n.*, u.user_id, u.user_name, u.user_email, u.user_customtitle, nc.category_name, nc.category_icon FROM #news AS n
@@ -238,7 +238,7 @@ class rssCreate {
 				FROM #forum_t AS t
 				LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
 				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-				WHERE f.forum_class  IN (0, 251, 255) AND t.thread_id=".$this -> topicid;
+				WHERE f.forum_class  IN (0, 251, 255) AND t.thread_id=".intval($this -> topicid);
 				$sql->db_Select_gen($this -> rssQuery);
 				$topic = $sql->db_Fetch();
 
@@ -247,7 +247,7 @@ class rssCreate {
 				FROM #forum_t AS t
 				LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
 				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-				WHERE f.forum_class  IN (0, 251, 255) AND t.thread_parent=".$this -> topicid;
+				WHERE f.forum_class  IN (0, 251, 255) AND t.thread_parent=".intval($this -> topicid);
 				$sql->db_Select_gen($this -> rssQuery);
 				$replies = $sql->db_getList();
 
@@ -302,7 +302,7 @@ class rssCreate {
 				LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
 				LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
 				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
-				WHERE t.thread_forum_id = ".$this->topicid."
+				WHERE t.thread_forum_id = ".intval($this->topicid)."
 				AND f.forum_class IN (0, 251, 255)
 				ORDER BY
 				t.thread_datestamp DESC
@@ -334,7 +334,7 @@ class rssCreate {
 			break;
 
 			case 12:
-				$topic = ($topic_id) ? "download_category='$topic_id' AND " : "";
+				$topic = ($topic_id) ? "download_category='".intval($topic_id)."' AND " : "";
 				$this -> contentType = "downloads";
 				$class_list = "0,251,252,253";
 				$sql->db_Select("download", "*", "{$topic} download_active > 0 AND download_class IN (".$class_list.") ORDER BY download_datestamp DESC LIMIT 0,29");
@@ -356,7 +356,7 @@ class rssCreate {
 		}
 
 	// Get Plugin RSS feeds.
-	if($sql_rs->db_Select("plugin","*","plugin_rss REGEXP('$content_type')")){
+	if($sql_rs->db_Select("plugin","*","plugin_rss REGEXP('".$tp -> toDB($content_type, true)."')")){
 		$row2 = $sql_rs -> db_Fetch();
 		require_once(e_PLUGIN.$row2['plugin_path']."/plugin.php");
 		foreach($eplug_rss as $key=>$rs){

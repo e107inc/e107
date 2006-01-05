@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-07-06 11:24:20 $
-|     $Author: lisa_ $
+|     $Revision: 1.15 $
+|     $Date: 2006-01-05 09:06:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */ 
 
@@ -125,7 +125,6 @@ if ($cal_super)
 			LEFT JOIN #event_cat as ec ON e.event_category = ec.event_cat_id
 			WHERE e.event_id != ''
 			ORDER BY e.event_start";
-			//WHERE ((e.event_start >= {$monthstart} AND e.event_start <= {$monthend}) OR (e.event_end >= {$monthstart} AND e.event_end <= {$monthend}) OR e.event_rec_y = {$month})
 } 
 else
 {
@@ -135,7 +134,6 @@ else
 			WHERE e.event_id != ''
 			AND find_in_set(event_cat_class,'".USERCLASS_LIST."') 
 			ORDER BY e.event_start";
-			//WHERE ((e.event_start >= {$monthstart} AND e.event_start <= {$monthend}) OR (e.event_end >= {$monthstart} AND e.event_end <= {$monthend}) OR e.event_rec_y = {$month})
 } 
 
 if ($sql->db_Select_gen($qry)){

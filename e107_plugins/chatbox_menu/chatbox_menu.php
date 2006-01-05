@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2005-12-14 19:28:43 $
+|     $Revision: 1.55 $
+|     $Date: 2006-01-05 09:06:46 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -43,7 +43,7 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 	else
 	{
 		$cmessage = $_POST['cmessage'];
-		$nick = trim(preg_replace("/\[.*\]/si", "", $_POST['nick']));
+		$nick = trim(preg_replace("/\[.*\]/si", "", $tp -> toDB($_POST['nick'])));
 		$fp = new floodprotect;
 		if($fp -> flood("chatbox", "cb_datestamp"))
 		{
@@ -74,7 +74,7 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 						}
 						else
 						{
-							$nick = "0.".$tp -> toDB($nick);
+							$nick = "0.".$nick;
 						}
 					}
 					if(!$emessage)
@@ -169,10 +169,8 @@ if(!$text = $e107cache->retrieve("chatbox"))
 	$qry = "
 	SELECT c.*, u.user_name FROM #chatbox AS c
 	LEFT JOIN #user AS u ON FLOOR(c.cb_nick) = u.user_id
-	ORDER BY c.cb_datestamp DESC LIMIT 0, {$chatbox_posts}
-	";
-	
-//	if($sql -> db_Select("chatbox", "*", "ORDER BY cb_datestamp DESC LIMIT 0, ".$chatbox_posts, "no_where"))
+	ORDER BY c.cb_datestamp DESC LIMIT 0, ".intval($chatbox_posts);
+
 	if($sql -> db_Select_gen($qry))
 	{
 		$obj2 = new convert;

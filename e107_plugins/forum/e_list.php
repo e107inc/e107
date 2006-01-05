@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/e_list.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-12-14 19:28:44 $
+|     $Revision: 1.7 $
+|     $Date: 2006-01-05 09:06:46 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -40,7 +40,7 @@ if (!defined('e107_INIT')) { exit; }
 		LEFT JOIN #user AS lp ON tp.thread_lastuser = lp.user_id 
 		WHERE f.forum_class REGEXP '".e_CLASS_REGEXP."' 
 		AND t.thread_datestamp > $lvisit 
-		ORDER BY t.thread_datestamp DESC LIMIT 0,".$arr[7];
+		ORDER BY t.thread_datestamp DESC LIMIT 0,".intval($arr[7]);
 	}
 	else
 	{
@@ -51,7 +51,7 @@ if (!defined('e107_INIT')) { exit; }
 		LEFT JOIN #user AS u ON t.thread_user = u.user_id 
 		LEFT JOIN #user AS lp ON t.thread_lastuser = lp.user_id 
 		WHERE t.thread_parent=0 AND f.forum_class REGEXP '".e_CLASS_REGEXP."' 
-		ORDER BY t.thread_lastpost DESC LIMIT 0,".$arr[7];
+		ORDER BY t.thread_lastpost DESC LIMIT 0,".intval($arr[7]);
 		
 	}
 

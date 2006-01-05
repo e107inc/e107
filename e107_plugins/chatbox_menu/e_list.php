@@ -15,7 +15,7 @@ if (!defined('e107_INIT')) { exit; }
 	}else{
 		$qry = "cb_id != '0' ";
 	}
-	$qry .= " ORDER BY cb_datestamp DESC LIMIT 0,".$arr[7];
+	$qry .= " ORDER BY cb_datestamp DESC LIMIT 0,".intval($arr[7]);
 
 	$bullet = $this -> getBullet($arr[6], $mode);
 

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/subs_menu.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-14 19:28:43 $
+|     $Revision: 1.3 $
+|     $Date: 2006-01-05 09:06:46 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -42,13 +42,13 @@ if ($caldb->db_Select_gen($cal_args))
     while ($cal_row = $caldb->db_Fetch())
     {
         extract($cal_row);
-        $cal_emaildb->db_Update("event_cat", "event_cat_last=" . time() . " where event_cat_id=" . $event_cat_id); 
+        $cal_emaildb->db_Update("event_cat", "event_cat_last=" . time() . " where event_cat_id=" . intval($event_cat_id)); 
 
         if ($event_cat_force > 0)
         { 
             // Force email to members of this class
 
-            $cal_emilargs = "select * from " . MPREFIX . "user where user_class regexp '^$event_cat_class,' or user_class regexp ',$event_cat_class,'  or user_class regexp ',$event_cat_class'"; 
+            $cal_emilargs = "select * from " . MPREFIX . "user where user_class regexp '^".intval($event_cat_class).",' or user_class regexp ',".intval($event_cat_class).",'  or user_class regexp ',".intval($event_cat_class)."'"; 
 
             if ($cal_emaildb->db_Select_gen($cal_emilargs)) 
                 {
@@ -64,7 +64,7 @@ if ($caldb->db_Select_gen($cal_args))
         else
         { 
             // only subscribers
-            $cal_emilargs = "select * from " . MPREFIX . "user left join " . MPREFIX . "event_subs on user_id=event_userid where " . MPREFIX . "event_subs.event_cat='$event_category'";
+            $cal_emilargs = "select * from " . MPREFIX . "user left join " . MPREFIX . "event_subs on user_id=event_userid where " . MPREFIX . "event_subs.event_cat='".intval($event_category)."'";
 #print $cal_emilargs;
             if ($cal_emaildb->db_Select_gen($cal_emilargs))
             {
@@ -83,9 +83,9 @@ if ($caldb->db_Select_gen($cal_args))
 // Firstly for dates ahead
 $cal_starttime = mktime(0, 0, 0, date("n"), date("d"), date("Y"));
 $cal_args = "select * from " . MPREFIX . "event left join " . MPREFIX . "event_cat on event_category=event_cat_id where event_cat_subs>0 and 
-event_cat_today < " . $cal_starttime . " and 
-event_start >= (" . $cal_starttime . ") and
-event_start <= (86400+" . $cal_starttime . ") and
+event_cat_today < " . intval($cal_starttime) . " and 
+event_start >= (" . intval($cal_starttime) . ") and
+event_start <= (86400+" . intval($cal_starttime) . ") and
 find_in_set(event_cat_notify,'2,3')";
 if ($caldb->db_Select_gen($cal_args))
 {
@@ -93,12 +93,12 @@ if ($caldb->db_Select_gen($cal_args))
     while ($cal_row = $caldb->db_Fetch())
     {
         extract($cal_row);
-        $cal_emaildb->db_Update("event_cat", "event_cat_today=" . time() . " where event_cat_id=" . $event_cat_id);
+        $cal_emaildb->db_Update("event_cat", "event_cat_today=" . time() . " where event_cat_id=" . intval($event_cat_id));
         if ($event_cat_force > 0)
         { 
             // Force email to members of this class
 
-            $cal_emilargs = "select * from " . MPREFIX . "user where user_class regexp '^$event_cat_class,' or user_class regexp ',$event_cat_class,'  or user_class regexp ',$event_cat_class'"; 
+            $cal_emilargs = "select * from " . MPREFIX . "user where user_class regexp '^".intval($event_cat_class).",' or user_class regexp ',".intval($event_cat_class).",'  or user_class regexp ',".intval($event_cat_class)."'"; 
 
             if ($cal_emaildb->db_Select_gen($cal_emilargs))
                 {
@@ -114,7 +114,7 @@ if ($caldb->db_Select_gen($cal_args))
         else
         { 
             // only subscribers
-            $cal_emilargs = "select * from " . MPREFIX . "user left join " . MPREFIX . "event_subs on user_id=event_userid where " . MPREFIX . "event_subs.event_cat='$event_category'";
+            $cal_emilargs = "select * from " . MPREFIX . "user left join " . MPREFIX . "event_subs on user_id=event_userid where " . MPREFIX . "event_subs.event_cat='".intval($event_category)."'";
             if ($cal_emaildb->db_Select_gen($cal_emilargs))
             {
                 while ($cal_emrow = $cal_emaildb->db_Fetch())

@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.22 $
-|    $Date: 2005-12-30 14:20:18 $
-|    $Author: lisa_ $
+|    $Revision: 1.23 $
+|    $Date: 2006-01-05 09:06:46 $
+|    $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -116,7 +116,7 @@ class linkclass {
 
 		$num_rows = $sql -> db_Select("core", "*", "e107_name='links_page' ");
 		if ($num_rows == 0) {
-			$sql -> db_Insert("core", "'links_page', '{$tmp}' ");
+			$sql -> db_Insert("core", "'links_page', '' ");
 		}else{
 			$row = $sql -> db_Fetch();
 
@@ -382,18 +382,14 @@ class linkclass {
 
 	function dbCategoryCreate($_POST) {
 		global $sql, $tp;
-		$_POST['link_category_name']		= $tp->toDB($_POST['link_category_name']);
-		$_POST['link_category_description']	= $tp->toDB($_POST['link_category_description']);
-		$link_t								= $sql->db_Count("links_page_cat", "(*)");
-		$sql->db_Insert("links_page_cat", " '0', '".$_POST['link_category_name']."', '".$_POST['link_category_description']."', '".$_POST['link_category_icon']."', '".($link_t+1)."', '".$_POST['link_category_class']."', '".time()."' ");
+		$link_t = $sql->db_Count("links_page_cat", "(*)");
+		$sql->db_Insert("links_page_cat", " '0', '".$tp -> toDB($_POST['link_category_name'])."', '".$tp -> toDB($_POST['link_category_description'])."', '".$tp -> toDB($_POST['link_category_icon'])."', '".($link_t+1)."', '".$tp -> toDB($_POST['link_category_class'])."', '".time()."' ");
 		$this->show_message(LCLAN_ADMIN_4);
 	}
 	function dbCategoryUpdate($_POST) {
 		global $sql, $tp;
-		$_POST['link_category_name']		= $tp->toDB($_POST['link_category_name']);
-		$_POST['link_category_description']	= $tp->toDB($_POST['link_category_description']);
 		$time = ($_POST['update_datestamp'] ? time() : ($_POST['link_category_datestamp'] != "0" ? $_POST['link_category_datestamp'] : time()) );
-		$sql->db_Update("links_page_cat", "link_category_name ='".$_POST['link_category_name']."', link_category_description='".$_POST['link_category_description']."', link_category_icon='".$_POST['link_category_icon']."', link_category_order='".$_POST['link_category_order']."', link_category_class='".$_POST['link_category_class']."', link_category_datestamp='".$time."'	WHERE link_category_id='".$_POST['link_category_id']."'");
+		$sql->db_Update("links_page_cat", "link_category_name ='".$tp -> toDB($_POST['link_category_name'])."', link_category_description='".$tp -> toDB($_POST['link_category_description'])."', link_category_icon='".$tp -> toDB($_POST['link_category_icon'])."', link_category_order='".$tp -> toDB($_POST['link_category_order'])."', link_category_class='".$tp -> toDB($_POST['link_category_class'])."', link_category_datestamp='".intval($time)."'	WHERE link_category_id='".intval($_POST['link_category_id'])."'");
 		$this->show_message(LCLAN_ADMIN_5);
 	}
 
@@ -401,7 +397,7 @@ class linkclass {
 		global $sql;
 		foreach ($order as $order_id) {
 			$tmp = explode(".", $order_id);
-		$sql->db_Update("links_page", "link_order=".$tmp[1]." WHERE link_id=".$tmp[0]);
+		$sql->db_Update("links_page", "link_order=".intval($tmp[1])." WHERE link_id=".intval($tmp[0]));
 		}
 		$this->show_message(LCLAN_ADMIN_9);
 	}
@@ -410,7 +406,7 @@ class linkclass {
 		global $sql;
 		foreach ($order as $order_id) {
 			$tmp = explode(".", $order_id);
-			$sql->db_Update("links_page_cat", "link_category_order=".$tmp[1]." WHERE link_category_id=".$tmp[0]);
+			$sql->db_Update("links_page_cat", "link_category_order=".intval($tmp[1])." WHERE link_category_id=".intval($tmp[0]));
 		}
 		$this->show_message(LCLAN_ADMIN_9);
 	}
@@ -418,9 +414,9 @@ class linkclass {
 	function dbOrderUpdateInc($inc) {
 		global $sql;
 		$tmp = explode(".", $inc);
-		$linkid = $tmp[0];
-		$link_order = $tmp[1];
-		$location = $tmp[2];
+		$linkid = intval($tmp[0]);
+		$link_order = intval($tmp[1]);
+		$location = intval($tmp[2]);
 		if(isset($location)){
 			$sql->db_Update("links_page", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category='$location'");
 			$sql->db_Update("links_page", "link_order=link_order-1 WHERE link_id='$linkid' AND link_category='$location'");
@@ -433,9 +429,9 @@ class linkclass {
 	function dbOrderUpdateDec($dec) {
 		global $sql;
 		$tmp = explode(".", $dec);
-		$linkid = $tmp[0];
-		$link_order = $tmp[1];
-		$location = $tmp[2];
+		$linkid = intval($tmp[0]);
+		$link_order = intval($tmp[1]);
+		$location = intval($tmp[2]);
 		if(isset($location)){
 			$sql->db_Update("links_page", "link_order=link_order-1 WHERE link_order='".($link_order+1)."' AND link_category='$location'");
 			$sql->db_Update("links_page", "link_order=link_order+1 WHERE link_id='$linkid' AND link_category='$location'");
@@ -461,7 +457,7 @@ class linkclass {
 			if ($_POST['link_name'] && $_POST['link_url'] && $_POST['link_description']) {
 				$username			= (defined('USERNAME')) ? USERNAME : LAN_LINKS_3;
 
-				$submitted_link		= $_POST['cat_id']."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".$username;
+				$submitted_link		= intval($_POST['cat_id'])."^".$link_name."^".$link_url."^".$link_description."^".$link_button."^".$username;
 				$sql->db_Insert("tmp", "'submitted_link', '".time()."', '$submitted_link' ");
 				
 				$edata_ls = array("link_category" => $_POST['cat_id'], "link_name" => $link_name, "link_url" => $link_url, "link_description" => $link_description, "link_button" => $link_button, "username" => $username, "submitted_link" => $submitted_link);
@@ -472,7 +468,7 @@ class linkclass {
 				message_handler("ALERT", 5);
 			}
 		}else{
-			$link_t	= $sql->db_Count("links_page", "(*)", "WHERE link_category='".$_POST['cat_id']."'");
+			$link_t	= $sql->db_Count("links_page", "(*)", "WHERE link_category='".intval($_POST['cat_id'])."'");
 			$time	= ($_POST['update_datestamp'] ? time() : ($_POST['link_datestamp'] != "0" ? $_POST['link_datestamp'] : time()) );
 
 			if (is_numeric($qs[2]) && $qs[1] != "sn") {
@@ -481,21 +477,21 @@ class linkclass {
 					//$link_class = ($linkspage_pref['link_directpost'] ? $_POST['link_class'] : "255");
 					$link_class = $_POST['link_class'];
 				}else{
-					$link_author = ($_POST['link_author'] ? $_POST['link_author'] : USERID);
+					$link_author = ($_POST['link_author'] ? $tp -> toDB($_POST['link_author']) : USERID);
 					$link_class = $_POST['link_class'];
 				}
 
-				$sql->db_Update("links_page", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".$_POST['cat_id']."', link_open='".$_POST['linkopentype']."', link_class='".$link_class."', link_datestamp='".$time."', link_author='".$link_author."' WHERE link_id='$qs[2]'");
+				$sql->db_Update("links_page", "link_name='$link_name', link_url='$link_url', link_description='$link_description', link_button= '$link_button', link_category='".intval($_POST['cat_id'])."', link_open='".intval($_POST['linkopentype'])."', link_class='".intval($link_class)."', link_datestamp='".intval($time)."', link_author='".$link_author."' WHERE link_id='".intval($qs[2])."'");
 				$e107cache->clear("sitelinks");
 				$this->show_message(LCLAN_ADMIN_3);
 			} else {
 
-				$sql->db_Insert("links_page", "0, '$link_name', '$link_url', '$link_description', '$link_button', '".$_POST['cat_id']."', '".($link_t+1)."', '0', '".$_POST['linkopentype']."', '".$_POST['link_class']."', '".time()."', '".USERID."' ");
+				$sql->db_Insert("links_page", "0, '$link_name', '$link_url', '$link_description', '$link_button', '".intval($_POST['cat_id'])."', '".($link_t+1)."', '0', '".intval($_POST['linkopentype'])."', '".intval($_POST['link_class'])."', '".time()."', '".USERID."' ");
 				$e107cache->clear("sitelinks");
 				$this->show_message(LCLAN_ADMIN_2);
 			}
 			if (is_numeric($qs[2]) && $qs[1] == "sn") {
-				$sql->db_Delete("tmp", "tmp_time='$qs[2]' ");
+				$sql->db_Delete("tmp", "tmp_time='".intval($qs[2])."' ");
 			}
 		}
 	}
@@ -513,13 +509,13 @@ class linkclass {
 		$link_resize_value			= (isset($linkspage_pref['link_resize_value']) && $linkspage_pref['link_resize_value'] ? $linkspage_pref['link_resize_value'] : "100");
 
 		if (isset($qs[1]) && $qs[1] == 'edit' && !isset($_POST['submit'])) {
-			if ($sql->db_Select("links_page", "*", "link_id='$qs[2]' ")) {
+			if ($sql->db_Select("links_page", "*", "link_id='".intval($qs[2])."' ")) {
 				$row = $sql->db_Fetch();
 			}
 		}
 
 		if (isset($qs[1]) && $qs[1] == 'sn') {
-			if ($sql->db_Select("tmp", "*", "tmp_time='$qs[2]'")) {
+			if ($sql->db_Select("tmp", "*", "tmp_time='".intval($qs[2])."'")) {
 				$row = $sql->db_Fetch();
 				$submitted					= explode("^", $row['tmp_info']);
 				$row['link_category']		= $submitted[0];
@@ -614,19 +610,20 @@ class linkclass {
 			<div id='linkbut' style='display:; vertical-align:top;'><table style='text-align:left; width:100%;'><tr><td style='width:20%; padding-right:10px;'>";
 			$selectjs	= "size='5'";
 			$text		.= $rs -> form_select_open("link_button", $selectjs);
-			$js			= " onclick = \"insertext('','link_but',''); document.getElementById('iconview').src='".$iconpath."blank.gif';\" ";
-			$text		.= $rs -> form_option(LCLAN_ITEM_34, "1", "", $js );
+			$js			= "onclick=\"insertext('','link_but',''); document.getElementById('iconview').src='".e_PLUGIN."links_page/images/blank.gif'; document.getElementById('iconview').style.display='none';\" ";
+			$text		.= $rs -> form_option(LCLAN_ITEM_34, ($row['link_button'] ? "0" : "1"), "", $js );
 			foreach($iconlist as $icon){
-				$js		= " onclick = \"insertext('".$icon['fname']."','link_but',''); document.getElementById('iconview').src='".$icon['path'].$icon['fname']."';\" ";
+				$js		= "onclick=\"insertext('".$icon['fname']."','link_but',''); document.getElementById('iconview').src='".$icon['path'].$icon['fname']."'; document.getElementById('iconview').style.display='';\" ";
 				$text	.= $rs -> form_option($icon['fname'], ($icon['fname'] == $row['link_button'] ? "1" : "0"), $icon['fname'], $js );
 			}
 			$text .= $rs -> form_select_close();
 			if(isset($row['link_button']) && $row['link_button']){
 				$img = $iconpath.$row['link_button'];
 			}else{
-				$img = $iconpath."blank.gif";
+				$blank_display = 'display: none';
+				$img = e_PLUGIN."links_page/images/blank.gif";
 			}
-			$text .= "</td><td><img id='iconview' src='".$img."' style='width:".$link_resize_value."px; border:0;' /></td></tr></table>";
+			$text .= "</td><td><img id='iconview' src='".$img."' style='width:".$link_resize_value."px; border:0; ".$blank_display."' /></td></tr></table>";
 			$text .= "</div>
 		</td>
 		</tr>";
@@ -674,15 +671,15 @@ class linkclass {
 			$caption = LCLAN_ITEM_38;
 			$qry = " link_id != '' ORDER BY link_category ASC, link_order ASC";
 		}else{
-			if ($sql->db_Select("links_page_cat", "link_category_name", "link_category_id='".$qs[2]."' " )) {
+			if ($sql->db_Select("links_page_cat", "link_category_name", "link_category_id='".intval($qs[2])."' " )) {
 				$row = $sql->db_Fetch();
 				$caption = LCLAN_ITEM_2." ".$row['link_category_name'];
 			}
-			$qry = " link_category=".$qs[2]." ORDER BY link_order, link_id ASC";
+			$qry = " link_category=".intval($qs[2])." ORDER BY link_order, link_id ASC";
 		}
 
 		$link_total = $sql->db_Select("links_page", "*", " ".$qry." ");
-		if (!$sql->db_Select("links_page", "*", " ".$qry." LIMIT ".$from.",".$number." ")) {
+		if (!$sql->db_Select("links_page", "*", " ".$qry." LIMIT ".intval($from).",".intval($number)." ")) {
 			js_location(e_SELF."?link");
 		}else{
 			$text = $rs->form_open("post", e_SELF.(e_QUERY ? "?".e_QUERY : ""), "myform_{$row['link_id']}", "", "");
@@ -775,7 +772,7 @@ class linkclass {
 			$link_cat_resize_value				= (isset($_POST['link_cat_resize_value']) && $_POST['link_cat_resize_value'] ? $_POST['link_cat_resize_value'] : $link_cat_resize_value);
 		}
 		if ($qs[1] == "edit") {
-			if ($sql->db_Select("links_page_cat", "*", "link_category_id='$qs[2]' ")) {
+			if ($sql->db_Select("links_page_cat", "*", "link_category_id='".intval($qs[2])."' ")) {
 				$row = $sql->db_Fetch();
 			}
 		}

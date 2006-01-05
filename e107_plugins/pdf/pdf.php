@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pdf/pdf.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-02-10 14:10:08 $
-|     $Author: lisa_ $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-05 09:06:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -46,7 +46,7 @@ else
 	/*
 	//the news could also have a print ability, didn't make that one yet
 	$con = new convert;
-	$sql->db_Select("news", "*", "news_id='$parms'");
+	$sql->db_Select("news", "*", "news_id='".intval($parms)."'");
 	$row = $sql->db_Fetch(); 
 	extract($row);
 	$news_body = $tp->toHTML($news_body, TRUE);
@@ -58,9 +58,9 @@ else
 	}
 	else
 	{
-		$sql->db_Select("news_category", "category_id, category_name", "category_id='$news_category'");
+		$sql->db_Select("news_category", "category_id, category_name", "category_id='".intval($news_category)."'");
 		list($category_id, $category_name) = $sql->db_Fetch();
-		$sql->db_Select("user", "user_id, user_name", "user_id='$news_author'");
+		$sql->db_Select("user", "user_id, user_name", "user_id='".intval($news_author)."'");
 		list($a_id, $a_name) = $sql->db_Fetch();
 	}
 	$news_datestamp = $con->convert_date($news_datestamp, "long");

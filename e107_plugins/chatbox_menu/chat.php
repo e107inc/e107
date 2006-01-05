@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2005-11-04 12:06:19 $
+|     $Revision: 1.16 $
+|     $Date: 2006-01-05 09:06:46 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -43,25 +43,25 @@ if($_POST['moderate'] && CB_MOD)
 {
 	if(isset($_POST['block']))
 	{
-		$blocklist = implode(",", array_keys($_POST['block']));
+		$blocklist = implode(",", array_keys(intval($_POST['block'])));
 		$sql->db_Select_gen("UPDATE #chatbox SET cb_blocked=1 WHERE cb_id IN ({$blocklist})");
 	}
 
 	if(isset($_POST['unblock']))
 	{
-		$unblocklist = implode(",", array_keys($_POST['unblock']));
+		$unblocklist = implode(",", array_keys(intval($_POST['unblock'])));
 		$sql->db_Select_gen("UPDATE #chatbox SET cb_blocked=0 WHERE cb_id IN ({$unblocklist})");
 	}
 	
 	if(isset($_POST['delete']))
 	{
-		$deletelist = implode(",", array_keys($_POST['delete']));
+		$deletelist = implode(",", array_keys(intval($_POST['delete'])));
 		$sql -> db_Select_gen("SELECT c.cb_id, u.user_id FROM #chatbox AS c 
 		LEFT JOIN #user AS u ON FLOOR(c.cb_nick) = u.user_id 
 		WHERE c.cb_id IN (".$deletelist.")");
 		$rowlist = $sql -> db_getList();
 		foreach ($rowlist as $row) {
-			$sql -> db_Select_gen("UPDATE #user SET user_chats=user_chats-1 where user_id = ".$row['user_id']);
+			$sql -> db_Select_gen("UPDATE #user SET user_chats=user_chats-1 where user_id = ".intval($row['user_id']));
 		}
 		$sql -> db_Select_gen("DELETE FROM #chatbox WHERE cb_id IN ({$deletelist})");
 	}
@@ -101,7 +101,7 @@ if ($fs) {
 }
 // end search
 
-$sql->db_Select("chatbox", "*", "{$qry_where} ORDER BY cb_datestamp DESC LIMIT $from, 30");
+$sql->db_Select("chatbox", "*", "{$qry_where} ORDER BY cb_datestamp DESC LIMIT ".intval($from).", 30");
 $obj2 = new convert;
 
 $chatList = $sql->db_getList();

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.50 $
-|     $Date: 2005-12-29 02:13:23 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.51 $
+|     $Date: 2006-01-05 09:06:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -143,7 +143,7 @@ if ($action == "report") {
 			$subject = LAN_421." ".SITENAME;
 			sendemail(SITEADMINEMAIL, $subject, $report);
 		}
-		$sql->db_Insert('generic', "0, 'reported_post', ".time().", '".USERID."', '{$thread_info['head']['thread_name']}', {$thread_id}, '{$report_add}'");
+		$sql->db_Insert('generic', "0, 'reported_post', ".time().", '".USERID."', '{$thread_info['head']['thread_name']}', ".intval($thread_id).", '{$report_add}'");
 		define("e_PAGETITLE", LAN_01." / ".LAN_428);
 		require_once(HEADERF);
 		$text = LAN_424."<br /><br /><a href='forum_viewtopic.php?".$thread_id.".post'>".LAN_429."</a";
@@ -243,17 +243,19 @@ if (isset($_POST['pollvote']))
 				/* multiple choice vote */
 				foreach($_POST['votea'] as $vote)
 				{
+					$vote = intval($vote);
 					$votes[($vote-1)] ++;
 				}
 			}
 			else
 			{
+				$_POST['votea'] = intval($_POST['votea']);
 				$votes[($_POST['votea']-1)] ++;
 			}
 
 			$votep = implode(chr(1), $votes);
 
-			$sql->db_Update("polls", "poll_votes = '$votep' WHERE poll_id=".$poll_id);
+			$sql->db_Update("polls", "poll_votes = '$votep' WHERE poll_id=".intval($poll_id));
 			$POLLMODE = "voted";
 
 		}

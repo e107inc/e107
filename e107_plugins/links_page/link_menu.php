@@ -128,7 +128,7 @@ if(isset($linkspage_pref["link_menu_recent"]) && $linkspage_pref["link_menu_rece
 	FROM #links_page AS l
 	LEFT JOIN #links_page_cat AS c ON c.link_category_id = l.link_category
 	WHERE l.link_class REGEXP '".e_CLASS_REGEXP."' AND c.link_category_class REGEXP '".e_CLASS_REGEXP."'
-	ORDER BY l.link_datestamp DESC LIMIT 0,".$num." 
+	ORDER BY l.link_datestamp DESC LIMIT 0,".intval($num)." 
 	";
 
 	$cap = (isset($linkspage_pref['link_menu_recent_caption']) && $linkspage_pref['link_menu_recent_caption'] ? $linkspage_pref['link_menu_recent_caption'] : LCLAN_OPT_84);

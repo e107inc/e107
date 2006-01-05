@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2005-12-31 15:55:34 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.60 $
+|     $Date: 2006-01-05 09:06:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -234,11 +234,11 @@ if (isset($_POST['newthread']) || isset($_POST['reply']))
 				$ns->tablerender(LAN_20, LAN_310);
 				if (isset($_POST['reply']))
 				{
-					$tmpdata = "reply.".$_POST['anonname'].".".$_POST['subject'].".".$_POST['post'];
+					$tmpdata = "reply.".$tp -> toDB($_POST['anonname']).".".$tp -> toDB($_POST['subject']).".".$tp -> toDB($_POST['post']);
 				}
 				else
 				{
-					$tmpdata = "newthread^".$_POST['anonname']."^".$_POST['subject']."^".$_POST['post'];
+					$tmpdata = "newthread^".$tp -> toDB($_POST['anonname'])."^".$tp -> toDB($_POST['subject'])."^".$tp -> toDB($_POST['post']);
 				}
 				$sql->db_Insert("tmp", "'$ip', '".time()."', '$tmpdata' ");
 				loginf();
@@ -330,8 +330,8 @@ if (isset($_POST['update_thread']))
 			exit;
 		}
 		$newvals['thread_edit_datestamp'] = time();
-		$newvals['thread_thread'] = $tp->toDB($_POST['post']);
-		$newvals['thread_name'] = $tp->toDB($_POST['subject']);
+		$newvals['thread_thread'] = $_POST['post'];
+		$newvals['thread_name'] = $_POST['subject'];
 		$newvals['thread_active'] = ($_POST['email_notify']) ? '99' : '1';
 		if (isset($_POST['threadtype']) && MODERATOR)
 		{
@@ -359,7 +359,7 @@ if (isset($_POST['update_reply']))
 			exit;
 		}
 		$newvals['thread_edit_datestamp'] = time();
-		$newvals['thread_thread'] = $tp->toDB($_POST['post']);
+		$newvals['thread_thread'] = $_POST['post'];
 		$forum->thread_update($id, $newvals);
 		$e107cache->clear("newforumposts");
 		$url = e_PLUGIN."forum/forum_viewtopic.php?{$thread_info['head']['thread_id']}.{$from}";
@@ -587,7 +587,7 @@ function getuser($name)
 	}
 	else
 	{
-		if ($sql->db_Select("user", "user_id, user_ip", "user_name='{$name}'"))
+		if ($sql->db_Select("user", "user_id, user_ip", "user_name='".$tp -> toDB($name)."'"))
 		{
 			$row = $sql->db_Fetch();
 			if ($row['user_ip'] == $ip)

@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/trackback/trackbackClass.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-14 19:28:52 $
+|     $Revision: 1.8 $
+|     $Date: 2006-01-05 09:06:46 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -101,18 +101,22 @@ class trackbackClass
 
 	function respondTrackback ()
 	{
-		global $sql, $pref;
+		global $sql, $pref, $tp;
 		$errorMessage = "";
 		if(!$pref['trackbackEnabled'])
 		{
 			$errorMessage = "This site does not allow trackbacks.";
 		}
 
-		$pid = (isset($_GET['pid']) ? $_GET['pid'] : $_POST['pid']);
+		$pid = (isset($_GET['pid']) ? intval($_GET['pid']) : intval($_POST['pid']));
 		$permLink = (isset($_GET['url']) ? $_GET['url'] : $_POST['url']);
+		$permLink = $tp -> toDB($permLink);
 		$blog_name = (isset($_GET['blog_name']) ? $_GET['blog_name'] : $_POST['blog_name']);
+		$blog_name = $tp -> toDB($blog_name);
 		$title = (isset($_GET['title']) ? $_GET['title'] : $_POST['title']);
+		$title = $tp -> toDB($title);
 		$excerpt = (isset($_GET['excerpt']) ? $_GET['excerpt'] : $_POST['excerpt']);
+		$excerpt = $tp -> toDB($excerpt);
 
 		/* debug	 */
 		/*

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2005-12-30 03:20:44 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.37 $
+|     $Date: 2006-01-05 09:06:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e107_INIT")) {
@@ -30,7 +30,7 @@ if (strstr(e_QUERY, "untrack"))
 {
 	$tmp1 = explode(".", e_QUERY);
 	$tmp = str_replace("-".$tmp1[1]."-", "", USERREALM);
-	$sql->db_Update("user", "user_realm='$tmp' WHERE user_id='".USERID."' ");
+	$sql->db_Update("user", "user_realm='".$tp -> toDB($tmp, true)."' WHERE user_id='".USERID."' ");
 	header("location:".e_SELF."?track");
 	exit;
 }
@@ -383,7 +383,7 @@ if (e_QUERY == "track")
 	{
 		if ($value)
 		{
-			if($sql->db_Select("forum_t", "thread_id, thread_datestamp, thread_name", "thread_id='".$value."' "))
+			if($sql->db_Select("forum_t", "thread_id, thread_datestamp, thread_name", "thread_id='".intval($value)."' "))
 			{
 				$row = $sql->db_Fetch();
 				//extract($row);

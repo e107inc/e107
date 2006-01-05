@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/plugin.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-12-14 19:28:44 $
+|     $Revision: 1.13 $
+|     $Date: 2006-01-05 09:06:46 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -116,14 +116,14 @@ $upgrade_alter_tables = array(
 if (!function_exists('forum_uninstall')) {
 	function forum_uninstall() {
 		global $sql;
-		$sql -> db_Update("user", "user_forums=''");
+		$sql -> db_Update("user", "user_forums='0'");
 	}
 }
 
 if (!function_exists('forum_install')) {
 	function forum_install() {
 		global $sql;
-		$sql -> db_Update("user", "user_forums=''");
+		$sql -> db_Update("user", "user_forums='0'");
 	}
 }
 	
