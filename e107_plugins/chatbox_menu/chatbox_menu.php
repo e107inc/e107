@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.56 $
+|     $Date: 2006-01-05 17:36:16 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -30,8 +30,6 @@ if($pref['cb_layer'] || isset($_POST['chatbox_ajax']))
 
 if(!defined("e_HANDLER")){ exit; }
 require_once(e_HANDLER."emote.php");
-
-include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
 
 $emessage='';
 if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
