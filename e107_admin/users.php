@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.67 $
-|     $Date: 2006-01-04 20:46:45 $
+|     $Revision: 1.68 $
+|     $Date: 2006-01-05 04:11:01 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -294,6 +294,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "admin") {
 	if(!$sub_action){ $sub_action = "user_id"; }
 	if(!$id){ $id = "DESC"; }
 }
+
 // ------- Remove Admin --------------
 if (isset($_POST['useraction']) && $_POST['useraction'] == "unadmin") {
 	$sql->db_Select("user", "*", "user_id='".$_POST['userid']."'");
@@ -309,13 +310,38 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "unadmin") {
 	if(!$id){ $id = "DESC"; }
 	}
 }
+
 // ------- Approve User. --------------
-if (isset($_POST['useraction']) && $_POST['useraction'] == "verify") {
-	if ($sql->db_Update("user", "user_ban='0' WHERE user_id='".$_POST['userid']."' ")) {
+if (isset($_POST['useraction']) && $_POST['useraction'] == "verify")
+{
+	$uid = intval($_POST['userid']);
+	if ($sql->db_Update("user", "user_ban='0' WHERE user_id='{$uid}' "))
+	{
 		$user->show_message(USRLAN_86);
-	if(!$action){ $action = "main"; }
-	if(!$sub_action){ $sub_action = "user_id"; }
-	if(!$id){ $id = "DESC"; }
+		if(!$action){ $action = "main"; }
+		if(!$sub_action){ $sub_action = "user_id"; }
+		if(!$id){ $id = "DESC"; }
+		
+		if($pref['user_reg_veri'] == 2)
+		{
+			if($sql->db_Select("user", "user_email, user_name", "user_id = '{$uid}'"))
+			{
+				$row = $sql->db_Fetch();
+				$message = USRLAN_114." ".$row['user_name'].",\n\n".USRLAN_122." ".SITENAME.".\n\n".USRLAN_123."\n\n";
+				$message .= str_replace("{SITEURL}", SITEURL, USRLAN_139);
+			
+				require_once(e_HANDLER."mail.php");
+				if(sendemail($row['user_email'], USRLAN_113." ".SITENAME, $message))
+				{
+				//  echo str_replace("\n","<br>",$message);
+				$user->show_message("Email sent to: ".$row['user_name']);
+				}
+				else
+				{
+		    	$user->show_message("Failed to send to: ".$row['user_name']);
+		    }
+			}
+		}
 	}
 }
 

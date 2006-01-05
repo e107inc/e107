@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.71 $
-|     $Date: 2005-12-24 22:53:38 $
-|     $Author: sweetas $
+|     $Revision: 1.72 $
+|     $Date: 2006-01-05 04:10:59 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -374,18 +374,22 @@ if (isset($_POST['register']))
 
 // ========== Send Email =========>
 
-			require_once(e_HANDLER."mail.php");
-			$eml = render_email();
-			$message = $eml['message'];
-			$subj = $eml['subject'];
-			$inline = $eml['inline-images'];
-			$Cc = $eml['cc'];
-			$Bcc = $eml['bcc'];
-			$attachments = $eml['attachments'];
-
-			if(!sendemail($_POST['email'], $subj, $message, $_POST['name'], "", "", $attachments, $Cc, $Bcc, $returnpath, $returnreceipt,$inline))
+			if ($pref['user_reg_veri'] != 2)
 			{
-            	$error_message = "There was a problem, the registration mail was not sent, please contact the website administrator.";
+		
+				require_once(e_HANDLER."mail.php");
+				$eml = render_email();
+				$message = $eml['message'];
+				$subj = $eml['subject'];
+				$inline = $eml['inline-images'];
+				$Cc = $eml['cc'];
+				$Bcc = $eml['bcc'];
+				$attachments = $eml['attachments'];
+
+				if(!sendemail($_POST['email'], $subj, $message, $_POST['name'], "", "", $attachments, $Cc, $Bcc, $returnpath, $returnreceipt,$inline))
+				{
+					$error_message = "There was a problem, the registration mail was not sent, please contact the website administrator.";
+				}
 			}
 
 			$edata_su = array("username" => $username, "email" => $_POST['email'], "signature" => $_POST['signature'], "image" => $_POST['image'], "timezone" => $_POST['timezone'], "hideemail" => $_POST['hideemail'], "ip" => $ip, "realname" => $_POST['realname'], "xup" => $_POST['xupexist']);
@@ -398,10 +402,18 @@ if (isset($_POST['register']))
 			}
 			else
 			{
-				$text = LAN_405;
+				if ($pref['user_reg_veri'] == 2)
+				{
+					$text = LAN_SIGNUP_37;
+				}
+				else
+				{
+					$text = LAN_405;
+				}
 			}
-            if(isset($error_message)){
-            	$text .= "<br /><b>".$error_message."</b><br />";
+			if(isset($error_message))
+			{
+      	$text .= "<br /><b>".$error_message."</b><br />";
 			}
 			$ns->tablerender(LAN_406, $text);
 			require_once(FOOTERF);
