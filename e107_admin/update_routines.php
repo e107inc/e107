@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.161 $
-|     $Date: 2006-01-06 06:59:41 $
+|     $Revision: 1.162 $
+|     $Date: 2006-01-06 13:52:35 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -139,7 +139,6 @@ function update_617_to_700($type='') {
 
 		/* start poll update */
 		if ($error=='') {
-			$sql -> db_Update("menus", "menu_path='poll' WHERE menu_name='poll_menu' ");
 			$query = "CREATE TABLE ".MPREFIX."polls (
 			poll_id int(10) unsigned NOT NULL auto_increment,
 			poll_datestamp int(10) unsigned NOT NULL default '0',
@@ -372,6 +371,9 @@ function update_617_to_700($type='') {
 
 		if ($error=='') {
 			mysql_query("ALTER TABLE ".MPREFIX."menus ADD menu_path varchar(100) NOT NULL default ''");
+			catch_error();
+			
+			$sql -> db_Update("menus", "menu_path='poll/' WHERE menu_name='poll_menu' ");
 			catch_error();
 
 			mysql_query("UPDATE ".MPREFIX."menus SET menu_path = 'custom', menu_name = substring(menu_name,8) WHERE substring(menu_name,1,6) = 'custom'");
