@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.162 $
-|     $Date: 2006-01-06 13:52:35 $
+|     $Revision: 1.163 $
+|     $Date: 2006-01-06 22:07:51 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -1195,6 +1195,11 @@ function update_617_to_700($type='') {
 				$pref['download_email'] = $pref['reported_post_email'];
 				$s_prefs = TRUE;
 			}
+		}
+		
+		if (!isset($pref['mailer'])) {
+			$pref['mailer'] = $pref['smtp_enable'] ? 'smtp' : 'php';
+			$s_prefs = TRUE;
 		}
 		
 		if(!array_key_exists('ue_upgrade', $pref)){
