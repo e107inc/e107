@@ -67,7 +67,7 @@ define("ADLAN_49", " site beheerder");
 define("ADLAN_50", "Rechten");
 define("ADLAN_51", "Log in om naar het beheerscherm te gaan");
 define("ADLAN_52", "Beheerscherm");
-define("ADLAN_53", "Verlaat beheerscherm");
+define("ADLAN_53", "Website");
 define("ADLAN_54", "Banners");
 define("ADLAN_55", "Configureer banners");
 define("ADLAN_56", "Chatbox");

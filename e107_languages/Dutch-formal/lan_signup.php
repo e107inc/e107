@@ -90,7 +90,9 @@ define("LAN_SIGNUP_33", "Geef locatie op of kies avatar");
 define("LAN_SIGNUP_34", "Let op: elke naar deze website geuploade afbeelding die de beheerders onacceptabel vinden,  zal worden verwijderd.");
 define("LAN_SIGNUP_35", "Klik hier om gebruik te maken van een XUP-bestand");
 define("LAN_SIGNUP_36", "Er is een fout opgetreden bij het aanmaken van uw gebruikersregistratie. Neemt u contact op met de beheerder van deze site");
-
+define("LAN_SIGNUP_37", "Deze fase van de aanmelding is afgerond. De beheerder moet nu eerst uw aanmelding goedkeuren. Als dat is gebeurd, ontvangt u een e-mail ter bevestiging.");
+define("LAN_SIGNUP_38", "U hebt twee verschillende e-mailadressen opgegeven. Geeft u hetzelfde geldige e-mailadres op in beide daarvoor bestemde velden.");
+define("LAN_SIGNUP_39", "Nogmaals uw e-mailadres:");
 define("LAN_LOGINNAME", "Inlognaam");
 define("LAN_PASSWORD", "Wachtwoord");
 define("LAN_USERNAME", "Weergavenaam");

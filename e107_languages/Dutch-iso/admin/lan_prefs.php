@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /*
 +---------------------------------------------------------------+
 |        e107 website system
@@ -136,6 +136,9 @@ define("PRFLAN_148", "Activeren ontwikkelfuncties. Alleen voor ontwikkelaars ! G
 define("PRFLAN_149", "Geavanceerde functies");
 define("PRFLAN_150", "Selecteer de e107 authenticatiemethode");
 define("PRFLAN_151", "e107 - er wordt geen alternatieve authenticatiemethode gebruikt");
+define("PRFLAN_152", "Geen goedkeuring");
+define("PRFLAN_153", "Beheerdersgoedkeuring");
+define("PRFLAN_154", "Nieuwe gebruiker goedkeuringsmethode<br />Als 'Beheerdersgoedkeuring' is geselecteerd, wordt geadviseerd om de e-mailmelding bij de aanmelding van leden <a href='".e_ADMIN."notify.php'>hier</a> te activeren.");
 
 define("CUSTSIG_1", "Instellingen opgeslagen!");
 define("CUSTSIG_2", "Echte naam:");

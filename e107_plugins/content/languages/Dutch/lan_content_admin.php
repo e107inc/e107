@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch/lan_content_admin.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-10-21 13:55:35 $
+|     $Revision: 1.12 $
+|     $Date: 2006-01-06 10:54:49 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -68,7 +68,7 @@ define("CONTENT_ADMIN_CAT_LAN_47", "bepalen of afdruk/e-mail pictogrammen worden
 define("CONTENT_ADMIN_CAT_LAN_48", "selecteer welke gebruikers dit onderwerp zien");
 define("CONTENT_ADMIN_CAT_LAN_49", "kies een pictogram voor deze categorie");
 //define("CONTENT_ADMIN_CAT_LAN_50", "content menu gecreëerd<br /><br />");
-define("CONTENT_ADMIN_CAT_LAN_50", "alleen als je een nieuwe Hoofd oudercategorie hebt aangemaakt is een menubestand aangemaakt.<br />
+define("CONTENT_ADMIN_CAT_LAN_50", "alleen als je een nieuwe hoofdonderwerpcategorie hebt aangemaakt is een menubestand aangemaakt.<br />
 Dit menubestand is opgeslagen in de /menus directory.<br />
 Om dit menu te gebruiken moet je het eerst activeren in het <a href='".e_ADMIN."menus.php'>menubeheerscherm</a>.<br /><br />");
 define("CONTENT_ADMIN_CAT_LAN_51", "fout; menubestand niet gecreëerd");
@@ -98,7 +98,7 @@ define("CONTENT_ADMIN_ITEM_LAN_9", "pictogram");
 define("CONTENT_ADMIN_ITEM_LAN_10", "auteur");
 define("CONTENT_ADMIN_ITEM_LAN_11", "kop");
 define("CONTENT_ADMIN_ITEM_LAN_12", "opties");
-define("CONTENT_ADMIN_ITEM_LAN_13", "kies categorie van de ouder");
+define("CONTENT_ADMIN_ITEM_LAN_13", "kies categorie van het hoofdonderwerp");
 define("CONTENT_ADMIN_ITEM_LAN_14", "naam auteur");
 define("CONTENT_ADMIN_ITEM_LAN_15", "e-mailadres auteur");
 define("CONTENT_ADMIN_ITEM_LAN_16", "onderkop");
@@ -133,7 +133,7 @@ define("CONTENT_ADMIN_ITEM_LAN_44", "creëren content onderwerp");
 define("CONTENT_ADMIN_ITEM_LAN_45", "bijwerken content onderwerp");
 define("CONTENT_ADMIN_ITEM_LAN_46", "bekijken");
 define("CONTENT_ADMIN_ITEM_LAN_47", "nogmaals bekijken");
-define("CONTENT_ADMIN_ITEM_LAN_48", "hoofdouder");
+define("CONTENT_ADMIN_ITEM_LAN_48", "hoofdonderwerp");
 define("CONTENT_ADMIN_ITEM_LAN_49", "aangemelde content onderwerpen");
 define("CONTENT_ADMIN_ITEM_LAN_50", "geen aangemelde content onderwerpen");
 define("CONTENT_ADMIN_ITEM_LAN_51", "auteursgegevens");
@@ -210,6 +210,7 @@ define("CONTENT_ADMIN_ITEM_LAN_120", "standaard layout");
 define("CONTENT_ADMIN_ITEM_LAN_121", "nog geen nieuw pictogram geupload");
 define("CONTENT_ADMIN_ITEM_LAN_122", "nog geen nieuwe bijlage geupload");
 define("CONTENT_ADMIN_ITEM_LAN_123", "nog geen nieuwe afbeelding geupload");
+define("CONTENT_ADMIN_ITEM_LAN_124", "om onderwerp te bekijken");
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "volgorde is verhoogd");
 define("CONTENT_ADMIN_ORDER_LAN_1", "volgorde is verlaagd");
@@ -219,12 +220,12 @@ define("CONTENT_ADMIN_MAIN_LAN_0", "aanwezige content categorieën");
 define("CONTENT_ADMIN_MAIN_LAN_1", "nog geen content categorieën");
 define("CONTENT_ADMIN_MAIN_LAN_2", "hoofdcategorieën");
 define("CONTENT_ADMIN_MAIN_LAN_3", "content onderwerp verwijderd");
-define("CONTENT_ADMIN_MAIN_LAN_4", "tekst ouder");
-define("CONTENT_ADMIN_MAIN_LAN_5", "pictogram ouder");
+define("CONTENT_ADMIN_MAIN_LAN_4", "tekst hoofdonderwerp");
+define("CONTENT_ADMIN_MAIN_LAN_5", "pictogram hoofdonderwerp");
 define("CONTENT_ADMIN_MAIN_LAN_7", "Welkom bij het Content Management System !");
 define("CONTENT_ADMIN_MAIN_LAN_8", "Leest u eerst nauwkeurig de onderstaande informatie en maak een keuze.");
 define("CONTENT_ADMIN_MAIN_LAN_9", "Deze informatie wordt getoond, omdat de tabel van de Content Management Plugin geen records bevat.");
-define("CONTENT_ADMIN_MAIN_LAN_10", "U kunt de content beheren op deze pagina. Bepaalt u eerst in welke categorie u content wilt beheren. Klik op de knop van de hoofd ouders die hieronder staan om de content voor die categorie te beheren.");
+define("CONTENT_ADMIN_MAIN_LAN_10", "U kunt de content beheren op deze pagina. Bepaalt u eerst in welke categorie u content wilt beheren. Klik op de knop van de hoofdonderwerpen die hieronder staan om de content voor die categorie te beheren.");
 define("CONTENT_ADMIN_MAIN_LAN_11", "
 <b>De oude content tabel bevat records</b><br />
 Omdat de oude tabel al records bevat, kunt u nu kiezen uit twee mogelijkheden:<br />
@@ -245,8 +246,8 @@ define("CONTENT_ADMIN_MAIN_LAN_12", "<b>Dit is een nieuwe installatie / De oude 
 Omdat de oude tabel geen records bevat, kunt u nu meteen beginnen met het beheer van uw nieuwe content.<br />
 Het eerste wat u moet doen is het creëren van een nieuwe categorie.<br />
 Ga naar de <a href='".e_SELF."?type.0.cat.create'>Creëren nieuwe categorie</a> pagina.<br />");
-define("CONTENT_ADMIN_MAIN_LAN_13", "U kunt nieuwe content beheren op deze pagina. Bepaal eerst de categorie waarvoor u content wilt beheren. Klik op de knop van de hoofd ouders die hieronder staan om de content voor die categorie te beheren.");
-define("CONTENT_ADMIN_MAIN_LAN_14", "U kunt op deze pagina de volgorde van de content vaststellen. Klik op de knop van de hoofd ouders die hieronder staan om de volgorde van content of categorieën binnen de geselecteerde hoofdcategorie te wijzigen.");
+define("CONTENT_ADMIN_MAIN_LAN_13", "U kunt nieuwe content beheren op deze pagina. Bepaal eerst de categorie waarvoor u content wilt beheren. Klik op de knop van de hoofdonderwerpen die hieronder staan om de content voor die categorie te beheren.");
+define("CONTENT_ADMIN_MAIN_LAN_14", "U kunt op deze pagina de volgorde van de content vaststellen. Klik op de knop van de hoofdonderwerpen die hieronder staan om de volgorde van content of categorieën binnen de geselecteerde hoofdcategorie te wijzigen.");
 define("CONTENT_ADMIN_MAIN_LAN_15", "Op deze pagina kunt u de categorieën beheren. Kies de hoofdcategorie hieronder om het overzicht van alle categorieën en subcategorieën binnen deze hoofdcategorie te zien.");
 define("CONTENT_ADMIN_MAIN_LAN_16", "Op deze pagina kunt u nieuwe categorieën aanmaken. Standaard wordt het invulformulier voor een nieuwe hoofdcategorie getoond. Als u een subcategorie voor een al aanwezige hoofdcategorie wilt maken, klikt u dan op een van de onderstaande knoppen om het formulier voor een subcategorie binnen die hoofdcategorie te zien.");
 define("CONTENT_ADMIN_MAIN_LAN_17", "maak een nieuwe categorie op de <a href='".e_SELF."?type.0.cat.create'>Creëren nieuwe categorie</a> pagina");
@@ -262,7 +263,7 @@ en ook geen set met standaard categorieën wilt starten,<br />
 dan kunt u beginnen met het aanmaken van een nieuwe contentcategorie.<br />");
 define("CONTENT_ADMIN_MAIN_LAN_22", "Aanmaken set standaardcategorieën");
 define("CONTENT_ADMIN_MAIN_LAN_23", "Als u met een nieuwe installatie wilt starten, kunt u eerst een set standaard contentcategorieën creëren.<br />
-In deze standaardset worden drie hoofd oudercategorieën aangemaakt, namelijk Content, Review en Artikel.<br />");
+In deze standaardset worden drie hoofdonderwerpcategorieën aangemaakt, namelijk Content, Review en Artikel.<br />");
 define("CONTENT_ADMIN_MAIN_LAN_24", "Dit is een nieuwe installatie / De oude content tabel bevat geen record");
 define("CONTENT_ADMIN_MAIN_LAN_25", "Omdat de oude aanwezige content tabel nog geen records bevat, kunt u nu gewoon beginnen met het beheren van nieuwe content.<br />
 Door te klikken op de Volgende knop, maakt u automatisch een nieuwe standaardset categorieën aan, namelijk Content, Review en Artikel.<br />");
@@ -367,15 +368,15 @@ define("CONTENT_ADMIN_CONVERSION_LAN_46", "Beheer uw content op de <a href='".e_
 define("CONTENT_ADMIN_CONVERSION_LAN_47", "conversie gereed");
 define("CONTENT_ADMIN_CONVERSION_LAN_48", "klik hier voor details");
 define("CONTENT_ADMIN_CONVERSION_LAN_49", "conversie van pagina's");
-define("CONTENT_ADMIN_CONVERSION_LAN_50", "conversie van hoofdouders");
+define("CONTENT_ADMIN_CONVERSION_LAN_50", "conversie van hoofdonderwerpen");
 define("CONTENT_ADMIN_CONVERSION_LAN_51", "onbekende rijen");
-define("CONTENT_ADMIN_CONVERSION_LAN_52", "standaardset van hoofdouders aangemaakt");
-define("CONTENT_ADMIN_CONVERSION_LAN_53", "er bestaat al een hoofdouder met deze naam");
+define("CONTENT_ADMIN_CONVERSION_LAN_52", "standaardset van hoofdonderwerpen aangemaakt");
+define("CONTENT_ADMIN_CONVERSION_LAN_53", "er bestaat al een hoofdonderwerp met deze naam");
 define("CONTENT_ADMIN_CONVERSION_LAN_54", "aanmaken van een standaardset met hoofdcategorieën (content, review en artikelen)");
 define("CONTENT_ADMIN_CONVERSION_LAN_55", "content management plugin: converteer opties");
 define("CONTENT_ADMIN_CONVERSION_LAN_56", "druk op de knop om naar de Content Creëren nieuwe categorie pagina te gaan.");
-define("CONTENT_ADMIN_CONVERSION_LAN_57", "kies ouder");
-define("CONTENT_ADMIN_CONVERSION_LAN_58", "upgrade sucesvol<br /><br /><b>Let op:<br />u moet deze opties voor elke hoofdouder opnieuw configureren<br />en u moet de menu's die u in uw content/menus folder hebt gemaakt verwijderen en opnieuw aanmaken door de opties bij te werken voor de specifieke hoofdouders waarvoor u menu's wilt maken.</b>");
+define("CONTENT_ADMIN_CONVERSION_LAN_57", "kies hoofdonderwerp");
+define("CONTENT_ADMIN_CONVERSION_LAN_58", "upgrade sucesvol<br /><br /><b>Let op:<br />u moet deze opties voor elk hoofdonderwerp opnieuw configureren<br />en u moet de menu's die u in uw content/menus folder hebt gemaakt verwijderen en opnieuw aanmaken door de opties bij te werken voor de specifieke hoofdonderwerpen waarvoor u menu's wilt maken.</b>");
 define("CONTENT_ADMIN_CONVERSION_LAN_59", "converteren tabel");
 define("CONTENT_ADMIN_CONVERSION_LAN_60", "standaard creëren");
 define("CONTENT_ADMIN_CONVERSION_LAN_61", "creëren nieuwe categorie");
@@ -398,8 +399,8 @@ define("CONTENT_ADMIN_OPT_LAN_MENU_12", "Auteurspagina");
 define("CONTENT_ADMIN_OPT_LAN_MENU_13", "Archiefpagina");
 define("CONTENT_ADMIN_OPT_LAN_MENU_14", "Hoogste waarderingen pagina");
 define("CONTENT_ADMIN_OPT_LAN_MENU_15", "Topscore pagina");
-define("CONTENT_ADMIN_OPT_LAN_MENU_16", "alle categorieën pagina (alle categorieën onder de hoofdouder)");
-define("CONTENT_ADMIN_OPT_LAN_MENU_17", "bekijk de categoriepagina (ouderonderwerp, subcategorieën en content onderwerpen in die categorie");
+define("CONTENT_ADMIN_OPT_LAN_MENU_16", "alle categorieën pagina (alle categorieën onder het hoofdonderwerp)");
+define("CONTENT_ADMIN_OPT_LAN_MENU_17", "bekijk de categoriepagina (hoofdonderwerp, subcategorieën en content onderwerpen in die categorie");
 define("CONTENT_ADMIN_OPT_LAN_MENU_18", "categorieën");
 define("CONTENT_ADMIN_OPT_LAN_MENU_19", "recente onderwerpenlijst");
 define("CONTENT_ADMIN_OPT_LAN_MENU_20", "links naar pagina's");
@@ -425,7 +426,7 @@ define("CONTENT_ADMIN_OPT_LAN_SECTION_17", "auteur : e-mailadres");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_18", "auteur : link naar auteursprofiel");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_19", "auteur : link naar auteurslijst");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_20", "e-mail/print/pdf pictogram");
-define("CONTENT_ADMIN_OPT_LAN_SECTION_21", "ouder kruimel");
+define("CONTENT_ADMIN_OPT_LAN_SECTION_21", "hoofdonderwerp kruimel");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_22", "verwijzer (alleen als logging is geactiveerd)");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_23", "aantal onderwerpen");
 define("CONTENT_ADMIN_OPT_LAN_SECTION_24", "laatste onderwerp van elke auteur");
@@ -480,7 +481,7 @@ define("CONTENT_ADMIN_OPT_LAN_5", "aantal beschikbare maatwerk datatags");
 define("CONTENT_ADMIN_OPT_LAN_6", "vooringestelde datatags");
 define("CONTENT_ADMIN_OPT_LAN_7", "bepaal de standaard vooringestelde datatags");
 
-//define("CONTENT_ADMIN_OPT_LAN_8", "Hier kunt u extra vooringestelde data tags instellen. De velden die u hier opgeeft, zijn de sleutels van de sleutel <-> waarde data tags. Ze zijn voorzien van een tekstveld voor het creatieformulier voor beheer. Let op: ze horen niet bij het aantal maatwerk data tags dat u hierboven opgaf, maar ze worden aanvullend gebruikt.<br />Deze vooringestelde Tags zijn nuttig als u een bepaalde maatwerk tag beschikbaar wilt hebben voor elk nieuw onderwerk. Bijvoorbeeld als u altijd een waarde voor [fotograaf] wilt invullen, kunt u een dergelijke voorinstelling opgeven, die altijd wordt getoond bij ieder onderwerp bij deze hoofdouder.");
+//define("CONTENT_ADMIN_OPT_LAN_8", "Hier kunt u extra vooringestelde data tags instellen. De velden die u hier opgeeft, zijn de sleutels van de sleutel <-> waarde data tags. Ze zijn voorzien van een tekstveld voor het creatieformulier voor beheer. Let op: ze horen niet bij het aantal maatwerk data tags dat u hierboven opgaf, maar ze worden aanvullend gebruikt.<br />Deze vooringestelde Tags zijn nuttig als u een bepaalde maatwerk tag beschikbaar wilt hebben voor elk nieuw onderwerk. Bijvoorbeeld als u altijd een waarde voor [fotograaf] wilt invullen, kunt u een dergelijke voorinstelling opgeven, die altijd wordt getoond bij ieder onderwerp bij dit hoofdonderwerp.");
 
 define("CONTENT_ADMIN_OPT_LAN_9", "toestaan aanmelden onderwerpen ?");
 define("CONTENT_ADMIN_OPT_LAN_10", "wie kan onderwerpen aanmelden ?");
@@ -556,14 +557,14 @@ define("CONTENT_ADMIN_OPT_LAN_80", "niets invullen om niets te tonen");
 define("CONTENT_ADMIN_OPT_LAN_81", "bepaal aantal woorden");
 define("CONTENT_ADMIN_OPT_LAN_82", "tekst");
 define("CONTENT_ADMIN_OPT_LAN_83", "link toevoegen aan postfix");
-define("CONTENT_ADMIN_OPT_LAN_84", "tonen ouderonderwerp");
-define("CONTENT_ADMIN_OPT_LAN_85", "tonen ouder subcategorieën");
-define("CONTENT_ADMIN_OPT_LAN_86", "tonen onderwerpen uit ouder subcategorieën");
+define("CONTENT_ADMIN_OPT_LAN_84", "tonen hoofdonderwerp");
+define("CONTENT_ADMIN_OPT_LAN_85", "tonen hoofdonderwerp subcategorieën");
+define("CONTENT_ADMIN_OPT_LAN_86", "tonen onderwerpen uit hoofdonderwerp subcategorieën");
 define("CONTENT_ADMIN_OPT_LAN_87", "wanneer geactiveerd worden alle onderwerpen van de geselecteerde categorie en onderwerpen uit alle onderliggende categorieën getoond.");
-define("CONTENT_ADMIN_OPT_LAN_88", "bepaal de weergave volgorde van ouder- en kindonderwerpen");
-define("CONTENT_ADMIN_OPT_LAN_89", "ouders eerst, dan onderwerpen");
-define("CONTENT_ADMIN_OPT_LAN_90", "onderwerpen eerst, dan ouders");
-define("CONTENT_ADMIN_OPT_LAN_91", "weergavemethode voor ouder, sub- en onderwerpen");
+define("CONTENT_ADMIN_OPT_LAN_88", "bepaal de weergave volgorde van hoofdonderwerp en onderwerpen");
+define("CONTENT_ADMIN_OPT_LAN_89", "hoofdonderwerp eerst, dan onderwerpen");
+define("CONTENT_ADMIN_OPT_LAN_90", "onderwerpen eerst, dan hoofdonderwerpen");
+define("CONTENT_ADMIN_OPT_LAN_91", "weergavemethode voor hoofdonderwerp, sub- en onderwerpen");
 define("CONTENT_ADMIN_OPT_LAN_92", "elk in een eigen menu");
 define("CONTENT_ADMIN_OPT_LAN_93", "titel");
 define("CONTENT_ADMIN_OPT_LAN_94", "toevoegen zoekfunctie");
@@ -591,7 +592,7 @@ define("CONTENT_ADMIN_OPT_LAN_115", "titel voor linklijst");
 define("CONTENT_ADMIN_OPT_LAN_116", "deze titel wordt alleen gebruikt als de links als 'normalelinks' worden getoond.");
 define("CONTENT_ADMIN_OPT_LAN_117", "tonen categorieën");
 define("CONTENT_ADMIN_OPT_LAN_118", "hoofdcategorie inbegrepen");
-define("CONTENT_ADMIN_OPT_LAN_119", "wanneer gedeactiveerd worden alleen de subcategorieën van de hoodouder getoond");
+define("CONTENT_ADMIN_OPT_LAN_119", "wanneer gedeactiveerd worden alleen de subcategorieën van de hoofdonderwerpen getoond");
 define("CONTENT_ADMIN_OPT_LAN_120", "tonen aantal onderwerpen in elke categorie");
 define("CONTENT_ADMIN_OPT_LAN_121", "pictogram: categorie");
 define("CONTENT_ADMIN_OPT_LAN_122", "pictogram: categorie (standaard)");

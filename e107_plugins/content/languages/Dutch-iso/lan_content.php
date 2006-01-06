@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Dutch-iso/lan_content.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-10-18 19:20:24 $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-06 10:54:49 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -81,8 +81,8 @@ define("CONTENT_ORDER_LAN_3", "datum (op)");
 define("CONTENT_ORDER_LAN_4", "datum (neer)");
 define("CONTENT_ORDER_LAN_5", "verwijzing (op)");
 define("CONTENT_ORDER_LAN_6", "verwijzing (neer)");
-define("CONTENT_ORDER_LAN_7", "ouder (op)");
-define("CONTENT_ORDER_LAN_8", "ouder (neer)");
+define("CONTENT_ORDER_LAN_7", "hoofdonderwerp (op)");
+define("CONTENT_ORDER_LAN_8", "hoofdonderwerp (neer)");
 define("CONTENT_ORDER_LAN_9", "volgorde (op)");
 define("CONTENT_ORDER_LAN_10", "volgorde (neer)");
 define("CONTENT_ORDER_LAN_11", "auteur (op)");
@@ -110,9 +110,9 @@ define("CONTENT_LAN_22", "content types");
 define("CONTENT_LAN_23", "content recent overzicht");
 define("CONTENT_LAN_24", "kruimelpad");
 define("CONTENT_LAN_25", "content categorieën");
-define("CONTENT_LAN_26", "ouder");
+define("CONTENT_LAN_26", "hoofdonderwerp");
 define("CONTENT_LAN_27", "subcategorieën");
-define("CONTENT_LAN_28", "subcategorieën ouder");
+define("CONTENT_LAN_28", "subcategorieën hoofdonderwerp");
 define("CONTENT_LAN_29", "onbekend");
 define("CONTENT_LAN_30", "contentonderwerp");
 define("CONTENT_LAN_31", "contentonderwerpen");

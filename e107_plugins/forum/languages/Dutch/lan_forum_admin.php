@@ -186,6 +186,8 @@ define("FORLAN_173", "Discussietitel");
 define("FORLAN_174", "Gemeld door gebruiker");
 define("FORLAN_175", "Melding gedaan");
 define("FORLAN_176", "Melding");
+define("FORLAN_177", "e-mail meldingen standaard AAN");
+define("FORLAN_178", "Aankruisen om de keuze voor melding per e-mail standaard op AAN te zetten.");
 
 define("WMGLAN_1", "Regels voor gasten");
 define("WMGLAN_2", "Regels voor leden");

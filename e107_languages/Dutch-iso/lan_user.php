@@ -5,7 +5,7 @@
 |        e107 website system
 |        lan_user.php Dutch-utf language file 
 |
-|        ©Steve Dunstan 2001-2002
+|        Â©Steve Dunstan 2001-2002
 |        http://e107.org
 |        jalist@e107.org
 |
@@ -25,12 +25,12 @@ define("LAN_117", "MSN Messenger-adres: ");
 define("LAN_118", "Geboortedatum: ");
 define("LAN_119", "Woonplaats: ");
 define("LAN_120", "Onderschrift: ");
-define("LAN_137", "Er is geen informatie over deze deelnemer omdat deze nog niet is geregistreerd bij");
-define("LAN_138", "Geregistreerde deelnemers: ");
+define("LAN_137", "Er is geen informatie over dit lid omdat deze nog niet is geregistreerd bij");
+define("LAN_138", "Geregistreerde leden: ");
 define("LAN_139", "Volgorde: ");
-define("LAN_140", "Geregistreerde deelnemers");
-define("LAN_141", "Nog geen geregistreerde deelnemers.");
-define("LAN_142", "Deelnemer");
+define("LAN_140", "Geregistreerde leden");
+define("LAN_141", "Nog geen geregistreerde leden.");
+define("LAN_142", "Lidnr.");
 define("LAN_143", "[op verzoek verborgen]");
 define("LAN_144", "Homepage-adres: ");
 define("LAN_145", "Geregistreerd: ");
@@ -39,10 +39,10 @@ define("LAN_147", "Chatboxberichten: ");
 define("LAN_148", "Reacties: ");
 define("LAN_149", "Forumberichten: ");
 define("LAN_308", "Echte naam: ");
-define("LAN_400", "Dat is geen geldige deelnemer.");
+define("LAN_400", "Dat is geen geldig lidnummer.");
 define("LAN_401", "geen informatie");
 define("LAN_402", "Lidmaatschapsprofiel");
-define("LAN_403", "Sitestatistieken");
+define("LAN_403", "Deelname op de site");
 define("LAN_404", "Laatste bezoek");
 define("LAN_405", "dagen geleden");
 define("LAN_406", "Waardering");

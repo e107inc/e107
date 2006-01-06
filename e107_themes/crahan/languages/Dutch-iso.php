@@ -11,14 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_themes/crahan/languages/Dutch-iso.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-10-19 20:19:10 $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-06 10:54:49 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
 
 define("LAN_THEME_1", "'CraHan' door <a href='http://e107.org' rel='external'>jalist</a>, gebaseerd op het thema van CraHan op zijn homepage <a href='http://n00.be' rel='external'>n00.be</a>");
-define("LAN_THEME_2", "Reageren bji dit onderwerp niet mogelijk");
+define("LAN_THEME_2", "Reageren bij dit onderwerp niet mogelijk");
 define("LAN_THEME_3", "reactie(s): ");
 define("LAN_THEME_4", "Lees verder ...");
 define("LAN_THEME_5", "Trackbacks: ");

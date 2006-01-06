@@ -13,6 +13,6 @@
 */
 
 define("UTHEME_MENU_L1", "Instellen taal");
-define("UTHEME_MENU_L2", "Instellen interfacetaal");
+define("UTHEME_MENU_L2", "Taal");
 define("UTHEME_MENU_L3", "tabellen");
 ?>
