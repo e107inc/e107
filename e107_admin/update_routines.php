@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.160 $
-|     $Date: 2005-12-29 20:39:59 $
+|     $Revision: 1.161 $
+|     $Date: 2006-01-06 06:59:41 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -123,7 +123,7 @@ function update_617_to_700($type='') {
 		altered structure of news table
 		*/
 		if ($error=='') {
-			mysql_query("ALTER TABLE ".MPREFIX."news ADD news_comment_total INT (10) UNSIGNED NOT NULL");
+			mysql_query("ALTER TABLE ".MPREFIX."news ADD news_comment_total int(10) unsigned NOT NULL default '0'");
 			catch_error();
 			$sql->db_Select_gen("SELECT comment_item_id AS id, COUNT(*) AS amount FROM #comments GROUP BY comment_item_id");
 			$commentArray = $sql->db_getList();
@@ -193,7 +193,7 @@ function update_617_to_700($type='') {
 
 		/* general table structure changes */
 		if ($error=='') {
-			mysql_query("ALTER TABLE `".MPREFIX."user` CHANGE `user_sess` `user_sess` VARCHAR( 100 ) NOT NULL");
+			mysql_query("ALTER TABLE `".MPREFIX."user` CHANGE `user_sess` `user_sess` varchar(100) NOT NULL default ''");
 			catch_error();
 		}
 		/*	end	*/
@@ -217,7 +217,7 @@ function update_617_to_700($type='') {
 			if(!$pref['emotepack']){
         			$pref['emotepack'] = "default";
 			}
-			mysql_query("ALTER TABLE ".MPREFIX."core CHANGE e107_name e107_name VARCHAR( 100 ) NOT NULL");
+			mysql_query("ALTER TABLE ".MPREFIX."core CHANGE e107_name e107_name varchar(100) NOT NULL default ''");
 			catch_error();
 
 		}
@@ -239,9 +239,9 @@ function update_617_to_700($type='') {
 			catch_error();
 			mysql_query("ALTER TABLE ".MPREFIX."download ADD download_class TINYINT ( 3 ) UNSIGNED NOT NULL");
 			catch_error();
-			mysql_query("ALTER TABLE ".MPREFIX."download_category ADD download_category_order INT ( 10 ) UNSIGNED NOT NULL");
+			mysql_query("ALTER TABLE ".MPREFIX."download_category ADD download_category_order int(10) unsigned NOT NULL default '0'");
 			catch_error();
-			mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_mirror` TEXT NOT NULL , ADD `download_mirror_type` TINYINT( 1 ) UNSIGNED NOT NULL");
+			mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_mirror` TEXT NOT NULL , ADD `download_mirror_type` tinyint(1) unsigned NOT NULL default '0' ");
 			catch_error();
 		}
 		/*	end	*/
@@ -249,9 +249,9 @@ function update_617_to_700($type='') {
 
 		/* start user update */
 		if ($error=='') {
-			mysql_query("ALTER TABLE ".MPREFIX."user ADD user_loginname VARCHAR( 100 ) NOT NULL AFTER user_name");
+			mysql_query("ALTER TABLE ".MPREFIX."user ADD user_loginname varchar(100) NOT NULL default '' AFTER user_name");
 			catch_error();
-			mysql_query("ALTER TABLE ".MPREFIX."user ADD user_xup VARCHAR( 100 ) NOT NULL");
+			mysql_query("ALTER TABLE ".MPREFIX."user ADD user_xup varchar(100) NOT NULL default ''");
 			catch_error();
 			$sql->db_Update("user", "user_loginname=user_name WHERE user_loginname=''");
 			catch_error();
@@ -263,20 +263,20 @@ function update_617_to_700($type='') {
 			$sql->db_Select_gen("
 		  	CREATE TABLE ".MPREFIX."page (
 		  	page_id int(10) unsigned NOT NULL auto_increment,
-		  	page_title varchar(250) NOT NULL,
+		  	page_title varchar(250) NOT NULL default '',
 		  	page_text mediumtext NOT NULL,
-		  	page_author int(10) unsigned NOT NULL,
-		  	page_datestamp int(10) unsigned NOT NULL,
-		  	page_rating_flag tinyint(1) unsigned NOT NULL,
-		  	page_comment_flag tinyint(1) unsigned NOT NULL,
-		  	page_password varchar(50) NOT NULL,
-		  	page_class varchar(250) default NULL,
+		  	page_author int(10) unsigned NOT NULL default '0',
+		  	page_datestamp int(10) unsigned NOT NULL default '0',
+		  	page_rating_flag tinyint(1) unsigned NOT NULL default '0',
+		  	page_comment_flag tinyint(1) unsigned NOT NULL default '0',
+		  	page_password varchar(50) NOT NULL default '',
+		  	page_class varchar(250) NOT NULL default '',
 		  	page_ip_restrict text NOT NULL,
-		  	page_theme varchar(50) NOT NULL,
+		  	page_theme varchar(50) NOT NULL default '',
 		  	PRIMARY KEY  (page_id)
 			) TYPE=MyISAM;");
 			catch_error();
-			mysql_query("ALTER TABLE ".MPREFIX."page CHANGE page_class page_class VARCHAR( 250 ) NOT NULL");
+			mysql_query("ALTER TABLE ".MPREFIX."page CHANGE page_class page_class varchar(250) NOT NULL default ''");
 			catch_error();
 		}
 		/*	end 	*/
@@ -371,7 +371,7 @@ function update_617_to_700($type='') {
 		}
 
 		if ($error=='') {
-			mysql_query("ALTER TABLE ".MPREFIX."menus ADD menu_path VARCHAR( 100 ) NOT NULL");
+			mysql_query("ALTER TABLE ".MPREFIX."menus ADD menu_path varchar(100) NOT NULL default ''");
 			catch_error();
 
 			mysql_query("UPDATE ".MPREFIX."menus SET menu_path = 'custom', menu_name = substring(menu_name,8) WHERE substring(menu_name,1,6) = 'custom'");
@@ -442,10 +442,10 @@ function update_617_to_700($type='') {
 			");
 			catch_error();
 
-			$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_applicable TINYINT( 3 ) UNSIGNED NOT NULL");
+			$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_applicable tinyint(3) unsigned NOT NULL default '0'");
 			catch_error();
 
-			$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_order INT( 10 ) UNSIGNED NOT NULL");
+			$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_order int(10) unsigned NOT NULL default '0'");
 			catch_error();
 
 			$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_icon VARCHAR( 255 ) NOT NULL");
@@ -523,11 +523,6 @@ function update_617_to_700($type='') {
 			$sql->db_Select_gen("DELETE FROM #core WHERE e107_name='user_entended'");
 
 
-		}
-
-        if(!array_key_exists('ue_upgrade', $pref)){
-				$pref['ue_upgrade'] = 1;
-				$s_prefs = TRUE;
 		}
 
 		//End Extended user field conversion
@@ -654,11 +649,11 @@ function update_617_to_700($type='') {
 			$field3 = $sql->db_Field("news",15);
 
 			if($field1 != "news_summary" && $field1 != "news_thumbnail" && $field3 != "news_sticky"){
-				mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_summary` TEXT DEFAULT NULL;");
+				mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_summary` text NOT NULL");
 				catch_error();
-				mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_thumbnail` TEXT DEFAULT NULL;");
+				mysql_query("ALTER TABLE `".MPREFIX."news` ADD `news_thumbnail` text NOT NULL");
 				catch_error();
-				mysql_query("ALTER TABLE ".MPREFIX."news ADD news_sticky TINYINT ( 3 ) UNSIGNED NOT NULL");
+				mysql_query("ALTER TABLE ".MPREFIX."news ADD news_sticky tinyint(3) unsigned NOT NULL default '0'");
 				catch_error();
 			}
 		}
@@ -715,7 +710,7 @@ function update_617_to_700($type='') {
 			catch_error();
 			mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_icon` ;");
 			catch_error();
-	                mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_parent` INT( 10 ) UNSIGNED NOT NULL ;");
+	                mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_parent` int(10) unsigned NOT NULL default '0'");
 			catch_error();
         	        mysql_query("ALTER TABLE `".MPREFIX."user_extended` ADD `user_hidden_fields` TEXT NOT NULL AFTER `user_extended_id`");
 			catch_error();
@@ -825,13 +820,6 @@ function update_617_to_700($type='') {
 				}
 		}
 		// -----------------------------------------------------
-
-
-		// Add default pref for Max IP signups.
-		if(!isset($pref['signup_maxip'])){
-			$pref['signup_maxip'] = 3;
-			$s_prefs = TRUE;
-		}
 
 		// Fix corrupted Plugin Table.
 		$sql -> db_Delete("plugin", " plugin_installflag='0' ");
@@ -1060,7 +1048,7 @@ function update_617_to_700($type='') {
 
 		if ($error=='') {
 			if($sql->db_Field("plugin",5) != "plugin_rss"){
-				mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_rss` VARCHAR( 255 ) NOT NULL ;");
+				mysql_query("ALTER TABLE `".MPREFIX."plugin` ADD `plugin_rss` varchar(255) NOT NULL default ''");
 				catch_error();
 			}
 		}
@@ -1205,6 +1193,17 @@ function update_617_to_700($type='') {
 				$pref['download_email'] = $pref['reported_post_email'];
 				$s_prefs = TRUE;
 			}
+		}
+		
+		if(!array_key_exists('ue_upgrade', $pref)){
+			$pref['ue_upgrade'] = 1;
+			$s_prefs = TRUE;
+		}
+		
+		// Add default pref for Max IP signups.
+		if(!isset($pref['signup_maxip'])){
+			$pref['signup_maxip'] = 3;
+			$s_prefs = TRUE;
 		}
 
 		// -----------------------------------------------------
@@ -1618,7 +1617,8 @@ function catch_error(){
 	if (mysql_error()!='' && E107_DEBUG_LEVEL > 0) {
 		$tmp2 = debug_backtrace();
 		$tmp = mysql_error();
-		$error.= $tmp;
+		// we cant stop the upgrade when 1 thing goes wrong like this as its been causing major failures in the upgrade process for people. do not set any value into $error anywhere.
+		// $error.= $tmp;
 		echo $tmp." [ ".basename(__FILE__)." on line ".$tmp2[0]['line']."] <br />";
 	}
 	return;
