@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_update.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-12-14 19:28:44 $
+|     $Revision: 1.14 $
+|     $Date: 2006-01-06 06:59:41 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -71,9 +71,9 @@ function forum_stage1()
 {
 	global $sql;
 	$ttab = MPREFIX.'forum_t';
-	$sql->db_Select_gen("ALTER TABLE #forum_t ADD thread_edit_datestamp INT( 10 ) UNSIGNED NOT NULL");
-	$sql->db_Select_gen("ALTER TABLE #forum_t ADD thread_lastuser VARCHAR( 30 ) NOT NULL");
-	$sql->db_Select_gen("ALTER TABLE #forum_t ADD thread_total_replies INT UNSIGNED NOT NULL");
+	$sql->db_Select_gen("ALTER TABLE #forum_t ADD thread_edit_datestamp int(10) unsigned NOT NULL default '0'");
+	$sql->db_Select_gen("ALTER TABLE #forum_t ADD thread_lastuser varchar(30) NOT NULL default ''");
+	$sql->db_Select_gen("ALTER TABLE #forum_t ADD thread_total_replies int(10) unsigned NOT NULL default '0'");
 	$sql->db_Select_gen("ALTER TABLE #forum ADD forum_postclass TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL ;");
 	$sql->db_Select_gen("ALTER TABLE #forum ADD `forum_sub` INT( 10 ) UNSIGNED DEFAULT '0' NOT NULL AFTER `forum_parent` ;");
 	return "Updated table structure <br />";
@@ -91,7 +91,7 @@ function forum_stage2()
 function forum_stage3()
 {
 	global $sql;
-	$sql->db_Select_gen("ALTER TABLE #forum_t CHANGE thread_user thread_user varchar( 250 ) NOT NULL");
+	$sql->db_Select_gen("ALTER TABLE #forum_t CHANGE thread_user thread_user varchar(250) NOT NULL default ''");
 	$sql->db_Select_gen("ALTER TABLE #forum_t DROP thread_anon"); 
 	return "Updated thread_user & forum_anon field<br />";
 }
@@ -116,8 +116,8 @@ function forum_stage4()
 function forum_stage5()
 {
 	global $sql, $forum;
-	$sql->db_Select_gen("ALTER TABLE #forum CHANGE forum_lastpost forum_lastpost_user VARCHAR( 200 ) NOT NULL"); 
-	$sql->db_Select_gen("ALTER TABLE #forum ADD forum_lastpost_info VARCHAR( 40 ) NOT NULL AFTER forum_lastpost_user");
+	$sql->db_Select_gen("ALTER TABLE #forum CHANGE forum_lastpost forum_lastpost_user varchar(200) NOT NULL default ''"); 
+	$sql->db_Select_gen("ALTER TABLE #forum ADD forum_lastpost_info varchar(40) NOT NULL default '' AFTER forum_lastpost_user");
 	set_time_limit(180);
 	$forum->update_lastpost('forum', 'all', TRUE);
 	return "Updated lastpost info <br />";
