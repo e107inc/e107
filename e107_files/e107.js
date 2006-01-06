@@ -5,9 +5,9 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.16 $
-|	$Date: 2005-09-23 02:24:23 $
-|	$Author: e107coders $
+|	$Revision: 1.17 $
+|	$Date: 2006-01-06 01:50:05 $
+|	$Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -79,6 +79,10 @@ if(document.getElementById(hide)){
 
 function urljump(url){
 	top.window.location = url;
+}
+
+function setInner(id, txt) {
+	document.getElementById(id).innerHTML = txt;
 }
 
 function jsconfirm(thetext){
