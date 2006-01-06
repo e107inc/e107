@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.249 $
-|     $Date: 2006-01-04 20:46:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.250 $
+|     $Date: 2006-01-06 13:23:48 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -252,6 +252,8 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 	}
 }
 
+$page = substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
+define("e_PAGE", $page);
 
 // sort out the users language selection
 if (isset($_POST['setlanguage']) || isset($_GET['elan'])) {
@@ -293,11 +295,20 @@ if (isset($pref['multilanguage']) && $pref['multilanguage']) {
 	closedir($handle);
 	$tmplan = implode(",",$lanlist);
 }
+
 define("e_LANLIST",(isset($tmplan) ? $tmplan : ""));
-$page=substr(strrchr($_SERVER['PHP_SELF'], "/"), 1);
-define("e_PAGE", $page);
 
 $sql->db_Mark_Time('(Start: Pref/multilang done)');
+
+$language=(isset($_COOKIE['e107language_'.$pref['cookie_name']]) ? $_COOKIE['e107language_'.$pref['cookie_name']] : ($pref['sitelanguage'] ? $pref['sitelanguage'] : "English"));
+define("e_LAN", $language);
+define("USERLAN", ($user_language && (strpos(e_SELF, $PLUGINS_DIRECTORY) !== FALSE || (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE && file_exists(e_LANGUAGEDIR.$user_language."/lan_".e_PAGE)) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE && file_exists(e_LANGUAGEDIR.$user_language."/admin/lan_".e_PAGE)) || file_exists(dirname($_SERVER['SCRIPT_FILENAME'])."/languages/".$user_language."/lan_".e_PAGE)    || (    (strpos(e_SELF, $ADMIN_DIRECTORY) == FALSE) && (strpos(e_SELF, $PLUGINS_DIRECTORY) == FALSE) && file_exists(e_LANGUAGEDIR.$user_language."/".$user_language.".php")  )   ) ? $user_language : FALSE));
+define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
+
+e107_include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
+e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
+
+define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
 
 // online user tracking class
 $e_online = new e_online();
@@ -435,16 +446,6 @@ if ($pref['membersonly_enabled'] && !USER && e_PAGE != e_SIGNUP && e_PAGE != "in
 }
 
 $sql->db_Delete("tmp", "tmp_time < '".(time() - 300)."' AND tmp_ip!='data' AND tmp_ip!='submitted_link'");
-
-$language=(isset($_COOKIE['e107language_'.$pref['cookie_name']]) ? $_COOKIE['e107language_'.$pref['cookie_name']] : ($pref['sitelanguage'] ? $pref['sitelanguage'] : "English"));
-define("MAGIC_QUOTES_GPC", (ini_get('magic_quotes_gpc') ? TRUE : FALSE));
-define("e_LAN", $language);
-
-define("USERLAN", ($user_language && (strpos(e_SELF, $PLUGINS_DIRECTORY) !== FALSE || (strpos(e_SELF, $ADMIN_DIRECTORY) === FALSE && file_exists(e_LANGUAGEDIR.$user_language."/lan_".e_PAGE)) || (strpos(e_SELF, $ADMIN_DIRECTORY) !== FALSE && file_exists(e_LANGUAGEDIR.$user_language."/admin/lan_".e_PAGE)) || file_exists(dirname($_SERVER['SCRIPT_FILENAME'])."/languages/".$user_language."/lan_".e_PAGE)    || (    (strpos(e_SELF, $ADMIN_DIRECTORY) == FALSE) && (strpos(e_SELF, $PLUGINS_DIRECTORY) == FALSE) && file_exists(e_LANGUAGEDIR.$user_language."/".$user_language.".php")  )   ) ? $user_language : FALSE));
-define("e_LANGUAGE", (!USERLAN || !defined("USERLAN") ? $language : USERLAN));
-
-e107_include(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE.".php");
-e107_include_once(e_LANGUAGEDIR.e_LANGUAGE."/".e_LANGUAGE."_custom.php");
 
 // for multi-language these definitions needs to come after the language loaded.
 define("SITENAME", trim($tp->toHTML($pref['sitename'], "", "emotes_off defs no_make_clickable")));
@@ -1303,7 +1304,7 @@ class error_handler {
  * @return mixed
  */
 function strip_if_magic($data) {
-	if (ini_get("magic_quotes_gpc") == true) {
+	if (MAGIC_QUOTES_GPC == true) {
 		return array_stripslashes($data);
 	} else {
 		return $data;
