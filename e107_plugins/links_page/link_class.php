@@ -11,9 +11,9 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.23 $
-|    $Date: 2006-01-05 09:06:46 $
-|    $Author: sweetas $
+|    $Revision: 1.24 $
+|    $Date: 2006-01-07 13:37:06 $
+|    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -608,12 +608,12 @@ class linkclass {
 		<td style='width:70%; vertical-align:top;' class='forumheader3'>
 		<input class='tbox' type='text' name='link_but' id='link_but' size='60' value='".$row['link_button']."' maxlength='100' />
 			<div id='linkbut' style='display:; vertical-align:top;'><table style='text-align:left; width:100%;'><tr><td style='width:20%; padding-right:10px;'>";
-			$selectjs	= "size='5'";
+			//$selectjs	= "size='5'";
 			$text		.= $rs -> form_select_open("link_button", $selectjs);
-			$js			= "onclick=\"insertext('','link_but',''); document.getElementById('iconview').src='".e_PLUGIN."links_page/images/blank.gif'; document.getElementById('iconview').style.display='none';\" ";
+			$js			= "onclick=\"insertext('','link_but','');document.getElementById('iconview').src='".e_PLUGIN."links_page/images/blank.gif'; document.getElementById('iconview').style.display='none';\"";
 			$text		.= $rs -> form_option(LCLAN_ITEM_34, ($row['link_button'] ? "0" : "1"), "", $js );
 			foreach($iconlist as $icon){
-				$js		= "onclick=\"insertext('".$icon['fname']."','link_but',''); document.getElementById('iconview').src='".$icon['path'].$icon['fname']."'; document.getElementById('iconview').style.display='';\" ";
+				$js		= "onclick=\"insertext('".$icon['fname']."','link_but','');document.getElementById('iconview').src='".$icon['path'].$icon['fname']."'; document.getElementById('iconview').style.display='';\"";
 				$text	.= $rs -> form_option($icon['fname'], ($icon['fname'] == $row['link_button'] ? "1" : "0"), $icon['fname'], $js );
 			}
 			$text .= $rs -> form_select_close();
