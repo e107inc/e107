@@ -17,6 +17,7 @@ define("LIST_PLUGIN_2", "Deze plugin laat een overzicht met recente aanvullingen
 define("LIST_PLUGIN_3", "Configureren hoofdmenu");
 define("LIST_PLUGIN_4", "De List_new plugin is nu gereed voor gebruik.");
 define("LIST_PLUGIN_5", "list");
+define("LIST_PLUGIN_6", "Deze plugin is niet geïnstalleerd.");
 
 define("PAGE_NAME", "Overzicht nieuwe onderwerpen");
 define("LIST_1", "Nieuwsberichten");
