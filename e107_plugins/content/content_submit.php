@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content_submit.php,v $
-|		$Revision: 1.18 $
-|		$Date: 2005-07-12 11:39:01 $
+|		$Revision: 1.19 $
+|		$Date: 2006-01-07 01:37:26 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -127,7 +127,7 @@ if(!isset($qs[0])){
 
 if(isset($qs[0]) && $qs[0]=="content" && $qs[1] == "submit" && is_numeric($qs[2]) && !isset($qs[3])){
 	//check if valid categories exist for this main parent
-	$array			= $aa -> getCategoryTree("", $qs[2], TRUE);
+	$array			= $aa -> getCategoryTree("", intval($qs[2]), TRUE);
 	$validparent	= implode(",", array_keys($array));
 	$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 	$sql2			= new db;

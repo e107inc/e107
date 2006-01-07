@@ -55,7 +55,7 @@ if (!defined('e107_INIT')) { exit; }
 				}else{
 					$qry = $qry." ".$datequery;
 				}
-				$qry .= " ORDER BY content_datestamp DESC LIMIT 0,".$arr[7];
+				$qry .= " ORDER BY content_datestamp DESC LIMIT 0,".intval($arr[7]);
 
 				//get recent content for each main parent
 				$sqli = new db;

@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.96 $
-|		$Date: 2005-12-14 19:28:43 $
-|		$Author: sweetas $
+|		$Revision: 1.97 $
+|		$Date: 2006-01-07 01:37:26 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -91,6 +91,7 @@ class contentform{
 					{CONTENT_CONTENT_PREVIEW_PAGENAMES}
 				</table>\n";
 
+				$_POST['parent'] = intval($_POST['parent']);
 				$mainparent						= $aa -> getMainParent( $_POST['parent'] );
 				$content_pref					= $aa -> getContentPref($mainparent);
 				$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$mainparent}"]);
@@ -260,11 +261,11 @@ class contentform{
 						}
 
 						if($mode == "submit"){
-							$mainparent					= $aa -> getMainParent( $qs[2] );
+							$mainparent					= $aa -> getMainParent( intval($qs[2]) );
 							$array						= $aa -> getCategoryTree("", $mainparent, FALSE);
 						}else{
 							$array						= $aa -> getCategoryTree("", "", FALSE);
-							$mainparent					= $aa -> getMainParent( (isset($qs[3]) && is_numeric($qs[3]) ? $qs[3] : $qs[2]) );
+							$mainparent					= $aa -> getMainParent( (isset($qs[3]) && is_numeric($qs[3]) ? $qs[3] : intval($qs[2])) );
 						}
 						
 						$content_pref					= $aa -> getContentPref($mainparent);
@@ -286,7 +287,7 @@ class contentform{
 						if($mode == "contentmanager"){
 
 							$personalmanagercheck = FALSE;
-							if($sql -> db_Select($plugintable, "content_id, content_heading, content_parent, content_pref", " content_id='".$qs[2]."' ")){
+							if($sql -> db_Select($plugintable, "content_id, content_heading, content_parent, content_pref", " content_id='".intval($qs[2])."' ")){
 								$rowpcm = $sql -> db_Fetch();
 								
 								if( isset($qs[1]) && $qs[1] == "edit" && is_numeric($qs[2]) ){
@@ -311,6 +312,7 @@ class contentform{
 								if($qs[1] == "edit"){
 									//use user restriction (personal admin)
 									if(isset($userid) && isset($username) ){
+										$userid = intval($userid);
 										$userquery = " AND (content_author = '".$userid."' OR SUBSTRING_INDEX(content_author, '^', 1) = '".$userid."' OR SUBSTRING_INDEX(content_author, '^', 2) = '".$userid."^".$username."' OR content_author REGEXP '".$username."' )";
 									}else{
 										$userquery = "";
@@ -403,7 +405,7 @@ class contentform{
 						}
 
 						if( ($qs[1] == "edit" || $qs[1] == "sa") && is_numeric($qs[2]) && !isset($_POST['preview_content']) && !isset($message)){
-							if(!$sql -> db_Select($plugintable, "*", "content_id='".$qs[2]."' ")){
+							if(!$sql -> db_Select($plugintable, "*", "content_id='".intval($qs[2])."' ")){
 								header("location:".e_SELF."?content"); exit;
 							}else{
 								$row = $sql -> db_Fetch();
@@ -484,7 +486,7 @@ class contentform{
 							if($qs[1] == "edit"){
 								$hidden = $rs -> form_hidden("parent", $row['content_parent']);
 							}else{
-								$hidden = $rs -> form_hidden("parent", $qs[2]);
+								$hidden = $rs -> form_hidden("parent", intval($qs[2]));
 							}
 						}else{
 							if($mode == "submit"){
@@ -1076,7 +1078,7 @@ class contentform{
 
 			if($mode == "contentmanager"){
 				$personalmanagercheck = FALSE;
-				if($sql -> db_Select($plugintable, "content_id, content_heading, content_pref", " content_id='".$qs[1]."' ")){
+				if($sql -> db_Select($plugintable, "content_id, content_heading, content_pref", " content_id='".intval($qs[1])."' ")){
 					$rowpcm = $sql -> db_Fetch();
 					$pcmcontent_pref = $eArrayStorage->ReadArray($rowpcm['content_pref']);
 
@@ -1094,24 +1096,25 @@ class contentform{
 					}else{
 						//use user restriction (personal admin)
 						if(isset($userid) && isset($username) ){
+							$userid = intval($userid);
 							$qryuser = " AND (content_author = '".$userid."' OR SUBSTRING_INDEX(content_author, '^', 1) = '".$userid."' OR SUBSTRING_INDEX(content_author, '^', 2) = '".$userid."^".$username."' OR content_author REGEXP '".$username."' )";
 						}
 					}
-					$formtarget	= $plugindir."content_manager.php?content.".$qs[1];
-					$qrycat		= " content_parent = '".$qs[1]."' ";
-					$qryfirst	= " content_parent = '".$qs[1]."' ";
+					$formtarget	= $plugindir."content_manager.php?content.".intval($qs[1]);
+					$qrycat		= " content_parent = '".intval($qs[1])."' ";
+					$qryfirst	= " content_parent = '".intval($qs[1])."' ";
 					$qryletter	= "";
 					
 				}else{
 					header("location:".$plugindir."content_manager.php"); exit;
 				}
 			}else{
-				$array			= $aa -> getCategoryTree("", $qs[1], TRUE);
+				$array			= $aa -> getCategoryTree("", intval($qs[1]), TRUE);
 				$validparent	= implode(",", array_keys($array));
 				$qrycat			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 				$qryuser = "";
 				if( !(isset($qs[2]) && is_numeric($qs[2])) ){
-					$formtarget	= e_SELF."?content.".$qs[1];
+					$formtarget	= e_SELF."?content.".intval($qs[1]);
 					$qryfirst	= " ".$qrycat." ";							
 					$qryletter	= "";
 				}
@@ -1164,7 +1167,7 @@ class contentform{
 
 			// -------- CHECK FOR FIRST LETTER SUBMISSION --------------------------------
 			$letter=(isset($_POST['letter']) ? $_POST['letter'] : "");
-			if ($letter != "" && $letter != "all" ) { $qryletter .= " AND content_heading LIKE '".$letter."%' "; }else{ $qryletter .= ""; }
+			if ($letter != "" && $letter != "all" ) { $qryletter .= " AND content_heading LIKE '".$tp->toDB($letter)."%' "; }else{ $qryletter .= ""; }
 			
 			$qryitem = " ".$qrycat." AND content_refer != 'sa' ".$qryletter." ".$qryuser." ORDER BY content_datestamp DESC";
 			// ---------------------------------------------------------------------------
@@ -1308,7 +1311,7 @@ class contentform{
 
 				if(!is_object($sql)){ $sql = new db; }
 				foreach($array as $catid){
-					if(!$category_total = $sql -> db_Select($plugintable, "*", "content_id='".$catid."' ")){
+					if(!$category_total = $sql -> db_Select($plugintable, "*", "content_id='".intval($catid)."' ")){
 						$text .= "<div style='text-align:center;'>".CONTENT_ADMIN_CAT_LAN_9."</div>";
 					}else{
 						$row = $sql -> db_Fetch();
@@ -1337,7 +1340,7 @@ class contentform{
 							<input type='image' title='delete' name='delete[cat_{$catid}]' src='".CONTENT_ICON_DELETE_BASE."' onclick=\"return jsconfirm('".$tp->toJS(CONTENT_ADMIN_JS_LAN_9."\\n\\n".CONTENT_ADMIN_JS_LAN_0."\\n\\n[".CONTENT_ADMIN_JS_LAN_6." ".$catid." : ".$delete_heading."]\\n\\n")."')\"/>";
 						
 						}elseif($mode == "manager"){
-							$options = "<a href='".e_SELF."?manager.".$catid."'>".CONTENT_ICON_CONTENTMANAGER_SMALL."</a>";
+							$options = "<a href='".e_SELF."?manager.".intval($catid)."'>".CONTENT_ICON_CONTENTMANAGER_SMALL."</a>";
 							if(isset($row['content_pref'])){
 								$pcmcontent_pref = $eArrayStorage->ReadArray($row['content_pref']);
 							}
@@ -1394,13 +1397,13 @@ class contentform{
 			$content_cat_icon_path_large	= $tp -> replaceConstants($content_pref["content_cat_icon_path_large_{$mainparent}"]);
 
 			if( $qs[0] == "cat" && $qs[1] == "create" && isset($qs[2]) && is_numeric($qs[2]) ){
-				if(!$sql -> db_Select($plugintable, "*", "content_id='".$qs[2]."' ")){
+				if(!$sql -> db_Select($plugintable, "*", "content_id='".intval($qs[2])."' ")){
 					header("location:".e_SELF."?cat"); exit;
 				}
 				$formurl = e_SELF."?".e_QUERY;
 			}
 			if( $qs[0] == "cat" && $qs[1] == "edit" && isset($qs[2]) && is_numeric($qs[2]) ){
-				if(!$sql -> db_Select($plugintable, "*", "content_id='".$qs[2]."' ")){
+				if(!$sql -> db_Select($plugintable, "*", "content_id='".intval($qs[2])."' ")){
 					header("location:".e_SELF."?cat"); exit;
 				}else{
 					$row = $sql -> db_Fetch();
@@ -1672,7 +1675,7 @@ class contentform{
 			$catarray	= array_keys($array);
 			$content_contentmanager_table_string = "";
 			foreach($catarray as $catid){
-				if($sql -> db_Select($plugintable, "content_id, content_heading, content_pref", " content_id='".$catid."' ")){
+				if($sql -> db_Select($plugintable, "content_id, content_heading, content_pref", " content_id='".intval($catid)."' ")){
 					$row = $sql -> db_Fetch();
 					$content_pref = $eArrayStorage->ReadArray($row['content_pref']);
 
@@ -1724,7 +1727,7 @@ class contentform{
 
 				if(!is_object($sql)){ $sql = new db; }
 				foreach($array as $catid){
-					if(!$category_total = $sql -> db_Select($plugintable, "*", "content_id='".$catid."' ")){
+					if(!$category_total = $sql -> db_Select($plugintable, "*", "content_id='".intval($catid)."' ")){
 						$text .= "<div style='text-align:center;'>".CONTENT_ADMIN_CAT_LAN_9."</div>";
 					}else{
 						$row = $sql -> db_Fetch();
@@ -1758,7 +1761,7 @@ class contentform{
 						$selectorder = "";
 
 						$sqlc = new db;
-						$n = $sqlc -> db_Count($plugintable, "(*)", "WHERE content_parent='".$catid."' AND content_refer != 'sa' ");
+						$n = $sqlc -> db_Count($plugintable, "(*)", "WHERE content_parent='".intval($catid)."' AND content_refer != 'sa' ");
 						if($n > 1){
 							$ordercat = "<a href='".e_SELF."?order.".$catarray[$catid][0].".".$catid."'>".CONTENT_ICON_ORDERCAT."</a>";
 							$ordercatall = ($row['content_parent'] == 0 ? "<a href='".e_SELF."?order.".$catid."'>".CONTENT_ICON_ORDERALL."</a>" : "");
@@ -1838,11 +1841,11 @@ class contentform{
 			$allcats = $aa -> getCategoryTree("", "", FALSE);
 			if($mode == "ci"){
 				$formtarget		= e_SELF."?order.".$qs[1].".".$qs[2];
-				$qry			= "content_parent = '".$qs[2]."' ";
+				$qry			= "content_parent = '".intval($qs[2])."' ";
 				$order			= "SUBSTRING_INDEX(content_order, '.', 1)+0";
 
 			}elseif($mode == "ai"){
-				$array			= $aa -> getCategoryTree("", $qs[1], FALSE);
+				$array			= $aa -> getCategoryTree("", intval($qs[1]), FALSE);
 				$validparent	= implode(",", array_keys($array));
 				$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 				$formtarget		= e_SELF."?order.".$qs[1];
@@ -1953,7 +1956,7 @@ class contentform{
 			if(!is_numeric($qs[1])){ js_location(e_SELF); }
 
 			if(!is_object($sql)){ $sql = new db; }
-			if(!$sql -> db_Select($plugintable, "content_id, content_heading, content_pref", "content_id='".$qs[1]."' ")){
+			if(!$sql -> db_Select($plugintable, "content_id, content_heading, content_pref", "content_id='".intval($qs[1])."' ")){
 				js_location(e_SELF."?manager");
 			}else{
 				$row = $sql -> db_Fetch();
@@ -1961,7 +1964,7 @@ class contentform{
 			}
 			
 			//get current preferences
-			$mainparent			= $aa -> getMainParent( $qs[1] );						
+			$mainparent			= $aa -> getMainParent( intval($qs[1]) );						
 			if($qs[1] == $mainparent){
 				$content_pref	= $aa -> getContentPref($mainparent);
 			}else{							
@@ -2126,7 +2129,7 @@ class contentform{
 			}elseif(is_numeric($qs[1])){
 				$id = $qs[1];
 				$sqlo = new db;
-				if(!$sqlo -> db_Select($plugintable, "content_heading", "content_id='".$id."' AND content_parent = '0' ")){
+				if(!$sqlo -> db_Select($plugintable, "content_heading", "content_id='".intval($id)."' AND content_parent = '0' ")){
 					header("location:".e_SELF."?option"); exit;
 				}else{
 					while($rowo = $sqlo -> db_Fetch()){

@@ -17,7 +17,7 @@ function print_item($id)
 		include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."content/languages/English/lan_content.php");
 
 		if(!is_object($sql)){ $sql = new db; }
-		$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_image, content_parent, content_datestamp, content_class", "content_id='$id' ");
+		$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_image, content_parent, content_datestamp, content_class", "content_id='".intval($id)."' ");
 		$row = $sql -> db_Fetch();
 
 		if(!check_class($row['content_class'])){
@@ -62,7 +62,7 @@ function email_item($id)
 {
 	$plugintable = "pcontent";
 	if(!is_object($sql)){ $sql = new db; }
-	if($sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_parent, content_datestamp, content_class", "content_id='$id' ")){
+	if($sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_parent, content_datestamp, content_class", "content_id='".intval($id)."' ")){
 		while($row = $sql -> db_Fetch()){
 			$tmp = explode(".",$row['content_parent']);
 			if(!check_class($row['content_class'])){
@@ -88,7 +88,7 @@ function print_item_pdf($id){
 			$aa = new content;
 			
 			if(!is_object($sql)){ $sql = new db; }
-			$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_parent, content_datestamp, content_class", "content_id='$id' ");
+			$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_parent, content_datestamp, content_class", "content_id='".intval($id)."' ");
 			$row = $sql -> db_Fetch();
 
 			if(!check_class($row['content_class'])){

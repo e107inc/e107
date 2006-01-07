@@ -411,7 +411,7 @@ SC_END
 SC_BEGIN CONTENT_CAT_LIST_TABLE_COMMENT
 global $CONTENT_CAT_LIST_TABLE_COMMENT, $qs, $row, $comment_total, $mainparent, $content_pref, $sql, $plugintable;
 if($row['content_comment'] && isset($content_pref["content_cat_comment_{$mainparent}"]) && $content_pref["content_cat_comment_{$mainparent}"]){
-	$comment_total = $sql -> db_Count("comments", "(*)",  "WHERE comment_item_id='".$qs[1]."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
+	$comment_total = $sql -> db_Count("comments", "(*)",  "WHERE comment_item_id='".intval($qs[1])."' AND comment_type='".$plugintable."' AND comment_pid='0' ");
 	return "<a style='text-decoration:none;' href='".e_SELF."?cat.".$qs[1].".comment'>".CONTENT_LAN_57." ".$comment_total."</a>";
 }
 SC_END
@@ -718,7 +718,7 @@ SC_END
 SC_BEGIN CONTENT_CONTENT_TABLE_REFER
 global $CONTENT_CONTENT_TABLE_REFER, $sql, $qs, $content_pref, $plugintable, $mainparent;
 if(isset($content_pref["content_content_refer_{$mainparent}"]) && $content_pref["content_content_refer_{$mainparent}"]){
-	$sql -> db_Select($plugintable, "content_refer", "content_id='".$qs[1]."' ");
+	$sql -> db_Select($plugintable, "content_refer", "content_id='".intval($qs[1])."' ");
 	list($content_refer) = $sql -> db_Fetch();
 	$refercounttmp = explode("^", $content_refer);
 	$CONTENT_CONTENT_TABLE_REFER = ($refercounttmp[0] ? $refercounttmp[0] : "");

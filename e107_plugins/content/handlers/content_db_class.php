@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.40 $
-|		$Date: 2005-12-30 14:52:34 $
+|		$Revision: 1.41 $
+|		$Date: 2006-01-07 01:37:26 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -32,7 +32,7 @@ if(isset($_POST['uploadfile'])){
 	if($_POST['uploadtype']){
 		$pref['upload_storagetype'] = "1";
 		require_once(e_HANDLER."upload_handler.php");
-		$mainparent		= $aa -> getMainParent($_POST['parent']);
+		$mainparent		= $aa -> getMainParent(intval($_POST['parent']));
 		$content_pref	= $aa -> getContentPref($mainparent);
 
 		if($_POST['content_id']){
@@ -111,8 +111,8 @@ class contentdb{
 			$_POST['content_subheading']	= $tp -> toDB($_POST['content_subheading']);
 			$_POST['content_summary']		= $tp -> toDB($_POST['content_summary']);
 			$_POST['content_text']			= $tp -> toDB($_POST['content_text']);
-			$_POST['parent']				= ($_POST['parent'] ? $_POST['parent'] : "0");
-			$_POST['content_class']			= ($_POST['content_class'] ? $_POST['content_class'] : "0");
+			$_POST['parent']				= ($_POST['parent'] ? intval($_POST['parent']) : "0");
+			$_POST['content_class']			= ($_POST['content_class'] ? intval($_POST['content_class']) : "0");
 			$_POST['content_meta']			= $tp -> toDB($_POST['content_meta']);
 
 			if(USER){
@@ -144,7 +144,7 @@ class contentdb{
 				}
 			}
 
-			$mainparent						= $aa -> getMainParent($_POST['parent']);
+			$mainparent						= $aa -> getMainParent(intval($_POST['parent']));
 			$content_pref					= $aa -> getContentPref($mainparent);
 			
 			$content_pref["content_icon_path_tmp_{$mainparent}"] = ($content_pref["content_icon_path_tmp_{$mainparent}"] ? $content_pref["content_icon_path_tmp_{$mainparent}"] : $content_pref["content_icon_path_{$mainparent}"]."tmp/");
@@ -162,7 +162,7 @@ class contentdb{
 
 			//move icon to correct folder
 			if($_POST['content_icon']){
-				$icon = $_POST['content_icon'];							
+				$icon = $tp->toDB($_POST['content_icon']);	
 				if($icon && file_exists($content_tmppath_icon.$icon)){
 					rename($content_tmppath_icon.$icon, $content_icon_path.$icon);
 				}
@@ -181,7 +181,7 @@ class contentdb{
 			//move attachments to correct folder
 			$totalattach = "";
 			for($i=0;$i<$sumf;$i++){
-				$attach{$i} = $_POST["content_files{$i}"];
+				$attach{$i} = $tp->toDB($_POST["content_files{$i}"]);
 				if($attach{$i} && file_exists($content_tmppath_file.$attach{$i})){
 					rename($content_tmppath_file.$attach{$i}, $content_file_path.$attach{$i});
 				}
@@ -192,7 +192,7 @@ class contentdb{
 			//move images to correct folder
 			$totalimages = "";
 			for($i=0;$i<$sumi;$i++){
-				$image{$i} = $_POST["content_images{$i}"];
+				$image{$i} = $tp->toDB($_POST["content_images{$i}"]);
 				if($image{$i} && file_exists($content_tmppath_image.$image{$i})){
 					rename($content_tmppath_image.$image{$i}, $content_image_path.$image{$i});
 				}
@@ -208,7 +208,7 @@ class contentdb{
 				$starttime = time();
 			}else{
 				if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
-					$newstarttime = mktime( 0, 0, 0, $_POST['ne_month'], $_POST['ne_day'], $_POST['ne_year']);
+					$newstarttime = mktime( 0, 0, 0, intval($_POST['ne_month']), intval($_POST['ne_day']), intval($_POST['ne_year']));
 				}else{
 					$newstarttime = time();
 				}
@@ -216,7 +216,7 @@ class contentdb{
 					if($newstarttime != $starttime){
 						$starttime = $newstarttime;
 					}else{
-						$starttime = $_POST['content_datestamp'];
+						$starttime = intval($_POST['content_datestamp']);
 					}
 				}else{
 					$starttime = time();
@@ -224,7 +224,7 @@ class contentdb{
 			}
 
 			if($_POST['end_day'] != "none" && $_POST['end_month'] != "none" && $_POST['end_year'] != "none"){
-				$endtime = mktime( 0, 0, 0, $_POST['end_month'], $_POST['end_day'], $_POST['end_year']);
+				$endtime = mktime( 0, 0, 0, intval($_POST['end_month']), intval($_POST['end_day']), intval($_POST['end_year']));
 			}else{
 				$endtime = "0";
 			}
@@ -238,13 +238,13 @@ class contentdb{
 			}
 			//preset additional data tags
 			if(isset($_POST['content_custom_preset_key']) && $_POST['content_custom_preset_key']){
-				$custom['content_custom_presettags'] = $_POST['content_custom_preset_key'];
+				$custom['content_custom_presettags'] = $tp->toDB($_POST['content_custom_preset_key']);
 				$contentprefvalue = $eArrayStorage->WriteArray($custom);
 			}else{
 				$contentprefvalue = "";
 			}
 
-			$_POST['content_layout'] = (!$_POST['content_layout'] || $_POST['content_layout'] == "content_content_template.php" ? "" : $_POST['content_layout']);
+			$_POST['content_layout'] = (!$_POST['content_layout'] || $_POST['content_layout'] == "content_content_template.php" ? "" : $tp->toDB($_POST['content_layout']));
 			
 			//content_order : not added in the sql
 			//content_refer : only added in sql if posting submitted item
@@ -256,7 +256,7 @@ class contentdb{
 				}else{
 					$refer = "";
 				}
-				$sql -> db_Insert($plugintable, "'0', '".$_POST['content_heading']."', '".$_POST['content_subheading']."', '".$_POST['content_summary']."', '".$_POST['content_text']."', '".$author."', '".$icon."', '".$totalattach."', '".$totalimages."', '".$_POST['parent']."', '".$_POST['content_comment']."', '".$_POST['content_rate']."', '".$_POST['content_pe']."', '".$refer."', '".$starttime."', '".$endtime."', '".$_POST['content_class']."', '".$contentprefvalue."', '0', '".$_POST['content_score']."', '".$_POST['content_meta']."', '".$_POST['content_layout']."' ");
+				$sql -> db_Insert($plugintable, "'0', '".$_POST['content_heading']."', '".$_POST['content_subheading']."', '".$_POST['content_summary']."', '".$_POST['content_text']."', '".$tp->toDB($author)."', '".$icon."', '".$totalattach."', '".$totalimages."', '".$_POST['parent']."', '".intval($_POST['content_comment'])."', '".intval($_POST['content_rate'])."', '".intval($_POST['content_pe'])."', '".$refer."', '".$starttime."', '".$endtime."', '".$_POST['content_class']."', '".$contentprefvalue."', '0', '".intval($_POST['content_score'])."', '".$_POST['content_meta']."', '".$_POST['content_layout']."' ");
 
 				$e107cache->clear("$plugintable");
 				if(!$type || $type == "admin"){
@@ -286,7 +286,7 @@ class contentdb{
 						$refer = "";
 					}
 				}
-				$sql -> db_Update($plugintable, "content_heading = '".$_POST['content_heading']."', content_subheading = '".$_POST['content_subheading']."', content_summary = '".$_POST['content_summary']."', content_text = '".$_POST['content_text']."', content_author = '".$author."', content_icon = '".$icon."', content_file = '".$totalattach."', content_image = '".$totalimages."', content_parent = '".$_POST['parent']."', content_comment = '".$_POST['content_comment']."', content_rate = '".$_POST['content_rate']."', content_pe = '".$_POST['content_pe']."' ".$refer.", content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['content_class']."', content_pref = '".$contentprefvalue."', content_score='".$_POST['content_score']."', content_meta='".$_POST['content_meta']."', content_layout='".$_POST['content_layout']."' WHERE content_id = '".$_POST['content_id']."' ");
+				$sql -> db_Update($plugintable, "content_heading = '".$_POST['content_heading']."', content_subheading = '".$_POST['content_subheading']."', content_summary = '".$_POST['content_summary']."', content_text = '".$_POST['content_text']."', content_author = '".$author."', content_icon = '".$icon."', content_file = '".$totalattach."', content_image = '".$totalimages."', content_parent = '".$_POST['parent']."', content_comment = '".intval($_POST['content_comment'])."', content_rate = '".intval($_POST['content_rate'])."', content_pe = '".intval($_POST['content_pe'])."' ".$refer.", content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['content_class']."', content_pref = '".$contentprefvalue."', content_score='".intval($_POST['content_score'])."', content_meta='".$_POST['content_meta']."', content_layout='".$_POST['content_layout']."' WHERE content_id = '".intval($_POST['content_id'])."' ");
 
 				$e107cache->clear("$plugintable");
 				$e107cache->clear("comment.$plugintable.{$_POST['content_id']}");
@@ -306,22 +306,22 @@ class contentdb{
 			$_POST['cat_heading']		= $tp -> toDB($_POST['cat_heading']);
 			$_POST['cat_subheading']	= $tp -> toDB($_POST['cat_subheading']);
 			$_POST['cat_text']			= $tp -> toDB($_POST['cat_text']);
-			$_POST['parent']			= ($_POST['parent'] == "0" ? "0" : "0.".$_POST['parent']);
-			$_POST['cat_class']			= ($_POST['cat_class'] ? $_POST['cat_class'] : "0");
+			$_POST['parent']			= ($_POST['parent'] == "0" ? "0" : "0.".intval($_POST['parent']));
+			$_POST['cat_class']			= ($_POST['cat_class'] ? intval($_POST['cat_class']) : "0");
 
 			if($_POST['ne_day'] != "none" && $_POST['ne_month'] != "none" && $_POST['ne_year'] != "none"){
-				$starttime = mktime( 0, 0, 0, $_POST['ne_month'], $_POST['ne_day'], $_POST['ne_year']);
+				$starttime = mktime( 0, 0, 0, intval($_POST['ne_month']), intval($_POST['ne_day']), intval($_POST['ne_year']));
 			}else{
 				$starttime = time();
 			}
 			if($_POST['end_day'] != "none" && $_POST['end_month'] != "none" && $_POST['end_year'] != "none"){
-				$endtime = mktime( 0, 0, 0, $_POST['end_month'], $_POST['end_day'], $_POST['end_year']);
+				$endtime = mktime( 0, 0, 0, intval($_POST['end_month']), intval($_POST['end_day']), intval($_POST['end_year']));
 			}else{
 				$endtime = "0";
 			}
 
 			if($mode == "create"){
-				$sql -> db_Insert($plugintable, "'0', '".$_POST['cat_heading']."', '".$_POST['cat_subheading']."', '', '".$_POST['cat_text']."', '".ADMINID."', '".$_POST["cat_icon"]."', '', '', '".$_POST['parent']."', '".$_POST['cat_comment']."', '".$_POST['cat_rate']."', '".$_POST['cat_pe']."', '', '".$starttime."', '".$endtime."', '".$_POST['cat_class']."', '', '0', '', '', '' ");
+				$sql -> db_Insert($plugintable, "'0', '".$_POST['cat_heading']."', '".$_POST['cat_subheading']."', '', '".$_POST['cat_text']."', '".ADMINID."', '".$tp->toDB($_POST["cat_icon"])."', '', '', '".$_POST['parent']."', '".intval($_POST['cat_comment'])."', '".intval($_POST['cat_rate'])."', '".intval($_POST['cat_pe'])."', '', '".$starttime."', '".$endtime."', '".$_POST['cat_class']."', '', '0', '0', '', '' ");
 
 				// check and insert default pref values if new main parent + create menu file
 				if($_POST['parent'] == "0"){
@@ -334,7 +334,7 @@ class contentdb{
 				js_location(e_SELF."?".e_QUERY.".pc");
 
 			}elseif($mode == "update"){
-				$sql -> db_Update($plugintable, "content_heading = '".$_POST['cat_heading']."', content_subheading = '".$_POST['cat_subheading']."', content_summary = '', content_text = '".$_POST['cat_text']."', content_author = '".ADMINID."', content_icon = '".$_POST['cat_icon']."', content_image = '', content_parent = '".$_POST['parent']."', content_comment = '".$_POST['cat_comment']."', content_rate = '".$_POST['cat_rate']."', content_pe = '".$_POST['cat_pe']."', content_refer = '0', content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['cat_class']."' WHERE content_id = '".$_POST['cat_id']."' ");
+				$sql -> db_Update($plugintable, "content_heading = '".$_POST['cat_heading']."', content_subheading = '".$_POST['cat_subheading']."', content_summary = '', content_text = '".$_POST['cat_text']."', content_author = '".ADMINID."', content_icon = '".$tp->toDB($_POST["cat_icon"])."', content_image = '', content_parent = '".$_POST['parent']."', content_comment = '".intval($_POST['cat_comment'])."', content_rate = '".intval($_POST['cat_rate'])."', content_pe = '".intval($_POST['cat_pe'])."', content_refer = '0', content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".intval($_POST['cat_class'])."' WHERE content_id = '".intval($_POST['cat_id'])."' ");
 
 				// check and insert default pref values if new main parent + create menu file
 				if($_POST['parent'] == "0"){
@@ -352,7 +352,7 @@ class contentdb{
 			global $plugintable, $sql, $eArrayStorage;
 
 			if($mode == "admin"){
-				$sql -> db_Select($plugintable, "content_pref", "content_id = '".$id."' ");
+				$sql -> db_Select($plugintable, "content_pref", "content_id = '".intval($id)."' ");
 				$row = $sql -> db_Fetch();
 
 				//get current preferences
@@ -368,7 +368,7 @@ class contentdb{
 				//create new array of preferences
 				$tmp = $eArrayStorage->WriteArray($content_pref);
 
-				$sql -> db_Update($plugintable, "content_pref = '{$tmp}' WHERE content_id = '".$id."' ");
+				$sql -> db_Update($plugintable, "content_pref = '{$tmp}' WHERE content_id = '".intval($id)."' ");
 				$message = CONTENT_ADMIN_CAT_LAN_34;
 				return $message;
 			}else{
@@ -383,13 +383,13 @@ class contentdb{
 
 			if($mode == "admin"){
 				if($cat == "cat"){
-					if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+					if($sql -> db_Delete($plugintable, "content_id='".intval($del_id)."' ")){
 						$e107cache->clear("$plugintable");
 						$message = CONTENT_ADMIN_CAT_LAN_23;
 						return $message;
 					}
 				}elseif($cat == "content"){
-					if($sql -> db_Delete($plugintable, "content_id='$del_id' ")){
+					if($sql -> db_Delete($plugintable, "content_id='".intval($del_id)."' ")){
 						$e107cache->clear("$plugintable");
 						$message = CONTENT_ADMIN_ITEM_LAN_3;
 						return $message;
@@ -418,7 +418,12 @@ class contentdb{
 					$tmp		= explode(".", $cid);
 					$old		= explode("-", $tmp[3]);
 					$old[0]		= ($old[0] == "" ? "0" : $old[0]);
-					$old[1]		= ($old[1] == "" ? "0" : $old[1]);								
+					$old[1]		= ($old[1] == "" ? "0" : $old[1]);	
+					
+					$tmp[0]		= intval($tmp[0]);
+					$tmp[1]		= intval($tmp[1]);
+					$old[0]		= intval($old[0]);
+					$old[1]		= intval($old[1]);
 
 					if($tmp[2] == "cat"){
 						$sql->db_Update($plugintable, "content_order='".$tmp[1]."' WHERE content_id='".$tmp[0]."' " );
@@ -435,6 +440,10 @@ class contentdb{
 			}elseif($mode == "inc"){
 
 				$tmp = explode("-", $order);
+				$tmp[0]		= intval($tmp[0]);
+				$tmp[1]		= intval($tmp[1]);
+				$tmp[2]		= intval($tmp[2]);
+
 				if($type == "cc"){
 					$mainparent		= $aa -> getMainParent($tmp[0]);
 					$array			= $aa -> getCategoryTree("", $mainparent, TRUE);
@@ -444,11 +453,11 @@ class contentdb{
 					$sql->db_Update($plugintable, "content_order=content_order-1 WHERE content_id='".$tmp[0]."' " );
 
 				}elseif($type == "ci"){
-					$sql->db_Update($plugintable, "content_order='".$tmp[1].".".$tmp[2]."' WHERE content_parent = '".$qs[2]."' AND SUBSTRING_INDEX(content_order, '.', 1) = '".($tmp[1]-1)."' " );
+					$sql->db_Update($plugintable, "content_order='".$tmp[1].".".$tmp[2]."' WHERE content_parent = '".intval($qs[2])."' AND SUBSTRING_INDEX(content_order, '.', 1) = '".($tmp[1]-1)."' " );
 					$sql->db_Update($plugintable, "content_order='".($tmp[1]-1).".".$tmp[2]."' WHERE content_id='".$tmp[0]."' " );
 
 				}elseif($type == "ai"){
-					$array			= $aa -> getCategoryTree("", $qs[1], TRUE);
+					$array			= $aa -> getCategoryTree("", intval($qs[1]), TRUE);
 					$validparent	= implode(",", array_keys($array));
 					$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' AND SUBSTRING_INDEX(content_order, '.', -1) = '".($tmp[2]-1)."' ";
 					$sql->db_Update($plugintable, " content_order=content_order+0.1 WHERE ".$qry." " );
@@ -460,6 +469,9 @@ class contentdb{
 			}elseif($mode == "dec"){
 
 				$tmp = explode("-", $order);
+				$tmp[0]		= intval($tmp[0]);
+				$tmp[1]		= intval($tmp[1]);
+				$tmp[2]		= intval($tmp[2]);
 				if($type == "cc"){
 					$mainparent		= $aa -> getMainParent($tmp[0]);
 					$array			= $aa -> getCategoryTree("", $mainparent, TRUE);
@@ -469,11 +481,11 @@ class contentdb{
 					$sql->db_Update($plugintable, "content_order=content_order+1 WHERE content_id='".$tmp[0]."' " );
 
 				}elseif($type == "ci"){
-					$sql->db_Update($plugintable, "content_order='".$tmp[1].".".$tmp[2]."' WHERE content_parent = '".$qs[2]."' AND SUBSTRING_INDEX(content_order, '.', 1) = '".($tmp[1]+1)."' " );
+					$sql->db_Update($plugintable, "content_order='".$tmp[1].".".$tmp[2]."' WHERE content_parent = '".intval($qs[2])."' AND SUBSTRING_INDEX(content_order, '.', 1) = '".($tmp[1]+1)."' " );
 					$sql->db_Update($plugintable, "content_order='".($tmp[1]+1).".".$tmp[2]."' WHERE content_id='".$tmp[0]."' " );
 
 				}elseif($type == "ai"){
-					$array			= $aa -> getCategoryTree("", $qs[1], TRUE);
+					$array			= $aa -> getCategoryTree("", intval($qs[1]), TRUE);
 					$validparent	= implode(",", array_keys($array));
 					$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' AND SUBSTRING_INDEX(content_order, '.', -1) = '".($tmp[2]+1)."' ";
 					$sql->db_Update($plugintable, "content_order=content_order-0.1 WHERE ".$qry." " );
