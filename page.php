@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2006-01-05 19:02:46 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.19 $
+|     $Date: 2006-01-07 01:58:45 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -132,7 +132,7 @@ class pageClass
 		LEFT JOIN #user AS u ON p.page_author = u.user_id
 		WHERE p.page_id='".intval($this -> pageID)."' AND p.page_class IN (".USERCLASS_LIST.") ";
 
-		if(!$sql -> db_Select_gen($query))
+		if(!$sql -> db_Select_gen($query) && !$_GET['elan'])
 		{
 			$this -> pageError(2);
 			return FALSE;
