@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.84 $
-|		$Date: 2005-12-21 20:49:26 $
+|		$Revision: 1.85 $
+|		$Date: 2006-01-07 01:37:26 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -318,6 +318,7 @@ class content{
 			$plugintable = "pcontent";
 
 			if($id && $id!="0"){	//if $id; use prefs from content table
+				$id = intval($id);
 				$num_rows = $sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
 				$row = $sql -> db_Fetch();
 				if (empty($row['content_pref'])) {
@@ -344,7 +345,7 @@ class content{
 		}
 
 		//admin
-		function UpdateContentPref($_POST, $id){
+		function UpdateContentPref($id){
 			global $plugintable, $sql, $tp, $eArrayStorage;
 
 			if(!is_object($sql)){ $sql = new db; }
@@ -353,14 +354,14 @@ class content{
 			if($id == "0"){
 				$num_rows = $sql -> db_Select("core", "*", "e107_name='$plugintable' ");
 				if ($num_rows == 0) {
-					$sql -> db_Insert("core", "'$plugintable', '{$tmp}' ");
+					$sql -> db_Insert("core", "'$plugintable', '' ");
 				}else{
 					$row = $sql -> db_Fetch();
 				}
 
 			//insert category preferences into plugintable
 			}else{
-				$sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
+				$sql -> db_Select($plugintable, "content_pref", "content_id='".intval($id)."' ");
 				$row = $sql -> db_Fetch();
 			}
 
@@ -383,7 +384,7 @@ class content{
 			if($id == "0"){
 				$sql -> db_Update("core", "e107_value = '{$tmp}' WHERE e107_name = '$plugintable' ");
 			}else{
-				$sql -> db_Update($plugintable, "content_pref='{$tmp}' WHERE content_id='$id' ");
+				$sql -> db_Update($plugintable, "content_pref='{$tmp}' WHERE content_id='".intval($id)."' ");
 			}
 			return $content_pref;
 		}
@@ -399,12 +400,12 @@ class content{
 
 			if($parent){
 				$agc = "";
-				$qrygc = " content_id = '".$parent."' ";
+				$qrygc = " content_id = '".intval($parent)."' ";
 			}else{
 				$qrygc = " content_parent = '0' ";
 			}
 			if($id){
-				$qrygc = " content_parent = '0.".$id."' ";
+				$qrygc = " content_parent = '0.".intval($id)."' ";
 			}
 
 			if($classcheck == TRUE){
@@ -517,7 +518,7 @@ class content{
 			//$id	:	category content_id
 
 			if(!is_object($sqlcountitemsincat)){ $sqlcountitemsincat = new db; }
-			$n = $sqlcountitemsincat -> db_Count($plugintable, "(*)", "WHERE content_class REGEXP '".e_CLASS_REGEXP."' AND content_parent='".$id."' AND content_refer != 'sa' ".$datequery." ");
+			$n = $sqlcountitemsincat -> db_Count($plugintable, "(*)", "WHERE content_class REGEXP '".e_CLASS_REGEXP."' AND content_parent='".intval($id)."' AND content_refer != 'sa' ".$datequery." ");
 
 			return $n;
 		}
@@ -525,7 +526,7 @@ class content{
 
 		function getPageHeading($id){
 			global $plugintable, $sql;
-			$sql -> db_Select($plugintable, "content_heading", "content_id='".$id."' ");
+			$sql -> db_Select($plugintable, "content_heading", "content_id='".intval($id)."' ");
 			$row2 = $sql -> db_Fetch();
 			return $row2['content_heading'];
 		}
@@ -538,7 +539,7 @@ class content{
 				if(!e_QUERY){
 					$page = CONTENT_PAGETITLE_LAN_0;
 				}else{
-					$sql -> db_Select($plugintable, "content_heading", "content_id = '".$qs[1]."' ");
+					$sql -> db_Select($plugintable, "content_heading", "content_id = '".intval($qs[1])."' ");
 					$row = $sql -> db_Fetch();
 
 					$page = CONTENT_PAGETITLE_LAN_0;
@@ -573,7 +574,7 @@ class content{
 
 					//authorlist of parent='2' and content_id='5'
 					}elseif($qs[0] == "author" && is_numeric($qs[1]) && !isset($qs[2])){
-						$sql -> db_Select($plugintable, "content_author", "content_id='".$qs[1]."' ");
+						$sql -> db_Select($plugintable, "content_author", "content_id='".intval($qs[1])."' ");
 						$row2 = $sql -> db_Fetch();
 						$authordetails = $this -> getAuthor($row2['content_author']);
 						$page .= " / ".CONTENT_PAGETITLE_LAN_5." / ".$authordetails[1];
@@ -657,7 +658,7 @@ class content{
 		function getMainParent($id){
 			global $sql, $plugintable;
 
-			$category_total = $sql -> db_Select($plugintable, "content_id, content_parent", "content_id='".$id."' ");
+			$category_total = $sql -> db_Select($plugintable, "content_id, content_parent", "content_id='".intval($id)."' ");
 			$row = $sql -> db_Fetch();
 			if($row['content_parent'] == 0){
 				$mainparent = $row['content_id'];
@@ -680,15 +681,15 @@ class content{
 			$string = "";
 
 			if($currentparent == "submit"){
-				$mainparent		= $this -> getMainParent( $qs[2] );
-				$catarray		= $this -> getCategoryTree("", $mainparent, FALSE);
+				$mainparent		= $this -> getMainParent( intval($qs[2]) );
+				$catarray		= $this -> getCategoryTree("", intval($mainparent), FALSE);
 			}else{
 				$catarray		= $this -> getCategoryTree("", "", FALSE);
 			}
 			$array = array_keys($catarray);
 
 			foreach($array as $catid){
-				$category_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_parent", "content_id='".$catid."' ");
+				$category_total = $sql -> db_Select($plugintable, "content_id, content_heading, content_parent", "content_id='".intval($catid)."' ");
 				$row = $sql -> db_Fetch();
 
 				$pre = "";
@@ -785,7 +786,7 @@ class content{
 			}elseif(isset($qs[3]) && substr($qs[3],0,5) == "order"){
 				$orderstring	= $qs[3];
 			}else{
-				$checkmi		= (is_numeric($qs[1]) ? $qs[1] : $qs[2]);
+				$checkmi		= (is_numeric($qs[1]) ? $qs[1] : intval($qs[2]));
 				$checkmp		= $this -> getMainParent($checkmi);
 				$orderstring	= ($content_pref["content_defaultorder_{$checkmp}"] ? $content_pref["content_defaultorder_{$checkmp}"] : "orderddate" );
 			}
@@ -1086,7 +1087,7 @@ class content{
 			global $plugintable, $plugindir, $tp, $datequery;
 
 			if(!is_object($sqlcreatemenu)){ $sqlcreatemenu = new db; }
-			if(!$sqlcreatemenu -> db_Select($plugintable, "*", "content_id='".$parentid."'  ")){
+			if(!$sqlcreatemenu -> db_Select($plugintable, "*", "content_id='".intval($parentid)."'  ")){
 				return FALSE;
 			}else{
 				$row = $sqlcreatemenu -> db_Fetch();
@@ -1183,7 +1184,7 @@ class content{
 			$data .= "}\n";
 			$data .= "\n";
 			$data .= "//get category array\n";
-			$data .= chr(36)."array = ".chr(36)."aa -> getCategoryTree(\"\", ".chr(36)."menutypeid, TRUE);\n";
+			$data .= chr(36)."array = ".chr(36)."aa -> getCategoryTree(\"\", intval(".chr(36)."menutypeid), TRUE);\n";
 			$data .= "\n";
 			$data .= "//##### CATEGORY LIST --------------------------------------------------\n";
 			$data .= "if(!".chr(36)."content_pref[\"content_menu_cat_dropdown_".chr(36)."menutypeid\"]){\n";

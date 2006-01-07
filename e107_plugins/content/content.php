@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.86 $
-|		$Date: 2005-10-30 13:12:07 $
-|		$Author: mcfly_e107 $
+|		$Revision: 1.87 $
+|		$Date: 2006-01-07 01:37:26 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -91,7 +91,7 @@ function headerjs(){
 //post comment
 if(isset($_POST['commentsubmit'])){
 	if(!is_object($sql)){ $sql = new db; }
-	if(!$sql -> db_Select($plugintable, "content_comment", "content_id='".$qs[1]."' ")){
+	if(!$sql -> db_Select($plugintable, "content_comment", "content_id='".intval($qs[1])."' ")){
 		header("location:".e_BASE."index.php"); exit;
 	}else{
 		$row = $sql -> db_Fetch();
@@ -233,11 +233,12 @@ function show_content_search_menu($mode, $mainparent){
 function show_content_search_result($searchkeyword){
 		global $row, $qs, $content_shortcodes, $ns, $rs, $tp, $plugindir, $plugintable, $gen, $aa, $content_pref, $datequery, $gen, $mainparent, $content_icon_path;
 
-		$mainparent			= $aa -> getMainParent( (is_numeric($qs[1]) ? $qs[1] : $qs[2]) );
+		$mainparent			= $aa -> getMainParent( (is_numeric($qs[1]) ? $qs[1] : intval($qs[2])) );
 		$content_pref		= $aa -> getContentPref($mainparent);
-		$array				= $aa -> getCategoryTree("", $qs[1], TRUE);
+		$array				= $aa -> getCategoryTree("", intval($qs[1]), TRUE);
 		$validparent		= implode(",", array_keys($array));
 		$qry				= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
+		$searchkeyword		= $tp -> toDB($searchkeyword);
 		$qry				.= " AND (content_heading REGEXP '".$searchkeyword."' OR content_subheading REGEXP '".$searchkeyword."' OR content_summary REGEXP '".$searchkeyword."' OR content_text REGEXP '".$searchkeyword."' ) ";
 		$content_icon_path	= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 
@@ -409,7 +410,7 @@ function show_content_archive(){
 		global $CONTENT_ARCHIVE_TABLE, $CONTENT_ARCHIVE_TABLE_START, $datequery, $CONTENT_ARCHIVE_TABLE_LETTERS;
 		global $CONTENT_SEARCH_TABLE_SELECT, $CONTENT_SEARCH_TABLE_ORDER, $CONTENT_SEARCH_TABLE_KEYWORD, $CONTENT_ARCHIVE_TABLE_AUTHOR;
 
-		$mainparent		= $aa -> getMainParent($qs[1]);
+		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
 
 		show_content_search_menu("archive", $mainparent);		//show navigator/search/order menu
@@ -438,7 +439,7 @@ function show_content_archive(){
 			$qry			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 			$number			= (isset($content_pref["content_archive_nextprev_number_{$mainparent}"]) && $content_pref["content_archive_nextprev_number_{$mainparent}"] ? $content_pref["content_archive_nextprev_number_{$mainparent}"] : "30");
 			$order			= $aa -> getOrder();
-			$nextprevquery	= (isset($content_pref["content_archive_nextprev_{$mainparent}"]) && $content_pref["content_archive_nextprev_{$mainparent}"] ? "LIMIT ".$from.",".$number : "");
+			$nextprevquery	= (isset($content_pref["content_archive_nextprev_{$mainparent}"]) && $content_pref["content_archive_nextprev_{$mainparent}"] ? "LIMIT ".intval($from).",".intval($number) : "");
 			$sql1 = new db;
 			
 			if(isset($content_pref["content_archive_letterindex_{$mainparent}"]) && $content_pref["content_archive_letterindex_{$mainparent}"]){
@@ -468,7 +469,7 @@ function show_content_archive(){
 				}
 				//check posted letter
 				$letter=(isset($_POST['letter']) ? $_POST['letter'] : "");
-				if ($letter != "" && $letter != "all" ) { $qry .= " AND content_heading LIKE '".$letter."%' "; }else{ $qry .= ""; }
+				if ($letter != "" && $letter != "all" ) { $qry .= " AND content_heading LIKE '".$tp->toDB($letter)."%' "; }else{ $qry .= ""; }
 			}
 			$CONTENT_ARCHIVE_TABLE_START = $tp -> parseTemplate($CONTENT_ARCHIVE_TABLE_START, FALSE, $content_shortcodes);
 
@@ -540,7 +541,7 @@ function show_content_recent(){
 		global $qs, $sql2, $plugindir, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $content_pref, $cobj;
 		global $nextprevquery, $from, $number, $mainparent, $datequery, $content_icon_path, $CONTENT_RECENT_TABLE;
 
-		$mainparent		= $aa -> getMainParent($qs[1]);
+		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
 		show_content_search_menu("recent", $mainparent);		//show navigator/search/order menu
 
@@ -551,11 +552,11 @@ function show_content_recent(){
 			ob_start();
 
 			$content_icon_path	= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
-			$array				= $aa -> getCategoryTree("", $qs[1], TRUE);
+			$array				= $aa -> getCategoryTree("", intval($qs[1]), TRUE);
 			$validparent		= implode(",", array_keys($array));
 			$order				= $aa -> getOrder();
 			$number				= ($content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "5");
-			$nextprevquery		= ($content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".$from.",".$number : "");
+			$nextprevquery		= ($content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".intval($from).",".intval($number) : "");
 			$qry				= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 
 			$contenttotal = $sql2 -> db_Count($plugintable, "(*)", "WHERE content_refer != 'sa' AND ".$qry." ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' " );
@@ -585,7 +586,7 @@ function show_content_cat_all(){
 
 		unset($text);
 
-		$mainparent		= $aa -> getMainParent($qs[2]);
+		$mainparent		= $aa -> getMainParent(intval($qs[2]));
 		$content_pref	= $aa -> getContentPref($mainparent);
 		show_content_search_menu("catall", $mainparent);		//show navigator/search/order menu
 
@@ -613,7 +614,7 @@ function show_content_cat_all(){
 			$validparent					= implode(",", array_keys($array));
 			$order							= $aa -> getOrder();
 			$number							= (isset($content_pref["content_nextprev_number_{$mainparent}"]) && $content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "5");
-			$nextprevquery					= (isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".$from.",".$number : "");
+			$nextprevquery					= (isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".intval($from).",".intval($number) : "");
 			$qry							= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 
 			$content_cat_table_string = "";
@@ -662,11 +663,11 @@ function show_content_cat($mode=""){
 		global $content_cat_icon_path_small, $content_cat_icon_path_large, $content_icon_path, $mainparent, $totalparent, $totalsubcat;
 		global $row, $datestamp, $comment_total, $gen, $authordetails, $rater, $crumb, $amount;
 
-		$mainparent		= $aa -> getMainParent($qs[1]);
+		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
 		$array			= $aa -> getCategoryTree("", $mainparent, TRUE);
 		$validparent	= "0,0.".implode(",0.", array_keys($array));
-		$qry			= " content_id = '".$qs[1]."' AND content_refer !='sa' AND content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ";
+		$qry			= " content_id = '".intval($qs[1])."' AND content_refer !='sa' AND content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ";
 
 		show_content_search_menu("cat", $mainparent);		//show navigator/search/order menu
 
@@ -687,7 +688,7 @@ function show_content_cat($mode=""){
 		$content_icon_path				= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);					
 		$order							= $aa -> getOrder();
 		$number							= (isset($content_pref["content_nextprev_number_{$mainparent}"]) && $content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "5");
-		$nextprevquery					= (isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".$from.",".$number : "");
+		$nextprevquery					= (isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".intval($from).",".intval($number) : "");
 		$capqs							= array_reverse($array[$qs[1]]);
 		$caption						= CONTENT_LAN_26." : ".$capqs[0];
 
@@ -719,7 +720,7 @@ function show_content_cat($mode=""){
 
 			if(!$mode || $mode == ""){
 
-				$check			= (isset($qs[1]) && is_numeric($qs[1]) ? $qs[1] : $mainparent);
+				$check			= (isset($qs[1]) && is_numeric($qs[1]) ? intval($qs[1]) : intval($mainparent));
 				$array1			= $aa -> getCategoryTree("", $check, TRUE);
 				$newarray		= array_merge_recursive($array1);
 				for($a=0;$a<count($newarray);$a++){
@@ -756,7 +757,7 @@ function show_content_cat($mode=""){
 					$validitem		= implode(",", $subparent);
 					$qrycat			= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validitem)."' ";
 				}else{
-					$qrycat			= " content_parent = '".$qs[1]."' ";
+					$qrycat			= " content_parent = '".intval($qs[1])."' ";
 				}
 				$qrycat				= " content_refer !='sa' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' AND ".$qrycat." ";
 				$contenttotal		= $sql -> db_Count($plugintable, "(*)", "WHERE ".$qrycat);
@@ -844,7 +845,7 @@ function show_content_author_all(){
 		global $qs, $plugindir, $ix, $content_shortcodes, $ns, $plugintable, $from, $sql, $aa, $e107cache, $tp, $pref, $mainparent, $content_pref, $cobj, $datequery;
 		global $authordetails, $i, $gen, $totalcontent, $row, $CONTENT_AUTHOR_TABLE, $CONTENT_AUTHOR_TABLE_START, $CONTENT_AUTHOR_TABLE_END, $CONTENT_AUTHOR_TABLE_DATE, $CONTENT_AUTHOR_TABLE_HEADING;
 
-		$mainparent		= $aa -> getMainParent($qs[2]);
+		$mainparent		= $aa -> getMainParent(intval($qs[2]));
 		$content_pref	= $aa -> getContentPref($mainparent);
 		show_content_search_menu("authorall", $mainparent);		//show navigator/search/order menu
 
@@ -869,7 +870,7 @@ function show_content_author_all(){
 			$array			= $aa -> getCategoryTree("", $mainparent, TRUE);
 			$validparent	= implode(",", array_keys($array));
 			$number			= (isset($content_pref["content_author_nextprev_number_{$mainparent}"]) && $content_pref["content_author_nextprev_number_{$mainparent}"] ? $content_pref["content_author_nextprev_number_{$mainparent}"] : "5");
-			$nextprevquery	= (isset($content_pref["content_author_nextprev_{$mainparent}"]) && $content_pref["content_author_nextprev_{$mainparent}"] ? "LIMIT ".$from.",".$number : "");
+			$nextprevquery	= (isset($content_pref["content_author_nextprev_{$mainparent}"]) && $content_pref["content_author_nextprev_{$mainparent}"] ? "LIMIT ".intval($from).",".intval($number) : "");
 			$qry			= " p.content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 			$dateqry		= "AND p.content_datestamp < ".time()." AND (p.content_enddate=0 || p.content_enddate>".time().")";
 
@@ -972,7 +973,7 @@ function show_content_author(){
 		global $nextprevquery, $from, $number, $content_icon_path;
 		global $CONTENT_RECENT_TABLE, $datequery, $crumb, $mainparent;
 
-		$mainparent		= $aa -> getMainParent($qs[1]);
+		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
 		show_content_search_menu("author", $mainparent);		//show navigator/search/order menu
 
@@ -991,11 +992,11 @@ function show_content_author(){
 			}
 			$order				= $aa -> getOrder();
 			$number				= (isset($content_pref["content_nextprev_number_{$mainparent}"]) && $content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "5");
-			$nextprevquery		= (isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".$from.",".$number : "");
+			$nextprevquery		= (isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".intval($from).",".intval($number) : "");
 			$qry				= " content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 			$sqla = "";
 			if(!is_object($sqla)){ $sqla = new db; }
-			if(!$author = $sqla -> db_Select($plugintable, "content_author", "content_refer !='sa' AND ".$qry." ".$datequery." AND content_id = '".$qs[1]."' AND content_class REGEXP '".e_CLASS_REGEXP."' ")){
+			if(!$author = $sqla -> db_Select($plugintable, "content_author", "content_refer !='sa' AND ".$qry." ".$datequery." AND content_id = '".intval($qs[1])."' AND content_class REGEXP '".e_CLASS_REGEXP."' ")){
 				header("location:".e_SELF."?author.list.".$mainparent); exit;
 			}else{
 				list($content_author)	= $sqla -> db_Fetch();
@@ -1026,7 +1027,7 @@ function show_content_top(){
 		global $from, $datequery, $content_pref, $mainparent;
 		global $CONTENT_TOP_TABLE_AUTHOR, $authordetails, $row;
 
-		$mainparent		= $aa -> getMainParent($qs[1]);
+		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
 		show_content_search_menu("top", $mainparent);		//show navigator/search/order menu
 
@@ -1047,12 +1048,12 @@ function show_content_top(){
 		}else{
 			ob_start();
 			$content_icon_path	= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
-			$array				= $aa -> getCategoryTree("", $qs[1], TRUE);
+			$array				= $aa -> getCategoryTree("", intval($qs[1]), TRUE);
 			$validparent		= implode(",", array_keys($array));
 			$datequery1			= " AND p.content_datestamp < ".time()." AND (p.content_enddate=0 || p.content_enddate>".time().") ";
 			$qry				= " p.content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ";
 			$number				= (isset($content_pref["content_nextprev_number_{$mainparent}"]) && $content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "");
-			$np					= ($number ? " LIMIT ".$from.", ".$number : "");
+			$np					= ($number ? " LIMIT ".intval($from).", ".intval($number) : "");
 
 			$qry1 = "
 			SELECT p.*, r.*, (r.rate_rating / r.rate_votes) as rate_avg
@@ -1090,7 +1091,7 @@ function show_content_score(){
 		global $qs, $plugindir, $content_shortcodes, $ns, $plugintable, $sql, $aa, $e107cache, $tp, $pref, $cobj, $content_icon_path;
 		global $from, $datequery, $content_pref, $mainparent, $eArrayStorage, $CONTENT_SCORE_TABLE_SCORE, $CONTENT_SCORE_TABLE_AUTHOR, $authordetails, $row, $thisratearray;
 
-		$mainparent		= $aa -> getMainParent($qs[1]);
+		$mainparent		= $aa -> getMainParent(intval($qs[1]));
 		$content_pref	= $aa -> getContentPref($mainparent);
 		show_content_search_menu("score", $mainparent);		//show navigator/search/order menu
 
@@ -1113,7 +1114,7 @@ function show_content_score(){
 			ob_start();
 
 			$content_icon_path	= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
-			$array				= $aa -> getCategoryTree("", $qs[1], TRUE);
+			$array				= $aa -> getCategoryTree("", intval($qs[1]), TRUE);
 			$validparent		= implode(",", array_keys($array));
 			$qry				= " content_score != '0' AND content_score != '' AND content_parent REGEXP '".$aa -> CONTENTREGEXP($validparent)."' ".$datequery." AND content_class REGEXP '".e_CLASS_REGEXP."' ";
 			$number				= (isset($content_pref["content_nextprev_number_{$mainparent}"]) && $content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "5");
@@ -1146,7 +1147,7 @@ function show_content_item(){
 		global $pref, $content_pref, $content_icon_path, $content_image_path, $content_file_path, $custom, $plugindir, $plugintable, $array, $content_shortcodes, $datequery, $order, $nextprevquery, $from, $number, $row, $qs, $gen, $sql, $aa, $tp, $rs, $cobj, $e107, $e107cache, $eArrayStorage, $ns, $rater, $ep, $row, $authordetails, $mainparent; 
 		global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS, $CONTENT_CONTENT_TABLE_PARENT, $CONTENT_CONTENT_TABLE_INFO_PRE, $CONTENT_CONTENT_TABLE_INFO_POST, $CONTENT_CONTENT_TABLE_AUTHORDETAILS;
 
-		$mainparent			= $aa -> getMainParent($qs[1]);
+		$mainparent			= $aa -> getMainParent(intval($qs[1]));
 		$content_pref		= $aa -> getContentPref($mainparent);
 		show_content_search_menu("item", $mainparent);		//show navigator/search/order menu
 		$array				= $aa -> getCategoryTree("", $mainparent, TRUE);
@@ -1171,7 +1172,7 @@ function show_content_item(){
 						$contentrefernew	= ($refertmp[0]+1)."^".$refertmp[1];
 					}
 					$sql = new db;
-					$sql -> db_Update($plugintable, "content_refer='".$contentrefernew."' WHERE content_id='".$qs[1]."' ");
+					$sql -> db_Update($plugintable, "content_refer='".$contentrefernew."' WHERE content_id='".intval($qs[1])."' ");
 					
 					$e107cache->clear("$plugintable.content.$qs[1]");
 					$e107cache->clear("$plugintable.recent.$mainparent");
@@ -1199,7 +1200,7 @@ function show_content_item(){
 					$content_image_path				= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
 					$content_file_path				= $tp -> replaceConstants($content_pref["content_file_path_{$mainparent}"]);
 					$number							= (isset($content_pref["content_nextprev_number_{$mainparent}"]) && $content_pref["content_nextprev_number_{$mainparent}"] ? $content_pref["content_nextprev_number_{$mainparent}"] : "5");
-					$nextprevquery					= (isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".$from.",".$number : "");
+					$nextprevquery					= (isset($content_pref["content_nextprev_{$mainparent}"]) && $content_pref["content_nextprev_{$mainparent}"] ? "LIMIT ".intval($from).",".intval($number) : "");
 
 					$CONTENT_CONTENT_TABLE_AUTHORDETAILS = $aa -> prepareAuthor("content", $row['content_author'], $row['content_id']);
 					$CONTENT_CONTENT_TABLE_TEXT = $row['content_text'];
