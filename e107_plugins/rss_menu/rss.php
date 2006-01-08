@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2006-01-08 12:49:31 $
+|     $Revision: 1.38 $
+|     $Date: 2006-01-08 12:57:44 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -118,7 +118,7 @@ class rssCreate {
 
 					$this -> rssItems[$loop]['comment'] = ( $value['news_allow_comments'] ? "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id : "Comments are turned off for this item");
 
-					$this -> rssItems[$loop]['pubdate'] = date("r", ($value['news_datestamp'] + $this -> offset));
+					$this -> rssItems[$loop]['pubdate'] = $value['news_datestamp'];
 
 					$loop++;
 				}
@@ -350,6 +350,7 @@ class rssCreate {
 					$this -> rssItems[$loop]['enc_url'] = $e107->http_path."request.php?".$value['download_id'];
 					$this -> rssItems[$loop]['enc_leng'] = $value['download_filesize'];
 					$this -> rssItems[$loop]['enc_type'] = $this->getmime($value['download_url']);
+					$this -> rssItems[$loop]['pubdate'] = $value['download_datestamp'];
 				$loop++;
 				}
 			break;
@@ -394,7 +395,7 @@ class rssCreate {
 						$catlink = ($categorylink) ? str_replace("#",$catid,$categorylink) : "";
 						if($categoryname){ $this -> rssItems[$loop]['category'] = "<category domain='".$e107->http_path.$catlink."'>".$tp -> toRss($row[$categoryname])."</category>"; }
 						if($datestamp){
-							$this -> rssItems[$loop]['pubdate'] = date("r", ($row[$datestamp] + $this -> offset));
+							$this -> rssItems[$loop]['pubdate'] = $row[$datestamp];
 						}
 						$loop++;
 					}
@@ -502,7 +503,7 @@ class rssCreate {
 					echo "<enclosure url=\"".$value['enc_url']."\" length=\"".$value['enc_leng']."\" type=\"".$value['enc_type']."\"   />\n";
 		   	 	}
 
-				echo "<pubDate>".$value['pubdate']."</pubDate>\n";
+				echo "<pubDate>".date("r", ($value['pubdate'] + $this -> offset))."</pubDate>\n";
 
 				if($value['link']){
 					echo "<guid isPermaLink=\"true\">".$value['link']."</guid>\n";
@@ -554,7 +555,7 @@ class rssCreate {
 					<dc:date>".$this->get_iso_8601_date($time + $this -> offset)."</dc:date>
 					<dc:creator>".$value['author']."</dc:creator>
 					<dc:subject>".$value['category_name']."</dc:subject>
-					<description>".$tp->toHTML($value['description'], TRUE)."</description>
+					<description>".$tp->toRss($value['description'])."</description>
 					</item>";
 			}
 			echo "
