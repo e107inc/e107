@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.37 $
+|     $Date: 2006-01-08 12:49:31 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -432,7 +432,7 @@ class rssCreate {
 						echo "
 							<item>
 							<title>".$value['title']."</title>
-							<description>".$tp->toHTML($value['description'], TRUE)."</description>
+							<description>".$tp->toRss($value['description'])."</description>
 							<author>".$value['author']."</author>
 							<link>".$value['link']."</link>
 							</item>";
@@ -487,7 +487,7 @@ class rssCreate {
                 	echo "<link>".$value['link']."</link>\n";
 				}
 
-				echo "<description>".$tp->toHTML($value['description'], TRUE)."</description>
+				echo "<description>".$tp->toRss($value['description'])."</description>
 					".$value['category']."\n";
 
 				if($value['comment']){

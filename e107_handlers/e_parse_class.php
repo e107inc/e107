@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.122 $
-|     $Date: 2005-12-30 00:58:42 $
-|     $Author: streaky $
+|     $Revision: 1.123 $
+|     $Date: 2006-01-08 12:49:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -416,10 +416,13 @@ class e_parse
 
 	function toRss($text)
 	{
+		$text = $this -> toHTML($text,TRUE);
+		$text = strip_tags($text);
 		$search = array("&amp;#039;", "&amp;#036;", "&#039;", "&#036;", "&", "<");
 		$replace = array("'", '$', "'", '$', "&amp;", "&lt;");
 		$text = str_replace($search, $replace, $text);
 		//$text = htmlspecialchars($text);
+
 		return $text;
 	}
 
