@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.17 $
+|     $Date: 2006-01-09 03:20:30 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -55,7 +55,7 @@ if($_POST['moderate'] && CB_MOD)
 	
 	if(isset($_POST['delete']))
 	{
-		$deletelist = implode(",", array_keys(intval($_POST['delete'])));
+		$deletelist = implode(",", array_keys($_POST['delete']));
 		$sql -> db_Select_gen("SELECT c.cb_id, u.user_id FROM #chatbox AS c 
 		LEFT JOIN #user AS u ON FLOOR(c.cb_nick) = u.user_id 
 		WHERE c.cb_id IN (".$deletelist.")");
