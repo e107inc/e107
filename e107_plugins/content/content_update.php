@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-12-14 19:28:43 $
-|     $Author: sweetas $
+|     $Revision: 1.13 $
+|     $Date: 2006-01-09 09:46:52 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -145,109 +145,113 @@ if($newcontent == 0){
 		$conversion_analyses_rows_warning	= (count($content_array[4]) + count($content_array[5]) + count($article_array[4]) + count($article_array[5]) + count($review_array[4]) + count($review_array[5]));
 		
 		$conversion_analyses_rows_failed	= (count($article_cat_array[2]) + count($review_cat_array[2]) + count($content_array[3]) + count($article_array[3]) + count($review_array[3]) + count($unknown_array[1]));
-
-		$SPACER = "<tr><td $stylespacer colspan='2'>&nbsp;</td></tr>";
 		
 		showlink();
 		
-		$text = "
-		<table class='fborder' style='width:95%; padding:0px;'>";
+		global $pref;
+		//only output detailed information if developer mode is set
+		if ($pref['developer']) {
+			$SPACER = "<tr><td $stylespacer colspan='2'>&nbsp;</td></tr>";
+			$text = "
+			<table class='fborder' style='width:95%; padding:0px;'>";
 
-		//conversion analysis
-		$text .= "
-		<tr>
-			<td class='forumheader' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ADMIN_CONVERSION_LAN_11."</td>
-			<td class='forumheader3'>
-				<a style='cursor: pointer; cursor: hand' onclick=\"expandit('analysisconvert');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
-				<div id='analysisconvert' style='display: none;'>
-					".CONTENT_ADMIN_CONVERSION_LAN_12.": ".$conversion_analyses_rows_total."<br />
-					".CONTENT_ADMIN_CONVERSION_LAN_13.": ".$conversion_analyses_rows_converted."<br />
-					".CONTENT_ADMIN_CONVERSION_LAN_14.": ".$conversion_analyses_rows_warning."<br />
-					".CONTENT_ADMIN_CONVERSION_LAN_15.": ".$conversion_analyses_rows_failed."<br />
-				</div>
-			</td>
-		</tr>";
-
-		$text .= $SPACER;
-
-		//old content table : analysis
-		$text .= "
-		<tr>
-			<td class='forumheader' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ADMIN_CONVERSION_LAN_16."</td>
-			<td class='forumheader3'>
-				<a style='cursor: pointer; cursor: hand' onclick=\"expandit('analysisold');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
-				<div id='analysisold' style='display: none;'>
-					".CONTENT_ADMIN_CONVERSION_LAN_17.": ".$totaloldcontentrows."<br />
-					".CONTENT_ADMIN_CONVERSION_LAN_0." ".CONTENT_ADMIN_CONVERSION_LAN_6.": ".$totaloldrowsitem_content."<br />
-					".CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_4.": ".$totaloldrowscat_review."<br />
-					".CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_6.": ".$totaloldrowsitem_review."<br />
-					".CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_4.": ".$totaloldrowscat_article."<br />
-					".CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_6.": ".$totaloldrowsitem_article."<br />";
-
-					$knownrows = $totaloldrowscat_article + $totaloldrowscat_review + $totaloldrowsitem_content + $totaloldrowsitem_review + $totaloldrowsitem_article;
-					if($totaloldcontentrows > $knownrows ){
-						$text .= CONTENT_ADMIN_CONVERSION_LAN_18.": ".($totaloldcontentrows - $knownrows)."<br />";
-					}else{
-						$text .= CONTENT_ADMIN_CONVERSION_LAN_19."<br />";
-					}
-
-				$text .= "
-				</div>
-			</td>
-		</tr>";		
-
-		$text .= $SPACER;
-
-		//unknown rows
-		if(count($unknown_array[0]) > 0){
-			$text .= "<tr><td class='fcaption' colspan='2'>".CONTENT_ADMIN_CONVERSION_LAN_51."</td></tr>";
+			//conversion analysis
 			$text .= "
 			<tr>
-				<td class='forumheader3' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ICON_ERROR." ".count($unknown_array[0])." ".CONTENT_ADMIN_CONVERSION_LAN_51."</td>
+				<td class='forumheader' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ADMIN_CONVERSION_LAN_11."</td>
 				<td class='forumheader3'>
-					<a style='cursor: pointer; cursor: hand' onclick=\"expandit('unknownrows');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
-					<div id='unknownrows' style='display: none;'>
-						<table style='width:100%; border:0;'>";
-						for($i=0;$i<count($unknown_array[0]);$i++){
-							$text .= "<tr><td style='width:25%; white-space:nowrap;'>".CONTENT_ICON_ERROR." ".$unknown_array[0][$i]."</td><td>".$unknown_array[2][$i]." ".$rs -> form_hidden("unknownrows[]", $unknown_array[1][$i])."</td></tr>";
-						}
-						$text .= "
-						</table>
+					<a style='cursor: pointer; cursor: hand' onclick=\"expandit('analysisconvert');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
+					<div id='analysisconvert' style='display: none;'>
+						".CONTENT_ADMIN_CONVERSION_LAN_12.": ".$conversion_analyses_rows_total."<br />
+						".CONTENT_ADMIN_CONVERSION_LAN_13.": ".$conversion_analyses_rows_converted."<br />
+						".CONTENT_ADMIN_CONVERSION_LAN_14.": ".$conversion_analyses_rows_warning."<br />
+						".CONTENT_ADMIN_CONVERSION_LAN_15.": ".$conversion_analyses_rows_failed."<br />
 					</div>
 				</td>
 			</tr>";
+
+			$text .= $SPACER;
+
+			//old content table : analysis
+			$text .= "
+			<tr>
+				<td class='forumheader' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ADMIN_CONVERSION_LAN_16."</td>
+				<td class='forumheader3'>
+					<a style='cursor: pointer; cursor: hand' onclick=\"expandit('analysisold');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
+					<div id='analysisold' style='display: none;'>
+						".CONTENT_ADMIN_CONVERSION_LAN_17.": ".$totaloldcontentrows."<br />
+						".CONTENT_ADMIN_CONVERSION_LAN_0." ".CONTENT_ADMIN_CONVERSION_LAN_6.": ".$totaloldrowsitem_content."<br />
+						".CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_4.": ".$totaloldrowscat_review."<br />
+						".CONTENT_ADMIN_CONVERSION_LAN_1." ".CONTENT_ADMIN_CONVERSION_LAN_6.": ".$totaloldrowsitem_review."<br />
+						".CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_4.": ".$totaloldrowscat_article."<br />
+						".CONTENT_ADMIN_CONVERSION_LAN_2." ".CONTENT_ADMIN_CONVERSION_LAN_6.": ".$totaloldrowsitem_article."<br />";
+
+						$knownrows = $totaloldrowscat_article + $totaloldrowscat_review + $totaloldrowsitem_content + $totaloldrowsitem_review + $totaloldrowsitem_article;
+						if($totaloldcontentrows > $knownrows ){
+							$text .= CONTENT_ADMIN_CONVERSION_LAN_18.": ".($totaloldcontentrows - $knownrows)."<br />";
+						}else{
+							$text .= CONTENT_ADMIN_CONVERSION_LAN_19."<br />";
+						}
+
+					$text .= "
+					</div>
+				</td>
+			</tr>";		
+
+			$text .= $SPACER;
+
+			//unknown rows
+			if(count($unknown_array[0]) > 0){
+				$text .= "<tr><td class='fcaption' colspan='2'>".CONTENT_ADMIN_CONVERSION_LAN_51."</td></tr>";
+				$text .= "
+				<tr>
+					<td class='forumheader3' style='width:5%; white-space:nowrap; vertical-align:top;'>".CONTENT_ICON_ERROR." ".count($unknown_array[0])." ".CONTENT_ADMIN_CONVERSION_LAN_51."</td>
+					<td class='forumheader3'>
+						<a style='cursor: pointer; cursor: hand' onclick=\"expandit('unknownrows');\">".CONTENT_ADMIN_CONVERSION_LAN_48."</a>
+						<div id='unknownrows' style='display: none;'>
+							<table style='width:100%; border:0;'>";
+							for($i=0;$i<count($unknown_array[0]);$i++){
+								$text .= "<tr><td style='width:25%; white-space:nowrap;'>".CONTENT_ICON_ERROR." ".$unknown_array[0][$i]."</td><td>".$unknown_array[2][$i]." ".$rs -> form_hidden("unknownrows[]", $unknown_array[1][$i])."</td></tr>";
+							}
+							$text .= "
+							</table>
+						</div>
+					</td>
+				</tr>";
+			}
+
+			$text .= "
+
+			".$SPACER."
+			
+			".$ac -> results_conversion_mainparent($content_mainarray, $review_mainarray, $article_mainarray)."
+			
+			".$SPACER."			
+			
+			<tr><td class='fcaption' colspan='2'>content : ".CONTENT_ADMIN_CONVERSION_LAN_27."</td></tr>
+			".$ac -> results_conversion_row("content", $content_array, $totaloldrowsitem_content)."
+			
+			".$SPACER."			
+			
+			<tr><td class='fcaption' colspan='2'>review : ".CONTENT_ADMIN_CONVERSION_LAN_27."</td></tr>
+			".$ac -> results_conversion_category("review", $review_cat_array, $totaloldrowscat_review)."
+			".$ac -> results_conversion_row("review", $review_array, $totaloldrowsitem_review)."
+			
+			".$SPACER."			
+			
+			<tr><td class='fcaption' colspan='2'>article : ".CONTENT_ADMIN_CONVERSION_LAN_27."</td></tr>
+			".$ac -> results_conversion_category("article", $article_cat_array, $totaloldrowscat_article)."
+			".$ac -> results_conversion_row("article", $article_array, $totaloldrowsitem_article)."
+			
+			".$SPACER."
+			
+			</table>";
+
+			//$caption = CONTENT_ADMIN_CONVERSION_LAN_42;
+			//$ns -> tablerender($caption, $text);
+			$main_convert = array($caption, $text);
 		}
 
-		$text .= "
-
-		".$SPACER."
-		
-		".$ac -> results_conversion_mainparent($content_mainarray, $review_mainarray, $article_mainarray)."
-		
-		".$SPACER."			
-		
-		<tr><td class='fcaption' colspan='2'>content : ".CONTENT_ADMIN_CONVERSION_LAN_27."</td></tr>
-		".$ac -> results_conversion_row("content", $content_array, $totaloldrowsitem_content)."
-		
-		".$SPACER."			
-		
-		<tr><td class='fcaption' colspan='2'>review : ".CONTENT_ADMIN_CONVERSION_LAN_27."</td></tr>
-		".$ac -> results_conversion_category("review", $review_cat_array, $totaloldrowscat_review)."
-		".$ac -> results_conversion_row("review", $review_array, $totaloldrowsitem_review)."
-		
-		".$SPACER."			
-		
-		<tr><td class='fcaption' colspan='2'>article : ".CONTENT_ADMIN_CONVERSION_LAN_27."</td></tr>
-		".$ac -> results_conversion_category("article", $article_cat_array, $totaloldrowscat_article)."
-		".$ac -> results_conversion_row("article", $article_array, $totaloldrowsitem_article)."
-		
-		".$SPACER."
-		
-		</table>";
-
-		//$caption = CONTENT_ADMIN_CONVERSION_LAN_42;
-		//$ns -> tablerender($caption, $text);
-		$main_convert = array($caption, $text);
 	}
 }
 
