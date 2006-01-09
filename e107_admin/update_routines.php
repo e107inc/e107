@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.167 $
-|     $Date: 2006-01-09 09:29:19 $
-|     $Author: lisa_ $
+|     $Revision: 1.168 $
+|     $Date: 2006-01-09 11:27:50 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
@@ -1393,8 +1393,10 @@ function update_617_to_700($type='') {
 		  	return update_needed();
 		}
 
-		if($sql->db_Field("event_cat",3) != "event_cat_class"){
-		 	return update_needed();
+		if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'calendar_menu' AND plugin_installflag='1' ")) {
+			if($sql->db_Field("event_cat",3) != "event_cat_class"){
+			 	return update_needed();
+			}
 		}
 
 
