@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm_conf.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-10-03 00:47:36 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.6 $
+|     $Date: 2006-01-09 17:09:01 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 $retrieve_prefs[] = 'pm_prefs';
@@ -120,11 +120,6 @@ if(isset($message))
 if($action == "main")
 {
 	$ns->tablerender(ADLAN_PM_12, show_options());
-}
-
-if('convert' == $action)
-{
-	$ns->tablerender(ADLAN_PM_13, show_conversion());
 }
 
 if($action == "limits")
@@ -350,103 +345,6 @@ function add_limit()
 	return $txt;
 }
 
-function show_conversion()
-{
-	global $sql, $ns;
-	if(isset($_POST['convert_delete']))
-	{
-		$ns->tablerender(ADLAN_PM_46, pm_delete());
-	}
-
-	if(isset($_POST['convert_convert']))
-	{
-		$ns->tablerender(ADLAN_PM_46, pm_convert());
-	}
-
-	$old_count = $sql->db_Count("pm_messages","(*)");
-	if(!$old_count)
-	{
-		return ADLAN_PM_47;
-	}
-	else
-	{
-		$txt = "";
-		$txt .= "<div style='text-align:center'>
-		<form method='post' action='".e_SELF."?convert'>";
-		$txt .= str_replace("{OLDCOUNT}", $old_count, ADLAN_PM_48);
-		$txt .= "
-		<br /> <br /> <br />
-		<input type='submit' class='button' name='convert_convert' value='".ADLAN_PM_49."' /> <br /> <br />
-		<input type='submit' class='button' name='convert_delete' value='".ADLAN_PM_50."' />
-		</form>
-		</div>
-		";
-		return $txt;
-	}
-}
-
-function pm_convert_uid($name)
-{
-	global $uinfo;
-	$sqlu =& new db;
-	$name = trim($name);
-	if(!array_key_exists($uinfo[$name]))
-	{
-		if($sqlu->db_Select("user", "user_id", "user_name LIKE '{$name}'"))
-		{
-			$row = $sqlu->db_Fetch();
-			$uinfo[$name] = $row['user_id'];
-		}
-		else
-		{
-			if($sqlu->db_Select("user", "user_id", "user_loginname LIKE '{$name}'"))
-			{
-				$row = $sqlu->db_Fetch();
-				$uinfo[$name] = $row['user_id'];
-			}
-			else
-			{
-				return FALSE;
-			}
-		}
-	}
-	return $uinfo[$name];
-}
-function pm_convert()
-{
-	global $sql, $uinfo;
-	$sql2 =& new db;
-	$count = 0;
-	if($sql->db_Select("pm_messages","*"))
-	{
-		while($row = $sql->db_Fetch())
-		{
-			$from = pm_convert_uid($row['pm_from_user']);
-			$to = pm_convert_uid($row['pm_to_user']);
-			$size = strlen($row['pm_message']);
-			if($from && $to)
-			{
-				if($sql2->db_Insert("private_msg", "0, '{$from}', '{$to}', '{$row['pm_sent_datestamp']}', '{$row['pm_rcv_datestamp']}', '{$row['pm_subject']}', '{$row['pm_message']}', '0', '0', '', '', '{$size}'"))
-				{
-					//Insertion of new PM successful, delete old
-					$sql2->db_Delete("pm_messages", "pm_id='{$row['pm_id']}'");
-					$count++;
-				}
-			}
-			else
-			{
-				$ret .= str_replace("{PMNUM}", $row['pm_id'], ADLAN_PM_51)."<br />";
-			}
-		}
-		$ret .= "<br />{$count} ".ADLAN_PM_52."<br />";
-	}
-	else
-	{
-		$ret .= ADLAN_PM_53;
-	}
-	return $ret;
-}	
-
 function show_menu($action)
 {
 	global $sql;
@@ -455,11 +353,6 @@ function show_menu($action)
 	$var['main']['link'] = e_SELF;
 	$var['limits']['text'] = ADLAN_PM_55;
 	$var['limits']['link'] = e_SELF."?limits";
-	if($sql->db_Count("plugin","(*)", "WHERE plugin_path = 'pm_menu' AND plugin_installflag = '1'"))
-	{
-		$var['convert']['text'] = ADLAN_PM_56;
-		$var['convert']['link'] = e_SELF."?convert";
-	}
 	show_admin_menu(ADLAN_PM_12, $action, $var);
 }
 
