@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/content/content_update.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2006-01-09 09:46:52 $
+|     $Revision: 1.14 $
+|     $Date: 2006-01-09 09:56:57 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -21,7 +21,7 @@ if (!defined('e107_INIT')) { exit; }
 require_once(e_HANDLER."form_handler.php");
 $rs = new form;
 
-global $ns, $sql;
+global $ns, $sql, $pref;
 
 $plugindir		= e_PLUGIN."content/";
 $plugintable	= "pcontent";		//name of the table used in this plugin (never remove this, as it's being used throughout the plugin !!)
@@ -80,8 +80,6 @@ $newcontent = $sql -> db_Count($plugintable, "(*)", "");
 if($newcontent == 0){
 
 	unset($text);
-
-
 
 	//possible database values
 	//content page:		$content_parent == "1" && $content_type == "1"	//added at 20051031
@@ -146,11 +144,10 @@ if($newcontent == 0){
 		
 		$conversion_analyses_rows_failed	= (count($article_cat_array[2]) + count($review_cat_array[2]) + count($content_array[3]) + count($article_array[3]) + count($review_array[3]) + count($unknown_array[1]));
 		
-		showlink();
 		
-		global $pref;
 		//only output detailed information if developer mode is set
 		if ($pref['developer']) {
+			showlink();
 			$SPACER = "<tr><td $stylespacer colspan='2'>&nbsp;</td></tr>";
 			$text = "
 			<table class='fborder' style='width:95%; padding:0px;'>";
@@ -247,8 +244,6 @@ if($newcontent == 0){
 			
 			</table>";
 
-			//$caption = CONTENT_ADMIN_CONVERSION_LAN_42;
-			//$ns -> tablerender($caption, $text);
 			$main_convert = array($caption, $text);
 		}
 
@@ -278,14 +273,20 @@ $text .= $ac -> upgrade_1_21();
 
 //render message
 if(isset($text)){
-	$caption = CONTENT_ADMIN_CONVERSION_LAN_63;
-	$ns -> tablerender($caption, $text);
+	//only output detailed information if developer mode is set
+	if ($pref['developer']) {
+		$caption = CONTENT_ADMIN_CONVERSION_LAN_63;
+		$ns -> tablerender($caption, $text);
+	}
 }
 
 //render primary conversion results
 if(is_array($main_convert)){
 	if(isset($main_convert[1])){
-		$ns -> tablerender($main_convert[0], $main_convert[1]);
+		//only output detailed information if developer mode is set
+		if ($pref['developer']) {
+			$ns -> tablerender($main_convert[0], $main_convert[1]);
+		}
 	}
 }
 
@@ -311,13 +312,17 @@ function create_defaults()
 	$article_mainarray			= $ac -> create_mainparent("article", "1", "2");
 	$review_mainarray			= $ac -> create_mainparent("review", "1", "3");
 	
-	showlink();
+	$main_convert = '';
+	//only output detailed information if developer mode is set
+	if ($pref['developer']) {
+		showlink();
 	
-	$text = "<table class='fborder' style='width:95%; padding:0px;'>";
-	$text .= $ac -> results_conversion_mainparent($content_mainarray, $review_mainarray, $article_mainarray);
-	$text .= "</table>";
+		$text = "<table class='fborder' style='width:95%; padding:0px;'>";
+		$text .= $ac -> results_conversion_mainparent($content_mainarray, $review_mainarray, $article_mainarray);
+		$text .= "</table>";
 
-	$main_convert = array(CONTENT_ADMIN_CONVERSION_LAN_52, $text);
+		$main_convert = array(CONTENT_ADMIN_CONVERSION_LAN_52, $text);
+	}
 	return $main_convert;
 }
 
@@ -326,10 +331,13 @@ function create_defaults()
 //show link to start managing the content management plugin
 function showlink()
 {
-	global $ns;
-	$text = "<div style='text-align:center'>".CONTENT_ADMIN_CONVERSION_LAN_46."</div>";
-	$caption = CONTENT_ADMIN_CONVERSION_LAN_47;
-	$ns -> tablerender($caption, $text);
+	global $ns, $pref;
+	//only output detailed information if developer mode is set
+	if ($pref['developer']) {
+		$text = "<div style='text-align:center'>".CONTENT_ADMIN_CONVERSION_LAN_46."</div>";
+		$caption = CONTENT_ADMIN_CONVERSION_LAN_47;
+		$ns -> tablerender($caption, $text);
+	}
 }
 
 
@@ -337,10 +345,15 @@ function showlink()
 //update content plugin version number
 function set_content_version()
 {
-	global $sql;
+	global $sql, $pref;
 	$new_version = "1.21";
 	$sql->db_Update('plugin',"plugin_version = '{$new_version}' WHERE plugin_path='content'");
-	return CONTENT_ADMIN_CONVERSION_LAN_62." $new_version <br />";
+	$text = '';
+	//only output detailed information if developer mode is set
+	if ($pref['developer']) {
+		$text = CONTENT_ADMIN_CONVERSION_LAN_62." $new_version <br />";
+	}
+	return $text;
 }	
 
 ?>
