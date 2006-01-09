@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.164 $
-|     $Date: 2006-01-09 06:26:11 $
-|     $Author: sweetas $
+|     $Revision: 1.165 $
+|     $Date: 2006-01-09 08:54:38 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -1201,7 +1201,38 @@ function update_617_to_700($type='') {
 			$pref['mailer'] = $pref['smtp_enable'] ? 'smtp' : 'php';
 			$s_prefs = TRUE;
 		}
-		
+
+		//calendar_menu
+		if ($error=='') {
+			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_class int(10) unsigned NOT NULL default '0';");
+			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_subs tinyint(3) unsigned NOT NULL default '0';");
+			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_force tinyint(3) unsigned NOT NULL default '0';");
+			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_ahead tinyint(3) unsigned NOT NULL default '0';");
+			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_msg1 text;");
+			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_msg2 text;");
+			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_notify  tinyint(3) unsigned NOT NULL default '0';");
+			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_last int(10) unsigned NOT NULL default '0';");
+			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_today int(10) unsigned NOT NULL default '0';");
+			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_lastupdate int(10) unsigned NOT NULL default '0';");
+			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_addclass int(10) unsigned NOT NULL default '0';");
+
+			mysql_query("CREATE TABLE ".MPREFIX."event_subs (
+				event_subid int(10) unsigned NOT NULL auto_increment,
+				event_userid int(10) unsigned NOT NULL default '0',
+				event_cat int(10) unsigned NOT NULL default '0',
+				PRIMARY KEY (event_subid)
+				) TYPE=MyISAM;
+			");
+		}
+
+		if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'calendar_menu' ")) {
+			$row = $sql->db_Fetch();
+			if($row['plugin_version'] != '3.5'){
+				$sql -> db_Update("plugin", "plugin_version='3.5' WHERE plugin_path = 'calendar_menu' ");
+			}
+		}
+		// end calendar_menu
+
 		if(!array_key_exists('ue_upgrade', $pref)){
 			$pref['ue_upgrade'] = 1;
 			$s_prefs = TRUE;
@@ -1353,6 +1384,11 @@ function update_617_to_700($type='') {
 		if($sql->db_Select("links_page") && $sql->db_Field("links_page",11) != "link_author"){
 		  	return update_needed();
 		}
+
+		if($sql->db_Field("event_cat",3) != "event_cat_class"){
+		 	return update_needed();
+		}
+
 
 /*
 		if(!$sql -> db_Select("core", "*", "e107_name='emote_default' "))
