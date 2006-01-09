@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.56 $
-|     $Date: 2006-01-05 17:36:16 $
+|     $Revision: 1.57 $
+|     $Date: 2006-01-09 03:40:42 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -41,6 +41,10 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 	else
 	{
 		$cmessage = $_POST['cmessage'];
+		if(isset($_POST['ajax_used']))
+		{
+			$cmessage = urldecode($cmessage);
+		}
 		$nick = trim(preg_replace("/\[.*\]/si", "", $tp -> toDB($_POST['nick'])));
 		$fp = new floodprotect;
 		if($fp -> flood("chatbox", "cb_datestamp"))

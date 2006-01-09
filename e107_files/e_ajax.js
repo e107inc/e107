@@ -201,7 +201,7 @@ function sendInfo() {
 		req.send(null);
 	} else {
 		var obj = sendInfo.arguments[2];
-		var poststr = "";
+		var poststr = "ajax_used=1&";
 		var tmp;
 		var show;
 		for(i=0; i < obj.length; i++) {
@@ -237,7 +237,7 @@ function sendInfo() {
 					break;
 			}
 			if(show && obj.elements[i].id) {
-				poststr += obj.elements[i].id + '=' + encodeURI(tmp) + '&';
+				poststr += obj.elements[i].id + '=' + escape(tmp) + '&';
 			}
 		}
 		req.open('POST', handler, true);
