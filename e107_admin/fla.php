@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/fla.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-08-04 09:56:38 $
-|     $Author: streaky $
+|     $Revision: 1.9 $
+|     $Date: 2006-01-09 14:19:26 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -25,13 +25,12 @@ if (!getperms("4")) {
 $e_sub_cat = 'failed_login';
 require_once("auth.php");
 
-if(e_QUERY)
-{
-	list($action, $id) = explode(".", e_QUERY);
-}
+$tmp = (e_QUERY) ? explode(".", e_QUERY) : "";
+$from = (!$tmp[0]) ? 0 : intval($tmp[0]);
+$amount = (!$tmp[1]) ? 50 : intval($tmp[1]);
 
 
-if(IsSet($_POST['delbanSubmit']))
+if(isset($_POST['delbanSubmit']))
 {
 
 	$delcount = 0;
@@ -65,7 +64,7 @@ if(e_QUERY == "dabl")
 }
 
 
-if($sql -> db_Select("generic", "*", "gen_type='auto_banned' ORDER BY gen_datestamp DESC"))
+if($sql -> db_Select("generic", "*", "gen_type='auto_banned' ORDER BY gen_datestamp DESC "))
 {
 	$abArray = $sql -> db_getList();
 	$message = FLALAN_15;
@@ -83,8 +82,8 @@ if (isset($message)) {
 }
 
 $gen = new convert;
-
-if(!$sql -> db_Select("generic", "*", "gen_type='failed_login' ORDER BY gen_datestamp DESC"))
+$fla_total = $sql->db_Count("generic", "(*)", "WHERE gen_type='failed_login'");
+if(!$sql -> db_Select("generic", "*", "gen_type='failed_login' ORDER BY gen_datestamp DESC LIMIT $from,$amount"))
 {
 	$text = "<div style='text-align: center;'>".FLALAN_2."</div>";
 }
@@ -107,7 +106,7 @@ else
 	foreach($faArray as $fa)
 	{
 		extract($fa);
-		
+
 		$host = $e107->get_host_name(getenv($gen_ip));
 		$text .= "<tr>
 		<td style='width: 20%;' class='forumheader3'>".$gen->convert_date($gen_datestamp, "forum")."</td>
@@ -130,7 +129,7 @@ else
 	<br />
 	<a href='".e_SELF."?checkall=1' onclick=\"setCheckboxes('flaform', true, 'flaban[]'); return false;\">".FLALAN_13."</a> -
 	<a href='".e_SELF."' onclick=\"setCheckboxes('flaform', false, 'flaban[]'); return false;\">".FLALAN_14."</a>
-	
+
 	</td>
 	</tr>
 
@@ -139,13 +138,16 @@ else
 	</tr>
 	</table>
 	</form>
-
-	<script type=\"text/javascript\">
-	
-	</script>
-
-
+    <div style='text-align:center'><br />
 	";
+
+	$parms = $fla_total.",".$amount.",".$from.",".e_SELF.'?'."[FROM].".$amount;
+	$text .= ($fla_total > $amount) ? "&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}") : "";
+
+    $text .= "</div>";
+
+
+
 }
 
 $ns->tablerender(FLALAN_1, $text);
