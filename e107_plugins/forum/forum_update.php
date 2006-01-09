@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_update.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-01-06 06:59:41 $
+|     $Revision: 1.15 $
+|     $Date: 2006-01-09 09:55:14 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -65,7 +65,9 @@ $timeend = microtime();
 $diff = number_format(((substr($timeend, 0, 9)) + (substr($timeend, -10)) - (substr($timestart, 0, 9)) - (substr($timestart, -10))), 4);
 $text .= "<br />script generation took $diff s";
 
-$ns->tablerender('forum upgrade',$text);
+if ($pref['developer']) {
+	$ns->tablerender('forum upgrade',$text);
+}
 	
 function forum_stage1()
 {
