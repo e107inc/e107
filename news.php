@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.87 $
-|     $Date: 2006-01-05 22:52:53 $
-|     $Author: streaky $
+|     $Revision: 1.88 $
+|     $Date: 2006-01-09 19:29:18 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -168,7 +168,7 @@ if ($action == "extend") {
 	ob_start();
 	$ix->render_newsitem($news, "extend");
 	$cache_data = ob_get_contents();
-	ob_flush();
+	ob_end_flush();
 	setNewsCache($cacheString, $cache_data);
 	require_once(FOOTERF);
 	exit;
