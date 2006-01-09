@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/admin_prefs.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-25 05:26:48 $
+|     $Revision: 1.5 $
+|     $Date: 2006-01-09 00:04:36 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -68,13 +68,13 @@ $text = "<div style='text-align:center'>
 	$text .= "<tr><td class='forumheader3'>".RSS_LAN01."</td>";
 	$text .= "<td class='forumheader3'>";
 	$sel = ($pref['rss_newscats'] == 1) ? " checked='checked' " : "";
-	$text .= "<input type='checkbox' $sel class='tbox' name='rss_newscats' value='1' />
+	$text .= "<input type='checkbox' $sel  name='rss_newscats' value='1' />
 				</td></tr>";
 
 	$text .= "<tr><td class='forumheader3'>".RSS_LAN02."</td>";
 	$text .= "<td class='forumheader3'>";
 	$sel = ($pref['rss_dlcats'] == 1) ? " checked='checked' " : "";
-	$text .= "<input type='checkbox' $sel class='tbox' name='rss_dlcats' value='1' />
+	$text .= "<input type='checkbox' $sel name='rss_dlcats' value='1' />
 				</td></tr>";
 
 	$text .="<tr style='vertical-align:top'>
