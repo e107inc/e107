@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/comment.php,v $
-|     $Revision: 1.46 $
-|     $Date: 2005-12-28 09:55:38 $
+|     $Revision: 1.47 $
+|     $Date: 2006-01-09 12:43:02 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -136,6 +136,10 @@ if (isset($_POST['replysubmit']))
 		} elseif ($table == "download")
 		{
 			echo "<script type='text/javascript'>document.location.href='".e_BASE."download.php?view.{$nid}'</script>\n";
+			exit;
+		} elseif ($table == "page")
+		{
+			echo "<script type='text/javascript'>document.location.href='".e_BASE."page.php?{$nid}'</script>\n";
 			exit;
 		}
 	}
