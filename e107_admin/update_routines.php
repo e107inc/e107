@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.168 $
-|     $Date: 2006-01-09 11:27:50 $
+|     $Revision: 1.169 $
+|     $Date: 2006-01-09 17:02:15 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -40,6 +40,14 @@ if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content' AND plug
 	if(file_exists(e_PLUGIN.'content/content_update_check.php'))
 	{
 		include_once(e_PLUGIN.'content/content_update_check.php');
+	}
+}
+
+if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'pm' AND plugin_installflag='1' "))
+{
+	if(file_exists(e_PLUGIN.'pm/pm_update_check.php'))
+	{
+		include_once(e_PLUGIN.'pm/pm_update_check.php');
 	}
 }
 
@@ -1239,6 +1247,13 @@ function update_617_to_700($type='') {
 			if($row['plugin_version'] != '1.12'){
 				$sql -> db_Update("plugin", "plugin_version='1.12' WHERE plugin_path = 'links_page' ");
 			}
+		}
+		
+		// install new private message plugin if old plugin is installed
+		if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'pm_menu' AND plugin_installflag='1' "))
+		{
+			$sql->db_Insert("plugin", "0, 'Private Messenger', '3.0', 'pm', 1, ''");
+			catch_error();
 		}
 
 		if(!array_key_exists('ue_upgrade', $pref)){

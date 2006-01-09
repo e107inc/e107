@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/e107_update.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-11-21 16:15:28 $
+|     $Revision: 1.12 $
+|     $Date: 2006-01-09 17:02:15 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -92,6 +92,14 @@ if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'content' AND plug
 	if(file_exists(e_PLUGIN.'content/content_update_check.php'))
 	{
 		include_once(e_PLUGIN.'content/content_update_check.php');
+	}
+}
+
+if ($sql->db_Select("plugin", "plugin_version", "plugin_path = 'pm' AND plugin_installflag='1' "))
+{
+	if(file_exists(e_PLUGIN.'pm/pm_update_check.php'))
+	{
+		include_once(e_PLUGIN.'pm/pm_update_check.php');
 	}
 }
 
