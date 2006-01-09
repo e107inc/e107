@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.163 $
-|     $Date: 2006-01-06 22:07:51 $
+|     $Revision: 1.164 $
+|     $Date: 2006-01-09 06:26:11 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -1487,7 +1487,7 @@ function update_615_to_616($type='') {
 		mysql_query("INSERT INTO ".MPREFIX."wmessage VALUES (5, 'Member rules ----- This text (if activated) will appear on a page when \"Forum Rules\" link is clicked on - only logged in members will see this.', '0')");
 		mysql_query("INSERT INTO ".MPREFIX."wmessage VALUES (6, 'Administrator rules ----- This text (if activated) will appear on a page when \"Forum Rules\" link is clicked on - only logged in administrators will see this.', '0')");
 		mysql_query("ALTER TABLE ".MPREFIX."download ADD download_comment TINYINT( 3 ) UNSIGNED NOT NULL ");
-		mysql_query("ALTER TABLE ".MPREFIX."chatbox CHANGE cb_nick cb_nick VARCHAR( 30 ) NOT NULL ");
+		mysql_query("ALTER TABLE ".MPREFIX."chatbox CHANGE cb_nick cb_nick VARCHAR( 30 ) NOT NULL default ''");
 		mysql_query("ALTER TABLE ".MPREFIX."comments CHANGE comment_type comment_type VARCHAR( 10 ) DEFAULT '0' NOT NULL ");
 		mysql_query("ALTER TABLE ".MPREFIX."comments ADD comment_pid INT( 10 ) UNSIGNED DEFAULT '0' NOT NULL AFTER comment_id ");
 		mysql_query("ALTER TABLE ".MPREFIX."comments ADD comment_subject VARCHAR( 100 ) NOT NULL AFTER comment_item_id ");
