@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/help/administrator.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-12-14 17:37:43 $
+|     $Revision: 1.3 $
+|     $Date: 2006-01-09 17:02:46 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -20,6 +20,7 @@
 if (!defined('e107_INIT')) { exit; }
 
 $caption = "Site Admin Help";
-$text = "Use this page to enter new, or delete site administrators. The administrator will only have permission to access the features that are ticked.";
+$text = "Use this page to edit the preferences for, or delete site administrators. The administrator will only have permission to access the features that are ticked.<br /><br />
+To create a new admin go to the user config page and update an existing user to admin status.";
 $ns -> tablerender($caption, $text);
 ?>
