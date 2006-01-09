@@ -11,13 +11,20 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2006-01-09 03:40:42 $
+|     $Revision: 1.58 $
+|     $Date: 2006-01-09 19:03:06 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 global $tp, $e107cache, $e_event, $e107, $pref, $footer_js, $PLUGINS_DIRECTORY;
+
+//if (file_exists(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php")) {
+//	include_once(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
+//} else {
+//	include_once(e_PLUGIN."chatbox_menu/languages/English/English.php");
+//}
+
 
 if($pref['cb_layer'] || isset($_POST['chatbox_ajax']))
 {
@@ -44,6 +51,9 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 		if(isset($_POST['ajax_used']))
 		{
 			$cmessage = urldecode($cmessage);
+			//Normally the menu.sc file will auto-load the language file, this is needed in case
+			//ajax is turned on and the menu is not loaded from the menu.sc
+			include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
 		}
 		$nick = trim(preg_replace("/\[.*\]/si", "", $tp -> toDB($_POST['nick'])));
 		$fp = new floodprotect;
