@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.166 $
-|     $Date: 2006-01-09 09:09:45 $
+|     $Revision: 1.167 $
+|     $Date: 2006-01-09 09:29:19 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -1232,6 +1232,14 @@ function update_617_to_700($type='') {
 			}
 		}
 		// end calendar_menu
+
+		//update plugin_version : links_page
+		if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'links_page' AND plugin_installflag='1' ")) {
+			$row = $sql->db_Fetch();
+			if($row['plugin_version'] != '1.12'){
+				$sql -> db_Update("plugin", "plugin_version='1.12' WHERE plugin_path = 'links_page' ");
+			}
+		}
 
 		if(!array_key_exists('ue_upgrade', $pref)){
 			$pref['ue_upgrade'] = 1;
