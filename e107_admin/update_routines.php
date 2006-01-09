@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.165 $
-|     $Date: 2006-01-09 08:54:38 $
+|     $Revision: 1.166 $
+|     $Date: 2006-01-09 09:09:45 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -1204,31 +1204,31 @@ function update_617_to_700($type='') {
 
 		//calendar_menu
 		if ($error=='') {
-			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_class int(10) unsigned NOT NULL default '0';");
-			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_subs tinyint(3) unsigned NOT NULL default '0';");
-			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_force tinyint(3) unsigned NOT NULL default '0';");
-			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_ahead tinyint(3) unsigned NOT NULL default '0';");
-			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_msg1 text;");
-			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_msg2 text;");
-			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_notify  tinyint(3) unsigned NOT NULL default '0';");
-			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_last int(10) unsigned NOT NULL default '0';");
-			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_today int(10) unsigned NOT NULL default '0';");
-			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_lastupdate int(10) unsigned NOT NULL default '0';");
-			mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_addclass int(10) unsigned NOT NULL default '0';");
+			if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'calendar_menu' AND plugin_installflag='1' ")) {
+				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_class int(10) unsigned NOT NULL default '0';");
+				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_subs tinyint(3) unsigned NOT NULL default '0';");
+				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_force tinyint(3) unsigned NOT NULL default '0';");
+				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_ahead tinyint(3) unsigned NOT NULL default '0';");
+				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_msg1 text;");
+				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_msg2 text;");
+				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_notify  tinyint(3) unsigned NOT NULL default '0';");
+				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_last int(10) unsigned NOT NULL default '0';");
+				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_today int(10) unsigned NOT NULL default '0';");
+				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_lastupdate int(10) unsigned NOT NULL default '0';");
+				mysql_query("ALTER TABLE ".MPREFIX."event_cat ADD event_cat_addclass int(10) unsigned NOT NULL default '0';");
 
-			mysql_query("CREATE TABLE ".MPREFIX."event_subs (
-				event_subid int(10) unsigned NOT NULL auto_increment,
-				event_userid int(10) unsigned NOT NULL default '0',
-				event_cat int(10) unsigned NOT NULL default '0',
-				PRIMARY KEY (event_subid)
-				) TYPE=MyISAM;
-			");
-		}
+				mysql_query("CREATE TABLE ".MPREFIX."event_subs (
+					event_subid int(10) unsigned NOT NULL auto_increment,
+					event_userid int(10) unsigned NOT NULL default '0',
+					event_cat int(10) unsigned NOT NULL default '0',
+					PRIMARY KEY (event_subid)
+					) TYPE=MyISAM;
+				");
 
-		if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'calendar_menu' ")) {
-			$row = $sql->db_Fetch();
-			if($row['plugin_version'] != '3.5'){
-				$sql -> db_Update("plugin", "plugin_version='3.5' WHERE plugin_path = 'calendar_menu' ");
+				$row = $sql->db_Fetch();
+				if($row['plugin_version'] != '3.5'){
+					$sql -> db_Update("plugin", "plugin_version='3.5' WHERE plugin_path = 'calendar_menu' ");
+				}
 			}
 		}
 		// end calendar_menu
