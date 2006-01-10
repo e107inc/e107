@@ -14,10 +14,10 @@ while($row = $sql -> db_Fetch()){
 			//if(strpos($link_url, "e107_plugins") !== FALSE){ $link_url = e_BASE.$link_url; }
 			if(strpos($link_url, e_PAGE) !== FALSE){ $ulclass = '_onpage'; } else { $ulclass = ''; }
 
-			switch ($link_open) { 
+			switch ($link_open) {
 				case 1:
 					$link_append = " onclick=\"window.open('$link_url'); return false;\"";
-					break; 
+					break;
 				case 2:
 				   $link_append = " target=\"_parent\"";
 					break;
@@ -27,11 +27,13 @@ while($row = $sql -> db_Fetch()){
 				default:
 				   unset($link_append);
 			}
-			$ulmenu .= "<li class='nav".$r."$ulclass'><a class='$ulclass' ".($link_description ? " title = '$link_description' " : "title = 'add a text description to this link' ")." href='".$link_url."' accesskey='".$r."' ".$link_append.">".LINKSTART."$link_name".LINKEND."</a></li>";
+
+ 			$lname = (defined(trim($link_name))) ? constant(trim($link_name)) : $link_name;
+
+			$ulmenu .= "<li class='nav".$r."$ulclass'><a class='$ulclass' ".($link_description ? " title = '$link_description' " : "title = 'add a text description to this link' ")." href='".$link_url."' accesskey='".$r."' ".$link_append.">".LINKSTART."$lname".LINKEND."</a></li>";
 		}
 		$r++;
 	}
 }
 $ulmenu .= "</ul>\n".POSTLINK;
 return $ulmenu;
-
