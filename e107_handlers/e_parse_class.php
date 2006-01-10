@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.123 $
-|     $Date: 2006-01-08 12:49:30 $
+|     $Revision: 1.124 $
+|     $Date: 2006-01-10 18:49:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -401,7 +401,7 @@ class e_parse
 		}
 //		$text = preg_replace("#\[\s*?E_NL\s*?\]#s", $nl_replace, $text);
 		$text = str_replace(E_NL, $nl_replace, $text);
-		//		$text = str_replace("&amp;", "&", $text);
+		$text = str_replace("&","&amp;", $text); // needed for Xhtml compliance. 
 		//		$text = str_replace(array("&", "&pound;"), array("&amp;", ""), $text);
 		return trim($text);
 	}
