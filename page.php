@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-01-07 01:58:45 $
+|     $Revision: 1.20 $
+|     $Date: 2006-01-10 16:26:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -292,7 +292,7 @@ class pageClass
 			$rate_text .= "</td><td style='width:50%; text-align:right'>";
 
 			if (!$rater->checkrated("page", $this -> pageID) && USER) {
-				$rate_text .= $rater->rateselect("&nbsp;&nbsp;&nbsp;&nbsp; <b>Rate this page</b>", "page", $this -> pageID)."</b>";
+				$rate_text .= $rater->rateselect("&nbsp;&nbsp;&nbsp;&nbsp; <b>Rate this page</b>", "page", $this -> pageID);
 			}
 			else if(!USER) {
 				$rate_text .= "&nbsp;";
