@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.24 $
-|    $Date: 2006-01-07 13:37:06 $
+|    $Revision: 1.25 $
+|    $Date: 2006-01-10 00:14:40 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -259,6 +259,48 @@ class linkclass {
 		return $sotext;
 	}
 
+	function parseOrderCat($orderstring){
+		if(substr($orderstring,6) == "heading"){
+			$orderby		= "link_category_name";
+			$orderby2		= "";
+		}elseif(substr($orderstring,6) == "id"){
+			$orderby		= "link_category_id";
+			$orderby2		= ", link_category_name ASC";
+		}elseif(substr($orderstring,6) == "order"){
+			$orderby		= "link_category_order";
+			$orderby2		= ", link_category_name ASC";
+		}else{
+			$orderstring	= "orderdheading";
+			$orderby		= "link_category_name";
+			$orderby2		= ", link_category_name ASC";
+		}
+		return $orderby." ".(substr($orderstring,5,1) == "a" ? "ASC" : "DESC")." ".$orderby2;
+	}
+
+	function parseOrderLink($orderstring){
+		if(substr($orderstring,6) == "heading"){
+			$orderby		= "link_name";
+			$orderby2		= "";
+		}elseif(substr($orderstring,6) == "url"){
+			$orderby		= "link_url";
+			$orderby2		= ", link_name ASC";
+		}elseif(substr($orderstring,6) == "order"){
+			$orderby		= "link_order";
+			$orderby2		= ", link_name ASC";
+		}elseif(substr($orderstring,6) == "refer"){
+			$orderby		= "link_refer";
+			$orderby2		= ", link_name ASC";
+		}elseif(substr($orderstring,6) == "date"){
+			$orderby		= "link_datestamp";
+			$orderby2		= ", link_name ASC";
+		}else{
+			$orderstring	= "orderddate";
+			$orderby		= "link_datestamp";
+			$orderby2		= ", link_name ASC";
+		}
+		return $orderby." ".(substr($orderstring,5,1) == "a" ? "ASC" : "DESC")." ".$orderby2;
+	}
+
 	function getOrder($mode=''){
 		global $qs, $linkspage_pref;
 
@@ -280,56 +322,14 @@ class linkclass {
 			}
 		}
 
-		function parseOrderCat($orderstring){
-			if(substr($orderstring,6) == "heading"){
-				$orderby		= "link_category_name";
-				$orderby2		= "";
-			}elseif(substr($orderstring,6) == "id"){
-				$orderby		= "link_category_id";
-				$orderby2		= ", link_category_name ASC";
-			}elseif(substr($orderstring,6) == "order"){
-				$orderby		= "link_category_order";
-				$orderby2		= ", link_category_name ASC";
-			}else{
-				$orderstring	= "orderdheading";
-				$orderby		= "link_category_name";
-				$orderby2		= ", link_category_name ASC";
-			}
-			return $orderby." ".(substr($orderstring,5,1) == "a" ? "ASC" : "DESC")." ".$orderby2;
-		}
-
-		function parseOrderLink($orderstring){
-			if(substr($orderstring,6) == "heading"){
-				$orderby		= "link_name";
-				$orderby2		= "";
-			}elseif(substr($orderstring,6) == "url"){
-				$orderby		= "link_url";
-				$orderby2		= ", link_name ASC";
-			}elseif(substr($orderstring,6) == "order"){
-				$orderby		= "link_order";
-				$orderby2		= ", link_name ASC";
-			}elseif(substr($orderstring,6) == "refer"){
-				$orderby		= "link_refer";
-				$orderby2		= ", link_name ASC";
-			}elseif(substr($orderstring,6) == "date"){
-				$orderby		= "link_datestamp";
-				$orderby2		= ", link_name ASC";
-			}else{
-				$orderstring	= "orderddate";
-				$orderby		= "link_datestamp";
-				$orderby2		= ", link_name ASC";
-			}
-			return $orderby." ".(substr($orderstring,5,1) == "a" ? "ASC" : "DESC")." ".$orderby2;
-		}
-
 		if($mode == "cat"){
-			$str = parseOrderCat($orderstring);
+			$str = $this -> parseOrderCat($orderstring);
 		}else{
 			if(isset($orderstringcat)){
-				$str = parseOrderCat($orderstringcat);
-				$str .= ", ".parseOrderLink($orderstring);
+				$str = $this -> parseOrderCat($orderstringcat);
+				$str .= ", ".$this -> parseOrderLink($orderstring);
 			}else{
-				$str = parseOrderLink($orderstring);
+				$str = $this -> parseOrderLink($orderstring);
 			}
 		}
 
@@ -416,8 +416,9 @@ class linkclass {
 		$tmp = explode(".", $inc);
 		$linkid = intval($tmp[0]);
 		$link_order = intval($tmp[1]);
-		$location = intval($tmp[2]);
+		$location = $tmp[2];
 		if(isset($location)){
+			$location = intval($location);
 			$sql->db_Update("links_page", "link_order=link_order+1 WHERE link_order='".($link_order-1)."' AND link_category='$location'");
 			$sql->db_Update("links_page", "link_order=link_order-1 WHERE link_id='$linkid' AND link_category='$location'");
 		}else{
@@ -431,8 +432,9 @@ class linkclass {
 		$tmp = explode(".", $dec);
 		$linkid = intval($tmp[0]);
 		$link_order = intval($tmp[1]);
-		$location = intval($tmp[2]);
+		$location = $tmp[2];
 		if(isset($location)){
+			$location = intval($location);
 			$sql->db_Update("links_page", "link_order=link_order-1 WHERE link_order='".($link_order+1)."' AND link_category='$location'");
 			$sql->db_Update("links_page", "link_order=link_order+1 WHERE link_id='$linkid' AND link_category='$location'");
 		}else{
