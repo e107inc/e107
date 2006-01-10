@@ -50,7 +50,7 @@ class prefs {
 			{
 				$Args .= ($Args ? " OR e107_name='{$v}'" : "e107_name='{$v}'");
 			}
-		} 
+		}
 		$sql->db_Select('core', '*', $Args, 'default');
 		while ($row = $sql->db_Fetch())
 		{
@@ -67,15 +67,15 @@ class prefs {
 	* - @access  public
 	*/
 	function get($Name) {
-		global $sql;
+		$get_sql = new db; // required so sql loops don't break using $tp->toHTML(). 
 		if(isset($this->prefVals['core'][$Name])){
 			if($this->prefVals['core'][$Name] != '### ROW CACHE FALSE ###'){
 				return $this->prefVals['core'][$Name];
 			} else {
 				return false;
 			}
-		} elseif($sql->db_Select('core', '*', "`e107_name` = '{$Name}'", 'default')) {
-			$row = $sql->db_Fetch();
+		} elseif($get_sql->db_Select('core', '*', "`e107_name` = '{$Name}'", 'default')) {
+			$row = $get_sql->db_Fetch();
 			$this->prefVals['core'][$Name] = $row['e107_value'];
 			return $this->prefVals['core'][$Name];
 		} else {
