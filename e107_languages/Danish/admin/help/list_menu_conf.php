@@ -1,4 +1,24 @@
 <?php
+/*
++---------------------------------------------------------------+
+|        e107 website system  Language File
+|
+|        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/help/list_menu_conf.php,v $
+|        $Revision: 1.2 $
+|        $Date: 2006-01-10 16:31:21 $
+|        $Author: e107dk $
++---------------------------------------------------------------+
+*/
+
+
+
+
+
+
+
+
+if (!defined('e107_INIT')) { exit; }
+
 $text = "I denne section kan du konfigurere 3 menuer<br>
 <b> Ny Artikel Menu</b> <br>
 Skriv et nummer for eksempel '5' i det første felt for at vise de sidste 5 artikler, lad være tom for at vise alle, Du kan konfigurere hvad titlen på linket skal være for resten af artiklen i det andet felt, når du lader denne sidste mulighed være tom vil der ikke blive skabt et link, for eksempel: 'Alle artikler'<br>

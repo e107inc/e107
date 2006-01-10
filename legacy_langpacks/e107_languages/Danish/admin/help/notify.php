@@ -4,11 +4,21 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/help/notify.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:29:27 $
+|        $Revision: 1.2 $
+|        $Date: 2006-01-10 16:31:21 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
+
+
+
+
+
+
+
+
+if (!defined('e107_INIT')) { exit; }
+
 $text = "Underretning sender email underretninger n&aring;r e107 begivenheder sker.<br /><br />
 F.eks., s&aelig;t 'IP banlyst for gentagne handlinger(flooded) mod site' til brugergruppe 'Admin' og alle admins vil f&aring; sendt en email n&aring;r dit 
 site bliver flooded.<br /><br />

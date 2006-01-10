@@ -4,11 +4,20 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/help/fileinspector.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-12-14 16:16:10 $
+|        $Revision: 1.3 $
+|        $Date: 2006-01-10 16:31:21 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
+
+
+
+
+
+
+
+
+if (!defined('e107_INIT')) { exit; }
 
 $text = "<div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vertical-align: top; white-space: nowrap'>
 <img src='".e_IMAGE."fileinspector/file_core.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Kerne Fil</div>
@@ -28,7 +37,7 @@ $text = "<div style='margin-left: 0px; margin-bottom: 1px; margin-top: 2px; vert
 <img src='".e_IMAGE."fileinspector/file_unknown.png' alt='".$dir."' style='margin-left: 3px; width: 16px; height: 16px' />&nbsp;Ej Kerne Fil</div>";
 $ns -> tablerender("Fil N&oslash;gle", $text);
 
-$text = "Fil inspektøren scanner og analyserer filerne p&aring; dit sites server. N&aring;r inspekt&oslash;ren m&oslash;der
+$text = "Fil inspekt&oslash;ren scanner og analyserer filerne p&aring; dit sites server. N&aring;r inspekt&oslash;ren m&oslash;der 
 en e107 kerne fil kontrollerer den for fil regelm&aelig;ssighed for at sikre at den ikke er korrupt.";
 
 if ($pref['developer']) {

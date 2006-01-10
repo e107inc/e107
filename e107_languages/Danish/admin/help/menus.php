@@ -1,5 +1,23 @@
 <?php
-if(!defined('e_HTTP')){ die("Unauthorised Access");}
+/*
++---------------------------------------------------------------+
+|        e107 website system  Language File
+|
+|        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/admin/help/menus.php,v $
+|        $Revision: 1.4 $
+|        $Date: 2006-01-10 16:31:21 $
+|        $Author: e107dk $
++---------------------------------------------------------------+
+*/
+
+
+
+
+
+
+
+
+if(!defined('e107_INIT')){ die("Unauthorised Access");}
 if (!getperms("2")) {
 	header("location:".e_BASE."index.php");
 	 exit;

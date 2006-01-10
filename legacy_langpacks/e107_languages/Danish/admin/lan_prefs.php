@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_prefs.php,v $
-|        $Revision: 1.5 $
-|        $Date: 2005-12-14 16:16:10 $
+|        $Revision: 1.6 $
+|        $Date: 2006-01-10 16:31:21 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -22,14 +22,15 @@ define("PRFLAN_10", "Tema");
 define("PRFLAN_11", "Tema");
 define("PRFLAN_12", "Fremvis temaer");
 define("PRFLAN_13", "Vis informationer");
-define("PRFLAN_14", "Tema information?");
-define("PRFLAN_15", "Afviklings tid?");
-define("PRFLAN_16", "SQL foresp&oslash;rgsler?");
+define("PRFLAN_14", "Vis Tema information?");
+define("PRFLAN_15", "Vis Afviklings tid?");
+define("PRFLAN_16", "Vis SQL foresp&oslash;rgsler?");
 
-// define("PRFLAN_17", "Sprog");
+define("PRFLAN_17", "Komprimer output med gzip");
+
 // define("PRFLAN_18", "V&aelig;lg sprog");
 
-define("PRFLAN_19", "Tilmelding");
+define("PRFLAN_19", "Tilmeldings side egenskaber");
 
 // define("PRFLAN_20", "Antal nyheder der &oslash;nskes vist pr. side?");
 
