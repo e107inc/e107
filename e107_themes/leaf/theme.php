@@ -11,9 +11,9 @@
 |	GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/leaf/theme.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-12-14 19:28:52 $
-|     $Author: sweetas $
+|     $Revision: 1.14 $
+|     $Date: 2006-01-10 18:52:47 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -48,7 +48,7 @@ define("THEME_DISCLAIMER", "<br /><i>".$themeinfo."</i>");
 define("e_PAGE", substr(strrchr($_SERVER['PHP_SELF'], "/"), 1));
 define("e_PAGECLASS", str_replace(substr(strrchr(e_PAGE, "."), 0), "", e_PAGE));
 
-// [navigation] 
+// [navigation]
 $register_sc[] = 'UL';
 
 // [credit links]
@@ -74,7 +74,7 @@ function theme_head() {
 	}
 	/* Sidbar menu content styles */
 	.loginform, .searchform, .chatboxform, .onlineform{
-		background-color: #".$colorstyle."; 
+		background-color: #".$colorstyle.";
 	}
 	.defaultform{
 		background-color: #".$colorstyle.";
@@ -88,7 +88,7 @@ function theme_head() {
 
 $HEADER = "
 <div id='header'><!--Start Header-->
-  <h1><a href='{SITEURL}' title='{SITENAME} home page' accesskey='0'>{SITENAME}</a></h1>
+  <h1><a href='".SITEURL."' title='{SITENAME} home page' accesskey='0'>{SITENAME}</a></h1>
   <div id='navigation'>
     <h3 class='hidden'>Navigation</h3>
     {UL}
@@ -140,7 +140,7 @@ $FOOTER = "<!--End Database Generated Content-->
 
 $CUSTOMHEADER = "
 <div id='header'><!--Start Header-->
- <h1><a href='{SITEURL}' title='{SITENAME} : home page' accesskey='0'>{SITENAME}</a></h1>
+ <h1><a href='".SITEURL."' title='{SITENAME} : home page' accesskey='0'>{SITENAME}</a></h1>
   <div id='navigation'>
     <h3 class='hidden'>Navigation</h3>
     {UL}
@@ -220,7 +220,7 @@ function tablestyle($caption, $text, $mode=""){
         	// echo "Style: ".$style.", Mode: ".$mode;
 	}
 	if($style == "sidebar"){  // sidebar styles
- 		
+
 		echo "<div class='sidebarbody'>";
 
 		if($mode){
@@ -241,9 +241,9 @@ function tablestyle($caption, $text, $mode=""){
 		        }else{
 		                echo "<div class='sidebarin'><div class='defaultform'>".$text." </div></div>\n";
 		        }
-		} 
+		}
 		echo "</div>\n";
-	}else{ 
+	}else{
 		echo "<h2>".$caption."</h2>
 		<div class='contentbody'>".$text."</div>";
  	}
