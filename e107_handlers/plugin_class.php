@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2005-12-29 20:41:49 $
-|     $Author: sweetas $
+|     $Revision: 1.39 $
+|     $Date: 2006-01-10 17:05:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -204,11 +204,22 @@ class e107plugin
 			}
 			return TRUE;
 		}
+        if ($action == 'upgrade') {
+			if (is_array($var)) {
+				foreach($var as $tab) {
+					if (!$sql->db_Query_all($tab)) {
+						return FALSE;
+					}
+				}
+				return TRUE;
+			}
+			return TRUE;
+		}
 		if ($action == 'remove') {
 			if (is_array($var)) {
 				foreach($var as $tab) {
 					$qry = 'DROP TABLE '.MPREFIX.$tab;
-					if (!$sql->db_Query($qry)) {
+					if (!$sql->db_Query_all($qry)) {
 						return $tab;
 					}
 				}

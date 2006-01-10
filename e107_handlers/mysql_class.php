@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2005-12-28 20:44:18 $
-|     $Author: streaky $
+|     $Revision: 1.54 $
+|     $Date: 2006-01-10 17:05:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.53 $
-* @author $Author: streaky $
+* @version $Revision: 1.54 $
+* @author $Author: e107coders $
 */
 class db {
 
@@ -625,19 +625,31 @@ class db {
     	Multi-language Query Function.
 	*/
 
-	function db_Query_all($query){
 
-       if(strpos($query,'#') !== FALSE) {
+	function db_Query_all($query,$debug=""){
+        $error = "";
+		$query = str_replace(MPREFIX,"#",$query);
+
+		if(strpos($query,'#') !== FALSE) {
 			$table = explode(" ",str_replace("#","",strrchr($query, "#"))); // get the name of the table.
 			$query = preg_replace_callback("/\s#([\w]*?)\W/", array($this, 'ml_check'), $query);
 		}
-        $this->db_Query($query);
+
+        if(!$this->db_Query($query)){
+        	$error .= $query. "failed";
+		}
+        if($debug){ echo "** ".$query; }
+
         if($tablist = $this->db_IsLang($table[0],TRUE)){
 			foreach($tablist as $tab){
             	$qrylan = str_replace(MPREFIX.$table[0],$tab,$query);
-				$this->db_Query($qrylan);
+				if(!$this->db_Query($qrylan)){
+					$error .= $qrylan." failed";
+				}
+				if($debug){ echo "<br />** ".$query; }
 			}
 		}
+		return ($error)? FALSE : TRUE;
 	}
 
     function db_Field($table,$fieldid=""){
