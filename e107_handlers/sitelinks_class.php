@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.79 $
-|     $Date: 2005-12-28 14:03:36 $
-|     $Author: sweetas $
+|     $Revision: 1.80 $
+|     $Date: 2006-01-10 19:41:17 $
+|     $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -277,8 +277,8 @@ function hilite($link,$enabled=''){
             return FALSE;
 		}
 
-		// --------------- highlight for news items.----------------
-		// eg. news.php?list.1 or news.php?cat.2 etc
+// --------------- highlight for news items.----------------
+// eg. news.php?list.1 or news.php?cat.2 etc
 
 		if (strpos($link, "news.php?") !== FALSE && strpos(e_SELF,"/news.php")) {
             $tmp = explode("?",$link);
@@ -294,8 +294,17 @@ function hilite($link,$enabled=''){
 			}
 
 		}
+// --------------- highlight for Custom Pages.----------------
+// eg. page.php?1
 
-		// --------------- highlight default ----------------
+		if (strpos($link, "page.php?") !== FALSE && strpos(e_SELF,"/page.php")) {
+			$tmp = explode("?",$link);
+			if(e_QUERY == $tmp[1]){
+            	return TRUE;
+			}
+		}
+
+// --------------- highlight default ----------------
 		if(strpos($link, "?") !== FALSE){
 			$subq = explode("?",$link);
 			$linkq = $subq[1];
