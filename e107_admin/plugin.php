@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2005-12-25 01:33:05 $
-|     $Author: sweetas $
+|     $Revision: 1.55 $
+|     $Date: 2006-01-10 17:05:40 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -235,14 +235,14 @@ if ($action == 'upgrade') {
 	}
 
 	if (is_array($upgrade_alter_tables)) {
-		$result = $plugin->manage_tables('add', $upgrade_alter_tables);
+		$result = $plugin->manage_tables('upgrade', $upgrade_alter_tables);
 		if (!$result) {
 			$text .= EPL_ADLAN_9.'<br />';
 		} else {
 			$text .= EPL_ADLAN_7."<br />";
 		}
 	}
-	
+
 	if ($eplug_module) {
 		$plugin->manage_plugin_prefs('add', 'modules', $eplug_folder);
 	} else {
