@@ -42,8 +42,6 @@ function GetStringWidth($s)
   print_r($cw);
   foreach($codepoints as $cp)
     $w+=$cw[$cp];
-  //0 - http://www.e107.org - Array - 3.5277777777778 - 0
-  echo $w." - ".$s." - ".$codepoints." - ".($this->FontSize)." - ".($w*$this->FontSize/1000)." - ".$cw."<br />";
   return $w*$this->FontSize/1000;
 }
 */
@@ -56,7 +54,6 @@ function GetStringWidth($s)
 	$l=strlen($s);
 	for($i=0;$i<$l;$i++)
 		$w+=$cw[$s{$i}];
-	//echo $w." - ".$s." - ".$l." - ".($this->FontSize)." - ".($w*$this->FontSize/1000)." - ".$cw."<br />";
 	return $w*$this->FontSize/1000;
 }
 function AddFont($family,$style='',$file='')

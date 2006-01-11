@@ -76,72 +76,57 @@ function email_item($id)
 
 
 function print_item_pdf($id){
-
-	function print_content_pdf($id)
-	{
-		global $tp;
-			//in this section you decide what to needs to be output to the pdf file
-			$con = new convert;
-
-			require_once(e_PLUGIN."content/handlers/content_class.php");
-			$aa = new content;
+	global $tp;
 			
-			if(!is_object($sql)){ $sql = new db; }
-			$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_parent, content_datestamp, content_class", "content_id='".intval($id)."' ");
-			$row = $sql -> db_Fetch();
+	//in this section you decide what to needs to be output to the pdf file
+	$con = new convert;
 
-			if(!check_class($row['content_class'])){
-				header("location:".e_PLUGIN."content/content.php"); exit;
-			}
-			$authordetails				= $aa -> getAuthor($row['content_author']);
-			$row['content_datestamp']	= $con -> convert_date($row['content_datestamp'], "long");
+	require_once(e_PLUGIN."content/handlers/content_class.php");
+	$aa = new content;
+	
+	if(!is_object($sql)){ $sql = new db; }
+	$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_parent, content_datestamp, content_class", "content_id='".intval($id)."' ");
+	$row = $sql -> db_Fetch();
 
-			$text = "
-			<b>".$row['content_heading']."</b><br />
-			".$row['content_subheading']."<br />
-			".$authordetails[1].", ".$row['content_datestamp']."<br />
-			<br />
-			".$row['content_text']."<br />
-			";
-
-			//the following defines are processed in the document properties of the pdf file
-
-			//Do NOT add parser function to the variables, leave them as raw data !
-			//as the pdf methods will handle this !
-			$text		= $text;							//define text
-			$creator	= SITENAME;						//define creator
-			$author		= $authordetails[1];				//define author
-			$title		= $row['content_heading'];		//define title
-			$subject	= $row['content_subheading'];	//define subject
-			$keywords	= "";												//define keywords
-
-			//define url and logo to use in the header of the pdf file
-			$url		= SITEURL.$PLUGINS_DIRECTORY."content/content.php?content.".$row['content_id'];
-			define('CONTENTPDFPAGEURL', $url);								//define page url to add in header
-
-			if(file_exists(THEME."images/logopdf.png")){
-				$logo = THEME."images/logopdf.png";
-			}else{
-				$logo = e_IMAGE."logo.png";
-			}
-			define('CONTENTPDFLOGO', $logo);								//define logo to add in header
-
-			//always return an array with the following data:
-			return array($text, $creator, $author, $title, $subject, $keywords, $url);
+	if(!check_class($row['content_class'])){
+		header("location:".e_PLUGIN."content/content.php"); exit;
 	}
+	$authordetails				= $aa -> getAuthor($row['content_author']);
+	$row['content_datestamp']	= $con -> convert_date($row['content_datestamp'], "long");
 
+	$text = "
+	<b>".$row['content_heading']."</b><br />
+	".$row['content_subheading']."<br />
+	".$authordetails[1].", ".$row['content_datestamp']."<br />
+	<br />
+	".$row['content_text']."<br />
+	";
 
-	//##### THIS IS THE ACTUAL PDF CREATION - DO NOT EDIT THIS ------------------------------------
-	$text = print_content_pdf($id);				//get content from $id number
+	//the following defines are processed in the document properties of the pdf file
 
-	define('FPDF_FONTPATH', 'font/');
-	require_once(e_PLUGIN."pdf/ufpdf.php");		//require the ufpdf class
-	require_once(e_PLUGIN."pdf/e107pdf.php");	//require the e107pdf class
+	//Do NOT add parser function to the variables, leave them as raw data !
+	//as the pdf methods will handle this !
+	$text		= $text;							//define text
+	$creator	= SITENAME;						//define creator
+	$author		= $authordetails[1];				//define author
+	$title		= $row['content_heading'];		//define title
+	$subject	= $row['content_subheading'];	//define subject
+	$keywords	= "";												//define keywords
 
-	$pdf = new e107PDF();
-	$pdf->makePDF($text);
-	//##### ---------------------------------------------------------------------------------------
+	//define url and logo to use in the header of the pdf file
+	//$url		= SITEURL.$PLUGINS_DIRECTORY."content/content.php?content.".$row['content_id'];
+	$url		= SITEURLBASE.e_PLUGIN_ABS."content/content.php?content.".$row['content_id'];
+	define('CONTENTPDFPAGEURL', $url);								//define page url to add in header
 
+	if(file_exists(THEME."images/logopdf.png")){
+		$logo = THEME."images/logopdf.png";
+	}else{
+		$logo = e_IMAGE."logo.png";
+	}
+	define('CONTENTPDFLOGO', $logo);								//define logo to add in header
+
+	//always return an array with the following data:
+	return array($text, $creator, $author, $title, $subject, $keywords, $url);
 }
 
 ?>

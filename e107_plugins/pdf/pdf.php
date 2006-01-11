@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pdf/pdf.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-01-11 00:17:49 $
+|     $Revision: 1.4 $
+|     $Date: 2006-01-11 15:54:58 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -32,6 +32,17 @@ if(strpos($source,'plugin:') !== FALSE)
 	{
 		include_once(e_PLUGIN.$plugin."/e_emailprint.php");
 		$text = print_item_pdf($parms);
+
+		$lan_file = e_PLUGIN."pdf/languages/".e_LANGUAGE.".php";
+		include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."pdf/languages/English.php");
+
+		define('FPDF_FONTPATH', 'font/');
+		require_once(e_PLUGIN."pdf/ufpdf.php");		//require the ufpdf class
+		require_once(e_PLUGIN."pdf/e107pdf.php");	//require the e107pdf class
+
+		$pdf = new e107PDF();
+		$pdf->makePDF($text);
+
 	}
 	else
 	{

@@ -20,6 +20,7 @@ class e107PDF extends UFPDF{
 	var $iminfo=array(0,0);
 	
 	function e107PDF($orientation='P',$unit='mm',$format='A4'){
+		global $pdfpref;
 		//Call parent constructor
 		$this->UFPDF($orientation,$unit,$format);
 		//Initialization
@@ -39,13 +40,54 @@ class e107PDF extends UFPDF{
 		$this->issetcolor=false;
 	}
 
+	//default preferences if none present
+	function getDefaultPDFPrefs(){
+			$pdfpref['pdf_margin_left']				= '25';
+			$pdfpref['pdf_margin_right']			= '15';
+			$pdfpref['pdf_margin_top']				= '15';
+			$pdfpref['pdf_font_family']				= 'arial';
+			$pdfpref['pdf_font_size']				= '8';
+			$pdfpref['pdf_font_size_sitename']		= '14';
+			$pdfpref['pdf_font_size_page_url']		= '8';
+			$pdfpref['pdf_font_size_page_number']	= '8';
+			$pdfpref['pdf_show_logo']				= true;
+			$pdfpref['pdf_show_sitename']			= false;
+			$pdfpref['pdf_show_page_url']			= true;
+			$pdfpref['pdf_show_page_number']		= true;
+			return $pdfpref;
+	}
+	//get preferences from db
+	function getPDFPrefs(){
+		global $sql, $eArrayStorage;
+
+		if(!is_object($eArrayStorage)){
+			e107_require_once(e_HANDLER.'arraystorage_class.php');
+			$eArrayStorage = new ArrayData();
+		}
+
+		if(!is_object($sql)){ $sql = new db; }
+		$num_rows = $sql -> db_Select("core", "*", "e107_name='pdf' ");
+		if($num_rows == 0){
+			$tmp = $this->getDefaultPDFPrefs();
+			$tmp2 = $eArrayStorage->WriteArray($tmp);
+			$sql -> db_Insert("core", "'pdf', '".$tmp2."' ");
+			$sql -> db_Select("core", "*", "e107_name='pdf' ");
+		}
+		$row = $sql -> db_Fetch();
+		$pdfpref = $eArrayStorage->ReadArray($row['e107_value']);
+		return $pdfpref;
+	}
+
 	/*
 	The makePDF function does all the real parsing and composing
 	input argument $text needs to be an array containing the following:
 	$text = array($text, $creator, $author, $title, $subject, $keywords, $url);
 	*/
 	function makePDF($text){
-		global $tp;
+		global $tp, $pdfpref;
+
+		//call get preferences
+		$pdfpref = $this->getPDFPrefs();
 
 		function toPDF($text){
 			$search = array('&#39;', '&#039;', '&#036;', '&quot;');
@@ -69,16 +111,13 @@ class e107PDF extends UFPDF{
 		}
 
 		//set some variables
-		$margin['left']		= "25";
-		$margin['right']	= "15";
-		$margin['top']		= "15";
-		$this->SetMargins($margin['left'],$margin['top'],$margin['right']);
+		$this->SetMargins($pdfpref['pdf_margin_left'],$pdfpref['pdf_margin_top'],$pdfpref['pdf_margin_right']);
 		//$this->SetAutoPageBreak(true,25);
 
 		//start creating the pdf and adding the data
 		$this->AliasNbPages();						//calculate current page + number of pages
 		$this->AddPage();							//start page
-		$this->SetFont('Arial','',10);				//set font
+		$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);				//set font
 		$this->WriteHTML($text[0], true);			//write text
 		$this->SetCreator($text[1]);				//name of creator
 		$this->SetAuthor($text[2]);					//name of author
@@ -93,39 +132,73 @@ class e107PDF extends UFPDF{
 
 	//create a header; this will be added on each page
 	function Header(){
-		/*
+		global $pdfpref;
+
 		$this->SetY(15);
-		$this->SetFont('Arial','I',8);			
-		$this->Image(CONTENTPDFLOGO, 10, 15, 0, 0, '', '');
-		$y = $this->GetY();
-		$x = $this->GetX();			
-		$image_wh = getimagesize(CONTENTPDFLOGO);
-		$newx = $x + ($image_wh[0]/$this->k);
-		$newy = ($image_wh[1]/$this->k);
-		$this->SetX($newx);
+		if($pdfpref['pdf_show_logo']){
+			$this->SetFont($pdfpref['pdf_font_family'],'I',$pdfpref['pdf_font_size']);			
+			$this->PutImage(CONTENTPDFLOGO, '1');
+			$x = $this->GetX();
+			$y = $this->GetY();
+
+			$image_wh = getimagesize(CONTENTPDFLOGO);
+			$newx = $x + ($image_wh[0]/$this->k);
+			$newy = ($image_wh[1]/$this->k);
+
+			$this->SetY(15);
+			$a=$this->GetStringWidth(SITENAME);
+			$b=$this->GetStringWidth(CONTENTPDFPAGEURL);
+			if($a>$b){$c=$a;}else{$c=$b;}
+			if($x+$newx+$c > 210){
+				$this->SetX();
+				$this->SetY($y+5);
+			}
+		}
+		$cellwidth	= 210-$this->lMargin-$this->rMargin;
+		$align		= "R";
+		if($pdfpref['pdf_show_sitename']){
+			$this->SetFont($pdfpref['pdf_font_family'],'B',$pdfpref['pdf_font_size_sitename']);
+			$this->Cell($cellwidth,5,SITENAME,0,1,$align);
+		}
+		if($pdfpref['pdf_show_page_url']){
+			$this->SetFont($pdfpref['pdf_font_family'],'I',$pdfpref['pdf_font_size_page_url']);
+			$this->Cell($cellwidth,5,CONTENTPDFPAGEURL,0,1,$align,'',CONTENTPDFPAGEURL);
+		}
+		if($pdfpref['pdf_show_page_number']){
+			$this->SetFont($pdfpref['pdf_font_family'],'I',$pdfpref['pdf_font_size_page_number']);
+			$this->Cell($cellwidth,5,PDF_LAN_19.' '.$this->PageNo().'/{nb}',0,1,$align);
+		}
 		$x = $this->GetX();
-		$cellwidth = 210-10-$x;
-		$this->SetFont('Arial','B',14);
-		$this->Cell($cellwidth,8,SITENAME,0,2,'R');
-		$this->SetFont('Arial','I',8);
-		$this->Cell($cellwidth,8,CONTENTPDFPAGEURL,0,2,'R');
-		$this->Cell($cellwidth,10,'Page '.$this->PageNo().'/{nb}',0,2,'R');
-		$this->Line(10, $newy+20, 200, $newy+20);
-		$this->Ln(20);
-		*/
+		$y = $this->GetY();
+		$this->Line($this->lMargin, $y, 210-$this->rMargin, $y);
+		$this->Ln(10);
 		
-		$cellwidth	= 0;
-		$align		= "L";
+		/*
+		$a=$this->GetStringWidth(SITENAME);
+		$b=$this->GetStringWidth(CONTENTPDFPAGEURL);
+		if($a>$b){$c=$a;}else{$c=$b;}
+		$cellwidth = 210-10-$c;
+		//$cellwidth	= 0;
+		$align		= "R";
 		
 		$this->SetFont('Arial','B',14);
 		$this->Cell($cellwidth,8,SITENAME,0,2,$align);
 		$this->SetFont('Arial','I',8);
-		$this->Cell($cellwidth,8,CONTENTPDFPAGEURL,0,2,$align);
+		//$this->Cell($cellwidth,8,CONTENTPDFPAGEURL,0,2,$align, '', CONTENTPDFPAGEURL);
+		//$this->PutLink(CONTENTPDFPAGEURL,CONTENTPDFPAGEURL);
+		//$this->Ln(5);
+
+		$this->SetTextColor(0,0,255);
+		$this->Write(5,CONTENTPDFPAGEURL,CONTENTPDFPAGEURL);
+		$this->SetTextColor(0);
+		$this->Ln(5);
+
 		$this->Cell($cellwidth,8,'Page '.$this->PageNo().'/{nb}',0,2,$align);
 		$x = $this->GetX();
 		$y = $this->GetY();
 		$this->Line($this->lMargin, $y, 210-$this->rMargin, $y);
-		$this->Ln(20);
+		$this->Ln(10);
+		*/
 	}
 
 	function txtentities($html){
@@ -167,9 +240,6 @@ class e107PDF extends UFPDF{
 			{
 				//Text
 				if($this->HREF){
-					if(strpos($this->HREF, "http://")!==false){
-						$this->HREF = substr($this->HREF, strpos($this->HREF, "http://")+strlen('http://') );
-					}
 					$this->PutLink($this->HREF,$e);
 				}elseif($this->IMG){
 					$this->PutImage($this->SRC,$scale);
@@ -353,6 +423,8 @@ class e107PDF extends UFPDF{
 	}
 
 	function CloseTag($tag){
+		global $pdfpref;
+
 		 $tag = strtoupper($tag);
 		 //Closing tag
 		if($tag=='SPAN')
@@ -362,7 +434,7 @@ class e107PDF extends UFPDF{
 				$this->SetTextColor(0);
 			}
 			if ($this->issetfont==true) {
-				$this->SetFont('arial');
+				$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
 				$this->issetfont=false;
 			}
 		if($tag=='DIV')
@@ -392,7 +464,7 @@ class e107PDF extends UFPDF{
 				$this->issetcolor=false;
 			}
 			if ($this->issetfont) {
-				$this->SetFont('arial');
+				$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
 				$this->issetfont=false;
 			}
         }
@@ -402,7 +474,7 @@ class e107PDF extends UFPDF{
 				$this->issetcolor=false;
 			}
 			if ($this->issetfont) {
-				$this->SetFont('arial');
+				$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
 				$this->issetfont=false;
 			}
 		}
@@ -415,7 +487,7 @@ class e107PDF extends UFPDF{
 			$this->SetStyle('U',false);
             $this->Ln(6);
             if($this->issetfont=true){
-				$this->SetFont('arial');
+				$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
 				$this->issetfont=false;
 			}
 			if($this->issetcolor=true){
@@ -436,6 +508,10 @@ class e107PDF extends UFPDF{
 	}
 
 	function PutLink($URL,$txt){
+		//remove leading 'http://'
+		if(strpos($URL, "http://")!==false){
+			$URL = substr($URL, strpos($URL, "http://")+strlen('http://') );
+		}
 		//Put a hyperlink
 		$this->SetTextColor(0,0,255);
 		$this->SetStyle('U',true);
