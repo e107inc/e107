@@ -45,5 +45,6 @@ define("LAN_NEWS_19", "Nu");
 define("LAN_NEWS_20", "Nieuws in de database bijgewerkt in de volgende taal: ");
 define("LAN_NEWS_21", "Nieuws bijgewerkt in de database.");
 define("LAN_NEWS_22", "Ga naar pagina: ");
-define("LAN_NEWS_23", "Nieuws categorieën");
+define("LAN_NEWS_23", "Nieuwscategorieën");
+define("LAN_NEWS_24", "genereer een pdf van dit bericht");
 ?>
