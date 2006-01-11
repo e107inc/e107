@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2006-01-11 04:48:59 $
+|     $Revision: 1.50 $
+|     $Date: 2006-01-11 04:49:50 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -132,7 +132,7 @@ class e107{
 
 			if ($ip != '127.0.0.1') {
 				if ($sql->db_Select("banlist", "*", "banlist_ip='".$tp -> toDB($_SERVER['REMOTE_ADDR'], true)."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='{$ip}' OR banlist_ip='{$wildcard}' OR banlist_ip='{$wildcard2}' {$bhost}")) {
-				  header("HTTP/1.1 403 Forbidden");
+				  header("HTTP/1.1 403 Forbidden", true);
 					// enter a message here if you want some text displayed to banned users ...
 					exit();
 				}
