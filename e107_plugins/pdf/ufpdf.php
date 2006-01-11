@@ -38,8 +38,6 @@ function GetStringWidth($s)
   $codepoints=$this->utf8_to_codepoints($s);
   $cw=&$this->CurrentFont['cw'];
   $w=0;
-  print_r($codepoints);
-  print_r($cw);
   foreach($codepoints as $cp)
     $w+=$cw[$cp];
   return $w*$this->FontSize/1000;
