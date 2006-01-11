@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.45 $
+|     $Date: 2006-01-11 16:25:48 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -162,7 +162,7 @@ class e107forum
 		}
 		while($row = $sql->db_Fetch())
 		{
-			$ret[] = $row['user_name'];
+			$ret[$row['user_id']] = $row['user_name'];
 		}
 		return $ret;
 	}
