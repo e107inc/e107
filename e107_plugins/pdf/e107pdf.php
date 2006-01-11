@@ -27,6 +27,7 @@ class e107PDF extends UFPDF{
 		$this->B=0;
 		$this->I=0;
 		$this->U=0;
+		$this->BLOCKQUOTE='';
 		$this->HREF='';
 		$this->CENTER='';
 		$this->ALIGN='';
@@ -136,7 +137,7 @@ class e107PDF extends UFPDF{
 
 		$this->SetY(15);
 		if($pdfpref['pdf_show_logo']){
-			$this->SetFont($pdfpref['pdf_font_family'],'I',$pdfpref['pdf_font_size']);			
+			$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);			
 			$this->PutImage(CONTENTPDFLOGO, '1');
 			$x = $this->GetX();
 			$y = $this->GetY();
@@ -172,6 +173,7 @@ class e107PDF extends UFPDF{
 		$y = $this->GetY();
 		$this->Line($this->lMargin, $y, 210-$this->rMargin, $y);
 		$this->Ln(10);
+		$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
 		
 		/*
 		$a=$this->GetStringWidth(SITENAME);
@@ -251,6 +253,15 @@ class e107PDF extends UFPDF{
 					$this->Cell(0,5,$e,0,1,'R');
 				}elseif($this->ALIGN == 'left'){
 					$this->Cell(0,5,$e,0,1,'L');
+				}elseif($this->BLOCKQUOTE == 'BLOCKQUOTE'){
+					$this->SetFont('Courier','',11);
+					$this->SetStyle('B',true);
+					$this->SetStyle('I',true);
+					$this->Cell(0,5,$e,1,1,'L');
+					$this->SetStyle('B',false);
+					$this->SetStyle('I',false);
+					$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
+					
 				}else{
 					$this->Write(5,stripslashes($this->txtentities($e)));
 				}
@@ -277,6 +288,19 @@ class e107PDF extends UFPDF{
 	function OpenTag($tag,$attr,$scale){
 		$tag = strtoupper($tag);
 		//Opening tag
+		
+		//<em class='bbcode'>italic</em><br />
+		//<span style='text-decoration: underline'>underline</span>
+/*
+echo $tag."<br />";
+if(is_array($attr)){
+	print_r($attr);
+	echo "<br />";
+}
+if(isset($attr['STYLE'])){
+	echo " - ".$attr['STYLE']."<br />";
+}
+*/
 		switch($tag){
 			case 'STRONG':
 				$this->SetStyle('B',true);
@@ -297,7 +321,8 @@ class e107PDF extends UFPDF{
 				break;
 			case 'SPAN':
 				if(isset($attr['STYLE'])){
-					if($attr['STYLE'] == 'text-decoration: underline'){
+					if($attr['STYLE'] == 'text-decoration:underline'){
+//echo "_______".$attr['STYLE']."________<br />";
 						$this->SetStyle('U',true);
 						break;
 					}
@@ -326,7 +351,14 @@ class e107PDF extends UFPDF{
 					$this->ALIGN='right';
 				}
 				if($attr['CLASS'] == 'indent'){
-					$this->Ln(5);
+					$this->BLOCKQUOTE='BLOCKQUOTE';
+					/*
+					$this->SetFont('Courier','',11);
+					$this->issetfont=true;
+					$this->issetcolor=true;
+					$this->SetStyle('B',true);
+					$this->SetStyle('I',true);
+					*/
 				}
 				break;
 			case 'IMG':
@@ -354,12 +386,11 @@ class e107PDF extends UFPDF{
 			case 'CODE':
 			case 'BLOCKQUOTE':
 			case 'PRE':
-                $this->SetFont('Courier','',11);
-                $this->SetFontSize(11);
+                $this->Ln(5);
+				$this->SetFont('Courier','',11);
 				$this->issetfont=true;
-				$this->issetcolor=true;
-                $this->SetStyle('B',false);
-                $this->SetStyle('I',false);
+                $this->SetStyle('B',true);
+                $this->SetStyle('I',true);
                 break;
 			case 'LI':
                 //$this->Ln(2);
@@ -399,12 +430,16 @@ class e107PDF extends UFPDF{
                 break;
             case 'H2':
                 $this->Ln(5);
+				$this->SetTextColor(0);
+				$this->issetcolor=true;
                 $this->SetFontSize(18);
 				$this->issetfont=true;
                 $this->SetStyle('U',true);
                 break;
             case 'H3':
                 $this->Ln(5);
+				$this->SetTextColor(0);
+				$this->issetcolor=true;
                 $this->SetFontSize(16);
 				$this->issetfont=true;
                 $this->SetStyle('U',true);
@@ -415,8 +450,7 @@ class e107PDF extends UFPDF{
 				$this->issetcolor=true;
                 $this->SetFontSize(14);
 				$this->issetfont=true;
-                if ($this->bi)
-                    $this->SetStyle('B',true);
+				$this->SetStyle('B',true);
                 break;
             
 		}
@@ -429,7 +463,7 @@ class e107PDF extends UFPDF{
 		 //Closing tag
 		if($tag=='SPAN')
 			$tag='U';
-			$this->SetStyle($tag,false);
+			//$this->SetStyle($tag,false);
 			if ($this->issetcolor==true) {
 				$this->SetTextColor(0);
 			}
@@ -440,6 +474,7 @@ class e107PDF extends UFPDF{
 		if($tag=='DIV')
 			$tag='DIV';
 			$this->ALIGN='';
+			$this->BLOCKQUOTE='';
 		if($tag=='STRONG')
 			$tag='B';
 		if($tag=='EM')
@@ -456,14 +491,17 @@ class e107PDF extends UFPDF{
 			$this->WIDTH='';
 			$this->HEIGHT='';
 		}
-		if($tag=='TR' || $tag=='BLOCKQUOTE' || $tag=='CODE' || $tag='PRE'){
+		if($tag=='LI')
+			$this->Ln(5);
+		if($tag=='TR' || $tag=='BLOCKQUOTE' || $tag=='CODE' || $tag=='PRE'){
 			$this->SetStyle('B',false);
 			$this->SetStyle('I',false);
+			$this->Ln(5);
 			if ($this->issetcolor==true) {
 				$this->SetTextColor(0);
 				$this->issetcolor=false;
 			}
-			if ($this->issetfont) {
+			if ($this->issetfont==true) {
 				$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
 				$this->issetfont=false;
 			}
@@ -473,24 +511,24 @@ class e107PDF extends UFPDF{
 				$this->SetTextColor(0);
 				$this->issetcolor=false;
 			}
-			if ($this->issetfont) {
+			if ($this->issetfont==true) {
 				$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
 				$this->issetfont=false;
 			}
 		}
-		if ($tag='H1' || $tag='H2' || $tag='H3' || $tag='H4'){
+		if ($tag=='H1' || $tag=='H2' || $tag=='H3' || $tag=='H4'){
 			$this->H1='';
 			$this->H2='';
 			$this->H3='';
 			$this->H4='';
 			$this->SetStyle('B',false);
 			$this->SetStyle('U',false);
-            $this->Ln(6);
-            if($this->issetfont=true){
+			$this->Ln(5);
+			if($this->issetfont==true){
 				$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
 				$this->issetfont=false;
 			}
-			if($this->issetcolor=true){
+			if($this->issetcolor==true){
 				$this->SetTextColor(0);
 				$this->issetcolor=false;
 			}
