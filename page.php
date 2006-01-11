@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/page.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2006-01-10 16:26:13 $
-|     $Author: e107coders $
+|     $Revision: 1.21 $
+|     $Date: 2006-01-11 03:35:37 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -26,7 +26,13 @@ if(isset($_POST['enterpw']))
 if(!e_QUERY)
 {
 	require_once(HEADERF);
-	$page -> listPages();
+	$tmp = $page -> listPages();
+	if(is_array($tmp))
+	{
+		$ns -> tablerender($tmp['title'], $tmp['text']);
+		require_once(FOOTERF);
+		exit;
+	}
 }
 else
 {
@@ -80,7 +86,7 @@ class pageClass
 
 		if(!$pref['listPages'])
 		{
-			$this -> pageError(1);
+			return $this -> pageError(1);
 		}
 		else
 		{
@@ -121,7 +127,7 @@ class pageClass
 		}
 		$text .= "</div>
 		";
-		$ns -> tablerender("Error", $text);
+		return array('title' => 'error', 'text' => $text);
 	}
 
 
@@ -134,8 +140,7 @@ class pageClass
 
 		if(!$sql -> db_Select_gen($query) && !$_GET['elan'])
 		{
-			$this -> pageError(2);
-			return FALSE;
+			return $this -> pageError(2);
 		}
 
 		extract($sql -> db_Fetch());
@@ -177,10 +182,6 @@ class pageClass
 		$ret['comment_caption'] = $comment['caption'];
 
 	 	return $ret;
-	 //	$ns -> tablerender($page_title, $text);
-
-	 //	$this -> pageComment($page_comment_flag);
-
 	}
 
 	function parsePage()
@@ -329,9 +330,6 @@ class pageClass
 					}
 				}
 			}
-        //    $tmp = $cobj->compose_comment("page", "comment", $this -> pageID, $width, $subject, $showrate=FALSE,TRUE);
-
-
 			return $cobj->compose_comment("page", "comment", $this -> pageID, $width, $subject, $showrate=FALSE,$return=TRUE);
 		}
 	}
@@ -345,8 +343,7 @@ class pageClass
 
 			if($_COOKIE[$cookiename] != md5($page_password.USERID))
 			{
-				$this -> pageError(3);
-				return FALSE;
+				return $this -> pageError(3);
 			}
 			else
 			{
