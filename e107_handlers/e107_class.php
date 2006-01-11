@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e107_class.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2005-12-28 14:03:36 $
-|     $Author: sweetas $
+|     $Revision: 1.49 $
+|     $Date: 2006-01-11 04:48:59 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -132,6 +132,7 @@ class e107{
 
 			if ($ip != '127.0.0.1') {
 				if ($sql->db_Select("banlist", "*", "banlist_ip='".$tp -> toDB($_SERVER['REMOTE_ADDR'], true)."' OR banlist_ip='".USEREMAIL."' OR banlist_ip='{$ip}' OR banlist_ip='{$wildcard}' OR banlist_ip='{$wildcard2}' {$bhost}")) {
+				  header("HTTP/1.1 403 Forbidden");
 					// enter a message here if you want some text displayed to banned users ...
 					exit();
 				}
