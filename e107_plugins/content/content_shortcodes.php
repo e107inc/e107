@@ -845,7 +845,7 @@ foreach($imagestmp as $key => $value) {
 	} 
 } 
 $images = array_values($imagestmp);
-$content_image_popup_name = str_replace("'", "", $row['content_heading']);
+$content_image_popup_name = $row['content_heading'];
 $CONTENT_CONTENT_TABLE_IMAGES = "";
 require_once(e_HANDLER."popup_handler.php");
 $pp = new popup;
@@ -859,8 +859,11 @@ for($i=0;$i<count($images);$i++){
 	
 	$oMaxWidth = (isset($content_pref["content_upload_image_size_{$mainparent}"]) && $content_pref["content_upload_image_size_{$mainparent}"] ? $content_pref["content_upload_image_size_{$mainparent}"] : "500");
 	
-	$oTitle = $content_image_popup_name." ".($i+1);
-	$oText = $content_image_popup_name." ".($i+1)."<br />".$tp -> toHTML($row['content_subheading'], TRUE, "")."<br />".$authordetails[1]." (".$datestamp.")";
+	$subheading	= $tp -> toHTML($row['content_subheading'], TRUE);
+	$popupname	= $tp -> toHTML($content_image_popup_name, TRUE);
+	$author		= $tp -> toHTML($authordetails[1], TRUE);
+	$oTitle		= $popupname." ".($i+1);
+	$oText		= $popupname." ".($i+1)."<br />".$subheading."<br />".$author." (".$datestamp.")";
 	$CONTENT_CONTENT_TABLE_IMAGES .= $pp -> popup($oSrc, $oSrcThumb, $oIconWidth, $oMaxWidth, $oTitle, $oText);
 }
 return $CONTENT_CONTENT_TABLE_IMAGES;
