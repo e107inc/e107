@@ -2,7 +2,6 @@
 /*
 +---------------------------------------------------------------+
 |        e107 website system
-|        code adapted from original by Lolo Irie (lolo_irie@e107coders.org)
 |
 |        ©Steve Dunstan 2001-2002
 |        http://e107.org
@@ -15,15 +14,18 @@
 
 if (!defined('e107_INIT')) { exit; }
 
+$lan_file = e_PLUGIN."pdf/languages/".e_LANGUAGE.".php";
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."pdf/languages/English.php");
+
 // Plugin info -------------------------------------------------------------------------------------------------------
-$eplug_name = "PDF";
+$eplug_name = PDF_PLUGIN_LAN_1;
 $eplug_version = "1.0";
 $eplug_author = "Eric Vanderfeesten (lisa)";
 $eplug_logo = "";
 $eplug_url = "http://eindhovenseschool.net";
 $eplug_email = "lisa@eindhovenseschool.net";
-$eplug_description = "PDF creation support";
-$eplug_compatible = "e107v7";
+$eplug_description = PDF_PLUGIN_LAN_2;
+$eplug_compatible = "e107v0.7+";
 $eplug_readme = "";        // leave blank if no readme file
 
 $eplug_sc = array('PDF');
@@ -35,12 +37,12 @@ $eplug_folder = "pdf";
 $eplug_menu_name = "";
 
 // Name of the admin configuration file --------------------------------------------------------------------------
-$eplug_conffile = "";
+$eplug_conffile = "admin_pdf_config.php";
 
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/pdf_32.png";
 $eplug_icon_small = $eplug_folder."/images/pdf_16.png";
-$eplug_caption =  'PDF';
+$eplug_caption = PDF_PLUGIN_LAN_3;
 
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = "";
@@ -60,13 +62,12 @@ $eplug_link_name = "";
 $eplug_link_url = "";
 
 // Text to display after plugin successfully installed ------------------------------------------------------------------
-$eplug_done = "This plugin is now ready to be used.";
+$eplug_done = PDF_PLUGIN_LAN_4;
 
 // upgrading ... //
 $upgrade_add_prefs = "";
 $upgrade_remove_prefs = "";
 $upgrade_alter_tables = "";
 $eplug_upgrade_done = "";
-
 
 ?>
