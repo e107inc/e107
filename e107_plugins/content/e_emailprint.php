@@ -81,7 +81,6 @@ function print_item_pdf($id){
 	{
 		global $tp;
 			//in this section you decide what to needs to be output to the pdf file
-			//unfortunately using $tp causes problems, so don't use it (yet)
 			$con = new convert;
 
 			require_once(e_PLUGIN."content/handlers/content_class.php");
@@ -106,11 +105,15 @@ function print_item_pdf($id){
 			";
 
 			//the following defines are processed in the document properties of the pdf file
-			$creator	= SITENAME;											//define creator
-			$author		= $authordetails[1];								//define author
+
+			//Do NOT add parser function to the variables, leave them as raw data !
+			//as the pdf methods will handle this !
+			$text		= $text;							//define text
+			$creator	= SITENAME;						//define creator
+			$author		= $authordetails[1];				//define author
+			$title		= $row['content_heading'];		//define title
+			$subject	= $row['content_subheading'];	//define subject
 			$keywords	= "";												//define keywords
-			$subject	= $tp->toHTML($row['content_subheading'], TRUE);	//define subject
-			$title		= $tp->toHTML($row['content_heading'], TRUE);		//define title
 
 			//define url and logo to use in the header of the pdf file
 			$url		= SITEURL.$PLUGINS_DIRECTORY."content/content.php?content.".$row['content_id'];
@@ -122,152 +125,23 @@ function print_item_pdf($id){
 				$logo = e_IMAGE."logo.png";
 			}
 			define('CONTENTPDFLOGO', $logo);								//define logo to add in header
-	
+
 			//always return an array with the following data:
 			return array($text, $creator, $author, $title, $subject, $keywords, $url);
-
 	}
 
-
-
-	//extend fpdf class from package with custom functions
-	class PDF extends FPDF{
-
-		//create a header; this will be added on each page
-		function Header(){
-			$this->SetY(15);
-			$this->SetFont('Arial','I',8);			
-			$this->Image(CONTENTPDFLOGO, 10, 15, 0, 0, '', '');
-			$y = $this->GetY();
-			$x = $this->GetX();			
-			$image_wh = Getimagesize(CONTENTPDFLOGO);
-			$newx = $x + (($image_wh[0]/$this->k));
-			$newy = (($image_wh[1]/$this->k));
-			$this->SetX($newx);
-			$x = $this->GetX();
-			$cellwidth = 210-10-$newx;
-			$this->SetFont('Arial','B',14);
-			$this->Cell($cellwidth,8,SITENAME,0,2,'R');
-			$this->SetFont('Arial','I',8);
-			$this->Cell($cellwidth,8,CONTENTPDFPAGEURL,0,2,'R');
-			$this->Cell($cellwidth,10,'Page '.$this->PageNo().'/{nb}',0,2,'R');
-			$this->Line(10, $newy+20, 200, $newy+20);
-			$this->Ln(20);
-		}
-
-
-		function WriteHTML($html)
-		{
-			//HTML parser
-			$a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE);
-			foreach($a as $i=>$e)
-			{
-				if($i%2==0)
-				{
-					//Text
-					if($this->HREF)
-						$this->PutLink($this->HREF,$e);
-					else
-						$this->Write(5,$e);
-				}
-				else
-				{
-					//Tag
-					if($e{0}=='/')
-						$this->CloseTag(strtoupper(substr($e,1)));
-					else
-					{
-						//Extract attributes
-						$a2=explode(' ',$e);
-						$tag=strtoupper(array_shift($a2));
-						$attr=array();
-						foreach($a2 as $v)
-							if(preg_match('/^([^=]*)=["\']?([^"\']*)["\']?$/',$v,$a3))
-								$attr[strtoupper($a3[1])]=$a3[2];
-						$this->OpenTag($tag,$attr);
-					}
-				}
-			}
-		}
-
-		function OpenTag($tag,$attr)
-		{
-			//Opening tag
-			if($tag=='B' or $tag=='I' or $tag=='U')
-				$this->SetStyle($tag,true);
-			if($tag=='A')
-				$this->HREF=$attr['HREF'];
-			if($tag=='BR')
-				$this->Ln(5);
-		}
-
-		function CloseTag($tag)
-		{
-			//Closing tag
-			if($tag=='B' or $tag=='I' or $tag=='U')
-				$this->SetStyle($tag,false);
-			if($tag=='A')
-				$this->HREF='';
-		}
-
-		function SetStyle($tag,$enable)
-		{
-			//Modify style and select corresponding font
-			$this->$tag+=($enable ? 1 : -1);
-			$style='';
-			foreach(array('B','I','U') as $s)
-				if($this->$s>0)
-					$style.=$s;
-			$this->SetFont('',$style);
-		}
-
-		function PutLink($URL,$txt)
-		{
-			//Put a hyperlink
-			$this->SetTextColor(0,0,255);
-			$this->SetStyle('U',true);
-			$this->Write(5,$txt,$URL);
-			$this->SetStyle('U',false);
-			$this->SetTextColor(0);
-		}
-
-	}
 
 	//##### THIS IS THE ACTUAL PDF CREATION - DO NOT EDIT THIS ------------------------------------
-
-	$pdf=new PDF();								//start new pdf class
-
 	$text = print_content_pdf($id);				//get content from $id number
-	$search = array('&#39;', '&#039;', '&#036;', '&quot;', '<br />', '\n');
-	$replace = array("'", "'", '$', '"', '\n', '');
-	$text[0] = str_replace($search, $replace, $text[0]);		//replace some in the text
-	$text[3] = str_replace($search, $replace, $text[3]);		//replace some in the title
 
-	$search2 = array(":", "*", "?", '"', '<', '>', '|');
-	$replace2 = array('-', '-', '-', '-', '-', '-', '-');
-	$text[3] = str_replace($search2, $replace2, $text[3]);		//replace non-allowed characters
+	define('FPDF_FONTPATH', 'font/');
+	require_once(e_PLUGIN."pdf/ufpdf.php");		//require the ufpdf class
+	require_once(e_PLUGIN."pdf/e107pdf.php");	//require the e107pdf class
 
-	global $tp;
-	$text[0] = $tp->toHTML($text[0], TRUE);
-
-	$pdf->AliasNbPages();						//calculate current page + number of pages
-	$pdf->AddPage();							//start page
-	$pdf->SetFont('Arial','',10);				//set font
-
-	$pdf->WriteHTML($text[0]);					//write text
-	//$pdf->Write('5', $text[0]);					//write text
-	$pdf->SetCreator($text[1]);					//name of creator
-	$pdf->SetAuthor($text[2]);					//name of author
-	$pdf->SetTitle($text[3]);					//title
-	$pdf->SetSubject($text[4]);					//subject
-	$pdf->SetKeywords($text[5]);				//space seperated
-
-	$file = $text[3].".pdf";					//name of the file
-	$pdf->Output($file, 'D');					//Save PDF to file (D = output to download window)
-
+	$pdf = new e107PDF();
+	$pdf->makePDF($text);
 	//##### ---------------------------------------------------------------------------------------
 
 }
-
 
 ?>
