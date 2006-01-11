@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pdf/pdf.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-01-11 15:54:58 $
+|     $Revision: 1.5 $
+|     $Date: 2006-01-11 18:13:29 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -25,6 +25,23 @@ if ($qs[0] == "") {
 $source = $qs[0];
 $parms = $qs[1];
 
+$lan_file = e_PLUGIN."pdf/languages/".e_LANGUAGE.".php";
+include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."pdf/languages/English.php");
+
+define('FPDF_FONTPATH', 'font/');
+require_once(e_PLUGIN."pdf/ufpdf.php");		//require the ufpdf class
+require_once(e_PLUGIN."pdf/e107pdf.php");	//require the e107pdf class
+$pdf = new e107PDF();
+
+if(is_readable(THEME."images/logopdf.png")){
+	$logo = THEME."images/logopdf.png";
+}else{
+	$logo = e_IMAGE."logo.png";
+}
+define('PDFLOGO', $logo);								//define logo to add in header
+
+
+
 if(strpos($source,'plugin:') !== FALSE)
 {
 	$plugin = substr($source,7);
@@ -33,14 +50,6 @@ if(strpos($source,'plugin:') !== FALSE)
 		include_once(e_PLUGIN.$plugin."/e_emailprint.php");
 		$text = print_item_pdf($parms);
 
-		$lan_file = e_PLUGIN."pdf/languages/".e_LANGUAGE.".php";
-		include_once(file_exists($lan_file) ? $lan_file : e_PLUGIN."pdf/languages/English.php");
-
-		define('FPDF_FONTPATH', 'font/');
-		require_once(e_PLUGIN."pdf/ufpdf.php");		//require the ufpdf class
-		require_once(e_PLUGIN."pdf/e107pdf.php");	//require the e107pdf class
-
-		$pdf = new e107PDF();
 		$pdf->makePDF($text);
 
 	}
@@ -52,47 +61,53 @@ if(strpos($source,'plugin:') !== FALSE)
 }
 else
 {
-	/*
-	//the news could also have a print ability, didn't make that one yet
-	$con = new convert;
-	$sql->db_Select("news", "*", "news_id='".intval($parms)."'");
-	$row = $sql->db_Fetch(); 
-	extract($row);
-	$news_body = $tp->toHTML($news_body, TRUE);
-	$news_extended = $tp->toHTML($news_extended, TRUE);
-	if ($news_author == 0)
-	{
-		$a_name = "e107";
-		$category_name = "e107 welcome message";
-	}
-	else
-	{
-		$sql->db_Select("news_category", "category_id, category_name", "category_id='".intval($news_category)."'");
-		list($category_id, $category_name) = $sql->db_Fetch();
-		$sql->db_Select("user", "user_id, user_name", "user_id='".intval($news_author)."'");
-		list($a_id, $a_name) = $sql->db_Fetch();
-	}
-	$news_datestamp = $con->convert_date($news_datestamp, "long");
-	$text = "<font style=\"font-size: 11px; color: black; font-family: tahoma, verdana, arial, helvetica; text-decoration: none\">
-	<b>".LAN_135.": ".$news_title."</b>
-	<br />
-	(".LAN_86." ".$category_name.")
-	<br />
-	".LAN_94." ".$a_name."<br />
-	".$news_datestamp."
-	<br /><br />".
-	$news_body;
+	
+	if($source == 'news'){
+		$con = new convert;
+		$sql->db_Select("news", "*", "news_id='".intval($parms)."'");
+		$row = $sql->db_Fetch(); 
+		$news_body = $tp->toHTML($row['news_body'], TRUE);
+		$news_extended = $tp->toHTML($row['news_extended'], TRUE);
+		if ($row['news_author'] == 0){
+			$a_name = "e107";
+			$category_name = "e107 welcome message";
+		}else{
+			$sql->db_Select("news_category", "category_id, category_name", "category_id='".intval($row['news_category'])."'");
+			list($category_id, $category_name) = $sql->db_Fetch();
+			$sql->db_Select("user", "user_id, user_name", "user_id='".intval($row['news_author'])."'");
+			list($a_id, $a_name) = $sql->db_Fetch();
+		}
+		$row['news_datestamp'] = $con->convert_date($row['news_datestamp'], "long");
+	
+		$text = "
+		<b>".$row['news_title']."</b><br />
+		".$row['category_name']."<br />
+		".$a_name.", ".$row['news_datestamp']."<br />
+		<br />
+		".$row['news_body']."<br />
+		";
 
-	if ($news_extended != ""){ $text .= "<br /><br />".$news_extended; }
-	if ($news_source != ""){ $text .= "<br /><br />".$news_source; }
-	if ($news_url != ""){ $text .= "<br />".$news_url; }
-	 
-	$text .= "<br /><br /><hr />".
-	LAN_303.SITENAME."
-	<br />
-	( http://".$_SERVER[HTTP_HOST].e_HTTP."comment.php?comment.news.".$news_id." )
-	</font>";
-	*/
+		if ($row['news_extended'] != ""){ $text .= "<br /><br />".$row['news_extended']; }
+		if ($row['news_source'] != ""){ $text .= "<br /><br />".$row['news_source']; }
+		if ($row['news_url'] != ""){ $text .= "<br />".$row['news_url']; }
+
+		$text		= $text;					//define text
+		$creator	= SITENAME;					//define creator
+		$author		= $a_name;					//define author
+		$title		= $row['news_title'];		//define title
+		$subject	= $category_name;			//define subject
+		$keywords	= "";						//define keywords
+
+		//define url and logo to use in the header of the pdf file
+		$url		= SITEURL."news.php?extend.".$row['news_id'];
+		define('PDFPAGEURL', $url);								//define page url to add in header
+
+		//always return an array with the following data:
+		$text = array($text, $creator, $author, $title, $subject, $keywords, $url);
+		$pdf->makePDF($text);
+	
+	}
+	
 
 }
 

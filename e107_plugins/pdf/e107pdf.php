@@ -138,17 +138,17 @@ class e107PDF extends UFPDF{
 		$this->SetY(15);
 		if($pdfpref['pdf_show_logo']){
 			$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);			
-			$this->PutImage(CONTENTPDFLOGO, '1');
+			$this->PutImage(PDFLOGO, '1');
 			$x = $this->GetX();
 			$y = $this->GetY();
 
-			$image_wh = getimagesize(CONTENTPDFLOGO);
+			$image_wh = getimagesize(PDFLOGO);
 			$newx = $x + ($image_wh[0]/$this->k);
 			$newy = ($image_wh[1]/$this->k);
 
 			$this->SetY(15);
 			$a=$this->GetStringWidth(SITENAME);
-			$b=$this->GetStringWidth(CONTENTPDFPAGEURL);
+			$b=$this->GetStringWidth(PDFPAGEURL);
 			if($a>$b){$c=$a;}else{$c=$b;}
 			if($x+$newx+$c > 210){
 				$this->SetX();
@@ -163,7 +163,7 @@ class e107PDF extends UFPDF{
 		}
 		if($pdfpref['pdf_show_page_url']){
 			$this->SetFont($pdfpref['pdf_font_family'],'I',$pdfpref['pdf_font_size_page_url']);
-			$this->Cell($cellwidth,5,CONTENTPDFPAGEURL,0,1,$align,'',CONTENTPDFPAGEURL);
+			$this->Cell($cellwidth,5,PDFPAGEURL,0,1,$align,'',PDFPAGEURL);
 		}
 		if($pdfpref['pdf_show_page_number']){
 			$this->SetFont($pdfpref['pdf_font_family'],'I',$pdfpref['pdf_font_size_page_number']);
@@ -230,8 +230,8 @@ class e107PDF extends UFPDF{
 
 	function WriteHTML($html,$scale){
 
-		$search		= array("\n", "<br />", "<hr />", '&raquo;', '&ordm;', '&middot', '&trade;', '&copy;', '&euro;');
-		$replace	= array(" ", "<br>", "<hr>", 'Â»', 'Âº', 'Â·', '™', '©', '€');
+		$search		= array("\n", "<br />", "<hr />", '&raquo;', '&ordm;', '&middot', '&trade;', '&copy;', '&euro;', '&#091;');
+		$replace	= array(" ", "<br>", "<hr>", 'Â»', 'Âº', 'Â·', '™', '©', '€', '[');
 		//replace carriage returns by spaces, and some html variants
 		$html=str_replace($search, $replace, $html);
 		$a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE); //explodes the string
@@ -288,19 +288,7 @@ class e107PDF extends UFPDF{
 	function OpenTag($tag,$attr,$scale){
 		$tag = strtoupper($tag);
 		//Opening tag
-		
-		//<em class='bbcode'>italic</em><br />
-		//<span style='text-decoration: underline'>underline</span>
-/*
-echo $tag."<br />";
-if(is_array($attr)){
-	print_r($attr);
-	echo "<br />";
-}
-if(isset($attr['STYLE'])){
-	echo " - ".$attr['STYLE']."<br />";
-}
-*/
+
 		switch($tag){
 			case 'STRONG':
 				$this->SetStyle('B',true);
@@ -322,7 +310,6 @@ if(isset($attr['STYLE'])){
 			case 'SPAN':
 				if(isset($attr['STYLE'])){
 					if($attr['STYLE'] == 'text-decoration:underline'){
-//echo "_______".$attr['STYLE']."________<br />";
 						$this->SetStyle('U',true);
 						break;
 					}
@@ -352,13 +339,6 @@ if(isset($attr['STYLE'])){
 				}
 				if($attr['CLASS'] == 'indent'){
 					$this->BLOCKQUOTE='BLOCKQUOTE';
-					/*
-					$this->SetFont('Courier','',11);
-					$this->issetfont=true;
-					$this->issetcolor=true;
-					$this->SetStyle('B',true);
-					$this->SetStyle('I',true);
-					*/
 				}
 				break;
 			case 'IMG':
@@ -393,7 +373,6 @@ if(isset($attr['STYLE'])){
                 $this->SetStyle('I',true);
                 break;
 			case 'LI':
-                //$this->Ln(2);
                 $this->Write(5,'     Â» ');
                 break;
 			case 'BR':
@@ -463,7 +442,6 @@ if(isset($attr['STYLE'])){
 		 //Closing tag
 		if($tag=='SPAN')
 			$tag='U';
-			//$this->SetStyle($tag,false);
 			if ($this->issetcolor==true) {
 				$this->SetTextColor(0);
 			}
