@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pdf/pdf.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2006-01-11 00:17:49 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -24,8 +24,6 @@ if ($qs[0] == "") {
 }
 $source = $qs[0];
 $parms = $qs[1];
-
-require_once(e_PLUGIN."pdf/fpdf.php");		//require the fpdf class
 
 if(strpos($source,'plugin:') !== FALSE)
 {
