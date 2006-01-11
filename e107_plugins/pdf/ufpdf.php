@@ -30,6 +30,7 @@ function UFPDF($orientation='P',$unit='mm',$format='A4')
 	FPDF::FPDF($orientation, $unit, $format);
 }
 
+/*
 function GetStringWidth($s)
 {
   //Get width of a string in the current font
@@ -37,11 +38,27 @@ function GetStringWidth($s)
   $codepoints=$this->utf8_to_codepoints($s);
   $cw=&$this->CurrentFont['cw'];
   $w=0;
+  print_r($codepoints);
+  print_r($cw);
   foreach($codepoints as $cp)
     $w+=$cw[$cp];
+  //0 - http://www.e107.org - Array - 3.5277777777778 - 0
+  echo $w." - ".$s." - ".$codepoints." - ".($this->FontSize)." - ".($w*$this->FontSize/1000)." - ".$cw."<br />";
   return $w*$this->FontSize/1000;
 }
-
+*/
+function GetStringWidth($s)
+{
+	//Get width of a string in the current font
+	$s=(string)$s;
+	$cw=&$this->CurrentFont['cw'];
+	$w=0;
+	$l=strlen($s);
+	for($i=0;$i<$l;$i++)
+		$w+=$cw[$s{$i}];
+	//echo $w." - ".$s." - ".$l." - ".($this->FontSize)." - ".($w*$this->FontSize/1000)." - ".$cw."<br />";
+	return $w*$this->FontSize/1000;
+}
 function AddFont($family,$style='',$file='')
 {
   //Add a TrueType or Type1 font
