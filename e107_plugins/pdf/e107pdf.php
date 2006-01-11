@@ -173,34 +173,8 @@ class e107PDF extends UFPDF{
 		$y = $this->GetY();
 		$this->Line($this->lMargin, $y, 210-$this->rMargin, $y);
 		$this->Ln(10);
+		$this->SetX();
 		$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
-		
-		/*
-		$a=$this->GetStringWidth(SITENAME);
-		$b=$this->GetStringWidth(CONTENTPDFPAGEURL);
-		if($a>$b){$c=$a;}else{$c=$b;}
-		$cellwidth = 210-10-$c;
-		//$cellwidth	= 0;
-		$align		= "R";
-		
-		$this->SetFont('Arial','B',14);
-		$this->Cell($cellwidth,8,SITENAME,0,2,$align);
-		$this->SetFont('Arial','I',8);
-		//$this->Cell($cellwidth,8,CONTENTPDFPAGEURL,0,2,$align, '', CONTENTPDFPAGEURL);
-		//$this->PutLink(CONTENTPDFPAGEURL,CONTENTPDFPAGEURL);
-		//$this->Ln(5);
-
-		$this->SetTextColor(0,0,255);
-		$this->Write(5,CONTENTPDFPAGEURL,CONTENTPDFPAGEURL);
-		$this->SetTextColor(0);
-		$this->Ln(5);
-
-		$this->Cell($cellwidth,8,'Page '.$this->PageNo().'/{nb}',0,2,$align);
-		$x = $this->GetX();
-		$y = $this->GetY();
-		$this->Line($this->lMargin, $y, 210-$this->rMargin, $y);
-		$this->Ln(10);
-		*/
 	}
 
 	function txtentities($html){
@@ -231,7 +205,7 @@ class e107PDF extends UFPDF{
 	function WriteHTML($html,$scale){
 
 		$search		= array("\n", "<br />", "<hr />", '&raquo;', '&ordm;', '&middot', '&trade;', '&copy;', '&euro;', '&#091;');
-		$replace	= array(" ", "<br>", "<hr>", '»', 'º', '·', '�', '�', '�', '[');
+		$replace	= array(" ", "<br>", "<hr>", '»', 'º', '·', '™', '©', '�', '[');
 		//replace carriage returns by spaces, and some html variants
 		$html=str_replace($search, $replace, $html);
 		$a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE); //explodes the string

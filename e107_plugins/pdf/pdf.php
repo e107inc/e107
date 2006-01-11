@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pdf/pdf.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2006-01-11 18:13:29 $
+|     $Revision: 1.6 $
+|     $Date: 2006-01-11 22:30:19 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -79,6 +79,23 @@ else
 		}
 		$row['news_datestamp'] = $con->convert_date($row['news_datestamp'], "long");
 	
+		$row['news_title'] = $tp -> toHTML($row['news_title'], TRUE, 'parse_sc');
+
+		//remove existing links from news title
+		$search = array();
+		$replace = array();
+		$search[0] = "/\<a href=\"(.*?)\">(.*?)<\/a>/si";
+		$replace[0] = '\\2';
+		$search[1] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
+		$replace[1] = '\\2';
+		$search[2] = "/\<a href='(.*?)'>(.*?)<\/a>/si";
+		$replace[2] = '\\2';
+		$search[3] = "/\<a href=&quot;(.*?)&quot;>(.*?)<\/a>/si";
+		$replace[3] = '\\2';
+		$search[4] = "/\<a href=&#39;(.*?)&#39;>(.*?)<\/a>/si";
+		$replace[4] = '\\2';
+		$row['news_title'] = preg_replace($search, $replace, $row['news_title']);
+
 		$text = "
 		<b>".$row['news_title']."</b><br />
 		".$row['category_name']."<br />
