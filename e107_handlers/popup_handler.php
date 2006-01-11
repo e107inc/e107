@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_handlers/popup_handler.php,v $
-|		$Revision: 1.3 $
-|		$Date: 2005-12-14 17:37:34 $
-|		$Author: sweetas $
+|		$Revision: 1.4 $
+|		$Date: 2006-01-11 09:26:39 $
+|		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -39,6 +39,7 @@ class popup{
 	// $pp -> popup($oSrc, $oSrcThumb, $oIconWidth, $oMaxWidth, $oTitle, $oText)
 
 	function popup($image, $thumb, $iconwidth='100', $maxwidth='', $title, $text){
+			global $tp;
 			//$image	:	full path to the large image you want to popup
 			//$thumb	:	full path to the small image to show on screen
 			//$maxwidth	:	the maximum size (width or height) an image may be popup'ed
@@ -72,9 +73,15 @@ class popup{
 						$height		= $imagearray[1];
 					}
 				}
-				$iconwidth = ($title == "help" ? "" : ($iconwidth ? "width:".$iconwidth."px;" : "width:100px;") );
+				$iconwidth = ($title == "help" ? "" : ($iconwidth ? "width:".intval($iconwidth)."px;" : "width:100px;") );
 
-				$popup = "<a href=\"javascript:openPerfectPopup('".$image."',".$width.",'".$title."','".$text."')\" style='cursor:pointer;' onmouseover=\"window.status='".POPUP_LAN_1."'; return true;\" onmouseout=\"window.status=''; return true;\" ><img src='".$thumb."' style='border:1px solid #000; ".$iconwidth."' alt='' /></a><br /><br />";
+				$width		= intval($width);
+				$search		= array("'", '$', '"', '&#036;','&#039;', '&#092;');
+				$replace	= array("\'", '\$', '&quot;', '\$', "\'", '\\');
+				$title		= str_replace($search, $replace, $title);
+				$text		= str_replace($search, $replace, $text);
+
+				$popup = "<a href='javascript:void(0);' onclick=\"javascript:openPerfectPopup('".$image."',".$width.",'".$title."','".$text."')\" style='cursor:pointer;' onmouseover=\"window.status='".POPUP_LAN_1."'; return true;\" onmouseout=\"window.status=''; return true;\" ><img src='".$thumb."' style='border:1px solid #000; ".$iconwidth."' alt='' /></a><br /><br />";
 
 			}else{
 				$popup = "";
