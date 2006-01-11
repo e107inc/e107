@@ -154,8 +154,11 @@ class e107PDF extends UFPDF{
 	}
 
 	function WriteHTML($html,$scale){
-		$html=str_replace("<br />",'<br>',$html);
-		$html=str_replace("\n",' ',$html); //replace carriage returns by spaces
+
+		$search		= array("\n", "<br />", "<hr />", '&raquo;', '&ordm;', '&middot', '&trade;', '&copy;', '&euro;');
+		$replace	= array(" ", "<br>", "<hr>", 'Â»', 'Âº', 'Â·', '™', '©', '€');
+		//replace carriage returns by spaces, and some html variants
+		$html=str_replace($search, $replace, $html);
 		$a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE); //explodes the string
 
 		foreach($a as $i=>$e)
@@ -163,28 +166,31 @@ class e107PDF extends UFPDF{
 			if($i%2==0)
 			{
 				//Text
-				if($this->HREF)
+				if($this->HREF){
+					if(strpos($this->HREF, "http://")!==false){
+						$this->HREF = substr($this->HREF, strpos($this->HREF, "http://")+strlen('http://') );
+					}
 					$this->PutLink($this->HREF,$e);
-				elseif($this->IMG)
+				}elseif($this->IMG){
 					$this->PutImage($this->SRC,$scale);
-				elseif($this->CENTER)
+				}elseif($this->CENTER){
 					$this->Cell(0,5,$e,0,1,'C');
-				elseif($this->ALIGN == 'center')
+				}elseif($this->ALIGN == 'center'){
 					$this->Cell(0,5,$e,0,1,'C');
-				elseif($this->ALIGN == 'right')
+				}elseif($this->ALIGN == 'right'){
 					$this->Cell(0,5,$e,0,1,'R');
-				elseif($this->ALIGN == 'left')
+				}elseif($this->ALIGN == 'left'){
 					$this->Cell(0,5,$e,0,1,'L');
-				else
+				}else{
 					$this->Write(5,stripslashes($this->txtentities($e)));
+				}
 			}
 			else
 			{
 				//Tag
-				if($e{0}=='/')
+				if($e{0}=='/'){
 					$this->CloseTag(strtoupper(substr($e,1)));
-				else
-				{
+				}else{
 					//Extract attributes
 					$a2=explode(' ',$e);
 					$tag=strtoupper(array_shift($a2));
@@ -258,10 +264,37 @@ class e107PDF extends UFPDF{
 				$this->SRC=$attr['SRC'];
 				$this->WIDTH=$attr['WIDTH'];
 				$this->HEIGHT=$attr['HEIGHT'];
-				$this->PutImage($attr[SRC],$scale);
+				
+				//correct url
+				$url = str_replace("../", "", $attr[SRC]);
+				$search = array(e_IMAGE, e_THEME, e_PLUGIN, e_FILE, e_HANDLER);
+				//e_BASE and e_ADMIN are not taken into account !
+				foreach($search as $p){
+					$p = str_replace("../", "", $p);
+					$l = strpos($url, $p);
+					if ($l !== false) {
+						$url = SITEURL.$url;
+					}
+				}
+				if(is_readable($url)){
+					$this->PutImage($attr[SRC],$scale);
+				}
 				break;
 			case 'TR':
+			case 'CODE':
 			case 'BLOCKQUOTE':
+			case 'PRE':
+                $this->SetFont('Courier','',11);
+                $this->SetFontSize(11);
+				$this->issetfont=true;
+				$this->issetcolor=true;
+                $this->SetStyle('B',false);
+                $this->SetStyle('I',false);
+                break;
+			case 'LI':
+                //$this->Ln(2);
+                $this->Write(5,'     Â» ');
+                break;
 			case 'BR':
 				$this->Ln(5);
 				break;
@@ -287,6 +320,35 @@ class e107PDF extends UFPDF{
 					$this->issetfont=true;
 				}
 				break;
+			case 'H1':
+                $this->Ln(5);
+                $this->SetTextColor(150,0,0);
+				$this->issetcolor=true;
+                $this->SetFontSize(22);
+				$this->issetfont=true;
+                break;
+            case 'H2':
+                $this->Ln(5);
+                $this->SetFontSize(18);
+				$this->issetfont=true;
+                $this->SetStyle('U',true);
+                break;
+            case 'H3':
+                $this->Ln(5);
+                $this->SetFontSize(16);
+				$this->issetfont=true;
+                $this->SetStyle('U',true);
+                break;
+            case 'H4':
+                $this->Ln(5);
+                $this->SetTextColor(102,0,0);
+				$this->issetcolor=true;
+                $this->SetFontSize(14);
+				$this->issetfont=true;
+                if ($this->bi)
+                    $this->SetStyle('B',true);
+                break;
+            
 		}
 	}
 
@@ -315,22 +377,52 @@ class e107PDF extends UFPDF{
 		if($tag=='A')
 			$this->HREF='';
 		if($tag=='P')
-		$this->ALIGN='';
+			$this->ALIGN='';
 		if($tag=='IMG'){
 			$this->IMG='';
 			$this->SRC='';
 			$this->WIDTH='';
 			$this->HEIGHT='';
 		}
+		if($tag=='TR' || $tag=='BLOCKQUOTE' || $tag=='CODE' || $tag='PRE'){
+			$this->SetStyle('B',false);
+			$this->SetStyle('I',false);
+			if ($this->issetcolor==true) {
+				$this->SetTextColor(0);
+				$this->issetcolor=false;
+			}
+			if ($this->issetfont) {
+				$this->SetFont('arial');
+				$this->issetfont=false;
+			}
+        }
 		if($tag=='FONT'){
 			if ($this->issetcolor==true) {
 				$this->SetTextColor(0);
+				$this->issetcolor=false;
 			}
 			if ($this->issetfont) {
 				$this->SetFont('arial');
 				$this->issetfont=false;
 			}
 		}
+		if ($tag='H1' || $tag='H2' || $tag='H3' || $tag='H4'){
+			$this->H1='';
+			$this->H2='';
+			$this->H3='';
+			$this->H4='';
+			$this->SetStyle('B',false);
+			$this->SetStyle('U',false);
+            $this->Ln(6);
+            if($this->issetfont=true){
+				$this->SetFont('arial');
+				$this->issetfont=false;
+			}
+			if($this->issetcolor=true){
+				$this->SetTextColor(0);
+				$this->issetcolor=false;
+			}
+        }
 	}
 
 	function SetStyle($tag,$enable){
@@ -373,7 +465,6 @@ class e107PDF extends UFPDF{
 			$yscale=1;
 			//get image info
 			$oposy=$this->GetY();
-			//$url = str_replace(XOOPS_URL, XOOPS_ROOT_PATH, $url);
 			$iminfo=@getimagesize($url);
 			$iw=$scale * $this->px2mm($iminfo[0]);
 			$ih=$scale * $this->px2mm($iminfo[1]);
