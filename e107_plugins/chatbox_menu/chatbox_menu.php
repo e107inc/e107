@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2006-01-09 19:03:06 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.59 $
+|     $Date: 2006-01-11 04:42:31 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -123,7 +123,7 @@ else
 
 	if($pref['cb_layer'] == 2)
 	{
-		$texta =  "\n<form id='chatbox' action='javascript:;' onsubmit='return(0)'>
+		$texta =  "\n<form id='chatbox' action='".e_SELF."?".e_QUERY."'  method='post' onsubmit='return(false);'>
 		<input type='hidden' id='chatbox_ajax' value='1' />
 		";
 	}
@@ -140,7 +140,7 @@ else
 
 	if($pref['cb_layer'] == 2)
 	{
-		
+
 		$oc = "onclick=\"javascript:sendInfo('".$pref['siteurl'].$PLUGINS_DIRECTORY."chatbox_menu/chatbox_menu.php', 'chatbox_posts', this.form);\"";
 	}
 	else
@@ -177,7 +177,7 @@ if(!$text = $e107cache->retrieve("chatbox"))
 		$pref['cb_mod'] = e_UC_ADMIN;
 	}
 	define("CB_MOD", check_class($pref['cb_mod']));
-	
+
 	$qry = "
 	SELECT c.*, u.user_name FROM #chatbox AS c
 	LEFT JOIN #user AS u ON FLOOR(c.cb_nick) = u.user_id
@@ -203,7 +203,7 @@ if(!$text = $e107cache->retrieve("chatbox"))
 			$datestamp = $obj2->convert_date($cb['cb_datestamp'], "short");
 			if(!$pref['cb_wordwrap']) { $pref['cb_wordwrap'] = 30; }
 			$emotes_active = $pref['cb_emote'] ? 'emotes_on' : 'emotes_off';
-			
+
 			$cb_message = $tp -> toHTML($cb['cb_message'], TRUE, $emotes_active, $cb['cb_uid'], $pref['menu_wordwrap']);
 
 			$replace[0] = "["; $replace[1] = "]";
@@ -263,10 +263,10 @@ else
 		$text = "<div id='chatbox_posts'>".$text."</div>";
 	}
 	$ns -> tablerender($caption, $text, 'chatbox');
-}	
-		
+}
+
 //$text = ($pref['cb_layer'] ? $texta."<div style='border : 0; padding : 4px; width : auto; height : ".$pref['cb_layer_height']."px; overflow : auto; '>".$text."</div>" : $texta.$text);
-//if(ADMIN && getperms("C")){$text .= "<br /><div style='text-align: center'>[ <a href='".e_PLUGIN."chatbox_menu/admin_chatbox.php'>".CHATBOX_L13."</a> ]</div>";}  
+//if(ADMIN && getperms("C")){$text .= "<br /><div style='text-align: center'>[ <a href='".e_PLUGIN."chatbox_menu/admin_chatbox.php'>".CHATBOX_L13."</a> ]</div>";}
 //$ns -> tablerender($caption, $text, 'chatbox');
 
 ?>
