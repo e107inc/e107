@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-01-11 03:50:35 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.16 $
+|     $Date: 2006-01-11 18:13:29 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -153,6 +153,12 @@ $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
 require_once(e_HANDLER.'emailprint_class.php');
 return emailprint::render_emailprint('news', $news_item['news_id'], 2);
+SC_END
+
+SC_BEGIN PDFICON
+global $tp;
+$news_item = getcachedvars('current_news_item');
+return $tp -> parseTemplate("{PDF=".LAN_NEWS_24."^news.".$news_item['news_id']."}");
 SC_END
 
 SC_BEGIN NEWSID

@@ -116,14 +116,7 @@ function print_item_pdf($id){
 	//define url and logo to use in the header of the pdf file
 	//$url		= SITEURL.$PLUGINS_DIRECTORY."content/content.php?content.".$row['content_id'];
 	$url		= SITEURLBASE.e_PLUGIN_ABS."content/content.php?content.".$row['content_id'];
-	define('CONTENTPDFPAGEURL', $url);								//define page url to add in header
-
-	if(file_exists(THEME."images/logopdf.png")){
-		$logo = THEME."images/logopdf.png";
-	}else{
-		$logo = e_IMAGE."logo.png";
-	}
-	define('CONTENTPDFLOGO', $logo);								//define logo to add in header
+	define('PDFPAGEURL', $url);								//define page url to add in header
 
 	//always return an array with the following data:
 	return array($text, $creator, $author, $title, $subject, $keywords, $url);
