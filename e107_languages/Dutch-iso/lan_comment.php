@@ -54,7 +54,7 @@ define("COMLAN_2", "om aan te melden");
 define("COMLAN_3", "Fout!");
 define("COMLAN_4", "Onderwerp reactie");
 define("COMLAN_5", "Re:");
-define("COMLAN_6", "Reageer hierop");
+define("COMLAN_6", "Reageer hierop ");
 define("COMLAN_7", "Beoordeling");
 define("COMLAN_8", "Reacties gesloten");
 

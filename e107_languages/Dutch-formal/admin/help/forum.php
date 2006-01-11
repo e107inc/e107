@@ -1,4 +1,7 @@
 <?php
+
+if (!defined('e107_INIT')) { exit; }
+
 $caption = "Forum Hulp";
 $text = "<b>Algemeen</b><br />
 Gebruik dit scherm om forums te maken of bewerken<br />

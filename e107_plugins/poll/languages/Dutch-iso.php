@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Dutch-iso.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-18 15:59:24 $
+|     $Revision: 1.3 $
+|     $Date: 2006-01-11 05:58:59 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -53,7 +53,7 @@ define("POLLAN_26", "stemmen");
 define("POLLAN_27", "reacties");
 define("POLLAN_28", "Voorgaande peilingen");
 define("POLLAN_29", "geplaatst door");
-define("POLLAN_30", "Aanmelden");
+define("POLLAN_30", "Stem uitbrengen");
 define("POLLAN_31", "stemmen");
 define("POLLAN_32", "Klik hier voor het resultaat");
 define("POLLAN_33", "Nog geen voorgaande peilingen.");

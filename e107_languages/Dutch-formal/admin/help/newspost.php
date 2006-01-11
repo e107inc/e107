@@ -1,4 +1,7 @@
 <?php
+
+if (!defined('e107_INIT')) { exit; }
+
 $caption = "Nieuwsberichten hulp";
 $text = "<b>Algemeen</b><br />
 De tekst wordt getoond op de hoofdpagina, uitgebreide tekst wordt getoond door op de 'Lees verder' link te klikken. Herkomst en URL verwijst naar de bron waar het bericht vandaan komt.

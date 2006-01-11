@@ -3,8 +3,8 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
-|     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Dutch/Dutch_config.php,v $
-|     $Revision: 1.2 $
+|     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Dutch-formal/Dutch-formal_config.php,v $
+|     $Revision: 1.1 $
 |     $Date: 2006-01-11 05:58:59 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
@@ -51,5 +51,4 @@ define("CHBLAN_35", "Herberekenen");
 define("CHBLAN_36", "Chatbox weergave opties");
 define("CHBLAN_37", "Normale chatbox");
 define("CHBLAN_38", "Gebruik javascript code om de berichten dynamisch bij te werken (AJAX)");
-
 ?>

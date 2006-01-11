@@ -1,4 +1,7 @@
 <?php
+
+if (!defined('e107_INIT')) { exit; }
+
 $text = "In dit scherm kunt u artikelen van één of meer pagina's opvoeren.<br />
  Voor een artikele van meerdere pagina's kunt u pagina's scheiden door het tussenplaatsen van [newpage], bijv. <br /><code>Test1 [newline] Test2</code><br /> zou resulteren in een artikel van twee pagina's met 'Test1' op pagina 1 en 'Test2' op pagina 2.
 <br /><br />

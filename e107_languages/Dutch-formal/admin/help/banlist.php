@@ -1,4 +1,7 @@
 <?php
+
+if (!defined('e107_INIT')) { exit; }
+
 $caption = "Blokkeer toegang tot uw site";
 $text = "U kunt in dit scherm gebruikers de toegang tot uw site ontzeggen.<br />
 Dat kan ofwel met volledige IP-adres of met jokertekens om een hele serie IP-adressen te blokkeren. U kunt ook een e-mailadres opgeven om te verhinderen dat iemand zich aanmeldt als lid.<br /><br />

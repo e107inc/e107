@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Dutch-iso/Dutch-iso-config.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-10-15 06:02:23 $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-11 05:58:59 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -42,5 +42,15 @@ define("CHBLAN_28", "Chatbox geschoond.");
 define("CHBLAN_29", "Toon chatbox binnen een scrolling layer");
 define("CHBLAN_30", "Layer hoogte");
 define("CHBLAN_31", "Toon emoticons");
+
+define("CHBLAN_32", "Moderator ledenklasse");
+
+define("CHBLAN_33", "Totalen herberekend");
+define("CHBLAN_34", "Herbereken aantal berichten per gebruiker");
+define("CHBLAN_35", "Herberekenen");
+
+define("CHBLAN_36", "Chatbox weergave opties");
+define("CHBLAN_37", "Normale chatbox");
+define("CHBLAN_38", "Gebruik javascript code om de berichten dynamisch bij te werken (AJAX)");
 
 ?>
