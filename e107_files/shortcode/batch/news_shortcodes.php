@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/news_shortcodes.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2005-12-27 19:19:39 $
-|     $Author: sweetas $
+|     $Revision: 1.15 $
+|     $Date: 2006-01-11 03:50:35 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -69,7 +69,18 @@ SC_END
 SC_BEGIN NEWSAUTHOR
 $news_item = getcachedvars('current_news_item');
 $param = getcachedvars('current_news_param');
-return ($news_item['user_id'] ? "<a href='".e_BASE."user.php?id.".$news_item['user_id']."'>".$news_item['user_name']."</a>" : "<a href='http://e107.org'>e107</a>");
+if($news_item['user_id'])
+{
+	if($parm == 'nolink')
+	{
+		return $news_item['user_name'];
+	}
+	else
+	{
+		return "<a href='".e_BASE."user.php?id.".$news_item['user_id']."'>".$news_item['user_name']."{$parm}</a>";
+	}
+}
+return "<a href='http://e107.org'>e107</a>";
 SC_END
 	
 SC_BEGIN NEWSDATE
