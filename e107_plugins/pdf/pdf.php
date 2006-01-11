@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pdf/pdf.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2006-01-11 22:30:19 $
+|     $Revision: 1.7 $
+|     $Date: 2006-01-11 23:16:29 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -116,7 +116,7 @@ else
 		$keywords	= "";						//define keywords
 
 		//define url and logo to use in the header of the pdf file
-		$url		= SITEURL."news.php?extend.".$row['news_id'];
+		$url		= SITEURL."news.php?item.".$row['news_id'];
 		define('PDFPAGEURL', $url);								//define page url to add in header
 
 		//always return an array with the following data:
