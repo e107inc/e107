@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.250 $
-|     $Date: 2006-01-06 13:23:48 $
+|     $Revision: 1.251 $
+|     $Date: 2006-01-12 16:38:52 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -65,7 +65,7 @@ ini_set('session.use_trans_sid',    0);
 @include_once(realpath(dirname(__FILE__).'/e107_config.php'));
 if(!isset($ADMIN_DIRECTORY)){
 	// e107_config.php is either empty, not valid or doesn't exist so redirect to installer..
-	header("Location: install_.php"); // Cleanup path when released
+	header("Location: install.php");
 }
 
 // clever stuff that figures out where the paths are on the fly.. no more need fo hard-coded e_HTTP :)
