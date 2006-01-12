@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/log_update.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-01-05 13:10:47 $
+|     $Revision: 1.4 $
+|     $Date: 2006-01-12 12:42:36 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -34,6 +34,10 @@ for ($i = 1; $i <= 7; $i++) {
 		$sql -> db_Insert("stat_info", "'Stats Update Stage ".$i." Complete', '".$i."', '99'");
 		$sql -> db_Delete("generic", "gen_type='stat_update' && gen_intdata=".$i);
 	}
+}
+
+if (!$sql -> db_Select("logstats", "*", "log_id='statQuery'")) {
+	$sql -> db_Insert("logstats", "0, 'statQuery', ''");
 }
 
 class updateStats {
