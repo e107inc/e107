@@ -888,7 +888,7 @@ SC_END
 
 //content images (from uploaded area) used in the print page
 SC_BEGIN CONTENT_PRINT_IMAGES
-global $CONTENT_PRINT_IMAGES, $row, $content_image_path, $aa, $tp, $authordetails, $content_pref, $mainparent;
+global $CONTENT_PRINT_IMAGES, $row, $content_image_path, $tp, $content_pref, $mainparent;
 if($content_pref["content_content_images_{$mainparent}"]){
 $imagestmp = explode("[img]", $row['content_image']);
 foreach($imagestmp as $key => $value) { 
@@ -903,6 +903,9 @@ for($i=0;$i<count($images);$i++){
 	$oSrcThumb = $content_image_path."thumb_".$images[$i];
 
 	$iconwidth = (isset($content_pref["content_upload_image_size_thumb_{$mainparent}"]) && $content_pref["content_upload_image_size_thumb_{$mainparent}"] ? $content_pref["content_upload_image_size_thumb_{$mainparent}"] : "100");
+	if($iconwidth){
+		$iconwidth = "width:".$iconwidth."px;";
+	}
 	
 	//use $image if $thumb doesn't exist
 	if(file_exists($oSrc)){
@@ -915,6 +918,45 @@ for($i=0;$i<count($images);$i++){
 	}
 }
 return $CONTENT_PRINT_IMAGES;
+}
+SC_END
+
+
+// PDF PAGE ------------------------------------------------
+
+//content images (from uploaded area) used in the pdf creation
+SC_BEGIN CONTENT_PDF_IMAGES
+global $CONTENT_PDF_IMAGES, $row, $content_image_path, $tp, $content_pref, $mainparent;
+if($content_pref["content_content_images_{$mainparent}"]){
+$imagestmp = explode("[img]", $row['content_image']);
+foreach($imagestmp as $key => $value) { 
+	if($value == "") { 
+		unset($imagestmp[$key]); 
+	} 
+} 
+$images = array_values($imagestmp);
+$CONTENT_PDF_IMAGES = "";
+for($i=0;$i<count($images);$i++){		
+	$oSrc = $content_image_path.$images[$i];
+	$oSrcThumb = $content_image_path."thumb_".$images[$i];
+
+	$iconwidth = (isset($content_pref["content_upload_image_size_thumb_{$mainparent}"]) && $content_pref["content_upload_image_size_thumb_{$mainparent}"] ? $content_pref["content_upload_image_size_thumb_{$mainparent}"] : "100");
+	if($iconwidth){
+		$iconwidth = "width:".$iconwidth."px;";
+	}
+	
+	//use $image if $thumb doesn't exist
+	if(file_exists($oSrc)){
+		if(!file_exists($oSrcThumb)){
+			$thumb = $oSrc;
+		}else{
+			$thumb = $oSrcThumb;
+		}
+		$thumb = $oSrc;
+		$CONTENT_PDF_IMAGES .= "<img src='".$thumb."' style='border:1px solid #000; ".$iconwidth."' alt='' />";
+	}
+}
+return $CONTENT_PDF_IMAGES;
 }
 SC_END
 

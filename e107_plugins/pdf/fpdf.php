@@ -634,7 +634,7 @@ function Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0,$link='')
 			$this->_out('0 Tw');
 		}
 		$this->AddPage($this->CurOrientation);
-		$this->x=$x;
+		$this->x=$x+$this->lMargin;
 		if($ws>0)
 		{
 			$this->ws=$ws;
@@ -908,38 +908,41 @@ function Image($file,$x,$y,$w=0,$h=0,$type='',$link='')
 		$type=strtolower($type);
 		$mqr=get_magic_quotes_runtime();
 		set_magic_quotes_runtime(0);
-		if($type=='jpg' || $type=='jpeg')
+		if($type=='jpg' || $type=='jpeg'){
 			$info=$this->_parsejpg($file);
-		elseif($type=='png')
+		}elseif($type=='png'){
 			$info=$this->_parsepng($file);
-		else
-		{
+		}else{
 			//Allow for additional formats
 			$mtd='_parse'.$type;
 			if(!method_exists($this,$mtd))
 				$this->Error('Unsupported image type: '.$type);
 			$info=$this->$mtd($file);
 		}
-		set_magic_quotes_runtime($mqr);
-		$info['i']=count($this->images)+1;
-		$this->images[$file]=$info;
+		if($info){
+			set_magic_quotes_runtime($mqr);
+			$info['i']=count($this->images)+1;
+			$this->images[$file]=$info;
+		}
 	}
 	else
 		$info=$this->images[$file];
-	//Automatic width and height calculation if needed
-	if($w==0 && $h==0)
-	{
-		//Put image at 72 dpi
-		$w=$info['w']/$this->k;
-		$h=$info['h']/$this->k;
-	}
-	if($w==0)
-		$w=$h*$info['w']/$info['h'];
-	if($h==0)
-		$h=$w*$info['h']/$info['w'];
-	$this->_out(sprintf('q %.2f 0 0 %.2f %.2f %.2f cm /I%d Do Q',$w*$this->k,$h*$this->k,$x*$this->k,($this->h-($y+$h))*$this->k,$info['i']));
-	if($link)
-		$this->Link($x,$y,$w,$h,$link);
+		if($info){
+			//Automatic width and height calculation if needed
+			if($w==0 && $h==0)
+			{
+				//Put image at 72 dpi
+				$w=$info['w']/$this->k;
+				$h=$info['h']/$this->k;
+			}
+			if($w==0)
+				$w=$h*$info['w']/$info['h'];
+			if($h==0)
+				$h=$w*$info['h']/$info['w'];
+			$this->_out(sprintf('q %.2f 0 0 %.2f %.2f %.2f cm /I%d Do Q',$w*$this->k,$h*$this->k,$x*$this->k,($this->h-($y+$h))*$this->k,$info['i']));
+			if($link)
+				$this->Link($x,$y,$w,$h,$link);
+		}
 }
 
 function Ln($h='')
