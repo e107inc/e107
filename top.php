@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/top.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-12-24 22:53:38 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2006-01-12 21:12:49 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -85,7 +85,7 @@ if ($action == "active") {
 				}
 
 				$text .= "<tr>
-					<td style='width:5%; text-align:center' class='forumheader3'><img src='".e_IMAGE_ABS."forum/new_small.png' alt='' /></td>
+					<td style='width:5%; text-align:center' class='forumheader3'><img src='".e_PLUGIN_ABS."forum/images/".IMODE."/new_small.png' alt='' /></td>
 					<td style='width:45%' class='forumheader3'><b><a href='{$LINKTOTHREAD}'>{$thread_name}</a></b> <span class='smalltext'>(<a href='{$LINKTOFORUM}'>{$forum_name}</a>)</span></td>
 					<td style='width:15%; text-align:center' class='forumheader3'>{$POSTER}</td>
 					<td style='width:5%; text-align:center' class='forumheader3'>{$thread_views}</td>
