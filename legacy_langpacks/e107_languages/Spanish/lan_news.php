@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Spanish/lan_news.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.3 $
+|     $Date: 2006-01-12 01:23:56 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -46,4 +46,5 @@ define("LAN_NEWS_20", "Noticias actualizadas en la base de datos para este idiom
 define("LAN_NEWS_21", "Noticias actualizadas en la base de datos.");
 define("LAN_NEWS_22", "Ir a la página: ");
 define("LAN_NEWS_23", "Categoría de noticias");
+define("LAN_NEWS_24", "Crear PDF para esta noticia");
 ?>
