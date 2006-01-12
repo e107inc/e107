@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.88 $
-|     $Date: 2006-01-09 19:29:18 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.89 $
+|     $Date: 2006-01-12 18:35:28 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -291,7 +291,7 @@ if (!$sql->db_Select_gen($query)) {
 
 
 $p_title = ($action == "item") ? $newsAr[1]['news_title'] : $newsAr[1]['category_name'];
-if($action != ""){
+if($action != "" && !is_numeric($action)){
 	define("e_PAGETITLE", $p_title);
 }
 
