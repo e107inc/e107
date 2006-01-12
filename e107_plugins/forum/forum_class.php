@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_class.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2006-01-11 16:25:48 $
+|     $Revision: 1.46 $
+|     $Date: 2006-01-12 12:20:08 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -153,12 +153,12 @@ class e107forum
 		global $sql;
 		if($uclass == e_UC_ADMIN)
 		{
-			$sql->db_Select('user', 'user_name',"user_admin = 1");
+			$sql->db_Select('user', 'user_id, user_name',"user_admin = 1");
 		}
 		else
 		{
 			$regex = "(^|,)(".str_replace(",", "|", $uclass).")(,|$)";
-			$sql->db_Select("user", "user_name", "user_class REGEXP '{$regex}'");
+			$sql->db_Select("user", "user_id, user_name", "user_class REGEXP '{$regex}'");
 		}
 		while($row = $sql->db_Fetch())
 		{
