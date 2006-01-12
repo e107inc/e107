@@ -1648,6 +1648,7 @@ function _out($s)
 //Handle special IE contype request
 if(isset($_SERVER['HTTP_USER_AGENT']) && $_SERVER['HTTP_USER_AGENT']=='contype')
 {
+	Header('Pragma: public');
 	header('Content-Type: application/pdf');
 	exit;
 }
