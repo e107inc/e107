@@ -1546,7 +1546,8 @@ function _parsepng($file)
 	elseif($ct==3)
 		$colspace='Indexed';
 	else
-		$this->Error('Alpha channel not supported: '.$file);
+		$colspace = '';
+		//$this->Error('Alpha channel not supported: '.$file);
 	if(ord(fread($f,1))!=0)
 		$this->Error('Unknown compression method: '.$file);
 	if(ord(fread($f,1))!=0)
@@ -1600,7 +1601,11 @@ function _parsepng($file)
 	if($colspace=='Indexed' && empty($pal))
 		$this->Error('Missing palette in '.$file);
 	fclose($f);
-	return array('w'=>$w,'h'=>$h,'cs'=>$colspace,'bpc'=>$bpc,'f'=>'FlateDecode','parms'=>$parms,'pal'=>$pal,'trns'=>$trns,'data'=>$data);
+	if($colspace!=''){
+		return array('w'=>$w,'h'=>$h,'cs'=>$colspace,'bpc'=>$bpc,'f'=>'FlateDecode','parms'=>$parms,'pal'=>$pal,'trns'=>$trns,'data'=>$data);
+	}else{
+		return;
+	}
 }
 
 function _freadint($f)
