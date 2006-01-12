@@ -204,8 +204,8 @@ class e107PDF extends UFPDF{
 
 	function WriteHTML($html,$scale){
 
-		$search		= array("\n", "<br />", "<hr />", '&raquo;', '&ordm;', '&middot', '&trade;', '&copy;', '&euro;', '&#091;');
-		$replace	= array(" ", "<br>", "<hr>", '»', 'º', '·', '™', '©', '�', '[');
+		$search		= array("\n", "<br />", "<hr />", '&raquo;', '&ordm;', '&middot', '&trade;', '&copy;', '&euro;', '&#091;', '&amp;#091;');
+		$replace	= array(" ", "<br>", "<hr>", '»', 'º', '·', '™', '©', '', '[', '[');
 		//replace carriage returns by spaces, and some html variants
 		$html=str_replace($search, $replace, $html);
 		$a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE); //explodes the string
@@ -217,8 +217,40 @@ class e107PDF extends UFPDF{
 				//Text
 				if($this->HREF){
 					$this->PutLink($this->HREF,$e);
+					$this->HREF='';
 				}elseif($this->IMG){
-					$this->PutImage($this->SRC,$scale);
+					//correct url
+					if(is_readable($this->SRC)){
+						$file = $this->SRC;
+						$pos=strrpos($file,'.');
+						$type=substr($file,$pos+1);
+						$type=strtolower($type);
+						//for now only jpg, jpeg and png are supported
+						if($type=='jpg' || $type=='jpeg' || $type=='png'){
+
+							$url = str_replace("../", "", $this->SRC);
+							$imgsearch = array(e_IMAGE, e_THEME, e_PLUGIN, e_FILE, e_HANDLER);
+							//e_BASE and e_ADMIN are not taken into account !
+							foreach($imgsearch as $p){
+								$p = str_replace("../", "", $p);
+								$l = strpos($url, $p);
+								if ($l !== false) {
+									$url = SITEURL.$url;
+								}
+							}
+							$this->SetX();
+							$this->Ln(2);
+							$this->PutImage($url,$scale);
+							$this->Ln(2);
+							$this->x=$this->lMargin;
+							//$this->SetX();
+						}
+					}
+					$this->IMG='';
+					$this->SRC='';
+					$this->WIDTH='';
+					$this->HEIGHT='';
+
 				}elseif($this->CENTER){
 					$this->Cell(0,5,$e,0,1,'C');
 				}elseif($this->ALIGN == 'center'){
@@ -234,8 +266,11 @@ class e107PDF extends UFPDF{
 					$this->Cell(0,5,$e,1,1,'L');
 					$this->SetStyle('B',false);
 					$this->SetStyle('I',false);
+					if ($this->issetcolor==true) {
+						$this->SetTextColor(0);
+						$this->issetcolor=false;
+					}
 					$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
-					
 				}else{
 					$this->Write(5,stripslashes($this->txtentities($e)));
 				}
@@ -250,9 +285,11 @@ class e107PDF extends UFPDF{
 					$a2=explode(' ',$e);
 					$tag=strtoupper(array_shift($a2));
 					$attr=array();
-					foreach($a2 as $v)
-						if(ereg('^([^=]*)=["\']?([^"\']*)["\']?$',$v,$a3))
+					foreach($a2 as $v){
+						if(ereg('^([^=]*)=["\']?([^"\']*)["\']?$',$v,$a3)){
 							$attr[strtoupper($a3[1])]=$a3[2];
+						}
+					}
 					$this->OpenTag($tag,$attr,$scale);
 				}
 			}
@@ -285,21 +322,19 @@ class e107PDF extends UFPDF{
 				if(isset($attr['STYLE'])){
 					if($attr['STYLE'] == 'text-decoration:underline'){
 						$this->SetStyle('U',true);
-						break;
 					}
 					if(strstr($attr['STYLE'], 'color:')){
 						$attr['COLOR'] = substr($attr['STYLE'],6);
 						$coul=$this->hex2dec($attr['COLOR']);
 						$this->SetTextColor($coul['R'],$coul['G'],$coul['B']);
 						$this->issetcolor=true;
-						break;
 					}
 					if(strstr($attr['STYLE'], 'font-size:')){
 						$attr['FONTSIZE'] = intval(substr($attr['STYLE'],10));
 						$this->SetFont('','',$attr['FONTSIZE']);
 						$this->issetfont=true;
-						break;
 					}
+					break;
 				}
 			case 'DIV':
 				if($attr['STYLE'] == 'text-align:center'){
@@ -316,25 +351,10 @@ class e107PDF extends UFPDF{
 				}
 				break;
 			case 'IMG':
-				$this->IMG=$attr['IMG'];
+				$this->IMG=true;
 				$this->SRC=$attr['SRC'];
 				$this->WIDTH=$attr['WIDTH'];
 				$this->HEIGHT=$attr['HEIGHT'];
-				
-				//correct url
-				$url = str_replace("../", "", $attr[SRC]);
-				$search = array(e_IMAGE, e_THEME, e_PLUGIN, e_FILE, e_HANDLER);
-				//e_BASE and e_ADMIN are not taken into account !
-				foreach($search as $p){
-					$p = str_replace("../", "", $p);
-					$l = strpos($url, $p);
-					if ($l !== false) {
-						$url = SITEURL.$url;
-					}
-				}
-				if(is_readable($url)){
-					$this->PutImage($attr[SRC],$scale);
-				}
 				break;
 			case 'TR':
 			case 'CODE':
@@ -342,6 +362,7 @@ class e107PDF extends UFPDF{
 			case 'PRE':
                 $this->Ln(5);
 				$this->SetFont('Courier','',11);
+				$this->issetcolor=true;
 				$this->issetfont=true;
                 $this->SetStyle('B',true);
                 $this->SetStyle('I',true);
@@ -364,43 +385,35 @@ class e107PDF extends UFPDF{
 				$this->Ln(2);
 				break;
 			case 'FONT':
-				if (isset($attr['COLOR']) and $attr['COLOR']!='') {
+				if (isset($attr['COLOR']) && $attr['COLOR']!='') {
 					$coul=$this->hex2dec($attr['COLOR']);
 					$this->SetTextColor($coul['R'],$coul['G'],$coul['B']);
 					$this->issetcolor=true;
 				}
-				if (isset($attr['FACE']) and in_array(strtolower($attr['FACE']), $this->fontlist)) {
+				if (isset($attr['FACE']) && in_array(strtolower($attr['FACE']), $this->fontlist)) {
 					$this->SetFont(strtolower($attr['FACE']));
 					$this->issetfont=true;
 				}
 				break;
 			case 'H1':
                 $this->Ln(5);
-                $this->SetTextColor(150,0,0);
-				$this->issetcolor=true;
                 $this->SetFontSize(22);
 				$this->issetfont=true;
                 break;
             case 'H2':
                 $this->Ln(5);
-				$this->SetTextColor(0);
-				$this->issetcolor=true;
                 $this->SetFontSize(18);
 				$this->issetfont=true;
                 $this->SetStyle('U',true);
                 break;
             case 'H3':
                 $this->Ln(5);
-				$this->SetTextColor(0);
-				$this->issetcolor=true;
                 $this->SetFontSize(16);
 				$this->issetfont=true;
                 $this->SetStyle('U',true);
                 break;
             case 'H4':
                 $this->Ln(5);
-                $this->SetTextColor(102,0,0);
-				$this->issetcolor=true;
                 $this->SetFontSize(14);
 				$this->issetfont=true;
 				$this->SetStyle('B',true);
@@ -412,9 +425,17 @@ class e107PDF extends UFPDF{
 	function CloseTag($tag){
 		global $pdfpref;
 
+		if ($this->issetcolor==true) {
+			$this->SetTextColor(0);
+		}
+		if ($this->issetfont==true) {
+			$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
+			$this->issetfont=false;
+		}
+
 		 $tag = strtoupper($tag);
 		 //Closing tag
-		if($tag=='SPAN')
+		if($tag=='SPAN'){
 			$tag='U';
 			if ($this->issetcolor==true) {
 				$this->SetTextColor(0);
@@ -423,28 +444,36 @@ class e107PDF extends UFPDF{
 				$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
 				$this->issetfont=false;
 			}
-		if($tag=='DIV')
+		}
+		if($tag=='DIV'){
 			$tag='DIV';
 			$this->ALIGN='';
 			$this->BLOCKQUOTE='';
-		if($tag=='STRONG')
+		}
+		if($tag=='STRONG'){
 			$tag='B';
-		if($tag=='EM')
+		}
+		if($tag=='EM'){
 			$tag='I';
-		if($tag=='B' or $tag=='I' or $tag=='U')
+		}
+		if($tag=='B' or $tag=='I' or $tag=='U'){
 			$this->SetStyle($tag,false);
-		if($tag=='A')
+		}
+		if($tag=='A'){
 			$this->HREF='';
-		if($tag=='P')
+		}
+		if($tag=='P'){
 			$this->ALIGN='';
+		}
 		if($tag=='IMG'){
 			$this->IMG='';
 			$this->SRC='';
 			$this->WIDTH='';
 			$this->HEIGHT='';
 		}
-		if($tag=='LI')
+		if($tag=='LI'){
 			$this->Ln(5);
+		}
 		if($tag=='TR' || $tag=='BLOCKQUOTE' || $tag=='CODE' || $tag=='PRE'){
 			$this->SetStyle('B',false);
 			$this->SetStyle('I',false);
@@ -479,10 +508,6 @@ class e107PDF extends UFPDF{
 			if($this->issetfont==true){
 				$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
 				$this->issetfont=false;
-			}
-			if($this->issetcolor==true){
-				$this->SetTextColor(0);
-				$this->issetcolor=false;
 			}
         }
 	}
@@ -532,47 +557,50 @@ class e107PDF extends UFPDF{
 			//get image info
 			$oposy=$this->GetY();
 			$iminfo=@getimagesize($url);
-			$iw=$scale * $this->px2mm($iminfo[0]);
-			$ih=$scale * $this->px2mm($iminfo[1]);
-			$iw = ($iw)?$iw:1;
-			$ih = ($ih)?$ih:1;
-			$nw=$iw;
-			$nh=$ih;
-			//resizing in x-direction
-			$xsflag=0;
-			if($iw>150)	{
-				$xscale=150 / $iw;
-				$yscale=$xscale;
-				$nw=$xscale * $iw;
-				$nh=$xscale * $ih;
-				$xsflag=1;
+			if($iminfo){
+				$iw=$scale * $this->px2mm($iminfo[0]);
+				$ih=$scale * $this->px2mm($iminfo[1]);
+				$iw = ($iw)?$iw:1;
+				$ih = ($ih)?$ih:1;
+				$nw=$iw;
+				$nh=$ih;
+				//resizing in x-direction
+				$xsflag=0;
+				if($iw>150)	{
+					$xscale=150 / $iw;
+					$yscale=$xscale;
+					$nw=$xscale * $iw;
+					$nh=$xscale * $ih;
+					$xsflag=1;
+				}
+				//now eventually resizing in y-direction
+				$ysflag=0;
+				if(($oposy+$nh)>250){
+					$yscale=(250-$oposy)/$ih;
+					$nw=$yscale * $iw;
+					$nh=$yscale * $ih;
+					$ysflag=1;
+				}
+				//uups, if the scaling factor of resized image is < 0.33
+				//remark: without(!) the global factor $scale!
+				//that's hard -> on the next page please...
+				$yhflag=0;
+				if($yscale<0.33 and ($xsflag==1 or $ysflag==1))	{
+					$nw=$xscale * $iw;
+					$nh=$xscale * $ih;
+					$ysflag==0;
+					$xsflag==1;
+					$yhflag=1;
+				}
+				if($yhflag==1) $this->AddPage();
+				$oposy=$this->GetY();
+				$this->Image($url, $this->GetX(), $this->GetY(), $nw, $nh);
+				$this->SetY($oposy+$nh);
+				if($yhflag==0 and $ysflag==1) $this->AddPage();
 			}
-			//now eventually resizing in y-direction
-			$ysflag=0;
-			if(($oposy+$nh)>250){
-				$yscale=(250-$oposy)/$ih;
-				$nw=$yscale * $iw;
-				$nh=$yscale * $ih;
-				$ysflag=1;
-			}
-			//uups, if the scaling factor of resized image is < 0.33
-			//remark: without(!) the global factor $scale!
-			//that's hard -> on the next page please...
-			$yhflag=0;
-			if($yscale<0.33 and ($xsflag==1 or $ysflag==1))	{
-				$nw=$xscale * $iw;
-				$nh=$xscale * $ih;
-				$ysflag==0;
-				$xsflag==1;
-				$yhflag=1;
-			}
-			if($yhflag==1) $this->AddPage();
-			$oposy=$this->GetY();
-			$this->Image($url, $this->GetX(), $this->GetY(), $nw, $nh);
-			$this->SetY($oposy+$nh);
-			if($yhflag==0 and $ysflag==1) $this->AddPage();
 		}
 	}
+
 }
 
 ?>

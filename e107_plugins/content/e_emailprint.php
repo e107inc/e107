@@ -76,16 +76,19 @@ function email_item($id)
 
 
 function print_item_pdf($id){
-	global $tp;
-			
+	global $tp, $content_shortcodes;
+	global $CONTENT_PRINT_IMAGES, $row, $content_image_path, $content_pref, $mainparent;
+
 	//in this section you decide what to needs to be output to the pdf file
 	$con = new convert;
+	
+	require_once(e_PLUGIN."content/content_shortcodes.php");
 
 	require_once(e_PLUGIN."content/handlers/content_class.php");
 	$aa = new content;
 	
 	if(!is_object($sql)){ $sql = new db; }
-	$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_author, content_parent, content_datestamp, content_class", "content_id='".intval($id)."' ");
+	$sql -> db_Select($plugintable, "content_id, content_heading, content_subheading, content_text, content_image, content_author, content_parent, content_datestamp, content_class", "content_id='".intval($id)."' ");
 	$row = $sql -> db_Fetch();
 
 	if(!check_class($row['content_class'])){
@@ -93,6 +96,14 @@ function print_item_pdf($id){
 	}
 	$authordetails				= $aa -> getAuthor($row['content_author']);
 	$row['content_datestamp']	= $con -> convert_date($row['content_datestamp'], "long");
+	$img						= $tp -> parseTemplate('{CONTENT_PRINT_IMAGES}', FALSE, $content_shortcodes);
+
+	$mainparent					= $aa -> getMainParent(intval($id));
+	$content_pref				= $aa -> getContentPref($mainparent);
+	$content_icon_path			= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
+	$content_image_path			= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
+	$img						= $tp -> parseTemplate('{CONTENT_PDF_IMAGES}', FALSE, $content_shortcodes);
+//echo $img;
 
 	$text = "
 	<b>".$row['content_heading']."</b><br />
@@ -100,6 +111,7 @@ function print_item_pdf($id){
 	".$authordetails[1].", ".$row['content_datestamp']."<br />
 	<br />
 	".$row['content_text']."<br />
+	<div style='float:left; padding-left:10px;'>".$img."</div>
 	";
 
 	//the following defines are processed in the document properties of the pdf file
