@@ -11,15 +11,23 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.25 $
-|     $Date: 2005-09-01 19:42:25 $
-|     $Author: streaky $
+|     $Revision: 1.26 $
+|     $Date: 2006-01-12 06:45:46 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
 $e_sub_cat = 'main';
 require_once('auth.php');
 require_once(e_HANDLER.'admin_handler.php');
+
+if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea')) {
+	$text = "There are files on your server that are known to be 
+	exploitable. These must be removed <b>immediately</b>. The files are related to the WYSIWYG system used in the 
+	older 0.6xx branch of e107 - htmlArea. Please delete the following directories and all their contents:<br /><br />
+	<div style='text-align:center'>".$HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/</div>";
+	$ns -> tablerender('Warning!', $text);
+}
 
 // update users using old layout names to their new names
 $update_prefs = FALSE;
