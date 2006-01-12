@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/jayya/theme.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-12-14 19:28:52 $
-|     $Author: sweetas $
+|     $Revision: 1.48 $
+|     $Date: 2006-01-12 09:52:21 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -143,6 +143,7 @@ $NEWSSTYLE = "<div class='cap_border'><div class='main_caption'><div class='beve
 </td><td style='text-align: center; padding: 3px; padding-bottom: 0px; padding-left: 7px; white-space: nowrap'>
 {EMAILICON}
 {PRINTICON}
+{PDFICON}
 {ADMINOPTIONS}
 </td></tr></table>
 <br /></div>";
