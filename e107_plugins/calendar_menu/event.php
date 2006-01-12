@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/event.php,v $
-|     $Revision: 1.23 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.24 $
+|     $Date: 2006-01-12 22:18:29 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -70,8 +70,8 @@ if (isset($_POST['ne_insert']) && USER == true)
         $ev_event		= $tp->toDB($_POST['ne_event']);
 
         if ($_POST['recurring'] == 1){
-            $rec_m = $_POST['ne_day'];
-            $rec_y = $_POST['ne_month'];
+			$rec_m = substr($_POST['start_date'], 8,2);
+            $rec_y = substr($_POST['start_date'], 5,2);
         }else{
             $rec_m = "";
             $rec_y = "";
@@ -98,8 +98,8 @@ if (isset($_POST['ne_update']) && USER == true)
         $ev_event		= $tp->toDB($_POST['ne_event']);
 
         if ($_POST['recurring'] == 1){
-            $rec_m = $_POST['ne_day'];
-            $rec_y = $_POST['ne_month'];
+			$rec_m = substr($_POST['start_date'], 8,2);
+            $rec_y = substr($_POST['start_date'], 5,2);
         }else{
             $rec_m = "";
             $rec_y = "";
