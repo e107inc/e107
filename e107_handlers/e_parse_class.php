@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.124 $
-|     $Date: 2006-01-10 18:49:20 $
-|     $Author: e107coders $
+|     $Revision: 1.125 $
+|     $Date: 2006-01-12 15:34:51 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -45,6 +45,9 @@ class e_parse
 			if(isset($pref['post_html']) && check_class($pref['post_html']))
 			{
 				$no_encode = TRUE;
+			}
+			if ($pref['wysiwyg']) {
+				$data = html_entity_decode($data, ENT_NOQUOTES, CHARSET);
 			}
 			if (getperms("0") || $no_encode === TRUE)
 			{
@@ -399,10 +402,7 @@ class e_parse
 		{
 			$nl_replace = "\n";
 		}
-//		$text = preg_replace("#\[\s*?E_NL\s*?\]#s", $nl_replace, $text);
 		$text = str_replace(E_NL, $nl_replace, $text);
-		$text = str_replace("&","&amp;", $text); // needed for Xhtml compliance. 
-		//		$text = str_replace(array("&", "&pound;"), array("&amp;", ""), $text);
 		return trim($text);
 	}
 
