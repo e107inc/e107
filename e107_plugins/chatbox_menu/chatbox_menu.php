@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.59 $
-|     $Date: 2006-01-11 04:42:31 $
-|     $Author: streaky $
+|     $Revision: 1.60 $
+|     $Date: 2006-01-12 15:28:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -124,7 +124,7 @@ else
 	if($pref['cb_layer'] == 2)
 	{
 		$texta =  "\n<form id='chatbox' action='".e_SELF."?".e_QUERY."'  method='post' onsubmit='return(false);'>
-		<input type='hidden' id='chatbox_ajax' value='1' />
+		<div><input type='hidden' id='chatbox_ajax' value='1' /></div>
 		";
 	}
 	else
