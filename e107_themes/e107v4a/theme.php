@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/theme.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-12-14 19:28:52 $
-|     $Author: sweetas $
+|     $Revision: 1.17 $
+|     $Date: 2006-01-12 09:52:21 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
@@ -149,6 +149,7 @@ $NEWSSTYLE = "
  |
 {EMAILICON}
 {PRINTICON}
+{PDFICON}
 </div>
 </td>
 <td class='bodyright'><img src='".THEME_ABS."images/blank.gif' width='3' height='1' alt='' style='display: block;' /></td>

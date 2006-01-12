@@ -11,9 +11,9 @@
 |	GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/leaf/theme.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-01-10 18:52:47 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2006-01-12 09:52:21 $
+|     $Author: lisa_ $
 +---------------------------------------------------------------+
 */
 
@@ -193,6 +193,7 @@ function news_style($news) {
 	          <span class='item3'>{NEWSCOMMENTS}</span>
 	          <span class='item4'>{EMAILICON}</span>
 	          <span class='item5'>{PRINTICON}</span>
+	          <span class='item5'>{PDFICON}</span>
 	        </div>
 	        </div><!-- end news item -->";
 	return $NEWSSTYLE;
