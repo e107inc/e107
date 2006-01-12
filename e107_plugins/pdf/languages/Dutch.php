@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pdf/languages/Dutch.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-11 21:42:55 $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-12 20:24:40 $
 |     $Author: mijnheer $
 +-----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ define("PDF_LAN_10", "font groott sitenaam");
 define("PDF_LAN_11", "font grootte pagina url");
 define("PDF_LAN_12", "font grootte paginanummer");
 define("PDF_LAN_13", "tonen logo in pdf?");
-define("PDF_LAN_14", "tonen sitenaame in pdf?");
+define("PDF_LAN_14", "tonen sitenaam in pdf?");
 define("PDF_LAN_15", "tonen herkomst pagina url in pdf?");
 define("PDF_LAN_16", "tonen paginanummers in pdf?");
 define("PDF_LAN_17", "bijwerken");
