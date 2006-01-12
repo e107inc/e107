@@ -11,13 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.89 $
-|     $Date: 2006-01-12 18:35:28 $
+|     $Revision: 1.90 $
+|     $Date: 2006-01-12 22:41:46 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 require_once(e_HANDLER."news_class.php");
+require_once(e_HANDLER."comment_class.php");
+$cobj = new comment;
 
 if (isset($NEWSHEADER)) {
 	require_once(HEADERF);
