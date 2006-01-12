@@ -1,4 +1,24 @@
 <?php
+/*
++ ----------------------------------------------------------------------------+
+|     e107 website system
+|
+|     ©Steve Dunstan 2001-2002
+|     http://e107.org
+|     jalist@e107.org
+|
+|     Released under the terms and conditions of the
+|     GNU General Public License (http://gnu.org).
+|
+|     $Source: /cvs_backup/e107_0.7/e107_admin/core_image.php,v $
+|     $Revision: 1.31 $
+|     $Date: 2006-01-12 18:29:32 $
+|     $Author: sweetas $
++----------------------------------------------------------------------------+
+*/
+
+if (!defined('e107_INIT')) { exit; }
+
 $core_image = array (
   $coredir['admin'] => 
   array (
@@ -2962,12 +2982,9 @@ $deprecated_image = array (
       'dialog.js' => '668c78f39fd35f5a234bb068c5b24538',
       'htmlarea-lang-en.js' => 'b0a8e9dd8583f4e3898ba6f540bc53a1',
       'htmlarea.css' => '9e4641ed724a4c64c36d5c2905f78fea',
-      'htmlarea.js' => '1357982938f5fd1b9edd8b81a21e1b26',
+      'htmlarea.js' => '44255a20c22defb474b49c463b433810',
       'index.php' => 'dcc74dfdbaecfdfa27727007dbce195d',
       'license.txt' => '05389e64589d247475013880d06595ef',
-    ),
-    'includes' => 
-    array (
     ),
     'sql' => 
     array (
@@ -2983,6 +3000,7 @@ $deprecated_image = array (
     'downloadOLD.php' => '958dc19cccb83c007ed12c6e2a546ce4',
     'download_.php' => 'caeea790f670fad2d631f097f861cea9',
     'download_category.php' => '2675265f706ec209c540ba11a68cfd85',
+    'filetypes_.php' => 'f951037335e993337792606cc1475cec',
     'forum.php' => 'bb850eef7ba9ead930abd61efc19d57b',
     'forum_conf.php' => 'dd2043f57a0cfe21abde3a89b22cc6be',
     'header_links.php' => 'd8aa17c4b82d54a5f55772c6486db602',
@@ -3036,11 +3054,8 @@ $deprecated_image = array (
   array (
     'backend' => 
     array (
-      'news.txt' => '051e560e575430da13e77cbb753184de',
-      'news.xml' => '3d6045fe80fc745b1bc72f9610ce5de0',
-    ),
-    'bbcode' => 
-    array (
+      'news.txt' => 'd41d8cd98f00b204e9800998ecf8427e',
+      'news.xml' => 'd41d8cd98f00b204e9800998ecf8427e',
     ),
     'cache' => 
     array (
@@ -3057,9 +3072,6 @@ $deprecated_image = array (
     'images' => 
     array (
     ),
-    'import' => 
-    array (
-    ),
     'misc' => 
     array (
     ),
@@ -3070,26 +3082,11 @@ $deprecated_image = array (
         'null.txt' => 'd41d8cd98f00b204e9800998ecf8427e',
       ),
     ),
-    'resetcore' => 
-    array (
-    ),
-    'shortcode' => 
-    array (
-      'batch' => 
-      array (
-      ),
-    ),
     'default.css' => '3c16cdade7f5fc5bf43e9fe0adf3d2b7',
     'style.css' => 'ce301a8f5bf6cb07dc11ead5d45cb578',
   ),
   $coredir['handlers'] => 
   array (
-    'calendar' => 
-    array (
-      'language' => 
-      array (
-      ),
-    ),
     'htmlarea' => 
     array (
       'examples' => 
@@ -3528,12 +3525,6 @@ $deprecated_image = array (
       'parse_profile.php' => '1b6547b7a8f55d230fc4eb3871a465a9',
       'parse_username.php' => '95225d3fd11a5b709bc54ddecd168009',
     ),
-    'phpmailer' => 
-    array (
-      'language' => 
-      array (
-      ),
-    ),
     'search' => 
     array (
       'search_article.php' => 'bcd831877eabcb2bce0f1c6f35421ce8',
@@ -3560,105 +3551,6 @@ $deprecated_image = array (
     array (
       'basic.php' => 'd81de16f7f0e4eecf599459abe8cd065',
     ),
-    'tiny_mce' => 
-    array (
-      'langs' => 
-      array (
-      ),
-      'plugins' => 
-      array (
-        'contextmenu' => 
-        array (
-          'css' => 
-          array (
-          ),
-          'images' => 
-          array (
-          ),
-        ),
-        'emoticons' => 
-        array (
-          'images' => 
-          array (
-          ),
-          'langs' => 
-          array (
-          ),
-        ),
-        'flash' => 
-        array (
-          'css' => 
-          array (
-          ),
-          'images' => 
-          array (
-          ),
-          'jscripts' => 
-          array (
-          ),
-          'langs' => 
-          array (
-          ),
-        ),
-        'ibrowser' => 
-        array (
-          'images' => 
-          array (
-          ),
-          'langs' => 
-          array (
-          ),
-        ),
-        'iespell' => 
-        array (
-          'images' => 
-          array (
-          ),
-          'langs' => 
-          array (
-          ),
-        ),
-        'table' => 
-        array (
-          'css' => 
-          array (
-          ),
-          'images' => 
-          array (
-          ),
-          'jscripts' => 
-          array (
-          ),
-          'langs' => 
-          array (
-          ),
-        ),
-      ),
-      'themes' => 
-      array (
-        'advanced' => 
-        array (
-          'css' => 
-          array (
-          ),
-          'images' => 
-          array (
-            'xp' => 
-            array (
-            ),
-          ),
-          'jscripts' => 
-          array (
-          ),
-          'langs' => 
-          array (
-          ),
-        ),
-      ),
-      'utils' => 
-      array (
-      ),
-    ),
     'errorhandler_class.php' => 'e2703328fd8379fcd88a3ce3063f7485',
     'poll_class.php' => '51c2f954ebf1844cacf15760bc9c0872',
     'security_handler.php' => 'a1e7f2dbc17c3ebef7101b5227d25ada',
@@ -3669,9 +3561,6 @@ $deprecated_image = array (
   ),
   $coredir['images'] => 
   array (
-    'admin_images' => 
-    array (
-    ),
     'avatars' => 
     array (
     ),
@@ -3689,12 +3578,6 @@ $deprecated_image = array (
       'icon5.png' => '460caf982d6aba5be255f0fadd3b4ae8',
       'star2.gif' => 'be6622a8dc7c4e1c71b31f894817b1a5',
       'star4.gif' => 'b660fb0c498a9dbe834238bc8ffcf6a1',
-    ),
-    'emotes' => 
-    array (
-      'default' => 
-      array (
-      ),
     ),
     'emoticons' => 
     array (
@@ -3729,9 +3612,6 @@ $deprecated_image = array (
       'template2.png' => 'ccd1fad3a1793d7d35c4f4797b97034e',
       'tongue.png' => '679f29c38a2ae17559b7315be0e2d711',
       'wink.png' => '1155a9a73dc9f9b541d0a2f86021d878',
-    ),
-    'fileinspector' => 
-    array (
     ),
     'filemanager' => 
     array (
@@ -3804,15 +3684,6 @@ $deprecated_image = array (
         'but_create.png' => '6f275e35506f4c6db810f06ad3d5a021',
         'but_delete.png' => '937b33c01d8494589ed873ea9f0ea1af',
       ),
-      'bbcode' => 
-      array (
-      ),
-      'dark' => 
-      array (
-      ),
-      'lite' => 
-      array (
-      ),
       'access.png' => 'd30fa59d45ad714bd25761094fe6065e',
       'admin.gif' => 'b4d2ee0f18dee92d807e9277785a036a',
       'aim.png' => 'e836f8d0370a420f3be4438f8c9fb027',
@@ -3870,9 +3741,6 @@ $deprecated_image = array (
       'up.png' => 'a2b49db69fbbeec34a721b659a1a4851',
       'upgrade.png' => 'e433f87f34318096664419b1628abd2f',
       'user.png' => 'b31bb198e4c899d636bd8359edc46301',
-    ),
-    'icons' => 
-    array (
     ),
     'install' => 
     array (
@@ -3932,15 +3800,6 @@ $deprecated_image = array (
     ),
     'rate' => 
     array (
-      'box' => 
-      array (
-      ),
-      'dark' => 
-      array (
-      ),
-      'lite' => 
-      array (
-      ),
       '1.png' => '09c643761793c2b124cf1370e8dd3a7f',
       '2.png' => 'e715366760fbb1abe60b80fea12c7f47',
       '3.png' => '74f2d630e67e085887d7e0dc6bad4453',
@@ -3951,9 +3810,6 @@ $deprecated_image = array (
       '8.png' => 'd495086b256436f51798fc66f3377c9d',
       '9.png' => 'd9779dfe46afb591c25c90035b489183',
       'empty.png' => '6f9c56755d5387c7a71f56fea1b31c13',
-    ),
-    'user_icons' => 
-    array (
     ),
     'logo3.png' => '8fd7855db31a4a1eb3b4c193d72f1da1',
   ),
@@ -4034,9 +3890,6 @@ $deprecated_image = array (
       'lan_oldpolls.php' => '1b68fd126667b700ac99d87cdb6ac5fd',
       'lan_sitemap.php' => 'f27ecdf90a099af0a61ce0c4a365910c',
       'lan_stats.php' => '153671a58474fa0b4dff9762a2f007fa',
-    ),
-    'English-iso' => 
-    array (
     ),
     'Finnish' => 
     array (
@@ -4120,33 +3973,18 @@ $deprecated_image = array (
       'languages' => 
       array (
       ),
-      'search' => 
-      array (
-      ),
     ),
     'chatbox_menu' => 
     array (
-      'images' => 
-      array (
-      ),
       'languages' => 
       array (
-        'English' => 
-        array (
-        ),
         'English.php' => '1b336ae212a99cead96aa77c846b1e32',
-      ),
-      'search' => 
-      array (
       ),
     ),
     'clock_menu' => 
     array (
       'languages' => 
       array (
-        'admin' => 
-        array (
-        ),
       ),
     ),
     'comment_menu' => 
@@ -4157,65 +3995,8 @@ $deprecated_image = array (
     ),
     'compliance_menu' => 
     array (
-      'images' => 
-      array (
-      ),
       'languages' => 
       array (
-      ),
-    ),
-    'content' => 
-    array (
-      'handlers' => 
-      array (
-      ),
-      'images' => 
-      array (
-        'cat' => 
-        array (
-          16 => 
-          array (
-          ),
-          48 => 
-          array (
-          ),
-        ),
-        'file' => 
-        array (
-          'tmp' => 
-          array (
-          ),
-        ),
-        'icon' => 
-        array (
-          'tmp' => 
-          array (
-          ),
-        ),
-        'image' => 
-        array (
-          'tmp' => 
-          array (
-          ),
-        ),
-      ),
-      'languages' => 
-      array (
-        'English' => 
-        array (
-        ),
-      ),
-      'menus' => 
-      array (
-      ),
-      'search' => 
-      array (
-      ),
-      'templates' => 
-      array (
-        'default' => 
-        array (
-        ),
       ),
     ),
     'counter_menu' => 
@@ -4245,48 +4026,6 @@ $deprecated_image = array (
       'config.php' => '3b5dcaaf9f8c4a2ef8565c67d6d62877',
       'fader_menu.php' => '29d4a0d5b14a0aa72a30976be585f527',
       'plugin.php' => '42c8f133e6f07b88419a1ca53577a149',
-    ),
-    'featurebox' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-      'templates' => 
-      array (
-      ),
-    ),
-    'forum' => 
-    array (
-      'images' => 
-      array (
-        'dark' => 
-        array (
-        ),
-        'lite' => 
-        array (
-        ),
-      ),
-      'languages' => 
-      array (
-        'English' => 
-        array (
-        ),
-      ),
-      'search' => 
-      array (
-      ),
-      'templates' => 
-      array (
-      ),
-    ),
-    'gsitemap' => 
-    array (
-      'images' => 
-      array (
-      ),
     ),
     'headlines_menu' => 
     array (
@@ -4325,54 +4064,9 @@ $deprecated_image = array (
       'integrity_check.crc.gz' => 'd96701aacb1b825ece3ecd242440ed41',
       'integrity_check.php' => '3f5f8bd4c8320b4fcfc9f4f90e5988f2',
     ),
-    'lastseen' => 
-    array (
-      'languages' => 
-      array (
-      ),
-    ),
-    'links_page' => 
-    array (
-      'cat_images' => 
-      array (
-      ),
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-      'link_images' => 
-      array (
-      ),
-      'search' => 
-      array (
-      ),
-    ),
-    'linkwords' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
     'list_new' => 
     array (
-      'icon' => 
-      array (
-      ),
-      'images' => 
-      array (
-      ),
       'languages' => 
-      array (
-      ),
-      'section' => 
-      array (
-      ),
-      'templates' => 
       array (
       ),
     ),
@@ -4381,15 +4075,6 @@ $deprecated_image = array (
       'images' => 
       array (
         'trans.gif' => '39bc952559e5a8f4e84ba035fb2f7390',
-      ),
-      'languages' => 
-      array (
-        'admin' => 
-        array (
-        ),
-      ),
-      'logs' => 
-      array (
       ),
     ),
     'login_menu' => 
@@ -4417,27 +4102,6 @@ $deprecated_image = array (
       'config.php' => '9143a4dd38c8d64f85c1d7aa9c0d9726',
       'newforumposts_menu.php' => '5aef7894633ac7331db129978f6e8fd7',
     ),
-    'newsfeed' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-      'templates' => 
-      array (
-      ),
-    ),
-    'newsletter' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
     'online_extended_menu' => 
     array (
       'images' => 
@@ -4457,33 +4121,6 @@ $deprecated_image = array (
     array (
       'languages' => 
       array (
-      ),
-    ),
-    'pdf' => 
-    array (
-      'font' => 
-      array (
-        'makefont' => 
-        array (
-        ),
-      ),
-      'images' => 
-      array (
-      ),
-    ),
-    'pm' => 
-    array (
-      'attachments' => 
-      array (
-      ),
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-        'admin' => 
-        array (
-        ),
       ),
     ),
     'pm_menu' => 
@@ -4536,21 +4173,6 @@ $deprecated_image = array (
       'pm_readme.txt' => '899470c8f26b498b0acb97d5da379cdf',
       'pm_sql.php' => '78df752baf20937c018f8566233255ad',
     ),
-    'poll' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-      'search' => 
-      array (
-      ),
-      'templates' => 
-      array (
-      ),
-    ),
     'poll_menu' => 
     array (
       'languages' => 
@@ -4571,20 +4193,8 @@ $deprecated_image = array (
       array (
       ),
     ),
-    'rss_menu' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
     'search_menu' => 
     array (
-      'images' => 
-      array (
-      ),
       'languages' => 
       array (
       ),
@@ -4619,15 +4229,6 @@ $deprecated_image = array (
       'poll_layout.php' => '64c00593afcc0acf47581eb8c664f6f6',
       'theme.php' => '8337371ab26f9239c5943f2b41b5aedc',
       'theme_layout.php' => '1359a7d0f3317b2a2140a918a05aa716',
-    ),
-    'trackback' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
     ),
     'tree_menu' => 
     array (
@@ -4857,15 +4458,6 @@ $deprecated_image = array (
       'style.css' => '09e8a97633d55445b74a7a613cb68ed6',
       'theme.php' => '0c570eb8fc0cb67aa5c6d95e7511bdc5',
     ),
-    'crahan' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
     'e107' => 
     array (
       'images' => 
@@ -4890,9 +4482,6 @@ $deprecated_image = array (
       array (
         'bar2.gif' => 'eb85624e746f91fd33511783cccc92a6',
         'bar2edge.gif' => '6d273a53798e532091bd6354f1e39c60',
-      ),
-      'languages' => 
-      array (
       ),
       'forum_design.php' => '707aab8cf22d8bd6e15e737dbb280cab',
     ),
@@ -4949,75 +4538,6 @@ $deprecated_image = array (
       'style.css' => '7036dffcf48ba7130d7577a21cfcc18e',
       'theme.php' => 'fe620620e6425cff7d0ca9b5d9b783ba',
     ),
-    'human_condition' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'interfectus' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'jayya' => 
-    array (
-      'forum' => 
-      array (
-      ),
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'khatru' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'kubrick' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'lamb' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
-    'leaf' => 
-    array (
-      'fontstyles' => 
-      array (
-      ),
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
     'leap of faith' => 
     array (
       'images' => 
@@ -5063,12 +4583,6 @@ $deprecated_image = array (
       ),
       'style.css' => '2700aef19622a7aac0b0f0158e235bac',
       'theme.php' => 'd8ca4804d2e972d0620575bca9823c19',
-    ),
-    'newsroom' => 
-    array (
-      'images' => 
-      array (
-      ),
     ),
     'nordranious' => 
     array (
@@ -5198,15 +4712,6 @@ $deprecated_image = array (
       'style.css' => '8435df83ddb57eba3b522bdba8cf8e6c',
       'theme.php' => '2c3d55140d0563b1c57437b80ccb0e2d',
     ),
-    'sebes' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
     'smacks' => 
     array (
       'images' => 
@@ -5268,15 +4773,6 @@ $deprecated_image = array (
       'forum_viewforum_template.php' => '00d07368f8ec0c1a49533d19bc2bf1bd',
       'forum_viewtopic_template.php' => 'eb9e9285f459efec4d189152ab432fbb',
     ),
-    'vekna_blue' => 
-    array (
-      'images' => 
-      array (
-      ),
-      'languages' => 
-      array (
-      ),
-    ),
     'wan' => 
     array (
       'forum' => 
@@ -5318,10 +4814,12 @@ $deprecated_image = array (
     ),
   ),
   'CHANGES.txt' => '63ce3c2347fa1705cdc07bd6a18f8f0b',
+  'Copy of class2.php' => '98e51871d71e43c526cc5ecc2df04e15',
+  'Copy of forum_post.php' => '57a503ffde3c5c1363c81ec64634c15e',
   'chat.php' => '25cf92e658943c89ad4175e6089f7b90',
   'e107_6171_readme.txt' => '388bc81a9a79a7d9947b86e3e53fcbb8',
-  'forum_post.php' => '38eee3fddc253ea5822501508b8bee96',
-  'install.php' => '4d9748053241bcbb2232bd3c01a80133',
+  'forum_post.php' => '98f1f836634bc8e698cde4a0b0131d07',
+  'install.php' => '71dfbd2d6c923b451a47bb19966359ae',
   'oldpolls.php' => '44af80765e98edaba7dbd0aab0e666ac',
   'sitemap.php' => 'ef7b4e734ebebb70b7cb8e52f8d08af0',
   'stats.php' => '0c5fff38ca4556c7b4a5a2d6618411d5',
