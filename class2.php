@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.251 $
-|     $Date: 2006-01-12 16:38:52 $
-|     $Author: sweetas $
+|     $Revision: 1.252 $
+|     $Date: 2006-01-13 12:25:35 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -1179,10 +1179,10 @@ function include_lan($path, $force = false) {
 	return (isset($ret)) ? $ret : "";
 }
 
-function utf8_html_entity_decode($string) {
-	$trans_tbl = get_html_translation_table(HTML_ENTITIES);
+function utf8_html_entity_decode($string, $mode = ENT_COMPAT) {
+	$trans_tbl = get_html_translation_table(HTML_ENTITIES, $mode);
 	foreach($trans_tbl as $k => $v) {
-		$ttr[$v] = utf8_encode($k);
+		$ttr[$v] == utf8_encode($k);
 	}
 	$string = strtr($string, $ttr);
 	return $string;
