@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/login_menu/login_menu.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2005-12-24 14:20:30 $
+|     $Revision: 1.41 $
+|     $Date: 2006-01-13 03:36:38 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-global $eMenuActive, $e107, $tp;
+global $eMenuActive, $e107, $tp, $use_imagecode;
 require_once(e_PLUGIN."login_menu/login_menu_shortcodes.php");
 $ip = $e107->getip();
 
@@ -31,7 +31,9 @@ if (defined('CORRUPT_COOKIE') && CORRUPT_COOKIE == TRUE) {
 	$ns->tablerender(LOGIN_MENU_L9, $text, 'login');
 }
 $use_imagecode = ($pref['logcode'] && extension_loaded('gd'));
+
 if ($use_imagecode) {
+	global $sec_img;
 	include_once(e_HANDLER.'secure_img_handler.php');
 	$sec_img = new secure_image;
 }
