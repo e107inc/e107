@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.86 $
-|		$Date: 2006-01-13 00:26:33 $
+|		$Revision: 1.87 $
+|		$Date: 2006-01-13 11:32:06 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1158,6 +1158,7 @@ class content{
 			$data .= chr(36)."content_icon_path				= ".chr(36)."tp -> replaceConstants(".chr(36)."content_pref[\"content_icon_path_".chr(36)."menutypeid\"]);\n";
 			$data .= chr(36)."content_cat_icon_path_small	= ".chr(36)."tp -> replaceConstants(".chr(36)."content_pref[\"content_cat_icon_path_small_".chr(36)."menutypeid\"]);\n";
 			$data .= "\n";
+			$data .= "	".chr(36)."break = FALSE;\n";
 			$data .= "//##### SEARCH SELECT ORDER --------------------------------------------------\n";
 			$data .= "//show search box\n";
 			$data .= "if(".chr(36)."content_pref[\"content_menu_search_".chr(36)."menutypeid\"]){\n";
