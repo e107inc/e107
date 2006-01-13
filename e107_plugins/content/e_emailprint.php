@@ -103,7 +103,6 @@ function print_item_pdf($id){
 	$content_icon_path			= $tp -> replaceConstants($content_pref["content_icon_path_{$mainparent}"]);
 	$content_image_path			= $tp -> replaceConstants($content_pref["content_image_path_{$mainparent}"]);
 	$img						= $tp -> parseTemplate('{CONTENT_PDF_IMAGES}', FALSE, $content_shortcodes);
-//echo $img;
 
 	$text = "
 	<b>".$row['content_heading']."</b><br />
@@ -118,17 +117,15 @@ function print_item_pdf($id){
 
 	//Do NOT add parser function to the variables, leave them as raw data !
 	//as the pdf methods will handle this !
-	$text		= $text;							//define text
+	$text		= $text;						//define text
 	$creator	= SITENAME;						//define creator
-	$author		= $authordetails[1];				//define author
+	$author		= $authordetails[1];			//define author
 	$title		= $row['content_heading'];		//define title
 	$subject	= $row['content_subheading'];	//define subject
-	$keywords	= "";												//define keywords
+	$keywords	= "";							//define keywords
 
-	//define url and logo to use in the header of the pdf file
-	//$url		= SITEURL.$PLUGINS_DIRECTORY."content/content.php?content.".$row['content_id'];
+	//define url to use in the header of the pdf file
 	$url		= SITEURLBASE.e_PLUGIN_ABS."content/content.php?content.".$row['content_id'];
-	define('PDFPAGEURL', $url);								//define page url to add in header
 
 	//always return an array with the following data:
 	return array($text, $creator, $author, $title, $subject, $keywords, $url);

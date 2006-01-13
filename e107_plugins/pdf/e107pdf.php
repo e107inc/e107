@@ -90,6 +90,15 @@ class e107PDF extends UFPDF{
 		//call get preferences
 		$pdfpref = $this->getPDFPrefs();
 
+		//define logo and source pageurl (before the parser!)
+		if(is_readable(THEME."images/logopdf.png")){
+			$logo = THEME."images/logopdf.png";
+		}else{
+			$logo = e_IMAGE."logo.png";
+		}
+		define('PDFLOGO', $logo);					//define logo to add in header
+		define('PDFPAGEURL', $text[6]);				//define page url to add in header
+
 		function toPDF($text){
 			$search = array('&#39;', '&#039;', '&#036;', '&quot;');
 			$replace = array("'", "'", '$', '"');
@@ -110,7 +119,7 @@ class e107PDF extends UFPDF{
 		foreach($text as $k=>$v){
 			$text[$k] = $tp->toHTML($v, TRUE);
 		}
-
+		
 		//set some variables
 		$this->SetMargins($pdfpref['pdf_margin_left'],$pdfpref['pdf_margin_top'],$pdfpref['pdf_margin_right']);
 		//$this->SetAutoPageBreak(true,25);
@@ -136,23 +145,35 @@ class e107PDF extends UFPDF{
 		global $pdfpref;
 
 		$this->SetY(15);
+		$y0 = $this->GetY();
 		if($pdfpref['pdf_show_logo']){
 			$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);			
 			$this->PutImage(PDFLOGO, '1');
-			$x = $this->GetX();
-			$y = $this->GetY();
+			$x1 = $this->GetX();
+			$y1 = $this->GetY();
 
 			$image_wh = getimagesize(PDFLOGO);
-			$newx = $x + ($image_wh[0]/$this->k);
+			$newx = $x1 + ($image_wh[0]/$this->k);
 			$newy = ($image_wh[1]/$this->k);
 
-			$this->SetY(15);
 			$a=$this->GetStringWidth(SITENAME);
 			$b=$this->GetStringWidth(PDFPAGEURL);
 			if($a>$b){$c=$a;}else{$c=$b;}
-			if($x+$newx+$c > 210){
+			if($x1+$newx+$c > 210){
 				$this->SetX();
-				$this->SetY($y+5);
+				$this->SetY($y1+2);
+			}else{
+				if($pdfpref['pdf_show_sitename']){
+					$m = 5;
+				}
+				if($pdfpref['pdf_show_page_url']){
+					$m += 5;
+				}
+				if($pdfpref['pdf_show_page_number']){
+					$m += 5;
+				}
+				$y = $this->GetY();
+				$this->SetY($y-$m);
 			}
 		}
 		$cellwidth	= 210-$this->lMargin-$this->rMargin;
@@ -169,8 +190,7 @@ class e107PDF extends UFPDF{
 			$this->SetFont($pdfpref['pdf_font_family'],'I',$pdfpref['pdf_font_size_page_number']);
 			$this->Cell($cellwidth,5,PDF_LAN_19.' '.$this->PageNo().'/{nb}',0,1,$align);
 		}
-		$x = $this->GetX();
-		$y = $this->GetY();
+		$y = $this->GetY()+2;
 		$this->Line($this->lMargin, $y, 210-$this->rMargin, $y);
 		$this->Ln(10);
 		$this->SetX();

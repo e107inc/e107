@@ -1022,6 +1022,10 @@ function Output($name='',$dest='')
 			if(php_sapi_name()!='cli')
 			{
 				//We send to a browser
+				//Secure https check
+				if(isset($_SERVER['HTTP_USER_AGENT']) && $_SERVER['HTTP_USER_AGENT']=='contype'){
+					header('Pragma: public');
+				}
 				header('Content-Type: application/pdf');
 				if(headers_sent())
 					$this->Error('Some data has already been output to browser, can\'t send PDF file');
@@ -1034,6 +1038,9 @@ function Output($name='',$dest='')
 			//Download file
 			if(ob_get_contents())
 				$this->Error('Some data has already been output, can\'t send PDF file');
+			//Secure https check
+			if(isset($_SERVER['HTTP_USER_AGENT']) && $_SERVER['HTTP_USER_AGENT']=='contype')
+				header('Pragma: public');
 			if(isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'],'MSIE'))
 				header('Content-Type: application/force-download');
 			else
