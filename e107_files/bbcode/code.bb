@@ -28,14 +28,7 @@ if($pref['useGeshi'] && file_exists(e_PLUGIN."geshi/geshi.php")) {
 }
 else
 {
-	if(CHARSET == 'utf-8' && function_exists("utf8_encode"))
-	{
-		$code_text = utf8_html_entity_decode($code_text);
-	}
-	else
-	{
-		$code_text = html_entity_decode($code_text, ENT_QUOTES, CHARSET);
-	}
+	$code_text = html_entity_decode($code_text, ENT_QUOTES, CHARSET);
 	$highlighted_text = highlight_string($code_text, TRUE);
 	$divClass = ($parm) ? $parm : 'code_highlight';
 	$ret = "<div class='{$divClass}'>{$highlighted_text}</div>";
