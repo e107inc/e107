@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.127 $
-|     $Date: 2006-01-13 13:08:45 $
+|     $Revision: 1.128 $
+|     $Date: 2006-01-13 14:32:20 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -80,6 +80,14 @@ class e_parse
 			return html_entity_decode($text, $mode, CHARSET);
 		}
 	}
+	
+	function post_toForm($text) {
+		if (MAGIC_QUOTES_GPC == TRUE) {
+			$text = stripslashes($text);
+		}
+		// ensure apostrophes are properly converted, or else the form item could break
+		return str_replace(array( "'", '"'), array("&#039;", "&quot;"), $text);
+	}
 
 	function post_toHTML($text, $modifier = true, $extra = '') {
 		/*
@@ -113,14 +121,6 @@ class e_parse
 			$text = htmlentities($text, ENT_QUOTES, CHARSET);
 		}
 		return ($modifier ? $this->toHTML($text, true, $extra) : $text);
-	}
-
-	function post_toForm($text) {
-		if (MAGIC_QUOTES_GPC == TRUE) {
-			$text = stripslashes($text);
-		}
-		// ensure apostrophes are properly converted, or else the form item could break
-		return str_replace(array( "'", '"'), array("&#039;", "&quot;"), $text);
 	}
 
 	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "") {
