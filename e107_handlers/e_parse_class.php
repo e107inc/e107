@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.125 $
-|     $Date: 2006-01-12 15:34:51 $
-|     $Author: sweetas $
+|     $Revision: 1.126 $
+|     $Date: 2006-01-13 12:25:35 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -47,7 +47,11 @@ class e_parse
 				$no_encode = TRUE;
 			}
 			if ($pref['wysiwyg']) {
-				$data = html_entity_decode($data, ENT_NOQUOTES, CHARSET);
+				if(strtolower(CHARSET) == 'utf-8') {
+					$data = utf8_html_entity_decode($data);
+				} else {
+					$data = html_entity_decode($data, ENT_NOQUOTES, CHARSET);
+				}
 			}
 			if (getperms("0") || $no_encode === TRUE)
 			{
@@ -73,7 +77,7 @@ class e_parse
 		$search = array('&#036;', '&quot;');
 		$replace = array('$', '"');
 		$text = str_replace($search, $replace, $text);
-		if(CHARSET == 'utf-8' && function_exists("utf8_encode")) {
+		if(strtolower(CHARSET) == 'utf-8') {
 			return utf8_html_entity_decode($text);
 		} else {
 			return html_entity_decode($text, $mode, CHARSET);
@@ -207,48 +211,48 @@ class e_parse
 			switch($text{$pos})
 			{
 				case "<" :
-								if($text{$pos+1} == "/")
-								{
-									$closing_tag = TRUE;
-								}
-								$intag = TRUE;
-								$tmp_pos = $pos-1;
-								$pos++;
-								break;
+				if($text{$pos+1} == "/")
+				{
+					$closing_tag = TRUE;
+				}
+				$intag = TRUE;
+				$tmp_pos = $pos-1;
+				$pos++;
+				break;
 				case ">" :
-								if($text{$pos-1} == "/")
-								{
-									$closing_tag = TRUE;
-								}
-								if($closing_tag == TRUE)
-								{
-									$tmp_pos = 0;
-									$closing_tag = FALSE;
-								}
-								$intag = FALSE;
-								$pos++;
-								break;
+				if($text{$pos-1} == "/")
+				{
+					$closing_tag = TRUE;
+				}
+				if($closing_tag == TRUE)
+				{
+					$tmp_pos = 0;
+					$closing_tag = FALSE;
+				}
+				$intag = FALSE;
+				$pos++;
+				break;
 				case "&" :
-					if($text{$pos+1} == "#")
+				if($text{$pos+1} == "#")
+				{
+					$end = strpos(substr($text, $pos, 7), ";");
+					if($end !== FALSE)
 					{
-						$end = strpos(substr($text, $pos, 7), ";");
-						if($end !== FALSE)
-						{
-							$pos+=($end+1);
-							if(!$intag) {$curlen++;}
-							break;
-						}
-					}
-					else
-					{
-						$pos++;
+						$pos+=($end+1);
 						if(!$intag) {$curlen++;}
 						break;
 					}
-				default:
+				}
+				else
+				{
 					$pos++;
 					if(!$intag) {$curlen++;}
 					break;
+				}
+				default:
+				$pos++;
+				if(!$intag) {$curlen++;}
+				break;
 			}
 		}
 		$ret = ($tmp_pos > 0 ? substr($text, 0, $tmp_pos) : substr($text, 0, $pos));
@@ -307,7 +311,7 @@ class e_parse
 				if(CHARSET != "utf-8" && CHARSET != "UTF-8"){
 					$email_text = ($pref['email_text']) ? $pref['email_text'] : "\\1\\2&copy;\\3";
 				}else{
-                    $email_text = ($pref['email_text']) ? $pref['email_text'] : "\\1\\2©\\3";
+					$email_text = ($pref['email_text']) ? $pref['email_text'] : "\\1\\2©\\3";
 				}
 				$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>", $text);
 			} else {
@@ -470,7 +474,7 @@ class e_parse
 				if(!pspell_check($pspell_handle, $val)) {
 					/*$sug="Suggested spellings:\n";
 					foreach(pspell_suggest($pspell_handle, $val) as $suggestion) {
-						$sug.=$suggestion."\n";
+					$sug.=$suggestion."\n";
 					}*/
 					//$text=str_replace($val,'<span style="color:red" title="'.$sug.'">'.$val.'</span>',$text);
 					$text = str_replace($val, "<span style='color:red; text-decoration: underline;'>{$val}</span>", $text);
