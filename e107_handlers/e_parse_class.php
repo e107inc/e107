@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.129 $
-|     $Date: 2006-01-13 16:01:44 $
+|     $Revision: 1.130 $
+|     $Date: 2006-01-13 17:22:06 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -47,11 +47,7 @@ class e_parse
 				$no_encode = TRUE;
 			}
 			if ($pref['wysiwyg']) {
-				//if(strtolower(CHARSET) == 'utf-8') {
-				//	$data = utf8_html_entity_decode($data);
-				//} else {
-					$data = html_entity_decode($data, ENT_NOQUOTES, CHARSET);
-				//}
+				$data = html_entity_decode($data, ENT_NOQUOTES, CHARSET);
 			}
 			if (getperms("0") || $no_encode === TRUE)
 			{
@@ -74,11 +70,7 @@ class e_parse
 		$search = array('&#036;', '&quot;');
 		$replace = array('$', '"');
 		$text = str_replace($search, $replace, $text);
-		//if(strtolower(CHARSET) == 'utf-8') {
-		//	return utf8_html_entity_decode($text);
-		//} else {
-			return html_entity_decode($text, $mode, CHARSET);
-		//}
+		return html_entity_decode($text, $mode);
 	}
 	
 	function post_toForm($text) {
