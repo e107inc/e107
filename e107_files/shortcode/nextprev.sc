@@ -110,7 +110,7 @@ if($total_pages > 1)
 	$np_parm['template'] = "[PREV]&nbsp;&nbsp;[DROPDOWN]&nbsp;&nbsp;[NEXT]";
 	$np_parms['prev'] = "&nbsp;&nbsp;&lt;&lt;&nbsp;&nbsp;";
 	$np_parms['next'] = "&nbsp;&nbsp;&gt;&gt;&nbsp;&nbsp;";
-	$np_parms['np_class'] = 'tbox';
+	$np_parms['np_class'] = 'tbox npbutton';
 	$np_parms['dropdown_class'] = 'tbox';
 
 	if($cached_parms = getcachedvars('nextprev'))
