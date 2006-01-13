@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/emoticon.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2006-01-13 14:34:41 $
+|     $Revision: 1.32 $
+|     $Date: 2006-01-13 14:38:41 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ if (!getperms("F")) {
 	exit;
 }
 $e_sub_cat = 'emoticon';
-		print_a($_POST);
+
 require_once("auth.php");
 
 if(!$sql->db_Count("core", "(*)", "e107_name = 'emote_default'"))
