@@ -14,11 +14,6 @@ return LAN_06.': '.$gen->convert_date($post_info['user_join'], 'forum').'<br />'
 }
 SC_END
 	
-SC_BEGIN LOCATION
-global $post_info;
-return ($post_info["user_location"] ? LAN_07.": ".$post_info["user_location"]."<br />" : "");
-SC_END
-	
 SC_BEGIN THREADDATESTAMP
 global $post_info, $gen, $thread_id;
 return "<a id='post_{$post_info['thread_id']}'>".IMAGE_post."</a> ".$gen->convert_date($post_info['thread_datestamp'], "forum");
