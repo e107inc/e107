@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.73 $
-|     $Date: 2005-12-28 20:44:18 $
-|     $Author: streaky $
+|     $Revision: 1.74 $
+|     $Date: 2006-01-13 07:08:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -76,17 +76,37 @@ if (isset($eplug_js) && $eplug_js) { echo "<script type='text/javascript' src='{
 if(defined("PREVIEWTHEME")) {
 	echo "<link rel='stylesheet' href='".PREVIEWTHEME."style.css' type='text/css' />\n";
 } else {
+	$css_default = "all";
 	if (isset($theme_css_php) && $theme_css_php) {
 		echo "<link rel='stylesheet' href='".THEME_ABS."theme-css.php' type='text/css' />\n";
 	} else {
 		if(isset($pref['themecss']) && $pref['themecss'] && file_exists(THEME.$pref['themecss']))
 		{
-			echo "<link rel='stylesheet' href='".THEME_ABS."{$pref['themecss']}' type='text/css' />\n";
+			// Support for print and handheld media.
+			if(file_exists(THEME."style_mobile.css")){
+            	echo "<link rel='stylesheet' href='".THEME_ABS."style_mobile.css' type='text/css' media='handheld' />\n";
+				$css_default = "screen";
+			}
+			if(file_exists(THEME."style_print.css")){
+            	echo "<link rel='stylesheet' href='".THEME_ABS."style_print.css' type='text/css' media='print' />\n";
+                $css_default = "screen";
+			}
+			echo "<link rel='stylesheet' href='".THEME_ABS."{$pref['themecss']}' type='text/css' media='{$css_default}' />\n";
+
+
 		}
 		else
 		{
-
-			echo "<link rel='stylesheet' href='".THEME_ABS."style.css' type='text/css' />\n";
+			// Support for print and handheld media.
+			if(file_exists(THEME."style_mobile.css")){
+            	echo "<link rel='stylesheet' href='".THEME_ABS."style_mobile.css' type='text/css' media='handheld' />\n";
+                $css_default = "screen";
+			}
+			if(file_exists(THEME."style_print.css")){
+            	echo "<link rel='stylesheet' href='".THEME_ABS."style_print.css' type='text/css' media='print' />\n";
+                $css_default = "screen";
+			}
+			echo "<link rel='stylesheet' href='".THEME_ABS."style.css' type='text/css' media='{$css_default}' />\n";
 		}
 		if (!isset($no_core_css) || !$no_core_css) {
 			echo "<link rel='stylesheet' href='".e_FILE_ABS."e107.css' type='text/css' />\n";
