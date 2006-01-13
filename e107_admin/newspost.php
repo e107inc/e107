@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.100 $
-|   $Date: 2005-12-25 01:26:59 $
-|   $Author: sweetas $
+|   $Revision: 1.101 $
+|   $Date: 2006-01-13 20:54:30 $
+|   $Author: lisa_ $
 +---------------------------------------------------------------+
 
 */
@@ -897,11 +897,11 @@ class newspost {
 		$_POST['comment_total'] = $comment_total;
 		$_PR = $_POST;
 
-		$_PR['news_title'] = $tp->post_toHTML($tp->spell_check($_PR['news_title']));
+		$_PR['news_title'] = $tp->post_toHTML($_PR['news_title']);
 		$_PR['news_summary'] = $tp->post_toHTML($_PR['news_summary']);
 		$_PR['data'] = $tp->post_toHTML($_PR['data'], FALSE);
-		$_PR['news_extended'] = $tp->post_toHTML($tp->spell_check($_PR['news_extended']));
-		$_PR['news_body'] = $tp->spell_check(strstr($_PR['data'], "[img]http") ? $_PR['data'] : str_replace("[img]", "[img]../", $_PR['data']));
+		$_PR['news_extended'] = $tp->post_toHTML($_PR['news_extended']);
+		$_PR['news_body'] = strstr($_PR['data'], "[img]http") ? $_PR['data'] : str_replace("[img]", "[img]../", $_PR['data']);
 
 		$_PR['news_file'] = $_POST['news_file'];
 		$_PR['news_image'] = $_POST['news_image'];
