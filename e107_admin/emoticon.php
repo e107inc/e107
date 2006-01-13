@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/emoticon.php,v $
-|     $Revision: 1.30 $
-|     $Date: 2005-12-25 01:26:59 $
+|     $Revision: 1.31 $
+|     $Date: 2006-01-13 14:34:41 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -23,7 +23,7 @@ if (!getperms("F")) {
 	exit;
 }
 $e_sub_cat = 'emoticon';
-
+		print_a($_POST);
 require_once("auth.php");
 
 if(!$sql->db_Count("core", "(*)", "e107_name = 'emote_default'"))
@@ -153,7 +153,7 @@ class emotec
 	function emoteConf($packID)
 	{
 
-		global $ns, $fl, $pref, $sysprefs;
+		global $ns, $fl, $pref, $sysprefs, $tp;
 		$corea = "emote_".$packID;
 
 		$emotecode = $sysprefs -> getArray($corea);
@@ -189,7 +189,7 @@ class emotec
 			<tr>
 			<td class='forumheader3' style='width: 20%;'>".$ename."</td>
 			<td class='forumheader3' style='width: 20%; text-align: center;'><img src='".$emote['path'].$ename."' alt='' /></td>
-			<td class='forumheader3' style='width: 60%;'><input style='width: 80%' class='tbox' type='text' name='$evalue' value='".$emotecode[$evalue]."' maxlength='200' /></td>
+			<td class='forumheader3' style='width: 60%;'><input style='width: 80%' class='tbox' type='text' name='$evalue' value='".$tp -> toForm($emotecode[$evalue])."' maxlength='200' /></td>
 			</tr>
 			";	
 		}
@@ -208,7 +208,7 @@ class emotec
 
 	function saveConf()
 	{
-		global $ns, $sql;
+		global $ns, $sql, $tp;
 
 		$packID = $_POST['packID'];
 		unset($_POST['sub_conf'], $_POST['packID']);
@@ -219,12 +219,13 @@ class emotec
 			$_POST[$key] = $value;
 		}
 
+		$encoded_emotes = $tp -> toDB($_POST);
+		$tmp = addslashes(serialize($encoded_emotes));
 
-		$tmp = addslashes(serialize($_POST));
-
-		if(!admin_update($sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='emote_".$packID."' "), 'update', EMOLAN_16))
-		{
-			$sql->db_Insert("core", "'emote_".$packID."', '$tmp' ");
+		if ($sql->db_Select("core", "*", "e107_name='emote_".$packID."'")) {
+			admin_update($sql->db_Update("core", "e107_value='$tmp' WHERE e107_name='emote_".$packID."' "), 'update', EMOLAN_16);
+		} else {
+			admin_update($sql->db_Insert("core", "'emote_".$packID."', '$tmp' "), 'insert', EMOLAN_16);
 		}
 	}
 
