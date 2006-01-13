@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.126 $
-|     $Date: 2006-01-13 12:25:35 $
-|     $Author: streaky $
+|     $Revision: 1.127 $
+|     $Date: 2006-01-13 13:08:45 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -71,9 +71,6 @@ class e_parse
 	{
 		if($text == "") { return ""; }
 		$mode = ($single_quotes ? ENT_QUOTES :ENT_COMPAT);
-		if (MAGIC_QUOTES_GPC == TRUE) {
-			$text = stripslashes($text);
-		}
 		$search = array('&#036;', '&quot;');
 		$replace = array('$', '"');
 		$text = str_replace($search, $replace, $text);
@@ -119,6 +116,9 @@ class e_parse
 	}
 
 	function post_toForm($text) {
+		if (MAGIC_QUOTES_GPC == TRUE) {
+			$text = stripslashes($text);
+		}
 		// ensure apostrophes are properly converted, or else the form item could break
 		return str_replace(array( "'", '"'), array("&#039;", "&quot;"), $text);
 	}
