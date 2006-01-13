@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.97 $
-|		$Date: 2006-01-07 01:37:26 $
+|		$Revision: 1.98 $
+|		$Date: 2006-01-13 20:03:43 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -42,7 +42,7 @@ $TOPIC_ROW = "
 <tr>
 	<td class='forumheader3' style='width:20%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
 	<td class='forumheader3' style='vertical-align:top;'>
-		<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>{TOPIC_HEADING}</a>
+		<a style='cursor: pointer;' onclick='expandit(this);'>{TOPIC_HEADING}</a>
 		<div style='display: none;'>
 			<div class='smalltext'>{TOPIC_HELP}</div><br />
 			{TOPIC_FIELD}
@@ -245,7 +245,7 @@ class contentform{
 							<tr>
 								<td class='forumheader3' style='".$padding." ".$border." width:30%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
 								<td class='forumheader3' style='".$padding." ".$border." vertical-align:top;'>
-									<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>{TOPIC_HEADING}</a>
+									<a style='cursor: pointer;' onclick='expandit(this);'>{TOPIC_HEADING}</a>
 									<div style='display: none;'>
 										<div class='smalltext'>{TOPIC_HELP}</div><br />
 										{TOPIC_FIELD}
@@ -2159,7 +2159,7 @@ class contentform{
 			<tr>
 				<td class='forumheader3' style='width:20%; white-space:nowrap; vertical-align:top;'>{TOPIC_TOPIC}</td>
 				<td class='forumheader3' style='vertical-align:top;'>
-					<a style='cursor: pointer; cursor: hand' onclick='expandit(this);'>{TOPIC_HEADING}</a>
+					<a style='cursor: pointer;' onclick='expandit(this);'>{TOPIC_HEADING}</a>
 					<div style='display: none;'>
 						<div class='smalltext'>{TOPIC_HELP}</div><br />
 						{TOPIC_FIELD}

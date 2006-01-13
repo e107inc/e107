@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/content.php,v $
-|		$Revision: 1.87 $
-|		$Date: 2006-01-07 01:37:26 $
+|		$Revision: 1.88 $
+|		$Date: 2006-01-13 20:03:43 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1145,7 +1145,7 @@ function show_content_score(){
 // ##### CONTENT ITEM ------------------------------------------
 function show_content_item(){
 		global $pref, $content_pref, $content_icon_path, $content_image_path, $content_file_path, $custom, $plugindir, $plugintable, $array, $content_shortcodes, $datequery, $order, $nextprevquery, $from, $number, $row, $qs, $gen, $sql, $aa, $tp, $rs, $cobj, $e107, $e107cache, $eArrayStorage, $ns, $rater, $ep, $row, $authordetails, $mainparent; 
-		global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS, $CONTENT_CONTENT_TABLE_PARENT, $CONTENT_CONTENT_TABLE_INFO_PRE, $CONTENT_CONTENT_TABLE_INFO_POST, $CONTENT_CONTENT_TABLE_AUTHORDETAILS;
+		global $CONTENT_CONTENT_TABLE_TEXT, $CONTENT_CONTENT_TABLE_PAGENAMES, $CONTENT_CONTENT_TABLE_SUMMARY, $CONTENT_CONTENT_TABLE_CUSTOM_TAGS, $CONTENT_CONTENT_TABLE_PARENT, $CONTENT_CONTENT_TABLE_INFO_PRE, $CONTENT_CONTENT_TABLE_INFO_POST, $CONTENT_CONTENT_TABLE_AUTHORDETAILS, $CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA, $CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA;
 
 		$mainparent			= $aa -> getMainParent(intval($qs[1]));
 		$content_pref		= $aa -> getContentPref($mainparent);
@@ -1277,9 +1277,18 @@ function show_content_item(){
 					$rat	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_RATING}', FALSE, $content_shortcodes);
 					$fil	= $tp -> parseTemplate('{CONTENT_CONTENT_TABLE_FILE}', FALSE, $content_shortcodes);
 
-					if ($date!="" || $auth!="" || $ep!="" || $edit!="" || $par!="" || $com!="" || $score!="" || $ref!="" || $ico!="" || $sub!="" || $rat!="" || $fil!="") {
+					$CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA = FALSE;
+					$CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA = FALSE;
+					$CONTENT_CONTENT_TABLE_INFO_PRE = FALSE;
+					$CONTENT_CONTENT_TABLE_INFO_POST = FALSE;
+					
+					if ($date!="" || $auth!="" || $ep!="" || $edit!="" || $par!="" || $com!="" || $score!="" || $ref!="" || $sub!="" || $rat!="" || $fil!="") {
 						$CONTENT_CONTENT_TABLE_INFO_PRE = TRUE;
 						$CONTENT_CONTENT_TABLE_INFO_POST = TRUE;
+					}
+					if($CONTENT_CONTENT_TABLE_INFO_PRE || $ico==''){
+						$CONTENT_CONTENT_TABLE_INFO_PRE_HEADDATA = TRUE;
+						$CONTENT_CONTENT_TABLE_INFO_POST_HEADDATA = TRUE;
 					}
 
 					if(!isset($CONTENT_CONTENT_TABLE)){
