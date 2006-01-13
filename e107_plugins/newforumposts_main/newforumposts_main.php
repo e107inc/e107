@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newforumposts_main/newforumposts_main.php,v $
-|     $Revision: 1.20 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.21 $
+|     $Date: 2006-01-13 13:27:22 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -36,11 +36,11 @@ else if(!$NEWFORUMPOSTSTYLE_HEADER) {
 		<div style='text-align:center'>\n<table style='width:auto' class='fborder'>
 		<tr>
 		<td style='width:5%' class='forumheader'>&nbsp;</td>
-		<td style='width:45%' class='forumheader'>".LAN_1."</td>
-		<td style='width:15%; text-align:center' class='forumheader'>".LAN_2."</td>
-		<td style='width:5%; text-align:center' class='forumheader'>".LAN_3."</td>
-		<td style='width:5%; text-align:center' class='forumheader'>".LAN_4."</td>
-		<td style='width:25%; text-align:center' class='forumheader'>".LAN_5."</td>
+		<td style='width:45%' class='forumheader'>".NFPM_LAN_1."</td>
+		<td style='width:15%; text-align:center' class='forumheader'>".NFPM_LAN_2."</td>
+		<td style='width:5%; text-align:center' class='forumheader'>".NFPM_LAN_3."</td>
+		<td style='width:5%; text-align:center' class='forumheader'>".NFPM_LAN_4."</td>
+		<td style='width:25%; text-align:center' class='forumheader'>".NFPM_LAN_5."</td>
 		</tr>\n";
 	 
 	$NEWFORUMPOSTSTYLE_MAIN = "
@@ -54,7 +54,7 @@ else if(!$NEWFORUMPOSTSTYLE_HEADER) {
 		</tr>\n";
 	 
 	$NEWFORUMPOSTSTYLE_FOOTER = "<tr>\n<td colspan='6' style='text-align:center' class='forumheader2'>
-		<span class='smalltext'>".LAN_6.": <b>{TOTAL_TOPICS}</b> | ".LAN_4.": <b>{TOTAL_REPLIES}</b> | ".LAN_3.": <b>{TOTAL_VIEWS}</b></span>\n</td>\n</tr>\n</table>\n</div>";
+		<span class='smalltext'>".NFPM_LAN_6.": <b>{TOTAL_TOPICS}</b> | ".NFPM_LAN_4.": <b>{TOTAL_REPLIES}</b> | ".NFPM_LAN_3.": <b>{TOTAL_VIEWS}</b></span>\n</td>\n</tr>\n</table>\n</div>";
 	 
 }
 
