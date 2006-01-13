@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pdf/pdf.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2006-01-11 23:16:29 $
+|     $Revision: 1.8 $
+|     $Date: 2006-01-13 10:49:03 $
 |     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -33,15 +33,6 @@ require_once(e_PLUGIN."pdf/ufpdf.php");		//require the ufpdf class
 require_once(e_PLUGIN."pdf/e107pdf.php");	//require the e107pdf class
 $pdf = new e107PDF();
 
-if(is_readable(THEME."images/logopdf.png")){
-	$logo = THEME."images/logopdf.png";
-}else{
-	$logo = e_IMAGE."logo.png";
-}
-define('PDFLOGO', $logo);								//define logo to add in header
-
-
-
 if(strpos($source,'plugin:') !== FALSE)
 {
 	$plugin = substr($source,7);
@@ -49,9 +40,7 @@ if(strpos($source,'plugin:') !== FALSE)
 	{
 		include_once(e_PLUGIN.$plugin."/e_emailprint.php");
 		$text = print_item_pdf($parms);
-
 		$pdf->makePDF($text);
-
 	}
 	else
 	{
@@ -117,14 +106,12 @@ else
 
 		//define url and logo to use in the header of the pdf file
 		$url		= SITEURL."news.php?item.".$row['news_id'];
-		define('PDFPAGEURL', $url);								//define page url to add in header
 
 		//always return an array with the following data:
 		$text = array($text, $creator, $author, $title, $subject, $keywords, $url);
 		$pdf->makePDF($text);
 	
 	}
-	
 
 }
 
