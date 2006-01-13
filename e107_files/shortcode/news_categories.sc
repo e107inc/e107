@@ -12,9 +12,7 @@ $nbr_cols = (defined("NEWSCAT_COLS")) ? NEWSCAT_COLS : $nbr_cols;
 	if(!$NEWSCAT){
 		$NEWSCAT = "
 			<div style='padding:5px'><div style='border-bottom:1px inset black; padding-bottom:1px;margin-bottom:5px'>
-			{NEWSCATICON}
-			&nbsp;
-			{NEWSCATEGORY}
+			{NEWSCATICON}&nbsp;{NEWSCATEGORY}
 			</div>
 			{NEWSCAT_ITEM}
 			</div>
