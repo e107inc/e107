@@ -1,5 +1,5 @@
-if(is_readable(THEME."images/logo.png")){
-	$logo = THEME."images/logo.png";
+if(is_readable(THEME."images/e_logo.png")){
+	$logo = THEME."images/e_logo.png";
 }else{
 	$logo = e_IMAGE."logo.png";
 }
