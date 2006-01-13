@@ -377,6 +377,9 @@ class e107PDF extends UFPDF{
 				$this->HEIGHT=$attr['HEIGHT'];
 				break;
 			case 'TR':
+				break;
+			case 'TD':
+				break;
 			case 'CODE':
 			case 'BLOCKQUOTE':
 			case 'PRE':
@@ -493,6 +496,9 @@ class e107PDF extends UFPDF{
 		}
 		if($tag=='LI'){
 			$this->Ln(5);
+		}
+		if($tag=='TD'){
+			$this->Write(5,'    ');
 		}
 		if($tag=='TR' || $tag=='BLOCKQUOTE' || $tag=='CODE' || $tag=='PRE'){
 			$this->SetStyle('B',false);
