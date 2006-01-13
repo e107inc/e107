@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.85 $
-|		$Date: 2006-01-07 01:37:26 $
+|		$Revision: 1.86 $
+|		$Date: 2006-01-13 00:26:33 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -322,9 +322,40 @@ class content{
 				$num_rows = $sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
 				$row = $sql -> db_Fetch();
 				if (empty($row['content_pref'])) {
-					$content_pref = $this -> ContentDefaultPrefs($id);
-					$tmp = $eArrayStorage->WriteArray($content_pref);
-					$sql -> db_Update($plugintable, "content_pref='{$tmp}' WHERE content_id='$id' ");
+					
+					//if no prefs present yet, get them from core (default preferences)
+					$num_rows = $sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+					//if those are not present, insert the default ones given in this file
+					if ($num_rows == 0) {
+						$content_pref = $this -> ContentDefaultPrefs("0");
+						$tmp = $eArrayStorage->WriteArray($content_pref);
+						$sql -> db_Insert("core", "'$plugintable', '{$tmp}' ");
+						$sql -> db_Select("core", "*", "e107_name='$plugintable' ");
+					}
+					$row = $sql -> db_Fetch();
+					$tmp = $eArrayStorage->ReadArray($row['e107_value']);
+					
+					//create array of custom preset tags
+					foreach($tmp['content_custom_preset_key'] as $ck => $cv){
+						if(!empty($cv)){
+							$string[] = $cv;
+						}
+					}
+					if($string){
+						$content_pref['content_custom_preset_key'] = $string;
+					}
+					//replace the id value for the content_pref
+					foreach($tmp as $k=>$v){
+						if(substr($k,-2) == "_0"){
+							$k = str_replace("_0", "_{$id}", $k);
+						}
+						if(strpos($k, "content_") === 0){
+							$content_pref[$k] = $tp->toDB($v);
+						}
+					}
+					//finally we can store the new default prefs into the db
+					$tmp1 = $eArrayStorage->WriteArray($content_pref);
+					$sql -> db_Update($plugintable, "content_pref='{$tmp1}' WHERE content_id='$id' ");
 					$sql -> db_Select($plugintable, "content_pref", "content_id='$id' ");
 					$row = $sql -> db_Fetch();
 				}
