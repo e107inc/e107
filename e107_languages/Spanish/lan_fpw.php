@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/lan_fpw.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.8 $
+|     $Date: 2006-01-14 10:37:10 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -47,6 +47,6 @@ define("LAN_FPW12","e inmediatamente cambie su contraseña, por motivos de segur
 define("LAN_FPW13", "por favor siga las instrucciones del email para validar su contraseña.");
 define("LAN_FPW14", "Fué enviado por alguien con la IP");
 define("LAN_FPW15", "Esto no quiere decir que su contraseña haya sido cambiada.  Debe acceder al enlace proporcionado al final de este mensaje para completar el cambio de contraseña.");
-define("LAN_FPW16", "Si usted no ha solicitado o no desea cambiar su contraseña, simplemente ignore este email");
+define("LAN_FPW16", "Si no solicitó resetear su contraseña y NO quiere resetearla, simplemente ignore este correo");
 define("LAN_FPW17", "El siguiente enlace será válido durante 48 horas.");
 ?>

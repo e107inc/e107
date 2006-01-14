@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_admin.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.18 $
+|     $Date: 2006-01-14 10:37:10 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
@@ -220,5 +220,6 @@ define("LAN_OPTIONAL", "Opcional");
 define("LAN_INACTIVE","Inactivo");
 define("LAN_NO_CHANGE","Falló la actualización y no se cambió nada."); 
 define("LAN_TRY_AGAIN","Por favor, vuelva a intentarlo.");
+define("LAN_BAN","Expulsión");
 
 ?>
