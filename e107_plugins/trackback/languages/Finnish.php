@@ -7,19 +7,19 @@
 |     http://e107.org
 |     jalist@e107.org
 |
-|     Released under the terms and conditions of the
+|     Released under the terms ja conditions of the
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/trackback/languages/Finnish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-06 17:41:18 $
-|     $Author: timmerbacka $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-14 22:26:05 $
+|     $Kirjoittaja: stevedunstan $
 +----------------------------------------------------------------------------+
 */
     
 define("TRACKBACK_L1", "Configure Trackback");
 define("TRACKBACK_L2", "This plugin enables you to use trackback in your news posts.");
-define("TRACKBACK_L3", "Trackback is now installed and enabled.");
+define("TRACKBACK_L3", "Trackback is now installed ja enabled.");
 define("TRACKBACK_L4", "Trackback settings saved.");
 define("TRACKBACK_L5", "Päällä");
 define("TRACKBACK_L6", "Pois päältä");
@@ -32,6 +32,6 @@ define("TRACKBACK_L11", "Trackback address for this post:");
 define("TRACKBACK_L12", "No trackbacks for this item");
 define("TRACKBACK_L13", "Moderate trackbacks");
 define("TRACKBACK_L14", "Poista");
-define("TRACKBACK_L15", "Trackbacks deleted.");
+define("TRACKBACK_L15", "Trackbacks poistettu.");
 
 ?>

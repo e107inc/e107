@@ -1,12 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_online.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-05 18:25:51 $
-|     $Author: timmerbacka $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-14 22:26:04 $
+|     $Kirjoittaja: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -20,8 +20,8 @@ define("ONLINE_EL6", "Uusin käyttäjä");
 define("ONLINE_EL7", "viewing");
 define("ONLINE_EL8", "most ever online: ");
 define("ONLINE_EL9", "on");
-define("ONLINE_EL10", "Member Name");
-define("ONLINE_EL11", "Viewing Page");
+define("ONLINE_EL10", "Käyttäjä Name");
+define("ONLINE_EL11", "Näytäing Page");
 define("ONLINE_EL12", "Vastaus");
 define("ONLINE_EL13", "Keskustelualue");
 define("ONLINE_EL14", "Keskustelu");
@@ -32,33 +32,33 @@ define("CHAT", "Pikaviesti");
 define("COMMENT", "Kommentit");
 define("DOWNLOAD", "Tiedostojen lataus");
 define("EMAIL", "email.php");
-define("FORUM", "Main Forum Index");
-define("LINKS", "Linkit");
+define("FORUM", "Main Keskustelualue Index");
+define("LINKS", "Linkkiit");
 define("NEWS", "Uutiset");
-define("OLDPOLLS", "Old Polls");
+define("OLDPOLLS", "Old Äänestyss");
 define("POLLCOMMENT", "Äänestys");
 define("PRINTPAGE", "Print");
 define("LOGIN", "Logging In");
 define("SEARCH", "Etsintä");
 define("STATS", "Tilastot");
 define("SUBMITNEWS", "Lisää uutinen");
-define("UPLOAD", "Uploads");
+define("UPLOAD", "Tiedostojen lisäys");
 define("USERPAGE", "User Profiles");
 define("USERSETTINGS", "Käyttäjän asetukset");
-define("ONLINE", "Online Users");
-define("LISTNEW", "List New Items");
+define("ONLINE", "Online Käyttäjät");
+define("LISTNEW", "List Uusi Nimikes");
 define("USERPOSTS", "Käyttäjän kirjoittamat");
-define("SUBCONTENT", "Submit Artikkeli / Arvostelu");
-define("TOP", "Top Posters/Most Active Threads");
+define("SUBCONTENT", "Lähetä Artikkeli / Arvostelu");
+define("TOP", "Top Lähetäers/Most Active Keskustelua");
 define("ADMINAREA", "Ylläpitotoiminnot");
 define("BUGTRACKER", "Virjeilmoitukset");
 define("EVENT", "Events List");
-define("CALENDAR", "Events Calendar");
+define("CALENDAR", "Events Kalenteri");
 define("FAQ", "Ukk");
 define("PM", "Private Messaging");
 define("SURVEY", "Kysely");
 define("ARTICLE", "Artikkeli");
-define("CONTENT", "Content Page");
+define("CONTENT", "Sisältösivut Page");
 define("REVIEW", "Arvostelu");
 
 ?>

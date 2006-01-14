@@ -7,12 +7,12 @@
 | http://e107.org
 | jalist@e107.org
 |
-| Released under the terms and conditions of the
+| Released under the terms ja conditions of the
 | GNU General Public License (http://gnu.org).
 +---------------------------------------------------------------+
 */
     
-define("BLOGCAL_L1", "News for ");
+define("BLOGCAL_L1", "Uutiset for ");
 define("BLOGCAL_L2", "Archive");
     
 define("BLOGCAL_D1", "Ma");
@@ -44,6 +44,6 @@ define("BLOGCAL_CONF3", "Päivitä Menu Settings");
 define("BLOGCAL_CONF4", "BlogCal Menu Configuration");
 define("BLOGCAL_CONF5", "BlogCal menu configuration saved");
     
-define("BLOGCAL_ARCHIV1", "Select Archive");
+define("BLOGCAL_ARCHIV1", "Valitse Archive");
     
 ?>

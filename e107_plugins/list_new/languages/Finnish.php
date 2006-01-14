@@ -7,61 +7,26 @@
 |     http://e107.org
 |     jalist@e107.org
 |
-|     Released under the terms and conditions of the
+|     Released under the terms ja conditions of the
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Finnish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-06 17:41:17 $
-|     $Author: timmerbacka $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-14 22:26:04 $
+|     $Kirjoittaja: lisa_ $
 +----------------------------------------------------------------------------+
 */
 
-define("PAGE_NAME", "List New Items");
-
-//all benaeth will be deprecated sometime
-define("LIST_1", "Uutiset");
-define("LIST_2", "untitled");
-define("LIST_3", "New viime käyntisi jälkeen ...");
-define("LIST_4", "No new items found.");
-define("LIST_5", "Pikaviestejä");
-define("LIST_6", "ylläpitäjä on estänyt");
-define("LIST_7", "Forum Posts");
-define("LIST_8", "Uusia käyttäjiä");
-define("LIST_9", "Kommentit");
-define("LIST_10", "Ideas");
-define("LIST_11", "Lataa");
-define("LIST_12", "Uutiset");
-define("LIST_13", "Virjeilmoitukset");
-define("LIST_14", "Äänestys");
-define("LIST_15", "FAQ");
-define("LIST_16", "Bugs");
-define("LIST_17", "Ideas");
-
-define("LIST_13", "Profiili");
-define("LIST_14", "Artikkeli");
-define("LIST_15", "Sisältö");
-
-define("LIST_18", "FAQ");
-define("LIST_18", "Äänestys");
-define("LIST_19", "Docs");
-define("LIST_20", "Virjeilmoitukset");
-    
-define("LIST_21", "Artikkelit");
-define("LIST_22", "Ideas");
-//all above will be deprecated sometime
-
-define("LIST_23", "This plugin is not installed.");
-
+define("PAGE_NAME", "List Uusi Nimikes");
 
 define("LIST_PLUGIN_1", "List");
-define("LIST_PLUGIN_2", "This plugin allows you to view a list of recent additions in all e107 categories. You can either view the list with data viime käyntisi jälkeen, or view a general latest additions list. Besides the page a menu is also present. Every section is configurable in the admin area.");
+define("LIST_PLUGIN_2", "This plugin allows you to view a list of uusimmat additions in all e107 categories. You can either view the list with data viime käyntisi jälkeen, or view a general latest additions list. Besides the page a menu is also present. Every section is configurable in the admin area.");
 define("LIST_PLUGIN_3", "Configure Päävalikko");
 define("LIST_PLUGIN_4", "The List_new plugin is now ready to be used.");
 define("LIST_PLUGIN_5", "list");
+define("LIST_PLUGIN_6", "This plugin is not installed.");
 
-
-define("LIST_ADMIN_1", "recent");
+define("LIST_ADMIN_1", "uusimmat");
 define("LIST_ADMIN_2", "update settings");
 define("LIST_ADMIN_3", "settings updated");
 define("LIST_ADMIN_4", "section");
@@ -73,10 +38,10 @@ define("LIST_ADMIN_9", "open");
 define("LIST_ADMIN_10", "closed");
 define("LIST_ADMIN_11", "update");
 define("LIST_ADMIN_12", "choose");
-define("LIST_ADMIN_13", "Welcome on the Recent page of ".SITENAME." ! This page shows for the most common sections of this site a list with the most recent additions in these sections.");
-define("LIST_ADMIN_14", "recent additions");
+define("LIST_ADMIN_13", "Welcome on the Recent page of ".SITENAME." ! This page shows for the most common sections of this site a list with the most uusimmat additions in these sections.");
+define("LIST_ADMIN_14", "uusimmat additions");
 define("LIST_ADMIN_15", "new viime käyntisi jälkeen");
-define("LIST_ADMIN_16", "Welcome on the New page of ".SITENAME." ! This page shows for the most common sections of this site a list with the additions in these sections viime käyntisi jälkeen.");
+define("LIST_ADMIN_16", "Welcome on the Uusi page of ".SITENAME." ! This page shows for the most common sections of this site a list with the additions in these sections viime käyntisi jälkeen.");
 
 define("LIST_ADMIN_SECT_1", "sections");
 define("LIST_ADMIN_SECT_2", "choose which sections to show");
@@ -86,7 +51,7 @@ define("LIST_ADMIN_SECT_4", "display style");
 define("LIST_ADMIN_SECT_5", "choose which sections are opened by default");
 define("LIST_ADMIN_SECT_6", "");
 
-define("LIST_ADMIN_SECT_7", "kirjoittajan");
+define("LIST_ADMIN_SECT_7", "author");
 define("LIST_ADMIN_SECT_8", "choose if the author should be displayed");
 define("LIST_ADMIN_SECT_9", "");
 
@@ -114,10 +79,9 @@ define("LIST_ADMIN_SECT_25", "caption");
 define("LIST_ADMIN_SECT_26", "define a caption for each section");
 define("LIST_ADMIN_SECT_27", "");
 
-
 define("LIST_ADMIN_OPT_1", "general");
-define("LIST_ADMIN_OPT_2", "recent page");
-define("LIST_ADMIN_OPT_3", "recent menu");
+define("LIST_ADMIN_OPT_2", "uusimmat page");
+define("LIST_ADMIN_OPT_3", "uusimmat menu");
 define("LIST_ADMIN_OPT_4", "new page");
 define("LIST_ADMIN_OPT_5", "new menu");
 define("LIST_ADMIN_OPT_6", "options");
@@ -146,8 +110,8 @@ define("LIST_ADMIN_LAN_14", "date");
 define("LIST_ADMIN_LAN_15", "choose a date style");
 define("LIST_ADMIN_LAN_16", "For more information on date formats see the <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime function page at php.net</a>");
 
-define("LIST_ADMIN_LAN_17", "today date");
-define("LIST_ADMIN_LAN_18", "choose a date style if the date is today");
+define("LIST_ADMIN_LAN_17", "topäivä date");
+define("LIST_ADMIN_LAN_18", "choose a date style if the date is topäivä");
 define("LIST_ADMIN_LAN_19", "For more information on date formats see the <a href='http://www.php.net/manual/en/function.strftime.php' rel='external'>strftime function page at php.net</a>");
 
 define("LIST_ADMIN_LAN_20", "columns");
@@ -166,22 +130,21 @@ define("LIST_ADMIN_LAN_29", "icon : default");
 define("LIST_ADMIN_LAN_30", "use default theme bullet if no icon is present or if icon:use is disabled");
 define("LIST_ADMIN_LAN_31", "");
 
-define("LIST_ADMIN_LAN_32", "timelapse:days");
-define("LIST_ADMIN_LAN_33", "maximum of days users can look back");
+define("LIST_ADMIN_LAN_32", "timelapse:päivää");
+define("LIST_ADMIN_LAN_33", "maximum of päivää käyttäjäs can look back");
 define("LIST_ADMIN_LAN_34", "");
 define("LIST_ADMIN_LAN_35", "päivää");
 
 define("LIST_ADMIN_LAN_36", "timelapse");
-define("LIST_ADMIN_LAN_37", "display a select box with number of days to look back?");
+define("LIST_ADMIN_LAN_37", "display a select box with number of päivää to look back?");
 define("LIST_ADMIN_LAN_38", "");
 
-
-define("LIST_MENU_1", "recent additions");
-define("LIST_MENU_2", "Kirjoittaja");
+define("LIST_MENU_1", "uusimmat additions");
+define("LIST_MENU_2", "kirjoittaja");
 define("LIST_MENU_3", "on");
 define("LIST_MENU_4", "in");
 define("LIST_MENU_5", "päivää");
-define("LIST_MENU_6", "view content for how may days?");
+define("LIST_MENU_6", "view content for how may päivää?");
 define("LIST_MENU_7", "");
 define("LIST_MENU_8", "");
 define("LIST_MENU_9", "");
@@ -210,8 +173,6 @@ define("LIST_COMMENT_8", "sisältö");
 define("LIST_COMMENT_9", "tiedoston lataus");
 define("LIST_COMMENT_10", "ideas");
 
-
-
 define("LIST_DOWNLOAD_1", "ladattavat tiedostot");
 define("LIST_DOWNLOAD_2", "no downloads");
 
@@ -221,7 +182,6 @@ define("LIST_MEMBER_2", "no members");
 define("LIST_CONTENT_1", "sisältö");
 define("LIST_CONTENT_2", "no content in");
 define("LIST_CONTENT_3", "no valid content category");
-
 
 define("LIST_CHATBOX_1", "chatbox");
 define("LIST_CHATBOX_2", "no chatbox posts");
@@ -238,6 +198,5 @@ define("LIST_FORUM_3", "views:");
 define("LIST_FORUM_4", "replies:");
 define("LIST_FORUM_5", "lastpost:");
 define("LIST_FORUM_6", "on:");
-
 
 ?>

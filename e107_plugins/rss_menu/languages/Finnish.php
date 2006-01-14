@@ -1,12 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/rss_menu/languages/Finnish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-06 17:41:18 $
-|     $Author: timmerbacka $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-14 22:26:04 $
+|     $Kirjoittaja: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -24,4 +24,15 @@ define("BACKEND_MENU_L9", "Our downloads");
 
 define("RSS_LAN01", "Enable seperate feeds for each news category?");
 define("RSS_LAN02", "Enable seperate feeds for each download category?");
+
+define("RSS_NEWS","Uutiset");
+define("RSS_COM","Kommentit");
+define("RSS_ART","Artikkelit");
+define("RSS_REV", "Arvostelut");
+define("RSS_FT","Keskustelualue Keskustelua");
+define("RSS_FP","Keskustelualue Viestiö");
+define("RSS_FSP","Keskustelualue Specific Lähetä");
+define("RSS_BUG","Virjeilmoitukset");
+define("RSS_FOR","Keskustelualue");
+define("RSS_DL","Tiedostojen lataus");
 ?>

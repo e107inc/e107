@@ -1,12 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_user_extended.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-05 18:25:51 $
-|     $Author: timmerbacka $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-14 22:26:04 $
+|     $Kirjoittaja: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("UE_LAN_1", "Text Box");
@@ -22,7 +22,7 @@ define("UE_LAN_9", "Nimi");
 define("UE_LAN_10", "Type");
 define("UE_LAN_11", "Use");
 
-define("UE_LAN_HIDE", "Piiloita from users");
+define("UE_LAN_HIDE", "Piiloita from käyttäjäs");
 
 define("UE_LAN_LOCATION", "Sijainti");
 define("UE_LAN_LOCATION_DESC", "User location");

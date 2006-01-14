@@ -1,12 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_user.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-05 18:25:51 $
-|     $Author: timmerbacka $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-14 22:26:04 $
+|     $Kirjoittaja: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Käyttäjät");
@@ -18,11 +18,11 @@ define("LAN_116", "AIM osoite");
 define("LAN_117", "MSN Messenger");
 define("LAN_118", "Syntymäpäivä");
 define("LAN_119", "Sijainti");
-define("LAN_120", "Allekirjoitus");
-define("LAN_137", "There is ei tietoa for that user as they are not registered at");
-define("LAN_138", "Rekisteröitynyt käyttäjäs: ");
+define("LAN_120", "Kaikkiekirjoitus");
+define("LAN_137", "There is ei tietoa for that käyttäjä as they are not registered at");
+define("LAN_138", "Rekisteröityneet käyttäjät: ");
 define("LAN_139", "Järjestys: ");
-define("LAN_140", "Rekisteröitynyt käyttäjäs");
+define("LAN_140", "Rekisteröityneet käyttäjät");
 define("LAN_141", "Ei vielä rekisteröityneitä käyttäjiä.");
 define("LAN_142", "Käyttäjä");
 define("LAN_143", "[piiloitettu käyttäjän pyynnöstä]");
@@ -33,16 +33,16 @@ define("LAN_147", "Pikaviestejä");
 define("LAN_148", "Kommentteja");
 define("LAN_149", "Keskusteluviestejä");
 define("LAN_308", "Todellinen nimi");
-define("LAN_400", "That is not a valid user.");
+define("LAN_400", "That is not a valid käyttäjä.");
 define("LAN_401", "ei tietoa");
 define("LAN_402", "Käyttäjän profiili");
 define("LAN_403", "Tilastot");
-define("LAN_404", "Last visit");
+define("LAN_404", "Viimeisin käynti");
 define("LAN_405", "päivää sitten");
 define("LAN_406", "Pisteytys");
 define("LAN_407", "none");
 define("LAN_408", "ei kuvaa");
-define("LAN_409", "pisteit�");
+define("LAN_409", "pisteitä");
 define("LAN_410", "Muuta");
 define("LAN_411", "Paina tästä päivittääksesi tietojasi");
 define("LAN_412", "Paina tästä päivittääksesi käyttäjän tietoja");
@@ -50,7 +50,7 @@ define("LAN_413", "poista kuva");
 define("LAN_414", "edellinen käyttäjä");
 define("LAN_415", "seuraava käyttäjä");
 define("LAN_416", "Sinun tulee olla kirjautunut käyttäjäksi päästäksesi tälle sivulle");
-define("LAN_417", "Palvelun pääylläpitäjä");
+define("LAN_417", "Pääylläpitäjä");
 define("LAN_418", "Ylläpitäjä");
 define("LAN_419", "Näytä");
 define("LAN_420", "Laskeva järjestys");

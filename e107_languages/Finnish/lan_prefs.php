@@ -1,18 +1,18 @@
-<?php
+ï»¿<?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_prefs.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-05 18:25:51 $
-|     $Author: timmerbacka $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-14 22:26:04 $
+|     $Kirjoittaja: streaky $
 +----------------------------------------------------------------------------+
 */
 
-define("LAN_PREF_1", "e107 powered website");
-define("LAN_PREF_2", "e107 website system");
-define("LAN_PREF_3", "All trademarks are © their respective owners, all other content is © e107 powered website.<br />e107 is © e107.org 2002-2005 and is released under the <a href=\"http://www.gnu.org/\" rel=\"external\">GNU GPL license</a>.");
+define("LAN_PREF_1", "e107 Powered Www-sivut");
+define("LAN_PREF_2", "e107 Www-sivut System");
+define("LAN_PREF_3", "This site is powered by <a href=&quot;http://e107.org/&quot; rel=&quot;external&quot;>e107</a>, which is released under the terms of the <a href=&quot;http://www.gnu.org/&quot; rel=&quot;external&quot;>GNU</a> GPL License.");
 define("LAN_PREF_4", "censored");
 define("LAN_PREF_5", "Keskustelualueet");
 

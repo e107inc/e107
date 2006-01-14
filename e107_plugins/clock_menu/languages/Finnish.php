@@ -7,27 +7,27 @@
 |     http://e107.org
 |     jalist@e107.org
 |
-|     Released under the terms and conditions of the
+|     Released under the terms ja conditions of the
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/clock_menu/languages/Finnish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-06 17:41:17 $
-|     $Author: timmerbacka $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-14 22:26:04 $
+|     $Kirjoittaja: streaky $
 +----------------------------------------------------------------------------+
 */
     
 define('CLOCK_MENU_L1', 'Clock menu configuration saved');
-define('CLOCK_MENU_L2', 'Caption');
-define('CLOCK_MENU_L3', 'Update Menu Settings');
+define('CLOCK_MENU_L2', 'Otsikko');
+define('CLOCK_MENU_L3', 'Päivitä Menu Settings');
 define('CLOCK_MENU_L4', 'Clock Menu Config');
-define('CLOCK_MENU_L5', 'Monday,');
-define('CLOCK_MENU_L6', 'Tuesday,');
-define('CLOCK_MENU_L7', 'Wednesday,');
-define('CLOCK_MENU_L8', 'Thursday,');
-define('CLOCK_MENU_L9', 'Friday,');
-define('CLOCK_MENU_L10', 'Saturday,');
-define('CLOCK_MENU_L11', 'Sunday,');
+define('CLOCK_MENU_L5', 'Monpäivä,');
+define('CLOCK_MENU_L6', 'Tuespäivä,');
+define('CLOCK_MENU_L7', 'Wednespäivä,');
+define('CLOCK_MENU_L8', 'Thurspäivä,');
+define('CLOCK_MENU_L9', 'Fripäivä,');
+define('CLOCK_MENU_L10', 'Saturpäivä,');
+define('CLOCK_MENU_L11', 'Sunpäivä,');
 define('CLOCK_MENU_L12', 'January');
 define('CLOCK_MENU_L13', 'February');
 define('CLOCK_MENU_L14', 'March');
@@ -39,6 +39,6 @@ define('CLOCK_MENU_L19', 'August');
 define('CLOCK_MENU_L20', 'September');
 define('CLOCK_MENU_L21', 'October');
 define('CLOCK_MENU_L22', 'November');
-define('CLOCK_MENU_L23', 'December');
+define('CLOCK_MENU_L23', 'Laskevaember');
 define('CLOCK_MENU_L24', '');
 ?>

@@ -1,12 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_banner.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-05 18:25:51 $
-|     $Author: timmerbacka $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-14 22:26:04 $
+|     $Kirjoittaja: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Mainos");
@@ -14,7 +14,7 @@ define("PAGE_NAME", "Mainos");
 define("LAN_16", "Käyttäjänimi: ");
 define("LAN_17", "Salasana: ");
 define("LAN_18", "Jatka");
-define("LAN_19", "Please enter your client login and password to continue");
+define("LAN_19", "Please enter your client login ja password to continue");
 define("LAN_20", "Sorry, unable to find those details in the tietokanta. Please contact the site administrator for details.");
 define("LAN_21", "Banners Statistics");
 define("LAN_22", "Client");

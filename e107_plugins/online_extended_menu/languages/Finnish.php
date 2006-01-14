@@ -7,13 +7,13 @@
 |     http://e107.org
 |     jalist@e107.org
 |
-|     Released under the terms and conditions of the
+|     Released under the terms ja conditions of the
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/online_extended_menu/languages/Finnish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-06 17:41:17 $
-|     $Author: timmerbacka $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-14 22:26:04 $
+|     $Kirjoittaja: sweetas $
 +----------------------------------------------------------------------------+
 */
     
@@ -27,4 +27,7 @@ define("ONLINE_EL7", "viewing");
     
 define("ONLINE_EL8", "most ever online: ");
 define("ONLINE_EL9", "on");
+
+define("TRACKING_MESSAGE", "Online käyttäjä tracking is currently disabled, please enable it <a href='".e_ADMIN."käyttäjäs.php?options'>here</a></span><br />");
+
 ?>

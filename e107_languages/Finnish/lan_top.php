@@ -1,21 +1,21 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_top.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-05 18:25:51 $
-|     $Author: timmerbacka $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-14 22:26:04 $
+|     $Kirjoittaja: e107coders $
 +----------------------------------------------------------------------------+
 */
 
-define("TOP_LAN_0", "Top Forum Posters");
+define("TOP_LAN_0", "Top Keskustelualue Lähetäers");
 define("TOP_LAN_1", "Käyttäjännimi");
-define("TOP_LAN_2", "Posts");
-define("TOP_LAN_3", "Top Comment Posters");
+define("TOP_LAN_2", "Viestiö");
+define("TOP_LAN_3", "Top Kommentti Lähetäers");
 define("TOP_LAN_4", "Kommentit");
-define("TOP_LAN_5", "Top Chatbox Posters");
+define("TOP_LAN_5", "Top Pikaviestit Lähetäers");
 define("TOP_LAN_6", "Site Rating");
 
 //v.616

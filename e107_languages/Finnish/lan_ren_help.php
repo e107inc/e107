@@ -1,12 +1,12 @@
 <?php
 /*
 + ----------------------------------------------------------------------------+
-|     e107 website system - Language File.
+|     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_ren_help.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-05 18:25:51 $
-|     $Author: timmerbacka $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-14 22:26:04 $
+|     $Kirjoittaja: stevedunstan $
 +----------------------------------------------------------------------------+
 */
 define("LANHELP_1", "Musta");
@@ -37,7 +37,7 @@ define("LANHELP_22", "Click to open size dialog ...");
 define("LANHELP_23", "Lisää linkki: [link]http://mysite.com[/link] or  [link=http://yoursite.com]Visit My Site[/link]");
 define("LANHELP_24", "Lihavoitu teksti: [b]Tämä teksti näkyy lihavoituna[/b]", "font-weight:bold; width: 20px");
 define("LANHELP_25", "Kursivoitu teksti: [i]Tämä teksti näkyy kursivoituna[/i]", "font-style:italic; width: 20px");
-define("LANHELP_26", "Alleviivattu teksti: [u]Tämä teksti näkyy alleviivattuna[/u]", "text-decoration: underline; width: 20px");
+define("LANHELP_26", "Kaikkieviivattu teksti: [u]Tämä teksti näkyy alleviivattuna[/u]", "text-decoration: underline; width: 20px");
 define("LANHELP_27", "Lisää kuva: [img]mypicture.jpg[/img]");
 define("LANHELP_28", "Keskitä: [center]Tämä teksti näkyy keskitettynä[/center]");
 define("LANHELP_29", "Tasaus vasemmalle: [left]Tämä teksti näkyy vasemalle tasattuna[/left]");
@@ -47,7 +47,7 @@ define("LANHELP_32", "Code - esimuotoiltu teksti: [code]\$foo = bah;[/code]");
 define("LANHELP_33", "HTML - Poistaa rivinvaihdot tekstistä: [html]&lt;table&gt;&lt;tr&gt;&lt;td&gt; etc[/html]");
 define("LANHELP_34", "[newpage] or [newpage=title] Lisää sivunvaihtomerkki, jakaa artikkelin useammalle sivulle");
 define("LANHELP_35", "hyperlinkki osoite");
-define("LANHELP_36", "Unordered: [list]line1*line2*line3[/list] Ordered: [list=type]line1*line2*line3[/list]");
+define("LANHELP_36", "Unordered: [list]line1*line2*line3[/list] Järjestysed: [list=type]line1*line2*line3[/list]");
 
 
 ?>
