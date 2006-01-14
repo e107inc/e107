@@ -3,9 +3,9 @@
 |     e107 website system
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/sitelinks_alt.sc,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-12-09 18:45:36 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.33 $
+|     $Date: 2006-01-14 00:23:04 $
+|     $Author: qnome $
 +----------------------------------------------------------------------------+
 */
 
@@ -38,7 +38,7 @@
 		if ($cat_open == 1){
 			$text .= " rel='external' ";
 		}
-		$text .= ">".$tp->toHTML($cat_title,"","defs")."</a>";
+		$text .= ">".$tp->toHTML($cat_title,"","defs no_hook")."</a>";
 		return $text;
 	}
 
@@ -68,7 +68,7 @@
 		if ($cat_img != 'no_icons') {
 			$text .= "<span class='menuItemBuffer'>".$cat_img."</span>";
 		}
-		$text .= "<span class='menuItemText'>".$tp->toHTML($cat_title,"","defs")."</span>";
+		$text .= "<span class='menuItemText'>".$tp->toHTML($cat_title,"","defs no_hook")."</span>";
 		if ($cat_id) {
 			$text .= "<span class=\"menuItemArrow\">&#9654;</span>";
 		}
