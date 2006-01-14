@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2005-12-30 15:55:23 $
+|     $Revision: 1.61 $
+|     $Date: 2006-01-14 20:07:26 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -216,6 +216,7 @@ if (isset($_POST['updatesettings']))
 	{
 		require_once(e_HANDLER."upload_handler.php");
 		require_once(e_HANDLER."resize_handler.php");
+		
 		if ($uploaded = file_upload(e_FILE."public/avatars/", "avatar"))
 		{
 			if ($uploaded[0]['name'] && $pref['avatar_upload'])
@@ -240,7 +241,7 @@ if (isset($_POST['updatesettings']))
 
 	if ($user_sess != "")
 	{
-		$sesschange = ", user_sess = '{$user_sess}' ";
+		$sesschange = ", user_sess = '".$tp->toDB($user_sess)."' ";
 	}
 
 	if (!$error)
@@ -269,7 +270,7 @@ if (isset($_POST['updatesettings']))
 
 		if ($ret == '')
 		{
-			$sql->db_Update("user", "user_name='".$tp -> toDB($username)."' {$pwreset} ".$tp -> toDB($sesschange).", user_email='".$tp -> toDB(check_email($_POST['email']))."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['user_timezone'])."', user_hideemail='".$tp -> toDB($_POST['hideemail'])."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
+			$sql->db_Update("user", "user_name='".$tp -> toDB($username)."' {$pwreset} ".$sesschange.", user_email='".$tp -> toDB(check_email($_POST['email']))."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['user_timezone'])."', user_hideemail='".$tp -> toDB($_POST['hideemail'])."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ", 'default', true);
 			// If user has changed display name, update the record in the online table
 			if($username != USERNAME && !$_uid)
 			{
