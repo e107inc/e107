@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/calendar.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.16 $
+|     $Date: 2006-01-14 12:02:10 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */ 
 
@@ -183,6 +183,8 @@ if ($sql->db_Select_gen($qry)){
 }
 
 $start		= $monthstart;
+$numberdays	= date("t", $start); // number of days in this month
+
 $text = "";
 $text .= $tp -> parseTemplate($CALENDAR_CALENDAR_START, FALSE, $calendar_shortcodes);
 $text .= $tp -> parseTemplate($CALENDAR_CALENDAR_HEADER_START, FALSE, $calendar_shortcodes);
@@ -206,7 +208,7 @@ for ($c=0; $c<$firstdayoffset; $c++) {
 }
 $loop = $firstdayoffset;
 
-for ($c = 1; $c <= 31; $c++)
+for ($c = 1; $c <= $numberdays; $c++)
 {
     $dayarray	= getdate($start + (($c-1) * 86400));
     $stopp		= mktime(24, 0, 0, $calmonth, $c, $calyear);
@@ -257,9 +259,18 @@ for ($c = 1; $c <= 31; $c++)
     if ($loop == 7)
     {
         $loop = 0;
-		$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_WEEKSWITCH, FALSE, $calendar_shortcodes);
+		if($numberdays!=$totaldays){
+			$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_WEEKSWITCH, FALSE, $calendar_shortcodes);
+		}
     } 
-} 
+}
+//remainder cells to end the row properly with empty cells
+if($loop!=0){
+	$remainder = 7-$loop;
+	for ($c=0; $c<$remainder; $c++) {
+		$text .= $tp -> parseTemplate($CALENDAR_CALENDAR_DAY_NON, FALSE, $calendar_shortcodes);
+	}
+}
 $text .= $tp -> parseTemplate($CALENDAR_CALENDAR_END, FALSE, $calendar_shortcodes);
 
 $caption	= EC_LAN_79; // "Calendar View";
