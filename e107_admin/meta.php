@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/meta.php,v $
-|     $Revision: 1.14 $
-|     $Date: 2006-01-13 03:00:31 $
-|     $Author: e107coders $
+|     $Revision: 1.15 $
+|     $Date: 2006-01-14 23:14:14 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -37,10 +37,11 @@ if (isset($_POST['metasubmit'])) {
 		$meta_copyright[$lan] = $pref['meta_copyright'][$lan];
 	}
 
-	$meta_tag[$current_lang] = chop($_POST['meta']);
-	$meta_diz[$current_lang] = chop($_POST['meta_description']);
-	$meta_keywords[$current_lang] = chop($_POST['meta_keywords']);
-	$meta_copyright[$current_lang] = chop($_POST['meta_copyright']);
+	$meta_tag[$current_lang] = strip_if_magic(chop($_POST['meta']));
+	$meta_diz[$current_lang] = strip_if_magic(chop($_POST['meta_description']));
+	$meta_keywords[$current_lang] = strip_if_magic(chop($_POST['meta_keywords']));
+	$meta_copyright[$current_lang] = strip_if_magic(chop($_POST['meta_copyright']));
+	
 
 	$pref['meta_tag'] = $meta_tag;
 	$pref['meta_description'] = $meta_diz;
