@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.253 $
-|     $Date: 2006-01-13 19:24:42 $
-|     $Author: sweetas $
+|     $Revision: 1.254 $
+|     $Date: 2006-01-14 19:31:26 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -245,7 +245,7 @@ define("e_SELF", ($pref['ssl_enabled'] ? "https://".$_SERVER['HTTP_HOST'].($_SER
 // if the option to force users to use a particular url for the site is enabled, redirect users there
 if($pref['redirectsiteurl'] && $pref['siteurl']) {
 	$siteurl = SITEURLBASE."/";
-	if (strpos($pref['siteurl'], $siteurl) === FALSE) {
+	if (strpos($pref['siteurl'], $siteurl) === FALSE && strpos(e_SELF, ADMINDIR) === FALSE) {
 		$location = str_replace($siteurl, $pref['siteurl'], e_SELF).(e_QUERY ? "?".e_QUERY : "");
 		header("Location: {$location}");
 		exit();
