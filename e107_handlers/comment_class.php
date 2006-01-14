@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/comment_class.php,v $
-|     $Revision: 1.51 $
-|     $Date: 2006-01-12 23:19:57 $
-|     $Author: lisa_ $
+|     $Revision: 1.52 $
+|     $Date: 2006-01-14 22:01:34 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -357,6 +357,11 @@ class comment {
 		//if rateindex is posted, enter the rating from this user
 		if($rateindex){
 			$rater -> enterrating($rateindex);
+		}
+
+		if(defined("emessage"))
+		{
+			message_handler("ALERT", emessage);
 		}
 	}
 

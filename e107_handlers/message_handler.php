@@ -11,9 +11,9 @@ e107 website system
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/message_handler.php,v $
-|     $Revision: 1.9 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.10 $
+|     $Date: 2006-01-14 22:01:34 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -46,8 +46,7 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 	}
 	switch($mode) {
 		case "CRITICAL_ERROR":
-		$message = is_numeric($message) ? $emessage[$message] :
-		 $message;
+		$message = $emessage[$message] ? $emessage[$message] : $message;
 		echo "<div style='text-align:center; font: 11px verdana, tahoma, arial, helvetica, sans-serif;'><b>CRITICAL_ERROR: </b><br />Line $line $file<br /><br />Error reported as: ".$message."</div>";
 		break;
 
@@ -64,7 +63,8 @@ function show_emessage($mode, $message, $line = 0, $file = "") {
 		break;
 
 		case "ALERT":
-		echo "<script type='text/javascript'>alert(\"".$tp->toJS($emessage[$message])."\"); window.history.go(-1); </script>\n";
+		$message = $emessage[$message] ? $emessage[$message] : $message;
+		echo "<noscript>$message</noscript><script type='text/javascript'>alert(\"".$tp->toJS($message)."\"); window.history.go(-1); </script>\n"; exit;
 		break;
 
 		case "P_ALERT":
