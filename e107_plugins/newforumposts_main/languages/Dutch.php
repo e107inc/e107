@@ -1,12 +1,12 @@
 <?php
 
-define("LAN_1", "Discussie");
-define("LAN_2", "Auteur");
-define("LAN_3", "Bekeken");
-define("LAN_4", "Reacties");
-define("LAN_5", "Laatste");
-define("LAN_6", "Discussies");
-define("LAN_7", "door");
+define("NFPM_LAN_1", "Discussie");
+define("NFPM_LAN_2", "Auteur");
+define("NFPM_LAN_3", "Bekeken");
+define("NFPM_LAN_4", "Reacties");
+define("NFPM_LAN_5", "Laatste");
+define("NFPM_LAN_6", "Discussies");
+define("NFPM_LAN_7", "door");
 
 define("NFPM_L1", "Deze plugin toont een overzicht met de nieuwste forumdiscussies op je startpagina");
 define("NFPM_L2", "Nieuwste forumdiscussies"); 
