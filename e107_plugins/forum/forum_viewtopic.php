@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.53 $
-|     $Date: 2006-01-14 04:15:13 $
+|     $Revision: 1.54 $
+|     $Date: 2006-01-14 14:09:51 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -206,7 +206,7 @@ if (!check_class($forum_info['forum_class']) || !check_class($forum_info['parent
 
 $forum->thread_incview($thread_id);
 
-define("e_PAGETITLE", LAN_01." / ".$tp->toHTML($forum_info['forum_name'], TRUE)." / ".$tp->toHTML($thread_info['head']['thread_name'], TRUE));
+define("e_PAGETITLE", LAN_01." / ".$tp->toHTML($forum_info['forum_name'], TRUE, 'no_hook')." / ".$tp->toHTML($thread_info['head']['thread_name'], TRUE));
 //define("MODERATOR", (preg_match("/".preg_quote(ADMINNAME)."/", $forum_info['forum_moderators']) && getperms('A') ? TRUE : FALSE));
 define("MODERATOR", $forum_info['forum_moderators'] != "" && check_class($forum_info['forum_moderators']));
 $modArray = $forum->forum_getmods($forum_info['forum_moderators']);
@@ -342,7 +342,7 @@ else
 	{
 		$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_sub']}'>{$forum_info['sub_parent']}</a> -> ";
 	}
-	$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'>{$forum_info['forum_name']}</a></b>";
+	$BREADCRUMB .= "<a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?{$forum_info['forum_id']}'>".$tp->toHTML($forum_info['forum_name'], TRUE, 'no_hook')."</a></b>";
 }
 
 $BACKLINK = $BREADCRUMB;
