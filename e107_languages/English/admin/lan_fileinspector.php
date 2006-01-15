@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_fileinspector.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-12-04 23:23:41 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2006-01-15 01:08:03 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -50,9 +50,9 @@ define("FR_LAN_13", "The file is out of date");
 define("FR_LAN_14", "If the file is from an older release of e107 to the version you are 
 running then it will fail the integrity check. Make sure you have uploaded the newest version of this file.");
 define("FR_LAN_15", "The file has been edited");
-define("FR_LAN_16", "If you have edited this file in anyway it will not pass the integrity check. If you 
-intentionally edited this file then you need not worry and can ignore this integrity check fail. If however 
-the file was edited by someone else without authorisation you may want to re-upload the proper version of 
+define("FR_LAN_16", "If you have edited this file in any way it will not pass the integrity check. If you
+intentionally edited this file then you need not worry and can ignore this integrity check fail. If however
+the file was edited by someone else without authorisation you may want to re-upload the proper version of
 this file from the e107 zip.");
 define("FR_LAN_17", "If you are a CVS user");
 define("FR_LAN_18", "If you run checkouts of the e107 CVS on your site instead of the official e107 stable 

@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_prefs.php,v $
-|     $Revision: 1.45 $
-|     $Date: 2006-01-04 20:46:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.46 $
+|     $Date: 2006-01-15 01:08:03 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -68,7 +68,7 @@ define("PRFLAN_52", "Save Changes");
 define("PRFLAN_53", "Site Preferences");
 define("PRFLAN_55", "Cookie name (if cookies selected)");
 define("PRFLAN_56", "Timezone");
-define("PRFLAN_58", "Restrict website to member's only");
+define("PRFLAN_58", "Restrict website to members only");
 define("PRFLAN_59", "ticking will restrict all areas apart from the front page and signup page to members only");
 define("PRFLAN_60", "Enable SSL");
 define("PRFLAN_61", "Only enable SSL if <b>you are sure you know what you are doing!</b>");
