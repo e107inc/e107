@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_search.php,v $
-|     $Revision: 1.21 $
-|     $Date: 2005-10-15 03:31:52 $
-|     $Author: sweetas $
+|     $Revision: 1.22 $
+|     $Date: 2006-01-15 01:08:04 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 define("SEALAN_1", "Search Configuration");
@@ -31,7 +31,7 @@ define("SEALAN_23", "Alternative:");
 define("SEALAN_24", "Type");
 define("SEALAN_25", "User Class");
 define("SEALAN_26", "Pre-Title Text");
-define("SEALAN_30", "Highlight keywords on referred too page:");
+define("SEALAN_30", "Highlight keywords on referred to page:");
 define("SEALAN_31", "PHP limited to");
 define("SEALAN_32", "results (leave blank for no limit)");
 define("SEALAN_33", "Could not switch to MySql sort method as this requires at least version 4.0.1 of MySql.");

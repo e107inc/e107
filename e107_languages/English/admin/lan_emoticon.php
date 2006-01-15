@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_emoticon.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-05-26 16:48:17 $
-|     $Author: stevedunstan $
+|     $Revision: 1.7 $
+|     $Date: 2006-01-15 01:08:03 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 define("EMOLAN_1", "Emote activation");
@@ -16,7 +16,7 @@ define("EMOLAN_4", "Activate emoticons?");
 
 define("EMOLAN_5", "Image");
 define("EMOLAN_6", "Emote Code");
-define("EMOLAN_7", "seperate multiple entries with spaces");
+define("EMOLAN_7", "separate multiple entries with spaces");
 
 define("EMOLAN_8", "Status");
 define("EMOLAN_9", "Options");
