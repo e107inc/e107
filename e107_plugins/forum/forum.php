@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum.php,v $
-|     $Revision: 1.37 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.38 $
+|     $Date: 2006-01-15 19:07:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if(!defined("e107_INIT")) {
@@ -302,6 +302,10 @@ function parse_forum($f, $restricted_string = "")
 		$NEWFLAG = IMAGE_nonew;
 	}
 
+	if(substr($f['forum_name'], 0, 1) == "*")
+	{
+		$f['forum_name'] = substr($f['forum_name'], 1);
+	}
 	$f['forum_name'] = $tp -> toHTML($f['forum_name'], TRUE, "no_hook");
 	$f['forum_description'] = $tp -> toHTML($f['forum_description'], TRUE, "no_hook");
 

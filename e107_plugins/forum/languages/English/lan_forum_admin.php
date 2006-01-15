@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_admin.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2005-12-30 18:27:11 $
+|     $Revision: 1.18 $
+|     $Date: 2006-01-15 19:07:41 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -199,5 +199,6 @@ define("FORLAN_176", "Report");
 define("FORLAN_177", "email nofication ON by default");
 define("FORLAN_178", "Tick this to allow make the email notification checkbox be on by default");
 
+define("FORLAN_179", "(Adding a * to the beginning of the forum name will make this forum a container for subforums only.  The forum theme must support this option also.)");
 
 ?>
