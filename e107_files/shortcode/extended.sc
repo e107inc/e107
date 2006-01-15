@@ -3,7 +3,7 @@
 include(e_LANGUAGEDIR.e_LANGUAGE."/lan_user_extended.php");
 $parms = explode(".", $parm);
 global $currentUser, $sql, $tp, $loop_uid, $e107;
-if(intval($loop_uid) == 0) { return ""; }
+if(isset($loop_uid) && intval($loop_uid) == 0) { return ""; }
 $ueStruct = getcachedvars("user_extended_struct");
 if(!$ueStruct)
 {
