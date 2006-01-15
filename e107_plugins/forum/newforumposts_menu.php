@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/newforumposts_menu.php,v $
-|     $Revision: 1.13 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.14 $
+|     $Date: 2006-01-15 03:01:08 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -29,9 +29,10 @@ else
 {
 	include_once(e_PLUGIN."forum/languages/English/lan_newforumposts_menu.php");
 }
+$_chars = max($menu_pref['newforumposts_characters'] * 3, 200);
 
 $query2 = "
-SELECT tp.thread_name AS parent_name, t.thread_datestamp, t.thread_thread, t.thread_name, t.thread_id, t.thread_user, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class FROM #forum_t AS t 
+SELECT tp.thread_name AS parent_name, t.thread_datestamp , left(t.thread_thread, {$_chars}) as thread_thread, t.thread_name, t.thread_id, t.thread_user, f.forum_id, f.forum_name, f.forum_class, u.user_name, fp.forum_class FROM #forum_t AS t 
 LEFT JOIN #user AS u ON t.thread_user = u.user_id 
 LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id 
 LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id 
