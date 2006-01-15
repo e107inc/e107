@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_admin.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2005-12-30 18:27:08 $
+|     $Revision: 1.34 $
+|     $Date: 2006-01-15 19:07:40 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -855,7 +855,9 @@ class forum
 			</tr>
 
 			<tr>
-			<td style='width:40%' class='forumheader3'>".FORLAN_31.":</td>
+			<td style='width:40%' class='forumheader3'>".FORLAN_31.":
+			<div class='smalltext'>".FORLAN_179."</div>
+			</td>
 			<td style='width:60%' class='forumheader3'>
 			<input class='tbox' type='text' name='forum_name' size='60' value='$forum_name' maxlength='250' />
 			</td>

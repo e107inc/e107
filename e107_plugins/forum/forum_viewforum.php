@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.47 $
-|     $Date: 2005-12-30 03:20:44 $
+|     $Revision: 1.48 $
+|     $Date: 2006-01-15 19:07:41 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -133,6 +133,20 @@ if (check_class($forum_info['forum_postclass']) && check_class($forum_info['pare
 	$NEWTHREADBUTTON = "<a href='".e_PLUGIN."forum/forum_post.php?nt.".$forum_id."'>".IMAGE_newthread."</a>";
 }
 	
+if(substr($forum_info['forum_name'], 0, 1) == "*")
+{
+	$forum_info['forum_name'] = substr($forum_info['forum_name'], 1);
+	$container_only = true;
+}
+else
+{
+	$container_only = false;
+}
+
+if(substr($forum_info['sub_parent'], 0, 1) == "*")
+{
+	$forum_info['sub_parent'] = substr($forum_info['sub_parent'], 1);
+}
 
 if(is_array($FORUM_CRUMB))
 {
@@ -172,7 +186,6 @@ else
 	}
 	$BREADCRUMB .= $forum_info['forum_name']."</b>";
 }
-
 
 
 $FORUMTITLE = $forum_info['forum_name'];
@@ -244,7 +257,8 @@ if(is_array($sub_list))
 	$SUBFORUMS = $FORUM_VIEW_SUB_START.$sub_info.$FORUM_VIEW_SUB_END;
 }
 
-if (count($thread_list))
+
+if (count($thread_list) )
 {
 	foreach($thread_list as $thread_info) {
 		$idArray[] = $thread_info['thread_id'];
@@ -294,8 +308,17 @@ $sql->db_Select("forum", "*", "forum_parent !=0 AND forum_class!='255' ");
 $FORUMJUMP = forumjump();
 $TOPLINK = "<a href='".e_SELF."?".$_SERVER['QUERY_STRING']."#top'>".LAN_02."</a>";
 	
+if($container_only)
+{
+	$FORUM_VIEW_START = ($FORUM_VIEW_START_CONTAINER ? $FORUM_VIEW_START_CONTAINER : $FORUM_VIEW_START);
+	$FORUM_VIEW_END = ($FORUM_VIEW_END_CONTAINER ? $FORUM_VIEW_END_CONTAINER : $FORUM_VIEW_END);
+	$forum_view_forum = "";
+}
+
 $forum_view_start = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_START);
 $forum_view_end = preg_replace("/\{(.*?)\}/e", '$\1', $FORUM_VIEW_END);
+
+
 if ($pref['forum_enclose'])
 {
 	$ns->tablerender($pref['forum_title'], $forum_view_start.$forum_view_subs.$forum_view_forum.$forum_view_end, array('forum_viewforum', 'main1'));

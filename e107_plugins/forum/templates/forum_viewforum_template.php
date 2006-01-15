@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_viewforum_template.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-12-29 02:13:23 $
+|     $Revision: 1.13 $
+|     $Date: 2006-01-15 19:07:41 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -58,6 +58,22 @@ $FORUM_VIEW_START = "
 	<td style='width:20%; text-align:center' class='fcaption'>{LASTPOSTITLE}</td>
 	</tr>";
 }
+
+if(!$FORUM_VIEW_START_CONTAINER)
+{
+	$FORUM_VIEW_START_CONTAINER = "
+	<div style='text-align:center'>
+	<div class='spacer'>
+	<table style='width:95%' class='fborder' >
+	<tr>
+	<td class='fcaption'>{BREADCRUMB}</td>
+	</tr>
+	{SUBFORUMS}
+	</table>
+	</div>
+	";
+}	
+
 
 if (!$FORUM_VIEW_FORUM) {
 	$FORUM_VIEW_FORUM = "
@@ -173,6 +189,22 @@ if (!$FORUM_VIEW_END) {
 		<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div></div>
 ";
 }
+
+
+if(!$FORUM_VIEW_END_CONTAINER)
+{
+	$FORUM_VIEW_END_CONTAINER = "
+		<table style='width:95%'>
+		<tr>
+		<td colspan ='2'>
+		{FORUMJUMP}
+		</td>
+		</tr>
+		</table>
+		<div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div></div>
+";
+}	
+
 
 if (!$FORUM_VIEW_SUB_START)
  {
