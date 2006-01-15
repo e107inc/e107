@@ -1,3 +1,4 @@
+
 global $pref;
 list($total_items, $perpage, $current_start, $url) = explode(",", $parm, 4);
 while(substr($url, -1) == ".")
@@ -12,8 +13,21 @@ if($total_pages > 1)
 {
 	if(isset($pref['old_np']) && $pref['old_np'])
 	{
+
+		$NP_PRE_ACTIVE = "";
+		$NP_POST_ACTIVE = "";
+		$NP_STYLE = "";
+
+        if(!defined("NEXTPREV_NOSTYLE") || NEXTPREV_NOSTYLE==FALSE){
+        	$NP_PRE_ACTIVE = "[";
+            $NP_POST_ACTIVE = "] ";
+			$NP_STYLE = "style='text-decoration:underline'";
+		}
+
+
 		//	Use OLD nextprev metod
 		$nppage = '';
+		$nppage .= "\n\n<!-- Start of Next/Prev -->\n\n";
 		if ($total_pages > 10)
 		{
 			$current_page = ($current_start/$perpage)+1;
@@ -22,12 +36,12 @@ if($total_pages > 1)
 			{
 				if($perpage * $c == $current_start)
 				{
-					$nppage .= "[<span style='text-decoration:underline'>".($c+1)."</span>] ";
+					$nppage .= $NP_PRE_ACTIVE."<span class='nextprev_current' {$NP_STYLE} >".($c+1)."</span>".$NP_POST_ACTIVE."\n";
 				}
 				else
 				{
 					$link = str_replace("[FROM]", ($perpage * $c), $url);
-					$nppage .= "<a href='{$link}'>".($c+1)."</a> ";
+					$nppage .= "<a class='nextprev_link' href='{$link}'>".($c+1)."</a> \n";
 
 				}
 			}
@@ -38,12 +52,12 @@ if($total_pages > 1)
 				{
 					if($perpage * $c == $current_start)
 					{
-						$nppage .= "[<span style='text-decoration:underline'>".($c+1)."</span>] ";
+						$nppage .= $NP_PRE_ACTIVE."<span class='nextprev_current' {$NP_STYLE} >".($c+1)."</span>".$NP_POST_ACTIVE."\n";
 					}
 					else
 					{
 						$link = str_replace("[FROM]", ($perpage * $c), $url);
-						$nppage .= "<a href='{$link}'>".($c+1)."</a> ";
+						$nppage .= "<a class='nextprev_link' href='{$link}'>".($c+1)."</a> \n";
 					}
 				}
 			}
@@ -54,12 +68,12 @@ if($total_pages > 1)
 				{
 					if($perpage * $c == $current_start)
 					{
-						$nppage .= "[<span style='text-decoration:underline'>".($c+1)."</span>] ";
+						$nppage .= $NP_PRE_ACTIVE."<span class='nextprev_current' {$NP_STYLE} >".($c+1)."</span>".$NP_POST_ACTIVE."\n";
 					}
 					else
 					{
 						$link = str_replace("[FROM]", ($perpage * $c), $url);
-						$nppage .= "<a href='{$link}'>".($c+1)."</a> ";
+						$nppage .= "<a class='nextprev_link' href='{$link}'>".($c+1)."</a> \n";
 					}
 				}
 			}
@@ -78,12 +92,12 @@ if($total_pages > 1)
 			{
 				if($perpage * $c == $current_start)
 				{
-					$nppage .= "[<span style='text-decoration:underline'>".($c+1)."</span>] ";
+					$nppage .= $NP_PRE_ACTIVE."<span class='nextprev_current' {$NP_STYLE} >".($c+1)."</span>".$NP_POST_ACTIVE."\n";
 				}
 				else
 				{
 					$link = str_replace("[FROM]", ($perpage * $c), $url);
-					$nppage .= "<a href='{$link}'>".($c+1)."</a> ";
+					$nppage .= "<a class='nextprev_link' href='{$link}'>".($c+1)."</a> \n";
 				}
 			}
 
@@ -94,15 +108,16 @@ if($total_pages > 1)
 			{
 				if($perpage * $c == $current_start)
 				{
-					$nppage .= "[<span style='text-decoration:underline'>".($c+1)."</span>] ";
+					$nppage .= $NP_PRE_ACTIVE."<span class='nextprev_current' {$NP_STYLE} >".($c+1)."</span>".$NP_POST_ACTIVE."\n";
 				}
 				else
 				{
 					$link = str_replace("[FROM]", ($perpage * $c), $url);
-					$nppage .= "<a href='{$link}'>".($c+1)."</a> ";
+					$nppage .= "<a class='nextprev_link' href='{$link}'>".($c+1)."</a> \n";
 				}
 			}
 		}
+        $nppage .= "\n\n<!-- End of Next/Prev -->\n\n";
 		return $nppage;
 	}
 
