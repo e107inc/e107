@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/e107v4a/forum_template.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-01-13 02:10:33 $
+|     $Revision: 1.11 $
+|     $Date: 2006-01-15 19:08:25 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -183,6 +183,15 @@ $FORUM_VIEW_START = "
 </tr>";
 
 
+$FORUM_VIEW_START_CONTAINER = "
+<table style='width:100%' class='nforumholder' cellpadding='0' cellspacing='0'>
+<tr>
+<td  colspan='2' class='nforumcaption'>{BREADCRUMB}</td>
+</tr>
+{SUBFORUMS}
+</table>
+";
+
 
 $FORUM_VIEW_FORUM = "
 <tr>
@@ -234,6 +243,20 @@ $FORUM_VIEW_END = "
 </div>
 
 <div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>";
+
+
+
+$FORUM_VIEW_END_CONTAINER = "
+<table style='width:100%'>
+<tr>
+<td style='width:100%; text-align:left'>
+<br />{FORUMJUMP}
+</td>
+</tr>
+</table>
+<br /><div class='nforumdisclaimer' style='text-align:center'>Powered by <b>e107 Forum System</b></div>
+";
+
 
 
 $FORUM_VIEW_SUB_START = "
