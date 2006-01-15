@@ -4,6 +4,14 @@ define("e107_INIT", TRUE);
 
 error_reporting(E_ERROR | E_PARSE);
 
+if(!function_exists("file_get_contents")) {
+	die("e107 requires PHP 4.3 or greater to work correctly.");
+}
+
+if(!function_exists("mysql_connect")) {
+	die("e107 requires PHP to be installed or compiled with the MySQL extension to work correctly, please see the MySQL manual for more information.");
+}
+
 if(!function_exists("print_a")) {
 	function print_a($var) {
 		return '<pre>'.htmlentities(print_r($var, true), null, "UTF-8").'</pre>';
