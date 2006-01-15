@@ -3,7 +3,7 @@
 +---------------------------------------------------------------+
 |	e107 website system
 |
-|	©Steve Dunstan 2001-2005
+|	ï¿½Steve Dunstan 2001-2005
 |	http://e107.org
 |	jalist@e107.org
 |
@@ -14,8 +14,8 @@
 if (!defined('e107_INIT')) { exit; }
 
 // [multilanguage]
-@include_once(e_THEME."khatru/languages/".e_LANGUAGE.".php");
-@include_once(e_THEME."khatru/languages/English.php");
+@include_once(THEME."languages/".e_LANGUAGE.".php");
+@include_once(THEME."languages/English.php");
 
 // [theme]
 $themename = "khatru";
