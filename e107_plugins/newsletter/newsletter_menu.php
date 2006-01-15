@@ -11,21 +11,22 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/newsletter_menu.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-12-28 16:12:59 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2006-01-15 01:47:41 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-if(!$sql -> db_Select("newsletter", "*", "newsletter_parent='0' "))
+if(!USER || !$sql -> db_Select("newsletter", "*", "newsletter_parent='0' "))
 {
 	// no newsletters defined yet //
 	return FALSE;
 }
 
 $newsletterArray = $sql -> db_getList();
+$requery = false;
 
 foreach($_POST as $key => $value)
 {
@@ -34,16 +35,26 @@ foreach($_POST as $key => $value)
 		$subid = str_replace("nlUnsubscribe_", "", $key);
 		$newsletterArray[$subid]['newsletter_subscribers'] = str_replace(chr(1).USERID, "", $newsletterArray[$subid]['newsletter_subscribers']);
 		$sql -> db_Update("newsletter", "newsletter_subscribers='".$newsletterArray[$subid]['newsletter_subscribers']."' WHERE newsletter_id='".intval($subid)."' ");
+		$requery = true;
 	}
 	else if(strstr($key, "nlSubscribe_"))
 	{
 		$subid = str_replace("nlSubscribe_", "", $key);
 		$newsletterArray[$subid]['newsletter_subscribers'] .= chr(1).USERID;
 		$sql -> db_Update("newsletter", "newsletter_subscribers='".$newsletterArray[$subid]['newsletter_subscribers']."' WHERE newsletter_id='".intval($subid)."' ");
+		$requery = true;
 	}
 }
 
 global $tp;
+
+if($requery)
+{
+	if($sql -> db_Select("newsletter", "*", "newsletter_parent='0' "))
+	{
+		$newsletterArray = $sql -> db_getList();
+	}
+}	
 
 $text = "";
 foreach($newsletterArray as $nl)
@@ -56,7 +67,7 @@ foreach($newsletterArray as $nl)
 	$tp -> toHTML($nl['newsletter_text'], TRUE)."</span><br /><br />
 	";
 
-	if(preg_match("#".chr(1)."1(".chr(1)."|$)#si", $nl['newsletter_subscribers']))
+	if(preg_match("#".chr(1).USERID."(".chr(1)."|$)#si", $nl['newsletter_subscribers']))
 	{
 		$text .= NLLAN_48."<br /><br />
 		<input class='button' type='submit' name='nlUnsubscribe_".$nl['newsletter_id']."' value='".NLLAN_51."' onclick=\"return jsconfirm('".$tp->toJS(NLLAN_49)."') \" />
