@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/credits.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-01-16 16:20:27 $
-|     $Author: lisa_ $
+|     $Revision: 1.12 $
+|     $Date: 2006-01-16 16:41:07 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -21,77 +21,77 @@ $e_sub_cat = 'credits';
 
 
 $creditsArray = array(
-	array(	"name" => "MagpieRSS", 
-				"url" => "http://magpierss.sourceforge.net/", 
-				"description" => "MagpieRSS provides an XML-based (expat) RSS parser in PHP.", 
-				"version" => "0.71.1", 
+	array(	"name" => "MagpieRSS",
+				"url" => "http://magpierss.sourceforge.net/",
+				"description" => "MagpieRSS provides an XML-based (expat) RSS parser in PHP.",
+				"version" => "0.71.1",
 				"licence" => "GPL, permission granted"
 			),
-	array(	"name" => "PCLZip", 
-				"url" => "http://www.phpconcept.net/pclzip/", 
-				"description" => "PclZip library offers compression and extraction functions for Zip formatted archives (WinZip, PKZIP).", 
-				"version" => "2.3", 
+	array(	"name" => "PCLZip",
+				"url" => "http://www.phpconcept.net/pclzip/",
+				"description" => "PclZip library offers compression and extraction functions for Zip formatted archives (WinZip, PKZIP).",
+				"version" => "2.3",
 				"licence" => "GPL"
 			),
-	array(	"name" => "PCLTar", 
-				"url" => "http://www.phpconcept.net/pcltar/", 
-				"description" => "PclTar offer the ability to archive a list of files or directories with or without compression. The archives created by PclTar are readeable by most of gzip/tar applications and by the Windows WinZip application.", 
-				"version" => "1.3", 
+	array(	"name" => "PCLTar",
+				"url" => "http://www.phpconcept.net/pcltar/",
+				"description" => "PclTar offer the ability to archive a list of files or directories with or without compression. The archives created by PclTar are readeable by most of gzip/tar applications and by the Windows WinZip application.",
+				"version" => "1.3",
 				"licence" => "GPL"
 			),
-	array(	"name" => "TinyMCE", 
-				"url" => "http://tinymce.moxiecode.com/", 
-				"description" => "TinyMCE is a platform independent web based Javascript HTML WYSIWYG editor control released as Open Source under LGPL by Moxiecode Systems AB. It has the ability to convert HTML TEXTAREA fields or other HTML elements to editor instances.", 
-				"version" => "1.42", 
+	array(	"name" => "TinyMCE",
+				"url" => "http://tinymce.moxiecode.com/",
+				"description" => "TinyMCE is a platform independent web based Javascript HTML WYSIWYG editor control released as Open Source under LGPL by Moxiecode Systems AB. It has the ability to convert HTML TEXTAREA fields or other HTML elements to editor instances.",
+				"version" => "2.01",
 				"licence" => "GPL"
 			),
-	array(	"name" => "Nuvolo Icons", 
-				"url" => "http://www.icon-king.com", 
-				"description" => "Icons used in e107", 
-				"version" => "1.0", 
+	array(	"name" => "Nuvolo Icons",
+				"url" => "http://www.icon-king.com",
+				"description" => "Icons used in e107",
+				"version" => "1.0",
 				"licence" => "GPL"
 			),
-	array(	"name" => "PHPMailer", 
-				"url" => "http://phpmailer.sourceforge.net/", 
-				"description" => "Full featured email transfer class for PHP", 
-				"version" => "1.72", 
+	array(	"name" => "PHPMailer",
+				"url" => "http://phpmailer.sourceforge.net/",
+				"description" => "Full featured email transfer class for PHP",
+				"version" => "1.72",
 				"licence" => "GPL"
 			),
-	array(	"name" => "Brainjar DHTML Menu", 
-				"url" => "http://www.brainjar.com/dhtml/menubar/", 
-				"description" => "Menu system used in Jayya theme", 
-				"version" => "0.1", 
+	array(	"name" => "Brainjar DHTML Menu",
+				"url" => "http://www.brainjar.com/dhtml/menubar/",
+				"description" => "Menu system used in Jayya theme",
+				"version" => "0.1",
 				"licence" => "GPL, permission granted"
 			),
-	array(	"name" => "DHTML / JavaScript Calendar", 
-				"url" => "http://www.dynarch.com/projects/", 
-				"description" => "Popup calendar widget", 
-				"version" => "1.0", 
+	array(	"name" => "DHTML / JavaScript Calendar",
+				"url" => "http://www.dynarch.com/projects/",
+				"description" => "Popup calendar widget",
+				"version" => "1.0",
 				"licence" => "GPL"
 			),
-	array(	"name" => "FPDF", 
+	array(	"name" => "FPDF",
 				"url" => "http://www.fpdf.org/",
-				"description" => "PDF support", 
-				"version" => "1.53", 
+				"description" => "PDF support",
+				"version" => "1.53",
 				"licence" => "Freeware"
 			),
-	array(	"name" => "UFPDF", 
+	array(	"name" => "UFPDF",
 				"url" => "http://www.acko.net/node/56",
-				"description" => "UTF-8 PDF support", 
-				"version" => "0.1", 
+				"description" => "UTF-8 PDF support",
+				"version" => "0.1",
 				"licence" => "GPL"
 			),
 	);
 
 $contentA = array(
-	"<h3>e107 v0.7 was brought to you by ...</h3>", 
+	"<h3>e107 v0.7 was brought to you by ...</h3>",
 	"<h1>Carl Cedergren</h1>[ asperon ]<br /><br /><br />",
-	"<h1>Cameron Hanly</h1>[ cameron ]<br /><br /><br />", 
-	"<h1>Steve Dunstan</h1>[ jalist ]<br /><br /><br />\"MTVhNjMyZDgxN2QwM2Q3ZTI<br />5ODM2NDU3YWI0ZjM1NGILJT<br />yarrrrrr! wtf matey!\"", 
-	"<h1>Eric Vanderfeesten</h1> [ lisa ]<br /><br /><br />", 
-	"<h1>Thom Michelbrink</h1>[ McFly ]<br /><br /><br />", 
-	"<h1>William Moffett</h1>[ que ]<br /><br /><br />", 
-	"<h1>Martin Nicholls</h1>[ streaky ]<br /><br /><br />", 
+	"<h1>Cameron Hanly</h1>[ CaMer0n ]<br /><br /><br />Always a pressure..err..pleasure!",
+	"<h1>Steve Dunstan</h1>[ jalist ]<br /><br /><br />\"MTVhNjMyZDgxN2QwM2Q3ZTI<br />5ODM2NDU3YWI0ZjM1NGILJT<br />yarrrrrr! wtf matey!\"",
+	"<h1>Eric Vanderfeesten</h1> [ lisa ]<br /><br /><br />",
+	"<h1>Thom Michelbrink</h1>[ McFly ]<br /><br /><br />",
+	"<h1>William Moffett</h1>[ que ]<br /><br /><br />",
+	"<h1>Martin Nicholls</h1>[ streaky ]<br /><br /><br />",
 	"<h1>James Currie</h1>[ SweetAs ]<br /><br /><br />\"Wot? No tea?? 0_0\""
 );
 
@@ -114,7 +114,7 @@ echo "<?xml version='1.0' encoding='utf-8' ?><!DOCTYPE html PUBLIC \"-//W3C//DTD
 
 
 <img src='".e_IMAGE."generic/cred.png' alt='' />
-<div class='smalltext' style='position: absolute; top: 120px; left: 118px;'><b>version ".$e107v['e107_version'].", build ".($e107v['e107_build'] ? $e107v['e107_build'] : "zero")."</b><br />&copy; 2002-2005, all rights reserved</div>
+<div class='smalltext' style='position: absolute; top: 120px; left: 118px;'><b>version ".$e107info['e107_version'].", build ".($e107info['e107_build'] ? $e107info['e107_build'] : "zero")."</b><br />&copy; 2002-2006, all rights reserved</div>
 
 ";
 
@@ -208,7 +208,7 @@ function linkcolorchange(step){
 /*Rafael Raposo edited function*/
 var fadecounter;
 function colorfade(step) {
-  if(step<=maxsteps) {	
+  if(step<=maxsteps) {
     document.getElementById("fscroller").style.color=getstepcolor(step);
     if (fadelinks)
       linkcolorchange(step);
@@ -218,8 +218,8 @@ function colorfade(step) {
     clearTimeout(fadecounter);
     document.getElementById("fscroller").style.color="rgb("+endcolor[0]+", "+endcolor[1]+", "+endcolor[2]+")";
     setTimeout("changecontent()", delay);
-	
-  }   
+
+  }
 }
 
 /*Rafael Raposo's new function*/
@@ -265,6 +265,5 @@ echo "
 ";
 
 ?>
-
 
 
