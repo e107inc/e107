@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pdf/languages/Spanish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-12 01:22:45 $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-16 23:45:35 $
 |     $Author: natxocc $
 +-----------------------------------------------------------------------------+
 */
@@ -34,4 +34,5 @@ define("PDF_LAN_16", "¿Mostrar numeros de página en el PDF?");
 define("PDF_LAN_17", "Actualizar");
 define("PDF_LAN_18", "Prferencias de PDF actualizadas correctamente");
 define("PDF_LAN_19", "Página");
+define("PDF_LAN_20", "Informe error");
 ?>
