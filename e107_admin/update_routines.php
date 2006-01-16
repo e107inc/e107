@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.171 $
-|     $Date: 2006-01-16 13:13:15 $
+|     $Revision: 1.172 $
+|     $Date: 2006-01-16 13:17:10 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -1204,7 +1204,6 @@ function update_617_to_700($type='') {
 		return '';
 
 	} else {
-return update_needed();
 
 		// Check if update is needed to 0.7. -----------------------------------------------
 		global $pref;
