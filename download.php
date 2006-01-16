@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.58 $
-|     $Date: 2006-01-16 01:46:01 $
+|     $Revision: 1.59 $
+|     $Date: 2006-01-16 02:37:29 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -619,7 +619,7 @@ if($action == "mirror")
 		}
 
 		$DOWNLOAD_MIRROR_HOST_LAN = LAN_dl_68;
-		$DOWNLOAD_MIRROR_GET_LAN = LAN_dl_69;
+		$DOWNLOAD_MIRROR_GET_LAN = LAN_dl_32;
 		$DOWNLOAD_MIRROR_LOCATION_LAN = LAN_dl_70;
 		$DOWNLOAD_MIRROR_DESCRIPTION_LAN = LAN_dl_71;
 		$DOWNLOAD_MIRROR_REQUEST = LAN_dl_72."'".$download_name."'";
@@ -655,7 +655,7 @@ function parse_download_mirror_table($row, $mirrorstring, $mirrorList)
 	$DOWNLOAD_MIRROR_DESCRIPTION = ($mirror_description ? $mirror_description : "");
 
 	$DOWNLOAD_MIRROR_FILESIZE = parsesize($row['download_filesize']);
-	$DOWNLOAD_MIRROR_LINK = "<a href='".e_BASE."request.php?mirror.{$row['download_id']}.{$mirrorHost_id}'><img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
+	$DOWNLOAD_MIRROR_LINK = "<a href='".e_BASE."request.php?mirror.{$row['download_id']}.{$mirrorHost_id}' title='".LAN_dl_32."'><img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' /></a>";
 
 	$DOWNLOAD_MIRROR_REQUESTS = (ADMIN ? LAN_dl_73.$mirrorRequests : "");
 	$DOWNLOAD_TOTAL_MIRROR_REQUESTS = (ADMIN ? LAN_dl_74.$mirror_count : "");
