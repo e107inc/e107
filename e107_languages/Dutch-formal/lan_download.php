@@ -84,11 +84,11 @@ define("LAN_dl_65", "Niet gevonden");
 define("LAN_dl_66", "Selecteer download mirror");
 define("LAN_dl_67", "Selecteer de te gebruiken mirror ...");
 define("LAN_dl_68", "Mirror Host");
-define("LAN_dl_69", "Download");
 define("LAN_dl_70", "Locatie");
 define("LAN_dl_71", "Over");
 define("LAN_dl_72", "Opvragen van bestand: ");
 define("LAN_dl_73", "Downloads van deze mirror: ");
 define("LAN_dl_74", "Totaal aantal downloads van deze mirror: ");
 define("LAN_dl_75", "geen afbeelding beschikbaar ");
+define("LAN_dl_76", "Ga naar pagina");
 ?>

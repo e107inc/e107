@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pdf/languages/Dutch.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-12 20:24:40 $
+|     $Revision: 1.3 $
+|     $Date: 2006-01-16 18:57:42 $
 |     $Author: mijnheer $
 +-----------------------------------------------------------------------------+
 */
@@ -34,6 +34,6 @@ define("PDF_LAN_16", "tonen paginanummers in pdf?");
 define("PDF_LAN_17", "bijwerken");
 define("PDF_LAN_18", "PDF voorkeuren succesvol bijgewerkt");
 define("PDF_LAN_19", "Pagina");
-
+define("PDF_LAN_20", "foutrapportage");
 
 ?>
