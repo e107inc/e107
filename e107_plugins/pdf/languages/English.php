@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pdf/languages/English.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2006-01-11 15:54:58 $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-16 10:36:59 $
 |     $Author: lisa_ $
 +-----------------------------------------------------------------------------+
 */
@@ -34,6 +34,6 @@ define("PDF_LAN_16", "show page numbers on pdf?");
 define("PDF_LAN_17", "update");
 define("PDF_LAN_18", "PDF preferences succesfully updated");
 define("PDF_LAN_19", "Page");
-
+define("PDF_LAN_20", "error reporting");
 
 ?>

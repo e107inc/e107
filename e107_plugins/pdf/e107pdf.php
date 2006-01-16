@@ -55,6 +55,7 @@ class e107PDF extends UFPDF{
 			$pdfpref['pdf_show_sitename']			= false;
 			$pdfpref['pdf_show_page_url']			= true;
 			$pdfpref['pdf_show_page_number']		= true;
+			$pdfpref['pdf_error_reporting']			= true;
 			return $pdfpref;
 	}
 	//get preferences from db
@@ -160,7 +161,7 @@ class e107PDF extends UFPDF{
 			$b=$this->GetStringWidth(PDFPAGEURL);
 			if($a>$b){$c=$a;}else{$c=$b;}
 			if($x1+$newx+$c > 210){
-				$this->SetX();
+				$this->SetX($this->lMargin);
 				$this->SetY($y1+2);
 			}else{
 				if($pdfpref['pdf_show_sitename']){
@@ -193,7 +194,7 @@ class e107PDF extends UFPDF{
 		$y = $this->GetY()+2;
 		$this->Line($this->lMargin, $y, 210-$this->rMargin, $y);
 		$this->Ln(10);
-		$this->SetX();
+		$this->SetX($this->lMargin);
 		$this->SetFont($pdfpref['pdf_font_family'],'',$pdfpref['pdf_font_size']);
 	}
 
@@ -224,8 +225,8 @@ class e107PDF extends UFPDF{
 
 	function WriteHTML($html,$scale){
 
-		$search		= array("\n", "<br />", "<hr />", '&raquo;', '&ordm;', '&middot', '&trade;', '&copy;', '&euro;', '&#091;', '&amp;#091;', '&nbsp;');
-		$replace	= array(" ", "<br>", "<hr>", '»', 'º', '·', '™', '©', '', '[', '[', ' ');
+		$search		= array("\n", "<br />", "<hr />", '&raquo;', '&ordm;', '&middot', '&trade;', '&copy;', '&euro;', '&#091;', '&amp;#091;', '&nbsp;', 'â€˜', 'â€™', ' />');
+		$replace	= array(" ", "<br>", "<hr>", '»', 'º', '·', '™', '©', '', '[', '[', ' ', "'", "'", '>');
 		//replace carriage returns by spaces, and some html variants
 		$html=str_replace($search, $replace, $html);
 		$a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE); //explodes the string
@@ -258,12 +259,10 @@ class e107PDF extends UFPDF{
 									$url = SITEURL.$url;
 								}
 							}
-							$this->SetX();
 							$this->Ln(2);
 							$this->PutImage($url,$scale);
 							$this->Ln(2);
-							$this->x=$this->lMargin;
-							//$this->SetX();
+							$this->SetX($this->lMargin);
 						}
 					}
 					$this->IMG='';
@@ -622,7 +621,7 @@ class e107PDF extends UFPDF{
 				$oposy=$this->GetY();
 				$this->Image($url, $this->GetX(), $this->GetY(), $nw, $nh);
 				$this->SetY($oposy+$nh);
-				if($yhflag==0 and $ysflag==1) $this->AddPage();
+				//if($yhflag==0 and $ysflag==1) $this->AddPage();
 			}
 		}
 	}
