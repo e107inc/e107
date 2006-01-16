@@ -67,6 +67,7 @@ if(isset($_POST['addpreset'])){
 		}
 	}
 	if(!$err){
+		$value = $tp->post_toForm($value);
 
 		$js = "		
 		<script type='text/javascript'>
