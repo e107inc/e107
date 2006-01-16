@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.173 $
-|     $Date: 2006-01-16 13:22:28 $
+|     $Revision: 1.174 $
+|     $Date: 2006-01-16 13:59:48 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -101,8 +101,12 @@ function update_617_to_700($type='') {
 			$tablenames[]=$row[0];
 		}
 
-		// Switch 0.6xx upgraders to iso ========================
-
+		// Switch 0.6xx upgraders back to standard English pack ========================
+		if ($pref['sitelanguage'] == 'English-iso') {
+			$pref['sitelanguage'] = 'English';
+			$s_prefs = TRUE;
+		}
+		
 		if ($sql -> db_Select("link_category", "link_category_id")){
 			if (is_dir(e_LANGUAGEDIR.e_LANGUAGE."-iso")) {
 				$pref['sitelanguage'] = $pref['sitelanguage']."-iso";
@@ -1207,8 +1211,11 @@ function update_617_to_700($type='') {
 
 		// Check if update is needed to 0.7. -----------------------------------------------
 		global $pref;
-		
 		if (!$sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended")) {
+			return update_needed();
+		}
+		
+		if ($pref['sitelanguage'] == 'English-iso') {
 			return update_needed();
 		}
 		
