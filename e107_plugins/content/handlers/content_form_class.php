@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.98 $
-|		$Date: 2006-01-13 20:03:43 $
+|		$Revision: 1.99 $
+|		$Date: 2006-01-16 10:26:35 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -410,11 +410,11 @@ class contentform{
 							}else{
 								$row = $sql -> db_Fetch();
 
-								$row['content_heading']		= $tp -> toForm($row['content_heading'], TRUE);
-								$row['content_subheading']	= $tp -> toForm($row['content_subheading'], TRUE);
-								$row['content_summary']		= $tp -> toForm($row['content_summary'], TRUE);
-								$row['content_text']		= $tp -> toForm($row['content_text'], TRUE);
-								$row['content_meta']		= $tp -> toForm($row['content_meta'], TRUE);
+								$row['content_heading']		= $tp -> toForm($row['content_heading']);
+								$row['content_subheading']	= $tp -> toForm($row['content_subheading']);
+								$row['content_summary']		= $tp -> toForm($row['content_summary']);
+								$row['content_text']		= $tp -> toForm($row['content_text']);
+								$row['content_meta']		= $tp -> toForm($row['content_meta']);
 								$authordetails				= $aa -> getAuthor($row['content_author']);
 							}
 						}
@@ -429,8 +429,8 @@ class contentform{
 								$row['content_parent']				= $_POST['parent'];
 								$row['content_heading']				= $tp -> post_toForm($_POST['content_heading']);
 								$row['content_subheading']			= $tp -> post_toForm($_POST['content_subheading']);
-								$row['content_summary']				= $tp -> post_toForm($_POST['content_summary'], TRUE);
-								$row['content_text']				= $tp -> post_toForm($_POST['content_text'], TRUE);
+								$row['content_summary']				= $tp -> post_toForm($_POST['content_summary']);
+								$row['content_text']				= $tp -> post_toForm($_POST['content_text']);
 								$authordetails[0]					= $_POST['content_author_id'];
 								$authordetails[1]					= $_POST['content_author_name'];
 								$authordetails[2]					= $_POST['content_author_email'];
@@ -462,12 +462,13 @@ class contentform{
 								}
 								//custom tags
 								for($i=0;$i<$content_pref["content_admin_custom_number_{$mainparent}"];$i++){
-									$keystring = $_POST["content_custom_key_{$i}"];
-									$custom["content_custom_{$keystring}"] = $_POST["content_custom_value_{$i}"];
+									$keystring = $tp -> post_toForm($_POST["content_custom_key_{$i}"]);
+									$custom["content_custom_{$keystring}"] = $tp -> post_toForm($_POST["content_custom_value_{$i}"]);
 								}
 								//preset tags
 								foreach($_POST['content_custom_preset_key'] as $k => $v){
-									$custom['content_custom_presettags'][$k] = $v;
+									$k = $tp -> post_toForm($k);
+									$custom['content_custom_presettags'][$k] = $tp -> post_toForm($v);
 								}
 						}
 
@@ -902,6 +903,10 @@ class contentform{
 							foreach($custom as $k => $v){
 								if(substr($k,0,22) != "content_custom_preset_" && $k != "content_custom_presettags"){
 									$key = substr($k,15);
+
+									$key	= $tp -> post_toForm($key);
+									$v		= $tp -> post_toForm($v);
+
 									if($checkcustom && $checkcustomnumber){
 										$TOPIC_FIELD .= "
 										<tr>
@@ -945,10 +950,12 @@ class contentform{
 								}else{
 									$tmp = explode("^", $content_pref["content_custom_preset_key"][$i]);
 									if(is_array($custom['content_custom_presettags'][$tmp[0]])){
+										$tmp[0] = $tp -> post_toForm($tmp[0]);
 										$hidden .= $rs -> form_hidden("content_custom_preset_key[$tmp[0]][day]", $custom['content_custom_presettags'][$tmp[0]][day]);
 										$hidden .= $rs -> form_hidden("content_custom_preset_key[$tmp[0]][month]", $custom['content_custom_presettags'][$tmp[0]][month]);
 										$hidden .= $rs -> form_hidden("content_custom_preset_key[$tmp[0]][year]", $custom['content_custom_presettags'][$tmp[0]][year]);
 									}else{
+										$tmp[0] = $tp -> post_toForm($tmp[0]);
 										$hidden .= $rs -> form_hidden("content_custom_preset_key[$tmp[0]]", $custom['content_custom_presettags'][$tmp[0]]);
 									}
 								}
@@ -987,21 +994,22 @@ class contentform{
 
 
 		function parseCustomPresetTag($tag, $values){
-			global $rs, $TOPIC_ROW_NOEXPAND, $months;
+			global $rs, $TOPIC_ROW_NOEXPAND, $months, $tp;
 
 			$tmp = explode("^", $tag);
 
 			$str = "";
 			if($tmp[1] == "text"){
-					$str = $rs -> form_text("content_custom_preset_key[{$tmp[0]}]", $tmp[2], $values[$tmp[0]], $tmp[3], "tbox", "", "", "");
+					$str = $rs -> form_text("content_custom_preset_key[{$tmp[0]}]", $tmp[2], $tp -> post_toForm($values[$tmp[0]]), $tmp[3], "tbox", "", "", "");
 
 			}elseif($tmp[1] == "area"){
-					$str = $rs -> form_textarea("content_custom_preset_key[{$tmp[0]}]", $tmp[2], $tmp[3], $values[$tmp[0]], "", "", "", "", "");
+					$str = $rs -> form_textarea("content_custom_preset_key[{$tmp[0]}]", $tmp[2], $tmp[3], $tp -> post_toForm($values[$tmp[0]]), "", "", "", "", "");
 
 			}elseif($tmp[1] == "select"){
 					$str = $rs -> form_select_open("content_custom_preset_key[{$tmp[0]}]", "");
 					$str .= $rs -> form_option($tmp[2], ($values[$tmp[0]] == $tmp[2] ? "1" : "0"), "", "");
 					for($i=3;$i<count($tmp);$i++){
+						$tmp[$i] = $tp -> post_toForm($tmp[$i]);
 						$str .= $rs -> form_option($tmp[$i], ($values[$tmp[0]] == $tmp[$i] ? "1" : "0"), $tmp[$i], "");
 					}				
 					$str .= $rs -> form_select_close();
@@ -1035,7 +1043,7 @@ class contentform{
 					}
 
 			}elseif($tmp[1] == "checkbox"){
-					$str = $rs -> form_checkbox("content_custom_preset_key[{$tmp[0]}]", $tmp[2], ($values[$tmp[0]] == $tmp[2] ? "1" : "0"), "", "");
+					$str = $rs -> form_checkbox("content_custom_preset_key[{$tmp[0]}]", $tp -> post_toForm($tmp[2]), ($values[$tmp[0]] == $tmp[2] ? "1" : "0"), "", "");
 			}
 
 			$TOPIC_TOPIC = $tmp[0];
