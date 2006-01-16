@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/admin_content_config.php,v $
-|		$Revision: 1.58 $
-|		$Date: 2006-01-07 01:37:26 $
+|		$Revision: 1.59 $
+|		$Date: 2006-01-16 15:21:52 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -338,7 +338,7 @@ if(!e_QUERY){																//show main categories
 	}elseif($qs[0] == "manager" && isset($qs[1]) && is_numeric($qs[1]) ){
 		if(!getperms("0")){ header("location:".e_SELF); exit; }
 		if(isset($qs[2])){
-			$message = $adb -> dbAssignAdmins("admin", $qs[1], $qs[2]);
+			$message = $adb -> dbAssignAdmins("admin", intval($qs[1]), $qs[2]);
 			$ns -> tablerender("", "<div style='text-align:center'><b>".$message."</b></div>");
 		}
 		$aform -> show_admin_contentmanager_category();

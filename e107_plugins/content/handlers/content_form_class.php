@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_form_class.php,v $
-|		$Revision: 1.99 $
-|		$Date: 2006-01-16 10:26:35 $
+|		$Revision: 1.100 $
+|		$Date: 2006-01-16 15:21:52 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1978,30 +1978,34 @@ class contentform{
 			}else{							
 				$content_pref	= $eArrayStorage->ReadArray($row['content_pref']);
 			}
+			$qs[1] = intval($qs[1]);
 			if(isset($content_pref["content_manager_allowed_{$qs[1]}"]) && $content_pref["content_manager_allowed_{$qs[1]}"]){
 				$pcm				= explode(",", $content_pref["content_manager_allowed_{$qs[1]}"]);
 			}else{
 				$pcm = array();
 			}
 
+			$classtocheck = $content_pref["content_manager_class_{$mainparent}"];
+			if($classtocheck==e_UC_PUBLIC || !$content_pref["content_manager_class_{$mainparent}"]){
+				$classqry = '';
+			}else{
+				$classqry = " AND (user_class = '{$classtocheck}' OR user_class REGEXP('^{$classtocheck},') OR user_class REGEXP(',{$classtocheck},') OR user_class REGEXP(',{$classtocheck}$'))";
+			}
 			$sql2 = new db;
-			$sql2->db_Select("user", "user_id, user_name, user_class, user_login", " user_perms != '0' ORDER BY user_name");
 			$c = 0;
 			$d = 0;
+			$sql2->db_Select("user", "user_id, user_name, user_class, user_login", " user_perms != '0' ".$classqry." ORDER BY user_name");
 			while ($row2 = $sql2->db_Fetch()) {
-				$arr = explode(",", $row2['user_class']);
-				if(in_array($content_pref["content_manager_class_{$mainparent}"], $arr)){
-					if(in_array($row2['user_id'], $pcm)){
-						$in_userid[$c]		= $row2['user_id'];
-						$in_username[$c]	= $row2['user_name'];
-						$in_userlogin[$c]	= $row2['user_login'] ? "(".$row2['user_login'].")" : "";
-						$c++;
-					} else {
-						$out_userid[$d]		= $row2['user_id'];
-						$out_username[$d]	= $row2['user_name'];
-						$out_userlogin[$d]	= $row2['user_login'] ? "(".$row2['user_login'].")" : "";
-						$d++;
-					}
+				if(in_array($row2['user_id'], $pcm)){
+					$in_userid[$c]		= $row2['user_id'];
+					$in_username[$c]	= $row2['user_name'];
+					$in_userlogin[$c]	= $row2['user_login'] ? "(".$row2['user_login'].")" : "";
+					$c++;
+				} else {
+					$out_userid[$d]		= $row2['user_id'];
+					$out_username[$d]	= $row2['user_name'];
+					$out_userlogin[$d]	= $row2['user_login'] ? "(".$row2['user_login'].")" : "";
+					$d++;
 				}
 			}
 			
@@ -2025,7 +2029,6 @@ class contentform{
 				<table style='width:98%;'>
 				<tr>
 				<td style='width:50%; vertical-align:top'>".CONTENT_ADMIN_CAT_LAN_29."<br />
-				
 				<select class='tbox' id='assignclass1' name='assignclass1' size='10' style='width:220px' multiple='multiple' onchange='moveOver();'>
 				".$optionout."				 
 				</select>
@@ -2665,7 +2668,7 @@ class contentform{
 			
 			//content_manager_class_
 			$TOPIC_TOPIC = CONTENT_ADMIN_OPT_LAN_62;
-			$TOPIC_FIELD = r_userclass("content_manager_class_{$id}", $content_pref["content_manager_class_{$id}"], "CLASSES").$rs -> form_hidden("content_manager_allowed_{$id}", $content_pref["content_manager_allowed_{$id}"]);
+			$TOPIC_FIELD = r_userclass("content_manager_class_{$id}", $content_pref["content_manager_class_{$id}"], 'off', "public,classes").$rs -> form_hidden("content_manager_allowed_{$id}", $content_pref["content_manager_allowed_{$id}"]);
 			$text .= preg_replace("/\{(.*?)\}/e", '$\1', $TOPIC_ROW_NOEXPAND);
 
 			$text .= $TOPIC_TABLE_END;
