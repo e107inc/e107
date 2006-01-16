@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.170 $
-|     $Date: 2006-01-12 12:56:38 $
+|     $Revision: 1.171 $
+|     $Date: 2006-01-16 13:13:15 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -396,8 +396,7 @@ function update_617_to_700($type='') {
 			dblog_query text NOT NULL,
 			dblog_remarks varchar(255) NOT NULL default '',
 			PRIMARY KEY  (dblog_id)
-			) TYPE=MyISAM;
-			");
+			) TYPE=MyISAM;");
 			catch_error();
 		}
 
@@ -412,8 +411,7 @@ function update_617_to_700($type='') {
 			gen_intdata int(10) unsigned NOT NULL default '0',
 			gen_chardata text NOT NULL,
 			PRIMARY KEY  (gen_id)
-			) TYPE=MyISAM;
-			");
+			) TYPE=MyISAM;");
 			catch_error();
 		}
 
@@ -421,8 +419,7 @@ function update_617_to_700($type='') {
 			$sql->db_Select_gen("CREATE TABLE ".MPREFIX."user_extended (
 			user_extended_id int(10) unsigned NOT NULL default '0',
 			PRIMARY KEY  (user_extended_id)
-			) TYPE=MyISAM;
-			");
+			) TYPE=MyISAM;");
 			catch_error();
 
 			$sql->db_Select_gen("CREATE TABLE ".MPREFIX."user_extended_struct (
@@ -438,8 +435,7 @@ function update_617_to_700($type='') {
 			user_extended_struct_required tinyint(3) unsigned NOT NULL default '0',
 			user_extended_struct_signup tinyint(3) unsigned NOT NULL default '0',
 			PRIMARY KEY  (user_extended_struct_id)
-			) TYPE=MyISAM;
-			");
+			) TYPE=MyISAM;");
 			catch_error();
 
 			$sql->db_Select_gen("ALTER TABLE #user_extended_struct ADD user_extended_struct_applicable tinyint(3) unsigned NOT NULL default '0'");
@@ -624,8 +620,7 @@ function update_617_to_700($type='') {
 			preset_field varchar(80) NOT NULL default '',
 			preset_value varchar(255) NOT NULL default '',
 			PRIMARY KEY  (preset_id)
-			) TYPE=MyISAM;
-			");
+			) TYPE=MyISAM;");
 			catch_error();
 		}
 
@@ -654,8 +649,7 @@ function update_617_to_700($type='') {
 			download_request_download_id int(10) unsigned NOT NULL default '0',
 			download_request_datestamp int(10) unsigned NOT NULL default '0',
 			PRIMARY KEY  (download_request_id)
-			) TYPE=MyISAM;
-			");
+			) TYPE=MyISAM;");
 			catch_error();
 		}
 
@@ -684,15 +678,15 @@ function update_617_to_700($type='') {
 
 		// db verify fixes
 			// Are these needed? To facilitate for users that upgraded to the cvs during development, or?
-			mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_signup_show` , DROP `user_extended_struct_signup_required` ;");
+			mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_signup_show` , DROP `user_extended_struct_signup_required`;");
 			catch_error();
-			mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_signup` TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_extended_struct_required` ;");
+			mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_signup` TINYINT( 3 ) UNSIGNED DEFAULT '0' NOT NULL AFTER `user_extended_struct_required`;");
 			catch_error();
-			mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_icon` ;");
+			mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` DROP `user_extended_struct_icon`;");
 			catch_error();
-	                mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_parent` int(10) unsigned NOT NULL default '0'");
+	        mysql_query("ALTER TABLE `".MPREFIX."user_extended_struct` ADD `user_extended_struct_parent` int(10) unsigned NOT NULL default '0'");
 			catch_error();
-        	        mysql_query("ALTER TABLE `".MPREFIX."user_extended` ADD `user_hidden_fields` TEXT NOT NULL AFTER `user_extended_id`");
+        	mysql_query("ALTER TABLE `".MPREFIX."user_extended` ADD `user_hidden_fields` TEXT NOT NULL AFTER `user_extended_id`");
 			catch_error();
 
 
@@ -865,7 +859,7 @@ function update_617_to_700($type='') {
 
 		// New Downloads visibility field.
 			if($sql->db_Field("download",18) != "download_visible"){
-				mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_visible` varchar(255) NOT NULL default '0' ;");
+				mysql_query("ALTER TABLE `".MPREFIX."download` ADD `download_visible` varchar(255) NOT NULL default '0';");
 				catch_error();
 				mysql_query("UPDATE `".MPREFIX."download` SET download_visible = download_class");
 				catch_error();
@@ -1165,8 +1159,7 @@ function update_617_to_700($type='') {
 					event_userid int(10) unsigned NOT NULL default '0',
 					event_cat int(10) unsigned NOT NULL default '0',
 					PRIMARY KEY (event_subid)
-					) TYPE=MyISAM;
-				");
+					) TYPE=MyISAM;");
 
 				$row = $sql->db_Fetch();
 				if($row['plugin_version'] != '3.5'){
@@ -1211,7 +1204,7 @@ function update_617_to_700($type='') {
 		return '';
 
 	} else {
-
+return update_needed();
 
 		// Check if update is needed to 0.7. -----------------------------------------------
 		global $pref;
