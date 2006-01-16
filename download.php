@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/download.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2005-12-24 22:53:38 $
-|     $Author: sweetas $
+|     $Revision: 1.58 $
+|     $Date: 2006-01-16 01:46:01 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -298,10 +298,11 @@ if ($action == "list") {
 	}
 
 
-	echo "<div style='text-align:center;margin-left:auto;margin-right:auto'><a href='".e_SELF."'>".LAN_dl_9."</a></div>";
+	echo "<div style='text-align:center;margin-left:auto;margin-right:auto'><a href='".e_SELF."'>".LAN_dl_9."</a><br /><br />";
+	$parms = $total_downloads.",".$view.",".$from.",".e_SELF."?[FROM].list.{$id}.{$view}.{$order}.{$sort}.";
+	echo ($total_downloads > $view) ? "<div class='nextprev'>".LAN_dl_76."&nbsp;".$tp->parseTemplate("{NEXTPREV={$parms}}")."</div>" : "";
+    echo "</div>";
 
-	require_once(e_HANDLER."np_class.php");
-	$ix = new nextprev("download.php", $from, $view, $total_downloads, "Downloads", "list.{$id}.{$view}.{$order}.{$sort}");
 	require_once(FOOTERF);
 	exit;
 }
@@ -526,7 +527,7 @@ if ($action == "report") {
 		$report_add = $tp -> toDB($_POST['report_add']);
 		$download_name = $tp -> toDB($download_name);
 		$user = USER ? USERNAME : LAN_dl_52;
-		
+
 		if ($pref['download_email']) {
 			require_once(e_HANDLER."mail.php");
 			$subject = LAN_dl_60." ".SITENAME;
