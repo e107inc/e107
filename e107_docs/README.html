@@ -4,12 +4,12 @@
 <!-- Version Info:
 
 $Source: /cvs_backup/e107_0.7/e107_docs/README.html,v $
-$Revision: 1.6 $
-$Date: 2005-11-23 16:29:16 $
-$Author: streaky $
+$Revision: 1.7 $
+$Date: 2006-01-16 16:01:01 $
+$Author: sweetas $
 
 -->
-<title>e107 Readme [$Revision: 1.6 $]</title>
+<title>e107 Readme [$Revision: 1.7 $]</title>
 <link rel="stylesheet" href="style.css" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta http-equiv="content-style-type" content="text/css" />
@@ -28,7 +28,7 @@ $Author: streaky $
     <li>e107 requires a webserver that has PHP 4.3 (or newer) and MySQL 3.22 (or newer), contact your host if you're not sure if you have these installed.</li>
     <li>If you host your own site you can download <a href="http://php.net">PHP</a> and <a href="http://mysql.com">MySQL</a> and install them yourself, both are free.</li>
     <li>You will need your MySQL username and password, and a database for content storage. Don't worry if you only have one database, e107 is happy to share it's database with other applications.</li>
-    <li>A complete e107 install requires approximately 8MB of disk space on your server, although this should be reduced dramatically for most users by removing the plugins and themes they won't be using, simply by removing the relevent folder.</li>
+    <li>A complete e107 install requires approximately 9MB of disk space on your server, although this should be reduced dramatically for most users by removing the plugins and themes they won't be using, simply by removing the relevent folder.</li>
   </ul>
   <br />
   <a id='installing' name='installing'></a><span class="headertext">Installing</span>
@@ -91,26 +91,8 @@ $Author: streaky $
   <br />
   <a id='upgrading' name='upgrading'></a><span class="headertext">Upgrading</span><br />
   <br />
-  You should back up your database before applying any updates, see the section below on how to do that.<br />
-  <br/>
-  If upgrading from one version previous (e.g. v.617 to v.700)<br />
-  <ul>
-    <li>Download the update package and unzip it</li>
-    <li>Open your FTP client and navigate to your e107 installation</li>
-    <li>Upload the files in the update package, overwriting the originals</li>
-    <li>Go to your administration section on your website, if there are any changes to be made to the e107 database you'll see a message informing you - click the button to carry out the database changes.</li>
-  </ul>
-  <br />
-  If upgrading from a version less than one number previous (e.g. v.610 to v.700). Versions .615 and above now include all updates back to .600.<br/>
-  You can use this method to upgrade any e107 install that is greater than v.600.<br />
-  <ul>
-    <li>Download the full install package and unzip it</li>
-    <li>Open your FTP client and navigate to your e107 installation</li>
-    <li><strong>Delete the e107_config.php and install.php files before uploading.</strong>Upload the files in the update package, overwriting the originals.</li>
-    <li><strong>Once again when updating using this method, DO NOT upload e107config.php it will overwrite your configuration settings.</strong></li>
-    <li>Go to your administration section on your website, if there are any changes to be made to the e107 database you'll see a message informing you - click the button to carry out the database changes.</li>
-  </ul>
-  <br />
+  <a href='README_UPGRADE.html'>Please click here for instructions on upgrading your 0.6175 website to 0.7.</a>
+  <br /><br /><br />
   <a id='backup' name='backup'></a><span class="headertext">Using phpMyAdmin to backup your database</span><br />
   <br />
   <ul>
@@ -168,7 +150,7 @@ $Author: streaky $
   <a id='problems' name='problems'></a><span class="headertext">Common Problems</span><br />
   <br />
   <ul>
-    <li>If for any reason you get a critical error message concering your core settings, you can easily reset them to default using the resetcore utility. You can find this in your e107_files folder, use your web browser to navigate to http://yoursite.com/resetcore/resetcore.php and follow the instructions. This will not affect any content on your site, it will merely reset your core settings, so your site theme etc will revert to default. You can make a backup of your core at any time and restore this from the resetcore utility, to backup your core go to your admin section, click on Database ten click on Backup Core</li>
+    <li>If for any reason you get a critical error message concering your core settings, you can easily reset them to default using the resetcore utility. You can find this in your e107_files folder, use your web browser to navigate to http://yoursite.com/e107_files/resetcore/resetcore.php and follow the instructions. This will not affect any content on your site, it will merely reset your core settings, so your site theme etc will revert to default. You can make a backup of your core at any time and restore this from the resetcore utility, to backup your core go to your admin section, click on Database ten click on Backup Core</li>
     <li>If after installing e107 you get a blank page, check your error_reporting level in your php.ini file. This is generally caused by an error on your site not being reported because your error reporting is set too low, or turned off completely. If you don't have access to your php.ini contact your web host</li>
     <li>If you are seeing Undefined Variable or Notice errors on your site, your error_reporting is set too high. Make sure it's set to E_ERROR | E_WARNING | E_PARSE in your php.ini, again if you don't have access contact your web hosts and ask them to change it</li>
   </ul>
@@ -187,14 +169,14 @@ $Author: streaky $
     <li><b>Third party plugin support: e107coders</b><br />
       <a href='http://e107coders.org'>http://e107coders.org/</a></li>
     <br />
-    <li><b>Third party theme support: e107themes</b><br />
-      <a href='http://e107themes.org'>http://e107themes.org/</a></li>
+    <li><b>Third party theme support: e107styles | e107themes</b><br />
+      <a href='http://e107styles.org'>http://e107styles.org/</a> | <a href='http://e107themes.org'>http://e107themes.org/</a></li>
   </ul>
   <p><br />
     <a id='development' name='development'></a><span class="headertext">Development</span><br />
     <br />
     e107 has been tested, and developed on Apache 1 and 2, IIS, and PHP 4.3+ (Including 5.0).<br />
-    It is developed by the e107 dev team (Jalist, McFly, Cameron, Streaky, SweetAs, Asperon, Que, Lolo, Chavo,).<br />
+    It is developed by the e107 dev team (Jalist, McFly, Cameron, Streaky, SweetAs, Asperon, Que, Lolo, Chavo, Lisa, MrPete).<br />
     <br />
     If you have made changes to the core you think might benefit others please let us know about them in the forums at e107.org :)<br />
     <br />
@@ -210,13 +192,6 @@ $Author: streaky $
     <li>e107.net for donated hosting</li>
     <li>Thanks to all of you who have taken the time to create plugins/themes/hacks, answer questions in the forums and IRC channel etc. We have a wonderful community here and it's because of people like you.</li>
     <li>And thanks to you for trying e107, I hope you like it and it fits your website needs. If it doesn't try <a href='http://opensourcecms.com'>OpenSourceCMS</a> for a full list of alternative systems.</li>
-    <li>A couple of third-party scripts have been integrated into e107 to make your life easier, so thankyou to ...<br />
-      <ul>
-        <li>InteractiveTools (<a href='http://interactivetools.com'>http://interactivetools.com</a>) for HTMLArea</li>
-        <li>Mihai Bazon (<a href='http://dynarch.com/mishoo/home.epl'>http://dynarch.com/mishoo/home.epl</a>) for the calendar widget</li>
-      </ul>
-      <br />
-      Both these scripts are released under the GPL license and as stated the copyright information has been left intact in the scripts themselves, if you want to use these scripts in your own code you must abide by the GPL license.</li>
   </ul>
   </br >
   <a id='disclaimer' name='disclaimer'></a><span class="headertext">Disclaimer</span><br />
