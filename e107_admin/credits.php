@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/credits.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-11-04 18:35:45 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2006-01-16 16:20:27 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -67,6 +67,18 @@ $creditsArray = array(
 				"url" => "http://www.dynarch.com/projects/", 
 				"description" => "Popup calendar widget", 
 				"version" => "1.0", 
+				"licence" => "GPL"
+			),
+	array(	"name" => "FPDF", 
+				"url" => "http://www.fpdf.org/",
+				"description" => "PDF support", 
+				"version" => "1.53", 
+				"licence" => "Freeware"
+			),
+	array(	"name" => "UFPDF", 
+				"url" => "http://www.acko.net/node/56",
+				"description" => "UTF-8 PDF support", 
+				"version" => "0.1", 
 				"licence" => "GPL"
 			),
 	);
