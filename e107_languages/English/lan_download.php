@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/lan_download.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2006-01-16 01:46:01 $
+|     $Revision: 1.11 $
+|     $Date: 2006-01-16 02:37:30 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -86,7 +86,7 @@ define("LAN_dl_66", "Select download mirror");
 
 define("LAN_dl_67", "Please select mirror to use ...");
 define("LAN_dl_68", "Mirror Host");
-define("LAN_dl_69", "Download");
+// define("LAN_dl_69", "Download"); // duplicate
 define("LAN_dl_70", "Location");
 define("LAN_dl_71", "About");
 

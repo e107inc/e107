@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_files/shortcode/batch/download_shortcodes.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.8 $
+|     $Date: 2006-01-16 02:37:30 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -40,9 +40,9 @@ SC_END
 
 SC_BEGIN DOWNLOAD_LIST_ICON
 global $row;
-$img = "<img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' />";
+$img = "<img src='".IMAGE_DOWNLOAD."' alt='' style='border:0' title='".LAN_dl_32."' />";
 if($parm == "link"){
-	return "<a href='".e_SELF."?view.".$row['download_id']."'>".$img."</a>";
+	return "<a href='".e_SELF."?view.".$row['download_id']."' >".$img."</a>";
 }else{
 	return $img;
 }
@@ -102,9 +102,9 @@ SC_BEGIN DOWNLOAD_LIST_LINK
 global $tp,$row,$pref;
 $agreetext = $tp->toJS($pref['agree_text']);
 	if($row['download_mirror_type']){
-		return ($pref['agree_flag'] ? "<a href='".e_SELF."?mirror.".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_SELF."?mirror.".$row['download_id']."'>");
+		return ($pref['agree_flag'] ? "<a href='".e_SELF."?mirror.".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_SELF."?mirror.".$row['download_id']."' >");
 	}else{
-		return ($pref['agree_flag'] ? "<a href='".e_BASE."request.php?".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."request.php?".$row['download_id']."'>");
+		return ($pref['agree_flag'] ? "<a href='".e_BASE."request.php?".$row['download_id']."' onclick= \"return confirm('{$agreetext}');\">" : "<a href='".e_BASE."request.php?".$row['download_id']."' >");
 	}
 SC_END
 
