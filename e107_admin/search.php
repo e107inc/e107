@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/search.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-12-04 04:09:06 $
+|     $Revision: 1.33 $
+|     $Date: 2006-01-16 15:06:30 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -62,11 +62,15 @@ while (false !== ($file = readdir($handle))) {
 }
 closedir($handle);
 
+if (!isset($search_prefs['boundary'])) {
+	$search_prefs['boundary'] = 1;
+	$save_search = TRUE;
+}
+
 if ($save_search) {
 	$serialpref = addslashes(serialize($search_prefs));
 	$sql -> db_Update("core", "e107_value='".$serialpref."' WHERE e107_name='search_prefs'");
 }
-
 
 if (isset($_POST['update_main'])) {
 	foreach($search_handlers as $s_key => $s_value) {
@@ -123,6 +127,7 @@ if (isset($_POST['update_prefs'])) {
 		$search_prefs['mysql_sort'] = FALSE;
 	}
 	$search_prefs['php_limit'] = $tp -> toDB($_POST['php_limit']);
+	$search_prefs['boundary'] = $_POST['boundary'];
 
 	$tmp = addslashes(serialize($search_prefs));
 	admin_update($sql -> db_Update("core", "e107_value='".$tmp."' WHERE e107_name='search_prefs'"));
@@ -202,11 +207,19 @@ if ($query[0] == 'settings') {
 	</tr>";
 	
 	$text .= "<tr>
-	<td class='forumheader3' style='width:50%'>".SEALAN_3."</td>
+	<td class='forumheader3' style='width:50%'>".SEALAN_3."<br />".SEALAN_49."</td>
 	<td colspan='2' class='forumheader3' style='width:50%'>
 	".$rs -> form_radio('search_sort', 'mysql', ($search_prefs['mysql_sort'] == TRUE ? 1 : 0), 'MySql', ($mysql_supported ? "" : "disabled='true'"))."MySql<br />
 	".$rs -> form_radio('search_sort', 'php', ($search_prefs['mysql_sort'] == TRUE ? 0 : 1)).SEALAN_31." 
 	".$rs -> form_text("php_limit", 5, $tp -> toForm($search_prefs['php_limit']), 5)." ".SEALAN_32." 
+	</td>
+	</tr>";
+	
+	$text .= "<tr>
+	<td style='width:50%' class='forumheader3'>".SEALAN_47."<br />".SEALAN_48."</td>
+	<td style='width:50%;' colspan='2' class='forumheader3'>
+	<input type='radio' name='boundary' value='1'".($search_prefs['boundary'] ? " checked='checked'" : "")." /> ".SEALAN_16."&nbsp;&nbsp;
+	<input type='radio' name='boundary' value='0'".(!$search_prefs['boundary'] ? " checked='checked'" : "")." /> ".SEALAN_17."
 	</td>
 	</tr>";
 	

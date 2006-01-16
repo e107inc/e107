@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_languages/English/admin/lan_search.php,v $
-|     $Revision: 1.22 $
-|     $Date: 2006-01-15 01:08:04 $
-|     $Author: streaky $
+|     $Revision: 1.23 $
+|     $Date: 2006-01-16 15:06:30 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 define("SEALAN_1", "Search Configuration");
@@ -54,6 +54,10 @@ define("SEALAN_43", "Edit search settings for");
 define("SEALAN_44", "User class allowed to search this area");
 define("SEALAN_45", "Number of results displayed per page");
 define("SEALAN_46", "Number of characters in search result summary");
+
+define("SEALAN_47", "Only match whole words:");
+define("SEALAN_48", "This setting only applies when the search sort method is PHP. If your site includes Ideographic languages such as Chinese and Japanese you must have this set to off.");
+define("SEALAN_49", "If your site includes Ideographic languages such as Chinese and Japanese you must use the PHP sort method.");
 
 
 ?>
