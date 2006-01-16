@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.172 $
-|     $Date: 2006-01-16 13:17:10 $
+|     $Revision: 1.173 $
+|     $Date: 2006-01-16 13:22:28 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -1207,6 +1207,11 @@ function update_617_to_700($type='') {
 
 		// Check if update is needed to 0.7. -----------------------------------------------
 		global $pref;
+		
+		if (!$sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended")) {
+			return update_needed();
+		}
+		
 		if (!isset($pref['download_email'])) {
 			return update_needed();
 		}
