@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/search_class.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2005-12-28 14:03:36 $
+|     $Revision: 1.33 $
+|     $Date: 2006-01-16 15:06:30 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -89,14 +89,15 @@ class e_search {
 				}
 				$match_query .= isset($uninitial_field) ? " ".$field_operator." (" : "(";
 				$uninitial_field = TRUE;
-				if ($this -> keywords['wildcard'][$k_key]) {
+				if ($this -> keywords['wildcard'][$k_key] || !$search_prefs['boundary']) {
 					$wildcard = '';
 				} else {
 					$wildcard = '[[:>:]]';
 				}
 				$key_count = 1;
 				foreach ($search_fields as $field) {
-					$match_query .= " ".$field." ".$boolean_regex." REGEXP '[[:<:]]".$key.$wildcard."' ";
+					$regexp = $search_prefs['boundary'] ? "[[:<:]]".$key.$wildcard : $key;
+					$match_query .= " ".$field." ".$boolean_regex." REGEXP '".$regexp."' ";
 					if ($key_count != count($search_fields)) {
 						$match_query .= $key_operator;
 					}
@@ -204,10 +205,11 @@ class e_search {
 						$replace = array_merge($t_replace, $s_replace);
 						$this -> text = strip_tags(str_replace($search, $replace, $this -> text));
 						foreach ($this -> keywords['match'] as $match_id => $this -> query) {
+							$boundary = $search_prefs['boundary'] ? '\b' : '';
 							if ($this -> keywords['wildcard'][$match_id]) {
-								$regex_append = ".*?\b)";
+								$regex_append = ".*?".$boundary.")";
 							} else {
-								$regex_append = "\b)";	
+								$regex_append = $boundary.")";	
 							}
 							if (($match_start = stristr($this -> text, $this -> query)) !== FALSE) {
 								$this -> pos = strlen($this -> text) - strlen($match_start);
@@ -216,7 +218,7 @@ class e_search {
 									$endcrop = TRUE;
 								}
 								$key = substr($this -> text, $this -> pos, strlen($this -> query));
-								$this -> text = preg_replace("#(\b".$this -> query.$regex_append."#i", "<span class='searchhighlight'>\\1</span>", $this -> text);
+								$this -> text = preg_replace("#(".$boundary.$this -> query.$regex_append."#i", "<span class='searchhighlight'>\\1</span>", $this -> text);
 							}
 						}
 						if ($title) {
