@@ -11,8 +11,8 @@
 |    GNU General Public License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/pdf/admin_pdf_config.php,v $
-|    $Revision: 1.1 $
-|    $Date: 2006-01-11 15:54:58 $
+|    $Revision: 1.2 $
+|    $Date: 2006-01-16 10:36:59 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -61,6 +61,7 @@ function getDefaultPDFPrefs(){
 		$pdfpref['pdf_show_sitename']			= false;
 		$pdfpref['pdf_show_page_url']			= true;
 		$pdfpref['pdf_show_page_number']		= true;
+		$pdfpref['pdf_error_reporting']			= true;
 		return $pdfpref;
 }
 
@@ -162,6 +163,13 @@ $text .= "
 	<td class='forumheader3' style='width:70%;'>
 		".$rs -> form_radio("pdf_show_page_number", "1", ($pdfpref['pdf_show_page_number'] ? "1" : "0"), "", "").PDF_LAN_3."
 		".$rs -> form_radio("pdf_show_page_number", "0", ($pdfpref['pdf_show_page_number'] ? "0" : "1"), "", "").PDF_LAN_4."
+	</td>
+</tr>
+<tr>
+	<td class='forumheader3' style='width:30%; white-space:nowrap;'>".PDF_LAN_20."</td>
+	<td class='forumheader3' style='width:70%;'>
+		".$rs -> form_radio("pdf_error_reporting", "1", ($pdfpref['pdf_error_reporting'] ? "1" : "0"), "", "").PDF_LAN_3."
+		".$rs -> form_radio("pdf_error_reporting", "0", ($pdfpref['pdf_error_reporting'] ? "0" : "1"), "", "").PDF_LAN_4."
 	</td>
 </tr>
 
