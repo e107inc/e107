@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2006-01-08 12:57:44 $
+|     $Revision: 1.39 $
+|     $Date: 2006-01-16 01:15:13 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -36,6 +36,7 @@ The following should be using $eplug_rss in their plugin.php file (see chatbox)
 */
 
 require_once("../../class2.php");
+
 if (!is_object($tp->e_bb)) {
 	require_once(e_HANDLER.'bbcode_handler.php');
 	$tp->e_bb = new e_bbcode;
@@ -113,11 +114,12 @@ class rssCreate {
 					}else{
 						$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['news_body']) : $tp -> toRss(substr($value['news_body'], 0, 100)));
                     }
-					$this -> rssItems[$loop]['author'] = $value['user_name'] . "&lt;".str_replace("@",".nospamplease@nospam.",$value['user_email'])."&gt;";
+					$this -> rssItems[$loop]['author'] = $value['user_name'] . " &lt;".$value['user_email']."&gt;";
 					$this -> rssItems[$loop]['category'] = "<category domain='".SITEURL."news.php?cat.".$value['news_category']."'>".$value['category_name']."</category>";
 
-					$this -> rssItems[$loop]['comment'] = ( $value['news_allow_comments'] ? "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id : "Comments are turned off for this item");
-
+					if($value['news_allow_comments']){
+						$this -> rssItems[$loop]['comment'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."comment.php?comment.news.".$news_id;
+                    }
 					$this -> rssItems[$loop]['pubdate'] = $value['news_datestamp'];
 
 					$loop++;
@@ -163,7 +165,7 @@ class rssCreate {
 			case 6:
 				$this -> contentType = "forum threads";
 				$this -> rssQuery =
-				"SELECT t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, u.user_name FROM #forum_t AS t
+				"SELECT t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, u.user_name, u.user_email FROM #forum_t AS t
 				LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
 				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
 				WHERE f.forum_class IN (0, 251, 252) AND t.thread_parent=0
@@ -177,7 +179,7 @@ class rssCreate {
 				foreach($tmp as $value) {
 
 					if($value['user_name']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".intval($value['thread_user'])." )";
+						$this -> rssItems[$loop]['author'] = $value['user_name'] . " &lt;".$value['user_email']."&gt;";  // must include an email address to be valid.
 					} else {
 						$tmp=explode(".", $value['thread_user'], 2);
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
@@ -194,7 +196,7 @@ class rssCreate {
 
 			case 7:
 				$this -> contentType = "forum posts";
-				$this -> rssQuery = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name FROM #forum_t AS t
+				$this -> rssQuery = "SELECT tp.thread_name AS parent_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, t.thread_lastuser, t.thread_total_replies, f.forum_id, f.forum_name, f.forum_class, u.user_name, u.user_email FROM #forum_t AS t
 				LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
 				LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
 				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
@@ -207,7 +209,7 @@ class rssCreate {
 				foreach($tmp as $value) {
 
 					if($value['user_name']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".intval($value['thread_user'])." )";
+						$this -> rssItems[$loop]['author'] = $value['user_name'] . " &lt;".$value['user_email']."&gt;";
 					} else {
 						$tmp=explode(".", $value['thread_user'], 2);
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
@@ -243,7 +245,7 @@ class rssCreate {
 				$topic = $sql->db_Fetch();
 
 				/* get replies ...  */
-				$this -> rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, f.forum_id, f.forum_name, f.forum_class, u.user_name
+				$this -> rssQuery = "SELECT t.thread_name, t.thread_thread, t.thread_id, t.thread_name, t.thread_datestamp, t.thread_parent, t.thread_user, t.thread_views, t.thread_lastpost, f.forum_id, f.forum_name, f.forum_class, u.user_name, u.user_email
 				FROM #forum_t AS t
 				LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
 				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
@@ -267,7 +269,7 @@ class rssCreate {
 				$loop ++;
 				foreach($replies as $value) {
 					if($value['user_name']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".intval($value['thread_user'])." )";
+						$this -> rssItems[$loop]['author'] = $value['user_name'] . " &lt;".$value['user_email']."&gt;";
 					} else {
 						$tmp=explode(".", $value['thread_user'], 2);
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
@@ -298,7 +300,7 @@ class rssCreate {
 
 			case 11:
 				$this -> rssQuery = "
-				SELECT f.forum_id, f.forum_name, f.forum_class, tp.thread_name AS parent_name, t.*, u.user_name from #forum_t as t
+				SELECT f.forum_id, f.forum_name, f.forum_class, tp.thread_name AS parent_name, t.*, u.user_name, u.user_email from #forum_t as t
 				LEFT JOIN #user AS u ON FLOOR(t.thread_user) = u.user_id
 				LEFT JOIN #forum_t AS tp ON t.thread_parent = tp.thread_id
 				LEFT JOIN #forum AS f ON f.forum_id = t.thread_forum_id
@@ -315,7 +317,7 @@ class rssCreate {
 				$loop=0;
 				foreach($tmp as $value) {
 					if($value['user_name']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " ( ".$e107->http_path."user.php?id.".intval($value['thread_user'])." )";
+						$this -> rssItems[$loop]['author'] = $value['user_name'] . " &lt;".$value['user_email']."&gt;";
 					} else {
 						$tmp=explode(".", $value['thread_user'], 2);
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
@@ -343,7 +345,7 @@ class rssCreate {
 				$loop=0;
 				foreach($tmp as $value) {
 					$nick = preg_replace("/[0-9]+\./", "", $value['download_author']);
-					$this -> rssItems[$loop]['author'] = $nick;
+					$this -> rssItems[$loop]['author'] = $nick . "&lt;".$value['download_author_email']."&gt;";
 					$this -> rssItems[$loop]['title'] = $value['download_name'];
 					$this -> rssItems[$loop]['link'] = $e107->http_path."download.php?view.".$value['download_id'];
 					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['download_description']) : $tp -> toRss(substr($value['download_description'], 0, 100)));
@@ -370,7 +372,7 @@ class rssCreate {
 					$loop=0;
 					foreach($tmp as $row) {
 
-						$this -> rssItems[$loop]['author'] = $tp -> toRss($row[$author]);
+						$this -> rssItems[$loop]['author'] = $row[$author];
 						$this -> rssItems[$loop]['title'] = $tp -> toRss($row[$title]);
 						$item = ($itemid) ? $row[$itemid] : "";
 						$link2 = str_replace("#",$item,$link);
@@ -412,7 +414,7 @@ class rssCreate {
 
 	function buildRss($rss_title) {
 		global $sql, $pref, $tp;
-		header('Content-type: text/xml', TRUE);
+		header('Content-type: application/rss+xml', TRUE);
 
 		$rss_title = $tp->toRss($pref['sitename']." : ".$rss_title);
 
@@ -424,7 +426,7 @@ class rssCreate {
 						<!-- content type=\"".$this -> contentType."\" -->
 						<rss version=\"0.92\">
 						<channel>
-						<title>".$rss_title."</title>
+						<title>".$tp->toRss($rss_title)."</title>
 						<link>".$pref['siteurl']."</link>
 						<description>".$tp->toRss($pref['sitedescription'])."</description>
 						<lastBuildDate>".$itemdate = date("r", ($time + $this -> offset))."</lastBuildDate>
@@ -432,9 +434,9 @@ class rssCreate {
 					foreach($this -> rssItems as $value) {
 						echo "
 							<item>
-							<title>".$value['title']."</title>
+							<title>".$tp->toRss($value['title'])."</title>
 							<description>".$tp->toRss($value['description'])."</description>
-							<author>".$value['author']."</author>
+							<author>".$this->nospam($value['author'])."</author>
 							<link>".$value['link']."</link>
 							</item>";
 					}
@@ -453,7 +455,7 @@ class rssCreate {
 
 				<rss version=\"2.0\">
 				<channel>
-				<title>".$rss_title."</title>
+				<title>".$tp->toRss($rss_title)."</title>
 				<link>".$pref['siteurl']."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>
 				<language>en-gb</language>
@@ -466,7 +468,7 @@ class rssCreate {
 				<generator>e107 (http://e107.org)</generator>
 				<ttl>60</ttl>
 				<image>
-				<title>".$rss_title."</title>
+				<title>".$tp->toRss($rss_title)."</title>
 				<url>".(strstr(SITEBUTTON, "http:") ? SITEBUTTON : SITEURL.str_replace("../", "", e_IMAGE).SITEBUTTON)."</url>
 				<link>".$pref['siteurl']."</link>
 				<width>88</width>
@@ -482,7 +484,7 @@ class rssCreate {
 			foreach($this -> rssItems as $value) {
 				echo "
 					<item>
-					<title>".$value['title']."</title>\n";
+					<title>".$tp->toRss($value['title'])."</title>\n";
 
 				if($value['link']){
                 	echo "<link>".$value['link']."</link>\n";
@@ -492,10 +494,10 @@ class rssCreate {
 					".$value['category']."\n";
 
 				if($value['comment']){
-					echo "<comments>".$value['comment']."</comments>\n";
+					echo "<comments>".$tp->toRss($value['comment'])."</comments>\n";
 				 }
 				if($value['author']){
-					echo "<author>".$value['author']."</author>\n";
+					echo "<author>".$this->nospam($value['author'])."</author>\n";
 				}
 
 				// enclosure support for podcasting etc.
@@ -583,6 +585,12 @@ class rssCreate {
    return $date_mod;
 }
 
+	function nospam($text){
+		$tmp = explode("@",$text);
+		if($tmp[0]){
+			return $tmp[0]."@nospam.com&gt;";
+		}
+	}
 
 }
 
