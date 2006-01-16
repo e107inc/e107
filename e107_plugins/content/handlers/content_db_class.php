@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_db_class.php,v $
-|		$Revision: 1.41 $
-|		$Date: 2006-01-07 01:37:26 $
+|		$Revision: 1.42 $
+|		$Date: 2006-01-16 15:21:52 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -286,7 +286,7 @@ class contentdb{
 						$refer = "";
 					}
 				}
-				$sql -> db_Update($plugintable, "content_heading = '".$_POST['content_heading']."', content_subheading = '".$_POST['content_subheading']."', content_summary = '".$_POST['content_summary']."', content_text = '".$_POST['content_text']."', content_author = '".$author."', content_icon = '".$icon."', content_file = '".$totalattach."', content_image = '".$totalimages."', content_parent = '".$_POST['parent']."', content_comment = '".intval($_POST['content_comment'])."', content_rate = '".intval($_POST['content_rate'])."', content_pe = '".intval($_POST['content_pe'])."' ".$refer.", content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['content_class']."', content_pref = '".$contentprefvalue."', content_score='".intval($_POST['content_score'])."', content_meta='".$_POST['content_meta']."', content_layout='".$_POST['content_layout']."' WHERE content_id = '".intval($_POST['content_id'])."' ");
+				$sql -> db_Update($plugintable, "content_heading = '".$_POST['content_heading']."', content_subheading = '".$_POST['content_subheading']."', content_summary = '".$_POST['content_summary']."', content_text = '".$_POST['content_text']."', content_author = '".$tp->toDB($author)."', content_icon = '".$icon."', content_file = '".$totalattach."', content_image = '".$totalimages."', content_parent = '".$_POST['parent']."', content_comment = '".intval($_POST['content_comment'])."', content_rate = '".intval($_POST['content_rate'])."', content_pe = '".intval($_POST['content_pe'])."' ".$refer.", content_datestamp = '".$starttime."', content_enddate = '".$endtime."', content_class = '".$_POST['content_class']."', content_pref = '".$contentprefvalue."', content_score='".intval($_POST['content_score'])."', content_meta='".$_POST['content_meta']."', content_layout='".$_POST['content_layout']."' WHERE content_id = '".intval($_POST['content_id'])."' ");
 
 				$e107cache->clear("$plugintable");
 				$e107cache->clear("comment.$plugintable.{$_POST['content_id']}");
@@ -349,9 +349,10 @@ class contentdb{
 
 
 		function dbAssignAdmins($mode, $id, $value){
-			global $plugintable, $sql, $eArrayStorage;
+			global $plugintable, $qs, $sql, $eArrayStorage;
 
 			if($mode == "admin"){
+				$id = intval($id);
 				$sql -> db_Select($plugintable, "content_pref", "content_id = '".intval($id)."' ");
 				$row = $sql -> db_Fetch();
 
@@ -369,11 +370,12 @@ class contentdb{
 				$tmp = $eArrayStorage->WriteArray($content_pref);
 
 				$sql -> db_Update($plugintable, "content_pref = '{$tmp}' WHERE content_id = '".intval($id)."' ");
+
 				$message = CONTENT_ADMIN_CAT_LAN_34;
 				return $message;
 			}else{
 				return FALSE;
-			}						
+			}
 		}
 
 
