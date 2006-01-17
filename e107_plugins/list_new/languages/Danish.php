@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Danish.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-07-23 17:16:17 $
+|        $Revision: 1.3 $
+|        $Date: 2006-01-17 14:50:45 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -19,47 +19,12 @@
 
 define("PAGE_NAME", "Nyhedsliste");
 
-//all benaeth will be deprecated sometime
-define("LIST_1", "Nyheder");
-define("LIST_2", "ingen titel");
-define("LIST_3", "Nyt siden dit sidste besøg ...");
-define("LIST_4", "Intet nyt fundet");
-define("LIST_5", "Chatboks indlæg");
-define("LIST_6", "blokeret af admin");
-define("LIST_7", "Forum indlæg");
-define("LIST_8", "Nye medlemmer");
-define("LIST_9", "Kommentarer");
-define("LIST_10", "Ideer");
-define("LIST_11", "Download");
-define("LIST_12", "Nyheder");
-define("LIST_13", "Fejlsøger");
-define("LIST_14", "Afstemning");
-define("LIST_15", "FAQ");
-define("LIST_16", "Fejl");
-define("LIST_17", "Ideer");
-
-define("LIST_13", "Profil");
-define("LIST_14", "Artikel");
-define("LIST_15", "Indhold");
-
-define("LIST_18", "FAQ");
-define("LIST_18", "Afstemning");
-define("LIST_19", "Dokumenter");
-define("LIST_20", "Fejlsøger");
-
-define("LIST_21", "Artikler");
-define("LIST_22", "Ideer");
-//all above will be deprecated sometime
-
-define("LIST_23", "Denne plugin er ikke installeret.");
-
-
 define("LIST_PLUGIN_1", "Liste");
 define("LIST_PLUGIN_2", "Denne plugin lader dig se en liste over seneste tilføjelser i alle e107 kategorier. Du kan enten se listen med data siden dit sidste besøg, eller se en generel seneste tilføjelser liste. Udover siden er der også en menu tilstede. Hver sektion er kkan konfigureres i admin området.");
 define("LIST_PLUGIN_3", "Konfigurer Hovedmenu");
 define("LIST_PLUGIN_4", "List_new pluginen er nu klar til brug.");
 define("LIST_PLUGIN_5", "liste");
-
+define("LIST_PLUGIN_6", "Denne plugin er ikke installeret.");
 
 define("LIST_ADMIN_1", "seneste");
 define("LIST_ADMIN_2", "opdater indstillinger");
@@ -113,7 +78,6 @@ define("LIST_ADMIN_SECT_24", "");
 define("LIST_ADMIN_SECT_25", "overskrift");
 define("LIST_ADMIN_SECT_26", "definer en overskrift til hver sektion");
 define("LIST_ADMIN_SECT_27", "");
-
 
 define("LIST_ADMIN_OPT_1", "generelt");
 define("LIST_ADMIN_OPT_2", "seneste side");
@@ -175,7 +139,6 @@ define("LIST_ADMIN_LAN_36", "varighed");
 define("LIST_ADMIN_LAN_37", "vis en valgboks med antal dage der skal ses tilbage?");
 define("LIST_ADMIN_LAN_38", "");
 
-
 define("LIST_MENU_1", "seneste tilføjelser");
 define("LIST_MENU_2", "af");
 define("LIST_MENU_3", "den");
@@ -210,8 +173,6 @@ define("LIST_COMMENT_8", "indhold");
 define("LIST_COMMENT_9", "download");
 define("LIST_COMMENT_10", "ideer");
 
-
-
 define("LIST_DOWNLOAD_1", "downloads");
 define("LIST_DOWNLOAD_2", "ingen downloads");
 
@@ -221,7 +182,6 @@ define("LIST_MEMBER_2", "ingen medlemmer");
 define("LIST_CONTENT_1", "indhold");
 define("LIST_CONTENT_2", "intet indhold i");
 define("LIST_CONTENT_3", "ingen gyldig indholds kategori");
-
 
 define("LIST_CHATBOX_1", "chatboks");
 define("LIST_CHATBOX_2", "ingen chatboks indlæg");
@@ -238,6 +198,5 @@ define("LIST_FORUM_3", "visninger:");
 define("LIST_FORUM_4", "svar:");
 define("LIST_FORUM_5", "sidste post:");
 define("LIST_FORUM_6", "den:");
-
 
 ?>

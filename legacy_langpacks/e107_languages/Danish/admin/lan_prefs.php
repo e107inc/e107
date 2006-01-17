@@ -4,11 +4,20 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_prefs.php,v $
-|        $Revision: 1.6 $
-|        $Date: 2006-01-10 16:31:21 $
+|        $Revision: 1.7 $
+|        $Date: 2006-01-17 14:50:45 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
+
+
+
+
+
+
+
+
+
 define("PRFLAN_1", "Informationer om websted");
 define("PRFLAN_2", "Navn");
 define("PRFLAN_3", "URL");
@@ -25,15 +34,8 @@ define("PRFLAN_13", "Vis informationer");
 define("PRFLAN_14", "Vis Tema information?");
 define("PRFLAN_15", "Vis Afviklings tid?");
 define("PRFLAN_16", "Vis SQL foresp&oslash;rgsler?");
-
 define("PRFLAN_17", "Komprimer output med gzip");
-
-// define("PRFLAN_18", "V&aelig;lg sprog");
-
 define("PRFLAN_19", "Tilmeldings side egenskaber");
-
-// define("PRFLAN_20", "Antal nyheder der &oslash;nskes vist pr. side?");
-
 define("PRFLAN_21", "Datoformat");
 define("PRFLAN_22", "Kort datoformat");
 define("PRFLAN_23", "Langt datoformat");
@@ -44,19 +46,13 @@ define("PRFLAN_27", "Eksempel, hvis du s&aelig;tter dette til +2, vil alle tider
 define("PRFLAN_28", "Bruger tilmelding/postering");
 define("PRFLAN_29", "Aktiver bruger tilmeldingssystem?");
 define("PRFLAN_30", "tillad brugere at registrere sig som medlem");
-define("PRFLAN_31", "Brug e-mail godkendelse ved tilmelding?");
+//define("PRFLAN_31", "Brug e-mail godkendelse ved tilmelding?");
 define("PRFLAN_32", "Tillad anonyme indl&aelig;g?");
 define("PRFLAN_33", "hvis ikke markeret, kan KUN registrerede medlemmer skrive kommentarer osv.");
-
-// define("PRFLAN_34", "Sikkerhed");
-
 define("PRFLAN_35", "Benyt genskrivnings beskyttelse?");
 define("PRFLAN_36", "Genskrivnings timeout");
 define("PRFLAN_37", "Automatisk banlysning");
 define("PRFLAN_38", "Tid kr&aelig;vet i sekunder mellem 2 indl&aelig;g for omr&aring;der hvor brugere kan skrive (chatboks, forums...). Hvis en bruger skriver indl&aelig;g for hurtigt, vil denne blive omdirigeret til forsiden");
-
-// define("PRFLAN_39", "Beskyttelse af mindre&aring;riges muligheder");
-
 define("PRFLAN_40", "Filtrering af bande ord ?");
 define("PRFLAN_41", "hvis markeret, vil valgte ord blive overskrevet med indholdet herunder");
 define("PRFLAN_42", "Erstatnings tekst");
@@ -70,44 +66,18 @@ define("PRFLAN_49", "Cookies");
 define("PRFLAN_50", "Sessions");
 define("PRFLAN_52", "Gem indstillinger");
 define("PRFLAN_53", "Indstillinger");
-
-// define("PRFLAN_54", "Admin Omr&aring;de Tema");
-
 define("PRFLAN_55", "Cookie navn (hvis cookies v&aelig;lges)");
 define("PRFLAN_56", "Tidszone");
-
-// define("PRFLAN_57", "Admin Forside Udseende");
-
 define("PRFLAN_58", "Begr&aelig;ns websted til kun medlemmer");
 define("PRFLAN_59", "Markering vil begr&aelig;nse alle sider undtaget forsiden og tilmelding til kun at kunne ses af medlemmer");
 define("PRFLAN_60", "Anvend SSL");
 define("PRFLAN_61", "Brug kun SSL <b>hvis du er sikker p&aring; du ved hvad du foretager dig!</b>");
-
-// define("PRFLAN_62", "E-mail Indstillinger");
-// define("PRFLAN_63", "Send test e-mail");
-// define("PRFLAN_64", "Klik p&aring; knappen sender en test e-mail til administratoren");
-// define("PRFLAN_65", "Klik for at sende e-mail til");
-// define("PRFLAN_66", "Test e-mail fra");
-// define("PRFLAN_67", "Test e-mail, det lader til at dine e-mail indstillinger virker ok!nnHilsen fra e107 CMS systemet.");
-// define("PRFLAN_68", "E-mail kunne ikke sendes. Det lader til at din server ikke er korrekt konfigureret til at sende e-mail, pr&oslash;v igen ved brug af SMTP, eller kontakt din host og bed dem kontrollere deres sendmail / e-mail server indstillinger.");
-// define("PRFLAN_69", "E-mailen er sendt, tjek din indbakke.");
-// define("PRFLAN_70", "Sl&aring; SMTP til");
-// define("PRFLAN_71", "Markering vil f&aring; serveren til at fors&oslash;ge at bruge SMTP server til at sende e-mails");
-// define("PRFLAN_72", "SMTP Server");
-// define("PRFLAN_73", "SMTP brugernavn");
-// define("PRFLAN_74", "SMTP adgangskode");
-// define("PRFLAN_75", "E-mailen kunne ikke sendes. Kontroller dine SMTP indstillinger, eller sl&aring; SMTP fra og pr&oslash;v igen.");
-
 define("PRFLAN_76", "Sl&aring; billedekode verification til under tilmelding.");
 define("PRFLAN_77", "Admin Fremvisnings Egenskaber");
 define("PRFLAN_78", "Lad v&aelig;re tomt for at sl&aring; fra");
 define("PRFLAN_80", "Klik her for at se");
 define("PRFLAN_81", "Sl&aring; billedekode verification til under log p&aring;.");
 define("PRFLAN_83", "eksempel");
-
-// define("PRFLAN_85", "Hvis et tema ikke bliver vist, kontroller at det er uploadet korrekt og l&aelig;se rettighederne er sat.");
-// define("PRFLAN_86", "Verificer sprogfilerne");
-
 define("PRFLAN_87", "Kommentarer");
 define("PRFLAN_88", "Sammenk&aelig;dede kommentarer");
 define("PRFLAN_89", "Vis nyt kommentar ikon");
@@ -121,11 +91,6 @@ define("CUSTSIG_5", "Sted:");
 define("CUSTSIG_6", "Signatur:");
 define("CUSTSIG_7", "Profillogo");
 define("CUSTSIG_8", "Tidszone:");
-
-// define("CUSTSIG_9", "Opdater tilmeldings indstillinger");
-// define("CUSTSIG_10", "Bruger tilmelding indstillinger");
-// define("CUSTSIG_11", "Marker alle");
-
 define("CUSTSIG_12", "Skjul");
 define("CUSTSIG_13", "Felter");
 define("CUSTSIG_14", "Vis");
@@ -135,8 +100,6 @@ define("CUSTSIG_17", "Abonner til indhold/sendmail");
 define("CUSTSIG_18", "Tillad ikke brugernavne");
 define("CUSTSIG_19", "brugernavne indeholdende flg. tekst vil blive afvist, adskild med komma");
 
-// define("PRFLAN_90", "Brug Internet Explorer standard tilstand. Standard er quirks tilstand.");
-
 define("PRFLAN_91", "Hvis nogen angriber webstedet med adskillige forsp&oslash;rgsler til din server. vil hans ip automatisk blive banlyst ! Erstatter ikke en korrekt server konfiguration !!!");
 define("PRFLAN_92", "Sikker tilmeldings bekr&aelig;ftelse -- gem adgangskode i e-mail?");
 define("PRFLAN_93", "strftime funktions siden hos php.net (Engelsk)");
@@ -145,10 +108,6 @@ define("PRFLAN_95", "Vis plugin info:");
 define("PRFLAN_96", "Vil vise info p&aring; alle admin sider for hver plugin der underst&oslash;tter denne type egenskab");
 define("PRFLAN_97", "Unik 'Plugin info' menu:");
 define("PRFLAN_98", "Hvis ikke markeret, vil hver plugin vise sine egne oplysninger p&aring; en individuel menu. Hvis valgt vil alle oplysninger blive vist i en menu.");
-
-
-// define("PRFLAN_100", "Forindl&aelig;s tema billeder:");
-
 define("PRFLAN_101", "Tekst fremvisning");
 define("PRFLAN_102", "Erstat links");
 define("PRFLAN_103", "Hvis valgt, vil skrevne links blive erstattet af teksten i feltet herunder, vil forhindre meget lange links i at bryde layoutet");
@@ -180,26 +139,28 @@ define("PRFLAN_130", "Aktivering af dette vil g&oslash;re at kun en kan logge in
 define("PRFLAN_131", "Aktiver brug af [php] bbcode");
 define("PRFLAN_132", "Aktivering af dette vil tillade autoriserede brugere at skrive [php] kode i bestemte omr&aring;der");
 define("PRFLAN_133", "GD udvidelsen kr&aelig;vet, ikke fundet");
-
 define("PRFLAN_134", "Omdiriger alle forsp&oslash;rgsler til site URL");
 define("PRFLAN_135", "f.eks. hvis din site URL ovenfor er sat http://foo.com, vil alle alle der forsp&oslash;rger http://www.foo.com blive vidrestillet til http://foo.com");
 define("PRFLAN_136", "Maksimalt Antal Tilmeldinger tilladt fra samme IP adresse.");
 define("PRFLAN_137", "Vis hukommelsesforbrug");
-
 define("PRFLAN_138", "Aktiver billedkode verificering ved glemt adgangskode.");
 define("PRFLAN_139", "Vis advarsel n&aring;r det er mere end 30 siden administrator har skiftet adgangskode");
-
 define("PRFLAN_140", "Tekst der vises efter tilmeldings formularen er udf&oslash;rt.");
 define("PRFLAN_141", "Tillad registrering med XML Bruger Profiler");
-
 define("PRFLAN_142", "Kun Flood");
 define("PRFLAN_143", "Kun Fejlede Logins");
 define("PRFLAN_144", "Flood & Fejlede Logins");
-
 define("PRFLAN_145", "Links i nyt vindue");
 define("PRFLAN_146", "Marker her for at f&aring; alle vinduer til at &aring;bne i et nyt vindue (<i>dette vil g&aelig;lde hele sitet</i>). ");
-
 define("PRFLAN_147", "Udvikler Mode");
 define("PRFLAN_148", "Aktiver udvikler funktioner. Dette er kun for udviklere. Benyt ikke p&aring; live sites af sikkerheds grunde.");
+define("PRFLAN_149", "Advancerede Egenskaber");
+define("PRFLAN_150", "V&aelig;lg e107 godkendelses metode");
+define("PRFLAN_151", "e107 - Ingen alternative godkendelses metoder installeret");
+
+define("PRFLAN_31", "Email Bekr&aelig;ftigelse");
+define("PRFLAN_152", "Ingen Bekr&aelig;ftigelse");
+define("PRFLAN_153", "Administrator Godkendelse");
+define("PRFLAN_154", "Ny bruger godkendelse metode <br />Hvis 'Administrator Godkendelse' er valgt, anbefales det at du sl&aring;r email bekr&aelig;ftigelse ved bruger tilmelding til <a href='".e_ADMIN."notify.php'>her</a>.");
 
 ?>

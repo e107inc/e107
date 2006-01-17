@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Danish/lan_forum_admin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-11-21 15:11:11 $
+|     $Revision: 1.4 $
+|     $Date: 2006-01-17 14:50:45 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -195,5 +195,9 @@ define("FORLAN_173", "Tr&aring;d titel");
 define("FORLAN_174", "Raporteret af bruger");
 define("FORLAN_175", "Raport tilf&oslash;jet");
 define("FORLAN_176", "Raport");
+
+define("FORLAN_177", "email bekr&aelig;ftelse ANVENDT som standard");
+define("FORLAN_178", "Marker dette for at tillade email bekr&aelig;ftelse tjekboksen til som standard");
+
 
 ?>

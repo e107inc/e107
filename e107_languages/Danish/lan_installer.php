@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_installer.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-12-04 16:20:39 $
+|     $Revision: 1.6 $
+|     $Date: 2006-01-17 14:50:45 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -24,7 +24,7 @@ define("LANINS_010", "Fil er skrivebeskyttet: ");
 define("LANINS_010a", "Mappe er skrivebeskyttet: ");
 define("LANINS_011", "Fejl");
 define("LANINS_012", "MySQL Funktioner lader ikke til at eksistere. Dette betyder formentlig at enten er MySQL PHP Udvidelsen ikke installeret eller den er ikke konfigureret korrekt."); // help for 012
-define("LANINS_013", "Kunne ikke bestemme dit MySQL versions nummer. Dette kan betyde at din MySQL server er nede, eller nægter forbindelser.");
+define("LANINS_013", "Kunne ikke bestemme dit MySQL versions nummer. Dette er ikke en fatal fejl, så fortsæt vblot med at installere, men vær opmærksom på at e107 kræver MySQL >= 3.23. for at fungere korrekt");
 define("LANINS_014", "Fil Tilladelser");
 define("LANINS_015", "PHP Version");
 define("LANINS_016", "MySQL");
@@ -89,7 +89,7 @@ define("LANINS_062", "[b]Velkommen til din nye hjemmeside![/b]
 e107 blev installeret med succes og er nu klar til at modtage indhold.<br />Dit administrationt område er [link=e107_admin/admin.php]beliggende her[/link], klik for at gå det til nu. Du skal logge ind ved hjælp af det brugernavn og kodeord du skrev under installations processen.
 
 [b]Support[/b]
-e107 Hjemmeside: [link=http://e107.org]http://e107.org[/link], du vil finde FAQ og dokumentation her.
+e107 Hjemmeside: [link=http://e107.org]http://e107.org[/link], du kan finde FAQ og dokumentation her.
 Forums: [link=http://e107.org/e107_plugins/forum/forum.php]http://e107.org/e107_plugins/forum/forum.php[/link]
 
 [b]Downloads[/b]

@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/e107_languages/Danish/lan_signup.php,v $
-|        $Revision: 1.5 $
-|        $Date: 2005-11-21 13:41:17 $
+|        $Revision: 1.6 $
+|        $Date: 2006-01-17 14:50:45 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -95,4 +95,7 @@ define("LAN_EMAIL_04", "Gem venligst denne email til eget brug.");
 define("LAN_EMAIL_05", "Dit kodeord er blevet krypteret og kan ikke generhverves hvis du mister eller glemmer det. Du kan dog anmode om et nyt kodeord hvis dette sker.");
 define("LAN_EMAIL_06", "Tak for din tilmelding.");
 
+define("LAN_SIGNUP_37", "Denne del af registreringen er fuldført. Site admin skal godkende dit medlemskab.  Når dette er sket vil du modtage en bekræftelses email der oplyser at dit medlemskab er godkendt.");
+define("LAN_SIGNUP_38", "Du skrev to forskellige email adresser. Skriv venligst en gyldig email adresse i de to felter");
+define("LAN_SIGNUP_39", "Gen-skriv Email Adresse:");
 ?>

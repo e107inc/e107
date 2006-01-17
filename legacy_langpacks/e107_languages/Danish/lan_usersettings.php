@@ -4,12 +4,11 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/lan_usersettings.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2005-10-21 12:39:29 $
+|        $Revision: 1.4 $
+|        $Date: 2006-01-17 14:50:45 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
-
 define("PAGE_NAME", "Brugerindstillinger");
 
 define("LAN_7", "Brugernavn: ");
@@ -106,4 +105,6 @@ define("LAN_USET_7", "Diverse");
 define("LAN_USET_8", "Signatur / Tidszone");
 define("LAN_USET_9", "Nogle af de kr&aelig;vede felter (markeret med en *) mangler i dine indstillinger.");
 define("LAN_USET_10","Opdater venligst dine indstillinger nu, for at kunne forts&aelig;tte.");
+define("LAN_USET_11", "Det brugernavn kan ikke accepteres som gyldigt, v&aelig;lg venligst et andet brugernavn");
+
 ?>

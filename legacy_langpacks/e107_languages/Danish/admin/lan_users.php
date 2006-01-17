@@ -4,8 +4,8 @@
 |        e107 website system  Language File
 |     
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_users.php,v $
-|        $Revision: 1.3 $
-|        $Date: 2005-10-06 14:26:55 $
+|        $Revision: 1.4 $
+|        $Date: 2006-01-17 14:50:45 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -175,5 +175,8 @@ define("DUSRLAN_34", "Tilladelser");
 define("DUSRLAN_35", "Billede");
 define("DUSRLAN_36", "&AELIG;ndrer Kodeord");
 define("DUSRLAN_37", "XUP");
+
+define("USRLAN_138", "Ubekr&aelig;ftede brugere");
+define("USRLAN_139", "Din konto er blevet aktiveret.\n\nDu kan bes&oslash;ge {SITEURL} og logge ind p&aring; sitet ved hj&aelig;lp af de login informationer du angav.");
 
 ?>
