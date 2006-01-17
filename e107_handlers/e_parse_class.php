@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.134 $
-|     $Date: 2006-01-16 03:44:35 $
-|     $Author: e107coders $
+|     $Revision: 1.135 $
+|     $Date: 2006-01-17 16:38:59 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -45,9 +45,6 @@ class e_parse
 			if(isset($pref['post_html']) && check_class($pref['post_html']))
 			{
 				$no_encode = TRUE;
-			}
-			if ($pref['wysiwyg']) {
-				$data = html_entity_decode($data, ENT_NOQUOTES, CHARSET);
 			}
 			if (getperms("0") || $no_encode === TRUE)
 			{
