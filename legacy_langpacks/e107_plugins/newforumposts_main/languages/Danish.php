@@ -4,19 +4,19 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/newforumposts_main/languages/Danish.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:52:22 $
+|        $Revision: 1.2 $
+|        $Date: 2006-01-17 17:26:35 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
 
-define("LAN_1", "Indl&aelig;g");
-define("LAN_2", "Startet af");
-define("LAN_3", "Vist");
-define("LAN_4", "Svar");
-define("LAN_5", "Seneste indl&aelig;g");
-define("LAN_6", "Indl&aelig;g");
-define("LAN_7", "af");
+define("NFPM_LAN_1", "Indl&aelig;g");
+define("NFPM_LAN_2", "Startet af");
+define("NFPM_LAN_3", "Vist");
+define("NFPM_LAN_4", "Svar");
+define("NFPM_LAN_5", "Seneste indl&aelig;g");
+define("NFPM_LAN_6", "Indl&aelig;g");
+define("NFPM_LAN_7", "af");
 
 define("NFPM_L1", "Plugin'et viser en liste af de seneste forum indl&aelig;g p&aring; din forside");
 define("NFPM_L2", "Seneste forum indl&aelig;g"); 
