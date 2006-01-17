@@ -11,13 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/credits.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2006-01-16 16:41:07 $
-|     $Author: e107coders $
+|     $Revision: 1.13 $
+|     $Date: 2006-01-17 16:57:08 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
 $e_sub_cat = 'credits';
+require_once(e_ADMIN.'ver.php');
+
 
 
 $creditsArray = array(
@@ -92,14 +94,9 @@ $contentA = array(
 	"<h1>Thom Michelbrink</h1>[ McFly ]<br /><br /><br />",
 	"<h1>William Moffett</h1>[ que ]<br /><br /><br />",
 	"<h1>Martin Nicholls</h1>[ streaky ]<br /><br /><br />",
-	"<h1>James Currie</h1>[ SweetAs ]<br /><br /><br />\"Wot? No tea?? 0_0\""
+	"<h1>James Currie</h1>[ SweetAs ]<br /><br /><br />\"Wot? No tea?? 0_0\"",
+	"<h1>Pete Holzmann</h1>[ MrPete ]<br /><br /><br />"
 );
-
-
-$sql -> db_Select("core", "*", "e107_name='e107' ");
-$foo = $sql -> db_Fetch();
-$e107v = unserialize($foo['e107_value']);
-
 
 echo "<?xml version='1.0' encoding='utf-8' ?><!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">
 <html xmlns='http://www.w3.org/1999/xhtml'>
@@ -110,8 +107,6 @@ echo "<?xml version='1.0' encoding='utf-8' ?><!DOCTYPE html PUBLIC \"-//W3C//DTD
 <link rel='stylesheet' href='".e_THEME."lamb/style.css' type='text/css' />
 </head>
 <body style='padding: 0; margin: 0; background-color: #e8e8e8; color: #8E8E8E'>
-
-
 
 <img src='".e_IMAGE."generic/cred.png' alt='' />
 <div class='smalltext' style='position: absolute; top: 120px; left: 118px;'><b>version ".$e107info['e107_version'].", build ".($e107info['e107_build'] ? $e107info['e107_build'] : "zero")."</b><br />&copy; 2002-2006, all rights reserved</div>
