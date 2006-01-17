@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/forum/languages/Danish/lan_forum_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2006-01-17 14:50:45 $
+|     $Revision: 1.5 $
+|     $Date: 2006-01-17 15:27:37 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -199,5 +199,6 @@ define("FORLAN_176", "Raport");
 define("FORLAN_177", "email bekr&aelig;ftelse ANVENDT som standard");
 define("FORLAN_178", "Marker dette for at tillade email bekr&aelig;ftelse tjekboksen til som standard");
 
+define("FORLAN_179", "(Ved at tilf&oslash;jelse af en * til begyndelsen af forum navnet vil g&oslash;re dette forum til beholder kun for underforums.  Forum temaet skal ogs&aring; underst&oslash;tte denne egenskab.)");
 
 ?>

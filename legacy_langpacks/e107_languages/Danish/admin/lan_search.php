@@ -4,8 +4,8 @@
 |        e107 website system  Language File - Danish
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/admin/lan_search.php,v $
-|        $Revision: 1.2 $
-|        $Date: 2005-10-15 11:46:12 $
+|        $Revision: 1.3 $
+|        $Date: 2006-01-17 15:27:37 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
@@ -55,4 +55,10 @@ define("SEALAN_44", "Bruger gruppe tilladt at s&oslash;ge i dette omr&aring;de")
 define("SEALAN_45", "Antal resultater pr. side");
 define("SEALAN_46", "Antal tegn i s&oslash;ge resultat opsummering");
 
+define("SEALAN_47", "Sammenlign kun hele ord:");
+define("SEALAN_48", "Denne indstilling g&aelig;lder kun n&aring;r sorterings metoden er PHP. Hvis dit site inkluderer Ideografiske sprog som Kinesisk og Japansk skal du sl&aring; dette fra.");
+define("SEALAN_49", "Hvis dit site inkluderer Ideografiske sprog som Kinesisk og Japansk skal du bruge PHP som sorterings metode.");
+
+
+?>
 ?>

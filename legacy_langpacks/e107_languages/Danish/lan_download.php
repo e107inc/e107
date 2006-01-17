@@ -4,12 +4,11 @@
 |        e107 website system  Language File
 |
 |        $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_languages/Danish/lan_download.php,v $
-|        $Revision: 1.1 $
-|        $Date: 2005-09-17 09:29:27 $
+|        $Revision: 1.2 $
+|        $Date: 2006-01-17 15:27:37 $
 |        $Author: e107dk $
 +---------------------------------------------------------------+
 */
-
 define("PAGE_NAME", "Downloads");
 
 define("LAN_dl_1", "(Begr&aelig;nset)");
@@ -87,12 +86,15 @@ define("LAN_dl_66", "V&aelig;lg download spejl");
 
 define("LAN_dl_67", "V&aelig;lg et spejl til brug ...");
 define("LAN_dl_68", "Spejl Host");
-define("LAN_dl_69", "Download");
+//define("LAN_dl_69", "Download");
 define("LAN_dl_70", "Sted");
 define("LAN_dl_71", "Om");
 
 define("LAN_dl_72", "Forsp&oslash;rger fil: ");
 define("LAN_dl_73", "Downloads fra dette spejl: ");
 define("LAN_dl_74", "Downloads ialt fra dette spejl: ");
+
 define("LAN_dl_75", "ingen billeder tilg&aelig;ngelig ");
+define("LAN_dl_76", "G&aring; til side");
+
 ?>
