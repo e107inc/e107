@@ -4,8 +4,8 @@
 |     e107 website system - Tiny MCE controller file.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/tiny_mce/wysiwyg.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-12-25 12:49:14 $
+|     $Revision: 1.19 $
+|     $Date: 2006-01-17 16:18:33 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -76,6 +76,7 @@ $text .= ",inline_styles: true\n";
 $text .= ",debug: false\n";
 $text .= ",force_br_newlines: true\n";
 $text .= ",force_p_newlines: false\n";
+$text .= ",entity_encoding: \"raw\" \n";
 $text .= ",convert_fonts_to_styles: true\n";
 $text .= ",relative_urls: true\n";
 $text .= ",document_base_url: '".SITEURL."'\n";
