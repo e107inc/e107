@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.73 $
-|     $Date: 2006-01-04 20:46:45 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.74 $
+|     $Date: 2006-01-17 20:01:09 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -379,7 +379,7 @@ $text .= "<div id='registration' style='display:none; text-align:center'><table 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_154."</td>
 	<td style='width:50%; text-align:right' class='forumheader3'>
-		
+
 	<select name='user_reg_veri' class='tbox'>";
 	$veri_list[0] = PRFLAN_152;
   $veri_list[1] = PRFLAN_31;
@@ -555,7 +555,7 @@ $text .= "<div id='textpost' style='display:none; text-align:center'>
 	<tr>
 	<td class='forumheader3' style='width:50%;'>".PRFLAN_116.":  <div class='smalltext'>".PRFLAN_117."</div></td>
 	<td class='forumheader3' style='width:50%; text-align: right;'>
-	".r_userclass('post_html',$pref['post_html'],'off','public, member, admin, classes')."
+	".r_userclass('post_html',$pref['post_html'],'off','nobody, public, member, admin, classes')."
 	</td>
 	</tr>\n
 
@@ -841,7 +841,7 @@ $text .= "<div id='advanced' style='display:none; text-align:center'>
 	<td style='width:50%; text-align:right' class='forumheader3'>{$auth_dropdown}
 	</td>
 	</tr>
-	
+
 	";
 
 $text .= pref_submit();

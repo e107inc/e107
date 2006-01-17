@@ -12,9 +12,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.41 $
-|   $Date: 2005-12-14 17:37:34 $
-|   $Author: sweetas $
+|   $Revision: 1.42 $
+|   $Date: 2006-01-17 20:01:08 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 */
 
@@ -102,9 +102,12 @@ if (isset($eplug_js) && $eplug_js) {
 if (isset($eplug_css) && $eplug_css) {
 	echo "\n<link rel='stylesheet' href='{$eplug_css}' type='text/css' />\n";
 }
-if((ADMIN || $pref['allow_html']) && $pref['wysiwyg'] && $e_wysiwyg == TRUE){
+if(check_class($pref['post_html']) && $pref['wysiwyg'] && $e_wysiwyg == TRUE){
   	require_once(e_HANDLER."tiny_mce/wysiwyg.php");
 	echo wysiwyg($e_wysiwyg);
+	define("e_WYSIWYG",TRUE);
+}else{
+	define("e_WYSIWYG",FALSE);
 }
 echo "</head>
 	<body>";
@@ -136,7 +139,7 @@ if (!function_exists('show_admin_menu')) {
 		}
 		if (!isset($SUB_BUTTONS_START)) {
 			$SUB_BUTTONS_START = "<div style='text-align:center; width:100%'><table class='fborder' style='width:98%;'>
-			<tr><td class='button'><a style='text-align:center; cursor:hand; cursor:pointer; text-decoration:none;' 
+			<tr><td class='button'><a style='text-align:center; cursor:hand; cursor:pointer; text-decoration:none;'
 			onclick=\"expandit('{SUB_HEAD_ID}');\" >{SUB_HEAD}</a></td></tr>
 			<tr id='{SUB_HEAD_ID}' style='display: none' ><td class='forumheader3' style='text-align:left;'>";
 		}
@@ -161,13 +164,13 @@ if (!function_exists('show_admin_menu')) {
 				}
 			}
 		}
-		
+
 		$search[0] = "/\{LINK_TEXT\}(.*?)/si";
 		$search[1] = "/\{LINK_URL\}(.*?)/si";
 		$search[2] = "/\{ONCLICK\}(.*?)/si";
 		$search[3] = "/\{SUB_HEAD\}(.*?)/si";
 		$search[4] = "/\{SUB_HEAD_ID\}(.*?)/si";
-		
+
 		if ($sub_link) {
 			$replace[0] = '';
 			$replace[1] = '';
@@ -195,7 +198,7 @@ if (!function_exists('show_admin_menu')) {
 			}
 		}
 		$text .= $sub_link ? $SUB_BUTTONS_END : $BUTTONS_END;
-	
+
 		if ($title == "" || $sub_link) {
 			return $text;
 		} else {
