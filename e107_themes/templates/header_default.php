@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/header_default.php,v $
-|     $Revision: 1.75 $
-|     $Date: 2006-01-17 20:01:10 $
+|     $Revision: 1.76 $
+|     $Date: 2006-01-18 18:55:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -118,7 +118,15 @@ if(function_exists('theme_head')){
 	echo theme_head();
 }
 if(function_exists('core_head')){ echo core_head(); }
-if (file_exists(e_BASE."favicon.ico")) { echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n"; }
+
+// ---------- Favicon ---------
+if (file_exists(THEME."favicon.ico")) {
+	echo "<link rel='icon' href='".THEME_ABS."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".THEME_ABS."favicon.ico' type='image/xicon' />\n";
+}elseif (file_exists(e_BASE."favicon.ico")) {
+	echo "<link rel='icon' href='".SITEURL."favicon.ico' type='image/x-icon' />\n<link rel='shortcut icon' href='".SITEURL."favicon.ico' type='image/xicon' />\n";
+}
+
+
 
 if (isset($theme_js_php) && $theme_js_php) {
 	echo "<link rel='stylesheet' href='".THEME_ABS."theme-js.php' type='text/css />";
