@@ -11,9 +11,9 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.101 $
-|   $Date: 2006-01-13 20:54:30 $
-|   $Author: lisa_ $
+|   $Revision: 1.102 $
+|   $Date: 2006-01-18 04:42:06 $
+|   $Author: e107coders $
 +---------------------------------------------------------------+
 
 */
@@ -186,7 +186,7 @@ if (isset($_POST['save_prefs'])) {
 
 	// ##### ADDED FOR NEWSARCHIVE --------------------------------------------------------------------
 	$pref['newsposts_archive'] = $_POST['newsposts_archive'];
-	$pref['newsposts_archive_title'] = $_POST['newsposts_archive_title'];
+	$pref['newsposts_archive_title'] = $tp->toDB($_POST['newsposts_archive_title']);
 	// ##### END --------------------------------------------------------------------------------------
 
 	$pref['news_cats'] = $_POST['news_cats'];
@@ -948,7 +948,7 @@ class newspost {
 		{
 			$_POST['news_datestamp'] = time();
 		}
-		
+
 		if($sub_action == 'edit')
 		{
 			$_POST['news_author'] = -1;
@@ -1025,9 +1025,9 @@ class newspost {
 		</div>";
 
 		$ns->tablerender(NWSLAN_56, $text);
-		
+
 		unset($category_name, $category_icon);
-		
+
 		$text = "<div style='text-align: center'>";
 		if ($category_total = $sql->db_Select("news_category")) {
 			$text .= "
@@ -1180,7 +1180,7 @@ class newspost {
 		<input type='checkbox' name='news_unstemplate' value='1' ".($pref['news_unstemplate'] == 1 ? " checked='checked'" : "")." />
 		</td>
 		</tr>
-		
+
 		<tr>
 		<td class='forumheader3' style='width:60%'><span class='defaulttext'>".NWSLAN_120."</span><br /></td>
 		<td class='forumheader3' style='width:40%'>
