@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/pm.php,v $
-|     $Revision: 1.18 $
-|     $Date: 2005-12-30 14:22:29 $
+|     $Revision: 1.19 $
+|     $Date: 2006-01-18 01:51:14 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -297,7 +297,7 @@ function show_pm($pmid)
 
 function post_pm()
 {
-	global $pm_prefs, $pm, $pref, $sql;
+	global $pm_prefs, $pm, $pref, $sql, $tp;
 	if(!check_class($pm_prefs['pm_class']))
 	{
 		return LAN_PM_12;
