@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.61 $
+|     $Date: 2006-01-18 02:39:07 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -358,11 +358,13 @@ if (isset($_POST['update_reply']))
 			require_once(FOOTERF);
 			exit;
 		}
+		$url = e_PLUGIN."forum/forum_viewtopic.php?{$id}.post";
+		echo "<script type='text/javascript'>document.location.href='".$url."'</script>\n";
 		$newvals['thread_edit_datestamp'] = time();
 		$newvals['thread_thread'] = $_POST['post'];
 		$forum->thread_update($id, $newvals);
 		$e107cache->clear("newforumposts");
-		$url = e_PLUGIN."forum/forum_viewtopic.php?{$thread_info['head']['thread_id']}.{$from}";
+		$url = e_PLUGIN."forum/forum_viewtopic.php?{$id}.post";
 		echo "<script type='text/javascript'>document.location.href='".$url."'</script>\n";
 	}
 }
