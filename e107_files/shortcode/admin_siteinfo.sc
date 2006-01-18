@@ -24,7 +24,7 @@ if (ADMIN) {
 	<br />
 	<b>e107</b>
 	<br />
-	".FOOTLAN_3." ".$e107info['e107_version']. ($e107info['e107_build'] ? " ".FOOTLAN_4." ".$e107info['e107_build'] : "")."
+	".FOOTLAN_3." ".$e107info['e107_version']."
 	<br /><br />
 	<b>".FOOTLAN_5."</b>
 	<br />
