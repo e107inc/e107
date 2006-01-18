@@ -237,7 +237,7 @@ function sendInfo() {
 					break;
 			}
 			if(show && obj.elements[i].id) {
-				poststr += obj.elements[i].id + '=' + escape(tmp) + '&';
+				poststr += obj.elements[i].id + '=' + tmp + '&';
 			}
 		}
 		req.open('POST', handler, true);
