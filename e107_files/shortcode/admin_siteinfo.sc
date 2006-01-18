@@ -1,11 +1,14 @@
 if (ADMIN) {
 	global $sql,$ns, $themename, $themeversion, $themeauthor, $themedate, $themeinfo, $mySQLdefaultdb;
-//	$sql = new db;
+
 	$sql -> db_Select("core", "*", "e107_name='e107' ");
 	$row = $sql -> db_Fetch();
 	$e107info = unserialize($row['e107_value']);
 
-	if(file_exists(e_ADMIN."ver.php")){ @require_once(e_ADMIN."ver.php"); }
+    $e107info['e107_version'] = "";
+	$e107info['e107_build'] = "";
+
+	if(file_exists(e_ADMIN."ver.php")){ @include_once(e_ADMIN."ver.php"); }
 
 	$obj = new convert;
 	$install_date = $obj->convert_date($e107info['e107_datestamp'], "long");
@@ -26,9 +29,9 @@ if (ADMIN) {
 	<b>".FOOTLAN_5."</b>
 	<br />
 	".$themename." v".$themeversion." ".($themeauthor ? FOOTLAN_6.' '.$themeauthor : '')." ".($themedate ? "(".$themedate.")" : "");
-	
+
 	$text .= $themeinfo ? "<br />".FOOTLAN_7.": ".$themeinfo : "";
-	
+
 	$text .= "<br /><br />
 	<b>".FOOTLAN_8."</b>
 	<br />
