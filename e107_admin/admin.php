@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.26 $
-|     $Date: 2006-01-12 06:45:46 $
+|     $Revision: 1.27 $
+|     $Date: 2006-01-18 18:45:47 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -26,6 +26,59 @@ if (is_dir(e_ADMIN.'htmlarea') || is_dir(e_HANDLER.'htmlarea')) {
 	exploitable. These must be removed <b>immediately</b>. The files are related to the WYSIWYG system used in the 
 	older 0.6xx branch of e107 - htmlArea. Please delete the following directories and all their contents:<br /><br />
 	<div style='text-align:center'>".$HANDLERS_DIRECTORY."htmlarea/<br />".$ADMIN_DIRECTORY."htmlarea/</div>";
+	$ns -> tablerender('Warning!', $text);
+}
+
+if (is_readable(e_ADMIN.'filetypes.php')) {
+	$a_types = trim(file_get_contents(e_ADMIN.'filetypes.php'));
+} else {
+	$a_types = 'zip, gz, jpg, png, gif';
+}
+$a_types = explode(',', $a_types);
+foreach ($a_types as $f_type) {
+	$allowed_types[] = '.'.trim(str_replace('.', '', $f_type));
+}
+$public = array(e_FILE.'public', e_FILE.'public/avatars');
+foreach ($public as $dir) {
+	if (is_dir($dir)) {
+		if ($dh = opendir($dir)) {
+			while (($file = readdir($dh)) !== false) {
+				if ($file != '.' && $file != '..' && $file != '/' && $file != 'CVS' && $file != 'avatars' && $file != 'Thumbs.db') {
+					$fext = substr(strrchr($file, "."), 0);
+					if (!in_array($fext, $allowed_types)) {
+						if ($file == 'index.html') {
+							if (filesize($dir.'/'.$file)) {
+								$potential[] = str_replace('../', '', $dir).'/'.$file;
+							}
+						} else {
+							$potential[] = str_replace('../', '', $dir).'/'.$file;
+						}
+					}
+				}
+			}
+		closedir($dh);
+		}
+	}
+}
+
+if (isset($potential)) {
+	$text = "There are one or more files in your public upload directories that are not in your allowed upload filetypes 
+	list. These may have been placed here by an attacker and if so should be removed <b>immediately</b>. You should 
+	<b>not</b> open these files as this may execute any malicious code the file might contain. ie. do not open them 
+	with your browser.<br /><br />
+	
+	If you recognise these files as being legitimate, it is likely that due to the recent allowed filetypes changes, 
+	the filetype you allowed is no longer in the allowed filetypes list and you will need to re-add it 
+	(see admin => uploads). You should not allow the upload of .html, .txt, etc as an attacker may upload a file of 
+	this type which includes malicious javascript. You should also, of course, not allow the upload of .php files or 
+	any other type of executable script.<br ><br />
+	
+	Below is the list of files that could potentially be malicious:<br /><br />";
+	
+	foreach ($potential as $p_file) {
+		$text .= $p_file.'<br />';
+	}
+	
 	$ns -> tablerender('Warning!', $text);
 }
 
