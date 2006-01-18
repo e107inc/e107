@@ -1,8 +1,8 @@
-#<?php
+<?php
+
 global $sql, $link_class, $page;
 $sql -> db_Select('links', '*', "link_category = 1 and link_name NOT REGEXP('submenu') and link_name NOT REGEXP('child') and link_class IN (".USERCLASS_LIST.") ORDER BY link_order ASC");
 $ulmenu = PRELINK."<ul>";
-
 $r="1";
 while($row = $sql -> db_Fetch()){
 	if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
@@ -11,7 +11,6 @@ while($row = $sql -> db_Fetch()){
 			if(!preg_match("#(http:|mailto:|ftp:|https:)#",$link_url)){
 				$link_url = e_HTTP.$link_url;
 			}
-			//if(strpos($link_url, "e107_plugins") !== FALSE){ $link_url = e_BASE.$link_url; }
 			if(strpos($link_url, e_PAGE) !== FALSE){ $ulclass = '_onpage'; } else { $ulclass = ''; }
 
 			switch ($link_open) {

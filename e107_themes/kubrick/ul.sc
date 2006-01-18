@@ -6,16 +6,10 @@ while($row = $sql -> db_Fetch()){
 	if(!$link_class || check_class($link_class) || ($link_class==254 && USER)){
 		if($r <= "8"){
 			extract($row);
-
-
 			$ltest = (e_QUERY ? e_PAGE."?".e_QUERY : e_PAGE);
 			$rtest=substr(strrchr($link_url, "/"), 1);
-
 			if(!preg_match("#(http:|mailto:|ftp:)#",$link_url)){ $link_url = e_BASE.$link_url; }
-			if(strpos($link_url, e_PLUGIN) !== FALSE){ $link_url = e_BASE.$link_url; }
-
 			if($ltest == $link_url || $rtest == e_PAGE){ $ulclass = '_onpage'; } else { $ulclass = ''; }
-	
 			switch ($link_open) { 
 				case 1:
 					$link_append = " onclick=\"window.open('$link_url'); return false;\"";
