@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.60 $
-|     $Date: 2006-01-12 15:28:40 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.61 $
+|     $Date: 2006-01-18 07:08:14 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -50,7 +50,6 @@ if(isset($_POST['chat_submit']) && $_POST['cmessage'] != "")
 		$cmessage = $_POST['cmessage'];
 		if(isset($_POST['ajax_used']))
 		{
-			$cmessage = urldecode($cmessage);
 			//Normally the menu.sc file will auto-load the language file, this is needed in case
 			//ajax is turned on and the menu is not loaded from the menu.sc
 			include_lan(e_PLUGIN."chatbox_menu/languages/".e_LANGUAGE."/".e_LANGUAGE.".php");
