@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/signup.php,v $
-|     $Revision: 1.73 $
-|     $Date: 2006-01-05 16:21:07 $
-|     $Author: e107coders $
+|     $Revision: 1.74 $
+|     $Date: 2006-01-19 20:00:23 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -24,7 +24,7 @@ $usere = new e107_user_extended;
 require_once(e_HANDLER."calendar/calendar_class.php");
 $cal = new DHTML_Calendar(true);
 
-$use_imagecode = ($pref['signcode'] && extension_loaded("gd"));
+$signup_imagecode = ($pref['signcode'] && extension_loaded("gd"));
 
 if(!$_POST){   // Notice Removal.
 	$error = "";
@@ -77,7 +77,8 @@ if ($pref['membersonly_enabled']) {
 	$FOOTER = "</div></div>";
 }
 
-if ($use_imagecode) {
+
+if ($signup_imagecode) {
 	require_once(e_HANDLER."secure_img_handler.php");
 	$sec_img = new secure_image;
 }
@@ -129,7 +130,7 @@ if (isset($_POST['register']))
 	$error_message = "";
 	require_once(e_HANDLER."message_handler.php");
 
-	if ($use_imagecode && !isset($_POST['xupexist']))
+	if ($signup_imagecode && !isset($_POST['xupexist']))
 	{
 		if (!$sec_img->verify_code($_POST['rand_num'], $_POST['code_verify']))
 		{
@@ -788,7 +789,7 @@ if ($signupval[9])
 		</tr>";
 }
 
-if ($use_imagecode)
+if ($signup_imagecode)
 {
 	$text .= " <tr>
 		<td class='forumheader3' style='width:30%'>".LAN_410.req(2)."</td>
