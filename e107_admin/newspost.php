@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.102 $
-|   $Date: 2006-01-18 04:42:06 $
+|   $Revision: 1.103 $
+|   $Date: 2006-01-19 04:53:32 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -479,9 +479,9 @@ class newspost {
 		<td style='width:20%' class='forumheader3'>".NWSLAN_13.":<br /></td>
 		<td style='width:80%;margin-left:auto' class='forumheader3'>";
 
-		$insertjs = (!$pref['wysiwyg'])?"rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'": "rows='25' style='width:100%'  ";
+		$insertjs = (!$pref['wysiwyg']) ? "rows='15' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'": "rows='25' ";
 		$_POST['data'] = $tp->toForm($_POST['data']);
-		$text .= "<textarea class='tbox' id='data' name='data'  cols='80'  style='width:95%' $insertjs>".(strstr($_POST['data'], "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $_POST['data']))."</textarea>
+		$text .= "<textarea class='tbox' id='data' name='data'  cols='80'  style='width:100%' $insertjs>".(strstr($tp->post_toForm($_POST['data']), "[img]http") ? $_POST['data'] : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['data'])))."</textarea>
 		";
 
 		//Main news body textarea
@@ -500,7 +500,7 @@ class newspost {
 		<td style='width:80%' class='forumheader3'>
 		<a style='cursor: pointer; cursor: hand' onclick=\"expandit(this);$ff_expand\">".NWSLAN_83."</a>
 		<div style='display:none'>
-		<textarea class='tbox' id='news_extended' name='news_extended' cols='80' style='width:95%' $insertjs>".(strstr($_POST['news_extended'], "[img]http") ? $_POST['news_extended'] : str_replace("[img]../", "[img]", $tp->toForm($_POST['news_extended'])))."</textarea>";
+		<textarea class='tbox' id='news_extended' name='news_extended' cols='80' style='width:95%' $insertjs>".(strstr($tp->post_toForm($_POST['news_extended']), "[img]http") ? $tp->post_toForm($_POST['news_extended']) : str_replace("[img]../", "[img]", $tp->post_toForm($_POST['news_extended'])))."</textarea>";
 		if (!$pref['wysiwyg']) {
 			$text .="<br />". display_help("helpb");
 		}
@@ -569,10 +569,10 @@ class newspost {
 		<div id='newsicn' style='display:none;{head}'>";
 
 		foreach($thumblist as $icon){
-			$text .= "<a href=\"javascript:insertext('".$icon['fname']."','news_thumbnail','newsicn')\"><img src='".$icon['path'].$icon['fname']."' style='border:0' alt='' /></a> ";
+			$text .= "<a href=\"javascript:insertext('".$icon['fname']."','news_thumbnail','newsicn')\"><img src='".$icon['path'].$icon['fname']."' style='border:0' alt='' /></a>\n ";
 		}
 
-		$text .= "</div>
+		$text .= "</div></div>
 		</td>
 		</tr>
 		";
@@ -580,7 +580,7 @@ class newspost {
 		if (!$pref['wysiwyg'])
 		{
 
-			$text .= "<tr>
+			$text .= "\n\n<!-- wysiwyg off -->\n\n<tr>
 			<td class='forumheader3'>".LAN_NEWS_42."</td>
 			<td class='forumheader3'>
 			<a style='cursor: pointer' onclick='expandit(this);'>".LAN_NEWS_40."</a>
@@ -661,13 +661,13 @@ class newspost {
 					}
 				}
 			}
-
+            /*
 			$text .= "</div>
 			</td>
 			</tr>\n";
 
 
-			/*
+
 			<input class='tbox' type='text' name='news_image' size='60' value='".$_POST['news_image']."' maxlength='100' />
 			<input class='button' type ='button' style='cursor:hand' size='30' value='View images' onclick='expandit(this)' />
 			<div id='imagefile' style='display:none;{head}'>";
@@ -682,7 +682,9 @@ class newspost {
 
 			$text .= "</div>
 			</td>
-			</tr>\n";
+			</tr>\n
+
+			<!-- end of wysiwyg off -->\n\n";
 		}
 
 		$text .= "<tr>
@@ -752,7 +754,7 @@ class newspost {
 		$cal_attrib['value'] = $_enddate;
 		$text .= $cal->make_input_field($cal_options, $cal_attrib);
 
-		$text .= "</select>
+		$text .= "
 		</div>
 		</td>
 		</tr>";
