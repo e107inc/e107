@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Spanish/admin/lan_prefs.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2006-01-05 11:03:51 $
+|     $Revision: 1.20 $
+|     $Date: 2006-01-19 00:30:15 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */

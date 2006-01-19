@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/online_extended_menu/languages/Spanish.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-11-11 23:57:40 $
+|     $Revision: 1.6 $
+|     $Date: 2006-01-19 00:30:15 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */

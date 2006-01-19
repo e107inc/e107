@@ -1,4 +1,4 @@
-﻿
+
 P>	He realizado algunos cambios en mi sitio y ahora aparecen algunos errores MySql que no desaparecen.
 R>	Parece ser que el núcle se ha vuelto corrupto. EL núcleo incluye los ajustes y variables de e107. Para reiniciar su nucleo, vaya a http://nombre_de_su_sitio/e107_files/resetcore.php . Haga siempre una copia de seguridad (desde la pantalla de bases de datos) antes de realizar algún cambio. Así podrá restaurar su núcleo si alguna cosa saliera mal (nuevamente desde resetcore.php).
 

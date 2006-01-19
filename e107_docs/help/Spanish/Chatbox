@@ -1,4 +1,4 @@
-﻿
+
 P>	¿Que es la sección 'reemplazar enlaces'?
 R>	Puede convertir cualquier enlace entrado en el chatbox en otro texto. De esta manera evitará tener líneas o direcciones a otros enlaces excesivamente largos creando distorsión de datos y lectura menos accesible. Para usar una imagen, Active 'Reemplazar enlaces' y en la caja de texto escriba <img src='ruta_a_su_imagen' alt='' />. Ahora todos los enlaces de texto se convertiran en la imagen definida.
 

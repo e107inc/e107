@@ -1,4 +1,4 @@
-﻿
+
 
 P>	I definido un nuevo anuncio (banner) desde el área de administración pero no se muestra ¿Porque?
 R>	El tema que estes utilizando debe estar preparado para mostrar anuncios. Asegúrese de que tiene la etiqueta {BANNER] o {BANNER=su_nombre_de_campaña} en la sección $HEADER del aricho theme.php

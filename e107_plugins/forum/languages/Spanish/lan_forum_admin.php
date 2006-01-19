@@ -1,11 +1,11 @@
-﻿<?php
+<?php
 /*
 + ----------------------------------------------------------------------------+
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Spanish/lan_forum_admin.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2006-01-16 00:38:02 $
+|     $Revision: 1.12 $
+|     $Date: 2006-01-19 00:30:15 $
 |     $Author: natxocc $
 +----------------------------------------------------------------------------+
 */
