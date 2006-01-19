@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chatbox_menu.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2006-01-18 07:08:14 $
-|     $Author: streaky $
+|     $Revision: 1.62 $
+|     $Date: 2006-01-19 23:57:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -28,11 +28,11 @@ global $tp, $e107cache, $e_event, $e107, $pref, $footer_js, $PLUGINS_DIRECTORY;
 
 if($pref['cb_layer'] || isset($_POST['chatbox_ajax']))
 {
-	$footer_js[] = e_FILE_ABS.'e_ajax.js';
 	if(isset($_POST['chat_submit']))
 	{
 		include_once("../../class2.php");
 	}
+	$footer_js[] = e_FILE_ABS.'e_ajax.js';
 }
 
 if(!defined("e_HANDLER")){ exit; }
