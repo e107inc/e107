@@ -237,6 +237,7 @@ function sendInfo() {
 					break;
 			}
 			if(show && obj.elements[i].id) {
+				tmp = tmp.replace(/&/g, "%26");
 				poststr += obj.elements[i].id + '=' + tmp + '&';
 			}
 		}
