@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/chatbox_menu/chat.php,v $
-|     $Revision: 1.17 $
-|     $Date: 2006-01-09 03:20:30 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.18 $
+|     $Date: 2006-01-20 00:26:53 $
+|     $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -43,13 +43,15 @@ if($_POST['moderate'] && CB_MOD)
 {
 	if(isset($_POST['block']))
 	{
-		$blocklist = implode(",", array_keys(intval($_POST['block'])));
+		foreach(array_keys($_POST['block']) as $k){ $kk[] = intval($k); }
+		$blocklist = implode(",", $kk);
 		$sql->db_Select_gen("UPDATE #chatbox SET cb_blocked=1 WHERE cb_id IN ({$blocklist})");
 	}
 
 	if(isset($_POST['unblock']))
 	{
-		$unblocklist = implode(",", array_keys(intval($_POST['unblock'])));
+		foreach(array_keys($_POST['unblock']) as $k){ $kk[] = intval($k); }
+		$unblocklist = implode(",", $kk);
 		$sql->db_Select_gen("UPDATE #chatbox SET cb_blocked=0 WHERE cb_id IN ({$unblocklist})");
 	}
 	
