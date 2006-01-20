@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-01-01 02:05:26 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.36 $
+|     $Date: 2006-01-20 17:12:11 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -135,7 +135,7 @@ if (ob_get_level() != $start_ob_level && $pref['developer']) {
 	echo $obdbg;
 }
 
-if($error_handler->debug == true) {
+if(ADMIN == true && $error_handler->debug == true) {
 	echo "
 	<br /><br />
 	<div>
