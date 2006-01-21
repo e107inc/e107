@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.74 $
-|     $Date: 2006-01-17 20:01:09 $
+|     $Revision: 1.75 $
+|     $Date: 2006-01-21 20:47:27 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -480,7 +480,7 @@ for ($i = 0; $i < count($signup_title); $i++)
 	}
 	else
 	{
-		$text .= "<input type='hidden' name='{$signup_name[$i]}' valye='0' />";
+		$text .= "<input type='hidden' name='{$signup_name[$i]}' value='0' />";
 	}
 }
 
