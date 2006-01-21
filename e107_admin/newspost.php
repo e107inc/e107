@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.103 $
-|   $Date: 2006-01-19 04:53:32 $
+|   $Revision: 1.104 $
+|   $Date: 2006-01-21 23:59:15 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -149,6 +149,10 @@ if (isset($_POST['preview'])) {
 }
 
 if (isset($_POST['submit'])) {
+    if(e_WYSIWYG){
+		$_POST['data'] = $tp->createConstants($_POST['data']); // convert e107_images to {e_IMAGE} etc.
+		$_POST['news_extended'] = $tp->createConstants($_POST['news_extended']);
+	}
 	$newspost->submit_item($sub_action, $id);
 	$action = "main";
 	unset($sub_action, $id);
@@ -221,8 +225,20 @@ if ($action == "create") {
 			$row = $sql->db_Fetch();
 			extract($row);
 			$_POST['news_title'] = $news_title;
-			$_POST['data'] = $news_body;
-			$_POST['news_extended'] = $news_extended;
+
+			if(e_WYSIWYG){
+
+				$_POST['data'] = $tp->toHTML($news_body,$parseBB = TRUE); // parse the bbcodes to we can edit as html.
+            	$_POST['data'] = $tp->replaceConstants($_POST['data'],TRUE); // eg. replace {e_IMAGE} with e107_images/ and NOT ../e107_images
+				$_POST['news_extended'] = $tp->toHTML($news_extended,$parseBB = TRUE);
+            	$_POST['news_extended'] = $tp->replaceConstants($_POST['news_extended'],TRUE);
+
+			}else{
+
+				$_POST['data'] = $news_body;
+				$_POST['news_extended'] = $news_extended;
+			}
+
 			$_POST['news_allow_comments'] = $news_allow_comments;
 			$_POST['news_class'] = $news_class;
 			$_POST['news_summary'] = $news_summary;
@@ -235,6 +251,7 @@ if ($action == "create") {
 			$_POST['comment_total'] = $sql->db_Count("comments", "(*)", " WHERE comment_item_id='$news_id' AND comment_type='0' ");
 			$_POST['news_rendertype'] = $news_render_type;
 			$_POST['news_thumbnail'] = $news_thumbnail;
+
 		}
 	}
 	$newspost->create_item($sub_action, $id);
@@ -856,6 +873,7 @@ class newspost {
 	function preview_item($id) {
 		// ##### Display news preview ---------------------------------------------------------------------------------------------------------
 		global $tp, $sql, $ix, $IMAGES_DIRECTORY;
+
 		$_POST['news_id'] = $id;
 
 		if($_POST['news_start'])
@@ -899,12 +917,15 @@ class newspost {
 		$_POST['comment_total'] = $comment_total;
 		$_PR = $_POST;
 
+		if(e_WYSIWYG){
+            $_PR['data'] = $tp->createConstants($_PR['data']); // convert e107_images/ to {e_IMAGE} etc.
+ 			$_PR['news_extended'] = $tp->createConstants($_PR['news_extended']);
+		}
+
+		$_PR['news_body'] = $tp->post_toHTML($_PR['data'],FALSE);
 		$_PR['news_title'] = $tp->post_toHTML($_PR['news_title']);
 		$_PR['news_summary'] = $tp->post_toHTML($_PR['news_summary']);
-		$_PR['data'] = $tp->post_toHTML($_PR['data'], FALSE);
 		$_PR['news_extended'] = $tp->post_toHTML($_PR['news_extended']);
-		$_PR['news_body'] = strstr($_PR['data'], "[img]http") ? $_PR['data'] : str_replace("[img]", "[img]../", $_PR['data']);
-
 		$_PR['news_file'] = $_POST['news_file'];
 		$_PR['news_image'] = $_POST['news_image'];
 
