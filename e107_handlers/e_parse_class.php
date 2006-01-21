@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.136 $
-|     $Date: 2006-01-18 02:11:05 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.137 $
+|     $Date: 2006-01-21 23:59:15 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -30,7 +30,7 @@ class e_parse
 	var $replace = array("'", "'", '"', 'one<i></i>rror', '>', "'", '"');
 	var $e_query;
 
-	function toDB($data, $nostrip = false, $no_encode = false)
+	function toDB($data, $nostrip = false, $no_encode = false, $mod = false)
 	{
 		global $pref;
 		if (is_array($data)) {
@@ -57,6 +57,9 @@ class e_parse
 				$ret = preg_replace("/&amp;#(\d*?);/", "&#\\1;", $data);
 			}
 		}
+
+ //       ret = $this->createConstants($ret);
+
 		return $ret;
 	}
 
@@ -77,6 +80,9 @@ class e_parse
 		// ensure apostrophes are properly converted, or else the form item could break
 		return str_replace(array( "'", '"'), array("&#039;", "&quot;"), $text);
 	}
+
+
+
 
 	function post_toHTML($text, $modifier = true, $extra = '') {
 		/*
@@ -107,10 +113,16 @@ class e_parse
 			if (MAGIC_QUOTES_GPC) {
 				$text = stripslashes($text);
 			}
-			$text = htmlentities($text, ENT_QUOTES, CHARSET);
+		  	$text = htmlentities($text, ENT_QUOTES, CHARSET);
 		}
+
+		$text = $this->replaceConstants($text);
+
 		return ($modifier ? $this->toHTML($text, true, $extra) : $text);
 	}
+
+
+
 
 	function parseTemplate($text, $parseSCFiles = TRUE, $extraCodes = "") {
 		// Start parse {XXX} codes
@@ -431,8 +443,15 @@ class e_parse
 		return $text;
 	}
 
-	function replaceConstants($text)
+	function replaceConstants($text,$nonrelative = FALSE)
 	{
+		if($nonrelative !== FALSE){
+			global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, $THEMES_DIRECTORY;
+        	$replace = array($IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY);
+        	$search = array("{"."e_IMAGE"."}","{"."e_PLUGIN"."}","{"."e_FILE"."}","{"."e_THEME"."}");
+            return str_replace($search,$replace,$text);
+		}
+
 		$text = preg_replace_callback("#\{(e_[A-Z]*)\}#s", array($this, 'doReplace'), $text);
 		return $text;
 	}
@@ -445,6 +464,14 @@ class e_parse
 		}
 		return $matches[1];
 	}
+
+    function createConstants($text){
+        global $IMAGES_DIRECTORY, $PLUGINS_DIRECTORY, $FILES_DIRECTORY, $THEMES_DIRECTORY;
+        $search = array($IMAGES_DIRECTORY,$PLUGINS_DIRECTORY,$FILES_DIRECTORY,$THEMES_DIRECTORY);
+        $replace = array("{"."e_IMAGE"."}","{"."e_PLUGIN"."}","{"."e_FILE"."}","{"."e_THEME"."}");
+		return str_replace($search,$replace,$text);
+    }
+
 
 	function e_highlight($text, $match) {
 		preg_match_all("#<[^>]+>#", $text, $tags);
