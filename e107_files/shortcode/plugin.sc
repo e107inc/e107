@@ -7,7 +7,7 @@ if($path == '.')
 {
 	$path = $menu;
 }
-if($sql->db_Select('menus','menu_id, menu_pages',"menu_name = '$name' AND menu_path = '".$path."/' AND menu_class IN (".USERCLASS_LIST.")"))
+if($sql->db_Select('menus','menu_id, menu_pages',"menu_name = '$name' AND (menu_path = '".$path."/' OR menu_path = '".$path."') AND menu_class IN (".USERCLASS_LIST.")"))
 {
 	$row = $sql->db_Fetch();
 	$show_menu = TRUE;
