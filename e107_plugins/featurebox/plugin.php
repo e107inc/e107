@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/featurebox/plugin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.5 $
+|     $Date: 2006-01-22 07:08:15 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -67,7 +67,7 @@ $eplug_tables = array(
   PRIMARY KEY  (fb_id)
 ) TYPE=MyISAM AUTO_INCREMENT=1 ;");
 
-$eplug_rss = array(
+$eplug_rss['featurebox'] = array(
 	"query" => "SELECT * FROM #featurebox WHERE fb_class = 0",
 	"author" => "",
 	"link" => "",
