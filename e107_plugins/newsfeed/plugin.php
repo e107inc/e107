@@ -11,17 +11,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/plugin.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.4 $
+|     $Date: 2006-01-22 19:53:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
-	
+
 if (!defined('e107_INIT')) { exit; }
 
 @include_once(e_PLUGIN."newsfeed/languages/".e_LANGUAGE.".php");
 @include_once(e_PLUGIN."newsfeed/languages/English.php");
-	
+
 // Plugin info -------------------------------------------------------------------------------------------------------
 $eplug_name = NFLAN_01;
 $eplug_version = "2.0";
@@ -31,29 +31,29 @@ $eplug_email = "jalist@e107.org";
 $eplug_description = NFLAN_02;
 $eplug_compatible = "e107v0.7+";
 $eplug_readme = "";
-	
+
 // Name of the plugin's folder -------------------------------------------------------------------------------------
 $eplug_folder = "newsfeed";
-	
+
 // Name of menu item for plugin ----------------------------------------------------------------------------------
 $eplug_menu_name = "newsfeed_menu";
-	
+
 // Name of the admin configuration file --------------------------------------------------------------------------
 $eplug_conffile = "admin_config.php";
-	
+
 $eplug_sc = array("");
 
 // Icon image and caption text ------------------------------------------------------------------------------------
 $eplug_icon = $eplug_folder."/images/newsfeed_32.png";
 $eplug_icon_small = $eplug_folder."/images/newsfeed_16.png";
 $eplug_caption = NFLAN_03;
-	
+
 // List of preferences -----------------------------------------------------------------------------------------------
 $eplug_prefs = array();
-	
+
 // List of table names -----------------------------------------------------------------------------------------------
 $eplug_table_names = array("newsfeed");
-	
+
 // List of sql requests to create tables -----------------------------------------------------------------------------
 $eplug_tables = array(
 "CREATE TABLE ".MPREFIX."newsfeed (
@@ -68,13 +68,14 @@ $eplug_tables = array(
   newsfeed_updateint int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (newsfeed_id)
 ) TYPE=MyISAM;");
-	
+
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
 $eplug_link = TRUE;
 $eplug_link_name = NFLAN_01;
 $eplug_link_url = e_PLUGIN."newsfeed/newsfeed.php";
-	
+$eplug_link_perms = "Everyone"; // Guest, Member, Admin, Everyone
+
 // Text to display after plugin successfully installed ------------------------------------------------------------------
 $eplug_done = NFLAN_04; // "To activate please go to your menus screen and select the pm_menu into one of your menu areas.";
-	
+
 ?>

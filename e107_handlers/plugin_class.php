@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/plugin_class.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2006-01-10 17:05:40 $
+|     $Revision: 1.40 $
+|     $Date: 2006-01-22 19:53:06 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -139,7 +139,7 @@ class e107plugin
 		}
 	}
 
-	function manage_link($action, $link_url, $link_name) {
+	function manage_link($action, $link_url, $link_name,$link_class=0) {
 		global $sql, $tp;
 		$link_url = $tp -> toDB($link_url, true);
 		$link_name = $tp -> toDB($link_name, true);
@@ -147,7 +147,7 @@ class e107plugin
 			$path = str_replace("../", "", $link_url);
 			$link_t = $sql->db_Count('links');
 			if (!$sql->db_Count('links', '(*)', "link_name = '{$link_name}'")) {
-				return $sql->db_Insert('links', "0, '{$link_name}', '{$path}', '', '', '1', '".($link_t + 1)."', '0', '0', '0' ");
+				return $sql->db_Insert('links', "0, '{$link_name}', '{$path}', '', '', '1', '".($link_t + 1)."', '0', '0', '{$link_class}' ");
 			} else {
 				return FALSE;
 			}
@@ -427,7 +427,14 @@ class e107plugin
 			}
 
 			if ($eplug_link === TRUE && $eplug_link_url != '' && $eplug_link_name != '') {
-				$this->manage_link('add', $eplug_link_url, $eplug_link_name);
+                $plug_perm['everyone'] = e_UC_PUBLIC;
+				$plug_perm['guest'] = e_UC_GUEST;
+				$plug_perm['member'] = e_UC_MEMBER;
+				$plug_perm['admin'] = e_UC_ADMIN;
+				$plug_perm['nobody'] = e_UC_NOBODY;
+				$eplug_link_perms = strtolower($eplug_link_perms);
+                $linkperm = ($plug_perm[$eplug_link_perms]) ? $plug_perm[$eplug_link_perms] : e_UC_PUBLIC;
+				$this->manage_link('add', $eplug_link_url, $eplug_link_name,$linkperm);
 			}
 
 			if ($eplug_userclass) {

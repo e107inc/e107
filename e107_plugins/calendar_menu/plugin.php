@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/calendar_menu/plugin.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-12-14 19:28:43 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2006-01-22 19:53:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -113,10 +113,11 @@ $eplug_tables = array(
 
 
 // Create a link in main menu (yes=TRUE, no=FALSE) -------------------------------------------------------------
+$ec_dir = e_PLUGIN."calendar_menu/";
 $eplug_link = TRUE;
 $eplug_link_name = EC_LAN_83; // "Calendar";
-$ec_dir = e_PLUGIN."calendar_menu/";
 $eplug_link_url = "".$ec_dir."calendar.php";
+$eplug_link_perms = "Everyone"; // Everyone, Guest, Member, Admin 
 
 
 // Text to display after plugin successfully installed ------------------------------------------------------------------
