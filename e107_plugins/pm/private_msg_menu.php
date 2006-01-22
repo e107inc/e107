@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/pm/private_msg_menu.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-12-14 19:28:52 $
-|     $Author: sweetas $
+|     $Revision: 1.9 $
+|     $Date: 2006-01-22 15:38:08 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -70,7 +70,7 @@ if(check_class($pm_prefs['pm_class']))
 	{
 		$txt .= pm_show_popup();
 	}
-	$ns->tablerender(LAN_PM, $txt);
+	$ns->tablerender(LAN_PM, $txt, 'pm');
 }
 
 function pm_show_popup()
