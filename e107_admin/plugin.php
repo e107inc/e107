@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2006-01-10 17:05:40 $
+|     $Revision: 1.56 $
+|     $Date: 2006-01-22 21:05:01 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -385,6 +385,7 @@ function render_plugs($pluginList){
 				unset($$varname);
 			}
 		}
+
 		include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
 
  		if ($eplug_conffile || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_module || $eplug_userclass || $eplug_status || $eplug_latest) {
@@ -445,6 +446,10 @@ function render_plugs($pluginList){
 				$text .= EPL_NOINSTALL.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
 			} else {
 				$text .= EPL_NOINSTALL_1.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
+				if($plug['plugin_installflag'] == FALSE){
+					global $sql;
+					$sql->db_Delete('plugin', "plugin_installflag=0 AND (plugin_path='{$plug['plugin_path']}' OR plugin_path='{$plug['plugin_path']}/' )  ");
+				}
 			}
 		}
 
