@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |		$Source: /cvs_backup/e107_0.7/e107_plugins/content/handlers/content_class.php,v $
-|		$Revision: 1.87 $
-|		$Date: 2006-01-13 11:32:06 $
+|		$Revision: 1.88 $
+|		$Date: 2006-01-23 14:17:04 $
 |		$Author: lisa_ $
 +---------------------------------------------------------------+
 */
@@ -1354,7 +1354,7 @@ class content{
 			$data .= "\n";				
 			$data .= "if(!isset(".chr(36)."text)){ ".chr(36)."text = CONTENT_MENU_LAN_1; }\n";
 			$data .= chr(36)."caption = (".chr(36)."content_pref[\"content_menu_caption_".chr(36)."menutypeid\"] != \"\" ? ".chr(36)."content_pref[\"content_menu_caption_".chr(36)."menutypeid\"] : CONTENT_MENU_LAN_0.\" \".".chr(36)."menuname);\n";
-			$data .= chr(36)."ns -> tablerender(".chr(36)."caption, ".chr(36)."text);\n";
+			$data .= chr(36)."ns -> tablerender(".chr(36)."caption, ".chr(36)."text, '$menufile');\n";
 			$data .= "\n";
 			$data .= "?".chr(62);
 				 
