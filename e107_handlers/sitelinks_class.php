@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/sitelinks_class.php,v $
-|     $Revision: 1.81 $
-|     $Date: 2006-01-14 00:28:55 $
-|     $Author: qnome $
+|     $Revision: 1.82 $
+|     $Date: 2006-01-24 07:18:19 $
+|     $Author: sweetas $
 +---------------------------------------------------------------+
 */
 
@@ -52,7 +52,7 @@ class sitelinks
 
 	}
 
-	function get($cat=1,$style='')
+	function get($cat=1, $style='', $css_class = false)
 	{
 		global $pref, $ns, $e107cache;
 
@@ -77,16 +77,19 @@ class sitelinks
 		}
 		// -----------------------------
 
+		// where did link alignment go?
+		if (!defined('LINKALIGN')) { define(LINKALIGN, ''); }
+
 		if(!$style){
-			$style['prelink'] = PRELINK;
-			$style['linkdisplay'] = LINKDISPLAY;
-			$style['postlink'] = POSTLINK;
+			$style['prelink'] = defined('PRELINK') ? PRELINK : '';
+			$style['postlink'] = defined('POSTLINK') ? POSTLINK : '';
 			$style['linkclass'] = defined('LINKCLASS') ? LINKCLASS : "";
 			$style['linkclass_hilite'] = defined('LINKCLASS_HILITE') ? LINKCLASS_HILITE : "";
 			$style['linkstart_hilite'] = defined('LINKSTART_HILITE') ? LINKSTART_HILITE : "";
-			$style['linkstart'] = LINKSTART;
-			$style['linkdisplay'] = LINKDISPLAY;
-			$style['linkend'] = LINKEND;
+			$style['linkstart'] = defined('LINKSTART') ? LINKSTART : '';
+			$style['linkdisplay'] = defined('LINKDISPLAY') ? LINKDISPLAY : '';
+			$style['linkend'] = defined('LINKEND') ? LINKEND : '';
+			$style['linkseparator'] = defined('LINKSEPARATOR') ? LINKSEPARATOR : '';
 		}
 
     // Sublink styles.- replacing the tree-menu.
@@ -102,12 +105,12 @@ class sitelinks
 		$text = "\n\n\n<!-- Sitelinks ($cat) -->\n\n\n".$style['prelink'];
 
 		if ($style['linkdisplay'] != 3)	{
-			foreach ($this->eLinkList['head_menu'] as $link){
+			foreach ($this->eLinkList['head_menu'] as $key => $link){
 				$main_linkid = "sub_".$link['link_id'];
 
 				$link['link_expand'] = (isset($pref['sitelinks_expandsub']) && isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])) ?  TRUE : FALSE;
 
-				$text .= $this->makeLink($link,'', $style);
+				$render_link[$key] = $this->makeLink($link,'', $style, $css_class);
 
 				if(!defined("LINKSRENDERONLYMAIN"))	/* if this is defined in theme.php only main links will be rendered */
 				{
@@ -115,14 +118,15 @@ class sitelinks
 					// if there's a submenu. :
 					if (isset($this->eLinkList[$main_linkid]) && is_array($this->eLinkList[$main_linkid])){
 						$substyle = (strpos(e_SELF, $link['link_url']) !== FALSE || strpos(e_SELF, $link['link_name']) !== FALSE || $link['link_expand'] == FALSE) ? "visible" : "none";   // expanding sub-menus.
-						$text .= "\n\n<div id='{$main_linkid}' style='display:$substyle'>\n";
+						$render_link[$key] .= "\n\n<div id='{$main_linkid}' style='display:$substyle'>\n";
 						foreach ($this->eLinkList[$main_linkid] as $sub){
-							$text .= $this->makeLink($sub, TRUE, $style);
+							$render_link[$key] .= $this->makeLink($sub, TRUE, $style, $css_class);
 						}
-						$text .= "\n</div>\n\n";
+						$render_link[$key] .= "\n</div>\n\n";
 					}
 				}
 			}
+			$text .= implode($style['linkseparator'], $render_link);
 			$text .= $style['postlink'];
 			if ($style['linkdisplay'] == 2)	{
 				$text = $ns->tablerender(LAN_183, $text, 'sitelinks', TRUE);
@@ -134,7 +138,7 @@ class sitelinks
 			{
 				if (!count($this->eLinkList['sub_'.$link['link_id']]))
 				{
-					$text .= $this->makeLink($link,'', $style);
+					$text .= $this->makeLink($link,'', $style, $css_class);
 				}
 				$text .= $style['postlink'];
 			}
@@ -146,7 +150,7 @@ class sitelinks
 				{
 					if ($k != 'head_menu')
 					{
-						$mnu .= $this->makeLink($link, TRUE, $style);
+						$mnu .= $this->makeLink($link, TRUE, $style, $css_class);
 					}
 				}
 				$mnu .= $style['postlink'];
@@ -158,7 +162,7 @@ class sitelinks
 	 	return $text;
 	}
 
-	function makeLink($linkInfo, $submenu = FALSE, $style='')
+	function makeLink($linkInfo, $submenu = FALSE, $style='', $css_class = false)
 	{
 		global $pref,$tp;
 
@@ -177,6 +181,7 @@ class sitelinks
 		// By default links are not highlighted.
 		$linkstart = $style['linkstart'];
 		$linkadd = ($style['linkclass']) ? " class='".$style['linkclass']."'" : "";
+		$linkadd = ($css_class) ? " class='".$css_class."'" : $linkadd;
 
 		// Check for screentip regardless of URL.
 		if (isset($pref['linkpage_screentip']) && $pref['linkpage_screentip'] && $linkInfo['link_description']){
