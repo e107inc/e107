@@ -3,6 +3,7 @@ if(!in_array('edynamic_menu',$eMenuActive) && !in_array('tree_menu',$eMenuActive
     $tmp = explode(":",$parm);
 	$linktype = $tmp[0];
 	$cat = ($tmp[1]) ? $tmp[1] : 1;
+	$css_class = ($tmp[2]) ? $tmp[2] : false;
 	if(!defined('LINKDISPLAY')) {
 		define("LINKDISPLAY", ($linktype == "menu" ? 2 : 1));
 	}
@@ -13,7 +14,7 @@ if(!in_array('edynamic_menu',$eMenuActive) && !in_array('tree_menu',$eMenuActive
 	}else{
 		$style="";
 	}
-	return $sitelinks->get($cat,$style);
+	return $sitelinks->get($cat, $style, $css_class);
 }
 
 
