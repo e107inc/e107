@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/update_routines.php,v $
-|     $Revision: 1.174 $
-|     $Date: 2006-01-16 13:59:48 $
-|     $Author: sweetas $
+|     $Revision: 1.175 $
+|     $Date: 2006-01-24 23:41:17 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -51,6 +51,7 @@ if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'pm' AND plugin_in
 	}
 }
 
+// $dbupdate["701_to_702"] = LAN_UPDATE_8." .7.1 ".LAN_UPDATE_9." .7.2";
 $dbupdate["617_to_700"] = LAN_UPDATE_8." .617 ".LAN_UPDATE_9." .7";
 $dbupdate["616_to_617"] = LAN_UPDATE_8." .616 ".LAN_UPDATE_9." .617";
 $dbupdate["615_to_616"] = LAN_UPDATE_8." .615 ".LAN_UPDATE_9." .616";
@@ -68,7 +69,7 @@ function update_check() {
 			}
 		}
 	}
-	
+
 	foreach($dbupdatep as $func => $rmks) {
 		if (function_exists("update_".$func)) {
 			if (!call_user_func("update_".$func, FALSE)) {
@@ -86,7 +87,17 @@ function update_check() {
 		$ns->tablerender(LAN_UPDATE, $txt);
 	}
 }
+/*
+// ------------------------------- .7.1 to .7.2 etc ----------------------------------
+function update_701_to_702($type='') {
 
+//  $sql->db_Query_all() must be used for all mysql queries to avoid serious multi-language issues.
+
+
+}
+*/
+
+// ------------------------------- .6 to .7 ----------------------------------
 function update_617_to_700($type='') {
 	global $sql, $ns, $mySQLdefaultdb, $pref, $tp, $sysprefs, $eArrayStorage;
 	if ($type == "do") {
@@ -106,7 +117,7 @@ function update_617_to_700($type='') {
 			$pref['sitelanguage'] = 'English';
 			$s_prefs = TRUE;
 		}
-		
+
 		if ($sql -> db_Select("link_category", "link_category_id")){
 			if (is_dir(e_LANGUAGEDIR.e_LANGUAGE."-iso")) {
 				$pref['sitelanguage'] = $pref['sitelanguage']."-iso";
@@ -215,7 +226,7 @@ function update_617_to_700($type='') {
 			) TYPE=MyISAM;");
 			catch_error();
 		}
-		
+
 		if (mysql_table_exists('newsfeed')) {
 			mysql_query("ALTER TABLE `".MPREFIX."newsfeed` CHANGE `newsfeed_data` `newsfeed_data` LONGTEXT NOT NULL");
 			catch_error();
@@ -374,12 +385,13 @@ function update_617_to_700($type='') {
 		//  #########  McFly's 0.7 Updates ############
 
 		// parse table obsolete
+		if(mysql_table_exists("parser")){
 			mysql_query('DROP TABLE `'.MPREFIX.'parser`');
 			catch_error();
-
+        }
 			mysql_query("ALTER TABLE ".MPREFIX."menus ADD menu_path varchar(100) NOT NULL default ''");
 			catch_error();
-			
+
 			$sql -> db_Update("menus", "menu_path='poll/' WHERE menu_name='poll_menu' ");
 			catch_error();
 
@@ -543,7 +555,7 @@ function update_617_to_700($type='') {
 				}
 			}
 
-			mysql_query("ALTER TABLE ".MPREFIX."generic` CHANGE gen_chardata gen_chardata TEXT NOT NULL");
+			mysql_query("ALTER TABLE ".MPREFIX."generic CHANGE gen_chardata gen_chardata TEXT NOT NULL");
 			catch_error();
 
 			mysql_query("ALTER TABLE ".MPREFIX."banner CHANGE banner_active banner_active TINYINT(3) UNSIGNED NOT NULL DEFAULT '0'");
@@ -572,14 +584,14 @@ function update_617_to_700($type='') {
 				{
 					$fieldlist = "";
 					$gen_type='wmessage';
-					
+
 					if($wm['wm_id'] == '1') { $wm_class = $wm['wm_active'] ? e_UC_GUEST : '255'; }
 					if($wm['wm_id'] == '2') { $wm_class = $wm['wm_active'] ? e_UC_MEMBER : '255'; }
 					if($wm['wm_id'] == '3') { $wm_class = $wm['wm_active'] ? e_UC_ADMIN : '255'; }
 					if($wm['wm_id'] == '4') { $gen_type = 'forum_rules_guest'; $wm_class = $wm['wm_active'] ? e_UC_GUEST : '255'; }
 					if($wm['wm_id'] == '5') { $gen_type = 'forum_rules_member'; $wm_class = $wm['wm_active'] ? e_UC_MEMBER : '255'; }
 					if($wm['wm_id'] == '6') { $gen_type = 'forum_rules_admin'; $wm_class = $wm['wm_active'] ? e_UC_ADMIN : '255'; }
-					
+
 					if($gen_type != "wmessage")
 					{
 						$exists = $sql->db_Count('generic','(*)',"WHERE gen_type = '{$gen_type}'");
@@ -715,7 +727,7 @@ function update_617_to_700($type='') {
 					catch_error();
 				}
 			}
-		
+
 			if (!$sql->db_Select("plugin", "plugin_path", "plugin_path='log'") && !mysql_table_exists("logstats")) {
 				$sql->db_Select_gen("CREATE TABLE ".MPREFIX."logstats (
 				log_uniqueid int(11) NOT NULL auto_increment,
@@ -726,7 +738,7 @@ function update_617_to_700($type='') {
 				) TYPE=MyISAM;");
 				catch_error();
 			}
-		
+
 		if (isset($pref['log_activate'])) {
 			if ($pref['log_activate']) {
 				$pref['statActivate'] = 1;
@@ -780,7 +792,7 @@ function update_617_to_700($type='') {
 				$s_prefs = TRUE;
 			}
 			// end list_new update -------------------------------------------------------------------------------------------
-			
+
 
 		// Truncate logstats table if log_id = pageTotal not found
 		/* log update - previous log entries are not compatible with later versions, sorry but we have to clear the table :\ */
@@ -1039,14 +1051,14 @@ function update_617_to_700($type='') {
 					}
 				}
 			}
-		
+
 		if (!isset($pref['track_online'])) {
 			$pref['track_online'] = 1;
 			$s_prefs = TRUE;
 		}
-		
+
 		// custom menus / pages update
-			
+
 			unset($type);
 			global $tp, $ns, $sql;
 			require_once(e_HANDLER."file_class.php");
@@ -1071,7 +1083,7 @@ function update_617_to_700($type='') {
 					preg_match('#<CAPTION(.*?)CAPTION#si', $contents, $match);
 				}
 				$page_title = $tp -> toDB(trim($match[1]));
-			
+
 				if(!preg_match('#\$text = "(.*?)";#si', $contents, $match))
 				{
 					preg_match('#TEXT(.*?)TEXT#si', $contents, $match);
@@ -1088,7 +1100,7 @@ function update_617_to_700($type='') {
 				}
 
 				$iid = mysql_insert_id();
-				
+
 				if($type)
 				{
 					if(!$sql -> db_Select("menus", "*", "menu_path='$iid' "))
@@ -1138,7 +1150,7 @@ function update_617_to_700($type='') {
 				$pref['download_email'] = $pref['reported_post_email'];
 				$s_prefs = TRUE;
 			}
-		
+
 		if (!isset($pref['mailer'])) {
 			$pref['mailer'] = $pref['smtp_enable'] ? 'smtp' : 'php';
 			$s_prefs = TRUE;
@@ -1179,7 +1191,7 @@ function update_617_to_700($type='') {
 				$sql -> db_Update("plugin", "plugin_version='1.12' WHERE plugin_path = 'links_page' ");
 			}
 		}
-		
+
 		// install new private message plugin if old plugin is installed
 		if($sql->db_Select("plugin", "plugin_version", "plugin_path = 'pm_menu' AND plugin_installflag='1' "))
 		{
@@ -1191,7 +1203,7 @@ function update_617_to_700($type='') {
 			$pref['ue_upgrade'] = 1;
 			$s_prefs = TRUE;
 		}
-		
+
 		// Add default pref for Max IP signups.
 		if(!isset($pref['signup_maxip'])){
 			$pref['signup_maxip'] = 3;
@@ -1214,19 +1226,19 @@ function update_617_to_700($type='') {
 		if (!$sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."user_extended")) {
 			return update_needed();
 		}
-		
+
 		if ($pref['sitelanguage'] == 'English-iso') {
 			return update_needed();
 		}
-		
+
 		if (!isset($pref['download_email'])) {
 			return update_needed();
 		}
-		
+
 		if($sql -> db_Select("menus", "*", "menu_pages='dbcustom'")) {
 			return update_needed();
 		}
-		
+
 		if ($sql->db_Query("SHOW INDEX FROM ".MPREFIX."forum_t"))
 		{
 			$a = array("PRIMARY", "thread_parent", "thread_datestamp", "thread_forum_id");
@@ -1251,7 +1263,7 @@ function update_617_to_700($type='') {
 				}
 			}
 		}
-		
+
 		if ($sql -> db_Query("SHOW COLUMNS FROM ".MPREFIX."links_page_cat")) {
 			while ($row = $sql -> db_Fetch()) {
 				if ($row['Field'] == 'link_category_order' && strpos($row['Type'], 'int') === FALSE) {
@@ -1347,7 +1359,7 @@ function update_617_to_700($type='') {
 			 	return update_needed();
 			}
 		}
-		
+
 		// No updates needed
 	 	return TRUE;
 	}
