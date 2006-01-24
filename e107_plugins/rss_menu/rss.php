@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.39 $
-|     $Date: 2006-01-16 01:15:13 $
+|     $Revision: 1.40 $
+|     $Date: 2006-01-24 21:00:14 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -414,7 +414,7 @@ class rssCreate {
 
 	function buildRss($rss_title) {
 		global $sql, $pref, $tp;
-		header('Content-type: application/rss+xml', TRUE);
+		header('Content-type: application/xml', TRUE);
 
 		$rss_title = $tp->toRss($pref['sitename']." : ".$rss_title);
 
@@ -587,7 +587,7 @@ class rssCreate {
 
 	function nospam($text){
 		$tmp = explode("@",$text);
-		if($tmp[0]){
+		if($tmp[0] != ""){
 			return $tmp[0]."@nospam.com&gt;";
 		}
 	}
