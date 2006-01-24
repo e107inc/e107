@@ -4,11 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/help/article.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:34 $
+|     $Revision: 1.3 $
+|     $Date: 2006-01-24 12:49:09 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
+
 $text = "Från denna sida kan du lägga till en- eller flersidiga artiklar.<br />
  För en flersidig artikel skall du separera sidorna med texten [newpage], t.ex. kommer<br /><code>Test1 [newpage] Test2</code><br /> att skapa en tvåsidig artikel med 'Test1' på sida 1 och 'Test2' på sida 2.
 <br /><br />

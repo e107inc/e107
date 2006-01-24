@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_users.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-10-08 06:34:30 $
+|     $Revision: 1.7 $
+|     $Date: 2006-01-24 12:44:19 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -132,6 +132,9 @@ define("USRLAN_134", "Aktivering av detta alternativ kommer att automatiskt skic
 define("USRLAN_135", "Ingen IP adress hittades i användarens info, IP inte spärrad");
 define("USRLAN_136", "Flera användare hittades med IP adressen {IP}, IP inte spärrad.");
 define("USRLAN_137", "Användare med IP adressen {IP} spärrade.");
+define("USRLAN_138", "Ej verifierade användare");
+define("USRLAN_139", "Ditt konto har aktiverats.\n\nDu kan nu besöka {SITEURL} och logga in på sajten med den inloggningsinformation du angivit.");
+
 
 define("LAN_MAINADMIN", "Huvudadmin");
 define("LAN_ADMIN", "Admin");

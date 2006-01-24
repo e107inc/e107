@@ -1,5 +1,8 @@
 Changelog for the Swedish Language pack:
 
+Tue Jan 24 2005 - mrpiercer (at) users.sourceforge.net
+- Updated to todays CVS code, which should be the e107
+  v0.7.1 RELEASE.
 Sat Sep 17 2005 - mrpiercer (at) users.sourceforge.net
 - Updated to today's CVS code status. I'm putting up
   a test suite for the ISO encoded files in legacy_langpacks

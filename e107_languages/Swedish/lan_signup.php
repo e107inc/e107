@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_signup.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-11-03 18:25:11 $
+|     $Revision: 1.5 $
+|     $Date: 2006-01-24 12:42:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -16,7 +16,7 @@ define("LAN_9", "Inloggningsnamn: ");
 define("LAN_10", "namnet du använder för inloggning");
 define("LAN_17", "Lösenord: ");
 define("LAN_103", "Det användarnamnet kan inte accepteras som giltigt, välj något annat");
-define("LAN_104", "Det användarnamnet finns redan i databasen, välj något annat namn");
+define("LAN_104", "Den inloggningen finns redan i databasen, välj något annat inloggningsnamn");
 define("LAN_105", "De två lösenorden är inte lika");
 define("LAN_106", "Det ser inte ut som en giltig e-postadress");
 define("LAN_107", "Tack! Du är nu en registrerad medlem på");
@@ -91,5 +91,9 @@ define("LAN_EMAIL_01", "Kära");
 define("LAN_EMAIL_04", "Spara detta e-postbrev för din egen referens.");
 define("LAN_EMAIL_05", "Ditt lösenord har krypterats och kan inte återskapas om glömmer bort det. Du kan däremot begära ett nytt lösenord om det skulle hända.");
 define("LAN_EMAIL_06", "Tack för din registrering.");
+
+define("LAN_SIGNUP_37", "Detta steg i registreringen är nu klart. En sajtadministratör måste nu godkänna ditt medlemskap.  När det är gjort kommer du att få ett bekräftelsebrev med e-post som upplyser dig om att medlemskapet har godkänts.");
+define("LAN_SIGNUP_38", "Du angav två olika e-postadresser. Ange en korrekt e-postadress i de två fälten för detta.");
+define("LAN_SIGNUP_39", "Ange e-postadressen igen:");
 
 ?>

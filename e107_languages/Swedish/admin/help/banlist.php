@@ -4,11 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/help/banlist.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:34 $
+|     $Revision: 1.3 $
+|     $Date: 2006-01-24 12:49:09 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
+
 $caption = "Spärra användare från din sajt";
 $text = "Från denna sida kan du spärra användare från din sajt.<br />
 Antingen anger du en fullständig IP-adress eller så använder du jokertecken för att ange ett område av IP-adresser. Du kan också ange en e-postadress för att hindra att någon registrerar sig med den adressen.<br /><br />

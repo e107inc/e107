@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_prefs.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-10-20 08:55:34 $
+|     $Revision: 1.5 $
+|     $Date: 2006-01-24 12:44:19 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -25,14 +25,8 @@ define("PRFLAN_13", "Visa information");
 define("PRFLAN_14", "Visa temainformation?");
 define("PRFLAN_15", "Visa renderingstid?");
 define("PRFLAN_16", "Visa SQL-frågor?");
-
-// define("PRFLAN_17", "Språk");
-// define("PRFLAN_18", "Sajtspråk");
-
+define("PRFLAN_17", "Komprimera sajtens utflöde med gzip");
 define("PRFLAN_19", "Alternativ, registreringssida");
-
-// define("PRFLAN_20", "Nyhetsposter att visa per sida?");
-
 define("PRFLAN_21", "Alternativ för datumvisning");
 define("PRFLAN_22", "Kort datumformat");
 define("PRFLAN_23", "Långt datumformat");
@@ -43,19 +37,13 @@ define("PRFLAN_27", "T.ex. om du sätter detta till +2 kommer alla tider på din
 define("PRFLAN_28", "Användarregistrering/postning");
 define("PRFLAN_29", "Aktivera användarregistrering?");
 define("PRFLAN_30", "Tillåt användare att registrera sig som medlemmar på din sajt");
-define("PRFLAN_31", "Använd e-postverifiering för nyregistrering?");
+// define("PRFLAN_31", "Använd e-postverifiering för nyregistrering?");
 define("PRFLAN_32", "Tillåt anonym postning?");
 define("PRFLAN_33", "Slå av detta för att enbart tillåta regsitrerade medlemmar att posta kommentarer etc");
-
-// define("PRFLAN_34", "Säkerhet");
-
 define("PRFLAN_35", "Använd flödningsskydd?");
 define("PRFLAN_36", "Flod timeout");
 define("PRFLAN_37", "Autospärr");
 define("PRFLAN_38", "Tid i sekunder som krävs mellan 2 inlägg för areor där användare kan posta (chattruta, forum...). Om en användare postar för snabbt kommer han/hon att bli omdirigerad till hemsidan");
-
-// define("PRFLAN_39", "Alternativ för skydd av minderåriga");
-
 define("PRFLAN_40", "Filtrera svordomar?");
 define("PRFLAN_41", "Om PÅ kommer svordomar att bli ersatta av strängen nedan");
 define("PRFLAN_42", "Ersättningssträng");
@@ -69,44 +57,18 @@ define("PRFLAN_49", "Kakor");
 define("PRFLAN_50", "Sessioner");
 define("PRFLAN_52", "Spara ändringar");
 define("PRFLAN_53", "Sajtpreferenser");
-
-// define("PRFLAN_54", "Adminarea tema");
-
 define("PRFLAN_55", "Kakans namn (om kakor aktiverade)");
 define("PRFLAN_56", "Tidszon");
-
-// define("PRFLAN_57", "Stil på admins förstasida");
-
 define("PRFLAN_58", "Begränsa webbsajten för enbart medlemmar");
 define("PRFLAN_59", "På begränsar alla areor utom förstasidan och registreringssidan till enbart medlemmar");
 define("PRFLAN_60", "Aktivera SSL");
 define("PRFLAN_61", "Aktivera endast SSL om <b>du är säker på vad du gör!</b>");
-
-// define("PRFLAN_62", "E-postinställningar");
-// define("PRFLAN_63", "Skicka testbrev");
-// define("PRFLAN_64", "När du klickar på knappen kommer ett testbrev att skickas huvudadmins e-postadress");
-// define("PRFLAN_65", "Klicka för att skicka e-post till");
-// define("PRFLAN_66", "Testbrev från");
-// define("PRFLAN_67", "Detta är ett testbrev, det verkar som om dina e-postinställningar fungerar!\n\nHälsningar\nfrån e107 webbsajtsystemet.");
-// define("PRFLAN_68", "E-postbrevet kunde inte skickas. Det verkar som om din e-postserver inte är rätt konfigurerad för att skicka e-post, prova igen med  SMTP, eller kontakta din webbvärd och be dem att kontrollera sina sendmail/e-postserver inställningar.");
-// define("PRFLAN_69", "Brevet skickades iväg, kontrollera din brevlåda.");
-// define("PRFLAN_70", "Använd SMTP");
-// define("PRFLAN_71", "Markering här gör att din SMTP-server kommer att användas för att skicka e-post");
-// define("PRFLAN_72", "SMTP server");
-// define("PRFLAN_73", "SMTP användarnamn");
-// define("PRFLAN_74", "SMTP lösenord");
-// define("PRFLAN_75", "E-postbrevet kunde inte skickas. Kontrollera dina SMTP-inställningar, eller avaktivera SMTP och försök igen.");
-
 define("PRFLAN_76", "Aktivera bildkodsverifikation under registrering.");
 define("PRFLAN_77", "Admin visningsalternativ ");
 define("PRFLAN_78", "Lämna tomt för att avaktivera");
 define("PRFLAN_80", "Klicka här för att se");
 define("PRFLAN_81", "Använd bildkodsverifikation vid inloggning");
 define("PRFLAN_83", "Exempel");
-
-// define("PRFLAN_85", "Om ett tema inte dyker upp, försäkra dig om att det laddades upp ordentligt och att läsrättigheter finns.");
-// define("PRFLAN_86", "Klicka här för att verifiera språkfiler");
-
 define("PRFLAN_87", "Kommentarer");
 define("PRFLAN_88", "Slå på nästlade kommentarer");
 define("PRFLAN_89", "Visa ikon för ny kommentar");
@@ -120,11 +82,6 @@ define("CUSTSIG_5", "Plats:");
 define("CUSTSIG_6", "Signatur:");
 define("CUSTSIG_7", "Figur");
 define("CUSTSIG_8", "Tidszon:");
-
-// define("CUSTSIG_9", "Uppdatera registreringsinställningar");
-// define("CUSTSIG_10", "Egna val till registreringssidan");
-// define("CUSTSIG_11", "Markera alla");
-
 define("CUSTSIG_12", "Göm");
 define("CUSTSIG_13", "Fält");
 define("CUSTSIG_14", "Visa");
@@ -134,8 +91,7 @@ define("CUSTSIG_17", "Prenumerera på innehåll/e-postutskick");
 define("CUSTSIG_18", "Förbjud användarnamn");
 define("CUSTSIG_19", "Användarnamn innehållande följande text kommer att avslås, separera poster med kommatecken");
 
-// define("PRFLAN_90", "Klicka här för att tvinga Internet Explorer att använda standardläge. Standard är 'fixläge'.");
-
+define("PRFLAN_31", "E-postverifiering");
 define("PRFLAN_91", "Om någon attackerar din sajt med multipla förfrågningar till din server kommer dennes IP att spärras automatiskt! Ändra inte en fungerande serverkonfiguration!!!");
 define("PRFLAN_92", "Säker registreringsverifiering - dölj lösenord i e-post");
 define("PRFLAN_93", "strftime funktionens sida på php.net");
@@ -144,10 +100,6 @@ define("PRFLAN_95", "Visa plugin info:");
 define("PRFLAN_96", "Kommer att visa info på alla adminsidor för varje plugin som stödjer denna funktion");
 define("PRFLAN_97", "Unik 'Plugin info' meny:");
 define("PRFLAN_98", "Om AV kommer varje plugin att visa sin egen info i en individuell meny. Om PÅ kommer all info att visas i en meny.");
-
-
-// define("PRFLAN_100", "Förhandsladda temabilder:");
-
 define("PRFLAN_101", "Text rendering");
 define("PRFLAN_102", "Byt ut länkar");
 define("PRFLAN_103", "Om markerad kommer postade länkar att bytas ut mot texten i rutan nedan, det hindrar att väldigt långa länkar bryter layouten");
@@ -179,20 +131,26 @@ define("PRFLAN_130", "Aktivering av detta kommer att förhindra att mer än en p
 define("PRFLAN_131", "Aktivera användande av [php] bbkod");
 define("PRFLAN_132", "Aktivering av detta kommer att tillåta auktoriserade användare att posta [php] kod i vissa areor");
 define("PRFLAN_133", "GD modul krävs, hittades ej");
-
 define("PRFLAN_134", "Omdirigera alla förfrågningar till sajt-URL");
 define("PRFLAN_135", "t.ex. om din URL ovan är satt till http://foo.com, kommer en begäran om  http://www.foo.com att omdirigeras till http://foo.com");
 define("PRFLAN_136", "Maximala registreringar tillåtna från samma IP adress.");
 define("PRFLAN_137", "Visa minnesanvändning");
-
 define("PRFLAN_138", "Använd Bildkods-verifikation vid glömt lösenord.");
 define("PRFLAN_139", "Visa en varning när huvudadministratörens lösenord inte bytts ut under de senaste 30 dagarna");
-
 define("PRFLAN_140", "Text att visa efter att registreringsforuläret har sänts in.");
 define("PRFLAN_141", "Tillåt registrering genom att använda XML användarprofiler");
-
 define("PRFLAN_142", "Enbart flödning");
 define("PRFLAN_143", "Enbart misslyckad inloggning");
 define("PRFLAN_144", "Flödning & Misslyckade inloggningar");
+define("PRFLAN_145", "Länkar i nya fönster");
+define("PRFLAN_146", "Markera här för att göra så att alla länkar öppnas i nya fönster (<i>detta kommer att gälla hela saten</i>). ");
+define("PRFLAN_147", "Utvecklarläge");
+define("PRFLAN_148", "Aktivera utvecklarlägesfunktioner. Detta är enbart för utvecklare. Använd inte på en produktionssajt av säkerhetsskäl.");
+define("PRFLAN_149", "Avancerade funktioner");
+define("PRFLAN_150", "Välj e107 autentiseringsmetod");
+define("PRFLAN_151", "e107 - Inga alternativa autentiseringsmetoder installerade");
+define("PRFLAN_152", "Ingen verifiering");
+define("PRFLAN_153", "Admins godkännande");
+define("PRFLAN_154", "Verifieringsmetod för nya användare<br />Om 'Admins godkännande' är valt rekommenderas att du aktiverar e-postnotifiering vid användarregistrering <a href='".e_ADMIN."notify.php'>här</a>.");
 
 ?>

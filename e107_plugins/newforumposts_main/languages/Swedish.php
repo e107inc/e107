@@ -4,18 +4,18 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newforumposts_main/languages/Swedish.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-29 08:27:00 $
+|     $Revision: 1.4 $
+|     $Date: 2006-01-24 12:42:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
-define("LAN_1", "Tråd");
-define("LAN_2", "Författare");
-define("LAN_3", "Visningar");
-define("LAN_4", "Svar");
-define("LAN_5", "Senaste inlägg");
-define("LAN_6", "Trådar");
-define("LAN_7", "av");
+define("NFPM_LAN_1", "Tråd");
+define("NFPM_LAN_2", "Författare");
+define("NFPM_LAN_3", "Visningar");
+define("NFPM_LAN_4", "Svar");
+define("NFPM_LAN_5", "Senaste inlägg");
+define("NFPM_LAN_6", "Trådar");
+define("NFPM_LAN_7", "av");
 
 define("NFPM_L1", "Denna plugin visar en lista på nya foruminlägg på din förstasida");
 define("NFPM_L2", "Senaste foruminlägg");

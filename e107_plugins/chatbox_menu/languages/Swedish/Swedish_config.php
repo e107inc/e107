@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Swedish/Swedish_config.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-11-03 18:25:11 $
+|     $Revision: 1.4 $
+|     $Date: 2006-01-24 12:42:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -47,5 +47,8 @@ define("CHBLAN_32", "Moderator användarklass");
 define("CHBLAN_33", "Användare omräknade");
 define("CHBLAN_34", "Räkna om användarpostningar");
 define("CHBLAN_35", "Räkna om");
+define("CHBLAN_36", "Visningsalternativ för chattruta");
+define("CHBLAN_37", "Normal chattruta");
+define("CHBLAN_38", "Använd javascriptkod för att uppdatera innehållet dynamiskt (AJAX)");
 
 ?>

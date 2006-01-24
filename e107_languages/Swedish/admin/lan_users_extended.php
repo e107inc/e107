@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_users_extended.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-17 11:39:40 $
+|     $Revision: 1.4 $
+|     $Date: 2006-01-24 12:44:19 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -76,7 +76,9 @@ define("EXTLAN_62", "Välj tabell");
 define("EXTLAN_63", "Välj fält-ID");
 define("EXTLAN_64", "Välj visat värde");
 
-
+define("EXTLAN_65", "Nej - Kommer ej att visas på registreringssidan");
+define("EXTLAN_66", "Ja - Kommer att visas på registreringssidan");
+define("EXTLAN_67", "Nej - Visas på registreringssidan");
 
 //textbox
 define("EXTLAN_HELP_1", "<b><i>Parametrar:</i></b><br />size - storlek på fält<br />maxlength - max fältlängd<br /><br />class - fältets css klass<br />style - css stilsträng<br /><br />regex - regex valideringskod<br />regexfail - validering feltext");

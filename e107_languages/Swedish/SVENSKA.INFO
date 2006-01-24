@@ -2,7 +2,7 @@
 |     e107 website system - Svensk översättning
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/SVENSKA.INFO,v $
-|     $Revision: 1.6 $
+|     $Revision: 1.7 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 
@@ -17,6 +17,9 @@ det engelska originalet.
 Feedback, förslag och kommentarer emottas mycket tacksamt!
 -----
 
+Tis Jan 24 2005 - mrpiercer (at) users.sourceforge.net
+- Uppdaterat till e107 v0.7.1 RELEASE. Endast UTF-8
+  kodningen är klar just nu. Legacy kommer så småningom.
 Lör Sep 17 2005 - mrpiercer (at) users.sourceforge.net
 - Uppdaterat till dagens CVS status, jag skall lägga upp
   en ISO-kodad version i legacy_langpacks för dem som vill

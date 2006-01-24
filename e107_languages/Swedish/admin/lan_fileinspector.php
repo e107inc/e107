@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_fileinspector.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.4 $
+|     $Date: 2006-01-24 12:44:19 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -23,6 +23,14 @@ define("FC_LAN_10", "Av");
 define("FC_LAN_11", "Skanna nu");
 define("FC_LAN_12", "Inga");
 define("FC_LAN_13", "Saknade kärnfiler");
+define("FC_LAN_14", "Visa resultat som");
+define("FC_LAN_15", "Katalogträd");
+define("FC_LAN_16", "Lista");
+define("FC_LAN_17", "Strängmatchning");
+define("FC_LAN_18", "Reguljärt uttryck");
+define("FC_LAN_19", "Visa radnummer");
+define("FC_LAN_20", "Visa matchande rader");
+define("FC_LAN_21", "Gamla kärnfiler");
 
 define("FR_LAN_1", "Skannar");
 define("FR_LAN_2", "Skaningsresultat");
@@ -54,5 +62,12 @@ define("FR_LAN_19", "filer fallerade");
 define("FR_LAN_20", "Alla filer klara");
 define("FR_LAN_21", "inga");
 define("FR_LAN_22", "Saknade kärnfiler");
+define("FR_LAN_23", "Inga matchningar hittades.");
+define("FR_LAN_24", "Gamla kärnfiler");
+define("FR_LAN_25", "Integritet kan ej beräknas");
+
+define("FR_LAN_26", "Varning! Känd osäkerhet detekterad!");
+define("FR_LAN_27", "Det finns filer på din server som är kända för att kunna utnyttjas och de måste raderas omedelbart.");
+define("FR_LAN_28", "Kända osäkra filer");
 
 ?>

@@ -4,11 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/help/menus.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.3 $
+|     $Date: 2006-01-24 12:49:09 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
+
 if(!defined('e_HTTP')){ die("Oauktoriserad Tillgång");}
 if (!getperms("2")) {
 	header("location:".e_BASE."index.php");

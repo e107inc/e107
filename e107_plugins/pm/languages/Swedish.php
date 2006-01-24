@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/pm/languages/Swedish.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 12:52:54 $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-24 12:42:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -83,5 +83,7 @@ define("LAN_PM_105", "Du kan läsa ditt PM på: ");
 define("LAN_PM_106", "PM läst av ");
 define("LAN_PM_107", "Det privata meddelande du skickade till {UNAME} lästes ");
 define("LAN_PM_108", "Meddelande skickades: ");
+define("LAN_PM_109", "Nya Meddelande");
+define("LAN_PM_110", "ok");
 
 ?>

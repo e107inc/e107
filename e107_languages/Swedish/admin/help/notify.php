@@ -4,11 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/help/notify.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.3 $
+|     $Date: 2006-01-24 12:49:09 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
+
 $text = "Notifiering skickar e-postnotifieringar när någon e107-händelse uppstår.<br /><br />
 Till exempel, om du sätter 'IP spärrad för flödning av sajten' till klassen 'Admin' så kommer alla admins att få ett brev med e-post när
 sajten blir flödad.<br /><br />

@@ -4,53 +4,20 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Swedish.php,v $
-|     $Revision: 1.8 $
-|     $Date: 2005-08-15 06:38:54 $
+|     $Revision: 1.9 $
+|     $Date: 2006-01-24 12:42:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
 
 define("PAGE_NAME", "Lista nya ämnen");
 
-//allt nedan kommer att tas bort vid senare tillfälle
-define("LIST_1", "Nyhetsämnen");
-define("LIST_2", "orubricerat");
-define("LIST_3", "Nya sedan ditt senaste besök...");
-define("LIST_4", "Inget nytt hittades.");
-define("LIST_5", "Chattruteinlägg");
-define("LIST_6", "blockerat av admin");
-define("LIST_7", "Foruminlägg");
-define("LIST_8", "Nya medlemmar");
-define("LIST_9", "Kommentarer");
-define("LIST_10", "Idéer");
-define("LIST_11", "Nerladdning");
-define("LIST_12", "Nyheter");
-define("LIST_13", "Buggspårning");
-define("LIST_14", "Röstning");
-define("LIST_15", "FAQ");
-define("LIST_16", "Buggar");
-define("LIST_17", "Idéer");
-
-define("LIST_13", "Profil");
-define("LIST_14", "Artikel");
-define("LIST_15", "Innehåll");
-
-define("LIST_18", "FAQ");
-define("LIST_18", "Röstning");
-define("LIST_19", "Dokumentation");
-define("LIST_20", "Buggspårare");
-
-define("LIST_21", "Artiklar");
-define("LIST_22", "Idéer");
-//allt ovan kommer att tas bort vid senare tillfälle
-
-define("LIST_23", "Denna plugin är inte installerad.");
-
 define("LIST_PLUGIN_1", "Lista nya tillägg");
 define("LIST_PLUGIN_2", "Denna plugin låter dig se en lista på nya tillägg i alla e107 kategorier. Du kan antingen visa listan med data sedan ditt senaste besök, eller visa en generell lista på senaste tillägg. Förutom sidan finns även en meny. Alla sektioner är konfigurerbara i adminsektionen.");
 define("LIST_PLUGIN_3", "Konfigurera huvudmeny");
 define("LIST_PLUGIN_4", "Plugin för nya tillägg är nu klar att användas.");
 define("LIST_PLUGIN_5", "lista");
+define("LIST_PLUGIN_6", "Denna plugin är inte installerad.");
 
 define("LIST_ADMIN_1", "Senaste");
 define("LIST_ADMIN_2", "Uppdatera inställningar");
@@ -104,7 +71,6 @@ define("LIST_ADMIN_SECT_24", "");
 define("LIST_ADMIN_SECT_25", "Rubrik");
 define("LIST_ADMIN_SECT_26", "Välj en rubrik för varje sektion");
 define("LIST_ADMIN_SECT_27", "");
-
 
 define("LIST_ADMIN_OPT_1", "Generellt");
 define("LIST_ADMIN_OPT_2", "Senaste sida");
@@ -165,8 +131,6 @@ define("LIST_ADMIN_LAN_35", "dagar");
 define("LIST_ADMIN_LAN_36", "Tidspännvidd");
 define("LIST_ADMIN_LAN_37", "Visa en valruta med antale dagar att se tillbaka?");
 define("LIST_ADMIN_LAN_38", "");
-
-
 
 define("LIST_MENU_1", "Senaste tilläggen");
 define("LIST_MENU_2", "av");

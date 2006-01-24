@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_news.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-09-17 11:39:40 $
+|     $Revision: 1.4 $
+|     $Date: 2006-01-24 12:42:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -42,5 +42,7 @@ define("LAN_NEWS_20", "Nyhet uppdaterad i databasen för följande språk: ");
 define("LAN_NEWS_21", "Nyhet uppdaterad i databasen.");
 define("LAN_NEWS_22", "Gå till sida: ");
 define("LAN_NEWS_23", "Nyhetskategorier");
+define("LAN_NEWS_24", "skapa en pdf av detta nyhetsämne");
+define("LAN_462", "Inga nyhetsämnen för den angivna månanden");
 
 ?>

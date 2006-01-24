@@ -3,8 +3,8 @@
 |     Swedish (SE) language variables
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_handlers/tiny_mce/langs/sv.js,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-09-17 11:39:40 $
+|     $Revision: 1.3 $
+|     $Date: 2006-01-24 12:42:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -36,8 +36,8 @@ update : 'Uppdatera',
 cancel : 'Avbryt',
 insert_link_url : 'Länkens URL',
 insert_link_target : 'Fönster',
-insert_link_target_same : 'öppna länken i samma fönster',
-insert_link_target_blank : 'öppna länken i ett nytt fönster',
+insert_link_target_same : 'Öppna länken i samma fönster',
+insert_link_target_blank : 'Öppna länken i ett nytt fönster',
 insert_link_delta_width : 20,
 insert_link_delta_height : 10,
 insert_image_title : 'Skapa/redigera bild',
@@ -48,5 +48,5 @@ italic_img : 'italic_de_se.gif',
 underline_img : "underline.gif",
 clipboard_msg : 'Klipput/Kopiera/Klistra fungerar inte Mozilla och Firefox. Vill du veta mer om detta?',
 help_desc : "Hjälp",
-popup_blocked : 'Tyvärr, vi ser att din popup-blockerare har avaktiverat ett fönster som ger applikationen sin funktionalitet. Du måste avaktivera popup blockering på denna sajt för att kunna använda detta verktyg.'
+popup_blocked : 'Tyvärr har vi noterat att din popup-stoppare har blockerat ett fönster som tillhandahåller programfunktioner. Du måste avaktivera din pop-stoppare för denna sajten för att kunna utnyttja detta verktyget helt och hållet.'
 });

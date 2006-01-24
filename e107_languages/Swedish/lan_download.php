@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/lan_download.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2005-06-27 12:05:42 $
+|     $Revision: 1.4 $
+|     $Date: 2006-01-24 12:42:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -72,8 +72,8 @@ define("LAN_dl_54", "En administratör kommer att uppmärksammas på denna nerla
 define("LAN_dl_55", "Använd <b>INTE</b> detta formulär för att kontakta admin av någon annan orsak.");
 define("LAN_dl_56", "Rapportera trasig nerladdning");
 define("LAN_dl_57", "rapporterad av");
-define("LAN_dl_58", "Denna post har rapporterats från sajt ");
-define("LAN_dl_59", "Meddelande från: ");
+define("LAN_dl_58", "Följande nerladdning har rapporterats som trasig från sajt");
+define("LAN_dl_59", "Rapporterad av: ");
 define("LAN_dl_60", "Rapport om trasig nerladdning från");
 
 define("LAN_dl_61", "Fel vid nerladdning");
@@ -86,7 +86,7 @@ define("LAN_dl_66", "Välj nerladdningsspegel");
 
 define("LAN_dl_67", "Vänligen välj spegel att använda ...");
 define("LAN_dl_68", "Spegelvärd");
-define("LAN_dl_69", "Ladda ner");
+// define("LAN_dl_69", "Ladda ner"); //Dublett
 define("LAN_dl_70", "Plats");
 define("LAN_dl_71", "Om");
 
@@ -95,5 +95,6 @@ define("LAN_dl_73", "Nerladdningar från denna spegel: ");
 define("LAN_dl_74", "Totala nerladdningar från denna spegel: ");
 
 define("LAN_dl_75", "ingen bild tillgänglig ");
+define("LAN_dl_76", "Gå till sidan");
 
 ?>

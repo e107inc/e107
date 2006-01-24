@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Swedish/lan_forum_admin.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-10-17 10:58:03 $
+|     $Revision: 1.5 $
+|     $Date: 2006-01-24 12:42:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -143,8 +143,7 @@ define("WMGLAN_3", "Regler för Administratörer");
 define("WMGLAN_4", "Skicka");
 define("WMGLAN_5", "Sätt forumregler");
 define("WMGLAN_6", "Aktivera?");
-define("FORLAN_124", "Länkar i nytt fönster");
-define("FORLAN_125", "Markera här för att alla länkar skall öppnas i nytt fönster (<i>Detta kommer att gälla <b>hela</b> sajten</i>). ");
+
 define("FORLAN_126", "Visa verktygstips");
 define("FORLAN_127", "Markera för att visa verktygstips innehållande det första inlägget i tråden när musen svävar över trådens namn. ");
 define("FORLAN_128", "Längd på verktygstips");
@@ -197,5 +196,9 @@ define("FORLAN_173", "Trådrubrik");
 define("FORLAN_174", "Rapporterad av användare");
 define("FORLAN_175", "Rapport insänd");
 define("FORLAN_176", "Rapport");
+define("FORLAN_177", "e-postnotfiering PÅ som standard");
+define("FORLAN_178", "Markera detta för att sätta rutan för e-postnotifiering som till som standard");
+
+define("FORLAN_179", "(Lägg till en * i början av forumnamet för att göra detta forum till endast en behållare för underforum.  Forumtemat måste också ha stöd för detta.)");
 
 ?>

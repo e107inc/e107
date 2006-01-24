@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_admin.php,v $
-|     $Revision: 1.6 $
-|     $Date: 2005-11-03 18:25:11 $
+|     $Revision: 1.7 $
+|     $Date: 2006-01-24 12:44:19 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -240,5 +240,7 @@ define("LAN_GOPAGE", "Gå till sida:");
 define("LAN_DATESTAMP","Datumstämpel");
 define("LAN_OPTIONAL", "Frivillig");
 define("LAN_INACTIVE","Inaktiv");
+
+define("LAN_BAN","Ban");
 
 ?>

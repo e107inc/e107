@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_handlers/phpmailer/language/phpmailer.lang-sv.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 11:50:20 $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-24 12:42:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */

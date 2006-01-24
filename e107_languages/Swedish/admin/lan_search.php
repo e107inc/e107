@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_search.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-10-17 10:58:03 $
+|     $Revision: 1.6 $
+|     $Date: 2006-01-24 12:44:19 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -50,10 +50,8 @@ define("SEALAN_43", "Redigera sökinställningarna för");
 define("SEALAN_44", "Användarklass som tillåts söka i denna area");
 define("SEALAN_45", "Antal resultat att visa per sida");
 define("SEALAN_46", "Antal tecken att visa i sökningens resultatsummering");
-
-define("LAN_98", "Nyheter");
-define("LAN_197", "Nerladdningar");
-
-define("LAN_418", "Egna sidor");
+define("SEALAN_47", "Matcha enbart hela ord:");
+define("SEALAN_48", "Denna inställning gäller enbart om sorteringsmetoden är PHP. Om din sajt innehåller Ideografiska språk som kinesiska eller japanska måste du lämna detta avaktiverat.");
+define("SEALAN_49", "Om din sajt innehåller Ideografiska språk som kinesiska eller japanska måste du använda PHP's sorteringsmetod.");
 
 ?>

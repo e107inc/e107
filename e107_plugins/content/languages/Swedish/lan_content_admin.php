@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/content/languages/Swedish/lan_content_admin.php,v $
-|     $Revision: 1.7 $
-|     $Date: 2005-07-08 12:54:56 $
+|     $Revision: 1.8 $
+|     $Date: 2006-01-24 12:42:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -219,7 +219,7 @@ define("CONTENT_ADMIN_ITEM_LAN_120", "standardlayout");
 define("CONTENT_ADMIN_ITEM_LAN_121", "Ingen ny okon uppladdad ännu");
 define("CONTENT_ADMIN_ITEM_LAN_122", "Ingen ny bilaga uppladdad ännu");
 define("CONTENT_ADMIN_ITEM_LAN_123", "Ingen ny bild uppladdad ännu");
-
+define("CONTENT_ADMIN_ITEM_LAN_124", "för att se objektet");
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "Ordningen är stigande");
 define("CONTENT_ADMIN_ORDER_LAN_1", "Ordningen är fallande");

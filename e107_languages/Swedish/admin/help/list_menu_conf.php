@@ -4,11 +4,14 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/help/list_menu_conf.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.3 $
+|     $Date: 2006-01-24 12:49:09 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
+
+if (!defined('e107_INIT')) { exit; }
+
 $text = "I denna sektion kan du konfigurera 3 menyer<br>
 <b>Nya artiklar meny</b> <br>
 Skriv in ett nummer, t.ex. '5' i det första fältet för att visa de fem första artiklarna, lämna tomt för att visa alla. Du konfigurerar vad rubriken till länken skall vara för resten av artiklarna i det andra fältet, om du lämnar det sista valet tomt skapa ingen länk, t.ex.: 'Alla artiklar'<br>

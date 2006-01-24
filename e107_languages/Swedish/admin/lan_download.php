@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_download.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-06-27 12:05:42 $
+|     $Revision: 1.5 $
+|     $Date: 2006-01-24 12:44:19 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -130,5 +130,7 @@ define("DOWLAN_146", "Eget 'Nekad Nerladdning' meddelande eller URL");
 define("DOWLAN_147", "Ikon för tom kategori");
 define("DOWLAN_148", "Markera för att uppdatera datumstämpeln till nuvarande tid");
 define("DOWLAN_149", "Eller klicka här för att använda en extern fil");
+
+define("DOWLAN_150", "E-posta admin vid rapport om trasig nerladdning");
 
 ?>

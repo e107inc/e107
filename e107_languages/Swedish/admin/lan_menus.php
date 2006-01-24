@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Swedish/admin/lan_menus.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-06-25 11:07:35 $
+|     $Revision: 1.3 $
+|     $Date: 2006-01-24 12:44:19 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -49,7 +49,7 @@ define("MENLAN_33", "Egen layout");
 define("MENLAN_34", "Inbäddad");
 define("MENLAN_35", "Konfigurera menyer");
 define("MENLAN_36", "Välj meny(er) att aktivera");
-define("MENLAN_37", "välj sedan var de skall aktiveras.");
+define("MENLAN_37", "och var de skall aktiveras.");
 define("MENLAN_38", "Håll ner CTRL för att välja flera menyer.");
 
 ?>

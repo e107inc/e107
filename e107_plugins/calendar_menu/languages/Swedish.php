@@ -4,11 +4,12 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/calendar_menu/languages/Swedish.php,v $
-|     $Revision: 1.4 $
-|     $Date: 2005-07-07 16:06:45 $
+|     $Revision: 1.5 $
+|     $Date: 2006-01-24 12:42:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
+
 define('EC_ADLAN_1', "Kalender");
 define('EC_ADLAN_2', "Konfigurera kalender");
 define('EC_INSTALL', "Installera kalender");

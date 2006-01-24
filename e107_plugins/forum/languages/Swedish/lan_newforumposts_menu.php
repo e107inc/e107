@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/forum/languages/Swedish/lan_newforumposts_menu.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-13 16:20:21 $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-24 12:42:35 $
 |     $Author: mrpiercer $
 +----------------------------------------------------------------------------+
 */
@@ -20,5 +20,6 @@ define("NFP_7", "Postfix för för långa inlägg?");
 define("NFP_8", "Visa ursprungliga ämnen i meny?");
 define("NFP_9", "Uppdatera menyinställningar");
 define("NFP_10", "Menykonfiguration för nya foruminlägg");
+define("NFP_11", "Postad av");
 
 ?>
