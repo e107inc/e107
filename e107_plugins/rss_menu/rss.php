@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.41 $
-|     $Date: 2006-01-24 22:09:26 $
+|     $Revision: 1.42 $
+|     $Date: 2006-01-24 22:38:40 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -180,8 +180,9 @@ class rssCreate {
 				foreach($tmp as $value) {
 
 					if($value['user_name']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " &lt;".$value['user_email']."&gt;";  // must include an email address to be valid.
-					} else {
+						$this -> rssItems[$loop]['author'] = $value['user_name'];
+                       	$this -> rssItems[$loop]['author_email'] = $value['user_email'];  // must include an email address to be valid.
+				} else {
 						$tmp=explode(".", $value['thread_user'], 2);
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
 					}
@@ -210,7 +211,8 @@ class rssCreate {
 				foreach($tmp as $value) {
 
 					if($value['user_name']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " &lt;".$value['user_email']."&gt;";
+						$this -> rssItems[$loop]['author'] = $value['user_name'];
+						$this -> rssItems[$loop]['author_email'] = $value['user_email'];  // must include an email address to be valid.
 					} else {
 						$tmp=explode(".", $value['thread_user'], 2);
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
@@ -270,7 +272,8 @@ class rssCreate {
 				$loop ++;
 				foreach($replies as $value) {
 					if($value['user_name']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " &lt;".$value['user_email']."&gt;";
+						$this -> rssItems[$loop]['author'] = $value['user_name'];
+						$this -> rssItems[$loop]['author_email'] = $value['user_email'];  // must include an email address to be valid.
 					} else {
 						$tmp=explode(".", $value['thread_user'], 2);
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
@@ -414,8 +417,7 @@ class rssCreate {
 
 	function striptags($text)
 	{
-
-		return $text;
+   		return $text;
 	}
 
 	function buildRss($rss_title) {
@@ -442,7 +444,7 @@ class rssCreate {
 							<item>
 							<title>".$tp->toRss($value['title'])."</title>
 							<description>".$tp->toRss($value['description'])."</description>
-							<author>".$this->nospam($value['author'])."</author>
+							<author>".$value['author']."&lt;".$this->nospam($value['author_email'])."&gt;</author>
 							<link>".$value['link']."</link>
 							</item>";
 					}
