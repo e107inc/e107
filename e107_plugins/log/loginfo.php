@@ -4,7 +4,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/loginfo.php,v $
-|     $Revision: 1.10 $
-|     $Date: 2005-12-14 19:28:44 $
-|     $Author: sweetas $
+|     $Revision: 1.11 $
+|     $Date: 2006-01-24 06:17:19 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -89,73 +89,19 @@ $visitInfo[$ip] = $tmp.chr(1).time().chr(1).$os.chr(1).$browser.chr(1).$screenst
 $varStart = chr(36);
 $quote = chr(34);
 
-$data = "<?php\n/* e107 website system: Log info file: ".date("z:Y", time())." */\n\n";
+$data = "<?php
 
-$loop = FALSE;
-$data .= "\$domainInfo = array(\n";
-foreach($domainInfo as $key => $info) {
-	if($loop){ $data .= ",\n"; }
-	$data .= $quote.$key.$quote." => $info";
-	$loop = 1;
-}
-$data .= "\n);\n".
+/* e107 website system: Log info file: ".date("z:Y", time())." */
 
-$loop = FALSE;
-$data .= $varStart."screenInfo = array(\n";
-foreach($screenInfo as $key => $info) {
-	if($loop){ $data .= ",\n"; }
-	$data .= $quote.$key.$quote." => $info";
-	$loop = 1;
-}
-$data .= "\n);\n".
-
-
-$loop = FALSE;
-$data .= $varStart."browserInfo = array(\n";
-foreach($browserInfo as $key => $info) {
-	if($loop){ $data .= ",\n"; }
-	$data .= $quote.$key.$quote." => $info";
-	$loop = 1;
-}
-$data .= "\n);\n".
-
-$loop = FALSE;
-$data .= $varStart."osInfo = array(\n";
-foreach($osInfo as $key => $info) {
-	if($loop){ $data .= ",\n"; }
-	$data .= $quote.$key.$quote." => $info";
-	$loop = 1;
-}
-$data .= "\n);\n".
-
-
-$loop = FALSE;
-$data .= $varStart."refInfo = array(\n";
-foreach($refInfo as $key => $info) {
-	if($loop){ $data .= ",\n"; }
-	$data .= $quote.$key.$quote." => array('url' => '".$info['url']."', 'ttl' => ".$info['ttl'].")";
-	$loop = 1;
-}
-$data .= "\n);\n".
-
-$loop = FALSE;
-$data .= $varStart."searchInfo = array(\n";
-foreach($searchInfo as $key => $info) {
-	if($loop){ $data .= ",\n"; }
-	$data .= $quote.$key.$quote." => $info";
-	$loop = 1;
-}
-$data .= "\n);\n".
-
-$loop = FALSE;
-$data .= $varStart."visitInfo = array(\n";
-foreach($visitInfo as $key => $info) {
-	if($loop){ $data .= ",\n"; }
-	$data .= $quote.$key.$quote." => ".$quote.$info.$quote;
-	$loop = 1;
-}
-
-$data .= "\n);\n\n?".  chr(62);
+";
+$data .= '$domainInfo = '.var_export($domainInfo, true).";\n\n";
+$data .= '$screenInfo = '.var_export($screenInfo, true).";\n\n";
+$data .= '$browserInfo = '.var_export($browserInfo, true).";\n\n";
+$data .= '$osInfo = '.var_export($osInfo, true).";\n\n";
+$data .= '$refInfo = '.var_export($refInfo, true).";\n\n";
+$data .= '$searchInfo = '.var_export($searchInfo, true).";\n\n";
+$data .= '$visitInfo = '.var_export($visitInfo, true).";\n\n";
+$data .= '?>';
 
 if ($handle = fopen($logIfile, 'w')) {
 	fwrite($handle, $data);
