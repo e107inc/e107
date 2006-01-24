@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.40 $
-|     $Date: 2006-01-24 21:00:14 $
+|     $Revision: 1.41 $
+|     $Date: 2006-01-24 22:09:26 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -114,7 +114,8 @@ class rssCreate {
 					}else{
 						$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['news_body']) : $tp -> toRss(substr($value['news_body'], 0, 100)));
                     }
-					$this -> rssItems[$loop]['author'] = $value['user_name'] . " &lt;".$value['user_email']."&gt;";
+					$this -> rssItems[$loop]['author'] = $value['user_name'];
+                    $this -> rssItems[$loop]['author_email'] = $value['user_email'];
 					$this -> rssItems[$loop]['category'] = "<category domain='".SITEURL."news.php?cat.".$value['news_category']."'>".$value['category_name']."</category>";
 
 					if($value['news_allow_comments']){
@@ -317,7 +318,8 @@ class rssCreate {
 				$loop=0;
 				foreach($tmp as $value) {
 					if($value['user_name']) {
-						$this -> rssItems[$loop]['author'] = $value['user_name'] . " &lt;".$value['user_email']."&gt;";
+						$this -> rssItems[$loop]['author'] = $value['user_name'];
+						$this -> rssItems[$loop]['author_email'] = $value['user_email'];
 					} else {
 						$tmp=explode(".", $value['thread_user'], 2);
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
@@ -344,11 +346,14 @@ class rssCreate {
 				$this -> rssItems = array();
 				$loop=0;
 				foreach($tmp as $value) {
-					$nick = preg_replace("/[0-9]+\./", "", $value['download_author']);
-					$this -> rssItems[$loop]['author'] = $nick . "&lt;".$value['download_author_email']."&gt;";
+					if($value['download_author']){
+				   		$nick = preg_replace("/[0-9]+\./", "", $value['download_author']);
+						$this -> rssItems[$loop]['author'] = $nick;
+					}
+					$this -> rssItems[$loop]['author_email'] = $value['download_author_email'];
 					$this -> rssItems[$loop]['title'] = $value['download_name'];
 					$this -> rssItems[$loop]['link'] = $e107->http_path."download.php?view.".$value['download_id'];
-					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['download_description']) : $tp -> toRss(substr($value['download_description'], 0, 100)));
+					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $value['download_description'] : $value['download_description']);
 					$this -> rssItems[$loop]['enc_url'] = $e107->http_path."request.php?".$value['download_id'];
 					$this -> rssItems[$loop]['enc_leng'] = $value['download_filesize'];
 					$this -> rssItems[$loop]['enc_type'] = $this->getmime($value['download_url']);
@@ -373,6 +378,7 @@ class rssCreate {
 					foreach($tmp as $row) {
 
 						$this -> rssItems[$loop]['author'] = $row[$author];
+						$this -> rssItems[$loop]['author_email'] = $row[$author_email];
 						$this -> rssItems[$loop]['title'] = $tp -> toRss($row[$title]);
 						$item = ($itemid) ? $row[$itemid] : "";
 						$link2 = str_replace("#",$item,$link);
@@ -497,7 +503,7 @@ class rssCreate {
 					echo "<comments>".$tp->toRss($value['comment'])."</comments>\n";
 				 }
 				if($value['author']){
-					echo "<author>".$this->nospam($value['author'])."</author>\n";
+					echo "<author>".$value['author']."&lt;".$this->nospam($value['author_email'])."&gt;</author>\n";
 				}
 
 				// enclosure support for podcasting etc.
@@ -587,9 +593,7 @@ class rssCreate {
 
 	function nospam($text){
 		$tmp = explode("@",$text);
-		if($tmp[0] != ""){
-			return $tmp[0]."@nospam.com&gt;";
-		}
+		return ($tmp[0] != "") ? $tmp[0]."@nospam.com" : "noauthor@nospam.com";
 	}
 
 }
