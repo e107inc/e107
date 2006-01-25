@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ï¿½Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/log/stats.php,v $
-|     $Revision: 1.34 $
-|     $Date: 2005-12-15 02:25:22 $
+|     $Revision: 1.35 $
+|     $Date: 2006-01-25 19:44:28 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -20,6 +20,16 @@ require_once("../../class2.php");
 
 @include_once(e_PLUGIN."log/languages/".e_LANGUAGE.".php");
 @include_once(e_PLUGIN."log/languages/English.php");
+
+$stat = new siteStats();
+
+function core_head() {
+	return "<style type='text/css'>
+<!--
+.b { background-image: url(".$stat -> bar."); border: 1px solid #999; height: 10px; font: 0px }
+-->
+</style>";
+}
 
 require_once(HEADERF);
 
@@ -47,8 +57,6 @@ if(strstr(e_QUERY, ".")) {
 $action = intval($action);
 $toremove = $order;
 $order = intval($order);
-
-$stat = new siteStats();
 
 if($stat -> error) {
 	$ns->tablerender(ADSTAT_L6, $stat -> error);
@@ -454,12 +462,7 @@ switch($action) {
 
 /* render links */
 $path = e_PLUGIN."log/stats.php";
-$links = "<style type='text/css'>
-<!--
-.b { background-image: url(".$stat -> bar."); border: 1px solid #999; height: 10px; font: 0px }
--->
-</style>
-
+$links = "
 <div style='text-align: center;'>".
 (e_QUERY != 1 ? "<a href='$path?1'>".ADSTAT_L8."</a>" : "<b>".ADSTAT_L8."</b>")." | ".
 (e_QUERY != 2 ? "<a href='$path?2'>".ADSTAT_L9."</a>" : "<b>".ADSTAT_L9."</b>")." | ".
