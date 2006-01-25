@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2006-01-18 02:39:07 $
+|     $Revision: 1.62 $
+|     $Date: 2006-01-25 20:31:07 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -71,6 +71,7 @@ if (!check_class($forum_info['forum_postclass']) || !check_class($forum_info['pa
 define("MODERATOR", check_class($forum_info['forum_moderators']));
 //require_once(e_HANDLER.'forum_include.php');
 require_once(e_PLUGIN."forum/forum_post_shortcodes.php");
+require_once(e_PLUGIN."forum/forum_shortcodes.php");
 require_once(e_HANDLER."ren_help.php");
 $gen = new convert;
 $fp = new floodprotect;
@@ -419,12 +420,11 @@ if ($action == 'edit' || $action == 'quote')
 //Load forumpost template
 
 if (!$FORUMPOST) {
-	if (file_exists(THEME."forum_post_template.php")) {
-		require_once(THEME."forum_post_template.php");
-	} else {
-		require_once(e_PLUGIN."forum/templates/forum_post_template.php");
+	if (is_readable(THEME."forum_post_template.php")) {
+		include_once(THEME."forum_post_template.php");
 	}
 }
+include_once(e_PLUGIN."forum/templates/forum_post_template.php");
 
 /* check post access (bugtracker #1424) */
 
@@ -451,111 +451,13 @@ else
 	}
 }
 
-// template definitions ...
-
-$FORMSTART = "<form enctype='multipart/form-data' method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>";
-
-$BACKLINK = "<a class='forumlink' href='".e_PLUGIN."forum/forum.php'>".LAN_405."</a>-><a class='forumlink' href='".e_PLUGIN."forum/forum_viewforum.php?".$forum_info['forum_id']."'>".$forum_info['forum_name']."</a>->".
-($action == "nt" ? ($eaction ? LAN_77 : LAN_60) : ($eaction ? LAN_78 : LAN_406." ".$thread_info['head']['thread_name']));
-$USERBOX = (USER == FALSE ? $userbox : "");
-$SUBJECTBOX = ($action == "nt" ? $subjectbox : "");
-$POSTTYPE = ($action == "nt" ? LAN_63 : LAN_73);
-$POSTBOX = "<textarea class='tbox' name='post' cols='70' rows='10' style='width:95%' onselect='storeCaret(this);' onclick='storeCaret(this);' onkeyup='storeCaret(this);'>$post</textarea>\n<br />\n";
-if(!$pref['wysiwyg'] || !check_class($pref['post_html']))
+if($action == 'rp')
 {
-	$POSTBOX .= ren_help(2);
-	require_once(e_HANDLER."emote.php");
-	if($pref['smiley_activate'])
-	{
-		$EMOTES = r_emote();
-	}
-	else
-	{
-		$EMOTES = "";
-	}
+	$FORUMPOST = $FORUMPOST_REPLY;
 }
-
-$emailnotify = "";
-if ($pref['email_notify'] && $action == "nt")
-{
-	if(isset($_POST['fpreview']))
-	{
-		$chk = ($_POST['email_notify'] ? "checked = 'checked'" : "");
-	}
-	else
-	{ 
-		if(isset($thread_info))
-		{
-			$chk = ($thread_info['head']['thread_active'] == 99 ? "checked='checked'" : "");
-		}
-		else
-		{
-			$chk = ($pref['email_notify_on'] ? "checked='checked'" : "");
-		}
-	}
-	$emailnotify = "<span class='defaulttext'>".LAN_380."</span><input type='checkbox' name='email_notify' value='1' {$chk} />";
-}
-$EMAILNOTIFY = $emailnotify;
-
-$postthreadas = "";
-if (MODERATOR && $action == "nt")
-{
-	$thread_s = (isset($_POST['threadtype']) ? $_POST['threadtype'] : $thread_info['head']['thread_s']);
-	$postthreadas = "<br /><span class='defaulttext'>".LAN_400."<input name='threadtype' type='radio' value='0' ".(!$thread_s ? "checked='checked' " : "").">".LAN_1."&nbsp;<input name='threadtype' type='radio' value='1' ".($thread_s == 1 ? "checked='checked' " : "").">".LAN_2."&nbsp;<input name='threadtype' type='radio' value='2' ".($thread_s == 2 ? "checked='checked' " : "").">".LAN_3."</span>";
-}
-$POSTTHREADAS = $postthreadas;
-
-if ($action == "nt" && $pref['forum_poll'] && strpos(e_QUERY, "edit") === FALSE)
-{
-	$POLL = $poll;
-}
-
-if ($pref['forum_attach'] && strpos(e_QUERY, "edit") === FALSE && (check_class($pref['upload_class']) || getperms('0')))
-{
-	if (is_writable(e_FILE."public"))
-	{
-		$FILEATTACH = $fileattach;
-	}
-	else
-	{
-		$FILEATTACH = "";
-		if(ADMIN)
-		{
-			if(!$fileattach_alert)
-			{
-				$fileattach_alert = "<tr><td colspan='2' class='nforumcaption2'>".($pref['image_post'] ? LAN_390 : LAN_416)."</td></tr><tr><td colspan='2' class='forumheader3'>".LAN_FORUM_1."</td></tr>\n";
-			}
-			$FILEATTACH = $fileattach_alert;
-		}
-	}
-}
-
-
-$buttons = "<input class='button' type='submit' name='fpreview' value='".LAN_323."' /> ";
-if ($action != "nt") {
-	$buttons .= ($eaction ? "<input class='button' type='submit' name='update_reply' value='".LAN_78."' />" : "<input class='button' type='submit' name='reply' value='".LAN_74."' />");
-} else {
-	$buttons .= ($eaction ? "<input class='button' type='submit' name='update_thread' value='".LAN_77."' />" : "<input class='button' type='submit' name='newthread' value='".LAN_64."' />");
-}
-
-$BUTTONS = $buttons;
-$FORMEND = "</form>";
-$FORUMJUMP = forumjump();
-
-$text = preg_replace("/\{(.*?)\}/e", '$\1', $FORUMPOST);
+$text = $tp->parseTemplate($FORUMPOST, FALSE, $forum_post_shortcodes);
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-if ($action == 'rp')
-{
-	$tmp_template = "
-		<div style='text-align:center'>
-		{THREADTOPIC}
-		{LATESTPOSTS}
-		</div>
-		";
-	$text .= $tp->parseTemplate($tmp_template, FALSE, $forum_post_shortcodes);
-}
 
 if ($pref['forum_enclose'])
 {
