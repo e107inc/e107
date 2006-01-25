@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.90 $
-|     $Date: 2006-01-12 22:41:46 $
-|     $Author: lisa_ $
+|     $Revision: 1.91 $
+|     $Date: 2006-01-25 07:21:51 $
+|     $Author: qnome $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -401,6 +401,8 @@ if($pref['news_unstemplate'] && file_exists(THEME."news_template.php")) {
 // #### new: news archive ---------------------------------------------------------------------------------------------
 if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 	// do not show the newsarchive on the news.php?item.X page (but only on the news mainpage)
+	require_once(e_FILE.'shortcode/batch/news_archives.php');
+
 	$i = $interval + 1;
 	while(isset($newsAr[$i]))
 	{
@@ -426,7 +428,22 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 		$gen = new convert;
 		$news2['news_datestamp'] = $gen->convert_date($news2['news_datestamp'], "short");
 
-		$textnewsarchive .= "
+
+		if(!$NEWSARCHIVE){
+			$NEWSARCHIVE ="	<div>
+					<table style='width:98%;'>
+					<tr>
+					<td>
+					<div>{ARCHIVE_BULLET} <b>{ARCHIVE_LINK}</b> <span class='smalltext'><i>{ARCHIVE_AUTHOR} @ ({ARCHIVE_DATESTAMP}) ({ARCHIVE_CATEGORY})</i></span></div>
+					</td>
+					</tr>
+					</table>
+					</div>";
+
+		}
+		$textnewsarchive .= $tp->parseTemplate($NEWSARCHIVE, FALSE, $news_archive_shortcodes);
+
+		/* $textnewsarchive .= "
 					<div>
 					<table style='width:98%;'>
 					<tr>
@@ -436,6 +453,7 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 					</tr>
 					</table>
 					</div>";
+		*/
 		$i++;
 	}
 	$ns->tablerender($pref['newsposts_archive_title'], $textnewsarchive, 'news_archive');
