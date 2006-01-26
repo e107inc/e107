@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/mysql_class.php,v $
-|     $Revision: 1.55 $
-|     $Date: 2006-01-13 13:29:19 $
-|     $Author: sweetas $
+|     $Revision: 1.56 $
+|     $Date: 2006-01-26 03:00:44 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -27,8 +27,8 @@ $db_mySQLQueryCount = 0;	// Global total number of db object queries (all db's)
 * MySQL Abstraction class
 *
 * @package e107
-* @version $Revision: 1.55 $
-* @author $Author: sweetas $
+* @version $Revision: 1.56 $
+* @author $Author: e107coders $
 */
 class db {
 
@@ -548,6 +548,7 @@ class db {
 		if ((!$this->mySQLlanguage || !$pref['multilanguage']) && $multiple==FALSE) {
 		  	return $table;
 		}
+
 		if (!$mySQLtablelist) {
 			$tablist = mysql_list_tables($this->mySQLdefaultdb);
 			while (list($temp) = mysql_fetch_array($tablist)) {
@@ -557,14 +558,27 @@ class db {
 
 		$mltable = "lan_".strtolower($this->mySQLlanguage.'_'.$table);
 
-		if($multiple == TRUE){ // return an array of all matching language tables.
+	// ---- Find all multi-language tables.
+
+		if($multiple == TRUE){ // return an array of all matching language tables. eg [french]->e107_lan_news
+			if(!is_array($table)){
+				$table = array($table);
+			}
+
 			foreach($mySQLtablelist as $tab){
-              	if(stristr($tab, MPREFIX."lan_") !== FALSE && substr($tab,-strlen($table)) == $table){
-                	$lanlist[] = $tab;
+ 				if(stristr($tab, MPREFIX."lan_") !== FALSE){
+					$tmp = explode("_",str_replace(MPREFIX."lan_","",$tab));
+			   		$lng = $tmp[0];
+                    foreach($table as $t){
+                    	if(eregi($t."$",$tab)){
+							$lanlist[$lng][MPREFIX.$t] = $tab;
+						}
+					}
 			  	}
 			}
 			return ($lanlist) ? $lanlist : FALSE;
 		}
+	// -------------------------
 
 		if (in_array(MPREFIX.$mltable, $mySQLtablelist)) {
 			return $mltable;
@@ -623,27 +637,39 @@ class db {
 
 	function db_Query_all($query,$debug=""){
         $error = "";
-		$query = str_replace(MPREFIX,"#",$query);
 
-		if(strpos($query,'#') !== FALSE) {
-			$table = explode(" ",str_replace("#","",strrchr($query, "#"))); // get the name of the table.
-			$query = preg_replace_callback("/\s#([\w]*?)\W/", array($this, 'ml_check'), $query);
+		$query = str_replace("#",MPREFIX,$query);
+
+        if(!$this->db_Query($query)){  // run query on the default language first.
+        	$error .= $query. " failed";
 		}
 
-        if(!$this->db_Query($query)){
-        	$error .= $query. "failed";
-		}
-        if($debug){ echo "** ".$query; }
-
-        if($tablist = $this->db_IsLang($table[0],TRUE)){
-			foreach($tablist as $tab){
-            	$qrylan = str_replace(MPREFIX.$table[0],$tab,$query);
-				if(!$this->db_Query($qrylan)){
-					$error .= $qrylan." failed";
-				}
-				if($debug){ echo "<br />** ".$query; }
+        $tmp = explode(" ",$query);
+      	foreach($tmp as $val){
+   			if(strpos($val,MPREFIX) !== FALSE){
+    			$table[] = str_replace(MPREFIX,"",$val);
+				$search[] = $val;
 			}
 		}
+
+     // Loop thru relevant language tables and replace each tablename within the query.
+        if($tablist = $this->db_IsLang($table,TRUE)){
+			foreach($tablist as $key=>$tab){
+				$querylan = $query;
+                foreach($search as $find){
+                    $lang = $key;
+					$replace = ($tab[$find] !="") ? $tab[$find] : $find;
+               	  	$querylan = str_replace($find,$replace,$querylan);
+				}
+
+				if(!$this->db_Query($querylan)){ // run query on other language tables.
+					$error .= $qrylan." failed for language";
+				}
+			 	if($debug){ echo "<br />** lang= ".$querylan; }
+			}
+		}
+
+
 		return ($error)? FALSE : TRUE;
 	}
 
