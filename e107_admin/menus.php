@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/menus.php,v $
-|     $Revision: 1.44 $
-|     $Date: 2006-01-19 23:46:17 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.45 $
+|     $Date: 2006-01-26 07:35:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -89,7 +89,6 @@ if ($CUSTOMPAGES) {
 
 $menu_array = parseheader($layouts_str, 'check');
 sort($menu_array, SORT_NUMERIC);
-
 $menu_check = 'set';
 foreach ($menu_array as $menu_value) {
 	if ($menu_value != $menu_check) {
@@ -393,7 +392,7 @@ function parseheader($LAYOUT, $check = FALSE) {
 		if (preg_match("/[\{|\}]/", $tmp[$c])) {
 			if ($check) {
 				if (strstr($tmp[$c], "MENU")) {
-					$str[] = preg_replace("/\{MENU=(.*?)\}/si", "\\1", $tmp[$c]);
+					$str[] = preg_replace("/\{MENU=(.*?)(:.*?)?\}/si", "\\1", $tmp[$c]);
 				}
 			} else {
 				checklayout($tmp[$c]);
@@ -410,8 +409,7 @@ function parseheader($LAYOUT, $check = FALSE) {
 }
 
 function checklayout($str) {
-	global $pref, $menu_areas,$ns,$PLUGINS_DIRECTORY;
-	global $frm;
+	global $pref, $menu_areas, $ns, $PLUGINS_DIRECTORY, $frm, $sc_style;
 
 	if (strstr($str, "LOGO")) {
 		echo "<div style='padding: 2px'>[Logo]</div>";
@@ -447,7 +445,10 @@ function checklayout($str) {
 	}
 	else if (strstr($str, "MENU")) {
 		$ns = new e107table;
-		$menu = preg_replace("/\{MENU=(.*?)\}/si", "\\1", $str);
+		$menu = preg_replace("/\{MENU=(.*?)(:.*?)?\}/si", "\\1", $str);
+		if (isset($sc_style['MENU']['pre']) && strpos($str, 'ret') !== false) {
+			echo $sc_style['MENU']['pre'];
+		}
 		echo "<div style='text-align:center; font-size:14px' class='fborder'><div class='forumheader'><b>".MENLAN_14."  ".$menu."</b></div></div><br />";
 		$text = "&nbsp;";
 		$sql9 = new db;
@@ -503,6 +504,9 @@ function checklayout($str) {
 				echo "<div><br /></div>";
 			}
 			echo $frm->form_close();
+		}
+		if(isset($sc_style['MENU']['post']) && strpos($str, 'ret') !== false) {
+			echo $sc_style['MENU']['post'];
 		}
 	}
 	else if (strstr($str, "SETSTYLE")) {
