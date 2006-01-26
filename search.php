@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/search.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2006-01-26 21:49:25 $
+|     $Revision: 1.49 $
+|     $Date: 2006-01-26 21:52:38 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -27,14 +27,13 @@ if (!check_class($pref['search_restrict'])) {
 }
 
 $search_prefs = $sysprefs -> getArray('search_prefs');
-//print_a($search_prefs);
+
 // load search routines
 $search_info = array();
 $auto_order = 1000;
 function search_info($id, $type, $plug_require, $info='') {
 	global $tp, $search_prefs, $auto_order;
 	if (check_class($search_prefs[$type.'_handlers'][$id]['class'])) {
-		echo $id;
 		if ($plug_require) {
 			require_once($plug_require);
 			$ret = $search_info[0];
