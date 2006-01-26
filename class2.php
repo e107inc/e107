@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.254 $
-|     $Date: 2006-01-14 19:31:26 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.255 $
+|     $Date: 2006-01-26 21:57:06 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -455,9 +455,6 @@ define("SITEDESCRIPTION", $tp->toHTML($pref['sitedescription'], "", "emotes_off 
 define("SITEADMIN", $pref['siteadmin']);
 define("SITEADMINEMAIL", $pref['siteadminemail']);
 define("SITEDISCLAIMER", $tp->toHTML($pref['sitedisclaimer'], "", "emotes_off defs"));
-
-// send the charset to the browser - overides spurious server settings with the lan pack settings.
-header("Content-type: text/html; charset=".CHARSET, true);
 
 if ($pref['maintainance_flag'] && ADMIN == FALSE && strpos(e_SELF, "admin.php") === FALSE && strpos(e_SELF, "sitedown.php") === FALSE) {
 	header("Location: ".SITEURL."sitedown.php");
