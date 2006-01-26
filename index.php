@@ -12,13 +12,17 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/index.php,v $
-|     $Revision: 1.19 $
-|     $Date: 2005-10-05 08:07:48 $
+|     $Revision: 1.20 $
+|     $Date: 2006-01-26 00:48:32 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 
 require_once('class2.php');
+
+if (file_exists('index_include.php')) {
+	include('index_include.php');
+}
 
 if (!is_array($pref['frontpage']) && $pref['frontpage'] != 'Array') {
 	if (!$pref['frontpage'] || $pref['frontpage'] == 'Array.php') {
