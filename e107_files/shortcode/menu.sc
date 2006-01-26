@@ -2,13 +2,17 @@ global $sql;
 global $ns;
 global $eMenuList;
 global $error_handler;
-if (!array_key_exists($parm,$eMenuList)) {
+$tmp = explode(":",$parm);
+
+if (!array_key_exists($tmp[0],$eMenuList)) {
 	return;
 }
 
+if ($tmp[1] == ret) {
+	ob_start();
+}
 
-
-foreach($eMenuList[$parm] as $row)
+foreach($eMenuList[$tmp[0]] as $row)
 {
 
 	$show_menu = TRUE;
@@ -74,4 +78,10 @@ foreach($eMenuList[$parm] as $row)
 			echo "\n<!-- Menu Start: ".$mname." -->\n";			
 		}
 	}
+}
+
+if ($tmp[1] == ret) {
+	$ret = ob_get_contents();
+	ob_end_clean();
+	return $ret;
 }
