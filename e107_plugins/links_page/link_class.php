@@ -11,8 +11,8 @@
 |    GNU    General Public  License (http://gnu.org).
 |
 |    $Source: /cvs_backup/e107_0.7/e107_plugins/links_page/link_class.php,v $
-|    $Revision: 1.25 $
-|    $Date: 2006-01-10 00:14:40 $
+|    $Revision: 1.26 $
+|    $Date: 2006-01-27 17:52:08 $
 |    $Author: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -609,14 +609,12 @@ class linkclass {
 		<td style='width:30%; vertical-align:top;' class='forumheader3'>".LCLAN_ITEM_14."</td>
 		<td style='width:70%; vertical-align:top;' class='forumheader3'>
 		<input class='tbox' type='text' name='link_but' id='link_but' size='60' value='".$row['link_button']."' maxlength='100' />
-			<div id='linkbut' style='display:; vertical-align:top;'><table style='text-align:left; width:100%;'><tr><td style='width:20%; padding-right:10px;'>";
-			//$selectjs	= "size='5'";
+			<div id='linkbut' style='display:block; vertical-align:top;'><table style='text-align:left; width:100%;'><tr><td style='width:20%; padding-right:10px;'>";
+			$selectjs	= " onchange=\"document.getElementById('link_but').value=this.options[this.selectedIndex].value; if(this.options[this.selectedIndex].value!=''){document.getElementById('iconview').src='".$iconpath."'+this.options[this.selectedIndex].value; document.getElementById('iconview').style.display='block';}else{document.getElementById('iconview').src='';document.getElementById('iconview').style.display='none';}\"";
 			$text		.= $rs -> form_select_open("link_button", $selectjs);
-			$js			= "onclick=\"insertext('','link_but','');document.getElementById('iconview').src='".e_PLUGIN."links_page/images/blank.gif'; document.getElementById('iconview').style.display='none';\"";
-			$text		.= $rs -> form_option(LCLAN_ITEM_34, ($row['link_button'] ? "0" : "1"), "", $js );
+			$text		.= $rs -> form_option(LCLAN_ITEM_34, ($row['link_button'] ? "0" : "1"), "");
 			foreach($iconlist as $icon){
-				$js		= "onclick=\"insertext('".$icon['fname']."','link_but','');document.getElementById('iconview').src='".$icon['path'].$icon['fname']."'; document.getElementById('iconview').style.display='';\"";
-				$text	.= $rs -> form_option($icon['fname'], ($icon['fname'] == $row['link_button'] ? "1" : "0"), $icon['fname'], $js );
+				$text	.= $rs -> form_option($icon['fname'], ($icon['fname'] == $row['link_button'] ? "1" : "0"), $icon['fname'] );
 			}
 			$text .= $rs -> form_select_close();
 			if(isset($row['link_button']) && $row['link_button']){
@@ -625,7 +623,7 @@ class linkclass {
 				$blank_display = 'display: none';
 				$img = e_PLUGIN."links_page/images/blank.gif";
 			}
-			$text .= "</td><td><img id='iconview' src='".$img."' style='width:".$link_resize_value."px; border:0; ".$blank_display."' /></td></tr></table>";
+			$text .= "</td><td><img id='iconview' src='".$img."' style='width:".$link_resize_value."px; border:0; ".$blank_display."' /><br /><br /></td></tr></table>";
 			$text .= "</div>
 		</td>
 		</tr>";
@@ -662,6 +660,7 @@ class linkclass {
 		</table>
 		".$rs -> form_close()."
 		</div>";
+
 		$ns->tablerender(LCLAN_ITEM_24, $text);
 	}
 
