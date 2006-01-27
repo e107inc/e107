@@ -10,9 +10,9 @@
 |	Released under the terms and conditions of the
 |	GNU General Public License (http://gnu.org).
 |
-|   $Revision: 1.19 $
-|   $Date: 2005-12-14 19:28:52 $
-|   $Author: sweetas $
+|   $Revision: 1.20 $
+|   $Date: 2006-01-27 02:30:59 $
+|   $Author: qnome $
 +---------------------------------------------------------------+
 */
 
@@ -43,30 +43,14 @@ define("e_PAGE", $page);
 
 $register_sc[]= "UL";  // register shortcode ul.sc for inclusion.
 
-
-
-function theme_head() {
-	global $logo;
-	return "<link rel='stylesheet' type='text/css' href='".THEME_ABS."style.css' />
-	<script type='text/javascript' src='".THEME_ABS."nicetitle.js'></script>
-	<style type='text/css'>
-	#header{
-		position: relative;
-	}
-	</style>";
-}
-
-
 // [layout]
 
 $layout = "_default";
 
 $HEADER = "<div id='page'>
 <div id='header'>
-<div id='headerimg'>
 <h1><a href='".SITEURL."' title='{SITENAME}'>{SITENAME}</a></h1>
-<div class='sitetag'>{SITETAG}</div>
-</div>
+<h2>{SITETAG}</h2>
 {UL}
 </div>
 <div id='content' class='narrowcolumn'>";
@@ -75,6 +59,7 @@ $FOOTER = "
 </div>
 <div id='sidebar'>
 {MENU=1}
+{MENU=2}
 </div>
 <hr />
 <div id='footer'>
@@ -87,10 +72,8 @@ $FOOTER = "
 
 $CUSTOMHEADER = "<div id='page2'>
 <div id='header'>
-<div id='headerimg'>
 <h1><a href='".SITEURL."' title='{SITENAME}'>{SITENAME}</a></h1>
-<div class='sitetag'>{SITETAG}</div>
-</div>
+<h2>{SITETAG}</h2>
 {UL}
 </div>
 <div id='content' class='widecolumn'>";
