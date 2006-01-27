@@ -20,7 +20,7 @@ if (ADMIN) {
 			}
 			$text .= ($cnt ? "</ul>" : "");
 
-			$text .= "[ <a href='".e_SELF."?logall'>".ADLAN_117."</a> ][ <a href='".e_SELF."?purge'>".ADLAN_118."</a> ]\n</div>";
+			$text .= "[ <a href='".e_ADMIN."admin_log.php?logall'>".ADLAN_117."</a> ][ <a href='".e_ADMIN."admin_log.php?purge'>".ADLAN_118."</a> ]\n</div>";
 
 			return $ns -> tablerender(ADLAN_135, $text, '', TRUE);
 		}
