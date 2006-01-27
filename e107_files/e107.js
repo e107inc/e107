@@ -5,8 +5,8 @@
 |	e107 website system - Javascript File.
 |
 |	$Source: /cvs_backup/e107_0.7/e107_files/e107.js,v $
-|	$Revision: 1.17 $
-|	$Date: 2006-01-06 01:50:05 $
+|	$Revision: 1.18 $
+|	$Date: 2006-01-27 01:41:23 $
 |	$Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -57,25 +57,36 @@ var operaaa=(agtbrw.indexOf('opera')!=-1);
 var head="display:''";
 var folder='';
 
-function expandit(curobj,hide){
-if(document.getElementById(curobj)){
-  folder=document.getElementById(curobj).style;
-
-  }else{
-
-if(ns6==1||operaaa==true){
-	folder=curobj.nextSibling.nextSibling.style;
-}else{
-	folder=document.all[curobj.sourceIndex+1].style;
-}
+function expandit(curobj, hide) {
+	if(document.getElementById(curobj)) {
+  		folder=document.getElementById(curobj).style;
+	} else {
+		if(ns6==1||operaaa==true) {
+			folder=curobj.nextSibling.nextSibling.style;
+		} else {
+			folder=document.all[curobj.sourceIndex+1].style;
+		}
    }
-if (folder.display=="none"){folder.display="";}else{folder.display="none";}
-if(document.getElementById(hide)){
-	hidden=document.getElementById(hide).style;
-	if (hidden.display=="none"){hidden.display="";}else{hidden.display="none";}
+	if(folder.display=="none")
+	{
+		folder.display="";
+	} else {
+		folder.display="none";
+	}
+	if(hide) {
+		var hide_objects = hide.split(",");	
+		for(i=0; i<hide_objects.length; i++) {
+			hide_objects[i]=hide_objects[i].replace(/^\s*(.*)/, "$1");
+			hide_objects[i]=hide_objects[i].replace(/(.*?)\s*$/, "$1");
+			if(document.getElementById(hide_objects[i])) {
+				hidden=document.getElementById(hide_objects[i]).style;
+				if(hidden.display=="") {
+					hidden.display="none";
+				}
+			}
+		}
+	}
 }
-}
-
 
 function urljump(url){
 	top.window.location = url;
