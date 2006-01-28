@@ -22,7 +22,7 @@ if (isset($_GET['rsd'])) { // http://archipelago.phrasewise.com/rsd
 die();
 }
 
-class e107_xmlrpc_server extends IXR_Server {
+/*class e107_xmlrpc_server extends IXR_Server {
 	function e107_xmlrpc_server() {
 		$this->methods = array(
 		'blogger.getUsersBlogs'  => 'this:blogger_getUsersBlogs',
@@ -104,3 +104,4 @@ function check_login($user, $password) {
 }
 
 $xmlrpc_server = new e107_xmlrpc_server();
+*/
