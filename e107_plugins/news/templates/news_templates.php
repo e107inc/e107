@@ -3,26 +3,23 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Steve Dunstan 2001-2002
+|     �Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
 |     Released under the terms and conditions of the
 |     GNU General Public License (http://gnu.org).
 |
-|     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.90.2.2 $
-|     $Date: 2006-01-28 07:50:06 $
+|     $Source: /cvs_backup/e107_0.7/e107_plugins/news/templates/news_templates.php,v $
+|     $Revision: 1.1.2.1 $
+|     $Date: 2006-01-28 07:50:07 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
+if (!defined('e107_INIT')) { exit; }
 
-require_once("class2.php");
-
-if(file_exists(e_PLUGIN."news/news.php")) {
-	require_once(e_PLUGIN."news/news.php");
-} else {
-	require_once(HEADERF);
-	echo "No news posts";
-	require_once(FOOTERF);
+// Main news layout - posts location, pagination, location of archive etc..
+if(!isset($NEWS_MAIN_LAYOUT)) {
+	$NEWS_MAIN_LAYOUT = "{POSTS}\n</tr>";
 }
+

@@ -3,25 +3,6 @@
 require_once("class2.php");
 require_once(e_HANDLER."ixr_library.php");
 
-if (isset($_GET['rsd'])) { // http://archipelago.phrasewise.com/rsd
-	header('Content-type: text/xml; charset=' . get_settings('blog_charset'), true);
-
-?>
-<?php echo '<?xml version="1.0" encoding="'.get_settings('blog_charset').'"?'.'>'; ?>
-<rsd version="1.0" xmlns="http://archipelago.phrasewise.com/rsd">
-  <service>
-    <engineName>e107</engineName>
-    <engineLink>http://e107.org/</engineLink>
-    <homePageLink><?php SITEURL ?></homePageLink>
-    <apis>
-      <api name="Blogger" blogID="1" preferred="false" apiLink="<?php bloginfo_rss('url') ?>/xmlrpc.php" />
-    </apis>
-  </service>
-</rsd>
-<?php
-die();
-}
-
 /*class e107_xmlrpc_server extends IXR_Server {
 	function e107_xmlrpc_server() {
 		$this->methods = array(
