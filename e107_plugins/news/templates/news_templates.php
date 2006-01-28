@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/news/templates/news_templates.php,v $
-|     $Revision: 1.1.2.1 $
-|     $Date: 2006-01-28 07:50:07 $
+|     $Revision: 1.1.2.2 $
+|     $Date: 2006-01-28 07:56:26 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -22,4 +22,3 @@ if (!defined('e107_INIT')) { exit; }
 if(!isset($NEWS_MAIN_LAYOUT)) {
 	$NEWS_MAIN_LAYOUT = "{POSTS}\n</tr>";
 }
-

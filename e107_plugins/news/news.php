@@ -11,13 +11,18 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/news/news.php,v $
-|     $Revision: 1.1.2.2 $
-|     $Date: 2006-01-28 07:52:08 $
+|     $Revision: 1.1.2.3 $
+|     $Date: 2006-01-28 07:56:26 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
 require_once(e_HANDLER."news_class.php");
+
+if(file_exists(THEME."news_templates.php")) {
+	require_once(THEME."news_templates.php");
+}
+require_once(e_PLUGIN."news/templates/news_templates.php");
 
 $ix = new news;
 
