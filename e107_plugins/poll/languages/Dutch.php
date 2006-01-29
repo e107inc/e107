@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Dutch.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-01-11 05:58:59 $
+|     $Revision: 1.4 $
+|     $Date: 2006-01-29 06:59:02 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -38,7 +38,7 @@ define("POLLAN_11", "nee");
 define("POLLAN_12", "Toon resulaten");
 define("POLLAN_13", "na stemmen");
 define("POLLAN_14", "door klikken op bekijk resultaat link");
-define("POLLAN_15", "Stemmen op deze peiling is toeegstaan");
+define("POLLAN_15", "Stemmen op deze peiling is toegestaan");
 define("POLLAN_16", "Stem opslagmethode");
 define("POLLAN_17", "cookie");
 define("POLLAN_18", "IP adres");

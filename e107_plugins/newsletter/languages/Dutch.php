@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsletter/languages/Dutch.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-06-01 04:44:55 $
+|     $Revision: 1.2 $
+|     $Date: 2006-01-29 06:59:02 $
 |     $Author: mijnheer $
 +----------------------------------------------------------------------------+
 */
@@ -55,7 +55,7 @@ define("NLLAN_31", "Onderwerp / Titel");
 define("NLLAN_32", "Uitgave nummer");
 define("NLLAN_33", "Tekst");
 define("NLLAN_34", "Bijwerken verzending");
-define("NLLAN_35", "Aanmalen verzending");
+define("NLLAN_35", "Aanmaken verzending");
 define("NLLAN_36", "Bijwerken uitgave nieuwsbrief");
 define("NLLAN_37", "Aanmaken uitgave nieuwsbrief");
 define("NLLAN_38", "Nieuwsbrief bijgewerkt in database.");
@@ -68,11 +68,11 @@ define("NLLAN_43", "Uitgave nieuwsbrief verwijderd.");
 
 define("NLLAN_44", "Nieuwsbrief  voorpagina");
 define("NLLAN_45", "Aanmaken nieuwsbrief ");
-define("NLLAN_46", "Aanmaken verzending");
+define("NLLAN_46", "Aanmaken uitgave");
 define("NLLAN_47", "Nieuwsbrief opties");
 
 define("NLLAN_48", "je bent geabonneerd op deze nieuwsbrief  - als je je af wilt melden, klik dan op de onderstaande knop.");
-define("NLLAN_49", "Wil je je echt afmelden voor deze nieuwsberief?");
+define("NLLAN_49", "Wil je je echt afmelden voor deze nieuwsbrief?");
 define("NLLAN_50", "Klik om te abonneren (je adres luidt");
 define("NLLAN_51", "Afmelden");
 define("NLLAN_52", "Abonneren");
