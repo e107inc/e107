@@ -11,33 +11,44 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/file_class.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-12-14 17:37:34 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2006-01-31 19:36:21 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
-class e_file {
-	function get_files($path, $fmask = '', $omit='standard', $recurse_level = 0, $current_level = 0) {
+class e_file
+{
+	function get_files($path, $fmask = '', $omit='standard', $recurse_level = 0, $current_level = 0)
+	{
 		$ret = array();
-		if($recurse_level != 0 && $current_level > $recurse_level) {
+		if($recurse_level != 0 && $current_level > $recurse_level)
+		{
 			return $ret;
 		}
-		if(substr($path,-1) == '/') {
+		if(substr($path,-1) == '/')
+		{
 			$path = substr($path, 0, -1);
 		}
 
-		if(!$handle = opendir($path)) {
+		if(!$handle = opendir($path))
+		{
 			return $ret;
 		}
-		if($omit == 'standard') {
+		if($omit == 'standard')
+		{
 			$rejectArray = array('^\.$','^\.\.$','^\/$','^CVS$','thumbs\.db','.*\._$');
-		} else {
-			if(is_array($omit)) {
+		}
+		else
+		{
+			if(is_array($omit))
+			{
 				$rejectArray = $omit;
-			} else {
+			}
+			else
+			{
 				$rejectArray = array($omit);
 			}
 		}
@@ -65,7 +76,7 @@ class e_file {
 				}
 				if($rejected == FALSE)
 				{
-					$finfo['path'] = $path."/";  // important: leave this slash here and update other file instead. 
+					$finfo['path'] = $path."/";  // important: leave this slash here and update other file instead.
 					$finfo['fname'] = $file;
 					$ret[] = $finfo;
 				}
@@ -74,7 +85,8 @@ class e_file {
 		return $ret;
 	}
 
-	function get_dirs($path, $fmask = '', $omit='standard') {
+	function get_dirs($path, $fmask = '', $omit='standard')
+	{
 		$ret = array();
 		if(substr($path,-1) == '/')
 		{
@@ -121,5 +133,46 @@ class e_file {
 		}
 		return $ret;
 	}
+
+	function rmtree($dir)
+	{
+		if (substr($dir, strlen($dir)-1, 1) != '/')
+		{
+			$dir .= '/';
+		}
+		if ($handle = opendir($dir))
+		{
+			while ($obj = readdir($handle))
+			{
+				if ($obj != '.' && $obj != '..')
+				{
+					if (is_dir($dir.$obj))
+					{
+						if (!$this->rmtree($dir.$obj))
+						{
+							return false;
+						}
+					}
+					elseif (is_file($dir.$obj))
+					{
+						if (!unlink($dir.$obj))
+						{
+							return false;
+						}
+					}
+				}
+			}
+
+			closedir($handle);
+
+			if (!@rmdir($dir))
+			{
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
 }
 ?>
