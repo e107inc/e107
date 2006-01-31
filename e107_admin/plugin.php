@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/plugin.php,v $
-|     $Revision: 1.57 $
-|     $Date: 2006-01-30 20:34:08 $
+|     $Revision: 1.58 $
+|     $Date: 2006-01-31 19:36:21 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -113,7 +113,14 @@ if (isset($_POST['upload'])) {
 }
 
 
-if ($action == 'uninstall') {
+if ($action == 'uninstall')
+{
+	if(!isset($_POST['uninstall_confirm']))
+	{
+		show_uninstall_confirm();
+		exit;
+	}
+
 	$id = intval($id);
 	$plug = $plugin->getinfo($id);
 	//Uninstall Plugin
@@ -125,19 +132,30 @@ if ($action == 'uninstall') {
 			$text .= call_user_func($func);
 		}
 
-        if(is_array($eplug_rss)){
-			foreach($eplug_rss as $key=>$values){
+		if(is_array($eplug_rss)) {
+			foreach($eplug_rss as $key=>$values) {
 				$text .= ($sql -> db_Update("plugin", "plugin_rss = '' WHERE plugin_id='{$id}'")) ? EPL_ADLAN_47 .". ($key)<br />" : EPL_ADLAN_49 .". ($key)<br />";
-            }
-		}
-
-		if (is_array($eplug_table_names)) {
-			$result = $plugin->manage_tables('remove', $eplug_table_names);
-			if ($result !== TRUE) {
-				$text .= EPL_ADLAN_27.' <b>'.$mySQLprefix.$result.'</b> - '.EPL_ADLAN_30.'<br />';
-			} else {
-				$text .= EPL_ADLAN_28."<br />";
 			}
+		}
+		
+		if($_POST['delete_tables'])
+		{
+			if (is_array($eplug_table_names))
+			{
+				$result = $plugin->manage_tables('remove', $eplug_table_names);
+				if ($result !== TRUE)
+				{
+					$text .= EPL_ADLAN_27.' <b>'.$mySQLprefix.$result.'</b> - '.EPL_ADLAN_30.'<br />';
+				}
+				else
+				{
+					$text .= EPL_ADLAN_28."<br />";
+				}
+			}
+		}
+		else
+		{
+			$text .= "Tables not deleted during uninstall process by request<br />";
 		}
 
 		if (is_array($eplug_prefs)) {
@@ -215,7 +233,18 @@ if ($action == 'uninstall') {
 		$plugin -> manage_notify('remove', $eplug_folder);
 
 		$sql->db_Update('plugin', "plugin_installflag=0, plugin_version='{$eplug_version}' WHERE plugin_id='{$id}' ");
-		$text .= '<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32;
+		
+		if($_POST['delete_files'])
+		{
+			include_once(e_HANDLER."file_class.php");
+			$fi = new e_file;
+			$result = $fi->rmtree(e_PLUGIN.$eplug_folder);
+			$text .= ($result ? "<br />All files removed from ".e_PLUGIN.$eplug_folder : '<br />File deletion failed<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32);
+		}
+		else
+		{
+			$text .= '<br />'.EPL_ADLAN_31.' <b>'.e_PLUGIN.$eplug_folder.'</b> '.EPL_ADLAN_32;
+		}
 		$ns->tablerender(EPL_ADLAN_1.' '.$eplug_name, $text);
 		$text = "";
 	}
@@ -413,7 +442,6 @@ function render_plugs($pluginList){
 		$img <b>{$plug['plugin_name']}</b><br />".EPL_ADLAN_11." {$plug['plugin_version']}
 		<br />";
 
-
 		$text .="</td>
 		</tr></table>
 		</td>
@@ -440,7 +468,7 @@ function render_plugs($pluginList){
 		$text .= "</table></td>";
 		$text .= "<td class='forumheader3' style='width:70px;text-align:center'>";
     	if ($eplug_conffile || $eplug_module || is_array($eplug_table_names) || is_array($eplug_prefs) || is_array($eplug_user_prefs) || is_array($eplug_sc) || is_array($eplug_bb) || $eplug_status || $eplug_latest) {
-			$text .= ($plug['plugin_installflag'] ? "<input type='button' class='button' onclick=\"uninstall_confirm('".$tp->toJS(EPL_ADLAN_2." [ {$plug['plugin_name']} ]")."','".e_SELF."?uninstall.{$plug['plugin_id']}')\" title='".EPL_ADLAN_1."' value='".EPL_ADLAN_1."' />" : "<input type='button' class='button' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />");
+			$text .= ($plug['plugin_installflag'] ? "<input type='button' class='button' onclick=\"location.href='".e_SELF."?uninstall.{$plug['plugin_id']}'\" title='".EPL_ADLAN_1."' value='".EPL_ADLAN_1."' /> " : "<input type='button' class='button' onclick=\"location.href='".e_SELF."?install.{$plug['plugin_id']}'\" title='".EPL_ADLAN_0."' value='".EPL_ADLAN_0."' />");
 		} else {
 	   		if ($eplug_menu_name) {
 				$text .= EPL_NOINSTALL.str_replace("..", "", e_PLUGIN.$plug['plugin_path'])."/ ".EPL_DIRECTORY;
@@ -476,22 +504,79 @@ $ns->tablerender(EPL_ADLAN_16, $text);
 // ----------------------------------------------------------
 
 require_once("footer.php");
+exit;
 
-function headerjs(){
 
-$text = "<script type='text/javascript'>
-function uninstall_confirm(thetext,loc){
+function show_uninstall_confirm()
+{
+	global $plugin, $tp, $id, $ns;
+	$id = intval($id);
+	$plug = $plugin->getinfo($id);
+	
+	if ($plug['plugin_installflag'] == TRUE )
+	{
+		include(e_PLUGIN.$plug['plugin_path'].'/plugin.php');
+	}
 
-		if(confirm(thetext)){
-        	location.href = loc;
-		}else{
-        	return false;
-		}
+	if(is_writable(e_PLUGIN.$plug['plugin_path']))
+	{
+		$del_text = "
+		<select class='tbox' name='delete_files'>
+		<option value='0'>No</option>
+		<option value='1'>Yes</option>
+		</select>
+		";
+	}
+	else
+	{
+		$del_text = "
+		Directory not writable
+		<input type='hidden' name='delete_files' value='0' />
+		";
+	}
+
+	$text = "
+	<form action='".e_SELF."?".e_QUERY."' method='post'>
+	<table style='".ADMIN_WIDTH."' class='fborder'>
+	<tr>
+		<td colspan='2' class='forumheader'>Please select the option for uninstalling the plugin: $eplug_name </td>
+	</tr>
+	<tr>
+		<td class='forumheader3'>Uninstall plugin</td>
+		<td class='forumheader3'>Yes</td>
+	</tr>
+	<tr>
+		<td class='forumheader3' style='width:75%'>
+		Delete plugin tables
+		<div class='smalltext'>
+		If the tables are not removed, the plugin can be reinstalled with no data loss.  The creation of tables during the reinstall will fail.  Tables will have to be manually deleted to remove.
+		</div>
+		</td>
+		<td class='forumheader3'>
+		<select class='tbox' name='delete_tables'>
+		<option value='1'>Yes</option>
+		<option value='0'>No</option>
+		</select>
+		</td>
+	</tr>
+	<tr>
+		<td class='forumheader3'>Delete plugin files
+		<div class='smalltext'>
+		e107 will attempt to remove all plugin related files.
+		</div>
+		</td>
+		<td class='forumheader3'>{$del_text}
+		</td>
+	</tr>
+	<tr>
+		<td colspan='2' class='forumheader' style='text-align:center'><input class='button' type='submit' name='uninstall_confirm' value='Confirm uninstall' />&nbsp;&nbsp;<input class='button' type='submit' name='uninstall_cancel' value='Cancel uninstall' onclick=\"location.href='".e_SELF."'; return false;\"/></td>
+	</tr>
+	</table>
+	</form>
+	";
+	$ns->tablerender("Uninstall: {$eplug_name}", $text);
+	require_once(e_ADMIN."footer.php");
+	exit;
 }
-</script>";
 
-return $text;
-
-
-}
 ?>
