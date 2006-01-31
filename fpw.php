@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/fpw.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-12-24 22:53:38 $
-|     $Author: sweetas $
+|     $Revision: 1.13 $
+|     $Date: 2006-01-31 03:07:19 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("class2.php");
@@ -91,7 +91,7 @@ if (isset($_POST['pwsubmit'])) {
 	
 	$clean_email = check_email($tp -> toDB($_POST['email']));
 	$clean_username = $tp -> toDB($_POST['username']);
-	if ($sql->db_Select("user", "*", "user_email='{$clean_email}' AND user_name='{$clean_username}' ")) {
+	if ($sql->db_Select("user", "*", "user_email='{$clean_email}' AND user_loginname='{$clean_username}' ")) {
 		$row = $sql->db_Fetch();
 		 extract($row);
 
