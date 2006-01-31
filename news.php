@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/news.php,v $
-|     $Revision: 1.91 $
-|     $Date: 2006-01-25 07:21:51 $
+|     $Revision: 1.92 $
+|     $Date: 2006-01-31 04:55:00 $
 |     $Author: qnome $
 +----------------------------------------------------------------------------+
 */
@@ -430,7 +430,7 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 
 
 		if(!$NEWSARCHIVE){
-			$NEWSARCHIVE ="	<div>
+			$NEWSARCHIVE ="<div>
 					<table style='width:98%;'>
 					<tr>
 					<td>
@@ -442,18 +442,6 @@ if ($action != "item" && $action != 'list' && $pref['newsposts_archive']) {
 
 		}
 		$textnewsarchive .= $tp->parseTemplate($NEWSARCHIVE, FALSE, $news_archive_shortcodes);
-
-		/* $textnewsarchive .= "
-					<div>
-					<table style='width:98%;'>
-					<tr>
-					<td>
-					<div><img src='".THEME."images/".(defined("BULLET") ? BULLET : "bullet2.gif")."' style='border:0px' alt='' /> <b><a href='news.php?item.".$news2['news_id']."'>".$news2['news_title']."</a></b> <span class='smalltext'><i><a href='".e_BASE."user.php?id.".$news2['user_id']."'>".$news2['user_name']."</a> @ (".$news2['news_datestamp'].") (".$news2['category_name'].")</i></span></div>
-					</td>
-					</tr>
-					</table>
-					</div>";
-		*/
 		$i++;
 	}
 	$ns->tablerender($pref['newsposts_archive_title'], $textnewsarchive, 'news_archive');
