@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewtopic.php,v $
-|     $Revision: 1.54 $
-|     $Date: 2006-01-14 14:09:51 $
+|     $Revision: 1.55 $
+|     $Date: 2006-01-31 02:54:33 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -389,7 +389,7 @@ $alt = FALSE;
 for($i = 0; $i < count($thread_info)-1; $i++) {
 	unset($post_info);
 	$post_info = $thread_info[$i];
-	$loop_uid = $post_info['user_id'];
+	$loop_uid = intval($post_info['user_id']);
 	if (!$post_info['thread_user']) {
 		// guest
 		$tmp = explode(chr(1), $post_info['thread_anon']);
