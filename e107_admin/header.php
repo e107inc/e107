@@ -12,8 +12,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.42 $
-|   $Date: 2006-01-17 20:01:08 $
+|   $Revision: 1.43 $
+|   $Date: 2006-01-31 04:08:49 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 */
@@ -42,11 +42,26 @@ if (file_exists(THEME.'admin_template.php')) {
   	require_once(e_BASE.$THEMES_DIRECTORY.'templates/admin_template.php');
 }
 
+if (!defined('ADMIN_TRUE_ICON'))
+{
+	define("ADMIN_TRUE_ICON", "<img src='".e_IMAGE_ABS."fileinspector/integrity_pass.png' alt='' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_TRUE_ICON_PATH", e_IMAGE."fileinspector/integrity_pass.png");
+}
+
+if (!defined('ADMIN_FALSE_ICON'))
+{
+	define("ADMIN_FALSE_ICON", "<img src='".e_IMAGE_ABS."fileinspector/integrity_fail.png' alt='' style='border:0px; height:16px; width:16px' />");
+	define("ADMIN_FALSE_ICON_PATH", e_IMAGE."fileinspector/integrity_fail.png");
+}
+
+
 if (!defined('ADMIN_EDIT_ICON'))
 {
 	define("ADMIN_EDIT_ICON", "<img src='".e_IMAGE_ABS."admin_images/edit_16.png' alt='' title='".LAN_EDIT."' style='border:0px; height:16px; width:16px' />");
 	define("ADMIN_EDIT_ICON_PATH", e_IMAGE."admin_images/edit_16.png");
 }
+
+
 
 if (!defined('ADMIN_DELETE_ICON'))
 {

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/download.php,v $
-|     $Revision: 1.72 $
-|     $Date: 2005-12-28 14:50:23 $
-|     $Author: sweetas $
+|     $Revision: 1.73 $
+|     $Date: 2006-01-31 04:08:49 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -277,7 +277,7 @@ if ($action == "opt") {
 		</select>
 		</td>
 		</tr>
-		
+
 		<tr>
 		<td style='width:70%' class='forumheader3'>".DOWLAN_150."</td>
 		<td class='forumheader3' style='width:30%;text-align:left'>". ($pref['download_email'] ? "<input type='checkbox' name='download_email' value='1' checked='checked' />" : "<input type='checkbox' name='download_email' value='1' />")."</td>
@@ -469,6 +469,7 @@ class download {
 					<td style='width:5%;vertical-align:top' class='forumheader3'>$download_id</td>";
 
 // Display Chosen options -------------------------------------
+        $bolean_list = array("download_active","download_comment");
 
 		foreach($search_display as $disp){
 			$text .= "<td class='forumheader3' style='vertical-align:top'>";
@@ -489,6 +490,12 @@ class download {
 				$text .= "<a rel='external' href='".e_FILE."downloadimages/".$row[$disp]."' >".$row[$disp]."</a>&nbsp;";
 			}elseif($disp == "download_description"){
 				$text .= $tp->toHTML($row[$disp],TRUE)."&nbsp;";
+            }elseif($disp == "download_active"){
+				if($row[$disp]== 1){ $text .= "<img src='".ADMIN_TRUE_ICON_PATH."' title='".DOWLAN_123."' alt='' style='cursor:help' />\n"; 	}
+				elseif($row[$disp]== 2){ $text .= "<img src='".ADMIN_TRUE_ICON_PATH."' title='".DOWLAN_124."' alt='' style='cursor:help' /><img src='".ADMIN_TRUE_ICON_PATH."' title='".DOWLAN_124."' alt='' style='cursor:help' />\n"; 	}
+				else{ $text .= "<img src='".ADMIN_FALSE_ICON_PATH."' title='".DOWLAN_122."' alt='' style='cursor:help' />\n";  }
+			}elseif($disp == "download_comment"){
+                $text .= ($row[$disp]) ? ADMIN_TRUE_ICON : "&nbsp;";
 			}else{
 				$text .= $row[$disp]."&nbsp;";
         	}

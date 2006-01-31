@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.68 $
-|     $Date: 2006-01-05 04:11:01 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.69 $
+|     $Date: 2006-01-31 04:08:49 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -321,7 +321,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "verify")
 		if(!$action){ $action = "main"; }
 		if(!$sub_action){ $sub_action = "user_id"; }
 		if(!$id){ $id = "DESC"; }
-		
+
 		if($pref['user_reg_veri'] == 2)
 		{
 			if($sql->db_Select("user", "user_email, user_name", "user_id = '{$uid}'"))
@@ -329,7 +329,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == "verify")
 				$row = $sql->db_Fetch();
 				$message = USRLAN_114." ".$row['user_name'].",\n\n".USRLAN_122." ".SITENAME.".\n\n".USRLAN_123."\n\n";
 				$message .= str_replace("{SITEURL}", SITEURL, USRLAN_139);
-			
+
 				require_once(e_HANDLER."mail.php");
 				if(sendemail($row['user_email'], USRLAN_113." ".SITENAME, $message))
 				{
@@ -535,6 +535,7 @@ class users{
  // Display Chosen options -------------------------------------
 
 	$datefields = array("user_lastpost","user_lastvisit","user_join","user_currentvisit");
+	$boleanfields = array("user_admin","user_hideemail","user_ban");
 
 	foreach($search_display as $disp)
 	{
@@ -553,6 +554,9 @@ class users{
 			{
 				$text .= "&nbsp;";
 			}
+		}elseif(in_array($disp,$boleanfields))
+		{
+        	$text .= ($row[$disp]) ? ADMIN_TRUE_ICON : "";
 		}
 		elseif(in_array($disp,$datefields))
 		{
@@ -566,7 +570,7 @@ class users{
 		{
 			$text .= $row[$disp]."&nbsp;";
 		}
-		if(isset($prev[$disp]) && $row[$disp] == $prev[$disp] && $prev[$disp] != "")
+		if(!in_array($disp,$boleanfields) && isset($prev[$disp]) && $row[$disp] == $prev[$disp] && $prev[$disp] != "")
 		{ // show matches
 			$text .= " <b>*</b>";
 		}
@@ -678,7 +682,7 @@ class users{
 	}
 
 	function show_options($action) {
-		
+
 		global $unverified;
 		// ##### Display options ---------------------------------------------------------------------------------------------------------
 		if ($action == "") {
