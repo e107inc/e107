@@ -1,4 +1,8 @@
+global $pref;
+
 $full_text = str_replace('"','&039;',$full_text);
+$_ext      = $pref['links_new_window'] ? " rel=\"external\"" : "";
+
 $search = array(
 "#\[link\]([a-z]+?://){1}(.*?)\[/link\]#si",
 "#\[link\](.*?)\[/link\]#si",
@@ -12,14 +16,14 @@ $search = array(
 );
 
 $replace = array(
-'<a href="\1\2" rel="nofollow">\1\2</a>',
-'<a href="http://\1" rel="nofollow">\1</a>',
-'<a href="\1\2" rel="nofollow">\3</a>',
-'<a href="\1" rel="nofollow">\2</a>', 
-'<a href="\1\2" rel="nofollow">\1\2</a>',
-'<a href="http://\1" rel="nofollow">\1</a>',
-'<a href="\1\2" rel="nofollow">\3</a>',
-'<a href="\1" rel="nofollow">\2</a>'
+'<a href="\1\2"'.$_ext.'>\1\2</a>',
+'<a href="http://\1"'.$_ext.'>\1</a>',
+'<a href="\1\2"'.$_ext.'>\3</a>',
+'<a href="\1"'.$_ext.'>\2</a>', 
+'<a href="\1\2"'.$_ext.'>\1\2</a>',
+'<a href="http://\1"'.$_ext.'>\1</a>',
+'<a href="\1\2"'.$_ext.'>\3</a>',
+'<a href="\1"'.$_ext.'>\2</a>'
 );
 
 return preg_replace($search,$replace,$full_text);
