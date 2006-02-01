@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.255 $
-|     $Date: 2006-01-26 21:57:06 $
+|     $Revision: 1.256 $
+|     $Date: 2006-02-01 14:19:12 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -103,7 +103,7 @@ define("e_UC_NOBODY", 255);
 define("ADMINDIR", $ADMIN_DIRECTORY);
 
 // All debug objects and constants are defined in the debug handler
-if (strpos(e_MENU, 'debug=') !== FALSE || isset($_COOKIE['e107_debug_level'])) {
+if (strpos(e_MENU, 'debug') !== FALSE || isset($_COOKIE['e107_debug_level'])) {
 	require_once(e_HANDLER.'debug_handler.php');
 	$db_debug = new e107_db_debug;
 } else {
