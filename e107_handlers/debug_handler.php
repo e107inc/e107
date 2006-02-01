@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/debug_handler.php,v $
-|     $Revision: 1.16 $
-|     $Date: 2005-12-14 17:37:34 $
+|     $Revision: 1.17 $
+|     $Date: 2006-02-01 14:19:15 $
 |     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -45,19 +45,19 @@ class e107_debug {
 	);
 
 	function e107_debug() {
-		if (preg_match('/debug=(.*)/', e_MENU, $debug_param) || isset($_COOKIE['e107_debug_level'])) {
-			if(isset($_COOKIE['e107_debug_level'])) {
+		if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU, $debug_param) || isset($_COOKIE['e107_debug_level'])) {
+			if (isset($_COOKIE['e107_debug_level'])) {
 				$dVal = substr($_COOKIE['e107_debug_level'],6);
 			}
-			if(preg_match('/debug=(.*)/', e_MENU)) {
-				$dVal = $debug_param[1];
+			if (preg_match('/debug(=?)(.*?),?(\+|stick|-|unstick|$)/', e_MENU)) {
+				$dVal = $debug_param[1] == '=' ? $debug_param[2] : 'everything';
 			}
-			if(substr($dVal, -6) == ',stick')
+			if ($debug_param[3] == '+' || $debug_param[3] == 'stick')
 			{
-				$dVal = substr($dVal, 0, -6);
 				cookie('e107_debug_level', 'level='.$dVal, time() + 86400);
 			}
-			if($dVal == 'unstick') {
+			if ($debug_param[3] == '-' || $debug_param[3] == 'unstick')
+			{
 				cookie('e107_debug_level', '', time() - 3600);
 			}
 
