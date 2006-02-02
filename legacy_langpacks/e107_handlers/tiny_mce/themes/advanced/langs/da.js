@@ -1,4 +1,4 @@
-// DA_DK lang variables
+// DA_DK lang variables by Jesper Olesen e107.dk
 
 tinyMCE.addToLang('',{
 theme_style_select : '-- Stil --',
@@ -70,6 +70,7 @@ author : 'Forfatter',
 version : 'Version',
 loaded_plugins : 'Indl&aelig;ste plugins',
 help : 'Hj&aelig;lp',
-not_set : '-- Ikke indstilt --',
+not_set : '-- Ikke defineret --',
 close : 'Luk'
+toolbar_focus : 'G&aring; til v&aelig;rkt&oslash;jsknapperne - Alt+Q, G&aring; til editor - Alt-Z, G&aring; til element sti - Alt-X'
 });

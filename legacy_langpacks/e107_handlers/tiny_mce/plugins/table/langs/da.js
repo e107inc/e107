@@ -1,4 +1,4 @@
-// UK lang variables
+// DK lang variables
 
 tinyMCE.addToLang('tabel',{
 general_tab : 'Generelt',
@@ -58,12 +58,18 @@ th : "Titel",
 cell_cell : 'Opdater nuv&aelig;rrende celle',
 cell_row : 'Opdater all cells in row',
 cell_all : 'Opdater alle celler i tabellen',
-row_row : 'Opdater nuv&aelig;rrende r&aelig;kke',
-row_odd : 'Opdater ulige r&aelig;kker i tabellen',
-row_even : 'Opdater lige r&aelig;kker i tabellen',
-row_all : 'Opdater alle r&aelig;kker i tabellen',
+row_row : 'Opdater nuv&aelig;rrende kolonne',
+row_odd : 'Opdater ulige kolonner i tabellen',
+row_even : 'Opdater lige kolonner i tabellen',
+row_all : 'Opdater alle kolonner i tabellen',
 thead : 'Tabel Hoved',
 tbody : 'Table Center',
 tfoot : 'Table Fod',
 del : 'Slet tabel'
+scope : 'Scope',
+row : 'Row',
+col : 'Col',
+rowgroup : 'Række Gruppe',
+colgroup : 'Kolonne Gruppe',
+missing_scope: 'Er du sikker p&aring; du vil forts&aelig;tte uden at specifisere et Scope for denne tabel hoved celle. Uden den, kan det v&aelig;re sv&aelig;rt for brugere med handikap at forst&aring; indholdet eller data vis i tabellen.'
 });

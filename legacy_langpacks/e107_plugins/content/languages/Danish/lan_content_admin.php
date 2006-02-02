@@ -4,8 +4,8 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_langpacks/legacy_langpacks/e107_plugins/content/languages/Danish/lan_content_admin.php,v $
-|     $Revision: 1.1 $
-|     $Date: 2005-09-17 09:52:21 $
+|     $Revision: 1.2 $
+|     $Date: 2006-02-02 16:57:53 $
 |     $Author: e107dk $
 +----------------------------------------------------------------------------+
 */
@@ -224,6 +224,8 @@ define("CONTENT_ADMIN_ITEM_LAN_120", "standard layout");
 define("CONTENT_ADMIN_ITEM_LAN_121", "intet nyt ikon uploadet endnu");
 define("CONTENT_ADMIN_ITEM_LAN_122", "ingen ny vedh&aelig;ftning uploadet endnu");
 define("CONTENT_ADMIN_ITEM_LAN_123", "intet nyt billede uploadet endnu");
+
+define("CONTENT_ADMIN_ITEM_LAN_124", "for at fremvise emnet");
 
 
 define("CONTENT_ADMIN_ORDER_LAN_0", "sortering er stigende");
