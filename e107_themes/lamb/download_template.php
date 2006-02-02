@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/lamb/download_template.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-12-14 19:28:52 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2006-02-02 05:37:32 $
+|     $Author: qnome $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -152,10 +152,10 @@ if(!$DOWNLOAD_VIEW_TABLE){
  ";    
        
 
-                if($DOWNLOAD_VIEW_IMAGE){
+              
                 $DOWNLOAD_VIEW_TABLE .= "
-        <br /><span class='mediumtext'>{DOWNLOAD_VIEW_IMAGE}</span> | ";
-                }
+        <br /><span class='mediumtext'>{DOWNLOAD_VIEW_IMAGE}</span> <br /> | ";
+           
 
         $DOWNLOAD_VIEW_TABLE .= "
                 <span class='mediumtext'>{DOWNLOAD_VIEW_FILESIZE_LAN}: {DOWNLOAD_VIEW_FILESIZE} | {DOWNLOAD_VIEW_REQUESTED_LAN}: {DOWNLOAD_VIEW_REQUESTED} | {DOWNLOAD_REPORT_LINK} 
