@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/auth.php,v $
-|     $Revision: 1.11 $
-|     $Date: 2005-12-24 23:30:50 $
-|     $Author: sweetas $
+|     $Revision: 1.12 $
+|     $Date: 2006-02-02 06:37:52 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -23,6 +23,7 @@ if (!defined('e107_INIT')) { exit; }
 @include_once(e_LANGUAGEDIR."English/admin/lan_admin.php");
 if (ADMIN)
 {
+	define("ADMIN_PAGE", true);
 	require_once(e_ADMIN."header.php");
 }
 else
