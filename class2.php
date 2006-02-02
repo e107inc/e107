@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.256 $
-|     $Date: 2006-02-01 14:19:12 $
-|     $Author: sweetas $
+|     $Revision: 1.257 $
+|     $Date: 2006-02-02 10:07:01 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 // Find out if register globals is enabled and destroy them if so
@@ -247,7 +247,7 @@ if($pref['redirectsiteurl'] && $pref['siteurl']) {
 	$siteurl = SITEURLBASE."/";
 	if (strpos($pref['siteurl'], $siteurl) === FALSE && strpos(e_SELF, ADMINDIR) === FALSE) {
 		$location = str_replace($siteurl, $pref['siteurl'], e_SELF).(e_QUERY ? "?".e_QUERY : "");
-		header("Location: {$location}");
+		header("Location: {$location}", true, 301); // send 301 header, not 302
 		exit();
 	}
 }
