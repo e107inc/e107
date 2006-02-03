@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/bbcode_handler.php,v $
-|     $Revision: 1.35 $
-|     $Date: 2006-01-13 21:38:55 $
+|     $Revision: 1.36 $
+|     $Date: 2006-02-03 19:57:50 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -33,12 +33,12 @@ class e_bbcode
 		global $pref;
 		$core_bb = array(
 		'blockquote', 'img', 'i', 'u', 'center',
-		'*br', '*ba', 'color', 'size', 'code',
+		'*br', 'color', 'size', 'code',
 		'html', 'flash', 'link', 'email',
 		'url', 'quote', 'left', 'right',
 		'b', 'justify', 'file', 'stream',
 		'textarea', 'list', 'php', 'time',
-		'spoiler'
+		'spoiler', 'hide'
 		);
 		foreach($core_bb as $c)
 		{
