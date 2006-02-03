@@ -4,8 +4,8 @@
 |     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_ren_help.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:47 $
 |     $Kirjoittaja: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -37,7 +37,7 @@ define("LANHELP_22", "Click to open size dialog ...");
 define("LANHELP_23", "Lisää linkki: [link]http://mysite.com[/link] or  [link=http://yoursite.com]Visit My Site[/link]");
 define("LANHELP_24", "Lihavoitu teksti: [b]Tämä teksti näkyy lihavoituna[/b]", "font-weight:bold; width: 20px");
 define("LANHELP_25", "Kursivoitu teksti: [i]Tämä teksti näkyy kursivoituna[/i]", "font-style:italic; width: 20px");
-define("LANHELP_26", "Kaikkieviivattu teksti: [u]Tämä teksti näkyy alleviivattuna[/u]", "text-decoration: underline; width: 20px");
+define("LANHELP_26", "Alleviivattu teksti: [u]Tämä teksti näkyy alleviivattuna[/u]", "text-decoration: underline; width: 20px");
 define("LANHELP_27", "Lisää kuva: [img]mypicture.jpg[/img]");
 define("LANHELP_28", "Keskitä: [center]Tämä teksti näkyy keskitettynä[/center]");
 define("LANHELP_29", "Tasaus vasemmalle: [left]Tämä teksti näkyy vasemalle tasattuna[/left]");

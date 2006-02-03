@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/poll/languages/Finnish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:48 $
 |     $Kirjoittaja: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -32,18 +32,18 @@ define("POLLAN_5", "Muokkaa");
 define("POLLAN_6", "Poista");
 define("POLLAN_7", "No polls yet.");
 define("POLLAN_8", "Add another option");
-define("POLLAN_9", "Kaikkiow multiple choices?");
+define("POLLAN_9", "Allow multiple choices?");
 define("POLLAN_10", "yes");
 define("POLLAN_11", "ei");
 define("POLLAN_12", "Näytä results");
 define("POLLAN_13", "after voting");
 define("POLLAN_14", "kirjoittaja clicking view results link - comments must be turned on to use this option");
-define("POLLAN_15", "Kaikkiow to vote on this poll");
+define("POLLAN_15", "Allow to vote on this poll");
 define("POLLAN_16", "Vote storage method");
 define("POLLAN_17", "cookie");
 define("POLLAN_18", "IP address");
 define("POLLAN_19", "UserID (only members can vote)");
-define("POLLAN_20", "Kaikkiow comments to be posted to this poll?");
+define("POLLAN_20", "Allow comments to be posted to this poll?");
 define("POLLAN_21", "Esikatsele uudelleen");
 define("POLLAN_22", "Päivitä Äänestys");
 define("POLLAN_23", "Create Äänestys");

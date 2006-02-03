@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/list_new/languages/Finnish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:48 $
 |     $Kirjoittaja: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -144,7 +144,7 @@ define("LIST_MENU_2", "kirjoittaja");
 define("LIST_MENU_3", "on");
 define("LIST_MENU_4", "in");
 define("LIST_MENU_5", "päivää");
-define("LIST_MENU_6", "view content for how may päivää?");
+define("LIST_MENU_6", "Kuinka monen päivän ajalta sisältö näytetään?");
 define("LIST_MENU_7", "");
 define("LIST_MENU_8", "");
 define("LIST_MENU_9", "");
@@ -190,7 +190,7 @@ define("LIST_CALENDAR_1", "calendar");
 define("LIST_CALENDAR_2", "no calendar events");
 
 define("LIST_LINKS_1", "linkit");
-define("LIST_LINKS_2", "no links");
+define("LIST_LINKS_2", "no linkkiä");
 
 define("LIST_FORUM_1", "keskustelu");
 define("LIST_FORUM_2", "no forum posts");

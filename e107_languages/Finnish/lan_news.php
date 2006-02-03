@@ -4,9 +4,9 @@
 |     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_news.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
-|     $Kirjoittaja: mcfly_e107 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:47 $
+|     $Kirjoittaja: lisa_ $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Uutiset");
@@ -16,7 +16,7 @@ define("LAN_83", "No news items at the moment - please check back soon.");
 define("LAN_84", "Uutiset");
 define("LAN_99", "Kommentit");
 define("LAN_100", "Päällä");
-define("LAN_307", "Total posts in this category: ");
+define("LAN_307", "Total posts tässä aihepiirissä: ");
 
 define("LAN_NEWS_1", "Uutiset for specific members only");
 define("LAN_NEWS_2", "You are not allowed to see this news");
@@ -42,5 +42,6 @@ define("LAN_NEWS_20", "Uutiset updated in tietokanta for the following language:
 define("LAN_NEWS_21", "Uutiset updated in tietokanta.");
 define("LAN_NEWS_22", "Siirry sivulle: ");
 define("LAN_NEWS_23", "Uutiset Aihepiirit");
+define("LAN_NEWS_24", "create pdf of this news item");
 define("LAN_462", "No news items for specified month");
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_subcontent.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:47 $
 |     $Kirjoittaja: chavo $
 +----------------------------------------------------------------------------+
 */
@@ -17,7 +17,7 @@ define("ARLAN_17", "Otsikko");
 define("ARLAN_18", "Alaotsikko");
 define("ARLAN_19", "Yhteenveto");
 define("ARLAN_20", "Artikkeli");
-define("ARLAN_21", "Kaikkiow comments?");
+define("ARLAN_21", "Allow comments?");
 define("ARLAN_22", "Päällä");
 define("ARLAN_23", "Pois päältä");
 define("ARLAN_24", "Lisää sähköposti/tulosta kuvakkeet?");
@@ -55,7 +55,7 @@ define("ARLAN_100", "Uutiset");
 define("ARLAN_101", " Event");
 define("ARLAN_102", "Artikkeli");
 define("ARLAN_103", "Arvostelu");
-define("ARLAN_104", "Linkkiki");
+define("ARLAN_104", "Linkki");
 define("ARLAN_105", "Lataa");
 define("ARLAN_106", "Lähetä Nimike");
 

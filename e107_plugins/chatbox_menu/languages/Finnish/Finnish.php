@@ -11,13 +11,13 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/chatbox_menu/languages/Finnish/Finnish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:47 $
 |     $Kirjoittaja: sweetas $
 +----------------------------------------------------------------------------+
 */
 
-define("CHATBOX_L1", "Unable to accept post as that käyttäjäname is registered - if it is your käyttäjäname please login to post.");
+define("CHATBOX_L1", "Unable to accept post as that käyttäjänimi is registered - if it is your käyttäjänimi please login to post.");
 define("CHATBOX_L2", "Pikaviestintä");
 define("CHATBOX_L3", "Sinun täytyy olla kirjautunut lähettääksesi kommentteja tähän www-palveluun - ole hyvä ja kirjaudu palveluun tai jos et ole vielä käyttäjä, niin paina <a href='".e_BASE."signup.php'>here</a> to signup");
 define("CHATBOX_L4", "Lähetä");

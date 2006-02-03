@@ -1,12 +1,12 @@
 <?php
 
-define("LAN_1", "Keskustelu");
-define("LAN_2", "Lähettäjä");
-define("LAN_3", "Lukukertoja");
-define("LAN_4", "Vastauksia");
-define("LAN_5", "Viimeisin viesti");
-define("LAN_6", "Keskustelua");
-define("LAN_7", "kirjoittaja");
+define("NFPM_LAN_1", "Keskustelu");
+define("NFPM_LAN_2", "Lähettäjä");
+define("NFPM_LAN_3", "Lukukertoja");
+define("NFPM_LAN_4", "Vastauksia");
+define("NFPM_LAN_5", "Viimeisin viesti");
+define("NFPM_LAN_6", "Keskustelua");
+define("NFPM_LAN_7", "kirjoittaja");
     
 define("NFPM_L1", "This plugin displays a list of new forum posts on your front page");
 define("NFPM_L2", "Latest Keskustelualue Viestiö");

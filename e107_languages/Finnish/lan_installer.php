@@ -37,8 +37,8 @@ define("LANINS_026", "MySQL Salasana:");
 define("LANINS_027", "MySQL Database:");
 define("LANINS_028", "Create Database?");
 define("LANINS_029", "Table prefix:");
-define("LANINS_030", "The MySQL server you would like e107 to use. It can also include a port number. e.g. \"hostname:port\" or a path to a local socket e.g. \":/path/to/socket\" for the localhost.");
-define("LANINS_031", "The käyttäjäname you wish e107 to use for connecting to your MySQL server");
+define("LANINS_030", "The MySQL server you would like e107 to use. It can also include a port number. e.g. \"hostnimi:port\" or a path to a local socket e.g. \":/path/to/socket\" for the localhost.");
+define("LANINS_031", "The käyttäjänimi you wish e107 to use for connecting to your MySQL server");
 define("LANINS_032", "The Salasana for the käyttäjä you just entered");
 define("LANINS_033", "The MySQL tietokanta you wish e107 to reside in, sometimes referred to as a schema. If the käyttäjä has tietokanta create permissions you can opt to create the tietokanta automatically if it doesn't already exist.");
 define("LANINS_034", "The prefix you wish e107 to use when creating the e107 tables. Useful for multiple installs of e107 in one tietokanta schema.");
@@ -46,7 +46,7 @@ define("LANINS_035", "Jatka");
 define("LANINS_036", "3");
 define("LANINS_037", "MySQL Connection Verification");
 define("LANINS_038", " ja Database Creation");
-define("LANINS_039", "Please make sure you fill in all fields, most importantly, MySQL Server, MySQL Username ja MySQL Database (These are always required by the MySQL Server)");
+define("LANINS_039", "Please make sure you fill in all fields, most importantly, MySQL Server, MySQL Usernimi ja MySQL Database (These are always required by the MySQL Server)");
 define("LANINS_040", "virhes");
 define("LANINS_041", "e107 was unable to establish a connection to the MySQL server using the information you entered. Please return to the last page ja ensure the information is correct.");
 define("LANINS_042", "Connection to the MySQL server established ja verified.");
@@ -77,7 +77,7 @@ define("LANINS_061", "e107 was unable to create all of the required tietokanta t
 Please clear the tietokanta ja rectify any problems before trying again.");
 
 define("LANINS_062", "[b]Welcome to your new website![/b]
-e107 has installed successfully ja is now ready to accept content.<br />Your administration section is [link=e107_admin/admin.php]located here[/link], click to go there now. You will have to login using the name ja password you entered during the installation process.
+e107 has installed successfully ja is now ready to accept content.<br />Your administration section is [link=e107_admin/admin.php]located here[/link], click to go there now. You will have to login using the nimi ja password you entered during the installation process.
 
 [b]Support[/b]
 e107 Homepage: [link=http://e107.org]http://e107.org[/link], you will find the FAQ ja documentation here.
@@ -103,10 +103,10 @@ define("LANINS_070", "e107 was unable to save the main config file to your serve
 Please ensure the <b>e107_config.php</b> file has the correct permissions");
 define("LANINS_071", "Finalising Installation");
 
-define("LANINS_072", "Ylläpitäjä Username");
-define("LANINS_073", "This is the name you will use to login into the site. If you wish to use this as your display name also");
+define("LANINS_072", "Ylläpitäjä Usernimi");
+define("LANINS_073", "This is the nimi you will use to login into the site. If you wish to use this as your display nimi also");
 define("LANINS_074", "Ylläpitäjä Display Name");
-define("LANINS_075", "This is the name that you wish your käyttäjäs to see displayed in your profile, forums ja other areas. If you wish to use the same as your login name then leave this blank.");
+define("LANINS_075", "This is the nimi that you wish your käyttäjäs to see displayed in your profile, forums ja other areas. If you wish to use the same as your login nimi then leave this blank.");
 define("LANINS_076", "Ylläpitäjä Salasana");
 define("LANINS_077", "Please type the admin password you wish to use here");
 define("LANINS_078", "Ylläpitäjä Salasana Confirmation");

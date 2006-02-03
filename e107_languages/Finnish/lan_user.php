@@ -4,8 +4,8 @@
 |     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_user.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:47 $
 |     $Kirjoittaja: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -18,7 +18,7 @@ define("LAN_116", "AIM osoite");
 define("LAN_117", "MSN Messenger");
 define("LAN_118", "Syntymäpäivä");
 define("LAN_119", "Sijainti");
-define("LAN_120", "Kaikkiekirjoitus");
+define("LAN_120", "Allekirjoitus");
 define("LAN_137", "There is ei tietoa for that käyttäjä as they are not registered at");
 define("LAN_138", "Rekisteröityneet käyttäjät: ");
 define("LAN_139", "Järjestys: ");

@@ -4,16 +4,16 @@
 |     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_download.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
-|     $Kirjoittaja: sweetas $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:47 $
+|     $Kirjoittaja: e107coders $
 +----------------------------------------------------------------------------+
 */
 define("PAGE_NAME", "Tiedostojen lataus");
 
 define("LAN_dl_1", "(Restricted)");
 define("LAN_dl_2", "Ei vielä ladattavia tiedostoja, Tule pian tarkistamaan uudelleen");
-define("LAN_dl_3", "No downloads in this category yet");
+define("LAN_dl_3", "No downloads tässä aihepiirissä yet");
 define("LAN_dl_4", "Tiedostoa available: ");
 define("LAN_dl_5", "Tiedostojen koko yhteensä: ");
 define("LAN_dl_6", "Tiedostoja ladattu: ");
@@ -33,7 +33,7 @@ define("LAN_dl_19", "Aihepiiri");
 define("LAN_dl_20", "Tiedostoa");
 define("LAN_dl_21", "Koko");
 define("LAN_dl_22", "Päivä");
-define("LAN_dl_23", "Tiedostoname");
+define("LAN_dl_23", "Tiedostonimi");
 define("LAN_dl_24", "Kirjoittaja");
 define("LAN_dl_25", "Nouseva");
 define("LAN_dl_26", "Laskeva");
@@ -77,7 +77,7 @@ define("LAN_dl_59", "Reported by: ");
 define("LAN_dl_60", "Broken download report from");
 
 define("LAN_dl_61", "Lataa virhe");
-define("LAN_dl_62", "You have been prevented from downloading this file, you have exceeded you download quota");
+define("LAN_dl_62", "You have been prevented from downloading this file, you have exceeded your download quota");
 define("LAN_dl_63", "You do not have the correct permissions to download this file.");
 define("LAN_dl_64", "Takaisin");
 define("LAN_dl_65", "Not Found");
@@ -86,7 +86,7 @@ define("LAN_dl_66", "Valitse download mirror");
 
 define("LAN_dl_67", "Please select mirror to use ...");
 define("LAN_dl_68", "Mirror Host");
-define("LAN_dl_69", "Lataa");
+// define("LAN_dl_69", "Lataa"); // duplicate
 define("LAN_dl_70", "Sijainti");
 define("LAN_dl_71", "About");
 
@@ -95,4 +95,6 @@ define("LAN_dl_73", "Tiedostojen lataus from this mirror: ");
 define("LAN_dl_74", "Total downloads from this mirror: ");
 
 define("LAN_dl_75", "no kuva available ");
+define("LAN_dl_76", "Siirry sivulle");
+
 ?>

@@ -4,8 +4,8 @@
 |     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_error.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:47 $
 |     $Kirjoittaja: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -15,7 +15,7 @@ define("LAN_1", "virhe 401 - Permission Denied");
 define("LAN_2", "You do not have permission to retrieve the URL or link you requested.");
 define("LAN_3", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
 define("LAN_4", "virhe 403 - Authentication Failed");
-define("LAN_5", "The URL you've requested requires a correct käyttäjäname ja password. Either you entered an incorrect käyttäjäname/password, or your browser doesn't support this feature.");
+define("LAN_5", "The URL you've requested requires a correct käyttäjänimi ja password. Either you entered an incorrect käyttäjänimi/password, or your browser doesn't support this feature.");
 define("LAN_6", "Please inform the administrator of the referring page if you think this error page has been shown by mistake.");
 define("LAN_7", "virhe 404 - Document Not Found");
 define("LAN_9", "Please inform the administrator of the referring page if you think this error message has been shown by mistake.");

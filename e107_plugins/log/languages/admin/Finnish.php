@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/log/languages/admin/Finnish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:48 $
 |     $Kirjoittaja: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -36,7 +36,7 @@ define("ADSTAT_L14", "Page counts");
 define("ADSTAT_L15", "Päivitä Statistic Settings");
 define("ADSTAT_L16", "Site Statistic Settings");
 define("ADSTAT_L17", "Statistic settings updated");
-define("ADSTAT_L18", "Kaikkiow access to main statistics page to ...");
+define("ADSTAT_L18", "Allow access to main statistics page to ...");
 define("ADSTAT_L19", "Recent visitors");
 define("ADSTAT_L20", "Count admin visits");
 define("ADSTAT_L21", "Maximum records to display on stats page");

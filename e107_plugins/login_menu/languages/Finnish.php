@@ -11,15 +11,15 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/login_menu/languages/Finnish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:48 $
 |     $Kirjoittaja: streaky $
 +----------------------------------------------------------------------------+
 */
-    
+
 define("LOGIN_MENU_L1", "Käyttäjänimi: ");
 define("LOGIN_MENU_L2", "Salasana: ");
-define("LOGIN_MENU_L3", "Kirjaudu");
+define("LOGIN_MENU_L3", "Rekisteröidy");
 define("LOGIN_MENU_L4", "Unohdin salasanan?");
 define("LOGIN_MENU_L5", "Tervetuloa");
 define("LOGIN_MENU_L6", "Muista minut");
@@ -45,7 +45,7 @@ define("LOGIN_MENU_L25", "Viime käyntisi jälkeen:");
 define("LOGIN_MENU_L26", "ei");
 define("LOGIN_MENU_L27", "and");
 define("LOGIN_MENU_L28", "Kirjaudu");
-    
+
 define("LOGIN_MENU_L29", "uusi artikkeli");
 define("LOGIN_MENU_L30", "uutta artikkelia");
     

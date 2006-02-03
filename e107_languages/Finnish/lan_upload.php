@@ -4,8 +4,8 @@
 |     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_upload.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:47 $
 |     $Kirjoittaja: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -33,7 +33,7 @@ define("LAN_416", "Lähetä ja Lisää tiedosto");
 define("LAN_417", "Lisää tiedosto Tiedosto");
 define("LAN_418", "Maximum file size: ");
 define("DOWLAN_11", "Aihepiiri");
-define("LAN_419", "Kaikkiowed filetypes");
+define("LAN_419", "Allowed filetypes");
 define("LAN_420", "fields are required");
 
 

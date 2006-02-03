@@ -4,8 +4,8 @@
 |     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_search.php,v $
-|     $Revision: 1.3 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.4 $
+|     $Date: 2006-02-03 19:32:47 $
 |     $Kirjoittaja: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -62,7 +62,7 @@ define("LAN_SEARCH_24", "Tulee sisältää sanat");
 define("LAN_SEARCH_25", "Ei saa sisältää sanoja");
 define("LAN_SEARCH_26", "Sisältää lauseen");
 define("LAN_SEARCH_27", "Word(s) beginning with");
-define("LAN_SEARCH_28", "Kaikki Has No Advanced Etsi");
+define("LAN_SEARCH_28", "All Has No Advanced Etsi");
 define("LAN_SEARCH_29", "Yksinkertainen");
 define("LAN_SEARCH_30", "Monipuolinen");
 define("LAN_SEARCH_31", "Has No Advanced Etsi");
@@ -91,25 +91,25 @@ define("LAN_SEARCH_52", "Match in");
 define("LAN_SEARCH_53", "Whole item");
 define("LAN_SEARCH_54", "Otsikko only");
 define("LAN_SEARCH_55", "Etsi in news category");
-define("LAN_SEARCH_56", "Kaikki Uutiset Aihepiirit");
+define("LAN_SEARCH_56", "All Uutiset Aihepiirit");
 define("LAN_SEARCH_57", "Kommentteja to");
 define("LAN_SEARCH_58", "Kaikki alueet");
-define("LAN_SEARCH_59", "Kaikki Kommentit");
+define("LAN_SEARCH_59", "All Kommentit");
 define("LAN_SEARCH_60", "Kommentteja to");
 define("LAN_SEARCH_61", "By author");
 define("LAN_SEARCH_62", "Date joined");
 define("LAN_SEARCH_63", "Etsi in category");
-define("LAN_SEARCH_64", "Kaikki Lataa Aihepiirit");
+define("LAN_SEARCH_64", "All Lataa Aihepiirit");
 define("LAN_SEARCH_65", "Tiedostojen lataus");
 define("LAN_SEARCH_66", "Lisätty");
-define("LAN_SEARCH_67", "Kaikki downloads details");
+define("LAN_SEARCH_67", "All downloads details");
 define("LAN_SEARCH_68", "Päivä");
 define("LAN_SEARCH_69", "Relevance");
 
 define("LAN_SEARCH_70", "Lähetäed to download item");
 define("LAN_SEARCH_71", "Lähetäed in vastaa to news item");
-define("LAN_SEARCH_72", "Kaikkiekirjoitus");
-define("LAN_SEARCH_73", "No Kaikkiekirjoitus.");
+define("LAN_SEARCH_72", "Allekirjoitus");
+define("LAN_SEARCH_73", "No Allekirjoitus.");
 define("LAN_SEARCH_74", "Joined on");
 
 define("LAN_SEARCH_75", "Etsi type");

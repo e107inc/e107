@@ -4,8 +4,8 @@
 |     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/integrity_check/languages/Finnish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:48 $
 |     $Kirjoittaja: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -20,11 +20,11 @@ define("Integ_07", "No files available");
 define("Integ_08", "Check integrity");
 define("Integ_09", "Create sfv-file");
 define("Integ_10", "The selected folder will <u>not</u> be saved within the crc-file.");
-define("Integ_11", "Tiedostoname:");
+define("Integ_11", "Tiedostonimi:");
 define("Integ_12", "Create sfv file");
 define("Integ_13", "Integrity-checking");
 define("Integ_14", "SFV-Creation not possible, because the folder ".e_PLUGIN."integrity_check/<b>{output}</b> is not writable. Please chmod this folder to 777!");
-define("Integ_15", "Kaikki files have been valittu ja are o.k.!");
+define("Integ_15", "All files have been valittu ja are o.k.!");
 define("Integ_16", "No core-crc-file available");
 define("Integ_17", "No plugin-crc-files available");
 define("Integ_18", "Create Plugin-CRC-Tiedosto");
@@ -42,8 +42,8 @@ define("Integ_26", "Load Site with normal header");
 
 define("Integ_30", "For less cpu-usage , you can do the checking in 1 - 10 steps.");
 define("Integ_31", "Steps: ");
-define("Integ_32", "There is a file named <b>log_crc.txt</b> in your crc-folder. Please delete! (Or try refreshing)");
-define("Integ_33", "There is a file named <b>log_miss.txt</b> in your crc-folder. Please delete! (Or try refreshing)");
+define("Integ_32", "There is a file nimid <b>log_crc.txt</b> in your crc-folder. Please delete! (Or try refreshing)");
+define("Integ_33", "There is a file nimid <b>log_miss.txt</b> in your crc-folder. Please delete! (Or try refreshing)");
 define("Integ_34", "Your Crc-folder is not writable!");
 define("Integ_35", "Because of the following reason(s) you are only allowed to select <b>one</b> step:");
 define("Integ_36", "Click here, if you don't want to wait 5 Seconds till the next step:");

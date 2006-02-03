@@ -4,8 +4,8 @@
 |     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_upload_handler.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:47 $
 |     $Kirjoittaja: sweetas $
 +----------------------------------------------------------------------------+
 */
@@ -18,8 +18,8 @@ define("LANUPLOAD_6", "The uploaded file exceeds the MAX_FILE_SIZE directive tha
 define("LANUPLOAD_7", "The uploaded file was only partially uploaded.");
 define("LANUPLOAD_8", "No file was uploaded.");
 define("LANUPLOAD_9", "Lisää tiedostoed file size 0 bytes");
-define("LANUPLOAD_10", "Lisää tiedosto failed [Duplicate filename] - A file with the same name already exits.");
-define("LANUPLOAD_11", "The file did not upload. Tiedostoname: ");
+define("LANUPLOAD_10", "Lisää tiedosto failed [Duplicate filenimi] - A file with the same nimi already exits.");
+define("LANUPLOAD_11", "The file did not upload. Tiedostonimi: ");
 define("LANUPLOAD_12", "Virhe");
 
 ?>

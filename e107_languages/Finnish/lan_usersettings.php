@@ -4,8 +4,8 @@
 |     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_usersettings.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:47 $
 |     $Kirjoittaja: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -28,7 +28,7 @@ define("LAN_116", "AIM osoite: ");
 define("LAN_117", "MSN Messenger: ");
 define("LAN_118", "Syntymäpäivä: ");
 define("LAN_119", "Sijainti: ");
-define("LAN_120", "Kaikkiekirjoitus: ");
+define("LAN_120", "Allekirjoitus: ");
 define("LAN_121", "Avatar: ");
 define("LAN_122", "Aikavyöhyke:");
 define("LAN_144", "www-sivu osoite: ");
@@ -66,7 +66,7 @@ define("LAN_425", "Valokuva");
 define("LAN_426", "This will be shown on your profile page");
 define("LAN_427", "Talleta ...");
 define("LAN_428", "Uutiset Nimike");
-define("LAN_429", "Linkkiki");
+define("LAN_429", "Linkki");
 define("LAN_430", "Lataa");
 define("LAN_431", "Artikkeli");
 define("LAN_432", "Arvostelu");
@@ -102,9 +102,9 @@ define("RESIZE_NOT_SUPPORTED", "Resize method not supported by this server. Plea
 define("LAN_USET_5", "Subscribed to");
 define("LAN_USET_6", "Subscribe to our mailing-list(s) ja/or sections of this site.");
 define("LAN_USET_7", "Muuta");
-define("LAN_USET_8", "Kaikkiekirjoitus / Aikavyöhyke");
+define("LAN_USET_8", "Allekirjoitus / Aikavyöhyke");
 define("LAN_USET_9", "Some of the required fields (marked with a *) are missing from your settings.");
 define("LAN_USET_10","Please update your settings now, in order to proceed.");
-define("LAN_USET_11", "That käyttäjä name cannot be accepted as valid, please choose a different käyttäjä name");
+define("LAN_USET_11", "That käyttäjä nimi cannot be accepted as valid, please choose a different käyttäjä nimi");
 
 ?>

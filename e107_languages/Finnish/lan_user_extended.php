@@ -4,8 +4,8 @@
 |     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_user_extended.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:47 $
 |     $Kirjoittaja: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -35,7 +35,7 @@ define("UE_LAN_YAHOO_DESC", "Yahoo! Address");
 define("UE_LAN_MSN", "MSN");
 define("UE_LAN_MSN_DESC", "MSN Address");
 define("UE_LAN_HOMEPAGE", "Homepage");
-define("UE_LAN_HOMEPAGE_DESC", "User homepage (url)");
+define("UE_LAN_HOMEPAGE_DESC", "User homepage (www-osoite)");
 define("UE_LAN_BIRTHDAY", "Syntymäpäivä");
 define("UE_LAN_BIRTHDAY_DESC", "Syntymäpäivä");
 

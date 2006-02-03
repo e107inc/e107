@@ -1,6 +1,6 @@
 <?php
 // e107 Language Tiedosto.
-// $Id: Finnish.php,v 1.2 2006-01-14 22:26:04 timmerbacka Exp $
+// $Id: Finnish.php,v 1.3 2006-02-03 19:32:47 timmerbacka Exp $
     
     
 define('EC_ADLAN_1', "Tapahtuma kalenteri");
@@ -153,7 +153,7 @@ define('EC_LAN_64', "Check for an all-päivä event");
 define('EC_LAN_65', "Toistuva:");
 define('EC_LAN_66', "Edit Event");
 define('EC_LAN_67', "Alkaen:");
-define('EC_LAN_68', "Kaikki päivä event");
+define('EC_LAN_68', "All päivä event");
 define('EC_LAN_69', "Ends");
 define('EC_LAN_70', "Tapahtuman kuvaus:");
 define('EC_LAN_71', "Tapahtuman kellonaika:");
@@ -172,7 +172,7 @@ define('edesc_LAN_9', "päivä");
 define('edesc_LAN_10', "päivää");
 define('EC_LAN_VIEWCALENDAR', "Näytä Kalenteri");
 define('EC_LAN_VIEWALLEVENTS', "Näytä all events");
-define('EC_LAN_ALLEVENTS', "Kaikki events");
+define('EC_LAN_ALLEVENTS', "All events");
 define('EC_LAN_74', "Näytä aihepiiri");
 // ADMIN
 define('EC_LAN_75', "Kalenteri settings updated.");
@@ -215,13 +215,13 @@ define('EC_LAN_107', "This plugin is a fully featured event calendar with calend
 define('EC_LAN_108', "Event Kalenteri Upgraded.  Now check the new options.");
 define('EC_LAN_109', "Unable to delete this event.");    
 define('EC_LAN_110', "Event Number ");    
-define('EC_LAN_111', "Kaikki the events on ");
-define('EC_LAN_112', "Kaikki the Events in ");
+define('EC_LAN_111', "All the events on ");    
+define('EC_LAN_112', "All the Events in ");    
 define('EC_LAN_113', "Event form already submitted.");
 define('EC_LAN_114', "Week starts with:");
 define('EC_LAN_115', "Sunnuntai");
 define('EC_LAN_116', "Maanantai");
-define('EC_LAN_117', "Length of päivänames (characters)");
+define('EC_LAN_117', "Length of päivänimis (characters)");
 define('EC_LAN_118', "Date format in calendar header.");
 define('EC_LAN_119', "month/year");
 define('EC_LAN_120', "year/month");
@@ -238,7 +238,7 @@ define('EC_LAN_130', "Subscriptions updated");
 define('EC_LAN_131', "Return");
 define('EC_LAN_132', "Expand details");
 define('EC_LAN_133', "[read more]");
-define('EC_LAN_134', "You have to provide a category name");
+define('EC_LAN_134', "You have to provide a category nimi");
 
 define('EC_ADLAN_A10', "Configuration");
 define('EC_ADLAN_A11', "Aihepiirit");
@@ -251,7 +251,7 @@ define('EC_ADLAN_A17', "Proceed");
 define('EC_ADLAN_A18', "Toiminta");
 define('EC_ADLAN_A19', "Ylläpitäjäister Aihepiirit");
 define('EC_ADLAN_A20', "Kalenteri Aihepiirit");
-define('EC_ADLAN_A21', "Aihepiiri name");
+define('EC_ADLAN_A21', "Aihepiiri nimi");
 
 define('EC_ADLAN_A23', "Create category");
 define('EC_ADLAN_A24', "Edit category");
@@ -270,7 +270,7 @@ define('EC_ADLAN_A35', "");
 define('EC_ADLAN_A59', "Aihepiiri is in use. Can not delete.");
 
 define('EC_ADLAN_A80', "Näkyy");
-define('EC_ADLAN_A81', "Kaikkiow subscription");
+define('EC_ADLAN_A81', "Allow subscription");
 define('EC_ADLAN_A82', "Force notification to this class");
 define('EC_ADLAN_A83', "Days ahead to notify of event");
 define('EC_ADLAN_A84', "Advanced message");
@@ -281,7 +281,7 @@ define('EC_ADLAN_A88', "Only advanced");
 define('EC_ADLAN_A89', "Only on the päivä");
 define('EC_ADLAN_A90', "Advanced ja on the päivä");
 define('EC_ADLAN_A91', "Sähköposti Subject");
-define('EC_ADLAN_A92', "Sähköposti from (name)");
+define('EC_ADLAN_A92', "Sähköposti from (nimi)");
 define('EC_ADLAN_A93', "Sähköposti from sähköpostiosoite");
 define('EC_ADLAN_A94', "Add new event class");
 define('EC_ADLAN_A95', "Enable subscriptions");

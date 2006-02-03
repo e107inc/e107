@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_plugins/newsfeed/languages/Finnish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:48 $
 |     $Kirjoittaja: stevedunstan $
 +----------------------------------------------------------------------------+
 */
@@ -47,21 +47,21 @@ define("NFLAN_26", "Päivitä Interval");
 define("NFLAN_27", "Options");
 define("NFLAN_28", "URL");
 define("NFLAN_29", "Available newsfeeds");
-define("NFLAN_30", "Feed name");
+define("NFLAN_30", "Feed nimi");
 define("NFLAN_31", "Takaisin newsfeed list");
 define("NFLAN_32", "No feed with that identification number can be found.");
 define("NFLAN_33", "Date published: ");
 define("NFLAN_34", "not known");
 define("NFLAN_35", "lähettäjä ");
 define("NFLAN_36", "Kuvaus");
-define("NFLAN_37", "short description of feed, enter 'default' to use the description defined in the feed");
+define("NFLAN_37", "short kuvaus of feed, enter 'default' to use the kuvaus defined in the feed");
 define("NFLAN_38", "Headlines");
 define("NFLAN_39", "Details");
 define("NFLAN_40", "Uutisetfeed poistettu");
 define("NFLAN_41", "No newsfeeds defined yet");
 
 define("NFLAN_42", "<b>&raquo;</b> <u>Feed Name:</u>
-    The identifying name of the feed, can be anything you like.
+    The identifying nimi of the feed, can be anything you like.
     <br /><br />
     <b>&raquo;</b> <u>URL to rss feed:</u>
     The address of the rss feed
@@ -69,8 +69,8 @@ define("NFLAN_42", "<b>&raquo;</b> <u>Feed Name:</u>
     <b>&raquo;</b> <u>Path to kuva:</u>
     If the feed has an kuva defined in it, enter 'default' to use it. To use your own kuva, enter the full path to it. Leave blank to use no kuva at all.
     <br /><br />
-    <b>&raquo;</b> <u>Kuvaus:</u>
-    Enter a short description of the feed, or 'default' to use the description defined in the feed (if there is one).
+    <b>&raquo;</b> <u>Description:</u>
+    Enter a short kuvaus of the feed, or 'default' to use the kuvaus defined in the feed (if there is one).
     <br /><br />
     <b>&raquo;</b> <u>Päivitä interval in seconds:</u>
     The amount of seconds that elapse before the feed is updated, for example, 1800: 30 minuuttia, 3600: an hour.

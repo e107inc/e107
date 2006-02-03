@@ -4,8 +4,8 @@
 |     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/lan_comment.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:47 $
 |     $Kirjoittaja: lisa_ $
 +----------------------------------------------------------------------------+
 */
@@ -35,7 +35,7 @@ define("LAN_105", "Sisältö");
 define("LAN_145", "Registered: ");
 define("LAN_194", "Vieras");
 define("LAN_195", "Rekisteröitynyt käyttäjä");
-define("LAN_310", "Unable to accept post as that käyttäjäname is registered - if it is your käyttäjäname please login to post.");
+define("LAN_310", "Unable to accept post as that käyttäjänimi is registered - if it is your käyttäjänimi please login to post.");
 define("LAN_312", "Duplicate post - unable to accept.");
 define("LAN_313", "Sijainti");
 define("LAN_314", "Ylläpidä kommentteja");

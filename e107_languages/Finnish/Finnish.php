@@ -4,8 +4,8 @@
 |     e107 website system - Language Tiedosto.
 |
 |     $Source: /cvs_backup/e107_langpacks/e107_languages/Finnish/Finnish.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2006-01-14 22:26:04 $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-03 19:32:47 $
 |     $Kirjoittaja: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -16,6 +16,6 @@ define("CHARSET", "utf-8");  // for a true multi-language site. :)
 define("CORE_LAN1","virhe : teema puuttuu.\\n\\nChange the used themes in your preferences (admin area) or upload files of the current theme on the server.");
 
 //v.616
-define("CORE_LAN2"," \\1 kirjoitti:");// "\\1" represents the käyttäjäname.
+define("CORE_LAN2"," \\1 kirjoitti:");// "\\1" represents the käyttäjänimi.
 define("CORE_LAN3","tiedosto liitteet pois käytöstä");
 ?>
