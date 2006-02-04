@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.31 $
-|     $Date: 2006-02-04 06:58:34 $
+|     $Revision: 1.32 $
+|     $Date: 2006-02-04 07:01:51 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -50,7 +50,7 @@ class userlogin {
 			$auth_file = e_PLUGIN."auth_{$pref['auth_method']}/alt_auth_login_class.php";
 			if (file_exists($auth_file)) {
 				require_once($auth_file);
-				$result = new alt_login($pref['auth_method'], $username, $userpass);
+				$result = new alt_login($username, $userpass);
 			}
 		}
 
