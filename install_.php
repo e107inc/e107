@@ -1,8 +1,23 @@
 <?php
 
 define("e107_INIT", TRUE);
-
 error_reporting(E_ERROR | E_PARSE);
+
+// setup some php options
+ini_set('magic_quotes_runtime',     0);
+ini_set('magic_quotes_sybase',      0);
+ini_set('arg_separator.output',     '&amp;');
+ini_set('session.use_only_cookies', 1);
+ini_set('session.use_trans_sid',    0);
+
+//  Ensure thet '.' is the first part of the include path
+$inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
+if($inc_path[0] != ".") {
+	array_unshift($inc_path, ".");
+	$inc_path = implode(PATH_SEPARATOR, $inc_path);
+	ini_set("include_path", $inc_path);
+}
+unset($inc_path);
 
 if(!function_exists("file_get_contents")) {
 	die("e107 requires PHP 4.3 or greater to work correctly.");

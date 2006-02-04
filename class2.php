@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/class2.php,v $
-|     $Revision: 1.257 $
-|     $Date: 2006-02-02 10:07:01 $
+|     $Revision: 1.258 $
+|     $Date: 2006-02-04 07:20:31 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -60,6 +60,15 @@ ini_set('magic_quotes_sybase',      0);
 ini_set('arg_separator.output',     '&amp;');
 ini_set('session.use_only_cookies', 1);
 ini_set('session.use_trans_sid',    0);
+
+//  Ensure thet '.' is the first part of the include path
+$inc_path = explode(PATH_SEPARATOR, ini_get('include_path'));
+if($inc_path[0] != ".") {
+	array_unshift($inc_path, ".");
+	$inc_path = implode(PATH_SEPARATOR, $inc_path);
+	ini_set("include_path", $inc_path);
+}
+unset($inc_path);
 
 // Grab e107_config, get directory paths, and create the $e107 object
 @include_once(realpath(dirname(__FILE__).'/e107_config.php'));
