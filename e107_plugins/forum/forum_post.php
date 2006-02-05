@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_post.php,v $
-|     $Revision: 1.63 $
-|     $Date: 2006-02-03 19:57:50 $
-|     $Author: mcfly_e107 $
+|     $Revision: 1.64 $
+|     $Date: 2006-02-05 12:32:47 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -399,10 +399,9 @@ if ($action == 'edit' || $action == 'quote')
 	$subject = $thread_info['0']['thread_name'];
 	$post = $tp->toForm($thread_info[0]['thread_thread']);
 	$post = preg_replace("/&lt;span class=&#39;smallblacktext&#39;.*\span\>/", "", $post);
-
-	$post = preg_replace("#\[hide].*?\[/hide]#", "", $post);
-
+	
 	if ($action == 'quote') {
+		$post = preg_replace("#\[hide].*?\[/hide]#s", "", $post);
 		$tmp = explode(chr(1), $thread_info[0]['user_name']);
 		$timeStamp = time();
 		$post = "[quote{$timeStamp}={$tmp[0]}]\n".$post."\n[/quote{$timeStamp}]\n";
