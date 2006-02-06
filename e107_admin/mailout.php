@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/mailout.php,v $
-|     $Revision: 1.49 $
-|     $Date: 2005-12-06 07:21:05 $
-|     $Author: sweetas $
+|     $Revision: 1.50 $
+|     $Date: 2006-02-06 18:33:32 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 
@@ -95,7 +95,7 @@ if (isset($_POST['submit'])) {
        $qry = "SELECT u.* FROM #user AS u WHERE u.user_id='".USERID."'";
 
 	} else {
-	
+
     $insert = "u.user_class REGEXP concat('(^|,)',{$_POST['email_to']},'(,|$)') AND u.user_ban='0' ";
 		$qry = "SELECT u.*, ue.* FROM #user AS u LEFT JOIN #user_extended AS ue ON ue.user_extended_id = u.user_id WHERE $insert ";
 	}
@@ -675,17 +675,14 @@ function userclasses($name) {
 		<option value='unverified'>".MAILAN_13."</option>
 		<option value='admin'>Admins</option>
 		<option value='self'>Self</option>";
-	$query = "
-						SELECT uc.*, count(u.user_id) AS members
-						FROM `e107_userclass_classes` AS uc
-						LEFT JOIN e107_user AS u ON u.user_class REGEXP concat('(^|,)',uc.userclass_id,'(,|$)')
-						GROUP BY uc.userclass_id	
+	$query = "SELECT uc.*, count(u.user_id) AS members
+			FROM #userclass_classes AS uc
+			LEFT JOIN #user AS u ON u.user_class REGEXP concat('(^|,)',uc.userclass_id,'(,|$)')
+			GROUP BY uc.userclass_id
 					";
 
 	$sql->db_Select_gen($query);
-//	$sql->db_Select("userclass_classes");
 	while ($row = $sql->db_Fetch()) {
-//		extract($row);
 		$public = ($row['userclass_editclass'] == 0)? "(".MAILAN_10.")" : "";
 		$text .= "<option value='{$row['userclass_id']}' >Userclass - {$row['userclass_name']}  $public [{$row['members']}]</option>";
 	}
