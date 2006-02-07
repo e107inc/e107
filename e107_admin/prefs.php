@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ?Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.75 $
-|     $Date: 2006-01-21 20:47:27 $
-|     $Author: e107coders $
+|     $Revision: 1.76 $
+|     $Date: 2006-02-07 12:04:24 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -76,16 +76,12 @@ while ($row = $sql->db_Fetch()) {
 }
 if ($authlist) {
 	$authlist[] = "e107";
-	$auth_dropdown = "\n<tr>
-		<td style='width:50%' class='forumheader3'>".PRFLAN_56.": </td>
-		<td style='width:50%; text-align:right;' class='forumheader3'>";
 	$auth_dropdown .= "<select class='tbox' name='auth_method'>\n";
 	foreach($authlist as $a) {
 		$s = ($pref['auth_method'] == $a ? " selected='selected'>" : "");
 		$auth_dropdown .= "<option {$s}>".$a."</option>\n";
 	}
 	$auth_dropdown .= "</select>\n";
-	$auth_dropdown .= "</td></tr>";
 } else {
 	$auth_dropdown = "<input type='hidden' name='auth_method' value='' />".PRFLAN_151;
 	$pref['auth_method'] = "";
@@ -838,8 +834,7 @@ $text .= "<div id='advanced' style='display:none; text-align:center'>
 
 	<tr>
 	<td style='width:50%' class='forumheader3'>".PRFLAN_150."<br /><span class='smalltext'>&nbsp</span></td>
-	<td style='width:50%; text-align:right' class='forumheader3'>{$auth_dropdown}
-	</td>
+	<td style='width:50%; text-align:right' class='forumheader3'>{$auth_dropdown}</td>
 	</tr>
 
 	";
