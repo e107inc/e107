@@ -4,9 +4,9 @@
 |     e107 website system - Language File.
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/languages/English/lan_forum_conf.php,v $
-|     $Revision: 1.2 $
-|     $Date: 2005-01-27 19:52:49 $
-|     $Author: streaky $
+|     $Revision: 1.3 $
+|     $Date: 2006-02-07 03:28:40 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 define("FORLAN_5", "Poll deleted.");
@@ -33,5 +33,12 @@ define("FORLAN_25", "Move Thread");
 define("FORLAN_26", "Reply deleted");
 	
 define("FORLAN_27", "moved");
+
+define("FORLAN_28", "Do not rename thread title");
+define("FORLAN_29", "Add");
+define("FORLAN_30", "to title");
+define("FORLAN_31", "Rename to:");
+define("FORLAN_32", "Rename thread options:");
+
 	
 ?>

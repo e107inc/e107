@@ -11,9 +11,9 @@
 | GNU General Public License (http://gnu.org).
 |
 | $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_conf.php,v $
-| $Revision: 1.6 $
-| $Date: 2006-01-05 09:06:46 $
-| $Author: sweetas $
+| $Revision: 1.7 $
+| $Date: 2006-02-07 03:28:40 $
+| $Author: mcfly_e107 $
 +---------------------------------------------------------------+
 */
 require_once("../../class2.php");
@@ -161,10 +161,10 @@ if ($action == "move")
 		</tr>
 		<tr>
 		<td colspan='2'><br />
-		<b>Rename thread Options:</b><br />
-		<input type='radio' name='rename_thread' checked='checked' value='none' /> Do not rename thread title<br />
-		<input type='radio' name='rename_thread' value='add' /> Add [".FORLAN_27."] to title<br />
-		<input type='radio' name='rename_thread' value='rename' /> Rename to: <input type='text' class='tbox' name='newtitle' size='60' maxlength='250' value='".$tp->toForm($info['thread_name'])."'/>
+		<b>".FORLAN_32."</b><br />
+		<input type='radio' name='rename_thread' checked='checked' value='none' /> ".FORLAN_28."<br />
+		<input type='radio' name='rename_thread' value='add' /> ".FORLAN_29." [".FORLAN_27."] ".FORLAN_30."<br />
+		<input type='radio' name='rename_thread' value='rename' /> ".FORLAN_31." <input type='text' class='tbox' name='newtitle' size='60' maxlength='250' value='".$tp->toForm($info['thread_name'])."'/>
 		</td>
 		</tr>
 		<tr style='vertical-align: top;'>
