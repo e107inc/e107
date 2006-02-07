@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/usersettings.php,v $
-|     $Revision: 1.61 $
-|     $Date: 2006-01-14 20:07:26 $
+|     $Revision: 1.62 $
+|     $Date: 2006-02-07 02:50:48 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -270,7 +270,7 @@ if (isset($_POST['updatesettings']))
 
 		if ($ret == '')
 		{
-			$sql->db_Update("user", "user_name='".$tp -> toDB($username)."' {$pwreset} ".$sesschange.", user_email='".$tp -> toDB(check_email($_POST['email']))."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['user_timezone'])."', user_hideemail='".$tp -> toDB($_POST['hideemail'])."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ", 'default', true);
+			$sql->db_Update("user", "user_name='".$tp -> toDB($username)."' {$pwreset} ".$sesschange.", user_email='".$tp -> toDB(check_email($_POST['email']))."', user_signature='".$_POST['signature']."', user_image='".$tp -> toDB($_POST['image'])."', user_timezone='".$tp -> toDB($_POST['user_timezone'])."', user_hideemail='".$tp -> toDB($_POST['hideemail'])."', user_login='".$_POST['realname']."' {$new_customtitle}, user_xup='".$tp -> toDB($_POST['user_xup'])."' WHERE user_id='".intval($inp)."' ");
 			// If user has changed display name, update the record in the online table
 			if($username != USERNAME && !$_uid)
 			{
