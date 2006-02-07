@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.137 $
-|     $Date: 2006-01-21 23:59:15 $
-|     $Author: e107coders $
+|     $Revision: 1.138 $
+|     $Date: 2006-02-07 14:49:02 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -263,6 +263,14 @@ class e_parse
 		}
 		return $ret;
 	}
+	
+	function text_truncate($text, $len = 200, $more = "[more]") {
+		if(strlen($text) <= $len) {
+			return $text;
+		} else {
+			return substr($text, 0, $len).$more;
+		}
+	}
 
 	function textclean ($text, $wrap=100)
 	{
@@ -312,7 +320,7 @@ class e_parse
 				if(CHARSET != "utf-8" && CHARSET != "UTF-8"){
 					$email_text = ($pref['email_text']) ? $pref['email_text'] : "\\1\\2&copy;\\3";
 				}else{
-					$email_text = ($pref['email_text']) ? $pref['email_text'] : "\\1\\2©\\3";
+					$email_text = ($pref['email_text']) ? $pref['email_text'] : "\\1\\2??\\3";
 				}
 				$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>", $text);
 			} else {
