@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.77 $
-|     $Date: 2006-02-07 13:28:04 $
-|     $Author: streaky $
+|     $Revision: 1.78 $
+|     $Date: 2006-02-07 15:35:43 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -68,14 +68,20 @@ if (isset($_POST['updateprefs']))
 	exit;
 }
 
-$sql->db_Select("plugin", "plugin_path", "plugin_installflag='1' ");
-while ($row = $sql->db_Fetch()) {
-	if (preg_match("/^(.*)_auth\.php/", $row['plugin_path'], $match)) {
-		$authlist[] = $match[1];
+if($sql->db_Select("plugin", "plugin_path", "plugin_installflag='1' AND plugin_path = 'alt_auth'"))
+{
+	$authlist[] = "e107";
+	$handle=opendir(e_PLUGIN."alt_auth");
+	while ($file = readdir($handle))
+	{
+		if(preg_match("/^(.*)_auth\.php/",$file,$match))
+		{
+			$authlist[] = $match[1];
+		}
 	}
 }
+
 if ($authlist) {
-	$authlist[] = "e107";
 	$auth_dropdown .= "<select class='tbox' name='auth_method'>\n";
 	foreach($authlist as $a) {
 		$s = ($pref['auth_method'] == $a ? " selected='selected'>" : "");
