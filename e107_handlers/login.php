@@ -12,8 +12,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.32 $
-|     $Date: 2006-02-04 07:01:51 $
+|     $Revision: 1.33 $
+|     $Date: 2006-02-07 13:28:04 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -47,10 +47,10 @@ class userlogin {
 		$autologin = intval($autologin);
 
 		if ($pref['auth_method'] && $pref['auth_method'] != "e107") {
-			$auth_file = e_PLUGIN."auth_{$pref['auth_method']}/alt_auth_login_class.php";
+			$auth_file = e_PLUGIN."alt_auth/".$pref['auth_method']."_auth.php";
 			if (file_exists($auth_file)) {
-				require_once($auth_file);
-				$result = new alt_login($username, $userpass);
+				require_once(e_PLUGIN."alt_auth/alt_auth_login_class.php");
+				$result = new alt_login($pref['auth_method'], $username, $userpass);
 			}
 		}
 
@@ -62,7 +62,6 @@ class userlogin {
 				return FALSE;
 			}
 		}
-		
 		if ($username != "" && $userpass != "") {
 			$username = preg_replace("/\sOR\s|\=|\#/", "", $username);
 			$ouserpass = $userpass;
