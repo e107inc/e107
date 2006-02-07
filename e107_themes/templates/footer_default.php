@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     �Steve Dunstan 2001-2002
+|     ???Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_themes/templates/footer_default.php,v $
-|     $Revision: 1.36 $
-|     $Date: 2006-01-20 17:12:11 $
+|     $Revision: 1.37 $
+|     $Date: 2006-02-07 12:06:28 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -161,6 +161,11 @@ if(isset($footer_js) && is_array($footer_js))
 echo "</body></html>";
 
 $page = ob_get_clean();
+
+$etag = md5($page);
+header("Cache-Control: must-revalidate");
+header("ETag: {$etag}");
+
 $pref['compression_level'] == 6;
 if(strstr($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip") || strstr($_SERVER['HTTP_USER_AGENT'], "Mozilla")) {
 	$browser_support = true;
