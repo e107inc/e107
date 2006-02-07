@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsletter/admin_config.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-12-01 13:32:09 $
+|     $Revision: 1.6 $
+|     $Date: 2006-02-07 03:16:00 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -399,7 +399,7 @@ class newsletter
 		$mail_style = "<link rel=\"stylesheet\" href=\"".SITEURL.$theme."style.css\" type=\"text/css\" />";
 		$mail_style .= "<div style='width:100%'>";
 		$mail_style .= "<div style='width:90%; padding-top:10px'>";
-		$mail_style .= "<div class='fcaption'><b>$message_subject<br />[ issue ".$newsletterInfo['newsletter_issue']." ]</b></div><br /><br />";
+		$mail_style .= "<div class='fcaption'><b>$message_subject<br />[ ".NLLAN_12." ".$newsletterInfo['newsletter_issue']." ]</b></div><br /><br />";
 		$mail_style .= "<div class='forumheader3'>";
 		$message_body = $mail_style.$newsletter_header."<hr />".$message_body."<br><br><hr />".$newsletter_footer."<br></div></div>";
 
