@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/prefs.php,v $
-|     $Revision: 1.76 $
-|     $Date: 2006-02-07 12:04:24 $
+|     $Revision: 1.77 $
+|     $Date: 2006-02-07 13:28:04 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -70,7 +70,7 @@ if (isset($_POST['updateprefs']))
 
 $sql->db_Select("plugin", "plugin_path", "plugin_installflag='1' ");
 while ($row = $sql->db_Fetch()) {
-	if (preg_match("/^auth_(.*)/", $row['plugin_path'], $match)) {
+	if (preg_match("/^(.*)_auth\.php/", $row['plugin_path'], $match)) {
 		$authlist[] = $match[1];
 	}
 }
