@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ?Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,16 +11,16 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/templates/newsfeed_menu_template.php,v $
-|     $Revision: 1.5 $
-|     $Date: 2005-12-14 19:28:51 $
-|     $Author: sweetas $
+|     $Revision: 1.6 $
+|     $Date: 2006-02-08 20:50:47 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
 
 $truncate = 100;
-$truncate_string = "...[more]";
+$truncate_string = " ...[more]";
 $items = 10;
 
 $NEWSFEED_MENU_START = "

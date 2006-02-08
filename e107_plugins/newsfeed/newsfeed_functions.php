@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     ©Steve Dunstan 2001-2002
+|     ?Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/newsfeed/newsfeed_functions.php,v $
-|     $Revision: 1.12 $
-|     $Date: 2005-12-28 16:12:59 $
-|     $Author: sweetas $
+|     $Revision: 1.13 $
+|     $Date: 2006-02-08 20:50:47 $
+|     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
 
@@ -125,7 +125,7 @@ function newsfeed_info($which) {
 			foreach ($item_total as $item) {
 				$FEEDITEMLINK = "<a href='".$item['link']."' rel='external'>".$tp -> toHTML($item['title'], TRUE)."</a>\n";
 				$feeditemtext = preg_replace("#\[[a-z0-9=]+\]|\[\/[a-z]+\]|\{[A-Z_]+\}#si", "", $item['description']);
-				$FEEDITEMTEXT = $tp->html_truncate($feeditemtext, $truncate, $truncate_string);
+				$FEEDITEMTEXT = $tp->text_truncate($feeditemtext, $truncate, $truncate_string);
 
 				$FEEDITEMCREATOR = $tp -> toHTML($item['author'], TRUE);
 				$data .= preg_replace("/\{(.*?)\}/e", '$\1', $NEWSFEED_MENU);
