@@ -24,7 +24,7 @@ return $tp->parseTemplate($THREADTOPIC_REPLY, TRUE, $forum_shortcodes);
 SC_END
 
 SC_BEGIN FORMSTART
-return "<form enctype='multipart/form-data' method='post' action='".e_SELF."?".e_QUERY."' name='dataform'>";
+return "<form enctype='multipart/form-data' method='post' action='".e_SELF."?".e_QUERY."' id='dataform'>";
 SC_END
 
 SC_BEGIN FORMEND
@@ -119,7 +119,7 @@ global $action, $thread_info;
 if (MODERATOR && $action == "nt")
 {
 	$thread_s = (isset($_POST['threadtype']) ? $_POST['threadtype'] : $thread_info['head']['thread_s']);
-	return "<br /><span class='defaulttext'>".LAN_400."<input name='threadtype' type='radio' value='0' ".(!$thread_s ? "checked='checked' " : "").">".LAN_1."&nbsp;<input name='threadtype' type='radio' value='1' ".($thread_s == 1 ? "checked='checked' " : "").">".LAN_2."&nbsp;<input name='threadtype' type='radio' value='2' ".($thread_s == 2 ? "checked='checked' " : "").">".LAN_3."</span>";
+	return "<br /><span class='defaulttext'>".LAN_400."<input name='threadtype' type='radio' value='0' ".(!$thread_s ? "checked='checked' " : "")." />".LAN_1."&nbsp;<input name='threadtype' type='radio' value='1' ".($thread_s == 1 ? "checked='checked' " : "")." />".LAN_2."&nbsp;<input name='threadtype' type='radio' value='2' ".($thread_s == 2 ? "checked='checked' " : "")." />".LAN_3."</span>";
 }
 return "";
 SC_END

@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/poll/poll_class.php,v $
-|     $Revision: 1.38 $
-|     $Date: 2006-01-05 09:06:46 $
-|     $Author: sweetas $
+|     $Revision: 1.39 $
+|     $Date: 2006-02-08 02:59:04 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -304,7 +304,7 @@ class poll
 			</tr>
 			<tr>
 			<td colspan='2' class='forumheader3'>
-			<span class='smalltext'>".LAN_386."
+			<span class='smalltext'>".LAN_386."</span>
 			</td>
 			</tr>
 			<tr><td style='width:20%' class='forumheader3'><div class='normaltext'>".LAN_5."</div></td><td style='width:80%'class='forumheader3'><input class='tbox' type='text' name='poll_title' size='70' value='".$tp->post_toForm($_POST['poll_title'])."' maxlength='200' /></td></tr>";

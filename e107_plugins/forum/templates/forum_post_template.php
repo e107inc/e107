@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/templates/forum_post_template.php,v $
-|     $Revision: 1.15 $
-|     $Date: 2006-01-25 20:31:07 $
+|     $Revision: 1.16 $
+|     $Date: 2006-02-08 02:59:04 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -54,25 +54,36 @@ if(!$poll)
 // finally, file attach is optional, again only change this if you know what you're doing ...
 if(!$fileattach)
 {
-$fileattach = "<tr><td colspan='2' class='nforumcaption2'>".($pref['image_post'] ? LAN_390 : LAN_416)."</td></tr>
-<tr><td style='width:20%' class='forumheader3'>".LAN_392."</td>
-<td style='width:80%' class='forumheader3'>".LAN_393." | ".$allowed_filetypes." |<br />".LAN_394."<br />".LAN_395.": ".($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'].LAN_396 : ini_get('upload_max_filesize'))."
-<br />
-
-<div id='fiupsection'>
-<span id='fiupopt'><input class='tbox' name='file_userfile[]' type='file' size='47'></span>
-</div>
-<input class='button' type='button' name='addoption' value='".LAN_417."' onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
-</td>
+$fileattach = "
+<tr>
+	<td colspan='2' class='nforumcaption2'>".($pref['image_post'] ? LAN_390 : LAN_416)."</td>
 </tr>
-</td>
+<tr>
+	<td style='width:20%' class='forumheader3'>".LAN_392."</td>
+	<td style='width:80%' class='forumheader3'>".LAN_393." | ".$allowed_filetypes." |<br />".LAN_394."<br />".LAN_395.": ".($pref['upload_maxfilesize'] ? $pref['upload_maxfilesize'].LAN_396 : ini_get('upload_max_filesize'))."
+		<br />
+		<div id='fiupsection'>
+		<span id='fiupopt'>
+			<input class='tbox' name='file_userfile[]' type='file' size='47' />
+		</span>
+		</div>
+		<input class='button' type='button' name='addoption' value='".LAN_417."' onclick=\"duplicateHTML('fiupopt','fiupsection')\" />
+	</td>
 </tr>
 ";
+//</td>
+//</tr>
 }
 // If the upload directory is not writable, we need to alert the user about this.
 if(!$fileattach_alert)
 {
-	$fileattach_alert = "<tr><td colspan='2' class='nforumcaption2'>".($pref['image_post'] ? LAN_390 : LAN_416)."</td></tr><tr><td colspan='2' class='forumheader3'>".LAN_FORUM_1."</td></tr>\n";
+	$fileattach_alert = "
+	<tr>
+		<td colspan='2' class='nforumcaption2'>".($pref['image_post'] ? LAN_390 : LAN_416)."</td>
+	</tr>
+	<tr>
+		<td colspan='2' class='forumheader3'>".LAN_FORUM_1."</td>
+	</tr>\n";
 }
 // ------------
 
@@ -103,6 +114,8 @@ $FORUMPOST = "
 <tr style='vertical-align:top'>
 <td colspan='2' class='forumheader' style='text-align:center'>
 {BUTTONS}
+</td>
+</tr>
 </table>
 {FORMEND}
 
