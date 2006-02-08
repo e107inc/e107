@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/users.php,v $
-|     $Revision: 1.69 $
-|     $Date: 2006-01-31 04:08:49 $
-|     $Author: e107coders $
+|     $Revision: 1.70 $
+|     $Date: 2006-02-08 02:27:24 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 require_once("../class2.php");
@@ -103,13 +103,15 @@ if (isset($_POST['update_options'])) {
 // ------- Prune Users. --------------
 if (isset($_POST['prune'])) {
 	$e107cache->clear("online_menu_totals");
-	$sql2 = new db;
 	$text = USRLAN_56." ";
-	if ($sql->db_Select("user", "user_id, user_name", "user_ban=2")) {
-		while ($row = $sql->db_Fetch()) {
-			extract($row);
-			$text .= $user_name." ";
-			$sql2->db_Delete("user", "user_id='$user_id' ");
+	if ($sql->db_Select("user", "user_id, user_name", "user_ban=2"))
+	{
+		$uList = $sql->db_getList();
+		foreach($uList as $u)
+		{
+			$text .= $u['user_name']." ";
+			$sql->db_Delete("user", "user_id='{$u['user_id']}' ");
+			$sql->db_Delete("user_extended", "user_extended_id='{$u['user_id']}' ");
 		}
 	}
 	$ns->tablerender(USRLAN_57, "<div style='text-align:center'><b>".$text."</b></div>");
@@ -256,6 +258,7 @@ if (isset($_POST['useraction']) && $_POST['useraction'] == 'test') {
 if (isset($_POST['useraction']) && $_POST['useraction'] == 'deluser') {
 	if ($_POST['confirm']) {
 		if ($sql->db_Delete("user", "user_id='".$_POST['userid']."' AND user_perms != '0'")) {
+		   $sql->db_Delete("user_extended", "user_extended_id='".$_POST['userid']."' ");
 			$user->show_message(USRLAN_10);
 		}
 		if(!$sub_action){ $sub_action = "user_id"; }
