@@ -12,9 +12,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/login.php,v $
-|     $Revision: 1.33 $
-|     $Date: 2006-02-07 13:28:04 $
-|     $Author: streaky $
+|     $Revision: 1.34 $
+|     $Date: 2006-02-08 01:34:41 $
+|     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
 
@@ -143,7 +143,7 @@ class userlogin {
 	}
 
 	function checkibr($fip) {
-		global $sql,$pref;
+		global $sql, $pref, $tp;
 		if($pref['autoban'] == 1 || $pref['autoban'] == 3){ // Flood + Login or Login Only.
 	   		$fails = $sql -> db_Count("generic", "(*)", "WHERE gen_ip='$fip' AND gen_type='failed_login' ");
 			if($fails > 10) {
