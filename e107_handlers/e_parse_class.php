@@ -3,7 +3,7 @@
 + ----------------------------------------------------------------------------+
 |     e107 website system
 |
-|     Steve Dunstan 2001-2002
+|     © Steve Dunstan 2001-2002
 |     http://e107.org
 |     jalist@e107.org
 |
@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.138 $
-|     $Date: 2006-02-07 14:49:02 $
+|     $Revision: 1.139 $
+|     $Date: 2006-02-08 21:18:09 $
 |     $Author: streaky $
 +----------------------------------------------------------------------------+
 */
@@ -320,7 +320,7 @@ class e_parse
 				if(CHARSET != "utf-8" && CHARSET != "UTF-8"){
 					$email_text = ($pref['email_text']) ? $pref['email_text'] : "\\1\\2&copy;\\3";
 				}else{
-					$email_text = ($pref['email_text']) ? $pref['email_text'] : "\\1\\2??\\3";
+					$email_text = ($pref['email_text']) ? $pref['email_text'] : "\\1\\2Â©\\3";
 				}
 				$text = preg_replace("#([\n ])([a-z0-9\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1<a rel='external' href='javascript:window.location=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\";self.close();' onmouseover='window.status=\"mai\"+\"lto:\"+\"\\2\"+\"@\"+\"\\3\"; return true;' onmouseout='window.status=\"\";return true;'>".$email_text."</a>", $text);
 			} else {
