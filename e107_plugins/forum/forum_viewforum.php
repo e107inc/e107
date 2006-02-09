@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/forum/forum_viewforum.php,v $
-|     $Revision: 1.48 $
-|     $Date: 2006-01-15 19:07:41 $
+|     $Revision: 1.49 $
+|     $Date: 2006-02-09 01:49:33 $
 |     $Author: mcfly_e107 $
 +----------------------------------------------------------------------------+
 */
@@ -409,7 +409,7 @@ function parse_thread($thread_info)
 		$thread_name = substr($thread_name, strlen($THREADTYPE));
 	}
 	if ($pref['forum_tooltip']) {
-		$thread_thread = strip_tags($tp->toHTML($thread_info['thread_thread'], false, 'no_hook'));
+		$thread_thread = strip_tags($tp->toHTML($thread_info['thread_thread'], true, 'no_hook'));
 		$tip_length = ($pref['forum_tiplength'] ? $pref['forum_tiplength'] : 400);
 		if (strlen($thread_thread) > $tip_length) {
 			$thread_thread = substr($thread_thread, 0, $tip_length)." ".$menu_pref['newforumposts_postfix'];
