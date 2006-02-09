@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.42 $
-|     $Date: 2006-01-24 22:38:40 $
+|     $Revision: 1.43 $
+|     $Date: 2006-02-09 22:25:20 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -107,12 +107,12 @@ class rssCreate {
 				$loop=0;
 				foreach($tmp as $value) {
 
-					$this -> rssItems[$loop]['title'] = $tp -> toRss($value['news_title']);
+					$this -> rssItems[$loop]['title'] = $value['news_title'];
 					$this -> rssItems[$loop]['link'] = "http://".$_SERVER['HTTP_HOST'].e_HTTP."news.php?item.".$value['news_id'].".".$value['news_category'];
                     if($value['news_summary']){
-                        	$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['news_summary']) : $tp -> toRss(substr($value['news_summary'], 0, 100)));
+                        	$this -> rssItems[$loop]['description'] = $value['news_summary'];
 					}else{
-						$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['news_body']) : $tp -> toRss(substr($value['news_body'], 0, 100)));
+						$this -> rssItems[$loop]['description'] = $value['news_body'];
                     }
 					$this -> rssItems[$loop]['author'] = $value['user_name'];
                     $this -> rssItems[$loop]['author_email'] = $value['user_email'];
@@ -146,7 +146,7 @@ class rssCreate {
 				$this -> rssItems = array();
 				$loop=0;
 				foreach($tmp as $value) {
-					$this -> rssItems[$loop]['title'] = $tp -> toRss($value['comment_subject']);
+					$this -> rssItems[$loop]['title'] = $value['comment_subject'];
 
 					switch ($value['comment_type']) {
 						case 0:
@@ -157,7 +157,7 @@ class rssCreate {
 							break;
 					}
 
-					$this -> rssItems[$loop]['description'] = $tp -> toRss($value['comment_comment']);
+					$this -> rssItems[$loop]['description'] = $value['comment_comment'];
 					$this -> rssItems[$loop]['author'] = substr($value['comment_author'], (strpos($value['comment_author'], ".")+1));
 					$loop++;
 				}
@@ -187,10 +187,10 @@ class rssCreate {
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
 					}
 
-					$this -> rssItems[$loop]['title'] = $tp -> toRss($value['thread_name']);
+					$this -> rssItems[$loop]['title'] = $value['thread_name'];
 					$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
 
-					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['thread_thread']) : $tp -> toRss(substr($value['thread_thread'], 0, 100)));
+					$this -> rssItems[$loop]['description'] = $value['thread_thread'];
 
 					$loop++;
 				}
@@ -219,14 +219,14 @@ class rssCreate {
 					}
 
 					if($value['parent_name']) {
-						$this -> rssItems[$loop]['title'] = "Re: ".$tp -> toRss($value['parent_name']);
+						$this -> rssItems[$loop]['title'] = "Re: ".$value['parent_name'];
 						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_parent'];
 					} else {
-						$this -> rssItems[$loop]['title'] = $tp -> toRss($value['thread_name']);
+						$this -> rssItems[$loop]['title'] = $value['thread_name'];
 						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
 					}
 
-					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['thread_thread']) : $tp -> toRss(substr($value['thread_thread'], 0, 100)));
+					$this -> rssItems[$loop]['description'] = $value['thread_thread'];
 
 					$loop++;
 				}
@@ -266,9 +266,9 @@ class rssCreate {
 					list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
 				}
 
-				$this -> rssItems[$loop]['title'] = $tp -> toRss($topic['thread_name']);
+				$this -> rssItems[$loop]['title'] = $topic['thread_name'];
 				$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$topic['thread_id'];
-				$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($topic['thread_thread']) : $tp -> toRss(substr($topic['thread_thread'], 0, 100)));
+				$this -> rssItems[$loop]['description'] = $topic['thread_thread'];
 				$loop ++;
 				foreach($replies as $value) {
 					if($value['user_name']) {
@@ -278,9 +278,9 @@ class rssCreate {
 						$tmp=explode(".", $value['thread_user'], 2);
 						list($this -> rssItems[$loop]['author'], $ip) = explode(chr(1), $tmp[1]);
 					}
-					$this -> rssItems[$loop]['title'] = "Re: ".$tp -> toRss($topic['thread_name']);
+					$this -> rssItems[$loop]['title'] = "Re: ".$topic['thread_name'];
 					$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$this -> topicid;
-					$this -> rssItems[$loop]['description'] = $tp -> toRss($value['thread_thread']);
+					$this -> rssItems[$loop]['description'] = $value['thread_thread'];
 					$loop++;
 				}
 			break;
@@ -297,7 +297,7 @@ class rssCreate {
 					$this -> rssItems[$loop]['author'] = $nick;
 					$this -> rssItems[$loop]['title'] = $value['bugtrack2_bugs_summary'];
 					$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."bugtracker2/bugtracker2.php?0.bug.".$value['bugtrack2_bugs_id'];
-					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['bugtrack2_bugs_description']) : $tp -> toRss(substr($value['bugtrack2_bugs_description'], 0, 100)));
+					$this -> rssItems[$loop]['description'] = $value['bugtrack2_bugs_description'];
 					$loop++;
 				}
 			break;
@@ -329,13 +329,13 @@ class rssCreate {
 					}
 
 					if($value['parent_name']) {
-						$this -> rssItems[$loop]['title'] = $tp -> toRss("Re: ".$value['parent_name']);
+						$this -> rssItems[$loop]['title'] = "Re: ".$value['parent_name'];
 						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'].".post";
 					} else {
-						$this -> rssItems[$loop]['title'] = $tp -> toRss($value['thread_name']);
+						$this -> rssItems[$loop]['title'] = $value['thread_name'];
 						$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY."forum/forum_viewtopic.php?".$value['thread_id'];
 					}
-					$this -> rssItems[$loop]['description'] = ($rss_type == 3 ? $tp -> toRss($value['thread_thread']) : $tp -> toRss(substr($value['thread_thread'], 0, 100)));
+					$this -> rssItems[$loop]['description'] = $value['thread_thread'];
 					$loop++;
 				}
 			break;
@@ -382,7 +382,7 @@ class rssCreate {
 
 						$this -> rssItems[$loop]['author'] = $row[$author];
 						$this -> rssItems[$loop]['author_email'] = $row[$author_email];
-						$this -> rssItems[$loop]['title'] = $tp -> toRss($row[$title]);
+						$this -> rssItems[$loop]['title'] = $row[$title];
 						$item = ($itemid) ? $row[$itemid] : "";
 						$link2 = str_replace("#",$item,$link);
 						if($link2){
@@ -392,7 +392,7 @@ class rssCreate {
                             	$this -> rssItems[$loop]['link'] = $e107->http_path.$PLUGINS_DIRECTORY.$link2;
 							}
                                             }
-						$this -> rssItems[$loop]['description'] = ($rss_type == 3) ? $tp -> toRss($row[$description]) : $tp -> toRss(substr($row[$description], 0, 100));
+						$this -> rssItems[$loop]['description'] = $row[$description];
 
 						if($enc_url){ $this -> rssItems[$loop]['enc_url'] = $e107->http_path.$PLUGINS_DIRECTORY.$enc_url.$row[$item_id]; }
                			if($enc_leng){ $this -> rssItems[$loop]['enc_leng'] = $row[$enc_leng]; }
@@ -404,7 +404,10 @@ class rssCreate {
 
 						$catid = ($categoryid) ? $row[$categoryid] : "";
 						$catlink = ($categorylink) ? str_replace("#",$catid,$categorylink) : "";
-						if($categoryname){ $this -> rssItems[$loop]['category'] = "<category domain='".$e107->http_path.$catlink."'>".$tp -> toRss($row[$categoryname])."</category>"; }
+						if($categoryname && $catlink){
+							$this -> rssItems[$loop]['category_name'] = $row[$categoryname];
+							$this -> rssItems[$loop]['category_link'] = $e107->http_path.$catlink;
+						}
 						if($datestamp){
 							$this -> rssItems[$loop]['pubdate'] = $row[$datestamp];
 						}
@@ -443,7 +446,7 @@ class rssCreate {
 						echo "
 							<item>
 							<title>".$tp->toRss($value['title'])."</title>
-							<description>".$tp->toRss($value['description'])."</description>
+							<description>".$tp->toRss(substr($value['description'],0,150))."</description>
 							<author>".$value['author']."&lt;".$this->nospam($value['author_email'])."&gt;</author>
 							<link>".$value['link']."</link>
 							</item>";
@@ -498,12 +501,16 @@ class rssCreate {
                 	echo "<link>".$value['link']."</link>\n";
 				}
 
-				echo "<description>".$tp->toRss($value['description'])."</description>
-					".$value['category']."\n";
+				echo "<description>".$tp->toRss($value['description'])."</description>\n";
+
+				if($value['category_name'] && $value['category_link']){
+                	echo "<category domain='".$value['category_link']."'>".$tp -> toRss($value['category_name'])."</category>\n";
+				}
 
 				if($value['comment']){
 					echo "<comments>".$tp->toRss($value['comment'])."</comments>\n";
-				 }
+				}
+
 				if($value['author']){
 					echo "<author>".$value['author']."&lt;".$this->nospam($value['author_email'])."&gt;</author>\n";
 				}
@@ -586,12 +593,12 @@ class rssCreate {
 
     function get_iso_8601_date($int_date) {
    //$int_date: current date in UNIX timestamp
-   $date_mod = date('Y-m-d\TH:i:s', $int_date);
-   $pre_timezone = date('O', $int_date);
-   $time_zone = substr($pre_timezone, 0, 3).":".substr($pre_timezone, 3, 2);
-   $date_mod .= $time_zone;
-   return $date_mod;
-}
+   		$date_mod = date('Y-m-d\TH:i:s', $int_date);
+   		$pre_timezone = date('O', $int_date);
+   		$time_zone = substr($pre_timezone, 0, 3).":".substr($pre_timezone, 3, 2);
+   		$date_mod .= $time_zone;
+   		return $date_mod;
+	}
 
 	function nospam($text){
 		$tmp = explode("@",$text);
