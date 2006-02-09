@@ -11,8 +11,8 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/newspost.php,v $
-|   $Revision: 1.104 $
-|   $Date: 2006-01-21 23:59:15 $
+|   $Revision: 1.105 $
+|   $Date: 2006-02-09 01:42:31 $
 |   $Author: e107coders $
 +---------------------------------------------------------------+
 
@@ -148,7 +148,7 @@ if (isset($_POST['preview'])) {
 	$newspost->preview_item($id);
 }
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['submit_news'])) {
     if(e_WYSIWYG){
 		$_POST['data'] = $tp->createConstants($_POST['data']); // convert e107_images to {e_IMAGE} etc.
 		$_POST['news_extended'] = $tp->createConstants($_POST['news_extended']);
@@ -220,7 +220,7 @@ if (!e_QUERY || $action == "main") {
 if ($action == "create") {
 	$preset = $pst->read_preset("admin_newspost");  //only works here because $_POST is used.
 
-	if ($sub_action == "edit" && !$_POST['preview'] && !$_POST['submit']) {
+	if ($sub_action == "edit" && !$_POST['preview'] && !$_POST['submit_news']) {
 		if ($sql->db_Select("news", "*", "news_id='$id' ")) {
 			$row = $sql->db_Fetch();
 			extract($row);
@@ -457,7 +457,7 @@ class newspost {
 		}
 
 		$text = "<div style='text-align:center'>
-		<form ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." method='post' action='".e_SELF."?".e_QUERY."' id='dataform'>
+		<form method='post' action='".e_SELF."?".e_QUERY."' id='dataform' ".(FILE_UPLOADS ? "enctype='multipart/form-data'" : "")." >
 		<table style='".ADMIN_WIDTH."' class='fborder'>
 
 		<tr>
@@ -857,7 +857,7 @@ class newspost {
 		<td colspan='2'  style='text-align:center' class='forumheader'>".
 
 		(isset($_POST['preview']) ? "<input class='button' type='submit' name='preview' value='".NWSLAN_24."' /> " : "<input class='button' type='submit' name='preview' value='".NWSLAN_27."' /> ").
-		($id && $sub_action != "sn" && $sub_action != "upload" ? "<input class='button' type='submit' name='submit' value='".NWSLAN_25."' /> " : "<input class='button' type='submit' name='submit' value='".NWSLAN_26."' /> ")."
+		($id && $sub_action != "sn" && $sub_action != "upload" ? "<input class='button' type='submit' name='submit_news' value='".NWSLAN_25."' /> " : "<input class='button' type='submit' name='submit_news' value='".NWSLAN_26."' /> ")."
 
 
 		<input type='hidden' name='news_id' value='$news_id' />  \n</td>
