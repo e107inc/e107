@@ -12,13 +12,16 @@
 |        GNU General Public License (http://gnu.org).
 |
 |   $Source: /cvs_backup/e107_0.7/e107_admin/header.php,v $
-|   $Revision: 1.43 $
-|   $Date: 2006-01-31 04:08:49 $
-|   $Author: e107coders $
+|   $Revision: 1.44 $
+|   $Date: 2006-02-09 09:35:52 $
+|   $Author: sweetas $
 +---------------------------------------------------------------+
 */
 
 if (!defined('e107_INIT')) { exit; }
+
+// send the charset to the browser - overides spurious server settings with the lan pack settings.
+header("Content-type: text/html; charset=".CHARSET, true);
 
 require_once(e_ADMIN.'ad_links.php');
 echo defined('STANDARDS_MODE') ? "" :
