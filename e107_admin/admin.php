@@ -11,12 +11,14 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_admin/admin.php,v $
-|     $Revision: 1.28 $
-|     $Date: 2006-01-19 04:00:03 $
-|     $Author: e107coders $
+|     $Revision: 1.29 $
+|     $Date: 2006-02-09 09:30:35 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 require_once('../class2.php');
+// send the charset to the browser - overides spurious server settings with the lan pack settings.
+header("Content-type: text/html; charset=".CHARSET, true);
 $e_sub_cat = 'main';
 require_once('auth.php');
 require_once(e_HANDLER.'admin_handler.php');
