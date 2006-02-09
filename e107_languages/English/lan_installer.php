@@ -116,4 +116,9 @@ define("LANINS_081", "Enter your email address");
 
 define("LANINS_082", "user@yoursite.com");
 
+// Better table creation error reporting
+define("LANINS_083", "MySQL Reported Error:");
+define("LANINS_084", "The installer could not establish a connection to the database");
+define("LANINS_085", "The installer could not select database:");
+
 ?>
