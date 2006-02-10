@@ -1,7 +1,7 @@
 <?php
 
 define("e107_INIT", TRUE);
-error_reporting(E_ERROR | E_PARSE);
+error_reporting(E_ALL);
 
 // setup some php options
 ini_set('magic_quotes_runtime',     0);
@@ -37,8 +37,8 @@ header("Content-type: text/html; charset=utf-8");
 
 $installer_folder_name = 'e107_install';
 
-require_once("./{$installer_folder_name}/defaults.php");
-require_once("./{$HANDLERS_DIRECTORY}e107_class.php");
+include_once("./{$installer_folder_name}/defaults.php");
+include_once("./{$HANDLERS_DIRECTORY}e107_class.php");
 
 $e107_paths = compact('ADMIN_DIRECTORY', 'FILES_DIRECTORY', 'IMAGES_DIRECTORY', 'THEMES_DIRECTORY', 'PLUGINS_DIRECTORY', 'HANDLERS_DIRECTORY', 'LANGUAGES_DIRECTORY', 'HELP_DIRECTORY', 'DOWNLOADS_DIRECTORY');
 $e107 = new e107($e107_paths, __FILE__);
@@ -46,17 +46,17 @@ unset($e107_paths);
 
 $e107->e107_dirs['INSTALLER'] = "{$installer_folder_name}/";
 
-require_once("./{$installer_folder_name}/install_template_class.php");
-require_once("./{$installer_folder_name}/installer_handling_class.php");
+include_once("./{$installer_folder_name}/install_template_class.php");
+include_once("./{$installer_folder_name}/installer_handling_class.php");
 $e_install = new e_install();
-require_once("./{$installer_folder_name}/forms_class.php");
+include_once("./{$installer_folder_name}/forms_class.php");
 $e_forms = new e_forms();
 
 $e_install->template->SetTag("installer_css_http", e_HTTP.$installer_folder_name."/style.css");
 $e_install->template->SetTag("installer_folder_http", e_HTTP.$installer_folder_name."/");
 $e_install->template->SetTag("files_dir_http", e_FILE_ABS);
 
-if(!$_POST['stage']) {
+if(!isset($_POST['stage'])) {
 	$_POST['stage'] = 1;
 }
 $_POST['stage'] = intval($_POST['stage']);
