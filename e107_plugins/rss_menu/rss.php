@@ -11,8 +11,8 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_plugins/rss_menu/rss.php,v $
-|     $Revision: 1.43 $
-|     $Date: 2006-02-09 22:25:20 $
+|     $Revision: 1.44 $
+|     $Date: 2006-02-10 23:38:58 $
 |     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
@@ -539,7 +539,7 @@ class rssCreate {
 				<!-- content type=\"".$this -> contentType."\" -->
 				<rdf:RDF xmlns=\"http://purl.org/rss/1.0/\" xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:sy=\"http://purl.org/rss/1.0/modules/syndication/\" xmlns:admin=\"http://webns.net/mvcb/\" xmlns:content=\"http://purl.org/rss/1.0/modules/content/\">
 				<channel rdf:about=\"".$pref['siteurl']."\">
-				<title>".$rss_title."</title>
+				<title>".$tp->toRss($rss_title)."</title>
 				<link>".$pref['siteurl']."</link>
 				<description>".$tp->toRss($pref['sitedescription'])."</description>
 				<dc:language>en</dc:language>
@@ -567,11 +567,11 @@ class rssCreate {
 			foreach($this -> rssItems as $value) {
 				echo "
 					<item rdf:about=\"".$value['link']."\">
-					<title>".$value['title']."</title>
+					<title>".$tp->toRss($value['title'])."</title>
 					<link>".$value['link']."</link>
 					<dc:date>".$this->get_iso_8601_date($time + $this -> offset)."</dc:date>
 					<dc:creator>".$value['author']."</dc:creator>
-					<dc:subject>".$value['category_name']."</dc:subject>
+					<dc:subject>".$tp->toRss($value['category_name'])."</dc:subject>
 					<description>".$tp->toRss($value['description'])."</description>
 					</item>";
 			}
