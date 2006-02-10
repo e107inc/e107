@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.140 $
-|     $Date: 2006-02-10 15:31:52 $
-|     $Author: sweetas $
+|     $Revision: 1.141 $
+|     $Date: 2006-02-10 23:53:06 $
+|     $Author: e107coders $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -263,7 +263,7 @@ class e_parse
 		}
 		return $ret;
 	}
-	
+
 	function text_truncate($text, $len = 200, $more = "[more]") {
 		if(strlen($text) <= $len) {
 			return $text;
@@ -419,7 +419,7 @@ class e_parse
 
 		return trim($text);
 	}
-	
+
 	function toAttribute($text) {
 		if (!preg_match('/&#|\'|"|\(|\)|<|>/s', $text)) {
 			return $text;
@@ -469,6 +469,7 @@ class e_parse
 		}
 
 		$text = preg_replace_callback("#\{(e_[A-Z]*)\}#s", array($this, 'doReplace'), $text);
+		$text = str_replace("{THEME}",constant("THEME"),$text);   
 		return $text;
 	}
 
