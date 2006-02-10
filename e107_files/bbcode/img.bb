@@ -9,7 +9,7 @@ $imgParms['class']="bbcode";
 $imgParms['alt']='';
 $imgParms['style']="vertical-align:middle; border:0";
 
-
+$code_text = $tp -> toAttribute($code_text);
 
 if($parm) {
 	$parm = preg_replace('#onerror *=#i','',$parm);
@@ -21,7 +21,7 @@ if($parm) {
 }
 $parmStr="";
 foreach($imgParms as $k => $v) {
-	$parmStr .= "$k='{$v}' ";
+	$parmStr .= $tp -> toAttribute($k)."='".$tp -> toAttribute($v)."' ";
 }
 
 
@@ -31,7 +31,7 @@ if(file_exists(e_IMAGE."newspost_images/".$code_text))
 }
 
 if (!$postID) {
-	return "<img src='{$code_text}' {$parmStr} />";
+	return "<img src='".$code_text."' {$parmStr} />";
 } else {
 	if(strstr($postID,'class:')) {
 		$uc = substr($postID,6);
@@ -44,7 +44,7 @@ if (!$postID) {
 			$uc = e107_userGetuserclass($postID);
 		}
 		if (check_class($pref['image_post_class'],$uc)) {
-			return "<img src='{$code_text}' {$parmStr} />";
+			return "<img src='".$code_text."' {$parmStr} />";
 		}
 		else
 		{

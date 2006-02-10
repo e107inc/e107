@@ -11,9 +11,9 @@
 |     GNU General Public License (http://gnu.org).
 |
 |     $Source: /cvs_backup/e107_0.7/e107_handlers/e_parse_class.php,v $
-|     $Revision: 1.139 $
-|     $Date: 2006-02-08 21:18:09 $
-|     $Author: streaky $
+|     $Revision: 1.140 $
+|     $Date: 2006-02-10 15:31:52 $
+|     $Author: sweetas $
 +----------------------------------------------------------------------------+
 */
 if (!defined('e107_INIT')) { exit; }
@@ -418,6 +418,14 @@ class e_parse
 		$text = str_replace(E_NL, $nl_replace, $text);
 
 		return trim($text);
+	}
+	
+	function toAttribute($text) {
+		if (!preg_match('/&#|\'|"|\(|\)|<|>/s', $text)) {
+			return $text;
+		} else {
+			return '';
+		}
 	}
 
 	function toJS($stringarray) {
